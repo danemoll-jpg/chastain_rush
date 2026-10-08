@@ -56,6 +56,18 @@ What Dan will judge when driving it:
 * Are road widths and corners right for the existing vehicle's handling?
 * Is the performance acceptable for an area this size?
 
+Round 1 status (2026-10-07) — built, automated drive check passed, NOT yet driven by Dan
+
+* Final bounds: unchanged from the starting bounds (S 34.0315, N 34.0450,
+  W -84.5433, E -84.5271). The whole neighbourhood and its New Chastain Road
+  entrance are inside. Map is the 1534 m UTM square around them.
+* OSM check: 801 buildings (718 houses), 91 addressed houses on Chastain Glen
+  Lane, 226 drivable road ways, 8 ponds, 21 streams (Noonday Creek, Little
+  Noonday Creek), 2 woods. Footprint coverage is good, so no Microsoft
+  footprints are needed for this area.
+* Not done this round: performance not measured on Dan's PC; woods are
+  reported but not drawn (trees are out of scope).
+
 Next Steps (Do Not Start Yet)
 
 * **Wait for the prototype verdict before deciding anything below.** All of

@@ -4,8 +4,8 @@ Sequel to Woodstock Rush (the `Racer` repo). Same kind of game, but the map is
 generated from real-world data for the Chastain Glen area of Marietta, GA.
 
 ## Tech Stack
-- Same engine and engine version as Racer. Confirm the exact version from the
-  Racer project on first session and record it here.
+- Unity 6000.6.1f1 (same as Racer, confirmed from Racer's ProjectVersion.txt),
+  URP 17.6.0, Input System 1.20.0 (Input System only, no old Input Manager).
 - Map data: USGS 3DEP 1 m elevation (GeoTIFF, UTM zone 16N, NAD83, metres) and
   OpenStreetMap (roads, building footprints, water, woods). Details and the
   tile URL are in `TODO.md` under Technical Notes.
@@ -30,16 +30,34 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - **Privacy:** don't commit the owner's street address or house number.
 
 ## Commands
-- To be filled in once the project is set up: how to run the map generation,
-  how to open and play the test scene, how to build.
+- Python deps for map generation: `pip install -r Tools/mapgen/requirements.txt`
+- Generate map data (bounds and settings in `Tools/mapgen/config.json`):
+  `python Tools/mapgen/mapgen.py` (`--refresh-osm` to re-download OSM).
+  Writes `Data/heightmap_1m.tif`, `Data/map.json` (committed) and
+  `Assets/Generated/terrain.r16` (ignored).
+- Build the scene: Unity menu **Chastain Rush > Build Map**, or batch:
+  `Unity.exe -batchmode -nographics -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine`
+  Output: `Assets/Generated/ChastainPrototype.unity` (ignored, rebuilt every run).
+- Play: open `Assets/Generated/ChastainPrototype.unity`, press Play.
+  W/S or triggers, A/D or left stick, R or Y to reset.
+- Automated drive check (Play mode, no keyboard needed):
+  `Unity.exe -batchmode -projectPath . -executeMethod ChastainRush.DriveCheck.Run -driveCheckOut <dir>`
+  Writes `drive_log.tsv` and screenshots.
+- Owner's house marker: put `{"housenumber": "...", "street": "..."}` in
+  `local/owner_house.json` (git-ignored) before running mapgen.
+- No player build yet.
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
 
-Nothing is built yet. The repo is clean. Active work is Round 1, the map
-prototype: generate about 1.5 km x 1.5 km around Chastain Glen from real data
-and make it drivable with one existing Racer vehicle. Everything else from
-Racer is deliberately out of scope until Dan has driven the prototype.
+Round 1 (map prototype) is built and passed an automated drive check; it has
+not yet been driven by Dan. Next is Dan's verdict (see `TODO.md`). Everything
+else from Racer stays out of scope until then.
+
+Imported from Racer so far (Round 1): PrototypeCar prefab, its materials and
+physics material (`Assets/Vehicles/`), and ArcadeVehicle, VehicleInput,
+ChaseCamera, ShallowWater (trimmed) and VehicleRespawn (rewritten) in
+`Assets/Scripts/Vehicle/`. Edits made to the copies are commented in place.
 
 End every round with a per-item status report: done / not done / deferred,
 and why.
