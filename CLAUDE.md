@@ -24,7 +24,10 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   kept it). True-scale terrain reads too flat in game. Design rule: the real
   world is the starting point, and fun wins when the two disagree.
 - **Road flattening levels across the road's width only.** Along-road smoothing
-  (`road_flatten.profile_smoothing_m`) is 0 because it reduced grades.
+  (`road_flatten.profile_smoothing_m`) is 0 because it reduced grades. Instead the
+  road profile gets a curvature limit (`sag_max_m` 0.06 over +-3 m: removes
+  lidar humps, keeps grades) and a junction level match (`junction_blend_m`),
+  Round 4. Roads have no colliders; the car drives on the terrain collider.
 - **Map generation is a re-runnable script driven by a bounding box**, not
   hand edits to generated output. Hand-made additions live separately from
   generated data so regenerating never destroys them.
@@ -44,7 +47,10 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   `Assets/Generated/terrain.r16` (ignored), plus `Data/bridges.txt` (committed).
   Downloads NAIP 4-band imagery into `raw/` (ignored) for tree cover.
   The crop is a rectangle clamped to the elevation tile; terrain is 18 tiles.
-  Other checks: `ChastainRush.SeamCheck.Run`, `PerfCheck.Run` (add `-perfGameView`,
+  Other checks: `ChastainRush.BumpScan.Run` (batch, no Play mode: rays onto the
+  real colliders along every road, writes `Data/bumps.txt`; run it after every
+  mapgen + Build Map), `ChastainRush.HudCheck.Run` (windowed, not -nographics:
+  checks the debug HUD, bug capture and bump log), `ChastainRush.SeamCheck.Run`, `PerfCheck.Run` (add `-perfGameView`,
   windowed, for the real Game view), `ScreenshotCheck.Run` (Round 3 shots to
   `Data/screenshots/round3/`),
   `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`.
@@ -63,12 +69,14 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
 
-Rounds 1 to 3 are built and driven by Dan: a 3983 m x 1918 m map from I-575
+Rounds 1 to 3 are built and driven by Dan (Round 4 is built and scripted-checked,
+not yet driven): a 3983 m x 1918 m map from I-575
 to past Canton Road, 18 terrain tiles, bridges, `vertical_scale` 1.5, 56,000
-trees, roofed and coloured houses, driveways, road paint, sky and fog. Active
-work is Round 4 in `TODO.md`: find the road bumps that launch the car, from a
-scan of the real colliders, and fix them at the source. Everything else from
-Racer stays out of scope.
+trees, roofed and coloured houses, driveways, road paint, sky and fog. Round 4
+(see `TODO.md`) found the road bumps with a collider scan and fixed them in
+mapgen, and added the on-screen coordinates, bug capture (F3 / F4 / F6) and the
+automatic bump log (`local/bump_log.txt`). Everything else from Racer stays out
+of scope.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
@@ -81,6 +89,12 @@ ChaseCamera, ShallowWater (trimmed) and VehicleRespawn (rewritten) in
 
 End every round with a per-item status report: done / not done / deferred,
 and why.
+
+Imported from Racer in Round 4: the debug report system, `Assets/Scripts/Debug/`:
+`DebugReportSession.cs` (copied, Racer's AtomicSave folded in, race fields
+replaced by road / vertical speed) and `DeveloperHud.cs` (a rewrite in IMGUI;
+Racer's depends on its race, campaign, menu and uGUI code). New here:
+`RoadLookup.cs`, `BumpLogger.cs`. Reports go to `local/debug_reports/`.
 
 Imported from Racer in Round 3: the tree kit `SceneryTrees.fbx` (copied unchanged
 to `Assets/Trees/`), and Racer's approach to drawing trees (instanced, near and

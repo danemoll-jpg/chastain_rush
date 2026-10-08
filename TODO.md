@@ -203,9 +203,107 @@ New tools: `TreeBuilder`, `TreeField`, `ScreenshotCheck`, `VertexLit` and
 drive checks (road geometry and colliders were not changed; houses' roofs now
 have colliders).
 
+Round 4 status — built, scripted-checked. NOT yet driven by Dan. Items 1-6 were
+done in order; the scan was reported before anything was fixed.
+
+1. Road-surface scan: DONE. `Assets/Editor/BumpScan.cs`, run in batch mode (no
+   Play mode needed, about 35 s): rays straight down onto the scene's real
+   colliders every 0.25 m along the centreline and both wheel tracks (+-0.85 m,
+   the car's suspension points), over all 604 road and bridge pieces (78.8 km,
+   316,043 stations, 948,129 rays, started 1.5 m above the surface: above the
+   car's roof, below house eaves). It flags: STEP (jump between neighbours
+   beyond the local grade, over 3 cm), HUMP (crest or dip against the chord
+   +-3 m, over 10 cm; a crest of 10 cm launches a car above about 21 m/s, 30 cm
+   above about 12 m/s), COLLIDER (first hit is not the road surface), OBSTRUCT
+   (solid object in the lane corridor), MISS. Output `Data/bumps.txt` (one row
+   per cluster: position, road, size, collider hit, features) and
+   `Data/bumps_before_fix.txt` (the same scan on the pre-fix map). The collider
+   inventory matters: roads, paint and driveways have NO colliders; the car
+   drives on the terrain collider, bridge decks and buildings only.
+2. Findings before fixing: DONE (reported in chat before the fixes). Before the
+   fix, outside the I-575 zone (within 100 m of a highway-class road or an
+   I-575 deck, out of scope): 166 STEP, 296 HUMP, 11 OBSTRUCT. Serious ones
+   (STEP >= 10 cm, HUMP >= 30 cm): 13 and 9. Causes found:
+   a. A bug in the road flattening (`build_terrain`): a cell took the height of
+      whichever road segment pulled on it first, at weight 0.999999, because of
+      a 1e-6 tie tolerance, instead of the nearest segment. It left single-
+      sample spikes up to about 0.7 m in the middle of ordinary streets (found
+      by tracing one: Brickelberry Court, a 34 cm bump at the car's wheel
+      track). Fixed with a 1e-3 tolerance (nearest segment wins ties).
+   b. Lidar humps in the centreline profile (culverts, embankments), kept
+      because along-road smoothing is off; vertical scale 1.5 amplified them.
+   c. Junction steps: each road took its own height at a junction, 8-15 cm
+      apart on steep through roads.
+   d. Unnamed service roads running through or along buildings (parking aisles,
+      loops, one building passage tagged tunnel): OBSTRUCT / COLLIDER.
+   Not causes: 128 m chunk boundaries (roads have no collider; 5% of clusters
+   against 4.6% of road length), terrain tile seams (2 of 628 clusters; 1.2% of
+   road length). Junctions and bridge ends are over-represented (35% and 7% of
+   clusters against 9.8% and 0.3% of road length), the bridge ends being nearly
+   all the I-575 / Chastain Road decks.
+3. Fixes at the source (`Tools/mapgen/mapgen.py`, `config.json`): DONE.
+   `road_flatten.sag_max_m` 0.06 (curvature limit: no crest or dip sharper than
+   0.06 m over a +-3 m chord, crest radius 75 m; straight grades untouched, only
+   humps shorter than a car are rounded: 2.5% of stations moved over 2 cm,
+   0.47% over 10 cm), `junction_blend_m` 12 (a road meeting a wider one takes its
+   height at the junction, fading over 12 m; 530 junction nodes), the tie fix
+   above, and `service_building_clearance_m` 1.5 (12 service roads cut, 123 m
+   removed). Before and after, same scan, outside the I-575 zone: STEP >= 10 cm
+   13 -> 1; STEP >= 5 cm 50 -> 31; HUMP >= 20 cm 52 -> 3; HUMP >= 30 cm 9 -> 0;
+   OBSTRUCT 11 -> 0; HUMP >= 10 cm 296 -> 76. What is left: 149 STEPs of 3-5 cm
+   (median 4 cm; probably the terrain collider's triangle zigzag on steep
+   grades, NOT verified), one 12 cm step at the Clarington / Brickelberry
+   junction, 5 COLLIDER rows (New Chastain Road deck ends: the deck meets the
+   road, no step), 4 MISS (the map's outer edge). The I-575 zone is untouched:
+   12 steps of 1.2-3.0 m remain there (the collapsed Chastain Road overpass, the
+   cut-off deck ends at the south edge), plus roads on the I-575 embankment near
+   Big Shanty Road. The scan cannot say whether a launch still happens at
+   speed; that is Dan's drive (`local/bump_log.txt` will say where).
+4. Coordinates and bug capture: DONE, scripted-checked in a windowed Editor Play
+   session (`HudCheck.Run`: capture, comment, save, report files, and a bump log
+   line from a test ramp). I did NOT press the F3 / F4 / F6 keys myself.
+   Brought over from Racer's `DeveloperLocationHud` and `DebugReportSession`
+   (`Assets/Scripts/Debug/`): `DebugReportSession.cs` (copied; Racer's
+   `AtomicSave` folded in; race fields dropped, road name / distance / vertical
+   speed added) and `DeveloperHud.cs` (REWRITTEN: Racer's is built on
+   RaceDirector, RaceFlow, Campaign, MenuInput / MenuGlyph, WorldLook,
+   GetawayChase, VehicleConfiguration and uGUI, none of which this project has).
+   New here: `RoadLookup.cs` (road names, filled into the scene by MapBuilder)
+   and `BumpLogger.cs`. CUT: race / lap / checkpoint / course lines, the debug-
+   fly camera and its "records disabled" flag, the campaign cheat buttons, the
+   Getaway log, all of the uGUI canvas (drawn with IMGUI, like `MapCredits`).
+   Nothing needed the launcher or publishing setup; the only build-only thing
+   was `Application.persistentDataPath`, now used just in a player build.
+   How Dan uses it: press Play. A panel at the lower right shows X Y Z, heading,
+   speed, the nearest road and the distance from its centre (on road / off
+   road), wheels on the ground and vertical speed. F3 hides / shows it (it is on
+   from the start). F4 (or gamepad Select): the game pauses, the screenshot is
+   saved with the panel on it, and a box opens: type the problem, Enter saves,
+   Shift+Enter is a new line, Esc cancels (gamepad: A saves, B cancels). F6 (or
+   Start): menu with Export Bug Report ZIP, Open Debug Report Folder, Start New
+   Debug Session. Files land in `local/debug_reports/<session>/` (`bugs.json`,
+   `BUG_REPORT.md`, `Screenshots/BUG-001.png` ...; the ZIP beside it),
+   git-ignored.
+   Bump log: `local/bump_log.txt` (git-ignored). A line is added, with no key
+   pressed, when the car leaves the ground on a road for 0.2 s or more (AIRBORNE,
+   at the take-off point, then LANDED with air time and peak), or its vertical
+   speed changes by 2 m/s or more within 0.1 s while driving on a road (JOLT).
+   Each line has time, x y z, road name and distance from its centre, speed. Not
+   active in batch mode.
+5. Drive checks: DONE (scripted). Chastain Glen Lane: 1252 m, last waypoint
+   reached, max tilt 10.9 deg, 0.00 s with fewer than 2 wheels grounded,
+   identical to Round 2. Bridge route (`-driveBridge 5`): 178 m, 4 wheels
+   grounded across the deck, 6.75 m above the terrain at mid-span, max tilt
+   2.1 deg, identical to Round 2. Both drive at 13 m/s and neither covers a road
+   that had bumps, so "bumps gone" is Dan's to judge.
+6. This report: DONE.
+
+New tools: `BumpScan`, `HudCheck` / `HudCheckRunner`, `RoadLookup`,
+`DeveloperHud`, `BumpLogger`, `DebugReportSession`.
+
 Current Objective (Focus Area)
 
-**Round 4 — find and fix the road bumps. DECIDED (2026-10-08).** Dan hit
+**Round 4 — find and fix the road bumps. DECIDED (2026-10-08).** BUILT, see Round 4 status above; waiting for Dan to drive it. Dan hit
 random bumps while driving that sometimes launch the car. He did not note
 where. Find them from data first; do not guess at a cause and patch it.
 Suspects, none confirmed: the 128 m road chunk boundaries added in Round 3,

@@ -86,6 +86,7 @@ namespace ChastainRush
             BuildRoads(map, terrain, mats, world, paint);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
+            BuildRoadLookup(map);
             BuildBuildings(map, terrain, mats, world, LoadOwner());
             BuildDriveways(map, terrain, mats, world);
             BuildWater(map, terrain, mats, world);
@@ -261,6 +262,24 @@ namespace ChastainRush
             }
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
+        }
+
+        // Road names for the debug HUD, bug reports and bump log (Scripts/Debug/RoadLookup.cs): every road and bridge
+        // centreline, serialized into the scene.
+        static void BuildRoadLookup(MapData map)
+        {
+            var names = new List<string>(); var halves = new List<float>();
+            var road = new List<int>(); var a = new List<Vector2>(); var b = new List<Vector2>();
+            void Add(string name, float width, float[] flat)
+            {
+                int id = names.Count;
+                names.Add(name ?? ""); halves.Add(width * 0.5f);
+                var p = ToPoints(flat);
+                for (int i = 0; i + 1 < p.Count; i++) { road.Add(id); a.Add(p[i]); b.Add(p[i + 1]); }
+            }
+            foreach (var r in map.roads) Add(r.name, r.width, r.points);
+            foreach (var br in map.bridges) Add(br.name, br.width, br.points);
+            new GameObject("RoadLookup").AddComponent<RoadLookup>().Fill(names, halves, road, a, b);
         }
 
         static void AddRibbon(MeshBuilder mb, List<Vector2> pts, float width, float lift, TerrainGrid t)
