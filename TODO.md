@@ -138,7 +138,12 @@ north to south, not 2.2. A second tile is the next step for more.
 New tools: `GroundQuery` (tile-aware ground height for checks), Editor
 `PerfCheck`, `SeamCheck`, `steep_roads.py`.
 
-Round 3 status — built, scripted-checked. NOT yet driven by Dan.
+Round 3 status — built, scripted-checked, and DRIVEN by Dan on his PC
+(2026-10-08), over most of the map. His verdict: generally feels pretty good,
+looks good, no lag. Problems he found: random bumps on roads that sometimes
+send the car flying (Round 4), and the Chastain Road overpass at I-575 has
+collapsed onto the highway, which also has no real ramps (deferred, see Next
+Steps).
 
 1. Trees: DONE. NAIP 4-band imagery (tile m_3408460_se_16_060_20231007, flown
    2023-10-07, so autumn leaves; fetched at 1 m from USGS's image service into
@@ -200,65 +205,49 @@ have colliders).
 
 Current Objective (Focus Area)
 
-**Round 3 — build the map out so it reads as a real place. DECIDED
-(2026-10-08).** Same area and bounds as Round 2, `vertical_scale` still 1.5.
-Dan can't judge the map while it is bare boxes on bare ground, so this round
-is about looks, not new systems. Simple and stylized is fine; it only has to
-be recognizable.
+**Round 4 — find and fix the road bumps. DECIDED (2026-10-08).** Dan hit
+random bumps while driving that sometimes launch the car. He did not note
+where. Find them from data first; do not guess at a cause and patch it.
+Suspects, none confirmed: the 128 m road chunk boundaries added in Round 3,
+junctions where two roads meet at slightly different heights, bridge deck
+ends, terrain tile seams, and colliders that should not be drivable surface
+(paint, driveways, edge strips, roof or building corners near the road).
 
-1. Trees. This area is heavily wooded, so trees matter most. Get real tree
-   cover for the map area and place trees from it: NAIP 4-band imagery
-   (public domain; near-infrared makes tree canopy easy to separate) is the
-   preferred source. If it can't be fetched or processed in reasonable time,
-   say so and fall back to a rule: dense trees wherever the ground is more
-   than about 15 m from any road or building, sparse ones in yards. No trees
-   on roads, buildings, water or bridges. Positions must be stable between
-   regenerations.
-   **Tree models — DECIDED (2026-10-08): reuse the trees made in Blender for
-   Woodstock Rush** (3 or 4 of them, in the Racer repo). Copy them over with
-   their materials, vary size and rotation, and list what came with them.
-   Woodstock Rush scatters these trees by script over most of its map, so
-   look at how Racer places and draws them first, and reuse that approach
-   (and its code, if it fits) where it helps. Only the positions change here:
-   they come from real tree cover, not random scatter. Report each model's
-   triangle count, how many trees Racer draws, and how many this map needs.
-   If this map needs far more than Racer handles, keep the models for nearby
-   trees and add a cheap far version; don't model new trees from scratch.
-2. Tree performance: use GPU instancing and distance culling or billboards
-   from the start. Report how many trees were placed.
-3. Houses: give detached houses pitched roofs, and vary wall and roof colours
-   from a small palette, chosen by a stable hash of the building so they don't
-   reshuffle on regeneration. Keep flat roofs for commercial buildings. Keep
-   the owner's house marker.
-4. Driveways: draw the driveways OSM has (they are currently excluded). For
-   houses with none, add a simple straight driveway to the nearest road.
-   Visual only; they don't need to flatten the terrain.
-5. Road markings: a centre line on roads that have one in real life (not
-   quiet residential streets), and a visible edge between road and grass.
-6. Sky, sun and distance fog, so the far edge of the map fades out instead of
-   ending in a hard line.
-7. Add `Assets/_Recovery/` to `.gitignore` (Unity crash-recovery scenes).
-8. Performance: the Game-view frame rate at the Round 1 spawn and at the
-   densest spot, after trees. If it is below 60 fps, fix that before finishing
-   and report what it took.
-   Dan is open to a smaller map if performance needs it (the current area is
-   larger than he first pictured). Don't shrink it yourself: if 60 fps can't
-   be reached without heavy work, stop and report what a smaller area would
-   gain, and let Dan choose.
-9. Save screenshots from fixed viewpoints to `Data/screenshots/round3/`: the
-   spawn on Chastain Glen Lane, the hill past the bend, the New Chastain Road
-   bridge, Canton Road, I-575, and one overhead view of the whole map.
-10. Report status for every item: done / not done / deferred, and why.
+1. Build a road-surface scan: for every road, cast down onto the actual
+   colliders every 0.25 m along the centreline and along both wheel tracks,
+   and record any height step over 3 cm between neighbouring samples and any
+   place where the first collider hit is not the road or a bridge deck.
+   Write the results to `Data/bumps.txt` with position, road name, step size,
+   and which collider was hit.
+2. Report what the scan found before fixing anything: how many, how big, and
+   what they have in common (chunk boundary, junction, bridge end, tile seam,
+   stray collider). Say plainly if the scan finds nothing.
+3. Fix the causes the scan shows, at the source in the generator, not by
+   smoothing individual spots. Re-run the scan and report the before and
+   after counts.
+4. Bring over Racer's on-screen coordinates and its bug capture (debug
+   report) system. **DECIDED (2026-10-08):** Dan wants these in early. They
+   must work in Unity Play mode, not only in a built executable; if Racer's
+   version depends on the launcher, the publishing setup or anything else
+   that only exists in a build, cut that dependency and say what was cut.
+   Reports go to a git-ignored folder. Bring only what these two need, and
+   list what came with them. Report how Dan triggers a capture and where the
+   files land.
+   Add one thing Racer may not have: when the car's vertical speed jumps
+   sharply or it leaves the ground on a road, automatically append the time,
+   coordinates and nearest road name to `local/bump_log.txt`, so a bump is
+   recorded even if Dan doesn't press anything.
+5. Run the scripted drive checks from Round 2 (Chastain Glen Lane and the
+   bridge route); they were skipped in Round 3.
+6. Report status for every item: done / not done / deferred, and why.
 
-Out of scope for this round: medians, ramps and overpasses on the big roads,
-a second elevation tile, hand-built houses, traffic, rivals, race routes, and
-any other Racer system.
+Out of scope for this round: the I-575 overpass and ramps, tree collision,
+the entrance, and anything visual.
 
 What Dan will judge when driving it:
-* Does it now look like the neighborhood?
-* With trees and houses in, is this the right amount of area?
-* Do the hills read better with things to judge them against?
-* Does it still run smoothly?
+* Are the bumps gone? If one still happens, `local/bump_log.txt` will have
+  where.
+* Do the coordinates and bug capture work the way they do in Woodstock Rush?
 
 Next Steps (Do Not Start Yet)
 
@@ -267,7 +256,12 @@ Next Steps (Do Not Start Yet)
   camera and narrower field of view, before raising the scale further.
 * Growing the map further north needs a second elevation tile (the current
   one ends at latitude 34.048).
-* Proper handling for major roads: medians, ramps and overpasses.
+* Proper handling for major roads: medians, ramps and overpasses. Known
+  broken: the Chastain Road overpass at I-575 lies collapsed on the highway,
+  and I-575 has no real ramps. Dan expects that edge of the map may not be in
+  the final game, so decide whether to trim the west edge east of I-575
+  before spending any work on it. Open, not urgent.
+* Tree collision: the car drives through trees.
 * One world with race routes laid over it (not a copy of the world per course,
   as in Woodstock Rush).
 * Houses missing from OSM, found by comparing against NAIP imagery.
@@ -275,9 +269,15 @@ Next Steps (Do Not Start Yet)
   the first time the map grows into an area that has such a crossing.
 * Hand-built versions of the houses that matter, from photos, as was done for
   Kyle's house in Woodstock Rush.
+* Hand detailing of the Chastain Glen entrance. Dan confirmed from photos
+  (2026-10-08) that the divided entrance with a median island is real, so the
+  generated layout there is correct. Missing against the photos: trees and
+  trimmed shrubs on the island, a white rail fence along one side, sidewalks
+  and curbs. Dan has reference photos. Also check the lighter grey patch on
+  the road beside the island in `01_spawn.png`, which looks like a glitch.
 * Importing the remaining Racer systems: rival AI, traffic, campaign, Free
-  Roam, split-screen, menus and garage, radio, debug-report tool, launcher and
-  publishing. Deferred until Woodstock Rush is finished, so the final versions
+  Roam, split-screen, menus and garage, radio, launcher and publishing. (The
+  debug-report tool comes over early, in Round 4.) Deferred until Woodstock Rush is finished, so the final versions
   are what gets brought over.
 * Vehicle list, course list, campaign structure, and the final name.
 * When Woodstock Rush is finished: record what to keep, what to build
