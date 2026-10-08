@@ -50,7 +50,91 @@ Completed Tasks
   The files git still lists as modified differ only in line endings.
 * **Terrain/OSM alignment offset — DECIDED: leave as is.** Up to 0.37 m near
   the map edges from a half-pixel difference, about 4 cm of height on a 12%
-  slope. Not worth fixing.
+  slope. Not worth fixing. (Round 2 samples the terrain at true positions, so
+  the offset is gone in the new generator anyway.)
+* **Steep-road check (Round 2 item 1) — recorded.** The original chat report
+  was not kept anywhere in the repo, so this is a re-run of the same kind of
+  check on the Round 1 data (`Tools/mapgen/steep_roads.py`: 20 m windows, true
+  scale). It cannot say what Dan was told about Hayworth Drive NE at the time.
+  What the data shows: Hayworth Drive Northeast is one 11-node residential OSM
+  way with nothing odd in its tags, and it is simply steep: 94 m over 15% (max
+  22.3%) plus another 83 m (max 17.2%), no water. Every stretch over 15% in the
+  Round 1 area (residential unless noted): Joel Drive 124 m, max 30.4%, and
+  32 m, 16.0%; Hayworth Drive NE 94 m, 22.3%, and 83 m, 17.2%; Embry Lane NE
+  163 m, 21.5%, and 50 m, 18.3%; Elaine Circle NE 58 m, 21.2%, and 47 m, 16.9%;
+  Blackwell Circle 69 m, 18.3%; Chastain Ridge Drive NE 25 m, 15.4%; one
+  unnamed service road 21 m, 15.0%; and New Chastain Road (primary) over
+  Noonday Creek, four 21 m windows at 18.8-20.5% (up to 38% over 10 m). The New
+  Chastain stretch is the only one that crosses water: it is the creek-channel
+  dip, not a real grade, and Round 2 bridges it. The rest are real hills. In
+  the Round 2 area the same list holds, plus Kelly Drive NE (21.4%), Daisy
+  Circle NE (18.3%), Hilltop Drive NE (17.8%), Suholden Circle NE (15.8%) and
+  two service stubs at the south edge by I-575 (31% and 29%, probably highway
+  cut walls). Nothing over 15% crosses water any more.
+
+Round 2 status (coding pass; built and scripted-checked, NOT yet driven by Dan)
+
+Final area: a rectangle in UTM, 3983 m east-west by 1918 m north-south
+(SW corner 34.0294, -84.5665; NE corner 34.0458, -84.5229). Landmarks: I-575
+inside with about 200 m beyond it; east edge about 400 m past Canton Road at
+its easternmost point; south edge about 300 m south of New Chastain Road.
+**The north side stops at the elevation tile edge** (lat 34.0467 at the west
+end, 34.0458 at the east end): 1 km north of Chastain Glen Lane would have
+needed 34.049. The map reaches about 620 m north of the lane and is 1.9 km
+north to south, not 2.2. A second tile is the next step for more.
+
+1. Steep-road findings: DONE, recorded above (a re-run; Hayworth's original
+   conclusion is not recovered).
+2. Tile edge check: DONE. West, east and south are inside the tile; north is cut.
+3. Regenerate at vertical_scale 1.5: DONE (592 road pieces, 2388 buildings,
+   22 water areas, 33 streams drawn). The crop is a rectangle, not a square.
+4. Terrain tiles: DONE. 6 x 3 = 18 tiles of 1025 x 1025 samples, about
+   0.65 x 0.62 m per sample (finer than Round 1's 0.749). `SeamCheck.Run` on the
+   built scene: 0.00000 m difference across all 27 seams; the largest step from
+   a seam sample to the next is 0.84 m, below the 3.0 m steepest step inside
+   tiles (real lidar walls). Not yet walked by Dan.
+5. Bridges: DONE for what the data holds. 9 bridge pieces, all from OSM
+   `bridge` tags (`Data/bridges.txt`): New Chastain Road over Noonday Creek (two
+   decks, 33 m each, up to 6.8 m above the creek bed); four Chastain Road NW
+   decks at the I-575 interchange (39-72 m, not over mapped water); three tiny
+   I-575 / express-lane pieces cut at the south map edge. Crossings with no
+   bridge tag over open streams or ponds: none found. Seven crossings of
+   streams OSM maps as culverts were left on the ground (dips 0.01-0.38 m).
+   The untagged-crossing logic (span search, level deck, 0.4 m minimum dip) is
+   built but had no untagged case to act on here, so it is untested on real
+   data. Decks have colliders and 0.7 m parapets.
+6. Major roads: DONE as a report, no special handling. Widths come from lane
+   counts: I-575 carriageways 8 m (one-way) or 11.5 m, the express lane 4.5 m,
+   New Chastain Road one-way ways 8 m (11.5-15 m near junctions), Canton Road
+   8-22 m, Bells Ferry 8 m. Likely wrong, judged from the data (I have not
+   driven them): I-575 and its express lane are separate side-by-side ways with
+   no median or barriers (6 of 17 sampled highway points lie within a road
+   width of another highway way); the express lane is not flagged one-way; the
+   10 ramp (`_link`) ways are plain narrow roads; overpasses are bridged but
+   nothing handles the road beneath; dual carriageways of New Chastain and
+   Canton Road are separate ways with an unfilled gap. For Dan to judge.
+7. Performance: DONE with a caveat. Batch mode does not draw the game view, so
+   `PerfCheck.Run` renders the main camera offscreen at 1920 x 1080 each frame
+   and waits for the GPU (Editor, GTX 1660 Ti, i7-9700, with another Unity batch
+   job running at the time). Round 1 spawn: 136 fps average, 99th-percentile
+   frame 9.2 ms (108 fps), 568 draw calls, 0.69 M triangles. Densest part
+   (x 3152, z 1610): 135 fps average, 99th percentile 9.3 ms, worst 15.5 ms, 610
+   draw calls, 0.71 M triangles. Both above 60, so no optimizing. Within 300 m:
+   spawn 179 buildings and 4131 m of road in 42 ways; densest 195 buildings and
+   3426 m in 31 ways. Whole map: 2388 buildings, 592 road pieces, 134 renderers.
+   Not a player build or a windowed run: Dan's own Game-view frame rate is
+   unmeasured.
+8. Drive checks: DONE (scripted). Chastain Glen Lane: 1252 m, last waypoint
+   reached, max tilt 10.9 deg, never fewer than 2 wheels grounded. Round 1's
+   numbers were not recorded, so "matches Round 1" is not checked numerically.
+   Bridge route (`-driveBridge 5`, New Chastain Road over Noonday Creek): 178 m,
+   crossed the deck with 4 wheels grounded, 6.75 m above the terrain at
+   mid-span, max tilt 2.1 deg. It stopped about 1 s after the deck end, short
+   of the planned length (a path-walking quirk in the check, not the bridge).
+9. This report: DONE.
+
+New tools: `GroundQuery` (tile-aware ground height for checks), Editor
+`PerfCheck`, `SeamCheck`, `steep_roads.py`.
 
 Current Objective (Focus Area)
 

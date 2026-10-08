@@ -41,7 +41,10 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - Generate map data (bounds and settings in `Tools/mapgen/config.json`):
   `python Tools/mapgen/mapgen.py` (`--refresh-osm` to re-download OSM).
   Writes `Data/heightmap_1m.tif`, `Data/map.json` (committed) and
-  `Assets/Generated/terrain.r16` (ignored).
+  `Assets/Generated/terrain.r16` (ignored), plus `Data/bridges.txt` (committed).
+  The crop is a rectangle clamped to the elevation tile; terrain is 18 tiles.
+  Other checks: `ChastainRush.SeamCheck.Run`, `PerfCheck.Run`,
+  `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`.
 - Build the scene: Unity menu **Chastain Rush > Build Map**, or batch:
   `Unity.exe -batchmode -nographics -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine`
   Output: `Assets/Generated/ChastainPrototype.unity` (ignored, rebuilt every run).

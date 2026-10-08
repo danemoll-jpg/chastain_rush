@@ -53,8 +53,7 @@ namespace ChastainRush
             if (t > 2f) maxTilt = Mathf.Max(maxTilt, tilt);
             maxSpeed = Mathf.Max(maxSpeed, speed);
             if (car.GroundedWheels < 2 && t > 2f) airTime += dt;
-            var terrain = Terrain.activeTerrain;
-            float gap = pos.y - (terrain.SampleHeight(pos) + terrain.transform.position.y);
+            float gap = pos.y - GroundQuery.Height(pos.x, pos.z);
             if (t > 2f) minGap = Mathf.Min(minGap, gap);
 
             if (t >= nextLog)
@@ -89,12 +88,11 @@ namespace ChastainRush
             var go = new GameObject("OverviewCamera");
             var c = go.AddComponent<Camera>();
             c.farClipPlane = 5000f;
-            var terrain = Terrain.activeTerrain;
-            float size = terrain.terrainData.size.x;
-            go.transform.SetPositionAndRotation(new Vector3(size / 2f, 1500f, size / 2f), Quaternion.Euler(90f, 0f, 0f));
+            var ext = GroundQuery.Extent();
+            go.transform.SetPositionAndRotation(new Vector3(ext.center.x, 1500f, ext.center.y), Quaternion.Euler(90f, 0f, 0f));
             c.orthographic = true;
-            c.orthographicSize = size / 2f;
-            Shoot("overview_map.png", c);
+            c.orthographicSize = Mathf.Max(ext.height / 2f, ext.width / 2f / (16f / 9f));
+            Shoot("overview_map.png", c, 2560, 1440);
             var beacon = GameObject.Find("OwnerHouseBeacon");
             if (beacon)
             {
@@ -107,14 +105,14 @@ namespace ChastainRush
             }
         }
 
-        public void Shoot(string file, Camera c)
+        public void Shoot(string file, Camera c, int w = 1280, int h = 720)
         {
-            var rt = new RenderTexture(1280, 720, 24);
+            var rt = new RenderTexture(w, h, 24);
             c.targetTexture = rt;
             c.Render();
             RenderTexture.active = rt;
-            var tex = new Texture2D(1280, 720, TextureFormat.RGB24, false);
-            tex.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0);
+            var tex = new Texture2D(w, h, TextureFormat.RGB24, false);
+            tex.ReadPixels(new Rect(0, 0, w, h), 0, 0);
             tex.Apply();
             c.targetTexture = null;
             RenderTexture.active = null;

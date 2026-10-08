@@ -6,6 +6,10 @@ Re-runnable, driven by the bounds in config.json. Steps:
   3. process - project OSM to UTM metres, build roads / buildings / water -> Data/map.json
   4. terrain - resample heightmap to the terrain grid, flatten under roads -> Assets/Generated/terrain.r16
 
+The crop is a rectangle (size_x_m by size_z_m) in whole UTM metres, clamped to the elevation tile's edge. The terrain is
+written as one global height grid that Unity cuts into square-sample tiles; neighbouring tiles share their edge samples,
+so there are no seams. Roads that cross water are held level on a deck (bridges, see plan_bridges).
+
 World frame (shared with Unity): x = easting - origin_e, z = northing - origin_n,
 y = elevation in metres (NAVD88). 1 unit = 1 metre horizontally. Vertical scale is 1.0 (true) unless
 config.json "vertical_scale" says otherwise; it is applied about the lowest point of the crop, to terrain
@@ -45,10 +49,20 @@ def log(msg):
 
 # ---------------------------------------------------------------- fetch
 
-def fetch_osm(cfg, refresh):
-    b = cfg["bounds"]
+def osm_bbox(cfg, rect):
+    """Lat/lon box that contains the UTM rectangle (plus a little), for the OSM query."""
+    tr = Transformer.from_crs(cfg["utm_epsg"], 4326, always_xy=True)
+    w, s, e, n = rect
+    pts = [tr.transform(x, y) for x in (w, e) for y in (s, n)]
+    return (min(p[1] for p in pts) - 0.0005, min(p[0] for p in pts) - 0.0005,
+            max(p[1] for p in pts) + 0.0005, max(p[0] for p in pts) + 0.0005)  # S, W, N, E
+
+
+def fetch_osm(cfg, refresh, rect):
+    south, west, north, east = osm_bbox(cfg, rect)
+    b = {"south": south, "west": west, "north": north, "east": east}
     path = os.path.join(RAW, "osm_box.json")
-    key = f'{b["south"]},{b["west"]},{b["north"]},{b["east"]}'
+    key = f'{south:.5f},{west:.5f},{north:.5f},{east:.5f}'
     if os.path.exists(path) and not refresh:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -79,19 +93,7 @@ def fetch_osm(cfg, refresh):
 
 # ---------------------------------------------------------------- dem
 
-def utm_rect(cfg):
-    """Square UTM rectangle (whole metres) that contains the lat/lon bounds."""
-    b = cfg["bounds"]
-    tr = Transformer.from_crs(4326, cfg["utm_epsg"], always_xy=True)
-    xs, ys = zip(*[tr.transform(lon, lat) for lon in (b["west"], b["east"]) for lat in (b["south"], b["north"])])
-    w, e, s, n = min(xs), max(xs), min(ys), max(ys)
-    side = math.ceil(max(e - w, n - s))
-    cx, cy = (w + e) / 2, (s + n) / 2
-    w0, s0 = math.floor(cx - side / 2), math.floor(cy - side / 2)
-    return w0, s0, w0 + side, s0 + side
-
-
-def build_heightmap(cfg, rect):
+def tile_paths(cfg):
     os.makedirs(RAW, exist_ok=True)
     paths = []
     for url in cfg["elevation_tiles"]:
@@ -100,7 +102,32 @@ def build_heightmap(cfg, rect):
             log(f"DEM: downloading {url}")
             urllib.request.urlretrieve(url, p)
         paths.append(p)
-    srcs = [rasterio.open(p) for p in paths]
+    return paths
+
+
+def utm_rect(cfg):
+    """UTM rectangle (whole metres) that contains the lat/lon bounds, clamped to the elevation tile(s).
+    Returns (rect, clamped) where clamped lists the sides that were cut at the tile edge."""
+    b = cfg["bounds"]
+    tr = Transformer.from_crs(4326, cfg["utm_epsg"], always_xy=True)
+    xs, ys = zip(*[tr.transform(lon, lat) for lon in (b["west"], b["east"]) for lat in (b["south"], b["north"])])
+    w, e, s, n = math.floor(min(xs)), math.ceil(max(xs)), math.floor(min(ys)), math.ceil(max(ys))
+    srcs = [rasterio.open(p) for p in tile_paths(cfg)]
+    tw, ts = min(r.bounds.left for r in srcs), min(r.bounds.bottom for r in srcs)
+    te, tn = max(r.bounds.right for r in srcs), max(r.bounds.top for r in srcs)
+    for r in srcs:
+        r.close()
+    tw, ts, te, tn = math.ceil(tw) + 1, math.ceil(ts) + 1, math.floor(te) - 1, math.floor(tn) - 1  # 1 m inside the edge
+    clamped = []
+    if w < tw: w = tw; clamped.append("west")
+    if s < ts: s = ts; clamped.append("south")
+    if e > te: e = te; clamped.append("east")
+    if n > tn: n = tn; clamped.append("north")
+    return (w, s, e, n), clamped
+
+
+def build_heightmap(cfg, rect):
+    srcs = [rasterio.open(p) for p in tile_paths(cfg)]
     w, s, e, n = rect
     arr, transform = merge(srcs, bounds=(w, s, e, n), res=1.0, nodata=-999999.0)
     arr = arr[0]
@@ -181,13 +208,13 @@ def process_osm(cfg, osm, rect):
             x, y = tr.transform(el["lon"], el["lat"])
             nodes[el["id"]] = (round(x - w0, 2), round(y - s0, 2))
     ways = {el["id"]: el for el in osm["elements"] if el["type"] == "way"}
-    size = e0 - w0
+    size_x, size_z = e0 - w0, n0 - s0
 
     def pts_of(way):
         return [nodes[n] for n in way["nodes"] if n in nodes]
 
     def inside(p, margin=0.0):
-        return -margin <= p[0] <= size + margin and -margin <= p[1] <= size + margin
+        return -margin <= p[0] <= size_x + margin and -margin <= p[1] <= size_z + margin
 
     roads, buildings, water, streams, woods = [], [], [], [], []
     owner_cfg = None
@@ -210,7 +237,9 @@ def process_osm(cfg, osm, rect):
                 continue
             for run, ids in clip_runs(pts, [n for n in way["nodes"] if n in nodes], inside):
                 roads.append({"name": t.get("name", ""), "class": hw, "width": road_width(t, cfg),
-                              "oneway": t.get("oneway") == "yes", "points": run, "node_ids": ids})
+                              "oneway": t.get("oneway") == "yes", "points": run, "node_ids": ids,
+                              "bridge": t.get("bridge", "no") not in ("no", ""), "tunnel": t.get("tunnel", "no") not in ("no", ""),
+                              "osm_id": way["id"]})
         elif "building" in t and way["nodes"][0] == way["nodes"][-1] and len(pts) >= 4:
             ring = pts[:-1]
             cx = sum(p[0] for p in ring) / len(ring)
@@ -230,7 +259,8 @@ def process_osm(cfg, osm, rect):
                 water.append({"name": t.get("name", ""), "outline": ring if poly_area(ring) > 0 else ring[::-1]})
         elif "waterway" in t:
             for run, _ in clip_runs(pts, list(range(len(pts))), inside):
-                streams.append({"name": t.get("name", ""), "kind": t["waterway"], "points": run})
+                streams.append({"name": t.get("name", ""), "kind": t["waterway"], "points": run,
+                                "tunnel": t.get("tunnel", "no") not in ("no", "")})
         elif t.get("natural") == "wood" or t.get("landuse") == "forest":
             if any(inside(p) for p in pts):
                 woods.append({"outline": pts})
@@ -251,15 +281,12 @@ def process_osm(cfg, osm, rect):
     out = {
         "attribution": "© OpenStreetMap contributors (ODbL); elevation: USGS 3DEP 1 m (public domain)",
         "bounds": cfg["bounds"], "utm_epsg": cfg["utm_epsg"], "vertical_scale": vscale(cfg),
-        "origin_utm": [w0, s0], "size_m": size,
+        "origin_utm": [w0, s0], "size_x_m": size_x, "size_z_m": size_z,
         "roads": roads, "buildings": buildings, "water": water, "streams": streams, "woods": woods,
         "spawn": spawn,
     }
-    path = os.path.join(DATA, "map.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(flat_for_unity(out), f, ensure_ascii=False, separators=(",", ":"))
     log(f"OSM: {len(roads)} road ways, {len(buildings)} buildings, {len(water)} water areas, "
-        f"{len(streams)} streams, {len(woods)} woods -> {path}")
+        f"{len(streams)} streams, {len(woods)} woods")
     os.makedirs(LOCAL, exist_ok=True)
     marker_path = os.path.join(LOCAL, "owner_marker.json")
     if owner:
@@ -302,9 +329,10 @@ def flat_for_unity(mapdata):
         return [c for p in pts for c in p]
     out = dict(mapdata)
     out["roads"] = [dict(r, points=flat(r["points"])) for r in mapdata["roads"]]
+    out["bridges"] = [dict(b, points=flat(b["points"])) for b in mapdata["bridges"]]
     out["buildings"] = [dict(b, footprint=flat(b["footprint"])) for b in mapdata["buildings"]]
     out["water"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["water"]]
-    out["streams"] = [dict(s, points=flat(s["points"])) for s in mapdata["streams"]]
+    out["streams"] = [dict(s, points=flat(s["points"])) for s in mapdata["streams"] if not s["tunnel"]]
     out["woods"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["woods"]]
     return out
 
@@ -333,36 +361,253 @@ def find_spawn(cfg, roads):
     raise SystemExit(f"Spawn: no {sp['street']} way touching {sp['from_street']}")
 
 
+# ---------------------------------------------------------------- bridges
+
+def densify_line(pts, step=1.0):
+    pts = np.asarray(pts, dtype=np.float64)
+    seg = np.hypot(*np.diff(pts, axis=0).T)
+    cum = np.concatenate([[0.0], np.cumsum(seg)])
+    n = max(2, int(math.ceil(cum[-1] / step)) + 1)
+    s = np.linspace(0, cum[-1], n)
+    return s, np.interp(s, cum, pts[:, 0]), np.interp(s, cum, pts[:, 1]), cum
+
+
+def subline(pts, cum, a, b):
+    """Part of a polyline between arc lengths a and b, cut exactly at both ends."""
+    pts = np.asarray(pts, dtype=np.float64)
+    inner = [(float(pts[i, 0]), float(pts[i, 1])) for i in range(len(pts)) if a + 1e-6 < cum[i] < b - 1e-6]
+    return [(float(np.interp(a, cum, pts[:, 0])), float(np.interp(a, cum, pts[:, 1])))] + inner + \
+           [(float(np.interp(b, cum, pts[:, 0])), float(np.interp(b, cum, pts[:, 1])))]
+
+
+def points_in_poly(x, z, poly):
+    inside = np.zeros(len(x), bool)
+    j = len(poly) - 1
+    for i in range(len(poly)):
+        xi, zi = poly[i]
+        xj, zj = poly[j]
+        if zi != zj:
+            hit = ((zi > z) != (zj > z)) & (x < (xj - xi) * (z - zi) / (zj - zi) + xi)
+            inside ^= hit
+        j = i
+    return inside
+
+
+def road_stream_crossings(x, z, s, line):
+    """Arc lengths along the densified road where it crosses a polyline (stream)."""
+    out = []
+    lx0, lx1 = min(p[0] for p in line), max(p[0] for p in line)
+    lz0, lz1 = min(p[1] for p in line), max(p[1] for p in line)
+    if x.max() < lx0 - 1 or x.min() > lx1 + 1 or z.max() < lz0 - 1 or z.min() > lz1 + 1:
+        return out
+    ax, az, bx, bz = x[:-1], z[:-1], x[1:], z[1:]
+    rx, rz = bx - ax, bz - az
+    for (cx, cz), (dx, dz) in zip(line, line[1:]):
+        qx, qz = dx - cx, dz - cz
+        den = rx * qz - rz * qx
+        with np.errstate(divide="ignore", invalid="ignore"):
+            u = ((cx - ax) * qz - (cz - az) * qx) / den
+            v = ((cx - ax) * rz - (cz - az) * rx) / den
+        ok = (np.abs(den) > 1e-9) & (u >= 0) & (u <= 1) & (v >= 0) & (v <= 1)
+        for k in np.nonzero(ok)[0]:
+            out.append(float(s[k] + u[k] * (s[k + 1] - s[k])))
+    return out
+
+
+def plan_bridges(cfg, mapdata, sample):
+    """Holds roads level where they cross water or carry an OSM bridge tag.
+
+    Each road way is cut into ordinary pieces (kept in mapdata["roads"], draped on the terrain) and bridge pieces
+    (mapdata["bridges"], with a deck height every ~2 m). A bridge span is the shortest stretch around the water whose
+    straight-line deck between its two ends clears the bare-earth ground; if none is found within max_half_span_m the
+    deck is lifted to clear it instead. A water crossing whose dip is under min_depth_m is left on the ground
+    (culvert / ford)."""
+    bc = cfg["bridges"]
+    step = bc["search_step_m"]
+    lines = [(st["name"] or st["kind"], st["points"]) for st in mapdata["streams"] if not st["tunnel"]]
+    culverts = [(st["name"] or st["kind"], st["points"]) for st in mapdata["streams"] if st["tunnel"]]
+    ponds = [(w["name"] or "unnamed pond", [tuple(p) for p in w["outline"]]) for w in mapdata["water"]]
+    new_roads, bridges, at_grade, culvert_hits = [], [], [], []
+    for r in mapdata["roads"]:
+        if r["tunnel"]:
+            new_roads.append(r)
+            continue
+        s, x, z, cum = densify_line(r["points"])
+        L = float(s[-1])
+        g = sample(x, z)
+        tx, tz = np.gradient(x), np.gradient(z)
+        nrm = np.maximum(np.hypot(tx, tz), 1e-9)
+        ox, oz = -tz / nrm * r["width"] / 2, tx / nrm * r["width"] / 2
+        gmax = np.maximum(g, np.maximum(sample(x + ox, z + oz), sample(x - ox, z - oz)))
+        water = []  # [start_s, end_s, label]
+        for nm, line in lines:
+            for c in road_stream_crossings(x, z, s, line):
+                water.append([c - bc["stream_halfwidth_m"], c + bc["stream_halfwidth_m"], "stream " + nm])
+        for nm, poly in ponds:
+            inside = points_in_poly(x, z, poly)
+            if inside.any():
+                idx = np.nonzero(inside)[0]
+                for run in np.split(idx, np.nonzero(np.diff(idx) > 1)[0] + 1):
+                    water.append([s[run[0]] - 1, s[run[-1]] + 1, "pond " + nm])
+        for nm, line in culverts:
+            for c in road_stream_crossings(x, z, s, line):
+                ia, ib = int(max(0, round(c - 12))), int(min(len(s) - 1, round(c + 12)))
+                dip = float((g[ia] + (g[ib] - g[ia]) * (np.arange(ia, ib + 1) - ia) / max(ib - ia, 1) - g[ia:ib + 1]).max())
+                culvert_hits.append((r["name"] or r["class"], nm, round(dip, 2), round(float(x[int(round(c))]), 0), round(float(z[int(round(c))]), 0)))
+        water.sort()
+        merged = []
+        for w in water:
+            if merged and w[0] <= merged[-1][1] + 6:
+                merged[-1][1] = max(merged[-1][1], w[1])
+                merged[-1][2] += "; " + w[2]
+            else:
+                merged.append(list(w))
+        spans = []  # [a, b, labels, tagged]
+        if r["bridge"]:
+            spans.append([0.0, L, [m[2] for m in merged], True])
+        else:
+            for wa, wb, lab in merged:
+                wa, wb = max(0.0, wa), min(L, wb)
+                chosen = None
+                w_ext = 0.0
+                while w_ext <= bc["max_half_span_m"] + 1e-9:
+                    a, b = max(0.0, wa - w_ext), min(L, wb + w_ext)
+                    ia, ib = int(round(a)), int(round(b))
+                    if ib - ia >= 2:
+                        deck = g[ia] + (g[ib] - g[ia]) * (np.arange(ia, ib + 1) - ia) / (ib - ia)
+                        if (gmax[ia:ib + 1] - deck).max() <= bc["clear_m"]:
+                            chosen = [a, b]
+                            break
+                    w_ext += step
+                if chosen is None:
+                    chosen = [max(0.0, wa - bc["max_half_span_m"]), min(L, wb + bc["max_half_span_m"])]
+                ia, ib = int(round(chosen[0])), int(round(chosen[1]))
+                if ib - ia < 2:
+                    continue
+                deck = g[ia] + (g[ib] - g[ia]) * (np.arange(ia, ib + 1) - ia) / (ib - ia)
+                depth = float((deck - g[ia:ib + 1]).max())
+                if depth < bc["min_depth_m"]:
+                    mid = int(round((wa + wb) / 2))
+                    at_grade.append({"road": r["name"] or r["class"], "over": lab, "depth_m": round(depth, 2),
+                                     "x": round(float(x[mid]), 1), "z": round(float(z[mid]), 1)})
+                    continue
+                if spans and chosen[0] <= spans[-1][1]:
+                    spans[-1][1] = max(spans[-1][1], chosen[1])
+                    spans[-1][2].append(lab)
+                else:
+                    spans.append([chosen[0], chosen[1], [lab], False])
+        if not spans:
+            new_roads.append(r)
+            continue
+        cursor = 0.0
+        for a, b, lab, tagged in spans:
+            if a - cursor > 0.5:
+                piece = dict(r, points=subline(r["points"], cum, cursor, a))
+                piece["taper_start"], piece["taper_end"] = cursor > 0, True
+                new_roads.append(piece)
+            ia, ib = int(round(a)), int(round(b))
+            bs = np.unique(np.concatenate([np.arange(a, b, 2.0), [b]]))
+            bx, bz = np.interp(bs, s, x), np.interp(bs, s, z)
+            chord = g[ia] + (g[ib] - g[ia]) * np.clip((bs - ia) / max(ib - ia, 1), 0, 1)
+            deck = np.maximum(chord, np.interp(bs, s, gmax) - bc["clear_m"])  # lift only where the banks would poke through
+            clamped = bool((deck > chord + 0.25).any())
+            bridges.append({"name": r["name"], "class": r["class"], "width": r["width"], "oneway": r["oneway"],
+                            "osm_id": r["osm_id"], "tagged": tagged,
+                            "over": "; ".join(lab) if lab else "(no mapped water)",
+                            "length_m": round(float(b - a), 1),
+                            "depth_m": round(float((deck - np.interp(bs, s, g)).max()), 2), "deck_lifted": clamped,
+                            "points": [(round(float(px), 2), round(float(pz), 2)) for px, pz in zip(bx, bz)],
+                            "deck_y": [round(float(d), 3) for d in deck]})
+            cursor = b
+        if L - cursor > 0.5:
+            piece = dict(r, points=subline(r["points"], cum, cursor, L))
+            piece["taper_start"], piece["taper_end"] = True, False
+            new_roads.append(piece)
+    mapdata["roads"] = new_roads
+    mapdata["bridges"] = bridges
+    return at_grade, culvert_hits
+
+
+def write_bridge_report(bridges, at_grade, culvert_hits):
+    lines = ["Bridges built by Tools/mapgen/mapgen.py (regenerated every run)", ""]
+    lines.append(f"{len(bridges)} bridge pieces: {sum(b['tagged'] for b in bridges)} from an OSM bridge tag, "
+                 f"{sum(not b['tagged'] for b in bridges)} from a road crossing mapped water with no bridge tag.")
+    lines.append("")
+    for i, b in enumerate(sorted(bridges, key=lambda b: (b["name"], b["points"][0])), 1):
+        lines.append(f"{i:3d}. {b['name'] or '(unnamed ' + b['class'] + ')'} [{b['class']}] at x={b['points'][0][0]:.0f} "
+                     f"z={b['points'][0][1]:.0f}, {b['length_m']:.0f} m long, {b['width']:.1f} m wide, deck up to "
+                     f"{b['depth_m']:.1f} m above the bare earth; {'OSM bridge tag' if b['tagged'] else 'NO bridge tag'}; "
+                     f"over {b['over']}{'; deck lifted to clear banks' if b['deck_lifted'] else ''}")
+    lines += ["", f"{len(at_grade)} water crossings left on the ground (dip under the minimum: culvert or ford):"]
+    for c in at_grade:
+        lines.append(f"  {c['road']} over {'; '.join(c['over']) if isinstance(c['over'], list) else c['over']} "
+                     f"at x={c['x']:.0f} z={c['z']:.0f} (dip {c['depth_m']:.2f} m)")
+    lines += ["", f"{len(culvert_hits)} road crossings of streams that OSM maps as a culvert (left on the ground; dip = how far the "
+              "bare earth sits below a straight line 12 m either side):"]
+    for nm, st, dip, cx, cz in sorted(culvert_hits):
+        lines.append(f"  {nm} over {st} at x={cx:.0f} z={cz:.0f} (dip {dip:.2f} m)")
+    path = os.path.join(DATA, "bridges.txt")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    return path
+
+
 # ---------------------------------------------------------------- terrain
 
+def smoothstep(t):
+    t = np.clip(t, 0, 1)
+    return t * t * (3 - 2 * t)
+
+
 def build_terrain(cfg, dem_path, mapdata):
-    res = cfg["terrain_resolution"]
+    tc = cfg["terrain"]
+    cells = tc["tile_resolution"] - 1
+    W, H = mapdata["size_x_m"], mapdata["size_z_m"]
+    nx, nz = math.ceil(W / tc["max_tile_m"]), math.ceil(H / tc["max_tile_m"])
+    gx_n, gz_n = nx * cells + 1, nz * cells + 1
+    sx, sz = W / (nx * cells), H / (nz * cells)  # metres per sample
     with rasterio.open(dem_path) as src:
-        # grid sample i spans the full crop, row 0 = south (Unity terrain convention)
-        h = src.read(1, out_shape=(res, res), resampling=Resampling.bilinear)[::-1].astype(np.float64)
-        src_min, src_max = float(src.read(1).min()), float(src.read(1).max())
+        dem = src.read(1)[::-1].astype(np.float32)  # row 0 = south (Unity convention); 1 m cells, value at the cell centre
+    src_min, src_max = float(dem.min()), float(dem.max())
+
+    def axis(n, step, size):
+        p = np.clip(np.arange(n) * step - 0.5, 0, size - 1.001)
+        i0 = p.astype(int)
+        return i0, (p - i0).astype(np.float32)
+
+    # bilinear onto the global grid; sample i sits at i * step metres from the crop's south-west corner
+    j0, fx = axis(gx_n, sx, dem.shape[1])
+    i0, fz = axis(gz_n, sz, dem.shape[0])
+    rows = dem[:, j0] * (1 - fx) + dem[:, j0 + 1] * fx
+    h = rows[i0, :] * (1 - fz)[:, None] + rows[i0 + 1, :] * fz[:, None]
+    del rows
     # Vertical scale: stretch heights about the lowest point of the crop, so the map keeps its elevations near
     # their real values and only the relief grows. Roads are flattened from the scaled surface, so their grades scale too.
     k = vscale(cfg)
     datum = src_min
-    h = datum + (h - datum) * k
-    size = mapdata["size_m"]
-    step = size / (res - 1)
+    h = (datum + (h - datum) * k).astype(np.float32)
     raw = h.copy()
 
     def sample(x, z):
-        gx = np.clip(x / step, 0, res - 1.001)
-        gz = np.clip(z / step, 0, res - 1.001)
-        i0, j0 = gz.astype(int), gx.astype(int)
-        fz, fx = gz - i0, gx - j0
-        return (raw[i0, j0] * (1 - fx) * (1 - fz) + raw[i0, j0 + 1] * fx * (1 - fz) +
-                raw[i0 + 1, j0] * (1 - fx) * fz + raw[i0 + 1, j0 + 1] * fx * fz)
+        gx = np.clip(np.asarray(x) / sx, 0, gx_n - 1.001)
+        gz = np.clip(np.asarray(z) / sz, 0, gz_n - 1.001)
+        i, j = gz.astype(int), gx.astype(int)
+        fz_, fx_ = gz - i, gx - j
+        return (raw[i, j] * (1 - fx_) * (1 - fz_) + raw[i, j + 1] * fx_ * (1 - fz_) +
+                raw[i + 1, j] * (1 - fx_) * fz_ + raw[i + 1, j + 1] * fx_ * fz_).astype(np.float64)
+
+    at_grade, culvert_hits = plan_bridges(cfg, mapdata, sample)
+    rpt = write_bridge_report(mapdata["bridges"], at_grade, culvert_hits)
+    log(f"Bridges: {len(mapdata['bridges'])} built, {len(at_grade)} crossings left at grade -> {rpt}")
 
     fl = cfg["road_flatten"]
+    taper = cfg["bridges"]["end_taper_m"]
     best_w = np.zeros_like(h)
     best_d = np.full_like(h, np.inf)
     target = np.zeros_like(h)
     for road in mapdata["roads"]:
+        if road["tunnel"]:
+            continue
         pts = np.array(road["points"], dtype=np.float64)
         seglen = np.hypot(*np.diff(pts, axis=0).T)
         if seglen.sum() < 0.5:
@@ -381,46 +626,66 @@ def build_terrain(cfg, dem_path, mapdata):
             prof = np.convolve(padded, np.ones(2 * win + 1) / (2 * win + 1), mode="valid")
         core = road["width"] / 2 + fl["shoulder_m"]
         reach = core + fl["blend_m"]
+        total = s[-1]
+        t_start, t_end = road.get("taper_start", False), road.get("taper_end", False)
         for a in range(len(dx) - 1):
             ax, az, bx, bz = dx[a], dz[a], dx[a + 1], dz[a + 1]
             ha, hb = prof[a], prof[a + 1]
-            j0 = max(0, int((min(ax, bx) - reach) / step))
-            j1 = min(res - 1, int((max(ax, bx) + reach) / step) + 1)
-            i0 = max(0, int((min(az, bz) - reach) / step))
-            i1 = min(res - 1, int((max(az, bz) + reach) / step) + 1)
-            if j0 > j1 or i0 > i1:
+            j0_ = max(0, int((min(ax, bx) - reach) / sx))
+            j1_ = min(gx_n - 1, int((max(ax, bx) + reach) / sx) + 1)
+            i0_ = max(0, int((min(az, bz) - reach) / sz))
+            i1_ = min(gz_n - 1, int((max(az, bz) + reach) / sz) + 1)
+            if j0_ > j1_ or i0_ > i1_:
                 continue
-            gx = np.arange(j0, j1 + 1) * step
-            gz = np.arange(i0, i1 + 1) * step
-            X, Z = np.meshgrid(gx, gz)
+            X, Z = np.meshgrid(np.arange(j0_, j1_ + 1) * sx, np.arange(i0_, i1_ + 1) * sz)
             vx, vz = bx - ax, bz - az
             L2 = vx * vx + vz * vz or 1e-9
-            t = np.clip(((X - ax) * vx + (Z - az) * vz) / L2, 0, 1)
+            t_raw = ((X - ax) * vx + (Z - az) * vz) / L2
+            t = np.clip(t_raw, 0, 1)
             d = np.hypot(X - (ax + t * vx), Z - (az + t * vz))
             wgt = np.clip((reach - d) / fl["blend_m"], 0, 1)
             wgt = wgt * wgt * (3 - 2 * wgt)  # smoothstep
-            sl = (slice(i0, i1 + 1), slice(j0, j1 + 1))
+            # next to a bridge the levelling fades out over taper_m, so the terrain meets the deck end untouched
+            if (t_start and s[a] < taper + 2) or (t_end and total - s[a] < taper + 2):
+                sp = s[a] + t_raw * (s[a + 1] - s[a])
+                if t_start:
+                    wgt = wgt * smoothstep(sp / taper)
+                if t_end:
+                    wgt = wgt * smoothstep((total - sp) / taper)
+            sl = (slice(i0_, i1_ + 1), slice(j0_, j1_ + 1))
             better = (wgt > best_w[sl] + 1e-6) | ((np.abs(wgt - best_w[sl]) <= 1e-6) & (d < best_d[sl]))
             better &= wgt > 0
             best_w[sl] = np.where(better, wgt, best_w[sl])
             best_d[sl] = np.where(better, d, best_d[sl])
             target[sl] = np.where(better, ha + t * (hb - ha), target[sl])
-    h = h * (1 - best_w) + target * best_w
+    h = (h * (1 - best_w) + target * best_w).astype(np.float32)
 
     lo, hi = float(h.min()) - 1.0, float(h.max()) + 1.0
     norm = np.round((h - lo) / (hi - lo) * 65535).astype("<u2")
     os.makedirs(GENERATED, exist_ok=True)
     out = os.path.join(GENERATED, "terrain.r16")
     norm.tofile(out)
-    meta = {"resolution": res, "size_m": size, "min_height": lo, "max_height": hi,
+    meta = {"grid_x": gx_n, "grid_z": gz_n, "tiles_x": nx, "tiles_z": nz, "tile_resolution": tc["tile_resolution"],
+            "size_x_m": W, "size_z_m": H, "tile_w_m": W / nx, "tile_d_m": H / nz,
+            "step_x_m": sx, "step_z_m": sz, "min_height": lo, "max_height": hi,
             "vertical_scale": k, "vertical_datum_m": datum}
     with open(os.path.join(GENERATED, "terrain.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=1)
     moved = np.abs(h - raw)
-    log(f"Terrain: {res}x{res} ({step:.3f} m/sample), vertical scale {k:g} about {datum:.2f} m; "
+    log(f"Terrain: {gx_n} x {gz_n} samples = {nx} x {nz} tiles of {tc['tile_resolution']}^2 samples "
+        f"({W / nx:.1f} x {H / nz:.1f} m each), {sx:.3f} x {sz:.3f} m/sample, vertical scale {k:g} about {datum:.2f} m; "
         f"road flattening moved {(moved > 0.05).mean() * 100:.1f}% of samples, max {moved.max():.2f} m -> {out}")
     log(f"Elevation check: USGS crop {src_min:.3f}-{src_max:.3f} m (x{k:g} about {datum:.3f} -> "
         f"{src_min:.3f}-{datum + (src_max - datum) * k:.3f} m expected); terrain {h.min():.3f}-{h.max():.3f} m")
+
+
+def write_map(mapdata):
+    out = dict(mapdata)
+    out["roads"] = [{kk: v for kk, v in r.items() if kk not in ("taper_start", "taper_end")} for r in mapdata["roads"]]
+    path = os.path.join(DATA, "map.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(flat_for_unity(out), f, ensure_ascii=False, separators=(",", ":"))
+    log(f"Map: {len(out['roads'])} road pieces, {len(out['bridges'])} bridges, {len(out['buildings'])} buildings -> {path}")
 
 
 def main():
@@ -430,12 +695,20 @@ def main():
     with open(os.path.join(os.path.dirname(__file__), "config.json"), encoding="utf-8") as f:
         cfg = json.load(f)
     os.makedirs(DATA, exist_ok=True)
-    rect = utm_rect(cfg)
-    log(f"Bounds: {cfg['bounds']} -> UTM {rect} ({rect[2] - rect[0]} m square)")
-    osm = fetch_osm(cfg, args.refresh_osm)
+    rect, clamped = utm_rect(cfg)
+    tr = Transformer.from_crs(cfg["utm_epsg"], 4326, always_xy=True)
+    sw, ne, nw, se = (tr.transform(rect[0], rect[1]), tr.transform(rect[2], rect[3]),
+                      tr.transform(rect[0], rect[3]), tr.transform(rect[2], rect[1]))
+    log(f"Requested bounds: {cfg['bounds']}")
+    log(f"Crop: UTM {rect} = {rect[2] - rect[0]} m east-west x {rect[3] - rect[1]} m north-south; "
+        f"lat/lon corners SW {sw[1]:.5f},{sw[0]:.5f}  SE {se[1]:.5f},{se[0]:.5f}  NW {nw[1]:.5f},{nw[0]:.5f}  NE {ne[1]:.5f},{ne[0]:.5f}")
+    if clamped:
+        log(f"*** The requested area runs past the elevation tile on the {', '.join(clamped)} side: stopped at the tile edge. ***")
+    osm = fetch_osm(cfg, args.refresh_osm, rect)
     dem = build_heightmap(cfg, rect)
     mapdata = process_osm(cfg, osm, rect)
     build_terrain(cfg, dem, mapdata)
+    write_map(mapdata)
     log("Done. In Unity: Chastain Rush > Build Map (or run the batch build).")
 
 

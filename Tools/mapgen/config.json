@@ -1,26 +1,77 @@
 {
-  "bounds": { "south": 34.0315, "north": 34.0450, "west": -84.5433, "east": -84.5271 },
+  "bounds": {
+    "south": 34.0294,
+    "north": 34.0477,
+    "west": -84.566,
+    "east": -84.5234
+  },
   "utm_epsg": 26916,
   "elevation_tiles": [
     "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif"
   ],
-  "terrain_resolution": 2049,
   "vertical_scale": 1.5,
   "road_widths_m": {
-    "motorway": 14.0, "trunk": 14.0, "primary": 14.0, "secondary": 11.0, "tertiary": 9.0,
-    "primary_link": 6.5, "secondary_link": 6.0, "tertiary_link": 6.0,
-    "residential": 8.0, "unclassified": 7.0, "living_street": 6.0, "service": 5.0
+    "motorway": 14.0,
+    "trunk": 14.0,
+    "primary": 14.0,
+    "secondary": 11.0,
+    "tertiary": 9.0,
+    "primary_link": 6.5,
+    "secondary_link": 6.0,
+    "tertiary_link": 6.0,
+    "residential": 8.0,
+    "unclassified": 7.0,
+    "living_street": 6.0,
+    "service": 5.0
   },
   "lane_width_m": 3.5,
-  "excluded_service": ["driveway", "parking_aisle", "drive-through"],
-  "road_flatten": { "shoulder_m": 1.0, "blend_m": 6.0, "profile_smoothing_m": 0.0 },
+  "excluded_service": [
+    "driveway",
+    "parking_aisle",
+    "drive-through"
+  ],
+  "road_flatten": {
+    "shoulder_m": 1.0,
+    "blend_m": 6.0,
+    "profile_smoothing_m": 0.0
+  },
   "building_heights_m": {
-    "default": 7.0, "detached": 7.5, "house": 7.5, "semidetached_house": 7.5,
-    "garage": 3.2, "garages": 3.2, "shed": 2.8, "carport": 3.0, "roof": 4.0, "pavilion": 4.0,
-    "retail": 6.0, "commercial": 7.0, "office": 9.0, "industrial": 8.0, "warehouse": 8.0,
-    "church": 11.0, "apartments": 12.0, "kindergarten": 5.0
+    "default": 7.0,
+    "detached": 7.5,
+    "house": 7.5,
+    "semidetached_house": 7.5,
+    "garage": 3.2,
+    "garages": 3.2,
+    "shed": 2.8,
+    "carport": 3.0,
+    "roof": 4.0,
+    "pavilion": 4.0,
+    "retail": 6.0,
+    "commercial": 7.0,
+    "office": 9.0,
+    "industrial": 8.0,
+    "warehouse": 8.0,
+    "church": 11.0,
+    "apartments": 12.0,
+    "kindergarten": 5.0
   },
   "level_height_m": 3.2,
-  "spawn": { "street": "Chastain Glen Lane", "from_street": "New Chastain Road", "distance_m": 40.0 },
-  "owner_house_file": "local/owner_house.json"
+  "spawn": {
+    "street": "Chastain Glen Lane",
+    "from_street": "New Chastain Road",
+    "distance_m": 40.0
+  },
+  "owner_house_file": "local/owner_house.json",
+  "terrain": {
+    "tile_resolution": 1025,
+    "max_tile_m": 767
+  },
+  "bridges": {
+    "stream_halfwidth_m": 3.0,
+    "search_step_m": 2.0,
+    "max_half_span_m": 40.0,
+    "clear_m": 0.15,
+    "min_depth_m": 0.4,
+    "end_taper_m": 4.0
+  }
 }

@@ -32,8 +32,23 @@ namespace ChastainRush
         [Serializable] class Area { public string name; public float[] outline; }
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
-        [Serializable] class MapData { public string attribution; public float size_m; public float vertical_scale = 1f; public Road[] roads; public Building[] buildings; public Area[] water; public Line[] streams; public Spawn spawn; }
-        [Serializable] class TerrainMeta { public int resolution; public float size_m; public float min_height; public float max_height; }
+        [Serializable] class Bridge { public string name; public string @class; public float width; public float[] points; public float[] deck_y; }
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Spawn spawn; }
+        [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; }
+
+        // The terrain is a grid of tiles that share their edge samples; this finds the tile under a point.
+        sealed class TerrainGrid
+        {
+            public Terrain[,] Tiles;
+            public float TileW, TileD, BaseY;
+            public Terrain At(float x, float z)
+            {
+                int i = Mathf.Clamp(Mathf.FloorToInt(x / TileW), 0, Tiles.GetLength(0) - 1);
+                int j = Mathf.Clamp(Mathf.FloorToInt(z / TileD), 0, Tiles.GetLength(1) - 1);
+                return Tiles[i, j];
+            }
+            public float Height(float x, float z) => At(x, z).SampleHeight(new Vector3(x, 0f, z)) + BaseY;
+        }
         [Serializable] class OwnerMarker { public int index; public float x; public float z; }
 
         static float vScale = 1f;
@@ -74,56 +89,73 @@ namespace ChastainRush
             var terrain = BuildTerrain(meta, mats);
             var world = new GameObject("World").transform;
             BuildRoads(map, terrain, mats, world);
+            BuildBridges(map, mats, world);
             BuildBuildings(map, terrain, mats, world, LoadOwner());
             BuildWater(map, terrain, mats, world);
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
-            PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain);
+            PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             AssetDatabase.SaveAssets();
             Debug.Log($"[MapBuilder] Built {ScenePath}: {map.roads.Length} roads, {map.buildings.Length} buildings, " +
-                      $"{map.water.Length} water areas, spawn on {map.spawn.street}, vertical scale {vScale:0.##}");
+                      $"{map.bridges.Length} bridges, {map.water.Length} water areas, {meta.tiles_x}x{meta.tiles_z} terrain tiles, spawn on {map.spawn.street}, vertical scale {vScale:0.##}");
         }
 
         // ------------------------------------------------------------ terrain
 
-        static Terrain BuildTerrain(TerrainMeta meta, Materials mats)
+        static TerrainGrid BuildTerrain(TerrainMeta meta, Materials mats)
         {
-            int res = meta.resolution;
+            int res = meta.tile_resolution, cells = res - 1;
             var bytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, "terrain.r16"));
-            if (bytes.Length != res * res * 2) throw new Exception($"terrain.r16 is {bytes.Length} bytes, expected {res * res * 2}");
+            if (bytes.Length != (long)meta.grid_x * meta.grid_z * 2) throw new Exception($"terrain.r16 is {bytes.Length} bytes, expected {(long)meta.grid_x * meta.grid_z * 2}");
+            foreach (var guid in AssetDatabase.FindAssets("TerrainData t:TerrainData", new[] { GeneratedDir })) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(guid));
+            var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height };
+            var root = new GameObject("Terrain").transform;
             var heights = new float[res, res];
-            for (int z = 0; z < res; z++)
-                for (int x = 0; x < res; x++)
+            for (int tz = 0; tz < meta.tiles_z; tz++)
+                for (int tx = 0; tx < meta.tiles_x; tx++)
                 {
-                    int i = (z * res + x) * 2;
-                    heights[z, x] = (bytes[i] | (bytes[i + 1] << 8)) / 65535f;
+                    // tiles share their edge row/column of samples, so neighbours meet at exactly the same height
+                    for (int z = 0; z < res; z++)
+                        for (int x = 0; x < res; x++)
+                        {
+                            int i = ((tz * cells + z) * meta.grid_x + tx * cells + x) * 2;
+                            heights[z, x] = (bytes[i] | (bytes[i + 1] << 8)) / 65535f;
+                        }
+                    var data = new TerrainData { heightmapResolution = res };
+                    data.size = new Vector3(meta.tile_w_m, meta.max_height - meta.min_height, meta.tile_d_m);
+                    data.SetHeights(0, 0, heights);
+                    data.terrainLayers = new[] { mats.GrassLayer };
+                    AssetDatabase.CreateAsset(data, $"{GeneratedDir}/TerrainData_{tx}_{tz}.asset");
+
+                    var go = Terrain.CreateTerrainGameObject(data);
+                    go.name = $"Terrain_{tx}_{tz}";
+                    go.transform.SetParent(root, false);
+                    go.transform.position = new Vector3(tx * meta.tile_w_m, meta.min_height, tz * meta.tile_d_m);
+                    var terrain = go.GetComponent<Terrain>();
+                    terrain.heightmapPixelError = 3f;
+                    terrain.basemapDistance = 2000f;
+                    terrain.drawTreesAndFoliage = false;
+                    terrain.groupingID = 1;
+                    terrain.allowAutoConnect = true;
+                    if (mats.TerrainMaterial != null) terrain.materialTemplate = mats.TerrainMaterial;
+                    grid.Tiles[tx, tz] = terrain;
                 }
-
-            var data = new TerrainData { heightmapResolution = res };
-            data.size = new Vector3(meta.size_m, meta.max_height - meta.min_height, meta.size_m);
-            data.SetHeights(0, 0, heights);
-            data.terrainLayers = new[] { mats.GrassLayer };
-            AssetDatabase.CreateAsset(data, GeneratedDir + "/TerrainData.asset");
-
-            var go = Terrain.CreateTerrainGameObject(data);
-            go.name = "Terrain";
-            go.transform.position = new Vector3(0f, meta.min_height, 0f);
-            var terrain = go.GetComponent<Terrain>();
-            terrain.heightmapPixelError = 3f;
-            terrain.basemapDistance = 2000f;
-            terrain.drawTreesAndFoliage = false;
-            if (mats.TerrainMaterial != null) terrain.materialTemplate = mats.TerrainMaterial;
-            return terrain;
+            for (int tz = 0; tz < meta.tiles_z; tz++)
+                for (int tx = 0; tx < meta.tiles_x; tx++)
+                    grid.Tiles[tx, tz].SetNeighbors(
+                        tx > 0 ? grid.Tiles[tx - 1, tz] : null, tz < meta.tiles_z - 1 ? grid.Tiles[tx, tz + 1] : null,
+                        tx < meta.tiles_x - 1 ? grid.Tiles[tx + 1, tz] : null, tz > 0 ? grid.Tiles[tx, tz - 1] : null);
+            return grid;
         }
 
-        static float Ground(Terrain t, float x, float z) => t.SampleHeight(new Vector3(x, 0f, z)) + t.transform.position.y;
+        static float Ground(TerrainGrid t, float x, float z) => t.Height(x, z);
 
         // ------------------------------------------------------------ roads (visual only; the car drives on the flattened terrain)
 
-        static void BuildRoads(MapData map, Terrain terrain, Materials mats, Transform parent)
+        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
         {
             var main = new MeshBuilder();
             var service = new MeshBuilder();
@@ -140,7 +172,7 @@ namespace ChastainRush
             service.ToObject("ServiceRoads", mats.ServiceAsphalt, parent, false);
         }
 
-        static void AddRibbon(MeshBuilder mb, List<Vector2> pts, float width, float lift, Terrain t)
+        static void AddRibbon(MeshBuilder mb, List<Vector2> pts, float width, float lift, TerrainGrid t)
         {
             float hw = width * 0.5f;
             int start = mb.Count;
@@ -164,7 +196,7 @@ namespace ChastainRush
             }
         }
 
-        static void AddDisc(MeshBuilder mb, Vector2 c, float radius, float lift, Terrain t)
+        static void AddDisc(MeshBuilder mb, Vector2 c, float radius, float lift, TerrainGrid t)
         {
             const int n = 14;
             int centre = mb.Vertex(new Vector3(c.x, Ground(t, c.x, c.y) + lift, c.y));
@@ -177,6 +209,60 @@ namespace ChastainRush
             for (int i = 0; i < n; i++) mb.Tri(centre, centre + 1 + (i + 1) % n, centre + 1 + i);
         }
 
+        // ------------------------------------------------------------ bridges (deck and parapets; unlike the roads these have colliders)
+
+        // mapgen holds each bridge level across the water: deck_y is the deck height every ~2 m. The car drives on
+        // the deck mesh; the bare-earth channel stays on the terrain underneath.
+        static void BuildBridges(MapData map, Materials mats, Transform parent)
+        {
+            var top = new MeshBuilder();
+            var body = new MeshBuilder();
+            const float parapetH = 0.7f, parapetW = 0.35f, slab = 0.7f;
+            foreach (var b in map.bridges)
+            {
+                var pts = ToPoints(b.points);
+                int n = pts.Count;
+                if (n < 2) continue;
+                float lift = (RoadLift.TryGetValue(b.@class, out var l) ? l : 0.06f) * vScale;
+                float hw = b.width * 0.5f;
+                var nrm = new Vector2[n];
+                for (int i = 0; i < n; i++)
+                {
+                    Vector2 t = (pts[Mathf.Min(i + 1, n - 1)] - pts[Mathf.Max(i - 1, 0)]).normalized;
+                    nrm[i] = new Vector2(-t.y, t.x); // left of travel
+                }
+                Vector3 P(int i, float off, float dy) => new Vector3(pts[i].x + nrm[i].x * off, b.deck_y[i] + lift + dy, pts[i].y + nrm[i].y * off);
+                Vector3 N(int i, float sgn) => new Vector3(nrm[i].x * sgn, 0f, nrm[i].y * sgn);
+                for (int i = 0; i + 1 < n; i++)
+                {
+                    int j = i + 1;
+                    Face(top, P(i, -hw, 0f), P(j, -hw, 0f), P(j, hw, 0f), P(i, hw, 0f), Vector3.up);
+                    foreach (float sgn in new[] { -1f, 1f })
+                    {
+                        float inner = sgn * hw, outer = sgn * (hw + parapetW);
+                        Face(body, P(i, inner, 0f), P(j, inner, 0f), P(j, inner, parapetH), P(i, inner, parapetH), -N(i, sgn));
+                        Face(body, P(i, inner, parapetH), P(j, inner, parapetH), P(j, outer, parapetH), P(i, outer, parapetH), Vector3.up);
+                        Face(body, P(i, outer, -slab), P(j, outer, -slab), P(j, outer, parapetH), P(i, outer, parapetH), N(i, sgn));
+                    }
+                    Face(body, P(i, -hw - parapetW, -slab), P(j, -hw - parapetW, -slab), P(j, hw + parapetW, -slab), P(i, hw + parapetW, -slab), Vector3.down);
+                }
+            }
+            var root = new GameObject("Bridges").transform;
+            root.SetParent(parent, false);
+            top.ToObject("BridgeDecks", mats.Asphalt, root, true);
+            body.ToObject("BridgeStructure", mats.Concrete, root, true);
+        }
+
+        // Adds a quad whose triangles wind so that its front face points along 'outward'.
+        static void Face(MeshBuilder mb, Vector3 a, Vector3 b, Vector3 c, Vector3 d, Vector3 outward)
+        {
+            if (Vector3.Dot(Vector3.Cross(b - a, c - a), outward) < 0f) { var t = b; b = d; d = t; }
+            int v = mb.Vertex(a);
+            mb.Vertex(b); mb.Vertex(c); mb.Vertex(d);
+            mb.Tri(v, v + 1, v + 2);
+            mb.Tri(v, v + 2, v + 3);
+        }
+
         // ------------------------------------------------------------ buildings
 
         static OwnerMarker LoadOwner()
@@ -185,7 +271,7 @@ namespace ChastainRush
             return File.Exists(path) ? JsonUtility.FromJson<OwnerMarker>(File.ReadAllText(path)) : null;
         }
 
-        static void BuildBuildings(MapData map, Terrain terrain, Materials mats, Transform parent, OwnerMarker owner)
+        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
@@ -255,7 +341,7 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ water
 
-        static void BuildWater(MapData map, Terrain terrain, Materials mats, Transform parent)
+        static void BuildWater(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
         {
             var mb = new MeshBuilder();
             foreach (var w in map.water)
@@ -273,7 +359,7 @@ namespace ChastainRush
 
         // The lidar surface is hydro-flattened: open water is one flat level, so the median ground height inside the
         // outline is the water level. The outline's own lowest point usually sits below it, on the bank or a ditch.
-        static float WaterLevel(List<Vector2> ring, Terrain terrain)
+        static float WaterLevel(List<Vector2> ring, TerrainGrid terrain)
         {
             Vector2 min = ring[0], max = ring[0];
             foreach (var p in ring) { min = Vector2.Min(min, p); max = Vector2.Max(max, p); }
@@ -388,7 +474,7 @@ namespace ChastainRush
 
         class Materials
         {
-            public readonly Material Asphalt, ServiceAsphalt, Building, OwnerHouse, Beacon, Water, TerrainMaterial;
+            public readonly Material Asphalt, Concrete, ServiceAsphalt, Building, OwnerHouse, Beacon, Water, TerrainMaterial;
             public readonly TerrainLayer GrassLayer;
 
             public Materials()
@@ -397,6 +483,7 @@ namespace ChastainRush
                 Directory.CreateDirectory(Path.Combine(ProjectRoot, GeneratedDir, "Meshes"));
                 AssetDatabase.Refresh();
                 Asphalt = Make("Asphalt", new Color(0.18f, 0.18f, 0.19f), 0.25f);
+                Concrete = Make("Concrete", new Color(0.55f, 0.55f, 0.53f), 0.1f);
                 ServiceAsphalt = Make("ServiceAsphalt", new Color(0.30f, 0.30f, 0.30f), 0.2f);
                 Building = Make("Building", new Color(0.80f, 0.76f, 0.68f), 0.1f);
                 OwnerHouse = Make("OwnerHouse", new Color(1.0f, 0.45f, 0.05f), 0.2f);

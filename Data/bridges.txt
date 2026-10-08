@@ -1,0 +1,24 @@
+Bridges built by Tools/mapgen/mapgen.py (regenerated every run)
+
+9 bridge pieces: 9 from an OSM bridge tag, 0 from a road crossing mapped water with no bridge tag.
+
+  1. Chastain Road Northwest [primary] at x=292 z=927, 72 m long, 11.5 m wide, deck up to 8.0 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  2. Chastain Road Northwest [primary] at x=333 z=946, 44 m long, 11.5 m wide, deck up to 6.4 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  3. Chastain Road Northwest [primary] at x=364 z=929, 39 m long, 15.0 m wide, deck up to 3.9 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  4. Chastain Road Northwest [primary] at x=399 z=944, 66 m long, 8.0 m wide, deck up to 8.2 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  5. New Chastain Road [primary] at x=2414 z=752, 34 m long, 8.0 m wide, deck up to 6.0 m above the bare earth; OSM bridge tag; over stream Noonday Creek
+  6. New Chastain Road [primary] at x=2446 z=766, 33 m long, 8.0 m wide, deck up to 6.8 m above the bare earth; OSM bridge tag; over stream Noonday Creek
+  7. Northwest Corridor Express Lanes [motorway] at x=529 z=12, 12 m long, 4.5 m wide, deck up to 0.7 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  8. Phillip Landrum Memorial Highway [motorway] at x=514 z=6, 6 m long, 8.0 m wide, deck up to 0.8 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+  9. Phillip Landrum Memorial Highway [motorway] at x=543 z=0, 15 m long, 8.0 m wide, deck up to 1.0 m above the bare earth; OSM bridge tag; over (no mapped water); deck lifted to clear banks
+
+0 water crossings left on the ground (dip under the minimum: culvert or ford):
+
+7 road crossings of streams that OSM maps as a culvert (left on the ground; dip = how far the bare earth sits below a straight line 12 m either side):
+  Bells Ferry Road Northwest over stream at x=1429 z=1176 (dip 0.08 m)
+  Kelly Drive Northeast over stream at x=2624 z=128 (dip 0.01 m)
+  North Lakeside Drive Northwest over stream at x=416 z=1454 (dip 0.21 m)
+  Northwest Corridor Express Lanes over stream at x=237 z=1535 (dip 0.01 m)
+  Phillip Landrum Memorial Highway over stream at x=223 z=1532 (dip 0.02 m)
+  Phillip Landrum Memorial Highway over stream at x=250 z=1538 (dip 0.02 m)
+  Southwick Drive Northwest over stream at x=8 z=1644 (dip 0.38 m)

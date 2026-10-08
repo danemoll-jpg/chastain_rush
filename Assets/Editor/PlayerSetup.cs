@@ -10,12 +10,11 @@ namespace ChastainRush
     {
         const string VehiclePrefabPath = "Assets/Vehicles/PrototypeCar.prefab";
 
-        public static void Place(float x, float z, float headingDeg, Terrain terrain)
+        public static void Place(float x, float z, float headingDeg, float ground, float terrainBaseY)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(VehiclePrefabPath);
             if (prefab == null) throw new System.Exception($"Missing {VehiclePrefabPath}");
 
-            float ground = terrain.SampleHeight(new Vector3(x, 0f, z)) + terrain.transform.position.y;
             var rotation = Quaternion.Euler(0f, headingDeg, 0f);
             var spawn = new GameObject("PlayerSpawn").transform;
             spawn.SetPositionAndRotation(new Vector3(x, ground + 0.8f, z), rotation);
@@ -24,7 +23,7 @@ namespace ChastainRush
             car.transform.SetPositionAndRotation(spawn.position, rotation);
             var respawn = car.GetComponent<VehicleRespawn>();
             respawn.spawnPoint = spawn;
-            respawn.fallResetHeight = terrain.transform.position.y - 20f;
+            respawn.fallResetHeight = terrainBaseY - 20f;
 
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();
