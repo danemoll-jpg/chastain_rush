@@ -290,6 +290,7 @@ def process_osm(cfg, osm, rect):
                         ring = pts[:-1]
                         water.append({"name": t.get("name", ""), "outline": ring if poly_area(ring) > 0 else ring[::-1]})
 
+    roads = trim_service_roads(cfg, roads, buildings)
     spawn = find_spawn(cfg, roads)
     for r in roads:
         r.pop("node_ids")
@@ -310,6 +311,75 @@ def process_osm(cfg, osm, rect):
         log(f"Owner house: found (building #{owner['index']}) -> {marker_path} (not committed)")
     elif owner_cfg:
         log("Owner house: NOT found in OSM building addresses")
+    return out
+
+
+def trim_service_roads(cfg, roads, buildings):
+    """Cuts service roads where they run through, or within service_building_clearance_m of, a building footprint.
+    OSM parking aisles and loops around commercial buildings often clip a wall or a corner; the building has a collider
+    and the road does not, so the car would hit a wall on what looks like open road (Round 4 scan: OBSTRUCT / COLLIDER)."""
+    clear = cfg.get("service_building_clearance_m", 0.0)
+    if clear <= 0:
+        return roads
+    cell = 32.0
+    grid = {}
+    polys = [np.asarray(b["footprint"], dtype=np.float64) for b in buildings]
+    for i, q in enumerate(polys):
+        for gx in range(int((q[:, 0].min() - clear) // cell), int((q[:, 0].max() + clear) // cell) + 1):
+            for gz in range(int((q[:, 1].min() - clear) // cell), int((q[:, 1].max() + clear) // cell) + 1):
+                grid.setdefault((gx, gz), []).append(i)
+
+    def blocked(x, z):
+        for i in grid.get((int(x // cell), int(z // cell)), ()):
+            q = polys[i]
+            if points_in_poly(np.array([x]), np.array([z]), q.tolist())[0]:
+                return True
+            a, b = q, np.roll(q, -1, axis=0)
+            ab = b - a
+            t = np.clip(((x - a[:, 0]) * ab[:, 0] + (z - a[:, 1]) * ab[:, 1]) / np.maximum((ab ** 2).sum(1), 1e-9), 0, 1)
+            if np.min(np.hypot(a[:, 0] + t * ab[:, 0] - x, a[:, 1] + t * ab[:, 1] - z)) < clear:
+                return True
+        return False
+
+    out, cut, removed = [], 0, 0.0
+    for r in roads:
+        if r["class"] != "service" or r["bridge"]:
+            out.append(r)
+            continue
+        pts = r["points"]
+        # walk the polyline in ~1 m steps (keeping the original vertices), marking each point free or blocked
+        walk = [(pts[0], True, 0)]
+        for k in range(1, len(pts)):
+            (x0, z0), (x1, z1) = pts[k - 1], pts[k]
+            n = max(1, int(math.ceil(math.hypot(x1 - x0, z1 - z0))))
+            for j in range(1, n + 1):
+                walk.append(((x0 + (x1 - x0) * j / n, z0 + (z1 - z0) * j / n), j == n, k))
+        bad = [blocked(p[0], p[1]) for p, _, _ in walk]
+        if not any(bad):
+            out.append(r)
+            continue
+        cut += 1
+        total = sum(math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]) for k in range(1, len(pts)))
+        kept, run = 0.0, []
+        runs = []
+        for (p, _, _), b in zip(walk, bad):
+            if b:
+                if len(run) >= 2:
+                    runs.append(run)
+                run = []
+            else:
+                run.append((round(p[0], 2), round(p[1], 2)))
+        if len(run) >= 2:
+            runs.append(run)
+        for run in runs:
+            ln = sum(math.hypot(run[k][0] - run[k - 1][0], run[k][1] - run[k - 1][1]) for k in range(1, len(run)))
+            if ln < 3.0:
+                continue
+            kept += ln
+            piece = dict(r, points=run, node_ids=[None] * len(run))
+            out.append(piece)
+        removed += total - kept
+    log(f"Service roads: {cut} cut where they ran through or within {clear:g} m of a building; {removed:.0f} m of service road removed")
     return out
 
 
@@ -570,6 +640,88 @@ def write_bridge_report(bridges, at_grade, culvert_hits):
 
 # ---------------------------------------------------------------- terrain
 
+def limit_curvature(prof, half, sag_max, fixed, iters=800):
+    """Relaxes a road profile until no crest or dip is sharper than sag_max: at every station the height may not differ
+    from the chord between the stations 'half' before and after by more than sag_max. Straight grades have no sag, so
+    they are untouched (unlike a moving average, which also shaves the tops off hills); only humps, dips and kinks shorter
+    than a car are rounded off. Each step moves a too-sharp station toward its chord and the chord ends half as far the
+    other way. 'fixed' marks stations that must keep their height. Returns (profile, iterations used)."""
+    prof = prof.copy()
+    n = len(prof)
+    if n < 2 * half + 1:
+        return prof, 0
+    for it in range(iters):
+        sag = prof[half:n - half] - 0.5 * (prof[:n - 2 * half] + prof[2 * half:])
+        excess = np.sign(sag) * np.maximum(np.abs(sag) - sag_max, 0.0)
+        if float(np.abs(excess).max()) < 0.004:
+            return prof, it
+        a = excess / 3.0
+        d = np.zeros(n)
+        d[half:n - half] -= a
+        d[:n - 2 * half] += a / 2
+        d[2 * half:] += a / 2
+        d[fixed] = 0.0
+        prof += d
+    return prof, iters
+
+
+def shape_road_profiles(fl, plans):
+    """Gives every road a drivable vertical profile (see CLAUDE.md, Round 4):
+      1. curvature limit - removes the lidar's culvert humps, dips and kinks (the car launches off them);
+      2. junctions - a road that meets a wider one takes the wider road's height at the junction, fading back to its own
+         profile over junction_blend_m, so the two surfaces do not step across the through road's pavement;
+      3. curvature limit again, with the junction heights held."""
+    half = int(round(fl.get("sag_half_chord_m", 3.0)))
+    sag_max = float(fl.get("sag_max_m", 0.0))
+    blend = float(fl.get("junction_blend_m", 12.0))
+    if sag_max <= 0:
+        return
+    before = [pl["prof"].copy() for pl in plans]
+    # stations that must not move: the ends of a road piece that meets a bridge deck
+    for pl in plans:
+        fixed = np.zeros(len(pl["prof"]), bool)
+        if pl["road"].get("taper_start"):
+            fixed[:2] = True
+        if pl["road"].get("taper_end"):
+            fixed[-2:] = True
+        pl["fixed"] = fixed
+        pl["prof"], _ = limit_curvature(pl["prof"], half, sag_max, fixed)
+    # junction nodes: a vertex that two or more road pieces share
+    nodes = {}
+    for i, pl in enumerate(plans):
+        for (px, pz), c in zip(pl["pts"], pl["cum"]):
+            nodes.setdefault((round(px * 20), round(pz * 20)), []).append((i, float(c)))
+    shared = [v for v in nodes.values() if len({i for i, _ in v}) > 1]
+    shared.sort(key=lambda v: -max(plans[i]["road"]["width"] for i, _ in v))
+    adjusted = 0
+    for v in shared:
+        major = max(v, key=lambda t: plans[t[0]]["road"]["width"])
+        pm = plans[major[0]]
+        hj = float(np.interp(major[1], pm["s"], pm["prof"]))
+        for i, c in v:
+            if i == major[0]:
+                continue
+            pl = plans[i]
+            delta = hj - float(np.interp(c, pl["s"], pl["prof"]))
+            w = np.clip(1.0 - np.abs(pl["s"] - c) / blend, 0.0, 1.0)
+            pl["prof"] = pl["prof"] + delta * (w * w * (3 - 2 * w))
+            adjusted += 1
+    held = 0
+    for v in shared:
+        for i, c in v:
+            pl = plans[i]
+            k = int(np.argmin(np.abs(pl["s"] - c)))
+            pl["fixed"][k] = True
+            held += 1
+    for pl in plans:
+        pl["prof"], _ = limit_curvature(pl["prof"], half, sag_max, pl["fixed"])
+    moved = np.concatenate([np.abs(pl["prof"] - b) for pl, b in zip(plans, before)])
+    log(f"Road profiles: curvature limit {sag_max:g} m over +-{half} m (crest radius {half * half / (2 * sag_max):.0f} m), "
+        f"{len(shared)} junction nodes ({adjusted} road ends levelled to the wider road over {blend:g} m); "
+        f"{(moved > 0.02).mean() * 100:.1f}% of {len(moved)} stations moved more than 2 cm, "
+        f"{(moved > 0.10).mean() * 100:.2f}% more than 10 cm, max {moved.max():.2f} m, mean of those moved {moved[moved > 0.02].mean():.2f} m")
+
+
 def smoothstep(t):
     t = np.clip(t, 0, 1)
     return t * t * (3 - 2 * t)
@@ -621,6 +773,7 @@ def build_terrain(cfg, dem_path, mapdata):
     best_w = np.zeros_like(h)
     best_d = np.full_like(h, np.inf)
     target = np.zeros_like(h)
+    plans = []
     for road in mapdata["roads"]:
         if road["tunnel"]:
             continue
@@ -640,6 +793,10 @@ def build_terrain(cfg, dem_path, mapdata):
         if win > 0:
             padded = np.pad(prof, win, mode="edge")
             prof = np.convolve(padded, np.ones(2 * win + 1) / (2 * win + 1), mode="valid")
+        plans.append({"road": road, "s": s, "dx": dx, "dz": dz, "prof": prof, "pts": pts, "cum": cum})
+    shape_road_profiles(fl, plans)
+    for plan in plans:
+        road, s, dx, dz, prof = plan["road"], plan["s"], plan["dx"], plan["dz"], plan["prof"]
         core = road["width"] / 2 + fl["shoulder_m"]
         reach = core + fl["blend_m"]
         total = s[-1]
@@ -669,7 +826,12 @@ def build_terrain(cfg, dem_path, mapdata):
                 if t_end:
                     wgt = wgt * smoothstep((total - sp) / taper)
             sl = (slice(i0_, i1_ + 1), slice(j0_, j1_ + 1))
-            better = (wgt > best_w[sl] + 1e-6) | ((np.abs(wgt - best_w[sl]) <= 1e-6) & (d < best_d[sl]))
+            # A cell takes the target of the road segment with the strongest pull; weights within TIE of each other
+            # count as equal and the nearer segment wins. (With a tolerance of 1e-6 a cell at the edge of the road's
+            # level core, weight 0.999999, kept the height of a segment 5 m away and left single-sample spikes up to
+            # a metre high in the road surface: the Round 4 scan's STEP events on ordinary streets.)
+            TIE = 1e-3
+            better = (wgt > best_w[sl] + TIE) | ((np.abs(wgt - best_w[sl]) <= TIE) & (d < best_d[sl]))
             better &= wgt > 0
             best_w[sl] = np.where(better, wgt, best_w[sl])
             best_d[sl] = np.where(better, d, best_d[sl])

@@ -25,6 +25,7 @@
     "service": 5.0
   },
   "lane_width_m": 3.5,
+  "service_building_clearance_m": 1.5,
   "excluded_service": [
     "driveway",
     "parking_aisle",
@@ -33,7 +34,10 @@
   "road_flatten": {
     "shoulder_m": 1.0,
     "blend_m": 6.0,
-    "profile_smoothing_m": 0.0
+    "profile_smoothing_m": 0.0,
+    "sag_max_m": 0.06,
+    "sag_half_chord_m": 3.0,
+    "junction_blend_m": 12.0
   },
   "building_heights_m": {
     "default": 7.0,

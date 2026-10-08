@@ -27,6 +27,7 @@ namespace ChastainRush
         [Serializable] class MapData { public Road[] roads; public Bridge[] bridges; }
         [Serializable] class TerrainMeta { public float tile_w_m; public float tile_d_m; public int tiles_x; public int tiles_z; }
 
+        const float RayHeight = 1.5f; // rays start this far above the expected surface: above the car's roof, below a house's eaves
         const float Step = 0.25f, TrackOffset = 0.85f, StepLimit = 0.03f, HumpLimit = 0.10f, HumpHalf = 3f, ChunkCell = 128f;
         const float ClusterGap = 2.0f;
 
@@ -129,11 +130,12 @@ namespace ChastainRush
                 {
                     var ab = b - a;
                     float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
-                    if ((a + ab * t - p).sqrMagnitude < 60f * 60f) return true;
+                    if ((a + ab * t - p).sqrMagnitude < 100f * 100f) return true;
                 }
                 return false;
             }
 
+            var terrainExtent = GroundQuery.Extent();
             var events = new List<Ev>();
             var baseline = new SortedDictionary<string, int>();
             int baselineStations = 0;
@@ -207,7 +209,7 @@ namespace ChastainRush
                     for (int t = 0; t < 3; t++)
                     {
                         var q = pos[i] + nrm * ((t - 1) * TrackOffset);
-                        float top = (float.IsNaN(expect) ? 400f : expect) + 3f;
+                        float top = (float.IsNaN(expect) ? 400f : expect) + RayHeight;
                         rays++;
                         h[t][i] = float.NaN;
                         firstHit[t][i] = "MISS";
@@ -277,6 +279,8 @@ namespace ChastainRush
                     {
                         string hit = firstHit[t][i];
                         bool good = hit == "MISS" ? false : bridge ? hit == "BridgeDecks" : hit.StartsWith("Terrain_");
+                        // a ray that misses exactly on the map's outer edge is a road leaving the map, not a hole
+                        if (hit == "MISS" && !InsideExtent(terrainExtent, pos[i], 0.8f)) continue;
                         if (!good)
                             local.Add(new Ev { kind = hit == "MISS" ? "MISS" : "COLLIDER", x = pos[i].x, z = pos[i].y, s = i * total / (n - 1), value = 0f, track = trackName[t], collider = hit });
                     }
@@ -319,6 +323,8 @@ namespace ChastainRush
             return firstHit[1][i];
         }
 
+        static bool InsideExtent(Rect r, Vector2 p, float margin) => p.x > r.xMin + margin && p.x < r.xMax - margin && p.y > r.yMin + margin && p.y < r.yMax - margin;
+
         delegate bool NearOtherFn(Vector2 p, int self, out string other);
 
         static Ev Features(Ev e, int selfIdx, TerrainMeta meta, List<Vector2> bridgeEnds, NearOtherFn nearOther, Func<Vector2, bool> nearHighway, float roadLength, bool bridge)
@@ -354,9 +360,12 @@ namespace ChastainRush
                 sb.AppendLine($"  {g.Key}: {g.Count()} clusters on {g.Select(e => e.road).Distinct().Count()} road names" +
                               (g.Key == "STEP" || g.Key == "HUMP" ? $", largest {g.Max(e => Mathf.Abs(e.value)):F3} m, median {Median(g.Select(e => Mathf.Abs(e.value)).ToList()):F3} m" : ""));
             var scoped = events.Where(e => !e.features.Contains("i575-zone")).ToList();
-            sb.AppendLine($"  outside the I-575 zone (60 m of a highway-class road or of an I-575 deck): " + string.Join(", ", scoped.GroupBy(e => e.kind).OrderBy(g => g.Key).Select(g => g.Key + " " + g.Count())));
+            sb.AppendLine($"  outside the I-575 zone (100 m of a highway-class road or of an I-575 deck): " + string.Join(", ", scoped.GroupBy(e => e.kind).OrderBy(g => g.Key).Select(g => g.Key + " " + g.Count())));
             sb.AppendLine($"  serious, outside the I-575 zone (STEP >= 10 cm, HUMP >= 30 cm, any COLLIDER/OBSTRUCT/MISS): STEP {scoped.Count(e => e.kind == "STEP" && Mathf.Abs(e.value) >= 0.10f)}, " +
                           $"HUMP {scoped.Count(e => e.kind == "HUMP" && Mathf.Abs(e.value) >= 0.30f)}, COLLIDER {scoped.Count(e => e.kind == "COLLIDER")}, OBSTRUCT {scoped.Count(e => e.kind == "OBSTRUCT")}, MISS {scoped.Count(e => e.kind == "MISS")}");
+            int N(string kind, float min, IEnumerable<Ev> src) => src.Count(e => e.kind == kind && Mathf.Abs(e.value) >= min);
+            sb.AppendLine("  outside the I-575 zone, by size: STEP >=3 cm " + N("STEP", 0.03f, scoped) + ", >=5 cm " + N("STEP", 0.05f, scoped) + ", >=10 cm " + N("STEP", 0.10f, scoped) + ", >=20 cm " + N("STEP", 0.20f, scoped) +
+                          "; HUMP >=10 cm " + N("HUMP", 0.10f, scoped) + ", >=20 cm " + N("HUMP", 0.20f, scoped) + ", >=30 cm " + N("HUMP", 0.30f, scoped) + ", >=50 cm " + N("HUMP", 0.50f, scoped));
             sb.AppendLine("  features of all clusters (a cluster can have several):");
             var featureCount = new SortedDictionary<string, int>();
             foreach (var e in events)
