@@ -58,10 +58,10 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 **Always check `TODO.md` for the current objective before starting work.**
 
 Round 1 (map prototype) is built, and Dan has driven it and accepted it with
-`vertical_scale` at 1.5. Active work is the short list under Current Objective
-in `TODO.md`: commit, then a report-only check of the steepest roads. What
-comes after that is an open question for Dan. Everything else from Racer stays
-out of scope.
+`vertical_scale` at 1.5. Active work is Round 2 in `TODO.md`: enlarge the map
+to about 4 km x 2.2 km (I-575 to just past Canton Road), split the terrain
+into tiles, and add bridges where roads cross water. Everything else from
+Racer stays out of scope.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

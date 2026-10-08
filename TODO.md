@@ -46,34 +46,68 @@ Completed Tasks
     steepest. At 1.5: +18.8 m, 11.7% average, 19.0% steepest.
   * Chasefield Way, 235 m: true scale +9.6 m, 4.1% average, 7.3% steepest.
     At 1.5: +14.4 m, 6.1% average, 10.9% steepest.
+* **Round 1 follow-up work — committed** (`28bf044`), with the config at 1.5.
+  The files git still lists as modified differ only in line endings.
 * **Terrain/OSM alignment offset — DECIDED: leave as is.** Up to 0.37 m near
   the map edges from a half-pixel difference, about 4 cm of height on a 12%
   slope. Not worth fixing.
 
 Current Objective (Focus Area)
 
-1. Commit the current work with the config at 1.5. (Nothing was committed as
-   of the last report.)
-2. Check Hayworth Drive NE, which reads 33% at 1.5 (about 22% at true scale).
-   Is it a real slope, or a road crossing a creek or culvert where the
-   bare-earth data drops into the channel? List any other road segments over
-   15% at true scale and say which cross water. Report only; don't fix yet.
-3. Report status per item: done / not done / deferred, and why.
+**Round 2 — enlarge the map, with bridges. DECIDED (2026-10-08).** Dan picked
+the area from a map view. It is about 4 km east to west by 2.2 km north to
+south, roughly four times the Round 1 area.
 
-Open question for Dan: with the map prototype accepted, what comes next? See
-the first few items under Next Steps. Recommended default: enlarge the area.
+Edges, by landmark (snap the bounds to these and report the final numbers):
+* West: I-575, with the highway itself inside the map.
+* East: a little past Canton Road, about 400 m.
+* South: a little south of New Chastain Road, about 300 m.
+* North: about 1 km north of Chastain Glen Lane.
+* Approximate starting bounds: S 34.0280, N 34.0477, W -84.5660, E -84.5220.
+  These were read off a picture, so the landmarks win over the numbers.
 
-Not yet measured: performance on Dan's PC.
+1. Write the findings from the earlier steep-road check into this file under
+   Completed Tasks: what Hayworth Drive NE turned out to be, every road
+   segment over 15% at true scale, and which cross water. (It was reported in
+   chat but never recorded here.)
+2. Check the new bounds against the elevation tile, whose north edge is at
+   latitude 34.048. If the area runs past it, stop at the tile edge and say
+   so; don't download a second tile this round.
+3. Regenerate the map for the new bounds with `vertical_scale` still 1.5.
+4. Keep the terrain detail at least as fine as Round 1 (0.749 m per sample).
+   One Unity terrain can't cover 4 km at that detail, so split it into tiles
+   and make sure there are no seams or height steps between them.
+5. Bridges: wherever a road crosses a stream or pond, hold the road level
+   across the channel instead of following the bare-earth dip, and give it a
+   simple deck. Use OSM `bridge` tags where present, and report crossings that
+   have none. List every bridge built.
+6. Major roads (I-575, Bells Ferry Road, Canton Road, New Chastain Road):
+   drive them as they come out of the current generator, with widths from
+   lane counts. Report what looks wrong (medians, ramps, overpasses), but
+   don't build special handling this round.
+7. Measure performance in Play mode on Dan's PC at the Round 1 spawn and at
+   the densest part of the new map: frame rate, and building and road counts.
+   If it is below 60 fps, report why before optimizing.
+8. Run the scripted drive check on Chastain Glen Lane (it should match Round
+   1) and on one route that crosses a new bridge.
+9. Report status for every item: done / not done / deferred, and why.
+
+Out of scope for this round: trees, driveways, textures, traffic, rivals, race
+routes, and any other Racer system.
+
+What Dan will judge when driving it:
+* Is this the right amount of area, or should it grow or shrink?
+* Do the bridges and the big roads feel right to drive?
+* Does it still run smoothly?
 
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
 * If hills still read flat at a height setting that drives well: a lower chase
   camera and narrower field of view, before raising the scale further.
-* Roads that cross water: bare-earth elevation has bridges removed, so these
-  may need the road held level across the channel.
-* Final map size. Growing north beyond roughly 1 km from Chastain Glen Lane
-  needs a second elevation tile.
+* Growing the map further north needs a second elevation tile (the current
+  one ends at latitude 34.048).
+* Proper handling for major roads: medians, ramps and overpasses.
 * One world with race routes laid over it (not a copy of the world per course,
   as in Woodstock Rush).
 * Map detail pass: trees (2 woods are in the data but not drawn), driveways
