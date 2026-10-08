@@ -72,7 +72,9 @@ Completed Tasks
   two service stubs at the south edge by I-575 (31% and 29%, probably highway
   cut walls). Nothing over 15% crosses water any more.
 
-Round 2 status (coding pass; built and scripted-checked, NOT yet driven by Dan)
+Round 2 status — built, scripted-checked, and DRIVEN by Dan on his PC
+(2026-10-08). His verdict: the area is fine, but it is hard to judge until the
+map is more built out. Size accepted for now; not final.
 
 Final area: a rectangle in UTM, 3983 m east-west by 1918 m north-south
 (SW corner 34.0294, -84.5665; NE corner 34.0458, -84.5229). Landmarks: I-575
@@ -138,50 +140,64 @@ New tools: `GroundQuery` (tile-aware ground height for checks), Editor
 
 Current Objective (Focus Area)
 
-**Round 2 — enlarge the map, with bridges. DECIDED (2026-10-08).** Dan picked
-the area from a map view. It is about 4 km east to west by 2.2 km north to
-south, roughly four times the Round 1 area.
+**Round 3 — build the map out so it reads as a real place. DECIDED
+(2026-10-08).** Same area and bounds as Round 2, `vertical_scale` still 1.5.
+Dan can't judge the map while it is bare boxes on bare ground, so this round
+is about looks, not new systems. Simple and stylized is fine; it only has to
+be recognizable.
 
-Edges, by landmark (snap the bounds to these and report the final numbers):
-* West: I-575, with the highway itself inside the map.
-* East: a little past Canton Road, about 400 m.
-* South: a little south of New Chastain Road, about 300 m.
-* North: about 1 km north of Chastain Glen Lane.
-* Approximate starting bounds: S 34.0280, N 34.0477, W -84.5660, E -84.5220.
-  These were read off a picture, so the landmarks win over the numbers.
+1. Trees. This area is heavily wooded, so trees matter most. Get real tree
+   cover for the map area and place trees from it: NAIP 4-band imagery
+   (public domain; near-infrared makes tree canopy easy to separate) is the
+   preferred source. If it can't be fetched or processed in reasonable time,
+   say so and fall back to a rule: dense trees wherever the ground is more
+   than about 15 m from any road or building, sparse ones in yards. No trees
+   on roads, buildings, water or bridges. Positions must be stable between
+   regenerations.
+   **Tree models — DECIDED (2026-10-08): reuse the trees made in Blender for
+   Woodstock Rush** (3 or 4 of them, in the Racer repo). Copy them over with
+   their materials, vary size and rotation, and list what came with them.
+   Woodstock Rush scatters these trees by script over most of its map, so
+   look at how Racer places and draws them first, and reuse that approach
+   (and its code, if it fits) where it helps. Only the positions change here:
+   they come from real tree cover, not random scatter. Report each model's
+   triangle count, how many trees Racer draws, and how many this map needs.
+   If this map needs far more than Racer handles, keep the models for nearby
+   trees and add a cheap far version; don't model new trees from scratch.
+2. Tree performance: use GPU instancing and distance culling or billboards
+   from the start. Report how many trees were placed.
+3. Houses: give detached houses pitched roofs, and vary wall and roof colours
+   from a small palette, chosen by a stable hash of the building so they don't
+   reshuffle on regeneration. Keep flat roofs for commercial buildings. Keep
+   the owner's house marker.
+4. Driveways: draw the driveways OSM has (they are currently excluded). For
+   houses with none, add a simple straight driveway to the nearest road.
+   Visual only; they don't need to flatten the terrain.
+5. Road markings: a centre line on roads that have one in real life (not
+   quiet residential streets), and a visible edge between road and grass.
+6. Sky, sun and distance fog, so the far edge of the map fades out instead of
+   ending in a hard line.
+7. Add `Assets/_Recovery/` to `.gitignore` (Unity crash-recovery scenes).
+8. Performance: the Game-view frame rate at the Round 1 spawn and at the
+   densest spot, after trees. If it is below 60 fps, fix that before finishing
+   and report what it took.
+   Dan is open to a smaller map if performance needs it (the current area is
+   larger than he first pictured). Don't shrink it yourself: if 60 fps can't
+   be reached without heavy work, stop and report what a smaller area would
+   gain, and let Dan choose.
+9. Save screenshots from fixed viewpoints to `Data/screenshots/round3/`: the
+   spawn on Chastain Glen Lane, the hill past the bend, the New Chastain Road
+   bridge, Canton Road, I-575, and one overhead view of the whole map.
+10. Report status for every item: done / not done / deferred, and why.
 
-1. Write the findings from the earlier steep-road check into this file under
-   Completed Tasks: what Hayworth Drive NE turned out to be, every road
-   segment over 15% at true scale, and which cross water. (It was reported in
-   chat but never recorded here.)
-2. Check the new bounds against the elevation tile, whose north edge is at
-   latitude 34.048. If the area runs past it, stop at the tile edge and say
-   so; don't download a second tile this round.
-3. Regenerate the map for the new bounds with `vertical_scale` still 1.5.
-4. Keep the terrain detail at least as fine as Round 1 (0.749 m per sample).
-   One Unity terrain can't cover 4 km at that detail, so split it into tiles
-   and make sure there are no seams or height steps between them.
-5. Bridges: wherever a road crosses a stream or pond, hold the road level
-   across the channel instead of following the bare-earth dip, and give it a
-   simple deck. Use OSM `bridge` tags where present, and report crossings that
-   have none. List every bridge built.
-6. Major roads (I-575, Bells Ferry Road, Canton Road, New Chastain Road):
-   drive them as they come out of the current generator, with widths from
-   lane counts. Report what looks wrong (medians, ramps, overpasses), but
-   don't build special handling this round.
-7. Measure performance in Play mode on Dan's PC at the Round 1 spawn and at
-   the densest part of the new map: frame rate, and building and road counts.
-   If it is below 60 fps, report why before optimizing.
-8. Run the scripted drive check on Chastain Glen Lane (it should match Round
-   1) and on one route that crosses a new bridge.
-9. Report status for every item: done / not done / deferred, and why.
-
-Out of scope for this round: trees, driveways, textures, traffic, rivals, race
-routes, and any other Racer system.
+Out of scope for this round: medians, ramps and overpasses on the big roads,
+a second elevation tile, hand-built houses, traffic, rivals, race routes, and
+any other Racer system.
 
 What Dan will judge when driving it:
-* Is this the right amount of area, or should it grow or shrink?
-* Do the bridges and the big roads feel right to drive?
+* Does it now look like the neighborhood?
+* With trees and houses in, is this the right amount of area?
+* Do the hills read better with things to judge them against?
 * Does it still run smoothly?
 
 Next Steps (Do Not Start Yet)
@@ -194,8 +210,9 @@ Next Steps (Do Not Start Yet)
 * Proper handling for major roads: medians, ramps and overpasses.
 * One world with race routes laid over it (not a copy of the world per course,
   as in Woodstock Rush).
-* Map detail pass: trees (2 woods are in the data but not drawn), driveways
-  and missing houses, using NAIP aerial imagery as a reference only.
+* Houses missing from OSM, found by comparing against NAIP imagery.
+* The untagged-bridge logic from Round 2 is untested on real data; check it
+  the first time the map grows into an area that has such a crossing.
 * Hand-built versions of the houses that matter, from photos, as was done for
   Kyle's house in Woodstock Rush.
 * Importing the remaining Racer systems: rival AI, traffic, campaign, Free
@@ -208,6 +225,12 @@ Next Steps (Do Not Start Yet)
 
 Technical Notes / Blockers
 
+* **Size against Woodstock Rush:** that world is about 1.2 km by 0.9 km,
+  roughly 1 km2 (an 800 m neighborhood block plus the mountain area), and its
+  courses run 1.5 to 2.7 km by looping inside it. This map is 3983 m by
+  1918 m, about 7.6 km2, so roughly seven to eight times the area. Expect
+  tree and building counts to scale the same way; whatever Racer does for
+  trees has only been proven at about one eighth of this size.
 * **Elevation tile:**
   `https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif`
   Projection is UTM zone 16N, NAD83, in metres; elevations are metres
