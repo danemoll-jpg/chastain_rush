@@ -5,6 +5,7 @@
     "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif"
   ],
   "terrain_resolution": 2049,
+  "vertical_scale": 1.5,
   "road_widths_m": {
     "motorway": 14.0, "trunk": 14.0, "primary": 14.0, "secondary": 11.0, "tertiary": 9.0,
     "primary_link": 6.5, "secondary_link": 6.0, "tertiary_link": 6.0,
@@ -12,7 +13,7 @@
   },
   "lane_width_m": 3.5,
   "excluded_service": ["driveway", "parking_aisle", "drive-through"],
-  "road_flatten": { "shoulder_m": 1.0, "blend_m": 6.0, "profile_smoothing_m": 20.0 },
+  "road_flatten": { "shoulder_m": 1.0, "blend_m": 6.0, "profile_smoothing_m": 0.0 },
   "building_heights_m": {
     "default": 7.0, "detached": 7.5, "house": 7.5, "semidetached_house": 7.5,
     "garage": 3.2, "garages": 3.2, "shed": 2.8, "carport": 3.0, "roof": 4.0, "pavilion": 4.0,

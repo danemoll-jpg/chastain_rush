@@ -3,81 +3,81 @@ Active Development Plan — Chastain Rush
 Sequel to Woodstock Rush, built on a real-world map generated from public map
 data instead of a hand-built one. Working title: Chastain Rush.
 
+**Design rule — DECIDED (2026-10-08):** the real world is the starting point,
+and fun wins when the two disagree. The game does not need to be a 1:1 match.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
   (`C:\Users\danmo\chastain_rush`), not a duplicate of Racer. Racer's history
   and one-off files stay behind. Systems are brought over from Racer one at a
-  time, only when a round needs them, and each import is a chance to leave
-  dead code out. Racer itself is not modified by any Chastain Rush round.
-* **Elevation data availability — confirmed by catalog lookup (not yet
-  downloaded or opened).** One USGS 3DEP 1 m tile covers the prototype area:
-  `USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif`, GeoTIFF, about 313 MB,
-  10 km x 10 km. See Technical Notes for the URL and projection.
+  time, only when a round needs them. Racer itself is not modified by any
+  Chastain Rush round.
+* **Round 1, map prototype — built; driven by Dan at true scale (2026-10-07).**
+  A 1534 m square around Chastain Glen generated from USGS 1 m elevation and
+  OpenStreetMap, drivable with one Racer vehicle. Bounds: S 34.0315,
+  N 34.0450, W -84.5433, E -84.5271, including the New Chastain Road entrance.
+  Dan's verdict: the layout is recognizable and he could find his way around,
+  but the hills felt lower than in real life.
+* **OSM coverage — checked, good.** 801 buildings (718 houses), 226 drivable
+  road ways, 8 ponds, 21 streams (Noonday Creek, Little Noonday Creek),
+  2 woods. No Microsoft footprints needed for this area.
+* **"Hills feel flat" — root cause found: perception, not data.** The first
+  suspicion was squashed heights. Measurement showed the true-scale terrain
+  matches the USGS crop to 6 mm (273.10 to 329.34 m in game against 273.098
+  to 329.350 m in the source), with no off-road smoothing (mean difference
+  0.2 mm more than 15 m from any road). Terrain is 2049 x 2049 samples, 0.749 m
+  per sample, bilinear from the 1 m source. Measured from the data file
+  (`terrain.r16`), not from Unity's built TerrainData.
+* **Along-road smoothing bug — fixed.** A 20 m smoothing of the road profile
+  was cutting grades by 6.5% on average (up to 2.8 points). Now off
+  (`profile_smoothing_m` 0); roads level across their width only. Real but
+  small: it was not the cause of the flat feeling.
+* **Vertical scale setting — added, set to 1.5. DECIDED (2026-10-08): keep
+  1.5 as the working value.** `vertical_scale` in `Tools/mapgen/config.json`;
+  1.0 is true scale. Scaling is from the lowest point, so only the relief
+  grows. Scene needs Chastain Rush > Build Map after a change. Status: built,
+  scripted drive passed on Chastain Glen Lane, and CONFIRMED by Dan driving
+  it at 1.5 on his PC (2026-10-08). His verdict: keep it.
+* **Reference hill measurements** (Claude Code's reading of Dan's directions,
+  not yet confirmed by Dan: "right out of the driveway" taken as east, "first
+  left the other way" taken as Chasefield Way):
+  * Chastain Glen Lane hill, 160 m: true scale +12.5 m, 7.8% average, 12.7%
+    steepest. At 1.5: +18.8 m, 11.7% average, 19.0% steepest.
+  * Chasefield Way, 235 m: true scale +9.6 m, 4.1% average, 7.3% steepest.
+    At 1.5: +14.4 m, 6.1% average, 10.9% steepest.
+* **Terrain/OSM alignment offset — DECIDED: leave as is.** Up to 0.37 m near
+  the map edges from a half-pixel difference, about 4 cm of height on a 12%
+  slope. Not worth fixing.
 
 Current Objective (Focus Area)
 
-**Round 1 — map prototype.** Goal: find out whether a map generated from real
-data is recognizable and fun to drive, before committing to the approach.
-Nothing in this round needs to look good.
+1. Commit the current work with the config at 1.5. (Nothing was committed as
+   of the last report.)
+2. Check Hayworth Drive NE, which reads 33% at 1.5 (about 22% at true scale).
+   Is it a real slope, or a road crossing a creek or culvert where the
+   bare-earth data drops into the channel? List any other road segments over
+   15% at true scale and say which cross water. Report only; don't fix yet.
+3. Report status per item: done / not done / deferred, and why.
 
-Prototype area: a box about 1.5 km on a side centered on the Chastain Glen
-neighborhood (Marietta, GA 30066). Starting bounds, approximate:
-south 34.0315, north 34.0450, west -84.5433, east -84.5271. Adjust so the
-whole neighborhood and its entrance road are inside, and report the final
-bounds.
+Open question for Dan: with the map prototype accepted, what comes next? See
+the first few items under Next Steps. Recommended default: enlarge the area.
 
-1. Query OpenStreetMap for the box and report what it holds: number of roads
-   and their names, number of building footprints, any water and woods.
-   **If house footprints are mostly missing, stop and report before going on**
-   (the fallback is Microsoft's open US building footprints).
-2. Download the USGS 1 m elevation tile, crop it to the box, and save the crop
-   as the project's heightmap. The raw tile stays out of git.
-3. Build the terrain from the heightmap at true scale: 1 unit = 1 metre, no
-   vertical exaggeration.
-4. Generate roads from the OSM road lines at realistic widths, and flatten the
-   terrain across each road's width so the surface isn't tilted or bumpy.
-5. Place buildings as plain extruded boxes on their footprints. Mark the
-   owner's house so it's easy to find (Dan gives the house number directly;
-   keep the address out of committed files).
-6. Bring over one existing vehicle from Racer with its current handling,
-   camera and controls, spawning on Chastain Glen Lane. Bring only what that
-   vehicle needs, and list every file and system that had to come with it.
-7. Keep the generation as a re-runnable script driven by the bounds, so the
-   area can be enlarged later by changing numbers rather than redoing work.
-8. Report status for every item above: done / not done / deferred, and why.
-
-Out of scope for this round: trees, driveways, textures, traffic, rivals, race
-routes, menus, and any other Racer system.
-
-What Dan will judge when driving it:
-* Do the streets read as the real neighborhood?
-* Do the hills feel right, in steepness and in where they are?
-* Are road widths and corners right for the existing vehicle's handling?
-* Is the performance acceptable for an area this size?
-
-Round 1 status (2026-10-07) — built, automated drive check passed, NOT yet driven by Dan
-
-* Final bounds: unchanged from the starting bounds (S 34.0315, N 34.0450,
-  W -84.5433, E -84.5271). The whole neighbourhood and its New Chastain Road
-  entrance are inside. Map is the 1534 m UTM square around them.
-* OSM check: 801 buildings (718 houses), 91 addressed houses on Chastain Glen
-  Lane, 226 drivable road ways, 8 ponds, 21 streams (Noonday Creek, Little
-  Noonday Creek), 2 woods. Footprint coverage is good, so no Microsoft
-  footprints are needed for this area.
-* Not done this round: performance not measured on Dan's PC; woods are
-  reported but not drawn (trees are out of scope).
+Not yet measured: performance on Dan's PC.
 
 Next Steps (Do Not Start Yet)
 
-* **Wait for the prototype verdict before deciding anything below.** All of
-  these are deferred, not decided against.
+* All of these are deferred, not decided against.
+* If hills still read flat at a height setting that drives well: a lower chase
+  camera and narrower field of view, before raising the scale further.
+* Roads that cross water: bare-earth elevation has bridges removed, so these
+  may need the road held level across the channel.
 * Final map size. Growing north beyond roughly 1 km from Chastain Glen Lane
   needs a second elevation tile.
 * One world with race routes laid over it (not a copy of the world per course,
   as in Woodstock Rush).
-* Map detail pass: trees, driveways and missing houses placed using NAIP
-  aerial imagery as a reference only.
+* Map detail pass: trees (2 woods are in the data but not drawn), driveways
+  and missing houses, using NAIP aerial imagery as a reference only.
 * Hand-built versions of the houses that matter, from photos, as was done for
   Kyle's house in Woodstock Rush.
 * Importing the remaining Racer systems: rival AI, traffic, campaign, Free
@@ -93,19 +93,21 @@ Technical Notes / Blockers
 * **Elevation tile:**
   `https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif`
   Projection is UTM zone 16N, NAD83, in metres; elevations are metres
-  (NAVD88). It is a bare-earth surface, so buildings and trees are already
+  (NAVD88). It is a bare-earth surface, so buildings, trees and bridges are
   removed. Tile covers latitude 33.955 to 34.048 and longitude -84.619 to
   -84.508. Public domain.
 * **OpenStreetMap** data is under the ODbL licence. The game needs a visible
-  credit, "© OpenStreetMap contributors". OSM coordinates are latitude and
-  longitude, so they must be converted to the same UTM metres as the elevation
-  before anything is placed.
+  credit, "© OpenStreetMap contributors".
 * **Google Maps data can't be used in a game.** Not for geometry, imagery or
   tracing.
-* **NAIP aerial imagery** is a placement reference only, not a texture source
-  for this project.
-* **OSM coverage for this area has not been checked yet.** Item 1 of Round 1
-  is that check.
-* **Verification wording:** "built" and "driven by Dan on his PC" are separate
-  claims. Record which one applies to each item.
+* **NAIP aerial imagery** is a placement reference only, not a texture source.
+* **True-scale terrain reads flatter in game than in real life.** This is a
+  camera and reference-object effect, confirmed here by measurement. Expect it
+  again on any new area; check the numbers before suspecting the data.
+* **Terrain rendering:** Unity's `heightmapPixelError` = 3 simplifies the
+  visible mesh at a distance; collision uses the full-resolution data.
+* **`terrain.json` stores a padded height range** (1 m each side), not the
+  real extremes.
+* **Verification wording:** "built", "scripted drive passed" and "driven by Dan
+  on his PC" are separate claims. Record which one applies.
 * Process notes for this collaboration are in `collaboration-process-notes.md`.

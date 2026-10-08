@@ -17,7 +17,14 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - **Import from Racer selectively.** Bring a system over only when the current
   round needs it, bring only what it depends on, and list what came with it in
   the round report. Don't copy Racer wholesale and don't bring its git history.
-- **World scale is real:** 1 unit = 1 metre, no vertical exaggeration.
+- **World scale is real:** 1 unit = 1 metre. Vertical exaggeration is off (1.0) by
+  default; `vertical_scale` in `Tools/mapgen/config.json` stretches terrain, roads
+  (draped on it) and building heights together, about the crop's lowest point.
+  It is set to 1.5, and that is the decided working value (Dan drove it and
+  kept it). True-scale terrain reads too flat in game. Design rule: the real
+  world is the starting point, and fun wins when the two disagree.
+- **Road flattening levels across the road's width only.** Along-road smoothing
+  (`road_flatten.profile_smoothing_m`) is 0 because it reduced grades.
 - **Map generation is a re-runnable script driven by a bounding box**, not
   hand edits to generated output. Hand-made additions live separately from
   generated data so regenerating never destroys them.
@@ -50,9 +57,15 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
 
-Round 1 (map prototype) is built and passed an automated drive check; it has
-not yet been driven by Dan. Next is Dan's verdict (see `TODO.md`). Everything
-else from Racer stays out of scope until then.
+Round 1 (map prototype) is built, and Dan has driven it and accepted it with
+`vertical_scale` at 1.5. Active work is the short list under Current Objective
+in `TODO.md`: commit, then a report-only check of the steepest roads. What
+comes after that is an open question for Dan. Everything else from Racer stays
+out of scope.
+
+**Commit before reading `TODO.md` at the start of a round.** Claude (planning)
+edits `TODO.md` and this file directly in the working folder between rounds,
+so commit any uncommitted work first to keep those edits separate from yours.
 
 Imported from Racer so far (Round 1): PrototypeCar prefab, its materials and
 physics material (`Assets/Vehicles/`), and ArcadeVehicle, VehicleInput,

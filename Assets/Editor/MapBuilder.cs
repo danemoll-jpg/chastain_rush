@@ -32,9 +32,11 @@ namespace ChastainRush
         [Serializable] class Area { public string name; public float[] outline; }
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
-        [Serializable] class MapData { public string attribution; public float size_m; public Road[] roads; public Building[] buildings; public Area[] water; public Line[] streams; public Spawn spawn; }
+        [Serializable] class MapData { public string attribution; public float size_m; public float vertical_scale = 1f; public Road[] roads; public Building[] buildings; public Area[] water; public Line[] streams; public Spawn spawn; }
         [Serializable] class TerrainMeta { public int resolution; public float size_m; public float min_height; public float max_height; }
         [Serializable] class OwnerMarker { public int index; public float x; public float z; }
+
+        static float vScale = 1f;
 
         static string ProjectRoot => Path.GetDirectoryName(Application.dataPath);
 
@@ -66,6 +68,9 @@ namespace ChastainRush
             RenderSettings.ambientEquatorColor = new Color(0.50f, 0.52f, 0.50f);
             RenderSettings.ambientGroundColor = new Color(0.30f, 0.28f, 0.25f);
 
+            // vertical_scale (config.json) is already baked into the terrain heights and building heights by mapgen;
+            // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
+            vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
             var terrain = BuildTerrain(meta, mats);
             var world = new GameObject("World").transform;
             BuildRoads(map, terrain, mats, world);
@@ -79,7 +84,7 @@ namespace ChastainRush
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             AssetDatabase.SaveAssets();
             Debug.Log($"[MapBuilder] Built {ScenePath}: {map.roads.Length} roads, {map.buildings.Length} buildings, " +
-                      $"{map.water.Length} water areas, spawn on {map.spawn.street}");
+                      $"{map.water.Length} water areas, spawn on {map.spawn.street}, vertical scale {vScale:0.##}");
         }
 
         // ------------------------------------------------------------ terrain
@@ -125,7 +130,7 @@ namespace ChastainRush
             foreach (var r in map.roads)
             {
                 var pts = Densify(ToPoints(r.points), 2f);
-                float lift = RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f;
+                float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
                 var mb = r.@class == "service" ? service : main;
                 AddRibbon(mb, pts, r.width, lift, terrain);
                 AddDisc(mb, pts[0], r.width * 0.5f, lift - 0.004f, terrain);
@@ -201,7 +206,7 @@ namespace ChastainRush
                     c += p;
                 }
                 c /= ring.Count;
-                float baseY = lo - 0.5f, topY = sum / ring.Count + b.height;
+                float baseY = lo - 0.5f * vScale, topY = sum / ring.Count + b.height;
                 if (owner != null && owner.index == i)
                 {
                     var own = new MeshBuilder();

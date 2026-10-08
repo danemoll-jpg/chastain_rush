@@ -7,7 +7,9 @@ Re-runnable, driven by the bounds in config.json. Steps:
   4. terrain - resample heightmap to the terrain grid, flatten under roads -> Assets/Generated/terrain.r16
 
 World frame (shared with Unity): x = easting - origin_e, z = northing - origin_n,
-y = elevation in metres (NAVD88). 1 unit = 1 metre, no vertical exaggeration.
+y = elevation in metres (NAVD88). 1 unit = 1 metre horizontally. Vertical scale is 1.0 (true) unless
+config.json "vertical_scale" says otherwise; it is applied about the lowest point of the crop, to terrain
+(and so to the roads draped on it) and to building heights together.
 
 Usage:  python Tools/mapgen/mapgen.py [--refresh-osm]
 """
@@ -147,6 +149,7 @@ def road_width(tags, cfg):
 
 
 def building_height(tags, cfg):
+    """True (unscaled) height in metres; the caller applies vertical_scale."""
     for k in ("height", "building:height"):
         if k in tags:
             try:
@@ -160,6 +163,13 @@ def building_height(tags, cfg):
             pass
     h = cfg["building_heights_m"]
     return h.get(tags["building"], h["default"])
+
+
+def vscale(cfg):
+    k = float(cfg.get("vertical_scale", 1.0))
+    if k <= 0:
+        raise SystemExit(f"config.json vertical_scale must be > 0, got {k}")
+    return k
 
 
 def process_osm(cfg, osm, rect):
@@ -209,7 +219,7 @@ def process_osm(cfg, osm, rect):
                 continue
             if poly_area(ring) < 0:
                 ring = ring[::-1]  # counter-clockwise
-            b = {"type": t["building"], "height": round(building_height(t, cfg), 2), "footprint": ring}
+            b = {"type": t["building"], "height": round(building_height(t, cfg) * vscale(cfg), 2), "footprint": ring}
             if owner_cfg and t.get("addr:housenumber") == str(owner_cfg["housenumber"]) and \
                     owner_cfg["street"].lower() in t.get("addr:street", "").lower():
                 owner = {"index": len(buildings), "x": round(cx, 2), "z": round(cz, 2)}
@@ -240,7 +250,7 @@ def process_osm(cfg, osm, rect):
         r.pop("node_ids")
     out = {
         "attribution": "© OpenStreetMap contributors (ODbL); elevation: USGS 3DEP 1 m (public domain)",
-        "bounds": cfg["bounds"], "utm_epsg": cfg["utm_epsg"],
+        "bounds": cfg["bounds"], "utm_epsg": cfg["utm_epsg"], "vertical_scale": vscale(cfg),
         "origin_utm": [w0, s0], "size_m": size,
         "roads": roads, "buildings": buildings, "water": water, "streams": streams, "woods": woods,
         "spawn": spawn,
@@ -330,6 +340,12 @@ def build_terrain(cfg, dem_path, mapdata):
     with rasterio.open(dem_path) as src:
         # grid sample i spans the full crop, row 0 = south (Unity terrain convention)
         h = src.read(1, out_shape=(res, res), resampling=Resampling.bilinear)[::-1].astype(np.float64)
+        src_min, src_max = float(src.read(1).min()), float(src.read(1).max())
+    # Vertical scale: stretch heights about the lowest point of the crop, so the map keeps its elevations near
+    # their real values and only the relief grows. Roads are flattened from the scaled surface, so their grades scale too.
+    k = vscale(cfg)
+    datum = src_min
+    h = datum + (h - datum) * k
     size = mapdata["size_m"]
     step = size / (res - 1)
     raw = h.copy()
@@ -351,15 +367,18 @@ def build_terrain(cfg, dem_path, mapdata):
         seglen = np.hypot(*np.diff(pts, axis=0).T)
         if seglen.sum() < 0.5:
             continue
-        # densify to ~1 m, sample the bare-earth profile and smooth it along the road
+        # densify to ~1 m and sample the bare-earth profile along the road centreline
         cum = np.concatenate([[0], np.cumsum(seglen)])
         s = np.linspace(0, cum[-1], max(2, int(cum[-1]) + 1))
         dx = np.interp(s, cum, pts[:, 0])
         dz = np.interp(s, cum, pts[:, 1])
         prof = sample(dx, dz)
-        k = max(1, int(fl["profile_smoothing_m"] / 2))
-        padded = np.pad(prof, k, mode="edge")
-        prof = np.convolve(padded, np.ones(2 * k + 1) / (2 * k + 1), mode="valid")
+        # Optional smoothing ALONG the road. It shaves crests and fills dips, so it reduces grades; 0 (the default)
+        # keeps the centreline profile exactly as sampled and only levels the surface across the road's width.
+        win = int(fl.get("profile_smoothing_m", 0) / 2)
+        if win > 0:
+            padded = np.pad(prof, win, mode="edge")
+            prof = np.convolve(padded, np.ones(2 * win + 1) / (2 * win + 1), mode="valid")
         core = road["width"] / 2 + fl["shoulder_m"]
         reach = core + fl["blend_m"]
         for a in range(len(dx) - 1):
@@ -393,12 +412,15 @@ def build_terrain(cfg, dem_path, mapdata):
     os.makedirs(GENERATED, exist_ok=True)
     out = os.path.join(GENERATED, "terrain.r16")
     norm.tofile(out)
-    meta = {"resolution": res, "size_m": size, "min_height": lo, "max_height": hi}
+    meta = {"resolution": res, "size_m": size, "min_height": lo, "max_height": hi,
+            "vertical_scale": k, "vertical_datum_m": datum}
     with open(os.path.join(GENERATED, "terrain.json"), "w", encoding="utf-8") as f:
         json.dump(meta, f, indent=1)
     moved = np.abs(h - raw)
-    log(f"Terrain: {res}x{res} ({step:.3f} m/sample), {lo:.1f}-{hi:.1f} m; road flattening moved "
-        f"{(moved > 0.05).mean() * 100:.1f}% of samples, max {moved.max():.2f} m -> {out}")
+    log(f"Terrain: {res}x{res} ({step:.3f} m/sample), vertical scale {k:g} about {datum:.2f} m; "
+        f"road flattening moved {(moved > 0.05).mean() * 100:.1f}% of samples, max {moved.max():.2f} m -> {out}")
+    log(f"Elevation check: USGS crop {src_min:.3f}-{src_max:.3f} m (x{k:g} about {datum:.3f} -> "
+        f"{src_min:.3f}-{datum + (src_max - datum) * k:.3f} m expected); terrain {h.min():.3f}-{h.max():.3f} m")
 
 
 def main():
