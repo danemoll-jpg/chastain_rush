@@ -1,0 +1,6 @@
+01_spawn.png: Spawn on Chastain Glen Lane; trees drawn 7113, 140 tree draw calls, 516 k tree triangles
+02_hill_past_bend.png: Hill past the bend: Chastain Glen Lane, bend at (3065,963), steepest 60 m after it 15.9% from (3066,968); trees drawn 4788, 83 tree draw calls, 340 k tree triangles
+03_new_chastain_bridge.png: New Chastain Road bridge, deck (2446,766) to (2414,766); trees drawn 7440, 165 tree draw calls, 597 k tree triangles
+04_canton_road.png: Canton Road at (3381,1664), 22.0 m wide; trees drawn 760, 87 tree draw calls, 58 k tree triangles
+05_i575.png: I-575 (Phillip Landrum Memorial Highway) at (366,768), 8.0 m wide; trees drawn 7051, 141 tree draw calls, 519 k tree triangles
+06_overhead.png: whole map, 3983 x 1918 m, orthographic, fog off; trees drawn 56213

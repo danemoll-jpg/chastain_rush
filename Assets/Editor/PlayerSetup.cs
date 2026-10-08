@@ -5,7 +5,7 @@ using UnityEngine;
 namespace ChastainRush
 {
     // Puts the Racer car (Assets/Vehicles/PrototypeCar.prefab) and its chase camera into the generated scene.
-    // Camera values are the ones Racer's gameplay scenes use, apart from the far clip, which covers the whole map.
+    // Camera values are the ones Racer's gameplay scenes use, apart from the clip planes (fog hides everything past 650 m).
     static class PlayerSetup
     {
         const string VehiclePrefabPath = "Assets/Vehicles/PrototypeCar.prefab";
@@ -28,8 +28,8 @@ namespace ChastainRush
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();
             cam.fieldOfView = 65f;
-            cam.nearClipPlane = 0.1f;
-            cam.farClipPlane = 2500f;
+            cam.nearClipPlane = 0.25f;  // a larger near plane keeps depth precision for paint and roads at a distance
+            cam.farClipPlane = 750f;    // the fog is solid by MapBuilder.FogEnd (650 m); trees stop at 700 m
             camGo.AddComponent<AudioListener>();
             var chase = camGo.AddComponent<ChaseCamera>();
             chase.target = car.transform;

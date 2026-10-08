@@ -22,9 +22,11 @@ namespace ChastainRush
 
         public List<Location> locations = new List<Location>();
         public string outputDir;
+        public bool gameView; // true: leave drawing to the Game view (windowed Editor); false: render offscreen (batch mode)
         public float warmup = 3f, measure = 12f, speed = 11f;
 
         ArcadeVehicle car;
+        TreeField trees;
         Camera cam;
         RenderTexture rt;
         Texture2D probe;
@@ -39,17 +41,26 @@ namespace ChastainRush
         void Start()
         {
             car = FindAnyObjectByType<ArcadeVehicle>();
+            trees = FindAnyObjectByType<TreeField>();
+            var cl = System.Environment.GetCommandLineArgs();
+            if (System.Array.IndexOf(cl, "-perfNoTrees") >= 0) trees.enabled = false;
+            for (int i = 0; i < cl.Length - 1; i++) if (cl[i] == "-perfTreeDist") { trees.drawDistance = float.Parse(cl[i + 1]); RenderSettings.fogEndDistance = trees.drawDistance - 50f; }
+            for (int i = 0; i < cl.Length - 1; i++) if (cl[i] == "-perfNear") trees.nearDistance = float.Parse(cl[i + 1]);
+            if (System.Array.IndexOf(cl, "-perfNoShadows") >= 0) UnityEngine.Rendering.Universal.UniversalRenderPipeline.asset.shadowDistance = 0f;
             car.enabled = false;
             // Batch mode never draws the game view, so render the main camera ourselves each frame into a 1080p target and
             // read one pixel back to wait for the GPU. Frame time then includes real rendering, shadows and terrain LOD.
             cam = Camera.main;
-            rt = new RenderTexture(1920, 1080, 24);
-            cam.targetTexture = rt;
-            probe = new Texture2D(1, 1);
+            if (!gameView)
+            {
+                rt = new RenderTexture(1920, 1080, 24);
+                cam.targetTexture = rt;
+                probe = new Texture2D(1, 1);
+            }
             QualitySettings.vSyncCount = 0;
             Application.targetFrameRate = -1;
             report.AppendLine($"GPU {SystemInfo.graphicsDeviceName}, {SystemInfo.graphicsMemorySize} MB; CPU {SystemInfo.processorType} x{SystemInfo.processorCount}; " +
-                              $"screen {Screen.width}x{Screen.height}; renderers in scene {FindObjectsByType<Renderer>(FindObjectsSortMode.None).Length}; " +
+                              $"{(gameView ? "GAME VIEW (windowed Editor)" : "offscreen 1920x1080")}, screen {Screen.width}x{Screen.height}; renderers in scene {FindObjectsByType<Renderer>(FindObjectsSortMode.None).Length}; " +
                               $"terrain tiles {Terrain.activeTerrains.Length}");
             NextLocation();
         }
@@ -90,7 +101,7 @@ namespace ChastainRush
 
         void LateUpdate()
         {
-            if (cam == null) return;
+            if (cam == null || gameView) return;
             cam.Render();
             RenderTexture.active = rt;
             probe.ReadPixels(new Rect(0, 0, 1, 1), 0, 0);
@@ -129,7 +140,8 @@ namespace ChastainRush
                 ? $"; per frame: {sumBatches / statSamples:F0} draw calls, {sumPasses / statSamples:F0} SetPass calls, {sumTris / statSamples / 1e6:F2} M triangles"
                 : "";
             report.AppendLine($"{loc.label}: {frames.Count} frames in {total:F1} s = {avg:F0} fps average; median frame {median * 1000f:F1} ms; " +
-                              $"99th percentile {p99 * 1000f:F1} ms ({1f / p99:F0} fps); worst {sorted[sorted.Count - 1] * 1000f:F1} ms{stats}; {loc.counts}");
+                              $"99th percentile {p99 * 1000f:F1} ms ({1f / p99:F0} fps); worst {sorted[sorted.Count - 1] * 1000f:F1} ms{stats}; {loc.counts}; trees " +
+                              $"{(trees ? trees.LastTreesDrawn + " drawn, " + trees.LastDrawCalls + " draw calls, " + trees.LastTriangles / 1000 + " k triangles" : "n/a")}");
         }
 
         void Finish()

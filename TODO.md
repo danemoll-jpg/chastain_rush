@@ -138,6 +138,66 @@ north to south, not 2.2. A second tile is the next step for more.
 New tools: `GroundQuery` (tile-aware ground height for checks), Editor
 `PerfCheck`, `SeamCheck`, `steep_roads.py`.
 
+Round 3 status — built, scripted-checked. NOT yet driven by Dan.
+
+1. Trees: DONE. NAIP 4-band imagery (tile m_3408460_se_16_060_20231007, flown
+   2023-10-07, so autumn leaves; fetched at 1 m from USGS's image service into
+   `raw/`). Canopy = NDVI > 0.2 with texture, or dark vegetated pixels; canopy is
+   46% of the crop. One tree per 7 m jittered-grid cell (hash-stable, so
+   regenerating gives the same file) where there is canopy, none on roads,
+   buildings, water, bridges or driveways, thinned to half in yards. **56,213
+   trees** (47,822 woods, 8,391 yards): Round 11,619, Oak 9,801, Maple 9,616,
+   Pine 14,187, Poplar 10,143, Young 847. Models: Racer's six tree types
+   (Bush and Shrub not used). Triangles near / far (crown + trunk): Round 687 / 103,
+   Oak 860 / 123, Maple 514 / 83, Pine 155 / 59, Poplar 568 / 83, Young 341 / 83.
+   Racer draws about 12,600-13,000 trees per scene; this map has 4.4x that. Tree
+   heights get vertical_scale like the houses. No colliders (the car drives
+   through trees): not asked for, deferred.
+2. Tree performance: DONE. Instanced (`TreeField`): detailed kit within 55 m with
+   shadows, far kit (three shapes) beyond with no shadows, trunks to 160 m,
+   nothing past 700 m; 48 m cells inside 256 m far cells, frustum culled. In
+   view at spawn about 5,300 trees, about 90 tree draw calls.
+3. Houses: DONE. 1,335 gable, 846 hip, 50 pyramid (footprint far from a
+   rectangle) roofs on detached houses and other house types (also terraces,
+   semi-detached, garages, church); 157 other buildings stay flat. 8 wall and 5
+   roof colours by a hash of where the building stands. Owner house keeps its
+   orange colour and beacon. Roof rise is scaled by vertical_scale.
+4. Driveways: DONE. 107 from OSM, 2,088 generated straight to the nearest road
+   (not for 18 houses that had an OSM driveway within 6 m, 13 with no road within
+   45 m, 57 blocked by another building or water). Visual only.
+5. Road markings: DONE. Pale edge strip on every road; primary / secondary /
+   tertiary / trunk / motorway and links also get white edge lines; two-way ones a
+   double yellow centre line, wide ones white dashed lane lines; one-way and
+   motorway carriageways white dashes. Quiet residential, unclassified and service
+   roads get only the edge strip. Paint is cut where another road's pavement
+   covers it. Also on bridge decks. Not checked: markings at every junction.
+6. Sky, sun, fog: DONE. Gradient sky whose horizon colour equals the linear fog
+   (clear to 100 m, solid at 650 m); camera far clip 750 m, near 0.25 m.
+7. `.gitignore` for `Assets/_Recovery/`: DONE (and the three recovery scenes
+   removed from git; the files are still on disk).
+8. Performance: DONE, close to the line. Windowed Editor Game view
+   (`-perfGameView`) is only 734x293 here, so it flatters: 202 fps spawn, 208
+   fps densest. The fair number is the offscreen 1920x1080 render (as Round 2):
+   spawn 70 fps average, 14.2 ms median, 99th percentile 17.9 ms (56 fps);
+   densest 70 fps, 14.0 ms, 99th 18.0 ms (56 fps); about 1.2 M triangles and
+   1,100 draw calls. So the average is over 60 and the worst 1% dips just under.
+   First attempt was 44 / 52 fps; it took: roads, paint and driveways split into
+   128 m chunks (they were one mesh for the whole map) and shadows off for them;
+   far trees reduced to three shapes; near distance 90 -> 55 m; draw distance
+   1000 -> 700 m with the fog pulled in to match. No area change needed. Dan's own
+   Game-view rate is still unmeasured.
+9. Screenshots: DONE, `Data/screenshots/round3/` (01_spawn, 02_hill_past_bend,
+   03_new_chastain_bridge, 04_canton_road, 05_i575, 06_overhead, and
+   screenshots.txt with the positions). "Hill past the bend" is my pick (first bend
+   on Chastain Glen Lane from the spawn, then its steepest 60 m, 15.9%); the
+   others are the widest Canton Road piece and the middle of I-575's longest piece.
+10. This report: DONE.
+
+New tools: `TreeBuilder`, `TreeField`, `ScreenshotCheck`, `VertexLit` and
+`SkyGradient` shaders; `PerfCheck` got `-perfGameView`. Not run this round: the
+drive checks (road geometry and colliders were not changed; houses' roofs now
+have colliders).
+
 Current Objective (Focus Area)
 
 **Round 3 — build the map out so it reads as a real place. DECIDED

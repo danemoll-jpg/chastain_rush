@@ -56,6 +56,44 @@
     "kindergarten": 5.0
   },
   "level_height_m": 3.2,
+  "pitched_roof_pitch_deg": {
+    "detached": 30.0,
+    "house": 30.0,
+    "semidetached_house": 30.0,
+    "terrace": 28.0,
+    "residential": 28.0,
+    "bungalow": 28.0,
+    "church": 35.0,
+    "garage": 20.0,
+    "garages": 18.0,
+    "stable": 22.0
+  },
+  "driveways": {
+    "width_m": 3.0,
+    "has_one_within_m": 6.0,
+    "max_length_m": 45.0,
+    "min_length_m": 3.0,
+    "skip_road_classes": ["motorway", "trunk", "primary", "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link"]
+  },
+  "naip": {
+    "url": "https://imagery.nationalmap.gov/arcgis/rest/services/USGSNAIPImagery/ImageServer/exportImage",
+    "max_px": 4000
+  },
+  "trees": {
+    "cell_m": 7.0,
+    "ndvi_min": 0.20,
+    "texture_min": 10.0,
+    "dark_lum_max": 70.0,
+    "min_blob_px": 12,
+    "road_margin_m": 1.5,
+    "building_margin_m": 2.0,
+    "water_margin_m": 1.0,
+    "driveway_margin_m": 1.0,
+    "yard_distance_m": 12.0,
+    "yard_keep": 0.5,
+    "rule_forest_distance_m": 15.0,
+    "rule_yard_keep": 0.12
+  },
   "spawn": {
     "street": "Chastain Glen Lane",
     "from_street": "New Chastain Road",

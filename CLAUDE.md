@@ -40,10 +40,13 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - Python deps for map generation: `pip install -r Tools/mapgen/requirements.txt`
 - Generate map data (bounds and settings in `Tools/mapgen/config.json`):
   `python Tools/mapgen/mapgen.py` (`--refresh-osm` to re-download OSM).
-  Writes `Data/heightmap_1m.tif`, `Data/map.json` (committed) and
+  Writes `Data/heightmap_1m.tif`, `Data/map.json` and `Data/trees.bin` (committed) and
   `Assets/Generated/terrain.r16` (ignored), plus `Data/bridges.txt` (committed).
+  Downloads NAIP 4-band imagery into `raw/` (ignored) for tree cover.
   The crop is a rectangle clamped to the elevation tile; terrain is 18 tiles.
-  Other checks: `ChastainRush.SeamCheck.Run`, `PerfCheck.Run`,
+  Other checks: `ChastainRush.SeamCheck.Run`, `PerfCheck.Run` (add `-perfGameView`,
+  windowed, for the real Game view), `ScreenshotCheck.Run` (Round 3 shots to
+  `Data/screenshots/round3/`),
   `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`.
 - Build the scene: Unity menu **Chastain Rush > Build Map**, or batch:
   `Unity.exe -batchmode -nographics -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine`
@@ -77,3 +80,9 @@ ChaseCamera, ShallowWater (trimmed) and VehicleRespawn (rewritten) in
 
 End every round with a per-item status report: done / not done / deferred,
 and why.
+
+Imported from Racer in Round 3: the tree kit `SceneryTrees.fbx` (copied unchanged
+to `Assets/Trees/`), and Racer's approach to drawing trees (instanced, near and
+far kit). `Assets/Scripts/Trees/TreeField.cs`, `Assets/Editor/TreeBuilder.cs` and
+`Assets/Shaders/VertexLit.shader` are rewritten from Racer's `SceneryTrees` and
+`Racer/Foliage` shader (Racer's lighting include was dropped).

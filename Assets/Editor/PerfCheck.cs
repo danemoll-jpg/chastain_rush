@@ -10,6 +10,7 @@ namespace ChastainRush
     // Development check: frame rate in Play mode at the spawn and at the densest part of the map.
     // Batch (needs a graphics device, so no -nographics):
     //   Unity.exe -batchmode -projectPath . -executeMethod ChastainRush.PerfCheck.Run -perfOut <dir>
+    // Real Game view (windowed, no -batchmode): add -perfGameView
     public static class PerfCheck
     {
         [Serializable] class Building { public float[] footprint; }
@@ -21,6 +22,7 @@ namespace ChastainRush
         {
             string outDir = Path.GetFullPath("Temp/PerfCheck");
             var args = Environment.GetCommandLineArgs();
+            bool gameView = Array.IndexOf(args, "-perfGameView") >= 0;
             for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-perfOut") outDir = args[i + 1];
             Directory.CreateDirectory(outDir);
 
@@ -30,6 +32,7 @@ namespace ChastainRush
             var extra = JsonUtility.FromJson<Extra>(json);
             var runner = new GameObject("PerfCheck").AddComponent<PerfCheckRunner>();
             runner.outputDir = outDir;
+            runner.gameView = gameView;
 
             var centres = new List<Vector2>();
             foreach (var b in extra.buildings)

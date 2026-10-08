@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -28,12 +29,13 @@ namespace ChastainRush
         };
 
         [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; }
-        [Serializable] class Building { public string type; public float height; public float[] footprint; }
+        [Serializable] class Building { public string type; public float height; public float[] footprint; public string roof; public float pitch_deg; public int seed; }
+        [Serializable] class Driveway { public float[] points; public float width; public string source; }
         [Serializable] class Area { public string name; public float[] outline; }
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
-        [Serializable] class Bridge { public string name; public string @class; public float width; public float[] points; public float[] deck_y; }
-        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Spawn spawn; }
+        [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; }
         [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; }
 
         // The terrain is a grid of tiles that share their edge samples; this finds the tile under a point.
@@ -73,25 +75,21 @@ namespace ChastainRush
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             var mats = new Materials();
 
-            var sun = new GameObject("Sun").AddComponent<Light>();
-            sun.type = LightType.Directional;
-            sun.intensity = 1.2f;
-            sun.shadows = LightShadows.Soft;
-            sun.transform.rotation = Quaternion.Euler(50f, -30f, 0f);
-            RenderSettings.ambientMode = AmbientMode.Trilight;
-            RenderSettings.ambientSkyColor = new Color(0.62f, 0.70f, 0.82f);
-            RenderSettings.ambientEquatorColor = new Color(0.50f, 0.52f, 0.50f);
-            RenderSettings.ambientGroundColor = new Color(0.30f, 0.28f, 0.25f);
+            BuildSky(mats);
 
             // vertical_scale (config.json) is already baked into the terrain heights and building heights by mapgen;
             // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
             vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
             var terrain = BuildTerrain(meta, mats);
             var world = new GameObject("World").transform;
-            BuildRoads(map, terrain, mats, world);
-            BuildBridges(map, mats, world);
+            var paint = new Chunks();
+            BuildRoads(map, terrain, mats, world, paint);
+            BuildBridges(map, mats, world, paint);
+            paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildBuildings(map, terrain, mats, world, LoadOwner());
+            BuildDriveways(map, terrain, mats, world);
             BuildWater(map, terrain, mats, world);
+            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world);
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
@@ -99,6 +97,8 @@ namespace ChastainRush
             EditorSceneManager.SaveScene(scene, ScenePath);
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             AssetDatabase.SaveAssets();
+            Debug.Log($"[MapBuilder] Trees: {trees.Trees} ({trees.Woods} in woods, {trees.Yards} in yards); per species " +
+                      string.Join(", ", TreeField.SpeciesNames.Select((nm, i) => nm + " " + trees.PerSpecies[i])) + $"; kit triangles: {trees.KitTriangles}");
             Debug.Log($"[MapBuilder] Built {ScenePath}: {map.roads.Length} roads, {map.buildings.Length} buildings, " +
                       $"{map.bridges.Length} bridges, {map.water.Length} water areas, {meta.tiles_x}x{meta.tiles_z} terrain tiles, spawn on {map.spawn.street}, vertical scale {vScale:0.##}");
         }
@@ -153,23 +153,114 @@ namespace ChastainRush
 
         static float Ground(TerrainGrid t, float x, float z) => t.Height(x, z);
 
+        // ------------------------------------------------------------ sky, sun and distance fog
+
+        // The fog colour and the sky's horizon colour are the same, so the far edge of the map fades into the sky.
+        // Fog is linear: clear for the first FogStart metres, solid by FogEnd (trees stop at TreeField.drawDistance,
+        // the camera's far clip is just past it).
+        public const float FogStart = 100f, FogEnd = 650f;
+        static readonly Color HazeColor = new Color(0.74f, 0.80f, 0.88f);
+
+        static void BuildSky(Materials mats)
+        {
+            var sun = new GameObject("Sun").AddComponent<Light>();
+            sun.type = LightType.Directional;
+            sun.color = new Color(1.0f, 0.96f, 0.88f);
+            sun.intensity = 1.25f;
+            sun.shadows = LightShadows.Soft;
+            sun.transform.rotation = Quaternion.Euler(48f, -35f, 0f);
+            RenderSettings.sun = sun;
+            Vector3 toSun = -sun.transform.forward;
+            mats.Sky.SetVector("_SunDir", new Vector4(toSun.x, toSun.y, toSun.z, 0f));
+            RenderSettings.skybox = mats.Sky;
+            RenderSettings.ambientMode = AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor = new Color(0.58f, 0.68f, 0.84f);
+            RenderSettings.ambientEquatorColor = new Color(0.52f, 0.55f, 0.55f);
+            RenderSettings.ambientGroundColor = new Color(0.30f, 0.28f, 0.25f);
+            RenderSettings.fog = true;
+            RenderSettings.fogMode = FogMode.Linear;
+            RenderSettings.fogColor = HazeColor;
+            RenderSettings.fogStartDistance = FogStart;
+            RenderSettings.fogEndDistance = FogEnd;
+        }
+
         // ------------------------------------------------------------ roads (visual only; the car drives on the flattened terrain)
 
-        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
+        // Other roads, for trimming road paint where a side road joins or crosses (the paint stops at the side road's edge).
+        sealed class RoadIndex
         {
-            var main = new MeshBuilder();
-            var service = new MeshBuilder();
+            struct Seg { public Vector2 a, b; public float half; public Road road; }
+            readonly List<Seg> segs = new List<Seg>();
+            readonly Dictionary<Vector2Int, List<int>> grid = new Dictionary<Vector2Int, List<int>>();
+            const float Cell = 32f;
+            public RoadIndex(Road[] roads)
+            {
+                foreach (var r in roads)
+                {
+                    var p = ToPoints(r.points);
+                    for (int i = 0; i + 1 < p.Count; i++)
+                    {
+                        var s = new Seg { a = p[i], b = p[i + 1], half = r.width * 0.5f, road = r };
+                        int id = segs.Count;
+                        segs.Add(s);
+                        float pad = s.half + 1f;
+                        int x0 = Mathf.FloorToInt((Mathf.Min(s.a.x, s.b.x) - pad) / Cell), x1 = Mathf.FloorToInt((Mathf.Max(s.a.x, s.b.x) + pad) / Cell);
+                        int z0 = Mathf.FloorToInt((Mathf.Min(s.a.y, s.b.y) - pad) / Cell), z1 = Mathf.FloorToInt((Mathf.Max(s.a.y, s.b.y) + pad) / Cell);
+                        for (int x = x0; x <= x1; x++)
+                            for (int z = z0; z <= z1; z++)
+                            {
+                                var key = new Vector2Int(x, z);
+                                if (!grid.TryGetValue(key, out var l)) grid[key] = l = new List<int>();
+                                l.Add(id);
+                            }
+                    }
+                }
+            }
+
+            static readonly string[] Directions = { "Northeast", "Northwest", "Southeast", "Southwest", "North", "South", "East", "West", "NE", "NW", "SE", "SW" };
+            static string BaseName(string n)
+            {
+                var words = (n ?? "").Split(' ');
+                int len = words.Length;
+                while (len > 1 && Array.IndexOf(Directions, words[len - 1]) >= 0) len--;
+                return string.Join(" ", words, 0, len);
+            }
+            static bool SameStreet(Road a, Road b) => a == b || (a.@class == b.@class && BaseName(a.name) == BaseName(b.name));
+
+            // true if p lies on the pavement of some other road (not a continuation of 'self')
+            public bool Covers(Vector2 p, Road self, float margin = 0.1f)
+            {
+                if (!grid.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.y / Cell)), out var l)) return false;
+                foreach (int id in l)
+                {
+                    var s = segs[id];
+                    if (SameStreet(s.road, self)) continue;
+                    var ab = s.b - s.a;
+                    float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
+                    if ((s.a + ab * t - p).magnitude < s.half + margin) return true;
+                }
+                return false;
+            }
+        }
+
+        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint)
+        {
+            var main = new Chunks();
+            var service = new Chunks();
+            var others = new RoadIndex(map.roads);
             foreach (var r in map.roads)
             {
                 var pts = Densify(ToPoints(r.points), 2f);
                 float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
                 var mb = r.@class == "service" ? service : main;
-                AddRibbon(mb, pts, r.width, lift, terrain);
-                AddDisc(mb, pts[0], r.width * 0.5f, lift - 0.004f, terrain);
-                AddDisc(mb, pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
+                foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain);
+                AddDisc(mb.At(pts[0]), pts[0], r.width * 0.5f, lift - 0.004f, terrain);
+                AddDisc(mb.At(pts[pts.Count - 1]), pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
+                var self = r;
+                AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self));
             }
-            main.ToObject("Roads", mats.Asphalt, parent, false);
-            service.ToObject("ServiceRoads", mats.ServiceAsphalt, parent, false);
+            main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
+            service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
         }
 
         static void AddRibbon(MeshBuilder mb, List<Vector2> pts, float width, float lift, TerrainGrid t)
@@ -209,11 +300,119 @@ namespace ChastainRush
             for (int i = 0; i < n; i++) mb.Tri(centre, centre + 1 + (i + 1) % n, centre + 1 + i);
         }
 
+        // ------------------------------------------------------------ road paint
+        // Every road gets a pale edge strip just outside the asphalt (the visible edge between road and grass).
+        // Roads that have lines in real life (primary, secondary, tertiary, trunk, motorway and their links) also get
+        // white edge lines; two-way ones a double yellow centre line; one-way and motorway carriageways white dashed
+        // lane lines. Quiet residential, unclassified and service roads get only the edge strip. Paint is cut where
+        // another road's pavement covers it (junctions) and sits on a depth offset, so it does not flicker.
+
+        static readonly Color EdgeStrip = new Color(0.60f, 0.58f, 0.54f), PaintWhite = new Color(0.93f, 0.93f, 0.90f), PaintYellow = new Color(0.95f, 0.76f, 0.10f);
+        const float PaintLift = 0.03f;
+
+        static bool IsMarked(string cls) => cls == "primary" || cls == "secondary" || cls == "tertiary" || cls == "trunk" || cls == "motorway" || cls.EndsWith("_link");
+
+        static void AddPaint(Chunks paint, List<Vector2> pts, string cls, float width, bool oneway, Func<Vector2, float, float> height, Func<Vector2, bool> blocked)
+        {
+            int n = pts.Count;
+            if (n < 2) return;
+            float hw = width * 0.5f;
+            var nrm = new Vector2[n];
+            var arc = new float[n];
+            for (int i = 0; i < n; i++)
+            {
+                Vector2 dirIn = i > 0 ? (pts[i] - pts[i - 1]).normalized : (pts[1] - pts[0]).normalized;
+                Vector2 dirOut = i < n - 1 ? (pts[i + 1] - pts[i]).normalized : dirIn;
+                Vector2 t = (dirIn + dirOut).normalized;
+                if (t.sqrMagnitude < 1e-6f) t = dirOut;
+                nrm[i] = new Vector2(-t.y, t.x);
+                if (i > 0) arc[i] = arc[i - 1] + Vector2.Distance(pts[i - 1], pts[i]);
+            }
+            float edgeW = cls == "service" ? 0.30f : 0.45f;
+            Strip(paint, pts, nrm, arc, hw, hw + edgeW, EdgeStrip, height, blocked);
+            Strip(paint, pts, nrm, arc, -hw - edgeW, -hw, EdgeStrip, height, blocked);
+            if (!IsMarked(cls)) return;
+            Strip(paint, pts, nrm, arc, hw - 0.55f, hw - 0.40f, PaintWhite, height, blocked);
+            Strip(paint, pts, nrm, arc, -hw + 0.40f, -hw + 0.55f, PaintWhite, height, blocked);
+            if (cls.EndsWith("_link")) return;
+            bool twoWay = !oneway && cls != "motorway";
+            if (twoWay)
+            {
+                if (width < 7f) return;
+                Strip(paint, pts, nrm, arc, -0.22f, -0.10f, PaintYellow, height, blocked);
+                Strip(paint, pts, nrm, arc, 0.10f, 0.22f, PaintYellow, height, blocked);
+                int perDir = Mathf.Max(1, Mathf.RoundToInt((width - 1f) / 3.5f / 2f));
+                float lw = (width - 1f) / (2 * perDir);
+                for (int k = 1; k < perDir; k++)
+                {
+                    Dashes(paint, pts, nrm, arc, k * lw, PaintWhite, height, blocked);
+                    Dashes(paint, pts, nrm, arc, -k * lw, PaintWhite, height, blocked);
+                }
+            }
+            else
+            {
+                int lanes = Mathf.Max(1, Mathf.RoundToInt((width - 1f) / 3.5f));
+                float lw = (width - 1f) / lanes;
+                for (int k = 1; k < lanes; k++) Dashes(paint, pts, nrm, arc, -hw + 0.5f + k * lw, PaintWhite, height, blocked);
+            }
+        }
+
+        // A continuous band between two offsets from the centre line (left of travel is positive).
+        static void Strip(Chunks chunks, List<Vector2> pts, Vector2[] nrm, float[] arc, float offA, float offB, Color colour,
+                          Func<Vector2, float, float> height, Func<Vector2, bool> blocked)
+        {
+            chunks.Tint = colour;
+            float mid = (offA + offB) * 0.5f;
+            for (int i = 0; i + 1 < pts.Count; i++)
+            {
+                int j = i + 1;
+                var m = (pts[i] + pts[j]) * 0.5f + (nrm[i] + nrm[j]).normalized * mid;
+                if (blocked(m)) continue;
+                Vector3 V(int k, float off)
+                {
+                    var p = pts[k] + nrm[k] * off;
+                    return new Vector3(p.x, height(p, arc[k]) + PaintLift, p.y);
+                }
+                Face(chunks.At(m), V(i, offA), V(j, offA), V(j, offB), V(i, offB), Vector3.up);
+            }
+        }
+
+        // A dashed line at an offset from the centre line: 3 m paint, 6 m gap.
+        static void Dashes(Chunks chunks, List<Vector2> pts, Vector2[] nrm, float[] arc, float off, Color colour,
+                           Func<Vector2, float, float> height, Func<Vector2, bool> blocked, float dash = 3f, float gap = 6f, float w = 0.14f)
+        {
+            chunks.Tint = colour;
+            float total = arc[arc.Length - 1];
+            int seg = 0;
+            Vector2 PosAt(float s, out Vector2 normal)
+            {
+                while (seg + 2 < arc.Length && arc[seg + 1] < s) seg++;
+                float span = Mathf.Max(arc[seg + 1] - arc[seg], 1e-4f);
+                float f = Mathf.Clamp01((s - arc[seg]) / span);
+                normal = Vector2.Lerp(nrm[seg], nrm[seg + 1], f).normalized;
+                return Vector2.Lerp(pts[seg], pts[seg + 1], f);
+            }
+            for (float s0 = gap * 0.5f; s0 + dash <= total; s0 += dash + gap)
+            {
+                seg = 0;
+                var p0 = PosAt(s0, out var n0);
+                var p1 = PosAt(s0 + dash, out var n1);
+                var c = (p0 + p1) * 0.5f + (n0 + n1).normalized * off;
+                if (blocked(c)) continue;
+                Vector3 V(Vector2 p, Vector2 nn, float o, float s)
+                {
+                    var q = p + nn * o;
+                    return new Vector3(q.x, height(q, s) + PaintLift, q.y);
+                }
+                Face(chunks.At(c), V(p0, n0, off - w / 2, s0), V(p1, n1, off - w / 2, s0 + dash), V(p1, n1, off + w / 2, s0 + dash), V(p0, n0, off + w / 2, s0), Vector3.up);
+            }
+        }
+
         // ------------------------------------------------------------ bridges (deck and parapets; unlike the roads these have colliders)
 
         // mapgen holds each bridge level across the water: deck_y is the deck height every ~2 m. The car drives on
         // the deck mesh; the bare-earth channel stays on the terrain underneath.
-        static void BuildBridges(MapData map, Materials mats, Transform parent)
+        static void BuildBridges(MapData map, Materials mats, Transform parent, Chunks paint)
         {
             var top = new MeshBuilder();
             var body = new MeshBuilder();
@@ -246,6 +445,19 @@ namespace ChastainRush
                     }
                     Face(body, P(i, -hw - parapetW, -slab), P(j, -hw - parapetW, -slab), P(j, hw + parapetW, -slab), P(i, hw + parapetW, -slab), Vector3.down);
                 }
+                // paint on the deck: the deck height is deck_y (every point), interpolated along the arc length
+                var arcs = new float[n];
+                for (int i = 1; i < n; i++) arcs[i] = arcs[i - 1] + Vector2.Distance(pts[i - 1], pts[i]);
+                var deck = b.deck_y;
+                float DeckAt(float s)
+                {
+                    int k = Array.BinarySearch(arcs, s);
+                    if (k < 0) k = ~k;
+                    k = Mathf.Clamp(k, 1, n - 1);
+                    float f = Mathf.Clamp01((s - arcs[k - 1]) / Mathf.Max(arcs[k] - arcs[k - 1], 1e-4f));
+                    return Mathf.Lerp(deck[k - 1], deck[k], f);
+                }
+                AddPaint(paint, pts, b.@class, b.width, b.oneway, (p, s) => DeckAt(s) + lift, p => false);
             }
             var root = new GameObject("Bridges").transform;
             root.SetParent(parent, false);
@@ -263,7 +475,43 @@ namespace ChastainRush
             mb.Tri(v, v + 2, v + 3);
         }
 
+        static void TriFace(MeshBuilder mb, Vector3 a, Vector3 b, Vector3 c, Vector3 outward)
+        {
+            if (Vector3.Dot(Vector3.Cross(b - a, c - a), outward) < 0f) { var t = b; b = c; c = t; }
+            int v = mb.Vertex(a);
+            mb.Vertex(b); mb.Vertex(c);
+            mb.Tri(v, v + 1, v + 2);
+        }
+
         // ------------------------------------------------------------ buildings
+        // Detached houses (and other pitched-roof types: mapgen sets "roof": "gable") get walls up to the eaves and a
+        // pitched roof on the footprint's best-fit rectangle: a gable along the long side, or a hip roof when the
+        // footprint is nearly square. Footprints that are not close to a rectangle get a pyramid roof. Everything else
+        // (commercial, industrial, apartments, small sheds) keeps a flat roof. Wall and roof colours come from small
+        // palettes, picked by the building's stable seed (mapgen: a hash of where it stands), so they never reshuffle.
+
+        static readonly Color[] WallPalette =
+        {
+            new Color(0.86f, 0.82f, 0.70f), new Color(0.88f, 0.88f, 0.85f), new Color(0.70f, 0.71f, 0.72f), new Color(0.76f, 0.66f, 0.50f),
+            new Color(0.62f, 0.70f, 0.78f), new Color(0.64f, 0.72f, 0.60f), new Color(0.58f, 0.30f, 0.24f), new Color(0.55f, 0.45f, 0.36f),
+        };
+        static readonly Color[] RoofPalette =
+        {
+            new Color(0.20f, 0.20f, 0.21f), new Color(0.28f, 0.20f, 0.16f), new Color(0.36f, 0.36f, 0.37f), new Color(0.13f, 0.13f, 0.14f), new Color(0.40f, 0.26f, 0.18f),
+        };
+        static readonly Color[] FlatWallPalette =
+        {
+            new Color(0.78f, 0.74f, 0.66f), new Color(0.70f, 0.70f, 0.70f), new Color(0.62f, 0.50f, 0.42f), new Color(0.82f, 0.80f, 0.74f),
+        };
+        static readonly Color[] FlatRoofPalette = { new Color(0.42f, 0.42f, 0.43f), new Color(0.50f, 0.49f, 0.47f), new Color(0.34f, 0.34f, 0.35f) };
+
+        static uint Mix(int seed, int salt)
+        {
+            uint x = (uint)seed * 2654435761u + (uint)salt * 40503u;
+            x ^= x >> 15; x *= 2246822519u; x ^= x >> 13; x *= 3266489917u; x ^= x >> 16;
+            return x;
+        }
+        static Color PickColour(Color[] palette, int seed, int salt) => palette[Mix(seed, salt) % (uint)palette.Length];
 
         static OwnerMarker LoadOwner()
         {
@@ -271,12 +519,15 @@ namespace ChastainRush
             return File.Exists(path) ? JsonUtility.FromJson<OwnerMarker>(File.ReadAllText(path)) : null;
         }
 
+        static readonly Color OwnerWall = new Color(1.0f, 0.45f, 0.05f), OwnerRoof = new Color(0.62f, 0.22f, 0.04f);
+
         static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
             var bparent = new GameObject("Buildings").transform;
             bparent.SetParent(parent, false);
+            int gable = 0, hip = 0, pyramid = 0, flat = 0;
             for (int i = 0; i < map.buildings.Length; i++)
             {
                 var b = map.buildings[i];
@@ -293,23 +544,130 @@ namespace ChastainRush
                 }
                 c /= ring.Count;
                 float baseY = lo - 0.5f * vScale, topY = sum / ring.Count + b.height;
-                if (owner != null && owner.index == i)
+                bool isOwner = owner != null && owner.index == i;
+                bool pitched = b.roof == "gable";
+                Color wall = isOwner ? OwnerWall : pitched ? PickColour(WallPalette, b.seed, 1) : PickColour(FlatWallPalette, b.seed, 1);
+                Color roofC = isOwner ? OwnerRoof : pitched ? PickColour(RoofPalette, b.seed, 2) : PickColour(FlatRoofPalette, b.seed, 2);
+                MeshBuilder mb;
+                if (isOwner) mb = new MeshBuilder();
+                else
                 {
-                    var own = new MeshBuilder();
-                    Extrude(own, ring, baseY, topY);
-                    own.ToObject("OwnerHouse", mats.OwnerHouse, bparent, true);
-                    AddBeacon(c, topY, mats, parent);
-                    continue;
+                    var key = new Vector2Int(Mathf.FloorToInt(c.x / cell), Mathf.FloorToInt(c.y / cell));
+                    if (!chunks.TryGetValue(key, out mb)) chunks[key] = mb = new MeshBuilder();
                 }
-                var key = new Vector2Int(Mathf.FloorToInt(c.x / cell), Mathf.FloorToInt(c.y / cell));
-                if (!chunks.TryGetValue(key, out var mb)) chunks[key] = mb = new MeshBuilder();
-                Extrude(mb, ring, baseY, topY);
+                int shape = pitched ? AddPitched(mb, ring, baseY, topY, b.height, b.pitch_deg, wall, roofC) : -1;
+                if (shape < 0) { Extrude(mb, ring, baseY, topY, wall, roofC, true); flat++; }
+                else if (shape == 0) gable++; else if (shape == 1) hip++; else pyramid++;
+                if (isOwner)
+                {
+                    mb.ToObject("OwnerHouse", mats.House, bparent, true);
+                    AddBeacon(c, topY, mats, parent);
+                }
             }
-            foreach (var kv in chunks) kv.Value.ToObject($"Buildings_{kv.Key.x}_{kv.Key.y}", mats.Building, bparent, true);
+            foreach (var kv in chunks) kv.Value.ToObject($"Buildings_{kv.Key.x}_{kv.Key.y}", mats.House, bparent, true);
+            Debug.Log($"[MapBuilder] Roofs: {gable} gable, {hip} hip, {pyramid} pyramid (footprint not close to a rectangle), {flat} flat");
         }
 
-        static void Extrude(MeshBuilder mb, List<Vector2> ring, float baseY, float topY)
+        // Walls to the eaves plus the roof. Returns 0 gable, 1 hip, 2 pyramid; -1 if the footprint is too small or odd.
+        static int AddPitched(MeshBuilder mb, List<Vector2> ring, float baseY, float topY, float height, float pitchDeg, Color wall, Color roof)
         {
+            float area = Mathf.Abs(PolyArea(ring));
+            float tan = Mathf.Tan(Mathf.Clamp(pitchDeg, 10f, 45f) * Mathf.Deg2Rad);
+            bool box = BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw);
+            float rect = box ? area / (4f * hl * hw) : 0f;
+            if (box && hw >= 1.8f && rect >= 0.72f)
+            {
+                float rise = Mathf.Clamp(tan * hw * vScale, 0.5f, 0.45f * height);
+                float eaveY = topY - rise;
+                Extrude(mb, ring, baseY, eaveY, wall, roof, false);
+                const float oh = 0.35f;
+                float slope = rise / hw, dropY = eaveY - slope * oh;
+                bool hipRoof = hl / hw < 1.35f;
+                float endX = hipRoof ? hl + oh : hl + 0.25f, ridgeHalf = hipRoof ? Mathf.Max(hl - hw, 0.25f) : hl + 0.25f;
+                Vector3 W(float a, float b2, float y) { var q = c + U * a + V * b2; return new Vector3(q.x, y, q.y); }
+                Vector3 A = W(endX, hw + oh, dropY), B = W(endX, -hw - oh, dropY), C = W(-endX, -hw - oh, dropY), D = W(-endX, hw + oh, dropY);
+                Vector3 R0 = W(ridgeHalf, 0f, topY), R1 = W(-ridgeHalf, 0f, topY);
+                var up = Vector3.up;
+                Vector3 nPos = new Vector3(V.x * slope, 1f, V.y * slope), nNeg = new Vector3(-V.x * slope, 1f, -V.y * slope);
+                mb.Tint = roof;
+                Face(mb, A, D, R1, R0, nPos);
+                Face(mb, B, C, R1, R0, nNeg);
+                if (hipRoof)
+                {
+                    float endSlope = rise / Mathf.Max(endX - ridgeHalf, 0.3f);
+                    TriFace(mb, A, B, R0, new Vector3(U.x * endSlope, 1f, U.y * endSlope));
+                    TriFace(mb, C, D, R1, new Vector3(-U.x * endSlope, 1f, -U.y * endSlope));
+                }
+                else
+                {
+                    mb.Tint = wall;
+                    TriFace(mb, W(hl, hw, eaveY), W(hl, -hw, eaveY), W(hl, 0f, topY), new Vector3(U.x, 0f, U.y));
+                    TriFace(mb, W(-hl, hw, eaveY), W(-hl, -hw, eaveY), W(-hl, 0f, topY), new Vector3(-U.x, 0f, -U.y));
+                }
+                mb.Tint = Color.white;
+                return hipRoof ? 1 : 0;
+            }
+            if (area < 25f) return -1;
+            {
+                // not a rectangle: a low pyramid over the footprint, apex at its centre
+                float perim = 0f;
+                for (int i = 0; i < ring.Count; i++) perim += Vector2.Distance(ring[i], ring[(i + 1) % ring.Count]);
+                float inradius = 2f * area / Mathf.Max(perim, 1f);
+                float rise = Mathf.Clamp(tan * inradius * vScale, 0.5f, 0.4f * height);
+                float eaveY = topY - rise;
+                Extrude(mb, ring, baseY, eaveY, wall, roof, false);
+                Vector2 centre = Vector2.zero;
+                foreach (var p in ring) centre += p;
+                centre /= ring.Count;
+                var apex = new Vector3(centre.x, topY, centre.y);
+                mb.Tint = roof;
+                for (int i = 0; i < ring.Count; i++)
+                {
+                    var a = ring[i]; var b2 = ring[(i + 1) % ring.Count];
+                    TriFace(mb, new Vector3(a.x, eaveY, a.y), new Vector3(b2.x, eaveY, b2.y), apex, Vector3.up);
+                }
+                mb.Tint = Color.white;
+                return 2;
+            }
+        }
+
+        static float PolyArea(List<Vector2> r)
+        {
+            float a = 0f;
+            for (int i = 0; i < r.Count; i++) { var p = r[i]; var q = r[(i + 1) % r.Count]; a += p.x * q.y - q.x * p.y; }
+            return a * 0.5f;
+        }
+
+        // Smallest-area rectangle that has a side along one of the footprint's edges. U is the long axis.
+        static bool BestRectangle(List<Vector2> ring, out Vector2 centre, out Vector2 U, out Vector2 V, out float hl, out float hw)
+        {
+            centre = Vector2.zero; U = Vector2.right; V = Vector2.up; hl = hw = 0f;
+            float best = float.MaxValue;
+            for (int i = 0; i < ring.Count; i++)
+            {
+                var d = ring[(i + 1) % ring.Count] - ring[i];
+                if (d.sqrMagnitude < 1e-4f) continue;
+                d.Normalize();
+                var p = new Vector2(-d.y, d.x);
+                float u0 = float.MaxValue, u1 = float.MinValue, v0 = float.MaxValue, v1 = float.MinValue;
+                foreach (var q in ring)
+                {
+                    float a = Vector2.Dot(q, d), b = Vector2.Dot(q, p);
+                    u0 = Mathf.Min(u0, a); u1 = Mathf.Max(u1, a); v0 = Mathf.Min(v0, b); v1 = Mathf.Max(v1, b);
+                }
+                float area = (u1 - u0) * (v1 - v0);
+                if (area >= best) continue;
+                best = area;
+                centre = d * ((u0 + u1) * 0.5f) + p * ((v0 + v1) * 0.5f);
+                if (u1 - u0 >= v1 - v0) { U = d; V = p; hl = (u1 - u0) * 0.5f; hw = (v1 - v0) * 0.5f; }
+                else { U = p; V = -d; hl = (v1 - v0) * 0.5f; hw = (u1 - u0) * 0.5f; }
+            }
+            return best < float.MaxValue && hw > 0.1f;
+        }
+
+        static void Extrude(MeshBuilder mb, List<Vector2> ring, float baseY, float topY, Color wall, Color roof, bool flatRoof)
+        {
+            mb.Tint = wall;
             for (int i = 0; i < ring.Count; i++)
             {
                 Vector2 a = ring[i], b = ring[(i + 1) % ring.Count];
@@ -322,9 +680,14 @@ namespace ChastainRush
                 mb.Tri(v, v + 2, v + 1);
                 mb.Tri(v, v + 3, v + 2);
             }
-            int roof = mb.Count;
-            foreach (var p in ring) mb.Vertex(new Vector3(p.x, topY, p.y));
-            foreach (var tri in EarClip(ring)) mb.Tri(roof + tri.x, roof + tri.z, roof + tri.y);
+            if (flatRoof)
+            {
+                mb.Tint = roof;
+                int top = mb.Count;
+                foreach (var p in ring) mb.Vertex(new Vector3(p.x, topY, p.y));
+                foreach (var tri in EarClip(ring)) mb.Tri(top + tri.x, top + tri.z, top + tri.y);
+            }
+            mb.Tint = Color.white;
         }
 
         static void AddBeacon(Vector2 c, float topY, Materials mats, Transform parent)
@@ -337,6 +700,24 @@ namespace ChastainRush
             beacon.transform.localScale = new Vector3(1.2f, 30f, 1.2f);
             beacon.GetComponent<MeshRenderer>().sharedMaterial = mats.Beacon;
             beacon.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+        }
+
+        // ------------------------------------------------------------ driveways (visual only: nothing is levelled)
+
+        static void BuildDriveways(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
+        {
+            var mb = new Chunks { Tint = new Color(0.60f, 0.59f, 0.57f) };
+            float lift = 0.05f * vScale;
+            int osm = 0, generated = 0;
+            foreach (var d in map.driveways)
+            {
+                var pts = Densify(ToPoints(d.points), 1.5f);
+                if (pts.Count < 2) continue;
+                foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, d.width, lift, terrain);
+                if (d.source == "osm") osm++; else generated++;
+            }
+            mb.ToObjects("Driveways", mats.Driveway, parent, false);
+            Debug.Log($"[MapBuilder] Driveways: {osm} from OSM, {generated} generated");
         }
 
         // ------------------------------------------------------------ water
@@ -445,28 +826,72 @@ namespace ChastainRush
         static bool InTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c) =>
             Cross(b - a, p - a) >= 0f && Cross(c - b, p - b) >= 0f && Cross(a - c, p - c) >= 0f;
 
+        // Meshes split into 128 m cells, so the renderer can cull what is out of view (one mesh for the whole map is
+        // drawn, and its vertices processed, every frame).
+        sealed class Chunks
+        {
+            const float Cell = 128f;
+            readonly Dictionary<Vector2Int, MeshBuilder> cells = new Dictionary<Vector2Int, MeshBuilder>();
+            public Color Tint = Color.white;
+            public MeshBuilder At(Vector2 p)
+            {
+                var key = new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.y / Cell));
+                if (!cells.TryGetValue(key, out var mb)) cells[key] = mb = new MeshBuilder();
+                mb.Tint = Tint;
+                return mb;
+            }
+            public void ToObjects(string name, Material mat, Transform parent, bool castShadows)
+            {
+                var root = new GameObject(name).transform;
+                root.SetParent(parent, false);
+                foreach (var kv in cells) kv.Value.ToObject($"{name}_{kv.Key.x}_{kv.Key.y}", mat, root, false, castShadows);
+            }
+        }
+
+        // pieces of a polyline of about 'length' metres each (sharing end points), so each can go to its own chunk
+        static IEnumerable<List<Vector2>> Runs(List<Vector2> pts, float length)
+        {
+            var run = new List<Vector2> { pts[0] };
+            float acc = 0f;
+            for (int i = 1; i < pts.Count; i++)
+            {
+                run.Add(pts[i]);
+                acc += Vector2.Distance(pts[i - 1], pts[i]);
+                if (acc >= length && i < pts.Count - 1) { yield return run; run = new List<Vector2> { pts[i] }; acc = 0f; }
+            }
+            if (run.Count >= 2) yield return run;
+        }
+
         class MeshBuilder
         {
             readonly List<Vector3> verts = new List<Vector3>();
+            readonly List<Color> colours = new List<Color>();
             readonly List<int> tris = new List<int>();
+            public Color Tint = Color.white; // colour of the vertices added from now on
             public int Count => verts.Count;
-            public int Vertex(Vector3 v) { verts.Add(v); return verts.Count - 1; }
+            public int Vertex(Vector3 v) { verts.Add(v); colours.Add(Tint); return verts.Count - 1; }
             public void Tri(int a, int b, int c) { tris.Add(a); tris.Add(b); tris.Add(c); }
 
-            public GameObject ToObject(string name, Material mat, Transform parent, bool collider)
+            public GameObject ToObject(string name, Material mat, Transform parent, bool collider, bool castShadows = true)
             {
                 var go = new GameObject(name);
                 go.transform.SetParent(parent, false);
-                go.isStatic = true;
+                // static for batching and occlusion, but not a GI contributor: no lightmaps are baked, and the
+                // VertexLit shader takes its ambient from the probe (SampleSH), which lightmapped objects don't get
+                GameObjectUtility.SetStaticEditorFlags(go, (StaticEditorFlags)int.MaxValue & ~StaticEditorFlags.ContributeGI);
                 if (verts.Count == 0) return go;
                 var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };
                 mesh.SetVertices(verts);
+                mesh.SetColors(colours);
                 mesh.SetTriangles(tris, 0);
                 mesh.RecalculateNormals();
                 mesh.RecalculateBounds();
                 AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
                 go.AddComponent<MeshFilter>().sharedMesh = mesh;
-                go.AddComponent<MeshRenderer>().sharedMaterial = mat;
+                var renderer = go.AddComponent<MeshRenderer>();
+                renderer.sharedMaterial = mat;
+                renderer.receiveGI = ReceiveGI.LightProbes;
+                if (!castShadows) renderer.shadowCastingMode = ShadowCastingMode.Off;
                 if (collider) go.AddComponent<MeshCollider>().sharedMesh = mesh;
                 return go;
             }
@@ -474,7 +899,7 @@ namespace ChastainRush
 
         class Materials
         {
-            public readonly Material Asphalt, Concrete, ServiceAsphalt, Building, OwnerHouse, Beacon, Water, TerrainMaterial;
+            public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Foliage, Sky, Beacon, Water, TerrainMaterial;
             public readonly TerrainLayer GrassLayer;
 
             public Materials()
@@ -482,11 +907,20 @@ namespace ChastainRush
                 AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes"); // drop chunks left over from a larger previous map
                 Directory.CreateDirectory(Path.Combine(ProjectRoot, GeneratedDir, "Meshes"));
                 AssetDatabase.Refresh();
-                Asphalt = Make("Asphalt", new Color(0.18f, 0.18f, 0.19f), 0.25f);
-                Concrete = Make("Concrete", new Color(0.55f, 0.55f, 0.53f), 0.1f);
-                ServiceAsphalt = Make("ServiceAsphalt", new Color(0.30f, 0.30f, 0.30f), 0.2f);
-                Building = Make("Building", new Color(0.80f, 0.76f, 0.68f), 0.1f);
-                OwnerHouse = Make("OwnerHouse", new Color(1.0f, 0.45f, 0.05f), 0.2f);
+                // ChastainRush/VertexLit: lit by the sun, shadows and fog, coloured per vertex (roads, houses, paint, trees).
+                // Roads, paint and driveways carry a depth offset so that what lies on the ground does not flicker with it.
+                Asphalt = MakeVertexLit("Asphalt", new Color(0.18f, 0.18f, 0.19f), 0f, -1f, -1f);
+                Concrete = MakeVertexLit("Concrete", new Color(0.55f, 0.55f, 0.53f), 0f, 0f, 0f);
+                ServiceAsphalt = MakeVertexLit("ServiceAsphalt", new Color(0.30f, 0.30f, 0.30f), 0f, -1f, -1f);
+                House = MakeVertexLit("House", Color.white, 0f, 0f, 0f);
+                Paint = MakeVertexLit("RoadPaint", Color.white, 0f, -3f, -3f);
+                Driveway = MakeVertexLit("Driveway", Color.white, 0f, -1f, -1f);
+                Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f);
+                Foliage.enableInstancing = true;
+                Foliage.SetFloat("_LeafTint", 1f);
+                Sky = new Material(Shader.Find("ChastainRush/SkyGradient")) { name = "Sky" };
+                Sky.SetColor("_Horizon", HazeColor);
+                AssetDatabase.CreateAsset(Sky, GeneratedDir + "/Sky.mat");
                 Beacon = Make("Beacon", new Color(1.0f, 0.55f, 0.1f), 0f, new Color(2.5f, 1.2f, 0.2f));
                 Water = Make("Water", new Color(0.16f, 0.32f, 0.50f), 0.85f);
 
@@ -505,6 +939,19 @@ namespace ChastainRush
                     TerrainMaterial = new Material(terrainShader);
                     AssetDatabase.CreateAsset(TerrainMaterial, GeneratedDir + "/Terrain.mat");
                 }
+            }
+
+            static Material MakeVertexLit(string name, Color tint, float sway, float offsetFactor, float offsetUnits)
+            {
+                var shader = Shader.Find("ChastainRush/VertexLit");
+                if (shader == null) throw new Exception("Shader ChastainRush/VertexLit not found");
+                var m = new Material(shader) { name = name };
+                m.SetColor("_BaseColor", tint);
+                m.SetFloat("_Sway", sway);
+                m.SetFloat("_OffsetFactor", offsetFactor);
+                m.SetFloat("_OffsetUnits", offsetUnits);
+                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+                return m;
             }
 
             static Material Make(string name, Color color, float smoothness, Color? emission = null)

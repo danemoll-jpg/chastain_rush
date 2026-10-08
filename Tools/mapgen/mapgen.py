@@ -5,6 +5,8 @@ Re-runnable, driven by the bounds in config.json. Steps:
   2. dem     - download USGS 1 m tile(s) (raw/), crop to the bounds -> Data/heightmap_1m.tif
   3. process - project OSM to UTM metres, build roads / buildings / water -> Data/map.json
   4. terrain - resample heightmap to the terrain grid, flatten under roads -> Assets/Generated/terrain.r16
+  5. driveways - OSM driveways, plus a straight one from each house that has none to its nearest road (map.json)
+  6. trees   - NAIP 4-band imagery (raw/naip_4band.tif) -> tree canopy -> a jittered-grid scatter -> Data/trees.bin
 
 The crop is a rectangle (size_x_m by size_z_m) in whole UTM metres, clamped to the elevation tile's edge. The terrain is
 written as one global height grid that Unity cuts into square-sample tiles; neighbouring tiles share their edge samples,
@@ -21,7 +23,9 @@ import argparse
 import json
 import math
 import os
+import struct
 import sys
+import zlib
 import urllib.parse
 import urllib.request
 
@@ -31,6 +35,9 @@ from rasterio.enums import Resampling
 from rasterio.merge import merge
 from rasterio.windows import from_bounds
 from pyproj import Transformer
+from PIL import Image, ImageDraw
+from scipy import ndimage as ndi
+from scipy.spatial import cKDTree
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 RAW = os.path.join(ROOT, "raw")
@@ -216,7 +223,7 @@ def process_osm(cfg, osm, rect):
     def inside(p, margin=0.0):
         return -margin <= p[0] <= size_x + margin and -margin <= p[1] <= size_z + margin
 
-    roads, buildings, water, streams, woods = [], [], [], [], []
+    roads, buildings, water, streams, woods, driveways = [], [], [], [], [], []
     owner_cfg = None
     owner_path = os.path.join(ROOT, cfg["owner_house_file"])
     if os.path.exists(owner_path):
@@ -231,6 +238,10 @@ def process_osm(cfg, osm, rect):
             continue
         hw = t.get("highway")
         if hw in DRIVABLE:
+            if hw == "service" and t.get("service") == "driveway":
+                for run, _ in clip_runs(pts, list(range(len(pts))), inside):
+                    driveways.append({"points": run, "width": cfg["driveways"]["width_m"], "source": "osm"})
+                continue
             if hw == "service" and t.get("service") in cfg["excluded_service"]:
                 continue
             if not any(inside(p) for p in pts):
@@ -248,7 +259,11 @@ def process_osm(cfg, osm, rect):
                 continue
             if poly_area(ring) < 0:
                 ring = ring[::-1]  # counter-clockwise
-            b = {"type": t["building"], "height": round(building_height(t, cfg) * vscale(cfg), 2), "footprint": ring}
+            b = {"type": t["building"], "height": round(building_height(t, cfg) * vscale(cfg), 2), "footprint": ring,
+                 "roof": "gable" if t["building"] in cfg["pitched_roof_pitch_deg"] else "flat",
+                 "pitch_deg": cfg["pitched_roof_pitch_deg"].get(t["building"], 0.0),
+                 # stable between regenerations: depends only on where the building stands (to 0.5 m), not on OSM order
+                 "seed": zlib.crc32(f"{round(cx * 2)},{round(cz * 2)}".encode()) & 0x7fffffff}
             if owner_cfg and t.get("addr:housenumber") == str(owner_cfg["housenumber"]) and \
                     owner_cfg["street"].lower() in t.get("addr:street", "").lower():
                 owner = {"index": len(buildings), "x": round(cx, 2), "z": round(cz, 2)}
@@ -283,10 +298,10 @@ def process_osm(cfg, osm, rect):
         "bounds": cfg["bounds"], "utm_epsg": cfg["utm_epsg"], "vertical_scale": vscale(cfg),
         "origin_utm": [w0, s0], "size_x_m": size_x, "size_z_m": size_z,
         "roads": roads, "buildings": buildings, "water": water, "streams": streams, "woods": woods,
-        "spawn": spawn,
+        "driveways": driveways, "spawn": spawn,
     }
     log(f"OSM: {len(roads)} road ways, {len(buildings)} buildings, {len(water)} water areas, "
-        f"{len(streams)} streams, {len(woods)} woods")
+        f"{len(streams)} streams, {len(woods)} woods, {len(driveways)} OSM driveways")
     os.makedirs(LOCAL, exist_ok=True)
     marker_path = os.path.join(LOCAL, "owner_marker.json")
     if owner:
@@ -334,6 +349,7 @@ def flat_for_unity(mapdata):
     out["water"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["water"]]
     out["streams"] = [dict(s, points=flat(s["points"])) for s in mapdata["streams"] if not s["tunnel"]]
     out["woods"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["woods"]]
+    out["driveways"] = [dict(d, points=flat(d["points"])) for d in mapdata["driveways"]]
     return out
 
 
@@ -679,6 +695,323 @@ def build_terrain(cfg, dem_path, mapdata):
         f"{src_min:.3f}-{datum + (src_max - datum) * k:.3f} m expected); terrain {h.min():.3f}-{h.max():.3f} m")
 
 
+# ---------------------------------------------------------------- shared raster of what trees must keep off
+
+class Mask:
+    """A 1 m raster of the crop (row 0 = north, like NAIP), drawn from map data in world metres (x east, z north)."""
+
+    def __init__(self, w, h):
+        self.w, self.h = int(w), int(h)
+        self.img = Image.new("L", (self.w, self.h), 0)
+        self.d = ImageDraw.Draw(self.img)
+
+    def poly(self, pts, margin=0.0):
+        xy = [(x, self.h - z) for x, z in pts]
+        self.d.polygon(xy, fill=255)
+        if margin > 0:
+            self.d.line(xy + [xy[0]], fill=255, width=max(1, int(round(margin * 2))), joint="curve")
+
+    def line(self, pts, width):
+        xy = [(x, self.h - z) for x, z in pts]
+        self.d.line(xy, fill=255, width=max(1, int(round(width))), joint="curve")
+        r = max(0.5, width / 2)
+        for x, y in (xy[0], xy[-1]):
+            self.d.ellipse([x - r, y - r, x + r, y + r], fill=255)
+
+    def array(self):
+        return np.asarray(self.img) > 0
+
+
+def keep_off_masks(cfg, mapdata):
+    tc = cfg["trees"]
+    W, H = mapdata["size_x_m"], mapdata["size_z_m"]
+    roads, builds, water, drives = Mask(W, H), Mask(W, H), Mask(W, H), Mask(W, H)
+    for r in mapdata["roads"]:
+        roads.line(r["points"], r["width"] + 2 * tc["road_margin_m"])
+    for b in mapdata["bridges"]:
+        roads.line(b["points"], b["width"] + 2 * tc["road_margin_m"] + 1.4)  # parapets
+    for b in mapdata["buildings"]:
+        builds.poly(b["footprint"], tc["building_margin_m"])
+    for w in mapdata["water"]:
+        water.poly(w["outline"], tc["water_margin_m"])
+    for st in mapdata["streams"]:
+        if not st["tunnel"]:
+            water.line(st["points"], 2.0 + 2 * tc["water_margin_m"])
+    for d in mapdata["driveways"]:
+        drives.line(d["points"], d["width"] + 2 * tc["driveway_margin_m"])
+    return {"roads": roads.array(), "buildings": builds.array(), "water": water.array(), "driveways": drives.array()}
+
+
+# ---------------------------------------------------------------- driveways
+
+def dens(pts, step=1.0):
+    pts = np.asarray(pts, dtype=np.float64)
+    if len(pts) < 2:
+        return pts
+    s, x, z, _ = densify_line(pts, step)
+    return np.stack([x, z], 1)
+
+
+def _ccw(a, b, c):
+    return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
+
+
+def seg_cross(a, b, c, d):
+    return _ccw(a, c, d) != _ccw(b, c, d) and _ccw(a, b, c) != _ccw(a, b, d)
+
+
+def point_in_ring(p, ring):
+    x, z = p
+    inside = False
+    j = len(ring) - 1
+    for i in range(len(ring)):
+        xi, zi = ring[i]
+        xj, zj = ring[j]
+        if (zi > z) != (zj > z) and x < (xj - xi) * (z - zi) / (zj - zi) + xi:
+            inside = not inside
+        j = i
+    return inside
+
+
+def segment_hits_ring(a, b, ring, margin=0.0):
+    """True if the segment a-b touches the polygon ring (crosses an edge, lies inside, or comes within margin of it)."""
+    if point_in_ring(a, ring) or point_in_ring(b, ring):
+        return True
+    n = len(ring)
+    for i in range(n):
+        c, d = ring[i], ring[(i + 1) % n]
+        if seg_cross(a, b, c, d):
+            return True
+    if margin > 0:
+        rd = dens(ring + [ring[0]], 1.0)
+        ab = dens([a, b], 0.5)
+        if cKDTree(rd).query(ab)[0].min() < margin:
+            return True
+    return False
+
+
+def plan_driveways(cfg, mapdata):
+    """OSM driveways were read in process_osm. For each pitched-roof house with none close to it, add a straight one
+    from the footprint edge nearest a road to that road. Skipped when it would run through another building or water,
+    or is too long or too short. Visual only (the car drives on the terrain, which is not touched)."""
+    dc = cfg["driveways"]
+    skip = set(dc["skip_road_classes"])
+    road_pts = []
+    for r in mapdata["roads"]:
+        if r["class"] in skip or r["tunnel"]:
+            continue
+        for p in dens(r["points"], 1.0):
+            road_pts.append((p[0], p[1], r["width"]))
+    road_pts = np.array(road_pts)
+    road_tree = cKDTree(road_pts[:, :2])
+    osm_pts = np.concatenate([dens(d["points"], 1.0) for d in mapdata["driveways"]]) if mapdata["driveways"] else np.zeros((0, 2))
+    osm_tree = cKDTree(osm_pts) if len(osm_pts) else None
+    builds = mapdata["buildings"]
+    bboxes = np.array([[min(p[0] for p in b["footprint"]), min(p[1] for p in b["footprint"]),
+                        max(p[0] for p in b["footprint"]), max(p[1] for p in b["footprint"])] for b in builds])
+    masks_water = Mask(mapdata["size_x_m"], mapdata["size_z_m"])
+    for w in mapdata["water"]:
+        masks_water.poly(w["outline"], 0.5)
+    for st in mapdata["streams"]:
+        if not st["tunnel"]:
+            masks_water.line(st["points"], 3.0)
+    water = masks_water.array()
+    H = mapdata["size_z_m"]
+    houses = [i for i, b in enumerate(builds) if b["roof"] == "gable" and b["type"] in
+              ("detached", "house", "semidetached_house", "terrace", "residential", "bungalow")]
+    stats = {"houses": len(houses), "had_osm": 0, "added": 0, "too_far": 0, "blocked": 0}
+    for i in houses:
+        ring = [tuple(p) for p in builds[i]["footprint"]]
+        edge = dens(ring + [ring[0]], 1.0)
+        if osm_tree is not None and osm_tree.query(edge)[0].min() < dc["has_one_within_m"]:
+            stats["had_osm"] += 1
+            continue
+        dist, idx = road_tree.query(edge)
+        order = np.argsort(dist)
+        done = False
+        reason = "too_far"
+        tried = []
+        for k in order:
+            if dist[k] > dc["max_length_m"]:
+                break
+            a = (float(edge[k][0]), float(edge[k][1]))
+            rp = road_pts[idx[k]]
+            if any(math.hypot(a[0] - t[0], a[1] - t[1]) < 6 for t in tried):
+                continue
+            tried.append(a)
+            b = (float(rp[0]), float(rp[1]))
+            L = math.hypot(b[0] - a[0], b[1] - a[1])
+            if L < dc["min_length_m"] + rp[2] / 2:
+                continue
+            # leave the wall in the direction of the road and stop at the road edge, not its centre line
+            ux, uz = (b[0] - a[0]) / L, (b[1] - a[1]) / L
+            b = (b[0] - ux * rp[2] / 2, b[1] - uz * rp[2] / 2)
+            ok = True
+            lo = (min(a[0], b[0]) - 1.5, min(a[1], b[1]) - 1.5, max(a[0], b[0]) + 1.5, max(a[1], b[1]) + 1.5)
+            for j in np.nonzero((bboxes[:, 0] <= lo[2]) & (bboxes[:, 2] >= lo[0]) & (bboxes[:, 1] <= lo[3]) & (bboxes[:, 3] >= lo[1]))[0]:
+                if j == i:
+                    continue
+                if segment_hits_ring(a, b, [tuple(p) for p in builds[j]["footprint"]], 1.2):
+                    ok = False
+                    break
+            if ok:
+                for q in dens([a, b], 1.0):
+                    c, r = int(q[0]), int(H - q[1])
+                    if 0 <= r < water.shape[0] and 0 <= c < water.shape[1] and water[r, c]:
+                        ok = False
+                        break
+            if not ok:
+                reason = "blocked"
+                continue
+            # start slightly inside the footprint so the strip meets the wall with no gap
+            a2 = (a[0] + ux * 0.4, a[1] + uz * 0.4)
+            mapdata["driveways"].append({"points": [(round(a2[0], 2), round(a2[1], 2)), (round(b[0], 2), round(b[1], 2))],
+                                         "width": dc["width_m"], "source": "generated"})
+            stats["added"] += 1
+            done = True
+            break
+        if not done:
+            stats["too_far" if reason == "too_far" else "blocked"] += 1
+    log(f"Driveways: {len([d for d in mapdata['driveways'] if d['source'] == 'osm'])} from OSM, {stats['added']} generated for "
+        f"{stats['houses']} houses ({stats['had_osm']} already had an OSM driveway nearby, {stats['too_far']} no road within "
+        f"{dc['max_length_m']:.0f} m, {stats['blocked']} blocked by another building or water)")
+    return stats
+
+
+# ---------------------------------------------------------------- trees
+
+def fetch_naip(cfg, rect):
+    """4-band (R, G, B, near-infrared) NAIP imagery for the crop at 1 m, from USGS's public NAIP image service.
+    Cached in raw/ (not committed). Returns the array (4, rows, cols) with row 0 = north, or None if it can't be fetched."""
+    w, s, e, n = rect
+    cols, rows = e - w, n - s
+    path = os.path.join(RAW, "naip_4band.tif")
+    key = f"{w},{s},{e},{n}"
+    keypath = os.path.join(RAW, "naip_4band.key")
+    if os.path.exists(path) and os.path.exists(keypath) and open(keypath).read() == key:
+        log(f"NAIP: using cache {path}")
+    else:
+        nc = cfg["naip"]
+        if cols > nc["max_px"] or rows > nc["max_px"]:
+            log(f"NAIP: crop {cols} x {rows} m is over the service's {nc['max_px']} px limit; not handled")
+            return None
+        q = urllib.parse.urlencode({"bbox": f"{w},{s},{e},{n}", "bboxSR": cfg["utm_epsg"], "imageSR": cfg["utm_epsg"],
+                                    "size": f"{cols},{rows}", "format": "tiff", "pixelType": "U8",
+                                    "interpolation": "RSP_NearestNeighbor", "f": "image"})
+        try:
+            log("NAIP: downloading 4-band imagery from USGS ...")
+            req = urllib.request.Request(nc["url"] + "?" + q, headers={"User-Agent": USER_AGENT})
+            data = urllib.request.urlopen(req, timeout=600).read()
+            if data[:2] not in (b"II", b"MM"):
+                raise RuntimeError("response is not a TIFF: " + data[:200].decode("latin1"))
+            os.makedirs(RAW, exist_ok=True)
+            with open(path, "wb") as f:
+                f.write(data)
+            with open(keypath, "w") as f:
+                f.write(key)
+        except Exception as ex:
+            log(f"NAIP: could not fetch ({ex})")
+            return None
+    with rasterio.open(path) as src:
+        if src.count < 4 or (src.height, src.width) != (rows, cols):
+            log(f"NAIP: cached image is {src.width} x {src.height} x {src.count}, expected {cols} x {rows} x 4; ignoring it")
+            return None
+        return src.read().astype(np.float32)
+
+
+def canopy_from_naip(cfg, naip):
+    """Tree canopy as a boolean raster: green in near-infrared (NDVI) and either textured (lawns are smooth) or dark
+    (shaded canopy); small speckles removed. Tuned by eye against the imagery around Chastain Glen Lane."""
+    tc = cfg["trees"]
+    R, G, B, N = naip
+    ndvi = (N - R) / (N + R + 1e-3)
+    mean = ndi.uniform_filter(N, 5)
+    sd = np.sqrt(np.maximum(ndi.uniform_filter(N * N, 5) - mean * mean, 0))
+    lum = (R + G + B) / 3
+    m = ((ndvi > tc["ndvi_min"]) & (sd > tc["texture_min"])) | ((ndvi > 0.1) & (lum < tc["dark_lum_max"]))
+    m = ndi.binary_closing(m, iterations=2)
+    m = ndi.binary_opening(m, iterations=1)
+    lab, n = ndi.label(m)
+    if n:
+        sizes = ndi.sum(m, lab, range(1, n + 1))
+        m = np.isin(lab, 1 + np.nonzero(sizes >= tc["min_blob_px"])[0])
+    return m
+
+
+def hash01(i, j, salt):
+    """Deterministic per-cell pseudo-random numbers in [0, 1) (so tree positions never change between runs)."""
+    x = (i.astype(np.uint64) * np.uint64(73856093)) ^ (j.astype(np.uint64) * np.uint64(19349663)) ^ np.uint64(salt * 83492791 + 1)
+    x &= np.uint64(0xFFFFFFFF)
+    for mult in (0x45d9f3b, 0x45d9f3b):
+        x ^= x >> np.uint64(16)
+        x = (x * np.uint64(mult)) & np.uint64(0xFFFFFFFF)
+    x ^= x >> np.uint64(16)
+    return (x & np.uint64(0xFFFFFF)).astype(np.float64) / float(1 << 24)
+
+
+def plan_trees(cfg, mapdata, rect):
+    """One tree per jittered-grid cell where there is canopy, none on roads, buildings, water, bridges or driveways;
+    thinned in yards. Writes Data/trees.bin: 'CRT1', uint32 count, then per tree float32 x, float32 z (metres from the
+    crop's south-west corner), uint16 seed, uint8 kind (0 woods, 1 yard), uint8 depth (tenths of a metre inside the canopy)."""
+    tc = cfg["trees"]
+    W, H = int(mapdata["size_x_m"]), int(mapdata["size_z_m"])
+    masks = keep_off_masks(cfg, mapdata)
+    blocked = masks["roads"] | masks["buildings"] | masks["water"] | masks["driveways"]
+    near_things = masks["buildings"] | masks["roads"]
+    dist_thing = ndi.distance_transform_edt(~near_things)  # metres to the nearest building or road
+    near_bld = ndi.distance_transform_edt(~masks["buildings"])
+    naip = fetch_naip(cfg, rect)
+    if naip is not None:
+        canopy = canopy_from_naip(cfg, naip)
+        source = "NAIP 4-band imagery (NDVI + texture)"
+    else:
+        canopy = np.ones((H, W), bool)
+        source = "RULE FALLBACK (no imagery): dense woods more than %.0f m from any road or building, sparse in yards" % tc["rule_forest_distance_m"]
+    depth = ndi.distance_transform_edt(canopy)
+    S = tc["cell_m"]
+    ni, nj = int(math.ceil(W / S)), int(math.ceil(H / S))
+    ii, jj = np.meshgrid(np.arange(ni), np.arange(nj), indexing="ij")
+    u = 0.12 + 0.76 * hash01(ii, jj, 1)
+    v = 0.12 + 0.76 * hash01(ii, jj, 2)
+    x = (ii + u) * S
+    z = (jj + v) * S
+    c = np.clip(x.astype(int), 0, W - 1)
+    r = np.clip((H - z).astype(int), 0, H - 1)
+    ok = (x < W - 2) & (z < H - 2) & (x > 2) & (z > 2)
+    ok &= canopy[r, c] & ~blocked[r, c]
+    yard_keep = hash01(ii, jj, 3)
+    if naip is not None:
+        yard = near_bld[r, c] < tc["yard_distance_m"]
+        ok &= ~yard | (yard_keep < tc["yard_keep"])
+    else:
+        yard = dist_thing[r, c] < tc["rule_forest_distance_m"]
+        ok &= ~yard | (yard_keep < tc["rule_yard_keep"])
+    seed = (hash01(ii, jj, 4) * 65536).astype(np.uint16)
+    sel = ok
+    out_x, out_z = x[sel], z[sel]
+    order = np.lexsort((out_x, out_z))  # fixed order, so the file is identical run to run
+    out_x, out_z = out_x[order], out_z[order]
+    out_seed, out_yard = seed[sel][order], yard[sel][order].astype(np.uint8)
+    out_depth = np.clip(depth[r, c][sel][order] * 10, 0, 255).astype(np.uint8)
+    path = os.path.join(DATA, "trees.bin")
+    with open(path, "wb") as f:
+        f.write(b"CRT1" + struct.pack("<I", len(out_x)))
+        rec = np.zeros(len(out_x), dtype=[("x", "<f4"), ("z", "<f4"), ("s", "<u2"), ("k", "u1"), ("d", "u1")])
+        rec["x"], rec["z"], rec["s"], rec["k"], rec["d"] = out_x, out_z, out_seed, out_yard, out_depth
+        f.write(rec.tobytes())
+    log(f"Trees: {len(out_x)} placed from {source}; canopy covers {canopy.mean() * 100:.0f}% of the crop; "
+        f"{int(out_yard.sum())} in yards, {len(out_x) - int(out_yard.sum())} in woods -> {path}")
+    if naip is not None:  # preview for a human check: canopy outline and tree dots over the imagery
+        prev = np.clip(naip[:3].transpose(1, 2, 0), 0, 255).astype(np.uint8).copy()
+        edge = canopy & ~ndi.binary_erosion(canopy)
+        prev[edge] = (0, 255, 0)
+        for px, pz in zip(out_x, out_z):
+            rr, cc = int(H - pz), int(px)
+            prev[max(0, rr - 1):rr + 2, max(0, cc - 1):cc + 2] = (255, 255, 0)
+        Image.fromarray(prev).save(os.path.join(RAW, "tree_preview.png"))
+    return len(out_x)
+
+
 def write_map(mapdata):
     out = dict(mapdata)
     out["roads"] = [{kk: v for kk, v in r.items() if kk not in ("taper_start", "taper_end")} for r in mapdata["roads"]]
@@ -708,6 +1041,8 @@ def main():
     dem = build_heightmap(cfg, rect)
     mapdata = process_osm(cfg, osm, rect)
     build_terrain(cfg, dem, mapdata)
+    plan_driveways(cfg, mapdata)
+    plan_trees(cfg, mapdata, rect)
     write_map(mapdata)
     log("Done. In Unity: Chastain Rush > Build Map (or run the batch build).")
 
