@@ -187,19 +187,4 @@ namespace ChastainRush
         }
     }
 
-    // The trigger box of one panel (a child of its FenceChunk).
-    public sealed class FencePanel : MonoBehaviour
-    {
-        public FenceChunk chunk;
-        public int index;
-        void OnTriggerEnter(Collider other) => Touch(other);
-        void OnTriggerStay(Collider other) => Touch(other);
-        void Touch(Collider other)
-        {
-            var rb = other.attachedRigidbody;
-            if (!rb) return;
-            var car = rb.GetComponent<ArcadeVehicle>();
-            if (car) chunk.Hit(index, car);
-        }
-    }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Racer;
@@ -24,7 +25,10 @@ namespace ChastainRush
         bool Pick(string kind, out FencePanel panel)
         {
             panel = null;
-            foreach (var fp in FindObjectsByType<FencePanel>())
+            // Round 8: a stable order (FindObjectsByType's order changes between runs, so the check tested a different panel each time)
+            var all = new List<FencePanel>(FindObjectsByType<FencePanel>());
+            all.Sort((x, y) => { var a = x.transform.position; var b = y.transform.position; int c0 = a.x.CompareTo(b.x); return c0 != 0 ? c0 : a.z.CompareTo(b.z); });
+            foreach (var fp in all)
             {
                 if (!fp.chunk.name.StartsWith(kind)) continue;
                 var c = fp.transform.position; var along = fp.transform.forward;
@@ -38,6 +42,8 @@ namespace ChastainRush
                     var o = new Vector3(from.x, gy + 0.9f, from.z);
                     var target = new Vector3(c.x, gy + 0.9f, c.z);
                     if (Physics.Raycast(o, (target - o).normalized, (target - o).magnitude - 0.8f, ~0, QueryTriggerInteraction.Ignore)) continue;
+                    // Round 8: and the car's start is not inside something solid (a ray from inside a house box does not hit it)
+                    if (Physics.CheckBox(o, new Vector3(1.2f, 0.6f, 2.2f), Quaternion.LookRotation(-normal * side, Vector3.up), ~0, QueryTriggerInteraction.Ignore)) continue;
                     // and open ground for 14 m beyond the fence (a solid house or wall behind it would stop any car)
                     var behindDir = -normal * side;
                     if (Physics.Raycast(target + behindDir * 0.8f, behindDir, 14f, ~0, QueryTriggerInteraction.Ignore)) continue;

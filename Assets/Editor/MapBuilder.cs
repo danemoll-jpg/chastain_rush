@@ -95,6 +95,7 @@ namespace ChastainRush
             BuildWater(map, terrain, mats, world, hood);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world, hood.RejectTree);
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
+            BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
@@ -283,6 +284,7 @@ namespace ChastainRush
             race.embeddedRouteJson = File.Exists(path) ? File.ReadAllText(path) : "";
             race.gateBlack = mats.GateBlack; race.gateWhite = mats.GateWhite;
             race.nextMaterial = mats.RaceNext; race.laterMaterial = mats.RaceLater; race.missedMaterial = mats.RaceMissed;
+            race.shortcutMaterial = mats.RaceShortcut;
             if (race.embeddedRouteJson.Length == 0) Debug.LogWarning("[MapBuilder] no race route at " + path + " (run Tools/mapgen/make_route.py); racing will be off");
         }
 
@@ -915,6 +917,7 @@ namespace ChastainRush
             readonly List<int> tris = new List<int>();
             public Color Tint = Color.white; // colour of the vertices added from now on
             public int Count => verts.Count;
+            public List<Vector3> Verts => verts; public List<Color> Colours => colours; public List<int> Tris => tris;   // Round 8: for clipping
             public Mesh ToMesh(string name)
             {
                 var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };
@@ -954,7 +957,7 @@ namespace ChastainRush
         class Materials
         {
             public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Foliage, Sky, Beacon, Water, TerrainMaterial;
-            public readonly Material GateBlack, GateWhite, RaceNext, RaceLater, RaceMissed; // Round 5 race markers (unlit)
+            public readonly Material GateBlack, GateWhite, RaceNext, RaceLater, RaceMissed, RaceShortcut; // Round 5 race markers (unlit); Round 8 shortcut entries
             public readonly TerrainLayer GrassLayer;
 
             public Materials()
@@ -983,6 +986,7 @@ namespace ChastainRush
                 RaceNext = MakeUnlit("RaceNext", new Color(0.35f, 1.0f, 0.2f));
                 RaceLater = MakeUnlit("RaceLater", new Color(1.0f, 0.62f, 0.1f));
                 RaceMissed = MakeUnlit("RaceMissed", new Color(0.9f, 0.1f, 0.1f));
+                RaceShortcut = MakeUnlit("RaceShortcut", new Color(0.15f, 0.65f, 1.0f));
 
                 var tex = new Texture2D(4, 4);
                 var px = new Color[16];

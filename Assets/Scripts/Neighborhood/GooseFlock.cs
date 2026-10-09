@@ -13,8 +13,9 @@ namespace ChastainRush
     //   Away   wait until the car has been gone a while (more than ReturnDistance for ReturnSeconds), then come
     //          home: walking or swimming if it is near, flying if far
     // Driving through the flock (a goose within HitRadius of the car) costs a little speed, once per goose per few
-    // seconds, and that goose takes off. The honk is synthesized in Awake (like Racer's TurkeyVoice); Racer has no
-    // goose sound and its wildlife wavs are only deer, bats, birds, frogs and squirrels.
+    // seconds, and that goose takes off. Round 8: the honk is an audio clip, picked at random from honkClips (filled by
+    // MapBuilder from Assets/Audio/Geese/goose_honk*.wav / .ogg / .mp3) with a little pitch variation and at most
+    // MaxVoices playing at once. With no clips the geese are silent (the Round 7 synthesized honk is gone).
     public sealed class GooseFlock : MonoBehaviour
     {
         public enum ZoneKind { Bank, Road, Water }
@@ -28,6 +29,8 @@ namespace ChastainRush
         public Vector3 heronPost;                 // where the heron stands (on the bank, at the water's edge)
         public bool heron = true;
         public int seed = 7;
+        public AudioClip[] honkClips = new AudioClip[0];   // Round 8: set by MapBuilder from Assets/Audio/Geese
+        public const int MaxVoices = 3;
 
         // tuning
         public const float HitRadius = 2.0f, HitSpeedLoss = 0.02f, HitCooldown = 3f;
@@ -47,34 +50,36 @@ namespace ChastainRush
         readonly List<Bird> birds = new List<Bird>();
         ArcadeVehicle car;
         System.Random rng;
-        AudioSource[] voices; int voice; float lastHonk;
-        AudioClip honk;
+        AudioSource[] voices; float lastHonk;
         Mesh gooseBody, gooseWing, heronBody, heronWing;
         public int BirdCount => birds.Count;
         public int FlyingCount { get { int n = 0; foreach (var b in birds) if (b.mode == Mode.Fly || b.mode == Mode.Flee) n++; return n; } }
         public int ScatteredCount { get { int n = 0; foreach (var b in birds) if (b.mode == Mode.Fly || b.mode == Mode.Flee || b.mode == Mode.Away || b.mode == Mode.Return) n++; return n; } }
         public float TotalSpeedLost { get; private set; }
         public int HitsCount { get; private set; }
+        public int HonksPlayed { get; private set; }
+        public int VoiceCount => voices != null ? voices.Length : 0;
 
         void Start()
         {
             car = FindAnyObjectByType<ArcadeVehicle>();
             rng = new System.Random(seed);
-            honk = MakeHonk();
-            voices = new AudioSource[4];
-            for (int i = 0; i < voices.Length; i++)
+            int clips = 0; foreach (var c in honkClips) if (c) clips++;
+            if (clips > 0)
             {
-                var go = new GameObject("honk " + i); go.transform.SetParent(transform, false);
-                var a = go.AddComponent<AudioSource>();
-                a.clip = honk; a.spatialBlend = 1f; a.minDistance = 6f; a.maxDistance = 90f; a.rolloffMode = AudioRolloffMode.Linear; a.volume = 0.8f; a.playOnAwake = false;
-                voices[i] = a;
+                voices = new AudioSource[MaxVoices];
+                for (int i = 0; i < voices.Length; i++)
+                {
+                    var go = new GameObject("honk " + i); go.transform.SetParent(transform, false);
+                    var a = go.AddComponent<AudioSource>();
+                    a.spatialBlend = 1f; a.minDistance = 6f; a.maxDistance = 90f; a.rolloffMode = AudioRolloffMode.Linear; a.volume = 0.8f; a.playOnAwake = false;
+                    voices[i] = a;
+                }
             }
             BuildModels();
             for (int i = 0; i < gooseZones.Length; i++) birds.Add(MakeBird(false, zones[gooseZones[i]], i));
             if (heron) birds.Add(MakeBird(true, new Zone { kind = ZoneKind.Bank, centre = heronPost, radius = 0.5f }, 99));
         }
-
-        void OnDestroy() { if (honk) Destroy(honk); }
 
         // ---------------------------------------------------------------- models (procedural, low poly)
 
@@ -296,11 +301,18 @@ namespace ChastainRush
         void Honk(Vector3 at)
         {
             if (Time.time - lastHonk < 0.12f || voices == null) return;
+            AudioSource v = null;
+            foreach (var a in voices) if (!a.isPlaying) { v = a; break; }
+            if (v == null) return;   // MaxVoices already honking: skip this one rather than cut one off
+            AudioClip clip = null;
+            for (int tries = 0; tries < 8 && !clip; tries++) clip = honkClips[rng.Next(honkClips.Length)];
+            if (!clip) return;
             lastHonk = Time.time;
-            var v = voices[voice++ % voices.Length];
             v.transform.position = at;
-            v.pitch = 0.88f + (float)rng.NextDouble() * 0.3f;
+            v.clip = clip;
+            v.pitch = 0.93f + (float)rng.NextDouble() * 0.14f;
             v.Play();
+            HonksPlayed++;
         }
 
         // ---------------------------------------------------------------- movement helpers
@@ -391,35 +403,6 @@ namespace ChastainRush
                 if ((a.y > z) != (b2.y > z) && x < (b2.x - a.x) * (z - a.y) / (b2.y - a.y) + a.x) inside = !inside;
             }
             return inside;
-        }
-
-        // ---------------------------------------------------------------- the honk
-
-        static AudioClip MakeHonk()
-        {
-            const int rate = 22050; float len = 0.55f;
-            var data = new float[(int)(rate * len)];
-            float phase = 0f, phase2 = 0f;
-            var r = new System.Random(3);
-            for (int i = 0; i < data.Length; i++)
-            {
-                float t = i / (float)rate;
-                // two short nasal notes, the second a little lower: "ha-honk"
-                float local = t < 0.17f ? t : t - 0.20f;
-                float f0 = t < 0.17f ? 520f - 60f * (t / 0.17f) : t < 0.20f ? 0f : 430f - 90f * Mathf.Clamp01((t - 0.20f) / 0.35f);
-                float env = t < 0.17f ? Mathf.Sin(Mathf.PI * Mathf.Clamp01(t / 0.17f)) * 0.7f
-                          : t < 0.20f ? 0f
-                          : Mathf.Sin(Mathf.PI * Mathf.Clamp01((t - 0.20f) / 0.35f)); env *= env > 0 ? Mathf.Min(1f, local * 40f) : 0f;
-                phase += 2f * Mathf.PI * f0 / rate; phase2 += 2f * Mathf.PI * f0 * 1.007f / rate;
-                // buzzy: a rich harmonic stack with the upper ones strong, as a goose's reedy call
-                float s = 0f;
-                for (int h = 1; h <= 9; h++) s += Mathf.Sin(phase * h) / h * (h == 2 || h == 3 || h == 4 ? 1.5f : 1f) + 0.5f * Mathf.Sin(phase2 * h) / h;
-                s += ((float)r.NextDouble() - 0.5f) * 0.25f;
-                data[i] = Mathf.Clamp(s * env * 0.28f, -1f, 1f);
-            }
-            var clip = AudioClip.Create("goose honk", data.Length, 1, rate, false);
-            clip.SetData(data, 0);
-            return clip;
         }
 
         // ---------------------------------------------------------------- tiny mesh builder for the bird models

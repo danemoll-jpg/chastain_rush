@@ -1,0 +1,353 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using Racer;
+using UnityEngine;
+
+namespace ChastainRush
+{
+    // Development check only (added by Editor/ShortcutCheck.cs, never saved into the scene). Round 8, item 4g. For each
+    // official shortcut and each approach speed, the real car (ArcadeVehicle.Simulate, the same step the player's input
+    // drives) starts on the lap 80 m before the turn-off at that speed and is steered along the shortcut's line, holding the
+    // speed where it is on the ground; the same start is also driven along the road. Both are timed to a line 20 m past
+    // the rejoin point. Recorded: the time against the road, every flight (air time, distance, height), the car's tilt
+    // and pitch on landing, any knock against a house, and how the run ended. Then two one-lap races through the real
+    // RaceController: one on the road, one taking both shortcuts (no penalty, the forgiven checkpoints named).
+    public sealed class ShortcutCheckRunner : MonoBehaviour
+    {
+        [Serializable] public sealed class Target
+        {
+            public string id, name; public float leaveLapS, rejoinLapS, raceSpeed, startBack = 35f;
+            public List<Vector2> path = new List<Vector2>(); public List<Vector2> jumps = new List<Vector2>();
+        }
+        public List<Target> targets = new List<Target>();
+        public string outputDir;
+        public float[] speeds = { 12f, 14f, 16f, 18f, 20f, 22f, 24f, 26f, 28f, 30f, 33f, 36f };
+        public float roadSpeed = 18f;
+        const float LatAcc = 14f, BrakeAcc = 14f;
+
+
+        ArcadeVehicle car; VehicleRespawn respawn; RaceController race; RaceRoute route;
+        readonly StringBuilder report = new StringBuilder();
+        readonly StringBuilder csv = new StringBuilder("shortcut,mode,speed,result,time_s,road_time_s,air_s,flights,longest_flight_s,longest_flight_m,peak_m,worst_landing_tilt_deg,touchdown_pitch_deg,house_hits\n");
+        int fails, checks;
+
+        // driving state
+        List<Vector3> drive; int next; float want, look;
+        bool active;
+        readonly List<(string name, float speed)> contacts = new List<(string, float)>();
+
+        void Check(string name, bool ok, string detail = "") { checks++; if (!ok) fails++; report.AppendLine($"{(ok ? "PASS" : "FAIL")}  {name}{(detail.Length > 0 ? "  -  " + detail : "")}"); }
+
+        IEnumerator Start()
+        {
+            Time.timeScale = 8f; Time.maximumDeltaTime = 1f;
+            car = FindAnyObjectByType<ArcadeVehicle>(); respawn = car.GetComponent<VehicleRespawn>(); race = RaceController.Instance;
+            car.gameObject.AddComponent<ContactProbe>().runner = this;
+            yield return null; yield return null;
+            route = race.Route;
+            car.enabled = false;   // this runner steps the car itself
+            report.AppendLine($"Shortcut check, {DateTime.Now:yyyy-MM-dd HH:mm}. Route {route.Name}, lap {route.LapLength:0} m, {route.Shortcuts.Count} official shortcuts in the route file.");
+            report.AppendLine("Each run starts on the lap before the turn-off at the given speed (35 m before for #2; 14 m for #6, just past the sharp CP4 corner, so the speed is the speed the car arrives with); times are to a line 20 m past the rejoin point. The road run uses the same start and speed.");
+            report.AppendLine("Air: wheels all off the ground (flights shorter than 0.25 s are not counted as flights). Landing tilt: worst tilt from upright in the 1 s after a flight. Pitch at touchdown: negative = nose down.");
+            report.AppendLine();
+            var argv = Environment.GetCommandLineArgs();
+            string only = null; bool noRace = false;
+            for (int i = 0; i < argv.Length; i++) { if (argv[i] == "-shortcutOnly" && i + 1 < argv.Length) only = argv[i + 1]; if (argv[i] == "-shortcutNoRace") noRace = true; }
+            foreach (var t in targets)
+            {
+                if (only != null && t.id != only) continue;
+                report.AppendLine($"=== {t.name} ({t.id}): leaves the lap {t.leaveLapS:0} m after the gate, rejoins {t.rejoinLapS:0} m; runs start {t.startBack:0} m before the turn-off");
+                var rows = new List<Trial>();
+                foreach (float v in speeds)
+                {
+                    var road = new Trial(); yield return RunTrial(t, v, false, road);
+                    var sc = new Trial(); yield return RunTrial(t, v, true, sc);
+                    sc.roadTime = road.time; rows.Add(sc);
+                    report.AppendLine($"  {v,4:0} m/s  road {Fmt(road)}   shortcut {Fmt(sc)}");
+                    csv.AppendLine($"{t.id},shortcut,{v},{sc.result},{sc.time:0.00},{road.time:0.00},{sc.air:0.00},{sc.flights.Count},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.dur) : 0):0.00},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.dist) : 0):0.0},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.peak) : 0):0.0},{sc.worstTilt:0},{sc.touchPitch:0},{string.Join(" ", sc.houseHits)}");
+                }
+                var clean = rows.Where(r => r.result == "clean").ToList();
+                int bad = rows.Count(r => r.result != "clean");
+                report.AppendLine($"  -> clean at {clean.Count} of {rows.Count} speeds ({string.Join(", ", clean.Select(r => r.speed.ToString("0")))} m/s); bad landings / crashes at {bad} ({string.Join(", ", rows.Where(r => r.result != "clean").Select(r => $"{r.speed:0}: {r.result}"))})");
+                if (clean.Count > 0)
+                {
+                    var best = clean.OrderBy(r => r.time - r.roadTime).First();
+                    report.AppendLine($"  -> best: {best.speed:0} m/s, {best.time:0.00} s against {best.roadTime:0.00} s on the road ({best.roadTime - best.time:+0.00;-0.00} s), air {best.air:0.00} s");
+                    t.raceSpeed = best.speed;
+                }
+                Check($"{t.name}: taken well it beats the road", clean.Any(r => r.time < r.roadTime - 0.5f), clean.Count > 0 ? $"best gain {clean.Max(r => r.roadTime - r.time):0.00} s" : "no clean run");
+                if (t.id.Contains("over_house"))
+                {
+                    var cleared = rows.Where(r => r.result == "clean" && !r.houseHits.Any(h => h.Contains("1641"))).Select(r => r.speed).ToList();
+                    float lowest = cleared.Count > 0 ? cleared.Min() : -1f;
+                    report.AppendLine($"  -> roof of house 1641 cleared at: {string.Join(", ", cleared.Select(x => x.ToString("0")))} m/s; lowest approach speed that clears it: {(lowest > 0 ? lowest.ToString("0") + " m/s" : "none")}");
+                    foreach (var r in rows.Where(r => r.houseHits.Any(h => h.Contains("1641")) || r.result != "clean")) report.AppendLine($"     {r.speed:0} m/s: {Fmt(r)}");
+                }
+                report.AppendLine();
+            }
+            if (!noRace) yield return RaceLaps();
+            report.AppendLine();
+            report.AppendLine(fails == 0 ? $"ALL {checks} CHECKS PASSED" : $"{fails} OF {checks} CHECKS FAILED");
+            Directory.CreateDirectory(outputDir);
+            File.WriteAllText(Path.Combine(outputDir, "shortcut_check.txt"), report.ToString());
+            File.WriteAllText(Path.Combine(outputDir, "shortcut_runs.csv"), csv.ToString());
+            Debug.Log("[ShortcutCheck]\n" + report);
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.Exit(fails == 0 ? 0 : 1);
+#endif
+        }
+
+        // ---------------------------------------------------------------- one run
+
+        sealed class Flight { public float dur, dist, peak; public Vector3 from, to; }
+        sealed class Trial
+        {
+            public float speed, time, roadTime, air, worstTilt, touchPitch, roofGap = float.MaxValue; public string result = "timeout", endNote = "";
+            public List<Flight> flights = new List<Flight>(); public List<string> houseHits = new List<string>();
+        }
+
+        static string Fmt(Trial t)
+        {
+            var sb = new StringBuilder();
+            sb.Append(t.time > 0f ? $"{t.time,6:0.00} s {t.result}" : t.result);
+            if (t.flights.Count > 0) sb.Append($" (air {t.air:0.0} s; longest flight {t.flights.Max(f => f.dur):0.00} s, {t.flights.Max(f => f.dist):0} m, {t.flights.Max(f => f.peak):0.0} m up; landing tilt {t.worstTilt:0} deg, pitch {t.touchPitch:0})");
+            if (t.roofGap < 100f) sb.Append($" [roof clearance {t.roofGap:0.0} m]");
+            if (t.houseHits.Count > 0) sb.Append($" [touched {string.Join(", ", t.houseHits)}]");
+            if (t.endNote.Length > 0) sb.Append(" " + t.endNote);
+            return sb.ToString();
+        }
+
+        List<Vector3> Lap(float s0, float s1) => route.SamplePath(route.GateS + s0, route.GateS + s1, 3f);
+        static Vector3 G(Vector2 p) => RaceRoute.Ground(p.x, p.y);
+
+        IEnumerator RunTrial(Target t, float v, bool shortcut, Trial tr)
+        {
+            tr.speed = v;
+            FenceChunk.RestoreAll();
+            var path = Lap(t.leaveLapS - t.startBack, t.leaveLapS);
+            if (shortcut) { foreach (var p in t.path) path.Add(G(p)); path.AddRange(Lap(t.rejoinLapS, t.rejoinLapS + 40f)); }
+            else path.AddRange(Lap(t.leaveLapS, t.rejoinLapS + 40f));
+            var start = route.PointAt(route.GateS + t.leaveLapS - t.startBack, out var f0);
+            var finish = route.PointAt(route.GateS + t.rejoinLapS + 20f, out var f1);
+            respawn.PlaceAt(start + Vector3.up * 0.3f, Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg);
+            yield return new WaitForFixedUpdate();
+            car.Body.linearVelocity = f0 * v;
+            drive = path; next = 0; want = v; contacts.Clear(); active = true;
+            roofGap = float.MaxValue;
+            trace = shortcut ? new StringBuilder("t,x,z,y,above_ground,speed,vy,wheels,pitch,roll,cte\n") : null; traceStep = 0; traceT = 0f;
+            float time = 0f, slow = 0f, airRun = 0f, tiltWatch = 0f, lastFlightEnd = -1f; bool wasAir = false;
+            Flight cur = null; float takeoffY = 0f;
+            float prevSide = Vector3.Dot(car.transform.position - finish, f1);
+            while (true)
+            {
+                yield return new WaitForFixedUpdate();
+                float dt = Time.fixedDeltaTime; time += dt;
+                var pos = car.transform.position;
+                bool air = car.GroundedWheels == 0;
+                if (air) { tr.air += dt; airRun += dt; if (cur == null) { cur = new Flight { from = pos }; takeoffY = pos.y; } cur.peak = Mathf.Max(cur.peak, pos.y - takeoffY); }
+                else if (wasAir)
+                {
+                    if (airRun >= 0.25f && cur != null)
+                    {
+                        cur.dur = airRun; cur.to = pos; cur.dist = Vector2.Distance(new Vector2(cur.from.x, cur.from.z), new Vector2(pos.x, pos.z));
+                        tr.flights.Add(cur); tiltWatch = 1f;
+                        var fw = car.transform.forward; tr.touchPitch = Mathf.Asin(Mathf.Clamp(fw.y, -1f, 1f)) * Mathf.Rad2Deg;
+                        lastFlightEnd = time;
+                    }
+                    airRun = 0f; cur = null;
+                }
+                wasAir = air;
+                float tilt = Vector3.Angle(car.transform.up, Vector3.up);
+                if (tiltWatch > 0f) { tr.worstTilt = Mathf.Max(tr.worstTilt, tilt); tiltWatch -= dt; }
+                if (tilt > 75f) { tr.result = "rolled"; tr.endNote = $"at ({pos.x:0},{pos.z:0})"; break; }
+                slow = car.Body.linearVelocity.magnitude < 1.5f ? slow + dt : 0f;
+                if (slow > 2.5f) { tr.result = "stuck"; tr.endNote = $"stopped at ({pos.x:0},{pos.z:0}), {pos.y - RaceRoute.Ground(pos.x, pos.z).y:0.0} m above the ground"; break; }
+                if (DistToPath(pos) > 25f) { tr.result = "lost"; tr.endNote = $"{DistToPath(pos):0} m off the line at ({pos.x:0},{pos.z:0})"; break; }
+                if (time > 60f) { tr.result = "timeout"; break; }
+                float side = Vector3.Dot(pos - finish, f1);
+                if (prevSide < 0f && side >= 0f && Vector3.Distance(Flat(pos), Flat(finish)) < 20f) { tr.time = time; tr.result = "finished"; break; }
+                prevSide = side;
+            }
+            active = false;
+            tr.roofGap = roofGap;
+            if (trace != null) { foreach (var c in contacts) if (c.speed > 4f && !c.name.StartsWith("rode on")) trace.AppendLine($"# contact {c.name} {c.speed:0.0}");
+                Directory.CreateDirectory(Path.Combine(outputDir, "traces")); File.WriteAllText(Path.Combine(outputDir, "traces", $"{t.id}_{v:0}.csv"), trace.ToString()); trace = null; }
+            foreach (var c in contacts) if (IsHouse(c.name)) tr.houseHits.Add(c.name.StartsWith("rode on ") ? Short(c.name) : $"{Short(c.name)} at {c.speed:0} m/s");
+            tr.houseHits = tr.houseHits.Distinct().ToList();
+            if (tr.result == "finished")
+            {
+                bool badLanding = tr.worstTilt > 40f;
+                bool hardHit = contacts.Any(c => IsHouse(c.name) && (c.speed > 5f || c.name.StartsWith("rode on ")));
+                tr.result = !shortcut ? "finished" : badLanding ? "bad landing" : hardHit ? "hit a house" : "clean";
+                if (!shortcut) tr.result = "clean";
+            }
+            yield return null;
+        }
+
+        // a house's own collider (not the shortcut's ramps, whose names mention the house they serve)
+        static bool IsHouse(string n) => n.Contains("HouseColliders/") || n.Contains("(open: shortcut passage)") || n.Contains("Jumped house");
+        static string Short(string n) => n.Replace("HouseColliders/", "").Replace(" (open: shortcut passage)/box", " (passage walls)").Replace("Neighborhood/Jumped house 1641 roof collider", "House 1641 roof");
+
+        float DistToPath(Vector3 p)
+        {
+            float best = float.MaxValue;
+            int a = Mathf.Max(0, next - 12), b = Mathf.Min(drive.Count - 1, next + 12);
+            for (int i = a; i < b; i++)
+            {
+                Vector3 s = Flat(drive[i]), e = Flat(drive[i + 1]), q = Flat(p); var ab = e - s;
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - s, ab) / ab.sqrMagnitude);
+                best = Mathf.Min(best, (s + ab * t - q).magnitude);
+            }
+            return best;
+        }
+
+        // Steering: aim along the line a few metres ahead and correct for the sideways error from it (a cross-track term,
+        // so a car coming out of a bend settles on the line before a passage rather than cutting toward it).
+        void FixedUpdate()
+        {
+            if (!active || drive == null) return;
+            var pos = car.transform.position; float v = Mathf.Max(car.ForwardSpeed, 1f);
+            // nearest segment ahead of the last one
+            int best = next; float bd = float.MaxValue;
+            for (int i = next; i < Mathf.Min(drive.Count - 1, next + 15); i++)
+            {
+                Vector3 a = Flat(drive[i]), b = Flat(drive[i + 1]), q = Flat(pos), ab = b - a;
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - a, ab) / ab.sqrMagnitude);
+                float d = (a + ab * t - q).sqrMagnitude;
+                if (d < bd) { bd = d; best = i; }
+            }
+            next = best;
+            Vector3 sa = Flat(drive[next]), sb = Flat(drive[Mathf.Min(next + 1, drive.Count - 1)]);
+            Vector3 segDir = (sb - sa).sqrMagnitude > 1e-6f ? (sb - sa).normalized : Flat(car.transform.forward).normalized;
+            float cte = Vector3.Dot(Flat(pos) - sa, Vector3.Cross(Vector3.up, segDir));   // + = right of the line
+            float la = (look > 0f ? look : 4f) + 0.12f * v;
+            Vector3 aim = Flat(drive[next]); float acc = 0f; int k = next;
+            while (k < drive.Count - 1 && acc < la) { acc += (Flat(drive[k + 1]) - Flat(drive[k])).magnitude; k++; }
+            aim = Flat(drive[k]);
+            Vector3 aimDir = (aim - Flat(pos)).normalized;
+            Vector3 lineDir = (aim - sa).sqrMagnitude > 1e-4f ? (aim - sa).normalized : segDir;
+            float headErr = Vector3.SignedAngle(Flat(car.transform.forward), lineDir, Vector3.up);
+            float corr = -Mathf.Atan2(1.6f * cte, v + 2f) * Mathf.Rad2Deg;
+            float angle = Vector3.SignedAngle(Flat(car.transform.forward), aimDir, Vector3.up);
+            float steer = Mathf.Clamp((headErr + corr) / 18f, -1f, 1f), speed = car.ForwardSpeed;
+            // speed: the target, but no faster than the bends ahead allow (a driver who brakes for a bend in time):
+            // v <= sqrt(latAcc * radius) at each bend, reachable from here with brakeAcc of braking
+            float w = want;
+            {
+                // the bend radius at each point ahead, from the points 6 m before and after it
+                var ahead = new List<Vector3>(); float acc2 = 0f; ahead.Add(Flat(pos));
+                for (int i = next + 1; i < drive.Count && acc2 < 70f; i++) { acc2 += (Flat(drive[i]) - ahead[ahead.Count - 1]).magnitude; ahead.Add(Flat(drive[i])); }
+                var cum = new float[ahead.Count]; for (int i = 1; i < ahead.Count; i++) cum[i] = cum[i - 1] + (ahead[i] - ahead[i - 1]).magnitude;
+                Vector3 At(float d) { int i = 1; while (i < cum.Length - 1 && cum[i] < d) i++; return Vector3.Lerp(ahead[i - 1], ahead[i], Mathf.InverseLerp(cum[i - 1], cum[i], d)); }
+                for (float d = 6f; d < cum[cum.Length - 1] - 6f; d += 2f)
+                {
+                    Vector3 a = At(d - 6f), b = At(d), c = At(d + 6f);
+                    float area2 = Mathf.Abs(Vector3.Cross(b - a, c - a).y);
+                    if (area2 < 1e-3f) continue;
+                    float r = (b - a).magnitude * (c - b).magnitude * (c - a).magnitude / (2f * area2);
+                    float vb = Mathf.Sqrt(LatAcc * r);
+                    w = Mathf.Min(w, Mathf.Sqrt(vb * vb + 2f * BrakeAcc * Mathf.Max(0f, d - 6f)));
+                }
+            }
+            car.Simulate(speed < w ? 1f : 0f, speed > w + 1.5f ? Mathf.Clamp01((speed - w) / 4f) : 0f, steer, Time.fixedDeltaTime);
+            // clearance over the jumped house's roof: the gap from the car's underside to the roof below it
+            foreach (var hh in Physics.RaycastAll(pos, Vector3.down, 20f, ~0, QueryTriggerInteraction.Ignore))
+                if (hh.collider.name.Contains("Jumped house")) roofGap = Mathf.Min(roofGap, hh.distance - 0.3f);
+            // riding on a house (the wheels on a roof, not the body hitting it)
+            if (car.GroundedWheels > 0 && Physics.Raycast(pos - car.transform.up * 0.4f, Vector3.down, out var rh, 2.0f, ~0, QueryTriggerInteraction.Ignore))   // from under the car's own box
+            {
+                var rn = rh.collider.transform.parent ? rh.collider.transform.parent.name + "/" + rh.collider.name : rh.collider.name;
+                if (IsHouse(rn)) contacts.Add(("rode on " + rn, 0f));
+            }
+            if (trace != null && (traceStep++ % 3) == 0)
+            {
+                var gy = RaceRoute.Ground(pos.x, pos.z).y; var e = car.transform.eulerAngles;
+                trace.AppendLine($"{traceT:0.00},{pos.x:0.0},{pos.z:0.0},{pos.y:0.00},{pos.y - gy:0.00},{car.Body.linearVelocity.magnitude:0.0},{car.Body.linearVelocity.y:0.0},{car.GroundedWheels},{Mathf.DeltaAngle(0, e.x):0},{Mathf.DeltaAngle(0, e.z):0},{cte:0.0}");
+            }
+            traceT += Time.fixedDeltaTime;
+        }
+        StringBuilder trace; int traceStep; float traceT; float roofGap = float.MaxValue;
+
+        public void OnContact(Collision c)
+        {
+            if (!active) return;
+            var n = c.collider.name; var t = c.collider.transform;
+            string full = t.parent ? t.parent.name + "/" + n : n;
+            contacts.Add((full + $" @({car.transform.position.x:0.0},{car.transform.position.z:0.0})", c.relativeVelocity.magnitude));
+        }
+
+        sealed class ContactProbe : MonoBehaviour
+        {
+            public ShortcutCheckRunner runner;
+            void OnCollisionEnter(Collision c) { if (runner) runner.OnContact(c); }
+        }
+
+        static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
+
+        // ---------------------------------------------------------------- races
+
+        IEnumerator RaceLaps()
+        {
+            report.AppendLine("=== Race laps through the RaceController (1 lap each, same road speed)");
+            RaceController.RecordsPathOverride = Path.Combine(outputDir, "race_records_shortcut_check.json");
+            RaceController.LapsOverride = 1;
+            float plain = 0f;
+            for (int mode = 0; mode < 2; mode++)
+            {
+                var events = new List<string>();
+                Action<string> log = e => events.Add(e);
+                race.Logged += log;
+                race.StartRace();
+                yield return null;
+                var r = race.Route;
+                var path = new List<Vector3>(); var looks = new List<float>(); var speedsAt = new List<float>();
+                void Add(IEnumerable<Vector3> pts, float sp, float lk) { foreach (var p in pts) { path.Add(p); speedsAt.Add(sp); looks.Add(lk); } }
+                var li = race.RouteData.lead_in;
+                var lead = new List<Vector3>(); for (int i = 0; i + 1 < li.Length; i += 2) lead.Add(RaceRoute.Ground(li[i], li[i + 1]));
+                Add(lead, roadSpeed, 9f);
+                if (mode == 0) Add(r.SamplePath(0f, r.GateS + r.LapLength + 40f, 4f), roadSpeed, 9f);
+                else
+                {
+                    float s = 0f;
+                    foreach (var t in targets.OrderBy(x => x.leaveLapS))
+                    {
+                        Add(r.SamplePath(s, r.GateS + t.leaveLapS, 4f), roadSpeed, 9f);
+                        Add(t.path.Select(G), t.raceSpeed > 0 ? t.raceSpeed : roadSpeed, 7f);
+                        s = r.GateS + t.rejoinLapS;
+                    }
+                    Add(r.SamplePath(s, r.GateS + r.LapLength + 40f, 4f), roadSpeed, 9f);
+                }
+                while (race.State == RaceController.Stage.Countdown) yield return new WaitForFixedUpdate();
+                drive = path; next = 0; active = true;
+                float t0 = Time.time;
+                while (race.State == RaceController.Stage.Racing && Time.time - t0 < 300f)
+                {
+                    int k = Mathf.Min(next, speedsAt.Count - 1); want = speedsAt[k]; look = looks[k];
+                    if (next >= path.Count - 1) break;
+                    yield return new WaitForFixedUpdate();
+                }
+                active = false; look = 0f;
+                race.Logged -= log;
+                bool finished = race.State == RaceController.Stage.Finished;
+                float lap = race.LapTimes.Count > 0 ? race.LapTimes[0] : 0f;
+                report.AppendLine($"  {(mode == 0 ? "road lap" : "lap by both shortcuts")}: {(finished ? RaceController.Fmt(lap) : "not finished, state " + race.State)}; penalties {race.PenaltyTotal:0} s");
+                foreach (var e in events) report.AppendLine("      " + e);
+                if (mode == 0) { plain = lap; Check("road lap finishes with no penalty", finished && race.PenaltyTotal == 0f, RaceController.Fmt(lap)); }
+                else
+                {
+                    foreach (var t in targets) Check($"race: {t.name} entered and its checkpoint forgiven", events.Any(e => e.Contains("SHORTCUT " + t.id + " entered") && e.Contains("forgiven")), events.FirstOrDefault(e => e.Contains("SHORTCUT " + t.id)) ?? "no event");
+                    Check("race: no penalty on the shortcut lap", finished && race.PenaltyTotal == 0f, $"penalty {race.PenaltyTotal:0} s");
+                    Check("race: the shortcut lap is faster than the road lap", finished && lap < plain, $"{RaceController.Fmt(lap)} against {RaceController.Fmt(plain)}");
+                }
+                race.EndRace();
+                yield return new WaitForFixedUpdate();
+                car.enabled = false;
+            }
+            RaceController.LapsOverride = 0;
+        }
+    }
+}

@@ -5,13 +5,14 @@ namespace ChastainRush
 {
     // Round 6: roads that leave the course are closed while a race runs. The closures are route data (made by
     // Tools/mapgen/make_route.py: one per road that leaves the lap or the lead-in, a little way along it); a closure is
-    // skipped where an official shortcut starts or ends. Each barrier is a row of red and white blocks across the road and
+    // skipped only where it would stand across an official shortcut's line (Round 8: it used to be skipped whenever a
+    // shortcut started or ended within 16 m of the junction, which opened Chasefield Way next to the Two-house drop). Each barrier is a row of red and white blocks across the road and
     // its verge, with colliders, so the car stops. Built when a race starts, removed in free driving (Racer does the same
     // with its authored course barriers, which are switched on only for the race).
     // Layer note: the barrier is on the default layer like the terrain, so it is solid to the car and to its wheel rays.
     public sealed class RaceBarriers : MonoBehaviour
     {
-        public const float Height = 1.5f, Depth = 0.9f, Block = 1.5f, Verge = 3f, ShortcutClearM = 16f;
+        public const float Height = 1.5f, Depth = 0.9f, Block = 1.5f, Verge = 3f, ShortcutClearM = 3f;   // a shortcut's line this close to a barrier: the barrier is left out
         public int Count => built.Count;
         public IReadOnlyList<Barrier> Built => built;
         readonly List<Barrier> built = new List<Barrier>();
@@ -36,11 +37,19 @@ namespace ChastainRush
             if (red == null) { red = Unlit(new Color(0.85f, 0.08f, 0.06f)); white = Unlit(new Color(0.96f, 0.96f, 0.96f)); }
             foreach (var c in route.Closures)
             {
-                var contact = c.contact != null && c.contact.Length >= 2 ? new Vector2(c.contact[0], c.contact[1]) : new Vector2(c.x, c.z);
-                bool shortcutEnd = false;
+                bool blocks = false;
+                var along = new Vector2(c.dx, c.dz).normalized; var across = new Vector2(-along.y, along.x);
+                float half = c.width_m * 0.5f + Verge;
+                Vector2 a = new Vector2(c.x, c.z) - across * half, b = new Vector2(c.x, c.z) + across * half;
                 foreach (var sc in route.Shortcuts)
-                    if (Dist2(contact, sc.Start) < ShortcutClearM || Dist2(contact, sc.End) < ShortcutClearM) shortcutEnd = true;
-                if (shortcutEnd) { Open.Add($"{c.id} {c.label}"); continue; }
+                    for (int i = 0; i + 1 < sc.Path.Length && !blocks; i++)
+                    {
+                        // along the line's segments, every 0.5 m (a path can have long straight segments between its points)
+                        Vector2 p0 = new Vector2(sc.Path[i].x, sc.Path[i].z), p1 = new Vector2(sc.Path[i + 1].x, sc.Path[i + 1].z);
+                        int n = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(p0, p1) / 0.5f));
+                        for (int k = 0; k <= n && !blocks; k++) if (DistToSegment(Vector2.Lerp(p0, p1, k / (float)n), a, b) < ShortcutClearM) blocks = true;
+                    }
+                if (blocks) { Open.Add($"{c.id} {c.label}"); continue; }
                 built.Add(MakeBarrier(c));
             }
         }
@@ -51,7 +60,11 @@ namespace ChastainRush
             built.Clear();
         }
 
-        static float Dist2(Vector2 a, Vector3 b) => Vector2.Distance(a, new Vector2(b.x, b.z));
+        static float DistToSegment(Vector2 p, Vector2 a, Vector2 b)
+        {
+            var ab = b - a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
+            return (a + ab * t - p).magnitude;
+        }
 
         Barrier MakeBarrier(RouteClosureJson c)
         {

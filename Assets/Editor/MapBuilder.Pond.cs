@@ -236,6 +236,25 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ geese
 
+        // Round 8: every goose_honk*.wav / .ogg / .mp3 in Assets/Audio/Geese (Dan's clips). Referenced from the scene, so they
+        // go into the exe; dropping in new clips needs Build Map (or Build Executable) again.
+        public const string GooseAudioDir = "Assets/Audio/Geese";
+        static AudioClip[] LoadHonkClips()
+        {
+            var list = new List<AudioClip>();
+            if (AssetDatabase.IsValidFolder(GooseAudioDir))
+                foreach (var guid in AssetDatabase.FindAssets("t:AudioClip", new[] { GooseAudioDir }))
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(guid), file = System.IO.Path.GetFileName(path).ToLowerInvariant(), ext = System.IO.Path.GetExtension(file);
+                    if (!file.StartsWith("goose_honk") || (ext != ".wav" && ext != ".ogg" && ext != ".mp3")) continue;
+                    var clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+                    if (clip) list.Add(clip);
+                }
+            list.Sort((a, b) => string.CompareOrdinal(a.name, b.name));
+            Debug.Log($"[Pond] goose honk clips: {list.Count} ({string.Join(", ", list.Select(x => x.name))})" + (list.Count == 0 ? " - the geese are silent until clips are added to " + GooseAudioDir : ""));
+            return list.ToArray();
+        }
+
         static void BuildGeese(HoodCtx c, Transform root, float level, Shore shore, int roadShore, Vector2 roadPt, Vector2 pondCentre)
         {
             var hood = c.hood;
@@ -244,6 +263,7 @@ namespace ChastainRush
             gf.material = c.mats.House;
             gf.pondOutline = hood.PondRing.ToArray();
             gf.waterY = level;
+            gf.honkClips = LoadHonkClips();
             Vector3 At(Vector2 p, float? y = null) => new Vector3(p.x, y ?? Ground(c.terrain, p.x, p.y), p.y);
             // bank beside the street (the geese on the bank in the photos, and the ones that wander across the road)
             Vector2 bankA = shore.p[roadShore] + shore.n[roadShore] * 4.0f;

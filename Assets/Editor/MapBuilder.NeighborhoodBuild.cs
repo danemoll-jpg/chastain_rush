@@ -24,7 +24,7 @@ namespace ChastainRush
             public readonly List<(Vector2 a, Vector2 b, float half)> DriveSegs = new List<(Vector2, Vector2, float)>();
             public readonly StringBuilder Log = new StringBuilder();
             public readonly List<ViewPt> Views = new List<ViewPt>();
-            public int Houses, Drives, Mailboxes, Lamps, Hydrants, FencePanels, FenceRuns, CurbMetres, WalkMetres;
+            public int Houses, Drives, Mailboxes, Lamps, Hydrants, FencePanels, FenceRuns, CurbMetres, WalkMetres, ShortcutCleared;
             public float Lift => 0.06f;
             public float Y(float x, float z) => terrain.Height(x, z);
             public bool OnDrive(Vector2 p, float margin)
@@ -94,18 +94,21 @@ namespace ChastainRush
                 if (!chunks.TryGetValue(key, out var mb)) chunks[key] = mb = new MeshBuilder();
                 if (!detailChunks.TryGetValue(key, out var db)) detailChunks[key] = db = new MeshBuilder();
                 h.detail = db;
-                if (!h.dan) BuildHouse(mb, h);
+                if (!h.dan) BuildHouseWithShortcuts(c, mb, db, h);   // Round 8: a house on a shortcut is opened up or given a roof collider
                 // the front yard: round shrubs either side of the entry, as in the photos
                 int shrubs = h.dan ? 0 : 3 + (int)(Hash01(h.seed, 81) * 3f);
                 for (int i = 0; i < shrubs; i++)
                 {
                     float u = Mathf.Lerp(h.garageU1 + 0.6f, h.W / 2 - 0.5f, (i + 0.5f) / shrubs) + (Hash01(h.seed, 82 + i) - 0.5f) * 0.5f;
                     Vector3 p = h.frame.P(u, 0f, h.D / 2 + 0.85f + Hash01(h.seed, 90 + i) * 0.35f);
+                    if (c.hood.InCorridor(new Vector2(p.x, p.z), 1f)) continue;   // Round 8: not on a shortcut's line
                     float gy = c.Y(p.x, p.z), r = 0.55f + 0.35f * Hash01(h.seed, 100 + i);
                     var col = PickOf(ShrubGreens, h.seed, 110 + i);
                     Blob(mb, new Vector3(p.x, gy + 0.05f, p.z), new Vector3(r, r * 0.85f, r), col * 1.15f, col * 0.75f, 8, 4, true, h.seed + i);
                 }
                 // the collider: one box over the footprint (the car never needs to know about eaves and trim)
+                if (c.hood.OpenHouses.ContainsKey(h.index)) { OpenHouseColliders(c, h, colRoot); c.Houses++; BuildDrive(c, h); BuildMailbox(c, h); continue; }
+                if (c.hood.JumpHouses.Contains(h.index)) { c.Houses++; BuildDrive(c, h); BuildMailbox(c, h); continue; }   // Round 8: its own mesh is its collider (a box would stand above the eaves)
                 var go = new GameObject("House " + h.index); go.transform.SetParent(colRoot, false);
                 float hh = h.style == HouseStyle.C ? 3.0f : 5.9f;
                 float yMid = (h.baseY + h.floorY + hh) / 2f;
@@ -191,6 +194,7 @@ namespace ChastainRush
             Vector2 p = q + toHouse * (half + 0.45f + 0.18f + 0.55f) + along * (3.4f + (h.style == HouseStyle.D ? 0f : 0.5f));
             if (c.OnDrive(p, 0.8f)) p = q + toHouse * (half + 1.2f) - along * 4.2f;
             if (c.OnDrive(p, 0.8f) || c.hood.RoadClearance(p) < 0.4f) return;
+            if (c.hood.InCorridor(p, 1f)) return;   // Round 8: no mailbox on a shortcut's line
             if (c.roadIndex.Covers(p, NoRoad, 0.8f)) return;
             float gy = c.Y(p.x, p.y);
             var mb = c.Props.At(p);

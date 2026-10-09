@@ -1,0 +1,25 @@
+shortcut,mode,speed,result,time_s,road_time_s,air_s,flights,longest_flight_s,longest_flight_m,peak_m,worst_landing_tilt_deg,touchdown_pitch_deg,house_hits
+sc2_two_houses,shortcut,12,clean,25.68,35.98,0.46,1,0.30,3.4,0.0,23,-22,
+sc2_two_houses,shortcut,14,clean,22.12,30.92,0.94,1,0.40,5.5,0.0,20,-19,
+sc2_two_houses,shortcut,16,clean,19.66,27.10,1.72,2,0.74,11.4,0.7,16,-15,
+sc2_two_houses,shortcut,18,clean,17.98,24.08,3.26,4,1.04,17.7,1.5,22,-12,
+sc2_two_houses,shortcut,20,clean,16.74,21.74,4.16,5,1.30,24.3,2.2,11,-7,
+sc2_two_houses,shortcut,22,clean,16.10,19.88,4.24,5,1.38,26.8,2.4,15,-8,
+sc2_two_houses,shortcut,24,clean,16.24,18.42,3.14,5,1.02,19.8,0.0,13,-8,
+sc2_two_houses,shortcut,26,clean,15.54,17.28,4.22,5,1.40,27.2,2.5,17,-8,
+sc2_two_houses,shortcut,28,clean,15.42,16.42,4.22,5,1.36,26.4,2.4,16,-8,
+sc2_two_houses,shortcut,30,clean,15.36,15.82,4.30,5,1.44,28.6,2.6,18,-8,
+sc2_two_houses,shortcut,33,clean,15.30,15.28,4.28,5,1.42,27.8,2.6,17,-9,
+sc2_two_houses,shortcut,36,clean,15.34,15.10,4.22,5,1.40,27.4,2.5,18,-8,
+sc6_over_house,shortcut,12,hit a house,19.22,25.72,1.66,2,1.22,14.0,1.1,27,-11,rode on House 1641 roof
+sc6_over_house,shortcut,14,hit a house,17.40,22.12,1.64,2,1.36,17.8,0.6,29,-10,rode on House 1641 roof House 1641 roof @(2811.9,1093.3) at 9 m/s
+sc6_over_house,shortcut,16,hit a house,15.60,19.44,1.86,2,1.34,18.0,1.7,25,-11,rode on House 1641 roof
+sc6_over_house,shortcut,18,clean,13.84,17.28,2.18,1,2.18,32.0,4.5,10,-10,
+sc6_over_house,shortcut,20,clean,13.16,15.72,2.50,1,2.50,40.7,5.9,9,-9,
+sc6_over_house,shortcut,22,clean,12.84,14.52,2.58,1,2.58,42.7,6.2,8,-8,
+sc6_over_house,shortcut,24,hit a house,13.90,13.72,1.86,2,1.34,17.4,1.6,27,-9,rode on House 1641 roof
+sc6_over_house,shortcut,26,hit a house,13.82,13.22,1.86,2,1.36,17.4,1.4,27,-8,rode on House 1641 roof House 1641 roof @(2811.5,1090.5) at 11 m/s
+sc6_over_house,shortcut,28,clean,12.52,12.88,2.54,1,2.54,42.0,6.1,8,-8,
+sc6_over_house,shortcut,30,clean,12.38,12.82,2.64,1,2.58,43.2,6.2,8,-8,
+sc6_over_house,shortcut,33,clean,12.50,13.28,2.66,1,2.54,41.7,6.1,9,-9,
+sc6_over_house,shortcut,36,clean,12.40,13.56,2.96,1,2.78,48.8,7.1,8,-6,

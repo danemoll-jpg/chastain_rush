@@ -616,6 +616,108 @@ New tools: `Tools/mapgen/neighborhood_area.py`, `neighborhood_extras.py`; Editor
 `FenceCheck`; runtime `Assets/Scripts/Neighborhood/` (`BreakableFence`, `Geese`, `FountainSpray`); `PerfCheck -perfRound7`,
 `-perfShadowDist`.
 
+Round 8 status — built and scripted-checked (2026-10-09); NOT yet driven by Dan. Everything was run in this working folder
+(the Editor was not open). Exe: `Builds/ChastainRush/ChastainRush.exe` (208 MB folder, 206.9 MB of game data; built 2026-10-09 14:10), started by `Play Chastain Rush.bat`.
+Screenshots and check reports: `Data/screenshots/round8/` (+ `checks/`).
+
+1. Executable: DONE. `Chastain Rush > Build Executable` / `ChastainRush.PlayerBuild.BuildFromCommandLine` runs Build Map and then
+   builds `Builds/ChastainRush/ChastainRush.exe` (git-ignored, with `BUILD_INFO.txt`). Ported from Racer's `SoloReleaseBuild`
+   (development, script debugging and profiler off; `BuildPipeline.BuildPlayer`; a report beside the exe); Racer's launcher, signing,
+   version numbers and licence copying were not brought over. `Play Chastain Rush.bat` (repo root) is Racer's `Play-Racer.cmd`
+   pointed at the exe. Fullscreen borderless at the desktop resolution, Esc twice quits (the first press shows "Press Esc again to
+   quit"; ignored while the debug menu or a bug comment is open), F2 shows frames per second, the 1% low over 10 s and frame time
+   (`Assets/Scripts/GameShell.cs`, new). Run-time files: the route is embedded in the scene (the Editor still reads `Data/routes`);
+   race records, debug reports, the bump log and `Player.log` go to `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\`
+   (`race_records.json`, `DebugReports\`, `bump_log.txt`); Dan's house, the geese and the fences are in the scene.
+   The exe was run with `-exeCheck` (new `Checks/ExeCheckRunner.cs`: only with that argument), fullscreen at 3840 x 2160 (Dan's desktop resolution on this PC), GTX 1660 Ti, i7-9700, vSync on (so 60 fps is the ceiling):
+   9 of 9 checks passed (`Data/screenshots/round8/exe/exe_check.txt`, screenshots beside it). It STARTS (after one fix below),
+   loads the route, Dan's house, the geese (1 flock) and the fences (25 chunks), and a 3-lap race started with the T-key call ran to
+   the finish: laps 1:22.675, 1:22.617, 1:22.645, no penalties; records went to the check's own file (Dan's are untouched).
+   Frame rate, parked 10 s: entrance 59 fps average, median 60, 99th percentile 30 (33 ms frames); beside the pond 60 / 60 / 60;
+   outside Dan's house 59 / 60 / 30. Driving lap 1 at 15 m/s: 60 fps average and median, 99th percentile 60, one 351 ms hitch in the
+   lap; 60 / 60 / 60 within 60 m of the pond and of Dan's house. So it holds vSync's 60 at 4K with occasional single dropped frames
+   (a 33 ms frame is one missed vSync). Fix found by running it: the first exe crashed on load ("level0 is corrupted"): the fence
+   panels' and the geese's scripts lived in files of another name (`BreakableFence.cs`, `Geese.cs`), which the Editor tolerates and a
+   player build silently drops. Split / renamed to `FenceChunk.cs`, `FencePanel.cs`, `GooseFlock.cs`; Build Executable now fails if
+   a build reports a missing script. The exe pauses when it loses focus (runInBackground off, normal for a game); the check turns
+   that off for itself.
+2. Dan's back yard: DONE. Dan's lot has no fence (also without the exceptions file). Fixed exceptions to the hashed placement live in
+   `local/owner_fences.json` (git-ignored, with the owner data; lots by position, so no house numbers here): the neighbour on the
+   RIGHT of Dan's house seen from the street now has a privacy fence round its back and both sides (so the side line between it and
+   Dan is fenced), and so does the lot BEHIND him at the top of the hill. My reading of "behind, on top of the hill": the highest lot
+   behind his back yard, on the street above (about 53 m back, slightly to the left of straight behind), not the lower lot behind his
+   right-hand neighbour; easy to switch in the local file if I picked the wrong one. The neighbour on the left keeps whatever the hash
+   gives it. Screenshots 10 and 11.
+3. Goose sound: DONE (silent until clips are added). The synthesized honk is gone. Build Map loads every
+   `Assets/Audio/Geese/goose_honk*.wav|ogg|mp3` into the flock (`GooseFlock.honkClips`, so the clips go into the exe); each honk picks
+   one at random, pitch 0.93-1.07, at most 3 playing at once (a fourth is skipped, not cut off). The folder has a README. It is empty,
+   so the geese are silent; after dropping clips in, run Build Executable again. Not heard (no clips; batch runs have no audio).
+4. Two official shortcuts: DONE, scripted only. Data: `Tools/mapgen/make_shortcuts.py` (hand-made design constants, everything else from
+   the terrain and houses; re-run after mapgen) writes `Data/shortcuts/chastain_glen_loop.json` (what the builder builds) and the two
+   `official_shortcuts` of the route file. Builder: `Assets/Editor/MapBuilder.Shortcuts.cs`. Plan of both: `shortcut_layout.png`.
+   **#2 "Two-house drop"** (forgives CP2). a. The line: off the lane 176 m after the gate (just past CP1, so CP1 is still crossed),
+   21 deg left on to a 25 m drive-up ramp (the house sits on the crest, its floor 5.8 m above the ramp's foot), THROUGH house 1763,
+   level to the natural lip 10.5 m behind it, down a built landing ramp INTO house 1627 (both houses are on one straight line, so the
+   jump lines up with the second door), out of its back, one straight 80 m line through the 6.9 m gap between 1615 and 1459, over the
+   crest and between 1602 and 1919 (2.3-3.3 m to the nearest corners), and an arc of radius 13 m (101 deg left) back on to the lane
+   at 544 m. Changed from the candidate: it leaves at 176 m, not 204 (the straight line through both houses meets the lane there); the
+   second half is not the straight cut (that ran into 1459) but the gap line; it rejoins at 544 m, not 528. Line 249 m against 376 m
+   of lap between the same points. b. Both houses opened: a 7.2 m wide passage cut through the house mesh (walls, windows and garage
+   doors clipped, triangle by triangle), 3.7 m high in 1763 and 4.6 m in 1627 (a car that flies long off the lip arrives at 1627's
+   door in the air), with a floor, side walls, a ceiling with a light, baseboards and a picture on each wall; the single box collider
+   is replaced by 0.5 m boxes either side of the passage and one over it. The lip is the real one (8.7 m of fall in 18 m); the
+   landing is a concave ramp from 2 m past the lip into 1627's door, shaped from the flight paths (nose-down landings, pitch -7 to -9
+   deg). Flights 22-24 m, 1.1-1.2 s at 22-36 m/s; not the huge jump hoped for, because 1627 stands 31 m past the lip.
+   **#6 "Rooftop leap"** (forgives CP5). a. Off the lane 729 m after the gate, 25 deg left on to a big kicker in 1641's front yard
+   (18 m long: a 3 m easement, a 21 m-radius curve, then straight at 33 deg to a lip 5.6 m up, 2.5 m before the wall), OVER house 1641
+   diagonally (17 m across, ridge about 9.4 m), on to a landing deck whose front edge runs along 1641's back wall (4.6 m up, under the
+   eaves, so a car that comes off the back of the roof lands on it) and which runs down to the ground 54 m from the house's middle; then
+   a bend right through the 11 m gap between 713 and 1052 and one arc (radius 14 m, 159 deg left) on to the lane at 996 m. Jumped:
+   1641 (the one by the lane, so the run-up is the lane and the landing is in the open back yards). Driven round: 713, passed on its
+   west side, 4.2 m clear. Changed from the candidate: the line is turned 25 deg so the kicker misses 1499 (1.2 m) and the deck misses
+   1622 (1.0 m); it rejoins at 996 m, not 987, through the 713/1052 gap. Lowest speed that clears the roof: 18 m/s arriving at the
+   kicker (1.4 m between the car's underside and the roof at 18-36 m/s). Below that (12-16 m/s) the car rolls over the ridge on its
+   wheels, comes down the roof on to the deck and drives on; it never stopped or got wedged. 1641 has no box collider now: its own mesh
+   is its collider (the box stood 0.25 m above the eaves). Flights 40-49 m, 2.5-2.8 s, peak 6 m above the lip at 20-36 m/s.
+   Both: c./d. Trees, lamps, hydrants, mailboxes and front-yard shrubs are kept 6.5 m off the off-road parts of both lines (14 trees
+   went); fences on the lines stay and break. Barriers: none of the nine stands in a shortcut's way (Chasefield Way's B3 is 12.2 m
+   from #2's line and stays); the rule that left a barrier out whenever a shortcut started within 16 m of its junction was replaced by
+   "out only if the line passes within 3 m of it" (the old rule opened Chasefield Way next to #2). e. Markers (Racer marks its
+   shortcuts with a dirt trail painted into the ground and no arch, BackyardForwardAuthoring): the same dirt trail along both lines,
+   plus this game's checkpoint look in blue: a blue arch with two 80 m blue beams over each entry (beams only while the shortcut can
+   still be used this lap), and a blue chevron sign on the verge 6 m before each turn-off pointing the way (screenshots 01, 07).
+   f. In the route file with `forgives` [2] and [5]; entry planes at 1763's door and at #6's lip (a first plane at the kicker's foot
+   reached back across the lane and fired from the road: caught by the race lap check and fixed). g. Scripted with the real car
+   (`ShortcutCheck.Run`, `checks/shortcut_check.txt`): every speed 12-36 m/s, against the road from the same start at the same speed.
+   #2: clean at all 12 speeds, no bad landing; faster than the road at 12-33 m/s (25.7 against 36.0 s at 12; 15.6 against 18.4 s at
+   24; 15.1 against 15.8 at 30), level at 36. #6: clean at 18-24 and 28-36 m/s, faster than the road at every clean speed (13.8 against
+   17.3 s at 18; 12.7 against 13.7 at 24; 12.3 against 12.8 at 30); at 12-16 and once at 26 (a different line by the script driver)
+   the car rides over the roof and is slower or barely faster; no bad landing (worst tilt 31 deg, rolls never). A one-lap race through
+   both: 1:08.8 against 1:11.5 on the road at the same driving speed, CP2 and CP5 forgiven, no penalty. What the script cannot judge:
+   whether the lines are findable and fun at speed with a pad, and how the jumps feel. The script driver brakes for bends at 14 m/s2
+   of grip; a human can take #2's last arc faster.
+5. Re-run against Round 7: DONE. BumpScan: identical outside the I-575 zone (COLLIDER 5, HUMP 76, MISS 4, STEP 149, serious STEP 1);
+   only the collider list changed (the new ramps and decks). FenceCheck: the same wooden privacy panel as Round 7, 8% speed cost (two
+   panels broke; Round 7: one, 5%), control 2%; picket 3% (a different picket panel: the fence list changed); the car kept moving,
+   no launch, panels restored at race start. RaceCheck (run in batch mode: the windowed
+   Editor did not advance while it was not focused): lap 8/8, 1:22.675 (Round 7: 1:22.676); reverse lap 8/8, 1:22.607 (same);
+   round6 67/67; full 19 of 21, laps 1:22.676, 1:09.256 (TEST shortcut), 1:22.751, identical to Round 7; the two failures are "debug
+   HUD present" and "bump logger present", which never start in batch mode (Round 7 ran this one windowed). Two Round 6 checks
+   failed until fixed: the Round 6 check took Shortcuts[0] as its test shortcut (now found by id), and my new barrier rule measured
+   from path points only, so B4 stayed across the TEST shortcut (now measured along the line). Also fixed while re-running: a
+   ramp corner of each shortcut stood on the lane (#6's kicker 1 m from the lane centre, #2's ramp 3.4 m) and stopped a car driving
+   the plain lap; every ramp is now kept 5 m from the lane centre, #2's ramp starts rising only past that cut and #6's cut edge has a
+   sloped skirt. FenceCheck picked a different panel each run (some starts were inside a house): now a stable pick, and the same
+   privacy panel as Round 7.
+6. Executable rebuilt last: DONE. `Builds/ChastainRush/ChastainRush.exe`, 208 MB folder, 206.9 MB of game data; built 2026-10-09 14:10.
+7. This report: DONE.
+
+Not done / not measured: Dan's drive; real key presses and a pad; any sound (no clips yet); how the shortcuts look to a player at speed
+(screenshots only); frame rate on Dan's own machine (the exe check ran on this PC).
+
+New tools: `make_shortcuts.py`, `MapBuilder.Shortcuts.cs`, `PlayerBuild`, `GameShell`, `ExeCheckRunner`, `ShortcutCheck` /
+`ShortcutCheckRunner`, `Round8Check` / `Round8ShotsRunner`; `RaceBarriers` skip rule; `RaceMarkers` shortcut arches and signs.
+
 Current Objective (Focus Area)
 
 **Round 8 — an executable, two shortcuts, and fixes from Dan's drive.

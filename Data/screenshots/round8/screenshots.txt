@@ -1,0 +1,13 @@
+01_sc2_turnoff_from_lane.png  #2 turn-off: the sign, the blue entry arch at house 1763's door, the drive-up ramp  (camera 3068,305,977)
+02_sc2_house_1763_opening.png  #2: the passage through house 1763  (camera 3075,317,1028)
+03_sc2_inside_1763.png  #2: inside house 1763, the lip and house 1627 ahead  (camera 3071,317,1043)
+04_sc2_lip_landing_and_1627.png  #2: off the lip, the landing ramp runs into house 1627's door  (camera 3065,317,1068)
+05_sc2_drop_side_view.png  #2: the drop between the two houses from the side  (camera 3028,312,1076)
+06_sc2_gap_1615_1459.png  #2: out of 1627 toward the gap between 1615 and 1459  (camera 3052,308,1120)
+07_sc6_turnoff_from_lane.png  #6 turn-off: the kicker over house 1641 from the lane  (camera 2864,293,1136)
+08_sc6_side_view.png  #6: kicker, house 1641 and the landing deck from the side  (camera 2846,313,1070)
+09_sc6_deck_looking_back.png  #6: the landing deck behind the house, looking back at the kicker  (camera 2785,292,1034)
+10_dan_backyard.png  Dan's back yard: no fence on his lot; the neighbour on the right and the lot up the hill are fenced
+11_dan_backyard_high.png  Dan's back yard from above
+12_sc6_in_flight_over_house.png  in flight at 24 m/s: 11.5 m above the ground, 21 m/s  (camera 2842,310,1071)
+13_sc2_in_flight: the car did not pass the point (closest 41.8 m)

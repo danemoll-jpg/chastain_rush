@@ -206,8 +206,9 @@ namespace ChastainRush
             RaceController.LapsOverride = 2;
             race.StartRace(); yield return WaitRacing();
             var r = race.Route; var cps = r.Checkpoints;
-            Check("the route has the test shortcut", r.Shortcuts.Count == 1, r.Shortcuts.Count + " shortcut(s)");
-            var sc = r.Shortcuts[0];
+            // Round 8: the route file now has two official shortcuts of its own; the test one is found by its id
+            var sc = r.Shortcuts.Find(x => x.Id == testShortcut.id);
+            Check("the route has the test shortcut (beside the official ones)", sc != null, r.Shortcuts.Count + " shortcut(s): " + string.Join(", ", r.Shortcuts.Select(x => x.Id)));
             Note($"   shortcut '{sc.Name}': entry plane at ({sc.Entry.Position.x:0},{sc.Entry.Position.z:0}) half width {sc.Entry.HalfWidth:0} m, exit ({sc.Exit.Position.x:0},{sc.Exit.Position.z:0}), forgives CP{sc.FirstForgiven + 1} to CP{sc.LastForgiven + 1}, path {sc.Path.Length} points");
             yield return Cross(r.Gate, 0, 0);
             // lap 1: take the shortcut: enter it (nothing else crossed), then CP4, CP5, finish

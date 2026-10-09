@@ -37,7 +37,7 @@ namespace ChastainRush
         [Header("Set by MapBuilder (Chastain Rush > Build Map)")]
         [TextArea] public string embeddedRouteJson;   // the route file as it was when the scene was built
         public string routeFileName = "chastain_glen_loop.json";
-        public Material gateBlack, gateWhite, nextMaterial, laterMaterial, missedMaterial;
+        public Material gateBlack, gateWhite, nextMaterial, laterMaterial, missedMaterial, shortcutMaterial;
 
         public Stage State { get; private set; } = Stage.Free;
         public RaceRoute Route { get; private set; }

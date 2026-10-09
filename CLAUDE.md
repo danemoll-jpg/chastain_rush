@@ -80,7 +80,21 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   Writes `drive_log.tsv` and screenshots.
 - Owner's house marker: put `{"housenumber": "...", "street": "..."}` in
   `local/owner_house.json` (git-ignored) before running mapgen.
-- No player build yet.
+- Player build (Round 8): Unity menu **Chastain Rush > Build Executable**, or batch:
+  `Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.PlayerBuild.BuildFromCommandLine`
+  It runs Build Map first, then writes `Builds/ChastainRush/ChastainRush.exe` (git-ignored) and `BUILD_INFO.txt`.
+  Start it with `Play Chastain Rush.bat` in the repo root. In the exe: Esc twice quits, F2 frame-rate counter.
+  Records, debug reports, the bump log and `Player.log` go to
+  `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\`. Exe self-check (frame rate at three places,
+  a scripted 3-lap race): `ChastainRush.exe -exeCheck <dir>` writes `exe_check.txt` and screenshots, then quits.
+- Official shortcuts (Round 8): `python Tools/mapgen/make_shortcuts.py [--plot]` writes
+  `Data/shortcuts/chastain_glen_loop.json` (ramps, opened houses, the jumped house, the trail) and the two
+  `official_shortcuts` of the route file; re-run it after mapgen (it reads `Assets/Generated/terrain.r16`), then
+  Build Map. Checks: `ChastainRush.ShortcutCheck.Run -shortcutCheckOut <dir>` (batch; the real car through both
+  shortcuts at 12-36 m/s against the road, plus race laps), `ChastainRush.Round8Check.Run` (screenshots to
+  `Data/screenshots/round8/`). Unity empties the project's `Temp/` on exit: send check output elsewhere.
+- Goose honks: drop `goose_honk*.wav|ogg|mp3` into `Assets/Audio/Geese/`, then Build Map. None there = silent geese.
+- Fence exceptions near Dan's house: `local/owner_fences.json` (git-ignored; format in `MapBuilder.Neighborhood.cs`).
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
@@ -110,9 +124,18 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-Active work is Round 8 in `TODO.md`: a Windows executable Dan can launch, two
-official shortcuts on the Chastain Glen loop (#2 through two houses, #6 over
-a house), no fence in Dan's backyard, and goose honks from audio clips.
+Round 8 (see `TODO.md`, status there) is built and scripted-checked, not yet driven by Dan: a Windows executable
+(`Builds/ChastainRush/ChastainRush.exe`, `Play Chastain Rush.bat`), two official shortcuts on the Chastain Glen
+loop (#2 "Two-house drop" through two opened houses, #6 "Rooftop leap" over house 1641), no fence on Dan's lot
+(fences for the neighbour on his right and the lot behind him), and goose honks from audio clips (none yet).
+
+Imported from Racer in Round 8: the player build follows Racer's `SoloReleaseBuild` (development / debugging /
+profiler off, `BuildPipeline.BuildPlayer`, a build report next to the exe), re-written as `Assets/Editor/PlayerBuild.cs`;
+its launcher, signing, versions and licence copying stayed behind. `Play Chastain Rush.bat` is Racer's `Play-Racer.cmd`
+pointed at the exe instead of a launcher. Shortcut marking: Racer paints a dirt trail into the ground
+(`BackyardForwardAuthoring`, colour 0.38/0.255/0.135); the same trail colour is used here, the blue arch and the
+chevron sign are this game's checkpoint look. `WoodlandRoute`'s entry-plane idea was already in Round 6. Nothing
+else was copied. New: `GameShell.cs`, `ExeCheckRunner.cs`, `MapBuilder.Shortcuts.cs`, `ShortcutCheck*`, `Round8*`.
 
 **From Round 8 on, end every round by rebuilding the executable** and report
 its path, so Dan tests from the exe, not from the Editor.
@@ -123,8 +146,8 @@ so commit any uncommitted work first to keep those edits separate from yours.
 
 Imported from Racer in Round 7: nothing was copied. Dan's house follows Racer's Kyle's-house method (a hand-authored, named object outside
 the rebuilt world; its mesh is `Assets/HandMade/DanHouse/DanHouse.asset`, kept apart from generated data). The breakable fences re-implement
-the idea of Racer's `BreakableProp` (trigger per prop, no impulse on the car) as `Assets/Scripts/Neighborhood/BreakableFence.cs`, with a speed
-cost; the geese's honk is synthesized in code like Racer's `TurkeyVoice`. New: `Geese.cs`, `FountainSpray.cs`; the area is dressed by
+the idea of Racer's `BreakableProp` (trigger per prop, no impulse on the car) as `Assets/Scripts/Neighborhood/FenceChunk.cs` + `FencePanel.cs` (was `BreakableFence.cs`), with a speed
+cost; the geese's honk is synthesized in code like Racer's `TurkeyVoice`. New: `GooseFlock.cs` (was `Geese.cs`), `FountainSpray.cs`; the area is dressed by
 `Assets/Editor/MapBuilder.*.cs` (the builder is now a partial class). Data: `Data/neighborhood/` (made by `Tools/mapgen/neighborhood_area.py`
 and `neighborhood_extras.py`, re-run both after a mapgen run). The Unity project now lists the built-in Particle System module.
 Checks: `ChastainRush.Round7Check.Run` (19 screenshots to `Data/screenshots/round7/`), `ChastainRush.FenceCheck.Run`, `PerfCheck.Run -perfRound7`.

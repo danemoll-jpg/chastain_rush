@@ -1,0 +1,58 @@
+PASS  start: state is Countdown  -  Countdown
+PASS  start: car on the grid  -  0.00 m from the grid point
+PASS  start: car faces the route direction  -  0.0 deg off the grid heading -7.9
+(screenshot 01_countdown requested at 0.8 s, screen 640x480)
+PASS  countdown lasts 3 s  -  3.02 s
+
+Route Chastain Glen loop, direction forward, lap 1247.0 m, 5 checkpoints, run-in 100 m, mode full
+Checkpoints in travel order:
+  CP1 179 m after the gate  (3074,1001)  at Chasefield Way
+  CP2 400 m after the gate  (3117,1200)  on the loop
+  CP3 621 m after the gate  (2931,1176)  at Chasefield Way
+  CP4 710 m after the gate  (2860,1125)  at Chastain Glen Lane
+  CP5 979 m after the gate  (2759,986)  on the loop
+Junctions (m after the gate): 1225 m: Chastain Glen Lane entrance / Chastain Trail; 49 m: Courtfield Trace; 126 m: Glenbarrett Lane; 179 m: Chasefield Way; 286 m: Chastain Glen Lane; 437 m: Chastain Glen Lane; 621 m: Chasefield Way; 710 m: Chastain Glen Lane; 947 m: Chastain Place
+PASS  lap 1: every checkpoint registered, in order  -  passed 1,2,3,4,5
+PASS  lap 1: counted, time recorded  -  1:22.676
+PASS  lap 1: time is plausible for the length  -  82.7 s for 1247 m = 15.1 m/s average
+PASS  the start line starts the clock
+PASS  shortcut lap (Chasefield Way, test shortcut): the entry was recognised  -    105.5  SHORTCUT chasefield_test entered at 95.222: checkpoints 2,3 forgiven
+PASS  shortcut lap: the checkpoints it skips were forgiven
+PASS  shortcut lap: no penalty was given and nothing was missed  -  0 penalties
+PASS  shortcut lap: counted like any other  -  1:09.256
+PASS  shortcut lap: faster than lap 1  -  1:09.256 against 1:22.676
+PASS  race finishes after 3 counted laps  -  3 laps, state Finished
+PASS  finish: total time recorded  -  total 3:54.682 vs sum of laps 3:54.682, penalties 0 s
+PASS  records file written  -  C:/Users/danmo/AppData/Local/Temp/claude/C--Users-danmo-chastain-rush/71e53c6b-e31c-4c96-b5be-fe8cdd595cff/scratchpad/race_full\race_records_full.json
+PASS  records file holds best lap and best total  -  {     "entries": [         {             "key": "Chastain Glen loop|forward|3",             "best_lap": 69.25568389892578,             "best_total": 234.68240356445313         }     ] }
+PASS  best lap = fastest counted lap  -  69.256 vs 69.256
+PASS  leaving the race returns to free driving
+FAIL  debug HUD present during a race
+FAIL  bump logger present
+
+Race events:
+      0.0  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 7 road barriers, 3 official shortcuts
+      3.0  GO
+     10.3  START LINE crossed: clock started
+     22.2  CHECKPOINT 1 at 11.887
+     36.9  CHECKPOINT 2 at 26.668
+     51.6  CHECKPOINT 3 at 41.323
+     57.5  CHECKPOINT 4 at 47.214
+     75.2  CHECKPOINT 5 at 64.885
+     92.9  LAP 1 COUNTED 82.676 (clock 82.676 + penalty 0.0)
+    105.3  CHECKPOINT 1 at 95.022
+    105.5  SHORTCUT chasefield_test entered at 95.222: checkpoints 2,3 forgiven
+    120.6  SHORTCUT chasefield_test left at 110.281
+    126.8  CHECKPOINT 4 at 116.513
+    144.5  CHECKPOINT 5 at 134.203
+    162.2  LAP 2 COUNTED 69.256 (clock 69.256 + penalty 0.0); forgiven CP2,CP3
+    174.1  CHECKPOINT 1 at 163.817
+    188.9  CHECKPOINT 2 at 178.606
+    203.5  CHECKPOINT 3 at 193.263
+    209.4  CHECKPOINT 4 at 199.167
+    227.1  CHECKPOINT 5 at 216.854
+    245.0  LAP 3 COUNTED 82.751 (clock 82.751 + penalty 0.0)
+    245.0  FINISH total 234.682 (clock 234.682 + penalties 0.0); laps 82.676 69.256 82.751
+    245.0  RACE LEFT
+
+2 OF 21 CHECKS FAILED: debug HUD present during a race; bump logger present

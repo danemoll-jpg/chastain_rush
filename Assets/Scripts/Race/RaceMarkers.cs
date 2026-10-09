@@ -9,21 +9,28 @@ namespace ChastainRush
     //   start / finish: a black-and-white chequered arch across the road, always standing (it is a landmark in free driving too);
     //   checkpoints: an arch each, shown only during a race. The NEXT one is bright green with two tall beams you can see
     //   over hills and trees from far down the road; later ones are amber arches; ones skipped this lap are red; passed ones are hidden.
+    //   Round 8, official shortcuts: a BLUE arch with two tall blue beams over the shortcut's entry plane, and a blue chevron
+    //   sign on the verge where its line leaves the road, pointing the way. Shown during a race while the shortcut can still
+    //   be taken this lap (the checkpoints it forgives are not yet passed); dimmed (no beams) once it is of no use.
+    //   (Racer marks its shortcuts with a dirt trail painted into the ground and no arch; the trail is built into the map here
+    //   too, MapBuilder.Shortcuts.cs; the arch and chevron are this game's checkpoint look in the shortcut colour.)
     public sealed class RaceMarkers : MonoBehaviour
     {
         class Arch { public GameObject root; public Renderer[] paint; public GameObject beams; public RaceGate gate; }
         readonly List<Arch> arches = new List<Arch>();
+        readonly List<(Arch arch, GameObject sign, RaceShortcut sc)> shortcutMarks = new List<(Arch, GameObject, RaceShortcut)>();
         Arch finish;
         RaceController race;
-        Material fallbackWhite, fallbackBlack, fallbackNext, fallbackLater, fallbackMissed;
+        Material fallbackWhite, fallbackBlack, fallbackNext, fallbackLater, fallbackMissed, fallbackShortcut;
 
         public void Build(RaceController r)
         {
             race = r;
             for (int i = transform.childCount - 1; i >= 0; i--) Destroy(transform.GetChild(i).gameObject);
-            arches.Clear();
+            arches.Clear(); shortcutMarks.Clear();
             finish = MakeFinish(r.Route.Gate);
             foreach (var g in r.Route.Checkpoints) arches.Add(MakeCheckpoint(g));
+            foreach (var sc in r.Route.Shortcuts) shortcutMarks.Add((MakeShortcutEntry(sc), MakeTurnSign(r.Route, sc), sc));
         }
 
         public void Refresh(RaceController r)
@@ -45,9 +52,67 @@ namespace ChastainRush
                 foreach (var rd in a.paint) rd.sharedMaterial = mat;
                 a.beams.SetActive(next);
             }
+            foreach (var (arch, sign, sc) in shortcutMarks)
+            {
+                bool show = racing && r.State != RaceController.Stage.Finished;
+                bool useful = show && sc.LastForgiven >= r.NextCheckpoint;
+                arch.root.SetActive(show);
+                if (sign) sign.SetActive(show);
+                arch.beams.SetActive(useful);
+            }
         }
 
         // ------------------------------------------------------------ pieces
+
+        Arch MakeShortcutEntry(RaceShortcut sc)
+        {
+            var g = sc.Entry;
+            var root = new GameObject("Shortcut entry " + sc.Id);
+            root.transform.SetParent(transform, false);
+            root.transform.SetPositionAndRotation(g.Position, Quaternion.LookRotation(g.Forward, Vector3.up));
+            var paint = new List<Renderer>();
+            float h = 6.5f, half = Mathf.Min(g.HalfWidth, 5.5f);
+            paint.Add(Box(root.transform, new Vector3(-half, h / 2f, 0), new Vector3(0.7f, h, 0.7f), Shortcut));
+            paint.Add(Box(root.transform, new Vector3(half, h / 2f, 0), new Vector3(0.7f, h, 0.7f), Shortcut));
+            paint.Add(Box(root.transform, new Vector3(0, h - 0.5f, 0), new Vector3(half * 2f, 1.0f, 0.4f), Shortcut));
+            var beams = new GameObject("Beams"); beams.transform.SetParent(root.transform, false);
+            foreach (float side in new[] { -1f, 1f })
+                paint.Add(Box(beams.transform, new Vector3(side * half, 40f, 0), new Vector3(0.8f, 80f, 0.8f), Shortcut));
+            return new Arch { root = root, paint = paint.ToArray(), beams = beams, gate = g };
+        }
+
+        // A chevron sign on the verge where the shortcut's line leaves the road, facing the oncoming driver, pointing its way.
+        GameObject MakeTurnSign(RaceRoute route, RaceShortcut sc)
+        {
+            Vector3 leave = sc.Path[0]; float bestS = 0f;
+            for (int i = 0; i < sc.Path.Length; i++)
+            {
+                float d = float.MaxValue, sAt = 0f;
+                for (float s = 0; s < route.LapLength; s += 2f) { var q = route.PointAt(s, out _); float dd = Flat(q - sc.Path[i]).sqrMagnitude; if (dd < d) { d = dd; sAt = s; } }
+                if (Mathf.Sqrt(d) > 6.5f) { leave = sc.Path[i]; bestS = sAt; break; }
+            }
+            var p = route.PointAt(bestS, out var fwd);
+            Vector3 right = Vector3.Cross(Vector3.up, fwd).normalized;
+            float side = Mathf.Sign(Vector3.Dot(leave - p, right));
+            var root = new GameObject("Shortcut sign " + sc.Id);
+            root.transform.SetParent(transform, false);
+            var at = RaceRoute.Ground(leave.x, leave.z) - fwd * 6f;   // a little before the turn-off
+            root.transform.SetPositionAndRotation(at, Quaternion.LookRotation(fwd, Vector3.up));
+            Box(root.transform, new Vector3(0, 1.2f, 0), new Vector3(0.25f, 2.4f, 0.25f), White);
+            Box(root.transform, new Vector3(0, 3.3f, 0.05f), new Vector3(3.4f, 1.8f, 0.15f), White);
+            for (int k = 0; k < 2; k++)
+            {
+                float x = (-0.7f + k * 1.1f) * side;
+                foreach (float up in new[] { -1f, 1f })
+                {
+                    var arm = Box(root.transform, new Vector3(x, 3.3f + up * 0.32f, -0.05f), new Vector3(0.95f, 0.28f, 0.1f), Shortcut).transform;
+                    arm.localRotation = Quaternion.Euler(0f, 0f, -up * side * 40f);
+                }
+            }
+            return root;
+        }
+
+        static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
 
         Arch MakeCheckpoint(RaceGate g)
         {
@@ -108,6 +173,7 @@ namespace ChastainRush
         Material Next => race.nextMaterial ? race.nextMaterial : (fallbackNext ??= Unlit(new Color(0.35f, 1f, 0.2f)));
         Material Later => race.laterMaterial ? race.laterMaterial : (fallbackLater ??= Unlit(new Color(1f, 0.62f, 0.1f)));
         Material Missed => race.missedMaterial ? race.missedMaterial : (fallbackMissed ??= Unlit(new Color(0.9f, 0.1f, 0.1f)));
+        Material Shortcut => race.shortcutMaterial ? race.shortcutMaterial : (fallbackShortcut ??= Unlit(new Color(0.15f, 0.65f, 1f)));
         static Material Unlit(Color c)
         {
             var sh = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");

@@ -22,7 +22,7 @@ namespace ChastainRush
 
         struct RoadSeg { public Vector2 a, b; public float half; public int road; }
 
-        sealed class Neighborhood
+        sealed partial class Neighborhood
         {
             public AreaJson Area;
             public ExtrasJson Extras;
@@ -63,6 +63,7 @@ namespace ChastainRush
                 n.Extras = File.Exists(extraPath) ? JsonUtility.FromJson<ExtrasJson>(File.ReadAllText(extraPath)) : new ExtrasJson();
                 n.Present = true;
                 n.Plan();
+                n.LoadShortcuts();   // after Plan: the corridor leaves out the stretches of the line that run on a street
                 return n;
             }
 
@@ -234,11 +235,40 @@ namespace ChastainRush
             // back is on the pond get a low picket fence instead, and a white three-rail fence follows the road on the pond
             // side. The pool gets a black iron fence. A segment is dropped wherever it would cross a house, road, drive or water.
 
+            // Round 8: fixed exceptions to the hashed placement, from Dan (2026-10-09): no fence on his own lot, a fence for
+            // the neighbour on his right (seen from the street) and for the lot behind him at the top of the hill. They are
+            // stored with the owner data in local/owner_fences.json (git-ignored: it locates his house), by house position:
+            //   {"no_fence": [{"x": .., "z": ..}], "fence": [{"x": .., "z": ..}, ...]}   (each matched to the nearest area house within 8 m)
+            [Serializable] class FencePoint { public float x, z; public string note; }
+            [Serializable] class FenceExceptions { public FencePoint[] no_fence; public FencePoint[] fence; }
+            public readonly HashSet<int> NoFence = new HashSet<int>(), ForceFence = new HashSet<int>();
+
+            void LoadFenceExceptions()
+            {
+                if (Dan != null) NoFence.Add(Dan.index);   // Dan has no fence even without the file
+                string path = Path.Combine(ProjectRoot, "local/owner_fences.json");
+                if (!File.Exists(path)) { Debug.Log("[Neighborhood] no local/owner_fences.json: only Dan's own lot is an exception to the fence placement"); return; }
+                var ex = JsonUtility.FromJson<FenceExceptions>(File.ReadAllText(path));
+                HouseSpec Match(FencePoint fp)
+                {
+                    HouseSpec best = null; float bd = 8f;
+                    foreach (var h in Houses) { float d = (h.footprintCentre - new Vector2(fp.x, fp.z)).magnitude; if (d < bd) { bd = d; best = h; } }
+                    if (best == null) Debug.LogWarning($"[Neighborhood] owner_fences.json: no area house within 8 m of ({fp.x:0.0}, {fp.z:0.0})");
+                    return best;
+                }
+                if (ex.no_fence != null) foreach (var fp in ex.no_fence) { var h = Match(fp); if (h != null) NoFence.Add(h.index); }
+                if (ex.fence != null) foreach (var fp in ex.fence) { var h = Match(fp); if (h != null) { ForceFence.Add(h.index); NoFence.Remove(h.index); } }
+                Debug.Log($"[Neighborhood] fence exceptions from local/owner_fences.json: {NoFence.Count} lot(s) without a fence, {ForceFence.Count} with one");
+            }
+
             void PlanFences()
             {
+                LoadFenceExceptions();
                 foreach (var h in Houses)
                 {
-                    if (Hash01(h.seed, 71) > 0.62f && !h.dan) continue;
+                    bool forced = ForceFence.Contains(h.index);
+                    if (NoFence.Contains(h.index)) continue;
+                    if (Hash01(h.seed, 71) > 0.62f && !forced) continue;
                     var f = new Vector2(h.frame.F.x, h.frame.F.z); var r = new Vector2(h.frame.R.x, h.frame.R.z);
                     Vector2 P(float u, float v) => h.footprintCentre + r * u + f * v;
                     // side lines midway to the neighbours (or a default), measured along the facade
@@ -265,10 +295,10 @@ namespace ChastainRush
                     var rearC = P(0f, -h.D / 2 - rear);
                     bool pond = DistToPond(rearC) < 22f;
                     FenceKind kind = pond ? FenceKind.Picket : FenceKind.Privacy;
-                    if (pond && Hash01(h.seed, 72) > 0.55f) continue;                  // a few lots by the pond, not all
+                    if (pond && Hash01(h.seed, 72) > 0.55f && !forced) continue;                  // a few lots by the pond, not all
                     var run = new FenceRun { kind = kind, seed = h.seed };
                     bool sideLeft = Hash01(h.seed, 73) < 0.5f, sideRight = Hash01(h.seed, 74) < 0.5f;
-                    if (pond) { sideLeft = sideRight = true; }
+                    if (pond || forced) { sideLeft = sideRight = true; }   // a fixed exception gets the rear and both sides
                     float vSide = h.D / 2 - 1.5f;
                     if (sideLeft) run.pts.Add(P(-sideL, vSide));
                     if (sideLeft) run.pts.Add(P(-sideL, -h.D / 2 - rear)); else run.pts.Add(P(-sideL, -h.D / 2 - rear));
@@ -276,6 +306,12 @@ namespace ChastainRush
                     if (sideRight) run.pts.Add(P(sideR, vSide));
                     Fences.Add(run);
                 }
+                foreach (var h in Houses)
+                    if (ForceFence.Contains(h.index) || NoFence.Contains(h.index))
+                    {
+                        var run = Fences.Find(f => f.seed == h.seed && (f.kind == FenceKind.Privacy || f.kind == FenceKind.Picket));
+                        Debug.Log($"[Neighborhood] fence exception, house {h.index}: " + (run != null ? $"{run.kind} fence, {run.pts.Count - 1} side(s)" : "no fence") + (ForceFence.Contains(h.index) && run == null ? " (WANTED one, but no clear rear line was found)" : ""));
+                    }
                 AddRoadSideRail();
                 AddPoolFence();
                 foreach (var run in Fences) for (int i = 0; i + 1 < run.pts.Count; i++) fenceSegs.Add((run.pts[i], run.pts[i + 1]));
@@ -357,6 +393,7 @@ namespace ChastainRush
                 }
                 if (InRing(p, ParkingRing) || InRing(p, PlaygroundRing)) return true;
                 if (PondRing.Count > 2 && DistToPond(p) < 2.5f) return true;
+                if (InCorridor(p)) { TreesCleared++; return true; }   // Round 8: nothing grows on a shortcut's line
                 foreach (var dsc in discs) if ((p - dsc.c).sqrMagnitude < dsc.r * dsc.r) return true;
                 return false;
             }

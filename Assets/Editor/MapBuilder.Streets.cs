@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 // Round 7: concrete curbs, sidewalks with a grass strip, street lamps, hydrants, the white rail / wooden / picket / iron
-// fences (breakable, see Scripts/Neighborhood/BreakableFence.cs) and the planted entrance island with its two signs.
+// fences (breakable, see Scripts/Neighborhood/FenceChunk.cs) and the planted entrance island with its two signs.
 namespace ChastainRush
 {
     public static partial class MapBuilder
@@ -88,6 +88,7 @@ namespace ChastainRush
                         int k = Array.FindIndex(arc, a => a >= s0); if (k < 1) continue;
                         Vector2 p = Vector2.Lerp(pts[k - 1], pts[k], Mathf.InverseLerp(arc[k - 1], arc[k], s0)) + nrm[k] * side * (hw + 1.3f);
                         if (c.roadIndex.Covers(p, r, 2.5f) || c.OnDrive(p, 1.2f) || hood.DistToPond(p) < 3f || Neighborhood.InRing(p, hood.ParkingRing)) continue;
+                        if (hood.InCorridor(p, 1.5f)) { c.ShortcutCleared++; continue; }   // Round 8: no lamp on a shortcut's line
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
                         float gy = Ground(c.terrain, p.x, p.y);
@@ -105,6 +106,7 @@ namespace ChastainRush
                         int k = Array.FindIndex(arc, a => a >= s0); if (k < 1) continue;
                         Vector2 p = Vector2.Lerp(pts[k - 1], pts[k], Mathf.InverseLerp(arc[k - 1], arc[k], s0)) + nrm[k] * side * (hw + 1.1f);
                         if (c.roadIndex.Covers(p, r, 2.5f) || c.OnDrive(p, 1.5f) || hood.DistToPond(p) < 3f) continue;
+                        if (hood.InCorridor(p, 1.5f)) { c.ShortcutCleared++; continue; }   // Round 8: no hydrant on a shortcut's line
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
                         Hydrant(c.Props.At(p), new Vector3(p.x, Ground(c.terrain, p.x, p.y), p.y), Hash01(ri, 142 + k));
