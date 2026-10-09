@@ -86,10 +86,16 @@ trees, roofed and coloured houses, driveways, road paint, sky and fog. Round 4
 (see `TODO.md`) found the road bumps with a collider scan and fixed them in
 mapgen, and added the on-screen coordinates, bug capture (F3 / F4 / F6) and the
 automatic bump log (`local/bump_log.txt`). Round 4 is closed. Round 5 (see
-`TODO.md`) is built and scripted-checked, not yet driven by Dan: the first race
+`TODO.md`) is built and driven by Dan: the first race
 route, a 3-lap loop around Chastain Glen Lane with checkpoints and a timer, laid
 over the one world as data (`Data/routes/chastain_glen_loop.json`). No rivals,
-and Racer's race systems are not imported.
+and Racer's race systems are not imported. Dan keeps this game's checkpoint
+LOOK (arches, lit next checkpoint with beams, HUD arrow) but wants Woodstock
+Rush's RULES: time penalties for missed checkpoints, forgiveness on official
+shortcuts, and side roads blocked during a race. The loop is a real course,
+likely the starter race. Active work is Round 6 in `TODO.md`: those rules,
+forgiving gates, blocked roads, and a report-only list of backyard shortcut
+candidates.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

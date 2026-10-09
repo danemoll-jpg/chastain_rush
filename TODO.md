@@ -11,6 +11,24 @@ lifts the car evenly is part of the fun. Only awkward bumps get removed: ones
 that tilt the car sideways, hit one wheel track, or come from data spikes and
 mismatched junctions, and so spin the car out of control.
 
+**Checkpoints — DECIDED (2026-10-08), corrected the same day.** Keep the
+Round 5 LOOK: arch markers, the next checkpoint lit with tall beams, and the
+arrow and distance on the HUD. Dan prefers these to Woodstock Rush's arrows
+on the ground. Keep Woodstock Rush's RULES: a missed checkpoint costs a time
+penalty (the lap still counts), and taking an official shortcut forgives the
+checkpoints it skips. (An earlier note here said the Round 5 rules were kept
+and Racer's penalties dropped. That was Claude's misreading and is wrong.)
+
+**Races — DECIDED (2026-10-08): the Chastain Glen loop is a real course**, most
+likely the starter race because it is short (1247 m a lap).
+
+**Shortcuts — DECIDED (2026-10-08): the same kind of system as Woodstock
+Rush.** Official shortcuts run through backyards, with jumps, including over
+houses or even through them. They should be challenging, rewarding and fun,
+with huge jumps where the land allows. A shortcut does not need checkpoints
+of its own. Roads that are not part of the course are blocked off during a
+race, unless they are part of an official shortcut.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -319,8 +337,12 @@ is still untested by a real key press.
 New tools: `BumpScan`, `HudCheck` / `HudCheckRunner`, `RoadLookup`,
 `DeveloperHud`, `BumpLogger`, `DebugReportSession`.
 
-Round 5 status — built and scripted-checked (forward and reverse), NOT yet
-driven by Dan. I did not press T / X or use a pad myself; the check calls the
+Round 5 status — built, scripted-checked (forward and reverse), and DRIVEN
+by Dan on his PC (2026-10-08). His verdict: fun for a first pass, and he
+likes this checkpoint handling better than Woodstock Rush's. One problem: he
+crossed the finish line at its very edge and it did not count until he
+backed up and drove through nearer the centre (Current Objective).
+Original coding-pass note follows. I did not press T / X or use a pad myself; the check calls the
 same functions the keys call. The loop matched the road data, so nothing was
 changed from the route Dan confirmed.
 
@@ -422,55 +444,77 @@ New tools: `make_route.py`, `RaceCheck` / `RaceCheckRunner`, `RaceRoute`,
 
 Current Objective (Focus Area)
 
-**Round 5 — first race route: the Chastain Glen loop. DECIDED (2026-10-08). Built, waiting for Dan's drive (status above); the brief is kept below.**
-Dan chose a loop around Chastain Glen Lane. This is the first thing that makes
-the map a game, so keep it simple: one route, one car, a clock. No rivals.
+**Round 6 — race rules as in Woodstock Rush, forgiving gates, blocked side
+roads, and shortcut candidates.** The Round 5 look stays; the rules change.
 
-The loop, from `Data/map.json` (checked by Claude, planning): Chastain Glen
-Lane is not a closed loop by itself. Its long piece (979 m) runs from the
-Glenbarrett Lane junction at about x 3060, z 951 round to the Courtfield
-Trace junction at about x 2868, z 1048, and Chastain Trail links back from
-about x 2808, z 1008 to the junction near the entrance at about x 2940,
-z 877. Lap, CONFIRMED by Dan (closing via Chastain Trail): start just inside the entrance, north to the Chastain
-Trail junction, along Chastain Glen Lane past Glenbarrett Lane and all the
-way round the long piece, then back down Chastain Trail to the same junction.
-Expected lap length roughly 1.2 km. If the geometry says otherwise, say so
-and propose the nearest sensible loop; do not silently change the route.
-
-1. Look at how Racer defines a course (route, checkpoints, start grid) and
-   report it in a few lines. Do not import Racer's race systems this round
-   (RaceDirector, RaceFlow, Campaign and the rest stay deferred), but keep
-   the route data in a shape they could read later where that is cheap.
-2. Define the route as data laid over the one world (an ordered list of road
-   pieces or waypoints in a file under `Data/routes/`), not as a copy of the
-   map. Report the lap length and the junctions it passes.
-3. Start/finish line and checkpoints: a visible start/finish gate and visible
-   checkpoint markers at each junction and bend where a shortcut is possible.
-   The next checkpoint should be obvious from the driver's seat.
-4. Race flow: a 3-2-1 countdown, 3 laps, a lap timer and total timer on
-   screen, lap count, and a finish screen with total and best lap. Missing a
-   checkpoint must not count the lap; show which one was missed. A key to
-   restart the race, and the car starts on the grid facing the right way.
-5. Save the best lap and best total to a git-ignored file and show them.
-6. Free driving must still work: racing is something Dan starts with a key,
-   and the debug panel, bug capture and bump log keep working during a race.
-7. Make the direction a setting, so the reverse lap is a one-line change.
-8. Scripted check: drive the route by script for one lap and confirm every
-   checkpoint registers in order and the lap time is recorded.
+1. Gate edge bug: find why a crossing at the edge of the finish line did not
+   count. Report the gate's real width against the road and verge there, and
+   whether the test uses the car's centre or its body.
+2. Make every gate forgiving: crossing anywhere on the road, the verge, or a
+   reasonable way onto the grass beside it counts, at any angle, the finish
+   line most of all. Report the old and new width of each gate. Make the
+   visible markers match the counted width.
+3. Read how Racer handles these three things and report each in a few lines
+   before changing anything: (a) the penalty for a missed checkpoint, (b)
+   checkpoint forgiveness when an official shortcut is taken, including how a
+   shortcut is defined and detected, (c) how roads that are not part of a
+   course are blocked off.
+4. Change the rules here to match Racer: a missed checkpoint adds Racer's
+   time penalty and the lap still counts (remove "this lap will not count"
+   and the re-run lap). Show the penalty on the HUD when it is given and on
+   the finish panel. Port Racer's logic where it fits; keep this game's
+   markers, beams and HUD arrow.
+5. Official shortcuts in the route data: add them to the route file format
+   the way Racer defines them (entry, exit, and which checkpoints each one
+   forgives), and make the race logic honour them. No shortcut exists yet, so
+   prove it with one temporary test shortcut in the scripted check only.
+6. Blocked roads: while a race is running, close every road that leaves the
+   course and is not part of an official shortcut, with a visible barrier
+   that stops the car. Barriers appear at race start and go away in free
+   driving. List the junctions blocked. This closes the Chasefield Way and
+   Courtfield Trace road shortcuts.
+7. Shortcut candidates, REPORT ONLY, build nothing. Dan wants backyard routes
+   with jumps, over or even through houses, challenging and rewarding, with
+   huge jumps where possible. Use the elevation data to find them: look for
+   places where the lap doubles back near itself with a drop, a bank or a
+   slope between that could launch the car, and for gaps between houses and
+   through woods. List six to eight. For each: where it leaves and rejoins the
+   lap, the height difference, what is in the way (houses, trees, water),
+   which checkpoints it would skip, the distance saved, and what would be
+   built (a ramp, a gap in a fence, a path, an open house to drive through).
+   Save an overhead image of the loop with checkpoints and numbered
+   candidates to `Data/screenshots/round6/`.
+8. Scripted check: each gate crossed at both edges and at 45 degrees counts; a
+   missed checkpoint gives the penalty and the lap counts; the test shortcut
+   forgives its checkpoints; a blocked road stops the car.
 9. Report status for every item: done / not done / deferred, and why.
 
-Out of scope for this round: rivals, traffic, multiple routes, menus, tree
-collision, and anything on the map itself.
+Out of scope for this round: building any shortcut, tree collision, rivals.
 
 What Dan will judge when driving it:
-* Is the loop the right one, and the right direction?
-* Is a lap fun, and about the right length?
-* Are the checkpoints easy to follow at speed?
-* Would he rather race into trees that stop the car (tree collision next)?
+* Does every gate count when it looks like it should?
+* Do penalties feel right?
+* Do the barriers make the course clear without getting in the way?
+* Which shortcut candidates does he want built?
 
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
+* **Round 7, planned — beautify Chastain Glen only. DECIDED (2026-10-08).**
+  Dan wants a round that makes his own neighborhood look good, as a start,
+  before the rest of the map. He has photos of his house, the front of the
+  neighborhood, and the house styles found in it. Only his house has to be
+  accurate; the others can be fudged from a few styles. Photos go in
+  `local/reference_photos/` (git-ignored, so they never reach a public repo):
+  `my_house/`, `entrance/`, `house_styles/`. Scope to settle when the photos
+  are in: his house hand-built from the photos; the entrance (island
+  planting, white rail fence, sign if there is one); three to five house
+  styles applied across Chastain Glen; sidewalks, curbs, mailboxes and
+  fences if they show in the photos. Waiting on: the photos.
+* **Then: build the chosen shortcuts for the Chastain Glen loop.** Do this
+  after Round 7, not before: shortcuts go through backyards and over or
+  through houses, so they should be built against the final houses and
+  fences, not the placeholder boxes.
 * If hills still read flat at a height setting that drives well: a lower chase
   camera and narrower field of view, before raising the scale further.
 * Growing the map further north needs a second elevation tile (the current
@@ -480,7 +524,8 @@ Next Steps (Do Not Start Yet)
   and I-575 has no real ramps. Dan expects that edge of the map may not be in
   the final game, so decide whether to trim the west edge east of I-575
   before spending any work on it. Open, not urgent.
-* Tree collision: the car drives through trees.
+* Tree collision: the car drives through trees. This matters once backyard
+  shortcuts exist, since woods are otherwise a free cut-through.
 * Bump log: it counts the car as on a road up to about 5 m from the
   centreline, so off-road driving beside a road gets logged as a road bump.
   Tighten it to the road's real half-width when the log is next used.
@@ -489,8 +534,8 @@ Next Steps (Do Not Start Yet)
 * Houses missing from OSM, found by comparing against NAIP imagery.
 * The untagged-bridge logic from Round 2 is untested on real data; check it
   the first time the map grows into an area that has such a crossing.
-* Hand-built versions of the houses that matter, from photos, as was done for
-  Kyle's house in Woodstock Rush.
+* Hand-built versions of other houses that matter, from photos, as was done
+  for Kyle's house in Woodstock Rush. (Dan's own house is in Round 7.)
 * Hand detailing of the Chastain Glen entrance. Dan confirmed from photos
   (2026-10-08) that the divided entrance with a median island is real, so the
   generated layout there is correct. Missing against the photos: trees and
