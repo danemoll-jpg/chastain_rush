@@ -4,8 +4,13 @@
  "laps": 3,
  "gate_after_junction_m": 22.0,
  "reverse_grid_back_m": 45.0,
- "gate_half_width_m": 9.0,
- "checkpoint_half_width_m": 11.0,
+ "gate_half_width_m": 16.0,
+ "checkpoint_half_width_m": 14.0,
+ "gate_below_m": 6.0,
+ "gate_above_m": 25.0,
+ "closure_clear_m": 12.0,
+ "closure_min_branch_m": 14.0,
+ "closure_extra_width_m": 6.0,
  "max_checkpoint_gap_m": 330.0,
  "min_checkpoint_gap_m": 60.0,
  "source": "Tools/mapgen/make_route.py from Data/map.json. Coordinates are map metres (= Unity x, z); heights come from the world.",
@@ -436,5 +441,196 @@
    ],
    "label": "on the loop"
   }
- ]
+ ],
+ "closures": [
+  {
+   "road": "Courtfield Trace",
+   "osm_id": 9132885,
+   "x": 2982.34,
+   "z": 939.05,
+   "dx": -0.4005,
+   "dz": 0.9163,
+   "width_m": 8.0,
+   "junction_s": 71.3,
+   "contact": [
+    2987.3,
+    927.8
+   ],
+   "arc_m": 12.3,
+   "barrier_on": "Courtfield Trace",
+   "id": "B1",
+   "label": "Courtfield Trace at lap 71 m"
+  },
+  {
+   "road": "Glenbarrett Lane",
+   "osm_id": 9149195,
+   "x": 3069.87,
+   "z": 943.26,
+   "dx": 0.9023,
+   "dz": -0.431,
+   "width_m": 8.0,
+   "junction_s": 148.3,
+   "contact": [
+    3060.0,
+    950.7
+   ],
+   "arc_m": 12.5,
+   "barrier_on": "Glenbarrett Lane",
+   "id": "B2",
+   "label": "Glenbarrett Lane at lap 148 m"
+  },
+  {
+   "road": "Chasefield Way",
+   "osm_id": 9124483,
+   "x": 3062.23,
+   "z": 1004.52,
+   "dx": -0.8803,
+   "dz": 0.4744,
+   "width_m": 8.0,
+   "junction_s": 200.7,
+   "contact": [
+    3073.8,
+    1001.1
+   ],
+   "arc_m": 12.1,
+   "barrier_on": "Chasefield Way",
+   "id": "B3",
+   "label": "Chasefield Way at lap 201 m"
+  },
+  {
+   "road": "Chasefield Way",
+   "osm_id": 9124483,
+   "x": 2936.29,
+   "z": 1164.99,
+   "dx": 0.267,
+   "dz": -0.9637,
+   "width_m": 8.0,
+   "junction_s": 642.6,
+   "contact": [
+    2931.3,
+    1176.4
+   ],
+   "arc_m": 12.5,
+   "barrier_on": "Chasefield Way",
+   "id": "B4",
+   "label": "Chasefield Way at lap 643 m"
+  },
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 9132884,
+   "x": 2857.84,
+   "z": 1113.22,
+   "dx": -0.1089,
+   "dz": -0.9941,
+   "width_m": 8.0,
+   "junction_s": 732.3,
+   "contact": [
+    2859.6,
+    1125.3
+   ],
+   "arc_m": 12.3,
+   "barrier_on": "Chastain Glen Lane",
+   "id": "B5",
+   "label": "Chastain Glen Lane at lap 732 m"
+  },
+  {
+   "road": "Chastain Place",
+   "osm_id": 9131065,
+   "x": 2721.67,
+   "z": 982.1,
+   "dx": -0.5484,
+   "dz": -0.8362,
+   "width_m": 8.0,
+   "junction_s": 969.0,
+   "contact": [
+    2728.3,
+    992.3
+   ],
+   "arc_m": 12.2,
+   "barrier_on": "Chastain Place",
+   "id": "B6",
+   "label": "Chastain Place at lap 969 m"
+  },
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 9134737,
+   "x": 2818.15,
+   "z": 1013.56,
+   "dx": 0.8807,
+   "dz": 0.4736,
+   "width_m": 8.0,
+   "junction_s": 1054.6,
+   "contact": [
+    2807.6,
+    1007.9
+   ],
+   "arc_m": 12.0,
+   "barrier_on": "Chastain Glen Lane",
+   "id": "B7",
+   "label": "Chastain Glen Lane at lap 1055 m"
+  },
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 1360406930,
+   "x": 2928.99,
+   "z": 791.95,
+   "dx": 0.1244,
+   "dz": -0.9922,
+   "width_m": 8.0,
+   "junction_s": -1.0,
+   "contact": [
+    2933.4,
+    852.2
+   ],
+   "arc_m": 62.4,
+   "barrier_on": "Chastain Glen Lane",
+   "id": "B8",
+   "label": "Chastain Glen Lane at the entrance"
+  },
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 1161774882,
+   "x": 2940.42,
+   "z": 786.94,
+   "dx": 0.1392,
+   "dz": -0.9903,
+   "width_m": 8.0,
+   "junction_s": -1.0,
+   "contact": [
+    2938.5,
+    800.3
+   ],
+   "arc_m": 13.5,
+   "barrier_on": "Chastain Glen Lane",
+   "id": "B9",
+   "label": "Chastain Glen Lane at the entrance"
+  }
+ ],
+ "closure_stubs_not_barred": [
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 1074360535,
+   "contact": [
+    3099.1,
+    1232.0
+   ]
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 1161774881,
+   "contact": [
+    2938.5,
+    800.3
+   ]
+  },
+  {
+   "road": "Chastain Glen Lane",
+   "osm_id": 1360406924,
+   "contact": [
+    3131.5,
+    1089.2
+   ]
+  }
+ ],
+ "official_shortcuts": []
 }

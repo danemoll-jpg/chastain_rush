@@ -54,9 +54,12 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   windowed, for the real Game view), `ScreenshotCheck.Run` (Round 3 shots to
   `Data/screenshots/round3/`),
   `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`,
-  `RaceCheck.Run -raceCheck lap|full [-raceDirection reverse] -raceCheckOut <dir>`
+  `RaceCheck.Run -raceCheck lap|full|round6 [-raceDirection reverse] -raceCheckOut <dir>`
   (windowed Editor run, not -batchmode: drives the race route by script, writes
-  `race_check_*.txt` and screenshots with the HUD).
+  `race_check_*.txt` / `round6_check.txt` and screenshots with the HUD; `round6` moves the car across
+  every gate by hand through the real RaceController and tests penalties, a TEST shortcut and barriers;
+  these cannot run while the Editor has the project open: use a copy of the folder),
+  `python Tools/mapgen/shortcut_candidates.py` (report only: backyard shortcut candidates, overhead image).
 - Race route: `python Tools/mapgen/make_route.py` writes
   `Data/routes/chastain_glen_loop.json` from `Data/map.json` (route road pieces
   are listed in the script by OSM id; re-run it after every mapgen run, then
@@ -93,9 +96,11 @@ and Racer's race systems are not imported. Dan keeps this game's checkpoint
 LOOK (arches, lit next checkpoint with beams, HUD arrow) but wants Woodstock
 Rush's RULES: time penalties for missed checkpoints, forgiveness on official
 shortcuts, and side roads blocked during a race. The loop is a real course,
-likely the starter race. Active work is Round 6 in `TODO.md`: those rules,
-forgiving gates, blocked roads, and a report-only list of backyard shortcut
-candidates.
+likely the starter race. Round 6 (see `TODO.md`) is built and scripted-checked, not yet driven by Dan: wide
+forgiving gates, Racer's 5 s penalty per missed checkpoint (the lap still counts), official shortcuts in the
+route file (none yet; a test one lives in the check only), barriers across every road that leaves the course
+while racing (`RaceBarriers`, closures from `make_route.py`), and a report-only list of seven backyard
+shortcut candidates (`Data/screenshots/round6/`).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

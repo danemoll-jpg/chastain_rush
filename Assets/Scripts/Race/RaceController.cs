@@ -16,10 +16,12 @@ namespace ChastainRush
     //   T  start the race / restart it (from the countdown, mid-race or the results)     X  leave the race, back to free driving
     //   pad: D-pad up = start / restart, D-pad down = leave.   R / Y still resets the car to its last stable spot.
     //
-    // Rules: 3 laps; checkpoints must be passed in order; a checkpoint passed out of order marks the ones skipped as missed
-    // (shown at once) and the lap does not count, though the clock keeps running; a lap that did not count is simply run
-    // again, so a race ends after 3 COUNTED laps. Times use the physics clock (Time.fixedDeltaTime), so a bug-capture pause
-    // (Time.timeScale 0) pauses the race too, and crossings are interpolated inside the physics step.
+    // Rules (Round 6, as in Racer / Woodstock Rush): 3 laps; checkpoints are met in order; a checkpoint that is skipped costs a
+    // 5 s time penalty (Racer's RaceProgress.Miss) and the lap STILL COUNTS, with the penalty added to the lap and to the total;
+    // taking an official shortcut (RaceRoute.Shortcuts, shaped after Racer's WoodlandRoute) forgives the checkpoints it skips;
+    // while a race runs, every road that leaves the course and is not part of a shortcut is closed by a barrier (RaceBarriers).
+    // Times use the physics clock (Time.fixedDeltaTime), so a bug-capture pause (Time.timeScale 0) pauses the race too, and
+    // crossings are interpolated inside the physics step. Gates are wide and forgiving: see RaceGate.Crossed.
     [DefaultExecutionOrder(50)]
     public sealed class RaceController : MonoBehaviour
     {
@@ -28,6 +30,9 @@ namespace ChastainRush
         public static RaceController Instance { get; private set; }
         public static string DirectionOverride;   // command line -raceDirection, or set by a check; otherwise the route file decides
         public static string RecordsPathOverride; // checks write somewhere other than the real records
+        public static int LapsOverride;           // checks only: race this many laps instead of the route file's
+        public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
+        public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
 
         [Header("Set by MapBuilder (Chastain Rush > Build Map)")]
         [TextArea] public string embeddedRouteJson;   // the route file as it was when the scene was built
@@ -38,7 +43,15 @@ namespace ChastainRush
         public RaceRoute Route { get; private set; }
         public RouteJson RouteData { get; private set; }
         public float Clock { get; private set; }        // seconds since the first crossing of the start line
-        public float LapClock => clockStarted && State != Stage.Free ? Clock - lapStart : 0f;
+        public float LapClock => clockStarted && State != Stage.Free ? Clock - lapStart + LapPenalty : 0f;   // with this lap's penalties
+        public float TotalClock => Clock + PenaltyTotal;                                                    // with all penalties
+        public float PenaltyTotal { get; private set; }  // seconds of penalty so far this race
+        public float LapPenalty { get; private set; }    // ... of which on the lap in progress
+        public int MissedTotal { get; private set; }     // checkpoints missed so far this race
+        public IReadOnlyList<string> PenaltyLog => penaltyLog;
+        public RaceShortcut ActiveShortcut { get; private set; }
+        public IReadOnlyList<int> ForgivenThisLap => forgiven;
+        public RaceBarriers Barriers => barriers;
         public int CompletedLaps { get; private set; }
         public int NextCheckpoint { get; private set; } // index into Route.Checkpoints; == Count once all are passed
         public bool ClockStarted => clockStarted;
@@ -65,7 +78,11 @@ namespace ChastainRush
         readonly List<float> lapTimes = new List<float>();
         readonly List<string> lapLog = new List<string>();
         readonly List<int> missed = new List<int>();
+        readonly List<int> forgiven = new List<int>();
+        readonly List<string> penaltyLog = new List<string>();
         RaceMarkers markers;
+        RaceBarriers barriers;
+        BoxCollider carBox;
         Texture2D arrow;
         GUIStyle small, big, huge, panel;
         Texture2D back;
@@ -85,6 +102,7 @@ namespace ChastainRush
             if (!car) { enabled = false; return; }
             input = car.GetComponent<VehicleInput>();
             respawn = car.GetComponent<VehicleRespawn>();
+            carBox = car.GetComponentInChildren<BoxCollider>();
             if (respawn) respawn.Respawned += OnRespawned;
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-raceDirection") DirectionOverride = args[i + 1];
@@ -102,7 +120,14 @@ namespace ChastainRush
 #endif
             if (string.IsNullOrEmpty(json)) { Debug.LogWarning("[Race] no route data; racing is off"); enabled = false; return; }
             RouteData = JsonUtility.FromJson<RouteJson>(json);
+            if (ExtraShortcuts.Count > 0)
+            {
+                var all = new List<RouteShortcutJson>(RouteData.official_shortcuts ?? new RouteShortcutJson[0]);
+                all.AddRange(ExtraShortcuts);
+                RouteData.official_shortcuts = all.ToArray();
+            }
             Route = RaceRoute.Create(RouteData, DirectionOverride);
+            if (LapsOverride > 0) Route.Laps = LapsOverride;
             LoadRecords();
             if (markers == null) markers = new GameObject("RaceMarkers").AddComponent<RaceMarkers>();
             markers.Build(this);
@@ -117,13 +142,16 @@ namespace ChastainRush
             LoadRoute(); // picks up a changed direction
             clockStarted = false; Clock = 0f; lapStart = 0f; CompletedLaps = 0; FinalTotal = 0f;
             NewBestLap = NewBestTotal = false;
-            lapTimes.Clear(); lapLog.Clear(); missed.Clear(); NextCheckpoint = 0;
+            lapTimes.Clear(); lapLog.Clear(); missed.Clear(); forgiven.Clear(); penaltyLog.Clear(); NextCheckpoint = 0;
+            PenaltyTotal = LapPenalty = 0f; MissedTotal = 0; ActiveShortcut = null;
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f;
             PlaceOnGrid();
             input.enabled = false;
             Say("Get ready", 2f);
-            Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m");
+            if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
+            barriers.Build(Route);   // closed roads appear with the race ...
+            Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts");
             markers.Refresh(this);
         }
 
@@ -133,6 +161,8 @@ namespace ChastainRush
             State = Stage.Free;
             input.enabled = true;
             Say("", 0f);
+            if (barriers != null) barriers.Clear();   // ... and go away in free driving
+            ActiveShortcut = null;
             Log("RACE LEFT");
             markers.Refresh(this);
         }
@@ -146,6 +176,15 @@ namespace ChastainRush
         }
 
         void OnRespawned() { prevPos = car.transform.position; } // a reset is a teleport: it must not count as crossing anything
+        public void NotifyTeleported() { prevPos = car.transform.position; } // checks that move the car by hand say so, as a reset does
+
+        // How far the car's body reaches sideways across a gate at the moment of crossing (half the car's box, turned to the gate).
+        float Reach(RaceGate g)
+        {
+            Vector3 right = g.Right, cr = car.transform.right, cf = car.transform.forward;
+            float hx = carBox ? carBox.size.x * 0.5f * carBox.transform.lossyScale.x : 0.925f, hz = carBox ? carBox.size.z * 0.5f * carBox.transform.lossyScale.z : 1.85f;
+            return Mathf.Abs(Vector3.Dot(right, cr)) * hx + Mathf.Abs(Vector3.Dot(right, cf)) * hz;
+        }
 
         // ---------------------------------------------------------------- per frame
 
@@ -190,14 +229,23 @@ namespace ChastainRush
             var hits = new List<(float f, int id)>();
             if (State == Stage.Racing)
             {
-                if (Route.Gate.Crossed(prevPos, pos, out float fg)) hits.Add((fg, 0));
+                if (Route.Gate.Crossed(prevPos, pos, Reach(Route.Gate), out float fg)) hits.Add((fg, 0));
                 for (int i = 0; i < Route.Checkpoints.Count; i++)
-                    if (Route.Checkpoints[i].Crossed(prevPos, pos, out float fc)) hits.Add((fc, i + 1));
+                    if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
+                for (int i = 0; i < Route.Shortcuts.Count; i++)
+                {
+                    var sc = Route.Shortcuts[i];
+                    if (sc.Entry.Crossed(prevPos, pos, Reach(sc.Entry), out float fe)) hits.Add((fe, 1000 + i));
+                    if (ActiveShortcut == sc && sc.Exit.Crossed(prevPos, pos, Reach(sc.Exit), out float fx)) hits.Add((fx, 2000 + i));
+                }
                 hits.Sort((a, b) => a.f.CompareTo(b.f));
                 foreach (var h in hits)
                 {
                     float at = t0 + h.f * dt;
-                    if (h.id == 0) OnGate(at); else OnCheckpoint(h.id - 1, at);
+                    if (h.id == 0) OnGate(at);
+                    else if (h.id < 1000) OnCheckpoint(h.id - 1, at);
+                    else if (h.id < 2000) OnShortcutEntry(Route.Shortcuts[h.id - 1000], at);
+                    else OnShortcutExit(Route.Shortcuts[h.id - 2000], at);
                     if (State != Stage.Racing) break;
                 }
             }
@@ -206,67 +254,98 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- rules
 
+        // A checkpoint that was skipped: Racer's rule, 5 s on the lap and on the total, and the lap goes on counting.
+        void Miss(int index, float at)
+        {
+            missed.Add(index);
+            PenaltyTotal += MissPenaltySeconds; LapPenalty += MissPenaltySeconds; MissedTotal++;
+            penaltyLog.Add($"Lap {CompletedLaps + 1}  CP{index + 1}  +{MissPenaltySeconds:0} s  missed");
+            Log($"PENALTY +{MissPenaltySeconds:0} s: missed CP{index + 1} on lap {CompletedLaps + 1} at {at:0.000} (race penalty now {PenaltyTotal:0} s)");
+        }
+
+        void MissMessage(List<int> skipped)
+        {
+            if (skipped.Count == 0) return;
+            Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s", 4f);
+        }
+
         void OnCheckpoint(int index, float at)
         {
             if (!clockStarted) return;       // before the first start-line crossing there is no lap to be on
-            if (index < NextCheckpoint) return; // already passed (or already counted as missed) this lap
+            if (index < NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
-            for (int k = NextCheckpoint; k < index; k++) { missed.Add(k); skipped.Add(k + 1); }
+            for (int k = NextCheckpoint; k < index; k++) { Miss(k, at); skipped.Add(k + 1); }
             NextCheckpoint = index + 1;
-            if (skipped.Count > 0)
-            {
-                Say($"Missed checkpoint {string.Join(", ", skipped)} - this lap will not count", 5f);
-                Log($"CHECKPOINT {index + 1} at {at:0.000}; MISSED {string.Join(",", skipped)}");
-            }
-            else Log($"CHECKPOINT {index + 1} at {at:0.000}");
+            Log($"CHECKPOINT {index + 1} at {at:0.000}" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            MissMessage(skipped);
             markers.Refresh(this);
+        }
+
+        // Taking an official shortcut (Racer: a Branch entry grants the route's bypass list): the checkpoints it skips are
+        // forgiven, with no penalty. Checkpoints before the first forgiven one that are still waiting were really missed.
+        void OnShortcutEntry(RaceShortcut sc, float at)
+        {
+            if (!clockStarted) return;
+            if (sc.LastForgiven < NextCheckpoint) return;   // nothing left on this lap for it to forgive
+            var skipped = new List<int>();
+            for (int k = NextCheckpoint; k < sc.FirstForgiven; k++) { Miss(k, at); skipped.Add(k + 1); }
+            var free = new List<int>();
+            for (int k = Mathf.Max(NextCheckpoint, sc.FirstForgiven); k <= sc.LastForgiven; k++) { forgiven.Add(k); free.Add(k + 1); }
+            NextCheckpoint = sc.LastForgiven + 1;
+            ActiveShortcut = sc;
+            Log($"SHORTCUT {sc.Id} entered at {at:0.000}: checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            if (skipped.Count > 0) MissMessage(skipped);
+            else Say($"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
+            markers.Refresh(this);
+        }
+
+        void OnShortcutExit(RaceShortcut sc, float at)
+        {
+            if (ActiveShortcut != sc) return;
+            ActiveShortcut = null;
+            Log($"SHORTCUT {sc.Id} left at {at:0.000}");
         }
 
         void OnGate(float at)
         {
             if (!clockStarted)
             {
-                clockStarted = true; Clock = 0f; lapStart = 0f; NextCheckpoint = 0; missed.Clear();
+                clockStarted = true; Clock = 0f; lapStart = 0f; NextCheckpoint = 0; missed.Clear(); forgiven.Clear();
+                PenaltyTotal = LapPenalty = 0f; MissedTotal = 0; penaltyLog.Clear();
                 Say("Lap 1 - go!", 3f);
                 Log("START LINE crossed: clock started");
                 markers.Refresh(this);
                 return;
             }
-            for (int k = NextCheckpoint; k < Route.Checkpoints.Count; k++) missed.Add(k);
-            float lap = at - lapStart;
+            var skipped = new List<int>();
+            for (int k = NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(k, at); skipped.Add(k + 1); }
+            float raw = at - lapStart, lap = raw + LapPenalty;
             int lapNo = CompletedLaps + 1;
-            bool retry = lapLog.Count > 0 && lapLog[lapLog.Count - 1].Contains("not counted");
-            if (missed.Count == 0)
-            {
-                lapTimes.Add(lap); CompletedLaps++;
-                bool best = BestLap <= 0f || lap < BestLap;
-                if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); }
-                lapLog.Add($"Lap {lapNo}{(retry ? " (run again)" : "")}: {Fmt(lap)}" + (best ? "  (best lap)" : ""));
-                Say($"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
-                Log($"LAP {lapNo} COUNTED {lap:0.000}");
-                if (CompletedLaps >= Route.Laps) { Finish(at); return; }
-            }
-            else
-            {
-                var names = new List<string>();
-                foreach (int k in missed) names.Add("CP" + (k + 1));
-                string why = string.Join(", ", names);
-                lapLog.Add($"Lap {lapNo}: not counted - missed {why} ({Fmt(lap)})");
-                Say($"Lap not counted - missed checkpoint {why.Replace("CP", "")}. Run it again.", 6f);
-                Log($"LAP {lapNo} NOT COUNTED {lap:0.000}; missed {why}");
-            }
-            lapStart = at; NextCheckpoint = 0; missed.Clear();
+            lapTimes.Add(lap); CompletedLaps++;
+            bool best = BestLap <= 0f || lap < BestLap;
+            if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); }
+            string pen = LapPenalty > 0f ? $"  (includes +{LapPenalty:0} s penalty, {MissedText()})" : "";
+            string fg = forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
+            lapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
+            if (skipped.Count > 0) Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+            else Say($"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
+            Log($"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {LapPenalty:0.0})" + (missed.Count > 0 ? $"; {MissedText()}" : "") + (forgiven.Count > 0 ? $"; forgiven {string.Join(",", forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
+            if (CompletedLaps >= Route.Laps) { Finish(at); return; }
+            lapStart = at; NextCheckpoint = 0; LapPenalty = 0f; missed.Clear(); forgiven.Clear(); ActiveShortcut = null;
             markers.Refresh(this);
         }
 
+        string MissedText() { var names = new List<string>(); foreach (int k in missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
+
         void Finish(float at)
         {
-            State = Stage.Finished; FinalTotal = at;
+            State = Stage.Finished; FinalTotal = at + PenaltyTotal;   // the clock plus every penalty
+            at = FinalTotal;
             bool bestTotal = BestTotal <= 0f || at < BestTotal;
             if (bestTotal) { BestTotal = at; NewBestTotal = true; }
             SaveRecords();
             Say($"Finished! Total {Fmt(at)}", 10f);
-            Log($"FINISH total {at:0.000}; laps {string.Join(" ", lapTimes.ConvertAll(x => x.ToString("0.000")))}");
+            Log($"FINISH total {at:0.000} (clock {at - PenaltyTotal:0.000} + penalties {PenaltyTotal:0.0}); laps {string.Join(" ", lapTimes.ConvertAll(x => x.ToString("0.000")))}");
             markers.Refresh(this);
         }
 
@@ -326,7 +405,7 @@ namespace ChastainRush
             : !clockStarted ? Route.Gate : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
 
         public string DebugLine => State == Stage.Free ? null
-            : $"Race {State}  lap {Mathf.Min(CompletedLaps + 1, LapsInRace)}/{LapsInRace}  next {(Target != null ? (Target.Id == 0 ? "start line" : "CP" + Target.Id) : "-")}  {Fmt(Clock)}";
+            : $"Race {State}  lap {Mathf.Min(CompletedLaps + 1, LapsInRace)}/{LapsInRace}  next {(Target != null ? (Target.Id == 0 ? "start line" : "CP" + Target.Id) : "-")}  {Fmt(Clock)}  penalty +{PenaltyTotal:0}s";
 
         // ---------------------------------------------------------------- HUD (IMGUI, like MapCredits and the debug panel)
 
@@ -391,17 +470,20 @@ namespace ChastainRush
 
         void DrawTimers(float w, float h)
         {
-            var r = new Rect(14, 10, 330, 168);
+            var r = new Rect(14, 10, 330, 196);
             GUI.Box(r, GUIContent.none, panel);
             int lap = Mathf.Min(CompletedLaps + 1, LapsInRace);
             string lapText = State == Stage.Finished ? "Finished" : $"Lap {lap} / {LapsInRace}";
             Shadowed(new Rect(r.x + 12, r.y + 4, r.width, 40), lapText, big);
-            string lapT = State == Stage.Finished && lapTimes.Count > 0 ? Fmt(lapTimes[lapTimes.Count - 1]) : clockStarted ? Fmt(LapClock) : "--:--.---", totT = clockStarted ? Fmt(State == Stage.Finished ? FinalTotal : Clock) : "--:--.---";
+            string lapT = State == Stage.Finished && lapTimes.Count > 0 ? Fmt(lapTimes[lapTimes.Count - 1]) : clockStarted ? Fmt(LapClock) : "--:--.---", totT = clockStarted ? Fmt(State == Stage.Finished ? FinalTotal : TotalClock) : "--:--.---";
             Shadowed(new Rect(r.x + 12, r.y + 46, r.width, 26), $"Lap    <b>{lapT}</b>", small);
             Shadowed(new Rect(r.x + 12, r.y + 70, r.width, 26), $"Total  <b>{totT}</b>", small);
-            Shadowed(new Rect(r.x + 12, r.y + 98, r.width, 26), $"Best lap    {Fmt(BestLap)}", small);
-            Shadowed(new Rect(r.x + 12, r.y + 122, r.width, 26), $"Best total  {Fmt(BestTotal)}", small);
-            Shadowed(new Rect(r.x + 12, r.y + 144, r.width, 22), Hint, small);
+            // penalties: shown as soon as one is given (they are already inside the lap and total times above)
+            string penText = PenaltyTotal > 0f ? $"<color=#ffb040>Penalty  +{PenaltyTotal:0} s  ({MissedTotal} missed)</color>" : "Penalty  none";
+            Shadowed(new Rect(r.x + 12, r.y + 94, r.width, 26), penText, small);
+            Shadowed(new Rect(r.x + 12, r.y + 122, r.width, 26), $"Best lap    {Fmt(BestLap)}", small);
+            Shadowed(new Rect(r.x + 12, r.y + 146, r.width, 26), $"Best total  {Fmt(BestTotal)}", small);
+            Shadowed(new Rect(r.x + 12, r.y + 170, r.width, 22), Hint, small);
         }
 
         // next-gate arrow and distance, top centre
@@ -433,14 +515,15 @@ namespace ChastainRush
 
         void DrawResults(float w, float h)
         {
-            var r = new Rect((w - 560) / 2f, h * 0.2f, 560, 330);
+            var r = new Rect((w - 640) / 2f, h * 0.16f, 640, 390);
             GUI.Box(r, GUIContent.none, panel);
             Shadowed(new Rect(r.x + 20, r.y + 10, r.width, 44), "FINISH", big);
-            Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : ""), small);
+            Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : "") + (PenaltyTotal > 0f ? $"   (clock {Fmt(FinalTotal - PenaltyTotal)} + {PenaltyTotal:0} s penalties)" : ""), small);
             float best = 0f; foreach (var l in lapTimes) if (best <= 0f || l < best) best = l;
             Shadowed(new Rect(r.x + 20, r.y + 88, r.width, 30), $"Best lap this race   <b>{Fmt(best)}</b>" + (NewBestLap ? "   NEW BEST" : ""), small);
             Shadowed(new Rect(r.x + 20, r.y + 116, r.width, 30), $"Record: best lap {Fmt(BestLap)}   best total {Fmt(BestTotal)}", small);
             float y = r.y + 154;
+            Shadowed(new Rect(r.x + 20, y, r.width, 26), PenaltyTotal > 0f ? $"<color=#ffb040>Penalties  +{PenaltyTotal:0} s  ({MissedTotal} missed checkpoint{(MissedTotal == 1 ? "" : "s")}, {MissPenaltySeconds:0} s each)</color>" : "Penalties  none", small); y += 28;
             foreach (var line in lapLog) { Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), line, small); y += 24; }
             Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "T  race again        X  free driving", small);
         }

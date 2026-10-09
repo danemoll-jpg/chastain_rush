@@ -17,8 +17,16 @@ SETTINGS = {
     "laps": 3,
     "gate_after_junction_m": 22.0,  # start/finish gate this far past the Chastain Trail junction, on the way to Glenbarrett Lane
     "reverse_grid_back_m": 45.0,    # reverse: the grid sits this far before the gate
-    "gate_half_width_m": 9.0,
-    "checkpoint_half_width_m": 11.0,
+    # Round 6: forgiving gates. Half widths from the route centreline (the road is 8 m wide, half 4 m): the start/finish gate
+    # counts anywhere within 16 m of the centre, checkpoints within 14 m, i.e. the road, its verge and about 10-12 m of yard.
+    # The car's own half extent is added at the moment of crossing (RaceGate.Crossed). Round 5 had 9 and 11.
+    "gate_half_width_m": 16.0,
+    "checkpoint_half_width_m": 14.0,
+    "gate_below_m": 6.0,            # a crossing still counts this far under the road surface at the gate ...
+    "gate_above_m": 25.0,           # ... and this far over it (a jump over the gate counts)
+    "closure_clear_m": 12.0,        # Round 6: a barrier stands where a road that leaves the course is this far from it
+    "closure_min_branch_m": 14.0,   # a leaving road shorter than this is a dead-end stub and is not barred
+    "closure_extra_width_m": 6.0,   # (the barrier is the road width plus this many metres of verge, in the game)
     "max_checkpoint_gap_m": 330.0,
     "min_checkpoint_gap_m": 60.0,
 }
@@ -147,6 +155,76 @@ for i, c in enumerate(cps, 1):
     near = min(merged, key=lambda j: abs(j["s"] - c["s"]))
     c["label"] = ("at " + " / ".join(near["roads"])) if abs(near["s"] - c["s"]) < 20 else "on the loop"
 
+# --- Round 6: roads that leave the course. Every drivable road that meets the lap or the lead-in (it may also be the lap's own
+# road, past the point where the lap leaves it) is followed away from the course until it is closure_clear_m from it; a
+# barrier goes there during a race. The grid end of the lead-in counts as the course end, so the road behind the grid is
+# closed as well. Roads that only run beside the course closer than that for their whole length are dead ends (not barred).
+course_lines = [loop, lead]
+def course_dist(q):
+    return min(min(math.dist(q, (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]))) for t in [max(0.0, min(1.0, ((q[0] - a[0]) * (b[0] - a[0]) + (q[1] - a[1]) * (b[1] - a[1])) / max((b[0] - a[0]) ** 2 + (b[1] - a[1]) ** 2, 1e-9)))])
+               for line in course_lines for a, b in zip(line[:-1], line[1:]))
+def walk(p, k, step):
+    """Points along polyline p from vertex k, towards k+step (+1 or -1): yields (arc_m, point, tangent)."""
+    arc = 0.0
+    i = k
+    while 0 <= i + step < len(p):
+        a, b = p[i], p[i + step]; seg = math.dist(a, b)
+        if seg < 1e-6: i += step; continue
+        n = int(seg / 0.5) + 1
+        for q in range(1, n + 1):
+            d = min(seg, q * 0.5)
+            yield arc + d, (a[0] + (b[0] - a[0]) * d / seg, a[1] + (b[1] - a[1]) * d / seg), ((b[0] - a[0]) / seg, (b[1] - a[1]) / seg)
+        arc += seg; i += step
+def follow(ri, k, step, arc0, depth, seen):
+    """Walk road ri from vertex k towards k+step. Returns (arc, point, tangent, road) where the walk first reaches
+    closure_clear_m from the course, continuing onto roads that meet the end of this one (up to 3 hops, 120 m); or None."""
+    p = roads_pts[ri]; arc = arc0; last = None
+    for d, q, tan in walk(p, k, step):
+        last = (arc0 + d, q, tan)
+        if course_dist(q) >= SETTINGS["closure_clear_m"]: return (arc0 + d, q, tan, ri)
+        if arc0 + d > 120: return None
+    if last is None or depth >= 3: return None
+    end = p[len(p) - 1] if step > 0 else p[0]
+    for rj, pj in enumerate(roads_pts):
+        if rj == ri or rj in seen or roads[rj]["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
+        for kj in (0, len(pj) - 1):
+            if math.dist(pj[kj], end) < 1.5:
+                res = follow(rj, kj, 1 if kj == 0 else -1, last[0], depth + 1, seen | {ri})
+                if res: return res
+    return None
+roads_pts = [pts(r) for r in roads]
+closures, stubs = [], []
+for ri, r in enumerate(roads):
+    if r["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
+    p = roads_pts[ri]
+    on = [course_dist(v) < 2.5 for v in p]
+    for k in range(len(p)):
+        if not on[k]: continue
+        for step in (1, -1):
+            nb = k + step
+            if not (0 <= nb < len(p)) or on[nb]: continue
+            contact = p[k]
+            res = follow(ri, k, step, 0.0, 0, frozenset())
+            if res is None:
+                stubs.append({"road": r["name"] or "(unnamed " + r["class"] + ")", "osm_id": r["osm_id"], "contact": [round(contact[0], 1), round(contact[1], 1)]})
+                continue
+            arc, q, tan, rj = res
+            sj = nearest_s(loop, contact)
+            closures.append({"road": r["name"] or "(unnamed " + r["class"] + ")", "osm_id": r["osm_id"], "x": round(q[0], 2), "z": round(q[1], 2),
+                             "dx": round(tan[0], 4), "dz": round(tan[1], 4), "width_m": roads[rj]["width"], "junction_s": round(sj[1], 1) if sj[0] < 3 else -1.0,
+                             "contact": [round(contact[0], 1), round(contact[1], 1)], "arc_m": round(arc, 1), "barrier_on": roads[rj]["name"] or "(unnamed " + roads[rj]["class"] + ")"})
+# the same barrier twice (two roads meeting at one spot, a way split in two): keep one, the wider
+closures.sort(key=lambda c: -c["width_m"])
+kept = []
+for c in closures:
+    if any(math.dist((c["x"], c["z"]), (o["x"], o["z"])) < 5.0 and abs(c["dx"] * o["dx"] + c["dz"] * o["dz"]) > 0.8 for o in kept): continue
+    kept.append(c)
+closures = sorted(kept, key=lambda c: (c["junction_s"] < 0, c["junction_s"], c["x"]))
+for i, c in enumerate(closures, 1):
+    c["id"] = f"B{i}"
+    c["label"] = f"{c['road']} at {'lap ' + format(c['junction_s'], '.0f') + ' m' if c['junction_s'] >= 0 else 'the entrance'}"
+    c["x"] = c["x"]; c["z"] = c["z"]
+
 route = dict(SETTINGS)
 route.update({
     "source": "Tools/mapgen/make_route.py from Data/map.json. Coordinates are map metres (= Unity x, z); heights come from the world.",
@@ -157,9 +235,14 @@ route.update({
     "lead_in_length_m": round(cum(lead)[-1], 1),
     "gate_s": gate_s,
     "junctions": merged, "shortcuts": shortcuts, "checkpoints": cps,
+    "closures": closures, "closure_stubs_not_barred": stubs,
+    "official_shortcuts": [],   # hand-authored, kept across runs (see below); format in Assets/Scripts/Race/RaceRoute.cs (RouteShortcutJson)
 })
 if os.path.exists(OUT):
-    try: route["direction"] = json.load(open(OUT, encoding="utf-8"))["direction"]
+    try:
+        old = json.load(open(OUT, encoding="utf-8"))
+        route["direction"] = old["direction"]
+        route["official_shortcuts"] = old.get("official_shortcuts", [])   # hand-made: never lost by a re-run
     except Exception: pass
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(route, open(OUT, "w", encoding="utf-8"), indent=1)
@@ -168,5 +251,9 @@ print("junctions on the lap:")
 for j in merged: print(f"  s={j['s']:7.1f}  {', '.join(j['roads'])}")
 print("shortcuts:")
 for x in shortcuts: print(f"  {x['from_s']:.0f} -> {x['to_s']:.0f}: {x['via_m']} m vs {x['lap_m']} m on the lap (saves {x['saves_m']}); {x['from']} -> {x['to']}")
+print(f"closures (barriers while racing): {len(closures)}")
+for c in closures: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}) road width {c['width_m']:.0f} m")
+print(f"dead-end stubs not barred: {len(stubs)}")
+for t in stubs: print(f"  {t['road']} {t['contact']}")
 print("checkpoints:")
 for c in cps: print(f"  CP{c['id']} s={c['s']:7.1f} {c['pos']} {c['label']}")

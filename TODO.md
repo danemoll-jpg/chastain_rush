@@ -442,7 +442,83 @@ HUD at 1080p; real key presses and a pad; a bump during a race.
 New tools: `make_route.py`, `RaceCheck` / `RaceCheckRunner`, `RaceRoute`,
 `RaceController`, `RaceMarkers`.
 
+Round 6 status — built and scripted-checked (2026-10-08); NOT yet driven by Dan.
+Scripted: `RaceCheck.Run -raceCheck round6` 67 of 67 passed, `-raceCheck full` (forward, the real car, 3
+laps with a lap by a TEST shortcut) 23 of 23, `-raceCheck lap -raceDirection reverse` 8 of 8. Reports and
+screenshots: `Data/screenshots/round6/checks/`. I ran them in a copy of the project (the Unity Editor had
+this one open), so the scene in the working folder is stale: the race itself does not need Chastain Rush >
+Build Map (the Editor reads the route file), but run it before the next drive anyway. Items done in order;
+item 3 was reported in chat before any rule changed.
+
+1. Gate edge bug: FOUND BY READING THE CODE, not reproduced. Round 5 gates were 9 m (finish) and 11 m
+   (checkpoints) either side of the route centreline: 18 m and 22 m wide across an 8 m road (5 m and 7 m of
+   verge beyond each road edge). The test used one point, the car's body centre (`car.transform.position`),
+   on the segment from the last physics step to this one, and the post line was the limit. A car whose
+   centre was 9 to 10 m out (body half over the post) was not counted. The finish gate sits 22 m past the
+   Chastain Trail junction, where cars arrive at an angle. The height window was 4 m below to 10 m above
+   the road surface at the gate. Angle was not the cause: a path crossing the plane counted at any angle.
+2. Forgiving gates: DONE. Finish half width 9 -> 16 m (32 m across), checkpoints 11 -> 14 m (28 m
+   across); height window 4 below / 10 above -> 6 below / 25 above (a jump over the line counts). The car's
+   own half extent across the gate (0.9 to 2.0 m, from its collider, turned to the gate) is added at the
+   moment of crossing, so a car touching a post counts. The arches and beams are drawn at the counted half
+   width (`RaceMarkers` already used the gate's half width). No other part of the lap or lead-in crosses
+   any widened plane (checked by script over the route data).
+3. Racer's rules read: DONE, reported in chat first. Penalty: 5 s per missed gate (`RaceProgress.Miss`),
+   the lap still counts, added to the lap and the total, resolved when a later gate or the finish is
+   crossed. Shortcut: a `WoodlandRoute` (path, entryRoad, exitRoad, halfWidth, bypassedGates); crossing
+   its entry plane in the path direction, near the expected gate, grants the bypassed gates; credit is
+   final at entry. Blocked roads: no general mechanism, authored barriers per course switched on for the
+   race (`BackyardReverseBarriers`) and `CircuitBoundary` for closed corridors.
+4. Rules: DONE. A missed checkpoint adds 5 s (`RaceController.MissPenaltySeconds`, Racer's value) to its
+   lap and to the total; the lap counts; "this lap will not count" and the re-run lap are gone. HUD: a
+   penalty line in the timer panel (orange once there is one), a message when it is given ("Missed
+   checkpoint 2  +5 s"), and on the finish panel the penalties line, the total as clock + penalties and
+   each lap's penalty with what was missed. Best lap and best total include penalties (as Racer's
+   `LastLap` does). NOT ported: Racer's extra +5 s for missing the finish gate (a plain, very wide plane
+   here) and its "teleport voids the lap" rule (a reset here is simply not a crossing).
+5. Official shortcuts in the route file: DONE. `official_shortcuts` in `Data/routes/*.json` (format in
+   `RouteShortcutJson`): `id`, `name`, `direction` (forward / reverse / both), `path` (x, z list, entry to
+   exit), `half_width_m`, `entry_inset_m`, `entry_margin_m`, `forgives` (checkpoint ids). Crossing the
+   entry plane forwards within its width forgives the checkpoints from the first forgiven one to the last;
+   any earlier checkpoint still waiting is missed (penalty); entering with nothing left to forgive does
+   nothing. An exit plane ends the "on the shortcut" state. `make_route.py` keeps the hand-made list
+   across re-runs. The file has none: the proof was one TEST shortcut on Chasefield Way, defined in
+   `Editor/RaceCheck.cs` only (forgives CP1 to CP3).
+6. Blocked roads: DONE. `RaceBarriers`: red and white blocks (road width + 6 m, 1.5 m high, with colliders
+   and tall end posts) across every road that leaves the course, built when a race starts and removed when
+   it ends. The closures are route data (`closures`, from `make_route.py`): every road meeting the lap or
+   the lead-in, followed until it is 12 m from the course; a barrier is skipped where an official
+   shortcut starts or ends. 9 barriers: Courtfield Trace (lap 71 m), Glenbarrett Lane (148), Chasefield
+   Way (201 and 643: the two road shortcuts are closed), the Chastain Glen Lane branch at CP4 (732),
+   Chastain Place (969), the 73 m rest of the long Chastain Glen Lane piece towards Courtfield Trace
+   (1055), and two across the entrance lanes 12 m behind the grid. Not barred (listed in the route
+   file): three dead-end stubs of 6 to 10 m. The car can still go around a barrier through yards
+   (nothing closes yards).
+7. Shortcut candidates: DONE, report only. `Data/screenshots/round6/shortcut_candidates.{png,md,json}`
+   and `shortcut_candidate_profiles.png`, made by `Tools/mapgen/shortcut_candidates.py`. Seven, not
+   eight: the lap doubles back near itself in only a few places and the neighbourhood has almost no woods
+   (577 of 56,214 trees are within 100 m of the lap), so there is no woods cut. Biggest drops: #3 (21.9 m
+   down, 8 m launch drop, two houses) and #2 (16.0 m, 7.4 m, two houses); #4 is the over-a-house jump.
+   All are straight lines, so houses and distances are for the straight line. The .md has each one.
+8. Scripted check: DONE (above). Per gate, both edges and 45 degrees from each edge pass; a crossing 3.5 m
+   outside the post, a backwards crossing and one far outside a shortcut's entry width do not. Missed
+   checkpoint: +5 s, the lap counts, lap and total include it (8 missed in one 3-lap race: 40 s). Test
+   shortcut: forgives CP1 to CP3, no penalty; the control (no entry) costs 15 s. Physical: the real car
+   drives the Chasefield Way lap (CP1 passed, shortcut entered, CP2 and CP3 forgiven, lap 1:09 against
+   1:22, no penalty). Barrier: the real car at 14 m/s stopped 2.2 m short of the Courtfield Trace barrier
+   and drove straight through the same spot once the race was left.
+9. This report: DONE.
+
+Not done / not measured: real key presses and a pad; Dan's drive; the HUD at 1080p (screenshots are
+886 x 451 and the panels overlap, as in Round 5); frame rate with the barrier blocks; how a barrier
+looks on a steep verge; the reverse race with barriers (same closure list, only forward was driven).
+
+New tools: `RaceBarriers`, `Round6CheckRunner`, `shortcut_candidates.py`; `RaceGate.Crossed` takes the
+car's reach; `make_route.py` writes `closures` and keeps `official_shortcuts`.
+
 Current Objective (Focus Area)
+
+*Status: Round 6 is built and scripted-checked, not yet driven by Dan (see Round 6 status above). The list below is the brief it was built from.*
 
 **Round 6 — race rules as in Woodstock Rush, forgiving gates, blocked side
 roads, and shortcut candidates.** The Round 5 look stays; the rules change.

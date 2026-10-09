@@ -10,8 +10,34 @@ namespace ChastainRush
     //
     // Shape borrowed from Racer (read, not copied): a closed centreline (RaceRoad), directed timing planes with a half width
     // (RaceGate: the segment from last step to this step is tested against the plane) and numbered ordered gates
-    // (RaceProgress). Racer's penalties, branches and AI are not used.
+    // (RaceProgress).
+    //
+    // Round 6: gates are wide and forgiving; official shortcuts (shaped after Racer's WoodlandRoute: a path, an entry plane,
+    // the gates it bypasses) and road closures (barriers across roads that leave the course) are part of the route data.
     [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; }
+
+    // Round 6: an OFFICIAL shortcut. A path from entry to exit, an entry plane across it a little way in (crossing that plane
+    // in the direction of the path is "taking the shortcut") and the checkpoints it forgives. Heights come from the world.
+    // Checkpoint ids are the ids in this file (forward numbering), whatever direction the race runs.
+    [Serializable]
+    public class RouteShortcutJson
+    {
+        public string id, name, direction;   // direction: "forward" (default), "reverse", or "both" (reverse driving uses the path backwards)
+        public float[] path;                 // x, z, x, z ... from entry to exit (forward direction)
+        public float half_width_m, entry_inset_m, entry_margin_m;
+        public int[] forgives;               // checkpoint ids skipped by taking it
+    }
+
+    // A road that leaves the course and is not part of an official shortcut: a barrier stands across it during a race.
+    [Serializable]
+    public class RouteClosureJson
+    {
+        public string id, label;
+        public float x, z, dx, dz;           // barrier centre; unit direction of the closed road, away from the course
+        public float width_m, junction_s;
+        public float[] contact;              // x, z where the road meets the course
+    }
+
     [Serializable] public class RoutePieceJson { public long osm_id; public string name; public float length_m; public bool reverse; }
     [Serializable] public class RouteJunctionJson { public float s; public string[] roads; public float[] pos; }
     [Serializable]
@@ -20,26 +46,30 @@ namespace ChastainRush
         public string name, direction;
         public int laps;
         public float lap_length_m, lead_in_length_m, gate_s, gate_half_width_m, checkpoint_half_width_m, reverse_grid_back_m;
+        public float gate_below_m, gate_above_m;   // Round 6: how far under / over the road surface a crossing still counts
         public float[] loop, lead_in;
         public RouteCheckpointJson[] checkpoints;
         public RoutePieceJson[] loop_pieces;
         public RouteJunctionJson[] junctions;
+        public RouteShortcutJson[] official_shortcuts;
+        public RouteClosureJson[] closures;
     }
 
     public sealed class RaceGate
     {
         public int Id;               // 0 = start / finish, 1.. = checkpoints in travel order
+        public int DataId;           // the checkpoint's id in the route file (forward numbering); 0 for the start / finish
         public string Label;
         public Vector3 Position;     // on the ground, in the middle of the road
         public Vector3 Forward;      // horizontal travel direction through the gate
         public Vector3 Right;
         public float HalfWidth, S;   // S: distance along the lap in travel order from the lap's own start
+        public float Below = 6f, Above = 25f;   // metres under / over Position.y that still count (a jump over the gate counts)
 
-        public const float Below = 4f, Above = 10f;
-
-        // True when the step from -> to passes through the gate's opening in the travel direction; fraction is how far
-        // along the step it happened (so lap times are not rounded to physics steps).
-        public bool Crossed(Vector3 from, Vector3 to, out float fraction)
+        // True when the step from -> to passes through the gate's opening in the travel direction, at any angle; fraction is
+        // how far along the step it happened (so lap times are not rounded to physics steps). reach is the car's own half
+        // extent across the gate at that moment: a car that touches a post counts, which is what the markers show.
+        public bool Crossed(Vector3 from, Vector3 to, float reach, out float fraction)
         {
             fraction = 0f;
             Vector3 a = from - Position, b = to - Position;
@@ -47,8 +77,20 @@ namespace ChastainRush
             if (!(za < 0f && zb >= 0f)) return false;
             fraction = -za / (zb - za);
             Vector3 hit = Vector3.Lerp(a, b, fraction);
-            return Mathf.Abs(Vector3.Dot(hit, Right)) <= HalfWidth && hit.y >= -Below && hit.y <= Above;
+            return Mathf.Abs(Vector3.Dot(hit, Right)) <= HalfWidth + reach && hit.y >= -Below && hit.y <= Above;
         }
+    }
+
+    // An official shortcut, resolved for the direction the race runs.
+    public sealed class RaceShortcut
+    {
+        public string Id, Name;
+        public Vector3[] Path;                // entry to exit, in travel order
+        public RaceGate Entry;                // directed plane across the path a little way in; crossing it takes the shortcut
+        public RaceGate Exit;                 // plane across the path's last metres (ends the "on the shortcut" state)
+        public int FirstForgiven, LastForgiven;   // indices into RaceRoute.Checkpoints, inclusive
+        public Vector3 Start => Path[0];
+        public Vector3 End => Path[Path.Length - 1];
     }
 
     public sealed class RaceRoute
@@ -64,6 +106,8 @@ namespace ChastainRush
         public float GridYaw;
         public float RunInLength;           // grid to the gate, metres
         public List<string> Junctions = new List<string>();
+        public List<RaceShortcut> Shortcuts = new List<RaceShortcut>();
+        public List<RouteClosureJson> Closures = new List<RouteClosureJson>();
         float[] cum;
 
         public static RaceRoute Create(RouteJson j, string directionOverride = null)
@@ -84,6 +128,8 @@ namespace ChastainRush
             float gateS = r.Reverse ? L - j.gate_s : j.gate_s;
             r.GateS = gateS;
             r.Gate = r.MakeGate(0, "Start / finish", gateS, j.gate_half_width_m);
+            if (j.gate_below_m > 0f) r.Gate.Below = j.gate_below_m;
+            if (j.gate_above_m > 0f) r.Gate.Above = j.gate_above_m;
             var order = new List<(float s, RouteCheckpointJson c)>();
             foreach (var c in j.checkpoints) order.Add((r.Reverse ? L - c.s : c.s, c));
             order.Sort((x, y) => Mathf.Repeat(x.s - gateS, L).CompareTo(Mathf.Repeat(y.s - gateS, L)));
@@ -91,9 +137,13 @@ namespace ChastainRush
             {
                 var g = r.MakeGate(i + 1, order[i].c.label, order[i].s, j.checkpoint_half_width_m);
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
+                g.DataId = order[i].c.id;
+                g.Below = r.Gate.Below; g.Above = r.Gate.Above;
                 r.Checkpoints.Add(g);
             }
             foreach (var jn in j.junctions) r.Junctions.Add($"{Mathf.Repeat((r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");
+            r.BuildShortcuts(j);
+            if (j.closures != null) r.Closures.AddRange(j.closures);
 
             if (!r.Reverse)
             {
@@ -112,6 +162,48 @@ namespace ChastainRush
                 r.RunInLength = j.reverse_grid_back_m;
             }
             return r;
+        }
+
+        // Shortcuts that apply to this direction, with their entry / exit planes and the checkpoint indices they forgive.
+        void BuildShortcuts(RouteJson j)
+        {
+            if (j.official_shortcuts == null) return;
+            foreach (var sj in j.official_shortcuts)
+            {
+                string d = string.IsNullOrEmpty(sj.direction) ? "forward" : sj.direction;
+                if (d != "both" && d != Direction) continue;
+                if (sj.path == null || sj.path.Length < 4) continue;
+                int n = sj.path.Length / 2;
+                var pts = new List<Vector3>(n);
+                for (int i = 0; i < n; i++) pts.Add(Ground(sj.path[2 * i], sj.path[2 * i + 1]));
+                if (Reverse && d == "both") pts.Reverse();
+                var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray() };
+                var c = new float[pts.Count];
+                for (int i = 1; i < pts.Count; i++) c[i] = c[i - 1] + Flat(pts[i] - pts[i - 1]).magnitude;
+                float len = c[c.Length - 1];
+                float inset = Mathf.Min(sj.entry_inset_m > 0f ? sj.entry_inset_m : 6f, len * 0.5f);
+                float half = (sj.half_width_m > 0f ? sj.half_width_m : 6f) + (sj.entry_margin_m > 0f ? sj.entry_margin_m : 4f);
+                sc.Entry = PlaneOn(pts, c, inset, half);
+                sc.Exit = PlaneOn(pts, c, Mathf.Max(inset, len - 3f), half);
+                sc.FirstForgiven = int.MaxValue; sc.LastForgiven = -1;
+                if (sj.forgives != null)
+                    foreach (int id in sj.forgives)
+                    {
+                        int idx = Checkpoints.FindIndex(g => g.DataId == id);
+                        if (idx < 0) continue;
+                        sc.FirstForgiven = Mathf.Min(sc.FirstForgiven, idx); sc.LastForgiven = Mathf.Max(sc.LastForgiven, idx);
+                    }
+                if (sc.LastForgiven < 0) continue;
+                Shortcuts.Add(sc);
+            }
+        }
+
+        static RaceGate PlaneOn(List<Vector3> pts, float[] c, float s, float half)
+        {
+            int i = 1; while (i < c.Length - 1 && c[i] < s) i++;
+            Vector3 p = Vector3.Lerp(pts[i - 1], pts[i], Mathf.InverseLerp(c[i - 1], c[i], s));
+            Vector3 f = Flat(pts[i] - pts[i - 1]).normalized;
+            return new RaceGate { Position = p, Forward = f, Right = Vector3.Cross(Vector3.up, f).normalized, HalfWidth = half };
         }
 
         RaceGate MakeGate(int id, string label, float s, float halfWidth)
@@ -147,7 +239,7 @@ namespace ChastainRush
             return Vector3.Lerp(Path[lo], Path[lo + 1], t);
         }
 
-        static Vector3 Ground(float x, float z) { float y = GroundQuery.Height(x, z); return new Vector3(x, float.IsNaN(y) ? 0f : y, z); }
+        public static Vector3 Ground(float x, float z) { float y = GroundQuery.Height(x, z); return new Vector3(x, float.IsNaN(y) ? 0f : y, z); }
         static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
     }
 }

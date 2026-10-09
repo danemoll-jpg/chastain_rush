@@ -11,9 +11,10 @@ namespace ChastainRush
     // Development check only (added by Editor/RaceCheck.cs, never saved into the scene). Round 5, item 8: drives the route by
     // script through the real ArcadeVehicle.Simulate step and the real RaceController, and writes what registered.
     //   mode "lap"   grid -> start line -> one full lap: every checkpoint in order, the lap counted, its time recorded.
-    //   mode "full"  the same, then a lap that cuts through Chasefield Way (must NOT count and must name the missed
-    //                checkpoint), then laps until the race finishes; also bug capture during the race (the clock must stop)
-    //                and the records file.
+    //   mode "full"  the same, then a lap that cuts through Chasefield Way by a TEST official shortcut (defined by
+    //                Editor/RaceCheck.cs, not in the route file: it must be honoured, no penalty), then laps until the race
+    //                finishes; also bug capture during the race (the clock must stop) and the records file.
+    //                (Round 5 asserted the opposite here: a cut lap was "not counted". Round 6 changed the rules.)
     // Windowed Editor run (not -batchmode), because the screenshots include the race HUD and the debug panel.
     public sealed class RaceCheckRunner : MonoBehaviour
     {
@@ -40,7 +41,14 @@ namespace ChastainRush
         float pauseUntilReal;
         string lastMissedMessage = "";
 
-        void Awake() { RaceController.RecordsPathOverride = recordsPath; } // before the controller loads the records
+        public RouteShortcutJson testShortcut;   // "full" mode only: the TEST shortcut on Chasefield Way (never in the route file)
+
+        void Awake()
+        {
+            RaceController.RecordsPathOverride = recordsPath; // before the controller loads the records
+            RaceController.ExtraShortcuts.Clear();
+            if (mode == "full" && testShortcut != null && testShortcut.path != null && testShortcut.path.Length > 3) RaceController.ExtraShortcuts.Add(testShortcut);
+        }
 
         void Start()
         {
@@ -228,18 +236,19 @@ namespace ChastainRush
                 bool shortcutRan = shortcutEnd > 0;
                 if (shortcutRan)
                 {
-                    Check("shortcut lap (Chasefield Way): not counted", events.Exists(e => e.Contains("NOT COUNTED")));
-                    var miss = events.Find(e => e.Contains("NOT COUNTED"));
-                    Check("shortcut lap: the missed checkpoint is named (CP2)", miss != null && miss.Contains("CP2"), miss ?? "no event");
-                    Check("shortcut lap: CP1 was not reported missed", miss != null && !miss.Contains("CP1"));
-                    Check("an on-the-spot 'missed' event came before the end of the lap", events.Exists(e => e.Contains("MISSED")));
+                    Check("shortcut lap (Chasefield Way, test shortcut): the entry was recognised", events.Exists(e => e.Contains("SHORTCUT chasefield_test entered")), events.Find(e => e.Contains("SHORTCUT chasefield_test entered")) ?? "no event");
+                    var entered = events.Find(e => e.Contains("SHORTCUT chasefield_test entered"));
+                    Check("shortcut lap: the checkpoints it skips were forgiven", entered != null && entered.Contains("forgiven"));
+                    Check("shortcut lap: no penalty was given and nothing was missed", !events.Exists(e => e.Contains("PENALTY")) && !events.Exists(e => e.Contains("MISSED")), race.PenaltyLog.Count + " penalties");
+                    Check("shortcut lap: counted like any other", laps.Count >= 2 && events.Exists(e => e.Contains("LAP 2 COUNTED")), laps.Count >= 2 ? RaceController.Fmt(laps[1]) : "no lap 2");
+                    if (laps.Count >= 2) Check("shortcut lap: faster than lap 1", laps[1] < laps[0], $"{RaceController.Fmt(laps[1])} against {RaceController.Fmt(laps[0])}");
                 }
                 else report.AppendLine("(no shortcut path was supplied; shortcut lap not run)");
                 Check("race finishes after 3 counted laps", race.State == RaceController.Stage.Finished && race.CompletedLaps == race.Route.Laps, $"{race.CompletedLaps} laps, state {race.State}");
                 if (race.State == RaceController.Stage.Finished)
                 {
                     float sum = 0; foreach (var l in laps) sum += l;
-                    Check("finish: total time recorded", race.FinalTotal > sum - 0.01f, $"total {RaceController.Fmt(race.FinalTotal)} vs sum of counted laps {RaceController.Fmt(sum)}" + (shortcutRan ? " (the not-counted lap is in the total)" : ""));
+                    Check("finish: total time recorded", race.FinalTotal > sum - 0.01f, $"total {RaceController.Fmt(race.FinalTotal)} vs sum of laps {RaceController.Fmt(sum)}, penalties {race.PenaltyTotal:0} s");
                     string rp = RaceController.RecordsPath();
                     bool has = File.Exists(rp);
                     Check("records file written", has, rp);
