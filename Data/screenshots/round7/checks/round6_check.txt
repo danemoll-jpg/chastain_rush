@@ -1,0 +1,177 @@
+Route Chastain Glen loop, direction forward, lap 1247.0 m
+
+A. Gates crossed at the edges and at 45 degrees (4 laps; every crossing must count, no penalty)
+   finish half width 16.0 m, checkpoints CP1 14.0 m, CP2 14.0 m, CP3 14.0 m, CP4 14.0 m, CP5 14.0 m; window -6 to +25 m of the road surface
+PASS  start line at the left edge starts the clock  -  lateral -16.0 m
+PASS  lap 1 (left edge, straight): CP1 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 1 (left edge, straight): CP2 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 1 (left edge, straight): CP3 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 1 (left edge, straight): CP4 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 1 (left edge, straight): CP5 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 1 (left edge, straight): finish line counts at -16.0 m  -  gate half width 16.0 m
+PASS  lap 1 (left edge, straight): counted with no penalty  -  completed 1, penalty 0
+PASS  lap 2 (right edge, straight): CP1 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 2 (right edge, straight): CP2 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 2 (right edge, straight): CP3 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 2 (right edge, straight): CP4 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 2 (right edge, straight): CP5 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 2 (right edge, straight): finish line counts at +16.0 m  -  gate half width 16.0 m
+PASS  lap 2 (right edge, straight): counted with no penalty  -  completed 2, penalty 0
+PASS  lap 3 (left edge, 45 deg): CP1 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 3 (left edge, 45 deg): CP2 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 3 (left edge, 45 deg): CP3 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 3 (left edge, 45 deg): CP4 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 3 (left edge, 45 deg): CP5 counts at -14.0 m  -  gate half width 14.0 m
+PASS  lap 3 (left edge, 45 deg): finish line counts at -16.0 m  -  gate half width 16.0 m
+PASS  lap 3 (left edge, 45 deg): counted with no penalty  -  completed 3, penalty 0
+PASS  lap 4 (right edge, 45 deg): CP1 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 4 (right edge, 45 deg): CP2 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 4 (right edge, 45 deg): CP3 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 4 (right edge, 45 deg): CP4 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 4 (right edge, 45 deg): CP5 counts at +14.0 m  -  gate half width 14.0 m
+PASS  lap 4 (right edge, 45 deg): finish line counts at +16.0 m  -  gate half width 16.0 m
+PASS  lap 4 (right edge, 45 deg): counted with no penalty  -  completed 4, penalty 0
+PASS  race finished after 4 laps, total carries no penalty  -  Finished
+   negative control: a crossing outside the posts
+(screenshot a_gates_finished saved, 886x451)
+PASS  start line crossed 3.5 m outside the post does NOT start the clock  -  lateral 19.5 m
+PASS  ... nor at 45 degrees on the other side
+PASS  crossing the start line backwards does NOT start the clock
+PASS  ... but crossing it properly does
+
+B. Missed checkpoints: 5 s each, the lap still counts, penalties on the total (3 laps)
+PASS  CP2 skipped: +5 s given when CP3 is crossed  -  penalty 5 s
+PASS  ... and the HUD message says so  -  Missed checkpoint 2  +5 s
+(screenshot b_penalty_shown saved, 886x451)
+PASS  lap 1 counts despite the missed checkpoint
+PASS  lap 1 time = clock + 5 s penalty  -  lap 5.250, clock at the line about 0.220
+PASS  no 'not counted' anywhere
+PASS  CP2 and CP3 skipped: +10 s more  -  race penalty 15 s, this lap 10 s
+PASS  lap 2 counts, 2 laps done
+PASS  lap 2 time includes its +10 s  -  10.160
+PASS  lap 3: all five checkpoints skipped = +25 s, lap counts  -  8 missed, penalty 40 s
+PASS  race finished
+PASS  total = clock + 40 s of penalties  -  total 0:40.450, clock 0.420 + 40
+PASS  the penalty log has every miss  -  8 entries
+PASS  the finish panel lap lines name the penalties  -  Lap 1: 0:05.250  (includes +5 s penalty, missed CP2)  best lap | Lap 2: 0:10.160  (includes +10 s penalty, missed CP2, CP3) | Lap 3: 0:25.040  (includes +25 s penalty, missed CP1, CP2, CP3, CP4, CP5)
+PASS  best lap includes its penalty  -  0:05.250
+(screenshot b_results_with_penalties saved, 886x451)
+
+C. Official shortcut (a TEST shortcut on Chasefield Way, added by this check only)
+PASS  the route has the test shortcut  -  1 shortcut(s)
+   shortcut 'Chasefield Way (TEST)': entry plane at (3066,1003) half width 10 m, exit (2933,1174), forgives CP1 to CP3, path 17 points
+PASS  entering the shortcut forgives CP1-3 with no penalty  -  next index 3, penalty 0, forgiven 1,2,3
+PASS  ... the HUD says shortcut, no penalty  -  Shortcut: Chasefield Way (TEST)  (checkpoints 1, 2, 3 skipped, no penalty)
+PASS  leaving the shortcut ends the 'on the shortcut' state
+PASS  lap 1 by shortcut counts, no penalty  -  penalty 0 s, lap 0:00.190
+PASS  lap line says which checkpoints were forgiven  -  Lap 1: 0:00.190  (shortcut: CP1,2,3 forgiven)  best lap
+PASS  entry plane crossed backwards forgives nothing
+PASS  entry plane crossed far outside its width forgives nothing
+PASS  control: without the shortcut CP1-3 cost 15 s  -  penalty 15 s
+PASS  race finished; total carries the 15 s  -  total 0:15.390
+
+D. Closed roads (barriers)
+PASS  barriers at the test shortcut's ends are left open  -  7 barriers, open: B3 Chasefield Way at lap 201 m; B4 Chasefield Way at lap 643 m
+PASS  before the race starts there are no barriers
+PASS  every closure in the route data has a barrier  -  9 barriers for 9 closures
+PASS  two more than with the shortcut (the Chasefield Way ends)  -  9 vs 7
+   barriers, in lap order:
+     B1   Courtfield Trace at lap 71 m  (2982,939)  14.0 m wide  8 m road
+     B2   Glenbarrett Lane at lap 148 m  (3070,943)  14.0 m wide  8 m road
+     B3   Chasefield Way at lap 201 m  (3062,1005)  14.0 m wide  8 m road
+     B4   Chasefield Way at lap 643 m  (2936,1165)  14.0 m wide  8 m road
+     B5   Chastain Glen Lane at lap 732 m  (2858,1113)  14.0 m wide  8 m road
+     B6   Chastain Place at lap 969 m  (2722,982)  14.0 m wide  8 m road
+     B7   Chastain Glen Lane at lap 1055 m  (2818,1014)  14.0 m wide  8 m road
+     B8   Chastain Glen Lane at the entrance  (2929,792)  14.0 m wide  8 m road
+     B9   Chastain Glen Lane at the entrance  (2940,787)  14.0 m wide  8 m road
+PASS  every barrier is at least 10 m from the course centreline  -  closest B7 at 12.0 m
+PASS  the grid is not boxed in (nearest barrier 10 m+ away)  -  12.2 m
+   physical test on B1: Courtfield Trace at lap 71 m
+(screenshot d_barrier_in_race_approach saved, 886x451)
+(screenshot d_barrier_in_race_stopped saved, 886x451)
+PASS  the car is stopped by the barrier (does not pass it)  -  closest to the barrier line -2.09 m short of it (negative = before it), speed 0.8 m/s, lateral 0.2 m from the centre
+PASS  free driving again: all barrier objects gone
+(screenshot d_barrier_gone_in_free_approach saved, 886x451)
+PASS  the same drive in free driving passes the barrier line  -  went 4.1 m past the line
+
+Race events:
+      0.2  RACE START requested: Chastain Glen loop, forward, 4 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 0 official shortcuts
+      3.2  GO
+      3.2  START LINE crossed: clock started
+      3.3  CHECKPOINT 1 at 0.030
+      3.3  CHECKPOINT 2 at 0.070
+      3.3  CHECKPOINT 3 at 0.110
+      3.4  CHECKPOINT 4 at 0.150
+      3.4  CHECKPOINT 5 at 0.190
+      3.5  LAP 1 COUNTED 0.230 (clock 0.230 + penalty 0.0)
+      3.5  CHECKPOINT 1 at 0.270
+      3.5  CHECKPOINT 2 at 0.310
+      3.6  CHECKPOINT 3 at 0.350
+      3.6  CHECKPOINT 4 at 0.390
+      3.7  CHECKPOINT 5 at 0.430
+      3.7  LAP 2 COUNTED 0.240 (clock 0.240 + penalty 0.0)
+      3.7  CHECKPOINT 1 at 0.510
+      3.8  CHECKPOINT 2 at 0.550
+      3.8  CHECKPOINT 3 at 0.590
+      3.9  CHECKPOINT 4 at 0.630
+      3.9  CHECKPOINT 5 at 0.670
+      3.9  LAP 3 COUNTED 0.240 (clock 0.240 + penalty 0.0)
+      4.0  CHECKPOINT 1 at 0.750
+      4.0  CHECKPOINT 2 at 0.790
+      4.1  CHECKPOINT 3 at 0.830
+      4.1  CHECKPOINT 4 at 0.870
+      4.1  CHECKPOINT 5 at 0.910
+      4.2  LAP 4 COUNTED 0.240 (clock 0.240 + penalty 0.0)
+      4.2  FINISH total 0.950 (clock 0.950 + penalties 0.0); laps 0.230 0.240 0.240 0.240
+      4.2  RACE START requested: Chastain Glen loop, forward, 1 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 0 official shortcuts
+      7.2  GO
+      7.4  START LINE crossed: clock started
+      7.4  RACE LEFT
+      7.5  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 0 official shortcuts
+     10.5  GO
+     10.5  START LINE crossed: clock started
+     10.6  CHECKPOINT 1 at 0.030
+     10.6  PENALTY +5 s: missed CP2 on lap 1 at 0.070 (race penalty now 5 s)
+     10.6  CHECKPOINT 3 at 0.070; MISSED 2
+     10.7  CHECKPOINT 4 at 0.110
+     10.7  CHECKPOINT 5 at 0.150
+     10.8  LAP 1 COUNTED 5.250 (clock 0.250 + penalty 5.0); missed CP2
+     10.8  CHECKPOINT 1 at 0.290
+     10.9  PENALTY +5 s: missed CP2 on lap 2 at 0.330 (race penalty now 10 s)
+     10.9  PENALTY +5 s: missed CP3 on lap 2 at 0.330 (race penalty now 15 s)
+     10.9  CHECKPOINT 4 at 0.330; MISSED 2,3
+     10.9  CHECKPOINT 5 at 0.370
+     11.0  LAP 2 COUNTED 10.160 (clock 0.160 + penalty 10.0); missed CP2, CP3
+     11.0  PENALTY +5 s: missed CP1 on lap 3 at 0.450 (race penalty now 20 s)
+     11.0  PENALTY +5 s: missed CP2 on lap 3 at 0.450 (race penalty now 25 s)
+     11.0  PENALTY +5 s: missed CP3 on lap 3 at 0.450 (race penalty now 30 s)
+     11.0  PENALTY +5 s: missed CP4 on lap 3 at 0.450 (race penalty now 35 s)
+     11.0  PENALTY +5 s: missed CP5 on lap 3 at 0.450 (race penalty now 40 s)
+     11.0  LAP 3 COUNTED 25.040 (clock 0.040 + penalty 25.0); missed CP1, CP2, CP3, CP4, CP5
+     11.0  FINISH total 40.450 (clock 0.450 + penalties 40.0); laps 5.250 10.160 25.040
+     11.7  RACE LEFT
+     11.7  RACE START requested: Chastain Glen loop, forward, 2 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 7 road barriers, 1 official shortcuts
+     14.7  GO
+     14.8  START LINE crossed: clock started
+     14.8  SHORTCUT chasefield_test entered at 0.030: checkpoints 1,2,3 forgiven
+     14.9  SHORTCUT chasefield_test left at 0.070
+     14.9  CHECKPOINT 4 at 0.110
+     14.9  CHECKPOINT 5 at 0.150
+     15.0  LAP 1 COUNTED 0.190 (clock 0.190 + penalty 0.0); forgiven CP1,CP2,CP3
+     15.1  PENALTY +5 s: missed CP1 on lap 2 at 0.310 (race penalty now 5 s)
+     15.1  PENALTY +5 s: missed CP2 on lap 2 at 0.310 (race penalty now 10 s)
+     15.1  PENALTY +5 s: missed CP3 on lap 2 at 0.310 (race penalty now 15 s)
+     15.1  CHECKPOINT 4 at 0.310; MISSED 1,2,3
+     15.1  CHECKPOINT 5 at 0.350
+     15.2  LAP 2 COUNTED 15.200 (clock 0.200 + penalty 15.0); missed CP1, CP2, CP3
+     15.2  FINISH total 15.390 (clock 0.390 + penalties 15.0); laps 0.190 15.200
+     15.2  RACE LEFT
+     15.2  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 7 road barriers, 1 official shortcuts
+     18.2  GO
+     18.3  RACE LEFT
+     18.3  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 0 official shortcuts
+     21.3  GO
+     25.3  RACE LEFT
+
+ALL 67 CHECKS PASSED

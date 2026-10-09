@@ -1,0 +1,36 @@
+PASS  start: state is Countdown  -  Countdown
+PASS  start: car on the grid  -  0.00 m from the grid point
+PASS  start: car faces the route direction  -  0.0 deg off the grid heading -7.9
+(screenshot 01_countdown requested at 0.9 s, screen 886x451)
+(screenshot 01_countdown saved)
+PASS  countdown lasts 3 s  -  3.02 s
+(screenshot 03_checkpoint_1_passed_next_lit requested at 22.2 s, screen 886x451)
+(screenshot 03_checkpoint_1_passed_next_lit saved)
+(screenshot 02_next_checkpoint_close requested at 34.3 s, screen 886x451)
+(screenshot 02_next_checkpoint_close saved)
+
+Route Chastain Glen loop, direction forward, lap 1247.0 m, 5 checkpoints, run-in 100 m, mode lap
+Checkpoints in travel order:
+  CP1 179 m after the gate  (3074,1001)  at Chasefield Way
+  CP2 400 m after the gate  (3117,1200)  on the loop
+  CP3 621 m after the gate  (2931,1176)  at Chasefield Way
+  CP4 710 m after the gate  (2860,1125)  at Chastain Glen Lane
+  CP5 979 m after the gate  (2759,986)  on the loop
+Junctions (m after the gate): 1225 m: Chastain Glen Lane entrance / Chastain Trail; 49 m: Courtfield Trace; 126 m: Glenbarrett Lane; 179 m: Chasefield Way; 286 m: Chastain Glen Lane; 437 m: Chastain Glen Lane; 621 m: Chasefield Way; 710 m: Chastain Glen Lane; 947 m: Chastain Place
+PASS  lap 1: every checkpoint registered, in order  -  passed 1,2,3,4,5
+PASS  lap 1: counted, time recorded  -  1:22.675
+PASS  lap 1: time is plausible for the length  -  82.7 s for 1247 m = 15.1 m/s average
+PASS  the start line starts the clock
+
+Race events:
+      0.0  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 0 official shortcuts
+      3.0  GO
+     10.3  START LINE crossed: clock started
+     22.2  CHECKPOINT 1 at 11.887
+     36.9  CHECKPOINT 2 at 26.668
+     51.6  CHECKPOINT 3 at 41.323
+     57.5  CHECKPOINT 4 at 47.214
+     75.2  CHECKPOINT 5 at 64.885
+     92.9  LAP 1 COUNTED 82.675 (clock 82.675 + penalty 0.0)
+
+ALL 8 CHECKS PASSED

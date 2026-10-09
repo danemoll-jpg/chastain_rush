@@ -1,0 +1,22 @@
+fountain: 108 spray particles alive
+01_entrance_island.png: the entrance island: planted lens, trimmed shrubs, tall tree, the two signs on posts at its ends, the rail fence beyond
+01b_entrance_island_from_inside.png: the island from the north end, looking back toward the entrance
+02_dan_house.png: Dan's house from the street, 23 m away
+03_style_A_brick.png: style A, brick front from the street, 24 m away
+04_style_A_siding.png: style A, all siding from the street, 22 m away
+05_style_B_colonial.png: style B, brick colonial with columns from the street, 25 m away
+06_style_C_ranch.png: style C, one-storey ranch from the street, 24 m away
+07_style_D_plain.png: style D, plain two-storey from the street, 23 m away
+02b_dan_house_drive.png: Dan's house from the end of the drive (dark asphalt, large front-yard tree)
+02c_dan_house_backyard_hill.png: behind Dan's house: the hill under pine straw, planted trees, the plain back
+08_pond_fountain.png: the pond with the fountain from the bank by the street (weeping trees, retaining walls and docks on the far shore)
+08c_fountain_close.png: the fountain from the shore, about 24 m away
+08b_pond_wide.png: the pond, wide
+09_street_sidewalks.png: a street with curbs, grass strips, sidewalks, mailboxes and lamps, looking along it
+chase: geese zone on the road at (2927,808); car drives at it from 46 m at 11 m/s
+10_geese_calm.png: the geese before the car comes (on the bank, on the road, on the water)
+chase: first goose scattered at t = 3.31 s, car 9.6 m from the zone centre
+10_geese_scatter_1.png: geese scattering 0.15 s after the first one went (1 of 15 up, 1 in the air)
+10_geese_scatter_2.png: geese scattering 0.65 s after the first one went (3 of 15 up, 3 in the air)
+10_geese_scatter_3.png: geese scattering 1.30 s after the first one went (3 of 15 up, 3 in the air)
+geese after the chase: 3 of 15 away or flying, speed lost to 0 goose hits 0.0%

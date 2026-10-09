@@ -1,0 +1,11 @@
+Round 7 performance, offscreen 1920x1080 (PerfCheck.Run -perfRound7), GTX 1660 Ti / i7-9700, with the Unity Editor of this project and
+other Unity processes running on the same machine (so the 99th percentile is noisy: it varies 42-55 fps between runs of the same scene).
+
+First run, before any optimizing (shadows 150 m, all house detail casting shadows):
+  Entrance island  67 fps average, 99th percentile 18.9 ms (53 fps), 1286 draw calls, 1.63 M triangles
+  Beside the pond  68 fps average, 99th percentile 19.1 ms (52 fps), 1306 draw calls, 1.57 M triangles
+  Outside Dan's    67 fps average, 99th percentile 18.7 ms (53 fps), 1119 draw calls, 1.34 M triangles
+Same scene with shadows off (-perfNoShadows): 75 / 76 / 73 fps average, 99th percentile 57 / 59 / 56 fps, 1.32 / 1.27 / 1.12 M triangles.
+After the optimizing (house doors/windows/trim in a no-shadow mesh, no shadows from curbs, lamps, mailboxes, shrubs, picket, rail and iron
+fences, URP shadow distance 150 -> 110 m): see perf_after_r1.txt (first repeat, best), perf_after_r2.txt, and perf_tree_near_40.txt.
+Without trees (-perfNoTrees): 99 / 106 / 109 fps average, 99th percentile 59-60 fps, 0.79 / 0.79 / 0.51 M triangles.

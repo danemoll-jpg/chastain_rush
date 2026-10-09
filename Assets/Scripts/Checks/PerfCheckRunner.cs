@@ -47,6 +47,7 @@ namespace ChastainRush
             for (int i = 0; i < cl.Length - 1; i++) if (cl[i] == "-perfTreeDist") { trees.drawDistance = float.Parse(cl[i + 1]); RenderSettings.fogEndDistance = trees.drawDistance - 50f; }
             for (int i = 0; i < cl.Length - 1; i++) if (cl[i] == "-perfNear") trees.nearDistance = float.Parse(cl[i + 1]);
             if (System.Array.IndexOf(cl, "-perfNoShadows") >= 0) UnityEngine.Rendering.Universal.UniversalRenderPipeline.asset.shadowDistance = 0f;
+            for (int i = 0; i < cl.Length - 1; i++) if (cl[i] == "-perfShadowDist") UnityEngine.Rendering.Universal.UniversalRenderPipeline.asset.shadowDistance = float.Parse(cl[i + 1]);
             car.enabled = false;
             // Batch mode never draws the game view, so render the main camera ourselves each frame into a 1080p target and
             // read one pixel back to wait for the GPU. Frame time then includes real rendering, shadows and terrain LOD.

@@ -15,7 +15,7 @@ using UnityEngine.Rendering;
 // Batch: Unity.exe -batchmode -quit -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine
 namespace ChastainRush
 {
-    public static class MapBuilder
+    public static partial class MapBuilder
     {
         const string GeneratedDir = "Assets/Generated";
         public const string ScenePath = GeneratedDir + "/ChastainPrototype.unity";
@@ -28,7 +28,7 @@ namespace ChastainRush
             { "living_street", 0.06f }, { "service", 0.05f },
         };
 
-        [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; }
+        [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; public long osm_id; }
         [Serializable] class Building { public string type; public float height; public float[] footprint; public string roof; public float pitch_deg; public int seed; }
         [Serializable] class Driveway { public float[] points; public float width; public string source; }
         [Serializable] class Area { public string name; public float[] outline; }
@@ -83,14 +83,18 @@ namespace ChastainRush
             var terrain = BuildTerrain(meta, mats);
             var world = new GameObject("World").transform;
             var paint = new Chunks();
-            BuildRoads(map, terrain, mats, world, paint);
+            // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
+            // houses and driveways are not built here
+            var hood = Neighborhood.Load(map, terrain);
+            BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildRoadLookup(map);
-            BuildBuildings(map, terrain, mats, world, LoadOwner());
-            BuildDriveways(map, terrain, mats, world);
-            BuildWater(map, terrain, mats, world);
-            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world);
+            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood);
+            BuildDriveways(map, terrain, mats, world, hood);
+            BuildWater(map, terrain, mats, world, hood);
+            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world, hood.RejectTree);
+            BuildNeighborhood(map, terrain, mats, world, hood, trees);
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
@@ -245,16 +249,19 @@ namespace ChastainRush
             }
         }
 
-        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint)
+        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint, Neighborhood hood)
         {
             var main = new Chunks();
             var service = new Chunks();
             var others = new RoadIndex(map.roads);
-            foreach (var r in map.roads)
+            for (int ri = 0; ri < map.roads.Length; ri++)
             {
+                var r = map.roads[ri];
                 var pts = Densify(ToPoints(r.points), 2f);
                 float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
-                var mb = r.@class == "service" ? service : main;
+                // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the
+                // street it joins. In the lighter service shade it read as a pale patch on the carriageway (01_spawn.png).
+                var mb = r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
                 foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain);
                 AddDisc(mb.At(pts[0]), pts[0], r.width * 0.5f, lift - 0.004f, terrain);
                 AddDisc(mb.At(pts[pts.Count - 1]), pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
@@ -555,7 +562,7 @@ namespace ChastainRush
 
         static readonly Color OwnerWall = new Color(1.0f, 0.45f, 0.05f), OwnerRoof = new Color(0.62f, 0.22f, 0.04f);
 
-        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner)
+        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
@@ -565,6 +572,7 @@ namespace ChastainRush
             for (int i = 0; i < map.buildings.Length; i++)
             {
                 var b = map.buildings[i];
+                if (hood.OwnsBuilding(i)) continue; // Round 7: styled houses in the area, Dan's house hand-built
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;
@@ -738,13 +746,15 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ driveways (visual only: nothing is levelled)
 
-        static void BuildDriveways(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
+        static void BuildDriveways(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Neighborhood hood)
         {
             var mb = new Chunks { Tint = new Color(0.60f, 0.59f, 0.57f) };
             float lift = 0.05f * vScale;
             int osm = 0, generated = 0;
-            foreach (var d in map.driveways)
+            for (int di = 0; di < map.driveways.Length; di++)
             {
+                var d = map.driveways[di];
+                if (hood.OwnsDriveway(di)) continue; // Round 7: the area's driveways come with its houses
                 var pts = Densify(ToPoints(d.points), 1.5f);
                 if (pts.Count < 2) continue;
                 foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, d.width, lift, terrain);
@@ -756,11 +766,13 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ water
 
-        static void BuildWater(MapData map, TerrainGrid terrain, Materials mats, Transform parent)
+        static void BuildWater(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Neighborhood hood)
         {
             var mb = new MeshBuilder();
-            foreach (var w in map.water)
+            for (int wi = 0; wi < map.water.Length; wi++)
             {
+                var w = map.water[wi];
+                if (hood.OwnsPond(wi)) continue; // Round 7: the pond is built with its surroundings
                 var ring = ToPoints(w.outline);
                 if (ring.Count < 3) continue;
                 float level = WaterLevel(ring, terrain);
@@ -903,6 +915,14 @@ namespace ChastainRush
             readonly List<int> tris = new List<int>();
             public Color Tint = Color.white; // colour of the vertices added from now on
             public int Count => verts.Count;
+            public Mesh ToMesh(string name)
+            {
+                var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };
+                mesh.SetVertices(verts); mesh.SetColors(colours); mesh.SetTriangles(tris, 0);
+                mesh.RecalculateNormals(); mesh.RecalculateBounds();
+                return mesh;
+            }
+            public List<Vector3> VertexRange(int start, int count) => verts.GetRange(start, count);
             public int Vertex(Vector3 v) { verts.Add(v); colours.Add(Tint); return verts.Count - 1; }
             public void Tri(int a, int b, int c) { tris.Add(a); tris.Add(b); tris.Add(c); }
 

@@ -516,11 +516,99 @@ looks on a steep verge; the reverse race with barriers (same closure list, only 
 New tools: `RaceBarriers`, `Round6CheckRunner`, `shortcut_candidates.py`; `RaceGate.Crossed` takes the
 car's reach; `make_route.py` writes `closures` and keeps `official_shortcuts`.
 
+Round 7 status — built and scripted-checked (2026-10-09); NOT yet driven by Dan. Work was done and checked in a mirrored copy of
+the project (`C:\Users\danmo\chastain_rush_r7`) because the Editor had this folder open, so the scene in the working folder is stale:
+run Chastain Rush > Build Map before driving. Screenshots (19) and every check report: `Data/screenshots/round7/` (+ `checks/`).
+
+1. Area: DONE (`Tools/mapgen/neighborhood_area.py` -> `Data/neighborhood/chastain_glen_area.json`). Streets reached from the entrance
+   without going out on New Chastain Road: Chastain Glen Lane (11 pieces, 1463 m), Chasefield Way (236 m), Chastain Trail (192 m),
+   Glenbarrett Court (227 m), Courtfield Trace (173 m), Glenbarrett Lane (90 m), Chasefield Court (78 m), Chastain Place (25 m), and
+   one unnamed 11 m stub (the service crossover through the entrance island). 20 road pieces, 172 houses (+1 shed). The pond is OSM
+   water index 8, UNNAMED in the data (10,682 m2, 18 m from the lane, just west of the entrance spur); West and East Chastain Lake are
+   about 2 km west and are not in the area. The photos show this unnamed pond (fountain, white rail fence along the road, culvert,
+   docks and walls on the back-yard shore). The OSM fountain node is inside its outline. The pool, parking lot and playground are in the
+   data too (`Tools/mapgen/neighborhood_extras.py` -> `extras.json`). The owner's house is NOT in the committed area file (privacy): the
+   builder reads it from the git-ignored `local/owner_marker.json`.
+2. Dan's house: DONE, hand-built. Racer's method (read in `CR015Neighborhood`, `DiscoveryDriveway`): a named, hand-placed object built
+   by Editor code outside the rebuilt world. Here: the mesh is `Assets/HandMade/DanHouse/DanHouse.asset` (committed; the map builder
+   only instantiates it, so regenerating cannot touch it), placed from `local/owner_marker.json`, named `DanHouse`, with the orange beacon
+   kept to find it. Red brick front, front gable over a two-car garage with white panelled doors, one window in the gable with dark
+   shutters, white trim, entry gable with a fan window, pedimented door with sidelights, wall lanterns, light siding on the upper side wall,
+   grey shingle roof, 14.3 x 10.6 m from the OSM footprint (true height, not vertical_scale). Dark asphalt drive, a large maple in the front
+   yard, the real hill behind (5.1 m of relief) under pine straw with five planted trees, a small stained deck fudged from the back photos.
+   Sides and back plain (his word). ESTIMATES: roof pitch, window sizes and positions are read off the photos by eye, not measured.
+3. House styles: DONE. 172 houses by footprint size and shape and a stable hash of the building seed: A 81 (brick-front about half, the
+   rest siding), B 9, C 55, D 27. Windows, door, garage doors, trim and shutters on the street side (and one window on A's side wall);
+   garage on the side nearest the street, front toward the road. Houses are true height (the rest of the map's buildings still get
+   vertical_scale). Colours from the photos: white, cream, grey, sage, light blue, greige, yellow (D), two reds of brick, grey / charcoal /
+   brown roofs, dark shutters, white garage doors. One box collider per house.
+4. Streets: DONE. 3834 m of concrete curb (18 cm wide, 12 cm proud, NO collider), 3878 m of sidewalk with a 1.25 m grass strip (along
+   houses only), 172 drives (28% asphalt, the rest concrete with seams; Dan's asphalt), 146 mailboxes (26 houses had no clear spot),
+   49 lamps, 21 hydrants. Nothing but the houses and the fence triggers has a collider. Proof: BumpScan (item 11).
+5. Fences: DONE, breakable. 104 runs, 2096 panels: wooden privacy fences on about 60% of lots (rear, and about half the sides),
+   low picket on a few pond lots, a white three-rail fence along the road on the pond side, a black iron fence round the pool.
+   There is no fence data (the OSM fence nodes in the crop are outside the area): placement is plausible, not real. Racer HAS a
+   breakable fence (`BreakableProp`: a trigger per prop that flies the visual away with no impulse on the car, no speed cost, restored by
+   `RestoreRace`); the same idea is re-implemented here (nothing copied) as `FenceChunk`/`FencePanel`: one mesh per 128 m cell (one draw
+   call), a trigger box per panel, the panel's pieces (boards, post) fly off separately, and a break costs 3.5% of horizontal speed.
+   Scripted with the real car at 15 m/s (`FenceCheck.Run`): a wooden panel broke, speed 15.1 -> 14.4 m/s (the same line with the panel
+   gone: 14.9) and back to 15 m/s, tilt 9.7 deg (control 9.7), never stopped, no launch (peak vertical speed below the control's); picket: 4
+   panels broke, 15.2 -> 13.7 m/s (10%), recovered; 11 broken panels were whole again after `RaceController.StartRace`. The rail fence was
+   driven through in the first pass (3% cost) but the stricter second pass found no level, open rail panel, so it has no control run.
+   The first wooden-fence test stopped the car: a house stood right behind that panel (the test, not the fence); the test now requires
+   14 m of open ground behind the panel.
+6. Entrance: DONE with one change from the photo. The island is a 55 m lens, but only 1.3 m wide at its widest in this data (the two
+   one-way carriageways are 8 m each here), so the planting is scaled to it: a tall maple at the widest point, three pairs of trimmed
+   round shrubs, mulch, the street curb round it, the two no-parking / no-U-turn plates on posts at its ends (drawn from code, my own
+   texture), and the white rail fence along the pond side. The brick "Chastain Glen" monument sign in the photos is NOT built (no
+   lettering without a font; deferred). The lighter grey patch in `01_spawn.png`: it is OSM service way 1161774881, 10 m long, a crossover
+   between the two carriageways at the island's south tip, drawn in the lighter service-road shade (0.30 grey against 0.18) over the
+   carriageway edge. Fixed: service ways inside the area are drawn in the street's asphalt. The crossover itself is data and stays.
+7. Pond: DONE where the data allows. Fountain at the OSM node (two particle systems: 700 jets/s and a mist skirt, built in Awake; the
+   project needed Unity's built-in Particle System module, added to `Packages/manifest.json`), darker green-brown water, 6 weeping trees
+   (custom mesh), 2 retaining walls (the brief says 2 or 3), 2 docks, the white rail fence on the road side, 2 pine-straw patches, and a
+   culvert headwall with two pipes at the shore nearest the street. ESTIMATES: the data has no docks, walls or culvert; they are placed
+   on the shoreline by the rules in `MapBuilder.Pond.cs`, and there is no stream near the pond in the data, so the headwall drains to
+   nothing. The banks are the terrain grass.
+8. Geese: DONE (needs Dan's eyes). 14 geese (zones for 9 and 5) and one heron live at the pond: bank, road beside it, water. A car at
+   speed scatters those within about 6 m + 0.3 m per m/s of speed (9 m at 10 m/s): a short run with flapping, a honk, then flight to
+   water or the far bank; they come home once the car has been 38 m away for 6 s. A goose the car reaches costs 2% of speed (once per goose
+   per 3 s, 5% a frame at most). No colliders at all: they cannot stop, flip or launch the car. Scripted (`Round7Check`): a car at 11 m/s
+   up the lane: 3 of 15 birds scattered, speed cost 2% for one hit in one run and 0 hits in the last (it depends on the line). The honk
+   is synthesized in code (as Racer's `TurkeyVoice` is; Racer has no goose sound and its wildlife wavs are deer, bats, birds, frogs and
+   squirrels): its sound was NOT heard (batch runs have no audio). The return-home behaviour is coded but not scripted-checked.
+9. Pool and clubhouse: DONE (simple). The map data has the pool (OSM way, 8 points), its parking lot and a playground inside the area
+   (not carried in map.json; `extras.json`). Built: aqua pool with pale coping on a level deck with lounge chairs and red umbrellas, the
+   black iron fence (breakable, white posts), the parking lot, a playground with a swing set. The clubhouse has no footprint in the data:
+   a small peach building with a four-column front-gable porch, placed by estimate on the side of the deck away from the pond, with a
+   box collider. One blurry photo and one listing photo (`amenities/`) were the only reference.
+10. Performance: NOT MET at the 99th percentile; averages are above 60. Offscreen 1080p (Round 3's method) at the entrance, beside the
+   pond and outside Dan's house: first run 67 / 68 / 67 fps average, 99th percentile 53 / 52 / 53 fps, 1.6 / 1.6 / 1.3 M triangles,
+   about 1,300 draw calls (Round 3: 70 fps, 56 fps at the 99th). What it took: house doors, windows and trim in a no-shadow mesh,
+   no shadows from curbs, lamps, mailboxes, shrubs, picket, rail and iron fences, URP shadow distance 150 -> 110 m. After: 66-70 fps
+   average, 99th percentile 52-54 fps in the best repeat and worse in later ones (the machine has the Editor and other Unity processes
+   running; the same scene's 99th percentile varied 42-55). Where the time goes: the trees (no trees: 99-109 fps, 0.5-0.8 M triangles),
+   and shadows about 8 fps. Tree near distance 55 -> 40 m gave 70 / 72 / 70 fps and 55-56 at the 99th; not adopted (Round 3 tuned the
+   trees). Next lever if Dan sees stutter: tree draw distance or near distance, or fewer tree draw calls. Details: `checks/perf_*.txt`.
+11. Nothing driving-related regressed: DONE. `BumpScan` over the whole map: identical to Round 4 (outside the I-575 zone: COLLIDER 5, HUMP
+   76, MISS 4, STEP 149, serious STEP 1; area subset: the same 4 STEP rows, the largest 4.2 cm). `RaceCheck`: lap forward 8 of 8 (lap
+   1:22.676, as Round 5/6), full 23 of 23, round6 67 of 67, reverse lap 8 of 8 (1:22.607).
+12. Screenshots: DONE, 19 in `Data/screenshots/round7/`: entrance island (from the road and from the north end), Dan's house (street,
+   drive, backyard hill), one of each style (A brick, A siding, B, C, D), the pond with the fountain (wide and close), a street with
+   sidewalks, the geese calm and scattering. From the street at about the photos' angles, 1920 x 1080.
+13. This report: DONE.
+
+Not done / not measured: Dan's drive; real key presses and audio (the honk); the geese's walk home; the brick entrance monument; the
+fence check's rail control run; frame rate in the Editor Game view. Dan's house sides and back are plain by design.
+
+New tools: `Tools/mapgen/neighborhood_area.py`, `neighborhood_extras.py`; Editor `MapBuilder.*.cs` (partial class), `Round7Check`,
+`FenceCheck`; runtime `Assets/Scripts/Neighborhood/` (`BreakableFence`, `Geese`, `FountainSpray`); `PerfCheck -perfRound7`,
+`-perfShadowDist`.
+
 Current Objective (Focus Area)
 
-*Round 6 is built and scripted-checked but NOT yet driven by Dan, and he has
-not yet picked shortcut candidates. Its brief is in git history; its status
-is above. Round 7 does not depend on either.*
+*Round 7 (beautify Chastain Glen) is built and scripted-checked but NOT yet driven by Dan (status above). Round 6 is also still
+undriven, and Dan has not picked shortcut candidates. The shortcuts round comes after Dan has judged Round 7. Its brief is in git history.*
 
 **Round 7 — beautify Chastain Glen. DECIDED (2026-10-09): go ahead now.** Dan
 will come back for more detail later. Only his own neighborhood this round;

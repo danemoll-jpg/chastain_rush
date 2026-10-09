@@ -151,6 +151,7 @@ namespace ChastainRush
             Say("Get ready", 2f);
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
             barriers.Build(Route);   // closed roads appear with the race ...
+            FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
             Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts");
             markers.Refresh(this);
         }

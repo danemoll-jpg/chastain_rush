@@ -16,6 +16,9 @@ namespace ChastainRush
         [Serializable] class Building { public float[] footprint; }
         [Serializable] class Extra { public Building[] buildings; }
 
+        [Serializable] class ViewPt { public string label; public float x, z, fx, fz, qx, qz; }
+        [Serializable] class Views { public ViewPt[] points; }
+
         const float Radius = 300f; // roughly what the chase camera sees of the buildings and roads around the car
 
         public static void Run()
@@ -62,6 +65,27 @@ namespace ChastainRush
                 if (count > bestCount) { bestCount = count; bestPt = rp; }
             }
             runner.locations.Add(Make("Densest part (most buildings within 300 m of a named road)", bestPt.p, bestPt.dir, bestPt.name, map, centres));
+            // Round 7: the three places that matter for the dressed neighbourhood (-perfRound7): the entrance, beside the pond, outside Dan's house
+            if (Array.IndexOf(args, "-perfRound7") >= 0)
+            {
+                var vp = JsonUtility.FromJson<Views>(File.ReadAllText(Path.Combine(Path.GetDirectoryName(Application.dataPath), "Assets/Generated/hood_views.json")));
+                ViewPt Find(string l) { foreach (var p in vp.points) if (p.label == l) return p; return null; }
+                runner.locations.Clear();
+                runner.locations.Add(Make("Entrance island (the map spawn on Chastain Glen Lane)", spawn, new Vector2(Mathf.Sin(h), Mathf.Cos(h)), map.spawn.street, map, centres));
+                var gr = Find("geese_road"); var fo = Find("fountain");
+                if (gr != null && fo != null)
+                {
+                    var at = new Vector2(gr.x, gr.z); var tp = (new Vector2(fo.x, fo.z) - at).normalized;
+                    var along = new Vector2(-tp.y, tp.x);
+                    runner.locations.Add(Make("Beside the pond (road next to the geese, fountain in view)", at - along * 20f, along, "Chastain Glen Lane", map, centres));
+                }
+                var dn = Find("dan");
+                if (dn != null)
+                {
+                    var q = new Vector2(dn.qx, dn.qz); var c = new Vector2(dn.x, dn.z); var tp = (c - q).normalized; var along = new Vector2(-tp.y, tp.x);
+                    runner.locations.Add(Make("Outside Dan's house (street in front of it)", q - along * 25f, along, "Chastain Glen Lane", map, centres));
+                }
+            }
             EditorApplication.EnterPlaymode();
         }
 

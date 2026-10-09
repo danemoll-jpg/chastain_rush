@@ -41,10 +41,11 @@ namespace ChastainRush
             public int Trees;
             public int[] PerSpecies = new int[Variants.Length];
             public string KitTriangles;
-            public int Woods, Yards;
+            public int Woods, Yards, Rejected;
+            public TreeField Field; // the kit meshes, reused by the hand-placed trees of Round 7
         }
 
-        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent)
+        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent, Func<float, float, bool> reject = null)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(KitPath);
             if (asset == null) throw new Exception("Missing " + KitPath);
@@ -69,12 +70,14 @@ namespace ChastainRush
             if (bytes.Length < 8 || bytes[0] != 'C' || bytes[1] != 'R' || bytes[2] != 'T' || bytes[3] != '1') throw new Exception("Bad trees.bin");
             int count = BitConverter.ToInt32(bytes, 4);
             if (bytes.Length != 8 + count * 12) throw new Exception($"trees.bin is {bytes.Length} bytes, expected {8 + count * 12}");
-            var result = new Result { Trees = count, KitTriangles = tri.ToString() };
+            var result = new Result { Trees = count, KitTriangles = tri.ToString(), Field = field };
             var packed = new byte[count * TreeField.PackedSize];
+            int kept = 0;
             for (int i = 0; i < count; i++)
             {
                 int o = 8 + i * 12;
                 float x = BitConverter.ToSingle(bytes, o), z = BitConverter.ToSingle(bytes, o + 4);
+                if (reject != null && reject(x, z)) { result.Rejected++; continue; } // Round 7: not through a sidewalk, a pool or a fence
                 int seed = BitConverter.ToUInt16(bytes, o + 8);
                 bool yard = bytes[o + 10] != 0;
                 float depth = bytes[o + 11] * 0.1f; // metres inside the canopy
@@ -98,11 +101,14 @@ namespace ChastainRush
                     trunkH = (byte)Mathf.Clamp(Mathf.RoundToInt(trunkH * 10f), 1, 255),
                     trunkW = (byte)Mathf.Clamp(Mathf.RoundToInt(trunkW * 100f), 5, 255),
                 };
-                var span = new Span<byte>(packed, i * TreeField.PackedSize, TreeField.PackedSize);
+                var span = new Span<byte>(packed, kept * TreeField.PackedSize, TreeField.PackedSize);
                 System.Runtime.InteropServices.MemoryMarshal.Write(span, ref p);
+                kept++;
             }
+            System.Array.Resize(ref packed, kept * TreeField.PackedSize);
+            result.Trees = kept;
             field.data = packed;
-            field.count = count;
+            field.count = kept;
             return result;
         }
 

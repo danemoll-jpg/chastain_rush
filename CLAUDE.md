@@ -102,7 +102,7 @@ route file (none yet; a test one lives in the check only), barriers across every
 while racing (`RaceBarriers`, closures from `make_route.py`), and a report-only list of seven backyard
 shortcut candidates (`Data/screenshots/round6/`).
 
-Active work is Round 7 in `TODO.md`: beautify Chastain Glen only (Dan's house
+Round 7 (see `TODO.md`, status there) is built and scripted-checked, not yet driven by Dan: beautify Chastain Glen only (Dan's house
 hand-built from photos, four house styles, curbs and sidewalks, the entrance,
 the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
@@ -111,6 +111,15 @@ committed files.
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
 so commit any uncommitted work first to keep those edits separate from yours.
+
+Imported from Racer in Round 7: nothing was copied. Dan's house follows Racer's Kyle's-house method (a hand-authored, named object outside
+the rebuilt world; its mesh is `Assets/HandMade/DanHouse/DanHouse.asset`, kept apart from generated data). The breakable fences re-implement
+the idea of Racer's `BreakableProp` (trigger per prop, no impulse on the car) as `Assets/Scripts/Neighborhood/BreakableFence.cs`, with a speed
+cost; the geese's honk is synthesized in code like Racer's `TurkeyVoice`. New: `Geese.cs`, `FountainSpray.cs`; the area is dressed by
+`Assets/Editor/MapBuilder.*.cs` (the builder is now a partial class). Data: `Data/neighborhood/` (made by `Tools/mapgen/neighborhood_area.py`
+and `neighborhood_extras.py`, re-run both after a mapgen run). The Unity project now lists the built-in Particle System module.
+Checks: `ChastainRush.Round7Check.Run` (19 screenshots to `Data/screenshots/round7/`), `ChastainRush.FenceCheck.Run`, `PerfCheck.Run -perfRound7`.
+Run checks in a mirrored copy of the folder (the Editor has this one open); sync it with `robocopy ... /E /XO /XD Generated Library`, not `/MIR`.
 
 Imported from Racer so far (Round 1): PrototypeCar prefab, its materials and
 physics material (`Assets/Vehicles/`), and ArcadeVehicle, VehicleInput,

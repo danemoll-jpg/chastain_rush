@@ -1,0 +1,14 @@
+== Fence_Privacy: panel at (2667,1035), car starts 30 m away, aiming straight at it; broken before 0
+   speed just before the fence 15.1 m/s, lowest after 14.4 m/s (cost 5%), speed 10 m past 15.2 m/s
+   panels broken 1 (flying pieces now 4); peak upward speed -0.37 m/s; max tilt 9.7 deg; fewest wheels grounded 3; car kept moving: True
+== Fence_Privacy CONTROL (same line, that panel already gone): panel at (2667,1035), car starts 30 m away, aiming straight at it; broken before 1
+   speed just before the fence 15.1 m/s, lowest after 14.9 m/s (cost 2%), speed 10 m past 15.0 m/s
+   panels broken 0 (flying pieces now 0); peak upward speed -0.38 m/s; max tilt 9.7 deg; fewest wheels grounded 4; car kept moving: True
+Fence_Rail: no level, open panel found
+== Fence_Picket: panel at (2845,897), car starts 30 m away, aiming straight at it; broken before 1
+   speed just before the fence 15.2 m/s, lowest after 13.7 m/s (cost 10%), speed 10 m past 15.0 m/s
+   panels broken 4 (flying pieces now 8); peak upward speed 0.62 m/s; max tilt 9.1 deg; fewest wheels grounded 4; car kept moving: True
+== Fence_Picket CONTROL (same line, that panel already gone): panel at (2845,897), car starts 30 m away, aiming straight at it; broken before 5
+   speed just before the fence 15.1 m/s, lowest after 14.9 m/s (cost 1%), speed 10 m past 15.1 m/s
+   panels broken 0 (flying pieces now 0); peak upward speed 0.38 m/s; max tilt 8.9 deg; fewest wheels grounded 4; car kept moving: True
+== race start: broken panels 5 -> 0 (RaceController.StartRace), flying pieces 0
