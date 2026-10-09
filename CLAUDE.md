@@ -14,6 +14,8 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 
 ## Code Style & Architecture
 - **Racer is read-only from this project.** Copy from it, never edit it.
+- **Racer's systems are finished and open to use** (Dan, 2026-10-09). Prefer
+  porting Racer's code to writing a new version of something it already has.
 - **Import from Racer selectively.** Bring a system over only when the current
   round needs it, bring only what it depends on, and list what came with it in
   the round report. Don't copy Racer wholesale and don't bring its git history.
@@ -107,6 +109,13 @@ hand-built from photos, four house styles, curbs and sidewalks, the entrance,
 the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
+
+Active work is Round 8 in `TODO.md`: a Windows executable Dan can launch, two
+official shortcuts on the Chastain Glen loop (#2 through two houses, #6 over
+a house), no fence in Dan's backyard, and goose honks from audio clips.
+
+**From Round 8 on, end every round by rebuilding the executable** and report
+its path, so Dan tests from the exe, not from the Editor.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

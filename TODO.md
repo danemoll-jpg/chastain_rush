@@ -29,6 +29,12 @@ with huge jumps where the land allows. A shortcut does not need checkpoints
 of its own. Roads that are not part of the course are blocked off during a
 race, unless they are part of an official shortcut.
 
+**Racer imports — DECIDED (2026-10-09): the hold is lifted.** Dan says nearly
+all Woodstock Rush systems are finished; anything he adds there will be more
+tracks. Take whatever is needed from Racer from now on, and prefer porting
+its finished code to writing a new version. The rules still stand: Racer is
+read-only, bring only what a round needs, and list what came with it.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -516,7 +522,12 @@ looks on a steep verge; the reverse race with barriers (same closure list, only 
 New tools: `RaceBarriers`, `Round6CheckRunner`, `shortcut_candidates.py`; `RaceGate.Crossed` takes the
 car's reach; `make_route.py` writes `closures` and keeps `official_shortcuts`.
 
-Round 7 status — built and scripted-checked (2026-10-09); NOT yet driven by Dan. Work was done and checked in a mirrored copy of
+Round 7 status — built, scripted-checked, and DRIVEN by Dan (2026-10-09). His
+feedback: he has no fence in his own backyard (the neighbour to the right and
+the one behind, on top of the hill, do); the goose sound is bad and he will
+supply one from ElevenLabs; he wants the two recommended shortcuts built and
+an executable he can just launch. All four are Round 8. Original note:
+built and scripted-checked (2026-10-09). Work was done and checked in a mirrored copy of
 the project (`C:\Users\danmo\chastain_rush_r7`) because the Editor had this folder open, so the scene in the working folder is stale:
 run Chastain Rush > Build Map before driving. Screenshots (19) and every check report: `Data/screenshots/round7/` (+ `checks/`).
 
@@ -607,98 +618,88 @@ New tools: `Tools/mapgen/neighborhood_area.py`, `neighborhood_extras.py`; Editor
 
 Current Objective (Focus Area)
 
-*Round 7 (beautify Chastain Glen) is built and scripted-checked but NOT yet driven by Dan (status above). Round 6 is also still
-undriven, and Dan has not picked shortcut candidates. The shortcuts round comes after Dan has judged Round 7. Its brief is in git history.*
+**Round 8 — an executable, two shortcuts, and fixes from Dan's drive.
+DECIDED (2026-10-09).**
 
-**Round 7 — beautify Chastain Glen. DECIDED (2026-10-09): go ahead now.** Dan
-will come back for more detail later. Only his own neighborhood this round;
-the rest of the map is not touched. Only his house has to be accurate; every
-other house is fudged from a few styles. The look stays simple and low-poly,
-matching the trees and car.
+1. Executable. Dan wants to launch the game from a file, not through Unity.
+   Add a one-step Windows player build (a menu item and a batch-mode method)
+   that rebuilds the map scene and then builds to
+   `Builds/ChastainRush/ChastainRush.exe` (git-ignored). Everything the game
+   reads at run time must work in the build: the route file (the Editor
+   reads it from `Data/routes/` today), race records, the debug reports and
+   the bump log (use persistentDataPath in a build and report the folder),
+   Dan's house, the geese and fences. Fullscreen at the desktop resolution,
+   a key to quit, and an on-screen frame-rate counter on a key. Put a
+   `Play Chastain Rush` shortcut or .bat in the repo root that starts it.
+   Run the built exe and report: that it starts, that a race can be started
+   and finished, and the frame rate at the entrance, the pond and Dan's
+   house. This is the first honest frame-rate number outside the Editor.
+2. Dan's backyard: remove the fence from his lot. Give a fence to the
+   neighbour on the right of his house (as seen from the street) and to the
+   lot behind him at the top of the hill. Keep these as fixed exceptions to
+   the hashed fence placement, stored with the owner data in `local/`, not
+   in committed files.
+3. Goose sound: replace the synthesized honk with audio clips. Load every
+   file matching `Assets/Audio/Geese/goose_honk*.wav` (or .ogg / .mp3), pick
+   one at random per honk with a little pitch variation, and limit how many
+   play at once. If the folder is empty, play nothing (remove the
+   synthesized honk). Dan will drop his ElevenLabs clips in that folder;
+   create it with a short README saying so.
+4. Build two official shortcuts on the Chastain Glen loop, forward
+   direction, from the Round 6 candidates. **DECIDED by Dan (2026-10-09):
+   #2 and #6.** (Not #4: it cuts off too much of the lap. Not #3: it comes
+   out past his house.)
+   **#2**: the downhill drop. Leaves the lap at about 204 m, rejoins at
+   528 m, skips CP2 only, about 16 m of fall, saves roughly 97 m.
+   **#6**: the jump over a house. Leaves at about 759 m, rejoins at 987 m
+   near Chastain Place, skips CP5 only, saves roughly 80 m.
+   For each one:
+   a. Lay out a real, drivable line, not the straight cut: bend around what
+      should not be hit, and say what changed against the candidate.
+   b. #2 goes THROUGH its two houses (near x 3071, z 1053 and x 3053,
+      z 1105): openings front and back wide enough to hit at speed, a floor,
+      and a simple interior. Put the launch lip where the ground falls away
+      (near x 3065, z 1071, about 7.4 m of fall in the next 15 m) with a
+      landing shaped so the car comes down nose-first on the slope. Aim for
+      a huge jump.
+   c. #6 goes OVER a house. The land there is nearly flat, so the jump is
+      built. DECIDED by Dan (2026-10-09): make it a BIG ramp. Size it for a
+      long, high flight that clears the roof with room to spare at racing
+      speed, not the smallest ramp that just gets over, with a landing ramp
+      long enough to come down on cleanly. It should be a showpiece you can
+      see from the road. Two houses sit on the straight line (near x 2805, z 1089
+      and x 2777, z 1013); jump one and route beside or through the other,
+      whichever makes the better line, and say which. Report the lowest
+      speed that clears the roof, and what happens below it (the car must
+      end up somewhere it can drive on from, not wedged).
+   d. Fences on the line stay and break. Remove trees, mailboxes and lamps
+      from the line. Where the line crosses a road that is barred during a
+      race, the barrier must not block the shortcut.
+   e. Mark the entry so a player can spot it at speed, in the same visual
+      language as the checkpoints (look at how Racer marks its shortcuts).
+   f. Add both to `official_shortcuts` in the route file with the
+      checkpoints they forgive, so taking one costs no penalty.
+   g. Challenging but rewarding: taken well it must clearly beat the road;
+      taken badly it should cost time. Drive each with the real car by
+      script at several speeds and report the time against the road for the
+      same stretch, the air time, and how often the car lands badly.
+5. Re-run `BumpScan`, `RaceCheck` and `FenceCheck`, and report against Round 7.
+6. Rebuild the executable last, so the exe Dan launches has everything in
+   this round. Report its path and size.
+7. Report status for every item: done / not done / deferred, and why.
 
-Reference: 20 photos in `local/reference_photos/` (git-ignored). Look at
-every one before starting. Never commit them, and never copy them or parts of
-them into committed files or textures. The notes under "Round 7, planned" in
-Next Steps say what each folder shows.
+Racer is now open to use (see the decision near the top). In this round,
+port Racer's own code where it does the job: its player build and launcher
+setup for item 1, and its shortcut markers and props for item 4. Say what
+was ported and what was written new.
 
-1. Define the area and report it: the streets reached from the Chastain Glen
-   entrance without going back out onto New Chastain Road, the houses on
-   them, and the pond or ponds inside (the map data names West Chastain Lake
-   and East Chastain Lake; say which the photos show). Give the street list
-   and the house count. Everything outside this area stays as it is.
-2. Dan's house, hand-built and accurate from the three photos in `my_house/`.
-   Look at how Racer built Kyle's house and use the same method. Front: red
-   brick, a front gable over a two-car garage with white doors, white trim,
-   one window in the gable, dark shutters, light siding on the upper side
-   wall, grey shingle roof. Dark asphalt driveway, a large tree in the front
-   yard. Sides: plain, fudge them. Back: fudge it. Backyard: a hill covered
-   in pine straw with a few planted trees (use the real slope from the
-   terrain). Keep it as a hand-made asset separate from generated data, so
-   regenerating the map never destroys it. It replaces the orange marker
-   house; keep a way to find it.
-3. House styles for every other house in the area, each with a few colour
-   variants, assigned by footprint size and shape with a stable hash:
-   (A) Dan's style: two-storey, front gable over a two-car garage, in a
-   brick-front version and an all-siding version; (B) two-storey brick-front
-   colonial with full-height white columns and a side garage wing; (C)
-   one-storey ranch with a front-gable two-car garage; (D) plain two-storey
-   siding house with a side gable. Windows, front door, garage doors, trim
-   and shutters on the street side at least. Garage and front door face the
-   street the driveway meets. Colours from the photos: white, cream, grey,
-   sage green, light blue, red brick; grey, charcoal and brown roofs.
-4. Streets inside the area: concrete curbs, a sidewalk with a grass strip,
-   concrete driveways, mailboxes at the curb, street lamps, a few hydrants.
-   Curbs must not launch or snag the car: keep them low or without
-   collision, and prove it with item 11.
-5. Fences, breakable. DECIDED (2026-10-09): fences go in this round and the
-   car can smash through them. Wooden privacy fences around a good share of
-   the backyards and beside some houses, low picket fences on a few lots by
-   the pond, as in the photos. There is no data for where real fences are,
-   so place them plausibly along rear and side lot lines with a stable hash.
-   Hitting one breaks the panels it touches, with pieces flying, and costs a
-   little speed; it must not stop, flip or launch the car. Check whether
-   Racer already has breakable fences and reuse that if so. Broken fences
-   are whole again when a race restarts. The white rail fences at the
-   entrance and the pond break the same way.
-6. Entrance: the planted island (one tall tree, trimmed round shrubs, mulch,
-   a curb), the white three-rail fence, and the no-parking and no-U-turn
-   signs. Fix or explain the lighter grey patch on the road beside the
-   island seen in `Data/screenshots/round3/01_spawn.png`.
-7. The pond: a fountain in the middle with visible spray, grass banks,
-   weeping trees on the bank, two or three low retaining walls and small
-   docks, the white rail fence along the road side, and the culvert headwall
-   where the stream goes under the road.
-8. Geese. A flock or two that live at the pond: on the banks, on the water,
-   and often wandering into the road beside it. When the car gets close they
-   scatter with flapping (and honking, if a sound can be made or Racer has a
-   way to add one; say which). Driving through the flock costs a little
-   speed. They are NOT solid obstacles and must never stop, flip or launch
-   the car. They come back after the car has gone. One heron standing at the
-   water's edge is a nice extra, not required.
-9. Pool and clubhouse: only if the map data has them inside the area. A
-   simple version with a black fence. If the data has nothing, defer and say
-   so; there is only one blurry photo.
-10. Performance: frame rate at the entrance, beside the pond and outside Dan's
-   house, by the same offscreen 1080p method as Round 3. Round 3 was close to
-   the line (56 fps at the 99th percentile), so fix it in this round if it
-   falls below 60 and report what it took.
-11. Nothing driving-related may regress: re-run `BumpScan` over the area and
-    the race check for the Chastain Glen loop, and report both against the
-    Round 4 and Round 6 results.
-12. Screenshots to `Data/screenshots/round7/`, taken from about the same
-    viewpoints as the photos: the entrance island, Dan's house from the
-    street, one of each house style, the pond with the fountain, the geese,
-    and a street view with sidewalks.
-13. Report status for every item: done / not done / deferred, and why.
+Out of scope for this round: reverse-direction shortcuts, more than two
+shortcuts, tree collision, rivals, menus, publishing.
 
-Out of scope for this round: building any shortcut, tree collision, anything
-outside Chastain Glen, rivals.
-
-What Dan will judge when driving it:
-* Does it look like his neighborhood, and like his house?
-* Do the geese behave the way he pictured?
-* Does it still run smoothly and drive cleanly?
-* What detail does he want to come back for?
+What Dan will judge, from the exe:
+* Does it launch and run smoothly outside Unity?
+* Are the two shortcuts fun, findable, and worth the risk?
+* Is his backyard right?
 
 Next Steps (Do Not Start Yet)
 
@@ -744,10 +745,13 @@ Next Steps (Do Not Start Yet)
   that is in the backyard is the hill, covered with straw, with a few trees
   planted. He may bring backyard photos later for a detail pass; Round 7
   does not wait for them.
-* **Then: build the chosen shortcuts for the Chastain Glen loop.** Do this
-  after Round 7, not before: shortcuts go through backyards and over or
-  through houses, so they should be built against the final houses and
-  fences, not the placeholder boxes.
+* More shortcuts for the Chastain Glen loop after Dan has driven the first
+  two (Round 8): the other candidates, reverse-direction versions, and the
+  out-and-back jump across the creek ravine east of the loop.
+* Brick "Chastain Glen" monument sign at the entrance (not built in Round 7).
+* Frame rate: Round 7 measured 66-70 fps average but 52-54 at the 99th
+  percentile in the Editor. Trees are the cost. If the exe stutters, the
+  lever is tree near distance (55 -> 40 m gave 55-56 at the 99th).
 * If hills still read flat at a height setting that drives well: a lower chase
   camera and narrower field of view, before raising the scale further.
 * Growing the map further north needs a second elevation tile (the current
@@ -775,10 +779,12 @@ Next Steps (Do Not Start Yet)
   trimmed shrubs on the island, a white rail fence along one side, sidewalks
   and curbs. Dan has reference photos. Also check the lighter grey patch on
   the road beside the island in `01_spawn.png`, which looks like a glitch.
-* Importing the remaining Racer systems: rival AI, traffic, campaign, Free
-  Roam, split-screen, menus and garage, radio, launcher and publishing. (The
-  debug-report tool comes over early, in Round 4.) Deferred until Woodstock Rush is finished, so the final versions
-  are what gets brought over.
+* **Next big round, likely Round 9: bring over Racer's finished systems.**
+  No longer waiting on Woodstock Rush. Candidates, to be ordered with Dan:
+  rival AI, menus and garage, the vehicles (mostly motorcycles and four
+  wheelers), campaign, Free Roam, split-screen, traffic, radio, publishing.
+  First step of that round: a short written inventory of each Racer system,
+  what it depends on, and what in it assumes the Woodstock Rush map.
 * Vehicle list, course list, campaign structure, and the final name.
 * When Woodstock Rush is finished: record what to keep, what to build
   differently, and the final state of each reused system.
