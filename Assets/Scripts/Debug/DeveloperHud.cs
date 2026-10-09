@@ -278,6 +278,7 @@ namespace ChastainRush
             float mps = Mathf.Abs(car.ForwardSpeed);
             string text = $"DEBUG\nX {p.x:F2}   Y {p.y:F2}   Z {p.z:F2}\nHeading {car.transform.eulerAngles.y:F1}°   {mps * 2.23694f:F1} mph ({mps:F1} m/s)\n" +
                           $"{road}\nWheels on ground {car.GroundedWheels}   vertical {car.Body.linearVelocity.y:+0.0;-0.0} m/s\n" +
+                          (RaceController.Instance?.DebugLine is string raceLine ? raceLine + "\n" : "") + // Round 5: race state shows in bug screenshots
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +
                           (string.IsNullOrEmpty(Status) ? "" : Status + "\n") +

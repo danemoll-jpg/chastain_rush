@@ -47,6 +47,15 @@ namespace Racer
             safeRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
         }
 
+        // Chastain Rush, Round 5: the race puts the car on its grid with this. It also makes that pose the one R returns to,
+        // so a reset right after a restart cannot send the car back to wherever it last stood before the race.
+        public void PlaceAt(Vector3 position, float yawDegrees)
+        {
+            var rotation = Quaternion.Euler(0, yawDegrees, 0);
+            safePosition = position; safeRotation = rotation;
+            Place(position, rotation);
+        }
+
         void Place(Vector3 position, Quaternion rotation)
         {
             var body = vehicle.Body;

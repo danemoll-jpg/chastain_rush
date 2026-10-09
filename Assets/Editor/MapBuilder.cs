@@ -93,6 +93,7 @@ namespace ChastainRush
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world);
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
+            BuildRace(mats);
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -262,6 +263,20 @@ namespace ChastainRush
             }
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
+        }
+
+        // Round 5: the race controller. The route itself is data (Data/routes/*.json, from Tools/mapgen/make_route.py), laid over
+        // the one world; the scene only carries a copy of it (the Editor reads the file afresh) and the marker materials.
+        static void BuildRace(Materials mats)
+        {
+            string path = Path.Combine(ProjectRoot, "Data/routes/chastain_glen_loop.json");
+            var go = new GameObject("Race");
+            var race = go.AddComponent<RaceController>();
+            race.routeFileName = Path.GetFileName(path);
+            race.embeddedRouteJson = File.Exists(path) ? File.ReadAllText(path) : "";
+            race.gateBlack = mats.GateBlack; race.gateWhite = mats.GateWhite;
+            race.nextMaterial = mats.RaceNext; race.laterMaterial = mats.RaceLater; race.missedMaterial = mats.RaceMissed;
+            if (race.embeddedRouteJson.Length == 0) Debug.LogWarning("[MapBuilder] no race route at " + path + " (run Tools/mapgen/make_route.py); racing will be off");
         }
 
         // Road names for the debug HUD, bug reports and bump log (Scripts/Debug/RoadLookup.cs): every road and bridge
@@ -919,6 +934,7 @@ namespace ChastainRush
         class Materials
         {
             public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Foliage, Sky, Beacon, Water, TerrainMaterial;
+            public readonly Material GateBlack, GateWhite, RaceNext, RaceLater, RaceMissed; // Round 5 race markers (unlit)
             public readonly TerrainLayer GrassLayer;
 
             public Materials()
@@ -942,6 +958,11 @@ namespace ChastainRush
                 AssetDatabase.CreateAsset(Sky, GeneratedDir + "/Sky.mat");
                 Beacon = Make("Beacon", new Color(1.0f, 0.55f, 0.1f), 0f, new Color(2.5f, 1.2f, 0.2f));
                 Water = Make("Water", new Color(0.16f, 0.32f, 0.50f), 0.85f);
+                GateBlack = MakeUnlit("GateBlack", new Color(0.05f, 0.05f, 0.05f));
+                GateWhite = MakeUnlit("GateWhite", new Color(0.95f, 0.95f, 0.95f));
+                RaceNext = MakeUnlit("RaceNext", new Color(0.35f, 1.0f, 0.2f));
+                RaceLater = MakeUnlit("RaceLater", new Color(1.0f, 0.62f, 0.1f));
+                RaceMissed = MakeUnlit("RaceMissed", new Color(0.9f, 0.1f, 0.1f));
 
                 var tex = new Texture2D(4, 4);
                 var px = new Color[16];
@@ -969,6 +990,15 @@ namespace ChastainRush
                 m.SetFloat("_Sway", sway);
                 m.SetFloat("_OffsetFactor", offsetFactor);
                 m.SetFloat("_OffsetUnits", offsetUnits);
+                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+                return m;
+            }
+
+            static Material MakeUnlit(string name, Color color)
+            {
+                var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
+                var m = new Material(shader) { name = name, color = color };
+                m.SetColor("_BaseColor", color);
                 AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
                 return m;
             }

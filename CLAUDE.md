@@ -53,7 +53,18 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   checks the debug HUD, bug capture and bump log), `ChastainRush.SeamCheck.Run`, `PerfCheck.Run` (add `-perfGameView`,
   windowed, for the real Game view), `ScreenshotCheck.Run` (Round 3 shots to
   `Data/screenshots/round3/`),
-  `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`.
+  `DriveCheck.Run -driveBridge <n>`, `python Tools/mapgen/steep_roads.py`,
+  `RaceCheck.Run -raceCheck lap|full [-raceDirection reverse] -raceCheckOut <dir>`
+  (windowed Editor run, not -batchmode: drives the race route by script, writes
+  `race_check_*.txt` and screenshots with the HUD).
+- Race route: `python Tools/mapgen/make_route.py` writes
+  `Data/routes/chastain_glen_loop.json` from `Data/map.json` (route road pieces
+  are listed in the script by OSM id; re-run it after every mapgen run, then
+  Build Map). **Direction is the `"direction"` line in that JSON**
+  (`"forward"` / `"reverse"`; the Editor reads the file at race start, so no
+  rebuild is needed; it survives re-runs of the script). Race keys in Play:
+  T start / restart the race, X leave it (pad: D-pad up / down); R / Y still
+  resets the car. Best lap and best total: `local/race_records.json`.
 - Build the scene: Unity menu **Chastain Rush > Build Map**, or batch:
   `Unity.exe -batchmode -nographics -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine`
   Output: `Assets/Generated/ChastainPrototype.unity` (ignored, rebuilt every run).
@@ -74,10 +85,11 @@ to past Canton Road, 18 terrain tiles, bridges, `vertical_scale` 1.5, 56,000
 trees, roofed and coloured houses, driveways, road paint, sky and fog. Round 4
 (see `TODO.md`) found the road bumps with a collider scan and fixed them in
 mapgen, and added the on-screen coordinates, bug capture (F3 / F4 / F6) and the
-automatic bump log (`local/bump_log.txt`). Round 4 is closed. Active work is Round 5 in `TODO.md`:
-the first race route, a 3-lap loop around Chastain Glen Lane with checkpoints
-and a timer, laid over the one world as data. No rivals, and Racer's race
-systems are not imported yet.
+automatic bump log (`local/bump_log.txt`). Round 4 is closed. Round 5 (see
+`TODO.md`) is built and scripted-checked, not yet driven by Dan: the first race
+route, a 3-lap loop around Chastain Glen Lane with checkpoints and a timer, laid
+over the one world as data (`Data/routes/chastain_glen_loop.json`). No rivals,
+and Racer's race systems are not imported.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
@@ -90,6 +102,13 @@ ChaseCamera, ShallowWater (trimmed) and VehicleRespawn (rewritten) in
 
 End every round with a per-item status report: done / not done / deferred,
 and why.
+
+Imported from Racer in Round 5: nothing was copied. The race is new code in
+`Assets/Scripts/Race/` (`RaceRoute`, `RaceController`, `RaceMarkers`), shaped
+after Racer's `RaceRoad` (closed centreline), `RaceGate` (directed timing plane
+with a half width) and `RaceProgress` (ordered gates, rolling start). Racer's
+`RaceDirector`, `RaceFlow`, penalties, menus and AI stay behind. One edit to an
+imported file: `VehicleRespawn.PlaceAt` (commented in place).
 
 Imported from Racer in Round 4: the debug report system, `Assets/Scripts/Debug/`:
 `DebugReportSession.cs` (copied, Racer's AtomicSave folded in, race fields

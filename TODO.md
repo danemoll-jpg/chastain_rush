@@ -319,9 +319,110 @@ is still untested by a real key press.
 New tools: `BumpScan`, `HudCheck` / `HudCheckRunner`, `RoadLookup`,
 `DeveloperHud`, `BumpLogger`, `DebugReportSession`.
 
+Round 5 status — built and scripted-checked (forward and reverse), NOT yet
+driven by Dan. I did not press T / X or use a pad myself; the check calls the
+same functions the keys call. The loop matched the road data, so nothing was
+changed from the route Dan confirmed.
+
+The lap: the entrance spur (inbound lane, from the map spawn, 78 m) to the
+Chastain Trail junction, then Chastain Glen Lane north-east to Glenbarrett Lane
+(148 m piece), round the long piece (979 m piece, used for its first 906 m: the
+lap leaves it where Chastain Trail starts, so the last 73 m, on to Courtfield
+Trace, are not in the lap) and back down Chastain Trail (192 m) to the same
+junction. Lap length 1247 m (expected about 1.2 km). Start/finish gate 22 m
+past the Chastain Trail junction, on the way to Glenbarrett Lane. Grid to gate
+(forward): 100 m.
+
+1. Racer's course shape: DONE (read, nothing imported). A course is a closed
+   `RaceRoad` polyline (Repeat-wrapped distance, `At(s)`); gates are `RaceGate`
+   directed planes (half width 6 m, half height 3 m, tested on the segment from
+   the last step to this one); `RaceProgress` holds the ordered numbered gates
+   (0 = start/finish), a rolling start (clock starts at the first crossing of
+   gate 0) and a 5 s penalty per missed gate; the grid is placed a fixed
+   distance before the gate on the road (`RaceDirector`, about 32 m back,
+   alternating sides). Differences here: no penalties (a lap with a missed
+   checkpoint does not count, as asked), gate half width 9 m / 11 m for the
+   wider streets here, and the route is a JSON file, not scene objects.
+   `RaceDirector`, `RaceFlow`, Campaign, menus and AI were not imported.
+2. Route as data: DONE. `Tools/mapgen/make_route.py` reads `Data/map.json` and
+   writes `Data/routes/chastain_glen_loop.json`: the road pieces by OSM id
+   (lead-in 1161774882 + 1360406926; loop 9134741 reversed, 9134737 from 0 to
+   906.4 m, 9125364), the resolved centreline (x, z only; heights come from the
+   world), junctions, shortcut analysis and checkpoints. Re-run it after mapgen.
+   Junctions passed, in lap order from the gate: Courtfield Trace (49 m),
+   Glenbarrett Lane (126), Chasefield Way (179), two 6-8 m Chastain Glen Lane
+   stubs (286, 437), Chasefield Way again (621), Chastain Glen Lane toward
+   Courtfield (710), Chastain Place (947), the entrance / Chastain Trail
+   junction (1225). Real shortcuts through the road network: Chasefield Way
+   (179 to 621: 236 m against 442 m round the lap, saves 206 m) and Courtfield
+   Trace to the Chastain Glen Lane branch at 710 m (253 m against 661 m, saves
+   408 m), plus the same two in the other direction.
+3. Gate and checkpoints: DONE. A black-and-white chequered gate across the
+   road (always standing). 5 checkpoints, in order: CP1 Chasefield Way (179 m),
+   CP2 the far bend (400 m), CP3 Chasefield Way (621 m), CP4 the Chastain Glen
+   Lane branch (710 m), CP5 on the way back near Chastain Place (979 m). Every
+   road shortcut skips at least one. Markers: an arch per checkpoint; the NEXT
+   one is bright green with two 80 m tall beams (visible over hills and trees),
+   later ones amber, skipped ones red, passed ones hidden. HUD arrow and
+   distance to the next gate, top centre. No colliders on any marker. Off-road
+   cuts across yards are not blocked: only the gates are checked, in order.
+4. Race flow: DONE. 3-2-1 (3.02 s measured) then GO; 3 laps; lap timer, total
+   timer, lap count, best lap and best total on screen; finish panel with total,
+   best lap and every lap (including ones that did not count). Rolling start as
+   in Racer: the clock starts when the car first crosses the start line, so a
+   lap is gate to gate (the 100 m grid run-in is not timed). A checkpoint
+   passed out of order marks the skipped ones missed at once ("Missed
+   checkpoint 2, 3 - this lap will not count"); at the finish line the lap is
+   not counted and is run again (a race is 3 COUNTED laps; the clock keeps
+   running, so a lap that did not count still adds to the total). Keys: T starts
+   or restarts the race (any time), X leaves it; pad D-pad up / down. The car
+   is put on the grid facing the way of travel, held until GO.
+5. Records: DONE. `local/race_records.json` (git-ignored; a player build uses
+   persistentDataPath), one entry per route, direction and lap count; best lap
+   is saved when it is set, best total on finish; both shown in the HUD and on
+   the finish panel, and before any race in free driving.
+6. Free driving and the debug tools: DONE by script, not by hand. Nothing runs
+   unless T was pressed, apart from the gate and one hint line. During a race
+   the debug panel shows the race state (so bug screenshots carry it). F4 bug
+   capture was run mid-race by the check: the race clock stopped while the
+   game was paused (246.58 to 246.62 s) and the comment saved. The bump logger
+   is present (not checked for a bump during a race). A reset (R / Y) during a
+   race counts as a teleport and cannot cross a gate; it returns the car to its
+   last stable spot, and a restart makes the grid the reset spot. Race keys are
+   ignored while the debug menu or comment box is open (typing a "t" in a bug
+   comment must not restart the race).
+7. Direction setting: DONE. `"direction": "forward" | "reverse"` in the route
+   JSON (the Editor reads the file at each race start, no rebuild; make_route.py
+   keeps your value), and `-raceDirection reverse` on the command line. Reverse
+   drives the loop the other way with the gate where it is: the grid is 45 m
+   before the gate on Chastain Glen Lane (no entrance lead-in), checkpoints are
+   renumbered in travel order. Reverse checked for one lap (below).
+8. Scripted check: DONE. `RaceCheck.Run` (windowed Editor, 6x time scale), a car
+   driven along the route centreline at 15 m/s. Forward, mode full, 22 of 22
+   checks passed: grid pose, 3 s countdown, lap 1 with all five checkpoints 1-5
+   in order, counted at 1:22.676 (15.1 m/s average); a lap cutting through
+   Chasefield Way was NOT counted and named "missed CP2, CP3" (CP3's plane is
+   not always crossed when merging at an angle, so both are reported); the race
+   then finished after 3 counted laps (total 5:17.360 including the lap that did
+   not count; laps 1:22.676, 1:22.751, 1:22.678); records file written with best
+   lap 82.676 and best total 317.360; bug capture mid-race; back to free
+   driving. Reverse, mode lap, 8 of 8 passed: five checkpoints in order, lap
+   1:22.607. Reports and screenshots with the HUD: `Data/screenshots/round5/`
+   (01_countdown, 02_next_checkpoint_close, 03_checkpoint_1_passed_next_lit,
+   04_missed_checkpoint, 05_results). The screenshots are 886 x 451, the
+   Editor's Game view size here, so the HUD looks cramped and the panels overlap.
+9. This report: DONE.
+
+Not measured: frame rate with the markers (about 60 cubes, no shadows: expected
+negligible, but Round 3 was close to the line at 56 fps 99th percentile); the
+HUD at 1080p; real key presses and a pad; a bump during a race.
+
+New tools: `make_route.py`, `RaceCheck` / `RaceCheckRunner`, `RaceRoute`,
+`RaceController`, `RaceMarkers`.
+
 Current Objective (Focus Area)
 
-**Round 5 — first race route: the Chastain Glen loop. DECIDED (2026-10-08).**
+**Round 5 — first race route: the Chastain Glen loop. DECIDED (2026-10-08). Built, waiting for Dan's drive (status above); the brief is kept below.**
 Dan chose a loop around Chastain Glen Lane. This is the first thing that makes
 the map a game, so keep it simple: one route, one car, a clock. No rivals.
 
