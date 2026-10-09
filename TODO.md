@@ -35,6 +35,13 @@ tracks. Take whatever is needed from Racer from now on, and prefer porting
 its finished code to writing a new version. The rules still stand: Racer is
 read-only, bring only what a round needs, and list what came with it.
 
+**Woodstock Rush handoff — ADOPTED (2026-10-09).** Dan supplied the rules and
+notes from the original game: `Docs/FROM-WOODSTOCK-RUSH.md`. Its standing
+rules now apply here (the short list is in `CLAUDE.md`). Where this project
+has already chosen differently, this project's decision stands: a clean repo
+with selective imports (not copy-then-strip), `TODO.md` / `CLAUDE.md` (not
+`PROJECT_TODO.md` / `CODEX_RULES.md`), and this game's checkpoint look.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -616,7 +623,10 @@ New tools: `Tools/mapgen/neighborhood_area.py`, `neighborhood_extras.py`; Editor
 `FenceCheck`; runtime `Assets/Scripts/Neighborhood/` (`BreakableFence`, `Geese`, `FountainSpray`); `PerfCheck -perfRound7`,
 `-perfShadowDist`.
 
-Round 8 status — built and scripted-checked (2026-10-09); NOT yet driven by Dan. Everything was run in this working folder
+Round 8 status — built, scripted-checked, and DRIVEN by Dan from the exe
+(2026-10-09; his best lap 0:43.608). He filed debug report
+2026-10-09_14-41-20-911_46947e (8 entries) and sent backyard photos; all of it
+is Round 9. Original note: built and scripted-checked (2026-10-09). Everything was run in this working folder
 (the Editor was not open). Exe: `Builds/ChastainRush/ChastainRush.exe` (208 MB folder, 206.9 MB of game data; built 2026-10-09 14:10), started by `Play Chastain Rush.bat`.
 Screenshots and check reports: `Data/screenshots/round8/` (+ `checks/`).
 
@@ -720,88 +730,101 @@ New tools: `make_shortcuts.py`, `MapBuilder.Shortcuts.cs`, `PlayerBuild`, `GameS
 
 Current Objective (Focus Area)
 
-**Round 8 — an executable, two shortcuts, and fixes from Dan's drive.
-DECIDED (2026-10-09).**
+**Round 9 — Dan's debug report, his house and yard, and the #2 shortcut
+redesign. DECIDED (2026-10-09).** Source: debug report
+`2026-10-09_14-41-20-911_46947e` (in
+`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\`;
+look at each screenshot) and three new photos in
+`local/reference_photos/my_house/` (`back_*.jpg`). Positions are game
+coordinates from the report: Dan's coordinates are the authority for where.
 
-1. Executable. Dan wants to launch the game from a file, not through Unity.
-   Add a one-step Windows player build (a menu item and a batch-mode method)
-   that rebuilds the map scene and then builds to
-   `Builds/ChastainRush/ChastainRush.exe` (git-ignored). Everything the game
-   reads at run time must work in the build: the route file (the Editor
-   reads it from `Data/routes/` today), race records, the debug reports and
-   the bump log (use persistentDataPath in a build and report the folder),
-   Dan's house, the geese and fences. Fullscreen at the desktop resolution,
-   a key to quit, and an on-screen frame-rate counter on a key. Put a
-   `Play Chastain Rush` shortcut or .bat in the repo root that starts it.
-   Run the built exe and report: that it starts, that a race can be started
-   and finished, and the frame rate at the entrance, the pond and Dan's
-   house. This is the first honest frame-rate number outside the Editor.
-2. Dan's backyard: remove the fence from his lot. Give a fence to the
-   neighbour on the right of his house (as seen from the street) and to the
-   lot behind him at the top of the hill. Keep these as fixed exceptions to
-   the hashed fence placement, stored with the owner data in `local/`, not
-   in committed files.
-3. Goose sound: replace the synthesized honk with audio clips. Load every
-   file matching `Assets/Audio/Geese/goose_honk*.wav` (or .ogg / .mp3), pick
-   one at random per honk with a little pitch variation, and limit how many
-   play at once. If the folder is empty, play nothing (remove the
-   synthesized honk). Dan will drop his ElevenLabs clips in that folder;
-   create it with a short README saying so.
-4. Build two official shortcuts on the Chastain Glen loop, forward
-   direction, from the Round 6 candidates. **DECIDED by Dan (2026-10-09):
-   #2 and #6.** (Not #4: it cuts off too much of the lap. Not #3: it comes
-   out past his house.)
-   **#2**: the downhill drop. Leaves the lap at about 204 m, rejoins at
-   528 m, skips CP2 only, about 16 m of fall, saves roughly 97 m.
-   **#6**: the jump over a house. Leaves at about 759 m, rejoins at 987 m
-   near Chastain Place, skips CP5 only, saves roughly 80 m.
-   For each one:
-   a. Lay out a real, drivable line, not the straight cut: bend around what
-      should not be hit, and say what changed against the candidate.
-   b. #2 goes THROUGH its two houses (near x 3071, z 1053 and x 3053,
-      z 1105): openings front and back wide enough to hit at speed, a floor,
-      and a simple interior. Put the launch lip where the ground falls away
-      (near x 3065, z 1071, about 7.4 m of fall in the next 15 m) with a
-      landing shaped so the car comes down nose-first on the slope. Aim for
-      a huge jump.
-   c. #6 goes OVER a house. The land there is nearly flat, so the jump is
-      built. DECIDED by Dan (2026-10-09): make it a BIG ramp. Size it for a
-      long, high flight that clears the roof with room to spare at racing
-      speed, not the smallest ramp that just gets over, with a landing ramp
-      long enough to come down on cleanly. It should be a showpiece you can
-      see from the road. Two houses sit on the straight line (near x 2805, z 1089
-      and x 2777, z 1013); jump one and route beside or through the other,
-      whichever makes the better line, and say which. Report the lowest
-      speed that clears the roof, and what happens below it (the car must
-      end up somewhere it can drive on from, not wedged).
-   d. Fences on the line stay and break. Remove trees, mailboxes and lamps
-      from the line. Where the line crosses a road that is barred during a
-      race, the barrier must not block the shortcut.
-   e. Mark the entry so a player can spot it at speed, in the same visual
-      language as the checkpoints (look at how Racer marks its shortcuts).
-   f. Add both to `official_shortcuts` in the route file with the
-      checkpoints they forgive, so taking one costs no penalty.
-   g. Challenging but rewarding: taken well it must clearly beat the road;
-      taken badly it should cost time. Drive each with the real car by
-      script at several speeds and report the time against the road for the
-      same stretch, the air time, and how often the car lands badly.
-5. Re-run `BumpScan`, `RaceCheck` and `FenceCheck`, and report against Round 7.
-6. Rebuild the executable last, so the exe Dan launches has everything in
-   this round. Report its path and size.
-7. Report status for every item: done / not done / deferred, and why.
+Rules for this round (from `Docs/FROM-WOODSTOCK-RUSH.md`): the smallest
+change that does what was asked; fix exactly the place Dan pointed at and
+LIST similar problems elsewhere without changing them, unless the item says
+"all"; when ground or a building moves, everything on it moves with it; one
+targeted check per change at the place it changed, in the built exe, no
+sweeps or matrices; results as a short list plus "for Dan to check".
 
-Racer is now open to use (see the decision near the top). In this round,
-port Racer's own code where it does the job: its player build and launcher
-setup for item 1, and its shortcut markers and props for item 4. Say what
-was ported and what was written new.
+1. BUG-006, shortcut #2 (x 3075, z 1033). Dan: "I don't like this. Instead
+   lets put a big rampe here that wiilll clear both houses." Remove the
+   drive-through: restore houses 1763 and 1627 to whole, solid houses.
+   Replace it with one big ramp near where the shortcut leaves the lane that
+   launches the car OVER both houses in a single flight, using the 8.7 m of
+   fall behind the first house, with a landing ramp beyond the second house
+   that the car comes down on cleanly. Keep the rest of the line (the gap
+   line and the rejoin at 544 m), the blue entry marker and `forgives` CP2.
+   Report the lowest speed that clears both roofs and what happens below it
+   (the car must be able to drive on, not wedge). If the flight needed is
+   longer than the car can make at racing speed, stop and report the numbers
+   and the nearest version that works; do not quietly build something else.
+2. BUG-005 (x 3049, z 1020, house on Chasefield Way). Dan: "This house
+   shouldn't be buried like this." The hill covers the lower part of the
+   house and its garage side. Fix THIS house so its floor, garage door and
+   front door sit on the ground with the driveway meeting the garage
+   (re-level the lot locally or set the house on a visible foundation,
+   whichever looks right), and move its shrubs, drive and fence with it.
+   Then list, do not change, the other houses in Chastain Glen whose walls
+   are buried by more than about 0.5 m, with positions and an overhead
+   image, so Dan can choose.
+3. Dan's house, back and yard, from the three `back_*.jpg` photos. Dan:
+   "Clean it up so it looks better and make the flat bottom part grass."
+   Back wall: light grey siding; a tall siding-clad chimney up the back;
+   the left part of the back steps out further than the rest; a triple
+   window upstairs, a door on to the deck, a row of three windows low on
+   the left, other windows as in the photos. A low wooden deck with
+   blue-grey railings across the right half of the back. Yard: the flat
+   area at the bottom is mown grass; the hill rises from it to the
+   neighbour's wooden fence at the top, with trees on the slope and pine
+   straw under them. Build the tidy version: NO gazebo frame, trampoline,
+   loose items, overgrowth or vines (Dan confirmed). His lot still has no
+   fence.
+4. BUG-001 (x 2814, z 837, by the pool). Dan: "make this a regular
+   playground. The block is a gazebo. With 6 wooden tables underneath."
+   Replace the plain brown block with an open-sided gazebo (posts and a
+   roof, no walls) with six wooden picnic tables under it. Make the
+   playground a regular one: swings, a slide, a climbing frame, on its
+   mulch pad.
+5. BUG-002 (x 2795, z 791). Dan: "There is a sidewalk that starts here and
+   goes to the main entrance of the neighborhood. There are benches along
+   the way." Add that sidewalk from this point to the entrance (about
+   x 2933, z 758), following the roadside, with a few benches along it.
+6. BUG-003 (x 2895, z 741). Dan: "There should be a wooden fence along the
+   street in front of the pool area." Add it along New Chastain Road in
+   front of the pool area. Breakable like the others.
+7. BUG-004 (x 2922, z 755). Dan: "the white fence should extend to the
+   entrance and you should use the brick entrance signs on either side of
+   the entrance." Extend the white rail fence to the entrance, and build a
+   brick monument sign on each side of the entrance reading "Chastain Glen"
+   (see `local/reference_photos/entrance/`). Lettering follows the sign
+   rule: one-sided, hidden by terrain like the board, never drawn on top,
+   fits inside the board, readable at 20 to 30 m, depth-tested material
+   (never a TextMesh default font material; see how Racer's `PhysicalSign`
+   does it).
+8. BUG-007 (x 2963, z 1195). Dan: "Move the tree into the yard." The tree
+   with the mulch ring stands on the sidewalk strip: move it into that
+   house's yard.
+9. BUG-008, for ALL of Chastain Glen (Dan asked for a check of all):
+   a. "check all driveways to make sure there is no grass in driveways":
+      no grass patches or strips showing on any driveway.
+   b. "make sure trees are in yards and not on sidewalks": no tree on a
+      sidewalk, grass strip, driveway or curb; move each into the yard.
+   c. "lets not make all the mailboxes with flags up": most flags down, a
+      few up, by a stable hash.
+   d. "make them smashable": mailboxes break when hit, like the fences,
+      with a small speed cost, never stopping or launching the car, and
+      are whole again at race start.
+   Report how many driveways, trees and mailboxes were changed.
+10. Debug keys that need no Fn. Dan's keyboard needs Fn held for F2, F3, F4
+    and F6. Keep those, and add second keys for the same actions that never
+    need Fn: `[` show or hide the debug panel, `]` capture a bug, `\` the
+    debug menu, `P` the frame-rate counter. Show the new keys on the panel's
+    hint line. (Gamepad Select and Start already work.)
+11. Rebuild the executable last and report its path.
+12. Report status for every item: done / not done / deferred, and why, as
+    a short list, then a short "for Dan to check" list.
 
-Out of scope for this round: reverse-direction shortcuts, more than two
-shortcuts, tree collision, rivals, menus, publishing.
-
-What Dan will judge, from the exe:
-* Does it launch and run smoothly outside Unity?
-* Are the two shortcuts fun, findable, and worth the risk?
-* Is his backyard right?
+Out of scope for this round: anything not listed; other houses' grounding;
+reverse shortcuts; rivals and menus; goose sounds (Dan is making clips).
 
 Next Steps (Do Not Start Yet)
 

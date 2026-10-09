@@ -41,6 +41,36 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   credit. No Google Maps data of any kind.
 - **Privacy:** don't commit the owner's street address or house number.
 
+## Standing rules from Woodstock Rush (adopted 2026-10-09)
+Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
+- **KISS.** The smallest change. No unrequested roads, ramps, features,
+  scenery or systems.
+- **World changes only where Dan pointed.** Fix exactly the reported place;
+  list similar problems elsewhere for Dan; do not change them unless the
+  round says "all". His coordinates are the authoritative location.
+- **Grounding.** When ground changes, everything on it moves with it. No
+  floating or buried buildings, fences, signs or trees.
+- **Protected geometry.** Roads, jumps (approach, lip, flight, landing,
+  run-out) and shortcuts get local fixes only; never fill space another
+  route uses; check the neighbours after a change.
+- **Verification budget.** One targeted check per change, at the place it
+  changed. No race matrices, sweeps or long validation documents unless
+  asked. Dan playtests the rest. Report a short list plus "for Dan to check".
+- **Check the way Dan plays:** in the built Windows exe, at 3840 x 2160, with
+  a controller, driving flat out. An Editor or scripted pass is not proof.
+- **Controller first.** Every menu reachable with a controller only, focus
+  visible, B goes back; left / right changes a value, A never cycles one.
+- **Signs.** Text is one-sided, hidden by terrain like its board, never drawn
+  on top, fits the board, readable at 20 to 30 m. Depth-tested lettering,
+  never a TextMesh default font material.
+- **Never write Dan's real save or records in a check.** Use a copy.
+- **Don't bother Dan** for normal operations (Unity, Git, build). Stop only
+  for a real external blocker, with the exact action needed.
+- **"This should be fun."** Forgiving resets, escapable water and pits, no
+  cheap traps.
+- **Claims need proof.** Before saying done, look at the result where Dan
+  stood.
+
 ## Commands
 - Python deps for map generation: `pip install -r Tools/mapgen/requirements.txt`
 - Generate map data (bounds and settings in `Tools/mapgen/config.json`):
@@ -124,7 +154,11 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-Round 8 (see `TODO.md`, status there) is built and scripted-checked, not yet driven by Dan: a Windows executable
+**Active work is Round 9 in `TODO.md`:** Dan's debug report (8 entries), the
+back of his house and his yard, and shortcut #2 changed from a drive-through
+to one big ramp over both houses.
+
+Round 8 (see `TODO.md`, status there) is built and driven by Dan from the exe: a Windows executable
 (`Builds/ChastainRush/ChastainRush.exe`, `Play Chastain Rush.bat`), two official shortcuts on the Chastain Glen
 loop (#2 "Two-house drop" through two opened houses, #6 "Rooftop leap" over house 1641), no fence on Dan's lot
 (fences for the neighbour on his right and the lot behind him), and goose honks from audio clips (none yet).
