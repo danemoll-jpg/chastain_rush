@@ -6,6 +6,11 @@ data instead of a hand-built one. Working title: Chastain Rush.
 **Design rule — DECIDED (2026-10-08):** the real world is the starting point,
 and fun wins when the two disagree. The game does not need to be a 1:1 match.
 
+**Jumps — DECIDED (2026-10-08):** natural jumps stay. A hill crest that
+lifts the car evenly is part of the fun. Only awkward bumps get removed: ones
+that tilt the car sideways, hit one wheel track, or come from data spikes and
+mismatched junctions, and so spin the car out of control.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -203,8 +208,21 @@ New tools: `TreeBuilder`, `TreeField`, `ScreenshotCheck`, `VertexLit` and
 drive checks (road geometry and colliders were not changed; houses' roofs now
 have colliders).
 
-Round 4 status — built, scripted-checked. NOT yet driven by Dan. Items 1-6 were
-done in order; the scan was reported before anything was fixed.
+Round 4 status — built, scripted-checked, and DRIVEN by Dan on his PC
+(2026-10-08, about 27 minutes of play). His verdict: nothing to report. Items
+1-6 were done in order; the scan was reported before anything was fixed.
+What `local/bump_log.txt` recorded on that drive (read by Claude, planning):
+six times airborne, top speed seen 34 m/s (77 mph). Four were small hops of
+0.24 to 0.44 s with almost no height, two of them at the same spot on New
+Chastain Road near x 2918, z 750. One was a real jump: New Chastain Road at
+x 3079, z 774, 0.82 s and 1.44 m up at 66 mph. So crests still give air with
+`sag_max_m` at 0.06, and Dan did not ask for more: leave it. Two entries looked
+like hard jolts (New Chastain Road at x 1711, z 649, and Claybrooke Drive NE
+at x 2711, z 622, both about 5 m off the centreline). Dan confirmed he was
+driving off-road there, so they are not road bumps and nothing is to be
+fixed. **Round 4 is closed: bumps fixed, confirmed by Dan's drive.** Bug
+capture: a debug session folder was created but no report was filed, so F4
+is still untested by a real key press.
 
 1. Road-surface scan: DONE. `Assets/Editor/BumpScan.cs`, run in batch mode (no
    Play mode needed, about 35 s): rays straight down onto the scene's real
@@ -303,49 +321,51 @@ New tools: `BumpScan`, `HudCheck` / `HudCheckRunner`, `RoadLookup`,
 
 Current Objective (Focus Area)
 
-**Round 4 — find and fix the road bumps. DECIDED (2026-10-08).** BUILT, see Round 4 status above; waiting for Dan to drive it. Dan hit
-random bumps while driving that sometimes launch the car. He did not note
-where. Find them from data first; do not guess at a cause and patch it.
-Suspects, none confirmed: the 128 m road chunk boundaries added in Round 3,
-junctions where two roads meet at slightly different heights, bridge deck
-ends, terrain tile seams, and colliders that should not be drivable surface
-(paint, driveways, edge strips, roof or building corners near the road).
+**Round 5 — first race route: the Chastain Glen loop. DECIDED (2026-10-08).**
+Dan chose a loop around Chastain Glen Lane. This is the first thing that makes
+the map a game, so keep it simple: one route, one car, a clock. No rivals.
 
-1. Build a road-surface scan: for every road, cast down onto the actual
-   colliders every 0.25 m along the centreline and along both wheel tracks,
-   and record any height step over 3 cm between neighbouring samples and any
-   place where the first collider hit is not the road or a bridge deck.
-   Write the results to `Data/bumps.txt` with position, road name, step size,
-   and which collider was hit.
-2. Report what the scan found before fixing anything: how many, how big, and
-   what they have in common (chunk boundary, junction, bridge end, tile seam,
-   stray collider). Say plainly if the scan finds nothing.
-3. Fix the causes the scan shows, at the source in the generator, not by
-   smoothing individual spots. Re-run the scan and report the before and
-   after counts.
-4. Bring over Racer's on-screen coordinates and its bug capture (debug
-   report) system. **DECIDED (2026-10-08):** Dan wants these in early. They
-   must work in Unity Play mode, not only in a built executable; if Racer's
-   version depends on the launcher, the publishing setup or anything else
-   that only exists in a build, cut that dependency and say what was cut.
-   Reports go to a git-ignored folder. Bring only what these two need, and
-   list what came with them. Report how Dan triggers a capture and where the
-   files land.
-   Add one thing Racer may not have: when the car's vertical speed jumps
-   sharply or it leaves the ground on a road, automatically append the time,
-   coordinates and nearest road name to `local/bump_log.txt`, so a bump is
-   recorded even if Dan doesn't press anything.
-5. Run the scripted drive checks from Round 2 (Chastain Glen Lane and the
-   bridge route); they were skipped in Round 3.
-6. Report status for every item: done / not done / deferred, and why.
+The loop, from `Data/map.json` (checked by Claude, planning): Chastain Glen
+Lane is not a closed loop by itself. Its long piece (979 m) runs from the
+Glenbarrett Lane junction at about x 3060, z 951 round to the Courtfield
+Trace junction at about x 2868, z 1048, and Chastain Trail links back from
+about x 2808, z 1008 to the junction near the entrance at about x 2940,
+z 877. Lap, CONFIRMED by Dan (closing via Chastain Trail): start just inside the entrance, north to the Chastain
+Trail junction, along Chastain Glen Lane past Glenbarrett Lane and all the
+way round the long piece, then back down Chastain Trail to the same junction.
+Expected lap length roughly 1.2 km. If the geometry says otherwise, say so
+and propose the nearest sensible loop; do not silently change the route.
 
-Out of scope for this round: the I-575 overpass and ramps, tree collision,
-the entrance, and anything visual.
+1. Look at how Racer defines a course (route, checkpoints, start grid) and
+   report it in a few lines. Do not import Racer's race systems this round
+   (RaceDirector, RaceFlow, Campaign and the rest stay deferred), but keep
+   the route data in a shape they could read later where that is cheap.
+2. Define the route as data laid over the one world (an ordered list of road
+   pieces or waypoints in a file under `Data/routes/`), not as a copy of the
+   map. Report the lap length and the junctions it passes.
+3. Start/finish line and checkpoints: a visible start/finish gate and visible
+   checkpoint markers at each junction and bend where a shortcut is possible.
+   The next checkpoint should be obvious from the driver's seat.
+4. Race flow: a 3-2-1 countdown, 3 laps, a lap timer and total timer on
+   screen, lap count, and a finish screen with total and best lap. Missing a
+   checkpoint must not count the lap; show which one was missed. A key to
+   restart the race, and the car starts on the grid facing the right way.
+5. Save the best lap and best total to a git-ignored file and show them.
+6. Free driving must still work: racing is something Dan starts with a key,
+   and the debug panel, bug capture and bump log keep working during a race.
+7. Make the direction a setting, so the reverse lap is a one-line change.
+8. Scripted check: drive the route by script for one lap and confirm every
+   checkpoint registers in order and the lap time is recorded.
+9. Report status for every item: done / not done / deferred, and why.
+
+Out of scope for this round: rivals, traffic, multiple routes, menus, tree
+collision, and anything on the map itself.
 
 What Dan will judge when driving it:
-* Are the bumps gone? If one still happens, `local/bump_log.txt` will have
-  where.
-* Do the coordinates and bug capture work the way they do in Woodstock Rush?
+* Is the loop the right one, and the right direction?
+* Is a lap fun, and about the right length?
+* Are the checkpoints easy to follow at speed?
+* Would he rather race into trees that stop the car (tree collision next)?
 
 Next Steps (Do Not Start Yet)
 
@@ -360,6 +380,9 @@ Next Steps (Do Not Start Yet)
   the final game, so decide whether to trim the west edge east of I-575
   before spending any work on it. Open, not urgent.
 * Tree collision: the car drives through trees.
+* Bump log: it counts the car as on a road up to about 5 m from the
+  centreline, so off-road driving beside a road gets logged as a road bump.
+  Tighten it to the road's real half-width when the log is next used.
 * One world with race routes laid over it (not a copy of the world per course,
   as in Woodstock Rush).
 * Houses missing from OSM, found by comparing against NAIP imagery.

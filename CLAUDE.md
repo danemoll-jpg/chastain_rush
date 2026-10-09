@@ -69,14 +69,15 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
 
-Rounds 1 to 3 are built and driven by Dan (Round 4 is built and scripted-checked,
-not yet driven): a 3983 m x 1918 m map from I-575
+Rounds 1 to 4 are built and driven by Dan: a 3983 m x 1918 m map from I-575
 to past Canton Road, 18 terrain tiles, bridges, `vertical_scale` 1.5, 56,000
 trees, roofed and coloured houses, driveways, road paint, sky and fog. Round 4
 (see `TODO.md`) found the road bumps with a collider scan and fixed them in
 mapgen, and added the on-screen coordinates, bug capture (F3 / F4 / F6) and the
-automatic bump log (`local/bump_log.txt`). Everything else from Racer stays out
-of scope.
+automatic bump log (`local/bump_log.txt`). Round 4 is closed. Active work is Round 5 in `TODO.md`:
+the first race route, a 3-lap loop around Chastain Glen Lane with checkpoints
+and a timer, laid over the one world as data. No rivals, and Racer's race
+systems are not imported yet.
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
