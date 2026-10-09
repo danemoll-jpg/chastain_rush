@@ -102,6 +102,12 @@ route file (none yet; a test one lives in the check only), barriers across every
 while racing (`RaceBarriers`, closures from `make_route.py`), and a report-only list of seven backyard
 shortcut candidates (`Data/screenshots/round6/`).
 
+Active work is Round 7 in `TODO.md`: beautify Chastain Glen only (Dan's house
+hand-built from photos, four house styles, curbs and sidewalks, the entrance,
+the pond with its fountain, and geese that scatter). Reference photos are in
+`local/reference_photos/` (git-ignored): never commit them or copy them into
+committed files.
+
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
 so commit any uncommitted work first to keep those edits separate from yours.

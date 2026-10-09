@@ -518,75 +518,144 @@ car's reach; `make_route.py` writes `closures` and keeps `official_shortcuts`.
 
 Current Objective (Focus Area)
 
-*Status: Round 6 is built and scripted-checked, not yet driven by Dan (see Round 6 status above). The list below is the brief it was built from.*
+*Round 6 is built and scripted-checked but NOT yet driven by Dan, and he has
+not yet picked shortcut candidates. Its brief is in git history; its status
+is above. Round 7 does not depend on either.*
 
-**Round 6 — race rules as in Woodstock Rush, forgiving gates, blocked side
-roads, and shortcut candidates.** The Round 5 look stays; the rules change.
+**Round 7 — beautify Chastain Glen. DECIDED (2026-10-09): go ahead now.** Dan
+will come back for more detail later. Only his own neighborhood this round;
+the rest of the map is not touched. Only his house has to be accurate; every
+other house is fudged from a few styles. The look stays simple and low-poly,
+matching the trees and car.
 
-1. Gate edge bug: find why a crossing at the edge of the finish line did not
-   count. Report the gate's real width against the road and verge there, and
-   whether the test uses the car's centre or its body.
-2. Make every gate forgiving: crossing anywhere on the road, the verge, or a
-   reasonable way onto the grass beside it counts, at any angle, the finish
-   line most of all. Report the old and new width of each gate. Make the
-   visible markers match the counted width.
-3. Read how Racer handles these three things and report each in a few lines
-   before changing anything: (a) the penalty for a missed checkpoint, (b)
-   checkpoint forgiveness when an official shortcut is taken, including how a
-   shortcut is defined and detected, (c) how roads that are not part of a
-   course are blocked off.
-4. Change the rules here to match Racer: a missed checkpoint adds Racer's
-   time penalty and the lap still counts (remove "this lap will not count"
-   and the re-run lap). Show the penalty on the HUD when it is given and on
-   the finish panel. Port Racer's logic where it fits; keep this game's
-   markers, beams and HUD arrow.
-5. Official shortcuts in the route data: add them to the route file format
-   the way Racer defines them (entry, exit, and which checkpoints each one
-   forgives), and make the race logic honour them. No shortcut exists yet, so
-   prove it with one temporary test shortcut in the scripted check only.
-6. Blocked roads: while a race is running, close every road that leaves the
-   course and is not part of an official shortcut, with a visible barrier
-   that stops the car. Barriers appear at race start and go away in free
-   driving. List the junctions blocked. This closes the Chasefield Way and
-   Courtfield Trace road shortcuts.
-7. Shortcut candidates, REPORT ONLY, build nothing. Dan wants backyard routes
-   with jumps, over or even through houses, challenging and rewarding, with
-   huge jumps where possible. Use the elevation data to find them: look for
-   places where the lap doubles back near itself with a drop, a bank or a
-   slope between that could launch the car, and for gaps between houses and
-   through woods. List six to eight. For each: where it leaves and rejoins the
-   lap, the height difference, what is in the way (houses, trees, water),
-   which checkpoints it would skip, the distance saved, and what would be
-   built (a ramp, a gap in a fence, a path, an open house to drive through).
-   Save an overhead image of the loop with checkpoints and numbered
-   candidates to `Data/screenshots/round6/`.
-8. Scripted check: each gate crossed at both edges and at 45 degrees counts; a
-   missed checkpoint gives the penalty and the lap counts; the test shortcut
-   forgives its checkpoints; a blocked road stops the car.
-9. Report status for every item: done / not done / deferred, and why.
+Reference: 20 photos in `local/reference_photos/` (git-ignored). Look at
+every one before starting. Never commit them, and never copy them or parts of
+them into committed files or textures. The notes under "Round 7, planned" in
+Next Steps say what each folder shows.
 
-Out of scope for this round: building any shortcut, tree collision, rivals.
+1. Define the area and report it: the streets reached from the Chastain Glen
+   entrance without going back out onto New Chastain Road, the houses on
+   them, and the pond or ponds inside (the map data names West Chastain Lake
+   and East Chastain Lake; say which the photos show). Give the street list
+   and the house count. Everything outside this area stays as it is.
+2. Dan's house, hand-built and accurate from the three photos in `my_house/`.
+   Look at how Racer built Kyle's house and use the same method. Front: red
+   brick, a front gable over a two-car garage with white doors, white trim,
+   one window in the gable, dark shutters, light siding on the upper side
+   wall, grey shingle roof. Dark asphalt driveway, a large tree in the front
+   yard. Sides: plain, fudge them. Back: fudge it. Backyard: a hill covered
+   in pine straw with a few planted trees (use the real slope from the
+   terrain). Keep it as a hand-made asset separate from generated data, so
+   regenerating the map never destroys it. It replaces the orange marker
+   house; keep a way to find it.
+3. House styles for every other house in the area, each with a few colour
+   variants, assigned by footprint size and shape with a stable hash:
+   (A) Dan's style: two-storey, front gable over a two-car garage, in a
+   brick-front version and an all-siding version; (B) two-storey brick-front
+   colonial with full-height white columns and a side garage wing; (C)
+   one-storey ranch with a front-gable two-car garage; (D) plain two-storey
+   siding house with a side gable. Windows, front door, garage doors, trim
+   and shutters on the street side at least. Garage and front door face the
+   street the driveway meets. Colours from the photos: white, cream, grey,
+   sage green, light blue, red brick; grey, charcoal and brown roofs.
+4. Streets inside the area: concrete curbs, a sidewalk with a grass strip,
+   concrete driveways, mailboxes at the curb, street lamps, a few hydrants.
+   Curbs must not launch or snag the car: keep them low or without
+   collision, and prove it with item 11.
+5. Fences, breakable. DECIDED (2026-10-09): fences go in this round and the
+   car can smash through them. Wooden privacy fences around a good share of
+   the backyards and beside some houses, low picket fences on a few lots by
+   the pond, as in the photos. There is no data for where real fences are,
+   so place them plausibly along rear and side lot lines with a stable hash.
+   Hitting one breaks the panels it touches, with pieces flying, and costs a
+   little speed; it must not stop, flip or launch the car. Check whether
+   Racer already has breakable fences and reuse that if so. Broken fences
+   are whole again when a race restarts. The white rail fences at the
+   entrance and the pond break the same way.
+6. Entrance: the planted island (one tall tree, trimmed round shrubs, mulch,
+   a curb), the white three-rail fence, and the no-parking and no-U-turn
+   signs. Fix or explain the lighter grey patch on the road beside the
+   island seen in `Data/screenshots/round3/01_spawn.png`.
+7. The pond: a fountain in the middle with visible spray, grass banks,
+   weeping trees on the bank, two or three low retaining walls and small
+   docks, the white rail fence along the road side, and the culvert headwall
+   where the stream goes under the road.
+8. Geese. A flock or two that live at the pond: on the banks, on the water,
+   and often wandering into the road beside it. When the car gets close they
+   scatter with flapping (and honking, if a sound can be made or Racer has a
+   way to add one; say which). Driving through the flock costs a little
+   speed. They are NOT solid obstacles and must never stop, flip or launch
+   the car. They come back after the car has gone. One heron standing at the
+   water's edge is a nice extra, not required.
+9. Pool and clubhouse: only if the map data has them inside the area. A
+   simple version with a black fence. If the data has nothing, defer and say
+   so; there is only one blurry photo.
+10. Performance: frame rate at the entrance, beside the pond and outside Dan's
+   house, by the same offscreen 1080p method as Round 3. Round 3 was close to
+   the line (56 fps at the 99th percentile), so fix it in this round if it
+   falls below 60 and report what it took.
+11. Nothing driving-related may regress: re-run `BumpScan` over the area and
+    the race check for the Chastain Glen loop, and report both against the
+    Round 4 and Round 6 results.
+12. Screenshots to `Data/screenshots/round7/`, taken from about the same
+    viewpoints as the photos: the entrance island, Dan's house from the
+    street, one of each house style, the pond with the fountain, the geese,
+    and a street view with sidewalks.
+13. Report status for every item: done / not done / deferred, and why.
+
+Out of scope for this round: building any shortcut, tree collision, anything
+outside Chastain Glen, rivals.
 
 What Dan will judge when driving it:
-* Does every gate count when it looks like it should?
-* Do penalties feel right?
-* Do the barriers make the course clear without getting in the way?
-* Which shortcut candidates does he want built?
+* Does it look like his neighborhood, and like his house?
+* Do the geese behave the way he pictured?
+* Does it still run smoothly and drive cleanly?
+* What detail does he want to come back for?
 
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
-* **Round 7, planned — beautify Chastain Glen only. DECIDED (2026-10-08).**
+* **Round 7 reference notes (the round itself is the Current Objective).**
   Dan wants a round that makes his own neighborhood look good, as a start,
-  before the rest of the map. He has photos of his house, the front of the
-  neighborhood, and the house styles found in it. Only his house has to be
-  accurate; the others can be fudged from a few styles. Photos go in
-  `local/reference_photos/` (git-ignored, so they never reach a public repo):
-  `my_house/`, `entrance/`, `house_styles/`. Scope to settle when the photos
-  are in: his house hand-built from the photos; the entrance (island
-  planting, white rail fence, sign if there is one); three to five house
-  styles applied across Chastain Glen; sidewalks, curbs, mailboxes and
-  fences if they show in the photos. Waiting on: the photos.
+  before the rest of the map. Only his house has to be accurate; the others
+  can be fudged from a few styles. 20 reference photos are filed (2026-10-09)
+  in `local/reference_photos/` (git-ignored; never commit them): `entrance/`
+  (2), `house_styles/` (3), `pond/` (9), `streets/` (2), `amenities/` (1,
+  blurry), `my_house/` (3, front only). What the photos show, as a draft scope:
+  * Dan's house: CONFIRMED as the red-brick style A house in `my_house/`
+    (front gable over a two-car garage, red brick with white trim, light
+    siding on the upper side wall, a large tree in the front yard, a dark
+    asphalt driveway). Build it by hand and accurately.
+  * House styles: (A) Dan's style, which recurs through the neighborhood:
+    two-storey with a front gable over a two-car garage, sometimes brick
+    fronted and sometimes all siding (a grey siding one is in the photos); (B)
+    two-storey brick-front colonial with full-height white columns and a side
+    garage wing; (C) one-storey ranch with a front-gable two-car garage (sage
+    green siding; white with a brick accent); (D) plain two-storey siding box
+    with a side gable (white, cream, yellow). Colours: white, cream, grey,
+    sage, light blue, red brick; grey to charcoal and brown roofs; white trim
+    and garage doors; dark shutters. Apply across Chastain Glen by footprint.
+  * The pond: a real feature with a fountain in the middle, grass banks,
+    weeping trees, a few low retaining walls and small docks, a white rail
+    fence along the road side, and a culvert under the road. Geese and a
+    heron live there.
+  * Streets: concrete curbs, a sidewalk with a grass strip on at least one
+    side, concrete driveways, mailboxes at the curb, street lamps, fire
+    hydrants, utility boxes, wooden privacy fences and low picket fences.
+  * Entrance: the planted island (one tall tree, trimmed round shrubs, mulch,
+    a curb), a white three-rail fence, no-parking and no-U-turn signs.
+  * Amenities: a pool with a black metal fence and a small clubhouse (one
+    blurry photo; needs a better one and its location).
+  * Geese: DECIDED (2026-10-09), yes. Geese around the pond, on the banks
+    and on the water, and they often wander into the road near the pond, as
+    they do in real life. They are a moving hazard to dodge on the course.
+    DECIDED: they scatter when the car reaches them, with flapping and
+    honking, and driving through the flock costs a little speed. They are
+    not solid obstacles. A heron is optional.
+  Dan on his house (2026-10-09): the sides are plain and don't matter. All
+  that is in the backyard is the hill, covered with straw, with a few trees
+  planted. He may bring backyard photos later for a detail pass; Round 7
+  does not wait for them.
 * **Then: build the chosen shortcuts for the Chastain Glen loop.** Do this
   after Round 7, not before: shortcuts go through backyards and over or
   through houses, so they should be built against the final houses and
