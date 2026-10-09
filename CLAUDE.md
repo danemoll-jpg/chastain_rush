@@ -157,7 +157,14 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-Round 9 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan: Dan's debug report
+**Active work is Round 10 in `TODO.md`:** shortcut #2 rebuilt with both houses
+whole (a smaller ramp, in and out through breakable upstairs windows of the
+first house, then in through a sliding glass door of the second, up its
+stairs as a ramp and out through its upstairs windows), plus Dan's second debug report
+(deck, house marker, more windows on his house and on every other house),
+solid trees, and breakable street lamps and hydrants with a water jet.
+
+Round 9 (see `TODO.md`, status there) is built and driven by Dan from the exe: Dan's debug report
 (the buried house 1520 regraded in the terrain itself, the gazebo and playground, the sidewalk with benches, the pool
 fence, the entrance rail and two brick "Chastain Glen" monuments, his tree moved, drives that no longer show grass,
 breakable mailboxes with most flags down), the back of his house and his yard, and debug keys that need no Fn
