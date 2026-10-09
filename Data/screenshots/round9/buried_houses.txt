@@ -1,0 +1,10 @@
+Chastain Glen houses whose walls are buried by more than 0.5 m (ground above the floor level at the walls), before Round 9.
+Report only: none of these was changed except the BUG-005 house (FIXED). Position = footprint centre, game coordinates.
+
+  house  1520 at x  3057.7  z  1033.0  style C  buried 3.68 m  -> FIXED (BUG-005), now -0.12 m
+  house  1630 at x  2686.2  z  1041.7  style D  buried 0.65 m
+  house  1719 at x  3156.3  z  1117.0  style A  buried 0.63 m
+  house  1557 at x  2953.5  z  1071.7  style A  buried 0.63 m
+  house   806 at x  3153.5  z   892.2  style A  buried 0.55 m
+  house   860 at x  2766.0  z   965.7  style A  buried 0.54 m
+  house  1657 at x  3140.8  z  1180.0  style A  buried 0.50 m

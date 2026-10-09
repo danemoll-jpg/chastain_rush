@@ -46,7 +46,7 @@ namespace ChastainRush
 
             readonly HashSet<int> roadSet = new HashSet<int>();
             public bool IsAreaRoad(int i) => Present && roadSet.Contains(i);
-            public bool OwnsBuilding(int i) => Present && HouseSet.Contains(i);
+            public bool OwnsBuilding(int i) => Present && (HouseSet.Contains(i) || Replaced.Contains(i));   // Round 9: and the pavilion, now a gazebo
             public bool OwnsDriveway(int i) => Present && DriveSet.Contains(i);
             public bool OwnsPond(int waterIndex) => Present && waterIndex == PondIndex;
             public void KeepOut(Vector2 c, float r) => discs.Add((c, r));
@@ -116,6 +116,8 @@ namespace ChastainRush
                 Bounds = Rect.MinMaxRect(x0 - 40f, z0 - 40f, x1 + 40f, z1 + 40f);
                 PlanPool();
                 PlanHouses();
+                PlanDrives();      // Round 9: before the trees, so none is left standing on a drive
+                PlanGazebo();
                 PlanDriveOwnership();
                 PlanFences();
             }
@@ -312,6 +314,7 @@ namespace ChastainRush
                         var run = Fences.Find(f => f.seed == h.seed && (f.kind == FenceKind.Privacy || f.kind == FenceKind.Picket));
                         Debug.Log($"[Neighborhood] fence exception, house {h.index}: " + (run != null ? $"{run.kind} fence, {run.pts.Count - 1} side(s)" : "no fence") + (ForceFence.Contains(h.index) && run == null ? " (WANTED one, but no clear rear line was found)" : ""));
                     }
+                PlanPoolStreet();   // Round 9: the sidewalk, benches, pool fence and monuments on New Chastain Road
                 AddRoadSideRail();
                 AddPoolFence();
                 foreach (var run in Fences) for (int i = 0; i + 1 < run.pts.Count; i++) fenceSegs.Add((run.pts[i], run.pts[i + 1]));
@@ -335,7 +338,7 @@ namespace ChastainRush
                             Vector2 t = (dirIn + dirOut).normalized; if (t.sqrMagnitude < 1e-6f) t = dirOut;
                             Vector2 nrm = new Vector2(-t.y, t.x) * side;
                             Vector2 p = pts[i] + nrm * (r.width * 0.5f + 4.2f);
-                            bool keep = DistToPond(p) < 15f && !InPolygon(p, PondRing) && RoadClearanceExcept(p, ri) > 3.2f && !InsideHouse(p, 2f, null) && !InRing(p, ParkingRing) && !(PoolRing != null && DistToRing(p, PoolRing) < 6f);
+                            bool keep = (DistToPond(p) < 15f || RailExtension(r, p)) && !InPolygon(p, PondRing) && RoadClearanceExcept(p, ri) > 3.2f && !InsideHouse(p, 2f, null) && !InRing(p, ParkingRing) && !(PoolRing != null && DistToRing(p, PoolRing) < 6f);
                             if (keep) run.pts.Add(p);
                             else { if (run.pts.Count >= 3) Fences.Add(run); run = new FenceRun { kind = FenceKind.Rail, seed = ri }; }
                         }
@@ -374,6 +377,12 @@ namespace ChastainRush
                 if (!Present) return false;
                 var p = new Vector2(x, z);
                 if (!Bounds.Contains(p)) return false;
+                if (InCorridor(p)) { TreesCleared++; return true; }   // Round 8: nothing grows on a shortcut's line
+                return TreeBlocked(p);
+            }
+
+            bool TreeBlocked(Vector2 p)
+            {
                 // not through the curb, grass strip and sidewalk of the area's streets
                 foreach (var s in Segs)
                 {
@@ -393,7 +402,9 @@ namespace ChastainRush
                 }
                 if (InRing(p, ParkingRing) || InRing(p, PlaygroundRing)) return true;
                 if (PondRing.Count > 2 && DistToPond(p) < 2.5f) return true;
-                if (InCorridor(p)) { TreesCleared++; return true; }   // Round 8: nothing grows on a shortcut's line
+                if (InCorridor(p)) return true;
+                if (OnDrivePlan(p, 0.4f)) return true;                                              // Round 9: never on a drive
+                if (PoolWalk != null && Neighborhood.DistToLine(p, PoolWalk) < 1.6f) return true;   // Round 9: nor on the new sidewalk
                 foreach (var dsc in discs) if ((p - dsc.c).sqrMagnitude < dsc.r * dsc.r) return true;
                 return false;
             }

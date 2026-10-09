@@ -21,9 +21,11 @@ namespace ChastainRush
             public TreeBuilder.Result trees; public RoadIndex roadIndex;
             public Chunks Ground = new Chunks();                 // ribbons lying on the terrain (drives, sidewalks, mulch, straw): depth-offset material
             public Chunks Props = new Chunks();                  // small 3D things: curbs, lamps, mailboxes, shrubs
-            public readonly List<(Vector2 a, Vector2 b, float half)> DriveSegs = new List<(Vector2, Vector2, float)>();
+            public List<(Vector2 a, Vector2 b, float half)> DriveSegs = new List<(Vector2, Vector2, float)>();   // Round 9: every drive, planned before the trees (Neighborhood.PlanDrives)
+            public readonly Breakables Mailboxes3D = new Breakables();   // Round 9: mailboxes break like the fences
             public readonly StringBuilder Log = new StringBuilder();
             public readonly List<ViewPt> Views = new List<ViewPt>();
+            public int GrassyDrives, FlagsUp;
             public int Houses, Drives, Mailboxes, Lamps, Hydrants, FencePanels, FenceRuns, CurbMetres, WalkMetres, ShortcutCleared;
             public float Lift => 0.06f;
             public float Y(float x, float z) => terrain.Height(x, z);
@@ -59,7 +61,7 @@ namespace ChastainRush
             if (!hood.Present) return;
             var root = new GameObject("Neighborhood").transform;
             root.SetParent(world, false);
-            var ctx = new HoodCtx { map = map, terrain = terrain, mats = mats, root = root, hood = hood, trees = trees, roadIndex = new RoadIndex(map.roads) };
+            var ctx = new HoodCtx { map = map, terrain = terrain, mats = mats, root = root, hood = hood, trees = trees, roadIndex = new RoadIndex(map.roads), DriveSegs = hood.DriveSegs };
             BuildHouses(ctx);
             BuildStreets(ctx);
             BuildFences(ctx);
@@ -67,12 +69,16 @@ namespace ChastainRush
             BuildPond(ctx);
             BuildPoolSite(ctx);
             BuildDanLot(ctx);
+            BuildRound9(ctx);   // Round 9: the gazebo, the playground, the sidewalk with benches, the pool fence, the entrance monuments
+            ctx.Mailboxes3D.ToObjects("Mailboxes", mats.House, root, 1.25f);
             ExportViews(ctx);
             ctx.Ground.ToObjects("HoodGround", mats.Driveway, root, false);
             ctx.Props.ToObjects("HoodProps", mats.House, root, false);   // curbs, mailboxes, lamps, shrubs: small, no shadows (performance)
             Debug.Log($"[Neighborhood] {ctx.Houses} houses (styles A {hood.Houses.Count(h => h.style == HouseStyle.A)}, B {hood.Houses.Count(h => h.style == HouseStyle.B)}, " +
                       $"C {hood.Houses.Count(h => h.style == HouseStyle.C)}, D {hood.Houses.Count(h => h.style == HouseStyle.D)}), {ctx.Drives} drives, {ctx.Mailboxes} mailboxes, " +
-                      $"{ctx.Lamps} lamps, {ctx.Hydrants} hydrants, {ctx.CurbMetres} m of curb, {ctx.WalkMetres} m of sidewalk, {ctx.FenceRuns} fence runs / {ctx.FencePanels} panels; {ctx.Log}");
+                      $"{ctx.Lamps} lamps, {ctx.Hydrants} hydrants, {ctx.CurbMetres} m of curb, {ctx.WalkMetres} m of sidewalk, {ctx.FenceRuns} fence runs / {ctx.FencePanels} panels; " +
+                      $"Round 9: drives rebuilt as a fine grid, {ctx.GrassyDrives} of {ctx.Drives} had ground showing through the old surface; {ctx.Mailboxes} mailboxes breakable, {ctx.FlagsUp} flags up; " +
+                      $"trees: {hood.TreesMovedOffDrives} moved off drives into the yard, {hood.TreesDroppedOffDrives} on a drive with no room beside it removed; {ctx.Log}");
         }
 
         // ------------------------------------------------------------ houses, drives, mailboxes
@@ -128,41 +134,74 @@ namespace ChastainRush
 
         static void BuildDrive(HoodCtx c, HouseSpec h)
         {
-            float u = (h.garageU0 + h.garageU1) / 2f;
-            Vector3 s3 = h.frame.P(u, 0f, h.D / 2 + 0.05f);
-            var S = new Vector2(s3.x, s3.z);
-            c.hood.Nearest(S, out Vector2 q, out float half, out Vector2 tan, out float dist);
-            Vector2 toHouse = (S - q).normalized;
-            Vector2 E = q + toHouse * (half + 0.45f);              // the road edge
-            var F2 = new Vector2(h.frame.F.x, h.frame.F.z);
-            float len = (E - S).magnitude;
-            if (len < 2f) return;
-            Vector2 C1 = S + F2 * Mathf.Clamp(len * 0.55f, 2f, 9f);
-            var pts = new List<Vector2>();
-            int n = Mathf.Max(4, Mathf.CeilToInt(len / 1.5f));
-            for (int i = 0; i <= n; i++) { float t = i / (float)n; pts.Add((1 - t) * (1 - t) * S + 2 * (1 - t) * t * C1 + t * t * E); }
-            float w0 = h.style == HouseStyle.D ? 3.8f : 5.8f;
-            var widths = new float[pts.Count];
-            for (int i = 0; i < pts.Count; i++) { float t = i / (float)n; widths[i] = w0 + (t > 0.78f ? (t - 0.78f) / 0.22f * 1.5f : 0f); }
-            bool asphalt = h.dan || Hash01(h.seed, 120) < 0.28f;
+            // Round 9: the path is planned once (Neighborhood.PlanDrives, before the trees, so no tree stands on a drive), and
+            // the surface is a grid (5 vertices across, a row every 0.75 m): the old two-edge ribbon let the lawn show through
+            // wherever the ground between its edges bulged above the straight line between them (BUG-008)
+            if (!c.hood.DrivePlans.TryGetValue(h.index, out var dp)) return;
+            var pts = dp.pts; var widths = dp.widths; bool asphalt = dp.asphalt;
+            if (GroundShowedThroughOldRibbon(c, pts, widths)) c.GrassyDrives++;
             Color col = asphalt ? Shade(new Color(0.22f, 0.22f, 0.23f), 0.9f + 0.2f * Hash01(h.seed, 121)) : Shade(new Color(0.58f, 0.57f, 0.54f), 0.92f + 0.14f * Hash01(h.seed, 122));
             c.Ground.Tint = col;
-            RibbonVar(c.Ground.At(pts[pts.Count / 2]), pts, widths, 0.075f, c.terrain);
+            RibbonGrid(c.Ground.At(pts[pts.Count / 2]), pts, widths, 0.075f, c.terrain, 4);
             // joints of a concrete drive: a seam every 3 m
             if (!asphalt)
             {
                 c.Ground.Tint = Shade(col, 0.82f);
-                for (int i = 2; i + 1 < pts.Count; i += 2)
+                for (int i = 4; i + 1 < pts.Count; i += 4)
                 {
                     var d = (pts[i + 1] - pts[i - 1]).normalized; var nrm = new Vector2(-d.y, d.x);
-                    var a = pts[i] + nrm * widths[i] * 0.5f; var b = pts[i] - nrm * widths[i] * 0.5f;
                     var mb = c.Ground.At(pts[i]);
                     Vector3 V(Vector2 p, float dd) => new Vector3(p.x + d.x * dd, c.Y(p.x, p.y) + 0.082f, p.y + d.y * dd);
-                    Face(mb, V(a, -0.02f), V(b, -0.02f), V(b, 0.02f), V(a, 0.02f), Vector3.up);
+                    for (int k = 0; k < 4; k++)
+                    {
+                        var a = pts[i] + nrm * widths[i] * (0.5f - k / 4f); var b = pts[i] + nrm * widths[i] * (0.5f - (k + 1) / 4f);
+                        Face(mb, V(a, -0.02f), V(b, -0.02f), V(b, 0.02f), V(a, 0.02f), Vector3.up);
+                    }
                 }
             }
-            for (int i = 0; i + 1 < pts.Count; i++) c.DriveSegs.Add((pts[i], pts[i + 1], widths[i] * 0.5f));
             c.Drives++;
+        }
+
+        // Round 9 (BUG-008 a): would the Round 7 surface (a vertex at each edge, every ~1.5 m, 7.5 cm up) have let the lawn
+        // show? It did wherever the ground in the middle of the drive stood above the straight line between the two edges.
+        static bool GroundShowedThroughOldRibbon(HoodCtx c, List<Vector2> pts, float[] widths)
+        {
+            for (int i = 0; i + 1 < pts.Count; i += 2)
+            {
+                var d = (pts[i + 1] - pts[i]).normalized; var nrm = new Vector2(-d.y, d.x);
+                var l = pts[i] + nrm * widths[i] * 0.5f; var r = pts[i] - nrm * widths[i] * 0.5f;
+                foreach (float f in new[] { 0f, 0.25f, -0.25f })
+                {
+                    var m = pts[i] + nrm * widths[i] * f;
+                    float surface = Mathf.Lerp(c.Y(l.x, l.y), c.Y(r.x, r.y), 0.5f - f) + 0.075f;
+                    if (c.Y(m.x, m.y) > surface + 0.01f) return true;
+                }
+            }
+            return false;
+        }
+
+        // a ribbon like RibbonVar, but with 'across' cells across its width, so it follows the ground between the edges
+        static void RibbonGrid(MeshBuilder mb, List<Vector2> pts, float[] width, float lift, TerrainGrid t, int across)
+        {
+            int start = mb.Count, cols = across + 1;
+            for (int i = 0; i < pts.Count; i++)
+            {
+                Vector2 dirIn = i > 0 ? (pts[i] - pts[i - 1]).normalized : (pts[1] - pts[0]).normalized;
+                Vector2 dirOut = i < pts.Count - 1 ? (pts[i + 1] - pts[i]).normalized : dirIn;
+                Vector2 tg = (dirIn + dirOut).normalized; if (tg.sqrMagnitude < 1e-6f) tg = dirOut;
+                Vector2 nrm = new Vector2(-tg.y, tg.x);
+                for (int k = 0; k < cols; k++)
+                {
+                    var p = pts[i] + nrm * width[i] * (0.5f - k / (float)across);
+                    mb.Vertex(new Vector3(p.x, Ground(t, p.x, p.y) + lift, p.y));
+                }
+                if (i > 0)
+                    for (int k = 0; k < across; k++)
+                    {
+                        int a = start + (i - 1) * cols + k, b = a + cols;
+                        mb.Tri(a, b, a + 1); mb.Tri(a + 1, b, b + 1);
+                    }
+            }
         }
 
         // a ribbon with its own width at each point, lying on the terrain
@@ -197,12 +236,24 @@ namespace ChastainRush
             if (c.hood.InCorridor(p, 1f)) return;   // Round 8: no mailbox on a shortcut's line
             if (c.roadIndex.Covers(p, NoRoad, 0.8f)) return;
             float gy = c.Y(p.x, p.y);
-            var mb = c.Props.At(p);
+            // Round 9 (BUG-008 c, d): breakable (FenceChunk: a trigger, a little speed lost, whole again at race start), and
+            // the flag is down on most of them, up on about one in five (a stable hash)
+            var mb = c.Mailboxes3D.Begin(p);
             Color post = Hash01(h.seed, 131) < 0.6f ? new Color(0.92f, 0.92f, 0.9f) : new Color(0.3f, 0.22f, 0.15f);
-            Post(mb, new Vector3(p.x, gy - 0.05f, p.y), 1.05f, 0.1f, post);
+            c.Mailboxes3D.Piece(() => Post(mb, new Vector3(p.x, gy - 0.05f, p.y), 1.05f, 0.1f, post));
             var face = -toHouse; var a = new Vector3(p.x - face.x * 0.24f, gy + 1.17f, p.y - face.y * 0.24f); var b = new Vector3(p.x + face.x * 0.24f, gy + 1.17f, p.y + face.y * 0.24f);
-            Beam(mb, a, b, 0.2f, 0.22f, Hash01(h.seed, 132) < 0.5f ? new Color(0.12f, 0.12f, 0.13f) : new Color(0.55f, 0.57f, 0.6f));
-            Beam(mb, a + Vector3.up * 0.12f + new Vector3(-face.y, 0, face.x) * 0.11f, a + Vector3.up * 0.28f + new Vector3(-face.y, 0, face.x) * 0.11f, 0.03f, 0.03f, new Color(0.8f, 0.1f, 0.08f));
+            var flagSide = new Vector3(-face.y, 0, face.x) * 0.11f; var fwd = new Vector3(face.x, 0, face.y);
+            bool flagUp = Hash01(h.seed, 133) < 0.2f;
+            c.Mailboxes3D.Piece(() =>
+            {
+                Beam(mb, a, b, 0.2f, 0.22f, Hash01(h.seed, 132) < 0.5f ? new Color(0.12f, 0.12f, 0.13f) : new Color(0.55f, 0.57f, 0.6f));
+                var red = new Color(0.8f, 0.1f, 0.08f);
+                if (flagUp) Beam(mb, a + Vector3.up * 0.12f + flagSide, a + Vector3.up * 0.28f + flagSide, 0.03f, 0.03f, red);
+                else Beam(mb, a + Vector3.up * 0.03f + flagSide + fwd * 0.04f, a + Vector3.up * 0.03f + flagSide + fwd * 0.2f, 0.03f, 0.03f, red, Vector3.up);
+            });
+            c.Mailboxes3D.End(new Vector3(p.x, gy + 0.7f, p.y), fwd, 0.6f, 1.4f);
+            if (flagUp) c.FlagsUp++;
+            AddView(c, "mailbox", p, toHouse, q, h.index);   // Round 9: for the smash check in the exe (ExeShotsRunner)
             c.hood.KeepOut(p, 0.9f);
             c.Mailboxes++;
         }

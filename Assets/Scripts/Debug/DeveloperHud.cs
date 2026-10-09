@@ -108,10 +108,11 @@ namespace ChastainRush
                 return;
             }
             if (Capturing) return;
-            if (k != null && k.f3Key.wasPressedThisFrame) { Visible = !Visible; if (!Visible && MenuOpen) CloseMenu(); }
+            // Round 9: a second key for each that never needs Fn on Dan's keyboard: [ panel, ] capture, \ menu
+            if (k != null && (k.f3Key.wasPressedThisFrame || k.leftBracketKey.wasPressedThisFrame)) { Visible = !Visible; if (!Visible && MenuOpen) CloseMenu(); }
             if (!Visible) return;
-            if ((k != null && k.f4Key.wasPressedThisFrame) || (g != null && g.selectButton.wasPressedThisFrame)) CaptureBug();
-            if ((k != null && k.f6Key.wasPressedThisFrame) || (g != null && g.startButton.wasPressedThisFrame)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }
+            if ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.selectButton.wasPressedThisFrame)) CaptureBug();
+            if ((k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame)) || (g != null && g.startButton.wasPressedThisFrame)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }
             if (MenuOpen && ((k != null && k.escapeKey.wasPressedThisFrame) || (g != null && g.buttonEast.wasPressedThisFrame))) CloseMenu();
         }
 
@@ -282,7 +283,7 @@ namespace ChastainRush
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +
                           (string.IsNullOrEmpty(Status) ? "" : Status + "\n") +
-                          "F3 hide / F4 capture bug / F6 menu";
+                          "F3 or [ hide / F4 or ] capture bug / F6 or \\ menu / F2 or P fps";
             float height = label.CalcHeight(new GUIContent(text), 430f) + 14f;
             var r = new Rect(w - 450f - 12f, h - height - 12f, 450f, height);
             GUI.Box(r, GUIContent.none, box);
@@ -299,12 +300,12 @@ namespace ChastainRush
             GUILayout.Label("DEBUG / INSPECTION", title);
             GUILayout.Label(SessionText, label);
             GUILayout.Space(6);
-            if (GUILayout.Button("Resume   (F6 / Esc)", button, GUILayout.Height(36))) CloseMenu();
-            if (GUILayout.Button("Capture Bug   (F4)", button, GUILayout.Height(36))) { CloseMenuForCapture(); }
+            if (GUILayout.Button("Resume   (F6 / \\ / Esc)", button, GUILayout.Height(36))) CloseMenu();
+            if (GUILayout.Button("Capture Bug   (F4 / ])", button, GUILayout.Height(36))) { CloseMenuForCapture(); }
             if (GUILayout.Button("Export Bug Report ZIP", button, GUILayout.Height(36))) Export();
             if (GUILayout.Button("Open Debug Report Folder", button, GUILayout.Height(36))) OpenFolder();
             if (GUILayout.Button("START NEW DEBUG SESSION", button, GUILayout.Height(36))) NewSession();
-            if (GUILayout.Button("Hide Debug HUD   (F3)", button, GUILayout.Height(36))) { Visible = false; CloseMenu(); }
+            if (GUILayout.Button("Hide Debug HUD   (F3 / [)", button, GUILayout.Height(36))) { Visible = false; CloseMenu(); }
             GUILayout.Space(6);
             GUILayout.Label("Reports: " + ReportRoot() + "\nBump log: " + Path.GetFullPath(BumpLogger.LogPath), label);
             if (!string.IsNullOrEmpty(Status)) GUILayout.Label(Status, label);

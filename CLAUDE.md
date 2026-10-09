@@ -124,6 +124,9 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   shortcuts at 12-36 m/s against the road, plus race laps), `ChastainRush.Round8Check.Run` (screenshots to
   `Data/screenshots/round8/`). Unity empties the project's `Temp/` on exit: send check output elsewhere.
 - Goose honks: drop `goose_honk*.wav|ogg|mp3` into `Assets/Audio/Geese/`, then Build Map. None there = silent geese.
+- Round 9: `python Tools/mapgen/buried_houses_plot.py` (after Build Map) writes the report-only list and picture of buried
+  houses (`Data/screenshots/round9/buried_houses.*`); `python Tools/handmade/make_entrance_sign.py` re-draws the monument
+  panel (`Assets/HandMade/Entrance/ChastainGlenSign.png`, hand-made, committed).
 - Fence exceptions near Dan's house: `local/owner_fences.json` (git-ignored; format in `MapBuilder.Neighborhood.cs`).
 
 ## Where things stand
@@ -154,9 +157,15 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-**Active work is Round 9 in `TODO.md`:** Dan's debug report (8 entries), the
-back of his house and his yard, and shortcut #2 changed from a drive-through
-to one big ramp over both houses.
+Round 9 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan: Dan's debug report
+(the buried house 1520 regraded in the terrain itself, the gazebo and playground, the sidewalk with benches, the pool
+fence, the entrance rail and two brick "Chastain Glen" monuments, his tree moved, drives that no longer show grass,
+breakable mailboxes with most flags down), the back of his house and his yard, and debug keys that need no Fn
+(`[` `]` `\` `P`). Item 1 (shortcut #2 as one big ramp over both houses) was stopped and reported: the run-up between
+the lane and house 1763 is too short for a clean jump; #2 is still Round 8's drive-through until Dan picks an option.
+Imported from Racer in Round 9: nothing. Look at a change in the exe from Dan's report position with
+`ChastainRush.exe -exeShots <list.json> <dir>` (Checks/ExeShotsRunner.cs; the list: name, x, z, yaw, optional
+drive_speed / drive_seconds / shot_at). Never commit shots that show where Dan's house is.
 
 Round 8 (see `TODO.md`, status there) is built and driven by Dan from the exe: a Windows executable
 (`Builds/ChastainRush/ChastainRush.exe`, `Play Chastain Rush.bat`), two official shortcuts on the Chastain Glen

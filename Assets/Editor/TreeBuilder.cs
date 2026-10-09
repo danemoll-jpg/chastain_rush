@@ -45,7 +45,7 @@ namespace ChastainRush
             public TreeField Field; // the kit meshes, reused by the hand-placed trees of Round 7
         }
 
-        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent, Func<float, float, bool> reject = null)
+        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent, Func<float, float, bool> reject = null, Func<float, float, Vector2> move = null)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(KitPath);
             if (asset == null) throw new Exception("Missing " + KitPath);
@@ -77,6 +77,7 @@ namespace ChastainRush
             {
                 int o = 8 + i * 12;
                 float x = BitConverter.ToSingle(bytes, o), z = BitConverter.ToSingle(bytes, o + 4);
+                if (move != null) { var m = move(x, z); x = m.x; z = m.y; }   // Round 9: a tree on a drive is moved into the yard
                 if (reject != null && reject(x, z)) { result.Rejected++; continue; } // Round 7: not through a sidewalk, a pool or a fence
                 int seed = BitConverter.ToUInt16(bytes, o + 8);
                 bool yard = bytes[o + 10] != 0;

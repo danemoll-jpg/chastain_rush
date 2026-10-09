@@ -728,6 +728,80 @@ Not done / not measured: Dan's drive; real key presses and a pad; any sound (no 
 New tools: `make_shortcuts.py`, `MapBuilder.Shortcuts.cs`, `PlayerBuild`, `GameShell`, `ExeCheckRunner`, `ShortcutCheck` /
 `ShortcutCheckRunner`, `Round8Check` / `Round8ShotsRunner`; `RaceBarriers` skip rule; `RaceMarkers` shortcut arches and signs.
 
+Round 9 status — built and checked in the exe (2026-10-09), not yet driven by Dan. Each change was looked at in
+the built exe (3840 x 2160) from Dan's own report position with the new `ChastainRush.exe -exeShots <list.json> <dir>`
+(Checks/ExeShotsRunner.cs: car at the given place and heading, chase camera, screenshot; or a straight drive with what it
+broke). Shots of the public places: `Data/screenshots/round9/` (the shots at Dan's house, his yard and his street's mailboxes are
+kept out of the repo: they locate his house).
+
+1. BUG-006, shortcut #2 big ramp: NOT DONE, stopped as the item says (the flight cannot be made cleanly). Numbers: the lane
+   crosses the jump line about 31 m before house 1763's middle, so the 5 m lane-clear rule leaves 12.5 m of run-up (ramp foot
+   23 m before 1763's middle at 311.2 m, lip 10.5 m before it, just short of its front corner). 1763 sits on the crest: its
+   ridge is about 324 m, 13 m above the ramp's foot and 10.5 m past the lip; 1627's roof is about 75 m past the lip. With
+   the car's real gravity and top speed (38 m/s), the only ramp that fits and clears 1763 is 9.5 m tall, curling up to 54
+   degrees on an 8 m radius, met at 30.5 m/s or more; the car would peak about 25 m above the lip (346 m) and fall about
+   39 m to the ground past 1627. No ramp of 45 degrees or less clears 1763's roof at any speed from that run-up. Starting
+   the run-up on the lane itself (blocking the plain lap) still needs 42 degrees, 11 m tall, 30 m/s, a 30 m fall. Speeds of
+   30 to 38 m/s also spread the landings over about 60 m, into houses 1459 / 1615 at the gap. Nearest versions that work, for
+   Dan to choose: (a) keep the drive-through of 1763 and replace only the second half with a kicker at the natural lip behind
+   it that jumps house 1627 (lip 314.4 m, 1627's roof about 316 m 31 m away over 7 m of fall: a 2 to 3 m kicker clears it at
+   about 22 to 26 m/s, landing on a ramp behind 1627 like #6's deck); (b) put the big two-house jump where the lane leaves
+   room for a 25 m+ run-up (a different pair of houses). Shortcut #2 is unchanged from Round 8 until Dan decides.
+2. BUG-005 buried house: DONE. House 1520 (ranch, Chasefield Way) was buried 3.7 m on its uphill side. Its lot is cut down
+   in the terrain itself (Build Map, MapBuilder.Round9.cs CutLot): a level pad 0.12 m under the floor over the house and
+   1.4 m round it, then a bank at about 40 degrees back up to the natural ground (cut only, never filled; 940 terrain samples,
+   up to 3.8 m). The walls, garage door and front door now stand clear (buried -0.12 m after); the shrubs, drive, mailbox
+   and trees sit on the new ground because they are built after it. The bank's uphill edge reaches toward #2's ramp up to
+   1763 (its sides go down to the new ground). List of the others, unchanged: `Data/screenshots/round9/buried_houses.txt`
+   and `.png` (Tools/mapgen/buried_houses_plot.py): 6 houses buried 0.50 to 0.65 m (1630, 1719, 1557, 806, 860, 1657).
+3. Dan's back and yard: DONE. Light grey siding (sides and back); the left part (seen from the yard) steps out 1.2 m with
+   its own roof; a siding-clad chimney beside it up through the eave; two windows up and a row of three plus one low on the
+   stepped part; a tall window over a lower one, the triple window upstairs, a two-panel glass door, a pair of windows low
+   on the right, a lantern; a low grey-brown deck across the right half with blue-grey railings, an opening and two steps.
+   The red brick sill band is now on the front only. Yard: mown grass (the terrain's grass) for the flat 7.5 m behind the
+   house; pine straw from where the hill rises to the back of the lot, with the five trees on the slope. No gazebo,
+   trampoline, loose items, vines; no fence on his lot. A second collider covers the stepped-out part.
+4. BUG-001 gazebo and playground: DONE. The pavilion block (OSM building 2224, 9.4 x 6.4 m) is an open hip-roofed wooden
+   gazebo on a concrete slab, six posts (with colliders), six picnic tables (three by two). The playground has the swings,
+   a slide (platform, ladder, chute) and a climbing frame on its mulch pad.
+5. BUG-002 sidewalk: DONE. 148 m from the parking lot's edge where Dan stood, down to New Chastain Road and along its north
+   side to the entrance lane's verge, with three benches facing the walk in front of the pond. Trees kept off it.
+6. BUG-003 pool fence: DONE. A wooden privacy fence (breakable, as the others) along New Chastain Road in front of the pool
+   area (x 2776 to 2860), behind the sidewalk, with a gap where the walk comes down from the parking lot.
+7. BUG-004 fence and monuments: DONE. The white rail fence runs on south along the entrance's outbound lane to the west
+   monument. Two brick monuments (raised arched middle, sweeping wings, darker coping), at (2923, 770) and (2951, 772),
+   facing New Chastain Road, turned 15 degrees outward, with colliders. The panel (black, gold border, white cattails,
+   "CHASTAIN GLEN" in gold capitals about 0.3 m tall) is a hand-made texture (Assets/HandMade/Entrance/ChastainGlenSign.png,
+   made by Tools/handmade/make_entrance_sign.py) on a one-sided quad with a lit, depth-tested, cut-out URP material: it is
+   hidden by anything in front of it, sits inside the brick, and reads clearly from Dan's spot (about 20 m) and from 30 m.
+8. BUG-007 tree: DONE. It was Dan's front-yard tree (placed 8.5 m out, on the grass strip); it now stands 4.3 m in front of
+   the house, its mulch ring clear of the sidewalk.
+9. BUG-008, all of Chastain Glen: DONE. a. Drives: every drive is now a grid (5 vertices across, a row every 0.75 m) that
+   follows the ground; 60 of the 172 drives had lawn showing through the old surface. b. Trees: drives are planned before
+   the trees; 11 trees from the canopy data stood on a drive and were moved sideways into the yard (0 removed); the
+   sidewalk / strip / curb band was already kept clear; the one hand-placed tree on a strip was Dan's (item 8). c. Flags:
+   19 of 72 mailboxes have the flag up (a stable hash), the rest down. d. Mailboxes break like the fences (trigger, pieces
+   fly, whole again at race start). In the exe, driven into at 15 and 25 m/s: one broke each time, speed 2% and 4% lower,
+   tilt 2 and 4 degrees, the car kept going.
+10. Debug keys without Fn: DONE. [ panel, ] capture, \ menu, P frame-rate counter, beside F3 / F4 / F6 / F2 (P is ignored
+    while a bug comment is being typed). The panel's hint line and the menu buttons show both.
+11. Executable rebuilt last: DONE. `Builds/ChastainRush/ChastainRush.exe`.
+12. This report: DONE.
+
+For Dan to check: whether (a) or (b) of item 1 (or something else) is wanted for shortcut #2; the cut bank behind house
+1520 from the street and from #2's ramp; Dan's back of house and yard against his photos; the monuments from New Chastain
+Road at speed; the new keys on his keyboard; mailbox smashing with a pad.
+
+Regression check in the final exe (`-exeCheck`, 3840 x 2160): 9 of 9 passed; 3-lap race 1:22.675 / 1:22.617 / 1:22.645
+(the same as Round 8), no penalties; 60 fps average, median and 99th percentile at the entrance, the pond and Dan's house.
+
+Not done / not measured: Dan's drive; real key presses and a pad; shortcut #6 and the Round 8 shortcut checks were not
+re-run (nothing on them changed).
+
+New tools: `Checks/ExeShotsRunner.cs` (-exeShots), `Tools/mapgen/buried_houses_plot.py`, `Tools/handmade/make_entrance_sign.py`;
+Editor `MapBuilder.Round9.cs`. Imported from Racer: nothing (the sign rule follows Racer's PhysicalSign idea: lit,
+depth-tested lettering on a one-sided board).
+
 Current Objective (Focus Area)
 
 **Round 9 — Dan's debug report, his house and yard, and the #2 shortcut

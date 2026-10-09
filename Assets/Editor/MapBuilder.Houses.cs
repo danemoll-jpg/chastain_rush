@@ -90,7 +90,7 @@ namespace ChastainRush
         {
             h.style = HouseStyle.A; h.dan = true; h.brick = true; h.entryGable = true; h.chimney = false;
             h.brickC = new Color(0.50f, 0.17f, 0.13f);       // red brick
-            h.sidingC = new Color(0.86f, 0.88f, 0.89f);       // light siding on the upper side wall
+            h.sidingC = new Color(0.72f, 0.74f, 0.77f);       // light grey siding on the side walls and the back (Round 9: greyer, as in the back photos)
             h.roofC = new Color(0.30f, 0.30f, 0.32f);         // grey shingle
             h.trimC = TrimWhite; h.shutterC = new Color(0.08f, 0.09f, 0.10f);
             h.doorC = new Color(0.07f, 0.07f, 0.08f); h.glassC = GlassDark; h.garageC = GarageWhite;
@@ -264,7 +264,7 @@ namespace ChastainRush
                 BoxF(mb, f, gU1 + 0.0f, gU1 + 0.1f, yb, hG, D / 2 - 0.1f, D / 2 + 0.05f, h.trimC);
                 BoxF(mb, f, gU1 - 0.04f, gU1 + 0.06f, 0f, hE, vFront - 0.1f, vFront + 0.04f, h.trimC);
                 // the arched (fan) window light over the entry window is the half-disc above; a brick sill course
-                BoxF(mb, f, gU0 - 0.04f, W / 2 + 0.04f, -0.05f, 0.18f, -D / 2, D / 2 + 0.04f, Shade(h.brickC, 1.25f));
+                BoxF(mb, f, gU0 - 0.04f, W / 2 + 0.04f, -0.05f, 0.18f, vFront - 0.3f, D / 2 + 0.04f, Shade(h.brickC, 1.25f));   // Round 9: on the brick front only (the back is siding to the ground)
             }
         }
 

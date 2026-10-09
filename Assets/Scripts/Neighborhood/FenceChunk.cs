@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ChastainRush
 {
-    // Round 7: fences the car smashes through. One FenceChunk per ~128 m cell holds a single mesh (one draw call) made of
+    // Round 7: fences the car smashes through (Round 9: mailboxes too, built the same way by MapBuilder.Breakables). One FenceChunk per ~128 m cell holds a single mesh (one draw call) made of
     // panels; each panel has its own trigger box. A trigger does not push back, so a fence can never stop, flip or launch
     // the car (this is the approach of Racer's BreakableProp: "scenery yields without transferring solver impulses to the
     // car"). Racer's version gives no speed cost and flies the whole visual away; here a hit costs a little speed, and the
@@ -20,6 +20,7 @@ namespace ChastainRush
         public Piece[] pieces;
         public Panel[] panels;
         public bool[] broken;
+        public float debrisDrop = 0.55f;   // Round 9: how far below a piece's centre its debris comes to rest (mailboxes use more: the box sits 1.2 m up)
 
         // tuning
         public const float MinBreakSpeed = 1.5f;     // slower than this the car just touches the fence
@@ -118,7 +119,7 @@ namespace ChastainRush
                   + Vector3.Cross(Vector3.up, dir) * ((h - 0.5f) * 2.4f);
             d.spin = new Vector3(120f + 160f * h, 80f * (h - 0.5f), 260f * (0.5f - h));
             d.age = 0f;
-            d.floorY = transform.TransformPoint(piece.centre).y - 0.55f;
+            d.floorY = transform.TransformPoint(piece.centre).y - debrisDrop;
             d.go.SetActive(true);
             moving.Add(d);
         }

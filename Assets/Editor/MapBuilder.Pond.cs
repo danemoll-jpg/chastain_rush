@@ -381,13 +381,7 @@ namespace ChastainRush
                 pk.Tint = new Color(0.45f, 0.34f, 0.22f);
                 var rg = hood.PlaygroundRing.Take(hood.PlaygroundRing.Count - 1).ToList();
                 DrapePoly(pk, rg, 3f, 0.05f, c.terrain);
-                var pc = RingCentroid(rg); float gy = Ground(c.terrain, pc.x, pc.y);
-                BoxF(pk, new Frame { O = new Vector3(pc.x, gy, pc.y), R = Vector3.right, F = Vector3.forward, M = 1f }, -1.8f, -1.7f, 0f, 2.2f, -0.6f, -0.5f, new Color(0.15f, 0.30f, 0.6f));
-                var sf = new Frame { O = new Vector3(pc.x, gy, pc.y), R = Vector3.right, F = Vector3.forward, M = 1f };
-                foreach (float sx in new[] { -1.8f, 1.8f }) foreach (float sz in new[] { -0.6f, 0.6f }) BoxF(pk, sf, sx - 0.05f, sx + 0.05f, 0f, 2.3f, sz - 0.05f, sz + 0.05f, new Color(0.15f, 0.30f, 0.6f));
-                BoxF(pk, sf, -1.85f, 1.85f, 2.2f, 2.35f, -0.05f, 0.05f, new Color(0.15f, 0.30f, 0.6f));
-                BoxF(pk, sf, -1.0f, -0.6f, 0.45f, 0.5f, -0.2f, 0.2f, new Color(0.1f, 0.1f, 0.1f));
-                BoxF(pk, sf, 0.6f, 1.0f, 0.45f, 0.5f, -0.2f, 0.2f, new Color(0.1f, 0.1f, 0.1f));
+                BuildPlayground(pk, rg, c.terrain);   // Round 9 (BUG-001): swings, a slide and a climbing frame
             }
             pk.ToObject("ParkingAndPlayground", c.mats.Driveway, root, false, false);
             c.Log.Append($"pool site: OSM pool {hood.PoolRing.Count - 1} points, deck {deckY:0.0} m (ground {lo:0.0}..{samples[samples.Count - 1]:0.0}), clubhouse placed by estimate (no footprint in the data), parking {(hood.ParkingRing != null)}, playground {(hood.PlaygroundRing != null)}; ");

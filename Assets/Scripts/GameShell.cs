@@ -9,8 +9,9 @@ namespace ChastainRush
     // Round 8, item 1: what a stand-alone player needs around the game. New code (Racer's own shell lives in its menus and
     // launcher, which are not imported).
     //   Esc        press twice to quit (the first press shows a prompt; it is ignored while the debug menu or a bug comment is open)
-    //   F2         frame-rate counter on / off: frames per second over the last second, the 1% low over the last 10 s, frame time
-    // The command line "-exeCheck <dir>" adds the scripted exe check (Checks/ExeCheckRunner.cs); without it nothing else runs.
+    //   F2 or P    frame-rate counter on / off: frames per second over the last second, the 1% low over the last 10 s, frame time
+    // The command line "-exeCheck <dir>" adds the scripted exe check (Checks/ExeCheckRunner.cs), "-exeShots <list.json> <dir>"
+    // the Round 9 screenshots at given places (Checks/ExeShotsRunner.cs); without them nothing else runs.
     public sealed class GameShell : MonoBehaviour
     {
         public static GameShell Instance { get; private set; }
@@ -33,7 +34,10 @@ namespace ChastainRush
             Instance = go.AddComponent<GameShell>();
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
+            {
                 if (args[i] == "-exeCheck") { var r = go.AddComponent<ExeCheckRunner>(); r.outputDir = args[i + 1]; }
+                if (args[i] == "-exeShots" && i + 2 < args.Length) { var r = go.AddComponent<ExeShotsRunner>(); r.listPath = args[i + 1]; r.outputDir = args[i + 2]; }   // Round 9
+            }
         }
 
         void Update()
@@ -53,9 +57,10 @@ namespace ChastainRush
 
             var k = Keyboard.current;
             if (k == null) return;
-            if (k.f2Key.wasPressedThisFrame) ShowFps = !ShowFps;
             var hud = DeveloperHud.Instance;
             bool hudBusy = hud != null && (hud.MenuOpen || hud.CommentOpen || hud.Capturing);
+            // Round 9: P as well, for a keyboard that needs Fn for F2 (not while a bug comment is being typed)
+            if (k.f2Key.wasPressedThisFrame || (k.pKey.wasPressedThisFrame && !hudBusy)) ShowFps = !ShowFps;
             if (k.escapeKey.wasPressedThisFrame && !hudBusy)
             {
                 if (Time.unscaledTime < quitPromptUntil) Quit();

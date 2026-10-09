@@ -1,0 +1,75 @@
+{
+    "note": "Round 9 (BUG-005): area houses whose walls are buried by more than 0.5 m (ground above the floor level at the walls), before any change. Only the reported house was changed (regraded = true).",
+    "houses": [
+        {
+            "building": 1520,
+            "x": 3057.70947265625,
+            "z": 1032.9998779296875,
+            "buried_m": 3.68438720703125,
+            "floor_y": 309.25439453125,
+            "style": "C",
+            "regraded": true,
+            "after_m": -0.119354248046875
+        },
+        {
+            "building": 1630,
+            "x": 2686.20556640625,
+            "z": 1041.6544189453125,
+            "buried_m": 0.64593505859375,
+            "floor_y": 286.28424072265625,
+            "style": "D",
+            "regraded": false,
+            "after_m": 0.64593505859375
+        },
+        {
+            "building": 1719,
+            "x": 3156.317138671875,
+            "z": 1116.990478515625,
+            "buried_m": 0.62933349609375,
+            "floor_y": 314.1949157714844,
+            "style": "A",
+            "regraded": false,
+            "after_m": 0.62933349609375
+        },
+        {
+            "building": 1557,
+            "x": 2953.4697265625,
+            "z": 1071.68994140625,
+            "buried_m": 0.626373291015625,
+            "floor_y": 301.20660400390625,
+            "style": "A",
+            "regraded": false,
+            "after_m": 0.626373291015625
+        },
+        {
+            "building": 806,
+            "x": 3153.45068359375,
+            "z": 892.1593627929688,
+            "buried_m": 0.546478271484375,
+            "floor_y": 301.4964904785156,
+            "style": "A",
+            "regraded": false,
+            "after_m": 0.546478271484375
+        },
+        {
+            "building": 860,
+            "x": 2766.040771484375,
+            "z": 965.6755981445313,
+            "buried_m": 0.536834716796875,
+            "floor_y": 291.0089416503906,
+            "style": "A",
+            "regraded": false,
+            "after_m": 0.536834716796875
+        },
+        {
+            "building": 1657,
+            "x": 3140.771728515625,
+            "z": 1179.978515625,
+            "buried_m": 0.501708984375,
+            "floor_y": 303.2591247558594,
+            "style": "A",
+            "regraded": false,
+            "after_m": 0.501708984375
+        }
+    ]
+}

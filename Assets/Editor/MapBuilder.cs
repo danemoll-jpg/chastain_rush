@@ -86,6 +86,7 @@ namespace ChastainRush
             // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
             // houses and driveways are not built here
             var hood = Neighborhood.Load(map, terrain);
+            hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
@@ -93,7 +94,7 @@ namespace ChastainRush
             BuildBuildings(map, terrain, mats, world, LoadOwner(), hood);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
-            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world, hood.RejectTree);
+            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world, hood.RejectTree, hood.MoveTree);
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
 

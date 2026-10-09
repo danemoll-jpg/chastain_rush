@@ -67,7 +67,7 @@ namespace ChastainRush
                 $"Unity {Application.unityVersion}; Windows x64; development off",
                 $"Run-time files (persistentDataPath): {persistent}",
                 "  race_records.json, bump_log.txt, DebugReports/<session>/ (bug reports), Player.log",
-                "Keys: Esc twice quits, F2 frame-rate counter, F3 debug panel, F4 bug capture, F6 debug menu, T race, X leave race, R reset car",
+                "Keys: Esc twice quits, F2 or P frame-rate counter, F3 or [ debug panel, F4 or ] bug capture, F6 or \\ debug menu, T race, X leave race, R reset car",
             };
             File.WriteAllLines(Path.Combine(dir, "BUILD_INFO.txt"), lines.Concat(report.steps.SelectMany(st => st.messages)
                 .Where(m => m.type == LogType.Error || m.type == LogType.Exception).Select(m => "ERROR " + m.content)));
