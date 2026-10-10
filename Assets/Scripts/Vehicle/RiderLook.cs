@@ -19,7 +19,7 @@ namespace Racer
         public static readonly string[] SkinNames = { "Very light", "Light", "Medium", "Tan", "Brown", "Dark" };
         public static readonly Color[] Skins = { new(.95f, .79f, .67f), new(.91f, .69f, .53f), new(.78f, .52f, .36f), new(.60f, .39f, .25f), new(.39f, .22f, .15f), new(.24f, .14f, .09f) };
         public static readonly string[] Hairs = { "Short", "Medium", "Long", "Ponytail", "Bald" };
-        public static readonly string[] HairColorNames = { "Black", "Dark brown", "Brown", "Auburn", "Red", "Blonde", "Grey", "White" };
+        public static readonly string[] HairColorNames = { "Black", "Dark brown", "Brown", "Auburn", "Red", "Blonde", "Gray", "White" };
         public static readonly Color[] HairColors = { new(.03f, .025f, .022f), new(.18f, .065f, .028f), new(.36f, .20f, .09f), new(.45f, .13f, .05f), new(.72f, .24f, .07f), new(.80f, .62f, .30f), new(.52f, .52f, .52f), new(.88f, .87f, .84f) };
         public static readonly string[] Hats = { "None", "Flat cap", "Baseball cap", "Beanie", "Cowboy hat" };
         public static readonly string[] Shirts = { "T-shirt", "Long sleeve", "Jacket", "Leather jacket" };
@@ -51,9 +51,9 @@ namespace Racer
         public const int Fields = 10;
         public string Label(int field) => field switch
         {
-            0 => "Body: " + Bodies[body], 1 => "Skin tone: " + SkinNames[skin], 2 => "Hair: " + Hairs[hair], 3 => "Hair colour: " + HairColorNames[hairColor],
-            4 => "Hat: " + Hats[hat], 5 => "Hat colour: " + VehiclePaint.Names[hatColor], 6 => "Shirt: " + Shirts[shirt], 7 => "Shirt colour: " + VehiclePaint.Names[shirtColor],
-            8 => "Pants: " + Pants[pants], _ => "Pants colour: " + VehiclePaint.Names[pantsColor]
+            0 => "Body: " + Bodies[body], 1 => "Skin tone: " + SkinNames[skin], 2 => "Hair: " + Hairs[hair], 3 => "Hair color: " + HairColorNames[hairColor],
+            4 => "Hat: " + Hats[hat], 5 => "Hat color: " + VehiclePaint.Names[hatColor], 6 => "Shirt: " + Shirts[shirt], 7 => "Shirt color: " + VehiclePaint.Names[shirtColor],
+            8 => "Pants: " + Pants[pants], _ => "Pants color: " + VehiclePaint.Names[pantsColor]
         };
         public void Step(int field, int d)
         {

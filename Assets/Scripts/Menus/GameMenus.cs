@@ -128,9 +128,11 @@ namespace ChastainRush
         void Update()
         {
             if (!started || MenuInput.Blocked) return;
+            var hud = DeveloperHud.Instance;
+            if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
             if (menuKey.WasPressedThisFrame())
             {
-                if (!open) { OpenMenu(false); return; }
+                if (!open) { if (hud && hud.Visible) OpenDebug(); else OpenMenu(false); return; }   // Round 17: Start with the debug panel up opens the debug menu
                 if (modal != null) { modal = null; Show(); MenuInput.ConsumeThroughRelease(); return; }
                 if (pages.Count == 0 && !title) { CloseMenu(); return; }
                 if (pages.Count > 0) { BackPage(); return; }
@@ -366,6 +368,7 @@ namespace ChastainRush
                 case "race": RenderRaceSetup(); return;
                 case "opponents": RenderOpponents(); return;
                 case "garage": RenderGarage(); return;
+                case "debug": RenderDebug(); return;
             }
             if (title)
             {
@@ -382,7 +385,8 @@ namespace ChastainRush
                 Row(0, "resume", "RESUME", CloseMenu);
                 Row(1, "race", "RACE", () => Navigate("race"));
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(3, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
+                Row(4, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
@@ -392,8 +396,35 @@ namespace ChastainRush
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
+            Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
             Row(n++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
         }
+
+        // ---------------------------------------------------------------- Round 17: the debug menu, controller first
+        // Reached from the pause menu's DEBUG row, from Start while the debug panel is up, or from F6 / \ (DeveloperHud).
+        // The same rows as every page: A selects, left / right changes the panel row, B goes back (or resumes).
+        public void OpenDebug()
+        {
+            if (!started) return;
+            var hud = DeveloperHud.Instance; if (!hud || hud.CommentOpen || hud.Capturing) return;
+            if (open) { if (page != "debug" && modal == null) Navigate("debug"); return; }
+            OpenMenu(false); page = "debug"; Show();
+        }
+        void RenderDebug()
+        {
+            var hud = DeveloperHud.Instance;
+            if (!hud) { Clear("DEBUG", "No debug tools in this scene."); Row(0, "game", "Game menu", GameMenuFromDebug); return; }
+            Clear("DEBUG", hud.SessionLine + (string.IsNullOrEmpty(hud.Status) ? "" : "\n" + hud.Status));
+            Step(0, "panel", "Debug panel:   " + (hud.Visible ? "Shown" : "Hidden"), d => { hud.Visible = !hud.Visible; Show(); });
+            Row(1, "capture", "Capture bug", () => { CloseMenu(); hud.CaptureBug(); });
+            Row(2, "export", "Export bug report ZIP", () => { hud.ExportReport(); Show(); });
+            Row(3, "folder", "Open debug report folder", () => { hud.OpenReportFolder(); Show(); });
+            Row(4, "session", "Start new debug session", () => Confirm("START A NEW DEBUG SESSION?", "The current session is closed; its reports are kept.", "START NEW SESSION", () => { hud.StartNewSession(); Show(); }));
+            Row(5, "game", "Game menu", GameMenuFromDebug);
+            Row(6, "back", pages.Count > 0 ? "Back" : "Resume", BackPage);
+        }
+        // the regular menu is never out of reach: back to it if we came from it, else replace this page with it
+        void GameMenuFromDebug() { if (pages.Count > 0) BackPage(); else { CapturePage(); page = "root"; MenuInput.ConsumeThroughRelease(); Show(); } }
 
         static readonly string[] DifficultyNames = { "Easy", "Normal", "Hard" };
         void RenderRaceSetup()

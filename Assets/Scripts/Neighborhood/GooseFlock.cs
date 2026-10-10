@@ -84,10 +84,10 @@ namespace ChastainRush
             EnsureVoices();
         }
 
-        void EnsureVoices()
+        void EnsureVoices(bool any = false)
         {
             int clips = 0; foreach (var c in honkClips) if (c) clips++;
-            if (clips > 0 && voices == null)
+            if ((clips > 0 || any) && voices == null)
             {
                 voices = new AudioSource[MaxVoices];
                 for (int i = 0; i < voices.Length; i++)
@@ -305,7 +305,7 @@ namespace ChastainRush
             }
             b.target = dest; b.landing = false;
             b.mode = Mode.Flee; b.timer = 0.45f + (float)rng.NextDouble() * 0.6f;
-            Honk(b.pos);
+            Honk(b.pos, b.isHeron);
         }
 
         void Launch(Bird b, Vector3 dest, bool landing)
@@ -317,14 +317,19 @@ namespace ChastainRush
             b.mode = Mode.Fly;
         }
 
-        void Honk(Vector3 at)
+        // Round 17 (BUG-001): the heron never honks like a goose. It is silent unless Dan drops a heron* file into
+        // Sounds\Geese (SoundDropIns.Herons).
+        void Honk(Vector3 at, bool isHeron = false)
         {
+            var clips = isHeron ? (SoundDropIns.Instance != null ? SoundDropIns.Instance.Herons.ToArray() : new AudioClip[0]) : honkClips;
+            if (clips.Length == 0) return;
+            if (isHeron) EnsureVoices(true);
             if (Time.time - lastHonk < 0.12f || voices == null) return;
             AudioSource v = null;
             foreach (var a in voices) if (!a.isPlaying) { v = a; break; }
             if (v == null) return;   // MaxVoices already honking: skip this one rather than cut one off
             AudioClip clip = null;
-            for (int tries = 0; tries < 8 && !clip; tries++) clip = honkClips[rng.Next(honkClips.Length)];
+            for (int tries = 0; tries < 8 && !clip; tries++) clip = clips[rng.Next(clips.Length)];
             if (!clip) return;
             lastHonk = Time.time;
             v.transform.position = at;

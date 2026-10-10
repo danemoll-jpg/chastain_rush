@@ -111,7 +111,7 @@ namespace ChastainRush
         {
             float off = 0f;
             if (RoadLookup.Instance != null) RoadLookup.Instance.Nearest(p, out _, out off, out _);
-            string line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | t={Time.time:0.0}s | {kind,-8} | x={p.x:0.0} y={p.y:0.0} z={p.z:0.0} | {road ?? "(off road)"} ({off:0.0} m from centreline) | " +
+            string line = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} | t={Time.time:0.0}s | {kind,-8} | x={p.x:0.0} y={p.y:0.0} z={p.z:0.0} | {road ?? "(off road)"} ({off:0.0} m from centerline) | " +
                           $"{hSpeed:0.0} m/s ({hSpeed * 2.23694f:0} mph) vy={vy:+0.0;-0.0} m/s | {detail}";
             LastLine = line;
             Events++;

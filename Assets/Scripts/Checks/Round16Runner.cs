@@ -34,6 +34,7 @@ namespace ChastainRush
             // a check runs without window focus: input from every device is taken regardless (check runs only)
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
             pad = InputSystem.AddDevice<Gamepad>("Round16 virtual pad");
+            if (DeveloperHud.Instance) DeveloperHud.Instance.Visible = false;   // Round 17: as in the game Dan plays (Start with the panel up opens the debug menu)
             menus = GameMenus.Create();
             yield return new WaitForSecondsRealtime(1.5f);
             var car = FindAnyObjectByType<ArcadeVehicle>(); var race = RaceController.Instance; var cfg = car.GetComponent<VehicleConfiguration>();
@@ -54,7 +55,7 @@ namespace ChastainRush
             yield return Press(GamepadButton.South);
             Check("A does not step the vehicle row", true, cfg.profileId);
             yield return Press(GamepadButton.DpadDown); yield return Press(GamepadButton.DpadRight);
-            Check("colour row: right picks a colour", menus.FocusedLabel.StartsWith("Colour:") && !menus.FocusedLabel.Contains("Standard"), menus.FocusedLabel);
+            Check("color row: right picks a color", menus.FocusedLabel.StartsWith("Color:") && !menus.FocusedLabel.Contains("Standard"), menus.FocusedLabel);
             yield return Stick(new Vector2(1f, 0f), 0.6f);
             yield return Shot("03_garage_turned_colour");
             yield return Press(GamepadButton.East);

@@ -1,0 +1,23 @@
+Round 17 Part A check, 2026-10-10 17:18, the exe, 1280 x 720, muted. A virtual gamepad only.
+PASS  garage: the color row reads "Color"  -  Color:    Standard
+PASS  free roam, debug panel hidden  -  closed, panel False
+PASS  Start with the panel hidden opens the regular menu  -  free/root
+PASS  D-pad reaches DEBUG  -  DEBUG
+PASS  A on DEBUG opens the debug menu  -  free/debug
+PASS  the panel row has focus and reads Hidden  -  Debug panel:   Hidden
+PASS  A does not change the panel row  -  Debug panel:   Hidden
+PASS  right shows the panel  -  Debug panel:   Shown
+PASS  B goes back to the regular menu  -  free/root
+PASS  B resumes, panel on screen  -  closed
+PASS  Start with the panel up opens the debug menu  -  free/debug
+PASS  D-pad reaches "Game menu"  -  Game menu
+PASS  Game menu row opens the regular menu  -  free/root
+PASS  Start again: the debug menu  -  free/debug
+PASS  B out of the debug menu resumes  -  closed
+PASS  D-pad reaches Capture bug  -  Capture bug
+PASS  Capture bug: the menu closes and the comment box opens (panel hidden)  -  closed, comment True
+PASS  B cancels the comment  -  comment False
+PASS  the heron's call plays nothing with no heron* file  -  honks 0 -> 0
+PASS  a goose still honks  -  honks -> 1, voices 3
+
+ALL 20 CHECKS PASSED

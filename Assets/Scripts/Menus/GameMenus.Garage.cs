@@ -79,7 +79,7 @@ namespace ChastainRush
                 vehicles.Select(all[(at + d + all.Length) % all.Length].Id); Show();
             });
             int colour = vehicles.Colour;
-            Step(1, "colour", "Colour:   " + (colour < 0 ? "Standard" : VehiclePaint.Name(colour)), d =>
+            Step(1, "colour", "Color:    " + (colour < 0 ? "Standard" : VehiclePaint.Name(colour)), d =>
             {
                 int next = colour < 0 ? (d > 0 ? 0 : VehiclePaint.Count - 1) : colour + d;
                 vehicles.SetColour(next < 0 || next >= VehiclePaint.Count ? -1 : next); Show();

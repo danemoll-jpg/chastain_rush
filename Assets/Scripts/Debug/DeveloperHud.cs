@@ -24,12 +24,13 @@ namespace ChastainRush
         static DebugReportSession session;
         static bool resumeChecked;
 
-        public bool Visible { get; private set; } = true; // on from the start in Play mode; F3 hides it
+        public bool Visible { get; set; } = CheckRun.Active; // Round 17: hidden at start in the game Dan plays (F3 / [ or the debug menu shows it); a check run keeps it on
         public bool MenuOpen { get; private set; }
         public bool CommentOpen { get; private set; }
         public bool Capturing { get; private set; }
         public string LastExport { get; private set; }
         public string Status { get; private set; } = "";
+        public string SessionLine => SessionText;   // Round 17: shown on the debug menu page (GameMenus)
         public string CommentText { get => comment; set => comment = value; } // for the scripted check
 
         ArcadeVehicle car;
@@ -114,9 +115,13 @@ namespace ChastainRush
             if (Capturing) return;
             // Round 9: a second key for each that never needs Fn on Dan's keyboard: [ panel, ] capture, \ menu
             if (k != null && (k.f3Key.wasPressedThisFrame || k.leftBracketKey.wasPressedThisFrame)) { Visible = !Visible; if (!Visible && MenuOpen) CloseMenu(); }
-            if (!Visible) return;
-            if ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.selectButton.wasPressedThisFrame)) CaptureBug();
-            if ((k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame)) || (g != null && g.startButton.wasPressedThisFrame && GameMenus.Instance == null)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }   // Round 16: Start is the game menu's (debug menu: F6 / \)
+            // Round 17: capture works with the panel hidden too (the panel is drawn on the captured frame either way)
+            if (!GameMenus.Open && ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.selectButton.wasPressedThisFrame))) CaptureBug();
+            bool f6 = k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame);
+            // Round 17: with the game menus (the game Dan plays) F6 / \ opens their controller-driven debug page; the IMGUI menu
+            // below is left for check runs, which have no game menus. Start is the game menu's (Round 16).
+            if (f6 && GameMenus.Instance != null) { GameMenus.Instance.OpenDebug(); return; }
+            if (f6 || (g != null && g.startButton.wasPressedThisFrame && GameMenus.Instance == null)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }
             if (MenuOpen && ((k != null && k.escapeKey.wasPressedThisFrame) || (g != null && g.buttonEast.wasPressedThisFrame))) CloseMenu();
         }
 
@@ -152,7 +157,7 @@ namespace ChastainRush
 
         public void CaptureBug()
         {
-            if (!Visible || !car || Capturing || CommentOpen) return;
+            if (!car || Capturing || CommentOpen) return;
             try { EnsureSession(); } catch (Exception e) { Status = "Debug report: " + e.Message; return; }
             var cam = Camera.main;
             var t = cam ? cam.transform : car.transform;
@@ -221,6 +226,11 @@ namespace ChastainRush
             Release();
         }
 
+        // Round 17: for the debug menu page in GameMenus
+        public void ExportReport() => Export();
+        public void OpenReportFolder() => OpenFolder();
+        public void StartNewSession() => NewSession();
+
         void Export()
         {
             if (Session == null || session.Closed || session.Count == 0) { Status = "Nothing to export yet - capture a bug with F4 first."; return; }
@@ -269,7 +279,7 @@ namespace ChastainRush
             var old = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float w = Screen.width / s, h = Screen.height / s;
-            if (Visible && !MenuOpen && !CommentOpen) DrawPanel(w, h);
+            if (((Visible && !GameMenus.Open) || Capturing) && !MenuOpen && !CommentOpen) DrawPanel(w, h);   // Round 17: not over a game menu; always on a captured frame
             if (MenuOpen) DrawMenu(w, h);
             if (CommentOpen) DrawComment(w, h);
             GUI.matrix = old;
@@ -280,7 +290,7 @@ namespace ChastainRush
             var p = car.transform.position;
             string road = "no road within 40 m";
             if (RoadLookup.Instance != null && RoadLookup.Instance.Nearest(p, out string name, out float d, out float half))
-                road = $"{name}, {d:0.0} m from centre ({(d <= half + 1.5f ? "on road" : "off road")})";
+                road = $"{name}, {d:0.0} m from center ({(d <= half + 1.5f ? "on road" : "off road")})";
             float mps = Mathf.Abs(car.ForwardSpeed);
             string text = $"DEBUG\nX {p.x:F2}   Y {p.y:F2}   Z {p.z:F2}\nHeading {car.transform.eulerAngles.y:F1}°   {mps * 2.23694f:F1} mph ({mps:F1} m/s)\n" +
                           $"{road}\n{VehicleName()}\nWheels on ground {car.GroundedWheels}   vertical {car.Body.linearVelocity.y:+0.0;-0.0} m/s\n" +
@@ -288,7 +298,7 @@ namespace ChastainRush
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +
                           (string.IsNullOrEmpty(Status) ? "" : Status + "\n") +
-                          "F3 or [ hide / F4 or ] capture bug / F6 or \\ menu / F2 or P fps";
+                          "F3 or [ hide / F4 or ] capture bug / F6, \\ or Start: debug menu / F2 or P fps";
             float height = label.CalcHeight(new GUIContent(text), 430f) + 14f;
             var r = new Rect(w - 450f - 12f, h - height - 12f, 450f, height);
             GUI.Box(r, GUIContent.none, box);

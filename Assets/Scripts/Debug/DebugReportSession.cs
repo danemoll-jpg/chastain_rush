@@ -93,7 +93,7 @@ namespace ChastainRush
                   .AppendLine("Heading: " + F(b.heading) + " degrees").AppendLine("Viewpoint: " + b.viewpoint)
                   .AppendLine("Vehicle: " + (string.IsNullOrEmpty(b.vehicle) ? "(unknown)" : b.vehicle))
                   .AppendLine("Vehicle position: " + Position(b.vehiclePosition))
-                  .AppendLine("Road: " + (string.IsNullOrEmpty(b.road) ? "(none within 40 m)" : b.road + ", " + F(b.roadDistance) + " m from its centreline"))
+                  .AppendLine("Road: " + (string.IsNullOrEmpty(b.road) ? "(none within 40 m)" : b.road + ", " + F(b.roadDistance) + " m from its centerline"))
                   .AppendLine("Speed: " + F(b.speedMps) + " m/s / " + F(b.speedMps * 3600 / 1609.344) + " mph / vertical " + F(b.verticalSpeedMps) + " m/s")
                   .AppendLine("Wheels on the ground: " + b.groundedWheels)
                   .AppendLine("Version: " + b.version + " / Build: " + b.buildGuid).AppendLine("Scene: " + b.scene)

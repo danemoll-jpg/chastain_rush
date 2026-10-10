@@ -22,6 +22,7 @@ namespace ChastainRush
         public static readonly string[] BreakKinds = { "wood", "metal", "glass", "water" };
         public bool Loaded { get; private set; }
         public readonly List<AudioClip> Honks = new List<AudioClip>();
+        public readonly List<AudioClip> Herons = new List<AudioClip>();   // Round 17: heron*, the heron's own call (none = a silent heron)
         public readonly Dictionary<string, List<AudioClip>> Breaks = new Dictionary<string, List<AudioClip>>();
         public static event Action Ready;   // fired once every file has been read (also when there are none)
 
@@ -48,12 +49,14 @@ namespace ChastainRush
                 var geese = Path.Combine(Root, "Geese"); var breaks = Path.Combine(Root, "Breaks");
                 Directory.CreateDirectory(geese); Directory.CreateDirectory(breaks);
                 var g = Path.Combine(geese, "READ ME.txt");
-                if (!File.Exists(g)) File.WriteAllText(g,
+                if (!File.Exists(g) || !File.ReadAllText(g).Contains("heron")) File.WriteAllText(g,   // Round 17: the heron line added to an older READ ME
                     "Goose honks for Chastain Rush.\r\n\r\n" +
                     "Drop sound files here named goose_honk followed by anything, for example goose_honk1.wav, goose_honk_long.ogg.\r\n" +
                     "WAV, OGG and MP3 all work. The game reads this folder each time it starts: no rebuild needed.\r\n" +
                     "Each honk is picked at random from these files (and any built into the game).\r\n" +
-                    "With no goose file anywhere the geese stay silent.\r\n");
+                    "With no goose file anywhere the geese stay silent.\r\n\r\n" +
+                    "The heron never uses the goose honks. To give it a call of its own, drop a file here named heron followed\r\n" +
+                    "by anything, for example heron1.wav. With no heron file the heron stays silent.\r\n");
                 var b = Path.Combine(breaks, "READ ME.txt");
                 if (!File.Exists(b)) File.WriteAllText(b,
                     "Break sounds for Chastain Rush.\r\n\r\n" +
@@ -73,11 +76,13 @@ namespace ChastainRush
         {
             foreach (var path in Files(Path.Combine(Root, "Geese"), "goose_honk"))
                 yield return Load(path, c => Honks.Add(c));
+            foreach (var path in Files(Path.Combine(Root, "Geese"), "heron"))
+                yield return Load(path, c => Herons.Add(c));
             foreach (var kind in BreakKinds)
                 foreach (var path in Files(Path.Combine(Root, "Breaks"), kind))
                     yield return Load(path, c => { if (!Breaks.TryGetValue(kind, out var l)) Breaks[kind] = l = new List<AudioClip>(); l.Add(c); });
             Loaded = true;
-            Debug.Log($"[Sounds] drop-ins from {Root}: {Honks.Count} goose honks; breaks {string.Join("/", BreakKinds)}: " +
+            Debug.Log($"[Sounds] drop-ins from {Root}: {Honks.Count} goose honks, {Herons.Count} heron calls; breaks {string.Join("/", BreakKinds)}: " +
                       string.Join("/", Array.ConvertAll(BreakKinds, k => Breaks.TryGetValue(k, out var l) ? l.Count.ToString() : "0")));
             Ready?.Invoke();
         }
