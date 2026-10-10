@@ -297,6 +297,11 @@ else was copied. New: `GameShell.cs`, `ExeCheckRunner.cs`, `MapBuilder.Shortcuts
 **From Round 8 on, end every round by rebuilding the executable** and report
 its path, so Dan tests from the exe, not from the Editor.
 
+**Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
+the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
+beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
+`2026-10-10_14-22-18-410_d2650e` (BUG-001, BUG-002).
+
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
 so commit any uncommitted work first to keep those edits separate from yours.
