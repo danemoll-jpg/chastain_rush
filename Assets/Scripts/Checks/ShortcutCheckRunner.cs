@@ -339,11 +339,38 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- races
 
+        // Round 13, item 3: -shortcutRaceOffset id:metres,... drives the race lap that far LEFT of a shortcut's line (negative:
+        // right) at its entry plane, easing on over the 20 m before and off over the 25 m after (Dan's line round house 1763)
+        List<Vector2> Offset(Target t, List<Vector2> line)
+        {
+            float off = 0f; var argv = Environment.GetCommandLineArgs();
+            for (int i = 0; i + 1 < argv.Length; i++)
+                if (argv[i] == "-shortcutRaceOffset")
+                    foreach (var kv in argv[i + 1].Split(',')) { var p = kv.Split(':'); if (p.Length == 2 && p[0] == t.id) off = float.Parse(p[1]); }
+            if (off == 0f) return line;
+            var rs = route.Shortcuts.First(x => x.Id == t.id);
+            var e = new Vector2(rs.Entry.Position.x, rs.Entry.Position.z);
+            var c = new float[line.Count]; for (int i = 1; i < line.Count; i++) c[i] = c[i - 1] + Vector2.Distance(line[i], line[i - 1]);
+            int ie = 0; for (int i = 1; i < line.Count; i++) if (Vector2.Distance(line[i], e) < Vector2.Distance(line[ie], e)) ie = i;
+            var o = new List<Vector2>();
+            for (int i = 0; i < line.Count; i++)
+            {
+                var d = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var left = new Vector2(-d.y, d.x);
+                float ds = c[i] - c[ie];
+                float k = ds < 0f ? Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(-20f, 0f, ds)) : Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(25f, 0f, ds));
+                o.Add(line[i] + left * off * k);
+            }
+            report.AppendLine($"  race lap: {t.id} driven {Mathf.Abs(off):0.0} m {(off > 0f ? "left" : "right")} of its line at the entry plane");
+            return o;
+        }
+
         IEnumerator RaceLaps()
         {
             report.AppendLine("=== Race laps through the RaceController (1 lap each, same road speed)");
             RaceController.RecordsPathOverride = Path.Combine(outputDir, "race_records_shortcut_check.json");
             RaceController.LapsOverride = 1;
+            RaceController.EntryPlanesOff = Environment.GetCommandLineArgs().Contains("-shortcutNoEntryPlanes");   // Round 13
+            if (RaceController.EntryPlanesOff) report.AppendLine("  (-shortcutNoEntryPlanes: the entry planes are off, a shortcut counts only by its corridor)");
             float plain = 0f;
             for (int mode = 0; mode < 2; mode++)
             {
@@ -365,7 +392,7 @@ namespace ChastainRush
                     foreach (var t in targets.OrderBy(x => x.leaveLapS))
                     {
                         Add(r.SamplePath(s, r.GateS + t.leaveLapS, 4f), roadSpeed, 9f);
-                        Add(t.path.Select(G), t.raceSpeed > 0 ? t.raceSpeed : roadSpeed, 7f);
+                        Add(Offset(t, t.path).Select(G), t.raceSpeed > 0 ? t.raceSpeed : roadSpeed, 7f);
                         s = r.GateS + t.rejoinLapS;
                     }
                     Add(r.SamplePath(s, r.GateS + r.LapLength + 40f, 4f), roadSpeed, 9f);

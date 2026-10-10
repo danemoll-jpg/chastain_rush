@@ -86,6 +86,12 @@ namespace ChastainRush
             // first); if neither side has room it is left out. Called by TreeBuilder before RejectTree.
             public Vector2 MoveTree(float x, float z)
             {
+                var p = MoveTreeOffDrive(x, z);
+                return Present && Bounds.Contains(p) ? MoveTreeOffLine(p) : p;   // Round 13: then off a shortcut's line
+            }
+
+            Vector2 MoveTreeOffDrive(float x, float z)
+            {
                 var p = new Vector2(x, z);
                 if (!Present || !Bounds.Contains(p) || !NearestDrive(p, out Vector2 foot, out float half, out float d) || d >= half + 0.5f) return p;
                 var away = d > 1e-3f ? (p - foot) / d : Vector2.right;

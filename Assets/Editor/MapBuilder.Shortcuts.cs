@@ -62,7 +62,11 @@ namespace ChastainRush
                 {
                     var p = ToPoints(sc.path);
                     for (int i = 0; i + 1 < p.Count; i++)
-                        if (RoadClearance((p[i] + p[i + 1]) * 0.5f) > 0.5f) corridor.Add((p[i], p[i + 1], sc.clear_half_width));   // off the street only
+                        if (RoadClearance((p[i] + p[i + 1]) * 0.5f) > 0.5f)   // off the street only
+                        {
+                            corridor.Add((p[i], p[i + 1], sc.clear_half_width));
+                            treeBand.Add((p[i], p[i + 1], Mathf.Max(sc.clear_half_width, TreeClearHalf)));
+                        }
                     if (sc.open_houses != null) foreach (var oh in sc.open_houses) OpenHouses[oh.building] = oh;
                     if (sc.jump_houses != null) foreach (var jh in sc.jump_houses) JumpHouses.Add(jh.building);
                     if (sc.roof_houses != null) foreach (var rh in sc.roof_houses) RoofHouses.Add(rh.building);
@@ -112,6 +116,41 @@ namespace ChastainRush
                 if (ShortcutData == null) return false;
                 foreach (var sc in ShortcutData.shortcuts) foreach (var pr in sc.prisms) if (InPolygon(p, ToPoints(pr.poly))) return true;
                 return false;
+            }
+
+            // Round 13, item 1 (Dan: "there is a tree in the first shortcut path"): no tree trunk within 6.5 m of a shortcut's
+            // line. A trunk in the corridor is still left out (as before); one between the corridor's edge and 6.5 m is moved
+            // straight away from the line into its yard, to 7 m off it (or up to 4 m further where that spot is taken)
+            public const float TreeClearHalf = 6.5f;
+            readonly List<(Vector2 a, Vector2 b, float half)> treeBand = new List<(Vector2, Vector2, float)>();
+            public readonly List<(Vector2 from, Vector2 to)> TreesMovedOffLines = new List<(Vector2, Vector2)>();
+            public readonly List<Vector2> TreesLeftOnLines = new List<Vector2>();
+
+            public Vector2 MoveTreeOffLine(Vector2 p)
+            {
+                if (TreeBlocked(p) || !InBand(treeBand, p, 0f, out Vector2 foot)) return p;   // TreeBlocked: left out anyway (in the corridor, a house, ...)
+                var away = (p - foot).sqrMagnitude > 1e-6f ? (p - foot).normalized : Vector2.right;
+                for (float d = TreeClearHalf + 0.5f; d <= TreeClearHalf + 4.5f; d += 0.5f)
+                {
+                    var np = foot + away * d;
+                    if (!InBand(treeBand, np, 0.3f, out _) && !TreeBlocked(np)) { TreesMovedOffLines.Add((p, np)); return np; }
+                }
+                TreesLeftOnLines.Add(p);
+                return p;
+            }
+
+            static bool InBand(List<(Vector2 a, Vector2 b, float half)> band, Vector2 p, float extra, out Vector2 foot)
+            {
+                foot = p; float best = float.MaxValue; bool inside = false;
+                foreach (var s in band)
+                {
+                    float r = s.half + extra;
+                    if (p.x < Mathf.Min(s.a.x, s.b.x) - r || p.x > Mathf.Max(s.a.x, s.b.x) + r || p.y < Mathf.Min(s.a.y, s.b.y) - r || p.y > Mathf.Max(s.a.y, s.b.y) + r) continue;
+                    var ab = s.b - s.a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
+                    var c = s.a + ab * t; float d2 = (c - p).sqrMagnitude;
+                    if (d2 < r * r) { inside = true; if (d2 < best) { best = d2; foot = c; } }
+                }
+                return inside;
             }
 
             public bool InCorridor(Vector2 p, float extra = 0f)
@@ -445,6 +484,38 @@ namespace ChastainRush
             Box(-oh.half_width, oh.half_width, top, Mathf.Max(yt, top + 1.5f));
         }
 
+        // Round 13, item 1: every trunk (the forest's and the hand-placed kit trees') within 6.5 m of a shortcut's line where it is
+        // off the street, from the turn-off to the rejoin (flight and landing included). Written to Data/screenshots/round13/.
+        static void ReportTreesOnLines(Neighborhood hood, TreeBuilder.Result trees)
+        {
+            var trunks = new List<Vector2>();
+            for (int i = 0; i < trees.Field.count; i++) { var t = TreeField.Unpack(trees.Field.data, i); trunks.Add(new Vector2(t.x, t.z)); }
+            foreach (var cc in UnityEngine.Object.FindObjectsByType<CapsuleCollider>(FindObjectsInactive.Include))
+                if (cc.gameObject.name.StartsWith("Tree ")) trunks.Add(new Vector2(cc.transform.position.x, cc.transform.position.z));
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine($"Round 13 item 1: tree trunks within {Neighborhood.TreeClearHalf} m of a shortcut line (off the street), after the build");
+            sb.AppendLine($"moved into their yards: {hood.TreesMovedOffLines.Count}");
+            foreach (var (from, to) in hood.TreesMovedOffLines) sb.AppendLine($"  ({from.x:0.0}, {from.y:0.0}) -> ({to.x:0.0}, {to.y:0.0}), {Vector2.Distance(from, to):0.0} m");
+            sb.AppendLine($"no room to move (left standing): {hood.TreesLeftOnLines.Count}");
+            foreach (var p in hood.TreesLeftOnLines) sb.AppendLine($"  ({p.x:0.0}, {p.y:0.0})");
+            foreach (var sc in hood.ShortcutData.shortcuts)
+            {
+                var pts = ToPoints(sc.path); int n = 0;
+                foreach (var q in trunks)
+                    for (int k = 0; k + 1 < pts.Count; k++)
+                    {
+                        if (hood.RoadClearance((pts[k] + pts[k + 1]) * 0.5f) <= 0.5f) continue;
+                        var ab = pts[k + 1] - pts[k]; float u = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - pts[k], ab) / ab.sqrMagnitude);
+                        float d = (pts[k] + ab * u - q).magnitude;
+                        if (d < Neighborhood.TreeClearHalf) { n++; sb.AppendLine($"  {sc.id}: trunk at ({q.x:0.0}, {q.y:0.0}) {d:0.00} m from the line"); break; }
+                    }
+                sb.AppendLine($"{sc.id}: {n} trunks within {Neighborhood.TreeClearHalf} m of the line");
+            }
+            string dir = Path.Combine(ProjectRoot, "Data/screenshots/round13"); Directory.CreateDirectory(dir);
+            File.WriteAllText(Path.Combine(dir, "trees_on_lines.txt"), sb.ToString());
+            Debug.Log("[Round13] " + sb.ToString().Replace("\n", " | "));
+        }
+
         // ------------------------------------------------------------ ramps and decks
 
         static void BuildShortcuts(Neighborhood hood, TerrainGrid terrain, Materials mats, Transform world)
@@ -528,35 +599,49 @@ namespace ChastainRush
             return pr[2 * n - 1];
         }
 
-        // Round 12, item 9: a wide board of planks (running up the ramp, 0.3 m each, 6 cm thick) on the kicker's surface, on big
-        // square bales (2.53 m long across the ramp, 1.2 m wide along it, 0.9 m tall, three to a row) stacked in columns under
-        // it: each column as high as the board allows at its lower end, topped with a half-height bale where a full one does
-        // not fit, so the board rests on every step. Bales only where their middle is inside the outline.
+        // Round 13, item 2 (Dan: "i don't particularly like the way the hay bales look. You r suggestion of a flatbed was
+        // better"): the kicker drawn as one big flatbed trailer, sized up to the ramp (7.6 m wide), its deck tilted up and its
+        // loading ramps down. LOOK ONLY: every drawn top is the kicker's own surface (Top), the collider is unchanged.
+        //   ramps    the low part of the outline (where it is not yet full width): full-width steel loading ramps, ribbed
+        //   deck     from there to the lip: hardwood planks running up the deck, in steel side rails with stake pockets
+        //   chassis  three main beams under the deck, cross members; a tandem axle of dual wheels where the beams clear the
+        //            ground by a wheel, standing on the ground and hung from the beams
+        //   cribbing beyond the axles the raised end rests on stacks of crossed timbers, one under each main beam, ground to
+        //            beam, so nothing floats
         static MeshBuilder KickerLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain)
         {
             var mb = new MeshBuilder();
             float S(Vector2 p) => Vector2.Dot(p - O, U); float L(Vector2 p) => Vector2.Dot(p - O, Lv);
             float s0 = poly.Min(S), s1 = poly.Max(S), l0 = poly.Min(L), l1 = poly.Max(L);
             Vector2 At(float s, float l) => O + U * s + Lv * l;
-            var wood = new Color(0.58f, 0.46f, 0.31f);
-            // the board: a grid of the surface's strips (the profile's bends) by planks across
-            const float Plank = 0.3f, Thick = 0.06f;
-            int planks = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Plank));
+            Vector3 TopAt(float s, float l) => Top(At(s, l));
+            float G(float s, float l) { var p = At(s, l); return Ground(terrain, p.x, p.y); }
+            // where the outline is full width: the deck starts there
+            float sDeck = Mathf.Max(poly.Where(p => Mathf.Abs(L(p) - l0) < 0.01f).Min(S), poly.Where(p => Mathf.Abs(L(p) - l1) < 0.01f).Min(S));
+            var wood = new Color(0.47f, 0.31f, 0.20f);    // hardwood deck
+            var steel = new Color(0.60f, 0.62f, 0.63f);   // the ramps
+            var paint = new Color(0.55f, 0.13f, 0.10f);   // the trailer's frame
+            var dark = new Color(0.16f, 0.16f, 0.17f); var tyre = new Color(0.09f, 0.09f, 0.09f); var timber = new Color(0.42f, 0.33f, 0.22f);
+            const float Thick = 0.06f, Plank = 0.3f, Ramp = 0.95f, Rail = 0.34f, BeamD = 0.5f;
+            int planks = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Plank)), ramps = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Ramp));
             for (int i = 0; i + 1 < cuts.Count; i++)
             {
-                // the underside (seen in the gaps between the steps of bales)
+                if (cuts[i + 1] - cuts[i] < 1e-3f) continue;
+                float sm = (cuts[i] + cuts[i + 1]) * 0.5f; bool deck = sm >= sDeck;
                 var strip = ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p));
                 if (strip.Count >= 3)
                 {
-                    mb.Tint = Shade(wood, 0.55f);
+                    mb.Tint = Shade(deck ? paint : steel, 0.45f);   // the underside
                     for (int t = 1; t + 1 < strip.Count; t++) TriFace(mb, Top(strip[0]) - Vector3.up * Thick, Top(strip[t]) - Vector3.up * Thick, Top(strip[t + 1]) - Vector3.up * Thick, Vector3.down);
                 }
-                for (int k = 0; k < planks; k++)
+                int n = deck ? planks : ramps;
+                for (int k = 0; k < n; k++)
                 {
-                    float la = Mathf.Lerp(l0, l1, k / (float)planks), lb = Mathf.Lerp(l0, l1, (k + 1) / (float)planks);
-                    var cell = ClipPoly2(ClipPoly2(ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p)), p => L(p) - la), p => lb - L(p));
+                    float la = Mathf.Lerp(l0, l1, k / (float)n), lb = Mathf.Lerp(l0, l1, (k + 1) / (float)n);
+                    var cell = ClipPoly2(ClipPoly2(strip, p => L(p) - la), p => lb - L(p));
                     if (cell.Count < 3) continue;
-                    mb.Tint = Shade(wood, 0.86f + 0.2f * Hash01(k, 301) - ((k & 1) == 0 ? 0f : 0.05f));
+                    mb.Tint = deck ? Shade(wood, 0.84f + 0.24f * Hash01(k, 301) - ((k & 1) == 0 ? 0f : 0.05f))
+                                   : Shade(steel, ((Mathf.FloorToInt(cuts[i] / 0.5f) & 1) == 0 ? 1f : 0.86f) * ((k & 1) == 0 ? 1f : 0.94f));   // ribs across, ramp by ramp
                     int st = mb.Count; foreach (var p in cell) mb.Vertex(Top(p));
                     for (int t = 1; t + 1 < cell.Count; t++)
                     {
@@ -565,61 +650,127 @@ namespace ChastainRush
                     }
                 }
             }
-            // its edges: the board's thickness round the outline
+            // edges: the side rails along the deck (deep, painted), the ramps' and the lip's edges thin
             Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
-            mb.Tint = Shade(wood, 0.7f);
             for (int e = 0; e < poly.Count; e++)
             {
                 var a = poly[e]; var b = poly[(e + 1) % poly.Count]; var dir = (b - a).normalized; var outN = new Vector2(dir.y, -dir.x);
                 if (Vector2.Dot(outN, (a + b) * 0.5f - centre) < 0f) outN = -outN;
-                int n = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b) / 0.5f));
-                for (int i = 0; i < n; i++)
+                int m = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b) / 0.5f));
+                for (int i = 0; i < m; i++)
                 {
-                    var p = Vector2.Lerp(a, b, i / (float)n); var q = Vector2.Lerp(a, b, (i + 1) / (float)n);
+                    var p = Vector2.Lerp(a, b, i / (float)m); var q = Vector2.Lerp(a, b, (i + 1) / (float)m);
+                    bool onDeck = (S(p) + S(q)) * 0.5f >= sDeck - 0.01f;
+                    float d = onDeck ? Rail : Thick;
+                    mb.Tint = onDeck ? paint : Shade(steel, 0.7f);
                     var tp = Top(p); var tq = Top(q);
-                    Face(mb, tp - Vector3.up * Thick, tq - Vector3.up * Thick, tq, tp, new Vector3(outN.x, 0f, outN.y));
+                    Face(mb, tp - Vector3.up * d, tq - Vector3.up * d, tq, tp, new Vector3(outN.x, 0f, outN.y));
                 }
             }
-            // the bales
-            const float BL = 1.2f, BH = 0.9f;
-            int across = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / 2.53f)); float bw = (l1 - l0) / across;
-            var hay = new Color(0.80f, 0.67f, 0.36f);
             var f = new Frame { O = new Vector3(O.x, 0f, O.y), R = new Vector3(Lv.x, 0f, Lv.y), F = new Vector3(U.x, 0f, U.y), M = 1f };
-            int bales = 0;
-            for (float sa = s1; sa - BL > s0 - 0.01f; sa -= BL)   // from the lip back, so the column under the lip is a whole one
+            var R3 = new Vector3(Lv.x, 0f, Lv.y); var U3 = new Vector3(U.x, 0f, U.y);
+            // stake pockets on the rails, and the hinge between ramps and deck
+            foreach (float side in new[] { l0, l1 })
             {
-                float sb = sa - BL;
-                for (int j = 0; j < across; j++)
+                float sg = side < 0f ? -1f : 1f;
+                for (float s = sDeck + 0.4f; s < s1 - 0.2f; s += 0.6f)
                 {
-                    float la = l0 + j * bw, lb = la + bw;
-                    if (!InPolygon(At((sa + sb) * 0.5f, (la + lb) * 0.5f), poly)) continue;
-                    float top = float.MaxValue, lo = float.MaxValue;
-                    foreach (float s in new[] { sa, sb }) foreach (float l in new[] { la, lb })
-                    {
-                        var p = At(s, l); top = Mathf.Min(top, Top(p).y - Thick); lo = Mathf.Min(lo, Ground(terrain, p.x, p.y));
-                    }
-                    float y = lo - 0.15f; int layer = 0;
-                    while (true)
-                    {
-                        float h = y + BH <= top ? BH : y + BH * 0.5f <= top ? BH * 0.5f : 0f;
-                        if (h <= 0f) break;
-                        Bale(mb, f, la + 0.03f, lb - 0.03f, y, y + h, sb + 0.02f, sa - 0.02f, Shade(hay, 0.9f + 0.18f * Hash01(bales, 302) + (layer & 1) * 0.03f));
-                        y += h; layer++; bales++;
-                    }
+                    var t = TopAt(s, side);
+                    Beam(mb, t + R3 * sg * 0.04f - Vector3.up * 0.06f, t + R3 * sg * 0.04f - Vector3.up * (Rail - 0.04f), 0.08f, 0.12f, Shade(paint, 0.7f), U3);
                 }
             }
+            Beam(mb, TopAt(sDeck, l0) - Vector3.up * 0.09f, TopAt(sDeck, l1) - Vector3.up * 0.09f, 0.12f, 0.06f, dark, U3);
+            // chassis: three main beams under the deck, cross members every 0.6 m
+            float[] beamsL = { l0 + 1.2f, (l0 + l1) * 0.5f, l1 - 1.2f };
+            Vector3 Under(float s, float l) => TopAt(s, l) - Vector3.up * (Thick + BeamD * 0.5f);
+            foreach (float bl in beamsL)
+                for (int i = 0; i + 1 < cuts.Count; i++)
+                {
+                    if (cuts[i + 1] <= sDeck || cuts[i + 1] - cuts[i] < 1e-3f) continue;
+                    Beam(mb, Under(Mathf.Max(cuts[i], sDeck), bl), Under(cuts[i + 1], bl), 0.16f, BeamD, Shade(paint, 0.8f), R3);
+                }
+            for (float s = sDeck + 0.3f; s < s1; s += 0.6f)
+                Beam(mb, TopAt(s, l0 + 0.05f) - Vector3.up * (Thick + 0.12f), TopAt(s, l1 - 0.05f) - Vector3.up * (Thick + 0.12f), 0.1f, 0.2f, Shade(paint, 0.6f), U3);
+            // the axles: the first station where every main beam clears the ground by a wheel (1.0 m) and a little
+            const float WheelR = 0.5f, AxleGap = 1.3f;
+            float BeamBottom(float s, float l) => TopAt(s, l).y - Thick - BeamD;
+            float sAxle = float.NaN;
+            for (float s = sDeck + 0.5f; s < s1 - AxleGap - 1f; s += 0.1f)
+                if (beamsL.All(bl => BeamBottom(s, bl) - G(s, bl) >= 2f * WheelR + 0.15f)) { sAxle = s; break; }
+            float sCrib = sDeck + 1f;
+            if (!float.IsNaN(sAxle))
+            {
+                foreach (float sa in new[] { sAxle, sAxle + AxleGap })
+                {
+                    float gy = beamsL.Min(bl => G(sa, bl));
+                    var c = At(sa, 0f); var axle = new Vector3(c.x, gy + WheelR, c.y);
+                    Beam(mb, axle + R3 * (l0 + 0.35f), axle + R3 * (l1 - 0.35f), 0.14f, 0.14f, dark, U3);
+                    foreach (float bl in beamsL)   // hangers: axle up to the beam
+                    {
+                        var hb = At(sa, bl); float top = BeamBottom(sa, bl);
+                        Beam(mb, new Vector3(hb.x, axle.y, hb.y), new Vector3(hb.x, top + 0.02f, hb.y), 0.12f, 0.2f, dark, U3);
+                    }
+                    foreach (float wl in new[] { l0 + 0.55f, l0 + 2.35f, l1 - 2.35f, l1 - 0.55f })   // dual wheels
+                        foreach (float dw in new[] { -0.16f, 0.16f })
+                        {
+                            var wc = At(sa, wl + dw); var w = new Vector3(wc.x, Ground(terrain, wc.x, wc.y) + WheelR - 0.02f, wc.y);
+                            Wheel(mb, w, R3, WheelR, 0.28f, tyre, Shade(steel, 0.8f));
+                        }
+                }
+                sCrib = sAxle + AxleGap + 1.6f;
+            }
+            // cribbing: stacks of crossed 0.2 x 0.25 m timbers, 1.4 m square, every 2.8 m from the lip back to past the axles
+            int stacks = 0;
+            for (float sc = s1 - 0.9f; sc >= sCrib; sc -= 2.8f)
+                foreach (float bl in beamsL)
+                {
+                    float top = float.MaxValue, lo = float.MaxValue;
+                    foreach (float ds in new[] { -0.7f, 0.7f }) foreach (float dl in new[] { -0.7f, 0.7f })
+                    {
+                        top = Mathf.Min(top, BeamBottom(sc + ds, bl + Mathf.Clamp(dl, -0.08f, 0.08f)));
+                        lo = Mathf.Min(lo, G(sc + ds, bl + dl));
+                    }
+                    if (top - lo < 0.3f) continue;
+                    float y = lo - 0.1f; int layer = 0;
+                    while (y < top - 1e-3f)
+                    {
+                        float h = Mathf.Min(0.2f, top - y);
+                        var tc = Shade(timber, 0.85f + 0.25f * Hash01(stacks * 31 + layer, 303));
+                        foreach (float off in new[] { -0.5f, 0.5f })
+                            if ((layer & 1) == 0) BoxF(mb, f, bl + off - 0.125f, bl + off + 0.125f, y, y + h, sc - 0.7f, sc + 0.7f, tc);
+                            else BoxF(mb, f, bl - 0.7f, bl + 0.7f, y, y + h, sc + off - 0.125f, sc + off + 0.125f, tc);
+                        y += h; layer++;
+                    }
+                    stacks++;
+                }
+            string axles = float.IsNaN(sAxle) ? "none (no room)" : $"{sAxle - s0:0.0} and {sAxle + AxleGap - s0:0.0} m up";
+            Debug.Log($"[Round13] #6 flatbed: deck from {sDeck - s0:0.0} m up the ramp ({s1 - sDeck:0.0} m long, {l1 - l0:0.0} m wide), axles {axles}, {stacks} cribbing stacks");
             return mb;
         }
 
-        // a big square bale: a box of hay with four darker twine bands round it (its length runs across the ramp)
-        static void Bale(MeshBuilder mb, Frame f, float l0, float l1, float y0, float y1, float s0, float s1, Color c)
+        // a wheel: a 12-sided tyre about the axis, its hub on both faces
+        static void Wheel(MeshBuilder mb, Vector3 c, Vector3 axis, float r, float width, Color tyre, Color hub)
         {
-            BoxF(mb, f, l0, l1, y0, y1, s0, s1, c);
-            var tw = Shade(c, 0.62f);
-            foreach (float k in new[] { 0.2f, 0.4f, 0.6f, 0.8f })   // twine round its length: over the top and down both faces
+            axis.Normalize(); var a = Vector3.Cross(axis, Vector3.up).normalized; var b = Vector3.up;
+            const int Seg = 12;
+            mb.Tint = tyre;
+            for (int i = 0; i < Seg; i++)
             {
-                float lm = Mathf.Lerp(l0, l1, k);
-                BoxF(mb, f, lm - 0.02f, lm + 0.02f, y0, y1 + 0.01f, s0 - 0.01f, s1 + 0.01f, tw);
+                float t0 = Mathf.PI * 2f * i / Seg, t1 = Mathf.PI * 2f * (i + 1) / Seg;
+                Vector3 d0 = a * Mathf.Cos(t0) + b * Mathf.Sin(t0), d1 = a * Mathf.Cos(t1) + b * Mathf.Sin(t1);
+                Vector3 p0 = c + d0 * r - axis * width * 0.5f, p1 = c + d1 * r - axis * width * 0.5f;
+                Face(mb, p0, p1, p1 + axis * width, p0 + axis * width, (d0 + d1).normalized);
+            }
+            foreach (float sg in new[] { -1f, 1f })
+            {
+                var fc = c + axis * sg * width * 0.5f;
+                for (int i = 0; i < Seg; i++)
+                {
+                    float t0 = Mathf.PI * 2f * i / Seg, t1 = Mathf.PI * 2f * (i + 1) / Seg;
+                    Vector3 d0 = a * Mathf.Cos(t0) + b * Mathf.Sin(t0), d1 = a * Mathf.Cos(t1) + b * Mathf.Sin(t1);
+                    mb.Tint = tyre; TriFace(mb, fc + d0 * r, fc + d1 * r, fc + d0 * r * 0.6f, axis * sg); TriFace(mb, fc + d1 * r, fc + d1 * r * 0.6f, fc + d0 * r * 0.6f, axis * sg);
+                    mb.Tint = hub; TriFace(mb, fc + axis * sg * 0.01f, fc + d0 * r * 0.6f + axis * sg * 0.01f, fc + d1 * r * 0.6f + axis * sg * 0.01f, axis * sg);
+                }
             }
         }
 
@@ -685,10 +836,9 @@ namespace ChastainRush
                     Face(mb, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), tq, tp, new Vector3(outN.x, 0f, outN.y));
                 }
             }
-            // Round 12, item 9 (Dan: "turn the second ramp into like a wide board leaned up against some bales of hay"): the
-            // kicker's LOOK only. The surface, its curve, pitch, height, lip and the collider below are exactly as before (the
-            // collider is still made from mb); what is drawn is a board of planks on that same surface, on a stepped stack of big
-            // square bales that fills the space under it, so nothing floats
+            // Round 12, item 9 / Round 13, item 2: the kicker's LOOK only (a flatbed trailer since Round 13, hay bales in Round
+            // 12). The surface, its curve, pitch, height, lip and the collider below are exactly as before (the collider is still
+            // made from mb); what is drawn sits on that same surface and is held up from the ground, so nothing floats
             var look = pr.kind == "kicker" ? KickerLook(poly, O, U, Lv, cuts, Top, terrain) : mb;
             var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;

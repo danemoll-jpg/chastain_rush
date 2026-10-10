@@ -101,27 +101,10 @@ namespace ChastainRush
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
                 (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f), (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
             trees.Field.gameObject.AddComponent<TreeTrunks>();
-            if (hood.ShortcutData != null)
-            {
-                int onLine = 0;
-                foreach (var sc in hood.ShortcutData.shortcuts)
-                {
-                    var pts = ToPoints(sc.path);
-                    for (int i = 0; i < trees.Field.count; i++)
-                    {
-                        var t = TreeField.Unpack(trees.Field.data, i); var q = new Vector2(t.x, t.z);
-                        for (int k = 0; k + 1 < pts.Count; k++)
-                        {
-                            var ab = pts[k + 1] - pts[k]; float u = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - pts[k], ab) / ab.sqrMagnitude);
-                            if ((pts[k] + ab * u - q).sqrMagnitude < 16f) { onLine++; break; }
-                        }
-                    }
-                }
-                Debug.Log($"[Round10] tree trunks within 4 m of a shortcut line: {onLine}");
-            }
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
+            if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);

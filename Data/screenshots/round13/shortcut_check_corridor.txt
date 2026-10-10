@@ -1,0 +1,54 @@
+Shortcut check, 2026-10-10 03:12. Route Chastain Glen loop, lap 1247 m, 2 official shortcuts in the route file.
+Each run starts on the lap before the turn-off at the given speed (35 m before for #2; 14 m for #6, just past the sharp CP4 corner, so the speed is the speed the car arrives with); times are to a line 20 m past the rejoin point. The road run uses the same start and speed.
+Air: wheels all off the ground (flights shorter than 0.25 s are not counted as flights). Landing tilt: worst tilt from upright in the 1 s after a flight. Pitch at touchdown: negative = nose down.
+
+=== Two-house drop (sc2_two_houses): leaves the lap 180 m after the gate, rejoins 552 m; runs start 35 m before the turn-off
+           ramps at 24 m/s: sc2 stairs in house 1627: on 22.5, lowest 22.5, off 23.7 m/s (105% of the speed it arrived with)
+    24 m/s  road  18.22 s clean   shortcut  14.78 s clean (air 2.4 s; longest flight 1.46 s, 33 m, 1.2 m up; landing tilt 15 deg, pitch -14)
+  -> clean at 1 of 1 speeds (24 m/s); bad landings / crashes at 0 ()
+  -> best: 24 m/s, 14.78 s against 18.22 s on the road (+3.44 s), air 2.40 s
+PASS  Two-house drop: taken well it beats the road  -  best gain 3.44 s
+
+=== Rooftop leap (sc6_over_house): leaves the lap 729 m after the gate, rejoins 1003 m; runs start 14 m before the turn-off
+           ramps at 24 m/s: sc6 kicker over house 1641: on 15.5, lowest 15.5, off 20.2 m/s (130% of the speed it arrived with)
+    24 m/s  road  13.68 s clean   shortcut  12.68 s clean (air 2.7 s; longest flight 2.70 s, 44 m, 6.1 m up; landing tilt 6 deg, pitch -6) [roof clearance 1.3 m]
+  -> clean at 1 of 1 speeds (24 m/s); bad landings / crashes at 0 ()
+  -> best: 24 m/s, 12.68 s against 13.68 s on the road (+1.00 s), air 2.70 s
+PASS  Rooftop leap: taken well it beats the road  -  best gain 1.00 s
+  -> roof of house 1641 cleared at: 24 m/s; lowest approach speed that clears it: 24 m/s
+
+=== Race laps through the RaceController (1 lap each, same road speed)
+  (-shortcutNoEntryPlanes: the entry planes are off, a shortcut counts only by its corridor)
+  road lap: 1:11.428; penalties 0 s
+      RACE START requested: Chastain Glen loop, forward, 1 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 2 official shortcuts
+      GO
+      START LINE crossed: clock started
+      CHECKPOINT 1 at 10.035
+      CHECKPOINT 2 at 22.407
+      CHECKPOINT 3 at 34.670
+      CHECKPOINT 4 at 39.967
+      CHECKPOINT 5 at 55.119
+      LAP 1 COUNTED 71.428 (clock 71.428 + penalty 0.0)
+      FINISH total 71.428 (clock 71.428 + penalties 0.0); laps 71.428
+PASS  road lap finishes with no penalty  -  1:11.428
+  race lap: sc2_two_houses driven 1.5 m right of its line at the entry plane
+  race lap: sc6_over_house driven 3.0 m left of its line at the entry plane
+  lap by both shortcuts: 1:02.337; penalties 0 s
+      RACE START requested: Chastain Glen loop, forward, 1 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 2 official shortcuts
+      GO
+      START LINE crossed: clock started
+      CHECKPOINT 1 at 10.035
+      SHORTCUT sc2_two_houses entered at 13.260 (its corridor): checkpoints 2 forgiven
+      SHORTCUT sc2_two_houses left at 22.378
+      CHECKPOINT 3 at 26.331
+      CHECKPOINT 4 at 31.599
+      SHORTCUT sc6_over_house entered at 34.981 (its corridor): checkpoints 5 forgiven
+      SHORTCUT sc6_over_house left at 47.361
+      LAP 1 COUNTED 62.337 (clock 62.337 + penalty 0.0); forgiven CP2,CP5
+      FINISH total 62.337 (clock 62.337 + penalties 0.0); laps 62.337
+PASS  race: Two-house drop entered and its checkpoint forgiven  -  SHORTCUT sc2_two_houses entered at 13.260 (its corridor): checkpoints 2 forgiven
+PASS  race: Rooftop leap entered and its checkpoint forgiven  -  SHORTCUT sc6_over_house entered at 34.981 (its corridor): checkpoints 5 forgiven
+PASS  race: no penalty on the shortcut lap  -  penalty 0 s
+PASS  race: the shortcut lap is faster than the road lap  -  1:02.337 against 1:11.428
+
+ALL 7 CHECKS PASSED

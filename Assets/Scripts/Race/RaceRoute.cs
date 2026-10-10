@@ -89,6 +89,21 @@ namespace ChastainRush
         public RaceGate Entry;                // directed plane across the path a little way in; crossing it takes the shortcut
         public RaceGate Exit;                 // plane across the path's last metres (ends the "on the shortcut" state)
         public int FirstForgiven, LastForgiven;   // indices into RaceRoute.Checkpoints, inclusive
+        // Round 13, item 3: the shortcut's corridor (flat segments of its path from the entry plane to the exit, where the path is
+        // CorridorOffLap or more from the lap's centreline) and its half width. A car anywhere in it is on the shortcut, however
+        // it got there (Dan was charged for CP2 on all three laps: his line round house 1763 passed outside #2's entry plane)
+        public List<(Vector2 a, Vector2 b)> Corridor = new List<(Vector2, Vector2)>();
+        public float CorridorHalf;
+        public bool InCorridor(Vector3 p)
+        {
+            var q = new Vector2(p.x, p.z); float r2 = CorridorHalf * CorridorHalf;
+            foreach (var (a, b) in Corridor)
+            {
+                var ab = b - a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
+                if ((a + ab * t - q).sqrMagnitude <= r2) return true;
+            }
+            return false;
+        }
         public Vector3 Start => Path[0];
         public Vector3 End => Path[Path.Length - 1];
     }
@@ -185,6 +200,10 @@ namespace ChastainRush
                 float half = (sj.half_width_m > 0f ? sj.half_width_m : 6f) + (sj.entry_margin_m > 0f ? sj.entry_margin_m : 4f);
                 sc.Entry = PlaneOn(pts, c, inset, half);
                 sc.Exit = PlaneOn(pts, c, Mathf.Max(inset, len - 3f), half);
+                sc.CorridorHalf = Mathf.Max(half, CorridorHalfMin);
+                for (int i = 0; i + 1 < pts.Count; i++)
+                    if (c[i] >= inset && c[i + 1] <= len - 3f && DistToLap(pts[i]) >= CorridorOffLap && DistToLap(pts[i + 1]) >= CorridorOffLap)
+                        sc.Corridor.Add((new Vector2(pts[i].x, pts[i].z), new Vector2(pts[i + 1].x, pts[i + 1].z)));
                 sc.FirstForgiven = int.MaxValue; sc.LastForgiven = -1;
                 if (sj.forgives != null)
                     foreach (int id in sj.forgives)
@@ -196,6 +215,21 @@ namespace ChastainRush
                 if (sc.LastForgiven < 0) continue;
                 Shortcuts.Add(sc);
             }
+        }
+
+        // Round 13, item 3: the corridor is 7 m either side of the shortcut's line (at least the entry plane's half width),
+        // only where the line is 12 m or more from the lap's centreline, so a car on the lane is never in it
+        const float CorridorHalfMin = 7f, CorridorOffLap = 12f;
+        float DistToLap(Vector3 p)
+        {
+            float best = float.MaxValue; var q = new Vector2(p.x, p.z);
+            for (int i = 0; i + 1 < Path.Length; i++)
+            {
+                var a = new Vector2(Path[i].x, Path[i].z); var ab = new Vector2(Path[i + 1].x, Path[i + 1].z) - a;
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
+                best = Mathf.Min(best, (a + ab * t - q).magnitude);
+            }
+            return best;
         }
 
         static RaceGate PlaneOn(List<Vector3> pts, float[] c, float s, float half)

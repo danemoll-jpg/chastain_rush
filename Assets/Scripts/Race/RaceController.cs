@@ -32,6 +32,7 @@ namespace ChastainRush
         public static string RecordsPathOverride; // checks write somewhere other than the real records
         public static int LapsOverride;           // checks only: race this many laps instead of the route file's
         public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
+        public static bool EntryPlanesOff;   // checks only (Round 13): shortcuts are taken by their corridor alone
         public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
 
         [Header("Set by MapBuilder (Chastain Rush > Build Map)")]
@@ -236,8 +237,10 @@ namespace ChastainRush
                 for (int i = 0; i < Route.Shortcuts.Count; i++)
                 {
                     var sc = Route.Shortcuts[i];
-                    if (sc.Entry.Crossed(prevPos, pos, Reach(sc.Entry), out float fe)) hits.Add((fe, 1000 + i));
+                    if (!EntryPlanesOff && sc.Entry.Crossed(prevPos, pos, Reach(sc.Entry), out float fe)) hits.Add((fe, 1000 + i));
                     if (ActiveShortcut == sc && sc.Exit.Crossed(prevPos, pos, Reach(sc.Exit), out float fx)) hits.Add((fx, 2000 + i));
+                    // Round 13: in the shortcut's corridor counts as taking it too (the entry plane can be passed round)
+                    else if (ActiveShortcut != sc && clockStarted && sc.LastForgiven >= NextCheckpoint && sc.InCorridor(pos)) hits.Add((1f, 3000 + i));
                 }
                 hits.Sort((a, b) => a.f.CompareTo(b.f));
                 foreach (var h in hits)
@@ -245,8 +248,9 @@ namespace ChastainRush
                     float at = t0 + h.f * dt;
                     if (h.id == 0) OnGate(at);
                     else if (h.id < 1000) OnCheckpoint(h.id - 1, at);
-                    else if (h.id < 2000) OnShortcutEntry(Route.Shortcuts[h.id - 1000], at);
-                    else OnShortcutExit(Route.Shortcuts[h.id - 2000], at);
+                    else if (h.id < 2000) OnShortcutEntry(Route.Shortcuts[h.id - 1000], at, "its entry plane");
+                    else if (h.id < 3000) OnShortcutExit(Route.Shortcuts[h.id - 2000], at);
+                    else OnShortcutEntry(Route.Shortcuts[h.id - 3000], at, "its corridor");
                     if (State != Stage.Racing) break;
                 }
             }
@@ -284,7 +288,7 @@ namespace ChastainRush
 
         // Taking an official shortcut (Racer: a Branch entry grants the route's bypass list): the checkpoints it skips are
         // forgiven, with no penalty. Checkpoints before the first forgiven one that are still waiting were really missed.
-        void OnShortcutEntry(RaceShortcut sc, float at)
+        void OnShortcutEntry(RaceShortcut sc, float at, string how)
         {
             if (!clockStarted) return;
             if (sc.LastForgiven < NextCheckpoint) return;   // nothing left on this lap for it to forgive
@@ -294,7 +298,7 @@ namespace ChastainRush
             for (int k = Mathf.Max(NextCheckpoint, sc.FirstForgiven); k <= sc.LastForgiven; k++) { forgiven.Add(k); free.Add(k + 1); }
             NextCheckpoint = sc.LastForgiven + 1;
             ActiveShortcut = sc;
-            Log($"SHORTCUT {sc.Id} entered at {at:0.000}: checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            Log($"SHORTCUT {sc.Id} entered at {at:0.000} ({how}): checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
             if (skipped.Count > 0) MissMessage(skipped);
             else Say($"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
             markers.Refresh(this);
