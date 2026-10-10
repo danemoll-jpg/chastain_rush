@@ -36,6 +36,8 @@ namespace ChastainRush
             public List<Vector2> ring;
             public Vector3 garageCentre;          // world, at the foot of the garage doors
             public Vector2? backReserve;          // Round 10: a range of the back wall (back frame u) kept free of windows (a shortcut's sliding door)
+            public Vector2? frontReserve;         // Round 11: a range of the entry front (u) kept free of ground-floor windows and the door (a shortcut's picture window; style A)
+            public bool sideLowFree;              // Round 11: no ground-floor windows on the +u side wall (a shortcut's side window)
             public MeshBuilder detail;           // windows, doors, garage doors, shutters: flat quads that do not need to cast shadows (a separate mesh with shadows off)
             public Vector2 nearestRoadPoint;
             public float roadHalf;
@@ -180,6 +182,7 @@ namespace ChastainRush
             // the side away from the garage (+u): one or two windows down, one up (if two storeys); style D also one up on the garage end
             float vf0 = -D / 2 + 1.2f, vf1 = (h.style == HouseStyle.A ? D / 2 - 1.3f : h.style == HouseStyle.C ? D / 2 - 1.0f : D / 2) - 1.2f;
             int sideLow = Hash01(s, 209) < 0.5f ? 2 : 1;
+            if (h.sideLowFree) sideLow = 0;
             for (int k = 0; k < sideLow; k++) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, sideLow == 1 ? 0.5f : (k == 0 ? 0.2f : 0.8f)), 1.4f, 0.95f, 1.25f);
             if (two) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, 0.25f + 0.5f * Hash01(s, 210)), 4.1f, 0.95f, 1.4f);
             if (h.style == HouseStyle.D) SideWindow(d, h, -1f, 0f, 4.1f, 0.95f, 1.4f);
@@ -318,9 +321,20 @@ namespace ChastainRush
             // entry
             float E = W / 2 - gU1, doorU = gU1 + E * 0.60f;
             float vEntry = vFront;
-            FrontDoor(d, f, doorU, vEntry, h, true, h.dan);
-            WindowF(d, f, gU1 + E * 0.17f + 0.35f, 1.55f, 1.15f, 1.35f, vEntry, h, true);
-            if (E > 6.0f) WindowF(d, f, W / 2 - 0.95f, 1.55f, 1.0f, 1.35f, vEntry, h, true);
+            if (h.frontReserve == null)
+            {
+                FrontDoor(d, f, doorU, vEntry, h, true, h.dan);
+                WindowF(d, f, gU1 + E * 0.17f + 0.35f, 1.55f, 1.15f, 1.35f, vEntry, h, true);
+                if (E > 6.0f) WindowF(d, f, W / 2 - 0.95f, 1.55f, 1.0f, 1.35f, vEntry, h, true);
+            }
+            else
+            {
+                // Round 11 (BUG-013): the picture window takes the ground floor of the entry front; the door moves round the corner
+                // to the garage block's side, facing along the front, in the 1.3 m nook beside the garage
+                var sf = MakeFrame(f.O, new Vector2(f.Dir(1f, 0f, 0f).x, f.Dir(1f, 0f, 0f).z), 1f);
+                var at = f.P(gU1, 0f, vFront + proj / 2f);
+                FrontDoor(d, sf, Vector3.Dot(at - f.O, sf.R), Vector3.Dot(at - f.O, sf.F), h, false, false);
+            }
             // upstairs
             WindowF(d, f, gU1 + E * 0.22f + 0.35f, 4.1f, 1.0f, 1.4f, vEntry, h, true);
             if (!h.entryGable) WindowF(d, f, gU1 + E * 0.78f, 4.1f, 1.0f, 1.4f, vEntry, h, true);

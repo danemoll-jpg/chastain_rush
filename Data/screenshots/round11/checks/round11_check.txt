@@ -1,0 +1,42 @@
+Round 11 exe check, 2026-10-09 23:13:12, screen 1920x1080, built exe
+shortcut #2 windows of 1763: in (3075.7, 316.8, 1050.8), out (3074.1, 316.8, 1055.5)
+shortcut #2, racing speed (target 30 m/s): finished, 14.08 s against 16.52 s by the road (+2.44 s); speed at the ramp's foot 27.8 m/s
+    broken: House 1763 shortcut wall (in) at 26.6 m/s
+    broken: House 1763 shortcut wall (out) at 25.2 m/s
+    broken: Fences at 26.0 m/s
+    broken: Fences at 25.8 m/s
+    broken: Fences at 25.8 m/s
+    broken: House 1627 shortcut wall (in) at 24.3 m/s
+    broken: House 1627 shortcut wall (out) at 24.2 m/s
+    broken: Fences at 26.7 m/s
+    broken: Fences at 26.0 m/s
+    flight: 1.30 s, 31 m from (3076,1050) at 25.4 m/s, down on PrototypeCar at 25.7 m/s
+    flight: 0.32 s, 7 m from (3058,1100) at 23.8 m/s, down on PrototypeCar at 22.9 m/s
+    flight: 0.82 s, 20 m from (3052,1114) at 24.5 m/s, down on PrototypeCar at 25.3 m/s
+    flight: 1.60 s, 39 m from (3039,1143) at 25.2 m/s, down on PrototypeCar at 26.3 m/s
+    lowest speed after the ramp's foot 16.9 m/s; most tilt 28 deg; things broken 9; touched: Shortcut sc2_two_houses (Two-house drop)/sc2 ramp to the window of house 1763, Shortcut sc2_two_houses (Two-house drop)/sc2 landing slope to house 1627
+shortcut #2, slow (target 13 m/s): finished, 25.46 s against 34.86 s by the road (+9.40 s); speed at the ramp's foot 13.1 m/s
+    broken: House 1763 shortcut wall (in) at 13.2 m/s
+    broken: House 1763 shortcut wall (out) at 12.9 m/s
+    broken: Fences at 13.0 m/s
+    broken: Fences at 13.2 m/s
+    broken: House 1627 shortcut wall (in) at 13.1 m/s
+    broken: House 1627 shortcut wall (out) at 13.1 m/s
+    broken: Fences at 13.0 m/s
+    broken: Fences at 13.1 m/s
+    broken: Fences at 12.9 m/s
+    flight: 0.90 s, 12 m from (3052,1113) at 13.0 m/s, down on PrototypeCar at 15.0 m/s
+    flight: 0.36 s, 5 m from (3028,1173) at 13.3 m/s, down on PrototypeCar at 14.6 m/s
+    lowest speed after the ramp's foot 12.2 m/s; most tilt 28 deg; things broken 9; touched: Shortcut sc2_two_houses (Two-house drop)/sc2 ramp to the window of house 1763, Shortcut sc2_two_houses (Two-house drop)/sc2 stairs in house 1627
+shortcut #6 at 27 m/s: finished, 13.34 s against 14.56 s by the road at 27 m/s; speed at the kicker's foot 19.1 m/s; landings carried 1
+    flight: 2.88 s, 52 m from (2814,1097) at 22.2 m/s, down on PrototypeCar at 23.5 m/s
+    lowest speed after the kicker's foot 17.3 m/s; most tilt 32 deg; things broken 5; touched: Shortcut sc6_over_house (Rooftop leap)/sc6 kicker over house 1641
+shortcut #6 at 21 m/s: finished, 14.04 s against 14.56 s by the road at 27 m/s; speed at the kicker's foot 19.1 m/s; landings carried 1
+    flight: 2.74 s, 47 m from (2814,1097) at 20.8 m/s, down on PrototypeCar at 22.4 m/s
+    lowest speed after the kicker's foot 17.0 m/s; most tilt 33 deg; things broken 7; touched: Shortcut sc6_over_house (Rooftop leap)/sc6 kicker over house 1641
+shortcut #6 at 14 m/s: finished, 18.68 s against 14.56 s by the road at 27 m/s; speed at the kicker's foot 14.0 m/s; landings carried 1
+    flight: 0.62 s, 7 m from (2814,1097) at 14.0 m/s, down on PrototypeCar at 11.8 m/s
+    flight: 1.36 s, 18 m from (2808,1084) at 13.5 m/s, down on PrototypeCar at 18.5 m/s
+    lowest speed after the kicker's foot 11.7 m/s; most tilt 33 deg; things broken 10; touched: Shortcut sc6_over_house (Rooftop leap)/sc6 kicker over house 1641
+monuments: shots from a car turning in and from Dan's BUG-012 view
+RampHold: 4 landings carried, 53 held steps over the whole check

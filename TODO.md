@@ -897,9 +897,84 @@ New: `VehicleSurfaceContacts` (copied from Racer), `RampHold`, `ShortcutSurface`
 (commented): ArcadeVehicle (registers the contact fix), VehicleRespawn (Recover hook). Imported from Racer:
 `VehicleSurfaceContacts` only (its test switch dropped, surfaces = the shortcut prisms).
 
+Round 11 status — built and checked in the exe, NOT yet driven by Dan (2026-10-09). Checks: `ChastainRush.exe -exeRound11 <dir>`
+(new, Checks/Round11Runner.cs), `-exeShots` at Dan's 13 report positions, `-exeCheck`. Reports and shots:
+`Data/screenshots/round11/` (Dan's house hidden or out of view in all of them; the BUG-006 shot was looked at and not committed).
+
+1. BUG-013 window jump: DONE as the nearest version, STOPPED short of an upstairs window (numbers below). The ramp now ends
+   at a level lip 2.4 m before 1763's front wall (open air; the wall is at 43 deg to the line, so 0.7 to 4.1 m across the
+   ramp), 0.97 m above the yard. The car flies through a 5.6 m x 2.25 m ground-floor PICTURE WINDOW (three panes, white frame,
+   sill; glass 0.45 to 2.7 m above the floor), across the living room (5 m), and out through a 6.0 m picture window in the
+   north side wall, on to the landing slope. Only the glass and frame break (pieces fly, whole again at race start); the wall
+   round each window stays solid. With the glass whole it reads as a house with a big window (shot `r11_1763_from_dan_bug013_before`).
+   1763's front door moved round the corner into the nook beside the garage (the window takes the entry front); its small
+   upstairs gable is back. Why not upstairs: the lane leaves 13.75 m from the wall for the ramp; a level lip at the upstairs
+   floor with air before the wall needs a 5.6 m climb in about 11 m: a ramp of 40 deg or more with a foot radius of 10 m or
+   less (about 7 g at racing speed). At the ground floor it is a 3.4 m climb: curved foot 12 m, straight at 30 deg (Round 10:
+   23 deg), rounded held top, 0.6 m level lip. Kept from Round 10: the landing slope (it now starts 0.25 m under the room's
+   floor, 10.6 deg instead of 13.8; the crest behind 1763 is cut up to 3.2 m, with banks reaching 4.5 m), 1627's sliding door
+   and stairs, the rest of the line, `forgives` CP2, held ramps, the landing carry. Exe, at racing speed (30 m/s on the
+   lane, 27.8 at the ramp's foot): front window broken at 26.6 m/s, side window at 25.2, flight 31 m (1.3 s) through the
+   house, finished 14.08 s against 16.52 s by the road (+2.44 s); nothing of 1763 touched. Slow (13 m/s): finished, +9.40 s.
+   (A first try with the glass to 2.35 m let the car's roof clip the top of the front window at 30 m/s: it leaves the lip
+   still rising about 1 m. The glass now goes to 2.7 m; the room's ceiling is 2.8 m.)
+2. BUG-005, BUG-007 dirt trails and markers: DONE. No dirt trail on either shortcut (the yard is plain grass); no blue arches,
+   beams or chevron signs (RaceMarkers no longer builds them). Entry planes, `forgives` and the barrier rule unchanged (#6's
+   race data is identical; #2's line moved about 0.1 m with item 1, its entry plane 0.15 m).
+3. BUG-007 #6 landing deck: DONE. No deck; the car lands on the ground behind 1641. That ground (from the back wall to 75 m,
+   6.5 m either side of the line) is a landing zone (`LandingZone`): RampHold keeps the speed on touchdown there, as on the
+   deck. Nothing solid there (trees were already kept off the line; fences there break). Exe: 27 m/s: flight 52 m, down at
+   23.5 m/s, finished (-1.2 s on the road); 21 m/s: 47 m, finished; 14 m/s (comes off the back of the roof): finished,
+   lowest 11.7 m/s, no roll.
+4. Driveways, all of Chastain Glen: DONE. a. Every street end in the area is now a cul-de-sac bulb, 13 m radius (Glenbarrett
+   Court both ends, Chasefield Court, Chastain Place), with its curb, edge band and sidewalk round it; drives end on the
+   bulb's edge, each by itself. (The two short stubs off Chastain Glen Lane, 6 and 8 m, are not cul-de-sacs.) b. Overlaps
+   are measured between every pair of drives: 3 drives were re-aimed (Dan's never), 0 overlaps left; drives that end on a
+   bulb do not flare. c. Drives (and roads and sidewalks) are grids whose inner vertices stand on the highest ground near
+   them, so no lawn comes through; no drive is drawn under a shortcut ramp (1763's drive; the #2 ramp is narrower on that side).
+5. Roads and sidewalks, all of Chastain Glen: DONE. Roads in the area are grids six cells across clear of every bump (the
+   grass at junctions came through two-vertex ribbons); every junction corner has a curb return (31 arcs, 6 m, smaller where
+   a median or island leaves less room): asphalt fill, edge band, curb and, where the street has one, the sidewalk round the
+   corner. Sidewalks: their own material, drawn over drives they cross, 9 cm up on a grid clear of the lawn; "along houses"
+   is joined over gaps under 24 m and to a street's end, stretches under 10 m dropped, offsets smoothed on bends. The entrance
+   at New Chastain Road: the strip of median between the entrance's two lanes is paved (BUG-012). Paint and curbs stop on
+   any other road unless it continues this one.
+6. BUG-008 white lines: DONE. They were the two entrance lanes' edge bands and curbs running on across each other where
+   the lanes meet beyond the island (they were exempt as "the same street"); now stopped there.
+7. BUG-006 mailbox and hydrant: DONE. Dan's mailbox stands just right of his drive (seen from the street); the hydrant that
+   stood by his neighbour's drive (beside his own) is now in his grass strip on the other side of his drive, past the
+   mailbox. Checked from his report position in the exe (shot not committed).
+8. BUG-009, BUG-011 lake walk: DONE. The Round 9 walk no longer runs along New Chastain Road: from the parking lot it runs
+   inside the wooden fence, south of the pool's fence and the clubhouse, along the lake shore (4.5 m off the water), and out
+   to the entrance lane through a gap in the white rail fence (173 m). The wooden fence along the road is now whole (the gap
+   for the old walk is gone). Three benches on the lake side of the walk, facing the lake.
+9. BUG-010 road to the pool lot: DONE. The map data has it as a 3 m driveway (pale) from the end of Grasmere Court into the
+   lot; it is drawn as a 6 m asphalt road with the pale edge band, into the lot.
+10. BUG-012 monuments: DONE. Each turned 15 deg IN toward the entrance's middle (was 15 deg out); checked from a car
+    turning in and from Dan's spot in the exe.
+11. Executable rebuilt last: DONE. `Builds/ChastainRush/ChastainRush.exe` (2026-10-09 23:32). Regression `-exeCheck`: 9 of 9,
+    laps 1:22.675 / 1:22.617 / 1:22.645 (as Rounds 9 and 10), 60 fps average, median and 99th percentile at the entrance, the
+    pond and Dan's house (run at 1920 x 1080, not 3840 x 2160).
+12. This report: DONE.
+
+For Dan to check: the #2 window jump with a pad at racing speed, and whether a GROUND-floor window is close enough (an
+upstairs one needs a 40 deg ramp); 1763's front door now in the nook beside its garage; the steeper #2 ramp (30 deg); the
+deeper cut for the landing slope behind 1763 (up to 3.2 m); #6 landing on the bare ground at speed and coming off the roof
+slowly; the four cul-de-sac bulbs and the curb returns at every junction; sidewalks crossing drives; the lake walk's line
+round the clubhouse; the paved median strip at the entrance; his mailbox and hydrant; the monuments when pulling in.
+
+Not done / not measured: Dan's drive; a real pad; 3840 x 2160. Not changed (seen, outside the items): the two short stubs
+off Chastain Glen Lane keep their small end discs.
+
+New: `MapBuilder.Round11.cs` (street graph, curb returns, bulbs, drive overlaps, the pool road, surfaces clear of the lawn),
+`LandingZone`, `Checks/Round11Runner.cs` (-exeRound11), Editor `TopDownShots` (straight-down pictures of the built scene:
+`ChastainRush.TopDownShots.Run -topDownOut <dir> -topDownRects "name:x0:z0:x1:z1;..."`, with graphics). Edits: RampHold
+(landing zones), RaceMarkers (no shortcut markers), make_shortcuts.py (#2 window jump, no trails, no #6 deck). Imported from
+Racer: nothing.
+
 Current Objective (Focus Area)
 
-**Round 11 — Dan's third report: the #2 window jump, no dirt trails, clean
+**(Built 2026-10-09, status above; waiting for Dan's drive.)** **Round 11 — Dan's third report: the #2 window jump, no dirt trails, clean
 drives, roads and sidewalks, the lake walk. DECIDED (2026-10-09).** Source:
 debug report `2026-10-09_21-01-01-659_c29ec3` (13 entries, in
 `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\`;

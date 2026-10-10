@@ -21,6 +21,7 @@ namespace ChastainRush
             public TreeBuilder.Result trees; public RoadIndex roadIndex;
             public Chunks Ground = new Chunks();                 // ribbons lying on the terrain (drives, sidewalks, mulch, straw): depth-offset material
             public Chunks Props = new Chunks();                  // small 3D things: curbs, lamps, mailboxes, shrubs
+            public Chunks Walks = new Chunks();                  // Round 11: sidewalks (their own material, drawn over the drives they cross)
             public List<(Vector2 a, Vector2 b, float half)> DriveSegs = new List<(Vector2, Vector2, float)>();   // Round 9: every drive, planned before the trees (Neighborhood.PlanDrives)
             public readonly Breakables Mailboxes3D = new Breakables();   // Round 9: mailboxes break like the fences
             public readonly Breakables Lamps3D = new Breakables(), Hydrants3D = new Breakables();   // Round 10: street lamps and fire hydrants too
@@ -80,6 +81,7 @@ namespace ChastainRush
             water.sprayMaterial = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial(); water.groundMaterial = mats.Driveway;
             ExportViews(ctx);
             ctx.Ground.ToObjects("HoodGround", mats.Driveway, root, false);
+            ctx.Walks.ToObjects("HoodSidewalks", mats.Sidewalk, root, false);
             ctx.Props.ToObjects("HoodProps", mats.House, root, false);   // curbs, mailboxes, lamps, shrubs: small, no shadows (performance)
             Debug.Log($"[Neighborhood] {ctx.Houses} houses (styles A {hood.Houses.Count(h => h.style == HouseStyle.A)}, B {hood.Houses.Count(h => h.style == HouseStyle.B)}, " +
                       $"C {hood.Houses.Count(h => h.style == HouseStyle.C)}, D {hood.Houses.Count(h => h.style == HouseStyle.D)}), {ctx.Drives} drives, {ctx.Mailboxes} mailboxes, " +
@@ -149,7 +151,9 @@ namespace ChastainRush
             if (GroundShowedThroughOldRibbon(c, pts, widths)) c.GrassyDrives++;
             Color col = asphalt ? Shade(new Color(0.22f, 0.22f, 0.23f), 0.9f + 0.2f * Hash01(h.seed, 121)) : Shade(new Color(0.58f, 0.57f, 0.54f), 0.92f + 0.14f * Hash01(h.seed, 122));
             c.Ground.Tint = col;
-            RibbonGrid(c.Ground.At(pts[pts.Count / 2]), pts, widths, 0.075f, c.terrain, 4);
+            // Round 11 (BUG-013: lawn showing on 1763's drive): the inner vertices stand on the highest ground near them, and
+            // no part of a drive is drawn under a shortcut's ramp
+            RibbonGridMax(c.Ground.At(pts[pts.Count / 2]), pts, widths, 0.075f, c.terrain, 4, false, p => c.hood.UnderShortcutPrism(p));
             // joints of a concrete drive: a seam every 3 m
             if (!asphalt)
             {
@@ -236,10 +240,20 @@ namespace ChastainRush
             c.hood.Nearest(S, out Vector2 q, out float half, out Vector2 tan, out float dist);
             Vector2 toHouse = (S - q).normalized;
             float side = Hash01(h.seed, 130) < 0.5f ? 1f : -1f;
+            float alongM = 3.4f + (h.style == HouseStyle.D ? 0f : 0.5f);
+            if (h.dan && c.hood.DrivePlans.TryGetValue(h.index, out var dp))
+            {
+                // Round 11 (BUG-006, Dan: "my house doesn't have a mailbox. should be to the right of the driveway"): just past
+                // the right-hand edge of his drive as seen from the street (the house frame's +u)
+                var right = new Vector2(h.frame.R.x, h.frame.R.z) * h.frame.M;
+                side = Vector2.Dot(tan, right) >= 0f ? 1f : -1f;
+                alongM = dp.widths[dp.widths.Length - 1] * 0.5f + 0.95f;
+            }
             Vector2 along = tan * side;
-            Vector2 p = q + toHouse * (half + 0.45f + 0.18f + 0.55f) + along * (3.4f + (h.style == HouseStyle.D ? 0f : 0.5f));
-            if (c.OnDrive(p, 0.8f)) p = q + toHouse * (half + 1.2f) - along * 4.2f;
-            if (c.OnDrive(p, 0.8f) || c.hood.RoadClearance(p) < 0.4f) return;
+            Vector2 p = q + toHouse * (half + 0.45f + 0.18f + 0.55f) + along * alongM;
+            if (h.dan) { int k = 0; while (c.OnDrive(p, 0.8f) && k++ < 12) p += along * 0.25f; }   // Round 11: Dan's stays on the right of his drive
+            else if (c.OnDrive(p, 0.8f)) p = q + toHouse * (half + 1.2f) - along * 4.2f;
+            if (c.OnDrive(p, 0.8f) || c.hood.RoadClearance(p) < 0.4f) { if (h.dan) c.Log.Append("BUG-006 Dan's mailbox: NO ROOM beside his drive; "); return; }
             if (c.hood.InCorridor(p, 1f)) return;   // Round 8: no mailbox on a shortcut's line
             if (c.roadIndex.Covers(p, NoRoad, 0.8f)) return;
             float gy = c.Y(p.x, p.y);
@@ -260,6 +274,7 @@ namespace ChastainRush
             });
             c.Mailboxes3D.End(new Vector3(p.x, gy + 0.7f, p.y), fwd, 0.6f, 1.4f);
             if (flagUp) c.FlagsUp++;
+            if (h.dan) { c.Log.Append("BUG-006 Dan's mailbox: right of his drive; "); c.hood.DanMailbox = p; }
             AddView(c, "mailbox", p, toHouse, q, h.index);   // Round 9: for the smash check in the exe (ExeShotsRunner)
             c.hood.KeepOut(p, 0.9f);
             c.Mailboxes++;

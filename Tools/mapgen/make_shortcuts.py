@@ -326,38 +326,67 @@ def build_sc2():
     tB = (vFrontB + B["D"] / 2) / dvB
     Pb = Pf - h2 * tB                                  # the sliding door in its back wall
     ub = 2.0 - duB * tB
-    # -- 1763: in through its upstairs front (v = D/2 - 1.3) 3.5 m along from its middle; the line runs to a bend 18 m before 1627's door
+    # -- 1763, Round 11 (BUG-013, Dan: "I wanted the jump through a large window and out another one"): a level jump
+    # through a large ground-floor picture window in its front (v = D/2 - 1.3, the entry part of a style A front) WIN_U m
+    # along from its middle, across the living room (in the air, or on its floor), and out through a large window in its
+    # north side wall. The upstairs is out of reach for a jump: the lane leaves 13.75 m from the wall for the ramp, and a
+    # level lip at the upstairs floor with 2 m of air before the wall needs a 5.6 m climb in 11 m (a ramp of 40 degrees or
+    # more with a foot radius of 10 m or less, about 7 g at racing speed). At the ground floor it is a 3.3 m climb.
     vFrontA = A["D"] / 2 - 1.3
-    E = hpt(A, 3.5, vFrontA); BEND = 18.0
+    WIN_U = 3.6
+    E = hpt(A, WIN_U, vFrontA); BEND = 18.0
     Bp = Pb - h2 * BEND; h1 = unit(Bp - E)
     dvA, duA = float(h1 @ A["F"]), float(h1 @ A["ua"])
-    tX = (A["W"] / 2 - 3.5) / duA                      # where the line leaves through the north side wall (u = +W/2)
+    tX = (A["W"] / 2 - WIN_U) / duA                    # where the line leaves through the north side wall (u = +W/2)
     X = E + h1 * tX; vX = vFrontA + dvA * tX
-    note(f"#2 house 1763 (floor {fA:.2f}, upstairs {upA:.2f}): in through the upstairs front {math.degrees(math.acos(min(1.0, -dvA))):.0f} deg off square, out through the north side wall {vX:+.1f} m from its middle, {tX:.1f} m inside; "
+    cos_in, cos_out = -dvA, duA                         # the line against the two walls' normals
+    note(f"#2 house 1763 (floor {fA:.2f}): in through a ground-floor picture window in its front {math.degrees(math.acos(min(1.0, cos_in))):.0f} deg off square, "
+         f"out through a window in its north side wall {math.degrees(math.acos(min(1.0, cos_out))):.0f} deg off square, {vX:+.1f} m from its middle, {tX:.1f} m across the room; "
          f"house 1627 (floor {fB:.2f}, upstairs {upB:.2f}): in through the back wall at u {ub:+.1f}, out through the upstairs front at u +2.0, {tB:.1f} m inside; bend {math.degrees(math.acos(min(1.0, float(h1 @ h2)))):.1f} deg left {BEND:.0f} m before 1627's door")
+    # the windows (heights against the floor): glass from SILL to TOP; the room's floor along the line is at the sill
+    SILL, TOP = 0.45, 2.7                             # (2.7: at 30 m/s the car still rises about 1 m off the lip)
+    WIN_W = 5.6                                         # along the front wall: u 0.8 to 6.4 of the entry part (-0.4 to 7.0)
+    across = WIN_W * cos_in                             # the opening seen along the line
+    WIN_W_OUT = across / cos_out                        # the side window: the same opening seen along the line
+    LIP_HALF = across / 2 - 0.2                         # the ramp's half width at the lip (0.2 m kept for a car a little askew)
+    note(f"#2 windows of 1763: front {WIN_W:.1f} m wide, side {WIN_W_OUT:.1f} m wide, glass {SILL:.2f} to {TOP:.2f} m above the floor; "
+         f"the opening along the line {across:.2f} m wide, the ramp {2 * LIP_HALF:.2f} m wide at its lip (a car 1.85 m wide has {LIP_HALF - 0.925:.2f} m either side)")
     # -- the ramp's foot: as far back along the line as the lane allows (5 m from its centre, plus a little)
     s_foot = 0.0
     while lap_dist(E - h1 * (s_foot + 0.25))[0] >= LANE_CLEAR + 0.6: s_foot += 0.25
     F0 = E - h1 * s_foot
     gF = ground(*F0)
-    CREST_IN = 3.5                                     # the ramp's rounded top ends level this far inside the front wall
-    L_r = s_foot + CREST_IN
-    R1A, R2A = 14.0, 6.0
-    th, ry = two_arcs(upA - (gF - 0.03), L_r, R1A, R2A)
+    GAP, LEVEL, LIP = 2.4, 0.6, 0.65                    # open air before the wall (along the line, at its middle: the wall is at 43 deg, so 0.7 to 4.1 m
+                                                        # across the ramp), the level lip, its height against the floor (0.2 m over the sill)
+    lipY = fA + LIP
+    L_r = s_foot - GAP - LEVEL
+    R1A, R2A = 12.0, 6.0
+    th, ry = two_arcs(lipY - (gF - 0.03), L_r, R1A, R2A)
     def ramp_y(s): return gF - 0.03 + ry(s + s_foot)  # s from the front wall (negative outside)
-    worst = min(ramp_y(s) - ground(*(E + h1 * s)) for s in np.arange(-s_foot, 0, 0.25))
-    note(f"#2 ramp up into house 1763: {L_r:.1f} m from its foot ({s_foot:.1f} m in front of the wall, ground {gF:.2f}) to level on the upstairs floor {CREST_IN} m inside; "
-         f"rises {upA - gF:.2f} m: curved foot (radius {R1A:.0f} m), straight at {math.degrees(th):.0f} deg, rounded top (radius {R2A:.0f} m, the car is held on it); "
-         f"{ramp_y(0) - upA:+.2f} m against the upstairs floor at the wall; lowest {worst:+.2f} m against the ground under it")
-    HW, HWB = 2.6, 3.0      # the passage's half width through 1763 and (wider: a car that lands late on the slope arrives off line) 1627
+    worst = min(ramp_y(s) - ground(*(E + h1 * s)) for s in np.arange(-s_foot, -GAP, 0.25))
+    note(f"#2 ramp to the window of 1763: {s_foot - GAP:.1f} m from its foot ({s_foot:.1f} m in front of the wall, ground {gF:.2f}) to its lip {GAP:.1f} m before the wall "
+         f"(ground there {ground(*(E - h1 * GAP)):.2f}, the lip {lipY:.2f}, {lipY - ground(*(E - h1 * GAP)):.2f} m up); rises {lipY - gF:.2f} m: curved foot (radius {R1A:.0f} m), "
+         f"straight at {math.degrees(th):.0f} deg, rounded top (radius {R2A:.0f} m, held), level for the last {LEVEL} m; lowest {worst:+.2f} m against the ground under it")
+    for v in (8.0, 12.0, 20.0, 27.0):
+        tw = GAP / v; tr = (GAP + tX) / v
+        note(f"#2 at {v:.0f} m/s off the lip: {4.905 * tw * tw:.2f} m lower at the front window, {4.905 * tr * tr:.2f} m lower at the side window (the car's body is about 0.3 to 0.95 m above its wheels)")
+    HW, HWB = across / 2, 3.0  # the passage's half width through 1763 (the windows) and (wider: a car that lands late on the slope arrives off line) 1627
     prisms = []
-    prisms.append(prism("sc2 ramp up into house 1763", "ramp", strip_poly(E, h1, -s_foot, CREST_IN, HW), E, h1,
-                        [(s, ramp_y(s)) for s in np.linspace(-s_foot, CREST_IN, 48)], RAMP, held=True, cut=True))
-    prisms.append(prism("sc2 upstairs floor in house 1763", "floor", strip_poly(E, h1, CREST_IN - 0.2, tX + 0.05, HW), E, h1, [(CREST_IN - 0.2, upA), (tX + 0.05, upA)], FLOOR, held=True))
-    # -- the landing slope: from just under the side wall's sill, straight down, flaring level into 1627's door; its angle
-    # (about 14 degrees) is set so it arrives at 1627's floor exactly
+    def taper_poly(o, u, s0, s1, h0, h1_, left0=None):
+        n = left(u); l0 = h0 if left0 is None else left0
+        return [o + u * s0 - n * h0, o + u * s1 - n * h1_, o + u * s1 + n * h1_, o + u * s0 + n * l0]
+    # (its left side, toward 1763's drive, is straight at the lip's half width: wider, its foot lay over the drive)
+    prisms.append(prism("sc2 ramp to the window of house 1763", "ramp", taper_poly(E, h1, -s_foot, -GAP, 2.6, LIP_HALF, LIP_HALF), E, h1,
+                        [(s, ramp_y(s)) for s in np.linspace(-s_foot, -GAP - LEVEL, 44)] + [(-GAP, lipY)], RAMP, held=True, cut=True))
+    # the room's floor along the line, from wall to wall (the walls cross the line at 43 and 47 degrees)
+    nA = left(h1); wf, ws = V(-A["F"][1], A["F"][0]), V(-A["ua"][1], A["ua"][0])
+    room = [intersect(E - nA * (HW - 0.05), h1, E, wf), intersect(X - nA * (HW - 0.05), h1, X, ws), intersect(X + nA * (HW - 0.05), h1, X, ws), intersect(E + nA * (HW - 0.05), h1, E, wf)]
+    st = [float((q - E) @ h1) for q in room]
+    prisms.append(prism("sc2 floor in house 1763", "floor", room, E, h1, [(min(st), fA + SILL), (max(st), fA + SILL)], FLOOR, held=True))
+    # -- the landing slope: from just under the side window's sill, straight down, flaring level into 1627's door; its angle
+    # (about 10 degrees) is set so it arrives at 1627's floor exactly
     FLARE_R = 31.0
-    y_top = upA - 0.25
+    y_top = fA + SILL - 0.25
     L1 = float(np.linalg.norm(Bp - X)); L_tot = L1 + BEND
     drop_needed = y_top - fB
     lo_, hi_ = 0.05, 0.4
@@ -371,8 +400,8 @@ def build_sc2():
         if d <= L_tot - flare: return y_top - d * math.tan(SLOPE)
         x = L_tot - d
         return fB + FLARE_R - math.sqrt(max(FLARE_R ** 2 - x * x, 0.0))
-    note(f"#2 landing slope: {L_tot:.0f} m from 1763's side wall to 1627's door, {math.degrees(SLOPE):.1f} deg, starting {y_top - upA:+.2f} m against 1763's upstairs floor, "
-         f"level over its last {flare:.1f} m into 1627's door ({fB:.2f}); a level flight off the upstairs edge lands about v*v*{2 * math.tan(SLOPE) / 9.81:.3f} m out")
+    note(f"#2 landing slope: {L_tot:.0f} m from 1763's side wall to 1627's door, {math.degrees(SLOPE):.1f} deg, starting {y_top - fA - SILL:+.2f} m against 1763's room floor, "
+         f"level over its last {flare:.1f} m into 1627's door ({fB:.2f}); a level flight off the room's floor lands about v*v*{2 * math.tan(SLOPE) / 9.81:.3f} m out")
     dX = 0.05
     cut_max = max(ground(*(X + h1 * d)) - land_y(d) for d in np.arange(0, L1, 0.5))
     note(f"#2 the ground's crest behind 1763 stands up to {cut_max:.1f} m above the slope: cut down to it (the slope's prisms are marked 'cut')")
@@ -407,13 +436,16 @@ def build_sc2():
     for hn in (1539, 1615, 1459, 1602, 1919, 1993, 1961):
         note(f"#2 house {hn}: nearest corner {nearest_corner(dense, hn):.1f} m from the line")
     entry_s = station(dense, E - h1 * 4.0)              # the entry plane: on the ramp, well clear of the lane
-    trail = [[0.0, station(dense, F0)], [station(dense, Pf + h2 * 6.0), length(dense)]]
+    trail = []                                          # Round 11: no dirt trail (Dan: "I don't want the dirt path")
     # the houses the line goes through: the two wall crossings (a point on the wall and its outward normal), the passage's
     # half width and, for each wall, the height range of the panel that breaks (MapBuilder.Shortcuts.cs)
     def wall(P, N): return [round(float(P[0]), 3), round(float(P[1]), 3), round(float(N[0]), 5), round(float(N[1]), 5)]
     houses = [
-        {"building": 1763, "a": list(map(float, E)), "b": list(map(float, X)), "half_width": HW, "wall_a": wall(E, A["F"]), "wall_b": wall(X, A["ua"]),
-         "y0_a": round(ramp_y(0), 3), "y1_a": round(upA + 2.35, 3), "y0_b": round(upA - 0.1, 3), "y1_b": round(upA + 2.35, 3), "floor_y": round(fA, 3), "no_entry_gable": True},
+        # Round 11: picture windows (window_a / window_b: the glass's half width along the wall; y0 / y1: the glass's bottom and top;
+        # front_u: the picture window's range along the front, kept free of the house's own ground-floor windows and door)
+        {"building": 1763, "a": list(map(float, E)), "b": list(map(float, X)), "half_width": round(HW, 3), "wall_a": wall(E, A["F"]), "wall_b": wall(X, A["ua"]),
+         "y0_a": round(fA + SILL, 3), "y1_a": round(fA + TOP, 3), "y0_b": round(fA + SILL, 3), "y1_b": round(fA + TOP, 3), "floor_y": round(fA, 3), "no_entry_gable": False,   # Round 11: its small upstairs gable is back (the jump is at the ground floor)
+         "window_a": round(WIN_W / 2, 3), "window_b": round(WIN_W_OUT / 2, 3), "front_u": [round(WIN_U - WIN_W / 2, 3), round(WIN_U + WIN_W / 2, 3)]},
         {"building": 1627, "a": list(map(float, Pb)), "b": list(map(float, Pf)), "half_width": HWB, "wall_a": wall(Pb, -B["F"]), "wall_b": wall(Pf, B["F"]),
          "y0_a": round(fB - 0.1, 3), "y1_a": round(fB + 2.45, 3), "y0_b": round(upB - 0.1, 3), "y1_b": round(upB + 2.35, 3), "floor_y": round(fB, 3), "sliding_door_a": True},
     ]
@@ -421,7 +453,7 @@ def build_sc2():
         "id": "sc2_two_houses", "name": "Two-house drop", "forgives": [2],
         "path": dense, "half_width": 4.0, "trail": trail, "clear_half_width": 6.5,
         "entry_s": entry_s, "prisms": prisms, "open_houses": houses, "jump_houses": [],
-        "jumps": [{"label": "upstairs of house 1763 (out through its side wall)", "x": float(X[0]), "z": float(X[1])}, {"label": "upstairs of house 1627 (out through its front)", "x": float(Pf[0]), "z": float(Pf[1])}],
+        "jumps": [{"label": "through the picture window of house 1763", "x": float((E - h1 * GAP)[0]), "z": float((E - h1 * GAP)[1])}, {"label": "out of the side window of house 1763", "x": float(X[0]), "z": float(X[1])}, {"label": "upstairs of house 1627 (out through its front)", "x": float(Pf[0]), "z": float(Pf[1])}],
         "leave_lap_s": round(float(s_leave - 30), 1), "rejoin_lap_s": float(s_end + 8),
     }
 
@@ -499,9 +531,14 @@ def build_sc6():
     yTop = ground(*q) + 4.6
     yEnd = ground(*(o + u * s_far)) - 0.05
     sf = min(s_front_l, s_front_r)
-    prisms.append(prism("sc6 landing deck behind house 1641", "landing", deck_poly, o, u, [(sf, yTop), (max(s_front_l, s_front_r) + 2.0, yTop - 0.4), (s_far, yEnd)], DECK))
-    note(f"#6 landing deck: front along 1641's back wall (stations {s_front_l:.1f} / {s_front_r:.1f}), right edge {r0:.1f} m from the line at the front (house 1622's corner), "
-         f"{yTop - ground(*q):.1f} m up, to the ground at {s_far:.0f} m; slope {math.degrees(math.atan((yTop - 0.4 - yEnd) / (s_far - max(s_front_l, s_front_r) - 2))):.1f} deg")
+    # Round 11 (BUG-007, Dan: "is the reception ramp really necesarry? I think it will be ok without it"): no landing deck.
+    # The car comes down on the ground behind 1641. That ground is a landing zone instead: RampHold keeps the car's speed on
+    # touching down there, as it did on the deck (from the back wall to 75 m, 6.5 m either side of the line)
+    LZ_FAR, LZ_HALF = 75.0, 6.5
+    landing_zone = [o + u * sf - n * LZ_HALF, o + u * LZ_FAR - n * LZ_HALF, o + u * LZ_FAR + n * LZ_HALF, o + u * sf + n * LZ_HALF]
+    gp = [ground(*(o + u * t)) for t in np.arange(sf, LZ_FAR, 1.0)]
+    note(f"#6 no landing deck: the car lands on the ground behind 1641 (a landing zone from its back wall, station {sf:.1f}, to {LZ_FAR:.0f} m, {LZ_HALF} m either side); "
+         f"the ground along the line falls {gp[0] - gp[-1]:.1f} m over it, steepest {max(abs(a - b) for a, b in zip(gp[:-1], gp[1:])) * 100:.0f}% over 1 m; the eaves are about {yTop - 4.6 + 5.9 - ground(*q):.1f} m above the ground at the back wall")
     land_end = o + u * s_far
     # the line bends right off the deck's far half toward the gap between 713 and 1052, then sweeps left round 713's
     # front yard on to the lane in one arc
@@ -518,12 +555,13 @@ def build_sc6():
                                                      # kicker's foot reached back across the lane and fired from the road)
     lapd = min(float(np.linalg.norm(K0 - lap(s_))) for s_ in np.arange(700, 780, 0.5))
     note(f"#6 kicker foot {lapd:.1f} m from the lane's centreline (the lane is 8 m wide)")
-    trail = [[0.0, station(pts, K0)], [station(pts, land_end) + 1.0, length(pts)]]
+    trail = []                                          # Round 11: no dirt trail
     lipP = o + u * lip_t
     return {
         "id": "sc6_over_house", "name": "Rooftop leap", "forgives": [5], "entry_half_width": 3.5, "entry_margin": 1.0,
         "path": pts, "half_width": 4.0, "trail": trail, "clear_half_width": 6.5,
         "entry_s": entry_s, "prisms": prisms, "open_houses": [], "jump_houses": [{"building": 1641}],
+        "landing_zones": [{"poly": [round(float(v), 2) for p_ in landing_zone for v in p_]}],
         "jumps": [{"label": "kicker over house 1641", "x": float(lipP[0]), "z": float(lipP[1])}],
         "leave_lap_s": 729, "rejoin_lap_s": float(REJOIN_6),
     }
@@ -545,7 +583,7 @@ def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
 out = {"source": "Tools/mapgen/make_shortcuts.py (hand-made design; re-run after mapgen). Heights are absolute world y.", "route": "chastain_glen_loop", "notes": notes, "shortcuts": []}
 for sc in shortcuts:
     o = dict(sc); o["path"] = [v for p in sc["path"] for v in rnd(p)]
-    o["trail"] = [round(v, 2) for a, b in sc["trail"] for v in (a, b)]; o["entry_s"] = round(sc["entry_s"], 2)
+    o["trail"] = []; o["entry_s"] = round(sc["entry_s"], 2)
     out["shortcuts"].append(o)
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)

@@ -14,12 +14,15 @@ namespace ChastainRush
     //   be taken this lap (the checkpoints it forgives are not yet passed); dimmed (no beams) once it is of no use.
     //   (Racer marks its shortcuts with a dirt trail painted into the ground and no arch; the trail is built into the map here
     //   too, MapBuilder.Shortcuts.cs; the arch and chevron are this game's checkpoint look in the shortcut colour.)
+    //   Round 11 (Dan: shortcuts are found, not signposted): the shortcut arch, beams and chevron are no longer built. The
+    //   code stays for reference; nothing marks a shortcut.
     public sealed class RaceMarkers : MonoBehaviour
     {
         class Arch { public GameObject root; public Renderer[] paint; public GameObject beams; public RaceGate gate; }
         readonly List<Arch> arches = new List<Arch>();
         readonly List<(Arch arch, GameObject sign, RaceShortcut sc)> shortcutMarks = new List<(Arch, GameObject, RaceShortcut)>();
         Arch finish;
+        static readonly bool MarkShortcuts = false;   // Round 11: off (no arches, beams or signs on shortcuts)
         RaceController race;
         Material fallbackWhite, fallbackBlack, fallbackNext, fallbackLater, fallbackMissed, fallbackShortcut;
 
@@ -30,7 +33,7 @@ namespace ChastainRush
             arches.Clear(); shortcutMarks.Clear();
             finish = MakeFinish(r.Route.Gate);
             foreach (var g in r.Route.Checkpoints) arches.Add(MakeCheckpoint(g));
-            foreach (var sc in r.Route.Shortcuts) shortcutMarks.Add((MakeShortcutEntry(sc), MakeTurnSign(r.Route, sc), sc));
+            if (MarkShortcuts) foreach (var sc in r.Route.Shortcuts) shortcutMarks.Add((MakeShortcutEntry(sc), MakeTurnSign(r.Route, sc), sc));
         }
 
         public void Refresh(RaceController r)

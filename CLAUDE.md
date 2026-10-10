@@ -157,7 +157,15 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-**Active work is Round 11 in `TODO.md`:** Dan's third debug report (13
+**Round 11 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** #2 is now a jump through a
+ground-floor picture window of 1763 and out a side window (an upstairs window needs a 40 deg ramp); no trails or markers
+on shortcuts; #6 lands on the ground (a `LandingZone`); cul-de-sac bulbs, curb returns and lawn-proof road, drive and
+sidewalk surfaces across Chastain Glen (`MapBuilder.Round11.cs`); Dan's mailbox and hydrant; the lake walk; the pool road;
+the monuments turned in. Checks: `ChastainRush.exe -exeRound11 <dir>`; top-down pictures of the built scene:
+`ChastainRush.TopDownShots.Run -topDownOut <dir> -topDownRects "name:x0:z0:x1:z1;..."` (Editor batch, with graphics).
+Imported from Racer in Round 11: nothing.
+
+**Round 11 brief (done):** Dan's third debug report (13
 entries): shortcut #2's first house becomes a real jump through a large
 window, no dirt trails, no landing deck on #6, clean driveways, roads and
 sidewalks across Chastain Glen, bigger cul-de-sacs, the walk moved to the

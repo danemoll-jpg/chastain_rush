@@ -61,7 +61,8 @@ namespace ChastainRush
                     for (int i = 0; i <= n; i++) { float t = i / (float)n; pts.Add((1 - t) * (1 - t) * S + 2 * (1 - t) * t * C1 + t * t * E); }
                     float w0 = h.style == HouseStyle.D ? 3.8f : 5.8f;
                     var widths = new float[pts.Count];
-                    for (int i = 0; i < pts.Count; i++) { float t = i / (float)n; widths[i] = w0 + (t > 0.78f ? (t - 0.78f) / 0.22f * 1.5f : 0f); }
+                    bool bulb = InBulbZone(E, 1f);   // Round 11: a drive that ends on a cul-de-sac's bulb does not widen at its mouth
+                    for (int i = 0; i < pts.Count; i++) { float t = i / (float)n; widths[i] = w0 + (t > 0.78f && !bulb ? (t - 0.78f) / 0.22f * 1.5f : 0f); }
                     DrivePlans[h.index] = new DrivePlan { pts = pts, widths = widths, asphalt = h.dan || Hash01(h.seed, 120) < 0.28f };
                     for (int i = 0; i + 1 < pts.Count; i++) DriveSegs.Add((pts[i], pts[i + 1], widths[i] * 0.5f));
                 }
@@ -149,46 +150,92 @@ namespace ChastainRush
                 }
                 var outLine = ToPoints(outR.points); var inLine = ToPoints(inR.points);
                 float outHalf = outR.width * 0.5f;
-                // --- the sidewalk: from the parking lot's edge down to the road, then along it to the entrance lane's verge
-                var walkRoad = Offset(hw + 2.58f).Where(p => p.x >= 2806f && DistToLine(p, outLine) - outHalf > 2.2f && p.x < 2935f).ToList();
-                if (walkRoad.Count < 2) return;
-                PoolWalk = new List<Vector2>();
-                var join = walkRoad[0];
-                var bend = join + new Vector2(-1.5f, 3.5f);
-                PoolWalk.AddRange(Densify(new List<Vector2> { Bug002WalkStart, bend }, 2f));
-                PoolWalk.AddRange(walkRoad);
-                PoolWalk = Smooth(PoolWalk, 2);
-                // --- benches on the pond side of the walk, facing it, along the stretch in front of the pond
-                foreach (float bx in new[] { 2862f, 2886f, 2910f })
+                // --- the sidewalk. Round 11 (BUG-009, BUG-011, Dan: "this sidewalk is in the wrong place. It is the
+                // neighborhood sidewalk and should be closer to the lake", "closer to the lake/pool and inside the fence"): it
+                // no longer runs along the road. From the parking lot's edge it runs inside the wooden fence along the road,
+                // past the pool's fence (2.2 m off it) and along the lake shore (4.5 m off the water), then out to the entrance
+                // lane's verge through a gap in the rail fence. Its height follows the ground.
+                var fenceAt = Offset(hw + 4.45f);
+                var pondC = PondRing.Count > 2 ? RingCentroid(PondRing) : PoolCentre;
+                var clubhouse = PoolCentre + (PoolCentre - pondC).normalized * (PoolDeckHalfU + 6.0f);   // as BuildPoolSite places it
+                bool Blocked(Vector2 p)
                 {
-                    int k = walkRoad.FindIndex(p => p.x >= bx); if (k < 1) continue;
-                    var dir = (walkRoad[k] - walkRoad[k - 1]).normalized; var north = new Vector2(-dir.y, dir.x); if (north.y < 0f) north = -north;
-                    var bp = walkRoad[k] + north * 1.45f;
-                    if (DistToPond(bp) < 2.5f) continue;
-                    Benches.Add((bp, -north));
+                    if (PondRing.Count > 2 && DistToPond(p) < 4.5f) return true;
+                    if (PoolDeckHalfU > 0f) { var d = p - PoolCentre; if (Mathf.Abs(Vector2.Dot(d, PoolU)) < PoolDeckHalfU + 0.8f + 2.2f && Mathf.Abs(Vector2.Dot(d, PoolV)) < PoolDeckHalfV + 0.8f + 2.2f) return true; }
+                    if ((p - clubhouse).magnitude < 5.5f || InRing(p, ParkingRing)) return true;
+                    return false;
+                }
+                // where the walk meets the entrance's outbound lane: on its west verge, 13 m north of the west monument's line
+                var laneEnd = PointAtZ(outLine, MonumentZ + 13f, out var lt);
+                var laneW = new Vector2(-lt.y, lt.x); if (laneW.x > 0f) laneW = -laneW;
+                var walkEnd = laneEnd + laneW * (outHalf + 1.2f);
+                var shore = new List<Vector2>();
+                float xLast = walkEnd.x - 12f;
+                for (float x = Bug002WalkStart.x + 6f; x <= xLast; x += 2f)
+                {
+                    float zf = PointAtX(fenceAt, x) + 2.6f, best = zf;
+                    for (float z = zf; z < zf + 30f; z += 0.5f) { if (Blocked(new Vector2(x, z))) break; best = z; }
+                    shore.Add(new Vector2(x, best));
+                }
+                if (shore.Count < 4) return;
+                // no tight detours (round the clubhouse): each point at the lowest of its neighbours within 14 m
+                shore = shore.Select((q, i) => new Vector2(q.x, shore.Where((o, j) => Mathf.Abs(j - i) <= 7).Min(o => o.y))).ToList();
+                PoolWalk = new List<Vector2> { Bug002WalkStart };
+                PoolWalk.AddRange(shore);
+                PoolWalk.Add(walkEnd + laneW * 3f); PoolWalk.Add(walkEnd);
+                PoolWalk = Densify(Smooth(Smooth(PoolWalk, 2), 3), 2f);
+                // --- benches on the lake side of the walk, facing the lake, along the shore
+                foreach (float bx in new[] { 2862f, 2880f, 2898f })
+                {
+                    int k = PoolWalk.FindIndex(p => p.x >= bx); if (k < 1) continue;
+                    var dir = (PoolWalk[k] - PoolWalk[k - 1]).normalized; var north = new Vector2(-dir.y, dir.x); if (north.y < 0f) north = -north;
+                    var bp = PoolWalk[k] + north * 1.45f;
+                    if (DistToPond(bp) < 2.0f) continue;
+                    var toLake = ClosestOnRing(bp, PondRing) - bp;
+                    Benches.Add((bp, toLake.normalized));
                     KeepOut(bp, 1.4f);
                 }
+                var join = PoolWalk[0];
                 // --- the wooden fence in front of the pool area, behind the sidewalk, with a gap where the walk comes down
                 var fenceLine = Offset(hw + 4.45f).Where(p => p.x >= 2776f && p.x <= 2860f).ToList();
-                var connector = PoolWalk.Where(p => p.y > join.y + 0.5f && p.x < join.x).ToList(); connector.Add(join);   // only the stretch down from the lot
-                var run = new FenceRun { kind = FenceKind.Privacy, seed = 9003 };
-                foreach (var p in fenceLine)
-                {
-                    if (DistToLine(p, connector) < 2.2f) { if (run.pts.Count >= 2) Fences.Add(run); run = new FenceRun { kind = FenceKind.Privacy, seed = 9004 }; continue; }
-                    run.pts.Add(p);
-                }
+                var run = new FenceRun { kind = FenceKind.Privacy, seed = 9003 };   // Round 11: whole (the walk stays inside it)
+                foreach (var p in fenceLine) run.pts.Add(p);
                 if (run.pts.Count >= 2) Fences.Add(run);
                 // --- the two brick monuments, either side of the entrance (outbound lane on the west, inbound on the east),
-                // facing New Chastain Road, turned 15 degrees outward
+                // facing New Chastain Road. Round 11 (BUG-012, Dan: "they should be slanted the other way so that you see them
+                // when you are pulling into the neighborhood"): each is turned 15 degrees in, toward the entrance's middle
+                // (Round 9 had them turned 15 degrees out)
                 var nd = (line[line.Count - 1] - line[0]).normalized; if (nd.x < 0f) nd = -nd;      // east
                 var south = new Vector2(nd.y, -nd.x); if (south.y > 0f) south = -south;
                 var pw = PointAtZ(outLine, MonumentZ, out var tw); var pe = PointAtZ(inLine, MonumentZ, out var te);
                 var westN = new Vector2(-tw.y, tw.x); if (westN.x > 0f) westN = -westN;
                 var eastN = new Vector2(-te.y, te.x); if (eastN.x < 0f) eastN = -eastN;
                 Vector2 mw = pw + westN * (outHalf + 4.4f), me = pe + eastN * (inR.width * 0.5f + 4.4f);
-                Monuments.Add((mw, (south - nd * 0.27f).normalized));
-                Monuments.Add((me, (south + nd * 0.27f).normalized));
+                Monuments.Add((mw, (south + nd * 0.27f).normalized));
+                Monuments.Add((me, (south - nd * 0.27f).normalized));
                 foreach (var m in Monuments) KeepOut(m.p, 4.0f);
+            }
+
+            // Round 11: the height (z) of a west-to-east line at x
+            static float PointAtX(List<Vector2> line, float x)
+            {
+                for (int i = 0; i + 1 < line.Count; i++)
+                {
+                    var a = line[i]; var b = line[i + 1];
+                    if ((a.x - x) * (b.x - x) <= 0f && Mathf.Abs(b.x - a.x) > 1e-4f) return Mathf.Lerp(a.y, b.y, (x - a.x) / (b.x - a.x));
+                }
+                return x < line[0].x ? line[0].y : line[line.Count - 1].y;
+            }
+
+            static Vector2 ClosestOnRing(Vector2 p, List<Vector2> ring)
+            {
+                Vector2 best = p; float bd = float.MaxValue;
+                for (int i = 0; i < ring.Count; i++)
+                {
+                    var a = ring[i]; var ab = ring[(i + 1) % ring.Count] - a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
+                    var c = a + ab * t; float d = (c - p).sqrMagnitude; if (d < bd) { bd = d; best = c; }
+                }
+                return best;
             }
 
             static List<Vector2> Smooth(List<Vector2> pts, int iterations)
@@ -290,7 +337,7 @@ namespace ChastainRush
                         var O = new Vector2(pr.origin[0], pr.origin[1]); var U = new Vector2(pr.axis[0], pr.axis[1]).normalized;
                         float s0 = float.MaxValue, s1 = float.MinValue; float x0 = float.MaxValue, x1 = float.MinValue, z0 = float.MaxValue, z1 = float.MinValue;
                         foreach (var q in poly) { float sq = Vector2.Dot(q - O, U); s0 = Mathf.Min(s0, sq); s1 = Mathf.Max(s1, sq); x0 = Mathf.Min(x0, q.x); x1 = Mathf.Max(x1, q.x); z0 = Mathf.Min(z0, q.y); z1 = Mathf.Max(z1, q.y); }
-                        const float Bank = 0.85f, Reach = 3f;
+                        const float Bank = 0.85f, Reach = 4.5f;   // Round 11: 4.5 m (the cut behind 1763 is up to 3.2 m deep now)
                         int changed = 0; float deepest = 0f;
                         EditTerrain(terrain, Rect.MinMaxRect(x0 - Reach, z0 - Reach, x1 + Reach, z1 + Reach), (x, z, y) =>
                         {
@@ -450,11 +497,11 @@ namespace ChastainRush
             // --- BUG-002: the sidewalk and its benches
             if (hood.PoolWalk != null)
             {
-                c.Ground.Tint = ConcreteLight;
+                c.Walks.Tint = ConcreteLight;
                 foreach (var piece in Runs(hood.PoolWalk, 96f))
                 {
                     var w = new float[piece.Count]; for (int k = 0; k < w.Length; k++) w[k] = 1.4f;
-                    RibbonGrid(c.Ground.At(piece[piece.Count / 2]), piece, w, 0.035f, c.terrain, 2);
+                    RibbonGridMax(c.Walks.At(piece[piece.Count / 2]), piece, w, WalkLift, c.terrain, 2);   // Round 11: the sidewalk material, clear of the lawn
                 }
                 float len = 0f; for (int i = 1; i < hood.PoolWalk.Count; i++) len += Vector2.Distance(hood.PoolWalk[i - 1], hood.PoolWalk[i]);
                 c.WalkMetres += Mathf.RoundToInt(len);

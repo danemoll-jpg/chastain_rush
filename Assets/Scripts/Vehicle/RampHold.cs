@@ -43,7 +43,7 @@ namespace ChastainRush
             if (car.GroundedWheels == 0) airTime += Time.fixedDeltaTime;
             else
             {
-                if (airTime > 0.25f && surface != null && surface.landing)
+                if (airTime > 0.25f && ((surface != null && surface.landing) || (hit.collider is TerrainCollider && LandingZone.Contains(hit.point))))   // Round 11: or the ground of a landing zone
                 {
                     var v0 = car.Body.linearVelocity; float into = Vector3.Dot(v0, hit.normal);
                     if (into < 0f)

@@ -30,6 +30,7 @@ namespace ChastainRush
             public readonly HashSet<int> HouseSet = new HashSet<int>();
             public readonly List<HouseSpec> Houses = new List<HouseSpec>();
             public HouseSpec Dan;
+            public Vector2? DanMailbox;   // Round 11 (BUG-006): where his mailbox went (the hydrant keeps clear of it)
             public readonly HashSet<int> DriveSet = new HashSet<int>();
             public readonly List<RoadSeg> Segs = new List<RoadSeg>();
             public readonly List<FenceRun> Fences = new List<FenceRun>();
@@ -47,7 +48,7 @@ namespace ChastainRush
             readonly HashSet<int> roadSet = new HashSet<int>();
             public bool IsAreaRoad(int i) => Present && roadSet.Contains(i);
             public bool OwnsBuilding(int i) => Present && (HouseSet.Contains(i) || Replaced.Contains(i));   // Round 9: and the pavilion, now a gazebo
-            public bool OwnsDriveway(int i) => Present && DriveSet.Contains(i);
+            public bool OwnsDriveway(int i) => Present && (DriveSet.Contains(i) || i == PoolRoadIndex);   // Round 11: and the road into the pool's lot
             public bool OwnsPond(int waterIndex) => Present && waterIndex == PondIndex;
             public void KeepOut(Vector2 c, float r) => discs.Add((c, r));
 
@@ -69,16 +70,22 @@ namespace ChastainRush
 
             // ---------------------------------------------------------------- roads
 
-            public bool Nearest(Vector2 p, out Vector2 q, out float half, out Vector2 tangent, out float dist)
+            public bool Nearest(Vector2 p, out Vector2 q, out float half, out Vector2 tangent, out float dist, bool byEdge = true)
             {
                 q = p; half = 4f; tangent = Vector2.right; dist = float.MaxValue;
+                float best = float.MaxValue;
                 foreach (var s in Segs)
                 {
                     var ab = s.b - s.a;
                     float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
                     var c = s.a + ab * t;
                     float d = (c - p).magnitude;
-                    if (d < dist) { dist = d; q = c; half = s.half; tangent = ab.sqrMagnitude < 1e-6f ? Vector2.right : ab.normalized; }
+                    // Round 11: the nearest pavement's EDGE (a cul-de-sac's bulb is nearer than the end of its road's centreline)
+                    float key = byEdge ? d - s.half : d;   // (the houses face their streets as before: by the centreline)
+                    if (key >= best) continue;
+                    best = key;
+                    // Round 11: a cul-de-sac bulb is a point with a radius: along its edge is round it
+                    dist = d; q = c; half = s.half; tangent = ab.sqrMagnitude < 1e-6f ? (d > 1e-4f ? new Vector2(-(p - c).y, (p - c).x) / d : Vector2.right) : ab.normalized;
                 }
                 return dist < float.MaxValue;
             }
@@ -115,8 +122,11 @@ namespace ChastainRush
                 if (PoolRing != null) foreach (var p in PoolRing) { x0 = Mathf.Min(x0, p.x); z0 = Mathf.Min(z0, p.y); }
                 Bounds = Rect.MinMaxRect(x0 - 40f, z0 - 40f, x1 + 40f, z1 + 40f);
                 PlanPool();
+                PlanPoolRoad();    // Round 11 (BUG-010): the way from Grasmere Court into the pool's parking lot is a road
                 PlanHouses();
+                PlanStreets();     // Round 11: junction corners and cul-de-sac bulbs (after the houses face their streets, before the drives)
                 PlanDrives();      // Round 9: before the trees, so none is left standing on a drive
+                ResolveDriveOverlaps();   // Round 11: no two drives overlap
                 PlanGazebo();
                 PlanDriveOwnership();
                 PlanFences();
@@ -131,7 +141,7 @@ namespace ChastainRush
                     var ring = ToPoints(b.footprint);
                     if (ring.Count < 3 || !BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) continue;
                     float area = Mathf.Abs(PolyArea(ring));
-                    Nearest(c, out Vector2 q, out float roadHalf, out Vector2 tan, out _);
+                    Nearest(c, out Vector2 q, out float roadHalf, out Vector2 tan, out _, false);
                     Vector2 toRoad = (q - c).normalized;
                     Vector2[] cand = { U, -U, V, -V };
                     Vector2 F = cand[0]; float best = -2f;
@@ -338,7 +348,8 @@ namespace ChastainRush
                             Vector2 t = (dirIn + dirOut).normalized; if (t.sqrMagnitude < 1e-6f) t = dirOut;
                             Vector2 nrm = new Vector2(-t.y, t.x) * side;
                             Vector2 p = pts[i] + nrm * (r.width * 0.5f + 4.2f);
-                            bool keep = (DistToPond(p) < 15f || RailExtension(r, p)) && !InPolygon(p, PondRing) && RoadClearanceExcept(p, ri) > 3.2f && !InsideHouse(p, 2f, null) && !InRing(p, ParkingRing) && !(PoolRing != null && DistToRing(p, PoolRing) < 6f);
+                            bool keep = (DistToPond(p) < 15f || RailExtension(r, p)) && !InPolygon(p, PondRing) && RoadClearanceExcept(p, ri) > 3.2f && !InsideHouse(p, 2f, null) && !InRing(p, ParkingRing) && !(PoolRing != null && DistToRing(p, PoolRing) < 6f)
+                                        && (PoolWalk == null || DistToLine(p, PoolWalk) > 1.7f);   // Round 11: a gap where the lake walk comes through
                             if (keep) run.pts.Add(p);
                             else { if (run.pts.Count >= 3) Fences.Add(run); run = new FenceRun { kind = FenceKind.Rail, seed = ri }; }
                         }
@@ -405,6 +416,7 @@ namespace ChastainRush
                 if (InCorridor(p)) return true;
                 if (OnDrivePlan(p, 0.4f)) return true;                                              // Round 9: never on a drive
                 if (PoolWalk != null && Neighborhood.DistToLine(p, PoolWalk) < 1.6f) return true;   // Round 9: nor on the new sidewalk
+                if (PoolRoad != null && Neighborhood.DistToLine(p, PoolRoad) < PoolRoadWidth * 0.5f + 1.2f) return true;   // Round 11: nor on the pool's road
                 foreach (var dsc in discs) if ((p - dsc.c).sqrMagnitude < dsc.r * dsc.r) return true;
                 return false;
             }

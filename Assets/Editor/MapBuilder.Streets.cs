@@ -19,10 +19,14 @@ namespace ChastainRush
             var centres = hood.Houses.Select(h => h.footprintCentre).ToList();
             var lampBrown = new Color(0.27f, 0.22f, 0.18f); var lampHead = new Color(0.22f, 0.22f, 0.24f);
             int lampCount = 0, hydrantCount = 0;
+            // Round 11 (BUG-006, Dan: "the hydrant should be in my yard instead of the neighbors"): the hydrant that stands in
+            // front of a neighbour's lot next to Dan's is put in front of Dan's own lot instead (DanHydrant)
+            Vector2 danFront = default; bool danHydrantDone = hood.Dan == null;
+            if (hood.Dan != null) { var fp = hood.Dan.frame.P(0f, 0f, hood.Dan.D / 2f); hood.Nearest(new Vector2(fp.x, fp.z), out danFront, out _, out _, out _); }
             foreach (int ri in hood.Area.roads)
             {
                 var r = c.map.roads[ri];
-                var pts = Densify(ToPoints(r.points), 2f);
+                var pts = Densify(ToPoints(r.points), 1f);   // Round 11: 1 m (was 2 m), so curbs and sidewalks follow the ground
                 int n = pts.Count; if (n < 2) continue;
                 float hw = r.width * 0.5f;
                 var nrm = new Vector2[n]; var arc = new float[n];
@@ -41,7 +45,9 @@ namespace ChastainRush
                     {
                         int j = i + 1;
                         Vector2 mid = (pts[i] + pts[j]) * 0.5f + (nrm[i] + nrm[j]).normalized * side * (hw + 0.55f);
-                        if (c.roadIndex.Covers(mid, r, 1.3f) || c.OnDrive(mid, 0.3f)) continue;
+                        // Round 11: off any other road that does not continue this one (BUG-008), and where a curb return or a
+                        // cul-de-sac's ring takes over
+                        if (hood.OtherRoadCovers(ri, mid, 0.65f) || hood.InCornerZone(ri, mid, hw) || hood.InBulbZone(mid, 0.6f) || hood.InMedianFill(mid) || c.OnDrive(mid, 0.3f)) continue;
                         var mb = c.Props.At(mid);
                         Vector3 Pt(int k, float off, float dy) { var p = pts[k] + nrm[k] * side * off; return new Vector3(p.x, Ground(c.terrain, p.x, p.y) + dy, p.y); }
                         mb.Tint = CurbConcrete;
@@ -49,35 +55,42 @@ namespace ChastainRush
                         mb.Tint = CurbFace;
                         Face(mb, Pt(i, hw + 0.45f, 0.08f), Pt(j, hw + 0.45f, 0.08f), Pt(j, hw + 0.45f, 0.20f), Pt(i, hw + 0.45f, 0.20f), new Vector3(-nrm[i].x * side, 0f, -nrm[i].y * side));
                         Face(mb, Pt(i, hw + 0.63f, -0.1f), Pt(j, hw + 0.63f, -0.1f), Pt(j, hw + 0.63f, 0.20f), Pt(i, hw + 0.63f, 0.20f), new Vector3(nrm[i].x * side, 0f, nrm[i].y * side));
-                        c.CurbMetres += 2;
+                        c.CurbMetres += 1;
                     }
-                    // --- sidewalk: 1.4 m wide, 1.25 m of grass between it and the curb; only along houses, never into the pond
+                    // --- sidewalk: 1.4 m wide, 1.25 m of grass between it and the curb; only along houses, never into the pond.
+                    // Round 11 (BUG-001, 003, 004: "the sidewalks arent broken like this"): a grid that stands clear of the lawn,
+                    // in its own material over the drives it crosses; the stretch "along houses" is joined over gaps under 24 m
+                    // and stretches under 10 m are left out, so it no longer comes and goes in short pieces; it stops where a
+                    // curb return or a cul-de-sac's ring takes over, and on any other road
+                    var walkP = new Vector2[n]; var along = new bool[n];
+                    for (int i = 0; i < n; i++)
+                    {
+                        walkP[i] = pts[i] + nrm[i] * side * (hw + 2.58f);
+                        foreach (var hc in centres)
+                        {
+                            var d = hc - pts[i];
+                            if (d.sqrMagnitude < 26f * 26f && Vector2.Dot(d, nrm[i] * side) > 2f) { along[i] = true; break; }
+                        }
+                    }
+                    Smooth1D(along, arc, 24f, 10f);
                     var run = new List<Vector2>();
                     void Flush()
                     {
-                        if (run.Count >= 2)
+                        if (run.Count >= 3)
                         {
-                            var w = new float[run.Count]; for (int k = 0; k < w.Length; k++) w[k] = 1.4f;
-                            foreach (var piece in Runs(run, 96f))
-                            {
-                                var ww = new float[piece.Count]; for (int k = 0; k < ww.Length; k++) ww[k] = 1.4f;
-                                c.Ground.Tint = ConcreteLight;
-                                RibbonVar(c.Ground.At(piece[piece.Count / 2]), piece, ww, 0.035f, c.terrain);
-                            }
-                            c.WalkMetres += Mathf.RoundToInt(run.Count * 2f);
+                            var path = Densify(Chaikin(run, 2), 1f);   // the offset of a bent road zig-zags: smoothed
+                            var w = new float[path.Count]; for (int k = 0; k < w.Length; k++) w[k] = 1.4f;
+                            c.Walks.Tint = ConcreteLight;
+                            RibbonGridMax(c.Walks.At(path[path.Count / 2]), path, w, WalkLift, c.terrain, 2);
+                            c.WalkMetres += run.Count;
                         }
                         run.Clear();
                     }
                     for (int i = 0; i < n; i++)
                     {
-                        Vector2 p = pts[i] + nrm[i] * side * (hw + 2.58f);
-                        bool houseSide = false;
-                        foreach (var hc in centres)
-                        {
-                            var d = hc - pts[i];
-                            if (d.sqrMagnitude < 26f * 26f && Vector2.Dot(d, nrm[i] * side) > 2f) { houseSide = true; break; }
-                        }
-                        bool ok = houseSide && !c.roadIndex.Covers(p, r, 2.0f) && hood.DistToPond(p) > 1.5f && !Neighborhood.InRing(p, hood.ParkingRing);
+                        var p = walkP[i];
+                        bool ok = along[i] && !hood.OtherRoadCovers(ri, p, 0.75f) && !hood.NearOtherRoad(ri, p, 1.8f) && !hood.InCornerZone(ri, p, hw, 1.0f) && !hood.InBulbZone(p, 2.4f)
+                                  && hood.DistToPond(p) > 1.5f && !Neighborhood.InRing(p, hood.ParkingRing);
                         if (ok) run.Add(p); else Flush();
                     }
                     Flush();
@@ -88,6 +101,7 @@ namespace ChastainRush
                         int k = Array.FindIndex(arc, a => a >= s0); if (k < 1) continue;
                         Vector2 p = Vector2.Lerp(pts[k - 1], pts[k], Mathf.InverseLerp(arc[k - 1], arc[k], s0)) + nrm[k] * side * (hw + 1.3f);
                         if (c.roadIndex.Covers(p, r, 2.5f) || c.OnDrive(p, 1.2f) || hood.DistToPond(p) < 3f || Neighborhood.InRing(p, hood.ParkingRing)) continue;
+                        if (hood.InCornerZone(ri, p, hw) || hood.InBulbZone(p, 1.6f)) continue;   // Round 11: not on a curb return or in a bulb
                         if (hood.InCorridor(p, 1.5f)) { c.ShortcutCleared++; continue; }   // Round 8: no lamp on a shortcut's line
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
@@ -113,7 +127,13 @@ namespace ChastainRush
                         int k = Array.FindIndex(arc, a => a >= s0); if (k < 1) continue;
                         Vector2 p = Vector2.Lerp(pts[k - 1], pts[k], Mathf.InverseLerp(arc[k - 1], arc[k], s0)) + nrm[k] * side * (hw + 1.1f);
                         if (c.roadIndex.Covers(p, r, 2.5f) || c.OnDrive(p, 1.5f) || hood.DistToPond(p) < 3f) continue;
+                        if (hood.InCornerZone(ri, p, hw) || hood.InBulbZone(p, 1.6f)) continue;   // Round 11: not on a curb return or in a bulb
                         if (hood.InCorridor(p, 1.5f)) { c.ShortcutCleared++; continue; }   // Round 8: no hydrant on a shortcut's line
+                        if (!danHydrantDone && (p - danFront).sqrMagnitude < 24f * 24f)
+                        {
+                            var dh = DanHydrant(c, p);
+                            if (dh.HasValue) { p = dh.Value; danHydrantDone = true; }
+                        }
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
                         // Round 10 (items 8, 9): breakable, and its water starts when it goes (HydrantWater)
@@ -127,6 +147,70 @@ namespace ChastainRush
                 }
             }
             c.Lamps = lampCount; c.Hydrants = hydrantCount;
+            BuildStreetCorners(c);   // Round 11: curbs and sidewalks round the curb returns and the cul-de-sac bulbs
+        }
+
+        // Round 11: a yes / no along a street (at arc lengths 'arc'): gaps of 'no' shorter than 'join' metres between two 'yes'
+        // (or between a 'yes' and the street's end) become 'yes', then stretches of 'yes' shorter than 'drop' metres become 'no'
+        // Chaikin corner cutting, keeping both ends
+        static List<Vector2> Chaikin(List<Vector2> pts, int iterations)
+        {
+            var P = pts;
+            for (int it = 0; it < iterations; it++)
+            {
+                var Q = new List<Vector2> { P[0] };
+                for (int i = 0; i + 1 < P.Count; i++) { Q.Add(P[i] * 0.75f + P[i + 1] * 0.25f); Q.Add(P[i] * 0.25f + P[i + 1] * 0.75f); }
+                Q.Add(P[P.Count - 1]); P = Q;
+            }
+            return P;
+        }
+
+        static void Smooth1D(bool[] v, float[] arc, float join, float drop)
+        {
+            int n = v.Length;
+            for (int i = 0; i < n;)
+            {
+                if (v[i]) { i++; continue; }
+                int j = i; while (j < n && !v[j]) j++;
+                // a gap at either end of the street counts too (the sidewalk runs on to the junction or the cul-de-sac's ring)
+                bool fill = (i > 0 || j < n) && (i == 0 ? arc[j] - arc[0] : j == n ? arc[n - 1] - arc[i - 1] : arc[j] - arc[i - 1]) < join;
+                if (fill && (i > 0 || j < n) && !(i == 0 && j == n)) for (int k = i; k < j; k++) v[k] = true;
+                i = j;
+            }
+            for (int i = 0; i < n;)
+            {
+                if (!v[i]) { i++; continue; }
+                int j = i; while (j < n && v[j]) j++;
+                if (arc[j - 1] - arc[i] < drop) for (int k = i; k < j; k++) v[k] = false;
+                i = j;
+            }
+        }
+
+        // Round 11 (BUG-006): where the hydrant near Dan's house goes. The one beside his drive on the neighbour's side (his
+        // neighbour's drive runs right next to his, so it read as the neighbour's) goes to the other side of his drive, in the
+        // grass strip past his mailbox: clearly in his yard. Null if p is not that hydrant.
+        static Vector2? DanHydrant(HoodCtx c, Vector2 p)
+        {
+            var hood = c.hood; var dan = hood.Dan;
+            if (!hood.DrivePlans.TryGetValue(dan.index, out var dp)) return null;
+            var right = new Vector2(dan.frame.R.x, dan.frame.R.z) * dan.frame.M; var front = new Vector2(dan.frame.F.x, dan.frame.F.z);
+            var E = dp.pts[dp.pts.Count - 1]; float half = dp.widths[dp.widths.Length - 1] * 0.5f;
+            if (Vector2.Dot(p - E, front) > 1.5f) return null;                       // across the street
+            float uE = Vector2.Dot(E - dan.footprintCentre, right), uP = Vector2.Dot(p - dan.footprintCentre, right);
+            if (uP > uE) { c.Log.Append("BUG-006 hydrant: already on the house side of Dan's drive; "); return null; }
+            Vector2 Strip(float u)
+            {
+                var g = E + right * (u - uE);
+                hood.Nearest(g, out var q, out float hw, out _, out _);
+                return q + (g - q).normalized * (hw + 1.1f);
+            }
+            for (float u = uE + half + 2.6f; u < uE + half + 10f; u += 0.5f)
+            {
+                var q = Strip(u);
+                if (!c.OnDrive(q, 1.5f) && (!hood.DanMailbox.HasValue || (q - hood.DanMailbox.Value).magnitude > 1.6f)) { c.Log.Append($"BUG-006 hydrant: moved from {uE - uP - half:0.0} m off the neighbour's side of Dan's drive to {u - uE - half:0.0} m off its other side, past his mailbox; "); return q; }
+            }
+            c.Log.Append("BUG-006 hydrant: NO ROOM in front of Dan's lot; ");
+            return null;
         }
 
         static void Hydrant(MeshBuilder mb, Vector3 b, float h)

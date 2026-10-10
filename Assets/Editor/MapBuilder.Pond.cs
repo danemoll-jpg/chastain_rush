@@ -388,6 +388,7 @@ namespace ChastainRush
                 BuildPlayground(pk, rg, c.terrain);   // Round 9 (BUG-001): swings, a slide and a climbing frame
             }
             pk.ToObject("ParkingAndPlayground", c.mats.Driveway, root, false, false);
+            BuildPoolRoad(c);   // Round 11 (BUG-010)
             c.Log.Append($"pool site: OSM pool {hood.PoolRing.Count - 1} points, deck {deckY:0.0} m (ground {lo:0.0}..{samples[samples.Count - 1]:0.0}), clubhouse placed by estimate (no footprint in the data), parking {(hood.ParkingRing != null)}, playground {(hood.PlaygroundRing != null)}; ");
         }
     }

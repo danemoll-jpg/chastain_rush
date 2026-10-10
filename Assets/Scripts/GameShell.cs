@@ -39,6 +39,7 @@ namespace ChastainRush
             {
                 if (args[i] == "-exeCheck") { var r = go.AddComponent<ExeCheckRunner>(); r.outputDir = args[i + 1]; }
                 if (args[i] == "-exeRound10") { var r = go.AddComponent<Round10Runner>(); r.outputDir = args[i + 1]; }   // Round 10: items 2i and 10
+                if (args[i] == "-exeRound11") { var r = go.AddComponent<Round11Runner>(); r.outputDir = args[i + 1]; }   // Round 11: items 1, 3 and 10
                 if (args[i] == "-exeShortcut") { var r = go.AddComponent<ShortcutCheckRunner>(); r.outputDir = args[i + 1]; Application.runInBackground = true; }   // Round 10: the shortcut check in the exe (-shortcutOnly <id>, -shortcutSpeeds 20,30, -shortcutNoRace)
                 if (args[i] == "-exeShots" && i + 2 < args.Length) { var r = go.AddComponent<ExeShotsRunner>(); r.listPath = args[i + 1]; r.outputDir = args[i + 2]; }   // Round 9
             }

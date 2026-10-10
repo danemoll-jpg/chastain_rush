@@ -289,12 +289,30 @@ namespace ChastainRush
                 // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the
                 // street it joins. In the lighter service shade it read as a pale patch on the carriageway (01_spawn.png).
                 var mb = r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
+                var self = r;
+                if (hood.IsStreetRoad(ri))
+                {
+                    // Round 11: in Chastain Glen the surface is a grid that stays clear of the lawn (four cells across), the end
+                    // caps likewise (a cul-de-sac's end is its bulb), and paint stops on any other road that does not continue this one
+                    int road = ri; float hw = r.width * 0.5f;
+                    foreach (var run in Runs(pts, 96f))
+                    {
+                        if (!hood.Bounds.Contains(run[run.Count / 2])) { AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain); continue; }
+                        var dense = Densify(run, 0.75f);
+                        RibbonGridMax(mb.At(run[run.Count / 2]), dense, Enumerable.Repeat(r.width, dense.Count).ToArray(), lift, terrain, 6, true);
+                    }
+                    foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
+                        if (!hood.InBulbZone(e, -0.5f)) DiscGrid(mb.At(e), e, hw, lift - 0.004f, terrain, 20);
+                    AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift,
+                             p => hood.OtherRoadCovers(road, p, 0.1f) || hood.InCornerZone(road, p, hw - 0.7f) || hood.InBulbZone(p, 0.45f) || hood.InMedianFill(p));
+                    continue;
+                }
                 foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain);
                 AddDisc(mb.At(pts[0]), pts[0], r.width * 0.5f, lift - 0.004f, terrain);
                 AddDisc(mb.At(pts[pts.Count - 1]), pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
-                var self = r;
                 AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self));
             }
+            BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
         }
@@ -1021,7 +1039,7 @@ namespace ChastainRush
 
         class Materials
         {
-            public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Foliage, Sky, Beacon, Water, TerrainMaterial;
+            public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Sidewalk, Foliage, Sky, Beacon, Water, TerrainMaterial;
             public readonly Material GateBlack, GateWhite, RaceNext, RaceLater, RaceMissed, RaceShortcut; // Round 5 race markers (unlit); Round 8 shortcut entries
             public readonly TerrainLayer GrassLayer;
 
@@ -1038,6 +1056,7 @@ namespace ChastainRush
                 House = MakeVertexLit("House", Color.white, 0f, 0f, 0f);
                 Paint = MakeVertexLit("RoadPaint", Color.white, 0f, -3f, -3f);
                 Driveway = MakeVertexLit("Driveway", Color.white, 0f, -1f, -1f);
+                Sidewalk = MakeVertexLit("Sidewalk", Color.white, 0f, -2f, -2f);   // Round 11: drawn over the drives it crosses
                 Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f);
                 Foliage.enableInstancing = true;
                 Foliage.SetFloat("_LeafTint", 1f);
