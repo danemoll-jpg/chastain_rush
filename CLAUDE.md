@@ -171,7 +171,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Round 13 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** trees moved off
+**Active work is Round 14 in `TODO.md`:** find out, by measuring in the exe,
+why Racer's vehicles drive badly on this map (the Needle 600 and the Turf
+Rocket slow down constantly) and fix the cause without touching any vehicle
+profile. Shortcut #6's rejected flatbed is replaced by a dirt pile (look
+only; how it drives does not change). Queued: 15 three AI drivers, 16 menus.
+
+**Round 13 (see `TODO.md`, status there) is built and checked in the exe, driven by Dan:** trees moved off
 shortcut #2's line (none within 6.5 m of either line); #6's kicker drawn as a flatbed trailer (look only); Dan's penalties were
 CP2 (#2's entry plane missed by his line round 1539), fixed by shortcut CORRIDORS (`RaceShortcut.InCorridor`: 7 m either side of
 the line, 12 m+ off the lap). Racer's eleven player vehicles with sound; the Street Classic is the default and drives exactly as the

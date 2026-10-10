@@ -55,6 +55,13 @@ Dan wants things to look more natural: a ramp is a board on hay bales, a
 dirt mound, a trailer, a pile of something, not a purpose-built wooden
 launch structure. Applies to every ramp from now on.
 
+**A ramp's look must fit its real size — LESSON (2026-10-10).** Shortcut #6's
+ramp was dressed as hay bales (Round 12) and as a flatbed (Round 13); Dan
+rejected both, because a 5.6 m, 33 degree ramp is not the size of either.
+Before dressing a ramp as an object, check that the real object is about
+that tall and that steep. If it is not, say so and offer objects that are
+(a dirt pile, a raised dump-truck bed) instead of stretching the object.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -1056,7 +1063,16 @@ roof-hull houses, the sign, #6's board and bales), MapBuilder.Round9.cs (grading
 reserve), MapBuilder.Streets.cs / Round11.cs (sidewalks stop at drives), MapBuilder.Neighborhood.cs / Pond.cs (clubhouse),
 RaceMarkers (gate only in a race), LandingZone + RampHold (held zones). Imported from Racer: nothing.
 
-Round 13 status — built and checked in the exe (2026-10-10), not yet driven by Dan. Checks: `ChastainRush.exe -exeRound13 <dir>`
+Round 13 status — built, checked in the exe, and DRIVEN by Dan (2026-10-10).
+His verdict, with debug report 2026-10-10_02-19-13-422_fb0237:
+* Item 2, the flatbed: REJECTED. "how is this what we described at all?
+  Doesn't look like a flatbed with a gate open. completly weird and even
+  worse than previous." (BUG-002, x 2808, z 1100: a red steel deck tilted
+  steeply in the air on a stack of timber, wheels hanging under it.)
+* Vehicles: "The vehicles drove like ass. Especially the cycle and
+  lawnmower were getting constant slow down."
+* The tree (BUG-001) was from the build before; item 1 fixed it.
+Original note: built and checked in the exe (2026-10-10). Checks: `ChastainRush.exe -exeRound13 <dir>`
 (new, Checks/Round13Runner.cs: every vehicle), `-exeShortcut <dir> -vehicle <id>` (new switch), `-exeCheck` (9 of 9). Reports:
 `Data/screenshots/round13/`.
 
@@ -1116,103 +1132,85 @@ RaceController (corridors, per-vehicle records), ShortcutCheckRunner (-vehicle v
 
 Current Objective (Focus Area)
 
-**Round 13 — three shortcut fixes, then the real vehicles with sound.
-DECIDED (2026-10-10).** Dan: "I want to fold this into the next round."
-The standing rules in `CLAUDE.md` apply: smallest change, one targeted
-check per change in the built exe, a short report plus "for Dan to check".
-Do items 1 to 3 first and commit them by themselves before starting item 4.
+**Round 14 — make Racer's vehicles drive properly on this map. DECIDED
+(2026-10-10).** Dan: "The vehicles drove like ass. Especially the cycle and
+lawnmower were getting constant slow down." The Street Classic drives as
+the prototype did; the trouble is the vehicles that are new to this map.
+This is a find-the-cause round. Do not retune a vehicle's profile and do
+not guess: measure first, in the built exe, then fix the cause.
 
-Part A: fixes from Dan's Round 12 drive.
+1. Reference numbers from Racer. For the Needle 600, the Turf Rocket, the
+   Trail Four and one more car (Pebble Coupe), read each profile's top
+   speed and acceleration, and note anything Racer's own world gives them
+   that this one does not (surface types, road colliders, gentler hills).
+2. Measure here, in the exe, each of those four at full throttle:
+   a. on the flattest straight road on the map (New Chastain Road): the
+      speed reached and the time to reach it, against item 1;
+   b. up the steep part of Chastain Glen Lane and along the whole lap: a
+      speed trace with, for every moment the speed DROPS while the
+      throttle is held, what was acting: the grade, how many wheels were
+      on the ground, whether the BODY collider (not the wheels) was
+      touching the terrain, any trigger entered (geese, fence, mailbox,
+      lamp, hydrant, a held zone), the wipeout state, and any contact
+      impulse against the direction of travel.
+   Write the traces to `Data/screenshots/round14/` and say in plain words
+   what is slowing each vehicle.
+3. Suspects, none confirmed (rule each in or out with item 2):
+   a. The body scraping the ground. The small vehicles sit lower or have a
+      different collider; this map's terrain has 3 to 5 cm steps on steep
+      grades (Round 4's scan) and roads have no collider of their own. In
+      Round 10 a body contact with a tilted internal-edge normal took a car
+      from 18 to 7 m/s in one step, and Racer's `VehicleSurfaceContacts`
+      fix is only switched on for the shortcut ramps here.
+   b. The hills. `vertical_scale` 1.5 makes grades of 12 to 19% common,
+      and drive force fades as speed nears top speed, so a low-power
+      vehicle loses a large share of its speed on every climb.
+   c. Racer's small-vehicle wipeout or tip logic cutting the throttle on
+      this map's slopes.
+   d. Breakable-prop and goose triggers costing speed more often for
+      vehicles that drive nearer the verge.
+4. Fix what item 2 shows, at its cause, for every vehicle at once:
+   * body contacts: apply the contact fix on the terrain too, or lift or
+     reshape the body collider as Racer does, so no vehicle is slowed by
+     touching smooth ground;
+   * hills: if the climb is the cause, do NOT change profiles. Report the
+     numbers and add one map-wide hill assist (this is an arcade game and
+     Dan's rule is fun over realism), set so no vehicle loses more than
+     about 15% of its top speed on the lap's steepest climb, with the
+     value in one place so Dan can ask for more or less;
+   * anything else: say what it was.
+5. After the fix, repeat 2a and 2b for the four vehicles and give before
+   and after. Then drive the Needle 600 and the Turf Rocket one lap each in
+   the exe with a controller if a person is there, otherwise by script,
+   and say plainly that a script is not proof of how it feels.
+6. Dan said all the vehicles drove badly, the cycle and mower worst. While
+   measuring, note anything else that differs from Racer for these
+   vehicles on this map and could be felt: steering at speed, sideways
+   grip on cambered or sloped road, bouncing, the chase camera's distance
+   and height per vehicle, the rider's lean. List it; change only what is
+   plainly broken.
+7. Shortcut #6's ramp becomes a DIRT PILE. DECIDED by Dan (2026-10-10):
+   of the options put to him he chose a dirt pile ("4 was actually closer
+   to what I was thinking initally"; a dump truck with its bed raised was
+   his other acceptable choice). Remove every part of the Round 13 flatbed
+   (deck, rails, steel ramps, beams, wheels, timber cribbing). In its
+   place: one big mound of packed brown earth, as if dumped there for
+   landscaping or building work. The side the car drives up is the mound's
+   smooth, packed face and is EXACTLY the existing driving surface (same
+   curve, pitch, height, lip and collider: look only). The rest of the
+   mound falls away naturally to the grass on the sides and behind the lip,
+   with a rounded, uneven outline, so it reads as a pile of dirt and not
+   as a ramp painted brown. Nothing floats and nothing is hollow under it.
+   Its sides must not snag a car that clips them. Look at it from Dan's
+   BUG-002 spot (x 2808, z 1100) in the exe, and drive it once.
+8. Rebuild the executable last and report its path.
+9. Report status for every item as a short list, then "for Dan to check".
 
-1. Dan: "there is a tree in the first shortcut path." Shortcut #2's line
-   moved in Round 12 and the tree clearance did not follow it. No tree
-   trunk may stand within 6.5 m of #2's line anywhere from the turn-off to
-   the rejoin, including under the flight out of 1627 and its landing.
-   Move each one found into its yard (do not delete it) and report how many
-   and where. Check #6's line the same way while there.
-2. Dan: "i don't particularly like the way the hay bales look. You r
-   suggestion of a flatbed was better." Replace the board-and-hay-bales look
-   of #6's ramp with a flatbed: a flatbed trailer or truck parked in the
-   yard with its deck tilted and ramps down. Round 12 judged a trailer
-   "unbelievable" at a 5.6 m lip and chose bales; Dan has seen the bales
-   and wants the flatbed anyway, so build it, sized up as far as it needs
-   (a long semi flatbed or a car hauler with its top deck down reaches that
-   height). LOOK ONLY: the driving surface, curve, pitch, height, lip and
-   collider stay exactly as they are. Nothing floats; no bales left.
-3. Dan: "I got dinged for missing checkpoints on the 2nd shortcut." Taking
-   #6 (the house jump) charged him penalties although it `forgives` CP5.
-   Find out why before changing anything: reproduce it in the exe driving
-   as a player does (turning on to the ramp from different places on the
-   lane, at an angle, fast). Likely causes: the entry plane at the lip is
-   narrower than the ramp or is missed by a car that is airborne or off
-   centre; forgiveness is given only at the entry and he joined the line
-   later; or "checkpoints", plural, means a checkpoint besides CP5 was
-   charged. Say which.
-   MORE FROM DAN (2026-10-10): "it happened all three laps. I don't think
-   this happened previously." So it is consistent, not a matter of his
-   line, and it is most likely a REGRESSION from Round 12 (Round 11's #6
-   did not do it to him). Start with what Round 12 changed: diff the route
-   file's `official_shortcuts`, `make_shortcuts.py`, `RaceController`'s
-   shortcut state, `LandingZone` and `RampHold` between the Round 11 and
-   Round 12 commits. One thing to rule out first: #2 was rebuilt, and the
-   car now FLIES out of 1627 and lands 36 m on. If #2's exit plane is
-   crossed in the air above its height window, or is no longer on the
-   line, the race may still think the car is "on shortcut #2" when it
-   reaches #6, and so ignore #6's entry. Dan takes both shortcuts every
-   lap; the Round 12 scripted lap reported no penalty, so find what he
-   does that the script did not (speed, height, line) and test that.
-   Then make forgiveness generous on BOTH shortcuts:
-   a car that goes over the ramp, through 1627, or is anywhere in the
-   shortcut's corridor between its entry and its exit, gets the forgiven
-   checkpoints, however it got there. One check in the exe per shortcut,
-   entering off centre: no penalty.
+Out of scope for this round: AI drivers (Round 15), menus and the garage
+(Round 16), any change to a vehicle profile, any change to how shortcut
+#6 drives.
 
-Part B: Racer's vehicles and sound. Dan: "It would be interesting to get the
-actual vehicles in with sound." Racer is finished and open to use: port its
-code and assets as they are; do not rewrite or retune. List everything that
-came over.
-
-4. Bring over the player vehicles: Street Classic (original), tourer,
-   Needle 600 (moto), Trail Four (atv), Sundown Roadster, Highball Fastback,
-   Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket
-   (mower). With them: `VehicleProfile`, `VehicleConfiguration`,
-   `VehicleVisual`, `VehiclePaint`, `VehicleLights`, `VehicleContact`, the
-   built models and materials (copy the generated assets; bring a
-   `Tools/Blender` script only if a model has to be rebuilt), and the rider
-   for the bikes, the ATV and the mower (`RiderLook`, `RiderGestures`).
-   Police vehicles stay behind. Keep this project's `ArcadeVehicle` edits
-   (the ramp contact fix, the recovery hook) working with every vehicle;
-   if Racer's own `ArcadeVehicle` is newer, take Racer's and re-apply them.
-5. Handling is Racer's, per vehicle, untouched. The default vehicle is the
-   Street Classic. The blue prototype car is retired.
-6. Sound: `VehicleAudio` and `VehicleSoundSynthesis` (engine sound made in
-   code) for every vehicle, plus whatever Racer plays for tyres, landings
-   and impacts. Nothing of Dan's music or the radio in this round.
-7. Choosing a vehicle, TEMPORARY until the menus (Round 15): D-pad left and
-   right (and the `,` and `.` keys) step through the vehicles while not in
-   a race; the car is swapped where it stands and its name shows for a
-   couple of seconds. The vehicle driven last is remembered between
-   launches. (Shoulder buttons are left alone: Racer uses LB for the
-   rider's wave.)
-8. Everything already here keeps working with every vehicle: the chase
-   camera (use Racer's per-vehicle camera settings), reset, the race and
-   its penalties, both shortcuts' held ramps and landings, breakables,
-   geese, solid trees, the debug panel and bug capture (the report now
-   names the vehicle, as Racer's does). Best lap and best total are kept
-   per vehicle.
-9. Targeted check in the exe, with a controller where a person is needed,
-   not a matrix: the Street Classic, the Needle 600, the Trail Four and the
-   Turf Rocket each driven once up the steep part of Chastain Glen Lane and
-   once over each shortcut. Report any vehicle that cannot make a jump or
-   climb; do not retune it. Frame rate at the pond with a vehicle of each
-   kind. For the other seven: that each loads, drives and sounds.
-10. Rebuild the executable last and report its path.
-11. Report status for every item as a short list, then "for Dan to check".
-
-Out of scope for this round: AI drivers (Round 14), menus and the garage
-(Round 15), police, campaign, radio, split-screen.
-
-**QUEUED NEXT — Round 14: AI drivers on the Chastain Glen loop.**
+**QUEUED NEXT — Round 15: AI drivers on the Chastain Glen loop.**
 Outline: `RoadDriver`, `RaceRoad`, `ShortcutStrategy`, `AiFinishEstimate`,
 the start grid and positions from `RaceDirector` / `RaceProgress`, rival
 names. DECIDED by Dan (2026-10-09): start with 3 AI drivers; their vehicles
@@ -1224,7 +1222,7 @@ not a scripted one. The AI must cope with what this map adds: barriers,
 breakable fences, mailboxes, lamps and hydrants, solid trees, geese, the
 window jump and the rooftop leap.
 
-**QUEUED AFTER THAT — Round 15: menus and the garage.** Dan: "getting the
+**QUEUED AFTER THAT — Round 16: menus and the garage.** Dan: "getting the
 menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 `MenuGlyph`, the garage view (turning model, stat bars), picking the AI
 drivers' vehicles, controller first. Replaces the temporary vehicle switch
