@@ -24,6 +24,7 @@ namespace ChastainRush
             var respawn = car.GetComponent<VehicleRespawn>();
             respawn.spawnPoint = spawn;
             respawn.fallResetHeight = terrainBaseY - 20f;
+            car.AddComponent<VehicleSwitch>();   // Round 13: Racer's vehicles (VehicleConfiguration, VehicleAudio), the Street Classic by default
 
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };
             var cam = camGo.AddComponent<Camera>();

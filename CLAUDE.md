@@ -171,6 +171,21 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Round 13 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** trees moved off
+shortcut #2's line (none within 6.5 m of either line); #6's kicker drawn as a flatbed trailer (look only); Dan's penalties were
+CP2 (#2's entry plane missed by his line round 1539), fixed by shortcut CORRIDORS (`RaceShortcut.InCorridor`: 7 m either side of
+the line, 12 m+ off the lap). Racer's eleven player vehicles with sound; the Street Classic is the default and drives exactly as the
+retired prototype. Temporary vehicle switch: D-pad left / right or `,` / `.` while not racing (`VehicleSwitch`, saved in
+`vehicle.json` beside the race records). Records are per vehicle (the Street Classic keeps the old key). Checks:
+`ChastainRush.exe -exeRound13 <dir>` (every vehicle: load, climb, sound, pond fps), `-exeShortcut <dir> -vehicle <id>
+[-shortcutRaceOffset id:m,...] [-shortcutNoEntryPlanes]`; any exe check takes `-vehicle <id>` and never reads or writes the saved
+choice. Imported from Racer in Round 13: VehicleProfile (police removed), VehicleConfiguration, VehicleVisual (with
+VehicleMeshLifetime, MotorcycleFrontEnd, VehiclePose), VehiclePaint, VehicleLights, VehicleContact, RiderLook, RiderGestures (with
+RiderArms), VehicleAudio, VehicleSoundSynthesis (all in `Assets/Scripts/Vehicle/`, trims commented "Chastain Rush" in place), the
+models `Assets/Resources/VehicleModels/` (11 vehicles + Rider.fbx) and `Assets/Resources/VehicleGlazing.mat`; ArcadeVehicle took
+Racer 0.97's VehicleConfiguration hooks (weather grip and WaterFeedback left behind). Left behind: police, WeatherGrip,
+CameraViews, VehicleUnlocks, SmashAudio, Racer's VehicleRespawn and VehicleInput changes.
+
 **Round 12 (see `TODO.md`, status there) is built and checked in the exe, driven by Dan:** 1763 is an ordinary house
 again; #2 leaves the lane past it through the side yard (one hand-painted "SHORTCUT" sign at the turn-off, the only
 signposted shortcut), runs down held grass (`LandingZone.hold`, RampHold) through an S into 1627's sliding door on a 12 deg

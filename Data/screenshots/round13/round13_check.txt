@@ -1,0 +1,77 @@
+Round 13 check (vehicles), 2026-10-10 03:34. Screen 1920x1080, GPU NVIDIA GeForce GTX 1660 Ti.
+PASS  the player car has the vehicle switch, Racer's VehicleConfiguration and VehicleAudio
+PASS  the default vehicle is the Street Classic  -  Street Classic
+PASS  eleven player vehicles, no police  -  Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket
+Climb: the steepest 150 m of the lap, 125 to 275 m along it, rising 18.4 m (12.2% average); from (3039,941) to (3109,1065).
+
+=== Street Classic (original, Car)
+PASS  Street Classic: loads (swapped in place, model built)  -  46 renderers, body (1.85, 0.65, 3.70), mass 1200 kg, top speed 49 m/s
+PASS  Street Classic: chase camera uses Racer's offset for it  -  (0.0, 3.6, -7.5)
+  parked beside the pond: 60 fps average; median 60 fps; 99th percentile 17.2 ms (58 fps)
+PASS  Street Classic: drives up the steep part of the lane  -  5.74 s, slowest 17.8 m/s, top 35.8 m/s at the top
+PASS  Street Classic: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 287 of 287 steps
+
+=== Longroof GT (tourer, Car)
+PASS  Longroof GT: loads (swapped in place, model built)  -  42 renderers, body (2.00, 0.80, 4.50), mass 1500 kg, top speed 52 m/s
+PASS  Longroof GT: chase camera uses Racer's offset for it  -  (0.0, 3.8, -8.2)
+PASS  Longroof GT: drives up the steep part of the lane  -  5.82 s, slowest 17.3 m/s, top 36.1 m/s at the top
+PASS  Longroof GT: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 291 of 291 steps
+
+=== Needle 600 (moto, Motorcycle)
+PASS  Needle 600: loads (swapped in place, model built)  -  34 renderers, body (0.65, 0.80, 2.25), mass 220 kg, top speed 61 m/s
+PASS  Needle 600: chase camera uses Racer's offset for it  -  (0.0, 3.0, -6.5)
+  parked beside the pond: 60 fps average; median 60 fps; 99th percentile 17.3 ms (58 fps)
+PASS  Needle 600: drives up the steep part of the lane  -  5.12 s, slowest 19.4 m/s, top 41.3 m/s at the top
+PASS  Needle 600: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 256 of 256 steps
+
+=== Trail Four (atv, ATV)
+PASS  Trail Four: loads (swapped in place, model built)  -  42 renderers, body (1.45, 0.65, 2.35), mass 340 kg, top speed 56 m/s
+PASS  Trail Four: chase camera uses Racer's offset for it  -  (0.0, 3.2, -6.8)
+  parked beside the pond: 60 fps average; median 60 fps; 99th percentile 17.1 ms (58 fps)
+PASS  Trail Four: drives up the steep part of the lane  -  5.28 s, slowest 18.8 m/s, top 39.6 m/s at the top
+PASS  Trail Four: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 264 of 264 steps
+
+=== Sundown Roadster (roadster, Car)
+PASS  Sundown Roadster: loads (swapped in place, model built)  -  41 renderers, body (1.80, 0.60, 3.90), mass 1000 kg, top speed 50 m/s
+PASS  Sundown Roadster: chase camera uses Racer's offset for it  -  (0.0, 3.4, -7.4)
+PASS  Sundown Roadster: drives up the steep part of the lane  -  5.68 s, slowest 18.0 m/s, top 36.3 m/s at the top
+PASS  Sundown Roadster: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 284 of 284 steps
+
+=== Highball Fastback (fastback, Car)
+PASS  Highball Fastback: loads (swapped in place, model built)  -  45 renderers, body (2.00, 0.75, 4.60), mass 1400 kg, top speed 52 m/s
+PASS  Highball Fastback: chase camera uses Racer's offset for it  -  (0.0, 3.7, -8.0)
+PASS  Highball Fastback: drives up the steep part of the lane  -  5.46 s, slowest 18.9 m/s, top 38.0 m/s at the top
+PASS  Highball Fastback: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 273 of 273 steps
+
+=== Pebble Coupe (pebble, Car)
+PASS  Pebble Coupe: loads (swapped in place, model built)  -  45 renderers, body (1.70, 0.65, 3.70), mass 950 kg, top speed 49 m/s
+PASS  Pebble Coupe: chase camera uses Racer's offset for it  -  (0.0, 3.4, -7.2)
+PASS  Pebble Coupe: drives up the steep part of the lane  -  5.82 s, slowest 17.5 m/s, top 35.4 m/s at the top
+PASS  Pebble Coupe: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 291 of 291 steps
+
+=== Skyfin Cruiser (skyfin, Car)
+PASS  Skyfin Cruiser: loads (swapped in place, model built)  -  46 renderers, body (2.10, 0.80, 5.00), mass 1750 kg, top speed 51 m/s
+PASS  Skyfin Cruiser: chase camera uses Racer's offset for it  -  (0.0, 3.9, -8.6)
+PASS  Skyfin Cruiser: drives up the steep part of the lane  -  5.94 s, slowest 16.9 m/s, top 35.1 m/s at the top
+PASS  Skyfin Cruiser: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 297 of 297 steps
+
+=== Ridge Scrambler (scrambler, Motorcycle)
+PASS  Ridge Scrambler: loads (swapped in place, model built)  -  36 renderers, body (0.70, 0.90, 2.30), mass 200 kg, top speed 56 m/s
+PASS  Ridge Scrambler: chase camera uses Racer's offset for it  -  (0.0, 3.2, -6.6)
+PASS  Ridge Scrambler: drives up the steep part of the lane  -  5.16 s, slowest 20.0 m/s, top 39.9 m/s at the top
+PASS  Ridge Scrambler: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 258 of 258 steps
+
+=== Drifter Twin (drifter, Motorcycle)
+PASS  Drifter Twin: loads (swapped in place, model built)  -  36 renderers, body (0.80, 0.80, 2.60), mass 320 kg, top speed 58 m/s
+PASS  Drifter Twin: chase camera uses Racer's offset for it  -  (0.0, 3.1, -7.0)
+PASS  Drifter Twin: drives up the steep part of the lane  -  5.28 s, slowest 19.2 m/s, top 39.5 m/s at the top
+PASS  Drifter Twin: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 264 of 264 steps
+
+=== Turf Rocket (mower, Mower)
+PASS  Turf Rocket: loads (swapped in place, model built)  -  46 renderers, body (1.15, 0.65, 2.10), mass 760 kg, top speed 61 m/s
+PASS  Turf Rocket: chase camera uses Racer's offset for it  -  (0.0, 3.1, -6.6)
+  parked beside the pond: 60 fps average; median 60 fps; 99th percentile 17.4 ms (57 fps)
+PASS  Turf Rocket: drives up the steep part of the lane  -  5.10 s, slowest 19.4 m/s, top 41.3 m/s at the top
+PASS  Turf Rocket: sounds while driving (VehicleAudio)  -  6 voices, loudest 0.128, audible in 255 of 255 steps
+
+ALL 47 CHECKS PASSED

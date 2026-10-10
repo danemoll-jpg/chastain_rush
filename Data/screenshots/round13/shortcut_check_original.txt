@@ -1,0 +1,29 @@
+Shortcut check, 2026-10-10 03:37. Route Chastain Glen loop, lap 1247 m, 2 official shortcuts in the route file.
+Each run starts on the lap before the turn-off at the given speed (35 m before for #2; 14 m for #6, just past the sharp CP4 corner, so the speed is the speed the car arrives with); times are to a line 20 m past the rejoin point. The road run uses the same start and speed.
+Air: wheels all off the ground (flights shorter than 0.25 s are not counted as flights). Landing tilt: worst tilt from upright in the 1 s after a flight. Pitch at touchdown: negative = nose down.
+
+=== Two-house drop (sc2_two_houses): leaves the lap 180 m after the gate, rejoins 552 m; runs start 35 m before the turn-off
+           ramps at 20 m/s: sc2 stairs in house 1627: on 19.8, lowest 19.3, off 19.8 m/s (100% of the speed it arrived with)
+    20 m/s  road  21.54 s clean   shortcut  16.46 s clean (air 2.2 s; longest flight 1.28 s, 25 m, 0.8 m up; landing tilt 15 deg, pitch -8)
+           ramps at 26 m/s: sc2 stairs in house 1627: on 8.6, lowest 8.4, off 17.6 m/s (204% of the speed it arrived with)
+    26 m/s  road  17.10 s clean   shortcut  16.00 s hit a house (air 2.1 s; longest flight 1.20 s, 21 m, 0.5 m up; landing tilt 12 deg, pitch -8) [touched House 1627 (passage walls) @(3057.5,1100.5) at 9 m/s, House 1627 (passage walls) @(3055.9,1102.6) at 11 m/s]
+           ramps at 32 m/s: sc2 stairs in house 1627: on 5.3, lowest 5.3, off 17.1 m/s (326% of the speed it arrived with)
+    32 m/s  road  15.28 s clean   shortcut  16.18 s hit a house (air 2.2 s; longest flight 1.20 s, 20 m, 0.5 m up; landing tilt 12 deg, pitch -9) [touched House 1627 (passage walls) @(3058.0,1099.9) at 5 m/s, House 1627 (passage walls) @(3056.1,1102.4) at 9 m/s]
+  -> clean at 1 of 3 speeds (20 m/s); bad landings / crashes at 2 (26: hit a house, 32: hit a house)
+  -> best: 20 m/s, 16.46 s against 21.54 s on the road (+5.08 s), air 2.22 s
+PASS  Two-house drop: taken well it beats the road  -  best gain 5.08 s
+
+=== Rooftop leap (sc6_over_house): leaves the lap 729 m after the gate, rejoins 1003 m; runs start 14 m before the turn-off
+           ramps at 20 m/s: sc6 kicker over house 1641: on 15.6, lowest 15.6, off 19.9 m/s (128% of the speed it arrived with)
+    20 m/s  road  15.68 s clean   shortcut  13.12 s clean (air 2.7 s; longest flight 2.66 s, 43 m, 5.8 m up; landing tilt 7 deg, pitch -7) [roof clearance 1.4 m]
+           ramps at 26 m/s: sc6 kicker over house 1641: on 15.5, lowest 15.5, off 20.2 m/s (131% of the speed it arrived with)
+    26 m/s  road  13.18 s clean   shortcut  12.58 s clean (air 2.7 s; longest flight 2.68 s, 44 m, 6.0 m up; landing tilt 7 deg, pitch -7) [roof clearance 1.4 m]
+           ramps at 32 m/s: sc6 kicker over house 1641: on 15.0, lowest 15.0, off 19.9 m/s (133% of the speed it arrived with)
+    32 m/s  road  13.12 s clean   shortcut  12.70 s clean (air 2.8 s; longest flight 2.66 s, 43 m, 5.8 m up; landing tilt 7 deg, pitch -7) [roof clearance 1.4 m]
+  -> clean at 3 of 3 speeds (20, 26, 32 m/s); bad landings / crashes at 0 ()
+  -> best: 20 m/s, 13.12 s against 15.68 s on the road (+2.56 s), air 2.66 s
+PASS  Rooftop leap: taken well it beats the road  -  best gain 2.56 s
+  -> roof of house 1641 cleared at: 20, 26, 32 m/s; lowest approach speed that clears it: 20 m/s
+
+
+ALL 2 CHECKS PASSED

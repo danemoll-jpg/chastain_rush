@@ -79,6 +79,9 @@ namespace ChastainRush
         string SessionText => Session == null ? "Session: NEW / Reports 0 - next F4 starts BUG-001"
             : "Session: " + session.Id + " " + (session.Closed ? "CLOSED" : "OPEN") + " / Reports " + session.Count;
 
+        // Round 13: "Street Classic (original)", the name and Racer's profile id
+        string VehicleName() { var c = car ? car.GetComponent<VehicleConfiguration>() : null; return c ? $"{c.Profile.Name} ({c.profileId})" : "(no vehicle profile)"; }
+
         void Awake()
         {
             Instance = this;
@@ -163,6 +166,7 @@ namespace ChastainRush
                 speedMps = Mathf.Abs(car.ForwardSpeed), verticalSpeedMps = car.Body.linearVelocity.y,
                 version = Application.version, buildGuid = Application.buildGUID,
                 scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name, viewpoint = "Chase camera",
+                vehicle = VehicleName(),   // Round 13
             };
             pending.screenshot = "Screenshots/" + pending.id + ".png";
             MenuOpen = false;
@@ -278,7 +282,7 @@ namespace ChastainRush
                 road = $"{name}, {d:0.0} m from centre ({(d <= half + 1.5f ? "on road" : "off road")})";
             float mps = Mathf.Abs(car.ForwardSpeed);
             string text = $"DEBUG\nX {p.x:F2}   Y {p.y:F2}   Z {p.z:F2}\nHeading {car.transform.eulerAngles.y:F1}°   {mps * 2.23694f:F1} mph ({mps:F1} m/s)\n" +
-                          $"{road}\nWheels on ground {car.GroundedWheels}   vertical {car.Body.linearVelocity.y:+0.0;-0.0} m/s\n" +
+                          $"{road}\n{VehicleName()}\nWheels on ground {car.GroundedWheels}   vertical {car.Body.linearVelocity.y:+0.0;-0.0} m/s\n" +
                           (RaceController.Instance?.DebugLine is string raceLine ? raceLine + "\n" : "") + // Round 5: race state shows in bug screenshots
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +

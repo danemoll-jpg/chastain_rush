@@ -356,7 +356,10 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- records (best lap, best total)
 
-        string RecordKey => $"{Route.Name}|{Route.Direction}|{Route.Laps}";
+        // Round 13: kept per vehicle. The Street Classic ("original", the retired prototype's own tuning) keeps the key the
+        // records had before, so its best times carry on; every other vehicle adds its id
+        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.Name}|{Route.Direction}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
+        public void ReloadRecords() { if (Route != null) LoadRecords(); }   // Round 13: after a vehicle switch
 
         public static string RecordsPath()
         {

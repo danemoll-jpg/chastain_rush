@@ -24,6 +24,7 @@ namespace ChastainRush
             public float heading, speedMps, verticalSpeedMps, roadDistance;
             public int groundedWheels;
             public string road, viewpoint, screenshot, comment;
+            public string vehicle;   // Round 13: as Racer's report (Bug.vehicle): the vehicle driven
         }
         [Serializable] public sealed class Report
         {
@@ -90,6 +91,7 @@ namespace ChastainRush
                   .AppendLine("Timestamp: " + b.timestamp)
                   .AppendLine("Position: " + Position(b.position)).AppendLine("Rotation: " + Position(b.rotation))
                   .AppendLine("Heading: " + F(b.heading) + " degrees").AppendLine("Viewpoint: " + b.viewpoint)
+                  .AppendLine("Vehicle: " + (string.IsNullOrEmpty(b.vehicle) ? "(unknown)" : b.vehicle))
                   .AppendLine("Vehicle position: " + Position(b.vehiclePosition))
                   .AppendLine("Road: " + (string.IsNullOrEmpty(b.road) ? "(none within 40 m)" : b.road + ", " + F(b.roadDistance) + " m from its centreline"))
                   .AppendLine("Speed: " + F(b.speedMps) + " m/s / " + F(b.speedMps * 3600 / 1609.344) + " mph / vertical " + F(b.verticalSpeedMps) + " m/s")

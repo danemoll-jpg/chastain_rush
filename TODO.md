@@ -1056,6 +1056,64 @@ roof-hull houses, the sign, #6's board and bales), MapBuilder.Round9.cs (grading
 reserve), MapBuilder.Streets.cs / Round11.cs (sidewalks stop at drives), MapBuilder.Neighborhood.cs / Pond.cs (clubhouse),
 RaceMarkers (gate only in a race), LandingZone + RampHold (held zones). Imported from Racer: nothing.
 
+Round 13 status — built and checked in the exe (2026-10-10), not yet driven by Dan. Checks: `ChastainRush.exe -exeRound13 <dir>`
+(new, Checks/Round13Runner.cs: every vehicle), `-exeShortcut <dir> -vehicle <id>` (new switch), `-exeCheck` (9 of 9). Reports:
+`Data/screenshots/round13/`.
+
+1. Trees on the shortcut lines: DONE. No trunk within 6.5 m of either line from turn-off to rejoin (flight and landing
+   included). 3 moved, none deleted, all on #2's side-yard run (4.5 to 6.5 m off the line): (3067.9, 1061.3) moved 2.4 m,
+   (3060.9, 1072.7) moved 0.7 m and (3068.2, 1090.5) moved 1.8 m. The last is the one in Dan's BUG-001. #6: none.
+   `trees_on_lines.txt`.
+2. #6 as a flatbed: DONE, look only. One big flatbed trailer sized to the ramp (7.6 m wide): full-width steel loading ramps on
+   the low 6.7 m, a 9.6 m plank deck in red steel rails with stake pockets, three main beams, a tandem axle of dual wheels where
+   the beams clear the ground, crossed-timber cribbing under the raised end. Surface, curve, lip and collider unchanged; no bales.
+3. Penalties: DONE. The cause was NOT #6. Dan's own exe log (Player.log) shows #6 entered and CP5 forgiven on all three laps; it
+   was CP2 charged every lap, because #2's entry was never registered. #2's entry plane sits in the gap between 1763 and 1539,
+   lopsided (1763's corner 6.55 m left of the line, 1539's 2.2 m right), and reaches 4 m either side. His bump log and BUG-001
+   put him right of the line and 6.9 m right of it by station 100, so his line went round 1539's far side and missed the
+   plane. A Round 12 regression in effect: #2's new line and entry plane. Fix, both shortcuts: a car anywhere in a shortcut's
+   corridor (7 m either side of its line, where the line is 12 m or more off the lap, entry to exit) takes it, however it got
+   there; the race log says which caught it ("its entry plane" / "its corridor"). Exe check with the entry planes switched off
+   (`-shortcutNoEntryPlanes`), #2 driven 1.5 m right and #6 3 m left of the line: both forgiven by the corridor, no penalty.
+   Items 1 to 3 committed on their own (2d24b64).
+4. Vehicles: DONE. From Racer, as they are: the eleven player vehicles, VehicleProfile (police removed from the list),
+   VehicleConfiguration (Racer's swap), VehicleVisual, VehiclePaint, VehicleLights, VehicleContact, RiderLook, RiderGestures (with
+   RiderArms), the models and the rider (`Assets/Resources/VehicleModels/`, 12 FBX, 8.9 MB) and `VehicleGlazing.mat`. No Blender
+   script was needed. Racer's ArcadeVehicle is newer: its changes are taken (VehicleConfiguration contact mode, wipeout, Recover);
+   its weather grip and WaterFeedback stay behind (clear weather: no effect). The Round 10 surface-contact edit is kept.
+5. Handling: DONE, Racer's per vehicle, untouched. Street Classic is the default; the blue prototype is retired (its body is hidden).
+   The Street Classic is Racer's "original", which keeps the prototype's own tuning: same times as Round 12 on both shortcuts
+   and the same 3-lap race to the thousandth.
+6. Sound: DONE. VehicleAudio and VehicleSoundSynthesis (all made in code: engine idle and load, road, loose ground, tyre slip,
+   body impact, landing). Racer has no audio files for vehicles. No music or radio.
+7. Vehicle switch (temporary): DONE. D-pad left / right, `,` / `.`, only while no race runs; swapped where it stands; its name
+   shows for 2.5 s. The last vehicle is saved in `vehicle.json` beside the race records (Editor: `local/vehicle.json`). Checks
+   neither read nor write it (`-vehicle <id>` picks one for a check).
+8. Everything else with every vehicle: DONE as far as checked. Chase camera uses Racer's per-vehicle offset; reset; race and
+   penalties; both shortcuts; the debug panel and BUG_REPORT.md name the vehicle. Best lap / total are per vehicle (the Street
+   Classic keeps the old key, so Dan's records carry on). Geese, breakables and solid trees were not driven into per vehicle.
+9. Check in the exe: DONE by script, not with a controller. All 11 vehicles load, swap in place, climb the steepest 150 m of the
+   lap (18.4 m rise, 12%) from 8 m/s at full throttle, and sound: 47 of 47. Pond, parked: 60 fps (99th percentile 57 to 58 fps)
+   with the Street Classic, Needle 600, Trail Four and Turf Rocket. Shortcuts at 20 / 26 / 32 m/s, the four named vehicles: every
+   run finished and #6 cleared 1641's roof every time. Not clean: the Trail Four on #2 is slower than the road (touched 1763
+   at 20 m/s); at 26 and 32 m/s the Street Classic and the Turf Rocket brush 1627's passage walls (5 to 11 m/s). That is the
+   scripted driver at speeds Round 12 did not run: the Street Classic at 30 m/s matches Round 12 exactly. Not retuned.
+10. Executable rebuilt last: DONE, `Builds/ChastainRush/ChastainRush.exe` (2026-10-10 03:34). `-exeCheck` 9 of 9, laps
+    1:22.675 / 1:22.617 / 1:22.645 (as Rounds 9 to 12), 60 fps at the three places (1920 x 1080, not 3840 x 2160).
+11. This report: DONE.
+
+For Dan to check: #2 the way he drives it (round 1539's far side): no penalty now, and the moved trees; #6's flatbed from the
+lane; each vehicle with a pad (switch with the D-pad while not racing), especially the Needle 600, Trail Four and Turf Rocket on
+both shortcuts and up the lane; engine, skid and landing sounds; the vehicle remembered after quitting; best times per vehicle.
+
+Not done / not measured: Dan's drive; a real pad; 3840 x 2160. Noticed, not changed: exe checks append to the player's own
+`bump_log.txt` (BumpLogger writes there in every exe run, as in earlier rounds); trees beyond 6.5 m still stand in Dan's wide line
+round 1539.
+
+New: `VehicleSwitch`, `Checks/Round13Runner.cs` (-exeRound13). Edits: MapBuilder (trees moved off lines, the flatbed), RaceRoute /
+RaceController (corridors, per-vehicle records), ShortcutCheckRunner (-vehicle via VehicleSwitch, -shortcutRaceOffset,
+-shortcutNoEntryPlanes), DebugReportSession / DeveloperHud (vehicle), PlayerSetup, ArcadeVehicle, GameShell.
+
 Current Objective (Focus Area)
 
 **Round 13 — three shortcut fixes, then the real vehicles with sound.
