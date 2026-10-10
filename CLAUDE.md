@@ -64,6 +64,10 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   on top, fits the board, readable at 20 to 30 m. Depth-tested lettering,
   never a TextMesh default font material.
 - **Never write Dan's real save or records in a check.** Use a copy.
+- **Test quietly** (Dan, 2026-10-10). Every automated run is muted from
+  start-up: Editor Play checks, batch runs, and any exe run with a check
+  argument. Turn sound on only for the moment something must be heard, then
+  off again. The game Dan launches himself is never muted.
 - **Don't bother Dan** for normal operations (Unity, Git, build). Stop only
   for a real external blocker, with the exact action needed.
 - **"This should be fun."** Forgiving resets, escapable water and pits, no
@@ -171,13 +175,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 14 in `TODO.md`:** find out, by measuring in the exe,
-why Racer's vehicles drive badly on this map (the Needle 600 and the Turf
-Rocket slow down constantly) and fix the cause without touching any vehicle
-profile. Shortcut #6's rejected flatbed is replaced by a dirt pile (look
-only; how it drives does not change). Queued: 15 three AI drivers, 16 menus.
+**Active work is Round 15 in `TODO.md`:** Part A: quiet testing, water that
+vehicles sink part-way into and are slowed by (Racer's `ShallowWater` way),
+sounds for breaking fences, mailboxes, lamps, hydrants and glass, and a
+drop-in folder for goose honks. Part B: three AI drivers on the Chastain
+Glen loop, ported from Racer. Queued: 16 menus and the garage.
 
-**Round 14 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the small
+**Round 14 (see `TODO.md`, status there) is built, checked in the exe by script, and driven and approved by Dan (no complaint from Dan after driving means approved):** the small
 vehicles' slow-downs were their BODY contacts with the terrain: speculative CCD (Racer's setting for small vehicles) plus a
 TerrainCollider gave contacts with horizontal normals (Needle 600 30 m/s lost in 40 ms). Racer's ground is all mesh and its
 `VehicleSurfaceContacts` fix covers it; here that fix now covers the terrain tiles (heightfield normal, gap measured straight down

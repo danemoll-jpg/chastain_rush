@@ -1130,7 +1130,7 @@ New: `VehicleSwitch`, `Checks/Round13Runner.cs` (-exeRound13). Edits: MapBuilder
 RaceController (corridors, per-vehicle records), ShortcutCheckRunner (-vehicle via VehicleSwitch, -shortcutRaceOffset,
 -shortcutNoEntryPlanes), DebugReportSession / DeveloperHud (vehicle), PlayerSetup, ArcadeVehicle, GameShell.
 
-Round 14 status — built and checked in the exe by script (2026-10-10), not yet driven by Dan. Check: `ChastainRush.exe
+Round 14 status — built and checked in the exe by script (2026-10-10). DRIVEN BY DAN 2026-10-10: approved, no issues (slowdown fix and the dirt pile). Dan's rule: if he drove it and did not complain, it is approved; he reports problems when he hits them. Check: `ChastainRush.exe
 -exeRound14 <dir> [-r14Vehicles moto,mower,atv,pebble,original] [-r14Tag t]` (new, Checks/Round14Runner.cs); `-noSurfaceContacts`
 gives the "before" numbers. Plots: `python Tools/mapgen/round14_plot.py <before> <after> <out>`. Everything is in
 `Data/screenshots/round14/` (`round14_before.txt`, `round14_after.txt`, a TSV per vehicle and run, `round14_*.png`).
@@ -1201,97 +1201,122 @@ bridge decks), MapBuilder.Shortcuts.cs (DirtPileLook replaces the flatbed), Game
 
 Current Objective (Focus Area)
 
-**Round 14 — make Racer's vehicles drive properly on this map. DECIDED
-(2026-10-10).** Dan: "The vehicles drove like ass. Especially the cycle and
-lawnmower were getting constant slow down." The Street Classic drives as
-the prototype did; the trouble is the vehicles that are new to this map.
-This is a find-the-cause round. Do not retune a vehicle's profile and do
-not guess: measure first, in the built exe, then fix the cause.
+*Round 14 is built and scripted-checked; Dan has not yet said he drove it.
+Its status is above.*
 
-1. Reference numbers from Racer. For the Needle 600, the Turf Rocket, the
-   Trail Four and one more car (Pebble Coupe), read each profile's top
-   speed and acceleration, and note anything Racer's own world gives them
-   that this one does not (surface types, road colliders, gentler hills).
-2. Measure here, in the exe, each of those four at full throttle:
-   a. on the flattest straight road on the map (New Chastain Road): the
-      speed reached and the time to reach it, against item 1;
-   b. up the steep part of Chastain Glen Lane and along the whole lap: a
-      speed trace with, for every moment the speed DROPS while the
-      throttle is held, what was acting: the grade, how many wheels were
-      on the ground, whether the BODY collider (not the wheels) was
-      touching the terrain, any trigger entered (geese, fence, mailbox,
-      lamp, hydrant, a held zone), the wipeout state, and any contact
-      impulse against the direction of travel.
-   Write the traces to `Data/screenshots/round14/` and say in plain words
-   what is slowing each vehicle.
-3. Suspects, none confirmed (rule each in or out with item 2):
-   a. The body scraping the ground. The small vehicles sit lower or have a
-      different collider; this map's terrain has 3 to 5 cm steps on steep
-      grades (Round 4's scan) and roads have no collider of their own. In
-      Round 10 a body contact with a tilted internal-edge normal took a car
-      from 18 to 7 m/s in one step, and Racer's `VehicleSurfaceContacts`
-      fix is only switched on for the shortcut ramps here.
-   b. The hills. `vertical_scale` 1.5 makes grades of 12 to 19% common,
-      and drive force fades as speed nears top speed, so a low-power
-      vehicle loses a large share of its speed on every climb.
-   c. Racer's small-vehicle wipeout or tip logic cutting the throttle on
-      this map's slopes.
-   d. Breakable-prop and goose triggers costing speed more often for
-      vehicles that drive nearer the verge.
-4. Fix what item 2 shows, at its cause, for every vehicle at once:
-   * body contacts: apply the contact fix on the terrain too, or lift or
-     reshape the body collider as Racer does, so no vehicle is slowed by
-     touching smooth ground;
-   * hills: if the climb is the cause, do NOT change profiles. Report the
-     numbers and add one map-wide hill assist (this is an arcade game and
-     Dan's rule is fun over realism), set so no vehicle loses more than
-     about 15% of its top speed on the lap's steepest climb, with the
-     value in one place so Dan can ask for more or less;
-   * anything else: say what it was.
-5. After the fix, repeat 2a and 2b for the four vehicles and give before
-   and after. Then drive the Needle 600 and the Turf Rocket one lap each in
-   the exe with a controller if a person is there, otherwise by script,
-   and say plainly that a script is not proof of how it feels.
-6. Dan said all the vehicles drove badly, the cycle and mower worst. While
-   measuring, note anything else that differs from Racer for these
-   vehicles on this map and could be felt: steering at speed, sideways
-   grip on cambered or sloped road, bouncing, the chase camera's distance
-   and height per vehicle, the rider's lean. List it; change only what is
-   plainly broken.
-7. Shortcut #6's ramp becomes a DIRT PILE. DECIDED by Dan (2026-10-10):
-   of the options put to him he chose a dirt pile ("4 was actually closer
-   to what I was thinking initally"; a dump truck with its bed raised was
-   his other acceptable choice). Remove every part of the Round 13 flatbed
-   (deck, rails, steel ramps, beams, wheels, timber cribbing). In its
-   place: one big mound of packed brown earth, as if dumped there for
-   landscaping or building work. The side the car drives up is the mound's
-   smooth, packed face and is EXACTLY the existing driving surface (same
-   curve, pitch, height, lip and collider: look only). The rest of the
-   mound falls away naturally to the grass on the sides and behind the lip,
-   with a rounded, uneven outline, so it reads as a pile of dirt and not
-   as a ramp painted brown. Nothing floats and nothing is hollow under it.
-   Its sides must not snag a car that clips them. Look at it from Dan's
-   BUG-002 spot (x 2808, z 1100) in the exe, and drive it once.
-8. Rebuild the executable last and report its path.
-9. Report status for every item as a short list, then "for Dan to check".
+**Round 15 — water, break sounds, quiet testing, then three AI drivers.
+DECIDED (2026-10-10).** Dan: "Lets fold these into the next round." The
+standing rules in `CLAUDE.md` apply. Racer is the reference for all of it:
+port what it has, do not write a new version. Do Part A first and commit it
+by itself before starting Part B.
 
-Out of scope for this round: AI drivers (Round 15), menus and the garage
-(Round 16), any change to a vehicle profile, any change to how shortcut
-#6 drives.
+Part A: Dan's three requests.
 
-**QUEUED NEXT — Round 15: AI drivers on the Chastain Glen loop.**
-Outline: `RoadDriver`, `RaceRoad`, `ShortcutStrategy`, `AiFinishEstimate`,
-the start grid and positions from `RaceDirector` / `RaceProgress`, rival
-names. DECIDED by Dan (2026-10-09): start with 3 AI drivers; their vehicles
-are either chosen by Dan or picked at random. Until the menus exist, random
-is the default, with a simple setting to fix them. Known Racer
-lessons to carry: jump run-ups use `aiEntrySpeed`; the obstacle sensor must
-not read a ramp as a wall; check AI against a human-like driver in the exe,
-not a scripted one. The AI must cope with what this map adds: barriers,
-breakable fences, mailboxes, lamps and hydrants, solid trees, geese, the
-window jump and the rooftop leap.
+1. Quiet testing, a STANDING RULE from now on (also added to `CLAUDE.md`).
+   Dan: "When you are testing - Please mute sounds. Only briefly turn on
+   sounds if you need to hear, then quickly turn off." Every automated run
+   is silent: Editor Play mode checks, batch runs, and every exe run
+   started with a check argument (`-exeCheck`, `-exeShots`, `-exeRound..`,
+   `-exeShortcut`). Mute at start-up, before the first frame can make a
+   sound. If a check truly needs to hear something, switch sound on for
+   that moment only and off again, and say so in the report. The game Dan
+   launches himself is never muted. Do this item first, so the rest of the
+   round is quiet.
+2. Water. Dan: "Vehicles should be submerged in the water but not all the
+   way. Driving through water should slow you down. Please look at how
+   this is handled by the other project."
+   a. Read how Racer does it and report in a few lines: `ShallowWater`
+      (a trimmed copy is already here), the immersion drag in
+      `ArcadeVehicle`, `WaterFeedback`, and how Racer shapes the ground
+      under its water so a vehicle sinks part-way and can always get out.
+   b. Here the elevation data is flat across every pond (the survey
+      flattens water), so there is no bed to sink into. Give the water a
+      bed in the generator: a shallow bowl under each pond and lake and a
+      shallow channel along each stream, deep enough that a car sits with
+      its wheels and lower body under water and its roof and windows well
+      clear, and never deeper. Banks slope gently all the way round:
+      "escapable water" is a standing rule, so any vehicle that drives in
+      can drive out anywhere, including the bikes and the mower.
+   c. Register every water area with `ShallowWater` so the vehicle sinks
+      to the bed, slows as Racer's does, and speeds up again on leaving.
+      Bring over `WaterFeedback` (splash, wake, sound) as Racer has it.
+   d. The neighborhood pond keeps its fountain, docks, walls and geese; the
+      pool is water too. A reset from water puts the car on the route or
+      the nearest road, never back in the water.
+   e. One check in the exe: drive a car and the Needle 600 into the
+      neighborhood pond, across, and out; report how deep each sat, the
+      speed in and across, and that both got out.
+3. Break sounds. Dan: "Lets add in game sounds for smashing mailboxes,
+   fences, street lamps, fire hydrants. Metal or wood breaking sound
+   whichever is appropriate."
+   a. See whether Racer plays a sound when a `BreakableProp` breaks and how
+      (a file, or made in code like its vehicle sounds). Use the same way.
+   b. A sound for each: wooden privacy and picket fences and the white
+      rail fence (wood splintering); the pool's iron fence (metal); a
+      mailbox (a metal clang with the wooden post); a street lamp (metal,
+      with glass); a hydrant (metal, then the rush of water while it
+      runs); the shortcut's windows and sliding glass door (glass
+      breaking). Loudness follows how hard it was hit. Heard in 3D from
+      where it happened. Limit how many play at once.
+4. Geese. Dan: "Geese no longer honk. Give me a space to drop a proper
+   geese honk noise." The space exists but only works after a rebuild, and
+   Dan may not know where it is. Make it a drop-in:
+   a. The game loads, each time it starts, every `goose_honk*` file (.wav,
+      .ogg or .mp3) from
+      `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Geese\`
+      and uses them at once, with no rebuild. Create that folder on first
+      run, with a short READ ME text file in it saying what to drop there.
+   b. Keep `Assets/Audio/Geese/` as well (built into the exe); files in
+      the drop-in folder are added to those.
+   c. The same drop-in idea for the break sounds, so Dan can replace any of
+      them: `Sounds\Breaks\` with names such as `wood*.wav`, `metal*.wav`,
+      `glass*.wav`. A file there replaces the built-in sound of that kind.
+   d. With no goose file anywhere the geese stay silent (no made-up honk).
+5. Checks must not write Dan's own files (noticed in Round 13): exe checks
+   append to his `bump_log.txt`. Point every check at its own folder.
 
-**QUEUED AFTER THAT — Round 16: menus and the garage.** Dan: "getting the
+Part B: three AI drivers on the Chastain Glen loop. Dan: "some ai drivers
+... I think we can start with 3 ai drivers", vehicles "either I select or
+they pick random ones."
+
+6. Port from Racer: `RoadDriver`, `RaceRoad`, `ShortcutStrategy`,
+   `AiFinishEstimate`, the start grid from `RaceDirector`, rival names from
+   `RaceNames`, and `VehicleContact` behaviour between vehicles. This
+   game's own race logic (`RaceController`: gates, 5 s penalties, shortcut
+   corridors, barriers) stays and the AI drivers race under it, the same
+   rules as the player. List what came over and what was adapted.
+7. Three AI drivers in every race started with T. Each gets a vehicle
+   picked at random from the eleven for that race, and a name. Until the
+   menus exist (Round 16) a small settings file can fix their vehicles;
+   say where it is.
+8. A four-place start grid behind the start line, the player on it too,
+   all held until GO.
+9. They drive the lap properly on this map: the barriers, the breakable
+   fences, mailboxes, lamps and hydrants (they may hit them; they must not
+   get stuck on them), solid trees, the geese, the water from Part A.
+   Racer's lessons apply: a jump run-up uses `aiEntrySpeed`; the obstacle
+   sensor must not read a ramp, the dirt pile or 1627's stairs as a wall;
+   an AI that is stuck or off the route resets as Racer's does.
+10. Shortcuts: with `ShortcutStrategy`, as in Racer, so some AI drivers
+    take shortcut #2 (the side yard, the door, the stairs, the jump) and
+    shortcut #6 (the dirt pile over the house) some of the time. If an AI
+    driver cannot take one reliably, it does not take it; say which.
+11. On screen: the player's place (1st to 4th) during the race, and the
+    finishing order with names and times, penalties included, on the
+    finish panel. AI vehicles make their engine sound, heard in 3D.
+12. Their pace is Racer's default. Report their lap times beside Dan's
+    best (0:42.4 in the Street Classic) and leave the tuning to Dan.
+13. One check in the exe, muted, the way Dan plays: a 3-lap race with the
+    three AI drivers and a fast human-like player taking both shortcuts;
+    all four finish; no AI driver stuck for more than 5 s; the frame rate
+    with four vehicles on screen.
+14. Rebuild the executable last and report its path.
+15. Report status for every item as a short list, then "for Dan to check".
+
+Out of scope for this round: menus and the garage (Round 16), police,
+campaign, traffic, split-screen, the radio and Dan's music.
+
+**QUEUED NEXT — Round 16: menus and the garage.** Dan: "getting the
 menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 `MenuGlyph`, the garage view (turning model, stat bars), picking the AI
 drivers' vehicles, controller first. Replaces the temporary vehicle switch
@@ -1300,6 +1325,10 @@ and the T / X race keys.
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
+* The west end of the New Chastain Road bridge (x 2421, z 766): the deck
+  ends 0.2 m above the ground and the creek bank falls away under it, so a
+  fast vehicle leaves the deck end with its wheels off the ground (Round 14
+  saw it, did not change it). Not on the lap. Waiting on Dan.
 * **Round 7 reference notes (the round itself is the Current Objective).**
   Dan wants a round that makes his own neighborhood look good, as a start,
   before the rest of the map. Only his house has to be accurate; the others
