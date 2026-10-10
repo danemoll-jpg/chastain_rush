@@ -12,7 +12,7 @@ namespace ChastainRush
     // the camera to settle and writes <dir>/<name>.png. A shot with drive_speed > 0 is a drive instead: the car starts there
     // at that speed, is held straight on for drive_seconds by ArcadeVehicle.Simulate (the step the player's input drives),
     // and the line in shots.txt says how many breakable panels (fences, mailboxes) it broke, the speed before and after, the
-    // most it tilted and whether it stopped. Then the exe quits. Added by GameShell only when that argument is given.
+    // most it tilted, whether it stopped and (Round 17) the longest spell with no wheel on the ground. Then the exe quits. Added by GameShell only when that argument is given.
     public sealed class ExeShotsRunner : MonoBehaviour
     {
         [Serializable] public class Shot { public string name; public float x, z, yaw, drive_speed, drive_seconds, shot_at = -1f; }
@@ -42,7 +42,7 @@ namespace ChastainRush
                 car.enabled = false;
                 var fwd = Quaternion.Euler(0f, s.yaw, 0f) * Vector3.forward;
                 car.Body.linearVelocity = fwd * s.drive_speed;
-                float t = 0f, maxTilt = 0f, minSpeed = s.drive_speed; bool shot = false;
+                float t = 0f, maxTilt = 0f, minSpeed = s.drive_speed, air = 0f, maxAir = 0f; bool shot = false;   // Round 17: air, the longest spell with no wheel down
                 while (t < s.drive_seconds)
                 {
                     yield return new WaitForFixedUpdate();
@@ -50,13 +50,15 @@ namespace ChastainRush
                     car.Simulate(car.ForwardSpeed < s.drive_speed ? 1f : 0f, 0f, steer, Time.fixedDeltaTime);
                     t += Time.fixedDeltaTime;
                     maxTilt = Mathf.Max(maxTilt, Vector3.Angle(car.transform.up, Vector3.up));
+                    air = car.GroundedWheels == 0 ? air + Time.fixedDeltaTime : 0f; if (t > 0.6f) maxAir = Mathf.Max(maxAir, air);   // not the drop from the placing height
                     if (t > 0.3f) minSpeed = Mathf.Min(minSpeed, car.ForwardSpeed);
                     if (!shot && s.shot_at >= 0f && t >= s.shot_at) { shot = true; yield return Capture(s.name); }
                 }
                 car.enabled = true;
                 if (!shot) yield return Capture(s.name);
                 report.AppendLine($"{s.name}: drive at {s.drive_speed:0.0} m/s for {s.drive_seconds:0.0} s from ({s.x:0.0}, {s.z:0.0}) heading {s.yaw:0}: broke {FenceChunk.TotalBroken() - broken0} panel(s); " +
-                                  $"lowest speed after the start {minSpeed:0.0} m/s ({(1f - minSpeed / s.drive_speed) * 100f:0}% below), most tilt {maxTilt:0} deg, {(minSpeed < 1f ? "STOPPED" : "kept going")}");
+                                  $"lowest speed after the start {minSpeed:0.0} m/s ({(1f - minSpeed / s.drive_speed) * 100f:0}% below), most tilt {maxTilt:0} deg, {(minSpeed < 1f ? "STOPPED" : "kept going")}, " +
+                                  $"longest with no wheel down {maxAir:0.00} s");
             }
             File.WriteAllText(Path.Combine(outputDir, "shots.txt"), report.ToString());
             yield return new WaitForSecondsRealtime(0.5f);

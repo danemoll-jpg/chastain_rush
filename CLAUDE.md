@@ -219,6 +219,16 @@ their own; Part B, the shopping center behind Chastain Glen (overhead for
 Dan first). Queued after 17: the creek-woods track with pipe shortcuts;
 Chastain Commons, Chastain Enclave and Grasmere Court.
 
+**Round 17 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A
+(b512061, b3bfe9f), then item 5 and Part B: Dan's two junction jumps smoothed in the map build at those spots only
+(`MapBuilder.Round17.cs`: BUG-001 at the entrance, BUG-002 at Chastain Corner with the crest on its approach), and the
+shopping center (`MapBuilder.ShoppingCenter.cs`): the lot graded and paved (outline by hand, `LotRing`) with stalls,
+islands and sidewalks, shop fronts with made-up names (`python Tools/handmade/make_store_signs.py` draws
+`Assets/HandMade/ShoppingCenter/StoreSigns.png`, hand-made, committed; its row order matches `SignRows`), the gas
+station with breakable pumps that explode for show (`PumpChunk`, `PumpBlast`, sound drop-in `Sounds\Breaks\boom*`), the
+abandoned bank. Exe drives: `ExeShotsRunner` now reports the longest spell with no wheel down. Imported from Racer:
+nothing.
+
 **Round 16 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** items A to E
 (commit a70d0d4: the culvert set into the bank, the solid dirt pile, breakable signs; C and E reported, not changed), then
 the menus and the garage (`Assets/Scripts/Menus/`: `GameMenus` from Racer's `RaceMenus`, with Racer's `MenuInput`,

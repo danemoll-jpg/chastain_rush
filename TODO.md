@@ -1618,6 +1618,47 @@ So the overhead is APPROVED, with BUG-003 as the correction; go on to dress the 
   (Dan confirmed; build 17:28). The line is now drawn once with a drop shadow, as intended. Nothing more to do
   unless Dan reports it.
 
+**Round 17 item 5 and Part B status (Claude Code, 2026-10-10).** No new debug session since
+2026-10-10_17-47-11-485_46d8cb. Built and checked in the exe by script (muted, minimized 1280 x 720, check folders
+only), not yet driven by Dan. Exe built 19:28. Check lists and results: `local/round17/partB/checks/` (git-ignored);
+pictures in `local/round17/partB/` (git-ignored: some show Chastain Glen houses behind the center).
+- BUG-001 DONE (`MapBuilder.Round17.cs`). The crease was a terrain step: where the lane's pieces cross New Chastain
+  Road's carriageways, mapgen's ground switched from one piece's height to another's, 0.33 m in 1 m at (2937, 764).
+  The old exe threw the Drifter Twin up at +12 m/s there. Fix, this junction only: the pavement smoothed (a 4 m
+  Gaussian of the road surface's own heights, within 24 m of (2941, 756), largest change 0.27 m), in the map build
+  before anything samples the ground. Exe, 35 m/s on Dan's line and three others, Drifter Twin and Street Classic:
+  no wheel left the ground.
+- BUG-002 DONE. Same kind of seam (up to 0.5 m) where Chastain Corner and Chastain Ridge cross New Chastain Road; the
+  old exe hopped 0.24 to 0.60 s there (21 m westbound). Smoothed with 8 m within 30 m of (3152, 756) (4 m left a crest
+  that still lifted the car westbound). Dan's LANDED point (3164.3, 767.2) is where a car coming south comes down
+  off the crest on Chastain Corner at about (3162, 780), 25 m up from the junction (it lifted off there before and
+  after the smoothing), so that crest was rounded too (cut and fill up to 0.11 m, along Chastain Corner only). Exe, 35
+  m/s, both vehicles: north- and southbound 0 to 0.06 s, nothing lifts off in the junction. Left as it was: a crest on
+  New Chastain Road 31 m east of the junction at (3183, 742), 0.2 to 0.3 s westbound at 35 m/s, the same before.
+- Other junctions with the same kind of seam: listed for Dan, nothing changed (a terrain scan: largest crest or step
+  against a 3 m chord on the pavement within 15 m of each of 443 junctions; 157 are 0.25 m or more). In or by Chastain
+  Glen: Chasefield Way / Chastain Glen Lane at (3071, 1005) 0.51 m (checkpoint 1 is there); Chasefield Court /
+  Chasefield Way (2990, 1070) 0.35 m; Chastain Glen Lane (3136, 1090) 0.30 m; Kensington Drive / Westminister Way
+  (2816, 1252) 0.29 m; Chastain Corner Northeast / service (3275, 994) 0.28 m; Glenbarrett Lane (3064, 951) 0.25 m;
+  Chastain Place (2731, 987) 0.25 m. Largest on the map: Big Shanty Road (609, 17) 1.5 m, Elaine Circle / Hayworth Drive
+  (3004, 417) 0.9 m, Brickelberry Court (3305, 1656) 0.8 m. Some of these may be natural crests, not seams.
+- BUG-003 DONE, with Part B. The ground south of the supermarket is paved and is one lot with the main one; the
+  supermarket's south face has four shop fronts.
+- Part B DONE (`MapBuilder.ShoppingCenter.cs`, `Assets/Scripts/ShoppingCenter/`). The lot (26,300 m2, outline by hand
+  in `LotRing`): graded first (a 6 m smoothing of its own ground, faded out past its edge, never onto a road outside
+  it), asphalt, a curb band where it meets grass, 502 painted stalls in double rows with 26 grass islands at the row
+  ends, sidewalks in front of the shops (islands and sidewalks are 3.5 cm up and have no collider: nothing to snag a
+  wheel). The map's service roads run through it as its drive aisles. Shop fronts (glass, a door, an awning, a sign)
+  on the shop row (10), the supermarket (FRESH ACRES MARKET with a PHARMACY door) and its south face (4). Every name is
+  made up (`Tools/handmade/make_store_signs.py` writes `Assets/HandMade/ShoppingCenter/StoreSigns.png`). The gas
+  station: the canopy (QUIK FUEL on its fascia) on four columns (solid) over two pump islands on a level pad, four
+  pumps that break like hydrants and then explode for show (`PumpBlast`: a flash, a fireball, flames, smoke and a
+  bang; particles, a light and a sound only, no force, no damage; a drop-in `Sounds\Breaks\boom*` replaces the bang).
+  The bank: drab walls, windows and door boarded up, "F RST CHAS AIN BA K", a FOR LEASE banner. No trees on the lot.
+  Exe: the car broke two pumps at 15 m/s (both exploded, 3 % speed lost, kept going); a 30 m/s drive across the south
+  lot into the main one: wheels down, 1 % speed lost.
+- Imported from Racer: nothing.
+
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
 particularly want the shopping center behind my neighborhood, the

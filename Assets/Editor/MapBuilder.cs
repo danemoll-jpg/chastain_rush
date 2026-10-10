@@ -81,6 +81,9 @@ namespace ChastainRush
             // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
             vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
             var terrain = BuildTerrain(meta, mats);
+            SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
+            var shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
+            GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
             var world = new GameObject("World").transform;
             var paint = new Chunks();
             // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
@@ -93,7 +96,7 @@ namespace ChastainRush
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildRoadLookup(map);
-            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood);
+            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
             RegisterWater(map, world, new Pavement(map));   // Round 15 (item 2c)
@@ -102,11 +105,12 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z),   // Round 15: none in the water
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
             trees.Field.gameObject.AddComponent<TreeTrunks>();
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
+            BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
 
@@ -595,7 +599,7 @@ namespace ChastainRush
 
         static readonly Color OwnerWall = new Color(1.0f, 0.45f, 0.05f), OwnerRoof = new Color(0.62f, 0.22f, 0.04f);
 
-        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood)
+        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood, ShoppingCenter shop)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
@@ -606,6 +610,7 @@ namespace ChastainRush
             {
                 var b = map.buildings[i];
                 if (hood.OwnsBuilding(i)) continue; // Round 7: styled houses in the area, Dan's house hand-built
+                if (shop.Owns(i)) continue;          // Round 17: the gas station's canopy and the bank are built with the shopping center
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;

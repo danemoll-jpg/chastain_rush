@@ -12,7 +12,8 @@ namespace ChastainRush
     //     Mailbox clang with Wood for the post), a street lamp (Racer's Sign metal with Glass), a hydrant (Racer's Mailbox
     //     clang pitched down, then HydrantRush, a loop of rushing water while the jet runs), windows and the sliding door (Glass).
     //   - a hit of two layers (mailbox, lamp) takes two voices at once; six voices instead of Racer's four.
-    //   - a drop-in file (SoundDropIns, Sounds\Breaks\wood*, metal*, glass*, water*) replaces the made sound of that kind.
+    //   - a drop-in file (SoundDropIns, Sounds\Breaks\wood*, metal*, glass*, water*, boom*) replaces the made sound of that kind.
+    //   - Round 17: Boom(), a gas pump's explosion (not Racer's; made the same way).
     public sealed class BreakSounds : MonoBehaviour
     {
         public enum Kind { Wood, Iron, Mailbox, Lamp, Glass, Hydrant, Sign }   // Round 16 (D): Sign, a sign plate on a metal post (Racer's Sign surface)
@@ -91,6 +92,26 @@ namespace ChastainRush
             for (int i = 0; i < n; i++) { float k = i / (float)n; data[i] = Mathf.Clamp(raw[i] * k + raw[i + n] * (1 - k), -.9f, .9f) * .8f; }
             rush = AudioClip.Create("Hydrant rush", n, 1, rate, false); rush.SetData(data, 0); rush.hideFlags = HideFlags.DontUnloadUnusedAsset;
             return rush;
+        }
+
+        // Round 17: a gas pump's explosion (PumpBlast): a deep thump under a burst of noise that rolls off, about 2.5 s; a
+        // drop-in Sounds\Breaksoom* replaces it
+        static AudioClip boom;
+        public static AudioClip Boom()
+        {
+            var drop = DropIn("boom"); if (drop) return drop;
+            if (boom) return boom;
+            const int rate = 22050; int n = (int)(rate * 2.6f); var data = new float[n]; var rng = new System.Random(1717); float low = 0, lower = 0;
+            for (int i = 0; i < n; i++)
+            {
+                float t = i / (float)rate, w = (float)rng.NextDouble() * 2 - 1; low = Mathf.Lerp(low, w, .12f); lower = Mathf.Lerp(lower, w, .025f);
+                float thump = Mathf.Sin(2 * Mathf.PI * (52f - 18f * Mathf.Min(t, 1f)) * t) * Mathf.Exp(-t * 3.2f);
+                float crack = w * Mathf.Exp(-t * 30f) * .7f;
+                float rumble = (low * .55f + lower * 1.6f) * Mathf.Exp(-t * 1.5f);
+                data[i] = Mathf.Clamp((thump * .8f + crack + rumble) * Mathf.Min(1f, i / 40f), -.95f, .95f);
+            }
+            boom = AudioClip.Create("Pump explosion", n, 1, rate, false); boom.SetData(data, 0); boom.hideFlags = HideFlags.DontUnloadUnusedAsset;
+            return boom;
         }
 
         static AudioClip DropIn(string kind)

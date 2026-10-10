@@ -47,7 +47,7 @@ namespace ChastainRush
         }
 
         // a polygon lying on the terrain: ear-clipped, then split until no edge is longer than 'step' so it follows the ground
-        static void DrapePoly(MeshBuilder mb, List<Vector2> ring, float step, float lift, TerrainGrid t)
+        static void DrapePoly(MeshBuilder mb, List<Vector2> ring, float step, float lift, TerrainGrid t, int maxDepth = 6)   // Round 17: maxDepth (a 300 m lot needs more)
         {
             if (ring.Count < 3) return;
             var r = new List<Vector2>(ring);
@@ -58,7 +58,7 @@ namespace ChastainRush
             {
                 float l0 = (a - b).magnitude, l1 = (b - cc).magnitude, l2 = (cc - a).magnitude;
                 float m = Mathf.Max(l0, Mathf.Max(l1, l2));
-                if (m > step && depth < 6)
+                if (m > step && depth < maxDepth)
                 {
                     if (m == l0) { var mid = (a + b) / 2; Emit(a, mid, cc, depth + 1); Emit(mid, b, cc, depth + 1); }
                     else if (m == l1) { var mid = (b + cc) / 2; Emit(a, b, mid, depth + 1); Emit(a, mid, cc, depth + 1); }
