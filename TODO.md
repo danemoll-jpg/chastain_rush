@@ -1531,6 +1531,51 @@ E. REPORT ONLY (protected geometry: the jump is not changed). The shortcut check
 * Checks before the "stay off Dan's screen" rule (added to CLAUDE.md during this round) ran full screen at 3840 x 2160; from
   then on, minimized 1280 x 720, and a check run now turns run-in-background on itself (CheckRun).
 
+**ACTIVE — Round 17: the small follow-ups, then the shopping center (Dan, 2026-10-10: "Since these changes
+are small I want to fold them into our next phase").** Round 16 (A to E, menus, garage) is built and committed.
+Part A is items (1) to (4) below: do them in order and commit them on their own. Part B is the shopping center
+(the "Round 17, the shopping center" notes further down): first the labelled overhead screenshot of the center,
+the gas station and the bank for Dan, then the paved parking lot, the shops, the gas station with breakable
+pumps that explode for show, the abandoned bank, made-up store names. Then rebuild the exe and report. All
+under the standing rules, "Stay off Dan's screen" and American English included. Later rounds are not started.
+
+**(1) American English (Dan, 2026-10-10).** Dan: "use
+American english...no more colour, use color. Not sure if there are other words like this but this is the only
+one I noticed". Standing rule in CLAUDE.md. This round: fix every British spelling Dan can read in the game.
+Found by a search of string literals (not a complete list; search again): `GameMenus.Garage.cs` "Colour:";
+`RiderLook.cs` "Hair colour", "Hat colour", "Shirt colour", "Pants colour", "Grey"; `DeveloperHud.cs` "from
+centre"; `DebugReportSession.cs` and `BumpLogger.cs` "centreline"; any check that looks for the old text
+(`Round16Runner.cs` "Colour:"). Saved-data keys and identifiers keep their names. One check: the garage and the
+rider screen read "Color" in the exe.
+
+**(2) The debug panel and debug menu (Dan, 2026-10-10).**
+1. Dan: "Be default lets leave the debug window off now". The debug panel (F3 / `[`) starts hidden in the game
+   Dan launches. F3 / `[` still shows it; F4 / `]` capture still works with the panel hidden.
+2. Dan: "The debug menu can be either a menu option or come up if you press start and the debug window is
+   open/ regular menu comes up if debug window is closed". Build both, they do not conflict:
+   - Start with the debug panel closed opens the regular menu. The regular menu has a "Debug" entry that opens
+     the debug menu (the only controller way in when the panel is hidden), with a row there to show or hide the
+     debug panel.
+   - Start with the debug panel open opens the debug menu. The debug menu has a "Game menu" row, so the
+     regular menu is never out of reach.
+   - F6 / `\` still opens the debug menu from the keyboard.
+3. Dan: "Debug menu should be controllable via the controller". Same rules as every menu (controller first):
+   every row reachable with a controller only, focus visible, B goes back, left / right changes a value, A never
+   cycles one. A capture (F4) from the controller too: a row in the debug menu.
+   One check in the exe: with a controller only, open the regular menu, reach Debug, show the panel, close,
+   press Start, land in the debug menu, B out.
+
+**(3) Dan's reports, session 2026-10-10_16-53-56-509_f5d57e (read by Claude, 2026-10-10).**
+- BUG-001 (vehicle x 2744.09, z 879.53, at the pond's west bank): "thats a heron, shouldn't get the goose
+  sound". The heron in `GooseFlock` honks with the goose clips (Dan has now dropped honk files in). The heron
+  makes no goose sound: silent, unless a file named `heron*` is in `Sounds\Geese\` (same drop-in rule; say so
+  in the READ ME). Geese unchanged.
+- BUG-002 (Grasmere Court houses) is NOT in this round: Dan moved it to the neighborhoods round (below).
+
+**(4) Seen by Claude in both screenshots, not reported by Dan:** the HUD line at the top left ("Start / Esc
+menu: race Chastain Glen loop, 3 laps, forward  best lap ...") is drawn twice, one copy over the other and
+slightly offset (an old line still drawn under the new one). Draw it once.
+
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
 particularly want the shopping center behind my neighborhood, the
@@ -1611,6 +1656,13 @@ so far, in his words where it matters:
   - Chastain Commons (confirmed by Dan): Weybourne Court Northeast and its side streets, south of New
     Chastain Road, about x 2560 to 2945, z 600 to 700, entered from New
     Chastain Road.
+* **Also in the neighborhoods round (Dan, 2026-10-10: "grasmere court can easily fit it with the
+  neighborhood refresh").** Session 2026-10-10_16-53-56-509_f5d57e:
+  - BUG-002 (vehicle x 2767.04, z 823.81, on Grasmere Court Northeast): "these houses here are part of chastain
+    glen. Please decorate them as you did the others". The houses on Grasmere Court Northeast are plain boxes
+    (no windows, doors, trim; bare drives). Dress every house on Grasmere Court Northeast the way the Chastain
+    Glen houses were dressed in Round 7 (the same styles, mailboxes, lamps, drives, sidewalks as there). Only
+    that street; if other streets look like part of Chastain Glen and are still plain, list them for Dan.
 * Each new area is somewhere a new race can go; one world, routes laid over.
 
 Next Steps (Do Not Start Yet)

@@ -59,6 +59,13 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
 - **Check the way Dan plays:** in the built Windows exe, driving flat out. An
   Editor or scripted pass is not proof. (Resolution: see "Stay off Dan's
   screen" below; 3840 x 2160 full screen only when the check is about that.)
+- **American English** (Dan, 2026-10-10: "use American english...no more
+  colour, use color"). Everything Dan can read in the game is American
+  spelling: menus, garage, HUD, signs, finish panel, debug panel and report
+  text, READ ME files the game writes. color, gray, center, meter, tire,
+  curb, neighbor, parking lot, sidewalk, recognized, and so on. New code,
+  comments, reports and TODO text are written American too. Do not rename
+  existing identifiers, files or saved-data keys just for spelling.
 - **Stay off Dan's screen** (Dan, 2026-10-10: "it is annoying with unity
   taking over my screen constantly"; applies to every round from now on).
   Dan uses this PC while a round runs.
@@ -205,6 +212,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Active work is Round 17 in `TODO.md`:** Part A, the small follow-ups
+(American English, the debug panel off by default and a controller-driven
+debug menu, the heron's goose sound, the doubled HUD line), committed on
+their own; Part B, the shopping center behind Chastain Glen (overhead for
+Dan first). Queued after 17: the creek-woods track with pipe shortcuts;
+Chastain Commons, Chastain Enclave and Grasmere Court.
+
 **Round 16 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** items A to E
 (commit a70d0d4: the culvert set into the bank, the solid dirt pile, breakable signs; C and E reported, not changed), then
 the menus and the garage (`Assets/Scripts/Menus/`: `GameMenus` from Racer's `RaceMenus`, with Racer's `MenuInput`,
@@ -327,7 +341,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-10_14-22-18-410_d2650e` (BUG-001, BUG-002).
+`2026-10-10_16-53-56-509_f5d57e` (BUG-001 heron, BUG-002 Grasmere Court houses; in TODO.md, Round 16 follow-ups).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
