@@ -157,7 +157,16 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-**Round 10 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** shortcut #2 rebuilt with both houses
+**Active work is Round 11 in `TODO.md`:** Dan's third debug report (13
+entries): shortcut #2's first house becomes a real jump through a large
+window, no dirt trails, no landing deck on #6, clean driveways, roads and
+sidewalks across Chastain Glen, bigger cul-de-sacs, the walk moved to the
+lake, the entrance signs turned. Queued after it, one round each: Round 12
+(Racer's vehicles with sound), Round 13 (3 AI drivers), Round 14 (menus and
+the garage). Shortcuts are never marked: no arches, signs, trails or HUD
+pointers (Dan, 2026-10-09).
+
+**Round 10 (see `TODO.md`, status there) is built and driven by Dan from the exe:** shortcut #2 rebuilt with both houses
 whole (a smaller ramp, in and out through breakable upstairs windows of the
 first house, then in through a sliding glass door of the second, up its
 stairs as a ramp and out through its upstairs windows), plus Dan's second debug report

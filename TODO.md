@@ -42,6 +42,14 @@ has already chosen differently, this project's decision stands: a clean repo
 with selective imports (not copy-then-strip), `TODO.md` / `CLAUDE.md` (not
 `PROJECT_TODO.md` / `CODEX_RULES.md`), and this game's checkpoint look.
 
+**Shortcuts are found, not signposted — DECIDED (2026-10-09).** Dan: "I
+don't think we need the blue arches for for the shortcut maybe not even the
+signs. I think the fact that there is a ramp there is evidence enough. In the
+Rush series, which half-way inspired this, the shortcuts were not always
+obvious and sometimes you had to find them." No arches, beams, signs, trails
+or HUD pointers on any shortcut, now or on future courses. The ramp or the
+window is the only clue. Taking one still forgives its checkpoints.
+
 Completed Tasks
 
 * **Repo decision — DECIDED.** Chastain Rush lives in its own clean repo
@@ -805,149 +813,9 @@ New tools: `Checks/ExeShotsRunner.cs` (-exeShots), `Tools/mapgen/buried_houses_p
 Editor `MapBuilder.Round9.cs`. Imported from Racer: nothing (the sign rule follows Racer's PhysicalSign idea: lit,
 depth-tested lettering on a one-sided board).
 
-Current Objective (Focus Area)
-
-**Round 10 — shortcut #2 rebuilt with whole houses, and Dan's second report.
-DECIDED (2026-10-09).** Sources: Dan's message, and debug report
-`2026-10-09_18-04-36-369_c80a61` (in
-`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\`;
-look at both screenshots). The standing rules in `CLAUDE.md` apply: smallest
-change, only where Dan pointed unless the item says "all", one targeted check
-per change in the built exe, a short report plus "for Dan to check".
-
-1. Shortcut #2, houses restored. Dan: "it simply has to restore the houses.
-   I don't like the way this looks at all for that short cut." This part is
-   not optional and comes first: houses 1763 and 1627 are whole, normal
-   houses again. No open passage, no cut-away walls, no visible tunnel. From
-   the street and from the lane, with nobody having driven the shortcut,
-   both must look like every other house.
-2. Shortcut #2, new design. Dan: "can we maybe do a smaller ramp where it
-   crashes through windows on the upstairs level of the first house, lands
-   in the yard and hits a ramp to launch it over the second house or
-   something like this?" Build that, in the spirit he describes:
-   a. A smaller ramp in 1763's front yard up to its UPSTAIRS level (about
-      one storey above the floor, far less than the 13 m to the ridge that
-      made the Round 9 jump impossible).
-   b. The car crashes IN through the upstairs front windows and OUT through
-      the upstairs back windows. The glass and the wall panel it sits in are
-      breakable, like the fences: they look like ordinary windows until hit,
-      pieces fly, a small speed cost, and they are whole again at race
-      start. Behind them, only what is needed to cross: a floor and a plain
-      room, not seen from outside until the windows break.
-   c. The car lands in the yard behind 1763 on ground or a landing shaped
-      so it comes down cleanly, and drives on down toward house 1627.
-   d. House 1627, CHANGED by Dan a few minutes later (this replaces the
-      ramp over the second house): "instead of giving a ramp for the 2nd
-      house, lets have it so you drive through a sliding glass door,
-      immedietly up stairs which is used as a ramp as you jump through
-      another set of window before continuing the shortcut as it was."
-      So: the car drives IN through a sliding glass door on the side of
-      1627 it arrives at, straight on to a staircase inside that works as a
-      ramp, and jumps OUT through a set of upstairs windows on the far
-      side. No ramp outside 1627 and no jump over its roof. The glass door
-      and the windows are breakable in the same way as 1763's, and 1627
-      looks like a whole, ordinary house with a sliding glass door until
-      they are hit. Inside, only what the car needs: a floor, the stairs
-      (smooth enough to drive, shaped as a ramp under the steps' look) and
-      plain walls.
-   e. After the jump out of 1627 the car lands and continues the shortcut
-      as it was: the gap between 1615 and 1459, the rejoin at 544 m. The
-      blue entry marker, the dirt trail and `forgives` CP2 stay.
-   f. Work the distances out first: the landing behind 1763, the approach
-      to 1627's door, the stair ramp's angle and the flight out of the
-      upstairs windows to a clean landing before the gap. If the exact
-      sequence does not fit, keep Dan's beats in the nearest form that
-      does (upstairs windows of the first house, touch down, glass door,
-      stairs, out through upstairs windows of the second) and say what you
-      changed and why.
-   g. A car that arrives too slow or off line must end up somewhere it can
-      drive on from: never wedged inside the house or on a roof.
-   h. Keep every ramp 5 m from the lane's centre, as now.
-   j. RAMPS MUST NOT SLOW THE CAR. Dan (2026-10-09): "We need to make
-      sure that the ramps don't slow down your progress. I had that issue
-      on the ramps." This applies to every ramp on both shortcuts: the new
-      ones here, the stair ramp inside 1627, and #6's big kicker and
-      landing deck (the only change allowed on #6 this round).
-      WHAT DAN HIT: on #6's kicker, the only ramp in the game now, "It got
-      stuck at the bottom." The car stopped at the ramp's FOOT, not on the
-      climb. Start there: the foot was changed late in Round 8 (the ramp
-      was cut back 5 m from the lane centre and given a sloped skirt on
-      the cut edge), so look first at that cut edge and skirt, the step or
-      angle where the terrain meets the ramp, and any collider face the
-      car's nose or underside can meet before its wheels are on the ramp.
-      Reproduce it in the exe at racing speed from the lane, as a player
-      arrives (turning in at an angle, not square on), before fixing. Measure
-      before changing anything: in the exe, log the car's speed at the
-      ramp's foot, along it and at the lip, on #6 as it is now, at racing
-      speed. Say how much is lost and where: a kink where the ramp meets
-      the ground, the ramp's surface or friction, seams between collider
-      pieces, the skirt at the lane edge, the suspension bottoming out, or
-      simply the climb. Fix what is found at its cause (a smooth curved
-      entry, one continuous collider, the right surface). The target: a car
-      that hits a ramp at racing speed leaves the lip at no less than
-      about 95% of the speed it arrived with. If the climb alone costs
-      more than that, keep the ramp's shape and carry the car's speed up
-      it (this is an arcade game: see how Racer's jumps treat speed on a
-      run-up and use the same idea), and say that is what was done. The
-      same goes for landings: touching down on a landing ramp must not
-      scrub speed or stop the car.
-   i. One targeted check in the exe: drive it once at racing speed and once
-      slow, and report the flights, the speed needed, and the time against
-      the road. Save street-side screenshots of both houses before and after
-      the windows break, and a side profile of the whole line, to
-      `Data/screenshots/round10/`.
-   If no version with whole houses works, stop and report the numbers and
-   the nearest option; do not bring back the open drive-through passage.
-3. BUG-001 (x 2986, z 1170, Dan's deck). Dan: "there shouldn't be a grassy
-   spot on my porch." Grass shows through the deck: remove it, so the deck
-   is solid boards.
-4. BUG-001, second part. Dan: "Lets remove the indicator for my house. I
-   don't need it anymore." Remove the orange beacon over his house.
-5. BUG-002 (x 2969, z 1166, the side wall of Dan's house to the left of the
-   back as seen from the yard, blank in the screenshot). Dan: "lets put 3
-   windows on this wall around the corner equal to the three windows three
-   lower windows to the far left on my house." Add three windows on that
-   side wall, the same size and height as the row of three low on the left
-   of the back.
-6. BUG-002, for ALL other houses in Chastain Glen (Dan asked for the other
-   houses). Dan: "Lets add more windows to the back of other houses. They
-   should look similar to mine. maybe with slight vaitances. and then add a
-   few on the other side like I am asking here." Give every house windows
-   on its back, laid out like the back of Dan's (a mix of single and grouped
-   windows on both floors, a back door), varied a little per house by the
-   stable hash, and a few windows on the side walls. Keep them in the
-   no-shadow detail mesh so the frame rate does not drop.
-7. Solid trees. Dan: "lets make the trees solid." Every tree on the map
-   stops the car. Look at how Racer does tree collision and port it. The
-   collider is the TRUNK only (about its real radius), never the crown, so
-   branches over a road or a yard don't snag the car. With 56,000 trees,
-   don't create 56,000 live colliders: keep them only for trees near the
-   car (a pool, or per-cell activation) and report the cost. Trees on the
-   two shortcut lines were already cleared; check that no tree trunk stands
-   on a road, a driveway or either shortcut line now that it matters, and
-   move any that does into the yard. A reset after hitting a tree follows
-   Racer's rule: back on the route, facing the right way, never into
-   vegetation.
-8. Breakable street lamps and fire hydrants. Dan: "lights poles and fire
-   hydrants breakable." Both break like the mailboxes and fences: the pole
-   or hydrant is knocked over, a small speed cost, the car is never
-   stopped, flipped or launched, and they are whole again at race start.
-9. Hydrant water. Dan: "when you knock over a hydrant, water squirts out
-   like it would it does in movies." A broken hydrant sends up a tall
-   column of water with spray and a wet patch, visible from down the
-   street, for as long as it stays broken (use the fountain's particle
-   approach). It does not push or slow the car.
-10. One targeted check in the exe for 7 to 9: drive into a tree (the car
-    stops, and can reverse away or reset cleanly), a lamp and a hydrant
-    (each breaks, the car keeps going, the water runs), and the frame rate
-    beside the pond with solid trees on.
-11. Rebuild the executable last and report its path.
-12. Report status for every item as a short list, then "for Dan to check".
-
-Out of scope for this round: shortcut #6 apart from item 2j, the six slightly buried houses
-listed in Round 9 (waiting on Dan), goose sounds, rivals and menus.
-
-Round 10 status — built and checked in the exe (2026-10-09), not yet driven by Dan. Checks: `ChastainRush.exe -exeRound10 <dir>`
+Round 10 status — built, checked in the exe, and DRIVEN by Dan from the exe
+(2026-10-09; best lap 0:42.364). His verdict: "It seems to drive well." He
+filed debug report 2026-10-09_21-01-01-659_c29ec3 (13 entries): Round 11. Checks: `ChastainRush.exe -exeRound10 <dir>`
 (new, Checks/Round10Runner.cs), `-exeShortcut <dir>` (the Round 8 shortcut check, now also in the exe, with per-ramp speeds),
 `-exeCheck`. Reports and shots: `Data/screenshots/round10/` (Dan's house hidden in all of them).
 
@@ -1029,6 +897,150 @@ New: `VehicleSurfaceContacts` (copied from Racer), `RampHold`, `ShortcutSurface`
 (commented): ArcadeVehicle (registers the contact fix), VehicleRespawn (Recover hook). Imported from Racer:
 `VehicleSurfaceContacts` only (its test switch dropped, surfaces = the shortcut prisms).
 
+Current Objective (Focus Area)
+
+**Round 11 — Dan's third report: the #2 window jump, no dirt trails, clean
+drives, roads and sidewalks, the lake walk. DECIDED (2026-10-09).** Source:
+debug report `2026-10-09_21-01-01-659_c29ec3` (13 entries, in
+`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\`;
+look at every screenshot before starting). Positions are the car's, from the
+report. The standing rules in `CLAUDE.md` apply. Where Dan wrote "make sure"
+or gave several examples of one fault, the item covers all of Chastain Glen
+and says so; otherwise fix only the place he pointed at.
+
+1. BUG-013 (x 3080, z 1044, the ramp into house 1763). Dan: "I think the
+   concept was kind of missed I wanted the jump through a large window and
+   out another one, but maybe it isn't possible?" What is there now is a
+   ramp that runs right up to the wall and into an opening. What he wants is
+   a JUMP: the car leaves a ramp, flies through a large window, crosses the
+   room in the air or on its floor, and flies out through another large
+   window. So:
+   a. The ramp ends at a lip SHORT of the house, with open air between the
+      lip and the wall, so the car is airborne when it reaches the glass.
+   b. The way in is one LARGE window (a picture window, wide and tall enough
+      to hit at speed with margin), with glass that shatters. The wall round
+      it stays. With the glass unbroken it must read as a house with a big
+      window, not as an opening or a carport.
+   c. The way out is another large window that shatters the same way.
+   d. Keep what works from Round 10: the landing slope, the sliding glass
+      door and stairs of 1627, the rest of the line, `forgives` CP2, ramps
+      that keep their speed, glass whole again at race start.
+   e. It is possible in principle (the flight is short and nearly level).
+      If the numbers say otherwise, stop and report them with the nearest
+      version that is still a jump through a window.
+   f. Look at it from Dan's spot in the exe before and after the glass
+      breaks, and drive it once at racing speed.
+2. BUG-005 (x 3053, z 1120) and BUG-007 (x 2782, z 1038). Dan: "remove the
+   dirt trail here. It should look normal." and "aggain i don't want the
+   dirt path. I dont think it is needed." Remove the dirt trail from BOTH
+   shortcuts along their whole length: the ground there is ordinary yard
+   again. ALSO remove the blue arches, the blue beams and the chevron signs
+   from both shortcuts (Dan, later the same evening; see "Shortcuts are
+   found, not signposted" near the top). Nothing marks a shortcut. The
+   entry planes, the `forgives` lists and the barrier rule stay exactly as
+   they are; only the visible markers go.
+3. BUG-007, #6. Dan: "is the reception ramp really necesarry? I think it
+   will be ok without it." Remove #6's landing deck: the car lands on the
+   ground behind the house. The landing must still keep the car's speed and
+   not stop or flip it (extend the Round 10 landing carry to that patch of
+   ground). Clear anything solid from the landing area. A slow car that
+   comes off the back of the roof must still be able to drive on.
+4. Driveways, ALL of Chastain Glen. BUG-002 (x 3168, z 989, Glenbarrett
+   Court): "Clean driveways here as well ... They shouldn't be colliding.
+   Maybe make the cul-de-sacs larger to prevent this." BUG-005: "make the
+   cul-de-sac larger to prevent driveways from merging into each other."
+   a. Make the cul-de-sac bulbs larger (Glenbarrett Court, Chasefield Court
+      and any other in the area) so each driveway reaches the bulb by
+      itself.
+   b. No two driveways overlap, cross or merge anywhere, and none has
+      broken or shattered-looking pieces where it meets the road.
+   c. No grass showing on any driveway (BUG-013's screenshot shows grass
+      patches on the asphalt drive at 1763).
+5. Roads and sidewalks, ALL of Chastain Glen. BUG-001 (x 3022, z 838):
+   "clean the sidewalks hre." BUG-003 (x 3065, z 949): "make sure there is
+   no grass in teh road nor sidewalks and the sidewalks arent broken like
+   this." BUG-004 (x 3074, z 996): "another example oof what i mean."
+   BUG-012 (x 2944, z 758): "Make sure grass is not in the road."
+   a. No grass on any road surface or sidewalk, including junctions and the
+      entrance at New Chastain Road.
+   b. Sidewalks and curbs are continuous: no broken, overlapping, floating
+      or torn pieces. At junctions and driveways they stop or turn the
+      corner cleanly.
+6. BUG-008 (x 2930, z 829, the entrance lane by the island). Dan: "these
+   white lines crossing into the road should not be there." Remove the curb
+   or sidewalk strips that run across the roadway there.
+7. BUG-006 (x 2964, z 1193, Dan's house). Dan: "my house doesn thave a
+   mailbox. should be to the right of the driveway. ALso the hydrant should
+   be in my yard instead of the neighbors." Add a mailbox to the right of
+   his driveway as seen from the street, and move that hydrant on to his
+   side of the lot line.
+8. The lake walk. BUG-009 (x 2914, z 767): "this sidewalk is in the wrong
+   place. It is the neighborhood sidewalk and should be closer to the lake.
+   The benches should be facing the lake and not the road." BUG-011 (x 2814,
+   z 760): "Again this sidewalk shoult be closer to the lake/pool and inside
+   the fence." Move the Round 9 walk off the roadside: it runs inside the
+   fences, along the pool area and the lake shore, to the entrance. The
+   benches face the lake.
+9. BUG-010 (x 2759, z 808). Dan: "This is not a sidewalk, this is a road to
+   the parking lot of the pool." The map data has a road there (Grasmere
+   Court Northeast). Take the sidewalk off it and show it as the road it
+   is, running into the pool parking lot.
+10. BUG-012, the brick entrance signs. Dan: "These brickwalls are incorrect,
+    they should be slanted the other way so that you see them when you are
+    pulling into the neighborhood, not approaching it." They are turned 15
+    degrees outward now. Turn each the other way, so both faces angle in
+    toward a car turning into the entrance from New Chastain Road. Check
+    from a car in the entrance, in the exe.
+11. Rebuild the executable last and report its path.
+12. Report status for every item as a short list, then "for Dan to check".
+
+Out of scope for this round: vehicles, sound and AI drivers (Rounds 12 and
+13, queued below), the six slightly buried houses, goose sounds.
+
+**QUEUED NEXT — Round 12: the real vehicles, with sound. DECIDED
+(2026-10-09).** Dan: "It would be interesting to get the actual vehicles in
+with sound and some ai drivers." Not started; promote after Round 11. One
+round per prompt. Outline:
+* Bring over Racer's vehicles as they are: `VehicleProfile`,
+  `VehicleConfiguration`, `VehicleVisual`, `VehiclePaint`, `VehicleLights`,
+  `VehicleSurfaceContacts`, `VehicleContact`, the built models (from
+  `Tools/Blender`; copy the generated assets, and the scripts only if a
+  model must be rebuilt), and the rider (`RiderLook`, `RiderGestures`) for
+  the bikes and the ATV. All player vehicles: Street Classic, tourer,
+  Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble
+  Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket. Police
+  vehicles stay behind until police modes come over.
+* Sound: `VehicleAudio` and `VehicleSoundSynthesis` (engine sound made in
+  code), per vehicle, plus whatever Racer plays for tyres, landings and
+  impacts.
+* Handling stays Racer's for each vehicle. Check each one on this map's
+  steeper roads (`vertical_scale` 1.5) and on both shortcuts; report any
+  that cannot make a jump, do not retune them.
+* Choosing a vehicle, DECIDED by Dan (2026-10-09): a temporary switch on
+  the shoulder buttons for now (and two keys), showing the vehicle's name
+  briefly. It is temporary: the garage view comes with the menus, and Dan
+  said the menus "shouldn't wait too long" (Round 14).
+* The chase camera, the debug panel, records (per vehicle) and the exe
+  build keep working. Check with a controller in the exe.
+
+**QUEUED AFTER THAT — Round 13: AI drivers on the Chastain Glen loop.**
+Outline: `RoadDriver`, `RaceRoad`, `ShortcutStrategy`, `AiFinishEstimate`,
+the start grid and positions from `RaceDirector` / `RaceProgress`, rival
+names. DECIDED by Dan (2026-10-09): start with 3 AI drivers; their vehicles
+are either chosen by Dan or picked at random. Until the menus exist, random
+is the default, with a simple setting to fix them. Known Racer
+lessons to carry: jump run-ups use `aiEntrySpeed`; the obstacle sensor must
+not read a ramp as a wall; check AI against a human-like driver in the exe,
+not a scripted one. The AI must cope with what this map adds: barriers,
+breakable fences, mailboxes, lamps and hydrants, solid trees, geese, the
+window jump and the rooftop leap.
+
+**QUEUED AFTER THAT — Round 14: menus and the garage.** Dan: "getting the
+menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
+`MenuGlyph`, the garage view (turning model, stat bars), picking the AI
+drivers' vehicles, controller first. Replaces the temporary vehicle switch
+and the T / X race keys.
+
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
@@ -1105,7 +1117,7 @@ Next Steps (Do Not Start Yet)
   trimmed shrubs on the island, a white rail fence along one side, sidewalks
   and curbs. Dan has reference photos. Also check the lighter grey patch on
   the road beside the island in `01_spawn.png`, which looks like a glitch.
-* **Next big round, likely Round 9: bring over Racer's finished systems.**
+* **After Rounds 12 and 13 (vehicles, sound, AI): the rest of Racer's finished systems.**
   No longer waiting on Woodstock Rush. Candidates, to be ordered with Dan:
   rival AI, menus and garage, the vehicles (mostly motorcycles and four
   wheelers), campaign, Free Roam, split-screen, traffic, radio, publishing.
