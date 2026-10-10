@@ -183,13 +183,12 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 15 in `TODO.md`:** Part A: quiet testing, water that
-vehicles sink part-way into and are slowed by (Racer's `ShallowWater` way),
-sounds for breaking fences, mailboxes, lamps, hydrants and glass, and a
-drop-in folder for goose honks. Part B: three AI drivers on the Chastain
-Glen loop, ported from Racer. Queued: 16 menus and the garage.
+**Active work is Round 16 in `TODO.md`:** first Dan's five follow-ups from
+driving Round 15 (items A to E: the culvert wall by the pond, a solid dirt
+pile on #6, grass and sidewalk edges that snag, breakable signs, the snag on
+#6's jump), committed on their own; then the menus and the garage from Racer.
 
-**Round 15 (see `TODO.md`, status there) is built and checked in the exe by script (muted), not yet driven by Dan:** Part A
+**Round 15 (see `TODO.md`, status there) is built, checked in the exe by script (muted), and driven and approved by Dan apart from Round 16 items A to E:** Part A
 (commit 1114c66): `CheckRun` mutes every check run and keeps its files in the check's folder; water with a 0.5 m bed under
 every pond, lake and stream, cut by the map build (`MapBuilder.Water.cs`), registered with Racer's `ShallowWater` (outline
 mode added) and Racer's `WaterFeedback`; the pool is water with a shallow end; break sounds (`BreakSounds`, Racer's

@@ -1316,7 +1316,7 @@ they pick random ones."
 Out of scope for this round: menus and the garage (Round 16), police,
 campaign, traffic, split-screen, the radio and Dan's music.
 
-**Round 15 status (Claude Code, 2026-10-10).** Built and checked in the exe by script (muted); not yet driven by Dan.
+**Round 15 status (Claude Code, 2026-10-10).** Built and checked in the exe by script (muted). DRIVEN BY DAN 2026-10-10 (session 2026-10-10_14-22-18-410_d2650e): approved apart from what he reported, which is items A to E under Round 16.
 
 Part A (committed on its own):
 1. Quiet testing: DONE. `CheckRun` (Assets/Scripts/CheckRun.cs) sets AudioListener.volume to 0 before the first scene loads
@@ -1422,7 +1422,7 @@ menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 drivers' vehicles, controller first. Replaces the temporary vehicle switch
 and the T / X race keys.
 
-**Also in Round 16 (Dan, 2026-10-10: "Can we put these in with the next phase?").** Fix exactly where Dan
+**Also in Round 16 (Dan, 2026-10-10: "Can we put these in with the next phase?").** Do A to E first and commit them on their own before starting the menus. Fix exactly where Dan
 pointed; list similar spots elsewhere for Dan rather than changing them.
 
 A. BUG-001 (session 2026-10-10_14-22-18-410_d2650e, x 2910.95, z 814.32, by the pond near the entrance): the
@@ -1445,6 +1445,88 @@ E. Shortcut #6's jump (the dirt pile over house 1641; Dan confirmed it is #6, no
    and approach angles out of the CP4 corner) and look for contacts that stop or snag the body on the dirt pile,
    the kicker's lip, 1641's roof and the landing. Do it together with B (the solid heap must not add a snag).
    Report what was found before changing the jump (protected geometry).
+
+**QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
+Dan: "we need to also fill in some other places on the map as well. I
+particularly want the shopping center behind my neighborhood, the
+river/wooded area (well mainly I want a track through there) and a couple
+of other neighborhoods as well." Not scoped into items yet. Dan's answers
+so far, in his words where it matters:
+
+* **Round 17, the shopping center.** Dan: "On the corner of Canton and new
+  Chastain corners I think. Currently there is a broad layout of the
+  buildings but the parking lot is pretty much all grass and should be
+  paved instead. There is a small gas station close to the road but
+  separate from building (it is the building in the shopping center further
+  north on canton road and an abandoned bank. I want the gas pumps to be
+  breakable".
+  - PLACED (Claude, 2026-10-10, from Dan's labelled overhead picture matched
+    to `Data/map.json`; the picture and a plot of the map data are in
+    `local/reference_photos/maps/`, git-ignored, reference only, never a data
+    source and never committed). It is NOT at the Canton / New Chastain
+    junction; it is 650 m further north, west of Canton Road Northeast and
+    north of Chastain Corner Northeast, backing onto Chastain Glen:
+    * The center: the one L-shaped retail footprint, x 3209 to 3416, z 1046 to
+      1230 (10,653 m2). Its big south-west block is the supermarket (Dan: "The
+      biggest part is a kroger"); the long arm running east along the north
+      side is the row of small shops, one of them a parcel shop.
+    * The gas station: the "roof" footprint at x 3418, z 1164 (379 m2), in
+      the car park's north-east. Dan: "The unlabelled other building is were
+      the gas pumps are". Canopy and breakable pumps go here.
+    * The abandoned bank: the "commercial" footprint at x 3445, z 1113
+      (525 m2), by Canton Road. (The picture mislabels it as a parcel shop.)
+    * The car park is the ground between them, east and south of the center.
+    * Not pointed at by Dan, so not part of this round: the buildings south of
+      Chastain Corner Northeast (x 3354 z 993, x 3466 z 1007, the roof at
+      x 3492 z 1017) and east of Canton Road.
+  - The first build step is still a labelled overhead screenshot from the game
+    of these three, for Dan to see before the dressing goes on.
+  - Paved car park (not grass) with painted bays, kerbs and islands; the
+    buildings read as shops; the gas station with a canopy and pumps that
+    break (pumps like hydrants and lamps: knocked over, a sound) and they
+    EXPLODE. Dan: "I would like explosions but not really do any damage to
+    anything else": a fireball, a bang and smoke for show only; it does not
+    break, push or damage anything else, the player's vehicle included; the bank looks abandoned.
+  - Shop names and signs are made up, not real brands (Dan: "Store names can be faked").
+* **Its own round after the shopping center: a track through the creek
+  woods, with pipe shortcuts.** DECIDED by Dan (2026-10-10): "Made up,
+  though I didn't realized there was a real paved path trail there...if so
+  we can use it but take liberties with it. For example I think it would be
+  cool to use pipes connected to various lakes/pounds as underground short
+  cuts".
+  - A made-up dirt track along Noonday Creek through the woods, built for
+    racing: jumps, creek crossings (water slows and splashes, Round 15). There is
+    no real trail on this stretch (Dan: the Noonday Creek trail has one end
+    in Woodstock and one on Bells Ferry Road off our map, not joined yet), so
+    the line is entirely made up.
+  - Underground pipe shortcuts: big drainage pipes a vehicle can drive
+    through, running between ponds / lakes / the creek (the pond by the
+    Chastain Glen entrance already has a culvert headwall with two pipes).
+    Enter at a headwall on one bank, come out at another. Shortcut rules as
+    #2 and #6: found, not signposted; an official shortcut forgives the
+    checkpoints it skips; must never slow or trap a vehicle (every one of the
+    eleven fits and gets through, the AI included); a ramp-like thing must
+    look like something that could be there.
+  - Before building: propose the track's line and each pipe (where it goes
+    in, where it comes out, what it cuts off) on an overhead picture for Dan.
+    Do not build a nearest version of anything he describes.
+* **Round 18, two more neighborhoods: Chastain Commons and Chastain
+  Enclave.** Dan: "the easiest as they are part of the same community so we
+  can reuse the house styles there. Though Enclave tends to have larger
+  houses. It also has a pool and tennis court up towards the front of the
+  neighborhood". Dressed the way Chastain Glen was in Round 7 (same house
+  styles, larger houses in Enclave, mailboxes, fences, lamps); Enclave gets
+  a pool (water, as Round 15) and a tennis court near its entrance.
+  PLACED from Dan's two map pictures (same folder):
+  - Chastain Enclave: north of New Chastain Road, just east of Bells Ferry
+    Road: Rotherhithe Landing and Bloombridge Way and their side streets,
+    about x 1500 to 2100, z 640 to 960, entered by Chastain Crossing
+    (x 1793, z 658). The pool is inside the loop, just north of the entrance;
+    exact spot and the tennis court to be shown to Dan on an overhead first.
+  - Chastain Commons (confirmed by Dan): Weybourne Court Northeast and its side streets, south of New
+    Chastain Road, about x 2560 to 2945, z 600 to 700, entered from New
+    Chastain Road.
+* Each new area is somewhere a new race can go; one world, routes laid over.
 
 Next Steps (Do Not Start Yet)
 
