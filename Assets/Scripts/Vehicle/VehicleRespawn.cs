@@ -51,6 +51,7 @@ namespace Racer
         void RecordSafePose()
         {
             bool stable = vehicle.GroundedWheels == 4 && transform.up.y > 0.9f;
+            if (vehicle.WaterImmersion > 0f || ShallowWater.InWater(vehicle.Body.position)) stable = false;   // Chastain Rush, Round 15: never a spot in the water
             if (!stable) { stableSince = -1; return; }
             if (stableSince < 0) stableSince = Time.time;
             if (Time.time - stableSince < StableFor || Time.time < nextSample) return;

@@ -64,10 +64,13 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   on top, fits the board, readable at 20 to 30 m. Depth-tested lettering,
   never a TextMesh default font material.
 - **Never write Dan's real save or records in a check.** Use a copy.
+  (Round 15: any `-exe...` run is a check run: `CheckRun` sends its reports, bump log and records to the check's own
+  folder. Also pass `-logFile <dir>\Player.log` so Unity does not overwrite Dan's Player.log.)
 - **Test quietly** (Dan, 2026-10-10). Every automated run is muted from
   start-up: Editor Play checks, batch runs, and any exe run with a check
   argument. Turn sound on only for the moment something must be heard, then
-  off again. The game Dan launches himself is never muted.
+  off again. The game Dan launches himself is never muted. (Round 15: `CheckRun` does it
+  at start-up; `CheckRun.Hear(true/false)` for the moment.)
 - **Don't bother Dan** for normal operations (Unity, Git, build). Stop only
   for a real external blocker, with the exact action needed.
 - **"This should be fun."** Forgiving resets, escapable water and pits, no
@@ -132,6 +135,11 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   houses (`Data/screenshots/round9/buried_houses.*`); `python Tools/handmade/make_entrance_sign.py` re-draws the monument
   panel (`Assets/HandMade/Entrance/ChastainGlenSign.png`, hand-made, committed).
 - Fence exceptions near Dan's house: `local/owner_fences.json` (git-ignored; format in `MapBuilder.Neighborhood.cs`).
+- Round 15: `ChastainRush.exe -exeRound15 <dir> [-r15Only water|sounds|shortcuts|race] [-soundsRoot <test dir>]
+  -logFile <dir>\Player.log`. Sound drop-ins (no rebuild): `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\`
+  `Geese\goose_honk*` and `Breaks\wood*|metal*|glass*|water*` (.wav/.ogg/.mp3). Water beds are cut by the map build
+  (`MapBuilder.Water.cs`), not mapgen. A code-only exe rebuild during a round: add `-playerBuildKeepScene` to the
+  Build Executable batch line (never for the round's last build).
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**

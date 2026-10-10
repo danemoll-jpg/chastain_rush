@@ -15,7 +15,8 @@ namespace ChastainRush
     // Driving through the flock (a goose within HitRadius of the car) costs a little speed, once per goose per few
     // seconds, and that goose takes off. Round 8: the honk is an audio clip, picked at random from honkClips (filled by
     // MapBuilder from Assets/Audio/Geese/goose_honk*.wav / .ogg / .mp3) with a little pitch variation and at most
-    // MaxVoices playing at once. With no clips the geese are silent (the Round 7 synthesized honk is gone).
+    // MaxVoices playing at once. With no clips the geese are silent (the Round 7 synthesized honk is gone). Round 15: plus any
+    // goose_honk* file in the drop-in folder (SoundDropIns), read each time the game starts.
     public sealed class GooseFlock : MonoBehaviour
     {
         public enum ZoneKind { Bank, Road, Water }
@@ -64,8 +65,29 @@ namespace ChastainRush
         {
             car = FindAnyObjectByType<ArcadeVehicle>();
             rng = new System.Random(seed);
+            EnsureVoices();
+            // Round 15, item 4: honks Dan drops into Sounds\Geese are added to the built-in ones, read at start-up (no rebuild)
+            if (SoundDropIns.Instance != null && SoundDropIns.Instance.Loaded) AddDropIns();
+            else SoundDropIns.Ready += AddDropIns;
+            BuildModels();
+            for (int i = 0; i < gooseZones.Length; i++) birds.Add(MakeBird(false, zones[gooseZones[i]], i));
+            if (heron) birds.Add(MakeBird(true, new Zone { kind = ZoneKind.Bank, centre = heronPost, radius = 0.5f }, 99));
+        }
+
+        void OnDestroy() { SoundDropIns.Ready -= AddDropIns; }
+
+        void AddDropIns()
+        {
+            SoundDropIns.Ready -= AddDropIns;
+            var d = SoundDropIns.Instance; if (d == null || d.Honks.Count == 0) return;
+            var list = new System.Collections.Generic.List<AudioClip>(honkClips); list.AddRange(d.Honks); honkClips = list.ToArray();
+            EnsureVoices();
+        }
+
+        void EnsureVoices()
+        {
             int clips = 0; foreach (var c in honkClips) if (c) clips++;
-            if (clips > 0)
+            if (clips > 0 && voices == null)
             {
                 voices = new AudioSource[MaxVoices];
                 for (int i = 0; i < voices.Length; i++)
@@ -76,9 +98,6 @@ namespace ChastainRush
                     voices[i] = a;
                 }
             }
-            BuildModels();
-            for (int i = 0; i < gooseZones.Length; i++) birds.Add(MakeBird(false, zones[gooseZones[i]], i));
-            if (heron) birds.Add(MakeBird(true, new Zone { kind = ZoneKind.Bank, centre = heronPost, radius = 0.5f }, 99));
         }
 
         // ---------------------------------------------------------------- models (procedural, low poly)

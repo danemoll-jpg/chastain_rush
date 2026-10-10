@@ -10,6 +10,7 @@ namespace ChastainRush
     //               the lap and 2 to 3.5 m to either side until the car's box there touches nothing but the ground
     //   otherwise   the last stable spot as before, unless a tree or anything else stands there or within 6 m ahead of it;
     //               then the nearest road, facing along it the way the car was heading, with the same clear check
+    //   (Round 15) never a spot in a pond, lake, stream or the pool: the safe spot is not recorded there and Clear rejects it
     public static class CarRecovery
     {
         static readonly Collider[] hits = new Collider[16];
@@ -61,6 +62,7 @@ namespace ChastainRush
         // nothing but the ground (and triggers) in the car's box there, and (ahead) no trunk or wall within 6 m
         static bool Clear(VehicleRespawn r, Vector3 q, float yawDeg, bool ahead)
         {
+            if (ShallowWater.InWater(q + Vector3.up * 0.1f)) return false;   // Round 15: never back into the water
             var rot = Quaternion.Euler(0f, yawDeg, 0f);
             var own = r.GetComponent<Rigidbody>();
             int n = Physics.OverlapBoxNonAlloc(q + Vector3.up * 1.0f, new Vector3(1.3f, 0.7f, 2.4f), hits, rot, ~0, QueryTriggerInteraction.Ignore);

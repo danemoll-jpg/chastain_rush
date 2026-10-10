@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using Racer;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -73,7 +74,7 @@ namespace ChastainRush
             var root = new GameObject("Pond").transform; root.SetParent(c.root, false);
             PondWaterMaterial = MakePondWater(); SpraySoftMaterial = MakeSprayMaterial();
             var ring = hood.PondRing;
-            float level = WaterLevel(ring, c.terrain) + 0.15f;
+            float level = (Beds != null && Beds.Level.TryGetValue(hood.PondIndex, out float lv) ? lv : WaterLevel(ring, c.terrain)) + PondLift;   // Round 15: measured before the bed was cut
             // water surface
             var wmb = new MeshBuilder();
             int v0 = wmb.Count;
@@ -302,6 +303,80 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ pool, parking, playground, clubhouse
 
+        // Round 15 (item 2d): the deck top with the pool's hole, the pool's walls and floor, the bed cut into the terrain under it, and
+        // its ShallowWater. Returns the water surface height.
+        static float BuildSunkPool(HoodCtx c, MeshBuilder mb, Frame f, List<Vector2> ring, float deckY, float hu, float hv, Color deckC, Transform root)
+        {
+            float surface = deckY - 0.08f, deep = surface - BedDepth, top = deckY - 0.12f;
+            // the shallow end: the longest side; n points into the pool
+            int si = 0; float sl = 0f;
+            for (int i = 0; i < ring.Count; i++) { float l = Vector2.Distance(ring[i], ring[(i + 1) % ring.Count]); if (l > sl) { sl = l; si = i; } }
+            Vector2 A = ring[si], e = (ring[(si + 1) % ring.Count] - A).normalized, n = new Vector2(-e.y, e.x);   // CCW ring: left of an edge is inside
+            float L = (top - deep) / PondSlope;
+            float Bed(Vector2 p) => Mathf.Lerp(top, deep, Mathf.Clamp01(Vector2.Dot(p - A, n) / L));
+            // spans of a line (o + dir * t) inside the ring
+            List<float> Cross(Vector2 o, Vector2 dir)
+            {
+                var ts = new List<float>();
+                for (int i = 0; i < ring.Count; i++)
+                {
+                    var a = ring[i]; var b = ring[(i + 1) % ring.Count]; var ab = b - a;
+                    float den = dir.x * ab.y - dir.y * ab.x; if (Mathf.Abs(den) < 1e-6f) continue;
+                    var ao = a - o; float t = (ao.x * ab.y - ao.y * ab.x) / den, k = (ao.x * dir.y - ao.y * dir.x) / den;
+                    if (k >= 0f && k < 1f) ts.Add(t);
+                }
+                ts.Sort(); return ts;
+            }
+            const float Step = 0.25f;
+            // deck top: rows along u, the parts outside the pool
+            var U = new Vector2(f.R.x, f.R.z); var V = new Vector2(f.F.x, f.F.z); var O = new Vector2(f.O.x, f.O.z);
+            mb.Tint = deckC;
+            for (float v = -hv; v < hv - 1e-4f; v += Step)
+            {
+                float v1 = Mathf.Min(v + Step, hv);
+                var ts = Cross(O + V * ((v + v1) * 0.5f), U);
+                var cuts = new List<float> { -hu };
+                for (int i = 0; i + 1 < ts.Count; i += 2) { cuts.Add(Mathf.Clamp(ts[i], -hu, hu)); cuts.Add(Mathf.Clamp(ts[i + 1], -hu, hu)); }
+                cuts.Add(hu);
+                for (int i = 0; i + 1 < cuts.Count; i += 2)
+                    if (cuts[i + 1] - cuts[i] > 1e-3f)
+                        Face(mb, f.P(cuts[i], 0f, v), f.P(cuts[i + 1], 0f, v), f.P(cuts[i + 1], 0f, v1), f.P(cuts[i], 0f, v1), Vector3.up);
+            }
+            // walls (facing in) from the deck down past the deep floor, and the floor in rows along the shallow side
+            var tile = new Color(0.55f, 0.82f, 0.86f);
+            mb.Tint = tile;
+            for (int i = 0; i < ring.Count; i++)
+            {
+                var a = ring[i]; var b = ring[(i + 1) % ring.Count];
+                var d = (b - a).normalized; var inward = new Vector3(-d.y, 0f, d.x);
+                Face(mb, new Vector3(a.x, deep - 0.05f, a.y), new Vector3(b.x, deep - 0.05f, b.y), new Vector3(b.x, deckY, b.y), new Vector3(a.x, deckY, a.y), inward);
+            }
+            float far = 0f; foreach (var p in ring) far = Mathf.Max(far, Vector2.Dot(p - A, n));
+            for (float d0 = 0f; d0 < far - 1e-4f; d0 += Step)
+            {
+                float d1 = Mathf.Min(d0 + Step, far);
+                var ts = Cross(A + n * ((d0 + d1) * 0.5f), e);
+                for (int i = 0; i + 1 < ts.Count; i += 2)
+                {
+                    Vector3 P(float t, float dd) { var q = A + e * t + n * dd; return new Vector3(q.x, Bed(q) + 0.02f, q.y); }
+                    Face(mb, P(ts[i], d0), P(ts[i + 1], d0), P(ts[i + 1], d1), P(ts[i], d1), Vector3.up);
+                }
+            }
+            // the bed in the terrain (the car drives on the terrain), 0.3 m in from the walls
+            int cut = 0;
+            EditTerrain(c.terrain, BoundsOf(ring, 1f), (x, z, y) =>
+            {
+                var p = new Vector2(x, z);
+                if (!InPolygon(p, ring) || DistToEdges(p, ring) < 0.3f) return y;
+                float b = Bed(p); if (b >= y) return y;
+                cut++; return b;
+            });
+            var go = new GameObject("Pool water"); go.transform.SetParent(root, false);
+            var w = go.AddComponent<ShallowWater>(); w.outline = ring.ToArray(); w.surfaceY = surface;
+            c.Log.Append($"pool water: surface {surface:0.00} m (8 cm under the deck), 0.5 m deep, shallow end along its {sl:0.0} m side rising 1 in 7 over {L:0.0} m, {cut} terrain samples cut; ");
+            return surface;
+        }
+
         static void BuildPoolSite(HoodCtx c)
         {
             var hood = c.hood;
@@ -316,13 +391,17 @@ namespace ChastainRush
             samples.Sort();
             float deckY = samples[samples.Count / 2] + 0.12f;
             var f = new Frame { O = new Vector3(hood.PoolCentre.x, deckY, hood.PoolCentre.y), R = new Vector3(hood.PoolU.x, 0, hood.PoolU.y), F = new Vector3(hood.PoolV.x, 0, hood.PoolV.y), M = 1f };
-            BoxF(mb, f, -hood.PoolDeckHalfU, hood.PoolDeckHalfU, lo - 0.3f - deckY, 0f, -hood.PoolDeckHalfV, hood.PoolDeckHalfV, new Color(0.78f, 0.72f, 0.64f));
-            // the pool: the OSM outline, a little above the deck, aqua
-            mb.Tint = new Color(0.16f, 0.74f, 0.82f);
+            var deckC = new Color(0.78f, 0.72f, 0.64f);
             var pr = new List<Vector2>(hood.PoolRing); if (pr.Count > 1 && pr[0] == pr[pr.Count - 1]) pr.RemoveAt(pr.Count - 1);
             if (PolyArea(pr) < 0f) pr.Reverse();
+            // Round 15 (item 2d): the pool is water a vehicle sinks into, Racer's way (its 0.85 / 0.86 pools): 0.5 m deep, and the
+            // floor at one end (the longest side, full width) rises at 1 in 7 to the ground under the deck, so any vehicle can
+            // drive out. The deck gets a hole for it; the surface is 8 cm under the deck; walls and floor in the pool's colour.
+            BoxNoBottom(mb, f, -hood.PoolDeckHalfU, hood.PoolDeckHalfU, lo - 0.3f - deckY, 0f, -hood.PoolDeckHalfV, hood.PoolDeckHalfV, deckC, deckC, deckC);
+            float poolSurface = BuildSunkPool(c, mb, f, pr, deckY, hood.PoolDeckHalfU, hood.PoolDeckHalfV, deckC, root);
+            mb.Tint = new Color(0.16f, 0.74f, 0.82f);
             int pv = mb.Count;
-            foreach (var p in pr) mb.Vertex(new Vector3(p.x, deckY + 0.03f, p.y));
+            foreach (var p in pr) mb.Vertex(new Vector3(p.x, poolSurface, p.y));
             foreach (var tri in EarClip(pr)) mb.Tri(pv + tri.x, pv + tri.z, pv + tri.y);
             // coping: a pale rim round the pool
             mb.Tint = new Color(0.93f, 0.92f, 0.88f);

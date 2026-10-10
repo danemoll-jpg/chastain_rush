@@ -55,6 +55,7 @@ namespace ChastainRush
         // Where bug reports go: local/debug_reports in the project (git-ignored); a built player has no project folder.
         public static string ReportRoot()
         {
+            if (CheckRun.Active) return Path.Combine(CheckRun.Dir, "debug_reports");   // Round 15, item 5: a check never writes Dan's own reports or bump log
 #if UNITY_EDITOR
             return Path.GetFullPath(Path.Combine(Application.dataPath, "..", "local", "debug_reports"));
 #else

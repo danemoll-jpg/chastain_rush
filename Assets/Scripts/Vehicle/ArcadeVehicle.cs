@@ -52,6 +52,7 @@ namespace Racer
             // imported); here the car registers itself, so a body contact on a shortcut ramp uses the ramp's real face normal
             var box = GetComponentInChildren<BoxCollider>();
             if (box) VehicleSurfaceContacts.Register(box);
+            if(!GetComponent<WaterFeedback>())gameObject.AddComponent<WaterFeedback>();   // Round 15: Racer's, as in Racer
         }
         void OnDestroy() { var box = GetComponentInChildren<BoxCollider>(); if (box) VehicleSurfaceContacts.Unregister(box); }   // Chastain Rush, Round 10
 
@@ -69,7 +70,7 @@ namespace Racer
         public void Simulate(float throttle, float brakeReverse, float steering, float dt)
         {
             // Round 13: Racer's current ArcadeVehicle (0.97) re-applied here: the vehicle profile's contact mode and the small
-            // vehicles' wipeout. Its weather grip and WaterFeedback stay behind (clear weather: the grip scale is always 1)
+            // vehicles' wipeout. Its weather grip stays behind (WaterFeedback came in Round 15) (clear weather: the grip scale is always 1)
             var configuration = GetComponent<VehicleConfiguration>();
             if(configuration) configuration.PrepareContacts();
             if (configuration && configuration.WipedOut && transform.up.y<.35f) { throttle = 0; steering *= .25f; }
@@ -135,7 +136,7 @@ namespace Racer
             Body.AddTorque((tilt * uprightStrength - tiltVelocity * uprightDamping) * (grounded ? 1 : airStability), ForceMode.Acceleration);
         }
 
-        public void ClearSteering() { steer = 0; WaterImmersion=0; WaterSurface=0; GetComponent<VehicleConfiguration>()?.Recover(); }   // Round 13: Racer 0.97
+        public void ClearSteering() { steer = 0; WaterImmersion=0; WaterSurface=0; GetComponent<WaterFeedback>()?.Clear(); GetComponent<VehicleConfiguration>()?.Recover(); }   // Round 13: Racer 0.97 (Round 15: with its WaterFeedback)
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.cyan;

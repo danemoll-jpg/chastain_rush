@@ -514,7 +514,7 @@ namespace ChastainRush
                 cur.trig.Add((centre, along, width, height, depth > 0f ? depth : width));
                 Count++;
             }
-            public Transform ToObjects(string name, Material mat, Transform parent, float debrisDrop)
+            public Transform ToObjects(string name, Material mat, Transform parent, float debrisDrop, BreakSounds.Kind sound)
             {
                 var root = new GameObject(name).transform; root.SetParent(parent, false);
                 foreach (var kv in cells)
@@ -524,7 +524,7 @@ namespace ChastainRush
                     GameObjectUtility.SetStaticEditorFlags(go, 0);   // the mesh is rewritten at runtime when one breaks
                     var chunk = go.AddComponent<FenceChunk>();
                     chunk.source = go.GetComponent<MeshFilter>().sharedMesh; chunk.material = mat;
-                    chunk.pieces = cell.pieces.ToArray(); chunk.panels = cell.panels.ToArray(); chunk.debrisDrop = debrisDrop;
+                    chunk.pieces = cell.pieces.ToArray(); chunk.panels = cell.panels.ToArray(); chunk.debrisDrop = debrisDrop; chunk.sound = sound;   // Round 15: its break sound
                     for (int i = 0; i < cell.trig.Count; i++)
                     {
                         var t = cell.trig[i];

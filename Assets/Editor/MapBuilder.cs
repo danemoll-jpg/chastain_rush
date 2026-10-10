@@ -87,6 +87,7 @@ namespace ChastainRush
             // houses and driveways are not built here
             var hood = Neighborhood.Load(map, terrain);
             hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
+            CarveWaterBeds(map, terrain);   // Round 15 (item 2): a bed under every pond, lake and stream (MapBuilder.Water.cs)
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
@@ -94,12 +95,14 @@ namespace ChastainRush
             BuildBuildings(map, terrain, mats, world, LoadOwner(), hood);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
+            RegisterWater(map, world, new Pavement(map));   // Round 15 (item 2c)
             // Round 10 (item 7): trees are solid now, so no trunk may stand on a road or a drive anywhere on the map (the area's
             // own rules already keep them off its streets, drives and the shortcut lines): one standing within 0.6 m of a
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f), (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z),   // Round 15: none in the water
+                (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
             trees.Field.gameObject.AddComponent<TreeTrunks>();
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
@@ -802,6 +805,9 @@ namespace ChastainRush
                 return best < margin;
             }
             public bool On(Vector2 p, float margin) => Worst(p, margin, out _, out _, out _);
+            // Round 15: how far p is from the nearest pavement edge (negative on it), up to 'range'; bridges can be added
+            public float Clearance(Vector2 p, float range) => Worst(p, range, out _, out float half, out float d) ? d - half : range;
+            public void AddLines(IEnumerable<(List<Vector2> p, float half)> lines) { foreach (var (p, h) in lines) Add(p, h); }
             public Vector2 MoveOff(Vector2 p)
             {
                 if (!Worst(p, 0.6f, out var foot, out float half, out float d)) return p;
@@ -837,19 +843,44 @@ namespace ChastainRush
         static void BuildWater(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Neighborhood hood)
         {
             var mb = new MeshBuilder();
+            var pave = new Pavement(map);
             for (int wi = 0; wi < map.water.Length; wi++)
             {
                 var w = map.water[wi];
                 if (hood.OwnsPond(wi)) continue; // Round 7: the pond is built with its surroundings
                 var ring = ToPoints(w.outline);
                 if (ring.Count < 3) continue;
-                float level = WaterLevel(ring, terrain);
+                float level = Beds.Level.TryGetValue(wi, out float lv) ? lv : WaterLevel(ring, terrain);   // Round 15: measured before the bed was cut
                 int v = mb.Count;
-                foreach (var p in ring) mb.Vertex(new Vector3(p.x, level + 0.15f, p.y));
+                foreach (var p in ring) mb.Vertex(new Vector3(p.x, level + PondLift, p.y));
                 foreach (var tri in EarClip(ring)) mb.Tri(v + tri.x, v + tri.z, v + tri.y);
             }
-            foreach (var s in map.streams) AddRibbon(mb, Densify(ToPoints(s.points), 2f), 2f, 0.04f, terrain);
+            // Round 15: a stream is drawn level across at its surface, as wide as the water in its channel, and not on pavement
+            foreach (var (pts, surf) in Beds.Streams)
+            {
+                var run = new List<Vector3>();
+                for (int i = 0; i <= pts.Count; i++)
+                {
+                    bool dry = i == pts.Count || pave.Clearance(pts[i], 6f) < 1f;
+                    if (!dry) { run.Add(new Vector3(pts[i].x, surf[i], pts[i].y)); continue; }
+                    if (run.Count >= 2) AddLevelRibbon(mb, run, StreamHalf * 2f);
+                    run.Clear();
+                }
+            }
             mb.ToObject("Water", mats.Water, parent, false);
+        }
+
+        // Round 15: a ribbon at the given heights (level across), for the streams
+        static void AddLevelRibbon(MeshBuilder mb, List<Vector3> pts, float width)
+        {
+            int start = mb.Count;
+            for (int i = 0; i < pts.Count; i++)
+            {
+                var a = pts[Mathf.Max(i - 1, 0)]; var b = pts[Mathf.Min(i + 1, pts.Count - 1)];
+                var t = new Vector2(b.x - a.x, b.z - a.z).normalized; var n = new Vector3(-t.y, 0f, t.x) * (width * 0.5f);
+                mb.Vertex(pts[i] + n); mb.Vertex(pts[i] - n);
+                if (i > 0) { int k = start + (i - 1) * 2; mb.Tri(k, k + 2, k + 1); mb.Tri(k + 1, k + 2, k + 3); }
+            }
         }
 
         // The lidar surface is hydro-flattened: open water is one flat level, so the median ground height inside the
@@ -1040,9 +1071,9 @@ namespace ChastainRush
                 Paint = MakeVertexLit("RoadPaint", Color.white, 0f, -3f, -3f);
                 Driveway = MakeVertexLit("Driveway", Color.white, 0f, -1f, -1f);
                 Sidewalk = MakeVertexLit("Sidewalk", Color.white, 0f, -2f, -2f);   // Round 11: drawn over the drives it crosses
-                Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f);
-                Foliage.enableInstancing = true;
-                Foliage.SetFloat("_LeafTint", 1f);
+                // Round 15: instancing and the leaf tint are set before the asset is written; set after, they lived only in memory,
+                // and the exe drew no trees (and nothing after them) whenever the material was read back from disk
+                Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f, m => { m.enableInstancing = true; m.SetFloat("_LeafTint", 1f); });
                 Sky = new Material(Shader.Find("ChastainRush/SkyGradient")) { name = "Sky" };
                 Sky.SetColor("_Horizon", HazeColor);
                 AssetDatabase.CreateAsset(Sky, GeneratedDir + "/Sky.mat");
@@ -1072,7 +1103,7 @@ namespace ChastainRush
                 }
             }
 
-            static Material MakeVertexLit(string name, Color tint, float sway, float offsetFactor, float offsetUnits)
+            static Material MakeVertexLit(string name, Color tint, float sway, float offsetFactor, float offsetUnits, Action<Material> setup = null)
             {
                 var shader = Shader.Find("ChastainRush/VertexLit");
                 if (shader == null) throw new Exception("Shader ChastainRush/VertexLit not found");
@@ -1081,6 +1112,7 @@ namespace ChastainRush
                 m.SetFloat("_Sway", sway);
                 m.SetFloat("_OffsetFactor", offsetFactor);
                 m.SetFloat("_OffsetUnits", offsetUnits);
+                setup?.Invoke(m);
                 AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
                 return m;
             }

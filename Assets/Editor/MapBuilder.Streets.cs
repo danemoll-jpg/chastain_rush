@@ -351,6 +351,7 @@ namespace ChastainRush
                 chunk.material = c.mats.House;
                 chunk.pieces = cell.pieces.ToArray();
                 chunk.panels = cell.panels.ToArray();
+                chunk.sound = kind == FenceKind.Iron ? BreakSounds.Kind.Iron : BreakSounds.Kind.Wood;   // Round 15, item 3
                 for (int i = 0; i < cell.recs.Count; i++)
                 {
                     var rec = cell.recs[i];

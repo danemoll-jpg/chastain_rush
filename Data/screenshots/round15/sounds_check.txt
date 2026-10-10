@@ -1,0 +1,16 @@
+Round 15 check, 2026-10-10 11:10, the exe, 1920 x 1080. Sound muted throughout (AudioListener.volume 0).
+
+=== Break sounds and the drop-in folders (counted, not heard: the check is muted)
+  drop-in folder: C:\Users\danmo\AppData\Local\Temp\claude\C--Users-danmo-chastain-rush\4cd6155d-c206-490b-b660-fc51e4e33303\scratchpad\soundsroot
+PASS  drop-in folders made with a READ ME
+  read: 1 goose honk(s) (goose_honk_test), wood 1
+PASS  a dropped-in honk reaches the geese  -  1 clip(s), 3 voices
+PASS  break sound: Wood (Fence_Privacy_24_6)  -  playing: wood_test
+PASS  break sound: Iron (Fence_Iron_22_6)  -  playing: wood_test, Original ChainLink 2
+PASS  break sound: Mailbox (Mailboxes_24_9)  -  playing: Original Mailbox 0, wood_test, Original ChainLink 2
+PASS  break sound: Lamp (StreetLamps_23_8)  -  playing: Original Glass 1, Original Mailbox 0, Original ChainLink 2, Original Sign 1
+PASS  break sound: Glass (House 1627 shortcut wall (in)_23_8)  -  playing: Original Glass 1, Original Mailbox 0, Original Glass 2, Original Sign 1
+PASS  break sound: Hydrant (Hydrants_24_9)  -  playing: Original Glass 1, Original Mailbox 0, Original Glass 2, Original Sign 1
+PASS  hydrant: the rush of water plays while it runs  -  Hydrant rush
+
+ALL 9 CHECKS PASSED

@@ -20,6 +20,7 @@ namespace ChastainRush
         public Piece[] pieces;
         public Panel[] panels;
         public bool[] broken;
+        public BreakSounds.Kind sound;     // Round 15: what it sounds like when a panel breaks (set by MapBuilder)
         public float debrisDrop = 0.55f;   // Round 9: how far below a piece's centre its debris comes to rest (mailboxes use more: the box sits 1.2 m up)
 
         // tuning
@@ -85,6 +86,7 @@ namespace ChastainRush
             }
             live.vertices = current;
             live.RecalculateBounds();
+            BreakSounds.Play(transform.TransformPoint(panel.centre), speed, sound);   // Round 15, item 3
             PanelBroken?.Invoke(this, panelIndex, transform.TransformPoint(panel.centre));
             // a little speed lost, at most MaxCostPerStep in one physics step however many panels go at once
             if (lastCostFrame != Time.frameCount) { lastCostFrame = Time.frameCount; costThisStep = 0f; }

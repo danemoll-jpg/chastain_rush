@@ -1316,6 +1316,52 @@ they pick random ones."
 Out of scope for this round: menus and the garage (Round 16), police,
 campaign, traffic, split-screen, the radio and Dan's music.
 
+**Round 15 status (Claude Code, 2026-10-10).** Built and checked in the exe by script (muted); not yet driven by Dan.
+
+Part A (committed on its own):
+1. Quiet testing: DONE. `CheckRun` (Assets/Scripts/CheckRun.cs) sets AudioListener.volume to 0 before the first scene loads
+   in any exe run with an `-exe...` argument and any Editor run with -batchmode / -executeMethod; `CheckRun.Hear(true/false)`
+   for a moment that must be heard (not needed this round). The game Dan starts himself is never muted. Every check in this
+   round ran muted (the report prints AudioListener.volume 0).
+2. Water: DONE.
+   a. Racer, in a few lines: `ShallowWater` is a box (or round) volume whose top is the surface; the bed is the ground under
+      it, sculpted per scene (lake beds dug into the terrain, pools with a full-width shallow end, banks 25% or gentler, 0.85).
+      `ShallowWater.Sample` measures the depth from 0.15 m under the wheels' ground and is full at 0.65 m; `ArcadeVehicle`
+      multiplies the drive by 0.48 and adds a drag of 0.95 x speed at full immersion (both were already here, unused: no water
+      was registered). `WaterFeedback` draws ripple rings round the vehicle and plays a soft splash on going in and out.
+   b. A bed in the map build (`MapBuilder.Water.cs`, run before anything samples the ground, as the Round 9 regrade): every
+      pond and lake a bowl 0.5 m under its surface, reached 1 in 7 (14%) from the shore; every stream a channel 0.5 m under
+      its surface for 0.8 m either side of the line, then 20% banks (the stream is now drawn about 6 m wide, level across,
+      where the water is). Levels are measured on the untouched lidar first, so every surface stays where it was. Only lowers,
+      only where the ground was at the water (fades out 0.6 m above it: no trenches in hillsides), never under roads, bridges,
+      drives or buildings. 527,330 terrain samples lowered, by at most 0.50 m. No tree stands in water. Done in the map build,
+      not mapgen.py: same inputs, re-runnable, no new download or mapgen run needed.
+   c. All 22 ponds and lakes registered by outline (ShallowWater got an outline mode, commented), streams as 906 boxes;
+      Racer's `WaterFeedback` copied (its ambience setting left behind; the splash noise copied in).
+   d. The pond keeps its fountain, docks, walls and geese (docks' posts now stand in the bed). The pool is water: 0.5 m deep,
+      its floor rising 1 in 7 to the deck along its longest side (Racer's shallow end), a hole in the deck, surface 8 cm under
+      the coping. A reset never lands in water: the safe spot is not recorded there, and CarRecovery rejects a spot in water.
+   e. Check (`ChastainRush.exe -exeRound15 <dir> -r15Only water`): across the pond (82 m of water) at full throttle. Street
+      Classic: bed 0.50 m under the surface, water up to the bottom of the doors, in at 24.7 m/s, across 8.7 m/s mean (lowest
+      6.3), out on the far bank after 12.0 s. Needle 600: 0.50 m (the rider's shins), in at 26.3, across 10.8 (lowest 7.8), out
+      after 10.0 s. A reset in the middle of the pond put each on dry ground 55 m away. 8 of 8 passed. (The first line tried
+      ended against a tree trunk on the far bank, out of the water; the check now picks a line clear of trees.)
+3. Break sounds: DONE. Racer's `SmashAudio` way (made in code, no files; bounded 3D voices; loudness from the hit speed),
+   copied as `BreakSounds`: wooden fences and the white rail = wood; the pool's iron fence = metal (Racer's chain-link);
+   mailbox = metal clang plus wood; street lamp = metal plus glass; hydrant = a heavy clang, then a looped rush of water at the
+   jet while it runs (at most 3 at once); shortcut windows and the sliding door = glass. Six voices at once, nothing past 75 m.
+   Check (`-r15Only sounds`): one of each kind broken, each played (counted, muted).
+4. Geese and drop-ins: DONE. Every start, the game reads `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\`:
+   `Geese\goose_honk*.wav|ogg|mp3` are added to the built-in ones; `Breaks\wood*|metal*|glass*|water*` replace the made sound of
+   that kind. The folders and a READ ME in each are made on the first start of the game Dan runs (a check never writes there).
+   `Assets/Audio/Geese/` still works (README updated). No goose file anywhere = silent geese. Check: with a test folder
+   (`-soundsRoot`), the READ MEs were made, a test honk reached the geese and a test wood sound replaced the wood break.
+5. Checks keep to their own folder: DONE. In a check run the debug reports and bump log go under the check's folder and the
+   race records to `<dir>ace_records_check.json`. Run exe checks with `-logFile <dir>\Player.log` too, or Unity overwrites
+   Dan's Player.log. Dan's bump_log.txt was unchanged by every run this round (07:42).
+   Also fixed: the trees' material kept its instancing flag only in memory (set after the asset was written); now it is set
+   before, so the exe never draws without trees.
+
 **QUEUED NEXT — Round 16: menus and the garage.** Dan: "getting the
 menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 `MenuGlyph`, the garage view (turning model, stat bars), picking the AI

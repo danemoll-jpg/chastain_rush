@@ -72,9 +72,9 @@ namespace ChastainRush
             BuildPoolSite(ctx);
             BuildDanLot(ctx);
             BuildRound9(ctx);   // Round 9: the gazebo, the playground, the sidewalk with benches, the pool fence, the entrance monuments
-            ctx.Mailboxes3D.ToObjects("Mailboxes", mats.House, root, 1.25f);
-            ctx.Lamps3D.ToObjects("StreetLamps", mats.House, root, 1f);
-            var hyd = ctx.Hydrants3D.ToObjects("Hydrants", mats.House, root, 0.3f);
+            ctx.Mailboxes3D.ToObjects("Mailboxes", mats.House, root, 1.25f, BreakSounds.Kind.Mailbox);
+            ctx.Lamps3D.ToObjects("StreetLamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
+            var hyd = ctx.Hydrants3D.ToObjects("Hydrants", mats.House, root, 0.3f, BreakSounds.Kind.Hydrant);
             foreach (var fc in hyd.GetComponentsInChildren<FenceChunk>()) fc.gameObject.AddComponent<HydrantChunk>();
             var water = new GameObject("HydrantWater").AddComponent<HydrantWater>();   // Round 10, item 9
             water.transform.SetParent(root, false);

@@ -364,6 +364,7 @@ namespace ChastainRush
         public static string RecordsPath()
         {
             if (!string.IsNullOrEmpty(RecordsPathOverride)) return RecordsPathOverride;
+            if (CheckRun.Active) return Path.Combine(CheckRun.Dir, "race_records_check.json");   // Round 15, item 5
 #if UNITY_EDITOR
             return Path.GetFullPath(Path.Combine(Application.dataPath, "..", "local", "race_records.json")); // git-ignored
 #else

@@ -369,7 +369,7 @@ namespace ChastainRush
             foreach (var kv in cells) br.Piece(() => { foreach (var poly in kv.Value) Emit(mbp, poly); });
             float ym = (y0 + y1) / 2f;
             br.End(new Vector3(P.x, ym, P.y), new Vector3(-N.x, 0f, -N.y), windowHalf > 0f ? (windowHalf + WinFrame) * 2f + 0.4f : oh.half_width * 2f + 1.2f, y1 - y0 + 0.4f, 1.6f);
-            br.ToObjects($"House {h.index} shortcut wall ({tag})", c.mats.House, c.root, Mathf.Max(0.3f, ym - gy - 0.2f));
+            br.ToObjects($"House {h.index} shortcut wall ({tag})", c.mats.House, c.root, Mathf.Max(0.3f, ym - gy - 0.2f), windowHalf > 0f ? BreakSounds.Kind.Glass : BreakSounds.Kind.Wood);   // Round 15: glass for a window or the sliding door
         }
 
         // the house's back wall range (in the turned-round back frame, u to the right as seen from behind) around where the

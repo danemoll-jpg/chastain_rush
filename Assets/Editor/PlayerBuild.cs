@@ -32,7 +32,9 @@ namespace ChastainRush
         public static BuildReport Build()
         {
             if (Application.isPlaying) throw new InvalidOperationException("Leave Play mode first.");
-            MapBuilder.Build();   // the exe always gets a fresh scene from the current data
+            // the exe always gets a fresh scene from the current data (Round 15: -playerBuildKeepScene, for a code-only rebuild
+            // during a round, builds from the scene already made; the last build of a round never uses it)
+            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-playerBuildKeepScene") < 0) MapBuilder.Build();
 
             PlayerSettings.companyName = "Chastain Rush";
             PlayerSettings.productName = "Chastain Rush";

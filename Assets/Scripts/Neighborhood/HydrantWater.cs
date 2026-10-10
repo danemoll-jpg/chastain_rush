@@ -14,6 +14,7 @@ namespace ChastainRush
         public float columnHeight = 9f;
         readonly List<GameObject> jets = new List<GameObject>();
         public static int Running { get; private set; }
+        const int RushVoices = 3;
 
         void OnEnable() { FenceChunk.PanelBroken += OnBroken; FenceChunk.AllRestored += StopAll; }
         void OnDisable() { FenceChunk.PanelBroken -= OnBroken; FenceChunk.AllRestored -= StopAll; }
@@ -42,6 +43,13 @@ namespace ChastainRush
             patch.AddComponent<MeshFilter>().sharedMesh = Disc();
             var r = patch.AddComponent<MeshRenderer>(); r.sharedMaterial = groundMaterial; r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             patch.AddComponent<Grow>();
+            // Round 15, item 3: the rush of water while it runs, in 3D at the jet; at most RushVoices at once (the newest)
+            var rush = go.AddComponent<AudioSource>();
+            rush.clip = BreakSounds.Rush(); rush.loop = true; rush.spatialBlend = 1f; rush.dopplerLevel = 0f; rush.rolloffMode = AudioRolloffMode.Linear;
+            rush.minDistance = 6f; rush.maxDistance = 60f; rush.volume = 0.45f; rush.priority = 90;
+            rush.time = Random.Range(0f, rush.clip.length * 0.9f); rush.Play();
+            int playing = 0;
+            for (int i = jets.Count - 1; i >= 0; i--) { var a = jets[i] ? jets[i].GetComponent<AudioSource>() : null; if (a && a.isPlaying && ++playing >= RushVoices) a.Stop(); }
             jets.Add(go); Running = jets.Count;
         }
 
