@@ -20,6 +20,9 @@ namespace Racer
         public float RoadWeight => road;
         public int ImpactCount { get; private set; }
         public const float Volume = .75f;   // Chastain Rush: Racer's default Settings.vehicle
+        // Chastain Rush, Round 15 (item 11): an AI driver's vehicle makes its engine sound too, heard in 3D from where it is
+        // (Racer removes the engine audio from its rivals). Its pedals come from its RoadDriver instead of the player's input.
+        [System.NonSerialized] public RoadDriver driver;
 
         void Start()
         {
@@ -33,6 +36,7 @@ namespace Racer
                 var source = gameObject.AddComponent<AudioSource>(); voices[i] = source;
                 source.playOnAwake = false; source.spatialBlend = 0; source.dopplerLevel = 0;
                 source.priority = i < 2 ? 100 : 150; source.volume = 0;
+                if (driver) { source.spatialBlend = 1; source.rolloffMode = AudioRolloffMode.Linear; source.minDistance = 8; source.maxDistance = 140; source.priority = i < 2 ? 160 : 220; }   // Round 15: an AI car, in 3D
                 if (i < 5) { source.clip = clips[i]; source.loop = true; source.Play(); }
             }
             ResetAudio();
@@ -45,7 +49,7 @@ namespace Racer
             float volume = Volume;   // Chastain Rush: Racer's default vehicle volume (no settings menu yet, Round 15)
             float speed = Racing ? Mathf.Abs(car.ForwardSpeed) : 0;
             bool grounded = Racing && car.GroundedWheels >= 2;
-            float pedal = Racing && input ? (car.ForwardSpeed < -.6f ? input.BrakeReverse : input.Throttle) : 0;   // Chastain Rush: no RoadDriver
+            float pedal = driver ? (car.ForwardSpeed < -.6f ? driver.LastBrake : driver.LastThrottle) : Racing && input ? (car.ForwardSpeed < -.6f ? input.BrakeReverse : input.Throttle) : 0;   // Chastain Rush: the AI's pedals (Round 15)
             load = Mathf.MoveTowards(load, pedal, dt * 3);
             // Audio-only rev estimate; no forces, gear changes or motor edits.
             float revs = .82f + Mathf.Sqrt(Mathf.Clamp01(speed / car.topSpeed)) * 1.25f + load * .22f;
@@ -58,7 +62,7 @@ namespace Racer
             SetLevel(1, engine ? .16f * load : 0, volume, dt);
             Slip = grounded ? Mathf.Abs(Vector3.Dot(car.Body.linearVelocity, transform.right)) : 0;
             float slipLevel = Mathf.SmoothStep(0, 1, Mathf.InverseLerp(1.4f, 5.5f, Slip)) * Mathf.InverseLerp(5, 14, speed);
-            float brakingSlip=grounded&&car.ForwardSpeed>.6f?Mathf.InverseLerp(.5f,1,input.BrakeReverse)*Mathf.InverseLerp(9,24,speed):0;
+            float brakingSlip=grounded&&car.ForwardSpeed>.6f?Mathf.InverseLerp(.5f,1,driver?driver.LastBrake:input?input.BrakeReverse:0)*Mathf.InverseLerp(9,24,speed):0;
             slipLevel=Mathf.Max(slipLevel,brakingSlip*.85f);
             if (grounded) road = Mathf.MoveTowards(road, SampleRoad(), dt * 4);
             float rolling = grounded ? Mathf.InverseLerp(1, 30, speed) : 0;

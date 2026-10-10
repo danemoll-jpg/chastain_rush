@@ -189,6 +189,20 @@ sounds for breaking fences, mailboxes, lamps, hydrants and glass, and a
 drop-in folder for goose honks. Part B: three AI drivers on the Chastain
 Glen loop, ported from Racer. Queued: 16 menus and the garage.
 
+**Round 15 (see `TODO.md`, status there) is built and checked in the exe by script (muted), not yet driven by Dan:** Part A
+(commit 1114c66): `CheckRun` mutes every check run and keeps its files in the check's folder; water with a 0.5 m bed under
+every pond, lake and stream, cut by the map build (`MapBuilder.Water.cs`), registered with Racer's `ShallowWater` (outline
+mode added) and Racer's `WaterFeedback`; the pool is water with a shallow end; break sounds (`BreakSounds`, Racer's
+`SmashAudio` way); sound drop-ins `Sounds\Geese\` and `Sounds\Breaks\` beside the records (`SoundDropIns`). Part B: three AI
+drivers in every race (T): Racer's `RoadDriver` (trimmed), `RaceRoad`, `ShortcutStrategy`, `DriverVariation`,
+`AiFinishEstimate`; every car is a `RaceEntrant` under `RaceController`'s rules; Racer's grid (player at the back), names and
+paints (EMBER, GOLD, BLUE); place on the HUD and the finishing order on the finish panel; AI engine sound in 3D
+(`VehicleAudio.driver`); tree trunks solid round the AI too (`TreeTrunks.Track`). AI vehicles: random each race, or fixed in
+`ai_drivers.json` beside the race records (`local/` in the Editor). Imported from Racer in Round 15: ShallowWater's
+`WaterFeedback`, `SmashAudio` (as BreakSounds), `RoadDriver`, `RaceRoad`, `ShortcutStrategy`, `DriverVariation`,
+`AiFinishEstimate` (all commented in place); left behind: RaceDirector, RaceFlow, RacerState, RaceProgress, traffic,
+split-screen, campaign, name tags.
+
 **Round 14 (see `TODO.md`, status there) is built, checked in the exe by script, and driven and approved by Dan (no complaint from Dan after driving means approved):** the small
 vehicles' slow-downs were their BODY contacts with the terrain: speculative CCD (Racer's setting for small vehicles) plus a
 TerrainCollider gave contacts with horizontal normals (Needle 600 30 m/s lost in 40 ms). Racer's ground is all mesh and its

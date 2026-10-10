@@ -22,6 +22,15 @@ namespace ChastainRush
     // while a race runs, every road that leaves the course and is not part of a shortcut is closed by a barrier (RaceBarriers).
     // Times use the physics clock (Time.fixedDeltaTime), so a bug-capture pause (Time.timeScale 0) pauses the race too, and
     // crossings are interpolated inside the physics step. Gates are wide and forgiving: see RaceGate.Crossed.
+    //
+    // Round 15 (items 6 to 13): three AI drivers race too (Racer's RoadDriver, see RoadDriver.cs), under exactly these rules:
+    // every car is a RaceEntrant with its own gates, laps, penalties and shortcuts. They get a vehicle each (random from the
+    // eleven, or fixed in ai_drivers.json beside the race records) and Racer's quick-race names and paints (EMBER, GOLD, BLUE).
+    // The grid is Racer's: the player at the back on the old grid spot, the three AI ahead of it at 8, 15 and 22 m, either
+    // side of the lane, all held until GO. The race clock runs from GO; each racer's own clock starts at its first crossing
+    // of the start line (the rolling start above). The finishing order is who crossed the line first, penalties added; if
+    // an AI driver is still racing 60 s after the player has finished, its finish is estimated from its pace (Racer's
+    // AiFinishEstimate) and marked as such.
     [DefaultExecutionOrder(50)]
     public sealed class RaceController : MonoBehaviour
     {
@@ -43,25 +52,37 @@ namespace ChastainRush
         public Stage State { get; private set; } = Stage.Free;
         public RaceRoute Route { get; private set; }
         public RouteJson RouteData { get; private set; }
-        public float Clock { get; private set; }        // seconds since the first crossing of the start line
-        public float LapClock => clockStarted && State != Stage.Free ? Clock - lapStart + LapPenalty : 0f;   // with this lap's penalties
+        // the player's race (Round 15: these read the player's RaceEntrant; the AI drivers have their own, in Entrants)
+        public float RaceClock { get; private set; }    // Round 15: seconds since GO, the same for every racer
+        public float Clock => P.ClockStarted ? (P.Finished ? P.FinalTotal - P.PenaltyTotal : RaceClock - P.StartAt) : 0f;   // seconds since the player first crossed the start line
+        public float LapClock => P.ClockStarted && State != Stage.Free ? RaceClock - P.LapStart + P.LapPenalty : 0f;   // with this lap's penalties
         public float TotalClock => Clock + PenaltyTotal;                                                    // with all penalties
-        public float PenaltyTotal { get; private set; }  // seconds of penalty so far this race
-        public float LapPenalty { get; private set; }    // ... of which on the lap in progress
-        public int MissedTotal { get; private set; }     // checkpoints missed so far this race
-        public IReadOnlyList<string> PenaltyLog => penaltyLog;
-        public RaceShortcut ActiveShortcut { get; private set; }
-        public IReadOnlyList<int> ForgivenThisLap => forgiven;
+        public float PenaltyTotal => P.PenaltyTotal;     // seconds of penalty so far this race
+        public float LapPenalty => P.LapPenalty;         // ... of which on the lap in progress
+        public int MissedTotal => P.MissedTotal;         // checkpoints missed so far this race
+        public IReadOnlyList<string> PenaltyLog => P.PenaltyLog;
+        public RaceShortcut ActiveShortcut => P.ActiveShortcut;
+        public IReadOnlyList<int> ForgivenThisLap => P.Forgiven;
         public RaceBarriers Barriers => barriers;
-        public int CompletedLaps { get; private set; }
-        public int NextCheckpoint { get; private set; } // index into Route.Checkpoints; == Count once all are passed
-        public bool ClockStarted => clockStarted;
+        public int CompletedLaps => P.CompletedLaps;
+        public int NextCheckpoint => P.NextCheckpoint; // index into Route.Checkpoints; == Count once all are passed
+        public bool ClockStarted => P.ClockStarted;
         public float CountdownRemaining { get; private set; }
-        public float FinalTotal { get; private set; }
+        public float FinalTotal => P.FinalTotal;
         public string Message { get; private set; } = "";
-        public IReadOnlyList<float> LapTimes => lapTimes;
-        public IReadOnlyList<string> LapLog => lapLog;
-        public IReadOnlyList<int> MissedThisLap => missed;
+        public IReadOnlyList<float> LapTimes => P.LapTimes;
+        public IReadOnlyList<string> LapLog => P.LapLog;
+        public IReadOnlyList<int> MissedThisLap => P.Missed;
+        // Round 15: every racer (the player first), the AI drivers' road and shortcuts, and whether the AI drive now
+        public readonly List<RaceEntrant> Entrants = new List<RaceEntrant>();
+        public RaceEntrant Player => P;
+        public RaceRoad AiRoad { get; private set; }
+        public readonly List<AiShortcut> AiShortcuts = new List<AiShortcut>();
+        public bool AiRunning => (State == Stage.Racing || State == Stage.Finished) && aiActive;
+        public static int AiCount = 3;                 // Dan: "I think we can start with 3 ai drivers"; checks may change it (-aiCount)
+        public static string[] AiVehiclesOverride;     // checks: -aiVehicles id,id,id (otherwise ai_drivers.json, otherwise random)
+        public static float PlayerFinishWait = 60f;    // after the player finishes, how long the AI drivers race on before their finishes are estimated
+        public float PlayerFinishedAt { get; private set; }
         public float BestLap { get; private set; }
         public float BestTotal { get; private set; }
         public bool NewBestLap { get; private set; }
@@ -73,14 +94,9 @@ namespace ChastainRush
         ArcadeVehicle car;
         VehicleInput input;
         VehicleRespawn respawn;
-        bool clockStarted, startPressed, endPressed, wasInputEnabled;
-        float lapStart, messageUntil, goFlashUntil;
-        Vector3 prevPos;
-        readonly List<float> lapTimes = new List<float>();
-        readonly List<string> lapLog = new List<string>();
-        readonly List<int> missed = new List<int>();
-        readonly List<int> forgiven = new List<int>();
-        readonly List<string> penaltyLog = new List<string>();
+        bool startPressed, endPressed, wasInputEnabled, aiActive;
+        float messageUntil, goFlashUntil, nextEstimateSample;
+        readonly RaceEntrant P = new RaceEntrant { Name = "YOU" };
         RaceMarkers markers;
         RaceBarriers barriers;
         BoxCollider carBox;
@@ -104,9 +120,15 @@ namespace ChastainRush
             input = car.GetComponent<VehicleInput>();
             respawn = car.GetComponent<VehicleRespawn>();
             carBox = car.GetComponentInChildren<BoxCollider>();
+            P.Car = car; P.Box = carBox;
             if (respawn) respawn.Respawned += OnRespawned;
             var args = Environment.GetCommandLineArgs();
-            for (int i = 0; i < args.Length - 1; i++) if (args[i] == "-raceDirection") DirectionOverride = args[i + 1];
+            for (int i = 0; i < args.Length - 1; i++)
+            {
+                if (args[i] == "-raceDirection") DirectionOverride = args[i + 1];
+                if (args[i] == "-aiCount") AiCount = Mathf.Clamp(int.Parse(args[i + 1]), 0, 3);
+                if (args[i] == "-aiVehicles") AiVehiclesOverride = args[i + 1].Split(',');
+            }
             LoadRoute();
         }
 
@@ -141,13 +163,15 @@ namespace ChastainRush
         {
             if (!enabled || !car) return;
             LoadRoute(); // picks up a changed direction
-            clockStarted = false; Clock = 0f; lapStart = 0f; CompletedLaps = 0; FinalTotal = 0f;
+            RaceClock = 0f; PlayerFinishedAt = 0f;
             NewBestLap = NewBestTotal = false;
-            lapTimes.Clear(); lapLog.Clear(); missed.Clear(); forgiven.Clear(); penaltyLog.Clear(); NextCheckpoint = 0;
-            PenaltyTotal = LapPenalty = 0f; MissedTotal = 0; ActiveShortcut = null;
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f;
+            RemoveAi();
             PlaceOnGrid();
+            P.Reset();
+            Entrants.Clear(); Entrants.Add(P);
+            SpawnAi();   // Round 15: the AI drivers on the grid ahead of the player
             input.enabled = false;
             Say("Get ready", 2f);
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
@@ -164,7 +188,8 @@ namespace ChastainRush
             input.enabled = true;
             Say("", 0f);
             if (barriers != null) barriers.Clear();   // ... and go away in free driving
-            ActiveShortcut = null;
+            P.ActiveShortcut = null;
+            RemoveAi();
             Log("RACE LEFT");
             markers.Refresh(this);
         }
@@ -174,17 +199,18 @@ namespace ChastainRush
             Vector3 g = Route.GridPosition;
             if (respawn) respawn.PlaceAt(g + Vector3.up * 0.3f, Route.GridYaw);
             else { car.Body.position = g + Vector3.up * 0.8f; car.Body.rotation = Quaternion.Euler(0, Route.GridYaw, 0); car.Body.linearVelocity = Vector3.zero; }
-            prevPos = car.transform.position;
+            P.PrevPos = car.transform.position;
         }
 
-        void OnRespawned() { prevPos = car.transform.position; } // a reset is a teleport: it must not count as crossing anything
-        public void NotifyTeleported() { prevPos = car.transform.position; } // checks that move the car by hand say so, as a reset does
+        void OnRespawned() { P.PrevPos = car.transform.position; } // a reset is a teleport: it must not count as crossing anything
+        public void NotifyTeleported() { P.PrevPos = car.transform.position; } // checks that move the car by hand say so, as a reset does
 
         // How far the car's body reaches sideways across a gate at the moment of crossing (half the car's box, turned to the gate).
-        float Reach(RaceGate g)
+        static float Reach(RaceEntrant e, RaceGate g)
         {
-            Vector3 right = g.Right, cr = car.transform.right, cf = car.transform.forward;
-            float hx = carBox ? carBox.size.x * 0.5f * carBox.transform.lossyScale.x : 0.925f, hz = carBox ? carBox.size.z * 0.5f * carBox.transform.lossyScale.z : 1.85f;
+            var t = e.Car.transform; var box = e.Box;
+            Vector3 right = g.Right, cr = t.right, cf = t.forward;
+            float hx = box ? box.size.x * 0.5f * box.transform.lossyScale.x : 0.925f, hz = box ? box.size.z * 0.5f * box.transform.lossyScale.z : 1.85f;
             return Mathf.Abs(Vector3.Dot(right, cr)) * hx + Mathf.Abs(Vector3.Dot(right, cf)) * hz;
         }
 
@@ -206,153 +232,403 @@ namespace ChastainRush
             if (endPressed) { endPressed = false; EndRace(); }
             if (State == Stage.Free || !car) return;
             float dt = Time.fixedDeltaTime;
-            Vector3 pos = car.transform.position;
 
             if (State == Stage.Countdown)
             {
                 car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero;
-                float before = CountdownRemaining;
                 CountdownRemaining -= dt;
                 if (CountdownRemaining <= 0f)
                 {
-                    State = Stage.Racing; input.enabled = true; goFlashUntil = Time.time + 1.0f;
+                    State = Stage.Racing; input.enabled = true; goFlashUntil = Time.time + 1.0f; RaceClock = 0f;
                     Say("Cross the start line to start the clock", 6f);
                     Log("GO");
                     markers.Refresh(this);
                 }
-                prevPos = pos;
+                foreach (var e in Entrants) if (e.Car) e.PrevPos = e.Car.transform.position;
                 return;
             }
 
-            float t0 = Clock;
-            if (clockStarted && State == Stage.Racing) Clock += dt;
-
-            // gates passed during this step, in the order they happened
-            var hits = new List<(float f, int id)>();
-            if (State == Stage.Racing)
+            float t0 = RaceClock;
+            RaceClock += dt;
+            foreach (var e in Entrants)
             {
-                if (Route.Gate.Crossed(prevPos, pos, Reach(Route.Gate), out float fg)) hits.Add((fg, 0));
-                for (int i = 0; i < Route.Checkpoints.Count; i++)
-                    if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
-                for (int i = 0; i < Route.Shortcuts.Count; i++)
-                {
-                    var sc = Route.Shortcuts[i];
-                    if (!EntryPlanesOff && sc.Entry.Crossed(prevPos, pos, Reach(sc.Entry), out float fe)) hits.Add((fe, 1000 + i));
-                    if (ActiveShortcut == sc && sc.Exit.Crossed(prevPos, pos, Reach(sc.Exit), out float fx)) hits.Add((fx, 2000 + i));
-                    // Round 13: in the shortcut's corridor counts as taking it too (the entry plane can be passed round)
-                    else if (ActiveShortcut != sc && clockStarted && sc.LastForgiven >= NextCheckpoint && sc.InCorridor(pos)) hits.Add((1f, 3000 + i));
-                }
-                hits.Sort((a, b) => a.f.CompareTo(b.f));
-                foreach (var h in hits)
-                {
-                    float at = t0 + h.f * dt;
-                    if (h.id == 0) OnGate(at);
-                    else if (h.id < 1000) OnCheckpoint(h.id - 1, at);
-                    else if (h.id < 2000) OnShortcutEntry(Route.Shortcuts[h.id - 1000], at, "its entry plane");
-                    else if (h.id < 3000) OnShortcutExit(Route.Shortcuts[h.id - 2000], at);
-                    else OnShortcutEntry(Route.Shortcuts[h.id - 3000], at, "its corridor");
-                    if (State != Stage.Racing) break;
-                }
+                if (!e.Car) continue;
+                if (e.Finished) { e.PrevPos = e.Car.transform.position; continue; }
+                Step(e, t0, dt);
             }
-            prevPos = pos;
+            if (aiActive) TrackAi();
+        }
+
+        // the gates one racer passed during this step, in the order they happened
+        void Step(RaceEntrant e, float t0, float dt)
+        {
+            Vector3 pos = e.Car.transform.position, prevPos = e.PrevPos;
+            var hits = new List<(float f, int id)>();
+            if (Route.Gate.Crossed(prevPos, pos, Reach(e, Route.Gate), out float fg)) hits.Add((fg, 0));
+            for (int i = 0; i < Route.Checkpoints.Count; i++)
+                if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(e, Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
+            for (int i = 0; i < Route.Shortcuts.Count; i++)
+            {
+                var sc = Route.Shortcuts[i];
+                if (!EntryPlanesOff && sc.Entry.Crossed(prevPos, pos, Reach(e, sc.Entry), out float fe)) hits.Add((fe, 1000 + i));
+                if (e.ActiveShortcut == sc && sc.Exit.Crossed(prevPos, pos, Reach(e, sc.Exit), out float fx)) hits.Add((fx, 2000 + i));
+                // Round 13: in the shortcut's corridor counts as taking it too (the entry plane can be passed round)
+                else if (e.ActiveShortcut != sc && e.ClockStarted && sc.LastForgiven >= e.NextCheckpoint && sc.InCorridor(pos)) hits.Add((1f, 3000 + i));
+            }
+            hits.Sort((a, b) => a.f.CompareTo(b.f));
+            foreach (var h in hits)
+            {
+                float at = t0 + h.f * dt;
+                if (h.id == 0) OnGate(e, at);
+                else if (h.id < 1000) OnCheckpoint(e, h.id - 1, at);
+                else if (h.id < 2000) OnShortcutEntry(e, Route.Shortcuts[h.id - 1000], at, "its entry plane");
+                else if (h.id < 3000) OnShortcutExit(e, Route.Shortcuts[h.id - 2000], at);
+                else OnShortcutEntry(e, Route.Shortcuts[h.id - 3000], at, "its corridor");
+                if (e.Finished) break;
+            }
+            e.PrevPos = pos;
         }
 
         // ---------------------------------------------------------------- rules
 
         // A checkpoint that was skipped: Racer's rule, 5 s on the lap and on the total, and the lap goes on counting.
-        void Miss(int index, float at)
+        void Miss(RaceEntrant e, int index, float at)
         {
-            missed.Add(index);
-            PenaltyTotal += MissPenaltySeconds; LapPenalty += MissPenaltySeconds; MissedTotal++;
-            penaltyLog.Add($"Lap {CompletedLaps + 1}  CP{index + 1}  +{MissPenaltySeconds:0} s  missed");
-            Log($"PENALTY +{MissPenaltySeconds:0} s: missed CP{index + 1} on lap {CompletedLaps + 1} at {at:0.000} (race penalty now {PenaltyTotal:0} s)");
+            e.Missed.Add(index);
+            e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
+            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  CP{index + 1}  +{MissPenaltySeconds:0} s  missed");
+            Log(e, $"PENALTY +{MissPenaltySeconds:0} s: missed CP{index + 1} on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
         }
 
-        void MissMessage(List<int> skipped)
+        void MissMessage(RaceEntrant e, List<int> skipped)
         {
-            if (skipped.Count == 0) return;
+            if (skipped.Count == 0 || !e.IsPlayer) return;
             Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s", 4f);
         }
 
-        void OnCheckpoint(int index, float at)
+        void OnCheckpoint(RaceEntrant e, int index, float at)
         {
-            if (!clockStarted) return;       // before the first start-line crossing there is no lap to be on
-            if (index < NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
+            if (!e.ClockStarted) return;       // before the first start-line crossing there is no lap to be on
+            if (index < e.NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
-            for (int k = NextCheckpoint; k < index; k++) { Miss(k, at); skipped.Add(k + 1); }
-            NextCheckpoint = index + 1;
-            Log($"CHECKPOINT {index + 1} at {at:0.000}" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
-            MissMessage(skipped);
-            markers.Refresh(this);
+            for (int k = e.NextCheckpoint; k < index; k++) { Miss(e, k, at); skipped.Add(k + 1); }
+            e.NextCheckpoint = index + 1;
+            Log(e, $"CHECKPOINT {index + 1} at {at:0.000}" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            MissMessage(e, skipped);
+            if (e.IsPlayer) markers.Refresh(this);
         }
 
         // Taking an official shortcut (Racer: a Branch entry grants the route's bypass list): the checkpoints it skips are
         // forgiven, with no penalty. Checkpoints before the first forgiven one that are still waiting were really missed.
-        void OnShortcutEntry(RaceShortcut sc, float at, string how)
+        void OnShortcutEntry(RaceEntrant e, RaceShortcut sc, float at, string how)
         {
-            if (!clockStarted) return;
-            if (sc.LastForgiven < NextCheckpoint) return;   // nothing left on this lap for it to forgive
+            if (!e.ClockStarted) return;
+            if (sc.LastForgiven < e.NextCheckpoint) return;   // nothing left on this lap for it to forgive
             var skipped = new List<int>();
-            for (int k = NextCheckpoint; k < sc.FirstForgiven; k++) { Miss(k, at); skipped.Add(k + 1); }
+            for (int k = e.NextCheckpoint; k < sc.FirstForgiven; k++) { Miss(e, k, at); skipped.Add(k + 1); }
             var free = new List<int>();
-            for (int k = Mathf.Max(NextCheckpoint, sc.FirstForgiven); k <= sc.LastForgiven; k++) { forgiven.Add(k); free.Add(k + 1); }
-            NextCheckpoint = sc.LastForgiven + 1;
-            ActiveShortcut = sc;
-            Log($"SHORTCUT {sc.Id} entered at {at:0.000} ({how}): checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
-            if (skipped.Count > 0) MissMessage(skipped);
-            else Say($"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
-            markers.Refresh(this);
+            for (int k = Mathf.Max(e.NextCheckpoint, sc.FirstForgiven); k <= sc.LastForgiven; k++) { e.Forgiven.Add(k); free.Add(k + 1); }
+            e.NextCheckpoint = sc.LastForgiven + 1;
+            e.ActiveShortcut = sc;
+            e.ShortcutsTaken.Add($"lap {e.CompletedLaps + 1} {sc.Id}");
+            Log(e, $"SHORTCUT {sc.Id} entered at {at:0.000} ({how}): checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            if (skipped.Count > 0) MissMessage(e, skipped);
+            else if (e.IsPlayer) Say($"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
+            if (e.IsPlayer) markers.Refresh(this);
         }
 
-        void OnShortcutExit(RaceShortcut sc, float at)
+        void OnShortcutExit(RaceEntrant e, RaceShortcut sc, float at)
         {
-            if (ActiveShortcut != sc) return;
-            ActiveShortcut = null;
-            Log($"SHORTCUT {sc.Id} left at {at:0.000}");
+            if (e.ActiveShortcut != sc) return;
+            e.ActiveShortcut = null;
+            Log(e, $"SHORTCUT {sc.Id} left at {at:0.000}");
         }
 
-        void OnGate(float at)
+        void OnGate(RaceEntrant e, float at)
         {
-            if (!clockStarted)
+            if (!e.ClockStarted)
             {
-                clockStarted = true; Clock = 0f; lapStart = 0f; NextCheckpoint = 0; missed.Clear(); forgiven.Clear();
-                PenaltyTotal = LapPenalty = 0f; MissedTotal = 0; penaltyLog.Clear();
-                Say("Lap 1 - go!", 3f);
-                Log("START LINE crossed: clock started");
-                markers.Refresh(this);
+                e.ClockStarted = true; e.StartAt = e.LapStart = at; e.NextCheckpoint = 0; e.Missed.Clear(); e.Forgiven.Clear();
+                e.PenaltyTotal = e.LapPenalty = 0f; e.MissedTotal = 0; e.PenaltyLog.Clear();
+                if (e.IsPlayer) { Say("Lap 1 - go!", 3f); markers.Refresh(this); }
+                Log(e, "START LINE crossed: clock started");
                 return;
             }
             var skipped = new List<int>();
-            for (int k = NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(k, at); skipped.Add(k + 1); }
-            float raw = at - lapStart, lap = raw + LapPenalty;
-            int lapNo = CompletedLaps + 1;
-            lapTimes.Add(lap); CompletedLaps++;
-            bool best = BestLap <= 0f || lap < BestLap;
-            if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); }
-            string pen = LapPenalty > 0f ? $"  (includes +{LapPenalty:0} s penalty, {MissedText()})" : "";
-            string fg = forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
-            lapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
-            if (skipped.Count > 0) Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
-            else Say($"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
-            Log($"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {LapPenalty:0.0})" + (missed.Count > 0 ? $"; {MissedText()}" : "") + (forgiven.Count > 0 ? $"; forgiven {string.Join(",", forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
-            if (CompletedLaps >= Route.Laps) { Finish(at); return; }
-            lapStart = at; NextCheckpoint = 0; LapPenalty = 0f; missed.Clear(); forgiven.Clear(); ActiveShortcut = null;
-            markers.Refresh(this);
+            for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(e, k, at); skipped.Add(k + 1); }
+            float raw = at - e.LapStart, lap = raw + e.LapPenalty;
+            int lapNo = e.CompletedLaps + 1;
+            e.LapTimes.Add(lap); e.CompletedLaps++;
+            bool best = false;
+            if (e.IsPlayer) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
+            string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
+            string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
+            e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
+            if (e.IsPlayer)
+            {
+                if (skipped.Count > 0) Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                else Say($"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
+            }
+            Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
+            if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
+            e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null;
+            if (e.IsPlayer) markers.Refresh(this);
         }
 
-        string MissedText() { var names = new List<string>(); foreach (int k in missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
+        static string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
 
-        void Finish(float at)
+        void Finish(RaceEntrant e, float at)
         {
-            State = Stage.Finished; FinalTotal = at + PenaltyTotal;   // the clock plus every penalty
-            at = FinalTotal;
-            bool bestTotal = BestTotal <= 0f || at < BestTotal;
-            if (bestTotal) { BestTotal = at; NewBestTotal = true; }
+            e.Finished = true; e.FinalTotal = at - e.StartAt + e.PenaltyTotal;   // its clock plus every penalty
+            e.FinishedAt = at + e.PenaltyTotal;
+            Log(e, $"FINISH total {e.FinalTotal:0.000} (clock {e.FinalTotal - e.PenaltyTotal:0.000} + penalties {e.PenaltyTotal:0.0}); laps {string.Join(" ", e.LapTimes.ConvertAll(x => x.ToString("0.000")))}; place {Ordered().IndexOf(e) + 1}");
+            if (!e.IsPlayer) return;
+            State = Stage.Finished; PlayerFinishedAt = RaceClock;
+            float total = e.FinalTotal;
+            bool bestTotal = BestTotal <= 0f || total < BestTotal;
+            if (bestTotal) { BestTotal = total; NewBestTotal = true; }
             SaveRecords();
-            Say($"Finished! Total {Fmt(at)}", 10f);
-            Log($"FINISH total {at:0.000} (clock {at - PenaltyTotal:0.000} + penalties {PenaltyTotal:0.0}); laps {string.Join(" ", lapTimes.ConvertAll(x => x.ToString("0.000")))}");
+            Say($"Finished! Total {Fmt(total)}", 10f);
             markers.Refresh(this);
         }
+
+        // ---------------------------------------------------------------- Round 15: the AI drivers
+
+        [Serializable] class AiDriverJson { public string name, vehicle; }
+        [Serializable] class AiDriversJson { public string note; public AiDriverJson[] drivers; }
+        // Racer's quick-race rivals: names and paints (RaceDirector.CreateCars)
+        static readonly string[] AiNames = { "EMBER", "GOLD", "BLUE" };
+        static readonly Color[] AiPaints = { new Color(.95f, .25f, .12f), new Color(.95f, .75f, .1f), new Color(.2f, .55f, 1f) };
+
+        public static string AiSettingsPath()
+        {
+#if UNITY_EDITOR
+            return Path.GetFullPath(Path.Combine(Application.dataPath, "..", "local", "ai_drivers.json")); // git-ignored
+#else
+            return Path.Combine(Application.persistentDataPath, "ai_drivers.json");
+#endif
+        }
+
+        // Until the menus (Round 16): each AI driver's vehicle, "random" (a new pick from the eleven every race) or a vehicle id.
+        // The file is made with three "random" lines the first time a race starts in the game Dan runs himself; a check never
+        // reads or writes it (-aiVehicles instead).
+        string[] AiVehicles(System.Random rng)
+        {
+            var picks = new string[AiCount];
+            string[] chosen = AiVehiclesOverride;
+            if (chosen == null && !CheckRun.Active)
+            {
+                string path = AiSettingsPath();
+                try
+                {
+                    if (!File.Exists(path))
+                    {
+                        Directory.CreateDirectory(Path.GetDirectoryName(path));
+                        var def = new AiDriversJson { note = "AI drivers' vehicles for a race (T). \"random\" = a new pick from the eleven every race, or a vehicle id: " + string.Join(", ", Array.ConvertAll(VehicleProfile.All, p => p.Id)) + ". Read at every race start.", drivers = new AiDriverJson[3] };
+                        for (int i = 0; i < 3; i++) def.drivers[i] = new AiDriverJson { name = AiNames[i], vehicle = "random" };
+                        File.WriteAllText(path, JsonUtility.ToJson(def, true));
+                    }
+                    var f = JsonUtility.FromJson<AiDriversJson>(File.ReadAllText(path));
+                    if (f?.drivers != null) chosen = Array.ConvertAll(f.drivers, d => d?.vehicle);
+                }
+                catch (Exception ex) { Debug.LogWarning("[Race] ai_drivers.json unreadable, all random: " + ex.Message); }
+            }
+            for (int i = 0; i < picks.Length; i++)
+            {
+                string id = chosen != null && i < chosen.Length ? chosen[i] : null;
+                if (string.IsNullOrEmpty(id) || id == "random" || VehicleProfile.IndexOf(id) < 0) id = VehicleProfile.All[rng.Next(VehicleProfile.All.Length)].Id;
+                picks[i] = id;
+            }
+            return picks;
+        }
+
+        // The road the AI drive (the lap, closed) and the shortcuts as they drive them, made at each race start.
+        void BuildAiRoad()
+        {
+            if (AiRoad != null) Destroy(AiRoad.gameObject);   // a new road for each race (the direction may have changed)
+            AiRoad = new GameObject("AI race road").AddComponent<RaceRoad>();
+            var pts = new List<Vector3>(Route.Path); if (pts.Count > 1 && (pts[0] - pts[pts.Count - 1]).sqrMagnitude < 0.01f) pts.RemoveAt(pts.Count - 1);
+            AiRoad.points = pts.ToArray(); AiRoad.Initialize();
+            AiShortcuts.Clear();
+            foreach (var sc in Route.Shortcuts)
+            {
+                var line = new GameObject("AI shortcut " + sc.Id).AddComponent<RaceRoad>(); line.transform.SetParent(AiRoad.transform, false);
+                line.openHighway = true; line.points = sc.Path; line.Initialize();
+                var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = AiShortcutSpeed(sc.Id) };
+                a.entryRoad = AiRoad.Project(sc.Start, out _); a.exitRoad = AiRoad.Project(sc.End, out _);
+                a.Allows = c => AiShortcutAllowed(sc.Id, c);
+                AiShortcuts.Add(a);
+            }
+            runIn = RunInLine();
+        }
+        AiShortcut runIn;
+
+        // The speed an AI driver arrives with and holds through each shortcut (Racer's aiEntrySpeed), from the shortcut checks:
+        // #2 is clean at 20 m/s in every vehicle (26 m/s and up a car hits a house: Rounds 12 to 14), #6 clears 1641 from 20 m/s.
+        public static float AiShortcutSpeed(string id) => id.Contains("over_house") ? 22f : 20f;
+        // Which vehicles an AI driver takes each shortcut in: only those that got through it in the Round 15 trials
+        // (Round15Runner, "shortcuts"); the others stay on the road there.
+        public static readonly Dictionary<string, string[]> AiShortcutNever = new Dictionary<string, string[]>();
+        static bool AiShortcutAllowed(string id, ArcadeVehicle c)
+        {
+            var cfg = c ? c.GetComponent<VehicleConfiguration>() : null;
+            return cfg == null || !AiShortcutNever.TryGetValue(id, out var never) || Array.IndexOf(never, cfg.profileId) < 0;
+        }
+
+        // Racer's grid: the player at the back on the old grid spot, the AI drivers ahead at 8, 15 and 22 m, either side of the
+        // lane (2.2 m off the line), each moved toward the line if its spot is not clear.
+        List<(Vector3 pos, Vector3 fwd)> GridSlots()
+        {
+            var line = new List<Vector3>();
+            if (!Route.Reverse && RouteData.lead_in != null && RouteData.lead_in.Length >= 4)
+            {
+                for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) line.Add(RaceRoute.Ground(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
+            }
+            else line.AddRange(Route.SamplePath(Route.GateS - RouteData.reverse_grid_back_m, Route.GateS, 2f));
+            var slots = new List<(Vector3, Vector3)>();
+            for (int n = 0; n < AiCount; n++)
+            {
+                float d = 8f + n * 7f; float side = n % 2 == 0 ? 2.2f : -2.2f;
+                var p = Along(line, d, out var f);
+                var right = Vector3.Cross(Vector3.up, f).normalized;
+                Vector3 best = p;
+                foreach (float k in new[] { 1f, 0.6f, 0.3f, 0f, -0.3f })
+                {
+                    var q = RaceRoute.Ground(p.x + right.x * side * k, p.z + right.z * side * k);
+                    if (!Physics.CheckBox(q + Vector3.up * 1.0f, new Vector3(1.1f, 0.6f, 2.4f), Quaternion.LookRotation(f), ~0, QueryTriggerInteraction.Ignore)) { best = q; break; }
+                }
+                slots.Add((best, f));
+            }
+            return slots;
+        }
+
+        static Vector3 Along(List<Vector3> line, float d, out Vector3 fwd)
+        {
+            float acc = 0f;
+            for (int i = 0; i + 1 < line.Count; i++)
+            {
+                var a = line[i]; var b = line[i + 1]; var ab = b - a; ab.y = 0f; float L = ab.magnitude;
+                if (acc + L >= d || i + 2 == line.Count) { fwd = L > 1e-4f ? ab / L : Vector3.forward; return Vector3.Lerp(a, b, Mathf.Clamp01((d - acc) / Mathf.Max(L, 1e-4f))); }
+                acc += L;
+            }
+            fwd = Vector3.forward; return line[0];
+        }
+
+        // forward races start on the entrance lane: the AI follow the lead-in to the lap, then 40 m of the lap
+        AiShortcut RunInLine()
+        {
+            if (Route.Reverse || RouteData.lead_in == null || RouteData.lead_in.Length < 4) return null;
+            var pts = new List<Vector3>();
+            for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) pts.Add(RaceRoute.Ground(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
+            float j = AiRoad.Project(pts[pts.Count - 1], out _);
+            for (float d = 4f; d <= 40f; d += 4f) pts.Add(AiRoad.At(j + d, out _));
+            var line = new GameObject("AI run-in").AddComponent<RaceRoad>(); line.transform.SetParent(AiRoad.transform, false);
+            line.openHighway = true; line.points = pts.ToArray(); line.Initialize();
+            return new AiShortcut { Id = "run-in", Name = "run-in", Line = line, FirstForgiven = int.MaxValue };
+        }
+
+        void SpawnAi()
+        {
+            if (AiCount <= 0) { aiActive = false; return; }
+            BuildAiRoad();
+            var rng = new System.Random(Environment.TickCount);
+            DriverVariation.Seed = rng.Next();
+            var vehicles = AiVehicles(rng);
+            var slots = GridSlots();
+            var riders = RiderLook.Field(DriverVariation.Seed, Mathf.Max(3, AiCount), RiderLook.Player);
+            for (int n = 0; n < AiCount; n++)
+            {
+                var clone = Instantiate(car.gameObject);
+                clone.name = AiNames[n];
+                // the player's own parts that an AI car must not have: the vehicle switch, the player's input and reset, any
+                // check probes; its engine sound is made again below as a 3D sound driven by the AI's pedals
+                foreach (var mb in clone.GetComponents<MonoBehaviour>())
+                {
+                    if (mb is VehicleInput || mb is VehicleRespawn) { mb.enabled = false; continue; }
+                    if (mb is ArcadeVehicle || mb is VehicleConfiguration || mb is RampHold || mb is WaterFeedback || mb is RiderGestures || mb is VehicleLights) continue;
+                    mb.enabled = false; if (mb is VehicleAudio) DestroyImmediate(mb); else Destroy(mb);   // VehicleAudio is added again below (one per object)
+                }
+                foreach (var src in clone.GetComponents<AudioSource>()) Destroy(src);
+                foreach (Transform child in clone.transform) if (child.name == "Headlight") Destroy(child.gameObject);   // VehicleLights makes its own
+                var ai = clone.GetComponent<ArcadeVehicle>();
+                var cfg = clone.GetComponent<VehicleConfiguration>();
+                cfg.riderLook = riders[n % riders.Length];
+                cfg.Apply(vehicles[n]);
+                cfg.SetPaint(AiPaints[n % AiPaints.Length]);
+                ai.enabled = false; ai.Body.isKinematic = true;
+                var (pos, fwd) = slots[n];
+                var rot = Quaternion.LookRotation(fwd, Vector3.up);
+                ai.Body.position = pos + Vector3.up * Mathf.Max(.4f, ai.suspensionLength - Physics.gravity.magnitude / ai.springStrength);
+                ai.Body.rotation = rot; clone.transform.SetPositionAndRotation(ai.Body.position, rot);
+                ai.Body.linearVelocity = ai.Body.angularVelocity = Vector3.zero; ai.ClearSteering();
+                var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>() };
+                var driver = clone.AddComponent<RoadDriver>();
+                e.Driver = driver;
+                driver.Initialize(this, ai, e, .94f + n * .025f, n);   // Racer's pace spread for rivals
+                driver.RunIn = runIn;
+                var sound = clone.AddComponent<VehicleAudio>(); sound.driver = driver;
+                e.Reset();
+                Entrants.Add(e);
+                if (TreeTrunks.Instance) TreeTrunks.Instance.Track(clone.transform);
+                Log($"AI driver {e.Name}: {cfg.Profile.Name} ({cfg.profileId}) on the grid at ({pos.x:0.0}, {pos.z:0.0})");
+            }
+            aiActive = true; nextEstimateSample = 0f;
+        }
+
+        void RemoveAi()
+        {
+            for (int i = Entrants.Count - 1; i >= 0; i--)
+            {
+                var e = Entrants[i]; if (e.IsPlayer) continue;
+                if (e.Car) { if (TreeTrunks.Instance) TreeTrunks.Instance.Untrack(e.Car.transform); e.Car.gameObject.SetActive(false); Destroy(e.Car.gameObject); }
+                Entrants.RemoveAt(i);
+            }
+            aiActive = false;
+        }
+
+        // Racer's AiFinishEstimate: each AI driver's pace is sampled every second; once the player has finished and
+        // PlayerFinishWait has passed, any AI driver still racing is classified at its estimated finish.
+        void TrackAi()
+        {
+            bool sample = RaceClock >= nextEstimateSample; if (sample) nextEstimateSample = RaceClock + 1f;
+            bool estimate = State == Stage.Finished && RaceClock - PlayerFinishedAt >= PlayerFinishWait;
+            bool any = false;
+            foreach (var e in Entrants)
+            {
+                if (e.IsPlayer || e.Finished) continue;
+                float remaining = Remaining(e);
+                if (sample) e.Estimate.Sample(RaceClock, remaining, e.Car.topSpeed, e.Driver && e.Driver.StalledSeconds > 1f);
+                if (estimate)
+                {
+                    var cfg = e.Car.GetComponent<VehicleConfiguration>();
+                    float more = (float)e.Estimate.Duration(RaceClock, remaining, cfg ? cfg.Profile : VehicleProfile.All[0], false, RoadDriver.Difficulty);
+                    if (!e.ClockStarted) { e.ClockStarted = true; e.StartAt = RaceClock; }
+                    e.Finished = e.Estimated = true;
+                    e.FinalTotal = RaceClock + more - e.StartAt + e.PenaltyTotal; e.FinishedAt = RaceClock + more + e.PenaltyTotal;
+                    Log(e, $"FINISH ESTIMATED total {e.FinalTotal:0.000} ({remaining:0} m to go at its pace)");
+                    continue;
+                }
+                any = true;
+            }
+            if (!any && State == Stage.Finished) aiActive = false;
+        }
+
+        // distance still to drive to the finish, and progress (for the places): laps done x lap + how far into this lap
+        float Into(RaceEntrant e)
+        {
+            float L = Route.LapLength, st = Route.LapStationOf(e.Car.transform.position);
+            if (st > L - 60f && e.NextCheckpoint == 0) st -= L;   // just over the line, still read as the end of the last lap
+            return st;
+        }
+        float Remaining(RaceEntrant e) => !e.ClockStarted ? Route.Laps * Route.LapLength + Vector3.Distance(e.Car.transform.position, Route.Gate.Position) : Mathf.Max(0f, (Route.Laps - e.CompletedLaps) * Route.LapLength - Into(e));
+        public float Score(RaceEntrant e) => e.Finished ? 1e7f - e.FinishedAt : !e.ClockStarted ? -Vector3.Distance(e.Car.transform.position, Route.Gate.Position) : e.CompletedLaps * Route.LapLength + Into(e);
+        public List<RaceEntrant> Ordered()
+        {
+            var list = new List<RaceEntrant>(Entrants);
+            list.Sort((a, b) => Score(b).CompareTo(Score(a)));
+            return list;
+        }
+        public int PlayerPlace => Ordered().IndexOf(P) + 1;
 
         // ---------------------------------------------------------------- records (best lap, best total)
 
@@ -401,6 +677,7 @@ namespace ChastainRush
 
         void Say(string text, float seconds) { Message = text; messageUntil = Time.time + seconds; }
         void Log(string text) { Logged?.Invoke(text); if (!Application.isBatchMode) Debug.Log("[Race] " + text); }
+        void Log(RaceEntrant e, string text) => Log(e.IsPlayer ? text : e.Name + ": " + text);   // Round 15: the AI drivers' events carry their name
 
         public static string Fmt(float seconds)
         {
@@ -411,7 +688,7 @@ namespace ChastainRush
 
         // The next gate the driver should aim for, and how far it is; used by the HUD arrow.
         public RaceGate Target => State == Stage.Free || Route == null ? null
-            : !clockStarted ? Route.Gate : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
+            : !ClockStarted ? Route.Gate : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
 
         public string DebugLine => State == Stage.Free ? null
             : $"Race {State}  lap {Mathf.Min(CompletedLaps + 1, LapsInRace)}/{LapsInRace}  next {(Target != null ? (Target.Id == 0 ? "start line" : "CP" + Target.Id) : "-")}  {Fmt(Clock)}  penalty +{PenaltyTotal:0}s";
@@ -462,6 +739,7 @@ namespace ChastainRush
             else
             {
                 DrawTimers(w, h);
+                DrawPlace(w, h);
                 DrawGuide(w, h);
                 DrawCountdown(w, h);
                 if (State == Stage.Finished) DrawResults(w, h);
@@ -484,7 +762,7 @@ namespace ChastainRush
             int lap = Mathf.Min(CompletedLaps + 1, LapsInRace);
             string lapText = State == Stage.Finished ? "Finished" : $"Lap {lap} / {LapsInRace}";
             Shadowed(new Rect(r.x + 12, r.y + 4, r.width, 40), lapText, big);
-            string lapT = State == Stage.Finished && lapTimes.Count > 0 ? Fmt(lapTimes[lapTimes.Count - 1]) : clockStarted ? Fmt(LapClock) : "--:--.---", totT = clockStarted ? Fmt(State == Stage.Finished ? FinalTotal : TotalClock) : "--:--.---";
+            string lapT = State == Stage.Finished && LapTimes.Count > 0 ? Fmt(LapTimes[LapTimes.Count - 1]) : ClockStarted ? Fmt(LapClock) : "--:--.---", totT = ClockStarted ? Fmt(State == Stage.Finished ? FinalTotal : TotalClock) : "--:--.---";
             Shadowed(new Rect(r.x + 12, r.y + 46, r.width, 26), $"Lap    <b>{lapT}</b>", small);
             Shadowed(new Rect(r.x + 12, r.y + 70, r.width, 26), $"Total  <b>{totT}</b>", small);
             // penalties: shown as soon as one is given (they are already inside the lap and total times above)
@@ -493,6 +771,27 @@ namespace ChastainRush
             Shadowed(new Rect(r.x + 12, r.y + 122, r.width, 26), $"Best lap    {Fmt(BestLap)}", small);
             Shadowed(new Rect(r.x + 12, r.y + 146, r.width, 26), $"Best total  {Fmt(BestTotal)}", small);
             Shadowed(new Rect(r.x + 12, r.y + 170, r.width, 22), Hint, small);
+        }
+
+        // Round 15 (item 11): the player's place among the racers, top right, and the grid during the countdown
+        static string Ordinal(int n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : n % 10 == 1 ? "st" : n % 10 == 2 ? "nd" : n % 10 == 3 ? "rd" : "th");
+        void DrawPlace(float w, float h)
+        {
+            if (Entrants.Count < 2) return;
+            var order = Ordered();
+            var st = new GUIStyle(big) { fontSize = 54, alignment = TextAnchor.UpperRight };
+            Shadowed(new Rect(w - 345, 6, 260, 64), Ordinal(order.IndexOf(P) + 1), st);
+            Shadowed(new Rect(w - 70, 30, 56, 36), $"/ {order.Count}", new GUIStyle(small) { fontSize = 26, alignment = TextAnchor.UpperLeft });
+            if (State != Stage.Countdown) return;
+            // Racer's RaceNames.GridText: the grid, front first, the player's line in colour
+            var r = new Rect(w - 360, 78, 340, 30 + 26 * order.Count);
+            GUI.Box(r, GUIContent.none, panel);
+            Shadowed(new Rect(r.x + 12, r.y + 4, r.width, 26), "<b>STARTING GRID</b>", small);
+            for (int i = 0; i < order.Count; i++)
+            {
+                var e = order[i]; string line = $"{i + 1}   {e.Name}   <size=14>{e.VehicleName}</size>";
+                Shadowed(new Rect(r.x + 12, r.y + 30 + 26 * i, r.width, 26), e.IsPlayer ? $"<color=#FFC747>{line}</color>" : line, small);
+            }
         }
 
         // next-gate arrow and distance, top centre
@@ -510,7 +809,7 @@ namespace ChastainRush
             GUI.DrawTexture(new Rect(c.x - 28, c.y - 28, 56, 56), arrow);
             GUI.color = Color.white;
             GUI.matrix = save;
-            string name = t.Id == 0 ? (clockStarted ? "FINISH LINE" : "START LINE") : $"CHECKPOINT {t.Id} / {Route.Checkpoints.Count}";
+            string name = t.Id == 0 ? (ClockStarted ? "FINISH LINE" : "START LINE") : $"CHECKPOINT {t.Id} / {Route.Checkpoints.Count}";
             Shadowed(new Rect(0, 94, w, 30), $"<b>{name}</b>   {to.magnitude:0} m", new GUIStyle(small) { alignment = TextAnchor.MiddleCenter, fontSize = 20, richText = true, normal = { textColor = Color.white } });
         }
 
@@ -524,16 +823,31 @@ namespace ChastainRush
 
         void DrawResults(float w, float h)
         {
-            var r = new Rect((w - 640) / 2f, h * 0.16f, 640, 390);
+            // Round 15 (item 11): the finishing order with names, vehicles and times (penalties included), under the player's own lines
+            var order = Ordered();
+            float extra = Entrants.Count > 1 ? 40 + 26 * order.Count : 0;
+            var r = new Rect((w - 760) / 2f, h * 0.12f, 760, 390 + extra);
             GUI.Box(r, GUIContent.none, panel);
             Shadowed(new Rect(r.x + 20, r.y + 10, r.width, 44), "FINISH", big);
             Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : "") + (PenaltyTotal > 0f ? $"   (clock {Fmt(FinalTotal - PenaltyTotal)} + {PenaltyTotal:0} s penalties)" : ""), small);
-            float best = 0f; foreach (var l in lapTimes) if (best <= 0f || l < best) best = l;
+            float best = 0f; foreach (var l in LapTimes) if (best <= 0f || l < best) best = l;
             Shadowed(new Rect(r.x + 20, r.y + 88, r.width, 30), $"Best lap this race   <b>{Fmt(best)}</b>" + (NewBestLap ? "   NEW BEST" : ""), small);
             Shadowed(new Rect(r.x + 20, r.y + 116, r.width, 30), $"Record: best lap {Fmt(BestLap)}   best total {Fmt(BestTotal)}", small);
             float y = r.y + 154;
             Shadowed(new Rect(r.x + 20, y, r.width, 26), PenaltyTotal > 0f ? $"<color=#ffb040>Penalties  +{PenaltyTotal:0} s  ({MissedTotal} missed checkpoint{(MissedTotal == 1 ? "" : "s")}, {MissPenaltySeconds:0} s each)</color>" : "Penalties  none", small); y += 28;
-            foreach (var line in lapLog) { Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), line, small); y += 24; }
+            foreach (var line in LapLog) { Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), line, small); y += 24; }
+            if (Entrants.Count > 1)
+            {
+                y += 12;
+                Shadowed(new Rect(r.x + 20, y, r.width, 26), "<b>FINISHING ORDER</b>", small); y += 28;
+                for (int i = 0; i < order.Count; i++)
+                {
+                    var e = order[i];
+                    string time = e.Finished ? Fmt(e.FinalTotal) + (e.Estimated ? "  (estimated)" : "") + (e.PenaltyTotal > 0f ? $"  incl. +{e.PenaltyTotal:0} s penalty" : "") : "racing...";
+                    string line = $"{i + 1}.  {e.Name,-6}  {e.VehicleName,-18}  {time}";
+                    Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), e.IsPlayer ? $"<color=#FFC747>{line}</color>" : line, small); y += 26;
+                }
+            }
             Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "T  race again        X  free driving", small);
         }
     }

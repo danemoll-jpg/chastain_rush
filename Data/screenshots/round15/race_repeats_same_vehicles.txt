@@ -1,0 +1,12 @@
+   1. GOLD  Needle 600         total 2:12.794  laps 0:45.958 / 0:43.214 / 0:43.622  penalties +0 s  shortcuts: lap 2 sc6_over_house  recoveries 0, longest without progress 0.7 s
+   2. EMBER Street Classic     total 2:25.523  laps 0:48.761 / 0:48.684 / 0:48.078  penalties +0 s  shortcuts: lap 3 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   3. BLUE  Street Classic     total 2:26.840  laps 0:49.713 / 0:49.376 / 0:47.750  penalties +0 s  shortcuts: lap 2 sc2_two_houses, lap 3 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   4. YOU   Street Classic     total 2:30.758  laps 0:50.138 / 0:50.158 / 0:50.462  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 1 sc6_over_house, lap 2 sc2_two_houses, lap 2 sc6_over_house, lap 3 sc2_two_houses, lap 3 sc6_over_house
+   1. GOLD  Needle 600         total 2:11.670  laps 0:46.768 / 0:42.448 / 0:42.454  penalties +0 s  shortcuts: none  recoveries 0, longest without progress 0.7 s
+   2. BLUE  Street Classic     total 2:25.208  laps 0:48.406 / 0:48.122 / 0:48.680  penalties +0 s  shortcuts: lap 2 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   3. EMBER Street Classic     total 2:26.397  laps 0:49.513 / 0:48.556 / 0:48.328  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 3 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   4. YOU   Street Classic     total 2:30.815  laps 0:50.123 / 0:50.212 / 0:50.479  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 1 sc6_over_house, lap 2 sc2_two_houses, lap 2 sc6_over_house, lap 3 sc2_two_houses, lap 3 sc6_over_house
+   1. GOLD  Needle 600         total 2:10.415  laps 0:45.779 / 0:42.360 / 0:42.276  penalties +0 s  shortcuts: none  recoveries 0, longest without progress 0.7 s
+   2. EMBER Street Classic     total 2:26.632  laps 0:48.261 / 0:48.038 / 0:50.334  penalties +0 s  shortcuts: lap 2 sc6_over_house, lap 3 sc2_two_houses  recoveries 0, longest without progress 0.5 s
+   3. BLUE  Street Classic     total 2:27.536  laps 0:49.648 / 0:47.848 / 0:50.041  penalties +0 s  shortcuts: lap 2 sc6_over_house, lap 3 sc2_two_houses, lap 3 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   4. YOU   Street Classic     total 2:30.374  laps 0:50.138 / 0:50.135 / 0:50.102  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 1 sc6_over_house, lap 2 sc2_two_houses, lap 2 sc6_over_house, lap 3 sc2_two_houses, lap 3 sc6_over_house

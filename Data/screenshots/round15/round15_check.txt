@@ -1,0 +1,102 @@
+Round 15 check, 2026-10-10 12:46, the exe, 3840 x 2160. Sound muted throughout (AudioListener.volume 0).
+
+=== Water: the neighborhood pond, driven straight across at full throttle
+    line 0 deg: (2741,858) to (2867,858), score 473, blocked by trunk@(2735,858) trunk@(2733,858) trunk@(2881,858) trunk@(2883,858)
+    line 15 deg: (2801,853) to (2858,868), score 451, blocked by trunk@(2873,872) House 1241@(2883,875) House 1241@(2885,876) House 1241@(2887,876)
+    line 30 deg: (2810,853) to (2851,876), score 1345, blocked by Buildings_10_3@(2784,838) trunk@(2852,877) trunk@(2854,878) trunk@(2858,880)
+    line 45 deg: (2813,852) to (2844,883), score 855, blocked by House 871@(2856,894) House 871@(2857,896) House 871@(2859,897) House 871@(2860,899)
+    line 60 deg: (2815,851) to (2838,890), score 1054, blocked by trunk@(2802,828) trunk@(2800,825) House 888@(2846,904) House 888@(2847,906)
+    line 75 deg: (2817,850) to (2830,898), score 857, blocked by Gazebo post@(2811,827) Gazebo post@(2810,825) Gazebo post@(2809,821) trunk@(2833,908)
+    line 90 deg: (2819,848) to (2819,908), score 970, blocked by trunk@(2819,844) trunk@(2819,842) trunk@(2819,836) trunk@(2819,834)
+    line 105 deg: (2822,847) to (2801,926), score 263, blocked by trunk@(2827,831) trunk@(2827,829)
+    line 120 deg: (2828,842) to (2769,945), score 751, blocked by trunk@(2842,818) trunk@(2768,947) House 860@(2762,958) House 860@(2761,959)
+    line 135 deg: (2889,789) to (2755,922), score 424, blocked by House 1233@(2737,941) House 1233@(2735,942) House 1233@(2734,943)
+    line 150 deg: (2909,806) to (2751,897), score 457, blocked by trunk@(2916,802) trunk@(2735,906) trunk@(2727,911)
+    line 165 deg: (2892,838) to (2747,877), score 527, blocked by trunk@(2739,879) trunk@(2731,881) trunk@(2730,882) trunk@(2718,885)
+    line 180 deg: (2867,858) to (2741,858), score 467, blocked by trunk@(2881,858) trunk@(2883,858) trunk@(2735,858) trunk@(2733,858)
+    line 195 deg: (2858,868) to (2801,853), score 459, blocked by trunk@(2873,872) House 1241@(2883,875) House 1241@(2885,876) House 1241@(2887,876)
+    line 210 deg: (2851,876) to (2810,853), score 1353, blocked by trunk@(2852,877) trunk@(2854,878) trunk@(2858,880) trunk@(2864,884)
+    line 225 deg: (2844,883) to (2813,852), score 858, blocked by House 871@(2856,894) House 871@(2857,896) House 871@(2859,897) House 871@(2860,899)
+    line 240 deg: (2838,890) to (2815,851), score 1058, blocked by House 888@(2846,904) House 888@(2847,906) House 888@(2848,907) House 888@(2849,909)
+    line 255 deg: (2830,898) to (2817,850), score 858, blocked by trunk@(2833,908) House 601@(2836,922) House 601@(2837,924) House 601@(2838,926)
+    line 270 deg: (2819,908) to (2819,848), score 970, blocked by House 1128@(2819,934) House 1128@(2819,936) House 1128@(2819,938) trunk@(2819,844)
+    line 285 deg: (2801,926) to (2822,847), score 268, blocked by trunk@(2827,831) trunk@(2827,829)
+    line 300 deg: (2769,945) to (2828,842), score 758, blocked by trunk@(2768,947) House 860@(2762,958) House 860@(2761,959) House 860@(2760,961)
+    line 315 deg: (2755,922) to (2889,789), score 425, blocked by House 1233@(2737,941) House 1233@(2735,942) House 1233@(2734,943)
+    line 330 deg: (2751,897) to (2909,806), score 444, blocked by trunk@(2735,906) trunk@(2727,911) trunk@(2916,802)
+    line 345 deg: (2747,877) to (2892,838), score 519, blocked by trunk@(2739,879) trunk@(2731,881) trunk@(2730,882) trunk@(2718,885)
+  pond surface 288.46 m; line from (2822,847) to (2801,926), 82 m of water
+  Street Classic: water 0.50 m deep at the deepest point it drove (wheel bottoms on the bed); the water reached 0.50 m up the body (body bottom 0.00 m over the ground, vehicle 2.12 m tall)
+     speed going in 24.7 m/s, across: lowest 6.3, mean 8.7 m/s; full immersion 100%; 8.6 s in the water; splash sounds on entry 1
+PASS  Street Classic drove in and out of the pond  -  out on the far bank after 12.0 s
+PASS  Street Classic sat part-way in, not under  -  depth 0.50 m, top of the vehicle 2.12 m
+PASS  Street Classic slowed in the water  -  in 24.7, mean across 8.7 m/s
+PASS  Street Classic: a reset in the pond puts it on dry ground  -  from (2812,886) to (2828,828)
+  Needle 600: water 0.50 m deep at the deepest point it drove (wheel bottoms on the bed); the water reached 0.55 m up the body (body bottom -0.05 m over the ground, vehicle 1.91 m tall)
+     speed going in 26.3 m/s, across: lowest 7.8, mean 10.8 m/s; full immersion 100%; 6.9 s in the water; splash sounds on entry 1
+PASS  Needle 600 drove in and out of the pond  -  out on the far bank after 10.0 s
+PASS  Needle 600 sat part-way in, not under  -  depth 0.50 m, top of the vehicle 1.91 m
+PASS  Needle 600 slowed in the water  -  in 26.3, mean across 10.8 m/s
+PASS  Needle 600: a reset in the pond puts it on dry ground  -  from (2812,886) to (2827,831)
+
+=== Break sounds and the drop-in folders (counted, not heard: the check is muted)
+  drop-in folder: C:\Users\danmo\AppData\Local\Temp\claude\C--Users-danmo-chastain-rush\4cd6155d-c206-490b-b660-fc51e4e33303\scratchpad\soundsroot
+PASS  drop-in folders made with a READ ME
+  read: 1 goose honk(s) (goose_honk_test), wood 1
+PASS  a dropped-in honk reaches the geese  -  1 clip(s), 3 voices
+PASS  break sound: Wood (Fence_Privacy_22_7)  -  playing: wood_test
+PASS  break sound: Iron (Fence_Iron_21_6)  -  playing: Original ChainLink 2, wood_test
+PASS  break sound: Mailbox (Mailboxes_22_8)  -  playing: Original ChainLink 2, Original Mailbox 0, wood_test
+PASS  break sound: Lamp (StreetLamps_24_7)  -  playing: Original ChainLink 2, Original Sign 1, Original Mailbox 0, Original Glass 1
+PASS  break sound: Glass (House 1627 shortcut wall (in)_23_8)  -  playing: Original Glass 2, Original Sign 1, Original Mailbox 0, Original Glass 1
+PASS  break sound: Hydrant (Hydrants_23_7)  -  playing: Original Glass 2, Original Sign 1, Original Mailbox 0, Original Glass 1
+PASS  hydrant: the rush of water plays while it runs  -  Hydrant rush
+
+=== Shortcuts as the AI drives them: each vehicle once down each official shortcut (RoadDriver, made to take it)
+    The AI starts on the lap 120 m before the turn-off at 18 m/s, its lap already running; a run counts when the race
+    gives it the shortcut (its checkpoint forgiven, no penalty) and it is back on the lap 30 m past the rejoin, upright,
+    without a recovery, within 40 s.
+  Street Classic     Two-house drop   OK     19.9 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Street Classic     Rooftop leap     OK     17.8 s, shortcut given yes, recoveries 0, worst tilt 34 deg, longest stop 0.0 s
+  Longroof GT        Two-house drop   OK     20.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Longroof GT        Rooftop leap     OK     18.1 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Needle 600         Two-house drop   OK     19.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Needle 600         Rooftop leap     OK     16.7 s, shortcut given yes, recoveries 0, worst tilt 36 deg, longest stop 0.0 s
+  Trail Four         Two-house drop   OK     19.3 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Trail Four         Rooftop leap     OK     16.8 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  Sundown Roadster   Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Sundown Roadster   Rooftop leap     OK     17.7 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Highball Fastback  Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Highball Fastback  Rooftop leap     OK     18.0 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Pebble Coupe       Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Pebble Coupe       Rooftop leap     OK     17.6 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Skyfin Cruiser     Two-house drop   OK     20.2 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Skyfin Cruiser     Rooftop leap     OK     18.3 s, shortcut given yes, recoveries 0, worst tilt 32 deg, longest stop 0.0 s
+  Ridge Scrambler    Two-house drop   OK     19.2 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Ridge Scrambler    Rooftop leap     OK     16.8 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  Drifter Twin       Two-house drop   OK     19.3 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Drifter Twin       Rooftop leap     OK     17.0 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  Turf Rocket        Two-house drop   OK     19.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Turf Rocket        Rooftop leap     OK     16.6 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  -> Two-house drop: taken cleanly by 11 of 11
+  -> Rooftop leap: taken cleanly by 11 of 11
+PASS  every vehicle tried on both shortcuts  -  22 runs
+
+=== The race: 3 laps, three AI drivers (random vehicles), the player driven by script flat out, both shortcuts every lap
+  EMBER: Sundown Roadster
+  GOLD: Turf Rocket
+  BLUE: Needle 600
+  Finishing order (the finish panel's):
+   1. BLUE  Needle 600         total 2:09.348  laps 0:42.837 / 0:43.057 / 0:43.454  penalties +0 s  shortcuts: lap 3 sc6_over_house  recoveries 0, longest without progress 0.5 s
+   2. GOLD  Turf Rocket        total 2:12.072  laps 0:45.020 / 0:44.633 / 0:42.420  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 2 sc2_two_houses  recoveries 0, longest without progress 0.7 s
+   3. EMBER Sundown Roadster   total 2:23.900  laps 0:47.754 / 0:48.049 / 0:48.096  penalties +0 s  shortcuts: none  recoveries 0, longest without progress 0.5 s
+   4. YOU   Street Classic     total 2:30.419  laps 0:50.099 / 0:50.136 / 0:50.183  penalties +0 s  shortcuts: lap 1 sc2_two_houses, lap 1 sc6_over_house, lap 2 sc2_two_houses, lap 2 sc6_over_house, lap 3 sc2_two_houses, lap 3 sc6_over_house
+PASS  all four finish  -  YOU finished, EMBER finished, GOLD finished, BLUE finished
+PASS  no AI driver stuck for more than 5 s  -  EMBER 0.5 s, GOLD 0.7 s, BLUE 0.5 s
+  The scripted player pressed reset 0 time(s) (stuck 3 s)
+PASS  the player took both shortcuts every lap  -  lap 1 sc2_two_houses; lap 1 sc6_over_house; lap 2 sc2_two_houses; lap 2 sc6_over_house; lap 3 sc2_two_houses; lap 3 sc6_over_house
+  Frame rate (3840 x 2160): first 10 s after GO, all four on screen: 60 fps; whole race 60 fps average, 1% low 60 fps
+    first 10 s: 599 frames, longest 33 ms, over 20 ms: 1 (at frames 33:33ms)
+PASS  frame rate with four vehicles on screen at least 60  -  60 fps
+
+ALL 22 CHECKS PASSED

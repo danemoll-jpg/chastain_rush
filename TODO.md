@@ -1362,6 +1362,60 @@ Part A (committed on its own):
    Also fixed: the trees' material kept its instancing flag only in memory (set after the asset was written); now it is set
    before, so the exe never draws without trees.
 
+Part B:
+6. Port: DONE. From Racer: `RoadDriver` (trimmed to racing: pure pursuit, lanes and passing only into a clear lane, speed
+   planned from bends, hills and crests with braking judgment, the sphere-cast obstacle sensor, stall back-off, recovery when
+   stuck or off the route, finish run-off and parking; traffic, highway, Racer's map-specific run-ups, split-screen and
+   campaign left behind), `RaceRoad` (trimmed: no highway / forest / bypass), `ShortcutStrategy`, `DriverVariation` and
+   `AiFinishEstimate` (copied), the grid and quick-race names and paints from `RaceDirector.CreateCars`, the grid card idea from
+   `RaceNames.GridText`; `VehicleContact` (cars vs small vehicles) was already here and now acts between the racers.
+   Adapted: the race is this game's `RaceController`, now with a `RaceEntrant` per car, so the AI race under exactly the
+   player's rules (gates, 5 s per missed checkpoint, shortcut corridors and entry planes, barriers). A shortcut is an
+   `AiShortcut` (Racer's WoodlandRoute: its line, turn-off and rejoin, an entry speed held through run-up and jump, Racer's
+   aiEntrySpeed); on it the AI steers along the line as this game's shortcut check does, and its obstacle sensor ignores the
+   static world there. Recovery: back on the line or the lap, clear of everything, never in water (CarRecovery's rule).
+7. Three AI drivers in every race started with T: DONE. EMBER, GOLD, BLUE, each a random vehicle from the eleven per race.
+   To fix them until Round 16: `ai_drivers.json` beside the race records (`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain
+   Rushi_drivers.json`; made with three "random" lines the first time Dan starts a race; put a vehicle id instead, e.g.
+   "moto"). Checks never read it (`-aiVehicles a,b,c`, `-aiCount n`).
+8. Grid: DONE. Racer's: the player at the back on the old grid spot, the three ahead at 8, 15 and 22 m, either side of the
+   lane where there is room (the entrance lane is narrow beside the island, so they stand nearly in line); all held until GO;
+   a STARTING GRID card during the countdown.
+9. Driving the lap: DONE by script. They follow the entrance lane to the lap, race 3 laps, take barriers, fences, mailboxes,
+   lamps and hydrants as the player does (triggers: they break them and lose a little speed), trees are solid round them too
+   (TreeTrunks follows each AI car), geese are not solid (they drive through; the flock reacts only to the player, as before),
+   water slows them as it slows the player. No AI stuck in the final runs (longest without progress 0.5 to 0.8 s, no
+   recoveries). Found and fixed on the way: on #2's one-car-wide side yard an AI and the scripted player wedged together and
+   the AI's recovery kept putting it back behind the stuck car; now an AI does not commit to a shortcut with another car at
+   its turn-off or on its first 80 m, and when held up by a vehicle on a shortcut it recovers to the lap.
+10. Shortcuts: DONE. ShortcutStrategy decides per lap (more likely when behind). Trial, each vehicle once down each shortcut
+    as an AI: #2 Two-house drop 11 of 11 clean, #6 Rooftop leap 11 of 11 clean (no recoveries, worst tilt 29 to 37 deg), so no
+    vehicle is barred from either (`RaceController.AiShortcutNever` is empty). In races they take #2 and #6 on some laps.
+11. On screen: DONE. The place (1st to 4th) at the top right during the race, the finishing order with names, vehicles and
+    times (penalties included, "estimated" if an AI was still racing 60 s after the player finished) on the finish panel. AI
+    engines are heard in 3D (VehicleAudio driven by the AI's pedals).
+12. Pace: Racer's default (Normal). AI lap times in the scripted races: Needle 600 42.3 to 43.5 s, Turf Rocket 42.4 to 45.0,
+    Ridge Scrambler and Drifter Twin 43.8 to 46.5, the cars 47.5 to 50.3 (Street Classic 48.0 to 49.5, Pebble Coupe 47.6 to
+    49.8, Sundown Roadster 47.5 to 49.6, Longroof GT 49.9 to 51.8), first laps 1 to 3 s slower from the grid. Dan's best:
+    0:42.4 in the Street Classic. Tuning left to Dan (`RoadDriver.Difficulty` 0 / 1 / 2, Racer's Easy / Normal / Hard).
+13. Exe check, muted, 3840 x 2160: DONE. `-exeRound15 <dir>`: a 3-lap race, three random AI (Sundown Roadster, Turf Rocket,
+    Needle 600), the player scripted flat out taking both shortcuts every lap: all four finished (BLUE 2:09.3, GOLD 2:12.1,
+    EMBER 2:23.9, the scripted player 2:30.4), no AI stuck, frame rate 60 fps in the first 10 s after GO with all four on
+    screen, 60 average and 60 at the 1% low over the race (vsync). Same race three more times with Street Classic, Needle 600,
+    Street Classic: all clean. `-exeCheck`: 9 of 9.
+14. Executable rebuilt last: DONE, `Builds/ChastainRush/ChastainRush.exe` (2026-10-10 12:46, full map rebuild).
+15. This report: DONE. Results: `Data/screenshots/round15/`.
+
+For Dan to check: a race (T) flat out with a controller at 3840 x 2160: the grid, GO, the AI pace against yours, their
+engines, the place readout, the finish panel; an AI going through #2 (side yard, door, stairs, window) and over #6; driving
+into the pond, the pool and a creek and out again (how deep it feels, how much it slows); a reset in water; smashing a
+privacy fence, the pool's iron fence, a mailbox, a lamp, a hydrant and #2's door (the sounds); a goose honk file dropped into
+`Sounds\Geese` after the first start.
+
+Not done / not measured: Dan's drive; a real controller; the sounds heard (all counted, muted); geese do not react to the AI cars.
+Imported from Racer in Round 15: WaterFeedback, SmashAudio (as BreakSounds), RoadDriver, RaceRoad, ShortcutStrategy,
+DriverVariation, AiFinishEstimate.
+
 **QUEUED NEXT — Round 16: menus and the garage.** Dan: "getting the
 menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 `MenuGlyph`, the garage view (turning model, stat bars), picking the AI

@@ -1,0 +1,46 @@
+using System.Collections.Generic;
+using Racer;
+using UnityEngine;
+
+namespace ChastainRush
+{
+    // Round 15 (item 6): one car in a race, the player or an AI driver, and where it stands under the race's rules
+    // (RaceController: gates in order, 5 s per missed checkpoint, shortcuts forgive what they skip). Before Round 15 these
+    // were RaceController's own fields for the one car; every racer now has its own, so the AI drivers race under exactly the
+    // same rules as the player. Times are on the race clock (seconds since GO); a racer's own clock starts when it first
+    // crosses the start line (Racer's rolling start), so its laps run gate to gate and its total is the sum of its laps.
+    public sealed class RaceEntrant
+    {
+        public string Name;
+        public ArcadeVehicle Car;
+        public RoadDriver Driver;          // null for the player
+        public bool IsPlayer => Driver == null;
+        public BoxCollider Box;
+        public Vector3 PrevPos;
+        public bool ClockStarted;
+        public float StartAt, LapStart;    // race clock at its first start-line crossing, and at the start of its lap
+        public int CompletedLaps, NextCheckpoint, MissedTotal;
+        public float PenaltyTotal, LapPenalty;
+        public RaceShortcut ActiveShortcut;
+        public readonly List<float> LapTimes = new List<float>();
+        public readonly List<int> Missed = new List<int>(), Forgiven = new List<int>();
+        public readonly List<string> PenaltyLog = new List<string>(), LapLog = new List<string>();
+        public readonly List<string> ShortcutsTaken = new List<string>();
+        public bool Finished, Estimated;
+        public float FinalTotal;           // its own time: from its start-line crossing, with every penalty
+        public float FinishedAt;           // race clock when it crossed the line, with every penalty (the finishing order)
+        public readonly AiFinishEstimate Estimate = new AiFinishEstimate();
+        public string VehicleName => Car && Car.GetComponent<VehicleConfiguration>() ? Car.GetComponent<VehicleConfiguration>().Profile.Name : "";
+
+        public void Reset()
+        {
+            ClockStarted = false; StartAt = LapStart = 0f; CompletedLaps = NextCheckpoint = MissedTotal = 0;
+            PenaltyTotal = LapPenalty = 0f; ActiveShortcut = null; Finished = Estimated = false; FinalTotal = FinishedAt = 0f;
+            LapTimes.Clear(); Missed.Clear(); Forgiven.Clear(); PenaltyLog.Clear(); LapLog.Clear(); ShortcutsTaken.Clear();
+            if (Car) PrevPos = Car.transform.position;
+        }
+
+        // a reset or a placement is a teleport: it must not count as crossing anything
+        public void NotifyTeleported() { if (Car) PrevPos = Car.transform.position; }
+    }
+}

@@ -49,7 +49,6 @@ namespace ChastainRush
             Application.Quit(fails == 0 ? 0 : 1);
         }
 
-        IEnumerator PartB(string only) { yield break; }   // Part B (AI drivers) comes in its own commit
 
         // ---------------------------------------------------------------- water (item 2e)
 
@@ -229,13 +228,17 @@ namespace ChastainRush
         }
 
         // the game as it is shown (the HUD included), at the end of a frame
+        bool capturing;   // the frame-rate meter leaves out the check's own screenshot frames
         IEnumerator CaptureScreen(string name)
         {
+            capturing = true;
             yield return new WaitForEndOfFrame();
             var tex = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
             tex.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0); tex.Apply();
             File.WriteAllBytes(Path.Combine(outputDir, name + ".png"), tex.EncodeToPNG());
             Destroy(tex);
+            yield return null; yield return null;
+            capturing = false;
         }
 
         float VehicleHeight()

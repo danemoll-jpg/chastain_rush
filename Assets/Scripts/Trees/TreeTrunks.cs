@@ -62,8 +62,34 @@ namespace ChastainRush
 
         void OnDestroy() { if (Instance == this) Instance = null; }
 
+        // Round 15 (item 9): the AI drivers' cars get trunk colliders round them too: a pool of ExtraPool each, ExtraRadius
+        // round the car, refreshed the same way (every 0.25 s or 3 m). Track / Untrack are called by RaceController.
+        public const int ExtraPool = 60; public const float ExtraRadius = 30f;
+        sealed class Follow { public Transform t; public CapsuleCollider[] caps; public Vector3 lastAt = new Vector3(1e9f, 0f, 1e9f); public float nextAt; }
+        readonly List<Follow> follows = new List<Follow>();
+        public void Track(Transform t)
+        {
+            if (t == null || follows.Exists(f => f.t == t)) return;
+            var root = new GameObject("TrunkColliders " + t.name).transform; root.SetParent(transform, false);
+            var f = new Follow { t = t, caps = new CapsuleCollider[ExtraPool] };
+            for (int k = 0; k < ExtraPool; k++) { var go = new GameObject("trunk"); go.transform.SetParent(root, false); var c = go.AddComponent<CapsuleCollider>(); c.direction = 1; c.enabled = false; f.caps[k] = c; }
+            follows.Add(f);
+        }
+        public void Untrack(Transform t)
+        {
+            for (int i = follows.Count - 1; i >= 0; i--)
+                if (follows[i].t == t || follows[i].t == null) { if (follows[i].caps.Length > 0 && follows[i].caps[0]) Destroy(follows[i].caps[0].transform.parent.gameObject); follows.RemoveAt(i); }
+        }
+
         void FixedUpdate()
         {
+            for (int i = follows.Count - 1; i >= 0; i--)
+            {
+                var f = follows[i]; if (f.t == null) { Untrack(null); continue; }
+                var q = f.t.position;
+                if ((q - f.lastAt).sqrMagnitude < 9f && Time.time < f.nextAt) continue;
+                f.lastAt = q; f.nextAt = Time.time + 0.25f; Fill(q, ExtraRadius, f.caps, out _);
+            }
             if (car == null) { var v = FindAnyObjectByType<ArcadeVehicle>(); if (v == null) return; car = v.transform; }
             var p = car.position;
             if ((p - lastAt).sqrMagnitude < 9f && Time.time < nextAt) return;
@@ -75,6 +101,15 @@ namespace ChastainRush
         {
             watch.Restart();
             lastAt = p; nextAt = Time.time + 0.25f;
+            Fill(p, radius, caps, out int used);
+            Active = used; Refreshes++;
+            LastRefreshMs = (float)watch.Elapsed.TotalMilliseconds;
+        }
+
+        // the nearest trees within 'rad' of p get the colliders of 'set' (Round 15: shared by the player's pool and the AI pools)
+        void Fill(Vector3 p, float rad, CapsuleCollider[] set, out int used)
+        {
+            float radius = rad; int pool = set.Length; var caps = set;
             near.Clear();
             int r = Mathf.CeilToInt(radius / Cell);
             int cx = Mathf.FloorToInt(p.x / Cell), cz = Mathf.FloorToInt(p.z / Cell);
@@ -90,7 +125,7 @@ namespace ChastainRush
                     }
                 }
             if (near.Count > pool) near.Sort((a, b) => a.d.CompareTo(b.d));
-            int used = Mathf.Min(pool, near.Count);
+            used = Mathf.Min(pool, near.Count);
             for (int k = 0; k < pool; k++)
             {
                 var c = caps[k];
@@ -100,8 +135,6 @@ namespace ChastainRush
                 c.radius = tr[i]; c.height = th[i];
                 if (!c.enabled) c.enabled = true;
             }
-            Active = used; Refreshes++;
-            LastRefreshMs = (float)watch.Elapsed.TotalMilliseconds;
         }
     }
 }
