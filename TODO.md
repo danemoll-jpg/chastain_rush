@@ -1576,6 +1576,25 @@ rider screen read "Color" in the exe.
 menu: race Chastain Glen loop, 3 laps, forward  best lap ...") is drawn twice, one copy over the other and
 slightly offset (an old line still drawn under the new one). Draw it once.
 
+**Round 17 status (Claude Code, 2026-10-10).** No new debug session since 2026-10-10_16-53-56-509_f5d57e.
+Part A is built and checked in the exe by a script (muted, minimized 1280 x 720, a virtual gamepad), committed on its own
+(b512061, b3bfe9f), and not yet driven by Dan. Check: `ChastainRush.exe -exeRound17 <dir>`, 20 of 20; shots in
+`Data/screenshots/round17/partA/`.
+1. DONE. Color / Gray / center / centerline in the garage, the RiderLook labels (no rider page exists in the game), the
+   debug panel, BUG_REPORT.md and the bump log; the Round 16 check looks for "Color:". Identifiers and saved keys unchanged.
+2. DONE. The panel starts hidden in the game Dan plays (a check run keeps it on). F4 / ] / the pad's View button capture
+   with it hidden (the panel is drawn on the captured frame anyway). The debug menu is now a page of the game menus
+   (controller first): Debug panel Shown / Hidden (left / right), Capture bug, Export bug report ZIP, Open debug report
+   folder, Start new debug session (asks first), Game menu, Back / Resume. Reached by DEBUG on both pause menus, by Start
+   while the panel is up, and by F6 / `\`. The old IMGUI menu is left only for check runs (no game menus there).
+3. DONE. The heron never uses the goose clips; it is silent unless a `heron*` file is in `Sounds\Geese\` (the READ ME
+   there now says so and is rewritten once to add that line).
+4. DONE. Not a second line: the shadow under the top-left HUD line had its bold tags stripped, so it was narrower than
+   the text and showed as an offset copy. Only color tags are stripped now (every shadowed HUD text).
+Part B: STOPPED for Dan, as asked. The labelled overhead of the built scene (center, gas station, bank, parking lot,
+north up, 50 m bar) is in `local/round17/round17_shopping_center_overhead.png` (git-ignored: Chastain Glen is in the
+picture). Nothing is dressed yet.
+
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
 particularly want the shopping center behind my neighborhood, the
