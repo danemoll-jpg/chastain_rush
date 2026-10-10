@@ -1595,6 +1595,29 @@ Part B: STOPPED for Dan, as asked. The labelled overhead of the built scene (cen
 north up, 50 m bar) is in `local/round17/round17_shopping_center_overhead.png` (git-ignored: Chastain Glen is in the
 picture). Nothing is dressed yet.
 
+**(5) Round 17, added from Dan's session 2026-10-10_17-47-11-485_46d8cb (read by Claude, 2026-10-10).**
+Dan on the shopping-center overhead: "overhead is fine with the exception of what is the latest bug reports".
+So the overhead is APPROVED, with BUG-003 as the correction; go on to dress the center.
+- BUG-003 (vehicle x 3257.33, z 1042.52, heading 72, beside the south wall of the supermarket block): "there
+  are shops on this side...as well as this is a parking lot tha tmeet s with the main parking lot". Two things,
+  both part of Part B:
+  * The south face of the big block has shop fronts too (doors, windows, made-up signs), not a blank wall.
+  * The ground south of the block, where Dan is standing (now grass), is a paved parking lot, and it joins the
+    main parking lot east of the block as one continuous paved area (the map's service roads there, about
+    x 3230 to 3340, z 1030 to 1060, run through it).
+- BUG-001 (vehicle x 2945.75, z 762.90, heading 98, Chastain Glen Lane where it meets New Chastain Road; bump
+  log JOLT at x 2948.4, z 767.4): "unintended jump". There is a visible crease across the lane's mouth by the
+  entrance island. Smooth the road surface there so a vehicle stays on the ground; this spot only.
+- BUG-002 (vehicle x 3145.88, z 767.01, heading 344, New Chastain Road at the Chastain Corner Northeast
+  junction; bump log LANDED at x 3164.3, z 767.2): "unintebded jump". Same: smooth that junction so it does not
+  launch a vehicle; this spot only.
+  Both are junction seams (the design decision stands: natural jumps stay, awkward ones Dan points at go).
+  Check each by driving through flat out in the exe from Dan's heading: wheels stay down. If the bump scan
+  shows the same kind of seam at other junctions, list them for Dan, change nothing else.
+- The HUD line at the top left: these three screenshots are from the exe built after the item 4 fix
+  (Dan confirmed; build 17:28). The line is now drawn once with a drop shadow, as intended. Nothing more to do
+  unless Dan reports it.
+
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
 particularly want the shopping center behind my neighborhood, the

@@ -341,7 +341,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-10_16-53-56-509_f5d57e` (BUG-001 heron, BUG-002 Grasmere Court houses; in TODO.md, Round 16 follow-ups).
+`2026-10-10_17-47-11-485_46d8cb` (BUG-001 and BUG-002 unintended jumps, BUG-003 shopping center; in TODO.md, Round 17 item 5).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
