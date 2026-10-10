@@ -352,11 +352,22 @@ namespace ChastainRush
             // clubhouse: a small peach building with a front-gable porch on four white columns, on the side away from the pond
             var away = (hood.PoolCentre - RingCentroid(hood.PondRing)).normalized;
             Vector2 cb = hood.PoolCentre + away * (hood.PoolDeckHalfU + 6.0f);
-            var cf2 = MakeFrame(new Vector3(cb.x, deckY, cb.y), -away, 1f);
             float cw = 6.4f, cd = 4.8f, ch = 2.8f;
+            float clubY = deckY, clubLo = deckY - 0.6f;
+            var front = -away;
+            if (hood.ClubhouseAt.HasValue)
+            {
+                // Round 12 (BUG-001): on the footprint of the big building that is no longer built, its porch toward the pool,
+                // its floor on the highest ground under it, its walls down to the lowest
+                cb = hood.ClubhouseAt.Value; front = hood.ClubhouseFront;
+                var fr = MakeFrame(new Vector3(cb.x, 0f, cb.y), front, 1f); float hi = float.MinValue; clubLo = float.MaxValue;
+                foreach (float u in new[] { -cw / 2, 0f, cw / 2 }) foreach (float v in new[] { -cd / 2, 0f, cd / 2 + 1.9f }) { var q = fr.P(u, 0f, v); float g = Ground(c.terrain, q.x, q.z); hi = Mathf.Max(hi, g); clubLo = Mathf.Min(clubLo, g); }
+                clubY = hi + 0.1f; clubLo -= 0.3f;
+            }
+            var cf2 = MakeFrame(new Vector3(cb.x, clubY, cb.y), front, 1f);
             Color peach = new Color(0.86f, 0.70f, 0.54f), roof = new Color(0.62f, 0.45f, 0.38f);
             var hs = new HouseSpec { trimC = TrimWhite, shutterC = new Color(0.3f, 0.2f, 0.15f), doorC = new Color(0.12f, 0.10f, 0.08f), glassC = GlassDark };
-            BoxNoBottom(mb, cf2, -cw / 2, cw / 2, -0.6f, ch, -cd / 2, cd / 2, peach, peach, peach);
+            BoxNoBottom(mb, cf2, -cw / 2, cw / 2, clubLo - clubY, ch, -cd / 2, cd / 2, peach, peach, peach);
             Gable(mb, cf2, -cw / 2, cw / 2, -cd / 2, cd / 2, true, ch, 1.6f, 0.5f, 0.4f, roof, peach, true, true, TrimWhite);
             // porch: a gable over four columns on the pool side
             Gable(mb, cf2, cd / 2 - 0.5f, cd / 2 + 2.0f, -1.9f, 1.9f, false, ch, 1.3f, 0.2f, 0.3f, roof, peach, false, true, TrimWhite);
@@ -389,7 +400,7 @@ namespace ChastainRush
             }
             pk.ToObject("ParkingAndPlayground", c.mats.Driveway, root, false, false);
             BuildPoolRoad(c);   // Round 11 (BUG-010)
-            c.Log.Append($"pool site: OSM pool {hood.PoolRing.Count - 1} points, deck {deckY:0.0} m (ground {lo:0.0}..{samples[samples.Count - 1]:0.0}), clubhouse placed by estimate (no footprint in the data), parking {(hood.ParkingRing != null)}, playground {(hood.PlaygroundRing != null)}; ");
+            c.Log.Append($"pool site: OSM pool {hood.PoolRing.Count - 1} points, deck {deckY:0.0} m (ground {lo:0.0}..{samples[samples.Count - 1]:0.0}), clubhouse {(hood.ClubhouseAt.HasValue ? $"on building {hood.ClubhouseBuilding}'s footprint (BUG-001: that building not built)" : "placed by estimate (no footprint in the data)")}, parking {(hood.ParkingRing != null)}, playground {(hood.PlaygroundRing != null)}; ");
         }
     }
 }

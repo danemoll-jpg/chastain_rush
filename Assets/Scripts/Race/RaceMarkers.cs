@@ -6,7 +6,8 @@ namespace ChastainRush
 {
     // Round 5: what the driver sees of the route. Everything here is scenery with no colliders, built at runtime from the
     // route so a direction change needs no rebuild.
-    //   start / finish: a black-and-white chequered arch across the road, always standing (it is a landmark in free driving too);
+    //   start / finish: a black-and-white chequered arch across the road. Round 12 (BUG-006, Dan: "start lines should be
+    //   non-existent in free roam"): shown only while a race is running, like everything else here;
     //   checkpoints: an arch each, shown only during a race. The NEXT one is bright green with two tall beams you can see
     //   over hills and trees from far down the road; later ones are amber arches; ones skipped this lap are red; passed ones are hidden.
     //   Round 8, official shortcuts: a BLUE arch with two tall blue beams over the shortcut's entry plane, and a blue chevron
@@ -39,6 +40,7 @@ namespace ChastainRush
         public void Refresh(RaceController r)
         {
             bool racing = r.State != RaceController.Stage.Free;
+            if (finish != null) finish.root.SetActive(racing);   // Round 12 (BUG-006)
             for (int i = 0; i < arches.Count; i++)
             {
                 var a = arches[i];

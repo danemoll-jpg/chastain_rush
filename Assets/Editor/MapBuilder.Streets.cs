@@ -59,7 +59,7 @@ namespace ChastainRush
                     }
                     // --- sidewalk: 1.4 m wide, 1.25 m of grass between it and the curb; only along houses, never into the pond.
                     // Round 11 (BUG-001, 003, 004: "the sidewalks arent broken like this"): a grid that stands clear of the lawn,
-                    // in its own material over the drives it crosses; the stretch "along houses" is joined over gaps under 24 m
+                    // (Round 12: stopped at every drive it meets, BUG-002); the stretch "along houses" is joined over gaps under 24 m
                     // and stretches under 10 m are left out, so it no longer comes and goes in short pieces; it stops where a
                     // curb return or a cul-de-sac's ring takes over, and on any other road
                     var walkP = new Vector2[n]; var along = new bool[n];
@@ -79,9 +79,10 @@ namespace ChastainRush
                         if (run.Count >= 3)
                         {
                             var path = Densify(Chaikin(run, 2), 1f);   // the offset of a bent road zig-zags: smoothed
-                            var w = new float[path.Count]; for (int k = 0; k < w.Length; k++) w[k] = 1.4f;
+                            // Round 12 (BUG-002): stopped at every drive (OffDrives), so drives run unbroken to the road
+                            Edges(path, 0.7f, out var ea, out var eb);
                             c.Walks.Tint = ConcreteLight;
-                            RibbonGridMax(c.Walks.At(path[path.Count / 2]), path, w, WalkLift, c.terrain, 2);
+                            foreach (var (pa, pb) in OffDrives(c, ea, eb)) WalkBand(c.Walks.At(pa[pa.Count / 2]), pa, pb, c.terrain);
                             c.WalkMetres += run.Count;
                         }
                         run.Clear();
@@ -163,6 +164,74 @@ namespace ChastainRush
                 Q.Add(P[P.Count - 1]); P = Q;
             }
             return P;
+        }
+
+        // Round 12 (BUG-002, Dan: "The sidewalks shouldn't cross driveways anywhere"): on a drive as it is drawn (its width
+        // taken along each piece, so a flared mouth counts)
+        static bool OnDriveDrawn(HoodCtx c, Vector2 p)
+        {
+            foreach (var dp in c.hood.DrivePlans.Values)
+            {
+                if ((dp.pts[0] - p).sqrMagnitude > 60f * 60f && (dp.pts[dp.pts.Count - 1] - p).sqrMagnitude > 60f * 60f) continue;
+                for (int i = 0; i + 1 < dp.pts.Count; i++)
+                {
+                    var a = dp.pts[i]; var ab = dp.pts[i + 1] - a; float L2 = ab.sqrMagnitude; if (L2 < 1e-6f) continue;
+                    float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / L2);
+                    if ((a + ab * t - p).magnitude < Mathf.Lerp(dp.widths[i], dp.widths[i + 1], t) * 0.5f) return true;
+                }
+            }
+            return false;
+        }
+
+        // Round 12 (BUG-002): the stretches of a sidewalk (edges a and b, matching polylines) that stay off every drive. A
+        // stretch ends exactly where the sidewalk's cross-section first touches a drive's edge, and starts again where it
+        // leaves the drive on the other side, so the drive runs unbroken from the garage to the road.
+        static List<(List<Vector2> a, List<Vector2> b)> OffDrives(HoodCtx c, List<Vector2> a, List<Vector2> b)
+        {
+            int n = a.Count; var runs = new List<(List<Vector2>, List<Vector2>)>();
+            if (n < 2) return runs;
+            bool On(int i, float t)
+            {
+                if (i >= n - 1) { i = n - 2; t = 1f; }
+                var pa = Vector2.Lerp(a[i], a[i + 1], t); var pb = Vector2.Lerp(b[i], b[i + 1], t);
+                return OnDriveDrawn(c, pa) || OnDriveDrawn(c, pb) || OnDriveDrawn(c, (pa + pb) * 0.5f);
+            }
+            float Edge(int i)   // where the section changes between points i and i + 1
+            {
+                bool s0 = On(i, 0f); float lo = 0f, hi = 1f;
+                for (int k = 0; k < 14; k++) { float m = (lo + hi) * 0.5f; if (On(i, m) == s0) lo = m; else hi = m; }
+                return s0 ? hi : lo;   // the first point off the drive, or the last one before it
+            }
+            List<Vector2> ra = null, rb = null;
+            for (int i = 0; i < n; i++)
+            {
+                bool on = On(i, 0f);
+                if (!on && ra == null)
+                {
+                    ra = new List<Vector2>(); rb = new List<Vector2>();
+                    if (i > 0) { float t = Edge(i - 1); ra.Add(Vector2.Lerp(a[i - 1], a[i], t)); rb.Add(Vector2.Lerp(b[i - 1], b[i], t)); }
+                }
+                if (!on) { ra.Add(a[i]); rb.Add(b[i]); }
+                else if (ra != null)
+                {
+                    float t = Edge(i - 1); ra.Add(Vector2.Lerp(a[i - 1], a[i], t)); rb.Add(Vector2.Lerp(b[i - 1], b[i], t));
+                    runs.Add((ra, rb)); ra = rb = null;
+                }
+            }
+            if (ra != null) runs.Add((ra, rb));
+            runs.RemoveAll(r => r.Item1.Count < 2 || Vector2.Distance(r.Item1[0], r.Item1[r.Item1.Count - 1]) < 0.3f);
+            return runs;
+        }
+
+        // the two edges of a sidewalk 'half' either side of its centre line
+        static void Edges(List<Vector2> centre, float half, out List<Vector2> a, out List<Vector2> b)
+        {
+            a = new List<Vector2>(); b = new List<Vector2>(); int n = centre.Count;
+            for (int i = 0; i < n; i++)
+            {
+                var d = (centre[Mathf.Min(i + 1, n - 1)] - centre[Mathf.Max(i - 1, 0)]).normalized; var nrm = new Vector2(-d.y, d.x);
+                a.Add(centre[i] + nrm * half); b.Add(centre[i] - nrm * half);
+            }
         }
 
         static void Smooth1D(bool[] v, float[] arc, float join, float drop)

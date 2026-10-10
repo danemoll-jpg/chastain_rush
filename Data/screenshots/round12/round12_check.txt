@@ -1,0 +1,44 @@
+Round 12 exe check, 2026-10-10 01:54:05, screen 1920x1080, built exe
+race state during the free-roam shots: Free; start / finish gate showing: False
+shortcut #2: 1627's sliding door (3057.7, 308.1, 1101.0), upstairs window (3052.7, 311.0, 1112.3); house 1763 open for the shortcut: False
+shortcut #2 sign: (3087.8, 315.5, 1050.3)
+shortcut #2, racing speed (target 30 m/s): finished, 14.54 s against 15.52 s by the road (+0.98 s); speed on to 1627's stairs 21.3 m/s, off its kicker 24.1 m/s
+    broken: Fences at 19.2 m/s
+    broken: Fences at 18.9 m/s
+    broken: Fences at 19.7 m/s
+    broken: Fences at 20.5 m/s
+    broken: Fences at 20.5 m/s
+    broken: House 1627 shortcut wall (in) at 20.6 m/s
+    broken: House 1627 shortcut wall (out) at 24.0 m/s
+    broken: Fences at 24.1 m/s
+    broken: Fences at 26.8 m/s
+    broken: Fences at 25.9 m/s
+    flight: 1.50 s, 35 m from (3052,1114) at 24.1 m/s, up to 5.7 m over the ground, down on PrototypeCar at 24.7 m/s, 36 m past 1627's front wall
+    flight: 0.38 s, 9 m from (3035,1153) at 24.1 m/s, up to 1.2 m over the ground, down on PrototypeCar at 25.0 m/s, 53 m past 1627's front wall
+    flight: 0.52 s, 13 m from (3027,1173) at 25.6 m/s, up to 2.3 m over the ground, down on PrototypeCar at 26.6 m/s, 78 m past 1627's front wall
+    speeds: turn-off 16.1, side yard 18.4, the crest 19.3, the hollow 20.1 m/s; most tilt 29 deg; things broken 10; touched: 
+shortcut #2, slow (target 12 m/s): finished, 26.68 s against 36.44 s by the road (+9.76 s); speed on to 1627's stairs 11.9 m/s, off its kicker 11.9 m/s
+    broken: Fences at 12.0 m/s
+    broken: Fences at 12.3 m/s
+    broken: Fences at 12.2 m/s
+    broken: Fences at 12.0 m/s
+    broken: Fences at 12.2 m/s
+    broken: House 1627 shortcut wall (in) at 12.1 m/s
+    broken: House 1627 shortcut wall (out) at 12.1 m/s
+    broken: Fences at 12.0 m/s
+    broken: Fences at 12.1 m/s
+    broken: Fences at 12.0 m/s
+    flight: 0.98 s, 12 m from (3052,1114) at 11.9 m/s, up to 4.1 m over the ground, down on PrototypeCar at 14.0 m/s, 13 m past 1627's front wall
+    flight: 0.28 s, 3 m from (3028,1173) at 12.0 m/s, up to 1.3 m over the ground, down on PrototypeCar at 13.2 m/s, 69 m past 1627's front wall
+    speeds: turn-off 12.0, side yard 12.1, the crest 12.2, the hollow 12.0 m/s; most tilt 29 deg; things broken 10; touched: 
+Roof house 1459 collider: dropped on its roof (heading 0), then on the throttle: OFF the roof and on the ground after 3.3 s at (3047.4, 1169.6), speed 15.6 m/s, tilt 21 deg
+Roof house 1459 collider: dropped on its roof (heading 135), then on the throttle: OFF the roof and on the ground after 3.1 s at (3062.6, 1139.0), speed 6.0 m/s, tilt 67 deg
+Roof house 1615 collider: dropped on its roof (heading 0), then on the throttle: OFF the roof and on the ground after 3.3 s at (3024.0, 1168.9), speed 20.0 m/s, tilt 37 deg
+Roof house 1615 collider: dropped on its roof (heading 135), then on the throttle: OFF the roof and on the ground after 2.8 s at (3037.4, 1140.7), speed 17.8 m/s, tilt 32 deg
+Roof house 1993 collider: dropped on its roof (heading 0), then on the throttle: OFF the roof and on the ground after 3.6 s at (3064.5, 1159.1), speed 14.9 m/s, tilt 11 deg
+Roof house 1993 collider: dropped on its roof (heading 135), then on the throttle: OFF the roof and on the ground after 3.4 s at (3076.2, 1118.6), speed 6.4 m/s, tilt 15 deg
+shortcut #6 kicker: drawn mesh 0 triangles (board and bales), collider 'sc6 kicker over house 1641 collider' 285 triangles, bounds (13.9, 6.1, 15.9)
+shortcut #6 at 27 m/s: finished, 13.42 s against 14.56 s by the road; speed at the kicker's foot 19.1 m/s; landings carried 1
+    flight: 2.88 s, 52 m from (2814,1097) at 22.1 m/s, up to 14.3 m over the ground, down on PrototypeCar at 23.5 m/s
+    most tilt 33 deg; touched: Shortcut sc6_over_house (Rooftop leap)/sc6 kicker over house 1641
+RampHold: 4 landings carried, 282 held steps over the whole check

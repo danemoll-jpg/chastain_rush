@@ -38,6 +38,7 @@ namespace ChastainRush
             public Vector2? backReserve;          // Round 10: a range of the back wall (back frame u) kept free of windows (a shortcut's sliding door)
             public Vector2? frontReserve;         // Round 11: a range of the entry front (u) kept free of ground-floor windows and the door (a shortcut's picture window; style A)
             public bool sideLowFree;              // Round 11: no ground-floor windows on the +u side wall (a shortcut's side window)
+            public Vector2? upperReserve;         // Round 12: a range of the upstairs entry front (u) kept free of windows (a shortcut's upstairs window; style A)
             public MeshBuilder detail;           // windows, doors, garage doors, shutters: flat quads that do not need to cast shadows (a separate mesh with shadows off)
             public Vector2 nearestRoadPoint;
             public float roadHalf;
@@ -336,8 +337,9 @@ namespace ChastainRush
                 FrontDoor(d, sf, Vector3.Dot(at - f.O, sf.R), Vector3.Dot(at - f.O, sf.F), h, false, false);
             }
             // upstairs
-            WindowF(d, f, gU1 + E * 0.22f + 0.35f, 4.1f, 1.0f, 1.4f, vEntry, h, true);
-            if (!h.entryGable) WindowF(d, f, gU1 + E * 0.78f, 4.1f, 1.0f, 1.4f, vEntry, h, true);
+            bool UpperFree(float uc) => h.upperReserve == null || uc + 0.75f < h.upperReserve.Value.x || uc - 0.75f > h.upperReserve.Value.y;   // Round 12
+            if (UpperFree(gU1 + E * 0.22f + 0.35f)) WindowF(d, f, gU1 + E * 0.22f + 0.35f, 4.1f, 1.0f, 1.4f, vEntry, h, true);
+            if (!h.entryGable) { if (UpperFree(gU1 + E * 0.78f)) WindowF(d, f, gU1 + E * 0.78f, 4.1f, 1.0f, 1.4f, vEntry, h, true); }
             else
             {
                 float ue = (gU1 + W / 2) / 2f;

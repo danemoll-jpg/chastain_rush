@@ -618,7 +618,7 @@ namespace ChastainRush
                 {
                     var wa = LeadIn(k, Arc(k, k.R - 1.88f, 16)); var wb = LeadIn(k, Arc(k, k.R - 3.28f, 16));
                     c.Walks.Tint = ConcreteLight;
-                    WalkBand(c.Walks.At(mid), wa, wb, c.terrain);
+                    foreach (var (pa, pb) in OffDrives(c, wa, wb)) WalkBand(c.Walks.At(mid), pa, pb, c.terrain);   // Round 12 (BUG-002): not across drives
                     arcs++;
                 }
             }
@@ -633,7 +633,8 @@ namespace ChastainRush
                 keep.Clear();
                 for (int i = 0; i < wa.Count; i++) if (!MouthOf(bl, wa[i], bl.half + 1.6f)) keep.Add(i);
                 c.Walks.Tint = ConcreteLight;
-                foreach (var run in IndexRuns(keep, wa.Count)) WalkBand(c.Walks.At(bl.c), run.Select(i => wa[i]).ToList(), run.Select(i => wb[i]).ToList(), c.terrain);
+                foreach (var run in IndexRuns(keep, wa.Count))   // Round 12 (BUG-002): not across the drives that end on the bulb
+                    foreach (var (pa, pb) in OffDrives(c, run.Select(i => wa[i]).ToList(), run.Select(i => wb[i]).ToList())) WalkBand(c.Walks.At(bl.c), pa, pb, c.terrain);
                 rings++;
             }
             c.Log.Append($"Round 11 streets: {hood.Corners.Count} curb returns ({arcs} with the sidewalk round the corner), {rings} cul-de-sac bulbs with curb and sidewalk rings; drives re-aimed {hood.DrivesReaimed}, overlapping drives left {hood.DriveOverlapsLeft}; ");
@@ -687,6 +688,6 @@ namespace ChastainRush
                 }
         }
 
-        const float WalkLift = 0.09f;   // above the drives (7.5 cm) it crosses
+        const float WalkLift = 0.09f;   // above the drives (7.5 cm) (Round 12: it no longer crosses them)
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 // Round 7: the Chastain Glen area, planned from data. Nothing here changes the generated map data; the area itself is
@@ -223,7 +224,28 @@ namespace ChastainRush
                 if (PoolRing == null || PoolRing.Count < 3) return;
                 if (!BestRectangle(PoolRing, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) return;
                 PoolCentre = c; PoolU = U; PoolV = V; PoolDeckHalfU = hl + 3.2f; PoolDeckHalfV = hw + 3.2f;
+                // Round 12 (BUG-001, Dan: "the big building shoulding exist and the small building should be in its place"): the
+                // large generic building beside the pool (the nearest non-house building to his report position, not the
+                // gazebo's pavilion) is not built; the small clubhouse stands on its footprint, its porch toward the pool
+                float best = 20f;
+                for (int i = 0; i < map.buildings.Length; i++)
+                {
+                    var b = map.buildings[i];
+                    if (b.type == "pavilion" || HouseSet.Contains(i)) continue;
+                    var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
+                    Vector2 cc = Vector2.zero; foreach (var p in ring) cc += p; cc /= ring.Count;
+                    float d = (cc - Bug001Pool).magnitude;
+                    if (d < best) { best = d; ClubhouseBuilding = i; }
+                }
+                if (ClubhouseBuilding < 0) return;
+                Replaced.Add(ClubhouseBuilding);
+                BestRectangle(ToPoints(map.buildings[ClubhouseBuilding].footprint), out var bc, out var bu, out var bv, out _, out _);
+                ClubhouseAt = bc;
+                var toPool = (PoolCentre - bc).normalized;
+                ClubhouseFront = new[] { bu, -bu, bv, -bv }.OrderByDescending(a => Vector2.Dot(a, toPool)).First();
             }
+            public int ClubhouseBuilding = -1;
+            public Vector2? ClubhouseAt; public Vector2 ClubhouseFront;
 
             void PlanDriveOwnership()
             {

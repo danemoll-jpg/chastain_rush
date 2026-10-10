@@ -123,7 +123,7 @@ namespace ChastainRush
                 }
                 // the collider: one box over the footprint (the car never needs to know about eaves and trim)
                 if (c.hood.OpenHouses.ContainsKey(h.index)) { OpenHouseColliders(c, h, colRoot); c.Houses++; BuildDrive(c, h); BuildMailbox(c, h); continue; }
-                if (c.hood.JumpHouses.Contains(h.index)) { c.Houses++; BuildDrive(c, h); BuildMailbox(c, h); continue; }   // Round 8: its own mesh is its collider (a box would stand above the eaves)
+                if (c.hood.JumpHouses.Contains(h.index) || c.hood.RoofHouses.Contains(h.index)) { c.Houses++; BuildDrive(c, h); BuildMailbox(c, h); continue; }   // Round 8: its own mesh is its collider (a box would stand above the eaves)
                 var go = new GameObject("House " + h.index); go.transform.SetParent(colRoot, false);
                 float hh = h.style == HouseStyle.C ? 3.0f : 5.9f;
                 float yMid = (h.baseY + h.floorY + hh) / 2f;

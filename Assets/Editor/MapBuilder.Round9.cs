@@ -23,6 +23,7 @@ namespace ChastainRush
         // Dan's report positions that pick a thing (each the nearest of its kind)
         static readonly Vector2 Bug001Playground = new Vector2(2814.27f, 836.23f);   // the car; the block is 15 m ahead of it
         static readonly Vector2 Bug002WalkStart = new Vector2(2794.5f, 790.0f);      // the car stood on the edge of the parking lot
+        static readonly Vector2 Bug001Pool = new Vector2(2821.68f, 795.99f);         // Round 12: the car on the pool deck, beside the big building
         static readonly Vector2 Bug005Looking = new Vector2(3061.5f, 1028.5f);       // 15 m ahead of the car along its heading (56 deg)
         const long NcrNorth = 290281670, EntranceOut = 1360406927, EntranceIn = 1161774882;
         const float MonumentZ = 771f;
@@ -157,7 +158,7 @@ namespace ChastainRush
                 // lane's verge through a gap in the rail fence. Its height follows the ground.
                 var fenceAt = Offset(hw + 4.45f);
                 var pondC = PondRing.Count > 2 ? RingCentroid(PondRing) : PoolCentre;
-                var clubhouse = PoolCentre + (PoolCentre - pondC).normalized * (PoolDeckHalfU + 6.0f);   // as BuildPoolSite places it
+                var clubhouse = ClubhouseAt ?? PoolCentre + (PoolCentre - pondC).normalized * (PoolDeckHalfU + 6.0f);   // as BuildPoolSite places it
                 bool Blocked(Vector2 p)
                 {
                     if (PondRing.Count > 2 && DistToPond(p) < 4.5f) return true;
@@ -308,6 +309,7 @@ namespace ChastainRush
                 foreach (var h in Houses) before[h.index] = Burial(h);
                 if (target != null) CutLot(target);
                 CutUnderDanDeck();   // Round 10 (BUG-001): no grass through Dan's deck
+                GradeShortcuts();      // Round 12: the shortcuts' grass runs (before the prisms' cuts, which go under their tops)
                 CutUnderShortcuts();   // Round 10: the ground under the shortcut prisms marked "cut" (MapBuilder.Shortcuts.cs)
                 foreach (var h in Houses)
                 {
@@ -351,6 +353,49 @@ namespace ChastainRush
                             return allowed;
                         });
                         Debug.Log($"[Round10] {pr.name}: ground cut to its top, {changed} terrain samples, by up to {deepest:0.00} m");
+                    }
+            }
+
+            void GradeShortcuts()
+            {
+                if (ShortcutData == null) return;
+                // Round 12 (Dan: "It should just be grass"): a shortcut's grass run. Within half_width of its line the ground is
+                // set to the profile (cut or filled); outside, banks of about 40 degrees lead back to the natural ground. Never
+                // within 0.15 m of a house, and never below a house's foundation within 1.5 m of it.
+                foreach (var sc in ShortcutData.shortcuts)
+                    foreach (var gr in sc.grades ?? new ScGrade[0])
+                    {
+                        var line = ToPoints(gr.path); var cum = new float[line.Count];
+                        for (int i = 1; i < line.Count; i++) cum[i] = cum[i - 1] + (line[i] - line[i - 1]).magnitude;
+                        const float Bank = 0.85f, Reach = 6f;
+                        float x0 = float.MaxValue, x1 = float.MinValue, z0 = float.MaxValue, z1 = float.MinValue;
+                        foreach (var q in line) { x0 = Mathf.Min(x0, q.x); x1 = Mathf.Max(x1, q.x); z0 = Mathf.Min(z0, q.y); z1 = Mathf.Max(z1, q.y); }
+                        float m = gr.half_width + Reach; int changed = 0; float cutM = 0f, fillM = 0f;
+                        EditTerrain(terrain, Rect.MinMaxRect(x0 - m, z0 - m, x1 + m, z1 + m), (x, z, y) =>
+                        {
+                            var p = new Vector2(x, z); float best = float.MaxValue, st = 0f;
+                            for (int i = 0; i + 1 < line.Count; i++)
+                            {
+                                var ab = line[i + 1] - line[i]; float t = Mathf.Clamp01(Vector2.Dot(p - line[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                                float dd = (line[i] + ab * t - p).sqrMagnitude;
+                                if (dd < best) { best = dd; st = cum[i] + t * ab.magnitude; }
+                            }
+                            float d = Mathf.Max(0f, Mathf.Sqrt(best) - gr.half_width);
+                            if (d > Reach || InsideHouse(p, 0.15f, null) || RoadClearance(p) < 0.3f) return y;   // never on a street
+                            float target = Profile(gr.profile, st);
+                            float ny = Mathf.Clamp(y, target - d * Bank, target + d * Bank);
+                            ny = Mathf.Lerp(y, ny, Mathf.Clamp01((st - gr.profile[0]) / 6f));   // faded in over the first 6 m, off the street's edge
+                            // grounding: within 1.5 m of a house the ground is never cut below its foundation (no gap under a wall)
+                            foreach (var h in Houses)
+                            {
+                                var dh = p - h.footprintCentre; if (dh.sqrMagnitude > 400f) continue;
+                                if (Mathf.Abs(Vector2.Dot(dh, new Vector2(h.frame.R.x, h.frame.R.z))) < h.W / 2 + 1.5f && Mathf.Abs(Vector2.Dot(dh, new Vector2(h.frame.F.x, h.frame.F.z))) < h.D / 2 + 1.5f)
+                                    ny = Mathf.Max(ny, Mathf.Min(y, h.baseY + 0.15f));
+                            }
+                            if (Mathf.Abs(ny - y) > 1e-3f) { changed++; cutM = Mathf.Max(cutM, y - ny); fillM = Mathf.Max(fillM, ny - y); }
+                            return ny;
+                        });
+                        Debug.Log($"[Round12] {gr.label}: ground graded to the line's profile, {changed} terrain samples, cut up to {cutM:0.00} m, filled up to {fillM:0.00} m");
                     }
             }
 

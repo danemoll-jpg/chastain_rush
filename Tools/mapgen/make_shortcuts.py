@@ -309,151 +309,199 @@ def nearest_corner(pts, hn):
             if 0 <= t <= L: best = min(best, abs(float((cn - p) @ left(d))))
     return best
 
+def rect_dist(p, hn):
+    """Distance from p to house hn's rectangle (-1 inside)."""
+    r = rect(hn); d = p - r["c"]
+    a = abs(float(d @ r["d"])) - r["hl"]; b = abs(float(d @ r["p"])) - r["hw"]
+    return -1.0 if a < 0 and b < 0 else math.hypot(max(a, 0.0), max(b, 0.0))
+
+def corridor_poly(pts, half):
+    """A band 'half' either side of a line (left side forward, right side back): a landing zone's outline."""
+    P = [np.array(p, float) for p in pts]; P = [p for i, p in enumerate(P) if i == 0 or np.linalg.norm(p - P[i - 1]) > 1e-3]; L, R = [], []
+    for i, p in enumerate(P):
+        d = unit(P[min(i + 1, len(P) - 1)] - P[max(i - 1, 0)]); L.append(p + left(d) * half); R.append(p - left(d) * half)
+    return L + R[::-1]
+
+# =============================================================================================================== #2, Round 12
+# Dan (2026-10-10), after rejecting three versions through house 1763: "I think just restore that house completely. Remove the
+# ugly ramp and have the trail actually start right after that house." Nothing is attached to, cut into or aimed at 1763.
+#   * the line leaves Chastain Glen Lane on a left turn round 1763's north-east corner into the side yard between 1763 and
+#     1539 (5.5 m between their corners at the lane end), runs straight past 1539's west corner, then bends right (after the
+#     corner, where 1539's wall falls away) on to one straight through house 1627. The bend cannot come sooner: seen along
+#     that straight, 1539's west corner and 1763's north-east corner line up;
+#   * the ground is grass all the way: natural up to the crest by 1539's corner, then the terrain graded to a profile
+#     ("grade", MapBuilder: cut and fill): a landing hill (the path of a car leaving the crest at the design speed), a
+#     hollow and a 12 degree climb. From the lane's edge to the door the grass is "held" (RampHold, as the held ramps of
+#     Round 10): the car stays on it at any speed, so it can steer through the S;
+#   * 1627 (Dan: "slightly elevate it so that you are already on an incline when you bust through the sliding glass doors
+#     and once you hit the stairs and fly out the other window you should have pretty good momentum"): the climb runs on
+#     through a wide sliding glass door in its back wall and up its stairs without a kink; the stairs curve up into a
+#     kicker that ends at the upstairs front wall, out through a large upstairs window (only glass and frames break). The
+#     window has to clear the garage roof, so the straight points a few degrees east of the gap between 1615 and 1459 (the
+#     gap admits about half a degree from 1627's front): the kicker is sized so the car comes down in 1627's front yard at
+#     racing speed and the line bends back into the gap on the ground;
+#   * from there, as before: through the gap between 1615 and 1459, down the second slope and back on to the lane about 544 m
+#     after the gate. Skips CP2, as before. A sign at the turn-off is the clue (Round 12, item 3).
+SC2_LIP_DEG = float(os.environ.get("SC2_LIP_DEG", "18"))   # the kicker's last angle (Round 12, item 4: sized for the flight)
+SC2_LIP_UP = 0.0                 # the lip against the upstairs floor (higher needs a steeper kicker: the car roof must clear the window top)
+SC2_INCLINE_DEG = 12.0           # the climb into the sliding door and up the stairs
+SC2_CORNER_CLEAR = 2.2           # the line's centre off house 1539's west corner (on 1763's side)
+SC2_EXIT_U = 2.4                 # 1627's upstairs window: along its front from its middle (clear of the garage roof at -0.1)
+DOOR_HALF = 2.3                  # 1627's sliding door and upstairs window: half their width of glass along the wall
+
 def build_sc2():
-    A = house_frame(1763); B = house_frame(1627)
-    fA, fB = A["floor"], B["floor"]
-    upA, upB = fA + 2.85, fB + 2.85                   # the upstairs floors (MapBuilder.StoreyH)
+    B = house_frame(1627)
+    fB = B["floor"]; upB = fB + 2.85                   # the upstairs floor (MapBuilder.StoreyH)
     M = V(3036.6, 1145.9); G2 = V(3019.2, 1200.0); uL = unit(G2 - M)   # the gap between 1615 and 1459 (Round 8)
-    # -- 1627: out of its upstairs front (v = D/2 - 1.3, the entry part of a style A front) 2 m along from its middle, aimed at the gap
-    vFrontB = B["D"] / 2 - 1.3
-    # aimed 8 m into the gap past its narrowest point M (0.2 m east of its axis), where it widens (1459's wall falls away): the car flies straight
-    # out of 1627 at it and turns a little right in the wide part. That keeps the bend on the slope before 1627 small
-    # (about 5 degrees), which a fast car that lands late on the slope must still make to hit 1627's door (aiming at the
-    # gap's axis 10 m before M needed 13 degrees there, and cars landing past the bend missed the door)
-    T = M + uL * 8.0 - left(uL) * 0.2
-    Pf = hpt(B, 2.0, vFrontB); h2 = unit(T - Pf)
-    dvB, duB = float(h2 @ B["F"]), float(h2 @ B["ua"])
-    tB = (vFrontB + B["D"] / 2) / dvB
-    Pb = Pf - h2 * tB                                  # the sliding door in its back wall
-    ub = 2.0 - duB * tB
-    # -- 1763, Round 11 (BUG-013, Dan: "I wanted the jump through a large window and out another one"): a level jump
-    # through a large ground-floor picture window in its front (v = D/2 - 1.3, the entry part of a style A front) WIN_U m
-    # along from its middle, across the living room (in the air, or on its floor), and out through a large window in its
-    # north side wall. The upstairs is out of reach for a jump: the lane leaves 13.75 m from the wall for the ramp, and a
-    # level lip at the upstairs floor with 2 m of air before the wall needs a 5.6 m climb in 11 m (a ramp of 40 degrees or
-    # more with a foot radius of 10 m or less, about 7 g at racing speed). At the ground floor it is a 3.3 m climb.
-    vFrontA = A["D"] / 2 - 1.3
-    WIN_U = 3.6
-    E = hpt(A, WIN_U, vFrontA); BEND = 18.0
-    Bp = Pb - h2 * BEND; h1 = unit(Bp - E)
-    dvA, duA = float(h1 @ A["F"]), float(h1 @ A["ua"])
-    tX = (A["W"] / 2 - WIN_U) / duA                    # where the line leaves through the north side wall (u = +W/2)
-    X = E + h1 * tX; vX = vFrontA + dvA * tX
-    cos_in, cos_out = -dvA, duA                         # the line against the two walls' normals
-    note(f"#2 house 1763 (floor {fA:.2f}): in through a ground-floor picture window in its front {math.degrees(math.acos(min(1.0, cos_in))):.0f} deg off square, "
-         f"out through a window in its north side wall {math.degrees(math.acos(min(1.0, cos_out))):.0f} deg off square, {vX:+.1f} m from its middle, {tX:.1f} m across the room; "
-         f"house 1627 (floor {fB:.2f}, upstairs {upB:.2f}): in through the back wall at u {ub:+.1f}, out through the upstairs front at u +2.0, {tB:.1f} m inside; bend {math.degrees(math.acos(min(1.0, float(h1 @ h2)))):.1f} deg left {BEND:.0f} m before 1627's door")
-    # the windows (heights against the floor): glass from SILL to TOP; the room's floor along the line is at the sill
-    SILL, TOP = 0.45, 2.7                             # (2.7: at 30 m/s the car still rises about 1 m off the lip)
-    WIN_W = 5.6                                         # along the front wall: u 0.8 to 6.4 of the entry part (-0.4 to 7.0)
-    across = WIN_W * cos_in                             # the opening seen along the line
-    WIN_W_OUT = across / cos_out                        # the side window: the same opening seen along the line
-    LIP_HALF = across / 2 - 0.2                         # the ramp's half width at the lip (0.2 m kept for a car a little askew)
-    note(f"#2 windows of 1763: front {WIN_W:.1f} m wide, side {WIN_W_OUT:.1f} m wide, glass {SILL:.2f} to {TOP:.2f} m above the floor; "
-         f"the opening along the line {across:.2f} m wide, the ramp {2 * LIP_HALF:.2f} m wide at its lip (a car 1.85 m wide has {LIP_HALF - 0.925:.2f} m either side)")
-    # -- the ramp's foot: as far back along the line as the lane allows (5 m from its centre, plus a little)
-    s_foot = 0.0
-    while lap_dist(E - h1 * (s_foot + 0.25))[0] >= LANE_CLEAR + 0.6: s_foot += 0.25
-    F0 = E - h1 * s_foot
-    gF = ground(*F0)
-    GAP, LEVEL, LIP = 2.4, 0.6, 0.65                    # open air before the wall (along the line, at its middle: the wall is at 43 deg, so 0.7 to 4.1 m
-                                                        # across the ramp), the level lip, its height against the floor (0.2 m over the sill)
-    lipY = fA + LIP
-    L_r = s_foot - GAP - LEVEL
-    R1A, R2A = 12.0, 6.0
-    th, ry = two_arcs(lipY - (gF - 0.03), L_r, R1A, R2A)
-    def ramp_y(s): return gF - 0.03 + ry(s + s_foot)  # s from the front wall (negative outside)
-    worst = min(ramp_y(s) - ground(*(E + h1 * s)) for s in np.arange(-s_foot, -GAP, 0.25))
-    note(f"#2 ramp to the window of 1763: {s_foot - GAP:.1f} m from its foot ({s_foot:.1f} m in front of the wall, ground {gF:.2f}) to its lip {GAP:.1f} m before the wall "
-         f"(ground there {ground(*(E - h1 * GAP)):.2f}, the lip {lipY:.2f}, {lipY - ground(*(E - h1 * GAP)):.2f} m up); rises {lipY - gF:.2f} m: curved foot (radius {R1A:.0f} m), "
-         f"straight at {math.degrees(th):.0f} deg, rounded top (radius {R2A:.0f} m, held), level for the last {LEVEL} m; lowest {worst:+.2f} m against the ground under it")
-    for v in (8.0, 12.0, 20.0, 27.0):
-        tw = GAP / v; tr = (GAP + tX) / v
-        note(f"#2 at {v:.0f} m/s off the lip: {4.905 * tw * tw:.2f} m lower at the front window, {4.905 * tr * tr:.2f} m lower at the side window (the car's body is about 0.3 to 0.95 m above its wheels)")
-    HW, HWB = across / 2, 3.0  # the passage's half width through 1763 (the windows) and (wider: a car that lands late on the slope arrives off line) 1627
+    T = M + uL * 8.0 - left(uL) * 0.2                  # aimed 8 m into the gap past its narrowest point, as Round 10
+    vFrontB = B["D"] / 2 - 1.3                         # the upstairs front of a style A (the entry part's plane)
+    ne63, s39, w39 = V(3078.5, 1053.2), V(3081.1, 1058.1), V(3074.3, 1064.3)   # 1763's north-east corner, 1539's south and west corners
+    # -- the line in plan
+    Pf = hpt(B, SC2_EXIT_U, vFrontB); u_exit = SC2_EXIT_U
+    if u_exit - DOOR_HALF - 0.12 < -0.4 or u_exit + DOOR_HALF + 0.12 > B["W"] / 2 - 0.1:
+        raise SystemExit(f"#2: 1627's upstairs window ({u_exit:.2f} +- {DOOR_HALF}) does not fit between its garage roof and its corner")
+    Mo = (ne63 + s39) / 2 - unit(s39 - ne63) * 0.6     # the side yard's mouth, 0.6 m toward 1763 from its middle (2.15 m off each corner)
+    hM = unit(w39 - Mo)
+    for _ in range(8):
+        W1 = w39 + left(hM) * SC2_CORNER_CLEAR; hM = unit(W1 - Mo)
+    W1 = w39 + left(hM) * SC2_CORNER_CLEAR             # abeam 1539's west corner
+    # the straight: from 1627's upstairs window at SC2_EXIT_U, aimed at the gap; behind 1627 it would pass through 1539's
+    # corner, so the line reaches it from W1 by an S (right, then left, radius R_S) on the hill
+    h2 = unit(T - Pf); dvB = float(h2 @ B["F"]); off_sq = math.degrees(math.acos(min(1.0, dvB)))
+    Pb = Pf - h2 * ((vFrontB + B["D"] / 2) / dvB)      # the sliding door in its back wall
+    tB = float(np.linalg.norm(Pf - Pb)); aim = 0.0
+    def rot(v, a): return np.array([v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a)])
+    R_S = 25.0; dh = math.atan2(hM[0] * h2[1] - hM[1] * h2[0], hM @ h2)
+    best = None
+    for pa in np.linspace(0.0, 1.2, 2401):
+        pb = pa + dh
+        if pb < 0: continue
+        q = W1.copy(); hq = hM.copy(); pts = [q.copy()]
+        for ang, sg in ((pa, -1), (pb, +1)):
+            n = max(2, int(ang * R_S / 0.5))
+            for k in range(n): hq = rot(hq, sg * ang / n); q = q + hq * (ang * R_S / n); pts.append(q.copy())
+        off = float((q - Pf) @ left(h2))
+        if best is None or abs(off) < abs(best[0]): best = (off, pa, pb, pts)
+    _, pa, pb, fil = best
+    T1, T2 = W1, fil[-1]
+    RIGHT = 2.0                                        # the turn starts from the lane's right-hand side, as a driver swings wide
+    arc_in, s_leave, R_in, ang_in, err_in = arc_from_lap(Mo - hM * 3.0, hM, 195, 250, right=RIGHT)
+    t_leave = unit(lap(s_leave + 0.5) - lap(s_leave))
+    run_in_pts = polyline([lap(s_leave - 30), lap(s_leave - 22), lap(s_leave - 12) - left(t_leave) * RIGHT * 0.8, lap(s_leave) - left(t_leave) * RIGHT], 2.0)
+    down = smooth(run_in_pts)[:-1] + polyline(arc_in, 1.0) + polyline([arc_in[-1], T1], 1.0)[1:] + fil[1:] + polyline([fil[-1], Pb], 1.0)[1:]
+    S = np.concatenate([[0.0], np.cumsum([float(np.linalg.norm(b - a)) for a, b in zip(down[:-1], down[1:])])])
+    s_door = float(S[-1])
+    cl = min(min(rect_dist(p, 1763), rect_dist(p, 1539)) for p in down)
+    note(f"#2 off the lane: an arc of radius {R_in:.0f} m turning {ang_in:.0f} deg left from {RIGHT:.0f} m right of the lane's centre, leaving it {s_leave:.0f} m after the gate "
+         f"(fit {err_in:.2f} rad), into the side yard between 1763 and 1539, straight past 1539's west corner ({SC2_CORNER_CLEAR} m off it), an S (right {math.degrees(pa):.0f} deg, "
+         f"left {math.degrees(pb):.0f} deg, radius {R_S:.0f} m) on to one straight ({float(np.linalg.norm(Pb - T2)):.0f} m to 1627's door) through 1627, aimed at the gap between 1615 and 1459; "
+         f"the line's centre stays {cl:.1f} m or more from 1763 and 1539")
+    # -- the ground along the line (grass: the terrain graded)
+    def at(s): i = min(int(np.searchsorted(S, s)), len(down) - 1); return down[i]
+    s_e = next(float(S[i]) for i, p in enumerate(down) if S[i] > 20 and lap_dist(p)[0] > 4.8)   # where the line leaves the street
+    s_c = station(down, W1)                            # the crest, abeam 1539's corner
+    y_e, y_c = ground(*at(s_e)), ground(*at(s_c))
+    beta = math.atan((y_c - ground(*at(s_c - 3.0))) / 3.0)   # the natural ground's slope coming up to the crest (it is not graded before it)
+    ALPHA_MAX, Rs, Li = math.radians(30.0), 18.0, 2.5; th = math.radians(SC2_INCLINE_DEG); DX = 0.05
+    def run_profile(vd):
+        xs = [s_c]; ys = [y_c]; ang = beta; phase = 0; x = s_c
+        while x < s_door - 1e-6:
+            if phase < 2 and (s_door - Li) - x <= Rs * (math.sin(th) - math.sin(ang)): phase = 2
+            if phase == 0:
+                ang = math.atan(math.tan(beta) - 9.81 * (x - s_c + DX) / (vd * vd * math.cos(beta) ** 2))
+                if ang <= -ALPHA_MAX: ang = -ALPHA_MAX; phase = 1
+            elif phase == 2:
+                ang += DX / (Rs * math.cos(ang))
+                if ang >= th: ang = th; phase = 3
+            x += DX; xs.append(x); ys.append(ys[-1] + math.tan(ang) * DX)
+        return xs, ys
+    lo_, hi_ = 6.0, 40.0                               # the design speed that brings the climb to the door's sill
+    for _ in range(40):
+        v_ = (lo_ + hi_) / 2; _, ys_ = run_profile(v_)
+        if ys_[-1] > fB: hi_ = v_
+        else: lo_ = v_
+    VD = lo_; px, py = run_profile(VD)
+    steepest = -float(np.degrees(np.arctan(np.diff(py) / DX)).min())
+    def grade_y(s): return float(np.interp(s, px, py))
+    gs = np.arange(s_c, s_door + 0.01, 0.5)
+    low = min(grade_y(s) for s in gs)
+    cut = max(ground(*at(s)) - grade_y(s) for s in gs); fill = max(grade_y(s) - ground(*at(s)) for s in gs)
+    note(f"#2 the ground along the line (grass): natural from the lane's edge ({y_e:.2f}) up to the crest by 1539's corner ({y_c:.2f}, coming up at {math.degrees(beta):.1f} deg), then graded: "
+         f"a landing hill for {VD:.1f} m/s (steepest {steepest:.1f} deg), a hollow (radius {Rs:.0f} m, lowest {low:.2f}, {fB - low:.2f} m under 1627's floor) and up at "
+         f"{SC2_INCLINE_DEG:.0f} deg into the door ({fB:.2f}); against the natural ground it is cut by up to {cut:.2f} m and filled by up to {fill:.2f} m along the line")
+    gi = max(int(np.searchsorted(S, s_c)) - 3, 0)
+    grade = {"path": [round(float(v), 3) for p in down[gi:] for v in p], "profile": [round(float(v), 3) for s in gs for v in (s - S[gi], grade_y(s))],
+             "half_width": 3.5, "label": "sc2 run down to house 1627"}
+    # -- 1627: the climb goes on through the door and up the stairs, then curves up (a kicker) to the lip at the upstairs
+    # front wall, SC2_LIP_UP above the upstairs floor, leaving at SC2_LIP_DEG
+    lipY = upB + SC2_LIP_UP; thL = math.radians(SC2_LIP_DEG)
+    lo_, hi_ = 1.0, 400.0                              # the kicker's radius so the lip lands at lipY at the front wall
+    for _ in range(80):
+        Rk = (lo_ + hi_) / 2; xk = Rk * (math.sin(thL) - math.sin(th))
+        rise = (tB - xk) * math.tan(th) + Rk * (math.cos(th) - math.cos(thL))
+        if rise > lipY - fB: hi_ = Rk
+        else: lo_ = Rk
+    Rk = lo_; xk = Rk * (math.sin(thL) - math.sin(th)); tk = tB - xk
+    if tk < 0 or Rk >= 399.0: raise SystemExit(f"#2: a {SC2_LIP_DEG} deg kicker does not fit in 1627 (it would start {-tk:.1f} m outside the door)")
+    def stair_y(t):
+        if t <= tk: return fB + t * math.tan(th)
+        cx, cy = tk - Rk * math.sin(th), fB + tk * math.tan(th) + Rk * math.cos(th)
+        x = min(t, tB) - cx
+        return cy - math.sqrt(max(Rk * Rk - x * x, 0.0))
+    note(f"#2 house 1627 (floor {fB:.2f}, upstairs {upB:.2f}): the line crosses its back and front walls {off_sq:.0f} deg off square, {tB:.1f} m inside; "
+         f"in through a sliding door at {SC2_INCLINE_DEG:.0f} deg, the stairs straight for {tk:.1f} m, then a kicker of radius {Rk:.0f} m up to {SC2_LIP_DEG:.0f} deg; "
+         f"its lip at the upstairs front wall, {lipY:.2f} ({SC2_LIP_UP:.1f} m over the upstairs floor, {lipY - ground(*(Pf + h2 * 6.0)):.2f} m over the front yard)")
+    yard = ground(*(Pf + h2 * 6.0))
+    for v in (16.0, 20.0, 22.0, 24.0, 26.0):
+        vx, vy = v * math.cos(thL), v * math.sin(thL); h0 = lipY - yard
+        tf = (vy + math.sqrt(vy * vy + 2 * 9.81 * h0)) / 9.81
+        note(f"#2 off 1627's kicker at {v:.0f} m/s: up to {h0 + vy * vy / 19.62:.1f} m over the front yard, down {vx * tf:.0f} m out (level yard; the gap between 1615 and 1459 is {float((M - Pf) @ h2):.0f} m out)")
     prisms = []
-    def taper_poly(o, u, s0, s1, h0, h1_, left0=None):
-        n = left(u); l0 = h0 if left0 is None else left0
-        return [o + u * s0 - n * h0, o + u * s1 - n * h1_, o + u * s1 + n * h1_, o + u * s0 + n * l0]
-    # (its left side, toward 1763's drive, is straight at the lip's half width: wider, its foot lay over the drive)
-    prisms.append(prism("sc2 ramp to the window of house 1763", "ramp", taper_poly(E, h1, -s_foot, -GAP, 2.6, LIP_HALF, LIP_HALF), E, h1,
-                        [(s, ramp_y(s)) for s in np.linspace(-s_foot, -GAP - LEVEL, 44)] + [(-GAP, lipY)], RAMP, held=True, cut=True))
-    # the room's floor along the line, from wall to wall (the walls cross the line at 43 and 47 degrees)
-    nA = left(h1); wf, ws = V(-A["F"][1], A["F"][0]), V(-A["ua"][1], A["ua"][0])
-    room = [intersect(E - nA * (HW - 0.05), h1, E, wf), intersect(X - nA * (HW - 0.05), h1, X, ws), intersect(X + nA * (HW - 0.05), h1, X, ws), intersect(E + nA * (HW - 0.05), h1, E, wf)]
-    st = [float((q - E) @ h1) for q in room]
-    prisms.append(prism("sc2 floor in house 1763", "floor", room, E, h1, [(min(st), fA + SILL), (max(st), fA + SILL)], FLOOR, held=True))
-    # -- the landing slope: from just under the side window's sill, straight down, flaring level into 1627's door; its angle
-    # (about 10 degrees) is set so it arrives at 1627's floor exactly
-    FLARE_R = 31.0
-    y_top = fA + SILL - 0.25
-    L1 = float(np.linalg.norm(Bp - X)); L_tot = L1 + BEND
-    drop_needed = y_top - fB
-    lo_, hi_ = 0.05, 0.4
-    for _ in range(50):
-        a = (lo_ + hi_) / 2
-        d_ = (L_tot - FLARE_R * math.sin(a)) * math.tan(a) + FLARE_R * (1 - math.cos(a))
-        if d_ > drop_needed: hi_ = a
-        else: lo_ = a
-    SLOPE = lo_; flare = FLARE_R * math.sin(SLOPE)
-    def land_y(d):                                     # d: distance along the slope from the side wall
-        if d <= L_tot - flare: return y_top - d * math.tan(SLOPE)
-        x = L_tot - d
-        return fB + FLARE_R - math.sqrt(max(FLARE_R ** 2 - x * x, 0.0))
-    note(f"#2 landing slope: {L_tot:.0f} m from 1763's side wall to 1627's door, {math.degrees(SLOPE):.1f} deg, starting {y_top - fA - SILL:+.2f} m against 1763's room floor, "
-         f"level over its last {flare:.1f} m into 1627's door ({fB:.2f}); a level flight off the room's floor lands about v*v*{2 * math.tan(SLOPE) / 9.81:.3f} m out")
-    dX = 0.05
-    cut_max = max(ground(*(X + h1 * d)) - land_y(d) for d in np.arange(0, L1, 0.5))
-    note(f"#2 the ground's crest behind 1763 stands up to {cut_max:.1f} m above the slope: cut down to it (the slope's prisms are marked 'cut')")
-    prisms.append(prism("sc2 landing slope behind house 1763", "landing", strip_poly(X, h1, dX, L1 + 1.0, 3.2), X, h1,
-                        [(d, land_y(d)) for d in np.linspace(dX, L1 + 1.0, 60)], DECK, cut=True))
-    prisms.append(prism("sc2 landing slope to house 1627", "landing", strip_poly(Bp, h2, -1.0, BEND + 0.3, 3.4), Bp, h2,
-                        [(d - L1, land_y(d)) for d in np.linspace(L1 - 1.0, L_tot + 0.3, 30)], DECK, cut=True))
-    # -- 1627: level from the door to the foot of the stairs, then the stairs (a held ramp) up to the upstairs, level for the last metre to the front wall
-    STAIR_FOOT, STAIR_TOP = 1.2, tB - 1.0
-    th2, sy = two_arcs(upB - fB, STAIR_TOP - STAIR_FOOT, 10.0, 8.0)
-    def stair_y(t): return fB + sy(t - STAIR_FOOT) if t < STAIR_TOP else upB
-    note(f"#2 stairs in house 1627: from {STAIR_FOOT} m inside the door to {STAIR_TOP:.1f} m (1 m before the front wall), rising {upB - fB:.2f} m, "
-         f"straight part {math.degrees(th2):.0f} deg (curved foot radius 10 m, rounded top radius 8 m, held); level out through the upstairs front windows")
-    prisms.append(prism("sc2 ground floor in house 1627", "floor", strip_poly(Pb, h2, -0.3, STAIR_FOOT + 0.1, HWB), Pb, h2, [(-0.3, fB), (STAIR_FOOT + 0.1, fB)], FLOOR))
-    prisms.append(prism("sc2 stairs in house 1627", "stairs", strip_poly(Pb, h2, STAIR_FOOT, tB + 0.05, HWB), Pb, h2,
-                        [(t, stair_y(t)) for t in np.linspace(STAIR_FOOT, tB + 0.05, 40)], STAIRS, held=True))
-    # -- the line: off the lane on an arc on to the ramp's line, through both houses, out of 1627 and on as before
-    # the turn off the lane starts from its right-hand side (3 m right of the centre), as a driver swings wide for a left
-    # turn: from the centre the arc was 23 m in radius and the car ran wide at racing speed
-    arc_in, s_leave, R_in, ang_in, err_in = arc_from_lap(F0, h1, 150, 215, right=3.0)
-    note(f"#2 off the lane: an arc of radius {R_in:.0f} m turning {ang_in:.0f} deg left from 3 m right of the lane's centre, leaving it {s_leave:.0f} m after the gate (fit {err_in:.2f} rad), on to the ramp's foot")
+    HWB = 3.0
+    # its ends run along the two walls (the line crosses them off square: ends square to the line would poke out of both),
+    # 0.15 m out at the back door, 0.03 m inside the front
+    def end_on(Pw, side): return intersect(Pb + left(h2) * side, h2, Pw, B["ua"])
+    sp = [end_on(Pb - B["F"] * 0.15, -HWB), end_on(Pf - B["F"] * 0.03, -HWB), end_on(Pf - B["F"] * 0.03, HWB), end_on(Pb - B["F"] * 0.15, HWB)]
+    st_ = [float((q - Pb) @ h2) for q in sp]
+    prisms.append(prism("sc2 stairs in house 1627", "stairs", sp, Pb, h2, [(t, stair_y(t)) for t in np.linspace(min(st_), max(st_), 60)], STAIRS, held=True))
+    # the opening along the line, seen square to it: the door and the window are DOOR_HALF either side of the crossing,
+    # along walls the line crosses off_sq off square
+    across = DOOR_HALF * math.cos(math.radians(off_sq))
+    note(f"#2 1627's sliding door and upstairs window: {2 * DOOR_HALF:.1f} m wide, {2 * across:.2f} m across the line (a car 1.85 m wide has {across - 0.925:.2f} m either side)")
+    run_out = polyline([Pf, Pf + h2 * 12.0, M - uL * 5.0, M, T, G2, G2 + uL * 6.0], 2.0)   # back on to the gap's axis in 1627's front yard
     arc, s_end, R, ang, err = arc_onto_lap(G2 + uL * 6.0, uL, 520, 560, +1)
     note(f"#2 back on to the lane: an arc of radius {R:.0f} m turning {ang:.0f} deg left, joining the lane {s_end:.0f} m after the gate (fit {err:.2f} rad)")
-    land2 = Pf + h2 * 20.0
-    t_leave = unit(lap(s_leave + 0.5) - lap(s_leave))
-    # from the lane's centre 30 m before the arc, easing over to its right-hand side
-    run_in_pts = polyline([lap(s_leave - 30), lap(s_leave - 22), lap(s_leave - 12) - left(t_leave) * 2.4] + arc_in, 2.0)
-    through = polyline([F0, E, X, Bp, Pb, Pf], 1.0)
-    run_out = polyline([Pf, land2, T, G2, G2 + uL * 6.0], 2.0) + polyline(arc + [lap(s_end + 8)], 2.0)[1:]
-    # the straight runs through the houses stay exact (no corner cutting there): only the run-in and the run-out are smoothed
-    dense = smooth(run_in_pts)[:-1] + through + smooth(run_out)[1:]
+    through = polyline([Pb, Pf], 1.0)
+    dense = down + through[1:] + smooth(run_out + polyline(arc + [lap(s_end + 8)], 2.0)[1:])[1:]
     for hn in (1539, 1615, 1459, 1602, 1919, 1993, 1961):
         note(f"#2 house {hn}: nearest corner {nearest_corner(dense, hn):.1f} m from the line")
-    entry_s = station(dense, E - h1 * 4.0)              # the entry plane: on the ramp, well clear of the lane
-    trail = []                                          # Round 11: no dirt trail (Dan: "I don't want the dirt path")
-    # the houses the line goes through: the two wall crossings (a point on the wall and its outward normal), the passage's
-    # half width and, for each wall, the height range of the panel that breaks (MapBuilder.Shortcuts.cs)
+    # houses a car could come down on after the flight out of 1627 (Dan: "If someone ends up on a roof of a house, it is not a
+    # tragedy, they can just drive off of it"): every house within 12 m of the line from 1627's front to 75 m out gets a roof
+    # collider with no valley, chimney pocket or lip (MapBuilder: the convex hull of the house)
+    flight = [Pf + h2 * d for d in np.arange(0.0, 75.0, 1.0)]
+    roof_houses = sorted({i for i in AREA["houses"] if i != 1627 and min(rect_dist(p, i) for p in flight) < 12.0})
+    note(f"#2 houses near the flight out of 1627 (roofs a car can drive off): {roof_houses}")
+    entry_s = station(dense, W1)                        # the entry plane: at 1539's corner, well clear of the lane
     def wall(P, N): return [round(float(P[0]), 3), round(float(P[1]), 3), round(float(N[0]), 5), round(float(N[1]), 5)]
     houses = [
-        # Round 11: picture windows (window_a / window_b: the glass's half width along the wall; y0 / y1: the glass's bottom and top;
-        # front_u: the picture window's range along the front, kept free of the house's own ground-floor windows and door)
-        {"building": 1763, "a": list(map(float, E)), "b": list(map(float, X)), "half_width": round(HW, 3), "wall_a": wall(E, A["F"]), "wall_b": wall(X, A["ua"]),
-         "y0_a": round(fA + SILL, 3), "y1_a": round(fA + TOP, 3), "y0_b": round(fA + SILL, 3), "y1_b": round(fA + TOP, 3), "floor_y": round(fA, 3), "no_entry_gable": False,   # Round 11: its small upstairs gable is back (the jump is at the ground floor)
-         "window_a": round(WIN_W / 2, 3), "window_b": round(WIN_W_OUT / 2, 3), "front_u": [round(WIN_U - WIN_W / 2, 3), round(WIN_U + WIN_W / 2, 3)]},
-        {"building": 1627, "a": list(map(float, Pb)), "b": list(map(float, Pf)), "half_width": HWB, "wall_a": wall(Pb, -B["F"]), "wall_b": wall(Pf, B["F"]),
-         "y0_a": round(fB - 0.1, 3), "y1_a": round(fB + 2.45, 3), "y0_b": round(upB - 0.1, 3), "y1_b": round(upB + 2.35, 3), "floor_y": round(fB, 3), "sliding_door_a": True},
+        # Round 12: in through a sliding door (door_half: its glass's half width along the back wall), out through an upstairs
+        # window (window_b); only glass and frames break. upper_u: the upstairs front kept free of the house's own windows.
+        {"building": 1627, "a": list(map(float, Pb)), "b": list(map(float, Pf)), "half_width": round(across, 3), "wall_a": wall(Pb, -B["F"]), "wall_b": wall(Pf, B["F"]),
+         "y0_a": round(fB + 0.05, 3), "y1_a": round(fB + 2.25, 3), "y0_b": round(lipY - 0.15, 3), "y1_b": round(upB + 2.62, 3), "floor_y": round(fB, 3),
+         "sliding_door_a": True, "door_half": DOOR_HALF, "window_b": DOOR_HALF, "no_entry_gable": True,
+         "upper_u": [round(u_exit - DOOR_HALF - 0.4, 3), round(u_exit + DOOR_HALF + 0.4, 3)]},
     ]
+    # the side yard and the run down to the door are held (Round 12, RampHold): at racing speed the car would leave the yard's
+    # knee or the crest still turning and fly off the line; held, it stays on the grass and steers. It is a landing zone too
+    landing = [{"poly": [round(float(v), 2) for p_ in corridor_poly([at(s) for s in np.arange(s_e + 2.0, s_door, 1.0)], 4.0) for v in p_], "hold": True},
+               {"poly": [round(float(v), 2) for p_ in corridor_poly([Pf + h2 * d for d in np.arange(0.0, 62.0, 2.0)], 6.5) for v in p_]}]
     return {
         "id": "sc2_two_houses", "name": "Two-house drop", "forgives": [2],
-        "path": dense, "half_width": 4.0, "trail": trail, "clear_half_width": 6.5,
-        "entry_s": entry_s, "prisms": prisms, "open_houses": houses, "jump_houses": [],
-        "jumps": [{"label": "through the picture window of house 1763", "x": float((E - h1 * GAP)[0]), "z": float((E - h1 * GAP)[1])}, {"label": "out of the side window of house 1763", "x": float(X[0]), "z": float(X[1])}, {"label": "upstairs of house 1627 (out through its front)", "x": float(Pf[0]), "z": float(Pf[1])}],
+        "path": dense, "half_width": 4.0, "trail": [], "clear_half_width": 4.5, "entry_half_width": 3.0, "entry_margin": 1.0,   # 4.5: the side yard is narrow, keep the houses' shrubs
+        "entry_s": entry_s, "prisms": prisms, "open_houses": houses, "jump_houses": [], "roof_houses": [{"building": i} for i in roof_houses],
+        "grades": [grade], "landing_zones": landing,
+        "sign": {"x": round(float(Mo[0]), 2), "z": round(float(Mo[1]), 2)},
+        "jumps": [{"label": "upstairs of house 1627 (out through its front)", "x": float(Pf[0]), "z": float(Pf[1])}],
         "leave_lap_s": round(float(s_leave - 30), 1), "rejoin_lap_s": float(s_end + 8),
     }
 

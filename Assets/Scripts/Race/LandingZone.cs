@@ -10,6 +10,9 @@ namespace ChastainRush
     public sealed class LandingZone : MonoBehaviour
     {
         public Vector2[] outline;   // x, z
+        // Round 12: a held zone. The car is kept on the grass inside it as on a held ramp (RampHold): shortcut #2's run down to
+        // house 1627, where the line makes an S over the crest that a car at racing speed would otherwise fly off, still turning
+        public bool hold;
         static readonly List<LandingZone> all = new List<LandingZone>();
 
         void OnEnable() { all.Add(this); }
@@ -18,6 +21,12 @@ namespace ChastainRush
         public static bool Contains(Vector3 p)
         {
             foreach (var z in all) if (z.Inside(new Vector2(p.x, p.z))) return true;
+            return false;
+        }
+
+        public static bool Holds(Vector3 p)   // Round 12
+        {
+            foreach (var z in all) if (z.hold && z.Inside(new Vector2(p.x, p.z))) return true;
             return false;
         }
 

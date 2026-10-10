@@ -29,10 +29,16 @@ namespace ChastainRush
         // outward normal (x, z, nx, nz); y0 / y1: the height range of the panel that breaks in each wall
         // Round 11: window_a / window_b > 0: the walls have a picture window there (that half width along the wall, glass y0 to
         // y1) and only its glass and frame break; front_u: the picture window's range along the front (house frame u)
-        [Serializable] class ScOpenHouse { public int building; public float[] a, b, wall_a, wall_b, front_u; public float half_width, floor_y, y0_a, y1_a, y0_b, y1_b, window_a, window_b; public bool no_entry_gable, sliding_door_a; }
+        // Round 12: door_half > 0: the sliding door in wall a is that half width of glass along the wall and only its glass and
+        // frame break (as a window); upper_u: the upstairs front (house frame u) kept free of the house's own windows
+        [Serializable] class ScOpenHouse { public int building; public float[] a, b, wall_a, wall_b, front_u, upper_u; public float half_width, floor_y, y0_a, y1_a, y0_b, y1_b, window_a, window_b, door_half; public bool no_entry_gable, sliding_door_a; }
         [Serializable] class ScJumpHouse { public int building; }
-        [Serializable] class ScZone { public float[] poly; }   // Round 11: a landing zone on the ground (RampHold keeps the car's speed there)
-        [Serializable] class ScShortcut { public string id, name; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses; public ScZone[] landing_zones; }
+        [Serializable] class ScZone { public float[] poly; public bool hold; }   // Round 11: a landing zone on the ground (RampHold keeps the car's speed there); Round 12: hold, the car is kept on the ground there
+        // Round 12: ground along a line set to a profile (station along the line, height), cut and fill, half_width either side
+        // of the line, banks outside: the shortcut's surface is the grass itself
+        [Serializable] class ScGrade { public string label; public float[] path, profile; public float half_width; }
+        [Serializable] class ScSign { public float x, z; }
+        [Serializable] class ScShortcut { public string id, name; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; }
         [Serializable] class ScFile { public ScShortcut[] shortcuts; }
 
         const string ShortcutFile = "Data/shortcuts/chastain_glen_loop.json";
@@ -43,6 +49,7 @@ namespace ChastainRush
             public ScFile ShortcutData;
             public readonly Dictionary<int, ScOpenHouse> OpenHouses = new Dictionary<int, ScOpenHouse>();
             public readonly HashSet<int> JumpHouses = new HashSet<int>();
+            public readonly HashSet<int> RoofHouses = new HashSet<int>();   // Round 12: houses a car may land on (a convex roof collider)
             public int TreesCleared;
             readonly List<(Vector2 a, Vector2 b, float half)> corridor = new List<(Vector2, Vector2, float)>();
 
@@ -58,7 +65,45 @@ namespace ChastainRush
                         if (RoadClearance((p[i] + p[i + 1]) * 0.5f) > 0.5f) corridor.Add((p[i], p[i + 1], sc.clear_half_width));   // off the street only
                     if (sc.open_houses != null) foreach (var oh in sc.open_houses) OpenHouses[oh.building] = oh;
                     if (sc.jump_houses != null) foreach (var jh in sc.jump_houses) JumpHouses.Add(jh.building);
+                    if (sc.roof_houses != null) foreach (var rh in sc.roof_houses) RoofHouses.Add(rh.building);
+                    if (sc.sign != null && sc.sign.x != 0f && SignSpot(sc, out var spot, out var facing)) { SignSpots[sc.id] = (spot, facing); KeepOut(spot, 1.5f); }
                 }
+            }
+
+            // Round 12, item 3 (Dan: "we would need some sort of clue that there is a shortcut that way (a sign if need be)"):
+            // the sign at a shortcut's turn-off stands in the grass strip (1.5 m past the road's edge) on the side the line turns
+            // to, just past where the line's centre leaves the street (at the corner a driver turns round; failing that, up to
+            // 30 m before it), off every drive and 3.5 m or more from the line. It faces the oncoming driver, turned 25 degrees
+            // toward the road.
+            public readonly Dictionary<string, (Vector2 at, Vector2 facing)> SignSpots = new Dictionary<string, (Vector2, Vector2)>();
+            bool SignSpot(ScShortcut sc, out Vector2 spot, out Vector2 facing)
+            {
+                spot = facing = default;
+                var p = ToPoints(sc.path);
+                int i0 = p.FindIndex(q => RoadClearance(q) > 0f);
+                if (i0 < 16) return false;
+                var d = (p[i0 - 6] - p[i0 - 16]).normalized; var L = new Vector2(-d.y, d.x);
+                float side = Vector2.Dot(p[Mathf.Min(i0 + 8, p.Count - 1)] - p[i0 - 6], L) > 0f ? 1f : -1f;
+                var tries = new List<float>();
+                for (float back = -2f; back >= -16f; back -= 0.5f) tries.Add(back);
+                for (float back = 6f; back <= 30f; back += 0.5f) tries.Add(back);
+                foreach (float back in tries)
+                {
+                    Nearest(p[i0] - d * back, out Vector2 q, out float half, out Vector2 tan, out _);
+                    var n = new Vector2(-tan.y, tan.x); if (Vector2.Dot(n, L * side) < 0f) n = -n;   // toward the side the line turns to
+                    var s = q + n * (half + 1.5f);
+                    bool onDrive = false;
+                    foreach (var dr in DriveSegs)
+                    {
+                        var ab = dr.b - dr.a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(s - dr.a, ab) / ab.sqrMagnitude);
+                        if ((dr.a + ab * t - s).magnitude < dr.half + 1.2f) { onDrive = true; break; }
+                    }
+                    if (onDrive || InsideHouse(s, 1.0f, null) || p.Any(pp => (pp - s).sqrMagnitude < 3.5f * 3.5f)) continue;
+                    spot = s; facing = (-d * Mathf.Cos(25f * Mathf.Deg2Rad) - n * Mathf.Sin(25f * Mathf.Deg2Rad)).normalized;
+                    return true;
+                }
+                Debug.LogWarning($"[Round12] {sc.id}: no room for the sign at its turn-off");
+                return false;
             }
 
             // Round 11: p is under one of the shortcuts' ramps, decks, floors or stairs (a drive is not drawn there)
@@ -91,28 +136,48 @@ namespace ChastainRush
                 if (oh.no_entry_gable) h.entryGable = false;   // a flat upstairs front where the line goes in (one house's small porch gable)
                 var tm = new MeshBuilder(); var td = new MeshBuilder();
                 h.detail = td;
-                if (oh.sliding_door_a) h.backReserve = BackRange(h, oh, 1.6f);   // no back window where the sliding door goes
+                float doorHalf = oh.door_half > 0f ? oh.door_half : 1.15f;
+                if (oh.sliding_door_a) h.backReserve = BackRange(h, oh, doorHalf + 0.45f);   // no back window where the sliding door goes
                 bool picture = oh.window_a > 0f;   // Round 11 (BUG-013): picture windows; the door moves out of the way
                 if (picture) { h.frontReserve = new Vector2(oh.front_u[0], oh.front_u[1]); h.sideLowFree = true; }
+                if (oh.upper_u != null && oh.upper_u.Length == 2) h.upperReserve = new Vector2(oh.upper_u[0], oh.upper_u[1]);   // Round 12
                 BuildHouse(tm, h);
-                if (oh.sliding_door_a) SlidingDoor(td, h, oh);
-                if (picture) { PictureWindow(td, h, oh.wall_a, oh.window_a, oh.y0_a, oh.y1_a); PictureWindow(td, h, oh.wall_b, oh.window_b, oh.y0_b, oh.y1_b); }
-                h.detail = db; h.backReserve = null; h.frontReserve = null; h.sideLowFree = false;
+                if (oh.sliding_door_a) SlidingDoor(td, h, oh, doorHalf);
+                if (picture) PictureWindow(td, h, oh.wall_a, oh.window_a, oh.y0_a, oh.y1_a);
+                if (oh.window_b > 0f) PictureWindow(td, h, oh.wall_b, oh.window_b, oh.y0_b, oh.y1_b);
+                h.detail = db; h.backReserve = null; h.frontReserve = null; h.sideLowFree = false; h.upperReserve = null;
                 Passage(oh, out var A, out var u, out var n);
                 var inA = new List<List<(Vector3 p, Color c)>>(); var inB = new List<List<(Vector3 p, Color c)>>();
-                var volA = picture ? WindowVolume(oh.wall_a, oh.window_a, oh.y0_a, oh.y1_a) : WallVolume(oh.wall_a, A, n, oh.half_width, oh.y0_a, oh.y1_a);
-                var volB = picture ? WindowVolume(oh.wall_b, oh.window_b, oh.y0_b, oh.y1_b) : WallVolume(oh.wall_b, A, n, oh.half_width, oh.y0_b, oh.y1_b);
-                // a picture window: the wall behind it is left out for good (the frame covers the hole) and only the glass and
-                // frame break; otherwise the wall itself breaks
+                // Round 12 (Dan: broken, it shows broken glass with the wall round it intact): a wide sliding door breaks like a
+                // window, only its glass and frame
+                bool glassA = picture || oh.door_half > 0f, glassB = oh.window_b > 0f;
+                float halfA = picture ? oh.window_a : oh.door_half;
+                var volA = glassA ? WindowVolume(oh.wall_a, halfA, oh.y0_a, oh.y1_a) : WallVolume(oh.wall_a, A, n, oh.half_width, oh.y0_a, oh.y1_a);
+                var volB = glassB ? WindowVolume(oh.wall_b, oh.window_b, oh.y0_b, oh.y1_b) : WallVolume(oh.wall_b, A, n, oh.half_width, oh.y0_b, oh.y1_b);
+                // a window: the wall behind it is left out for good (the frame covers the hole) and only the glass and frame
+                // break; otherwise the wall itself breaks
                 var hole = new List<List<(Vector3 p, Color c)>>();
-                ClipSplit(tm, mb, volA, volB, picture ? hole : inA, picture ? hole : inB);
+                ClipSplit(tm, mb, volA, volB, glassA ? hole : inA, glassB ? hole : inB);
                 ClipSplit(td, db, volA, volB, inA, inB);
-                WallPanel(c, h, oh, oh.wall_a, oh.y0_a, oh.y1_a, A, n, inA, "in", picture ? oh.window_a : 0f);
-                WallPanel(c, h, oh, oh.wall_b, oh.y0_b, oh.y1_b, A, n, inB, "out", picture ? oh.window_b : 0f);
+                WallPanel(c, h, oh, oh.wall_a, oh.y0_a, oh.y1_a, A, n, inA, "in", glassA ? halfA : 0f);
+                WallPanel(c, h, oh, oh.wall_b, oh.y0_b, oh.y1_b, A, n, inB, "out", glassB ? oh.window_b : 0f);
                 PassageRoom(mb, db, h, oh, A, u, n);
-                c.Log.Append(picture
-                    ? $" house {h.index} (style {h.style}, floor {h.floorY:0.00}): whole, with a picture window in ({inA.Count} pieces of glass and frame) and a window out ({inB.Count}), door moved beside the garage;"
-                    : $" house {h.index} (style {h.style}, floor {h.floorY:0.00}): whole, with breakable wall panels where the shortcut goes in ({inA.Count} pieces of wall) and out ({inB.Count});");
+                c.Log.Append($" house {h.index} (style {h.style}, floor {h.floorY:0.00}): whole, the shortcut in through {(glassA ? "glass" : "a wall panel")} ({inA.Count} pieces) and out through {(glassB ? "glass" : "a wall panel")} ({inB.Count});");
+                return;
+            }
+            if (c.hood.RoofHouses.Contains(h.index))
+            {
+                // Round 12 (Dan: "If someone ends up on a roof of a house, it is not a tragedy, they can just drive off of it"): the
+                // collider is the convex hull of the house, so a car that comes down on it slides or drives off: no valley between
+                // roofs, no pocket behind a chimney, no lip at the eaves (MapBuilder.NeighborhoodBuild gives it no box)
+                var tm = new MeshBuilder();
+                BuildHouse(tm, h);
+                Append(tm, mb);
+                var go = tm.ToObject("Roof house " + h.index + " collider", c.mats.House, c.root, false);
+                UnityEngine.Object.DestroyImmediate(go.GetComponent<MeshRenderer>());
+                go.AddComponent<MeshCollider>().convex = true;
+                go.GetComponent<MeshCollider>().sharedMesh = go.GetComponent<MeshFilter>().sharedMesh;
+                c.Log.Append($" roof house {h.index} (style {h.style}): convex collider;");
                 return;
             }
             if (c.hood.JumpHouses.Contains(h.index))
@@ -278,18 +343,24 @@ namespace ChastainRush
             return new Vector2(ub - half, ub + half);
         }
 
-        // Round 10 (Dan: "drive through a sliding glass door"): a two-panel sliding glass door in the back wall where the line
-        // goes in, drawn with the house so it becomes part of the breakable panel
-        static void SlidingDoor(MeshBuilder d, HouseSpec h, ScOpenHouse oh)
+        // Round 10 (Dan: "drive through a sliding glass door"): a sliding glass door in the back wall where the line goes in,
+        // drawn with the house so it becomes part of the breakable panel. Round 12: 'half' of glass either side (four panels
+        // when wide), its frame inside WindowVolume (only glass and frame break); no step (the ground climbs to the sill)
+        static void SlidingDoor(MeshBuilder d, HouseSpec h, ScOpenHouse oh, float half)
         {
             var b = new Frame { O = h.frame.O, R = -h.frame.R, F = -h.frame.F, M = h.frame.M };
             var r = BackRange(h, oh, 0f); float uc = r.x, back = h.D / 2;
-            FrontQuad(d, b, uc - 1.25f, uc + 1.25f, 0f, 2.3f, back + 0.02f, h.trimC);
-            FrontQuad(d, b, uc - 1.15f, uc - 0.04f, 0.05f, 2.2f, back + 0.04f, h.glassC);
-            FrontQuad(d, b, uc + 0.04f, uc + 1.15f, 0.05f, 2.2f, back + 0.04f, Shade(h.glassC, 1.15f));
-            FrontQuad(d, b, uc - 0.04f, uc + 0.04f, 0.05f, 2.2f, back + 0.06f, h.trimC);
-            FrontQuad(d, b, uc - 0.12f, uc - 0.07f, 0.95f, 1.15f, back + 0.06f, new Color(0.75f, 0.75f, 0.72f));   // handle
-            BoxF(d, b, uc - 1.4f, uc + 1.4f, -0.14f, 0f, back, back + 0.6f, new Color(0.62f, 0.60f, 0.57f));        // step
+            float y0 = oh.y0_a - h.floorY, y1 = oh.y1_a - h.floorY;
+            FrontQuad(d, b, uc - half - WinFrame, uc + half + WinFrame, y0 - WinFrame, y1 + WinFrame, back + 0.02f, h.trimC);
+            int panels = half > 1.6f ? 4 : 2; float pw = 2f * half / panels;
+            for (int k = 0; k < panels; k++)
+            {
+                float a = uc - half + k * pw;
+                FrontQuad(d, b, a + 0.04f, a + pw - 0.04f, y0, y1, back + 0.04f, (k & 1) == 0 ? h.glassC : Shade(h.glassC, 1.15f));
+                if (k > 0) FrontQuad(d, b, a - 0.04f, a + 0.04f, y0, y1, back + 0.06f, h.trimC);
+            }
+            foreach (float hu in new[] { uc - 0.12f, uc + 0.07f })
+                FrontQuad(d, b, hu, hu + 0.05f, 0.95f, 1.15f, back + 0.06f, new Color(0.75f, 0.75f, 0.72f));   // handles
         }
 
         // The plain room along the line: walls either side of the passage inside the house, a ceiling, a light. Only seen
@@ -386,14 +457,54 @@ namespace ChastainRush
             {
                 var sroot = new GameObject("Shortcut " + sc.id + " (" + sc.name + ")").transform; sroot.SetParent(root, false);
                 foreach (var pr in sc.prisms) { BuildPrism(pr, terrain, mats, sroot); prisms++; }
+                BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
                 if (sc.landing_zones != null)
                     foreach (var z in sc.landing_zones)   // Round 11: ground the car lands on, with the landing carry (LandingZone, RampHold)
                     {
                         var go = new GameObject("Landing zone"); go.transform.SetParent(sroot, false);
-                        go.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray();
+                        var lz = go.AddComponent<LandingZone>(); lz.outline = ToPoints(z.poly).ToArray(); lz.hold = z.hold;
                     }
             }
             Debug.Log($"[Shortcuts] {hood.ShortcutData.shortcuts.Length} shortcuts, {prisms} ramps / decks / floors, {hood.OpenHouses.Count} houses opened, {hood.JumpHouses.Count} jumped; {hood.TreesCleared} trees kept off the lines");
+        }
+
+        // Round 12, item 3: a home-made sign at the turn-off: a plywood board 1.6 x 0.8 m on two posts, its painted face
+        // (Tools/handmade/make_shortcut_sign.py) on the front only, lit and depth-tested (hidden by terrain like the board). No
+        // collider: it stands 3 m or more off the line, like the other street furniture that is not breakable.
+        static void BuildShortcutSign(Neighborhood hood, TerrainGrid terrain, Materials mats, Transform parent, ScShortcut sc)
+        {
+            if (!hood.SignSpots.TryGetValue(sc.id, out var s)) return;
+            var f = MakeFrame(new Vector3(s.at.x, 0f, s.at.y), s.facing, 1f);
+            float lo = float.MaxValue, hi = float.MinValue;
+            foreach (float u in new[] { -0.6f, 0.6f }) { var q = f.P(u, 0f, -0.05f); float g = Ground(terrain, q.x, q.z); lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g); }
+            f.O.y = hi;
+            var mb = new MeshBuilder();
+            var post = new Color(0.40f, 0.31f, 0.22f); var edge = new Color(0.62f, 0.52f, 0.38f);
+            foreach (float u in new[] { -0.6f, 0.6f }) BoxF(mb, f, u - 0.045f, u + 0.045f, lo - hi - 0.3f, 1.85f, -0.1f, -0.01f, post);
+            BoxF(mb, f, -0.8f, 0.8f, 1.0f, 1.8f, -0.01f, 0.03f, edge);
+            var go = mb.ToObject("Shortcut sign " + sc.id, mats.House, parent, false);
+            go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            var mat = ShortcutSignMaterial();
+            if (mat != null)
+            {
+                var plate = SignPlate(parent, f.P(0f, 1.4f, 0.035f), -f.F, 1f, mat);   // the quad's front is -z locally
+                plate.name = "Shortcut sign face " + sc.id;
+                plate.transform.localScale = new Vector3(1.6f, 0.8f, 1f);
+            }
+            Debug.Log($"[Round12] {sc.id}: sign at ({s.at.x:0.0}, {s.at.y:0.0}), facing ({s.facing.x:0.00}, {s.facing.y:0.00})");
+        }
+
+        static Material ShortcutSignMaterial()
+        {
+            const string path = "Assets/HandMade/Shortcut/ShortcutSign.png";
+            var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            if (tex == null) { Debug.LogWarning("[Round12] " + path + " missing (Tools/handmade/make_shortcut_sign.py): a blank sign"); return null; }
+            var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "ShortcutSign" };
+            m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white);
+            m.SetFloat("_Smoothness", 0.1f);
+            m.SetFloat("_Cull", (float)CullMode.Back);
+            AssetDatabase.CreateAsset(m, GeneratedDir + "/ShortcutSign.mat");
+            return m;
         }
 
         // Ramps and decks are frictionless to the car's BODY. The car's grip comes from its own suspension rays
@@ -415,6 +526,101 @@ namespace ChastainRush
             for (int i = 0; i + 1 < n; i++)
                 if (s <= pr[2 * i + 2]) return Mathf.Lerp(pr[2 * i + 1], pr[2 * i + 3], Mathf.InverseLerp(pr[2 * i], pr[2 * i + 2], s));
             return pr[2 * n - 1];
+        }
+
+        // Round 12, item 9: a wide board of planks (running up the ramp, 0.3 m each, 6 cm thick) on the kicker's surface, on big
+        // square bales (2.53 m long across the ramp, 1.2 m wide along it, 0.9 m tall, three to a row) stacked in columns under
+        // it: each column as high as the board allows at its lower end, topped with a half-height bale where a full one does
+        // not fit, so the board rests on every step. Bales only where their middle is inside the outline.
+        static MeshBuilder KickerLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain)
+        {
+            var mb = new MeshBuilder();
+            float S(Vector2 p) => Vector2.Dot(p - O, U); float L(Vector2 p) => Vector2.Dot(p - O, Lv);
+            float s0 = poly.Min(S), s1 = poly.Max(S), l0 = poly.Min(L), l1 = poly.Max(L);
+            Vector2 At(float s, float l) => O + U * s + Lv * l;
+            var wood = new Color(0.58f, 0.46f, 0.31f);
+            // the board: a grid of the surface's strips (the profile's bends) by planks across
+            const float Plank = 0.3f, Thick = 0.06f;
+            int planks = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Plank));
+            for (int i = 0; i + 1 < cuts.Count; i++)
+            {
+                // the underside (seen in the gaps between the steps of bales)
+                var strip = ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p));
+                if (strip.Count >= 3)
+                {
+                    mb.Tint = Shade(wood, 0.55f);
+                    for (int t = 1; t + 1 < strip.Count; t++) TriFace(mb, Top(strip[0]) - Vector3.up * Thick, Top(strip[t]) - Vector3.up * Thick, Top(strip[t + 1]) - Vector3.up * Thick, Vector3.down);
+                }
+                for (int k = 0; k < planks; k++)
+                {
+                    float la = Mathf.Lerp(l0, l1, k / (float)planks), lb = Mathf.Lerp(l0, l1, (k + 1) / (float)planks);
+                    var cell = ClipPoly2(ClipPoly2(ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p)), p => L(p) - la), p => lb - L(p));
+                    if (cell.Count < 3) continue;
+                    mb.Tint = Shade(wood, 0.86f + 0.2f * Hash01(k, 301) - ((k & 1) == 0 ? 0f : 0.05f));
+                    int st = mb.Count; foreach (var p in cell) mb.Vertex(Top(p));
+                    for (int t = 1; t + 1 < cell.Count; t++)
+                    {
+                        Vector3 p0 = mb.Verts[st], p1 = mb.Verts[st + t], p2 = mb.Verts[st + t + 1];
+                        if (Vector3.Dot(Vector3.Cross(p1 - p0, p2 - p0), Vector3.up) >= 0f) mb.Tri(st, st + t, st + t + 1); else mb.Tri(st, st + t + 1, st + t);
+                    }
+                }
+            }
+            // its edges: the board's thickness round the outline
+            Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
+            mb.Tint = Shade(wood, 0.7f);
+            for (int e = 0; e < poly.Count; e++)
+            {
+                var a = poly[e]; var b = poly[(e + 1) % poly.Count]; var dir = (b - a).normalized; var outN = new Vector2(dir.y, -dir.x);
+                if (Vector2.Dot(outN, (a + b) * 0.5f - centre) < 0f) outN = -outN;
+                int n = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b) / 0.5f));
+                for (int i = 0; i < n; i++)
+                {
+                    var p = Vector2.Lerp(a, b, i / (float)n); var q = Vector2.Lerp(a, b, (i + 1) / (float)n);
+                    var tp = Top(p); var tq = Top(q);
+                    Face(mb, tp - Vector3.up * Thick, tq - Vector3.up * Thick, tq, tp, new Vector3(outN.x, 0f, outN.y));
+                }
+            }
+            // the bales
+            const float BL = 1.2f, BH = 0.9f;
+            int across = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / 2.53f)); float bw = (l1 - l0) / across;
+            var hay = new Color(0.80f, 0.67f, 0.36f);
+            var f = new Frame { O = new Vector3(O.x, 0f, O.y), R = new Vector3(Lv.x, 0f, Lv.y), F = new Vector3(U.x, 0f, U.y), M = 1f };
+            int bales = 0;
+            for (float sa = s1; sa - BL > s0 - 0.01f; sa -= BL)   // from the lip back, so the column under the lip is a whole one
+            {
+                float sb = sa - BL;
+                for (int j = 0; j < across; j++)
+                {
+                    float la = l0 + j * bw, lb = la + bw;
+                    if (!InPolygon(At((sa + sb) * 0.5f, (la + lb) * 0.5f), poly)) continue;
+                    float top = float.MaxValue, lo = float.MaxValue;
+                    foreach (float s in new[] { sa, sb }) foreach (float l in new[] { la, lb })
+                    {
+                        var p = At(s, l); top = Mathf.Min(top, Top(p).y - Thick); lo = Mathf.Min(lo, Ground(terrain, p.x, p.y));
+                    }
+                    float y = lo - 0.15f; int layer = 0;
+                    while (true)
+                    {
+                        float h = y + BH <= top ? BH : y + BH * 0.5f <= top ? BH * 0.5f : 0f;
+                        if (h <= 0f) break;
+                        Bale(mb, f, la + 0.03f, lb - 0.03f, y, y + h, sb + 0.02f, sa - 0.02f, Shade(hay, 0.9f + 0.18f * Hash01(bales, 302) + (layer & 1) * 0.03f));
+                        y += h; layer++; bales++;
+                    }
+                }
+            }
+            return mb;
+        }
+
+        // a big square bale: a box of hay with four darker twine bands round it (its length runs across the ramp)
+        static void Bale(MeshBuilder mb, Frame f, float l0, float l1, float y0, float y1, float s0, float s1, Color c)
+        {
+            BoxF(mb, f, l0, l1, y0, y1, s0, s1, c);
+            var tw = Shade(c, 0.62f);
+            foreach (float k in new[] { 0.2f, 0.4f, 0.6f, 0.8f })   // twine round its length: over the top and down both faces
+            {
+                float lm = Mathf.Lerp(l0, l1, k);
+                BoxF(mb, f, lm - 0.02f, lm + 0.02f, y0, y1 + 0.01f, s0 - 0.01f, s1 + 0.01f, tw);
+            }
         }
 
         // A solid: the convex outline in plan, its top at Profile(station along the axis), its sides down into the ground.
@@ -479,7 +685,12 @@ namespace ChastainRush
                     Face(mb, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), tq, tp, new Vector3(outN.x, 0f, outN.y));
                 }
             }
-            var go = mb.ToObject(pr.name, mats.House, parent, false);
+            // Round 12, item 9 (Dan: "turn the second ramp into like a wide board leaned up against some bales of hay"): the
+            // kicker's LOOK only. The surface, its curve, pitch, height, lip and the collider below are exactly as before (the
+            // collider is still made from mb); what is drawn is a board of planks on that same surface, on a stepped stack of big
+            // square bales that fills the space under it, so nothing floats
+            var look = pr.kind == "kicker" ? KickerLook(poly, O, U, Lv, cuts, Top, terrain) : mb;
+            var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
             var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing";   // Round 10: RampHold
             // the collider: the same surfaces with the vertices along the strip seams welded (1 mm), so the car's body does

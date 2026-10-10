@@ -1,0 +1,55 @@
+Chastain Rush exe check, 2026-10-10 01:58:19
+Player: built exe, Unity 6000.6.1f1, screen 1920x1080 Windowed, GPU NVIDIA GeForce GTX 1660 Ti, CPU Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz, vSync 1, target -1
+persistentDataPath: C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush
+PASS  scene loaded: car, race controller, debug HUD, road lookup
+PASS  Dan's house is in the scene
+PASS  geese are in the scene  -  1 flock(s)
+PASS  fences are in the scene  -  69 fence chunks
+PASS  route loaded from the scene (embedded copy)  -  Chastain Glen loop, 2 official shortcuts
+
+Frame rate, parked (10 s, car still, chase camera behind it; frame time = wall clock between rendered frames):
+  Entrance (race grid on the entrance lane): 601 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 16.7 ms (60 fps); worst 21.2 ms
+  Beside the pond (route point nearest the fountain) (80 m away): 601 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 18.0 ms (56 fps); worst 18.3 ms
+  Outside Dan's house (route point nearest the house) (20 m away): 600 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 18.1 ms (55 fps); worst 19.5 ms
+PASS  race started (T): countdown
+PASS  countdown ended: racing
+PASS  race finished (3 counted laps)  -  3 laps, state Finished, total 4:07.937, laps 1:22.675 1:22.617 1:22.645, penalties 0 s
+PASS  records written (to the check's own file)  -  C:\Users\danmo\AppData\Local\Temp\claude\C--Users-danmo-chastain-rush\06242463-ac6f-4726-a9b8-607b6de4c0dc\scratchpad\exe_check\race_records_exe_check.json
+
+Frame rate while driving lap 1 at 15 m/s (real time):
+  whole lap 1: 4959 frames in 82.7 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 16.7 ms (60 fps); worst 50.0 ms
+  Entrance (race grid on the entrance lane): the lap does not pass within 60 m
+  Beside the pond (route point nearest the fountain) (80 m away), within 60 m: 482 frames in 8.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 16.7 ms (60 fps); worst 16.7 ms
+  Outside Dan's house (route point nearest the house) (20 m away), within 60 m: 479 frames in 8.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 16.7 ms (60 fps); worst 27.2 ms
+
+Run-time files:
+  bump log: C:\Users\danmo\AppData\LocalLow\Chastain Rush\Chastain Rush\bump_log.txt exists True
+  debug reports folder: C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\DebugReports
+  race records (the player's own, untouched by this check): C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\race_records.json
+
+Race events:
+     40.0  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 2 official shortcuts
+     43.0  GO
+     50.2  START LINE crossed: clock started
+     62.1  CHECKPOINT 1 at 11.887
+     76.9  CHECKPOINT 2 at 26.668
+     91.5  CHECKPOINT 3 at 41.323
+     97.4  CHECKPOINT 4 at 47.214
+    115.1  CHECKPOINT 5 at 64.885
+    132.9  LAP 1 COUNTED 82.675 (clock 82.675 + penalty 0.0)
+    144.8  CHECKPOINT 1 at 94.560
+    159.6  CHECKPOINT 2 at 109.339
+    174.2  CHECKPOINT 3 at 123.991
+    180.1  CHECKPOINT 4 at 129.888
+    197.8  CHECKPOINT 5 at 147.570
+    215.5  LAP 2 COUNTED 82.617 (clock 82.617 + penalty 0.0)
+    227.4  CHECKPOINT 1 at 177.180
+    242.2  CHECKPOINT 2 at 191.965
+    256.8  CHECKPOINT 3 at 206.622
+    262.7  CHECKPOINT 4 at 212.519
+    280.4  CHECKPOINT 5 at 230.189
+    298.1  LAP 3 COUNTED 82.645 (clock 82.645 + penalty 0.0)
+    298.1  FINISH total 247.937 (clock 247.937 + penalties 0.0); laps 82.675 82.617 82.645
+    299.2  RACE LEFT
+
+ALL 9 CHECKS PASSED

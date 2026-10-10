@@ -54,7 +54,7 @@ namespace ChastainRush
                 }
                 airTime = 0f;
             }
-            bool held = surface != null && surface.held && car.GroundedWheels >= 2;
+            bool held = ((surface != null && surface.held) || (hit.collider is TerrainCollider && LandingZone.Holds(hit.point))) && car.GroundedWheels >= 2;   // Round 12: or the grass of a held zone
             // just off the edge of a held floor: the rear wheels, still on it, would push the tail up and pitch the car
             // nose-down for the whole flight; for a quarter of a second its pitching is stopped, then it flies as it left
             if (!held)

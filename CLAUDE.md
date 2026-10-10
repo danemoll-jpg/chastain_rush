@@ -165,6 +165,14 @@ kicker for big air out of its upstairs windows, sidewalks that stop at
 driveways, the pool building swap, no start gate in free roam. Queued after
 it, one round each: 13 vehicles with sound, 14 three AI drivers, 15 menus.
 
+**Round 12 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** 1763 is an ordinary house
+again; #2 leaves the lane past it through the side yard (one hand-painted "SHORTCUT" sign at the turn-off, the only
+signposted shortcut), runs down held grass (`LandingZone.hold`, RampHold) through an S into 1627's sliding door on a 12 deg
+climb, up its stairs to a kicker and out a big upstairs window; roof houses beyond (convex hull colliders); sidewalks stop
+at drives; the clubhouse replaces the big pool building; the start gate only in a race; #6's kicker drawn as a board on
+hay bales (collider unchanged). Check: `ChastainRush.exe -exeRound12 <dir>` (Checks/Round12Runner.cs). The sign's face:
+`python Tools/handmade/make_shortcut_sign.py` (hand-made, committed). Imported from Racer in Round 12: nothing.
+
 **Never build a "nearest version" of something Dan has described.** If what
 he asked for does not fit, build nothing of it, leave things clean, and
 report the numbers and options. He has rejected shortcut #2 three times for

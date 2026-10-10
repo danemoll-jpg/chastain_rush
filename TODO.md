@@ -982,6 +982,75 @@ New: `MapBuilder.Round11.cs` (street graph, curb returns, bulbs, drive overlaps,
 (landing zones), RaceMarkers (no shortcut markers), make_shortcuts.py (#2 window jump, no trails, no #6 deck). Imported from
 Racer: nothing.
 
+Round 12 status — built and checked in the exe (2026-10-10), NOT yet driven by Dan. Checks: `ChastainRush.exe -exeRound12 <dir>`
+(new, Checks/Round12Runner.cs), `-exeShortcut` (7 of 7), `-exeCheck` (9 of 9). Reports and shots: `Data/screenshots/round12/`
+(Dan's house hidden in every shot; the BUG-002 shot was looked at and not committed).
+
+1. House 1763 restored: DONE. Nothing of the shortcut is attached to, cut into or aimed at it: an ordinary style A house
+   (front door at the front, its own windows and entry gable), one box collider, its drive whole, its side yard natural
+   ground (no grading before the crest by 1539's corner). Shot `r12_1763_from_dan_bug003` (Dan's camera).
+2. #2 starts past 1763: DONE. The line leaves the lane 210 m after the gate (an arc of radius 21 m, 67 deg left) round 1763's
+   north-east corner into the side yard between 1763 and 1539 (2.15 m off each corner), runs 2.2 m past 1539's west corner,
+   then an S (right 38 deg, left 20 deg, radius 25 m) on to one straight through 1627 aimed at the gap between 1615 and 1459.
+   The S cannot come sooner: seen along that straight, 1539's west corner and 1763's north-east corner line up. Grass all
+   the way, no wood on the ground: natural up to the crest, then the terrain graded (a hill shaped as the path of a car
+   leaving the crest at 20 m/s, steepest 30 deg; a hollow 0.93 m under 1627's floor; a 12 deg climb into the door); cut up
+   to 0.81 m and filled up to 0.62 m along the line (1.04 / 1.57 m at the banks' edges), never below a house's foundation.
+   NEW, arcade, say if unwanted: the grass from the lane's edge to 1627's door is "held" like the Round 10 ramps (RampHold,
+   `LandingZone.hold`): at racing speed the car otherwise left the yard's crest still in the S and flew 27 m off the line
+   into 1627's wall. Entry plane at 1539's corner; `forgives` CP2 (unchanged: CP1 is passed on the lane before the
+   turn-off); the barrier rule unchanged. Race check: lap by both shortcuts 1:00.631, CP2 and CP5 forgiven, no penalty.
+3. The clue: DONE. One home-made sign, a weathered plywood board 1.6 x 0.8 m on two posts, "SHORTCUT" and an arrow
+   pointing left, painted (capitals 0.25 m: readable at 20 to 30 m), in the grass strip on the left just past the turn-off,
+   facing the oncoming driver. One-sided lit face, depth-tested (hidden by terrain like its board), no collider (3.5 m or
+   more off the line). Face drawn by `Tools/handmade/make_shortcut_sign.py` (`Assets/HandMade/Shortcut/ShortcutSign.png`).
+   No worn grass or tracks. Shots `r12_turnoff_sign_from_lane_11m`, `_22m`, `r12_turnoff_side_yard_from_lane`.
+4. Into 1627 on an incline, big air out: DONE. A 4.6 m four-panel sliding glass door in its back wall (the line crosses
+   its walls 30 deg off square: 4.0 m across the line, 1.08 m either side of the car); the 12 deg climb runs on through it
+   and up the stairs (straight 8.1 m, then a kicker of radius 42 m up to 18 deg), the lip at the upstairs front wall at the
+   upstairs floor (3.27 m over the front yard), out through a 4.6 x 2.8 m upstairs window (no entry gable on 1627; its two
+   small upstairs front windows are where the big one is). Only glass and frames break, the wall round them stays; whole
+   again at race start. Exe, racing speed (the scripted driver at 30 m/s braking for the turn-off as its curve needs): on to
+   the stairs at 21.3 m/s, off the kicker at 24.1 m/s; FLIGHT 1.50 s, 35 m, up to 5.7 m over the ground, down at 24.7 m/s
+   (speed kept) 36 m past 1627's front wall, the gap's narrowest point being 37 m out; touched nothing; finished 14.54 s
+   against 15.52 s by the road. Slow (12 m/s): flight 12 m, 4.1 m up, finished. Roofs: 1459, 1615 and 1993 (within 12 m of
+   the flight) have a convex roof collider (the house's hull: no valley, chimney pocket or eave lip); a car dropped on each
+   roof, two headings, drove off on to the ground within 3.6 s every time. Hiding the open front from the door: the wall
+   over the door does it for the chase camera (3.6 m up, 7.5 m back: through the door it looks down at the stairs); no
+   extra ceiling was built.
+5. Proof in the exe: DONE. `r12_1763_from_dan_bug003`; the turn-off and sign from the lane; `r12_1627_back_sliding_door_before`
+   / `_after`; `r12_1627_front_upstairs_window_before` / `_after`; `r12_sc2_flight_side_profile_1..3`; the drives above. The
+   drive is the scripted driver, not a person with a pad.
+6. BUG-002 sidewalks: DONE, all of Chastain Glen. Every sidewalk (along the streets, round the corner returns and the
+   cul-de-sac rings) stops exactly at a drive's drawn edge (flared mouths included) and starts again past it; the drive
+   runs unbroken to the road. The lake walk was not changed (not checked against drives).
+7. BUG-001 pool: DONE. The big plain building beside the pool (OSM building 841, a 11 m "detached" box) is not built; the
+   small clubhouse with the columned porch stands on its footprint, porch toward the pool. Shot `r12_pool_from_dan_bug001`.
+8. BUG-006 start line: DONE. The chequered gate shows only while a race runs (checkpoints and barriers already did). Shot
+   `r12_no_start_gate_from_dan_bug006`.
+9. #6 ramp look: DONE, a wide board on hay bales (a 5.6 m lip makes a tilted trailer unbelievable). Planks running up the
+   ramp on exactly the old surface, on a stepped stack of big square bales (three across, columns 1.2 m deep, topped with a
+   half bale where a full one does not fit) under and behind it. The collider is the same mesh as before; exe at 27 m/s:
+   finished 13.42 s against 14.56 s, flight 52 m (as Round 11). Shots `r12_sc6_kicker_from_lane`, `_side`.
+10. Executable rebuilt last: DONE, `Builds/ChastainRush/ChastainRush.exe` (2026-10-10 02:05). `-exeCheck` 9 of 9, laps 1:22.675 / 1:22.617 /
+    1:22.645 (as Rounds 9 to 11), 60 fps at the three places (1920 x 1080, not 3840 x 2160).
+11. This report: DONE.
+
+For Dan to check: #2 with a pad at racing speed: the turn-off round 1763 into the side yard, the S past 1539's corner, the
+held feel of the grass run down (arcade: the car does not leave the grass there), the door, the stairs and the flight out of
+1627 (it lands just before the gap); whether the sign is the right kind of clue and in the right place; 1763 as an ordinary
+house from the lane; the big upstairs window on 1627's front; landing on a roof beyond the gap and driving off; sidewalks
+stopping at drives; the clubhouse in the big building's place; no start gate in free roam; #6's board and hay bales.
+
+Not done / not measured: Dan's drive; a real pad; 3840 x 2160. The Round 10 and Round 11 exe checks still look for 1763's
+shortcut windows and now report them missing.
+
+New: `Checks/Round12Runner.cs` (-exeRound12), `Tools/handmade/make_shortcut_sign.py`, `Assets/HandMade/Shortcut/`. Edits:
+make_shortcuts.py (#2 rebuilt: line, grade, 1627, roof houses, sign), MapBuilder.Shortcuts.cs (1627's door and window,
+roof-hull houses, the sign, #6's board and bales), MapBuilder.Round9.cs (grading), MapBuilder.Houses.cs (upstairs window
+reserve), MapBuilder.Streets.cs / Round11.cs (sidewalks stop at drives), MapBuilder.Neighborhood.cs / Pond.cs (clubhouse),
+RaceMarkers (gate only in a race), LandingZone + RampHold (held zones). Imported from Racer: nothing.
+
 Current Objective (Focus Area)
 
 **Round 12 — shortcut #2 done the way Dan asked, and his fourth report.
