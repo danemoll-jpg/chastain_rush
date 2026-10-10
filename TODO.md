@@ -1439,10 +1439,12 @@ C. Grass / sidewalk edges: Dan: "some places the grass/sidewalk causes you to ei
 D. Signs breakable: Dan: "signs should be breakable". The street and neighborhood signs (no-parking, no-U-turn,
    the shortcut sign, others) break like mailboxes (FenceChunk, a sound). Not the brick entrance monuments
    unless Dan says so.
-E. Shortcut #2's jump: Dan: "There is a spot on the second jump where it catches you some times. I wasn't able to
-   recreate it but I did experience it." Find it: drive #2 with every vehicle across a spread of speeds and lines
-   (the shortcut check, plus lateral offsets) and look for contacts that stop or snag the body at the kicker,
-   the upstairs window and the landing. Report what was found before changing the jump (protected geometry).
+E. Shortcut #6's jump (the dirt pile over house 1641; Dan confirmed it is #6, not #2): Dan: "There is a spot on
+   the second jump where it catches you some times. I wasn't able to recreate it but I did experience it." Find
+   it: drive #6 with every vehicle across a spread of speeds and lines (the shortcut check, plus lateral offsets
+   and approach angles out of the CP4 corner) and look for contacts that stop or snag the body on the dirt pile,
+   the kicker's lip, 1641's roof and the landing. Do it together with B (the solid heap must not add a snag).
+   Report what was found before changing the jump (protected geometry).
 
 Next Steps (Do Not Start Yet)
 
