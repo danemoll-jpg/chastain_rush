@@ -94,7 +94,32 @@ namespace ChastainRush
             BuildBuildings(map, terrain, mats, world, LoadOwner(), hood);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
-            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world, hood.RejectTree, hood.MoveTree);
+            // Round 10 (item 7): trees are solid now, so no trunk may stand on a road or a drive anywhere on the map (the area's
+            // own rules already keep them off its streets, drives and the shortcut lines): one standing within 0.6 m of a
+            // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
+            var pave = new Pavement(map);
+            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f), (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
+            trees.Field.gameObject.AddComponent<TreeTrunks>();
+            if (hood.ShortcutData != null)
+            {
+                int onLine = 0;
+                foreach (var sc in hood.ShortcutData.shortcuts)
+                {
+                    var pts = ToPoints(sc.path);
+                    for (int i = 0; i < trees.Field.count; i++)
+                    {
+                        var t = TreeField.Unpack(trees.Field.data, i); var q = new Vector2(t.x, t.z);
+                        for (int k = 0; k + 1 < pts.Count; k++)
+                        {
+                            var ab = pts[k + 1] - pts[k]; float u = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - pts[k], ab) / ab.sqrMagnitude);
+                            if ((pts[k] + ab * u - q).sqrMagnitude < 16f) { onLine++; break; }
+                        }
+                    }
+                }
+                Debug.Log($"[Round10] tree trunks within 4 m of a shortcut line: {onLine}");
+            }
+            Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
 
@@ -605,8 +630,7 @@ namespace ChastainRush
                 else if (shape == 0) gable++; else if (shape == 1) hip++; else pyramid++;
                 if (isOwner)
                 {
-                    mb.ToObject("OwnerHouse", mats.House, bparent, true);
-                    AddBeacon(c, topY, mats, parent);
+                    mb.ToObject("OwnerHouse", mats.House, bparent, true);   // Round 10: no beacon over it
                 }
             }
             foreach (var kv in chunks) kv.Value.ToObject($"Buildings_{kv.Key.x}_{kv.Key.y}", mats.House, bparent, true);
@@ -735,16 +759,56 @@ namespace ChastainRush
             mb.Tint = Color.white;
         }
 
-        static void AddBeacon(Vector2 c, float topY, Materials mats, Transform parent)
+        // Round 10: every road and drive of the map as segments with a half width, for keeping tree trunks off them
+        sealed class Pavement
         {
-            var beacon = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-            beacon.name = "OwnerHouseBeacon";
-            UnityEngine.Object.DestroyImmediate(beacon.GetComponent<Collider>());
-            beacon.transform.SetParent(parent, false);
-            beacon.transform.position = new Vector3(c.x, topY + 30f, c.y);
-            beacon.transform.localScale = new Vector3(1.2f, 30f, 1.2f);
-            beacon.GetComponent<MeshRenderer>().sharedMaterial = mats.Beacon;
-            beacon.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off;
+            readonly List<(Vector2 a, Vector2 b, float half)> segs = new List<(Vector2, Vector2, float)>();
+            readonly Dictionary<Vector2Int, List<int>> grid = new Dictionary<Vector2Int, List<int>>();
+            const float Cell = 32f;
+            public int Moved, Dropped;
+            public Pavement(MapData map)
+            {
+                foreach (var r in map.roads) Add(ToPoints(r.points), r.width * 0.5f);
+                if (map.driveways != null) foreach (var d in map.driveways) Add(ToPoints(d.points), Mathf.Max(1.5f, d.width * 0.5f));
+            }
+            void Add(List<Vector2> p, float half)
+            {
+                for (int i = 0; i + 1 < p.Count; i++)
+                {
+                    int id = segs.Count; segs.Add((p[i], p[i + 1], half));
+                    float pad = half + 3f;
+                    for (int x = Mathf.FloorToInt((Mathf.Min(p[i].x, p[i + 1].x) - pad) / Cell); x <= Mathf.FloorToInt((Mathf.Max(p[i].x, p[i + 1].x) + pad) / Cell); x++)
+                        for (int z = Mathf.FloorToInt((Mathf.Min(p[i].y, p[i + 1].y) - pad) / Cell); z <= Mathf.FloorToInt((Mathf.Max(p[i].y, p[i + 1].y) + pad) / Cell); z++)
+                        {
+                            var key = new Vector2Int(x, z);
+                            if (!grid.TryGetValue(key, out var l)) grid[key] = l = new List<int>();
+                            l.Add(id);
+                        }
+                }
+            }
+            // the segment whose edge p is furthest inside (most negative clearance)
+            bool Worst(Vector2 p, float margin, out Vector2 foot, out float half, out float d)
+            {
+                foot = p; half = 0f; d = 0f; float best = float.MaxValue;
+                if (!grid.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.y / Cell)), out var l)) return false;
+                foreach (int id in l)
+                {
+                    var s = segs[id]; var ab = s.b - s.a;
+                    float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
+                    var c = s.a + ab * t; float dd = (c - p).magnitude, clear = dd - s.half;
+                    if (clear < margin && clear < best) { best = clear; foot = c; half = s.half; d = dd; }
+                }
+                return best < margin;
+            }
+            public bool On(Vector2 p, float margin) => Worst(p, margin, out _, out _, out _);
+            public Vector2 MoveOff(Vector2 p)
+            {
+                if (!Worst(p, 0.6f, out var foot, out float half, out float d)) return p;
+                var away = d > 1e-3f ? (p - foot) / d : Vector2.right;
+                var np = foot + away * (half + 1.5f);
+                if (On(np, 0.6f)) { Dropped++; return p; }   // the reject test drops it
+                Moved++; return np;
+            }
         }
 
         // ------------------------------------------------------------ driveways (visual only: nothing is levelled)

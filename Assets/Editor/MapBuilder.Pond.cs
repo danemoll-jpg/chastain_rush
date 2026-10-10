@@ -150,7 +150,11 @@ namespace ChastainRush
                 if (hood.RoadClearance(p) < 5f || hood.FenceOk(p) == false) continue;
                 if (hood.OnPoolOrLot(p)) continue;
                 float gy = Ground(c.terrain, p.x, p.y);
-                Weeping(props, new Vector3(p.x, gy, p.y), 8.5f + 2f * (float)rng.NextDouble(), 4.2f + (float)rng.NextDouble(), i);
+                float wh = 8.5f + 2f * (float)rng.NextDouble();
+                Weeping(props, new Vector3(p.x, gy, p.y), wh, 4.2f + (float)rng.NextDouble(), i);
+                var trunk = new GameObject("Weeping tree trunk"); trunk.transform.SetParent(c.root, false);   // Round 10: solid trees
+                trunk.transform.position = new Vector3(p.x, gy + wh * 0.21f, p.y);
+                var cap = trunk.AddComponent<CapsuleCollider>(); cap.direction = 1; cap.radius = 0.34f; cap.height = wh * 0.42f;
                 hood.KeepOut(p, 3.0f);
                 weeping++;
             }

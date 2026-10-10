@@ -13,8 +13,7 @@ using UnityEngine;
 //     builder never clears). It is written by BuildDanAsset below, which is the "authoring" and is only re-run when
 //     the design changes; map generation and Build Map only INSTANTIATE it. Regenerating the map cannot touch it.
 //   * Its position comes from local/owner_marker.json (the building index mapgen found from the private owner_house.json,
-//     git-ignored), so no address or position is committed. The object is named "DanHouse" and keeps the orange beacon
-//     so it can be found from anywhere.
+//     git-ignored), so no address or position is committed. The object is named "DanHouse" (Round 10: no beacon over it).
 //   * Front: red brick, a front gable over a two-car garage with white doors, one window in the gable, white trim, dark
 //     shutters, light siding on the upper side wall, grey shingle roof, an entry gable with a fan window, a pedimented
 //     door with sidelights, wall lanterns. Dark asphalt driveway (MapBuilder.BuildDrive), a large tree in the front yard.
@@ -80,6 +79,9 @@ namespace ChastainRush
             WindowF(d, b, w1 - 0.85f, 4.1f, 0.95f, 1.4f, vw, h, false);
             for (int k = 0; k < 3; k++) WindowF(d, b, w0 + 0.75f + k * 0.92f, 1.35f, 0.82f, 1.2f, vw, h, false);
             WindowF(d, b, w1 - 0.85f, 1.35f, 0.95f, 1.25f, vw, h, false);
+            // Round 10 (BUG-002): three windows round the corner on the side wall, the same size and height as the row of three
+            // low on the stepped-out part, continuing it (the side wall is u = +W/2 in the house frame, depth v = -(back frame v))
+            for (int k = 0; k < 3; k++) SideWindow(d, h, 1f, -(vw - 0.45f - k * 0.92f), 1.35f, 0.82f, 1.2f);
             // the main back wall: a tall window over a lower one beside the chimney, the triple window upstairs, the glass
             // door on to the deck, a pair of windows low on the right
             WindowF(d, b, c1 + 0.95f, 3.95f, 0.95f, 1.75f, back, h, false);
@@ -95,7 +97,9 @@ namespace ChastainRush
             var boards = new Color(0.47f, 0.42f, 0.36f); var rail = new Color(0.42f, 0.50f, 0.56f);
             float d0 = 0.2f, d1 = W / 2 + 0.3f, dv0 = back, dv1 = back + 4.2f, top = deckTop;
             for (float v = dv0; v < dv1 - 0.01f; v += 0.3f) BoxF(mb, b, d0, d1, top - 0.05f, top, v + 0.01f, Mathf.Min(v + 0.29f, dv1), Shade(boards, 0.94f + 0.12f * Hash01((int)(v * 10f), 5)));
-            BoxF(mb, b, d0, d1, top - 0.3f, top - 0.05f, dv1 - 0.05f, dv1, Shade(boards, 0.8f));
+            BoxF(mb, b, d0, d1, top - 0.4f, top - 0.05f, dv1 - 0.05f, dv1, Shade(boards, 0.8f));
+            BoxF(mb, b, d0, d0 + 0.05f, top - 0.4f, top - 0.05f, dv0, dv1, Shade(boards, 0.8f));   // Round 10: skirt boards on the open sides, over the cut ground
+            BoxF(mb, b, d1 - 0.05f, d1, top - 0.4f, top - 0.05f, dv0, dv1, Shade(boards, 0.8f));
             foreach (float u in new[] { d0 + 0.1f, (d0 + d1) / 2f, d1 - 0.1f }) foreach (float v in new[] { dv0 + 0.3f, dv1 - 0.1f })
                     BoxF(mb, b, u - 0.08f, u + 0.08f, Mathf.Min(yb, top - 3f), top - 0.05f, v - 0.08f, v + 0.08f, Shade(boards, 0.75f));
             float gap0 = d0 + 0.9f, gap1 = d0 + 2.1f;   // the opening to the steps
@@ -126,6 +130,7 @@ namespace ChastainRush
             foreach (float uu in new[] { -DanW / 2, -DanW / 4, -0.3f }) foreach (float vv in new[] { -DanD / 2 - 0.5f, -DanD / 2 - 4.3f })
                 { var q = dan.frame.P(uu, 0f, vv); deckGround = Mathf.Max(deckGround, c.Y(q.x, q.z)); }
             float deckTop = Mathf.Clamp(deckGround - dan.floorY + 0.12f, -0.25f, -0.03f);   // never above the door sill
+            if (!float.IsNaN(c.hood.DanDeckTop)) deckTop = c.hood.DanDeckTop;   // Round 10: set (densely sampled) before the ground under the deck was cut
             var mesh = BuildDanAsset(deckTop);
             var go = new GameObject("DanHouse");
             go.transform.SetParent(c.root, false);
@@ -136,7 +141,7 @@ namespace ChastainRush
             var box = go.AddComponent<BoxCollider>(); box.center = new Vector3(0f, 2.9f, 0f); box.size = new Vector3(DanW, 6.6f, DanD);
             // Round 9: the stepped-out part of the back (u 2.55..7.15 in the house frame, whose u runs along local -x)
             var wing = go.AddComponent<BoxCollider>(); wing.center = new Vector3(-(DanW / 2 - 2.3f), 2.4f, -DanD / 2 - 0.6f); wing.size = new Vector3(4.6f, 5.6f, 1.2f);
-            AddBeacon(dan.footprintCentre, dan.floorY + 8.5f, c.mats, c.root);
+            // Round 10 (BUG-001): the orange beacon over the house is gone; Dan no longer needs it
             var root = new GameObject("DanLot").transform; root.SetParent(c.root, false);
             var mb = new MeshBuilder(); var straw = new MeshBuilder();
             var f = dan.frame;

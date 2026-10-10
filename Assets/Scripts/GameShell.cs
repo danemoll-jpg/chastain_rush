@@ -32,10 +32,14 @@ namespace ChastainRush
             var go = new GameObject("GameShell");
             DontDestroyOnLoad(go);
             Instance = go.AddComponent<GameShell>();
+            var carGo = FindAnyObjectByType<ArcadeVehicle>().gameObject;
+            if (!carGo.GetComponent<RampHold>()) carGo.AddComponent<RampHold>();   // Round 10: held shortcut ramp tops
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
                 if (args[i] == "-exeCheck") { var r = go.AddComponent<ExeCheckRunner>(); r.outputDir = args[i + 1]; }
+                if (args[i] == "-exeRound10") { var r = go.AddComponent<Round10Runner>(); r.outputDir = args[i + 1]; }   // Round 10: items 2i and 10
+                if (args[i] == "-exeShortcut") { var r = go.AddComponent<ShortcutCheckRunner>(); r.outputDir = args[i + 1]; Application.runInBackground = true; }   // Round 10: the shortcut check in the exe (-shortcutOnly <id>, -shortcutSpeeds 20,30, -shortcutNoRace)
                 if (args[i] == "-exeShots" && i + 2 < args.Length) { var r = go.AddComponent<ExeShotsRunner>(); r.listPath = args[i + 1]; r.outputDir = args[i + 2]; }   // Round 9
             }
         }

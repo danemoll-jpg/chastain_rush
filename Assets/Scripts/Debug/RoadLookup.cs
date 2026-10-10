@@ -63,6 +63,22 @@ namespace ChastainRush
             return true;
         }
 
+        // Round 10 (CarRecovery): the nearest point on a road's centreline within 40 m and the road's direction there
+        public bool NearestPoint(Vector3 p, out Vector2 point, out Vector2 tangent)
+        {
+            point = default; tangent = Vector2.up;
+            if (!grid.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.z / Cell)), out var list)) return false;
+            var q = new Vector2(p.x, p.z); float best = float.MaxValue;
+            foreach (int i in list)
+            {
+                var ab = segmentB[i] - segmentA[i];
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - segmentA[i], ab) / ab.sqrMagnitude);
+                var c = segmentA[i] + ab * t; float d = (c - q).magnitude;
+                if (d < best && ab.sqrMagnitude > 1e-6f) { best = d; point = c; tangent = ab.normalized; }
+            }
+            return best <= 40f;
+        }
+
         // True when p is on a road's pavement (within its half width plus 1.5 m).
         public bool OnRoad(Vector3 p, out string name, out float distance)
         {

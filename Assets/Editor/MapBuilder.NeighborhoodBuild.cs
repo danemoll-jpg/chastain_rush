@@ -23,6 +23,7 @@ namespace ChastainRush
             public Chunks Props = new Chunks();                  // small 3D things: curbs, lamps, mailboxes, shrubs
             public List<(Vector2 a, Vector2 b, float half)> DriveSegs = new List<(Vector2, Vector2, float)>();   // Round 9: every drive, planned before the trees (Neighborhood.PlanDrives)
             public readonly Breakables Mailboxes3D = new Breakables();   // Round 9: mailboxes break like the fences
+            public readonly Breakables Lamps3D = new Breakables(), Hydrants3D = new Breakables();   // Round 10: street lamps and fire hydrants too
             public readonly StringBuilder Log = new StringBuilder();
             public readonly List<ViewPt> Views = new List<ViewPt>();
             public int GrassyDrives, FlagsUp;
@@ -71,6 +72,12 @@ namespace ChastainRush
             BuildDanLot(ctx);
             BuildRound9(ctx);   // Round 9: the gazebo, the playground, the sidewalk with benches, the pool fence, the entrance monuments
             ctx.Mailboxes3D.ToObjects("Mailboxes", mats.House, root, 1.25f);
+            ctx.Lamps3D.ToObjects("StreetLamps", mats.House, root, 1f);
+            var hyd = ctx.Hydrants3D.ToObjects("Hydrants", mats.House, root, 0.3f);
+            foreach (var fc in hyd.GetComponentsInChildren<FenceChunk>()) fc.gameObject.AddComponent<HydrantChunk>();
+            var water = new GameObject("HydrantWater").AddComponent<HydrantWater>();   // Round 10, item 9
+            water.transform.SetParent(root, false);
+            water.sprayMaterial = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial(); water.groundMaterial = mats.Driveway;
             ExportViews(ctx);
             ctx.Ground.ToObjects("HoodGround", mats.Driveway, root, false);
             ctx.Props.ToObjects("HoodProps", mats.House, root, false);   // curbs, mailboxes, lamps, shrubs: small, no shadows (performance)

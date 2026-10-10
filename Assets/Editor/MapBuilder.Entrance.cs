@@ -40,6 +40,8 @@ namespace ChastainRush
             }
             Part("crown", field.crownNear[species], new Vector3(radius, height - crownBase, radius), crownBase);
             Part("trunk", field.trunkNear[species], new Vector3(trunkW, trunkH, trunkW), 0f);
+            var col = go.AddComponent<CapsuleCollider>();   // Round 10: solid trees, the trunk only (TreeTrunks does the forest)
+            col.direction = 1; col.radius = Mathf.Max(0.12f, trunkW * 0.5f); col.height = Mathf.Max(2.5f, trunkH); col.center = new Vector3(0f, col.height * 0.5f, 0f);
             c.hood.KeepOut(new Vector2(groundPos.x, groundPos.z), Mathf.Max(1.2f, radius * 0.45f));
             return go;
         }

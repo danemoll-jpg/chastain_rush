@@ -12,7 +12,7 @@ namespace ChastainRush
     // back when RestoreAll runs (a race starts). Wheel rays ignore triggers (ArcadeVehicle), so suspension is unaffected.
     public sealed class FenceChunk : MonoBehaviour
     {
-        [System.Serializable] public struct Piece { public int vertexStart, vertexCount; public Vector3 centre; }
+        [System.Serializable] public struct Piece { public int vertexStart, vertexCount; public Vector3 centre; public float restY; }   // Round 10: restY (world, 0 = centre minus debrisDrop): a lamp's pieces come down to the ground
         [System.Serializable] public struct Panel { public int firstPiece, pieceCount; public Vector3 centre; }
 
         public Mesh source;
@@ -35,6 +35,9 @@ namespace ChastainRush
         public static int BrokenPanels { get; private set; }
         public static int MovingPieceCount => moving.Count;
         static int lastCostFrame = -1; static float costThisStep;
+        // Round 10: a panel broke (the chunk, its index, its centre in the world); everything was restored (a race started)
+        public static event System.Action<FenceChunk, int, Vector3> PanelBroken;
+        public static event System.Action AllRestored;
 
         Mesh live;
         Vector3[] original, current, srcNormals;
@@ -82,6 +85,7 @@ namespace ChastainRush
             }
             live.vertices = current;
             live.RecalculateBounds();
+            PanelBroken?.Invoke(this, panelIndex, transform.TransformPoint(panel.centre));
             // a little speed lost, at most MaxCostPerStep in one physics step however many panels go at once
             if (lastCostFrame != Time.frameCount) { lastCostFrame = Time.frameCount; costThisStep = 0f; }
             float cost = Mathf.Min(SpeedCostPerPanel, MaxCostPerStep - costThisStep);
@@ -119,7 +123,7 @@ namespace ChastainRush
                   + Vector3.Cross(Vector3.up, dir) * ((h - 0.5f) * 2.4f);
             d.spin = new Vector3(120f + 160f * h, 80f * (h - 0.5f), 260f * (0.5f - h));
             d.age = 0f;
-            d.floorY = transform.TransformPoint(piece.centre).y - debrisDrop;
+            d.floorY = piece.restY != 0f ? piece.restY : transform.TransformPoint(piece.centre).y - debrisDrop;
             d.go.SetActive(true);
             moving.Add(d);
         }
@@ -178,6 +182,7 @@ namespace ChastainRush
             for (int i = moving.Count - 1; i >= 0; i--) { moving[i].go.transform.localScale = Vector3.one; Recycle(moving[i]); }
             foreach (var c in all) c.Restore();
             BrokenPanels = 0;
+            AllRestored?.Invoke();
         }
 
         public static int TotalBroken()

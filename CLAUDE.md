@@ -157,12 +157,19 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-**Active work is Round 10 in `TODO.md`:** shortcut #2 rebuilt with both houses
+**Round 10 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** shortcut #2 rebuilt with both houses
 whole (a smaller ramp, in and out through breakable upstairs windows of the
 first house, then in through a sliding glass door of the second, up its
 stairs as a ramp and out through its upstairs windows), plus Dan's second debug report
 (deck, house marker, more windows on his house and on every other house),
 solid trees, and breakable street lamps and hydrants with a water jet.
+
+Round 10 checks: `ChastainRush.exe -exeRound10 <dir>` (shortcut #2 shots and drives, tree / lamp / hydrant, resets) and
+`ChastainRush.exe -exeShortcut <dir> [-shortcutOnly <id>] [-shortcutSpeeds 20,30] [-shortcutLatAcc 22] [-shortcutNoRace]` (the
+shortcut check in the exe, with speed on / off every ramp). Shortcut #2 now goes in through 1763's upstairs front and out its
+north side, down a landing slope to 1627's sliding door, up its stairs and out its upstairs front; both houses are whole
+(breakable wall panels only). Imported from Racer in Round 10: `VehicleSurfaceContacts` (ramp contact normals). New:
+`RampHold` (held ramp tops, landing carry), `TreeTrunks` (pooled trunk colliders), `CarRecovery` (reset rule), `HydrantWater`.
 
 Round 9 (see `TODO.md`, status there) is built and driven by Dan from the exe: Dan's debug report
 (the buried house 1520 regraded in the terrain itself, the gazebo and playground, the sidewalk with benches, the pool

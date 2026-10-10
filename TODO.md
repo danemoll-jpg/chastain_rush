@@ -947,6 +947,88 @@ per change in the built exe, a short report plus "for Dan to check".
 Out of scope for this round: shortcut #6 apart from item 2j, the six slightly buried houses
 listed in Round 9 (waiting on Dan), goose sounds, rivals and menus.
 
+Round 10 status — built and checked in the exe (2026-10-09), not yet driven by Dan. Checks: `ChastainRush.exe -exeRound10 <dir>`
+(new, Checks/Round10Runner.cs), `-exeShortcut <dir>` (the Round 8 shortcut check, now also in the exe, with per-ramp speeds),
+`-exeCheck`. Reports and shots: `Data/screenshots/round10/` (Dan's house hidden in all of them).
+
+1. Houses 1763 and 1627 whole again: DONE. Both are built as ordinary style A houses (1763 loses its small upstairs porch
+   gable so its upstairs front is flat). The only change: where the line crosses a wall, that piece of wall (siding or brick,
+   windows, trim, exactly as built) is a breakable panel. From the street and the lane they look like every other house.
+2. Shortcut #2 rebuilt: DONE, with two departures from the brief (f), below.
+   a/b. A wooden ramp in 1763's front yard (17.5 m, curved foot, 23 deg, rounded top) climbs 5.6 m and goes in through the
+   upstairs front windows; the car crosses a plain upstairs room and goes out through the upstairs windows of 1763's NORTH
+   SIDE wall, not its back. Why: the lane runs along 1763's front 21 m out, so a ramp can start only 14 m from the wall
+   (5 m from the lane) and must meet the wall at an angle a car can turn on to from the lane (about 45 deg); at that angle
+   the line reaches the side wall before the back. A square-on line would need a 75 deg turn off the lane on to an even
+   shorter, steeper ramp.
+   c. Out of 1763 the car comes off the upstairs floor level and lands on a straight 13.8 deg landing slope down the yard
+      (a level flight meets it at the same small angle at any speed); the crest behind 1763 is cut down to the slope.
+   d. The slope bends 5 deg left 18 m before 1627 and ends at a two-panel sliding glass door in 1627's back wall; inside, a
+      staircase (a smooth ramp drawn as treads) climbs to the upstairs and the car leaves through the upstairs front windows.
+   e. Then as before: front yard, the gap between 1615 and 1459, rejoin at 544 m. The run out of 1627 is aimed 8 m into the
+      gap (where it widens) instead of at a straight before it: that kept the bend before 1627's door small enough for a
+      car that lands late on the slope. Blue entry marker, dirt trail, forgives CP2: unchanged.
+   g. Slow: at 12-13 m/s the car climbs, drops off each upstairs edge on to the slope / front yard and drives on; never
+      wedged (a car that falls short inside a house is on the ground floor between the passage walls and drives out).
+   h. Every ramp is 5 m from the lane's centre or more.
+   j. Ramps and speed: see item 2j below.
+   i. Exe, at racing speed (30 m/s on the lane, 27 m/s at the ramp's foot): 14.46 s against 16.62 s by the road (+2.16 s);
+      panels broken at 28.5 / 28.6 / 28.1 / 26.7 m/s; flights 42 m off 1763 (1.6 s), 25 m off 1627, then the old gap hop.
+      Slow (13 m/s): 25.5 s against 34.9 s (+9.4 s); flights 11 m and 12 m. Speed needed: none (12 m/s works).
+      The full check in the exe with a hard turn-in (`shortcut_check_exe.txt`): clean at 9 of 12 approach speeds, faster than
+      the road at all 12; the 3 others still finished but touched 1627's door frame (24 m/s), the gap houses (28) or landed
+      hard (30). In the Editor the same check is clean at 12 of 12 with both turn-in models.
+   2j. #6 "stuck at the bottom": REPRODUCED in the exe before any change (`sc6_before_fix_exe.txt`): at 16 and 24 m/s the
+      car hit the kicker 7.6-7.9 m up its curved foot and dropped from 18.4 to 7.4 m/s in one physics step. Cause: the car's
+      body touches the curved ramp and PhysX reports the contact with an internal-edge normal tilted back against the travel
+      (the climb itself cost nothing: with throttle the car left the lip faster than it arrived). Fix: Racer's own
+      `VehicleSurfaceContacts` (copied; the contact uses the ramp triangle's real face normal). Exe after: kicker 98-100% of
+      arrival speed at every speed, normal and hard turn-in. Landings: a car that reaches #6's kicker at 21 m/s+ flies 57 m
+      and came down at about 40 deg on the 7 deg deck, losing 40-47%; now on any shortcut landing deck or slope the
+      touchdown keeps the speed and turns it along the surface (3% cost). #2's held ramps also cancel gravity on the climb
+      (its stairs lost 5-8% at 22-27 m/s). Racer has no speed assist for jumps; these two are new and arcade by design.
+3. BUG-001 grass on the deck: DONE. The ground under the deck stood 7 cm above its boards; it is cut to 0.3 m under them,
+   skirt boards close the open sides. Checked in the exe from Dan's position (shot not committed).
+4. BUG-001 beacon: DONE, removed.
+5. BUG-002 three side windows on Dan's house: DONE, the same size and height as the low row of three, continuing it round
+   the corner. Checked in the exe from Dan's position (shot not committed).
+6. Back and side windows on every other house: DONE (171 houses): a back door or sliding door, a row of two or three low
+   windows, one or two more; upstairs a triple or pair and one or two singles (one-storey ranches: the lower row only);
+   one or two windows on the side away from the garage, one upstairs. Varied by each house's hash, detail mesh (no shadows).
+7. Solid trees: DONE. Racer gives every tree a static trunk box; with 56,000 trees here, a pool of 160 trunk capsules (the
+   trunk's own radius and height, no crown) follows the car within 40 m (`TreeTrunks`); a refresh takes about 0.05 ms.
+   Hand-placed trees and the pond's weeping trees have their own trunk colliders. 23 trunks on a road or drive anywhere on
+   the map were moved 1.5 m clear of it (0 dropped); 0 trunks within 4 m of either shortcut line. Reset (CarRecovery, after
+   Racer's RecoverNearest): in a race the nearest lap point facing the race direction, checked clear; otherwise the last
+   stable spot unless a tree is there or within 6 m ahead, then the nearest road facing along it.
+8. Lamps and hydrants: DONE, breakable like the mailboxes (46 lamps, 20 hydrants): pieces fly and come to rest on the
+   ground, 3.5% speed per panel, whole again at race start.
+9. Hydrant water: DONE. A 9 m column, spray, mist and a spreading wet patch, particles only, until the race restarts.
+10. Exe check: DONE. Tree: approached at 20 m/s, the car stopped 2.0 m from the trunk within 1.2 s, tilt 9 deg; reversed
+    9.2 m clear; reset in free roam to the nearest road clear ahead; reset in a race to the lap, 0 deg off the race
+    direction. Lamp and hydrant: each broke, tilt 2-3 deg, the car kept going (19.2 m/s before, 16.1 m/s 6 m after while
+    coasting; 20 m/s held with throttle); water: 1 jet, 1,804 particles after 4 s, visible from 40 m down the street.
+    Frame rate beside the pond with solid trees: 60 fps average, median and 99th percentile at 3840 x 2160 (vsync cap),
+    also at the entrance and Dan's house. Regression `-exeCheck`: 9 of 9, laps 1:22.675 / 1:22.617 / 1:22.645 (as Round 9).
+    Race lap through both shortcuts (exe): 1:08.1 against 1:10.6 by the road, no penalty.
+11. Executable rebuilt last: DONE. `Builds/ChastainRush/ChastainRush.exe` (2026-10-09 20:22).
+12. This report: DONE.
+
+For Dan to check: #2 with a pad at racing speed, especially the turn off the lane on to the ramp, the landing in 1627's
+front yard and the run into the gap (the scripted hard turn-in touched something in 3 of 12 runs); how the smashed walls and
+the plain rooms look; whether in through the front and out through the SIDE of 1763 is close enough; the hold on the
+ramp tops and the landing carry (arcade feel); #6 from the lane at speed; Dan's deck and the three side windows; the
+back windows on other houses; hitting trees, lamps and hydrants; the reset after a tree.
+
+Not done / not measured: Dan's drive; a real pad; frame rate on Dan's machine. #6 at 12-14 m/s still rides over 1641's
+roof (as in Round 8, unchanged). Unity crashed twice at startup during the round (in its file prefetch, before any project
+code); re-running worked.
+
+New: `VehicleSurfaceContacts` (copied from Racer), `RampHold`, `ShortcutSurface`, `TreeTrunks`, `CarRecovery`,
+`HydrantWater`, `HydrantChunk`, `Checks/Round10Runner.cs`; GameShell `-exeShortcut`, `-exeRound10`. Edits to imported files
+(commented): ArcadeVehicle (registers the contact fix), VehicleRespawn (Recover hook). Imported from Racer:
+`VehicleSurfaceContacts` only (its test switch dropped, surfaces = the shortcut prisms).
+
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.

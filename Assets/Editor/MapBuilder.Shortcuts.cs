@@ -8,10 +8,14 @@ using UnityEngine.Rendering;
 
 // Round 8, item 4: the official shortcuts' physical side, built from Data/shortcuts/chastain_glen_loop.json
 // (Tools/mapgen/make_shortcuts.py). The race side (entry plane, forgiven checkpoints) is the route file's official_shortcuts.
-//   prisms        ramps, kickers, landing decks and passage floors: solid, with mesh colliders (the car drives on them)
-//   open houses   a house the line goes THROUGH: its mesh is clipped by the passage (both walls it crosses, and anything in
-//                 between, up to the passage height), the passage gets walls, a ceiling and a little decoration, and the
-//                 house's single box collider is replaced by boxes around the passage
+//   prisms        ramps, kickers, landing decks, floors and stairs: solid, with mesh colliders (the car drives on them).
+//                 Round 10: a "held" prism keeps the car on its top (ShortcutSurface + RampHold: a rounded ramp top the car
+//                 would otherwise fly off at speed); under a "cut" prism the terrain is lowered to its top first
+//   open houses   a house the line goes THROUGH. Round 10: the house is built whole (Dan: "it simply has to restore the
+//                 houses"); only the two wall panels where the line crosses its walls are taken out of its mesh, exactly as
+//                 they were (wall, windows, trim), and become breakable panels like the fences (pieces fly, a little speed,
+//                 whole again at race start). Behind them a plain room along the line; the house's box collider is replaced
+//                 by boxes that leave the line open
 //   jump houses   a house the line goes OVER: it keeps its box and also gets a collider from its own mesh, so a car that comes
 //                 up short lands on the sloped roof and slides off it instead of sitting on a flat box top
 //   trail         a dirt trail painted on the ground along the line (Racer marks its backyard shortcuts with a dirt colour
@@ -21,8 +25,10 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class ScPrism { public string name, kind; public float[] poly, origin, axis, profile, colour, bank; public int[] skirt_edges; }   // bank: (station, rise per metre to the left) pairs
-        [Serializable] class ScOpenHouse { public int building; public float[] a, b; public float half_width, floor_y, height; }
+        [Serializable] class ScPrism { public string name, kind; public float[] poly, origin, axis, profile, colour, bank; public int[] skirt_edges; public bool held, cut; }   // bank: (station, rise per metre to the left) pairs
+        // Round 10: a and b are where the line crosses the house's walls (in, out); wall_a / wall_b: a point on that wall and its
+        // outward normal (x, z, nx, nz); y0 / y1: the height range of the panel that breaks in each wall
+        [Serializable] class ScOpenHouse { public int building; public float[] a, b, wall_a, wall_b; public float half_width, floor_y, y0_a, y1_a, y0_b, y1_b; public bool no_entry_gable, sliding_door_a; }
         [Serializable] class ScJumpHouse { public int building; }
         [Serializable] class ScShortcut { public string id, name; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses; }
         [Serializable] class ScFile { public ScShortcut[] shortcuts; }
@@ -72,14 +78,23 @@ namespace ChastainRush
         {
             if (c.hood.OpenHouses.TryGetValue(h.index, out var oh))
             {
+                if (oh.no_entry_gable) h.entryGable = false;   // a flat upstairs front where the line goes in (one house's small porch gable)
                 var tm = new MeshBuilder(); var td = new MeshBuilder();
-                h.detail = td; BuildHouse(tm, h); h.detail = db;
+                h.detail = td;
+                if (oh.sliding_door_a) h.backReserve = BackRange(h, oh, 1.6f);   // no back window where the sliding door goes
+                BuildHouse(tm, h);
+                if (oh.sliding_door_a) SlidingDoor(td, h, oh);
+                h.detail = db; h.backReserve = null;
                 Passage(oh, out var A, out var u, out var n);
-                float top = oh.floor_y + oh.height;
-                ClipAppend(tm, mb, A, n, oh.half_width, top);
-                ClipAppend(td, db, A, n, oh.half_width, top);
-                PassageInterior(mb, db, h, oh, A, u, n);
-                c.Log.Append($" open house {h.index} (style {h.style}, floor {h.floorY:0.00}, passage floor {oh.floor_y:0.00}, {oh.half_width * 2f:0.0} x {oh.height:0.0} m);");
+                var inA = new List<List<(Vector3 p, Color c)>>(); var inB = new List<List<(Vector3 p, Color c)>>();
+                var volA = WallVolume(oh.wall_a, A, n, oh.half_width, oh.y0_a, oh.y1_a);
+                var volB = WallVolume(oh.wall_b, A, n, oh.half_width, oh.y0_b, oh.y1_b);
+                ClipSplit(tm, mb, volA, volB, inA, inB);
+                ClipSplit(td, db, volA, volB, inA, inB);
+                WallPanel(c, h, oh, oh.wall_a, oh.y0_a, oh.y1_a, A, n, inA, "in");
+                WallPanel(c, h, oh, oh.wall_b, oh.y0_b, oh.y1_b, A, n, inB, "out");
+                PassageRoom(mb, db, h, oh, A, u, n);
+                c.Log.Append($" house {h.index} (style {h.style}, floor {h.floorY:0.00}): whole, with breakable wall panels where the shortcut goes in ({inA.Count} pieces of wall) and out ({inB.Count});");
                 return;
             }
             if (c.hood.JumpHouses.Contains(h.index))
@@ -108,31 +123,49 @@ namespace ChastainRush
             foreach (int t in src.Tris) dst.Tris.Add(t + off);
         }
 
-        // Copies src into dst without what lies inside the passage: |lateral| < half and y < top. Each triangle is cut by the
-        // three planes in turn (Sutherland-Hodgman); the parts outside any of them are kept, the part inside all three dropped.
-        static void ClipAppend(MeshBuilder src, MeshBuilder dst, Vector2 A, Vector2 n, float half, float top)
+        // The volume of one breakable wall panel: within 0.35 m of the wall's plane (the wall, its windows, sills and trim),
+        // within the passage's half width of the line, between y0 and y1. As planes that are >= 0 outside it.
+        static Func<Vector3, float>[] WallVolume(float[] wall, Vector2 A, Vector2 n, float half, float y0, float y1)
         {
-            var V = src.Verts; var C = src.Colours; var T = src.Tris;
-            Func<Vector3, float>[] planes =
+            var P = new Vector2(wall[0], wall[1]); var N = new Vector2(wall[2], wall[3]);
+            return new Func<Vector3, float>[]
             {
                 p => Vector2.Dot(new Vector2(p.x, p.z) - A, n) - half,
                 p => -half - Vector2.Dot(new Vector2(p.x, p.z) - A, n),
-                p => p.y - top,
+                p => Vector2.Dot(new Vector2(p.x, p.z) - P, N) - 0.35f,
+                p => -0.35f - Vector2.Dot(new Vector2(p.x, p.z) - P, N),
+                p => y0 - p.y,
+                p => p.y - y1,
             };
+        }
+
+        // Copies src into dst without what lies inside volume a or b; those parts go to inA / inB instead (Sutherland-Hodgman,
+        // each triangle cut by the planes of a, then what is left of it by the planes of b).
+        static void ClipSplit(MeshBuilder src, MeshBuilder dst, Func<Vector3, float>[] a, Func<Vector3, float>[] b, List<List<(Vector3 p, Color c)>> inA, List<List<(Vector3 p, Color c)>> inB)
+        {
+            var V = src.Verts; var C = src.Colours; var T = src.Tris;
             for (int i = 0; i + 2 < T.Count; i += 3)
             {
-                var poly = new List<(Vector3 p, Color c)> { (V[T[i]], C[T[i]]), (V[T[i + 1]], C[T[i + 1]]), (V[T[i + 2]], C[T[i + 2]]) };
-                bool whole = false;
-                foreach (var f in planes) if (poly.All(q => f(q.p) >= 0f)) { whole = true; break; }
-                if (whole) { Emit(dst, poly); continue; }
-                foreach (var f in planes)
-                {
-                    var outside = Cut(poly, f, true); var inside = Cut(poly, f, false);
-                    if (outside.Count >= 3) Emit(dst, outside);
-                    poly = inside;
-                    if (poly.Count < 3) break;
-                }
+                var tri = new List<(Vector3 p, Color c)> { (V[T[i]], C[T[i]]), (V[T[i + 1]], C[T[i + 1]]), (V[T[i + 2]], C[T[i + 2]]) };
+                foreach (var outsideA in Split(tri, a, inA))
+                    foreach (var outsideBoth in Split(outsideA, b, inB)) Emit(dst, outsideBoth);
             }
+        }
+
+        // the parts of poly outside the volume (returned) and the part inside it (added to inside)
+        static List<List<(Vector3 p, Color c)>> Split(List<(Vector3 p, Color c)> poly, Func<Vector3, float>[] planes, List<List<(Vector3 p, Color c)>> inside)
+        {
+            var outs = new List<List<(Vector3 p, Color c)>>();
+            foreach (var f in planes) if (poly.All(q => f(q.p) >= 0f)) { outs.Add(poly); return outs; }
+            foreach (var f in planes)
+            {
+                var o = Cut(poly, f, true); var i = Cut(poly, f, false);
+                if (o.Count >= 3) outs.Add(o);
+                poly = i;
+                if (poly.Count < 3) return outs;
+            }
+            inside.Add(poly);
+            return outs;
         }
 
         static List<(Vector3 p, Color c)> Cut(List<(Vector3 p, Color c)> poly, Func<Vector3, float> f, bool keepOutside)
@@ -160,6 +193,86 @@ namespace ChastainRush
             for (int k = 1; k + 1 < poly.Count; k++) dst.Tri(start, start + k, start + k + 1);
         }
 
+        // One breakable panel: the clipped-out wall, in pieces of about 0.9 x 0.8 m (along the wall, up) that fly separately.
+        // Its trigger box straddles the wall across the passage; the debris comes to rest on the ground below the wall.
+        static void WallPanel(HoodCtx c, HouseSpec h, ScOpenHouse oh, float[] wall, float y0, float y1, Vector2 A, Vector2 n, List<List<(Vector3 p, Color c)>> polys, string tag)
+        {
+            if (polys.Count == 0) return;
+            var P = new Vector2(wall[0], wall[1]); var N = new Vector2(wall[2], wall[3]); var along = new Vector2(-N.y, N.x);
+            float gy = c.Y(P.x + N.x * 1.5f, P.y + N.y * 1.5f);
+            var br = new Breakables();
+            var mbp = br.Begin(P);
+            var cells = new SortedDictionary<(int, int), List<List<(Vector3 p, Color c)>>>();
+            foreach (var poly in polys)
+            {
+                Vector3 m = Vector3.zero; foreach (var q in poly) m += q.p; m /= poly.Count;
+                var key = (Mathf.FloorToInt(Vector2.Dot(new Vector2(m.x, m.z) - P, along) / 0.9f), Mathf.FloorToInt((m.y - y0) / 0.8f));
+                if (!cells.TryGetValue(key, out var list)) cells[key] = list = new List<List<(Vector3 p, Color c)>>();
+                list.Add(poly);
+            }
+            foreach (var kv in cells) br.Piece(() => { foreach (var poly in kv.Value) Emit(mbp, poly); });
+            float ym = (y0 + y1) / 2f;
+            br.End(new Vector3(P.x, ym, P.y), new Vector3(-N.x, 0f, -N.y), oh.half_width * 2f + 1.2f, y1 - y0 + 0.4f, 1.6f);
+            br.ToObjects($"House {h.index} shortcut wall ({tag})", c.mats.House, c.root, Mathf.Max(0.3f, ym - gy - 0.2f));
+        }
+
+        // the house's back wall range (in the turned-round back frame, u to the right as seen from behind) around where the
+        // line crosses it, so the generic back windows leave room for the sliding door
+        static Vector2 BackRange(HouseSpec h, ScOpenHouse oh, float half)
+        {
+            var b = new Frame { O = h.frame.O, R = -h.frame.R, F = -h.frame.F, M = h.frame.M };
+            var A3 = new Vector3(oh.a[0], h.frame.O.y, oh.a[1]);
+            float ub = Vector3.Dot(A3 - b.O, b.R) * b.M;
+            return new Vector2(ub - half, ub + half);
+        }
+
+        // Round 10 (Dan: "drive through a sliding glass door"): a two-panel sliding glass door in the back wall where the line
+        // goes in, drawn with the house so it becomes part of the breakable panel
+        static void SlidingDoor(MeshBuilder d, HouseSpec h, ScOpenHouse oh)
+        {
+            var b = new Frame { O = h.frame.O, R = -h.frame.R, F = -h.frame.F, M = h.frame.M };
+            var r = BackRange(h, oh, 0f); float uc = r.x, back = h.D / 2;
+            FrontQuad(d, b, uc - 1.25f, uc + 1.25f, 0f, 2.3f, back + 0.02f, h.trimC);
+            FrontQuad(d, b, uc - 1.15f, uc - 0.04f, 0.05f, 2.2f, back + 0.04f, h.glassC);
+            FrontQuad(d, b, uc + 0.04f, uc + 1.15f, 0.05f, 2.2f, back + 0.04f, Shade(h.glassC, 1.15f));
+            FrontQuad(d, b, uc - 0.04f, uc + 0.04f, 0.05f, 2.2f, back + 0.06f, h.trimC);
+            FrontQuad(d, b, uc - 0.12f, uc - 0.07f, 0.95f, 1.15f, back + 0.06f, new Color(0.75f, 0.75f, 0.72f));   // handle
+            BoxF(d, b, uc - 1.4f, uc + 1.4f, -0.14f, 0f, back, back + 0.6f, new Color(0.62f, 0.60f, 0.57f));        // step
+        }
+
+        // The plain room along the line: walls either side of the passage inside the house, a ceiling, a light. Only seen
+        // once a panel is broken. (The floors and the stairs are prisms.)
+        static void PassageRoom(MeshBuilder mb, MeshBuilder db, HouseSpec h, ScOpenHouse oh, Vector2 A, Vector2 u, Vector2 n)
+        {
+            // the house's rectangle, but only behind both walls the line crosses (the rectangle also takes in the garage's
+            // projection in front of the entry wall, where a room would stick out under the eave)
+            var Pa = new Vector2(oh.wall_a[0], oh.wall_a[1]); var Na = new Vector2(oh.wall_a[2], oh.wall_a[3]);
+            var Pb = new Vector2(oh.wall_b[0], oh.wall_b[1]); var Nb = new Vector2(oh.wall_b[2], oh.wall_b[3]);
+            var rect = ClipPoly2(ClipPoly2(HouseRect(h), p => -Vector2.Dot(p - Pa, Na)), p => -Vector2.Dot(p - Pb, Nb));
+            float y0 = Mathf.Min(oh.y0_a, oh.y0_b) - 0.3f, y1 = Mathf.Max(oh.y1_a, oh.y1_b), hw = oh.half_width;
+            Vector3 W(Vector2 p, float y) => new Vector3(p.x, y, p.y);
+            foreach (float side in new[] { -1f, 1f })
+            {
+                var piece = ClipPoly2(ClipPoly2(rect, p => Vector2.Dot(p - A, n) * side - hw + 0.02f), p => hw + 0.02f - Vector2.Dot(p - A, n) * side);
+                if (piece.Count < 2) continue;
+                float t0 = piece.Min(p => Vector2.Dot(p - A, u)) + 0.1f, t1 = piece.Max(p => Vector2.Dot(p - A, u)) - 0.1f;
+                if (t1 <= t0) continue;
+                Vector2 a = A + n * side * hw + u * t0, b = A + n * side * hw + u * t1;
+                var inward = new Vector3(-n.x * side, 0f, -n.y * side);
+                mb.Tint = PassageWall;
+                Face(mb, W(a, y0), W(b, y0), W(b, y1), W(a, y1), inward);
+            }
+            var ceil = ClipPoly2(ClipPoly2(rect, p => hw - Vector2.Dot(p - A, n)), p => hw + Vector2.Dot(p - A, n));
+            if (ceil.Count >= 3)
+            {
+                mb.Tint = PassageCeiling;
+                for (int k = 1; k + 1 < ceil.Count; k++) TriFace(mb, W(ceil[0], y1), W(ceil[k], y1), W(ceil[k + 1], y1), Vector3.down);
+                Vector2 cc = Vector2.zero; foreach (var p in ceil) cc += p; cc /= ceil.Count;
+                db.Tint = new Color(1f, 0.97f, 0.85f);
+                Face(db, W(cc + u * 0.4f + n * 0.4f, y1 - 0.02f), W(cc - u * 0.4f + n * 0.4f, y1 - 0.02f), W(cc - u * 0.4f - n * 0.4f, y1 - 0.02f), W(cc + u * 0.4f - n * 0.4f, y1 - 0.02f), Vector3.down);
+            }
+        }
+
         // the house's footprint rectangle (as the styled house is built: W along R, D along F) as a polygon
         static List<Vector2> HouseRect(HouseSpec h)
         {
@@ -179,46 +292,9 @@ namespace ChastainRush
             return o;
         }
 
-        static void PassageInterior(MeshBuilder mb, MeshBuilder db, HouseSpec h, ScOpenHouse oh, Vector2 A, Vector2 u, Vector2 n)
-        {
-            var rect = HouseRect(h);
-            float y0 = oh.floor_y, y1 = oh.floor_y + oh.height, hw = oh.half_width;
-            Vector3 W(Vector2 p, float y) => new Vector3(p.x, y, p.y);
-            // the passage's side walls: the lines lateral = +-hw inside the rectangle
-            foreach (float side in new[] { -1f, 1f })
-            {
-                var piece = ClipPoly2(ClipPoly2(rect, p => Vector2.Dot(p - A, n) * side - hw + 0.02f), p => hw + 0.02f - Vector2.Dot(p - A, n) * side);
-                if (piece.Count < 2) continue;
-                float t0 = piece.Min(p => Vector2.Dot(p - A, u)), t1 = piece.Max(p => Vector2.Dot(p - A, u));
-                Vector2 a = A + n * side * hw + u * t0, b = A + n * side * hw + u * t1;
-                var inward = new Vector3(-n.x * side, 0f, -n.y * side);
-                mb.Tint = PassageWall;
-                Face(mb, W(a, y0 - 0.3f), W(b, y0 - 0.3f), W(b, y1), W(a, y1), inward);
-                // a baseboard, a picture and a door frame painted on the wall (flat quads, no shadows)
-                db.Tint = TrimWhite;
-                Vector2 m0 = a + (b - a) * 0.5f;
-                var inw2 = new Vector2(inward.x, inward.z) * 0.03f;
-                Face(db, W(a + inw2, y0), W(b + inw2, y0), W(b + inw2, y0 + 0.12f), W(a + inw2, y0 + 0.12f), inward);
-                float pw = Mathf.Min(1.2f, (t1 - t0) * 0.2f);
-                db.Tint = new Color(0.25f, 0.18f, 0.12f);
-                Face(db, W(m0 - u * pw + inw2, y0 + 1.3f), W(m0 + u * pw + inw2, y0 + 1.3f), W(m0 + u * pw + inw2, y0 + 2.2f), W(m0 - u * pw + inw2, y0 + 2.2f), inward);
-                db.Tint = side > 0 ? new Color(0.35f, 0.55f, 0.75f) : new Color(0.62f, 0.48f, 0.30f);
-                Face(db, W(m0 - u * (pw - 0.1f) + inw2 * 2f, y0 + 1.4f), W(m0 + u * (pw - 0.1f) + inw2 * 2f, y0 + 1.4f), W(m0 + u * (pw - 0.1f) + inw2 * 2f, y0 + 2.1f), W(m0 - u * (pw - 0.1f) + inw2 * 2f, y0 + 2.1f), inward);
-            }
-            // the ceiling: the passage strip inside the rectangle, facing down, with a light
-            var ceil = ClipPoly2(ClipPoly2(rect, p => hw - Vector2.Dot(p - A, n)), p => hw + Vector2.Dot(p - A, n));
-            if (ceil.Count >= 3)
-            {
-                mb.Tint = PassageCeiling;
-                for (int k = 1; k + 1 < ceil.Count; k++) TriFace(mb, W(ceil[0], y1), W(ceil[k], y1), W(ceil[k + 1], y1), Vector3.down);
-                Vector2 cc = Vector2.zero; foreach (var p in ceil) cc += p; cc /= ceil.Count;
-                db.Tint = new Color(1f, 0.97f, 0.85f);
-                Face(db, W(cc + u * 0.4f + n * 0.4f, y1 - 0.02f), W(cc - u * 0.4f + n * 0.4f, y1 - 0.02f), W(cc - u * 0.4f - n * 0.4f, y1 - 0.02f), W(cc + u * 0.4f - n * 0.4f, y1 - 0.02f), Vector3.down);
-            }
-        }
-
         // The house's collider without the passage: boxes in the passage's frame, 0.5 m slices of the rectangle on either side
-        // of the passage, and one block over it (from the passage ceiling to the top of the old box).
+        // of the passage (full height), and over the passage a block from the top of the panels to the top of the old box.
+        // Below the panels the passage is left open: the ramp, the floors and the stairs are its floor.
         static void OpenHouseColliders(HoodCtx c, HouseSpec h, Transform parent)
         {
             var oh = c.hood.OpenHouses[h.index];
@@ -228,7 +304,6 @@ namespace ChastainRush
             float yb = h.baseY, yt = h.floorY + hh;
             var root = new GameObject("House " + h.index + " (open: shortcut passage)").transform; root.SetParent(parent, false);
             var rot = Quaternion.LookRotation(new Vector3(u.x, 0f, u.y), Vector3.up);
-            int boxes = 0;
             void Box(float l0, float l1, float y0, float y1)
             {
                 var piece = ClipPoly2(ClipPoly2(rect, p => Vector2.Dot(p - A, n) - l0), p => l1 - Vector2.Dot(p - A, n));
@@ -238,15 +313,13 @@ namespace ChastainRush
                 var cxz = A + n * ((l0 + l1) / 2f) + u * ((t0 + t1) / 2f);
                 var go = new GameObject("box"); go.transform.SetParent(root, false);
                 go.transform.SetPositionAndRotation(new Vector3(cxz.x, (y0 + y1) / 2f, cxz.y), rot);
-                var bc = go.AddComponent<BoxCollider>(); bc.size = new Vector3(l1 - l0, y1 - y0, t1 - t0);
-                boxes++;
+                go.AddComponent<BoxCollider>().size = new Vector3(l1 - l0, y1 - y0, t1 - t0);
             }
             float lmin = rect.Min(p => Vector2.Dot(p - A, n)), lmax = rect.Max(p => Vector2.Dot(p - A, n));
             for (float l = oh.half_width; l < lmax; l += 0.5f) Box(l, Mathf.Min(l + 0.5f, lmax), yb, yt);
             for (float l = -oh.half_width; l > lmin; l -= 0.5f) Box(Mathf.Max(l - 0.5f, lmin), l, yb, yt);
-            float top = oh.floor_y + oh.height;
-            if (yt > top + 0.1f) Box(-oh.half_width, oh.half_width, top, yt);
-            else Box(-oh.half_width, oh.half_width, top, top + 1.5f);
+            float top = Mathf.Max(oh.y1_a, oh.y1_b);
+            Box(-oh.half_width, oh.half_width, top, Mathf.Max(yt, top + 1.5f));
         }
 
         // ------------------------------------------------------------ ramps, decks, the trail
@@ -312,7 +385,9 @@ namespace ChastainRush
             float S(Vector2 p) => Vector2.Dot(p - O, U);
             float s0 = poly.Min(S), s1 = poly.Max(S);
             var cuts = new List<float>();
-            for (float s = s0; s < s1; s += 0.5f) cuts.Add(s);
+            bool stairs = pr.kind == "stairs";   // Round 10: the stairs in house 1627, a smooth ramp drawn as treads and risers
+            float step = stairs ? 0.28f : 0.5f;
+            for (float s = s0; s < s1; s += step) cuts.Add(s);
             for (int i = 0; i < pr.profile.Length; i += 2) if (pr.profile[i] > s0 && pr.profile[i] < s1) cuts.Add(pr.profile[i]);
             cuts.Add(s1); cuts.Sort();
             var col = pr.colour != null && pr.colour.Length >= 3 ? new Color(pr.colour[0], pr.colour[1], pr.colour[2]) : new Color(0.5f, 0.36f, 0.22f);
@@ -327,7 +402,7 @@ namespace ChastainRush
                 float a = cuts[i], b = cuts[i + 1];
                 var piece = ClipPoly2(ClipPoly2(poly, p => S(p) - a), p => b - S(p));
                 if (piece.Count < 3) continue;
-                mb.Tint = Shade(col, (Mathf.FloorToInt(a / 0.5f) & 1) == 0 ? 1f : 0.93f);
+                mb.Tint = stairs ? Shade(col, (Mathf.FloorToInt((a - s0) / step + 0.01f) & 1) == 0 ? 1.08f : 0.62f) : Shade(col, (Mathf.FloorToInt(a / 0.5f) & 1) == 0 ? 1f : 0.93f);
                 int st = mb.Count;
                 foreach (var p in piece) mb.Vertex(Top(p));
                 for (int k = 1; k + 1 < piece.Count; k++)
@@ -366,6 +441,7 @@ namespace ChastainRush
             }
             var go = mb.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing";   // Round 10: RampHold
             // the collider: the same surfaces with the vertices along the strip seams welded (1 mm), so the car's body does
             // not catch on seams between the strips ("internal edges")
             var weld = new Dictionary<Vector3Int, int>(); var wv = new List<Vector3>(); var wt = new List<int>();

@@ -27,7 +27,7 @@ namespace ChastainRush
         public string outputDir;
         public float[] speeds = { 12f, 14f, 16f, 18f, 20f, 22f, 24f, 26f, 28f, 30f, 33f, 36f };
         public float roadSpeed = 18f;
-        const float LatAcc = 14f, BrakeAcc = 14f;
+        float LatAcc = 14f; const float BrakeAcc = 14f;   // Round 10: -shortcutLatAcc <m/s2> for a driver who turns in faster
 
 
         ArcadeVehicle car; VehicleRespawn respawn; RaceController race; RaceRoute route;
@@ -49,6 +49,17 @@ namespace ChastainRush
             car.gameObject.AddComponent<ContactProbe>().runner = this;
             yield return null; yield return null;
             route = race.Route;
+            if (targets.Count == 0)   // Round 10, in the exe: the official shortcuts of the route the race uses
+                foreach (var rs in route.Shortcuts)
+                {
+                    var t = new Target { id = rs.Id, name = rs.Name, leaveLapS = Mathf.Round(route.LapStationOf(rs.Start)), rejoinLapS = Mathf.Round(route.LapStationOf(rs.End)), startBack = rs.Id.Contains("over_house") ? 14f : 35f };
+                    foreach (var p in rs.Path) t.path.Add(new Vector2(p.x, p.z));
+                    targets.Add(t);
+                }
+            {
+                var argv0 = Environment.GetCommandLineArgs();
+                for (int i = 0; i + 1 < argv0.Length; i++) { if (argv0[i] == "-shortcutSpeeds") speeds = argv0[i + 1].Split(',').Select(float.Parse).ToArray(); if (argv0[i] == "-shortcutLatAcc") LatAcc = float.Parse(argv0[i + 1]); }
+            }
             car.enabled = false;   // this runner steps the car itself
             report.AppendLine($"Shortcut check, {DateTime.Now:yyyy-MM-dd HH:mm}. Route {route.Name}, lap {route.LapLength:0} m, {route.Shortcuts.Count} official shortcuts in the route file.");
             report.AppendLine("Each run starts on the lap before the turn-off at the given speed (35 m before for #2; 14 m for #6, just past the sharp CP4 corner, so the speed is the speed the car arrives with); times are to a line 20 m past the rejoin point. The road run uses the same start and speed.");
@@ -98,6 +109,8 @@ namespace ChastainRush
             Debug.Log("[ShortcutCheck]\n" + report);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.Exit(fails == 0 ? 0 : 1);
+#else
+            Application.Quit(fails == 0 ? 0 : 1);   // Round 10: also runs in the built exe (-exeShortcut <dir>, GameShell)
 #endif
         }
 
@@ -108,6 +121,7 @@ namespace ChastainRush
         {
             public float speed, time, roadTime, air, worstTilt, touchPitch, roofGap = float.MaxValue; public string result = "timeout", endNote = "";
             public List<Flight> flights = new List<Flight>(); public List<string> houseHits = new List<string>();
+            public List<string> ramps = new List<string>();   // Round 10: speed onto, on and off each ramp / deck / floor (item 2j)
         }
 
         static string Fmt(Trial t)
@@ -178,6 +192,9 @@ namespace ChastainRush
                 Directory.CreateDirectory(Path.Combine(outputDir, "traces")); File.WriteAllText(Path.Combine(outputDir, "traces", $"{t.id}_{v:0}.csv"), trace.ToString()); trace = null; }
             foreach (var c in contacts) if (IsHouse(c.name)) tr.houseHits.Add(c.name.StartsWith("rode on ") ? Short(c.name) : $"{Short(c.name)} at {c.speed:0} m/s");
             tr.houseHits = tr.houseHits.Distinct().ToList();
+            if (rampName != null) CloseRamp(tr);
+            tr.ramps.AddRange(rampLog); rampLog.Clear();
+            if (shortcut && tr.ramps.Count > 0) report.AppendLine($"           ramps at {v:0} m/s: {string.Join("; ", tr.ramps)}");
             if (tr.result == "finished")
             {
                 bool badLanding = tr.worstTilt > 40f;
@@ -257,6 +274,19 @@ namespace ChastainRush
             // clearance over the jumped house's roof: the gap from the car's underside to the roof below it
             foreach (var hh in Physics.RaycastAll(pos, Vector3.down, 20f, ~0, QueryTriggerInteraction.Ignore))
                 if (hh.collider.name.Contains("Jumped house")) roofGap = Mathf.Min(roofGap, hh.distance - 0.3f);
+            // Round 10 (item 2j): which shortcut ramp / deck the wheels are on (rays down from the four wheel points)
+            string onRamp = null;
+            foreach (var wp in car.suspensionPoints)
+            {
+                var o = car.transform.TransformPoint(wp);
+                if (Physics.Raycast(o, -car.transform.up, out var wh, car.suspensionLength + 0.3f, ~0, QueryTriggerInteraction.Ignore) && wh.collider.name.StartsWith("sc")) { onRamp = wh.collider.name; break; }
+            }
+            float sp = car.Body.linearVelocity.magnitude;
+            if (onRamp != null && onRamp != rampName) { if (rampName != null) CloseRamp(null); rampName = onRamp; rampIn = sp; rampMin = sp; rampTop = pos.y; rampOff = sp; rampOffY = pos.y; }
+            else if (onRamp != null) { rampMin = Mathf.Min(rampMin, sp); rampOff = sp; rampOffY = pos.y; rampTop = Mathf.Max(rampTop, pos.y); }
+            else if (rampName != null && car.GroundedWheels == 0) { rampAir += Time.fixedDeltaTime; if (rampAir > 0.15f) CloseRamp(null); }
+            else if (rampName != null) CloseRamp(null);
+            if (onRamp != null) rampAir = 0f;
             // riding on a house (the wheels on a roof, not the body hitting it)
             if (car.GroundedWheels > 0 && Physics.Raycast(pos - car.transform.up * 0.4f, Vector3.down, out var rh, 2.0f, ~0, QueryTriggerInteraction.Ignore))   // from under the car's own box
             {
@@ -271,6 +301,13 @@ namespace ChastainRush
             traceT += Time.fixedDeltaTime;
         }
         StringBuilder trace; int traceStep; float traceT; float roofGap = float.MaxValue;
+        string rampName; float rampIn, rampMin, rampOff, rampTop, rampOffY, rampAir; readonly List<string> rampLog = new List<string>();
+        void CloseRamp(Trial tr)
+        {
+            string shortName = rampName.Replace(" collider", "");
+            rampLog.Add($"{shortName}: on {rampIn:0.0}, lowest {rampMin:0.0}, off {rampOff:0.0} m/s ({rampOff / Mathf.Max(rampIn, 0.1f) * 100f:0}% of the speed it arrived with)");
+            rampName = null; rampAir = 0f;
+        }
 
         public void OnContact(Collision c)
         {
@@ -278,12 +315,24 @@ namespace ChastainRush
             var n = c.collider.name; var t = c.collider.transform;
             string full = t.parent ? t.parent.name + "/" + n : n;
             contacts.Add((full + $" @({car.transform.position.x:0.0},{car.transform.position.z:0.0})", c.relativeVelocity.magnitude));
+            if (trace != null && c.contactCount > 0) { var cp = c.GetContact(0); trace.AppendLine($"# enter impulse {c.impulse.magnitude / car.Body.mass:0.0} m/s"); trace.AppendLine($"# body contact {full} at {traceT:0.00}s, rel {c.relativeVelocity.magnitude:0.0} m/s, normal ({cp.normal.x:0.00},{cp.normal.y:0.00},{cp.normal.z:0.00}), local point ({car.transform.InverseTransformPoint(cp.point).x:0.00},{car.transform.InverseTransformPoint(cp.point).y:0.00},{car.transform.InverseTransformPoint(cp.point).z:0.00}), speed {car.Body.linearVelocity.magnitude:0.0}"); }
+        }
+
+        // Round 10 (item 2j): any contact that takes more than 2 m/s off the car in one step, with its collider and normal
+        public void OnStay(Collision c)
+        {
+            if (!active || trace == null) return;
+            float dv = c.impulse.magnitude / car.Body.mass;
+            if (dv < 2f || c.contactCount == 0) return;
+            var cp = c.GetContact(0); var t = c.collider.transform;
+            trace.AppendLine($"# stay {(t.parent ? t.parent.name + "/" : "")}{c.collider.name} at {traceT:0.00}s, impulse {dv:0.0} m/s, normal ({cp.normal.x:0.00},{cp.normal.y:0.00},{cp.normal.z:0.00}), local point ({car.transform.InverseTransformPoint(cp.point).x:0.00},{car.transform.InverseTransformPoint(cp.point).y:0.00},{car.transform.InverseTransformPoint(cp.point).z:0.00}), {c.contactCount} points, speed {car.Body.linearVelocity.magnitude:0.0}");
         }
 
         sealed class ContactProbe : MonoBehaviour
         {
             public ShortcutCheckRunner runner;
             void OnCollisionEnter(Collision c) { if (runner) runner.OnContact(c); }
+            void OnCollisionStay(Collision c) { if (runner) runner.OnStay(c); }
         }
 
         static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }

@@ -1,0 +1,34 @@
+Round 10 exe check, 2026-10-09 20:23:03, screen 3840x2160, built exe
+shortcut #2 panels: 1763 in (3075.7, 318.7, 1050.7), out (3074.1, 319.2, 1055.6); 1627 door (3057.4, 308.1, 1100.6), out (3052.5, 310.9, 1112.0)
+shortcut #2, racing speed (target 30 m/s): finished, 14.46 s against 16.62 s by the road (+2.16 s); speed at the ramp's foot 27.1 m/s
+    panel broken: House 1763 shortcut wall (in) at 28.5 m/s
+    panel broken: House 1763 shortcut wall (out) at 28.6 m/s
+    panel broken: House 1627 shortcut wall (in) at 28.1 m/s
+    panel broken: House 1627 shortcut wall (out) at 26.7 m/s
+    panel broken: Fences at 22.1 m/s
+    panel broken: Fences at 21.4 m/s
+    flight: 1.64 s, 42 m from (3074,1057), landing at 28.8 m/s
+    flight: 1.00 s, 25 m from (3052,1113), landing at 26.0 m/s
+    flight: 1.20 s, 24 m from (3036,1142), landing at 22.1 m/s
+    flight: 0.64 s, 13 m from (3027,1173), landing at 22.6 m/s
+    lowest speed after the ramp's foot 16.8 m/s; most tilt 24 deg; panels broken 6
+shortcut #2, slow (target 13 m/s): finished, 25.48 s against 34.88 s by the road (+9.40 s); speed at the ramp's foot 13.1 m/s
+    panel broken: House 1763 shortcut wall (in) at 12.9 m/s
+    panel broken: House 1763 shortcut wall (out) at 13.0 m/s
+    panel broken: House 1627 shortcut wall (in) at 13.0 m/s
+    panel broken: House 1627 shortcut wall (out) at 12.9 m/s
+    panel broken: Fences at 13.2 m/s
+    panel broken: Fences at 13.2 m/s
+    panel broken: Fences at 13.0 m/s
+    flight: 0.84 s, 11 m from (3074,1057), landing at 14.8 m/s
+    flight: 0.92 s, 12 m from (3052,1113), landing at 14.9 m/s
+    flight: 0.36 s, 5 m from (3028,1173), landing at 14.5 m/s
+    lowest speed after the ramp's foot 12.1 m/s; most tilt 23 deg; panels broken 7
+tree at (2887.7, 891.6), driven into at 20 m/s: first contact 'TrunkColliders/trunk' at 0.5 m/s, speed 0.4 m/s after 1.2 s, 2.0 m from the trunk, tilt 9 deg
+    reversed for 2 s: 9.2 m back, free of the tree
+    reset (free roam) from a spot facing the tree 4 m off: to (2896.0, 896.8) on Chastain Trail (0.0 m from its centre), heading -56, clear ahead
+    reset in a race from beside the tree: to the lap 1175 m after the gate, 0.0 m from its centre, 0 deg off the race direction
+lamp at (2942.1, 814.4): driven into at 20 m/s along its road: 1 broken; 19.2 m/s before it, lowest 16.1 m/s past it (16% lower), most tilt 3 deg, kept going
+hydrant at (2866.4, 914.5): driven into at 20 m/s along its road: 2 broken; 19.2 m/s before it, lowest 16.1 m/s past it (16% lower), most tilt 2 deg, kept going
+    water: 1 jet(s) running, 1804 particles after 4 s
+Trunk colliders: pool of 160 within 40 m of the car; 601 refreshes, last one 0.06 ms, 24 active at the end

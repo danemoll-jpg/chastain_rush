@@ -12,6 +12,11 @@ namespace Racer
         public Transform spawnPoint;
         public float fallResetHeight = -15;
         public event Action Respawned;
+        // Chastain Rush, Round 10
+        public delegate bool RecoverFn(VehicleRespawn respawn, out Vector3 position, out float yawDegrees);
+        public static RecoverFn Recover;
+        public Vector3 SafePosition => safePosition;
+        public float SafeYaw => safeRotation.eulerAngles.y;
 
         const float SampleInterval = 0.5f, StableFor = 1f;
         ArcadeVehicle vehicle;
@@ -31,7 +36,14 @@ namespace Racer
         void FixedUpdate()
         {
             if (vehicle.Body.position.y < fallResetHeight) { Place(startPosition, startRotation); return; }
-            if (input.ConsumeReset()) { Place(safePosition, safeRotation); return; }
+            // Chastain Rush, Round 10: a reset asks Recover first (CarRecovery: back on the race route facing the right way, or
+            // off a spot a tree now blocks), as Racer's VehicleRespawn.RecoverNearest does; the last stable spot otherwise
+            if (input.ConsumeReset())
+            {
+                if (Recover != null && Recover(this, out var rp, out var ry)) Place(rp, Quaternion.Euler(0, ry, 0));
+                else Place(safePosition, safeRotation);
+                return;
+            }
             RecordSafePose();
         }
 

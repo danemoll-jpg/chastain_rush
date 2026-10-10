@@ -48,7 +48,12 @@ namespace Racer
             Body = GetComponent<Rigidbody>(); input = GetComponent<VehicleInput>();
             Body.centerOfMass = centreOfMass;
             Body.maxAngularVelocity = 5;
+            // Chastain Rush, Round 10: Racer registers its car with VehicleSurfaceContacts in VehicleConfiguration (not
+            // imported); here the car registers itself, so a body contact on a shortcut ramp uses the ramp's real face normal
+            var box = GetComponentInChildren<BoxCollider>();
+            if (box) VehicleSurfaceContacts.Register(box);
         }
+        void OnDestroy() { var box = GetComponentInChildren<BoxCollider>(); if (box) VehicleSurfaceContacts.Unregister(box); }   // Chastain Rush, Round 10
 
         // 0.84: only the player's own step (input path) holds at rest; AI and traffic call Simulate directly and are unchanged.
         bool playerStep;

@@ -260,6 +260,8 @@ namespace ChastainRush
                 var before = new Dictionary<int, float>();
                 foreach (var h in Houses) before[h.index] = Burial(h);
                 if (target != null) CutLot(target);
+                CutUnderDanDeck();   // Round 10 (BUG-001): no grass through Dan's deck
+                CutUnderShortcuts();   // Round 10: the ground under the shortcut prisms marked "cut" (MapBuilder.Shortcuts.cs)
                 foreach (var h in Houses)
                 {
                     float b = before[h.index];
@@ -272,6 +274,68 @@ namespace ChastainRush
                 File.WriteAllText(Path.Combine(dir, "buried_houses.json"), JsonUtility.ToJson(file, true));
                 Debug.Log($"[Round9] buried houses (> 0.5 m): {file.houses.Count(h => !h.regraded && h.buried_m > 0.5f)} besides the reported one; reported house {(target != null ? target.index.ToString() : "NOT FOUND")}: " +
                           (target != null ? $"{before[target.index]:0.00} m buried before, {Burial(target):0.00} m after" : ""));
+            }
+
+            // Round 10, item 2: where a shortcut's ramp or landing slope runs below the ground (the crest behind house 1763, the
+            // rising front yard under its ramp), the ground is cut down to 6 cm under the prism's top, with a bank of about 40
+            // degrees outside it; never within 1.2 m of a house. Cut only, never filled.
+            void CutUnderShortcuts()
+            {
+                if (ShortcutData == null) return;
+                foreach (var sc in ShortcutData.shortcuts)
+                    foreach (var pr in sc.prisms)
+                    {
+                        if (!pr.cut) continue;
+                        var poly = ToPoints(pr.poly);
+                        var O = new Vector2(pr.origin[0], pr.origin[1]); var U = new Vector2(pr.axis[0], pr.axis[1]).normalized;
+                        float s0 = float.MaxValue, s1 = float.MinValue; float x0 = float.MaxValue, x1 = float.MinValue, z0 = float.MaxValue, z1 = float.MinValue;
+                        foreach (var q in poly) { float sq = Vector2.Dot(q - O, U); s0 = Mathf.Min(s0, sq); s1 = Mathf.Max(s1, sq); x0 = Mathf.Min(x0, q.x); x1 = Mathf.Max(x1, q.x); z0 = Mathf.Min(z0, q.y); z1 = Mathf.Max(z1, q.y); }
+                        const float Bank = 0.85f, Reach = 3f;
+                        int changed = 0; float deepest = 0f;
+                        EditTerrain(terrain, Rect.MinMaxRect(x0 - Reach, z0 - Reach, x1 + Reach, z1 + Reach), (x, z, y) =>
+                        {
+                            var p = new Vector2(x, z);
+                            float d = InPolygon(p, poly) ? 0f : DistToRing(p, poly);
+                            if (d > Reach) return y;
+                            if (InsideHouse(p, 1.2f, null)) return y;
+                            float allowed = Profile(pr.profile, Mathf.Clamp(Vector2.Dot(p - O, U), s0, s1)) - 0.06f + d * Bank;
+                            if (y <= allowed) return y;
+                            changed++; deepest = Mathf.Max(deepest, y - allowed);
+                            return allowed;
+                        });
+                        Debug.Log($"[Round10] {pr.name}: ground cut to its top, {changed} terrain samples, by up to {deepest:0.00} m");
+                    }
+            }
+
+            // Round 10 (BUG-001): the ground behind Dan's house stood within a few centimetres of the deck's boards (the deck is
+            // capped 3 cm under the door sill), so the terrain's surface, simplified at a distance (heightmapPixelError), showed
+            // through as a grassy patch. The deck's height is set here from the natural ground (sampled every 0.25 m), then the
+            // ground under the deck and 0.2 m round it is cut to 0.3 m under the boards, with a short bank outside (cut only).
+            public float DanDeckTop = float.NaN;   // against the floor; read by BuildDanLot
+            void CutUnderDanDeck()
+            {
+                var h = Dan; if (h == null) return;
+                float u0 = -DanW / 2 - 0.3f, u1 = -0.2f, v0 = -DanD / 2 - 4.2f, v1 = -DanD / 2;   // the deck in the house frame
+                float g = float.MinValue;
+                for (float u = u0; u <= u1 + 0.01f; u += 0.25f) for (float v = v0; v <= v1 + 0.01f; v += 0.25f) { var q = h.frame.P(u, 0f, v); g = Mathf.Max(g, terrain.Height(q.x, q.z)); }
+                DanDeckTop = Mathf.Clamp(g - h.floorY + 0.12f, -0.25f, -0.03f);   // never above the door sill
+                float pad = h.floorY + DanDeckTop - 0.3f;
+                var r = new Vector2(h.frame.R.x, h.frame.R.z) * h.frame.M; var f = new Vector2(h.frame.F.x, h.frame.F.z);
+                float cu = (u0 + u1) / 2f, cv = (v0 + v1) / 2f, hu = (u1 - u0) / 2f + 0.2f, hv = (v1 - v0) / 2f + 0.2f;
+                var centre = h.footprintCentre + r * cu + f * cv;
+                const float Bank = 0.85f;
+                int changed = 0; float deepest = 0f;
+                var area = Rect.MinMaxRect(centre.x - 14f, centre.y - 14f, centre.x + 14f, centre.y + 14f);
+                EditTerrain(terrain, area, (x, z, y) =>
+                {
+                    var d = new Vector2(x, z) - centre;
+                    float ou = Mathf.Max(0f, Mathf.Abs(Vector2.Dot(d, r)) - hu), ov = Mathf.Max(0f, Mathf.Abs(Vector2.Dot(d, f)) - hv);
+                    float allowed = pad + Mathf.Sqrt(ou * ou + ov * ov) * Bank;
+                    if (y <= allowed) return y;
+                    changed++; deepest = Mathf.Max(deepest, y - allowed);
+                    return allowed;
+                });
+                Debug.Log($"[Round10] BUG-001: Dan's deck {DanDeckTop:+0.00;-0.00} m against the floor (highest ground under it {g - h.floorY:+0.00;-0.00}); ground under it cut to 0.30 m below the boards, {changed} terrain samples, by up to {deepest:0.00} m");
             }
 
             // Cuts the ground of one lot down to the house: a level pad (the house rectangle and 1.4 m round it) just under the
@@ -329,7 +393,7 @@ namespace ChastainRush
 
         sealed class Breakables
         {
-            sealed class Cell { public MeshBuilder mb = new MeshBuilder(); public List<FenceChunk.Piece> pieces = new List<FenceChunk.Piece>(); public List<FenceChunk.Panel> panels = new List<FenceChunk.Panel>(); public List<(Vector3 c, Vector3 along, float w, float h)> trig = new List<(Vector3, Vector3, float, float)>(); }
+            sealed class Cell { public MeshBuilder mb = new MeshBuilder(); public List<FenceChunk.Piece> pieces = new List<FenceChunk.Piece>(); public List<FenceChunk.Panel> panels = new List<FenceChunk.Panel>(); public List<(Vector3 c, Vector3 along, float w, float h, float d)> trig = new List<(Vector3, Vector3, float, float, float)>(); }
             readonly Dictionary<Vector2Int, Cell> cells = new Dictionary<Vector2Int, Cell>();
             Cell cur; int first;
             public int Count;
@@ -340,19 +404,19 @@ namespace ChastainRush
                 first = cur.pieces.Count;
                 return cur.mb;
             }
-            public void Piece(Action build)
+            public void Piece(Action build, float restY = 0f)   // Round 10: restY, where its debris comes to rest (world y)
             {
                 int v0 = cur.mb.Count; build(); int cnt = cur.mb.Count - v0;
                 Vector3 centre = Vector3.zero; foreach (var v in cur.mb.VertexRange(v0, cnt)) centre += v; centre /= Mathf.Max(cnt, 1);
-                cur.pieces.Add(new FenceChunk.Piece { vertexStart = v0, vertexCount = cnt, centre = centre });
+                cur.pieces.Add(new FenceChunk.Piece { vertexStart = v0, vertexCount = cnt, centre = centre, restY = restY });
             }
-            public void End(Vector3 centre, Vector3 along, float width, float height)
+            public void End(Vector3 centre, Vector3 along, float width, float height, float depth = -1f)   // Round 10: depth along 'along' (default: the width)
             {
                 cur.panels.Add(new FenceChunk.Panel { firstPiece = first, pieceCount = cur.pieces.Count - first, centre = centre });
-                cur.trig.Add((centre, along, width, height));
+                cur.trig.Add((centre, along, width, height, depth > 0f ? depth : width));
                 Count++;
             }
-            public void ToObjects(string name, Material mat, Transform parent, float debrisDrop)
+            public Transform ToObjects(string name, Material mat, Transform parent, float debrisDrop)
             {
                 var root = new GameObject(name).transform; root.SetParent(parent, false);
                 foreach (var kv in cells)
@@ -368,10 +432,11 @@ namespace ChastainRush
                         var t = cell.trig[i];
                         var pg = new GameObject("m"); pg.transform.SetParent(go.transform, false);
                         pg.transform.SetPositionAndRotation(t.c, Quaternion.LookRotation(t.along, Vector3.up));
-                        var bc = pg.AddComponent<BoxCollider>(); bc.isTrigger = true; bc.size = new Vector3(t.w, t.h, t.w);
+                        var bc = pg.AddComponent<BoxCollider>(); bc.isTrigger = true; bc.size = new Vector3(t.w, t.h, t.d);
                         var fp = pg.AddComponent<FencePanel>(); fp.chunk = chunk; fp.index = i;
                     }
                 }
+                return root;
             }
         }
 

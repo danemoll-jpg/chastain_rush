@@ -92,12 +92,19 @@ namespace ChastainRush
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
                         float gy = Ground(c.terrain, p.x, p.y);
-                        var mb = c.Props.At(p);
-                        Post(mb, new Vector3(p.x, gy - 0.05f, p.y), 5.7f, 0.14f, lampBrown);
+                        // Round 10 (item 8): breakable like the mailboxes: the pole in two pieces and the arm with its head, all
+                        // coming down to the ground when the car knocks it over
+                        var mb = c.Lamps3D.Begin(p);
                         Vector3 top = new Vector3(p.x, gy + 5.65f, p.y);
                         Vector2 toRoad = -nrm[k] * side;
-                        Beam(mb, top, top + new Vector3(toRoad.x, 0.25f, toRoad.y) * 1.5f, 0.09f, 0.09f, lampBrown);
-                        Beam(mb, top + new Vector3(toRoad.x, 0.2f, toRoad.y) * 1.0f, top + new Vector3(toRoad.x, 0.2f, toRoad.y) * 1.7f, 0.3f, 0.13f, lampHead);
+                        c.Lamps3D.Piece(() => Post(mb, new Vector3(p.x, gy - 0.05f, p.y), 2.9f, 0.14f, lampBrown), gy + 0.1f);
+                        c.Lamps3D.Piece(() => Post(mb, new Vector3(p.x, gy + 2.85f, p.y), 2.85f, 0.14f, lampBrown), gy + 0.1f);
+                        c.Lamps3D.Piece(() =>
+                        {
+                            Beam(mb, top, top + new Vector3(toRoad.x, 0.25f, toRoad.y) * 1.5f, 0.09f, 0.09f, lampBrown);
+                            Beam(mb, top + new Vector3(toRoad.x, 0.2f, toRoad.y) * 1.0f, top + new Vector3(toRoad.x, 0.2f, toRoad.y) * 1.7f, 0.3f, 0.13f, lampHead);
+                        }, gy + 0.15f);
+                        c.Lamps3D.End(new Vector3(p.x, gy + 1.0f, p.y), new Vector3(toRoad.x, 0f, toRoad.y), 0.7f, 2.2f);
                         hood.KeepOut(p, 0.8f);
                         lampCount++;
                     }
@@ -109,7 +116,11 @@ namespace ChastainRush
                         if (hood.InCorridor(p, 1.5f)) { c.ShortcutCleared++; continue; }   // Round 8: no hydrant on a shortcut's line
                         bool near = false; foreach (var hc in centres) if ((hc - p).sqrMagnitude < 28f * 28f) { near = true; break; }
                         if (!near) continue;
-                        Hydrant(c.Props.At(p), new Vector3(p.x, Ground(c.terrain, p.x, p.y), p.y), Hash01(ri, 142 + k));
+                        // Round 10 (items 8, 9): breakable, and its water starts when it goes (HydrantWater)
+                        float hy = Ground(c.terrain, p.x, p.y);
+                        var hmb = c.Hydrants3D.Begin(p);
+                        c.Hydrants3D.Piece(() => Hydrant(hmb, new Vector3(p.x, hy, p.y), Hash01(ri, 142 + k)), hy + 0.12f);
+                        c.Hydrants3D.End(new Vector3(p.x, hy + 0.45f, p.y), Vector3.forward, 0.7f, 1.1f);
                         hood.KeepOut(p, 0.8f);
                         hydrantCount++;
                     }

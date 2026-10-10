@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 // Round 7: the four house styles of Chastain Glen (from the photos in local/reference_photos, which are never copied into
@@ -11,6 +12,10 @@ using UnityEngine;
 //   B  two-storey brick-front colonial, four full-height white columns, side garage wing with a front gable
 //   C  one-storey ranch with a front-gable two-car garage (siding, sometimes a brick accent)
 //   D  plain two-storey siding house with a side gable, a small porch roof and a one-car garage at the end
+// Round 10 (BUG-002, Dan: "add more windows to the back of other houses. They should look similar to mine, maybe with
+// slight variances, and then add a few on the other side"): every house but Dan's gets windows on its back laid out like
+// the back of Dan's (a back door or sliding door, a row of low windows, a triple and single windows upstairs), varied by
+// the house's stable hash, and a few on the side wall away from the garage (BackAndSides). All in the detail mesh.
 namespace ChastainRush
 {
     public static partial class MapBuilder
@@ -30,6 +35,7 @@ namespace ChastainRush
             public Vector2 footprintCentre;
             public List<Vector2> ring;
             public Vector3 garageCentre;          // world, at the foot of the garage doors
+            public Vector2? backReserve;          // Round 10: a range of the back wall (back frame u) kept free of windows (a shortcut's sliding door)
             public MeshBuilder detail;           // windows, doors, garage doors, shutters: flat quads that do not need to cast shadows (a separate mesh with shadows off)
             public Vector2 nearestRoadPoint;
             public float roadHalf;
@@ -122,6 +128,79 @@ namespace ChastainRush
                 case HouseStyle.B: BuildB(mb, h); break;
                 case HouseStyle.C: BuildC(mb, h); break;
                 default: BuildD(mb, h); break;
+            }
+            if (!h.dan) BackAndSides(h.detail ?? mb, h);   // Round 10
+        }
+
+        // -- Round 10: back and side windows -----------------------------------
+
+        // a window on a side wall (u = side * W/2 in the house frame), centred at house-frame depth v
+        static void SideWindow(MeshBuilder d, HouseSpec h, float side, float v, float yc, float w, float hgt)
+        {
+            var f = h.frame; var outDir = f.Dir(side, 0f, 0f).normalized;
+            var sf = MakeFrame(f.O, new Vector2(outDir.x, outDir.z), 1f);
+            var at = f.P(side * h.W / 2f, 0f, v);
+            float uc = Vector3.Dot(at - f.O, sf.R), plane = Vector3.Dot(at - f.O, sf.F);
+            WindowF(d, sf, uc, yc, w, hgt, plane, h, false);
+        }
+
+        static void BackAndSides(MeshBuilder d, HouseSpec h)
+        {
+            var f0 = h.frame;
+            var b = new Frame { O = f0.O, R = -f0.R, F = -f0.F, M = f0.M };   // turned round: u to the right as seen from behind
+            float W = h.W, D = h.D, back = D / 2; int s = h.seed;
+            bool two = h.style != HouseStyle.C;
+            // the usable stretch of the back wall (style B: the main block only; its garage wing is set forward and one storey)
+            float u0 = -W / 2 + 0.7f, u1 = W / 2 - 0.7f;
+            if (h.style == HouseStyle.B) u1 = W / 2 - Mathf.Clamp(W * 0.42f, 5.6f, 6.6f) - 0.5f;
+            // lower: a door, a row of low windows (two or three), one or two more windows
+            var lower = new List<(float w, Action<float> draw)>();
+            bool slide = Hash01(s, 201) < 0.6f;
+            if (h.backReserve == null)
+            {
+                if (slide) lower.Add((1.75f, uc => { FrontQuad(d, b, uc - 0.875f, uc + 0.875f, 0f, 2.25f, back + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.75f, uc - 0.04f, 0.05f, 2.15f, back + 0.04f, h.glassC); FrontQuad(d, b, uc + 0.04f, uc + 0.75f, 0.05f, 2.15f, back + 0.04f, h.glassC); }));
+                else lower.Add((1.0f, uc => { FrontQuad(d, b, uc - 0.5f, uc + 0.5f, 0f, 2.2f, back + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.42f, uc + 0.42f, 0f, 2.12f, back + 0.04f, Shade(h.doorC, 1.2f)); FrontQuad(d, b, uc - 0.3f, uc + 0.3f, 1.1f, 1.95f, back + 0.055f, h.glassC); }));
+            }
+            int row = Hash01(s, 202) < 0.5f ? 3 : 2;
+            float rw = Mathf.Lerp(0.78f, 0.9f, Hash01(s, 203));
+            lower.Add((row * (rw + 0.1f) - 0.1f, uc => { for (int k = 0; k < row; k++) WindowF(d, b, uc - (row - 1) * (rw + 0.1f) / 2f + k * (rw + 0.1f), 1.35f, rw, 1.2f, back, h, false); }));
+            int singles = Hash01(s, 204) < 0.45f ? 2 : 1;
+            for (int k = 0; k < singles; k++) lower.Add((0.95f, uc => WindowF(d, b, uc, 1.4f, 0.95f, 1.25f, back, h, false)));
+            // upper: a triple (or a pair) and one or two single windows
+            var upper = new List<(float w, Action<float> draw)>();
+            if (two)
+            {
+                int tri = Hash01(s, 205) < 0.65f ? 3 : 2;
+                upper.Add((tri * 1.1f - 0.1f, uc => { for (int k = 0; k < tri; k++) WindowF(d, b, uc - (tri - 1) * 0.55f + k * 1.1f, 4.2f, 1.0f, 1.45f, back, h, false); }));
+                int us = Hash01(s, 206) < 0.5f ? 2 : 1;
+                for (int k = 0; k < us; k++) upper.Add((0.95f, uc => WindowF(d, b, uc, 4.1f, 0.95f, 1.4f, back, h, false)));
+            }
+            PlaceRow(lower, u0, u1, Hash01(s, 207), h.backReserve);
+            PlaceRow(upper, u0, u1, Hash01(s, 208), null);
+            // the side away from the garage (+u): one or two windows down, one up (if two storeys); style D also one up on the garage end
+            float vf0 = -D / 2 + 1.2f, vf1 = (h.style == HouseStyle.A ? D / 2 - 1.3f : h.style == HouseStyle.C ? D / 2 - 1.0f : D / 2) - 1.2f;
+            int sideLow = Hash01(s, 209) < 0.5f ? 2 : 1;
+            for (int k = 0; k < sideLow; k++) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, sideLow == 1 ? 0.5f : (k == 0 ? 0.2f : 0.8f)), 1.4f, 0.95f, 1.25f);
+            if (two) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, 0.25f + 0.5f * Hash01(s, 210)), 4.1f, 0.95f, 1.4f);
+            if (h.style == HouseStyle.D) SideWindow(d, h, -1f, 0f, 4.1f, 0.95f, 1.4f);
+        }
+
+        // lays items out along u0..u1 in an order turned round by 'rot' (0..1), with even gaps; drops items that do not fit
+        // or that overlap 'reserve'
+        static void PlaceRow(List<(float w, Action<float> draw)> items, float u0, float u1, float rot, Vector2? reserve)
+        {
+            if (items.Count == 0) return;
+            int r = Mathf.FloorToInt(rot * items.Count) % items.Count;
+            var order = new List<(float w, Action<float> draw)>();
+            for (int i = 0; i < items.Count; i++) order.Add(items[(i + r) % items.Count]);
+            while (order.Count > 0 && order.Sum(it => it.w) + 0.6f * (order.Count + 1) > u1 - u0) order.RemoveAt(order.Count - 1);
+            if (order.Count == 0) return;
+            float gap = (u1 - u0 - order.Sum(it => it.w)) / (order.Count + 1), u = u0 + gap;
+            foreach (var it in order)
+            {
+                float uc = u + it.w / 2f;
+                if (reserve == null || uc + it.w / 2f < reserve.Value.x || uc - it.w / 2f > reserve.Value.y) it.draw(uc);
+                u += it.w + gap;
             }
         }
 
