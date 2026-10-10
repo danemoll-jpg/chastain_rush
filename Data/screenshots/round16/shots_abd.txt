@@ -1,0 +1,7 @@
+Chastain Rush exe shots, 2026-10-10 15:35:37, screen 3840x2160, built exe
+A_bug001_dan_view: car at (2911.0, 289.6, 814.3) heading 176
+A_side_from_west: car at (2900.5, 288.0, 806.5) heading 95
+A_side_from_east: car at (2919.5, 291.9, 807.5) heading 265
+B_bug002_dan_view: car at (2807.4, 288.3, 1101.1) heading 155
+B_drive_into_skirt_8ms: drive at 8.0 m/s for 3.0 s from (2804.0, 1108.4) heading 155: broke 1 panel(s); lowest speed after the start -0.1 m/s (102% below), most tilt 3 deg, STOPPED
+D_shortcut_sign_smash_15ms: drive at 15.0 m/s for 1.2 s from (3089.4, 1044.6) heading 343: broke 1 panel(s); lowest speed after the start 2.9 m/s (80% below), most tilt 29 deg, kept going

@@ -1357,7 +1357,8 @@ Part A (committed on its own):
    `Assets/Audio/Geese/` still works (README updated). No goose file anywhere = silent geese. Check: with a test folder
    (`-soundsRoot`), the READ MEs were made, a test honk reached the geese and a test wood sound replaced the wood break.
 5. Checks keep to their own folder: DONE. In a check run the debug reports and bump log go under the check's folder and the
-   race records to `<dir>ace_records_check.json`. Run exe checks with `-logFile <dir>\Player.log` too, or Unity overwrites
+   race records to `<dir>
+ace_records_check.json`. Run exe checks with `-logFile <dir>\Player.log` too, or Unity overwrites
    Dan's Player.log. Dan's bump_log.txt was unchanged by every run this round (07:42).
    Also fixed: the trees' material kept its instancing flag only in memory (set after the asset was written); now it is set
    before, so the exe never draws without trees.
@@ -1445,6 +1446,62 @@ E. Shortcut #6's jump (the dirt pile over house 1641; Dan confirmed it is #6, no
    and approach angles out of the CP4 corner) and look for contacts that stop or snag the body on the dirt pile,
    the kicker's lip, 1641's roof and the landing. Do it together with B (the solid heap must not add a snag).
    Report what was found before changing the jump (protected geometry).
+
+**Round 16 A to E status (Claude Code, 2026-10-10).** Built, checked in the exe (muted, 3840 x 2160), committed on its
+own. No new debug session since 2026-10-10_14-22-18-410_d2650e. Results: `Data/screenshots/round16/`.
+A. DONE. The headwall (built at x 2909.9, z 805.6, 14 m from the street) had the bank 1.24 m below its coping behind it. The
+   map build now raises the bank round it only (`BuryCulvert`, MapBuilder.Pond.cs, right after the water beds, before
+   anything samples the ground): level with the wall just under the coping behind it and along its wing walls, then 1 in 3
+   down to the ground; never in the pond, fading out 2 to 4 m from roads and drives (the road and its rail fence do not
+   move). 89 terrain samples raised, by at most 1.23 m. The pipes' face toward the pond is open as before. Shots from
+   Dan's spot and both sides: `A_*.jpg`.
+B. DONE. The heap's skirt is solid: the same faces as its look, a collider of its own (frictionless, like the ramp, a child
+   "sc6 ... heap" so the Round 14 surface contacts treat it as a ramp surface). The driven face, its curve, lip and
+   collider are unchanged. Driving into the skirt at 8 m/s from Dan's side: the car stops at its foot. #6 re-checked
+   (item E's sweep): the heap is touched only on runs 3 m off the line (falling off the kicker's side), never on or near
+   it. AI trial (`-exeRound15 -r15Only shortcuts`): each vehicle as an AI down #2 and #6, 11 of 11 clean on both, no
+   recoveries (`ai_shortcut_trial.txt`).
+C. REPORT ONLY (no positions came in Dan's reports, so nothing was changed). New report-only scan
+   `ChastainRush.GrassScan.Run` (Editor batch: rays onto the terrain collider across and along every Chastain Glen street,
+   curb to lawn; `Data/screenshots/round16/grass_scan.txt`). Curbs, sidewalks and drives have no colliders: the car drives
+   on the terrain, so a snag there is the ground under them. Almost every large hit is at a STREET JUNCTION CORNER, where
+   the road is cut into the slope and the lawn rises in a short steep bank right behind the curb (seen in the exe):
+   * x 3066-3070, z 996-1009 (Chastain Glen Lane / Chasefield Way, both corners, on the lap): steps of 14-15 cm in 10 cm,
+     banks of 43-47 deg, a 2.6 m chord crest of 0.48 m and sag of 0.54 m: a car's floor or nose hits.
+   * x 2988, z 1070-1073 (Chasefield Court / Chasefield Way): 36 deg, step 8 cm, crest 0.37 m.
+   * x 3138, z 1092 (Chastain Glen Lane): step 10 cm, crest 0.32 m, 32 deg.
+   * x 2926-2950, z 750-767 (by the entrance island and monuments): steps 7-9 cm, crests 0.26-0.30 m.
+   * x 3067, z 952 (Glenbarrett Lane corner): step 10 cm on the sidewalk line, crest 0.24 m.
+   * x 2730, z 984 (Chastain Place corner) and x 2990, z 936 (Courtfield Trace corner): 7-8 cm steps, 0.23-0.26 m crests.
+   Lawns elsewhere: some 30-33 deg slopes in back of the sidewalk (x 3083 z 998, x 2999 z 1090, x 3137 z 1157, x 3121
+   z 929, x 3005 z 1100), no steps. For Dan: drive these corners and say which ones catch; a fix would ease each corner's
+   bank in the map build, only where pointed at.
+D. DONE. The no-parking and no-U-turn signs at the entrance island (their post and both plates) and the hand-painted
+   SHORTCUT sign at #2 break like mailboxes (FenceChunk: a trigger, a little speed lost, whole again at race start); the
+   printed faces fly off with the pieces (FenceChunk.faces). Sounds: Racer's sign clang for the street signs (new
+   BreakSounds.Kind.Sign), wood for the plywood shortcut sign. The brick monuments are untouched. Checked: the shortcut
+   sign smashed at 15 m/s (`D_shortcut_sign_smash_15ms.jpg`).
+E. REPORT ONLY (protected geometry: the jump is not changed). The shortcut check now takes `-shortcutLines` (on the line,
+   1.5 and 3 m either side, and "a4" / "a-4": 4 m off at the run's start, onto the line by the kicker's foot) and writes
+   `shortcut_snags.csv` (body contacts pushing against the motion with more than 1 m/s, and any loss of more than 1.5 m/s in
+   one physics step while not braking). Every one of the eleven vehicles, approach 14 to 34 m/s, 7 lines: 462 runs
+   (`Data/screenshots/round16/e_sc6/`). Found:
+   1. THE LANDING (most likely Dan's catch). x 2795-2803, z 1056-1066, on the grass after 1641: in 85 of 330 runs on or near
+      the line the vehicle comes down nose-first (9 to 12 deg) and the front corner of its body hits the ground, losing 3 to
+      7 m/s in one step (Street Classic at 18 m/s: 20.3 -> 13.6, an impulse of 14.6 m/s). Every vehicle, most often the
+      cars (Pebble Coupe and Highball Fastback 13 of 30, Drifter Twin 12, Street Classic 10; Skyfin Cruiser 1). It depends
+      on where the flight ends (short landings at 14 to 26 m/s, some at 30 to 34), which fits "sometimes".
+   2. THE KICKER'S FOOT, motorcycles and the ATV. Out of the CP4 corner the bike's lower left corner brushes the kicker's
+      left edge at its foot (x 2817-2821, z 1108-1112), 1 to 4 m/s each time (Needle 600 31 contacts, Drifter Twin 25,
+      Ridge Scrambler 15, Turf Rocket 11, Trail Four 9; cars 3 to 8). The edge's contact normal is too steep (about 62 deg)
+      for the Round 14 surface correction, so the solver's own push applies.
+   3. Nothing on 1641's roof on the line (roof clearance 1.3-1.5 m from 18 m/s up; at 14 m/s cars ride the roof, as in
+      Round 13). 3 m off the line a vehicle lands on the roof's edge or falls off the kicker's side (rolls, trunks): not a
+      snag, a missed line. The runs that "hit a house" at 1.5 m off are roof rides, and House 1052 / 713 after the rejoin
+      (the offset carried the line into them: an artifact of the check, not the course).
+   Options for Dan (none done): (1) a longer, gentler run-out where the vehicle lands (the landing zone's grade eased over
+   x 2790-2805, z 1045-1068) or the landing carry (RampHold) extended to that strip; (2) the kicker's foot corners
+   rounded or its skirt made the driving surface at the foot so a bike's corner rides over the edge.
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I

@@ -1,0 +1,216 @@
+Round 16 item C grass / sidewalk scan, 2026-10-10 15:44, scene Assets/Generated/ChastainPrototype.unity
+6006 profiles over 20 streets of Chastain Glen; limits: step 6 cm in 10 cm, crest / sag 12 cm over a 2.6 m chord, steep 30 deg over 1 m
+  CREST: 103 places (6569 samples)
+  OTHER: 3 places (1424 samples)
+  SAG: 66 places (4832 samples)
+  STEEP: 11 places (535 samples)
+  STEP: 16 places (358 samples)
+
+== CREST (largest first)
+x 3066.9 z 997.1  CREST +0.48  samples 190  lawn/sidewalk/grass strip  across Chasefield Way  hit terrain
+x 3069.6 z 1009.0  CREST +0.46  samples 193  lawn/sidewalk/grass strip  across Chastain Glen Lane  hit terrain
+x 2988.6 z 1072.3  CREST +0.37  samples 167  grass strip/sidewalk/lawn  across Chasefield Court  hit terrain
+x 3138.7 z 1091.9  CREST +0.32  samples 74  grass strip/sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 2938.0 z 764.2  CREST +0.30  samples 42  grass strip/sidewalk  across Chastain Glen Lane  hit terrain
+x 2951.6 z 784.5  CREST +0.29  samples 254  lawn  across Chastain Glen Lane  hit terrain
+x 2949.4 z 765.8  CREST +0.29  samples 71  grass strip/sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 2730.6 z 984.8  CREST +0.26  samples 65  grass strip/sidewalk/lawn  along Chastain Place  hit terrain
+x 2926.2 z 749.8  CREST +0.26  samples 12  lawn  along Chastain Glen Lane  hit terrain
+x 3067.0 z 952.2  CREST +0.24  samples 105  grass strip/sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 2918.6 z 792.7  CREST +0.24  samples 502  lawn  across Chastain Glen Lane  hit terrain
+x 2827.8 z 992.1  CREST +0.23  samples 385  lawn  across Chastain Trail  hit terrain
+x 3007.3 z 1098.4  CREST +0.23  samples 529  lawn/sidewalk  across Chasefield Court  hit terrain
+x 3015.9 z 1046.4  CREST +0.23  samples 447  lawn  across Chasefield Way  hit terrain
+x 3083.9 z 997.8  CREST +0.22  samples 135  lawn  across Chastain Glen Lane  hit terrain
+x 3122.7 z 929.7  CREST +0.22  samples 290  lawn  across Glenbarrett Lane  hit terrain
+x 2991.8 z 938.1  CREST +0.21  samples 91  sidewalk/grass strip/lawn  along Chastain Glen Lane  hit terrain
+x 2997.4 z 1062.4  CREST +0.21  samples 97  grass strip/sidewalk/lawn  across Chasefield Court  hit terrain
+x 3137.6 z 1156.4  CREST +0.21  samples 82  lawn  across Chastain Glen Lane  hit terrain
+x 3054.7 z 964.0  CREST +0.20  samples 193  lawn  across Chastain Glen Lane  hit terrain
+x 3007.2 z 1103.3  CREST +0.20  samples 24  lawn  across Chasefield Court  hit terrain
+x 3076.1 z 1041.4  CREST +0.20  samples 94  lawn  across Chastain Glen Lane  hit terrain
+x 2928.6 z 752.0  CREST +0.19  samples 28  sidewalk/grass strip  across Chastain Glen Lane  hit terrain
+x 2882.2 z 1029.7  CREST +0.19  samples 128  lawn  across Courtfield Trace  hit terrain
+x 2990.6 z 946.5  CREST +0.19  samples 82  lawn  across Courtfield Trace  hit terrain
+x 3000.1 z 942.8  CREST +0.18  samples 209  lawn  across Chastain Glen Lane  hit terrain
+x 3086.1 z 1056.4  CREST +0.18  samples 79  lawn  across Chastain Glen Lane  hit terrain
+x 3133.1 z 1082.0  CREST +0.18  samples 30  sidewalk/grass strip/lawn  across Chastain Glen Lane  hit terrain
+x 2987.9 z 951.2  CREST +0.18  samples 108  lawn  across Courtfield Trace  hit terrain
+x 2894.9 z 1046.4  CREST +0.18  samples 49  lawn  across Courtfield Trace  hit terrain
+x 3141.5 z 1137.8  CREST +0.18  samples 124  lawn  across Chastain Glen Lane  hit terrain
+x 2939.9 z 752.7  CREST +0.18  samples 22  sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2953.2 z 753.5  CREST +0.17  samples 21  sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 2979.5 z 961.5  CREST +0.17  samples 79  lawn  across Courtfield Trace  hit terrain
+x 2926.6 z 762.9  CREST +0.17  samples 14  lawn/sidewalk  along Chastain Glen Lane  hit terrain
+x 3081.2 z 949.7  CREST +0.17  samples 62  lawn  across Glenbarrett Lane  hit terrain
+x 2898.0 z 1011.4  CREST +0.17  samples 27  lawn  across Courtfield Trace  hit terrain
+x 3059.2 z 983.8  CREST +0.17  samples 201  lawn  across Chastain Glen Lane  hit terrain
+x 3122.0 z 1128.3  CREST +0.17  samples 48  lawn  across Chastain Glen Lane  hit terrain
+x 2919.8 z 783.7  CREST +0.16  samples 56  lawn  across Chastain Glen Lane  hit terrain
+x 2939.9 z 750.4  CREST +0.16  samples 21  grass strip/sidewalk  across Chastain Glen Lane  hit terrain
+x 2966.6 z 926.6  CREST +0.16  samples 42  lawn  across Chastain Glen Lane  hit terrain
+x 2936.1 z 886.4  CREST +0.16  samples 39  lawn/sidewalk/grass strip  across Chastain Trail  hit terrain
+x 3132.5 z 1178.8  CREST +0.16  samples 31  lawn  across Chastain Glen Lane  hit terrain
+x 3137.2 z 1162.4  CREST +0.16  samples 15  lawn  across Chastain Glen Lane  hit terrain
+x 2947.7 z 1163.0  CREST +0.15  samples 96  lawn  across Chasefield Way  hit terrain
+x 2791.4 z 1011.4  CREST +0.15  samples 38  lawn  across Chastain Glen Lane  hit terrain
+x 2985.6 z 914.3  CREST +0.15  samples 32  lawn  across Chastain Glen Lane  hit terrain
+x 2805.8 z 1000.1  CREST +0.15  samples 40  lawn/sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2844.0 z 1015.2  CREST +0.15  samples 25  lawn  across Chastain Glen Lane  hit terrain
+x 3097.7 z 1239.4  CREST +0.15  samples 19  lawn/sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2922.4 z 1015.1  CREST +0.15  samples 67  lawn  across Courtfield Trace  hit terrain
+x 2917.9 z 789.6  CREST +0.15  samples 6  lawn  across Chastain Glen Lane  hit terrain
+x 3113.7 z 1166.4  CREST +0.15  samples 27  lawn  across Chastain Glen Lane  hit terrain
+x 3056.7 z 1019.6  CREST +0.14  samples 50  lawn  across Chasefield Way  hit terrain
+x 3127.9 z 1200.3  CREST +0.14  samples 27  lawn  across Chastain Glen Lane  hit terrain
+x 2785.3 z 984.2  CREST +0.14  samples 38  lawn  across Chastain Glen Lane  hit terrain
+x 2973.4 z 966.5  CREST +0.14  samples 46  lawn  across Courtfield Trace  hit terrain
+x 3103.3 z 1074.0  CREST +0.14  samples 45  lawn  across Chastain Glen Lane  hit terrain
+x 3039.1 z 1243.7  CREST +0.14  samples 72  lawn  across Chastain Glen Lane  hit terrain
+x 2942.1 z 1173.2  CREST +0.14  samples 8  lawn  along Chastain Glen Lane  hit terrain
+x 2954.2 z 1138.8  CREST +0.14  samples 27  lawn  across Chasefield Way  hit terrain
+x 2968.6 z 928.6  CREST +0.14  samples 8  lawn  across Chastain Glen Lane  hit terrain
+x 3116.3 z 1152.6  CREST +0.14  samples 18  lawn  across Chastain Glen Lane  hit terrain
+x 2898.4 z 1043.6  CREST +0.14  samples 19  lawn  across Courtfield Trace  hit terrain
+x 3117.6 z 1148.8  CREST +0.14  samples 7  lawn  across Chastain Glen Lane  hit terrain
+x 3070.9 z 1028.2  CREST +0.14  samples 18  lawn  across Chastain Glen Lane  hit terrain
+x 3029.4 z 949.1  CREST +0.13  samples 7  lawn  across Chastain Glen Lane  hit terrain
+x 3054.6 z 1246.2  CREST +0.13  samples 32  lawn  across Chastain Glen Lane  hit terrain
+x 2911.6 z 1028.3  CREST +0.13  samples 39  lawn  across Courtfield Trace  hit terrain
+x 3119.5 z 1060.8  CREST +0.13  samples 22  lawn  across Chastain Glen Lane  hit terrain
+x 2875.8 z 1078.2  CREST +0.13  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2942.6 z 989.6  CREST +0.13  samples 10  lawn  across Courtfield Trace  hit terrain
+x 2853.0 z 1120.5  CREST +0.13  samples 16  sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2917.2 z 1021.3  CREST +0.13  samples 11  lawn  across Courtfield Trace  hit terrain
+x 2980.0 z 930.3  CREST +0.13  samples 9  lawn/sidewalk  along Chastain Glen Lane  hit terrain
+x 2962.6 z 1116.5  CREST +0.13  samples 4  lawn  across Chasefield Way  hit terrain
+x 2937.5 z 995.2  CREST +0.13  samples 16  lawn  across Courtfield Trace  hit terrain
+x 2917.3 z 797.2  CREST +0.13  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2960.1 z 1081.4  CREST +0.13  samples 4  lawn  across Chasefield Way  hit terrain
+x 3074.7 z 859.1  CREST +0.13  samples 10  lawn  across Glenbarrett Court  hit terrain
+x 2858.6 z 943.4  CREST +0.13  samples 13  lawn  across Chastain Trail  hit terrain
+x 3141.2 z 1137.7  CREST +0.13  samples 2  lawn  across Chastain Glen Lane  hit terrain
+x 2950.0 z 1095.7  CREST +0.13  samples 8  lawn  across Chasefield Way  hit terrain
+x 3107.9 z 1079.3  CREST +0.12  samples 11  lawn  across Chastain Glen Lane  hit terrain
+x 2801.0 z 1093.8  CREST +0.12  samples 5  lawn  across Chastain Glen Lane  hit terrain
+x 3059.9 z 943.3  CREST +0.12  samples 4  grass strip/sidewalk  along Chastain Glen Lane  hit terrain
+x 3067.7 z 858.4  CREST +0.12  samples 2  lawn  across Glenbarrett Court  hit terrain
+x 3070.8 z 858.5  CREST +0.12  samples 4  lawn  across Glenbarrett Court  hit terrain
+x 2868.6 z 1112.6  CREST +0.12  samples 3  lawn  across Chastain Glen Lane  hit terrain
+x 3026.4 z 949.0  CREST +0.12  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2923.6 z 765.5  CREST +0.12  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2696.8 z 1030.4  CREST +0.12  samples 2  lawn  across Chastain Glen Lane  hit terrain
+x 2939.9 z 1115.4  CREST +0.12  samples 1  lawn  across Chasefield Way  hit terrain
+x 2892.4 z 912.2  CREST +0.12  samples 5  lawn  across Chastain Trail  hit terrain
+x 3157.1 z 921.7  CREST +0.12  samples 6  lawn  across Glenbarrett Court  hit terrain
+x 2903.8 z 1037.7  CREST +0.12  samples 2  lawn  across Courtfield Trace  hit terrain
+x 2938.4 z 1174.5  CREST +0.12  samples 6  grass strip/sidewalk  across Chastain Glen Lane  hit terrain
+x 3075.9 z 1248.7  CREST +0.12  samples 1  lawn  across Chastain Glen Lane  hit terrain
+x 2778.8 z 1004.3  CREST +0.12  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2901.7 z 1039.9  CREST +0.12  samples 2  lawn  across Courtfield Trace  hit terrain
+x 3021.5 z 947.8  CREST +0.12  samples 1  lawn  across Chastain Glen Lane  hit terrain
+x 2849.1 z 1117.5  CREST +0.12  samples 1  lawn  across Chastain Glen Lane  hit terrain
+
+== OTHER (largest first)
+x 2804.4 z 1098.2  OTHER +0.00  samples 1394  lawn/sidewalk/grass strip  across Chastain Glen Lane  hit sc6 kicker over house 1641 heap/sc6 kicker over house 1641
+x 2921.3 z 769.8  OTHER +0.00  samples 15  lawn  across Chastain Glen Lane  hit Monument collider
+x 2952.7 z 771.5  OTHER +0.00  samples 15  lawn  across Chastain Glen Lane  hit Monument collider
+
+== SAG (largest first)
+x 3069.6 z 1008.2  SAG -0.54  samples 394  lawn/sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 3067.1 z 996.4  SAG -0.41  samples 169  lawn/sidewalk/grass strip  across Chastain Glen Lane  hit terrain
+x 2987.9 z 1072.2  SAG -0.34  samples 169  sidewalk/lawn/grass strip  across Chasefield Way  hit terrain
+x 2939.3 z 754.0  SAG -0.28  samples 42  grass strip/sidewalk  across Chastain Glen Lane  hit terrain
+x 2949.0 z 766.9  SAG -0.27  samples 77  grass strip/sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 3067.0 z 951.4  SAG -0.27  samples 105  grass strip/sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 2729.8 z 984.7  SAG -0.26  samples 74  grass strip/sidewalk/lawn  across Chastain Place  hit terrain
+x 3138.6 z 1092.6  SAG -0.26  samples 54  grass strip/sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 2926.0 z 751.7  SAG -0.26  samples 52  lawn/sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2995.2 z 1063.3  SAG -0.25  samples 118  grass strip/sidewalk/lawn  across Chasefield Court  hit terrain
+x 2998.2 z 1089.5  SAG -0.25  samples 245  lawn  across Chasefield Court  hit terrain
+x 2990.1 z 936.1  SAG -0.23  samples 76  grass strip/sidewalk/lawn  across Courtfield Trace  hit terrain
+x 3015.8 z 1049.6  SAG -0.21  samples 150  lawn  across Chasefield Way  hit terrain
+x 2990.6 z 937.7  SAG -0.20  samples 305  sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 3134.2 z 1081.3  SAG -0.18  samples 25  grass strip/sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 3054.7 z 955.1  SAG -0.18  samples 14  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3081.2 z 998.3  SAG -0.17  samples 168  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3117.6 z 928.4  SAG -0.17  samples 412  lawn/sidewalk  across Glenbarrett Lane  hit terrain
+x 2953.0 z 755.1  SAG -0.17  samples 10  lawn  along Chastain Glen Lane  hit terrain
+x 2947.1 z 785.8  SAG -0.17  samples 137  sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 3133.8 z 1157.6  SAG -0.17  samples 150  sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 2936.4 z 883.4  SAG -0.17  samples 28  sidewalk/lawn/grass strip  along Chastain Glen Lane  hit terrain
+x 2824.5 z 991.5  SAG -0.16  samples 370  sidewalk/lawn  across Chastain Trail  hit terrain
+x 3063.8 z 985.8  SAG -0.16  samples 216  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3080.3 z 1040.5  SAG -0.16  samples 81  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 2937.2 z 764.2  SAG -0.16  samples 12  grass strip/sidewalk  along Chastain Glen Lane  hit terrain
+x 3059.9 z 967.2  SAG -0.16  samples 95  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 2979.5 z 955.9  SAG -0.15  samples 92  lawn/sidewalk  across Courtfield Trace  hit terrain
+x 3125.3 z 1130.1  SAG -0.15  samples 111  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3138.3 z 1138.1  SAG -0.15  samples 147  sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 2804.6 z 999.7  SAG -0.14  samples 21  lawn/sidewalk/grass strip  across Chastain Glen Lane  hit terrain
+x 3116.2 z 1169.0  SAG -0.14  samples 62  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 2974.0 z 962.1  SAG -0.14  samples 68  lawn/sidewalk  across Courtfield Trace  hit terrain
+x 2950.5 z 752.5  SAG -0.14  samples 6  grass strip  across Chastain Glen Lane  hit terrain
+x 2939.3 z 1173.2  SAG -0.14  samples 20  grass strip/sidewalk/lawn  across Chasefield Way  hit terrain
+x 2926.5 z 764.2  SAG -0.14  samples 6  sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 3088.8 z 1054.3  SAG -0.14  samples 63  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3095.7 z 1242.0  SAG -0.14  samples 20  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3086.4 z 1018.0  SAG -0.14  samples 18  lawn  across Chastain Glen Lane  hit terrain
+x 2951.6 z 1136.0  SAG -0.14  samples 59  sidewalk/lawn  across Chasefield Way  hit terrain
+x 3128.4 z 1102.4  SAG -0.13  samples 4  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 2851.1 z 1120.1  SAG -0.13  samples 13  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3106.6 z 1072.1  SAG -0.13  samples 41  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 2943.8 z 1162.9  SAG -0.13  samples 81  sidewalk/lawn  across Chasefield Way  hit terrain
+x 2999.9 z 939.3  SAG -0.13  samples 81  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3134.5 z 1078.5  SAG -0.13  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2919.8 z 1011.9  SAG -0.13  samples 19  sidewalk/lawn  across Courtfield Trace  hit terrain
+x 3078.9 z 947.1  SAG -0.13  samples 40  lawn  across Glenbarrett Lane  hit terrain
+x 2935.4 z 992.3  SAG -0.13  samples 23  lawn  across Courtfield Trace  hit terrain
+x 2973.6 z 1093.0  SAG -0.13  samples 8  lawn  across Chasefield Way  hit terrain
+x 3029.1 z 1034.5  SAG -0.13  samples 16  lawn/sidewalk  across Chasefield Way  hit terrain
+x 2893.3 z 1042.7  SAG -0.13  samples 9  sidewalk/lawn  across Courtfield Trace  hit terrain
+x 3120.8 z 1149.5  SAG -0.13  samples 17  lawn/sidewalk  across Chastain Glen Lane  hit terrain
+x 3007.4 z 1056.5  SAG -0.12  samples 3  lawn  across Chasefield Way  hit terrain
+x 2938.9 z 750.8  SAG -0.12  samples 2  grass strip  along Chastain Glen Lane  hit terrain
+x 2855.0 z 1072.8  SAG -0.12  samples 7  lawn  across Chastain Glen Lane  hit terrain
+x 2815.6 z 1004.9  SAG -0.12  samples 2  sidewalk  across Chastain Trail  hit terrain
+x 3136.0 z 918.6  SAG -0.12  samples 3  sidewalk  across Glenbarrett Lane  hit terrain
+x 3077.4 z 978.7  SAG -0.12  samples 7  lawn  across Chastain Glen Lane  hit terrain
+x 3117.6 z 1062.7  SAG -0.12  samples 4  lawn  across Chastain Glen Lane  hit terrain
+x 2883.2 z 1032.6  SAG -0.12  samples 2  lawn  across Courtfield Trace  hit terrain
+x 2908.8 z 1026.1  SAG -0.12  samples 1  lawn  across Courtfield Trace  hit terrain
+x 2910.1 z 1024.6  SAG -0.12  samples 1  lawn  across Courtfield Trace  hit terrain
+x 3096.4 z 1239.2  SAG -0.12  samples 1  sidewalk  across Chastain Glen Lane  hit terrain
+x 2950.6 z 1136.8  SAG -0.12  samples 1  sidewalk  across Chasefield Way  hit terrain
+x 3097.6 z 1042.1  SAG -0.12  samples 1  lawn  across Chastain Glen Lane  hit terrain
+
+== STEEP (largest first)
+x 3069.8 z 1009.1  STEEP +47.06  samples 102  lawn/sidewalk/grass strip/curb  along Chastain Glen Lane  hit terrain
+x 3066.6 z 996.1  STEEP +43.41  samples 99  lawn/sidewalk/grass strip/curb  across Chasefield Way  hit terrain
+x 2987.9 z 1073.1  STEEP +35.82  samples 34  lawn/sidewalk  across Chasefield Court  hit terrain
+x 3083.3 z 997.9  STEEP +32.96  samples 49  lawn  across Chastain Glen Lane  hit terrain
+x 2999.6 z 1089.7  STEEP +32.85  samples 114  lawn  across Chasefield Court  hit terrain
+x 3136.7 z 1157.2  STEEP +32.51  samples 45  lawn  across Chastain Glen Lane  hit terrain
+x 3139.4 z 1092.8  STEEP +32.07  samples 9  sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 3005.5 z 1099.6  STEEP +31.52  samples 18  lawn  across Chasefield Court  hit terrain
+x 3121.4 z 929.4  STEEP +31.50  samples 44  lawn  across Glenbarrett Lane  hit terrain
+x 3005.6 z 1103.2  STEEP +31.47  samples 3  lawn  across Chasefield Court  hit terrain
+x 2914.5 z 804.2  STEEP +30.47  samples 18  lawn  across Chastain Glen Lane  hit terrain
+
+== STEP (largest first)
+x 3066.0 z 996.6  STEP +0.15  samples 84  lawn/sidewalk/grass strip/curb  across Chastain Glen Lane  hit terrain
+x 3069.8 z 1008.8  STEP +0.14  samples 91  lawn/sidewalk/grass strip/curb  along Chastain Glen Lane  hit terrain
+x 3067.8 z 951.7  STEP -0.10  samples 11  sidewalk  along Glenbarrett Lane  hit terrain
+x 3137.9 z 1091.8  STEP +0.10  samples 25  curb/grass strip/sidewalk/lawn  across Chastain Glen Lane  hit terrain
+x 2949.3 z 766.9  STEP -0.09  samples 32  grass strip/sidewalk/lawn  along Chastain Glen Lane  hit terrain
+x 2730.7 z 983.0  STEP -0.08  samples 16  sidewalk/grass strip/lawn  across Chastain Place  hit terrain
+x 2988.4 z 1069.5  STEP -0.08  samples 43  sidewalk/grass strip/lawn/curb  across Chasefield Court  hit terrain
+x 2990.4 z 935.5  STEP -0.07  samples 19  grass strip/sidewalk/lawn  along Courtfield Trace  hit terrain
+x 2926.1 z 750.6  STEP +0.07  samples 5  lawn  along Chastain Glen Lane  hit terrain
+x 2928.0 z 752.0  STEP +0.07  samples 5  sidewalk  along Chastain Glen Lane  hit terrain
+x 3133.3 z 1083.1  STEP +0.07  samples 3  grass strip  across Chastain Glen Lane  hit terrain
+x 2937.6 z 764.2  STEP +0.07  samples 10  sidewalk/grass strip  across Chastain Glen Lane  hit terrain
+x 2992.6 z 1063.2  STEP -0.07  samples 4  curb  across Chasefield Court  hit terrain
+x 2940.3 z 754.2  STEP -0.06  samples 7  sidewalk/grass strip  along Chastain Glen Lane  hit terrain
+x 2921.2 z 750.1  STEP -0.06  samples 2  lawn  across Chastain Glen Lane  hit terrain
+x 2988.0 z 1074.9  STEP +0.06  samples 1  lawn  across Chasefield Way  hit terrain

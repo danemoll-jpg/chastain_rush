@@ -1,0 +1,33 @@
+Round 15 check, 2026-10-10 16:05, the exe, 3840 x 2160. Sound muted throughout (AudioListener.volume 0).
+
+=== Shortcuts as the AI drives them: each vehicle once down each official shortcut (RoadDriver, made to take it)
+    The AI starts on the lap 120 m before the turn-off at 18 m/s, its lap already running; a run counts when the race
+    gives it the shortcut (its checkpoint forgiven, no penalty) and it is back on the lap 30 m past the rejoin, upright,
+    without a recovery, within 40 s.
+  Street Classic     Two-house drop   OK     19.9 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Street Classic     Rooftop leap     OK     17.9 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Longroof GT        Two-house drop   OK     20.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Longroof GT        Rooftop leap     OK     18.0 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Needle 600         Two-house drop   OK     19.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Needle 600         Rooftop leap     OK     16.7 s, shortcut given yes, recoveries 0, worst tilt 37 deg, longest stop 0.0 s
+  Trail Four         Two-house drop   OK     19.3 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Trail Four         Rooftop leap     OK     16.9 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  Sundown Roadster   Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Sundown Roadster   Rooftop leap     OK     17.7 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Highball Fastback  Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Highball Fastback  Rooftop leap     OK     18.0 s, shortcut given yes, recoveries 0, worst tilt 33 deg, longest stop 0.0 s
+  Pebble Coupe       Two-house drop   OK     19.8 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Pebble Coupe       Rooftop leap     OK     17.7 s, shortcut given yes, recoveries 0, worst tilt 34 deg, longest stop 0.0 s
+  Skyfin Cruiser     Two-house drop   OK     20.2 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Skyfin Cruiser     Rooftop leap     OK     18.3 s, shortcut given yes, recoveries 0, worst tilt 32 deg, longest stop 0.0 s
+  Ridge Scrambler    Two-house drop   OK     19.2 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Ridge Scrambler    Rooftop leap     OK     16.8 s, shortcut given yes, recoveries 0, worst tilt 36 deg, longest stop 0.0 s
+  Drifter Twin       Two-house drop   OK     19.3 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Drifter Twin       Rooftop leap     OK     16.9 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  Turf Rocket        Two-house drop   OK     19.0 s, shortcut given yes, recoveries 0, worst tilt 29 deg, longest stop 0.0 s
+  Turf Rocket        Rooftop leap     OK     16.5 s, shortcut given yes, recoveries 0, worst tilt 35 deg, longest stop 0.0 s
+  -> Two-house drop: taken cleanly by 11 of 11
+  -> Rooftop leap: taken cleanly by 11 of 11
+PASS  every vehicle tried on both shortcuts  -  22 runs
+
+ALL 1 CHECKS PASSED

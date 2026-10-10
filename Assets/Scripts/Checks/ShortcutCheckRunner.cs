@@ -58,7 +58,7 @@ namespace ChastainRush
                 }
             {
                 var argv0 = Environment.GetCommandLineArgs();
-                for (int i = 0; i + 1 < argv0.Length; i++) { if (argv0[i] == "-shortcutSpeeds") speeds = argv0[i + 1].Split(',').Select(float.Parse).ToArray(); if (argv0[i] == "-shortcutLatAcc") LatAcc = float.Parse(argv0[i + 1]); }
+                for (int i = 0; i + 1 < argv0.Length; i++) { if (argv0[i] == "-shortcutSpeeds") speeds = argv0[i + 1].Split(',').Select(float.Parse).ToArray(); if (argv0[i] == "-shortcutLatAcc") LatAcc = float.Parse(argv0[i + 1]); if (argv0[i] == "-shortcutLines") lines = argv0[i + 1].Split(','); }
             }
             car.enabled = false;   // this runner steps the car itself
             report.AppendLine($"Shortcut check, {DateTime.Now:yyyy-MM-dd HH:mm}. Route {route.Name}, lap {route.LapLength:0} m, {route.Shortcuts.Count} official shortcuts in the route file.");
@@ -76,10 +76,17 @@ namespace ChastainRush
                 foreach (float v in speeds)
                 {
                     var road = new Trial(); yield return RunTrial(t, v, false, road);
+                    foreach (var ln in lines)
+                    {
+                    line = ln;
                     var sc = new Trial(); yield return RunTrial(t, v, true, sc);
                     sc.roadTime = road.time; rows.Add(sc);
-                    report.AppendLine($"  {v,4:0} m/s  road {Fmt(road)}   shortcut {Fmt(sc)}");
+                    report.AppendLine($"  {v,4:0} m/s{(lines.Length > 1 ? $" {LineName(ln),-10}" : "")}  road {Fmt(road)}   shortcut {Fmt(sc)}");
+                    if (sc.snags.Count > 0) report.AppendLine($"           snags: {string.Join("; ", sc.snags)}");
+                    snagCsv.AppendLine($"{t.id},{VehicleName()},{v},{ln},{sc.result},{sc.snags.Count},\"{string.Join(" | ", sc.snags)}\"");
                     csv.AppendLine($"{t.id},shortcut,{v},{sc.result},{sc.time:0.00},{road.time:0.00},{sc.air:0.00},{sc.flights.Count},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.dur) : 0):0.00},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.dist) : 0):0.0},{(sc.flights.Count > 0 ? sc.flights.Max(f => f.peak) : 0):0.0},{sc.worstTilt:0},{sc.touchPitch:0},{string.Join(" ", sc.houseHits)}");
+                    }
+                    line = "0";
                 }
                 var clean = rows.Where(r => r.result == "clean").ToList();
                 int bad = rows.Count(r => r.result != "clean");
@@ -106,6 +113,7 @@ namespace ChastainRush
             Directory.CreateDirectory(outputDir);
             File.WriteAllText(Path.Combine(outputDir, "shortcut_check.txt"), report.ToString());
             File.WriteAllText(Path.Combine(outputDir, "shortcut_runs.csv"), csv.ToString());
+            File.WriteAllText(Path.Combine(outputDir, "shortcut_snags.csv"), snagCsv.ToString());   // Round 16 (E)
             Debug.Log("[ShortcutCheck]\n" + report);
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.Exit(fails == 0 ? 0 : 1);
@@ -122,6 +130,7 @@ namespace ChastainRush
             public float speed, time, roadTime, air, worstTilt, touchPitch, roofGap = float.MaxValue; public string result = "timeout", endNote = "";
             public List<Flight> flights = new List<Flight>(); public List<string> houseHits = new List<string>();
             public List<string> ramps = new List<string>();   // Round 10: speed onto, on and off each ramp / deck / floor (item 2j)
+            public List<string> snags = new List<string>();   // Round 16 (E): body contacts that took speed off, and sudden losses
         }
 
         static string Fmt(Trial t)
@@ -143,7 +152,7 @@ namespace ChastainRush
             tr.speed = v;
             FenceChunk.RestoreAll();
             var path = Lap(t.leaveLapS - t.startBack, t.leaveLapS);
-            if (shortcut) { foreach (var p in t.path) path.Add(G(p)); path.AddRange(Lap(t.rejoinLapS, t.rejoinLapS + 40f)); }
+            if (shortcut) { foreach (var p in t.path) path.Add(G(p)); path.AddRange(Lap(t.rejoinLapS, t.rejoinLapS + 40f)); path = OffsetLine(path); }
             else path.AddRange(Lap(t.leaveLapS, t.rejoinLapS + 40f));
             var start = route.PointAt(route.GateS + t.leaveLapS - t.startBack, out var f0);
             var finish = route.PointAt(route.GateS + t.rejoinLapS + 20f, out var f1);
@@ -151,6 +160,7 @@ namespace ChastainRush
             yield return new WaitForFixedUpdate();
             car.Body.linearVelocity = f0 * v;
             drive = path; next = 0; want = v; contacts.Clear(); active = true;
+            curTrial = shortcut ? tr : null; float prevSpeed = v; braking = false;
             roofGap = float.MaxValue;
             trace = shortcut ? new StringBuilder("t,x,z,y,above_ground,speed,vy,wheels,pitch,roll,cte\n") : null; traceStep = 0; traceT = 0f;
             float time = 0f, slow = 0f, airRun = 0f, tiltWatch = 0f, lastFlightEnd = -1f; bool wasAir = false;
@@ -178,6 +188,10 @@ namespace ChastainRush
                 float tilt = Vector3.Angle(car.transform.up, Vector3.up);
                 if (tiltWatch > 0f) { tr.worstTilt = Mathf.Max(tr.worstTilt, tilt); tiltWatch -= dt; }
                 if (tilt > 75f) { tr.result = "rolled"; tr.endNote = $"at ({pos.x:0},{pos.z:0})"; break; }
+                // Round 16 (E): a sudden loss of speed (more than 1.5 m/s in one step, about 7 g) while not braking
+                float spNow = car.Body.linearVelocity.magnitude;
+                if (shortcut && !braking && prevSpeed - spNow > 1.5f && tr.snags.Count < 12) tr.snags.Add($"LOSS {prevSpeed:0.0}->{spNow:0.0} m/s at ({pos.x:0.0},{pos.z:0.0}) {pos.y - RaceRoute.Ground(pos.x, pos.z).y:0.0} m up, {car.GroundedWheels} wheels down, over {Under(pos)}");
+                prevSpeed = spNow;
                 slow = car.Body.linearVelocity.magnitude < 1.5f ? slow + dt : 0f;
                 if (slow > 2.5f) { tr.result = "stuck"; tr.endNote = $"stopped at ({pos.x:0},{pos.z:0}), {pos.y - RaceRoute.Ground(pos.x, pos.z).y:0.0} m above the ground"; break; }
                 if (DistToPath(pos) > 25f) { tr.result = "lost"; tr.endNote = $"{DistToPath(pos):0} m off the line at ({pos.x:0},{pos.z:0})"; break; }
@@ -186,7 +200,7 @@ namespace ChastainRush
                 if (prevSide < 0f && side >= 0f && Vector3.Distance(Flat(pos), Flat(finish)) < 20f) { tr.time = time; tr.result = "finished"; break; }
                 prevSide = side;
             }
-            active = false;
+            active = false; curTrial = null;
             tr.roofGap = roofGap;
             if (trace != null) { foreach (var c in contacts) if (c.speed > 4f && !c.name.StartsWith("rode on")) trace.AppendLine($"# contact {c.name} {c.speed:0.0}");
                 Directory.CreateDirectory(Path.Combine(outputDir, "traces")); File.WriteAllText(Path.Combine(outputDir, "traces", $"{t.id}_{v:0}.csv"), trace.ToString()); trace = null; }
@@ -270,6 +284,7 @@ namespace ChastainRush
                     w = Mathf.Min(w, Mathf.Sqrt(vb * vb + 2f * BrakeAcc * Mathf.Max(0f, d - 6f)));
                 }
             }
+            braking = speed > w + 1.5f;
             car.Simulate(speed < w ? 1f : 0f, speed > w + 1.5f ? Mathf.Clamp01((speed - w) / 4f) : 0f, steer, Time.fixedDeltaTime);
             // clearance over the jumped house's roof: the gap from the car's underside to the roof below it
             foreach (var hh in Physics.RaycastAll(pos, Vector3.down, 20f, ~0, QueryTriggerInteraction.Ignore))
@@ -314,6 +329,7 @@ namespace ChastainRush
             if (!active) return;
             var n = c.collider.name; var t = c.collider.transform;
             string full = t.parent ? t.parent.name + "/" + n : n;
+            Snag(c, "hit");
             contacts.Add((full + $" @({car.transform.position.x:0.0},{car.transform.position.z:0.0})", c.relativeVelocity.magnitude));
             if (trace != null && c.contactCount > 0) { var cp = c.GetContact(0); trace.AppendLine($"# enter impulse {c.impulse.magnitude / car.Body.mass:0.0} m/s"); trace.AppendLine($"# body contact {full} at {traceT:0.00}s, rel {c.relativeVelocity.magnitude:0.0} m/s, normal ({cp.normal.x:0.00},{cp.normal.y:0.00},{cp.normal.z:0.00}), local point ({car.transform.InverseTransformPoint(cp.point).x:0.00},{car.transform.InverseTransformPoint(cp.point).y:0.00},{car.transform.InverseTransformPoint(cp.point).z:0.00}), speed {car.Body.linearVelocity.magnitude:0.0}"); }
         }
@@ -321,11 +337,60 @@ namespace ChastainRush
         // Round 10 (item 2j): any contact that takes more than 2 m/s off the car in one step, with its collider and normal
         public void OnStay(Collision c)
         {
+            if (active) Snag(c, "stay");
             if (!active || trace == null) return;
             float dv = c.impulse.magnitude / car.Body.mass;
             if (dv < 2f || c.contactCount == 0) return;
             var cp = c.GetContact(0); var t = c.collider.transform;
             trace.AppendLine($"# stay {(t.parent ? t.parent.name + "/" : "")}{c.collider.name} at {traceT:0.00}s, impulse {dv:0.0} m/s, normal ({cp.normal.x:0.00},{cp.normal.y:0.00},{cp.normal.z:0.00}), local point ({car.transform.InverseTransformPoint(cp.point).x:0.00},{car.transform.InverseTransformPoint(cp.point).y:0.00},{car.transform.InverseTransformPoint(cp.point).z:0.00}), {c.contactCount} points, speed {car.Body.linearVelocity.magnitude:0.0}");
+        }
+
+        // Round 16 (E): -shortcutLines drives the shortcut off its line: "1.5" = 1.5 m left of it all the way (negative: right);
+        // "a3" = 3 m left at the run's start, onto the line by the kicker's foot (into it at an angle out of the corner before).
+        // "0" = on the line (the default). Snags: body contacts that push against the motion with more than 1 m/s, and losses.
+        string[] lines = { "0" }; string line = "0"; bool braking; Trial curTrial;
+        readonly StringBuilder snagCsv = new StringBuilder("shortcut,vehicle,speed,line,result,snags,details\n");
+        static string LineName(string ln) => ln == "0" ? "on line" : ln.StartsWith("a") ? $"angle {ln.Substring(1)}" : $"offset {ln}";
+        string VehicleName() { var cfg = car.GetComponent<VehicleConfiguration>(); return cfg && cfg.Profile != null ? cfg.Profile.Id : car.name; }
+        List<Vector3> OffsetLine(List<Vector3> path)
+        {
+            if (line == "0") return path;
+            bool angle = line.StartsWith("a"); float off = float.Parse(angle ? line.Substring(1) : line);
+            var c = new float[path.Count]; for (int i = 1; i < path.Count; i++) c[i] = c[i - 1] + Vector3.Distance(Flat(path[i]), Flat(path[i - 1]));
+            // the kicker's foot: the path point nearest the kicker's low end
+            float footS = c[c.Length - 1] * 0.25f;
+            var kick = FindObjectsByType<MeshCollider>().FirstOrDefault(m => m.name.StartsWith("sc") && m.name.Contains("kicker") && !m.name.Contains("heap"));
+            if (kick)
+            {
+                var b = kick.bounds;
+                int foot = 0; float bd = float.MaxValue;
+                for (int i = 0; i < path.Count; i++) { float d = (Flat(path[i]) - Flat(b.center)).sqrMagnitude; if (d < bd) { bd = d; foot = i; } }
+                footS = Mathf.Max(1f, c[foot] - b.extents.magnitude * 0.6f);
+            }
+            var o = new List<Vector3>();
+            for (int i = 0; i < path.Count; i++)
+            {
+                var d = Flat(path[Mathf.Min(i + 1, path.Count - 1)] - path[Mathf.Max(i - 1, 0)]).normalized; var left = Vector3.Cross(d, Vector3.up);
+                float k = angle ? Mathf.Clamp01(1f - c[i] / footS) : 1f;
+                var q = path[i] + left * off * k; o.Add(G(new Vector2(q.x, q.z)));
+            }
+            return o;
+        }
+        string Under(Vector3 pos)
+        {
+            var hits = Physics.RaycastAll(pos + Vector3.up * 0.5f, Vector3.down, 4f, ~0, QueryTriggerInteraction.Ignore).Where(h => h.collider.attachedRigidbody == null).OrderBy(h => h.distance).ToArray();
+            return hits.Length > 0 ? (hits[0].collider.transform.parent ? hits[0].collider.transform.parent.name + "/" : "") + hits[0].collider.name : "nothing";
+        }
+        void Snag(Collision c, string kind)
+        {
+            if (curTrial == null || curTrial.snags.Count >= 12 || c.contactCount == 0) return;
+            float dv = c.impulse.magnitude / car.Body.mass;
+            if (dv < 1.0f) return;
+            var cp = c.GetContact(0); var vel = car.Body.linearVelocity;
+            float against = vel.sqrMagnitude > 1f ? -Vector3.Dot(cp.normal, vel.normalized) : 0f;   // how much the push opposes the motion
+            if (against < 0.25f) return;   // a push up (the ground carrying the body) is not a snag
+            var t = c.collider.transform; var lp = car.transform.InverseTransformPoint(cp.point);
+            curTrial.snags.Add($"{kind.ToUpper()} {(t.parent ? t.parent.name + "/" : "")}{c.collider.name} {dv:0.0} m/s at ({car.transform.position.x:0.0},{car.transform.position.z:0.0}) normal ({cp.normal.x:0.00},{cp.normal.y:0.00},{cp.normal.z:0.00}) body point ({lp.x:0.00},{lp.y:0.00},{lp.z:0.00}) speed {vel.magnitude:0.0}");
         }
 
         sealed class ContactProbe : MonoBehaviour

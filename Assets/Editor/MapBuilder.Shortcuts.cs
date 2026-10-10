@@ -540,8 +540,8 @@ namespace ChastainRush
         }
 
         // Round 12, item 3: a home-made sign at the turn-off: a plywood board 1.6 x 0.8 m on two posts, its painted face
-        // (Tools/handmade/make_shortcut_sign.py) on the front only, lit and depth-tested (hidden by terrain like the board). No
-        // collider: it stands 3 m or more off the line, like the other street furniture that is not breakable.
+        // (Tools/handmade/make_shortcut_sign.py) on the front only, lit and depth-tested (hidden by terrain like the board). It
+        // stands 3 m or more off the line; breakable since Round 16.
         static void BuildShortcutSign(Neighborhood hood, TerrainGrid terrain, Materials mats, Transform parent, ScShortcut sc)
         {
             if (!hood.SignSpots.TryGetValue(sc.id, out var s)) return;
@@ -549,19 +549,23 @@ namespace ChastainRush
             float lo = float.MaxValue, hi = float.MinValue;
             foreach (float u in new[] { -0.6f, 0.6f }) { var q = f.P(u, 0f, -0.05f); float g = Ground(terrain, q.x, q.z); lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g); }
             f.O.y = hi;
-            var mb = new MeshBuilder();
+            // Round 16 (D): breakable like a mailbox (FenceChunk: a trigger, a little speed lost, a wood sound, whole again at race
+            // start); posts and board fly in pieces, the painted face with them
+            var br = new Breakables();
+            var mb = br.Begin(s.at);
             var post = new Color(0.40f, 0.31f, 0.22f); var edge = new Color(0.62f, 0.52f, 0.38f);
-            foreach (float u in new[] { -0.6f, 0.6f }) BoxF(mb, f, u - 0.045f, u + 0.045f, lo - hi - 0.3f, 1.85f, -0.1f, -0.01f, post);
-            BoxF(mb, f, -0.8f, 0.8f, 1.0f, 1.8f, -0.01f, 0.03f, edge);
-            var go = mb.ToObject("Shortcut sign " + sc.id, mats.House, parent, false);
-            go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            foreach (float u in new[] { -0.6f, 0.6f }) br.Piece(() => BoxF(mb, f, u - 0.045f, u + 0.045f, lo - hi - 0.3f, 1.85f, -0.1f, -0.01f, post), lo + 0.05f);
+            foreach (float u in new[] { -0.4f, 0.4f }) br.Piece(() => BoxF(mb, f, u - 0.4f, u + 0.4f, 1.0f, 1.8f, -0.01f, 0.03f, edge), lo + 0.05f);
             var mat = ShortcutSignMaterial();
             if (mat != null)
             {
                 var plate = SignPlate(parent, f.P(0f, 1.4f, 0.035f), -f.F, 1f, mat);   // the quad's front is -z locally
                 plate.name = "Shortcut sign face " + sc.id;
                 plate.transform.localScale = new Vector3(1.6f, 0.8f, 1f);
+                br.Face(plate);
             }
+            br.End(f.P(0f, 1.0f, -0.03f), f.F, 1.9f, 2.2f, 0.8f);
+            br.ToObjects("Shortcut sign " + sc.id, mats.House, parent, 1f, BreakSounds.Kind.Wood);
             Debug.Log($"[Round12] {sc.id}: sign at ({s.at.x:0.0}, {s.at.y:0.0}), facing ({s.facing.x:0.00}, {s.facing.y:0.00})");
         }
 
@@ -606,11 +610,14 @@ namespace ChastainRush
         // unchanged. Round the whole outline the earth falls away to the grass: from the top's edge over a rounded shoulder
         // to a toe on the ground, about 40 degrees, wider where the top stands higher and longest behind the lip, the
         // outline wavering by up to a fifth so it reads as a heap and not a ramp. The skirt runs from the top's edge down to
-        // just under the ground, so nothing floats and nothing is open underneath. It has no collider of its own: a car that
-        // clips the side of the heap is not snagged by it.
-        static MeshBuilder DirtPileLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain)
+        // just under the ground, so nothing floats and nothing is open underneath.
+        // Round 16 (B, BUG-002): the skirt is solid too ('heap', the same faces, a collider of its own made by BuildPrism):
+        // before, it had none and a vehicle drove into it up to the prism's upright side under it. Its top edge is the driven
+        // face's own edge, so the face, the lip and the jump are unchanged.
+        static MeshBuilder DirtPileLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain, out MeshBuilder heap)
         {
             var mb = new MeshBuilder();
+            heap = new MeshBuilder();
             float S(Vector2 p) => Vector2.Dot(p - O, U);
             var packed = new Color(0.40f, 0.28f, 0.18f);   // the driven face: packed, darker
             var loose = new Color(0.47f, 0.34f, 0.22f);    // the heap's sides: drier, looser
@@ -668,10 +675,10 @@ namespace ChastainRush
                 int j = (i + 1) % ring.Count;
                 var outward = new Vector3(ring[i].n.x + ring[j].n.x, 0.8f, ring[i].n.y + ring[j].n.y);
                 mb.Tint = Shade(loose, 0.82f + 0.2f * Hash01(i, 313));
-                if ((top[i] - top[j]).sqrMagnitude > 1e-6f) Face(mb, top[i], top[j], shoulder[j], shoulder[i], outward);
-                else TriFace(mb, top[i], shoulder[j], shoulder[i], outward);   // a corner fan: the top edge is one point
+                if ((top[i] - top[j]).sqrMagnitude > 1e-6f) { Face(mb, top[i], top[j], shoulder[j], shoulder[i], outward); Face(heap, top[i], top[j], shoulder[j], shoulder[i], outward); }
+                else { TriFace(mb, top[i], shoulder[j], shoulder[i], outward); TriFace(heap, top[i], shoulder[j], shoulder[i], outward); }   // a corner fan: the top edge is one point
                 mb.Tint = Shade(loose, 0.9f + 0.2f * Hash01(i, 317));
-                Face(mb, shoulder[i], shoulder[j], toe[j], toe[i], outward);
+                Face(mb, shoulder[i], shoulder[j], toe[j], toe[i], outward); Face(heap, shoulder[i], shoulder[j], toe[j], toe[i], outward);
             }
             // a few clods of earth rolled down to the toe
             int clods = 0;
@@ -760,7 +767,8 @@ namespace ChastainRush
             // Round 12, item 9 / Round 13, item 2 / Round 14, item 7: the kicker's LOOK only (a dirt pile since Round 14, a flatbed in Round 13, hay bales in Round
             // 12). The surface, its curve, pitch, height, lip and the collider below are exactly as before (the collider is still
             // made from mb); what is drawn sits on that same surface and is held up from the ground, so nothing floats
-            var look = pr.kind == "kicker" ? DirtPileLook(poly, O, U, Lv, cuts, Top, terrain) : mb;
+            MeshBuilder heap = null;
+            var look = pr.kind == "kicker" ? DirtPileLook(poly, O, U, Lv, cuts, Top, terrain, out heap) : mb;
             var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
             var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing";   // Round 10: RampHold
@@ -777,6 +785,17 @@ namespace ChastainRush
             cm.SetVertices(wv); cm.SetTriangles(wt, 0); cm.RecalculateNormals(); cm.RecalculateBounds();
             AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/{pr.name} collider.asset");
             var mc = go.AddComponent<MeshCollider>(); mc.sharedMesh = cm; mc.sharedMaterial = RampMaterial();
+            // Round 16 (B): the heap's skirt, solid, frictionless like the ramp, on a child (not a held surface; its name starts
+            // "sc" so VehicleSurfaceContacts treats it as a ramp surface: its slope, not the triangle edges, pushes the body)
+            if (heap != null && heap.Tris.Count > 0)
+            {
+                var hm = new Mesh { name = pr.name + " heap collider", indexFormat = IndexFormat.UInt32 };
+                hm.SetVertices(heap.Verts); hm.SetTriangles(heap.Tris, 0); hm.RecalculateNormals(); hm.RecalculateBounds();
+                AssetDatabase.CreateAsset(hm, $"{GeneratedDir}/Meshes/{pr.name} heap collider.asset");
+                var hgo = new GameObject(pr.name + " heap"); hgo.transform.SetParent(go.transform, false);
+                var hc = hgo.AddComponent<MeshCollider>(); hc.sharedMesh = hm; hc.sharedMaterial = RampMaterial();
+                Debug.Log($"[Round16] B (BUG-002): {pr.name}: the dirt pile's skirt is solid ({heap.Tris.Count / 3} triangles)");
+            }
         }
     }
 }

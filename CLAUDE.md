@@ -140,6 +140,9 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   `Geese\goose_honk*` and `Breaks\wood*|metal*|glass*|water*` (.wav/.ogg/.mp3). Water beds are cut by the map build
   (`MapBuilder.Water.cs`), not mapgen. A code-only exe rebuild during a round: add `-playerBuildKeepScene` to the
   Build Executable batch line (never for the round's last build).
+- Round 16: `ChastainRush.GrassScan.Run [-grassOut <file>]` (Editor batch, report only: steps, crests and steep banks of the
+  ground across and along every Chastain Glen street, curb to lawn). The shortcut check takes `-shortcutLines 0,1.5,-1.5,a4`
+  (off the line / at an angle into it) and writes `shortcut_snags.csv`. Breakable signs: `Signs3D` / `Breakables.Face`.
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**

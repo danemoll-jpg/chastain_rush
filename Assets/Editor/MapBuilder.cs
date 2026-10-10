@@ -88,6 +88,7 @@ namespace ChastainRush
             var hood = Neighborhood.Load(map, terrain);
             hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
             CarveWaterBeds(map, terrain);   // Round 15 (item 2): a bed under every pond, lake and stream (MapBuilder.Water.cs)
+            BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);

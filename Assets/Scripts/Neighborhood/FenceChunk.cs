@@ -21,6 +21,8 @@ namespace ChastainRush
         public Panel[] panels;
         public bool[] broken;
         public BreakSounds.Kind sound;     // Round 15: what it sounds like when a panel breaks (set by MapBuilder)
+        public MeshRenderer[] faces;       // Round 16 (D): a sign's printed face (its own textured quad), hidden and thrown off with its panel
+        public int[] facePanel;            // the panel each face belongs to
         public float debrisDrop = 0.55f;   // Round 9: how far below a piece's centre its debris comes to rest (mailboxes use more: the box sits 1.2 m up)
 
         // tuning
@@ -86,6 +88,9 @@ namespace ChastainRush
             }
             live.vertices = current;
             live.RecalculateBounds();
+            if (faces != null)
+                for (int f = 0; f < faces.Length; f++)
+                    if (facePanel[f] == panelIndex && faces[f] && faces[f].enabled) { SpawnFace(faces[f], dir, speed, f, pieces[panel.firstPiece].restY); faces[f].enabled = false; }
             BreakSounds.Play(transform.TransformPoint(panel.centre), speed, sound);   // Round 15, item 3
             PanelBroken?.Invoke(this, panelIndex, transform.TransformPoint(panel.centre));
             // a little speed lost, at most MaxCostPerStep in one physics step however many panels go at once
@@ -126,6 +131,27 @@ namespace ChastainRush
             d.spin = new Vector3(120f + 160f * h, 80f * (h - 0.5f), 260f * (0.5f - h));
             d.age = 0f;
             d.floorY = piece.restY != 0f ? piece.restY : transform.TransformPoint(piece.centre).y - debrisDrop;
+            d.go.SetActive(true);
+            moving.Add(d);
+        }
+
+        // Round 16 (D): a sign face flies off like a piece: its quad (scale baked in) with its own material
+        void SpawnFace(MeshRenderer face, Vector3 dir, float speed, int salt, float restY)
+        {
+            while (moving.Count >= MaxMovingPieces) Recycle(moving[0]);
+            var d = pool.Count > 0 ? pool.Pop() : MakeDebris();
+            var src = face.GetComponent<MeshFilter>().sharedMesh; var t = face.transform; var c = t.position;
+            var sv = src.vertices; var verts = new Vector3[sv.Length]; var nms = src.normals;
+            for (int i = 0; i < sv.Length; i++) { verts[i] = t.TransformPoint(sv[i]) - c; nms[i] = t.TransformDirection(nms[i]); }
+            var m = new Mesh { name = "sign face piece" };
+            m.vertices = verts; m.normals = nms; m.uv = src.uv; m.triangles = src.triangles; m.RecalculateBounds();
+            d.mesh = m; d.mf.sharedMesh = m; d.mr.sharedMaterial = face.sharedMaterial;
+            d.go.transform.SetPositionAndRotation(c, Quaternion.identity);
+            float h = (salt * 0.37f + 0.21f) % 1f;
+            d.vel = dir * Mathf.Clamp(speed * 0.2f, 1f, 6f) + Vector3.up * Mathf.Clamp(speed * 0.05f + 0.8f * h, 0.6f, 2.2f);
+            d.spin = new Vector3(180f + 200f * h, 120f * (h - 0.5f), 220f * (0.5f - h));
+            d.age = 0f;
+            d.floorY = restY != 0f ? restY : c.y - debrisDrop;   // on the ground beside its post
             d.go.SetActive(true);
             moving.Add(d);
         }
@@ -176,6 +202,7 @@ namespace ChastainRush
             current = (Vector3[])original.Clone();
             live.vertices = current;
             live.RecalculateBounds();
+            if (faces != null) foreach (var f in faces) if (f) f.enabled = true;   // Round 16 (D)
         }
 
         // Called when a race starts or restarts: every broken fence is whole again, flying pieces vanish.

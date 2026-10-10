@@ -67,6 +67,50 @@ namespace ChastainRush
 
         // ------------------------------------------------------------ the pond
 
+        // Round 16 (A, BUG-001): the culvert headwall stood on the bank with its back and sides in the open. The pipes run
+        // into the ground, so the bank is raised round the wall only: level with the wall just under its coping behind it and
+        // at its wing walls, then down 1 in 3 to the ground. Raise only; never in the pond, fades out 2 to 4 m from roads and
+        // drives (so no road moves). Runs right after the beds are cut, before anything samples the ground, so the fence,
+        // trees, walk and geese stand on the new bank. Same placement as the wall in BuildPond.
+        static void BuryCulvert(MapData map, Neighborhood hood, TerrainGrid terrain)
+        {
+            if (hood.PondRing.Count < 3 || Beds == null || !Beds.Level.TryGetValue(hood.PondIndex, out float lidar)) return;
+            float level = lidar + PondLift;
+            var shore = MakeShore(hood.PondRing);
+            int roadShore = 0; float bestRoad = float.MaxValue;
+            for (int i = 0; i < shore.p.Count; i++)
+            {
+                hood.Nearest(shore.p[i], out _, out float half, out _, out float d);
+                if (d - half < bestRoad) { bestRoad = d - half; roadShore = i; }
+            }
+            var o = shore.p[roadShore]; var nOut = shore.n[roadShore];
+            var f = MakeFrame(new Vector3(o.x + nOut.x * 0.8f, level - 0.45f, o.y + nOut.y * 0.8f), -nOut, 1f);
+            float baseY = level - 0.45f, backTop = baseY + 1.75f, wingTop = baseY + 1.35f;   // body and wing walls (BuildPond)
+            const float Slope = 1f / 3f, Plateau = 1.5f, WallHalf = 2.9f, Front = 0.55f;
+            var pave = new Pavement(map);
+            float beforeBack = Ground(terrain, f.P(0f, 0f, -0.9f).x, f.P(0f, 0f, -0.9f).z);
+            int raised = 0; float most = 0f;
+            var c3 = f.P(0f, 0f, 0f);
+            EditTerrain(terrain, new Rect(c3.x - 12f, c3.z - 12f, 24f, 24f), (x, z, y) =>
+            {
+                var p = new Vector2(x, z);
+                if (InPolygon(p, hood.PondRing)) return y;
+                var d3 = new Vector3(x, 0f, z) - f.O;
+                float u = Vector3.Dot(d3, f.R), v = Vector3.Dot(d3, f.F);
+                if (Mathf.Abs(u) < WallHalf && v > -0.5f) return y;            // the wall itself and the open face between the wings
+                // height of the bank against the wall: under the coping behind it, at the wing tops along the wings
+                float h = v <= -0.5f ? backTop - 0.08f : Mathf.Lerp(backTop - 0.08f, wingTop - 0.08f, Mathf.InverseLerp(-0.5f, Front, v));
+                float du = Mathf.Max(0f, Mathf.Abs(u) - WallHalf), dv = Mathf.Max(0f, -0.5f - Plateau - v) + Mathf.Max(0f, v - Front);
+                float target = h - Mathf.Sqrt(du * du + dv * dv) * Slope;
+                if (target <= y) return y;
+                float w = Mathf.Clamp01((pave.Clearance(p, 6f) - 2f) / 2f);
+                float ny = y + (target - y) * w;
+                if (ny - y > 1e-3f) { raised++; most = Mathf.Max(most, ny - y); }
+                return ny;
+            });
+            Debug.Log($"[Round16] A (BUG-001): culvert headwall at x {c3.x:0.0} z {c3.z:0.0}, {bestRoad:0.0} m from the street; the bank behind it was {backTop - beforeBack:0.00} m below the coping; {raised} terrain samples raised, by up to {most:0.00} m");
+        }
+
         static void BuildPond(HoodCtx c)
         {
             var hood = c.hood;

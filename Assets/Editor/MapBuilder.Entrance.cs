@@ -227,15 +227,19 @@ namespace ChastainRush
                 int j = i; for (int s = 0; s < 12 && gaps[j] < 0.7f; s++) j = Mathf.Clamp(j + (ti == 0 ? 1 : -1), 0, mids.Count - 1);
                 Vector2 p = mids[j];
                 float gy = Ground(c.terrain, p.x, p.y);
-                var m3 = c.Props.At(p);
-                Post(m3, new Vector3(p.x, gy - 0.05f, p.y), 2.35f, 0.07f, new Color(0.55f, 0.57f, 0.58f));
+                // Round 16 (D): breakable like a mailbox (FenceChunk: a trigger, a little speed lost, a sound, whole again at race
+                // start); the post flies in pieces and the printed plates go with it
+                var m3 = c.Signs3D.Begin(p);
+                c.Signs3D.Piece(() => Post(m3, new Vector3(p.x, gy - 0.05f, p.y), 1.2f, 0.07f, new Color(0.55f, 0.57f, 0.58f)), gy + 0.05f);
+                c.Signs3D.Piece(() => Post(m3, new Vector3(p.x, gy + 1.15f, p.y), 1.2f, 0.07f, new Color(0.55f, 0.57f, 0.58f)), gy + 0.05f);
                 Vector2 outward = ti == 0 ? Vector2.down : Vector2.up;           // tip 0 is the south end, tip 1 the north end
                 var f3 = new Vector3(outward.x, 0f, outward.y);
-                SignPlate(parent, new Vector3(p.x, gy + 2.0f, p.y) + f3 * 0.045f, -f3, 0.5f, mp);
-                SignPlate(parent, new Vector3(p.x, gy + 1.42f, p.y) + f3 * 0.045f, -f3, 0.5f, mu);
+                c.Signs3D.Face(SignPlate(parent, new Vector3(p.x, gy + 2.0f, p.y) + f3 * 0.045f, -f3, 0.5f, mp));
+                c.Signs3D.Face(SignPlate(parent, new Vector3(p.x, gy + 1.42f, p.y) + f3 * 0.045f, -f3, 0.5f, mu));
                 // grey backs
-                SignPlate(parent, new Vector3(p.x, gy + 2.0f, p.y) - f3 * 0.045f, f3, 0.5f, back);
-                SignPlate(parent, new Vector3(p.x, gy + 1.42f, p.y) - f3 * 0.045f, f3, 0.5f, back);
+                c.Signs3D.Face(SignPlate(parent, new Vector3(p.x, gy + 2.0f, p.y) - f3 * 0.045f, f3, 0.5f, back));
+                c.Signs3D.Face(SignPlate(parent, new Vector3(p.x, gy + 1.42f, p.y) - f3 * 0.045f, f3, 0.5f, back));
+                c.Signs3D.End(new Vector3(p.x, gy + 1.1f, p.y), f3, 0.7f, 2.4f);
                 c.hood.KeepOut(p, 0.7f);
             }
             c.Log.Append($"entrance: {shrubs} shrubs, tall tree, 2 signs; ");

@@ -15,7 +15,7 @@ namespace ChastainRush
     //   - a drop-in file (SoundDropIns, Sounds\Breaks\wood*, metal*, glass*, water*) replaces the made sound of that kind.
     public sealed class BreakSounds : MonoBehaviour
     {
-        public enum Kind { Wood, Iron, Mailbox, Lamp, Glass, Hydrant }
+        public enum Kind { Wood, Iron, Mailbox, Lamp, Glass, Hydrant, Sign }   // Round 16 (D): Sign, a sign plate on a metal post (Racer's Sign surface)
         enum Surface { Wood, ChainLink, Mailbox, Sign, Glass }   // Racer's SmashAudio.Surface
         static BreakSounds instance;
         static readonly float[] WoodDelays = { .055f, .12f, .20f, .29f }, MetalDelays = { .08f, .17f, .29f, .43f, .61f };
@@ -121,6 +121,7 @@ namespace ChastainRush
                 case Kind.Lamp: Voice(at, Surface.Sign, gain, 1f); Voice(at, Surface.Glass, gain * .8f, 1f); break;
                 case Kind.Glass: Voice(at, Surface.Glass, gain, 1f); break;
                 case Kind.Hydrant: Voice(at, Surface.Mailbox, gain * 1.1f, .72f); break;
+                case Kind.Sign: Voice(at, Surface.Sign, gain, 1f); break;   // Round 16 (D)
             }
         }
 

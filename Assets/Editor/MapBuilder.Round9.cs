@@ -491,7 +491,7 @@ namespace ChastainRush
 
         sealed class Breakables
         {
-            sealed class Cell { public MeshBuilder mb = new MeshBuilder(); public List<FenceChunk.Piece> pieces = new List<FenceChunk.Piece>(); public List<FenceChunk.Panel> panels = new List<FenceChunk.Panel>(); public List<(Vector3 c, Vector3 along, float w, float h, float d)> trig = new List<(Vector3, Vector3, float, float, float)>(); }
+            sealed class Cell { public MeshBuilder mb = new MeshBuilder(); public List<FenceChunk.Piece> pieces = new List<FenceChunk.Piece>(); public List<FenceChunk.Panel> panels = new List<FenceChunk.Panel>(); public List<(Vector3 c, Vector3 along, float w, float h, float d)> trig = new List<(Vector3, Vector3, float, float, float)>(); public List<(MeshRenderer r, int panel)> faces = new List<(MeshRenderer, int)>(); }
             readonly Dictionary<Vector2Int, Cell> cells = new Dictionary<Vector2Int, Cell>();
             Cell cur; int first;
             public int Count;
@@ -508,6 +508,8 @@ namespace ChastainRush
                 Vector3 centre = Vector3.zero; foreach (var v in cur.mb.VertexRange(v0, cnt)) centre += v; centre /= Mathf.Max(cnt, 1);
                 cur.pieces.Add(new FenceChunk.Piece { vertexStart = v0, vertexCount = cnt, centre = centre, restY = restY });
             }
+            // Round 16 (D): a separate textured quad (a sign's face) that belongs to the panel being built (before End)
+            public void Face(GameObject plate) => cur.faces.Add((plate.GetComponent<MeshRenderer>(), cur.panels.Count));
             public void End(Vector3 centre, Vector3 along, float width, float height, float depth = -1f)   // Round 10: depth along 'along' (default: the width)
             {
                 cur.panels.Add(new FenceChunk.Panel { firstPiece = first, pieceCount = cur.pieces.Count - first, centre = centre });
@@ -525,6 +527,7 @@ namespace ChastainRush
                     var chunk = go.AddComponent<FenceChunk>();
                     chunk.source = go.GetComponent<MeshFilter>().sharedMesh; chunk.material = mat;
                     chunk.pieces = cell.pieces.ToArray(); chunk.panels = cell.panels.ToArray(); chunk.debrisDrop = debrisDrop; chunk.sound = sound;   // Round 15: its break sound
+                    chunk.faces = cell.faces.Select(f => f.r).ToArray(); chunk.facePanel = cell.faces.Select(f => f.panel).ToArray();   // Round 16 (D)
                     for (int i = 0; i < cell.trig.Count; i++)
                     {
                         var t = cell.trig[i];
