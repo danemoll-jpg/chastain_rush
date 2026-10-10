@@ -1422,6 +1422,28 @@ menus over shouldn't wait too long." Racer's `RaceMenus.*`, `MenuInput`,
 drivers' vehicles, controller first. Replaces the temporary vehicle switch
 and the T / X race keys.
 
+**Also in Round 16 (Dan, 2026-10-10: "Can we put these in with the next phase?").** Fix exactly where Dan
+pointed; list similar spots elsewhere for Dan rather than changing them.
+
+A. BUG-001 (session 2026-10-10_14-22-18-410_d2650e, x 2910.95, z 814.32, by the pond near the entrance): the
+   pond's culvert headwall (the concrete wall with the two pipes) stands with its back exposed. Dan: "the
+   backside of this shouldn't be exposed. It should be covered by land since this are pipes". Bury its back and
+   sides in the bank, only around it; grounding rule for anything nearby.
+B. BUG-002 (same session, x 2807.43, z 1101.14, shortcut #6): the dirt pile's skirt has no collider, so a vehicle
+   drives into / under it. Dan: "this should be solid so i cant run underneath it". Make the heap solid, without
+   changing the kicker's driven face, its lip or #6's drive (re-check #6 with the AI trial and the shortcut check).
+C. Grass / sidewalk edges: Dan: "some places the grass/sidewalk causes you to either get stuck or bumps you". He
+   may capture spots case by case (F4). This round: fix the spots in his reports; if none come with a position,
+   find likely causes (curb and sidewalk edges against the terrain, step heights the wheels or body catch) and
+   report them with positions for Dan, changing nothing he has not pointed at.
+D. Signs breakable: Dan: "signs should be breakable". The street and neighborhood signs (no-parking, no-U-turn,
+   the shortcut sign, others) break like mailboxes (FenceChunk, a sound). Not the brick entrance monuments
+   unless Dan says so.
+E. Shortcut #2's jump: Dan: "There is a spot on the second jump where it catches you some times. I wasn't able to
+   recreate it but I did experience it." Find it: drive #2 with every vehicle across a spread of speeds and lines
+   (the shortcut check, plus lateral offsets) and look for contacts that stop or snag the body at the kicker,
+   the upstairs window and the landing. Report what was found before changing the jump (protected geometry).
+
 Next Steps (Do Not Start Yet)
 
 * All of these are deferred, not decided against.
