@@ -728,7 +728,9 @@ namespace ChastainRush
             style.normal.textColor = new Color(0, 0, 0, 0.85f); GUI.Label(new Rect(r.x + 2, r.y + 2, r.width, r.height), StripTags(text), style);
             style.normal.textColor = old; GUI.Label(r, text, style);
         }
-        static string StripTags(string s) => System.Text.RegularExpressions.Regex.Replace(s, "<.*?>", "");
+        // Round 17, item 4: only the color tags go (the shadow is black); bold stays, else the shadow is narrower than the
+        // bold text and shows as a second, offset copy of the line
+        static string StripTags(string s) => System.Text.RegularExpressions.Regex.Replace(s, "</?color[^>]*>", "");
 
         void OnGUI()
         {
