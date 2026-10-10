@@ -165,7 +165,13 @@ kicker for big air out of its upstairs windows, sidewalks that stop at
 driveways, the pool building swap, no start gate in free roam. Queued after
 it, one round each: 13 vehicles with sound, 14 three AI drivers, 15 menus.
 
-**Round 12 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** 1763 is an ordinary house
+**Active work is Round 13 in `TODO.md`:** three shortcut fixes from Dan's
+drive (a tree on #2's line, #6's ramp drawn as a flatbed instead of hay
+bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
+with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
+drivers, 15 menus and the garage.
+
+**Round 12 (see `TODO.md`, status there) is built and checked in the exe, driven by Dan:** 1763 is an ordinary house
 again; #2 leaves the lane past it through the side yard (one hand-painted "SHORTCUT" sign at the turn-off, the only
 signposted shortcut), runs down held grass (`LandingZone.hold`, RampHold) through an S into 1627's sliding door on a 12 deg
 climb, up its stairs to a kicker and out a big upstairs window; roof houses beyond (convex hull colliders); sidewalks stop

@@ -982,7 +982,12 @@ New: `MapBuilder.Round11.cs` (street graph, curb returns, bulbs, drive overlaps,
 (landing zones), RaceMarkers (no shortcut markers), make_shortcuts.py (#2 window jump, no trails, no #6 deck). Imported from
 Racer: nothing.
 
-Round 12 status — built and checked in the exe (2026-10-10), NOT yet driven by Dan. Checks: `ChastainRush.exe -exeRound12 <dir>`
+Round 12 status — built, checked in the exe, and DRIVEN by Dan (2026-10-10).
+He accepted the new shortcut #2 (no complaint about it) and reported three
+things, folded into Round 13 at his request: a tree in #2's path, he does
+not like the hay bales on #6 (a flatbed instead), and he was penalised for
+missed checkpoints when taking #6. Original note: built and checked in the
+exe (2026-10-10). Checks: `ChastainRush.exe -exeRound12 <dir>`
 (new, Checks/Round12Runner.cs), `-exeShortcut` (7 of 7), `-exeCheck` (9 of 9). Reports and shots: `Data/screenshots/round12/`
 (Dan's house hidden in every shot; the BUG-002 shot was looked at and not committed).
 
@@ -1053,149 +1058,103 @@ RaceMarkers (gate only in a race), LandingZone + RampHold (held zones). Imported
 
 Current Objective (Focus Area)
 
-**Round 12 — shortcut #2 done the way Dan asked, and his fourth report.
-DECIDED (2026-10-10).** Source: debug report
-`2026-10-09_23-41-20-347_2f94e8` (6 entries, in
-`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\`;
-look at every screenshot first). The standing rules in `CLAUDE.md` apply.
+**Round 13 — three shortcut fixes, then the real vehicles with sound.
+DECIDED (2026-10-10).** Dan: "I want to fold this into the next round."
+The standing rules in `CLAUDE.md` apply: smallest change, one targeted
+check per change in the built exe, a short report plus "for Dan to check".
+Do items 1 to 3 first and commit them by themselves before starting item 4.
 
-**Read this before item 1.** Shortcut #2's first house (1763) has been built
-three ways (Rounds 8, 10, 11) and Dan rejected all three for the same
-reason: a ramp leading to a hole in a house. He has now DECIDED
-(2026-10-10) to stop trying there: "Id almost rather have it bypass that
-house then try to do something similar again. I think just restore that
-house completely. Remove the ugly ramp and have the trail actually start
-right after that house." There is no version of this round in which
-anything is attached to, cut into or aimed at house 1763.
+Part A: fixes from Dan's Round 12 drive.
 
-1. House 1763 restored completely. Remove the ramp, the picture windows,
-   the room, the breakable panels and anything else the shortcut added.
-   1763 is an ordinary style A house again: front door at the front, normal
-   windows, one solid collider, its driveway whole and clean, its yard
-   plain grass with no cut or bank left from the shortcut that looks odd
-   from the lane. Look at it from Dan's BUG-003 spot (x 3081, z 1036) in the
-   exe: it must be unremarkable.
-2. Shortcut #2 now STARTS JUST PAST house 1763. Dan: "have the trail
-   actually start right after that house." The car leaves the lane after
-   passing 1763, turns off through the side yard beyond it, and runs down
-   the slope behind toward house 1627. The ground is grass all the way
-   (BUG-004, x 3070, z 1067: "I dont want this wood path. It should just be
-   greaa."): no wooden surface on the ground on either shortcut. Shape the
-   terrain as needed so the turn-off and the run down are drivable at
-   racing speed. Update the entry plane and keep `forgives` CP2 (say so if
-   leaving later changes which checkpoints are skipped). The barrier rule
-   stays.
-3. A clue at the turn-off. Dan: "since it is off the road, we would need
-   some sort of clue that there is a shortcut that way (a sign if need
-   be)." This is his exception to "shortcuts are not signposted", for this
-   entry only, because nothing else shows it. Keep it modest and part of
-   the street: one sign at the turn-off that a driver can read at speed
-   (follow the sign rule), and worn grass or tyre tracks leading off the
-   lane are fine too. No arches, beams or HUD pointers.
-4. Into house 1627 on an incline. Dan: "maybe slightly elevate it so that
-   you are already on an incline when you bust through the sliding glass
-   doors and once you hit the stairs and fly out the other window you
-   should have pretty good momentum." Raise the approach so the ground is
-   already climbing as the car reaches 1627's sliding glass door; the climb
-   carries on up the stairs inside without a kink; the stairs end in a
-   kicker; the car flies out through the UPSTAIRS windows on the far side
-   with real height and speed (BUG-005, x 3049, z 1117: "I wanted a ramp
-   here to give big air, but it just kind of falls out."). It lands cleanly
-   before the gap between 1615 and 1459 with its speed kept, then the
-   shortcut continues as before to the rejoin at 544 m. Ramps keep their
-   speed, as in Round 10. Report the flight out of 1627 (height above the
-   yard, length) at racing speed.
-   Look, for 1627: unbroken it is an ordinary house with a sliding glass
-   door at the back and normal upstairs windows at the front. Broken, it
-   shows broken glass with the wall round it intact, not a cut-away wall
-   (the BUG-005 screenshot shows a whole section of the upstairs front
-   missing: that is too much). Only glass and frames break; whole again at
-   race start. A slow car must still be able to drive on.
-   Two limits LIFTED by Dan (2026-10-10), so size the jump for big air:
-   - The exit side. "This is a one way race, so I don't think the back
-     side of the house matters as much as the first, we can jus use
-     ceilings to block people from seeing it." The side the car ENTERS
-     (the sliding glass door) is the one that must look like an ordinary
-     house. The side it flies OUT of may have as large an upstairs opening
-     or window as the kicker needs, so the car's roof never clips the top.
-     Use the ceiling and inside walls so that a driver coming in through
-     the door does not see daylight or an open wall ahead until they are
-     on the stairs.
-   - The landing. "If someone ends up on a roof of a house, it is not a
-     tragedy, they can just drive off of it." Do not shorten the jump to
-     keep the car off the houses beyond. Instead make sure a car that
-     lands on a roof there (1615, 1459 and their neighbours) can drive off
-     it and carry on: no wedging in a valley or behind a chimney, no
-     collider lip at the eaves.
-   If this does not fit at 1627, do NOT build a nearest version: leave 1627
-   an ordinary house, end the shortcut as a grass run between the houses
-   to the gap, and report the numbers.
-5. Proof for items 1 to 4, in the exe, before saying done: screenshots of
-   1763 from Dan's spot; the turn-off and its sign from the lane at
-   driving height; 1627's back with the glass whole; 1627's front with the
-   glass whole and after the jump; a side profile of the flight. Drive it
-   once at racing speed, turning in the way a player does.
-6. BUG-002 (x 3089, z 1019), ALL of Chastain Glen. Dan: "The sidewalks
-   shouldn't cross driveways anywhere." A sidewalk stops at one edge of a
-   driveway and starts again at the other; the driveway's own surface runs
-   unbroken from the garage to the road. (Round 11 drew sidewalks over the
-   drives; undo that.)
-7. BUG-001 (x 2822, z 796, the pool). Dan: "the big building shoulding
-   exist and the small building should be in its place." Remove the large
-   plain tan building beside the pool, and put the small clubhouse (the
-   one with the columned porch) where it stood.
-8. BUG-006 (x 2943, z 875). Dan: "start lines should be non-existent in
-   free roam." The chequered start/finish gate, and anything else that
-   belongs to a race, appears only while a race is running.
-9. Shortcut #6's ramp, LOOK ONLY. Dan (2026-10-10): "I won't to try to make
-   things look a little more natural. So for the second shortcut could we
-   turn the second ramp into like a wide board leaned up against some bales
-   of hay or something. Not change the pitch or the height of the ramp,
-   just make it look like something that could actually be there." Restyle
-   the big kicker in front of house 1641 as a wide wooden board (planks)
-   leaning on a stack of hay bales. The driving surface, its curve, pitch,
-   height, lip and collider do not change at all (they are protected, and
-   the Round 10 speed fix depends on them): only what it looks like. The
-   bales fill the space under and behind the board so nothing floats.
-   Dan also accepts a flatbed trailer ("flatbed trailer works too"): a
-   tilted flatbed or car-hauler with its ramps down, parked in the yard.
-   The lip is about 5.6 m up, which is a very tall stack of bales, so choose
-   whichever of the two looks believable at that size (a mix is fine: a
-   trailer with boards and a few bales), and say which you chose. Check it
-   from the lane in the exe and drive it once.
+1. Dan: "there is a tree in the first shortcut path." Shortcut #2's line
+   moved in Round 12 and the tree clearance did not follow it. No tree
+   trunk may stand within 6.5 m of #2's line anywhere from the turn-off to
+   the rejoin, including under the flight out of 1627 and its landing.
+   Move each one found into its yard (do not delete it) and report how many
+   and where. Check #6's line the same way while there.
+2. Dan: "i don't particularly like the way the hay bales look. You r
+   suggestion of a flatbed was better." Replace the board-and-hay-bales look
+   of #6's ramp with a flatbed: a flatbed trailer or truck parked in the
+   yard with its deck tilted and ramps down. Round 12 judged a trailer
+   "unbelievable" at a 5.6 m lip and chose bales; Dan has seen the bales
+   and wants the flatbed anyway, so build it, sized up as far as it needs
+   (a long semi flatbed or a car hauler with its top deck down reaches that
+   height). LOOK ONLY: the driving surface, curve, pitch, height, lip and
+   collider stay exactly as they are. Nothing floats; no bales left.
+3. Dan: "I got dinged for missing checkpoints on the 2nd shortcut." Taking
+   #6 (the house jump) charged him penalties although it `forgives` CP5.
+   Find out why before changing anything: reproduce it in the exe driving
+   as a player does (turning on to the ramp from different places on the
+   lane, at an angle, fast). Likely causes: the entry plane at the lip is
+   narrower than the ramp or is missed by a car that is airborne or off
+   centre; forgiveness is given only at the entry and he joined the line
+   later; or "checkpoints", plural, means a checkpoint besides CP5 was
+   charged. Say which.
+   MORE FROM DAN (2026-10-10): "it happened all three laps. I don't think
+   this happened previously." So it is consistent, not a matter of his
+   line, and it is most likely a REGRESSION from Round 12 (Round 11's #6
+   did not do it to him). Start with what Round 12 changed: diff the route
+   file's `official_shortcuts`, `make_shortcuts.py`, `RaceController`'s
+   shortcut state, `LandingZone` and `RampHold` between the Round 11 and
+   Round 12 commits. One thing to rule out first: #2 was rebuilt, and the
+   car now FLIES out of 1627 and lands 36 m on. If #2's exit plane is
+   crossed in the air above its height window, or is no longer on the
+   line, the race may still think the car is "on shortcut #2" when it
+   reaches #6, and so ignore #6's entry. Dan takes both shortcuts every
+   lap; the Round 12 scripted lap reported no penalty, so find what he
+   does that the script did not (speed, height, line) and test that.
+   Then make forgiveness generous on BOTH shortcuts:
+   a car that goes over the ramp, through 1627, or is anywhere in the
+   shortcut's corridor between its entry and its exit, gets the forgiven
+   checkpoints, however it got there. One check in the exe per shortcut,
+   entering off centre: no penalty.
+
+Part B: Racer's vehicles and sound. Dan: "It would be interesting to get the
+actual vehicles in with sound." Racer is finished and open to use: port its
+code and assets as they are; do not rewrite or retune. List everything that
+came over.
+
+4. Bring over the player vehicles: Street Classic (original), tourer,
+   Needle 600 (moto), Trail Four (atv), Sundown Roadster, Highball Fastback,
+   Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket
+   (mower). With them: `VehicleProfile`, `VehicleConfiguration`,
+   `VehicleVisual`, `VehiclePaint`, `VehicleLights`, `VehicleContact`, the
+   built models and materials (copy the generated assets; bring a
+   `Tools/Blender` script only if a model has to be rebuilt), and the rider
+   for the bikes, the ATV and the mower (`RiderLook`, `RiderGestures`).
+   Police vehicles stay behind. Keep this project's `ArcadeVehicle` edits
+   (the ramp contact fix, the recovery hook) working with every vehicle;
+   if Racer's own `ArcadeVehicle` is newer, take Racer's and re-apply them.
+5. Handling is Racer's, per vehicle, untouched. The default vehicle is the
+   Street Classic. The blue prototype car is retired.
+6. Sound: `VehicleAudio` and `VehicleSoundSynthesis` (engine sound made in
+   code) for every vehicle, plus whatever Racer plays for tyres, landings
+   and impacts. Nothing of Dan's music or the radio in this round.
+7. Choosing a vehicle, TEMPORARY until the menus (Round 15): D-pad left and
+   right (and the `,` and `.` keys) step through the vehicles while not in
+   a race; the car is swapped where it stands and its name shows for a
+   couple of seconds. The vehicle driven last is remembered between
+   launches. (Shoulder buttons are left alone: Racer uses LB for the
+   rider's wave.)
+8. Everything already here keeps working with every vehicle: the chase
+   camera (use Racer's per-vehicle camera settings), reset, the race and
+   its penalties, both shortcuts' held ramps and landings, breakables,
+   geese, solid trees, the debug panel and bug capture (the report now
+   names the vehicle, as Racer's does). Best lap and best total are kept
+   per vehicle.
+9. Targeted check in the exe, with a controller where a person is needed,
+   not a matrix: the Street Classic, the Needle 600, the Trail Four and the
+   Turf Rocket each driven once up the steep part of Chastain Glen Lane and
+   once over each shortcut. Report any vehicle that cannot make a jump or
+   climb; do not retune it. Frame rate at the pond with a vehicle of each
+   kind. For the other seven: that each loads, drives and sounds.
 10. Rebuild the executable last and report its path.
 11. Report status for every item as a short list, then "for Dan to check".
 
-Out of scope for this round: vehicles, sound, AI drivers, menus (queued
-below), shortcut #6 apart from item 9, the six slightly buried houses, goose sounds.
+Out of scope for this round: AI drivers (Round 14), menus and the garage
+(Round 15), police, campaign, radio, split-screen.
 
-**QUEUED NEXT — Round 13: the real vehicles, with sound. DECIDED
-(2026-10-09).** Dan: "It would be interesting to get the actual vehicles in
-with sound and some ai drivers." Not started; promote after Round 11. One
-round per prompt. Outline:
-* Bring over Racer's vehicles as they are: `VehicleProfile`,
-  `VehicleConfiguration`, `VehicleVisual`, `VehiclePaint`, `VehicleLights`,
-  `VehicleSurfaceContacts`, `VehicleContact`, the built models (from
-  `Tools/Blender`; copy the generated assets, and the scripts only if a
-  model must be rebuilt), and the rider (`RiderLook`, `RiderGestures`) for
-  the bikes and the ATV. All player vehicles: Street Classic, tourer,
-  Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble
-  Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket. Police
-  vehicles stay behind until police modes come over.
-* Sound: `VehicleAudio` and `VehicleSoundSynthesis` (engine sound made in
-  code), per vehicle, plus whatever Racer plays for tyres, landings and
-  impacts.
-* Handling stays Racer's for each vehicle. Check each one on this map's
-  steeper roads (`vertical_scale` 1.5) and on both shortcuts; report any
-  that cannot make a jump, do not retune them.
-* Choosing a vehicle, DECIDED by Dan (2026-10-09): a temporary switch on
-  the shoulder buttons for now (and two keys), showing the vehicle's name
-  briefly. It is temporary: the garage view comes with the menus, and Dan
-  said the menus "shouldn't wait too long" (Round 15).
-* The chase camera, the debug panel, records (per vehicle) and the exe
-  build keep working. Check with a controller in the exe.
-
-**QUEUED AFTER THAT — Round 14: AI drivers on the Chastain Glen loop.**
+**QUEUED NEXT — Round 14: AI drivers on the Chastain Glen loop.**
 Outline: `RoadDriver`, `RaceRoad`, `ShortcutStrategy`, `AiFinishEstimate`,
 the start grid and positions from `RaceDirector` / `RaceProgress`, rival
 names. DECIDED by Dan (2026-10-09): start with 3 AI drivers; their vehicles
