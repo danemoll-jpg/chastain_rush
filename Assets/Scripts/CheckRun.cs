@@ -34,6 +34,7 @@ namespace ChastainRush
             if (string.IsNullOrEmpty(Dir)) Dir = Path.Combine(Path.GetTempPath(), "ChastainRushCheck");
             try { Dir = Path.GetFullPath(Dir); Directory.CreateDirectory(Dir); } catch (Exception) { }
             AudioListener.volume = 0f;
+            Application.runInBackground = true;   // Round 16 (Dan: stay off his screen): a check keeps running minimized, unfocused
             Debug.Log("[Check] muted; check files go to " + Dir);
         }
 

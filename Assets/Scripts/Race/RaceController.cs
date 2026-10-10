@@ -13,8 +13,8 @@ namespace ChastainRush
     // the ones Dan asked for, with Racer's rolling start (the clock starts when the car first crosses the start line, so a
     // lap is gate to gate and the 3-2-1 grid run-in is not part of any lap).
     //
-    //   T  start the race / restart it (from the countdown, mid-race or the results)     X  leave the race, back to free driving
-    //   pad: D-pad up = start / restart, D-pad down = leave.   R / Y still resets the car to its last stable spot.
+    //   Round 16: started, restarted and left from the menus (Menus/GameMenus.cs: RACE > START RACE; the pause menu's RESTART /
+    //   LEAVE RACE); the T / X keys and D-pad up / down are gone. R / Y still resets the car to its last stable spot.
     //
     // Rules (Round 6, as in Racer / Woodstock Rush): 3 laps; checkpoints are met in order; a checkpoint that is skipped costs a
     // 5 s time penalty (Racer's RaceProgress.Miss) and the lap STILL COUNTS, with the penalty added to the lap and to the total;
@@ -39,7 +39,7 @@ namespace ChastainRush
         public static RaceController Instance { get; private set; }
         public static string DirectionOverride;   // command line -raceDirection, or set by a check; otherwise the route file decides
         public static string RecordsPathOverride; // checks write somewhere other than the real records
-        public static int LapsOverride;           // checks only: race this many laps instead of the route file's
+        public static int LapsOverride;           // race this many laps instead of the route file's (checks; Round 16: the race setup menu)
         public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
         public static bool EntryPlanesOff;   // checks only (Round 13): shortcuts are taken by their corridor alone
         public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
@@ -88,13 +88,13 @@ namespace ChastainRush
         public bool NewBestLap { get; private set; }
         public bool NewBestTotal { get; private set; }
         public int LapsInRace => Route != null ? Route.Laps : 3;
-        public string Hint => State == Stage.Free ? "T: start race" : "T: restart   X: leave race";
+        public string Hint => "Start / Esc: menu";   // Round 16: the race keys are the menus now
         public event Action<string> Logged; // every race event, for the scripted check
 
         ArcadeVehicle car;
         VehicleInput input;
         VehicleRespawn respawn;
-        bool startPressed, endPressed, wasInputEnabled, aiActive;
+        bool wasInputEnabled, aiActive;
         float messageUntil, goFlashUntil, nextEstimateSample;
         readonly RaceEntrant P = new RaceEntrant { Name = "YOU" };
         RaceMarkers markers;
@@ -216,20 +216,8 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- per frame
 
-        void Update()
-        {
-            var k = Keyboard.current; var g = Gamepad.current;
-            if (Time.timeScale == 0f) return;
-            var hud = DeveloperHud.Instance;
-            if (hud != null && (hud.MenuOpen || hud.CommentOpen || hud.Capturing)) return; // typing a bug comment must not restart the race
-            if ((k != null && k.tKey.wasPressedThisFrame) || (g != null && g.dpad.up.wasPressedThisFrame)) startPressed = true;
-            if ((k != null && k.xKey.wasPressedThisFrame) || (g != null && g.dpad.down.wasPressedThisFrame)) endPressed = true;
-        }
-
         void FixedUpdate()
         {
-            if (startPressed) { startPressed = false; StartRace(); return; }
-            if (endPressed) { endPressed = false; EndRace(); }
             if (State == Stage.Free || !car) return;
             float dt = Time.fixedDeltaTime;
 
@@ -409,30 +397,46 @@ namespace ChastainRush
 #endif
         }
 
-        // Until the menus (Round 16): each AI driver's vehicle, "random" (a new pick from the eleven every race) or a vehicle id.
-        // The file is made with three "random" lines the first time a race starts in the game Dan runs himself; a check never
+        // Each AI driver's vehicle, "random" (a new pick from the eleven every race) or a vehicle id, kept in ai_drivers.json.
+        // Round 16: chosen in the menus (RACE > Opponent vehicles); the file stays where the choice is kept. A check never
         // reads or writes it (-aiVehicles instead).
+        public static string AiDriverName(int i) => AiNames[Mathf.Clamp(i, 0, AiNames.Length - 1)];
+        static string[] aiChoices;   // this session's choice (a check keeps it here only)
+        public static string[] SavedAiChoices()
+        {
+            if (aiChoices != null) return aiChoices;
+            var chosen = aiChoices = new[] { "random", "random", "random" };
+            if (CheckRun.Active) return chosen;
+            try
+            {
+                string path = AiSettingsPath();
+                if (File.Exists(path))
+                {
+                    var f = JsonUtility.FromJson<AiDriversJson>(File.ReadAllText(path));
+                    if (f?.drivers != null) for (int i = 0; i < chosen.Length && i < f.drivers.Length; i++) { var v = f.drivers[i]?.vehicle; if (!string.IsNullOrEmpty(v) && (v == "random" || VehicleProfile.IndexOf(v) >= 0)) chosen[i] = v; }
+                }
+                else SaveAiChoices(chosen);
+            }
+            catch (Exception ex) { Debug.LogWarning("[Race] ai_drivers.json unreadable, all random: " + ex.Message); }
+            return chosen;
+        }
+        public static void SaveAiChoices(string[] chosen)
+        {
+            aiChoices = chosen;
+            if (CheckRun.Active) return;
+            try
+            {
+                string path = AiSettingsPath(); Directory.CreateDirectory(Path.GetDirectoryName(path));
+                var def = new AiDriversJson { note = "AI drivers' vehicles (chosen in the menus: RACE > Opponent vehicles). \"random\" = a new pick from the eleven every race, or a vehicle id: " + string.Join(", ", Array.ConvertAll(VehicleProfile.All, p => p.Id)) + ".", drivers = new AiDriverJson[3] };
+                for (int i = 0; i < 3; i++) def.drivers[i] = new AiDriverJson { name = AiNames[i], vehicle = i < chosen.Length ? chosen[i] : "random" };
+                File.WriteAllText(path, JsonUtility.ToJson(def, true));
+            }
+            catch (Exception ex) { Debug.LogWarning("[Race] could not save ai_drivers.json: " + ex.Message); }
+        }
         string[] AiVehicles(System.Random rng)
         {
             var picks = new string[AiCount];
-            string[] chosen = AiVehiclesOverride;
-            if (chosen == null && !CheckRun.Active)
-            {
-                string path = AiSettingsPath();
-                try
-                {
-                    if (!File.Exists(path))
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(path));
-                        var def = new AiDriversJson { note = "AI drivers' vehicles for a race (T). \"random\" = a new pick from the eleven every race, or a vehicle id: " + string.Join(", ", Array.ConvertAll(VehicleProfile.All, p => p.Id)) + ". Read at every race start.", drivers = new AiDriverJson[3] };
-                        for (int i = 0; i < 3; i++) def.drivers[i] = new AiDriverJson { name = AiNames[i], vehicle = "random" };
-                        File.WriteAllText(path, JsonUtility.ToJson(def, true));
-                    }
-                    var f = JsonUtility.FromJson<AiDriversJson>(File.ReadAllText(path));
-                    if (f?.drivers != null) chosen = Array.ConvertAll(f.drivers, d => d?.vehicle);
-                }
-                catch (Exception ex) { Debug.LogWarning("[Race] ai_drivers.json unreadable, all random: " + ex.Message); }
-            }
+            string[] chosen = AiVehiclesOverride ?? (CheckRun.Active ? null : SavedAiChoices());
             for (int i = 0; i < picks.Length; i++)
             {
                 string id = chosen != null && i < chosen.Length ? chosen[i] : null;
@@ -728,7 +732,7 @@ namespace ChastainRush
 
         void OnGUI()
         {
-            if (Route == null || !car) return;
+            if (Route == null || !car || GameMenus.Open) return;   // Round 16: not drawn under a menu
             Styles();
             float s = Mathf.Max(1f, Screen.height / 800f);
             var old = GUI.matrix;
@@ -752,7 +756,7 @@ namespace ChastainRush
         void DrawFree(float w, float h)
         {
             string best = BestLap > 0f ? $"   best lap {Fmt(BestLap)}   best total {Fmt(BestTotal)}" : "";
-            Shadowed(new Rect(14, 10, 900, 28), $"<b>T</b> start race: {Route.Name}, {Route.Laps} laps, {Route.Direction}{best}", small);
+            Shadowed(new Rect(14, 10, 900, 28), $"<b>Start / Esc</b> menu: race {Route.Name}, {Route.Laps} laps, {Route.Direction}{best}", small);
         }
 
         void DrawTimers(float w, float h)
@@ -848,7 +852,7 @@ namespace ChastainRush
                     Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), e.IsPlayer ? $"<color=#FFC747>{line}</color>" : line, small); y += 26;
                 }
             }
-            Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "T  race again        X  free driving", small);
+            Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "Start / Esc  menu: race again or free roam", small);
         }
     }
 }

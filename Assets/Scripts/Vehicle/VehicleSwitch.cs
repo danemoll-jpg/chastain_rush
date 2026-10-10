@@ -2,23 +2,20 @@ using System;
 using System.IO;
 using Racer;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace ChastainRush
 {
-    // Round 13, item 7: choosing a vehicle, TEMPORARY until the menus (Round 15). While no race is running, D-pad left / right
-    // (or the , and . keys) step through Racer's eleven player vehicles (VehicleProfile.All, police left behind); the vehicle
-    // is swapped where it stands (VehicleConfiguration.Apply, Racer's own swap) and its name shows for a couple of seconds.
-    // The vehicle driven last is remembered between launches (vehicle.json next to the race records). The Street Classic is
-    // the default. Checks (any -exe... argument, or the Editor's batch mode) neither read nor write the saved choice; they
-    // drive the Street Classic, or the vehicle named by -vehicle <id>.
+    // Round 13, item 7: choosing a vehicle. Round 16: the garage (Menus/GameMenus.Garage.cs) chooses it now; the D-pad /
+    // , . switch and its on-screen hint are gone. A vehicle is swapped where it stands (VehicleConfiguration.Apply, Racer's
+    // own swap). The vehicle and its colour are remembered between launches (vehicle.json next to the race records). The
+    // Street Classic is the default. Checks (any -exe... argument, or the Editor's batch mode) neither read nor write the
+    // saved choice; they drive the Street Classic, or the vehicle named by -vehicle <id>.
     public sealed class VehicleSwitch : MonoBehaviour
     {
-        [Serializable] class Saved { public string vehicle; }
+        [Serializable] class Saved { public string vehicle; public int colour = -1; }
         VehicleConfiguration config;
-        string shown; float shownUntil;
         bool checkRun;
-        GUIStyle style;
+        public int Colour { get; private set; } = -1;   // Round 16: -1 = the vehicle's standard paint, else VehiclePaint's colour
 
         public static string SavePath()
         {
@@ -35,7 +32,7 @@ namespace ChastainRush
             if (!config) config = gameObject.AddComponent<VehicleConfiguration>();
             if (!GetComponent<VehicleAudio>()) gameObject.AddComponent<VehicleAudio>();
             if (!GetComponent<VehicleLights>()) gameObject.AddComponent<VehicleLights>();
-            string id = "original", forced = null;
+            string id = "original", forced = null; int colour = -1;
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length; i++)
             {
@@ -44,23 +41,13 @@ namespace ChastainRush
             }
             if (forced != null) id = forced;
             else if (!checkRun)
-                try { if (File.Exists(SavePath())) id = JsonUtility.FromJson<Saved>(File.ReadAllText(SavePath()))?.vehicle ?? id; }
+                try { if (File.Exists(SavePath())) { var saved = JsonUtility.FromJson<Saved>(File.ReadAllText(SavePath())); id = saved?.vehicle ?? id; colour = saved?.colour ?? -1; } }
                 catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
             if (VehicleProfile.IndexOf(id) < 0) id = "original";
             config.Apply(id);
+            if (colour >= 0 && colour < VehiclePaint.Count) { Colour = colour; config.SetBodyColor(colour); }
             if (RaceController.Instance) RaceController.Instance.ReloadRecords();
             Debug.Log($"[Vehicle] {config.Profile.Name} ({config.profileId})");
-        }
-
-        void Update()
-        {
-            var race = RaceController.Instance;
-            if (race && race.State != RaceController.Stage.Free) return;
-            var k = Keyboard.current; var g = Gamepad.current;
-            int step = 0;
-            if ((k != null && k.periodKey.wasPressedThisFrame) || (g != null && g.dpad.right.wasPressedThisFrame)) step = 1;
-            if ((k != null && k.commaKey.wasPressedThisFrame) || (g != null && g.dpad.left.wasPressedThisFrame)) step = -1;
-            if (step != 0) Step(step);
         }
 
         public void Step(int d)
@@ -78,30 +65,30 @@ namespace ChastainRush
             car.Body.position = t.position; car.Body.rotation = t.rotation;
             car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero;
             config.Apply(id);
-            shown = config.Profile.Name; shownUntil = Time.unscaledTime + 2.5f;
+            if (Colour >= 0) config.SetBodyColor(Colour);
             if (RaceController.Instance) RaceController.Instance.ReloadRecords();
-            if (!checkRun)
-                try
-                {
-                    string path = SavePath(); Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    File.WriteAllText(path, JsonUtility.ToJson(new Saved { vehicle = config.profileId }));
-                }
-                catch (Exception e) { Debug.LogWarning("[Vehicle] could not save the choice: " + e.Message); }
+            Save();
             Debug.Log($"[Vehicle] switched to {config.Profile.Name} ({config.profileId})");
         }
 
-        void OnGUI()
+        // Round 16: the garage's colour row (-1 = the standard paint: the vehicle is put on again to get it back)
+        public void SetColour(int colour)
         {
-            if (shown == null || Time.unscaledTime > shownUntil) return;
-            float s = Screen.height / 1080f;
-            style ??= new GUIStyle(GUI.skin.label) { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold };
-            style.fontSize = Mathf.RoundToInt(44 * s);
-            var r = new Rect(0, Screen.height * 0.28f, Screen.width, 70 * s);
-            style.normal.textColor = new Color(0, 0, 0, 0.75f); GUI.Label(new Rect(r.x + 3 * s, r.y + 3 * s, r.width, r.height), shown, style);
-            style.normal.textColor = Color.white; GUI.Label(r, shown, style);
-            style.fontSize = Mathf.RoundToInt(22 * s);
-            var r2 = new Rect(0, r.yMax, Screen.width, 34 * s);
-            style.normal.textColor = new Color(1, 1, 1, 0.85f); GUI.Label(r2, "D-pad left / right  ( , . )  to change vehicle", style);
+            Colour = colour;
+            if (colour >= 0) config.SetBodyColor(colour); else { var car = GetComponent<ArcadeVehicle>(); var v = car.Body.linearVelocity; config.Apply(config.profileId); car.Body.linearVelocity = v; }
+            Save();
         }
+
+        void Save()
+        {
+            if (checkRun) return;
+            try
+            {
+                string path = SavePath(); Directory.CreateDirectory(Path.GetDirectoryName(path));
+                File.WriteAllText(path, JsonUtility.ToJson(new Saved { vehicle = config.profileId, colour = Colour }));
+            }
+            catch (Exception e) { Debug.LogWarning("[Vehicle] could not save the choice: " + e.Message); }
+        }
+
     }
 }

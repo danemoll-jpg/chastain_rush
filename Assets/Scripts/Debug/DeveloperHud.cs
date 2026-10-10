@@ -116,7 +116,7 @@ namespace ChastainRush
             if (k != null && (k.f3Key.wasPressedThisFrame || k.leftBracketKey.wasPressedThisFrame)) { Visible = !Visible; if (!Visible && MenuOpen) CloseMenu(); }
             if (!Visible) return;
             if ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.selectButton.wasPressedThisFrame)) CaptureBug();
-            if ((k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame)) || (g != null && g.startButton.wasPressedThisFrame)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }
+            if ((k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame)) || (g != null && g.startButton.wasPressedThisFrame && GameMenus.Instance == null)) { if (MenuOpen) CloseMenu(); else OpenMenu(); }   // Round 16: Start is the game menu's (debug menu: F6 / \)
             if (MenuOpen && ((k != null && k.escapeKey.wasPressedThisFrame) || (g != null && g.buttonEast.wasPressedThisFrame))) CloseMenu();
         }
 

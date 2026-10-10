@@ -1,0 +1,25 @@
+Round 16 menu check, 2026-10-10 16:16, the exe, 3840 x 2160, muted (AudioListener.volume 0). A virtual gamepad.
+PASS  title menu on at start, game paused  -  title/root, timeScale 0
+PASS  D-pad down twice reaches GARAGE  -  GARAGE
+PASS  D-pad up goes back a row  -  FREE ROAM
+PASS  A opens the garage  -  title/garage
+PASS  right on the vehicle row changes the vehicle (twice)  -  original -> moto
+PASS  A does not step the vehicle row  -  moto
+PASS  colour row: right picks a colour  -  Colour:   Teal
+PASS  B goes back to the title  -  title/root
+PASS  RACE opens race setup  -  title/race
+PASS  laps change with right  -  Laps:   4
+PASS  difficulty changes  -  Difficulty:   Hard
+PASS  Opponent vehicles page  -  title/opponents
+PASS  an opponent's vehicle changes with right  -  EMBER:   Street Classic
+PASS  B back to race setup, focus kept  -  title/race Opponent vehicles…
+PASS  START RACE closes the menu and starts the race  -  closed, Countdown, laps 3, AI 3
+PASS  Start pauses the race  -  race/root
+PASS  the race clock stands still under the menu  -  2.82 / 2.82
+PASS  B resumes  -  closed
+PASS  RESTART asks first  -  modal:RESTART THE RACE?
+PASS  LEAVE RACE: free roam, menu closed  -  Free closed
+PASS  Start in free roam: the pause menu  -  free/root
+PASS  B resumes free roam  -  closed
+
+ALL 22 CHECKS PASSED

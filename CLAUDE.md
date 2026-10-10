@@ -56,8 +56,25 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
 - **Verification budget.** One targeted check per change, at the place it
   changed. No race matrices, sweeps or long validation documents unless
   asked. Dan playtests the rest. Report a short list plus "for Dan to check".
-- **Check the way Dan plays:** in the built Windows exe, at 3840 x 2160, with
-  a controller, driving flat out. An Editor or scripted pass is not proof.
+- **Check the way Dan plays:** in the built Windows exe, driving flat out. An
+  Editor or scripted pass is not proof. (Resolution: see "Stay off Dan's
+  screen" below; 3840 x 2160 full screen only when the check is about that.)
+- **Stay off Dan's screen** (Dan, 2026-10-10: "it is annoying with unity
+  taking over my screen constantly"; applies to every round from now on).
+  Dan uses this PC while a round runs.
+  - Editor: run Unity in batch mode with no window. Open the Editor window
+    only when a step truly cannot be done otherwise, and say so in the report.
+  - Check runs of the exe: a small 1280 x 720 window, minimized, never taking
+    focus (`-screen-fullscreen 0 -screen-width 1280 -screen-height 720`, and
+    start it minimized / not activated). A check run must keep running in the
+    background (the game pauses when unfocused: a check run turns run-in-
+    background on; the game Dan launches himself is unchanged). Screenshots
+    are captured straight to files, never by bringing the window forward.
+  - 3840 x 2160 full screen only when the check is specifically about how
+    something looks or performs at that size; say in the report when it was
+    done. Frame-rate numbers taken at 1280 x 720 are not 4K numbers: report
+    them as "not measured at 3840 x 2160" rather than as proof.
+  - Close every Editor or game window opened, as soon as that step is done.
 - **Controller first.** Every menu reachable with a controller only, focus
   visible, B goes back; left / right changes a value, A never cycles one.
 - **Signs.** Text is one-sided, hidden by terrain like its board, never drawn
@@ -104,9 +121,11 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   are listed in the script by OSM id; re-run it after every mapgen run, then
   Build Map). **Direction is the `"direction"` line in that JSON**
   (`"forward"` / `"reverse"`; the Editor reads the file at race start, so no
-  rebuild is needed; it survives re-runs of the script). Race keys in Play:
-  T start / restart the race, X leave it (pad: D-pad up / down); R / Y still
-  resets the car. Best lap and best total: `local/race_records.json`.
+  rebuild is needed; it survives re-runs of the script); since Round 16 the
+  race setup menu's Direction (saved in `race_settings.json` beside the
+  records) overrides it. Races are started, restarted and left from the menus
+  (Round 16; the T / X keys and D-pad up / down are gone); R / Y still resets
+  the car. Best lap and best total: `local/race_records.json`.
 - Build the scene: Unity menu **Chastain Rush > Build Map**, or batch:
   `Unity.exe -batchmode -nographics -projectPath . -executeMethod ChastainRush.MapBuilder.BuildFromCommandLine`
   Output: `Assets/Generated/ChastainPrototype.unity` (ignored, rebuilt every run).
@@ -120,7 +139,7 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
 - Player build (Round 8): Unity menu **Chastain Rush > Build Executable**, or batch:
   `Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.PlayerBuild.BuildFromCommandLine`
   It runs Build Map first, then writes `Builds/ChastainRush/ChastainRush.exe` (git-ignored) and `BUILD_INFO.txt`.
-  Start it with `Play Chastain Rush.bat` in the repo root. In the exe: Esc twice quits, F2 frame-rate counter.
+  Start it with `Play Chastain Rush.bat` in the repo root. In the exe: Start / Esc / Enter open the menus (QUIT GAME is there), F2 frame-rate counter.
   Records, debug reports, the bump log and `Player.log` go to
   `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\`. Exe self-check (frame rate at three places,
   a scripted 3-lap race): `ChastainRush.exe -exeCheck <dir>` writes `exe_check.txt` and screenshots, then quits.
@@ -186,10 +205,16 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 16 in `TODO.md`:** first Dan's five follow-ups from
-driving Round 15 (items A to E: the culvert wall by the pond, a solid dirt
-pile on #6, grass and sidewalk edges that snag, breakable signs, the snag on
-#6's jump), committed on their own; then the menus and the garage from Racer.
+**Round 16 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** items A to E
+(commit a70d0d4: the culvert set into the bank, the solid dirt pile, breakable signs; C and E reported, not changed), then
+the menus and the garage (`Assets/Scripts/Menus/`: `GameMenus` from Racer's `RaceMenus`, with Racer's `MenuInput`,
+`MenuGlyph`, `MenuActionRegistry`). Title menu at start; Start / Esc pause; race setup (laps, direction, opponents,
+difficulty, opponent vehicles); garage with the turning model and stat bars (vehicle and colour saved in `vehicle.json`).
+The D-pad vehicle switch and the T / X race keys are gone; the debug menu is F6 / `\` only (Start is the game menu's).
+Menus never appear in a check run; `ChastainRush.exe -exeRound16 <dir>` drives them with a virtual gamepad.
+Imported from Racer in Round 16: MenuInput, MenuGlyph, MenuActionRegistry (copied), RaceMenus' shell, navigation, focus
+frame, garage preview and stat bars (re-written into GameMenus, trimmed). Left behind: RaceFlow, campaign, shop, unlocks,
+police, split-screen, playlists, courses, radio, records boards, rider page, settings, on-screen keyboard, loading screen.
 
 **Round 15 (see `TODO.md`, status there) is built, checked in the exe by script (muted), and driven and approved by Dan apart from Round 16 items A to E:** Part A
 (commit 1114c66): `CheckRun` mutes every check run and keeps its files in the check's folder; water with a 0.5 m bed under

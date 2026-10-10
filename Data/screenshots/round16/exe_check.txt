@@ -1,0 +1,122 @@
+Chastain Rush exe check, 2026-10-10 16:18:02
+Player: built exe, Unity 6000.6.1f1, screen 3840x2160 Windowed, GPU NVIDIA GeForce GTX 1660 Ti, CPU Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz, vSync 1, target -1
+persistentDataPath: C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush
+PASS  scene loaded: car, race controller, debug HUD, road lookup
+PASS  Dan's house is in the scene
+PASS  geese are in the scene  -  1 flock(s)
+PASS  fences are in the scene  -  71 fence chunks
+PASS  route loaded from the scene (embedded copy)  -  Chastain Glen loop, 2 official shortcuts
+
+Frame rate, parked (10 s, car still, chase camera behind it; frame time = wall clock between rendered frames):
+  Entrance (race grid on the entrance lane): 601 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 17.0 ms (59 fps); worst 17.1 ms
+  Beside the pond (route point nearest the fountain) (80 m away): 601 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 17.0 ms (59 fps); worst 18.3 ms
+  Outside Dan's house (route point nearest the house) (20 m away): 601 frames in 10.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 17.0 ms (59 fps); worst 17.2 ms
+PASS  race started (T): countdown
+PASS  countdown ended: racing
+PASS  race finished (3 counted laps)  -  3 laps, state Finished, total 4:07.993, laps 1:22.673 1:22.668 1:22.652, penalties 0 s
+PASS  records written (to the check's own file)  -  C:/Users/danmo/r16/exechk\race_records_exe_check.json
+
+Frame rate while driving lap 1 at 15 m/s (real time):
+  whole lap 1: 4927 frames in 82.7 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 17.0 ms (59 fps); worst 356.4 ms
+  Entrance (race grid on the entrance lane): the lap does not pass within 60 m
+  Beside the pond (route point nearest the fountain) (80 m away), within 60 m: 479 frames in 8.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 17.7 ms (57 fps); worst 42.4 ms
+  Outside Dan's house (route point nearest the house) (20 m away), within 60 m: 480 frames in 8.0 s = 60 fps average; median 16.7 ms (60 fps); 99th percentile 16.9 ms (59 fps); worst 17.2 ms
+
+Run-time files:
+  bump log: C:\Users\danmo\r16\exechk\bump_log.txt exists True
+  debug reports folder: C:\Users\danmo\r16\exechk\debug_reports
+  race records (the player's own, untouched by this check): C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\race_records.json
+
+Race events:
+     40.4  AI driver EMBER: Highball Fastback (fastback) on the grid at (2939.9, 807.5)
+     40.4  AI driver GOLD: Pebble Coupe (pebble) on the grid at (2934.7, 813.9)
+     40.4  AI driver BLUE: Sundown Roadster (roadster) on the grid at (2938.2, 821.4)
+     40.4  RACE START requested: Chastain Glen loop, forward, 3 laps, lap 1247 m, 5 checkpoints, run-in 100 m, 9 road barriers, 2 official shortcuts
+     43.4  GO
+     47.4  BLUE: START LINE crossed: clock started
+     47.9  EMBER: START LINE crossed: clock started
+     49.4  GOLD: START LINE crossed: clock started
+     50.6  START LINE crossed: clock started
+     54.1  BLUE: CHECKPOINT 1 at 10.754
+     54.5  EMBER: CHECKPOINT 1 at 11.177
+     56.3  GOLD: CHECKPOINT 1 at 12.908
+     61.6  BLUE: CHECKPOINT 2 at 18.197
+     61.9  EMBER: CHECKPOINT 2 at 18.555
+     62.5  CHECKPOINT 1 at 19.130
+     63.7  GOLD: CHECKPOINT 2 at 20.339
+     68.7  BLUE: CHECKPOINT 3 at 25.365
+     68.9  EMBER: CHECKPOINT 3 at 25.538
+     70.6  GOLD: CHECKPOINT 3 at 27.243
+     72.2  BLUE: CHECKPOINT 4 at 28.796
+     72.3  EMBER: CHECKPOINT 4 at 28.954
+     73.9  GOLD: CHECKPOINT 4 at 30.529
+     75.1  EMBER: SHORTCUT sc6_over_house entered at 31.781 (its corridor): checkpoints 5 forgiven
+     76.7  GOLD: SHORTCUT sc6_over_house entered at 33.301 (its corridor): checkpoints 5 forgiven
+     77.3  CHECKPOINT 2 at 33.912
+     83.0  BLUE: CHECKPOINT 5 at 39.607
+     83.6  EMBER: SHORTCUT sc6_over_house left at 40.184
+     85.1  GOLD: SHORTCUT sc6_over_house left at 41.688
+     91.9  CHECKPOINT 3 at 48.566
+     95.0  EMBER: LAP 1 COUNTED 47.085 (clock 47.085 + penalty 0.0); forgiven CP5
+     95.8  BLUE: LAP 1 COUNTED 48.374 (clock 48.374 + penalty 0.0)
+     96.7  GOLD: LAP 1 COUNTED 47.276 (clock 47.276 + penalty 0.0); forgiven CP5
+     97.8  CHECKPOINT 4 at 54.457
+    102.2  EMBER: CHECKPOINT 1 at 58.806
+    102.7  BLUE: CHECKPOINT 1 at 59.342
+    103.8  GOLD: CHECKPOINT 1 at 60.415
+    111.5  BLUE: CHECKPOINT 2 at 68.108
+    115.5  CHECKPOINT 5 at 72.123
+    116.1  EMBER: SHORTCUT sc2_two_houses entered at 72.760 (its corridor): checkpoints 2 forgiven
+    118.6  BLUE: CHECKPOINT 3 at 75.271
+    119.3  GOLD: CHECKPOINT 2 at 75.897
+    122.0  BLUE: CHECKPOINT 4 at 78.621
+    126.1  EMBER: SHORTCUT sc2_two_houses left at 82.735
+    126.4  GOLD: CHECKPOINT 3 at 82.980
+    128.6  EMBER: CHECKPOINT 3 at 85.190
+    129.6  GOLD: CHECKPOINT 4 at 86.265
+    132.1  EMBER: CHECKPOINT 4 at 88.711
+    132.7  BLUE: CHECKPOINT 5 at 89.335
+    133.3  LAP 1 COUNTED 82.673 (clock 82.673 + penalty 0.0)
+    140.4  GOLD: CHECKPOINT 5 at 96.984
+    142.8  EMBER: CHECKPOINT 5 at 99.468
+    145.2  CHECKPOINT 1 at 101.800
+    145.2  BLUE: LAP 2 COUNTED 49.358 (clock 49.358 + penalty 0.0)
+    152.1  BLUE: CHECKPOINT 1 at 108.731
+    152.9  GOLD: LAP 2 COUNTED 56.178 (clock 56.178 + penalty 0.0)
+    155.2  EMBER: LAP 2 COUNTED 60.188 (clock 60.188 + penalty 0.0); forgiven CP2
+    159.8  GOLD: CHECKPOINT 1 at 116.426
+    160.0  CHECKPOINT 2 at 116.581
+    160.4  BLUE: CHECKPOINT 2 at 117.058
+    162.4  EMBER: CHECKPOINT 1 at 118.972
+    165.5  EMBER: SHORTCUT sc2_two_houses entered at 122.172 (its corridor): checkpoints 2 forgiven
+    167.3  GOLD: CHECKPOINT 2 at 123.882
+    169.1  BLUE: CHECKPOINT 3 at 125.715
+    172.5  BLUE: CHECKPOINT 4 at 129.109
+    174.4  GOLD: CHECKPOINT 3 at 130.989
+    174.6  CHECKPOINT 3 at 131.234
+    175.4  EMBER: SHORTCUT sc2_two_houses left at 132.030
+    177.7  GOLD: CHECKPOINT 4 at 134.292
+    177.9  EMBER: CHECKPOINT 3 at 134.486
+    180.5  CHECKPOINT 4 at 137.136
+    181.6  EMBER: CHECKPOINT 4 at 138.180
+    183.2  BLUE: CHECKPOINT 5 at 139.805
+    188.4  GOLD: CHECKPOINT 5 at 145.047
+    192.2  EMBER: CHECKPOINT 5 at 148.874
+    195.7  BLUE: LAP 3 COUNTED 50.479 (clock 50.479 + penalty 0.0)
+    195.7  BLUE: FINISH total 148.212 (clock 148.212 + penalties 0.0); laps 48.374 49.358 50.479; place 1
+    198.2  CHECKPOINT 5 at 154.819
+    200.9  GOLD: LAP 3 COUNTED 48.063 (clock 48.063 + penalty 0.0)
+    200.9  GOLD: FINISH total 151.517 (clock 151.517 + penalties 0.0); laps 47.276 56.178 48.063; place 2
+    204.7  EMBER: LAP 3 COUNTED 49.517 (clock 49.517 + penalty 0.0); forgiven CP2
+    204.7  EMBER: FINISH total 156.790 (clock 156.790 + penalties 0.0); laps 47.085 60.188 49.517; place 3
+    216.0  LAP 2 COUNTED 82.668 (clock 82.668 + penalty 0.0)
+    227.8  CHECKPOINT 1 at 184.469
+    242.6  CHECKPOINT 2 at 199.259
+    257.3  CHECKPOINT 3 at 213.918
+    263.2  CHECKPOINT 4 at 219.814
+    280.8  CHECKPOINT 5 at 237.489
+    298.6  LAP 3 COUNTED 82.652 (clock 82.652 + penalty 0.0)
+    298.6  FINISH total 247.993 (clock 247.993 + penalties 0.0); laps 82.673 82.668 82.652; place 4
+    299.7  RACE LEFT
+
+ALL 9 CHECKS PASSED

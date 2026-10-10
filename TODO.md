@@ -1503,6 +1503,34 @@ E. REPORT ONLY (protected geometry: the jump is not changed). The shortcut check
    x 2790-2805, z 1045-1068) or the landing carry (RampHold) extended to that strip; (2) the kicker's foot corners
    rounded or its skirt made the driving surface at the foot so a bike's corner rides over the edge.
 
+**Round 16 menus and garage status (Claude Code, 2026-10-10).** Built and checked in the exe by script, not yet driven by Dan.
+* Ported from Racer: `MenuInput` (the controller / keyboard decision and the release barrier; Racer's DeveloperLocationHud is
+  this game's DeveloperHud), `MenuGlyph` (the button pictures), `MenuActionRegistry` (copied), and from `RaceMenus` the card,
+  rows, value rows (`‹ value ›`, left / right, held to repeat; A never steps one), the page stack with focus memory, the
+  menu's own one-row-per-press navigation, the focus frame, the button prompts, the garage preview (turning model in its own
+  panel, sharp at 4K, right stick / Q E / mouse drag, slow turn when left alone) and the five stat bars. All re-written into
+  `Assets/Scripts/Menus/GameMenus.cs` and `GameMenus.Garage.cs` around a small flow of this game's own in place of RaceFlow.
+  uGUI (`com.unity.ugui` 2.6.0, Racer's version) is added to the project.
+* Pages. At start: the title menu (RACE, FREE ROAM, GARAGE, QUIT GAME), the game paused under it. Driving: Start / Esc /
+  Enter opens the pause menu (free roam: RESUME, RACE, GARAGE, QUIT GAME; in a race: RESUME, RESTART RACE (asks first), RACE
+  SETUP, LEAVE RACE, QUIT GAME; after the finish: RACE AGAIN, RACE SETUP, FREE ROAM, QUIT GAME). B / Esc goes back; on the
+  pause menu's first page it resumes. RACE SETUP: Laps 1 to 9, Direction, Opponents (3 AI drivers / Solo), Difficulty (Easy,
+  Normal, Hard: Racer's RoadDriver.Difficulty), Opponent vehicles (each of EMBER, GOLD, BLUE: Random or one of the eleven;
+  kept in `ai_drivers.json` as before), Garage, START RACE. Settings are kept in `race_settings.json` beside the records.
+  GARAGE: the vehicle (left / right through the eleven; locked during a race), its colour (Standard or Racer's seven), the
+  stat bars, Done; vehicle and colour kept in `vehicle.json`.
+* Replaced: the D-pad / `,` `.` vehicle switch and its hint, the T / X keys and D-pad up / down race keys, Esc-twice-to-quit
+  (kept only in a check run, which has no menus). The HUD lines now say "Start / Esc: menu". The debug menu no longer opens
+  on the pad's Start (Start is the game menu's; F6 / `\` still open it; the pad's View button still captures a bug).
+* Check: `ChastainRush.exe -exeRound16 <dir>`: a virtual gamepad through title, garage (vehicle and colour changed, model
+  turned), race setup (laps, difficulty), opponent vehicles, START RACE, pause with the race clock standing still, resume,
+  restart's confirmation, LEAVE RACE, the free-roam pause menu: 22 of 22. `-exeCheck` 9 of 9. Screens:
+  `Data/screenshots/round16/menus/`.
+* Not done / not brought: Racer's settings pages (volume, display, controls), the rider page, records boards, loading
+  screen, the results-stage menu (the finish panel stays; Start opens RACE AGAIN / FREE ROAM).
+* Checks before the "stay off Dan's screen" rule (added to CLAUDE.md during this round) ran full screen at 3840 x 2160; from
+  then on, minimized 1280 x 720, and a check run now turns run-in-background on itself (CheckRun).
+
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
 particularly want the shopping center behind my neighborhood, the
