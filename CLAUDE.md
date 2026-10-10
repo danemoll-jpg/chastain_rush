@@ -157,7 +157,20 @@ the pond with its fountain, and geese that scatter). Reference photos are in
 `local/reference_photos/` (git-ignored): never commit them or copy them into
 committed files.
 
-**Round 11 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** #2 is now a jump through a
+**Active work is Round 12 in `TODO.md`:** house 1763 restored completely
+(Dan has given up on a shortcut through it: nothing may be attached to it
+again), shortcut #2 now starts just past it with one sign as the clue, grass
+not wood on the ground, an inclined run into 1627's sliding door and a
+kicker for big air out of its upstairs windows, sidewalks that stop at
+driveways, the pool building swap, no start gate in free roam. Queued after
+it, one round each: 13 vehicles with sound, 14 three AI drivers, 15 menus.
+
+**Never build a "nearest version" of something Dan has described.** If what
+he asked for does not fit, build nothing of it, leave things clean, and
+report the numbers and options. He has rejected shortcut #2 three times for
+approximations.
+
+**Round 11 (see `TODO.md`, status there) is built and driven by Dan; its item 1 was rejected:** #2 is now a jump through a
 ground-floor picture window of 1763 and out a side window (an upstairs window needs a 40 deg ramp); no trails or markers
 on shortcuts; #6 lands on the ground (a `LandingZone`); cul-de-sac bulbs, curb returns and lawn-proof road, drive and
 sidewalk surfaces across Chastain Glen (`MapBuilder.Round11.cs`); Dan's mailbox and hydrant; the lake walk; the pool road;
