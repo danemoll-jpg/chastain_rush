@@ -1130,6 +1130,75 @@ New: `VehicleSwitch`, `Checks/Round13Runner.cs` (-exeRound13). Edits: MapBuilder
 RaceController (corridors, per-vehicle records), ShortcutCheckRunner (-vehicle via VehicleSwitch, -shortcutRaceOffset,
 -shortcutNoEntryPlanes), DebugReportSession / DeveloperHud (vehicle), PlayerSetup, ArcadeVehicle, GameShell.
 
+Round 14 status — built and checked in the exe by script (2026-10-10), not yet driven by Dan. Check: `ChastainRush.exe
+-exeRound14 <dir> [-r14Vehicles moto,mower,atv,pebble,original] [-r14Tag t]` (new, Checks/Round14Runner.cs); `-noSurfaceContacts`
+gives the "before" numbers. Plots: `python Tools/mapgen/round14_plot.py <before> <after> <out>`. Everything is in
+`Data/screenshots/round14/` (`round14_before.txt`, `round14_after.txt`, a TSV per vehicle and run, `round14_*.png`).
+
+1. Racer reference: DONE. Profiles here are Racer's, unchanged (top speed / acceleration: Needle 600 61 / 18, Turf Rocket
+   61 / 18, Trail Four 56 / 17, Pebble Coupe 49 / 14, Street Classic 49 / 14.5). ArcadeVehicle, VehicleConfiguration and
+   ChaseCamera are Racer's code (the camera byte for byte), physics settings the same but the broadphase. What Racer's world
+   gives that this one did not: ALL of Racer's ground is mesh colliders (`Ground_*`, no TerrainCollider in any scene), roads have
+   colliders, and Racer's VehicleSurfaceContacts face-normal fix covers every ground mesh. Here the ground is a TerrainCollider
+   (heightfield) and the fix only covered #2 / #6's ramps. Racer's own record of the problem: speculative contacts gave "nearly
+   backward horizontal normals"; the motorcycle went 51.3 to 15.9 m/s in 40 ms (Racer `Docs/CR028-033/VALIDATION.md`). Racer's
+   hills are no gentler (30 to 37% climbs on its courses).
+2. Measured in the exe: DONE. (a) New Chastain Road, flattest straight (2915,757 to 2206,761, 700 m, westbound): to 50 m/s
+   every vehicle matches the flat-ground formula to 0.1 s; after that, before the fix, the Needle 600 lost 117.7 m/s with the
+   throttle held (54 to 6 m/s at x 2594 on plain road, then the bridge end), the Trail Four 45.8 (52 to 6 m/s at the bridge),
+   the Turf Rocket 4.4; the two cars 0.1. (b) Steepest 150 m of the lane (12.2%) and the lap: the Needle 600 lost 18.6 m/s on
+   the climb and 71.6 on the lap, the Turf Rocket 22.3 on the lap, the Trail Four 20.0; the cars 0.3. What took it, in plain
+   words: the BODY of the small vehicles touching the terrain. With speculative CCD (Racer's setting for small vehicles) and 15 to
+   22 cm of clearance, their body box had a contact with the terrain in 95 to 99% of all physics steps; most do nothing, but now
+   and then PhysX gives one a horizontal normal (normal y 0.00 to 0.02) and the solver stops the vehicle against it: 30 m/s
+   lost in 40 ms at (3125,1166), 20 to 22 m/s at (2886,905) for all three. Ruled out by the same traces: the hills (gravity
+   took at most 0.5 m/s of the losses), wipeout (never), triggers (none entered), the wheels (all down when it happened). The
+   cars' bodies never touched (sweep CCD, 37 cm clearance).
+3. Suspects: a (body on the ground) CONFIRMED; b (hills) ruled out; c (wipeout / tip) ruled out; d (geese / breakables) not
+   seen on the scripted line (it keeps to the centre); their costs are fixed and the same for every vehicle.
+4. Fix: DONE, at the cause, for every vehicle. VehicleSurfaceContacts now covers this map's driving ground as Racer's covers
+   its own: the terrain tiles (the heightfield's own surface normal under the contact, from a copy of its heights) and the bridge
+   decks. A terrain contact's gap is measured straight down from the body's lowest corner, so a predicted contact with a bank
+   further on is not a hit. Same rule as Racer: only contacts from above, faces up to about 57 degrees, never removed, no push.
+   No profile changed; no hill assist (on the steepest climb every vehicle can hold 86 to 87% of its top speed: the 15% rule is
+   already met, see below).
+5. After: DONE. With the throttle held, body contacts now take: Needle 600 2.5 m/s on the straight (117.7 before), 0 on the
+   climb (17.6), 0 on the lap (72.2); Turf Rocket 0.2 / 0 / 0 (2.6 / 0 / 22.4); Trail Four 0 / 0 / 0 (45.0 / 0 / 20.0); the
+   cars 0 before and after, their traces identical. All finish all runs. Laps by the scripted driver: Needle 600 44.3 s (46.8
+   before), Turf Rocket 44.2 (44.8), Trail Four 45.0 (45.4). By script only: a script is not proof of how it feels.
+   Hills, the motor's own sums (top speed less what a grade takes, with the body's damping): on 12.2% the Needle 600 / Turf
+   Rocket hold 53.4 of 61 m/s, the Trail Four 48.9 of 56, the cars 41.9 to 42.1 of 49 (13 to 14% below top); the steepest 20 m
+   of the lap (16.8%, x 3075 z 1003) is too short to slow anything that much.
+6. Other differences, listed: the small vehicles' bodies still have contacts with the ground in nearly every step (harmless
+   now: no impulse). Racer's cars switch to speculative CCD when a small vehicle is within 20 m, so with AI drivers (Round 15)
+   the cars would have hit this too; the fix covers them. Steering, sideways grip, the chase camera's distance / height per vehicle
+   and the rider's lean are Racer's code and values, unchanged; the lateral-grip losses before were the after-effect of the body
+   hits (the bike yawed), now gone. Nothing else changed.
+   Seen, not changed (not on the lap; world change not asked for): the west end of the New Chastain Road bridge (x 2421, z 766):
+   the deck ends 0.2 m above the ground and the creek bank falls away under it; the Needle 600 at 56 m/s leaves the deck end with
+   its wheels off the ground and loses 3 to 5 m/s there (before the fix it lost 32 m/s, and one run rolled it).
+7. #6 as a dirt pile: DONE, look only. Every part of the flatbed is removed (code too). One mound of packed brown earth: the driven
+   face is the kicker's own surface (same curve, pitch, height, lip; collider unchanged), the rest falls away round the whole
+   outline over a rounded shoulder to the grass, about 40 degrees on the sides and longer behind the lip (up to 10 m), the outline
+   wavering, a few clods at the foot. The skirt goes from the top edge to just under the ground (nothing floats, nothing open) and
+   has no collider, so it cannot snag a car. Driven: `-exeShortcut -shortcutOnly sc6_over_house` at 20 / 26 / 32 m/s with the
+   Street Classic, Needle 600, Turf Rocket and Trail Four: on / lowest / off speeds identical to Round 13 for all twelve runs,
+   1641's roof cleared, all checks passed. From Dan's BUG-002 spot (x 2808, z 1100) the camera is INSIDE the heap: that spot is 3 m
+   from the lip's corner, and any earth slope off a 5.6 m lip covers it (the skirt has no collider, so a car can stand inside it).
+   Pictures: `r14_dirtpile_bug002.png` (his spot), `r14_dirtpile_from_bug002_back.png` (8 m back), `r14_dirtpile_approach.png`.
+8. Executable rebuilt last: DONE, `Builds/ChastainRush/ChastainRush.exe` (2026-10-10). `-exeCheck` 9 of 9, 60 fps at the three
+   places (1920 x 1080). Laps 1:22.657 / 1:22.665 / 1:22.652 (Round 13: 1:22.675 / 1:22.617 / 1:22.645): the Street Classic's
+   scripted race moved by up to 0.05 s, the only change to a car seen; its straight, climb and lap traces are identical.
+9. This report: DONE.
+
+For Dan to check: the Needle 600 and the Turf Rocket (and the Trail Four) flat out round the loop and up the lane: no sudden
+slow-downs; the dirt pile from the lane and from BUG-002, and driving it; the cars feel as before.
+
+Not done / not measured: Dan's drive; a real pad; 3840 x 2160; driving near the verge into geese and breakables per vehicle.
+
+New: `Checks/Round14Runner.cs` (-exeRound14), `Tools/mapgen/round14_plot.py`. Edits: VehicleSurfaceContacts (terrain and
+bridge decks), MapBuilder.Shortcuts.cs (DirtPileLook replaces the flatbed), GameShell (-exeRound14). Imported from Racer: nothing.
+
 Current Objective (Focus Area)
 
 **Round 14 — make Racer's vehicles drive properly on this map. DECIDED

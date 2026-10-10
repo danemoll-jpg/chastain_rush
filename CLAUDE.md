@@ -177,6 +177,15 @@ Rocket slow down constantly) and fix the cause without touching any vehicle
 profile. Shortcut #6's rejected flatbed is replaced by a dirt pile (look
 only; how it drives does not change). Queued: 15 three AI drivers, 16 menus.
 
+**Round 14 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the small
+vehicles' slow-downs were their BODY contacts with the terrain: speculative CCD (Racer's setting for small vehicles) plus a
+TerrainCollider gave contacts with horizontal normals (Needle 600 30 m/s lost in 40 ms). Racer's ground is all mesh and its
+`VehicleSurfaceContacts` fix covers it; here that fix now covers the terrain tiles (heightfield normal, gap measured straight down
+from the body's corner) and `BridgeDecks`. No profile changed, no hill assist (hills measured: not the cause). #6's kicker is
+drawn as a dirt pile (`DirtPileLook`, look only; collider and drive unchanged). Check: `ChastainRush.exe -exeRound14 <dir>
+[-r14Vehicles ids] [-r14Tag t]` (add `-noSurfaceContacts` for "before"), plots `python Tools/mapgen/round14_plot.py <before>
+<after> <out>`; results in `Data/screenshots/round14/`. Imported from Racer in Round 14: nothing.
+
 **Round 13 (see `TODO.md`, status there) is built and checked in the exe, driven by Dan:** trees moved off
 shortcut #2's line (none within 6.5 m of either line); #6's kicker drawn as a flatbed trailer (look only); Dan's penalties were
 CP2 (#2's entry plane missed by his line round 1539), fixed by shortcut CORRIDORS (`RaceShortcut.InCorridor`: 7 m either side of

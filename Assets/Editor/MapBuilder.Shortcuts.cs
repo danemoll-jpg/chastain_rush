@@ -599,49 +599,34 @@ namespace ChastainRush
             return pr[2 * n - 1];
         }
 
-        // Round 13, item 2 (Dan: "i don't particularly like the way the hay bales look. You r suggestion of a flatbed was
-        // better"): the kicker drawn as one big flatbed trailer, sized up to the ramp (7.6 m wide), its deck tilted up and its
-        // loading ramps down. LOOK ONLY: every drawn top is the kicker's own surface (Top), the collider is unchanged.
-        //   ramps    the low part of the outline (where it is not yet full width): full-width steel loading ramps, ribbed
-        //   deck     from there to the lip: hardwood planks running up the deck, in steel side rails with stake pockets
-        //   chassis  three main beams under the deck, cross members; a tandem axle of dual wheels where the beams clear the
-        //            ground by a wheel, standing on the ground and hung from the beams
-        //   cribbing beyond the axles the raised end rests on stacks of crossed timbers, one under each main beam, ground to
-        //            beam, so nothing floats
-        static MeshBuilder KickerLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain)
+        // Round 14, item 7 (Dan chose a dirt pile: "4 was actually closer to what I was thinking initally"): the kicker drawn
+        // as one big mound of packed brown earth, as if dumped for landscaping or building work. The Round 13 flatbed (deck,
+        // rails, steel ramps, beams, wheels, cribbing) is gone. LOOK ONLY: the face the car drives up is drawn on the kicker's
+        // own surface (Top), the same curve, pitch, height and lip, and the collider (made from the prism, BuildPrism) is
+        // unchanged. Round the whole outline the earth falls away to the grass: from the top's edge over a rounded shoulder
+        // to a toe on the ground, about 40 degrees, wider where the top stands higher and longest behind the lip, the
+        // outline wavering by up to a fifth so it reads as a heap and not a ramp. The skirt runs from the top's edge down to
+        // just under the ground, so nothing floats and nothing is open underneath. It has no collider of its own: a car that
+        // clips the side of the heap is not snagged by it.
+        static MeshBuilder DirtPileLook(List<Vector2> poly, Vector2 O, Vector2 U, Vector2 Lv, List<float> cuts, Func<Vector2, Vector3> Top, TerrainGrid terrain)
         {
             var mb = new MeshBuilder();
-            float S(Vector2 p) => Vector2.Dot(p - O, U); float L(Vector2 p) => Vector2.Dot(p - O, Lv);
-            float s0 = poly.Min(S), s1 = poly.Max(S), l0 = poly.Min(L), l1 = poly.Max(L);
-            Vector2 At(float s, float l) => O + U * s + Lv * l;
-            Vector3 TopAt(float s, float l) => Top(At(s, l));
-            float G(float s, float l) { var p = At(s, l); return Ground(terrain, p.x, p.y); }
-            // where the outline is full width: the deck starts there
-            float sDeck = Mathf.Max(poly.Where(p => Mathf.Abs(L(p) - l0) < 0.01f).Min(S), poly.Where(p => Mathf.Abs(L(p) - l1) < 0.01f).Min(S));
-            var wood = new Color(0.47f, 0.31f, 0.20f);    // hardwood deck
-            var steel = new Color(0.60f, 0.62f, 0.63f);   // the ramps
-            var paint = new Color(0.55f, 0.13f, 0.10f);   // the trailer's frame
-            var dark = new Color(0.16f, 0.16f, 0.17f); var tyre = new Color(0.09f, 0.09f, 0.09f); var timber = new Color(0.42f, 0.33f, 0.22f);
-            const float Thick = 0.06f, Plank = 0.3f, Ramp = 0.95f, Rail = 0.34f, BeamD = 0.5f;
-            int planks = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Plank)), ramps = Mathf.Max(1, Mathf.RoundToInt((l1 - l0) / Ramp));
+            float S(Vector2 p) => Vector2.Dot(p - O, U);
+            var packed = new Color(0.40f, 0.28f, 0.18f);   // the driven face: packed, darker
+            var loose = new Color(0.47f, 0.34f, 0.22f);    // the heap's sides: drier, looser
+            // the driven face, cell by cell (0.5 m strips, about 1.2 m across), each cell a slightly different shade of earth
+            var Lmin = poly.Min(p => Vector2.Dot(p - O, Lv)); var Lmax = poly.Max(p => Vector2.Dot(p - O, Lv));
+            int across = Mathf.Max(1, Mathf.RoundToInt((Lmax - Lmin) / 1.2f));
             for (int i = 0; i + 1 < cuts.Count; i++)
             {
                 if (cuts[i + 1] - cuts[i] < 1e-3f) continue;
-                float sm = (cuts[i] + cuts[i + 1]) * 0.5f; bool deck = sm >= sDeck;
                 var strip = ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p));
-                if (strip.Count >= 3)
+                for (int k = 0; k < across; k++)
                 {
-                    mb.Tint = Shade(deck ? paint : steel, 0.45f);   // the underside
-                    for (int t = 1; t + 1 < strip.Count; t++) TriFace(mb, Top(strip[0]) - Vector3.up * Thick, Top(strip[t]) - Vector3.up * Thick, Top(strip[t + 1]) - Vector3.up * Thick, Vector3.down);
-                }
-                int n = deck ? planks : ramps;
-                for (int k = 0; k < n; k++)
-                {
-                    float la = Mathf.Lerp(l0, l1, k / (float)n), lb = Mathf.Lerp(l0, l1, (k + 1) / (float)n);
-                    var cell = ClipPoly2(ClipPoly2(strip, p => L(p) - la), p => lb - L(p));
+                    float la = Mathf.Lerp(Lmin, Lmax, k / (float)across), lb = Mathf.Lerp(Lmin, Lmax, (k + 1) / (float)across);
+                    var cell = ClipPoly2(ClipPoly2(strip, p => Vector2.Dot(p - O, Lv) - la), p => lb - Vector2.Dot(p - O, Lv));
                     if (cell.Count < 3) continue;
-                    mb.Tint = deck ? Shade(wood, 0.84f + 0.24f * Hash01(k, 301) - ((k & 1) == 0 ? 0f : 0.05f))
-                                   : Shade(steel, ((Mathf.FloorToInt(cuts[i] / 0.5f) & 1) == 0 ? 1f : 0.86f) * ((k & 1) == 0 ? 1f : 0.94f));   // ribs across, ramp by ramp
+                    mb.Tint = Shade(packed, 0.96f + 0.07f * Hash01(i * 37 + k, 311));   // barely varied: packed earth, not boards
                     int st = mb.Count; foreach (var p in cell) mb.Vertex(Top(p));
                     for (int t = 1; t + 1 < cell.Count; t++)
                     {
@@ -650,128 +635,64 @@ namespace ChastainRush
                     }
                 }
             }
-            // edges: the side rails along the deck (deep, painted), the ramps' and the lip's edges thin
+            // the outline walked round every 0.5 m, with extra stations at each corner so the skirt turns the corner round
             Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
+            Vector2 OutN(Vector2 a, Vector2 b) { var d = (b - a).normalized; var n = new Vector2(d.y, -d.x); return Vector2.Dot(n, (a + b) * 0.5f - centre) < 0f ? -n : n; }
+            var ring = new List<(Vector2 p, Vector2 n, float along)>(); float run = 0f;
             for (int e = 0; e < poly.Count; e++)
             {
-                var a = poly[e]; var b = poly[(e + 1) % poly.Count]; var dir = (b - a).normalized; var outN = new Vector2(dir.y, -dir.x);
-                if (Vector2.Dot(outN, (a + b) * 0.5f - centre) < 0f) outN = -outN;
+                var a = poly[e]; var b = poly[(e + 1) % poly.Count]; var nPrev = OutN(poly[(e + poly.Count - 1) % poly.Count], a); var n = OutN(a, b);
+                float turn = Vector2.SignedAngle(nPrev, n); int fan = Mathf.CeilToInt(Mathf.Abs(turn) / 15f);
+                for (int f = 1; f < fan; f++) ring.Add((a, (Vector2)(Quaternion.Euler(0, 0, turn * f / fan) * nPrev), run));
                 int m = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b) / 0.5f));
-                for (int i = 0; i < m; i++)
-                {
-                    var p = Vector2.Lerp(a, b, i / (float)m); var q = Vector2.Lerp(a, b, (i + 1) / (float)m);
-                    bool onDeck = (S(p) + S(q)) * 0.5f >= sDeck - 0.01f;
-                    float d = onDeck ? Rail : Thick;
-                    mb.Tint = onDeck ? paint : Shade(steel, 0.7f);
-                    var tp = Top(p); var tq = Top(q);
-                    Face(mb, tp - Vector3.up * d, tq - Vector3.up * d, tq, tp, new Vector3(outN.x, 0f, outN.y));
-                }
+                for (int i = 0; i < m; i++) { ring.Add((Vector2.Lerp(a, b, i / (float)m), n, run)); run += Vector2.Distance(a, b) / m; }
             }
-            var f = new Frame { O = new Vector3(O.x, 0f, O.y), R = new Vector3(Lv.x, 0f, Lv.y), F = new Vector3(U.x, 0f, U.y), M = 1f };
-            var R3 = new Vector3(Lv.x, 0f, Lv.y); var U3 = new Vector3(U.x, 0f, U.y);
-            // stake pockets on the rails, and the hinge between ramps and deck
-            foreach (float side in new[] { l0, l1 })
+            // per station: the top edge, a shoulder a third of the way out (a quarter of the way down: rounded), the toe on the grass
+            var top = new Vector3[ring.Count]; var shoulder = new Vector3[ring.Count]; var toe = new Vector3[ring.Count];
+            for (int i = 0; i < ring.Count; i++)
             {
-                float sg = side < 0f ? -1f : 1f;
-                for (float s = sDeck + 0.4f; s < s1 - 0.2f; s += 0.6f)
-                {
-                    var t = TopAt(s, side);
-                    Beam(mb, t + R3 * sg * 0.04f - Vector3.up * 0.06f, t + R3 * sg * 0.04f - Vector3.up * (Rail - 0.04f), 0.08f, 0.12f, Shade(paint, 0.7f), U3);
-                }
+                var (p, n, along) = ring[i];
+                var t = Top(p); float g = Ground(terrain, p.x, p.y), h = Mathf.Max(0f, t.y - g);
+                // a slow, uneven waver round the outline (two long waves and a short one), up to about a fifth of the width
+                float waver = 1f + 0.12f * Mathf.Sin(along * 0.37f + 1.3f) + 0.07f * Mathf.Sin(along * 0.91f + 4.1f) + 0.04f * Mathf.Sin(along * 2.3f);
+                // about 40 degrees on the sides (dry earth's angle of repose), a longer fall behind the lip
+                float w = (0.3f + h * Mathf.Lerp(1.2f, 1.6f, Mathf.Clamp01(Vector2.Dot(n, U)))) * waver;
+                var pt = p + n * w; var ps = p + n * (w * 0.34f);
+                top[i] = t;
+                toe[i] = new Vector3(pt.x, Ground(terrain, pt.x, pt.y) - 0.06f, pt.y);
+                float gs = Ground(terrain, ps.x, ps.y);
+                shoulder[i] = new Vector3(ps.x, Mathf.Max(gs - 0.02f, Mathf.Lerp(t.y, toe[i].y, 0.24f) + 0.05f * Mathf.Sin(along * 1.7f)), ps.y);
             }
-            Beam(mb, TopAt(sDeck, l0) - Vector3.up * 0.09f, TopAt(sDeck, l1) - Vector3.up * 0.09f, 0.12f, 0.06f, dark, U3);
-            // chassis: three main beams under the deck, cross members every 0.6 m
-            float[] beamsL = { l0 + 1.2f, (l0 + l1) * 0.5f, l1 - 1.2f };
-            Vector3 Under(float s, float l) => TopAt(s, l) - Vector3.up * (Thick + BeamD * 0.5f);
-            foreach (float bl in beamsL)
-                for (int i = 0; i + 1 < cuts.Count; i++)
-                {
-                    if (cuts[i + 1] <= sDeck || cuts[i + 1] - cuts[i] < 1e-3f) continue;
-                    Beam(mb, Under(Mathf.Max(cuts[i], sDeck), bl), Under(cuts[i + 1], bl), 0.16f, BeamD, Shade(paint, 0.8f), R3);
-                }
-            for (float s = sDeck + 0.3f; s < s1; s += 0.6f)
-                Beam(mb, TopAt(s, l0 + 0.05f) - Vector3.up * (Thick + 0.12f), TopAt(s, l1 - 0.05f) - Vector3.up * (Thick + 0.12f), 0.1f, 0.2f, Shade(paint, 0.6f), U3);
-            // the axles: the first station where every main beam clears the ground by a wheel (1.0 m) and a little
-            const float WheelR = 0.5f, AxleGap = 1.3f;
-            float BeamBottom(float s, float l) => TopAt(s, l).y - Thick - BeamD;
-            float sAxle = float.NaN;
-            for (float s = sDeck + 0.5f; s < s1 - AxleGap - 1f; s += 0.1f)
-                if (beamsL.All(bl => BeamBottom(s, bl) - G(s, bl) >= 2f * WheelR + 0.15f)) { sAxle = s; break; }
-            float sCrib = sDeck + 1f;
-            if (!float.IsNaN(sAxle))
+            for (int i = 0; i < ring.Count; i++)
             {
-                foreach (float sa in new[] { sAxle, sAxle + AxleGap })
-                {
-                    float gy = beamsL.Min(bl => G(sa, bl));
-                    var c = At(sa, 0f); var axle = new Vector3(c.x, gy + WheelR, c.y);
-                    Beam(mb, axle + R3 * (l0 + 0.35f), axle + R3 * (l1 - 0.35f), 0.14f, 0.14f, dark, U3);
-                    foreach (float bl in beamsL)   // hangers: axle up to the beam
-                    {
-                        var hb = At(sa, bl); float top = BeamBottom(sa, bl);
-                        Beam(mb, new Vector3(hb.x, axle.y, hb.y), new Vector3(hb.x, top + 0.02f, hb.y), 0.12f, 0.2f, dark, U3);
-                    }
-                    foreach (float wl in new[] { l0 + 0.55f, l0 + 2.35f, l1 - 2.35f, l1 - 0.55f })   // dual wheels
-                        foreach (float dw in new[] { -0.16f, 0.16f })
-                        {
-                            var wc = At(sa, wl + dw); var w = new Vector3(wc.x, Ground(terrain, wc.x, wc.y) + WheelR - 0.02f, wc.y);
-                            Wheel(mb, w, R3, WheelR, 0.28f, tyre, Shade(steel, 0.8f));
-                        }
-                }
-                sCrib = sAxle + AxleGap + 1.6f;
+                int j = (i + 1) % ring.Count;
+                var outward = new Vector3(ring[i].n.x + ring[j].n.x, 0.8f, ring[i].n.y + ring[j].n.y);
+                mb.Tint = Shade(loose, 0.82f + 0.2f * Hash01(i, 313));
+                if ((top[i] - top[j]).sqrMagnitude > 1e-6f) Face(mb, top[i], top[j], shoulder[j], shoulder[i], outward);
+                else TriFace(mb, top[i], shoulder[j], shoulder[i], outward);   // a corner fan: the top edge is one point
+                mb.Tint = Shade(loose, 0.9f + 0.2f * Hash01(i, 317));
+                Face(mb, shoulder[i], shoulder[j], toe[j], toe[i], outward);
             }
-            // cribbing: stacks of crossed 0.2 x 0.25 m timbers, 1.4 m square, every 2.8 m from the lip back to past the axles
-            int stacks = 0;
-            for (float sc = s1 - 0.9f; sc >= sCrib; sc -= 2.8f)
-                foreach (float bl in beamsL)
+            // a few clods of earth rolled down to the toe
+            int clods = 0;
+            for (int i = 0; i < ring.Count; i += 7)
+            {
+                if (Hash01(i, 319) < 0.45f) continue;
+                var c = Vector3.Lerp(shoulder[i], toe[i], 0.85f + 0.2f * Hash01(i, 321)); var cg = new Vector2(c.x, c.z);
+                c.y = Ground(terrain, cg.x, cg.y); float r = 0.18f + 0.22f * Hash01(i, 323);
+                mb.Tint = Shade(loose, 0.75f + 0.2f * Hash01(i, 325));
+                Vector3[] d = { Vector3.right, Vector3.forward, Vector3.left, Vector3.back };
+                var apex = c + Vector3.up * r * 0.9f; var foot = c - Vector3.up * r * 0.3f;
+                for (int k = 0; k < 4; k++)
                 {
-                    float top = float.MaxValue, lo = float.MaxValue;
-                    foreach (float ds in new[] { -0.7f, 0.7f }) foreach (float dl in new[] { -0.7f, 0.7f })
-                    {
-                        top = Mathf.Min(top, BeamBottom(sc + ds, bl + Mathf.Clamp(dl, -0.08f, 0.08f)));
-                        lo = Mathf.Min(lo, G(sc + ds, bl + dl));
-                    }
-                    if (top - lo < 0.3f) continue;
-                    float y = lo - 0.1f; int layer = 0;
-                    while (y < top - 1e-3f)
-                    {
-                        float h = Mathf.Min(0.2f, top - y);
-                        var tc = Shade(timber, 0.85f + 0.25f * Hash01(stacks * 31 + layer, 303));
-                        foreach (float off in new[] { -0.5f, 0.5f })
-                            if ((layer & 1) == 0) BoxF(mb, f, bl + off - 0.125f, bl + off + 0.125f, y, y + h, sc - 0.7f, sc + 0.7f, tc);
-                            else BoxF(mb, f, bl - 0.7f, bl + 0.7f, y, y + h, sc + off - 0.125f, sc + off + 0.125f, tc);
-                        y += h; layer++;
-                    }
-                    stacks++;
+                    var a = c + d[k] * r; var b = c + d[(k + 1) % 4] * r;
+                    TriFace(mb, a, b, apex, (d[k] + d[(k + 1) % 4]) + Vector3.up);
+                    TriFace(mb, a, b, foot, (d[k] + d[(k + 1) % 4]) - Vector3.up);
                 }
-            string axles = float.IsNaN(sAxle) ? "none (no room)" : $"{sAxle - s0:0.0} and {sAxle + AxleGap - s0:0.0} m up";
-            Debug.Log($"[Round13] #6 flatbed: deck from {sDeck - s0:0.0} m up the ramp ({s1 - sDeck:0.0} m long, {l1 - l0:0.0} m wide), axles {axles}, {stacks} cribbing stacks");
+                clods++;
+            }
+            Debug.Log($"[Round14] #6 dirt pile: {ring.Count} stations round the outline ({run:0} m), widest skirt {ring.Select((r, i) => Vector2.Distance(r.p, new Vector2(toe[i].x, toe[i].z))).Max():0.0} m, {clods} clods");
             return mb;
-        }
-
-        // a wheel: a 12-sided tyre about the axis, its hub on both faces
-        static void Wheel(MeshBuilder mb, Vector3 c, Vector3 axis, float r, float width, Color tyre, Color hub)
-        {
-            axis.Normalize(); var a = Vector3.Cross(axis, Vector3.up).normalized; var b = Vector3.up;
-            const int Seg = 12;
-            mb.Tint = tyre;
-            for (int i = 0; i < Seg; i++)
-            {
-                float t0 = Mathf.PI * 2f * i / Seg, t1 = Mathf.PI * 2f * (i + 1) / Seg;
-                Vector3 d0 = a * Mathf.Cos(t0) + b * Mathf.Sin(t0), d1 = a * Mathf.Cos(t1) + b * Mathf.Sin(t1);
-                Vector3 p0 = c + d0 * r - axis * width * 0.5f, p1 = c + d1 * r - axis * width * 0.5f;
-                Face(mb, p0, p1, p1 + axis * width, p0 + axis * width, (d0 + d1).normalized);
-            }
-            foreach (float sg in new[] { -1f, 1f })
-            {
-                var fc = c + axis * sg * width * 0.5f;
-                for (int i = 0; i < Seg; i++)
-                {
-                    float t0 = Mathf.PI * 2f * i / Seg, t1 = Mathf.PI * 2f * (i + 1) / Seg;
-                    Vector3 d0 = a * Mathf.Cos(t0) + b * Mathf.Sin(t0), d1 = a * Mathf.Cos(t1) + b * Mathf.Sin(t1);
-                    mb.Tint = tyre; TriFace(mb, fc + d0 * r, fc + d1 * r, fc + d0 * r * 0.6f, axis * sg); TriFace(mb, fc + d1 * r, fc + d1 * r * 0.6f, fc + d0 * r * 0.6f, axis * sg);
-                    mb.Tint = hub; TriFace(mb, fc + axis * sg * 0.01f, fc + d0 * r * 0.6f + axis * sg * 0.01f, fc + d1 * r * 0.6f + axis * sg * 0.01f, axis * sg);
-                }
-            }
         }
 
         // A solid: the convex outline in plan, its top at Profile(station along the axis), its sides down into the ground.
@@ -836,10 +757,10 @@ namespace ChastainRush
                     Face(mb, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), tq, tp, new Vector3(outN.x, 0f, outN.y));
                 }
             }
-            // Round 12, item 9 / Round 13, item 2: the kicker's LOOK only (a flatbed trailer since Round 13, hay bales in Round
+            // Round 12, item 9 / Round 13, item 2 / Round 14, item 7: the kicker's LOOK only (a dirt pile since Round 14, a flatbed in Round 13, hay bales in Round
             // 12). The surface, its curve, pitch, height, lip and the collider below are exactly as before (the collider is still
             // made from mb); what is drawn sits on that same surface and is held up from the ground, so nothing floats
-            var look = pr.kind == "kicker" ? KickerLook(poly, O, U, Lv, cuts, Top, terrain) : mb;
+            var look = pr.kind == "kicker" ? DirtPileLook(poly, O, U, Lv, cuts, Top, terrain) : mb;
             var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
             var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing";   // Round 10: RampHold

@@ -1,0 +1,125 @@
+Round 14 measurement (after), 2026-10-10 07:27, the exe. Physics step 20.0 ms.
+Surface contact fix registered surfaces: see Player.log. Lap 1247 m.
+Steepest 150 m of the lap: 125 to 275 m, rising 18.4 m (12.2%).
+
+=== Needle 600 (moto, Motorcycle): top speed 61 m/s, acceleration 18 m/s2, body (0.65, 0.80, 2.25), mass 220 kg
+  (a) New Chastain Road straight, from rest: finished in 15.7 s over 710 m; top 56.2 m/s; average 45.1 m/s; slowest after 1 s 15.6 m/s
+    20 m/s at 1.4 s (15 m)    30 m/s at 2.4 s (41 m)    40 m/s at 3.8 s (92 m)    50 m/s at 6.3 s (208 m)    55 m/s at 9.1 s (354 m)
+    flat, smooth ground (formula): 20 m/s at 1.4 s (15 m)   30 m/s at 2.4 s (40 m)   40 m/s at 3.8 s (92 m)   50 m/s at 6.6 s (219 m)   55 m/s at 10.4 s (422 m)
+  Speed lost with the throttle held: 5.7 m/s in 66 of 787 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +1.7, gravity +0.0, damping -1.4, lateral grip -1.8, springs -0.1, BODY contacts -2.5, geese / breakables +0.0, other -1.8
+  Over every full-throttle step: body contact in 767 steps (753 with the terrain), body impulse -2.5 m/s; fewer than 2 wheels down in 37 steps; wiped out in 0; triggers: 
+  Body touched: terrain x753, BridgeDecks x32. Contact corrections so far: terrain 5367, ramps / decks 0.
+    drop 5.7 m/s over 1.42 s at (2422,766) 56.2 m/s: grade 3.3%, wheels min 0, body contact 71 steps (71 terrain, lowest contact normal y 0.74), by cause: drive +2.0 gravity +0.0 damping -1.5 grip -1.9 springs -0.1 body -2.5 scaled +0.0 other -1.8
+  (b) steepest 150 m of Chastain Glen Lane from 8 m/s: finished in 6.2 s over 197 m; top 41.8 m/s; average 31.9 m/s; slowest after 1 s 20.8 m/s
+  Speed lost with the throttle held: 1.3 m/s in 53 of 308 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity -0.4, damping -0.9, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 307 steps (307 with the terrain), body impulse -0.1 m/s; fewer than 2 wheels down in 63 steps; wiped out in 0; triggers: 
+  Body touched: terrain x307. Contact corrections so far: terrain 7365, ramps / decks 0.
+    drop 0.7 m/s over 1.02 s at (3107,1063) 41.8 m/s: grade -1.2%, wheels min 0, body contact 51 steps (51 terrain, lowest contact normal y 0.95), by cause: drive +0.0 gravity +0.1 damping -0.8 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.5 m/s over 0.24 s at (3083,1029) 40.1 m/s: grade 12.5%, wheels min 0, body contact 12 steps (12 terrain, lowest contact normal y 0.99), by cause: drive +0.0 gravity -0.3 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (c) one lap, rolling start at 15 m/s: finished in 44.3 s over 1281 m; top 47.3 m/s; average 28.9 m/s; slowest after 1 s 12.8 m/s
+  Speed lost with the throttle held: 0.1 m/s in 2 of 1184 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.1, gravity +0.0, damping +0.0, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other -0.1
+  Over every full-throttle step: body contact in 1183 steps (1183 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 1 steps; wiped out in 0; triggers: 
+  Body touched: terrain x2214. Contact corrections so far: terrain 21700, ramps / decks 0.
+    drop 0.0 m/s over 0.02 s at (2887,904) 38.7 m/s: grade 1.6%, wheels min 4, body contact 1 steps (1 terrain, lowest contact normal y 1.00), by cause: drive +0.1 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other -0.1
+    drop 0.0 m/s over 0.02 s at (3108,1064) 34.7 m/s: grade 6.6%, wheels min 0, body contact 1 steps (1 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+
+=== Turf Rocket (mower, Mower): top speed 61 m/s, acceleration 18 m/s2, body (1.15, 0.65, 2.10), mass 760 kg
+  (a) New Chastain Road straight, from rest: finished in 15.5 s over 710 m; top 56.6 m/s; average 45.9 m/s; slowest after 1 s 15.6 m/s
+    20 m/s at 1.4 s (15 m)    30 m/s at 2.4 s (41 m)    40 m/s at 3.8 s (92 m)    50 m/s at 6.3 s (208 m)    55 m/s at 9.1 s (355 m)
+    flat, smooth ground (formula): 20 m/s at 1.4 s (15 m)   30 m/s at 2.4 s (40 m)   40 m/s at 3.8 s (92 m)   50 m/s at 6.6 s (219 m)   55 m/s at 10.4 s (422 m)
+  Speed lost with the throttle held: 0.4 m/s in 16 of 773 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.1, gravity +0.0, damping -0.4, lateral grip +0.0, springs +0.0, BODY contacts -0.2, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 743 steps (729 with the terrain), body impulse -0.2 m/s; fewer than 2 wheels down in 12 steps; wiped out in 0; triggers: 
+  Body touched: terrain x729, BridgeDecks x31. Contact corrections so far: terrain 26156, ramps / decks 0.
+    drop -0.5 m/s over 3.82 s at (2420,766) 56.2 m/s: grade 0.7%, wheels min 0, body contact 191 steps (191 terrain, lowest contact normal y 0.82), by cause: drive +5.0 gravity +0.0 damping -4.3 grip +0.0 springs +0.0 body -0.2 scaled +0.0 other +0.0
+  (b) steepest 150 m of Chastain Glen Lane from 8 m/s: finished in 6.2 s over 197 m; top 41.9 m/s; average 32.0 m/s; slowest after 1 s 20.8 m/s
+  Speed lost with the throttle held: 1.3 m/s in 55 of 308 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity -0.4, damping -0.9, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 307 steps (307 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 64 steps; wiped out in 0; triggers: 
+  Body touched: terrain x307. Contact corrections so far: terrain 28153, ramps / decks 0.
+    drop 0.8 m/s over 1.04 s at (3106,1062) 41.9 m/s: grade -1.3%, wheels min 0, body contact 52 steps (52 terrain, lowest contact normal y 0.93), by cause: drive +0.0 gravity +0.1 damping -0.9 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.5 m/s over 0.24 s at (3083,1028) 40.1 m/s: grade 12.5%, wheels min 0, body contact 12 steps (12 terrain, lowest contact normal y 0.99), by cause: drive +0.0 gravity -0.3 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (c) one lap, rolling start at 15 m/s: finished in 44.2 s over 1281 m; top 47.4 m/s; average 29.0 m/s; slowest after 1 s 12.8 m/s
+  Speed lost with the throttle held: 0.0 m/s in 1 of 1182 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity +0.0, damping +0.0, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 1181 steps (1181 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 1 steps; wiped out in 0; triggers: 
+  Body touched: terrain x2211. Contact corrections so far: terrain 42116, ramps / decks 0.
+    drop 0.0 m/s over 0.02 s at (3108,1064) 34.7 m/s: grade 6.6%, wheels min 0, body contact 1 steps (1 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+
+=== Trail Four (atv, ATV): top speed 56 m/s, acceleration 17 m/s2, body (1.45, 0.65, 2.35), mass 340 kg
+  (a) New Chastain Road straight, from rest: finished in 16.4 s over 710 m; top 52.4 m/s; average 43.2 m/s; slowest after 1 s 14.7 m/s
+    20 m/s at 1.5 s (17 m)    30 m/s at 2.6 s (46 m)    40 m/s at 4.4 s (109 m)    50 m/s at 8.2 s (284 m)    55 m/s not reached
+    flat, smooth ground (formula): 20 m/s at 1.5 s (16 m)   30 m/s at 2.6 s (45 m)   40 m/s at 4.4 s (109 m)   50 m/s at 9.3 s (337 m)   55 m/s never
+  Speed lost with the throttle held: 0.0 m/s in 20 of 822 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.4, gravity +0.0, damping -0.4, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 790 steps (775 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 0 steps; wiped out in 0; triggers: 
+  Body touched: terrain x775, BridgeDecks x34. Contact corrections so far: terrain 46875, ramps / decks 0.
+    drop -0.2 m/s over 2.98 s at (2361,765) 52.2 m/s: grade 0.1%, wheels min 4, body contact 149 steps (149 terrain, lowest contact normal y 1.00), by cause: drive +3.3 gravity +0.0 damping -3.1 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (b) steepest 150 m of Chastain Glen Lane from 8 m/s: finished in 6.4 s over 197 m; top 40.2 m/s; average 30.7 m/s; slowest after 1 s 19.9 m/s
+  Speed lost with the throttle held: 1.2 m/s in 47 of 320 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.4, gravity -0.3, damping -0.7, lateral grip -0.6, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 319 steps (319 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 47 steps; wiped out in 0; triggers: 
+  Body touched: terrain x319. Contact corrections so far: terrain 48920, ramps / decks 0.
+    drop 0.7 m/s over 0.68 s at (3107,1062) 40.2 m/s: grade 2.3%, wheels min 0, body contact 34 steps (34 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity -0.2 damping -0.5 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.3 m/s over 0.16 s at (3083,1029) 37.9 m/s: grade 12.9%, wheels min 0, body contact 8 steps (8 terrain, lowest contact normal y 0.99), by cause: drive +0.0 gravity -0.2 damping -0.1 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.2 m/s over 0.18 s at (3131,1088) 40.2 m/s: grade -9.4%, wheels min 0, body contact 9 steps (9 terrain, lowest contact normal y 0.95), by cause: drive +0.4 gravity +0.2 damping -0.1 grip -0.6 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (c) one lap, rolling start at 15 m/s: finished in 45.0 s over 1281 m; top 45.3 m/s; average 28.5 m/s; slowest after 1 s 12.8 m/s
+  Speed lost with the throttle held: 0.3 m/s in 9 of 1292 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity -0.2, damping -0.1, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 1291 steps (1291 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 9 steps; wiped out in 0; triggers: 
+  Body touched: terrain x2248. Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop 0.2 m/s over 0.10 s at (3083,1029) 35.5 m/s: grade 13.2%, wheels min 0, body contact 5 steps (5 terrain, lowest contact normal y 0.99), by cause: drive +0.0 gravity -0.1 damping -0.1 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.1 m/s over 0.06 s at (3110,1065) 34.3 m/s: grade 5.0%, wheels min 0, body contact 3 steps (3 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.0 m/s over 0.02 s at (3108,1064) 34.4 m/s: grade 6.7%, wheels min 1, body contact 1 steps (1 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+
+=== Pebble Coupe (pebble, Car): top speed 49 m/s, acceleration 14 m/s2, body (1.70, 0.65, 3.70), mass 950 kg
+  (a) New Chastain Road straight, from rest: finished in 18.6 s over 710 m; top 45.7 m/s; average 38.3 m/s; slowest after 1 s 12.2 m/s
+    20 m/s at 1.9 s (21 m)    30 m/s at 3.5 s (62 m)    40 m/s at 6.5 s (170 m)    50 m/s not reached    55 m/s not reached
+    flat, smooth ground (formula): 20 m/s at 1.9 s (21 m)   30 m/s at 3.5 s (62 m)   40 m/s at 6.8 s (179 m)   50 m/s never   55 m/s never
+  Speed lost with the throttle held: 0.1 m/s in 99 of 928 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +1.9, gravity -0.2, damping -1.8, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 0 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop -0.2 m/s over 6.20 s at (2488,766) 45.5 m/s: grade 0.0%, wheels min 4, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +5.9 gravity -0.1 damping -5.7 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (b) steepest 150 m of Chastain Glen Lane from 8 m/s: finished in 7.1 s over 196 m; top 36.7 m/s; average 27.6 m/s; slowest after 1 s 17.5 m/s
+  Speed lost with the throttle held: 0.3 m/s in 20 of 356 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity +0.0, damping -0.3, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 27 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop 0.3 m/s over 0.26 s at (3109,1065) 35.7 m/s: grade 4.3%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity -0.1 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.0 m/s over 0.28 s at (3127,1085) 36.7 m/s: grade -9.0%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.2 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (c) one lap, rolling start at 15 m/s: finished in 47.6 s over 1288 m; top 41.4 m/s; average 27.0 m/s; slowest after 1 s 11.6 m/s
+  Speed lost with the throttle held: 0.4 m/s in 12 of 1542 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +1.1, gravity -0.1, damping -0.1, lateral grip -1.2, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.1
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 3 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop 0.3 m/s over 0.22 s at (2991,932) 27.5 m/s: grade 4.6%, wheels min 4, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +1.4 gravity -0.1 damping -0.1 grip -1.4 springs +0.0 body +0.0 scaled +0.0 other +0.1
+    drop 0.1 m/s over 0.06 s at (3110,1066) 33.5 m/s: grade 5.0%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+
+=== Street Classic (original, Car): top speed 49 m/s, acceleration 14.5 m/s2, body (1.85, 0.65, 3.70), mass 1200 kg
+  (a) New Chastain Road straight, from rest: finished in 18.4 s over 711 m; top 45.9 m/s; average 38.5 m/s; slowest after 1 s 12.6 m/s
+    20 m/s at 1.8 s (20 m)    30 m/s at 3.3 s (59 m)    40 m/s at 6.3 s (165 m)    50 m/s not reached    55 m/s not reached
+    flat, smooth ground (formula): 20 m/s at 1.8 s (20 m)   30 m/s at 3.4 s (60 m)   40 m/s at 6.5 s (172 m)   50 m/s never   55 m/s never
+  Speed lost with the throttle held: 0.1 m/s in 111 of 922 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +2.1, gravity -0.2, damping -2.0, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 0 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop -0.2 m/s over 6.22 s at (2490,766) 45.7 m/s: grade 0.0%, wheels min 4, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +5.9 gravity -0.1 damping -5.7 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (b) steepest 150 m of Chastain Glen Lane from 8 m/s: finished in 7.0 s over 197 m; top 37.2 m/s; average 28.0 m/s; slowest after 1 s 17.9 m/s
+  Speed lost with the throttle held: 0.3 m/s in 19 of 352 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +0.0, gravity +0.0, damping -0.3, lateral grip +0.0, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.0
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 26 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop 0.3 m/s over 0.24 s at (3109,1065) 36.2 m/s: grade 4.2%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity -0.1 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+    drop 0.0 m/s over 0.28 s at (3128,1086) 37.2 m/s: grade -9.2%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.2 damping -0.2 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+  (c) one lap, rolling start at 15 m/s: finished in 47.3 s over 1288 m; top 41.6 m/s; average 27.2 m/s; slowest after 1 s 11.6 m/s
+  Speed lost with the throttle held: 0.3 m/s in 12 of 1524 full-throttle steps. Of the losing steps, summed by cause (negative = took speed):
+    drive +1.3, gravity -0.1, damping -0.1, lateral grip -1.4, springs +0.0, BODY contacts +0.0, geese / breakables +0.0, other +0.1
+  Over every full-throttle step: body contact in 0 steps (0 with the terrain), body impulse +0.0 m/s; fewer than 2 wheels down in 2 steps; wiped out in 0; triggers: 
+  Body touched: . Contact corrections so far: terrain 63057, ramps / decks 0.
+    drop 0.3 m/s over 0.26 s at (2991,932) 27.6 m/s: grade 4.6%, wheels min 4, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +1.7 gravity -0.2 damping -0.1 grip -1.7 springs +0.0 body +0.0 scaled +0.0 other +0.1
+    drop 0.0 m/s over 0.04 s at (3110,1066) 33.6 m/s: grade 5.0%, wheels min 0, body contact 0 steps (0 terrain, lowest contact normal y 1.00), by cause: drive +0.0 gravity +0.0 damping +0.0 grip +0.0 springs +0.0 body +0.0 scaled +0.0 other +0.0
+
