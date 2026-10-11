@@ -1768,6 +1768,21 @@ world for Dan to drive round and judge.**
      removed when Dan has chosen.
    - Also an updated overhead picture with A and B in the same colors as the markers (git-ignored if it shows
      houses), with lap lengths, and what B costs over A.
+   **STATUS (Claude, 2026-10-11): MARKED, waiting for Dan. Nothing built.** Markers: `MapBuilder.Round18Proposals.cs`
+   from `Data/proposals/round18_markers.json`, labels `python Tools/handmade/make_proposal_labels.py`
+   (`Assets/HandMade/Proposals/ProposalLabels.png`), shown by `ProposalMarkers` (all temporary). Debug menu (F6 / `\`,
+   or Start > DEBUG): "Proposal markers" (left / right: Off, A, B, A + B, Reverse shortcuts, All) and "Go to" (left /
+   right picks Start of A, Start of B, R1, R2, R3; A goes there; free roam only). Posts every 22 m with a 24 m beam:
+   A orange, B cyan, shared banded both, pipe purple; caps: jumps red, crossings blue, checkpoints green, starts
+   white. Overhead `local/round18/2b_creek_A_and_B.png` (git-ignored). A as proposed, 1.58 km. B, 2.15 km: A's north
+   loop without the road, then J4 jumps New Chastain Road southbound east of the creek bridges (kicker on top of the
+   3.5 m road bank: 44 m and 2 s of air at 24 m/s, short of 22 m/s it lands on the road), a south loop down the creek's
+   east side (a narrow strip along the hill toe, z 590 to 680, side slope 8 to 11 %), J5, C4 ford at the bottom, up
+   the west side, J6, and back north in the creek bed under the two bridges (C5, 62 m in the water, about 6 m clear)
+   and up the bank (C6). Not a crossing figure of eight: over the road once, under it once. B costs over A: the road
+   jump, 42 more trees, two more cut creek banks, the slow water stretch, houses 29 m from the line (Claybrooke).
+   South loop pipe: none the ground allows (under the creek the mouths would be 8 m down; the ponds sit behind a 5 m
+   berm by the Lyndon Drive houses). P1 belongs to both.
 
 2c. Reverse Chastain Glen loop: SHORTCUT PROPOSALS, MARKED THE SAME WAY. Dan: "I noticed there is now a reverse
    track of the original... It seemed to work pretty well for stragiht forward race. Can it show me some good
@@ -1786,10 +1801,22 @@ world for Dan to drive round and judge.**
      touched; nothing is attached to house 1763.
    - Markers in the world in a fourth color with a label per candidate (R1...), on the same debug-menu row
      (add: Reverse shortcuts), and an overhead picture. Nothing built.
+   **STATUS (Claude, 2026-10-11): MARKED (yellow, "Reverse shortcuts" on the same row), waiting for Dan. Nothing
+   built.** Overhead `local/round18/2c_reverse_shortcuts.png` (git-ignored). Air is a ballistic flight over the real
+   ground (g 9.81, no drag, as the game). Only the west lobe falls in the reverse direction; elsewhere a reverse cut
+   climbs. R1 lobe drop: leaves past the bend before CP5, kicker on the natural 2.5 m bank between 1987 and 1552
+   (33 m, 4.4 m high at 20 m/s; from 23 m/s it reaches 1572's roof, so sized for 20), out through the 6 m gap between
+   2065 and 1572; saves about 84 m, skips CP5. R2 bike ramp: just after CP5, between 713 and 1052 (11 m), a plywood
+   bike ramp by 1452, over the fence and a 2 m drop onto the lane (20 m, 2.5 m high at 15 m/s); saves about 23 m.
+   R3 house run: off the top street past CP3, between 1602 and 1919, up the hollow, in through 1752's back and out its
+   front (no air, climbs 7 m); saves about 30 m, skips CP2. Studied and dropped: a leap over the pond's arm (no shorter,
+   and houses 1059 and 1128 block the way to the bank), Dan's hill and the north-east corner (they climb in reverse),
+   the creek ravine and the shopping center (out and back, not cuts). #2 and #6 are forward only as built.
 
 2d. Rebuild the exe (stay off Dan's screen, muted) and STOP for Dan: he drives round with the markers on and
    picks A or B, the pipes, and the reverse shortcuts. Report: the two fixes, how to turn the markers on, the
    two overheads, the candidates in a short table, questions.
+   **STATUS (Claude, 2026-10-11): DONE; exe rebuilt, STOPPED for Dan's choice** (A or B, the pipe, R1 to R3).
 
 3. After Dan approves: build the track (graded into the terrain in the map build, a dirt surface, trees cleared
    off it and solid beside it, no snags; jumps that look like something that could be there and whose look fits

@@ -117,6 +117,7 @@ namespace ChastainRush
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
+            BuildProposalMarkers(terrain, world);   // Round 18 (2b, 2c): TEMPORARY proposal markers, hidden until the debug menu shows them
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 
             EditorSceneManager.SaveScene(scene, ScenePath);

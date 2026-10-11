@@ -167,7 +167,10 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (`MapBuilder.Water.cs`), not mapgen. A code-only exe rebuild during a round: add `-playerBuildKeepScene` to the
   Build Executable batch line (never for the round's last build).
 - Round 16: `ChastainRush.GrassScan.Run [-grassOut <file>]` (Editor batch, report only: steps, crests and steep banks of the
-  ground across and along every Chastain Glen street, curb to lawn). The shortcut check takes `-shortcutLines 0,1.5,-1.5,a4`
+  ground across and along every Chastain Glen street, curb to lawn). Round 18 (TEMPORARY, remove when Dan has chosen):
+  proposal markers from `Data/proposals/round18_markers.json` (`MapBuilder.Round18Proposals.cs`, `ProposalMarkers`),
+  labels `python Tools/handmade/make_proposal_labels.py`; debug menu rows "Proposal markers" and "Go to"; a check run
+  shows them with `-proposalMarkers <0..5>`. The shortcut check takes `-shortcutLines 0,1.5,-1.5,a4`
   (off the line / at an angle into it) and writes `shortcut_snags.csv`. Breakable signs: `Signs3D` / `Breakables.Face`.
 
 ## Where things stand
