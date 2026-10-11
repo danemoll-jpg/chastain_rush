@@ -1531,7 +1531,7 @@ E. REPORT ONLY (protected geometry: the jump is not changed). The shortcut check
 * Checks before the "stay off Dan's screen" rule (added to CLAUDE.md during this round) ran full screen at 3840 x 2160; from
   then on, minimized 1280 x 720, and a check run now turns run-in-background on itself (CheckRun).
 
-**ACTIVE — Round 17: the small follow-ups, then the shopping center (Dan, 2026-10-10: "Since these changes
+**DONE, driven by Dan 2026-10-10 ("mostly it is fine"; his one report is Round 18 Part A) — Round 17: the small follow-ups, then the shopping center (Dan, 2026-10-10: "Since these changes
 are small I want to fold them into our next phase").** Round 16 (A to E, menus, garage) is built and committed.
 Part A is items (1) to (4) below: do them in order and commit them on their own. Part B is the shopping center
 (the "Round 17, the shopping center" notes further down): first the labelled overhead screenshot of the center,
@@ -1658,6 +1658,46 @@ pictures in `local/round17/partB/` (git-ignored: some show Chastain Glen houses 
   Exe: the car broke two pumps at 15 m/s (both exploded, 3 % speed lost, kept going); a 30 m/s drive across the south
   lot into the main one: wheels down, 1 % speed lost.
 - Imported from Racer: nothing.
+
+**ACTIVE — Round 18: a shopping-center driveway fix, then the creek-woods track with pipe shortcuts (Dan,
+2026-10-10: "we can fix these couple of things and pick up the next phase").**
+
+Part A, commit on its own. Dan's session 2026-10-10_20-18-10-199_3f4ac2 (read by Claude):
+1. BUG-001 (vehicle x 3263.31, z 1024.44, heading 224, at the south-west corner of the new south parking lot,
+   looking south-west): "this drive way should enter the parking lot. the othe driveway should continue all the
+   way around the building until it matches the other side of the parking lot". In his screenshot two service
+   roads come up to that corner:
+   a. The one ahead and to the left stops short of the lot with a strip of grass between its end and the
+      asphalt. It should run into the parking lot: paved through, no grass gap, no curb or step across it.
+   b. The other one (curving in ahead on the right, where the lot's edge is ragged against it) should carry on
+      all the way round the back of the building, west side then north side, and come out into the main parking
+      lot on the far side (the north-east end by the shop row), as the real service road does (Dan's picture in
+      `local/reference_photos/maps/shopping_center_dan.png`, reference only). Drivable the whole way, on the
+      ground, clear of the building and of Chastain Glen's back fences, joined flush to the lot at both ends.
+   If it is not clear which road is which, make a labelled overhead and ask Dan; do not guess. Also tidy the
+   ragged edge where the lot meets road b (seen by Claude in the screenshot). One check in the exe: drive from
+   the south lot round the back of the building into the main lot without leaving pavement or losing a wheel.
+
+Part B, the track through the creek woods with pipe shortcuts. Dan's decisions are in the note "Its own round
+after the shopping center" below; read it first. In short: a made-up dirt track along Noonday Creek through the
+woods, built for racing (jumps, creek crossings; water slows and splashes), and big drainage pipes a vehicle can
+drive through that link ponds / lakes / the creek as underground shortcuts.
+2. PROPOSE FIRST, build nothing yet: a labelled overhead picture (git-ignored if it shows Chastain Glen houses)
+   for Dan with (a) the track's line: where it leaves a road, where it rejoins, its length, each jump and each
+   creek crossing; (b) each pipe: where it goes in, where it comes out, its length, what it cuts off; (c) which
+   race it would belong to (a new route using the track, or a shortcut on the Chastain Glen loop). Say what is
+   in the way (trees to clear, houses, slopes steeper than a vehicle climbs). Stop for Dan's answer.
+3. After Dan approves: build the track (graded into the terrain in the map build, a dirt surface, trees cleared
+   off it and solid beside it, no snags; jumps that look like something that could be there and whose look fits
+   their real size; crossings are shallow water, always escapable).
+4. Build the pipes: round concrete pipes wide enough for every one of the eleven vehicles with room to spare,
+   a headwall at each mouth set into the bank (no exposed back, as BUG-001 of 2026-10-10), lit enough inside to
+   see, the camera kept inside the pipe, never a dead end or a place to get stuck, a reset inside puts the
+   vehicle back in the pipe facing forward. Found, not signposted. An official shortcut forgives the checkpoints
+   it skips. The AI can take them (trial each vehicle once through each, as Round 15 item 10).
+5. A route over it so Dan can race it from the menu (one world, routes laid over it), with the AI.
+6. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
+   list, "for Dan to check", path to the exe.
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I

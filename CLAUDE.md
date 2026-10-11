@@ -212,12 +212,12 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 17 in `TODO.md`:** Part A, the small follow-ups
-(American English, the debug panel off by default and a controller-driven
-debug menu, the heron's goose sound, the doubled HUD line), committed on
-their own; Part B, the shopping center behind Chastain Glen (overhead for
-Dan first). Queued after 17: the creek-woods track with pipe shortcuts;
-Chastain Commons, Chastain Enclave and Grasmere Court.
+**Active work is Round 18 in `TODO.md`:** Part A, a driveway fix at the
+shopping center (Dan's report), committed on its own; Part B, the made-up
+dirt track through the creek woods with drive-through pipe shortcuts:
+propose it to Dan on an overhead FIRST and stop for his answer. Round 17
+(follow-ups, shopping center) is built, driven and approved by Dan. Queued
+after 18: Chastain Commons, Chastain Enclave and Grasmere Court.
 
 **Round 17 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A
 (b512061, b3bfe9f), then item 5 and Part B: Dan's two junction jumps smoothed in the map build at those spots only
@@ -351,7 +351,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-10_17-47-11-485_46d8cb` (BUG-001 and BUG-002 unintended jumps, BUG-003 shopping center; in TODO.md, Round 17 item 5).
+`2026-10-10_20-18-10-199_3f4ac2` (BUG-001 shopping-center driveways; in TODO.md, Round 18 Part A).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
