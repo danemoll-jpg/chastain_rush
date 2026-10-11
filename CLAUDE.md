@@ -97,6 +97,15 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   at start-up; `CheckRun.Hear(true/false)` for the moment.)
 - **Don't bother Dan** for normal operations (Unity, Git, build). Stop only
   for a real external blocker, with the exact action needed.
+- **A fun arcade game, not a serious racer** (Dan, 2026-10-11: "This should
+  be fun and arcadey not too serious... The principle core is that this is a
+  fun arcade game not a serious racer"). When realism and fun pull apart,
+  fun wins: big jumps, generous physics, things that break instead of
+  stopping you, nothing that punishes a mistake with a dead stop.
+- **Shortcut hints** (Dan, 2026-10-11; replaces "found, not signposted" in
+  the neighborhoods): a shortcut's turn-off gets a clear hint, something
+  that could be there (a party sign and balloons, worn tracks, a rock bar),
+  never a game arrow or arch.
 - **"This should be fun."** Forgiving resets, escapable water and pits, no
   cheap traps.
 - **Claims need proof.** Before saying done, look at the result where Dan
@@ -221,6 +230,16 @@ drive (a tree on #2's line, #6's ramp drawn as a flatbed instead of hay
 bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
+
+**Active work is Round 19 in `TODO.md`:** follow-ups from Dan's drive of
+Round 18: the Noonday Creek trail wider (about 4.5 m, small trees beside it
+breakable), at least four big jumps on it, a dry rock bar across the creek
+into pipe P1, the pipe darker and used with a trickle of water and round
+walls a vehicle can ride (even right round), a clear hint (a birthday-party
+sign and balloons) at the R3 trampoline shortcut's turn-off, and a picture
+of the alternative R1 for Dan (R1 is not built). Queued: 20 the map-wide
+pipe network (proposal first); 21 Chastain Commons, Chastain Enclave and
+Grasmere Court.
 
 **Round 18 items 3 to 9 (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by
 Dan:** the Noonday Creek trail (track B, a narrow woods trail for the motorcycles, the ATV and the mower; J4 over New
@@ -362,7 +381,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-10_23-08-26-878_0e77b1` (BUG-001 junction ground, BUG-002 service-road stub and driveway color; in TODO.md, Round 18 item 2a).
+`2026-10-11_10-16-10-265_c7b248` (BUG-001 rocks into P1, BUG-002 pipe look / stream / wall riding; in TODO.md, Round 19).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

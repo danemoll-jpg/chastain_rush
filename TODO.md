@@ -1962,7 +1962,79 @@ ground allows". Build P1 this way, and re-judge the south loop pipe the same way
 build it). If terrain holes turn out not to work in this project (the map is 18 tiles; nothing uses holes yet),
 stop and report before falling back to anything else.
 
-**QUEUED — Round 19: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+**ACTIVE — Round 19: Noonday Creek and reverse-loop follow-ups (Dan, 2026-10-11 10:39, after driving Round 18).**
+Round 18 (trail B, pipe P1, the Noonday Creek route, the R3 trampoline) is driven by Dan; what he did not mention
+is approved. The principle for this round and from now on, in Dan's words: "This should be fun and arcadey not
+too serious... The principle core is that this is a fun arcade game not a serious racer."
+
+1. Noonday Creek trail, wider. Dan: "probably needs a little wider track, the vehicles aren't tight enough to
+   weave through the trees... If we have to make trees breakable that is ok." (This replaces Round 18's 2.5 m
+   tread; it is still a trail in the woods, not a road: no curbs, verges or lines, crowns still close overhead.)
+   - A tread about 4.5 m wide; no solid trunk within about 3.5 m of the trail's line (wider on the outside of
+     bends, at take-offs and landings). Report the width chosen and the trees removed.
+   - Breakable trees: the small trees near the trail that are left (within about 6 m of the line) snap when
+     hit (a wood crack, the tree falls and fades, a little speed lost, as fences and mailboxes), so clipping one
+     is a laugh, not a dead stop. The big trunks further out stay solid. Along this trail only; trees elsewhere
+     on the map are unchanged.
+   - The race stays for the small vehicles (the three motorcycles, the ATV, the mower) unless Dan says otherwise.
+   - The AI's trail mode retuned to the new width: real passing, far fewer recoveries (Round 18: 1 to 6 each).
+2. Noonday Creek trail, big jumps. Dan: "I feel like we should also add some big jumps too." Round 18's jumps
+   are about 1 m tabletops. Add at least four BIG ones, two seconds of air or more at race speed, spread round
+   the lap, each a different idea and each looking like something that could be in those woods at its real size
+   (for example: jump the creek instead of fording it, off an earth bank; a huge fallen tree as a take-off; a
+   washed-out wooden footbridge with the middle gone; a step-down off the top of a bank; a jump over the small
+   pond's arm). J4 over the road stays. Each with a real trajectory for every trail vehicle (lip speed, height,
+   distance), a wide take-off and landing (passing happens here), and never a punishment: short or slow lands
+   somewhere drivable (shallow water, a slope), never a wall, a pit or a reset. The AI takes them.
+   Keep the small ones where they give rhythm. One picture per big jump from the approach for the report.
+3. BUG-001, session 2026-10-11_10-16-10-265_c7b248 (vehicle x 2329.60, z 1297.26, heading 76, in Noonday Creek
+   facing P1's inlet): "Can we make it so the water doesnt slow you down for the shortcut...maybe put some rocks
+   here or something?" The way into P1 crosses the creek and the water drags. Make the crossing to the mouth dry
+   and fast: a shelf of flat rocks / a rock bar across the creek on the shortcut's line, its top just above the
+   water, wide enough for the ATV with room, smooth to drive (no snags, no bouncing), water either side. It should
+   look natural (creek rocks), and it doubles as the hint that something is there.
+4. BUG-002, same session (vehicle x 2357.49, z 1304.16, inside P1): "I want the inside to look a little more used
+   and dark, have a small stream of water in it. Also can we have the ability so that you could drive around the
+   walls?so if you had enough momentum you could even circle them or ride the walls". Three things, and they
+   become the standard for every pipe in the network (Round 20):
+   a. Look: used and dark. Stained, streaked concrete, grime and moss low on the walls, joints between pipe
+      sections, a tide line; fewer and dimmer lamps with dark between them (the vehicle's own lights carry it),
+      still enough to see the way. Not clean and evenly lit as now.
+   b. A small stream down the middle of the floor: a thin ribbon of moving water with a trickle sound and a small
+      splash from the wheels. It never slows a vehicle.
+   c. Ride the walls: the inside is a true round pipe to drive on, not a flat floor between walls. Steering up
+      the side at speed carries the vehicle up the wall; with enough momentum it can go right over the top and
+      round (a full circle), and it comes back down when it slows. Fun first: generous, not a physics exam (hold
+      the vehicle to the pipe's surface while it has the speed, let go gently when it does not). It must never
+      trap, flip or wreck: a vehicle that falls off the wall or roof lands on its wheels in the bottom and
+      keeps going; the camera follows without spinning the player sick and stays inside the pipe; a reset still
+      puts it in the bottom facing forward. All eleven vehicles; the AI just drives the bottom.
+   Also check, seen by Claude in both screenshots: the HUD shows "Penalty +5 s (1 missed)" while Dan is going
+   into P1 on lap 3. P1 is an official shortcut that forgives the hairpin's checkpoint: find out where that
+   penalty came from (his lap, not a script) and fix it if P1 or its creek crossing charged it.
+5. R3 (the play set and trampoline), a clear hint at the entrance. Dan: "Second shortcut the entrance needs to
+   be more obvious. I know I said hidden but I think especially in this neighborhood there is too many places a
+   shortcut can be so a clear hint where it is would be good". DESIGN DECISION CHANGED (Dan, 2026-10-11):
+   shortcuts in the neighborhoods get a clear hint at the turn-off. Still something that could be there, not a
+   game arrow or a blue arch: for R3, a kid's birthday party: a bunch of balloons and a hand-painted "PARTY"
+   yard sign with an arrow at the gap between the two houses where the line leaves the street, worn tire tracks
+   in the grass leading through the gap, bunting or balloons on the play set so it draws the eye from the lane.
+   Readable flat out from 60 m in the reverse direction (sign rule applies). Breakable, never solid.
+   Then list, for Dan, what the other shortcuts show at their turn-offs (#2 has its SHORTCUT sign; #6; R1 when
+   built) and what hint each could get; change only R3 now.
+6. R1: BUILD THE ALTERNATIVE (Dan, 2026-10-11 10:42: "well go ahead and try that one shortcut and we will see").
+   Round 18 found the marked line unsafe (the flight comes down into a house wall at race speed) and found one
+   robust version: a kicker in the west lobe's middle yard facing west-south-west, reached by a long left bend
+   after the 1987 / 1552 gap, landing on open grass at every speed from 14 to 32 m/s, rejoining on the lobe's
+   west side. Build that one, reverse direction only. Make it worth taking: as much air as the yard safely
+   allows (say the height and distance per vehicle), a look that fits its real size, a clear hint at the
+   turn-off (the shortcut-hints rule), never a trap (short, slow or off line lands on grass and drives out).
+   Forgives the gate it skips. AI trial, each vehicle once. It is a trial: Dan will drive it and decide, so keep
+   it easy to remove. One picture from the approach with the flight path drawn, for the report.
+7. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
+   list, "for Dan to check", path to the exe.
+
+**QUEUED — Round 20: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
 stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
@@ -1971,7 +2043,7 @@ with a PROPOSAL, not a build: an overhead of the whole map with every water body
 junction chambers where runs meet, lengths, which roads / houses each passes under; markers in the world as in
 Round 18; how a player knows where they are underground (a map? signs at junctions?); frame-rate cost. Dan picks.
 
-**QUEUED — Round 20: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
+**QUEUED — Round 21: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
