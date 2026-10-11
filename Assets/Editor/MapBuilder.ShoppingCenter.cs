@@ -25,9 +25,12 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
+        // Round 18 (A): the four corners along road b (the service road west of the supermarket) moved onto its north-east edge
+        // (2.3 m from its centerline, just under its asphalt) and one more in the corner where b joins road a; the lot used to
+        // stop 1.8 to 3.4 m short of b with a ragged grass strip between
         static readonly Vector2[] LotRing =
         {
-            new Vector2(3224f, 1062f), new Vector2(3226f, 1049f), new Vector2(3240f, 1036f), new Vector2(3257f, 1021f), new Vector2(3271f, 1019f),
+            new Vector2(3220.5f, 1061.1f), new Vector2(3223.8f, 1048.4f), new Vector2(3238.7f, 1034.5f), new Vector2(3255.7f, 1019.5f), new Vector2(3260.8f, 1015.3f), new Vector2(3271f, 1019f),
             new Vector2(3289f, 1015f), new Vector2(3312f, 1040f), new Vector2(3340f, 1056f), new Vector2(3398f, 1072f), new Vector2(3430f, 1080f),
             new Vector2(3447f, 1084f), new Vector2(3487f, 1093f), new Vector2(3485f, 1112f), new Vector2(3480f, 1135f), new Vector2(3475f, 1158f),
             new Vector2(3467f, 1196f), new Vector2(3446f, 1212f), new Vector2(3416f, 1207f), new Vector2(3284.9f, 1179.1f), new Vector2(3277.2f, 1167.8f),
@@ -123,6 +126,154 @@ namespace ChastainRush
             sc.Log += $"lot {Mathf.Abs(PolyArea(lot)):0} m2 graded (sigma {LotSigma:0} m, largest change {most:0.00} m); ";
         }
 
+        // ------------------------------------------------------------ Round 18 (A): the service roads joined to the lot
+
+        // Dan's session 2026-10-10_20-18-10-199_3f4ac2, BUG-001 ("this drive way should enter the parking lot. the othe driveway
+        // should continue all the way around the building until it matches the other side of the parking lot"). The map data
+        // leaves gaps there; these pieces are added to the map's own service roads in the build (generated data untouched):
+        //   a: the drive up from Chastain Corner (OSM 564629091) stopped 10 m short of the lot: it now runs into the lot.
+        //   b: the service road west of the supermarket (OSM 564629093) now goes on round the back of the building (west, then
+        //      the north-west corner) to the road behind the shop row (OSM 564629095), on the paved ground the elevation data
+        //      already shows there (flat, under 0.2 m across 5 m), and at its south end it meets a.
+        //   c: the stub at the shop row's east end (OSM 564629086) now runs down into the main lot.
+        // The pieces lie on the ground as it is (the grass gaps were the ground's own slope, no step). The lot's edge along b is
+        // levelled to b's own height so the two meet flush, the corner where a, b and the lot meet is smoothed, and a's climb
+        // into the lot is one smooth curve (GradeRoadA). Edge paint on these roads stops on the lot and where they meet.
+        static readonly (long osm, bool atStart, Vector2[] add)[] ServiceRoadJoins =
+        {
+            (564629091, true,  new[] { new Vector2(3262.5f, 1025f), new Vector2(3262.8f, 1018f), new Vector2(3263.3f, 1013f) }),
+            (564629093, true,  new[] { new Vector2(3278f, 1203f), new Vector2(3270f, 1199.5f), new Vector2(3262f, 1192f), new Vector2(3256f, 1182f),
+                                       new Vector2(3252f, 1170f), new Vector2(3252.5f, 1157f), new Vector2(3248f, 1152f), new Vector2(3216f, 1144.5f),
+                                       new Vector2(3209f, 1141f), new Vector2(3204f, 1134f) }),
+            (564629093, false, new[] { new Vector2(3260f, 1013f), new Vector2(3263.3f, 1011.5f) }),
+            (564629086, true,  new[] { new Vector2(3426.5f, 1205f), new Vector2(3426f, 1218f) }),
+        };
+        const long RoadB = 564629093;
+        static readonly long[] JoinedRoads = { 564629091, 564629093, 564629086, 564629095 };   // a, b, c and the road behind the shop row
+        static List<(long osm, Vector2 a, Vector2 b, float half)> joinedSegs = new List<(long, Vector2, Vector2, float)>();
+
+        static void JoinServiceRoads(MapData map, TerrainGrid terrain, ShoppingCenter sc)
+        {
+            var log = new List<string>();
+            // road b's centerline as it was, for levelling the lot's edge beside it
+            var bOld = map.roads.Where(r => r.osm_id == RoadB).Select(r => Densify(ToPoints(r.points), 1f)).FirstOrDefault();
+            foreach (var j in ServiceRoadJoins)
+            {
+                var r = map.roads.FirstOrDefault(x => x.osm_id == j.osm);
+                if (r == null) { Debug.LogWarning($"[Round18] service road {j.osm} not found; not joined"); continue; }
+                var pts = ToPoints(r.points);
+                Vector2 end = j.atStart ? pts[0] : pts[pts.Count - 1];
+                if (j.atStart) pts.InsertRange(0, j.add); else pts.AddRange(j.add);
+                r.points = pts.SelectMany(p => new[] { p.x, p.y }).ToArray();
+                float len = 0f; var piece = new List<Vector2> { end }; piece.AddRange(j.atStart ? Enumerable.Reverse(j.add) : j.add);
+                for (int i = 1; i < piece.Count; i++) len += Vector2.Distance(piece[i - 1], piece[i]);
+                log.Add($"{j.osm} +{len:0} m");
+            }
+            joinedSegs.Clear();
+            foreach (var r in map.roads.Where(x => JoinedRoads.Contains(x.osm_id)))
+            {
+                var p = ToPoints(r.points);
+                for (int i = 1; i < p.Count; i++) joinedSegs.Add((r.osm_id, p[i - 1], p[i], r.width * 0.5f));
+            }
+
+            // the lot's edge beside road b: within 6 m of b's centerline and on the lot, the ground goes to b's own height
+            // (all of it up to b's edge, fading out 3.5 m into the lot)
+            float edge = 0f;
+            if (bOld != null)
+            {
+                var bh = bOld.Select(p => terrain.Height(p.x, p.y)).ToArray();
+                Vector2 lo = new Vector2(sc.Lot.Min(p => p.x), sc.Lot.Min(p => p.y)), hi = new Vector2(sc.Lot.Max(p => p.x), 1070f);
+                EditTerrain(terrain, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, y) =>
+                {
+                    var p = new Vector2(x, z);
+                    if (!InPolygon(p, sc.Lot) && RingDist(p, sc.Lot) > 0.7f) return y;
+                    float best = float.MaxValue, by = y;
+                    for (int i = 1; i < bOld.Count; i++)
+                    {
+                        Vector2 a = bOld[i - 1], b = bOld[i], ab = b - a; float tt = Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
+                        float d = Vector2.Distance(p, a + ab * tt); if (d < best) { best = d; by = Mathf.Lerp(bh[i - 1], bh[i], tt); }
+                    }
+                    float w = Smooth01((6f - best) / 3.5f);
+                    if (w <= 0f) return y;
+                    float ny = y + w * (by - y);
+                    edge = Mathf.Max(edge, Mathf.Abs(ny - y));
+                    return ny;
+                });
+            }
+            Debug.Log($"[Round18] BUG-001 service roads joined: {string.Join(", ", log)}; the lot's edge beside road b levelled to it (largest change {edge:0.00} m)");
+            // the corner where a and b meet the lot: the pavement (the roads and the lot) smoothed as at Round 17's junctions, so
+            // the lot and the road surfaces follow the ground without it showing through
+            var lotList = LotRing.ToList();
+            SmoothSpot(map, terrain, (new Vector2(3259f, 1018f), 14f, 4f, 6f, "Round 18 (A) BUG-001 the lot's south-west corner, where roads a and b meet it"), q => InPolygon(q, lotList));
+            GradeRoadA(terrain);
+        }
+
+        // Road a climbed most of its 3 m in its last 15 m (14 %) and met the flat lot in a crest that threw a car at 16 m/s.
+        // From Chastain Corner's edge to 7 m into the lot it now follows one smooth curve (cubic: Chastain Corner's own grade at
+        // the bottom, level at the top; about 8 % in the middle, its crest radius over 80 m, so it holds a car at 28 m/s), across
+        // the road and 0.5 m past its edges (the ground moved up or down with the line), fading out over 9 m. The lot and the
+        // road beyond are untouched.
+        static readonly Vector2[] RoadAProfile = { new Vector2(3275.5f, 997.5f), new Vector2(3264f, 1009f), new Vector2(3263.3f, 1013f), new Vector2(3262.8f, 1018f), new Vector2(3262.5f, 1025f), new Vector2(3262.3f, 1032f) };
+
+        static void GradeRoadA(TerrainGrid terrain)
+        {
+            var line = Densify(RoadAProfile.ToList(), 0.5f);
+            var s = new float[line.Count]; for (int i = 1; i < line.Count; i++) s[i] = s[i - 1] + Vector2.Distance(line[i - 1], line[i]);
+            float L = s[line.Count - 1], h0 = terrain.Height(line[0].x, line[0].y), h1 = terrain.Height(line[line.Count - 1].x, line[line.Count - 1].y);
+            var yc = line.Select(p => terrain.Height(p.x, p.y)).ToArray();   // the ground along the line as it was
+            var q = PathAt(line, s, 3f);
+            float m0 = (terrain.Height(q.x, q.y) - h0) / 3f;   // the grade coming off Chastain Corner
+            float H(float u)
+            {
+                float t = Mathf.Clamp01(u / L), t2 = t * t, t3 = t2 * t;
+                return (2f * t3 - 3f * t2 + 1f) * h0 + (t3 - 2f * t2 + t) * L * m0 + (3f * t2 - 2f * t3) * h1;
+            }
+            const float Inner = 3f, Outer = 12f;   // a wide fade: the stall island and road b beside it stay on gentle ground
+            Vector2 lo = new Vector2(line.Min(p => p.x), line.Min(p => p.y)) - Vector2.one * Outer, hi = new Vector2(line.Max(p => p.x), line.Max(p => p.y)) + Vector2.one * Outer;
+            float most = 0f;
+            EditTerrain(terrain, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, y) =>
+            {
+                var p = new Vector2(x, z); float best = float.MaxValue, at = 0f, was = y;
+                for (int i = 1; i < line.Count; i++)
+                {
+                    Vector2 a = line[i - 1], b = line[i], ab = b - a; float tt = Mathf.Clamp01(Vector2.Dot(p - a, ab) / ab.sqrMagnitude);
+                    float d = Vector2.Distance(p, a + ab * tt); if (d < best) { best = d; at = s[i - 1] + tt * ab.magnitude; was = Mathf.Lerp(yc[i - 1], yc[i], tt); }
+                }
+                if (at <= 0.01f || at >= L - 0.01f) return y;   // past either end: Chastain Corner and the lot as they are
+                float w = Smooth01((Outer - best) / (Outer - Inner));
+                if (w <= 0f) return y;
+                // the line is lifted or lowered onto the curve and the ground beside it with it (its cross slope kept), so the change
+                // is nothing at both ends and nothing shows where it stops
+                float ny = y + w * (H(at) - was);
+                most = Mathf.Max(most, Mathf.Abs(ny - y));
+                return ny;
+            });
+            Debug.Log($"[Round18] BUG-001 road a: one curve from {h0:0.00} m (grade {m0 * 100f:0} %) to {h1:0.00} m over {L:0} m, steepest {MaxGrade(H, L) * 100f:0} %, largest change {most:0.00} m");
+        }
+
+        static Vector2 PathAt(List<Vector2> line, float[] s, float u)
+        {
+            for (int i = 1; i < line.Count; i++) if (s[i] >= u) return Vector2.Lerp(line[i - 1], line[i], (u - s[i - 1]) / Mathf.Max(s[i] - s[i - 1], 1e-4f));
+            return line[line.Count - 1];
+        }
+
+        static float MaxGrade(System.Func<float, float> h, float L)
+        {
+            float g = 0f; for (float u = 0f; u + 0.5f <= L; u += 0.5f) g = Mathf.Max(g, Mathf.Abs(h(u + 0.5f) - h(u)) / 0.5f);
+            return g;
+        }
+
+        // BuildRoads' paint rule for the joined roads: no edge line on the lot, nor inside another joined road where they meet
+        // (they are all unnamed service roads, so the usual rule takes them for one street and keeps the lines)
+        // (p is a point on an edge line; it stops within the two half widths of the other road's centerline)
+        static bool JoinPaintStops(long osm, Vector2 p, float half)
+        {
+            if (!JoinedRoads.Contains(osm)) return false;
+            if (InPolygon(p, LotRing.ToList()) || RingDist(p, LotRing.ToList()) < 0.5f) return true;
+            foreach (var s in joinedSegs) if (s.osm != osm && SegDist(p, s.a, s.b) < s.half + half + 0.1f) return true;
+            return false;
+        }
+
         // ------------------------------------------------------------ building it (after the ordinary buildings)
 
         static void BuildShoppingCenter(MapData map, TerrainGrid t, Materials mats, Transform parent, ShoppingCenter sc)
@@ -140,11 +291,21 @@ namespace ChastainRush
             DrapePoly(ground, sc.Lot, 2f, LotLift, t, 24);
             walks.Tint = new Color(0.70f, 0.69f, 0.66f);
             int edges = 0;
+            var edgeRoads = RoadSegsNear(map, (LotRing[0] + LotRing[12]) / 2f, 260f, _ => true);
             for (int i = 0; i < sc.Lot.Count; i++)
             {
                 Vector2 a = sc.Lot[i], b = sc.Lot[(i + 1) % sc.Lot.Count], mid = (a + b) / 2f;
                 if (retail != null && RingDist(mid, retail) < 1.5f) continue;
-                Band(walks, a, b, 0.35f, WalkLift, t, sc.Lot); edges++;
+                // Round 18 (A): no curb where a road meets the lot or runs into it (asphalt to asphalt, flush)
+                int k = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(a, b)));
+                for (int j = 0; j < k; )
+                {
+                    if (Clearance(edgeRoads, Vector2.Lerp(a, b, (j + 0.5f) / k)) < 0.5f) { j++; continue; }
+                    int e = j; while (e + 1 < k && Clearance(edgeRoads, Vector2.Lerp(a, b, (e + 1.5f) / k)) >= 0.5f) e++;
+                    Band(walks, Vector2.Lerp(a, b, j / (float)k), Vector2.Lerp(a, b, (e + 1) / (float)k), 0.35f, WalkLift, t, sc.Lot);
+                    j = e + 1;
+                }
+                edges++;
             }
 
             // --- shop fronts: (face start, face end, sign rows, kind)
@@ -174,7 +335,7 @@ namespace ChastainRush
             Rect canopyR = default; Vector2 cc = default, cu = default, cv = default; float chl = 0f, chw = 0f;
             if (sc.Canopy >= 0 && BestRectangle(ToPoints(map.buildings[sc.Canopy].footprint), out cc, out cu, out cv, out chl, out chw)) { }
             var bankRing = sc.Bank >= 0 ? ToPoints(map.buildings[sc.Bank].footprint) : null;
-            var roads = RoadSegsNear(map, (LotRing[0] + LotRing[11]) / 2f, 260f, _ => true);
+            var roads = RoadSegsNear(map, (LotRing[0] + LotRing[12]) / 2f, 260f, _ => true);
             Vector2 U = (new Vector2(3416f, 1207f) - new Vector2(3284.9f, 1179.1f)).normalized, V = new Vector2(-U.y, U.x);   // V points north
             float vTop = Vector2.Dot(new Vector2(3284.9f, 1179.1f), V);
             bool StallOk(Vector2 p)

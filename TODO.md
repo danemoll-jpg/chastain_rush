@@ -1677,6 +1677,19 @@ Part A, commit on its own. Dan's session 2026-10-10_20-18-10-199_3f4ac2 (read by
    If it is not clear which road is which, make a labelled overhead and ask Dan; do not guess. Also tidy the
    ragged edge where the lot meets road b (seen by Claude in the screenshot). One check in the exe: drive from
    the south lot round the back of the building into the main lot without leaving pavement or losing a wheel.
+   **STATUS (Claude, 2026-10-10): DONE, checked in the exe by script, not yet driven by Dan.** In the map build
+   (`MapBuilder.ShoppingCenter.cs`, `JoinServiceRoads`; map.json untouched): a (OSM 564629091) runs 16 m on into the
+   lot; b (OSM 564629093) goes on 127 m round the west side and north-west corner on the flat paved ground the
+   elevation data shows there, to the road behind the shop row (564629095), and at its south end meets a; the shop
+   row's east stub (564629086) runs 25 m down into the main lot. No curb band where a road meets the lot; edge
+   paint stops on the lot and where these roads meet. Ragged edge: the lot's four corners along b moved onto b's
+   edge and the ground there levelled to b; the corner where a, b and the lot meet smoothed (Round 17's junction
+   smoothing, now `SmoothSpot`). a used to climb most of its 3.5 m in its last 15 m into a crest (a 0.1 to 0.3 s
+   hop at 16 m/s): it now climbs on one smooth curve (12 % at most) from Chastain Corner's edge to 7 m into the lot.
+   Exe check (`-exeShots` drives can now follow a path, `ExeShotsRunner`), Street Classic and Drifter Twin: round
+   the back from the south lot into the main lot at up to 12 m/s, all four wheels down the whole way, at most
+   1.3 m from the centerline (at the sharp turn at the shop row's east end); road a into the lot at 15 and 25 m/s,
+   never airborne (at 25 m/s, slowed to 16 for the bend, two wheels go light for a moment at the top).
 
 Part B, the track through the creek woods with pipe shortcuts. Dan's decisions are in the note "Its own round
 after the shopping center" below; read it first. In short: a made-up dirt track along Noonday Creek through the

@@ -84,6 +84,7 @@ namespace ChastainRush
             SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
             var shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
+            JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
             var world = new GameObject("World").transform;
             var paint = new Chunks();
             // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
@@ -295,13 +296,13 @@ namespace ChastainRush
                     foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
                         if (!hood.InBulbZone(e, -0.5f)) DiscGrid(mb.At(e), e, hw, lift - 0.004f, terrain, 20);
                     AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift,
-                             p => hood.OtherRoadCovers(road, p, 0.1f) || hood.InCornerZone(road, p, hw - 0.7f) || hood.InBulbZone(p, 0.45f) || hood.InMedianFill(p));
+                             p => hood.OtherRoadCovers(road, p, 0.1f) || hood.InCornerZone(road, p, hw - 0.7f) || hood.InBulbZone(p, 0.45f) || hood.InMedianFill(p) || JoinPaintStops(self.osm_id, p, hw));   // Round 18 (A): road b is one of these
                     continue;
                 }
                 foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain);
                 AddDisc(mb.At(pts[0]), pts[0], r.width * 0.5f, lift - 0.004f, terrain);
                 AddDisc(mb.At(pts[pts.Count - 1]), pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
-                AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self));
+                AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
             }
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast

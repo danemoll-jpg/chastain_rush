@@ -28,12 +28,19 @@ namespace ChastainRush
 
         static void SmoothJunctionSeams(MapData map, TerrainGrid terrain)
         {
-            foreach (var spot in SeamSpots)
+            foreach (var spot in SeamSpots) SmoothSpot(map, terrain, spot);
+            RoundApproachCrest(terrain);
+        }
+
+        // Round 18 (A): one spot, also used for the shopping lot's corner; 'paved' counts more ground as pavement (the lot)
+        static void SmoothSpot(MapData map, TerrainGrid terrain, (Vector2 c, float r, float sigma, float fade, string what) spot, Func<Vector2, bool> paved = null)
+        {
             {
                 float reach = spot.r + 3f * spot.sigma + 2f;
                 var segs = RoadSegsNear(map, spot.c, reach + 30f, _ => true);
+                float Clear(Vector2 q) => paved != null && paved(q) ? Mathf.Min(0f, Clearance(segs, q)) : Clearance(segs, q);
                 var g = new HeightGrid(spot.c - Vector2.one * reach, Mathf.CeilToInt(2f * reach / SeamStep) + 1, SeamStep);
-                var clear = g.Map((x, z) => Clearance(segs, new Vector2(x, z)));
+                var clear = g.Map((x, z) => Clear(new Vector2(x, z)));
                 var h = g.Map((x, z) => terrain.Height(x, z));
                 var mask = g.Map((x, z) => clear[g.I(x), g.J(z)] <= 1f ? 1f : 0f);
                 var blur = g.NormalizedBlur(h, mask, spot.sigma);
@@ -43,7 +50,7 @@ namespace ChastainRush
                 {
                     float wr = Smooth01((spot.r - Vector2.Distance(new Vector2(x, z), spot.c)) / spot.fade);
                     if (wr <= 0f) return y;
-                    float w = wr * Smooth01((4f - Clearance(segs, new Vector2(x, z))) / 3f);
+                    float w = wr * Smooth01((4f - Clear(new Vector2(x, z))) / 3f);
                     if (w <= 0f) return y;
                     float ny = y + w * (g.Sample(blur, x, z) - y);
                     most = Mathf.Max(most, Mathf.Abs(ny - y));
@@ -51,7 +58,6 @@ namespace ChastainRush
                 });
                 Debug.Log($"[Round17] {spot.what}: pavement smoothed within {spot.r:0} m of ({spot.c.x:0}, {spot.c.y:0}), sigma {spot.sigma:0} m, largest change {most:0.00} m");
             }
-            RoundApproachCrest(terrain);
         }
 
         // BUG-002, the approach from the north: Dan's bump log has him LANDED at (3164.3, 767.2), 15 m short of the junction
