@@ -147,9 +147,21 @@ namespace ChastainRush
                                        new Vector2(3209f, 1141f), new Vector2(3204f, 1134f) }),
             (564629093, false, new[] { new Vector2(3260f, 1013f), new Vector2(3263.3f, 1011.5f) }),
             (564629086, true,  new[] { new Vector2(3426.5f, 1205f), new Vector2(3426f, 1218f) }),
+            // Round 18 (2a): Dan's session 2026-10-10_23-08-26-878_0e77b1, BUG-002 ("connect this as a roads"): the drive in from
+            // Canton Road north of the gas station (OSM 564629097) ended in a rounded stub 17 m short of the lot's north-east
+            // corner; it now runs on into the lot (the ground falls about 9 % along it, no step). The only center road that stopped
+            // short: every other one already reaches the lot, and the drives south of Chastain Corner and east of Canton Road
+            // belong to other sites.
+            (564629097, false, new[] { new Vector2(3441.5f, 1223f), new Vector2(3439.5f, 1215f), new Vector2(3438.5f, 1206f) }),
         };
         const long RoadB = 564629093;
-        static readonly long[] JoinedRoads = { 564629091, 564629093, 564629086, 564629095 };   // a, b, c and the road behind the shop row
+        static readonly long[] JoinedRoads = { 564629091, 564629093, 564629086, 564629095, 564629097 };   // a, b, c, the road behind the shop row, BUG-002's drive
+
+        // Round 18 (2a), BUG-002 ("The drive ways and darking lots shoutl be the same color"): the center's own service roads (the
+        // joined ones and every one that runs onto the lot) are drawn in the lot's asphalt, not the lighter service shade
+        static readonly Color LotAsphalt = new Color(0.235f, 0.235f, 0.245f);
+        static bool IsCenterRoad(Road r) => r.@class == "service" &&
+            (JoinedRoads.Contains(r.osm_id) || ToPoints(r.points).Any(q => InPolygon(q, LotRing.ToList())));
         static List<(long osm, Vector2 a, Vector2 b, float half)> joinedSegs = new List<(long, Vector2, Vector2, float)>();
 
         static void JoinServiceRoads(MapData map, TerrainGrid terrain, ShoppingCenter sc)
@@ -206,6 +218,7 @@ namespace ChastainRush
             var lotList = LotRing.ToList();
             SmoothSpot(map, terrain, (new Vector2(3259f, 1018f), 14f, 4f, 6f, "Round 18 (A) BUG-001 the lot's south-west corner, where roads a and b meet it"), q => InPolygon(q, lotList));
             GradeRoadA(terrain);
+            GradeDriveIn(terrain, Bug002Profile, "BUG-002 the drive from Canton Road into the lot's north-east corner");
         }
 
         // Road a climbed most of its 3 m in its last 15 m (14 %) and met the flat lot in a crest that threw a car at 16 m/s.
@@ -215,9 +228,15 @@ namespace ChastainRush
         // road beyond are untouched.
         static readonly Vector2[] RoadAProfile = { new Vector2(3275.5f, 997.5f), new Vector2(3264f, 1009f), new Vector2(3263.3f, 1013f), new Vector2(3262.8f, 1018f), new Vector2(3262.5f, 1025f), new Vector2(3262.3f, 1032f) };
 
-        static void GradeRoadA(TerrainGrid terrain)
+        // Round 18 (2a): BUG-002's drive (OSM 564629097) the same way, from 20 m up it to 7 m into the lot (the lot's own grading
+        // fades out across its new end, which lifted a car's wheels for 0.14 s at 12 m/s)
+        static readonly Vector2[] Bug002Profile = { new Vector2(3464f, 1231f), new Vector2(3450f, 1229.4f), new Vector2(3444.3f, 1228.7f), new Vector2(3441.5f, 1223f), new Vector2(3439.5f, 1215f), new Vector2(3438.5f, 1206f), new Vector2(3438f, 1204f) };
+
+        static void GradeRoadA(TerrainGrid terrain) => GradeDriveIn(terrain, RoadAProfile, "BUG-001 road a");
+
+        static void GradeDriveIn(TerrainGrid terrain, Vector2[] profile, string what)
         {
-            var line = Densify(RoadAProfile.ToList(), 0.5f);
+            var line = Densify(profile.ToList(), 0.5f);
             var s = new float[line.Count]; for (int i = 1; i < line.Count; i++) s[i] = s[i - 1] + Vector2.Distance(line[i - 1], line[i]);
             float L = s[line.Count - 1], h0 = terrain.Height(line[0].x, line[0].y), h1 = terrain.Height(line[line.Count - 1].x, line[line.Count - 1].y);
             var yc = line.Select(p => terrain.Height(p.x, p.y)).ToArray();   // the ground along the line as it was
@@ -248,7 +267,7 @@ namespace ChastainRush
                 most = Mathf.Max(most, Mathf.Abs(ny - y));
                 return ny;
             });
-            Debug.Log($"[Round18] BUG-001 road a: one curve from {h0:0.00} m (grade {m0 * 100f:0} %) to {h1:0.00} m over {L:0} m, steepest {MaxGrade(H, L) * 100f:0} %, largest change {most:0.00} m");
+            Debug.Log($"[Round18] {what}: one curve from {h0:0.00} m (grade {m0 * 100f:0} %) to {h1:0.00} m over {L:0} m, steepest {MaxGrade(H, L) * 100f:0} %, largest change {most:0.00} m");
         }
 
         static Vector2 PathAt(List<Vector2> line, float[] s, float u)
@@ -287,7 +306,7 @@ namespace ChastainRush
 
             // --- the lot's asphalt and its edge (a pale curb band where it meets grass, not along the shop walls)
             const float LotLift = 0.045f, WalkLift = 0.08f, PaintLift = 0.06f;
-            ground.Tint = new Color(0.235f, 0.235f, 0.245f);
+            ground.Tint = LotAsphalt;
             DrapePoly(ground, sc.Lot, 2f, LotLift, t, 24);
             walks.Tint = new Color(0.70f, 0.69f, 0.66f);
             int edges = 0;

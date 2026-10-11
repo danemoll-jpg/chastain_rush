@@ -1734,6 +1734,18 @@ world for Dan to drive round and judge.**
      (the shopping center's own service roads and driveways only; public roads keep their look). Check every
      service road of the center for another stub that stops short of the lot and join those too (same place,
      same fault); list them.
+   **STATUS (Claude, 2026-10-11): DONE, checked in the exe by script, not yet driven by Dan.** BUG-001
+   (`MapBuilder.Round17.cs`, `FillVergeHollow`): the verge had a 0.8 m rise in 2 m at x 3148 with a trough at its foot
+   and another along Chastain Corner's curb; within 5 m of (3149, 771.5), on the grass only (from 0.5 m past a road's
+   edge), the ground is now the smoothest surface meeting the ground round it and the curb (raised up to 0.28 m,
+   lowered up to 0.35 m); it rises evenly (about 0.2 to 0.35 m per 2 m) to the curb. Pavement and the bank across the
+   road untouched. BUG-002 (`MapBuilder.ShoppingCenter.cs`): (i) the stub (OSM 564629097, the drive in from Canton
+   Road) runs 24 m on into the lot's north-east corner, graded on one smooth curve like road a (13 % at most; the
+   lot's grading had left a 0.14 s hop at 12 m/s, now none at 12 or 18 m/s); (ii) the center's service roads (the
+   joined ones and every one running onto the lot) are drawn in the lot's own asphalt (material and color); public
+   roads unchanged. Other stubs: none. Every other center road already reaches the lot; the drives south of Chastain
+   Corner (564629063, 814479825 to 814479828) and east of Canton Road (768422193, 768422194, 1164024770) belong to
+   other sites and were left alone. Before / after from Dan's two views: `local/round18/2a_bug00*_before|after.png`.
 
 2b. Creek track: PROPOSALS A AND B, MARKED IN THE WORLD. Dan: "can code layout markers for me on the new trail
    proposal and different color markers for where the proposed pipe is. I would also say the river is on both

@@ -272,6 +272,7 @@ namespace ChastainRush
         {
             var main = new Chunks();
             var service = new Chunks();
+            var center = new Chunks { Tint = LotAsphalt };   // Round 18 (2a): the shopping center's service roads, the lot's color
             var others = new RoadIndex(map.roads);
             for (int ri = 0; ri < map.roads.Length; ri++)
             {
@@ -280,7 +281,7 @@ namespace ChastainRush
                 float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
                 // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the
                 // street it joins. In the lighter service shade it read as a pale patch on the carriageway (01_spawn.png).
-                var mb = r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
+                var mb = IsCenterRoad(r) ? center : r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
                 var self = r;
                 if (hood.IsStreetRoad(ri))
                 {
@@ -307,6 +308,7 @@ namespace ChastainRush
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
+            center.ToObjects("ShoppingCenterRoads", mats.Driveway, parent, false);   // the lot's own material and tint
         }
 
         // Round 5: the race controller. The route itself is data (Data/routes/*.json, from Tools/mapgen/make_route.py), laid over

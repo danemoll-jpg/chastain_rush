@@ -30,6 +30,47 @@ namespace ChastainRush
         {
             foreach (var spot in SeamSpots) SmoothSpot(map, terrain, spot);
             RoundApproachCrest(terrain);
+            FillVergeHollow(map, terrain);
+        }
+
+        // Round 18 (2a): Dan's session 2026-10-10_23-08-26-878_0e77b1, BUG-001 ("Cant we have this smoothed out?", "There is an
+        // uneven spot in the grass you see as it is darker right there"): the hollow in the grass verge in the corner between New
+        // Chastain Road and Chastain Corner Northeast, just north-east of his vehicle at (3145.1, 768.6), left when BUG-002's
+        // smoothing above pulled the ground near the curb down toward the lower junction: a 0.8 m rise in 2 m at x 3148 with a
+        // trough at its foot and another along the curb. That spot only: within 5 m of VergeHollow, on the grass (from 0.5 m past
+        // a road's edge, so the curb and the pavement keep their height), the ground is replaced by the smoothest surface that
+        // meets the ground round it and the curb (a membrane: each point the mean of its neighbors), which has no dip and no hump.
+        static readonly Vector2 VergeHollow = new Vector2(3149f, 771.5f);
+        const float VergeR = 5f;
+
+        static void FillVergeHollow(MapData map, TerrainGrid terrain)
+        {
+            float reach = VergeR + 2f;
+            var segs = RoadSegsNear(map, VergeHollow, reach + 30f, _ => true);
+            var g = new HeightGrid(VergeHollow - Vector2.one * reach, Mathf.CeilToInt(2f * reach / SeamStep) + 1, SeamStep);
+            var f = g.Map((x, z) => terrain.Height(x, z));
+            var free = g.Map((x, z) => Vector2.Distance(new Vector2(x, z), VergeHollow) < VergeR && Clearance(segs, new Vector2(x, z)) > 0.5f ? 1f : 0f);
+            for (int it = 0; it < 4000; it++)
+                for (int i = 1; i < g.NX - 1; i++) for (int j = 1; j < g.NZ - 1; j++)
+                    if (free[i, j] > 0f) f[i, j] = 0.25f * (f[i - 1, j] + f[i + 1, j] + f[i, j - 1] + f[i, j + 1]);
+            string Grid(string what)
+            {
+                var sb = new System.Text.StringBuilder($"[Round18] BUG-001 verge ground {what} (rows z 778 to 764, columns x 3141 to 3157):");
+                for (float z = 778f; z >= 764f; z -= 2f) { sb.Append($"\n  z {z:0}:"); for (float x = 3141f; x <= 3157f; x += 2f) sb.Append($" {terrain.Height(x, z):0.00}"); }
+                return sb.ToString();
+            }
+            Debug.Log(Grid("before"));
+            float up = 0f, down = 0f;
+            EditTerrain(terrain, new Rect(VergeHollow.x - VergeR, VergeHollow.y - VergeR, 2f * VergeR, 2f * VergeR), (x, z, y) =>
+            {
+                var q = new Vector2(x, z);
+                if (Vector2.Distance(q, VergeHollow) >= VergeR || Clearance(segs, q) <= 0.5f) return y;
+                float ny = g.Sample(f, x, z);
+                up = Mathf.Max(up, ny - y); down = Mathf.Max(down, y - ny);
+                return ny;
+            });
+            Debug.Log(Grid("after"));
+            Debug.Log($"[Round18] BUG-001 the uneven verge at New Chastain Road / Chastain Corner smoothed (raised up to {up:0.00} m, lowered up to {down:0.00} m)");
         }
 
         // Round 18 (A): one spot, also used for the shopping lot's corner; 'paved' counts more ground as pavement (the lot)
