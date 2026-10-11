@@ -38,7 +38,12 @@ namespace ChastainRush
         // of the line, banks outside: the shortcut's surface is the grass itself
         [Serializable] class ScGrade { public string label; public float[] path, profile; public float half_width; }
         [Serializable] class ScSign { public float x, z; }
-        [Serializable] class ScShortcut { public string id, name; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; }
+        [Serializable] class ScShortcut { public string id, name, direction; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; public ScPlayground playground; }
+        // Round 18 (R3): the play set and trampoline (MapBuilder.Playground.cs)
+        [Serializable] class ScTower { public float[] o, u; public float len, half, deck_y, roof_y; }
+        [Serializable] class ScSlide { public float[] o; public float len, half, foot_half, flare; }   // Round 18: the foot flares from foot_half to half over 'flare' m
+        [Serializable] class ScTrampoline { public float x, z, r, mat_y, flight_s, land_yaw; public float[] target; }
+        [Serializable] class ScPlayground { public ScTower tower; public ScSlide slide; public ScTrampoline trampoline; }
         [Serializable] class ScFile { public ScShortcut[] shortcuts; }
 
         const string ShortcutFile = "Data/shortcuts/chastain_glen_loop.json";
@@ -527,8 +532,9 @@ namespace ChastainRush
             foreach (var sc in hood.ShortcutData.shortcuts)
             {
                 var sroot = new GameObject("Shortcut " + sc.id + " (" + sc.name + ")").transform; sroot.SetParent(root, false);
-                foreach (var pr in sc.prisms) { BuildPrism(pr, terrain, mats, sroot); prisms++; }
+                foreach (var pr in sc.prisms) { if (pr.kind == "slide") FitFootToGround(pr, terrain); BuildPrism(pr, terrain, mats, sroot); prisms++; }
                 BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
+                if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) BuildPlayground(sc, terrain, mats, sroot);   // Round 18 (R3)
                 if (sc.landing_zones != null)
                     foreach (var z in sc.landing_zones)   // Round 11: ground the car lands on, with the landing carry (LandingZone, RampHold)
                     {
@@ -592,6 +598,15 @@ namespace ChastainRush
             rampMaterial = new PhysicsMaterial("ShortcutRamp") { dynamicFriction = 0f, staticFriction = 0f, bounciness = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounceCombine = PhysicsMaterialCombine.Minimum };
             AssetDatabase.CreateAsset(rampMaterial, GeneratedDir + "/ShortcutRamp.physicMaterial");
             return rampMaterial;
+        }
+
+        // Round 18 (R3): the slide's foot on the ground as built (its profile was made from the heights before the map build; the
+        // small vehicles went under a foot that stood above the grass): the difference eased out over its first 6 m, the top kept
+        static void FitFootToGround(ScPrism pr, TerrainGrid terrain)
+        {
+            float delta = Ground(terrain, pr.origin[0], pr.origin[1]) - 0.03f - pr.profile[1];
+            for (int i = 0; i + 1 < pr.profile.Length; i += 2) pr.profile[i + 1] += delta * (1f - Smooth01(pr.profile[i] / 6f));
+            Debug.Log($"[Round18] {pr.name}: its foot moved {delta:+0.00;-0.00} m onto the ground");
         }
 
         static float Profile(float[] pr, float s)
@@ -737,6 +752,26 @@ namespace ChastainRush
                     if (Vector3.Dot(Vector3.Cross(p1 - p0, p2 - p0), Vector3.up) >= 0f) mb.Tri(st, st + k, st + k + 1); else mb.Tri(st, st + k + 1, st + k);
                 }
             }
+            // Round 18 (R3): the play set's slide and deck are "open": a 0.25 m thick board on legs (MapBuilder.Playground.cs),
+            // not a solid down to the ground: the underside is the top 0.25 m lower, the edges a 0.25 m band
+            bool open = pr.kind == "slide" || pr.kind == "deck";
+            if (open)
+            {
+                int tops = mb.Tris.Count;
+                for (int i = 0; i + 1 < cuts.Count; i++)
+                {
+                    if (cuts[i + 1] - cuts[i] < 1e-3f) continue;
+                    var piece = ClipPoly2(ClipPoly2(poly, p => S(p) - cuts[i]), p => cuts[i + 1] - S(p));
+                    if (piece.Count < 3) continue;
+                    mb.Tint = Shade(col, 0.6f); int st = mb.Count;
+                    foreach (var p in piece) mb.Vertex(Top(p) - Vector3.up * 0.25f);
+                    for (int k = 1; k + 1 < piece.Count; k++)
+                    {
+                        Vector3 p0 = mb.Verts[st], p1 = mb.Verts[st + k], p2 = mb.Verts[st + k + 1];
+                        if (Vector3.Dot(Vector3.Cross(p1 - p0, p2 - p0), Vector3.down) >= 0f) mb.Tri(st, st + k, st + k + 1); else mb.Tri(st, st + k + 1, st + k);
+                    }
+                }
+            }
             // sides: each outline edge in 0.5 m pieces, from the top down to 0.5 m below the ground
             Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
             var skirt = new HashSet<int>(pr.skirt_edges ?? new int[0]);
@@ -752,6 +787,7 @@ namespace ChastainRush
                     var p = Vector2.Lerp(a, b, i / (float)k); var q = Vector2.Lerp(a, b, (i + 1) / (float)k);
                     float gp = Ground(terrain, p.x, p.y) - 0.5f, gq = Ground(terrain, q.x, q.y) - 0.5f;
                     var tp = Top(p); var tq = Top(q);
+                    if (open) { Face(mb, tp - Vector3.up * 0.25f, tq - Vector3.up * 0.25f, tq, tp, new Vector3(outN.x, 0f, outN.y)); continue; }   // Round 18: the board's edge
                     if (tp.y <= gp + 0.5f && tq.y <= gq + 0.5f) continue;   // buried
                     if (skirt.Contains(e))
                     {

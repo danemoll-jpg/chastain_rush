@@ -26,7 +26,11 @@ namespace ChastainRush
         public float[] path;                 // x, z, x, z ... from entry to exit (forward direction)
         public float half_width_m, entry_inset_m, entry_margin_m;
         public int[] forgives;               // checkpoint ids skipped by taking it
+        public float ai_speed;               // Round 18: the speed an AI driver takes it at (0: RaceController.AiShortcutSpeed)
+        public float[] ai_profile;           // Round 18: station along the path, speed, ...: no faster than this there (R3's bend)
     }
+    // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
+    [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }
 
     // A road that leaves the course and is not part of an official shortcut: a barrier stands across it during a race.
     [Serializable]
@@ -53,6 +57,15 @@ namespace ChastainRush
         public RouteJunctionJson[] junctions;
         public RouteShortcutJson[] official_shortcuts;
         public RouteClosureJson[] closures;
+        // Round 18: the Noonday Creek trail. directions: the ones this route may be raced in (none listed = both); vehicles: the
+        // only vehicle ids allowed on it (none listed = all); trail: a narrow trail (the AI keeps close to the line: its half
+        // width, lane and passing lane), ai_zones: held speeds
+        public string[] directions, vehicles;
+        public bool trail;
+        public float ai_half_width_m, ai_lane_m, ai_pass_lane_m;
+        public RouteAiZoneJson[] ai_zones;
+        public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
+        public bool AllowsVehicle(string id) => vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0;
     }
 
     public sealed class RaceGate
@@ -86,6 +99,8 @@ namespace ChastainRush
     {
         public string Id, Name;
         public Vector3[] Path;                // entry to exit, in travel order
+        public float AiSpeed;                 // Round 18
+        public float[] AiProfile;             // Round 18 (station, speed pairs along Path)
         public RaceGate Entry;                // directed plane across the path a little way in; crossing it takes the shortcut
         public RaceGate Exit;                 // plane across the path's last metres (ends the "on the shortcut" state)
         public int FirstForgiven, LastForgiven;   // indices into RaceRoute.Checkpoints, inclusive
@@ -190,9 +205,9 @@ namespace ChastainRush
                 if (sj.path == null || sj.path.Length < 4) continue;
                 int n = sj.path.Length / 2;
                 var pts = new List<Vector3>(n);
-                for (int i = 0; i < n; i++) pts.Add(Ground(sj.path[2 * i], sj.path[2 * i + 1]));
+                for (int i = 0; i < n; i++) { var g = Ground(sj.path[2 * i], sj.path[2 * i + 1]); g.y = DrainPipe.LineHeight(g.x, g.z, g.y); pts.Add(g); }   // Round 18: through a pipe, its floor
                 if (Reverse && d == "both") pts.Reverse();
-                var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray() };
+                var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray(), AiSpeed = sj.ai_speed, AiProfile = sj.ai_profile };
                 var c = new float[pts.Count];
                 for (int i = 1; i < pts.Count; i++) c[i] = c[i - 1] + Flat(pts[i] - pts[i - 1]).magnitude;
                 float len = c[c.Length - 1];

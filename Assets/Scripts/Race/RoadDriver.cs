@@ -58,11 +58,18 @@ namespace Racer
         bool obstacleVehicle;   // Chastain Rush: what stopped it last was another vehicle
         static readonly Collider[] overlap = new Collider[16];
 
+        // Chastain Rush, Round 18: on a narrow trail (Noonday Creek) the lanes are the trail's own (RouteJson.ai_lane_m, a pass
+        // lane ai_pass_lane_m), the car follows the line closely (the shortcut steering: the line winds between trunks), the
+        // obstacle sensor counts only vehicles (the trunks beside the line are not in the way), and over each jump it holds the
+        // route's set speed (ai_zones)
+        bool trail; float laneSide = 1.7f, passLane = 2.3f, laneGap = 2.5f; AiShortcut trailLine;
         public void Initialize(RaceController race, ArcadeVehicle car, RaceEntrant racer, float variation, int index)
         {
             Race = race; Car = car; Racer = racer;
             pace = variation;
-            lane = index % 2 == 0 ? 1.7f : -1.7f;
+            var rd = race.RouteData; trail = rd != null && rd.trail;
+            if (trail) { laneSide = rd.ai_lane_m > 0 ? rd.ai_lane_m : .55f; passLane = rd.ai_pass_lane_m > 0 ? rd.ai_pass_lane_m : .85f; laneGap = 1f; trailLine = new AiShortcut { Id = "trail", Name = "trail", Line = race.AiRoad, halfWidth = race.AiRoad.halfWidth }; }
+            lane = index % 2 == 0 ? laneSide : -laneSide;
             Variation.Initialize(DriverVariation.Seed, index+Mathf.RoundToInt(variation*1000));
             Shortcuts.Initialize(System.Guid.NewGuid().GetHashCode());
             finishParked = false; finishRunoff = 0; stalled = 0; plannedBranch = progressBranch = null; progressSample = false; trackingRejoin = false;
@@ -98,7 +105,7 @@ namespace Racer
             float driveHalfWidth=DriveRoad.HalfWidth(s);
             float speed = Mathf.Abs(Car.ForwardSpeed);
             DriveRoad.At(s, out var tangent);
-            float look = Mathf.Clamp(7 + speed * .48f, 8, 25);
+            float look = trail ? Mathf.Clamp(4 + speed * .22f, 5, 11) : Mathf.Clamp(7 + speed * .48f, 8, 25);
             float desiredLane = lane;
             if(finished) { finishRunoff += speed*Time.fixedDeltaTime; desiredLane=Mathf.Min(4.7f,driveHalfWidth); }
             if (!finished)
@@ -114,11 +121,11 @@ namespace Racer
                             slowerAhead = true;
                     }
                 if (slowerAhead)
-                    desiredLane = lane > 0 ? -2.3f : 2.3f;   // Chastain Rush: either side (Racer passes on its left of a two-lane road)
+                    desiredLane = lane > 0 ? -passLane : passLane;   // Chastain Rush: either side (Racer passes on its left of a two-lane road)
                 // Commit to a pass only when its destination lane has room alongside and ahead.
                 float currentLane=Vector3.Dot(Car.Body.position-DriveRoad.At(s,out _),Vector3.Cross(Vector3.up,tangent).normalized);
                 if(Mathf.Abs(desiredLane-currentLane)>1 && !LaneClear(s,desiredLane,speed))
-                    desiredLane=Mathf.Clamp(currentLane,-driveHalfWidth+1.2f,driveHalfWidth-1.2f);
+                    desiredLane=trail?Mathf.Clamp(currentLane,-passLane,passLane):Mathf.Clamp(currentLane,-driveHalfWidth+1.2f,driveHalfWidth-1.2f);
             }
 
             DecideShortcut(s);
@@ -139,7 +146,7 @@ namespace Racer
             bool departing=Time.time<recoveryDepartureUntil&&departureDistance<60&&!plannedBranch&&!activeBranch;
             if(departing)desiredLane=Mathf.Clamp(departureLane,-driveHalfWidth+Car.GetComponent<BoxCollider>().size.x*.5f+.5f,driveHalfWidth-Car.GetComponent<BoxCollider>().size.x*.5f-.5f);
             Variation.Step(this,s,speed,finished||plannedBranch||activeBranch||lateral>2.5f||Car.transform.up.y<.9f,false);
-            if(Variation.Line!=0)desiredLane=Mathf.Clamp(desiredLane+Variation.Line,-driveHalfWidth+1.6f,driveHalfWidth-1.6f);
+            if(Variation.Line!=0)desiredLane=trail?Mathf.Clamp(desiredLane+Variation.Line*.3f,-passLane,passLane):Mathf.Clamp(desiredLane+Variation.Line,-driveHalfWidth+1.6f,driveHalfWidth-1.6f);
             var target = DriveRoad.At(s + Direction * look, out var ahead);
             target += Vector3.Cross(Vector3.up, ahead).normalized * desiredLane;
             var local = transform.InverseTransformPoint(target);
@@ -147,6 +154,7 @@ namespace Racer
             float maxAngle = Mathf.Lerp(Car.slowSteerAngle, Car.fastSteerAngle, Mathf.Clamp01(speed / Car.topSpeed)) * Mathf.Deg2Rad;
             float steering = Mathf.Clamp(Mathf.Atan(2 * Car.wheelbase * Mathf.Sin(angle) / look) / maxAngle, -1, 1);
             if(activeBranch) steering=activeBranch.Steer(Car,branchS,0,out angle);   // Chastain Rush: the shortcut's own line
+            else if(trail) steering=trailLine.Steer(Car,s,desiredLane,out angle);   // Round 18: close to the trail's line
             float runS=0;
             if(RunIn&&!activeBranch){ runS=RunIn.Project(Car.Body.position,out _); if(runS>=RunIn.Length-4) RunIn=null; else steering=RunIn.Steer(Car,runS,lane,out angle); }
             int skill = Mathf.Clamp(Difficulty,0,2);
@@ -178,7 +186,16 @@ namespace Racer
                 }
 
             if(RunIn) TargetSpeed=Mathf.Min(TargetSpeed,RunIn.SpeedAt(Car,runS,cornerGrip));
-            if (Mathf.Abs(angle) > .6f && !activeBranch)
+            bool held=false;
+            var zones=Race.RouteData!=null?Race.RouteData.ai_zones:null;
+            if(zones!=null&&!activeBranch&&!finished)
+                foreach(var z in zones)
+                {
+                    float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);
+                    if(into<=z.s1-z.s0){TargetSpeed=z.speed;held=true;}   // the jump's set speed, whatever the crest rule says
+                    else if(toStart<90)TargetSpeed=Mathf.Min(TargetSpeed,Mathf.Sqrt(z.speed*z.speed+2*judgment*Mathf.Max(0,toStart-6)));
+                }
+            if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
                 TargetSpeed = Mathf.Min(TargetSpeed, 10);
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.
             float range = 6 + speed * 1.5f;
@@ -193,7 +210,7 @@ namespace Racer
                 // Chastain Rush: on a shortcut (and in its run-up) the static world is the line itself: ramps, the stairs, the
                 // dirt pile, the door frame it is aimed through. Only other vehicles count there (Racer: "the obstacle sensor
                 // ignores static ground inside a committed run-up").
-                if((activeBranch||(plannedBranch&&Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length)<40))&&!hit.rigidbody) continue;
+                if((activeBranch||trail||(plannedBranch&&Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length)<40))&&!hit.rigidbody) continue;   // Round 18: on the trail too
                 float aheadSpeed=hit.rigidbody?Mathf.Max(0,Vector3.Dot(hit.rigidbody.linearVelocity,transform.forward)):0;
                 float allowed = Mathf.Sqrt(Mathf.Max(0,aheadSpeed*aheadSpeed+2*judgment*(hit.distance-4)));
                 if(allowed<TargetSpeed){LastObstacle=hit.collider.name+"@"+hit.distance.ToString("F1");obstacleVehicle=hit.rigidbody!=null;}
@@ -202,7 +219,7 @@ namespace Racer
 
             float throttle = speed < TargetSpeed ? Mathf.Clamp01((TargetSpeed - speed) * (skill>0?.8f:.5f)) : 0;
             float brake = speed > TargetSpeed + .5f ? Mathf.Clamp01((speed - TargetSpeed) * .25f) : 0;
-            if(activeBranch&&speed<TargetSpeed) throttle=1;   // the run-up and jump at full throttle (Racer: aiEntrySpeed)
+            if((activeBranch||held)&&speed<TargetSpeed) throttle=1;   // the run-up and jump at full throttle (Racer: aiEntrySpeed)
             if (TargetSpeed < 1 && speed < .7f)
             {
                 throttle = brake = 0;
@@ -310,7 +327,7 @@ namespace Racer
                 plannedBranch=null; progressBranch=null;
                 foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f})
                 {
-                    foreach(float off in new[]{lane,0f,-lane,2.5f,-2.5f})
+                    foreach(float off in trail?new[]{0f,lane,-lane}:new[]{lane,0f,-lane,2.5f,-2.5f})
                     {
                         var p=DriveRoad.At(current+ds,out var f); f=Vector3.ProjectOnPlane(f,Vector3.up).normalized;
                         p+=Vector3.Cross(Vector3.up,f)*off; p=RaceRoute.Ground(p.x,p.z);
@@ -327,7 +344,7 @@ namespace Racer
             stalled=branchStuck=routeStuck=rejoinStuck=0;trackingRejoin=false;progressStation=DriveRoad.Project(Car.Body.position,out _);progressSample=true;branchBest=Mathf.Max(0,branchBest-6); nextRecovery=Time.time+4; RecoveryCount++;
             recoveryDepartureStation=progressStation;recoveryDepartureUntil=Time.time+8;
             var support=DriveRoad.At(progressStation,out var departureForward);departureLane=Vector3.Dot(Car.Body.position-support,Vector3.Cross(Vector3.up,departureForward).normalized);
-            if(!progressBranch)lane=lane>0?-1.7f:1.7f;
+            if(!progressBranch)lane=lane>0?-laneSide:laneSide;
         }
 
         // another racer within the first 80 m of the shortcut's line, or near its turn-off ahead of this car
@@ -360,7 +377,7 @@ namespace Racer
             {
                 var delta=other.Body.position-Car.Body.position;float along=Vector3.Dot(delta,forward);
                 float lanePosition=Vector3.Dot(other.Body.position-center,right);
-                return along>-12&&along<Mathf.Max(18,speed*.9f)&&Mathf.Abs(lanePosition-targetLane)<2.5f;
+                return along>-12&&along<Mathf.Max(18,speed*.9f)&&Mathf.Abs(lanePosition-targetLane)<laneGap;
             }
             foreach(var other in Race.Entrants)if(other!=null&&other!=Racer&&other.Car&&Blocks(other.Car))return false;
             return true;
@@ -376,6 +393,7 @@ namespace Racer
         public string Id, Name;
         public RaceRoad Line;
         public float entryRoad, exitRoad, entrySpeed, halfWidth = 3.5f;
+        public float[] profile;   // Chastain Rush, Round 18: (station, speed) pairs along the line, no faster there (null: none)
         public int FirstForgiven;
         public System.Func<ArcadeVehicle,bool> Allows = _ => true;
         public float Length => Line.Length;
@@ -397,6 +415,14 @@ namespace Racer
                 float vb = Mathf.Sqrt(grip * r);
                 w = Mathf.Min(w, Mathf.Sqrt(vb * vb + 2f * car.braking * .88f * Mathf.Max(0f, d - 6f)));
             }
+            if (profile != null)   // Round 18: the line's own speeds, braked for in time, held between two points
+                for (int i = 0; i + 1 < profile.Length; i += 2)
+                {
+                    float ps = profile[i], pv = profile[i + 1];
+                    bool next = i + 3 < profile.Length;
+                    if (s <= ps) w = Mathf.Min(w, Mathf.Sqrt(pv * pv + 2f * car.braking * .88f * (ps - s)));
+                    else if (next && s < profile[i + 2]) w = Mathf.Min(w, Mathf.Lerp(pv, profile[i + 3], Mathf.InverseLerp(ps, profile[i + 2], s)));
+                }
             return w;
         }
 

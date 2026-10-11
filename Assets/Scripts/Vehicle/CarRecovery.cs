@@ -23,7 +23,24 @@ namespace ChastainRush
             var at = r.transform.position;
             if (TreeTrunks.Instance) TreeTrunks.Instance.Refresh(at);
             var race = RaceController.Instance;
-            if (race != null && race.Route != null && (race.State == RaceController.Stage.Racing || race.State == RaceController.Stage.Countdown))
+            bool racing = race != null && race.Route != null && (race.State == RaceController.Stage.Racing || race.State == RaceController.Stage.Countdown);
+            // Round 18 (item 4): inside a drainage pipe or its cuts, back on the pipe's floor, facing along it: the way the race
+            // goes through it (a shortcut's line there), else the way the vehicle was heading
+            if (DrainPipe.Inside(at, out _) != null)
+            {
+                var raceFwd = Vector3.zero;
+                if (racing)
+                    foreach (var sc in race.Route.Shortcuts)
+                        for (int i = 0; i + 1 < sc.Path.Length; i++)
+                        {
+                            var a = sc.Path[i]; var b = sc.Path[i + 1];
+                            var ab = new Vector2(b.x - a.x, b.z - a.z); var q = new Vector2(at.x - a.x, at.z - a.z);
+                            float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q, ab) / ab.sqrMagnitude);
+                            if ((q - ab * t).magnitude < 4f) { raceFwd = new Vector3(ab.x, 0f, ab.y); break; }
+                        }
+                if (DrainPipe.Recover(at, r.transform.forward, raceFwd, r.GetComponent<Rigidbody>(), out pos, out yaw)) return true;
+            }
+            if (racing)
             {
                 var route = race.Route;
                 float s = route.LapStationOf(at);

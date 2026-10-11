@@ -614,7 +614,118 @@ def build_sc6():
         "leave_lap_s": 729, "rejoin_lap_s": float(REJOIN_6),
     }
 
-shortcuts = [build_sc2(), build_sc6()]
+# =============================================================================================================== R1, Round 18
+# The reverse loop's lobe drop (Dan, 2026-10-11: "I would like r1 built out", "build it as marked ... sized for 20 m/s ... it
+# must not put a vehicle on a roof it cannot get off, or into a wall"). NOT BUILT: as marked it does not fit (Round 18
+# report in TODO.md). The kicker on the bank between houses 1987 and 1552 (the 6.6 m between 1987's north corner and 1552's
+# west corner) facing the gap between 2065 and 1572: the flight crosses that gap at an angle (the gap runs north-north-west),
+# so even exactly on the line a vehicle at 24 m/s or more comes down into 1572's wall (lip 1.2 m, 15 degrees; a taller,
+# steeper kicker only moves the band), and 1.5 m or 6 degrees off the line it reaches 1572 or 2065 from 22 m/s. Vehicles
+# reach that kicker at 24 to 28 m/s from the corner (a straight run up the gap). The only robust lip found (every speed
+# from 14 to 32 m/s, 1.5 m and 6 degrees off the line, comes down on open ground) is in the lobe's middle yard facing
+# west-south-west, reached by a long left bend after the gap, not on the bank; it would rejoin on the lobe's west side. Dan
+# to choose. R2 was not chosen.
+RETIRED = {"r1_lobe_drop"}   # removed from the route file's official_shortcuts on a re-run
+
+# =============================================================================================================== R3, Round 18
+# The reverse loop's house hop, redesigned to Dan's idea (2026-10-11: "use a slide from a play ground as a ramp which would
+# bounce you onto a trampoline which would ultimately bounce you over the house instead of driving through it"). REVERSE
+# ONLY. House 1752 stays whole and untouched. From the top street the line goes through the gap between 1602 and 1919 and
+# east along the hollow into 1752's back yard, where a giant play set stands: the vehicle drives UP its slide (held, as the
+# Round 10 ramps), across the tower's deck and off its far edge onto a giant trampoline. The trampoline (Trampoline.cs)
+# throws it up and over 1752 onto Chastain Glen Lane beyond, where it comes down on its wheels pointing down the lane.
+# Forgives CP2 (file numbering; the reverse lap's CP4).
+#   Sizes (a vehicle needs them; the look is a play set and a trampoline at that size): slide 3.6 m wide (its foot flared to
+#   9 m), 16 m long, up 7 m;
+#   tower deck 4.0 x 3.5 m, 1.8 m above the trampoline's mat, 13 m from the mat's middle; trampoline 13 m across the mat on a
+#   1 m high frame. The play set cannot stand further east (a throw from the mat's near edge would not clear 1752's eaves),
+#   so the play set faces due east (round the same trampoline) and the way from the 1602 / 1919 gap to the slide's foot is one
+#   fitted arc onto the slide's axis (Round 18 checks: on a 6 m corner the cars went wide into the slide's side).
+#   Off a level deck 1.8 m above the mat a vehicle comes down 0.61 x its speed out: the mat (6.5 to 19.5 m out) takes any
+#   speed from about 11 to 32 m/s; slower lands short in the yard (drive out round the house), faster is caught as it
+#   passes low over the mat. The bounce aims every vehicle at the same point on the lane with the same flight time (4.0 s,
+#   about 20 m over the mat at the top, 3 m or more over the roofs of 1752 and its neighbors from anywhere on the mat), so
+#   where on the mat it lands does not matter. 3.4 s cleared 1752's eaves by 0.1 m: too close.
+R3_T = V(3068.0, 1184.5); R3_U = V(1.0, 0.0); R3_R = 6.5; R3_FLIGHT = 4.0; R3_GAP = 13.0
+def build_r3():
+    T, u = R3_T, R3_U
+    mat_y = ground(*T) + 1.0
+    deck_y = mat_y + 1.8
+    E = T - u * R3_GAP; D0 = E - u * 3.5; LC = 16.0; C0 = D0 - u * LC
+    gC = ground(*C0) - 0.03
+    th, y = two_arcs(deck_y - gC, LC, 10.0, 8.0)
+    # the foot flares (a wide run-out, as a big slide's): 9 m wide on the grass, narrowing to the 3.6 m chute over its first 6 m,
+    # with low sides that lead a vehicle in (Round 18 checks: the small vehicles came round the bend wide, beside the chute)
+    FOOT_HALF, FLARE = 4.5, 6.0
+    nS = left(u); foot = [C0 - nS * FOOT_HALF, C0 + u * FLARE - nS * 1.8, C0 + u * LC - nS * 1.8, C0 + u * LC + nS * 1.8, C0 + u * FLARE + nS * 1.8, C0 + nS * FOOT_HALF]
+    slide = prism("sc R3 play set slide", "slide", foot, C0, u, [(s, gC + y(s)) for s in np.linspace(0.0, LC, 33)], [0.95, 0.76, 0.14], held=True)
+    deck = prism("sc R3 play set deck", "deck", strip_poly(D0, u, -0.05, 3.5, 2.0), D0, u, [(0.0, deck_y), (3.5, deck_y)], DECK, held=True)
+    note(f"R3 slide: {LC:.0f} m from {gC:.2f} m up {deck_y - gC:.1f} m to the deck at {deck_y:.2f} m (steepest {math.degrees(th):.0f} degrees); deck 3.5 m; trampoline at ({T[0]:.0f}, {T[1]:.0f}), mat {mat_y:.2f} m, {2 * R3_R:.0f} m across")
+    # the landing point on the lane past 1752 (the reverse lap runs south-south-east there) and the heading down it
+    s_land = station([lap(s) for s in np.arange(0, CUM[-1], 1.0)], V(3124.8, 1165.0))
+    P = lap(s_land); rev = unit(lap(s_land - 1.0) - lap(s_land + 1.0))
+    land_yaw = math.degrees(math.atan2(rev[0], rev[1]))
+    Py = ground(*P) + 0.7
+    # check the flight from every part of the mat: apex and the height over 1752 and 1927 (ridges about 11 m up)
+    worst = 99.0
+    for ox in (-R3_R, 0.0, R3_R):
+        for oz in (-R3_R, 0.0, R3_R):
+            p0 = T + V(ox, oz); y0 = mat_y + 0.7
+            v_h = (P - p0) / R3_FLIGHT; vy = (Py - y0) / R3_FLIGHT + 4.905 * R3_FLIGHT
+            for t in np.arange(0, R3_FLIGHT, 0.02):
+                q = p0 + v_h * t; yy = y0 + vy * t - 4.905 * t * t
+                for hn in (1752, 1927, 1844):
+                    # the roof: eaves 6.3 m up at the walls (two storeys and the floor), the ridge at the house's full height
+                    # in the middle, whichever way the ridge runs (the higher of the two), 1 m of margin round the walls
+                    r = rect(hn); d = q - r["c"]; da, dp = abs(d @ r["d"]), abs(d @ r["p"])
+                    if da > r["hl"] + 1.0 or dp > r["hw"] + 1.0: continue
+                    g_ = ground(*r["c"]); ridge = g_ + m["buildings"][hn]["height"]; eave = g_ + 6.3
+                    top = max(eave + (ridge - eave) * max(0.0, 1 - dp / r["hw"]), eave + (ridge - eave) * max(0.0, 1 - da / r["hl"]))
+                    worst = min(worst, yy - top)
+    vy0 = (Py - (mat_y + 0.7)) / R3_FLIGHT + 4.905 * R3_FLIGHT
+    note(f"R3 bounce: to ({P[0]:.1f}, {P[1]:.1f}) on the lane in {R3_FLIGHT} s, up at {vy0:.1f} m/s (apex {vy0 * vy0 / 19.62:.1f} m over the mat), "
+         f"{float(np.linalg.norm(P - T)) / R3_FLIGHT:.1f} m/s across; lowest clearance over the roofs of 1752 / 1927 / 1844: {worst:.1f} m; lands facing {land_yaw:.0f} degrees")
+    # the line (reverse travel): along the top street, through the 1602 / 1919 gap, the hollow, slide, deck, trampoline, the
+    # flight (straight in plan), the lane
+    s_l = station([lap(s) for s in np.arange(0, CUM[-1], 1.0)], V(3003.0, 1216.0))
+    Gn, Gs = V(3015.9, 1205.4), V(3022.0, 1193.5)
+    # out of the gap (heading down it), a straight of d m and one circular arc of radius R that ends on the slide's axis, then
+    # straight into its foot: the d and R whose arc ends nearest the axis with 5 m or more of straight before the foot
+    hG = unit(Gs - Gn); nU = left(u); best = None
+    def turn(v, a): return np.array([v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a)])
+    for e in np.arange(-1.5, 1.51, 0.5):   # across the gap's south end (about 6 m wide): up to 1.5 m off its middle
+        for d in np.arange(0.0, 8.01, 0.5):
+            for R in np.arange(6.0, 24.01, 0.5):
+                P0 = Gs + left(hG) * e + hG * d; phi = math.atan2(hG[0] * u[1] - hG[1] * u[0], hG @ u)
+                c = P0 + left(hG) * R * np.sign(phi); end = c + turn(P0 - c, phi)
+                off = abs(float((end - C0) @ nU)); before = float((C0 - end) @ u)
+                if before < 5.0: continue
+                if best is None or off < best[0] - 0.05 or (abs(off - best[0]) <= 0.05 and R > best[2]): best = (off, d, R, phi, c, P0, end, e)
+    off, d_, R_, phi_, c_, P0_, end_, e_ = best
+    arc = [c_ + turn(P0_ - c_, phi_ * k / 12) for k in range(13)]
+    straight = float((C0 - end_) @ u)
+    note(f"R3 way in: out of the 1602 / 1919 gap ({e_:+.2f} m off its middle), {d_:.1f} m straight, an arc of {R_:.1f} m turning {math.degrees(phi_):.0f} degrees onto the slide's axis {straight:.1f} m before its foot (off it by {off:.2f} m)")
+    head = smooth(polyline([lap(s_l + 22), lap(s_l + 6), Gn + left(hG) * e_], 2.0), 2) + polyline([Gn + left(hG) * e_, P0_], 1.0)[1:] + arc[1:]
+    pts = head + polyline([C0 - u * straight, C0], 1.0)[1:] + polyline([C0, T], 1.0)[1:] + polyline([T, P], 2.0)[1:] \
+        + smooth(polyline([P, lap(s_land - 6), lap(s_land - 16)], 2.0), 2)[1:]
+    entry_s = station(pts, C0 + u * 4.0)
+    note(f"R3: leaves the top street {s_l:.0f} m after the gate (forward stations), lands on the lane at {s_land:.0f}; {length(pts):.0f} m of line")
+    return {
+        "id": "r3_trampoline", "name": "Trampoline hop", "direction": "reverse", "forgives": [2], "entry_half_width": 3.0, "entry_margin": 1.0,
+        "path": pts, "half_width": 3.0, "trail": [], "clear_half_width": 5.0, "entry_s": entry_s, "prisms": [slide, deck], "open_houses": [],
+        "jump_houses": [], "landing_zones": [], "ai_speed": 17.0,
+        # the AI's speed along the line (station, m/s): 11 through the 8 m bend out of the gap (the AI's own bend rule samples
+        # the line 6 m apart and took it at 17: wide past the slide's foot), full speed from the slide's foot
+        "ai_profile": [round(v, 1) for v in (station(pts, P0_) - 12.0, 11.0, station(pts, C0) - 1.0, 11.0, station(pts, C0) + 2.0, 20.0)],
+        "playground": {"tower": {"o": rnd(D0), "u": [round(float(u[0]), 5), round(float(u[1]), 5)], "len": 3.5, "half": 2.0, "deck_y": round(deck_y, 3), "roof_y": round(deck_y + 3.4, 3)},
+                       "slide": {"o": rnd(C0), "len": LC, "half": 1.8, "foot_half": FOOT_HALF, "flare": FLARE},
+                       "trampoline": {"x": round(float(T[0]), 2), "z": round(float(T[1]), 2), "r": R3_R, "mat_y": round(mat_y, 3),
+                                      "target": [round(float(P[0]), 2), round(Py, 3), round(float(P[1]), 2)], "flight_s": R3_FLIGHT, "land_yaw": round(land_yaw, 2)}},
+        "leave_lap_s": float(s_l), "rejoin_lap_s": float(s_land - 16),
+    }
+
+def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
+shortcuts = [build_sc2(), build_sc6(), build_r3()]
 
 # ---------------------------------------------------------------- checks against the barriers and the checkpoints
 for sc in shortcuts:
@@ -624,10 +735,9 @@ for sc in shortcuts:
         # the race leaves a barrier out only if the line passes within 3 m of it (RaceBarriers.ShortcutClearM)
         if d < c["width_m"] / 2 + 3 + 3: note(f"barrier {c['id']} ({c['label']}) is in the way of {sc['id']} ({d:.1f} m from the line): the race leaves it out")
         elif d < 20: note(f"{sc['id']}: barrier {c['id']} ({c['label']}) stands {d:.1f} m from the line, clear of it, and stays")
-    note(f"{sc['id']}: {length(P):.0f} m of line, against {sc['rejoin_lap_s'] - sc['leave_lap_s']} m of lap between the same points; entry plane {sc['entry_s']:.0f} m in")
+    note(f"{sc['id']}: {length(P):.0f} m of line, against {abs(sc['rejoin_lap_s'] - sc['leave_lap_s']):.0f} m of lap between the same points; entry plane {sc['entry_s']:.0f} m in")
 
 # ---------------------------------------------------------------- write
-def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
 out = {"source": "Tools/mapgen/make_shortcuts.py (hand-made design; re-run after mapgen). Heights are absolute world y.", "route": "chastain_glen_loop", "notes": notes, "shortcuts": []}
 for sc in shortcuts:
     o = dict(sc); o["path"] = [v for p in sc["path"] for v in rnd(p)]
@@ -636,11 +746,12 @@ for sc in shortcuts:
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)
 
-# official_shortcuts in the route file: keep any other hand-made entries, replace these two
-keep = [s for s in route.get("official_shortcuts", []) if s.get("id") not in {sc["id"] for sc in shortcuts}]
+# official_shortcuts in the route file: keep any other hand-made entries, replace these (Round 18: R3, reverse only)
+keep = [s for s in route.get("official_shortcuts", []) if s.get("id") not in {sc["id"] for sc in shortcuts} | RETIRED]
 for sc in shortcuts:
-    keep.append({"id": sc["id"], "name": sc["name"], "direction": "forward", "path": [v for p in sc["path"] for v in rnd(p)],
-                 "half_width_m": sc.get("entry_half_width", 5.0), "entry_inset_m": round(sc["entry_s"], 2), "entry_margin_m": sc.get("entry_margin", 2.0), "forgives": sc["forgives"]})
+    keep.append({"id": sc["id"], "name": sc["name"], "direction": sc.get("direction", "forward"), "path": [v for p in sc["path"] for v in rnd(p)],
+                 "half_width_m": sc.get("entry_half_width", 5.0), "entry_inset_m": round(sc["entry_s"], 2), "entry_margin_m": sc.get("entry_margin", 2.0), "forgives": sc["forgives"],
+                 "ai_speed": sc.get("ai_speed", 0.0), "ai_profile": sc.get("ai_profile", [])})
 route["official_shortcuts"] = keep
 json.dump(route, open(ROUTE, "w", encoding="utf-8"), indent=1)
 print(f"wrote {OUT} and the official_shortcuts of {ROUTE}")

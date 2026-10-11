@@ -47,6 +47,11 @@ namespace ChastainRush
         [Header("Set by MapBuilder (Chastain Rush > Build Map)")]
         [TextArea] public string embeddedRouteJson;   // the route file as it was when the scene was built
         public string routeFileName = "chastain_glen_loop.json";
+        // Round 18 (item 5): every route of the one world (Data/routes/*.json), the Chastain Glen loop first; RouteOverride (a
+        // file name, the race setup menu's Route row or a check's -route) picks one, the first otherwise
+        public string[] routeFileNames;
+        [TextArea] public string[] embeddedRouteJsons;
+        public static string RouteOverride;
         public Material gateBlack, gateWhite, nextMaterial, laterMaterial, missedMaterial, shortcutMaterial;
 
         public Stage State { get; private set; } = Stage.Free;
@@ -128,17 +133,39 @@ namespace ChastainRush
                 if (args[i] == "-raceDirection") DirectionOverride = args[i + 1];
                 if (args[i] == "-aiCount") AiCount = Mathf.Clamp(int.Parse(args[i + 1]), 0, 3);
                 if (args[i] == "-aiVehicles") AiVehiclesOverride = args[i + 1].Split(',');
+                if (args[i] == "-route") RouteOverride = args[i + 1].EndsWith(".json") ? args[i + 1] : args[i + 1] + ".json";   // Round 18
             }
             LoadRoute();
         }
 
         // In the Editor the route file is read from Data/routes each time (so changing "direction" there needs no rebuild);
         // anywhere else, the copy MapBuilder embedded in the scene.
+        // Round 18: the routes there are, as (file name, display name), the Chastain Glen loop first
+        public List<(string file, string name)> Routes()
+        {
+            var list = new List<(string, string)>();
+            if (routeFileNames == null || routeFileNames.Length == 0) { list.Add((routeFileName, RouteData != null && routeFileName == CurrentFile ? RouteData.name : routeFileName)); return list; }
+            for (int i = 0; i < routeFileNames.Length; i++)
+            {
+                string name = routeFileNames[i];
+                try { var j = JsonUtility.FromJson<RouteJson>(embeddedRouteJsons[i]); if (!string.IsNullOrEmpty(j.name)) name = j.name; } catch (Exception) { }
+                list.Add((routeFileNames[i], name));
+            }
+            return list;
+        }
+        public string CurrentFile { get; private set; }
+
         void LoadRoute()
         {
-            string json = embeddedRouteJson;
+            string file = routeFileName, json = embeddedRouteJson;
+            if (routeFileNames != null && routeFileNames.Length > 0)
+            {
+                int k = Mathf.Max(0, Array.IndexOf(routeFileNames, RouteOverride));
+                file = routeFileNames[k]; json = embeddedRouteJsons[k];
+            }
+            CurrentFile = file;
 #if UNITY_EDITOR
-            string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Data", "routes", routeFileName));
+            string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Data", "routes", file));
             if (File.Exists(path)) json = File.ReadAllText(path);
 #endif
             if (string.IsNullOrEmpty(json)) { Debug.LogWarning("[Race] no route data; racing is off"); enabled = false; return; }
@@ -149,7 +176,9 @@ namespace ChastainRush
                 all.AddRange(ExtraShortcuts);
                 RouteData.official_shortcuts = all.ToArray();
             }
-            Route = RaceRoute.Create(RouteData, DirectionOverride);
+            string dir = DirectionOverride;
+            if (!string.IsNullOrEmpty(dir) && !RouteData.Allows(dir)) dir = RouteData.direction;   // Round 18: Noonday Creek is forward only (its jumps face one way)
+            Route = RaceRoute.Create(RouteData, dir);
             if (LapsOverride > 0) Route.Laps = LapsOverride;
             LoadRecords();
             if (markers == null) markers = new GameObject("RaceMarkers").AddComponent<RaceMarkers>();
@@ -163,6 +192,7 @@ namespace ChastainRush
         {
             if (!enabled || !car) return;
             LoadRoute(); // picks up a changed direction
+            EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
             RaceClock = 0f; PlayerFinishedAt = 0f;
             NewBestLap = NewBestTotal = false;
             if (State == Stage.Free) wasInputEnabled = input.enabled;
@@ -181,6 +211,9 @@ namespace ChastainRush
             markers.Refresh(this);
         }
 
+        // Round 18: the race setup menu changed the route (free roam only): load it so the menu shows its name and length
+        public void Reload() { if (State == Stage.Free && enabled) LoadRoute(); }
+
         public void EndRace()
         {
             if (State == Stage.Free) return;
@@ -192,6 +225,17 @@ namespace ChastainRush
             RemoveAi();
             Log("RACE LEFT");
             markers.Refresh(this);
+        }
+
+        // Round 18: on a route with a vehicle list (Noonday Creek: motorcycles, the ATV, the mower), a player in anything else is
+        // put in the first allowed vehicle (the race setup menu offers only those there; this covers a check or a saved choice)
+        public bool PlayerVehicleAllowed { get { var cfg = car ? car.GetComponent<VehicleConfiguration>() : null; return RouteData == null || cfg == null || RouteData.AllowsVehicle(cfg.profileId); } }
+        void EnsureAllowedVehicle()
+        {
+            if (PlayerVehicleAllowed) return;
+            var sw = car.GetComponent<VehicleSwitch>(); string id = RouteData.vehicles[0];
+            if (sw) sw.Select(id); else car.GetComponent<VehicleConfiguration>()?.Apply(id);
+            Log($"vehicle not allowed on {RouteData.name}: switched to {id}");
         }
 
         void PlaceOnGrid()
@@ -440,7 +484,11 @@ namespace ChastainRush
             for (int i = 0; i < picks.Length; i++)
             {
                 string id = chosen != null && i < chosen.Length ? chosen[i] : null;
-                if (string.IsNullOrEmpty(id) || id == "random" || VehicleProfile.IndexOf(id) < 0) id = VehicleProfile.All[rng.Next(VehicleProfile.All.Length)].Id;
+                if (string.IsNullOrEmpty(id) || id == "random" || VehicleProfile.IndexOf(id) < 0 || !RouteData.AllowsVehicle(id))   // Round 18: only the route's vehicles
+                {
+                    var pool = Array.FindAll(VehicleProfile.All, v => RouteData.AllowsVehicle(v.Id));
+                    id = pool[rng.Next(pool.Length)].Id;
+                }
                 picks[i] = id;
             }
             return picks;
@@ -452,13 +500,15 @@ namespace ChastainRush
             if (AiRoad != null) Destroy(AiRoad.gameObject);   // a new road for each race (the direction may have changed)
             AiRoad = new GameObject("AI race road").AddComponent<RaceRoad>();
             var pts = new List<Vector3>(Route.Path); if (pts.Count > 1 && (pts[0] - pts[pts.Count - 1]).sqrMagnitude < 0.01f) pts.RemoveAt(pts.Count - 1);
-            AiRoad.points = pts.ToArray(); AiRoad.Initialize();
+            AiRoad.points = pts.ToArray();
+            if (RouteData.trail && RouteData.ai_half_width_m > 0f) AiRoad.halfWidth = RouteData.ai_half_width_m;   // Round 18: a narrow trail
+            AiRoad.Initialize();
             AiShortcuts.Clear();
             foreach (var sc in Route.Shortcuts)
             {
                 var line = new GameObject("AI shortcut " + sc.Id).AddComponent<RaceRoad>(); line.transform.SetParent(AiRoad.transform, false);
                 line.openHighway = true; line.points = sc.Path; line.Initialize();
-                var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = AiShortcutSpeed(sc.Id) };
+                var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = sc.AiSpeed > 0f ? sc.AiSpeed : AiShortcutSpeed(sc.Id), profile = sc.AiProfile };
                 a.entryRoad = AiRoad.Project(sc.Start, out _); a.exitRoad = AiRoad.Project(sc.End, out _);
                 a.Allows = c => AiShortcutAllowed(sc.Id, c);
                 AiShortcuts.Add(a);

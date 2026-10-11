@@ -30,7 +30,7 @@ namespace ChastainRush
         public static bool Open => Instance && Instance.open;
 
         // ---------------------------------------------------------------- settings (race setup), saved beside the records
-        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; }
+        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; public string route = ""; }   // Round 18: route (a file name; "" = the Chastain Glen loop)
         public static Settings Current = new Settings();
         static string SettingsPath()
         {
@@ -59,6 +59,7 @@ namespace ChastainRush
         static void ApplySettings()
         {
             RaceController.LapsOverride = Current.laps;
+            RaceController.RouteOverride = Current.route;   // Round 18
             RaceController.DirectionOverride = Current.direction;
             RaceController.AiCount = Current.opponents ? 3 : 0;
             RoadDriver.Difficulty = Current.difficulty;
@@ -101,6 +102,7 @@ namespace ChastainRush
             yield return null;   // after VehicleSwitch.Start has put on the saved vehicle
             vehicles = car.GetComponent<VehicleSwitch>();
             LoadSettings(race); ApplySettings();
+            if (race) race.Reload();   // Round 18: the saved route
             Build();
             OpenMenu(true);
         }
@@ -420,30 +422,10 @@ namespace ChastainRush
             Row(2, "export", "Export bug report ZIP", () => { hud.ExportReport(); Show(); });
             Row(3, "folder", "Open debug report folder", () => { hud.OpenReportFolder(); Show(); });
             Row(4, "session", "Start new debug session", () => Confirm("START A NEW DEBUG SESSION?", "The current session is closed; its reports are kept.", "START NEW SESSION", () => { hud.StartNewSession(); Show(); }));
-            // Round 18 (2b, 2c), TEMPORARY: the proposal markers and a way to the start of each proposal (free roam only)
-            var pm = ProposalMarkers.Instance;
+            // Round 18 (item 8): the proposal markers and their Go to row are gone (everything proposed is built or was not chosen)
             int n = 5;
-            if (pm)
-            {
-                Step(n++, "proposals", "Proposal markers:   " + ProposalMarkers.ModeNames[pm.Mode], d => { pm.Step(d); Show(); });
-                bool free = !race || race.State == RaceController.Stage.Free;
-                goTarget = Mathf.Clamp(goTarget, 0, Mathf.Max(0, pm.startNames.Length - 1));
-                int row = n++;
-                StepAct(row, "goto", free ? "Go to:   " + (pm.startNames.Length > 0 ? pm.startNames[goTarget] : "-") : "Go to: in free roam only",
-                    d => { if (pm.startNames.Length > 0) goTarget = (goTarget + d + pm.startNames.Length) % pm.startNames.Length; Show(); },
-                    () => { if (pm.GoTo(goTarget)) CloseMenu(); });
-                buttons[row].interactable = free;
-            }
             Row(n++, "game", "Game menu", GameMenuFromDebug);
             Row(n++, "back", pages.Count > 0 ? "Back" : "Resume", BackPage);
-        }
-        int goTarget;
-        // Round 18: a value row that also acts on A (left / right picks the value, A uses it; A never cycles it)
-        void StepAct(int index, string id, string label, Action<int> change, Action act)
-        {
-            Step(index, id, label, change);
-            var button = buttons[index]; var entry = registry.Register(id, label, submit, act, () => button.interactable);
-            button.onClick.RemoveAllListeners(); button.onClick.AddListener(() => entry.Execute());
         }
         // the regular menu is never out of reach: back to it if we came from it, else replace this page with it
         void GameMenuFromDebug() { if (pages.Count > 0) BackPage(); else { CapturePage(); page = "root"; MenuInput.ConsumeThroughRelease(); Show(); } }
@@ -451,30 +433,57 @@ namespace ChastainRush
         static readonly string[] DifficultyNames = { "Easy", "Normal", "Hard" };
         void RenderRaceSetup()
         {
-            var r = race ? race.Route : null;
-            Clear("RACE SETUP", (r != null ? $"{r.Name}, {r.LapLength:0} m a lap." : "") + "\nShortcuts are there to be found.");
+            var r = race ? race.Route : null; var rd = race ? race.RouteData : null;
+            bool smallOnly = rd != null && rd.vehicles != null && rd.vehicles.Length > 0, oneWay = rd != null && !rd.Allows("reverse");
+            Clear("RACE SETUP", (r != null ? $"{r.Name}, {r.LapLength:0} m a lap." : "") + (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found.");
             void Changed() { SaveSettings(); ApplySettings(); Show(); }
-            Step(0, "laps", $"Laps:   {Current.laps}", d => { Current.laps = Mathf.Clamp(Current.laps + d, 1, 9); Changed(); });
-            Step(1, "direction", $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
-            Step(2, "mode", $"Opponents:   {(Current.opponents ? "3 AI drivers" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
-            Step(3, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
-            Row(4, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
-            buttons[4].interactable = Current.opponents;
-            Row(5, "garage", "Garage…", () => Navigate("garage"));
-            Row(6, "start", "START RACE", StartRace);
-            Row(7, "back", "Back", BackPage);
+            // Round 18 (item 5): the route, left / right through Data/routes (the Chastain Glen loop first)
+            var routes = race ? race.Routes() : new List<(string file, string name)>();
+            int at = race ? Mathf.Max(0, routes.FindIndex(x => x.file == (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route))) : 0;
+            Step(0, "route", $"Route:   {(routes.Count > 0 ? routes[at].name : "-")}", d =>
+            {
+                if (routes.Count < 2) return;
+                Current.route = routes[(at + d + routes.Count) % routes.Count].file; SaveSettings(); ApplySettings();
+                race.Reload(); EnsureRouteVehicle(); Show();
+            });
+            Step(1, "laps", $"Laps:   {Current.laps}", d => { Current.laps = Mathf.Clamp(Current.laps + d, 1, 9); Changed(); });
+            Step(2, "direction", oneWay ? "Direction:   Forward (one way only)" : $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { if (oneWay) return; Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
+            Step(3, "mode", $"Opponents:   {(Current.opponents ? "3 AI drivers" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
+            Step(4, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
+            Row(5, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
+            buttons[5].interactable = Current.opponents;
+            if (smallOnly)
+            {
+                // the trail's vehicles only (cars are not offered): left / right picks one, as the garage would
+                var cfg = car.GetComponent<VehicleConfiguration>(); var ids = rd.vehicles;
+                int vi = Mathf.Max(0, Array.IndexOf(ids, cfg ? cfg.profileId : ids[0]));
+                Step(6, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
+            }
+            else Row(6, "garage", "Garage…", () => Navigate("garage"));
+            Row(7, "start", "START RACE", StartRace);
+            Row(8, "back", "Back", BackPage);
+        }
+
+        // Round 18: a route with a vehicle list (Noonday Creek): a player in anything else is put in its first vehicle when the
+        // route is chosen (cars are not offered there)
+        void EnsureRouteVehicle()
+        {
+            var rd = race ? race.RouteData : null; var cfg = car ? car.GetComponent<VehicleConfiguration>() : null;
+            if (rd == null || cfg == null || rd.AllowsVehicle(cfg.profileId) || !vehicles) return;
+            vehicles.Select(rd.vehicles[0]);
         }
 
         // Racer's Opponents page: each slot random or a vehicle (saved in ai_drivers.json, as before the menus)
         void RenderOpponents()
         {
             var choices = RaceController.SavedAiChoices();
-            Clear("OPPONENT VEHICLES", "Random picks a new vehicle every race.");
-            var list = new List<string> { "random" }; list.AddRange(VehicleProfile.All.Select(p => p.Id));
+            var rd = race ? race.RouteData : null;   // Round 18: only the route's vehicles
+            Clear("OPPONENT VEHICLES", "Random picks a new vehicle every race." + (rd != null && rd.vehicles != null && rd.vehicles.Length > 0 ? "\n" + rd.name + ": motorcycles, the ATV and the mower only." : ""));
+            var list = new List<string> { "random" }; list.AddRange(VehicleProfile.All.Where(p => rd == null || rd.AllowsVehicle(p.Id)).Select(p => p.Id));
             for (int i = 0; i < choices.Length; i++)
             {
                 int slot = i; string id = choices[i];
-                string shown = id == "random" ? "Random" : VehicleProfile.Find(id).Name;
+                string shown = id == "random" || !list.Contains(id) ? "Random" : VehicleProfile.Find(id).Name;
                 Step(i, "slot-" + i, $"{RaceController.AiDriverName(i)}:   {shown}", d =>
                 {
                     int at = Mathf.Max(0, list.IndexOf(choices[slot]));

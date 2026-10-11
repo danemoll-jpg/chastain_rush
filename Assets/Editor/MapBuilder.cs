@@ -93,6 +93,9 @@ namespace ChastainRush
             hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
             CarveWaterBeds(map, terrain);   // Round 15 (item 2): a bed under every pond, lake and stream (MapBuilder.Water.cs)
             BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
+            var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
+            GradeCreekTrack(map, terrain, creek);
+            var pipes = PlanPipes(terrain);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs)
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
@@ -106,7 +109,7 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
             trees.Field.gameObject.AddComponent<TreeTrunks>();
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
@@ -114,10 +117,12 @@ namespace ChastainRush
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
+            BuildCreekTrack(map, terrain, mats, world, creek);   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
+            BuildPipes(terrain, mats, world, pipes);             // Round 18 (4)
+            if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
-            BuildProposalMarkers(terrain, world);   // Round 18 (2b, 2c): TEMPORARY proposal markers, hidden until the debug menu shows them
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 
             EditorSceneManager.SaveScene(scene, ScenePath);
@@ -321,6 +326,11 @@ namespace ChastainRush
             var race = go.AddComponent<RaceController>();
             race.routeFileName = Path.GetFileName(path);
             race.embeddedRouteJson = File.Exists(path) ? File.ReadAllText(path) : "";
+            // Round 18 (item 5): every route of the one world, the loop first (the race setup menu picks one)
+            var files = Directory.GetFiles(Path.Combine(ProjectRoot, "Data/routes"), "*.json").OrderBy(f => Path.GetFileName(f) == race.routeFileName ? 0 : 1).ThenBy(f => f).ToArray();
+            race.routeFileNames = files.Select(Path.GetFileName).ToArray();
+            race.embeddedRouteJsons = files.Select(File.ReadAllText).ToArray();
+            Debug.Log("[Round18] race routes: " + string.Join(", ", race.routeFileNames));
             race.gateBlack = mats.GateBlack; race.gateWhite = mats.GateWhite;
             race.nextMaterial = mats.RaceNext; race.laterMaterial = mats.RaceLater; race.missedMaterial = mats.RaceMissed;
             race.shortcutMaterial = mats.RaceShortcut;

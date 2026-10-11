@@ -1,8 +1,10 @@
 Round 13 item 1: tree trunks within 6.5 m of a shortcut line (off the street), after the build
-moved into their yards: 3
+moved into their yards: 4
   (3067.9, 1061.3) -> (3066.0, 1059.9), 2.4 m
   (3060.9, 1072.7) -> (3060.2, 1072.6), 0.7 m
   (3068.2, 1090.5) -> (3069.8, 1091.2), 1.8 m
+  (3063.4, 1179.1) -> (3063.4, 1177.5), 1.6 m
 no room to move (left standing): 0
 sc2_two_houses: 0 trunks within 6.5 m of the line
 sc6_over_house: 0 trunks within 6.5 m of the line
+r3_trampoline: 0 trunks within 6.5 m of the line

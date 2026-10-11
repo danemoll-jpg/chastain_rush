@@ -82,30 +82,6 @@ namespace ChastainRush
             yield return Press(GamepadButton.East);
             Check("B out of the debug menu resumes", menus.PageName == "closed" && Time.timeScale > 0f, menus.PageName);
 
-            // Round 18 (2b, 2c): the proposal markers row (right shows A) and Go to (A puts the vehicle at the start of A)
-            var pm = ProposalMarkers.Instance;
-            if (pm)
-            {
-                yield return Press(GamepadButton.Start);
-                for (int i = 0; i < 10 && !menus.FocusedLabel.StartsWith("Proposal markers"); i++) yield return Press(GamepadButton.DpadDown);
-                int before = pm.Mode;
-                yield return Press(GamepadButton.South);
-                Check("A does not change the proposal markers row", pm.Mode == before, menus.FocusedLabel);
-                for (int i = 0; i < 6 && pm.Mode != 1; i++) yield return Press(GamepadButton.DpadRight);
-                Check("right steps the markers to A", pm.Mode == 1 && menus.FocusedLabel.EndsWith("A") && pm.groupA.activeSelf && !pm.groupB.activeSelf, menus.FocusedLabel);
-                yield return Press(GamepadButton.DpadDown);
-                Check("the Go to row reads Start of A", menus.FocusedLabel.Contains("Start of A"), menus.FocusedLabel);
-                yield return Shot("R18_debug_menu_markers");
-                yield return Press(GamepadButton.South);
-                yield return new WaitForSecondsRealtime(2.5f);
-                var car = FindAnyObjectByType<ArcadeVehicle>();
-                var at = car ? car.transform.position : Vector3.zero;
-                Check("A on Go to closes the menu and puts the vehicle at the start of A", menus.PageName == "closed" && Vector2.Distance(new Vector2(at.x, at.z), new Vector2(pm.starts[0].x, pm.starts[0].y)) < 6f, $"{menus.PageName}, vehicle at ({at.x:0}, {at.z:0})");
-                yield return Shot("R18_start_of_A_markers");
-                pm.Step(-pm.Mode);
-            }
-            else Check("proposal markers in the scene", false);
-
             // Capture bug from the debug menu, the panel hidden
             yield return Press(GamepadButton.Start);
             // the page remembers its last row (Racer's focus memory): walk to the rows by their labels
