@@ -167,11 +167,18 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (`MapBuilder.Water.cs`), not mapgen. A code-only exe rebuild during a round: add `-playerBuildKeepScene` to the
   Build Executable batch line (never for the round's last build).
 - Round 16: `ChastainRush.GrassScan.Run [-grassOut <file>]` (Editor batch, report only: steps, crests and steep banks of the
-  ground across and along every Chastain Glen street, curb to lawn). Round 18 (TEMPORARY, remove when Dan has chosen):
-  proposal markers from `Data/proposals/round18_markers.json` (`MapBuilder.Round18Proposals.cs`, `ProposalMarkers`),
-  labels `python Tools/handmade/make_proposal_labels.py`; debug menu rows "Proposal markers" and "Go to"; a check run
-  shows them with `-proposalMarkers <0..5>`. The shortcut check takes `-shortcutLines 0,1.5,-1.5,a4`
+  ground across and along every Chastain Glen street, curb to lawn). The shortcut check takes `-shortcutLines 0,1.5,-1.5,a4`
   (off the line / at an angle into it) and writes `shortcut_snags.csv`. Breakable signs: `Signs3D` / `Breakables.Face`.
+  (Round 18's temporary proposal markers and their debug-menu rows are gone.)
+- Round 18: the Noonday Creek trail and its race route: `python Tools/mapgen/make_creek_track.py [--plot]` writes
+  `Data/tracks/noonday_creek.json` (built by `MapBuilder.CreekTrack.cs`) and `Data/routes/noonday_creek.json`; re-run it after
+  mapgen and after editing `Data/pipes/pipes.json`, then Build Map. Every `Data/routes/*.json` is a race (the race setup
+  menu's Route row; `local/race_settings.json` "route"; a check's `-route <file>`). A route may list `vehicles` (the only
+  ones offered, for the player and the AI), `directions`, `trail` (the AI's narrow-trail mode) and `ai_zones` (held speeds).
+  Drive-through pipes: `Data/pipes/pipes.json` (hand-made layout), built by `MapBuilder.Pipes.cs` (terrain holes over the
+  cuts; `DrainPipe` at run time: resets inside, race lines' heights). R3's play set and trampoline: `make_shortcuts.py`
+  (`build_r3`), `MapBuilder.Playground.cs`, `Trampoline.cs`. Check: `ChastainRush.exe -exeRound18 <dir> [-r18Only
+  j4|pipe|r3|ai|race|pics] [-r18Vehicles ids] -logFile <dir>\Player.log` (Checks/Round18Runner*.cs).
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.**
@@ -215,14 +222,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 18 in `TODO.md`, items 3 to 9 (Dan chose,
-2026-10-11):** build creek track B, pipe P1 underground (pipes are their own
-layer under the terrain: terrain holes at the mouths, no bank heaped over),
-the "Noonday Creek" route, reverse shortcut R1, and reverse shortcut R3
-redesigned as a playground slide onto a trampoline that bounces the vehicle
-over house 1752 (pictures for Dan first). R2 not built. Queued: 19 the
-map-wide underground pipe network (proposal first); 20 Chastain Commons,
-Chastain Enclave and Grasmere Court.
+**Round 18 items 3 to 9 (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by
+Dan:** the Noonday Creek trail (track B, a narrow woods trail for the motorcycles, the ATV and the mower; J4 over New
+Chastain Road), pipe P1 under the ground (terrain holes over its cuts only), the "Noonday Creek" route with a Route row in
+the race setup menu and the AI's trail mode, and reverse shortcut R3 (a giant play set's slide onto a trampoline that
+throws the vehicle over house 1752). R1 was NOT built: as marked it puts fast vehicles into 1572's wall (numbers and
+the one robust layout in `TODO.md`); R2 not chosen. Imported from Racer in Round 18: nothing. Queued: 19 the map-wide
+underground pipe network (proposal first); 20 Chastain Commons, Chastain Enclave and Grasmere Court.
 
 **Round 17 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A
 (b512061, b3bfe9f), then item 5 and Part B: Dan's two junction jumps smoothed in the map build at those spots only

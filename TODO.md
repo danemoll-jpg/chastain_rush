@@ -1892,6 +1892,63 @@ over the house instead of driving through it". R2 was not chosen: do not build i
 9. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
    list, "for Dan to check", path to the exe.
 
+**STATUS of items 3 to 9 (Claude, 2026-10-11): 3, 4, 5, 7, 8, 9 DONE, checked in the exe by script (muted, minimized 1280 x
+720), not yet driven by Dan. 6 (R1) NOT BUILT: as marked it does not fit (below).** Exe rebuilt from a fresh map build:
+`Builds/ChastainRush/ChastainRush.exe`. Check: `ChastainRush.exe -exeRound18 <dir> [-r18Only j4|pipe|r3|ai|race|pics]`.
+Pictures for Dan (git-ignored: houses in view): `local/round18/3_*`, `4_*`, `5_*`, `7_*`, `8_*`, `noonday_creek_layout.png`.
+- 3. Track B built as a narrow woods trail (`Tools/mapgen/make_creek_track.py` -> `Data/tracks/noonday_creek.json`,
+  `MapBuilder.CreekTrack.cs`): the marked B line moved up to 2.5 m round trunks (a cheapest path, at most 0.2 m sideways per
+  meter), a 2.5 m dirt tread (wavering, a darker wheel line, no tread on pavement or in water), graded into the ground (no
+  steeper than 22 %, level across the tread; in the streams a gravel bar 0.15 m under the water). Trees removed: 64 off the
+  trail and P1's ways in and out (trunks within 1.8 m of the line, wider at the jumps, fords and grid) + 5 in P1's cuts =
+  69 (the wide proposal's estimate was 101; at 1.5 m the AI drivers kept catching trunks, Round 18 race check). J1, J5
+  dirt tabletops, J2, J6 tabletops with logs under the lip, J3 a spoil heap (earth mounds, 5 m wide, two side by side). J4:
+  a dirt kicker up the north road bank (28 m, lip 1.6 m over New Chastain Road, 8 to 14 degrees, the #6 dirt-pile look) and
+  a landing slope graded down the south bank from the road's edge (9 %, 37 m). Speed at J4's lip from J3's landing flat
+  out: Street Classic 28.9 m/s, Longroof GT 28.6, Needle 600 33.1, Trail Four 31.6, Sundown Roadster 29.2, Highball
+  Fastback 29.8, Pebble Coupe 28.9, Skyfin Cruiser 27.9, Ridge Scrambler 32.1, Drifter Twin 31.6, Turf Rocket 33.1: all
+  eleven clear the road (down 49 to 70 m past the lip). Short of the speed (Trail Four held at 14 m/s) it lands on the road
+  and drives on down the slope: no wall, no reset. The creek bed under the bridges: the AI held 14.5 to 16.5 m/s averages
+  there (slowest moment 7 to 13 m/s), a splash run.
+- 4. P1 built underground (`Data/pipes/pipes.json`, `MapBuilder.Pipes.cs`, `DrainPipe.cs`): terrain holes over the two cuts
+  ONLY (they work: the TerrainCollider and the URP terrain shader honor them in the exe), nothing heaped. Inlet cut 10 m
+  (flared wingwalls, railings, coping) from a gravel ford across Noonday Creek, a 5 m round concrete pipe 44.5 m long under
+  the ground (crown 0.6 m or more under it; floor 4.0 m wide, 4.0 m clear; 5 lamps), outlet cut 19 m up to the small pond's
+  west shore (just outside the water). The way back to the trail runs up the dry slope west of the pond. Check: all eleven
+  vehicles through the pipe; the camera stays in the pipe; a reset inside puts the vehicle on its floor, along it, the way
+  it was facing; the two widest cars (Highball Fastback, Skyfin Cruiser) then stopped on the narrow trail just past the
+  rejoin (cars do not fit the trail, as Dan wanted). AI: the five trail vehicles each through P1 cleanly (no recovery).
+  Forgives CP2 (the hairpin). South loop pipe, re-judged with pipes as their own layer (a candidate, NOT BUILT): across
+  the creek between the loop's two sides the span is 47 to 64 m (z 480 to 640; it would cut 115 to 467 m of lap), but
+  the pipe's crown must pass 0.6 m under the creek bed (about 276 m), so its floor is 8 to 9 m under the 279 to 280 m
+  banks and each cut is about 45 to 50 m long at 18 %: longer than the crossing. It only works as a long diagonal (for
+  example from the east side at z 640 to the west side at z 520, about 125 m, two 45 m cuts and a pipe between). Dan to say.
+- 5. "Noonday Creek" route (`Data/routes/noonday_creek.json`, 2145 m, 3 laps, 5 checkpoints, P1 official): the race setup
+  menu has a Route row (left / right; saved in race_settings.json), Direction shows "Forward (one way only)" there, the
+  Vehicle row offers only the Trail Four, the three motorcycles and the mower (cars are not offered; a player in a car is
+  put in the Trail Four), the opponent vehicles page lists only those. The AI has a trail mode (lanes 0.25 m, 0.45 m to
+  pass, close line following, trunks ignored by its obstacle sensor, a held speed over each jump). Check: three AI drivers,
+  3 laps, all finished (5:21 to 5:46), 1 to 6 recoveries each, every lap through P1, longest right behind another 13 s.
+- 6. R1 NOT BUILT. As marked (the kicker on the bank between 1987 and 1552, facing the gap between 2065 and 1572) the flight
+  crosses that gap at an angle (the gap runs north-north-west): exactly on the line a vehicle at 24 m/s or more comes down
+  into 1572's wall; 1.5 m or 6 degrees off it, from 22 m/s, into 1572 or 2065. Vehicles reach that kicker at 24 to 28 m/s
+  (a straight run up from the corner), and the kicker itself has 6.6 m between 1987's and 1552's corners. A taller or steeper
+  kicker only moves the band. The one robust lip found (every speed 14 to 32 m/s, 1.5 m and 6 degrees off the line, comes
+  down on open grass): in the lobe's middle yard facing west-south-west, reached by a long left bend after the 1987 / 1552
+  gap, rejoining on the lobe's west side. Not as marked: Dan to choose (that, or drop R1).
+- 7. R3 built to Dan's idea (`build_r3`, `MapBuilder.Playground.cs`, `Trampoline.cs`); 1752 untouched. A giant play set in
+  1752's back yard (a wooden tower, deck 4.0 x 3.5 m, striped canopy, ladder, closed underneath with lattice; a yellow slide
+  3.6 m wide, its foot flared to 9 m, 16 m long, up 7 m) and a trampoline 13 m across the mat on a 1 m frame (padded blue
+  rim, skirt to the grass), 13 m past the deck. The bounce aims every vehicle at one point on the lane past 1752 in 4.0 s
+  (about 20 m up, 3 m or more over the roofs), turns it upright and down the lane in the air and catches its landing. Check:
+  all eleven up the slide, bounced, down within 4 m of the aim, facing down the lane, upright, four wheels down at about
+  17.7 m/s a second later; slow (5 m/s off the deck): lands short in the yard, no throw, drives away. AI: all eleven over it
+  cleanly (the line's own speed profile, 11 m/s through the bend from the 1602 / 1919 gap). The two pictures (approach, side
+  with the flight path) were sent to Dan before the final exe. Forgives file CP2 = the reverse lap's CP4.
+- 8. Checkpoints in the game are numbered in travel order already (reverse: the reverse lap's first gate is CP1); the
+  reverse overhead with those numbers and R3: `local/round18/8_reverse_loop_checkpoints.png`. The proposal markers, their
+  data, labels and debug-menu rows are gone (nothing is still proposed in the world).
+
 **Pipes are their own layer (Dan's question, 2026-10-11, answered by Claude; confirm in the build).** Dan asked
 whether "too low" means the map has a floor we are stuck with, and whether to raise the whole map or treat the
 pipe network as something that does not interfere with the world above. Answer: no floor, and no need to raise
