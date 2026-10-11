@@ -215,15 +215,14 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 18 in `TODO.md`, items 2a to 2d:** two reports
-from Dan (smooth the ground at the New Chastain / Chastain Corner junction;
-join a service-road stub to the shopping-center lot and make the center's
-driveways the lot's color), then MARKERS ONLY in the world, shown from the
-debug menu: creek track proposals A (north loop) and B (figure of eight
-that jumps New Chastain Road), their pipes in another color, and three to
-five shortcut candidates for the reverse Chastain Glen loop (big air or
-creative). Build none of them; rebuild the exe and stop for Dan's choice.
-Queued after 18: Chastain Commons, Chastain Enclave and Grasmere Court.
+**Active work is Round 18 in `TODO.md`, items 3 to 9 (Dan chose,
+2026-10-11):** build creek track B, pipe P1 underground (pipes are their own
+layer under the terrain: terrain holes at the mouths, no bank heaped over),
+the "Noonday Creek" route, reverse shortcut R1, and reverse shortcut R3
+redesigned as a playground slide onto a trampoline that bounces the vehicle
+over house 1752 (pictures for Dan first). R2 not built. Queued: 19 the
+map-wide underground pipe network (proposal first); 20 Chastain Commons,
+Chastain Enclave and Grasmere Court.
 
 **Round 17 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A
 (b512061, b3bfe9f), then item 5 and Part B: Dan's two junction jumps smoothed in the map build at those spots only

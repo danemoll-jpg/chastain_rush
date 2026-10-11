@@ -1818,17 +1818,103 @@ world for Dan to drive round and judge.**
    two overheads, the candidates in a short table, questions.
    **STATUS (Claude, 2026-10-11): DONE; exe rebuilt, STOPPED for Dan's choice** (A or B, the pipe, R1 to R3).
 
-3. After Dan approves: build the track (graded into the terrain in the map build, a dirt surface, trees cleared
-   off it and solid beside it, no snags; jumps that look like something that could be there and whose look fits
-   their real size; crossings are shallow water, always escapable).
-4. Build the pipes: round concrete pipes wide enough for every one of the eleven vehicles with room to spare,
-   a headwall at each mouth set into the bank (no exposed back, as BUG-001 of 2026-10-10), lit enough inside to
-   see, the camera kept inside the pipe, never a dead end or a place to get stuck, a reset inside puts the
-   vehicle back in the pipe facing forward. Found, not signposted. An official shortcut forgives the checkpoints
-   it skips. The AI can take them (trial each vehicle once through each, as Round 15 item 10).
-5. A route over it so Dan can race it from the menu (one world, routes laid over it), with the AI.
-6. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
+**DAN'S CHOICES (2026-10-11 02:57): BUILD NOW. Items 3 to 9 replace the old items 3 to 6.**
+Dan: "I want to go with the b track, we can go ahead and build the pipeline shortcut as well and once it is built
+we can look for other potential shortcuts. The trail shortcut isn't tied to pipes." And: "As far as shortcuts on
+the reverse I would like r1 built out. For r3 can we get a little more creative? I had this idea where you use a
+slide from a play ground as a ramp which would bounce you onto a trampoline which would ultimately bounce you
+over the house instead of driving through it". R2 was not chosen: do not build it.
+
+3. Creek track B (2.15 km, as marked in cyan and on `local/round18/2b_creek_A_and_B.png`): build it. Graded into
+   the terrain in the map build, a dirt surface, trees cleared off it and solid beside it, no snags; the north
+   loop, J4 over New Chastain Road, the south loop, back north in the creek bed under the two bridges. Jumps look
+   like something that could be there and their look fits their real size. Crossings are shallow water, always
+   escapable. J4 must never punish: a vehicle short of the speed lands on the road and can simply drive on across
+   and down to the south loop (no wall, no trap, no reset needed); say what speed each of the eleven vehicles
+   reaches at J4 and whether each clears the road. The stretch in the water under the bridges is slow by nature:
+   keep the water there shallow enough that it reads as a splash run, not a crawl (report the speed held).
+   **A NARROW WOODS TRAIL, NOT A ROAD (Dan, 2026-10-11 03:04; overrides anything above about width).** Dan: "I
+   don't want the trails very wide for this new track....perhaps even we restrict it to motorcycles and rtvs. I
+   don't want to remove too many trees just enough to give rtvs enough room. It should feel like you are in the
+   woods on a small trail, not on a road".
+   - Width: sized for the ATV (Trail Four, 1.45 m wide), not for cars: a dirt tread about 2.5 m wide, trees
+     standing right up to it on both sides and their crowns closing over it. Clear only the trees whose trunks
+     are in that tread or would catch the ATV's body; move the line a meter or two round a tree before cutting
+     it. Report how many trees were removed (the proposal's 59 + 42 were for a wide track: expect far fewer).
+   - Feel: winding between trunks, roots and dips, short sight lines, dappled shade; no curbs, no verge, no
+     painted lines, no cleared corridor. Jumps and crossings sized to the trail (J4 over the road stays big).
+   - The "Noonday Creek" race is for the small vehicles only: the three motorcycles (Needle 600, Ridge
+     Scrambler, Drifter Twin) and the ATV (Trail Four). Claude added the mower (Turf Rocket, 1.15 m wide)
+     because it fits; Dan to say if not. The race menu offers only those for this route, for the player and the
+     AI; cars are not offered. In free roam a car simply does not fit between the trees (nothing extra built to
+     stop it, and nothing that traps one that tries: it can always back out).
+   - Racing four on a single trail (Dan: "Vehicles can pass on jumps though or maybe squeeze around each other
+     when possible"): do not widen the trail to make lanes. Passing happens (i) at the jumps: each jump's
+     take-off and landing are wide enough for two side by side, so a faster vehicle can go past in the air or
+     on the landing; (ii) by squeezing past wherever two small vehicles physically fit (two motorcycles fit in
+     the tread; a motorcycle past the ATV where the trees allow), with the vehicle-to-vehicle contact as it is
+     (a nudge, not a wreck, nobody shoved into a trunk and stuck); (iii) at the natural wide spots (the fords,
+     the creek-bed run). The AI tries these and otherwise follows single file; it must not sit behind a slower
+     vehicle for a whole lap, and it must not block the player on purpose.
+   - Pipe P1 keeps its full size (all eleven vehicles), because the pipes become a map-wide network (Round 19).
+4. Pipe P1 (purple): build it, UNDERGROUND. See "Pipes are their own layer" below: no grassy bank heaped over it;
+   the pipe sits below the ground with a mouth at each end. Everything in the old pipe item stands: round concrete,
+   wide enough for all eleven vehicles with room to spare, a headwall at each mouth set into the bank (no exposed
+   back), lit enough to see, the camera kept inside the pipe, never a dead end or a place to get stuck, a reset
+   inside puts the vehicle back in the pipe facing forward, found not signposted, forgives the checkpoint it
+   skips, the AI can take it (trial each vehicle once through).
+   Dan: other shortcuts on the track come after he has driven it, and they need not be pipes. Do not add any now.
+5. A route "Noonday Creek" over track B so Dan can race it from the menu with the AI (one world, routes laid
+   over it; the race menu gets a route choice).
+6. Reverse shortcut R1 (lobe drop): build it as marked. The kicker on the natural bank, out through the gap
+   between the two houses; sized for 20 m/s as proposed, and say what happens faster (it must not put a vehicle
+   on a roof it cannot get off, or into a wall). Reverse direction only. Forgives the gate it skips. AI trial.
+7. Reverse shortcut R3, REDESIGNED to Dan's idea (not the drive through the house; house 1752 stays whole and
+   untouched): on the same line, a backyard playground. The vehicle drives up a playground SLIDE as its ramp,
+   comes off the top onto a TRAMPOLINE, and the trampoline BOUNCES it over the house onto the lane beyond.
+   - The trampoline is a real bounce: on landing it throws the vehicle up and forward (a bounce pad), with a
+     springy look and sound. Tune it so every one of the eleven vehicles, arriving off the slide at race speed,
+     clears the roof and comes down on its wheels on the lane, pointing down the lane.
+   - It has to read at a glance as a playground slide and a trampoline (a play set tower with the slide, a round
+     trampoline with a net or padded rim), but their look must fit their real size (the flatbed lesson): if a
+     vehicle needs a slide 3 m wide and a trampoline 6 m across, build a big play set and a big trampoline that
+     look right at that size, and report the sizes. Do not build a nearest version: if the slide-then-trampoline-
+     then-over-the-house sequence cannot work on this line, stop and tell Dan why, with the numbers.
+   - Never a trap: a vehicle that misses the trampoline, or comes in slow, lands in the yard and can drive out
+     round the house back to the lap; nothing solid to wedge against.
+   - Reverse direction only. Forgives the gate it skips. AI trial, each vehicle once.
+   - Before the exe is rebuilt: two pictures for Dan (the play set and trampoline from the approach, and from
+     the side with the flight path drawn), git-ignored if houses are in view.
+8. Number checkpoints in the order the lap passes them in the direction being raced (reverse: first gate = 1),
+   on the reverse markers / overhead and anywhere the game shows a number. Dan was confused by forward numbers
+   on the reverse overhead. Remove the proposal markers for what is now built (A's orange markers go; B, P1, R1,
+   R3 markers go once built); keep the debug-menu rows only if something is still proposed.
+9. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
    list, "for Dan to check", path to the exe.
+
+**Pipes are their own layer (Dan's question, 2026-10-11, answered by Claude; confirm in the build).** Dan asked
+whether "too low" means the map has a floor we are stuck with, and whether to raise the whole map or treat the
+pipe network as something that does not interfere with the world above. Answer: no floor, and no need to raise
+the map. The ground is a height field (one height per point), so it cannot have a tunnel IN it, but nothing
+stops a pipe being its own mesh with its own collider at any depth UNDER it. What a pipe needs is (a) a hole in
+the terrain at each mouth (Unity terrain holes; the TerrainCollider honors them) with a headwall and a short ramp
+or cut leading down, and (b) the pipe itself as separate geometry below the surface. The world above is untouched
+between the mouths: roads, houses, trees and water carry on over the top. The Round 18 proposal treated the pipe
+as something the natural ground had to cover, which is why P1 wanted a bank and the south loop had "no pipe the
+ground allows". Build P1 this way, and re-judge the south loop pipe the same way (list it as a candidate; do not
+build it). If terrain holes turn out not to work in this project (the map is 18 tiles; nothing uses holes yet),
+stop and report before falling back to anything else.
+
+**QUEUED — Round 19: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+underground network of pipes across the entire maps that link the different bodies of water, not only for race
+shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
+stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
+first piece and sets the standard parts (pipe run, mouth with headwall, lighting, reset rule). Round 19 starts
+with a PROPOSAL, not a build: an overhead of the whole map with every water body, proposed mouths and runs,
+junction chambers where runs meet, lengths, which roads / houses each passes under; markers in the world as in
+Round 18; how a player knows where they are underground (a map? signs at junctions?); frame-rate cost. Dan picks.
+
+**QUEUED — Round 20: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
