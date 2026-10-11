@@ -1700,6 +1700,20 @@ drive through that link ponds / lakes / the creek as underground shortcuts.
    creek crossing; (b) each pipe: where it goes in, where it comes out, its length, what it cuts off; (c) which
    race it would belong to (a new route using the track, or a shortcut on the Chastain Glen loop). Say what is
    in the way (trees to clear, houses, slopes steeper than a vehicle climbs). Stop for Dan's answer.
+   **STATUS (Claude, 2026-10-10): PROPOSED, waiting for Dan. Nothing built.** Overhead:
+   `local/round18/creek_track_proposal.png` (git-ignored: it shows houses). A new race, "Noonday Creek", lap
+   1.58 km: start / finish on New Chastain Road westbound (175 m, over the creek bridge), off the road west of the
+   creek (x 2390) down the 3 m road bank, north up the creek's west side (J1 dirt tabletop at z 920, C1 splash
+   across the side stream's mouth at z 1168), hairpin east across Noonday Creek (C2 ford at x 2306 z 1360, banks
+   cut to a gentle slope), between the big lake and the small pond (C3 splash over the stream between the ponds),
+   south down the east side (J2 log pile at z 1210, J3 dirt spoil heap at z 950), back up the road bank at x 2570.
+   Five checkpoints. One pipe, P1: 71 m, 5 m concrete, from a headwall in the creek's east bank (x 2336 z 1300) to
+   the small pond's west shore (x 2405 z 1316), coming out into the pond's shallow edge; skips the hairpin (CP3),
+   about 300 m of track becomes about 200 m. In the way: 59 trees on the line; no house within 54 m; the woods
+   are flat (277 to 279 m), so the only steep places are the road banks and the creek banks; the ground over P1
+   (276 to 279 m) is too low for a 5 m pipe from the creek bed (274.6 m), so it needs a grassy bank 1.5 to 3.5 m
+   high over it. Questions for Dan in the round report: the loop, the pipe and its bank, a second pipe only if the
+   track goes round the big lake, where the race is picked (the race menu has no route choice yet).
 3. After Dan approves: build the track (graded into the terrain in the map build, a dirt surface, trees cleared
    off it and solid beside it, no snags; jumps that look like something that could be there and whose look fits
    their real size; crossings are shallow water, always escapable).
