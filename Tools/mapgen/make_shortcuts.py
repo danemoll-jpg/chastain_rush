@@ -705,7 +705,7 @@ def build_r3():
     arc = [c_ + turn(P0_ - c_, phi_ * k / 12) for k in range(13)]
     straight = float((C0 - end_) @ u)
     note(f"R3 way in: out of the 1602 / 1919 gap ({e_:+.2f} m off its middle), {d_:.1f} m straight, an arc of {R_:.1f} m turning {math.degrees(phi_):.0f} degrees onto the slide's axis {straight:.1f} m before its foot (off it by {off:.2f} m)")
-    head = smooth(polyline([lap(s_l + 22), lap(s_l + 6), Gn + left(hG) * e_], 2.0), 2) + polyline([Gn + left(hG) * e_, P0_], 1.0)[1:] + arc[1:]
+    head = smooth(polyline([lap(s_l + 40), lap(s_l + 6), Gn + left(hG) * e_], 2.0), 2)   # Round 19: from 40 m back on the street (the turn-off's sign needs 16 points on it) + polyline([Gn + left(hG) * e_, P0_], 1.0)[1:] + arc[1:]
     pts = head + polyline([C0 - u * straight, C0], 1.0)[1:] + polyline([C0, T], 1.0)[1:] + polyline([T, P], 2.0)[1:] \
         + smooth(polyline([P, lap(s_land - 6), lap(s_land - 16)], 2.0), 2)[1:]
     entry_s = station(pts, C0 + u * 4.0)
@@ -714,6 +714,9 @@ def build_r3():
         "id": "r3_trampoline", "name": "Trampoline hop", "direction": "reverse", "forgives": [2], "entry_half_width": 3.0, "entry_margin": 1.0,
         "path": pts, "half_width": 3.0, "trail": [], "clear_half_width": 5.0, "entry_s": entry_s, "prisms": [slide, deck], "open_houses": [],
         "jump_houses": [], "landing_zones": [], "ai_speed": 17.0,
+        # Round 19 (item 5, Dan: "the entrance needs to be more obvious"): a birthday-party hint at the turn-off: a PARTY yard sign
+        # with an arrow and balloons in the grass strip, worn tire tracks through the gap, bunting and balloons on the play set
+        "sign": {"x": round(float(Gn[0]), 2), "z": round(float(Gn[1]), 2)}, "sign_face": "party",
         # the AI's speed along the line (station, m/s): 11 through the 8 m bend out of the gap (the AI's own bend rule samples
         # the line 6 m apart and took it at 17: wide past the slide's foot), full speed from the slide's foot
         "ai_profile": [round(v, 1) for v in (station(pts, P0_) - 12.0, 11.0, station(pts, C0) - 1.0, 11.0, station(pts, C0) + 2.0, 20.0)],
@@ -724,8 +727,60 @@ def build_r3():
         "leave_lap_s": float(s_l), "rejoin_lap_s": float(s_land - 16),
     }
 
+
+# =============================================================================================================== R1, Round 19
+# The reverse loop's west-lobe jump, BUILT AS A TRIAL (Dan, 2026-10-11 10:42: "well go ahead and try that one shortcut and we will
+# see"). REVERSE ONLY. Round 18 found the marked line unsafe and one robust version: a kicker in the lobe's middle yard facing
+# west-south-west, reached by a long left bend after the 1987 / 1552 gap, landing on open grass, rejoining on the lobe's west side.
+# Built on that line (out of the gap, 18 m, a left arc of 20 m turning 95 degrees, then straight), with the lip moved 22 m further
+# along it than Round 18's spot: there the kicker stood across shortcut #6's line (1.2 m from it; #6's corridor is 4 m either
+# side); here it is 9.4 m clear. The look: the neighborhood kids' giant homemade ramp, plywood on a lumber frame, at its real
+# size (2.8 m high, 25 degrees at the lip, 6 m wide). Lip speed held to 20 m/s (BigJump): faster would carry it onto the far side
+# of the lap's road toward house 2088; from 12 to 32 m/s into it, 1.5 m or 6 degrees off the line, it comes down on the yard or
+# the road's near edge (Round 19 scan, houses checked). Then a right turn onto the lap heading north. Forgives CP5 (file
+# numbering; the reverse lap's CP1). The hint at the turn-off: a hand-painted JUMP sign and worn tire tracks through the gap.
+# Easy to remove: drop build_r1() from 'shortcuts' below and re-run.
+R1_S0 = V(2808.0, 1004.0); R1_SHIFT = 31.0; R1_H = 2.8; R1_TH = 25.0; R1_VMAX = 20.0
+def build_r1(P6):
+    def turn(v, a): return np.array([v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a)])
+    th1 = math.radians(-10); h1 = V(math.sin(th1), math.cos(th1)); a_, Rr, phi = 18.0, 20.0, math.radians(95)
+    p = R1_S0 + h1 * a_; c = p + left(h1) * Rr
+    arc = [R1_S0 + h1 * t for t in np.arange(0, a_, 1.0)] + [p] + [c + turn(p - c, phi * k / 12) for k in range(1, 13)]
+    hd = unit(turn(h1, phi)); K0 = arc[-1]; LIP = K0 + hd * R1_SHIFT
+    gl = ground(*LIP); y1 = gl + R1_H; k = math.tan(math.radians(R1_TH))
+    ramp = 12.0
+    for _ in range(6): foot = LIP - hd * ramp; ramp = max(10.0, 2 * (y1 - ground(*foot) + 0.03) / k)
+    foot = LIP - hd * ramp; y0 = ground(*foot) - 0.03; Lk = 2 * (y1 - y0) / k; flat = ramp - Lk
+    prof = [(s, y0 + k * max(0.0, s - flat) ** 2 / (2 * Lk)) for s in np.linspace(0.0, ramp, 33)]
+    kick = prism("sc R1 kids ramp", "deck", strip_poly(foot, hd, 0.0, ramp, 3.0), foot, hd, prof, [0.74, 0.62, 0.44])
+    # the way on: straight to just past the longest landing, then right onto the lap (heading north on the lobe's west side)
+    lapl = [lap(s) for s in np.arange(0, CUM[-1], 1.0)]
+    s_join = station(lapl, V(2707.5, 1036.0))
+    land = LIP + hd * 34.0
+    out = smooth(polyline([land, LIP + hd * 39.0, lap(s_join), lap(s_join - 10), lap(s_join - 22)], 2.0), 2)
+    head = smooth(polyline([lap(station(lapl, R1_S0) + 20), lap(station(lapl, R1_S0) + 8), R1_S0], 2.0), 2)
+    pts = head + arc[1:] + polyline([K0, foot], 1.0)[1:] + polyline([foot, LIP], 1.0)[1:] + polyline([LIP, land], 2.0)[1:] + out[1:]
+    entry_s = station(pts, p)
+    landing = [{"poly": [round(float(v), 2) for p_ in corridor_poly([LIP + hd * d for d in np.arange(3.0, 46.0, 2.0)], 6.5) for v in p_]}]
+    d6 = min(min(float(np.linalg.norm(q - (a + (b - a) * np.clip((q - a) @ (b - a) / max(1e-9, (b - a) @ (b - a)), 0, 1)))) for a, b in zip(P6[:-1], P6[1:]))
+             for q in [foot + (LIP - foot) * t + left(hd) * o for t in np.linspace(0, 1, 9) for o in (-3, 0, 3)])
+    note(f"R1 (trial): out of the 1987 / 1552 gap, 18 m, a left arc of 20 m turning 95 degrees, then {R1_SHIFT:.0f} m to the lip at ({LIP[0]:.1f}, {LIP[1]:.1f}) facing "
+         f"{math.degrees(math.atan2(hd[0], hd[1])):.0f} degrees; the kids' ramp {ramp:.1f} m from {y0:.2f} m to {y1:.2f} m ({R1_H} m, {R1_TH:.0f} degrees at the lip), 6 m wide, "
+         f"{d6:.1f} m from #6's line; lip speed held to {R1_VMAX:.0f} m/s; joins the lap at forward station {s_join:.0f}; {length(pts):.0f} m of line")
+    return {
+        "id": "r1_kids_ramp", "name": "Kids' ramp", "direction": "reverse", "forgives": [5], "entry_half_width": 3.0, "entry_margin": 1.0,
+        "path": pts, "half_width": 3.5, "trail": [], "clear_half_width": 5.0, "entry_s": entry_s, "prisms": [kick], "open_houses": [],
+        "jump_houses": [], "landing_zones": landing, "ai_speed": 17.0,
+        # the AI: 15 m/s round the 20 m arc, 20 from the ramp's foot (its lip speed, held anyway), slow for the turn onto the lap
+        "ai_profile": [round(v, 1) for v in (station(pts, p) - 6.0, 15.0, station(pts, K0), 15.0, station(pts, foot), 20.0, station(pts, LIP) + 2.0, 20.0, station(pts, land) + 2.0, 9.0)],
+        "sign": {"x": round(float(R1_S0[0]), 2), "z": round(float(R1_S0[1]), 2)}, "sign_face": "jump", "look": "kids_ramp",
+        "big_jump": {"lip": [round(float(LIP[0]), 2), round(float(y1), 3), round(float(LIP[1]), 2)], "dir": [round(float(hd[0]), 5), round(float(hd[1]), 5)], "vmax": R1_VMAX, "half": 3.0, "angle": R1_TH},
+        "leave_lap_s": float(station(lapl, R1_S0)), "rejoin_lap_s": float(s_join),
+    }
+
 def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
 shortcuts = [build_sc2(), build_sc6(), build_r3()]
+shortcuts.append(build_r1(shortcuts[1]["path"]))   # Round 19: R1, a trial
 
 # ---------------------------------------------------------------- checks against the barriers and the checkpoints
 for sc in shortcuts:

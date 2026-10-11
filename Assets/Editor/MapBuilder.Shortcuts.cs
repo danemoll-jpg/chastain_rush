@@ -38,7 +38,8 @@ namespace ChastainRush
         // of the line, banks outside: the shortcut's surface is the grass itself
         [Serializable] class ScGrade { public string label; public float[] path, profile; public float half_width; }
         [Serializable] class ScSign { public float x, z; }
-        [Serializable] class ScShortcut { public string id, name, direction; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; public ScPlayground playground; }
+        [Serializable] class ScShortcut { public string id, name, direction; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; public string sign_face, look; public ScBigJump big_jump; public ScPlayground playground; }   // Round 19: sign_face "party" (R3) / "jump" (R1); look "kids_ramp"; big_jump (R1's lip speed cap)
+        [Serializable] class ScBigJump { public float[] lip, dir; public float vmax, half, angle; }
         // Round 18 (R3): the play set and trampoline (MapBuilder.Playground.cs)
         [Serializable] class ScTower { public float[] o, u; public float len, half, deck_y, roof_y; }
         [Serializable] class ScSlide { public float[] o; public float len, half, foot_half, flare; }   // Round 18: the foot flares from foot_half to half over 'flare' m
@@ -75,7 +76,7 @@ namespace ChastainRush
                     if (sc.open_houses != null) foreach (var oh in sc.open_houses) OpenHouses[oh.building] = oh;
                     if (sc.jump_houses != null) foreach (var jh in sc.jump_houses) JumpHouses.Add(jh.building);
                     if (sc.roof_houses != null) foreach (var rh in sc.roof_houses) RoofHouses.Add(rh.building);
-                    if (sc.sign != null && sc.sign.x != 0f && SignSpot(sc, out var spot, out var facing)) { SignSpots[sc.id] = (spot, facing); KeepOut(spot, 1.5f); }
+                    if (sc.sign != null && sc.sign.x != 0f && SignSpot(sc, out var spot, out var facing, out float turn)) { SignSpots[sc.id] = (spot, facing, turn); KeepOut(spot, sc.sign_face == "party" ? 2.2f : 1.5f); }
                 }
             }
 
@@ -84,15 +85,15 @@ namespace ChastainRush
             // to, just past where the line's centre leaves the street (at the corner a driver turns round; failing that, up to
             // 30 m before it), off every drive and 3.5 m or more from the line. It faces the oncoming driver, turned 25 degrees
             // toward the road.
-            public readonly Dictionary<string, (Vector2 at, Vector2 facing)> SignSpots = new Dictionary<string, (Vector2, Vector2)>();
-            bool SignSpot(ScShortcut sc, out Vector2 spot, out Vector2 facing)
+            public readonly Dictionary<string, (Vector2 at, Vector2 facing, float turn)> SignSpots = new Dictionary<string, (Vector2, Vector2, float)>();   // Round 19: turn, +1 the line turns left, -1 right
+            bool SignSpot(ScShortcut sc, out Vector2 spot, out Vector2 facing, out float turn)
             {
-                spot = facing = default;
+                spot = facing = default; turn = 0f;
                 var p = ToPoints(sc.path);
                 int i0 = p.FindIndex(q => RoadClearance(q) > 0f);
                 if (i0 < 16) return false;
                 var d = (p[i0 - 6] - p[i0 - 16]).normalized; var L = new Vector2(-d.y, d.x);
-                float side = Vector2.Dot(p[Mathf.Min(i0 + 8, p.Count - 1)] - p[i0 - 6], L) > 0f ? 1f : -1f;
+                float side = Vector2.Dot(p[Mathf.Min(i0 + 8, p.Count - 1)] - p[i0 - 6], L) > 0f ? 1f : -1f; turn = side;
                 var tries = new List<float>();
                 for (float back = -2f; back >= -16f; back -= 0.5f) tries.Add(back);
                 for (float back = 6f; back <= 30f; back += 0.5f) tries.Add(back);
@@ -534,7 +535,13 @@ namespace ChastainRush
                 var sroot = new GameObject("Shortcut " + sc.id + " (" + sc.name + ")").transform; sroot.SetParent(root, false);
                 foreach (var pr in sc.prisms) { if (pr.kind == "slide") FitFootToGround(pr, terrain); BuildPrism(pr, terrain, mats, sroot); prisms++; }
                 BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
-                if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) BuildPlayground(sc, terrain, mats, sroot);   // Round 18 (R3)
+                if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) { BuildPlayground(sc, terrain, mats, sroot); if (sc.sign_face == "party") BuildPartyDressing(sc, terrain, mats, sroot); }   // Round 18 (R3); Round 19: the party
+                if (sc.look == "kids_ramp") BuildKidsRamp(sc, terrain, mats, sroot);   // Round 19 (6): R1 (MapBuilder.PartyHint.cs)
+                if (sc.big_jump != null && sc.big_jump.lip != null && sc.big_jump.lip.Length == 3)
+                {
+                    var bj = sroot.gameObject.AddComponent<BigJump>(); bj.id = sc.id; bj.look = sc.look;
+                    bj.lip = new Vector3(sc.big_jump.lip[0], sc.big_jump.lip[1], sc.big_jump.lip[2]); bj.dir = new Vector3(sc.big_jump.dir[0], 0f, sc.big_jump.dir[1]).normalized; bj.vmax = sc.big_jump.vmax; bj.halfWidth = sc.big_jump.half; bj.angle = sc.big_jump.angle;
+                }
                 if (sc.landing_zones != null)
                     foreach (var z in sc.landing_zones)   // Round 11: ground the car lands on, with the landing carry (LandingZone, RampHold)
                     {
@@ -551,6 +558,7 @@ namespace ChastainRush
         static void BuildShortcutSign(Neighborhood hood, TerrainGrid terrain, Materials mats, Transform parent, ScShortcut sc)
         {
             if (!hood.SignSpots.TryGetValue(sc.id, out var s)) return;
+            if (sc.sign_face == "party" || sc.sign_face == "jump") { BuildPartySign(hood, terrain, mats, parent, sc, s); return; }   // Round 19 (5, 6): R3's party hint, R1's JUMP sign (MapBuilder.PartyHint.cs)
             var f = MakeFrame(new Vector3(s.at.x, 0f, s.at.y), s.facing, 1f);
             float lo = float.MaxValue, hi = float.MinValue;
             foreach (float u in new[] { -0.6f, 0.6f }) { var q = f.P(u, 0f, -0.05f); float g = Ground(terrain, q.x, q.z); lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g); }
@@ -742,7 +750,9 @@ namespace ChastainRush
                 float a = cuts[i], b = cuts[i + 1];
                 var piece = ClipPoly2(ClipPoly2(poly, p => S(p) - a), p => b - S(p));
                 if (piece.Count < 3) continue;
-                mb.Tint = stairs ? Shade(col, (Mathf.FloorToInt((a - s0) / step + 0.01f) & 1) == 0 ? 1.08f : 0.62f) : Shade(col, (Mathf.FloorToInt(a / 0.5f) & 1) == 0 ? 1f : 0.93f);
+                mb.Tint = stairs ? Shade(col, (Mathf.FloorToInt((a - s0) / step + 0.01f) & 1) == 0 ? 1.08f : 0.62f)
+                        : pr.kind == "rock" ? (Hash01(i, 951) > 0.86f ? Shade(new Color(0.52f, 0.56f, 0.46f), 0.9f + 0.15f * Hash01(i, 953)) : Shade(col, 0.84f + 0.2f * Hash01(i, 955)))   // Round 19: granite, mottled, a band of lichen here and there
+                        : Shade(col, (Mathf.FloorToInt(a / 0.5f) & 1) == 0 ? 1f : 0.93f);
                 int st = mb.Count;
                 foreach (var p in piece) mb.Vertex(Top(p));
                 for (int k = 1; k + 1 < piece.Count; k++)
@@ -754,7 +764,7 @@ namespace ChastainRush
             }
             // Round 18 (R3): the play set's slide and deck are "open": a 0.25 m thick board on legs (MapBuilder.Playground.cs),
             // not a solid down to the ground: the underside is the top 0.25 m lower, the edges a 0.25 m band
-            bool open = pr.kind == "slide" || pr.kind == "deck";
+            bool open = pr.kind == "slide" || pr.kind == "deck" || pr.kind == "deckland";   // Round 19: deckland, an open board that is a landing (BJ1's fallen span)
             if (open)
             {
                 int tops = mb.Tris.Count;
@@ -807,7 +817,7 @@ namespace ChastainRush
             var look = pr.kind == "kicker" ? DirtPileLook(poly, O, U, Lv, cuts, Top, terrain, out heap) : mb;
             var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
-            var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing";   // Round 10: RampHold
+            var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing" || pr.kind == "deckland";   // Round 10: RampHold
             // the collider: the same surfaces with the vertices along the strip seams welded (1 mm), so the car's body does
             // not catch on seams between the strips ("internal edges")
             var weld = new Dictionary<Vector3Int, int>(); var wv = new List<Vector3>(); var wt = new List<int>();

@@ -110,7 +110,7 @@ namespace Racer
             if(finished) { finishRunoff += speed*Time.fixedDeltaTime; desiredLane=Mathf.Min(4.7f,driveHalfWidth); }
             if (!finished)
             {
-                bool slowerAhead = false;
+                bool slowerAhead = false; float slowerLane = 0f, nearest = float.MaxValue;
                 foreach (var other in Race.Entrants)
                     if (other != null && other != Racer && other.Car)
                     {
@@ -118,10 +118,15 @@ namespace Racer
                         float along = Vector3.Dot(delta, tangent);
                         float side = Mathf.Abs(Vector3.Dot(delta, Vector3.Cross(Vector3.up, tangent)));
                         if (along > 4 && along < 50 && side < 3.5f && other.Car.ForwardSpeed < speed + 2)
+                        {
                             slowerAhead = true;
+                            if (along < nearest) { nearest = along; slowerLane = Vector3.Dot(other.Car.transform.position - DriveRoad.At(s, out _), Vector3.Cross(Vector3.up, tangent).normalized); }
+                        }
                     }
+                // Chastain Rush: either side (Racer passes on its left of a two-lane road); Round 19: on a trail, the side away from the
+                // slower vehicle (it passed on the side away from its own lane, and when the slower one was on that side it never went)
                 if (slowerAhead)
-                    desiredLane = lane > 0 ? -passLane : passLane;   // Chastain Rush: either side (Racer passes on its left of a two-lane road)
+                    desiredLane = trail ? (slowerLane > 0f ? -passLane : passLane) : (lane > 0 ? -passLane : passLane);
                 // Commit to a pass only when its destination lane has room alongside and ahead.
                 float currentLane=Vector3.Dot(Car.Body.position-DriveRoad.At(s,out _),Vector3.Cross(Vector3.up,tangent).normalized);
                 if(Mathf.Abs(desiredLane-currentLane)>1 && !LaneClear(s,desiredLane,speed))

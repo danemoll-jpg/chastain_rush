@@ -2034,6 +2034,66 @@ too serious... The principle core is that this is a fun arcade game not a seriou
 7. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
    list, "for Dan to check", path to the exe.
 
+**STATUS of Round 19 (Claude, 2026-10-11): items 1 to 7 DONE, checked in the exe by script (muted, minimized 1280 x 720),
+not yet driven by Dan.** Exe rebuilt from a fresh map build: `Builds/ChastainRush/ChastainRush.exe`. Check:
+`ChastainRush.exe -exeRound19 <dir> [-r19Only trail,jumps,bar,pipe,penalty,r3,r1,ai,race,pass] [-r19Vehicles ids] -logFile <dir>\Player.log`
+(Checks/Round19Runner*.cs). Pictures (git-ignored, houses in view): `local/round19/`. Imported from Racer: nothing.
+- 1. Trail wider (`make_creek_track.py`, `MapBuilder.CreekTrack.cs`): tread 4.5 m, graded level across it, blending out 2.4 to
+  4.6 m from the line; no solid trunk within 3.5 m of the line (more on bends: + 30 / radius, up to 1.5 m; 4.5 m at the jumps,
+  fords and grid). Trees removed: 250 off the trail, the big jumps' flights and P1's ways in and out (Round 18: 69). The trees
+  left within 6 m of the line (and within 8 m of each big jump's straight run-out) are breakable: 142 (TreeField.breakable,
+  TreeTrunks trigger capsules, FallingTree: a wood crack, 5 % of the speed, the tree falls away and shrinks; back at race
+  start). Check: 0 solid trunks within 3.5 m (nearest 6.0 m); the ATV snaps one and drives on. The AI's trail settings
+  retuned (half width 2.25 m, lanes 0.7 m, passing lane 1.4 m) and its passing fixed: on a trail it now passes on the side away
+  from the slower vehicle (it used to pass on the side away from its own lane and never went when that side was taken).
+  Race check (3 AI, 3 laps): all finished 5:00 to 5:12 (Round 18: 5:46 to 6:15), 0 recoveries each (Round 18: 6 to 9),
+  0 penalties, 6 place changes, longest right behind another 5 s; every lap through P1.
+- 2. Four big jumps (`MapBuilder.BigJumps.cs`, `BigJump.cs`), each a different idea, on straights: BJ1 a washed-out wooden
+  footbridge over the side gully (the near span's broken end heaved up to 23 degrees, splintered planks; the far span lies
+  collapsed down the far bank, so short lands in the gully and drives up it); BJ2 a dirt lip on the top of the bank down to
+  the creek flats; BJ3 an earth ramp heaped over a huge fallen tree (1.6 m log, root plate up, top tapering into the woods);
+  BJ4 a granite slab tilted out of the hump on the south loop. Crossing the lip a vehicle leaves at the lip's own angle at its
+  speed, no faster than 27 m/s (BJ2, BJ4: 24, the trail bends soon after) (BigJump: an aimed launch; flat out the trail
+  vehicles arrive at 30 to 39 m/s, too fast for a short curved take-off to throw them at its real angle). Every trail vehicle
+  flat out: BJ1 2.30 to 2.37 s in the air, 56 to 58 m, 6.2 to 6.7 m up; BJ2 2.12 to 2.13 s, 48 m, 4 m; BJ3 2.47 to 2.50 s,
+  60 m, 7.4 m; BJ4 2.23 to 2.38 s, 49 to 52 m, 5.5 m; all upright and on. Slow (12 m/s) at each: lands 14 to 17 m past the lip
+  and drives on. J3 gave way to BJ3; J2 (63 m before BJ2) is gone: flat out it threw vehicles across the bend past BJ2's
+  kicker. J1, J5, J6 and J4 stay. Landing zones (RampHold's carry) on all four. The AI holds 24 m/s into them.
+- 3. BUG-001: P1's way in crosses Noonday Creek on a rock bar (`pipes.json` `rock_bar_a`, `MapBuilder.Pipes.cs`): 6 m wide,
+  its top 0.12 m over the water, water either side, flat creek slabs on it and creek rocks either side; a DryPatch over it
+  (ShallowWater: not wading there). Check: every trail vehicle over it at 15.4 to 15.8 m/s (the line's 16), wading 0.
+- 4. BUG-002, the standard for every pipe (`MapBuilder.Pipes.cs`, `DrainPipe.cs`, `PipeStream.cs`): a true round pipe (no flat
+  floor; its last 6 m of each cut turn into the round bottom, so no lip at the headwall); P1's ramps 28 % (18 % before) to keep
+  42 m of round barrel. Stained, darker concrete (a texture made in the build: joints, streaks from the crown, grime and
+  moss low down, a tide line, the wet invert), lamps every 16 m and dim, the vehicles' headlights on in a pipe
+  (VehicleLights). A stream down the middle (opaque glossy ribbon, its water sliding, a trickle sound from the nearest point,
+  splashes at the wheels; nothing slows: slowest 14.7 m/s through at 16; its sound first sat on the ribbon itself and dragged it out of the pipe: fixed in the last build). Riding the walls: in the barrel a vehicle over
+  7 m/s is held to the wall (its gravity turns to point out from the axis, fully from 11 m/s), so steering up the side takes
+  it up and round; slower it slides down (a push so the tyres' grip cannot hold it parked on a steep wall), is righted in the
+  air, and anything lying overturned or parked on the wall for 1.5 s is put back in the bottom facing along the pipe. The
+  camera rides the pipe's axis behind the vehicle, world up (ChaseCamera.PipeView): in the pipe in every check. Scripted wall rides (14 m/s in, steering up the side): the motorcycles and the mower climb past the side and right round (360 degrees or more; 2 to 8 of the eleven, run to run), most cars climb 40 to 70 degrees and come back down (turned steeply across a 5 m pipe a 4.5 m car's nose and tail meet the rising wall; on a shallower spiral they climb further). Never a trap: left parked up the wall at 60 degrees with no input, all eleven are back in the bottom on their wheels within 4 s; a reset in the pipe puts the vehicle in its bottom along it.
+  The penalty Dan saw: his race log from that session was overwritten, so not found from his lap; P1 checked three ways (on
+  its line, a reset in the creek at its mouth, a reset in the pipe): no penalty, CP2 forgiven, P1 counted, CP3 passed. Not P1;
+  nothing changed for it.
+- 5. R3's hint (`MapBuilder.PartyHint.cs`, `make_party_sign.py` draws `Assets/HandMade/Shortcut/PartySign*.png`, hand-made,
+  committed): a 3.2 x 1.6 m hand-painted PARTY yard sign with a big arrow toward the gap (capitals 0.67 m), seven balloons on
+  its post, in the grass strip at the turn-off facing reverse-lap drivers; worn tire tracks through the gap to the slide;
+  bunting and balloons on the play set. Sign and balloons break (FenceChunk). Pictures (1280 x 720): from about 40 m it reads; from about 100 m the balloons and the bright board show (a true 60 m picture was not managed; not checked at 3840 x 2160).
+  Other shortcuts' turn-offs, for Dan (unchanged): #2 has its SHORTCUT sign (could add worn tracks); #6 shows only its dirt
+  pile from the lane (could get a "FILL DIRT" landscaper's sign or worn tracks); P1's rock bar is its own hint (could add worn
+  tracks off the trail); R1 (new) has a JUMP! sign and worn tracks.
+- 6. R1 built as a trial, reverse only (`make_shortcuts.py` `build_r1`, kind "kids_ramp"): out of the 1987 / 1552 gap, 18 m,
+  a left arc of 20 m, then straight to the neighborhood kids' giant homemade ramp (plywood on a lumber frame, cinder blocks;
+  2.8 m high, 25 degrees at the lip, 11 m long, 6 m wide) at (2750.1, 1029.5) facing west-south-west, 22 m further along the
+  same line than Round 18's spot: there the ramp stood across #6's line (1.2 m from it); here 9.2 m clear. Lip speed held to
+  20 m/s (faster would carry it over the lap's road toward house 2088). All eleven vehicles: 2.10 to 2.22 s in the air, down
+  38 to 41 m past the lip on the yard or the road's near edge, 4.2 to 4.3 m up, upright, on onto the lap; slow (8 m/s) drives
+  out. Forgives the reverse lap's CP1 (file CP5). Hint: a JUMP! sign and worn tracks. NOTE for Dan: it lands heading about
+  90 degrees to the lap (the road bends there), so a driver must brake and turn right after landing; straight on is house
+  2088's front yard. And it is about as long as the lap it replaces (137 m against 140 m): a jump, not a time saver. To remove:
+  drop build_r1() from `make_shortcuts.py`'s list, re-run it, Build Map.
+- 7. AI trials: each trail vehicle through the new round P1, each of the eleven over R1: 16 of 16 clean. Exe rebuilt.
+
 **QUEUED — Round 20: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33

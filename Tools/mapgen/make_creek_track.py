@@ -1,4 +1,5 @@
-"""Round 18, items 3 and 5: the Noonday Creek trail (track B, as Dan chose it) and its race route.
+"""Round 18, items 3 and 5: the Noonday Creek trail (track B, as Dan chose it) and its race route. Round 19, items 1 and 2:
+wider (a 4.5 m tread, no solid trunk within 3.5 m of the line, the small trees left within 6 m breakable) and four big jumps.
 
 Hand choices are the constants below (the line as marked in Round 18 item 2b, the jumps, crossings, checkpoints, the
 start); everything else is computed from the data, so this re-runs after any mapgen run. It writes:
@@ -53,20 +54,34 @@ CONTROL = [
     (2432, 680), (2430, 705), (2432, 728), (2430, 745), (2428, 770), (2426, 790), (2418, 802), (2400, 815), (2385, 828),
 ]
 # features, by where they are (projected onto the final line). Jumps: lip station from the point; heights in meters.
-JUMPS = [   # id, kind, x, z, lip height, run-up length, table length, landing length, look
+JUMPS = [   # id, kind, x, z, lip height, run-up length, table length, landing length, look (Round 19: J3 gave way to the fallen giant;
+            # J2, 63 m before the step-down, threw flat-out vehicles across the bend and past BJ2's kicker: gone)
     ("J1", "tabletop", 2372, 920, 1.2, 4.5, 5.0, 7.0, "dirt"),
-    ("J2", "tabletop", 2512, 1210, 1.0, 4.0, 3.0, 6.0, "logs"),
-    ("J3", "kicker", 2534, 950, 0.8, 3.5, 0.0, 4.0, "spoil"),
     ("J5", "tabletop", 2545, 530, 1.2, 4.5, 5.0, 7.0, "dirt"),
     ("J6", "tabletop", 2458, 586, 1.0, 4.0, 3.0, 6.0, "logs"),
 ]
+# Round 19, item 2 (Dan: "I feel like we should also add some big jumps too"): four big ones, each a different idea, sized for two
+# seconds of air or more at 24 m/s (the AI holds 24 into them; 'vmax': no vehicle leaves the lip faster, BigJump.cs, so nobody
+# overshoots the cleared landing). Lip (x, z) on the Round 18 line; the take-off points along the line there.
+#   id, look, lip x, z, lip height (m over the ground under it), lip angle (deg), take-off length, width, landing from / to (m past the lip),
+#   vmax (Round 19 checks: BJ2 and BJ4 at 24, the trail bends soon after their landings)
+BIG_JUMPS = [
+    ("BJ1", "footbridge", 2329.7, 1186.4, 2.2, 23.0, 16.5, 6.0, 12.0, 62.0, 27.0),    # the side gully: a washed-out footbridge, its middle gone
+    ("BJ2", "stepdown", 2517.6, 1143.4, 1.2, 20.0, 7.5, 7.0, 10.0, 66.0, 24.0),   # off the top of the bank, down to the creek flats
+    ("BJ3", "fallen_tree", 2529.6, 996.5, 1.7, 25.0, 8.0, 7.0, 10.0, 66.0, 27.0),     # an earth ramp heaped against a huge fallen tree
+    ("BJ4", "outcrop", 2485.0, 668.2, 1.6, 24.0, 8.0, 7.0, 10.0, 66.0, 24.0),     # a granite slab tilted up out of the hump
+]
+BIG_DESIGN, BIG_VMAX = 24.0, 27.0
 CROSSINGS = [("C1", 2333, 1168), ("C2", 2306, 1360), ("C3", 2443, 1379), ("C4", 2545, 440), ("C5", 2432, 728), ("C6", 2420, 800)]
 CHECKPOINTS = [(1, 2338, 1130, "up the creek"), (2, 2340, 1358, "at the hairpin"), (3, 2516, 1170, "down the east side"),
                (4, 2558, 500, "south loop"), (5, 2466, 560, "south loop, west side")]
 GATE_AFTER_J1 = 90.0         # the start / finish this far past J1's lip (a straight on the creek's west side)
 GRID_BACK = 75.0             # the grid this far before the gate (lead-in 35 m + the lap's first 40 m)
-CLEAR_HALF = 1.8             # trunks closer than this to the line go (an ATV anywhere on the 2.5 m tread, 0.5 m off its middle: 0.5 + 0.73 + a trunk's 0.3 m + 0.25 m; Round 18 race check: 1.5 m caught the AI)
-WIDE_HALF = 2.6              # at the jumps and fords: two small vehicles side by side (2 x 0.8 m + room)
+CLEAR_HALF = 3.5             # Round 19 (Dan: "probably needs a little wider track"): no solid trunk within 3.5 m of the line (the tread is 4.5 m)
+WIDE_HALF = 4.5              # at the jumps, fords and the grid: two small vehicles side by side with room
+BEND_WIDEN = 30.0            # on a bend of radius r, the cleared half width grows by BEND_WIDEN / r (at most 1.5 m)
+BREAK_HALF = 6.0             # the trees left within this of the line snap when hit (MapBuilder: TreeField.breakable)
+TREAD_HALF = 2.25
 STEP = 1.0
 SETTINGS = {
     "name": "Noonday Creek", "direction": "forward", "directions": ["forward"], "laps": 3,
@@ -74,7 +89,7 @@ SETTINGS = {
     "reverse_grid_back_m": 45.0,
     # Dan: "perhaps even we restrict it to motorcycles and rtvs"; Claude added the mower (1.15 m wide, it fits)
     "vehicles": ["atv", "moto", "scrambler", "drifter", "mower"],   # the first is the one a player in a car is put in
-    "trail": True, "ai_half_width_m": 1.25, "ai_lane_m": 0.25, "ai_pass_lane_m": 0.45,
+    "trail": True, "ai_half_width_m": 2.25, "ai_lane_m": 0.7, "ai_pass_lane_m": 1.4,   # Round 19: the 4.5 m tread
 }
 
 # ---------------------------------------------------------------- geometry helpers
@@ -116,6 +131,8 @@ steady = np.zeros(N, bool)
 for j in JUMPS:
     k = idx_of((j[2], j[3]))
     for q in range(k - 12, k + 20): steady[q % N] = True
+for b in BIG_JUMPS:   # Round 19: the big jumps on the smoothed line itself (straight), from the run-up to the landing's end
+    k = idx_of((b[2], b[3])); freeze(k - int(b[6]) - 30, k + int(b[9]) + 6)
 
 # ---------------------------------------------------------------- 2. round the trunks: cheapest lateral offsets
 OFFS = np.arange(-2.5, 2.501, 0.1)
@@ -168,18 +185,46 @@ def S(q): return st(q)[0]
 gate_s = 40.0
 
 clear = np.full(N1, CLEAR_HALF)
+# Round 19: wider on bends (radius from three points 6 m apart)
+for k in range(N1):
+    a, b, c = line[(k - 6) % N1], line[k], line[(k + 6) % N1]
+    ar = abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]))
+    r = 1e9 if ar < 1e-6 else np.linalg.norm(b - a) * np.linalg.norm(c - b) * np.linalg.norm(c - a) / (2 * ar)
+    clear[k] += min(1.5, BEND_WIDEN / r)
 def widen(s0, s1, half):
     for k in range(int(s0), int(s1) + 1): clear[k % N1] = max(clear[k % N1], half)
 jumps = []
 for jid, kind, x, z, h, up, table, down, look in JUMPS:
     s = S((x, z))   # the mark is where the take-off rises
     lip = s + up
-    jumps.append({"id": jid, "kind": kind, "look": look, "s_start": s, "s_lip": lip, "height": h, "table": table, "down": down, "width": 5.0})
+    jumps.append({"id": jid, "kind": kind, "look": look, "s_start": s, "s_lip": lip, "height": h, "table": table, "down": down, "width": 6.0})
     widen(s - 6, lip + table + down + 12, WIDE_HALF)
 crossings = []
 for cid, x, z in CROSSINGS:
     s = S((x, z)); crossings.append({"id": cid, "s": s}); widen(s - 8, s + 8, WIDE_HALF)
-widen(gate_s - GRID_BACK - 5, gate_s + 5, WIDE_HALF)   # the grid (RaceController moves a slot toward the line where it is not clear)
+widen(gate_s - GRID_BACK - 5, gate_s + 5, WIDE_HALF)
+# Round 19: the big jumps. The take-off points along the line at the lip; trajectories over the real ground (g 9.81, no drag, as
+# the game) at each lip speed for the report; the flight's corridor cleared of trunks (a straight line, 'clear_lines' below)
+def ballistic(P, d, y0, v, th):
+    vx, vy = v * math.cos(th), v * math.sin(th); t = 0.0; top = y0
+    while t < 6.0:
+        t += 0.01; q = P + d * vx * t; y = y0 + vy * t - 4.905 * t * t; top = max(top, y)
+        if t > 0.1 and y <= ground(*q): return t, float(vx * t), top - y0
+    return t, float(vx * t), top - y0
+big = []; big_clear = []
+for bid, look, x, z, h, ang, ramp, width, l0, l1, vmax in BIG_JUMPS:
+    s = S((x, z)); P = line[s % N1]; d = line[(s + 3) % N1] - line[(s - 3) % N1]; d = d / np.linalg.norm(d)
+    y0 = ground(*P) + h
+    table = {}
+    for v in (14, 18, 21, 24, 27):
+        t, dist, top = ballistic(P, d, y0, v, math.radians(ang)); table[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+    big.append({"id": bid, "look": look, "s_lip": float(s), "lip": [round(float(P[0]), 2), round(float(P[1]), 2)], "dir": [round(float(d[0]), 5), round(float(d[1]), 5)],
+                "height": h, "lip_y": round(float(y0), 3), "angle_deg": ang, "ramp_m": ramp, "width": width, "land_from": l0, "land_to": l1, "vmax": vmax, "design": BIG_DESIGN,
+                "flights": table})
+    widen(s - ramp - 12, s + l1 + 8, WIDE_HALF)
+    big_clear.append({"points": [round(float(v), 2) for q in [P - d * (ramp + 8.0), P + d * (l1 + 6.0)] for v in q], "half": 5.5})
+    print(f"  {bid} {look}: lip s {s} ({P[0]:.1f}, {P[1]:.1f}), {h} m at {ang} deg; air / distance / top at the lip speed: " +
+          ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m {a[2]:.1f} m" for v, a in table.items()))   # the grid (RaceController moves a slot toward the line where it is not clear)
 lip4 = S(J4_LIP)
 widen(lip4 - 30, lip4 + 70, 3.5)
 c5a, c6 = S((2432, 712)), S((2420, 801))
@@ -187,6 +232,7 @@ c5a, c6 = S((2432, 712)), S((2420, 801))
 # AI: a held speed at each jump (the crest rule would otherwise brake it to a crawl over every lip)
 ai_zones = [{"id": j["id"], "s0": j["s_start"] - 35, "s1": j["s_lip"] + 2, "speed": 20.0} for j in jumps]
 ai_zones.append({"id": "J4", "s0": lip4 - 45, "s1": lip4 + 1, "speed": 24.0})
+ai_zones += [{"id": b["id"], "s0": b["s_lip"] - b["ramp_m"] - 40, "s1": b["s_lip"] + 2, "speed": BIG_DESIGN} for b in big]   # Round 19
 
 # landing zones (the landing carry, RampHold): after every jump, and J4's long one over the road and down the far side
 def strip(s0, s1, half):
@@ -195,6 +241,10 @@ def strip(s0, s1, half):
     left = [line[k] + nrm1[k] * half for k in ks]; right = [line[k] - nrm1[k] * half for k in reversed(ks)]
     return [round(float(v), 2) for p in left + right for v in p]
 landings = [{"id": j["id"], "poly": strip(j["s_lip"] + 1, j["s_lip"] + 40, 3.5)} for j in jumps]
+def big_zone(b):   # Round 19: from just past the take-off to beyond the longest flight, 13 to 15 m wide
+    P, d = np.array(b["lip"]), np.array(b["dir"]); n = np.array([-d[1], d[0]])
+    return [round(float(v), 2) for q in [P + d * 3 + n * 6.5, P + d * (b["land_to"] + 10) + n * 7.5, P + d * (b["land_to"] + 10) - n * 7.5, P + d * 3 - n * 6.5] for v in q]
+landings += [{"id": b["id"], "poly": big_zone(b)} for b in big]
 landings.append({"id": "J4", "poly": [round(float(v), 2) for p in [j4(14) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(110) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6,
                                                                   j4(110) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(14) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6] for v in p]})
 
@@ -229,8 +279,8 @@ print(f"P1 way in: leaves the trail at s {leave}, an arc of {R_IN:.0f} m turning
 path_out = [tuple(B), tuple(B + uA * 2.0), (2399.5, 1321.0), (2398.5, 1330.0), (2400.5, 1341.0), (2402.0, 1353.0), (2404.5, 1362.0), (2408.5, 1368.0),
             line[(join + 6) % N1], line[(join + 16) % N1]]
 path = resample(path_in + [tuple(A + uA * t) for t in np.arange(5.0, np.linalg.norm(B - A), 5.0)] + path_out, 2.0)
-clear_lines = [{"points": [round(float(v), 2) for q in resample(path_in[1:], 1.0) for v in q], "half": 2.8},
-               {"points": [round(float(v), 2) for q in resample(path_out, 1.0) for v in q], "half": 2.8}]
+clear_lines = [{"points": [round(float(v), 2) for q in resample(path_in[1:], 1.0) for v in q], "half": 3.5},
+               {"points": [round(float(v), 2) for q in resample(path_out, 1.0) for v in q], "half": 3.5}] + big_clear
 sc_p1 = {"id": "p1_pipe", "name": "The drain pipe", "direction": "forward", "path": [round(float(v), 2) for q in path for v in q],
          "half_width_m": 3.0, "entry_inset_m": 14.0, "entry_margin_m": 2.0, "forgives": [2], "ai_speed": 16.0}
 
@@ -239,9 +289,9 @@ def flat(p): return [round(float(v), 2) for q in p for v in q]
 lead = [line[(N1 - 35 + k) % N1] for k in range(0, 36, 1)]   # the lap's last 35 m, up to its first point
 cps = [{"id": cid, "s": float(S((x, z))), "pos": [x, z], "label": label} for cid, x, z, label in CHECKPOINTS]
 track = {
-    "note": "Round 18 (items 3, 5): the Noonday Creek trail, made by Tools/mapgen/make_creek_track.py. Map x, z in meters; s = meters along 'line' from its first point (the lap's own stations, as in the route file). Built by MapBuilder.CreekTrack.cs.",
-    "line": flat(line), "clear_half": [round(float(v), 2) for v in clear], "tread_half_m": 1.25,
-    "jumps": jumps, "crossings": crossings, "creek_bed": {"s0": c5a, "s1": c6},
+    "note": "Round 18 (items 3, 5), Round 19 (items 1, 2): the Noonday Creek trail, made by Tools/mapgen/make_creek_track.py. Map x, z in meters; s = meters along 'line' from its first point (the lap's own stations, as in the route file). Built by MapBuilder.CreekTrack.cs.",
+    "line": flat(line), "clear_half": [round(float(v), 2) for v in clear], "tread_half_m": TREAD_HALF, "break_half_m": BREAK_HALF,
+    "jumps": jumps, "big_jumps": big, "crossings": crossings, "creek_bed": {"s0": c5a, "s1": c6},
     "road_jump": {"id": "J4", "lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4,
                   "ramp_m": 28.0, "lip_above_road_m": 1.6, "width_m": 5.0, "slope_start": 0.11, "slope_lip": 0.25,
                   "landing_from_m": 27.0, "landing_slope": 0.09, "landing_half_m": 5.0},

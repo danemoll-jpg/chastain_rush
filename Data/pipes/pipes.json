@@ -1,5 +1,5 @@
 {
- "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. Round 19 adds the map-wide network in this file.",
+ "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. 'rock_bar_a' (Round 19, BUG-001): the way to the inlet crosses the creek on a dry bar of flat rocks instead of a gravel bar under the water. The map-wide network (Round 20) goes in this file.",
  "pipes": [
   {
    "id": "P1",
@@ -14,13 +14,14 @@
    ],
    "diameter_m": 5.0,
    "cover_m": 0.6,
-   "cut_slope": 0.18,
+   "cut_slope": 0.28,
    "approach_a": [
     2306.0,
     1293.0,
     2317.3,
     1295.6
-   ]
+   ],
+   "rock_bar_a": true
   }
  ]
 }

@@ -11,7 +11,9 @@ namespace ChastainRush
     // DrawDistance. Differences: the positions come from map data (Data/trees.bin) and are packed into this component
     // when the scene is built, and instead of rebuilding lists every frame the trees are sorted once into 48 m cells
     // that sit inside 192 m far cells, so a frame costs a few dozen frustum tests and one instanced draw per mesh per cell.
-    // Trees have no colliders (visual only).
+    // Trees have no colliders (visual only; TreeTrunks gives the nearest ones trunk colliders).
+    // Round 19 (item 1): the trees listed in 'breakable' (beside the Noonday Creek trail) can be hidden one by one when they snap
+    // (TreeTrunks) and put back when a race starts: their instance matrices are swapped for a zero-size one in every list they are in.
     [DisallowMultipleComponent]
     public sealed class TreeField : MonoBehaviour
     {
@@ -44,6 +46,7 @@ namespace ChastainRush
         [SerializeField] public Material material;
         [SerializeField] public byte[] data;
         [SerializeField] public int count;
+        [SerializeField] public int[] breakable;   // Round 19: tree indices that snap when hit (MapBuilder)
 
         sealed class Cell
         {
@@ -75,6 +78,9 @@ namespace ChastainRush
         }
 
         readonly Dictionary<Vector2Int, Cell> cells = new Dictionary<Vector2Int, Cell>();
+        // Round 19: where each breakable tree sits in the draw lists (cell, species and far class, its index in each list)
+        sealed class Slot { public Cell c; public FarGroup g; public int s, fc, iNear, iCellFar, iGroup; public Matrix4x4 crown, trunk; public bool hidden; }
+        readonly Dictionary<int, Slot> slots = new Dictionary<int, Slot>();
         readonly List<FarGroup> groups = new List<FarGroup>();
         readonly Plane[] planes = new Plane[6];
         bool ready;
@@ -106,6 +112,7 @@ namespace ChastainRush
             if (data == null || count == 0 || crownNear == null || material == null) return;
             System.Array.Clear(PerSpecies, 0, Species);
             var farKeys = new Dictionary<Vector2Int, FarGroup>();
+            slots.Clear(); var isBreakable = new HashSet<int>(breakable ?? new int[0]);
             for (int i = 0; i < count; i++)
             {
                 var t = Unpack(data, i);
@@ -121,9 +128,10 @@ namespace ChastainRush
                 var key = new Vector2Int(Mathf.FloorToInt(t.x / NearCell), Mathf.FloorToInt(t.z / NearCell));
                 if (!cells.TryGetValue(key, out var c)) cells[key] = c = new Cell();
                 int fc = FarClassOf[s];
-                c.crown[s].Add(crownM); c.trunk[s].Add(trunkM); c.farCrown[fc].Add(crownM); c.farTrunk[fc].Add(trunkM); c.Grow(b);
                 var fk = new Vector2Int(Mathf.FloorToInt(t.x / FarCell), Mathf.FloorToInt(t.z / FarCell));
                 if (!farKeys.TryGetValue(fk, out var g)) { farKeys[fk] = g = new FarGroup(); groups.Add(g); }
+                if (isBreakable.Contains(i)) slots[i] = new Slot { c = c, g = g, s = s, fc = fc, iNear = c.crown[s].Count, iCellFar = c.farCrown[fc].Count, iGroup = g.crown[fc].Count, crown = crownM, trunk = trunkM };
+                c.crown[s].Add(crownM); c.trunk[s].Add(trunkM); c.farCrown[fc].Add(crownM); c.farTrunk[fc].Add(trunkM); c.Grow(b);
                 g.crown[fc].Add(crownM); g.trunk[fc].Add(trunkM);
                 if (g.any) g.bounds.Encapsulate(b); else { g.bounds = b; g.any = true; }
             }
@@ -140,6 +148,21 @@ namespace ChastainRush
             }
             ready = true;
         }
+
+        // Round 19: hide or show one breakable tree (no-op for any other)
+        public bool IsBreakable(int i) => slots.ContainsKey(i);
+        public bool SetHidden(int i, bool hidden)
+        {
+            if (!slots.TryGetValue(i, out var sl) || sl.hidden == hidden) return false;
+            sl.hidden = hidden;
+            var cr = hidden ? Matrix4x4.zero : sl.crown; var tr = hidden ? Matrix4x4.zero : sl.trunk;
+            sl.c.crownA[sl.s][sl.iNear] = cr; sl.c.trunkA[sl.s][sl.iNear] = tr;
+            sl.c.farCrownA[sl.fc][sl.iCellFar] = cr; sl.c.farTrunkA[sl.fc][sl.iCellFar] = tr;
+            sl.g.crownA[sl.fc][sl.iGroup] = cr; sl.g.trunkA[sl.fc][sl.iGroup] = tr;
+            return true;
+        }
+        public void ShowAll() { foreach (var k in slots.Keys) SetHidden(k, false); }
+        public int BreakableCount => slots.Count;
 
         void OnBeginCamera(ScriptableRenderContext ctx, Camera cam)
         {

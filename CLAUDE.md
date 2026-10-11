@@ -102,6 +102,16 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   fun arcade game not a serious racer"). When realism and fun pull apart,
   fun wins: big jumps, generous physics, things that break instead of
   stopping you, nothing that punishes a mistake with a dead stop.
+- **Houses are not set in stone** (Dan, 2026-10-11: "If we need to modify or
+  slightly relocate a house to accommodate tracks/shortcuts this could be ok.
+  Just let me know and i can do the final decision"). When a track or
+  shortcut would work better with a house modified or moved a little, say so
+  as an option, with which house, what change and what it buys, and let Dan
+  decide. Never do it unasked. Only Dan's own house is locked. House 1763
+  is open like any other (this overrides every earlier "nothing attached to
+  1763" line here and in TODO.md): Dan had it restored because he "didn't
+  like the permanent big hole in the wall", so what to avoid, on any house,
+  is a permanent ugly hole or ramp stuck on it, not the house being used.
 - **Shortcut hints** (Dan, 2026-10-11; replaces "found, not signposted" in
   the neighborhoods): a shortcut's turn-off gets a clear hint, something
   that could be there (a party sign and balloons, worn tracks, a rock bar),
@@ -240,6 +250,19 @@ sign and balloons) at the R3 trampoline shortcut's turn-off, and a picture
 of the alternative R1 for Dan (R1 is not built). Queued: 20 the map-wide
 pipe network (proposal first); 21 Chastain Commons, Chastain Enclave and
 Grasmere Court.
+
+**Round 19 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday
+Creek trail 4.5 m wide (no solid trunk within 3.5 m; the trees left within 6 m, and within 8 m of each big jump's run-out,
+breakable: `TreeField.breakable`, `TreeTrunks` trigger capsules, `FallingTree`); four big jumps (`MapBuilder.BigJumps.cs`:
+a washed-out footbridge, a step-down off the bank, an earth ramp over a fallen tree, a granite slab; `BigJump.cs` sends a
+vehicle off the lip at the lip's angle, capped at 24 to 27 m/s); J2 and J3 gone; P1's rock bar (`pipes.json`
+`rock_bar_a`, `DryPatch`); every pipe now round all the way, stained and dim, a stream (`PipeStream`), wall riding and a
+rescue in `DrainPipe`, the camera on the pipe's axis (`ChaseCamera.PipeView`), headlights on in pipes (`VehicleLights`),
+`ArcadeVehicle.SurfaceUp`; the AI passes on the side away from a slower vehicle on a trail; R3's PARTY sign, balloons,
+tracks and play-set bunting (`MapBuilder.PartyHint.cs`, `Tools/handmade/make_party_sign.py`, hand-made, committed); R1 built
+as a trial (`make_shortcuts.py` `build_r1`, the kids' ramp, a JUMP! sign). Check: `ChastainRush.exe -exeRound19 <dir>
+[-r19Only trail,jumps,bar,pipe,stream,penalty,r3,r1,ai,race,pass] -logFile <dir>\Player.log` (Checks/Round19Runner*.cs).
+Pictures: `local/round19/` (git-ignored). Imported from Racer in Round 19: nothing.
 
 **Round 18 items 3 to 9 (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by
 Dan:** the Noonday Creek trail (track B, a narrow woods trail for the motorcycles, the ATV and the mower; J4 over New

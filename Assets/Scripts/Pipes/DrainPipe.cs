@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Racer;
 using UnityEngine;
 
 namespace ChastainRush
@@ -10,17 +11,154 @@ namespace ChastainRush
     //            was heading; in a race, the way the race goes through it), on the first spot clear of other vehicles
     //   lines    a race line through a pipe (a shortcut's path, the AI's line) takes its heights from the pipe's floor, not from
     //            the ground above it (RaceRoute)
+    //   walls    Round 19 (BUG-002, Dan: "can we have the ability so that you could drive around the walls?so if you had enough
+    //            momentum you could even circle them or ride the walls"): in the round part (the barrel) a vehicle going faster
+    //            than StickFrom is held to the pipe's surface: its gravity turns to point at the wall under it (out from the
+    //            axis), fully from StickFull up, so steering up the side carries it up the wall and, fast enough, right over the
+    //            top and round. Slower, the real gravity comes back and it slides or drops to the bottom, righted in the air so it
+    //            lands on its wheels. The hold fades out over the last 5 m to each headwall (the cuts are open, flat sided). Arcade
+    //            by design (fun first): no speed is needed round the top beyond StickFull. The AI just drives the bottom.
+    //   camera   Round 19: inside the barrel the chase camera rides the pipe's axis behind the vehicle, world up (ChaseCamera.PipeView)
+    //   lights   Round 19: a vehicle in a pipe has its headlight on (VehicleLights)
     public sealed class DrainPipe : MonoBehaviour
     {
         public string id;
         public Vector3[] floor;          // the floor's centerline, a to b, 0.5 m apart (cuts and pipe)
         public float halfWidth = 2.4f;   // inside the cut walls; the pipe's own floor is narrower, its sides curve up
         public float clearHeight = 4.4f; // floor to the pipe's crown
+        public float radius = 2.5f;      // Round 19: the barrel's inside radius; its invert is the floor line
+        public float barrelFrom, barrelTo;   // the barrel's ends, as stations (indices into floor)
+        public const float StickFrom = 7f, StickFull = 11f, EndFade = 5f;
+        public static int WallSteps { get; private set; }   // checks: physics steps some vehicle was held to the wall more than 45 degrees up it
+        public static float MostRound { get; private set; }  // checks: the furthest round from the invert any vehicle went, degrees
+        public static int Rescues { get; private set; }
+        static readonly bool NoSlide = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noPipeSlide") >= 0;   // checks only      // checks: vehicles put back in the bottom after lying overturned and slow
         static readonly List<DrainPipe> all = new List<DrainPipe>();
         static readonly Collider[] hits = new Collider[16];
 
         void OnEnable() { all.Add(this); }
         void OnDisable() { all.Remove(this); }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        static void Install() { ChaseCamera.PipeView = View; }
+
+        // ---------------------------------------------------------------- Round 19: riding the walls
+        sealed class Ride { public float lastGround = -10f, stick, stuck; }
+        readonly Dictionary<ArcadeVehicle, Ride> rides = new Dictionary<ArcadeVehicle, Ride>();
+        ArcadeVehicle[] cars = new ArcadeVehicle[0]; float nextFind;
+
+        // where p is in the barrel: its axis point, the axis direction, how far into the barrel from its nearer end (m)
+        bool Barrel(Vector3 p, float pad, out Vector3 axis, out Vector3 along, out float fromEnd, out float station)
+        {
+            axis = default; along = Vector3.forward; fromEnd = 0f; station = 0f;
+            if (floor == null || floor.Length < 2 || barrelTo <= barrelFrom) return false;
+            float best = float.MaxValue; var q = new Vector2(p.x, p.z);
+            int i0 = Mathf.Max(0, (int)barrelFrom - 6), i1 = Mathf.Min(floor.Length - 2, (int)barrelTo + 6);
+            for (int i = i0; i <= i1; i++)
+            {
+                var a = new Vector2(floor[i].x, floor[i].z); var ab = new Vector2(floor[i + 1].x, floor[i + 1].z) - a;
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
+                float d = (a + ab * t - q).sqrMagnitude;
+                if (d < best) { best = d; station = i + t; }
+            }
+            if (station < barrelFrom - pad * 2f || station > barrelTo + pad * 2f) return false;
+            int k = Mathf.Clamp((int)station, 0, floor.Length - 2);
+            var f = Vector3.Lerp(floor[k], floor[k + 1], station - k);
+            axis = f + Vector3.up * radius; along = (floor[k + 1] - floor[k]).normalized;
+            var r = p - axis; r -= along * Vector3.Dot(r, along);
+            if (r.magnitude > radius + 0.6f) return false;
+            fromEnd = Mathf.Min(station - barrelFrom, barrelTo - station) * 0.5f;
+            return true;
+        }
+
+        void FixedUpdate()
+        {
+            if (Time.time >= nextFind) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; }
+            float dt = Time.fixedDeltaTime;
+            foreach (var car in cars)
+            {
+                if (!car || car.Body == null || car.Body.isKinematic) continue;
+                if (!rides.TryGetValue(car, out var ride)) rides[car] = ride = new Ride();
+                bool inBarrel = Barrel(car.Body.position, 0f, out var axis, out var along, out float fromEnd, out _);
+                // never a trap: overturned (or on its side) and slow anywhere in the pipe or its cuts for 1.5 s, it is put back in the
+                // bottom facing along the pipe, as a reset does
+                if (Inside(car.Body.position, out _) == this)
+                {
+                    var refUp = Vector3.up;
+                    if (inBarrel) { var rr = car.Body.position - axis; rr -= along * Vector3.Dot(rr, along); if (rr.magnitude > 0.3f) refUp = -rr.normalized; }
+                    bool onWall = Vector3.Angle(refUp, Vector3.up) > 35f && car.Body.linearVelocity.magnitude < 1.5f;   // parked up the side
+                    bool over = Vector3.Dot(car.transform.up, refUp) < 0.5f || car.GroundedWheels < 2 || onWall;
+                    ride.stuck = over && car.Body.linearVelocity.magnitude < 2.5f ? ride.stuck + dt : 0f;
+                    if (ride.stuck > 1.5f && Recover(car.Body.position, car.transform.forward, car.Body.linearVelocity, car.Body, out var rp, out float ry))
+                    {
+                        ride.stuck = 0f; ride.stick = 0f; car.SurfaceUp = Vector3.up; Rescues++;
+                        var rot = Quaternion.Euler(0f, ry, 0f);
+                        car.Body.position = rp + Vector3.up * 0.5f; car.Body.rotation = rot; car.transform.SetPositionAndRotation(car.Body.position, rot);
+                        car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero; car.ClearSteering();
+                        continue;
+                    }
+                    if (!inBarrel && car.GroundedWheels < 2)   // in a cut, on its side: roll it back onto its wheels
+                    {
+                        var tilt = Vector3.Cross(car.transform.up, Vector3.up);
+                        car.Body.AddTorque(tilt * 22f - Vector3.ProjectOnPlane(car.Body.angularVelocity, Vector3.up) * 5f, ForceMode.Acceleration);
+                    }
+                }
+                if (!inBarrel)
+                {
+                    if (ride.stick > 0f) { ride.stick = 0f; car.SurfaceUp = Vector3.up; }
+                    continue;
+                }
+                var r = car.Body.position - axis; r -= along * Vector3.Dot(r, along);
+                var n = r.magnitude > 0.3f ? r.normalized : Vector3.down;   // out from the axis: toward the wall under the vehicle
+                float speed = car.Body.linearVelocity.magnitude;
+                if (car.GroundedWheels >= 2) ride.lastGround = Time.time;
+                float target = Time.time - ride.lastGround < 0.3f ? Smooth01((speed - StickFrom) / (StickFull - StickFrom)) * Smooth01((fromEnd - 0.5f) / EndFade) : 0f;
+                ride.stick = Mathf.MoveTowards(ride.stick, target, dt * 4f);
+                // slow on a steep part of the wall: slide down it (the tires' grip would otherwise hold a vehicle parked sideways there)
+                if (!NoSlide && speed < StickFrom && car.GroundedWheels >= 1 && Vector3.Angle(-n, Vector3.up) > 30f)
+                    car.Body.AddForce(Vector3.ProjectOnPlane(Physics.gravity, -n) * (1.6f * (1f - speed / StickFrom)), ForceMode.Acceleration);
+                if (ride.stick > 0.001f) car.Body.AddForce((n * 9.81f - Physics.gravity) * ride.stick, ForceMode.Acceleration);
+                car.SurfaceUp = ride.stick > 0.001f ? Vector3.Slerp(Vector3.up, -n, ride.stick).normalized : Vector3.up;
+                float round = Vector3.Angle(n, Vector3.down);
+                if (round > 45f && car.GroundedWheels >= 2) WallSteps++;
+                MostRound = Mathf.Max(MostRound, car.GroundedWheels >= 2 ? round : 0f);
+                // in the air and not held (off the wall or the roof): turn it upright so it comes down on its wheels; lying on its side
+                // or its roof against the pipe (fewer than two wheels down): roll it back onto its wheels, toward the axis
+                if (car.GroundedWheels == 0 && ride.stick < 0.05f && r.magnitude < radius - 1.2f)
+                {
+                    var tilt = Vector3.Cross(car.transform.up, Vector3.up);
+                    car.Body.AddTorque(tilt * 14f - Vector3.ProjectOnPlane(car.Body.angularVelocity, Vector3.up) * 4f, ForceMode.Acceleration);
+                }
+                else if (car.GroundedWheels < 2)
+                {
+                    var want = -n; var tilt = Vector3.Cross(car.transform.up, want);
+                    car.Body.AddTorque(tilt * 22f - Vector3.ProjectOnPlane(car.Body.angularVelocity, want) * 5f, ForceMode.Acceleration);
+                    if (speed < 4f && Vector3.Dot(car.transform.up, want) < 0.3f) car.Body.AddForce(-n * 6f, ForceMode.Acceleration);   // lift it off the wall a little so it can roll
+                }
+            }
+        }
+        static float Smooth01(float t) { t = Mathf.Clamp01(t); return t * t * (3f - 2f * t); }
+
+        // the chase camera inside the barrel: on the axis 6 m behind the vehicle (the way it is pointing along the pipe), looking
+        // ahead of it, world up; it never leaves the pipe and does not roll or swing when the vehicle is on the wall or the roof
+        static bool View(Transform target, out Vector3 desired, out Vector3 lookAt)
+        {
+            desired = lookAt = default;
+            foreach (var d in all)
+            {
+                if (!d.Barrel(target.position, 1f, out var axis, out var along, out _, out float st)) continue;
+                float sign = Vector3.Dot(target.forward, along) >= 0f ? 1f : -1f;
+                var rb = target.GetComponent<Rigidbody>(); if (rb && rb.linearVelocity.magnitude > 2f) sign = Vector3.Dot(rb.linearVelocity, along) >= 0f ? 1f : -1f;
+                Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, d.floor.Length - 1.001f); int k = (int)s; return Vector3.Lerp(d.floor[k], d.floor[k + 1], s - k) + Vector3.up * d.radius; }
+                desired = AxisAt(st - sign * 12f) + Vector3.up * 0.4f;   // 12 stations = 6 m
+                lookAt = Vector3.Lerp(target.position, AxisAt(st + sign * 8f), 0.45f);
+                return true;
+            }
+            return false;
+        }
+
+        // the vehicle is in any pipe or its cuts (VehicleLights: its headlight on)
+        public static bool InsideAny(Vector3 p) => Inside(p, out _) != null;
 
         // the station (index into floor, fractional) and lateral offset of p, if p is inside this pipe's space
         bool Locate(Vector3 p, float lateralPad, out float station, out Vector3 at, out Vector3 along)

@@ -18,6 +18,7 @@ namespace Racer
         // Chastain Rush, Round 15: true when p is in water (inside an area and below its surface); a reset never lands there
         public static bool InWater(Vector3 p, float above = 0.3f)
         {
+            if (ChastainRush.DryPatch.Contains(p)) return false;   // Chastain Rush, Round 19: P1's rock bar
             foreach (var w in Active) if (w && w.Contains(p) && p.y < w.Surface + above && p.y > w.Surface - 3f) return true;
             return false;
         }
@@ -68,6 +69,7 @@ namespace Racer
         public static float Sample(ArcadeVehicle car, out float surface)
         {
             surface=0; float result=0;
+            if(ChastainRush.DryPatch.Contains(car.Body.position)) return 0;   // Chastain Rush, Round 19: on P1's rock bar, not wading
             foreach(var water in Active)
             {
                 if(!water || water.gameObject.scene!=car.gameObject.scene || !water.Contains(car.Body.position)) continue;

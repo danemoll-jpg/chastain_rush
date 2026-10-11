@@ -42,6 +42,9 @@ namespace Racer
         public float VisualSteering => steer;
         public float WaterImmersion { get; private set; }
         public float WaterSurface { get; private set; }
+        // Chastain Rush, Round 19: the "up" a wheel's ground must face and the vehicle settles to in the air (world up; a drainage
+        // pipe's DrainPipe turns it toward the pipe's axis while it holds a fast vehicle to the wall)
+        [System.NonSerialized] public Vector3 SurfaceUp = Vector3.up;
 
         void Awake()
         {
@@ -81,7 +84,7 @@ namespace Racer
             {
                 Vector3 origin = transform.TransformPoint(local);
                 if (!gameObject.scene.GetPhysicsScene().Raycast(origin, -transform.up, out RaycastHit hit, suspensionLength, groundMask, QueryTriggerInteraction.Ignore)) continue;
-                if (Vector3.Dot(hit.normal, Vector3.up) < 0.35f) continue;
+                if (Vector3.Dot(hit.normal, SurfaceUp) < 0.35f) continue;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
                 GroundedWheels++;
                 normal += hit.normal;
                 float compression = suspensionLength - hit.distance;
@@ -94,7 +97,7 @@ namespace Racer
             float immersed=ShallowWater.Sample(this,out float surface);
             WaterSurface=surface;
             WaterImmersion=immersed<=0?0:Mathf.MoveTowards(WaterImmersion,immersed,dt*2.5f);
-            Vector3 up = grounded ? normal.normalized : Vector3.up;
+            Vector3 up = grounded ? normal.normalized : SurfaceUp;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
             Vector3 forward = Vector3.ProjectOnPlane(transform.forward, up).normalized;
             Vector3 right = Vector3.Cross(up, forward);
             float speedForward = Vector3.Dot(Body.linearVelocity, forward);

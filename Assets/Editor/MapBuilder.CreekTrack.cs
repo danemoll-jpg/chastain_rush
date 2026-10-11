@@ -8,9 +8,12 @@ using UnityEngine.Rendering;
 // Round 18, item 3: the Noonday Creek trail (track B as Dan chose it), from Data/tracks/noonday_creek.json
 // (Tools/mapgen/make_creek_track.py). A narrow woods trail, not a road (Dan: "It should feel like you are in the woods on a small
 // trail, not on a road"):
+// Round 19 (items 1, 2; Dan: "probably needs a little wider track"): the tread 4.5 m (no solid trunk within 3.5 m of the line, more
+// on bends and at the jumps), the small trees left within 6 m of the line breakable (TreeField.breakable, TreeTrunks), and four
+// big jumps (MapBuilder.BigJumps.cs).
 //   ground   graded into the terrain before anything samples it: along the line, the ground smoothed a little (sigma 1.5 m,
 //            the dips and rolls kept) and cut where it is steeper than 22 % (the creek banks at the fords, the climb out of
-//            the creek bed), level across the 2.5 m tread, blending back to the woods floor 1.3 to 3.3 m from the line. Never
+//            the creek bed), level across the 4.5 m tread, blending back to the woods floor 2.4 to 4.6 m from the line. Never
 //            within a meter of a road (the road jump is built separately). In a stream or the creek bed, the tread is raised to
 //            0.15 m under the water (a gravel bar: a splash, not a crawl); the rest of the channel keeps its depth
 //   jumps    earth mounds in the same ground (tabletops J1, J2, J5, J6, a spoil heap J3), 5 m wide so two can go side by
@@ -18,8 +21,8 @@ using UnityEngine.Rendering;
 //   J4       the road jump over New Chastain Road: a dirt kicker up the north road bank (a prism, its look the dirt pile of
 //            shortcut #6), and on the far side a landing slope graded down the south bank from the road's edge. Short of the
 //            speed, a vehicle lands on the road and drives on down the same slope: no wall, nothing to reset from
-//   tread    a dirt ribbon, 2.3 to 2.7 m wide, wavering, darker in the wheel line; none on pavement or in the water
-//   trees    only the trunks within 'clear_half' of the line go (1.8 m on the trail, wider at the jumps, fords, grid, J4)
+//   tread    a dirt ribbon, 4.3 to 4.7 m wide, wavering, darker in the wheel lines; none on pavement or in the water
+//   trees    only the trunks within 'clear_half' of the line go (3.5 m on the trail, wider on bends, at the jumps, fords, grid, J4)
 //   landing  zones after each jump (RampHold's landing carry, as on #6)
 namespace ChastainRush
 {
@@ -31,10 +34,11 @@ namespace ChastainRush
         [Serializable] class CtRoadJump { public string id; public float[] lip, dir; public float s_lip, ramp_m, lip_above_road_m, width_m, slope_start, slope_lip, landing_from_m, landing_slope, landing_half_m; }
         [Serializable] class CtZone { public string id; public float[] poly; }
         [Serializable] class CtClear { public float[] points; public float half; }
-        [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m; public CtJump[] jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines; }
+        [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design; public float[] lip, dir; }
+        [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m = 1.25f, break_half_m; public CtJump[] jumps; public CtBigJump[] big_jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines; }
 
         const string CreekTrackFile = "Data/tracks/noonday_creek.json";
-        const float TrailMaxGrade = 0.22f, TrailBlend0 = 1.3f, TrailBlend1 = 3.3f, TrailShallow = 0.15f;
+        const float TrailMaxGrade = 0.22f, TrailBlend0 = 2.4f, TrailBlend1 = 4.6f, TrailShallow = 0.15f;   // Round 19: blend 1.3 to 3.3 m before (a 2.5 m tread)
 
         sealed class CreekTrack
         {
@@ -89,6 +93,23 @@ namespace ChastainRush
             public Vector2 Point(float s) { s = Mathf.Repeat(s, N); int i = (int)s; return Vector2.Lerp(P[i % N], P[(i + 1) % N], s - i); }
             public Vector2 Tangent(float s) => (Point(s + 1f) - Point(s - 1f)).normalized;
             public static float Gap(float a, float b, int n) { float d = Mathf.Repeat(b - a, n); return d > n * 0.5f ? d - n : d; }   // b - a along the loop
+
+            // Round 19 (item 1; Dan: "If we have to make trees breakable that is ok"): the trees left within break_half_m of the line
+            // and those within 8 m of a big jump's straight line from its take-off to 25 m past its landing (a vehicle that runs straight on
+            // after landing where the trail bends snaps them instead of stopping dead)
+            public bool Breakable(float x, float z)
+            {
+                if (Data.break_half_m <= 0f) return false;
+                var q = new Vector2(x, z);
+                if (Near(q, out _, out float lat) && Mathf.Abs(lat) < Data.break_half_m) return true;
+                if (Data.big_jumps != null)
+                    foreach (var b in Data.big_jumps)
+                    {
+                        var L = new Vector2(b.lip[0], b.lip[1]); var d = new Vector2(b.dir[0], b.dir[1]).normalized;
+                        if (SegDist(q, L - d * b.ramp_m, L + d * (b.land_to + 25f)) < 8f) return true;
+                    }
+                return false;
+            }
 
             public bool RejectTree(float x, float z)
             {
@@ -172,9 +193,10 @@ namespace ChastainRush
                 float ny = y + (target - y) * w;
                 if (mound > 0f) ny = Mathf.Max(ny, target + mound * wRoad);
                 // in a stream: the tread a gravel bar 0.15 m under the surface
-                if (a < 1.6f && Beds != null && Beds.NearStream(q, out float sd, out float surf) && sd < StreamHalf && ny < surf - TrailShallow)
+                float th = ct.Data.tread_half_m;
+                if (a < th + 0.35f && Beds != null && Beds.NearStream(q, out float sd, out float surf) && sd < StreamHalf && ny < surf - TrailShallow)
                 {
-                    float wf = 1f - Smooth01((a - 1.1f) / 0.5f);
+                    float wf = 1f - Smooth01((a - th + 0.15f) / 0.5f);
                     float raised = ny + (surf - TrailShallow - ny) * wf;
                     shallowed = Mathf.Max(shallowed, raised - ny); ny = raised;
                 }
@@ -220,7 +242,7 @@ namespace ChastainRush
             var rj = ct.Data.road_jump; int n = ct.N;
             // the tread: a wavering dirt ribbon, three strips across (litter at the edges, dirt, a darker wheel line)
             var tread = new Chunks();
-            float[] across = { -1f, -0.45f, 0f, 0.45f, 1f };
+            float[] across = { -1f, -0.62f, -0.2f, 0.2f, 0.62f, 1f };   // Round 19: two wheel lines on the 4.5 m tread
             var run = new List<(Vector3[] row, Vector2 at)>();
             void Flush()
             {
@@ -230,7 +252,7 @@ namespace ChastainRush
                     for (int k = 0; k + 1 < across.Length; k++)
                     {
                         bool edge = k == 0 || k == across.Length - 2;
-                        mb.Tint = edge ? Shade(TrailLitter, 0.95f + 0.1f * Hash01(i, 31 + k)) : Shade(TrailDirt, (k == 1 || k == 2 ? 0.86f : 0.95f) + 0.08f * Hash01(i, 37 + k));
+                        mb.Tint = edge ? Shade(TrailLitter, 0.95f + 0.1f * Hash01(i, 31 + k)) : Shade(TrailDirt, (k == 1 || k == 3 ? 0.86f : 0.95f) + 0.08f * Hash01(i, 37 + k));
                         Face(mb, run[i].row[k], run[i + 1].row[k], run[i + 1].row[k + 1], run[i].row[k + 1], Vector3.up);
                     }
                 }
@@ -242,7 +264,7 @@ namespace ChastainRush
                 bool skip = pave.Clearance(c, 4f) < 0.6f || (Beds != null && Beds.Wet(c.x, c.y) && Beds.NearStream(c, out float sd, out _) && sd < StreamHalf - 0.3f)
                             || (rj != null && CreekTrack.Gap(rj.s_lip - rj.ramp_m, s, n) >= -0.5f && CreekTrack.Gap(rj.s_lip - rj.ramp_m, s, n) <= rj.ramp_m + rj.landing_from_m);   // J4: the kicker, the road and its median
                 if (skip) { Flush(); continue; }
-                float half = 1.25f + 0.17f * Mathf.Sin(s * 0.21f + 1.1f) + 0.09f * Mathf.Sin(s * 0.67f);
+                float half = ct.Data.tread_half_m + 0.17f * Mathf.Sin(s * 0.21f + 1.1f) + 0.09f * Mathf.Sin(s * 0.67f);
                 var row = new Vector3[across.Length];
                 for (int k = 0; k < across.Length; k++)
                 {
@@ -301,7 +323,8 @@ namespace ChastainRush
                     var go = new GameObject("Landing zone " + z.id); go.transform.SetParent(root, false);
                     go.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray();
                 }
-            Debug.Log($"[Round18] Noonday Creek trail: tread drawn, {logCount} logs, {ct.Data.landing_zones?.Length ?? 0} landing zones; {ct.TreesRemoved} trees removed from the trail and the ways in and out of P1 (only trunks within 1.8 m of the line, wider at the jumps, fords, grid and J4)");
+            BuildBigJumps(terrain, mats, root, ct);   // Round 19 (2): MapBuilder.BigJumps.cs
+            Debug.Log($"[Round18] Noonday Creek trail: tread drawn, {logCount} logs, {ct.Data.landing_zones?.Length ?? 0} landing zones; {ct.TreesRemoved} trees removed from the trail, the big jumps' flights and the ways in and out of P1 (Round 19: trunks within 3.5 m of the line, wider on bends, at the jumps, fords, grid and J4)");
         }
 
         // a log: an 8-sided cylinder between two points, its ends lighter

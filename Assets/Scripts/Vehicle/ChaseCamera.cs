@@ -26,6 +26,10 @@ namespace Racer
         public Vector3 ChasePosition => position;
         public Quaternion ChaseRotation => rotation;
         Vector3 Offset => Vector3.Scale(offset, offsetScale);
+        // Chastain Rush, Round 19: inside a drainage pipe (DrainPipe.View) the camera rides the pipe's axis behind the vehicle and
+        // looks along it, world up, so a vehicle riding the walls or over the roof does not swing it round or out of the pipe
+        public delegate bool ViewFn(Transform target, out Vector3 desired, out Vector3 lookAt);
+        public static ViewFn PipeView;
         void OnEnable()
         {
             if (!target) return;
@@ -44,6 +48,14 @@ namespace Racer
         void LateUpdate()
         {
             if (!target) return;
+            if (PipeView != null && PipeView(target, out var pipeAt, out var pipeLook))   // Chastain Rush, Round 19
+            {
+                position = Vector3.SmoothDamp(position, pipeAt, ref velocity, positionSmoothTime * 0.6f);
+                var lk = pipeLook - position; if (lk.sqrMagnitude > 1e-6f) rotation = Quaternion.LookRotation(lk, Vector3.up);
+                var flat = Vector3.ProjectOnPlane(pipeLook - pipeAt, Vector3.up); if (flat.sqrMagnitude > 1e-4f) heading = Quaternion.LookRotation(flat);
+                transform.SetPositionAndRotation(position, rotation);
+                return;
+            }
             heading = Quaternion.Slerp(heading, Quaternion.Euler(0, target.eulerAngles.y, 0), 1 - Mathf.Exp(-headingResponse * Time.deltaTime));
             Vector3 desired = target.position + heading * Offset;
             Vector3 pivot = target.position + Vector3.up;

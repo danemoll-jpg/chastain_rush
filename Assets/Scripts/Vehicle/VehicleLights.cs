@@ -27,8 +27,9 @@ namespace Racer
         void LateUpdate()
         {
             if (!lamp) return;
-            bool on = Level > .02f && car && car.gameObject.activeInHierarchy;
-            lamp.enabled = on; if (on) lamp.intensity = 9f * Level;
+            bool pipe = car && ChastainRush.DrainPipe.InsideAny(car.transform.position);   // Chastain Rush, Round 19: headlights on in a drainage pipe
+            bool on = (Level > .02f || pipe) && car && car.gameObject.activeInHierarchy;
+            lamp.enabled = on; if (on) lamp.intensity = Mathf.Max(9f * Level, pipe ? 7f : 0f);
             // The lamp materials are shared by every vehicle: set once per frame for all.
             if (Mathf.Abs(shown - Level) > .005f) { shown = Level; Lamps(Level); }
         }
