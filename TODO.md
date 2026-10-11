@@ -1714,6 +1714,71 @@ drive through that link ponds / lakes / the creek as underground shortcuts.
    (276 to 279 m) is too low for a 5 m pipe from the creek bed (274.6 m), so it needs a grassy bank 1.5 to 3.5 m
    high over it. Questions for Dan in the round report: the loop, the pipe and its bank, a second pipe only if the
    track goes round the big lake, where the race is picked (the race menu has no route choice yet).
+**NEXT TO DO in Round 18 (Dan, 2026-10-10 23:21, after seeing the item 2 overhead). Three parts, in this order;
+nothing of the track, pipes or new shortcuts is BUILT yet: this pass fixes two reports and puts markers in the
+world for Dan to drive round and judge.**
+
+2a. Dan's session 2026-10-10_23-08-26-878_0e77b1 (read by Claude). Fix both, commit on their own.
+   - BUG-001 (vehicle x 3145.06, z 768.62, heading 92, on the verge at the New Chastain Road / Chastain Corner
+     Northeast junction, the one smoothed in Round 17): "Cant we have this smoothed out?". Dan, asked which part: "There is an uneven spot in the grass
+     you see as it is darker right there". It is the dark hollow in the grass verge just ahead and left of his
+     vehicle in the screenshot (about 2 to 4 m in front of x 3145, z 769, against the curb of the corner): a
+     dip in the ground left when Round 17 smoothed only the pavement. Fill and smooth that hollow so the grass
+     runs evenly up to the curb. That spot only: not the bank across the road, not the pavement. Before / after
+     picture from Dan's view for the report.
+   - BUG-002 (vehicle x 3438.24, z 1229.82, heading 155, north end of the shopping center's main lot): "connect
+     this as a roads. The drive ways and darking lots shoutl be the same color si they belind togethr". Two
+     things: (i) the service road on his left ends in a rounded stub on the grass short of the lot: carry it
+     on as a road into the parking lot, flush, no grass gap; (ii) the shopping center's driveways / service roads
+     are a lighter gray than the lot: make them the same asphalt color as the lot so they read as one surface
+     (the shopping center's own service roads and driveways only; public roads keep their look). Check every
+     service road of the center for another stub that stops short of the lot and join those too (same place,
+     same fault); list them.
+
+2b. Creek track: PROPOSALS A AND B, MARKED IN THE WORLD. Dan: "can code layout markers for me on the new trail
+   proposal and different color markers for where the proposed pipe is. I would also say the river is on both
+   sides of the road. We could start loop around jump the road to the other side and do a loop there as well
+   potentially. Maybe do an a and b proposal laid out with markers that I can see easily?"
+   - Proposal A: the loop already proposed (north of New Chastain Road, 1.58 km, J1 to J3, C1 to C3, pipe P1).
+   - Proposal B: a figure of eight. Noonday Creek also runs south of New Chastain Road: a loop north of the
+     road and a loop south of it, joined by JUMPING New Chastain Road (a big-air jump over the road from one
+     side to the other; say how the lap gets back, a second jump or under the creek bridge). Work out the south
+     loop from the ground and the creek there as A was worked out (what is in the way, houses, slopes), with
+     its own jumps, crossings and at least one pipe candidate if the ground allows.
+   - Markers, easy to see while driving and from a distance: tall thin posts or light beams every 20 to 25 m
+     along each line, one color for A, a clearly different color for B (where A and B share a line, both
+     colors), a third color for each pipe (a post at each mouth and a row over its run), and a distinct marker
+     with a floating label at each jump (J1...), crossing (C1...) and checkpoint. Labels readable at 30 m,
+     American spelling, sign rule applies. No colliders, nothing a vehicle can touch, no change to the terrain,
+     no trees cleared: markers only.
+   - Shown from the debug menu (a row: Proposal markers Off / A / B / Both; off by default), with a row to put
+     the vehicle at the start of each proposal so Dan does not have to find it. Marked temporary in code and
+     removed when Dan has chosen.
+   - Also an updated overhead picture with A and B in the same colors as the markers (git-ignored if it shows
+     houses), with lap lengths, and what B costs over A.
+
+2c. Reverse Chastain Glen loop: SHORTCUT PROPOSALS, MARKED THE SAME WAY. Dan: "I noticed there is now a reverse
+   track of the original... It seemed to work pretty well for stragiht forward race. Can it show me some good
+   spots for shortcuts. Since this track is so small the shortcuts shouldn't be huge, but let me emphasize that
+   I want jumps with big air or at the very least something interesting and creative".
+   - Three to five candidates for the REVERSE direction, short (the lap is 1247 m), each one either a jump with
+     big air or something interesting and creative, not a plain cut across grass. Use what is there: the
+     hills (the steep one by Dan's house), the pond and its docks, the pool, the creek ravine east of the loop,
+     roofs, decks, the shopping center behind the neighborhood, the Round 6 candidate list
+     (`Data/screenshots/round6/shortcut_candidates.md`) driven backwards. #2 and #6 are forward-only as built;
+     say whether either works in reverse as it is.
+   - For each: where it leaves the lap and rejoins, its length and what it saves, the air (height and distance
+     at race speed, from a real trajectory, not a guess), what it would look like (the design rules: found not
+     signposted, looks like something that could be there, a ramp's look fits its real size, never slows or
+     traps a vehicle), which checkpoints it would forgive, and what is in the way. Houses are restored if
+     touched; nothing is attached to house 1763.
+   - Markers in the world in a fourth color with a label per candidate (R1...), on the same debug-menu row
+     (add: Reverse shortcuts), and an overhead picture. Nothing built.
+
+2d. Rebuild the exe (stay off Dan's screen, muted) and STOP for Dan: he drives round with the markers on and
+   picks A or B, the pipes, and the reverse shortcuts. Report: the two fixes, how to turn the markers on, the
+   two overheads, the candidates in a short table, questions.
+
 3. After Dan approves: build the track (graded into the terrain in the map build, a dirt surface, trees cleared
    off it and solid beside it, no snags; jumps that look like something that could be there and whose look fits
    their real size; crossings are shallow water, always escapable).

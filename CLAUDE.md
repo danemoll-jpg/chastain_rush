@@ -212,12 +212,15 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 18 in `TODO.md`:** Part A, a driveway fix at the
-shopping center (Dan's report), committed on its own; Part B, the made-up
-dirt track through the creek woods with drive-through pipe shortcuts:
-propose it to Dan on an overhead FIRST and stop for his answer. Round 17
-(follow-ups, shopping center) is built, driven and approved by Dan. Queued
-after 18: Chastain Commons, Chastain Enclave and Grasmere Court.
+**Active work is Round 18 in `TODO.md`, items 2a to 2d:** two reports
+from Dan (smooth the ground at the New Chastain / Chastain Corner junction;
+join a service-road stub to the shopping-center lot and make the center's
+driveways the lot's color), then MARKERS ONLY in the world, shown from the
+debug menu: creek track proposals A (north loop) and B (figure of eight
+that jumps New Chastain Road), their pipes in another color, and three to
+five shortcut candidates for the reverse Chastain Glen loop (big air or
+creative). Build none of them; rebuild the exe and stop for Dan's choice.
+Queued after 18: Chastain Commons, Chastain Enclave and Grasmere Court.
 
 **Round 17 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A
 (b512061, b3bfe9f), then item 5 and Part B: Dan's two junction jumps smoothed in the map build at those spots only
@@ -351,7 +354,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-10_20-18-10-199_3f4ac2` (BUG-001 shopping-center driveways; in TODO.md, Round 18 Part A).
+`2026-10-10_23-08-26-878_0e77b1` (BUG-001 junction ground, BUG-002 service-road stub and driveway color; in TODO.md, Round 18 item 2a).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
