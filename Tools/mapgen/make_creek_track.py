@@ -66,7 +66,7 @@ JUMPS = [   # id, kind, x, z, lip height, run-up length, table length, landing l
 #   id, look, lip x, z, lip height (m over the ground under it), lip angle (deg), take-off length, width, landing from / to (m past the lip),
 #   vmax (Round 19 checks: BJ2 and BJ4 at 24, the trail bends soon after their landings)
 BIG_JUMPS = [
-    ("BJ1", "footbridge", 2329.7, 1186.4, 2.2, 23.0, 16.5, 6.0, 12.0, 62.0, 27.0),    # the side gully: a washed-out footbridge, its middle gone
+    ("BJ1", "footbridge", 2329.7, 1186.4, 2.2, 23.0, 16.5, 7.0, 12.0, 62.0, 27.0),    # the side gully: a washed-out footbridge, its middle gone (Round 20: 7 m wide, its rails clear of the line)
     ("BJ2", "stepdown", 2517.6, 1143.4, 1.2, 20.0, 7.5, 7.0, 10.0, 66.0, 24.0),   # off the top of the bank, down to the creek flats
     ("BJ3", "fallen_tree", 2529.6, 996.5, 1.7, 25.0, 8.0, 7.0, 10.0, 66.0, 27.0),     # an earth ramp heaped against a huge fallen tree
     ("BJ4", "outcrop", 2485.0, 668.2, 1.6, 24.0, 8.0, 7.0, 10.0, 66.0, 24.0),     # a granite slab tilted up out of the hump
@@ -253,8 +253,8 @@ pipes = json.load(open(PIPES, encoding="utf-8"))
 p1 = [p for p in pipes["pipes"] if p["id"] == "P1"][0]
 A = np.array(p1["a"]); B = np.array(p1["b"])
 # from the trail on the creek's west side, straight along the pipe's axis (25 m: down the bank and across the creek on the
-# graded ford, Data/pipes/pipes.json approach_a) into the inlet, through, out on the pond's west shore, then left up the dry
-# slope west of the pond (the pond's edge ends about z 1340) and onto the trail past it. Trunks on the way in and out go
+# graded ford, Data/pipes/pipes.json approach_a) into the inlet, through, out on the pond's west shore and over the pond
+# (Round 20, below) onto the trail's east side. Trunks on the way in and out go
 # ('clear_lines', as on the trail; nothing else marks it: shortcuts are found, not signposted)
 uA = (B - A) / np.linalg.norm(B - A)
 # the turn off the trail: a circular arc of 11 m radius, tangent to the trail where it leaves and to the pipe's axis where it
@@ -272,15 +272,33 @@ for k in range(S((2309.0, 1272.0)), S((2296.0, 1312.0)) + 1):
     if best is None or off < best[0]: best = (off, k, c, phi, end)
 _, leave, c_in, phi_in, end_in = best
 arc = [c_in + rot2(line[leave % N1] - c_in, phi_in * t / 12.0) for t in range(13)]
-join = S((2402.7, 1367.6))
 path_in = [line[(leave - 8) % N1]] + [tuple(q) for q in arc] + [tuple(A - uA * 8.0), tuple(A)]
 print(f"P1 way in: leaves the trail at s {leave}, an arc of {R_IN:.0f} m turning {math.degrees(phi_in):.0f} degrees, onto the pipe's axis {float((A - end_in) @ uA):.0f} m before the inlet (off it by {best[0]:.2f} m)")
-# back onto the trail on a curve (a 70 degree corner at the join sent the AI wide into a trunk)
-path_out = [tuple(B), tuple(B + uA * 2.0), (2399.5, 1321.0), (2398.5, 1330.0), (2400.5, 1341.0), (2402.0, 1353.0), (2404.5, 1362.0), (2408.5, 1368.0),
-            line[(join + 6) % N1], line[(join + 16) % N1]]
+# Round 20 (BUG-002, Dan: "Lets make a ramp right here so that you don't have to drive through the lake"): out of the pipe
+# straight on along its axis, up a concrete outfall apron at the mouth (7 m, turned up to 24 degrees at its lip, 1.5 m over the
+# shore) and OVER the small pond to its east shore, then on across the little stream there and onto the trail's east side (the
+# old way out, left up the pond's west shore, ran into the water). An aimed launch (BigJump: 'vmin' to 'vmax' off the lip; a
+# vehicle under 10 m/s just rolls off into the shallow edge): every vehicle clears the water and comes down before the stream;
+# then a right turn onto the trail (brake after landing: it runs south-south-east there).
+OUT_RAMP, OUT_RISE, OUT_ANG, OUT_VMIN, OUT_VMAX, OUT_W = 7.0, 1.5, 24.0, 23.5, 26.0, 8.5
+P_out = B + uA * OUT_RAMP; y_out = ground(*B) + OUT_RISE
+table = {}
+for v in (16, 20, OUT_VMIN, OUT_VMAX):
+    t, dist, top = ballistic(P_out, uA, y_out, v, math.radians(OUT_ANG)); table[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+outfall = {"id": "P1J", "look": "outfall", "s_lip": -1.0, "lip": [round(float(P_out[0]), 2), round(float(P_out[1]), 2)], "dir": [round(float(uA[0]), 5), round(float(uA[1]), 5)],
+           "height": OUT_RISE, "lip_y": round(float(y_out), 3), "angle_deg": OUT_ANG, "ramp_m": OUT_RAMP, "width": OUT_W, "land_from": 30.0, "land_to": 70.0,
+           "vmin": OUT_VMIN, "vmax": OUT_VMAX, "design": OUT_VMIN, "flights": table}
+big.append(outfall); landings.append({"id": "P1J", "poly": big_zone(outfall)})
+print(f"  P1J outfall: lip ({P_out[0]:.1f}, {P_out[1]:.1f}) at {y_out:.2f} m, {OUT_ANG} deg; air / distance / top: " +
+      ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m {a[2]:.1f} m" for v, a in table.items()))
+# after landing a right turn onto the trail's east side (it runs south-south-east there), eased over 40 m
+join2 = S((2494.6, 1307.2))
+path_out = [tuple(B)] + [tuple(B + uA * k) for k in (2.0, OUT_RAMP, 20.0, 35.0, 50.0, 62.0)] + [(2473.0, 1327.5), (2482.5, 1322.5), (2489.0, 1314.5),
+            line[join2 % N1], line[(join2 + 8) % N1], line[(join2 + 18) % N1]]
 path = resample(path_in + [tuple(A + uA * t) for t in np.arange(5.0, np.linalg.norm(B - A), 5.0)] + path_out, 2.0)
 clear_lines = [{"points": [round(float(v), 2) for q in resample(path_in[1:], 1.0) for v in q], "half": 3.5},
                {"points": [round(float(v), 2) for q in resample(path_out, 1.0) for v in q], "half": 3.5}] + big_clear
+clear_lines.append({"points": [round(float(v), 2) for q in [P_out - uA * 2.0, P_out + uA * (outfall["land_to"] + 6.0)] for v in q], "half": 5.5})
 sc_p1 = {"id": "p1_pipe", "name": "The drain pipe", "direction": "forward", "path": [round(float(v), 2) for q in path for v in q],
          "half_width_m": 3.0, "entry_inset_m": 14.0, "entry_margin_m": 2.0, "forgives": [2], "ai_speed": 16.0}
 
@@ -330,7 +348,7 @@ print(f"lap {L1:.0f} m; offsets: max {np.max(np.abs(off_s)):.2f} m, mean {np.mea
 print(f"trunks within {CLEAR_HALF} m of the line: {len(base_hits)} on the marked line, {len(gone)} after moving it round them; "
       f"{len(gone_wide)} more at the wide spots (jumps, fords, the grid, J4); in all {len(gone) + len(gone_wide - gone)}")
 for j in jumps: print(f"  {j['id']} {j['kind']}: start s {j['s_start']}, lip s {j['s_lip']:.1f}, {j['height']} m, look {j['look']}")
-print(f"  J4 lip s {lip4}; gate s {gate_s}; creek bed s {c5a}..{c6}; P1 path {len(path)} points, leaves the lap at s {leave}, rejoins at s {join}")
+print(f"  J4 lip s {lip4}; gate s {gate_s}; creek bed s {c5a}..{c6}; P1 path {len(path)} points, leaves the lap at s {leave}, rejoins at s {join2}")
 for c in cps: print(f"  CP{c['id']} s {c['s']:.0f} ({c['label']})")
 print(f"wrote {OUT_TRACK} and {OUT_ROUTE}")
 

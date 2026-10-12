@@ -48,6 +48,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound14") { var r = go.AddComponent<Round14Runner>(); r.outputDir = args[i + 1]; }   // Round 14: what slows the vehicles (items 2 and 5)
                 if (args[i] == "-exeRound18") { var r = go.AddComponent<Round18Runner>(); r.outputDir = args[i + 1]; }   // Round 18: items 3 to 9 (the creek trail, P1, R1, R3, the race)
                 if (args[i] == "-exeRound19") { var r = go.AddComponent<Round19Runner>(); r.outputDir = args[i + 1]; }   // Round 19: items 1 to 6 (the wider trail, big jumps, the rock bar, the pipe, R3's hint, R1)
+                if (args[i] == "-exeRound20") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; }   // Round 20: BUG-001 and BUG-002, the map
                 if (args[i] == "-exeShortcut") { var r = go.AddComponent<ShortcutCheckRunner>(); r.outputDir = args[i + 1]; Application.runInBackground = true; }   // Round 10: the shortcut check in the exe (-shortcutOnly <id>, -shortcutSpeeds 20,30, -shortcutNoRace)
                 if (args[i] == "-exeShots" && i + 2 < args.Length) { var r = go.AddComponent<ExeShotsRunner>(); r.listPath = args[i + 1]; r.outputDir = args[i + 2]; }   // Round 9
             }

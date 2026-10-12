@@ -34,7 +34,7 @@ namespace ChastainRush
         [Serializable] class CtRoadJump { public string id; public float[] lip, dir; public float s_lip, ramp_m, lip_above_road_m, width_m, slope_start, slope_lip, landing_from_m, landing_slope, landing_half_m; }
         [Serializable] class CtZone { public string id; public float[] poly; }
         [Serializable] class CtClear { public float[] points; public float half; }
-        [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design; public float[] lip, dir; }
+        [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design, vmin; public float[] lip, dir; }   // Round 20: vmin (P1J)
         [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m = 1.25f, break_half_m; public CtJump[] jumps; public CtBigJump[] big_jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines; }
 
         const string CreekTrackFile = "Data/tracks/noonday_creek.json";

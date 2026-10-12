@@ -10,12 +10,13 @@ namespace ChastainRush
     // the trail vehicles arrive at up to 39 m/s, and on a short curved take-off at that speed their suspension cannot follow the
     // curve, so they left low and short of the two seconds). Faster than vmax it would overshoot the cleared landing into the
     // trees. Slower vehicles leave at the same angle at their own speed and land short on ground that is drivable. Launched: for
-    // the checks.
+    // the checks. Round 20 (P1J, the outfall over the pond): 'vmin' > 0 sends a vehicle that crosses the lip at 10 m/s or more
+    // off it at vmin at least, so everyone clears the water; a slower one just rolls off into the shallow edge.
     public sealed class BigJump : MonoBehaviour
     {
         public string id, look;
         public Vector3 lip, dir;          // the lip's middle (world), the jump's direction (flat, unit)
-        public float halfWidth = 3.5f, vmax = 27f, angle = 20f;   // angle: the lip's, degrees
+        public float halfWidth = 3.5f, vmax = 27f, angle = 20f, vmin = 0f;   // angle: the lip's, degrees
         public static int Governed { get; private set; }
         public static event System.Action<BigJump, ArcadeVehicle, float> Launched;   // the jump, the vehicle, its speed off the lip (before any cap)
         static readonly List<BigJump> all = new List<BigJump>();
@@ -46,6 +47,7 @@ namespace ChastainRush
                 Launched?.Invoke(this, car, speed);
                 if (speed > vmax) Governed++;
                 float s = Mathf.Min(speed, vmax), a = angle * Mathf.Deg2Rad, side = Vector3.Dot(v, left) * 0.5f;
+                if (vmin > 0f && speed >= 10f) s = Mathf.Max(s, vmin);
                 car.Body.linearVelocity = dir * (s * Mathf.Cos(a)) + Vector3.up * (s * Mathf.Sin(a)) + left * side;
             }
         }

@@ -13,6 +13,7 @@ using UnityEngine.Rendering;
 //   fallen_tree  BJ3: an earth ramp heaped against a huge fallen tree lying across the trail (1.6 m through, its root plate up on
 //                one side, its top on the other); the lip is the log; behind it the earth falls away, so nothing to drop into
 //   outcrop      BJ4: a granite slab tilted up out of the hump on the south loop
+//   outfall      P1J (Round 20, BUG-002): P1's outfall apron at the pipe's mouth, turned up, over the small pond (not on the trail)
 // The driven surfaces are prisms (BuildPrism: mesh colliders, frictionless, "sc" names so VehicleSurfaceContacts treats them as
 // ramps); railings are solid, everything else (piers, planks, the log, the root plate) is look only. Each jump gets a BigJump
 // (runtime: the launch speed cap) and its landing zone comes from the file (RampHold's landing carry).
@@ -49,7 +50,9 @@ namespace ChastainRush
 
                 if (b.look == "footbridge")
                 {
-                    // the near span: an open deck, 5 degrees, the last 4.5 m heaved up to the lip's angle
+                    // the near span: an open deck, 5 degrees, the last 4.5 m heaved up to the lip's angle. Round 20 (BUG-001): its end
+                    // starts at the lowest ground across its width (it stood a little proud where the ground falls away to one side)
+                    for (float lat = -hw; lat <= hw + 1e-3f; lat += 0.5f) { var q = O + nl * lat; y0 = Mathf.Min(y0, Ground(terrain, q.x, q.y) - 0.03f); }
                     const float Lk = 4.5f; float R = y1 - y0, s1 = (R - k * Lk * 0.5f) / (b.ramp_m - Lk * 0.5f);
                     var pr = new List<float>();
                     for (float s = 0f; s <= b.ramp_m + 1e-3f; s += 0.5f)
@@ -59,20 +62,36 @@ namespace ChastainRush
                     }
                     BuildPrism(Prism("deck", pr.ToArray(), b.ramp_m, hw, OldWood), terrain, mats, jr);
                     float DeckY(float s) => Profile(pr.ToArray(), s);
-                    // railings (solid): posts every 2 m, a top rail and a mid rail
-                    var rail = new MeshBuilder();
+                    // railings: posts every 2 m, a top rail and a mid rail. Round 20 (BUG-001, Dan: "there is a catch right here that
+                    // brings the bike to a stop"): the first post faced the approach and stopped a vehicle 2 m off the line dead. The
+                    // near ends now flare out (wing rails, 0.8 m wider at the deck's end, in over the first 3.5 m) and only a smooth
+                    // panel along each railing is solid (no post faces): a vehicle that meets one glances off it
+                    const float Flare = 0.8f, FlareLen = 3.5f;
+                    float RailLat(float s) => hw - 0.12f + Flare * (1f - Smooth01(Mathf.Clamp01(s / FlareLen)));
+                    float RailFoot(float s, float lat) { var q = O + d * s + nl * lat; return Mathf.Abs(lat) > hw ? Mathf.Min(DeckY(s), Ground(terrain, q.x, q.y)) : DeckY(s); }
+                    var rail = new MeshBuilder(); var railWall = new MeshBuilder();
                     foreach (float side in new[] { 1f, -1f })
                     {
                         Vector3? pt = null, pm = null;
-                        for (float s = 0.3f; s <= b.ramp_m - 0.6f; s += 2f)
+                        for (float s = 0f; s <= b.ramp_m - 0.6f; s += 2f)
                         {
-                            var bt = W(s, side * (hw - 0.12f), DeckY(s)); Post(rail, bt, 1.05f, 0.12f, Shade(OldWood, 0.85f));
-                            var top = bt + Vector3.up * 1.0f; var mid = bt + Vector3.up * 0.5f;
+                            float lat = side * RailLat(s);
+                            var bt = W(s, lat, RailFoot(s, lat)); Post(rail, bt, 1.05f + DeckY(s) - bt.y, 0.12f, Shade(OldWood, 0.85f));
+                            var top = W(s, lat, DeckY(s) + 1.0f); var mid = W(s, lat, DeckY(s) + 0.5f);
                             if (pt.HasValue) { Beam(rail, pt.Value, top, 0.09f, 0.12f, OldWood); Beam(rail, pm.Value, mid, 0.07f, 0.1f, Shade(OldWood, 0.9f)); }
                             pt = top; pm = mid;
                         }
+                        // the solid panel: both sides, from just under the deck to the top rail
+                        float sEnd = Mathf.Floor((b.ramp_m - 0.6f) / 2f) * 2f;
+                        for (float s = 0f; s < sEnd - 1e-3f; s += 0.5f)
+                        {
+                            float s2 = Mathf.Min(s + 0.5f, sEnd), l1 = side * RailLat(s), l2 = side * RailLat(s2);
+                            Vector3 a0 = W(s, l1, RailFoot(s, l1) - 0.2f), a1 = W(s, l1, DeckY(s) + 1.05f), b0 = W(s2, l2, RailFoot(s2, l2) - 0.2f), b1 = W(s2, l2, DeckY(s2) + 1.05f);
+                            var o = new Vector3(nl.x, 0f, nl.y) * side;
+                            Face(railWall, a0, b0, b1, a1, o); Face(railWall, a0, b0, b1, a1, -o);
+                        }
                     }
-                    var rg = rail.ToObject(b.id + " railings", mats.House, jr, false); AddCollider(rg, rail, b.id + " railings collider");
+                    var rg = rail.ToObject(b.id + " railings", mats.House, jr, false); AddCollider(rg, railWall, b.id + " railings collider");
                     // under it: two stringers and posts down to the ground every 4 m (look only)
                     foreach (float side in new[] { 1f, -1f })
                     {
@@ -173,9 +192,29 @@ namespace ChastainRush
                     }
                     Debug.Log($"[Round19] {b.id} outcrop: a granite slab {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width + 1f:0.0} m at its widest");
                 }
+                else if (b.look == "outfall")
+                {
+                    // Round 20 (BUG-002): P1's outfall apron, a concrete slab from the pipe cut's mouth out into the pond's edge, its
+                    // end turned up (a spillway lip); sloped concrete sides and back into the water (a vehicle in the pond rides up
+                    // them, never into a wall); creek rock heaped either side of it in the shallows (look only)
+                    var p = Prism("apron", KickerProfile(), b.ramp_m, hw, new Color(0.58f, 0.57f, 0.54f), new[] { 1, 2, 3 });
+                    BuildPrism(p, terrain, mats, jr);
+                    for (int i = 0; i < 8; i++)
+                    {
+                        float side = i % 2 == 0 ? 1f : -1f, s = 0.5f + (i / 2) * 2f, r = 0.45f + 0.4f * Hash01(i, 961);
+                        var q = O + d * s + nl * side * (hw + 0.6f + 0.8f * Hash01(i, 963)); float g = Ground(terrain, q.x, q.y);
+                        look.Tint = Shade(Granite, 0.75f + 0.2f * Hash01(i, 965));
+                        var cc = new Vector3(q.x, g - 0.1f, q.y);
+                        Vector3[] dirs = { Vector3.right, Vector3.forward, Vector3.left, Vector3.back };
+                        var apex = cc + Vector3.up * (r + Mathf.Max(0f, DeckTop(s) - g) * 0.6f);
+                        for (int k2 = 0; k2 < 4; k2++) TriFace(look, cc + dirs[k2] * r * 1.4f, cc + dirs[(k2 + 1) % 4] * r * 1.4f, apex, dirs[k2] + dirs[(k2 + 1) % 4] + Vector3.up);
+                    }
+                    Debug.Log($"[Round20] {b.id} outfall: a concrete apron {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0.0} to {b.vmax:0} m/s");
+                    float DeckTop(float s) => Profile(KickerProfile(), s);
+                }
                 if (look.Count > 0) { var lg = look.ToObject(b.id + " look", mats.House, jr, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 // the runtime side: the launch speed cap
-                var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg;
+                var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg; bj.vmin = b.vmin;
             }
         }
     }
