@@ -72,6 +72,21 @@ BIG_JUMPS = [
     ("BJ4", "outcrop", 2485.0, 668.2, 1.6, 24.0, 8.0, 7.0, 10.0, 66.0, 24.0),     # a granite slab tilted up out of the hump
 ]
 BIG_DESIGN, BIG_VMAX = 24.0, 27.0
+# Round 21, the reverse race (Dan: "a straight up reverse version of the noonday creek trail"). Every forward take-off faced the reverse
+# lap with a wall (the lip's end; BJ1's broken span with a tunnel under it). Each big jump gets a back: from its lip down to the ground
+# at about 20 degrees (BJ1: earth and broken planks heaped against the broken end, down into the gully; BJ2: earth down the bank; BJ3:
+# the earth behind the log, now 20 degrees instead of 37; BJ4: the slab's back as a sloped rock shoulder). Coming the other way that
+# back is the take-off (a BigJump the other way at the same lip, its own angle and speed cap), and the forward take-off is the landing;
+# a forward vehicle that comes up short lands on the back. Reverse speed caps: BJ1 to BJ3 land on 60 m of straight trail behind them;
+# behind BJ4 the trail bends after 20 m, so its reverse launch is held to 17 m/s.
+#   id: (back angle deg, reverse lip angle deg, reverse vmax)
+BIG_REVERSE = {"BJ1": (20.0, 21.0, 24.0), "BJ2": (20.0, 21.0, 24.0), "BJ3": (20.0, 21.0, 24.0), "BJ4": (20.0, 20.0, 17.0)}
+# J4 in reverse (Dan: "The road jump over New Chastain Road in reverse too"): a second dirt kicker, the mirror of J4, up the south bank to
+# a lip on the south verge 31.5 m past J4's lip (New Chastain Road's two carriageways lie 5 to 27 m past it), over the road onto J4's
+# own kicker (its slope is the landing). Both kickers get a 4 m back down to the verge facing the road, so a vehicle short of either
+# jump drives across the road and over the other one (a hump, never a wall). The reverse launch is aimed (BigJump: anyone over its lip
+# at 10 m/s or more leaves at 23 to 25 m/s, 20 degrees): it clears J4's lip by about 2 m and comes down 13 to 22 m down J4's slope.
+RJ4_LIP_M, RJ4_BACK_M, RJ4_ANGLE, RJ4_VMIN, RJ4_VMAX = 31.5, 4.0, 20.0, 23.0, 25.0
 CROSSINGS = [("C1", 2333, 1168), ("C2", 2306, 1360), ("C3", 2443, 1379), ("C4", 2545, 440), ("C5", 2432, 728), ("C6", 2420, 800)]
 CHECKPOINTS = [(1, 2338, 1130, "up the creek"), (2, 2340, 1358, "at the hairpin"), (3, 2516, 1170, "down the east side"),
                (4, 2558, 500, "south loop"), (5, 2466, 560, "south loop, west side")]
@@ -84,7 +99,7 @@ BREAK_HALF = 6.0             # the trees left within this of the line snap when 
 TREAD_HALF = 2.25
 STEP = 1.0
 SETTINGS = {
-    "name": "Noonday Creek", "direction": "forward", "directions": ["forward"], "laps": 3,
+    "name": "Noonday Creek", "direction": "forward", "directions": ["forward", "reverse"], "laps": 3,   # Round 21: and reverse
     "gate_half_width_m": 5.0, "checkpoint_half_width_m": 5.0, "gate_below_m": 6.0, "gate_above_m": 25.0,
     "reverse_grid_back_m": 45.0,
     # Dan: "perhaps even we restrict it to motorcycles and rtvs"; Claude added the mower (1.15 m wide, it fits)
@@ -203,6 +218,7 @@ crossings = []
 for cid, x, z in CROSSINGS:
     s = S((x, z)); crossings.append({"id": cid, "s": s}); widen(s - 8, s + 8, WIDE_HALF)
 widen(gate_s - GRID_BACK - 5, gate_s + 5, WIDE_HALF)
+widen(gate_s - 5, gate_s + SETTINGS["reverse_grid_back_m"] + 10, WIDE_HALF)   # Round 21: the reverse grid, 45 m past the gate (forward stations)
 # Round 19: the big jumps. The take-off points along the line at the lip; trajectories over the real ground (g 9.81, no drag, as
 # the game) at each lip speed for the report; the flight's corridor cleared of trunks (a straight line, 'clear_lines' below)
 def ballistic(P, d, y0, v, th):
@@ -218,13 +234,21 @@ for bid, look, x, z, h, ang, ramp, width, l0, l1, vmax in BIG_JUMPS:
     table = {}
     for v in (14, 18, 21, 24, 27):
         t, dist, top = ballistic(P, d, y0, v, math.radians(ang)); table[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+    back_ang, rev_ang, rev_vmax = BIG_REVERSE[bid]
+    rtable = {}
+    for v in (14, 18, 21, rev_vmax):
+        t, dist, top = ballistic(P, -d, y0, v, math.radians(rev_ang)); rtable[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+    rev_far = max(a_[1] for a_ in rtable.values())
     big.append({"id": bid, "look": look, "s_lip": float(s), "lip": [round(float(P[0]), 2), round(float(P[1]), 2)], "dir": [round(float(d[0]), 5), round(float(d[1]), 5)],
                 "height": h, "lip_y": round(float(y0), 3), "angle_deg": ang, "ramp_m": ramp, "width": width, "land_from": l0, "land_to": l1, "vmax": vmax, "design": BIG_DESIGN,
-                "flights": table})
+                "flights": table, "back_angle": back_ang, "rev_angle": rev_ang, "rev_vmax": rev_vmax, "rev_land_to": round(rev_far + 6.0, 1), "rev_flights": rtable})   # Round 21
+    widen(s - rev_far - 8, s + 2, WIDE_HALF)   # Round 21: the reverse landing
+    big_clear.append({"points": [round(float(v), 2) for q in [P, P - d * (rev_far + 8.0)] for v in q], "half": 5.5})
     widen(s - ramp - 12, s + l1 + 8, WIDE_HALF)
     big_clear.append({"points": [round(float(v), 2) for q in [P - d * (ramp + 8.0), P + d * (l1 + 6.0)] for v in q], "half": 5.5})
     print(f"  {bid} {look}: lip s {s} ({P[0]:.1f}, {P[1]:.1f}), {h} m at {ang} deg; air / distance / top at the lip speed: " +
-          ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m {a[2]:.1f} m" for v, a in table.items()))   # the grid (RaceController moves a slot toward the line where it is not clear)
+          ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m {a[2]:.1f} m" for v, a in table.items()) +
+          f"; REVERSE (off its back at {rev_ang} deg, held to {rev_vmax}): " + ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m" for v, a in rtable.items()))   # the grid (RaceController moves a slot toward the line where it is not clear)
 lip4 = S(J4_LIP)
 widen(lip4 - 30, lip4 + 70, 3.5)
 c5a, c6 = S((2432, 712)), S((2420, 801))
@@ -245,8 +269,23 @@ def big_zone(b):   # Round 19: from just past the take-off to beyond the longest
     P, d = np.array(b["lip"]), np.array(b["dir"]); n = np.array([-d[1], d[0]])
     return [round(float(v), 2) for q in [P + d * 3 + n * 6.5, P + d * (b["land_to"] + 10) + n * 7.5, P + d * (b["land_to"] + 10) - n * 7.5, P + d * 3 - n * 6.5] for v in q]
 landings += [{"id": b["id"], "poly": big_zone(b)} for b in big]
+def big_zone_rev(b):   # Round 21: the reverse landing, behind the lip (the forward take-off and its run-up)
+    P, d = np.array(b["lip"]), -np.array(b["dir"]); n = np.array([-d[1], d[0]])
+    return [round(float(v), 2) for q in [P + d * 3 + n * 6.5, P + d * (b["rev_land_to"] + 4) + n * 7.5, P + d * (b["rev_land_to"] + 4) - n * 7.5, P + d * 3 - n * 6.5] for v in q]
+landings += [{"id": b["id"] + "R", "poly": big_zone_rev(b)} for b in big]
 landings.append({"id": "J4", "poly": [round(float(v), 2) for p in [j4(14) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(110) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6,
                                                                   j4(110) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(14) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6] for v in p]})
+
+# Round 21: J4 in reverse (RJ4): the flight over the road from the south verge, onto J4's slope; its landing zone beyond J4's foot
+rj4_lip = np.array(J4_LIP) + J4_DIR * RJ4_LIP_M
+rj4_y = ground(*(np.array(J4_LIP) + J4_DIR * 22.7)) + 1.6   # the south carriageway's height (+ J4's 1.6 m), as the build does for J4
+rtab4 = {}
+for v in (RJ4_VMIN, RJ4_VMAX):
+    t, dist, top = ballistic(rj4_lip, -J4_DIR, rj4_y, v, math.radians(RJ4_ANGLE)); rtab4[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+print(f"  RJ4 (J4 in reverse): lip {RJ4_LIP_M} m past J4's on the south verge at about {rj4_y:.2f} m, {RJ4_ANGLE} deg, {RJ4_VMIN} to {RJ4_VMAX} m/s over the road: " +
+      ", ".join(f"{v} m/s {a[0]:.2f} s {a[1]:.0f} m ({a[1] - RJ4_LIP_M:.0f} m past J4's lip)" for v, a in rtab4.items()))
+landings.append({"id": "RJ4", "poly": [round(float(v), 2) for p in [j4(-6) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(-36) + np.array([-J4_DIR[1], J4_DIR[0]]) * 6,
+                                                                   j4(-36) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6, j4(-6) - np.array([-J4_DIR[1], J4_DIR[0]]) * 6] for v in p]})
 
 # ---------------------------------------------------------------- 4. the pipe shortcut P1 (its layout: Data/pipes/pipes.json)
 pipes = json.load(open(PIPES, encoding="utf-8"))
@@ -380,6 +419,13 @@ def lap_gap(P, d, ramp, half):   # the ramp's nearest edge to the trail's line (
 print(f"  N2: {float(s2[-1]):.0f} m of line, leaves the lap at s {k2 - 14}, rejoins at s {k2j + 12} ({(k2j + 12 - (k2 - 14)) % N1} m of lap); kicker {lap_gap(L2, d2, 8.0, 3.0):.1f} m from the trail's line")
 print(f"  N5: {float(s5[-1]):.0f} m of line, leaves the lap at s {k5 - 14}, rejoins at s {k5j + 10} ({(k5j + 10 - (k5 - 14)) % N1} m of lap); log ramp {lap_gap(L5, d5, 8.0, 3.0):.1f} m from the trail's line")
 
+# Round 21: the reverse race's held speeds, in the reverse lap's stations (RaceRoute: the loop backwards, station = lap - forward station)
+def sr(sf): return round(float((L1 - sf) % L1), 1)
+ai_zones_rev = [{"id": j["id"] + "R", "s0": round(sr(j["s_lip"] + j["table"] + j["down"]) - 35, 1), "s1": round(sr(j["s_lip"]) + 2, 1), "speed": 20.0} for j in jumps]   # the tabletops backwards: up the landing face
+ai_zones_rev.append({"id": "RJ4", "s0": round(sr(lip4 + RJ4_LIP_M) - 28 - 45, 1), "s1": round(sr(lip4 + RJ4_LIP_M) + 1, 1), "speed": 24.0})
+ai_zones_rev += [{"id": b["id"] + "R", "s0": round(sr(b["s_lip"]) - 6 - 40, 1), "s1": round(sr(b["s_lip"]) + 2, 1), "speed": BIG_DESIGN} for b in big if b["s_lip"] >= 0]
+for z in ai_zones_rev: z["s0"] = round(z["s0"] % L1, 1); z["s1"] = round(z["s1"] % L1, 1)
+
 # ---------------------------------------------------------------- 5. write
 def flat(p): return [round(float(v), 2) for q in p for v in q]
 lead = [line[(N1 - 35 + k) % N1] for k in range(0, 36, 1)]   # the lap's last 35 m, up to its first point
@@ -390,7 +436,9 @@ track = {
     "jumps": jumps, "big_jumps": big, "crossings": crossings, "creek_bed": {"s0": c5a, "s1": c6},
     "road_jump": {"id": "J4", "lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4,
                   "ramp_m": 28.0, "lip_above_road_m": 1.6, "width_m": 5.0, "slope_start": 0.11, "slope_lip": 0.25,
-                  "landing_from_m": 27.0, "landing_slope": 0.09, "landing_half_m": 5.0},
+                  "landing_from_m": 27.0, "landing_slope": 0.09, "landing_half_m": 5.0,
+                  # Round 21: a back down to the verge facing the road, and the reverse kicker (RJ4) up the south bank, with its own back
+                  "back_m": RJ4_BACK_M, "rev_lip_m": RJ4_LIP_M, "rev_ramp_m": 28.0, "rev_angle": RJ4_ANGLE, "rev_vmin": RJ4_VMIN, "rev_vmax": RJ4_VMAX},
     "landing_zones": landings, "clear_lines": clear_lines,
 }
 route = dict(SETTINGS)
@@ -398,7 +446,7 @@ route.update({
     "source": "Tools/mapgen/make_creek_track.py. Coordinates are map meters (= Unity x, z); heights come from the world.",
     "lap_length_m": round(L1, 1), "loop": flat(np.vstack([line, line[:1]])), "gate_s": gate_s,
     "lead_in": flat(lead), "lead_in_length_m": 35.0, "checkpoints": cps, "junctions": [], "loop_pieces": [],
-    "official_shortcuts": [sc_p1, sc_n2, sc_n5], "closures": [], "ai_zones": ai_zones,
+    "official_shortcuts": [sc_p1, sc_n2, sc_n5], "closures": [], "ai_zones": ai_zones, "ai_zones_reverse": ai_zones_rev,
     # for the checks (Round18Runner): J4 and the creek-bed run, in lap stations
     "j4": {"lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4, "road_far_edge_m": 26.0},
     "creek_bed_s": [c5a, c6],

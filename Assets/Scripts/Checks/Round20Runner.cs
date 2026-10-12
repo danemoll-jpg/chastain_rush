@@ -45,7 +45,7 @@ namespace ChastainRush
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
-            if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races" };   // Round 21's default parts
+            if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races", "revlap", "fwdlap", "revslow", "revrace" };   // Round 21's default parts
             bool Do(string p) => parts == null || parts.Contains(p);
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
@@ -60,6 +60,12 @@ namespace ChastainRush
             // Round 21 (Round20Runner.R21.cs)
             if (Do("six")) yield return Guard(Six(ids));
             if (Do("races")) yield return Guard(Races());
+            // Round 21 Part B (Round20Runner.R21B.cs)
+            if (Do("revlap")) yield return Guard(LapJumps("reverse", ids));
+            if (Do("fwdlap")) yield return Guard(LapJumps("forward", ids));
+            if (Do("revslow")) yield return Guard(RevSlow());
+            if (Do("revrace")) yield return Guard(RevRace());
+            if (Do("bj1diag")) yield return Guard(Bj1Diag());
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

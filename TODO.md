@@ -2363,7 +2363,7 @@ fallback if the jump over a one-story 1572 is not safe: Round 20's working layou
 front, garage and porch, one of the neighborhood styles), so it reads as a normal smaller house, not half of one.
 Show Dan a picture of that house from the street before building it.
 
-**ACTIVE — Round 21: carry-overs, the reverse Noonday Creek race, and its shortcut candidates (Dan, 2026-10-12 10:00:
+**BUILT, not yet driven by Dan — Round 21: carry-overs, the reverse Noonday Creek race, and its shortcut candidates (Dan, 2026-10-12 10:00:
 "Lets fold everything into the next round").** The Round 20 follow-ups are built (commit 755f34e); Dan has not driven
 them yet. The two items added after that build (the AI shortcut rule, the AI makes mistakes) were never done: they are
 Part A here. The shortcut design rules in CLAUDE.md ("Shortcut design") apply to everything in this round.
@@ -2417,6 +2417,42 @@ of the track. Shortcuts should always be fun, and interesting".
    the map, plus an overhead picture. Build none of them; Dan picks after driving the reverse race.
 10. One targeted check per built piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
     list, "for Dan to check", the candidates in a short table, path to the exe.
+
+**STATUS of Round 21 (Claude, 2026-10-12): Parts A and B built and checked in the exe by script (minimized 1280 x 720, muted),
+not yet driven by Dan; Part C proposed on markers, nothing built.** Part A commit 03db48a. Check: `ChastainRush.exe -exeRound21 <dir>
+[-r21Only r1,six,races,revlap,fwdlap,revslow,revrace] -logFile <dir>\Player.log` (Checks/Round20Runner.R21.cs, R21B.cs). Pictures and
+lists: `local/round21/` (git-ignored). Imported from Racer: nothing.
+- 1. AI shortcut rule DONE: R1's fixed 0.85 removed; every shortcut follows ShortcutStrategy except N5 (lap option, 1.0). Chance: 12 %
+  at the front, 58 % when last and 200 m behind (each driver +/-4 %, kept to 6 to 65 %), the same for #2, #6, R1, R3, P1, N2.
+- 2. AI mistakes DONE. R1: a wooden step deck on the pool's near side (held slope to the rim, 2.2 m out, about 0.9 m into #6's
+  corridor); a vehicle off the step is caught over the pool (PoolHold) and drops in. Exe: 15 to 21 m/s off the lip all end in the
+  pool and get out; clean from 21.5 (cap 22); a fall costs 5.2 to 5.3 s (clean saves 2.7 to 4.2); #6 clean in all 11 vehicles. The
+  Skyfin Cruiser could not climb out of the pool (also before this round): the wading cap now grows after the stall, and a vehicle
+  still for 4 s in the water is lifted onto the exit deck (Skyfin: 12.1 s lost). R1 sloppy tries back on (0.3; x1.5 Easy, x0.6
+  Hard); AI sloppy x4 into the pool and out, no rescue. Elsewhere (DriverVariation): late braking (runs wide), curb clip on road
+  straights, short / off-line jumps at a route's jumps. Race checks (5 races, 15 drivers): wide line 9, early braking 20, jump off
+  line 4, late braking 16, short jump 6 (one an R1 sloppy try into the pool, out with no rescue), curb clip 12; all finished.
+- 3. Free cuts DONE: Chastain Glen checkpoints at lap stations 952, 1056, 1216 (replacing the filler at 1000.6; 7 in all), checkpoint
+  half width 12 m (was 14: cuts through the front yards beside the road passed the gates). free_cuts.py now treats a cut through a
+  gate's opening as passing it: 0 free cuts of 25 m or more left, both directions. #6 and R1 forgive CP5 (952), #2 and R3 CP2.
+- 4 to 7. Reverse Noonday Creek DONE (race setup: Route Noonday Creek, Direction Reverse). Same line, no variations needed: every
+  forward take-off had a wall facing the reverse lap, so each big jump got a back (about 20 degrees, a landing) that is the reverse
+  take-off (a BigJump the other way): BJ1R (earth and broken planks heaped against the broken end, meeting the fallen span in a V:
+  under the deck was a tunnel), BJ2R, BJ3R (behind the log, 20 instead of 37 degrees), BJ4R (held to 17 m/s: the trail bends 20 m
+  behind it); RJ4, J4's mirror on the south bank, an aimed launch north over New Chastain Road onto J4's slope; both road kickers
+  have a 4 m back toward the road. J1, J5, J6 work backwards as they are (smaller: the landing face is the take-off). Exe, flat out:
+  BJ1R 1.96 s 43 m, BJ2R 1.9 s 42 m, BJ3R 1.9 s 42 m, BJ4R 1.7 s 26 m, RJ4 2.0 to 2.1 s 44 to 49 m; forward unchanged (BJ1 56 m,
+  BJ3 60 m). Slow into every reverse take-off: drives on. P1, N2, N5 forward only (P1 backwards ends in the pond; N2 needs a kicker on
+  the other bank: candidate RC). Checkpoints in travel order (reverse CP1 = forward CP5), start / finish at the same gate, the grid 45 m
+  before it. Reverse race, 3 AI: all finished, 0, 0 and 1 recoveries.
+  Found, not changed (as Round 20's list): the scripted flat-out laps still run wide into trunks on some bends (forward: C3 bend,
+  east leg, south loop; reverse: lake corner, hairpin, south loop east side), and in reverse the drop into the creek bed under the
+  bridges is a big splash (27 to 10 m/s; one AI recovery there). Option for Dan: breakable trees at those bends.
+- 8, 9. Candidates PROPOSED (`python Tools/mapgen/reverse_creek_candidates.py`; `local/round21/reverse_candidates.png|txt`): RA Pipe
+  dive, RB Hairpin cut, RC Creek leap back (table in the round report; RD, a hop over the pond's outflow, dropped: 6 m). Markers in the
+  world (magenta; debug menu "Proposal markers" and "Go to", free roam only) and on the map: TEMPORARY, remove when Dan has chosen
+  (`MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/round21_markers.json`, `Assets/HandMade/Proposals/`,
+  `Tools/handmade/make_proposal_labels.py`).
 
 **QUEUED — Round 22: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race

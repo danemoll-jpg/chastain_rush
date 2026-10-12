@@ -213,7 +213,7 @@ namespace Racer
 
             if(RunIn) TargetSpeed=Mathf.Min(TargetSpeed,RunIn.SpeedAt(Car,runS,cornerGrip));
             bool held=false;
-            var zones=Race.RouteData!=null?Race.RouteData.ai_zones:null;
+            var zones=Race.AiZones;   // Chastain Rush, Round 21: the direction's own (reverse Noonday Creek)
             if(zones!=null&&!activeBranch&&!finished)
                 foreach(var z in zones)
                 {
@@ -387,7 +387,7 @@ namespace Racer
         // Chastain Rush, Round 21: the ai_zone (a jump) this car is in, or within 'ahead' metres before
         RouteAiZoneJson NearZone(float s,float ahead)
         {
-            var zones=Race.RouteData!=null?Race.RouteData.ai_zones:null; if(zones==null) return null;
+            var zones=Race.AiZones; if(zones==null) return null;
             foreach(var z in zones)
             {
                 float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);

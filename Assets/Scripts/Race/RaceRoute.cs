@@ -70,6 +70,7 @@ namespace ChastainRush
         public bool trail;
         public float ai_half_width_m, ai_lane_m, ai_pass_lane_m;
         public RouteAiZoneJson[] ai_zones;
+        public RouteAiZoneJson[] ai_zones_reverse;   // Round 21: the reverse race's held speeds (its own jumps), in the reverse lap's stations
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
         public bool AllowsVehicle(string id) => vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0;
     }

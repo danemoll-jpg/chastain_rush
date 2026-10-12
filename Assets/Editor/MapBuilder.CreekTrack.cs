@@ -21,6 +21,9 @@ using UnityEngine.Rendering;
 //   J4       the road jump over New Chastain Road: a dirt kicker up the north road bank (a prism, its look the dirt pile of
 //            shortcut #6), and on the far side a landing slope graded down the south bank from the road's edge. Short of the
 //            speed, a vehicle lands on the road and drives on down the same slope: no wall, nothing to reset from
+//            Round 21 (the reverse race): RJ4, J4's mirror, up the south bank to a lip on the south verge, an aimed launch (BigJump)
+//            north over the road onto J4's slope; both kickers have a 4 m back down to the verge facing the road (a vehicle short
+//            of either drives across and over the other: a hump, never a wall) and are landings (RampHold)
 //   tread    a dirt ribbon, 4.3 to 4.7 m wide, wavering, darker in the wheel lines; none on pavement or in the water
 //   trees    only the trunks within 'clear_half' of the line go (3.5 m on the trail, wider on bends, at the jumps, fords, grid, J4)
 //   landing  zones after each jump (RampHold's landing carry, as on #6)
@@ -31,10 +34,10 @@ namespace ChastainRush
         [Serializable] class CtJump { public string id, kind, look; public float s_start, s_lip, height, table, down, width; }
         [Serializable] class CtCrossing { public string id; public float s; }
         [Serializable] class CtRange { public float s0, s1; }
-        [Serializable] class CtRoadJump { public string id; public float[] lip, dir; public float s_lip, ramp_m, lip_above_road_m, width_m, slope_start, slope_lip, landing_from_m, landing_slope, landing_half_m; }
+        [Serializable] class CtRoadJump { public string id; public float[] lip, dir; public float s_lip, ramp_m, lip_above_road_m, width_m, slope_start, slope_lip, landing_from_m, landing_slope, landing_half_m, back_m, rev_lip_m, rev_ramp_m, rev_angle, rev_vmin, rev_vmax; }   // Round 21: back_m .. rev_vmax
         [Serializable] class CtZone { public string id; public float[] poly; }
         [Serializable] class CtClear { public float[] points; public float half; }
-        [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design, vmin; public float[] lip, dir, tracks; public CtHint hint; }   // Round 20: vmin (P1J); its follow-ups: tracks and a hint (N2, N5)
+        [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design, vmin; public float[] lip, dir, tracks; public CtHint hint; public float back_angle, rev_angle, rev_vmax; }   // Round 20: vmin (P1J); its follow-ups: tracks and a hint (N2, N5); Round 21: the back and the reverse launch
         [Serializable] class CtHint { public string kind; public float x, z, yaw; }
         [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m = 1.25f, break_half_m; public CtJump[] jumps; public CtBigJump[] big_jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines; }
 
@@ -311,10 +314,33 @@ namespace ChastainRush
                 var prof = new List<float>();
                 for (float s = 0f; s <= rj.ramp_m + 1e-3f; s += 1f) { prof.Add(s); prof.Add(y0 + a * s + (rj.slope_lip - a) * s * s / (2f * rj.ramp_m)); }
                 float hw = rj.width_m * 0.5f;
-                var poly = new[] { O + nl * hw, O - nl * hw, L - nl * hw, L + nl * hw };
+                // Round 21: the back, 'back_m' down to the verge on the road's side (the pavement starts 5 m past the lip)
+                float back = rj.back_m > 0f ? rj.back_m : 0f; var Lb = L + d * back;
+                if (back > 0f) { prof.Add(rj.ramp_m + 0.4f); prof.Add(y1 - 0.03f); prof.Add(rj.ramp_m + back); prof.Add(Ground(terrain, Lb.x, Lb.y) - 0.05f); }
+                var poly = new[] { O + nl * hw, O - nl * hw, Lb - nl * hw, Lb + nl * hw };
                 var pr = new ScPrism { name = "sc J4 road jump kicker", kind = "kicker", poly = poly.SelectMany(q => new[] { q.x, q.y }).ToArray(), origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y },
-                                       profile = prof.ToArray(), colour = new[] { 0.40f, 0.28f, 0.18f } };
+                                       profile = prof.ToArray(), colour = new[] { 0.40f, 0.28f, 0.18f }, landing = rj.rev_vmax > 0f };
                 BuildPrism(pr, terrain, mats, root);
+                if (rj.rev_vmax > 0f)
+                {
+                    // Round 21: RJ4, the mirror: from the south bank up to a lip on the south verge 'rev_lip_m' past J4's, the same curve and
+                    // height over the south carriageway, its own back toward the road; an aimed launch north (vmin to vmax)
+                    var RL = L + d * rj.rev_lip_m; var rd = -d; var RO = RL - rd * rj.rev_ramp_m; float ry0 = Ground(terrain, RO.x, RO.y) - 0.02f;
+                    var onRoadS = RL + rd * 6f; float roadS = Ground(terrain, onRoadS.x, onRoadS.y) + RoadLift["primary"] * vScale;
+                    float ry1 = roadS + rj.lip_above_road_m, ra = 2f * (ry1 - ry0) / rj.rev_ramp_m - rj.slope_lip;
+                    var rprof = new List<float>();
+                    for (float s = 0f; s <= rj.rev_ramp_m + 1e-3f; s += 1f) { rprof.Add(s); rprof.Add(ry0 + ra * s + (rj.slope_lip - ra) * s * s / (2f * rj.rev_ramp_m)); }
+                    var RLb = RL + rd * back;
+                    if (back > 0f) { rprof.Add(rj.rev_ramp_m + 0.4f); rprof.Add(ry1 - 0.03f); rprof.Add(rj.rev_ramp_m + back); rprof.Add(Ground(terrain, RLb.x, RLb.y) - 0.05f); }
+                    var rnl = new Vector2(-rd.y, rd.x);
+                    var rpoly = new[] { RO + rnl * hw, RO - rnl * hw, RLb - rnl * hw, RLb + rnl * hw };
+                    BuildPrism(new ScPrism { name = "sc RJ4 reverse road jump kicker", kind = "kicker", poly = rpoly.SelectMany(q => new[] { q.x, q.y }).ToArray(), origin = new[] { RO.x, RO.y }, axis = new[] { rd.x, rd.y },
+                                             profile = rprof.ToArray(), colour = new[] { 0.40f, 0.28f, 0.18f }, landing = true }, terrain, mats, root);
+                    var rg = new GameObject("RJ4 reverse road jump"); rg.transform.SetParent(root, false);
+                    var rb = rg.AddComponent<BigJump>(); rb.id = "RJ4"; rb.look = "road"; rb.lip = new Vector3(RL.x, ry1, RL.y); rb.dir = new Vector3(rd.x, 0f, rd.y); rb.halfWidth = hw;
+                    rb.angle = rj.rev_angle; rb.vmin = rj.rev_vmin; rb.vmax = rj.rev_vmax;
+                    Debug.Log($"[Round21] RJ4 (J4 in reverse): {rj.rev_ramp_m:0} m from {ry0:0.00} m to the lip at {ry1:0.00} m on the south verge ({rj.rev_lip_m:0.0} m past J4's lip, {rj.lip_above_road_m:0.0} m over the south carriageway at {roadS:0.00} m), an aimed launch at {rj.rev_angle:0} degrees, {rj.rev_vmin:0} to {rj.rev_vmax:0} m/s; both kickers with a {back:0} m back toward the road");
+                }
                 Debug.Log($"[Round18] J4 kicker: {rj.ramp_m:0} m from {y0:0.00} m to the lip at {y1:0.00} m ({rj.lip_above_road_m:0.0} m over New Chastain Road at {road:0.00} m), {Mathf.Atan(a) * Mathf.Rad2Deg:0} to {Mathf.Atan(rj.slope_lip) * Mathf.Rad2Deg:0} degrees, {rj.width_m:0} m wide");
             }
             // landing zones

@@ -24,7 +24,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class ScPrism { public string name, kind; public float[] poly, origin, axis, profile, colour, bank; public int[] skirt_edges; public bool held, cut; }   // bank: (station, rise per metre to the left) pairs
+        [Serializable] class ScPrism { public string name, kind; public float[] poly, origin, axis, profile, colour, bank; public int[] skirt_edges, no_face; public bool held, cut, landing; }   // Round 21: no_face, outline edges with no side face (a back against its take-off)   // Round 21: landing (RampHold's carry) on any kind   // bank: (station, rise per metre to the left) pairs
         // Round 10: a and b are where the line crosses the house's walls (in, out); wall_a / wall_b: a point on that wall and its
         // outward normal (x, z, nx, nz); y0 / y1: the height range of the panel that breaks in each wall
         // Round 11: window_a / window_b > 0: the walls have a picture window there (that half width along the wall, glass y0 to
@@ -786,10 +786,11 @@ namespace ChastainRush
             }
             // sides: each outline edge in 0.5 m pieces, from the top down to 0.5 m below the ground
             Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
-            var skirt = new HashSet<int>(pr.skirt_edges ?? new int[0]);
+            var skirt = new HashSet<int>(pr.skirt_edges ?? new int[0]); var noFace = new HashSet<int>(pr.no_face ?? new int[0]);
             mb.Tint = Shade(col, 0.72f);
             for (int e = 0; e < poly.Count; e++)
             {
+                if (noFace.Contains(e)) continue;   // Round 21: a back's edge against its take-off's lip (that face caught a vehicle's nose)
                 var a = poly[e]; var b = poly[(e + 1) % poly.Count];
                 var mid = (a + b) * 0.5f; var dir = (b - a).normalized; var outN = new Vector2(dir.y, -dir.x);
                 if (Vector2.Dot(outN, mid - centre) < 0f) outN = -outN;
@@ -819,7 +820,7 @@ namespace ChastainRush
             var look = pr.kind == "kicker" ? DirtPileLook(poly, O, U, Lv, cuts, Top, terrain, out heap) : mb;
             var go = look.ToObject(pr.name, mats.House, parent, false);
             go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
-            var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing" || pr.kind == "deckland";   // Round 10: RampHold
+            var surf = go.AddComponent<ShortcutSurface>(); surf.held = pr.held; surf.landing = pr.kind == "landing" || pr.kind == "deckland" || pr.landing;   // Round 10: RampHold
             // the collider: the same surfaces with the vertices along the strip seams welded (1 mm), so the car's body does
             // not catch on seams between the strips ("internal edges")
             var weld = new Dictionary<Vector3Int, int>(); var wv = new List<Vector3>(); var wt = new List<int>();

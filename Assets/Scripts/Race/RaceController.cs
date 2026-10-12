@@ -83,6 +83,8 @@ namespace ChastainRush
         public RaceEntrant Player => P;
         public RaceRoad AiRoad { get; private set; }
         public readonly List<AiShortcut> AiShortcuts = new List<AiShortcut>();
+        // Round 21: the AI's held speeds at the jumps for the direction being raced (Noonday Creek reverse has its own jumps)
+        public RouteAiZoneJson[] AiZones => RouteData == null ? null : Route != null && Route.Reverse && RouteData.ai_zones_reverse != null && RouteData.ai_zones_reverse.Length > 0 ? RouteData.ai_zones_reverse : Route != null && Route.Reverse ? null : RouteData.ai_zones;
         public bool AiRunning => (State == Stage.Racing || State == Stage.Finished) && aiActive;
         public static int AiCount = 3;                 // Dan: "I think we can start with 3 ai drivers"; checks may change it (-aiCount)
         public static string[] AiVehiclesOverride;     // checks: -aiVehicles id,id,id (otherwise ai_drivers.json, otherwise random)

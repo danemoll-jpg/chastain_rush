@@ -14,6 +14,11 @@ using UnityEngine.Rendering;
 //                one side, its top on the other); the lip is the log; behind it the earth falls away, so nothing to drop into
 //   outcrop      BJ4: a granite slab tilted up out of the hump on the south loop
 //   outfall      P1J (Round 20, BUG-002): P1's outfall apron at the pipe's mouth, turned up, over the small pond (not on the trail)
+// Round 21 (the reverse race): BJ1 to BJ4 each get a back ('back_angle', about 20 degrees) from the lip down to the ground, so the reverse
+// lap meets a slope, not a wall: BJ1 earth and broken planks heaped against the broken end down into the gully (it was a tunnel under
+// the deck there), BJ2 earth down the bank, BJ3 the earth behind the log at 20 degrees (it was 37), BJ4 a sloped rock shoulder. Coming
+// the other way the back is the take-off: a second BigJump at the same lip, the other way ('rev_angle', 'rev_vmax'); the forward
+// take-off is its landing (every surface here is a landing for RampHold), and a forward vehicle that comes up short lands on the back.
 // The driven surfaces are prisms (BuildPrism: mesh colliders, frictionless, "sc" names so VehicleSurfaceContacts treats them as
 // ramps); railings are solid, everything else (piers, planks, the log, the root plate) is look only. Each jump gets a BigJump
 // (runtime: the launch speed cap) and its landing zone comes from the file (RampHold's landing carry).
@@ -43,7 +48,7 @@ namespace ChastainRush
                 }
                 ScPrism Prism(string kind, float[] profile, float sEnd, float halfW, Color c, int[] skirts = null) => new ScPrism
                 {
-                    name = $"sc {b.id} {b.look} {kind}", kind = kind, origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = profile, colour = new[] { c.r, c.g, c.b }, skirt_edges = skirts,
+                    name = $"sc {b.id} {b.look} {kind}", kind = kind, origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = profile, colour = new[] { c.r, c.g, c.b }, skirt_edges = skirts, landing = b.back_angle > 0f,
                     poly = new[] { O + nl * halfW, O - nl * halfW, O + d * sEnd - nl * halfW, O + d * sEnd + nl * halfW }.SelectMany(q => new[] { q.x, q.y }).ToArray()
                 };
                 Vector3 W(float s, float lat, float y) { var q = O + d * s + nl * lat; return new Vector3(q.x, y, q.y); }
@@ -121,6 +126,18 @@ namespace ChastainRush
                         poly = new[] { O + d * s0 + nl * hw, O + d * s0 - nl * hw, O + d * sEndFar - nl * hw, O + d * sEndFar + nl * hw }.SelectMany(q => new[] { q.x, q.y }).ToArray()
                     };
                     BuildPrism(fp, terrain, mats, jr);
+                    // Round 21: earth and broken planks heaped against the broken end, down into the gully (it stops short of the fallen span)
+                    if (b.back_angle > 0f)
+                    {
+                        float FarTop(float sb) { float so = b.ramp_m + sb - s0; return so >= 0f && so <= sEndFar - s0 ? Profile(far.ToArray(), so) + 0.02f : -1e9f; }
+                        float backEnd = BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw, "earth", RootEarth, sEndFar - b.ramp_m, FarTop);
+                        for (int i = 0; i < 6; i++)   // planks from the missing middle span lying in the heap (look only)
+                        {
+                            float sb = 0.6f + i * (backEnd - 0.8f) / 6f, lat = (Hash01(i, 991) - 0.5f) * (b.width - 1.5f);
+                            var a = W(b.ramp_m + sb, lat, y1 - Mathf.Tan(b.back_angle * Mathf.Deg2Rad) * sb + 0.04f); var dd = (new Vector3(d.x, 0f, d.y) + new Vector3(nl.x, 0f, nl.y) * (Hash01(i, 993) - 0.5f)).normalized;
+                            Beam(look, a - dd * 1.1f, a + dd * 1.1f, 0.24f, 0.05f, Shade(WetWood, 0.85f + 0.2f * Hash01(i, 995)));
+                        }
+                    }
                     // its one railing, lying askew on it; two planks from the middle span down in the gully (look only)
                     for (float s = s0 + 1f; s < sEndFar - 1f; s += 2f) { var a = W(s, hw - 0.3f, Profile(far.ToArray(), s - s0) + 0.1f); Beam(look, a, a + new Vector3(d.x, 0f, d.y) * 1.9f + new Vector3(nl.x, 0.15f, nl.y) * 0.25f, 0.09f, 0.12f, Shade(WetWood, 0.9f)); }
                     for (int i = 0; i < 2; i++)
@@ -134,6 +151,7 @@ namespace ChastainRush
                 else if (b.look == "stepdown")
                 {
                     BuildPrism(Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.40f, 0.28f, 0.18f)), terrain, mats, jr);   // a dirt lip (DirtPileLook)
+                    if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw, "earth", new Color(0.40f, 0.28f, 0.18f), 15f);   // Round 21: earth down the bank
                     Debug.Log($"[Round19] {b.id} step-down: a dirt lip {b.ramp_m:0.0} m long from {y0:0.00} m to {y1:0.00} m ({b.angle_deg:0} degrees at the lip) on the bank's edge, {b.width:0.0} m wide");
                 }
                 else if (b.look == "fallen_tree")
@@ -142,7 +160,7 @@ namespace ChastainRush
                     var pr = KickerProfile().ToList();
                     var back = L + d * 0.8f; float gb = Ground(terrain, back.x, back.y);
                     pr.Add(b.ramp_m + 0.6f); pr.Add(y1 - 0.04f); pr.Add(b.ramp_m + 1.2f); pr.Add(y1 - 0.25f);
-                    float sEnd = b.ramp_m + 1.2f + Mathf.Max(0.5f, (y1 - 0.25f - gb) / 0.75f);
+                    float sEnd = b.ramp_m + 1.2f + Mathf.Max(0.5f, (y1 - 0.25f - gb) / (b.back_angle > 0f ? Mathf.Tan(b.back_angle * Mathf.Deg2Rad) : 0.75f));   // Round 21: 20 degrees (was 37: a wall to the reverse lap)
                     pr.Add(sEnd); pr.Add(gb - 0.05f);
                     BuildPrism(Prism("ramp", pr.ToArray(), sEnd, hw, new Color(0.40f, 0.30f, 0.20f), new[] { 1, 3 }), terrain, mats, jr);
                     // the log: 1.6 m through, its crown just over the lip; root plate up on the left, its top tapering away on the right
@@ -178,7 +196,8 @@ namespace ChastainRush
                     var poly = new[] { O + nl * (hw - 0.3f), O - nl * (hw - 0.3f), O + d * (b.ramp_m * 0.55f) - nl * (hw + 0.5f), L - nl * (hw - 0.1f), L + nl * (hw - 0.1f), O + d * (b.ramp_m * 0.55f) + nl * (hw + 0.5f) };
                     var p = new ScPrism { name = $"sc {b.id} outcrop slab", kind = "rock", origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = pr, colour = new[] { Granite.r, Granite.g, Granite.b }, skirt_edges = new[] { 1, 2, 4, 5 },
                                           poly = poly.SelectMany(q => new[] { q.x, q.y }).ToArray() };
-                    BuildPrism(p, terrain, mats, jr);
+                    p.landing = b.back_angle > 0f; BuildPrism(p, terrain, mats, jr);
+                    if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw - 0.1f, "rock", Granite, 15f);   // Round 21: the slab's back, a sloped rock shoulder
                     // a few lower rocks of the same outcrop showing through the ground either side (look only, 3.5 m and more off the line)
                     for (int i = 0; i < 5; i++)
                     {
@@ -256,7 +275,34 @@ namespace ChastainRush
                 if (look.Count > 0) { var lg = look.ToObject(b.id + " look", mats.House, jr, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 // the runtime side: the launch speed cap
                 var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg; bj.vmin = b.vmin;
+                if (b.rev_vmax > 0f)   // Round 21: the reverse take-off off the back, at the same lip
+                {
+                    var rg = new GameObject(b.id + " reverse launch"); rg.transform.SetParent(jr, false);
+                    var rb = rg.AddComponent<BigJump>(); rb.id = b.id + "R"; rb.look = b.look; rb.lip = bj.lip; rb.dir = -bj.dir; rb.halfWidth = hw; rb.vmax = b.rev_vmax; rb.angle = b.rev_angle;
+                }
             }
+        }
+
+        // Round 21: the back of a take-off, from its lip down to the ground at 'back_angle' (no further than maxLen: steeper at its foot
+        // if the ground is not reached by then), sloped skirts at its sides; a landing (RampHold). Returns its length.
+        static float BuildBack(CtBigJump b, TerrainGrid terrain, Materials mats, Transform parent, Vector2 L, Vector2 d, Vector2 nl, float y1, float hw, string kind, Color c, float maxLen, System.Func<float, float> floorAt = null)
+        {
+            // floorAt: a surface it may end on instead of the ground (BJ1: the fallen far span coming up out of the gully, a V, no step)
+            float Floor(float s, Vector2 q) => Mathf.Max(Ground(terrain, q.x, q.y) - 0.05f, floorAt != null ? floorAt(s) : -1e9f);
+            float k = Mathf.Tan(b.back_angle * Mathf.Deg2Rad), end = maxLen;
+            var pr = new List<float> { 0f, y1, 0.5f, y1 - 0.03f };
+            for (float s = 1f; s < maxLen - 0.25f; s += 0.5f)
+            {
+                var q = L + d * s; float y = y1 - 0.03f - k * (s - 0.5f), g = Floor(s, q);
+                if (y <= g) { end = s; break; }
+                pr.Add(s); pr.Add(y);
+            }
+            var qe = L + d * end; pr.Add(end); pr.Add(Floor(end, qe));
+            var p = new ScPrism { name = $"sc {b.id} back", kind = kind, origin = new[] { L.x, L.y }, axis = new[] { d.x, d.y }, profile = pr.ToArray(), colour = new[] { c.r, c.g, c.b }, skirt_edges = new[] { 1, 3 }, no_face = new[] { 0 }, landing = true,
+                                  poly = new[] { L + nl * hw, L - nl * hw, L + d * end - nl * hw, L + d * end + nl * hw }.SelectMany(q => new[] { q.x, q.y }).ToArray() };
+            BuildPrism(p, terrain, mats, parent);
+            Debug.Log($"[Round21] {b.id} back: {end:0.0} m from the lip ({y1:0.00} m) down to {pr[pr.Count - 1]:0.00} m ({Mathf.Atan((y1 - pr[pr.Count - 1]) / end) * Mathf.Rad2Deg:0} degrees overall), {2f * hw:0.0} m wide; the reverse launch off it at {b.rev_angle:0} degrees, no faster than {b.rev_vmax:0} m/s");
+            return end;
         }
 
         // a type III road-closed barricade (two orange and white striped boards on A-frame legs, 2.4 m long), knocked over on its side
