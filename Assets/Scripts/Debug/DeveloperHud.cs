@@ -10,7 +10,7 @@ namespace ChastainRush
     // On-screen coordinates and bug capture, brought over from Racer's DeveloperLocationHud (Round 4, item 4).
     // Same keys as Racer:  F3 show / hide the coordinates panel,  F4 capture a bug (screenshot, then a comment box;
     // Enter saves, Shift+Enter is a new line, Esc cancels),  F6 menu (export the session as a ZIP, open the report
-    // folder, start a new session).  Gamepad: Select captures, A saves, B cancels, Start opens the menu.
+    // folder, start a new session).  Gamepad: the right stick's click captures (Round 20; Select before), A saves, B cancels, Start opens the menu.
     //
     // Rewritten, not copied: Racer's version is built on RaceDirector / RaceFlow, Campaign, MenuInput and MenuGlyph,
     // WorldLook, GetawayChase, VehicleConfiguration and uGUI (not in this project). What was cut: the race / lap /
@@ -116,7 +116,9 @@ namespace ChastainRush
             // Round 9: a second key for each that never needs Fn on Dan's keyboard: [ panel, ] capture, \ menu
             if (k != null && (k.f3Key.wasPressedThisFrame || k.leftBracketKey.wasPressedThisFrame)) { Visible = !Visible; if (!Visible && MenuOpen) CloseMenu(); }
             // Round 17: capture works with the panel hidden too (the panel is drawn on the captured frame either way)
-            if (!GameMenus.Open && ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.selectButton.wasPressedThisFrame))) CaptureBug();
+            // Round 20 (item 2): the controller's View / Select is the map's now (as in Woodstock Rush); bug capture took the right
+            // stick's click (free while driving); not while the map is open (its own center button)
+            if (!GameMenus.Open && !WorldMap.OwnsInput && ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.rightStickButton.wasPressedThisFrame))) CaptureBug();
             bool f6 = k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame);
             // Round 17: with the game menus (the game Dan plays) F6 / \ opens their controller-driven debug page; the IMGUI menu
             // below is left for check runs, which have no game menus. Start is the game menu's (Round 16).
@@ -279,7 +281,7 @@ namespace ChastainRush
             var old = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float w = Screen.width / s, h = Screen.height / s;
-            if (((Visible && !GameMenus.Open) || Capturing) && !MenuOpen && !CommentOpen) DrawPanel(w, h);   // Round 17: not over a game menu; always on a captured frame
+            if (((Visible && !GameMenus.Open && !WorldMap.IsOpen) || Capturing) && !MenuOpen && !CommentOpen) DrawPanel(w, h);   // Round 17: not over a game menu (Round 20: nor the map); always on a captured frame
             if (MenuOpen) DrawMenu(w, h);
             if (CommentOpen) DrawComment(w, h);
             GUI.matrix = old;
@@ -298,7 +300,7 @@ namespace ChastainRush
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +
                           (string.IsNullOrEmpty(Status) ? "" : Status + "\n") +
-                          "F3 or [ hide / F4 or ] capture bug / F6, \\ or Start: debug menu / F2 or P fps";
+                          "F3 or [ hide / F4, ] or R3 capture bug / F6, \\ or Start: debug menu / F2 or P fps / M or View: map";
             float height = label.CalcHeight(new GUIContent(text), 430f) + 14f;
             var r = new Rect(w - 450f - 12f, h - height - 12f, 450f, height);
             GUI.Box(r, GUIContent.none, box);

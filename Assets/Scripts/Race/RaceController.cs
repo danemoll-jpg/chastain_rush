@@ -784,7 +784,7 @@ namespace ChastainRush
 
         void OnGUI()
         {
-            if (Route == null || !car || GameMenus.Open) return;   // Round 16: not drawn under a menu
+            if (Route == null || !car || GameMenus.Open || WorldMap.IsOpen) return;   // Round 16: not drawn under a menu (Round 20: nor the map)
             Styles();
             float s = Mathf.Max(1f, Screen.height / 800f);
             var old = GUI.matrix;

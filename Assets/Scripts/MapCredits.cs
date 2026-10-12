@@ -10,6 +10,7 @@ namespace ChastainRush
 
         void OnGUI()
         {
+            if (WorldMap.IsOpen) return;   // Round 20: the map shows its own credit
             if (style == null)
                 style = new GUIStyle(GUI.skin.label) { fontSize = 14, alignment = TextAnchor.LowerRight, normal = { textColor = Color.white } };
             var r = new Rect(0f, 0f, Screen.width - 10f, Screen.height - 6f);

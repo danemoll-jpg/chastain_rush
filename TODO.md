@@ -2156,6 +2156,49 @@ not yet driven by Dan.** Exe rebuilt from a fresh map build: `Builds/ChastainRus
    choices on items 3 and 4. Report: short status list, "for Dan to check", the options in short tables, path to
    the exe.
 
+**STATUS (Claude, 2026-10-12): items 1, 2 and 5 built and checked in the exe by script (minimized, muted), not yet driven by
+Dan; items 3 and 4 proposed, nothing built. STOPPED for Dan's choices.** Exe rebuilt from a fresh map build. Check:
+`ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,map,marks,lap] -logFile <dir>\Player.log` (Checks/Round20Runner*.cs;
+a watchdog ends it after `-r20Minutes`, default 25). Pictures: `local/round20/` (git-ignored). Imported from Racer: the map
+(below).
+- 1. BUG-001 DONE (commit a9eb434). The catch was the left railing's first post, facing the approach: a vehicle 2 m off the
+  line hit it head on and stopped (Trail Four, Turf Rocket). The near ends now flare out (wing rails, 0.8 m wider at the
+  deck's end) and only a smooth panel along each railing is solid; the bridge is 7 m wide (rails 3.4 m off the line); the
+  deck starts at the lowest ground across its width (it stood up to a few cm proud on one side). Exe: the five trail
+  vehicles flat out (31 to 37 m/s), on the line and 1, 2 and 2.5 m either side: all keep their speed.
+  BUG-002 DONE (same commit). A concrete outfall apron at P1's mouth (7 m, turned up to 24 degrees, lip 1.5 m over the
+  shore, 8.5 m wide, sloped concrete sides and back, creek rock either side) launches along the pipe's axis over the
+  small pond (BigJump with 'vmin': 23.5 to 26 m/s off the lip; under 10 m/s it rolls off into the shallow edge). P1's way
+  out now goes over the pond and onto the trail's east side (rejoins at s 645; brake and turn right after landing). Exe:
+  all eleven 2.28 to 2.43 s in the air, 53 to 57 m, 6.3 to 6.6 m over the lip, dry landings, on to the trail; Trail Four
+  at 8 m/s rolls off and drives out; AI 5 of 5 (lip 16 m/s, boosted: 2.0 to 2.1 s, 41 to 43 m).
+  The lap on each trail vehicle (scripted, flat out): the Drifter Twin clean (86.6 s). Every other stop was a solid trunk
+  8.6 to 13.5 m off the line where the script ran wide on a bend: s 555 (the C3 stream bend), s 725 to 733 (the east leg
+  before CP3), s 1549 (the C4 ford); plus a hard landing off J1 at s 2124 (ground, not a catch). NOT changed (not where Dan
+  pointed); option for Dan: make the trees within 14 m of those three bends breakable.
+- 2. The map DONE. Racer's ExplorationMap (+ .Controls) and WorldMapCourseOverlay ported as `Assets/Scripts/Map/WorldMap.cs`
+  and `WorldMapOverlay.cs`: the same button (View / Select; keyboard M), pauses the game (in a race too, as Racer: the race
+  clock stops), left stick / WASD pan, triggers / = - zoom (1 to 16x), right stick click / Home centers on you, A / Space
+  shows the shortcuts (every route's) and pipes (dashed, off by default), B / Esc or View / M close, mouse wheel and drag.
+  The picture is drawn from the map data at Build Map (`MapBuilder.MapPicture.cs`, `Assets/Generated/Resources/
+  WorldMapPicture.png`, 4096 x 1972, about 1 m a pixel: relief, woods and trees, water, streams, roads, bridges, drives,
+  the shopping center's lot, buildings, the Noonday Creek trail; Racer photographs its scene from above, which here would
+  hide the trail under the trees). Over it: the current route with START / FINISH and checkpoints numbered in travel order,
+  the player's arrow, the other racers in a race (name and dot), a readout of x, z under the cursor and at the player,
+  "© OpenStreetMap contributors", Round 20's proposals. The race HUD and debug panel are hidden while it is open. Left
+  behind: exploration fog and its save, destinations and travel, waypoints, acorn areas, track browsing, the action sheet.
+  Bug capture moved to the right stick's click (free while driving); F4 / ] and its debug-menu row unchanged. Exe (virtual
+  gamepad): free roam and a race, open, zoom, pan, layers, center, close: all pass.
+- 3. R1 original line: PROPOSED (table in the round report; `Tools/mapgen/r1_original_options.py`, pictures
+  `local/round20/r1_options.png`). Tested at 14 to 32 m/s, 1.5 m and 6 degrees off the line, aimed launch, 30 m straight
+  on after landing. No change to one house makes it safe (1572 moved up to 5 m before it reaches 1622, turned up to 40
+  degrees either way, cut back; 2065 moved up to 12 m). The one safe layout: 1572 cut back to its north-east half (206 to
+  117 m2) AND 2065 moved 8 m south-west. The trial R1 (kids' ramp) stays until Dan chooses.
+- 4. Noonday Creek candidates N1 to N5: PROPOSED (`Tools/mapgen/creek_shortcut_candidates.py`, overhead
+  `local/round20/creek_candidates.png`). Marked in the world (magenta posts and labels; debug menu "Proposal markers" and
+  "Go to", free roam only; `MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/round20_markers.json`,
+  labels `Tools/handmade/make_proposal_labels.py`) and on the map. TEMPORARY: remove when Dan has chosen.
+
 **QUEUED — Round 21: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33

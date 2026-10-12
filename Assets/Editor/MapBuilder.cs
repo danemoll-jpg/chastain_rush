@@ -127,9 +127,11 @@ namespace ChastainRush
             BuildCreekTrack(map, terrain, mats, world, creek);   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
             BuildPipes(terrain, mats, world, pipes);             // Round 18 (4)
             if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");
+            BakeMapPicture(map, terrain, shop, creek, trees.Field);   // Round 20 (2): the picture under the in-game map (MapBuilder.MapPicture.cs)
 
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
+            BuildProposalMarkers(terrain, world);   // Round 20 (4): TEMPORARY proposal markers (Noonday Creek shortcut candidates), hidden until the debug menu shows them
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 
             EditorSceneManager.SaveScene(scene, ScenePath);

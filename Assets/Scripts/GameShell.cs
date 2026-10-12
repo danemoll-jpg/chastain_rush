@@ -34,6 +34,7 @@ namespace ChastainRush
             Instance = go.AddComponent<GameShell>();
             var carGo = FindAnyObjectByType<ArcadeVehicle>().gameObject;
             if (!carGo.GetComponent<RampHold>()) carGo.AddComponent<RampHold>();   // Round 10: held shortcut ramp tops
+            WorldMap.Boot(go);   // Round 20 (item 2): the map, on View / Select and M (Map/WorldMap.cs)
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
@@ -76,7 +77,7 @@ namespace ChastainRush
             // Round 9: P as well, for a keyboard that needs Fn for F2 (not while a bug comment is being typed)
             if (k.f2Key.wasPressedThisFrame || (k.pKey.wasPressedThisFrame && !hudBusy)) ShowFps = !ShowFps;
             // Round 16: Esc opens the menus (QUIT GAME is there); press-twice-to-quit is left only for a run without them (a check)
-            if (k.escapeKey.wasPressedThisFrame && !hudBusy && GameMenus.Instance == null)
+            if (k.escapeKey.wasPressedThisFrame && !hudBusy && GameMenus.Instance == null && !WorldMap.OwnsInput)
             {
                 if (Time.unscaledTime < quitPromptUntil) Quit();
                 else quitPromptUntil = Time.unscaledTime + 2.5f;

@@ -9,13 +9,15 @@ using UnityEngine;
 
 namespace ChastainRush
 {
-    // Round 20, checked in the exe (ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,lap] [-r20Vehicles id,id]
+    // Round 20, checked in the exe (ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,map,marks,lap] [-r20Vehicles id,id]
     // -logFile <dir>\Player.log), muted like every check (CheckRun), its files in <dir>. One targeted check per piece:
     //   bj1   BUG-001: the Drifter Twin over the footbridge's near end at race speed, on Dan's line and 1 m either side; the
     //         slowest it goes there and what it touched
     //   lap   the whole Noonday Creek lap once on each trail vehicle: every dead stop (or near stop) and where
     //   ramp  BUG-002: every vehicle that comes through P1 off the outlet ramp over the pond: air, height, distance, on and on
-        public sealed partial class Round20Runner : MonoBehaviour
+    //   map   the map with the controller (a virtual gamepad), in free roam and in a race: open, zoom, pan, close
+//   marks the Noonday Creek candidates' markers (pictures in the world) and on the map
+    public sealed partial class Round20Runner : MonoBehaviour
     {
         public string outputDir;
         readonly StringBuilder report = new StringBuilder();
@@ -45,6 +47,8 @@ namespace ChastainRush
             bool Do(string p) => parts == null || parts.Contains(p);
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
+            if (Do("map")) yield return Guard(MapCheck());
+            if (Do("marks")) yield return Guard(Markers());
             if (Do("lap")) yield return Guard(Lap(ids));
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
@@ -138,21 +142,24 @@ namespace ChastainRush
                 var line = LapSlice(race.Route.GateS, race.Route.GateS + L + 20f);
                 Place(line[0], line[2] - line[0], 12f); yield return new WaitForFixedUpdate();
                 var run = new Run(); var hist = new Queue<(float t, float v, Vector3 p)>(); var found = new List<string>(); float lastAt = -99f; float t = 0f;
+                var tap = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); tap.seen.Clear(); tap.on = true;
                 var drive = StartCoroutine(DriveLine(line, 99f, 240f, run, null, null, 4f, false));
                 while (!run.reached && run.end == "" && run.time < 239.9f)
                 {
                     yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
                     float v = Flat(car.Body.linearVelocity).magnitude; var p = car.Body.position;
+                    if (tap.seen.Count > 40) tap.seen.RemoveRange(0, tap.seen.Count - 40);
                     hist.Enqueue((t, v, p)); while (hist.Count > 0 && hist.Peek().t < t - 0.5f) hist.Dequeue();
                     float vMax = hist.Max(h => h.v);
                     bool inPipe = DrainPipe.Inside(p, out _) != null;
                     if (car.GroundedWheels > 0 && vMax > 10f && v < vMax * 0.45f && t - lastAt > 3f && !inPipe)
                     {
                         lastAt = t; var at = hist.First(h => h.v == vMax).p;
-                        found.Add($"{vMax:0.0} to {v:0.0} m/s in 0.5 s at ({p.x:0.0}, {p.z:0.0}), lap station {race.Route.LapStationOf(p):0} m (from ({at.x:0.0}, {at.z:0.0}))");
+                        var hits = tap.seen.Where(x => !x.Contains("Terrain") || !x.Contains("normal (0.0")).Reverse().Take(3).ToList();
+                        found.Add($"{vMax:0.0} to {v:0.0} m/s in 0.5 s at ({p.x:0.0}, {p.z:0.0}), lap station {race.Route.LapStationOf(p):0} m (from ({at.x:0.0}, {at.z:0.0})); last contacts: {(hits.Count > 0 ? string.Join("; ", hits) : "none")}");
                     }
                 }
-                yield return drive;
+                yield return drive; tap.on = false;
                 stops += found.Count;
                 report.AppendLine($"  {Nm(id),-16} {(run.reached ? $"the lap in {run.time:0.0} s" : "DID NOT FINISH " + run.end + $" at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0})")}, {found.Count} sudden stop(s){(found.Count > 0 ? ":" : "")}");
                 foreach (var f in found) report.AppendLine("      " + f);

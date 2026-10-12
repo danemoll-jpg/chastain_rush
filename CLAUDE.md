@@ -250,6 +250,18 @@ the Noonday Creek lap. Round 19 is driven and approved by Dan. Queued: 21
 the map-wide pipe network (proposal first); 22 Chastain Commons, Chastain
 Enclave and Grasmere Court.
 
+**Round 20 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan; STOPPED for
+Dan's choices on items 3 and 4:** BUG-001 (BJ1's railings flare out, smooth solid panels, 7 m deck from the lowest ground)
+and BUG-002 (P1's outfall apron over the pond, `BigJump.vmin`), commit a9eb434. The map (`Assets/Scripts/Map/WorldMap.cs`,
+`WorldMapOverlay.cs`, picture baked by `MapBuilder.MapPicture.cs` into `Assets/Generated/Resources/WorldMapPicture.png`):
+View / Select or M opens it and pauses the game; bug capture moved to the right stick's click (F4 / ] unchanged). Proposals:
+`python Tools/mapgen/r1_original_options.py` (R1 with houses altered, report only) and `python Tools/mapgen/
+creek_shortcut_candidates.py` (writes `Data/proposals/round20_markers.json`; then `python Tools/handmade/
+make_proposal_labels.py`, Build Map). Proposal markers are back, TEMPORARY (`MapBuilder.Proposals.cs`,
+`Debug/ProposalMarkers.cs`, debug menu "Proposal markers" / "Go to"). Check: `ChastainRush.exe -exeRound20 <dir>
+[-r20Only bj1,ramp,map,marks,lap] [-r20Minutes 25] -logFile <dir>\Player.log`. Imported from Racer in Round 20: the map
+(ExplorationMap and its controls, WorldMapCourseOverlay; rewritten and trimmed, left-behind list in `WorldMap.cs`).
+
 **Round 19 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday
 Creek trail 4.5 m wide (no solid trunk within 3.5 m; the trees left within 6 m, and within 8 m of each big jump's run-out,
 breakable: `TreeField.breakable`, `TreeTrunks` trigger capsules, `FallingTree`); four big jumps (`MapBuilder.BigJumps.cs`:
