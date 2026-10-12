@@ -275,14 +275,11 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is the Round 21 follow-ups in `TODO.md`:** build reverse
-shortcuts RA (pipe dive, with a stretch of the pipe made a clear tube under
-the pond with fish swimming round it) and RC (creek leap back); breakable
-trees about 10 m either side of the Noonday Creek trail (15 m on the bends
-where laps hit trunks); remove the proposal markers. Round 21 (reverse
-Noonday Creek, AI rule and mistakes, checkpoints against free cuts) is built
-and the reverse race approved by Dan. Queued: 22 the map-wide pipe network
-(proposal first); 23 Chastain Commons, Chastain Enclave and Grasmere Court.
+**Active work is Round 22 in `TODO.md`:** dress Grasmere Court (part of
+Chastain Glen), Chastain Commons (same styles) and Chastain Enclave (larger
+houses, a community pool and tennis court near its entrance), with entrance
+signs. Round 21 and its follow-ups are built and driven by Dan. Queued: 23
+the map-wide pipe network (proposal first).
 
 **The Round 21 follow-ups (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by Dan:**
 P1's clear stretch: a pool at the small pond's level dug over P1's middle (the pond itself is too narrow on P1's line), 30 m

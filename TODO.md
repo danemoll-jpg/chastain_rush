@@ -2454,7 +2454,7 @@ lists: `local/round21/` (git-ignored). Imported from Racer: nothing.
   (`MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/round21_markers.json`, `Assets/HandMade/Proposals/`,
   `Tools/handmade/make_proposal_labels.py`).
 
-**ACTIVE — Round 21 follow-ups (Dan, 2026-10-12 14:27).** Dan: "i think the reverse track is fine" (approved). His
+**DONE, driven by Dan 2026-10-12 ("everything seems to be fine") — Round 21 follow-ups (Dan, 2026-10-12 14:27).** Dan: "i think the reverse track is fine" (approved). His
 picks from the Part C candidates, and one more:
 1. Build RA "Pipe dive" (reverse race, official, forgives reverse CP4) as proposed in `local/round21/reverse_candidates.txt`:
    the rock-heap take-off on the small pond's east shore, over the pond, down P1's outfall apron into the pipe, out over
@@ -2518,7 +2518,50 @@ cause). Pictures and reports: `local/round21f/` (git-ignored). Imported from Rac
   `Assets/HandMade/Proposals/`, `make_proposal_labels.py`, `reverse_creek_candidates.py`, the debug-menu rows, the map layer.
 - 5. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
 
-**QUEUED — Round 22: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+**ACTIVE — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court (Dan, 2026-10-12 18:45: "Do we go ahead
+and build the other community neighborhoods as discussed prior"; moved ahead of the pipe network).** Dan's words and
+the places are in the notes "Round 18, two more neighborhoods" and "Also in the neighborhoods round" further down
+(Claude's numbering there is old; this is the round). Build it; Dan judges by driving (CLAUDE.md "Build it, then Dan
+drives it").
+1. Grasmere Court Northeast (BUG-002 of session 2026-10-10_16-53-56-509_f5d57e, part of Chastain Glen): dress every
+   house on it the way the Chastain Glen houses were dressed in Round 7 (the same styles and colors, windows, doors,
+   trim, garages, mailboxes, lamps, hydrants, drives, sidewalks, fences, breakables). Then list any other street that
+   looks like part of Chastain Glen and is still plain boxes, for Dan.
+2. Chastain Commons (Weybourne Court Northeast and its side streets, south of New Chastain Road, about x 2560 to 2945,
+   z 600 to 700): same community as Chastain Glen, so the same house styles (Dan: "we can reuse the house styles
+   there"), dressed the same way, its own mix so it does not look like a copy.
+3. Chastain Enclave (Rotherhithe Landing, Bloombridge Way and side streets, about x 1500 to 2100, z 640 to 960, entered
+   by Chastain Crossing at x 1793, z 658): the same styles but LARGER houses (Dan: "Enclave tends to have larger
+   houses"): bigger footprints where the lots allow, more two-story, three-car garages, brick fronts, bigger yards and
+   driveways. Near the front of the neighborhood (Dan's picture `local/reference_photos/maps/enclave_dan.png`, the
+   "Chastain Enclave HOA Pool" pin, inside the Rotherhithe loop just north of the entrance): a community pool (water
+   as Round 15, a deck, a black metal fence that breaks, a small clubhouse) and a tennis court (fenced, net, lines)
+   beside it. Place them where the pin is; Dan will say if it is off.
+   DAN SENT REFERENCES (2026-10-12 19:01), filed in `local/reference_photos/enclave/` (git-ignored; reference only, never
+   traced or used as map data: the overhead is a Google Maps screenshot, and the project uses no Google Maps data):
+   - `enclave_amenity_overhead.png`: the amenity block sits INSIDE the loop between Rotherhithe Landing (north and west)
+     and Sherryforth Drive (east and south), back from both streets. Layout: TWO tennis courts side by side to the
+     north (fenced, lights), the pool south of them, the clubhouse on the pool's west side, a small shed / building by
+     the courts' south-west corner, a short drive or lot off the west.
+   - `enclave_pool_photo.jpg` (looking roughly north-east over the pool): the pool is a big free-form / angled shape
+     with wide concrete steps at both ends and a dark tile line at the waterline, a wide concrete deck all round with
+     joints; lots of striped lounge chairs, a round table with a red umbrella; the clubhouse is a one-story tan-siding
+     pool house with a hip roof and a front gable, white columns along a covered porch, a round vent in the gable,
+     restroom doors; the pool fence is black metal with white square posts and low hedges along it; beyond it the
+     tennis courts (green surround, blue playing surface, white lines, tall black chain-link fence, light poles) with a
+     green windscreen banner on the court fence reading "Chastain Enclave"; a wooden gazebo / pavilion with a deck and
+     railings beside the courts; tall pines round it all.
+   Build the amenity block to match these as closely as the house-building kit allows (the pool is water as Round 15,
+   driveable into and out of; the fence, chairs, umbrella and tables break; the courts' fence is solid chain-link
+     except where it would trap a car; the gazebo may be solid). Pictures of it for the report.
+4. An entrance sign for each community (Chastain Commons, Chastain Enclave) at its entrance, in the style of Chastain
+   Glen's brick monuments (the community names are real and fine to show; nothing else real). Sign rule applies.
+5. No new races or shortcuts this round. Check one drive through each neighborhood in the exe (no snags on curbs,
+   drives or the new pieces; frame rate in each), stay off Dan's screen, muted. Rebuild the exe. Report: short status
+   list, "for Dan to check", pictures from the street in each (git-ignored if houses are close and identifiable as
+   Dan's street: these are not, but keep them in local/ anyway), path to the exe.
+
+**QUEUED — Round 23: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
 stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
@@ -2527,7 +2570,7 @@ with a PROPOSAL, not a build: an overhead of the whole map with every water body
 junction chambers where runs meet, lengths, which roads / houses each passes under; markers in the world as in
 Round 18; how a player knows where they are underground (a map? signs at junctions?); frame-rate cost. Dan picks.
 
-**QUEUED — Round 23: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
+
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
