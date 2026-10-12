@@ -2481,6 +2481,43 @@ picks from the Part C candidates, and one more:
 5. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status list, "for
    Dan to check", path to the exe. Two pictures from inside the clear stretch.
 
+**STATUS (Claude, 2026-10-12): items 1 to 5 built and checked in the exe by script (1280 x 720, minimized, muted), not yet
+driven by Dan.** Check: `ChastainRush.exe -exeRound21 <dir> -r21Only tube,ra,rc,n2,ramp,fwdlap,revlap -r20Vehicles
+atv,moto,scrambler,drifter,mower -logFile <dir>\Player.log` (`Checks/Round20Runner.R21F.cs`; the laps now name each stop's
+cause). Pictures and reports: `local/round21f/` (git-ignored). Imported from Racer: nothing.
+- 1. RA "Pipe dive" (reverse, official, forgives reverse CP4) and the clear tube. The small pond is only about 38 m across on
+  P1's line and its east shore is where P1J lands and RA takes off, so the pipe could not pass under it without moving the
+  outlet and losing both. Instead the small pond's water was brought west over P1's middle: a pool at its level (276.12 m),
+  30 m along the pipe and 24 m across, dug up to 3.6 m into the swale there (banks 1 in 3; trees in it gone). Under it P1 is
+  held deeper (crown 1.35 m under the surface) and 30 m of it is a glass tube (steel ribs every 3 m), in a trench of deep water
+  16 m wide and 8 m deep with a silt bed, rocks, swaying weeds, light shafts and the rippling surface overhead, 56 fish (four
+  schools, sunfish, three big carp / bass; instanced, no physics); muffled sound and an underwater hum inside; an invisible lid
+  at the pool's bed so a wading vehicle never drops in. Concrete parts, mouths, the stream, wall riding, the camera and resets
+  unchanged (`MapBuilder.ClearPipe.cs`, `PipeAquarium.cs`, shaders `PipeGlass`, `UnderwaterScroll`, `Fish`; `pipes.json`
+  `clear`). Exe: all five trail vehicles through the glass forward without losing speed, out over the pond; a reset in the glass
+  lands on the floor; 60 fps average, 58 at the 99th percentile in the glass (1280 x 720, not measured at 3840 x 2160).
+  RA: a creek-rock heap on the east shore (lip 1.4 m, 22 degrees, aimed 23.2 to 23.5 m/s), over the pond onto P1J's apron
+  (its slope is the landing), through the pipe and the glass, out over the rock bar and a 25 m bend onto the trail. Hint: a lit
+  lamp over the outlet's opening and worn tracks. Exe: every vehicle down on the apron (1.85 to 1.92 s, 40 to 42 m), the AI
+  takes it on each vehicle (CP forgiven, no recovery), slow into it rolls into the pond and drives out.
+- 2. RC "Creek leap back" (reverse, official, forgives reverse CP2): N2's twin heap between the west trail and the gorge (lip
+  1.4 m, 24 degrees, aimed 15.5 to 16.3 m/s) onto N2's heap. The west trail runs 12 to 15 m from the gorge there, so the way in
+  loops out west (radius 9 to 10 m) and crosses the trail onto the heap; the heap's back is an earth ramp down into the gorge
+  (a short forward N2 flight lands on it; a vehicle short into the gorge drives out up it), and N2 got the same back on its side
+  (a slow RC fell into the gorge against N2's lip end and stopped): the old washed-out ford now has an earth ramp on each bank.
+  Exe: every vehicle onto N2's heap (24 to 27 m), the AI on each vehicle, slow rolls in and gets out (20 s); N2 forward
+  unchanged (every vehicle, slow 12 s, the AI).
+- 3. Breakable trees: 10 m either side of the trail everywhere (was 6), 15 m both sides on the bends named (the outside only
+  left trunks on the other side, where vehicles run wide out of S-bends), 12 m round RA's and RC's lines (25 m round RA's way
+  out of the pipe, where a flat-out exit went 24 m wide), and nine trunks the flat-out laps still hit 12 to 20 m out (by
+  position, `HIT_TRUNKS`): 492 breakable (was 166). Big trunks beyond stay solid. Final flat-out laps, each trail vehicle, both
+  ways: all finish, no stop on a trunk (forward 10 and reverse 21 breakable trees snapped). Left (not trunks, unchanged): the
+  water at the C4 ford and under the bridges, J5's take-off face, BJ4's back, two bumps; one bad landing off BJ2R (Needle 600
+  at 26.9 m/s, upright 0.66; BJ2R not changed this round).
+- 4. Round 21 proposal markers removed: `MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/`,
+  `Assets/HandMade/Proposals/`, `make_proposal_labels.py`, `reverse_creek_candidates.py`, the debug-menu rows, the map layer.
+- 5. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
+
 **QUEUED — Round 22: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33

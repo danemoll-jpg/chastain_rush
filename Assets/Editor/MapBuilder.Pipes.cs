@@ -34,7 +34,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a; }
+        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs)
         [Serializable] class PipeFile { public PipeJson[] pipes; }
         const string PipeFilePath = "Data/pipes/pipes.json";
         const float PipeFloorRise = 0f, PipeWall = 0.3f, CutHalf = 2.5f, CutWall = 0.35f, CopingOut = 0.95f, PipeStep = 0.5f, Flare = 5f, FlareW = 1.75f;   // Round 19: no flat floor (1.0 m over the invert before)
@@ -46,6 +46,7 @@ namespace ChastainRush
             public float[] Floor;        // floor height at each PipeStep station
             public float S1, S2;         // the headwalls (cut 1 is 0..S1, cut 2 is S2..L)
             public List<Vector2> Bar = new List<Vector2>(); public float BarTop;   // Round 19: P1's rock bar (the approach points over the creek)
+            public bool Clear; public float C0, C1, Surface; public List<Vector2> Pool; public int PoolRing = -1;   // Round 21 follow-ups: the clear stretch and its pool (MapBuilder.ClearPipe.cs)
             // Round 19: the cut's floor across: flat, turning over the last UTransition m before each headwall into the pipe's round bottom
             public float FloorAt(float s, float lat)
             {
@@ -92,6 +93,39 @@ namespace ChastainRush
                 if (j.approach_b != null && j.approach_b.Length >= 2) { var l = ToPoints(j.approach_b); l.Insert(0, p.B - p.U * 0.5f); GradeApproach(terrain, l, j.id + " outlet", null); }
                 int n = Mathf.CeilToInt(p.L / PipeStep) + 1;
                 float crownOut = j.diameter_m - PipeFloorRise + PipeWall;   // floor to the top of the pipe's outside
+                float yA = Ground(terrain, p.A.x, p.A.y), yB = Ground(terrain, p.B.x, p.B.y);
+                const float Ease = 6f;
+                float Ramp(float s) => s < Ease ? s * s / (2f * Ease) : s - Ease * 0.5f;
+                float[] FloorFrom(float yLow)
+                {
+                    var raw = new float[n];
+                    for (int i = 0; i < n; i++) { float s = Mathf.Min(i * PipeStep, p.L); raw[i] = Mathf.Max(yLow, Mathf.Max(yA - j.cut_slope * Ramp(s), yB - j.cut_slope * Ramp(p.L - s))); }
+                    // round the dips (sigma 2.5 m), keeping the ends on the ground
+                    var ff = new float[n]; int r = Mathf.CeilToInt(7.5f / PipeStep);
+                    for (int i = 0; i < n; i++)
+                    {
+                        float acc = 0f, w = 0f;
+                        for (int k = -r; k <= r; k++) { int ii = Mathf.Clamp(i + k, 0, n - 1); float ww = Mathf.Exp(-0.5f * (k * PipeStep / 2.5f) * (k * PipeStep / 2.5f)); acc += raw[ii] * ww; w += ww; }
+                        float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, p.L - s) / 8f);
+                        ff[i] = Mathf.Lerp(raw[i], Mathf.Min(raw[i], sm), edge);
+                    }
+                    return ff;
+                }
+                // Round 21 follow-ups: a clear stretch under water (MapBuilder.ClearPipe.cs): the floor held down so the crown is
+                // 'water_over_m' under the small pond's surface, and the pool dug over it before the ground over the pipe is measured
+                float forced = float.MaxValue;
+                if (HasClear(j))
+                {
+                    p.Surface = PondSurfaceNear(p.B + p.U * 12f, out _);
+                    if (float.IsNaN(p.Surface)) Debug.LogError($"[Round21+] pipe {j.id}: no pond past its outlet: no clear stretch");
+                    else
+                    {
+                        forced = p.Surface - j.clear.water_over_m - crownOut;
+                        var f0 = FloorFrom(forced); ClearStretch(p, f0);
+                        if (p.C0 < 0f || p.C1 - p.C0 < 8f) { Debug.LogError($"[Round21+] pipe {j.id}: the crown is never {ClearCrownUnder} m under the surface for 8 m: no clear stretch"); forced = float.MaxValue; }
+                        else { p.Clear = true; DigPool(terrain, p, f0); }
+                    }
+                }
                 // the ground over the pipe: the lowest across its outside width, at each station
                 var cover = new float[n];
                 for (int i = 0; i < n; i++)
@@ -100,28 +134,15 @@ namespace ChastainRush
                     for (float lat = -p.R - PipeWall; lat <= p.R + PipeWall + 1e-3f; lat += 0.5f) { var q = p.P(s, lat); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
                     cover[i] = lo;
                 }
-                float yA = Ground(terrain, p.A.x, p.A.y), yB = Ground(terrain, p.B.x, p.B.y);
                 int m0 = Mathf.RoundToInt(n * 0.3f), m1 = Mathf.RoundToInt(n * 0.7f);
-                float yLow = float.MaxValue; for (int i = m0; i <= m1; i++) yLow = Mathf.Min(yLow, cover[i] - j.cover_m - crownOut);
-                const float Ease = 6f;
-                float Ramp(float s) => s < Ease ? s * s / (2f * Ease) : s - Ease * 0.5f;
-                var raw = new float[n];
-                for (int i = 0; i < n; i++) { float s = Mathf.Min(i * PipeStep, p.L); raw[i] = Mathf.Max(yLow, Mathf.Max(yA - j.cut_slope * Ramp(s), yB - j.cut_slope * Ramp(p.L - s))); }
-                // round the dips (sigma 2.5 m), keeping the ends on the ground
-                var f = new float[n]; int r = Mathf.CeilToInt(7.5f / PipeStep);
-                for (int i = 0; i < n; i++)
-                {
-                    float acc = 0f, w = 0f;
-                    for (int k = -r; k <= r; k++) { int ii = Mathf.Clamp(i + k, 0, n - 1); float ww = Mathf.Exp(-0.5f * (k * PipeStep / 2.5f) * (k * PipeStep / 2.5f)); acc += raw[ii] * ww; w += ww; }
-                    float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, p.L - s) / 8f);
-                    f[i] = Mathf.Lerp(raw[i], Mathf.Min(raw[i], sm), edge);
-                }
+                float yLow0 = float.MaxValue; for (int i = m0; i <= m1; i++) yLow0 = Mathf.Min(yLow0, cover[i] - j.cover_m - crownOut);
+                var f = FloorFrom(Mathf.Min(yLow0, forced));
                 p.Floor = f;
                 // the headwalls: the longest run in the middle where the ground covers the crown by 0.4 m or more
                 int bestA = -1, bestB = -1, runA = -1;
                 for (int i = 0; i < n; i++)
                 {
-                    bool ok = cover[i] - (f[i] + crownOut) >= 0.4f;
+                    bool ok = cover[i] - (f[i] + crownOut) >= 0.4f || (p.Clear && i * PipeStep >= p.C0 - 1e-3f && i * PipeStep <= p.C1 + 1e-3f);   // Round 21 follow-ups: the clear stretch is under water, not ground
                     if (ok && runA < 0) runA = i;
                     if ((!ok || i == n - 1) && runA >= 0) { int e = ok ? i : i - 1; if (e - runA > bestB - bestA) { bestA = runA; bestB = e; } runA = -1; }
                 }
@@ -129,6 +150,7 @@ namespace ChastainRush
                 p.S1 = bestA * PipeStep; p.S2 = bestB * PipeStep;
                 result.Plans.Add(p);
                 CutPipeHoles(terrain, p);
+                if (p.Clear) CutTrenchHoles(terrain, p);
                 Debug.Log($"[Round18] pipe {j.id}: {p.L:0.0} m from ({p.A.x:0.0}, {p.A.y:0.0}) at {yA:0.00} m to ({p.B.x:0.0}, {p.B.y:0.0}) at {yB:0.00} m; floor down to {f.Min():0.00} m ({j.cut_slope * 100f:0} % in and out); inlet cut {p.S1:0.0} m, pipe {p.S2 - p.S1:0.0} m (crown {j.cover_m:0.0} m or more under the ground), outlet cut {p.L - p.S2:0.0} m");
             }
             return result;
@@ -296,7 +318,7 @@ namespace ChastainRush
                 return Mathf.Max(hi, p.Y(s)) + 0.12f;
             }
             // ---- the cuts (floor, walls, coping, railing), the headwalls
-            var cut = new MeshBuilder(); var rail = new MeshBuilder();
+            var cut = new MeshBuilder(); var rail = new MeshBuilder(); var lampFace = new List<(Vector3 at, Vector3 n)>();
             var steel = new Color(0.36f, 0.38f, 0.40f);
             int lamps = 0;
             foreach (var (s0, s1, inner) in new[] { (0f, p.S1, p.S1), (p.S2, p.L, p.S2) })
@@ -361,6 +383,11 @@ namespace ChastainRush
                     }
                     Face(cut, C(t0), C(t1), Rr(t1), Rr(t0), normal);
                 }
+                // Round 21 follow-ups (RA's hint, 'mouth_lamp_b'): a caged lamp over the outlet's opening, lit, seen across the small pond
+                if (p.J.mouth_lamp_b && inner == p.S2)
+                {
+                    var lc = c + up3 * (p.R + 0.55f) + normal * 0.18f; lampFace.Add((lc, normal));
+                }
                 // its coping, over the ground behind it
                 cut.Tint = Shade(concrete, 1.0f);
                 Face(cut, W(face, -hw - CopingOut, yt), W(face, hw + CopingOut, yt), W(face - sgn * 1.0f, hw + CopingOut, yt), W(face - sgn * 1.0f, -hw - CopingOut, yt), up3);
@@ -374,39 +401,61 @@ namespace ChastainRush
             const int arc = 48;
             Vector3 Axis(float s) => W(s, 0f, p.Y(s) - PipeFloorRise + p.R);
             Vector3 Ring(float s, float th) => Axis(s) + n3 * (Mathf.Sin(th) * p.R) - up3 * (Mathf.Cos(th) * p.R);
-            int rings = Mathf.Max(2, Mathf.CeilToInt((p.S2 - p.S1) / 0.5f) + 1);
-            var bv = new List<Vector3>(); var buv = new List<Vector2>(); var bt = new List<int>();
+            int rings0 = Mathf.Max(2, Mathf.CeilToInt((p.S2 - p.S1) / 0.5f) + 1);
+            var at = new List<float>(); for (int i = 0; i < rings0; i++) at.Add(Mathf.Lerp(p.S1, p.S2, i / (float)(rings0 - 1)));
+            if (p.Clear) { at.RemoveAll(x => Mathf.Abs(x - p.C0) < 0.05f || Mathf.Abs(x - p.C1) < 0.05f); at.Add(p.C0); at.Add(p.C1); at.Sort(); }   // Round 21 follow-ups: rings at the glass's ends
+            int rings = at.Count;
+            var bv = new List<Vector3>(); var buv = new List<Vector2>(); var bt = new List<int>(); var gt = new List<int>();
             for (int i = 0; i < rings; i++)
             {
-                float s = Mathf.Lerp(p.S1, p.S2, i / (float)(rings - 1));
+                float s = at[i];
                 for (int k = 0; k <= arc; k++) { float th = Mathf.PI * 2f * k / arc; bv.Add(Ring(s, th)); buv.Add(new Vector2((s - p.S1) / 2.4f, k / (float)arc)); }
             }
             for (int i = 0; i + 1 < rings; i++)
+            {
+                bool glass = p.Clear && at[i] >= p.C0 - 1e-3f && at[i + 1] <= p.C1 + 1e-3f;   // Round 21 follow-ups: the clear stretch is glass
                 for (int k = 0; k < arc; k++)
                 {
                     int a0 = i * (arc + 1) + k, a1 = a0 + 1, b0 = a0 + arc + 1, b1 = b0 + 1;
-                    bt.Add(a0); bt.Add(b0); bt.Add(a1); bt.Add(a1); bt.Add(b0); bt.Add(b1);
+                    var l = glass ? gt : bt; l.Add(a0); l.Add(b0); l.Add(a1); l.Add(a1); l.Add(b0); l.Add(b1);
                 }
+            }
             {   // wind so the faces look at the axis (inward)
-                var n0 = Vector3.Cross(bv[bt[1]] - bv[bt[0]], bv[bt[2]] - bv[bt[0]]);
-                if (Vector3.Dot(n0, Axis(p.S1) - bv[bt[0]]) < 0f) for (int i = 0; i < bt.Count; i += 3) { int x = bt[i + 1]; bt[i + 1] = bt[i + 2]; bt[i + 2] = x; }
+                var t0 = bt.Count > 0 ? bt : gt;
+                var n0 = Vector3.Cross(bv[t0[1]] - bv[t0[0]], bv[t0[2]] - bv[t0[0]]);
+                if (Vector3.Dot(n0, Axis(p.S1) - bv[t0[0]]) < 0f) foreach (var l in new[] { bt, gt }) for (int i = 0; i < l.Count; i += 3) { int x = l[i + 1]; l[i + 1] = l[i + 2]; l[i + 2] = x; }
             }
             var mesh = new Mesh { name = "Pipe " + p.J.id, indexFormat = IndexFormat.UInt32 };
-            mesh.SetVertices(bv); mesh.SetUVs(0, buv); mesh.SetTriangles(bt, 0); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
+            mesh.SetVertices(bv); mesh.SetUVs(0, buv); mesh.subMeshCount = p.Clear ? 2 : 1; mesh.SetTriangles(bt, 0); if (p.Clear) mesh.SetTriangles(gt, 1); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
             AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Pipe {p.J.id}.asset");
             var bgo = new GameObject("sc Pipe " + p.J.id + " barrel"); bgo.transform.SetParent(root, false);   // Round 19: "sc" (as the cuts)
             bgo.AddComponent<MeshFilter>().sharedMesh = mesh;
-            var mr = bgo.AddComponent<MeshRenderer>(); mr.sharedMaterial = pipeConcrete; mr.shadowCastingMode = ShadowCastingMode.Off;
+            var mr = bgo.AddComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
+            if (p.Clear) { ClearMaterials(); mr.sharedMaterials = new[] { pipeConcrete, clearGlass }; } else mr.sharedMaterial = pipeConcrete;
             var mc = bgo.AddComponent<MeshCollider>(); mc.sharedMesh = mesh; mc.sharedMaterial = RampMaterial();
             // lamps along the crown: a caged fitting and a dim point light every 16 m (Round 19: every 8 m and brighter before)
             var lampMb = new MeshBuilder();
-            for (float s = p.S1 + 6f; s < p.S2 - 4f; s += 16f)
+            var lampAt = new List<float>(); for (float s = p.S1 + 6f; s < p.S2 - 4f; s += 16f) lampAt.Add(s);
+            if (p.Clear)   // Round 21 follow-ups: none over the glass (daylight there); one in the middle of each concrete length either side of it
+            {
+                lampAt.RemoveAll(s => s > p.C0 - 3f && s < p.C1 + 3f);
+                if (p.C0 - p.S1 >= 4f) lampAt.Add((p.S1 + p.C0) * 0.5f);
+                if (p.S2 - p.C1 >= 4f) lampAt.Add((p.C1 + p.S2) * 0.5f);
+            }
+            foreach (float s in lampAt)
             {
                 var top = Ring(s, Mathf.PI); var c = top - up3 * 0.12f;
                 lampMb.Tint = Color.white;
                 BoxAt(lampMb, c, u3, 0.7f, 0.14f, 0.22f);
                 var lg = new GameObject("Pipe lamp"); lg.transform.SetParent(root, false); lg.transform.position = c - up3 * 0.4f;
                 var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 9f; l.intensity = 1.1f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
+                lamps++;
+            }
+            foreach (var (lat3, nrm) in lampFace)   // Round 21 follow-ups: the outlet's lamp (RA's hint)
+            {
+                lampMb.Tint = Color.white; BoxAt(lampMb, lat3, Vector3.Cross(Vector3.up, nrm), 0.6f, 0.32f, 0.3f);
+                var lg = new GameObject("Pipe outlet lamp (RA's hint)"); lg.transform.SetParent(root, false); lg.transform.position = lat3 + nrm * 0.6f;
+                var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 12f; l.intensity = 2.2f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
                 lamps++;
             }
             if (lampMb.Count > 0) { var lgo = lampMb.ToObject("Pipe " + p.J.id + " lamps", pipeLamp, root, false); lgo.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off; }
@@ -468,6 +517,8 @@ namespace ChastainRush
                 dp2.outline = new[] { e1 + across2 * hh, e2 + across2 * hh, e2 - across2 * hh, e1 - across2 * hh };
                 Debug.Log($"[Round19] pipe {p.J.id}: the rock bar's look: {slabs} flat slabs over {len:0.0} m x {BarHalf * 2f:0} m, {boulders} creek rocks either side; a dry patch over it");
             }
+
+            if (p.Clear) { BuildClearStretch(terrain, mats, root, p); BuildPoolSurface(mats, root, p); }   // Round 21 follow-ups (MapBuilder.ClearPipe.cs)
 
             // the runtime side: the floor's centerline for resets and race lines; Round 19: the barrel for riding the walls
             var dp = root.gameObject.AddComponent<DrainPipe>(); dp.id = p.J.id; dp.halfWidth = CutHalf; dp.clearHeight = p.J.diameter_m - PipeFloorRise;

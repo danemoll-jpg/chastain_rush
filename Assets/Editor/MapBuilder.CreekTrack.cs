@@ -39,7 +39,7 @@ namespace ChastainRush
         [Serializable] class CtClear { public float[] points; public float half; }
         [Serializable] class CtBigJump { public string id, look; public float s_lip, height, lip_y, angle_deg, ramp_m, width, land_from, land_to, vmax, design, vmin; public float[] lip, dir, tracks; public CtHint hint; public float back_angle, rev_angle, rev_vmax; }   // Round 20: vmin (P1J); its follow-ups: tracks and a hint (N2, N5); Round 21: the back and the reverse launch
         [Serializable] class CtHint { public string kind; public float x, z, yaw; }
-        [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m = 1.25f, break_half_m; public CtJump[] jumps; public CtBigJump[] big_jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines; }
+        [Serializable] class CtFile { public float[] line, clear_half; public float tread_half_m = 1.25f, break_half_m; public float[] break_left, break_right; public CtJump[] jumps; public CtBigJump[] big_jumps; public CtCrossing[] crossings; public CtRange creek_bed; public CtRoadJump road_jump; public CtZone[] landing_zones; public CtClear[] clear_lines, break_lines; }   // Round 21 follow-ups: break_left / break_right, break_lines
 
         const string CreekTrackFile = "Data/tracks/noonday_creek.json";
         const float TrailMaxGrade = 0.22f, TrailBlend0 = 2.4f, TrailBlend1 = 4.6f, TrailShallow = 0.15f;   // Round 19: blend 1.3 to 3.3 m before (a 2.5 m tread)
@@ -99,18 +99,60 @@ namespace ChastainRush
             public static float Gap(float a, float b, int n) { float d = Mathf.Repeat(b - a, n); return d > n * 0.5f ? d - n : d; }   // b - a along the loop
 
             // Round 19 (item 1; Dan: "If we have to make trees breakable that is ok"): the trees left within break_half_m of the line
-            // and those within 8 m of a big jump's straight line from its take-off to 25 m past its landing (a vehicle that runs straight on
-            // after landing where the trail bends snaps them instead of stopping dead)
+            // and those within that of a big jump's straight line from its take-off to 25 m past its landing (a vehicle that runs straight
+            // on after landing where the trail bends snaps them instead of stopping dead). Round 21 follow-ups (Dan: "can we make the
+            // breakable trees a little bit wider around the tracks?"): 10 m (was 6; 8 at the jumps), and per station on each side
+            // ('break_left' / 'break_right', + = left of forward travel): 15 m on the outside of the bends where the flat-out laps hit trunks
+            readonly Dictionary<Vector2Int, List<int>> wide = new Dictionary<Vector2Int, List<int>>();
+            const float WidePad = 16f;
+            bool NearWide(Vector2 q, out float s, out float lat)
+            {
+                if (wide.Count == 0)
+                    for (int i = 0; i < N; i++)
+                    {
+                        var a = P[i]; var b = P[(i + 1) % N];
+                        for (int x = Mathf.FloorToInt((Mathf.Min(a.x, b.x) - WidePad) / Cell); x <= Mathf.FloorToInt((Mathf.Max(a.x, b.x) + WidePad) / Cell); x++)
+                            for (int z = Mathf.FloorToInt((Mathf.Min(a.y, b.y) - WidePad) / Cell); z <= Mathf.FloorToInt((Mathf.Max(a.y, b.y) + WidePad) / Cell); z++)
+                            {
+                                var k = new Vector2Int(x, z);
+                                if (!wide.TryGetValue(k, out var l)) wide[k] = l = new List<int>();
+                                l.Add(i);
+                            }
+                    }
+                s = 0f; lat = float.MaxValue;
+                if (!wide.TryGetValue(new Vector2Int(Mathf.FloorToInt(q.x / Cell), Mathf.FloorToInt(q.y / Cell)), out var list)) return false;
+                float best = float.MaxValue;
+                foreach (int i in list)
+                {
+                    var a = P[i]; var ab = P[(i + 1) % N] - a;
+                    float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
+                    float d = (a + ab * t - q).sqrMagnitude;
+                    if (d < best) { best = d; s = i + t; lat = Cross(ab, q - a) >= 0f ? Mathf.Sqrt(d) : -Mathf.Sqrt(d); }
+                }
+                return best < WidePad * WidePad;
+            }
             public bool Breakable(float x, float z)
             {
                 if (Data.break_half_m <= 0f) return false;
                 var q = new Vector2(x, z);
-                if (Near(q, out _, out float lat) && Mathf.Abs(lat) < Data.break_half_m) return true;
+                if (NearWide(q, out float s, out float lat))
+                {
+                    int k = Mathf.Clamp(Mathf.RoundToInt(s), 0, N - 1) % N;
+                    var side = lat >= 0f ? Data.break_left : Data.break_right;
+                    float half = side != null && side.Length == N ? Mathf.Max(Data.break_half_m, side[k]) : Data.break_half_m;
+                    if (Mathf.Abs(lat) < half) return true;
+                }
                 if (Data.big_jumps != null)
                     foreach (var b in Data.big_jumps)
                     {
                         var L = new Vector2(b.lip[0], b.lip[1]); var d = new Vector2(b.dir[0], b.dir[1]).normalized;
-                        if (SegDist(q, L - d * b.ramp_m, L + d * (b.land_to + 25f)) < 8f) return true;
+                        if (SegDist(q, L - d * b.ramp_m, L + d * (b.land_to + 25f)) < Mathf.Max(8f, Data.break_half_m)) return true;
+                    }
+                if (Data.break_lines != null)   // Round 21 follow-ups: round RA's and RC's lines
+                    foreach (var bl in Data.break_lines)
+                    {
+                        var pl = bl.points;
+                        for (int i = 0; i + 3 < pl.Length; i += 2) if (SegDist(q, new Vector2(pl[i], pl[i + 1]), new Vector2(pl[i + 2], pl[i + 3])) < bl.half) return true;
                     }
                 return false;
             }

@@ -1,5 +1,5 @@
 {
- "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. 'rock_bar_a' (Round 19, BUG-001): the way to the inlet crosses the creek on a dry bar of flat rocks instead of a gravel bar under the water. The map-wide network (Round 20) goes in this file.",
+ "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. 'rock_bar_a' (Round 19, BUG-001): the way to the inlet crosses the creek on a dry bar of flat rocks instead of a gravel bar under the water. The map-wide network (Round 20) goes in this file. 'clear' (Round 21 follow-ups, Dan: \"can we have the pipe be clear and you can see fish swimming around?\"): a stretch of the pipe made a glass tube under water: the small pond's water brought over it as a pool (its level), the pipe held down so its crown is 'water_over_m' under the surface, a trench of deep water round the tube 'trench_half_m' either side (MapBuilder.ClearPipe.cs); 'from' / 'to' are the meters from 'a' it may span (the glass is where the crown is 0.6 m or more under the surface). 'mouth_lamp_b' (Round 21 follow-ups): a lit lamp over the outlet's opening (RA's hint, seen across the small pond).",
  "pipes": [
   {
    "id": "P1",
@@ -21,7 +21,15 @@
     2317.3,
     1295.6
    ],
-   "rock_bar_a": true
+   "rock_bar_a": true,
+   "clear": {
+    "from": 18.0,
+    "to": 50.0,
+    "water_over_m": 1.0,
+    "pool_half_m": 12.0,
+    "trench_half_m": 8.0
+   },
+   "mouth_lamp_b": true
   }
  ]
 }

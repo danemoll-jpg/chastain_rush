@@ -95,7 +95,7 @@ GRID_BACK = 75.0             # the grid this far before the gate (lead-in 35 m +
 CLEAR_HALF = 3.5             # Round 19 (Dan: "probably needs a little wider track"): no solid trunk within 3.5 m of the line (the tread is 4.5 m)
 WIDE_HALF = 4.5              # at the jumps, fords and the grid: two small vehicles side by side with room
 BEND_WIDEN = 30.0            # on a bend of radius r, the cleared half width grows by BEND_WIDEN / r (at most 1.5 m)
-BREAK_HALF = 6.0             # the trees left within this of the line snap when hit (MapBuilder: TreeField.breakable)
+BREAK_HALF = 10.0            # the trees left within this of the line snap when hit (MapBuilder: TreeField.breakable; Round 21 follow-ups: was 6)
 TREAD_HALF = 2.25
 STEP = 1.0
 SETTINGS = {
@@ -206,6 +206,31 @@ for k in range(N1):
     ar = abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]))
     r = 1e9 if ar < 1e-6 else np.linalg.norm(b - a) * np.linalg.norm(c - b) * np.linalg.norm(c - a) / (2 * ar)
     clear[k] += min(1.5, BEND_WIDEN / r)
+# Round 21 follow-ups (Dan: "can we make the breakable trees a little bit wider around the tracks?"): breakable within BREAK_HALF (10 m)
+# everywhere, and BREAK_WIDE (15 m) on the outside of the bends where the Round 21 flat-out laps hit trunks (the stop points of that
+# check, by the bends Dan named): forward the C3 bend, the east leg and the south loop; reverse the lake corner, the hairpin and the
+# south loop's east side. Around each point, 30 m either way, wherever the line bends (radius under 120 m), 15 m on both sides (the
+# outside only, first: the follow-ups' laps still hit trunks on the other side, where the vehicles run wide out of S-bends).
+BREAK_WIDE = 15.0
+BEND_HITS = [   # (x, z) where a flat-out lap stopped on a trunk (Round 21 check: forward, then reverse)
+    (2458.4, 1376.7), (2450.1, 1383.2), (2523.8, 1222.4), (2546.1, 526.8), (2564.3, 494.3), (2514.0, 424.3),
+    (2468.4, 1375.7), (2412.3, 1385.7), (2418.9, 1386.4), (2279.8, 1341.6), (2552.4, 440.3), (2511.5, 593.4), (2501.2, 594.0),
+    (2520.7, 584.6), (2521.2, 596.3)]   # the last two: the follow-ups' own reverse laps
+# trunks the follow-ups' flat-out laps still stopped on, 12 to 20 m off the line where the vehicles run wide (made breakable by position)
+HIT_TRUNKS = [(2521.6, 597.0), (2511.0, 593.8), (2518.5, 596.9), (2521.1, 586.8), (2418.6, 1384.6), (2524.2, 1221.5), (2528.7, 1211.8), (2473.3, 1383.9), (2411.6, 827.3)]
+break_left = np.zeros(N1); break_right = np.zeros(N1); wide_bends = []
+for hx, hz in BEND_HITS:
+    k0 = S((hx, hz)); n_out = 0
+    for k in range(k0 - 30, k0 + 31):
+        a, b, c = line[(k - 6) % N1], line[k % N1], line[(k + 6) % N1]
+        cr = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])   # > 0: a left bend (forward), so its outside is the right
+        ar = abs(cr); r = 1e9 if ar < 1e-6 else np.linalg.norm(b - a) * np.linalg.norm(c - b) * np.linalg.norm(c - a) / (2 * ar)
+        if r > 120.0: continue
+        # the outside of the bend; and the inside too: the laps hit trunks on both sides of these bends (S-bends, wide exits)
+        break_right[k % N1] = BREAK_WIDE; break_left[k % N1] = BREAK_WIDE
+        n_out += 1
+    wide_bends.append((k0, n_out))
+print(f"  breakable trees: {BREAK_HALF:.0f} m either side everywhere; {BREAK_WIDE:.0f} m both sides of the bends at stations " + ", ".join(f"{k} ({n} m)" for k, n in wide_bends))
 def widen(s0, s1, half):
     for k in range(int(s0), int(s1) + 1): clear[k % N1] = max(clear[k % N1], half)
 jumps = []
@@ -374,6 +399,7 @@ def leap(jid, leave_xz, R, bearing, straight, h, ang, vmin, vmax, ramp=8.0):
 # N2
 k2, arc2, foot2, L2, d2, n2, far2 = leap("N2", (2520.24, 565.95), 12.0, 245.0, 4.0, 1.8, 24.0, 15.0, 17.0)
 n2["look"] = "washout"
+n2["back_angle"] = 20.0   # Round 21 follow-ups: an earth back down into the gorge, as RC's (a vehicle short into the gorge from RC drives out up it)
 land2 = L2 + d2 * 25.0                               # about the longest landing (17 m/s in the exe): the turn back onto the trail starts here
 k2j = S((2468.0, 538.5))                             # where the right turn meets the trail (heading north)
 P2a = line[k2j % N1]; h2a = line[(k2j + 2) % N1] - line[(k2j - 2) % N1]; h2a = h2a / np.linalg.norm(h2a)
@@ -413,6 +439,136 @@ big.append(n5); landings.append({"id": "N5", "poly": big_zone(n5)})
 clear_lines.append({"points": [round(float(v), 2) for q in resample([line[(k5 - 6) % N1]] + arc5 + [foot5, L5], 1.0) for v in q], "half": 4.5})
 clear_lines.append({"points": [round(float(v), 2) for q in [L5, L5 + d5 * (far5 + 6.0)] for v in q], "half": 5.5})
 n5["tracks"] = [round(float(v), 2) for q in resample([line[(k5 - 8) % N1]] + arc5 + [foot5], 1.0) for v in q]
+RC_RR = 10.0   # Round 21 follow-ups: RC's right arc off the trail (m)
+# ---------------------------------------------------------------- 4c. RA and RC, the reverse race's shortcuts (Round 21 follow-ups, Dan's
+# picks from the Part C candidates; their script went with the markers). Both 'direction': "reverse", their paths in reverse travel order.
+#   RA "Pipe dive" (official, forgives reverse CP4 = id 2): off the east side's trail where P1's way out meets it, west along P1's axis
+#      to a heap of creek rock on the small pond's east shore (lip 1.4 m, 22 degrees), an aimed launch (BigJump: 23.0 to 23.4 m/s, a
+#      tight window: the apron is 7 m long) over the pond onto P1's outfall apron (its slope is the landing), down the outlet cut into
+#      the pipe, through the clear stretch, up the inlet cut, over the rock bar and round the arc onto the west side's trail. The heap
+#      stands in P1J's landing (forward flights come down on its run-up slope, a landing ramp in their direction, or past it).
+#      Hint: a lamp on the outlet headwall, seen across the pond (MapBuilder.Pipes.cs), and worn tracks off the trail to the heap.
+#   RC "Creek leap back" (official, forgives reverse CP2 = id 4): N2 backwards. The west side's trail runs only 12 to 15 m from the
+#      gorge's edge here, so the twin heap sits between them (its foot clear of the tread, its lip on the bank's top) and the run-up
+#      comes from the woods west of the trail: off the trail just past reverse CP1, a loop out to the west and round to the
+#      east-north-east, across the trail and up the heap; an aimed launch (15.0 to 16.5 m/s, 24 degrees) over the gorge onto N2's own
+#      heap (its slope is the landing), then left up the east side. The heap's back is an earth ramp down into the gorge (20 degrees):
+#      a forward N2 flight comes down on the twin's kicker (a landing ramp in its direction) or, short, on that back, and a vehicle
+#      short into the gorge drives up it and out.
+#      Hint: N2's knocked-over barricade is in plain sight across the creek; worn tracks from the trail round the loop to the heap.
+# RA
+RA_K, RA_H, RA_TH, RA_VMIN, RA_VMAX, RA_RAMP = 35.0, 1.4, 22.0, 23.2, 23.5, 8.0   # first exe check at 36 m, 23.0 to 23.4: the player down 3.3 to 4.1 m onto the apron, the AI 1.6 m short of it
+lipA = P_out + uA * RA_K; dA = -uA; yA_lip = ground(*lipA) + RA_H
+nA = np.array([-uA[1], uA[0]])
+ra_tab = {}
+for v in (RA_VMIN, RA_VMAX):
+    t, dist, top = ballistic(lipA, dA, yA_lip, v, math.radians(RA_TH)); ra_tab[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+ra = {"id": "RA", "look": "rockheap", "s_lip": -1.0, "lip": [round(float(lipA[0]), 2), round(float(lipA[1]), 2)], "dir": [round(float(dA[0]), 5), round(float(dA[1]), 5)],
+      "height": RA_H, "lip_y": round(float(yA_lip), 3), "angle_deg": RA_TH, "ramp_m": RA_RAMP, "width": 6.0, "land_from": RA_K - 4.0, "land_to": RA_K + 2.0,
+      "vmin": RA_VMIN, "vmax": RA_VMAX, "design": RA_VMIN, "flights": ra_tab}
+footA = lipA + uA * RA_RAMP
+# out of the inlet: straight on over the rock bar and up the west bank, then a wide left bend (radius 25 m) onto the trail heading south
+# (P1's own way in, an 11 m arc, was too tight out of the pipe: the first flat-out check ran wide 30 m into the woods)
+RA_OUT_R = 25.0
+oA = A - uA * 12.0; hA = -uA; leftA = np.array([-hA[1], hA[0]]); cA = oA + leftA * RA_OUT_R
+exitA = [tuple(A - uA * 6.0), tuple(oA)]; kAj = None
+for deg in range(2, 121, 2):
+    a_ = math.radians(deg); v_ = oA - cA; q_ = cA + np.array([v_[0] * math.cos(a_) - v_[1] * math.sin(a_), v_[0] * math.sin(a_) + v_[1] * math.cos(a_)])
+    exitA.append(tuple(q_)); k_, d_ = project(line, q_)[0], float(np.min(np.linalg.norm(line - q_, axis=1)))
+    if d_ < 1.5: kAj = int(np.argmin(np.linalg.norm(line - q_, axis=1))); break
+exitA += [tuple(line[(kAj - i) % N1]) for i in (4, 8, 12)]
+pathA = [line[(join2 + 18) % N1], line[(join2 + 8) % N1], line[join2 % N1], (2489.0, 1314.5), (2482.5, 1322.5), (2473.0, 1327.5), tuple(footA + uA * 6.0), tuple(footA), tuple(lipA),
+         tuple(P_out), tuple(B)] + [tuple(B - uA * t) for t in np.arange(5.0, np.linalg.norm(B - A), 5.0)] + [tuple(A)] + exitA
+pathA = resample(pathA, 2.0)
+sA = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(pathA, axis=0), axis=1))])
+sc_ra = {"id": "ra_pipe_dive", "name": "Pipe dive", "direction": "reverse", "path": [round(float(v), 2) for q in pathA for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(pathA, sA, footA + uA * 4.0), 1), "entry_margin_m": 1.0, "forgives": [2], "ai_speed": 16.0,
+         # the AI: 12 m/s round the turn off the trail, 22 up the heap (the launch takes it to 23), 14 through the pipe, 9 for the arc at the end
+         "ai_profile": [round(v, 1) for v in (st_on(pathA, sA, (2489.0, 1314.5)) - 4.0, 12.0, st_on(pathA, sA, (2473.0, 1327.5)), 13.0, st_on(pathA, sA, footA), 22.0,
+                                              st_on(pathA, sA, lipA) + 1.0, 22.0, st_on(pathA, sA, B) + 4.0, 14.0, st_on(pathA, sA, A), 12.0, st_on(pathA, sA, oA), 13.0)]}
+ra["tracks"] = [round(float(v), 2) for q in resample([line[join2 % N1], (2489.0, 1314.5), (2482.5, 1322.5), (2473.0, 1327.5), tuple(footA + uA * 4.0)], 1.0) for v in q]
+big.append(ra)
+landings.append({"id": "RA", "poly": [round(float(v), 2) for q in [P_out + uA * 3.0 + nA * 6.0, B - uA * 6.0 + nA * 4.0, B - uA * 6.0 - nA * 4.0, P_out + uA * 3.0 - nA * 6.0] for v in q]})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([(2473.0, 1327.5), tuple(footA + uA * 6.0), tuple(lipA)], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in resample(exitA, 1.0) for v in q], "half": 3.5})
+print(f"  RA pipe dive: heap lip ({lipA[0]:.1f}, {lipA[1]:.1f}) at {yA_lip:.2f} m, {RA_TH} deg, {RA_VMIN} to {RA_VMAX} m/s: " +
+      ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m" for v, a_ in ra_tab.items()) + f" (the apron's lip is {RA_K:.0f} m away); out on a {RA_OUT_R:.0f} m bend onto the trail at s {kAj}; {float(sA[-1]):.0f} m of line")
+# RC
+L2b = np.array(n2["lip"]); d2b = np.array(n2["dir"]); dC = -d2b; nC = np.array([-d2b[1], d2b[0]])
+RC_S, RC_H, RC_TH, RC_VMIN, RC_VMAX, RC_RAMP = 18.0, 1.4, 24.0, 15.5, 16.3, 7.0   # first exe check at 15 to 16: the AI down at N2's lip, the player 7 to 8 m past it
+lipC = L2b + d2b * RC_S; footC = lipC - dC * RC_RAMP; yC_lip = ground(*lipC) + RC_H
+def n2_surface(q):   # N2's kicker (from its foot up to its lip), for the landing of RC's flight
+    s_ = float((q - L2b) @ d2b)   # 0 at N2's lip, negative toward its foot
+    if -n2["ramp_m"] <= s_ <= 0.0 and abs(float((q - L2b) @ nC)) < n2["width"] / 2:
+        u = (s_ + n2["ramp_m"]) / n2["ramp_m"]; return ground(*(L2b - d2b * n2["ramp_m"])) + (n2["lip_y"] - ground(*(L2b - d2b * n2["ramp_m"]))) * u * u
+    return -1e9
+def ballistic2(P, d, y0, v, th, extra):
+    vx, vy = v * math.cos(th), v * math.sin(th); t = 0.0
+    while t < 6.0:
+        t += 0.01; q = P + d * vx * t; y = y0 + vy * t - 4.905 * t * t
+        if t > 0.1 and y <= max(ground(*q), extra(q)): return t, float(vx * t), float((q - L2b) @ -d2b)
+    return t, float(vx * t), 0.0
+rc_tab = {}
+for v in (RC_VMIN, RC_VMAX):
+    t, dist, past = ballistic2(lipC, dC, yC_lip, v, math.radians(RC_TH), n2_surface); rc_tab[str(v)] = [round(t, 2), round(dist, 1), round(past, 1)]
+rc = {"id": "RC", "look": "washout", "s_lip": -1.0, "lip": [round(float(lipC[0]), 2), round(float(lipC[1]), 2)], "dir": [round(float(dC[0]), 5), round(float(dC[1]), 5)],
+      "height": RC_H, "lip_y": round(float(yC_lip), 3), "angle_deg": RC_TH, "ramp_m": RC_RAMP, "width": 6.0, "land_from": 12.0, "land_to": 30.0,
+      "vmin": RC_VMIN, "vmax": RC_VMAX, "design": RC_VMIN, "flights": rc_tab, "back_angle": 20.0}
+# the run-up: off the trail just past reverse CP1 (forward CP5, s 1707), a loop out west and round onto the heap's axis 27 m before its lip
+kC = S((2470.5, 554.0)); hC = line[(kC - 2) % N1] - line[(kC + 2) % N1]; hC = hC / np.linalg.norm(hC)   # the reverse heading there
+RC_RUN = 38.0
+TC = lipC - dC * RC_RUN
+# a left turning circle (radius RC_R) tangent to the heap's axis at TC; a straight line onto it from the trail, eased off the trail's heading
+RC_R = 9.0
+leftC = np.array([-dC[1], dC[0]]); cC = TC + leftC * RC_R; b0 = line[kC % N1]
+# a right arc off the trail (radius RC_RR) until the heading is tangent to the left circle, a straight, then the left circle (a Dubins path)
+def rotc(v, a): c_, s_ = math.cos(a), math.sin(a); return np.array([v[0] * c_ + v[1] * s_, -v[0] * s_ + v[1] * c_])   # clockwise by a (x east, z north)
+rightC = np.array([hC[1], -hC[0]]); cR = b0 + rightC * RC_RR
+best = None
+for al in np.linspace(0.0, math.radians(150), 1501):
+    P_ = cR + rotc(b0 - cR, al); h_ = rotc(hC, al)
+    w = cC - P_; along_ = float(w @ h_); side_ = float(w @ np.array([-h_[1], h_[0]]))   # the circle's center: ahead, and to the left by RC_R
+    if along_ > 2.0 and (best is None or abs(side_ - RC_R) < best[0]): best = (abs(side_ - RC_R), al, P_, h_, along_)
+_, alR, PR, hR, runR = best
+T1 = PR + hR * runR; phi1 = math.atan2(*(T1 - cC)[::-1])
+phiT = math.atan2(*(TC - cC)[::-1]); sweep = (phiT - phi1) % (2 * math.pi)
+arcR = [cR + rotc(b0 - cR, alR * t) for t in np.linspace(0, 1, max(3, int(alR * RC_RR / 1.0)))]
+straightR = [PR + hR * runR * t for t in np.linspace(0, 1, max(2, int(runR / 1.0)))]
+arcC = [cC + RC_R * np.array([math.cos(phi1 + sweep * t), math.sin(phi1 + sweep * t)]) for t in np.linspace(0, 1, max(3, int(sweep * RC_R / 1.0)))]
+loopC = arcR + straightR[1:] + arcC[1:]
+print(f"  RC's way in: off the trail turning right {math.degrees(alR):.0f} degrees (radius {RC_RR:.0f} m), {runR:.1f} m straight, left {math.degrees(sweep):.0f} degrees (radius {RC_R:.0f} m) onto the heap's axis {RC_RUN:.0f} m before its lip")
+def min_radius(P):
+    P = np.asarray(P); r = 1e9
+    for i in range(2, len(P) - 2):
+        a, b, c = P[i - 2], P[i], P[i + 2]; ar = abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]))
+        if ar > 1e-6: r = min(r, np.linalg.norm(b - a) * np.linalg.norm(c - b) * np.linalg.norm(c - a) / (2 * ar))
+    return r
+kCj = S((2533.0, 582.0))   # the east side's trail, heading north (reverse) after the landing: a gentle left bend onto it (at (2545, 540) the flat-out check ran wide into trunks)
+P2j = line[kCj % N1]
+landC = L2b - d2b * 6.0
+midC = landC + dC * 6.0
+pathC = [line[(kC + 14 - i) % N1] for i in range(0, 14, 2)] + loopC[1:] + [tuple(footC), tuple(lipC), tuple(L2b), tuple(landC)] + \
+        [(1 - u) ** 2 * midC + 2 * (1 - u) * u * (midC + dC * 14.0) + u * u * P2j for u in np.linspace(0.1, 1.0, 10)] + [line[(kCj - i) % N1] for i in (4, 8, 12)]
+pathC = resample(pathC, 2.0)
+sCc = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(pathC, axis=0), axis=1))])
+sc_rc = {"id": "rc_creek_leap_back", "name": "Creek leap back", "direction": "reverse", "path": [round(float(v), 2) for q in pathC for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(pathC, sCc, footC + dC * 3.0), 1), "entry_margin_m": 1.0, "forgives": [4], "ai_speed": 14.0,
+         # the AI: 9 m/s round the loop, 15 up the heap (the launch holds it to 15 to 16.5), slow for the bend onto the east side
+         "ai_profile": [round(v, 1) for v in (st_on(pathC, sCc, loopC[0]) - 4.0, 10.0, st_on(pathC, sCc, loopC[8]), 9.0, st_on(pathC, sCc, loopC[-1]), 10.0, st_on(pathC, sCc, footC), 15.0,
+                                              st_on(pathC, sCc, lipC) + 2.0, 15.0, st_on(pathC, sCc, midC), 9.0, st_on(pathC, sCc, P2j), 10.0)]}
+rc["tracks"] = [round(float(v), 2) for q in resample([tuple(q) for q in loopC] + [tuple(footC)], 1.0) for v in q]
+big.append(rc)
+landings.append({"id": "RC", "poly": [round(float(v), 2) for q in [L2b + d2b * 1.0 + nC * 6.0, L2b - d2b * 16.0 + nC * 7.0, L2b - d2b * 16.0 - nC * 7.0, L2b + d2b * 1.0 - nC * 6.0] for v in q]})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(q) for q in loopC] + [tuple(footC), tuple(lipC)], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(landC), tuple(midC), tuple(midC + dC * 14.0), tuple(P2j)], 1.0) for v in q], "half": 6.0})
+# the trees within 12 m of RA's and RC's lines snap when hit (the flat-out check: a vehicle running wide out of RA's last turn and
+# out of RC's landing stopped dead on trunks 13 to 16 m off the trail)
+break_lines = [{"points": [round(float(v), 2) for q in pathA for v in q], "half": 12.0}, {"points": [round(float(v), 2) for q in pathC for v in q], "half": 12.0},
+               {"points": [round(float(v), 2) for q in resample(exitA, 1.0) for v in q], "half": 25.0}]   # 25 m round RA's way out (out of the pipe at speed over the bank, a flat-out run went 24 m wide)
+break_lines += [{"points": [hx, hz, hx + 0.01, hz], "half": 1.5} for hx, hz in HIT_TRUNKS]
+print(f"  RC creek leap back: heap lip ({lipC[0]:.1f}, {lipC[1]:.1f}) at {yC_lip:.2f} m ({RC_S:.0f} m from N2's lip), {RC_TH} deg, {RC_VMIN} to {RC_VMAX} m/s: " +
+      ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m, down {a_[2]:.1f} m past N2's lip" for v, a_ in rc_tab.items()) +
+      f"; the loop's tightest radius {min_radius(loopC):.1f} m; heap's foot {float(np.min(np.linalg.norm(line - footC, axis=1))):.1f} m from the trail's line; {float(sCc[-1]):.0f} m of line")
 def lap_gap(P, d, ramp, half):   # the ramp's nearest edge to the trail's line (the tread is 4.5 m wide)
     nl = np.array([-d[1], d[0]])
     return min(float(np.min(np.linalg.norm(line - (P - d * s_ + nl * o), axis=1))) for s_ in np.arange(0, ramp + 0.1, 1.0) for o in (-half, half))
@@ -433,6 +589,7 @@ cps = [{"id": cid, "s": float(S((x, z))), "pos": [x, z], "label": label} for cid
 track = {
     "note": "Round 18 (items 3, 5), Round 19 (items 1, 2): the Noonday Creek trail, made by Tools/mapgen/make_creek_track.py. Map x, z in meters; s = meters along 'line' from its first point (the lap's own stations, as in the route file). Built by MapBuilder.CreekTrack.cs.",
     "line": flat(line), "clear_half": [round(float(v), 2) for v in clear], "tread_half_m": TREAD_HALF, "break_half_m": BREAK_HALF,
+    "break_left": [round(float(v), 1) for v in break_left], "break_right": [round(float(v), 1) for v in break_right], "break_lines": break_lines,
     "jumps": jumps, "big_jumps": big, "crossings": crossings, "creek_bed": {"s0": c5a, "s1": c6},
     "road_jump": {"id": "J4", "lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4,
                   "ramp_m": 28.0, "lip_above_road_m": 1.6, "width_m": 5.0, "slope_start": 0.11, "slope_lip": 0.25,
@@ -446,7 +603,7 @@ route.update({
     "source": "Tools/mapgen/make_creek_track.py. Coordinates are map meters (= Unity x, z); heights come from the world.",
     "lap_length_m": round(L1, 1), "loop": flat(np.vstack([line, line[:1]])), "gate_s": gate_s,
     "lead_in": flat(lead), "lead_in_length_m": 35.0, "checkpoints": cps, "junctions": [], "loop_pieces": [],
-    "official_shortcuts": [sc_p1, sc_n2, sc_n5], "closures": [], "ai_zones": ai_zones, "ai_zones_reverse": ai_zones_rev,
+    "official_shortcuts": [sc_p1, sc_n2, sc_n5, sc_ra, sc_rc], "closures": [], "ai_zones": ai_zones, "ai_zones_reverse": ai_zones_rev,
     # for the checks (Round18Runner): J4 and the creek-bed run, in lap stations
     "j4": {"lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4, "road_far_edge_m": 26.0},
     "creek_bed_s": [c5a, c6],

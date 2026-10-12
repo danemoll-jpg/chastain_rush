@@ -23,7 +23,7 @@ namespace ChastainRush
             UseRoute("noonday_creek.json", direction); HookJumps();
             float L = race.Route.LapLength;
             var small = Small.Where(ids.Contains).ToArray(); if (small.Length == 0) small = Small;
-            int stops = 0, badLand = 0; var seenJumps = new HashSet<string>();
+            int stops = 0, badLand = 0, trunkStops = 0, snappedAll = 0; var seenJumps = new HashSet<string>();
             var launches = new List<(string id, float v)>();
             Action<BigJump, ArcadeVehicle, float> tap = (b, c, v) => { if (c == car) launches.Add((b.id, v)); };
             BigJump.Launched += tap;
@@ -35,6 +35,8 @@ namespace ChastainRush
                 var run = new Run(); var hist = new Queue<(float t, float v, Vector3 p)>(); var found = new List<string>(); float lastAt = -99f; float t = 0f;
                 launches.Clear(); var flights = new List<string>();
                 string cur = null; float air = 0f, top = 0f; Vector3 from = Vector3.zero; int done = 0;
+                var touch = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); touch.seen.Clear(); touch.on = true;   // Round 21 follow-ups: what each stop hit
+                int snapped0 = TreeTrunks.Snapped;
                 var drive = StartCoroutine(DriveLine(line, 99f, 260f, run, null, null, 4f, false));
                 while (!run.reached && run.end == "" && run.time < 259.9f)
                 {
@@ -55,11 +57,19 @@ namespace ChastainRush
                     hist.Enqueue((t, v, p)); while (hist.Count > 0 && hist.Peek().t < t - 0.5f) hist.Dequeue();
                     float vMax = hist.Max(h => h.v);
                     bool inPipe = DrainPipe.Inside(p, out _) != null;
+                    if (touch.seen.Count > 40) touch.seen.RemoveRange(0, touch.seen.Count - 40);
                     if (car.GroundedWheels > 0 && vMax > 10f && v < vMax * 0.45f && t - lastAt > 3f && !inPipe)
-                    { lastAt = t; found.Add($"{vMax:0.0} to {v:0.0} m/s in 0.5 s at ({p.x:0.0}, {p.z:0.0}), lap {race.Route.LapStationOf(p):0} m"); }
+                    {
+                        lastAt = t;
+                        // Round 21 follow-ups: the cause (a solid trunk among the last contacts, water, or something else)
+                        var last = touch.seen.Skip(Math.Max(0, touch.seen.Count - 8)).ToList();
+                        string cause = last.Any(x => x.Contains(" trunk at")) ? "TRUNK " + last.Last(x => x.Contains(" trunk at")) : car.WaterImmersion > 0.05f ? "water" : last.Count > 0 ? "hit: " + last[last.Count - 1] : "nothing touched (ground)";
+                        if (cause.StartsWith("TRUNK")) trunkStops++;
+                        found.Add($"{vMax:0.0} to {v:0.0} m/s in 0.5 s at ({p.x:0.0}, {p.z:0.0}), lap {race.Route.LapStationOf(p):0} m: {cause}");
+                    }
                 }
-                yield return drive;
-                stops += found.Count + (run.reached ? 0 : 1);
+                yield return drive; touch.on = false;
+                stops += found.Count + (run.reached ? 0 : 1); snappedAll += TreeTrunks.Snapped - snapped0;
                 report.AppendLine($"  {Nm(id),-16} {(run.reached ? $"the lap in {run.time:0.0} s" : "DID NOT FINISH " + run.end + $" at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0})")}, {found.Count} sudden stop(s)");
                 report.AppendLine($"      flights: {(flights.Count > 0 ? string.Join("; ", flights) : "none")}");
                 foreach (var f in found) report.AppendLine("      stop: " + f);
@@ -69,6 +79,7 @@ namespace ChastainRush
             var missing = want.Where(w => !seenJumps.Contains(w)).ToList();
             Check($"Noonday Creek {direction}: every trail vehicle round the lap flat out, no dead stop, every big jump launched and landed upright", stops == 0 && badLand == 0 && missing.Count == 0,
                   $"{stops} stop(s), {badLand} bad landing(s){(missing.Count > 0 ? ", never launched: " + string.Join(", ", missing) : "")}");
+            Check($"Noonday Creek {direction}, flat out (Round 21 follow-ups, the wider breakable trees): no dead stop on a trunk", trunkStops == 0, $"{trunkStops} stop(s) on a solid trunk; {snappedAll} breakable trees snapped over the laps");
         }
 
         // short of the speed in reverse: no wall, no trap

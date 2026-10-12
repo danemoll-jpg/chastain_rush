@@ -284,12 +284,22 @@ Noonday Creek, AI rule and mistakes, checkpoints against free cuts) is built
 and the reverse race approved by Dan. Queued: 22 the map-wide pipe network
 (proposal first); 23 Chastain Commons, Chastain Enclave and Grasmere Court.
 
+**The Round 21 follow-ups (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by Dan:**
+P1's clear stretch: a pool at the small pond's level dug over P1's middle (the pond itself is too narrow on P1's line), 30 m
+of glass tube in a deep-water trench with fish, weeds, light shafts (`MapBuilder.ClearPipe.cs`, `Pipes/PipeAquarium.cs`,
+shaders `PipeGlass` / `UnderwaterScroll` / `Fish`; `pipes.json` `clear`, `mouth_lamp_b`). RA "Pipe dive" and RC "Creek leap
+back" (reverse, official; `make_creek_track.py` section 4c, looks `rockheap` and `washout` with a back in
+`MapBuilder.BigJumps.cs`). Breakable trees 10 m round the trail, 15 m on the named bends, `break_lines` round RA / RC and
+hit trunks (`noonday_creek.json` `break_left` / `break_right` / `break_lines`). Proposal markers gone. Check: `ChastainRush.exe
+-exeRound21 <dir> -r21Only tube,ra,rc,n2,ramp,fwdlap,revlap -logFile <dir>\Player.log` (`Checks/Round20Runner.R21F.cs`).
+Imported from Racer: nothing.
+
 **Round 21 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A (03db48a): R1
 follows the AI shortcut rule, AI mistakes (`DriverVariation`: late braking, curb clip, short / off-line jumps; R1 sloppy tries into the
 pool over a near step, `PoolHold`), Chastain Glen checkpoints 952 / 1056 / 1216 at 12 m against free cuts. Part B: Noonday Creek
 reverse (route `directions`, `ai_zones_reverse`, `RaceController.AiZones`): every big jump has a back that is the reverse take-off
 (`MapBuilder.BigJumps.cs` `BuildBack`, a second BigJump), RJ4 over the road (`MapBuilder.CreekTrack.cs`). Part C: candidates RA to RC
-on TEMPORARY markers (`python Tools/mapgen/reverse_creek_candidates.py`, proposal markers back). Check: `ChastainRush.exe -exeRound21
+on TEMPORARY markers (removed in the follow-ups with their script). Check: `ChastainRush.exe -exeRound21
 <dir> [-r21Only r1,six,races,revlap,fwdlap,revslow,revrace] -logFile <dir>\Player.log`. Imported from Racer: nothing.
 
 **Round 20's follow-ups (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by

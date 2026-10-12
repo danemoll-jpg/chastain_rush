@@ -66,6 +66,10 @@ namespace ChastainRush
             if (Do("revslow")) yield return Guard(RevSlow());
             if (Do("revrace")) yield return Guard(RevRace());
             if (Do("bj1diag")) yield return Guard(Bj1Diag());
+            // the Round 21 follow-ups (Round20Runner.R21F.cs)
+            if (Do("tube")) yield return Guard(Tube(ids));
+            if (Do("ra")) yield return Guard(Ra(ids));
+            if (Do("rc")) yield return Guard(Rc(ids));
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

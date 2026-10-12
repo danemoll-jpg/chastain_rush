@@ -217,6 +217,7 @@ namespace ChastainRush
                     // end turned up (a spillway lip); sloped concrete sides and back into the water (a vehicle in the pond rides up
                     // them, never into a wall); creek rock heaped either side of it in the shallows (look only)
                     var p = Prism("apron", KickerProfile(), b.ramp_m, hw, new Color(0.58f, 0.57f, 0.54f), new[] { 1, 2, 3 });
+                    p.landing = true;   // Round 21 follow-ups: RA comes down on it the other way (RampHold's landing carry)
                     BuildPrism(p, terrain, mats, jr);
                     for (int i = 0; i < 8; i++)
                     {
@@ -236,6 +237,7 @@ namespace ChastainRush
                     // Round 20 follow-up, N2: where the bank is cut by an old washed-out ford, creek rock and earth bulldozed up into a
                     // heap on the bank's edge; its sides slope down to the ground, its back drops into the gorge; loose rock round it
                     BuildPrism(Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.40f, 0.31f, 0.21f), new[] { 1, 3 }), terrain, mats, jr);
+                    if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw, "earth", new Color(0.40f, 0.31f, 0.21f), 16f);   // Round 21 follow-ups: RC, its back an earth ramp down into the gorge (a forward N2 flight a little short lands on it; a vehicle short into the gorge drives up it and out: a 4 m back ended in a wall there)
                     float DeckTop(float s) => Profile(KickerProfile(), s);
                     for (int i = 0; i < 12; i++)
                     {
@@ -248,6 +250,25 @@ namespace ChastainRush
                         for (int k2 = 0; k2 < 4; k2++) TriFace(look, cc + dirs[k2] * r * 1.4f, cc + dirs[(k2 + 1) % 4] * r * 1.4f, apex, dirs[k2] + dirs[(k2 + 1) % 4] + Vector3.up);
                     }
                     Debug.Log($"[Round20+] {b.id} washout: an earth and rock kicker {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
+                }
+                else if (b.look == "rockheap")
+                {
+                    // Round 21 follow-ups, RA: creek rock heaped on the small pond's east shore (rubble from the outfall's building, left by the
+                    // crew); a smooth driven top (the prism), its sides and its end over the water sloped, boulders round it and in the shallows
+                    var rp = Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.47f, 0.46f, 0.42f), new[] { 1, 2, 3 }); rp.landing = true;   // P1J's flights come down on it
+                    BuildPrism(rp, terrain, mats, jr);
+                    float DeckTop(float s) => Profile(KickerProfile(), s);
+                    for (int i = 0; i < 18; i++)
+                    {
+                        float side = i % 2 == 0 ? 1f : -1f, s = 0.4f + (i / 2) * (b.ramp_m + 1.5f) / 9f, r = 0.35f + 0.55f * Hash01(i, 1301);
+                        var q = O + d * s + nl * side * (hw + 0.4f + 1.1f * Hash01(i, 1303)); float g = Ground(terrain, q.x, q.y);
+                        look.Tint = Shade(Granite, 0.6f + 0.35f * Hash01(i, 1305));
+                        var cc = new Vector3(q.x, g - 0.1f, q.y);
+                        Vector3[] dirs = { Vector3.right, (Vector3.right + Vector3.forward).normalized, Vector3.forward, (Vector3.forward + Vector3.left).normalized, Vector3.left, (Vector3.left + Vector3.back).normalized, Vector3.back, (Vector3.back + Vector3.right).normalized };
+                        var apex = cc + Vector3.up * (r + Mathf.Max(0f, (s <= b.ramp_m ? DeckTop(s) : y1) - g) * 0.55f);
+                        for (int k2 = 0; k2 < 8; k2++) TriFace(look, cc + dirs[k2] * r * (1.3f + 0.3f * Hash01(i * 8 + k2, 1307)), cc + dirs[(k2 + 1) % 8] * r * (1.3f + 0.3f * Hash01(i * 8 + (k2 + 1) % 8, 1307)), apex, dirs[k2] + dirs[(k2 + 1) % 8] + Vector3.up);
+                    }
+                    Debug.Log($"[Round21+] {b.id} rock heap: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0.0} to {b.vmax:0.0} m/s");
                 }
                 else if (b.look == "logramp")
                 {

@@ -7,7 +7,7 @@ namespace ChastainRush
     // Round 20, item 2: the lines drawn over the map's picture (WorldMap.cs). From Racer's WorldMapCourseOverlay (a MaskableGraphic
     // whose mesh is the route as quads, a dark edge under a colored line, white arrows every 85 px in the direction of travel, a
     // short bar at each gate; points under 2 px apart merged; lines off the view skipped; dashed where underground). Chastain Rush:
-    // fed this game's lines (the current route, the shortcuts and pipes layer, Round 20's proposals) instead of Racer's courses.
+    // fed this game's lines (the current route, the shortcuts and pipes layer) instead of Racer's courses.
     [RequireComponent(typeof(CanvasRenderer))]
     public sealed class WorldMapOverlay : MaskableGraphic
     {

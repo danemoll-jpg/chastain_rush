@@ -103,6 +103,7 @@ namespace ChastainRush
             // water: ponds and lakes, streams
             Color32 Water = new Color(0.27f, 0.52f, 0.78f), Shore = new Color(0.18f, 0.36f, 0.58f);
             foreach (var w in map.water) { var o = ToPoints(w.outline); r.Fill(o, Water); var closed = o.ToList(); closed.Add(o[0]); r.Line(closed, 1.2f, Shore); }
+            if (Beds != null) for (int i = map.water.Length; i < Beds.Rings.Count; i++) { var o = Beds.Rings[i]; r.Fill(o, Water); var closed = o.ToList(); closed.Add(o[0]); r.Line(closed, 1.2f, Shore); }   // Round 21 follow-ups: P1's pool
             foreach (var s in map.streams) r.Line(ToPoints(s.points), s.kind == "river" ? 8f : 3f, Water);
             // the shopping center's lot, drives, roads (by width), bridges over them with a dark edge
             Color32 Asphalt = new Color(0.30f, 0.30f, 0.31f), Edge = new Color(0.12f, 0.12f, 0.13f), Drive = new Color(0.62f, 0.61f, 0.58f), Deck = new Color(0.55f, 0.53f, 0.50f);
