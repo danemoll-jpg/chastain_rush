@@ -2454,6 +2454,33 @@ lists: `local/round21/` (git-ignored). Imported from Racer: nothing.
   (`MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/round21_markers.json`, `Assets/HandMade/Proposals/`,
   `Tools/handmade/make_proposal_labels.py`).
 
+**ACTIVE — Round 21 follow-ups (Dan, 2026-10-12 14:27).** Dan: "i think the reverse track is fine" (approved). His
+picks from the Part C candidates, and one more:
+1. Build RA "Pipe dive" (reverse race, official, forgives reverse CP4) as proposed in `local/round21/reverse_candidates.txt`:
+   the rock-heap take-off on the small pond's east shore, over the pond, down P1's outfall apron into the pipe, out over
+   the ford. Hint as proposed (the pipe's lights seen across the pond, worn tracks). AI trial.
+   PLUS, Dan: "can we have the pipe be clear and you can see fish swimming around?" Claude's reading, CONFIRMED by Dan (14:29): part of the pipe
+   becomes a CLEAR tube running through water, like an aquarium tunnel, with fish swimming round it, so driving through
+   you see water and fish on every side. P1 runs under dry ground now, so: re-route or extend the pipe's run so a good
+   stretch of it (as long as the ground allows, at least 25 to 30 m) passes UNDER the small pond (or the creek) as a
+   clear tube: glass-like walls, water all round it lit from above (light shafts, a rippling surface overhead), a
+   few schools of fish and some bigger fish drifting and darting, weeds and rocks on the pond bed, a sound change
+   inside. The concrete parts stay as they are. Everything P1 has keeps working in the clear stretch: round walls you
+   can ride, the camera inside, the trickle of water along the bottom, never a trap, a reset puts you in the bottom
+   facing along it. Both the forward P1 and the reverse RA go through it. Keep the frame rate (fish are cheap
+   animated meshes, no physics). If the pond is too shallow for a tube under it, deepen the pond bed over the tube
+   (the pond surface stays where it is) and say by how much.
+2. Build RC "Creek leap back" (reverse race, official, forgives reverse CP2) as proposed: N2's twin heap on the west bank,
+   over the creek onto N2's heap. AI trial.
+3. Breakable trees wider round the trail. Dan: "can we make the breakable trees a little bit wider around the tracks?"
+   Now within 6 m of the line (8 m at the big jumps' run-outs). Make it about 10 m both sides everywhere on the
+   Noonday Creek trail, both directions, and about 15 m on the outside of the bends where the scripted laps hit trunks
+   (forward: C3 bend, east leg, south loop; reverse: lake corner, hairpin, south loop east side). Big trunks beyond stay
+   solid. Report the count and re-run the flat-out laps: no dead stops on trunks.
+4. Remove the Round 21 proposal markers, their data, labels, debug-menu rows and the map layer (RB not built).
+5. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status list, "for
+   Dan to check", path to the exe. Two pictures from inside the clear stretch.
+
 **QUEUED — Round 22: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33

@@ -275,13 +275,14 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 21 in `TODO.md`:** Part A, carry-overs (R1 follows
-the AI shortcut rule, the AI makes occasional mistakes including falling in
-R1's pool); Part B, a reverse Noonday Creek race (the trail driven the other
-way, its own jumps where the forward ones do not work backwards); Part C,
-three to five shortcut candidates for the reverse race on markers, nothing
-built. Queued: 22 the map-wide pipe network (proposal first); 23 Chastain
-Commons, Chastain Enclave and Grasmere Court.
+**Active work is the Round 21 follow-ups in `TODO.md`:** build reverse
+shortcuts RA (pipe dive, with a stretch of the pipe made a clear tube under
+the pond with fish swimming round it) and RC (creek leap back); breakable
+trees about 10 m either side of the Noonday Creek trail (15 m on the bends
+where laps hit trunks); remove the proposal markers. Round 21 (reverse
+Noonday Creek, AI rule and mistakes, checkpoints against free cuts) is built
+and the reverse race approved by Dan. Queued: 22 the map-wide pipe network
+(proposal first); 23 Chastain Commons, Chastain Enclave and Grasmere Court.
 
 **Round 21 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A (03db48a): R1
 follows the AI shortcut rule, AI mistakes (`DriverVariation`: late braking, curb clip, short / off-line jumps; R1 sloppy tries into the
