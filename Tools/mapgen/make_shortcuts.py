@@ -758,6 +758,8 @@ R1_REVERSE_ONLY = ((1052, 713, 0.5), (1499, 1641, 0.75), (1641, 1622, 0.75))   #
 R1_LIP_H, R1_TH, R1_RAMP = 2.6, 18.0, 8.0   # the lip 0.85 m over the first fence's boards; the angle steepens to fit the 8 m ramp
 R1_GATE_W, R1_GATE_FRAC = 3.5, 0.88   # the gate fence 88% of the way from yard 2's back to its front (room to line up after landing)
 R1_POOL_AT, R1_POOL_LAT, R1_POOL_R, R1_WALL_H, R1_WATER_H, R1_DECK_LEN = 42.0, -1.5, 3.0, 1.25, 1.0, 1.4   # a 6 m (20 ft) pool: a 4.6 m one left a 1 m/s band to land in
+R1_NEAR_D, R1_NEAR_FACE, R1_NEAR_HALF, R1_NEAR_STRIPS = 2.2, 1.7, 2.9, 6   # Round 21: the near step, 2.2 m out from the wall, its face 1.7 m, 5.8 m across
+R1_AI_SLIP = 0.3   # Round 21 (Dan: the AI should fail R1 sometimes): the chance that an AI driver who takes R1 makes a sloppy try (RoadDriver scales it by difficulty)
 R1_CLEAR_M = 1.5   # the lip speed is held to the slowest that comes down this far past the deck's edge
 def gap_frame(i, j):
     """The side yard between houses i and j: its front (street side) and back middles, its axis (front to back), its width."""
@@ -824,6 +826,18 @@ def build_r1(P6):
                     [(s_, pad_y - 0.02 + (rim + 0.05 - pad_y + 0.02) * min(1.0, s_ / (s_top + 0.3))) for s_ in np.linspace(0.0, r + 0.3, 13)], [0.55, 0.42, 0.28])
     D0 = C + u1 * s_top
     deck = prism("sc R1 pool deck", "deck", strip_poly(D0, u1, 0.0, r - s_top + R1_DECK_LEN, EXIT_HALF), D0, u1, [(0.0, rim + 0.05), (r - s_top + R1_DECK_LEN, rim + 0.05)], [0.55, 0.42, 0.28])
+    # Round 21 (Dan, 2026-10-12 10:10: "yes put it in case you are short"): a wooden step deck on the pool's near side, flat at the
+    # rim, its face a held slope down to the grass (RampHold keeps a vehicle on it): a vehicle that comes down short, on the step or on
+    # the lawn before it, climbs it and goes over the rim into the water instead of stopping against the steel wall. Its outer edge
+    # follows the wall (strips, each convex: no gap for a wheel between step and wall). It reaches up to about 1 m into #6's corridor
+    # (#6 is forward only, R1 reverse only: they never meet in a race).
+    near_step = []; N0 = C - u1 * (r + R1_NEAR_D)
+    toe_y = min(ground(*(N0 + n1 * l_)) for l_ in np.linspace(-R1_NEAR_HALF, R1_NEAR_HALF, 13)) - 0.03
+    step_prof = [(t_, toe_y + (rim + 0.05 - toe_y) * math.sin(0.5 * math.pi * min(1.0, t_ / R1_NEAR_FACE))) for t_ in np.linspace(0.0, R1_NEAR_FACE, 9)] + [(R1_NEAR_D + r, rim + 0.05)]
+    ls = np.linspace(-R1_NEAR_HALF, R1_NEAR_HALF, R1_NEAR_STRIPS + 1)
+    for k_, (la, lb) in enumerate(zip(ls[:-1], ls[1:])):
+        fa = C - u1 * math.sqrt((r + 0.1) ** 2 - la * la) + n1 * la; fb = C - u1 * math.sqrt((r + 0.1) ** 2 - lb * lb) + n1 * lb
+        near_step.append(prism(f"sc R1 pool step {k_}", "step", [N0 + n1 * la, fa, fb, N0 + n1 * lb], N0, u1, step_prof, [0.55, 0.42, 0.28], held=True))
     far = float((C - F1) @ u1) + r + R1_DECK_LEN         # the deck's outer edge, from the first fence
     near = float((C - F1) @ u1) - math.sqrt(max(r * r - R1_POOL_LAT ** 2, 0.0))   # the near wall where the line crosses it
     # the ramp: in the front yard, its lip 0.3 m in front of the first fence, R1_LIP_H over the levelled yard
@@ -837,7 +851,7 @@ def build_r1(P6):
     # water's surface and the deck count as "in the pool"): where it comes down, from the first fence
     def top(q):
         s_ = float((q - F1) @ u1)
-        inside = np.linalg.norm(q - C) < r + 0.05 or (abs(float((q - D0) @ n1)) < EXIT_HALF and 0.0 <= float((q - D0) @ u1) <= r - s_top + R1_DECK_LEN)
+        inside = np.linalg.norm(q - C) < r + 0.05 or (abs(float((q - D0) @ n1)) < EXIT_HALF and 0.0 <= float((q - D0) @ u1) <= r - s_top + R1_DECK_LEN)             or (abs(float((q - C) @ n1)) < R1_NEAR_HALF and -(r + R1_NEAR_D) + R1_NEAR_FACE * 0.5 <= float((q - C) @ u1) <= 0.0)   # Round 21: the near step
         return max(ground(*q), rim if inside else -1e9)
     def flight(v):
         vx, vy = v * math.cos(math.radians(th)), v * math.sin(math.radians(th)); t = 0.0
@@ -850,7 +864,9 @@ def build_r1(P6):
     clean_from = min(clean) if clean else 99.0
     vmax = min(v for v, f in fl.items() if f[1] >= far + R1_CLEAR_M) if any(f[1] >= far + R1_CLEAR_M for f in fl.values()) else max(fl)
     in_pool = [v for v, f in fl.items() if f[2]]
-    pool_v = (float(np.median(in_pool)) if in_pool else clean_from - 1.0) - 0.45   # the near half of the band (exe: 20.3 and 20.8 come down in the pool, the AI at 20.7 cleared it)
+    # Round 21: with the near step the band that ends in the pool runs from the step to the deck; a sloppy AI try aims at its low end
+    # (on the step or just short of it: over the rim and in), never at the edge with a clean landing (exe, Round 20: the AI at 20.7 cleared it)
+    pool_v = (min(in_pool) + 0.5) if in_pool else clean_from - 1.5
     to_gate_back = float((B2 - F1) @ u1)
     note(f"R1 (Dan's line, with risk): yard 1 between 1987 / 1552 {g1['w']:.1f} m wide, {g1['len']:.1f} m long, levelled at {yard_y:.2f} m; yard 2 between 1572 / 1622 {g2['w']:.1f} m wide; "
          f"its back {to_gate_back:.0f} m from the first fence")
@@ -908,12 +924,12 @@ def build_r1(P6):
     note(f"R1: leaves the reverse lap at forward station {s_ramp + 15:.0f}, joins it at {s_join:.0f}; {length(pts):.0f} m of line against {abs(s_ramp + 15 - s_join):.0f} m of lap; entry plane {entry_s:.0f} m in")
     return {
         "id": "r1_pool_jump", "name": "Pool jump", "direction": "reverse", "forgives": [5], "entry_half_width": 3.0, "entry_margin": 1.0,
-        "path": pts, "half_width": 3.0, "trail": [], "clear_half_width": 4.0, "entry_s": entry_s, "prisms": [ramp, ramp_in, deck], "open_houses": [],
-        "jump_houses": [], "landing_zones": landing, "ai_speed": 24.0, "ai_profile": ai, "ai_take": 0.85, "ai_slip": 0.0, "ai_slip_profile": ai_slip,   # sloppy tries off: the exe check put one on the pool's near rim and against its wall (11 rescues); the band that lands in the pool is under 1 m/s wide
+        "path": pts, "half_width": 3.0, "trail": [], "clear_half_width": 4.0, "entry_s": entry_s, "prisms": [ramp, ramp_in, deck] + near_step, "open_houses": [],
+        "jump_houses": [], "landing_zones": landing, "ai_speed": 24.0, "ai_profile": ai, "ai_slip": R1_AI_SLIP, "ai_slip_profile": ai_slip,   # Round 21: no 'ai_take' (the AI shortcut rule, ShortcutStrategy); sloppy tries back on (the near step: a short one ends in the pool)
         "look": "pool_jump",
         "big_jump": {"lip": [round(float(LIP[0]), 2), round(float(y1), 3), round(float(LIP[1]), 2)], "dir": [round(float(u1[0]), 5), round(float(u1[1]), 5)], "vmax": round(float(vmax), 1), "half": 2.6, "angle": round(th, 2)},
         "pool": {"yard": [v for q in yard for v in rnd(q)], "yard_y": round(float(yard_y), 3), "c": rnd(C), "r": r, "pad_y": round(pad_y, 3), "wall_h": R1_WALL_H, "water_h": R1_WATER_H,
-                 "axis": [round(float(u1[0]), 5), round(float(u1[1]), 5)], "front": rnd(F1), "clean_from": round(float(clean_from), 1), "pool_speed": round(pool_v, 1)},
+                 "axis": [round(float(u1[0]), 5), round(float(u1[1]), 5)], "front": rnd(F1), "clean_from": round(float(clean_from), 1), "pool_speed": round(pool_v, 1), "near_d": R1_NEAR_D, "near_half": R1_NEAR_HALF},
         "fences": fences, "props": props, "tracks": [v for q in tracks for v in rnd(q)],
         "leave_lap_s": float(s_ramp + 15), "rejoin_lap_s": float(s_join),
     }
@@ -921,6 +937,12 @@ def build_r1(P6):
 def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
 shortcuts = [build_sc2(), build_sc6(), build_r3()]
 shortcuts.append(build_r1(shortcuts[1]["path"]))   # Round 20 follow-up: R1 on Dan's line, with risk (replaces Round 19's trial)
+# Round 21: the checkpoints each shortcut skips, by where they are on the loop (forward stations), so new checkpoints (make_route.py,
+# 'extra_checkpoints_s') renumber nothing by hand: #2 and R3 skip the one at 421.6 m; #6 and R1 the one in the west lobe's bend (952 m)
+FORGIVES_S = {"sc2_two_houses": (400, 450), "sc6_over_house": (760, 1003), "r3_trampoline": (400, 450), "r1_pool_jump": (820, 1040)}
+for sc in shortcuts:
+    lo, hi = FORGIVES_S[sc["id"]]; sc["forgives"] = [c["id"] for c in route["checkpoints"] if lo <= c["s"] <= hi]
+    note(f"{sc['id']} forgives CP{', CP'.join(str(i) for i in sc['forgives'])} (file numbering)")
 
 # ---------------------------------------------------------------- checks against the barriers and the checkpoints
 for sc in shortcuts:

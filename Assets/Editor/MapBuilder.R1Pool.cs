@@ -11,8 +11,8 @@ using UnityEngine;
 //           ground, never inside a house, never below a house's foundation), and a level pad under the pool
 //   pool    (Dan, 03:51: "I would prefer it was an above ground pool ... you would drop out of it") a round above-ground pool in the
 //           back yards behind 1572 / 1622: a steel wall with a top rail and uprights, a blue liner, the water (ShallowWater: a
-//           vehicle in it slows right down), an A-frame ladder on the near side. Its wall is solid (BoxColliders round it); its
-//           floor is the levelled ground. The way out is the shortcut's two prisms (MapBuilder.Shortcuts.cs): a wooden ramp inside,
+//           vehicle in it slows right down), (Round 21) a wooden step deck on the near side in place of the ladder. Its wall is solid (BoxColliders round it); its
+//           floor is the levelled ground. The way out is the shortcut's prisms (MapBuilder.Shortcuts.cs): a wooden ramp inside,
 //           from the floor up to the rim on the gate's side, and a small deck on the rim beyond it, whose outer edge you drop off
 //   fences  solid privacy fences (the neighborhood's panels, a real collider per panel, nothing breaks) across the lobe's side
 //           yards; the one across 1572 / 1622 has an open side gate (round solid posts, its two leaves swung back flat); the
@@ -25,7 +25,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class ScPool { public float[] yard, c, axis, front; public float yard_y, r, pad_y, wall_h, water_h, clean_from, pool_speed; }
+        [Serializable] class ScPool { public float[] yard, c, axis, front; public float yard_y, r, pad_y, wall_h, water_h, clean_from, pool_speed, near_d, near_half; }   // Round 21: near_d, near_half (the near step)
         [Serializable] class ScGate { public float[] c; public float w; }
         [Serializable] class ScFence { public float[] a, b; public string label, kind; public ScGate gate; }
         [Serializable] class ScProp { public string kind; public float x, z, yaw; }
@@ -122,24 +122,13 @@ namespace ChastainRush
                     seg.transform.SetPositionAndRotation(At(am, r, y0 + pl.wall_h * 0.5f - 0.05f), Quaternion.LookRotation(new Vector3(-Mathf.Sin(am), 0f, Mathf.Cos(am)), Vector3.up));
                     var bc = seg.AddComponent<BoxCollider>(); bc.size = new Vector3(0.12f, pl.wall_h + 0.1f, 2f * Mathf.PI * r / Seg + 0.05f);
                 }
-                // the A-frame ladder on the near side (look only)
-                var nearA = Mathf.Atan2(-U.y, -U.x); var n = new Vector3(-U.y, 0f, U.x);
-                foreach (float side in new[] { -1f, 1f })
-                {
-                    var top = At(nearA, r, rim + 0.15f) + n * (side * 0.3f);
-                    var outFoot = At(nearA, r + 1.0f, y0) + n * (side * 0.3f); var inFoot = At(nearA, r - 1.0f, y0) + n * (side * 0.3f);
-                    Beam(mb, outFoot, top, 0.05f, 0.05f, PoolRail); Beam(mb, inFoot, top, 0.05f, 0.05f, PoolRail);
-                }
-                for (int k = 1; k <= 3; k++)
-                {
-                    float t = k / 4f; var a = Vector3.Lerp(At(nearA, r + 1.0f, y0), At(nearA, r, rim + 0.15f), t);
-                    Beam(mb, a - n * 0.3f, a + n * 0.3f, 0.12f, 0.03f, PoolRail);
-                }
+                // Round 21: no ladder on the near side any more: the step deck stands there (a shortcut prism, make_shortcuts.py)
                 mb.ToObject(sc.id + " above-ground pool", mats.House, parent, false, true);
                 var w = new GameObject(sc.id + " pool water").AddComponent<ShallowWater>(); w.transform.SetParent(parent, false);
                 var ring = new Vector2[Seg]; for (int i = 0; i < Seg; i++) { float a = Mathf.PI * 2f * i / Seg; ring[i] = c + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * (r - 0.05f); }
                 w.outline = ring; w.surfaceY = surf;
                 var hold = w.gameObject.AddComponent<PoolHold>(); hold.centre = c; hold.radius = r - 0.1f; hold.rimY = rim;   // a fall in costs real time
+                hold.axis = U; hold.stepOut = pl.near_d; hold.stepHalf = pl.near_half;   // Round 21: off the near step, into the water
                 Debug.Log($"[Round20+] {sc.id} above-ground pool: {2f * r:0.0} m across at ({c.x:0.0}, {c.y:0.0}), its wall {pl.wall_h:0.00} m (solid), water {pl.water_h:0.0} m deep at {surf:0.00} m; out by the ramp inside and the deck on the gate's side");
             }
             BuildSolidFences(sc, terrain, mats, parent);

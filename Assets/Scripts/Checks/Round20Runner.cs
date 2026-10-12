@@ -20,6 +20,7 @@ namespace ChastainRush
     public sealed partial class Round20Runner : MonoBehaviour
     {
         public string outputDir;
+        public string tag = "round20";   // Round 21: -exeRound21 runs this runner's Round 21 parts (Round20Runner.R21.cs), its report round21_check.txt
         readonly StringBuilder report = new StringBuilder();
         int fails, checks;
         ArcadeVehicle car; VehicleSwitch sw; VehicleRespawn respawn; RaceController race;
@@ -28,22 +29,23 @@ namespace ChastainRush
         void Update() { var hud = DeveloperHud.Instance; if (hud && hud.MenuOpen) { hud.CloseMenu(); report.AppendLine("  (the debug menu was opened from outside; closed)"); } }
 
         void Check(string name, bool ok, string detail = "") { checks++; if (!ok) fails++; report.AppendLine($"{(ok ? "PASS" : "FAIL")}  {name}{(detail.Length > 0 ? "  -  " + detail : "")}"); Flush(); }
-        void Flush() { try { File.WriteAllText(Path.Combine(outputDir, "round20_check.txt"), report.ToString()); } catch (Exception) { } }
+        void Flush() { try { File.WriteAllText(Path.Combine(outputDir, tag + "_check.txt"), report.ToString()); } catch (Exception) { } }
 
         IEnumerator Start()
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"Round 20 check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>(); sw = car.GetComponent<VehicleSwitch>(); respawn = car.GetComponent<VehicleRespawn>(); race = RaceController.Instance;
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only" || argv[i] == "-r21Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
+            if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races" };   // Round 21's default parts
             bool Do(string p) => parts == null || parts.Contains(p);
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
@@ -55,6 +57,9 @@ namespace ChastainRush
             if (Do("n5")) yield return Guard(N5(ids));
             if (Do("n2")) yield return Guard(N2(ids));
             if (Do("r1")) yield return Guard(R1(ids));
+            // Round 21 (Round20Runner.R21.cs)
+            if (Do("six")) yield return Guard(Six(ids));
+            if (Do("races")) yield return Guard(Races());
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

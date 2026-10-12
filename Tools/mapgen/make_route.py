@@ -21,7 +21,11 @@ SETTINGS = {
     # counts anywhere within 16 m of the centre, checkpoints within 14 m, i.e. the road, its verge and about 10-12 m of yard.
     # The car's own half extent is added at the moment of crossing (RaceGate.Crossed). Round 5 had 9 and 11.
     "gate_half_width_m": 16.0,
-    "checkpoint_half_width_m": 14.0,
+    "checkpoint_half_width_m": 12.0,   # Round 21: 12 (was 14): with 14 m a cut through the front yards beside the road still passed the gates
+    # Round 21 (Dan, 2026-10-12 10:13: "to prevent major shortcuts, we can put a CP"): checkpoints placed by hand (stations along the loop)
+    # so that every free cut through the yards saving 30 m or more misses one (Tools/mapgen/free_cuts.py; chosen with its scan), in
+    # place of the old filler checkpoint at 1000.6 m. They go in before the filler, so no filler is needed.
+    "extra_checkpoints_s": [952.0, 1056.0, 1216.0],
     "gate_below_m": 6.0,            # a crossing still counts this far under the road surface at the gate ...
     "gate_above_m": 25.0,           # ... and this far over it (a jump over the gate counts)
     "closure_clear_m": 12.0,        # Round 6: a barrier stands where a road that leaves the course is this far from it
@@ -143,6 +147,8 @@ for s in sorted({x["from_s"] for x in shortcuts} | {x["to_s"] for x in shortcuts
     if (s - gate_s) % L < SETTINGS["min_checkpoint_gap_m"] or (gate_s + L - s) % L < SETTINGS["min_checkpoint_gap_m"]: continue
     if any(abs(s - c["s"]) < SETTINGS["min_checkpoint_gap_m"] for c in cps): continue
     cps.append({"s": round(s, 1)})
+for s in SETTINGS.get("extra_checkpoints_s", []):   # Round 21
+    if not any(abs(s - c["s"]) < SETTINGS["min_checkpoint_gap_m"] for c in cps): cps.append({"s": round(s, 1)})
 cps.sort(key=lambda c: (c["s"] - gate_s) % L)
 marks = [0.0] + [(c["s"] - gate_s) % L for c in cps] + [L]
 extra = []

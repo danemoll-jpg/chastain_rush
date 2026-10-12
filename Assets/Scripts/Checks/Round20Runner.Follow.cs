@@ -235,7 +235,8 @@ namespace ChastainRush
             report.AppendLine("  The speed window (Street Classic held at a speed up the ramp; every vehicle flies the same arc for the same lip speed; short of the pool it runs into its wall):");
             float poolV = rs.AiSlipProfile != null && rs.AiSlipProfile.Length > 1 ? rs.AiSlipProfile[1] : 20f;
             float cleanFrom = 99f;
-            foreach (float cap in new[] { 15f, 18f, poolV - 0.5f, poolV, poolV + 0.5f, j.vmax - 0.5f, j.vmax, 24f })
+            var stoppedShort = new List<string>();   // Round 21: with the near step nothing between 16 m/s and the clean speed ends against the wall
+            foreach (float cap in new[] { 15f, 16f, 17f, 18f, 18.5f, 19f, 19.5f, poolV - 0.5f, poolV, poolV + 0.5f, j.vmax - 0.5f, j.vmax, 24f })
             {
                 yield return Vehicle("original");
                 int from = line.FindIndex(q => Vector3.Dot(Flat(q - j.lip), j.dir) > -35f); var part = line.Skip(Mathf.Max(0, from)).ToList();
@@ -246,13 +247,15 @@ namespace ChastainRush
                 while (!run.reached && run.end == "" && run.time < 49.9f) { f.Step(this, j, hookAt == j && hookWho == car, Time.deltaTime); if (car.WaterImmersion > 0.3f && InR1Pool(car.Body.position)) wet = true; yield return null; }
                 yield return drive;
                 if (!wet && !f.wet && hookAt == j && run.reached) cleanFrom = Mathf.Min(cleanFrom, hookLaunch);   // clear of the pool and on through the gate
+                if (cap >= 16f && !run.reached) stoppedShort.Add($"{cap:0.0}");
                 report.AppendLine($"    {cap,4:0} m/s: {(hookAt == j ? $"off the lip at {hookLaunch:0.0}, down {f.dist:0.0} m past it" : "no launch")}, {(wet || f.wet ? "IN THE POOL" : "clear")}, {(run.reached ? $"out onto the lane ({run.time:0.0} s from 35 m before the lip)" : "STOPPED " + run.end + $" at ({car.Body.position.x:0.0}, {car.Body.position.y:0.0}, {car.Body.position.z:0.0}), {Vector3.Dot(Flat(car.Body.position - j.lip), j.dir):0.0} m past the lip")}");
             }
+            Check("R1 near step (Round 21): from 16 m/s up a short jump never ends against the pool's wall: on the step or the lawn it goes on into the pool and out, or clears it", stoppedShort.Count == 0, stoppedShort.Count > 0 ? "stopped at " + string.Join(", ", stoppedShort) + " m/s" : "");
             Check("R1 risk: only a fast, committed jump clears the pool (clean from close to the lip's speed cap), slower lands in it or short", cleanFrom > j.vmax - 2.5f && cleanFrom <= j.vmax + 0.01f, $"clear from about {cleanFrom:0.0} m/s off the lip, held to {j.vmax:0.0}");
             // the time a fall into the pool costs: slow into the pool (8 m/s) against flat out, from the same place, to the lane
             {
                 var lost = new List<string>(); bool allOut = true;
-                foreach (var id in new[] { "original", "moto", "mower" })
+                foreach (var id in new[] { "original", "moto", "mower", "skyfin" })   // Round 21: and the widest
                 {
                     yield return Vehicle(id);
                     Place(line[0], line[2] - line[0], 14f); yield return new WaitForFixedUpdate();
@@ -286,12 +289,12 @@ namespace ChastainRush
             }
             // the AI: two clean tries and one sloppy one (into the pool, out again)
             Time.timeScale = 4f; Time.maximumDeltaTime = 1f; int prev = RaceController.AiCount; var aiBad = new List<string>();
-            foreach (var (id, sloppy) in new[] { ("original", false), ("moto", false), ("skyfin", false), ("original", true) })
+            foreach (var (id, sloppy) in new[] { ("original", false), ("moto", false), ("skyfin", false), ("original", true), ("moto", true), ("mower", true), ("skyfin", true) })
             {
                 if (!ids.Contains(id)) continue;
                 if (sloppy && rs.AiSlip <= 0f) { report.AppendLine("  AI sloppy tries are off on this shortcut (ai_slip 0): not tried"); continue; }
                 var r = new AiResult(); yield return AiThrough("r1_pool_jump", "r1_pool_jump", id, sloppy, r);
-                bool ok = r.back && r.given && r.launch > 0f && (sloppy ? r.wet : !r.wet);
+                bool ok = r.back && r.given && r.launch > 0f && (sloppy ? r.wet : !r.wet) && r.recoveries == 0;   // Round 21: never stuck, no rescues
                 if (!ok) aiBad.Add(Nm(id) + (sloppy ? " (sloppy)" : ""));
                 report.AppendLine($"  AI {Nm(id),-17} {(sloppy ? "sloppy" : "clean ")} {(ok ? "OK  " : "FAIL")} {(r.launch > 0f ? $"onto the lip at {r.launch:0.0} m/s, {r.f.air:0.00} s in the air" : "never left the lip")}, {(r.wet ? "in the pool" : "clear of the pool")}, CP5 forgiven {(r.given ? "yes" : "no")}, recoveries {r.recoveries}{(r.back ? ", back on the lap" : ", ended at " + r.where)}");
             }

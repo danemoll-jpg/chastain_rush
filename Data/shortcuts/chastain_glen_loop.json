@@ -33,7 +33,7 @@
   "R3 way in: out of the 1602 / 1919 gap (-1.50 m off its middle), 4.5 m straight, an arc of 8.0 m turning 63 degrees onto the slide's axis 5.7 m before its foot (off it by 0.04 m)",
   "R3: leaves the top street 539 m after the gate (forward stations), lands on the lane at 364; 191 m of line",
   "R1 (Dan's line, with risk): yard 1 between 1987 / 1552 7.5 m wide, 11.8 m long, levelled at 291.72 m; yard 2 between 1572 / 1622 6.1 m wide; its back 49 m from the first fence",
-  "R1 ramp 8 m from 292.37 m to the lip at 294.32 m (2.6 m over the yard, 26.1 degrees at the lip), 5.2 m wide; the above-ground pool 6.0 m across, its wall 1.25 m, at 42.0 m past the first fence (-1.5 m to the side), the line crosses its near wall at 39.4 m, its deck's edge at 46.4 m; flights (air s, m past the fence, in the pool): 14.0 (1.8, 22.4, False), 16.0 (1.97, 28.0, False), 18.0 (2.16, 34.7, False), 19.0 (2.25, 38.1, False), 20.0 (2.23, 39.9, True), 20.5 (2.27, 41.5, True), 21.0 (2.31, 43.3, True), 21.5 (2.35, 45.1, True), 22.0 (2.47, 48.6, False), 23.0 (2.55, 52.5, False), 24.0 (2.63, 56.5, False); clean from 22.0 m/s, lip speed held to 22.0; in the pool around 20.3",
+  "R1 ramp 8 m from 292.37 m to the lip at 294.32 m (2.6 m over the yard, 26.1 degrees at the lip), 5.2 m wide; the above-ground pool 6.0 m across, its wall 1.25 m, at 42.0 m past the first fence (-1.5 m to the side), the line crosses its near wall at 39.4 m, its deck's edge at 46.4 m; flights (air s, m past the fence, in the pool): 14.0 (1.8, 22.4, False), 16.0 (1.97, 28.0, False), 18.0 (2.16, 34.7, False), 19.0 (2.22, 37.7, False), 20.0 (2.23, 39.9, True), 20.5 (2.27, 41.5, True), 21.0 (2.31, 43.3, True), 21.5 (2.35, 45.1, True), 22.0 (2.47, 48.6, False), 23.0 (2.55, 52.5, False), 24.0 (2.63, 56.5, False); clean from 22.0 m/s, lip speed held to 22.0; in the pool around 20.0",
   "R1 fence 1987/1552 (the ramp's fence): 9.1 m, solid, 24.9 m from #6's line",
   "R1 fence 1572/1622 (the side gate): 7.7 m, solid, 21.3 m from #6's line",
   "R1 fence 1552/1862: 9.3 m, solid, 28.2 m from #6's line",
@@ -48,6 +48,10 @@
   "R1 fence 1641/1622 (reverse races only: in #6's corridor): 10.7 m, reverse_only, 1.3 m from #6's line",
   "R1 pool: 7.2 m from #6's line at its nearest (its corridor is 6.5 m)",
   "R1: leaves the reverse lap at forward station 1047, joins it at 808; 141 m of line against 239 m of lap; entry plane 43 m in",
+  "sc2_two_houses forgives CP2 (file numbering)",
+  "sc6_over_house forgives CP5 (file numbering)",
+  "r3_trampoline forgives CP2 (file numbering)",
+  "r1_pool_jump forgives CP5 (file numbering)",
   "sc2_two_houses: barrier B3 (Chasefield Way at lap 201 m) stands 12.1 m from the line, clear of it, and stays",
   "sc2_two_houses: 252 m of line, against 372 m of lap between the same points; entry plane 68 m in",
   "sc6_over_house: 191 m of line, against 274 m of lap between the same points; entry plane 39 m in",
@@ -2651,6 +2655,324 @@
       0.42,
       0.28
      ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 0",
+     "kind": "step",
+     "poly": [
+      2790.881,
+      1057.505,
+      2788.96,
+      1061.132,
+      2788.727,
+      1059.506,
+      2790.027,
+      1057.053
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 1",
+     "kind": "step",
+     "poly": [
+      2790.027,
+      1057.053,
+      2788.727,
+      1059.506,
+      2788.118,
+      1058.593,
+      2789.173,
+      1056.6
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 2",
+     "kind": "step",
+     "poly": [
+      2789.173,
+      1056.6,
+      2788.118,
+      1058.593,
+      2787.336,
+      1058.004,
+      2788.318,
+      1056.148
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 3",
+     "kind": "step",
+     "poly": [
+      2788.318,
+      1056.148,
+      2787.336,
+      1058.004,
+      2786.409,
+      1057.688,
+      2787.464,
+      1055.695
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 4",
+     "kind": "step",
+     "poly": [
+      2787.464,
+      1055.695,
+      2786.409,
+      1057.688,
+      2785.31,
+      1057.697,
+      2786.61,
+      1055.243
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
+    },
+    {
+     "held": true,
+     "cut": false,
+     "skirt_edges": [],
+     "bank": [],
+     "name": "sc R1 pool step 5",
+     "kind": "step",
+     "poly": [
+      2786.61,
+      1055.243,
+      2785.31,
+      1057.697,
+      2783.835,
+      1058.418,
+      2785.755,
+      1054.791
+     ],
+     "origin": [
+      2788.318,
+      1056.148
+     ],
+     "axis": [
+      -0.46796,
+      0.88375
+     ],
+     "profile": [
+      0.0,
+      288.238,
+      0.212,
+      288.493,
+      0.425,
+      288.737,
+      0.637,
+      288.962,
+      0.85,
+      289.16,
+      1.062,
+      289.322,
+      1.275,
+      289.442,
+      1.488,
+      289.516,
+      1.7,
+      289.541,
+      5.2,
+      289.541
+     ],
+     "colour": [
+      0.55,
+      0.42,
+      0.28
+     ]
     }
    ],
    "open_houses": [],
@@ -2692,13 +3014,12 @@
     110.4,
     10.0
    ],
-   "ai_take": 0.85,
-   "ai_slip": 0.0,
+   "ai_slip": 0.3,
    "ai_slip_profile": [
     11.8,
-    20.3,
+    20.0,
     46.8,
-    20.3,
+    20.0,
     96.4,
     10.0,
     110.4,
@@ -2748,7 +3069,9 @@
      1022.92
     ],
     "clean_from": 22.0,
-    "pool_speed": 20.3
+    "pool_speed": 20.0,
+    "near_d": 2.2,
+    "near_half": 2.9
    },
    "fences": [
     {

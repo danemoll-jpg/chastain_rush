@@ -11,7 +11,7 @@ open at the same cost per metre: lawns, drives, streets that leave the course pa
 here). Breakable fences, mailboxes, trees and slopes are ignored. So each cut is "possible on the map", not proven drivable at
 speed: Dan drives the ones worth a look. The official shortcuts are not listed (they skip checkpoints or go through houses).
 
-Writes local/round20/free_cuts.txt and local/round20/free_cuts.png (git-ignored: they show the houses); prints the list.
+Writes local/round21/free_cuts.txt and local/round21/free_cuts.png (git-ignored: they show the houses); prints the list.
 Usage: python Tools/mapgen/free_cuts.py
 """
 import json, math, os
@@ -23,7 +23,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 m = json.load(open(os.path.join(ROOT, "Data/map.json"), encoding="utf-8"))
 route = json.load(open(os.path.join(ROOT, "Data/routes/chastain_glen_loop.json"), encoding="utf-8"))
 scf = json.load(open(os.path.join(ROOT, "Data/shortcuts/chastain_glen_loop.json"), encoding="utf-8"))
-OUT_TXT = os.path.join(ROOT, "local/round20/free_cuts.txt"); OUT_PNG = os.path.join(ROOT, "local/round20/free_cuts.png")
+OUT_TXT = os.path.join(ROOT, "local/round21/free_cuts.txt"); OUT_PNG = os.path.join(ROOT, "local/round21/free_cuts.png")
 SAVE_MIN, STEP_S, MAX_LAP = 25.0, 4.0, 420.0
 
 loop = np.array(route["loop"], float).reshape(-1, 2)
@@ -38,6 +38,22 @@ def station(q):
         if d < best[0]: best = (d, CUM[k] + t * seg[k])
     return best[1]
 CPS = [(f"CP{c['id']}", station(np.array(c["pos"], float))) for c in route["checkpoints"]] + [("the start / finish", station(at(route["gate_s"])))]
+# Round 21: trial stations for more checkpoints (--cps 900,1150), to choose where they go before make_route.py writes them
+import sys
+if "--cps" in sys.argv: CPS += [(f"new@{float(v):.0f}", float(v)) for v in sys.argv[sys.argv.index("--cps") + 1].split(",")]
+CP_HALF = route.get("checkpoint_half_width_m", 14.0) + 1.1   # Round 21: the gate's opening plus a car's half width (RaceGate.Crossed)
+def gate_seg(s):
+    a, b = at(s - 2.0), at(s + 2.0); d = (b - a) / np.linalg.norm(b - a); n = np.array([-d[1], d[0]]); c = at(s)
+    return c - n * CP_HALF, c + n * CP_HALF
+def crosses(path, s):
+    """Round 21: True when the cut's line passes through the gate's opening (the race counts it: no penalty)"""
+    g0, g1 = gate_seg(s); e = g1 - g0
+    for p0, p1 in zip(path[:-1], path[1:]):
+        f = p1 - p0; den = e[0] * f[1] - e[1] * f[0]
+        if abs(den) < 1e-9: continue
+        w = p0 - g0; t = (w[0] * f[1] - w[1] * f[0]) / den; u = (w[0] * e[1] - w[1] * e[0]) / den
+        if 0 <= t <= 1 and 0 <= u <= 1: return True
+    return False
 
 x0, z0 = loop.min(0) - 60; x1, z1 = loop.max(0) + 60
 NX, NZ = int(x1 - x0) + 1, int(z1 - z0) + 1
@@ -113,8 +129,13 @@ def scan(reverse):
                 g = D[i, src[j]]
                 if not np.isfinite(g) or lapd - g < SAVE_MIN: continue
                 lo_, hi_ = (sb, sa) if reverse else (sa, sb)
-                skipped = [nm for nm, s in CPS if ((s - lo_) % LAP) < ((hi_ - lo_) % LAP)]
-                if skipped: continue
+                skipped = [s for nm, s in CPS if ((s - lo_) % LAP) < ((hi_ - lo_) % LAP)]
+                if skipped:
+                    # Round 21: a skipped checkpoint stops it only if the line misses the gate's opening (14 m either side of the lap)
+                    path = []; k = src[j]
+                    while k >= 0 and len(path) < 5000: path.append(P[k]); k = pred[i][k]
+                    path = np.array(path[::-1])
+                    if not all(crosses(path, s) for s in skipped): continue
                 found.append((lapd - g, sa, sb, g, lapd, pred[i], src[j]))
     # one per cluster (start and end within 30 m of a better one)
     found.sort(key=lambda r: -r[0]); keep = []

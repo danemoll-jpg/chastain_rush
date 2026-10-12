@@ -5,7 +5,12 @@
  "gate_after_junction_m": 22.0,
  "reverse_grid_back_m": 45.0,
  "gate_half_width_m": 16.0,
- "checkpoint_half_width_m": 14.0,
+ "checkpoint_half_width_m": 12.0,
+ "extra_checkpoints_s": [
+  952.0,
+  1056.0,
+  1216.0
+ ],
  "gate_below_m": 6.0,
  "gate_above_m": 25.0,
  "closure_clear_m": 12.0,
@@ -433,11 +438,29 @@
    "label": "at Chastain Glen Lane"
   },
   {
-   "s": 1000.6,
+   "s": 952.0,
    "id": 5,
    "pos": [
-    2758.6,
-    986.1
+    2716.6,
+    1004.5
+   ],
+   "label": "at Chastain Place"
+  },
+  {
+   "s": 1056.0,
+   "id": 6,
+   "pos": [
+    2808.2,
+    1006.7
+   ],
+   "label": "on the loop"
+  },
+  {
+   "s": 1216.0,
+   "id": 7,
+   "pos": [
+    2910.8,
+    887.9
    ],
    "label": "on the loop"
   }
@@ -1740,13 +1763,12 @@
     110.4,
     10.0
    ],
-   "ai_take": 0.85,
-   "ai_slip": 0.0,
+   "ai_slip": 0.3,
    "ai_slip_profile": [
     11.8,
-    20.3,
+    20.0,
     46.8,
-    20.3,
+    20.0,
     96.4,
     10.0,
     110.4,

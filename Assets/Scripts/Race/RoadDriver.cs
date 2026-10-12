@@ -45,6 +45,12 @@ namespace Racer
         public int ShortcutsTaken { get; private set; }
 
         public RaceRoad DriveRoad => Race.AiRoad;
+        public float Lane => lane;   // Chastain Rush, Round 21: DriverVariation's curb clip goes to this side
+        // Chastain Rush, Round 21: a mistake at the jump being approached (DriverVariation.RollJump): its ai_zone, the kind (4 short,
+        // 2 off line), the side, and the lap it was rolled on (once per jump per lap)
+        RouteAiZoneJson jumpZone; int jumpKind, jumpLap=-1; float jumpSide; string jumpRolled;
+        public int SlipsTaken { get; private set; }
+        float wadeTime;   // checks: sloppy tries at a shortcut (R1)
         bool finishParked;
         AiShortcut plannedBranch, progressBranch;
         float branchBest, branchStuck;
@@ -74,6 +80,7 @@ namespace Racer
             lane = index % 2 == 0 ? laneSide : -laneSide;
             Variation.Initialize(DriverVariation.Seed, index+Mathf.RoundToInt(variation*1000));
             Shortcuts.Initialize(System.Guid.NewGuid().GetHashCode());
+            jumpZone = null; jumpRolled = null; jumpLap = -1; SlipsTaken = 0;   // Chastain Rush, Round 21
             finishParked = false; finishRunoff = 0; stalled = 0; plannedBranch = progressBranch = null; progressSample = false; trackingRejoin = false;
         }
 
@@ -152,8 +159,20 @@ namespace Racer
             float departureDistance=Mathf.Repeat(s-recoveryDepartureStation+DriveRoad.Length*.5f,DriveRoad.Length)-DriveRoad.Length*.5f;
             bool departing=Time.time<recoveryDepartureUntil&&departureDistance<60&&!plannedBranch&&!activeBranch;
             if(departing)desiredLane=Mathf.Clamp(departureLane,-driveHalfWidth+Car.GetComponent<BoxCollider>().size.x*.5f+.5f,driveHalfWidth-Car.GetComponent<BoxCollider>().size.x*.5f-.5f);
-            Variation.Step(this,s,speed,finished||plannedBranch||activeBranch||lateral>2.5f||Car.transform.up.y<.9f,false);
-            if(Variation.Line!=0)desiredLane=trail?Mathf.Clamp(desiredLane+Variation.Line*.3f,-passLane,passLane):Mathf.Clamp(desiredLane+Variation.Line,-driveHalfWidth+1.6f,driveHalfWidth-1.6f);
+            bool nearJump=!finished&&NearZone(s,90f)!=null;   // Chastain Rush, Round 21: the bend mistakes wait until past a jump
+            Variation.Step(this,s,speed,finished||plannedBranch||activeBranch||lateral>2.5f||Car.transform.up.y<.9f,nearJump,trail);
+            // Chastain Rush, Round 21: the curb clip runs from its lane out to the curb (the car's edge over it: a mailbox, lamp or hydrant there
+            // breaks); every other line mistake keeps inside the lane's usual bounds
+            if(Variation.Curb)desiredLane=Mathf.Lerp(desiredLane,Mathf.Sign(Variation.Line)*(driveHalfWidth+.15f),Mathf.Abs(Variation.Line));
+            else if(Variation.Line!=0)desiredLane=trail?Mathf.Clamp(desiredLane+Variation.Line*.3f,-passLane,passLane):Mathf.Clamp(desiredLane+Variation.Line,-driveHalfWidth+1.6f,driveHalfWidth-1.6f);
+            // Chastain Rush, Round 21: a jump mistake, rolled once as it comes up to each jump (ai_zones) on each lap
+            if(!finished&&!plannedBranch&&!activeBranch)
+            {
+                var z=NearZone(s,90f);
+                if(z!=null&&(jumpRolled!=z.id||jumpLap!=Racer.CompletedLaps)){jumpRolled=z.id;jumpLap=Racer.CompletedLaps;jumpKind=Variation.RollJump(true,out jumpSide);jumpZone=jumpKind!=0?z:null;}
+                if(jumpZone!=null&&NearZone(s,90f)!=jumpZone)jumpZone=null;
+                if(jumpZone!=null&&jumpKind==2)desiredLane=trail?Mathf.Clamp(desiredLane+jumpSide*.9f,-passLane-.2f,passLane+.2f):desiredLane+jumpSide*1.2f;
+            }
             var target = DriveRoad.At(s + Direction * look, out var ahead);
             target += Vector3.Cross(Vector3.up, ahead).normalized * desiredLane;
             var local = transform.InverseTransformPoint(target);
@@ -199,8 +218,9 @@ namespace Racer
                 foreach(var z in zones)
                 {
                     float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);
-                    if(into<=z.s1-z.s0){TargetSpeed=z.speed;held=true;}   // the jump's set speed, whatever the crest rule says
-                    else if(toStart<90)TargetSpeed=Mathf.Min(TargetSpeed,Mathf.Sqrt(z.speed*z.speed+2*judgment*Mathf.Max(0,toStart-6)));
+                    float zs=z==jumpZone&&jumpKind==4?z.speed*.8f:z.speed;   // Chastain Rush, Round 21: a short jump, a slow run-up
+                    if(into<=z.s1-z.s0){TargetSpeed=zs;held=true;}   // the jump's set speed, whatever the crest rule says
+                    else if(toStart<90)TargetSpeed=Mathf.Min(TargetSpeed,Mathf.Sqrt(zs*zs+2*judgment*Mathf.Max(0,toStart-6)));
                 }
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
                 TargetSpeed = Mathf.Min(TargetSpeed, 10);
@@ -246,6 +266,9 @@ namespace Racer
 
             // Racer 0.72: a rival below the world is restored to the nearest course point at once
             if(!finished&&Car.Body.position.y<RaceRoute.Ground(Car.Body.position.x,Car.Body.position.z).y-20&&Time.time>=nextRecovery)TryRecover(s);
+            // Chastain Rush, Round 21: wading out of R1's pool is not being stuck (for 12 s; longer, the usual recovery)
+            wadeTime=PoolHold.Wading(Car)?wadeTime+Time.fixedDeltaTime:0f;
+            if(wadeTime>0f&&wadeTime<12f){stalled=0;routeStuck=branchStuck=rejoinStuck=0;}
             float noProgress=Mathf.Max(routeStuck,branchStuck,rejoinStuck);
             if(!finished) LongestStall=Mathf.Max(LongestStall,Mathf.Max(noProgress,stalled));
             bool racerStuck=!finished && (noProgress>8 ||
@@ -274,7 +297,9 @@ namespace Racer
                 if(Shortcuts.TryDecide(branch,Racer.CompletedLaps,rank,gap,out bool take,branch.take)&&take)
                 {
                     plannedBranch=branch;
-                    Sloppy=branch.slip>0&&(ForceSloppy??Shortcuts.Roll(branch.slip));   // Chastain Rush, Round 20 follow-ups: a sloppy try (R1's pool)
+                    // Chastain Rush, Round 20 follow-ups: a sloppy try (R1's pool); Round 21: more often on Easy, less on Hard
+                    Sloppy=branch.slip>0&&(ForceSloppy??Shortcuts.Roll(branch.slip*(Difficulty==0?1.5f:Difficulty==2?.6f:1f)));
+                    if(Sloppy){SlipsTaken++;Variation.CountSlip();}
                     break;
                 }
             }
@@ -357,6 +382,18 @@ namespace Racer
             recoveryDepartureStation=progressStation;recoveryDepartureUntil=Time.time+8;
             var support=DriveRoad.At(progressStation,out var departureForward);departureLane=Vector3.Dot(Car.Body.position-support,Vector3.Cross(Vector3.up,departureForward).normalized);
             if(!progressBranch)lane=lane>0?-laneSide:laneSide;
+        }
+
+        // Chastain Rush, Round 21: the ai_zone (a jump) this car is in, or within 'ahead' metres before
+        RouteAiZoneJson NearZone(float s,float ahead)
+        {
+            var zones=Race.RouteData!=null?Race.RouteData.ai_zones:null; if(zones==null) return null;
+            foreach(var z in zones)
+            {
+                float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);
+                if(into<=z.s1-z.s0+4f||toStart<ahead) return z;
+            }
+            return null;
         }
 
         // another racer within the first 80 m of the shortcut's line, or near its turn-off ahead of this car
