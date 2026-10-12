@@ -241,15 +241,14 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 19 in `TODO.md`:** follow-ups from Dan's drive of
-Round 18: the Noonday Creek trail wider (about 4.5 m, small trees beside it
-breakable), at least four big jumps on it, a dry rock bar across the creek
-into pipe P1, the pipe darker and used with a trickle of water and round
-walls a vehicle can ride (even right round), a clear hint (a birthday-party
-sign and balloons) at the R3 trampoline shortcut's turn-off, and a picture
-of the alternative R1 for Dan (R1 is not built). Queued: 20 the map-wide
-pipe network (proposal first); 21 Chastain Commons, Chastain Enclave and
-Grasmere Court.
+**Active work is Round 20 in `TODO.md`:** two fixes from Dan's drive (a
+catch at the footbridge's near end; a ramp out of pipe P1 over the pond),
+the map ported from Racer on Racer's controller button (now bug capture's),
+and two sets of proposals with nothing built: the original R1 with a house
+slightly altered (options for Dan), and four to six shortcut candidates on
+the Noonday Creek lap. Round 19 is driven and approved by Dan. Queued: 21
+the map-wide pipe network (proposal first); 22 Chastain Commons, Chastain
+Enclave and Grasmere Court.
 
 **Round 19 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday
 Creek trail 4.5 m wide (no solid trunk within 3.5 m; the trees left within 6 m, and within 8 m of each big jump's run-out,
@@ -404,7 +403,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-11_10-16-10-265_c7b248` (BUG-001 rocks into P1, BUG-002 pipe look / stream / wall riding; in TODO.md, Round 19).
+`2026-10-11_17-41-40-815_db3e5c` (BUG-001 catch at the footbridge, BUG-002 ramp out of P1 over the pond; in TODO.md, Round 20).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

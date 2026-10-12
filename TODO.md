@@ -1962,7 +1962,7 @@ ground allows". Build P1 this way, and re-judge the south loop pipe the same way
 build it). If terrain holes turn out not to work in this project (the map is 18 tiles; nothing uses holes yet),
 stop and report before falling back to anything else.
 
-**ACTIVE — Round 19: Noonday Creek and reverse-loop follow-ups (Dan, 2026-10-11 10:39, after driving Round 18).**
+**DONE, driven by Dan 2026-10-11 ("It definitely is a lot a better and fun to drive now"; his two reports and R1 are in Round 20) — Round 19: Noonday Creek and reverse-loop follow-ups (Dan, 2026-10-11 10:39, after driving Round 18).**
 Round 18 (trail B, pipe P1, the Noonday Creek route, the R3 trampoline) is driven by Dan; what he did not mention
 is approved. The principle for this round and from now on, in Dan's words: "This should be fun and arcadey not
 too serious... The principle core is that this is a fun arcade game not a serious racer."
@@ -2094,7 +2094,69 @@ not yet driven by Dan.** Exe rebuilt from a fresh map build: `Builds/ChastainRus
   drop build_r1() from `make_shortcuts.py`'s list, re-run it, Build Map.
 - 7. AI trials: each trail vehicle through the new round P1, each of the eleven over R1: 16 of 16 clean. Exe rebuilt.
 
-**QUEUED — Round 20: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+**ACTIVE — Round 20: two fixes, the map, and two sets of proposals (Dan, 2026-10-11 17:51).**
+
+1. Dan's session 2026-10-11_17-41-40-815_db3e5c (read by Claude). Fix both, commit on their own.
+   - BUG-001 (vehicle x 2332.31, z 1168.69, heading 351, on the dirt run-up at the near end of the wooden
+     footbridge, BJ1): "there is a catch right here that brings the bike to a stop". Where the dirt meets the
+     bridge's first planks something stops a motorcycle dead (a step up onto the deck, a plank end, a rail post
+     or a collider edge). Find it by driving Dan's line at race speed on the Drifter Twin, remove it: the trail
+     runs onto the deck flush, nothing for a wheel or a body to catch, the rails clear of the line. Then drive
+     the whole lap once on each trail vehicle looking for any other dead stop and list what turns up.
+   - BUG-002 (vehicle x 2395.32, z 1313.10, heading 85, in P1's outlet cut looking out over the small pond):
+     "Lets make a ramp right here so that you don't have to drive through the lake". Coming out of the pipe the
+     cut runs into the pond and the water drags. Build a ramp at the pipe's outlet that launches the vehicle out
+     of the cut and OVER the pond to the far shore, back onto the trail: big air, fun (it is the reward for
+     finding the pipe). It looks like something that could be there at its real size (a concrete spillway lip
+     / an outfall apron turned up, or creek rock and earth heaped at the mouth). Every vehicle that can come
+     through P1 clears the water at the speed it leaves the pipe (use an aimed launch as BigJump if needed);
+     slow or short lands in the shallow edge and drives out: never a trap. A clear landing (no trunks; breakable
+     trees as on the trail). Report air time, height and distance per vehicle. The AI takes it.
+
+2. The map, as in Woodstock Rush. Dan: "I also want to look at adding the maps like we have in Woodstock Rush (it
+   is mapped to the button that we are currently using for F4) The maps will help me also look for shortcut
+   ideas". Read how Racer does its map (the code, the controller button, what it shows, how it opens and closes,
+   zoom / pan if any) and port it (prefer porting Racer's code; list what came with it). In Chastain Rush:
+   - On the SAME controller button as in Woodstock Rush. That button is the one this game uses now for bug
+     capture: the map takes it; bug capture stays on F4 / `]` and on its debug-menu row (and gets another
+     controller button only if one is free and it does not clash; say which). Say what the keyboard key is.
+   - It shows the whole world from above, north up: roads, the Noonday Creek trail, water (ponds, lakes, creeks),
+     woods, buildings, the shopping center, bridges; the player (position and heading), the other racers in a
+     race, the current route with start / finish and checkpoints in travel order. Because Dan will use it to hunt
+     for shortcut ideas: zoom and pan with the controller, a readout of the map x, z under the cursor or the
+     player, and (on a toggle, off by default) the existing shortcuts and pipes. The game pauses in free roam
+     while it is open; in a race follow what Racer does.
+   - "© OpenStreetMap contributors" visible on the map. American spelling. Controller first, B closes.
+   - One check in the exe: open it with the controller in free roam and in a race, zoom, pan, close.
+
+3. R1, the ORIGINAL line, with a house slightly altered: PROPOSE, build nothing. Dan: "Can we suggest going with
+   the original idea for the first jump on the reverse slightly altering the house so that it will work?" (Houses
+   are not set in stone; only Dan's own is locked; Dan makes the final decision.) The original R1: the kicker on
+   the natural bank between 1987 and 1552, out through the gap between 2065 and 1572, 33 m and 4.4 m up at
+   20 m/s, saving about 84 m. It failed because vehicles reach the kicker at 24 to 28 m/s and the flight crosses
+   the gap at an angle into 1572's (or 2065's) wall. Work out the smallest change to a house that makes it safe
+   at every speed a vehicle can arrive at (14 to 32 m/s, 1.5 m and 6 degrees off the line): for example moving
+   or turning 1572 a few meters, shortening it, taking off a wing, or lowering its roof so the flight clears
+   OVER it. Give two or three options, each with: which house, exactly what changes (meters, degrees), what the
+   house looks like afterwards (it must still look like a normal house: no hole, no ramp stuck on it), the air
+   and the saving, where it lands. An overhead and one picture from the approach per option (git-ignored). The
+   trial R1 (the kids' ramp) stays as it is until Dan chooses; say whether the original would replace it.
+
+4. Noonday Creek shortcuts: PROPOSE, build nothing. Dan: "let it give us some suggestions for short cuts on
+   noonday creek". Four to six candidates round the 2.1 km lap besides P1, each big air or creative (arcade, not
+   serious), not necessarily pipes: for example a long diagonal pipe on the south loop (Round 18's candidate),
+   cutting a loop's corner over the creek by a jump, through the big lake's shallows on a line of rocks, off the
+   road bridge instead of under it, a line up and over a bank the trail goes round. For each: where it leaves
+   and rejoins, length and seconds saved, the air per trail vehicle from a real trajectory, what it looks like
+   and its hint at the turn-off (the shortcut-hints rule), which checkpoint it forgives, what is in the way.
+   Mark them in the world the way Round 18 did (posts and labels, a debug-menu row, a "go to" row) AND on the
+   new map (item 2), plus an overhead picture. Dan picks.
+
+5. One targeted check per built piece in the exe (stay off Dan's screen, muted), rebuild the exe, STOP for Dan's
+   choices on items 3 and 4. Report: short status list, "for Dan to check", the options in short tables, path to
+   the exe.
+
+**QUEUED — Round 21: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
 stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
@@ -2103,7 +2165,7 @@ with a PROPOSAL, not a build: an overhead of the whole map with every water body
 junction chambers where runs meet, lengths, which roads / houses each passes under; markers in the world as in
 Round 18; how a player knows where they are underground (a map? signs at junctions?); frame-rate cost. Dan picks.
 
-**QUEUED — Round 21: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
+**QUEUED — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I
