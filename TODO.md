@@ -2270,6 +2270,21 @@ just not go straight out and be on the ground you would drop out of it".
   out that way, with no reset needed. A clean jump clears the whole pool and lands on the grass beyond.
 - Breakable patio furniture etc. as before.
 
+**Also in this pass (Dan, 2026-10-12 09:22): the AI shortcut rule.** Now a standing rule in CLAUDE.md ("How the AI
+chooses shortcuts"): usually the regular path, sometimes a shortcut, more likely when behind, more likely still the
+further behind. `ShortcutStrategy.Probability` already does this, but the new R1 has `"ai_take": 0.85` in
+`make_shortcuts.py` / the route data, a fixed 85 % that overrides the rule (the AI would take R1 almost every lap).
+Remove that override for R1 so it follows the rule; check every other shortcut on every route has no fixed chance,
+except the N5 ford leap (part of the lap, 1.0 is right there). Report each shortcut's chance at the front and when
+last and 200 m behind.
+
+**Also in this pass (Dan, 2026-10-12 09:26): the AI makes mistakes.** Answer to Code's question whether the AI
+should sometimes fail R1: yes, and more broadly, see the new CLAUDE.md rule "The AI is not perfect". For R1: an AI
+that takes it sometimes lands in the pool (a sloppy line or a slow run-up), climbs out and carries on. Beyond R1,
+if the AI has no mistakes elsewhere yet, list what it would take (per difficulty) and add the cheap ones in this
+pass: a small chance of a short or off-line jump, of running wide on a bend, of clipping a breakable. Report how
+often each happened in the race checks.
+
 **Also in this pass (Dan, 2026-10-12 02:15): a drop-in for the trampoline sound.** Dan: "I want to replace the
 trampolione sound. I can get it from eleven labs". Add a drop-in folder the same way as the geese and break sounds:
 `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Trampoline\`, files named `trampoline*`
@@ -2348,7 +2363,62 @@ fallback if the jump over a one-story 1572 is not safe: Round 20's working layou
 front, garage and porch, one of the neighborhood styles), so it reads as a normal smaller house, not half of one.
 Show Dan a picture of that house from the street before building it.
 
-**QUEUED — Round 21: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+**ACTIVE — Round 21: carry-overs, the reverse Noonday Creek race, and its shortcut candidates (Dan, 2026-10-12 10:00:
+"Lets fold everything into the next round").** The Round 20 follow-ups are built (commit 755f34e); Dan has not driven
+them yet. The two items added after that build (the AI shortcut rule, the AI makes mistakes) were never done: they are
+Part A here. The shortcut design rules in CLAUDE.md ("Shortcut design") apply to everything in this round.
+
+Part A, carry-overs (commit on their own):
+1. The AI shortcut rule (CLAUDE.md "How the AI chooses shortcuts"): R1 still has a fixed `ai_take` 0.85. Remove it so R1
+   follows `ShortcutStrategy`; check every shortcut on every route for a fixed chance (only the N5 ford leap may keep
+   one, it is part of the lap). Report each shortcut's chance at the front, and when last and 200 m behind.
+2. The AI makes mistakes (CLAUDE.md "The AI is not perfect"; Dan answered Code's question: yes, the AI should fail R1
+   sometimes). For R1: build the step / deck on the pool's near side so a short landing ends IN the pool, not against
+   its wall (Dan confirmed 10:10: "yes put it in case you are short"; it may reach 0.5 to 1 m into #6's corridor; #6 is forward only and R1 is
+   reverse only, so they never meet in a race; check #6 still runs clean). Then turn the AI's sloppy tries back on
+   for R1 so it sometimes lands in the pool, climbs out and carries on (never stuck, no rescues). Elsewhere: if the
+   AI makes no mistakes yet, add the cheap ones (a short or off-line jump, running wide on a bend, clipping a
+   breakable), more on Easy than Hard. Report how often each happened in the race checks.
+3. The free cuts listed in the Round 20 follow-ups status (`Tools/mapgen/free_cuts.py`): Dan's answer (10:13): "to
+   prevent major shortcuts, we can put a CP". So close them with checkpoints, not fences: add checkpoints to the
+   Chastain Glen loop (forward and reverse as needed) so that every free cut saving about 30 m or more skips a
+   checkpoint and costs the 5 s penalty, while the official shortcuts (#2, #6, R1, R3) still forgive what they
+   skip and the plain lap passes every checkpoint naturally. Keep the count sensible (gates spread round the lap,
+   none in an awkward spot such as mid-jump or on a landing). Re-run free_cuts.py afterwards and report what is left
+   open (small cuts under 30 m may stay). The AI keeps to the rules as before.
+
+Part B, a reverse Noonday Creek race. Dan: "I would like to see if we can do a straight up reverse version of the
+noonday creek trail. Slight variation of the track is expected if needed."
+4. A "Noonday Creek (reverse)" option: the same trail driven the other way, chosen from the race menu like the Chastain
+   Glen loop's direction (Direction: Forward / Reverse). Same world, routes laid over it. Slight changes to the line
+   are fine where a section does not work backwards (a bend too tight to take from the other side, a climb too steep,
+   a bank to get up), say each one.
+5. The jumps in reverse: every jump on the trail is a one-way kicker. For each (J1, J4 over New Chastain Road, J5,
+   J6, BJ1 to BJ4, N2's bank, N5's log ramp, P1's outfall over the pond) say what happens driving it the other way,
+   and give the reverse lap its own jumps where the forward kicker does not work backwards: a take-off on the other
+   side, looking like something that could be there at its real size, both directions living side by side without
+   one spoiling the other (no kicker you hit head on, nothing that catches a vehicle going the other way). The
+   reverse lap should have as much big air as the forward one. The road jump over New Chastain Road in reverse too.
+6. P1 and the other forward shortcuts (N2): official in the forward race only, unless one works as well backwards
+   (say which). In the reverse race the forward-only ones are just part of the world (not barred, not forgiven).
+7. Checkpoints numbered in travel order for the reverse race; the AI races it (trail mode, small vehicles only, as
+   forward); start / finish and grid placed for the reverse direction.
+
+Part C, shortcut candidates for the REVERSE Noonday Creek race, flagged for Dan to decide. Dan: "I would also like to
+see some potential shortcuts flagged out so I can decide. As usual shortcuts should be more challenging than just
+following the track but rewarding if pulled off successfully. We also don't want the shortcuts to cut off too much
+of the track. Shortcuts should always be fun, and interesting".
+8. Three to five candidates, each held to CLAUDE.md "Shortcut design": harder than the trail, a real reward when
+   pulled off, a real cost when fumbled, never cutting too much of the lap, fun and interesting (a jump, a gap, a
+   line through something), with a hint at the turn-off. For each: where it leaves and rejoins, how much lap it skips
+   and the time a clean run saves, what a fumble costs, the air per trail vehicle from a real trajectory, what it
+   looks like, which checkpoint it forgives, what is in the way.
+9. Mark them in the world (posts and labels, the debug-menu "Proposal markers" / "Go to" rows back, temporary) and on
+   the map, plus an overhead picture. Build none of them; Dan picks after driving the reverse race.
+10. One targeted check per built piece in the exe (stay off Dan's screen, muted), rebuild the exe, report: short status
+    list, "for Dan to check", the candidates in a short table, path to the exe.
+
+**QUEUED — Round 22: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
 stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
@@ -2357,7 +2427,7 @@ with a PROPOSAL, not a build: an overhead of the whole map with every water body
 junction chambers where runs meet, lengths, which roads / houses each passes under; markers in the world as in
 Round 18; how a player knows where they are underground (a map? signs at junctions?); frame-rate cost. Dan picks.
 
-**QUEUED — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
+**QUEUED — Round 23: Chastain Commons, Chastain Enclave and Grasmere Court** (the neighborhoods notes below).
 
 **QUEUED — Round 17 onward: fill in more of the map (Dan, 2026-10-10).**
 Dan: "we need to also fill in some other places on the map as well. I

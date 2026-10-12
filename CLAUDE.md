@@ -108,6 +108,34 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   game; pictures go in the report, not as a gate he has to approve first.
   Proposals and markers only when he asks for options, and changes to houses
   still wait for his yes.
+- **How the AI chooses shortcuts** (Dan, 2026-10-12; applies to every race and
+  every shortcut, now and later): (1) by default an AI driver usually takes the
+  regular path and only sometimes takes a shortcut; (2) it is more likely to
+  take one when it falls behind; (3) the further behind, the more likely.
+  Implemented in `ShortcutStrategy.Probability(rank, gap)` (ported from
+  Racer): about 12 % at the front, up to +34 % for being last and up to +12 %
+  for being 200 m or more behind the leader, a small per-driver lean of
+  +/-4 %, kept between 6 % and 65 %; decided once per shortcut per lap. A
+  fixed chance for one shortcut is allowed only for something that is part of
+  the lap rather than a real shortcut (the N5 ford leap); every official
+  shortcut follows the rule.
+- **The AI is not perfect** (Dan, 2026-10-12: "AI should never drive perfectly
+  100% of the time. It should potentially make mistakes just like a human
+  might"). Every AI driver makes the occasional human mistake, everywhere, not
+  only on shortcuts: comes up short on a jump or into R1's pool, clips a gate
+  post or a breakable tree, brakes late and runs wide, misses a turn-off it
+  meant to take, bobbles a landing. Not so often that it looks broken, never
+  in a way that leaves it stuck, and somewhat more often on Easy than on Hard.
+- **Shortcut design** (Dan, 2026-10-11 and 2026-10-12, across Rounds 18 to 21):
+  a shortcut is harder than just following the track and rewarding when pulled
+  off (a clean run saves real time); a fumble costs more than it would have
+  saved, but never traps; it never cuts off too much of the lap (no skipping
+  whole sections; Dan dropped candidates that did); it is always fun and
+  interesting (big air, a gap, a line through something), never a plain cut
+  across grass; it gets a hint at the turn-off; it must not leave an easier
+  free way through the same ground (Dan's R1 report: "there is literally
+  nothing stopping you"). Propose candidates on markers when Dan asks; build
+  once he picks.
 - **Houses are not set in stone** (Dan, 2026-10-11: "If we need to modify or
   slightly relocate a house to accommodate tracks/shortcuts this could be ok.
   Just let me know and i can do the final decision"). When a track or
@@ -246,6 +274,14 @@ drive (a tree on #2's line, #6's ramp drawn as a flatbed instead of hay
 bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
+
+**Active work is Round 21 in `TODO.md`:** Part A, carry-overs (R1 follows
+the AI shortcut rule, the AI makes occasional mistakes including falling in
+R1's pool); Part B, a reverse Noonday Creek race (the trail driven the other
+way, its own jumps where the forward ones do not work backwards); Part C,
+three to five shortcut candidates for the reverse race on markers, nothing
+built. Queued: 22 the map-wide pipe network (proposal first); 23 Chastain
+Commons, Chastain Enclave and Grasmere Court.
 
 **Round 20's follow-ups (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by
 Dan.** Queued, not started: 21 the map-wide pipe network (proposal first); 22 Chastain Commons, Chastain Enclave and
