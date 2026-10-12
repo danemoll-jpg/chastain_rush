@@ -2199,6 +2199,87 @@ a watchdog ends it after `-r20Minutes`, default 25). Pictures: `local/round20/` 
   "Go to", free roam only; `MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Data/proposals/round20_markers.json`,
   labels `Tools/handmade/make_proposal_labels.py`) and on the map. TEMPORARY: remove when Dan has chosen.
 
+**Round 20 item 4 decided (Dan, 2026-10-12 02:03): build N2 and N5; drop N1, N3, N4.** Dan: "N2 is the only one
+that even makes sense, the others cut off too much of the track well besides N5, since it is already being skipped,
+though we could put in N5 if you miss the pipe shortcut".
+- N2 "Low creek leap": build as proposed (`local/round20/creek_candidates.json`): off the washed-out east bank
+  (creek rock and earth bulldozed up, lip about 1.8 m, 24 degrees, aimed launch held 23 to 25 m/s, about 2 s and 42
+  to 50 m of air), over the creek to the west side; its hint is the knocked-over road-closed barricade and tire
+  tracks over the bank. Forgives the checkpoint it skips (CP4). Never a trap: short lands in the shallow creek and
+  drives out. AI trial, each trail vehicle once.
+- N5 "Ford leap": build it as the jump for those who MISS P1: a log ramp beside the hairpin's ford (C2) that jumps
+  Noonday Creek instead of wading it (lip about 1.4 m, 20 degrees, held 18 to 22 m/s, about 1.5 s). It sits on the
+  normal lap (P1 skips that stretch), so it is part of the lap, not an official shortcut: it skips nothing and
+  must not change how CP2 is counted. Worn tracks to it. The AI takes it when not taking P1.
+- N1, N3, N4: not built. Remove all the Round 20 proposal markers, their data, labels and debug-menu rows, and the
+  proposals layer on the map, once N2 and N5 are built.
+- Still open for Dan (not to be done unasked): making the trees breakable at the three bends where the scripted lap
+  hit trunks 9 to 14 m off the line (the stream bend, the east leg before CP3, the south ford).
+
+**DECIDED (Dan, 2026-10-12 02:11): Dan's line becomes R1, but with risk. The R1-over-1572 item below is CANCELLED (do not build it).**
+Dan's session 2026-10-12_01-54-20-969_70e57b, reverse Chastain Glen loop, Turf Rocket, lap 1, after the reverse
+lap's first gate: BUG-001 (vehicle x 2804.04, z 1018.74, heading 333, on the trial R1's worn tracks between the two
+houses): "why not start here...."; BUG-002 (vehicle x 2774.91, z 1079.09, heading 7, coming out onto Chastain Glen
+Lane on the lobe's north side): "and come out here? I mean there is ltiterally nothing stopping you and since there
+is no cp, whats the motivation of not taking this?" He drove straight on through the gap and across the yards to
+the lane, cutting the west lobe, with no barrier and no checkpoint to stop it, and no penalty. Claude has asked
+Dan to choose: (A) make his line the official R1 (with a jump on it), replacing the kids'-ramp trial and the
+one-story-1572 plan; or (B) keep a planned R1 and stop free cuts like his (a checkpoint inside the lobe, or a fence).
+Either way, scan both directions of the Chastain Glen loop for other free cuts through yards that skip no
+checkpoint, and list them for Dan.
+
+Dan: "yeah but it is too easy. I don't mind this area as a shortcut, but it has to has some risk". So:
+- R1 is Dan's line: from the gap between the two houses after the reverse lap's first gate, across the lobe's
+  back yards, out onto Chastain Glen Lane where his BUG-002 was. Reverse only. Official: forgives the gates it
+  skips. It replaces the kids'-ramp trial (remove that ramp, its JUMP! sign and its tracks).
+- It must carry RISK, so that taking it is a gamble that pays off for a clean run and costs time for a sloppy one.
+  Make the yards a real obstacle: the lobe's back yards fenced off with the neighborhood's privacy fences (solid,
+  not breakable, as on a property line), so the ONLY way through is the shortcut itself, and the shortcut asks
+  for commitment. Default design (Claude's; build it unless it cannot work, then say why): a homemade ramp over
+  the first fence into a back yard with an in-ground pool. Hit it right and you clear the pool and land on the
+  deck / lawn beyond; come in slow, short or off line and you drop into the pool: deep enough to cost real time
+  (well more than the shortcut saves), never a trap (pool steps at the shallow end, drive out, a reset is fine).
+  Then out through a narrow gap: an open side gate in the far fence, a little wider than a car, that you have to
+  line up for; clip the gate post and you lose speed. Breakable things in the yards (patio chairs, a grill, an
+  umbrella) for fun.
+- The hint at the turn-off as the shortcut-hints rule (worn tracks and something homemade at the gap).
+- Numbers for the report: the time saved on a clean run, the time lost in the pool, the speed window for clearing
+  it per vehicle. Every vehicle can make it clean (aimed launch if needed, as BigJump); the risk is in the driver's
+  line and speed, not in the vehicle. AI: takes it, makes it clean most of the time, sometimes not.
+- One picture from the approach and one overhead with the flight drawn, for the report.
+- Then scan both directions of the Chastain Glen loop for other free cuts through yards that skip no checkpoint and
+  cost nothing, and list them for Dan (change nothing else).
+
+**Also in this pass (Dan, 2026-10-12 02:15): a drop-in for the trampoline sound.** Dan: "I want to replace the
+trampolione sound. I can get it from eleven labs". Add a drop-in folder the same way as the geese and break sounds:
+`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Trampoline\`, files named `trampoline*`
+(.wav, .ogg, .mp3), read at start-up, replacing the made bounce sound when present (several files: pick one at random
+per bounce). The game makes the folder and a READ ME in it on its first start (a check never writes there). Say the
+folder and naming in the report so Dan can drop his file in.
+Dan, same message: "I say we go with this for now and forget the others for right now" (the R1 options other than
+his line). N2 and N5 stand as decided.
+
+**CANCELLED (Dan chose his own line for R1, 2026-10-12) — Round 20 item 3 follow-up: R1 OVER a one-story 1572 (Dan, 2026-10-12 01:43).** Dan, on the "cut 1572 in half and
+move 2065" result: "So is no matter what my choice going to take a significant chunk of 1572? Can we not make it a
+one story house or something". Claude's reading of `local/round20/r1_study.txt`: the option of lowering 1572 was
+never tried, and lowering it alone does not help, because almost every failure there is on the ground AFTER landing
+(the flight is only 1 to 3.5 m over the lip; vehicles land 16 m out and run into 1572's wall 19 m on). What could
+work is jumping OVER the house instead of past it: 1572 rebuilt as a one-story house on its own footprint (a ranch,
+style C, looks normal, nothing cut away), and the original R1 kicker made a big aimed launch (as BigJump / the
+trampoline: every vehicle thrown on the same arc whatever its speed, 14 to 32 m/s, 1.5 m and 6 degrees off line)
+that clears 1572's roof with room and lands on open ground beyond it, upright, pointing down the lap, with a clear
+run-out (2065 moved only if needed; say how far). Work this out on paper first (the same check as r1_study.txt:
+every speed, offset and angle; the roof clearance, where it lands, the run-out). If it is safe in every case, build
+it as R1, reverse only, with its hint at the turn-off, an AI trial, and one picture from the approach with the
+flight drawn; leave the kids'-ramp trial in place too so Dan can drive both and pick. If it is not safe, build
+nothing and report why with the numbers.
+Dan, clarifying (01:46): "i don't mind making changes. It just looks like the options take a significant portion of
+the house away and it will look akward". So the objection is the look of a house cut in half, not the change. The
+fallback if the jump over a one-story 1572 is not safe: Round 20's working layout (1572 down to its north-east part,
+2065 moved 8 m) BUT with 1572 rebuilt as a complete, smaller house designed for that footprint (its own proper roof,
+front, garage and porch, one of the neighborhood styles), so it reads as a normal smaller house, not half of one.
+Show Dan a picture of that house from the street before building it.
+
 **QUEUED — Round 21: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33

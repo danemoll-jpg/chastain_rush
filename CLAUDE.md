@@ -102,6 +102,12 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   fun arcade game not a serious racer"). When realism and fun pull apart,
   fun wins: big jumps, generous physics, things that break instead of
   stopping you, nothing that punishes a mistake with a dead stop.
+- **Build it, then Dan drives it** (Dan, 2026-10-12: "cant we just build it? I
+  mean unless i actually see it I am not going to be able to approve it or
+  not"). Once Dan has said what he wants, build it and let him judge it in the
+  game; pictures go in the report, not as a gate he has to approve first.
+  Proposals and markers only when he asks for options, and changes to houses
+  still wait for his yes.
 - **Houses are not set in stone** (Dan, 2026-10-11: "If we need to modify or
   slightly relocate a house to accommodate tracks/shortcuts this could be ok.
   Just let me know and i can do the final decision"). When a track or
@@ -241,14 +247,14 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 20 in `TODO.md`:** two fixes from Dan's drive (a
-catch at the footbridge's near end; a ramp out of pipe P1 over the pond),
-the map ported from Racer on Racer's controller button (now bug capture's),
-and two sets of proposals with nothing built: the original R1 with a house
-slightly altered (options for Dan), and four to six shortcut candidates on
-the Noonday Creek lap. Round 19 is driven and approved by Dan. Queued: 21
-the map-wide pipe network (proposal first); 22 Chastain Commons, Chastain
-Enclave and Grasmere Court.
+**Active work is Round 20's two follow-ups in `TODO.md` (Dan chose,
+2026-10-12):** build Noonday Creek shortcut N2 (low creek leap) and the N5 ford
+leap (for those who miss P1), remove the other proposals; and R1 rebuilt on
+Dan's own line across the west lobe's back yards, with risk (fenced yards, a
+ramp over a fence and a pool to clear or fall in, a narrow gate out); the
+one-story-1572 plan is cancelled. Round 20's fixes, map and
+proposals are built. Queued: 21 the map-wide pipe network (proposal first);
+22 Chastain Commons, Chastain Enclave and Grasmere Court.
 
 **Round 20 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan; STOPPED for
 Dan's choices on items 3 and 4:** BUG-001 (BJ1's railings flare out, smooth solid panels, 7 m deck from the lowest ground)
@@ -415,7 +421,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-11_17-41-40-815_db3e5c` (BUG-001 catch at the footbridge, BUG-002 ramp out of P1 over the pond; in TODO.md, Round 20).
+`2026-10-12_01-54-20-969_70e57b` (BUG-001 / BUG-002: Dan's free cut across the west lobe, now R1 with risk; in TODO.md, Round 20 follow-ups).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
