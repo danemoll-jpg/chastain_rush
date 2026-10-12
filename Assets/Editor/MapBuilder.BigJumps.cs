@@ -212,9 +212,73 @@ namespace ChastainRush
                     Debug.Log($"[Round20] {b.id} outfall: a concrete apron {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0.0} to {b.vmax:0} m/s");
                     float DeckTop(float s) => Profile(KickerProfile(), s);
                 }
+                else if (b.look == "washout")
+                {
+                    // Round 20 follow-up, N2: where the bank is cut by an old washed-out ford, creek rock and earth bulldozed up into a
+                    // heap on the bank's edge; its sides slope down to the ground, its back drops into the gorge; loose rock round it
+                    BuildPrism(Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.40f, 0.31f, 0.21f), new[] { 1, 3 }), terrain, mats, jr);
+                    float DeckTop(float s) => Profile(KickerProfile(), s);
+                    for (int i = 0; i < 12; i++)
+                    {
+                        float side = i % 2 == 0 ? 1f : -1f, s = 0.8f + (i / 2) * 1.4f, r = 0.35f + 0.45f * Hash01(i, 971);
+                        var q = O + d * s + nl * side * (hw + 0.5f + 0.9f * Hash01(i, 973)); float g = Ground(terrain, q.x, q.y);
+                        look.Tint = Shade(Granite, 0.65f + 0.25f * Hash01(i, 975));
+                        var cc = new Vector3(q.x, g - 0.1f, q.y);
+                        Vector3[] dirs = { Vector3.right, Vector3.forward, Vector3.left, Vector3.back };
+                        var apex = cc + Vector3.up * (r + Mathf.Max(0f, DeckTop(s) - g) * 0.5f);
+                        for (int k2 = 0; k2 < 4; k2++) TriFace(look, cc + dirs[k2] * r * 1.4f, cc + dirs[(k2 + 1) % 4] * r * 1.4f, apex, dirs[k2] + dirs[(k2 + 1) % 4] + Vector3.up);
+                    }
+                    Debug.Log($"[Round20+] {b.id} washout: an earth and rock kicker {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
+                }
+                else if (b.look == "logramp")
+                {
+                    // Round 20 follow-up, N5: a log ramp beside the ford, logs laid side by side across two big stringer logs; the driven
+                    // surface is the prism under the logs (smooth: no log is a bump), its back drops to the creek
+                    var pr = KickerProfile();
+                    BuildPrism(Prism("deck", pr, b.ramp_m, hw, WetWood, new[] { 1, 3 }), terrain, mats, jr);
+                    for (float s = 0.2f; s <= b.ramp_m - 0.1f; s += 0.42f)
+                    {
+                        float y = Profile(pr, s) + 0.05f, wob = 0.25f * (Hash01((int)(s * 10f), 981) - 0.5f);
+                        LogCyl(look, W(s, -hw - 0.15f + wob, y), W(s, hw + 0.15f + wob, y), 0.2f, 6);
+                    }
+                    foreach (float side in new[] { 1f, -1f })
+                    {
+                        var a0 = W(0f, side * (hw - 0.6f), Ground(terrain, O.x, O.y) - 0.1f); var a1 = W(b.ramp_m, side * (hw - 0.6f), y1 - 0.45f);
+                        LogCyl(look, a0, a1, 0.3f, 8);
+                        var foot = W(b.ramp_m - 0.3f, side * (hw - 0.6f), 0f); foot.y = Ground(terrain, foot.x, foot.z) - 0.2f;
+                        LogCyl(look, foot, a1, 0.22f, 6);   // a prop log under the lip
+                    }
+                    Debug.Log($"[Round20+] {b.id} log ramp: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
+                }
+                // Round 20 follow-ups: the hint at a turn-off (N2: a road-closed barricade knocked over on its side) and worn tire tracks
+                if (b.hint != null && b.hint.kind == "barricade") Barricade(look, terrain, new Vector2(b.hint.x, b.hint.z), b.hint.yaw);
+                if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, jr, ToPoints(b.tracks), b.id + " worn tracks");
                 if (look.Count > 0) { var lg = look.ToObject(b.id + " look", mats.House, jr, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 // the runtime side: the launch speed cap
                 var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg; bj.vmin = b.vmin;
+            }
+        }
+
+        // a type III road-closed barricade (two orange and white striped boards on A-frame legs, 2.4 m long), knocked over on its side
+        // in the grass: look only, no collider (Round 20 follow-up, N2's hint)
+        static readonly Color BarrierOrange = new Color(0.93f, 0.42f, 0.10f), BarrierWhite = new Color(0.92f, 0.92f, 0.90f);
+        static void Barricade(MeshBuilder mb, TerrainGrid terrain, Vector2 at, float yawDeg)
+        {
+            float g = Ground(terrain, at.x, at.y), a = yawDeg * Mathf.Deg2Rad;
+            var u = new Vector3(Mathf.Sin(a), 0f, Mathf.Cos(a)); var n = new Vector3(u.z, 0f, -u.x);   // along the boards, and across
+            var c = new Vector3(at.x, g, at.y);
+            // lying on its side: the boards stand on edge just above the grass, one behind the other; the legs stick out sideways
+            for (int k = 0; k < 2; k++)
+            {
+                var b0 = c - u * 1.2f + n * (k * 0.55f) + Vector3.up * (0.16f + 0.02f * k);
+                for (int i = 0; i < 6; i++)
+                    Beam(mb, b0 + u * (0.4f * i), b0 + u * (0.4f * (i + 1)), 0.04f, 0.25f, i % 2 == 0 ? BarrierOrange : BarrierWhite, n);
+            }
+            foreach (float s in new[] { -0.9f, 0.9f })
+            {
+                var foot = c + u * s - n * 0.3f + Vector3.up * 0.05f;
+                Beam(mb, foot, foot + n * 1.3f + Vector3.up * 0.12f, 0.06f, 0.06f, BarrierWhite);
+                Beam(mb, foot + n * 0.2f, foot + n * 1.2f + Vector3.up * 0.5f, 0.06f, 0.06f, BarrierWhite);
             }
         }
     }

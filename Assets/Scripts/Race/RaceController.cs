@@ -508,7 +508,8 @@ namespace ChastainRush
             {
                 var line = new GameObject("AI shortcut " + sc.Id).AddComponent<RaceRoad>(); line.transform.SetParent(AiRoad.transform, false);
                 line.openHighway = true; line.points = sc.Path; line.Initialize();
-                var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = sc.AiSpeed > 0f ? sc.AiSpeed : AiShortcutSpeed(sc.Id), profile = sc.AiProfile };
+                var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = sc.AiSpeed > 0f ? sc.AiSpeed : AiShortcutSpeed(sc.Id), profile = sc.AiProfile,
+                                       take = sc.AiTake, slip = sc.AiSlip, slipProfile = sc.AiSlipProfile };
                 a.entryRoad = AiRoad.Project(sc.Start, out _); a.exitRoad = AiRoad.Project(sc.End, out _);
                 a.Allows = c => AiShortcutAllowed(sc.Id, c);
                 AiShortcuts.Add(a);

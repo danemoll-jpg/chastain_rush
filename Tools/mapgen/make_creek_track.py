@@ -302,6 +302,84 @@ clear_lines.append({"points": [round(float(v), 2) for q in [P_out - uA * 2.0, P_
 sc_p1 = {"id": "p1_pipe", "name": "The drain pipe", "direction": "forward", "path": [round(float(v), 2) for q in path for v in q],
          "half_width_m": 3.0, "entry_inset_m": 14.0, "entry_margin_m": 2.0, "forgives": [2], "ai_speed": 16.0}
 
+# ---------------------------------------------------------------- 4b. N2 and N5 (Round 20 item 4, decided by Dan 2026-10-12: "N2 is
+# the only one that even makes sense ... we could put in N5 if you miss the pipe shortcut")
+# Each: off the trail on a circular arc (radius R, tangent to the trail where it leaves) onto a kicker's axis, the kicker 8 m long,
+# an aimed launch (BigJump: anyone over the lip at 10 m/s or more leaves it at vmin to vmax), the flight over Noonday Creek.
+#   N2 "Low creek leap" (official, forgives CP4): from the east side of the south loop across the creek's gorge to the west side.
+#      The proposal's lip (2528, 539) sat 9 m from the trail facing west: a 125 degree turn in 10 m that nothing can drive. Here the
+#      lip is 20 m further in, at the end of a 12 m arc; the loop's two sides are only 35 m apart there, so the launch is held to
+#      15 to 17 m/s (about 1.5 to 1.7 s and 23 to 28 m in the exe: down short of the west side's trail with room to turn onto it;
+#      at 17 to 19 m/s three of the five ran on past the turn into the bank; the proposal's 23 to 25 m/s would carry a vehicle 15 m
+#      into the woods beyond). Then a right bend onto the trail heading north, before CP5.
+#   N5 "Ford leap" (part of the lap: forgives nothing, 'lap_option'): a log ramp beside the hairpin's ford (C2), for those who
+#      did not take P1; it lands back on the trail 8 to 13 m before CP2, which is passed as usual. The AI takes it ('ai_take').
+def rot2l(v, a): c_, s_ = math.cos(a), math.sin(a); return np.array([v[0] * c_ - v[1] * s_, v[0] * s_ + v[1] * c_])
+def leap(jid, leave_xz, R, bearing, straight, h, ang, vmin, vmax, ramp=8.0):
+    k = S(leave_xz); P0 = line[k % N1]; h0 = line[(k + 2) % N1] - line[(k - 2) % N1]; h0 = h0 / np.linalg.norm(h0)
+    b = math.radians(bearing); d = np.array([math.sin(b), math.cos(b)])
+    phi = math.atan2(h0[0] * d[1] - h0[1] * d[0], h0 @ d)
+    c = P0 + np.array([h0[1], -h0[0]]) * R * (-np.sign(phi))   # the centre on the side the arc turns to
+    arc = [c + rot2l(P0 - c, phi * t / 16.0) for t in range(17)]
+    foot = arc[-1] + d * straight; L = foot + d * ramp; y0 = ground(*L) + h
+    table = {}
+    for v in sorted({vmin, vmax, round((vmin + vmax) / 2, 1)}):
+        t, dist, top = ballistic(L, d, y0, v, math.radians(ang)); table[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+    far = max(a_[1] for a_ in table.values())
+    bj = {"id": jid, "look": "", "s_lip": -1.0, "lip": [round(float(L[0]), 2), round(float(L[1]), 2)], "dir": [round(float(d[0]), 5), round(float(d[1]), 5)],
+          "height": h, "lip_y": round(float(y0), 3), "angle_deg": ang, "ramp_m": ramp, "width": 6.0, "land_from": 12.0, "land_to": round(far + 8.0, 1),
+          "vmin": vmin, "vmax": vmax, "design": vmin, "flights": table}
+    print(f"  {jid}: leaves the trail at s {k} on a {R:.0f} m arc turning {math.degrees(phi):.0f} degrees, lip ({L[0]:.1f}, {L[1]:.1f}) at {y0:.2f} m facing {bearing} degrees; air / distance / top: " +
+          ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.0f} m {a_[2]:.1f} m" for v, a_ in table.items()))
+    return k, arc, foot, L, d, bj, far
+# N2
+k2, arc2, foot2, L2, d2, n2, far2 = leap("N2", (2520.24, 565.95), 12.0, 245.0, 4.0, 1.8, 24.0, 15.0, 17.0)
+n2["look"] = "washout"
+land2 = L2 + d2 * 25.0                               # about the longest landing (17 m/s in the exe): the turn back onto the trail starts here
+k2j = S((2468.0, 538.5))                             # where the right turn meets the trail (heading north)
+P2a = line[k2j % N1]; h2a = line[(k2j + 2) % N1] - line[(k2j - 2) % N1]; h2a = h2a / np.linalg.norm(h2a)
+mid2 = land2 + d2 * 4.0                              # a little straight, then one smooth bend onto the trail (a fitted quadratic)
+path2 = [line[(k2 - 14 + i) % N1] for i in range(0, 14, 2)] + arc2 + [foot2, L2] + [L2 + d2 * t for t in (8.0, 16.0, 25.0)] + \
+        [(1 - u) ** 2 * mid2 + 2 * (1 - u) * u * (mid2 + d2 * 6.0) + u * u * P2a for u in np.linspace(0.15, 1.0, 7)] + [line[(k2j + i) % N1] for i in (4, 8, 12)]
+path2 = resample(path2, 2.0)
+s2 = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(path2, axis=0), axis=1))])
+def st_on(P, cum, q): return float(cum[int(np.argmin(np.linalg.norm(P - np.array(q), axis=1)))])
+sc_n2 = {"id": "n2_creek_leap", "name": "Low creek leap", "direction": "forward", "path": [round(float(v), 2) for q in path2 for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(path2, s2, foot2 + d2 * 4.0), 1), "entry_margin_m": 1.0, "forgives": [4], "ai_speed": 15.0,
+         # the AI: 11 m/s round the 12 m arc, 14 up the kicker (the launch takes it to 15), slow for the bend after landing
+         "ai_profile": [round(v, 1) for v in (st_on(path2, s2, arc2[0]) - 4.0, 11.0, st_on(path2, s2, arc2[-1]), 11.0, st_on(path2, s2, foot2), 14.0,
+                                              st_on(path2, s2, L2) + 2.0, 14.0, st_on(path2, s2, mid2), 9.0, st_on(path2, s2, P2a), 10.0)]}
+big.append(n2); landings.append({"id": "N2", "poly": big_zone(n2)})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([line[(k2 - 6) % N1]] + arc2 + [foot2, L2], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in [L2, L2 + d2 * (far2 + 8.0)] for v in q], "half": 6.0})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([mid2, mid2 + d2 * 6.0, P2a], 1.0) for v in q], "half": 8.0})   # 8 m: a fast vehicle swings wide across the trail here (the exe check: the Turf Rocket into a trunk 8.5 m past it)
+# the hint at the turn-off (Dan's shortcut-hints rule): a road-closed barricade knocked over on its side at the trail's edge where the
+# arc leaves it, and tire tracks from there over the bank to the kicker's foot
+n_left2 = np.array([-arc2[1][1] + arc2[0][1], arc2[1][0] - arc2[0][0]]); n_left2 /= np.linalg.norm(n_left2)
+bar2 = arc2[0] - n_left2 * 3.6 + (arc2[0] - arc2[2]) / np.linalg.norm(arc2[0] - arc2[2]) * 2.0
+n2["hint"] = {"kind": "barricade", "x": round(float(bar2[0]), 2), "z": round(float(bar2[1]), 2), "yaw": round(math.degrees(math.atan2(*(arc2[2] - arc2[0]))) + 70.0, 1)}
+n2["tracks"] = [round(float(v), 2) for q in resample([line[(k2 - 8) % N1]] + arc2 + [foot2], 1.0) for v in q]
+# N5
+k5, arc5, foot5, L5, d5, n5, far5 = leap("N5", (2291.19, 1334.04), 10.0, 65.0, 0.0, 1.4, 20.0, 18.0, 22.0)
+n5["look"] = "logramp"
+k5j = S((2345.0, 1358.0))
+path5 = [line[(k5 - 14 + i) % N1] for i in range(0, 14, 2)] + arc5 + [foot5, L5] + [L5 + d5 * t for t in (8.0, 16.0, 24.0)] + [line[(k5j + i) % N1] for i in (-2, 4, 10)]
+path5 = resample(path5, 2.0)
+s5 = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(path5, axis=0), axis=1))])
+sc_n5 = {"id": "n5_ford_leap", "name": "Ford leap", "direction": "forward", "path": [round(float(v), 2) for q in path5 for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(path5, s5, foot5 + d5 * 4.0), 1), "entry_margin_m": 1.0, "forgives": [], "lap_option": True,
+         "ai_take": 1.0, "ai_speed": 15.0,
+         "ai_profile": [round(v, 1) for v in (st_on(path5, s5, arc5[0]) - 4.0, 10.0, st_on(path5, s5, arc5[-1]), 11.0, st_on(path5, s5, L5) + 2.0, 15.0)]}
+big.append(n5); landings.append({"id": "N5", "poly": big_zone(n5)})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([line[(k5 - 6) % N1]] + arc5 + [foot5, L5], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in [L5, L5 + d5 * (far5 + 6.0)] for v in q], "half": 5.5})
+n5["tracks"] = [round(float(v), 2) for q in resample([line[(k5 - 8) % N1]] + arc5 + [foot5], 1.0) for v in q]
+def lap_gap(P, d, ramp, half):   # the ramp's nearest edge to the trail's line (the tread is 4.5 m wide)
+    nl = np.array([-d[1], d[0]])
+    return min(float(np.min(np.linalg.norm(line - (P - d * s_ + nl * o), axis=1))) for s_ in np.arange(0, ramp + 0.1, 1.0) for o in (-half, half))
+print(f"  N2: {float(s2[-1]):.0f} m of line, leaves the lap at s {k2 - 14}, rejoins at s {k2j + 12} ({(k2j + 12 - (k2 - 14)) % N1} m of lap); kicker {lap_gap(L2, d2, 8.0, 3.0):.1f} m from the trail's line")
+print(f"  N5: {float(s5[-1]):.0f} m of line, leaves the lap at s {k5 - 14}, rejoins at s {k5j + 10} ({(k5j + 10 - (k5 - 14)) % N1} m of lap); log ramp {lap_gap(L5, d5, 8.0, 3.0):.1f} m from the trail's line")
+
 # ---------------------------------------------------------------- 5. write
 def flat(p): return [round(float(v), 2) for q in p for v in q]
 lead = [line[(N1 - 35 + k) % N1] for k in range(0, 36, 1)]   # the lap's last 35 m, up to its first point
@@ -320,7 +398,7 @@ route.update({
     "source": "Tools/mapgen/make_creek_track.py. Coordinates are map meters (= Unity x, z); heights come from the world.",
     "lap_length_m": round(L1, 1), "loop": flat(np.vstack([line, line[:1]])), "gate_s": gate_s,
     "lead_in": flat(lead), "lead_in_length_m": 35.0, "checkpoints": cps, "junctions": [], "loop_pieces": [],
-    "official_shortcuts": [sc_p1], "closures": [], "ai_zones": ai_zones,
+    "official_shortcuts": [sc_p1, sc_n2, sc_n5], "closures": [], "ai_zones": ai_zones,
     # for the checks (Round18Runner): J4 and the creek-bed run, in lap stations
     "j4": {"lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4, "road_far_edge_m": 26.0},
     "creek_bed_s": [c5a, c6],

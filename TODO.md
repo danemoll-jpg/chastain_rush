@@ -2250,6 +2250,26 @@ Dan: "yeah but it is too easy. I don't mind this area as a shortcut, but it has 
 - Then scan both directions of the Chastain Glen loop for other free cuts through yards that skip no checkpoint and
   cost nothing, and list them for Dan (change nothing else).
 
+**R1 POOL CHANGED (Dan, 2026-10-12 03:51, watching the check run; overrides the pool in the R1 decision above).**
+Dan: "I can already tell I don't like the pool placement between two houses: 1) It isn't realistic, if someone had
+a pool it would be in the back yard not in the area between them and their neighbor 2) If the pool that close to
+the jump, it takes out most of the challenge. If the pool is further back it would be riskier (which is what you
+want) 3) Also I would prefer it was an above ground pool instead. We can still make the exit the same you would
+just not go straight out and be on the ground you would drop out of it".
+- The pool moves into a BACK YARD, behind the house, where a pool would really be, not in the side yard between
+  two houses.
+- It sits further from the kicker, so clearing it takes a committed, well-aimed, fast jump: that is the risk.
+  Coming in slow, short or off line lands you in it. Report the speed window and how much a clean run saves
+  against how much the pool costs.
+- An ABOVE-GROUND pool (a round or oval steel-walled pool, about 1.2 m high, blue liner, a ladder, perhaps a
+  small deck on one side), not in-ground.
+- The exit is the same (out through the narrow side gate in the far fence). Claude's reading of "you would drop
+  out of it": a vehicle that lands in the pool does not drive straight out level onto the grass; it gets out over
+  the far side and drops down to the ground (for example up the pool's deck / steps on the side toward the gate
+  and off its edge, or the far wall gives way), then on to the gate. Never a trap: every vehicle can always get
+  out that way, with no reset needed. A clean jump clears the whole pool and lands on the grass beyond.
+- Breakable patio furniture etc. as before.
+
 **Also in this pass (Dan, 2026-10-12 02:15): a drop-in for the trampoline sound.** Dan: "I want to replace the
 trampolione sound. I can get it from eleven labs". Add a drop-in folder the same way as the geese and break sounds:
 `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Trampoline\`, files named `trampoline*`
@@ -2258,6 +2278,54 @@ per bounce). The game makes the folder and a READ ME in it on its first start (a
 folder and naming in the report so Dan can drop his file in.
 Dan, same message: "I say we go with this for now and forget the others for right now" (the R1 options other than
 his line). N2 and N5 stand as decided.
+
+**STATUS of the Round 20 follow-ups (Claude, 2026-10-12): built and checked in the exe by script (minimized, muted), not yet
+driven by Dan.** Check: `ChastainRush.exe -exeRound20 <dir> -r20Only fences,tramp,n5,n2,r1 [-soundsRoot <test dir>]`
+(Checks/Round20Runner.Follow.cs). Pictures and the free-cut list: `local/round20/followup/`, `local/round20/free_cuts.*`
+(git-ignored). Imported from Racer: nothing.
+- N2 "Low creek leap" DONE (official, forgives CP4). Not quite as proposed: the proposal's lip (2528, 539) sat 9 m from the
+  trail facing west, a 125 degree turn in 10 m that nothing can drive. Built 20 m further in, off a 12 m arc: an earth and
+  creek-rock kicker on the bank's edge (lip 1.8 m, 24 degrees), the hint a knocked-over road-closed barricade and worn tracks.
+  The loop's two sides are only 35 m apart there, so the launch is held to 15 to 17 m/s (at 17 to 19 three of five ran past
+  the turn back onto the trail). Exe: the five trail vehicles flat out 1.57 to 1.62 s in the air, 25 m, dry, back on the
+  trail; the Trail Four at 9 m/s rolls into the creek and drives out (12 s); the AI 5 of 5 (CP4 forgiven, no rescue).
+  Trees within 8 m of the bend back onto the trail removed (the Turf Rocket hit one 8.5 m past the trail).
+- N5 "Ford leap" DONE (part of the lap: a lap option that forgives nothing, CP2 counted as usual). A log ramp 5.5 m beside the
+  hairpin's ford, off a 10 m arc, lip 1.4 m at 20 degrees, held 18 to 22 m/s. Exe: 1.52 to 1.67 s, 27 to 32 m, dry, back on
+  the trail before CP2; an AI driver that did not take P1 takes it by itself (5 of 5, CP2 counted, no penalty).
+- The Round 20 proposals REMOVED: markers, their data, labels, debug-menu rows ("Proposal markers", "Go to"), the map layer,
+  `creek_shortcut_candidates.py`, `make_proposal_labels.py`.
+- R1 DONE on Dan's line, with the pool as changed at 03:51 (see the numbers below). Kids'-ramp trial removed (ramp, JUMP! sign,
+  tracks). A big homemade ramp in the front yard, its lip (2.6 m, 26 degrees) over a privacy fence across the 1987 / 1552
+  side yard (levelled lawn behind it); the flight over #6's open landing strip; a 6 m above-ground pool (steel wall 1.25 m,
+  1 m of water, ladder) in the back yards behind 1572 / 1622, 42 m past the fence, 7.2 m from #6's line, clear of 1572; its
+  far half a wooden ramp up to a deck on the rim, off whose edge you drop toward the gate; a vehicle in the water stops for
+  2.5 s, then wades at 1 m/s (PoolHold); a privacy fence across the 1572 / 1622 side yard with an open side gate 3.5 m wide
+  (round solid posts); patio chairs, table, umbrella, grill (breakable). The lobe sealed: solid fences across its other side
+  yards; the three in #6's corridor (713 / 1052, 1499 / 1641, 1641 / 1622) stand only during a reverse race (RaceOnly).
+  The first build's in-ground pool between the houses is gone (Dan, 03:51).
+  Exe numbers (local/round20/followup/final, final2): clean, flat out, all 11 vehicles off the lip at the 22 m/s cap, 2.40 to
+  2.62 s in the air, 47 to 50 m, upright, through the gate and onto the lane: saves 2.7 to 4.2 s against the lap between the
+  same points. The speed window off the lip (the same for every vehicle, aimed launch): 21.5 and up clears it; 19.9 to 20.8
+  comes down in the pool and always gets out (up the ramp, off the deck, through the gate); a fall costs 4.8 to 5.8 s (more
+  than a clean run saves); 18 and under lands short of it on the lawn and stops against its wall (drive round it: not a
+  trap, but a stop). The AI takes it (85% of the time) and makes it clean (3 of 3). NOT MET: "sometimes not" for the AI. A
+  sloppy AI try was aimed at the pool and put the car on the pool's near rim and against its wall (11 rescues); the band that
+  lands in the pool is under 1 m/s wide, so the AI's sloppy tries are off on R1 (`ai_slip` 0) rather than let it get stuck.
+  The 1987 / 1552 fence is skimmed by some cars' tails over the lip (no impulse); cars brush the gate's posts without losing
+  speed; the Skyfin clipped a post hard at 3.3 m, so the gate is 3.5 m.
+  For Dan to decide: a step or deck on the pool's near side so a short landing ends in the pool instead of against its wall
+  (only room for it if it may reach 0.5 to 1 m into #6's corridor); and whether the AI should make mistakes here at all.
+- Trampoline sound drop-in DONE: `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Trampoline\`, files named
+  `trampoline*` (.wav / .ogg / .mp3), several = one at random per bounce; the folder and a READ ME are made on the game's first
+  start. Exe (a test folder): read and played on a bounce.
+- Free cuts (report only, nothing changed): `python Tools/mapgen/free_cuts.py`. Reverse, with R1's fences: (1) round the
+  barriers of the side road east of the lobe on the lawns, CP5 to the north lane, saves 68 m (and 34 m to a nearer point);
+  (2) front yards inside the lap's west curve, CP5 to the north lane, 27 m; (3) from the start / finish diagonally through
+  the back yards to near CP5, 35 m (26 m). Forward: (4) from the north lane round house 1641 and down #6's strip to CP5
+  instead of jumping, up to 79 m (open in a forward race: those fences stand in reverse only); (5) the same south back
+  yards, 35 m. Options for Dan: make the 1641 fences stand in forward races too (they would be beside #6's kicker), solid
+  fences along the side road's verges, a checkpoint inside the lobe.
 
 **CANCELLED (Dan chose his own line for R1, 2026-10-12) — Round 20 item 3 follow-up: R1 OVER a one-story 1572 (Dan, 2026-10-12 01:43).** Dan, on the "cut 1572 in half and
 move 2065" result: "So is no matter what my choice going to take a significant chunk of 1572? Can we not make it a

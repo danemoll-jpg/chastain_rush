@@ -28,6 +28,12 @@ namespace ChastainRush
         public int[] forgives;               // checkpoint ids skipped by taking it
         public float ai_speed;               // Round 18: the speed an AI driver takes it at (0: RaceController.AiShortcutSpeed)
         public float[] ai_profile;           // Round 18: station along the path, speed, ...: no faster than this there (R3's bend)
+        // Round 20 follow-ups: 'lap_option' keeps a line that forgives nothing (N5, a jump beside the lap: for the AI and the map);
+        // 'ai_take' is the AI's own chance of taking it (0: Racer's ShortcutStrategy); 'ai_slip' the chance that an AI driver who
+        // takes it makes a sloppy try at the speeds of 'ai_slip_profile' instead of 'ai_profile' (R1: sometimes into the pool)
+        public bool lap_option;
+        public float ai_take, ai_slip;
+        public float[] ai_slip_profile;
     }
     // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
     [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }
@@ -101,6 +107,8 @@ namespace ChastainRush
         public Vector3[] Path;                // entry to exit, in travel order
         public float AiSpeed;                 // Round 18
         public float[] AiProfile;             // Round 18 (station, speed pairs along Path)
+        public float AiTake, AiSlip;          // Round 20 follow-ups (RouteShortcutJson)
+        public float[] AiSlipProfile;
         public RaceGate Entry;                // directed plane across the path a little way in; crossing it takes the shortcut
         public RaceGate Exit;                 // plane across the path's last metres (ends the "on the shortcut" state)
         public int FirstForgiven, LastForgiven;   // indices into RaceRoute.Checkpoints, inclusive
@@ -207,7 +215,7 @@ namespace ChastainRush
                 var pts = new List<Vector3>(n);
                 for (int i = 0; i < n; i++) { var g = Ground(sj.path[2 * i], sj.path[2 * i + 1]); g.y = DrainPipe.LineHeight(g.x, g.z, g.y); pts.Add(g); }   // Round 18: through a pipe, its floor
                 if (Reverse && d == "both") pts.Reverse();
-                var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray(), AiSpeed = sj.ai_speed, AiProfile = sj.ai_profile };
+                var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray(), AiSpeed = sj.ai_speed, AiProfile = sj.ai_profile, AiTake = sj.ai_take, AiSlip = sj.ai_slip, AiSlipProfile = sj.ai_slip_profile };
                 var c = new float[pts.Count];
                 for (int i = 1; i < pts.Count; i++) c[i] = c[i - 1] + Flat(pts[i] - pts[i - 1]).magnitude;
                 float len = c[c.Length - 1];
@@ -227,7 +235,7 @@ namespace ChastainRush
                         if (idx < 0) continue;
                         sc.FirstForgiven = Mathf.Min(sc.FirstForgiven, idx); sc.LastForgiven = Mathf.Max(sc.LastForgiven, idx);
                     }
-                if (sc.LastForgiven < 0) continue;
+                if (sc.LastForgiven < 0 && !sj.lap_option) continue;   // a lap option forgives nothing: its planes and corridor never fire
                 Shortcuts.Add(sc);
             }
         }

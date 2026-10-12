@@ -316,6 +316,7 @@ namespace ChastainRush
                 if (target != null) CutLot(target);
                 CutUnderDanDeck();   // Round 10 (BUG-001): no grass through Dan's deck
                 GradeShortcuts();      // Round 12: the shortcuts' grass runs (before the prisms' cuts, which go under their tops)
+                GradePools();          // Round 20 follow-up: R1's pool deck levelled and its bed cut (MapBuilder.R1Pool.cs)
                 CutUnderShortcuts();   // Round 10: the ground under the shortcut prisms marked "cut" (MapBuilder.Shortcuts.cs)
                 foreach (var h in Houses)
                 {

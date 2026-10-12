@@ -30,6 +30,8 @@ namespace Racer
         public DriverVariation Variation { get; } = new();
         public ShortcutStrategy Shortcuts { get; } = new();
         public AiShortcut ForcedShortcut;   // checks only: always take this one when it comes
+        public bool? ForceSloppy;           // checks only: a sloppy try (true) or a clean one (false) on a shortcut with 'slip'
+        public bool Sloppy { get; private set; }   // Chastain Rush, Round 20 follow-ups: this try at the planned shortcut is a sloppy one
         public AiShortcut RunIn;            // Chastain Rush: from the grid on the entrance lane to the lap (set by RaceController)
 
         public int RecoveryCount { get; private set; }
@@ -171,7 +173,7 @@ namespace Racer
             if(finished) TargetSpeed=12;
             // Consistency costs time through early lifting, never extra vehicle capability.
             if (skill < 2 && !activeBranch) TargetSpeed *= 1 - (skill==0?.07f:.012f)*(.5f+.5f*Mathf.Sin(Time.time*.19f+pace*31));
-            if(activeBranch) TargetSpeed=Mathf.Min(TargetSpeed,activeBranch.SpeedAt(Car,branchS,cornerGrip));
+            if(activeBranch) TargetSpeed=Mathf.Min(TargetSpeed,activeBranch.SpeedAt(Car,branchS,cornerGrip,Sloppy));
             else if(plannedBranch&&plannedBranch.entrySpeed>0)
             {
                 float toEntry=Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length);
@@ -263,13 +265,18 @@ namespace Racer
                 float toEntry=Mathf.Repeat(branch.entryRoad-s,DriveRoad.Length);
                 if(toEntry>55 || toEntry<5) continue;
                 if(Racer.NextCheckpoint>branch.FirstForgiven) continue;   // Racer: only when the racer's next gate is the one the branch bypasses
-                if(ForcedShortcut!=null){ if(branch==ForcedShortcut){plannedBranch=branch;break;} continue; }
+                if(ForcedShortcut!=null){ if(branch==ForcedShortcut){plannedBranch=branch;Sloppy=branch.slip>0&&ForceSloppy==true;break;} continue; }
                 if(!branch.Allows(Car) || Shortcuts.Decided(branch,Racer.CompletedLaps)) continue;
                 if(Occupied(branch)) continue;   // Chastain Rush: another car at the turn-off or on the line: keep to the road for now
                 var order=Race.Ordered();int place=order.IndexOf(Racer);
                 float rank=order.Count>1?(float)place/(order.Count-1):.5f;
                 var leader=order[0];float gap=Mathf.Max(0,Race.Score(leader)-Race.Score(Racer));
-                if(Shortcuts.TryDecide(branch,Racer.CompletedLaps,rank,gap,out bool take)&&take){plannedBranch=branch;break;}
+                if(Shortcuts.TryDecide(branch,Racer.CompletedLaps,rank,gap,out bool take,branch.take)&&take)
+                {
+                    plannedBranch=branch;
+                    Sloppy=branch.slip>0&&(ForceSloppy??Shortcuts.Roll(branch.slip));   // Chastain Rush, Round 20 follow-ups: a sloppy try (R1's pool)
+                    break;
+                }
             }
         }
 
@@ -399,6 +406,8 @@ namespace Racer
         public RaceRoad Line;
         public float entryRoad, exitRoad, entrySpeed, halfWidth = 3.5f;
         public float[] profile;   // Chastain Rush, Round 18: (station, speed) pairs along the line, no faster there (null: none)
+        public float take, slip;  // Chastain Rush, Round 20 follow-ups: its own chance of being taken (0: the strategy's), of a sloppy try
+        public float[] slipProfile;   // the speeds of a sloppy try (R1: too slow off the ramp, into the pool)
         public int FirstForgiven;
         public System.Func<ArcadeVehicle,bool> Allows = _ => true;
         public float Length => Line.Length;
@@ -408,8 +417,9 @@ namespace Racer
 
         // the speed to hold here: the entry speed, no faster than the line's bends allow (the shortcut check's rule: v at most
         // sqrt(grip x radius) at each bend ahead, reached in time by braking)
-        public float SpeedAt(ArcadeVehicle car, float s, float grip)
+        public float SpeedAt(ArcadeVehicle car, float s, float grip, bool sloppy = false)
         {
+            var profile = sloppy && slipProfile != null && slipProfile.Length >= 2 ? slipProfile : this.profile;
             float w = entrySpeed > 0 ? entrySpeed : car.topSpeed;
             for (float d = 6f; d < 60f && s + d + 6f < Length; d += 2f)
             {

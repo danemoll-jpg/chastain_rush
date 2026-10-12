@@ -11,6 +11,8 @@ namespace ChastainRush
     //   <persistentDataPath>\Sounds\Geese\goose_honk*.wav|ogg|mp3   added to the honks built into the game (Assets/Audio/Geese)
     //   <persistentDataPath>\Sounds\Breaks\wood*|metal*|glass*|water*|boom*.wav|ogg|mp3  each kind replaces the built-in break sound
     //                                                                            of that kind (BreakSounds)
+    //   <persistentDataPath>\Sounds\Trampoline\trampoline*.wav|ogg|mp3   Round 20 follow-up: replaces the made bounce sound
+    //                                                                            (Trampoline.cs; several: one at random per bounce)
     // For the exe that is %USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\. The folders and a READ ME are
     // made on the first run of the game Dan starts himself (a check run only reads them, never writes there).
     public sealed class SoundDropIns : MonoBehaviour
@@ -23,6 +25,7 @@ namespace ChastainRush
         public bool Loaded { get; private set; }
         public readonly List<AudioClip> Honks = new List<AudioClip>();
         public readonly List<AudioClip> Herons = new List<AudioClip>();   // Round 17: heron*, the heron's own call (none = a silent heron)
+        public readonly List<AudioClip> Bounces = new List<AudioClip>();   // Round 20 follow-up: trampoline*, the trampoline's bounce
         public readonly Dictionary<string, List<AudioClip>> Breaks = new Dictionary<string, List<AudioClip>>();
         public static event Action Ready;   // fired once every file has been read (also when there are none)
 
@@ -46,8 +49,15 @@ namespace ChastainRush
         {
             try
             {
-                var geese = Path.Combine(Root, "Geese"); var breaks = Path.Combine(Root, "Breaks");
-                Directory.CreateDirectory(geese); Directory.CreateDirectory(breaks);
+                var geese = Path.Combine(Root, "Geese"); var breaks = Path.Combine(Root, "Breaks"); var tramp = Path.Combine(Root, "Trampoline");
+                Directory.CreateDirectory(geese); Directory.CreateDirectory(breaks); Directory.CreateDirectory(tramp);
+                var t = Path.Combine(tramp, "READ ME.txt");
+                if (!File.Exists(t)) File.WriteAllText(t,
+                    "Trampoline sound for Chastain Rush.\r\n\r\n" +
+                    "A file here replaces the game's own bounce sound of the giant trampoline. Name it starting with trampoline,\r\n" +
+                    "for example trampoline1.wav, trampoline_boing.mp3. With several files, one is picked at random for each bounce.\r\n" +
+                    "WAV, OGG and MP3 all work. The game reads this folder each time it starts: no rebuild needed.\r\n" +
+                    "Delete the files to go back to the game's own sound.\r\n");
                 var g = Path.Combine(geese, "READ ME.txt");
                 if (!File.Exists(g) || !File.ReadAllText(g).Contains("heron")) File.WriteAllText(g,   // Round 17: the heron line added to an older READ ME
                     "Goose honks for Chastain Rush.\r\n\r\n" +
@@ -79,11 +89,13 @@ namespace ChastainRush
                 yield return Load(path, c => Honks.Add(c));
             foreach (var path in Files(Path.Combine(Root, "Geese"), "heron"))
                 yield return Load(path, c => Herons.Add(c));
+            foreach (var path in Files(Path.Combine(Root, "Trampoline"), "trampoline"))
+                yield return Load(path, c => Bounces.Add(c));
             foreach (var kind in BreakKinds)
                 foreach (var path in Files(Path.Combine(Root, "Breaks"), kind))
                     yield return Load(path, c => { if (!Breaks.TryGetValue(kind, out var l)) Breaks[kind] = l = new List<AudioClip>(); l.Add(c); });
             Loaded = true;
-            Debug.Log($"[Sounds] drop-ins from {Root}: {Honks.Count} goose honks, {Herons.Count} heron calls; breaks {string.Join("/", BreakKinds)}: " +
+            Debug.Log($"[Sounds] drop-ins from {Root}: {Honks.Count} goose honks, {Herons.Count} heron calls, {Bounces.Count} trampoline bounces; breaks {string.Join("/", BreakKinds)}: " +
                       string.Join("/", Array.ConvertAll(BreakKinds, k => Breaks.TryGetValue(k, out var l) ? l.Count.ToString() : "0")));
             Ready?.Invoke();
         }

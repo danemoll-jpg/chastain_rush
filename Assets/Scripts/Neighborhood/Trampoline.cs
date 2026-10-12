@@ -28,7 +28,8 @@ namespace ChastainRush
         static readonly List<ArcadeVehicle> cars = new List<ArcadeVehicle>();
         float wobble = -10f, nextScan;
         Vector3 matRest;
-        AudioSource voice;
+        AudioSource voice; AudioClip made;
+        public static string LastBounceClip { get; private set; } = "";   // for the checks: the clip the last bounce played
 
         void Start()
         {
@@ -83,7 +84,16 @@ namespace ChastainRush
         {
             var body = car.Body; var p = body.position;
             wobble = Time.time;
-            if (voice) { voice.pitch = full ? 1f : 1.3f; voice.Play(); }
+            if (voice)
+            {
+                // Round 20 follow-up (Dan: "I want to replace the trampolione sound"): a drop-in file replaces the made one
+                // (Sounds\Trampoline\trampoline*, SoundDropIns; several: one at random per bounce, played at its own pitch)
+                var drop = SoundDropIns.Instance != null ? SoundDropIns.Instance.Bounces : null;
+                if (drop != null && drop.Count > 0) { voice.clip = drop[Random.Range(0, drop.Count)]; voice.pitch = 1f; }
+                else { if (made == null) made = voice.clip; voice.clip = made; voice.pitch = full ? 1f : 1.3f; }
+                voice.Play();
+                LastBounceClip = voice.clip ? voice.clip.name : "";
+            }
             if (!full)
             {
                 // a little hop where it is (a slow arrival): a real trampoline's bounce, nowhere near the house

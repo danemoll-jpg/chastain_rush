@@ -38,7 +38,8 @@ namespace ChastainRush
         // of the line, banks outside: the shortcut's surface is the grass itself
         [Serializable] class ScGrade { public string label; public float[] path, profile; public float half_width; }
         [Serializable] class ScSign { public float x, z; }
-        [Serializable] class ScShortcut { public string id, name, direction; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; public string sign_face, look; public ScBigJump big_jump; public ScPlayground playground; }   // Round 19: sign_face "party" (R3) / "jump" (R1); look "kids_ramp"; big_jump (R1's lip speed cap)
+        [Serializable] class ScShortcut { public string id, name, direction; public int[] forgives; public float[] path, trail; public float half_width, clear_half_width, entry_s; public ScPrism[] prisms; public ScOpenHouse[] open_houses; public ScJumpHouse[] jump_houses, roof_houses; public ScZone[] landing_zones; public ScGrade[] grades; public ScSign sign; public string sign_face, look; public ScBigJump big_jump; public ScPlayground playground;
+                                        public ScPool pool; public ScFence[] fences; public ScProp[] props; public float[] tracks; }   // Round 19: sign_face "party" (R3) / "jump" (R1); look "kids_ramp"; big_jump (R1's lip speed cap). Round 20 follow-up: look "pool_jump" (R1 on Dan's line: MapBuilder.R1Pool.cs)
         [Serializable] class ScBigJump { public float[] lip, dir; public float vmax, half, angle; }
         // Round 18 (R3): the play set and trampoline (MapBuilder.Playground.cs)
         [Serializable] class ScTower { public float[] o, u; public float len, half, deck_y, roof_y; }
@@ -536,7 +537,8 @@ namespace ChastainRush
                 foreach (var pr in sc.prisms) { if (pr.kind == "slide") FitFootToGround(pr, terrain); BuildPrism(pr, terrain, mats, sroot); prisms++; }
                 BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
                 if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) { BuildPlayground(sc, terrain, mats, sroot); if (sc.sign_face == "party") BuildPartyDressing(sc, terrain, mats, sroot); }   // Round 18 (R3); Round 19: the party
-                if (sc.look == "kids_ramp") BuildKidsRamp(sc, terrain, mats, sroot);   // Round 19 (6): R1 (MapBuilder.PartyHint.cs)
+                if (sc.look == "kids_ramp" || sc.look == "pool_jump") BuildKidsRamp(sc, terrain, mats, sroot);   // Round 19 (6): R1's homemade ramp (MapBuilder.PartyHint.cs)
+                if (sc.look == "pool_jump") BuildPoolJump(sc, terrain, mats, sroot);   // Round 20 follow-up: R1's pool, fences, gate, patio (MapBuilder.R1Pool.cs)
                 if (sc.big_jump != null && sc.big_jump.lip != null && sc.big_jump.lip.Length == 3)
                 {
                     var bj = sroot.gameObject.AddComponent<BigJump>(); bj.id = sc.id; bj.look = sc.look;

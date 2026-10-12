@@ -18,7 +18,7 @@ namespace ChastainRush
     //   new     the picture is drawn from the map data at Build Map (MapBuilder.MapPicture.cs; Racer photographs its scene); the
     //           readout of map x, z under the cursor and at the player; the other racers in a race; the current route with its
     //           start / finish and numbered checkpoints in travel order; A / Space shows the shortcuts and pipes (off by default);
-    //           Round 20's proposals (Proposals, item 4); "© OpenStreetMap contributors" on the map; zoom is by a factor (1 to 16)
+    //           "© OpenStreetMap contributors" on the map; zoom is by a factor (1 to 16)
     //   left    exploration fog and its save, destinations and travel, waypoints, acorn areas, track browsing, the action sheet
     // Bug capture (F4 / ] and its debug-menu row) moved to the right stick's click on the controller (DeveloperHud).
     public sealed class WorldMap : MonoBehaviour
@@ -32,13 +32,10 @@ namespace ChastainRush
         public float Zoom => zoom;
         public Vector2 Center => center;
         public Rect World => world;
-        // Round 20, item 4: proposal lines and labels drawn on the map while they exist (Debug/ProposalMarkers.cs fills it)
-        public sealed class Proposal { public string label; public Vector3[] line; public Color color; }
-        public static readonly List<Proposal> Proposals = new List<Proposal>();
 
         InputActionMap mapActions; InputAction mapToggle, panAction, zoomInAction, zoomOutAction, centerAction, layersAction, backAction;
         GameObject panel; RawImage picture; WorldMapOverlay overlay; Text status, heading, cursor, north, legend; Font font;
-        readonly List<Text> racerDots = new List<Text>(), gateLabels = new List<Text>(), proposalLabels = new List<Text>();
+        readonly List<Text> racerDots = new List<Text>(), gateLabels = new List<Text>();
         Rect world; float zoom = 1f, savedTimeScale = 1f; Vector2 center = new Vector2(.5f, .5f); int closedFrame = -10;
         ArcadeVehicle car; RaceController race;
         const float MaxZoom = 16f;
@@ -205,15 +202,6 @@ namespace ChastainRush
                 foreach (var p in FindObjectsByType<DrainPipe>(FindObjectsSortMode.None))
                     if (p.floor != null && p.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = p.floor, tint = new Color(.82f, .82f, .86f), dashed = true, width = 4f });
             }
-            // Round 20's proposals (item 4)
-            int pi = 0;
-            foreach (var pr in Proposals)
-            {
-                if (pr.line != null && pr.line.Length > 1) lines.Add(new WorldMapOverlay.Path { points = pr.line, tint = pr.color, width = 3f });
-                var t = Pooled(proposalLabels, pi++, "Proposal", 15); t.text = pr.label; t.color = pr.color; t.fontStyle = FontStyle.Bold;
-                if (pr.line != null && pr.line.Length > 0 && Marker(t, pr.line[0])) t.rectTransform.anchoredPosition += new Vector2(0, 14);
-            }
-            for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
             overlay.SetView(world, center, zoom, lines, bars);
             // the other racers (a race only), then the player on top
             int ri = 0;
@@ -230,8 +218,7 @@ namespace ChastainRush
             cursor.rectTransform.anchoredPosition = Vector2.zero; cursor.gameObject.SetActive(true);
             var at = WorldPoint(center);
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
-                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : "A / Space: show the shortcuts and pipes")
-                        + (Proposals.Count > 0 ? "\n<color=#FF66E0>━</color> proposals (Round 20)" : "");
+                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : "A / Space: show the shortcuts and pipes");
             status.text = $"Cursor  x {at.x:0}  z {at.z:0}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }
     }

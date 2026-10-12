@@ -9,14 +9,14 @@ using UnityEngine;
 
 namespace ChastainRush
 {
-    // Round 20, checked in the exe (ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,map,marks,lap] [-r20Vehicles id,id]
+    // Round 20, checked in the exe (ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,map,lap,fences,tramp,n5,n2,r1] [-r20Vehicles id,id]
     // -logFile <dir>\Player.log), muted like every check (CheckRun), its files in <dir>. One targeted check per piece:
     //   bj1   BUG-001: the Drifter Twin over the footbridge's near end at race speed, on Dan's line and 1 m either side; the
     //         slowest it goes there and what it touched
     //   lap   the whole Noonday Creek lap once on each trail vehicle: every dead stop (or near stop) and where
     //   ramp  BUG-002: every vehicle that comes through P1 off the outlet ramp over the pond: air, height, distance, on and on
     //   map   the map with the controller (a virtual gamepad), in free roam and in a race: open, zoom, pan, close
-//   marks the Noonday Creek candidates' markers (pictures in the world) and on the map
+    //   fences, tramp, n5, n2, r1: the follow-ups (Round20Runner.Follow.cs)
     public sealed partial class Round20Runner : MonoBehaviour
     {
         public string outputDir;
@@ -48,8 +48,13 @@ namespace ChastainRush
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
             if (Do("map")) yield return Guard(MapCheck());
-            if (Do("marks")) yield return Guard(Markers());
             if (Do("lap")) yield return Guard(Lap(ids));
+            // the follow-ups (Round20Runner.Follow.cs)
+            if (Do("fences")) yield return Guard(Fences());
+            if (Do("tramp")) yield return Guard(Tramp());
+            if (Do("n5")) yield return Guard(N5(ids));
+            if (Do("n2")) yield return Guard(N2(ids));
+            if (Do("r1")) yield return Guard(R1(ids));
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

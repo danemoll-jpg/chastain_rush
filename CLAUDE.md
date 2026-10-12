@@ -247,26 +247,36 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 20's two follow-ups in `TODO.md` (Dan chose,
-2026-10-12):** build Noonday Creek shortcut N2 (low creek leap) and the N5 ford
-leap (for those who miss P1), remove the other proposals; and R1 rebuilt on
-Dan's own line across the west lobe's back yards, with risk (fenced yards, a
-ramp over a fence and a pool to clear or fall in, a narrow gate out); the
-one-story-1572 plan is cancelled. Round 20's fixes, map and
-proposals are built. Queued: 21 the map-wide pipe network (proposal first);
-22 Chastain Commons, Chastain Enclave and Grasmere Court.
+**Round 20's follow-ups (see `TODO.md`, status there) are built and checked in the exe by script, not yet driven by
+Dan.** Queued, not started: 21 the map-wide pipe network (proposal first); 22 Chastain Commons, Chastain Enclave and
+Grasmere Court.
+- Noonday Creek N2 "Low creek leap" (official, forgives CP4) and N5 "Ford leap" (a lap option beside the ford, forgives
+  nothing: `lap_option`), both in `make_creek_track.py` (`leap()`), looks "washout" / "logramp" and N2's knocked-over
+  barricade in `MapBuilder.BigJumps.cs`. The Round 20 proposal markers, their data, labels, debug-menu rows and map layer are
+  gone (`creek_shortcut_candidates.py` and `make_proposal_labels.py` with them).
+- R1 on Dan's line (reverse, forgives CP5; `make_shortcuts.py` `build_r1`, replaces the kids'-ramp trial): a big homemade
+  ramp over a privacy fence into the 1987 / 1552 side yard (levelled lawn), the flight across #6's open landing strip over an
+  ABOVE-GROUND pool in the back yards behind 1572 / 1622 (Dan 03:51; 1.25 m steel wall, 1 m of water; out by a ramp inside
+  and a deck on the rim you drop off; `Neighborhood/PoolHold.cs` stops a vehicle in it 2.5 s, then 1 m/s), an open side gate in a fence across the 1572 / 1622 side yard, breakable patio things; solid fences
+  across the lobe's other side yards, three of them (in #6's corridor) only during a reverse race (`Race/RaceOnly.cs`).
+  Built by `MapBuilder.R1Pool.cs` (terrain: `GradePools` in the regrade). Route fields for the AI: `ai_take` (its own chance
+  of taking a shortcut), `ai_slip` / `ai_slip_profile` (a sloppy try; off on R1: it got an AI stuck at the pool), `lap_option` (`RaceRoute.cs`,
+  `RoadDriver`, `ShortcutStrategy`).
+- `python Tools/mapgen/free_cuts.py` (report only): free cuts through yards on the Chastain Glen loop, both directions
+  (`local/round20/free_cuts.txt|png`, git-ignored).
+- Trampoline sound drop-in: `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\Trampoline\trampoline*`
+  (.wav/.ogg/.mp3; several: one at random per bounce), made with a READ ME on the game's first start (`SoundDropIns`).
+- Check: `ChastainRush.exe -exeRound20 <dir> -r20Only fences,tramp,n5,n2,r1 [-soundsRoot <test dir>] -logFile
+  <dir>\Player.log` (Checks/Round20Runner.Follow.cs). Imported from Racer: nothing.
 
-**Round 20 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan; STOPPED for
-Dan's choices on items 3 and 4:** BUG-001 (BJ1's railings flare out, smooth solid panels, 7 m deck from the lowest ground)
-and BUG-002 (P1's outfall apron over the pond, `BigJump.vmin`), commit a9eb434. The map (`Assets/Scripts/Map/WorldMap.cs`,
-`WorldMapOverlay.cs`, picture baked by `MapBuilder.MapPicture.cs` into `Assets/Generated/Resources/WorldMapPicture.png`):
-View / Select or M opens it and pauses the game; bug capture moved to the right stick's click (F4 / ] unchanged). Proposals:
-`python Tools/mapgen/r1_original_options.py` (R1 with houses altered, report only) and `python Tools/mapgen/
-creek_shortcut_candidates.py` (writes `Data/proposals/round20_markers.json`; then `python Tools/handmade/
-make_proposal_labels.py`, Build Map). Proposal markers are back, TEMPORARY (`MapBuilder.Proposals.cs`,
-`Debug/ProposalMarkers.cs`, debug menu "Proposal markers" / "Go to"). Check: `ChastainRush.exe -exeRound20 <dir>
-[-r20Only bj1,ramp,map,marks,lap] [-r20Minutes 25] -logFile <dir>\Player.log`. Imported from Racer in Round 20: the map
-(ExplorationMap and its controls, WorldMapCourseOverlay; rewritten and trimmed, left-behind list in `WorldMap.cs`).
+**Round 20 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** BUG-001 (BJ1's
+railings flare out, smooth solid panels, 7 m deck from the lowest ground) and BUG-002 (P1's outfall apron over the pond,
+`BigJump.vmin`), commit a9eb434. The map (`Assets/Scripts/Map/WorldMap.cs`, `WorldMapOverlay.cs`, picture baked by
+`MapBuilder.MapPicture.cs` into `Assets/Generated/Resources/WorldMapPicture.png`): View / Select or M opens it and pauses
+the game; bug capture moved to the right stick's click (F4 / ] unchanged). `python Tools/mapgen/r1_original_options.py`
+(R1 with houses altered, report only; not chosen). Check: `ChastainRush.exe -exeRound20 <dir> [-r20Only bj1,ramp,map,lap]
+[-r20Minutes 25] -logFile <dir>\Player.log`. Imported from Racer in Round 20: the map (ExplorationMap and its controls,
+WorldMapCourseOverlay; rewritten and trimmed, left-behind list in `WorldMap.cs`).
 
 **Round 19 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday
 Creek trail 4.5 m wide (no solid trunk within 3.5 m; the trees left within 6 m, and within 8 m of each big jump's run-out,

@@ -8,4 +8,4 @@ no room to move (left standing): 0
 sc2_two_houses: 0 trunks within 6.5 m of the line
 sc6_over_house: 0 trunks within 6.5 m of the line
 r3_trampoline: 0 trunks within 6.5 m of the line
-r1_kids_ramp: 0 trunks within 6.5 m of the line
+r1_pool_jump: 0 trunks within 6.5 m of the line

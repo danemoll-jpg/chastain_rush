@@ -75,34 +75,5 @@ namespace ChastainRush
             race.EndRace(); RaceController.AiCount = ai0;
             InputSystem.RemoveDevice(pad);
         }
-
-        // ---------------------------------------------------------------- 4. the candidates' markers, in the world and on the map
-
-        IEnumerator Markers()
-        {
-            report.AppendLine(); report.AppendLine("=== 4. The Noonday Creek shortcut candidates: markers in the world (debug menu: Proposal markers) and on the map");
-            var pm = ProposalMarkers.Instance; var map = WorldMap.Instance;
-            Check("the candidates' markers and their map lines are there", pm != null && pm.startNames.Length >= 4 && WorldMap.Proposals.Count == pm.startNames.Length,
-                  pm != null ? $"{pm.startNames.Length} go-to points ({string.Join(", ", pm.startNames)}), {WorldMap.Proposals.Count} lines on the map" : "none");
-            if (pm == null || map == null) yield break;
-            if (pm.Mode == 0) pm.Step(1);
-            UseRoute("noonday_creek.json", "forward");
-            yield return Vehicle("drifter");
-            for (int i = 0; i < pm.startNames.Length; i++)
-            {
-                bool went = pm.GoTo(i); yield return new WaitForSecondsRealtime(1.2f);
-                var line = WorldMap.Proposals[i].line; var a = line[0]; var b = line[line.Length - 1];
-                var mid = (a + b) * 0.5f; mid.y = RaceRoute.Ground(mid.x, mid.z).y; var back = (b - a); back.y = 0f; back.Normalize();
-                var at = mid - back * 55f + Vector3.up * 60f;   // above the trees, behind the line, looking down along it
-                yield return Still($"4_{pm.startNames[i].Split(' ')[0]}_markers", at, mid, 60f);
-                if (!went) report.AppendLine($"    go to {pm.startNames[i]}: did not move the vehicle");
-            }
-            // the map over the south loop with the candidates
-            map.Open(); map.ZoomBy(3f); var c = map.Normalized(new Vector3(2490f, 0f, 600f)); map.PanBy(c - map.Center); yield return new WaitForSecondsRealtime(0.5f);
-            yield return Capture("4_map_candidates_south_loop");
-            var n = map.Normalized(new Vector3(2360f, 0f, 1300f)); map.PanBy(n - map.Center); yield return new WaitForSecondsRealtime(0.5f);
-            yield return Capture("4_map_candidates_north");
-            map.Close(); pm.Step(1);
-        }
     }
 }

@@ -422,31 +422,10 @@ namespace ChastainRush
             Row(2, "export", "Export bug report ZIP", () => { hud.ExportReport(); Show(); });
             Row(3, "folder", "Open debug report folder", () => { hud.OpenReportFolder(); Show(); });
             Row(4, "session", "Start new debug session", () => Confirm("START A NEW DEBUG SESSION?", "The current session is closed; its reports are kept.", "START NEW SESSION", () => { hud.StartNewSession(); Show(); }));
-            // Round 18 (item 8): the proposal markers and their Go to row went. Round 20 (item 4), TEMPORARY until Dan has chosen:
-            // the Noonday Creek shortcut candidates' markers (also drawn on the map) and a way to the start of each (free roam only)
+            // Round 18 (item 8) and the Round 20 follow-ups (Dan chose): the proposal markers and their Go to row are gone
             int n = 5;
-            var pm = ProposalMarkers.Instance;
-            if (pm)
-            {
-                Step(n++, "proposals", "Proposal markers:   " + ProposalMarkers.ModeNames[pm.Mode], d => { pm.Step(d); Show(); });
-                bool free = !race || race.State == RaceController.Stage.Free;
-                goTarget = Mathf.Clamp(goTarget, 0, Mathf.Max(0, pm.startNames.Length - 1));
-                int row = n++;
-                StepAct(row, "goto", free ? "Go to:   " + (pm.startNames.Length > 0 ? pm.startNames[goTarget] : "-") : "Go to: in free roam only",
-                    d => { if (pm.startNames.Length > 0) goTarget = (goTarget + d + pm.startNames.Length) % pm.startNames.Length; Show(); },
-                    () => { if (pm.GoTo(goTarget)) CloseMenu(); });
-                buttons[row].interactable = free;
-            }
             Row(n++, "game", "Game menu", GameMenuFromDebug);
             Row(n++, "back", pages.Count > 0 ? "Back" : "Resume", BackPage);
-        }
-        int goTarget;
-        // Round 18: a value row that also acts on A (left / right picks the value, A uses it; A never cycles it)
-        void StepAct(int index, string id, string label, Action<int> change, Action act)
-        {
-            Step(index, id, label, change);
-            var button = buttons[index]; var entry = registry.Register(id, label, submit, act, () => button.interactable);
-            button.onClick.RemoveAllListeners(); button.onClick.AddListener(() => entry.Execute());
         }
         // the regular menu is never out of reach: back to it if we came from it, else replace this page with it
         void GameMenuFromDebug() { if (pages.Count > 0) BackPage(); else { CapturePage(); page = "root"; MenuInput.ConsumeThroughRelease(); Show(); } }

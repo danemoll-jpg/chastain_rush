@@ -59,8 +59,14 @@ namespace ChastainRush
             var foot = sc.playground?.slide?.o != null && sc.playground.slide.o.Length >= 2 ? new Vector2(sc.playground.slide.o[0], sc.playground.slide.o[1]) : sc.prisms.Length > 0 ? new Vector2(sc.prisms[0].origin[0], sc.prisms[0].origin[1]) : p[p.Count - 1];   // R3: the slide's foot; R1: the ramp's foot
             int i1 = Enumerable.Range(0, p.Count).OrderBy(k => (p[k] - foot).sqrMagnitude).First();
             if (i0 < 0 || i1 <= i0 + 2) return;
+            WornRuts(terrain, mats, parent, p.GetRange(i0, i1 - i0 + 1), "Worn tracks " + sc.id);
+        }
+
+        // two worn tire ruts in the grass along 'path', fading in over its first 3 m (R3, and the Round 20 follow-ups: N2, N5, R1)
+        static void WornRuts(TerrainGrid terrain, Materials mats, Transform parent, List<Vector2> path, string name)
+        {
             var ruts = new MeshBuilder(); var worn = new Color(0.43f, 0.35f, 0.23f);
-            var line = Densify(p.GetRange(i0, i1 - i0 + 1), 0.5f);
+            var line = Densify(path, 0.5f);
             foreach (float side in new[] { -0.8f, 0.8f })
             {
                 Vector3? pa = null, pb = null;
@@ -74,7 +80,7 @@ namespace ChastainRush
                     pa = A; pb = B;
                 }
             }
-            ruts.ToObject("Worn tracks " + sc.id, mats.Driveway, parent, false, false);
+            ruts.ToObject(name, mats.Driveway, parent, false, false);
         }
 
         static Material PartySignMaterial(bool left, string name)
@@ -165,7 +171,9 @@ namespace ChastainRush
             Vector3 At(float s, float lat, float dy) { var q = O + U * s + N * lat; return new Vector3(q.x, Profile(pr.profile, s) + dy, q.y); }
             float G(Vector3 v) => Ground(terrain, v.x, v.z);
             int posts = 0;
-            foreach (float lat in new[] { -2.85f, 0f, 2.85f })
+            float hw = 0f; foreach (var q0 in ToPoints(pr.poly)) hw = Mathf.Max(hw, Mathf.Abs(Vector2.Dot(q0 - O, N)));   // the board's half width (6 m: Round 19's trial; 5.2 m: R1's pool ramp)
+            float e = hw - 0.15f;
+            foreach (float lat in new[] { -e, 0f, e })
             {
                 Vector3? prev = null;
                 for (float s = 1.5f; s <= len - 0.2f; s += 1.5f)
@@ -178,16 +186,16 @@ namespace ChastainRush
                 }
             }
             // stringers under the board's edges and middle, cross members every 1.5 m
-            foreach (float lat in new[] { -2.85f, 0f, 2.85f }) for (float s = 0.3f; s + 0.7f <= len; s += 0.7f) Beam(mb, At(s, lat, -0.33f), At(s + 0.7f, lat, -0.33f), 0.06f, 0.14f, Shade(lumber, 0.85f));
-            for (float s = 1.5f; s <= len - 0.2f; s += 1.5f) Beam(mb, At(s, -2.9f, -0.33f), At(s, 2.9f, -0.33f), 0.05f, 0.12f, Shade(lumber, 0.8f));
+            foreach (float lat in new[] { -e, 0f, e }) for (float s = 0.3f; s + 0.7f <= len; s += 0.7f) Beam(mb, At(s, lat, -0.33f), At(s + 0.7f, lat, -0.33f), 0.06f, 0.14f, Shade(lumber, 0.85f));
+            for (float s = 1.5f; s <= len - 0.2f; s += 1.5f) Beam(mb, At(s, -hw + 0.1f, -0.33f), At(s, hw - 0.1f, -0.33f), 0.05f, 0.12f, Shade(lumber, 0.8f));
             // cinder blocks along the foot
-            for (float lat = -2.6f; lat <= 2.61f; lat += 1.3f)
+            for (float lat = -hw + 0.4f; lat <= hw - 0.39f; lat += (2f * hw - 0.8f) / 4f)
             {
                 var q = O - U * 0.45f + N * lat; var c = new Vector3(q.x, Ground(terrain, q.x, q.y), q.y);
                 var f = new Frame { O = c, F = new Vector3(U.x, 0f, U.y), R = new Vector3(-N.x, 0f, -N.y), M = 1f };
                 BoxF(mb, f, -0.2f, 0.2f, -0.05f, 0.2f, -0.1f, 0.1f, Shade(block, 0.9f + 0.15f * Hash01(Mathf.RoundToInt(lat * 10f), 997)));
             }
-            mb.ToObject("R1 kids ramp frame", mats.House, parent, false);
+            mb.ToObject(sc.id + " ramp frame", mats.House, parent, false);
             Debug.Log($"[Round19] {sc.id}: the kids' ramp's frame: {posts} posts, braces, cinder blocks along its {len:0.0} m");
         }
     }

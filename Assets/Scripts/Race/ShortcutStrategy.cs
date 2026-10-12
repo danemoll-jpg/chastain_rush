@@ -21,14 +21,16 @@ namespace Racer
         public float Probability(float rank,float gap)
             => Mathf.Clamp(.12f+.34f*Mathf.Clamp01(rank)+.12f*Mathf.Clamp01(gap/200)+Risk,.06f,.65f);
         public bool Decided(AiShortcut route,int lap)=>decisions.TryGetValue(route,out int decidedLap)&&decidedLap==lap;
-        public bool TryDecide(AiShortcut route,int lap,float rank,float gap,out bool shortcut)
+        // Chastain Rush, Round 20 follow-ups: 'fixed' > 0 is the shortcut's own chance (N5: always; R1), in place of Probability
+        public bool TryDecide(AiShortcut route,int lap,float rank,float gap,out bool shortcut,float fixedProbability=0)
         {
             shortcut=false;
             if(Decided(route,lap))return false;
-            decisions[route]=lap;float probability=Probability(rank,gap);float roll=(float)random.NextDouble();
+            decisions[route]=lap;float probability=fixedProbability>0?Mathf.Min(1,fixedProbability):Probability(rank,gap);float roll=(float)random.NextDouble();
             shortcut=roll<probability;Decisions++;
             Diagnostic=$"route={route.Name}; lap={lap+1}; risk={Risk:F3}; rank={rank:F2}; gap={gap:F1}; probability={probability:F3}; roll={roll:F3}; choice={(shortcut?"shortcut":"main")}";
             return true;
         }
+        public bool Roll(float chance)=>random!=null&&(float)random.NextDouble()<chance;   // Chastain Rush, Round 20 follow-ups
     }
 }

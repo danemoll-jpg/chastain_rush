@@ -625,7 +625,7 @@ def build_sc6():
 # from 14 to 32 m/s, 1.5 m and 6 degrees off the line, comes down on open ground) is in the lobe's middle yard facing
 # west-south-west, reached by a long left bend after the gap, not on the bank; it would rejoin on the lobe's west side. Dan
 # to choose. R2 was not chosen.
-RETIRED = {"r1_lobe_drop"}   # removed from the route file's official_shortcuts on a re-run
+RETIRED = {"r1_lobe_drop", "r1_kids_ramp"}   # removed from the route file's official_shortcuts on a re-run
 
 # =============================================================================================================== R3, Round 18
 # The reverse loop's house hop, redesigned to Dan's idea (2026-10-11: "use a slide from a play ground as a ramp which would
@@ -728,59 +728,199 @@ def build_r3():
     }
 
 
-# =============================================================================================================== R1, Round 19
-# The reverse loop's west-lobe jump, BUILT AS A TRIAL (Dan, 2026-10-11 10:42: "well go ahead and try that one shortcut and we will
-# see"). REVERSE ONLY. Round 18 found the marked line unsafe and one robust version: a kicker in the lobe's middle yard facing
-# west-south-west, reached by a long left bend after the 1987 / 1552 gap, landing on open grass, rejoining on the lobe's west side.
-# Built on that line (out of the gap, 18 m, a left arc of 20 m turning 95 degrees, then straight), with the lip moved 22 m further
-# along it than Round 18's spot: there the kicker stood across shortcut #6's line (1.2 m from it; #6's corridor is 4 m either
-# side); here it is 9.4 m clear. The look: the neighborhood kids' giant homemade ramp, plywood on a lumber frame, at its real
-# size (2.8 m high, 25 degrees at the lip, 6 m wide). Lip speed held to 20 m/s (BigJump): faster would carry it onto the far side
-# of the lap's road toward house 2088; from 12 to 32 m/s into it, 1.5 m or 6 degrees off the line, it comes down on the yard or
-# the road's near edge (Round 19 scan, houses checked). Then a right turn onto the lap heading north. Forgives CP5 (file
-# numbering; the reverse lap's CP1). The hint at the turn-off: a hand-painted JUMP sign and worn tire tracks through the gap.
-# Easy to remove: drop build_r1() from 'shortcuts' below and re-run.
-R1_S0 = V(2808.0, 1004.0); R1_SHIFT = 31.0; R1_H = 2.8; R1_TH = 25.0; R1_VMAX = 20.0
+# =============================================================================================================== R1, Round 20 follow-up
+# Dan's line across the west lobe, WITH RISK (Dan, 2026-10-12: "I don't mind this area as a shortcut, but it has to has some risk";
+# his session 2026-10-12_01-54-20-969_70e57b, BUG-001 "why not start here" at (2804.0, 1018.7), BUG-002 "and come out here" at
+# (2774.9, 1079.1)). REVERSE ONLY, forgives CP5 (file numbering; the reverse lap's CP1). It replaces Round 19's kids'-ramp trial.
+# Dan's line is one straight line (about 334 degrees) through two side yards: between houses 1987 and 1552, then across the open
+# ground behind them, then between 1572 and 1622 out onto Chastain Glen Lane. The open ground in the middle is shortcut #6's landing
+# strip (forward races; 13 m wide): nothing may stand in it. The risk:
+#   * a big homemade plywood ramp in the front yard, its lip 0.85 m over a privacy fence across the 1987 / 1552 gap ("over the
+#     first fence"); the side yard behind it levelled (a lawn);
+#   * (Dan, 2026-10-12 03:51: "if someone had a pool it would be in the back yard ... If the pool is further back it would be
+#     riskier ... I would prefer it was an above ground pool ... you would drop out of it") an ABOVE-GROUND pool in the back yards
+#     behind 1572 / 1622, about 42 m past the first fence, just past #6's strip: a round steel-walled pool, 6 m across, its wall
+#     1.25 m, 1 m of water, a ladder on the near side and a small deck on the rim on the gate's side. The aimed launch (BigJump: the
+#     lip's angle, no faster than vmax, nothing added for the slow) is held to the speed that just clears the deck: arrive flat out
+#     and lined up and you clear the whole pool onto the grass beyond; slow or short and you come down in it (or short of it).
+#     Out of the pool: its far half is a wooden ramp up to the deck; drop off the deck's edge to the grass, toward the gate. A vehicle
+#     in the water is stopped for 2.5 s, then held to 1 m/s (PoolHold: a fall costs real time). Never a trap;
+#   * then a privacy fence across the 1572 / 1622 gap, near its front, with one open side gate 3.5 m wide (the widest vehicle is
+#     2.1 m; at 3.3 m the Skyfin clipped a post on the line) to line up for; its posts are solid and round (clip one and you lose speed, or stop);
+#   * patio chairs, a table, an umbrella and a grill round the pool and by the gate, breakable.
+# The lobe's back yards are fenced off (solid privacy fences across every gap between its houses, as on a property line), so the
+# only way through is the shortcut. One gap cannot be fenced for good: #6 leaves the lobe through the gap between 713 and 1052
+# (forward). Its fence stands only during a reverse race (RaceOnly). The hint at the turn-off: the ramp itself (homemade, in plain
+# sight from the lap) and worn tire tracks to it.
+R1_HOUSES = ((1987, 1552), (1572, 1622))     # the two side yards, in travel order
+R1_FENCED = ((1552, 1862), (1862, 1861), (1861, 1499), (1572, 2065), (2065, 1452), (1452, 1052), (713, 1987))
+R1_REVERSE_ONLY = ((1052, 713, 0.5), (1499, 1641, 0.75), (1641, 1622, 0.75))   # #6's corridor: 713 / 1052 its way out, 1641 the house it jumps
+R1_LIP_H, R1_TH, R1_RAMP = 2.6, 18.0, 8.0   # the lip 0.85 m over the first fence's boards; the angle steepens to fit the 8 m ramp
+R1_GATE_W, R1_GATE_FRAC = 3.5, 0.88   # the gate fence 88% of the way from yard 2's back to its front (room to line up after landing)
+R1_POOL_AT, R1_POOL_LAT, R1_POOL_R, R1_WALL_H, R1_WATER_H, R1_DECK_LEN = 42.0, -1.5, 3.0, 1.25, 1.0, 1.4   # a 6 m (20 ft) pool: a 4.6 m one left a 1 m/s band to land in
+R1_CLEAR_M = 1.5   # the lip speed is held to the slowest that comes down this far past the deck's edge
+def gap_frame(i, j):
+    """The side yard between houses i and j: its front (street side) and back middles, its axis (front to back), its width."""
+    ri, rj = rect(i), rect(j)
+    def facing(r, other):
+        cs = r["corners"]; best = None
+        for k in range(4):
+            a_, b_ = cs[k], cs[(k + 1) % 4]; m_ = (a_ + b_) / 2; out = m_ - r["c"]; out = out / np.linalg.norm(out)
+            score = float(out @ unit(other["c"] - r["c"]))
+            if best is None or score > best[0]: best = (score, a_, b_, out)
+        return best[1:]
+    ai, bi, ni = facing(ri, rj); aj, bj, nj = facing(rj, ri)
+    u = unit(bi - ai); w = float((((aj + bj) / 2) - ai) @ ni)
+    ts = sorted([float((q - ai) @ u) for q in (ai, bi)]); tj = sorted([float((q - ai) @ u) for q in (aj, bj)])
+    t0, t1 = max(ts[0], tj[0]), min(ts[1], tj[1])
+    mid = lambda t: ai + u * t + ni * (w / 2)
+    e0, e1 = mid(t0), mid(t1)
+    if nearest_road(e0)[0] > nearest_road(e1)[0]: e0, e1 = e1, e0
+    return {"front": e0, "back": e1, "u": unit(e1 - e0), "w": abs(w), "len": float(np.linalg.norm(e1 - e0)), "overlap": t1 - t0}
+def wall_to_wall(i, j, frac, extra=0.8):   # 0.8 m into each wall: no slot where a footprint is set back from its best-fit rectangle
+    """A fence across the gap between houses i and j, 'frac' of the way from its front to its back, wall to wall."""
+    g = gap_frame(i, j); c = g["front"] + g["u"] * g["len"] * frac; n = left(g["u"])
+    return c - n * (g["w"] / 2 + extra), c + n * (g["w"] / 2 + extra), g
+def corner_to_corner(i, j):
+    """Wide gaps (the lots' corners far apart): the nearest corners of the two houses."""
+    best = None
+    for p in rect(i)["corners"]:
+        for q in rect(j)["corners"]:
+            d = float(np.linalg.norm(p - q))
+            if best is None or d < best[0]: best = (d, p, q)
+    e = unit(best[2] - best[1]) * 0.8   # into both houses
+    return best[1] - e, best[2] + e
+def fence_line(i, j):
+    g = gap_frame(i, j)
+    if g["w"] < 13.0 and g["overlap"] > 3.0: a_, b_, _ = wall_to_wall(i, j, 0.35); return a_, b_   # side by side: across the side yard
+    return corner_to_corner(i, j)
+def ray_flight(P, d, y0, v, th, step=0.005):
+    vx, vy = v * math.cos(math.radians(th)), v * math.sin(math.radians(th)); t = 0.0
+    while t < 5.0:
+        t += step; q = P + d * vx * t; y = y0 + vy * t - 4.905 * t * t
+        if t > 0.05 and y <= ground(*q): return t, vx * t, q
+    return t, vx * t, q
 def build_r1(P6):
-    def turn(v, a): return np.array([v[0] * math.cos(a) - v[1] * math.sin(a), v[0] * math.sin(a) + v[1] * math.cos(a)])
-    th1 = math.radians(-10); h1 = V(math.sin(th1), math.cos(th1)); a_, Rr, phi = 18.0, 20.0, math.radians(95)
-    p = R1_S0 + h1 * a_; c = p + left(h1) * Rr
-    arc = [R1_S0 + h1 * t for t in np.arange(0, a_, 1.0)] + [p] + [c + turn(p - c, phi * k / 12) for k in range(1, 13)]
-    hd = unit(turn(h1, phi)); K0 = arc[-1]; LIP = K0 + hd * R1_SHIFT
-    gl = ground(*LIP); y1 = gl + R1_H; k = math.tan(math.radians(R1_TH))
-    ramp = 12.0
-    for _ in range(6): foot = LIP - hd * ramp; ramp = max(10.0, 2 * (y1 - ground(*foot) + 0.03) / k)
-    foot = LIP - hd * ramp; y0 = ground(*foot) - 0.03; Lk = 2 * (y1 - y0) / k; flat = ramp - Lk
-    prof = [(s, y0 + k * max(0.0, s - flat) ** 2 / (2 * Lk)) for s in np.linspace(0.0, ramp, 33)]
-    kick = prism("sc R1 kids ramp", "deck", strip_poly(foot, hd, 0.0, ramp, 3.0), foot, hd, prof, [0.74, 0.62, 0.44])
-    # the way on: straight to just past the longest landing, then right onto the lap (heading north on the lobe's west side)
-    lapl = [lap(s) for s in np.arange(0, CUM[-1], 1.0)]
-    s_join = station(lapl, V(2707.5, 1036.0))
-    land = LIP + hd * 34.0
-    out = smooth(polyline([land, LIP + hd * 39.0, lap(s_join), lap(s_join - 10), lap(s_join - 22)], 2.0), 2)
-    head = smooth(polyline([lap(station(lapl, R1_S0) + 20), lap(station(lapl, R1_S0) + 8), R1_S0], 2.0), 2)
-    pts = head + arc[1:] + polyline([K0, foot], 1.0)[1:] + polyline([foot, LIP], 1.0)[1:] + polyline([LIP, land], 2.0)[1:] + out[1:]
-    entry_s = station(pts, p)
-    landing = [{"poly": [round(float(v), 2) for p_ in corridor_poly([LIP + hd * d for d in np.arange(3.0, 46.0, 2.0)], 6.5) for v in p_]}]
-    d6 = min(min(float(np.linalg.norm(q - (a + (b - a) * np.clip((q - a) @ (b - a) / max(1e-9, (b - a) @ (b - a)), 0, 1)))) for a, b in zip(P6[:-1], P6[1:]))
-             for q in [foot + (LIP - foot) * t + left(hd) * o for t in np.linspace(0, 1, 9) for o in (-3, 0, 3)])
-    note(f"R1 (trial): out of the 1987 / 1552 gap, 18 m, a left arc of 20 m turning 95 degrees, then {R1_SHIFT:.0f} m to the lip at ({LIP[0]:.1f}, {LIP[1]:.1f}) facing "
-         f"{math.degrees(math.atan2(hd[0], hd[1])):.0f} degrees; the kids' ramp {ramp:.1f} m from {y0:.2f} m to {y1:.2f} m ({R1_H} m, {R1_TH:.0f} degrees at the lip), 6 m wide, "
-         f"{d6:.1f} m from #6's line; lip speed held to {R1_VMAX:.0f} m/s; joins the lap at forward station {s_join:.0f}; {length(pts):.0f} m of line")
+    g1, g2 = gap_frame(*R1_HOUSES[0]), gap_frame(*R1_HOUSES[1])
+    F1, B1, u1 = g1["front"], g1["back"], g1["u"]; F2, B2 = g2["front"], g2["back"]
+    n1 = left(u1)
+    # the side yard between 1987 and 1552 levelled (a lawn: the ground rises 1 m to the front there, and the ramp needs the lower
+    # ground to reach its lip at a sane angle), from the first fence to 1 m short of the yard's back
+    yard = [F1 + n1 * (g1["w"] / 2 + 0.3), F1 - n1 * (g1["w"] / 2 + 0.3), B1 - u1 * 1.0 - n1 * (g1["w"] / 2 + 0.3), B1 - u1 * 1.0 + n1 * (g1["w"] / 2 + 0.3)]
+    gs = sorted(ground(*(F1 + u1 * s_ + n1 * o)) for s_ in np.arange(0.5, g1["len"] - 1.0, 0.5) for o in np.arange(-g1["w"] / 2 + 0.5, g1["w"] / 2 - 0.4, 0.5))
+    yard_y = gs[len(gs) // 2] + 0.05
+    # the above-ground pool (Dan, 03:51): in the back yards behind 1572 / 1622, R1_POOL_AT m past the first fence, R1_POOL_LAT m to the
+    # line's left side (clear of #6's corridor and of 1572); its exit (an inside ramp up to a small deck on the rim, on the gate's side)
+    C = F1 + u1 * R1_POOL_AT + n1 * R1_POOL_LAT; r = R1_POOL_R
+    pads = [ground(*(C + np.array([math.cos(a), math.sin(a)]) * rr)) for a in np.linspace(0, 2 * math.pi, 16, endpoint=False) for rr in (0.0, r * 0.5, r)]
+    pad_y = float(np.median(pads)) + 0.02
+    rim = pad_y + R1_WALL_H
+    # the exit: the pool's whole far half is a ramp (a convex half disc just inside the wall: nowhere for a wheel to drop between
+    # ramp and wall), from the floor 0.3 m short of the middle up to the rim where the deck crosses the wall; the deck (3.2 m wide)
+    # on the rim, over the wall and 1.4 m beyond it, whose outer edge you drop off
+    EXIT_HALF = 1.6; s_top = math.sqrt(r * r - EXIT_HALF ** 2); ex0 = C - u1 * 0.3; rin = r - 0.08
+    half_disc = [ex0 - n1 * math.sqrt(rin * rin - 0.09)] + [C + u1 * (rin * math.cos(a_)) + n1 * (rin * math.sin(a_)) for a_ in np.linspace(-math.pi / 2 + 0.1, math.pi / 2 - 0.1, 11)] + [ex0 + n1 * math.sqrt(rin * rin - 0.09)]
+    ramp_in = prism("sc R1 pool exit ramp", "deck", half_disc, ex0, u1,
+                    [(s_, pad_y - 0.02 + (rim + 0.05 - pad_y + 0.02) * min(1.0, s_ / (s_top + 0.3))) for s_ in np.linspace(0.0, r + 0.3, 13)], [0.55, 0.42, 0.28])
+    D0 = C + u1 * s_top
+    deck = prism("sc R1 pool deck", "deck", strip_poly(D0, u1, 0.0, r - s_top + R1_DECK_LEN, EXIT_HALF), D0, u1, [(0.0, rim + 0.05), (r - s_top + R1_DECK_LEN, rim + 0.05)], [0.55, 0.42, 0.28])
+    far = float((C - F1) @ u1) + r + R1_DECK_LEN         # the deck's outer edge, from the first fence
+    near = float((C - F1) @ u1) - math.sqrt(max(r * r - R1_POOL_LAT ** 2, 0.0))   # the near wall where the line crosses it
+    # the ramp: in the front yard, its lip 0.3 m in front of the first fence, R1_LIP_H over the levelled yard
+    LIP = F1 - u1 * 0.3; y1 = yard_y + R1_LIP_H
+    foot = LIP - u1 * R1_RAMP; y0 = ground(*foot) - 0.03
+    k = max(math.tan(math.radians(R1_TH)), 2 * (y1 - y0) / R1_RAMP); th = math.degrees(math.atan(k))   # steeper than R1_TH when the 8 m ramp is short for its rise
+    Lk = min(R1_RAMP, 2 * (y1 - y0) / k); flat = R1_RAMP - Lk; rise_flat = (y1 - y0) - k * Lk / 2
+    prof = [(s_, y0 + (rise_flat * min(s_, flat) / flat if flat > 1e-6 else 0.0) + k * max(0.0, s_ - flat) ** 2 / (2 * Lk)) for s_ in np.linspace(0.0, R1_RAMP, 33)]
+    ramp = prism("sc R1 pool ramp", "deck", strip_poly(foot, u1, 0.0, R1_RAMP, 2.6), foot, u1, prof, [0.74, 0.62, 0.44])
+    # flights (the aimed launch: every vehicle on the same arc for the same lip speed) over the real ground, the pool (its walls, the
+    # water's surface and the deck count as "in the pool"): where it comes down, from the first fence
+    def top(q):
+        s_ = float((q - F1) @ u1)
+        inside = np.linalg.norm(q - C) < r + 0.05 or (abs(float((q - D0) @ n1)) < EXIT_HALF and 0.0 <= float((q - D0) @ u1) <= r - s_top + R1_DECK_LEN)
+        return max(ground(*q), rim if inside else -1e9)
+    def flight(v):
+        vx, vy = v * math.cos(math.radians(th)), v * math.sin(math.radians(th)); t = 0.0
+        while t < 5.0:
+            t += 0.005; q = LIP + u1 * vx * t; y = y1 + vy * t - 4.905 * t * t
+            if t > 0.05 and y <= top(q): return round(t, 2), round(float((q - F1) @ u1), 1), bool(y - ground(*q) > 0.5)
+        return t, -1.0, False
+    fl = {v: flight(v) for v in np.arange(14.0, 25.01, 0.5)}
+    clean = [v for v, f in fl.items() if f[1] > far + 0.3]
+    clean_from = min(clean) if clean else 99.0
+    vmax = min(v for v, f in fl.items() if f[1] >= far + R1_CLEAR_M) if any(f[1] >= far + R1_CLEAR_M for f in fl.values()) else max(fl)
+    in_pool = [v for v, f in fl.items() if f[2]]
+    pool_v = (float(np.median(in_pool)) if in_pool else clean_from - 1.0) - 0.45   # the near half of the band (exe: 20.3 and 20.8 come down in the pool, the AI at 20.7 cleared it)
+    to_gate_back = float((B2 - F1) @ u1)
+    note(f"R1 (Dan's line, with risk): yard 1 between 1987 / 1552 {g1['w']:.1f} m wide, {g1['len']:.1f} m long, levelled at {yard_y:.2f} m; yard 2 between 1572 / 1622 {g2['w']:.1f} m wide; "
+         f"its back {to_gate_back:.0f} m from the first fence")
+    note(f"R1 ramp {R1_RAMP:.0f} m from {y0:.2f} m to the lip at {y1:.2f} m ({R1_LIP_H} m over the yard, {th:.1f} degrees at the lip), 5.2 m wide; "
+         f"the above-ground pool {2 * r:.1f} m across, its wall {R1_WALL_H} m, at {float((C - F1) @ u1):.1f} m past the first fence ({R1_POOL_LAT:+.1f} m to the side), "
+         f"the line crosses its near wall at {near:.1f} m, its deck's edge at {far:.1f} m; "
+         f"flights (air s, m past the fence, in the pool): " + ", ".join(f"{v:.1f} {f}" for v, f in fl.items() if v in (14, 16, 18, 19, 20, 20.5, 21, 21.5, 22, 23, 24)) +
+         f"; clean from {clean_from:.1f} m/s, lip speed held to {vmax:.1f}; in the pool around {pool_v:.1f}")
+    # the line: on the reverse lap toward the junction, up the ramp, the flight over the pool, through the gate, onto the lane
+    lapl = [lap(s_) for s_ in np.arange(0, CUM[-1], 1.0)]
+    s_ramp = station(lapl, foot)
+    head = smooth(polyline([lap(s_ramp + 30), lap(s_ramp + 15), foot - u1 * 6.0, foot], 2.0), 2)
+    G = B2 + (F2 - B2) * R1_GATE_FRAC; u2 = unit(F2 - B2)
+    s_join = station(lapl, F2 + u2 * 9.0)
+    out = smooth(polyline([F2, F2 + u2 * 5.0, lap(s_join), lap(s_join - 10), lap(s_join - 22)], 2.0), 2)
+    # through the pool's middle (it sits 1 m to the side of the flight's line): the way a vehicle in it goes, up its exit ramp and off the deck
+    pts = head + polyline([foot, LIP], 1.0)[1:] + polyline([LIP, C - u1 * (r + 6.0), C - u1 * (r + 0.5)], 2.0)[1:] + polyline([C - u1 * (r + 0.5), C + u1 * (r + R1_DECK_LEN + 1.5), B2], 1.0)[1:]         + polyline([B2, G, F2], 1.0)[1:] + out[1:]
+    entry_s = station(pts, LIP - u1 * 2.0)
+    landing = [{"poly": [round(float(v), 2) for p_ in corridor_poly([F1 + u1 * d_ for d_ in np.arange(far, to_gate_back + 2.0, 1.0)], 3.0) for v in p_]}]
+    # the fences
+    fences = []
+    def add(a_, b_, label, kind="solid", gate=None):
+        f_ = {"a": rnd(a_), "b": rnd(b_), "label": label, "kind": kind}
+        if gate: f_["gate"] = gate
+        fences.append(f_)
+    add(F1 + u1 * 0.2 - n1 * (g1["w"] / 2 + 0.8), F1 + u1 * 0.2 + n1 * (g1["w"] / 2 + 0.8), "1987/1552 (the ramp's fence)")
+    ga, gb, _ = wall_to_wall(*R1_HOUSES[1], 1.0 - R1_GATE_FRAC)
+    add(ga, gb, "1572/1622 (the side gate)", gate={"c": rnd(G), "w": R1_GATE_W})
+    for i, j in R1_FENCED:
+        a_, b_ = fence_line(i, j); add(a_, b_, f"{i}/{j}")
+    for i, j, fr in R1_REVERSE_ONLY:
+        a_, b_, _ = wall_to_wall(i, j, fr); add(a_, b_, f"{i}/{j} (reverse races only: in #6's corridor)", kind="reverse_only")
+    def dist_to_line(q, P):
+        return min(float(np.linalg.norm(q - (a_ + (b_ - a_) * np.clip((q - a_) @ (b_ - a_) / max(1e-9, (b_ - a_) @ (b_ - a_)), 0, 1)))) for a_, b_ in zip(P[:-1], P[1:]))
+    for f_ in fences:
+        a_, b_ = np.array(f_["a"]), np.array(f_["b"])
+        d6 = min(dist_to_line(a_ + (b_ - a_) * t, P6) for t in np.linspace(0, 1, 11))
+        note(f"R1 fence {f_['label']}: {np.linalg.norm(b_ - a_):.1f} m, {f_['kind']}, {d6:.1f} m from #6's line" + (" (INSIDE #6's 6.5 m corridor)" if d6 < 6.5 and f_["kind"] == "solid" else ""))
+    d6p = min(dist_to_line(C + np.array([math.cos(a), math.sin(a)]) * r, P6) for a in np.linspace(0, 2 * math.pi, 36))
+    note(f"R1 pool: {d6p:.1f} m from #6's line at its nearest (its corridor is 6.5 m)")
+    # breakable patio things round the pool (on the lawn, off the line and out of #6's corridor) and by the gate
+    props = []
+    for s_, lat, kind in ((-0.8, r + 1.6, "chair"), (0.8, r + 1.6, "chair"), (-1.8, r + 1.4, "table"), (-1.8, r + 2.6, "umbrella"), (1.5, -(r + 1.3), "grill")):
+        q = C + u1 * s_ + n1 * lat
+        if dist_to_line(q, P6) < 7.0: continue
+        props.append({"kind": kind, "x": round(float(q[0]), 2), "z": round(float(q[1]), 2), "yaw": round(math.degrees(math.atan2(*(unit(C - q)))), 1)})
+    for off, kind in ((-2.6, "chair"), (2.4, "chair")):
+        q = G - u2 * 3.0 + left(u2) * off; props.append({"kind": kind, "x": round(float(q[0]), 2), "z": round(float(q[1]), 2), "yaw": round(math.degrees(math.atan2(*u2)), 1)})
+    tracks = polyline([lap(s_ramp + 14), foot - u1 * 4.0, foot], 1.0)
+    # the AI: on to the ramp at 24 (held to vmax off the lip: clean), slow for the gate, out onto the lane; a sloppy try comes up the
+    # ramp at the speed that lands it in the pool (then up its exit, off the deck, on to the gate)
+    sF, sL, sG = station(pts, foot), station(pts, LIP), station(pts, G)
+    ai = [round(v, 1) for v in (sF - 25.0, 24.0, sL + 2.0, 24.0, sG - 8.0, 10.0, sG + 6.0, 10.0)]
+    ai_slip = [round(v, 1) for v in (sF - 25.0, pool_v, sL + 2.0, pool_v, sG - 8.0, 10.0, sG + 6.0, 10.0)]
+    note(f"R1: leaves the reverse lap at forward station {s_ramp + 15:.0f}, joins it at {s_join:.0f}; {length(pts):.0f} m of line against {abs(s_ramp + 15 - s_join):.0f} m of lap; entry plane {entry_s:.0f} m in")
     return {
-        "id": "r1_kids_ramp", "name": "Kids' ramp", "direction": "reverse", "forgives": [5], "entry_half_width": 3.0, "entry_margin": 1.0,
-        "path": pts, "half_width": 3.5, "trail": [], "clear_half_width": 5.0, "entry_s": entry_s, "prisms": [kick], "open_houses": [],
-        "jump_houses": [], "landing_zones": landing, "ai_speed": 17.0,
-        # the AI: 15 m/s round the 20 m arc, 20 from the ramp's foot (its lip speed, held anyway), slow for the turn onto the lap
-        "ai_profile": [round(v, 1) for v in (station(pts, p) - 6.0, 15.0, station(pts, K0), 15.0, station(pts, foot), 20.0, station(pts, LIP) + 2.0, 20.0, station(pts, land) + 2.0, 9.0)],
-        "sign": {"x": round(float(R1_S0[0]), 2), "z": round(float(R1_S0[1]), 2)}, "sign_face": "jump", "look": "kids_ramp",
-        "big_jump": {"lip": [round(float(LIP[0]), 2), round(float(y1), 3), round(float(LIP[1]), 2)], "dir": [round(float(hd[0]), 5), round(float(hd[1]), 5)], "vmax": R1_VMAX, "half": 3.0, "angle": R1_TH},
-        "leave_lap_s": float(station(lapl, R1_S0)), "rejoin_lap_s": float(s_join),
+        "id": "r1_pool_jump", "name": "Pool jump", "direction": "reverse", "forgives": [5], "entry_half_width": 3.0, "entry_margin": 1.0,
+        "path": pts, "half_width": 3.0, "trail": [], "clear_half_width": 4.0, "entry_s": entry_s, "prisms": [ramp, ramp_in, deck], "open_houses": [],
+        "jump_houses": [], "landing_zones": landing, "ai_speed": 24.0, "ai_profile": ai, "ai_take": 0.85, "ai_slip": 0.0, "ai_slip_profile": ai_slip,   # sloppy tries off: the exe check put one on the pool's near rim and against its wall (11 rescues); the band that lands in the pool is under 1 m/s wide
+        "look": "pool_jump",
+        "big_jump": {"lip": [round(float(LIP[0]), 2), round(float(y1), 3), round(float(LIP[1]), 2)], "dir": [round(float(u1[0]), 5), round(float(u1[1]), 5)], "vmax": round(float(vmax), 1), "half": 2.6, "angle": round(th, 2)},
+        "pool": {"yard": [v for q in yard for v in rnd(q)], "yard_y": round(float(yard_y), 3), "c": rnd(C), "r": r, "pad_y": round(pad_y, 3), "wall_h": R1_WALL_H, "water_h": R1_WATER_H,
+                 "axis": [round(float(u1[0]), 5), round(float(u1[1]), 5)], "front": rnd(F1), "clean_from": round(float(clean_from), 1), "pool_speed": round(pool_v, 1)},
+        "fences": fences, "props": props, "tracks": [v for q in tracks for v in rnd(q)],
+        "leave_lap_s": float(s_ramp + 15), "rejoin_lap_s": float(s_join),
     }
 
 def rnd(p): return [round(float(p[0]), 2), round(float(p[1]), 2)]
 shortcuts = [build_sc2(), build_sc6(), build_r3()]
-shortcuts.append(build_r1(shortcuts[1]["path"]))   # Round 19: R1, a trial
+shortcuts.append(build_r1(shortcuts[1]["path"]))   # Round 20 follow-up: R1 on Dan's line, with risk (replaces Round 19's trial)
 
 # ---------------------------------------------------------------- checks against the barriers and the checkpoints
 for sc in shortcuts:
@@ -806,7 +946,8 @@ keep = [s for s in route.get("official_shortcuts", []) if s.get("id") not in {sc
 for sc in shortcuts:
     keep.append({"id": sc["id"], "name": sc["name"], "direction": sc.get("direction", "forward"), "path": [v for p in sc["path"] for v in rnd(p)],
                  "half_width_m": sc.get("entry_half_width", 5.0), "entry_inset_m": round(sc["entry_s"], 2), "entry_margin_m": sc.get("entry_margin", 2.0), "forgives": sc["forgives"],
-                 "ai_speed": sc.get("ai_speed", 0.0), "ai_profile": sc.get("ai_profile", [])})
+                 "ai_speed": sc.get("ai_speed", 0.0), "ai_profile": sc.get("ai_profile", []),
+                 **{k_: sc[k_] for k_ in ("ai_take", "ai_slip", "ai_slip_profile") if k_ in sc}})
 route["official_shortcuts"] = keep
 json.dump(route, open(ROUTE, "w", encoding="utf-8"), indent=1)
 print(f"wrote {OUT} and the official_shortcuts of {ROUTE}")
