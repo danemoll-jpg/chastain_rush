@@ -2518,7 +2518,7 @@ cause). Pictures and reports: `local/round21f/` (git-ignored). Imported from Rac
   `Assets/HandMade/Proposals/`, `make_proposal_labels.py`, `reverse_creek_candidates.py`, the debug-menu rows, the map layer.
 - 5. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
 
-**ACTIVE — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court (Dan, 2026-10-12 18:45: "Do we go ahead
+**BUILT — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court (Dan, 2026-10-12 18:45: "Do we go ahead
 and build the other community neighborhoods as discussed prior"; moved ahead of the pipe network).** Dan's words and
 the places are in the notes "Round 18, two more neighborhoods" and "Also in the neighborhoods round" further down
 (Claude's numbering there is old; this is the round). Build it; Dan judges by driving (CLAUDE.md "Build it, then Dan
@@ -2560,6 +2560,42 @@ drives it").
    drives or the new pieces; frame rate in each), stay off Dan's screen, muted. Rebuild the exe. Report: short status
    list, "for Dan to check", pictures from the street in each (git-ignored if houses are close and identifiable as
    Dan's street: these are not, but keep them in local/ anyway), path to the exe.
+
+**STATUS of Round 22 (Claude, 2026-10-12): items 1 to 5 built and checked in the exe by script (1280 x 720, minimized,
+muted), not yet driven by Dan.** No new debug sessions since 2026-10-12_01-54-20-969_70e57b. Imported from Racer: nothing.
+- Data: `python Tools/mapgen/communities_area.py` writes `Data/neighborhood/communities.json` (each community's street pieces,
+  houses, entrance; the Enclave's OSM pool, tennis pitches and the two small buildings by them). Re-run after mapgen. The
+  builder merges them into the Chastain Glen area (`MapBuilder.Communities.cs`), so they get Round 7's dressing exactly;
+  each community has its own bounds rectangle (roads outside them are untouched; only roads meeting their streets, New
+  Chastain Road at the entrances, get the street treatment).
+- 1. Grasmere Court: 9 houses dressed with Chastain Glen's own style rule (A 1, B 1, C 4, D 3). Other streets still plain
+  boxes near Chastain Glen (report only, `communities_area.py` prints the list): Chastain Ridge Drive NE (x 3086, z 681,
+  22 houses), Joel Drive (x 2915, z 416, 21), Embry Lane NE (x 2960, z 473, 40), Lyndon Drive (x 2814, z 441, 8), Hayworth
+  Drive NE (x 2998, z 402, 6), Blackwell Circle (x 3419, z 893, 13), Nivera Court (x 3494, z 796, 2), and farther north
+  Westminister Way, Kensington Drive, Cambridge Drive, Westchase Drive, Guidhall Trail, The Willows, Coventry Drive.
+- 2. Chastain Commons (Weybourne Court, Claybrooke Drive, Henford Court): 61 houses, its own mix (A 26, B 1, C 20, D 14,
+  15 brick fronts) and its own color draw from the same palettes.
+- 3. Chastain Enclave (Rotherhithe Landing, Bloombridge Way, Sherryforth Drive, Westcote Court, Chastain Crossing): 136
+  houses, footprints grown up to 14% where they stay 4 m from neighbors and 5 m from the street (all 136 grew), no ranches
+  (A 72, B 58, D 6), 114 brick fronts, 96 three-car garages with 8.4 m drives. Amenity block where the OSM pool is (inside
+  the loop, north of the entrance): pool from the OSM outline (water as Round 15, shallow end to drive out, dark tile line),
+  deck with joints set level (ground moved up to 2.5 m at its north edge, a 1 in 2 bank down to the courts), 37 striped
+  lounge chairs and 2 tables with red umbrellas (breakable), black iron fence with white posts (breakable) and low hedges,
+  clubhouse on its OSM footprint (tan siding, hip roof, front gable with a round vent over a porch on four white columns,
+  two restroom doors, solid), THREE tennis courts (the map data has three pitches and Dan's overhead shows three blue
+  panels; the planning note said two), level, green surround, blue courts, full lines, nets, 3 m chain-link (solid) with
+  two open gates so nothing is trapped, "Chastain Enclave" windscreen banner facing the pool (one-sided,
+  `Tools/handmade/make_windscreen_sign.py`), 4 breakable light poles; the wooden pavilion on the small building west of
+  the courts (raised deck, railings, a step, hip roof, solid); a 16 x 11 m parking lot off Rotherhithe Landing / Sherryforth
+  west of the clubhouse.
+- 4. Brick monuments in Chastain Glen's style: Chastain Commons one (left of Claybrooke Drive's entrance there is no room:
+  the slip road), Chastain Enclave two (both sides of Chastain Crossing). Sign panels from
+  `python Tools/handmade/make_entrance_sign.py CHASTAIN COMMONS ChastainCommonsSign.png` (and ENCLAVE).
+- 5. Exe drives (`-exeShots`, one along each neighborhood's streets at 20 m/s): Grasmere 105 m, Commons 437 m, Enclave
+  248 m: nothing broken, no stop, no air, tilt 3 / 15 / 12 deg; 60 fps average, slowest 1% 53 to 54 fps (1280 x 720, not
+  measured at 3840 x 2160). `ExeShotsRunner` now reports the frame rate of each drive. Pictures: `local/round22/`.
+- Report only: 16 community houses have a wall buried more than 0.5 m on a slope (worst 636 at x 2684, z 632, 2.7 m;
+  1099 at x 2873, z 639, 1.4 m; 361 at x 2013, z 780, 1.3 m); not regraded (Round 9 rule: only where Dan points).
 
 **QUEUED — Round 23: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race

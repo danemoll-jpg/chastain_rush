@@ -78,7 +78,8 @@ namespace ChastainRush
                     var r = map.roads[i];
                     if (r.points == null || r.points.Length < 4) continue;
                     bool inside = roadSet.Contains(i);
-                    if (!inside) for (int k = 0; k + 1 < r.points.Length && !inside; k += 2) inside = Bounds.Contains(new Vector2(r.points[k], r.points[k + 1]));
+                    if (!inside) for (int k = 0; k + 1 < r.points.Length && !inside; k += 2) inside = Bounds.Glen.Contains(new Vector2(r.points[k], r.points[k + 1]));
+                    if (!inside) inside = TouchesCommunityRoad(r);   // Round 22: in the communities only the roads that meet their streets (New Chastain Road at an entrance)
                     if (!inside) continue;
                     streetRoads.Add(i);
                     var p = ToPoints(r.points);

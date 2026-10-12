@@ -42,6 +42,8 @@ namespace ChastainRush
             public MeshBuilder detail;           // windows, doors, garage doors, shutters: flat quads that do not need to cast shadows (a separate mesh with shadows off)
             public Vector2 nearestRoadPoint;
             public float roadHalf;
+            public int community;                 // Round 22: 0 Chastain Glen, else 1 + the index in Data/neighborhood/communities.json
+            public int garageBays = 2;            // Round 22: 3 on the larger Chastain Enclave houses (styles A and B)
         }
 
         // ------------------------------------------------------------ palettes (from the photos)
@@ -111,12 +113,18 @@ namespace ChastainRush
             float W = h.W; float u0 = -W / 2, u1;
             switch (h.style)
             {
-                case HouseStyle.A: u1 = u0 + Mathf.Clamp(W * 0.47f, 5.7f, 6.7f); break;
-                case HouseStyle.B: u1 = u0 + Mathf.Clamp(W * 0.42f, 5.6f, 6.6f); break;
+                case HouseStyle.A: case HouseStyle.B: u1 = u0 + GarageWidth(h); break;
                 case HouseStyle.C: u1 = u0 + Mathf.Clamp(W * 0.42f, 5.6f, 6.4f); break;
                 default: u1 = u0 + 3.4f; break;
             }
             h.garageU0 = u0; h.garageU1 = u1;
+        }
+
+        // the garage block's width along the facade (style A) or the garage wing's (style B); Round 22: a three-car one is wider
+        static float GarageWidth(HouseSpec h)
+        {
+            if (h.style == HouseStyle.A) return h.garageBays == 3 ? Mathf.Clamp(h.W * 0.55f, 8.4f, 9.0f) : Mathf.Clamp(h.W * 0.47f, 5.7f, 6.7f);
+            return h.garageBays == 3 ? Mathf.Clamp(h.W * 0.5f, 8.2f, 8.8f) : Mathf.Clamp(h.W * 0.42f, 5.6f, 6.6f);
         }
 
         // ------------------------------------------------------------ the builder
@@ -155,7 +163,7 @@ namespace ChastainRush
             bool two = h.style != HouseStyle.C;
             // the usable stretch of the back wall (style B: the main block only; its garage wing is set forward and one storey)
             float u0 = -W / 2 + 0.7f, u1 = W / 2 - 0.7f;
-            if (h.style == HouseStyle.B) u1 = W / 2 - Mathf.Clamp(W * 0.42f, 5.6f, 6.6f) - 0.5f;
+            if (h.style == HouseStyle.B) u1 = W / 2 - GarageWidth(h) - 0.5f;
             // lower: a door, a row of low windows (two or three), one or two more windows
             var lower = new List<(float w, Action<float> draw)>();
             bool slide = Hash01(s, 201) < 0.6f;
@@ -291,7 +299,7 @@ namespace ChastainRush
             var f = h.frame; float W = h.W, D = h.D;
             float yb = h.baseY - h.floorY;
             float proj = 1.3f;                                        // the garage stands this far in front of the entry
-            float gW = Mathf.Clamp(W * 0.47f, 5.7f, 6.7f);
+            float gW = GarageWidth(h);
             float gU0 = -W / 2, gU1 = -W / 2 + gW;
             h.garageU0 = gU0; h.garageU1 = gU1;
             float hG = 3.95f, riseG = gW / 2 * 0.62f, hE = 2 * StoreyH - 0.05f;
@@ -313,7 +321,7 @@ namespace ChastainRush
             }
             // trim band over the garage doors and a corner board
             BoxF(mb, f, gU0 - 0.03f, gU1 + 0.03f, 2.45f, 2.62f, vFront, D / 2 + 0.05f, h.trimC);
-            GarageDoors(d, f, gU0 + 0.35f, gU1 - 0.35f, 2, D / 2, h);
+            GarageDoors(d, f, gU0 + 0.35f, gU1 - 0.35f, h.garageBays, D / 2, h);
             // gable window (one, in the gable) with dark shutters
             float gc = (gU0 + gU1) / 2;
             WindowF(d, f, gc, hG + 0.78f, 0.95f, 1.15f, D / 2, h, false);
@@ -370,7 +378,7 @@ namespace ChastainRush
             var d = h.detail ?? mb;
             var f = h.frame; float W = h.W, D = h.D;
             float yb = h.baseY - h.floorY;
-            float wing = Mathf.Clamp(W * 0.42f, 5.6f, 6.6f);
+            float wing = GarageWidth(h);
             float gU0 = -W / 2, gU1 = -W / 2 + wing;
             h.garageU0 = gU0; h.garageU1 = gU1;
             float hE = 2 * StoreyH, hb = D / 2, rise = hb * 0.48f;
@@ -381,7 +389,7 @@ namespace ChastainRush
             float wH = 3.35f, wRise = wing / 2 * 0.58f;
             BoxNoBottom(mb, f, gU0, gU1, yb, wH, -D / 2 + 1.2f, D / 2 + 0.4f, h.sidingC, h.sidingC, h.sidingC);
             Gable(mb, f, -D / 2 + 0.2f, D / 2 + 0.4f, gU0, gU1, false, wH, wRise, 0.3f, 0.3f, h.roofC, h.sidingC, false, true, h.trimC);
-            GarageDoors(d, f, gU0 + 0.35f, gU1 - 0.35f, 2, D / 2 + 0.4f, h);
+            GarageDoors(d, f, gU0 + 0.35f, gU1 - 0.35f, h.garageBays, D / 2 + 0.4f, h);
             FrontQuad(d, f, (gU0 + gU1) / 2 - 0.3f, (gU0 + gU1) / 2 + 0.3f, wH + 0.55f, wH + 1.05f, D / 2 + 0.43f, Shade(h.sidingC, 0.55f)); // round vent
             // four full-height columns across the main front, an entablature and the deep eave on top
             float m0 = gU1 + 0.2f, m1 = W / 2 - 0.2f, vc = D / 2 + 0.7f;

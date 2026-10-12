@@ -275,7 +275,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 22 in `TODO.md`:** dress Grasmere Court (part of
+**Round 22 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Grasmere Court,
+Chastain Commons and Chastain Enclave dressed like Chastain Glen (`python Tools/mapgen/communities_area.py` writes
+`Data/neighborhood/communities.json`, re-run after mapgen; `MapBuilder.Communities.cs`: per-community style mix, larger Enclave
+houses with three-car garages, the Enclave pool, clubhouse, three tennis courts, pavilion and lot, the two communities'
+monuments). Imported from Racer: nothing. Next: Round 23, the pipe network (proposal first).
+
+**Was active: Round 22 in `TODO.md`:** dress Grasmere Court (part of
 Chastain Glen), Chastain Commons (same styles) and Chastain Enclave (larger
 houses, a community pool and tennis court near its entrance), with entrance
 signs. Round 21 and its follow-ups are built and driven by Dan. Queued: 23

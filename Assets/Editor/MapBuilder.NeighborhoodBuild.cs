@@ -73,6 +73,7 @@ namespace ChastainRush
             BuildPoolSite(ctx);
             BuildDanLot(ctx);
             BuildRound9(ctx);   // Round 9: the gazebo, the playground, the sidewalk with benches, the pool fence, the entrance monuments
+            BuildCommunities(ctx);   // Round 22: the communities' monuments, the Enclave's pool and courts (MapBuilder.Communities.cs)
             ctx.Mailboxes3D.ToObjects("Mailboxes", mats.House, root, 1.25f, BreakSounds.Kind.Mailbox);
             ctx.Lamps3D.ToObjects("StreetLamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             ctx.Signs3D.ToObjects("StreetSigns", mats.House, root, 1f, BreakSounds.Kind.Sign);   // Round 16 (D)

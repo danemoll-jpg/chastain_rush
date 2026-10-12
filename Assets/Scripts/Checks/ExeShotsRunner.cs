@@ -22,6 +22,9 @@ namespace ChastainRush
 
         public string listPath, outputDir;
         ArcadeVehicle car;
+        readonly System.Collections.Generic.List<float> frames = new System.Collections.Generic.List<float>();   // Round 22: frame times during a drive
+        bool measuring;
+        void Update() { if (measuring) frames.Add(Time.unscaledDeltaTime); }
         readonly StringBuilder report = new StringBuilder();
 
         IEnumerator Start()
@@ -46,6 +49,7 @@ namespace ChastainRush
                 car.Body.linearVelocity = fwd * s.drive_speed;
                 float t = 0f, maxTilt = 0f, minSpeed = s.drive_speed, air = 0f, maxAir = 0f; bool shot = false;   // Round 17: air, the longest spell with no wheel down
                 bool follow = s.path != null && s.path.Length >= 4, reached = false; float maxDev = 0f; int minWheels = 99; Vector2 devAt = default, wheelAt = default;
+                frames.Clear(); measuring = true;
                 while (t < s.drive_seconds)
                 {
                     yield return new WaitForFixedUpdate();
@@ -74,11 +78,19 @@ namespace ChastainRush
                     if (!shot && s.shot_at >= 0f && t >= s.shot_at) { shot = true; yield return Capture(s.name); }
                 }
                 car.enabled = true;
+                measuring = false;
+                string fps = "";
+                if (frames.Count > 10)
+                {
+                    float sum = 0f; foreach (var ft in frames) sum += ft;
+                    frames.Sort(); float p99 = frames[Mathf.Min(frames.Count - 1, (int)(frames.Count * 0.99f))];
+                    fps = $"; frame rate {frames.Count / sum:0} fps average, slowest 1% of frames {1f / p99:0} fps ({Screen.width} x {Screen.height})";
+                }
                 if (!shot) yield return Capture(s.name);
                 report.AppendLine($"{s.name}: drive at {s.drive_speed:0.0} m/s for {s.drive_seconds:0.0} s from ({s.x:0.0}, {s.z:0.0}) heading {s.yaw:0}: broke {FenceChunk.TotalBroken() - broken0} panel(s); " +
                                   $"lowest speed after the start {minSpeed:0.0} m/s ({(1f - minSpeed / s.drive_speed) * 100f:0}% below), most tilt {maxTilt:0} deg, {(minSpeed < 1f ? "STOPPED" : "kept going")}, " +
                                   $"longest with no wheel down {maxAir:0.00} s" +
-                                  (follow ? $"; path {(reached ? "followed to its end" : "NOT finished")} in {t:0.0} s, farthest from it {maxDev:0.00} m at ({devAt.x:0.0}, {devAt.y:0.0}), fewest wheels down {minWheels} first at ({wheelAt.x:0.0}, {wheelAt.y:0.0})" : ""));
+                                  fps + (follow ? $"; path {(reached ? "followed to its end" : "NOT finished")} in {t:0.0} s, farthest from it {maxDev:0.00} m at ({devAt.x:0.0}, {devAt.y:0.0}), fewest wheels down {minWheels} first at ({wheelAt.x:0.0}, {wheelAt.y:0.0})" : ""));
             }
             File.WriteAllText(Path.Combine(outputDir, "shots.txt"), report.ToString());
             yield return new WaitForSecondsRealtime(0.5f);

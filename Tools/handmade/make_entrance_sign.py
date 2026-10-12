@@ -4,13 +4,18 @@
 Assets/HandMade/Entrance/ChastainGlenSign.png, which the map builder only reads. The quad it goes on is 2.7 x 1.9 m, so at
 1024 x 720 pixels one metre is about 380 pixels; the capitals are about 0.3 m tall (readable at 20 to 30 m).
 
-Usage: python Tools/handmade/make_entrance_sign.py
+Usage: python Tools/handmade/make_entrance_sign.py [LINE1 LINE2 FILE]
+Round 22: the same panel for the other communities' monuments, e.g.
+  python Tools/handmade/make_entrance_sign.py CHASTAIN COMMONS ChastainCommonsSign.png
+  python Tools/handmade/make_entrance_sign.py CHASTAIN ENCLAVE ChastainEnclaveSign.png
+(no arguments: "CHASTAIN GLEN", ChastainGlenSign.png, as before).
 """
-import os
+import os, sys
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-OUT = os.path.join(ROOT, "Assets/HandMade/Entrance/ChastainGlenSign.png")
+LINES = (sys.argv[1], sys.argv[2]) if len(sys.argv) >= 3 else ("CHASTAIN", "GLEN")
+OUT = os.path.join(ROOT, "Assets/HandMade/Entrance", sys.argv[3] if len(sys.argv) >= 4 else "ChastainGlenSign.png")
 W, H, S = 1024, 720, 2            # drawn at twice the size, then reduced (smooth edges)
 GOLD, BLACK, WHITE = (196, 160, 72, 255), (22, 22, 24, 255), (236, 236, 230, 255)
 
@@ -48,7 +53,7 @@ for name in ("georgiab.ttf", "BOOKOSB.TTF", "timesbd.ttf", "cambriab.ttf"):
     try: font = ImageFont.truetype(os.path.join(os.environ.get("WINDIR", "C:/Windows"), "Fonts", name), 112 * S); break
     except OSError: pass
 font = font or ImageFont.load_default()
-for text, y in (("CHASTAIN", 0.43), ("GLEN", 0.62)):
+for text, y in ((LINES[0], 0.43), (LINES[1], 0.62)):
     box = d.textbbox((0, 0), text, font=font)
     tw = box[2] - box[0]
     d.text(((W * S - tw) // 2 - box[0], int(H * S * y) - box[1]), text, font=font, fill=GOLD)

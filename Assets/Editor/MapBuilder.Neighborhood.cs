@@ -40,7 +40,7 @@ namespace ChastainRush
             public Vector2 FountainAt;
             public List<Vector2> PoolRing, ParkingRing, PlaygroundRing;
             public Vector2 PoolCentre; public float PoolDeckHalfU, PoolDeckHalfV; public Vector2 PoolU, PoolV;
-            public Rect Bounds;
+            public AreaBounds Bounds;   // Round 22: Chastain Glen's rectangle and one per community (was one Rect)
             public Neighborhood Self => this;
             readonly List<(Vector2 a, Vector2 b)> fenceSegs = new List<(Vector2, Vector2)>();
             readonly List<(Vector2 c, float r)> discs = new List<(Vector2, float)>();   // extra keep-outs (docks, walls, lamps, signs)
@@ -64,6 +64,7 @@ namespace ChastainRush
                 n.Area = JsonUtility.FromJson<AreaJson>(File.ReadAllText(areaPath));
                 n.Extras = File.Exists(extraPath) ? JsonUtility.FromJson<ExtrasJson>(File.ReadAllText(extraPath)) : new ExtrasJson();
                 n.Present = true;
+                n.LoadCommunities();   // Round 22: Grasmere Court, Chastain Commons and Chastain Enclave join the area (MapBuilder.Communities.cs)
                 n.Plan();
                 n.LoadShortcuts();   // after Plan: the corridor leaves out the stretches of the line that run on a street
                 return n;
@@ -118,10 +119,11 @@ namespace ChastainRush
                 if (Extras.parking != null && Extras.parking.outline != null) ParkingRing = ToPoints(Extras.parking.outline);
                 if (Extras.playground != null && Extras.playground.outline != null) PlaygroundRing = ToPoints(Extras.playground.outline);
                 float x0 = float.MaxValue, x1 = float.MinValue, z0 = float.MaxValue, z1 = float.MinValue;
-                foreach (var s in Segs) { x0 = Mathf.Min(x0, s.a.x, s.b.x); x1 = Mathf.Max(x1, s.a.x, s.b.x); z0 = Mathf.Min(z0, s.a.y, s.b.y); z1 = Mathf.Max(z1, s.a.y, s.b.y); }
+                foreach (var s in Segs) { if (communityRoadSet.Contains(s.road)) continue; x0 = Mathf.Min(x0, s.a.x, s.b.x); x1 = Mathf.Max(x1, s.a.x, s.b.x); z0 = Mathf.Min(z0, s.a.y, s.b.y); z1 = Mathf.Max(z1, s.a.y, s.b.y); }
                 foreach (var p in PondRing) { x0 = Mathf.Min(x0, p.x); x1 = Mathf.Max(x1, p.x); z0 = Mathf.Min(z0, p.y); z1 = Mathf.Max(z1, p.y); }
                 if (PoolRing != null) foreach (var p in PoolRing) { x0 = Mathf.Min(x0, p.x); z0 = Mathf.Min(z0, p.y); }
-                Bounds = Rect.MinMaxRect(x0 - 40f, z0 - 40f, x1 + 40f, z1 + 40f);
+                Bounds = new AreaBounds(Rect.MinMaxRect(x0 - 40f, z0 - 40f, x1 + 40f, z1 + 40f));
+                AddCommunityBounds();   // Round 22: each community's own rectangle (the streets between them are not part of it)
                 PlanPool();
                 PlanPoolRoad();    // Round 11 (BUG-010): the way from Grasmere Court into the pool's parking lot is a road
                 PlanHouses();
@@ -129,6 +131,7 @@ namespace ChastainRush
                 PlanDrives();      // Round 9: before the trees, so none is left standing on a drive
                 ResolveDriveOverlaps();   // Round 11: no two drives overlap
                 PlanGazebo();
+                PlanCommunities();   // Round 22: the Enclave's pool and courts, the communities' monuments (MapBuilder.Communities.cs)
                 PlanDriveOwnership();
                 PlanFences();
             }
@@ -142,6 +145,8 @@ namespace ChastainRush
                     var ring = ToPoints(b.footprint);
                     if (ring.Count < 3 || !BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) continue;
                     float area = Mathf.Abs(PolyArea(ring));
+                    int community = CommunityOf(idx);
+                    if (community == EnclaveCommunity) GrowEnclaveHouse(idx, ref ring, c, U, V, ref hl, ref hw);   // Round 22: larger houses where the lot allows
                     Nearest(c, out Vector2 q, out float roadHalf, out Vector2 tan, out _, false);
                     Vector2 toRoad = (q - c).normalized;
                     Vector2[] cand = { U, -U, V, -V };
@@ -150,8 +155,10 @@ namespace ChastainRush
                     bool facadeAlongU = Mathf.Abs(Vector2.Dot(F, U)) < 0.7f;
                     float W = facadeAlongU ? hl * 2f : hw * 2f, D = facadeAlongU ? hw * 2f : hl * 2f;
                     var h = new HouseSpec { index = idx, seed = b.seed, ring = ring, footprintCentre = c, W = W, D = D, nearestRoadPoint = q, roadHalf = roadHalf };
-                    h.style = ChooseStyle(area, Mathf.Max(W, D), Mathf.Min(W, D), b.seed);
+                    h.community = community;
+                    h.style = community == 0 ? ChooseStyle(area, Mathf.Max(W, D), Mathf.Min(W, D), b.seed) : CommunityStyle(community, area, Mathf.Max(W, D), Mathf.Min(W, D), b.seed);   // Round 22
                     ChooseColours(h);
+                    if (community != 0) DressForCommunity(h);   // Round 22: brick fronts and three-car garages in the Enclave, Commons' own colors
                     h.dan = owner != null && owner.index == idx;
                     if (h.dan) ApplyDan(h);
                     // mirror so the garage is on the side nearest the road point
@@ -211,6 +218,7 @@ namespace ChastainRush
                 if (RoadClearance(p) < 1.6f) return false;
                 if (PondRing.Count > 2 && (InPolygon(p, PondRing) || DistToRing(p, PondRing) < 1.2f)) return false;
                 if (InRing(p, PoolRing) || InRing(p, ParkingRing) || InRing(p, PlaygroundRing)) return false;
+                if (AmenityBlocks(p, 1.5f)) return false;   // Round 22: the Enclave's pool, courts, pavilion and lot
                 if (PoolRing != null && PoolDeckHalfU > 0f)
                 {
                     var d = p - PoolCentre;
@@ -434,6 +442,7 @@ namespace ChastainRush
                     if (Mathf.Abs(Vector2.Dot(d, PoolU)) < PoolDeckHalfU + 3.5f && Mathf.Abs(Vector2.Dot(d, PoolV)) < PoolDeckHalfV + 3.5f) return true;
                 }
                 if (InRing(p, ParkingRing) || InRing(p, PlaygroundRing)) return true;
+                if (AmenityBlocks(p, 2.5f)) return true;   // Round 22
                 if (PondRing.Count > 2 && DistToPond(p) < 2.5f) return true;
                 if (InCorridor(p)) return true;
                 if (OnDrivePlan(p, 0.4f)) return true;                                              // Round 9: never on a drive

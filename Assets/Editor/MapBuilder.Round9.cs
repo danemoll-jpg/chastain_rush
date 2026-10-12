@@ -60,7 +60,7 @@ namespace ChastainRush
                     var pts = new List<Vector2>();
                     int n = Mathf.Max(8, Mathf.CeilToInt(len / 0.75f));
                     for (int i = 0; i <= n; i++) { float t = i / (float)n; pts.Add((1 - t) * (1 - t) * S + 2 * (1 - t) * t * C1 + t * t * E); }
-                    float w0 = h.style == HouseStyle.D ? 3.8f : 5.8f;
+                    float w0 = h.style == HouseStyle.D ? 3.8f : h.garageBays == 3 ? 8.4f : 5.8f;   // Round 22: a three-car garage's drive is wider
                     var widths = new float[pts.Count];
                     bool bulb = InBulbZone(E, 1f);   // Round 11: a drive that ends on a cul-de-sac's bulb does not widen at its mouth
                     for (int i = 0; i < pts.Count; i++) { float t = i / (float)n; widths[i] = w0 + (t > 0.78f && !bulb ? (t - 0.78f) / 0.22f * 1.5f : 0f); }
@@ -317,10 +317,12 @@ namespace ChastainRush
                 CutUnderDanDeck();   // Round 10 (BUG-001): no grass through Dan's deck
                 GradeShortcuts();      // Round 12: the shortcuts' grass runs (before the prisms' cuts, which go under their tops)
                 GradePools();          // Round 20 follow-up: R1's pool deck levelled and its bed cut (MapBuilder.R1Pool.cs)
+                GradeCommunities();    // Round 22: the Enclave's pool deck and tennis courts set level (MapBuilder.Communities.cs)
                 CutUnderShortcuts();   // Round 10: the ground under the shortcut prisms marked "cut" (MapBuilder.Shortcuts.cs)
                 foreach (var h in Houses)
                 {
                     float b = before[h.index];
+                    if (h.community != 0) { if (b > 0.5f) CommunityBuried.Add((h, b)); continue; }   // Round 22: listed in the Round 22 report instead
                     if (b <= 0.5f && h != target) continue;
                     file.houses.Add(new BuriedRow { building = h.index, x = h.footprintCentre.x, z = h.footprintCentre.y, buried_m = b, floor_y = h.floorY, style = h.dan ? "Dan" : h.style.ToString(), regraded = h == target, after_m = h == target ? Burial(h) : b });
                 }
