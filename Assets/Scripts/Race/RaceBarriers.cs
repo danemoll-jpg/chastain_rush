@@ -52,6 +52,40 @@ namespace ChastainRush
                 if (blocks) { Open.Add($"{c.id} {c.label}"); continue; }
                 built.Add(MakeBarrier(c));
             }
+            // Round 24 A2 (A3): every pipe mouth this race does not go through is closed too (PipeMouths, from the map build)
+            MouthsClosed.Clear();
+            var mouths = PipeMouths.Instance;
+            if (mouths != null)
+            {
+                var lines = new List<Vector3[]> { route.Path };
+                foreach (var sc in route.Shortcuts) lines.Add(sc.Path);
+                foreach (int m in mouths.Unused(lines)) { MakeMouthBarrier(mouths, m); MouthsClosed.Add(mouths.ids[m]); }
+            }
+        }
+
+        public readonly List<string> MouthsClosed = new List<string>();   // Round 24 A2: for the checks and the log
+
+        // a row of blocks across a pipe's mouth, on its floor, 0.6 m in (no posts: the cut's walls frame it)
+        void MakeMouthBarrier(PipeMouths pm, int m)
+        {
+            var along = pm.inner[m] - pm.mouth[m]; along.y = 0f; along.Normalize();
+            var lateral = Vector3.Cross(Vector3.up, along);
+            float half = pm.half[m];
+            var root = new GameObject("Mouth barrier " + pm.ids[m]); root.transform.SetParent(transform, false);
+            int blocks = Mathf.Max(2, Mathf.RoundToInt(half * 2f / Block));
+            float bw = half * 2f / blocks;
+            var c = pm.mouth[m] + along * 0.6f;
+            for (int i = 0; i < blocks; i++)
+            {
+                var p = c + lateral * (-half + bw * (i + 0.5f));
+                var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.SetParent(root.transform, false);
+                cube.transform.SetPositionAndRotation(new Vector3(p.x, c.y + Height * 0.5f - 0.5f, p.z), Quaternion.LookRotation(along, Vector3.up));
+                cube.transform.localScale = new Vector3(bw, Height + 1f, Depth);
+                var rd = cube.GetComponent<Renderer>();
+                rd.sharedMaterial = i % 2 == 0 ? red : white;
+                rd.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+            }
         }
 
         public void Clear()

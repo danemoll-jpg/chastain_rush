@@ -57,7 +57,7 @@ Exits: **Exit W20 Pond** (x 1374, z 800)
 | M3b | M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1) | 5.0 m | 145 m | 267 to 269 m | J4 to J5;  |
 | M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 325 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m) |
 | M3d | M3 Noonday Main (the launch over the big lake) | 5.0 m | 73 m | 270 to 271 m | K15 to L_W15; comes out at launch big lake |
-| B11 | B11 | 3.5 m | 72 m | 269 to 271 m | J4 to X_TRAIL; comes out at exit creek trail |
+| B11 | B11 | 3.5 m | 117 m | 269 to 272 m | J4 to X_TRAIL; comes out at exit creek trail |
 | B12 | B12 | 3.5 m | 218 m | 268 to 273 m | J5 to X_W12; comes out at exit w12 pond |
 | B13 | B13 | 3.5 m | 92 m | 270 to 279 m | K15 to MH6; pops out at MH6 |
 | B14 | B14 | 3.5 m | 459 m | 269 to 278 m | J4 to MH7; pops out at MH7 |
@@ -67,23 +67,23 @@ Chambers: **J4 NOONDAY JCT** (junction, x 2280, z 1215, floor 269 m); **J5 LAKE 
 
 Manholes: **MH6** in Guidhall Trail (x 2550, z 1584; riser 6 m); **MH7** in Westminister Way (x 2724, z 1197; riser 9 m)
 
-Exits: **Launch Big Lake** (x 2394, z 1528, a launch over the water); **Exit Creek Trail** (x 2342, z 1112); **Exit W12 Pond** (x 2497, z 1443); **Exit W7 Pond** (x 2446, z 1700)
+Exits: **Launch Big Lake** (x 2394, z 1528, a launch over the water); **Exit Creek Trail** (x 2339, z 1112); **Exit W12 Pond** (x 2497, z 1443); **Exit W7 Pond** (x 2446, z 1700)
 
 ## Stage 3: the Glen and the shops (BUILT)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M4a | M4 Glen Main (J4 to J6) | 5.0 m | 338 m | 267 to 269 m | J4 to J6; a flooded sag (slow) |
+| M4a | M4 Glen Main (J4 to J6) | 5.0 m | 337 m | 267 to 269 m | J4 to J6; a flooded sag (slow) |
 | M4b | M4 Glen Main (J6 to J7) | 5.0 m | 338 m | 268 to 278 m | J6 to J7;  |
 | M4c | M4 Glen Main (J7 to J12, glass under the Chastain Glen pond) | 5.0 m | 275 m | 278 to 286 m | J7 to J12; glass under pond W8 (113 m) |
 | M4d | M4 Glen Main (J12 to J8) | 5.0 m | 361 m | 286 to 294 m | J12 to J8;  |
 | B16 | B16 | 3.5 m | 375 m | 268 to 278 m | J6 to MH8; pops out at MH8 |
 | B17 | B17 | 3.5 m | 175 m | 276 to 284 m | J7 to MH9; pops out at MH9 |
-| B18 | B18 (the launch over the Chastain Glen pond) | 5.0 m | 44 m | 286 to 287 m | J12 to L_W8; comes out at launch glen pond |
+| B18 | B18 (the launch over the Chastain Glen pond) | 3.5 m | 52 m | 286 to 288 m | J12 to L_W8; comes out at launch glen pond |
 | B19a | B19 | 3.5 m | 244 m | 285 to 290 m | J13 to K19;  |
 | B19b | B19 | 3.5 m | 69 m | 289 to 290 m | K19 to MH10; pops out at MH10 |
-| B19c | B19 | 3.5 m | 109 m | 282 to 290 m | K19 to X_W11; comes out at exit w11 pond |
-| B26 | B26 | 3.5 m | 58 m | 268 to 268 m | J6 to X_BRIDGE; comes out at exit under bridges |
+| B19c | B19 | 3.5 m | 89 m | 289 to 290 m | K19 to X_W11; comes out at exit w11 pond |
+| B26 | B26 | 3.5 m | 110 m | 268 to 272 m | J6 to X_BRIDGE; comes out at exit under bridges |
 | B20 | B20 | 3.5 m | 268 m | 293 to 294 m | J8 to MH11; pops out at MH11 |
 | B21 | B21 | 5.0 m | 38 m | 294 to 298 m | J8 to X_SHOPS; comes out at exit behind shops |
 | B22 | B22 | 3.5 m | 600 m | 277 to 294 m | J8 to X_LNC; comes out at exit little noonday |
@@ -92,7 +92,7 @@ Chambers: **J6 BRIDGE JCT** (junction, x 2384, z 884, floor 268 m); **J7 GLEN JC
 
 Manholes: **MH8** in Paxton Court Northeast (x 2127, z 619; riser 9 m); **MH9** in Grasmere Court Northeast (x 2730, z 816; riser 7 m); **MH10** in Weybourne Court Northeast (x 2691, z 613; riser 6 m); **MH11** in Chasefield Way (x 2965, z 1093; riser 6 m)
 
-Exits: **Launch Glen Pond** (x 2896, z 858, a launch over the water); **Exit W11 Pond** (x 2672, z 412); **Exit Under Bridges** (x 2424, z 778); **Exit Behind Shops** (x 3153, z 1256); **Exit Little Noonday** (x 3752, z 1468)
+Exits: **Launch Glen Pond** (x 2896, z 858, a launch over the water); **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780); **Exit Behind Shops** (x 3153, z 1256); **Exit Little Noonday** (x 3752, z 1468)
 
 ## Stage 4: the lakes (BUILT)
 

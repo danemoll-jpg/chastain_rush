@@ -150,17 +150,20 @@ CH = {
 # the water), manholes (pop out of the street). 'at' is the mouth (exits) or the street point (manholes, snapped onto it)
 EXITS = {
     "X_W20":   dict(name="EXIT W20 POND", at=(1373.5, 800.0)),
-    "X_TRAIL": dict(name="EXIT CREEK TRAIL", at=(2342.0, 1112.0)),
+    # Round 24 A2 (BUG-002, Dan: "this border should not go in the middle of the road"): the creek-trail exit's mouth just west
+    # of the trail (its tread 2.25 m either side of the line, plus a meter), its cut going straight away from the trail (it ran
+    # along the trail before, its wall and railing across the tread)
+    "X_TRAIL": dict(name="EXIT CREEK TRAIL", at=(2338.7, 1111.7)),
     "X_W12":   dict(name="EXIT W12 POND", at=(2497.0, 1443.0)),
     "X_W7":    dict(name="EXIT W7 POND", at=(2446.0, 1700.0)),
-    "X_BRIDGE": dict(name="EXIT UNDER BRIDGES", at=(2424.0, 778.0)),
-    "X_W11":   dict(name="EXIT W11 POND", at=(2672.0, 412.0)),
+    "X_BRIDGE": dict(name="EXIT UNDER BRIDGES", at=(2422.5, 780.0)),   # Round 24 A2: west of the trail under the bridges (its cut was on the trail's line)
+    "X_W11":   dict(name="EXIT W11 POND", at=(2686.0, 429.5)),   # Round 24 A2 (Dan's BUG-003 on Joel Drive): north of the road, clear of its curb, between the houses (its cut crossed the road)
     "X_SHOPS": dict(name="EXIT BEHIND SHOPS", at=(3153.0, 1256.0)),
     "X_LNC":   dict(name="EXIT LITTLE NOONDAY", at=(3752.0, 1468.0)),
     "X_STREAM": dict(name="EXIT LAKE STREAM", at=(470.0, 1425.0)),
     "X_W5":    dict(name="EXIT FAR WEST POND", at=(182.0, 1488.0)),
     "X_NELSON": dict(name="EXIT NELSON LAKE", at=(262.0, 118.0)),
-    "L_W8":    dict(name="LAUNCH GLEN POND", at=(2896.0, 858.0), outfall=8),
+    "L_W8":    dict(name="LAUNCH GLEN POND", at=(2896.0, 858.0), outfall=8, max_len=27.0),   # Round 24 A2: the chute stops short of Chastain Trail's sidewalk (it ended in it)
     "L_W15":   dict(name="LAUNCH BIG LAKE", at=(2394.0, 1528.0), outfall=15),
 }
 MANHOLES = {
@@ -210,7 +213,7 @@ TUBES = [
     T("M3b", "M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1)", MAIN, True, 2, ("ch", "J4"), [(2294.0, 1262.0), (2302.0, 1318.0)], ("ch", "J5"), stripe="M3"),
     T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1600.0), (2436.0, 1566.0)], ("ch", "K15"), glass=[15], stripe="M3"),
     T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [(2472.0, 1522.0), (2440.0, 1522.0)], ("x", "L_W15"), stripe="M3"),
-    T("B11", "B11", NARROW, False, 2, ("ch", "J4"), [(2318.0, 1160.0)], ("x", "X_TRAIL")),
+    T("B11", "B11", NARROW, False, 2, ("ch", "J4"), [(2300.0, 1150.0), (2290.0, 1106.5)], ("x", "X_TRAIL")),   # Round 24 A2: in from the west
     T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2452.0, 1462.0), (2512.0, 1486.0)], ("x", "X_W12")),
     T("B13", "B13", NARROW, False, 2, ("ch", "K15"), [], ("mh", "MH6")),
     T("B14", "B14", NARROW, False, 2, ("ch", "J4"), [(2420.0, 1236.0), (2560.0, 1256.0)], ("mh", "MH7")),
@@ -222,11 +225,12 @@ TUBES = [
     T("M4d", "M4 Glen Main (J12 to J8)", MAIN, True, 3, ("ch", "J12"), [(3010.0, 1010.0)], ("ch", "J8"), stripe="M4"),
     T("B16", "B16", NARROW, False, 3, ("ch", "J6"), [(2300.0, 800.0), (2230.0, 700.0)], ("mh", "MH8")),
     T("B17", "B17", NARROW, False, 3, ("ch", "J7"), [(2712.0, 900.0)], ("mh", "MH9")),
-    T("B18", "B18 (the launch over the Chastain Glen pond)", MAIN, False, 3, ("ch", "J12"), [(2938.0, 884.0)], ("x", "L_W8")),
+    # Round 24 A2: the narrow size (the 5 m pipe needs a chute long enough to reach Chastain Trail's sidewalk before the ground covers it)
+    T("B18", "B18 (the launch over the Chastain Glen pond)", NARROW, False, 3, ("ch", "J12"), [(2938.0, 884.0)], ("x", "L_W8")),
     T("B19a", "B19", NARROW, False, 3, ("ch", "J13"), [(2800.0, 650.0)], ("ch", "K19")),
     T("B19b", "B19", NARROW, False, 3, ("ch", "K19"), [], ("mh", "MH10")),
-    T("B19c", "B19", NARROW, False, 3, ("ch", "K19"), [(2690.0, 480.0)], ("x", "X_W11")),
-    T("B26", "B26", NARROW, False, 3, ("ch", "J6"), [], ("x", "X_BRIDGE")),
+    T("B19c", "B19", NARROW, False, 3, ("ch", "K19"), [], ("x", "X_W11")),   # Round 24 A2: straight from K19 to the new mouth
+    T("B26", "B26", NARROW, False, 3, ("ch", "J6"), [(2380.0, 779.0)], ("x", "X_BRIDGE")),   # Round 24 A2: in from the west
     T("B20", "B20", NARROW, False, 3, ("ch", "J8"), [(3060.0, 1150.0)], ("mh", "MH11")),
     T("B21", "B21", MAIN, False, 3, ("ch", "J8"), [(3168.0, 1232.0)], ("x", "X_SHOPS")),
     T("B22", "B22", NARROW, False, 3, ("ch", "J8"), [(3300.0, 1340.0), (3560.0, 1440.0)], ("x", "X_LNC")),
@@ -482,6 +486,7 @@ def make_heads(tb, ops, est):
             x = EXITS[e[1]]; A = x["at"]; dirx = norm(sub(nb, A)); room = math.hypot(*sub(nb, A))
             cap = room - (40.0 if not tb["way"] else 14.0)
             Lx = est.get(("x", k), 30.0); Lx = max(20.0, min(Lx, cap if cap > 20.0 else room * 0.4))
+            if x.get("max_len"): Lx = min(Lx, x["max_len"])   # Round 24 A2: a cut that must stop short of a street
             B = add(A, dirx, Lx)
             segs[k] = [B, add(B, dirx, 12.0)]
             heads[k] = dict(kind="x", level=est.get(("xlevel", k)), lock=4.0, exit=e[1], A=A, B=B, dir=dirx, L=Lx, room=room, gA=ground(*A), outfall=x.get("outfall"))

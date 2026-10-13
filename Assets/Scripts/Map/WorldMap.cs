@@ -93,7 +93,7 @@ namespace ChastainRush
             if (m != null && m.leftButton.isPressed) { var d = m.delta.ReadValue(); center -= new Vector2(d.x / picture.rectTransform.rect.width, d.y / picture.rectTransform.rect.height) * (720f / Screen.height) / zoom; }
             if (centerAction.WasPressedThisFrame()) CenterOnPlayer();
             if (layersAction.WasPressedThisFrame()) ShowLayers = !ShowLayers;
-            center = new Vector2(Mathf.Clamp01(center.x), Mathf.Clamp01(center.y));
+            ClampView();
             Draw();
         }
 
@@ -104,7 +104,7 @@ namespace ChastainRush
             race = RaceController.Instance; if (!car) car = FindAnyObjectByType<ArcadeVehicle>();
             savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f; Time.timeScale = 0f; AudioListener.pause = true;
             if (!panel) BuildUI();
-            CenterOnPlayer(); zoom = Mathf.Max(zoom, 2.5f);
+            zoom = Mathf.Max(zoom, 2.5f); CenterOnPlayer();
             panel.SetActive(true); EventSystem.current?.SetSelectedGameObject(null); Draw();
         }
         public void Close()
@@ -113,9 +113,17 @@ namespace ChastainRush
             if (panel) panel.SetActive(false);
             Time.timeScale = savedTimeScale; AudioListener.pause = false;
         }
-        public void CenterOnPlayer() { if (car) center = Normalized(car.Body ? car.Body.position : car.transform.position); }
-        public void ZoomBy(float factor) => zoom = Mathf.Clamp(zoom * factor, 1f, MaxZoom);
-        public void PanBy(Vector2 uv) => center = new Vector2(Mathf.Clamp01(center.x + uv.x), Mathf.Clamp01(center.y + uv.y));
+        public void CenterOnPlayer() { if (car) center = Normalized(car.Body ? car.Body.position : car.transform.position); ClampView(); }
+        public void ZoomBy(float factor) { zoom = Mathf.Clamp(zoom * factor, 1f, MaxZoom); ClampView(); }
+        public void PanBy(Vector2 uv) { center += uv; ClampView(); }
+        // Round 24 A2 (A4, Dan: "the map not be able to move further than the border of the map"): the view never shows past the
+        // world's edges: zoomed out it is the whole map (zoom 1), and the center keeps half the view's width and height from each edge
+        void ClampView()
+        {
+            zoom = Mathf.Clamp(zoom, 1f, MaxZoom);
+            float h = 0.5f / zoom;
+            center = new Vector2(Mathf.Clamp(center.x, h, 1f - h), Mathf.Clamp(center.y, h, 1f - h));
+        }
         public void SetLayers(bool on) => ShowLayers = on;
         public Vector2 Normalized(Vector3 p) => new Vector2((p.x - world.xMin) / world.width, (p.z - world.yMin) / world.height);
         public Vector3 WorldPoint(Vector2 uv) => new Vector3(world.xMin + uv.x * world.width, 0f, world.yMin + uv.y * world.height);

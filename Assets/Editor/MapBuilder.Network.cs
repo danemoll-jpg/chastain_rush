@@ -631,7 +631,7 @@ namespace ChastainRush
             for (int k = 0; k < seg; k++)
             {
                 float a0 = Mathf.PI * 2f * k / seg, a1 = Mathf.PI * 2f * (k + 1) / seg;
-                Vector3 Q(float a, float rr) => new Vector3(c.x + Mathf.Cos(a) * rr, y + 0.02f, c.y + Mathf.Sin(a) * rr);
+                Vector3 Q(float a, float rr) { float qx = c.x + Mathf.Cos(a) * rr, qz = c.y + Mathf.Sin(a) * rr; return new Vector3(qx, Ground(terrain, qx, qz) + 0.02f, qz); }   // Round 24 A2: on the street's slope
                 collar.Tint = new Color(0.50f, 0.49f, 0.46f); Face(collar, Q(a0, r - 0.15f), Q(a1, r - 0.15f), Q(a1, r + 0.4f), Q(a0, r + 0.4f), Vector3.up);
             }
             collar.ToObject("Manhole " + m.id + " collar", mats.House, root, false, false);
@@ -657,6 +657,9 @@ namespace ChastainRush
             var lidGo = lid.ToObject("Manhole " + m.id + " lid", mats.House, root, false, true);
             GameObjectUtility.SetStaticEditorFlags(lidGo, 0);
             lidGo.transform.position = new Vector3(c.x, y, c.y);
+            // Round 24 A2: the lid lies in the street's slope (flat, it stood up to 0.5 m proud on the low side of a sloping street)
+            float gx = (Ground(terrain, c.x + r, c.y) - Ground(terrain, c.x - r, c.y)) / (2f * r), gz = (Ground(terrain, c.x, c.y + r) - Ground(terrain, c.x, c.y - r)) / (2f * r);
+            lidGo.transform.rotation = Quaternion.FromToRotation(Vector3.up, new Vector3(-gx, 1f, -gz).normalized);
             var disc = new Mesh { name = "Manhole lid collider " + m.id }; var dv = new List<Vector3>(); var dt = new List<int>();
             for (int k = 0; k < 16; k++) { float a = Mathf.PI * 2f * k / 16; dv.Add(new Vector3(Mathf.Cos(a) * r, 0.03f, Mathf.Sin(a) * r)); dv.Add(new Vector3(Mathf.Cos(a) * r, -0.25f, Mathf.Sin(a) * r)); }
             for (int k = 0; k < 16; k++) { int a = 2 * k, b = 2 * ((k + 1) % 16); dt.AddRange(new[] { a, b, b + 1, a, b + 1, a + 1 }); }

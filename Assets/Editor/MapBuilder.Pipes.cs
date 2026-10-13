@@ -107,6 +107,9 @@ namespace ChastainRush
         static Pipes PlanPipes(TerrainGrid terrain, IEnumerable<PipeJson> extra = null)   // Round 23 follow-ups: 'extra', the network's exits (MapBuilder.Network.cs)
         {
             var result = new Pipes();
+            var stale = Path.Combine(ProjectRoot, DriveBands.WalksFile); if (File.Exists(stale)) File.Delete(stale);   // this build's own sidewalks only
+            DriveBands.Load(ProjectRoot);   // Round 24 A2: roads, drives, the creek trail (nothing of a mouth stands up on them); the sidewalks join as they are built
+            DriveBands.BeginWalks();
             string path = Path.Combine(ProjectRoot, PipeFilePath);
             var all = new List<PipeJson>();
             if (File.Exists(path)) all.AddRange(JsonUtility.FromJson<PipeFile>(File.ReadAllText(path)).pipes);
@@ -190,6 +193,35 @@ namespace ChastainRush
                 }
                 if (j.twin) { GradeTwinAprons(terrain, p); TrimStreamsAtCut(p); }   // Round 23
                 if (j.open_b) f[f.Length - 1] = j.b_floor;   // Round 23 follow-ups: exactly the network's level where its pipe goes on
+                // Round 24 A2: a headwall (and its coping, 1 m behind it) never stands in a road, drive or the creek trail: pulled back
+                // toward its mouth, 0.5 m at a time, while the ground still covers the pipe's crown there
+                bool HeadOn(float face, float back)
+                {
+                    float hw0 = p.Half + CutWall + CopingOut;
+                    for (float o = -hw0; o <= hw0 + 1e-3f; o += 0.5f) for (float d = -0.5f; d <= 1.01f; d += 0.5f) if (DriveBands.At(p.P(face + back * d, o)) != null) return true;
+                    return false;
+                }
+                float Cover(float st) { int i = Mathf.Clamp(Mathf.RoundToInt(st / PipeStep), 0, n - 1); return cover[i] - (f[i] + crownOut); }
+                if (p.S1 > 0f && p.S1 < p.L)
+                {
+                    float was = p.S1;
+                    while (HeadOn(p.S1, 1f) && p.S1 - PipeStep >= 4f && Cover(p.S1 - PipeStep) >= 0f) p.S1 -= PipeStep;
+                    if (p.S1 != was) Debug.Log($"[Round24] pipe {j.id}: its headwall moved {was - p.S1:0.0} m back out of the street (cover there {Cover(p.S1):0.00} m)");
+                    if (HeadOn(p.S1, 1f)) Debug.LogError($"[Round24] pipe {j.id}: its headwall still stands in a road, drive or the trail");
+                }
+                if (!j.open_b && p.S2 < p.L)
+                {
+                    float was = p.S2;
+                    while (HeadOn(p.S2, -1f) && p.S2 + PipeStep <= p.L - 4f && Cover(p.S2 + PipeStep) >= 0f) p.S2 += PipeStep;
+                    if (p.S2 != was) Debug.Log($"[Round24] pipe {j.id}: its outlet headwall moved {p.S2 - was:0.0} m back out of the street (cover there {Cover(p.S2):0.00} m)");
+                }
+                // Round 24 A2: a cut's trench must never lie in a road, sidewalk, drive or the creek trail (move the mouth instead)
+                for (float s = 0f; s <= p.S1; s += 1f)
+                    foreach (float lat in new[] { -1f, 0f, 1f })
+                    {
+                        string on = DriveBands.At(p.P(s, lat * p.HalfAt(s)));
+                        if (on != null && Ground(terrain, p.P(s, lat * p.HalfAt(s)).x, p.P(s, lat * p.HalfAt(s)).y) > p.Y(s) + 0.3f) { Debug.LogError($"[Round24] pipe {j.id}: its cut lies in {on} at ({p.P(s, 0f).x:0.0}, {p.P(s, 0f).y:0.0})"); s = float.MaxValue; break; }
+                    }
                 result.Plans.Add(p);
                 CutPipeHoles(terrain, p);
                 if (p.Clear) CutTrenchHoles(terrain, p);
@@ -339,7 +371,24 @@ namespace ChastainRush
             pipeSplash = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")) { name = "PipeSplash" };
             pipeSplash.SetColor("_BaseColor", new Color(0.78f, 0.84f, 0.86f, 0.7f)); MakeTransparent(pipeSplash);
             AssetDatabase.CreateAsset(pipeSplash, GeneratedDir + "/PipeSplash.mat");
+            DriveBands.SaveWalks(ProjectRoot);
             foreach (var p in pipes.Plans) BuildPipe(terrain, mats, root, p);
+            // Round 24 A2 (A3): every mouth, for the race's closures (PipeMouths): the mouth's middle on its floor and a point on the
+            // floor 1 m short of its headwall (at most 20 m in)
+            var ids = new List<string>(); var mouths = new List<Vector3>(); var inners = new List<Vector3>(); var halves = new List<float>();
+            foreach (var p in pipes.Plans)
+            {
+                void Add(string id, float s0, float s1)
+                {
+                    var a = p.P(s0, 0f); var b = p.P(s1, 0f);
+                    ids.Add(id); mouths.Add(new Vector3(a.x, p.Y(s0), a.y)); inners.Add(new Vector3(b.x, p.Y(s1), b.y)); halves.Add(p.HalfAt(s0));
+                }
+                if (p.S1 > 2f) Add(p.J.id + (p.J.open_b ? "" : " a"), 0f, Mathf.Max(1f, Mathf.Min(p.S1 - 1f, 20f)));
+                if (!p.J.open_b && p.L - p.S2 > 2f) Add(p.J.id + " b", p.L, Mathf.Min(p.L - 1f, Mathf.Max(p.S2 + 1f, p.L - 20f)));
+            }
+            var pm = new GameObject("Pipe mouths").AddComponent<PipeMouths>(); pm.transform.SetParent(root, false);
+            pm.ids = ids.ToArray(); pm.mouth = mouths.ToArray(); pm.inner = inners.ToArray(); pm.half = halves.ToArray();
+            Debug.Log($"[Round24] {ids.Count} pipe mouths for the race closures: {string.Join(", ", ids)}");
         }
 
         static void MakeTransparent(Material m)
@@ -409,10 +458,20 @@ namespace ChastainRush
             var root = new GameObject("Pipe " + p.J.id + " (" + p.J.name + ")").transform; root.SetParent(parent, false);
             var concrete = new Color(0.62f, 0.61f, 0.58f);
             Vector3 W(float s, float lat, float y) { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }
+            bool OnBand(float s, float lat, float pad) => DriveBands.At(p.P(s, lat), pad) != null;   // Round 24 A2
+            int railSkipped = 0;
             var up3 = Vector3.up; var u3 = new Vector3(p.U.x, 0f, p.U.y); var n3 = new Vector3(p.Nl.x, 0f, p.Nl.y);
             // the wall tops: the highest ground just outside each wall, + 0.12 m (the coping hides the hole's ragged edge)
             float Top(float s, float side)
             {
+                // Round 24 A2 (Dan: "these are too thick and prevent cars driving"): where the coping lies on a road, sidewalk, drive or
+                // the creek trail it is flush with that ground (the lowest across it), not raised to the highest ground nearby
+                if (OnBand(s, side * (p.HalfAt(s) + CopingOut * 0.5f), 0.5f * CopingOut + 0.3f))
+                {
+                    float lo = float.MaxValue;
+                    float h1 = p.HalfAt(s); for (float o = h1; o <= h1 + CopingOut + 1e-3f; o += 0.3f) { var q = p.P(s, side * o); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
+                    return Mathf.Max(lo, p.Y(s)) + 0.02f;
+                }
                 float hi = float.MinValue;
                 float h0 = p.HalfAt(s); for (float o = h0; o <= h0 + CopingOut + 0.3f; o += 0.3f) { var q = p.P(s, side * o); hi = Mathf.Max(hi, Ground(terrain, q.x, q.y)); }
                 return Mathf.Max(hi, p.Y(s)) + 0.12f;
@@ -477,6 +536,7 @@ namespace ChastainRush
                     {
                         float t = Top(s, side), drop = t - p.Y(s);
                         if (drop < 1f) { prevTop = prevMid = null; continue; }
+                        if (OnBand(s, side * (p.HalfAt(s) + 0.25f), 0.3f)) { prevTop = prevMid = null; railSkipped++; continue; }   // Round 24 A2: never on a drivable surface
                         var b = W(s, side * (p.HalfAt(s) + 0.25f), t);
                         Post(rail, b, 1.05f, 0.07f, steel);
                         var top = b + up3 * 1.0f; var mid = b + up3 * 0.5f;
@@ -488,6 +548,16 @@ namespace ChastainRush
                 float face = inner == p.S1 ? p.S1 : p.S2, sgn = inner == p.S1 ? -1f : 1f;   // the side the cut is on
                 float yb = p.Y(face) - 0.6f, yt = Mathf.Max(Mathf.Max(Top(face, 1f), Top(face, -1f)), p.Y(face) + 2f * p.R + 0.3f);
                 const int seg = 48; float hw = p.Half + CutWall;
+                // Round 24 A2: a headwall whose coping lies on a road, sidewalk, drive or the trail: its top flush with that ground
+                float behind = face - sgn * 0.5f;
+                if (OnBand(behind, 0f, hw + CopingOut) || OnBand(behind, hw + CopingOut * 0.5f, 0.6f) || OnBand(behind, -hw - CopingOut * 0.5f, 0.6f))
+                {
+                    float lo = float.MaxValue;   // the lowest ground of the parts of the coping that lie on the street / trail
+                    for (float o = -hw - CopingOut; o <= hw + CopingOut + 1e-3f; o += 0.5f) for (float d = 0f; d <= 1.01f; d += 0.5f) { var q = p.P(face - sgn * d, o); if (DriveBands.At(q) != null) lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
+                    if (lo == float.MaxValue) lo = yt;
+                    float flush = Mathf.Max(lo + 0.02f, p.Y(face) + 2f * p.R + 0.3f);
+                    if (flush < yt - 0.01f) { Debug.Log($"[Round24] pipe {p.J.id}: headwall top {yt - flush:0.00} m lower, flush with the street / trail"); yt = flush; }
+                }
                 var normal = u3 * sgn;
                 cut.Tint = Shade(concrete, 0.82f);
                 foreach (float bl in p.Lats)   // Round 23: a twin's headwall is two halves, each round its own opening, meeting at the pier (lateral 0)
@@ -521,6 +591,7 @@ namespace ChastainRush
             }
             var cutGo = cut.ToObject("sc Pipe " + p.J.id + " cuts and headwalls", mats.Concrete, root, false);   // Round 19: "sc", so VehicleSurfaceContacts takes the faces' own normals (a body scraping the round bottom is not stopped)
             AddCollider(cutGo, cut, "Pipe " + p.J.id + " cuts collider");
+            if (railSkipped > 0) Debug.Log($"[Round24] pipe {p.J.id}: {railSkipped} railing posts left off a road, sidewalk, drive or the trail");
             if (rail.Count > 0) { var rg = rail.ToObject("Pipe " + p.J.id + " railings", mats.House, root, false); AddCollider(rg, rail, "Pipe " + p.J.id + " railings collider"); }
 
             foreach (float bl in p.Lats)   // Round 23: one barrel, or a twin's two

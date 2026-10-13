@@ -283,7 +283,15 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 24 Part A2 in `TODO.md` (urgent):** frame rate broken
+**Round 24 Part A2 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the frame
+rate (cause: `DrainPipe.FixedUpdate` searching every pipe piece for every piece and vehicle each physics step; races 3 fps before,
+134 to 192 fps after), mouths off roads / sidewalks / drives / the trail (`DriveBands`, `ChastainRush.MouthScan.Run -mouthOut <file>`),
+mouths closed during races (`PipeMouths`, `RaceBarriers`), the big map clamped, Racer's minimap (`Map/MiniMap.cs`, J / B). Profiling
+in the exe: `PlayerBuild` with `-playerBuildDev` builds `Builds/ChastainRushDev/` (development, profiler markers); `ChastainRush.exe
+-exeProfile <dir> [-exeProfileRaw] [-profileShots] [-profileOnly name,...]` writes `profile.txt`; `ChastainRush.ProfileDump.Run
+-profileRaw <file.raw>` lists a capture's slowest markers. Imported from Racer: RacingMiniMap (rewritten). Next: Part B.
+
+**Was active: Round 24 Part A2 in `TODO.md` (urgent):** frame rate broken
 in all races since the pipe network / new cameras (find the cause with the
 profiler, back to 60 fps); no mouth, railing or wall on any road, drive,
 sidewalk or the trail; every network opening closed during races and the AI

@@ -2721,6 +2721,41 @@ A5. THE MINIMAP FROM WOODSTOCK RUSH. Dan: "Need to add the minimap from woodstoc
    are underground.
 A6. Rebuild the exe, commit, short report. No drive tests beyond A1's frame-rate check.
 
+**STATUS of Part A2 (Claude, 2026-10-13): A1 to A6 DONE, built, exe rebuilt; checked in the exe by script (muted, minimized,
+`local/round24/`), not yet driven by Dan.**
+- A1 DONE. Cause, from the profiler in the built exe (a development build, `ChastainRush.exe -exeProfile <dir> [-exeProfileRaw]`,
+  captures read by `ChastainRush.ProfileDump.Run -profileRaw <file>`): `DrainPipe.FixedUpdate` took 322 of 385 ms a frame in a race.
+  Every one of the network's ~260 pipe pieces asked `DrainPipe.Inside()` (itself a search of all ~260 pieces) for every vehicle on
+  every physics step: quadratic in the network's size, times four vehicles in a race; the slow frames then ran up to 16 physics
+  steps each, down to 3 fps. Fixed: a vehicle not near a piece costs one box test, and the full search runs only when the piece itself
+  holds the vehicle. Second cause (hitches): each of the 15 big jumps (and the pool, the trampoline) searched the scene for vehicles
+  once a second in the same step (12 to 19 ms spikes): they now share DrainPipe's one search. Frame rates (vSync off): before, dev
+  build 1280 x 720: races 3 to 4 fps (Glen loop 3 / 3, Noonday 4 / 4), free roam 168 to 186 fps. After, release exe at 3840 x 2160
+  (a minimized window, not full screen, to stay off Dan's screen): Glen loop forward 192 / reverse 185, Noonday forward 144 / reverse
+  134, free roam at BUG-003 / BUG-004 248 / 226, the hub 235, J4 235 fps; 99th-percentile frame 5 to 12 ms (one 26 ms hitch at BUG-004).
+- A2 DONE. `ChastainRush.MouthScan.Run -mouthOut <file>` (report: mouths against roads, sidewalks, drives, the creek trail): 52
+  findings before, 7 after (lid rims 5 to 7 cm, GP's and BF's headwall faces at the curb line of the OSM road width). Changed:
+  X_TRAIL (BUG-001 / 002) moved just west of the trail, its cut going straight away from it (it ran along the trail, wall and railing
+  across the tread); X_BRIDGE moved west of the trail under the bridges (its cut was on the trail's line, the race fell into it);
+  X_W11 moved north of Joel Drive between the houses (its cut crossed the road: Part B's BUG-003 road restored); L_W8 (the Glen pond
+  launch) stops short of Chastain Trail's sidewalk, its pipe the narrow size (the 5 m one needed the longer chute); it still passes
+  under the house (Part B's BUG-002, Dan's call); GP's and BF's headwalls pulled back out of the road (1.5 m / 0.5 m) and their tops
+  flush where the road is; GP lost 1 railing post; all 13 manhole lids and collars lie in the street's slope (they stood up to 0.5 m
+  proud). Rules in the map build for every mouth from now on (`DriveBands`, `MapBuilder.Pipes.cs`): no railing post on a road,
+  sidewalk, drive or the trail; coping and headwall tops flush there; a headwall pulls back out of a road while the ground covers the
+  pipe; an error in the build log if a cut lies on one. Layout in `Tools/mapgen/pipe_network.py` (EXITS, B11, B18, B19c, B26).
+- A3 DONE. `PipeMouths` (from the map build: 17 mouths) and `RaceBarriers`: every mouth a race neither laps through nor takes as an
+  official shortcut is closed by red and white blocks while the race runs (Glen loop: all 17; Noonday Creek: all but P1's two ends).
+  The AI followed the trail into X_TRAIL's cut, which lay on the trail; with the cut moved and the mouths closed it cannot.
+- A4 DONE. The big map's view is clamped to the world (zoomed out it is the whole map; the center keeps half a view from each edge).
+- A5 DONE. `Map/MiniMap.cs`, ported from Racer's `RacingMiniMap`: top right, heading up, compass, course teal, shortcuts gold,
+  checkpoints blue, rivals white; this game's map picture under it; underground the pipes in their colors; J / B toggles it in free
+  roam (saved in `minimap.json` beside the records); in a race it sits under the place readout. Imported from Racer in Round 24 A2:
+  RacingMiniMap (rewritten; left behind: road lines, sites, waypoint, stunt park, acorn areas, Speed Patrol, Getaway, split-screen).
+- A6 DONE. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
+- For Dan to check: a race on each track (frame rate), the creek-trail exit and the closed mouths in a Noonday race, the moved exits
+  (trail, bridges, Joel Drive), the manhole lids, the minimap (J / B in free roam), the big map's edges.
+
 Part B, QUEUED for Dan's next session (do after Part A, in this order):
 4. Ugly entrances and exits, everywhere. Dan: "I don't want ugly entrances like the one I flagged. If there are others I
    want them reworked as well." His session 2026-10-13_10-00-51-441_3321a8:

@@ -674,6 +674,7 @@ namespace ChastainRush
         // a sidewalk between two matching polylines, two cells across, on the highest ground near each inner vertex
         static void WalkBand(MeshBuilder mb, List<Vector2> a, List<Vector2> b, TerrainGrid t)
         {
+            DriveBands.AddWalk(a, b);   // Round 24 A2: where the sidewalks are, for the pipe mouths
             int start = mb.Count;
             for (int i = 0; i < a.Count; i++)
                 for (int k = 0; k < 3; k++)

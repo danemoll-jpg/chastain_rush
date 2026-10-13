@@ -35,6 +35,7 @@ namespace ChastainRush
             var carGo = FindAnyObjectByType<ArcadeVehicle>().gameObject;
             if (!carGo.GetComponent<RampHold>()) carGo.AddComponent<RampHold>();   // Round 10: held shortcut ramp tops
             WorldMap.Boot(go);   // Round 20 (item 2): the map, on View / Select and M (Map/WorldMap.cs)
+            MiniMap.Boot(go);    // Round 24 A2 (A5): Racer's minimap (Map/MiniMap.cs)
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
@@ -52,6 +53,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound20") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; }   // Round 20: BUG-001 and BUG-002, the map
                 if (args[i] == "-exeRound21") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round21"; }   // Round 21 (Round20Runner.R21.cs)
                 if (args[i] == "-exeShortcut") { var r = go.AddComponent<ShortcutCheckRunner>(); r.outputDir = args[i + 1]; Application.runInBackground = true; }   // Round 10: the shortcut check in the exe (-shortcutOnly <id>, -shortcutSpeeds 20,30, -shortcutNoRace)
+                if (args[i] == "-exeProfile") { var r = go.AddComponent<ProfileRunner>(); r.outputDir = args[i + 1]; }   // Round 24 A2: where the frame time goes
                 if (args[i] == "-exeShots" && i + 2 < args.Length) { var r = go.AddComponent<ExeShotsRunner>(); r.listPath = args[i + 1]; r.outputDir = args[i + 2]; }   // Round 9
             }
         }

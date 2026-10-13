@@ -28,7 +28,7 @@ namespace ChastainRush
 
         void FixedUpdate()
         {
-            if (Time.time >= nextScan) { cars.Clear(); cars.AddRange(FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)); nextScan = Time.time + 1f; }
+            if (Time.time >= nextScan) { cars.Clear(); cars.AddRange(DrainPipe.Vehicles);   /* Round 24 A2: the shared search */ nextScan = Time.time + 1f; }
             foreach (var car in cars)
             {
                 if (!car || car.Body == null || car.Body.isKinematic) continue;

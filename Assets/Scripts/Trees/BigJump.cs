@@ -23,14 +23,13 @@ namespace ChastainRush
         public static IReadOnlyList<BigJump> All => all;
         readonly Dictionary<Rigidbody, float> recent = new Dictionary<Rigidbody, float>();
         readonly Dictionary<Rigidbody, float> before = new Dictionary<Rigidbody, float>();   // where each vehicle was along the jump last step
-        ArcadeVehicle[] cars = new ArcadeVehicle[0]; float nextFind;
 
         void OnEnable() { all.Add(this); }
         void OnDisable() { all.Remove(this); }
 
         void FixedUpdate()
         {
-            if (Time.time >= nextFind) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; }
+            var cars = DrainPipe.Vehicles;   // Round 24 A2: the shared once-a-second search (each jump searching on its own was a 12 to 19 ms hitch)
             var left = Vector3.Cross(Vector3.up, dir);
             foreach (var car in cars)
             {

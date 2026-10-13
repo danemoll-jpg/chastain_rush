@@ -101,11 +101,20 @@ namespace ChastainRush
             foreach (var car in Vehicles)
             {
                 if (!car || car.Body == null || car.Body.isKinematic) continue;
-                if (!rides.TryGetValue(car, out var ride)) rides[car] = ride = new Ride();
+                // Round 24 A2 (A1, the frame rate): a vehicle nowhere near this piece costs one box test. Before, every piece asked
+                // Inside() (a search of every piece) for every vehicle on every physics step: with the network's ~260 pieces and a
+                // race's four vehicles that was ~320 ms a frame, and the slow frames ran more physics steps, down to 3 fps.
+                rides.TryGetValue(car, out var ride);
+                if (!Near(car.Body.position, 2f))
+                {
+                    if (ride != null && ride.stick > 0f) { ride.stick = 0f; car.SurfaceUp = Vector3.up; }
+                    continue;
+                }
+                if (ride == null) rides[car] = ride = new Ride();
                 bool inBarrel = Barrel(car.Body.position, 0f, out var axis, out var along, out float fromEnd, out _);
                 // never a trap: overturned (or on its side) and slow anywhere in the pipe or its cuts for 1.5 s, it is put back in the
-                // bottom facing along the pipe, as a reset does
-                if (Inside(car.Body.position, out _) == this)
+                // bottom facing along the pipe, as a reset does (Round 24 A2: this piece's own test first; the search of all only then)
+                if (Holds(car.Body.position) && Inside(car.Body.position, out _) == this)
                 {
                     var refUp = Vector3.up;
                     if (inBarrel) { var rr = car.Body.position - axis; rr -= along * Vector3.Dot(rr, along); if (rr.magnitude > 0.3f) refUp = -rr.normalized; }
@@ -212,6 +221,8 @@ namespace ChastainRush
             along = floor[k + 1] - floor[k]; along.y = 0f; along.Normalize();
             return station > 0.01f && station < floor.Length - 1.01f;
         }
+
+        bool Holds(Vector3 p) => Locate(p, 0.6f, out _, out var at, out _) && p.y > at.y - 1.5f && p.y < at.y + clearHeight + 0.5f;
 
         public static DrainPipe Inside(Vector3 p, out float station)
         {

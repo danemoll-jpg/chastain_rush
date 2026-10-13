@@ -44,20 +44,23 @@ namespace ChastainRush
             PlayerSettings.runInBackground = false;
             PlayerSettings.usePlayerLog = true;
             PlayerSettings.SplashScreen.showUnityLogo = false;
-            EditorUserBuildSettings.development = false;
+            // Round 24 A2: -playerBuildDev makes a development build (profiler markers on) in Builds/ChastainRushDev instead, for
+            // ProfileRunner; Dan's exe is never a development build
+            bool dev = Array.IndexOf(Environment.GetCommandLineArgs(), "-playerBuildDev") >= 0;
+            EditorUserBuildSettings.development = dev;
             EditorUserBuildSettings.allowDebugging = false;
             EditorUserBuildSettings.connectProfiler = false;
             EditorUserBuildSettings.waitForPlayerConnection = false;
 
             string root = Path.GetDirectoryName(Application.dataPath);
-            string dir = Path.Combine(root, OutputDir);
+            string dir = Path.Combine(root, dev ? OutputDir + "Dev" : OutputDir);
             Directory.CreateDirectory(dir);
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
                 scenes = new[] { MapBuilder.ScenePath },
                 locationPathName = Path.Combine(dir, ExeName),
                 target = BuildTarget.StandaloneWindows64,
-                options = BuildOptions.None,
+                options = dev ? BuildOptions.Development : BuildOptions.None,
             });
             var s = report.summary;
             string persistent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", PlayerSettings.companyName, PlayerSettings.productName);
