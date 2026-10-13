@@ -1,6 +1,6 @@
 # The underground pipe network, as built
 
-Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 2**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
+Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 3**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
 
 **Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off in different directions; every exit is a way in as well. Manholes open only from below.
 
@@ -69,7 +69,7 @@ Manholes: **MH6** in Guidhall Trail (x 2550, z 1584; riser 6 m); **MH7** in West
 
 Exits: **Launch Big Lake** (x 2394, z 1528, a launch over the water); **Exit Creek Trail** (x 2342, z 1112); **Exit W12 Pond** (x 2497, z 1443); **Exit W7 Pond** (x 2446, z 1700)
 
-## Stage 3: the Glen and the shops (not built yet)
+## Stage 3: the Glen and the shops (BUILT)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|

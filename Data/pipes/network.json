@@ -1,6 +1,6 @@
 {
 "note": "Round 23 follow-ups: the underground pipe network as built. Made by Tools/mapgen/pipe_network.py; read by MapBuilder.Network.cs. Tubes: 'pts' is the floor's (invert's) line x, y, z every meter (risers every 0.5 m); ends 'ch' (a chamber's wall, its opening 'wall' 0 +u, 1 +v, 2 -u, 3 -v of the chamber's frame, 't' along it), 'pipe' (an entrance barrel of Data/pipes/pipes.json), 'mh' (a manhole riser up to the street), 'x' (an exit or outfall cut). Only what is at or under build_stage is built; a built chamber's opening onto a pipe not built yet ends in a short stub at a closed grille.",
-"build_stage": 2,
+"build_stage": 3,
 "tubes": [
 {
 "id": "BF-R",
