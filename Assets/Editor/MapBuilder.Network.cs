@@ -679,10 +679,10 @@ namespace ChastainRush
             Vector3 At(float s) { int i = Mathf.Clamp(g.At(s), 1, g.P.Length - 1); float t = Mathf.InverseLerp(g.S[i - 1], g.S[i], s); return Vector3.Lerp(g.P[i - 1], g.P[i], t); }
             Vector3 Along(float s) { var d = At(s + 0.5f) - At(s - 0.5f); d.y = 0f; return d.normalized; }
             Vector3 Left(float s) { var u = Along(s); return new Vector3(-u.z, 0f, u.x); }
-            float axis = 0f; int k = 0; for (float s = gl.s0; s <= gl.s1; s += 1f) { axis += At(s).y + g.R; k++; } axis /= Mathf.Max(1, k);
-            if (axis + g.R + GlassOut > surface - ClearCrownUnder) { Debug.LogError($"[Round23+] pipe {g.J.id}: the glass under W{gl.pond} is not under the water (crown {axis + g.R:0.00} m, surface {surface:0.00} m): not built"); return; }
+            float axis = float.MaxValue, axisTop = float.MinValue; for (float s = gl.s0; s <= gl.s1; s += 1f) { axis = Mathf.Min(axis, At(s).y + g.R); axisTop = Mathf.Max(axisTop, At(s).y + g.R); }   // its lowest (the trench's depth) and highest (the crown under the water)
+            if (axisTop + g.R + GlassOut > surface - ClearCrownUnder) { Debug.LogError($"[Round23+] pipe {g.J.id}: the glass under W{gl.pond} is not under the water (crown {axis + g.R:0.00} m, surface {surface:0.00} m): not built"); return; }
             var f = new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = T, AxisY = axis,
-                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left };
+                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R };
             BuildClearStretch(terrain, mats, root, f);
             var a = At(gl.s0); var b = At(gl.s1);
             cells.Cells.Add((root, new Bounds((a + b) * 0.5f, new Vector3(Mathf.Abs(a.x - b.x) + 2f * T + 10f, 20f, Mathf.Abs(a.z - b.z) + 2f * T + 10f))));

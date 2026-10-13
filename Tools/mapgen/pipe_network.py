@@ -208,8 +208,8 @@ TUBES = [
     # ---- stage 2
     T("M3a", "M3 Noonday Main (the hub to J4)", MAIN, True, 2, ("ch", "HUB", "floor"), [(2030.0, 1160.0), (2150.0, 1185.0)], ("ch", "J4"), stripe="M3"),
     T("M3b", "M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1)", MAIN, True, 2, ("ch", "J4"), [(2294.0, 1262.0), (2302.0, 1318.0)], ("ch", "J5"), stripe="M3"),
-    T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1612.0)], ("ch", "K15"), glass=[15], stripe="M3"),
-    T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [(2440.0, 1548.0)], ("x", "L_W15"), stripe="M3"),
+    T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1600.0), (2436.0, 1566.0)], ("ch", "K15"), glass=[15], stripe="M3"),
+    T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [(2472.0, 1522.0), (2440.0, 1522.0)], ("x", "L_W15"), stripe="M3"),
     T("B11", "B11", NARROW, False, 2, ("ch", "J4"), [(2318.0, 1160.0)], ("x", "X_TRAIL")),
     T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2452.0, 1462.0), (2512.0, 1486.0)], ("x", "X_W12")),
     T("B13", "B13", NARROW, False, 2, ("ch", "K15"), [], ("mh", "MH6")),

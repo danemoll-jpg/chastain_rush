@@ -175,7 +175,13 @@ namespace ChastainRush
                     if (ok && runA < 0) runA = i;
                     if ((!ok || i == n - 1) && runA >= 0) { int e = ok ? i : i - 1; if (e - runA > bestB - bestA) { bestA = runA; bestB = e; } runA = -1; }
                 }
-                if (bestA < 0 || (bestB - bestA) * PipeStep < 8f) { Debug.LogError($"[Round18] pipe {j.id}: the ground never covers it for 8 m (cover {j.cover_m} m): not built"); continue; }
+                if ((bestA < 0 || (bestB - bestA) * PipeStep < 8f) && j.open_b)
+                {   // Round 23 follow-ups: a network exit on low ground (the launch over the big lake): an open chute all the way to b, its headwall
+                    // at b where the network's pipe comes out
+                    bestA = bestB = n - 1;
+                    Debug.Log($"[Round23+] pipe {j.id}: the ground never covers it: an open cut all the way, its headwall at b");
+                }
+                else if (bestA < 0 || (bestB - bestA) * PipeStep < 8f) { Debug.LogError($"[Round18] pipe {j.id}: the ground never covers it for 8 m (cover {j.cover_m} m): not built"); continue; }
                 p.S1 = bestA * PipeStep; p.S2 = bestB * PipeStep;
                 if (j.open_b)   // Round 23: the barrels run right to b, where the network's pipes go on
                 {
@@ -520,6 +526,7 @@ namespace ChastainRush
             foreach (float bl in p.Lats)   // Round 23: one barrel, or a twin's two
             {
                 string bid = p.J.id + (p.J.twin ? (bl < 0f ? "R" : "L") : "");   // a twin's barrels: L (left, +lateral) and R
+                if (p.S2 - p.S1 < 0.5f) continue;   // Round 23 follow-ups: an open cut all the way (no barrel)
                 // ---- the pipe: round all the way (Round 19), inside faces only, UVs for the stained concrete (u along, 2.4 m a section)
                 const int arc = 48;
                 Vector3 Axis(float s) => W(s, bl, p.Y(s) - PipeFloorRise + p.R);

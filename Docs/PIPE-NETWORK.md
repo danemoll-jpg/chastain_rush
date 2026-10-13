@@ -1,6 +1,6 @@
 # The underground pipe network, as built
 
-Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 1**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
+Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 2**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
 
 **Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off in different directions; every exit is a way in as well. Manholes open only from below.
 
@@ -49,14 +49,14 @@ Manholes: **MH1** in Parkwood Drive (x 1548, z 1277; riser 11 m); **MH2** in Par
 
 Exits: **Exit W20 Pond** (x 1374, z 800)
 
-## Stage 2: Noonday (not built yet)
+## Stage 2: Noonday (BUILT)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
 | M3a | M3 Noonday Main (the hub to J4) | 5.0 m | 339 m | 252 to 269 m | HUB to J4;  |
 | M3b | M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1) | 5.0 m | 145 m | 267 to 269 m | J4 to J5;  |
-| M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 332 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m) |
-| M3d | M3 Noonday Main (the launch over the big lake) | 5.0 m | 40 m | 270 to 270 m | K15 to L_W15; comes out at launch big lake |
+| M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 325 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m) |
+| M3d | M3 Noonday Main (the launch over the big lake) | 5.0 m | 73 m | 270 to 271 m | K15 to L_W15; comes out at launch big lake |
 | B11 | B11 | 3.5 m | 72 m | 269 to 271 m | J4 to X_TRAIL; comes out at exit creek trail |
 | B12 | B12 | 3.5 m | 218 m | 268 to 273 m | J5 to X_W12; comes out at exit w12 pond |
 | B13 | B13 | 3.5 m | 92 m | 270 to 279 m | K15 to MH6; pops out at MH6 |

@@ -23,7 +23,7 @@ namespace ChastainRush
             car.transform.SetPositionAndRotation(spawn.position, rotation);
             var respawn = car.GetComponent<VehicleRespawn>();
             respawn.spawnPoint = spawn;
-            respawn.fallResetHeight = terrainBaseY - 20f;
+            respawn.fallResetHeight = terrainBaseY - 45f;   // Round 23 follow-ups: the pipe network's hub floor is 252 m, 20 m under the terrain's lowest point
             car.AddComponent<VehicleSwitch>();   // Round 13: Racer's vehicles (VehicleConfiguration, VehicleAudio), the Street Classic by default
 
             var camGo = new GameObject("Main Camera") { tag = "MainCamera" };

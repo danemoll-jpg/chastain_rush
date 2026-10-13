@@ -43,7 +43,7 @@ namespace ChastainRush
                 respawn.PlaceAt(p + Vector3.up * 0.3f, s.yaw);
                 yield return new WaitForSecondsRealtime(2.5f);
                 if (s.drive_speed <= 0f) { yield return Capture(s.name); report.AppendLine($"{s.name}: car at ({s.x:0.0}, {p.y:0.0}, {s.z:0.0}) heading {s.yaw:0}"); continue; }
-                int broken0 = FenceChunk.TotalBroken(), bursts0 = ManholeLid.Bursts; string resetInfo = ""; bool didReset = false, fpsNearHit = false;
+                int broken0 = FenceChunk.TotalBroken(), bursts0 = ManholeLid.Bursts; string resetInfo = "", jumpInfo = ""; bool didReset = false, fpsNearHit = false; float lowY = float.MaxValue; Vector3 lowAt = default, lastP = car.Body.position;
                 car.enabled = false;
                 var fwd = Quaternion.Euler(0f, s.yaw, 0f) * Vector3.forward;
                 car.Body.linearVelocity = fwd * s.drive_speed;
@@ -76,6 +76,7 @@ namespace ChastainRush
                     air = car.GroundedWheels == 0 ? air + Time.fixedDeltaTime : 0f; if (t > 0.6f) maxAir = Mathf.Max(maxAir, air);   // not the drop from the placing height
                     if (t > 0.3f) minSpeed = Mathf.Min(minSpeed, car.ForwardSpeed);
                     if (!shot && s.shot_at >= 0f && t >= s.shot_at) { shot = true; yield return Capture(s.name); }
+                    { var bp = car.Body.position; if (bp.y < lowY) { lowY = bp.y; lowAt = bp; } if (t > 0.5f && (bp - lastP).magnitude > 25f && jumpInfo.Length == 0) jumpInfo = $"; JUMPED at {t:0.0} s from ({lastP.x:0.0}, {lastP.y:0.0}, {lastP.z:0.0}) to ({bp.x:0.0}, {bp.y:0.0}, {bp.z:0.0})"; lastP = bp; }
                     if (!shot && s.shot_near != null && s.shot_near.Length >= 2 && new Vector2(car.Body.position.x - s.shot_near[0], car.Body.position.z - s.shot_near[1]).magnitude < 3f) { shot = true; yield return Capture(s.name); }
                     if (s.fps_from >= 0f && t < s.fps_from) frames.Clear();
                     if (s.fps_near != null && s.fps_near.Length >= 2 && !fpsNearHit) { if (new Vector2(car.Body.position.x - s.fps_near[0], car.Body.position.z - s.fps_near[1]).magnitude < 5f) fpsNearHit = true; else frames.Clear(); }
@@ -99,7 +100,7 @@ namespace ChastainRush
                 report.AppendLine($"{s.name}: drive at {s.drive_speed:0.0} m/s for {s.drive_seconds:0.0} s from ({s.x:0.0}, {s.z:0.0}) heading {s.yaw:0}: broke {FenceChunk.TotalBroken() - broken0} panel(s); " +
                                   $"lowest speed after the start {minSpeed:0.0} m/s ({(1f - minSpeed / s.drive_speed) * 100f:0}% below), most tilt {maxTilt:0} deg, {(minSpeed < 1f ? "STOPPED" : "kept going")}, " +
                                   $"longest with no wheel down {maxAir:0.00} s" +
-                                  fps + resetInfo + (ManholeLid.Bursts > bursts0 ? $"; manhole lids burst: {ManholeLid.Bursts - bursts0}" : "") + $"; ended at ({car.Body.position.x:0.0}, {car.Body.position.y:0.0}, {car.Body.position.z:0.0}){(DrainPipe.InsideAny(car.Body.position) ? " underground" : " above ground")}" + (follow ? $"; path {(reached ? "followed to its end" : "NOT finished")} in {t:0.0} s, farthest from it {maxDev:0.00} m at ({devAt.x:0.0}, {devAt.y:0.0}), fewest wheels down {minWheels} first at ({wheelAt.x:0.0}, {wheelAt.y:0.0})" : ""));
+                                  fps + resetInfo + jumpInfo + $"; lowest at ({lowAt.x:0.0}, {lowAt.y:0.0}, {lowAt.z:0.0})" + (ManholeLid.Bursts > bursts0 ? $"; manhole lids burst: {ManholeLid.Bursts - bursts0}" : "") + $"; ended at ({car.Body.position.x:0.0}, {car.Body.position.y:0.0}, {car.Body.position.z:0.0}){(DrainPipe.InsideAny(car.Body.position) ? " underground" : " above ground")}" + (follow ? $"; path {(reached ? "followed to its end" : "NOT finished")} in {t:0.0} s, farthest from it {maxDev:0.00} m at ({devAt.x:0.0}, {devAt.y:0.0}), fewest wheels down {minWheels} first at ({wheelAt.x:0.0}, {wheelAt.y:0.0})" : ""));
             }
             File.WriteAllText(Path.Combine(outputDir, "shots.txt"), report.ToString());
             yield return new WaitForSecondsRealtime(0.5f);

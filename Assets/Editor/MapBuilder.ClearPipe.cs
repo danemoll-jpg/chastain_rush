@@ -165,7 +165,7 @@ namespace ChastainRush
         // MapBuilder.Network.cs), so the network's glass stretches are built from the same parts as P1's
         sealed class ClearFrame
         {
-            public string Id; public float R, C0, C1, Surface, T, AxisY;
+            public string Id; public float R, C0, C1, Surface, T, AxisY; public Func<float, float> AY;   // Round 23 follow-ups: AY, the axis's height along the stretch (a network pipe's glass may slope); AxisY its lowest
             public Func<float, float, float, Vector3> W;   // (s, lateral, y) to the world
             public Func<float, Vector3> U3, N3;            // along and left at s (level)
         }
@@ -181,7 +181,8 @@ namespace ChastainRush
             float T = p.T, R = p.R;
             Vector3 W(float s, float lat, float y) => p.W(s, lat, y);
             var up3 = Vector3.up;
-            float axisY = p.AxisY;   // the floor is level across the clear stretch
+            float axisY = p.AxisY;   // the floor is level across the clear stretch (P1); a network pipe's: its lowest
+            float AY(float s) => p.AY != null ? p.AY(s) : axisY;
             float surf = p.Surface, bot = axisY - R - TrenchBelow, top = surf - 0.03f, bedY = surf - BedDepth;
             float Half(float y) => Mathf.Lerp(TrenchBottomHalf, T, Mathf.InverseLerp(bot, top, y));   // the trench's half width at a height
             float Depth01(float y) => Mathf.InverseLerp(top, bot, y);
@@ -208,7 +209,7 @@ namespace ChastainRush
                     Vector3 a0 = Section(sa, k), a1 = Section(sa, k + 1), b0 = Section(sb, k), b1 = Section(sb, k + 1);
                     float y = (a0.y + a1.y) * 0.5f; float n = Mathf.PerlinNoise(sa * 0.3f + k * 0.21f, 3f);
                     bed.Tint = Under(Shade(Color.Lerp(silt, new Color(0.30f, 0.36f, 0.22f), n * 0.6f), 0.85f + 0.25f * n), y);
-                    var c = (a0 + a1 + b0 + b1) * 0.25f; var ax = W((sa + sb) * 0.5f, 0f, axisY);
+                    var c = (a0 + a1 + b0 + b1) * 0.25f; var ax = W((sa + sb) * 0.5f, 0f, AY((sa + sb) * 0.5f));
                     Face(bed, a0, b0, b1, a1, ax - c);   // facing the tube
                 }
             }
@@ -216,7 +217,7 @@ namespace ChastainRush
             foreach (var (s, sgn) in new[] { (p.C0, 1f), (p.C1, -1f) })
             {
                 var u3 = p.U3(s); var n3 = p.N3(s);
-                var c = W(s, 0f, axisY); const int seg = 48; float ro = R;   // the opening is the tube's own inside: no gap round it to see past
+                var c = W(s, 0f, AY(s)); float axS = AY(s); const int seg = 48; float ro = R;   // the opening is the tube's own inside: no gap round it to see past
                 for (int i = 0; i < seg; i++)
                 {
                     float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
@@ -224,14 +225,14 @@ namespace ChastainRush
                     Vector3 Edge(float th)   // out from the center along th to the trench's outline
                     {
                         var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = ro, hi = 20f;
-                        for (int it = 0; it < 24; it++) { float mid = (lo + hi) * 0.5f; float y = axisY + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
+                        for (int it = 0; it < 24; it++) { float mid = (lo + hi) * 0.5f; float y = axS + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
                         return c + n3 * (d.x * lo) + up3 * (d.y * lo);
                     }
                     var e0 = Edge(t0); bed.Tint = Under(Shade(silt, 0.8f), e0.y);
                     Face(bed, C(t0), C(t1), Edge(t1), e0, u3 * sgn); Face(bed, C(t0), C(t1), Edge(t1), e0, -u3 * sgn);   // both faces: nothing past it shows from any angle
                 }
             }
-            var bedGo = bed.ToObject("Pipe " + p.Id + " clear stretch - the deep water bed", mats.House, root, false, false);
+            var bedGo = bed.ToObject("Pipe " + p.Id + " clear stretch - the deep water bed", mats.House, root, true, false);   // Round 23 follow-ups: solid (nothing falls out of the world through it)
             // rocks on the bed and its slopes (look only)
             var rocks = new MeshBuilder(); int nRocks = 0;
             for (int i = 0; i < 46; i++)
@@ -322,14 +323,14 @@ namespace ChastainRush
                 Vector3 H(float s, int i)   // the trench outline (12 points round) pulled toward the axis by k, kept clear of the glass
                 {
                     float th = Mathf.PI * 2f * i / 12f; var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = R + 0.3f, hi = 20f;
-                    for (int it = 0; it < 20; it++) { float mid = (lo + hi) * 0.5f; float y = axisY + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
+                    for (int it = 0; it < 20; it++) { float mid = (lo + hi) * 0.5f; float y = AY(s) + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
                     float rr = Mathf.Max(R + 0.35f, lo * k);
-                    return W(s, d.x * rr, axisY + d.y * rr);
+                    return W(s, d.x * rr, AY(s) + d.y * rr);
                 }
                 for (int j = 0; j < 6; j++)
                 {
                     float sa = p.C0 + 0.3f + (len - 0.6f) * j / 6f, sb = p.C0 + 0.3f + (len - 0.6f) * (j + 1) / 6f;
-                    for (int i = 0; i < 12; i++) Face(hz, H(sa, i), H(sb, i), H(sb, i + 1), H(sa, i + 1), W(sa, 0f, axisY) - H(sa, i));
+                    for (int i = 0; i < 12; i++) Face(hz, H(sa, i), H(sb, i), H(sb, i + 1), H(sa, i + 1), W(sa, 0f, AY(sa)) - H(sa, i));
                 }
             }
             { var hgo = hz.ToObject("Pipe " + p.Id + " clear stretch - water haze", clearHaze, root, false, false); GameObjectUtility.SetStaticEditorFlags(hgo, 0); }
@@ -343,9 +344,9 @@ namespace ChastainRush
                 for (int i = 0; i < seg; i++)
                 {
                     float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
-                    Vector3 Rg(float sx, float th2, float r) => W(sx, Mathf.Sin(th2) * r, axisY - Mathf.Cos(th2) * r);
+                    Vector3 Rg(float sx, float th2, float r) => W(sx, Mathf.Sin(th2) * r, AY(sx) - Mathf.Cos(th2) * r);
                     float r0 = R + GlassOut + 0.005f, r1 = r0 + th;
-                    var dir0 = (Rg(s, t0, 1f) - W(s, 0f, axisY)).normalized; var u3 = p.U3(s);
+                    var dir0 = (Rg(s, t0, 1f) - W(s, 0f, AY(s))).normalized; var u3 = p.U3(s);
                     Face(ribs, Rg(s - w / 2, t0, r0), Rg(s + w / 2, t0, r0), Rg(s + w / 2, t1, r0), Rg(s - w / 2, t1, r0), -dir0);   // inner face (seen from the tube)
                     Face(ribs, Rg(s - w / 2, t0, r1), Rg(s + w / 2, t0, r1), Rg(s + w / 2, t1, r1), Rg(s - w / 2, t1, r1), dir0);
                     Face(ribs, Rg(s - w / 2, t0, r0), Rg(s - w / 2, t1, r0), Rg(s - w / 2, t1, r1), Rg(s - w / 2, t0, r1), -u3);
@@ -359,11 +360,11 @@ namespace ChastainRush
                 float s1 = Mathf.Min(s0 + 4f, p.C1), sm = (s0 + s1) * 0.5f;
                 var lid = new GameObject("Pipe " + p.Id + " clear stretch - lid over the deep water (collider only)"); lid.transform.SetParent(root, false);
                 lid.transform.SetPositionAndRotation(W(sm, 0f, bedY - 0.1f), Quaternion.LookRotation(p.U3(sm)));
-                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * T + 1f, 0.2f, s1 - s0 + 0.6f);
+                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * T + 3f, 0.4f, s1 - s0 + 1.5f);   // Round 23 follow-ups: wider and overlapping (a car launched over the big lake's trench fell past it)
             }
             // ---- the run-time side: fish and the sound change
             var aq = root.gameObject.AddComponent<PipeAquarium>();
-            aq.a0 = W(p.C0, 0f, axisY); aq.a1 = W(p.C1, 0f, axisY); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = T; aq.bottomHalf = TrenchBottomHalf;
+            aq.a0 = W(p.C0, 0f, AY(p.C0)); aq.a1 = W(p.C1, 0f, AY(p.C1)); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = T; aq.bottomHalf = TrenchBottomHalf;
             aq.fishMaterials = fishMats;
             Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the trench round it {2f * T:0} m wide at the top, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs");
         }
