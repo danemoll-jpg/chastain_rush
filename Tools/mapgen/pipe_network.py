@@ -163,7 +163,8 @@ EXITS = {
     "X_STREAM": dict(name="EXIT LAKE STREAM", at=(470.0, 1425.0)),
     "X_W5":    dict(name="EXIT FAR WEST POND", at=(182.0, 1488.0)),
     "X_NELSON": dict(name="EXIT NELSON LAKE", at=(262.0, 118.0)),
-    "L_W8":    dict(name="LAUNCH GLEN POND", at=(2896.0, 858.0), outfall=8, max_len=27.0),   # Round 24 A2: the chute stops short of Chastain Trail's sidewalk (it ended in it)
+    # Round 24 (Dan, 2026-10-13: "restore the property completely for now and worry about where that pipe gets rerouted later"):
+    # L_W8, the launch over the Chastain Glen pond, is out with its pipe B18 until Dan picks a new place
     "L_W15":   dict(name="LAUNCH BIG LAKE", at=(2394.0, 1528.0), outfall=15),
 }
 MANHOLES = {
@@ -225,8 +226,7 @@ TUBES = [
     T("M4d", "M4 Glen Main (J12 to J8)", MAIN, True, 3, ("ch", "J12"), [(3010.0, 1010.0)], ("ch", "J8"), stripe="M4"),
     T("B16", "B16", NARROW, False, 3, ("ch", "J6"), [(2300.0, 800.0), (2230.0, 700.0)], ("mh", "MH8")),
     T("B17", "B17", NARROW, False, 3, ("ch", "J7"), [(2712.0, 900.0)], ("mh", "MH9")),
-    # Round 24 A2: the narrow size (the 5 m pipe needs a chute long enough to reach Chastain Trail's sidewalk before the ground covers it)
-    T("B18", "B18 (the launch over the Chastain Glen pond)", NARROW, False, 3, ("ch", "J12"), [(2938.0, 884.0)], ("x", "L_W8")),
+    # B18 (J12 to L_W8, the launch over the Chastain Glen pond): out until it is re-routed (Round 24, Dan)
     T("B19a", "B19", NARROW, False, 3, ("ch", "J13"), [(2800.0, 650.0)], ("ch", "K19")),
     T("B19b", "B19", NARROW, False, 3, ("ch", "K19"), [], ("mh", "MH10")),
     T("B19c", "B19", NARROW, False, 3, ("ch", "K19"), [], ("x", "X_W11")),   # Round 24 A2: straight from K19 to the new mouth

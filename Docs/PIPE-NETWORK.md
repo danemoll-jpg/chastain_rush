@@ -79,7 +79,6 @@ Exits: **Launch Big Lake** (x 2394, z 1528, a launch over the water); **Exit Cre
 | M4d | M4 Glen Main (J12 to J8) | 5.0 m | 361 m | 286 to 294 m | J12 to J8;  |
 | B16 | B16 | 3.5 m | 375 m | 268 to 278 m | J6 to MH8; pops out at MH8 |
 | B17 | B17 | 3.5 m | 175 m | 276 to 284 m | J7 to MH9; pops out at MH9 |
-| B18 | B18 (the launch over the Chastain Glen pond) | 3.5 m | 52 m | 286 to 288 m | J12 to L_W8; comes out at launch glen pond |
 | B19a | B19 | 3.5 m | 244 m | 285 to 290 m | J13 to K19;  |
 | B19b | B19 | 3.5 m | 69 m | 289 to 290 m | K19 to MH10; pops out at MH10 |
 | B19c | B19 | 3.5 m | 89 m | 289 to 290 m | K19 to X_W11; comes out at exit w11 pond |
@@ -92,7 +91,7 @@ Chambers: **J6 BRIDGE JCT** (junction, x 2384, z 884, floor 268 m); **J7 GLEN JC
 
 Manholes: **MH8** in Paxton Court Northeast (x 2127, z 619; riser 9 m); **MH9** in Grasmere Court Northeast (x 2730, z 816; riser 7 m); **MH10** in Weybourne Court Northeast (x 2691, z 613; riser 6 m); **MH11** in Chasefield Way (x 2965, z 1093; riser 6 m)
 
-Exits: **Launch Glen Pond** (x 2896, z 858, a launch over the water); **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780); **Exit Behind Shops** (x 3153, z 1256); **Exit Little Noonday** (x 3752, z 1468)
+Exits: **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780); **Exit Behind Shops** (x 3153, z 1256); **Exit Little Noonday** (x 3752, z 1468)
 
 ## Stage 4: the lakes (BUILT)
 

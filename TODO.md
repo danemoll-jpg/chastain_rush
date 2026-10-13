@@ -2753,6 +2753,9 @@ A6. Rebuild the exe, commit, short report. No drive tests beyond A1's frame-rate
   roam (saved in `minimap.json` beside the records); in a race it sits under the place readout. Imported from Racer in Round 24 A2:
   RacingMiniMap (rewritten; left behind: road lines, sites, waypoint, stunt park, acorn areas, Speed Patrol, Getaway, split-screen).
 - A6 DONE. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
+- Follow-up (Dan, 2026-10-13: "restore the property completely for now and worry about where that pipe gets rerouted later"):
+  L_W8 (the launch over the Chastain Glen pond) and its pipe B18 are out of the network (`pipe_network.py`); the lot by the pond
+  is whole again (no cut, no chute), J12's wall closed where B18 joined. Re-routing it waits for Part B (item 4, BUG-002).
 - For Dan to check: a race on each track (frame rate), the creek-trail exit and the closed mouths in a Noonday race, the moved exits
   (trail, bridges, Joel Drive), the manhole lids, the minimap (J / B in free roam), the big map's edges.
 
