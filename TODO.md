@@ -2613,6 +2613,26 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
    rest waits for Dan's picks), to the pipe standard (round, rideable walls, used and dark, a trickle, lit, never a
    trap, reset in the bottom). Until the network behind it exists, the twin pipes carry you under Bells Ferry Road
    and out the other side.
+2b. CORRECTION TO ITEM 2 (Dan, 2026-10-12 23:17, from the work-in-progress exe, standing on his BUG-002 spot, x 1413.47
+   z 1176.45, heading 41; his screenshot: `local/round23/dan_culvert_2316.png`): "its already messed up. This should have
+   been the entrance". What the screenshot shows: the twin culvert stands off to the RIGHT of where he is looking; straight
+   ahead, where the creek channel meets the bank, there is a wingwall with railings and the channel's water is a flat
+   blue rectangle sticking out over the bank (it does not follow the channel). The entrance must be exactly where he
+   pointed: the twin pipes' mouths straight ahead of his position and heading, at the end of the creek channel he is
+   standing in, so the creek runs straight into them and he drives straight in. Move the culvert there (or re-route
+   its pipes so the mouths sit there) and fit the headwall and wingwalls to the channel's banks. The channel's water
+   follows the channel and goes into the pipes (no flat slab, nothing floating over the bank). Check from Dan's exact
+   spot and heading: a picture, and a drive straight in from there in a car and on a bike.
+2c. AND IT IS THE WAY INTO THE NETWORK, NOT A ROAD CULVERT (Dan, 23:19: "this was supposed to be the entrance into the
+   pipe network not just two pipes passing under the road"). Claude's item 2 wrongly said the twin pipes should carry
+   you under Bells Ferry Road and out the other side; that is withdrawn. Build the entrance as the start of the network:
+   the twin pipes lead from the creek channel INTO the network, down and away underground (the creek's water goes with
+   them), to the network's first junction chamber a little way in, built now as the first piece of the network: a big
+   concrete chamber where the twin mains arrive and other pipes leave in the directions the proposal will take them.
+   Those onward pipes run a short way and end at closed steel grilles (barred gates, lit, clearly "not open yet",
+   never a dead end that traps: room to turn round) until Dan has picked the network and they are built. No exit on the
+   far side of Bells Ferry Road from these pipes. Report what the chamber looks like (pictures), and draw where its
+   onward pipes would go on the proposal overhead.
 3. Rebuild the exe (stay off Dan's screen, muted); report: status list, "for Dan to check", the proposal overhead and
    how to turn its markers on, path to the exe. STOP for Dan's picks on the network.
 
