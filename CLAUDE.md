@@ -136,6 +136,14 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   free way through the same ground (Dan's R1 report: "there is literally
   nothing stopping you"). Propose candidates on markers when Dan asks; build
   once he picks.
+- **Build the world to be reused** (Dan, 2026-10-12: "once this game is complete
+  ... I can completely reuse the map for another kind of game maybe in post
+  apocalyptic world where there would be people living there. so i do want to
+  leave it versatile"). Keep the world and the game apart: the map, houses,
+  trails, pipes, chambers and the like are world, built from data and the map
+  build; races, checkpoints, race gates, switches, barriers, AI racing and HUD
+  are a game layer on top that can be swapped out. Do not bake race-only
+  assumptions into world pieces.
 - **Houses are not set in stone** (Dan, 2026-10-11: "If we need to modify or
   slightly relocate a house to accommodate tracks/shortcuts this could be ok.
   Just let me know and i can do the final decision"). When a track or
@@ -274,6 +282,12 @@ drive (a tree on #2's line, #6's ramp drawn as a flatbed instead of hay
 bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
+
+**Active work is Round 23 in `TODO.md`:** Part A, extend the Chastain
+Enclave amenity lot (Dan's report); Part B, the map-wide underground pipe
+network as a proposal on markers for Dan, plus its main entrance, decided by
+Dan: a twin culvert under Bells Ferry Road where the creek meets the road
+(x 1413, z 1176). Round 22 (the three neighborhoods) is built and driven.
 
 **Round 22 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Grasmere Court,
 Chastain Commons and Chastain Enclave dressed like Chastain Glen (`python Tools/mapgen/communities_area.py` writes
@@ -489,7 +503,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-12_01-54-20-969_70e57b` (BUG-001 / BUG-002: Dan's free cut across the west lobe, now R1 with risk; in TODO.md, Round 20 follow-ups).
+`2026-10-12_20-55-46-538_f31c32` (BUG-001 Enclave lot, BUG-002 twin culvert under Bells Ferry Road as the pipe network's main entrance; in TODO.md, Round 23).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

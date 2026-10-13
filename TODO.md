@@ -2518,7 +2518,7 @@ cause). Pictures and reports: `local/round21f/` (git-ignored). Imported from Rac
   `Assets/HandMade/Proposals/`, `make_proposal_labels.py`, `reverse_creek_candidates.py`, the debug-menu rows, the map layer.
 - 5. Exe rebuilt: `Builds/ChastainRush/ChastainRush.exe`.
 
-**BUILT — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court (Dan, 2026-10-12 18:45: "Do we go ahead
+**DONE, driven by Dan 2026-10-12 (session 2026-10-12_20-55-46-538_f31c32; his one fix is in Round 23 Part A) — Round 22: Chastain Commons, Chastain Enclave and Grasmere Court (Dan, 2026-10-12 18:45: "Do we go ahead
 and build the other community neighborhoods as discussed prior"; moved ahead of the pipe network).** Dan's words and
 the places are in the notes "Round 18, two more neighborhoods" and "Also in the neighborhoods round" further down
 (Claude's numbering there is old; this is the round). Build it; Dan judges by driving (CLAUDE.md "Build it, then Dan
@@ -2597,7 +2597,64 @@ muted), not yet driven by Dan.** No new debug sessions since 2026-10-12_01-54-20
 - Report only: 16 community houses have a wall buried more than 0.5 m on a slope (worst 636 at x 2684, z 632, 2.7 m;
   1099 at x 2873, z 639, 1.4 m; 361 at x 2013, z 780, 1.3 m); not regraded (Round 9 rule: only where Dan points).
 
-**QUEUED — Round 23: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
+**ACTIVE — Round 23: the Enclave lot fix, then the underground pipe network (Dan, 2026-10-12 21:59).**
+Part A (commit on its own), Dan's session 2026-10-12_20-55-46-538_f31c32 (read by Claude):
+1. BUG-001 (vehicle x 1767.22, z 771.72, heading 261, on the grass beside the Chastain Enclave amenity block's parking
+   lot): "parking lot should extend out to here". Extend the amenity lot's asphalt (with its stalls) out to Dan's spot,
+   flush, no step or curb to catch a wheel where it meets the grass. That lot only.
+Part B, the pipe network: the notes right below, PROPOSAL FIRST (as Dan asked), markers in the world and on the map,
+an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
+2. BUG-002 (vehicle x 1413.45, z 1176.44, heading 41, in the creek channel just west of Bells Ferry Road, facing the
+   bank where the stream goes under the road): "specifically right here there are two large pipes. I want this to
+   be a main entrance the pipe network". In the game the stream simply runs into the bank. Make this the network's
+   MAIN ENTRANCE: two large side-by-side culvert pipes (a twin culvert) under Bells Ferry Road with a concrete
+   headwall and wingwalls set into the bank (no exposed back), big enough for every vehicle, the stream running
+   through them; the proposal shows where the network leads from here. Build this entrance now (it is decided; the
+   rest waits for Dan's picks), to the pipe standard (round, rideable walls, used and dark, a trickle, lit, never a
+   trap, reset in the bottom). Until the network behind it exists, the twin pipes carry you under Bells Ferry Road
+   and out the other side.
+3. Rebuild the exe (stay off Dan's screen, muted); report: status list, "for Dan to check", the proposal overhead and
+   how to turn its markers on, path to the exe. STOP for Dan's picks on the network.
+
+**DAN'S VISION FOR THE NETWORK (2026-10-12 22:11, after talking it through with Claude). The proposal is built around
+this.** Dan, to Claude's list of questions and ideas: "pretty much everything you said. I want a maze, with secret exits
+all over but a space for full on race as well. I envision a main hub that is a big open chasm with water flowing in
+from all the sources. Love the idea of pop-out manhole covers as well. Pretty much everything you described is things
+that I think of." And: "during underground races we can [have] gates sealing off other [areas] and potential shortcuts
+would require you to drive over a switch or something to open them."
+- A MAZE: many branches and junctions, easy to get lost in, with SECRET EXITS all over the map (out of creek and
+  pond banks, behind the shopping center, up into the woods trail, under the bridges, ...).
+- THE HUB: a big open underground chasm in the middle of the network where the pipes from every water source pour in
+  as waterfalls; the main junction everything leads back to. Its own space to drive round (ledges, ramps, the floor,
+  a pool where the water gathers), and a landmark you remember.
+- MANHOLE POP-OUTS: some branches end under residential streets and the vehicle bursts up through a manhole cover
+  (the lid flies off, the vehicle pops out onto the road). Breakable lid, a clear launch, never a trap.
+- Also wanted (Claude's list, Dan: "pretty much everything"): junction chambers, aquarium stretches wherever the
+  network passes under a lake or pond (as P1), drop shafts down to a lower level, outfall launches out of headwalls
+  over water, flooded stretches that slow you (a reason to pick a route), big mains every vehicle fits and narrower
+  branches only bikes / the ATV fit, painted signs at the main junctions and color stripes on the mains (the maze
+  branches stay unmarked), and the map showing the pipes when you are underground.
+- A FULL UNDERGROUND RACE: a route through the network (through the hub) raced from the menu with the AI, its own
+  checkpoints. During that race, GATES (barred grilles / sluice gates) seal off the rest of the maze so the race
+  stays on its route; its shortcuts are behind gates that OPEN only when a racer drives over a SWITCH (a pressure
+  plate or a lever on the floor somewhere along the route, perhaps off the racing line or up a wall), so a shortcut
+  costs a detour or a risk to unlock. The AI follows the shortcut rules (CLAUDE.md) and may hit switches too.
+- The main entrance is already decided: the twin culvert under Bells Ferry Road (item 2). East Chastain Lake is just
+  west of it.
+- The natural spine (Claude): Nelson Lake (south-west corner), West Chastain Lake, East Chastain Lake, the Bells
+  Ferry entrance, the Enclave ponds, Noonday Creek and the big lake, the small pond (P1, the aquarium pipe), the
+  Chastain Glen pond; about 3 to 4 km, with the maze branching off it. The hub somewhere central on it.
+- VERSATILE (CLAUDE.md "Build the world to be reused"): the network is world, not race. Data-driven pieces (pipes,
+  chambers, hub, exits, gates, switches) in data files and the map build; race gates and switches are a race-layer
+  thing that can be switched off; nothing about the network assumes it is only a race track.
+- THE PROPOSAL (Part B): an overhead of the whole network (mains, maze branches, hub, chambers, aquarium stretches,
+  drop shafts, every exit and its kind, manholes), what passes under what (roads, houses, lakes), lengths; the
+  underground race route with its checkpoints, gates and switch shortcuts drawn; markers in the world at every
+  mouth, exit and manhole, and a map layer; build STAGES (stage 1: the hub, the main entrance and the trunk to it,
+  and the race route; then the maze in pieces); the frame-rate plan (nothing underground drawn or simulated when
+  you are not near it). Dan picks and changes; then build stage by stage.
+
+**Round 23 Part B notes: the underground pipe network (Dan, 2026-10-11).** Dan: "My idea is that we can have a huge
 underground network of pipes across the entire maps that link the different bodies of water, not only for race
 shortcts." A map-wide network of drive-through pipes joining the ponds, lakes and creeks (22 ponds and lakes, 33
 stream lines in `Data/map.json`), for exploring in free roam as well as for race shortcuts. P1 (Round 18) is its
