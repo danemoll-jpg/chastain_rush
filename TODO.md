@@ -2673,7 +2673,51 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 23 follow-ups (Dan's session 2026-10-13_00-41-08-815_cf0041, read by Claude; six reports, after
+**ACTIVE — Round 24 (Dan, 2026-10-13 11:20, after driving part of the network). Dan is near his weekly usage limit:
+do Part A first, rebuild the exe, commit, and stop if usage runs short; Part B is queued for his next session. No vehicle
+drive tests: Dan tests himself. One check that the map build and the exe build succeed.**
+
+Part A, CAMERAS (priority). Dan: "I think priority should be the camera underground. The camera shifts around too much
+and makes it a bit difficult. We should also implement the cameras from Woodstock rush at this point. Including the
+different angles and the look around capability".
+1. Port Racer's camera system (read Racer's chase camera code and its camera modes; prefer porting; list what came):
+   its different views / angles (cycled from the controller and keyboard as in Racer) and its look-around (right stick
+   / mouse, returning behind the vehicle when let go). Same buttons as in Woodstock Rush unless one clashes here (the
+   map is on View, bug capture on R3): say which buttons.
+2. Underground: the camera must be steady in the pipes, chambers and the hub: no swinging, snapping or shifting as the
+   pipe turns or the vehicle rides the walls; it stays inside the pipe (never through the wall), follows smoothly, and
+   keeps world-up unless the player picks a view that rolls. Look-around works underground too.
+3. Rebuild the exe, commit, short report (the buttons, the views). Stop here if usage is short.
+
+Part B, QUEUED for Dan's next session (do after Part A, in this order):
+4. Ugly entrances and exits, everywhere. Dan: "I don't want ugly entrances like the one I flagged. If there are others I
+   want them reworked as well." His session 2026-10-13_10-00-51-441_3321a8:
+   - BUG-001 (vehicle x 2918.28, z 814.79, by the Chastain Glen pond entrance): "We can put ground cover over this so
+     there isn't a big open notch and fence isnt hanging in mid air". Cover the cut: ground over the pipe, no open notch,
+     the fence standing on ground.
+   - BUG-002 (vehicle x 2901.45, z 853.92): "Don't like this exit at all. I don't want any exit/entrances occuring that
+     causes floating houses. Not to mention there is an actual pipe entrance close by. This pipe should be routed
+     somewhere else and the house restored to normal". Re-route that pipe elsewhere, restore the house and its ground.
+   - BUG-003 (vehicle x 2668.34, z 419.66, on Joel Drive): "the edges of the exit should not extend out in to the
+     road.please restore the road". Restore the road; the exit sits off it.
+   RULES for every mouth, exit and manhole (go through all of them, rework any that break one; list what changed): no
+   house, fence, tree or road left floating or cut; no open notch or raw cut in the ground; nothing poking into a road;
+   headwalls set into banks with ground over the pipe; it looks like something that belongs there.
+5. Aquarium stretches in open water. Dan: "is it possible to make them not in channels? For example if I am in the middle
+   of a lake I would want it to look like I am in the middle of a lake then in a channel". Where a glass stretch passes
+   under a lake or pond, the water must surround it openly: the lake bed falls away on both sides, open water around
+   and above, fish all round; no trench or channel walls hugging the tube.
+6. Finding the way. Dan: "It is very easy to get turned around in the tunnels. Can we [make] the lines always point
+   towards the hub." The color stripes on the mains carry arrows (chevrons) pointing toward the hub, everywhere along
+   them; at junctions a sign "HUB" with an arrow. Maze branches stay unmarked.
+7. The hub. Dan: "shouldn't all main lines intersect here?" Yes: every main (M1 to M6) reaches the hub and pours in as a
+   waterfall; re-route the ones that do not (say which, and how).
+8. The race: keep its proposal markers (moved to fit the network as built) and build nothing of it until the
+   underground is settled (Dan: "Lets keep the markers for the race but not build it until we have the underground
+   set").
+9. Rebuild the exe, commit, short report.
+
+**DONE (stages 1 to 4 built, driven in part by Dan 2026-10-13; his notes are Round 24) — Round 23 follow-ups (Dan's session 2026-10-13_00-41-08-815_cf0041, read by Claude; six reports, after
 the Round 23 build).** Build what is decided; the rest of the network still waits for Dan's go on the proposal.
 
 STATUS (Claude, 2026-10-13): items 1 to 3 done (e1ba748, checked in the exe); items 4 to 7 done (d2906dc, checked); items 8 to

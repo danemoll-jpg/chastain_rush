@@ -283,13 +283,12 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is the Round 23 follow-ups in `TODO.md`:** Part A, the
-Enclave amenity block (stalls on the sides, a sidewalk and gate between pool
-and lot, breakable tennis-court fence, at most 10 loungers plus umbrella
-tables); Part B, the entrances: the creek flows into the Bells Ferry pipes,
-the two pipes split in two directions (no big room straight inside), and the
-Chastain Glen pond culvert becomes a second entrance (two pipes, two
-directions). Then Part C: build the whole pipe network as proposed, stage by stage (1 to 4), the exe rebuilt and committed after each stage; NO underground race, gates or switches yet.
+**Active work is Round 24 in `TODO.md`:** Part A FIRST (Dan is near his
+usage limit): Racer's cameras (angles, look-around) and a steady camera
+underground; rebuild the exe and commit. Part B, queued: rework ugly pipe
+entrances and exits everywhere, open-water aquarium stretches, hub-pointing
+arrows on the mains, every main into the hub, race markers kept and the race
+not built. No vehicle drive tests (Dan tests); only check the builds succeed.
 
 **The Round 23 follow-ups (see `TODO.md`, status there) are built; stages 1 and 2 checked in the exe by script, stages 3 and 4
 built only (Dan asked to test them himself); none driven by Dan yet.** Part A (e1ba748) the Enclave lot, gate, sidewalk, court
@@ -527,7 +526,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-13_00-41-08-815_cf0041` (six reports: Enclave lot, fence, loungers; BF water and split; Glen pond culvert entrance; in TODO.md, Round 23 follow-ups).
+`2026-10-13_10-00-51-441_3321a8` (three entrance / exit reports; in TODO.md, Round 24 item 4).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
