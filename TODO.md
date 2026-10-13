@@ -2673,6 +2673,66 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
+**ACTIVE — Round 23 follow-ups (Dan's session 2026-10-13_00-41-08-815_cf0041, read by Claude; six reports, after
+the Round 23 build).** Build what is decided; the rest of the network still waits for Dan's go on the proposal.
+
+Part A, the Chastain Enclave amenity block (commit on its own):
+1. BUG-002 (vehicle x 1771.30, z 754.26, heading 255, at the pool fence looking over the lot): "parking spaces should be on
+   the sides...otherwise this parking lot doesn't make sense since people would be blocking people in. Also there should
+   be a sidewalk between the pool and the parking lot [and] a gate there as well". Re-stripe the lot: stalls along its
+   sides, a clear drive aisle down the middle, no stall that blocks another in. A sidewalk between the pool fence and the
+   lot, and a gate in the pool fence onto it (a real gap a vehicle can drive through; the gate breaks like the fence).
+2. BUG-003 (vehicle x 1770.99, z 780.23): "The fence around the tennis courts [also] should be breakable". Make the courts'
+   chain-link fence breakable (panels break and fall, a metal sound), like the pool fence.
+3. BUG-004 (vehicle x 1777.18, z 754.31, on the pool deck): "yes far too many loungers here. At most 10. Can have tables
+   with umbrellas as well". At most 10 loungers round the pool, plus a few tables with umbrellas (breakable).
+
+Part B, the entrances:
+4. BUG-005 (vehicle x 1412.21, z 1175.33, heading 46, in the creek channel at BF): "why would the water stop here? Should be
+   flowing". The creek's water still ends as a flat blue sheet short of the mouth, then only a thin trickle goes on. The
+   creek must flow continuously from its channel into the two pipes: the water surface follows the channel and runs into
+   the mouths and down the pipes (moving water, its sound), no flat sheet ending at the apron. Keep it shallow enough
+   that it never slows or traps.
+5. BUG-006 (inside J1, x 1448.47, z 1223.42): "I envision that those two pipes go off in different directions not dump into
+   a big open room right away". Rework BF: the two pipes SPLIT just inside the mouth and run off underground in two
+   different directions as two separate pipes, each its own route into the network (each heading where the proposal
+   needs it, for example one toward the trunk / the hub and the other toward the Enclave main or the north maze). No big
+   room straight inside. J1 as built goes (or becomes a smaller junction further along one of the two pipes, if the
+   proposal needs one). Until the network is built each pipe runs a good way (a real ride, not a stub) and ends at a
+   closed lit grille with room to turn round. Update the proposal overhead and markers to match.
+6. BUG-001 (vehicle x 2905.39, z 804.60, heading 91, facing the Chastain Glen pond's culvert headwall with its two pipe
+   holes): "Lets increase these and make these entrances as well...i think when there are two holes they are pipes that
+   go in different directions". Make the pond's twin culvert a network entrance too: bigger pipes (5 m, every vehicle
+   fits), the headwall rebuilt to suit (still set into the bank, no exposed back), and the two pipes going off in two
+   different directions, each a real run ending at a closed lit grille for now; add this entrance and its two directions
+   to the proposal (it is near the proposed Glen main and J7).
+   DESIGN RULE from Dan (add to the vision below): wherever there are two holes side by side, they are two pipes that go
+   in different directions, not two halves of one tunnel.
+7. One targeted check per piece in the exe (stay off Dan's screen, muted), rebuild the exe, commit.
+
+Part C, BUILD THE NETWORK (Dan, 2026-10-13 01:01: "I think go ahead and build it out (maybe wait on the race) so that I
+can get a better feel. I am not that worried about it since we can always add other branches as needed.")
+8. Build the network as proposed in `Docs/PIPE-NETWORK-PROPOSAL.md` (with items 5 and 6: the Bells Ferry pipes split
+   in two directions, the Chastain Glen pond culvert a second entrance, two holes = two directions), stage by stage in
+   the proposal's order: 1 the hub, M1, M5, J2, J3, B1 to B10, the stage 1 manholes and exits; 2 Noonday; 3 the Glen
+   and the shops; 4 the lakes and Nelson Lake. All of it to the pipe standard (round, rideable walls, used and dark,
+   a trickle, lit, never a trap, resets in the bottom, the vehicle's lights on), the hub with its ledges, ramps,
+   waterfalls and pool, junction chambers, glass stretches with fish, drop shafts, flooded stretches, manhole pop-outs,
+   outfall launches, secret exits, signs and color stripes on the mains only, the map showing the pipes when you are
+   underground, and the frame-rate plan (cells switched on only near you). Adjust lines where the ground or a house
+   demands it and say so; Dan does not mind if it differs a bit ("we can always add other branches as needed").
+9. WAIT ON THE RACE: no underground race route, no race gates, no switches this round (the network is world; the race
+   layer comes later). Every grille that was only a placeholder opens as its pipe is built; nothing closed in free roam.
+10. After EACH stage: one targeted check of that stage in the exe (drive the new mains end to end on a car and a bike,
+    each manhole pop-out and exit once, a reset in a pipe, the frame rate in the hub and above ground over it), rebuild
+    the exe, commit, and note it in the status, so Dan can drive each stage as it lands. Remove the proposal markers
+    for what is built, keep the map's pipe layer as the real network. KEEP the race's proposal markers (Dan, 01:03: "We
+    can keep the markers for the race though so I can see what is proposed"): the underground race route, its
+    checkpoints, gates G1 to G10 and the three switch shortcuts (S1, S2, S3) and their switches stay marked in the world
+    (debug menu "Proposal markers") and on the map, moved to fit the network as built.
+11. Report at the end: short status list per stage, "for Dan to check" (where to go in: the entrances, the manholes
+    from above), what differs from the proposal, frame rate, path to the exe.
+
 **DAN'S VISION FOR THE NETWORK (2026-10-12 22:11, after talking it through with Claude). The proposal is built around
 this.** Dan, to Claude's list of questions and ideas: "pretty much everything you said. I want a maze, with secret exits
 all over but a space for full on race as well. I envision a main hub that is a big open chasm with water flowing in
@@ -2698,6 +2758,9 @@ would require you to drive over a switch or something to open them."
   costs a detour or a risk to unlock. The AI follows the shortcut rules (CLAUDE.md) and may hit switches too.
 - The main entrance is already decided: the twin culvert under Bells Ferry Road (item 2). East Chastain Lake is just
   west of it.
+- TWO HOLES = TWO DIRECTIONS (Dan, 2026-10-13): wherever there are two pipe holes side by side (the Bells Ferry
+  entrance, the Chastain Glen pond culvert, any other twin culvert), they are two separate pipes that split and go off
+  in different directions, not a twin tunnel into one room. The Chastain Glen pond culvert is a second entrance.
 - The natural spine (Claude): Nelson Lake (south-west corner), West Chastain Lake, East Chastain Lake, the Bells
   Ferry entrance, the Enclave ponds, Noonday Creek and the big lake, the small pond (P1, the aquarium pipe), the
   Chastain Glen pond; about 3 to 4 km, with the maze branching off it. The hub somewhere central on it.
