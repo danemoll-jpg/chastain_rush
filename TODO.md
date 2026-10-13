@@ -2676,6 +2676,11 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
 **ACTIVE — Round 23 follow-ups (Dan's session 2026-10-13_00-41-08-815_cf0041, read by Claude; six reports, after
 the Round 23 build).** Build what is decided; the rest of the network still waits for Dan's go on the proposal.
 
+STATUS (Claude, 2026-10-13): items 1 to 3 done (e1ba748, checked in the exe); items 4 to 7 done (d2906dc, checked); items 8 to
+10 done stage by stage: stage 1 (af67ca7) and stage 2 (fd784ec) checked in the exe by script (car and motorcycle), stage 3
+(20b6a64) and stage 4 built only, no drive check (Dan, 2026-10-13: "skip the vehicle checks... I'll test myself"). No race,
+gates or switches (item 9). Differences from the proposal: Docs/PIPE-NETWORK.md, "What differs".
+
 Part A, the Chastain Enclave amenity block (commit on its own):
 1. BUG-002 (vehicle x 1771.30, z 754.26, heading 255, at the pool fence looking over the lot): "parking spaces should be on
    the sides...otherwise this parking lot doesn't make sense since people would be blocking people in. Also there should

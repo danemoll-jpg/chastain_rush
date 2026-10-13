@@ -1,6 +1,6 @@
 # The underground pipe network, as built
 
-Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 3**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
+Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 4**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
 
 **Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off in different directions; every exit is a way in as well. Manholes open only from below.
 
@@ -94,7 +94,7 @@ Manholes: **MH8** in Paxton Court Northeast (x 2127, z 619; riser 9 m); **MH9** 
 
 Exits: **Launch Glen Pond** (x 2896, z 858, a launch over the water); **Exit W11 Pond** (x 2672, z 412); **Exit Under Bridges** (x 2424, z 778); **Exit Behind Shops** (x 3153, z 1256); **Exit Little Noonday** (x 3752, z 1468)
 
-## Stage 4: the lakes (not built yet)
+## Stage 4: the lakes (BUILT)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|

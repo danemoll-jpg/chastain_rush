@@ -291,6 +291,16 @@ the two pipes split in two directions (no big room straight inside), and the
 Chastain Glen pond culvert becomes a second entrance (two pipes, two
 directions). Then Part C: build the whole pipe network as proposed, stage by stage (1 to 4), the exe rebuilt and committed after each stage; NO underground race, gates or switches yet.
 
+**The Round 23 follow-ups (see `TODO.md`, status there) are built; stages 1 and 2 checked in the exe by script, stages 3 and 4
+built only (Dan asked to test them himself); none driven by Dan yet.** Part A (e1ba748) the Enclave lot, gate, sidewalk, court
+fence, loungers. Part B (d2906dc) and Part C (stages af67ca7, fd784ec, 20b6a64, then stage 4): the whole pipe network as laid out
+by `python Tools/mapgen/pipe_network.py --stage N` (writes `Data/pipes/network.json` and `Docs/PIPE-NETWORK.md`; re-run after
+mapgen), built by `MapBuilder.Network.cs` / `NetworkHub.cs` / `PipeFlow.cs` (runtime: `NetworkCells`, `ManholeLid`,
+`ManholeTrigger`, `NetworkWaterfall`, `DrainPipe` open ends). BF and GP (the Glen pond culvert) are twin entrances whose barrels
+split two ways; J1 as a room inside BF is gone. Proposal markers: `python Tools/mapgen/network_markers.py` (what is unbuilt plus
+the underground race, kept), then `make_proposal_labels.py`. No race, gates or switches. Exe shots: `-exeShots` now takes
+`shot_near`, `fps_near`, `reset_at`. Imported from Racer: nothing.
+
 **Round 23 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan; STOPPED for
 Dan's picks on the network:** Part A (2b5cac5) the Enclave lot out to Dan's spot. BF, the network's main entrance
 (`Data/pipes/pipes.json` `twin` / `chamber_b` / `chamber`; `MapBuilder.Pipes.cs`, `MapBuilder.NetworkEntrance.cs`): twin 5 m
