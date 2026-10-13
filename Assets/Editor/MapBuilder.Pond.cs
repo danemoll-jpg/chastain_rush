@@ -75,6 +75,7 @@ namespace ChastainRush
         static void BuryCulvert(MapData map, Neighborhood hood, TerrainGrid terrain)
         {
             if (hood.PondRing.Count < 3 || Beds == null || !Beds.Level.TryGetValue(hood.PondIndex, out float lidar)) return;
+            if (GlenCulvertPiped()) { Debug.Log("[Round23+] the pond's culvert is GP, a network entrance (MapBuilder.Pipes.cs): the old headwall's bank is not raised"); return; }
             float level = lidar + PondLift;
             var shore = MakeShore(hood.PondRing);
             int roadShore = 0; float bestRoad = float.MaxValue;
@@ -203,7 +204,9 @@ namespace ChastainRush
                 hood.KeepOut(p, 3.0f);
                 weeping++;
             }
-            // --- culvert headwall where the pond drains under the street, at the shore nearest the street
+            // --- culvert headwall where the pond drains under the street, at the shore nearest the street (Round 23 follow-ups: not when it
+            // is GP, the network's second entrance: MapBuilder.Pipes.cs builds that one)
+            if (!GlenCulvertPiped())
             {
                 var o = shore.p[roadShore]; var nOut = shore.n[roadShore];
                 var f3 = MakeFrame(new Vector3(o.x + nOut.x * 0.8f, level - 0.45f, o.y + nOut.y * 0.8f), -nOut, 1f);  // front toward the water

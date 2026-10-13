@@ -34,14 +34,17 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b, twin, chamber_b; public float b_floor; public ChamberJson chamber; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs); Round 23: 'twin'
+        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b, twin, open_b, flow_in, glen_culvert, outfall; public float b_floor; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs); Round 23: 'twin'; Round 23 follow-ups: 'open_b', 'flow_in', 'glen_culvert', 'outfall'
         // Round 23 (BUG-002, Dan: "two large pipes. I want this to be a main entrance the pipe network"): 'twin' makes two barrels side by
         // side (a twin culvert), their centers R + 0.4 m either side of the line, one cut twice as wide with one headwall holding both
         // openings (an 0.8 m pier between them), one stream and one DrainPipe per barrel; and its floor never rises above the lower
         // mouth (a culvert under a road embankment: the floor runs level at the stream's bed, the road high over it).
         // Round 23, items 2b and 2c (Dan: "this was supposed to be the entrance into the pipe network not just two pipes passing under
-        // the road"): 'chamber_b' ends the pipe at b in an underground chamber instead of an outlet cut: no cut, no headwall and no
-        // holes at b, the floor at b is 'b_floor' (the chamber's floor), and the chamber ('chamber') is built by MapBuilder.NetworkEntrance.cs
+        // the road"): the pipe ended at b in an underground chamber, J1. Round 23 follow-ups (Dan, BUG-006: "I envision that those two
+        // pipes go off in different directions not dump into a big open room right away"): 'open_b' ends the pipe at b with no cut, no
+        // headwall and no holes there, its floor at b 'b_floor' (and never below it: no dip under the ground between), and each
+        // barrel goes on from b as a pipe of the network (MapBuilder.Network.cs); J1 as a room at BF's end is gone. The network's
+        // exits and outfalls are 'open_b' pipes too: a mouth and its cut at a, the network's tube going on from b
         [Serializable] class PipeFile { public PipeJson[] pipes; }
         const string PipeFilePath = "Data/pipes/pipes.json";
         const float PipeFloorRise = 0f, PipeWall = 0.3f, CutHalf = 2.5f, CutWall = 0.35f, CopingOut = 0.95f, PipeStep = 0.5f, Flare = 5f, FlareW = 1.75f;   // Round 19: no flat floor (1.0 m over the invert before)
@@ -54,6 +57,7 @@ namespace ChastainRush
             public float S1, S2;         // the headwalls (cut 1 is 0..S1, cut 2 is S2..L)
             public List<Vector2> Bar = new List<Vector2>(); public float BarTop;   // Round 19: P1's rock bar (the approach points over the creek)
             public bool Clear; public float C0, C1, Surface; public List<Vector2> Pool; public int PoolRing = -1;   // Round 21 follow-ups: the clear stretch and its pool (MapBuilder.ClearPipe.cs)
+            public bool HasFlow; public Vector2 FlowFrom, FlowDir; public float FlowSurf;   // Round 23 follow-ups (BUG-005): where the creek's own water ends, and its way (downstream)
             // Round 23: a twin's barrels sit O either side of the line, its cut is Half wide either side (CutHalf for one barrel)
             public float O => J.twin ? R + 0.4f : 0f;
             public float Half => J.twin ? O + R : CutHalf;
@@ -73,11 +77,11 @@ namespace ChastainRush
             public Vector2 P(float s, float lat = 0f) => A + U * s + Nl * lat;
             // the cut's half width: 2.5 m, flaring out to 4.25 m over the last 5 m at each mouth (wingwalls: a vehicle a little off
             // the line is led in, not stopped by a wall's end)
-            public float HalfAt(float s) => Half + FlareW * Mathf.Max(Smooth01(1f - s / Flare), J.chamber_b ? 0f : Smooth01(1f - (L - s) / Flare));
+            public float HalfAt(float s) => Half + FlareW * Mathf.Max(Smooth01(1f - s / Flare), J.open_b ? 0f : Smooth01(1f - (L - s) / Flare));
             public bool InCut(Vector2 q, float pad, out float s, out float lat)
             {
                 s = Vector2.Dot(q - A, U); lat = Vector2.Dot(q - A, Nl);
-                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= -pad && s <= S1 + 0.3f + pad) || (!J.chamber_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end
+                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= -pad && s <= S1 + 0.3f + pad) || (!J.open_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end
             }
         }
         sealed class Pipes
@@ -92,12 +96,22 @@ namespace ChastainRush
         }
 
         // planned and the holes cut before anything samples the ground (the heights are not changed)
-        static Pipes PlanPipes(TerrainGrid terrain)
+        // Round 23 follow-ups: the Chastain Glen pond's culvert is a network entrance (GP, 'glen_culvert'): the pond's old small headwall
+        // and its bank (MapBuilder.Pond.cs) are not built
+        static bool GlenCulvertPiped()
+        {
+            string path = Path.Combine(ProjectRoot, PipeFilePath);
+            return File.Exists(path) && JsonUtility.FromJson<PipeFile>(File.ReadAllText(path)).pipes.Any(j => j.glen_culvert);
+        }
+
+        static Pipes PlanPipes(TerrainGrid terrain, IEnumerable<PipeJson> extra = null)   // Round 23 follow-ups: 'extra', the network's exits (MapBuilder.Network.cs)
         {
             var result = new Pipes();
             string path = Path.Combine(ProjectRoot, PipeFilePath);
-            if (!File.Exists(path)) return result;
-            foreach (var j in JsonUtility.FromJson<PipeFile>(File.ReadAllText(path)).pipes)
+            var all = new List<PipeJson>();
+            if (File.Exists(path)) all.AddRange(JsonUtility.FromJson<PipeFile>(File.ReadAllText(path)).pipes);
+            if (extra != null) all.AddRange(extra);
+            foreach (var j in all)
             {
                 var p = new PipePlan { J = j, A = new Vector2(j.a[0], j.a[1]), B = new Vector2(j.b[0], j.b[1]) };
                 p.L = Vector2.Distance(p.A, p.B); p.U = (p.B - p.A) / p.L; p.Nl = new Vector2(-p.U.y, p.U.x);
@@ -106,7 +120,7 @@ namespace ChastainRush
                 if (j.approach_b != null && j.approach_b.Length >= 2) { var l = ToPoints(j.approach_b); l.Insert(0, p.B - p.U * 0.5f); GradeApproach(terrain, l, j.id + " outlet", null); }
                 int n = Mathf.CeilToInt(p.L / PipeStep) + 1;
                 float crownOut = j.diameter_m - PipeFloorRise + PipeWall;   // floor to the top of the pipe's outside
-                float yA = Ground(terrain, p.A.x, p.A.y), yB = j.chamber_b ? j.b_floor : Ground(terrain, p.B.x, p.B.y);   // Round 23: a chamber end's floor is given
+                float yA = Ground(terrain, p.A.x, p.A.y), yB = j.open_b ? j.b_floor : Ground(terrain, p.B.x, p.B.y);   // Round 23: a chamber end's floor is given
                 const float Ease = 6f;
                 float Ramp(float s) => s < Ease ? s * s / (2f * Ease) : s - Ease * 0.5f;
                 float[] FloorFrom(float yLow)
@@ -119,7 +133,7 @@ namespace ChastainRush
                     {
                         float acc = 0f, w = 0f;
                         for (int k = -r; k <= r; k++) { int ii = Mathf.Clamp(i + k, 0, n - 1); float ww = Mathf.Exp(-0.5f * (k * PipeStep / 2.5f) * (k * PipeStep / 2.5f)); acc += raw[ii] * ww; w += ww; }
-                        float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, j.chamber_b ? float.MaxValue : p.L - s) / 8f);
+                        float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, j.open_b ? float.MaxValue : p.L - s) / 8f);
                         ff[i] = Mathf.Lerp(raw[i], Mathf.Min(raw[i], sm), edge);
                     }
                     return ff;
@@ -150,6 +164,7 @@ namespace ChastainRush
                 int m0 = Mathf.RoundToInt(n * 0.3f), m1 = Mathf.RoundToInt(n * 0.7f);
                 float yLow0 = float.MaxValue; for (int i = m0; i <= m1; i++) yLow0 = Mathf.Min(yLow0, cover[i] - j.cover_m - crownOut);
                 if (j.twin) yLow0 = Mathf.Min(yLow0, Mathf.Min(yA, yB));   // Round 23: level at the lower mouth under the embankment, never a hump
+                if (j.open_b) yLow0 = Mathf.Min(yA, yB);                   // Round 23 follow-ups: down from the mouth to b's level and level on to b (no dip)
                 var f = FloorFrom(Mathf.Min(yLow0, forced));
                 p.Floor = f;
                 // the headwalls: the longest run in the middle where the ground covers the crown by 0.4 m or more
@@ -162,12 +177,13 @@ namespace ChastainRush
                 }
                 if (bestA < 0 || (bestB - bestA) * PipeStep < 8f) { Debug.LogError($"[Round18] pipe {j.id}: the ground never covers it for 8 m (cover {j.cover_m} m): not built"); continue; }
                 p.S1 = bestA * PipeStep; p.S2 = bestB * PipeStep;
-                if (j.chamber_b)   // Round 23: the barrels run right to the chamber's wall
+                if (j.open_b)   // Round 23: the barrels run right to b, where the network's pipes go on
                 {
-                    if (bestB < n - 1) Debug.LogError($"[Round23] pipe {j.id}: the ground does not cover it all the way to its chamber ({(n - 1 - bestB) * PipeStep:0.0} m short)");
+                    if (bestB < n - 1) Debug.LogError($"[Round23] pipe {j.id}: the ground does not cover it all the way to b ({(n - 1 - bestB) * PipeStep:0.0} m short)");
                     p.S2 = p.L;
                 }
                 if (j.twin) { GradeTwinAprons(terrain, p); TrimStreamsAtCut(p); }   // Round 23
+                if (j.open_b) f[f.Length - 1] = j.b_floor;   // Round 23 follow-ups: exactly the network's level where its pipe goes on
                 result.Plans.Add(p);
                 CutPipeHoles(terrain, p);
                 if (p.Clear) CutTrenchHoles(terrain, p);
@@ -221,7 +237,7 @@ namespace ChastainRush
             float most = 0f;
             foreach (var (s0, dir) in new[] { (0f, -1f), (p.L, 1f) })
             {
-                if (dir > 0f && p.J.chamber_b) continue;   // no mouth at a chamber end
+                if (dir > 0f && p.J.open_b) continue;   // no mouth at a chamber end
                 float target = p.Y(s0) - 0.05f, half = p.HalfAt(s0);   // just under the floor, which reaches 0.8 m out over it
                 var corners = new[] { p.P(s0 - dir * 2f, -half - Side), p.P(s0 - dir * 2f, half + Side), p.P(s0 + dir * Out, -half - Side), p.P(s0 + dir * Out, half + Side) };
                 EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
@@ -229,6 +245,10 @@ namespace ChastainRush
                     var q = new Vector2(x, z); float s = Vector2.Dot(q - p.A, p.U), lat = Mathf.Abs(Vector2.Dot(q - p.A, p.Nl));
                     float o = (s - s0) * dir; if (o < -2f || o > Out) return y;   // and 2 m into the cut: the terrain's last unholed cells there lie flat (no spikes up to the bank)
                     float w = (1f - Smooth01(o / Out)) * (1f - Smooth01((lat - half) / Side));
+                    // Round 23 follow-ups: and where the ground in front is lower than the floor (GP's mouth over the pond's edge), it is
+                    // filled up to a ramp that runs down from the floor's edge at 1 in 4 (no step up onto the floor from the water)
+                    float ramp = target - Mathf.Max(0f, o - 0.8f) * 0.25f;
+                    if (o > 0f && y < ramp && lat < half + 1f) { float ny2 = Mathf.Lerp(y, ramp, 1f - Smooth01((lat - half) / 1f)); most = Mathf.Max(most, ny2 - y); return ny2; }
                     if (w <= 0f || y <= target) return y;
                     float ny = y - (y - target) * w; most = Mathf.Max(most, y - ny); return ny;
                 });
@@ -242,12 +262,25 @@ namespace ChastainRush
         {
             if (Beds == null) return;
             int removed = 0;
+            // Round 23 follow-ups (BUG-005, Dan: "why would the water stop here? Should be flowing"): with 'flow_in' the creek's flat water
+            // also stops where the apron begins (10 m out); from there it is moving water down over the apron and into both barrels
+            // (BuildFlowIn). The point where the creek's own water now ends, and its surface there, are kept for that
+            float back = p.J.flow_in ? 11f : 0f;
+            bool Gone(Vector2 q) { if (p.InCut(q, 0.5f, out _, out _)) return true; float s = Vector2.Dot(q - p.A, p.U), lat = Vector2.Dot(q - p.A, p.Nl); return back > 0f && s > -back && s < 1f && Mathf.Abs(lat) < p.Half + 4f; }
+            float best = float.MaxValue;
             foreach (var (pts, surf) in Beds.Streams)
                 for (int i = pts.Count - 1; i >= 0; i--)
-                    if (p.InCut(pts[i], 0.5f, out _, out _)) { pts.RemoveAt(i); surf.RemoveAt(i); removed++; }
+                    if (Gone(pts[i]))
+                    {
+                        if (back > 0f)   // its neighbor still standing (the creek's new end) nearest the mouth
+                            foreach (int k in new[] { i - 1, i + 1 })
+                                if (k >= 0 && k < pts.Count && !Gone(pts[k]) && (pts[k] - p.A).magnitude < best)
+                                { best = (pts[k] - p.A).magnitude; p.HasFlow = true; p.FlowFrom = pts[k]; p.FlowSurf = surf[k]; p.FlowDir = (pts[i] - pts[k]).normalized; }
+                        pts.RemoveAt(i); surf.RemoveAt(i); removed++;
+                    }
             Beds.Streams.RemoveAll(st => st.p.Count < 2);
             Beds.Index();
-            Debug.Log($"[Round23] pipe {p.J.id}: the streams' water stops at its mouths ({removed} stream points inside its cuts dropped)");
+            Debug.Log($"[Round23] pipe {p.J.id}: the streams' water stops at its mouths ({removed} stream points inside its cuts dropped)" + (p.HasFlow ? $"; Round 23 follow-ups: the creek's flat water now ends at ({p.FlowFrom.x:0.0}, {p.FlowFrom.y:0.0}), {(p.FlowFrom - p.A).magnitude:0.0} m out, moving water on from there into the barrels" : ""));
         }
 
         // Unity terrain holes over the cuts: every hole cell whose center is in a cut, where the ground stands above the floor
@@ -384,7 +417,7 @@ namespace ChastainRush
             int lamps = 0;
             foreach (var (s0, s1, inner) in new[] { (0f, p.S1, p.S1), (p.S2, p.L, p.S2) })
             {
-                if (inner == p.S2 && p.J.chamber_b) continue;   // Round 23: the chamber is the far end (MapBuilder.NetworkEntrance.cs)
+                if (inner == p.S2 && p.J.open_b) continue;   // Round 23 follow-ups: the network's pipes go on from b (MapBuilder.Network.cs)
                 int k = Mathf.Max(1, Mathf.CeilToInt((s1 - s0) / 0.5f));
                 float lead = p.J.twin && s0 == 0f ? -0.8f : 0f;   // Round 23: a twin's floor starts 0.8 m out, over the apron
                 for (int i = 0; i < k; i++)
@@ -551,6 +584,7 @@ namespace ChastainRush
                 if (lampMb.Count > 0) { var lgo = lampMb.ToObject("Pipe " + bid + " lamps", pipeLamp, root, false); lgo.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off; }
 
                 // ---- Round 19: the stream down the middle of the floor, end to end (look and sound only: no water volume, nothing slows)
+                if (p.HasFlow) continue;   // Round 23 follow-ups: the creek's own water runs through these barrels (BuildFlowIn)
                 var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>(); var line = new List<Vector3>();
                 int sn = 0;
                 for (float s = 0.6f; s <= p.L - 0.6f + 1e-3f; s += 0.5f)
@@ -610,7 +644,8 @@ namespace ChastainRush
             }
 
             if (p.Clear) { BuildClearStretch(terrain, mats, root, p); BuildPoolSurface(mats, root, p); }   // Round 21 follow-ups (MapBuilder.ClearPipe.cs)
-            if (p.J.chamber_b && p.J.chamber != null) BuildChamber(terrain, mats, root, p);   // Round 23 (MapBuilder.NetworkEntrance.cs)
+            if (p.HasFlow) BuildFlowIn(terrain, root, p);   // Round 23 follow-ups (BUG-005)
+            if (p.J.outfall) BuildOutfallLip(root, p, mats);  // Round 23 follow-ups: a network outfall's launch
 
             // the runtime side: the floor's centerline for resets and race lines; Round 19: the barrel for riding the walls
             // (Round 23: a twin has one per barrel, on its own child, each holding its half of the cut)

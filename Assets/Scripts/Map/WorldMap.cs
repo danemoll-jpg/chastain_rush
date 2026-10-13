@@ -206,8 +206,14 @@ namespace ChastainRush
                             lines.Add(new WorldMapOverlay.Path { points = pts, tint = new Color(1f, .72f, .2f), width = 2.5f });
                         }
                     }
+            }
+            // Round 23 follow-ups (Dan's vision: "the map showing the pipes when you are underground"): the pipes always with the layer,
+            // and by themselves whenever you are in one; the network's mains in their stripe's color, its junctions, manholes and exits named
+            bool under = car && DrainPipe.InsideAny(car.transform.position);
+            if (ShowLayers || under)
+            {
                 foreach (var p in FindObjectsByType<DrainPipe>(FindObjectsSortMode.None))
-                    if (p.floor != null && p.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = p.floor, tint = new Color(.82f, .82f, .86f), dashed = true, width = 4f });
+                    if (p.floor != null && p.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = p.floor, tint = p.mapColor.a > 0f ? p.mapColor : new Color(.82f, .82f, .86f), dashed = true, width = p.mapColor.a > 0f ? 5f : 4f });
             }
             // Round 23: the pipe network proposal (its lines, the line names at their middles, the labeled points)
             int pi = 0;
@@ -225,6 +231,13 @@ namespace ChastainRush
                 var t = Pooled(proposalLabels, pi++, "Proposal", 11); t.text = "◆ " + mk.label; t.color = mk.color; t.fontStyle = FontStyle.Normal;
                 t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, mk.at);
             }
+            var net = NetworkCells.Instance;
+            if ((ShowLayers || under) && net != null && net.labels != null && zoom >= 1.5f)
+                for (int i = 0; i < net.labels.Length; i++)
+                {
+                    var t = Pooled(proposalLabels, pi++, "Proposal", 12); t.text = "● " + net.labels[i]; t.color = new Color(.95f, .88f, .6f); t.fontStyle = FontStyle.Bold;
+                    t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, net.labelAt[i]);
+                }
             for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
             overlay.SetView(world, center, zoom, lines, bars);
             // the other racers (a race only), then the player on top
@@ -242,7 +255,7 @@ namespace ChastainRush
             cursor.rectTransform.anchoredPosition = Vector2.zero; cursor.gameObject.SetActive(true);
             var at = WorldPoint(center);
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
-                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : "A / Space: show the shortcuts and pipes")
+                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   A / Space: shortcuts" : "A / Space: show the shortcuts and pipes")
                         + (Proposals.Count > 0 ? "\n" + ProposalLegend : "");
             status.text = $"Cursor  x {at.x:0}  z {at.z:0}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }

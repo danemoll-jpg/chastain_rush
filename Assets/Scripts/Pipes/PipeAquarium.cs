@@ -25,6 +25,7 @@ namespace ChastainRush
         Mesh[] meshes; readonly List<Matrix4x4>[] mats = { new List<Matrix4x4>(), new List<Matrix4x4>(), new List<Matrix4x4>() };
         Vector3 along, side; float len; AudioSource hum; AudioLowPassFilter lowPass; float inside;
 
+        static PipeAquarium lowOwner;
         void OnEnable() => Instance = this;
         void OnDisable() { if (Instance == this) Instance = null; if (lowPass) lowPass.cutoffFrequency = 22000f; }
 
@@ -81,7 +82,8 @@ namespace ChastainRush
             inside = Mathf.MoveTowards(inside, inTube ? 1f : 0f, dt * 1.6f);
             if (hum) hum.volume = 0.22f * inside;
             if (!lowPass) { var l = FindAnyObjectByType<AudioListener>(); if (l) lowPass = l.GetComponent<AudioLowPassFilter>() ?? l.gameObject.AddComponent<AudioLowPassFilter>(); }
-            if (lowPass) { lowPass.cutoffFrequency = Mathf.Lerp(22000f, 1100f, inside); lowPass.enabled = inside > 0.001f; }
+            // Round 23 follow-ups: several aquariums (P1's and the network's glass stretches): the one you are in owns the filter
+            if (lowPass && (inside > 0.001f || lowOwner == this)) { lowOwner = inside > 0.001f ? this : null; lowPass.cutoffFrequency = Mathf.Lerp(22000f, 1100f, inside); lowPass.enabled = inside > 0.001f; }
             if ((cp - (a0 + a1) * 0.5f).sqrMagnitude > 90f * 90f) return;
             // schools: along the stretch, turning at its ends, drifting round
             foreach (var sc in schools)

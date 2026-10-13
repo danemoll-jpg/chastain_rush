@@ -161,13 +161,27 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- the build (from BuildPipe)
+        // Round 23 follow-ups: the stretch is described by a frame along its line (a straight pipe's, or a network pipe's curve:
+        // MapBuilder.Network.cs), so the network's glass stretches are built from the same parts as P1's
+        sealed class ClearFrame
+        {
+            public string Id; public float R, C0, C1, Surface, T, AxisY;
+            public Func<float, float, float, Vector3> W;   // (s, lateral, y) to the world
+            public Func<float, Vector3> U3, N3;            // along and left at s (level)
+        }
         static void BuildClearStretch(TerrainGrid terrain, Materials mats, Transform root, PipePlan p)
         {
+            var f = new ClearFrame { Id = p.J.id, R = p.R, C0 = p.C0, C1 = p.C1, Surface = p.Surface, T = p.J.clear.trench_half_m, AxisY = p.Y((p.C0 + p.C1) * 0.5f) + p.R,
+                                     W = (s, lat, y) => { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }, U3 = s => new Vector3(p.U.x, 0f, p.U.y), N3 = s => new Vector3(p.Nl.x, 0f, p.Nl.y) };
+            BuildClearStretch(terrain, mats, root, f);
+        }
+        static void BuildClearStretch(TerrainGrid terrain, Materials mats, Transform root, ClearFrame p)
+        {
             ClearMaterials();
-            var cj = p.J.clear; float T = cj.trench_half_m, R = p.R;
-            Vector3 W(float s, float lat, float y) { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }
-            var up3 = Vector3.up; var u3 = new Vector3(p.U.x, 0f, p.U.y); var n3 = new Vector3(p.Nl.x, 0f, p.Nl.y);
-            float axisY = p.Y((p.C0 + p.C1) * 0.5f) + R;   // the floor is level across the clear stretch
+            float T = p.T, R = p.R;
+            Vector3 W(float s, float lat, float y) => p.W(s, lat, y);
+            var up3 = Vector3.up;
+            float axisY = p.AxisY;   // the floor is level across the clear stretch
             float surf = p.Surface, bot = axisY - R - TrenchBelow, top = surf - 0.03f, bedY = surf - BedDepth;
             float Half(float y) => Mathf.Lerp(TrenchBottomHalf, T, Mathf.InverseLerp(bot, top, y));   // the trench's half width at a height
             float Depth01(float y) => Mathf.InverseLerp(top, bot, y);
@@ -201,6 +215,7 @@ namespace ChastainRush
             // the end walls, across the trench at C0 and C1, with the tube's round opening; facing into the trench
             foreach (var (s, sgn) in new[] { (p.C0, 1f), (p.C1, -1f) })
             {
+                var u3 = p.U3(s); var n3 = p.N3(s);
                 var c = W(s, 0f, axisY); const int seg = 48; float ro = R;   // the opening is the tube's own inside: no gap round it to see past
                 for (int i = 0; i < seg; i++)
                 {
@@ -216,7 +231,7 @@ namespace ChastainRush
                     Face(bed, C(t0), C(t1), Edge(t1), e0, u3 * sgn); Face(bed, C(t0), C(t1), Edge(t1), e0, -u3 * sgn);   // both faces: nothing past it shows from any angle
                 }
             }
-            var bedGo = bed.ToObject("Pipe " + p.J.id + " clear stretch - the deep water bed", mats.House, root, false, false);
+            var bedGo = bed.ToObject("Pipe " + p.Id + " clear stretch - the deep water bed", mats.House, root, false, false);
             // rocks on the bed and its slopes (look only)
             var rocks = new MeshBuilder(); int nRocks = 0;
             for (int i = 0; i < 46; i++)
@@ -231,7 +246,7 @@ namespace ChastainRush
                 for (int k = 0; k < 8; k++) TriFace(rocks, cc + dirs[k] * r * (1.0f + 0.35f * Hash01(i * 8 + k, 1227)), cc + dirs[(k + 1) % 8] * r * (1.0f + 0.35f * Hash01(i * 8 + (k + 1) % 8, 1227)), apex, dirs[k] + dirs[(k + 1) % 8] + Vector3.up);
                 nRocks++;
             }
-            rocks.ToObject("Pipe " + p.J.id + " clear stretch - rocks", mats.House, root, false, false);
+            rocks.ToObject("Pipe " + p.Id + " clear stretch - rocks", mats.House, root, false, false);
             // weeds: clumps of ribbons rising from the bed and the lower slopes; they sway (ChastainRush/Fish, _Mode 1: vertex alpha is
             // how far up the blade)
             var weeds = new MeshBuilder(); int nClumps = 0;
@@ -260,7 +275,7 @@ namespace ChastainRush
                 }
                 nClumps++;
             }
-            weeds.ToObject("Pipe " + p.J.id + " clear stretch - weeds", clearWeed, root, false, false);
+            weeds.ToObject("Pipe " + p.Id + " clear stretch - weeds", clearWeed, root, false, false);
             // ---- the surface seen from below, over the trench (down-facing; the pool's own surface is drawn from above)
             var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>();
             for (int i = 0; i <= ns; i++)
@@ -274,9 +289,9 @@ namespace ChastainRush
                 var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]);
                 if (n0.y > 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; }
             }
-            var smesh = new Mesh { name = "Pipe " + p.J.id + " surface from below" }; smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetColors(Enumerable.Repeat(Color.white, sv.Count).ToList()); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {p.J.id} surface from below.asset");
-            var sgo = new GameObject("Pipe " + p.J.id + " clear stretch - the surface from below"); sgo.transform.SetParent(root, false);
+            var smesh = new Mesh { name = "Pipe " + p.Id + " surface from below" }; smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetColors(Enumerable.Repeat(Color.white, sv.Count).ToList()); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
+            AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {p.Id} surface from below.asset");
+            var sgo = new GameObject("Pipe " + p.Id + " clear stretch - the surface from below"); sgo.transform.SetParent(root, false);
             sgo.AddComponent<MeshFilter>().sharedMesh = smesh; var srr = sgo.AddComponent<MeshRenderer>(); srr.sharedMaterial = clearSurface; srr.shadowCastingMode = ShadowCastingMode.Off;
             // ---- light shafts: crossed quads slanting down from the surface (uv.y 0 at the top), beside and over the tube
             var sun = (new Vector3(0.28f, -1f, 0.18f)).normalized;
@@ -286,7 +301,7 @@ namespace ChastainRush
                 float s = p.C0 + 1.5f + (len - 3f) * (i + Hash01(i, 1261) * 0.8f) / 14f, lat = (Hash01(i, 1263) - 0.5f) * 2f * (T - 2f);
                 var a = W(s, lat, surf - 0.05f); float depth = surf - bot, wdt = 0.7f + 1.1f * Hash01(i, 1265);
                 var b = a + sun * (depth / -sun.y);
-                foreach (var side in new[] { n3, u3 })
+                foreach (var side in new[] { p.N3(s), p.U3(s) })
                 {
                     int v0 = shv.Count;
                     shv.Add(a - side * wdt); shv.Add(a + side * wdt); shv.Add(b + side * wdt * 1.4f); shv.Add(b - side * wdt * 1.4f);
@@ -296,9 +311,9 @@ namespace ChastainRush
                 }
                 nShafts++;
             }
-            var shm = new Mesh { name = "Pipe " + p.J.id + " light shafts" }; shm.SetVertices(shv); shm.SetUVs(0, shuv); shm.SetColors(shc); shm.SetTriangles(sht, 0); shm.RecalculateBounds();
-            AssetDatabase.CreateAsset(shm, $"{GeneratedDir}/Meshes/Pipe {p.J.id} light shafts.asset");
-            var shgo = new GameObject("Pipe " + p.J.id + " clear stretch - light shafts"); shgo.transform.SetParent(root, false);
+            var shm = new Mesh { name = "Pipe " + p.Id + " light shafts" }; shm.SetVertices(shv); shm.SetUVs(0, shuv); shm.SetColors(shc); shm.SetTriangles(sht, 0); shm.RecalculateBounds();
+            AssetDatabase.CreateAsset(shm, $"{GeneratedDir}/Meshes/Pipe {p.Id} light shafts.asset");
+            var shgo = new GameObject("Pipe " + p.Id + " clear stretch - light shafts"); shgo.transform.SetParent(root, false);
             shgo.AddComponent<MeshFilter>().sharedMesh = shm; var shr = shgo.AddComponent<MeshRenderer>(); shr.sharedMaterial = clearShaft; shr.shadowCastingMode = ShadowCastingMode.Off;
             // ---- water haze: two faint layers inside the trench, inset copies of its cross-section, along the stretch
             var hz = new MeshBuilder();
@@ -317,7 +332,7 @@ namespace ChastainRush
                     for (int i = 0; i < 12; i++) Face(hz, H(sa, i), H(sb, i), H(sb, i + 1), H(sa, i + 1), W(sa, 0f, axisY) - H(sa, i));
                 }
             }
-            { var hgo = hz.ToObject("Pipe " + p.J.id + " clear stretch - water haze", clearHaze, root, false, false); GameObjectUtility.SetStaticEditorFlags(hgo, 0); }
+            { var hgo = hz.ToObject("Pipe " + p.Id + " clear stretch - water haze", clearHaze, root, false, false); GameObjectUtility.SetStaticEditorFlags(hgo, 0); }
             // ---- steel ribs round the glass (just outside it: seen through it), thick rings where it meets the concrete
             var ribs = new MeshBuilder(); var steel = new Color(0.30f, 0.33f, 0.35f);
             var ribAt = new List<(float s, float w, float t)> { (p.C0, 0.45f, 0.16f), (p.C1, 0.45f, 0.16f) };
@@ -330,26 +345,27 @@ namespace ChastainRush
                     float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
                     Vector3 Rg(float sx, float th2, float r) => W(sx, Mathf.Sin(th2) * r, axisY - Mathf.Cos(th2) * r);
                     float r0 = R + GlassOut + 0.005f, r1 = r0 + th;
-                    var dir0 = (Rg(s, t0, 1f) - W(s, 0f, axisY)).normalized;
+                    var dir0 = (Rg(s, t0, 1f) - W(s, 0f, axisY)).normalized; var u3 = p.U3(s);
                     Face(ribs, Rg(s - w / 2, t0, r0), Rg(s + w / 2, t0, r0), Rg(s + w / 2, t1, r0), Rg(s - w / 2, t1, r0), -dir0);   // inner face (seen from the tube)
                     Face(ribs, Rg(s - w / 2, t0, r1), Rg(s + w / 2, t0, r1), Rg(s + w / 2, t1, r1), Rg(s - w / 2, t1, r1), dir0);
                     Face(ribs, Rg(s - w / 2, t0, r0), Rg(s - w / 2, t1, r0), Rg(s - w / 2, t1, r1), Rg(s - w / 2, t0, r1), -u3);
                     Face(ribs, Rg(s + w / 2, t0, r0), Rg(s + w / 2, t1, r0), Rg(s + w / 2, t1, r1), Rg(s + w / 2, t0, r1), u3);
                 }
             }
-            ribs.ToObject("Pipe " + p.J.id + " clear stretch - steel ribs", mats.House, root, false, false);
+            ribs.ToObject("Pipe " + p.Id + " clear stretch - steel ribs", mats.House, root, false, false);
             // ---- the lid: an invisible floor at the pool's bed over the trench (a wading vehicle never drops in)
+            for (float s0 = p.C0; s0 < p.C1 - 0.01f; s0 += 4f)   // Round 23 follow-ups: in 4 m pieces (a network pipe's line curves)
             {
-                var lid = new GameObject("Pipe " + p.J.id + " clear stretch - lid over the deep water (collider only)"); lid.transform.SetParent(root, false);
-                var c = W((p.C0 + p.C1) * 0.5f, 0f, bedY - 0.1f);
-                lid.transform.SetPositionAndRotation(c, Quaternion.LookRotation(u3));
-                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * T + 1f, 0.2f, len + 0.4f);
+                float s1 = Mathf.Min(s0 + 4f, p.C1), sm = (s0 + s1) * 0.5f;
+                var lid = new GameObject("Pipe " + p.Id + " clear stretch - lid over the deep water (collider only)"); lid.transform.SetParent(root, false);
+                lid.transform.SetPositionAndRotation(W(sm, 0f, bedY - 0.1f), Quaternion.LookRotation(p.U3(sm)));
+                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * T + 1f, 0.2f, s1 - s0 + 0.6f);
             }
             // ---- the run-time side: fish and the sound change
             var aq = root.gameObject.AddComponent<PipeAquarium>();
             aq.a0 = W(p.C0, 0f, axisY); aq.a1 = W(p.C1, 0f, axisY); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = T; aq.bottomHalf = TrenchBottomHalf;
             aq.fishMaterials = fishMats;
-            Debug.Log($"[Round21+] pipe {p.J.id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the trench round it {2f * T:0} m wide at the top, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs");
+            Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the trench round it {2f * T:0} m wide at the top, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs");
         }
 
         // the pool's own surface, from above, at the small pond's level (no shadow: the trench under it is lit)

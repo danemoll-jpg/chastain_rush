@@ -28,6 +28,23 @@ namespace ChastainRush
         public float clearHeight = 4.4f; // floor to the pipe's crown
         public float radius = 2.5f;      // Round 19: the barrel's inside radius; its invert is the floor line
         public float barrelFrom, barrelTo;   // the barrel's ends, as stations (indices into floor)
+        // Round 23 follow-ups: a network pipe is built in stretches of about 60 m, each with its own DrainPipe; an open end carries on
+        // into the next stretch: no fading of the hold to the wall there, and a vehicle past it belongs to the next stretch
+        public bool openStart, openEnd;
+        public Color mapColor;   // Round 23 follow-ups: the line's color on the map (a network main's stripe; none: gray)
+        Bounds box; bool boxed;
+        bool Near(Vector3 p, float pad)   // a quick test against the floor's bounds before the search along it
+        {
+            if (!boxed && floor != null && floor.Length > 0)
+            {
+                box = new Bounds(floor[0], Vector3.zero); foreach (var f in floor) box.Encapsulate(f);
+                box.Expand(new Vector3(2f * (halfWidth + radius) + 2f, 2f * (clearHeight + radius) + 4f, 2f * (halfWidth + radius) + 2f)); boxed = true;
+            }
+            return boxed && box.SqrDistance(p) <= pad * pad;
+        }
+        // Round 23 follow-ups: the axis is the floor's point plus the radius square to the floor's slope (on a manhole's 50 degree riser
+        // the axis is not straight up from the floor)
+        Vector3 AxisFrom(Vector3 f, Vector3 along) { var n = Vector3.up - along * Vector3.Dot(Vector3.up, along); return f + (n.sqrMagnitude > 1e-6f ? n.normalized : Vector3.up) * radius; }
         public const float StickFrom = 7f, StickFull = 11f, EndFade = 5f;
         public static int WallSteps { get; private set; }   // checks: physics steps some vehicle was held to the wall more than 45 degrees up it
         public static float MostRound { get; private set; }  // checks: the furthest round from the invert any vehicle went, degrees
@@ -52,6 +69,7 @@ namespace ChastainRush
         {
             axis = default; along = Vector3.forward; fromEnd = 0f; station = 0f;
             if (floor == null || floor.Length < 2 || barrelTo <= barrelFrom) return false;
+            if (!Near(p, 1f)) return false;
             float best = float.MaxValue; var q = new Vector2(p.x, p.z);
             int i0 = Mathf.Max(0, (int)barrelFrom - 6), i1 = Mathf.Min(floor.Length - 2, (int)barrelTo + 6);
             for (int i = i0; i <= i1; i++)
@@ -64,10 +82,13 @@ namespace ChastainRush
             if (station < barrelFrom - pad * 2f || station > barrelTo + pad * 2f) return false;
             int k = Mathf.Clamp((int)station, 0, floor.Length - 2);
             var f = Vector3.Lerp(floor[k], floor[k + 1], station - k);
-            axis = f + Vector3.up * radius; along = (floor[k + 1] - floor[k]).normalized;
+            along = (floor[k + 1] - floor[k]).normalized; axis = AxisFrom(f, along);
+            // Round 23 follow-ups: past an open end the vehicle is in the next stretch
+            if (openEnd && station >= floor.Length - 1.001f && Vector3.Dot(p - floor[floor.Length - 1], floor[floor.Length - 1] - floor[floor.Length - 2]) > 0f) return false;
+            if (openStart && station <= 0.001f && Vector3.Dot(p - floor[0], floor[1] - floor[0]) < 0f) return false;
             var r = p - axis; r -= along * Vector3.Dot(r, along);
             if (r.magnitude > radius + 0.6f) return false;
-            fromEnd = Mathf.Min(station - barrelFrom, barrelTo - station) * 0.5f;
+            fromEnd = Mathf.Min(openStart ? 999f : station - barrelFrom, openEnd ? 999f : barrelTo - station) * 0.5f;
             return true;
         }
 
@@ -149,7 +170,7 @@ namespace ChastainRush
                 if (!d.Barrel(target.position, 1f, out var axis, out var along, out _, out float st)) continue;
                 float sign = Vector3.Dot(target.forward, along) >= 0f ? 1f : -1f;
                 var rb = target.GetComponent<Rigidbody>(); if (rb && rb.linearVelocity.magnitude > 2f) sign = Vector3.Dot(rb.linearVelocity, along) >= 0f ? 1f : -1f;
-                Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, d.floor.Length - 1.001f); int k = (int)s; return Vector3.Lerp(d.floor[k], d.floor[k + 1], s - k) + Vector3.up * d.radius; }
+                Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, d.floor.Length - 1.001f); int k = (int)s; return d.AxisFrom(Vector3.Lerp(d.floor[k], d.floor[k + 1], s - k), (d.floor[k + 1] - d.floor[k]).normalized); }
                 desired = AxisAt(st - sign * 12f) + Vector3.up * 0.4f;   // 12 stations = 6 m
                 lookAt = Vector3.Lerp(target.position, AxisAt(st + sign * 8f), 0.45f);
                 return true;
@@ -165,6 +186,7 @@ namespace ChastainRush
         {
             station = 0f; at = default; along = Vector3.forward;
             if (floor == null || floor.Length < 2) return false;
+            if (!Near(p, 1f + lateralPad)) return false;
             float best = float.MaxValue; var q = new Vector2(p.x, p.z);
             for (int i = 0; i + 1 < floor.Length; i++)
             {
@@ -193,7 +215,7 @@ namespace ChastainRush
         public static float LineHeight(float x, float z, float groundY)
         {
             foreach (var d in all)
-                if (d.Locate(new Vector3(x, 0f, z), 0.5f, out _, out var at, out _) && groundY > at.y + 0.3f) return at.y;
+                if (d.Locate(new Vector3(x, groundY, z), 0.5f, out _, out var at, out _) && groundY > at.y + 0.3f) return at.y;   // Round 23 follow-ups: at the ground's height (Near tests in 3D)
             return groundY;
         }
 
