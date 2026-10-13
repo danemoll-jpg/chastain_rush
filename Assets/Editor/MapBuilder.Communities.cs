@@ -43,6 +43,7 @@ namespace ChastainRush
             public Vector2 ClubC, ClubFront, ClubU; public float ClubW, ClubD;
             public List<Vector2> Lot, LotDrive;                                  // the lot's corners, the drive from the street into it
             public Vector2 PavC; public float PavR;                              // the pavilion (a keep-out for trees and fences)
+            public List<Vector2> Walk; public int WalkSide = -1; public Vector2 Gate, WalkF0, WalkD, WalkO; public float WalkT0, WalkT1, WalkGap;                 // Round 23 follow-ups (BUG-002): the sidewalk between the pool fence and the lot, the fence side it is on
             public bool InRect(Vector2 p, Vector2 c, Vector2 u, Vector2 v, float hu, float hv, float m) { var d = p - c; return Mathf.Abs(Vector2.Dot(d, u)) < hu + m && Mathf.Abs(Vector2.Dot(d, v)) < hv + m; }
             public bool Blocks(Vector2 p, float m) => InRect(p, DeckC, DU, DV, DeckHU, DeckHV, m) || InRect(p, CourtC, CU, CV, CourtHU, CourtHV, m)
                                                        || (Lot != null && (InPolygon(p, Lot) || DistToEdges(p, Lot) < m)) || (LotDrive != null && DistSeg(p, LotDrive[0], LotDrive[LotDrive.Count - 1]) < 3f + m)
@@ -280,10 +281,64 @@ namespace ChastainRush
                 }
                 // the pool's black iron fence (breakable, white square posts) round the deck
                 float hu = a.DeckHU + 0.8f, hv = a.DeckHV + 0.8f;
-                var run = new FenceRun { kind = FenceKind.Iron, seed = 22, closed = true };
-                run.pts.Add(a.DeckC + a.DU * hu + a.DV * hv); run.pts.Add(a.DeckC - a.DU * hu + a.DV * hv);
-                run.pts.Add(a.DeckC - a.DU * hu - a.DV * hv); run.pts.Add(a.DeckC + a.DU * hu - a.DV * hv); run.pts.Add(run.pts[0]);
+                var fc = new[] { a.DeckC + a.DU * hu + a.DV * hv, a.DeckC - a.DU * hu + a.DV * hv, a.DeckC - a.DU * hu - a.DV * hv, a.DeckC + a.DU * hu - a.DV * hv };
+                if (!PlanEnclaveWalk(a, fc))
+                {
+                    var run = new FenceRun { kind = FenceKind.Iron, seed = 22, closed = true };
+                    run.pts.AddRange(fc); run.pts.Add(fc[0]);
+                    Fences.Add(run);
+                }
+            }
+
+            // Round 23 follow-ups, BUG-002 (Dan, at the pool fence looking over the lot: "there should be a sidewalk between the pool and
+            // the parking lot [and] a gate there as well"): a sidewalk fills the ground between the pool fence's side facing the lot and
+            // the lot's edge, over the stretch where the two face each other; the fence gets a 3.6 m gateway in the middle of it (a real
+            // gap a vehicle drives through), its two gate leaves standing open, folded back inside the fence (iron, breakable like it)
+            bool PlanEnclaveWalk(EnclaveAmenity a, Vector2[] fc)
+            {
+                if (a.Lot == null) return false;
+                var lc = (a.Lot[0] + a.Lot[1] + a.Lot[2] + a.Lot[3]) * 0.25f;
+                int e = Enumerable.Range(0, 4).OrderByDescending(k => Vector2.Dot(((fc[k] + fc[(k + 1) % 4]) * 0.5f - a.DeckC).normalized, (lc - a.DeckC).normalized)).First();
+                var f0 = fc[e]; var f1 = fc[(e + 1) % 4]; float lf = (f1 - f0).magnitude; var fd = (f1 - f0) / lf;
+                var o = new Vector2(-fd.y, fd.x); if (Vector2.Dot(o, (f0 + f1) * 0.5f - a.DeckC) < 0f) o = -o;   // out of the deck
+                // the lot's edge facing the pool
+                int le = Enumerable.Range(0, 4).OrderBy(k => ((a.Lot[k] + a.Lot[(k + 1) % 4]) * 0.5f - a.DeckC).magnitude).First();
+                var e0 = a.Lot[le]; var e1 = a.Lot[(le + 1) % 4];
+                // where the fence side and the lot's edge face each other: the lot edge's ends projected onto the fence side
+                float ta = Vector2.Dot(e0 - f0, fd), tb = Vector2.Dot(e1 - f0, fd);
+                float t0 = Mathf.Max(0.3f, Mathf.Min(ta, tb)), t1 = Mathf.Min(lf - 0.3f, Mathf.Max(ta, tb));
+                Vector2 Hit(Vector2 from)   // from a point outside the fence, straight out (o) to the lot's edge line
+                {
+                    var ed = e1 - e0; float den = o.x * ed.y - o.y * ed.x; if (Mathf.Abs(den) < 1e-4f) return from;
+                    var w = e0 - from; float s = (w.x * ed.y - w.y * ed.x) / den; return from + o * s;
+                }
+                var a0 = f0 + fd * t0 + o * 0.15f; var a1 = f0 + fd * t1 + o * 0.15f; var b0 = Hit(a0); var b1 = Hit(a1);
+                float g0 = Vector2.Dot(b0 - a0, o), g1 = Vector2.Dot(b1 - a1, o);
+                if (t1 - t0 < 6f || Mathf.Min(g0, g1) < 0.6f || Mathf.Max(g0, g1) > 6f)
+                {
+                    Log22.Add($"Round 23 follow-ups: Enclave sidewalk NOT built: the pool fence and the lot face each other over {t1 - t0:0.0} m, {g0:0.0} to {g1:0.0} m apart");
+                    return false;
+                }
+                a.Walk = new List<Vector2> { a0 - o * 0.15f, a1 - o * 0.15f, b1 + o * 0.3f, b0 + o * 0.3f };   // under the fence line and 0.3 m onto the lot (no seam)
+                a.WalkSide = e;
+                a.Gate = f0 + fd * ((t0 + t1) * 0.5f);
+                a.WalkF0 = f0; a.WalkD = fd; a.WalkO = o; a.WalkT0 = t0; a.WalkT1 = t1; a.WalkGap = (g0 + g1) * 0.5f + 0.15f;
+                // the fence, open at the gate: from the gateway's far post round the deck to its near post
+                float tm = (t0 + t1) * 0.5f, gh = 1.8f;
+                var run = new FenceRun { kind = FenceKind.Iron, seed = 22, closed = false };
+                run.pts.Add(f0 + fd * (tm + gh));
+                for (int k = 1; k <= 4; k++) run.pts.Add(fc[(e + k) % 4]);
+                run.pts.Add(f0 + fd * (tm - gh));
                 Fences.Add(run);
+                // the two gate leaves, open, folded back against the inside of the fence
+                foreach (float sg in new[] { -1f, 1f })
+                {
+                    var hinge = f0 + fd * (tm + sg * gh) - o * 0.3f;
+                    var leaf = new FenceRun { kind = FenceKind.Iron, seed = 23, closed = false };
+                    leaf.pts.Add(hinge); leaf.pts.Add(hinge + fd * sg * gh); Fences.Add(leaf);
+                }
+                Log22.Add($"Round 23 follow-ups: Enclave sidewalk between the pool fence and the lot, {t1 - t0:0.0} m long, {g0:0.0} to {g1:0.0} m wide; a {gh * 2f:0.0} m gateway in the pool fence at ({(f0 + fd * tm).x:0.0}, {(f0 + fd * tm).y:0.0}), its two leaves open inside the fence");
+                return true;
             }
 
             // two brick monuments at each entrance (Chastain Glen's), either side of the way in, facing New Chastain Road
@@ -384,11 +439,34 @@ namespace ChastainRush
                 var a = Amenity; if (a == null) return;
                 a.DeckY = MedianIn(a.DeckC, a.DU, a.DV, a.DeckHU, a.DeckHV);
                 GradeRect(a.DeckC, a.DU, a.DV, a.DeckHU, a.DeckHV, a.DeckY - 0.04f, "pool deck");
+                if (a.Walk != null) GradeWalk(a);
                 if (a.Courts.Count > 0)
                 {
                     a.CourtY = MedianIn(a.CourtC, a.CU, a.CV, a.CourtHU, a.CourtHV);
                     GradeRect(a.CourtC, a.CU, a.CV, a.CourtHU, a.CourtHV, a.CourtY, "tennis courts");
                 }
+            }
+
+            // Round 23 follow-ups (BUG-002): the deck stands about half a meter over the lot; the ground from 2 m inside the lot across
+            // the sidewalk and through the gate to the deck's edge becomes one even slope (the exe check: a car stopped on the old bank)
+            void GradeWalk(EnclaveAmenity a)
+            {
+                float far = a.WalkGap + 2f, near = -0.8f;   // across: from 2 m into the lot to the deck's edge (0.8 m inside the fence)
+                var lotH = new List<float>();
+                for (float t = a.WalkT0 - 2f; t <= a.WalkT1 + 2.01f; t += 0.5f) { var q = a.WalkF0 + a.WalkD * t + a.WalkO * far; lotH.Add(terrain.Height(q.x, q.y)); }
+                float LotAt(float t) { float f = Mathf.Clamp((t - (a.WalkT0 - 2f)) / 0.5f, 0f, lotH.Count - 1.001f); int i = (int)f; return Mathf.Lerp(lotH[i], lotH[i + 1], f - i); }
+                var corners = new[] { a.WalkF0 + a.WalkD * (a.WalkT0 - 2f) + a.WalkO * (far + 1f), a.WalkF0 + a.WalkD * (a.WalkT1 + 2f) + a.WalkO * (far + 1f), a.WalkF0 + a.WalkD * (a.WalkT0 - 2f) + a.WalkO * (near - 0.5f), a.WalkF0 + a.WalkD * (a.WalkT1 + 2f) + a.WalkO * (near - 0.5f) };
+                int changed = 0; float most = 0f;
+                EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, h) =>
+                {
+                    var q = new Vector2(x, z); float t = Vector2.Dot(q - a.WalkF0, a.WalkD), cc = Vector2.Dot(q - a.WalkF0, a.WalkO);
+                    if (cc < near || cc > far + 1f || t < a.WalkT0 - 1.5f || t > a.WalkT1 + 1.5f) return h;
+                    float target = Mathf.Lerp(a.DeckY - 0.04f, LotAt(t), Mathf.InverseLerp(near, far, cc));
+                    float w = Smooth01((a.WalkT1 + 1.5f - t) / 1.5f) * Smooth01((t - (a.WalkT0 - 1.5f)) / 1.5f) * Smooth01((far + 1f - cc) / 1f);
+                    float nh = Mathf.Lerp(h, target, w); if (Mathf.Abs(nh - h) > 1e-3f) { changed++; most = Mathf.Max(most, Mathf.Abs(nh - h)); }
+                    return nh;
+                });
+                Log22.Add($"Round 23 follow-ups: the ground from the lot across the sidewalk to the pool deck made one slope ({a.DeckY - 0.04f - LotAt((a.WalkT0 + a.WalkT1) * 0.5f):0.00} m up over {far - near:0.0} m at the gate): {changed} terrain samples moved, by up to {most:0.00} m");
             }
 
             float MedianIn(Vector2 c, Vector2 u, Vector2 v, float hu, float hv)
@@ -529,14 +607,38 @@ namespace ChastainRush
                 foreach (var (s0, s1) in DeckRuns(f, a, u, true)) Face(mb, f.P(u - 0.02f, 0.006f, s0), f.P(u + 0.02f, 0.006f, s0), f.P(u + 0.02f, 0.006f, s1), f.P(u - 0.02f, 0.006f, s1), Vector3.up);
             for (float v = -a.DeckHV + 3f; v < a.DeckHV; v += 3f)
                 foreach (var (s0, s1) in DeckRuns(f, a, v, false)) Face(mb, f.P(s0, 0.006f, v - 0.02f), f.P(s1, 0.006f, v - 0.02f), f.P(s1, 0.006f, v + 0.02f), f.P(s0, 0.006f, v + 0.02f), Vector3.up);
-            // lounge chairs (striped) along the deck, facing the pool; two round tables with red umbrellas
+            // lounge chairs (striped) along the deck, facing the pool; round tables with red umbrellas.
+            // Round 23 follow-ups, BUG-004 (Dan: "far too many loungers here. At most 10. Can have tables with umbrellas as well"):
+            // five loungers a side at most, in a group round the middle of the side's free stretch, a table with its umbrella at each
+            // end of the group; nothing within 3.5 m of the gate (BUG-002)
             int chairs = 0, tables = 0;
             Color[] stripe = { new Color(0.72f, 0.16f, 0.20f), new Color(0.15f, 0.48f, 0.34f) };
+            bool NearGate(Vector2 q) => a.Walk != null && (q - a.Gate).magnitude < 3.5f;
+            var chairAt = new List<(float side, float u)>(); var tableAt = new List<(float side, float u)>();
             foreach (float side in new[] { 1f, -1f })
-                for (float u = -a.DeckHU + 1.4f; u <= a.DeckHU - 1.4f; u += 1.25f)
+            {
+                var ok = new List<float>();
+                for (float u = -a.DeckHU + 1.4f; u <= a.DeckHU - 1.4f; u += 0.25f)
                 {
                     var p3 = f.P(u, 0f, side * (a.DeckHV - 1.35f)); var p = new Vector2(p3.x, p3.z);
-                    if (InPolygon(p, pr) || DistToEdges(p, pr) < 1.3f || ClubhouseNear(a, p, 1.5f)) continue;
+                    if (!InPolygon(p, pr) && DistToEdges(p, pr) >= 1.6f && !ClubhouseNear(a, p, 2f) && !NearGate(p)) ok.Add(u);
+                }
+                // the longest free stretch on this side
+                float bs = 0f, be = -1f, rs = 0f;
+                for (int i = 0; i < ok.Count; i++)
+                {
+                    if (i == 0 || ok[i] - ok[i - 1] > 0.3f) rs = ok[i];
+                    if (ok[i] - rs > be - bs) { bs = rs; be = ok[i]; }
+                }
+                if (be < bs) continue;
+                int n = Mathf.Clamp(Mathf.FloorToInt((be - bs - 2f * 1.8f) / 1.4f) + 1, 0, 5);   // loungers 1.4 m apart, room for a table at each end
+                float mid = (bs + be) * 0.5f, first = mid - (n - 1) * 0.7f;
+                for (int k = 0; k < n; k++) chairAt.Add((side, first + k * 1.4f));
+                if (n > 0) { tableAt.Add((side, first - 1.8f)); tableAt.Add((side, first + (n - 1) * 1.4f + 1.8f)); }
+            }
+            foreach (var (side, u) in chairAt)
+                {
+                    var p3 = f.P(u, 0f, side * (a.DeckHV - 1.35f)); var p = new Vector2(p3.x, p3.z);
                     var face = new Vector2(a.DV.x, a.DV.y) * -side;
                     var cf = MakeFrame(new Vector3(p.x, a.DeckY, p.y), face, 1f);
                     var m = furniture.Begin(p);
@@ -551,12 +653,12 @@ namespace ChastainRush
                     furniture.End(new Vector3(p.x, a.DeckY + 0.45f, p.y), new Vector3(face.x, 0f, face.y), 0.7f, 0.9f, 2.2f);
                     chairs++;
                 }
-            foreach (float u in new[] { -a.DeckHU * 0.45f, a.DeckHU * 0.5f })
+            foreach (var (tside, u) in tableAt)
             {
-                foreach (float side in new[] { 1f, -1f })
+                foreach (float side in new[] { tside })
                 {
                     var p3 = f.P(u, 0f, side * (a.DeckHV - 1.6f)); var p = new Vector2(p3.x, p3.z);
-                    if (InPolygon(p, pr) || DistToEdges(p, pr) < 1.6f || ClubhouseNear(a, p, 2f)) continue;
+                    if (InPolygon(p, pr) || DistToEdges(p, pr) < 1.6f || ClubhouseNear(a, p, 2f) || NearGate(p) || Mathf.Abs(u) > a.DeckHU - 1.3f) continue;
                     var g = new Vector3(p.x, a.DeckY, p.y);
                     var m = furniture.Begin(p);
                     furniture.Piece(() => { Cyl(m, g + Vector3.up * 0.7f, 0.04f, 0.55f, 0.55f, LineWhite, 10); Cyl(m, g, 0.7f, 0.04f, 0.04f, LineWhite, 5); }, a.DeckY);
@@ -576,6 +678,7 @@ namespace ChastainRush
                 {
                     var p = Vector2.Lerp(p0, p1, s / L);
                     if (ClubhouseNear(a, p, 2f) || c.hood.RoadClearance(p) < 2f || c.OnDrive(p, 0.8f)) continue;
+                    if (a.Walk != null && (InPolygon(p, a.Walk) || DistToEdges(p, a.Walk) < 1f)) continue;   // Round 23 follow-ups: not on the sidewalk to the lot
                     float gy = c.Y(p.x, p.y);
                     Blob(mb, new Vector3(p.x, gy + 0.05f, p.y), new Vector3(0.7f, 0.55f, 0.7f), hedge * 1.15f, hedge * 0.75f, 7, 3, true, shrubs);
                     shrubs++;
@@ -593,34 +696,30 @@ namespace ChastainRush
                 flat.Tint = new Color(0.21f, 0.21f, 0.22f);
                 DrapePoly(flat, a.Lot, 1f, 0.06f, c.terrain, 8);   // Round 23: a 1 m grid (was 2 m): the grass no longer shows through it
                 RibbonGridMax(flat, Densify(a.LotDrive, 0.75f), Enumerable.Repeat(6f, Densify(a.LotDrive, 0.75f).Count).ToArray(), 0.05f, c.terrain, 4);
-                // stall lines along the far side; a lot made deeper (Round 23) also gets double rows, 6 m aisles between
+                // Round 23 follow-ups, BUG-002 (Dan: "parking spaces should be on the sides...otherwise this parking lot doesn't make
+                // sense since people would be blocking people in"): one row of stalls along each long side, 5 m deep and 2.8 m wide,
+                // square to the side, and a clear drive aisle down the middle from the entrance to the far end (no stall blocks another)
                 var n = (a.Lot[3] - a.Lot[0]).normalized; var sd = (a.Lot[1] - a.Lot[0]).normalized;
                 float lw = (a.Lot[1] - a.Lot[0]).magnitude, ld = (a.Lot[3] - a.Lot[0]).magnitude;
-                int stalls = Mathf.FloorToInt((lw - 2f) / 2.8f);
+                int stalls = Mathf.FloorToInt((ld - 2f) / 2.8f); float s0 = (ld - stalls * 2.8f) * 0.5f;
                 flat.Tint = LineWhite;
-                void Stalls(float depth, float dir)   // a row of stall lines from the line at 'depth', 5 m towards 'dir' (+1 deeper, -1 nearer)
+                var w = n * 0.06f;
+                foreach (var (edge, dir) in new[] { (0f, 1f), (lw, -1f) })   // the side at sd 0 (stalls toward +sd) and the side at sd lw
                 {
                     for (int k = 0; k <= stalls; k++)
-                    {
-                        var w = new Vector2(-n.y, n.x) * 0.06f;
                         for (int j = 0; j < 5; j++)   // in 1 m pieces, so each stays on the lot's surface
                         {
-                            var b0 = a.Lot[0] + n * (depth + dir * j) + sd * (1.0f + k * 2.8f); var b1 = b0 + n * dir;
+                            var b0 = a.Lot[0] + n * (s0 + k * 2.8f) + sd * (edge + dir * (0.3f + j * 0.94f)); var b1 = b0 + sd * dir * 0.94f;
                             Face(flat, V3(c, b0 - w, 0.085f), V3(c, b0 + w, 0.085f), V3(c, b1 + w, 0.085f), V3(c, b1 - w, 0.085f), Vector3.up);
                         }
-                    }
                 }
-                Stalls(ld, -1f);
-                for (float mid = ld - 5f - 6f - 5f; mid - 5f >= 6f; mid -= 16f)
-                {
-                    Stalls(mid, 1f); Stalls(mid, -1f);
-                    var ew = n * 0.06f;
-                    for (int k = 0; k < stalls; k++)   // the divider between the two rows, in 2.8 m pieces
-                    {
-                        var e0 = a.Lot[0] + n * mid + sd * (1.0f + k * 2.8f); var e1 = e0 + sd * 2.8f;
-                        Face(flat, V3(c, e0 - ew, 0.085f), V3(c, e1 - ew, 0.085f), V3(c, e1 + ew, 0.085f), V3(c, e0 + ew, 0.085f), Vector3.up);
-                    }
-                }
+                c.hood.Log22.Add($"Round 23 follow-ups: Enclave lot re-striped: {stalls} stalls along each long side ({lw:0.0} m wide: 5 m stalls each side, a {lw - 10f:0.0} m aisle down the middle)");
+            }
+            // Round 23 follow-ups, BUG-002: the sidewalk between the pool fence and the lot (pale concrete, flush on the ground)
+            if (a.Walk != null)
+            {
+                c.Walks.Tint = ConcreteLight;
+                DrapePoly(c.Walks.At(a.Walk[0]), a.Walk, 0.5f, 0.075f, c.terrain, 8);
             }
             mb.ToObject("EnclavePoolAndClubhouse", c.mats.House, root, false, true);
             flat.ToObject("EnclaveCourtsAndLot", c.mats.Driveway, root, false, false);
@@ -748,7 +847,7 @@ namespace ChastainRush
                 courts++;
             }
             // the fence: 3 m chain-link on posts round the block, with two gates left open (the south side toward the pool, the
-            // west end toward the pavilion) so nothing that lands inside is trapped; solid colliders on each stretch
+            // west end toward the pavilion) so nothing that lands inside is trapped; Round 23 follow-ups: breakable panels (no solid stretches)
             const float FH = 3.0f;
             var corners = new[] { B(-a.CourtHU, -a.CourtHV), B(a.CourtHU, -a.CourtHV), B(a.CourtHU, a.CourtHV), B(-a.CourtHU, a.CourtHV) };
             Vector2 Out(int e) => ((corners[e] + corners[(e + 1) % 4]) * 0.5f - a.CourtC).normalized;
@@ -756,7 +855,8 @@ namespace ChastainRush
             var toPav = a.Pavilion >= 0 ? (a.PavC - a.CourtC).normalized : Vector2.left;
             int poolSide = Enumerable.Range(0, 4).OrderByDescending(e => Vector2.Dot(Out(e), toPool)).First();             // the side facing the pool
             int gateEnd = Enumerable.Range(0, 4).Where(e => e != poolSide).OrderByDescending(e => Vector2.Dot(Out(e), toPav)).First();   // the side facing the pavilion
-            float colliders = 0f, fenceM = 0f;
+            float fenceM = 0f; int fencePanels = 0;
+            var fence = new Breakables();   // Round 23 follow-ups (BUG-003): the fence breaks
             for (int e = 0; e < 4; e++)
             {
                 var p0 = corners[e]; var p1 = corners[(e + 1) % 4]; float L = (p1 - p0).magnitude; var dir = (p1 - p0) / L;
@@ -771,46 +871,62 @@ namespace ChastainRush
                 {
                     if (s1 - s0 < 0.5f) continue;
                     var q0 = p0 + dir * s0; var q1 = p0 + dir * s1;
-                    // posts every 3 m, a top rail, the mesh as fine vertical and horizontal wires (both faces)
+                    // Round 23 follow-ups, BUG-003 (Dan: "The fence around the tennis courts [also] should be breakable"): the fence in
+                    // panels of about 3 m, each its own breakable piece (FenceChunk, as the pool's iron fence: a trigger, a speed cost, the
+                    // pieces fly and fall, a metal sound): its post, the mesh and top rail, and on the pool side its windscreen
                     int posts = Mathf.Max(1, Mathf.CeilToInt((s1 - s0) / 3f));
-                    for (int k = 0; k <= posts; k++) Post(mb, P(Vector2.Lerp(q0, q1, k / (float)posts), -0.1f), FH + 0.1f, 0.07f, ChainLink);
-                    Beam(mb, P(q0, FH - 0.03f), P(q1, FH - 0.03f), 0.05f, 0.05f, ChainLink);
-                    link.Tint = ChainLink;
-                    for (float s = s0 + 0.12f; s < s1; s += 0.16f)
+                    var o2 = new Vector2(outN.x, outN.z);
+                    bool banner = e == poolSide && s1 - s0 > 8f && s0 > 0.1f;
+                    for (int k = 0; k < posts; k++)
                     {
-                        var w0 = p0 + dir * s; var w1 = w0 + dir * 0.012f;
-                        Face(link, P(w0, 0f), P(w1, 0f), P(w1, FH), P(w0, FH), outN); Face(link, P(w0, 0f), P(w1, 0f), P(w1, FH), P(w0, FH), -outN);
-                    }
-                    for (float h = 0.08f; h < FH; h += 0.16f)
-                    {
-                        Face(link, P(q0, h), P(q1, h), P(q1, h + 0.012f), P(q0, h + 0.012f), outN); Face(link, P(q0, h), P(q1, h), P(q1, h + 0.012f), P(q0, h + 0.012f), -outN);
-                    }
-                    var colGo = new GameObject("Court fence"); colGo.transform.SetParent(root, false);
-                    var mid = (q0 + q1) * 0.5f;
-                    colGo.transform.SetPositionAndRotation(P(mid, FH / 2f), Quaternion.LookRotation(new Vector3(dir.x, 0f, dir.y), Vector3.up));
-                    colGo.AddComponent<BoxCollider>().size = new Vector3(0.15f, FH, s1 - s0);
-                    colliders++; fenceM += s1 - s0;
-                    // the green windscreen on the side facing the pool, with the banner (one-sided, facing out) on its longest stretch
-                    if (e == poolSide)
-                    {
-                        var ws = new Color(0.11f, 0.29f, 0.18f);
-                        mb.Tint = ws;
-                        var o0 = q0 + new Vector2(outN.x, outN.z) * 0.03f; var o1 = q1 + new Vector2(outN.x, outN.z) * 0.03f;
-                        Face(mb, P(o0, 0.3f), P(o1, 0.3f), P(o1, 2.1f), P(o0, 2.1f), outN);
-                        Face(mb, P(q0 - new Vector2(outN.x, outN.z) * 0.03f, 0.3f), P(q1 - new Vector2(outN.x, outN.z) * 0.03f, 0.3f), P(q1 - new Vector2(outN.x, outN.z) * 0.03f, 2.1f), P(q0 - new Vector2(outN.x, outN.z) * 0.03f, 2.1f), -outN);
-                        if (s1 - s0 > 8f && s0 > 0.1f)
+                        var qa = Vector2.Lerp(q0, q1, k / (float)posts); var qb = Vector2.Lerp(q0, q1, (k + 1) / (float)posts); var qm = (qa + qb) * 0.5f;
+                        var m = fence.Begin(qm);
+                        fence.Piece(() => Post(m, P(qa, -0.1f), FH + 0.1f, 0.07f, ChainLink));
+                        if (k == posts - 1) fence.Piece(() => Post(m, P(qb, -0.1f), FH + 0.1f, 0.07f, ChainLink));
+                        fence.Piece(() =>
                         {
-                            var m = HandMadeSignMaterial("Assets/HandMade/Enclave/EnclaveWindscreen.png", "EnclaveWindscreen", false);
-                            if (m != null)
+                            Beam(m, P(qa, FH - 0.03f), P(qb, FH - 0.03f), 0.05f, 0.05f, ChainLink);
+                            m.Tint = ChainLink;
+                            float la = Vector2.Dot(qa - p0, dir), lb = Vector2.Dot(qb - p0, dir);
+                            for (float sw = la + 0.12f; sw < lb; sw += 0.16f)
                             {
-                                var bc = (q0 + q1) * 0.5f + new Vector2(outN.x, outN.z) * 0.06f;
-                                var plate = SignPlate(root, P(bc, 1.2f), -outN, 1f, m);   // the quad's front is -z locally: it faces out
-                                plate.name = "Enclave windscreen banner"; plate.transform.localScale = new Vector3(6f, 1.5f, 1f);
+                                var w0 = p0 + dir * sw; var w1 = w0 + dir * 0.012f;
+                                Face(m, P(w0, 0f), P(w1, 0f), P(w1, FH), P(w0, FH), outN); Face(m, P(w0, 0f), P(w1, 0f), P(w1, FH), P(w0, FH), -outN);
+                            }
+                            for (float h = 0.08f; h < FH; h += 0.16f)
+                            {
+                                Face(m, P(qa, h), P(qb, h), P(qb, h + 0.012f), P(qa, h + 0.012f), outN); Face(m, P(qa, h), P(qb, h), P(qb, h + 0.012f), P(qa, h + 0.012f), -outN);
+                            }
+                        });
+                        // the green windscreen on the side facing the pool, with the banner (one-sided, facing out) on its longest stretch
+                        if (e == poolSide)
+                        {
+                            var ws = new Color(0.11f, 0.29f, 0.18f);
+                            fence.Piece(() =>
+                            {
+                                m.Tint = ws;
+                                Face(m, P(qa + o2 * 0.03f, 0.3f), P(qb + o2 * 0.03f, 0.3f), P(qb + o2 * 0.03f, 2.1f), P(qa + o2 * 0.03f, 2.1f), outN);
+                                Face(m, P(qa - o2 * 0.03f, 0.3f), P(qb - o2 * 0.03f, 0.3f), P(qb - o2 * 0.03f, 2.1f), P(qa - o2 * 0.03f, 2.1f), -outN);
+                            });
+                            if (banner && k == posts / 2)
+                            {
+                                var bm = HandMadeSignMaterial("Assets/HandMade/Enclave/EnclaveWindscreen.png", "EnclaveWindscreen", false);
+                                if (bm != null)
+                                {
+                                    var bc = (q0 + q1) * 0.5f + o2 * 0.06f;
+                                    var plate = SignPlate(root, P(bc, 1.2f), -outN, 1f, bm);   // the quad's front is -z locally: it faces out
+                                    plate.name = "Enclave windscreen banner"; plate.transform.localScale = new Vector3(6f, 1.5f, 1f);
+                                    fence.Face(plate);   // thrown off with the middle panel
+                                }
                             }
                         }
+                        fence.End(P(qm, FH / 2f), new Vector3(dir.x, 0f, dir.y), 0.9f, FH, (qb - qa).magnitude);
+                        fencePanels++;
                     }
+                    fenceM += s1 - s0;
                 }
             }
+            fence.ToObjects("EnclaveCourtFence", c.mats.House, root, 1.2f, BreakSounds.Kind.Iron);
             // light poles: four, outside the two long sides, between the courts (break like the street lamps)
             int lights = 0;
             var longSides = Enumerable.Range(0, 4).OrderByDescending(e => (corners[(e + 1) % 4] - corners[e]).magnitude).Take(2);
@@ -833,7 +949,7 @@ namespace ChastainRush
                     lights++;
                 }
             }
-            c.hood.Log22.Add($"Enclave tennis courts: {courts} courts (the map data's {a.Courts.Count} pitches; Dan's note says two), block {a.CourtHU * 2f:0.0} x {a.CourtHV * 2f:0.0} m at {y:0.00} m, fence {fenceM:0} m in {colliders} solid stretches with two open gates, {lights} light poles");
+            c.hood.Log22.Add($"Enclave tennis courts: {courts} courts (the map data's {a.Courts.Count} pitches; Dan's note says two), block {a.CourtHU * 2f:0.0} x {a.CourtHV * 2f:0.0} m at {y:0.00} m, fence {fenceM:0} m in {fencePanels} breakable panels (Round 23 follow-ups) with two open gates, {lights} light poles");
         }
 
         // the wooden pavilion by the courts: a raised deck with railings (open toward the courts, with a step), posts, a hip roof
