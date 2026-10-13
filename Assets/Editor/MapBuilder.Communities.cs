@@ -276,6 +276,7 @@ namespace ChastainRush
                         break;
                     }
                     if (a.Lot == null) Log22.Add("Enclave parking lot: no clear 16 x 11 m near the clubhouse, not built");
+                    else ExtendEnclaveLot(a);
                 }
                 // the pool's black iron fence (breakable, white square posts) round the deck
                 float hu = a.DeckHU + 0.8f, hv = a.DeckHV + 0.8f;
@@ -286,6 +287,35 @@ namespace ChastainRush
             }
 
             // two brick monuments at each entrance (Chastain Glen's), either side of the way in, facing New Chastain Road
+            // Round 23 BUG-001 (Dan, session 2026-10-12_20-55-46-538_f31c32): "parking lot should extend out to here", his
+            // vehicle at x 1767.22, z 771.72 on the grass beside the lot. The lot's rectangle grows (away from the street and
+            // along it) until it takes in his spot with a margin; it stays flush on the ground, no curb. That lot only.
+            static readonly Vector2 EnclaveLotSpot = new Vector2(1767.22f, 771.72f);
+            void ExtendEnclaveLot(EnclaveAmenity a)
+            {
+                Vector2 o = a.Lot[0], sd = (a.Lot[1] - a.Lot[0]).normalized, n = (a.Lot[3] - a.Lot[0]).normalized;
+                float w = (a.Lot[1] - a.Lot[0]).magnitude, dp = (a.Lot[3] - a.Lot[0]).magnitude;
+                float s = Vector2.Dot(EnclaveLotSpot - o, sd), d = Vector2.Dot(EnclaveLotSpot - o, n);
+                foreach (float m in new[] { 4f, 3f, 2f, 1f, 0f })
+                {
+                    float s0 = Mathf.Min(0f, s - m), s1 = Mathf.Max(w, s + m), d1 = Mathf.Max(dp, d + m);
+                    bool ok = true;
+                    for (float u = s0; u <= s1 + 0.01f && ok; u += 1f)
+                        for (float v = 0f; v <= d1 + 0.01f && ok; v += 1f)
+                        {
+                            if (u >= 0f && u <= w && v <= dp) continue;   // the lot as it was
+                            var p = o + sd * Mathf.Min(u, s1) + n * Mathf.Min(v, d1);
+                            if (InsideHouse(p, 2f, null) || OnDrivePlan(p, 0.5f) || RoadClearance(p) < 3f || a.InRect(p, a.DeckC, a.DU, a.DV, a.DeckHU, a.DeckHV, 2.5f)
+                                || a.InRect(p, a.CourtC, a.CU, a.CV, a.CourtHU, a.CourtHV, 1.5f) || (a.PavR > 0f && (p - a.PavC).magnitude < a.PavR + 1f)) ok = false;
+                        }
+                    if (!ok) continue;
+                    a.Lot = new List<Vector2> { o + sd * s0, o + sd * s1, o + sd * s1 + n * d1, o + sd * s0 + n * d1 };
+                    Log22.Add($"Round 23: Enclave lot extended to Dan's spot ({EnclaveLotSpot.x:0.0}, {EnclaveLotSpot.y:0.0}) with {m:0} m to spare: {s1 - s0:0.0} x {d1:0.0} m (was {w:0} x {dp:0}), corners " + string.Join(" ", a.Lot.Select(q => $"({q.x:0.0}, {q.y:0.0})")));
+                    return;
+                }
+                Log22.Add($"Round 23: Enclave lot NOT extended: the ground out to Dan's spot is blocked (spot at {s:0.0} m along, {d:0.0} m deep in the lot's frame)");
+            }
+
             void PlanCommunityMonuments()
             {
                 for (int i = 0; i < Communities.communities.Length; i++)
@@ -561,16 +591,35 @@ namespace ChastainRush
             if (a.Lot != null)
             {
                 flat.Tint = new Color(0.21f, 0.21f, 0.22f);
-                DrapePoly(flat, a.Lot, 2f, 0.05f, c.terrain);
+                DrapePoly(flat, a.Lot, 1f, 0.06f, c.terrain, 8);   // Round 23: a 1 m grid (was 2 m): the grass no longer shows through it
                 RibbonGridMax(flat, Densify(a.LotDrive, 0.75f), Enumerable.Repeat(6f, Densify(a.LotDrive, 0.75f).Count).ToArray(), 0.05f, c.terrain, 4);
-                // stall lines along the far side
+                // stall lines along the far side; a lot made deeper (Round 23) also gets double rows, 6 m aisles between
                 var n = (a.Lot[3] - a.Lot[0]).normalized; var sd = (a.Lot[1] - a.Lot[0]).normalized;
+                float lw = (a.Lot[1] - a.Lot[0]).magnitude, ld = (a.Lot[3] - a.Lot[0]).magnitude;
+                int stalls = Mathf.FloorToInt((lw - 2f) / 2.8f);
                 flat.Tint = LineWhite;
-                for (int k = 0; k <= 5; k++)
+                void Stalls(float depth, float dir)   // a row of stall lines from the line at 'depth', 5 m towards 'dir' (+1 deeper, -1 nearer)
                 {
-                    var b0 = a.Lot[3] + sd * (1.0f + k * 2.8f); var b1 = b0 - n * 5.0f;
-                    var w = new Vector2(-n.y, n.x) * 0.06f;
-                    Face(flat, V3(c, b0 - w, 0.075f), V3(c, b0 + w, 0.075f), V3(c, b1 + w, 0.075f), V3(c, b1 - w, 0.075f), Vector3.up);
+                    for (int k = 0; k <= stalls; k++)
+                    {
+                        var w = new Vector2(-n.y, n.x) * 0.06f;
+                        for (int j = 0; j < 5; j++)   // in 1 m pieces, so each stays on the lot's surface
+                        {
+                            var b0 = a.Lot[0] + n * (depth + dir * j) + sd * (1.0f + k * 2.8f); var b1 = b0 + n * dir;
+                            Face(flat, V3(c, b0 - w, 0.085f), V3(c, b0 + w, 0.085f), V3(c, b1 + w, 0.085f), V3(c, b1 - w, 0.085f), Vector3.up);
+                        }
+                    }
+                }
+                Stalls(ld, -1f);
+                for (float mid = ld - 5f - 6f - 5f; mid - 5f >= 6f; mid -= 16f)
+                {
+                    Stalls(mid, 1f); Stalls(mid, -1f);
+                    var ew = n * 0.06f;
+                    for (int k = 0; k < stalls; k++)   // the divider between the two rows, in 2.8 m pieces
+                    {
+                        var e0 = a.Lot[0] + n * mid + sd * (1.0f + k * 2.8f); var e1 = e0 + sd * 2.8f;
+                        Face(flat, V3(c, e0 - ew, 0.085f), V3(c, e1 - ew, 0.085f), V3(c, e1 + ew, 0.085f), V3(c, e0 + ew, 0.085f), Vector3.up);
+                    }
                 }
             }
             mb.ToObject("EnclavePoolAndClubhouse", c.mats.House, root, false, true);
