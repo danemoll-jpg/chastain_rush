@@ -62,7 +62,10 @@ namespace ChastainRush
         // ---------------------------------------------------------------- Round 19: riding the walls
         sealed class Ride { public float lastGround = -10f, stick, stuck; }
         readonly Dictionary<ArcadeVehicle, Ride> rides = new Dictionary<ArcadeVehicle, Ride>();
-        ArcadeVehicle[] cars = new ArcadeVehicle[0]; float nextFind;
+        // Round 23 follow-ups: one search for the vehicles a second for every pipe (the network has a hundred pieces: each searching on
+        // its own, all in the same frame, was a hitch every second)
+        static ArcadeVehicle[] cars = new ArcadeVehicle[0]; static float nextFind;
+        public static ArcadeVehicle[] Vehicles { get { if (Time.time >= nextFind || Time.time < nextFind - 2f) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; } return cars; } }
 
         // where p is in the barrel: its axis point, the axis direction, how far into the barrel from its nearer end (m)
         bool Barrel(Vector3 p, float pad, out Vector3 axis, out Vector3 along, out float fromEnd, out float station)
@@ -94,9 +97,8 @@ namespace ChastainRush
 
         void FixedUpdate()
         {
-            if (Time.time >= nextFind) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; }
             float dt = Time.fixedDeltaTime;
-            foreach (var car in cars)
+            foreach (var car in Vehicles)
             {
                 if (!car || car.Body == null || car.Body.isKinematic) continue;
                 if (!rides.TryGetValue(car, out var ride)) rides[car] = ride = new Ride();

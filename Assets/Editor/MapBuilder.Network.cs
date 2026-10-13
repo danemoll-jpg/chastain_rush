@@ -65,6 +65,21 @@ namespace ChastainRush
         const string NetworkFilePath = "Data/pipes/network.json";
         const float NetLampEvery = 18f, NetCell = 60f;
 
+        // Round 23 follow-ups (the exe check: motorcycles stalled on the lip where a round opening's rim rose off a room's flat floor): at a
+        // chamber's wall an opening is D-shaped, its lower half square (the room's floor runs straight in, flat, 2R wide) and its upper half
+        // round; the pipe eases from that D to round over its first NetDEase m. (lateral, height over the invert) of a ring point at angle
+        // th (0 at the invert), d01 1 at the wall, 0 round
+        const float NetDEase = 6f;
+        static Vector2 NetRingPoint(float R, float th, float d01)
+        {
+            var c = new Vector2(Mathf.Sin(th) * R, R - Mathf.Cos(th) * R);
+            if (d01 <= 0f || Mathf.Cos(th) <= 0f) return c;
+            var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th));
+            float k = Mathf.Min(Mathf.Abs(d.x) > 1e-4f ? R / Mathf.Abs(d.x) : float.MaxValue, Mathf.Abs(d.y) > 1e-4f ? R / Mathf.Abs(d.y) : float.MaxValue);
+            var sq = new Vector2(d.x * k, R + d.y * k);
+            return Vector2.Lerp(c, sq, d01);
+        }
+
         sealed class NetTubeGeo
         {
             public NetTube J; public Vector3[] P; public float[] S; public float R; public int RiserFrom = -1;   // floor points, arc length; the riser's first point
@@ -73,6 +88,15 @@ namespace ChastainRush
             public Vector3 Up(int i) => Vector3.Cross(T(i), Side(i)).normalized;
             public Vector3 Axis(int i) => P[i] + Up(i) * R;
             public int At(float s) { int i = Array.BinarySearch(S, s); if (i < 0) i = ~i; return Mathf.Clamp(i, 0, S.Length - 1); }
+            // how far ring i is into the D at a chamber's wall (1 at the wall, 0 from NetDEase m on)
+            public float D01(int i)
+            {
+                float L = S[S.Length - 1], m = 0f;
+                if (J.a != null && J.a.kind == "ch") m = Mathf.Max(m, Smooth01(1f - S[i] / NetDEase));
+                if (J.b != null && J.b.kind == "ch") m = Mathf.Max(m, Smooth01(1f - (L - S[i]) / NetDEase));
+                return m;
+            }
+            public Vector3 RingAt(int i, float th) { var q = NetRingPoint(R, th, D01(i)); return P[i] + Side(i) * q.x + Up(i) * q.y; }
         }
 
         sealed class Network
@@ -82,6 +106,7 @@ namespace ChastainRush
             public readonly Dictionary<string, NetTubeGeo> Geo = new Dictionary<string, NetTubeGeo>();
             public readonly List<(Vector2 c, float r)> Holes = new List<(Vector2, float)>();     // the street cut round each manhole (roads, paint)
             public readonly List<(NetManhole m, Vector2 c, float r, float y)> Lids = new List<(NetManhole, Vector2, float, float)>();
+            public readonly Dictionary<string, (float half, float lift)> LidRoad = new Dictionary<string, (float, float)>();   // the street's half width and lift at each manhole
             public readonly List<(NetTubeGeo g, NetGlass gl, float T)> Glass = new List<(NetTubeGeo, NetGlass, float)>();
             public bool Built(NetTube t) => t.stage <= Stage;
             public bool Built(NetChamber c) => c.stage <= Stage;
@@ -127,7 +152,7 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- planning (before anything samples the ground)
-        static void PlanNetwork(TerrainGrid terrain, Network n)
+        static void PlanNetwork(TerrainGrid terrain, Network n, MapData map)
         {
             if (n == null) return;
             // manholes: terrain holes where the street's ground is inside the riser's top, the street cut round it
@@ -152,8 +177,22 @@ namespace ChastainRush
                 if (cells.Count == 0) { Debug.LogError($"[Round23+] manhole {m.id}: the riser never meets the street (no hole)"); continue; }
                 var c = new Vector2(cells.Average(q => q.x), cells.Average(q => q.y)); float r = cells.Max(q => (q - c).magnitude) + 0.9f;
                 n.Holes.Add((c, r + 0.4f)); n.Lids.Add((m, c, r, Ground(terrain, c.x, c.y)));
+                float half = 3.5f, lift = 0.06f * vScale; float bestD = float.MaxValue;   // the street it is in: its half width and lift (the patch round the lid)
+                foreach (var road in map.roads)
+                {
+                    if (road.name != m.road) continue; var pts = ToPoints(road.points);
+                    for (int i = 0; i + 1 < pts.Count; i++)
+                    {
+                        var ab = pts[i + 1] - pts[i]; float tt = Mathf.Clamp01(Vector2.Dot(c - pts[i], ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); float d = (pts[i] + ab * tt - c).magnitude;
+                        if (d < bestD) { bestD = d; half = road.width * 0.5f; lift = (RoadLift.TryGetValue(road.@class, out var l) ? l : 0.06f) * vScale; }
+                    }
+                }
+                n.LidRoad[m.id] = (half, lift);
                 Debug.Log($"[Round23+] manhole {m.id} in {m.road}: riser {m.height:0.0} m high, {holed} terrain hole cells, the lid {2f * r:0.0} m across at ({c.x:0.0}, {c.y:0.0})");
             }
+            // the hub's daylight grates: no trees on them (MapBuilder.NetworkHub.cs cuts their holes)
+            foreach (var c in n.F.chambers)
+                if (c.kind == "hub" && n.Built(c)) foreach (var g in HubGrates(c)) n.Holes.Add((g, HubGrateHalf * 1.5f));
             // glass: terrain holes over the trench round each glass stretch (in the pond; its water surface hides them from above)
             foreach (var t in n.F.tubes)
             {
@@ -259,7 +298,7 @@ namespace ChastainRush
                 else BuildChamberRoom(terrain, mats, root, c, n, cells);
                 rooms++;
             }
-            foreach (var (m, c, r, y) in n.Lids) BuildManholeLid(mats, root, m, c, r, y, n.Geo[m.tube], cells);
+            foreach (var (m, c, r, y) in n.Lids) BuildManholeLid(terrain, mats, root, m, c, r, y, n.LidRoad.TryGetValue(m.id, out var lr) ? lr : (3.5f, 0.06f), cells);
             foreach (var (g, gl, T) in n.Glass) BuildNetworkGlass(terrain, mats, root, g, gl, T, cells);
             // the run time: cells switched on near the camera
             var nc = root.gameObject.AddComponent<NetworkCells>();
@@ -281,7 +320,7 @@ namespace ChastainRush
             var glassAt = new List<(float, float)>(); if (t.glass != null) foreach (var gl in t.glass) if (n.Glass.Any(x => x.gl == gl)) glassAt.Add((gl.s0, gl.s1));
             bool Glass(float s) => glassAt.Any(x => s >= x.Item1 && s <= x.Item2);
             // ring vertices; a manhole riser's rings are cut off at the street
-            Vector3 Ring(int i, float th) => g.Axis(i) + g.Side(i) * (Mathf.Sin(th) * R) - g.Up(i) * (Mathf.Cos(th) * R);
+            Vector3 Ring(int i, float th) => g.RingAt(i, th);
             float Gnd(Vector3 v) => Ground(terrain, v.x, v.z);
             bool riserTop(int i) => g.RiserFrom >= 0 && i >= g.RiserFrom;
             // cells along it (60 m)
@@ -443,7 +482,7 @@ namespace ChastainRush
             if (atStart) { for (int i = 0; i < g.P.Length && g.S[i] <= Len + 0.01f; i++) idx.Add(i); }
             else { float L = g.S[g.S.Length - 1]; for (int i = g.P.Length - 1; i >= 0 && L - g.S[i] <= Len + 0.01f; i--) idx.Add(i); }
             var barrel = new UvMesh();
-            Vector3 Ring(int i, float th) => g.Axis(i) + g.Side(i) * (Mathf.Sin(th) * R) - g.Up(i) * (Mathf.Cos(th) * R);
+            Vector3 Ring(int i, float th) => g.RingAt(i, th);
             for (int q = 0; q + 1 < idx.Count; q++)
                 for (int k = 0; k < arc; k++)
                 {
@@ -558,7 +597,7 @@ namespace ChastainRush
                 for (int k = 0; k < seg; k++)
                 {
                     float th0 = Mathf.PI * 2f * k / seg, th1 = Mathf.PI * 2f * (k + 1) / seg;
-                    Vector2 Cq(float th) => new Vector2(hc + Mathf.Sin(th) * R, cy - Mathf.Cos(th) * R);
+                    Vector2 Cq(float th) { var q = NetRingPoint(R, th, 1f); return new Vector2(hc + q.x, yb + q.y); }   // the D (MapBuilder.Network.cs)
                     Vector2 Sq(float th) { var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float kx = Mathf.Abs(d.x) > 1e-4f ? a / Mathf.Abs(d.x) : float.MaxValue, ky = Mathf.Abs(d.y) > 1e-4f ? a / Mathf.Abs(d.y) : float.MaxValue; float kk = Mathf.Min(kx, ky); return new Vector2(hc + d.x * kk, cy + d.y * kk); }
                     Vector2 c0 = Cq(th0), c1 = Cq(th1), q0 = Sq(th0), q1 = Sq(th1);
                     room.Quad(P(c0.x, c0.y), P(c1.x, c1.y), P(q1.x, q1.y), P(q0.x, q0.y), Uv(c0.x, c0.y), Uv(c1.x, c1.y), Uv(q1.x, q1.y), Uv(q0.x, q0.y), inward);
@@ -569,9 +608,24 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- manhole lids
-        static void BuildManholeLid(Materials mats, Transform parent, NetManhole m, Vector2 c, float r, float y, NetTubeGeo g, NetCells cells)
+        static void BuildManholeLid(TerrainGrid terrain, Materials mats, Transform parent, NetManhole m, Vector2 c, float r, float y, (float half, float lift) road, NetCells cells)
         {
             var root = new GameObject("Manhole " + m.id + " (" + m.road + ")").transform; root.SetParent(parent, false);
+            // the street's surface round the lid: the street's own triangles over the hole were cut away (CutNetworkHoles) in whole
+            // pieces, so a patch of asphalt in the street's width fills round the collar (draped on the ground, just over the street)
+            {
+                var patch = new MeshBuilder(); var d = new Vector2(m.dir[0], m.dir[1]).normalized; var sd = new Vector2(-d.y, d.x);
+                float hl = r + 3.2f, hw = Mathf.Max(1.5f, road.half - 0.25f);
+                for (float a = -hl; a < hl - 1e-3f; a += 0.5f)
+                    for (float b = -hw; b < hw - 1e-3f; b += 0.5f)
+                    {
+                        var q0 = c + d * a + sd * b; var q1 = c + d * (a + 0.5f) + sd * b; var q2 = c + d * (a + 0.5f) + sd * (b + 0.5f); var q3 = c + d * a + sd * (b + 0.5f);
+                        if (((q0 + q2) * 0.5f - c).magnitude < r) continue;
+                        Vector3 V(Vector2 q) => new Vector3(q.x, Ground(terrain, q.x, q.y) + road.lift + 0.008f, q.y);
+                        Face(patch, V(q0), V(q1), V(q2), V(q3), Vector3.up);
+                    }
+                patch.ToObject("Manhole " + m.id + " street patch", mats.Asphalt, root, false, false);
+            }
             // the collar round the hole (concrete, flush with the street): hides the hole's edge when the lid is off
             var collar = new MeshBuilder(); const int seg = 32;
             for (int k = 0; k < seg; k++)

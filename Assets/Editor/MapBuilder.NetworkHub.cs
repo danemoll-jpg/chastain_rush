@@ -21,7 +21,13 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        const float HubTopW = 7f, HubMidW = 9f, HubRampW = 8f, HubRampGrade = 0.2f;
+        const float HubTopW = 7f, HubMidW = 9f, HubRampW = 8f, HubRampGrade = 0.2f, HubGrateHalf = 2f;
+        // two steel grates in the woods floor over the hub, above the floor either side of the pool: daylight shafts down into it
+        static IEnumerable<Vector2> HubGrates(NetChamber c)
+        {
+            var u = new Vector2(Mathf.Sin(c.yaw * Mathf.Deg2Rad), Mathf.Cos(c.yaw * Mathf.Deg2Rad));
+            foreach (float a in new[] { -26f, 26f }) yield return new Vector2(c.x, c.z) + u * a;
+        }
         static Material hubPool, waterfallMat;
 
         static void BuildHub(TerrainGrid terrain, Materials mats, Transform parent, NetChamber c, Network n, NetCells cells)
@@ -56,7 +62,9 @@ namespace ChastainRush
                 Tiles(hl - inI, hl - inO, -(hw - inI), hw - inI, y, up);                  // the +a end
             }
             Band(iM, iF, ym); Band(0f, iM, yt);
-            Tiles(-hl, hl, -hw, hw, yc, -up);
+            var grates = HubGrates(c).ToList();
+            bool InGrate(float a, float b) { var q = new Vector2((P(a, b, 0f)).x, (P(a, b, 0f)).z); return grates.Any(g => Mathf.Abs(q.x - g.x) < HubGrateHalf && Mathf.Abs(q.y - g.y) < HubGrateHalf); }
+            Tiles(-hl, hl, -hw, hw, yc, -up, InGrate);   // the ceiling, open under the grates
             // the basin: its bottom, its sides sloping in from the shallow ends (1 in 6 along a), steep at the sides
             {
                 var bm = room;
@@ -111,11 +119,53 @@ namespace ChastainRush
                 var fl = new List<Vector3>(); for (int k = 0; k <= 50; k++) { float t = k / 50f; fl.Add(Vector3.Lerp(lo, hi, t) + across * (w * 0.5f) + up * Mathf.Lerp(yLo, yHi, t)); }
                 dp.floor = fl.ToArray(); dp.barrelFrom = 0f; dp.barrelTo = 0f;
             }
+            // each ramp runs head-on into the ledge it climbs to (its top meets that ledge's face at the ledge's height: you drive straight
+            // on; the exe check sent a car off the end of ramps that stopped beside the ledge instead)
             float rampLen = (ym - y0) / HubRampGrade;
-            float fa0 = hl - iF - 6f;   // the floor ramp's low end, 6 m in from the floor's +a end
-            Ramp(O + u3 * fa0 - v3 * (hw - iF), O + u3 * (fa0 - rampLen) - v3 * (hw - iF), v3, HubRampW, y0, ym, "ramp floor to mid ledge");
-            float mb0 = hw - iM - 2f;   // the mid ledge's ramp: up the +a end from its +b corner toward -b
-            Ramp(O + u3 * (hl - iM) + v3 * mb0, O + u3 * (hl - iM) + v3 * (mb0 - rampLen), -u3, HubRampW, ym, yt, "ramp mid to top ledge");
+            // floor to the mid ledge: along the floor's -b side, up toward +a, into the mid ledge's +a band (its face at a = hl - iF)
+            Ramp(O + u3 * ((hl - iF) - rampLen) - v3 * (hw - iF), O + u3 * (hl - iF) - v3 * (hw - iF), v3, HubRampW, y0, ym, "ramp floor to mid ledge");
+            // mid to the top ledge: along the mid ledge's +b band, up toward -a, into the top ledge's -a band (its face at a = -(hl - iM))
+            Ramp(O + u3 * (-(hl - iM) + rampLen) + v3 * (hw - iM), O + u3 * (-(hl - iM)) + v3 * (hw - iM), -v3, HubRampW, ym, yt, "ramp mid to top ledge");
+            // the grates' shafts: square concrete walls from the ceiling up to the ground, a steel grate over each at the ground (solid:
+            // a car drives over it), a hole in the terrain under it, daylight down through it (a spotlight and soft beams)
+            var grateMb = new MeshBuilder(); var beams = new List<(Vector3 top, float drop)>();
+            foreach (var g in grates)
+            {
+                float gy = Ground(terrain, g.x, g.y); float top = gy + 0.05f;
+                var gc = new Vector3(g.x, 0f, g.y); var ex = Vector3.right * HubGrateHalf; var ez = Vector3.forward * HubGrateHalf;
+                foreach (var (o, al, inw) in new[] { (gc - ex - ez, Vector3.right, Vector3.forward), (gc + ex - ez, Vector3.forward, Vector3.left), (gc + ex + ez, Vector3.left, Vector3.back), (gc - ex + ez, Vector3.back, Vector3.right) })
+                    room.Quad(o + up * yc, o + al * (2f * HubGrateHalf) + up * yc, o + al * (2f * HubGrateHalf) + up * top, o + up * top, new Vector2(0f, 0.3f), new Vector2(1.6f, 0.3f), new Vector2(1.6f, 0.5f), new Vector2(0f, 0.5f), inw);
+                SetHoles(terrain, new Rect(g.x - HubGrateHalf - 0.6f, g.y - HubGrateHalf - 0.6f, 2f * HubGrateHalf + 1.2f, 2f * HubGrateHalf + 1.2f), q => Mathf.Abs(q.x - g.x) < HubGrateHalf + 0.3f && Mathf.Abs(q.y - g.y) < HubGrateHalf + 0.3f);
+                var steel = new Color(0.26f, 0.27f, 0.28f);
+                for (float x = -HubGrateHalf; x <= HubGrateHalf + 1e-3f; x += 0.25f) Beam(grateMb, new Vector3(g.x + x, top, g.y - HubGrateHalf - 0.3f), new Vector3(g.x + x, top, g.y + HubGrateHalf + 0.3f), 0.06f, 0.1f, steel);
+                foreach (float z in new[] { -HubGrateHalf - 0.3f, 0f, HubGrateHalf + 0.3f }) Beam(grateMb, new Vector3(g.x - HubGrateHalf - 0.3f, top + 0.02f, g.y + z), new Vector3(g.x + HubGrateHalf + 0.3f, top + 0.02f, g.y + z), 0.12f, 0.12f, steel);
+                var gcol = new GameObject("Hub grate (solid)"); gcol.transform.SetParent(root, false); gcol.transform.position = new Vector3(g.x, top - 0.05f, g.y);
+                gcol.AddComponent<BoxCollider>().size = new Vector3(2f * HubGrateHalf + 0.6f, 0.2f, 2f * HubGrateHalf + 0.6f);
+                var sl = new GameObject("Hub daylight"); sl.transform.SetParent(root, false); sl.transform.SetPositionAndRotation(new Vector3(g.x, yc - 0.5f, g.y), Quaternion.LookRotation(Vector3.down));
+                var l = sl.AddComponent<Light>(); l.type = LightType.Spot; l.range = (yc - y0) + 6f; l.spotAngle = 38f; l.intensity = 4f; l.color = new Color(1f, 0.96f, 0.86f); l.shadows = LightShadows.None;
+                beams.Add((new Vector3(g.x, yc, g.y), yc - y0));
+            }
+            if (grateMb.Count > 0) grateMb.ToObject("Hub grates", mats.House, root.parent, false, false);   // not in the hub's cell: seen from the woods
+            if (beams.Count > 0)
+            {
+                ClearMaterials();
+                var bv = new List<Vector3>(); var buv = new List<Vector2>(); var bc = new List<Color>(); var bt = new List<int>();
+                var sun = new Vector3(0.12f, -1f, 0.08f).normalized; int k = 0;
+                foreach (var (top, drop) in beams)
+                    for (int j = 0; j < 3; j++)
+                        foreach (var side in new[] { Vector3.right, Vector3.forward })
+                        {
+                            var a0 = top + new Vector3((j - 1) * 1.1f, 0f, (j - 1) * 0.7f); var b0 = a0 + sun * (drop / -sun.y); float w = 1.1f + 0.4f * j;
+                            int v0 = bv.Count; bv.Add(a0 - side * w); bv.Add(a0 + side * w); bv.Add(b0 + side * w * 1.6f); bv.Add(b0 - side * w * 1.6f);
+                            buv.Add(new Vector2(0, 0)); buv.Add(new Vector2(1, 0)); buv.Add(new Vector2(1, 1)); buv.Add(new Vector2(0, 1));
+                            var col = new Color(Hash01(k, 3301), 0f, 0f, 0.7f); for (int q = 0; q < 4; q++) bc.Add(col); k++;
+                            bt.Add(v0); bt.Add(v0 + 1); bt.Add(v0 + 2); bt.Add(v0); bt.Add(v0 + 2); bt.Add(v0 + 3);
+                        }
+                var bm = new Mesh { name = "Hub daylight beams" }; bm.SetVertices(bv); bm.SetUVs(0, buv); bm.SetColors(bc); bm.SetTriangles(bt, 0); bm.RecalculateBounds();
+                AssetDatabase.CreateAsset(bm, $"{GeneratedDir}/Meshes/Hub daylight beams.asset");
+                var bgo = new GameObject("Hub daylight beams"); bgo.transform.SetParent(root, false); bgo.AddComponent<MeshFilter>().sharedMesh = bm;
+                var br = bgo.AddComponent<MeshRenderer>(); br.sharedMaterial = clearShaft; br.shadowCastingMode = ShadowCastingMode.Off;
+            }
             room.ToObject("sc HUB", pipeConcrete, root, true);
             // the pool's water
             {
@@ -137,6 +187,8 @@ namespace ChastainRush
             foreach (var o in c.openings)
             {
                 if (o.lvl != "top" && o.lvl != "mid") continue;
+                var tin = n.F.tubes.FirstOrDefault(t => t.id == o.tube);
+                if (tin == null || tin.b == null || tin.b.chamber != c.id) continue;   // only a pipe that runs into the hub brings water in
                 var nrm = new[] { u3, v3, -u3, -v3 }[o.wall]; var along = new[] { v3, u3, v3, u3 }[o.wall];
                 float half = (o.wall == 0 || o.wall == 2) ? hl : hw;
                 var mouth = O + nrm * (half - o.inset) + along * o.t;
@@ -186,10 +238,10 @@ namespace ChastainRush
             foreach (var (inO, inI, y, clear, nm) in new[] { (iM, iF, ym, yt - ym - 0.6f, "mid ledge"), (0f, iM, yt, yc - yt - 0.3f, "top ledge") })
             {
                 float mid = (inO + inI) * 0.5f, hbw = (inI - inO) * 0.5f - 0.2f;
-                Reset(nm + " -b", P(-(hl - mid), -(hw - mid), y), P(hl - mid, -(hw - mid), y), hbw, clear);
-                Reset(nm + " +b", P(-(hl - mid), hw - mid, y), P(hl - mid, hw - mid, y), hbw, clear);
-                Reset(nm + " -a", P(-(hl - mid), -(hw - mid), y), P(-(hl - mid), hw - mid, y), hbw, clear);
-                Reset(nm + " +a", P(hl - mid, -(hw - mid), y), P(hl - mid, hw - mid, y), hbw, clear);
+                Reset(nm + " -b", P(-(hl - inO), -(hw - mid), y), P(hl - inO, -(hw - mid), y), hbw, clear);   // to the corners
+                Reset(nm + " +b", P(-(hl - inO), hw - mid, y), P(hl - inO, hw - mid, y), hbw, clear);
+                Reset(nm + " -a", P(-(hl - mid), -(hw - inO), y), P(-(hl - mid), hw - inO, y), hbw, clear);
+                Reset(nm + " +a", P(hl - mid, -(hw - inO), y), P(hl - mid, hw - inO, y), hbw, clear);
             }
             float least = float.MaxValue;
             for (float a = -hl; a <= hl; a += 4f) for (float b = -hw; b <= hw; b += 4f) { var q = P(a, b, 0f); least = Mathf.Min(least, Ground(terrain, q.x, q.z) - (yc + 0.3f)); }

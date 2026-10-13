@@ -15,6 +15,7 @@ namespace ChastainRush
         public const float Reach = 70f;       // on within this of the camera (m, to the cell's box)
         const float Every = 0.2f;
         bool[] on; float next;
+        Renderer[][] rends; Light[][] lights; Behaviour[][] parts;   // each cell's, gathered once
         public static int CellsOn { get; private set; }
         public static NetworkCells Instance { get; private set; }
 
@@ -23,8 +24,16 @@ namespace ChastainRush
 
         void Start()
         {
-            on = new bool[roots.Length];
-            for (int i = 0; i < roots.Length; i++) { on[i] = true; Set(i, false); }
+            on = new bool[roots.Length]; rends = new Renderer[roots.Length][]; lights = new Light[roots.Length][]; parts = new Behaviour[roots.Length][];
+            for (int i = 0; i < roots.Length; i++)
+            {
+                var r = roots[i]; if (!r) { rends[i] = new Renderer[0]; lights[i] = new Light[0]; parts[i] = new Behaviour[0]; continue; }
+                rends[i] = r.GetComponentsInChildren<Renderer>(true); lights[i] = r.GetComponentsInChildren<Light>(true);
+                var b = new System.Collections.Generic.List<Behaviour>();
+                b.AddRange(r.GetComponentsInChildren<PipeStream>(true)); b.AddRange(r.GetComponentsInChildren<NetworkWaterfall>(true)); b.AddRange(r.GetComponentsInChildren<PipeAquarium>(true));
+                parts[i] = b.ToArray();
+                on[i] = true; Set(i, false);
+            }
             next = 0f;
         }
 
@@ -48,14 +57,10 @@ namespace ChastainRush
 
         void Set(int i, bool v)
         {
-            on[i] = v; var r = roots[i]; if (!r) return;
-            foreach (var x in r.GetComponentsInChildren<Renderer>(true)) x.enabled = v;
-            foreach (var x in r.GetComponentsInChildren<Light>(true)) x.enabled = v;
-            foreach (var x in r.GetComponentsInChildren<AudioSource>(true)) { x.enabled = v; }
-            foreach (var x in r.GetComponentsInChildren<PipeStream>(true)) x.enabled = v;
-            foreach (var x in r.GetComponentsInChildren<NetworkWaterfall>(true)) x.enabled = v;
-            foreach (var x in r.GetComponentsInChildren<PipeAquarium>(true)) x.enabled = v;
-            foreach (var x in r.GetComponentsInChildren<ParticleSystem>(true)) { if (v) x.Play(); else x.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear); }
+            on[i] = v;   // the streams' and falls' own sound and spray stop and start with them (their OnEnable / OnDisable)
+            foreach (var x in rends[i]) if (x) x.enabled = v;
+            foreach (var x in lights[i]) if (x) x.enabled = v;
+            foreach (var x in parts[i]) if (x) x.enabled = v;
         }
     }
 }

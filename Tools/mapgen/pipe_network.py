@@ -134,17 +134,15 @@ CH = {
     "D10": dict(name="D10", kind="turn", at=(2060.0, 1060.0), yaw=60.0, size=TURN, stage=1),
     # stage 2: Noonday
     "J4":  dict(name="J4 NOONDAY JCT", kind="junction", at=(2280.0, 1215.0), yaw=75.0, size=J5M, stage=2, sign="M3 NOONDAY MAIN  /  M4 GLEN MAIN"),
-    "J5":  dict(name="J5 LAKE JCT", kind="junction", at=(2368.0, 1440.0), yaw=0.0, size=J5M, stage=2, sign="M3 NOONDAY MAIN"),
-    "K15": dict(name="K15", kind="junction", at=(2378.0, 1560.0), yaw=10.0, size=J5M, stage=2),
+    "J5":  dict(name="J5 LAKE JCT", kind="junction", at=(2350.0, 1352.0), yaw=20.0, size=J5M, stage=2, sign="M3 NOONDAY MAIN"),
+    "K15": dict(name="K15", kind="junction", at=(2472.0, 1562.0), yaw=0.0, size=J5M, stage=2),
     # stage 3: the Glen and the shops
-    "J6":  dict(name="J6 BRIDGE JCT", kind="junction", at=(2398.0, 832.0), yaw=110.0, size=J5M, stage=3, sign="M4 GLEN MAIN"),
+    "J6":  dict(name="J6 BRIDGE JCT", kind="junction", at=(2384.0, 884.0), yaw=110.0, size=J5M, stage=3, sign="M4 GLEN MAIN"),
     "J7":  dict(name="J7 GLEN JCT", kind="junction", at=(2722.0, 975.0), yaw=90.0, size=J5M, stage=3, sign="M4 GLEN MAIN"),
-    "K17": dict(name="K17", kind="junction", at=(2722.0, 880.0), yaw=0.0, size=J5M, stage=3),
-    "J8":  dict(name="J8 SHOPS JCT", kind="junction", at=(3170.0, 1185.0), yaw=45.0, size=J5M, stage=3, sign="M4 GLEN MAIN"),
+    "J8":  dict(name="J8 SHOPS JCT", kind="junction", at=(3194.0, 1204.0), yaw=45.0, size=J5M, stage=3, sign="M4 GLEN MAIN"),
     "K19": dict(name="K19", kind="junction", at=(2700.0, 560.0), yaw=0.0, size=J35, stage=3),
     # stage 4: the lakes
-    "J9":  dict(name="J9 LAKES JCT", kind="junction", at=(872.0, 1240.0), yaw=110.0, size=J5M, stage=4, sign="M2 LAKES MAIN  /  M6 NELSON MAIN"),
-    "K24": dict(name="K24", kind="junction", at=(985.0, 960.0), yaw=0.0, size=J35, stage=4),
+    "J9":  dict(name="J9 LAKES JCT", kind="junction", at=(868.0, 1236.0), yaw=110.0, size=J5M, stage=4, sign="M2 LAKES MAIN  /  M6 NELSON MAIN", floor=284.0),
     "K25": dict(name="K25", kind="junction", at=(560.0, 1418.0), yaw=110.0, size=J5M, stage=4),
 }
 
@@ -153,18 +151,17 @@ CH = {
 EXITS = {
     "X_W20":   dict(name="EXIT W20 POND", at=(1373.5, 800.0)),
     "X_TRAIL": dict(name="EXIT CREEK TRAIL", at=(2342.0, 1112.0)),
-    "X_W12":   dict(name="EXIT W12 POND", at=(2470.0, 1424.0)),
-    "X_W7":    dict(name="EXIT W7 POND", at=(2414.0, 1666.0)),
-    "X_BRIDGE": dict(name="EXIT UNDER BRIDGES", at=(2425.0, 790.0)),
+    "X_W12":   dict(name="EXIT W12 POND", at=(2497.0, 1443.0)),
+    "X_W7":    dict(name="EXIT W7 POND", at=(2446.0, 1700.0)),
+    "X_BRIDGE": dict(name="EXIT UNDER BRIDGES", at=(2424.0, 778.0)),
     "X_W11":   dict(name="EXIT W11 POND", at=(2672.0, 412.0)),
-    "X_SHOPS": dict(name="EXIT BEHIND SHOPS", at=(3250.0, 1262.0)),
+    "X_SHOPS": dict(name="EXIT BEHIND SHOPS", at=(3153.0, 1256.0)),
     "X_LNC":   dict(name="EXIT LITTLE NOONDAY", at=(3752.0, 1468.0)),
-    "X_W21":   dict(name="EXIT W21 POND", at=(1094.0, 852.0)),
     "X_STREAM": dict(name="EXIT LAKE STREAM", at=(470.0, 1425.0)),
     "X_W5":    dict(name="EXIT FAR WEST POND", at=(182.0, 1488.0)),
     "X_NELSON": dict(name="EXIT NELSON LAKE", at=(262.0, 118.0)),
-    "L_W8":    dict(name="LAUNCH GLEN POND", at=(2758.0, 835.0), outfall=8),
-    "L_W15":   dict(name="LAUNCH BIG LAKE", at=(2384.0, 1600.0), outfall=15),
+    "L_W8":    dict(name="LAUNCH GLEN POND", at=(2896.0, 858.0), outfall=8),
+    "L_W15":   dict(name="LAUNCH BIG LAKE", at=(2394.0, 1528.0), outfall=15),
 }
 MANHOLES = {
     "MH1": ("Parkwood Drive", (1548.0, 1278.0)), "MH2": ("Parkwood Drive", (1760.0, 1276.0)), "MH3": ("Bloombridge Way", (1880.0, 955.0)),
@@ -190,7 +187,7 @@ TUBES = [
     T("M1a", "M1 Trunk (J1 to J2, glass under the pond)", MAIN, True, 1, ("ch", "J1"), [(1540.0, 1162.0), (1600.0, 1104.0)], ("ch", "J2"), glass=[1], stripe="M1"),
     T("M1b", "M1 Trunk (J2 to the hub)", MAIN, True, 1, ("ch", "J2"), [(1700.0, 1096.0), (1770.0, 1112.0)], ("ch", "HUB", "mid"), stripe="M1"),
     T("M5a", "M5 Enclave Main (J1 to J3, glass along the pond)", MAIN, True, 1, ("ch", "J1"), [(1500.0, 1100.0), (1506.0, 1036.0), (1570.0, 1004.0), (1647.0, 994.0), (1645.0, 962.0), (1635.0, 922.0), (1625.0, 895.0), (1662.0, 880.0), (1722.0, 945.0)], ("ch", "J3"), glass=[4], stripe="M5"),
-    T("M5b", "M5 Enclave Main (J3 to the hub)", MAIN, True, 1, ("ch", "J3"), [(1840.0, 1060.0)], ("ch", "HUB", "top"), stripe="M5"),
+    T("M5b", "M5 Enclave Main (J3 to the hub)", MAIN, True, 1, ("ch", "J3"), [(1840.0, 1060.0), (1935.0, 1085.0)], ("ch", "HUB", "top"), stripe="M5"),
     T("B1a", "B1", MAIN, False, 1, ("ch", "J2"), [(1600.0, 1150.0)], ("ch", "K2")),
     T("B1b", "B1", MAIN, False, 1, ("ch", "K2"), [], ("ch", "K3")),
     T("B1c", "B1", MAIN, False, 1, ("ch", "K3"), [(1800.0, 1215.0)], ("ch", "HUB", "top")),
@@ -210,29 +207,28 @@ TUBES = [
     T("B10", "B10", NARROW, False, 1, ("ch", "K8"), [], ("ch", "D10")),
     # ---- stage 2
     T("M3a", "M3 Noonday Main (the hub to J4)", MAIN, True, 2, ("ch", "HUB", "floor"), [(2030.0, 1160.0), (2150.0, 1185.0)], ("ch", "J4"), stripe="M3"),
-    T("M3b", "M3 Noonday Main (J4 to J5, under Noonday Creek)", MAIN, True, 2, ("ch", "J4"), [(2318.0, 1268.0), (2345.0, 1350.0)], ("ch", "J5"), stripe="M3"),
-    T("M3c", "M3 Noonday Main (J5 under the big lake in glass)", MAIN, True, 2, ("ch", "J5"), [(2362.0, 1500.0)], ("ch", "K15"), glass=[15], stripe="M3"),
-    T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [], ("x", "L_W15"), stripe="M3"),
+    T("M3b", "M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1)", MAIN, True, 2, ("ch", "J4"), [(2294.0, 1262.0), (2302.0, 1318.0)], ("ch", "J5"), stripe="M3"),
+    T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1612.0)], ("ch", "K15"), glass=[15], stripe="M3"),
+    T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [(2440.0, 1548.0)], ("x", "L_W15"), stripe="M3"),
     T("B11", "B11", NARROW, False, 2, ("ch", "J4"), [(2318.0, 1160.0)], ("x", "X_TRAIL")),
-    T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2430.0, 1432.0)], ("x", "X_W12")),
-    T("B13", "B13", NARROW, False, 2, ("ch", "J5"), [(2440.0, 1500.0)], ("mh", "MH6")),
+    T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2452.0, 1462.0), (2512.0, 1486.0)], ("x", "X_W12")),
+    T("B13", "B13", NARROW, False, 2, ("ch", "K15"), [], ("mh", "MH6")),
     T("B14", "B14", NARROW, False, 2, ("ch", "J4"), [(2420.0, 1236.0), (2560.0, 1256.0)], ("mh", "MH7")),
-    T("B15", "B15", NARROW, False, 2, ("ch", "K15"), [(2420.0, 1630.0)], ("x", "X_W7")),
+    T("B15", "B15", NARROW, False, 2, ("ch", "K15"), [(2478.0, 1640.0), (2484.0, 1700.0)], ("x", "X_W7")),
     # ---- stage 3
-    T("M4a", "M4 Glen Main (J4 to J6)", MAIN, True, 3, ("ch", "J4"), [(2290.0, 1080.0), (2318.0, 980.0), (2340.0, 920.0)], ("ch", "J6"), flood=(2318.0, 985.0), stripe="M4"),
-    T("M4b", "M4 Glen Main (J6 to J7)", MAIN, True, 3, ("ch", "J6"), [(2560.0, 905.0)], ("ch", "J7"), stripe="M4"),
+    T("M4a", "M4 Glen Main (J4 to J6)", MAIN, True, 3, ("ch", "J4"), [(2290.0, 1080.0), (2318.0, 990.0), (2340.0, 940.0)], ("ch", "J6"), flood=(2318.0, 995.0), stripe="M4"),
+    T("M4b", "M4 Glen Main (J6 to J7)", MAIN, True, 3, ("ch", "J6"), [(2460.0, 880.0), (2560.0, 905.0)], ("ch", "J7"), stripe="M4"),
     T("M4c", "M4 Glen Main (J7 to J12, glass under the Chastain Glen pond)", MAIN, True, 3, ("ch", "J7"), [(2790.0, 915.0), (2860.0, 862.0)], ("ch", "J12"), glass=[8], stripe="M4"),
     T("M4d", "M4 Glen Main (J12 to J8)", MAIN, True, 3, ("ch", "J12"), [(3010.0, 1010.0)], ("ch", "J8"), stripe="M4"),
-    T("B16", "B16", NARROW, False, 3, ("ch", "J6"), [(2250.0, 720.0)], ("mh", "MH8")),
-    T("B17a", "B17", MAIN, False, 3, ("ch", "J7"), [], ("ch", "K17")),
-    T("B17b", "B17", NARROW, False, 3, ("ch", "K17"), [], ("mh", "MH9")),
-    T("B18", "B18 (the launch over the Chastain Glen pond)", MAIN, False, 3, ("ch", "K17"), [], ("x", "L_W8")),
+    T("B16", "B16", NARROW, False, 3, ("ch", "J6"), [(2300.0, 800.0), (2230.0, 700.0)], ("mh", "MH8")),
+    T("B17", "B17", NARROW, False, 3, ("ch", "J7"), [(2712.0, 900.0)], ("mh", "MH9")),
+    T("B18", "B18 (the launch over the Chastain Glen pond)", MAIN, False, 3, ("ch", "J12"), [(2938.0, 884.0)], ("x", "L_W8")),
     T("B19a", "B19", NARROW, False, 3, ("ch", "J13"), [(2800.0, 650.0)], ("ch", "K19")),
     T("B19b", "B19", NARROW, False, 3, ("ch", "K19"), [], ("mh", "MH10")),
     T("B19c", "B19", NARROW, False, 3, ("ch", "K19"), [(2690.0, 480.0)], ("x", "X_W11")),
-    T("B26", "B26", MAIN, False, 3, ("ch", "J6"), [], ("x", "X_BRIDGE")),
+    T("B26", "B26", NARROW, False, 3, ("ch", "J6"), [], ("x", "X_BRIDGE")),
     T("B20", "B20", NARROW, False, 3, ("ch", "J8"), [(3060.0, 1150.0)], ("mh", "MH11")),
-    T("B21", "B21", MAIN, False, 3, ("ch", "J8"), [], ("x", "X_SHOPS")),
+    T("B21", "B21", MAIN, False, 3, ("ch", "J8"), [(3168.0, 1232.0)], ("x", "X_SHOPS")),
     T("B22", "B22", NARROW, False, 3, ("ch", "J8"), [(3300.0, 1340.0), (3560.0, 1440.0)], ("x", "X_LNC")),
     # ---- stage 4
     T("M2a", "M2 Lakes Main (J10 to J9, glass along East Chastain Lake)", MAIN, True, 4, ("ch", "J10"), [(1385.0, 1230.0), (1345.0, 1160.0), (1250.0, 1170.0), (1060.0, 1200.0)], ("ch", "J9"), glass=[9], stripe="M2"),
@@ -240,9 +236,7 @@ TUBES = [
     T("M2c", "M2 Lakes Main (K25 under the interstate to the far-west pond)", MAIN, True, 4, ("ch", "K25"), [(440.0, 1440.0), (300.0, 1470.0)], ("x", "X_W5"), stripe="M2"),
     T("M6", "M6 Nelson Main", MAIN, True, 4, ("ch", "J9"), [(800.0, 1050.0), (640.0, 900.0), (520.0, 640.0), (420.0, 360.0), (330.0, 180.0)], ("x", "X_NELSON"), stripe="M6"),
     T("B23", "B23", NARROW, False, 4, ("ch", "J9"), [], ("mh", "MH12")),
-    T("B24a", "B24", NARROW, False, 4, ("ch", "J9"), [(940.0, 1060.0)], ("ch", "K24")),
-    T("B24b", "B24", NARROW, False, 4, ("ch", "K24"), [], ("mh", "MH13")),
-    T("B24c", "B24", NARROW, False, 4, ("ch", "K24"), [(1060.0, 890.0)], ("x", "X_W21")),
+    T("B24", "B24", NARROW, False, 4, ("ch", "J9"), [(930.0, 1090.0)], ("mh", "MH13")),
     T("B25", "B25", NARROW, False, 4, ("ch", "K25"), [(520.0, 1450.0)], ("x", "X_STREAM")),
 ]
 
@@ -254,6 +248,9 @@ DIFFERS = [
     "B4's drop shaft is a chamber of its own (S4): B4 drops 8 m into it from K3; B5 is a dead end off the shaft's floor with a small turning room (D5); B10 likewise (D10)",
     "M3: no glass under Noonday Creek (a creek is too narrow to dig round a tube) and no grate from P1's floor (P1 is a finished round pipe); the glass is under the big lake, J5 beside it on the shore",
     "No drop shaft at J7 (one drop shaft, S4, in the north maze)",
+    "Stage 2: J5 sits on the big lake's south shore (the proposal's J5 was in the water); M3 passes west of P1's inlet (it would have hit P1) and runs up the big lake in glass to K15, a junction on its east side; the launch over the big lake goes out from its east shore; B12 comes out on the north bank of the pond east of the lake",
+    "Stage 3: J6 moved 50 m north of the New Chastain Road bridges (the exit under the bridges needs room for its cut; B26 is 3.5 m); the launch over the Chastain Glen pond comes off J12 into its north-east corner (from K17 it could not climb to the pond's level in time; K17 is gone, B17 runs from J7 to its manhole); J8 sits a little up the slope; the exit behind the shops is in the low strip north-west of the center, its cut into the bank",
+    "Stage 4: J9 sits deeper (its floor 284 m) so M2 stays under East Chastain Lake's bed to its shore; the exit at the pond by Chastain Road (W21) is dropped (the ground there is too low for a pipe to come up under it) and B24 runs from J9 straight to its manhole",
 ]
 
 
@@ -299,7 +296,9 @@ def alloc_opening(cid, toward, d, lvl, tube_id):
     else:
         wall = 1 if b > 0 else 3; t = a * hw2 / max(abs(b), 1e-6); half = hl2
     lim = half - d * 0.5 - 1.2
-    if c["kind"] == "hub": lim = half - d * 0.5 - 3.0
+    if c["kind"] == "hub":   # over the band below it, whose water falls on down (not over the corner of its own ledge)
+        nxt = HUB["insets"]["floor"]   # (a top ledge's water falls to the mid ledge, then on to the floor: both under it)
+        lim = (half + inset) - nxt - d * 0.5 - 2.5
     t = max(-lim, min(lim, t))
     o = dict(wall=wall, t=t, d=d, lvl=lvl, tube=tube_id, inset=inset, half=half)
     openings[cid].append(o)
@@ -321,7 +320,10 @@ def spread_openings():
                         if gap < need:
                             sh = (need - gap) * 0.5 + 0.01; ws[i]["t"] -= sh; ws[i + 1]["t"] += sh; moved = True
                     for o in ws:
-                        lim = o["half"] - o["d"] * 0.5 - (3.0 if CH[cid]["kind"] == "hub" else 1.0)
+                        if CH[cid]["kind"] == "hub":
+                            nxt = HUB["insets"]["floor"]
+                            lim = (o["half"] + o["inset"]) - nxt - o["d"] * 0.5 - 2.5
+                        else: lim = o["half"] - o["d"] * 0.5 - 1.0
                         o["t"] = max(-lim, min(lim, o["t"]))
                     if not moved: break
                 for i in range(len(ws) - 1):
@@ -478,7 +480,8 @@ def make_heads(tb, ops, est):
             heads[k] = dict(kind="mh", level=est.get(("mhlevel", k)), lock=6.0, mh=e[1], street=m, dir=tdir, ground=gm, H=Hh, road=road)
         elif e[0] == "x":
             x = EXITS[e[1]]; A = x["at"]; dirx = norm(sub(nb, A)); room = math.hypot(*sub(nb, A))
-            Lx = est.get(("x", k), 30.0); Lx = max(20.0, min(Lx, room - 14.0 if room > 34.0 else room * 0.6))
+            cap = room - (40.0 if not tb["way"] else 14.0)
+            Lx = est.get(("x", k), 30.0); Lx = max(20.0, min(Lx, cap if cap > 20.0 else room * 0.4))
             B = add(A, dirx, Lx)
             segs[k] = [B, add(B, dirx, 12.0)]
             heads[k] = dict(kind="x", level=est.get(("xlevel", k)), lock=4.0, exit=e[1], A=A, B=B, dir=dirx, L=Lx, room=room, gA=ground(*A), outfall=x.get("outfall"))
@@ -559,9 +562,16 @@ def build(stage_max):
             if h["kind"] == "mh":
                 # the riser's foot as high as the pipe can climb to from its other end (a riser no taller than it has to be), and at
                 # least the riser's own depth under the street
-                foot = min(h["ground"] - (d + 0.3 + 1.2 + 0.5), other + reach); est[("mhlevel", k)] = round(foot, 2); est[("mh", k)] = h["ground"] - foot; again = True
+                fp = add(h["street"], h["dir"], -riser_run(h["H"]))
+                glow = min([h["ground"]] + [ground(*add(fp, h["dir"], -x)) - 0.6 for x in np.linspace(0, 18, 7)])   # the street, and the ground along the approach
+                foot = min(glow - (d + 0.3 + 1.2 + 0.5), other + reach); est[("mhlevel", k)] = round(foot, 2); est[("mh", k)] = h["ground"] - foot; again = True
             elif h["kind"] == "x":
-                Lx = max(20.0, (h["gA"] - yend) / 0.18 + 6.0); est[("x", k)] = Lx
+                Lx = min(max(20.0, (h["gA"] - yend) / 0.18 + 6.0), max(20.0, h["room"] - (40.0 if not tb["way"] else 14.0)))
+                for _ in range(40):   # far enough in that the ground over the pipe's end is 1 m over its crown
+                    yb = max(yend, h["gA"] - 0.18 * (Lx - 3.0) + 0.05); Bp = add(h["A"], h["dir"], Lx)
+                    if min(ground(*add(Bp, h["dir"], x)) for x in (-4.0, 0.0, 4.0, 8.0)) - (yb + d + 0.3) >= 1.0 or Lx > h["room"] - (40.0 if not tb["way"] else 14.0): break
+                    Lx += 2.0
+                est[("x", k)] = Lx
                 heads2, _ = make_heads(tb, pl["ops"], est); Lx2 = heads2[k]["L"]
                 est[("xlevel", k)] = round(max(yend, h["gA"] - 0.18 * (Lx2 - 3.0) + 0.05), 2); again = True
                 if est[("xlevel", k)] - other > reach + 0.5: print(f"  EXIT {tb['id']}: its cut ends {est[('xlevel', k)] - other:.1f} m over the pipe's other end, more than it can climb ({reach:.1f} m)")
@@ -635,7 +645,9 @@ def build(stage_max):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", type=int, default=None); ap.add_argument("--plot", action="store_true"); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", type=int, default=None); ap.add_argument("--plot", action="store_true"); ap.add_argument("--out", default=None); a = ap.parse_args()
+    global OUT
+    if a.out: OUT = a.out
     old = json.load(open(OUT)) if os.path.exists(OUT) else {}
     stage = a.stage if a.stage is not None else old.get("build_stage", 0)
     tubes, chambers, exits, manholes = build(stage)
@@ -647,6 +659,7 @@ def main():
                build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS)
     clearance_report(tubes, chambers)
     json.dump(doc, open(OUT, "w", encoding="utf-8"), indent=0)
+    if not a.out: write_doc(tubes, chambers, exits, manholes, stage)
     print(f"wrote {OUT}: build_stage {stage}; {len(tubes)} tubes, {len(chambers)} chambers, {len(exits)} exits, {len(manholes)} manholes")
     for t in tubes:
         r = t["report"]; mark = "" if t["stage"] <= stage else "   (not built yet)"
@@ -656,6 +669,55 @@ def main():
     for c in chambers:
         print(f"  {c['id']:4s} {c['kind']:8s} floor {c['floor']:.1f}  openings {len(c['openings'])}" + (f"  ceiling {c['ceiling']}" if 'ceiling' in c else ""))
     if a.plot: plot(tubes, chambers, exits, manholes, stage)
+
+
+DOC = os.path.join(ROOT, "Docs/PIPE-NETWORK.md")
+STAGE_NAMES = {0: "Part B: the two entrances", 1: "Stage 1: the hub, the trunk, the Enclave", 2: "Stage 2: Noonday", 3: "Stage 3: the Glen and the shops", 4: "Stage 4: the lakes"}
+
+
+def write_doc(tubes, chambers, exits, manholes, stage):
+    """Docs/PIPE-NETWORK.md: the network as built (and what is still to come), for Dan to find his way round it"""
+    md = ["# The underground pipe network, as built", "",
+          f"Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build "
+          f"(MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage {stage}**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. "
+          "World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, "
+          "Proposal markers).", "",
+          "**Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off "
+          "in different directions; every exit is a way in as well. Manholes open only from below.", "",
+          "**Finding your way**: the mains carry a color stripe along both walls and their names are painted over their openings in the "
+          "junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple); the maze branches are unmarked. Underground, the map "
+          "(M or View) shows the pipes and the junctions', manholes' and exits' names.", ""]
+    for st in range(0, 5):
+        ts = [t for t in tubes if t["stage"] == st]
+        if not ts: continue
+        state = "BUILT" if st <= stage else "not built yet"
+        md.append(f"## {STAGE_NAMES[st]} ({state})")
+        md.append("")
+        md.append("| Pipe | | Size | Length | Floor | Notes |")
+        md.append("|---|---|---|---|---|---|")
+        for t in ts:
+            r = t["report"]; notes = []
+            if t["glass"]: notes.append("glass under " + ", ".join(f"pond W{g['pond']} ({g['s1'] - g['s0']:.0f} m)" for g in t["glass"]))
+            if t.get("flood"): notes.append("a flooded sag (slow)")
+            for e in (t["a"], t["b"]):
+                if e["kind"] == "mh": notes.append(f"pops out at {e['manhole']}")
+                if e["kind"] == "x": notes.append(f"comes out at {next(x['name'] for x in exits if x['id'] == e['exit']).lower()}")
+                if e["kind"] == "ch" and e.get("high"): notes.append(f"drops into {e['chamber']}")
+            ends = f"{t['a'].get('chamber') or t['a'].get('pipe') or ''} to {t['b'].get('chamber') or t['b'].get('manhole') or t['b'].get('exit') or ''}"
+            md.append(f"| {t['id']} | {t['name']} | {t['d']:.1f} m | {r['length']:.0f} m | {r['floor_min']:.0f} to {r['floor_max']:.0f} m | {ends}; {'; '.join(notes)} |")
+        cs = [c for c in chambers if c["stage"] == st]
+        if cs:
+            md.append(""); md.append("Chambers: " + "; ".join(f"**{c['name']}** ({c['kind']}, x {c['x']:.0f}, z {c['z']:.0f}, floor {c['floor']:.0f} m)" for c in cs))
+        ms = [m for m in manholes if m["stage"] == st]
+        if ms: md.append(""); md.append("Manholes: " + "; ".join(f"**{m['id']}** in {m['road']} (x {m['x']:.0f}, z {m['z']:.0f}; riser {m['height']:.0f} m)" for m in ms))
+        xs = [x for x in exits if x["stage"] == st]
+        if xs: md.append(""); md.append("Exits: " + "; ".join(f"**{x['name'].title()}** (x {x['a'][0]:.0f}, z {x['a'][1]:.0f}{', a launch over the water' if x.get('outfall') else ''})" for x in xs))
+        md.append("")
+    md.append("## What differs from the proposal"); md.append("")
+    for d in DIFFERS: md.append(f"- {d}")
+    md.append("")
+    open(DOC, "w", encoding="utf-8").write(chr(10).join(md))
+    print("wrote", DOC)
 
 
 def clearance_report(tubes, chambers):

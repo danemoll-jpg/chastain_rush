@@ -27,6 +27,9 @@ namespace ChastainRush
             mist.Play();
         }
 
+        void OnEnable() { if (roar && !roar.isPlaying) roar.Play(); }
+        void OnDisable() { if (roar) roar.Stop(); }
+
         void Update()
         {
             if (material) material.SetTextureOffset("_BaseMap", new Vector2(0f, Time.time * 1.6f));

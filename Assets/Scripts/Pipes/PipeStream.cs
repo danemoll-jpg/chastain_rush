@@ -16,7 +16,7 @@ namespace ChastainRush
         public Material water, splash;
         const float FlowSpeed = 0.35f;  // texture repeats (3 m each) per second
         AudioSource source; ParticleSystem drops;
-        ArcadeVehicle[] cars = new ArcadeVehicle[0]; float nextFind;
+
         readonly Dictionary<ArcadeVehicle, float> emitDebt = new Dictionary<ArcadeVehicle, float>();
         static AudioClip clip;
 
@@ -37,6 +37,10 @@ namespace ChastainRush
             drops.Play();
         }
 
+        // Round 23 follow-ups: switched off by NetworkCells when far: its sound stops with it
+        void OnEnable() { if (source && !source.isPlaying) source.Play(); }
+        void OnDisable() { if (source) source.Stop(); }
+
         void Update()
         {
             if (water) water.SetTextureOffset("_BaseMap", new Vector2(0f, Time.time * FlowSpeed));
@@ -44,8 +48,7 @@ namespace ChastainRush
             var listener = Camera.main ? Camera.main.transform.position : transform.position;
             source.transform.position = Nearest(listener, out _);
             // splashes
-            if (Time.time >= nextFind) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; }
-            foreach (var car in cars)
+            foreach (var car in DrainPipe.Vehicles)   // Round 23 follow-ups: the shared search
             {
                 if (!car || car.Body == null || car.GroundedWheels == 0) continue;
                 var p = car.Body.position; var q = Nearest(p, out float d);

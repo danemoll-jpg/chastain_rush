@@ -60,12 +60,4 @@ namespace ChastainRush
             return false;
         }
     }
-
-    // the trigger in the riser's top, under the lid
-    public sealed class ManholeTrigger : MonoBehaviour
-    {
-        public ManholeLid owner;
-        void OnTriggerEnter(Collider other) { var rb = other.attachedRigidbody; if (rb && rb.GetComponent<ArcadeVehicle>()) owner.Burst(rb); }
-        void OnTriggerStay(Collider other) { var rb = other.attachedRigidbody; if (rb && rb.GetComponent<ArcadeVehicle>()) owner.Burst(rb); }
-    }
 }
