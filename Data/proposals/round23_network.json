@@ -1,0 +1,1560 @@
+{
+ "note": "Round 23, Part B: the underground pipe network PROPOSAL (TEMPORARY markers, nothing built but BF). Made by Tools/mapgen/pipe_network_proposal.py; read by MapBuilder.Proposals.cs and Tools/handmade/make_proposal_labels.py.",
+ "lines": [
+  {
+   "set": "M",
+   "name": "BF Entrance (built)",
+   "points": [
+    1415.8,
+    1183.4,
+    1437.8,
+    1209.9,
+    1452.6,
+    1225.9
+   ],
+   "spacing": 20.0,
+   "color": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "stage": 0
+  },
+  {
+   "set": "M",
+   "name": "M1 Trunk",
+   "points": [
+    1452.6,
+    1225.9,
+    1474.0,
+    1214.0,
+    1525.0,
+    1150.0,
+    1572.0,
+    1128.0,
+    1650.0,
+    1092.0,
+    1760.0,
+    1102.0,
+    1845.0,
+    1150.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    0.9,
+    0.16,
+    0.16
+   ],
+   "stage": 1
+  },
+  {
+   "set": "M",
+   "name": "M5 Enclave Main",
+   "points": [
+    1452.6,
+    1225.9,
+    1467.4,
+    1206.4,
+    1488.0,
+    1120.0,
+    1500.0,
+    1030.0,
+    1615.0,
+    975.0,
+    1638.0,
+    935.0,
+    1700.0,
+    960.0,
+    1785.0,
+    1000.0,
+    1850.0,
+    1075.0,
+    1890.0,
+    1110.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    1.0,
+    0.55,
+    0.05
+   ],
+   "stage": 1
+  },
+  {
+   "set": "M",
+   "name": "M3 Noonday Main",
+   "points": [
+    1955.0,
+    1140.0,
+    2100.0,
+    1180.0,
+    2280.0,
+    1215.0,
+    2330.0,
+    1250.0,
+    2345.0,
+    1330.0,
+    2352.0,
+    1470.0,
+    2372.0,
+    1560.0,
+    2386.0,
+    1602.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    0.15,
+    0.75,
+    0.25
+   ],
+   "stage": 2
+  },
+  {
+   "set": "M",
+   "name": "M4 Glen Main",
+   "points": [
+    2280.0,
+    1215.0,
+    2290.0,
+    1060.0,
+    2330.0,
+    930.0,
+    2398.0,
+    826.0,
+    2560.0,
+    905.0,
+    2722.0,
+    975.0,
+    2790.0,
+    905.0,
+    2860.0,
+    870.0,
+    2990.0,
+    1010.0,
+    3170.0,
+    1185.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    1.0,
+    0.85,
+    0.1
+   ],
+   "stage": 3
+  },
+  {
+   "set": "M",
+   "name": "M2 Lakes Main",
+   "points": [
+    1452.6,
+    1225.9,
+    1434.5,
+    1241.6,
+    1385.0,
+    1222.0,
+    1345.0,
+    1150.0,
+    1250.0,
+    1170.0,
+    1060.0,
+    1200.0,
+    872.0,
+    1240.0,
+    760.0,
+    1335.0,
+    600.0,
+    1390.0,
+    440.0,
+    1440.0,
+    300.0,
+    1470.0,
+    178.0,
+    1488.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    0.18,
+    0.45,
+    1.0
+   ],
+   "stage": 4
+  },
+  {
+   "set": "M",
+   "name": "M6 Nelson Main",
+   "points": [
+    872.0,
+    1240.0,
+    800.0,
+    1050.0,
+    640.0,
+    900.0,
+    520.0,
+    640.0,
+    420.0,
+    360.0,
+    330.0,
+    160.0,
+    262.0,
+    110.0
+   ],
+   "spacing": 20.0,
+   "color": [
+    0.62,
+    0.28,
+    0.95
+   ],
+   "stage": 4
+  },
+  {
+   "set": "B",
+   "name": "B1",
+   "points": [
+    1572.0,
+    1128.0,
+    1585.0,
+    1215.0,
+    1700.0,
+    1232.0,
+    1845.0,
+    1190.0,
+    1870.0,
+    1180.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B2",
+   "points": [
+    1452.6,
+    1225.9,
+    1466.4,
+    1241.8,
+    1530.0,
+    1245.0,
+    1520.0,
+    1276.6
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B2a",
+   "points": [
+    1530.0,
+    1245.0,
+    1585.0,
+    1215.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B3",
+   "points": [
+    1700.0,
+    1232.0,
+    1740.0,
+    1255.0,
+    1760.0,
+    1277.4
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B4",
+   "points": [
+    1650.0,
+    1092.0,
+    1655.0,
+    1175.0,
+    1640.0,
+    1222.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B5",
+   "points": [
+    1655.0,
+    1175.0,
+    1610.0,
+    1180.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B6",
+   "points": [
+    1785.0,
+    1000.0,
+    1860.0,
+    960.0,
+    1878.6,
+    948.7
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B7",
+   "points": [
+    1785.0,
+    1000.0,
+    1720.0,
+    890.0,
+    1708.4,
+    812.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B8",
+   "points": [
+    1720.0,
+    890.0,
+    1560.0,
+    880.0,
+    1430.0,
+    830.0,
+    1376.0,
+    812.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B9",
+   "points": [
+    1940.0,
+    1110.0,
+    1985.0,
+    1010.0,
+    2012.0,
+    933.3
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B10",
+   "points": [
+    1985.0,
+    1010.0,
+    2060.0,
+    1060.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 1
+  },
+  {
+   "set": "B",
+   "name": "B11",
+   "points": [
+    2280.0,
+    1215.0,
+    2310.0,
+    1150.0,
+    2342.0,
+    1112.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 2
+  },
+  {
+   "set": "B",
+   "name": "B12",
+   "points": [
+    2352.0,
+    1470.0,
+    2440.0,
+    1440.0,
+    2478.0,
+    1420.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 2
+  },
+  {
+   "set": "B",
+   "name": "B13",
+   "points": [
+    2352.0,
+    1470.0,
+    2470.0,
+    1520.0,
+    2550.3,
+    1584.3
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 2
+  },
+  {
+   "set": "B",
+   "name": "B14",
+   "points": [
+    2280.0,
+    1215.0,
+    2420.0,
+    1240.0,
+    2560.0,
+    1260.0,
+    2723.7,
+    1196.6
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 2
+  },
+  {
+   "set": "B",
+   "name": "B15",
+   "points": [
+    2372.0,
+    1560.0,
+    2425.0,
+    1640.0,
+    2420.0,
+    1668.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 2
+  },
+  {
+   "set": "B",
+   "name": "B16",
+   "points": [
+    2398.0,
+    826.0,
+    2250.0,
+    720.0,
+    2127.4,
+    619.4
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B17",
+   "points": [
+    2722.0,
+    975.0,
+    2735.0,
+    880.0,
+    2730.2,
+    816.3
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B18",
+   "points": [
+    2735.0,
+    880.0,
+    2752.0,
+    845.0,
+    2760.0,
+    828.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B19",
+   "points": [
+    2722.0,
+    975.0,
+    2650.0,
+    760.0,
+    2691.3,
+    613.2,
+    2690.0,
+    520.0,
+    2668.0,
+    410.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B26",
+   "points": [
+    2398.0,
+    826.0,
+    2425.0,
+    790.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B20",
+   "points": [
+    3170.0,
+    1185.0,
+    2964.7,
+    1092.8
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B21",
+   "points": [
+    3170.0,
+    1185.0,
+    3250.0,
+    1262.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.75,
+    0.75,
+    0.78
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B22",
+   "points": [
+    3170.0,
+    1185.0,
+    3300.0,
+    1340.0,
+    3560.0,
+    1440.0,
+    3752.0,
+    1468.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 3
+  },
+  {
+   "set": "B",
+   "name": "B23",
+   "points": [
+    872.0,
+    1240.0,
+    801.0,
+    1161.9
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 4
+  },
+  {
+   "set": "B",
+   "name": "B24",
+   "points": [
+    872.0,
+    1240.0,
+    960.0,
+    1000.0,
+    976.9,
+    962.0,
+    1080.0,
+    880.0,
+    1098.0,
+    850.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 4
+  },
+  {
+   "set": "B",
+   "name": "B25",
+   "points": [
+    600.0,
+    1390.0,
+    520.0,
+    1450.0,
+    470.0,
+    1425.0
+   ],
+   "spacing": 26.0,
+   "color": [
+    0.93,
+    0.93,
+    0.93
+   ],
+   "stage": 4
+  },
+  {
+   "set": "R",
+   "name": "Underground race (lap)",
+   "points": [
+    1900.0,
+    1165.0,
+    1870.0,
+    1170.0,
+    1847.0,
+    1150.0,
+    1760.0,
+    1102.0,
+    1650.0,
+    1092.0,
+    1572.0,
+    1128.0,
+    1525.0,
+    1150.0,
+    1474.0,
+    1214.0,
+    1459.8,
+    1221.9,
+    1447.8,
+    1223.9,
+    1451.8,
+    1215.9,
+    1467.4,
+    1206.4,
+    1488.0,
+    1120.0,
+    1500.0,
+    1030.0,
+    1615.0,
+    975.0,
+    1638.0,
+    935.0,
+    1700.0,
+    960.0,
+    1785.0,
+    1000.0,
+    1850.0,
+    1075.0,
+    1880.0,
+    1112.0,
+    1945.0,
+    1114.0,
+    1950.0,
+    1140.0,
+    1930.0,
+    1162.0,
+    1900.0,
+    1165.0
+   ],
+   "spacing": 30.0,
+   "color": [
+    0.85,
+    0.75,
+    1.0
+   ],
+   "stage": 1
+  },
+  {
+   "set": "R",
+   "name": "S1 Waterfall leap",
+   "points": [
+    1880.0,
+    1112.0,
+    1878.0,
+    1136.0,
+    1886.0,
+    1162.0,
+    1900.0,
+    1165.0
+   ],
+   "spacing": 12.0,
+   "color": [
+    1.0,
+    0.72,
+    0.2
+   ],
+   "stage": 1
+  },
+  {
+   "set": "R",
+   "name": "S2 Pond tube",
+   "points": [
+    1500.0,
+    1030.0,
+    1560.0,
+    990.0,
+    1610.0,
+    978.0,
+    1638.0,
+    935.0
+   ],
+   "spacing": 12.0,
+   "color": [
+    1.0,
+    0.72,
+    0.2
+   ],
+   "stage": 1
+  },
+  {
+   "set": "R",
+   "name": "S3 High line",
+   "points": [
+    1650.0,
+    1100.0,
+    1610.0,
+    1112.0,
+    1572.0,
+    1140.0,
+    1525.0,
+    1158.0
+   ],
+   "spacing": 12.0,
+   "color": [
+    1.0,
+    0.72,
+    0.2
+   ],
+   "stage": 1
+  },
+  {
+   "set": "H",
+   "name": "The hub (outline)",
+   "points": [
+    1845.0,
+    1110.0,
+    1955.0,
+    1110.0,
+    1955.0,
+    1180.0,
+    1845.0,
+    1180.0,
+    1845.0,
+    1110.0
+   ],
+   "spacing": 12.0,
+   "color": [
+    0.95,
+    0.25,
+    0.85
+   ],
+   "stage": 1
+  }
+ ],
+ "marks": [
+  {
+   "set": "N",
+   "kind": "mouth",
+   "title": "BF MAIN ENTRANCE",
+   "text": "Built: twin pipes down",
+   "x": 1415.8,
+   "z": 1183.4
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J1 FIRST CHAMBER",
+   "text": "Built: 4 pipes, grilles",
+   "x": 1452.6,
+   "z": 1225.9
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J2 POND JCT",
+   "text": "Glass roof under pond",
+   "x": 1572.0,
+   "z": 1128.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J3 ENCLAVE JCT",
+   "text": "Chamber, 15 m down",
+   "x": 1785.0,
+   "z": 1000.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J4 NOONDAY JCT",
+   "text": "Chamber, 11 m down",
+   "x": 2280.0,
+   "z": 1215.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J5 LAKE JCT",
+   "text": "Glass dome under lake",
+   "x": 2352.0,
+   "z": 1470.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J6 BRIDGE JCT",
+   "text": "Under the bridges",
+   "x": 2398.0,
+   "z": 826.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J7 GLEN JCT",
+   "text": "Chamber, 11 m down",
+   "x": 2722.0,
+   "z": 975.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J8 SHOPS JCT",
+   "text": "Chamber, 9 m down",
+   "x": 3170.0,
+   "z": 1185.0
+  },
+  {
+   "set": "N",
+   "kind": "junction",
+   "title": "J9 LAKES JCT",
+   "text": "Between the lakes",
+   "x": 872.0,
+   "z": 1240.0
+  },
+  {
+   "set": "N",
+   "kind": "hub",
+   "title": "THE HUB",
+   "text": "Chasm 110 x 70 m, 33 m deep",
+   "x": 1900.0,
+   "z": 1145.0
+  },
+  {
+   "set": "N",
+   "kind": "grille",
+   "title": "GRILLE M5 (CLOSED)",
+   "text": "Built: stub out of J1",
+   "x": 1467.4,
+   "z": 1206.4
+  },
+  {
+   "set": "N",
+   "kind": "grille",
+   "title": "GRILLE M1 (CLOSED)",
+   "text": "Built: stub out of J1",
+   "x": 1474.0,
+   "z": 1214.0
+  },
+  {
+   "set": "N",
+   "kind": "grille",
+   "title": "GRILLE NORTH (CLOSED)",
+   "text": "Built: stub out of J1",
+   "x": 1466.4,
+   "z": 1241.8
+  },
+  {
+   "set": "N",
+   "kind": "grille",
+   "title": "GRILLE M2 (CLOSED)",
+   "text": "Built: stub out of J1",
+   "x": 1434.5,
+   "z": 1241.6
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT W20 POND",
+   "text": "Bank, by Chastain Rd",
+   "x": 1376.0,
+   "z": 812.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT CREEK TRAIL",
+   "text": "Up into the woods trail",
+   "x": 2342.0,
+   "z": 1112.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT W12 POND",
+   "text": "Bank, east of big lake",
+   "x": 2478.0,
+   "z": 1420.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT W7 POND",
+   "text": "Bank, top of big lake",
+   "x": 2420.0,
+   "z": 1668.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT UNDER BRIDGES",
+   "text": "Creek bank, New Chastain",
+   "x": 2425.0,
+   "z": 790.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT W11 POND",
+   "text": "Bank, south of Commons",
+   "x": 2668.0,
+   "z": 410.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT BEHIND SHOPS",
+   "text": "Storm drain, north side",
+   "x": 3250.0,
+   "z": 1262.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT LITTLE NOONDAY",
+   "text": "Creek bank, past Canton",
+   "x": 3752.0,
+   "z": 1468.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT W21 POND",
+   "text": "Bank, by Chastain Rd",
+   "x": 1098.0,
+   "z": 850.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT LAKE STREAM",
+   "text": "Stream bank, north",
+   "x": 470.0,
+   "z": 1425.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT FAR WEST POND",
+   "text": "Bank, past I-575 (W5)",
+   "x": 178.0,
+   "z": 1488.0
+  },
+  {
+   "set": "N",
+   "kind": "exit",
+   "title": "EXIT NELSON LAKE",
+   "text": "Bank, past I-575",
+   "x": 262.0,
+   "z": 110.0
+  },
+  {
+   "set": "N",
+   "kind": "outfall",
+   "title": "LAUNCH GLEN POND",
+   "text": "Headwall, over the water",
+   "x": 2760.0,
+   "z": 828.0
+  },
+  {
+   "set": "N",
+   "kind": "outfall",
+   "title": "LAUNCH BIG LAKE",
+   "text": "Headwall, over the water",
+   "x": 2386.0,
+   "z": 1602.0
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH1 MANHOLE",
+   "text": "Parkwood Drive",
+   "x": 1520.0,
+   "z": 1276.6
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH2 MANHOLE",
+   "text": "Parkwood Drive",
+   "x": 1760.0,
+   "z": 1277.4
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH3 MANHOLE",
+   "text": "Bloombridge Way",
+   "x": 1878.6,
+   "z": 948.7
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH4 MANHOLE",
+   "text": "Rotherhithe Landing",
+   "x": 1708.4,
+   "z": 812.0
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH5 MANHOLE",
+   "text": "Bloombridge Way",
+   "x": 2012.0,
+   "z": 933.3
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH6 MANHOLE",
+   "text": "Guidhall Trail",
+   "x": 2550.3,
+   "z": 1584.3
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH7 MANHOLE",
+   "text": "Westminister Way",
+   "x": 2723.7,
+   "z": 1196.6
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH8 MANHOLE",
+   "text": "Paxton Court",
+   "x": 2127.4,
+   "z": 619.4
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH9 MANHOLE",
+   "text": "Grasmere Court",
+   "x": 2730.2,
+   "z": 816.3
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH10 MANHOLE",
+   "text": "Weybourne Court",
+   "x": 2691.3,
+   "z": 613.2
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH11 MANHOLE",
+   "text": "Chasefield Way",
+   "x": 2964.7,
+   "z": 1092.8
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH12 MANHOLE",
+   "text": "Laurel Green Court",
+   "x": 801.0,
+   "z": 1161.9
+  },
+  {
+   "set": "N",
+   "kind": "manhole",
+   "title": "MH13 MANHOLE",
+   "text": "Chastain Lakes Drive",
+   "x": 976.9,
+   "z": 962.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER W1 POND",
+   "text": "M1, J2's glass roof",
+   "x": 1572.0,
+   "z": 1128.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER W4 POND",
+   "text": "M5, along the pond",
+   "x": 1636.0,
+   "z": 945.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER CREEK",
+   "text": "M3 under Noonday bed",
+   "x": 2330.0,
+   "z": 1250.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER BIG LAKE",
+   "text": "M3, J5's dome",
+   "x": 2352.0,
+   "z": 1500.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER GLEN POND",
+   "text": "M4 across the pond",
+   "x": 2825.0,
+   "z": 888.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER E CHASTAIN",
+   "text": "M2 along the lake bed",
+   "x": 1160.0,
+   "z": 1185.0
+  },
+  {
+   "set": "N",
+   "kind": "aquarium",
+   "title": "GLASS UNDER W CHASTAIN",
+   "text": "M2 along the lake bed",
+   "x": 680.0,
+   "z": 1362.0
+  },
+  {
+   "set": "N",
+   "kind": "shaft",
+   "title": "SHAFT P1 GRATE",
+   "text": "P1's floor drops to M3",
+   "x": 2338.0,
+   "z": 1300.0
+  },
+  {
+   "set": "N",
+   "kind": "shaft",
+   "title": "SHAFT B4",
+   "text": "8 m drop, B1 to M1",
+   "x": 1652.0,
+   "z": 1150.0
+  },
+  {
+   "set": "N",
+   "kind": "shaft",
+   "title": "SHAFT J7",
+   "text": "10 m drop to M4",
+   "x": 2700.0,
+   "z": 940.0
+  },
+  {
+   "set": "N",
+   "kind": "flooded",
+   "title": "FLOODED B8",
+   "text": "Slow, under Bells Ferry",
+   "x": 1470.0,
+   "z": 846.0
+  },
+  {
+   "set": "N",
+   "kind": "flooded",
+   "title": "FLOODED M4",
+   "text": "Slow, by the creek",
+   "x": 2318.0,
+   "z": 980.0
+  },
+  {
+   "set": "N",
+   "kind": "flooded",
+   "title": "FLOODED M2",
+   "text": "Slow, low under the lake",
+   "x": 1300.0,
+   "z": 1162.0
+  },
+  {
+   "set": "N",
+   "kind": "sign",
+   "title": "SIGNS AT J1",
+   "text": "M1 TRUNK / M5 / M2",
+   "x": 1443.8,
+   "z": 1215.9
+  },
+  {
+   "set": "N",
+   "kind": "sign",
+   "title": "SIGNS AT J3",
+   "text": "M5 ENCLAVE MAIN",
+   "x": 1795.0,
+   "z": 1010.0
+  },
+  {
+   "set": "R",
+   "kind": "start",
+   "title": "RACE START / FINISH",
+   "text": "Hub floor, by the pool",
+   "x": 1900.0,
+   "z": 1165.0
+  },
+  {
+   "set": "R",
+   "kind": "checkpoint",
+   "title": "CP1 GLASS UNDER W1",
+   "text": "M1, J2",
+   "x": 1580.0,
+   "z": 1124.0
+  },
+  {
+   "set": "R",
+   "kind": "checkpoint",
+   "title": "CP2 J1 CHAMBER",
+   "text": "The hairpin in J1",
+   "x": 1447.8,
+   "z": 1227.9
+  },
+  {
+   "set": "R",
+   "kind": "checkpoint",
+   "title": "CP3 GLASS UNDER W4",
+   "text": "M5, along the pond",
+   "x": 1640.0,
+   "z": 952.0
+  },
+  {
+   "set": "R",
+   "kind": "checkpoint",
+   "title": "CP4 ENCLAVE JCT",
+   "text": "M5, J3",
+   "x": 1792.0,
+   "z": 1006.0
+  },
+  {
+   "set": "R",
+   "kind": "checkpoint",
+   "title": "CP5 HUB TOP LEDGE",
+   "text": "South side",
+   "x": 1890.0,
+   "z": 1112.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G1 ENTRANCE",
+   "text": "Seals BF's pipes (race)",
+   "x": 1437.8,
+   "z": 1209.9
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G2 M2 AT J1",
+   "text": "Seals M2 (race)",
+   "x": 1439.8,
+   "z": 1235.9
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G10 NORTH AT J1",
+   "text": "Seals B2 (race)",
+   "x": 1462.8,
+   "z": 1237.9
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G3 B1 AT J2",
+   "text": "Seals the north maze",
+   "x": 1578.0,
+   "z": 1150.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G4 B4 ON M1",
+   "text": "Seals the north maze",
+   "x": 1650.0,
+   "z": 1102.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G5 B6 AT J3",
+   "text": "Seals the Enclave maze",
+   "x": 1800.0,
+   "z": 992.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G6 B7 AT J3",
+   "text": "Seals the Enclave maze",
+   "x": 1774.0,
+   "z": 988.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G7 M3 AT HUB",
+   "text": "Seals M3 east",
+   "x": 1951.0,
+   "z": 1140.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G8 B1 AT HUB",
+   "text": "Seals the north maze",
+   "x": 1870.0,
+   "z": 1176.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G9 B9 AT HUB",
+   "text": "Seals the south-east maze",
+   "x": 1940.0,
+   "z": 1112.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "SHORTCUT GATE S1",
+   "text": "Waterfall leap (hub)",
+   "x": 1880.0,
+   "z": 1114.0
+  },
+  {
+   "set": "R",
+   "kind": "switch",
+   "title": "SWITCH S1",
+   "text": "Plate up M5's wall",
+   "x": 1830.0,
+   "z": 1055.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "SHORTCUT GATE S2",
+   "text": "Pond tube (W4)",
+   "x": 1610.0,
+   "z": 978.0
+  },
+  {
+   "set": "R",
+   "kind": "switch",
+   "title": "SWITCH S2",
+   "text": "Lever, side alcove",
+   "x": 1545.0,
+   "z": 1010.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "SHORTCUT GATE S3",
+   "text": "High line over J2",
+   "x": 1650.0,
+   "z": 1100.0
+  },
+  {
+   "set": "R",
+   "kind": "switch",
+   "title": "SWITCH S3",
+   "text": "Plate in J1's corner",
+   "x": 1488.0,
+   "z": 1184.0
+  }
+ ],
+ "starts": [
+  {
+   "name": "Main entrance (BF)",
+   "x": 1413.47,
+   "z": 1176.45,
+   "yaw": 41.0
+  },
+  {
+   "name": "Above the hub",
+   "x": 1840.0,
+   "z": 1145.0,
+   "yaw": 90.0
+  },
+  {
+   "name": "Parkwood Drive manholes",
+   "x": 1640.0,
+   "z": 1279.0,
+   "yaw": 90.0
+  },
+  {
+   "name": "Enclave (W4 pond)",
+   "x": 1660.0,
+   "z": 960.0,
+   "yaw": 270.0
+  },
+  {
+   "name": "Under the bridges (J6)",
+   "x": 2410.0,
+   "z": 840.0,
+   "yaw": 180.0
+  },
+  {
+   "name": "Glen pond (W8)",
+   "x": 2760.0,
+   "z": 812.0,
+   "yaw": 0.0
+  },
+  {
+   "name": "Behind the shops (J8)",
+   "x": 3240.0,
+   "z": 1275.0,
+   "yaw": 270.0
+  },
+  {
+   "name": "Between the lakes (J9)",
+   "x": 900.0,
+   "z": 1240.0,
+   "yaw": 270.0
+  }
+ ]
+}

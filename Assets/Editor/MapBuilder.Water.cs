@@ -33,6 +33,7 @@ namespace ChastainRush
 
             public void Index()
             {
+                grid.Clear();   // Round 23: indexed again after a twin culvert trims the streams at its mouths
                 for (int s = 0; s < Streams.Count; s++)
                     for (int i = 0; i + 1 < Streams[s].p.Count; i++)
                     {

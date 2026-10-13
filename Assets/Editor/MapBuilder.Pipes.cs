@@ -34,7 +34,14 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs)
+        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b, twin, chamber_b; public float b_floor; public ChamberJson chamber; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs); Round 23: 'twin'
+        // Round 23 (BUG-002, Dan: "two large pipes. I want this to be a main entrance the pipe network"): 'twin' makes two barrels side by
+        // side (a twin culvert), their centers R + 0.4 m either side of the line, one cut twice as wide with one headwall holding both
+        // openings (an 0.8 m pier between them), one stream and one DrainPipe per barrel; and its floor never rises above the lower
+        // mouth (a culvert under a road embankment: the floor runs level at the stream's bed, the road high over it).
+        // Round 23, items 2b and 2c (Dan: "this was supposed to be the entrance into the pipe network not just two pipes passing under
+        // the road"): 'chamber_b' ends the pipe at b in an underground chamber instead of an outlet cut: no cut, no headwall and no
+        // holes at b, the floor at b is 'b_floor' (the chamber's floor), and the chamber ('chamber') is built by MapBuilder.NetworkEntrance.cs
         [Serializable] class PipeFile { public PipeJson[] pipes; }
         const string PipeFilePath = "Data/pipes/pipes.json";
         const float PipeFloorRise = 0f, PipeWall = 0.3f, CutHalf = 2.5f, CutWall = 0.35f, CopingOut = 0.95f, PipeStep = 0.5f, Flare = 5f, FlareW = 1.75f;   // Round 19: no flat floor (1.0 m over the invert before)
@@ -47,12 +54,18 @@ namespace ChastainRush
             public float S1, S2;         // the headwalls (cut 1 is 0..S1, cut 2 is S2..L)
             public List<Vector2> Bar = new List<Vector2>(); public float BarTop;   // Round 19: P1's rock bar (the approach points over the creek)
             public bool Clear; public float C0, C1, Surface; public List<Vector2> Pool; public int PoolRing = -1;   // Round 21 follow-ups: the clear stretch and its pool (MapBuilder.ClearPipe.cs)
+            // Round 23: a twin's barrels sit O either side of the line, its cut is Half wide either side (CutHalf for one barrel)
+            public float O => J.twin ? R + 0.4f : 0f;
+            public float Half => J.twin ? O + R : CutHalf;
+            public float[] Lats => J.twin ? new[] { -O, O } : new[] { 0f };
             // Round 19: the cut's floor across: flat, turning over the last UTransition m before each headwall into the pipe's round bottom
+            // (Round 23: a twin's two round bottoms meet at the pier in a ridge that rises over the same 6 m)
             public float FloorAt(float s, float lat)
             {
-                float m = Mathf.Max(Smooth01(1f - (S1 - s) / UTransition) * (s <= S1 ? 1f : 0f), Smooth01(1f - (s - S2) / UTransition) * (s >= S2 ? 1f : 0f));
+                float ut = J.twin ? Mathf.Clamp(S1 - 0.5f, UTransition, 10f) : UTransition;   // Round 23: a twin's pier nose rises over 10 m (it steers a vehicle into a barrel; over 6 m it stopped them)
+                float m = Mathf.Max(Smooth01(1f - (S1 - s) / ut) * (s <= S1 ? 1f : 0f), Smooth01(1f - (s - S2) / ut) * (s >= S2 ? 1f : 0f));
                 if (s > S1 && s < S2) m = 1f;
-                float x = Mathf.Min(Mathf.Abs(lat), R * 0.999f);
+                float x = Mathf.Min(Mathf.Abs(Mathf.Abs(lat) - O), R * 0.999f);
                 return Y(s) + m * (R - Mathf.Sqrt(R * R - x * x));
             }
             public float R => J.diameter_m * 0.5f;
@@ -60,11 +73,11 @@ namespace ChastainRush
             public Vector2 P(float s, float lat = 0f) => A + U * s + Nl * lat;
             // the cut's half width: 2.5 m, flaring out to 4.25 m over the last 5 m at each mouth (wingwalls: a vehicle a little off
             // the line is led in, not stopped by a wall's end)
-            public float HalfAt(float s) => CutHalf + FlareW * Mathf.Max(Smooth01(1f - s / Flare), Smooth01(1f - (L - s) / Flare));
+            public float HalfAt(float s) => Half + FlareW * Mathf.Max(Smooth01(1f - s / Flare), J.chamber_b ? 0f : Smooth01(1f - (L - s) / Flare));
             public bool InCut(Vector2 q, float pad, out float s, out float lat)
             {
                 s = Vector2.Dot(q - A, U); lat = Vector2.Dot(q - A, Nl);
-                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= -pad && s <= S1 + 0.3f + pad) || (s >= S2 - 0.3f - pad && s <= L + pad));
+                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= -pad && s <= S1 + 0.3f + pad) || (!J.chamber_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end
             }
         }
         sealed class Pipes
@@ -93,7 +106,7 @@ namespace ChastainRush
                 if (j.approach_b != null && j.approach_b.Length >= 2) { var l = ToPoints(j.approach_b); l.Insert(0, p.B - p.U * 0.5f); GradeApproach(terrain, l, j.id + " outlet", null); }
                 int n = Mathf.CeilToInt(p.L / PipeStep) + 1;
                 float crownOut = j.diameter_m - PipeFloorRise + PipeWall;   // floor to the top of the pipe's outside
-                float yA = Ground(terrain, p.A.x, p.A.y), yB = Ground(terrain, p.B.x, p.B.y);
+                float yA = Ground(terrain, p.A.x, p.A.y), yB = j.chamber_b ? j.b_floor : Ground(terrain, p.B.x, p.B.y);   // Round 23: a chamber end's floor is given
                 const float Ease = 6f;
                 float Ramp(float s) => s < Ease ? s * s / (2f * Ease) : s - Ease * 0.5f;
                 float[] FloorFrom(float yLow)
@@ -106,7 +119,7 @@ namespace ChastainRush
                     {
                         float acc = 0f, w = 0f;
                         for (int k = -r; k <= r; k++) { int ii = Mathf.Clamp(i + k, 0, n - 1); float ww = Mathf.Exp(-0.5f * (k * PipeStep / 2.5f) * (k * PipeStep / 2.5f)); acc += raw[ii] * ww; w += ww; }
-                        float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, p.L - s) / 8f);
+                        float sm = acc / w, s = i * PipeStep, edge = Smooth01(Mathf.Min(s, j.chamber_b ? float.MaxValue : p.L - s) / 8f);
                         ff[i] = Mathf.Lerp(raw[i], Mathf.Min(raw[i], sm), edge);
                     }
                     return ff;
@@ -131,11 +144,12 @@ namespace ChastainRush
                 for (int i = 0; i < n; i++)
                 {
                     float s = Mathf.Min(i * PipeStep, p.L), lo = float.MaxValue;
-                    for (float lat = -p.R - PipeWall; lat <= p.R + PipeWall + 1e-3f; lat += 0.5f) { var q = p.P(s, lat); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
+                    for (float lat = -p.O - p.R - PipeWall; lat <= p.O + p.R + PipeWall + 1e-3f; lat += 0.5f) { var q = p.P(s, lat); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
                     cover[i] = lo;
                 }
                 int m0 = Mathf.RoundToInt(n * 0.3f), m1 = Mathf.RoundToInt(n * 0.7f);
                 float yLow0 = float.MaxValue; for (int i = m0; i <= m1; i++) yLow0 = Mathf.Min(yLow0, cover[i] - j.cover_m - crownOut);
+                if (j.twin) yLow0 = Mathf.Min(yLow0, Mathf.Min(yA, yB));   // Round 23: level at the lower mouth under the embankment, never a hump
                 var f = FloorFrom(Mathf.Min(yLow0, forced));
                 p.Floor = f;
                 // the headwalls: the longest run in the middle where the ground covers the crown by 0.4 m or more
@@ -148,6 +162,12 @@ namespace ChastainRush
                 }
                 if (bestA < 0 || (bestB - bestA) * PipeStep < 8f) { Debug.LogError($"[Round18] pipe {j.id}: the ground never covers it for 8 m (cover {j.cover_m} m): not built"); continue; }
                 p.S1 = bestA * PipeStep; p.S2 = bestB * PipeStep;
+                if (j.chamber_b)   // Round 23: the barrels run right to the chamber's wall
+                {
+                    if (bestB < n - 1) Debug.LogError($"[Round23] pipe {j.id}: the ground does not cover it all the way to its chamber ({(n - 1 - bestB) * PipeStep:0.0} m short)");
+                    p.S2 = p.L;
+                }
+                if (j.twin) { GradeTwinAprons(terrain, p); TrimStreamsAtCut(p); }   // Round 23
                 result.Plans.Add(p);
                 CutPipeHoles(terrain, p);
                 if (p.Clear) CutTrenchHoles(terrain, p);
@@ -190,6 +210,46 @@ namespace ChastainRush
             Debug.Log($"[Round18] pipe {what}: the way to it graded over {(n - 1) * 0.5f:0} m (largest change {most:0.00} m)" + (bar != null ? $"; Round 19: a rock bar across the creek, {bar.Bar.Count * 0.5f:0.0} m of it over the water, its top at {bar.BarTop:0.00} m ({BarTopOverWater:0.00} m over the surface), {BarHalf * 2f:0} m wide" : ""));
         }
 
+        // Round 23: a twin's cut is as wide as the creek channel and more, and its floor is level across while the ground beyond each
+        // mouth is not (the banks either side of the stream stand higher): the ground in front of each mouth is cut down to the floor's
+        // level across the mouth's whole width and blended back to the natural ground over 10 m out and 3 m to the sides, so the floor
+        // meets the ground with no step anywhere across it (Round 23's exe check: a slow car stopped against a 0.7 m step at the west
+        // mouth). Only ever lowered (the creek's own bed, lower, is kept).
+        static void GradeTwinAprons(TerrainGrid terrain, PipePlan p)
+        {
+            const float Out = 10f, Side = 3f;
+            float most = 0f;
+            foreach (var (s0, dir) in new[] { (0f, -1f), (p.L, 1f) })
+            {
+                if (dir > 0f && p.J.chamber_b) continue;   // no mouth at a chamber end
+                float target = p.Y(s0) - 0.05f, half = p.HalfAt(s0);   // just under the floor, which reaches 0.8 m out over it
+                var corners = new[] { p.P(s0 - dir * 2f, -half - Side), p.P(s0 - dir * 2f, half + Side), p.P(s0 + dir * Out, -half - Side), p.P(s0 + dir * Out, half + Side) };
+                EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
+                {
+                    var q = new Vector2(x, z); float s = Vector2.Dot(q - p.A, p.U), lat = Mathf.Abs(Vector2.Dot(q - p.A, p.Nl));
+                    float o = (s - s0) * dir; if (o < -2f || o > Out) return y;   // and 2 m into the cut: the terrain's last unholed cells there lie flat (no spikes up to the bank)
+                    float w = (1f - Smooth01(o / Out)) * (1f - Smooth01((lat - half) / Side));
+                    if (w <= 0f || y <= target) return y;
+                    float ny = y - (y - target) * w; most = Mathf.Max(most, y - ny); return ny;
+                });
+            }
+            Debug.Log($"[Round23] pipe {p.J.id}: the ground in front of both mouths cut down to the floor across their width (largest change {most:0.00} m)");
+        }
+
+        // Round 23: the streams' water (its surface and its ShallowWater, drawn and registered later from Beds.Streams) stops at a twin's
+        // mouths: none of it floats over the cut's floor or slows a vehicle inside the cut (the exe check: a blue sheet above the floor)
+        static void TrimStreamsAtCut(PipePlan p)
+        {
+            if (Beds == null) return;
+            int removed = 0;
+            foreach (var (pts, surf) in Beds.Streams)
+                for (int i = pts.Count - 1; i >= 0; i--)
+                    if (p.InCut(pts[i], 0.5f, out _, out _)) { pts.RemoveAt(i); surf.RemoveAt(i); removed++; }
+            Beds.Streams.RemoveAll(st => st.p.Count < 2);
+            Beds.Index();
+            Debug.Log($"[Round23] pipe {p.J.id}: the streams' water stops at its mouths ({removed} stream points inside its cuts dropped)");
+        }
+
         // Unity terrain holes over the cuts: every hole cell whose center is in a cut, where the ground stands above the floor
         static void CutPipeHoles(TerrainGrid g, PipePlan p)
         {
@@ -209,7 +269,8 @@ namespace ChastainRush
                     {
                         var q = new Vector2(pos.x + (x0 + i + 0.5f) * cx, pos.z + (z0 + j + 0.5f) * cz);
                         if (!p.InCut(q, 0f, out float s, out _)) continue;
-                        if (Ground(g, q.x, q.y) < p.Y(Mathf.Clamp(s, 0f, p.L)) + 0.08f) continue;   // the floor is at the ground here
+                        if (p.J.twin && s < 0.5f) continue;   // Round 23: a twin's floor reaches 0.8 m past its mouth over the ground (no gap at the edge)
+                        if (!p.J.twin && Ground(g, q.x, q.y) < p.Y(Mathf.Clamp(s, 0f, p.L)) + 0.08f) continue;   // the floor is at the ground here (Round 23: a twin is holed all over its cut, no grass through its floor)
                         holes[j, i] = false; any = true; cells++;
                     }
                 if (any) data.SetHoles(x0, z0, holes);
@@ -323,13 +384,22 @@ namespace ChastainRush
             int lamps = 0;
             foreach (var (s0, s1, inner) in new[] { (0f, p.S1, p.S1), (p.S2, p.L, p.S2) })
             {
+                if (inner == p.S2 && p.J.chamber_b) continue;   // Round 23: the chamber is the far end (MapBuilder.NetworkEntrance.cs)
                 int k = Mathf.Max(1, Mathf.CeilToInt((s1 - s0) / 0.5f));
+                float lead = p.J.twin && s0 == 0f ? -0.8f : 0f;   // Round 23: a twin's floor starts 0.8 m out, over the apron
                 for (int i = 0; i < k; i++)
                 {
                     float a = Mathf.Lerp(s0, s1, i / (float)k), b = Mathf.Lerp(s0, s1, (i + 1) / (float)k);
+                    if (i == 0 && lead < 0f)
+                        for (int j = 0; j < 24; j++)
+                        {
+                            float ta = -1f + 2f * j / 24f, tb = -1f + 2f * (j + 1) / 24f, h0 = p.HalfAt(0f);
+                            cut.Tint = Shade(concrete, 0.9f);
+                            Face(cut, W(lead, ta * h0, p.FloorAt(0f, ta * h0) + 0.02f), W(0f, ta * h0, p.FloorAt(0f, ta * h0) + 0.02f), W(0f, tb * h0, p.FloorAt(0f, tb * h0) + 0.02f), W(lead, tb * h0, p.FloorAt(0f, tb * h0) + 0.02f), up3);
+                        }
                     float ha = p.HalfAt(a), hb = p.HalfAt(b);
                     // Round 19: the floor in 12 strips across, flat, turning into the pipe's round bottom near the headwall
-                    const int across = 12;
+                    int across = p.J.twin ? 24 : 12;   // Round 23: a twin's two round bottoms need the finer strips
                     for (int j = 0; j < across; j++)
                     {
                         float ta = -1f + 2f * j / across, tb = -1f + 2f * (j + 1) / across;
@@ -346,6 +416,18 @@ namespace ChastainRush
                         cut.Tint = Shade(concrete, 1.0f);
                         Face(cut, W(a, side * ha, ta), W(b, side * hb, tb), W(b, side * (hb + CopingOut), tb), W(a, side * (ha + CopingOut), ta), up3);   // the coping
                         Face(cut, W(a, side * (ha + CopingOut), ta), W(b, side * (hb + CopingOut), tb), W(b, side * (hb + CopingOut), tb - 0.4f), W(a, side * (ha + CopingOut), ta - 0.4f), n3 * side);
+                    }
+                }
+                // Round 23: a twin's wall ends at the mouths closed with a face (the wall, the coping and the ground under them read as one
+                // solid wingwall from outside; the exe check saw through the open end into the terrain hole under the coping)
+                if (p.J.twin)
+                {
+                    float m = inner == p.S1 ? 0f : p.L; var outward = u3 * (inner == p.S1 ? -1f : 1f);
+                    foreach (float side in new[] { 1f, -1f })
+                    {
+                        float hm = p.HalfAt(m), tm = Top(m, side), bm = p.Y(m) - 0.6f;
+                        cut.Tint = Shade(concrete, 0.84f);
+                        Face(cut, W(m, side * hm, bm), W(m, side * (hm + CopingOut), bm), W(m, side * (hm + CopingOut), tm), W(m, side * hm, tm), outward);
                     }
                 }
                 // railing on the walls where the drop is over 1 m: posts every 2 m, a top rail and a mid rail
@@ -366,27 +448,32 @@ namespace ChastainRush
                 // the headwall across the inner end, facing the cut, with the round opening
                 float face = inner == p.S1 ? p.S1 : p.S2, sgn = inner == p.S1 ? -1f : 1f;   // the side the cut is on
                 float yb = p.Y(face) - 0.6f, yt = Mathf.Max(Mathf.Max(Top(face, 1f), Top(face, -1f)), p.Y(face) + 2f * p.R + 0.3f);
-                var c = W(face, 0f, p.Y(face) - PipeFloorRise + p.R);
-                const int seg = 48; float hw = CutHalf + CutWall;
+                const int seg = 48; float hw = p.Half + CutWall;
                 var normal = u3 * sgn;
                 cut.Tint = Shade(concrete, 0.82f);
-                for (int i = 0; i < seg; i++)
+                foreach (float bl in p.Lats)   // Round 23: a twin's headwall is two halves, each round its own opening, meeting at the pier (lateral 0)
                 {
-                    float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
-                    Vector3 C(float th) => c + n3 * (Mathf.Sin(th) * p.R) - up3 * (Mathf.Cos(th) * p.R);
-                    Vector3 Rr(float th)
+                    var c = W(face, bl, p.Y(face) - PipeFloorRise + p.R);
+                    float wPlus = bl > 0f ? hw - bl : bl < 0f ? -bl : hw, wMinus = bl < 0f ? hw + bl : bl > 0f ? bl : hw;   // the half's extent each side of its opening's center
+                    for (int i = 0; i < seg; i++)
                     {
-                        var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th));   // (lateral, up) from the center
-                        float kx = Mathf.Abs(d.x) > 1e-4f ? hw / Mathf.Abs(d.x) : float.MaxValue;
-                        float ky = d.y > 1e-4f ? (yt - c.y) / d.y : d.y < -1e-4f ? (c.y - yb) / -d.y : float.MaxValue;
-                        float kk = Mathf.Min(kx, ky); return c + n3 * (d.x * kk) + up3 * (d.y * kk);
+                        float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
+                        Vector3 C(float th) => c + n3 * (Mathf.Sin(th) * p.R) - up3 * (Mathf.Cos(th) * p.R);
+                        Vector3 Rr(float th)
+                        {
+                            var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th));   // (lateral, up) from the center
+                            float kx = d.x > 1e-4f ? wPlus / d.x : d.x < -1e-4f ? wMinus / -d.x : float.MaxValue;
+                            float ky = d.y > 1e-4f ? (yt - c.y) / d.y : d.y < -1e-4f ? (c.y - yb) / -d.y : float.MaxValue;
+                            float kk = Mathf.Min(kx, ky); return c + n3 * (d.x * kk) + up3 * (d.y * kk);
+                        }
+                        Face(cut, C(t0), C(t1), Rr(t1), Rr(t0), normal);
                     }
-                    Face(cut, C(t0), C(t1), Rr(t1), Rr(t0), normal);
                 }
+                var c0 = W(face, 0f, p.Y(face) - PipeFloorRise + p.R);
                 // Round 21 follow-ups (RA's hint, 'mouth_lamp_b'): a caged lamp over the outlet's opening, lit, seen across the small pond
                 if (p.J.mouth_lamp_b && inner == p.S2)
                 {
-                    var lc = c + up3 * (p.R + 0.55f) + normal * 0.18f; lampFace.Add((lc, normal));
+                    var lc = c0 + up3 * (p.R + 0.55f) + normal * 0.18f; lampFace.Add((lc, normal));
                 }
                 // its coping, over the ground behind it
                 cut.Tint = Shade(concrete, 1.0f);
@@ -397,89 +484,93 @@ namespace ChastainRush
             AddCollider(cutGo, cut, "Pipe " + p.J.id + " cuts collider");
             if (rail.Count > 0) { var rg = rail.ToObject("Pipe " + p.J.id + " railings", mats.House, root, false); AddCollider(rg, rail, "Pipe " + p.J.id + " railings collider"); }
 
-            // ---- the pipe: round all the way (Round 19), inside faces only, UVs for the stained concrete (u along, 2.4 m a section)
-            const int arc = 48;
-            Vector3 Axis(float s) => W(s, 0f, p.Y(s) - PipeFloorRise + p.R);
-            Vector3 Ring(float s, float th) => Axis(s) + n3 * (Mathf.Sin(th) * p.R) - up3 * (Mathf.Cos(th) * p.R);
-            int rings0 = Mathf.Max(2, Mathf.CeilToInt((p.S2 - p.S1) / 0.5f) + 1);
-            var at = new List<float>(); for (int i = 0; i < rings0; i++) at.Add(Mathf.Lerp(p.S1, p.S2, i / (float)(rings0 - 1)));
-            if (p.Clear) { at.RemoveAll(x => Mathf.Abs(x - p.C0) < 0.05f || Mathf.Abs(x - p.C1) < 0.05f); at.Add(p.C0); at.Add(p.C1); at.Sort(); }   // Round 21 follow-ups: rings at the glass's ends
-            int rings = at.Count;
-            var bv = new List<Vector3>(); var buv = new List<Vector2>(); var bt = new List<int>(); var gt = new List<int>();
-            for (int i = 0; i < rings; i++)
+            foreach (float bl in p.Lats)   // Round 23: one barrel, or a twin's two
             {
-                float s = at[i];
-                for (int k = 0; k <= arc; k++) { float th = Mathf.PI * 2f * k / arc; bv.Add(Ring(s, th)); buv.Add(new Vector2((s - p.S1) / 2.4f, k / (float)arc)); }
-            }
-            for (int i = 0; i + 1 < rings; i++)
-            {
-                bool glass = p.Clear && at[i] >= p.C0 - 1e-3f && at[i + 1] <= p.C1 + 1e-3f;   // Round 21 follow-ups: the clear stretch is glass
-                for (int k = 0; k < arc; k++)
+                string bid = p.J.id + (p.J.twin ? (bl < 0f ? "R" : "L") : "");   // a twin's barrels: L (left, +lateral) and R
+                // ---- the pipe: round all the way (Round 19), inside faces only, UVs for the stained concrete (u along, 2.4 m a section)
+                const int arc = 48;
+                Vector3 Axis(float s) => W(s, bl, p.Y(s) - PipeFloorRise + p.R);
+                Vector3 Ring(float s, float th) => Axis(s) + n3 * (Mathf.Sin(th) * p.R) - up3 * (Mathf.Cos(th) * p.R);
+                int rings0 = Mathf.Max(2, Mathf.CeilToInt((p.S2 - p.S1) / 0.5f) + 1);
+                var at = new List<float>(); for (int i = 0; i < rings0; i++) at.Add(Mathf.Lerp(p.S1, p.S2, i / (float)(rings0 - 1)));
+                if (p.Clear) { at.RemoveAll(x => Mathf.Abs(x - p.C0) < 0.05f || Mathf.Abs(x - p.C1) < 0.05f); at.Add(p.C0); at.Add(p.C1); at.Sort(); }   // Round 21 follow-ups: rings at the glass's ends
+                int rings = at.Count;
+                var bv = new List<Vector3>(); var buv = new List<Vector2>(); var bt = new List<int>(); var gt = new List<int>();
+                for (int i = 0; i < rings; i++)
                 {
-                    int a0 = i * (arc + 1) + k, a1 = a0 + 1, b0 = a0 + arc + 1, b1 = b0 + 1;
-                    var l = glass ? gt : bt; l.Add(a0); l.Add(b0); l.Add(a1); l.Add(a1); l.Add(b0); l.Add(b1);
+                    float s = at[i];
+                    for (int k = 0; k <= arc; k++) { float th = Mathf.PI * 2f * k / arc; bv.Add(Ring(s, th)); buv.Add(new Vector2((s - p.S1) / 2.4f, k / (float)arc)); }
                 }
-            }
-            {   // wind so the faces look at the axis (inward)
-                var t0 = bt.Count > 0 ? bt : gt;
-                var n0 = Vector3.Cross(bv[t0[1]] - bv[t0[0]], bv[t0[2]] - bv[t0[0]]);
-                if (Vector3.Dot(n0, Axis(p.S1) - bv[t0[0]]) < 0f) foreach (var l in new[] { bt, gt }) for (int i = 0; i < l.Count; i += 3) { int x = l[i + 1]; l[i + 1] = l[i + 2]; l[i + 2] = x; }
-            }
-            var mesh = new Mesh { name = "Pipe " + p.J.id, indexFormat = IndexFormat.UInt32 };
-            mesh.SetVertices(bv); mesh.SetUVs(0, buv); mesh.subMeshCount = p.Clear ? 2 : 1; mesh.SetTriangles(bt, 0); if (p.Clear) mesh.SetTriangles(gt, 1); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Pipe {p.J.id}.asset");
-            var bgo = new GameObject("sc Pipe " + p.J.id + " barrel"); bgo.transform.SetParent(root, false);   // Round 19: "sc" (as the cuts)
-            bgo.AddComponent<MeshFilter>().sharedMesh = mesh;
-            var mr = bgo.AddComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
-            if (p.Clear) { ClearMaterials(); mr.sharedMaterials = new[] { pipeConcrete, clearGlass }; } else mr.sharedMaterial = pipeConcrete;
-            var mc = bgo.AddComponent<MeshCollider>(); mc.sharedMesh = mesh; mc.sharedMaterial = RampMaterial();
-            // lamps along the crown: a caged fitting and a dim point light every 16 m (Round 19: every 8 m and brighter before)
-            var lampMb = new MeshBuilder();
-            var lampAt = new List<float>(); for (float s = p.S1 + 6f; s < p.S2 - 4f; s += 16f) lampAt.Add(s);
-            if (p.Clear)   // Round 21 follow-ups: none over the glass (daylight there); one in the middle of each concrete length either side of it
-            {
-                lampAt.RemoveAll(s => s > p.C0 - 3f && s < p.C1 + 3f);
-                if (p.C0 - p.S1 >= 4f) lampAt.Add((p.S1 + p.C0) * 0.5f);
-                if (p.S2 - p.C1 >= 4f) lampAt.Add((p.C1 + p.S2) * 0.5f);
-            }
-            foreach (float s in lampAt)
-            {
-                var top = Ring(s, Mathf.PI); var c = top - up3 * 0.12f;
-                lampMb.Tint = Color.white;
-                BoxAt(lampMb, c, u3, 0.7f, 0.14f, 0.22f);
-                var lg = new GameObject("Pipe lamp"); lg.transform.SetParent(root, false); lg.transform.position = c - up3 * 0.4f;
-                var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 9f; l.intensity = 1.1f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
-                lamps++;
-            }
-            foreach (var (lat3, nrm) in lampFace)   // Round 21 follow-ups: the outlet's lamp (RA's hint)
-            {
-                lampMb.Tint = Color.white; BoxAt(lampMb, lat3, Vector3.Cross(Vector3.up, nrm), 0.6f, 0.32f, 0.3f);
-                var lg = new GameObject("Pipe outlet lamp (RA's hint)"); lg.transform.SetParent(root, false); lg.transform.position = lat3 + nrm * 0.6f;
-                var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 12f; l.intensity = 2.2f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
-                lamps++;
-            }
-            if (lampMb.Count > 0) { var lgo = lampMb.ToObject("Pipe " + p.J.id + " lamps", pipeLamp, root, false); lgo.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off; }
+                for (int i = 0; i + 1 < rings; i++)
+                {
+                    bool glass = p.Clear && at[i] >= p.C0 - 1e-3f && at[i + 1] <= p.C1 + 1e-3f;   // Round 21 follow-ups: the clear stretch is glass
+                    for (int k = 0; k < arc; k++)
+                    {
+                        int a0 = i * (arc + 1) + k, a1 = a0 + 1, b0 = a0 + arc + 1, b1 = b0 + 1;
+                        var l = glass ? gt : bt; l.Add(a0); l.Add(b0); l.Add(a1); l.Add(a1); l.Add(b0); l.Add(b1);
+                    }
+                }
+                {   // wind so the faces look at the axis (inward)
+                    var t0 = bt.Count > 0 ? bt : gt;
+                    var n0 = Vector3.Cross(bv[t0[1]] - bv[t0[0]], bv[t0[2]] - bv[t0[0]]);
+                    if (Vector3.Dot(n0, Axis(p.S1) - bv[t0[0]]) < 0f) foreach (var l in new[] { bt, gt }) for (int i = 0; i < l.Count; i += 3) { int x = l[i + 1]; l[i + 1] = l[i + 2]; l[i + 2] = x; }
+                }
+                var mesh = new Mesh { name = "Pipe " + bid, indexFormat = IndexFormat.UInt32 };
+                mesh.SetVertices(bv); mesh.SetUVs(0, buv); mesh.subMeshCount = p.Clear ? 2 : 1; mesh.SetTriangles(bt, 0); if (p.Clear) mesh.SetTriangles(gt, 1); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
+                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Pipe {bid}.asset");
+                var bgo = new GameObject("sc Pipe " + bid + " barrel"); bgo.transform.SetParent(root, false);   // Round 19: "sc" (as the cuts)
+                bgo.AddComponent<MeshFilter>().sharedMesh = mesh;
+                var mr = bgo.AddComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
+                if (p.Clear) { ClearMaterials(); mr.sharedMaterials = new[] { pipeConcrete, clearGlass }; } else mr.sharedMaterial = pipeConcrete;
+                var mc = bgo.AddComponent<MeshCollider>(); mc.sharedMesh = mesh; mc.sharedMaterial = RampMaterial();
+                // lamps along the crown: a caged fitting and a dim point light every 16 m (Round 19: every 8 m and brighter before)
+                var lampMb = new MeshBuilder();
+                var lampAt = new List<float>(); for (float s = p.S1 + 6f; s < p.S2 - 4f; s += 16f) lampAt.Add(s);
+                if (p.Clear)   // Round 21 follow-ups: none over the glass (daylight there); one in the middle of each concrete length either side of it
+                {
+                    lampAt.RemoveAll(s => s > p.C0 - 3f && s < p.C1 + 3f);
+                    if (p.C0 - p.S1 >= 4f) lampAt.Add((p.S1 + p.C0) * 0.5f);
+                    if (p.S2 - p.C1 >= 4f) lampAt.Add((p.C1 + p.S2) * 0.5f);
+                }
+                foreach (float s in lampAt)
+                {
+                    var top = Ring(s, Mathf.PI); var c = top - up3 * 0.12f;
+                    lampMb.Tint = Color.white;
+                    BoxAt(lampMb, c, u3, 0.7f, 0.14f, 0.22f);
+                    var lg = new GameObject("Pipe lamp"); lg.transform.SetParent(root, false); lg.transform.position = c - up3 * 0.4f;
+                    var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 9f; l.intensity = 1.1f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
+                    lamps++;
+                }
+                foreach (var (lat3, nrm) in lampFace)   // Round 21 follow-ups: the outlet's lamp (RA's hint)
+                {
+                    lampMb.Tint = Color.white; BoxAt(lampMb, lat3, Vector3.Cross(Vector3.up, nrm), 0.6f, 0.32f, 0.3f);
+                    var lg = new GameObject("Pipe outlet lamp (RA's hint)"); lg.transform.SetParent(root, false); lg.transform.position = lat3 + nrm * 0.6f;
+                    var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 12f; l.intensity = 2.2f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
+                    lamps++;
+                }
+                if (lampMb.Count > 0) { var lgo = lampMb.ToObject("Pipe " + bid + " lamps", pipeLamp, root, false); lgo.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.Off; }
 
-            // ---- Round 19: the stream down the middle of the floor, end to end (look and sound only: no water volume, nothing slows)
-            var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>(); var line = new List<Vector3>();
-            int sn = 0;
-            for (float s = 0.6f; s <= p.L - 0.6f + 1e-3f; s += 0.5f)
-            {
-                float half = 0.45f + 0.08f * Mathf.Sin(s * 0.7f) + 0.05f * Mathf.Sin(s * 2.3f), wob = 0.06f * Mathf.Sin(s * 0.45f);
-                foreach (float t in new[] { -1f, -0.5f, 0f, 0.5f, 1f }) { float lat = wob + t * half; sv.Add(W(s, lat, p.FloorAt(s, lat) + 0.035f + 0.01f * (1f - Mathf.Abs(t)))); suv.Add(new Vector2(t * 0.5f + 0.5f, s / 3f)); }
-                line.Add(W(s, wob, p.FloorAt(s, wob) + 0.05f));
-                if (sn > 0) for (int k = 0; k < 4; k++) { int a0 = (sn - 1) * 5 + k, b0 = sn * 5 + k; st.Add(a0); st.Add(b0); st.Add(a0 + 1); st.Add(a0 + 1); st.Add(b0); st.Add(b0 + 1); }
-                sn++;
-            }
-            { var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; } }
-            var smesh = new Mesh { name = "Pipe " + p.J.id + " stream", indexFormat = IndexFormat.UInt32 };
-            smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {p.J.id} stream.asset");
-            var sgo = new GameObject("Pipe " + p.J.id + " stream"); sgo.transform.SetParent(root, false);
-            sgo.AddComponent<MeshFilter>().sharedMesh = smesh;
-            var smr = sgo.AddComponent<MeshRenderer>(); smr.sharedMaterial = pipeWater; smr.shadowCastingMode = ShadowCastingMode.Off;
-            var ps = sgo.AddComponent<PipeStream>(); ps.line = line.ToArray(); ps.water = pipeWater; ps.splash = pipeSplash;
+                // ---- Round 19: the stream down the middle of the floor, end to end (look and sound only: no water volume, nothing slows)
+                var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>(); var line = new List<Vector3>();
+                int sn = 0;
+                for (float s = 0.6f; s <= p.L - 0.6f + 1e-3f; s += 0.5f)
+                {
+                    float half = 0.45f + 0.08f * Mathf.Sin(s * 0.7f) + 0.05f * Mathf.Sin(s * 2.3f), wob = bl + 0.06f * Mathf.Sin(s * 0.45f);
+                    foreach (float t in new[] { -1f, -0.5f, 0f, 0.5f, 1f }) { float lat = wob + t * half; sv.Add(W(s, lat, p.FloorAt(s, lat) + 0.035f + 0.01f * (1f - Mathf.Abs(t)))); suv.Add(new Vector2(t * 0.5f + 0.5f, s / 3f)); }
+                    line.Add(W(s, wob, p.FloorAt(s, wob) + 0.05f));
+                    if (sn > 0) for (int k = 0; k < 4; k++) { int a0 = (sn - 1) * 5 + k, b0 = sn * 5 + k; st.Add(a0); st.Add(b0); st.Add(a0 + 1); st.Add(a0 + 1); st.Add(b0); st.Add(b0 + 1); }
+                    sn++;
+                }
+                { var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; } }
+                var smesh = new Mesh { name = "Pipe " + bid + " stream", indexFormat = IndexFormat.UInt32 };
+                smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
+                AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {bid} stream.asset");
+                var sgo = new GameObject("Pipe " + bid + " stream"); sgo.transform.SetParent(root, false);
+                sgo.AddComponent<MeshFilter>().sharedMesh = smesh;
+                var smr = sgo.AddComponent<MeshRenderer>(); smr.sharedMaterial = pipeWater; smr.shadowCastingMode = ShadowCastingMode.Off;
+                var ps = sgo.AddComponent<PipeStream>(); ps.line = line.ToArray(); ps.water = pipeWater; ps.splash = pipeSplash;
 
+            }
             // ---- Round 19: the rock bar across the creek to the inlet (look on the graded bar; DryPatch over it)
             if (p.Bar.Count > 0)
             {
@@ -519,12 +610,19 @@ namespace ChastainRush
             }
 
             if (p.Clear) { BuildClearStretch(terrain, mats, root, p); BuildPoolSurface(mats, root, p); }   // Round 21 follow-ups (MapBuilder.ClearPipe.cs)
+            if (p.J.chamber_b && p.J.chamber != null) BuildChamber(terrain, mats, root, p);   // Round 23 (MapBuilder.NetworkEntrance.cs)
 
             // the runtime side: the floor's centerline for resets and race lines; Round 19: the barrel for riding the walls
-            var dp = root.gameObject.AddComponent<DrainPipe>(); dp.id = p.J.id; dp.halfWidth = CutHalf; dp.clearHeight = p.J.diameter_m - PipeFloorRise;
-            var fl = new List<Vector3>(); for (float s = 0f; s <= p.L + 1e-3f; s += 0.5f) fl.Add(W(s, 0f, p.Y(s))); dp.floor = fl.ToArray();
-            dp.radius = p.R; dp.barrelFrom = p.S1 / 0.5f; dp.barrelTo = p.S2 / 0.5f;
-            Debug.Log($"[Round18] pipe {p.J.id} built: cuts {p.S1:0.0} m and {p.L - p.S2:0.0} m, the pipe {p.S2 - p.S1:0.0} m ({p.J.diameter_m:0.0} m across, round all the way: Round 19), {lamps} lamps; a stream {sn * 0.5f:0} m long down the floor");
+            // (Round 23: a twin has one per barrel, on its own child, each holding its half of the cut)
+            foreach (float bl in p.Lats)
+            {
+                var host = p.J.twin ? new GameObject("Pipe " + p.J.id + (bl < 0f ? "R" : "L") + " runtime") : root.gameObject;
+                if (p.J.twin) host.transform.SetParent(root, false);
+                var dp = host.AddComponent<DrainPipe>(); dp.id = p.J.id + (p.J.twin ? (bl < 0f ? "R" : "L") : ""); dp.halfWidth = p.J.twin ? p.O : CutHalf; dp.clearHeight = p.J.diameter_m - PipeFloorRise;
+                var fl = new List<Vector3>(); for (float s = 0f; s <= p.L + 1e-3f; s += 0.5f) fl.Add(W(s, bl, p.Y(s))); dp.floor = fl.ToArray();
+                dp.radius = p.R; dp.barrelFrom = p.S1 / 0.5f; dp.barrelTo = p.S2 / 0.5f;
+            }
+            Debug.Log($"[Round18] pipe {p.J.id} built: cuts {p.S1:0.0} m and {p.L - p.S2:0.0} m, the pipe {p.S2 - p.S1:0.0} m ({p.J.diameter_m:0.0} m across, round all the way: Round 19), {lamps} lamps; a stream down the floor of each barrel" + (p.J.twin ? $" (a twin: two barrels {p.O * 2f:0.0} m apart, the cut {p.Half * 2f:0.0} m wide)" : ""));
         }
 
         static void AddCollider(GameObject go, MeshBuilder mb, string name)

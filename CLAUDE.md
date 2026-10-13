@@ -283,11 +283,17 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 23 in `TODO.md`:** Part A, extend the Chastain
-Enclave amenity lot (Dan's report); Part B, the map-wide underground pipe
-network as a proposal on markers for Dan, plus its main entrance, decided by
-Dan: a twin culvert under Bells Ferry Road where the creek meets the road
-(x 1413, z 1176). Round 22 (the three neighborhoods) is built and driven.
+**Round 23 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan; STOPPED for
+Dan's picks on the network:** Part A (2b5cac5) the Enclave lot out to Dan's spot. BF, the network's main entrance
+(`Data/pipes/pipes.json` `twin` / `chamber_b` / `chamber`; `MapBuilder.Pipes.cs`, `MapBuilder.NetworkEntrance.cs`): twin 5 m
+pipes from the end of the creek channel west of Bells Ferry Road (straight ahead of Dan's spot x 1413.47, z 1176.45, heading
+41) down under the road INTO J1, the first junction chamber (22 x 28 x 8 m), whose four onward stubs end at closed grilles
+until the network is built; no way out on the far side of the road. It is NOT a culvert under the road. The network
+proposal: `python Tools/mapgen/pipe_network_proposal.py` (re-run after mapgen; writes `Data/proposals/round23_network.json`,
+`Docs/PIPE-NETWORK-PROPOSAL.md`, `local/round23/network_overhead.png`), then `python Tools/handmade/make_proposal_labels.py`,
+then Build Map. TEMPORARY markers (`MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`, `Assets/HandMade/Proposals/`, the
+map layer `WorldMap.Proposals`, the debug menu's "Proposal markers" and "Go to" rows; a check shows them with
+`-proposalMarkers 1`): remove when Dan has chosen. Imported from Racer: nothing.
 
 **Round 22 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Grasmere Court,
 Chastain Commons and Chastain Enclave dressed like Chastain Glen (`python Tools/mapgen/communities_area.py` writes

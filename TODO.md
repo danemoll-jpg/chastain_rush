@@ -2636,6 +2636,43 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
 3. Rebuild the exe (stay off Dan's screen, muted); report: status list, "for Dan to check", the proposal overhead and
    how to turn its markers on, path to the exe. STOP for Dan's picks on the network.
 
+**STATUS of Round 23 (Claude, 2026-10-13): items 1, 2, 2b, 2c and 3 DONE, the proposal made; checked in the exe by script
+(muted, minimized 1280 x 720, `local/round23/check/`). STOPPED for Dan's picks on the network.**
+- 1 (Part A, commit 2b5cac5): the Enclave amenity lot grows from 16 x 11 m to 16.7 x 32.4 m, taking in Dan's spot (x 1767.2,
+  z 771.7) with 3 m to spare (checked clear of houses, drives, the street, the pool deck, courts, pavilion); flush with the
+  grass, no curb, draped on a 1 m grid; a row of stalls on the far side and a double row in the middle. Exe drive from the
+  grass into it at 12 m/s: 1 % speed lost, 7 deg tilt, no air. That lot only.
+- 2 / 2b / 2c, BF, the network's main entrance (`Data/pipes/pipes.json` `twin`, `chamber_b`, `chamber`;
+  `MapBuilder.Pipes.cs`, new `MapBuilder.NetworkEntrance.cs`): the first build (a culvert under the road, out the other side)
+  is gone. Now two 5 m pipes start at the end of the creek channel straight ahead of Dan's spot (x 1413.47, z 1176.45,
+  heading 41; the right-hand pipe is dead on his line, the left one beside it, a pier between), a headwall and flared
+  wingwalls fitted to the banks (closed ends, the ground in front cut to the floor's level, no step), the creek's water
+  ending at the mouth and its trickle running on down both pipes. The pipes go down at up to 18 % under Bells Ferry Road
+  (41.5 m of pipe, 6 dim lamps) into J1, the network's first junction chamber: 22 x 28 x 8 m of stained concrete under the
+  far side of the road (floor 277.5 m, center x 1452.6, z 1225.9, 1.9 m or more of ground over it), four lamps, the two
+  trickles across its floor to a grated sump, and four onward stub pipes (5 m, 10 m long) toward M1 and M5 (south-east
+  wall), the north maze (far wall) and M2 (north-west wall), each ending at a CLOSED steel grille (bars, a red and white
+  crossbar, an amber lamp). No way out on the far side of the road. Resets in the pipes, the chamber and the stubs put you
+  on their floor (DrainPipe); headlights come on. Exe, from Dan's spot and heading, straight in: the Street Classic and the
+  Drifter Twin at 12 m/s (1 % speed lost, 10 deg tilt, no air) and 25 m/s (1 to 2 % lost, 0.5 to 0.6 s of air off the
+  mouth's dip); a tour in, round the chamber and back out to the creek at 8 m/s, both; a drive to the M1 grille.
+  On the way (the first exe checks): a slow car stopped against a 0.7 m step at the mouth (fixed: the apron), the creek's
+  flat water sheet floated over the cut (fixed: it stops at the mouth), straight in from Dan's spot hit the pier between
+  the pipes (fixed: the pipes moved 2.9 m so one is on his line; the pier's nose now rises over 10 m and steers into a pipe).
+- Part B, the proposal (`python Tools/mapgen/pipe_network_proposal.py` writes `Data/proposals/round23_network.json`,
+  `Docs/PIPE-NETWORK-PROPOSAL.md` and the overhead `local/round23/network_overhead.png`; labels
+  `python Tools/handmade/make_proposal_labels.py`): six mains (M1 Trunk red, M5 Enclave orange, M3 Noonday green, M4 Glen
+  yellow, M2 Lakes blue, M6 Nelson purple, about 6 km, starting at J1's grilles), 27 maze branches (about 5.8 km, most
+  3.5 m: bikes, the ATV, the mower), the hub (110 x 70 m chasm, floor 252 m, ledges at 262 and 272, waterfalls, a pool) at
+  x 1900, z 1145, nine more junctions, 12 secret exits, 13 manholes, 2 launches over water, 7 glass stretches, 3 drop
+  shafts, 3 flooded stretches; the underground race (a 1.36 km lap: hub floor, M1, a hairpin in J1, M5, the hub's top
+  ledge), its checkpoints CP1 to CP5, gates G1 to G10 and three switch shortcuts (S1 Waterfall leap, S2 Pond tube, S3 High
+  line); four build stages (1: the hub, M1, M5, the race; 2: Noonday; 3: the Glen and the shops; 4: the lakes and Nelson
+  Lake); the frame-rate plan. TEMPORARY markers in the world (`MapBuilder.Proposals.cs`, `Debug/ProposalMarkers.cs`,
+  `Assets/HandMade/Proposals/`): debug menu (F6 or `\`) "Proposal markers: Shown", "Go to" (8 stops, free roam); the map
+  (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
+- Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
+
 **DAN'S VISION FOR THE NETWORK (2026-10-12 22:11, after talking it through with Claude). The proposal is built around
 this.** Dan, to Claude's list of questions and ideas: "pretty much everything you said. I want a maze, with secret exits
 all over but a space for full on race as well. I envision a main hub that is a big open chasm with water flowing in

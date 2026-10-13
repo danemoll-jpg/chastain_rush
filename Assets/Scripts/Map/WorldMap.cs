@@ -32,10 +32,17 @@ namespace ChastainRush
         public float Zoom => zoom;
         public Vector2 Center => center;
         public Rect World => world;
+        // Round 23 (Part B): the pipe network proposal's lines, their names and its labeled points, drawn on the map while the
+        // proposal markers exist (Debug/ProposalMarkers.cs fills them; TEMPORARY, as Round 20's)
+        public sealed class Proposal { public string label; public Vector3[] line; public Color color; public float width = 3f; public bool dashed; }
+        public sealed class ProposalMark { public string label; public Vector3 at; public Color color; }
+        public static readonly List<Proposal> Proposals = new List<Proposal>();
+        public static readonly List<ProposalMark> ProposalMarks = new List<ProposalMark>();
+        public static string ProposalLegend = "";
 
         InputActionMap mapActions; InputAction mapToggle, panAction, zoomInAction, zoomOutAction, centerAction, layersAction, backAction;
         GameObject panel; RawImage picture; WorldMapOverlay overlay; Text status, heading, cursor, north, legend; Font font;
-        readonly List<Text> racerDots = new List<Text>(), gateLabels = new List<Text>();
+        readonly List<Text> racerDots = new List<Text>(), gateLabels = new List<Text>(), proposalLabels = new List<Text>();
         Rect world; float zoom = 1f, savedTimeScale = 1f; Vector2 center = new Vector2(.5f, .5f); int closedFrame = -10;
         ArcadeVehicle car; RaceController race;
         const float MaxZoom = 16f;
@@ -202,6 +209,23 @@ namespace ChastainRush
                 foreach (var p in FindObjectsByType<DrainPipe>(FindObjectsSortMode.None))
                     if (p.floor != null && p.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = p.floor, tint = new Color(.82f, .82f, .86f), dashed = true, width = 4f });
             }
+            // Round 23: the pipe network proposal (its lines, the line names at their middles, the labeled points)
+            int pi = 0;
+            foreach (var pr in Proposals)
+            {
+                if (pr.line == null || pr.line.Length < 2) continue;
+                lines.Add(new WorldMapOverlay.Path { points = pr.line, tint = pr.color, width = pr.width, dashed = pr.dashed });
+                if (string.IsNullOrEmpty(pr.label)) continue;
+                var t = Pooled(proposalLabels, pi++, "Proposal", 14); t.text = pr.label; t.color = pr.color; t.fontStyle = FontStyle.Bold;
+                if (Marker(t, pr.line[pr.line.Length / 2])) t.rectTransform.anchoredPosition += new Vector2(0, 12);
+            }
+            if (zoom >= 2f)   // the points' names only zoomed in (too many for the whole map)
+            foreach (var mk in ProposalMarks)
+            {
+                var t = Pooled(proposalLabels, pi++, "Proposal", 11); t.text = "◆ " + mk.label; t.color = mk.color; t.fontStyle = FontStyle.Normal;
+                t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, mk.at);
+            }
+            for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
             overlay.SetView(world, center, zoom, lines, bars);
             // the other racers (a race only), then the player on top
             int ri = 0;
@@ -218,7 +242,8 @@ namespace ChastainRush
             cursor.rectTransform.anchoredPosition = Vector2.zero; cursor.gameObject.SetActive(true);
             var at = WorldPoint(center);
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
-                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : "A / Space: show the shortcuts and pipes");
+                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : "A / Space: show the shortcuts and pipes")
+                        + (Proposals.Count > 0 ? "\n" + ProposalLegend : "");
             status.text = $"Cursor  x {at.x:0}  z {at.z:0}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }
     }

@@ -1,5 +1,5 @@
 {
- "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. 'rock_bar_a' (Round 19, BUG-001): the way to the inlet crosses the creek on a dry bar of flat rocks instead of a gravel bar under the water. The map-wide network (Round 20) goes in this file. 'clear' (Round 21 follow-ups, Dan: \"can we have the pipe be clear and you can see fish swimming around?\"): a stretch of the pipe made a glass tube under water: the small pond's water brought over it as a pool (its level), the pipe held down so its crown is 'water_over_m' under the surface, a trench of deep water round the tube 'trench_half_m' either side (MapBuilder.ClearPipe.cs); 'from' / 'to' are the meters from 'a' it may span (the glass is where the crown is 0.6 m or more under the surface). 'mouth_lamp_b' (Round 21 follow-ups): a lit lamp over the outlet's opening (RA's hint, seen across the small pond).",
+ "note": "Round 18 (item 4): the drive-through drainage pipes, hand-made layout (Dan: pipes are their own layer under the terrain). Each pipe runs straight from 'a' to 'b' (map x, z in meters): a concrete inlet cut leading down from the ground at 'a', a round concrete pipe under the ground, an outlet cut leading up to the ground at 'b' (P1: on the small pond's west shore, just outside the water). Heights, the depth and where the cuts end are worked out by MapBuilder.Pipes.cs from the ground. 'forward' is a to b. 'approach_a' / 'approach_b': optional lines (x, z, ...) leading to a mouth: graded like the trail's fords (down a bank at 22 % at most, across a stream on a gravel bar 0.15 m under the water), so the mouth is met from the ground. 'rock_bar_a' (Round 19, BUG-001): the way to the inlet crosses the creek on a dry bar of flat rocks instead of a gravel bar under the water. The map-wide network (Round 20) goes in this file. 'clear' (Round 21 follow-ups, Dan: \"can we have the pipe be clear and you can see fish swimming around?\"): a stretch of the pipe made a glass tube under water: the small pond's water brought over it as a pool (its level), the pipe held down so its crown is 'water_over_m' under the surface, a trench of deep water round the tube 'trench_half_m' either side (MapBuilder.ClearPipe.cs); 'from' / 'to' are the meters from 'a' it may span (the glass is where the crown is 0.6 m or more under the surface). 'mouth_lamp_b' (Round 21 follow-ups): a lit lamp over the outlet's opening (RA's hint, seen across the small pond). 'twin' (Round 23, BUG-002, Dan: \"two large pipes. I want this to be a main entrance the pipe network\"): two barrels side by side under one wide cut and one headwall (MapBuilder.Pipes.cs); BF is the network's main entrance (Round 23, items 2b and 2c): at the end of the creek channel west of Bells Ferry Road, straight ahead of Dan's BUG-002 spot (x 1413.47, z 1176.45, heading 41), its two barrels lead down under the road INTO the network's first junction chamber, J1 ('chamber_b': no outlet, 'b_floor' the chamber's floor level, 'chamber' its size and the onward stub pipes that end at closed grilles until the network is built; MapBuilder.NetworkEntrance.cs). There is no way out on the far side of the road.",
  "pipes": [
   {
    "id": "P1",
@@ -30,6 +30,54 @@
     "trench_half_m": 8.0
    },
    "mouth_lamp_b": true
+  },
+  {
+   "id": "BF",
+   "name": "BF, the network's main entrance (twin pipes from the creek down into J1; the right-hand pipe straight ahead of Dan's spot)",
+   "a": [
+    1409.97,
+    1176.84
+   ],
+   "b": [
+    1445.4,
+    1217.59
+   ],
+   "diameter_m": 5.0,
+   "cover_m": 0.6,
+   "cut_slope": 0.18,
+   "twin": true,
+   "chamber_b": true,
+   "b_floor": 277.5,
+   "chamber": {
+    "id": "J1",
+    "name": "J1, the first junction chamber",
+    "length_m": 22.0,
+    "width_m": 28.0,
+    "height_m": 8.0,
+    "stub_m": 10.0,
+    "stubs": [
+     {
+      "wall": "right",
+      "at": 6.0,
+      "name": "M5 Enclave Main"
+     },
+     {
+      "wall": "right",
+      "at": 16.0,
+      "name": "M1 Trunk"
+     },
+     {
+      "wall": "far",
+      "at": 0.0,
+      "name": "B north maze"
+     },
+     {
+      "wall": "left",
+      "at": 11.0,
+      "name": "M2 Lakes Main"
+     }
+    ]
+   }
   }
  ]
 }
