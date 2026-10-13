@@ -2689,6 +2689,38 @@ different angles and the look around capability".
    keeps world-up unless the player picks a view that rolls. Look-around works underground too.
 3. Rebuild the exe, commit, short report (the buttons, the views). Stop here if usage is short.
 
+Part A DONE (commit ea0dfb6): Dan, 2026-10-13 12:18: "new views work".
+
+Part A2, URGENT (Dan, 12:18, session 2026-10-13_12-05-26-727_6c2b53). Do these BEFORE Part B, in this order:
+A1. FRAME RATE. Dan: "all the races now suffer terrible FPS. Not even drivable anymore. Tested all 4 tracks." Reports:
+   BUG-003 (x 2340.43, z 1148.03, on the Noonday Creek trail): "the fps is really bad"; BUG-004 (x 2434.99, z 796.73,
+   by New Chastain Road at the creek bridges): "fps is now horrible here as well". It broke between Round 22 and now
+   (the pipe network stages 1 to 4, and / or the Round 24 camera). Find the cause in the built exe with the profiler
+   (not by guessing): the network's cells not switching off (meshes, point lights, waterfalls, streams, fish, glass
+   drawn or simulated far away), shadows, the camera's collision probes, the race AI, or something else. Fix it so all
+   four races (Chastain Glen loop forward and reverse, Noonday Creek forward and reverse) and free roam above and below
+   ground run at 60 fps again at Dan's resolution, as they did before Round 23. Report the cause and the before / after
+   numbers. This one check IS required.
+A2. MOUTHS AND RAILINGS IN ROADS AND TRAILS. BUG-002 (x 2342.17, z 1113.55, on the Noonday Creek trail at the woods-trail
+   exit): "this border should not go in the middle of the road. These are too thick and prevent cars driving. We need to
+   look at every mouth and make sure these aren't going into roads". Dan: "We need to check the mouths and remove any of
+   the entrances railings that go into the roads. You can't even drive over these." Go through EVERY mouth, exit and
+   manhole: nothing (headwall, wingwall, railing, coping, curb) on or across a road, a driveway, a sidewalk or the Noonday
+   Creek trail; railings only where they guard a drop and never across a drivable surface; nothing a vehicle catches.
+   List each one changed.
+A3. PIPES CLOSED DURING RACES, AND THE AI KEPT OUT. BUG-001 (x 2342.48, z 1105.55, the same woods-trail exit): "this needs
+   to be blocked off during races". Dan: "in the first example of the race it routed everyone to go down the pipe even
+   though it wasn't part of the race." During every race, every network mouth, exit and manhole that is not part of
+   that race is closed (a race-only barrier or grille, like `RaceBarriers` / `RaceOnly`; open again in free roam). The AI
+   never routes into the network unless the pipe is an official shortcut of that race (P1 / RA on Noonday Creek stay).
+A4. THE MAP STAYS INSIDE THE MAP. Dan: "the map not be able to move further than the border of the map". Clamp the big
+   map's pan (and zoom-out) so it never shows beyond the world's edges.
+A5. THE MINIMAP FROM WOODSTOCK RUSH. Dan: "Need to add the minimap from woodstock rush". Port Racer's minimap (read
+   its code: placement, size, rotation, what it shows, how it is toggled) and show it in races and free roam as Racer
+   does, using this game's map picture; it shows the route, checkpoints and racers in a race, and the pipes when you
+   are underground.
+A6. Rebuild the exe, commit, short report. No drive tests beyond A1's frame-rate check.
+
 Part B, QUEUED for Dan's next session (do after Part A, in this order):
 4. Ugly entrances and exits, everywhere. Dan: "I don't want ugly entrances like the one I flagged. If there are others I
    want them reworked as well." His session 2026-10-13_10-00-51-441_3321a8:

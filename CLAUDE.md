@@ -283,12 +283,13 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active work is Round 24 in `TODO.md`:** Part A FIRST (Dan is near his
-usage limit): Racer's cameras (angles, look-around) and a steady camera
-underground; rebuild the exe and commit. Part B, queued: rework ugly pipe
-entrances and exits everywhere, open-water aquarium stretches, hub-pointing
-arrows on the mains, every main into the hub, race markers kept and the race
-not built. No vehicle drive tests (Dan tests); only check the builds succeed.
+**Active work is Round 24 Part A2 in `TODO.md` (urgent):** frame rate broken
+in all races since the pipe network / new cameras (find the cause with the
+profiler, back to 60 fps); no mouth, railing or wall on any road, drive,
+sidewalk or the trail; every network opening closed during races and the AI
+kept out of pipes not in the race; the big map clamped to the world's edges;
+Racer's minimap. Then Part B (entrances rework, open-water aquariums, hub
+arrows, every main into the hub). Race markers kept, race not built.
 
 **The Round 23 follow-ups (see `TODO.md`, status there) are built; stages 1 and 2 checked in the exe by script, stages 3 and 4
 built only (Dan asked to test them himself); none driven by Dan yet.** Part A (e1ba748) the Enclave lot, gate, sidewalk, court
@@ -526,7 +527,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-13_10-00-51-441_3321a8` (three entrance / exit reports; in TODO.md, Round 24 item 4).
+`2026-10-13_12-05-26-727_6c2b53` (frame rate, woods-trail exit border and race block; in TODO.md, Round 24 Part A2).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
