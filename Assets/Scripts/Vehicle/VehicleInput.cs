@@ -10,7 +10,12 @@ namespace Racer
         public float BrakeReverse { get; private set; }
         public float Steering { get; private set; }
         bool resetRequested;
-        InputAction throttle, brake, steering, reset, fist, view; bool viewRequested;
+        InputAction throttle, brake, steering, reset, fist, view, look; bool viewRequested;
+        // Chastain Rush, Round 24 (from Racer's VehicleInput): look around while driving. Right stick; or the right mouse button held with the mouse moved.
+        // Racer's R3 look-behind is not ported (R3 is bug capture here); the stick pulled straight back looks behind.
+        public Vector2 Look { get; private set; }
+        public bool MouseLook { get; private set; }
+        public Vector2 MouseDelta { get; private set; }
         public InputAction[] CurrentBindings => new[]{throttle,brake,steering,reset,fist};
         public bool UsingGamepad { get; private set; }
         public string ResetControlLabel
@@ -30,7 +35,7 @@ namespace Racer
         public void Bind(InputDevice device)
         {
             if (device == Device && throttle != null) return;
-            bool on = isActiveAndEnabled; if (throttle != null) { OnDisable(); foreach (var a in CurrentBindings) a.Dispose(); view.Dispose(); }
+            bool on = isActiveAndEnabled; if (throttle != null) { OnDisable(); foreach (var a in CurrentBindings) a.Dispose(); view.Dispose(); look.Dispose(); }
             Create(device); if (on) OnEnable();
         }
         void Create(InputDevice device)
@@ -54,25 +59,28 @@ namespace Racer
             Add(fist, "<Gamepad>/leftShoulder"); Add(fist, "<Keyboard>/f");
             // 0.94 Part B: the camera view button, read per player in split-screen (CameraViews)
             view = new InputAction("Change view", InputActionType.Button); Add(view, "<Gamepad>/buttonWest"); Add(view, "<Keyboard>/v");
+            look = new InputAction("Look around", InputActionType.Value, expectedControlType: "Vector2"); Add(look, "<Gamepad>/rightStick", "stickDeadzone(min=0.2,max=0.95)");
             if (device != null) UsingGamepad = device is Gamepad;
             throttle.performed+=Used; brake.performed+=Used; steering.performed+=Used; reset.performed+=Used; fist.performed+=Used;
         }
 
-        void OnEnable() { throttle.Enable(); brake.Enable(); steering.Enable(); reset.Enable(); fist.Enable(); view.Enable(); }
+        void OnEnable() { throttle.Enable(); brake.Enable(); steering.Enable(); reset.Enable(); fist.Enable(); view.Enable(); look.Enable(); }
         void Update()
         {
             Throttle = throttle.ReadValue<float>();
             BrakeReverse = brake.ReadValue<float>();
             Steering = steering.ReadValue<float>();
+            Look = look.ReadValue<Vector2>();
+            var mouse = Device == null || Device is Keyboard ? Mouse.current : null; MouseLook = mouse != null && mouse.rightButton.isPressed; MouseDelta = MouseLook ? mouse.delta.ReadValue() : Vector2.zero;
             resetRequested |= reset.WasPressedThisFrame(); viewRequested |= view.WasPressedThisFrame();
         }
         public bool ConsumeReset() { bool result = resetRequested; resetRequested = false; return result; }
         public bool ConsumeView() { bool result = viewRequested; viewRequested = false; return result; }
         void OnDisable()
         {
-            throttle.Disable(); brake.Disable(); steering.Disable(); reset.Disable(); fist.Disable(); view.Disable(); viewRequested = false;
+            throttle.Disable(); brake.Disable(); steering.Disable(); reset.Disable(); fist.Disable(); view.Disable(); look.Disable(); viewRequested = false; Look = MouseDelta = Vector2.zero; MouseLook = false;
             Throttle = BrakeReverse = Steering = 0; resetRequested = false;
         }
-        void OnDestroy() { throttle.Dispose(); brake.Dispose(); steering.Dispose(); reset.Dispose(); fist.Dispose(); view.Dispose(); }
+        void OnDestroy() { throttle.Dispose(); brake.Dispose(); steering.Dispose(); reset.Dispose(); fist.Dispose(); view.Dispose(); look.Dispose(); }
     }
 }

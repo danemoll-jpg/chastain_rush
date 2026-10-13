@@ -34,6 +34,7 @@ namespace ChastainRush
             camGo.AddComponent<AudioListener>();
             var chase = camGo.AddComponent<ChaseCamera>();
             chase.target = car.transform;
+            camGo.AddComponent<CameraViews>();   // Round 24: Racer's views and look-around
             camGo.transform.position = spawn.position + rotation * new Vector3(0f, 3.6f, -7.5f);
             camGo.transform.LookAt(spawn.position);
         }

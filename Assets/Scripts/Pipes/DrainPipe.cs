@@ -164,20 +164,29 @@ namespace ChastainRush
 
         // the chase camera inside the barrel: on the axis 6 m behind the vehicle (the way it is pointing along the pipe), looking
         // ahead of it, world up; it never leaves the pipe and does not roll or swing when the vehicle is on the wall or the roof
+        // Round 24: steadier. The camera follows a SMOOTHED station along the axis (so it always lies on the axis, never cuts a bend
+        // through the wall), the direction only flips after the vehicle has gone the other way for half a second, the pipe is kept
+        // while the vehicle is still in it, and it looks along the axis, not toward the vehicle (so wall riding does not swing it)
+        static DrainPipe viewPipe; static float viewSt, viewStVel, viewSign = 1f, flipTime, viewIdle;
         static bool View(Transform target, out Vector3 desired, out Vector3 lookAt)
         {
             desired = lookAt = default;
-            foreach (var d in all)
-            {
-                if (!d.Barrel(target.position, 1f, out var axis, out var along, out _, out float st)) continue;
-                float sign = Vector3.Dot(target.forward, along) >= 0f ? 1f : -1f;
-                var rb = target.GetComponent<Rigidbody>(); if (rb && rb.linearVelocity.magnitude > 2f) sign = Vector3.Dot(rb.linearVelocity, along) >= 0f ? 1f : -1f;
-                Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, d.floor.Length - 1.001f); int k = (int)s; return d.AxisFrom(Vector3.Lerp(d.floor[k], d.floor[k + 1], s - k), (d.floor[k + 1] - d.floor[k]).normalized); }
-                desired = AxisAt(st - sign * 12f) + Vector3.up * 0.4f;   // 12 stations = 6 m
-                lookAt = Vector3.Lerp(target.position, AxisAt(st + sign * 8f), 0.45f);
-                return true;
-            }
-            return false;
+            DrainPipe d = null; Vector3 axis = default, along = default; float st = 0f;
+            if (viewPipe && viewPipe.Barrel(target.position, 1f, out axis, out along, out _, out st)) d = viewPipe;
+            else foreach (var q in all) if (q.Barrel(target.position, 1f, out axis, out along, out _, out st)) { d = q; break; }
+            if (d == null) { viewPipe = null; return false; }
+            var rb = target.GetComponent<Rigidbody>();
+            float want = viewSign;
+            if (rb && rb.linearVelocity.magnitude > 3f) want = Vector3.Dot(rb.linearVelocity, along) >= 0f ? 1f : -1f;
+            else if (!viewPipe) want = Vector3.Dot(target.forward, along) >= 0f ? 1f : -1f;
+            if (d != viewPipe) { viewPipe = d; viewSt = st; viewStVel = 0f; viewSign = want; flipTime = 0f; }
+            if (want != viewSign) { flipTime += Time.deltaTime; if (flipTime > 0.5f) { viewSign = want; flipTime = 0f; } } else flipTime = 0f;
+            viewSt = Mathf.SmoothDamp(viewSt, st, ref viewStVel, 0.12f);
+            var pipe = d;
+            Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, pipe.floor.Length - 1.001f); int k = (int)s; return pipe.AxisFrom(Vector3.Lerp(pipe.floor[k], pipe.floor[k + 1], s - k), (pipe.floor[k + 1] - pipe.floor[k]).normalized); }
+            desired = AxisAt(viewSt - viewSign * 12f) + Vector3.up * 0.4f;   // 12 stations = 6 m
+            lookAt = AxisAt(viewSt + viewSign * 14f);
+            return true;
         }
 
         // the vehicle is in any pipe or its cuts (VehicleLights: its headlight on)

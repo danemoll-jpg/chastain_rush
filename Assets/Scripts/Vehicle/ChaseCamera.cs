@@ -29,7 +29,7 @@ namespace Racer
         // Chastain Rush, Round 19: inside a drainage pipe (DrainPipe.View) the camera rides the pipe's axis behind the vehicle and
         // looks along it, world up, so a vehicle riding the walls or over the roof does not swing it round or out of the pipe
         public delegate bool ViewFn(Transform target, out Vector3 desired, out Vector3 lookAt);
-        public static ViewFn PipeView;
+        public static ViewFn PipeView; float pipeTime;
         void OnEnable()
         {
             if (!target) return;
@@ -50,12 +50,16 @@ namespace Racer
             if (!target) return;
             if (PipeView != null && PipeView(target, out var pipeAt, out var pipeLook))   // Chastain Rush, Round 19
             {
-                position = Vector3.SmoothDamp(position, pipeAt, ref velocity, positionSmoothTime * 0.6f);
-                var lk = pipeLook - position; if (lk.sqrMagnitude > 1e-6f) rotation = Quaternion.LookRotation(lk, Vector3.up);
+                // Round 24: a short blend on entering, then the camera sits on the (already smoothed) axis point; the rotation eases
+                pipeTime += Time.deltaTime;
+                if (pipeTime < 0.5f) position = Vector3.SmoothDamp(position, pipeAt, ref velocity, 0.2f); else { position = pipeAt; velocity = Vector3.zero; }
+                var lk = pipeLook - position;
+                if (lk.sqrMagnitude > 1e-6f) { var want = Quaternion.LookRotation(lk, Vector3.up); rotation = pipeTime < 0.02f ? rotation : Quaternion.Slerp(rotation, want, 1 - Mathf.Exp(-7f * Time.deltaTime)); }
                 var flat = Vector3.ProjectOnPlane(pipeLook - pipeAt, Vector3.up); if (flat.sqrMagnitude > 1e-4f) heading = Quaternion.LookRotation(flat);
                 transform.SetPositionAndRotation(position, rotation);
                 return;
             }
+            pipeTime = 0f;
             heading = Quaternion.Slerp(heading, Quaternion.Euler(0, target.eulerAngles.y, 0), 1 - Mathf.Exp(-headingResponse * Time.deltaTime));
             Vector3 desired = target.position + heading * Offset;
             Vector3 pivot = target.position + Vector3.up;
