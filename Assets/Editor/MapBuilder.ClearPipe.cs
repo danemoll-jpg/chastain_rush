@@ -94,31 +94,37 @@ namespace ChastainRush
             Debug.Log($"[Round21+] pipe {p.J.id}: a pool over its clear stretch at the small pond's level ({p.Surface:0.00} m), {p.C1 - p.C0:0.0} m along the pipe and {2f * W:0} m across, dug up to {most:0.00} m ({lowered} terrain samples lowered; banks 1 in {1f / PoolBank:0})");
         }
 
-        // terrain holes over the trench (the band round the tube over the clear stretch)
+        // terrain holes over the trench (the band round the tube over the clear stretch). Round 25 (A5 / A7): only where the bowl of deep
+        // water (ClearFrame.BowlY) is below the ground, and only under water (every corner of the cell under the surface): never in a bank
         static void CutTrenchHoles(TerrainGrid g, PipePlan p)
         {
-            int cells = 0; float T = p.J.clear.trench_half_m;
-            foreach (var tile in g.Tiles)
+            var f = P1Frame(p);
+            Debug.Log($"[Round21+] pipe {p.J.id}: {CutBowlHoles(g, f)} terrain hole cells over the deep water round its clear stretch (Round 25: under water only)");
+        }
+
+        static int CutBowlHoles(TerrainGrid g, ClearFrame f)
+        {
+            var corners = new List<Vector2>(); for (float s = f.C0; s <= f.C1 + 1e-3f; s += 2f) foreach (float side in new[] { -1f, 1f }) { var w = f.W(s, side * (f.Rim(s) + 1.5f), 0f); corners.Add(new Vector2(w.x, w.z)); }
+            var area = BoundsOf(corners, 2f); float hcx = 0.33f, hcz = 0.32f;
+            return SetHoles(g, area, q =>
             {
-                var data = tile.terrainData; int hr = data.holesResolution; var size = data.size; var pos = tile.transform.position;
-                float cx = size.x / hr, cz = size.z / hr;
-                var bounds = BoundsOf(new[] { p.P(p.C0, -T), p.P(p.C0, T), p.P(p.C1, -T), p.P(p.C1, T) }, 1f);
-                if (bounds.xMax < pos.x || bounds.xMin > pos.x + size.x || bounds.yMax < pos.z || bounds.yMin > pos.z + size.z) continue;
-                int x0 = Mathf.Clamp(Mathf.FloorToInt((bounds.xMin - pos.x) / cx), 0, hr - 1), x1 = Mathf.Clamp(Mathf.CeilToInt((bounds.xMax - pos.x) / cx), 0, hr - 1);
-                int z0 = Mathf.Clamp(Mathf.FloorToInt((bounds.yMin - pos.z) / cz), 0, hr - 1), z1 = Mathf.Clamp(Mathf.CeilToInt((bounds.yMax - pos.z) / cz), 0, hr - 1);
-                if (x1 <= x0 || z1 <= z0) continue;
-                var holes = data.GetHoles(x0, z0, x1 - x0 + 1, z1 - z0 + 1); bool any = false;
-                for (int j = 0; j <= z1 - z0; j++)
-                    for (int i = 0; i <= x1 - x0; i++)
-                    {
-                        var q = new Vector2(pos.x + (x0 + i + 0.5f) * cx, pos.z + (z0 + j + 0.5f) * cz);
-                        float s = Vector2.Dot(q - p.A, p.U), lat = Vector2.Dot(q - p.A, p.Nl);
-                        if (s < p.C0 || s > p.C1 || Mathf.Abs(lat) > T) continue;
-                        holes[j, i] = false; any = true; cells++;
-                    }
-                if (any) data.SetHoles(x0, z0, holes);
-            }
-            Debug.Log($"[Round21+] pipe {p.J.id}: {cells} terrain hole cells over the trench round its clear stretch");
+                var sl = f.ToSL(q); float s = sl.x, lat = sl.y;
+                if (s < f.C0 || s > f.C1 || Mathf.Abs(lat) > f.Rim(s) + 1f) return false;
+                float hi = float.MinValue; foreach (var (dx, dz) in new[] { (-hcx, -hcz), (hcx, -hcz), (hcx, hcz), (-hcx, hcz) }) hi = Mathf.Max(hi, Ground(g, q.x + dx, q.y + dz));
+                if (hi > f.Surface - 0.03f) return false;   // a bank: never holed (no flaps over the water, no gap under them)
+                return f.BowlY(s, lat) < Ground(g, q.x, q.y) - 0.05f;
+            });
+        }
+
+        // P1's frame: straight, level; its deep water as wide as its pool (1 m in from the pool's shore)
+        static ClearFrame P1Frame(PipePlan p)
+        {
+            float axisY = p.Y((p.C0 + p.C1) * 0.5f) + p.R;
+            var pool = p.Pool;
+            return new ClearFrame { Id = p.J.id, R = p.R, C0 = p.C0, C1 = p.C1, Surface = p.Surface, T = p.J.clear.trench_half_m, AxisY = axisY, AY = s => axisY,
+                                    W = (s, lat, y) => { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }, U3 = s => new Vector3(p.U.x, 0f, p.U.y), N3 = s => new Vector3(p.Nl.x, 0f, p.Nl.y),
+                                    ToSL = q => new Vector2(Vector2.Dot(q - p.A, p.U), Vector2.Dot(q - p.A, p.Nl)),
+                                    TS = pool == null ? (Func<float, float>)null : s => Mathf.Clamp(DistToEdges(p.P(s, 0f), pool) - 1f, p.R + 1.2f, 45f) };
         }
 
         static Material clearGlass, clearHaze, clearSurface, clearShaft, clearWeed;
@@ -139,6 +145,10 @@ namespace ChastainRush
                 M("ChastainRush/Fish", "FishSmall", m => { m.SetFloat("_Wag", 3.2f); m.SetFloat("_WagSize", 0.16f); m.enableInstancing = true; }),
                 M("ChastainRush/Fish", "FishSunfish", m => { m.SetFloat("_Wag", 2.2f); m.SetFloat("_WagSize", 0.12f); m.enableInstancing = true; }),
                 M("ChastainRush/Fish", "FishBig", m => { m.SetFloat("_Wag", 0.9f); m.SetFloat("_WagSize", 0.10f); m.enableInstancing = true; }),
+                // Round 25 (A8): turtles (a slow paddle), water snakes (a long winding wave), ducks and geese (still)
+                M("ChastainRush/Fish", "Turtle", m => { m.SetFloat("_Wag", 0.6f); m.SetFloat("_WagSize", 0.03f); m.enableInstancing = true; }),
+                M("ChastainRush/Fish", "WaterSnake", m => { m.SetFloat("_Wag", 0.9f); m.SetFloat("_WagSize", 0.32f); m.enableInstancing = true; }),
+                M("ChastainRush/Fish", "WaterBird", m => { m.SetFloat("_Wag", 0f); m.SetFloat("_WagSize", 0f); m.enableInstancing = true; }),
             };
         }
 
@@ -175,13 +185,32 @@ namespace ChastainRush
             public Func<float, float> TS;
             public float TAt(float s) => TS != null ? TS(s) : T;
             public float BottomAt(float s) => TS != null ? Mathf.Max(TrenchBottomHalf, 0.55f * TS(s)) : TrenchBottomHalf;
+            // Round 25 (A7, BUG-007, Dan in M1's glass under the pond: "this still appears to be a trench"; A5, BUG-004 by M5's glass: "this
+            // should be cleaned up"). The deep water was a cut trench: sloping straight walls from its bed up to the surface, closed at each
+            // end by a wall across it, and its terrain holes reached into the banks (ragged grass flaps over the water, a gap under them).
+            // Now it is a BOWL in the pond's bed: from the shore's shelf (0.2 m under the surface, 1 m in from the shore: TS) the bed falls
+            // in a smooth curve (steepening toward the shore) to a bed 1.6 m under the tube, with a little unevenness; toward the stretch's
+            // ends (over its last 10 m) the bowl closes in round the tube and rises to just under it, where the tube goes into the bed.
+            // The terrain is holed only where the bowl is below it and under the water (CutBowlHoles)
+            public Func<Vector2, Vector2> ToSL;   // world (x, z) to (s, lateral)
+            float Lend => Mathf.Min(10f, (C1 - C0) * 0.3f);
+            public float E(float s) => Smooth01(Mathf.Min(s - C0, C1 - s) / Mathf.Max(0.5f, Lend));
+            public float AYs(float s) => AY != null ? AY(s) : AxisY;
+            public float Rim(float s) => Mathf.Lerp(R + 1.2f, Mathf.Max(R + 1.2f, TAt(s)), E(s));
+            public float Bottom(float s) => AYs(s) - R - GlassOut - Mathf.Lerp(0.3f, TrenchBelow, E(s));
+            public float Top => Surface - 0.2f;
+            public float BowlY(float s, float lat)
+            {
+                float a = Mathf.Abs(lat), rim = Rim(s), b0 = Mathf.Min(R * 0.8f, rim - 0.6f), bot = Bottom(s), y;
+                if (a <= b0) y = bot;
+                else if (a <= rim) { float u = (a - b0) / (rim - b0); y = bot + (Top - bot) * Mathf.Pow(u, 1.7f) + 0.14f * (Mathf.PerlinNoise(s * 0.35f + 5f, lat * 0.35f + 3f) - 0.5f) * Mathf.Clamp01(u * 4f); }
+                else y = Top + (a - rim) * 0.3f;
+                float rt = R + GlassOut + 0.15f;   // never into the tube
+                if (a < rt) y = Mathf.Min(y, AYs(s) - Mathf.Sqrt(rt * rt - a * a) - 0.05f);
+                return y;
+            }
         }
-        static void BuildClearStretch(TerrainGrid terrain, Materials mats, Transform root, PipePlan p)
-        {
-            var f = new ClearFrame { Id = p.J.id, R = p.R, C0 = p.C0, C1 = p.C1, Surface = p.Surface, T = p.J.clear.trench_half_m, AxisY = p.Y((p.C0 + p.C1) * 0.5f) + p.R,
-                                     W = (s, lat, y) => { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }, U3 = s => new Vector3(p.U.x, 0f, p.U.y), N3 = s => new Vector3(p.Nl.x, 0f, p.Nl.y) };
-            BuildClearStretch(terrain, mats, root, f);
-        }
+        static void BuildClearStretch(TerrainGrid terrain, Materials mats, Transform root, PipePlan p) => BuildClearStretch(terrain, mats, root, P1Frame(p));
         static void BuildClearStretch(TerrainGrid terrain, Materials mats, Transform root, ClearFrame p)
         {
             ClearMaterials();
@@ -189,38 +218,34 @@ namespace ChastainRush
             Vector3 W(float s, float lat, float y) => p.W(s, lat, y);
             var up3 = Vector3.up;
             float axisY = p.AxisY;   // the floor is level across the clear stretch (P1); a network pipe's: its lowest
-            float AY(float s) => p.AY != null ? p.AY(s) : axisY;
+            float AY(float s) => p.AYs(s);
             float surf = p.Surface, bot = axisY - R - TrenchBelow, top = surf - 0.03f, bedY = surf - BedDepth;
-            float Half(float s, float y) => Mathf.Lerp(p.BottomAt(s), p.TAt(s), Mathf.InverseLerp(bot, top, y));   // the trench's half width at a height (Round 24 Part B: and along it)
+            float Gnd(float s, float lat) { var w = W(s, lat, 0f); return Ground(terrain, w.x, w.z); }
+            // Round 25 (A5 / A7): the deep water is the bowl under the surface and the ground (ClearFrame.BowlY)
+            bool Inside(float s, float lat, float y) => y >= p.BowlY(s, lat) && y <= Mathf.Min(top, Gnd(s, lat));
             float Depth01(float y) => Mathf.InverseLerp(top, bot, y);
             Color Under(Color c, float y) => Color.Lerp(c, new Color(0.10f, 0.26f, 0.28f), 0.25f + 0.55f * Depth01(y));
             var silt = new Color(0.42f, 0.42f, 0.32f); var stone = new Color(0.46f, 0.47f, 0.44f);
 
-            // ---- the trench: bed, sloping walls up to the surface, end walls round the tube (look only: nothing can reach it)
+            // ---- the bed: a sheet across the stretch every meter, out past the bowl's rim (there it lies just under the terrain, which
+            // covers it), its height the bowl's or the ground's (8 cm under it), whichever is lower
             var bed = new MeshBuilder();
             float len = p.C1 - p.C0; int ns = Mathf.CeilToInt(len / 1f);
-            const int across = 14;
-            Vector3 Section(float s, int k)   // the trench's cross-section from the left top (k 0) down, across the bed, up to the right top (k 2*across)
-            {
-                int m = 2 * across; float t = k / (float)m;   // 0..1
-                // left wall (0..0.3), bed (0.3..0.7), right wall (0.7..1)
-                if (t < 0.3f) { float u = t / 0.3f; float y = Mathf.Lerp(top, bot, u); return W(s, Half(s, y), y); }
-                if (t > 0.7f) { float u = (t - 0.7f) / 0.3f; float y = Mathf.Lerp(bot, top, u); return W(s, -Half(s, y), y); }
-                { float u = (t - 0.3f) / 0.4f; float lat = Mathf.Lerp(p.BottomAt(s), -p.BottomAt(s), u); int h = Mathf.RoundToInt(s * 3f) * 97 + k; return W(s, lat, bot + 0.18f * Mathf.PerlinNoise(s * 0.4f, lat * 0.5f) + 0.05f * Hash01(h, 1201)); }
-            }
+            const int across = 24;
+            float BedAt(float s, float lat) => Mathf.Min(p.BowlY(s, lat), Gnd(s, lat) - 0.08f);
+            Vector3 Pt(float s, int k) { float half = p.Rim(s) + 2f, lat = Mathf.Lerp(half, -half, k / (float)(2 * across)); return W(s, lat, BedAt(s, lat)); }
             for (int i = 0; i < ns; i++)
             {
                 float sa = p.C0 + len * i / ns, sb = p.C0 + len * (i + 1) / ns;
                 for (int k = 0; k < 2 * across; k++)
                 {
-                    Vector3 a0 = Section(sa, k), a1 = Section(sa, k + 1), b0 = Section(sb, k), b1 = Section(sb, k + 1);
+                    Vector3 a0 = Pt(sa, k), a1 = Pt(sa, k + 1), b0 = Pt(sb, k), b1 = Pt(sb, k + 1);
                     float y = (a0.y + a1.y) * 0.5f; float n = Mathf.PerlinNoise(sa * 0.3f + k * 0.21f, 3f);
                     bed.Tint = Under(Shade(Color.Lerp(silt, new Color(0.30f, 0.36f, 0.22f), n * 0.6f), 0.85f + 0.25f * n), y);
-                    var c = (a0 + a1 + b0 + b1) * 0.25f; var ax = W((sa + sb) * 0.5f, 0f, AY((sa + sb) * 0.5f));
-                    Face(bed, a0, b0, b1, a1, ax - c);   // facing the tube
+                    Face(bed, a0, b0, b1, a1, up3);
                 }
             }
-            // the end walls, across the trench at C0 and C1, with the tube's round opening; facing into the trench
+            // the ends: where the tube goes into the bed, a face across the bowl's (small) cross-section round the tube, up to the ground
             foreach (var (s, sgn) in new[] { (p.C0, 1f), (p.C1, -1f) })
             {
                 var u3 = p.U3(s); var n3 = p.N3(s);
@@ -229,10 +254,10 @@ namespace ChastainRush
                 {
                     float t0 = Mathf.PI * 2f * i / seg, t1 = Mathf.PI * 2f * (i + 1) / seg;
                     Vector3 C(float th) => c + n3 * (Mathf.Sin(th) * ro) - up3 * (Mathf.Cos(th) * ro);
-                    Vector3 Edge(float th)   // out from the center along th to the trench's outline
+                    Vector3 Edge(float th)   // out from the center along th to the bowl's outline (its bed, the surface, the ground)
                     {
-                        var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = ro, hi = 60f;
-                        for (int it = 0; it < 24; it++) { float mid = (lo + hi) * 0.5f; float y = axS + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(s, Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
+                        var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = ro, hi = 30f;
+                        for (int it = 0; it < 24; it++) { float mid = (lo + hi) * 0.5f; if (Inside(s, d.x * mid, axS + d.y * mid)) lo = mid; else hi = mid; }
                         return c + n3 * (d.x * lo) + up3 * (d.y * lo);
                     }
                     var e0 = Edge(t0); bed.Tint = Under(Shade(silt, 0.8f), e0.y);
@@ -240,14 +265,15 @@ namespace ChastainRush
                 }
             }
             var bedGo = bed.ToObject("Pipe " + p.Id + " clear stretch - the deep water bed", mats.House, root, true, false);   // Round 23 follow-ups: solid (nothing falls out of the world through it)
-            // rocks on the bed and its slopes (look only)
+            // rocks on the bowl's bed and slopes (look only), never on the tube's line
             var rocks = new MeshBuilder(); int nRocks = 0;
             int rockN = Mathf.Max(46, Mathf.RoundToInt(len * 1.5f));   // Round 24 Part B: as many per meter on a long stretch
             for (int i = 0; i < rockN; i++)
             {
                 float s = p.C0 + 0.8f + (len - 1.6f) * Hash01(i, 1211), side = Hash01(i, 1213) < 0.5f ? -1f : 1f;
-                float y = Mathf.Lerp(bot, bot + 2.6f, Mathf.Pow(Hash01(i, 1215), 1.6f)), lat = side * (Half(s, y) - 0.15f);
-                if (y < bot + 0.3f) { lat = side * p.BottomAt(s) * Hash01(i, 1217); if (Mathf.Abs(lat) < R * 0.8f && Hash01(i, 1219) < 0.5f) lat = side * (R * 0.8f + 0.6f); }
+                float lat = side * Mathf.Lerp(R + 0.9f, p.Rim(s) - 0.4f, Mathf.Pow(Hash01(i, 1215), 1.4f));
+                if (Mathf.Abs(lat) < R + 0.9f) continue;
+                float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.2f) continue;
                 var cc = W(s, lat, y - 0.1f); float r = 0.25f + 0.5f * Hash01(i, 1221);
                 rocks.Tint = Under(Shade(stone, 0.7f + 0.35f * Hash01(i, 1223)), y);
                 var apex = cc + up3 * r * (0.7f + 0.5f * Hash01(i, 1225));
@@ -256,20 +282,23 @@ namespace ChastainRush
                 nRocks++;
             }
             rocks.ToObject("Pipe " + p.Id + " clear stretch - rocks", mats.House, root, false, false);
-            // weeds: clumps of ribbons rising from the bed and the lower slopes; they sway (ChastainRush/Fish, _Mode 1: vertex alpha is
-            // how far up the blade)
+            // weeds: clumps of ribbons rising from the bed and the slopes; they sway (ChastainRush/Fish, _Mode 1: vertex alpha is how far up
+            // the blade)
             var weeds = new MeshBuilder(); int nClumps = 0;
             int weedN = Mathf.Max(38, Mathf.RoundToInt(len * 1.3f));
             for (int i = 0; i < weedN; i++)
             {
                 float s = p.C0 + 1f + (len - 2f) * Hash01(i, 1231), side = Hash01(i, 1233) < 0.5f ? -1f : 1f;
-                float y = Mathf.Lerp(bot, bot + 2.2f, Hash01(i, 1235)), lat = side * Mathf.Min(Half(s, y) - 0.2f, Mathf.Lerp(R + 0.9f, Half(s, y) - 0.2f, Hash01(i, 1237)));
+                float lat = side * Mathf.Lerp(R + 0.9f, p.Rim(s) - 0.3f, Hash01(i, 1237));
+                if (Mathf.Abs(lat) < R + 0.9f) continue;
+                float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.2f || y > top - 0.4f) continue;
                 var at = W(s, lat, y);
                 int blades = 4 + (int)(5 * Hash01(i, 1239));
                 for (int b = 0; b < blades; b++)
                 {
                     int h0 = i * 16 + b;
-                    float h = 0.8f + 1.9f * Hash01(h0, 1241), wdt = 0.07f + 0.06f * Hash01(h0, 1243), ang = 6.283f * Hash01(h0, 1245);
+                    float h = Mathf.Min(0.8f + 1.9f * Hash01(h0, 1241), top - y - 0.15f), wdt = 0.07f + 0.06f * Hash01(h0, 1243), ang = 6.283f * Hash01(h0, 1245);
+                    if (h < 0.3f) continue;
                     var off = new Vector3(Mathf.Cos(ang), 0f, Mathf.Sin(ang)) * 0.25f * Hash01(h0, 1247);
                     var side3 = new Vector3(-Mathf.Sin(ang), 0f, Mathf.Cos(ang)) * wdt;
                     var lean = new Vector3(Mathf.Cos(ang), 0f, Mathf.Sin(ang)) * 0.25f;
@@ -286,12 +315,12 @@ namespace ChastainRush
                 nClumps++;
             }
             weeds.ToObject("Pipe " + p.Id + " clear stretch - weeds", clearWeed, root, false, false);
-            // ---- the surface seen from below, over the trench (down-facing; the pool's own surface is drawn from above)
+            // ---- the surface seen from below, over the bowl and out to the shore (down-facing; the pond's own surface is drawn from above)
             var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>();
             for (int i = 0; i <= ns; i++)
                 for (int k = 0; k <= 8; k++)
                 {
-                    float s = p.C0 + len * i / ns, lat = Mathf.Lerp(-p.TAt(s) - 0.4f, p.TAt(s) + 0.4f, k / 8f); var q = W(s, lat, surf - 0.02f);
+                    float s = p.C0 + len * i / ns, lat = Mathf.Lerp(-p.Rim(s) - 1.5f, p.Rim(s) + 1.5f, k / 8f); var q = W(s, lat, surf - 0.02f);
                     sv.Add(q); suv.Add(new Vector2(q.x, q.z));
                     if (i > 0 && k > 0) { int a = i * 9 + k; st.Add(a - 10); st.Add(a - 1); st.Add(a - 9); st.Add(a - 9); st.Add(a - 1); st.Add(a); }
                 }
@@ -309,8 +338,8 @@ namespace ChastainRush
             int shafts = Mathf.Max(14, Mathf.RoundToInt(len / 4f));   // Round 24 Part B: as thick along a long stretch
             for (int i = 0; i < shafts; i++)
             {
-                float s = p.C0 + 1.5f + (len - 3f) * (i + Hash01(i, 1261) * 0.8f) / shafts, lat = (Hash01(i, 1263) - 0.5f) * 2f * (Mathf.Min(p.TAt(s), 14f) - 2f);
-                var a = W(s, lat, surf - 0.05f); float depth = surf - bot, wdt = 0.7f + 1.1f * Hash01(i, 1265);
+                float s = p.C0 + 1.5f + (len - 3f) * (i + Hash01(i, 1261) * 0.8f) / shafts, lat = (Hash01(i, 1263) - 0.5f) * 2f * Mathf.Max(0.5f, Mathf.Min(p.Rim(s), 14f) - 2f);
+                var a = W(s, lat, surf - 0.05f); float depth = surf - p.Bottom(s), wdt = 0.7f + 1.1f * Hash01(i, 1265);
                 var b = a + sun * (depth / -sun.y);
                 foreach (var side in new[] { p.N3(s), p.U3(s) })
                 {
@@ -326,14 +355,14 @@ namespace ChastainRush
             AssetDatabase.CreateAsset(shm, $"{GeneratedDir}/Meshes/Pipe {p.Id} light shafts.asset");
             var shgo = new GameObject("Pipe " + p.Id + " clear stretch - light shafts"); shgo.transform.SetParent(root, false);
             shgo.AddComponent<MeshFilter>().sharedMesh = shm; var shr = shgo.AddComponent<MeshRenderer>(); shr.sharedMaterial = clearShaft; shr.shadowCastingMode = ShadowCastingMode.Off;
-            // ---- water haze: two faint layers inside the trench, inset copies of its cross-section, along the stretch
+            // ---- water haze: two faint layers in the deep water, inset copies of its cross-section, along the stretch
             var hz = new MeshBuilder();
             foreach (float k in new[] { 0.62f, 0.86f })
             {
-                Vector3 H(float s, int i)   // the trench outline (12 points round) pulled toward the axis by k, kept clear of the glass
+                Vector3 H(float s, int i)   // the bowl's outline (12 points round) pulled toward the axis by k, kept clear of the glass
                 {
-                    float th = Mathf.PI * 2f * i / 12f; var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = R + 0.3f, hi = 60f;
-                    for (int it = 0; it < 20; it++) { float mid = (lo + hi) * 0.5f; float y = AY(s) + d.y * mid, lat = d.x * mid; bool inside = y >= bot && y <= top && Mathf.Abs(lat) <= Half(s, Mathf.Clamp(y, bot, top)); if (inside) lo = mid; else hi = mid; }
+                    float th = Mathf.PI * 2f * i / 12f; var d = new Vector2(Mathf.Sin(th), -Mathf.Cos(th)); float lo = R + 0.3f, hi = 30f;
+                    for (int it = 0; it < 20; it++) { float mid = (lo + hi) * 0.5f; if (Inside(s, d.x * mid, AY(s) + d.y * mid)) lo = mid; else hi = mid; }
                     float rr = Mathf.Max(R + 0.35f, lo * k);
                     return W(s, d.x * rr, AY(s) + d.y * rr);
                 }
@@ -371,13 +400,40 @@ namespace ChastainRush
                 float s1 = Mathf.Min(s0 + 4f, p.C1), sm = (s0 + s1) * 0.5f;
                 var lid = new GameObject("Pipe " + p.Id + " clear stretch - lid over the deep water (collider only)"); lid.transform.SetParent(root, false);
                 lid.transform.SetPositionAndRotation(W(sm, 0f, bedY - 0.1f), Quaternion.LookRotation(p.U3(sm)));
-                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * p.TAt(sm) + 3f, 0.4f, s1 - s0 + 1.5f);   // Round 23 follow-ups: wider and overlapping (a car launched over the big lake's trench fell past it)
+                var bc = lid.AddComponent<BoxCollider>(); bc.size = new Vector3(2f * p.Rim(sm) + 3f, 0.4f, s1 - s0 + 1.5f);   // Round 23 follow-ups: wider and overlapping (a car launched over the big lake's trench fell past it)
             }
             // ---- the run-time side: fish and the sound change
             var aq = root.gameObject.AddComponent<PipeAquarium>();
-            aq.a0 = W(p.C0, 0f, AY(p.C0)); aq.a1 = W(p.C1, 0f, AY(p.C1)); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = p.TS != null ? Enumerable.Range(0, 9).Min(k => p.TAt(Mathf.Lerp(p.C0, p.C1, k / 8f))) : T; aq.bottomHalf = p.TS != null ? Mathf.Max(TrenchBottomHalf, 0.55f * aq.topHalf) : TrenchBottomHalf;
+            aq.a0 = W(p.C0, 0f, AY(p.C0)); aq.a1 = W(p.C1, 0f, AY(p.C1)); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = Enumerable.Range(0, 9).Min(k => p.Rim(Mathf.Lerp(p.C0, p.C1, k / 8f))); aq.bottomHalf = R;
             aq.fishMaterials = fishMats;
-            Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the trench round it {2f * (p.TS != null ? aq.topHalf : T):0} m wide at the top (narrowest), its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs");
+            // Round 25 (A8): the tube's line every meter, the deep water's half width and bed along it; turtles' resting spots on the bowl's
+            // slopes beside the tube, every other one on a sunken log (look only)
+            {
+                var path = new List<Vector3>(); var rimL = new List<float>(); var botL = new List<float>();
+                for (float s = p.C0; s <= p.C1 + 1e-3f; s += 1f) { path.Add(W(s, 0f, AY(s))); rimL.Add(p.Rim(s)); botL.Add(p.Bottom(s)); }
+                aq.path = path.ToArray(); aq.rim = rimL.ToArray(); aq.bottom = botL.ToArray();
+                var rests = new List<Vector3>(); var yaws = new List<float>(); var logs = new MeshBuilder(); var bark = new Color(0.26f, 0.21f, 0.15f);
+                int want = Mathf.Clamp(Mathf.RoundToInt(len / 40f), 2, 8);
+                for (int i = 0; i < want * 4 && rests.Count < want; i++)
+                {
+                    float s = p.C0 + 3f + (len - 6f) * Hash01(i, 1301), side = Hash01(i, 1303) < 0.5f ? -1f : 1f, lat = side * (R + 1.6f + 2.5f * Hash01(i, 1305));
+                    if (Mathf.Abs(lat) > p.Rim(s) - 0.8f) continue;
+                    float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.3f || y > top - 1.0f || y < AY(s) - R - 0.2f && Mathf.Abs(lat) < R + 1.8f) continue;
+                    float yaw = 360f * Hash01(i, 1307); bool log = (rests.Count & 1) == 1;
+                    if (log)   // a log 3 m long lying on the bed, the turtle on it
+                    {
+                        var dir = Quaternion.Euler(0f, yaw, 0f) * Vector3.forward; var c0 = W(s, lat, y + 0.18f); var a = c0 - dir * 1.5f; var b = c0 + dir * 1.5f;
+                        a.y = Mathf.Max(a.y, BedAt(s, lat) + 0.15f); b.y = Mathf.Max(b.y, BedAt(s, lat) + 0.15f);
+                        logs.Tint = Under(bark, y); Beam(logs, a, b, 0.36f, 0.36f, Under(bark, y), Vector3.up);
+                        rests.Add(c0 + Vector3.up * 0.2f);
+                    }
+                    else rests.Add(W(s, lat, y + 0.02f));
+                    yaws.Add(yaw);
+                }
+                if (logs.Count > 0) logs.ToObject("Pipe " + p.Id + " clear stretch - sunken logs", mats.House, root, false, false);
+                aq.rests = rests.ToArray(); aq.restYaw = yaws.ToArray();
+            }
+            Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the deep water round it (Round 25: a bowl in the bed) {2f * aq.topHalf:0} m wide (narrowest) to {2f * Enumerable.Range(0, 9).Max(k => p.Rim(Mathf.Lerp(p.C0, p.C1, k / 8f))):0} m, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs; {aq.rests.Length} turtles' resting spots");
         }
 
         // the pool's own surface, from above, at the small pond's level (no shadow: the trench under it is lit)

@@ -46,6 +46,11 @@ namespace ChastainRush
                 new Place { name = "free_glen_entrance", x = 2860f, z = 760f, yaw = 0f },
                 new Place { name = "under_hub", x = 1900f, z = 1145f, yaw = 90f, y = 253f },
                 new Place { name = "under_j4", x = 2280f, z = 1215f, yaw = 75f, y = 269.2f },
+                // Round 25 (A8): in the four glass stretches (M1 under the pond, M5 along the Enclave pond, M2 along East Chastain Lake, P1)
+                new Place { name = "glass_m1", x = 1563f, z = 1139f, yaw = 134f, y = 274.8f },
+                new Place { name = "glass_m5", x = 1645.5f, z = 969.6f, yaw = 184f, y = 274.6f },
+                new Place { name = "glass_m2", x = 1338.8f, z = 1162.2f, yaw = 257f, y = 283.5f },
+                new Place { name = "glass_p1", x = 2355f, z = 1304.5f, yaw = 77f, y = 270.3f },
                 new Place { name = "race_glen_forward", route = "chastain_glen_loop.json", dir = "forward" },
                 new Place { name = "race_glen_reverse", route = "chastain_glen_loop.json", dir = "reverse" },
                 new Place { name = "race_creek_forward", route = "noonday_creek.json", dir = "forward" },

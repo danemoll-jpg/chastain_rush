@@ -102,6 +102,33 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- models (procedural, low poly)
 
+        // Round 25 (A8, Dan: "Maybe turtles and snakes or ducks, or geese swimming on top"): the pond's goose as it swims (no legs; the
+        // waterline at y 0.30) and a mallard, for the glass stretches' surface (PipeAquarium draws them instanced)
+        public static Mesh SwimmingGoose()
+        {
+            var brown = new Color(0.40f, 0.34f, 0.27f); var breast = new Color(0.78f, 0.72f, 0.62f); var black = new Color(0.05f, 0.05f, 0.05f); var white = new Color(0.95f, 0.95f, 0.93f);
+            var g = new LP();
+            g.Ellipsoid(new Vector3(0, 0.36f, 0), new Vector3(0.17f, 0.15f, 0.30f), brown, breast);
+            g.Cone(new Vector3(0, 0.40f, -0.26f), new Vector3(0, 0.46f, -0.50f), 0.08f, black, 5);
+            g.Tube(new Vector3(0, 0.44f, 0.20f), new Vector3(0, 0.80f, 0.32f), 0.055f, 0.04f, black, 6);
+            g.Ellipsoid(new Vector3(0, 0.84f, 0.36f), new Vector3(0.05f, 0.045f, 0.08f), black, black);
+            g.Box(new Vector3(0, 0.825f, 0.45f), new Vector3(0.025f, 0.015f, 0.05f), black);
+            g.Quad(new Vector3(-0.045f, 0.80f, 0.34f), new Vector3(0.045f, 0.80f, 0.34f), new Vector3(0.04f, 0.83f, 0.37f), new Vector3(-0.04f, 0.83f, 0.37f), white);
+            var m = new Mesh { name = "goose (swimming)" }; g.Apply(m); m.bounds = new Bounds(new Vector3(0f, 0.5f, 0f), Vector3.one * 1.6f); return m;
+        }
+        public static Mesh Duck()
+        {
+            var brown = new Color(0.45f, 0.36f, 0.26f); var grey = new Color(0.62f, 0.62f, 0.60f); var green = new Color(0.08f, 0.32f, 0.16f); var yellow = new Color(0.88f, 0.74f, 0.20f); var white = new Color(0.92f, 0.92f, 0.90f);
+            var d = new LP();
+            d.Ellipsoid(new Vector3(0, 0.22f, 0), new Vector3(0.11f, 0.09f, 0.20f), grey, brown);
+            d.Cone(new Vector3(0, 0.25f, -0.17f), new Vector3(0, 0.29f, -0.29f), 0.05f, brown, 5);
+            d.Tube(new Vector3(0, 0.26f, 0.13f), new Vector3(0, 0.38f, 0.17f), 0.04f, 0.035f, green, 5);
+            d.Quad(new Vector3(-0.04f, 0.27f, 0.15f), new Vector3(0.04f, 0.27f, 0.15f), new Vector3(0.04f, 0.29f, 0.155f), new Vector3(-0.04f, 0.29f, 0.155f), white);
+            d.Ellipsoid(new Vector3(0, 0.41f, 0.19f), new Vector3(0.04f, 0.04f, 0.06f), green, green);
+            d.Box(new Vector3(0, 0.40f, 0.27f), new Vector3(0.022f, 0.01f, 0.035f), yellow);
+            var m = new Mesh { name = "duck" }; d.Apply(m); m.bounds = new Bounds(new Vector3(0f, 0.3f, 0f), Vector3.one * 1f); return m;
+        }
+
         void BuildModels()
         {
             gooseBody = new Mesh { name = "goose" }; gooseWing = new Mesh { name = "goose wing" };

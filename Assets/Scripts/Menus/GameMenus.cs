@@ -442,10 +442,24 @@ namespace ChastainRush
                     () => { if (pm.GoTo(goTarget)) CloseMenu(); });
                 buttons[row].interactable = free;
             }
+            // Round 25 (B1, B2): a way to every place in the pipe network (free roam only), and the pipe express's mode
+            var pw = PipeWarp.Instance;
+            if (pw && pw.Count > 0)
+            {
+                bool free = !race || race.State == RaceController.Stage.Free;
+                warpTarget = Mathf.Clamp(warpTarget, 0, pw.Count - 1);
+                int row = n++;
+                StepAct(row, "pipewarp", free ? "Pipe warp:   " + pw.names[warpTarget] : "Pipe warp: in free roam only",
+                    d => { warpTarget = (warpTarget + d + pw.Count) % pw.Count; Show(); },
+                    () => { if (pw.Go(warpTarget)) CloseMenu(); });
+                buttons[row].interactable = free;
+            }
+            if (PipeExpress.Instance)
+                Step(n++, "pipeexpress", "Pipe express:   " + PipeExpress.ModeNames[(int)PipeExpress.Setting], d => { PipeExpress.Setting = (PipeExpress.Mode)(((int)PipeExpress.Setting + d + 3) % 3); Show(); });
             Row(n++, "game", "Game menu", GameMenuFromDebug);
             Row(n++, "back", pages.Count > 0 ? "Back" : "Resume", BackPage);
         }
-        int goTarget;
+        int goTarget, warpTarget;
         // Round 18: a value row that also acts on A (left / right picks the value, A uses it; A never cycles it)
         void StepAct(int index, string id, string label, Action<int> change, Action act)
         {

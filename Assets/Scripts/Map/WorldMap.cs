@@ -222,6 +222,9 @@ namespace ChastainRush
             {
                 foreach (var p in FindObjectsByType<DrainPipe>(FindObjectsSortMode.None))
                     if (p.floor != null && p.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = p.floor, tint = p.mapColor.a > 0f ? p.mapColor : new Color(.82f, .82f, .86f), dashed = true, width = p.mapColor.a > 0f ? 5f : 4f });
+                // Round 25 (B2): the pipe express's stretches, solid cyan over the pipes
+                if (PipeExpress.Instance && PipeExpress.Instance.stretches != null)
+                    foreach (var st in PipeExpress.Instance.stretches) if (st.floor != null && st.floor.Length > 1) lines.Add(new WorldMapOverlay.Path { points = st.floor, tint = PipeExpress.MapColor, width = 8f });
             }
             // Round 23: the pipe network proposal (its lines, the line names at their middles, the labeled points)
             int pi = 0;

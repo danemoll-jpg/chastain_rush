@@ -54,6 +54,7 @@ namespace ChastainRush
             float dt = Time.fixedDeltaTime;
             if (dt <= 0f || Time.timeScale <= 0f) return;
             var pos = car.transform.position;
+            if (body.isKinematic) { lastPos = pos; ResetState(); return; }   // Round 25: carried by the pipe express (not a bump)
             if ((pos - lastPos).sqrMagnitude > 25f) { ResetState(); return; } // teleported (respawn or reset)
             lastPos = pos;
             float vy = body.linearVelocity.y;

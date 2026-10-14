@@ -287,9 +287,16 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active: Round 25 in `TODO.md`** (Dan drove Part B 2026-10-14): Part A cleanup (street manholes flush and normal size,
-mouths, M6 and BF blocked, pond edge, floating stream); Part B pipe warp (debug) and the pipe express (boost / warp, free
-roam only, never in races).
+**Round 25 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A cleanup: street
+manholes are a hatch of the street itself with a 0.9 m cover, the collider the terrain's own surface, the riser 0.3 m under the street
+(`MapBuilder.Network.cs`; check `ChastainRush.ManholeProbe.Run -probeOut <file>`); mouths set into banks without terrain blades or sky
+gaps (`MapBuilder.Pipes.cs` HoleBehind, RaiseBehindHead), every network pipe under 0.6 m of ground (`MapBuilder.NetworkCover.cs`), a
+sweep of every opening in each build (`MapBuilder.MouthSweep.cs`, `Assets/Generated/mouth_sweep.txt`); hub openings off the ramps
+(`pipe_network.py` hub_ramp_clamp); glass stretches in a bowl in the pond bed, holes only under water (`MapBuilder.ClearPipe.cs`
+BowlY); exit streams end at the apron or run into water; turtles, snakes, ducks and geese at the glass (`PipeAquarium`). Part B: debug
+menu "Pipe warp" (`Pipes/PipeWarp.cs`, `MapBuilder.NetworkWarp.cs`) and the pipe express (`Pipes/PipeExpress.cs`, network.json
+'express', debug menu "Pipe express: Boost / Warp / Off", free roam only). Exe profile at the glass: `-exeProfile <dir> -profileOnly glass
+[-aquariumPlain]`. Imported from Racer: nothing.
 
 **Round 24 Part B items 4 to 9 (see `TODO.md`, status there) are built and driven by Dan 2026-10-14 (Round 25 notes); was not yet driven
 by Dan:** every network mouth reworked (`MapBuilder.Pipes.cs`: exits and BF set into graded banks with short wingwall aprons, `Bank`;

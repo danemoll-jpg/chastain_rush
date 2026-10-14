@@ -24,6 +24,7 @@ namespace ChastainRush
             public float heading, speedMps, verticalSpeedMps, roadDistance;
             public int groundedWheels;
             public string road, viewpoint, screenshot, comment;
+            public string pipePlace;   // Round 25 (B1): the nearest pipe warp place, underground
             public string vehicle;   // Round 13: as Racer's report (Bug.vehicle): the vehicle driven
         }
         [Serializable] public sealed class Report
@@ -89,7 +90,7 @@ namespace ChastainRush
                 foreach (string line in (b.comment ?? "").Replace("\r", "").Split('\n')) md.AppendLine("> " + line);
                 md.AppendLine().AppendLine("```text")
                   .AppendLine("Timestamp: " + b.timestamp)
-                  .AppendLine("Position: " + Position(b.position)).AppendLine("Rotation: " + Position(b.rotation))
+                  .AppendLine("Position: " + Position(b.position) + (string.IsNullOrEmpty(b.pipePlace) ? "" : " (in the pipes, nearest place: " + b.pipePlace + ")")).AppendLine("Rotation: " + Position(b.rotation))
                   .AppendLine("Heading: " + F(b.heading) + " degrees").AppendLine("Viewpoint: " + b.viewpoint)
                   .AppendLine("Vehicle: " + (string.IsNullOrEmpty(b.vehicle) ? "(unknown)" : b.vehicle))
                   .AppendLine("Vehicle position: " + Position(b.vehiclePosition))

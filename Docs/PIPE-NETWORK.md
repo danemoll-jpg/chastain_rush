@@ -101,7 +101,7 @@ Exits: **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780)
 | M2a | M2 Lakes Main (J10 to J9, glass along East Chastain Lake) | 5.0 m | 614 m | 282 to 284 m | J10 to J9; glass under pond W9 (406 m) |
 | M2b | M2 Lakes Main (J9 to K25, glass along West Chastain Lake) | 5.0 m | 345 m | 284 to 296 m | J9 to K25; glass under pond W0 (107 m) |
 | M2c | M2 Lakes Main (K25 under the interstate to the far-west pond) | 5.0 m | 270 m | 296 to 296 m | K25 to X_W5; comes out at exit far west pond |
-| M6 | M6 Nelson Main | 5.0 m | 1992 m | 262 to 287 m |  to HUB; comes out at exit nelson lake |
+| M6 | M6 Nelson Main | 5.0 m | 2000 m | 262 to 287 m |  to HUB; comes out at exit nelson lake |
 | B23 | B23 | 3.5 m | 112 m | 284 to 294 m | J9 to MH12; pops out at MH12 |
 | B24 | B24 | 3.5 m | 308 m | 284 to 301 m | J9 to MH13; pops out at MH13 |
 | B25 | B25 | 3.5 m | 56 m | 296 to 296 m | K25 to X_STREAM; comes out at exit lake stream |
@@ -111,6 +111,18 @@ Chambers: **J9 LAKES JCT** (junction, x 868, z 1236, floor 284 m); **K25** (junc
 Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 19 m); **MH13** in Chastain Lakes Drive Northwest (x 977, z 962; riser 8 m)
 
 Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 118); **Exit Lake Stream** (x 470, z 1425)
+
+## The pipe express (free roam only)
+
+On a few long pipes with nothing along them, an **EXPRESS** band painted round the pipe and arrows on the floor mark each end. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle at about 45 m/s (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it. Debug menu, **Pipe express**: Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.
+
+| Express | Pipe | From, to | Length | Driving it (20 m/s) | Express |
+|---|---|---|---|---|---|
+| E1 M6 Nelson express | M6 (5.0 m) | X_NELSON to HUB (25 to 1975 m along it) | 1950 m | 98 s | about 45 s |
+| E2 M4 Glen express | M4a (5.0 m) | J6 to HUB (25 to 474 m along it) | 449 m | 22 s | about 12 s |
+| E3 M4 J12 to J8 express | M4d (5.0 m) | J12 to J8 (25 to 336 m along it) | 311 m | 16 s | about 9 s |
+| E4 M3 Noonday express | M3a (5.0 m) | J4 to HUB (25 to 305 m along it) | 280 m | 14 s | about 8 s |
+| E5 B22 Little Noonday express | B22 (3.5 m) | J8 to X_LNC (25 to 575 m along it) | 550 m | 28 s | about 14 s |
 
 ## What differs from the proposal
 

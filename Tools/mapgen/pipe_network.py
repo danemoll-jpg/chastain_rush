@@ -303,6 +303,21 @@ def chamber_level(c, lvl):
     return None   # set when the chamber's floor is known
 
 
+# Round 25 (A3, BUG-005, Dan at M6's mouth in the hub: "this entrance is blocked"): the hub's two ramps (MapBuilder.NetworkHub.cs)
+# run along a ledge's wall, so an opening there opened onto the ramp's side (M6's mouth faced a 2.8 m high ramp side). The ramp
+# from the mid ledge to the top ledge lies along wall 1's mid-level band from a = -(hl - mid inset) up to a + 50 m; the one from the
+# floor to the mid ledge along wall 3's floor band from a = (hl - floor inset) - 50 m to its end. No opening at those levels within
+# 1.5 m of them (t along u on walls 1 and 3)
+HUB_RAMP_GRADE = 0.2
+def hub_ramp_clamp(o):
+    if o["wall"] == 1 and o["lvl"] == "mid":
+        end = -(HUB["hl"] - HUB["insets"]["mid"]) + (HUB["levels"]["top"] - HUB["levels"]["mid"]) / HUB_RAMP_GRADE
+        o["t"] = max(o["t"], end + o["d"] * 0.5 + 1.5)
+    if o["wall"] == 3 and (o["lvl"] or "floor") == "floor":
+        start = (HUB["hl"] - HUB["insets"]["floor"]) - (HUB["levels"]["mid"] - HUB["levels"]["floor"]) / HUB_RAMP_GRADE
+        o["t"] = min(o["t"], start - o["d"] * 0.5 - 1.5)
+
+
 def alloc_opening(cid, toward, d, lvl, tube_id):
     c = CH[cid]; u, v = ch_frame(c); hl, hw = ch_half(c)
     inset = HUB["insets"][lvl or "floor"] if c["kind"] == "hub" else 0.0
@@ -318,6 +333,7 @@ def alloc_opening(cid, toward, d, lvl, tube_id):
         lim = (half + inset) - nxt - d * 0.5 - 2.5
     t = max(-lim, min(lim, t))
     o = dict(wall=wall, t=t, d=d, lvl=lvl, tube=tube_id, inset=inset, half=half)
+    if c["kind"] == "hub": hub_ramp_clamp(o)   # Round 25 (A3)
     openings[cid].append(o)
     return o
 
@@ -342,6 +358,7 @@ def spread_openings():
                             lim = (o["half"] + o["inset"]) - nxt - o["d"] * 0.5 - 2.5
                         else: lim = o["half"] - o["d"] * 0.5 - 1.0
                         o["t"] = max(-lim, min(lim, o["t"]))
+                        if CH[cid]["kind"] == "hub": hub_ramp_clamp(o)   # Round 25 (A3)
                     if not moved: break
                 for i in range(len(ws) - 1):
                     if ws[i + 1]["t"] - ws[i]["t"] < (ws[i]["d"] + ws[i + 1]["d"]) * 0.5 + 0.8:
@@ -690,6 +707,27 @@ def hub_routes(tubes):
     print("  the way to the hub along the mains: " + ", ".join(f"{c} by {first[c]} ({dist[c]:.0f} m)" for c in sorted(first, key=lambda k: dist[k])))
 
 
+# Round 25 (B2, Dan: "some of the tunnels are really long. Part of the underground network was to make it quicker ... This wouldn't
+# be everywhere. for example races would move normally"): the PIPE EXPRESS, on a few long pipes with no junction, exit, manhole, glass
+# or flooded sag along them: from 25 m in from each end to 25 m short of the other, both ways. Free roam only (MapBuilder.Network.cs
+# builds the marks, Pipes/PipeExpress.cs carries you). (id, name, pipe)
+EXPRESS = [("E1", "M6 Nelson express", "M6"), ("E2", "M4 Glen express", "M4a"), ("E3", "M4 J12 to J8 express", "M4d"),
+           ("E4", "M3 Noonday express", "M3a"), ("E5", "B22 Little Noonday express", "B22")]
+EXPRESS_IN = 25.0
+
+
+def express(tubes):
+    out = []
+    for eid, name, tid in EXPRESS:
+        t = next((x for x in tubes if x["id"] == tid), None)
+        if t is None: print(f"  EXPRESS {eid}: no pipe {tid}"); continue
+        L = t["report"]["length"]; s0, s1 = EXPRESS_IN, L - EXPRESS_IN
+        if t["glass"] or t.get("flood") or s1 - s0 < 150: print(f"  EXPRESS {eid}: {tid} has glass, a flood or is short: none"); continue
+        a = t["a"].get("chamber") or t["a"].get("exit") or t["a"].get("pipe"); b = t["b"].get("chamber") or t["b"].get("exit") or t["b"].get("manhole")
+        out.append(dict(id=eid, name=name, tube=tid, s0=round(s0, 1), s1=round(s1, 1), length=round(s1 - s0, 1), ends=f"{a} to {b}", d=t["d"], stage=t["stage"]))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--stage", type=int, default=None); ap.add_argument("--plot", action="store_true"); ap.add_argument("--out", default=None); a = ap.parse_args()
     global OUT
@@ -702,10 +740,10 @@ def main():
                     "'wall' 0 +u, 1 +v, 2 -u, 3 -v of the chamber's frame, 't' along it), 'pipe' (an entrance barrel of Data/pipes/pipes.json), 'mh' "
                     "(a manhole riser up to the street), 'x' (an exit or outfall cut). Only what is at or under build_stage is built; a built "
                     "chamber's opening onto a pipe not built yet ends in a short stub at a closed grille.",
-               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS)
+               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS, express=express(tubes))
     clearance_report(tubes, chambers)
     json.dump(doc, open(OUT, "w", encoding="utf-8"), indent=0)
-    if not a.out: write_doc(tubes, chambers, exits, manholes, stage)
+    if not a.out: write_doc(tubes, chambers, exits, manholes, stage, doc["express"])
     print(f"wrote {OUT}: build_stage {stage}; {len(tubes)} tubes, {len(chambers)} chambers, {len(exits)} exits, {len(manholes)} manholes")
     for t in tubes:
         r = t["report"]; mark = "" if t["stage"] <= stage else "   (not built yet)"
@@ -721,7 +759,7 @@ DOC = os.path.join(ROOT, "Docs/PIPE-NETWORK.md")
 STAGE_NAMES = {0: "Part B: the two entrances", 1: "Stage 1: the hub, the trunk, the Enclave", 2: "Stage 2: Noonday", 3: "Stage 3: the Glen and the shops", 4: "Stage 4: the lakes"}
 
 
-def write_doc(tubes, chambers, exits, manholes, stage):
+def write_doc(tubes, chambers, exits, manholes, stage, exp=()):
     """Docs/PIPE-NETWORK.md: the network as built (and what is still to come), for Dan to find his way round it"""
     md = ["# The underground pipe network, as built", "",
           f"Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build "
@@ -759,6 +797,20 @@ def write_doc(tubes, chambers, exits, manholes, stage):
         if ms: md.append(""); md.append("Manholes: " + "; ".join(f"**{m['id']}** in {m['road']} (x {m['x']:.0f}, z {m['z']:.0f}; riser {m['height']:.0f} m)" for m in ms))
         xs = [x for x in exits if x["stage"] == st]
         if xs: md.append(""); md.append("Exits: " + "; ".join(f"**{x['name'].title()}** (x {x['a'][0]:.0f}, z {x['a'][1]:.0f}{', a launch over the water' if x.get('outfall') else ''})" for x in xs))
+        md.append("")
+    if exp:
+        md.append("## The pipe express (free roam only)"); md.append("")
+        md.append("On a few long pipes with nothing along them, an **EXPRESS** band painted round the pipe and arrows on the floor mark each "
+                  "end. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle at about "
+                  "45 m/s (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it. Debug menu, **Pipe express**: "
+                  "Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes "
+                  "drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.")
+        md.append("")
+        md.append("| Express | Pipe | From, to | Length | Driving it (20 m/s) | Express |")
+        md.append("|---|---|---|---|---|---|")
+        for e in exp:
+            boost = (e["length"] - 60.0) / 45.0 + 3.0
+            md.append(f"| {e['id']} {e['name']} | {e['tube']} ({e['d']:.1f} m) | {e['ends']} ({e['s0']:.0f} to {e['s1']:.0f} m along it) | {e['length']:.0f} m | {e['length'] / 20.0:.0f} s | about {boost:.0f} s |")
         md.append("")
     md.append("## What differs from the proposal"); md.append("")
     for d in DIFFERS: md.append(f"- {d}")

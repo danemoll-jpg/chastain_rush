@@ -98,7 +98,9 @@ namespace ChastainRush
             Net = null;
             var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
             var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
+            CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
+            MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
@@ -1038,7 +1040,7 @@ namespace ChastainRush
             {
                 var root = new GameObject(name).transform;
                 root.SetParent(parent, false);
-                foreach (var kv in cells) { CutNetworkHoles(kv.Value); kv.Value.ToObject($"{name}_{kv.Key.x}_{kv.Key.y}", mat, root, false, castShadows); }   // Round 23 follow-ups: not over a manhole's hole
+                foreach (var kv in cells) { CutNetworkHoles(kv.Value, mat); kv.Value.ToObject($"{name}_{kv.Key.x}_{kv.Key.y}", mat, root, false, castShadows); }   // Round 23 follow-ups: not over a manhole's hole
             }
         }
 

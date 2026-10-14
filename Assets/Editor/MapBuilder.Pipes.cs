@@ -82,7 +82,11 @@ namespace ChastainRush
                 float ut = J.twin ? Mathf.Clamp(S1 - 0.5f, UTransition, 10f) : UTransition;   // Round 23: a twin's pier nose rises over 10 m (it steers a vehicle into a barrel; over 6 m it stopped them)
                 float m = Mathf.Max(Smooth01(1f - (S1 - s) / ut) * (s <= S1 ? 1f : 0f), Smooth01(1f - (s - S2) / ut) * (s >= S2 ? 1f : 0f));
                 if (s > S1 && s < S2) m = 1f;
-                float x = Mathf.Min(Mathf.Abs(Mathf.Abs(lat) - O), R * 0.999f);
+                // Round 25 (A4, BUG-006, Dan at BF: "why is this blocked?"): a twin's ridge between the barrels was a knife edge out over
+                // the apron (a concrete wedge in the way); it is rounded where it starts (0.7 m across its top) and sharpens to meet the
+                // pier only at the headwall
+                float al = J.twin ? Mathf.Sqrt(lat * lat + (0.7f * (1f - m)) * (0.7f * (1f - m))) : Mathf.Abs(lat);
+                float x = Mathf.Min(Mathf.Abs(al - O), R * 0.999f);
                 return Y(s) + m * (R - Mathf.Sqrt(R * R - x * x));
             }
             public float R => J.diameter_m * 0.5f;
@@ -97,10 +101,13 @@ namespace ChastainRush
                 float s = Vector2.Dot(q - A, U), lat = Mathf.Abs(Vector2.Dot(q - A, Nl));
                 return s > -3f && s < WallFrom + 1f && lat < HalfAt(WallFrom) + CutWall + CopingOut + 2f;
             }
+            // Round 25 (A2, BUG-002's "white triangle shard" over X_LNC's headwall): how far past a headwall's face the terrain is holed. A bank's
+            // headwall holds the bank behind it (its ground covers the pipe), and a hole there showed the sky between the coping and the bank
+            public float HoleBehind => Bank ? -0.05f : 0.3f;
             public bool InCut(Vector2 q, float pad, out float s, out float lat)
             {
                 s = Vector2.Dot(q - A, U); lat = Vector2.Dot(q - A, Nl);
-                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= WallFrom - pad && s <= S1 + 0.3f + pad) || (!J.open_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end; Round 24 Part B: a bank's walled apron only
+                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= WallFrom - pad && s <= S1 + HoleBehind + pad) || (!J.open_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end; Round 24 Part B: a bank's walled apron only
             }
         }
         sealed class Pipes
@@ -243,7 +250,7 @@ namespace ChastainRush
                         if (on != null && Ground(terrain, p.P(s, lat * p.HalfAt(s)).x, p.P(s, lat * p.HalfAt(s)).y) > p.Y(s) + 0.3f) { Debug.LogError($"[Round24] pipe {j.id}: its cut lies in {on} at ({p.P(s, 0f).x:0.0}, {p.P(s, 0f).y:0.0})"); s = float.MaxValue; break; }
                     }
                 result.Plans.Add(p);
-                if (p.Bank) GradeBank(terrain, p);        // Round 24 Part B (item 4)
+                if (p.Bank) { GradeBank(terrain, p); RaiseBehindHead(terrain, p); }        // Round 24 Part B (item 4); Round 25 (A2)
                 if (j.covered) RaiseBerm(terrain, p);     // Round 24 Part B (item 4, GP)
                 CutPipeHoles(terrain, p);
                 if (p.Clear) CutTrenchHoles(terrain, p);
@@ -350,7 +357,7 @@ namespace ChastainRush
         // ground. Nothing on a road, drive, sidewalk or the creek trail is touched (reported).
         static void GradeBank(TerrainGrid terrain, PipePlan p)
         {
-            const float Slope = 0.5f;
+            const float Slope = 1f / 3f;   // Round 25 (A2, BUG-002, Dan stuck on the bank beside X_LNC's wingwall): 1 in 3 (was 1 in 2)
             float Bc(float s) => p.HalfAt(Mathf.Max(s, p.WallFrom)) + CutWall + CopingOut;
             float most = 0f; int lowered = 0, kept = 0;
             float reach = 2f * (p.HeadTop - p.Y(p.S1)) + 14f;
@@ -364,13 +371,41 @@ namespace ChastainRush
                 float baseY = sc >= p.WallFrom ? p.WingTop(sc) : p.Y(sc) - 0.05f;
                 float target = baseY + Slope * d;
                 if (s > p.S1) target = p.HeadTop + (s - p.S1) + Slope * Mathf.Max(0f, lat - b);   // behind the headwall the bank may stand at 1 in 1 (it holds it)
-                if (s >= p.WallFrom - 1f && s <= p.S1 && lat <= p.HalfAt(sc)) target = p.Y(sc) - 0.15f;   // under the apron's slab (no grass through it; its walls' footprint is holed)
+                // under the apron's slab (no grass through it; its walls' footprint is holed). Round 25 (A2, BUG-002 / BUG-003 and A4,
+                // BUG-006: green blades standing in the mouths): only the ground points whose terrain cells are all holed (0.5 m inside
+                // the holed area: the cells are 0.65 m): a point at the hole's edge brought down to the floor pulled the next, unholed
+                // cell's grass down with it, a green blade from the floor up to the bank behind the headwall or beside the walls
+                if (s >= p.WallFrom - 1f && s <= p.S1 + p.HoleBehind - 0.5f && lat <= p.HalfAt(sc) + CutWall - 0.5f) target = p.Y(sc) - 0.15f;
                 if (target >= y - 0.01f) return y;
                 if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
                 float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
                 lowered++; most = Mathf.Max(most, y - target); if (y - target > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}"); return target;
             });
             Debug.Log($"[Round24] pipe {p.J.id}: set into a bank: an open channel graded {p.WallFrom:0.0} m from the mouth to the wingwalls, the apron and wingwalls {p.S1 - p.WallFrom:0.0} m to the headwall (its top {p.HeadTop:0.00} m), the ground beside at 1 in 2; {lowered} samples lowered (up to {most:0.00} m)" + (kept > 0 ? $"; {kept} on a road, drive, sidewalk or the trail or by a building left as they were" : ""));
+        }
+
+        // Round 25 (A2, BUG-002: "a white triangle shard and a slab of the bank poking out above the mouth" at X_LNC): where the ground
+        // behind a bank's headwall was lower than its top, the coping (1 m back over the ground) hung in the air, a pale slab against
+        // the sky. The ground behind the headwall is raised (never lowered) to just under the coping's top across its width, falling at
+        // 1 in 2 from there; never on a road, drive, sidewalk or the trail, eased in beside a building
+        static void RaiseBehindHead(TerrainGrid terrain, PipePlan p)
+        {
+            float hw = p.Half + CutWall + CopingOut, top = p.HeadTop - 0.03f; int raised = 0, kept = 0; float most = 0f;
+            float reach = 2f * (top - p.Y(p.S1)) + 4f;
+            var corners = new[] { p.P(p.S1, -hw - reach), p.P(p.S1, hw + reach), p.P(p.S1 + 1f + reach, -hw - reach), p.P(p.S1 + 1f + reach, hw + reach) };
+            EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
+            {
+                var q = new Vector2(x, z); float s = Vector2.Dot(q - p.A, p.U), lat = Mathf.Abs(Vector2.Dot(q - p.A, p.Nl));
+                if (s < p.S1 + 0.05f) return y;   // the cut's side of the headwall: as graded
+                float d = new Vector2(Mathf.Max(0f, s - (p.S1 + 1f)), Mathf.Max(0f, lat - hw)).magnitude;
+                float target = top - 0.5f * d;
+                if (target <= y + 0.01f) return y;
+                if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
+                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
+                raised++; most = Mathf.Max(most, target - y); if (target - y > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}");
+                return target;
+            });
+            if (raised > 0 || kept > 0) Debug.Log($"[Round25] pipe {p.J.id}: the ground behind its headwall raised to its top ({raised} samples, up to {most:0.00} m" + (kept > 0 ? $"; {kept} on a road, drive, sidewalk or the trail or by a building left as they were" : "") + ")");
         }
 
         // Round 24 Part B (item 4, GP): the berm over a covered cut: the ground raised (never lowered) to 0.6 m over its roof (the slab
@@ -677,7 +712,9 @@ namespace ChastainRush
                     }
                 }
                 // railing on the walls where the drop is over 1 m: posts every 2 m, a top rail and a mid rail
-                foreach (float side in p.J.covered ? new float[0] : new[] { 1f, -1f })   // Round 24 Part B: none on a covered cut
+                // Round 24 Part B: none on a covered cut. Round 25 (A2, BUG-002: Dan stuck between a wingwall's railing and the bank): none
+                // on a bank's short wingwalls either (the drop into the apron is open, as the hub's ledges)
+                foreach (float side in p.J.covered || p.Bank ? new float[0] : new[] { 1f, -1f })
                 {
                     Vector3? prevTop = null, prevMid = null;
                     for (float s = s0; s <= s1 + 1e-3f; s += 2f)
@@ -817,14 +854,43 @@ namespace ChastainRush
                 if (p.HasFlow) continue;   // Round 23 follow-ups: the creek's own water runs through these barrels (BuildFlowIn)
                 var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>(); var line = new List<Vector3>();
                 int sn = 0;
-                for (float s = 0.6f; s <= p.L - 0.6f + 1e-3f; s += 0.5f)
+                // Round 25 (A6, BUG-008, Dan at X_W5: "this water should end up into some body of water and not just floating in air"): an
+                // exit's stream ran on along the pipe's floor line out of the mouth, over the ground (and off its end in the air). Out of a
+                // mouth set into a bank it now ends at the apron's edge, or, where the ground falls away from there to water, runs on
+                // down over the ground into it (RunToWater: the mouths' channels mostly climb out to the bank's edge, as the pipe dips
+                // into the ground; water does not run up them)
+                float from = 0.6f; List<Vector2> outside = null;
+                if (p.Bank || p.J.outfall)
                 {
-                    float half = 0.45f + 0.08f * Mathf.Sin(s * 0.7f) + 0.05f * Mathf.Sin(s * 2.3f), wob = bl + 0.06f * Mathf.Sin(s * 0.45f);
-                    foreach (float t in new[] { -1f, -0.5f, 0f, 0.5f, 1f }) { float lat = wob + t * half; sv.Add(W(s, lat, p.FloorAt(s, lat) + 0.035f + 0.01f * (1f - Mathf.Abs(t)))); suv.Add(new Vector2(t * 0.5f + 0.5f, s / 3f)); }
-                    line.Add(W(s, wob, p.FloorAt(s, wob) + 0.05f));
+                    from = Mathf.Max(0.6f, p.WallFrom - 0.8f);
+                    outside = RunToWater(terrain, p.P(from, bl), -p.U, p.J.id);
+                    if (outside == null) from = Mathf.Max(0.6f, p.WallFrom - 0.6f);
+                }
+                void Row(Vector2 c, Vector2 dir2, float s, bool onGround, float baseLat)
+                {
+                    var nn = new Vector2(-dir2.y, dir2.x);
+                    float half = 0.45f + 0.08f * Mathf.Sin(s * 0.7f) + 0.05f * Mathf.Sin(s * 2.3f), wob = 0.06f * Mathf.Sin(s * 0.45f);
+                    foreach (float t in new[] { -1f, -0.5f, 0f, 0.5f, 1f })
+                    {
+                        float o = wob + t * half; var q = c + nn * o; float lat = baseLat + o;
+                        float y = onGround ? Ground(terrain, q.x, q.y) + 0.04f + 0.01f * (1f - Mathf.Abs(t)) : p.FloorAt(s, lat) + 0.035f + 0.01f * (1f - Mathf.Abs(t));
+                        sv.Add(new Vector3(q.x, y, q.y)); suv.Add(new Vector2(t * 0.5f + 0.5f, s / 3f));
+                    }
+                    var cq = c + nn * wob; line.Add(new Vector3(cq.x, onGround ? Ground(terrain, cq.x, cq.y) + 0.05f : p.FloorAt(s, baseLat + wob) + 0.05f, cq.y));
                     if (sn > 0) for (int k = 0; k < 4; k++) { int a0 = (sn - 1) * 5 + k, b0 = sn * 5 + k; st.Add(a0); st.Add(b0); st.Add(a0 + 1); st.Add(a0 + 1); st.Add(b0); st.Add(b0 + 1); }
                     sn++;
                 }
+                if (outside != null)   // from the water up to the apron's edge (s counts on below 0 out there, for the texture)
+                {
+                    float acc = 0f; for (int i = 1; i < outside.Count; i++) acc += Vector2.Distance(outside[i - 1], outside[i]);
+                    for (int i = outside.Count - 1; i >= 0; i--)
+                    {
+                        var d2 = (outside[Mathf.Max(0, i - 1)] - outside[Mathf.Min(outside.Count - 1, i + 1)]).normalized;
+                        Row(outside[i], d2.sqrMagnitude > 1e-6f ? d2 : p.U, from - acc, true, bl);
+                        if (i > 0) acc -= Vector2.Distance(outside[i - 1], outside[i]);
+                    }
+                }
+                for (float s = from; s <= p.L - 0.6f + 1e-3f; s += 0.5f) Row(p.P(s, bl), p.U, s, false, bl);
                 { var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; } }
                 var smesh = new Mesh { name = "Pipe " + bid + " stream", indexFormat = IndexFormat.UInt32 };
                 smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
@@ -888,6 +954,37 @@ namespace ChastainRush
                 dp.radius = p.R; dp.barrelFrom = p.S1 / 0.5f; dp.barrelTo = p.S2 / 0.5f;
             }
             Debug.Log($"[Round18] pipe {p.J.id} built: cuts {p.S1:0.0} m and {p.L - p.S2:0.0} m, the pipe {p.S2 - p.S1:0.0} m ({p.J.diameter_m:0.0} m across, round all the way: Round 19), {lamps} lamps; a stream down the floor of each barrel" + (p.J.twin ? $" (a twin: two barrels {p.O * 2f:0.0} m apart, the cut {p.Half * 2f:0.0} m wide)" : ""));
+        }
+
+        // Round 25 (A6): from 'start' the way water would run over the ground (0.5 m steps, turning at most 45 degrees a step toward the
+        // lowest ground, climbing at most 0.15 m in all) until it is in a pond, a lake or a stream (and 1.5 m on); null if it never gets
+        // there within 80 m
+        static List<Vector2> RunToWater(TerrainGrid terrain, Vector2 start, Vector2 dir, string id)
+        {
+            var path = new List<Vector2> { start }; var q = start; var h = dir.normalized; float y = Ground(terrain, q.x, q.y), climbed = 0f, low = y;
+            for (int step = 0; step < 160; step++)
+            {
+                Vector2 bestQ = q; float bestY = float.MaxValue; Vector2 bestH = h;
+                for (int k = -9; k <= 9; k++)
+                {
+                    float a = k * 5f * Mathf.Deg2Rad; var hk = new Vector2(h.x * Mathf.Cos(a) - h.y * Mathf.Sin(a), h.x * Mathf.Sin(a) + h.y * Mathf.Cos(a));
+                    var c = q + hk * 0.5f; float yc = Ground(terrain, c.x, c.y) + Mathf.Abs(k) * 0.002f;
+                    if (yc < bestY) { bestY = yc; bestQ = c; bestH = hk; }
+                }
+                float ny = Ground(terrain, bestQ.x, bestQ.y);
+                if (ny > y) climbed += ny - y;
+                if (climbed > 0.15f) break;
+                q = bestQ; h = bestH; y = ny; low = Mathf.Min(low, y); path.Add(q);
+                if (Beds != null && Beds.Wet(q.x, q.y))
+                {
+                    for (int k = 0; k < 3; k++) { q += h * 0.5f; path.Add(q); }
+                    for (int it = 0; it < 3; it++) for (int i = 1; i + 1 < path.Count; i++) path[i] = (path[i - 1] + path[i] * 2f + path[i + 1]) * 0.25f;
+                    Debug.Log($"[Round25] pipe {id}: its stream runs on {(path.Count - 1) * 0.5f:0.0} m over the ground from the mouth into water at ({q.x:0.0}, {q.y:0.0})");
+                    return path;
+                }
+            }
+            Debug.Log($"[Round25] pipe {id}: no water downhill of its mouth within reach: its stream ends at the apron's edge");
+            return null;
         }
 
         static void AddCollider(GameObject go, MeshBuilder mb, string name)

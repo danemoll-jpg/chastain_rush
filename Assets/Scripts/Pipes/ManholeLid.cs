@@ -4,7 +4,9 @@ using UnityEngine;
 namespace ChastainRush
 {
     // Round 23 follow-ups (Dan, 2026-10-12: "Love the idea of pop-out manhole covers"): a pipe of the network ends in a riser that
-    // climbs at 50 degrees along a street to a big round iron lid, flush with the road (MapBuilder.Network.cs). From the street the
+    // climbs at 50 degrees along a street to a big round iron lid, flush with the road (MapBuilder.Network.cs). Round 25 (A1): the
+    // lid is now a hatch of the street itself with a 0.9 m cover drawn on it, and the collider (lidCollider) the terrain's own surface
+    // over the hole, on its own object (it does not fly). From the street the
     // lid is solid (a car drives over it). A vehicle coming up the riser hits the trigger just under the lid first: the lid flies
     // off (up, tumbling, a clang) and the vehicle bursts out onto the street. Never a trap: too slow to reach the top, the vehicle
     // rolls back down the riser (or a reset puts it on the pipe's floor). The lid comes back a few seconds later, once nothing is
@@ -15,6 +17,7 @@ namespace ChastainRush
         public Collider lidCollider;
         public Vector3 outward;          // along the street, the way the riser comes out
         public float radius = 2f;
+        public Vector2 slope;            // Round 25 (A1): the street's grade at the hole (dy/dx, dy/dz)
         public static int Bursts { get; private set; }   // checks
         Vector3 home; Quaternion homeRot; Vector3 vel, spin; float flying = -1f, gone = -1f;
         MeshRenderer lidRenderer;
@@ -25,8 +28,11 @@ namespace ChastainRush
         {
             if (flying >= 0f || gone >= 0f) return;
             if (body.linearVelocity.y < 1.5f) return;   // only a vehicle coming up from below
+            // Round 25 (A1): and only from below the street (a car climbing a sloping street over the hole, its body in the trigger's
+            // top, burst it, dropped into the riser and was thrown out: the JOLT Dan felt)
+            var d = body.position - home; if (body.position.y > home.y + slope.x * d.x + slope.y * d.z + 0.15f) return;
             Bursts++;
-            lidCollider.enabled = false;
+            if (lidCollider) lidCollider.enabled = false;
             float up = Mathf.Clamp(body.linearVelocity.y * 1.3f, 8f, 18f);
             vel = Vector3.up * up + outward * (2f + Random.Range(0f, 2f)) + Vector3.Cross(Vector3.up, outward) * Random.Range(-2.5f, 2.5f);
             spin = new Vector3(Random.Range(-540f, 540f), Random.Range(-200f, 200f), Random.Range(-540f, 540f));
@@ -48,7 +54,7 @@ namespace ChastainRush
                 gone += dt;
                 if (gone > 5f && !Occupied())
                 {
-                    gone = -1f; lid.SetPositionAndRotation(home, homeRot); lidCollider.enabled = true; if (lidRenderer) lidRenderer.enabled = true;
+                    gone = -1f; lid.SetPositionAndRotation(home, homeRot); if (lidCollider) lidCollider.enabled = true; if (lidRenderer) lidRenderer.enabled = true;
                 }
             }
         }

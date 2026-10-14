@@ -37,7 +37,8 @@ namespace ChastainRush
         [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling; public int stage; public NetOpening[] openings; }
         [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; }
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
-        [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; }
+        [Serializable] class NetExpress { public string id, name, tube; public float s0, s1; }   // Round 25 (B2): the pipe express's stretches
+        [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; public NetExpress[] express; }
 
         // a mesh with UVs (the pipes' stained concrete needs them), one-sided faces (from Round 23's MapBuilder.NetworkEntrance.cs)
         sealed class UvMesh
@@ -107,6 +108,11 @@ namespace ChastainRush
             public readonly List<(Vector2 c, float r)> Holes = new List<(Vector2, float)>();     // the street cut round each manhole (roads, paint)
             public readonly List<(NetManhole m, Vector2 c, float r, float y)> Lids = new List<(NetManhole, Vector2, float, float)>();
             public readonly Dictionary<string, (float half, float lift)> LidRoad = new Dictionary<string, (float, float)>();   // the street's half width and lift at each manhole
+            // Round 25 (A1): which hole is which lid's; each lid's terrain hole cells (centers, cell size); the street's own triangles
+            // cut out over each lid (its hatch: MapBuilder.Network.cs BuildManholeLid)
+            public readonly Dictionary<int, int> HoleLid = new Dictionary<int, int>();
+            public readonly Dictionary<int, (List<Vector2> cells, float cx, float cz)> LidCells = new Dictionary<int, (List<Vector2>, float, float)>();
+            public readonly Dictionary<int, List<(Material m, Vector3 a, Vector3 b, Vector3 c, Color ca, Color cb, Color cc)>> LidStreet = new Dictionary<int, List<(Material, Vector3, Vector3, Vector3, Color, Color, Color)>>();
             public readonly List<(NetTubeGeo g, NetGlass gl, float T, float[] TS)> Glass = new List<(NetTubeGeo, NetGlass, float, float[])>();   // Round 24 Part B: TS, the deep water's half width every meter from s0
             public bool Built(NetTube t) => t.stage <= Stage;
             public bool Built(NetChamber c) => c.stage <= Stage;
@@ -176,6 +182,8 @@ namespace ChastainRush
                 int holed = SetHoles(terrain, box, q => { if (Inside(new Vector3(q.x, Ground(terrain, q.x, q.y), q.y))) { cells.Add(q); return true; } return false; });
                 if (cells.Count == 0) { Debug.LogError($"[Round23+] manhole {m.id}: the riser never meets the street (no hole)"); continue; }
                 var c = new Vector2(cells.Average(q => q.x), cells.Average(q => q.y)); float r = cells.Max(q => (q - c).magnitude) + 0.9f;
+                n.HoleLid[n.Holes.Count] = n.Lids.Count;
+                { var tile = terrain.At(c.x, c.y).terrainData; n.LidCells[n.Lids.Count] = (cells, tile.size.x / tile.holesResolution, tile.size.z / tile.holesResolution); }
                 n.Holes.Add((c, r + 0.4f)); n.Lids.Add((m, c, r, Ground(terrain, c.x, c.y)));
                 float half = 3.5f, lift = 0.06f * vScale; float bestD = float.MaxValue;   // the street it is in: its half width and lift (the patch round the lid)
                 foreach (var road in map.roads)
@@ -208,12 +216,13 @@ namespace ChastainRush
                     int nT = Mathf.FloorToInt(gl.s1 - gl.s0) + 1; var raw = new float[nT]; var TS = new float[nT];
                     for (int k = 0; k < nT; k++)
                     {
-                        int i = g.At(gl.s0 + k); raw[k] = Mathf.Clamp(DistToEdges(new Vector2(g.P[i].x, g.P[i].z), ring) - 4f, g.R + 2.2f, 40f);
+                        // Round 25 (A5 / A7): the bowl's rim 1 m in from the shore (its own shelf is 0.2 m under the surface there)
+                        int i = g.At(gl.s0 + k); raw[k] = Mathf.Clamp(DistToEdges(new Vector2(g.P[i].x, g.P[i].z), ring) - 1f, g.R + 1.2f, 45f);
                         // and inside the bends' radius (the bed is laid out square to the line: past the radius it would fold over itself)
                         int i0 = g.At(gl.s0 + k - 5f), i1 = g.At(gl.s0 + k + 5f);
                         Vector2 A2 = new Vector2(g.P[i0].x, g.P[i0].z), B2 = new Vector2(g.P[i].x, g.P[i].z), C2 = new Vector2(g.P[i1].x, g.P[i1].z);
                         float area2 = Mathf.Abs((B2.x - A2.x) * (C2.y - A2.y) - (B2.y - A2.y) * (C2.x - A2.x));
-                        if (area2 > 1e-3f) raw[k] = Mathf.Max(g.R + 2.2f, Mathf.Min(raw[k], 0.7f * (A2 - B2).magnitude * (B2 - C2).magnitude * (C2 - A2).magnitude / (2f * area2)));
+                        if (area2 > 1e-3f) raw[k] = Mathf.Max(g.R + 1.2f, Mathf.Min(raw[k], 0.7f * (A2 - B2).magnitude * (B2 - C2).magnitude * (C2 - A2).magnitude / (2f * area2)));
                     }
                     for (int k = 0; k < nT; k++)
                     {
@@ -221,15 +230,11 @@ namespace ChastainRush
                         TS[k] = lo;
                     }
                     float T = TS.Min();
-                    float TSat(float s) => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, nT - 1)];
-                    int holed = SetHoles(terrain, BoundsOf(Enumerable.Range(g.At(gl.s0), g.At(gl.s1) - g.At(gl.s0) + 1).Select(i => new Vector2(g.P[i].x, g.P[i].z)), TS.Max() + 1f), q =>
-                    {
-                        float best = float.MaxValue, at = 0f;
-                        for (int i = g.At(gl.s0); i < g.At(gl.s1); i++) { var a = new Vector2(g.P[i].x, g.P[i].z); var b = new Vector2(g.P[i + 1].x, g.P[i + 1].z); var ab = b - a; float tt = Mathf.Clamp01(Vector2.Dot(q - a, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); float d = (a + ab * tt - q).magnitude; if (d < best) { best = d; at = g.S[i] + tt * ab.magnitude; } }
-                        return at > gl.s0 && at < gl.s1 && best <= TSat(at);
-                    });
+                    // Round 25 (A5, A7): holes only where the bowl of deep water is under the ground and under the water (CutBowlHoles)
+                    float surface = Beds.Level.TryGetValue(gl.pond, out float lv0) ? lv0 + PondLift : gl.surface;
+                    int holed = CutBowlHoles(terrain, NetGlassFrame(g, gl, TS, surface));
                     n.Glass.Add((g, gl, T, TS));
-                    Debug.Log($"[Round23+] pipe {t.id}: glass under pond W{gl.pond} from {gl.s0:0} to {gl.s1:0} m ({gl.s1 - gl.s0:0} m), the deep water {2f * T:0.0} to {2f * TS.Max():0.0} m wide (Round 24 Part B: open water), {holed} terrain hole cells");
+                    Debug.Log($"[Round23+] pipe {t.id}: glass under pond W{gl.pond} from {gl.s0:0} to {gl.s1:0} m ({gl.s1 - gl.s0:0} m), the deep water's rim {2f * T:0.0} to {2f * TS.Max():0.0} m across (Round 25: a bowl in the bed, 1 m in from the shore), {holed} terrain hole cells (under water only)");
                 }
             }
         }
@@ -259,15 +264,26 @@ namespace ChastainRush
             return cells;
         }
 
-        // Chunks.ToObjects: no street, paint or sidewalk over a manhole's hole
-        static void CutNetworkHoles(MeshBuilder mb)
+        // Chunks.ToObjects: no street, paint or sidewalk over a manhole's hole. Round 25 (A1): the triangles cut out over a manhole are
+        // kept (with their material and colors) as that manhole's hatch: the street itself, flush, until a vehicle bursts up through it
+        static void CutNetworkHoles(MeshBuilder mb, Material mat = null)
         {
             if (Net == null || Net.Holes.Count == 0 || mb.Count == 0) return;
-            var v = mb.Verts; var t = mb.Tris; var keep = new List<int>(t.Count);
+            var v = mb.Verts; var t = mb.Tris; var col = mb.Colours; var keep = new List<int>(t.Count);
             for (int i = 0; i + 2 < t.Count; i += 3)
             {
                 var c = (v[t[i]] + v[t[i + 1]] + v[t[i + 2]]) / 3f; var q = new Vector2(c.x, c.z); bool cut = false;
-                foreach (var (hc, hr) in Net.Holes) if ((q - hc).sqrMagnitude < hr * hr) { cut = true; break; }
+                for (int h = 0; h < Net.Holes.Count; h++)
+                {
+                    var (hc, hr) = Net.Holes[h]; if ((q - hc).sqrMagnitude >= hr * hr) continue;
+                    cut = true;
+                    if (mat != null && Net.HoleLid.TryGetValue(h, out int lid))
+                    {
+                        if (!Net.LidStreet.TryGetValue(lid, out var l)) Net.LidStreet[lid] = l = new List<(Material, Vector3, Vector3, Vector3, Color, Color, Color)>();
+                        l.Add((mat, v[t[i]], v[t[i + 1]], v[t[i + 2]], col[t[i]], col[t[i + 1]], col[t[i + 2]]));
+                    }
+                    break;
+                }
                 if (!cut) { keep.Add(t[i]); keep.Add(t[i + 1]); keep.Add(t[i + 2]); }
             }
             if (keep.Count != t.Count) { t.Clear(); t.AddRange(keep); }
@@ -315,8 +331,10 @@ namespace ChastainRush
                 else BuildChamberRoom(terrain, mats, root, c, n, cells);
                 rooms++;
             }
-            foreach (var (m, c, r, y) in n.Lids) BuildManholeLid(terrain, mats, root, m, c, r, y, n.LidRoad.TryGetValue(m.id, out var lr) ? lr : (3.5f, 0.06f), cells);
+            for (int li = 0; li < n.Lids.Count; li++) { var (m, c, r, y) = n.Lids[li]; BuildManholeLid(terrain, mats, root, li, m, c, r, y, n.LidRoad.TryGetValue(m.id, out var lr) ? lr : (3.5f, 0.06f), cells); }
             foreach (var (g, gl, T, TS) in n.Glass) BuildNetworkGlass(terrain, mats, root, g, gl, T, TS, cells);
+            BuildPipeWarp(root, n, pipes);        // Round 25 (B1): the debug menu's pipe warp places (MapBuilder.NetworkWarp.cs)
+            BuildPipeExpress(root, mats, n);      // Round 25 (B2): the pipe express
             // the run time: cells switched on near the camera
             var nc = root.gameObject.AddComponent<NetworkCells>();
             nc.roots = cells.Cells.Select(c => c.root).ToArray(); nc.bounds = cells.Cells.Select(c => c.b).ToArray();
@@ -351,7 +369,7 @@ namespace ChastainRush
                     for (int k = 0; k <= arc; k++)
                     {
                         float th = Mathf.PI * 2f * k / arc; var v = Ring(i, th);
-                        if (riserTop(i) && v.y > Gnd(v) - 0.02f) v.y = Mathf.Min(v.y, Gnd(v) - 0.02f);   // nothing of the riser above the street
+                        if (riserTop(i) && v.y > Gnd(v) - 0.3f) v.y = Mathf.Min(v.y, Gnd(v) - 0.3f);   // nothing of the riser above the street; Round 25 (A1): 0.3 m under it (2 cm under, a small vehicle's body riding the street caught its steep edges: a JOLT; the floor over the hole carries the street)
                         bv.Add(v); buv.Add(new Vector2(g.S[i] / 2.4f, k / (float)arc));
                     }
                 for (int i = cellStart; i < cellEnd; i++)
@@ -362,7 +380,7 @@ namespace ChastainRush
                         int a0 = (i - cellStart) * (arc + 1) + k, a1 = a0 + 1, b0 = a0 + arc + 1, b1 = b0 + 1;
                         if (riserTop(i + 1))   // a riser quad wholly at the street: the opening
                         {
-                            int above = 0; foreach (int q in new[] { a0, a1, b0, b1 }) if (bv[q].y >= Gnd(bv[q]) - 0.05f) above++;
+                            int above = 0; foreach (int q in new[] { a0, a1, b0, b1 }) if (bv[q].y >= Gnd(bv[q]) - 0.33f) above++;
                             if (above >= 3) continue;
                         }
                         var l = glass ? gt : bt;
@@ -651,73 +669,127 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- manhole lids
-        static void BuildManholeLid(TerrainGrid terrain, Materials mats, Transform parent, NetManhole m, Vector2 c, float r, float y, (float half, float lift) road, NetCells cells)
+        // Round 25 (A1, BUG-001, Dan in Chasefield Way over MH11: "can we make sure that manhole covers dont interfere with vehicles
+        // causing them to bounce. Also is there anyway to make them look normal size on the street without changing anything from the
+        // exits?"). The riser's opening in the street is about 5 m across (a 3.5 m pipe at 50 degrees); before, a 5 to 6 m iron lid
+        // was drawn over it with a concrete collar and an asphalt patch round it (jagged edges and grass between them), and its collider
+        // was a flat convex disc that stood off the sloping street. Now, from the street:
+        //   the hatch   the street's own triangles cut out over the hole (asphalt and paint, their colors: CutNetworkHoles), so the
+        //               opening is hidden flush in the road with no seam, and a normal manhole cover (0.9 m) drawn in its middle
+        //   the floor   a collider that is the terrain's own surface over the hole's cells (and one cell round them), at the terrain's
+        //               own heights: driving over it is driving over the ground the road lies on (roads have no colliders)
+        // The way up is as before: the riser, the trigger just under the street, the hatch (all of it) flies off and comes back
+        static void BuildManholeLid(TerrainGrid terrain, Materials mats, Transform parent, int lidIndex, NetManhole m, Vector2 c, float r, float y, (float half, float lift) road, NetCells cells)
         {
             var root = new GameObject("Manhole " + m.id + " (" + m.road + ")").transform; root.SetParent(parent, false);
-            // the street's surface round the lid: the street's own triangles over the hole were cut away (CutNetworkHoles) in whole
-            // pieces, so a patch of asphalt in the street's width fills round the collar (draped on the ground, just over the street)
-            {
-                var patch = new MeshBuilder(); var d = new Vector2(m.dir[0], m.dir[1]).normalized; var sd = new Vector2(-d.y, d.x);
-                float hl = r + 3.2f, hw = Mathf.Max(1.5f, road.half - 0.25f);
-                for (float a = -hl; a < hl - 1e-3f; a += 0.5f)
-                    for (float b = -hw; b < hw - 1e-3f; b += 0.5f)
-                    {
-                        var q0 = c + d * a + sd * b; var q1 = c + d * (a + 0.5f) + sd * b; var q2 = c + d * (a + 0.5f) + sd * (b + 0.5f); var q3 = c + d * a + sd * (b + 0.5f);
-                        if (((q0 + q2) * 0.5f - c).magnitude < r) continue;
-                        Vector3 V(Vector2 q) => new Vector3(q.x, Ground(terrain, q.x, q.y) + road.lift + 0.008f, q.y);
-                        Face(patch, V(q0), V(q1), V(q2), V(q3), Vector3.up);
-                    }
-                patch.ToObject("Manhole " + m.id + " street patch", mats.Asphalt, root, false, false);
-            }
-            // the collar round the hole (concrete, flush with the street): hides the hole's edge when the lid is off
-            var collar = new MeshBuilder(); const int seg = 32;
-            for (int k = 0; k < seg; k++)
-            {
-                float a0 = Mathf.PI * 2f * k / seg, a1 = Mathf.PI * 2f * (k + 1) / seg;
-                Vector3 Q(float a, float rr) { float qx = c.x + Mathf.Cos(a) * rr, qz = c.y + Mathf.Sin(a) * rr; return new Vector3(qx, Ground(terrain, qx, qz) + 0.02f, qz); }   // Round 24 A2: on the street's slope
-                collar.Tint = new Color(0.50f, 0.49f, 0.46f); Face(collar, Q(a0, r - 0.15f), Q(a1, r - 0.15f), Q(a1, r + 0.4f), Q(a0, r + 0.4f), Vector3.up);
-            }
-            collar.ToObject("Manhole " + m.id + " collar", mats.House, root, false, false);
-            // the lid: a big round iron plate, cast pattern on top; solid (a convex collider), flush with the street
-            var lid = new MeshBuilder(); var iron = new Color(0.20f, 0.20f, 0.21f);
-            float th = 0.12f;
-            for (int k = 0; k < seg; k++)
-            {
-                float a0 = Mathf.PI * 2f * k / seg, a1 = Mathf.PI * 2f * (k + 1) / seg;
-                Vector3 Q(float a, float rr, float yy) => new Vector3(Mathf.Cos(a) * rr, yy, Mathf.Sin(a) * rr);
-                lid.Tint = iron; TriFace(lid, Vector3.up * 0.03f, Q(a1, r, 0.03f), Q(a0, r, 0.03f), Vector3.up);
-                lid.Tint = Shade(iron, 0.8f); Face(lid, Q(a0, r, 0.03f), Q(a1, r, 0.03f), Q(a1, r, -th), Q(a0, r, -th), Q((a0 + a1) * 0.5f, 1f, 0f));
-                TriFace(lid, Vector3.up * -th, Q(a0, r, -th), Q(a1, r, -th), Vector3.down);
-            }
-            lid.Tint = Shade(iron, 1.35f);   // the cast rings and a cross on top
-            foreach (float rr in new[] { r * 0.35f, r * 0.7f })
-                for (int k = 0; k < seg; k++)
+            var home = new Vector3(c.x, y, c.y);
+            // the hatch: the cut-out street triangles (one submesh per material), then the cover on top (the paint's material: drawn over
+            // the road without fighting it)
+            var byMat = new Dictionary<Material, (List<Vector3> v, List<Color> col, List<int> t)>();
+            (List<Vector3> v, List<Color> col, List<int> t) Sub(Material mm) { if (!byMat.TryGetValue(mm, out var x)) byMat[mm] = x = (new List<Vector3>(), new List<Color>(), new List<int>()); return x; }
+            if (Net.LidStreet.TryGetValue(lidIndex, out var street))
+                foreach (var (mm, a, b, cc, ca, cb, ccol) in street)
                 {
-                    float a0 = Mathf.PI * 2f * k / seg, a1 = Mathf.PI * 2f * (k + 1) / seg;
-                    Face(lid, new Vector3(Mathf.Cos(a0) * rr, 0.035f, Mathf.Sin(a0) * rr), new Vector3(Mathf.Cos(a1) * rr, 0.035f, Mathf.Sin(a1) * rr), new Vector3(Mathf.Cos(a1) * (rr + 0.08f), 0.035f, Mathf.Sin(a1) * (rr + 0.08f)), new Vector3(Mathf.Cos(a0) * (rr + 0.08f), 0.035f, Mathf.Sin(a0) * (rr + 0.08f)), Vector3.up);
+                    var x = Sub(mm); int k = x.v.Count;
+                    x.v.Add(a - home); x.v.Add(b - home); x.v.Add(cc - home); x.col.Add(ca); x.col.Add(cb); x.col.Add(ccol);
+                    x.t.Add(k); x.t.Add(k + 1); x.t.Add(k + 2);
                 }
-            BoxAt(lid, Vector3.up * 0.04f, Vector3.forward, 2f * r * 0.9f, 0.01f, 0.1f); BoxAt(lid, Vector3.up * 0.04f, Vector3.right, 2f * r * 0.9f, 0.01f, 0.1f);
-            var lidGo = lid.ToObject("Manhole " + m.id + " lid", mats.House, root, false, true);
-            GameObjectUtility.SetStaticEditorFlags(lidGo, 0);
-            lidGo.transform.position = new Vector3(c.x, y, c.y);
-            // Round 24 A2: the lid lies in the street's slope (flat, it stood up to 0.5 m proud on the low side of a sloping street)
-            float gx = (Ground(terrain, c.x + r, c.y) - Ground(terrain, c.x - r, c.y)) / (2f * r), gz = (Ground(terrain, c.x, c.y + r) - Ground(terrain, c.x, c.y - r)) / (2f * r);
-            lidGo.transform.rotation = Quaternion.FromToRotation(Vector3.up, new Vector3(-gx, 1f, -gz).normalized);
-            var disc = new Mesh { name = "Manhole lid collider " + m.id }; var dv = new List<Vector3>(); var dt = new List<int>();
-            for (int k = 0; k < 16; k++) { float a = Mathf.PI * 2f * k / 16; dv.Add(new Vector3(Mathf.Cos(a) * r, 0.03f, Mathf.Sin(a) * r)); dv.Add(new Vector3(Mathf.Cos(a) * r, -0.25f, Mathf.Sin(a) * r)); }
-            for (int k = 0; k < 16; k++) { int a = 2 * k, b = 2 * ((k + 1) % 16); dt.AddRange(new[] { a, b, b + 1, a, b + 1, a + 1 }); }
-            disc.SetVertices(dv); disc.SetTriangles(dt, 0); disc.RecalculateBounds(); AssetDatabase.CreateAsset(disc, $"{GeneratedDir}/Meshes/Manhole lid collider {m.id}.asset");
-            var mc = lidGo.AddComponent<MeshCollider>(); mc.sharedMesh = disc; mc.convex = true;
+            else Debug.LogWarning($"[Round25] manhole {m.id}: no street triangles over its hole (no hatch drawn)");
+            {
+                var cover = Sub(mats.Paint); const int seg = 20; const float Rc = 0.45f;
+                float Lift(float qx, float qz) => Ground(terrain, qx, qz) + road.lift + 0.012f - y;
+                Vector3 Q(float a, float rr) { float qx = c.x + Mathf.Cos(a) * rr, qz = c.y + Mathf.Sin(a) * rr; return new Vector3(qx - c.x, Lift(qx, qz), qz - c.y); }
+                void Ring(float r0, float r1, Color colr)
+                {
+                    for (int k = 0; k < seg; k++)
+                    {
+                        float a0 = Mathf.PI * 2f * k / seg, a1 = Mathf.PI * 2f * (k + 1) / seg; int b = cover.v.Count;
+                        if (r0 <= 0f) { cover.v.Add(new Vector3(0f, Lift(c.x, c.y), 0f)); cover.v.Add(Q(a1, r1)); cover.v.Add(Q(a0, r1)); for (int j = 0; j < 3; j++) cover.col.Add(colr); cover.t.Add(b); cover.t.Add(b + 1); cover.t.Add(b + 2); continue; }
+                        cover.v.Add(Q(a0, r0)); cover.v.Add(Q(a1, r0)); cover.v.Add(Q(a1, r1)); cover.v.Add(Q(a0, r1)); for (int j = 0; j < 4; j++) cover.col.Add(colr);
+                        cover.t.Add(b); cover.t.Add(b + 2); cover.t.Add(b + 1); cover.t.Add(b); cover.t.Add(b + 3); cover.t.Add(b + 2);
+                    }
+                }
+                var iron = new Color(0.17f, 0.17f, 0.18f); var cast = new Color(0.27f, 0.27f, 0.28f);
+                Ring(0f, Rc, iron); Ring(Rc - 0.05f, Rc, new Color(0.38f, 0.38f, 0.38f));   // the plate, its worn steel rim
+                Ring(Rc * 0.52f, Rc * 0.6f, cast); Ring(Rc * 0.76f, Rc * 0.82f, cast);       // cast rings
+                for (int i = 0; i + 2 < cover.t.Count; i += 3)   // every face up
+                {
+                    var n0 = Vector3.Cross(cover.v[cover.t[i + 1]] - cover.v[cover.t[i]], cover.v[cover.t[i + 2]] - cover.v[cover.t[i]]);
+                    if (n0.y < 0f) { int sw = cover.t[i + 1]; cover.t[i + 1] = cover.t[i + 2]; cover.t[i + 2] = sw; }
+                }
+            }
+            var mesh = new Mesh { name = "Manhole hatch " + m.id, indexFormat = IndexFormat.UInt32 };
+            var allV = new List<Vector3>(); var allC = new List<Color>(); var mlist = new List<Material>(); var tris = new List<List<int>>();
+            foreach (var kv in byMat) { int off = allV.Count; allV.AddRange(kv.Value.v); allC.AddRange(kv.Value.col); tris.Add(kv.Value.t.Select(q => q + off).ToList()); mlist.Add(kv.Key); }
+            mesh.SetVertices(allV); mesh.SetColors(allC); mesh.subMeshCount = tris.Count; for (int i = 0; i < tris.Count; i++) mesh.SetTriangles(tris[i], i);
+            mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Manhole hatch {m.id}.asset");
+            var lidGo = new GameObject("Manhole " + m.id + " hatch (the street over it, a cover)"); lidGo.transform.SetParent(root, false); lidGo.transform.position = home;
+            lidGo.AddComponent<MeshFilter>().sharedMesh = mesh;
+            var lr = lidGo.AddComponent<MeshRenderer>(); lr.sharedMaterials = mlist.ToArray(); lr.shadowCastingMode = ShadowCastingMode.Off; lr.receiveGI = ReceiveGI.LightProbes;
+            // the floor over the hole: the terrain's surface over its cells and a ring of cells round them, at the terrain's heights
+            MeshCollider mc = null;
+            if (Net.LidCells.TryGetValue(lidIndex, out var lc))
+            {
+                var keys = new HashSet<Vector2Int>();
+                var tpos = terrain.At(c.x, c.y).transform.position; var org = new Vector2(tpos.x, tpos.z);
+                foreach (var q in lc.cells)
+                {
+                    int ix = Mathf.FloorToInt((q.x - org.x) / lc.cx), iz = Mathf.FloorToInt((q.y - org.y) / lc.cz);
+                    for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) keys.Add(new Vector2Int(ix + dx, iz + dz));
+                }
+                var cv = new List<Vector3>(); var ct = new List<int>(); var vid = new Dictionary<Vector2Int, int>();
+                int V(int ix, int iz)
+                {
+                    var key = new Vector2Int(ix, iz); if (vid.TryGetValue(key, out int id)) return id;
+                    float x = org.x + ix * lc.cx, z = org.y + iz * lc.cz; cv.Add(new Vector3(x, Ground(terrain, x, z), z)); vid[key] = cv.Count - 1; return cv.Count - 1;
+                }
+                foreach (var k in keys)
+                {
+                    int a = V(k.x, k.y), b = V(k.x + 1, k.y), d = V(k.x + 1, k.y + 1), e = V(k.x, k.y + 1);
+                    ct.AddRange(new[] { a, e, d, a, d, b });   // up-facing
+                }
+                var cm = new Mesh { name = "Manhole floor collider " + m.id, indexFormat = IndexFormat.UInt32 }; cm.SetVertices(cv); cm.SetTriangles(ct, 0); cm.RecalculateNormals(); cm.RecalculateBounds();
+                AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/Manhole floor collider {m.id}.asset");
+                var fgo = new GameObject("Manhole " + m.id + " floor over the hole (collider: the terrain's surface)"); fgo.transform.SetParent(root, false);
+                mc = fgo.AddComponent<MeshCollider>(); mc.sharedMesh = cm;
+                Debug.Log($"[Round25] manhole {m.id}: the hatch is the street's own {(street != null ? street.Count : 0)} triangles and a 0.9 m cover; the floor over its {lc.cells.Count} hole cells is the terrain's surface ({keys.Count} cells)");
+            }
+            else Debug.LogError($"[Round25] manhole {m.id}: no hole cells (no floor over it)");
             // the trigger in the top of the riser: a vehicle coming up hits it before the lid
             var trig = new GameObject("Manhole " + m.id + " burst trigger"); trig.transform.SetParent(root, false);
             var dir = new Vector3(m.dir[0], 0f, m.dir[1]);
             trig.transform.SetPositionAndRotation(new Vector3(c.x, y - 1.6f, c.y), Quaternion.LookRotation(dir));
             var bc = trig.AddComponent<BoxCollider>(); bc.isTrigger = true; bc.size = new Vector3(2f * r, 2.4f, 2f * r);
             var ml = root.gameObject.AddComponent<ManholeLid>(); ml.lid = lidGo.transform; ml.lidCollider = mc; ml.outward = dir; ml.radius = r;
+            ml.slope = new Vector2((Ground(terrain, c.x + 1.5f, c.y) - Ground(terrain, c.x - 1.5f, c.y)) / 3f, (Ground(terrain, c.x, c.y + 1.5f) - Ground(terrain, c.x, c.y - 1.5f)) / 3f);   // Round 25 (A1)
             trig.AddComponent<ManholeTrigger>().owner = ml;   // not a cell: the lid is seen from anywhere up the street
         }
 
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)
+        // the stretch's frame (Round 25: also for its terrain holes, ClearFrame.ToSL: the nearest point of the pipe's line)
+        static ClearFrame NetGlassFrame(NetTubeGeo g, NetGlass gl, float[] TS, float surface)
+        {
+            Vector3 At(float s) { int i = Mathf.Clamp(g.At(s), 1, g.P.Length - 1); float t = Mathf.InverseLerp(g.S[i - 1], g.S[i], s); return Vector3.Lerp(g.P[i - 1], g.P[i], t); }
+            Vector3 Along(float s) { var d = At(s + 0.5f) - At(s - 0.5f); d.y = 0f; return d.normalized; }
+            Vector3 Left(float s) { var u = Along(s); return new Vector3(-u.z, 0f, u.x); }
+            float axis = float.MaxValue; for (float s = gl.s0; s <= gl.s1; s += 1f) axis = Mathf.Min(axis, At(s).y + g.R);
+            int i0 = Mathf.Max(0, g.At(gl.s0) - 2), i1 = Mathf.Min(g.P.Length - 1, g.At(gl.s1) + 2);
+            Vector2 ToSL(Vector2 q)
+            {
+                float best = float.MaxValue, at = 0f, lat = 0f;
+                for (int i = i0; i < i1; i++)
+                {
+                    var a = new Vector2(g.P[i].x, g.P[i].z); var b = new Vector2(g.P[i + 1].x, g.P[i + 1].z); var ab = b - a;
+                    float tt = Mathf.Clamp01(Vector2.Dot(q - a, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); var c = a + ab * tt; float d = (c - q).magnitude;
+                    if (d < best) { best = d; at = g.S[i] + tt * ab.magnitude; var u = ab.normalized; lat = Vector2.Dot(q - c, new Vector2(-u.y, u.x)); }
+                }
+                return new Vector2(at, lat);
+            }
+            return new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = TS.Min(), AxisY = axis,
+                                    W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
+                                    TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)], ToSL = ToSL };
+        }
         static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, float[] TS, NetCells cells)
         {
             var root = cells.Make(parent, "Glass " + g.J.id + " under pond W" + gl.pond);
@@ -727,9 +799,7 @@ namespace ChastainRush
             Vector3 Left(float s) { var u = Along(s); return new Vector3(-u.z, 0f, u.x); }
             float axis = float.MaxValue, axisTop = float.MinValue; for (float s = gl.s0; s <= gl.s1; s += 1f) { axis = Mathf.Min(axis, At(s).y + g.R); axisTop = Mathf.Max(axisTop, At(s).y + g.R); }   // its lowest (the trench's depth) and highest (the crown under the water)
             if (axisTop + g.R + GlassOut > surface - ClearCrownUnder) { Debug.LogError($"[Round23+] pipe {g.J.id}: the glass under W{gl.pond} is not under the water (crown {axis + g.R:0.00} m, surface {surface:0.00} m): not built"); return; }
-            var f = new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = T, AxisY = axis,
-                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
-                                     TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)] };   // Round 24 Part B: open water
+            var f = NetGlassFrame(g, gl, TS, surface);
             BuildClearStretch(terrain, mats, root, f);
             var a = At(gl.s0); var b = At(gl.s1);
             cells.Cells.Add((root, new Bounds((a + b) * 0.5f, new Vector3(Mathf.Abs(a.x - b.x) + 2f * TS.Max() + 10f, 20f, Mathf.Abs(a.z - b.z) + 2f * TS.Max() + 10f))));

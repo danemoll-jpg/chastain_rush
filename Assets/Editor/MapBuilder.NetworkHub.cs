@@ -308,7 +308,7 @@ namespace ChastainRush
         // ---------------------------------------------------------------- painted signs (Assets/HandMade/Network/NetworkSigns.png)
         // rows of the atlas, top to bottom (Tools/handmade/make_network_signs.py writes them in this order)
         static readonly string[] NetSignRows = { "M1 TRUNK", "M5 ENCLAVE MAIN", "M3 NOONDAY MAIN", "M4 GLEN MAIN", "M2 LAKES MAIN", "M6 NELSON MAIN", "THE HUB",
-                                                  "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13", "< HUB", "HUB >" };   // Round 24 Part B: the hub arrows
+                                                  "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13", "< HUB", "HUB >", "EXPRESS >", "< EXPRESS" };   // Round 24 Part B: the hub arrows; Round 25: the express
         const string NetSignAtlas = "Assets/HandMade/Network/NetworkSigns.png";
         static Material netSigns;
 

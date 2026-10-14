@@ -138,6 +138,13 @@ namespace ChastainRush
                 var c = d.mapColor.a > 0f ? d.mapColor : Pipe; var prev = d.floor[0];
                 for (int i = 1; i < d.floor.Length; i++) if ((d.floor[i] - prev).sqrMagnitude >= 16 || i == d.floor.Length - 1) { pipeLines.Add((prev, d.floor[i], c)); prev = d.floor[i]; }
             }
+            // Round 25 (B2): the pipe express's stretches in cyan, over the pipes
+            if (PipeExpress.Instance && PipeExpress.Instance.stretches != null)
+                foreach (var st in PipeExpress.Instance.stretches)
+                {
+                    if (st.floor == null || st.floor.Length < 2) continue; var prev = st.floor[0];
+                    for (int i = 1; i < st.floor.Length; i++) if ((st.floor[i] - prev).sqrMagnitude >= 16 || i == st.floor.Length - 1) { pipeLines.Add((prev, st.floor[i], PipeExpress.MapColor)); prev = st.floor[i]; }
+                }
         }
 
         void LateUpdate()

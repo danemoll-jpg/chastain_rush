@@ -2673,7 +2673,7 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
+**DONE (not yet driven by Dan) — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
 `2026-10-14_11-23-52-092_9ec9c7`, eight reports, read by Claude). Dan: "Looks like we need a bit of cleanup here."
 Part A is cleanup, Part B is two new things for the pipe network. No vehicle drive tests unless cheap: Dan drives it.
 Rebuild the exe into `Builds/ChastainRush/` (the root launcher), commit, short report with the build time.**
@@ -2750,6 +2750,62 @@ B2. PIPE EXPRESS (game feature, free roam only). Dan: "some of the tunnels are r
    - Races never use it: during any race it is off and the stretch drives normally (also later in the underground race
      unless Dan says otherwise). Racers' AI never triggers it.
    - Document it in `Docs/PIPE-NETWORK.md` and on the map (the express stretches drawn in their own style).
+
+**STATUS of Round 25 (Claude, 2026-10-14): Part A and Part B DONE, exe rebuilt; checked in the exe by script (minimized, muted,
+`local/round25/`, git-ignored), not yet driven by Dan.**
+- A1 DONE. Every street manhole (MH1 to MH13): the opening is hidden flush in the road by a hatch made of the street's own triangles cut
+  out over it (asphalt and paint; no patch, no collar, no ring, no shards), with a normal 0.9 m iron cover drawn in its middle; the
+  collider over the hole is the terrain's own surface (`MapBuilder.Network.cs` BuildManholeLid). The way up is unchanged (riser size,
+  trigger, the hatch flies off and comes back). Cause of the bounce: the riser's top edge sat 2 cm under the street and a small vehicle's
+  body (which rides the surface, Round 14) caught its steep faces, one way only; it now ends 0.3 m under the street. A hatch also bursts
+  only for a vehicle below the street. Check: 26 drives at 20 m/s along the street over all 13, both ways: 0 JOLTs at any manhole (8
+  before the riser fix); BumpScan (`Data/bumps.txt`): the surface over every hole flush, no step or hump; `ChastainRush.ManholeProbe.Run
+  -probeOut <file>` (Editor batch): the floor 0.000 m over the terrain, the riser under it.
+- A2 DONE. Little Noonday (X_LNC): the green blade and the slab were terrain points at the edge of the holed apron pulled down to the
+  floor (a grass sheet from the floor up to the bank, in the opening); the white shards were sky seen through hole cells behind the
+  headwall. Fixed for every mouth set into a bank (`MapBuilder.Pipes.cs` GradeBank, HoleBehind, RaiseBehindHead): only points whose
+  cells are all holed go down to the floor; no holes behind a bank's headwall; the ground behind it raised to its top where lower; the
+  banks beside the wingwalls 1 in 3 (was 1 in 2) and no railings on the wingwalls (Dan was stuck between the railing and the bank). Every
+  network pipe is also kept under 0.6 m of ground (`MapBuilder.NetworkCover.cs`: one stretch raised, M2c by the far west pond, up to
+  0.8 m). The sweep (`MapBuilder.MouthSweep.cs`, every build, `Assets/Generated/mouth_sweep.txt`): no terrain inside any opening or the
+  first 15 m of pipe at P1, BF left and right, GP left and right, X_W20, L_W15, X_TRAIL, X_W12, X_W7, X_W11, X_BRIDGE, X_SHOPS, X_LNC, X_W5,
+  X_NELSON, X_STREAM and the network pipe on from each exit: all clear. No reeds or plants were in any opening (the blades were terrain).
+  The hub's and junctions' openings are inside rooms (no terrain there).
+- A3 DONE. M6 opened onto the side of the hub's ramp from the mid ledge to the top ledge (Dan was on the ramp, 2.2 m up). Openings at
+  the hub now keep off both ramps (`pipe_network.py` hub_ramp_clamp): M6 moved from t -11.6 to t 6 on the same wall (picture: clear).
+  The other five mains (M1, M3, M4 at the mid ledge, M5, M2 at the top ledge) open onto clear ledge (checked against both ramps).
+- A4 DONE. BF's blades were the same terrain points as A2 (gone). The ridge between the barrels (it steers a vehicle into one) is
+  rounded where it starts instead of a knife edge; a straight drive at the divider at 12 m/s went into a barrel without stopping. Not set
+  back further (the pier needs the ridge to meet it): for Dan to judge.
+- A5 / A7 DONE (`MapBuilder.ClearPipe.cs` ClearFrame.BowlY, CutBowlHoles). The deep water round every glass stretch (M1, M5, M2a, M2b,
+  M3c, M4c and P1) is a bowl in the pond's bed: from the shore's shelf (1 m in from the shore) it falls in a smooth curve to 1.6 m under
+  the tube, closing in round the tube over the stretch's last 10 m where the tube goes into the bed; no straight cut walls, no box.
+  Terrain is holed only under water (every corner of a cell under the surface): no grass flaps or gaps at the banks. M5 under the
+  narrow Enclave pond (9 to 12 m wide for a 5 m tube) still has steep sides: the pond is that narrow.
+- A6 DONE. An exit's trickle ends at its apron's edge, or runs on over the ground into water where the ground falls away to it (X_W20
+  4 m, X_W11 45 m, X_NELSON 6 m). X_W5's and the other exits' channels climb out of the mouth, so their streams end at the apron. No
+  exit stream in the air.
+- A8 DONE (`Pipes/PipeAquarium.cs`). Fish follow the tube's real line, more of them; anything more than 45 m along from the camera is
+  moved 20 to 35 m ahead or behind it (a long stretch always has life near you); turtles (swimming, or resting on the bed or on sunken
+  logs), water snakes at the surface, ducks and geese paddling on top (`GooseFlock.SwimmingGoose`, `GooseFlock.Duck`), all instanced, no
+  physics, nothing solid, only while the stretch's cell is on. Frame rate (`ChastainRush.exe -exeProfile <dir> -profileOnly glass`, vSync
+  off, 3840 x 2160 minimized window; `-aquariumPlain` = Round 24's fish and nothing else, same build), with life vs without: M1 229 vs
+  230 fps, M5 246 vs 239, M2 221 vs 230, P1 220 vs 217: within run-to-run noise. The Round 24 exe could not be measured uncapped (its
+  shots are vSync-capped: 60 fps at all four).
+- B1 DONE. Debug menu "Pipe warp: <place>" (free roam only; left / right picks, A goes): 85 places: the hub, every junction, BF's and
+  GP's two pipes, every exit's mouth and inside end, every manhole's foot, the middle of each main, on the floor, stopped, facing toward
+  the hub (`Pipes/PipeWarp.cs`, `MapBuilder.NetworkWarp.cs`). Underground, the debug panel and a bug report's position line name the
+  nearest place.
+- B2 DONE. The pipe express (`Pipes/PipeExpress.cs`; stretches in `network.json` 'express' from `pipe_network.py`; table in
+  `Docs/PIPE-NETWORK.md`): E1 M6 Nelson (1950 m: 98 s at 20 m/s, about 45 s express), E2 M4a J6 to the hub (449 m: 22 s / 12 s), E3 M4d
+  J12 to J8 (311 m: 16 s / 9 s), E4 M3a J4 to the hub (280 m: 14 s / 8 s), E5 B22 J8 to Little Noonday (550 m: 28 s / 14 s), both ways.
+  Boost by default (a surge, a whoosh and a rush, speed streaks, carried at 45 m/s on the floor's middle line, let go at 20 m/s facing
+  out); Warp (a dark fade, then at the far end); debug menu "Pipe express: Boost / Warp / Off". Cyan EXPRESS bands, boards and floor
+  arrows at both ends; cyan on the map and the minimap. Off in races; the AI never takes it. Check: a bike driven into E3 at 12 m/s was
+  carried the 311 m at 45 m/s and let go past the far end. Warp not driven by script.
+- Left: a sliver of light still shows at the top left corner of X_LNC's headwall from its mouth (the right one is gone).
+- For Dan to check: drive over the manholes (Chasefield Way's MH11 first); X_LNC in and out; BF's divider; M6 into the hub; the glass
+  stretches from inside (M1, M5, M2) and the Enclave pond's bank; the express (Boost and Warp) and the pipe warp from the debug menu.
 
 **DONE (Parts A, A2, A3 and B; commits ea0dfb6, 878fb15, 2736ea1, 0320c4d, 0fea050) — Round 24 (Dan, 2026-10-13 11:20, after driving part of the network). Dan is near his weekly usage limit:
 do Part A first, rebuild the exe, commit, and stop if usage runs short; Part B is queued for his next session. No vehicle
