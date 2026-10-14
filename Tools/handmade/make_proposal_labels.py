@@ -12,7 +12,7 @@ import json, os
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-DATA = os.path.join(ROOT, "Data/proposals/round23_network.json")
+DATA = [os.path.join(ROOT, "Data/proposals/round23_network.json"), os.path.join(ROOT, "Data/proposals/round24_creek_reverse.json")]   # Round 24 A3: both, in MapBuilder.Proposals.cs' order
 OUT = os.path.join(ROOT, "Assets/HandMade/Proposals/ProposalLabels.png")
 CW, CH, COLS = 512, 160, 4
 S = 2   # drawn at twice the size, then reduced
@@ -34,6 +34,8 @@ KINDS = {
     "switch": ((255, 184, 51), (20, 20, 20)),
     "checkpoint": ((40, 150, 60), (255, 255, 255)),
     "start": ((15, 15, 15), (255, 255, 255)),
+    "shortcut": ((255, 51, 204), (255, 255, 255)),   # Round 24 A3
+    "jump": ((140, 20, 115), (255, 255, 255)),
     "info": ((90, 90, 95), (255, 255, 255)),
 }
 
@@ -68,7 +70,7 @@ def cell(mark):
 
 
 def main():
-    marks = json.load(open(DATA))["marks"]
+    marks = [mk for f in DATA if os.path.exists(f) for mk in json.load(open(f))["marks"]]
     rows = (len(marks) + COLS - 1) // COLS
     atlas = Image.new("RGB", (CW * COLS, CH * rows), (0, 0, 0))
     for i, mk in enumerate(marks):

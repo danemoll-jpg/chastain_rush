@@ -328,6 +328,7 @@ namespace ChastainRush
                     if (kind != FenceKind.Iron && (!c.hood.FenceOk(mid) || c.OnDrive(mid, 0.6f))) continue;
                     if (c.hood.OnPoolJumpYard(mid)) continue;   // Round 20 follow-up: off R1's pool deck and its line (MapBuilder.R1Pool.cs)
                     if (kind == FenceKind.Rail && c.roadIndex.Covers(mid, NoRoad, 2.5f)) continue;
+                    if (OverCut(c.terrain, a, b)) { c.FencesOverCuts++; continue; }   // Round 24 A3 (B0, BUG-001: "fence isnt hanging in mid air"): no panel over a pipe's or the network's cut
                     float ga = Ground(c.terrain, a.x, a.y), gb = Ground(c.terrain, b.x, b.y);
                     var key = new Vector2Int(Mathf.FloorToInt(mid.x / 128f), Mathf.FloorToInt(mid.y / 128f));
                     var ck = ((int)kind) * 1000003 + key.x * 7919 + key.y;

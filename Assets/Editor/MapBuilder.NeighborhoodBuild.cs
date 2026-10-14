@@ -29,7 +29,7 @@ namespace ChastainRush
             public readonly StringBuilder Log = new StringBuilder();
             public readonly List<ViewPt> Views = new List<ViewPt>();
             public int GrassyDrives, FlagsUp;
-            public int Houses, Drives, Mailboxes, Lamps, Hydrants, FencePanels, FenceRuns, CurbMetres, WalkMetres, ShortcutCleared;
+            public int Houses, Drives, Mailboxes, Lamps, Hydrants, FencePanels, FenceRuns, CurbMetres, WalkMetres, ShortcutCleared, FencesOverCuts;   // Round 24 A3: FencesOverCuts
             public float Lift => 0.06f;
             public float Y(float x, float z) => terrain.Height(x, z);
             public bool OnDrive(Vector2 p, float margin)
@@ -88,7 +88,7 @@ namespace ChastainRush
             ctx.Props.ToObjects("HoodProps", mats.House, root, false);   // curbs, mailboxes, lamps, shrubs: small, no shadows (performance)
             Debug.Log($"[Neighborhood] {ctx.Houses} houses (styles A {hood.Houses.Count(h => h.style == HouseStyle.A)}, B {hood.Houses.Count(h => h.style == HouseStyle.B)}, " +
                       $"C {hood.Houses.Count(h => h.style == HouseStyle.C)}, D {hood.Houses.Count(h => h.style == HouseStyle.D)}), {ctx.Drives} drives, {ctx.Mailboxes} mailboxes, " +
-                      $"{ctx.Lamps} lamps, {ctx.Hydrants} hydrants, {ctx.CurbMetres} m of curb, {ctx.WalkMetres} m of sidewalk, {ctx.FenceRuns} fence runs / {ctx.FencePanels} panels; " +
+                      $"{ctx.Lamps} lamps, {ctx.Hydrants} hydrants, {ctx.CurbMetres} m of curb, {ctx.WalkMetres} m of sidewalk, {ctx.FenceRuns} fence runs / {ctx.FencePanels} panels ({ctx.FencesOverCuts} left off a pipe cut); " +
                       $"Round 9: drives rebuilt as a fine grid, {ctx.GrassyDrives} of {ctx.Drives} had ground showing through the old surface; {ctx.Mailboxes} mailboxes breakable, {ctx.FlagsUp} flags up; " +
                       $"trees: {hood.TreesMovedOffDrives} moved off drives into the yard, {hood.TreesDroppedOffDrives} on a drive with no room beside it removed; {ctx.Log}");
         }

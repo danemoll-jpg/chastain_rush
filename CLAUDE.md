@@ -283,6 +283,15 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Round 24 Part A3 (see `TODO.md`, status there) is built; pictures from the exe by script, no drive tests, not yet driven by Dan:**
+B0 BUG-002's house was already whole (L_W8 gone, pictures from Dan's spot), no fence over any cut (`MapBuilder.OverCut`), and a
+sweep of every building against the network's cuts (`ChastainRush.NetworkSweep.Run -sweepOut <dir>` [-sweepProfile x0,z0,x1,z1],
+then `python Tools/mapgen/network_sweep.py <dir>`): none found. B1 full screen at the desktop's resolution, or windowed, from the
+menus' "Screen" row (`ScreenSetting`, `display.json` beside the records; never in a check run). B2 #2's worn tracks to 1627's
+sliding door. B3 new reverse-only Noonday Creek candidates RD, RE on TEMPORARY markers (`python
+Tools/mapgen/creek_reverse_candidates.py`, `Data/proposals/round24_creek_reverse.json`, read with the race's proposal file by
+`MapBuilder.Proposals.cs` and `make_proposal_labels.py`). Imported from Racer: nothing. Next: Part B.
+
 **Round 24 Part A2 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the frame
 rate (cause: `DrainPipe.FixedUpdate` searching every pipe piece for every piece and vehicle each physics step; races 3 fps before,
 134 to 192 fps after), mouths off roads / sidewalks / drives / the trail (`DriveBands`, `ChastainRush.MouthScan.Run -mouthOut <file>`),

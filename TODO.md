@@ -2798,6 +2798,43 @@ B3. Noonday Creek reverse shortcuts that are its OWN. Dan: "are the shortcuts on
    interesting, a hint at the turn-off), on markers in the world and on the map with an overhead, as in Round 21 Part C.
    Build none yet; RA and RC stay until Dan picks.
 
+**STATUS of Part A3 (Claude, 2026-10-14): B0 to B3 DONE, exe rebuilt; pictures from the exe by script (minimized, muted,
+`local/round24a3/`, git-ignored), no drive tests; not yet driven by Dan.**
+- B0 BUG-002 (x 2901.45, z 853.92): the cut Dan saw WAS L_W8 (its chute ran under that house; the "about x 2760" in the note above
+  was wrong: L_W8's top-down of 14:16, `local/round24/td_lw8`, is that house). The exe of 14:16, from Dan's exact spot and heading,
+  already shows the house whole on unbroken lawn, and so does this round's exe (Drifter Twin, as Dan): `local/round24a3/
+  B0_bug002_before_after.png` (Dan's 10:03 picture, the 14:16 exe, now). No cut, hole or graded patch within 3 m of that house.
+  If Dan still sees it, he is not running `Builds/ChastainRush/ChastainRush.exe` of 14:16 or later.
+- B0 near the Glen pond (BUG-001, x 2918.28, z 814.79): the white rail fence ran across GP's open inlet cut (in mid air over the
+  trench). Fixed for every fence on the map: no fence panel over a pipe's or the network's cut (`MapBuilder.OverCut`, BuildFences;
+  6 panels left off, all at cuts); the fence now stops at the cut's railing (`B0_bug001_before_after.png`). The open notch itself
+  stays: GP's mouth floor is at the pond's level (288.5 m) and a 5 m barrel's crown needs 294.3 m of ground at the mouth, 2.4 m over
+  Chastain Glen Lane; ground cover there means a 2.4 m mound by the road, a smaller pipe, or the mouth under the pond's water. Not
+  built (no nearest version): Dan's pick, with Part B item 4.
+- B0 SWEEP of every house: `ChastainRush.NetworkSweep.Run -sweepOut <dir>` (Editor batch: every built thing standing over or within
+  1 m of a terrain hole cut by the pipes / network; writes holes.txt) and `python Tools/mapgen/network_sweep.py <dir>` (all 2388 OSM
+  buildings against the holes and the network's graded patches: BF / GP aprons, P1's approach). Result: 0 houses, garages, decks,
+  pools or other buildings over or within 3 m of a cut or a graded patch (nearest building 11 m from a hole, at X_SHOPS). Things
+  left at a cut, all at GP's mouth, for Dan: the curb on top of GP's headwall at the road edge (HoodProps), a pond straw patch at
+  its pond side, the fence's last post at the cut's south edge. No worst-three pictures: nothing found.
+- B1 DONE: `ScreenSetting` (Assets/Scripts/ScreenSetting.cs): the game Dan starts opens full screen (borderless) at the desktop's
+  resolution, or windowed (75 % of it) if he chose that, whatever Unity remembered from a check run; saved in `display.json` beside
+  the records; check runs never apply or save it. Menu row "Screen: Fullscreen / Windowed" (left / right) on the title menu and
+  both pause menus. Not checked on screen (that would take Dan's screen): for Dan.
+- B2 DONE: worn tire tracks (WornRuts, as R3 / R1) along #2's line from where it leaves Chastain Glen Lane (3085.8, 1045.4) to
+  1.5 m short of 1627's sliding glass door, 62 m (`MapBuilder.Shortcuts.cs` SlidingDoorTracks). Picture from Dan's spot:
+  `local/round24a3/after/b2_dan_spot.png`.
+- B3 MARKERS ONLY: `python Tools/mapgen/creek_reverse_candidates.py` (`Data/proposals/round24_creek_reverse.json`,
+  `local/round24a3/creek_reverse_candidates.png|txt`). Two candidates, not four: the trail is two long straight legs; away from the
+  hairpin and the south loop no cut saves more than about 15 m. RD "Gully leap" (south loop bottom, rev 482 to 654: a plank kicker on
+  the gully's west rim, 33 to 38 m over Noonday Creek's gully, 60 m south of N2 / RC; saves 85 m, about 3.3 s; forgives nothing,
+  rejoins before CP4). RE "Flood-plain run" (south of the small pond, rev 1424 to 1856: off the plateau's edge, 120 m through the
+  flood plain's woods, a log kicker over the gorge onto the west leg; saves 209 m, about 4.6 s; forgives the hairpin checkpoint;
+  skips the same hairpin as P1 / RA on a line of its own, 432 m of lap: maybe too much). Markers (magenta, debug menu "Proposal
+  markers", "Go to" RD / RE) and the map layer, with the race's markers. RA and RC stay.
+- For Dan to check: the house at BUG-002 in the exe; the fence at GP; the Screen row and full screen on start; #2's tracks; RD / RE on
+  the markers (free roam, debug menu).
+
 Part B, QUEUED for Dan's next session (do after Part A, in this order):
 4. Ugly entrances and exits, everywhere. Dan: "I don't want ugly entrances like the one I flagged. If there are others I
    want them reworked as well." His session 2026-10-13_10-00-51-441_3321a8:

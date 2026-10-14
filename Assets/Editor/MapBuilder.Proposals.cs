@@ -24,7 +24,9 @@ namespace ChastainRush
         [Serializable] class ProposalStart { public string name; public float x, z, yaw; }
         [Serializable] class ProposalDoc { public ProposalLine[] lines; public ProposalMark[] marks; public ProposalStart[] starts; }
 
-        const string ProposalFile = "Data/proposals/round23_network.json";
+        // Round 24 A3 (B3): and the new reverse-only Noonday Creek candidates (Tools/mapgen/creek_reverse_candidates.py), set "C", magenta;
+        // the files are read in this order (the labels' cells follow it: make_proposal_labels.py)
+        static readonly string[] ProposalFiles = { "Data/proposals/round23_network.json", "Data/proposals/round24_creek_reverse.json" };
         // the caps (and the label boards, make_proposal_labels.py) by kind
         static readonly Dictionary<string, Color> PropCaps = new Dictionary<string, Color>
         {
@@ -33,16 +35,17 @@ namespace ChastainRush
             { "aquarium", new Color(0.33f, 0.82f, 1f) }, { "shaft", new Color(0.54f, 0.17f, 0.89f) }, { "flooded", new Color(0.23f, 0.43f, 0.62f) },
             { "sign", new Color(1f, 0.84f, 0f) }, { "gate", new Color(0.82f, 0.06f, 0.06f) }, { "switch", new Color(1f, 0.72f, 0.2f) },
             { "checkpoint", new Color(0.16f, 0.62f, 0.25f) }, { "start", new Color(0.05f, 0.05f, 0.05f) },
+            { "shortcut", new Color(1f, 0.2f, 0.8f) }, { "jump", new Color(0.55f, 0.08f, 0.45f) },   // Round 24 A3 (B3)
         };
         static readonly HashSet<string> MapNamed = new HashSet<string> { "grille", "mouth", "junction", "hub", "exit", "manhole", "outfall" };
         const int LabelCols = 4; const float BoardW = 6.4f, BoardH = 2.0f;
 
         static void BuildProposalMarkers(TerrainGrid t, Transform parent)
         {
-            string path = Path.Combine(ProjectRoot, ProposalFile);
-            if (!File.Exists(path)) return;
-            var doc = JsonUtility.FromJson<ProposalDoc>(File.ReadAllText(path));
-            var root = new GameObject("ProposalMarkers (Round 23, temporary)");
+            var docs = ProposalFiles.Select(f => Path.Combine(ProjectRoot, f)).Where(File.Exists).Select(f => JsonUtility.FromJson<ProposalDoc>(File.ReadAllText(f))).ToList();
+            if (docs.Count == 0) return;
+            var doc = new ProposalDoc { lines = docs.SelectMany(d => d.lines ?? new ProposalLine[0]).ToArray(), marks = docs.SelectMany(d => d.marks ?? new ProposalMark[0]).ToArray(), starts = docs.SelectMany(d => d.starts ?? new ProposalStart[0]).ToArray() };
+            var root = new GameObject("ProposalMarkers (Round 23 and 24, temporary)");
             root.transform.SetParent(parent, false);
             var comp = root.AddComponent<ProposalMarkers>();
             var mats = new Dictionary<Color, Material>();
@@ -154,7 +157,8 @@ namespace ChastainRush
             comp.markPoints = named.Select(m => new Vector3(m.x, 0f, m.z)).ToArray();
             comp.markColors = named.Select(m => PropCaps.TryGetValue(m.kind, out var c) ? Color.Lerp(c, Color.white, 0.25f) : Color.white).ToArray();
             comp.legend = "<color=#F040D8>Round 23 proposal:</color> <color=#E62929>M1</color> <color=#FF8C0D>M5</color> <color=#26BF40>M3</color> <color=#FFD91A>M4</color> " +
-                          "<color=#2E73FF>M2</color> <color=#9E47F2>M6</color> mains, <color=#EEEEEE>B</color> maze, <color=#D9BFFF>race</color>, <color=#FFB833>switch shortcuts</color>; zoom in for exits and manholes";
+                          "<color=#2E73FF>M2</color> <color=#9E47F2>M6</color> mains, <color=#EEEEEE>B</color> maze, <color=#D9BFFF>race</color>, <color=#FFB833>switch shortcuts</color>; zoom in for exits and manholes" +
+                          "; <color=#FF33CC>Round 24: reverse-only Noonday Creek candidates RD, RE</color>";
             comp.boards = boards.ToArray();
             comp.startNames = doc.starts.Select(s => s.name).ToArray();
             comp.starts = doc.starts.Select(s => new Vector3(s.x, s.z, s.yaw)).ToArray();

@@ -536,6 +536,7 @@ namespace ChastainRush
                 var sroot = new GameObject("Shortcut " + sc.id + " (" + sc.name + ")").transform; sroot.SetParent(root, false);
                 foreach (var pr in sc.prisms) { if (pr.kind == "slide") FitFootToGround(pr, terrain); BuildPrism(pr, terrain, mats, sroot); prisms++; }
                 BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
+                SlidingDoorTracks(hood, terrain, mats, sroot, sc);   // Round 24 A3, item B2
                 if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) { BuildPlayground(sc, terrain, mats, sroot); if (sc.sign_face == "party") BuildPartyDressing(sc, terrain, mats, sroot); }   // Round 18 (R3); Round 19: the party
                 if (sc.look == "kids_ramp" || sc.look == "pool_jump") BuildKidsRamp(sc, terrain, mats, sroot);   // Round 19 (6): R1's homemade ramp (MapBuilder.PartyHint.cs)
                 if (sc.look == "pool_jump") BuildPoolJump(sc, terrain, mats, sroot);   // Round 20 follow-up: R1's pool, fences, gate, patio (MapBuilder.R1Pool.cs)
@@ -552,6 +553,24 @@ namespace ChastainRush
                     }
             }
             Debug.Log($"[Shortcuts] {hood.ShortcutData.shortcuts.Length} shortcuts, {prisms} ramps / decks / floors, {hood.OpenHouses.Count} houses opened, {hood.JumpHouses.Count} jumped; {hood.TreesCleared} trees kept off the lines");
+        }
+
+        // Round 24 A3, item B2 (Dan's session 2026-10-13_16-28, BUG-001 on #2's run-up: "we need the tire marks here. Because it isnt
+        // really obvious that you are supposed to go through the sliding glass door"): worn tire tracks in the grass along the line
+        // from where it leaves the street to 1.5 m short of the open house's sliding glass door (WornRuts, as R3's and R1's)
+        static void SlidingDoorTracks(Neighborhood hood, TerrainGrid terrain, Materials mats, Transform parent, ScShortcut sc)
+        {
+            var oh = sc.open_houses?.FirstOrDefault(o => o.sliding_door_a && o.a != null && o.a.Length >= 2);
+            if (oh == null || sc.path == null) return;
+            var p = ToPoints(sc.path); var door = new Vector2(oh.a[0], oh.a[1]);
+            int i0 = p.FindIndex(q => hood.RoadClearance(q) > 0.3f);
+            int i1 = Enumerable.Range(0, p.Count).OrderBy(k => (p[k] - door).sqrMagnitude).First();
+            while (i1 > 0 && (p[i1] - door).magnitude < 1.5f) i1--;
+            if (i0 < 0 || i1 <= i0 + 2) { Debug.LogWarning($"[Round24] {sc.id}: no room for worn tracks to the sliding door"); return; }
+            var line = p.GetRange(i0, i1 - i0 + 1);
+            WornRuts(terrain, mats, parent, line, sc.id + " worn tracks to the sliding door");
+            float len = 0f; for (int k = 1; k < line.Count; k++) len += Vector2.Distance(line[k - 1], line[k]);
+            Debug.Log($"[Round24] {sc.id}: worn tire tracks {len:0} m from the street at ({line[0].x:0.0}, {line[0].y:0.0}) to the sliding glass door of house {oh.building}");
         }
 
         // Round 12, item 3: a home-made sign at the turn-off: a plywood board 1.6 x 0.8 m on two posts, its painted face

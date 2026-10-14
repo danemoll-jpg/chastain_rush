@@ -20,8 +20,8 @@ namespace ChastainRush
     // records boards, rider page, settings tabs and on-screen keyboard are left behind.
     //   Start / Esc / Enter   open the menu while driving; on the menu's first page they close it again (resume)
     //   B / Esc               back one page (on the first page of the pause menu: resume)
-    // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, QUIT GAME), the pause menu (free driving: RESUME,
-    // RACE, GARAGE, QUIT GAME; in a race: RESUME, RESTART RACE, LEAVE RACE, QUIT GAME), race setup (laps, direction,
+    // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, Screen, QUIT GAME), the pause menu (free driving: RESUME,
+    // RACE, GARAGE, DEBUG, Screen, QUIT GAME; in a race: RESUME, RESTART RACE, LEAVE RACE, QUIT GAME), race setup (laps, direction,
     // opponents, difficulty, the opponents' vehicles, START RACE) and the garage. While a menu is up the game is paused.
     // Never in a check run (CheckRun.Active): checks drive straight away as before.
     public sealed partial class GameMenus : MonoBehaviour
@@ -378,7 +378,8 @@ namespace ChastainRush
                 Row(0, "race", "RACE", () => Navigate("race"));
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                ScreenRow(3);
+                Row(4, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free)
@@ -388,7 +389,8 @@ namespace ChastainRush
                 Row(1, "race", "RACE", () => Navigate("race"));
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
                 Row(3, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-                Row(4, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                ScreenRow(4);
+                Row(5, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
@@ -399,8 +401,11 @@ namespace ChastainRush
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
+            ScreenRow(n++);
             Row(n++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
         }
+        // Round 24 A3 (B1): full screen or windowed, left / right, applied at once and saved (ScreenSetting)
+        void ScreenRow(int index) => Step(index, "screen", "Screen:   " + (ScreenSetting.Fullscreen ? "Fullscreen" : "Windowed"), d => { ScreenSetting.Set(!ScreenSetting.Fullscreen); Show(); });
 
         // ---------------------------------------------------------------- Round 17: the debug menu, controller first
         // Reached from the pause menu's DEBUG row, from Start while the debug panel is up, or from F6 / \ (DeveloperHud).

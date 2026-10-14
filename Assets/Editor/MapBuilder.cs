@@ -196,6 +196,22 @@ namespace ChastainRush
         }
 
         static float Ground(TerrainGrid t, float x, float z) => t.Height(x, z);
+        // Round 24 A3 (B0): whether a terrain hole (a pipe's or the network's cut) lies on the line a..b or within 0.5 m of it
+        static bool OverCut(TerrainGrid g, Vector2 a, Vector2 b)
+        {
+            int n = Mathf.Max(2, Mathf.CeilToInt(Vector2.Distance(a, b) / 0.5f));
+            for (int i = 0; i <= n; i++)
+            {
+                var q = Vector2.Lerp(a, b, i / (float)n);
+                foreach (var o in new[] { Vector2.zero, new Vector2(0.5f, 0f), new Vector2(-0.5f, 0f), new Vector2(0f, 0.5f), new Vector2(0f, -0.5f) })
+                {
+                    var p = q + o; var t = g.At(p.x, p.y); var d = t.terrainData; var pos = t.transform.position; int hr = d.holesResolution;
+                    int x = Mathf.Clamp(Mathf.FloorToInt((p.x - pos.x) / d.size.x * hr), 0, hr - 1), z = Mathf.Clamp(Mathf.FloorToInt((p.y - pos.z) / d.size.z * hr), 0, hr - 1);
+                    if (!d.GetHoles(x, z, 1, 1)[0, 0]) return true;
+                }
+            }
+            return false;
+        }
 
         // ------------------------------------------------------------ sky, sun and distance fog
 
