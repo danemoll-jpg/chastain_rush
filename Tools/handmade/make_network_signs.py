@@ -14,7 +14,7 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 OUT = os.path.join(ROOT, "Assets/HandMade/Network/NetworkSigns.png")
 ROWS = ["M1 TRUNK", "M5 ENCLAVE MAIN", "M3 NOONDAY MAIN", "M4 GLEN MAIN", "M2 LAKES MAIN", "M6 NELSON MAIN", "THE HUB",
-        "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13"]
+        "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13", "< HUB", "HUB >"]
 COLORS = {"M1": (230, 41, 41), "M5": (255, 140, 13), "M3": (38, 191, 64), "M4": (255, 217, 26), "M2": (46, 115, 255), "M6": (158, 71, 242)}
 W, H, S = 512, 96, 2
 
@@ -29,6 +29,20 @@ def font(px):
 img = Image.new("RGBA", (W * S, H * S * len(ROWS)), (0, 0, 0, 0))
 d = ImageDraw.Draw(img)
 for r, text in enumerate(ROWS):
+    if "HUB" in text and text != "THE HUB":
+        # Round 24 Part B (item 6): the way to the hub, beside a main's opening in a junction: a dark board with a white rim, HUB and a
+        # big arrow pointing at the opening
+        y0, y1 = r * H * S + 4 * S, (r + 1) * H * S - 4 * S
+        d.rounded_rectangle((6 * S, y0, W * S - 6 * S, y1), radius=10 * S, fill=(28, 30, 32, 255), outline=(240, 240, 235, 255), width=4 * S)
+        f = font(64 * S); word = "HUB"; tw = d.textlength(word, font=f); bb = d.textbbox((0, 0), word, font=f)
+        left = text.startswith("<"); cy = (y0 + y1) / 2
+        ax0, ax1 = (24 * S, 250 * S) if left else (W * S - 250 * S, W * S - 24 * S)
+        tip, tail = (ax0, ax1) if left else (ax1, ax0)
+        head = 70 * S * (1 if left else -1)
+        d.polygon([(tip, cy), (tip + head, cy - 30 * S), (tip + head, cy - 11 * S), (tail, cy - 11 * S), (tail, cy + 11 * S), (tip + head, cy + 11 * S), (tip + head, cy + 30 * S)], fill=(255, 214, 40, 255))
+        tx = (W * S - 40 * S - tw) if left else 40 * S
+        d.text((tx, cy - (bb[3] - bb[1]) / 2 - bb[1]), word, font=f, fill=(255, 255, 255, 255))
+        continue
     col = COLORS.get(text.split()[0], (235, 235, 230))
     px = 78 * S
     f = font(px)

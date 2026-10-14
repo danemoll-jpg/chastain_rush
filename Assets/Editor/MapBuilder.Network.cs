@@ -32,9 +32,9 @@ namespace ChastainRush
         [Serializable] class NetEnd { public string kind, chamber, pipe, manhole, exit, lvl; public int wall, side; public float t, level, inset; public bool high; }
         [Serializable] class NetGlass { public int pond; public float s0, s1, surface; }
         [Serializable] class NetFlood { public float s0, s1, level; }
-        [Serializable] class NetTube { public string id, name; public float d; public bool main; public int stage; public float[] stripe; public NetEnd a, b; public float[] pts; public NetGlass[] glass; public NetFlood flood; }
+        [Serializable] class NetTube { public string id, name; public float d; public bool main; public int stage, to_hub; public float[] stripe; public NetEnd a, b; public float[] pts; public NetGlass[] glass; public NetFlood flood; }
         [Serializable] class NetOpening { public int wall; public float t, d, inset; public string tube, lvl; public bool high; }
-        [Serializable] class NetChamber { public string id, name, kind, sign; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling; public int stage; public NetOpening[] openings; }
+        [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling; public int stage; public NetOpening[] openings; }
         [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; }
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
         [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; }
@@ -107,7 +107,7 @@ namespace ChastainRush
             public readonly List<(Vector2 c, float r)> Holes = new List<(Vector2, float)>();     // the street cut round each manhole (roads, paint)
             public readonly List<(NetManhole m, Vector2 c, float r, float y)> Lids = new List<(NetManhole, Vector2, float, float)>();
             public readonly Dictionary<string, (float half, float lift)> LidRoad = new Dictionary<string, (float, float)>();   // the street's half width and lift at each manhole
-            public readonly List<(NetTubeGeo g, NetGlass gl, float T)> Glass = new List<(NetTubeGeo, NetGlass, float)>();
+            public readonly List<(NetTubeGeo g, NetGlass gl, float T, float[] TS)> Glass = new List<(NetTubeGeo, NetGlass, float, float[])>();   // Round 24 Part B: TS, the deep water's half width every meter from s0
             public bool Built(NetTube t) => t.stage <= Stage;
             public bool Built(NetChamber c) => c.stage <= Stage;
             public int TreesRemoved;
@@ -202,17 +202,34 @@ namespace ChastainRush
                 {
                     if (gl.s1 - gl.s0 < 8f || gl.pond < 0 || gl.pond >= Beds.Rings.Count) continue;
                     var ring = Beds.Rings[gl.pond];
-                    float T = 8f;   // the trench's half width at the top: never out past the pond's shore (1 m inside it)
-                    for (float s = gl.s0; s <= gl.s1; s += 1f) { int i = g.At(s); T = Mathf.Min(T, DistToEdges(new Vector2(g.P[i].x, g.P[i].z), ring) - 1f); }
-                    T = Mathf.Max(T, g.R + 2.2f);
-                    int holed = SetHoles(terrain, BoundsOf(Enumerable.Range(g.At(gl.s0), g.At(gl.s1) - g.At(gl.s0) + 1).Select(i => new Vector2(g.P[i].x, g.P[i].z)), T + 1f), q =>
+                    // Round 24 Part B (item 5, Dan: "if I am in the middle of a lake I would want it to look like I am in the middle of a lake
+                    // then in a channel"): the deep water's half width at the top at each meter: out to where the pond's own bed is at full
+                    // depth (4 m in from the shore, PondSlope), up to 40 m, smoothed along (it was 8 m at most: a channel round the tube)
+                    int nT = Mathf.FloorToInt(gl.s1 - gl.s0) + 1; var raw = new float[nT]; var TS = new float[nT];
+                    for (int k = 0; k < nT; k++)
+                    {
+                        int i = g.At(gl.s0 + k); raw[k] = Mathf.Clamp(DistToEdges(new Vector2(g.P[i].x, g.P[i].z), ring) - 4f, g.R + 2.2f, 40f);
+                        // and inside the bends' radius (the bed is laid out square to the line: past the radius it would fold over itself)
+                        int i0 = g.At(gl.s0 + k - 5f), i1 = g.At(gl.s0 + k + 5f);
+                        Vector2 A2 = new Vector2(g.P[i0].x, g.P[i0].z), B2 = new Vector2(g.P[i].x, g.P[i].z), C2 = new Vector2(g.P[i1].x, g.P[i1].z);
+                        float area2 = Mathf.Abs((B2.x - A2.x) * (C2.y - A2.y) - (B2.y - A2.y) * (C2.x - A2.x));
+                        if (area2 > 1e-3f) raw[k] = Mathf.Max(g.R + 2.2f, Mathf.Min(raw[k], 0.7f * (A2 - B2).magnitude * (B2 - C2).magnitude * (C2 - A2).magnitude / (2f * area2)));
+                    }
+                    for (int k = 0; k < nT; k++)
+                    {
+                        float lo = float.MaxValue; for (int j = Mathf.Max(0, k - 6); j <= Mathf.Min(nT - 1, k + 6); j++) lo = Mathf.Min(lo, raw[j] + Mathf.Abs(j - k) * 0.6f);   // never past the shore, eased along
+                        TS[k] = lo;
+                    }
+                    float T = TS.Min();
+                    float TSat(float s) => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, nT - 1)];
+                    int holed = SetHoles(terrain, BoundsOf(Enumerable.Range(g.At(gl.s0), g.At(gl.s1) - g.At(gl.s0) + 1).Select(i => new Vector2(g.P[i].x, g.P[i].z)), TS.Max() + 1f), q =>
                     {
                         float best = float.MaxValue, at = 0f;
                         for (int i = g.At(gl.s0); i < g.At(gl.s1); i++) { var a = new Vector2(g.P[i].x, g.P[i].z); var b = new Vector2(g.P[i + 1].x, g.P[i + 1].z); var ab = b - a; float tt = Mathf.Clamp01(Vector2.Dot(q - a, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); float d = (a + ab * tt - q).magnitude; if (d < best) { best = d; at = g.S[i] + tt * ab.magnitude; } }
-                        return best <= T && at > gl.s0 && at < gl.s1;
+                        return at > gl.s0 && at < gl.s1 && best <= TSat(at);
                     });
-                    n.Glass.Add((g, gl, T));
-                    Debug.Log($"[Round23+] pipe {t.id}: glass under pond W{gl.pond} from {gl.s0:0} to {gl.s1:0} m ({gl.s1 - gl.s0:0} m), the trench {2f * T:0.0} m wide, {holed} terrain hole cells");
+                    n.Glass.Add((g, gl, T, TS));
+                    Debug.Log($"[Round23+] pipe {t.id}: glass under pond W{gl.pond} from {gl.s0:0} to {gl.s1:0} m ({gl.s1 - gl.s0:0} m), the deep water {2f * T:0.0} to {2f * TS.Max():0.0} m wide (Round 24 Part B: open water), {holed} terrain hole cells");
                 }
             }
         }
@@ -299,7 +316,7 @@ namespace ChastainRush
                 rooms++;
             }
             foreach (var (m, c, r, y) in n.Lids) BuildManholeLid(terrain, mats, root, m, c, r, y, n.LidRoad.TryGetValue(m.id, out var lr) ? lr : (3.5f, 0.06f), cells);
-            foreach (var (g, gl, T) in n.Glass) BuildNetworkGlass(terrain, mats, root, g, gl, T, cells);
+            foreach (var (g, gl, T, TS) in n.Glass) BuildNetworkGlass(terrain, mats, root, g, gl, T, TS, cells);
             // the run time: cells switched on near the camera
             var nc = root.gameObject.AddComponent<NetworkCells>();
             nc.roots = cells.Cells.Select(c => c.root).ToArray(); nc.bounds = cells.Cells.Select(c => c.b).ToArray();
@@ -377,6 +394,32 @@ namespace ChastainRush
                             float th0 = side * 1.30f, th1 = side * 1.43f;
                             Face(sm, Pt(i, th0), Pt(i + 1, th0), Pt(i + 1, th1), Pt(i, th1), g.Axis(i) - Pt(i, (th0 + th1) * 0.5f));
                         }
+                    // Round 24 Part B (item 6, Dan: "It is very easy to get turned around in the tunnels. Can we [make] the lines always point
+                    // towards the hub"): chevrons on both stripes every 8 m, pointing the way to the hub along the mains (to_hub,
+                    // Tools/mapgen/pipe_network.py): 0.8 m tall across the 0.33 m stripe, in its color, just off the wall
+                    if (t.to_hub != 0)
+                    {
+                        float dir = t.to_hub, Lc = 0.8f, Wc = 0.3f, hh = 0.42f / R;
+                        Vector3 Ps(float s, float th)
+                        {
+                            int j = Mathf.Clamp(g.At(s), 1, N - 1); float u = Mathf.InverseLerp(g.S[j - 1], g.S[j], s);
+                            var ax = Vector3.Lerp(g.Axis(j - 1), g.Axis(j), u); var sd = Vector3.Lerp(g.Side(j - 1), g.Side(j), u).normalized; var upv = Vector3.Lerp(g.Up(j - 1), g.Up(j), u).normalized;
+                            return ax + (sd * Mathf.Sin(th) - upv * Mathf.Cos(th)) * (R - 0.02f);
+                        }
+                        float first8 = Mathf.Ceil((g.S[cellStart] + 0.01f) / 8f) * 8f;
+                        for (float sc = first8; sc < g.S[cellEnd]; sc += 8f)
+                        {
+                            if (sc < 4f || sc > g.S[N - 1] - 4f || Glass(sc - 1.5f) || Glass(sc + 1.5f) || riserTop(g.At(sc)) || (g.RiserFrom >= 0 && g.At(sc) > g.RiserFrom - 3)) continue;
+                            foreach (float side in new[] { -1f, 1f })
+                            {
+                                float thc = side * 1.365f, sb = sc - dir * Lc * 0.5f, st = sc + dir * Lc * 0.5f;
+                                var axm = g.Axis(g.At(sc));
+                                // the two arms of the ">" (back corner, back corner moved on by the arm's thickness, the tip moved on, the tip)
+                                Face(sm, Ps(sb, thc + hh), Ps(sb + dir * Wc, thc + hh), Ps(st + dir * Wc, thc), Ps(st, thc), axm - Ps(sc, thc));
+                                Face(sm, Ps(st, thc), Ps(st + dir * Wc, thc), Ps(sb + dir * Wc, thc - hh), Ps(sb, thc - hh), axm - Ps(sc, thc));
+                            }
+                        }
+                    }
                     if (sm.Count > 0) { var so = sm.ToObject($"Net {t.id} {cellStart} stripes", netStripe(new Color(t.stripe[0], t.stripe[1], t.stripe[2])), cell, false, false); GameObjectUtility.SetStaticEditorFlags(so, 0); }
                 }
                 // lamps along the crown (none over glass, none on a riser)
@@ -675,7 +718,7 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)
-        static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, NetCells cells)
+        static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, float[] TS, NetCells cells)
         {
             var root = cells.Make(parent, "Glass " + g.J.id + " under pond W" + gl.pond);
             float surface = Beds.Level.TryGetValue(gl.pond, out float lv) ? lv + PondLift : gl.surface;
@@ -685,10 +728,11 @@ namespace ChastainRush
             float axis = float.MaxValue, axisTop = float.MinValue; for (float s = gl.s0; s <= gl.s1; s += 1f) { axis = Mathf.Min(axis, At(s).y + g.R); axisTop = Mathf.Max(axisTop, At(s).y + g.R); }   // its lowest (the trench's depth) and highest (the crown under the water)
             if (axisTop + g.R + GlassOut > surface - ClearCrownUnder) { Debug.LogError($"[Round23+] pipe {g.J.id}: the glass under W{gl.pond} is not under the water (crown {axis + g.R:0.00} m, surface {surface:0.00} m): not built"); return; }
             var f = new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = T, AxisY = axis,
-                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R };
+                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
+                                     TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)] };   // Round 24 Part B: open water
             BuildClearStretch(terrain, mats, root, f);
             var a = At(gl.s0); var b = At(gl.s1);
-            cells.Cells.Add((root, new Bounds((a + b) * 0.5f, new Vector3(Mathf.Abs(a.x - b.x) + 2f * T + 10f, 20f, Mathf.Abs(a.z - b.z) + 2f * T + 10f))));
+            cells.Cells.Add((root, new Bounds((a + b) * 0.5f, new Vector3(Mathf.Abs(a.x - b.x) + 2f * TS.Max() + 10f, 20f, Mathf.Abs(a.z - b.z) + 2f * TS.Max() + 10f))));
         }
     }
 }

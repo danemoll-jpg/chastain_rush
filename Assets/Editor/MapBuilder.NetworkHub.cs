@@ -308,7 +308,7 @@ namespace ChastainRush
         // ---------------------------------------------------------------- painted signs (Assets/HandMade/Network/NetworkSigns.png)
         // rows of the atlas, top to bottom (Tools/handmade/make_network_signs.py writes them in this order)
         static readonly string[] NetSignRows = { "M1 TRUNK", "M5 ENCLAVE MAIN", "M3 NOONDAY MAIN", "M4 GLEN MAIN", "M2 LAKES MAIN", "M6 NELSON MAIN", "THE HUB",
-                                                  "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13" };
+                                                  "J1", "J2", "J3", "J4", "J5", "J6", "J7", "J8", "J9", "J10", "J12", "J13", "< HUB", "HUB >" };   // Round 24 Part B: the hub arrows
         const string NetSignAtlas = "Assets/HandMade/Network/NetworkSigns.png";
         static Material netSigns;
 
@@ -350,6 +350,36 @@ namespace ChastainRush
                     int w = Enumerable.Range(0, 4).OrderBy(k => c.openings.Count(o => o.wall == k)).First();
                     var nrm = new[] { u3, v3, -u3, -v3 }[w]; float half = (w == 0 || w == 2) ? hl : hw;
                     Plate(C + nrm * (half - 0.03f) + Vector3.up * (c.height - 1.6f), -nrm, 4.8f, 0.9f, nameRow);
+                }
+            }
+            // Round 24 Part B (item 6, Dan: "It is very easy to get turned around in the tunnels"): in every junction on a main, a HUB sign
+            // with an arrow beside the opening of the main that leads to the hub (hub_tube, Tools/mapgen/pipe_network.py), on the side of
+            // it with room, at eye height, the arrow pointing at the opening
+            if (!hub && !string.IsNullOrEmpty(c.hub_tube))
+            {
+                var o = c.openings.FirstOrDefault(x => x.tube == c.hub_tube);
+                if (o == null) Debug.LogWarning($"[Round24] chamber {c.id}: no opening for {c.hub_tube} (its HUB sign)");
+                else
+                {
+                    var nrm = new[] { u3, v3, -u3, -v3 }[o.wall]; var along = new[] { v3, u3, v3, u3 }[o.wall];
+                    float half = (o.wall == 0 || o.wall == 2) ? hl : hw, extent = (o.wall == 0 || o.wall == 2) ? hw : hl;
+                    float baseY = o.high ? c.drop : 0f; bool placed = false;
+                    foreach (float w in new[] { 3.2f, 2.4f })
+                    {
+                        foreach (float side in new[] { 1f, -1f })
+                        {
+                            float tc = o.t + side * (o.d * 0.5f + 0.5f + w * 0.5f);
+                            if (Mathf.Abs(tc) + w * 0.5f > extent - 0.2f) continue;
+                            if (c.openings.Any(x => x != o && x.wall == o.wall && Mathf.Abs(x.t - tc) < x.d * 0.5f + 0.4f + w * 0.5f && Mathf.Abs((x.high ? c.drop : 0f) - baseY) < 1f)) continue;
+                            var center = C + nrm * (half - 0.03f) + along * tc + Vector3.up * (baseY + 2.3f);
+                            var facing = -nrm; var right = Vector3.Cross(Vector3.up, facing).normalized * -1f;   // as Plate: the viewer's right
+                            bool signRightOfOpening = Vector3.Dot(along * (tc - o.t), right) > 0f;
+                            Plate(center, facing, w, w * 0.1875f, System.Array.IndexOf(NetSignRows, signRightOfOpening ? "< HUB" : "HUB >"));
+                            placed = true; break;
+                        }
+                        if (placed) break;
+                    }
+                    if (!placed) Debug.LogWarning($"[Round24] chamber {c.id}: no room on the wall beside {c.hub_tube}'s opening for its HUB sign");
                 }
             }
             if (signs > 0) mesh.ToObject("Signs " + c.id, netSigns, root, false);

@@ -101,8 +101,10 @@ race = [
     ("gate", "GATE G4 B4 AT J2", "Seals the drop shaft's way", end_point("B4b", True)),
     ("gate", "GATE G5 B6 AT J3", "Seals the Enclave maze", end_point("B6", False)),
     ("gate", "GATE G6 B7 AT J3", "Seals the Enclave maze", end_point("B7a", False)),
-    ("gate", "GATE G7 M3 AT HUB", "Seals M3 east", end_point("M3a", False)),
-    ("gate", "GATE G8 B1 AT HUB", "Seals the north maze", end_point("B1c", True)),
+    ("gate", "GATE G7 M3 AT HUB", "Seals M3 east", end_point("M3a", True)),             # Round 24 Part B: M3 now runs J4 to the hub
+    ("gate", "GATE G8 M2 AT HUB", "Seals M2 north", end_point("M2h", True)),             # Round 24 Part B: M2 now reaches the hub (B1c before)
+    ("gate", "GATE G10 M4 AT HUB", "Seals M4 east", end_point("M4a", True)),            # Round 24 Part B: M4 and M6 now come into the hub
+    ("gate", "GATE G11 M6 AT HUB", "Seals M6 south", end_point("M6", True)),
     ("gate", "GATE G9 B9 AT HUB", "Seals the south-east maze", end_point("B9a", False)),
     ("gate", "SHORTCUT GATE S1", "Waterfall leap (hub)", H(-5, 31)),
     ("switch", "SWITCH S1", "Plate up M5's wall", mid_point("M5b", 0.4)),

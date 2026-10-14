@@ -240,6 +240,7 @@ namespace ChastainRush
                 var pr = new List<Vector2>();
                 for (int k = 0; k < 14; k++) { float a = Mathf.PI * 2f * k / 14f; float jr = 1f + 0.25f * Mathf.PerlinNoise(f * 40f + k * 0.7f, 3f); pr.Add(cc + t * Mathf.Cos(a) * 7.5f * jr + shore.n[i] * Mathf.Sin(a) * 3.8f * jr); }
                 if (pr.Any(q => !hood.FenceOk(q))) continue;
+                if (pr.Any(InBerm)) continue;   // Round 24 Part B: none over GP's berm and face (it was draped down over the face)
                 straw.Tint = new Color(0.46f, 0.31f, 0.18f);
                 DrapePoly(straw, pr, 2.5f, 0.05f, c.terrain);
                 patches++;

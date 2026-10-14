@@ -526,16 +526,32 @@
    "kind": "gate",
    "title": "GATE G7 M3 AT HUB",
    "text": "Seals M3 east",
-   "x": 1939.0,
-   "z": 1149.5
+   "x": 1948.0,
+   "z": 1150.54
   },
   {
    "set": "R",
    "kind": "gate",
-   "title": "GATE G8 B1 AT HUB",
-   "text": "Seals the north maze",
+   "title": "GATE G8 M2 AT HUB",
+   "text": "Seals M2 north",
    "x": 1866.0,
    "z": 1180.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G10 M4 AT HUB",
+   "text": "Seals M4 east",
+   "x": 1948.0,
+   "z": 1133.0
+  },
+  {
+   "set": "R",
+   "kind": "gate",
+   "title": "GATE G11 M6 AT HUB",
+   "text": "Seals M6 south",
+   "x": 1888.41,
+   "z": 1117.0
   },
   {
    "set": "R",

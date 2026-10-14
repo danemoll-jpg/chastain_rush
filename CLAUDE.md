@@ -283,6 +283,14 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Round 24 Part B items 4 to 9 (see `TODO.md`, status there) are built; pictures from the exe by script, no drive tests, not yet driven
+by Dan:** every network mouth reworked (`MapBuilder.Pipes.cs`: exits and BF set into graded banks with short wingwall aprons, `Bank`;
+GP `covered`, a box culvert under a berm, its face at the pond; never on roads / drives / sidewalks / the trail or within 2 m of a
+building; `python Tools/mapgen/network_sweep.py --regraded` sweeps buildings against `Assets/Generated/regraded_mouths.txt`); the
+glass under the lakes in open water (`ClearFrame.TS`); chevrons to the hub on the mains' stripes and HUB signs in the junctions
+(`to_hub` / `hub_tube` from `pipe_network.py`); all six mains pour into the hub (M2 via K1 to K3, M3 at the mid ledge, M4 from J6, M6
+from Nelson Lake; B27 is the old J4 to J6). Race markers moved, race not built. `-exeShots` takes `y`. Imported from Racer: nothing.
+
 **Round 24 Part A3 (see `TODO.md`, status there) is built; pictures from the exe by script, no drive tests, not yet driven by Dan:**
 B0 BUG-002's house was already whole (L_W8 gone, pictures from Dan's spot), no fence over any cut (`MapBuilder.OverCut`), and a
 sweep of every building against the network's cuts (`ChastainRush.NetworkSweep.Run -sweepOut <dir>` [-sweepProfile x0,z0,x1,z1],

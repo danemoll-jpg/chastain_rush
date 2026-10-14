@@ -4,18 +4,18 @@ Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json)
 
 **Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off in different directions; every exit is a way in as well. Manholes open only from below.
 
-**Finding your way**: the mains carry a color stripe along both walls and their names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple); the maze branches are unmarked. Underground, the map (M or View) shows the pipes and the junctions', manholes' and exits' names.
+**Finding your way**: the mains carry a color stripe along both walls, with chevrons on it every 8 m pointing to the hub, their names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple) and a HUB sign with an arrow stands beside the one that leads to the hub; every main ends in the hub; the maze branches are unmarked. Underground, the map (M or View) shows the pipes and the junctions', manholes' and exits' names.
 
 ## Part B: the two entrances (BUILT)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
 | BF-R | BF right pipe (to J1, the trunk and the Enclave main) | 5.0 m | 83 m | 275 to 281 m | BF to J1;  |
-| BF-L | BF left pipe (to J10, the lakes main and the north maze) | 5.0 m | 57 m | 281 to 283 m | BF to J10;  |
+| BF-L | BF left pipe (to J10, the lakes main and the north maze) | 5.0 m | 57 m | 281 to 282 m | BF to J10;  |
 | GP-L | Glen pond left pipe (north, to J12 and the Glen main) | 5.0 m | 111 m | 283 to 286 m | GP to J12;  |
 | GP-R | Glen pond right pipe (south, under New Chastain Road to J13) | 5.0 m | 126 m | 283 to 285 m | GP to J13;  |
 
-Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH FORK** (junction, x 1452, z 1256, floor 283 m); **J12 GLEN NORTH** (junction, x 2966, z 908, floor 286 m); **J13 GLEN SOUTH** (junction, x 2908, z 704, floor 285 m)
+Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH FORK** (junction, x 1452, z 1256, floor 282 m); **J12 GLEN NORTH** (junction, x 2966, z 908, floor 286 m); **J13 GLEN SOUTH** (junction, x 2908, z 704, floor 285 m)
 
 ## Stage 1: the hub, the trunk, the Enclave (BUILT)
 
@@ -26,11 +26,11 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 | M5a | M5 Enclave Main (J1 to J3, glass along the pond) | 5.0 m | 540 m | 273 to 275 m | J1 to J3; glass under pond W4 (79 m) |
 | M5b | M5 Enclave Main (J3 to the hub) | 5.0 m | 192 m | 272 to 273 m | J3 to HUB;  |
 | B1a | B1 | 5.0 m | 109 m | 274 to 278 m | J2 to K2;  |
-| B1b | B1 | 5.0 m | 98 m | 278 to 280 m | K2 to K3;  |
-| B1c | B1 | 5.0 m | 172 m | 272 to 280 m | K3 to HUB;  |
-| B2a | B2 | 5.0 m | 43 m | 282 to 283 m | J10 to K1;  |
-| B2b | B2 | 3.5 m | 58 m | 282 to 284 m | K1 to MH1; pops out at MH1 |
-| B2c | B2a | 3.5 m | 63 m | 278 to 282 m | K1 to K2;  |
+| M2g | M2 Lakes Main (K2 to K3) | 5.0 m | 98 m | 278 to 280 m | K2 to K3;  |
+| M2h | M2 Lakes Main (K3 to the hub) | 5.0 m | 172 m | 272 to 280 m | K3 to HUB;  |
+| M2e | M2 Lakes Main (J10 to K1) | 5.0 m | 43 m | 281 to 282 m | J10 to K1;  |
+| B2b | B2 | 3.5 m | 58 m | 281 to 283 m | K1 to MH1; pops out at MH1 |
+| M2f | M2 Lakes Main (K1 to K2) | 5.0 m | 62 m | 278 to 281 m | K1 to K2;  |
 | B3 | B3 | 3.5 m | 79 m | 280 to 285 m | K3 to MH2; pops out at MH2 |
 | B4a | B4 (down the drop shaft) | 3.5 m | 63 m | 277 to 280 m | K3 to S4; drops into S4 |
 | B4b | B4 | 3.5 m | 63 m | 269 to 274 m | S4 to J2;  |
@@ -43,9 +43,9 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 | B9b | B9 | 3.5 m | 88 m | 273 to 280 m | K8 to MH5; pops out at MH5 |
 | B10 | B10 | 3.5 m | 81 m | 273 to 273 m | K8 to D10;  |
 
-Chambers: **J2 POND JCT** (junction, x 1628, z 1096, floor 274 m); **J3 ENCLAVE JCT** (junction, x 1785, z 1000, floor 273 m); **THE HUB** (hub, x 1900, z 1145, floor 252 m); **K1** (junction, x 1512, z 1246, floor 282 m); **K2** (junction, x 1585, z 1214, floor 278 m); **K3** (junction, x 1700, z 1230, floor 280 m); **S4 DROP SHAFT** (shaft, x 1660, z 1166, floor 269 m); **D5** (turn, x 1608, z 1180, floor 271 m); **K7** (junction, x 1720, z 890, floor 286 m); **K8** (junction, x 1985, z 1010, floor 273 m); **D10** (turn, x 2060, z 1060, floor 273 m)
+Chambers: **J2 POND JCT** (junction, x 1628, z 1096, floor 274 m); **J3 ENCLAVE JCT** (junction, x 1785, z 1000, floor 273 m); **THE HUB** (hub, x 1900, z 1145, floor 252 m); **K1** (junction, x 1512, z 1246, floor 281 m); **K2** (junction, x 1585, z 1214, floor 278 m); **K3** (junction, x 1700, z 1230, floor 280 m); **S4 DROP SHAFT** (shaft, x 1660, z 1166, floor 269 m); **D5** (turn, x 1608, z 1180, floor 271 m); **K7** (junction, x 1720, z 890, floor 286 m); **K8** (junction, x 1985, z 1010, floor 273 m); **D10** (turn, x 2060, z 1060, floor 273 m)
 
-Manholes: **MH1** in Parkwood Drive (x 1548, z 1277; riser 11 m); **MH2** in Parkwood Drive (x 1760, z 1277; riser 6 m); **MH3** in Bloombridge Way (x 1879, z 949; riser 10 m); **MH4** in Rotherhithe Landing (x 1708, z 812; riser 11 m); **MH5** in Bloombridge Way (x 2012, z 933; riser 9 m)
+Manholes: **MH1** in Parkwood Drive (x 1548, z 1277; riser 12 m); **MH2** in Parkwood Drive (x 1760, z 1277; riser 6 m); **MH3** in Bloombridge Way (x 1879, z 949; riser 10 m); **MH4** in Rotherhithe Landing (x 1708, z 812; riser 11 m); **MH5** in Bloombridge Way (x 2012, z 933; riser 9 m)
 
 Exits: **Exit W20 Pond** (x 1374, z 800)
 
@@ -53,7 +53,7 @@ Exits: **Exit W20 Pond** (x 1374, z 800)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M3a | M3 Noonday Main (the hub to J4) | 5.0 m | 339 m | 252 to 269 m | HUB to J4;  |
+| M3a | M3 Noonday Main (J4 to the hub) | 5.0 m | 330 m | 262 to 269 m | J4 to HUB;  |
 | M3b | M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1) | 5.0 m | 145 m | 267 to 269 m | J4 to J5;  |
 | M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 325 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m) |
 | M3d | M3 Noonday Main (the launch over the big lake) | 5.0 m | 73 m | 270 to 271 m | K15 to L_W15; comes out at launch big lake |
@@ -73,7 +73,8 @@ Exits: **Launch Big Lake** (x 2394, z 1528, a launch over the water); **Exit Cre
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M4a | M4 Glen Main (J4 to J6) | 5.0 m | 337 m | 267 to 269 m | J4 to J6; a flooded sag (slow) |
+| M4a | M4 Glen Main (J6 to the hub) | 5.0 m | 499 m | 262 to 268 m | J6 to HUB;  |
+| B27 | B27 (J4 to J6) | 5.0 m | 337 m | 267 to 269 m | J4 to J6; a flooded sag (slow) |
 | M4b | M4 Glen Main (J6 to J7) | 5.0 m | 338 m | 268 to 278 m | J6 to J7;  |
 | M4c | M4 Glen Main (J7 to J12, glass under the Chastain Glen pond) | 5.0 m | 275 m | 278 to 286 m | J7 to J12; glass under pond W8 (113 m) |
 | M4d | M4 Glen Main (J12 to J8) | 5.0 m | 361 m | 286 to 294 m | J12 to J8;  |
@@ -97,17 +98,17 @@ Exits: **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780)
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M2a | M2 Lakes Main (J10 to J9, glass along East Chastain Lake) | 5.0 m | 614 m | 283 to 284 m | J10 to J9; glass under pond W9 (406 m) |
+| M2a | M2 Lakes Main (J10 to J9, glass along East Chastain Lake) | 5.0 m | 614 m | 282 to 284 m | J10 to J9; glass under pond W9 (406 m) |
 | M2b | M2 Lakes Main (J9 to K25, glass along West Chastain Lake) | 5.0 m | 345 m | 284 to 296 m | J9 to K25; glass under pond W0 (107 m) |
 | M2c | M2 Lakes Main (K25 under the interstate to the far-west pond) | 5.0 m | 270 m | 296 to 296 m | K25 to X_W5; comes out at exit far west pond |
-| M6 | M6 Nelson Main | 5.0 m | 1207 m | 284 to 287 m | J9 to X_NELSON; comes out at exit nelson lake |
-| B23 | B23 | 3.5 m | 110 m | 284 to 294 m | J9 to MH12; pops out at MH12 |
+| M6 | M6 Nelson Main | 5.0 m | 1992 m | 262 to 287 m |  to HUB; comes out at exit nelson lake |
+| B23 | B23 | 3.5 m | 112 m | 284 to 294 m | J9 to MH12; pops out at MH12 |
 | B24 | B24 | 3.5 m | 308 m | 284 to 301 m | J9 to MH13; pops out at MH13 |
 | B25 | B25 | 3.5 m | 56 m | 296 to 296 m | K25 to X_STREAM; comes out at exit lake stream |
 
 Chambers: **J9 LAKES JCT** (junction, x 868, z 1236, floor 284 m); **K25** (junction, x 560, z 1418, floor 296 m)
 
-Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 20 m); **MH13** in Chastain Lakes Drive Northwest (x 977, z 962; riser 8 m)
+Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 19 m); **MH13** in Chastain Lakes Drive Northwest (x 977, z 962; riser 8 m)
 
 Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 118); **Exit Lake Stream** (x 470, z 1425)
 
@@ -123,3 +124,6 @@ Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 11
 - Stage 2: J5 sits on the big lake's south shore (the proposal's J5 was in the water); M3 passes west of P1's inlet (it would have hit P1) and runs up the big lake in glass to K15, a junction on its east side; the launch over the big lake goes out from its east shore; B12 comes out on the north bank of the pond east of the lake
 - Stage 3: J6 moved 50 m north of the New Chastain Road bridges (the exit under the bridges needs room for its cut; B26 is 3.5 m); the launch over the Chastain Glen pond comes off J12 into its north-east corner (from K17 it could not climb to the pond's level in time; K17 is gone, B17 runs from J7 to its manhole); J8 sits a little up the slope; the exit behind the shops is in the low strip north-west of the center, its cut into the bank
 - Stage 4: J9 sits deeper (its floor 284 m) so M2 stays under East Chastain Lake's bed to its shore; the exit at the pond by Chastain Road (W21) is dropped (the ground there is too low for a pipe to come up under it) and B24 runs from J9 straight to its manhole
+- Round 24 Part B (Dan: "shouldn't all main lines intersect here?"): every main now pours into the hub as a waterfall off a ledge. M3 comes in at the mid ledge (it came in at the floor); M4 starts with a new length from J6 straight to the hub's mid ledge (the old J4 to J6 length is B27, an unmarked 5 m branch, with its flooded sag); M2 goes on from J10 through K1, K2 and K3 to the hub's top ledge (the north maze's 5 m line; K1 to K2 widened to 5 m); M6 runs from Nelson Lake to the hub's mid ledge, 2 km (it ran from J9, on M2)
+- Round 24 Part B (Dan: "It is very easy to get turned around in the tunnels"): chevrons on the mains' stripes point the way to the hub along the mains, and every junction on a main has a HUB sign with an arrow beside the main that leads there
+- Round 24 (Dan): L_W8, the launch over the Chastain Glen pond, and its pipe B18 are out (they left a house floating); GP, 100 m away, is that pond's way in and out

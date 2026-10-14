@@ -66,5 +66,26 @@ def poly_dist(f, p):
     return 0.0 if inside else best
 
 
+def regraded():
+    """Round 24 Part B (item 4): every building within 2 m of the ground the mouths moved (Assets/Generated/regraded_mouths.txt, written by
+    the map build: the exits and BF set into banks, GP's berm). Prints them; none is the rule."""
+    path = os.path.join(ROOT, "Assets", "Generated", "regraded_mouths.txt")
+    rows = [l.split() for l in open(path) if l.strip()]
+    pts = np.array([[float(r[0]), float(r[1])] for r in rows]); dy = np.array([float(r[2]) for r in rows]); who = [r[3] for r in rows]
+    m = json.load(open(os.path.join(ROOT, "Data", "map.json")))
+    found = 0
+    for i, bld in enumerate(m["buildings"]):
+        f = np.array(bld["footprint"]).reshape(-1, 2); lo, hi = f.min(0) - 3, f.max(0) + 3
+        sel = np.where((pts[:, 0] > lo[0]) & (pts[:, 0] < hi[0]) & (pts[:, 1] > lo[1]) & (pts[:, 1] < hi[1]))[0]
+        near = [(poly_dist(f, pts[k]), k) for k in sel]
+        near = [(d, k) for d, k in near if d < 2.0]
+        if near:
+            found += 1; c = f.mean(0); k = max(near, key=lambda t: abs(dy[t[1]]))[1]
+            print(f"building {i} at x {c[0]:.1f}, z {c[1]:.1f}: ground moved up to {dy[k]:+.2f} m within 2 m of it ({who[k]})")
+    by = {}
+    for w, d in zip(who, dy): by.setdefault(w, []).append(d)
+    print(f"{len(rows)} ground samples moved by the mouths ({', '.join(f'{w} {min(v):+.1f} to {max(v):+.1f} m' for w, v in by.items())}); {found} buildings within 2 m")
+
+
 if __name__ == "__main__":
-    main()
+    regraded() if "--regraded" in sys.argv else main()

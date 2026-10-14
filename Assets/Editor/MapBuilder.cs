@@ -97,7 +97,7 @@ namespace ChastainRush
             GradeCreekTrack(map, terrain, creek);
             Net = null;
             var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
-            var pipes = PlanPipes(terrain, NetworkExitPipes(net));    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
+            var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
             BuildRoads(map, terrain, mats, world, paint, hood);
             BuildBridges(map, mats, world, paint);

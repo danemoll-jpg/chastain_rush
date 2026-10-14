@@ -2863,6 +2863,41 @@ Part B, QUEUED for Dan's next session (do after Part A, in this order):
    set").
 9. Rebuild the exe, commit, short report.
 
+**STATUS of Part B (Claude, 2026-10-14): items 4 to 9 DONE, exe rebuilt; pictures from the exe by script (minimized, muted,
+`local/round24b/`, git-ignored), no drive tests; not yet driven by Dan.**
+- 4 DONE, every mouth reworked (`MapBuilder.Pipes.cs`). The exits (all 11 but the launch over the big lake) and BF are SET INTO A
+  BANK: a grassed channel graded into the ground (no walls, no terrain holes) leads to a short concrete apron (6 m; BF's 10 m, for its
+  pier nose) between wingwalls whose tops fall from the headwall's top to 0.5 m over the floor, the ground beside graded at 1 in 2
+  (behind the headwall at 1 in 1); no vertical notch, railings only on the wingwalls where the drop is over 1 m; no trees in a
+  channel. GP (BUG-001) is COVERED (`pipes.json` `covered`): its cut is a roofed box culvert under a grassed berm raised out to
+  Chastain Glen Lane, its face a headwall at the pond (its top following the berm, 27 m across); the floor dives at 28 % (was 25 %)
+  so the box's roof stays under the street's edge; the fence stands on the berm; the pond's straw patch there is left off. Nothing
+  graded on a road, drive, sidewalk or the trail, and nothing within 2 m of a building (eased in over 4 m); every ground sample the
+  mouths moved is written to `Assets/Generated/regraded_mouths.txt` and swept against all buildings: `python
+  Tools/mapgen/network_sweep.py --regraded`. BUG-002: the house is whole (A3); B18 / L_W8 stay out: GP, 100 m away, is that pond's
+  way in (re-routing B18 somewhere else is for Dan to pick: no place near J12 is clear of houses). BUG-003 (Joel Drive): the road was
+  restored in A2; X_W11 now sits in a bank off it (picture). Left as it was: L_W15 (the launch over the big lake: an open chute by
+  design), P1's two mouths (the race's shortcut pipe).
+- 5 DONE: the glass under every lake is in open water (`MapBuilder.Network.cs` PlanNetwork, `MapBuilder.ClearPipe.cs`): the deep
+  water reaches out to where the lake's own bed is at full depth (4 m in from the shore, up to 40 m each side, inside the bends'
+  radius), the bed falling away on both sides; fish, weeds, rocks and light shafts scaled to the length. Widths now: M2a under East
+  Chastain Lake up to 80 m across, M2b 80 m, M3c 44 m, M1a 29 m, M4c 22 m; M5a under the narrow Enclave pond 9 to 12 m (the pond is
+  that narrow). P1's glass (its own dug pool) is unchanged.
+- 6 DONE: chevrons on both stripes of every main every 8 m pointing the way to the hub along the mains (`to_hub` from
+  `pipe_network.py`), and a HUB sign with a yellow arrow beside the main that leads to the hub in every junction on a main (`hub_tube`;
+  atlas rows "< HUB" / "HUB >", `Tools/handmade/make_network_signs.py`). K1, K2, K3, K15 and K25 now carry the mains' names too.
+- 7 DONE, all six mains pour into the hub as waterfalls (6 falls, was 2): M1 (mid) and M5 (top) as before; M3 now comes in at the mid
+  ledge (it came in at the floor, no fall); M4 gets a new first length from J6 straight to the hub's mid ledge, 499 m (the old J4 to
+  J6 length is B27, an unmarked 5 m branch, flooded sag kept); M2 carries on from J10 through K1, K2 and K3 to the top ledge (the north
+  maze's 5 m line renamed M2e to M2h, K1 to K2 widened to 5 m); M6 runs from Nelson Lake to the hub's mid ledge, 1992 m (it ran from
+  J9). Clearance check: 0 problems. Docs/PIPE-NETWORK.md rewritten.
+- 8 DONE: the race's proposal markers moved to fit (`network_markers.py`: G7 at M3's new mouth, G8 at M2's, new G10 M4 and G11 M6
+  at the hub); nothing of the race built.
+- Also: `-exeShots` takes `y` (a height to place at, underground).
+- For Dan to check: GP from the road and from the pond (and driving into the box), BF, a few exits (X_W11 off Joel Drive, X_SHOPS,
+  X_TRAIL), the glass under East Chastain Lake, the HUB signs and chevrons, the hub's six waterfalls; whether B18 should come back
+  somewhere.
+
 **DONE (stages 1 to 4 built, driven in part by Dan 2026-10-13; his notes are Round 24) — Round 23 follow-ups (Dan's session 2026-10-13_00-41-08-815_cf0041, read by Claude; six reports, after
 the Round 23 build).** Build what is decided; the rest of the network still waits for Dan's go on the proposal.
 

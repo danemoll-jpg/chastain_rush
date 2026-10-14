@@ -34,7 +34,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b, twin, open_b, flow_in, glen_culvert, outfall; public float b_floor; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs); Round 23: 'twin'; Round 23 follow-ups: 'open_b', 'flow_in', 'glen_culvert', 'outfall'
+        [Serializable] class PipeJson { public string id, name; public float[] a, b, approach_a, approach_b; public float diameter_m = 5f, cover_m = 0.6f, cut_slope = 0.18f; public bool rock_bar_a, mouth_lamp_b, twin, open_b, flow_in, glen_culvert, outfall, covered; public float b_floor; public PipeClearJson clear; }   // Round 21 follow-ups: 'clear' (MapBuilder.ClearPipe.cs); Round 23: 'twin'; Round 23 follow-ups: 'open_b', 'flow_in', 'glen_culvert', 'outfall'; Round 24 Part B: 'covered'
         // Round 23 (BUG-002, Dan: "two large pipes. I want this to be a main entrance the pipe network"): 'twin' makes two barrels side by
         // side (a twin culvert), their centers R + 0.4 m either side of the line, one cut twice as wide with one headwall holding both
         // openings (an 0.8 m pier between them), one stream and one DrainPipe per barrel; and its floor never rises above the lower
@@ -54,7 +54,20 @@ namespace ChastainRush
         {
             public PipeJson J; public Vector2 A, B, U, Nl; public float L;
             public float[] Floor;        // floor height at each PipeStep station
-            public float S1, S2;         // the headwalls (cut 1 is 0..S1, cut 2 is S2..L)
+            // Round 24 Part B (item 4, Dan: "I don't want ugly entrances like the one I flagged. If there are others I want them reworked
+            // as well"; the rules: no open notch or raw cut, headwalls set into banks with ground over the pipe, it looks like something
+            // that belongs there). A network mouth (its exits, BF) is SET INTO A BANK: a grassed channel graded into the ground (no walls)
+            // leads to a short concrete apron between wingwalls whose tops fall from the headwall's top to 0.5 m over the floor at their
+            // outer ends, the ground graded down beside them at 1 in 2 (no vertical notch). GP ('covered'; BUG-001: "We can put ground
+            // cover over this so there isn't a big open notch and fence isnt hanging in mid air"): its cut is roofed over (a box culvert),
+            // the ground raised over it in a grassed berm out to the street, its face a headwall at the pond
+            public bool Bank => J.open_b && !J.outfall && !J.covered;
+            public float WallFrom => Bank ? Mathf.Max(0f, S1 - (J.twin ? 10f : 6f)) : 0f;
+            public float HeadTop => Y(S1) + 2f * R + PipeWall + 0.12f;   // a bank's headwall top (its wingwalls' high end)
+            public float WingTop(float s) => Mathf.Lerp(Y(WallFrom) + 0.5f, HeadTop, Mathf.Clamp01((s - WallFrom) / Mathf.Max(0.5f, S1 - WallFrom)));
+            public float Roof(float s) => Y(s) + 2f * R;   // a covered cut's roof, inside
+            public float BermTop(float s) => Roof(s) + 0.3f + 0.3f;   // over it: the roof slab, then the ground
+            public float S1, S2;        // the headwalls (cut 1 is 0..S1, cut 2 is S2..L)
             public List<Vector2> Bar = new List<Vector2>(); public float BarTop;   // Round 19: P1's rock bar (the approach points over the creek)
             public bool Clear; public float C0, C1, Surface; public List<Vector2> Pool; public int PoolRing = -1;   // Round 21 follow-ups: the clear stretch and its pool (MapBuilder.ClearPipe.cs)
             public bool HasFlow; public Vector2 FlowFrom, FlowDir; public float FlowSurf;   // Round 23 follow-ups (BUG-005): where the creek's own water ends, and its way (downstream)
@@ -77,11 +90,17 @@ namespace ChastainRush
             public Vector2 P(float s, float lat = 0f) => A + U * s + Nl * lat;
             // the cut's half width: 2.5 m, flaring out to 4.25 m over the last 5 m at each mouth (wingwalls: a vehicle a little off
             // the line is led in, not stopped by a wall's end)
-            public float HalfAt(float s) => Half + FlareW * Mathf.Max(Smooth01(1f - s / Flare), J.open_b ? 0f : Smooth01(1f - (L - s) / Flare));
+            public float HalfAt(float s) => Half + (J.covered ? 0f : FlareW) * Mathf.Max(Smooth01(1f - (s - WallFrom) / Flare), J.open_b ? 0f : Smooth01(1f - (L - s) / Flare));   // Round 24 Part B: a bank's flare at its wingwalls' outer ends; none on a covered box (the berm showed through it at the face)
+            public bool InChannel(Vector2 q)   // Round 24 Part B: a bank's open channel, from the mouth to its wingwalls (and 2 m either side)
+            {
+                if (!Bank) return false;
+                float s = Vector2.Dot(q - A, U), lat = Mathf.Abs(Vector2.Dot(q - A, Nl));
+                return s > -3f && s < WallFrom + 1f && lat < HalfAt(WallFrom) + CutWall + CopingOut + 2f;
+            }
             public bool InCut(Vector2 q, float pad, out float s, out float lat)
             {
                 s = Vector2.Dot(q - A, U); lat = Vector2.Dot(q - A, Nl);
-                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= -pad && s <= S1 + 0.3f + pad) || (!J.open_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end
+                return Mathf.Abs(lat) <= HalfAt(Mathf.Clamp(s, 0f, L)) + CutWall + pad && ((s >= WallFrom - pad && s <= S1 + 0.3f + pad) || (!J.open_b && s >= S2 - 0.3f - pad && s <= L + pad));   // Round 23: no cut at a chamber end; Round 24 Part B: a bank's walled apron only
             }
         }
         sealed class Pipes
@@ -90,7 +109,7 @@ namespace ChastainRush
             public int TreesRemoved;
             public bool RejectTree(float x, float z)
             {
-                foreach (var p in Plans) if (p.InCut(new Vector2(x, z), 1.5f, out _, out _)) { TreesRemoved++; return true; }
+                foreach (var p in Plans) if (p.InCut(new Vector2(x, z), 1.5f, out _, out _) || p.InChannel(new Vector2(x, z))) { TreesRemoved++; return true; }   // Round 24 Part B: and none in a bank's open channel
                 return false;
             }
         }
@@ -104,9 +123,10 @@ namespace ChastainRush
             return File.Exists(path) && JsonUtility.FromJson<PipeFile>(File.ReadAllText(path)).pipes.Any(j => j.glen_culvert);
         }
 
-        static Pipes PlanPipes(TerrainGrid terrain, IEnumerable<PipeJson> extra = null)   // Round 23 follow-ups: 'extra', the network's exits (MapBuilder.Network.cs)
+        static Pipes PlanPipes(TerrainGrid terrain, IEnumerable<PipeJson> extra = null, MapData map = null)   // Round 23 follow-ups: 'extra', the network's exits (MapBuilder.Network.cs)
         {
-            var result = new Pipes();
+            var result = new Pipes(); Berms.Clear(); Regraded.Clear();
+            Footprints.Clear(); if (map != null) foreach (var bld in map.buildings) { var f = ToPoints(bld.footprint); Footprints.Add((f, BoundsOf(f, 0f))); }   // Round 24 Part B: the mouths' grading keeps off them
             var stale = Path.Combine(ProjectRoot, DriveBands.WalksFile); if (File.Exists(stale)) File.Delete(stale);   // this build's own sidewalks only
             DriveBands.Load(ProjectRoot);   // Round 24 A2: roads, drives, the creek trail (nothing of a mouth stands up on them); the sidewalks join as they are built
             DriveBands.BeginWalks();
@@ -223,10 +243,13 @@ namespace ChastainRush
                         if (on != null && Ground(terrain, p.P(s, lat * p.HalfAt(s)).x, p.P(s, lat * p.HalfAt(s)).y) > p.Y(s) + 0.3f) { Debug.LogError($"[Round24] pipe {j.id}: its cut lies in {on} at ({p.P(s, 0f).x:0.0}, {p.P(s, 0f).y:0.0})"); s = float.MaxValue; break; }
                     }
                 result.Plans.Add(p);
+                if (p.Bank) GradeBank(terrain, p);        // Round 24 Part B (item 4)
+                if (j.covered) RaiseBerm(terrain, p);     // Round 24 Part B (item 4, GP)
                 CutPipeHoles(terrain, p);
                 if (p.Clear) CutTrenchHoles(terrain, p);
                 Debug.Log($"[Round18] pipe {j.id}: {p.L:0.0} m from ({p.A.x:0.0}, {p.A.y:0.0}) at {yA:0.00} m to ({p.B.x:0.0}, {p.B.y:0.0}) at {yB:0.00} m; floor down to {f.Min():0.00} m ({j.cut_slope * 100f:0} % in and out); inlet cut {p.S1:0.0} m, pipe {p.S2 - p.S1:0.0} m (crown {j.cover_m:0.0} m or more under the ground), outlet cut {p.L - p.S2:0.0} m");
             }
+            File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "regraded_mouths.txt"), Regraded);
             return result;
         }
 
@@ -321,6 +344,85 @@ namespace ChastainRush
             Debug.Log($"[Round23] pipe {p.J.id}: the streams' water stops at its mouths ({removed} stream points inside its cuts dropped)" + (p.HasFlow ? $"; Round 23 follow-ups: the creek's flat water now ends at ({p.FlowFrom.x:0.0}, {p.FlowFrom.y:0.0}), {(p.FlowFrom - p.A).magnitude:0.0} m out, moving water on from there into the barrels" : ""));
         }
 
+        // Round 24 Part B (item 4): a bank's ground. Every sample near the mouth is brought down (never up) to the open channel and the
+        // slopes either side of it: the floor along the channel (from the mouth to the wingwalls' outer ends, as wide as the apron's
+        // mouth), the wingwalls' tops beside the apron, the headwall's top behind it, rising at 1 in 2 from there out to the natural
+        // ground. Nothing on a road, drive, sidewalk or the creek trail is touched (reported).
+        static void GradeBank(TerrainGrid terrain, PipePlan p)
+        {
+            const float Slope = 0.5f;
+            float Bc(float s) => p.HalfAt(Mathf.Max(s, p.WallFrom)) + CutWall + CopingOut;
+            float most = 0f; int lowered = 0, kept = 0;
+            float reach = 2f * (p.HeadTop - p.Y(p.S1)) + 14f;
+            var corners = new[] { p.P(-6f, -Bc(0f) - reach), p.P(-6f, Bc(0f) + reach), p.P(p.S1 + 12f, -Bc(p.S1) - reach), p.P(p.S1 + 12f, Bc(p.S1) + reach) };
+            EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
+            {
+                var q = new Vector2(x, z); float s = Vector2.Dot(q - p.A, p.U), lat = Mathf.Abs(Vector2.Dot(q - p.A, p.Nl));
+                if (s > p.S1 + 12f || s < -6f) return y;
+                float sc = Mathf.Clamp(s, 0f, p.S1), b = Bc(sc);
+                float d = new Vector2(s - sc, Mathf.Max(0f, lat - b)).magnitude;
+                float baseY = sc >= p.WallFrom ? p.WingTop(sc) : p.Y(sc) - 0.05f;
+                float target = baseY + Slope * d;
+                if (s > p.S1) target = p.HeadTop + (s - p.S1) + Slope * Mathf.Max(0f, lat - b);   // behind the headwall the bank may stand at 1 in 1 (it holds it)
+                if (s >= p.WallFrom - 1f && s <= p.S1 && lat <= p.HalfAt(sc)) target = p.Y(sc) - 0.15f;   // under the apron's slab (no grass through it; its walls' footprint is holed)
+                if (target >= y - 0.01f) return y;
+                if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
+                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
+                lowered++; most = Mathf.Max(most, y - target); if (y - target > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}"); return target;
+            });
+            Debug.Log($"[Round24] pipe {p.J.id}: set into a bank: an open channel graded {p.WallFrom:0.0} m from the mouth to the wingwalls, the apron and wingwalls {p.S1 - p.WallFrom:0.0} m to the headwall (its top {p.HeadTop:0.00} m), the ground beside at 1 in 2; {lowered} samples lowered (up to {most:0.00} m)" + (kept > 0 ? $"; {kept} on a road, drive, sidewalk or the trail or by a building left as they were" : ""));
+        }
+
+        // Round 24 Part B (item 4, GP): the berm over a covered cut: the ground raised (never lowered) to 0.6 m over its roof (the slab
+        // and ground on it) from just behind its face to its inner end, falling at 1 in 2 to the sides and beyond; never in front of the
+        // face (the pond's side), never on a road, drive, sidewalk or the trail
+        static void RaiseBerm(TerrainGrid terrain, PipePlan p)
+        {
+            const float Slope = 0.5f;
+            float Bc(float s) => p.HalfAt(s) + CutWall + CopingOut;
+            float most = 0f; int raised = 0, kept = 0;
+            float reach = 2f * (p.BermTop(0f) - p.Y(0f)) + 4f;
+            var corners = new[] { p.P(0f, -Bc(0f) - reach), p.P(0f, Bc(0f) + reach), p.P(p.S1 + reach, -Bc(p.S1) - reach), p.P(p.S1 + reach, Bc(p.S1) + reach) };
+            EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
+            {
+                var q = new Vector2(x, z); float s = Vector2.Dot(q - p.A, p.U), lat = Mathf.Abs(Vector2.Dot(q - p.A, p.Nl));
+                if (s < BermFrom) return y;   // the face: the pond's side stays as it is
+                float sc = Mathf.Clamp(s, BermFrom, p.S1), b = Bc(sc);
+                float d = new Vector2(s - sc, Mathf.Max(0f, lat - b)).magnitude;
+                float target = p.BermTop(sc) - Slope * d;
+                if (target <= y + 0.01f) return y;
+                if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
+                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
+                raised++; most = Mathf.Max(most, target - y); if (target - y > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}"); return target;
+            });
+            Berms.Add((p.A, p.U, p.Nl, p.S1, Bc(0f) + reach));
+            Debug.Log($"[Round24] pipe {p.J.id}: covered: a berm over its {p.S1:0.0} m box from {p.BermTop(BermFrom):0.00} m behind its face down to {p.BermTop(p.S1):0.00} m at its inner end; {raised} samples raised (up to {most:0.00} m)" + (kept > 0 ? $"; {kept} on a road, drive, sidewalk or the trail left as they were" : ""));
+        }
+        const float BermFrom = 1.5f;   // the berm starts behind the face's coping (2.3 m deep), the ground between holed in the opening
+        // Round 24 Part B: every ground sample the mouths moved by more than 0.15 m (x z change pipe), written to
+        // Assets/Generated/regraded_mouths.txt for the sweep of buildings against them (Tools/mapgen/network_sweep.py --regraded)
+        static readonly List<string> Regraded = new List<string>();
+        // Round 24 Part B (the rules: no house left floating or cut): the mouths' grading leaves the ground within 2 m of a building as it is and
+        // eases in from there over 4 m (the building footprints of Data/map.json)
+        static readonly List<(List<Vector2> f, Rect b)> Footprints = new List<(List<Vector2>, Rect)>();
+        static float NearBuilding(Vector2 q)   // 0 at a building (and within 2 m), 1 from 6 m away
+        {
+            float best = float.MaxValue;
+            foreach (var (f, b) in Footprints)
+            {
+                if (q.x < b.xMin - 6f || q.x > b.xMax + 6f || q.y < b.yMin - 6f || q.y > b.yMax + 6f) continue;
+                best = Mathf.Min(best, InPolygon(q, f) ? 0f : DistToEdges(q, f));
+            }
+            return Mathf.Clamp01((best - 2f) / 4f);
+        }
+        static readonly List<(Vector2 A, Vector2 U, Vector2 N, float S1, float W)> Berms = new List<(Vector2, Vector2, Vector2, float, float)>();
+        // whether a point lies on a covered cut's berm or just in front of its face (props draped there would hang over the face)
+        static bool InBerm(Vector2 q)
+        {
+            foreach (var (A, U, N, S1, W) in Berms) { float s = Vector2.Dot(q - A, U), lat = Mathf.Abs(Vector2.Dot(q - A, N)); if (s > -3f && s < S1 + 6f && lat < W) return true; }
+            return false;
+        }
+
         // Unity terrain holes over the cuts: every hole cell whose center is in a cut, where the ground stands above the floor
         static void CutPipeHoles(TerrainGrid g, PipePlan p)
         {
@@ -340,8 +442,9 @@ namespace ChastainRush
                     {
                         var q = new Vector2(pos.x + (x0 + i + 0.5f) * cx, pos.z + (z0 + j + 0.5f) * cz);
                         if (!p.InCut(q, 0f, out float s, out _)) continue;
-                        if (p.J.twin && s < 0.5f) continue;   // Round 23: a twin's floor reaches 0.8 m past its mouth over the ground (no gap at the edge)
-                        if (!p.J.twin && Ground(g, q.x, q.y) < p.Y(Mathf.Clamp(s, 0f, p.L)) + 0.08f) continue;   // the floor is at the ground here (Round 23: a twin is holed all over its cut, no grass through its floor)
+                        if (p.J.twin && !p.J.covered && s < 0.5f) continue;   // Round 23: a twin's floor reaches 0.8 m past its mouth over the ground (no gap at the edge)
+                        if (p.J.covered && s > BermFrom + 0.35f) continue;   // Round 24 Part B: the berm lies over a covered cut's roof (only its mouth is open)
+                        if (!p.J.twin && !p.Bank && Ground(g, q.x, q.y) < p.Y(Mathf.Clamp(s, 0f, p.L)) + 0.08f) continue;   // Round 24 Part B: a bank's apron is holed all over (its slab, walls and coping cover it)   // the floor is at the ground here (Round 23: a twin is holed all over its cut, no grass through its floor)
                         holes[j, i] = false; any = true; cells++;
                     }
                 if (any) data.SetHoles(x0, z0, holes);
@@ -383,12 +486,54 @@ namespace ChastainRush
                     var a = p.P(s0, 0f); var b = p.P(s1, 0f);
                     ids.Add(id); mouths.Add(new Vector3(a.x, p.Y(s0), a.y)); inners.Add(new Vector3(b.x, p.Y(s1), b.y)); halves.Add(p.HalfAt(s0));
                 }
-                if (p.S1 > 2f) Add(p.J.id + (p.J.open_b ? "" : " a"), 0f, Mathf.Max(1f, Mathf.Min(p.S1 - 1f, 20f)));
+                if (p.S1 > 2f) Add(p.J.id + (p.J.open_b ? "" : " a"), p.WallFrom, Mathf.Max(p.WallFrom + 1f, Mathf.Min(p.S1 - 1f, p.WallFrom + 20f)));   // Round 24 Part B: a bank's closure at its wingwalls' ends
                 if (!p.J.open_b && p.L - p.S2 > 2f) Add(p.J.id + " b", p.L, Mathf.Min(p.L - 1f, Mathf.Max(p.S2 + 1f, p.L - 20f)));
             }
             var pm = new GameObject("Pipe mouths").AddComponent<PipeMouths>(); pm.transform.SetParent(root, false);
             pm.ids = ids.ToArray(); pm.mouth = mouths.ToArray(); pm.inner = inners.ToArray(); pm.half = halves.ToArray();
             Debug.Log($"[Round24] {ids.Count} pipe mouths for the race closures: {string.Join(", ", ids)}");
+        }
+
+        // Round 24 Part B (item 4, GP, BUG-001: "We can put ground cover over this so there isn't a big open notch"): a covered cut's
+        // roof (its underside over the walls, from the mouth to the headwall), its face at the mouth (a headwall at the pond whose top
+        // follows the berm's surface across and down its sides, the box's opening in it, a coping along its top), two lamps inside
+        static void BuildCoveredBox(TerrainGrid terrain, MeshBuilder cut, PipePlan p, Color concrete, Transform root, ref int lamps)
+        {
+            var up3 = Vector3.up; var u3 = new Vector3(p.U.x, 0f, p.U.y);
+            Vector3 W(float s, float lat, float y) { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }
+            int k = Mathf.Max(1, Mathf.CeilToInt(p.S1 / 0.5f));
+            cut.Tint = Shade(concrete, 0.80f);
+            for (int i = 0; i < k; i++)
+            {
+                float a = p.S1 * i / k, b = p.S1 * (i + 1) / k, ha = p.HalfAt(a) + 0.05f, hb = p.HalfAt(b) + 0.05f;
+                Face(cut, W(a, -ha, p.Roof(a)), W(b, -hb, p.Roof(b)), W(b, hb, p.Roof(b)), W(a, ha, p.Roof(a)), -up3);   // the roof's underside
+            }
+            // the face: vertical strips 0.5 m wide across, from under the ground up to the berm's surface (+0.15), the opening left out
+            float h0 = p.HalfAt(0f), bc = h0 + CutWall + CopingOut, top0 = p.BermTop(BermFrom) + 0.15f;
+            float Ft(float lat) => top0 - 0.5f * Mathf.Max(0f, Mathf.Abs(lat) - bc);
+            float reach = bc; while (reach < bc + 20f && Ft(reach) > Ground(terrain, p.P(0f, reach).x, p.P(0f, reach).y) + 0.2f && Ft(-reach) > Ground(terrain, p.P(0f, -reach).x, p.P(0f, -reach).y) + 0.2f) reach += 0.5f;
+            float faceBot = p.Y(0f) - 0.6f;
+            for (float l0 = -reach; l0 < reach - 1e-3f; l0 += 0.5f)
+            {
+                float l1 = l0 + 0.5f, mid = (l0 + l1) * 0.5f;
+                float lo0 = Mathf.Min(faceBot, Ground(terrain, p.P(0f, l0).x, p.P(0f, l0).y) - 0.6f), lo1 = Mathf.Min(faceBot, Ground(terrain, p.P(0f, l1).x, p.P(0f, l1).y) - 0.6f);
+                bool open = Mathf.Abs(mid) < h0;
+                if (open) { lo0 = p.Roof(0f); lo1 = p.Roof(0f); }
+                cut.Tint = Shade(concrete, 0.84f);
+                Face(cut, W(0f, l0, lo0), W(0f, l1, lo1), W(0f, l1, Ft(l1)), W(0f, l0, Ft(l0)), -u3);
+                cut.Tint = Shade(concrete, 1.0f);   // the coping along its top, 2.3 m back over the berm's edge
+                Face(cut, W(0f, l0, Ft(l0)), W(0f, l1, Ft(l1)), W(2.3f, l1, Ft(l1)), W(2.3f, l0, Ft(l0)), up3);
+            }
+            // the opening's edges (the box's sides meet the face; the roof's front edge)
+            foreach (float side in new[] { -1f, 1f }) { cut.Tint = Shade(concrete, 0.78f); Face(cut, W(0f, side * h0, p.Y(0f) - 0.2f), W(0f, side * (h0 + 0.05f), p.Y(0f) - 0.2f), W(0f, side * (h0 + 0.05f), p.Roof(0f)), W(0f, side * h0, p.Roof(0f)), -u3); }
+            for (int i = 1; i <= 2; i++)
+            {
+                float s = p.S1 * i / 3f; var c = W(s, 0f, p.Roof(s) - 0.15f);
+                var lg = new GameObject("Pipe lamp (covered cut)"); lg.transform.SetParent(root, false); lg.transform.position = c - up3 * 0.4f;
+                var l = lg.AddComponent<Light>(); l.type = LightType.Point; l.range = 11f; l.intensity = 1.2f; l.color = new Color(1f, 0.82f, 0.58f); l.shadows = LightShadows.None;
+                lamps++;
+            }
+            Debug.Log($"[Round24] pipe {p.J.id}: covered: a roof over its {p.S1:0.0} m cut (inside {p.Roof(0f) - p.Y(0f):0.0} m high), its face at the pond {2f * reach:0} m across, its top {top0:0.00} m");
         }
 
         static void MakeTransparent(Material m)
@@ -472,6 +617,8 @@ namespace ChastainRush
                     float h1 = p.HalfAt(s); for (float o = h1; o <= h1 + CopingOut + 1e-3f; o += 0.3f) { var q = p.P(s, side * o); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
                     return Mathf.Max(lo, p.Y(s)) + 0.02f;
                 }
+                if (p.Bank) return p.WingTop(s);           // Round 24 Part B: wingwalls in a graded bank
+                if (p.J.covered) return p.Roof(s) + 0.3f;  // Round 24 Part B: up to the roof slab (the berm over it)
                 float hi = float.MinValue;
                 float h0 = p.HalfAt(s); for (float o = h0; o <= h0 + CopingOut + 0.3f; o += 0.3f) { var q = p.P(s, side * o); hi = Mathf.Max(hi, Ground(terrain, q.x, q.y)); }
                 return Mathf.Max(hi, p.Y(s)) + 0.12f;
@@ -480,20 +627,20 @@ namespace ChastainRush
             var cut = new MeshBuilder(); var rail = new MeshBuilder(); var lampFace = new List<(Vector3 at, Vector3 n)>();
             var steel = new Color(0.36f, 0.38f, 0.40f);
             int lamps = 0;
-            foreach (var (s0, s1, inner) in new[] { (0f, p.S1, p.S1), (p.S2, p.L, p.S2) })
+            foreach (var (s0, s1, inner) in new[] { (p.WallFrom, p.S1, p.S1), (p.S2, p.L, p.S2) })   // Round 24 Part B: a bank's walls only along its apron
             {
                 if (inner == p.S2 && p.J.open_b) continue;   // Round 23 follow-ups: the network's pipes go on from b (MapBuilder.Network.cs)
                 int k = Mathf.Max(1, Mathf.CeilToInt((s1 - s0) / 0.5f));
-                float lead = p.J.twin && s0 == 0f ? -0.8f : 0f;   // Round 23: a twin's floor starts 0.8 m out, over the apron
+                float lead = (p.J.twin && s0 == 0f) || (p.Bank && inner == p.S1) ? -0.8f : 0f;   // Round 23: a twin's floor starts 0.8 m out, over the apron (Round 24 Part B: and a bank's, over its channel)
                 for (int i = 0; i < k; i++)
                 {
                     float a = Mathf.Lerp(s0, s1, i / (float)k), b = Mathf.Lerp(s0, s1, (i + 1) / (float)k);
                     if (i == 0 && lead < 0f)
                         for (int j = 0; j < 24; j++)
                         {
-                            float ta = -1f + 2f * j / 24f, tb = -1f + 2f * (j + 1) / 24f, h0 = p.HalfAt(0f);
+                            float ta = -1f + 2f * j / 24f, tb = -1f + 2f * (j + 1) / 24f, h0 = p.HalfAt(s0);
                             cut.Tint = Shade(concrete, 0.9f);
-                            Face(cut, W(lead, ta * h0, p.FloorAt(0f, ta * h0) + 0.02f), W(0f, ta * h0, p.FloorAt(0f, ta * h0) + 0.02f), W(0f, tb * h0, p.FloorAt(0f, tb * h0) + 0.02f), W(lead, tb * h0, p.FloorAt(0f, tb * h0) + 0.02f), up3);
+                            Face(cut, W(s0 + lead, ta * h0, p.FloorAt(s0, ta * h0) + 0.02f), W(s0, ta * h0, p.FloorAt(s0, ta * h0) + 0.02f), W(s0, tb * h0, p.FloorAt(s0, tb * h0) + 0.02f), W(s0 + lead, tb * h0, p.FloorAt(s0, tb * h0) + 0.02f), up3);
                         }
                     float ha = p.HalfAt(a), hb = p.HalfAt(b);
                     // Round 19: the floor in 12 strips across, flat, turning into the pipe's round bottom near the headwall
@@ -511,6 +658,7 @@ namespace ChastainRush
                         cut.Tint = Shade(concrete, 0.86f);
                         var wn = Vector3.Cross(Vector3.up, W(b, side * hb, 0f) - W(a, side * ha, 0f)).normalized * side;   // the inner face's normal, flared
                         Face(cut, W(a, side * ha, p.Y(a) - 0.2f), W(b, side * hb, p.Y(b) - 0.2f), W(b, side * hb, tb), W(a, side * ha, ta), -wn * Mathf.Sign(Vector3.Dot(wn, n3 * side)));   // the inner face
+                        if (p.J.covered) continue;   // Round 24 Part B: under the berm (the roof is built below)
                         cut.Tint = Shade(concrete, 1.0f);
                         Face(cut, W(a, side * ha, ta), W(b, side * hb, tb), W(b, side * (hb + CopingOut), tb), W(a, side * (ha + CopingOut), ta), up3);   // the coping
                         Face(cut, W(a, side * (ha + CopingOut), ta), W(b, side * (hb + CopingOut), tb), W(b, side * (hb + CopingOut), tb - 0.4f), W(a, side * (ha + CopingOut), ta - 0.4f), n3 * side);
@@ -518,9 +666,9 @@ namespace ChastainRush
                 }
                 // Round 23: a twin's wall ends at the mouths closed with a face (the wall, the coping and the ground under them read as one
                 // solid wingwall from outside; the exe check saw through the open end into the terrain hole under the coping)
-                if (p.J.twin)
+                if ((p.J.twin || p.Bank) && !p.J.covered)   // Round 24 Part B: a bank's wingwalls' outer ends too
                 {
-                    float m = inner == p.S1 ? 0f : p.L; var outward = u3 * (inner == p.S1 ? -1f : 1f);
+                    float m = inner == p.S1 ? s0 : p.L; var outward = u3 * (inner == p.S1 ? -1f : 1f);
                     foreach (float side in new[] { 1f, -1f })
                     {
                         float hm = p.HalfAt(m), tm = Top(m, side), bm = p.Y(m) - 0.6f;
@@ -529,7 +677,7 @@ namespace ChastainRush
                     }
                 }
                 // railing on the walls where the drop is over 1 m: posts every 2 m, a top rail and a mid rail
-                foreach (float side in new[] { 1f, -1f })
+                foreach (float side in p.J.covered ? new float[0] : new[] { 1f, -1f })   // Round 24 Part B: none on a covered cut
                 {
                     Vector3? prevTop = null, prevMid = null;
                     for (float s = s0; s <= s1 + 1e-3f; s += 2f)
@@ -586,8 +734,12 @@ namespace ChastainRush
                 }
                 // its coping, over the ground behind it
                 cut.Tint = Shade(concrete, 1.0f);
-                Face(cut, W(face, -hw - CopingOut, yt), W(face, hw + CopingOut, yt), W(face - sgn * 1.0f, hw + CopingOut, yt), W(face - sgn * 1.0f, -hw - CopingOut, yt), up3);
-                Face(cut, W(face, -hw - CopingOut, yt - 0.35f), W(face, hw + CopingOut, yt - 0.35f), W(face, hw + CopingOut, yt), W(face, -hw - CopingOut, yt), normal);
+                if (!p.J.covered)
+                {
+                    Face(cut, W(face, -hw - CopingOut, yt), W(face, hw + CopingOut, yt), W(face - sgn * 1.0f, hw + CopingOut, yt), W(face - sgn * 1.0f, -hw - CopingOut, yt), up3);
+                    Face(cut, W(face, -hw - CopingOut, yt - 0.35f), W(face, hw + CopingOut, yt - 0.35f), W(face, hw + CopingOut, yt), W(face, -hw - CopingOut, yt), normal);
+                }
+                else if (inner == p.S1) BuildCoveredBox(terrain, cut, p, concrete, root, ref lamps);   // Round 24 Part B: GP's roof, its face at the pond, lamps
             }
             var cutGo = cut.ToObject("sc Pipe " + p.J.id + " cuts and headwalls", mats.Concrete, root, false);   // Round 19: "sc", so VehicleSurfaceContacts takes the faces' own normals (a body scraping the round bottom is not stopped)
             AddCollider(cutGo, cut, "Pipe " + p.J.id + " cuts collider");

@@ -36,14 +36,16 @@ namespace ChastainRush
             meshes = new[] { FishMesh(0), FishMesh(1), FishMesh(2) };
             var rnd = new System.Random(2121);
             float R() => (float)rnd.NextDouble();
-            for (int k = 0; k < 4; k++)
+            // Round 24 Part B (item 5, open water): as many fish per meter on a long stretch under a lake as on P1's 27 m
+            int schoolsN = Mathf.Clamp(Mathf.RoundToInt(len / 30f), 4, 14), sunN = Mathf.Clamp(Mathf.RoundToInt(len / 20f), 5, 18), bigN = Mathf.Clamp(Mathf.RoundToInt(len / 35f), 3, 10);
+            for (int k = 0; k < schoolsN; k++)
             {
                 var sc = new School { s = len * (0.15f + 0.7f * R()), phi = R() * 6.283f, dir = R() < 0.5f ? -1f : 1f, speed = 0.7f + 0.8f * R(), phiSpeed = (R() - 0.5f) * 0.25f, radiusK = 0.75f + 0.2f * R() };
                 schools.Add(sc);
                 for (int i = 0; i < 12; i++) fish.Add(new Fish { kind = 0, school = k, size = 0.17f + 0.08f * R(), phase = R() * 6.283f, s = (R() - 0.5f) * 2.6f, phi = (R() - 0.5f) * 0.5f, r = (R() - 0.5f) * 0.18f });
             }
-            for (int i = 0; i < 5; i++) fish.Add(new Fish { kind = 1, school = -1, size = 0.24f + 0.08f * R(), phase = R() * 6.283f, s = len * R(), phi = R() * 6.283f, r = 0.8f + 0.15f * R(), speed = 0.5f + 0.4f * R(), dir = R() < 0.5f ? -1f : 1f, nextDart = 3f + 6f * R() });
-            for (int i = 0; i < 3; i++) fish.Add(new Fish { kind = 2, school = -1, size = 0.65f + 0.3f * R(), phase = R() * 6.283f, s = len * R(), phi = R() * 6.283f, r = 0.86f + 0.08f * R(), speed = 0.35f + 0.2f * R(), dir = R() < 0.5f ? -1f : 1f, nextDart = 5f + 8f * R() });
+            for (int i = 0; i < sunN; i++) fish.Add(new Fish { kind = 1, school = -1, size = 0.24f + 0.08f * R(), phase = R() * 6.283f, s = len * R(), phi = R() * 6.283f, r = 0.8f + 0.15f * R(), speed = 0.5f + 0.4f * R(), dir = R() < 0.5f ? -1f : 1f, nextDart = 3f + 6f * R() });
+            for (int i = 0; i < bigN; i++) fish.Add(new Fish { kind = 2, school = -1, size = 0.65f + 0.3f * R(), phase = R() * 6.283f, s = len * R(), phi = R() * 6.283f, r = 0.86f + 0.08f * R(), speed = 0.35f + 0.2f * R(), dir = R() < 0.5f ? -1f : 1f, nextDart = 5f + 8f * R() });
             foreach (var f in fish) { f.pos = Where(f, Time.time); f.vel = along; }
             // the sound: a hum that fades in inside, and a low-pass on the listener
             hum = gameObject.AddComponent<AudioSource>(); hum.clip = Hum(); hum.loop = true; hum.spatialBlend = 0f; hum.volume = 0f; hum.playOnAwake = false; hum.Play();
@@ -56,7 +58,7 @@ namespace ChastainRush
             float c = Mathf.Cos(phi), sn = Mathf.Sin(phi);
             float h = (sn >= 0f ? up : down) * sn * rk;
             float halfAt = Mathf.Lerp(bottomHalf, topHalf, Mathf.InverseLerp(bottomY, surfaceY, axisY + h)) - 0.6f;
-            float lat = c * Mathf.Min(halfAt, radius + 2.6f) * rk;
+            float lat = c * Mathf.Min(halfAt, radius + (topHalf > 12f ? 4.5f : 2.6f)) * rk;   // Round 24 Part B: wider round the tube in open water
             var q = new Vector2(lat, h); float min = radius + 0.55f;   // never against the glass
             if (q.magnitude < min) q = q.normalized * min;
             return a0 + along * Mathf.Clamp(s, 0.6f, len - 0.6f) + side * q.x + Vector3.up * q.y;
