@@ -2673,7 +2673,52 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**Round 25 follow-ups (Dan, 2026-10-14, after driving the Round 25 exe; session `2026-10-14_15-37-54-171_ea184c`, two reports, read by
+**ACTIVE — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
+`2026-10-14_17-14-00-187_5d4e5a`, one report, read by Claude). Dan drives it; rebuild into `Builds/ChastainRush/`, commit,
+give the build time.**
+1. LOG RAMP IS A WALL (BUG-001, vehicle x 2362.22, z 1256.83, heading 275, reverse race lap 3, the orange SHORTCUT line on
+   the minimap; a log ramp in the trees just off the trail, next to the creek; likely RE's or RD's kicker, Code to name it).
+   Dan: "this is a stop. need to flatten so things dont get caught". The ramp's foot has a log lying across it and the two
+   side logs stick out past it at ground level, so a vehicle hits a step instead of rolling up. Make the foot meet the
+   ground flush (a thin wedge or the ground graded up to it), nothing across the foot and nothing sticking out past it,
+   side logs set back or beveled so a wheel touching them is deflected, not caught. Then sweep EVERY ramp, kicker and
+   log jump (the big jumps, N2, N5, RA, RC, RD, RE, R1, R3, #2, #6, the step-downs) for a lip at the foot or a catch at the
+   sides, from the line the race takes and from a few degrees either side. Bump log: no JOLT on the way onto any ramp.
+2. WATER ABOVE THE GROUND AT THE OTHER PONDS. The follow-up fixed the Enclave pond only and listed the other ponds where the
+   water's edge stands above the ground in the build log. Apply the same fix (`MapBuilder.PondBank.cs`) to every pond and
+   lake on the list, and say which ones changed.
+3. PIPE EXPRESS EVERYWHERE THERE IS DISTANCE (Dan, 17:22): "never tried warp but like boost. Would like to add it in more
+   places anytime there is any distance". Boost stays the default (keep the debug row). Add an express on every pipe run
+   longer than about 100 m between two places where the driver has a choice or a reason to stop (a junction, the hub, an
+   exit, a manhole foot, a glass stretch's ends): mains, branches, the BF / GP pipes and the exits' pipes. Each express
+   ends before such a place and lets go at 20 m/s, so the player still picks every turn; nothing along the network is
+   skipped. Glass stretches are never express (they are for looking at). Ride time: no ride longer than about 12 s
+   (raise the speed on long ones; E1 is about 45 s now), with the camera steady. Free roam only; races and the AI never.
+   List every express (pipe, from, to, length, ride time) in `Docs/PIPE-NETWORK.md` and draw them on the map as now.
+4. DRIVE ON THE WALLS AND CEILING (Dan, 17:24): "is there a way vehicles can drive on the walls but keep facing the
+   current direction and not go sideways? Want to be able to drive on the walls and potentially ceiling". Arcade, not
+   physics-true. Wall riding ALREADY exists (Round 19, `Pipes/DrainPipe.cs` "walls": gravity turns to the wall above StickFrom,
+   fully from StickFull). Start there: first find out in the exe why Dan's vehicles go sideways / do not stay on (the stick
+   speeds too high, the hold not on in the network's pipes, the vehicle's grip on a wall, the heading drifting, or the
+   camera's world-up making it feel sideways) and say what it was; fix that rather than build a second system.
+   - Inside the round pipes (not the hub, chambers or open water), gravity for the player's vehicle points into the pipe
+     wall under its wheels instead of straight down, so steering up the wall carries it round onto the wall and, with
+     speed, over the ceiling. Below a speed (start about 12 m/s on the wall's upper half / ceiling, tune it) it lets go
+     and drops back to the floor, landing on its wheels.
+   - It keeps pointing where it was going: no sliding down the wall, no turning sideways; grip on the wall as on the
+     floor, and a gentle pull that keeps the heading along the pipe unless the player steers.
+   - The camera rolls smoothly with the vehicle while it is on a wall or the ceiling (so the pipe seems to turn, not
+     the car) and comes back to world-up on the floor and outside; steady, never through the wall (the Round 24 rules).
+   - Leaving a pipe (a mouth, the hub, a chamber) or entering an express: the vehicle is eased back upright onto the
+     floor first, never thrown out upside down.
+   - On for the player in free roam and in races (the same distance, so no cut); the AI stays on the floor.
+   - Check by script: a drive up the wall, a full loop round the ceiling at speed, a slow drop off the ceiling, and
+     out of a mouth, in two vehicles. Dan drives the feel.
+
+Dan's status, 17:22: pipe warp works; RD and RE OK, move on; the Round 25 wildlife at the glass is not yet checked
+(leave A8 open).
+
+**DONE (d283f22) — Round 25 follow-ups (Dan, 2026-10-14, after driving the Round 25 exe; session `2026-10-14_15-37-54-171_ea184c`, two reports, read by
 Claude). Dan: "pull in my bugs...i thought the new shortcuts would have been built this round. I really want the manhole covers visible
 above ground at a normal size not completely gone". His picks (asked): build RD and RE; keep RA and RC.**
 - BUG-001 (x 2739.17, z 1045.29, the fence 2065/1452 in R1's lobe): "can we only make these unbreakable in the race? Let them all be

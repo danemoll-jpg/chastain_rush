@@ -569,7 +569,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-14_15-37-54-171_ea184c` (two reports: R1's fences breakable in free roam, the Enclave pond's bank; in TODO.md, Round 25 follow-ups).
+`2026-10-14_17-14-00-187_5d4e5a` (one report: a log ramp's foot is a wall; in TODO.md, Round 26).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
