@@ -28,8 +28,11 @@ namespace Racer
         Vector3 Offset => Vector3.Scale(offset, offsetScale);
         // Chastain Rush, Round 19: inside a drainage pipe (DrainPipe.View) the camera rides the pipe's axis behind the vehicle and
         // looks along it, world up, so a vehicle riding the walls or over the roof does not swing it round or out of the pipe
+        // (Round 26: up is PipeUp, which rolls with a vehicle held to the wall)
         public delegate bool ViewFn(Transform target, out Vector3 desired, out Vector3 lookAt);
         public static ViewFn PipeView; float pipeTime;
+        // Chastain Rush, Round 26: the camera's up inside a pipe (DrainPipe.View sets it: it rolls with a vehicle riding the wall)
+        public static Vector3 PipeUp = Vector3.up;
         void OnEnable()
         {
             if (!target) return;
@@ -54,7 +57,7 @@ namespace Racer
                 pipeTime += Time.deltaTime;
                 if (pipeTime < 0.5f) position = Vector3.SmoothDamp(position, pipeAt, ref velocity, 0.2f); else { position = pipeAt; velocity = Vector3.zero; }
                 var lk = pipeLook - position;
-                if (lk.sqrMagnitude > 1e-6f) { var want = Quaternion.LookRotation(lk, Vector3.up); rotation = pipeTime < 0.02f ? rotation : Quaternion.Slerp(rotation, want, 1 - Mathf.Exp(-7f * Time.deltaTime)); }
+                if (lk.sqrMagnitude > 1e-6f) { var want = Quaternion.LookRotation(lk, PipeUp); rotation = pipeTime < 0.02f ? rotation : Quaternion.Slerp(rotation, want, 1 - Mathf.Exp(-7f * Time.deltaTime)); }
                 var flat = Vector3.ProjectOnPlane(pipeLook - pipeAt, Vector3.up); if (flat.sqrMagnitude > 1e-4f) heading = Quaternion.LookRotation(flat);
                 transform.SetPositionAndRotation(position, rotation);
                 return;

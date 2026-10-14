@@ -19,6 +19,13 @@ namespace Racer
         static volatile Dictionary<EntityId, Box> vehicles = new();
         static volatile HashSet<EntityId> ramps = new();
         public static long RampCorrections;
+        // Chastain Rush, Round 26 (item 4, driving on the walls): a drainage pipe's round barrel ("sc ... barrel") is driven on all the
+        // way round. "From above" there is from above the VEHICLE (its own up), not the world's: on the walls and the ceiling the
+        // faces' normals point sideways and down, so those contacts kept PhysX's internal-edge normals, tilted back against the travel,
+        // and a body touching the wall it rode on lost 3 to 9 m/s a step (the Drifter Twin came off the wall). -wallRideRound25: as before
+        static volatile HashSet<EntityId> barrels = new();
+        static readonly bool Round25Walls = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-wallRideRound25") >= 0;
+        public static long BarrelCorrections;
         // Round 14: Racer applies this to all of its driving ground (every "Ground_" mesh); here the ground is the terrain
         // (a TerrainCollider heightfield, which has no triangle list to read) and the bridge decks. Measured in the exe: the
         // small vehicles' bodies (speculative CCD, 15 to 22 cm clearance) touched the terrain in nearly every physics step and
@@ -35,7 +42,7 @@ namespace Racer
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset()
         {
-            surfaces = new(); vehicles = new(); ramps = new(); fields = new(); initialized = false; registeredScene = default; RampCorrections = 0; TerrainCorrections = 0;
+            surfaces = new(); vehicles = new(); ramps = new(); fields = new(); barrels = new(); initialized = false; registeredScene = default; RampCorrections = 0; TerrainCorrections = 0; BarrelCorrections = 0;
             Physics.ContactModifyEvent -= Correct;
             Physics.ContactModifyEvent += Correct;
             Physics.ContactModifyEventCCD -= CorrectCcd;
@@ -49,7 +56,7 @@ namespace Racer
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noSurfaceContacts") >= 0) { Debug.Log("[VehicleSurfaceContacts] off (-noSurfaceContacts)"); return; }   // checks only: measure without it
             if (!initialized || registeredScene != box.gameObject.scene)
             {
-                var next = new Dictionary<EntityId, Face[]>(); var nextRamps = new HashSet<EntityId>();
+                var next = new Dictionary<EntityId, Face[]>(); var nextRamps = new HashSet<EntityId>(); var nextBarrels = new HashSet<EntityId>();
                 foreach (var mesh in Object.FindObjectsByType<MeshCollider>())
                 {
                     if (mesh.gameObject.scene != box.gameObject.scene) continue;
@@ -68,6 +75,7 @@ namespace Racer
                     }
                     next[mesh.GetEntityId()] = faces;
                     if (ramp) nextRamps.Add(mesh.GetEntityId());
+                    if (ramp && !Round25Walls && mesh.name.EndsWith(" barrel", System.StringComparison.Ordinal)) nextBarrels.Add(mesh.GetEntityId());   // Round 26
                     mesh.hasModifiableContacts = true;
                 }
                 var nextFields = new Dictionary<EntityId, Field>();   // Round 14: the terrain tiles
@@ -81,7 +89,7 @@ namespace Racer
                     nextFields[tc.GetEntityId()] = new Field { H = flat, Res = res, X = tc.transform.position.x, Z = tc.transform.position.z, StepX = d.size.x / (res - 1), StepZ = d.size.z / (res - 1) };
                     tc.hasModifiableContacts = true;
                 }
-                surfaces = next; ramps = nextRamps; fields = nextFields; initialized = true; registeredScene = box.gameObject.scene;
+                surfaces = next; ramps = nextRamps; barrels = nextBarrels; fields = nextFields; initialized = true; registeredScene = box.gameObject.scene;
                 Debug.Log($"[VehicleSurfaceContacts] {nextRamps.Count} shortcut surfaces, {next.Count - nextRamps.Count} bridge deck meshes, {nextFields.Count} terrain tiles registered");
             }
             var copy = new Dictionary<EntityId, Box>(vehicles);
@@ -99,7 +107,7 @@ namespace Racer
 
         static void CorrectPairs(NativeArray<ModifiableContactPair> pairs, bool ccd)
         {
-            var terrain = surfaces; var bodies = vehicles; var rampIds = ramps; var tiles = fields;
+            var terrain = surfaces; var bodies = vehicles; var rampIds = ramps; var tiles = fields; var barrelIds = barrels;
             for (int i = 0; i < pairs.Length; i++)
             {
                 var pair = pairs[i];
@@ -111,13 +119,15 @@ namespace Racer
                 var center = (first ? pair.position : pair.otherPosition) + rotation * box.Center;
                 if (!ccd && tiles.TryGetValue(surfaceId, out var field)) { CorrectTerrain(ref pair, field, first, center, rotation, box); continue; }
                 if (!terrain.TryGetValue(surfaceId, out var faces)) continue;
+                bool barrel = barrelIds.Contains(surfaceId); var bodyUp = rotation * Vector3.up;   // Round 26
                 for (int k = 0; k < pair.contactCount; k++)
                 {
                     uint face = pair.GetFaceIndex(k);
                     if (face >= faces.Length) continue;
                     var surface = faces[face]; var n = surface.Normal;
-                    // sides, undersides and obstacles keep their exact solver response
-                    if (n.y < .55f || Vector3.Dot(center - surface.Point, n) < 0) continue;
+                    // sides, undersides and obstacles keep their exact solver response (in a pipe's barrel: as seen from the vehicle)
+                    if ((barrel ? Vector3.Dot(n, bodyUp) : n.y) < .55f || Vector3.Dot(center - surface.Point, n) < 0) continue;
+                    if (barrel && n.y < .55f) System.Threading.Interlocked.Increment(ref BarrelCorrections);
                     var normal = first ? n : -n;
                     if (ccd) normal = -normal;
                     if (Vector3.Dot(pair.GetNormal(k), normal) > .98f) continue;

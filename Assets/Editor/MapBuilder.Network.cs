@@ -37,7 +37,7 @@ namespace ChastainRush
         [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling; public int stage; public NetOpening[] openings; }
         [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; }
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
-        [Serializable] class NetExpress { public string id, name, tube; public float s0, s1; }   // Round 25 (B2): the pipe express's stretches
+        [Serializable] class NetExpress { public string id, name, tube; public float s0, s1, top; }   // Round 25 (B2): the pipe express's stretches; Round 26: top, its own top speed
         [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; public NetExpress[] express; }
 
         // a mesh with UVs (the pipes' stained concrete needs them), one-sided faces (from Round 23's MapBuilder.NetworkEntrance.cs)

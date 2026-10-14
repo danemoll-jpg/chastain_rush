@@ -97,7 +97,7 @@ namespace ChastainRush
                 var g = n.Geo[t.id]; float R = g.R;
                 int i0 = g.At(e.s0), i1 = g.At(e.s1);
                 var fl = new List<Vector3>(); for (int i = i0; i <= i1; i++) fl.Add(g.P[i]);
-                stretches.Add(new PipeExpress.Stretch { id = e.id, name = e.name, floor = fl.ToArray(), radius = R });
+                stretches.Add(new PipeExpress.Stretch { id = e.id, name = e.name, floor = fl.ToArray(), radius = R, top = e.top });
                 // the marks at each end: the band round the pipe (from the end 1.2 m outward, away from the stretch), boards, floor arrows
                 foreach (var (sEnd, inward) in new[] { (e.s0, 1f), (e.s1, -1f) })
                 {
@@ -142,7 +142,7 @@ namespace ChastainRush
             if (boards.T.Count > 0 && netSigns) boards.ToObject("Pipe express boards", netSigns, host, false);
             var px = host.gameObject.AddComponent<PipeExpress>(); px.stretches = stretches.ToArray();
             px.streak = ExpressStreakMaterial(); px.splash = pipeSplash;
-            Debug.Log($"[Round25] pipe express: {stretches.Count} stretches ({string.Join("; ", stretches.Select(st => $"{st.id} {st.name} on {list.First(e => e.id == st.id).tube}, {list.First(e => e.id == st.id).s1 - list.First(e => e.id == st.id).s0:0} m"))})");
+            Debug.Log($"[Round26] pipe express: {stretches.Count} stretches ({string.Join("; ", stretches.Select(st => $"{st.id} {st.name} on {list.First(e => e.id == st.id).tube}, {list.First(e => e.id == st.id).s1 - list.First(e => e.id == st.id).s0:0} m at up to {(st.top > 0f ? st.top : PipeExpress.BoostSpeed):0} m/s"))})");
         }
 
         static Material ExpressStreakMaterial()

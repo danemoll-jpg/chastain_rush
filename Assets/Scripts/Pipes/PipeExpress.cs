@@ -16,9 +16,13 @@ namespace ChastainRush
     //   Off                  the stretches drive as any pipe
     // Chosen on the debug menu's "Pipe express" row (GameMenus). During any race it is off and the stretches drive normally; an AI
     // driver (RoadDriver) never takes it.
+    // Round 26 (item 3, Dan: "like boost. Would like to add it in more places anytime there is any distance"): a stretch on every run of
+    // pipe over about 100 m (pipe_network.py), each with its own top speed ('top': no ride longer than about 12 s; E1 goes 211 m/s). The
+    // speed-up and slow-down scale with it (Accel; the same in pipe_network.py's ride_time), the heading is taken over a longer stretch of
+    // floor at speed, and the camera rides the stretch's own line behind the vehicle (View), so it is steady however fast it goes.
     public sealed class PipeExpress : MonoBehaviour
     {
-        [Serializable] public sealed class Stretch { public string id, name; public Vector3[] floor; public float radius; }
+        [Serializable] public sealed class Stretch { public string id, name; public Vector3[] floor; public float radius, top; }   // Round 26: top, its own top speed (m/s; 0: BoostSpeed)
         public Stretch[] stretches;
         public Material streak, splash;
         public enum Mode { Boost, Warp, Off }
@@ -29,6 +33,10 @@ namespace ChastainRush
         public static PipeExpress Instance { get; private set; }
         public static int Rides { get; private set; }            // checks
         public static string LastRide { get; private set; } = "";
+        public static float LastRideTime { get; private set; }  // checks (Round 26): seconds from the surge to letting go
+        public static float Accel(float top) => Mathf.Max(Surge, top / 2.5f);   // Round 26: the speed-up and slow-down (pipe_network.py express_accel)
+        float Top => on != null && on.top > 0f ? on.top : BoostSpeed;
+        float rideStart;
 
         ArcadeVehicle car; bool wasEnabled; Stretch on; bool forward; float s, v, h0, cool, len; float[] arc;
         bool warping; float fade, fadeOut; Vector3 lastPos;
@@ -83,12 +91,21 @@ namespace ChastainRush
             len = arc[arc.Length - 1]; s = 0f;
             v = Mathf.Max(8f, Vector3.Dot(c.Body.linearVelocity, (Point(1f) - Point(0f)).normalized));
             h0 = Mathf.Clamp(c.Body.position.y - Point(0f).y, 0.3f, 1.4f);
-            wasEnabled = car.enabled; car.enabled = false; car.Body.isKinematic = true; lastPos = car.Body.position;
+            wasEnabled = car.enabled; car.enabled = false; car.Body.isKinematic = true; lastPos = car.Body.position; rideStart = Time.time;
+            c.SurfaceUp = Vector3.up;   // Round 26: off any pipe wall (DrainPipe eases it to the floor before an express's end)
             Rides++; LastRide = $"{st.id} {st.name} ({(fwd ? "forward" : "back")}, {Setting})";
             if (Setting == Mode.Warp) { warping = true; fade = 0f; return; }
             whoosh.Play(); rush.Play();
             Splash(car.Body.position, 60);
             Streaks(true);
+        }
+
+        // Round 26: as Point, carried on straight past either end (the camera's points near the ends: no swing as they stop there)
+        Vector3 PointX(float x)
+        {
+            if (x < 0f) return Point(0f) + (Point(0f) - Point(2f)).normalized * -x;
+            if (x > len) return Point(len) + (Point(len) - Point(len - 2f)).normalized * (x - len);
+            return Point(x);
         }
 
         // the floor's middle at distance x along the ride (from the end it was entered at)
@@ -103,14 +120,17 @@ namespace ChastainRush
         {
             if (!car || !car.Body) { on = null; return; }
             if ((car.Body.position - lastPos).sqrMagnitude > 25f) { Release(false); return; }   // a reset moved it: let go where it is
-            float left = len - s;
-            float target = left < 45f ? ExitSpeed : BoostSpeed;
-            v = Mathf.MoveTowards(v, target, Surge * dt);
+            // Round 26: the stretch's own top speed; slowing to ExitSpeed just in time for the far end (was: from 45 m out, at 45 m/s)
+            float left = len - s, acc = Accel(Top), brake = (v * v - ExitSpeed * ExitSpeed) / (2f * acc) + 3f;
+            float target = left < brake ? ExitSpeed : Top;
+            v = Mathf.MoveTowards(v, target, acc * dt);
             s = Mathf.Min(len, s + v * dt);
-            var p = Point(s); var t = (Point(Mathf.Min(len, s + 1.5f)) - Point(Mathf.Max(0f, s - 1.5f))).normalized;
+            float w = Mathf.Clamp(v * 0.12f, 1.5f, 14f);   // Round 26: the heading over more floor at speed (no flick at each bend's joints)
+            var p = Point(s); var t = (Point(Mathf.Min(len, s + w)) - Point(Mathf.Max(0f, s - w))).normalized;
             var pos = p + Vector3.up * h0; var rot = Quaternion.LookRotation(t, Vector3.up);
             car.Body.MovePosition(pos); car.Body.MoveRotation(rot); lastPos = pos;
             if (rush) rush.volume = Mathf.MoveTowards(rush.volume, 0.55f * Mathf.Clamp01(v / BoostSpeed), dt * 2f);
+            LastRideTime = Time.time - rideStart;
             if (s >= len - 1e-3f) Release();
         }
 
@@ -127,6 +147,41 @@ namespace ChastainRush
             }
             on = null; car = null; cool = 1.5f; warping = false; Streaks(false);
             if (rush) rush.volume = 0f;
+        }
+
+        // Round 26: the chase camera while carried (DrainPipe.View asks first): on the stretch's own axis 12 m behind, looking 14 m ahead,
+        // as DrainPipe.View places it; it moves with the vehicle exactly (no lag to catch up at 200 m/s, no jump where the pipe's pieces meet)
+        public static bool View(Transform target, out Vector3 desired, out Vector3 lookAt)
+        {
+            desired = lookAt = default;
+            var x = Instance; if (x == null || x.on == null || x.warping || !x.car || x.car.transform != target) return false;
+            float r = x.on.radius;
+            desired = x.Point(x.s - 12f) + Vector3.up * (r + 0.4f); lookAt = x.PointX(x.s + 14f) + Vector3.up * r;   // where DrainPipe.View has it (the camera
+            // waits at the stretch's start until the vehicle is 12 m in: carried on straight back from there it could leave a bending pipe)
+            return true;
+        }
+
+        // Round 26 (item 4): how far ahead along a pipe the nearest express entry is, for a vehicle at p moving with vel (DrainPipe eases a
+        // vehicle off the wall onto the floor before it). Free roam and the player only, as the express itself
+        public static float EntryAhead(ArcadeVehicle c, Vector3 p, Vector3 vel, float within)
+        {
+            var x = Instance; if (x == null || x.stretches == null || x.on != null || !Allowed || c.GetComponent<RoadDriver>() != null) return float.MaxValue;
+            float best = float.MaxValue;
+            foreach (var st in x.stretches)
+            {
+                if (st.floor == null || st.floor.Length < 3) continue;
+                foreach (bool fwd in new[] { true, false })
+                {
+                    var end = fwd ? st.floor[0] : st.floor[st.floor.Length - 1];
+                    var next = fwd ? st.floor[2] : st.floor[st.floor.Length - 3];
+                    var dir = next - end; dir.y = 0f; dir.Normalize();
+                    var rel = p - end; float along = -Vector3.Dot(new Vector3(rel.x, 0f, rel.z), dir);   // how far short of the entry
+                    if (along < -1f || along > within || Vector3.Dot(vel, dir) < 1f) continue;
+                    if ((new Vector3(rel.x, 0f, rel.z) + dir * along).magnitude > st.radius + 1f || Mathf.Abs(rel.y) > st.radius * 2.5f) continue;
+                    best = Mathf.Min(best, Mathf.Max(0f, along));
+                }
+            }
+            return best;
         }
 
         void Update()

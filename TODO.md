@@ -2673,7 +2673,7 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
+**DONE (not yet driven by Dan) — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
 `2026-10-14_17-14-00-187_5d4e5a`, one report, read by Claude). Dan drives it; rebuild into `Builds/ChastainRush/`, commit,
 give the build time.**
 1. LOG RAMP IS A WALL (BUG-001, vehicle x 2362.22, z 1256.83, heading 275, reverse race lap 3, the orange SHORTCUT line on
@@ -2717,6 +2717,55 @@ give the build time.**
 
 Dan's status, 17:22: pipe warp works; RD and RE OK, move on; the Round 25 wildlife at the glass is not yet checked
 (leave A8 open).
+
+**STATUS of Round 26 (Claude, 2026-10-14): items 1 to 4 DONE, exe rebuilt; checked in the exe by script (minimized, muted, 1280 x
+720: `ChastainRush.exe -exeRound26 <dir> [-r26Only ramps,express,walls] [-wallRideRound25] -logFile <dir>\Player.log`,
+Checks/Round20Runner.R26.cs). Imported from Racer: nothing.**
+1. Log ramp: DONE. Dan's ramp was RE2 (RE's log kicker at the gorge's east rim). It was an open board 0.25 m thick, its foot level at
+   the ground's height on the line; the ground falls away to one side there, so its front edge stood up to 0.12 m proud, and the
+   logs drawn on it sat 0.25 m over it and 0.15 m past its sides, one lying across the foot. Now every big jump's take-off (and
+   each back that is a reverse take-off) has its foot fitted to the ground across its whole width (`MapBuilder.BigJumps.cs`
+   FootSlope / footBank: the ground's cross slope as a bank fading out by mid-ramp, the foot just under the lowest ground); the
+   log ramps (N5, RD, RE2) are solid with sloped sides, the logs set into the surface (crowns 3 cm over it, inside its width),
+   the side logs along its edges on the sloped sides, buried at the foot; and every prism's edge standing 0 to 0.3 m proud of
+   the ground (a foot, a board's end) meets it with a thin 15 degree wedge (`MapBuilder.Shortcuts.cs` BuildPrism; R1's ramp
+   foot, R3's slide foot, #6's kicker, BJ1's fallen span). Sweep of every ramp on the built colliders
+   (`ChastainRush.RampSweep.Run -rampOut <file>`, report only: every BigJump toward its lip, across its width and 6 / 12 degrees
+   off, and #2, #6, R1, R3 along their lines): 60 lines with a step before, 30 after. Fixed: RE2 (foot 6 to 12 cm, sides 14 to
+   66 cm), RD (sides 23 to 169 cm), N5 (sides 41 to 99 cm), BJ4 and BJ4R (feet 6 to 8 cm), BJ1R (the fallen span's top end 9 cm),
+   R1's ramp foot (6 cm), R3's slide foot (10 cm). In the exe, 106 drives onto every take-off (the Drifter Twin on the line, 1.4 to
+   1.9 m in from each side and 8 degrees either way, the Trail Four on the line) and from Dan's spot to RE2: speed kept 92 to
+   100 %, no body contact against the travel; Dan's spot: 99 %. The bump log logs JOLTs on roads only; none in the check runs.
+   Left as they were (for Dan): BJ1R, the reverse take-off out of the footbridge's gully, keeps 83 to 87 % (the V at the gully's
+   floor, Round 21, not a lip); BJ2R, a light touch at the lip in reverse (97 to 99 % kept); BJ1's sides coming in at 12 degrees
+   meet its railings (Round 20); R1's pool deck and steps inside the pool; P1's outlet cut before P1J's apron (not on it).
+2. Ponds: DONE. `MapBuilder.PondBank.cs` now raises the bank at every pond and lake whose water's edge stood more than 0.3 m over
+   the ground beside it (never in a stream's bed at the water, another pond, a pipe's cut or open channel, a road, drive,
+   sidewalk or the trail). Changed: W1 (the pond over M1's glass, x 1569 z 1133, up to 0.49 m), W2 (north edge, x 2694 z 1917,
+   1.37 m), W3 (east edge, x 3986 z 1863, 1.37 m), W4 (the Enclave pond, as before, 1.63 m), W5 (the far west pond, x 129 z 1493,
+   1.98 m), W7 (x 2425 z 1698, 0.38 m), W10 (Nelson Lake, 0.20 m), W13 (the small pond by the creek trail, x 2431 z 1327, 0.56 m),
+   W17 (south edge, x 3321 z -23, 2.14 m). Pictures from the exe at W1, W2, W4, W5, W7, W13.
+3. Pipe express everywhere: DONE. `pipe_network.py` puts an express on every run of pipe over 100 m between two places with a choice
+   or a reason to stop (a pipe's ends, a glass stretch's or a flooded sag's ends), 20 m short of each: 37 (was 5; E1 to E5 keep
+   their ids). Each has its own top speed so no ride is over about 12 s (E1 211 m/s, E5 53, the rest 45); the speed-up and
+   slow-down scale with it and it still lets go at 20 m/s; the camera rides the stretch's own axis where the pipe camera sits.
+   Boost stays the default (debug row kept), free roam and the player only. Listed in `Docs/PIPE-NETWORK.md`; drawn on both maps
+   as before. Exe: E1 11.6 s (1959 m), E2 11.0 s, E5 11.6 s, E9 5.7 s, E6 2.3 s, all let go at 20.0 m/s, the camera in the pipe.
+4. Walls and ceiling: DONE. Found in the exe (before: `-wallRideRound25`): (a) half a second of steering at 16 m/s sent the vehicle
+   320 to 410 degrees round the pipe with its nose across it (nothing brought the heading back); (b) the Drifter Twin lost 3 to 9 m/s
+   a hit against the wall it rode on and dropped off: `VehicleSurfaceContacts` corrected a ramp contact's bad (internal-edge)
+   normal only for faces pointing up, so on a pipe's walls and ceiling PhysX's raw normals stayed, and the hold pressed a full g
+   into the wall plus the turn's own push going round, bottoming the springs; (c) the hold let go only under 7 m/s on the ceiling;
+   (d) toward a pipe's end a vehicle up the wall left the pipe on it (the Street Classic 77 degrees round, upright 0.19). Fixed
+   in `DrainPipe.cs` and `VehicleSurfaceContacts.cs`: barrel contacts judged from the vehicle's own up; one g into the wall in all;
+   the player's nose pulled back along the pipe when the steering is let go and never more than 35 degrees across it on the wall;
+   the hold from 10.5 / full 12.5 m/s on the upper half; eased round to the floor (the nose turned down the wall) before a pipe's
+   end and before an express's entry; the camera rolls with the vehicle (`ChaseCamera.PipeUp`). On for the player in free roam
+   and races; the AI drives the bottom as before. Exe, the Street Classic and the Drifter Twin in M4a: up the wall and along it
+   (both ride the ceiling at 16 m/s, nose 0 degrees off), a loop at 20 m/s (no speed lost), dropped when slowed on the ceiling
+   (let go at 8.7 to 9.4 m/s, back on its wheels), out at the hub 15 to 16 degrees round and upright 0.99, the camera clear.
+- For Dan to check: RE2 from your spot (and N5, RD), the ponds listed, the expresses (E1 is fast), driving on the walls and the
+  ceiling (the feel: the pull back along the pipe, the 35 degree limit, the camera roll), the Round 25 wildlife at the glass (A8).
 
 **DONE (d283f22) — Round 25 follow-ups (Dan, 2026-10-14, after driving the Round 25 exe; session `2026-10-14_15-37-54-171_ea184c`, two reports, read by
 Claude). Dan: "pull in my bugs...i thought the new shortcuts would have been built this round. I really want the manhole covers visible

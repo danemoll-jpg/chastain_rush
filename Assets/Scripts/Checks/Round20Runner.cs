@@ -35,17 +35,18 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>(); sw = car.GetComponent<VehicleSwitch>(); respawn = car.GetComponent<VehicleRespawn>(); race = RaceController.Instance;
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only" || argv[i] == "-r21Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
             if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races", "revlap", "fwdlap", "revslow", "revrace" };   // Round 21's default parts
+            if (tag == "round26" && parts == null) parts = new[] { "ramps", "express", "walls" };   // Round 26 (Round20Runner.R26.cs)
             bool Do(string p) => parts == null || parts.Contains(p);
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
@@ -70,6 +71,10 @@ namespace ChastainRush
             if (Do("tube")) yield return Guard(Tube(ids));
             if (Do("ra")) yield return Guard(Ra(ids));
             if (Do("rc")) yield return Guard(Rc(ids));
+            // Round 26 (Round20Runner.R26.cs)
+            if (Do("ramps")) yield return Guard(Ramps());
+            if (Do("express")) yield return Guard(Express());
+            if (Do("walls")) yield return Guard(Walls());
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

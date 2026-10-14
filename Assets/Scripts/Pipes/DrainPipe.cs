@@ -19,6 +19,24 @@ namespace ChastainRush
     //            lands on its wheels. The hold fades out over the last 5 m to each headwall (the cuts are open, flat sided). Arcade
     //            by design (fun first): no speed is needed round the top beyond StickFull. The AI just drives the bottom.
     //   camera   Round 19: inside the barrel the chase camera rides the pipe's axis behind the vehicle, world up (ChaseCamera.PipeView)
+    //   Round 26 (item 4, Dan: "is there a way vehicles can drive on the walls but keep facing the current direction and not go sideways?
+    //            Want to be able to drive on the walls and potentially ceiling"): the walls kept, made to feel like driving on them:
+    //            - the hold's speeds depend on where round the pipe it is: as before on the lower half (from 7, full from 11 m/s), on the
+    //              upper half and the ceiling from 10.5, full from 12.5: slower, it lets go and drops to the floor, righted onto its wheels
+    //            - the player's vehicle keeps facing along the pipe: with the steering let go, a gentle turn about the wall under it brings
+    //              its nose back along the pipe (the way it was going), so it rides along the wall where the steering took it instead of
+    //              spiralling on round and across (WallPull); the AI just drives the bottom as before
+    //            - before a pipe's end (a mouth, a chamber, the hub, a manhole's foot) and before an express's entry, a vehicle up the wall is
+    //              eased round to the floor (EaseFrom m ahead, more at speed), so it leaves upright, never thrown out on its roof
+    //            - the camera rolls with the vehicle on the wall (CamUp, the vehicle's SurfaceUp eased), so the pipe seems to turn, not the
+    //              vehicle, and comes back to world up on the floor and outside
+    //            - WHY they went sideways and came off (found in the exe, Round26 check): the hold pressed the vehicle into the wall with a
+    //              full g, and going round the pipe added the turn's own push (v round the pipe squared over the radius: 12 m/s2 at 16 m/s
+    //              turned 20 degrees across), so the springs bottomed out and the body hit the wall it rode on; and turned across the
+    //              pipe, a long body's ends dug into the curve. The Drifter Twin lost 3 to 9 m/s a hit and dropped off. Now the hold
+    //              presses with one g in all (the turn's push counted in: as on the floor), and on the wall the nose is kept within
+    //              MaxAcross of the pipe's line however hard it is steered (turning further only carried it round sideways)
+    //            The flag -wallRideRound25 (checks only) keeps Round 25's behavior, for a before-and-after
     //   lights   Round 19: a vehicle in a pipe has its headlight on (VehicleLights)
     public sealed class DrainPipe : MonoBehaviour
     {
@@ -33,6 +51,9 @@ namespace ChastainRush
         public bool openStart, openEnd;
         public Color mapColor;   // Round 23 follow-ups: the line's color on the map (a network main's stripe; none: gray)
         Bounds box; bool boxed;
+        // Round 26: metres between floor points (0.5 m in Data/pipes/pipes.json's pipes, 1 m in the network's), for distances along it
+        float spacing = -1f;
+        float Spacing { get { if (spacing < 0f) { float L = 0f; for (int i = 1; floor != null && i < floor.Length; i++) L += Vector3.Distance(floor[i - 1], floor[i]); spacing = floor != null && floor.Length > 1 ? L / (floor.Length - 1) : 0.5f; } return spacing; } }
         bool Near(Vector3 p, float pad)   // a quick test against the floor's bounds before the search along it
         {
             if (!boxed && floor != null && floor.Length > 0)
@@ -49,7 +70,10 @@ namespace ChastainRush
         public static int WallSteps { get; private set; }   // checks: physics steps some vehicle was held to the wall more than 45 degrees up it
         public static float MostRound { get; private set; }  // checks: the furthest round from the invert any vehicle went, degrees
         public static int Rescues { get; private set; }
-        static readonly bool NoSlide = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noPipeSlide") >= 0;   // checks only      // checks: vehicles put back in the bottom after lying overturned and slow
+        static readonly bool NoSlide = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noPipeSlide") >= 0;   // checks only
+        public static readonly bool Round25Walls = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-wallRideRound25") >= 0;   // checks only (Round 26's before)
+        public const float StickFromHigh = 10.5f, StickFullHigh = 12.5f, WallPull = 6f, EaseFrom = 35f, MaxAcross = 35f;
+        public static int Eased { get; private set; }   // checks: physics steps some vehicle was being eased off the wall before an end      // checks: vehicles put back in the bottom after lying overturned and slow
         static readonly List<DrainPipe> all = new List<DrainPipe>();
         static readonly Collider[] hits = new Collider[16];
 
@@ -111,7 +135,7 @@ namespace ChastainRush
                     continue;
                 }
                 if (ride == null) rides[car] = ride = new Ride();
-                bool inBarrel = Barrel(car.Body.position, 0f, out var axis, out var along, out float fromEnd, out _);
+                bool inBarrel = Barrel(car.Body.position, 0f, out var axis, out var along, out float fromEnd, out float station);
                 // never a trap: overturned (or on its side) and slow anywhere in the pipe or its cuts for 1.5 s, it is put back in the
                 // bottom facing along the pipe, as a reset does (Round 24 A2: this piece's own test first; the search of all only then)
                 if (Holds(car.Body.position) && Inside(car.Body.position, out _) == this)
@@ -144,12 +168,47 @@ namespace ChastainRush
                 var n = r.magnitude > 0.3f ? r.normalized : Vector3.down;   // out from the axis: toward the wall under the vehicle
                 float speed = car.Body.linearVelocity.magnitude;
                 if (car.GroundedWheels >= 2) ride.lastGround = Time.time;
-                float target = Time.time - ride.lastGround < 0.3f ? Smooth01((speed - StickFrom) / (StickFull - StickFrom)) * Smooth01((fromEnd - 0.5f) / EndFade) : 0f;
+                float roundNow = Vector3.Angle(n, Vector3.down), upper = Round25Walls ? 0f : Smooth01((roundNow - 70f) / 40f);   // Round 26: 0 on the lower half, 1 on the upper half
+                float from = Mathf.Lerp(StickFrom, StickFromHigh, upper), full = Mathf.Lerp(StickFull, StickFullHigh, upper);
+                // Round 26: eased round to the floor before the pipe's end the vehicle is heading for, or an express's entry (ease: 0 to 1)
+                float ease = 0f; var vel = car.Body.linearVelocity; bool player = car.GetComponent<RoadDriver>() == null;
+                if (!Round25Walls && roundNow > 10f)
+                {
+                    float toStart = openStart ? float.MaxValue : (station - barrelFrom) * Spacing, toEnd = openEnd ? float.MaxValue : (barrelTo - station) * Spacing;
+                    float ahead = Vector3.Dot(vel, along) >= 0f ? toEnd : toStart, easeLen = Mathf.Max(EaseFrom, speed * 3.5f);
+                    if (player) ahead = Mathf.Min(ahead, PipeExpress.EntryAhead(car, car.Body.position, vel, easeLen));
+                    if (ahead < easeLen) { ease = Mathf.Clamp01(2.5f * (1f - ahead / easeLen)); Eased++; }
+                }
+                float target = Time.time - ride.lastGround < 0.3f ? Smooth01((speed - from) / (full - from)) * Smooth01((fromEnd - 0.5f) / EndFade) : 0f;
+                if (ease > 0f && roundNow < 100f) target *= 1f - 0.6f * ease;   // on the lower wall the real weight comes back and helps it down (over the top it would drop)
                 ride.stick = Mathf.MoveTowards(ride.stick, target, dt * 4f);
+                if (!Round25Walls && ride.stick > 0.2f && car.GroundedWheels >= 2 && (player || ease > 0f))
+                {
+                    // Round 26: the player's vehicle keeps facing along the pipe (the way it was going) when the steering is let go; while
+                    // being eased (any vehicle) its nose is turned down the wall, up to 40 degrees, so it drives itself down to the floor
+                    var up = -n; var fwd = Vector3.ProjectOnPlane(car.transform.forward, up); var ax = Vector3.ProjectOnPlane(along, up);
+                    if (fwd.sqrMagnitude > 1e-4f && ax.sqrMagnitude > 1e-4f)
+                    {
+                        ax.Normalize(); if (Vector3.Dot(fwd, ax) < 0f) ax = -ax;
+                        if (ease > 0f)
+                        {
+                            var down = Vector3.ProjectOnPlane(Vector3.ProjectOnPlane(Vector3.down, n), along);   // round the wall toward the bottom
+                            if (down.sqrMagnitude < 0.01f) down = Vector3.Cross(along, n);                        // on the very top: either way
+                            ax = Vector3.Slerp(ax, down.normalized, Mathf.Clamp01(roundNow / 45f) * ease * 0.75f);
+                        }
+                        float offDeg = Vector3.SignedAngle(fwd, ax, up), let = Mathf.Max(ease, 1f - Mathf.Clamp01((Mathf.Abs(car.VisualSteering) - 0.15f) / 0.35f));
+                        // steered: only the part past MaxAcross is pulled back (on the wall: at the bottom it may turn as it likes)
+                        if (let < 1f && roundNow > 30f && Mathf.Abs(offDeg) > MaxAcross) { offDeg = Mathf.Sign(offDeg) * (Mathf.Abs(offDeg) - MaxAcross) * 2f; let = 1f; }
+                        car.Body.AddTorque(up * (offDeg * Mathf.Deg2Rad * WallPull * (1f + 1.5f * ease) * Mathf.Max(ride.stick, ease) * let), ForceMode.Acceleration);
+                    }
+                }
                 // slow on a steep part of the wall: slide down it (the tires' grip would otherwise hold a vehicle parked sideways there)
                 if (!NoSlide && speed < StickFrom && car.GroundedWheels >= 1 && Vector3.Angle(-n, Vector3.up) > 30f)
                     car.Body.AddForce(Vector3.ProjectOnPlane(Physics.gravity, -n) * (1.6f * (1f - speed / StickFrom)), ForceMode.Acceleration);
-                if (ride.stick > 0.001f) car.Body.AddForce((n * 9.81f - Physics.gravity) * ride.stick, ForceMode.Acceleration);
+                // Round 26: one g into the wall in all: the turn's own push going round the pipe counted in (the springs bottomed out)
+                float press = 9.81f;
+                if (!Round25Walls) { float round_ = Vector3.Dot(car.Body.linearVelocity, Vector3.Cross(along, n)); press = Mathf.Max(2f, 9.81f - round_ * round_ / Mathf.Max(1f, radius)); }
+                if (ride.stick > 0.001f) car.Body.AddForce((n * press - Physics.gravity) * ride.stick, ForceMode.Acceleration);
                 car.SurfaceUp = ride.stick > 0.001f ? Vector3.Slerp(Vector3.up, -n, ride.stick).normalized : Vector3.up;
                 float round = Vector3.Angle(n, Vector3.down);
                 if (round > 45f && car.GroundedWheels >= 2) WallSteps++;
@@ -177,13 +236,16 @@ namespace ChastainRush
         // through the wall), the direction only flips after the vehicle has gone the other way for half a second, the pipe is kept
         // while the vehicle is still in it, and it looks along the axis, not toward the vehicle (so wall riding does not swing it)
         static DrainPipe viewPipe; static float viewSt, viewStVel, viewSign = 1f, flipTime, viewIdle;
+        static Vector3 CamUp = Vector3.up;   // Round 26: the camera's up in a pipe (rolls with a vehicle on the wall)
         static bool View(Transform target, out Vector3 desired, out Vector3 lookAt)
         {
             desired = lookAt = default;
+            ChaseCamera.PipeUp = Vector3.up;
+            if (PipeExpress.View(target, out desired, out lookAt)) { CamUp = Vector3.up; return true; }   // Round 26: carried by the express
             DrainPipe d = null; Vector3 axis = default, along = default; float st = 0f;
             if (viewPipe && viewPipe.Barrel(target.position, 1f, out axis, out along, out _, out st)) d = viewPipe;
             else foreach (var q in all) if (q.Barrel(target.position, 1f, out axis, out along, out _, out st)) { d = q; break; }
-            if (d == null) { viewPipe = null; return false; }
+            if (d == null) { viewPipe = null; CamUp = Vector3.up; return false; }
             var rb = target.GetComponent<Rigidbody>();
             float want = viewSign;
             if (rb && rb.linearVelocity.magnitude > 3f) want = Vector3.Dot(rb.linearVelocity, along) >= 0f ? 1f : -1f;
@@ -193,8 +255,12 @@ namespace ChastainRush
             viewSt = Mathf.SmoothDamp(viewSt, st, ref viewStVel, 0.12f);
             var pipe = d;
             Vector3 AxisAt(float s) { s = Mathf.Clamp(s, 0f, pipe.floor.Length - 1.001f); int k = (int)s; return pipe.AxisFrom(Vector3.Lerp(pipe.floor[k], pipe.floor[k + 1], s - k), (pipe.floor[k + 1] - pipe.floor[k]).normalized); }
-            desired = AxisAt(viewSt - viewSign * 12f) + Vector3.up * 0.4f;   // 12 stations = 6 m
+            // Round 26: the camera's up follows the vehicle's (its SurfaceUp: tilted toward the wall under it while it is held there), eased
+            var av = target.GetComponent<ArcadeVehicle>(); var wantUp = av && !Round25Walls ? av.SurfaceUp : Vector3.up;
+            CamUp = Vector3.Slerp(CamUp, wantUp, 1f - Mathf.Exp(-10f * Time.deltaTime)).normalized;
+            desired = AxisAt(viewSt - viewSign * 12f) + CamUp * 0.4f;   // 12 stations = 6 m
             lookAt = AxisAt(viewSt + viewSign * 14f);
+            ChaseCamera.PipeUp = CamUp;
             return true;
         }
 

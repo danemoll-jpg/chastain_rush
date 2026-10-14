@@ -38,6 +38,18 @@ namespace ChastainRush
                 var O = L - d * b.ramp_m; float y0 = Ground(terrain, O.x, O.y) - 0.02f, y1 = b.lip_y, k = Mathf.Tan(b.angle_deg * Mathf.Deg2Rad), hw = b.width * 0.5f;
                 var jr = new GameObject(b.id + " " + b.look).transform; jr.SetParent(root, false);
                 var look = new MeshBuilder();
+                // Round 26 (BUG-001 at RE2, Dan: "this is a stop. need to flatten so things dont get caught"): the foot meets the ground
+                // flush across its whole width. The ground's cross slope at the foot is carried as a bank that fades out by mid-ramp (the
+                // lip stays level), and the foot sits just under the lowest ground across it, so no edge stands proud anywhere along it
+                // (the foot was level at the ground's height on the line: where the ground falls away to one side its edge stood up)
+                float[] footBank = null;
+                if (b.look != "footbridge")   // BJ1's deck starts under the lowest ground already (Round 20)
+                {
+                    float slope = FootSlope(terrain, O, nl, hw), low = float.MaxValue;
+                    for (float lat = -hw; lat <= hw + 1e-3f; lat += 0.25f) { var q = O + nl * lat; low = Mathf.Min(low, Ground(terrain, q.x, q.y) - slope * lat); }
+                    y0 = Mathf.Min(y0, low - 0.03f);
+                    footBank = new[] { 0f, slope, Mathf.Max(2f, b.ramp_m * 0.5f), 0f };
+                }
                 float[] KickerProfile()
                 {
                     // J4's curve: from y0 at O, steepening to the lip's slope k at the lip; flat first if the rise is small for its length
@@ -48,7 +60,7 @@ namespace ChastainRush
                 }
                 ScPrism Prism(string kind, float[] profile, float sEnd, float halfW, Color c, int[] skirts = null) => new ScPrism
                 {
-                    name = $"sc {b.id} {b.look} {kind}", kind = kind, origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = profile, colour = new[] { c.r, c.g, c.b }, skirt_edges = skirts, landing = b.back_angle > 0f,
+                    name = $"sc {b.id} {b.look} {kind}", kind = kind, origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = profile, colour = new[] { c.r, c.g, c.b }, skirt_edges = skirts, landing = b.back_angle > 0f, bank = footBank,
                     poly = new[] { O + nl * halfW, O - nl * halfW, O + d * sEnd - nl * halfW, O + d * sEnd + nl * halfW }.SelectMany(q => new[] { q.x, q.y }).ToArray()
                 };
                 Vector3 W(float s, float lat, float y) { var q = O + d * s + nl * lat; return new Vector3(q.x, y, q.y); }
@@ -194,8 +206,8 @@ namespace ChastainRush
                     // a granite slab: wider in the middle, its sides sloped rock shoulders, its back a short drop
                     var pr = KickerProfile();
                     var poly = new[] { O + nl * (hw - 0.3f), O - nl * (hw - 0.3f), O + d * (b.ramp_m * 0.55f) - nl * (hw + 0.5f), L - nl * (hw - 0.1f), L + nl * (hw - 0.1f), O + d * (b.ramp_m * 0.55f) + nl * (hw + 0.5f) };
-                    var p = new ScPrism { name = $"sc {b.id} outcrop slab", kind = "rock", origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = pr, colour = new[] { Granite.r, Granite.g, Granite.b }, skirt_edges = new[] { 1, 2, 4, 5 },
-                                          poly = poly.SelectMany(q => new[] { q.x, q.y }).ToArray() };
+                    var p = new ScPrism { name = $"sc {b.id} outcrop slab", kind = "rock", origin = new[] { O.x, O.y }, axis = new[] { d.x, d.y }, profile = pr, colour = new[] { Granite.r, Granite.g, Granite.b }, skirt_edges = new[] { 1, 2, 4, 5 }, bank = footBank,
+                                          poly =poly.SelectMany(q => new[] { q.x, q.y }).ToArray() };
                     p.landing = b.back_angle > 0f; BuildPrism(p, terrain, mats, jr);
                     if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw - 0.1f, "rock", Granite, 15f);   // Round 21: the slab's back, a sloped rock shoulder
                     // a few lower rocks of the same outcrop showing through the ground either side (look only, 3.5 m and more off the line)
@@ -274,20 +286,24 @@ namespace ChastainRush
                 {
                     // Round 20 follow-up, N5: a log ramp beside the ford, logs laid side by side across two big stringer logs; the driven
                     // surface is the prism under the logs (smooth: no log is a bump), its back drops to the creek
+                    // Round 26 (BUG-001 at RE2): a solid ramp with sloped sides (it was an open board, its 0.25 m front edge proud of the
+                    // ground on one side), its foot fitted to the ground (footBank). The logs lie IN its surface, their crowns 3 cm over it
+                    // and inside its width (they stood 0.25 m over it and 0.15 m past its sides: a log across the foot); the two side logs
+                    // lie along its edges on the sloped sides, following its curve, buried at the foot (they started proud of the ground)
                     var pr = KickerProfile();
-                    BuildPrism(Prism("deck", pr, b.ramp_m, hw, WetWood, new[] { 1, 3 }), terrain, mats, jr);
+                    BuildPrism(Prism("logs", pr, b.ramp_m, hw, WetWood, new[] { 1, 3 }), terrain, mats, jr);
+                    float TopAt(float s, float lat) => Profile(pr, s) + Profile(footBank, s) * lat;
                     for (float s = 0.2f; s <= b.ramp_m - 0.1f; s += 0.42f)
                     {
-                        float y = Profile(pr, s) + 0.05f, wob = 0.25f * (Hash01((int)(s * 10f), 981) - 0.5f);
-                        LogCyl(look, W(s, -hw - 0.15f + wob, y), W(s, hw + 0.15f + wob, y), 0.2f, 6);
+                        float wob = 0.12f * (Hash01((int)(s * 10f), 981) - 0.5f), la = -hw + 0.08f + wob, lb = hw - 0.08f + wob;
+                        LogCyl(look, W(s, la, TopAt(s, la) - 0.17f), W(s, lb, TopAt(s, lb) - 0.17f), 0.2f, 6);
                     }
                     foreach (float side in new[] { 1f, -1f })
-                    {
-                        var a0 = W(0f, side * (hw - 0.6f), Ground(terrain, O.x, O.y) - 0.1f); var a1 = W(b.ramp_m, side * (hw - 0.6f), y1 - 0.45f);
-                        LogCyl(look, a0, a1, 0.3f, 8);
-                        var foot = W(b.ramp_m - 0.3f, side * (hw - 0.6f), 0f); foot.y = Ground(terrain, foot.x, foot.z) - 0.2f;
-                        LogCyl(look, foot, a1, 0.22f, 6);   // a prop log under the lip
-                    }
+                        for (float s = 0f; s < b.ramp_m - 1e-3f; s += 1f)
+                        {
+                            float s2 = Mathf.Min(s + 1f, b.ramp_m), lat = side * (hw + 0.12f);
+                            LogCyl(look, W(s, lat, TopAt(s, side * hw) - 0.24f), W(s2 + 0.05f, lat, TopAt(s2, side * hw) - 0.24f), 0.27f, 8);
+                        }
                     Debug.Log($"[Round20+] {b.id} log ramp: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
                 }
                 // Round 20 follow-ups: the hint at a turn-off (N2: a road-closed barricade knocked over on its side) and worn tire tracks
@@ -302,6 +318,14 @@ namespace ChastainRush
                     var rb = rg.AddComponent<BigJump>(); rb.id = b.id + "R"; rb.look = b.look; rb.lip = bj.lip; rb.dir = -bj.dir; rb.halfWidth = hw; rb.vmax = b.rev_vmax; rb.angle = b.rev_angle;
                 }
             }
+        }
+
+        // Round 26: the ground's cross slope (rise per metre to the left, least squares) on the line across a ramp's foot at c
+        static float FootSlope(TerrainGrid terrain, Vector2 c, Vector2 nl, float hw)
+        {
+            float sx = 0f, sy = 0f, sxx = 0f, sxy = 0f; int n = 0;
+            for (float lat = -hw; lat <= hw + 1e-3f; lat += 0.5f) { var q = c + nl * lat; float g = Ground(terrain, q.x, q.y); sx += lat; sy += g; sxx += lat * lat; sxy += lat * g; n++; }
+            return (n * sxy - sx * sy) / Mathf.Max(1e-4f, n * sxx - sx * sx);
         }
 
         // Round 21: the back of a take-off, from its lip down to the ground at 'back_angle' (no further than maxLen: steeper at its foot
@@ -319,7 +343,17 @@ namespace ChastainRush
                 pr.Add(s); pr.Add(y);
             }
             var qe = L + d * end; pr.Add(end); pr.Add(Floor(end, qe));
-            var p = new ScPrism { name = $"sc {b.id} back", kind = kind, origin = new[] { L.x, L.y }, axis = new[] { d.x, d.y }, profile = pr.ToArray(), colour = new[] { c.r, c.g, c.b }, skirt_edges = new[] { 1, 3 }, no_face = new[] { 0 }, landing = true,
+            // Round 26: its end is the reverse take-off's foot: fitted flush to the ground across its width as a take-off's foot is
+            // (a bank over its last metres carrying the ground's cross slope; the end just under the lowest ground across it)
+            float[] bank = null;
+            if (floorAt == null)
+            {
+                float slope = FootSlope(terrain, qe, nl, hw), low = float.MaxValue;
+                for (float lat = -hw; lat <= hw + 1e-3f; lat += 0.25f) { var q = qe + nl * lat; low = Mathf.Min(low, Ground(terrain, q.x, q.y) - slope * lat); }
+                pr[pr.Count - 1] = Mathf.Min(pr[pr.Count - 1], low - 0.03f);
+                bank = new[] { Mathf.Max(0f, end - Mathf.Max(2f, end * 0.5f)), 0f, end, slope };
+            }
+            var p = new ScPrism { name = $"sc {b.id} back", kind = kind, origin = new[] { L.x, L.y }, axis = new[] { d.x, d.y }, profile = pr.ToArray(), colour = new[] { c.r, c.g, c.b }, skirt_edges = new[] { 1, 3 }, no_face = new[] { 0 }, landing = true, bank = bank,
                                   poly = new[] { L + nl * hw, L - nl * hw, L + d * end - nl * hw, L + d * end + nl * hw }.SelectMany(q => new[] { q.x, q.y }).ToArray() };
             BuildPrism(p, terrain, mats, parent);
             Debug.Log($"[Round21] {b.id} back: {end:0.0} m from the lip ({y1:0.00} m) down to {pr[pr.Count - 1]:0.00} m ({Mathf.Atan((y1 - pr[pr.Count - 1]) / end) * Mathf.Rad2Deg:0} degrees overall), {2f * hw:0.0} m wide; the reverse launch off it at {b.rev_angle:0} degrees, no faster than {b.rev_vmax:0} m/s");

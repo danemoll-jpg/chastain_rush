@@ -806,7 +806,7 @@ namespace ChastainRush
             // sides: each outline edge in 0.5 m pieces, from the top down to 0.5 m below the ground
             Vector2 centre = Vector2.zero; foreach (var p in poly) centre += p; centre /= poly.Count;
             var skirt = new HashSet<int>(pr.skirt_edges ?? new int[0]); var noFace = new HashSet<int>(pr.no_face ?? new int[0]);
-            mb.Tint = Shade(col, 0.72f);
+            mb.Tint = Shade(col, 0.72f); int wedges = 0;
             for (int e = 0; e < poly.Count; e++)
             {
                 if (noFace.Contains(e)) continue;   // Round 21: a back's edge against its take-off's lip (that face caught a vehicle's nose)
@@ -819,6 +819,18 @@ namespace ChastainRush
                     var p = Vector2.Lerp(a, b, i / (float)k); var q = Vector2.Lerp(a, b, (i + 1) / (float)k);
                     float gp = Ground(terrain, p.x, p.y) - 0.5f, gq = Ground(terrain, q.x, q.y) - 0.5f;
                     var tp = Top(p); var tq = Top(q);
+                    // Round 26 (BUG-001, a ramp's foot was a wall): an edge standing a little proud of the ground (up to 0.3 m: a foot, a
+                    // board's end, the low start of a side) meets the ground with a thin wedge (15 degrees) instead of an upright face, so a
+                    // wheel rolls up it; higher edges are a ramp's sides and keep their face or skirt
+                    float hpw = tp.y - gp - 0.5f, hqw = tq.y - gq - 0.5f;
+                    if (!stairs && !skirt.Contains(e) && Mathf.Max(hpw, hqw) > 0.005f && Mathf.Max(hpw, hqw) <= 0.3f)
+                    {
+                        const float Cot15 = 3.73f;
+                        var po = p + outN * (Mathf.Max(0f, hpw) * Cot15 + 0.05f); var qo = q + outN * (Mathf.Max(0f, hqw) * Cot15 + 0.05f);
+                        Face(mb, new Vector3(po.x, Ground(terrain, po.x, po.y) - 0.03f, po.y), new Vector3(qo.x, Ground(terrain, qo.x, qo.y) - 0.03f, qo.y), tq, tp, new Vector3(outN.x, Cot15, outN.y));
+                        wedges++;
+                        if (!open) continue;
+                    }
                     if (open) { Face(mb, tp - Vector3.up * 0.25f, tq - Vector3.up * 0.25f, tq, tp, new Vector3(outN.x, 0f, outN.y)); continue; }   // Round 18: the board's edge
                     if (tp.y <= gp + 0.5f && tq.y <= gq + 0.5f) continue;   // buried
                     if (skirt.Contains(e))
@@ -832,6 +844,7 @@ namespace ChastainRush
                     Face(mb, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), tq, tp, new Vector3(outN.x, 0f, outN.y));
                 }
             }
+            if (wedges > 0) Debug.Log($"[Round26] {pr.name}: {wedges} low edge pieces (0.5 m) meet the ground with a wedge");
             // Round 12, item 9 / Round 13, item 2 / Round 14, item 7: the kicker's LOOK only (a dirt pile since Round 14, a flatbed in Round 13, hay bales in Round
             // 12). The surface, its curve, pitch, height, lip and the collider below are exactly as before (the collider is still
             // made from mb); what is drawn sits on that same surface and is held up from the ground, so nothing floats

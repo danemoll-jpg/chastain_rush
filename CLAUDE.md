@@ -287,6 +287,16 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Round 26 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Dan's log ramp
+(RE2) and every take-off's foot fitted flush to the ground (`MapBuilder.BigJumps.cs` footBank; log ramps solid with sloped sides;
+`BuildPrism` meets the ground with a 15 degree wedge where an edge stands up to 0.3 m proud); a sweep of every ramp on the built
+colliders (`ChastainRush.RampSweep.Run -rampOut <file>`, batch, report only); every pond's bank raised to its water
+(`MapBuilder.PondBank.cs`, nine ponds); the pipe express on every run over 100 m (`pipe_network.py`, 37, each with its own top
+speed, no ride over about 12 s); driving on the walls and the ceiling (`DrainPipe.cs`: one g into the wall, the nose kept along
+the pipe, eased to the floor before an end or an express; `VehicleSurfaceContacts.cs` barrel contacts from the vehicle's up;
+`ChaseCamera.PipeUp` rolls). Check: `ChastainRush.exe -exeRound26 <dir> [-r26Only ramps,express,walls] [-wallRideRound25]
+-logFile <dir>\Player.log`. Imported from Racer: nothing.
+
 **Round 25 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A cleanup: street
 manholes are a hatch of the street itself with a 0.9 m cover, the collider the terrain's own surface, the riser 0.3 m under the street
 (`MapBuilder.Network.cs`; check `ChastainRush.ManholeProbe.Run -probeOut <file>`); mouths set into banks without terrain blades or sky

@@ -708,24 +708,70 @@ def hub_routes(tubes):
 
 
 # Round 25 (B2, Dan: "some of the tunnels are really long. Part of the underground network was to make it quicker ... This wouldn't
-# be everywhere. for example races would move normally"): the PIPE EXPRESS, on a few long pipes with no junction, exit, manhole, glass
-# or flooded sag along them: from 25 m in from each end to 25 m short of the other, both ways. Free roam only (MapBuilder.Network.cs
-# builds the marks, Pipes/PipeExpress.cs carries you). (id, name, pipe)
-EXPRESS = [("E1", "M6 Nelson express", "M6"), ("E2", "M4 Glen express", "M4a"), ("E3", "M4 J12 to J8 express", "M4d"),
-           ("E4", "M3 Noonday express", "M3a"), ("E5", "B22 Little Noonday express", "B22")]
-EXPRESS_IN = 25.0
+# be everywhere. for example races would move normally"): the PIPE EXPRESS. Free roam only (MapBuilder.NetworkWarp.cs builds the marks,
+# Pipes/PipeExpress.cs carries you).
+# Round 26 (item 3, Dan: "never tried warp but like boost. Would like to add it in more places anytime there is any distance"): an
+# express on EVERY run of pipe longer than EXPRESS_RUN between two places where the driver has a choice or a reason to stop: a pipe's
+# ends (a junction, the hub, an exit, a manhole's foot, the twin entrances' split) and a glass stretch's ends (glass is never express:
+# it is for looking at) or a flooded sag's. Each starts and ends EXPRESS_IN short of those places and lets go at 20 m/s, so every turn
+# is still the driver's and nothing along the network is skipped. No ride longer than about RIDE_MAX s: a long one goes faster ('top',
+# m/s; PipeExpress uses the same speed-up and slow-down as ride_time() here). The first five keep their Round 25 ids and names.
+EXPRESS_OLD = {"M6": ("E1", "M6 Nelson express"), "M4a": ("E2", "M4 Glen express"), "M4d": ("E3", "M4 J12 to J8 express"),
+               "M3a": ("E4", "M3 Noonday express"), "B22": ("E5", "B22 Little Noonday express")}
+EXPRESS_RUN = 100.0; EXPRESS_IN = 20.0; RIDE_MAX = 12.0
+EXPRESS_BOOST = 45.0; EXPRESS_EXIT = 20.0; EXPRESS_SURGE = 30.0
 
 
-def express(tubes):
-    out = []
-    for eid, name, tid in EXPRESS:
-        t = next((x for x in tubes if x["id"] == tid), None)
-        if t is None: print(f"  EXPRESS {eid}: no pipe {tid}"); continue
-        L = t["report"]["length"]; s0, s1 = EXPRESS_IN, L - EXPRESS_IN
-        if t["glass"] or t.get("flood") or s1 - s0 < 150: print(f"  EXPRESS {eid}: {tid} has glass, a flood or is short: none"); continue
-        a = t["a"].get("chamber") or t["a"].get("exit") or t["a"].get("pipe"); b = t["b"].get("chamber") or t["b"].get("exit") or t["b"].get("manhole")
-        out.append(dict(id=eid, name=name, tube=tid, s0=round(s0, 1), s1=round(s1, 1), length=round(s1 - s0, 1), ends=f"{a} to {b}", d=t["d"], stage=t["stage"]))
-    return out
+def express_accel(top): return max(EXPRESS_SURGE, top / 2.5)       # PipeExpress.Accel
+
+
+def ride_time(length, top, v0=12.0, dt=0.02):
+    """the express's ride, as PipeExpress.Carry runs it: from v0 up to top, slowing to 20 m/s by the far end"""
+    a = express_accel(top); v = max(8.0, v0); s = 0.0; t = 0.0
+    while s < length - 1e-3 and t < 120:
+        left = length - s; brake = (v * v - EXPRESS_EXIT ** 2) / (2 * a) + 3.0
+        target = EXPRESS_EXIT if left < brake else top
+        v = min(v + a * dt, target) if v < target else max(v - a * dt, target)
+        s = min(length, s + v * dt); t += dt
+    return t
+
+
+def express_top(length):
+    if ride_time(length, EXPRESS_BOOST) <= RIDE_MAX - 0.5: return EXPRESS_BOOST
+    lo, hi = EXPRESS_BOOST, 400.0
+    for _ in range(40):
+        mid = 0.5 * (lo + hi)
+        if ride_time(length, mid) <= RIDE_MAX - 0.5: hi = mid
+        else: lo = mid
+    return round(hi + 0.5)
+
+
+def express(tubes, stage, exits):
+    out = []; n = 6
+    xname = {x["id"]: x["name"].title() for x in exits}
+    def end_name(e):
+        if e["kind"] == "ch": return e["chamber"]
+        if e["kind"] == "mh": return e["manhole"] + "'s foot"
+        if e["kind"] == "x": return xname.get(e["exit"], e["exit"])
+        return e.get("pipe", "?") + " split"
+    for t in tubes:
+        if t["stage"] > stage: continue
+        L = t["report"]["length"]
+        stops = sorted([(g["s0"], g["s1"], f"glass under W{g['pond']}") for g in t["glass"]]
+                       + ([(t["flood"]["s0"], t["flood"]["s1"], "the flooded sag")] if t.get("flood") else []))
+        runs = []; a, an = 0.0, end_name(t["a"])
+        for s0, s1, what in stops:
+            runs.append((a, s0, an, what + "'s start")); a, an = s1, what + "'s end"
+        runs.append((a, L, an, end_name(t["b"])))
+        for a, b, an, bn in runs:
+            if b - a < EXPRESS_RUN: continue
+            s0, s1 = a + EXPRESS_IN, b - EXPRESS_IN
+            if t["id"] in EXPRESS_OLD and len(runs) == 1: eid, name = EXPRESS_OLD[t["id"]]
+            else: eid, name = f"E{n}", f"{t['id']} express"; n += 1
+            top = express_top(s1 - s0)
+            out.append(dict(id=eid, name=name, tube=t["id"], s0=round(s0, 1), s1=round(s1, 1), length=round(s1 - s0, 1), ends=f"{an} to {bn}",
+                            d=t["d"], stage=t["stage"], top=top, ride=round(ride_time(s1 - s0, top), 1)))
+    return sorted(out, key=lambda e: int(e["id"][1:]))
 
 
 def main():
@@ -740,7 +786,7 @@ def main():
                     "'wall' 0 +u, 1 +v, 2 -u, 3 -v of the chamber's frame, 't' along it), 'pipe' (an entrance barrel of Data/pipes/pipes.json), 'mh' "
                     "(a manhole riser up to the street), 'x' (an exit or outfall cut). Only what is at or under build_stage is built; a built "
                     "chamber's opening onto a pipe not built yet ends in a short stub at a closed grille.",
-               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS, express=express(tubes))
+               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS, express=express(tubes, stage, exits))
     clearance_report(tubes, chambers)
     json.dump(doc, open(OUT, "w", encoding="utf-8"), indent=0)
     if not a.out: write_doc(tubes, chambers, exits, manholes, stage, doc["express"])
@@ -800,17 +846,20 @@ def write_doc(tubes, chambers, exits, manholes, stage, exp=()):
         md.append("")
     if exp:
         md.append("## The pipe express (free roam only)"); md.append("")
-        md.append("On a few long pipes with nothing along them, an **EXPRESS** band painted round the pipe and arrows on the floor mark each "
-                  "end. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle at about "
-                  "45 m/s (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it. Debug menu, **Pipe express**: "
-                  "Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes "
-                  "drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.")
+        md.append("On every run of pipe longer than about 100 m between two places where you have a choice or a reason to stop (a junction, "
+                  "the hub, an exit, a manhole's foot, the split behind BF or GP, either end of a glass stretch or a flooded sag), an **EXPRESS** "
+                  "band painted round the pipe and arrows on the floor mark each end, 20 m short of those places. Drive in at either end and the "
+                  "water surges: the controls lock and you are carried along the floor's middle (a whoosh, speed streaks), and let go at the far "
+                  "end at 20 m/s, facing on out of it, so every turn is still yours. A long one goes faster, so no ride is longer than about 12 s. "
+                  "Glass stretches are never express. Debug menu, **Pipe express**: Boost (the default), Warp (a short dark fade, then you are at "
+                  "the far end) or Off. During a race it is off and these pipes drive as any other; the AI never uses it. On the map the express "
+                  "stretches are drawn in cyan.")
         md.append("")
-        md.append("| Express | Pipe | From, to | Length | Driving it (20 m/s) | Express |")
-        md.append("|---|---|---|---|---|---|")
+        md.append("| Express | Pipe | From | To | Length | Top speed | Ride | Driving it (20 m/s) |")
+        md.append("|---|---|---|---|---|---|---|---|")
         for e in exp:
-            boost = (e["length"] - 60.0) / 45.0 + 3.0
-            md.append(f"| {e['id']} {e['name']} | {e['tube']} ({e['d']:.1f} m) | {e['ends']} ({e['s0']:.0f} to {e['s1']:.0f} m along it) | {e['length']:.0f} m | {e['length'] / 20.0:.0f} s | about {boost:.0f} s |")
+            fr, to = e["ends"].split(" to ", 1)
+            md.append(f"| {e['id']} {e['name']} | {e['tube']} ({e['d']:.1f} m) | {fr} ({e['s0']:.0f} m along) | {to} ({e['s1']:.0f} m along) | {e['length']:.0f} m | {e['top']:.0f} m/s | about {e['ride']:.0f} s | {e['length'] / 20.0:.0f} s |")
         md.append("")
     md.append("## What differs from the proposal"); md.append("")
     for d in DIFFERS: md.append(f"- {d}")

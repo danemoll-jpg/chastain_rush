@@ -114,15 +114,47 @@ Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 11
 
 ## The pipe express (free roam only)
 
-On a few long pipes with nothing along them, an **EXPRESS** band painted round the pipe and arrows on the floor mark each end. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle at about 45 m/s (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it. Debug menu, **Pipe express**: Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.
+On every run of pipe longer than about 100 m between two places where you have a choice or a reason to stop (a junction, the hub, an exit, a manhole's foot, the split behind BF or GP, either end of a glass stretch or a flooded sag), an **EXPRESS** band painted round the pipe and arrows on the floor mark each end, 20 m short of those places. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it, so every turn is still yours. A long one goes faster, so no ride is longer than about 12 s. Glass stretches are never express. Debug menu, **Pipe express**: Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.
 
-| Express | Pipe | From, to | Length | Driving it (20 m/s) | Express |
-|---|---|---|---|---|---|
-| E1 M6 Nelson express | M6 (5.0 m) | X_NELSON to HUB (25 to 1975 m along it) | 1950 m | 98 s | about 45 s |
-| E2 M4 Glen express | M4a (5.0 m) | J6 to HUB (25 to 474 m along it) | 449 m | 22 s | about 12 s |
-| E3 M4 J12 to J8 express | M4d (5.0 m) | J12 to J8 (25 to 336 m along it) | 311 m | 16 s | about 9 s |
-| E4 M3 Noonday express | M3a (5.0 m) | J4 to HUB (25 to 305 m along it) | 280 m | 14 s | about 8 s |
-| E5 B22 Little Noonday express | B22 (3.5 m) | J8 to X_LNC (25 to 575 m along it) | 550 m | 28 s | about 14 s |
+| Express | Pipe | From | To | Length | Top speed | Ride | Driving it (20 m/s) |
+|---|---|---|---|---|---|---|---|
+| E1 M6 Nelson express | M6 (5.0 m) | Exit Nelson Lake (20 m along) | HUB (1980 m along) | 1960 m | 211 m/s | about 11 s | 98 s |
+| E2 M4 Glen express | M4a (5.0 m) | J6 (20 m along) | HUB (479 m along) | 459 m | 45 m/s | about 11 s | 23 s |
+| E3 M4 J12 to J8 express | M4d (5.0 m) | J12 (20 m along) | J8 (341 m along) | 321 m | 45 m/s | about 8 s | 16 s |
+| E4 M3 Noonday express | M3a (5.0 m) | J4 (20 m along) | HUB (310 m along) | 290 m | 45 m/s | about 7 s | 14 s |
+| E5 B22 Little Noonday express | B22 (3.5 m) | J8 (20 m along) | Exit Little Noonday (580 m along) | 560 m | 53 m/s | about 12 s | 28 s |
+| E6 GP-L express | GP-L (5.0 m) | GP split (20 m along) | J12 (91 m along) | 71 m | 45 m/s | about 2 s | 4 s |
+| E7 GP-R express | GP-R (5.0 m) | GP split (20 m along) | J13 (106 m along) | 86 m | 45 m/s | about 3 s | 4 s |
+| E8 M1b express | M1b (5.0 m) | J2 (20 m along) | HUB (200 m along) | 180 m | 45 m/s | about 5 s | 9 s |
+| E9 M5a express | M5a (5.0 m) | J1 (20 m along) | glass under W4's start (241 m along) | 221 m | 45 m/s | about 6 s | 11 s |
+| E10 M5a express | M5a (5.0 m) | glass under W4's end (360 m along) | J3 (520 m along) | 160 m | 45 m/s | about 4 s | 8 s |
+| E11 M5b express | M5b (5.0 m) | J3 (20 m along) | HUB (172 m along) | 152 m | 45 m/s | about 4 s | 8 s |
+| E12 B1a express | B1a (5.0 m) | J2 (20 m along) | K2 (89 m along) | 69 m | 45 m/s | about 2 s | 3 s |
+| E13 M2h express | M2h (5.0 m) | K3 (20 m along) | HUB (152 m along) | 132 m | 45 m/s | about 4 s | 7 s |
+| E14 B6 express | B6 (3.5 m) | J3 (20 m along) | MH3's foot (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
+| E15 B7a express | B7a (3.5 m) | J3 (20 m along) | K7 (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
+| E16 B8 express | B8 (3.5 m) | K7 (20 m along) | the flooded sag's start (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
+| E17 B9a express | B9a (3.5 m) | HUB (20 m along) | K8 (105 m along) | 85 m | 45 m/s | about 3 s | 4 s |
+| E18 M3b express | M3b (5.0 m) | J4 (20 m along) | J5 (125 m along) | 105 m | 45 m/s | about 3 s | 5 s |
+| E19 M3c express | M3c (5.0 m) | glass under W15's end (141 m along) | K15 (305 m along) | 164 m | 45 m/s | about 4 s | 8 s |
+| E20 B11 express | B11 (3.5 m) | J4 (20 m along) | Exit Creek Trail (97 m along) | 77 m | 45 m/s | about 2 s | 4 s |
+| E21 B12 express | B12 (3.5 m) | J5 (20 m along) | Exit W12 Pond (198 m along) | 178 m | 45 m/s | about 5 s | 9 s |
+| E22 B14 express | B14 (3.5 m) | J4 (20 m along) | MH7's foot (439 m along) | 419 m | 45 m/s | about 10 s | 21 s |
+| E23 B15 express | B15 (3.5 m) | K15 (20 m along) | Exit W7 Pond (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
+| E24 B27 express | B27 (5.0 m) | J4 (20 m along) | the flooded sag's start (184 m along) | 164 m | 45 m/s | about 4 s | 8 s |
+| E25 B27 express | B27 (5.0 m) | the flooded sag's end (246 m along) | J6 (317 m along) | 71 m | 45 m/s | about 2 s | 4 s |
+| E26 M4b express | M4b (5.0 m) | J6 (20 m along) | J7 (318 m along) | 298 m | 45 m/s | about 7 s | 15 s |
+| E27 M4c express | M4c (5.0 m) | glass under W8's end (182 m along) | J12 (255 m along) | 73 m | 45 m/s | about 2 s | 4 s |
+| E28 B16 express | B16 (3.5 m) | J6 (20 m along) | MH8's foot (355 m along) | 335 m | 45 m/s | about 8 s | 17 s |
+| E29 B17 express | B17 (3.5 m) | J7 (20 m along) | MH9's foot (155 m along) | 135 m | 45 m/s | about 4 s | 7 s |
+| E30 B19a express | B19a (3.5 m) | J13 (20 m along) | K19 (224 m along) | 204 m | 45 m/s | about 5 s | 10 s |
+| E31 B26 express | B26 (3.5 m) | J6 (20 m along) | Exit Under Bridges (90 m along) | 70 m | 45 m/s | about 2 s | 3 s |
+| E32 B20 express | B20 (3.5 m) | J8 (20 m along) | MH11's foot (248 m along) | 228 m | 45 m/s | about 6 s | 11 s |
+| E33 M2a express | M2a (5.0 m) | J10 (20 m along) | glass under W9's start (118 m along) | 98 m | 45 m/s | about 3 s | 5 s |
+| E34 M2b express | M2b (5.0 m) | J9 (20 m along) | glass under W0's start (141 m along) | 121 m | 45 m/s | about 3 s | 6 s |
+| E35 M2c express | M2c (5.0 m) | K25 (20 m along) | Exit Far West Pond (250 m along) | 230 m | 45 m/s | about 6 s | 12 s |
+| E36 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
+| E37 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
 
 ## What differs from the proposal
 
