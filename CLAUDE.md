@@ -207,7 +207,11 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
 - Player build (Round 8): Unity menu **Chastain Rush > Build Executable**, or batch:
   `Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.PlayerBuild.BuildFromCommandLine`
   It runs Build Map first, then writes `Builds/ChastainRush/ChastainRush.exe` (git-ignored) and `BUILD_INFO.txt`.
-  Start it with `Play Chastain Rush.bat` in the repo root. In the exe: Start / Esc / Enter open the menus (QUIT GAME is there), F2 frame-rate counter.
+  Start it with `Play Chastain Rush.bat` in the repo root. **Standing rule (Dan, Oct 14): the launcher always runs the newest build.** Every round's
+  release build overwrites `Builds/ChastainRush/` in place (never a new folder or a renamed exe), and
+  `Play Chastain Rush.bat` stays in the repo root pointing there. The `ChastainRushDev/` profiling build is never
+  what Dan plays. When a round ends, say the build time from `Builds/ChastainRush/BUILD_INFO.txt` so Dan knows it is fresh.
+  In the exe: Start / Esc / Enter open the menus (QUIT GAME is there), F2 frame-rate counter.
   Records, debug reports, the bump log and `Player.log` go to
   `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\`. Exe self-check (frame rate at three places,
   a scripted 3-lap race): `ChastainRush.exe -exeCheck <dir>` writes `exe_check.txt` and screenshots, then quits.
@@ -283,7 +287,11 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Round 24 Part B items 4 to 9 (see `TODO.md`, status there) are built; pictures from the exe by script, no drive tests, not yet driven
+**Active: Round 25 in `TODO.md`** (Dan drove Part B 2026-10-14): Part A cleanup (street manholes flush and normal size,
+mouths, M6 and BF blocked, pond edge, floating stream); Part B pipe warp (debug) and the pipe express (boost / warp, free
+roam only, never in races).
+
+**Round 24 Part B items 4 to 9 (see `TODO.md`, status there) are built and driven by Dan 2026-10-14 (Round 25 notes); was not yet driven
 by Dan:** every network mouth reworked (`MapBuilder.Pipes.cs`: exits and BF set into graded banks with short wingwall aprons, `Bank`;
 GP `covered`, a box culvert under a berm, its face at the pond; never on roads / drives / sidewalks / the trail or within 2 m of a
 building; `python Tools/mapgen/network_sweep.py --regraded` sweeps buildings against `Assets/Generated/regraded_mouths.txt`); the
@@ -552,7 +560,8 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-13_16-28-37-218_68722e` (#2 tire marks; in TODO.md, Round 24 Part A3).
+`2026-10-14_11-23-52-092_9ec9c7` (eight reports: manholes, mouths, blocked pipes, pond edge, floating stream; in
+TODO.md, Round 25).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

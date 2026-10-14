@@ -2673,7 +2673,85 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 24 (Dan, 2026-10-13 11:20, after driving part of the network). Dan is near his weekly usage limit:
+**ACTIVE — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
+`2026-10-14_11-23-52-092_9ec9c7`, eight reports, read by Claude). Dan: "Looks like we need a bit of cleanup here."
+Part A is cleanup, Part B is two new things for the pipe network. No vehicle drive tests unless cheap: Dan drives it.
+Rebuild the exe into `Builds/ChastainRush/` (the root launcher), commit, short report with the build time.**
+
+Part A, CLEANUP (report positions are the vehicle's; open each screenshot before working on it).
+A1. MANHOLES IN THE STREET (BUG-001, MH11 in Chasefield Way, x 2964.89, z 1095.83). Dan: "can we make sure that manhole
+   covers dont interfere with vehicles causing them to bounce. Also is there anyway to make them look normal size on the
+   street without changing anything from the exits?" The cover reads about 5 to 6 m across with a jagged ring of grass
+   colored shards round it. Make every street manhole (MH1 to MH13) look like a real one from above: a normal-size
+   cover (about 0.9 m) flush in the asphalt, no ring, no shards, no lip and no collider bump: driving over it at any
+   speed is like driving over the road. The way up from below stays exactly as it is now (riser size, how it opens,
+   where you come out); only what is drawn and collided on the street changes. If the opening that lets a vehicle out
+   has to be bigger than a real cover, keep it hidden flush in the road until it opens. Bump log: no JOLT over any
+   manhole (scripted pass over all 13 is fine).
+A2. LITTLE NOONDAY EXIT MOUTH (BUG-002 and BUG-003, X_LNC end b / B22, x 3716.99, z 1458.80 and x 3722.16, z 1462.93).
+   Dan: "can we clean up the mouths? Make them look better and also I am stuck in this location" and "I was able to exit
+   here but this green thing is blocking me from reentering here". There is a white triangle shard and a slab of the
+   bank poking out above the mouth, Dan was stuck on the bank beside it, and a green blade (a reed card or a terrain
+   spike) stands across the opening inside. Clean this mouth up: a neat headwall set into the bank, no shards, no
+   stray terrain over or inside the opening, nothing to get stuck on beside it, and drive-in and drive-out both work.
+   Then sweep EVERY mouth (both ends of every exit, BF, GP, the hub and junction openings): no reeds or plants inside or
+   across a pipe opening (reeds are fine in the water outside), no terrain spikes or slabs, no shards, no place a
+   vehicle gets stuck. List each mouth checked and what was fixed.
+A3. NELSON MAIN BLOCKED AT THE HUB (BUG-005, M6, x 1891.12, z 1121.41, beside the hub). Dan: "this entrance is
+   blocked". A ledge / wall across the bottom of the M6 opening stops the vehicle. Every main must drive straight in
+   and out of the hub without a ledge or step (all six; check each one).
+A4. BELLS FERRY TWIN PIPES BLOCKED (BUG-006, BF, x 1413.17, z 1180.37). Dan: "why is this blocked?" Green blades stand
+   across the left pipe's mouth and a concrete wedge between the two pipes sticks out into the way. Both BF pipes open
+   and drivable from the creek channel, nothing between them a vehicle hits head on (round or set back the divider).
+A5. ENCLAVE POND EDGE (BUG-004, over M5's glass along the pond, x 1646.44, z 974.60). Dan: "this should be cleaned
+   up". The grass edge hangs over the water in ragged flaps with a gap under it. Make the bank meet the water cleanly
+   (no overhangs, no floating terrain, no gaps) all round this pond and the other open-water glass cuts.
+A6. WATER IN THE AIR AT THE FAR WEST POND EXIT (BUG-008, X_W5 end a, x 186.45, z 1493.03). Dan: "this water should end up
+   into some body of water and not just floating in air". The stream from the exit runs as a thin line over the grass
+   and ends in the air. Run it on the ground down into the pond beside it (or, if that cannot work, end it at the
+   mouth). Sweep every exit stream and waterfall outside: each one lies on the ground and ends in water.
+A7. GLASS PIPE STILL IN A TRENCH (BUG-007, M1's glass under the pond, x 1575.16, z 1127.54). Dan: "this still appears to
+   be a trench" (he clarified "trance" = trench). Round 24 item 6 (open water round the glass) did not land here: from
+   inside, the glass shows straight walls of a cut channel running alongside and above it, so the pipe reads as lying
+   in a ditch, not in the pond. The glass should lie on (or just in) the pond's natural bed with open water all round
+   it and above it: no cut walls, no box shape, the bed sloping to the pipe as it does elsewhere in the pond. Check
+   every glass stretch (M1 under the pond, M5 along the Enclave pond, M2 along East Chastain Lake, the P1 aquarium
+   pipe) for the same trench look, from inside the pipe and from the bank, and fix each.
+A8. LIFE AT EVERY GLASS STRETCH (Dan, 12:02): "I want to make sure that also there always fish and other life visible.
+   Maybe turtles and snakes or ducks, or geese swimming on top if this isnt to taxing". From inside every glass pipe
+   (the four in A7) there is always something alive in view: a few fish swimming (reuse the P1 aquarium's), plus now and
+   then a turtle (swimming, or on the bed / a log), a water snake swimming at the surface, and ducks or geese paddling on
+   top, seen from below as shapes on the surface (reuse the existing geese models; ducks a small low-poly model). Keep it
+   cheap: low-poly, a handful per stretch, simple swim loops (no physics), drawn and moved only while that stretch's pipe
+   cell is active (the Round 24 A2 cell switching). Frame rate must not drop: compare in the exe at the four glass
+   stretches before and after and report the numbers. Surface ducks and geese at the open-water cuts are also visible
+   from the bank; they never block a vehicle.
+
+Part B, GETTING ROUND THE PIPES FASTER.
+B1. PIPE WARP (debug, for Dan to test with). Dan: "is there a way I can warp to specific places in the pipe area so it
+   is easier for me to determine issues and check out things". Add a debug menu row "Pipe warp: <place>" (free roam
+   only, like "Go to") that steps through: the HUB, every junction (J*, K*), both BF and both GP pipes, every exit's
+   inside end and outside mouth, every manhole's foot, and the middle of each main. Confirm puts the vehicle on the pipe
+   floor at that spot, stopped, facing along the pipe toward the hub where there is one. Names as on the map and in
+   `Docs/PIPE-NETWORK.md`. The bug report's position line then names the nearest place.
+B2. PIPE EXPRESS (game feature, free roam only). Dan: "some of the tunnels are really long. Part of the underground
+   network was to make it quicker. Is there a way to make the tunnels quicker (either a seamless warp or a scripted
+   boost that quickly pushes you through without control ... This wouldn't be everywhere. for example races would move
+   normally". Build it on a few long stretches only, not everywhere:
+   - Pick the stretches: long runs with no junction or exit along them (propose about 3 to 5, list each with its length
+     and the time it takes to drive now). Both directions.
+   - Default is the BOOST: entering one end, the water surges, controls lock and the vehicle is carried along the pipe
+     floor's center line at about 45 m/s, with a whoosh and speed streaks, and let go at the far end at normal driving
+     speed facing out of it. It cannot hit a wall, stall or get stuck, and the camera stays steady.
+   - Also build the WARP version (a short dark fade at the entry, the vehicle placed at the far end moving at normal
+     speed) and add a debug menu row "Pipe express: Boost / Warp / Off" so Dan can drive both and choose. Default Boost.
+   - Mark both ends so it reads as a feature: an EXPRESS band painted round the pipe and arrows on the floor, in the
+     style of the HUB signs.
+   - Races never use it: during any race it is off and the stretch drives normally (also later in the underground race
+     unless Dan says otherwise). Racers' AI never triggers it.
+   - Document it in `Docs/PIPE-NETWORK.md` and on the map (the express stretches drawn in their own style).
+
+**DONE (Parts A, A2, A3 and B; commits ea0dfb6, 878fb15, 2736ea1, 0320c4d, 0fea050) — Round 24 (Dan, 2026-10-13 11:20, after driving part of the network). Dan is near his weekly usage limit:
 do Part A first, rebuild the exe, commit, and stop if usage runs short; Part B is queued for his next session. No vehicle
 drive tests: Dan tests himself. One check that the map build and the exe build succeed.**
 
