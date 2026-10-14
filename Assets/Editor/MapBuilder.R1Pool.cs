@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Racer;
+using UnityEditor;
 using UnityEngine;
 
 // Round 20 follow-up (Dan, 2026-10-12: "I don't mind this area as a shortcut, but it has to has some risk"): R1 on Dan's own line
@@ -144,12 +145,20 @@ namespace ChastainRush
             var solid = new GameObject(sc.id + " fences").transform; solid.SetParent(parent, false);
             var race = new GameObject(sc.id + " fences (reverse races only)").transform; race.SetParent(parent, false);
             race.gameObject.AddComponent<RaceOnly>().reverse = true;
+            // Round 25 (BUG-001): the always-standing fences are solid in a race only; in free roam a breakable copy stands instead
+            var inRace = new GameObject(sc.id + " fences (solid in any race)").transform; inRace.SetParent(parent, false);
+            inRace.gameObject.AddComponent<RaceOnly>().any = true;
+            var free = new GameObject(sc.id + " fences (breakable in free roam)").transform; free.SetParent(parent, false);
+            free.gameObject.AddComponent<RaceOnly>().freeRoam = true;
+            var fmb = new MeshBuilder(); var fpieces = new List<FenceChunk.Piece>(); var fpanels = new List<FenceChunk.Panel>(); var frecs = new List<FencePanelRec>();
             int panels = 0, n = 0;
             foreach (var fe in sc.fences)
             {
                 if (fe.a == null || fe.b == null) continue;
                 bool raceOnly = fe.kind == "reverse_only";
-                var holder = new GameObject("Fence " + fe.label.Replace('/', '-')).transform; holder.SetParent(raceOnly ? race : solid, false);
+                var holder = new GameObject("Fence " + fe.label.Replace('/', '-')).transform; holder.SetParent(raceOnly ? race : inRace, false);
+                var always = new GameObject("Fence " + fe.label.Replace('/', '-') + " gate").transform; always.SetParent(solid, false);
+                var gmb = new MeshBuilder();
                 var mb = new MeshBuilder(); var dummy = new List<FenceChunk.Piece>();
                 Color wood = Shade(PickOf(WoodTones, 4000 + n, 150), 1f);
                 Vector2 A = new Vector2(fe.a[0], fe.a[1]), B = new Vector2(fe.b[0], fe.b[1]);
@@ -170,6 +179,11 @@ namespace ChastainRush
                         var p = Vector2.Lerp(a, b, i / (float)cnt); var q = Vector2.Lerp(a, b, (i + 1) / (float)cnt);
                         float gp = Ground(terrain, p.x, p.y), gq = Ground(terrain, q.x, q.y);
                         BuildFencePanel(mb, dummy, FenceKind.Privacy, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), wood, 4000 + n * 50 + i);
+                        if (!raceOnly)
+                        {
+                            var rec = BuildFencePanel(fmb, fpieces, FenceKind.Privacy, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), wood, 4000 + n * 50 + i);
+                            fpanels.Add(new FenceChunk.Panel { firstPiece = rec.first, pieceCount = rec.count, centre = rec.centre }); frecs.Add(rec);
+                        }
                         var col = new GameObject("panel"); col.transform.SetParent(holder, false);
                         var mid = (p + q) * 0.5f; float lo = Mathf.Min(gp, gq);
                         // as high as its boards (1.75 m: the ramp's lip is 2.15 m over the deck, a vehicle crossing it must not touch it)
@@ -189,21 +203,37 @@ namespace ChastainRush
                     foreach (float side in new[] { -1f, 1f })
                     {
                         var post = C + dir * (side * h); float g = Ground(terrain, post.x, post.y);
-                        Post(mb, new Vector3(post.x, g - 0.2f, post.y), 2.25f, 0.18f, Shade(wood, 0.75f));
-                        var pc = new GameObject("gate post"); pc.transform.SetParent(holder, false); pc.transform.position = new Vector3(post.x, g + 0.9f, post.y);
+                        Post(gmb, new Vector3(post.x, g - 0.2f, post.y), 2.25f, 0.18f, Shade(wood, 0.75f));
+                        var pc = new GameObject("gate post"); pc.transform.SetParent(always, false); pc.transform.position = new Vector3(post.x, g + 0.9f, post.y);
                         var cc = pc.AddComponent<CapsuleCollider>(); cc.radius = 0.12f; cc.height = 2.4f; cc.direction = 1;
                         // the leaf: swung round flat against the fence on the lane's side, boards on a frame
                         var l0 = post + nrm * 0.12f; var l1 = l0 + dir * (side * (h - 0.05f));
-                        Beam(mb, new Vector3(l0.x, g + 0.35f, l0.y), new Vector3(l1.x, g + 0.35f, l1.y), 0.05f, 0.1f, Shade(wood, 0.8f), new Vector3(nrm.x, 0f, nrm.y));
-                        Beam(mb, new Vector3(l0.x, g + 1.55f, l0.y), new Vector3(l1.x, g + 1.55f, l1.y), 0.05f, 0.1f, Shade(wood, 0.8f), new Vector3(nrm.x, 0f, nrm.y));
+                        Beam(gmb, new Vector3(l0.x, g + 0.35f, l0.y), new Vector3(l1.x, g + 0.35f, l1.y), 0.05f, 0.1f, Shade(wood, 0.8f), new Vector3(nrm.x, 0f, nrm.y));
+                        Beam(gmb, new Vector3(l0.x, g + 1.55f, l0.y), new Vector3(l1.x, g + 1.55f, l1.y), 0.05f, 0.1f, Shade(wood, 0.8f), new Vector3(nrm.x, 0f, nrm.y));
                         for (float t = 0.08f; t < h - 0.1f; t += 0.15f)
-                        { var bq = l0 + dir * (side * t) + nrm * 0.05f; Beam(mb, new Vector3(bq.x, g + 0.08f, bq.y), new Vector3(bq.x, g + 1.8f, bq.y), 0.13f, 0.025f, Shade(wood, 0.95f), new Vector3(dir.x, 0f, dir.y)); }
+                        { var bq = l0 + dir * (side * t) + nrm * 0.05f; Beam(gmb, new Vector3(bq.x, g + 0.08f, bq.y), new Vector3(bq.x, g + 1.8f, bq.y), 0.13f, 0.025f, Shade(wood, 0.95f), new Vector3(dir.x, 0f, dir.y)); }
                     }
                     Debug.Log($"[Round20+] {sc.id} side gate in fence {fe.label}: {fe.gate.w:0.0} m between round posts at ({C.x:0.0}, {C.y:0.0})");
                 }
                 mb.ToObject($"{sc.id} fence {n} {fe.label.Split(' ')[0].Replace('/', '-')}", mats.House, holder, false, true);   // its mesh asset's name: no '/'
+                if (gmb.Count > 0) gmb.ToObject($"{sc.id} fence {n} gate", mats.House, always, false, true);
                 n++;
             }
+            if (fpanels.Count > 0)
+            {
+                var go = fmb.ToObject($"{sc.id} fences breakable", mats.House, free, false, true);
+                GameObjectUtility.SetStaticEditorFlags(go, 0);
+                var chunk = go.AddComponent<FenceChunk>(); chunk.source = go.GetComponent<MeshFilter>().sharedMesh; chunk.material = mats.House;
+                chunk.pieces = fpieces.ToArray(); chunk.panels = fpanels.ToArray(); chunk.sound = BreakSounds.Kind.Wood;
+                for (int i = 0; i < frecs.Count; i++)
+                {
+                    var rec = frecs[i]; var pg = new GameObject("p"); pg.transform.SetParent(go.transform, false);
+                    pg.transform.SetPositionAndRotation(rec.centre, Quaternion.LookRotation(rec.along, Vector3.up));
+                    var bc = pg.AddComponent<BoxCollider>(); bc.isTrigger = true; bc.size = new Vector3(0.9f, rec.height, rec.length);
+                    var fp = pg.AddComponent<FencePanel>(); fp.chunk = chunk; fp.index = i;
+                }
+            }
+            Debug.Log($"[Round25] {sc.id}: the always-standing fences solid in races only, {fpanels.Count} breakable panels in free roam (BUG-001)");
             Debug.Log($"[Round20+] {sc.id}: {n} solid fences ({sc.fences.Count(x => x.kind == "reverse_only")} of them in reverse races only), {panels} panels");
         }
 

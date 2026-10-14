@@ -9,6 +9,9 @@ namespace ChastainRush
     public sealed class RaceOnly : MonoBehaviour
     {
         public bool reverse = true;   // the direction it stands in
+        // Round 25 (Dan, BUG-001 at R1's side-yard fences: "can we only make these unbreakable in the race? Let them all be breakable in
+        // free roam"): 'any' stands in a race in either direction; 'freeRoam' stands only outside races (the breakable copy)
+        public bool any, freeRoam;
         bool shown = true;
 
         void Start() => Apply(false);
@@ -16,7 +19,8 @@ namespace ChastainRush
         void Update()
         {
             var race = RaceController.Instance;
-            bool on = race != null && race.State != RaceController.Stage.Free && race.Route != null && race.Route.Reverse == reverse;
+            bool racing = race != null && race.State != RaceController.Stage.Free && race.Route != null;
+            bool on = freeRoam ? !racing : racing && (any || race.Route.Reverse == reverse);
             if (on != shown) Apply(on);
         }
 

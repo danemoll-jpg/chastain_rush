@@ -2673,6 +2673,36 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
+**Round 25 follow-ups (Dan, 2026-10-14, after driving the Round 25 exe; session `2026-10-14_15-37-54-171_ea184c`, two reports, read by
+Claude). Dan: "pull in my bugs...i thought the new shortcuts would have been built this round. I really want the manhole covers visible
+above ground at a normal size not completely gone". His picks (asked): build RD and RE; keep RA and RC.**
+- BUG-001 (x 2739.17, z 1045.29, the fence 2065/1452 in R1's lobe): "can we only make these unbreakable in the race? Let them all be
+  breakable in free roam". DONE: R1's always-standing side-yard fences (9 of them) are solid only during a race (either direction,
+  `RaceOnly.any`); in free roam a breakable copy (47 panels, the neighborhood's FenceChunk) stands instead (`RaceOnly.freeRoam`,
+  `MapBuilder.R1Pool.cs`). The three reverse-race-only fences in #6's corridor are unchanged (absent in free roam). Check: a drive into
+  Dan's fence at 10 m/s in free roam broke 2 panels, 7 % speed lost.
+- BUG-002 (x 1654.29, z 949.96, the Enclave pond): "Water cant act like this. Need to fix this so that he water flush with the ground".
+  The ground just outside the pond's east shore lay up to 1.5 m under its water's surface, so the water's edge stood in the air, and the
+  glass's underwater surface and light shafts (Round 25) reached past the shore, seen from the low bank. DONE: the ground round this
+  pond raised to meet its water, flush at the edge (`MapBuilder.PondBank.cs`, this pond only; the other ponds with the same are listed in
+  the build log for Dan); the underwater surface, the light shafts and the terrain holes kept inside the water's outline
+  (`MapBuilder.ClearPipe.cs`).
+- Manhole covers: DONE. The 0.9 m cover was near-black on dark asphalt and read as gone; now worn cast iron clearly lighter than the road,
+  a bright rim, a dark ring round it, cast rings and a cross-hatch (`MapBuilder.Network.cs`).
+- RD "Gully leap" and RE "Flood-plain run", the reverse race's own shortcuts: BUILT (`Tools/mapgen/make_creek_track.py` section 4d, official,
+  'direction' reverse; looks from `MapBuilder.BigJumps.cs`; the candidates' markers, `Data/proposals/round24_creek_reverse.json` and
+  `creek_reverse_candidates.py` removed). RD: a plank kicker (logramp, 1.4 m, 20 degrees, 21 to 23 m/s, a back down into the gully) on the
+  gully's west rim beside the south loop's west side, its foot 3.2 m from the trail's line; off the trail where it bends, one left turn onto
+  it; over the gully (32 to 39 m) onto the east bank, left onto the east side: 222 m of lap for 159 m of line; forgives forward CP4 (it
+  rejoins just past it). RE: off the east leg (a left arc), an earth step-down over the plateau's edge (0.8 m, 12 degrees, 18 to 22 m/s),
+  100 m across the flood plain on a cleared line, a log kicker at the gorge's east rim (1.6 m, 22 degrees, 17 to 19 m/s, a back down into
+  the gorge) onto the west leg: 416 m of lap for 226 m of line; forgives CP2 (the hairpin, as RA). Hints: worn tracks and a knocked-over
+  barricade at each turn-off. Trees cleared on the lines, breakable within 12 m. The AI follows the shortcut rule (ShortcutStrategy).
+  Check: the Drifter Twin driven down each line at 18 m/s followed it to its end (RD 1.5 s in the air, RE 1.3 s). Not raced with the AI by
+  script.
+- For Dan to check: RD and RE in a reverse Noonday Creek race (and the AI taking them); R1's fences in free roam and in a race; the
+  Enclave pond's east bank; the manhole covers.
+
 **DONE (not yet driven by Dan) — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
 `2026-10-14_11-23-52-092_9ec9c7`, eight reports, read by Claude). Dan: "Looks like we need a bit of cleanup here."
 Part A is cleanup, Part B is two new things for the pipe network. No vehicle drive tests unless cheap: Dan drives it.

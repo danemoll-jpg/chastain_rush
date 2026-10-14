@@ -569,6 +569,175 @@ break_lines += [{"points": [hx, hz, hx + 0.01, hz], "half": 1.5} for hx, hz in H
 print(f"  RC creek leap back: heap lip ({lipC[0]:.1f}, {lipC[1]:.1f}) at {yC_lip:.2f} m ({RC_S:.0f} m from N2's lip), {RC_TH} deg, {RC_VMIN} to {RC_VMAX} m/s: " +
       ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m, down {a_[2]:.1f} m past N2's lip" for v, a_ in rc_tab.items()) +
       f"; the loop's tightest radius {min_radius(loopC):.1f} m; heap's foot {float(np.min(np.linalg.norm(line - footC, axis=1))):.1f} m from the trail's line; {float(sCc[-1]):.0f} m of line")
+# ---------------------------------------------------------------- 4d. RD and RE, the reverse race's OWN shortcuts (Round 25, Dan's pick of
+# Round 24 A3's candidates: "RD and RE", RA and RC kept). Dan: "are the shortcuts on the trail the same both ways? ... I would want the
+# trails to feel different". Both 'direction': "reverse" (their paths in reverse travel order), held to CLAUDE.md "Shortcut design".
+#   RD "Gully leap" (official, forgives nothing: it rejoins before reverse CP2 / forward CP4): on the south loop's west side, a kicker of
+#      planks on the gully's west rim aimed east over Noonday Creek's gully (about 20 m across, 3.7 m deep, banks too steep to climb) onto
+#      the flat east bank, then left onto the east side's trail. The kicker's foot stands clear of the trail's tread, so the run-up comes
+#      from the woods west of the trail (off the trail, round to the east, across the trail and up the planks: as RC). Short: into the
+#      gully (out by the C4 ford downstream, or up the kicker's back); long: into breakable trunks. Hint: worn tracks off the trail round
+#      to the kicker and a road-closed barricade knocked over where they leave the trail.
+#   RE "Flood-plain run" (official, forgives the hairpin's checkpoint, as RA): coming north up the east leg, a left turn off the trail
+#      west over the plateau's edge (an earth step-down: it only works this way), 100 m across the flood plain's woods on a cleared line,
+#      and a log kicker on the east rim of Noonday Creek's gorge up onto the west leg's higher bank, then right onto the west leg. A line
+#      of its own 40 to 50 m south of P1 / RA. Short at the gorge: into the creek, out downstream. Hint: a barricade knocked flat in a
+#      gap in the plateau's trees and worn tracks into it.
+def loop_in(kC, lipC, dC, RUN, RR, R, tag, quiet=False):
+    """RC's way in, as a function: off the trail (reverse heading at kC) turning right (radius RR), a straight, then a left circle (radius
+    R) onto the kicker's axis RUN m before its lip"""
+    hC = line[(kC - 2) % N1] - line[(kC + 2) % N1]; hC = hC / np.linalg.norm(hC)
+    TC = lipC - dC * RUN
+    leftC = np.array([-dC[1], dC[0]]); cC = TC + leftC * R; b0 = line[kC % N1]
+    rightC = np.array([hC[1], -hC[0]]); cR = b0 + rightC * RR
+    best = None
+    for al in np.linspace(0.0, math.radians(150), 1501):
+        P_ = cR + rotc(b0 - cR, al); h_ = rotc(hC, al)
+        w = cC - P_; along_ = float(w @ h_); side_ = float(w @ np.array([-h_[1], h_[0]]))
+        if along_ > 2.0 and (best is None or abs(side_ - R) < best[0]): best = (abs(side_ - R), al, P_, h_, along_)
+    if best is None: return ([line[kC % N1]], 999.0) if quiet else None
+    _, alR, PR, hR, runR = best
+    T1 = PR + hR * runR; phi1 = math.atan2(*(T1 - cC)[::-1])
+    phiT = math.atan2(*(TC - cC)[::-1]); sweep = (phiT - phi1) % (2 * math.pi)
+    arcR = [cR + rotc(b0 - cR, alR * t) for t in np.linspace(0, 1, max(3, int(alR * RR / 1.0)))]
+    straightR = [PR + hR * runR * t for t in np.linspace(0, 1, max(2, int(runR / 1.0)))]
+    arcC = [cC + R * np.array([math.cos(phi1 + sweep * t), math.sin(phi1 + sweep * t)]) for t in np.linspace(0, 1, max(3, int(sweep * R / 1.0)))]
+    loop = arcR + straightR[1:] + arcC[1:] + [TC + dC * t for t in np.arange(2.0, RUN, 2.0)]
+    if not quiet: print(f"  {tag}'s way in: off the trail turning right {math.degrees(alR):.0f} degrees (radius {RR:.0f} m), {runR:.1f} m straight, left {math.degrees(sweep):.0f} degrees (radius {R:.0f} m) onto the kicker's axis {RUN:.0f} m before its lip; tightest radius {min_radius(loop):.1f} m")
+    return (loop, math.degrees(sweep)) if quiet else loop
+def length(P): P = np.asarray(P); return float(np.sum(np.linalg.norm(np.diff(P, axis=0), axis=1)))
+def trail_gap(P):
+    return float(np.min(np.linalg.norm(line - np.asarray(P), axis=1)))
+def forgiven(k_join, k_leave):   # the checkpoints a reverse shortcut skips: forward stations between where it rejoins and where it leaves
+    return [cid for cid, x, z, _ in CHECKPOINTS if k_join < S((x, z)) < k_leave]
+def bend_to(land, d, kj, out, n=8):   # a smooth bend from the landing onto the trail at kj (a quadratic through a point 6 m on)
+    mid = land + d * 4.0; P = line[kj % N1]
+    return [(1 - u) ** 2 * mid + 2 * (1 - u) * u * (mid + d * out) + u * u * P for u in np.linspace(0.1, 1.0, n)]
+def rev_after(kj, steps=(4, 8, 12)): return [line[(kj - i) % N1] for i in steps]   # on along the trail in reverse travel
+
+# RD
+RD_H, RD_TH, RD_RAMP, RD_VMIN, RD_VMAX = 1.4, 20.0, 6.0, 21.0, 23.0
+cands_D = []
+for kk in range(S((2495.0, 501.0)) - 8, S((2495.0, 501.0)) + 12):
+    P0 = line[kk % N1]
+    for brg in range(90, 131, 2):
+        d_ = np.array([math.sin(math.radians(brg)), math.cos(math.radians(brg))])
+        g0 = ground(*P0); rim = None
+        for s_ in np.arange(2.0, 16.0, 0.25):
+            if ground(*(P0 + d_ * s_)) < g0 - 0.6: rim = s_ - 0.5; break
+        if rim is None: continue
+        lip_ = P0 + d_ * rim; foot_ = lip_ - d_ * RD_RAMP
+        if trail_gap(foot_) < 3.1 or min(trail_gap(lip_ - d_ * t) for t in np.arange(0.0, RD_RAMP + 0.1, 1.0)) < 3.1: continue
+        y0_ = max(ground(*lip_), ground(*foot_)) + RD_H; ok = True; far_ = 0.0
+        for v in (RD_VMIN, RD_VMAX):
+            t, dist, top = ballistic(lip_, d_, y0_, v, math.radians(RD_TH)); q = lip_ + d_ * dist
+            if ground(*q) < g0 - 1.2 or trail_gap(q) < 5.0: ok = False
+            far_ = max(far_, dist)
+        if not ok: continue
+        cands_D.append((kk, brg, lip_, d_, y0_, far_))
+assert cands_D, "RD: no kicker place clear of the trail found"
+# the way in that saves the most: off the trail 20 to 70 m before the kicker's trail point, a smooth line (no bend under 8 m, the last
+# turn under 150 degrees) onto the axis 16 to 30 m before the lip; and the landing's way onto the east side's trail
+best = None
+for kk, brg, lip_, d_, y0_, far_ in cands_D:
+    land_ = lip_ + d_ * min(far_, 30.0); kj_ = S(land_ + (d_ + np.array([-d_[1], d_[0]])) * 12.0)
+    for off in range(20, 72, 4):
+        for RUN in (16.0, 20.0, 24.0, 30.0):
+            for RR, R in ((12.0, 10.0), (15.0, 12.0), (20.0, 15.0)):
+                loop_, sw = loop_in(kk + off, lip_, d_, RUN, RR, R, "RD", True)
+                if sw > 150.0 or min_radius(loop_) < 8.0: continue
+                ln = length(loop_) + RUN + 30.0
+                saves = ((kk + off - kj_) % N1) - ln
+                if best is None or saves > best[0]: best = (saves, kk, brg, lip_, d_, y0_, far_, off, RUN, RR, R)
+assert best is not None, "RD: no smooth way in found"
+_, kD, brgD, lipD, dD, yD_lip, farD, offD, runD, rrD, rD = best
+footD = lipD - dD * RD_RAMP
+rd_tab = {}
+for v in (RD_VMIN, RD_VMAX):
+    t, dist, top = ballistic(lipD, dD, yD_lip, v, math.radians(RD_TH)); rd_tab[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+rd = {"id": "RD", "look": "logramp", "s_lip": -1.0, "lip": [round(float(lipD[0]), 2), round(float(lipD[1]), 2)], "dir": [round(float(dD[0]), 5), round(float(dD[1]), 5)],
+      "height": RD_H, "lip_y": round(float(yD_lip), 3), "angle_deg": RD_TH, "ramp_m": RD_RAMP, "width": 6.0, "land_from": 12.0, "land_to": round(farD + 8.0, 1),
+      "vmin": RD_VMIN, "vmax": RD_VMAX, "design": RD_VMIN, "flights": rd_tab, "back_angle": 20.0}   # its back: earth down into the gully (a vehicle short drives out up it)
+kDL = kD + offD   # off the trail (forward stations: reverse travel comes down them) before the kicker's trail point
+loopD = loop_in(kDL, lipD, dD, runD, rrD, rD, "RD")
+landD = lipD + dD * min(farD, 30.0)
+kDj = S(landD + (dD + np.array([-dD[1], dD[0]])) * 12.0)   # the east side's trail, north of the landing (left in reverse)
+pathD = [line[(kDL + 14 - i) % N1] for i in range(0, 14, 2)] + loopD[1:] + [tuple(footD), tuple(lipD), tuple(landD)] + bend_to(landD, dD, kDj, 8.0) + rev_after(kDj)
+pathD = resample(pathD, 2.0)
+sD = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(pathD, axis=0), axis=1))])
+sc_rd = {"id": "rd_gully_leap", "name": "Gully leap", "direction": "reverse", "path": [round(float(v), 2) for q in pathD for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(pathD, sD, footD + dD * 2.0), 1), "entry_margin_m": 1.0, "forgives": forgiven(kDj, kDL), "ai_speed": 14.0,
+         "ai_profile": [round(v, 1) for v in (st_on(pathD, sD, loopD[0]) - 4.0, 10.0, st_on(pathD, sD, loopD[8]), 9.0, st_on(pathD, sD, footD) - 14.0, 12.0, st_on(pathD, sD, footD), RD_VMIN,
+                                              st_on(pathD, sD, lipD) + 2.0, RD_VMIN, st_on(pathD, sD, landD), 9.0, st_on(pathD, sD, line[kDj % N1]), 10.0)]}
+rd["tracks"] = [round(float(v), 2) for q in resample([tuple(q) for q in loopD] + [tuple(footD)], 1.0) for v in q]
+n_leaveD = loopD[2] - loopD[0]; n_leaveD = n_leaveD / np.linalg.norm(n_leaveD); barD = loopD[0] - np.array([-n_leaveD[1], n_leaveD[0]]) * 3.4
+rd["hint"] = {"kind": "barricade", "x": round(float(barD[0]), 2), "z": round(float(barD[1]), 2), "yaw": round(math.degrees(math.atan2(*n_leaveD)) + 70.0, 1)}
+big.append(rd)
+nD = np.array([-dD[1], dD[0]])
+landings.append({"id": "RD", "poly": [round(float(v), 2) for q in [lipD + dD * 3.0 + nD * 6.5, lipD + dD * (farD + 10.0) + nD * 7.5, lipD + dD * (farD + 10.0) - nD * 7.5, lipD + dD * 3.0 - nD * 6.5] for v in q]})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(q) for q in loopD] + [tuple(footD), tuple(lipD)], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in [lipD, lipD + dD * (farD + 8.0)] for v in q], "half": 6.0})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(landD)] + [tuple(q) for q in bend_to(landD, dD, kDj, 8.0)], 1.0) for v in q], "half": 6.0})
+print(f"  RD gully leap: kicker on the rim at ({lipD[0]:.1f}, {lipD[1]:.1f}), lip {yD_lip:.2f} m, facing {brgD} degrees, {RD_TH} deg, {RD_VMIN} to {RD_VMAX} m/s: " +
+      ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m" for v, a_ in rd_tab.items()) + f"; its foot {trail_gap(footD):.1f} m from the trail's line; leaves at s {kDL}, rejoins at s {kDj} " +
+      f"({(kDL - kDj) % N1} m of lap for {float(sD[-1]):.0f} m of line); forgives {sc_rd['forgives']}")
+
+# RE
+k700 = S((2508.0, 1255.0)); k300 = S((2347.0, 1262.0))
+uE = line[k300 % N1] - line[k700 % N1]; uE = uE / np.linalg.norm(uE)
+RE1_H, RE1_TH, RE1_RAMP, RE1_VMIN, RE1_VMAX = 0.8, 12.0, 8.0, 18.0, 22.0
+RE2_H, RE2_TH, RE2_RAMP, RE2_VMIN, RE2_VMAX = 1.6, 22.0, 8.0, 17.0, 19.0
+lipE1 = line[k700 % N1] + uE * 30.0; lipE2 = line[k700 % N1] + uE * 158.0
+def kicker(jid, look, lip, d, h, th, ramp, vmin, vmax):
+    foot = lip - d * ramp; y0 = max(ground(*lip), ground(*foot)) + h; tab = {}
+    for v in (vmin, vmax):
+        t, dist, top = ballistic(lip, d, y0, v, math.radians(th)); tab[str(v)] = [round(t, 2), round(dist, 1), round(top, 1)]
+    far = max(a_[1] for a_ in tab.values())
+    return {"id": jid, "look": look, "s_lip": -1.0, "lip": [round(float(lip[0]), 2), round(float(lip[1]), 2)], "dir": [round(float(d[0]), 5), round(float(d[1]), 5)],
+            "height": h, "lip_y": round(float(y0), 3), "angle_deg": th, "ramp_m": ramp, "width": 6.0, "land_from": 8.0, "land_to": round(far + 8.0, 1),
+            "vmin": vmin, "vmax": vmax, "design": vmin, "flights": tab}, foot, far
+re1, footE1, farE1 = kicker("RE1", "stepdown", lipE1, uE, RE1_H, RE1_TH, RE1_RAMP, RE1_VMIN, RE1_VMAX)
+re2, footE2, farE2 = kicker("RE2", "logramp", lipE2, uE, RE2_H, RE2_TH, RE2_RAMP, RE2_VMIN, RE2_VMAX)
+re2["back_angle"] = 20.0   # a vehicle short into the gorge drives up the kicker's back and out
+# the way in: a left arc (radius 12) off the trail (heading north, reverse) onto the axis, ended at least 10 m before the step-down's foot
+nE = np.array([-uE[1], uE[0]]); bestE = None
+for kk in range(k700 + 4, k700 + 40):
+    P0 = line[kk % N1]; h0 = line[(kk - 2) % N1] - line[(kk + 2) % N1]; h0 = h0 / np.linalg.norm(h0)
+    phi = math.atan2(h0[0] * uE[1] - h0[1] * uE[0], h0 @ uE)
+    c_ = P0 + np.array([-h0[1], h0[0]]) * 12.0 * np.sign(phi)
+    end = c_ + rot2l(P0 - c_, phi)
+    off = abs(float((end - lipE1) @ nE)); along = float((footE1 - end) @ uE)
+    if along < 10.0: continue
+    if bestE is None or off < bestE[0]: bestE = (off, kk, c_, phi)
+_, kEL, cE, phiE = bestE
+arcE = [cE + rot2l(line[kEL % N1] - cE, phiE * t / 12.0) for t in range(13)]
+landE2 = lipE2 + uE * min(farE2, 24.0)
+kEj = S(landE2 + uE * 14.0)
+pathE = [line[(kEL + 14 - i) % N1] for i in range(0, 14, 2)] + arcE + [tuple(footE1), tuple(lipE1)] + [tuple(lipE1 + uE * t) for t in np.arange(10.0, 128.0 - RE2_RAMP, 10.0)] + \
+        [tuple(footE2), tuple(lipE2), tuple(landE2)] + bend_to(landE2, uE, kEj, 6.0) + rev_after(kEj)
+pathE = resample(pathE, 2.0)
+sE = np.concatenate([[0], np.cumsum(np.linalg.norm(np.diff(pathE, axis=0), axis=1))])
+sc_re = {"id": "re_flood_plain_run", "name": "Flood-plain run", "direction": "reverse", "path": [round(float(v), 2) for q in pathE for v in q],
+         "half_width_m": 3.0, "entry_inset_m": round(st_on(pathE, sE, footE1 + uE * 2.0), 1), "entry_margin_m": 1.0, "forgives": forgiven(kEj, kEL), "ai_speed": 17.0,
+         "ai_profile": [round(v, 1) for v in (st_on(pathE, sE, arcE[0]) - 4.0, 11.0, st_on(pathE, sE, arcE[-1]), 13.0, st_on(pathE, sE, footE1), RE1_VMIN,
+                                              st_on(pathE, sE, lipE1) + 2.0, RE1_VMIN, st_on(pathE, sE, footE2) - 20.0, 17.0, st_on(pathE, sE, footE2), RE2_VMIN,
+                                              st_on(pathE, sE, lipE2) + 2.0, RE2_VMIN, st_on(pathE, sE, landE2), 10.0, st_on(pathE, sE, line[kEj % N1]), 11.0)]}
+re1["tracks"] = [round(float(v), 2) for q in resample([tuple(line[(kEL + 6) % N1])] + [tuple(q) for q in arcE] + [tuple(footE1)], 1.0) for v in q]
+n_leaveE = arcE[2] - arcE[0]; n_leaveE = n_leaveE / np.linalg.norm(n_leaveE); barE = arcE[0] + np.array([n_leaveE[1], -n_leaveE[0]]) * 3.4
+re1["hint"] = {"kind": "barricade", "x": round(float(barE[0]), 2), "z": round(float(barE[1]), 2), "yaw": round(math.degrees(math.atan2(*n_leaveE)) - 70.0, 1)}
+big.append(re1); big.append(re2)
+for b_, far_ in ((re1, farE1), (re2, farE2)):
+    P_, d_ = np.array(b_["lip"]), np.array(b_["dir"]); n_ = np.array([-d_[1], d_[0]])
+    landings.append({"id": b_["id"], "poly": [round(float(v), 2) for q in [P_ + d_ * 3.0 + n_ * 6.5, P_ + d_ * (far_ + 10.0) + n_ * 7.5, P_ + d_ * (far_ + 10.0) - n_ * 7.5, P_ + d_ * 3.0 - n_ * 6.5] for v in q]})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(line[(kEL + 4) % N1])] + [tuple(q) for q in arcE] + [tuple(footE1), tuple(lipE1)], 1.0) for v in q], "half": 4.5})
+clear_lines.append({"points": [round(float(v), 2) for q in [lipE1, lipE2] for v in q], "half": 4.5})   # the flood plain's woods: a cleared line
+clear_lines.append({"points": [round(float(v), 2) for q in [lipE2, lipE2 + uE * (farE2 + 8.0)] for v in q], "half": 6.0})
+clear_lines.append({"points": [round(float(v), 2) for q in resample([tuple(landE2)] + [tuple(q) for q in bend_to(landE2, uE, kEj, 6.0)], 1.0) for v in q], "half": 6.0})
+print(f"  RE flood-plain run: step-down lip ({lipE1[0]:.1f}, {lipE1[1]:.1f}) {re1['lip_y']:.2f} m: " + ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m" for v, a_ in re1["flights"].items()) +
+      f"; gorge kicker ({lipE2[0]:.1f}, {lipE2[1]:.1f}) {re2['lip_y']:.2f} m: " + ", ".join(f"{v} m/s {a_[0]:.2f} s {a_[1]:.1f} m" for v, a_ in re2["flights"].items()) +
+      f"; leaves at s {kEL}, rejoins at s {kEj} ({(kEL - kEj) % N1} m of lap for {float(sE[-1]):.0f} m of line); forgives {sc_re['forgives']}")
+break_lines += [{"points": [round(float(v), 2) for q in pathD for v in q], "half": 12.0}, {"points": [round(float(v), 2) for q in pathE for v in q], "half": 12.0}]
+
 def lap_gap(P, d, ramp, half):   # the ramp's nearest edge to the trail's line (the tread is 4.5 m wide)
     nl = np.array([-d[1], d[0]])
     return min(float(np.min(np.linalg.norm(line - (P - d * s_ + nl * o), axis=1))) for s_ in np.arange(0, ramp + 0.1, 1.0) for o in (-half, half))
@@ -603,7 +772,7 @@ route.update({
     "source": "Tools/mapgen/make_creek_track.py. Coordinates are map meters (= Unity x, z); heights come from the world.",
     "lap_length_m": round(L1, 1), "loop": flat(np.vstack([line, line[:1]])), "gate_s": gate_s,
     "lead_in": flat(lead), "lead_in_length_m": 35.0, "checkpoints": cps, "junctions": [], "loop_pieces": [],
-    "official_shortcuts": [sc_p1, sc_n2, sc_n5, sc_ra, sc_rc], "closures": [], "ai_zones": ai_zones, "ai_zones_reverse": ai_zones_rev,
+    "official_shortcuts": [sc_p1, sc_n2, sc_n5, sc_ra, sc_rc, sc_rd, sc_re], "closures": [], "ai_zones": ai_zones, "ai_zones_reverse": ai_zones_rev,
     # for the checks (Round18Runner): J4 and the creek-bed run, in lap stations
     "j4": {"lip": [J4_LIP[0], J4_LIP[1]], "dir": [round(float(J4_DIR[0]), 5), round(float(J4_DIR[1]), 5)], "s_lip": lip4, "road_far_edge_m": 26.0},
     "creek_bed_s": [c5a, c6],

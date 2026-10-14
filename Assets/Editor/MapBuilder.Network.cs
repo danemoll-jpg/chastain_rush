@@ -709,9 +709,21 @@ namespace ChastainRush
                         cover.t.Add(b); cover.t.Add(b + 2); cover.t.Add(b + 1); cover.t.Add(b); cover.t.Add(b + 3); cover.t.Add(b + 2);
                     }
                 }
-                var iron = new Color(0.17f, 0.17f, 0.18f); var cast = new Color(0.27f, 0.27f, 0.28f);
-                Ring(0f, Rc, iron); Ring(Rc - 0.05f, Rc, new Color(0.38f, 0.38f, 0.38f));   // the plate, its worn steel rim
-                Ring(Rc * 0.52f, Rc * 0.6f, cast); Ring(Rc * 0.76f, Rc * 0.82f, cast);       // cast rings
+                // Round 25 (Dan, after driving it: "I really want the manhole covers visible above ground at a normal size not completely
+                // gone"): the first cover was near-black on the dark asphalt and read as nothing. Now worn cast iron, clearly lighter than
+                // the road, a bright polished rim, a dark ring of grout round it, cast rings and a cross-hatch, 0.9 m across
+                var grout = new Color(0.10f, 0.10f, 0.10f); var iron = new Color(0.40f, 0.39f, 0.37f); var cast = new Color(0.55f, 0.54f, 0.51f); var rim = new Color(0.68f, 0.67f, 0.64f);
+                Ring(Rc, Rc + 0.05f, grout);
+                Ring(0f, Rc, iron); Ring(Rc - 0.06f, Rc, rim);                                 // the plate, its worn rim
+                Ring(Rc * 0.30f, Rc * 0.40f, cast); Ring(Rc * 0.62f, Rc * 0.72f, cast);       // cast rings
+                for (int k = -2; k <= 2; k++)   // the cross-hatch, inside the outer cast ring
+                    foreach (bool across in new[] { false, true })
+                    {
+                        float o = k * Rc * 0.22f, half = Mathf.Sqrt(Mathf.Max(0f, (Rc * 0.6f) * (Rc * 0.6f) - o * o)), w = 0.018f; int b = cover.v.Count;
+                        Vector3 P2(float u, float v) { float qx = c.x + (across ? v : u), qz = c.y + (across ? u : v); return new Vector3(qx - c.x, Lift(qx, qz) + 0.001f, qz - c.y); }
+                        cover.v.Add(P2(-half, o - w)); cover.v.Add(P2(half, o - w)); cover.v.Add(P2(half, o + w)); cover.v.Add(P2(-half, o + w)); for (int j = 0; j < 4; j++) cover.col.Add(cast);
+                        cover.t.Add(b); cover.t.Add(b + 2); cover.t.Add(b + 1); cover.t.Add(b); cover.t.Add(b + 3); cover.t.Add(b + 2);
+                    }
                 for (int i = 0; i + 2 < cover.t.Count; i += 3)   // every face up
                 {
                     var n0 = Vector3.Cross(cover.v[cover.t[i + 1]] - cover.v[cover.t[i]], cover.v[cover.t[i + 2]] - cover.v[cover.t[i]]);
@@ -788,7 +800,8 @@ namespace ChastainRush
             }
             return new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = TS.Min(), AxisY = axis,
                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
-                                    TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)], ToSL = ToSL };
+                                    TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)], ToSL = ToSL,
+                                    Water = gl.pond >= 0 && gl.pond < Beds.Rings.Count ? Beds.Rings[gl.pond] : null };
         }
         static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, float[] TS, NetCells cells)
         {

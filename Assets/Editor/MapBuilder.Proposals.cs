@@ -26,7 +26,7 @@ namespace ChastainRush
 
         // Round 24 A3 (B3): and the new reverse-only Noonday Creek candidates (Tools/mapgen/creek_reverse_candidates.py), set "C", magenta;
         // the files are read in this order (the labels' cells follow it: make_proposal_labels.py)
-        static readonly string[] ProposalFiles = { "Data/proposals/round23_network.json", "Data/proposals/round24_creek_reverse.json" };
+        static readonly string[] ProposalFiles = { "Data/proposals/round23_network.json" };   // Round 25: RD and RE built (round24_creek_reverse.json gone)
         // the caps (and the label boards, make_proposal_labels.py) by kind
         static readonly Dictionary<string, Color> PropCaps = new Dictionary<string, Color>
         {

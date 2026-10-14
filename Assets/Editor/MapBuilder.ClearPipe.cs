@@ -112,6 +112,7 @@ namespace ChastainRush
                 if (s < f.C0 || s > f.C1 || Mathf.Abs(lat) > f.Rim(s) + 1f) return false;
                 float hi = float.MinValue; foreach (var (dx, dz) in new[] { (-hcx, -hcz), (hcx, -hcz), (hcx, hcz), (-hcx, hcz) }) hi = Mathf.Max(hi, Ground(g, q.x + dx, q.y + dz));
                 if (hi > f.Surface - 0.03f) return false;   // a bank: never holed (no flaps over the water, no gap under them)
+                if (f.Water != null) foreach (var (dx, dz) in new[] { (-hcx, -hcz), (hcx, -hcz), (hcx, hcz), (-hcx, hcz) }) if (!InPolygon(new Vector2(q.x + dx, q.y + dz), f.Water)) return false;
                 return f.BowlY(s, lat) < Ground(g, q.x, q.y) - 0.05f;
             });
         }
@@ -123,7 +124,7 @@ namespace ChastainRush
             var pool = p.Pool;
             return new ClearFrame { Id = p.J.id, R = p.R, C0 = p.C0, C1 = p.C1, Surface = p.Surface, T = p.J.clear.trench_half_m, AxisY = axisY, AY = s => axisY,
                                     W = (s, lat, y) => { var q = p.P(s, lat); return new Vector3(q.x, y, q.y); }, U3 = s => new Vector3(p.U.x, 0f, p.U.y), N3 = s => new Vector3(p.Nl.x, 0f, p.Nl.y),
-                                    ToSL = q => new Vector2(Vector2.Dot(q - p.A, p.U), Vector2.Dot(q - p.A, p.Nl)),
+                                    ToSL = q => new Vector2(Vector2.Dot(q - p.A, p.U), Vector2.Dot(q - p.A, p.Nl)), Water = pool,
                                     TS = pool == null ? (Func<float, float>)null : s => Mathf.Clamp(DistToEdges(p.P(s, 0f), pool) - 1f, p.R + 1.2f, 45f) };
         }
 
@@ -193,6 +194,10 @@ namespace ChastainRush
             // ends (over its last 10 m) the bowl closes in round the tube and rises to just under it, where the tube goes into the bed.
             // The terrain is holed only where the bowl is below it and under the water (CutBowlHoles)
             public Func<Vector2, Vector2> ToSL;   // world (x, z) to (s, lateral)
+            // Round 25 (BUG-002 at the Enclave pond, Dan: "Water cant act like this. Need to fix this so that he water flush with the ground"):
+            // the pond's water outline; a terrain hole only where its whole cell is inside it, so the water's surface always covers it (a low
+            // bank just outside the outline was holed, and the deep water showed from the bank past the water's edge)
+            public List<Vector2> Water;
             float Lend => Mathf.Min(10f, (C1 - C0) * 0.3f);
             public float E(float s) => Smooth01(Mathf.Min(s - C0, C1 - s) / Mathf.Max(0.5f, Lend));
             public float AYs(float s) => AY != null ? AY(s) : AxisY;
@@ -322,8 +327,14 @@ namespace ChastainRush
                 {
                     float s = p.C0 + len * i / ns, lat = Mathf.Lerp(-p.Rim(s) - 1.5f, p.Rim(s) + 1.5f, k / 8f); var q = W(s, lat, surf - 0.02f);
                     sv.Add(q); suv.Add(new Vector2(q.x, q.z));
-                    if (i > 0 && k > 0) { int a = i * 9 + k; st.Add(a - 10); st.Add(a - 1); st.Add(a - 9); st.Add(a - 9); st.Add(a - 1); st.Add(a); }
+                    if (i > 0 && k > 0)
+                    {
+                        int a = i * 9 + k; var mid = (sv[a - 10] + sv[a]) * 0.5f;
+                        if (p.Water != null && !InPolygon(new Vector2(mid.x, mid.z), p.Water)) continue;   // Round 25 (BUG-002): only under the water itself
+                        st.Add(a - 10); st.Add(a - 1); st.Add(a - 9); st.Add(a - 9); st.Add(a - 1); st.Add(a);
+                    }
                 }
+            if (st.Count == 0) { st.Add(0); st.Add(0); st.Add(0); }   // Round 25: none under the water (a degenerate triangle keeps the mesh valid)
             {   // facing down (seen only from below: from above the pool's own surface is drawn)
                 var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]);
                 if (n0.y > 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; }
@@ -340,6 +351,7 @@ namespace ChastainRush
             {
                 float s = p.C0 + 1.5f + (len - 3f) * (i + Hash01(i, 1261) * 0.8f) / shafts, lat = (Hash01(i, 1263) - 0.5f) * 2f * Mathf.Max(0.5f, Mathf.Min(p.Rim(s), 14f) - 2f);
                 var a = W(s, lat, surf - 0.05f); float depth = surf - p.Bottom(s), wdt = 0.7f + 1.1f * Hash01(i, 1265);
+                if (p.Water != null && (!InPolygon(new Vector2(a.x, a.z), p.Water) || DistToEdges(new Vector2(a.x, a.z), p.Water) < wdt * 1.5f + 1f)) continue;   // Round 25 (BUG-002): inside the water
                 var b = a + sun * (depth / -sun.y);
                 foreach (var side in new[] { p.N3(s), p.U3(s) })
                 {

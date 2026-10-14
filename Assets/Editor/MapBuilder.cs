@@ -98,6 +98,7 @@ namespace ChastainRush
             Net = null;
             var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
             var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
+            RaisePondBanks(terrain);                 // Round 25 (BUG-002): the Enclave pond's banks meet its water (MapBuilder.PondBank.cs)
             CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
             MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)

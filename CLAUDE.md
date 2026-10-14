@@ -296,7 +296,9 @@ sweep of every opening in each build (`MapBuilder.MouthSweep.cs`, `Assets/Genera
 BowlY); exit streams end at the apron or run into water; turtles, snakes, ducks and geese at the glass (`PipeAquarium`). Part B: debug
 menu "Pipe warp" (`Pipes/PipeWarp.cs`, `MapBuilder.NetworkWarp.cs`) and the pipe express (`Pipes/PipeExpress.cs`, network.json
 'express', debug menu "Pipe express: Boost / Warp / Off", free roam only). Exe profile at the glass: `-exeProfile <dir> -profileOnly glass
-[-aquariumPlain]`. Imported from Racer: nothing.
+[-aquariumPlain]`. Imported from Racer: nothing. Follow-ups: RD "Gully leap" and RE "Flood-plain run" built (reverse, official; `make_creek_track.py` 4d), RA and RC kept; R1's
+side-yard fences solid only in races (`RaceOnly.any` / `freeRoam`); the Enclave pond's banks raised to its water (`MapBuilder.PondBank.cs`);
+lighter manhole covers.
 
 **Round 24 Part B items 4 to 9 (see `TODO.md`, status there) are built and driven by Dan 2026-10-14 (Round 25 notes); was not yet driven
 by Dan:** every network mouth reworked (`MapBuilder.Pipes.cs`: exits and BF set into graded banks with short wingwall aprons, `Bank`;
@@ -567,8 +569,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-14_11-23-52-092_9ec9c7` (eight reports: manholes, mouths, blocked pipes, pond edge, floating stream; in
-TODO.md, Round 25).
+`2026-10-14_15-37-54-171_ea184c` (two reports: R1's fences breakable in free roam, the Enclave pond's bank; in TODO.md, Round 25 follow-ups).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
