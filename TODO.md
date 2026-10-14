@@ -2759,6 +2759,45 @@ A6. Rebuild the exe, commit, short report. No drive tests beyond A1's frame-rate
 - For Dan to check: a race on each track (frame rate), the creek-trail exit and the closed mouths in a Noonday race, the moved exits
   (trail, bridges, Joel Drive), the manhole lids, the minimap (J / B in free roam), the big map's edges.
 
+Part A3 (Dan, 2026-10-13 17:05). Before Part B:
+B0. NOT FIXED, THOUGH REPORTED FIXED. Dan (17:07), on commit 2736ea1 ("L_W8 launch and its pipe B18 taken out, the lot by
+   the Glen pond restored"): "it claimed this, but it is still there". The exe Dan drove was built after that commit
+   (14:16; scene rebuilt 14:15), so either the wrong pipe was removed or something else leaves the cut. The one Dan
+   reported (Round 24 item 4, BUG-002 of session 2026-10-13_10-00-51-441_3321a8) is at vehicle x 2901.45, z 853.92,
+   heading 43, by Chastain Glen Lane: an exit that leaves a house floating, with the Glen pond's real pipe entrance close
+   by; L_W8 was at about x 2760, z 828, 140 m away. Go to Dan's exact spot and heading in the built exe, take a picture,
+   find which pipe / exit / cut is there, remove or re-route it, restore the house and its ground, and prove it with a
+   before / after picture from that spot. Check the same way for anything else near the Glen pond that leaves a notch
+   or a floating fence (Round 24 item 4, BUG-001, x 2918.28, z 814.79). CLAUDE.md "claims need proof" applies.
+   THEN A SWEEP OF EVERY HOUSE (Dan, 17:09: "it should do a sweep and make sure that it isn't doing this in any other
+   house"): a script over every building on the map against every pipe, mouth, exit, manhole, cut and terrain change
+   the network made: any house (or garage, fence, deck, pool) whose footprint is over a cut, a hole, a lowered or raised
+   patch of ground, or left floating / buried. Fix every one found (re-route the pipe or move the cut, restore the
+   ground under the house), list them with their positions, and give a before / after picture of the worst three.
+   POOLS ARE AN EXCEPTION (Dan, 17:11: "i wouldn't be opposed to it going into a pool as long as it doesn't destroy the
+   pool. For example, it could make a pool deeper to accommodate it"): a pipe may come out in (or start from) a pool, as
+   a fun secret exit, if the pool stays a whole, normal-looking pool: deepen it as needed, the mouth set into its wall or
+   floor (tiled to match), the water still filling it, the deck, fence and coping intact, and a way to drive out (pool
+   steps or a ramp). Do not break a pool to make room; if one can't be done cleanly, route away from it.
+B1. FULLSCREEN. Dan: "allow game to release in fullscreen". The game Dan launches must start full screen at his
+   desktop's resolution every time. Likely cause: Unity saves the window mode and size (registry / PlayerPrefs) and the
+   minimized 1280 x 720 check runs left it windowed. Make the player build start full screen at native resolution
+   regardless of what a check run saved, and make check runs not save their window settings (or restore them). Alt+Enter
+   (or a settings toggle) may still switch to windowed for Dan if he wants.
+   PLUS A MENU OPTION (Dan, 2026-10-14 02:08: "can we add the option to open in full screen for this round"): a
+   Display row in the game's settings / pause menu, "Screen: Fullscreen / Windowed" (left / right, controller first),
+   applied at once and saved, so the game opens the way Dan last chose. Default Fullscreen at native resolution.
+B2. Shortcut #2's hint. Dan's session 2026-10-13_16-28-37-218_68722e, BUG-001 (vehicle x 3071.36, z 1065.54, heading 330,
+   on the run-up to house 1627's sliding glass door): "on the race, we need the tire marks here. Because it isnt really
+   obvious that you are supposed to go through the sliding glass door". Worn tire tracks in the grass leading from the
+   turn-off to the sliding glass door (the shortcut-hints rule).
+B3. Noonday Creek reverse shortcuts that are its OWN. Dan: "are the shortcuts on the trail the same both ways? ... I would
+   want the trails to feel different". They are the same places now (RA is P1 driven backwards, RC is N2 driven
+   backwards). Propose three or four NEW reverse-only shortcut candidates in different places from the forward ones
+   (P1, N2, N5), held to CLAUDE.md "Shortcut design" (harder than the trail, rewarding, not cutting too much, fun and
+   interesting, a hint at the turn-off), on markers in the world and on the map with an overhead, as in Round 21 Part C.
+   Build none yet; RA and RC stay until Dan picks.
+
 Part B, QUEUED for Dan's next session (do after Part A, in this order):
 4. Ugly entrances and exits, everywhere. Dan: "I don't want ugly entrances like the one I flagged. If there are others I
    want them reworked as well." His session 2026-10-13_10-00-51-441_3321a8:

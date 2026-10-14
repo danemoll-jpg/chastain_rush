@@ -535,7 +535,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-13_12-05-26-727_6c2b53` (frame rate, woods-trail exit border and race block; in TODO.md, Round 24 Part A2).
+`2026-10-13_16-28-37-218_68722e` (#2 tire marks; in TODO.md, Round 24 Part A3).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
