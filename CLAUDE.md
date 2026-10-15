@@ -163,6 +163,23 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
 - **Claims need proof.** Before saying done, look at the result where Dan
   stood.
 
+## Process (Dan, 2026-10-15, carried over from Woodstock Rush)
+- **Keep `TODO.md` small.** Code reads it every round, so it holds only the standing rules, the CURRENT round, the queued
+  rounds, the last three "Previous delivery" sections and the technical notes. Everything older lives in
+  `TODO-ARCHIVE.md`, word for word: search it (grep) when needed, never read it in full. When Dan marks a round reviewed,
+  move the oldest delivery to the end of the archive in the same commit. (Woodstock Rush: 878 KB down to 77 KB.)
+- **Local build by default.** A round ends with a fresh build Dan can play (`Builds/ChastainRush/`, the root launcher).
+  No public release, download / signature checks or updater changes unless the round says "publish" or Dan asks. The
+  safety checkpoint, commits and push stay the same. Cleanup stays, but short.
+- **Short results.** At most about 20 lines per round in `TODO.md`: one line per item (what changed plus the one check,
+  with links to evidence files), decisions made, and a "For Dan to check" list. No build narrative or tables of runs;
+  detail, if any, goes in that round's report folder (`Data/screenshots/round<N>/`).
+- **Specs only cover what Dan reported.** No "do this everywhere" or audit-the-whole-map additions he did not ask for
+  (this restates "World changes only where Dan pointed" above; it binds the planner writing `TODO.md` too).
+- **Targeted testing only:** one check per fix, where it changed. Dan drives the full courses himself.
+- **Batch small fixes into one round** rather than several, since the build and cleanup happen once per round.
+- Dan starts a fresh planning chat every few rounds: `TODO.md` carries the state, so it must always say where things are.
+
 ## Commands
 - Python deps for map generation: `pip install -r Tools/mapgen/requirements.txt`
 - Generate map data (bounds and settings in `Tools/mapgen/config.json`):
@@ -246,7 +263,7 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   j4|pipe|r3|ai|race|pics] [-r18Vehicles ids] -logFile <dir>\Player.log` (Checks/Round18Runner*.cs).
 
 ## Where things stand
-**Always check `TODO.md` for the current objective before starting work.**
+**Always check `TODO.md` for the current objective before starting work.** Rounds before the last three deliveries are in `TODO-ARCHIVE.md` (search it; "see `TODO.md`" below for an old round means there).
 
 Rounds 1 to 4 are built and driven by Dan: a 3983 m x 1918 m map from I-575
 to past Canton Road, 18 terrain tiles, bridges, `vertical_scale` 1.5, 56,000
@@ -639,7 +656,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-15_03-07-51-371_794f57` (one report: no manhole cover on Westminister Way; in TODO.md, Round 28).
+`2026-10-15_03-07-51-371_794f57` through BUG-004 (BUG-001 in Round 28; BUG-002 to 004 in TODO.md, Round 31).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
