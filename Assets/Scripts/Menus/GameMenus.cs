@@ -17,12 +17,12 @@ namespace ChastainRush
     // focus itself one row per press (RaceMenus.Navigation), the bright focus frame, the button prompts along the bottom
     // drawn by MenuGlyph, the release barrier of MenuInput, and the garage (GameMenus.Garage.cs). Racer's RaceFlow is
     // replaced by the small flow below; its campaign, shop, unlocks, police, split-screen, playlists, courses, radio,
-    // records boards, rider page, settings tabs and on-screen keyboard are left behind.
+    // records boards, rider page and on-screen keyboard are left behind (Round 27 brought the radio and the settings tabs).
     //   Start / Esc / Enter   open the menu while driving; on the menu's first page they close it again (resume)
     //   B / Esc               back one page (on the first page of the pause menu: resume)
-    // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, Screen, QUIT GAME), the pause menu (free driving: RESUME,
-    // RACE, GARAGE, DEBUG, Screen, QUIT GAME; in a race: RESUME, RESTART RACE, LEAVE RACE, QUIT GAME), race setup (laps, direction,
-    // opponents, difficulty, the opponents' vehicles, START RACE) and the garage. While a menu is up the game is paused.
+    // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, SETTINGS, QUIT GAME), the pause menu (free driving: RESUME,
+    // RACE, GARAGE, DEBUG, SETTINGS, QUIT GAME; in a race: RESUME, RESTART RACE, RACE SETUP, LEAVE RACE, DEBUG, SETTINGS, QUIT GAME), race setup (laps, direction,
+    // opponents, difficulty, the opponents' vehicles, START RACE), the garage and (Round 27) Racer's settings pages (GameMenus.Settings.cs). While a menu is up the game is paused.
     // Never in a check run (CheckRun.Active): checks drive straight away as before.
     public sealed partial class GameMenus : MonoBehaviour
     {
@@ -141,13 +141,14 @@ namespace ChastainRush
             }
             if (!open) return;
             if (back.WasPressedThisFrame()) { BackPage(); return; }
+            UpdateSettingsTabs();   // Round 27 (C1): Q / E, LB / RB
             UpdateNavigation();
             UpdateAdjust();
         }
         void LateUpdate()
         {
             if (!started) return;
-            UpdateShell(); UpdateGaragePreview();
+            UpdateShell(); UpdateGaragePreview(); UpdateBindingRows();
             if (open && modal == null && EventSystem.current && !EventSystem.current.currentSelectedGameObject)
             { var first = buttons.FirstOrDefault(b => b.gameObject.activeInHierarchy && b.interactable); if (first) EventSystem.current.SetSelectedGameObject(first.gameObject); }
         }
@@ -155,7 +156,7 @@ namespace ChastainRush
         {
             if (ownedUiActions) { ownedUiActions.Disable(); Destroy(ownedUiActions); }
             if (menuActions) { menuActions.Disable(); Destroy(menuActions); }
-            back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose();
+            back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput();
             if (submitReference) Destroy(submitReference);
             if (previewRoot) Destroy(previewRoot); if (previewCamera) Destroy(previewCamera.gameObject); if (previewTexture) { previewTexture.Release(); Destroy(previewTexture); }
         }
@@ -199,7 +200,7 @@ namespace ChastainRush
             content.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>().verticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
             scroll.viewport = viewport; scroll.content = content;
             details = Label("Details", content, 20, 0); details.gameObject.AddComponent<UnityEngine.UI.LayoutElement>();
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 32; i++)   // Round 27: 32 (the settings' Controls page has 26 rows)
             {
                 var rect = Rect("Action " + i, content);
                 rect.gameObject.AddComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 44;
@@ -223,6 +224,7 @@ namespace ChastainRush
             }
             BuildFooter();
             BuildGarage();
+            BuildSettingsInput();   // Round 27 (C1)
             started = true;
         }
 
@@ -365,6 +367,8 @@ namespace ChastainRush
         void Render()
         {
             var stage = race ? race.State : RaceController.Stage.Free;
+            ClearBindingRows();   // Round 27: the Controls page's glyphs
+            if (page == "music" || page == "library" || SettingsPage) { RenderSettings(); return; }   // Round 27 (C1)
             switch (page)
             {
                 case "race": RenderRaceSetup(); return;
@@ -378,7 +382,7 @@ namespace ChastainRush
                 Row(0, "race", "RACE", () => Navigate("race"));
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                ScreenRow(3);
+                Row(3, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
                 Row(4, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
@@ -389,7 +393,7 @@ namespace ChastainRush
                 Row(1, "race", "RACE", () => Navigate("race"));
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
                 Row(3, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-                ScreenRow(4);
+                Row(4, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
                 Row(5, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
@@ -401,11 +405,9 @@ namespace ChastainRush
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-            ScreenRow(n++);
+            Row(n++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
             Row(n++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
         }
-        // Round 24 A3 (B1): full screen or windowed, left / right, applied at once and saved (ScreenSetting)
-        void ScreenRow(int index) => Step(index, "screen", "Screen:   " + (ScreenSetting.Fullscreen ? "Fullscreen" : "Windowed"), d => { ScreenSetting.Set(!ScreenSetting.Fullscreen); Show(); });
 
         // ---------------------------------------------------------------- Round 17: the debug menu, controller first
         // Reached from the pause menu's DEBUG row, from Start while the debug panel is up, or from F6 / \ (DeveloperHud).

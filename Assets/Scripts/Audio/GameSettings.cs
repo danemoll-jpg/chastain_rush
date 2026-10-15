@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Racer
 {
-    // Chastain Rush, Round 27 (B1): Racer's settings (RacerSave.Options, the settings part only: the volumes and the radio's
+    // Chastain Rush, Round 27 (B1, C1): Racer's settings (RacerSave.Options, the settings part only: the volumes, VSync and the frame cap, and the radio's
     // choices; Racer keeps records and other options in the same file, this game keeps those in its own files), saved as Racer
     // does: settings.json written with AtomicSave (below), loaded with FromJsonOverwrite into the defaults so a missing field
     // keeps its default, all defaults if the version or a volume is out of range. Beside the race records (persistentDataPath).
@@ -18,6 +18,9 @@ namespace Racer
             public int version = 1;
             public float master = .8f, ambience = 1, feedback = .65f, vehicle = .75f;
             public float music = .6f;
+            public float effects = 1;   // Chastain Rush, Round 27 (C1): Dan's "effects" (SoundMix.Kind.Effects)
+            public int frameLimit = 60;   // Racer's display settings (Round 27, C1)
+            public bool vsync = true;
             public bool radioOn = true;
             public string musicFolder = "";
             public string musicSource = "";
@@ -38,7 +41,7 @@ namespace Racer
             {
                 if (File.Exists(FilePath)) JsonUtility.FromJsonOverwrite(File.ReadAllText(FilePath), current);
                 bool bad(float v) => float.IsNaN(v) || v < 0 || v > 1;
-                if (current.version != 1 || bad(current.master) || bad(current.ambience) || bad(current.feedback) || bad(current.vehicle) || bad(current.music)) current = new Options();
+                if (current.version != 1 || bad(current.master) || bad(current.ambience) || bad(current.feedback) || bad(current.vehicle) || bad(current.music) || bad(current.effects) || (current.frameLimit != 30 && current.frameLimit != 60 && current.frameLimit != 120)) current = new Options();
             }
             catch (Exception e) { Debug.LogWarning("[Settings] unreadable, defaults used: " + e.Message); current = new Options(); }
         }
@@ -52,7 +55,10 @@ namespace Racer
 
         public static void ApplySettings()
         {
-            if (!ChastainRush.CheckRun.Active) AudioListener.volume = Settings.master;   // a check run stays muted (CheckRun)
+            if (ChastainRush.CheckRun.Active) return;   // a check run stays muted (CheckRun) and keeps its own frame pacing
+            AudioListener.volume = Settings.master;
+            QualitySettings.vSyncCount = Settings.vsync ? 1 : 0;   // Racer's ApplySettings
+            Application.targetFrameRate = Settings.frameLimit;
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

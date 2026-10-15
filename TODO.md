@@ -2732,6 +2732,29 @@ D4. Remove the race's proposal markers once it is built (all proposal markers ar
 D5. Check by script: the AI completes the race, a switch opens its gate, frame rate in a full race in the hub. Dan
    drives it.
 
+**STATUS of Round 27 Part C (Claude, 2026-10-15): C1 DONE, exe rebuilt (2026-10-15 00:39), committed; checked in the exe by script (muted), not yet
+driven by Dan.**
+- C1 DONE (`Menus/GameMenus.Settings.cs`, `Audio/SoundMix.cs`, `ScreenSetting.cs`). Racer's settings pages in the game menu: a SETTINGS row
+  on the title, the free-roam pause menu and the race pause menu (it replaces the Screen row, which moved to Display). As Racer: the tabs
+  are the first rows of every settings page (the one shown ticked), Q / E or LB / RB step through them, every value is  ‹ value ›  with
+  left / right, applied and saved at once, B goes back. AUDIO: Master (AudioListener), Vehicle (your engine and the AI's), Effects (new,
+  Dan's "effects": breaking things, the hydrants' jets, the pipe express, the trampoline, the pump blast), Ambience (geese, water, the pipes'
+  streams and hum, splashes), Music (the radio), and Racer's MUSIC page (station / Off, previous, next, music volume) and MUSIC LIBRARY page
+  (Bundled or Custom, choose a folder, rescan, cancel, open the folder, details). Racer's "Race / UI" volume is left out (this game has no
+  race or menu tones); Racer's GAMEPLAY tab too (hints, split screen, name tags, weather grip, police: none here). DISPLAY: Screen (full
+  screen / windowed), Resolution (the desktop's own, or a smaller size of the display; full screen draws at it and fills the screen), and
+  Racer's VSync (on) and Frame cap (30 / 60 / 120, with VSync off). CONTROLS: what every button does, read only, the glyph for the device in
+  use (driving, menus, pause, camera, minimap, map, radio, bug capture). Saved as Racer: `settings.json` beside the race records (volumes,
+  VSync, frame cap, the radio); the screen in `display.json` as before. A check run never applies them (it stays muted, its own pacing) and
+  keeps its own copy in its folder. Check (`ChastainRush.exe -exeRound27 <dir> -r27Only settings [-radio]`, `Checks/Round27Runner.cs`, a
+  virtual gamepad): 14 of 14 (title > SETTINGS, Master +10 % saved, RB / LB through the tabs, the Music page, back out); pictures in
+  `Data/screenshots/round27/c1_settings_*.png`.
+- Imported from Racer in Part C: RaceMenus.Core's RenderSettings / RenderControls and RaceMenus.Shell's tab switching (rewritten into
+  GameMenus.Settings), RacerSave's display fields (frame cap, VSync). Left behind: the GAMEPLAY tab, Race / UI, lightning, scenery,
+  the in-game folder browser page (the Windows folder picker is used, as Racer's Choose Folder does).
+- For Dan to check: the volumes by ear (Master is Racer's 80 % by default, so the game starts a little quieter than before); the Display
+  page at 3840 x 2160.
+
 **STATUS of Round 27 Part B (Claude, 2026-10-15): B1 and B2 DONE, exe rebuilt (2026-10-15 00:31), committed; checked in the exe by script (muted),
 not yet driven or heard by Dan.**
 - B1 DONE. Racer's radio (`Audio/LocalRadio.cs`, `MusicCollection.cs`, `AudioCeiling.cs`, the tag reader `Assets/Plugins/LocalRadio/`

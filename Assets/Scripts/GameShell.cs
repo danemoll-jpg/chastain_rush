@@ -46,6 +46,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound13") { var r = go.AddComponent<Round13Runner>(); r.outputDir = args[i + 1]; }   // Round 13: the vehicles (item 9)
                 if (args[i] == "-exeRound15") { var r = go.AddComponent<Round15Runner>(); r.outputDir = args[i + 1]; }   // Round 15: water, then the AI drivers
                 if (args[i] == "-exeRound16") { var r = go.AddComponent<Round16Runner>(); r.outputDir = args[i + 1]; }   // Round 16: the menus with a virtual gamepad
+                if (args[i] == "-exeRound27") { var r = go.AddComponent<Round27Runner>(); r.outputDir = args[i + 1]; }   // Round 27
                 if (args[i] == "-exeRound17") { var r = go.AddComponent<Round17Runner>(); r.outputDir = args[i + 1]; }   // Round 17: Part A, the debug menu with a virtual gamepad
                 if (args[i] == "-exeRound14") { var r = go.AddComponent<Round14Runner>(); r.outputDir = args[i + 1]; }   // Round 14: what slows the vehicles (items 2 and 5)
                 if (args[i] == "-exeRound18") { var r = go.AddComponent<Round18Runner>(); r.outputDir = args[i + 1]; }   // Round 18: items 3 to 9 (the creek trail, P1, R1, R3, the race)

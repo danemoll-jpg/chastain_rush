@@ -291,6 +291,11 @@ drivers, 15 menus and the garage.
 B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
 underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
 
+**Round 27 Part C (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's settings
+pages (`Menus/GameMenus.Settings.cs`: AUDIO, DISPLAY, CONTROLS; Q / E or LB / RB step the tabs; the Screen row moved to Display) with the
+volumes applied through `Audio/SoundMix.cs` (Effects and Ambience; Vehicle, Music and Master as Racer). Check: `ChastainRush.exe
+-exeRound27 <dir> [-r27Only settings] [-radio] -logFile <dir>\Player.log` (`Checks/Round27Runner.cs`).
+
 **Round 27 Part B (see `TODO.md`, status there) is built and checked in the exe by script, not yet heard by Dan:** Racer's radio
 (`Audio/LocalRadio.cs`; stations are the folders of `Music/` beside the exe; D-pad down / N station, right / . next, left / , previous,
 up / I what is playing) with its settings in `Audio/GameSettings.cs` (`settings.json` beside the records); the music is committed in

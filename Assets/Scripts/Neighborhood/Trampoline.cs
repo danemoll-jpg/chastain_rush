@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             if (mat) matRest = mat.localPosition;
             voice = gameObject.AddComponent<AudioSource>();
-            voice.clip = Boing(); voice.spatialBlend = 1f; voice.minDistance = 8f; voice.maxDistance = 120f; voice.playOnAwake = false; voice.volume = 0.9f;
+            voice.clip = Boing(); voice.spatialBlend = 1f; voice.minDistance = 8f; voice.maxDistance = 120f; voice.playOnAwake = false; Racer.SoundMix.Track(voice, 0.9f, Racer.SoundMix.Kind.Effects);   // Round 27: the Effects volume
         }
 
         // a springy "boing": a tone that bends up then down with a fast vibrato, dying away (synthesized, as the goose's honk)

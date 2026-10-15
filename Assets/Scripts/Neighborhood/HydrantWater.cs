@@ -46,7 +46,7 @@ namespace ChastainRush
             // Round 15, item 3: the rush of water while it runs, in 3D at the jet; at most RushVoices at once (the newest)
             var rush = go.AddComponent<AudioSource>();
             rush.clip = BreakSounds.Rush(); rush.loop = true; rush.spatialBlend = 1f; rush.dopplerLevel = 0f; rush.rolloffMode = AudioRolloffMode.Linear;
-            rush.minDistance = 6f; rush.maxDistance = 60f; rush.volume = 0.45f; rush.priority = 90;
+            rush.minDistance = 6f; rush.maxDistance = 60f; Racer.SoundMix.Track(rush, 0.45f, Racer.SoundMix.Kind.Effects); rush.priority = 90;   // Round 27: the Effects volume
             rush.time = Random.Range(0f, rush.clip.length * 0.9f); rush.Play();
             int playing = 0;
             for (int i = jets.Count - 1; i >= 0; i--) { var a = jets[i] ? jets[i].GetComponent<AudioSource>() : null; if (a && a.isPlaying && ++playing >= RushVoices) a.Stop(); }

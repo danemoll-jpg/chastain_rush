@@ -25,7 +25,7 @@ namespace ChastainRush
             var sgo = new GameObject("Pipe stream trickle"); sgo.transform.SetParent(transform, false);   // its own object: it moves to the listener's nearest point (on the ribbon's own, it dragged the ribbon away)
             source = sgo.AddComponent<AudioSource>();
             source.clip = clip ? clip : (clip = Trickle());
-            source.loop = true; source.spatialBlend = 1f; source.rolloffMode = AudioRolloffMode.Linear; source.minDistance = 2f; source.maxDistance = 22f; source.volume = 0.32f; source.dopplerLevel = 0f;
+            source.loop = true; source.spatialBlend = 1f; source.rolloffMode = AudioRolloffMode.Linear; source.minDistance = 2f; source.maxDistance = 22f; Racer.SoundMix.Track(source, 0.32f, Racer.SoundMix.Kind.Ambience);   /* Round 27: the Ambience volume */ source.dopplerLevel = 0f;
             source.Play();
             var go = new GameObject("Pipe stream splashes"); go.transform.SetParent(transform, false);
             drops = go.AddComponent<ParticleSystem>();

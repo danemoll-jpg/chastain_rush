@@ -53,7 +53,7 @@ namespace ChastainRush
             // the bang
             var bang = go.AddComponent<AudioSource>();
             bang.clip = BreakSounds.Boom(); bang.spatialBlend = 0.85f; bang.dopplerLevel = 0f; bang.rolloffMode = AudioRolloffMode.Linear;
-            bang.minDistance = 20f; bang.maxDistance = 300f; bang.volume = 1f; bang.priority = 40; bang.Play();
+            bang.minDistance = 20f; bang.maxDistance = 300f; Racer.SoundMix.Track(bang, 1f, Racer.SoundMix.Kind.Effects);   /* Round 27: the Effects volume */ bang.priority = 40; bang.Play();
             Destroy(go, 16f);
             blasts.Add(go); Count++;
         }

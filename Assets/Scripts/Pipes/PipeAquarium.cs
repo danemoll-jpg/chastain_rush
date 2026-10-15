@@ -156,7 +156,7 @@ namespace ChastainRush
             // the sound: in the clear stretch (inside the glass)
             bool inTube = camS > 0.01f && camS < len - 0.01f && camOff < radius + 0.2f;
             inside = Mathf.MoveTowards(inside, inTube ? 1f : 0f, dt * 1.6f);
-            if (hum) hum.volume = 0.22f * inside;
+            if (hum) hum.volume = 0.22f * inside * Racer.SoundMix.Gain(Racer.SoundMix.Kind.Ambience);   // Round 27: the Ambience volume
             if (!lowPass) { var l = FindAnyObjectByType<AudioListener>(); if (l) lowPass = l.GetComponent<AudioLowPassFilter>() ?? l.gameObject.AddComponent<AudioLowPassFilter>(); }
             // Round 23 follow-ups: several aquariums (P1's and the network's glass stretches): the one you are in owns the filter
             if (lowPass && (inside > 0.001f || lowOwner == this)) { lowOwner = inside > 0.001f ? this : null; lowPass.cutoffFrequency = Mathf.Lerp(22000f, 1100f, inside); lowPass.enabled = inside > 0.001f; }

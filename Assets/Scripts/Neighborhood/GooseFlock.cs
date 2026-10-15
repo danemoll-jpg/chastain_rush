@@ -94,7 +94,7 @@ namespace ChastainRush
                 {
                     var go = new GameObject("honk " + i); go.transform.SetParent(transform, false);
                     var a = go.AddComponent<AudioSource>();
-                    a.spatialBlend = 1f; a.minDistance = 6f; a.maxDistance = 90f; a.rolloffMode = AudioRolloffMode.Linear; a.volume = 0.8f; a.playOnAwake = false;
+                    a.spatialBlend = 1f; a.minDistance = 6f; a.maxDistance = 90f; a.rolloffMode = AudioRolloffMode.Linear; Racer.SoundMix.Track(a, 0.8f, Racer.SoundMix.Kind.Ambience); a.playOnAwake = false;   // Round 27: the Ambience volume
                     voices[i] = a;
                 }
             }

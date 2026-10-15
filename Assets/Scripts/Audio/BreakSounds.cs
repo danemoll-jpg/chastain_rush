@@ -152,7 +152,7 @@ namespace ChastainRush
             if (slot < 0) { slot = Events % voices.Length; voices[slot].Stop(); }   // the bound: the oldest-numbered voice gives way
             var source = voices[slot]; source.transform.position = at;
             source.clip = ClipFor(s); source.pitch = pitch * (.94f + (Events % 5) * .035f);
-            gains[slot] = gain; source.volume = gain; source.Play();
+            gains[slot] = gain; source.volume = gain * Racer.SoundMix.Gain(Racer.SoundMix.Kind.Effects); source.Play();   // Round 27: the Effects volume
         }
 
         void OnDestroy() { if (instance == this) instance = null; }

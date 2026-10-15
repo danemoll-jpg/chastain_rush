@@ -49,7 +49,7 @@ namespace ChastainRush
         {
             black = new Texture2D(1, 1); black.SetPixel(0, 0, Color.black); black.Apply();
             rush = gameObject.AddComponent<AudioSource>(); rush.clip = Rush(); rush.loop = true; rush.spatialBlend = 0f; rush.volume = 0f; rush.playOnAwake = false;
-            whoosh = gameObject.AddComponent<AudioSource>(); whoosh.clip = Whoosh(); whoosh.spatialBlend = 0f; whoosh.volume = 0.8f; whoosh.playOnAwake = false;
+            whoosh = gameObject.AddComponent<AudioSource>(); whoosh.clip = Whoosh(); whoosh.spatialBlend = 0f; Racer.SoundMix.Track(whoosh, 0.8f, Racer.SoundMix.Kind.Effects); whoosh.playOnAwake = false;   /* Round 27: the Effects volume */
         }
 
         static bool Allowed => Setting != Mode.Off && (RaceController.Instance == null || RaceController.Instance.State == RaceController.Stage.Free);
@@ -129,7 +129,7 @@ namespace ChastainRush
             var p = Point(s); var t = (Point(Mathf.Min(len, s + w)) - Point(Mathf.Max(0f, s - w))).normalized;
             var pos = p + Vector3.up * h0; var rot = Quaternion.LookRotation(t, Vector3.up);
             car.Body.MovePosition(pos); car.Body.MoveRotation(rot); lastPos = pos;
-            if (rush) rush.volume = Mathf.MoveTowards(rush.volume, 0.55f * Mathf.Clamp01(v / BoostSpeed), dt * 2f);
+            if (rush) rush.volume = Mathf.MoveTowards(rush.volume, 0.55f * Mathf.Clamp01(v / BoostSpeed) * Racer.SoundMix.Gain(Racer.SoundMix.Kind.Effects), dt * 2f);   // Round 27: the Effects volume
             LastRideTime = Time.time - rideStart;
             if (s >= len - 1e-3f) Release();
         }

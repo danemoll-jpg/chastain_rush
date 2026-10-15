@@ -129,7 +129,7 @@ namespace Racer
             // Frozen water: no ripples or splash sounds (the vehicle is on the ice).
             float wet=ShallowWater.Frozen?0:car.WaterImmersion;
             if((wet>.08f)!=(previous>.08f) && Time.time>nextSound)
-            { sound.volume=.12f; sound.pitch=wet>previous?1:.8f;if(wet>previous)EntrySounds++;else ExitSounds++;sound.Play();nextSound=Time.time+.25f; }
+            { sound.volume=.12f*SoundMix.Gain(SoundMix.Kind.Ambience);   /* Chastain Rush, Round 27: Racer's ambience volume */ sound.pitch=wet>previous?1:.8f;if(wet>previous)EntrySounds++;else ExitSounds++;sound.Play();nextSound=Time.time+.25f; }
             if(wet>.08f && car.Body.linearVelocity.magnitude>.4f && Time.time>nextRipple)
             {born[index]=Time.time;centers[index]=new Vector3(transform.position.x,car.WaterSurface+.035f,transform.position.z);index=(index+1)%rings.Length;nextRipple=Time.time+.22f;}
             for(int i=0;i<rings.Length;i++)

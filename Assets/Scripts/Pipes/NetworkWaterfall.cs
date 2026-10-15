@@ -18,7 +18,7 @@ namespace ChastainRush
         {
             var a = new GameObject("Waterfall roar"); a.transform.SetParent(transform, false);
             roar = a.AddComponent<AudioSource>(); roar.clip = clip ? clip : (clip = Roar());
-            roar.loop = true; roar.spatialBlend = 1f; roar.rolloffMode = AudioRolloffMode.Linear; roar.minDistance = 4f; roar.maxDistance = 70f; roar.volume = 0.55f; roar.dopplerLevel = 0f; roar.Play();
+            roar.loop = true; roar.spatialBlend = 1f; roar.rolloffMode = AudioRolloffMode.Linear; roar.minDistance = 4f; roar.maxDistance = 70f; Racer.SoundMix.Track(roar, 0.55f, Racer.SoundMix.Kind.Ambience);   /* Round 27: the Ambience volume */ roar.dopplerLevel = 0f; roar.Play();
             var m = new GameObject("Waterfall mist"); m.transform.SetParent(transform, false);
             mist = m.AddComponent<ParticleSystem>(); mist.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             var main = mist.main; main.loop = false; main.playOnAwake = false; main.startLifetime = 1.4f; main.startSize = 0.6f; main.gravityModifier = -0.05f; main.maxParticles = 300; main.simulationSpace = ParticleSystemSimulationSpace.World;
