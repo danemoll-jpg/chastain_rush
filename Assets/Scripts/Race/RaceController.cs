@@ -196,7 +196,7 @@ namespace ChastainRush
             LoadRoute(); // picks up a changed direction
             RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
-            RaceClock = 0f; PlayerFinishedAt = 0f; parkSlots = 0;
+            RaceClock = 0f; PlayerFinishedAt = 0f; winnerCelebrated = false; parkSlots = 0;
             NewBestLap = NewBestTotal = false;
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f;
@@ -420,6 +420,7 @@ namespace ChastainRush
 
         static string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
 
+        bool winnerCelebrated;   // Round 28 (C2)
         int parkSlots;           // Round 28: finished AI cars' places on the route's parking line (RoadDriver.DriveToPark)
         public int TakeParkSlot() => parkSlots++;
         void Finish(RaceEntrant e, float at)
@@ -427,6 +428,16 @@ namespace ChastainRush
             e.Finished = true; e.FinalTotal = at - e.StartAt + e.PenaltyTotal;   // its clock plus every penalty
             e.FinishedAt = at + e.PenaltyTotal;
             Log(e, $"FINISH total {e.FinalTotal:0.000} (clock {e.FinalTotal - e.PenaltyTotal:0.000} + penalties {e.PenaltyTotal:0.0}); laps {string.Join(" ", e.LapTimes.ConvertAll(x => x.ToString("0.000")))}; place {Ordered().IndexOf(e) + 1}");
+            // Round 28 (C2, Dan: "add the waved fist and celebrations from Woodstock Rush"): Racer's RaceDirector rule: when the first racer
+            // finishes a race with others in it, the winner (the best total among those finished) celebrates (both fists up, pumped; in a
+            // car a fist out of the window)
+            if (!winnerCelebrated && Entrants.Count > 1)
+            {
+                winnerCelebrated = true;
+                RaceEntrant w = null; foreach (var x in Entrants) if (x.Finished && x.Car && (w == null || x.FinalTotal < w.FinalTotal)) w = x;
+                var g = w != null ? w.Car.GetComponent<RiderGestures>() : null;
+                if (g && g.Celebrate()) Log(w, "celebrates the win");
+            }
             if (!e.IsPlayer) return;
             State = Stage.Finished; PlayerFinishedAt = RaceClock;
             float total = e.FinalTotal;

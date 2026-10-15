@@ -88,13 +88,14 @@ namespace Racer
         public float Age => Time.time - started;
         public bool HasArms => Arms();
         public static int AiWaves;
-        ArcadeVehicle car; VehicleConfiguration config; RiderArms arms; Transform armsVisual;   // Chastain Rush: no RaceDirector / RoadDriver
+        ArcadeVehicle car; VehicleConfiguration config; RoadDriver driver; RiderArms arms; Transform armsVisual;   // Chastain Rush: no RaceDirector (the winner's celebration: RaceController.Finish)
         float started, cooldownUntil, pendingAt = -1, aimYaw;
         Transform offender, lastOffender; float lastHit = -100; bool wasWiped;
         System.Random random;
 
         void Awake() { car = GetComponent<ArcadeVehicle>(); config = GetComponent<VehicleConfiguration>(); random = new System.Random(name.GetHashCode() ^ (int)(transform.position.x * 1000)); }
-        bool Ai => false;   // Chastain Rush: no AI drivers yet (Round 14)
+        // Chastain Rush, Round 28 (C2): Racer's rule again now that there are AI drivers (Round 15): an AI rider shakes a fist at whoever ran into it
+        bool Ai => (driver || (driver = GetComponent<RoadDriver>())) && driver.enabled;
         RiderArms Arms()
         {
             var visual = transform.Find("Vehicle visual");
@@ -157,8 +158,10 @@ namespace Racer
             var a = Arms(); if (!a) return;
             // first person on this vehicle (the player's view or the Trailer Mode first-person shot)
             // 0.94 Part B: the view of this vehicle (in split-screen each player's own)
-            // Chastain Rush: chase camera only (no CameraViews), so never seen from the rider's eyes
-            a.SeenFromEyes = false;
+            // Chastain Rush, Round 28 (C2): Racer's rule again now that there are views (CameraViews, Round 24): first person on this
+            // vehicle aims the wave into that view, so the player sees their own fist
+            var cam = Camera.main; var views = cam ? cam.GetComponent<CameraViews>() : null; var chase = cam ? cam.GetComponent<ChaseCamera>() : null;
+            a.SeenFromEyes = views && chase && chase.target == transform && views.Current == CameraViews.View.FirstPerson;
             bool holds = Steering(a);
             if (Current == Kind.None) { if (holds) { Weight = 0; Hold(a, 0); Hold(a, 1); } else if (Weight > 0) { Weight = 0; a.Rest(0); a.Rest(1); } return; }
             float t = Time.time - started, length = Current == Kind.Wave ? WaveSeconds : CelebrateSeconds;

@@ -1,0 +1,120 @@
+Moto hair Short: split errors 0
+Moto hair Medium: split errors 0
+Moto hair Long: split errors 0
+Moto hair Ponytail: split errors 0
+Moto hair Mohawk: split errors 0
+Moto hair CrewCut: split errors 0
+Moto hair Spiky: split errors 0
+Moto hair Buzz: split errors 0
+Moto hair Curly: split errors 0
+Moto hat FlatCap: head points above band 90, outside the hat 0
+Moto hat Baseball: head points above band 90, outside the hat 0
+Moto hat Beanie: head points above band 90, outside the hat 0
+Moto hat Cowboy: head points above band 90, outside the hat 0
+Atv hair Short: split errors 0
+Atv hair Medium: split errors 0
+Atv hair Long: split errors 0
+Atv hair Ponytail: split errors 0
+Atv hair Mohawk: split errors 0
+Atv hair CrewCut: split errors 0
+Atv hair Spiky: split errors 0
+Atv hair Buzz: split errors 0
+Atv hair Curly: split errors 0
+Atv hat FlatCap: head points above band 90, outside the hat 0
+Atv hat Baseball: head points above band 90, outside the hat 0
+Atv hat Beanie: head points above band 90, outside the hat 0
+Atv hat Cowboy: head points above band 90, outside the hat 0
+Car hair Short: split errors 0
+Car hair Medium: split errors 0
+Car hair Long: split errors 0
+Car hair Ponytail: split errors 0
+Car hair Mohawk: split errors 0
+Car hair CrewCut: split errors 0
+Car hair Spiky: split errors 0
+Car hair Buzz: split errors 0
+Car hair Curly: split errors 0
+Car hat FlatCap: head points above band 90, outside the hat 0
+Car hat Baseball: head points above band 90, outside the hat 0
+Car hat Beanie: head points above band 90, outside the hat 0
+Car hat Cowboy: head points above band 90, outside the hat 0
+Dirt hair Short: split errors 0
+Dirt hair Medium: split errors 0
+Dirt hair Long: split errors 0
+Dirt hair Ponytail: split errors 0
+Dirt hair Mohawk: split errors 0
+Dirt hair CrewCut: split errors 0
+Dirt hair Spiky: split errors 0
+Dirt hair Buzz: split errors 0
+Dirt hair Curly: split errors 0
+Dirt hat FlatCap: head points above band 90, outside the hat 0
+Dirt hat Baseball: head points above band 90, outside the hat 0
+Dirt hat Beanie: head points above band 90, outside the hat 0
+Dirt hat Cowboy: head points above band 90, outside the hat 0
+Cruiser hair Short: split errors 0
+Cruiser hair Medium: split errors 0
+Cruiser hair Long: split errors 0
+Cruiser hair Ponytail: split errors 0
+Cruiser hair Mohawk: split errors 0
+Cruiser hair CrewCut: split errors 0
+Cruiser hair Spiky: split errors 0
+Cruiser hair Buzz: split errors 0
+Cruiser hair Curly: split errors 0
+Cruiser hat FlatCap: head points above band 90, outside the hat 0
+Cruiser hat Baseball: head points above band 90, outside the hat 0
+Cruiser hat Beanie: head points above band 90, outside the hat 0
+Cruiser hat Cowboy: head points above band 90, outside the hat 0
+Stand hair Short: split errors 0
+Stand hair Medium: split errors 0
+Stand hair Long: split errors 0
+Stand hair Ponytail: split errors 0
+Stand hair Mohawk: split errors 0
+Stand hair CrewCut: split errors 0
+Stand hair Spiky: split errors 0
+Stand hair Buzz: split errors 0
+Stand hair Curly: split errors 0
+Stand hat FlatCap: head points above band 90, outside the hat 0
+Stand hat Baseball: head points above band 90, outside the hat 0
+Stand hat Beanie: head points above band 90, outside the hat 0
+Stand hat Cowboy: head points above band 90, outside the hat 0
+Sit hair Short: split errors 0
+Sit hair Medium: split errors 0
+Sit hair Long: split errors 0
+Sit hair Ponytail: split errors 0
+Sit hair Mohawk: split errors 0
+Sit hair CrewCut: split errors 0
+Sit hair Spiky: split errors 0
+Sit hair Buzz: split errors 0
+Sit hair Curly: split errors 0
+Sit hat FlatCap: head points above band 90, outside the hat 0
+Sit hat Baseball: head points above band 90, outside the hat 0
+Sit hat Beanie: head points above band 90, outside the hat 0
+Sit hat Cowboy: head points above band 90, outside the hat 0
+Sled hair Short: split errors 0
+Sled hair Medium: split errors 0
+Sled hair Long: split errors 0
+Sled hair Ponytail: split errors 0
+Sled hair Mohawk: split errors 0
+Sled hair CrewCut: split errors 0
+Sled hair Spiky: split errors 0
+Sled hair Buzz: split errors 0
+Sled hair Curly: split errors 0
+Sled hat FlatCap: head points above band 90, outside the hat 0
+Sled hat Baseball: head points above band 90, outside the hat 0
+Sled hat Beanie: head points above band 90, outside the hat 0
+Sled hat Cowboy: head points above band 90, outside the hat 0
+Moto Man: worst-case rider triangles 14748
+Moto Woman: worst-case rider triangles 15172
+Atv Man: worst-case rider triangles 14748
+Atv Woman: worst-case rider triangles 15172
+Car Man: worst-case rider triangles 14748
+Car Woman: worst-case rider triangles 15172
+Dirt Man: worst-case rider triangles 14748
+Dirt Woman: worst-case rider triangles 15172
+Cruiser Man: worst-case rider triangles 14748
+Cruiser Woman: worst-case rider triangles 15172
+Stand Man: worst-case rider triangles 14748
+Stand Woman: worst-case rider triangles 15172
+Sit Man: worst-case rider triangles 14748
+Sit Woman: worst-case rider triangles 15172
+Sled Man: worst-case rider triangles 14748
+Sled Woman: worst-case rider triangles 15172

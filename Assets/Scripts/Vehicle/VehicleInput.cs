@@ -73,6 +73,10 @@ namespace Racer
             Look = look.ReadValue<Vector2>();
             var mouse = Device == null || Device is Keyboard ? Mouse.current : null; MouseLook = mouse != null && mouse.rightButton.isPressed; MouseDelta = MouseLook ? mouse.delta.ReadValue() : Vector2.zero;
             resetRequested |= reset.WasPressedThisFrame(); viewRequested |= view.WasPressedThisFrame();
+            // Chastain Rush, Round 28 (C2): the fist wave was bound but never asked for (Racer's VehicleInput does it here): LB / F, not
+            // while a menu, the map or the debug menu has the controls
+            if (fist.WasPressedThisFrame() && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)
+                GetComponent<RiderGestures>()?.Wave();
         }
         public bool ConsumeReset() { bool result = resetRequested; resetRequested = false; return result; }
         public bool ConsumeView() { bool result = viewRequested; viewRequested = false; return result; }

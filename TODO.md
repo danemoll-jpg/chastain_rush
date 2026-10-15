@@ -2729,6 +2729,33 @@ C3. HAIR: "can we fix some of the hair styles? Especially short and medium don't
    all in the garage's hair list, all working with every hat (a hat hides what it should) and every hair color, and the
    AI riders' random looks using them. Pictures of each hair style from front, side and back, with and without a hat.
 
+**STATUS of Round 28 Part C (Claude, 2026-10-15): C1, C2, C3 DONE, exe rebuilt (2026-10-15 07:48), committed; checked in the exe by script (muted,
+minimized) and in Blender renders, not yet seen by Dan.**
+- The rider is now made in this repo: Racer's `Tools/Blender/rider.py` and `kit.py` copied (Racer unchanged) and changed here; `blender --background
+  --factory-startup --python Tools/Blender/rider.py` (Blender 3.6 at `F:\blender\blender.exe`, Racer's) writes `Assets/Resources/VehicleModels/Rider.fbx`
+  and `SourceArt/Blender/Rider.blend` (and `Rider-check.txt`: hair split at the hat band, hats covering the head: 0 errors in every pose).
+  Pictures: `Tools/Blender/render_heads.py` (new; Racer's render_rider.py predates the arm parts and was left behind).
+- C1 DONE. The hand was a capsule, a ball for the fist and a ball for the thumb. Now a closed hand round the grip: a palm block from the wrist to
+  the knuckles (over the top of the grip), four fingers curled round the grip's own axis (a bike's bar, the car's rim) and under it, a thumb
+  wrapped under from the inside, fingertips, the wrist into the sleeve; skin colored; in the hand's arm group, so it follows the steering and
+  the gestures as before. Pictures from first person (bike: the left hand on its grip; the right one sits under the debug panel) and outside:
+  `Data/screenshots/round28/c1_c2_hands_gestures.jpg`. Worst-case rider triangles 14,700 (were 8,900).
+- C2 DONE. In the exe, three things did not work: the fist button (LB / F) was bound but never asked for (Racer's VehicleInput asks; now here too),
+  the AI never reacted (RiderGestures had "no AI drivers yet" from Round 14) and nothing triggered the winner's celebration (Racer's RaceDirector
+  does it; now RaceController.Finish: the first finisher with the best total, in a race with others). First person now aims the wave into the
+  view (CameraViews), as Racer. Racer's RiderGestures has nothing newer (4 lines differ: ours), no gesture sounds, and its winner camera shot is
+  left out (the view only changes when the player changes it). Buttons: LB on the controller, F on the keyboard. Check (`-r28Only riders`, a
+  virtual pad, on the Drifter Twin and the Street Classic): LB waves in the chase view and in first person; an AI rammed by the player shakes a
+  fist at it; the AI winner of a 1-lap race celebrates: 8 of 8.
+- C3 DONE. Short and Medium were one smooth shell with a straight cut (a helmet). Short: closer to the head, a ragged brushed-forward fringe,
+  sideburns, small flat locks on the crown. Medium: fuller, a swept fringe, down over the tops of the ears, layered at the back. New: Mohawk (a
+  crest over thin sides), Crew cut (short sides, a little longer on top), Spiky, Buzz, Curly; in the garage's hair list after Bald (saved looks
+  keep their hair) and in the AI riders' random looks. With every hat the hair above the band is hidden and nothing pokes through (Rider-check).
+  Pictures, front / side / back and under each hat: `Data/screenshots/round28/c3_hair_styles.jpg`, `c3_hair_styles_hats_back.jpg`.
+- Imported from Racer in Part C: Tools/Blender/rider.py and kit.py (changed here), the input line that asks for the wave, RiderGestures' AI and
+  first-person rules, RaceDirector's winner celebration rule.
+- For Dan to check: the hands on the grips in first person, the fist (LB / F), the hair styles in the garage.
+
 **STATUS of Round 28 Part B (Claude, 2026-10-15): B1 to B6 DONE, exe rebuilt (2026-10-15 07:01), committed; checked in the exe by script (muted, minimized,
 1280 x 720), not yet driven by Dan.**
 - B2 DONE (the end of the lap; Code's proposal, built). Why the hairpin: M1 comes into the hub at mid level on the west wall and M5 leaves at top

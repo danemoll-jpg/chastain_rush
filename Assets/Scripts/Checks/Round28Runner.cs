@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using Racer;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace ChastainRush
 {
@@ -51,6 +53,7 @@ namespace ChastainRush
                 if (Only("bikes") || Only("camera")) yield return BikeLap();
                 if (Only("bikewall")) yield return BikeWall();
                 if (Only("camera")) yield return Express();
+                if (Only("riders")) yield return Riders();
             }
             report.AppendLine();
             report.AppendLine(fails == 0 ? $"ALL {checks} CHECKS PASSED" : $"{fails} OF {checks} CHECKS FAILED");
@@ -367,6 +370,70 @@ namespace ChastainRush
             File.WriteAllText(Path.Combine(outputDir, "bikes_walls.tsv"), tsv.ToString());
             Check("B5: let go up a wall, the bike comes back along the pipe (never left across)", bad == 0, $"{lines.Count - bad} of {lines.Count}");
             PipeExpress.Setting = expressWas;
+        }
+
+        // ---------------------------------------------------------------- C1, C2: the riders' hands and gestures
+        //   the fist wave from the button (LB on a virtual pad; F on the keyboard is the same action), seen from outside and from the eyes; an
+        //   AI rider shaking a fist at the player who ran into it; the winner's celebration at the end of a race with others in it; pictures of
+        //   the hands from first person and outside
+        IEnumerator Riders()
+        {
+            report.AppendLine("== C1 / C2 the riders: hands, the fist wave, the AI's reaction, the winner's celebration");
+            if (race.State != RaceController.Stage.Free) race.EndRace();
+            yield return new WaitForSecondsRealtime(0.5f);
+            var g = car.GetComponent<RiderGestures>();
+            InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
+            var pad = InputSystem.AddDevice<Gamepad>("Round28 virtual pad");
+            // a straight bit of Chastain Glen's loop, free roam
+            var spot = new Vector3(2715.56f, 0f, 1193.59f); spot = RaceRoute.Ground(spot.x, spot.z);
+            respawn.PlaceAt(spot, 69.4f); yield return new WaitForSecondsRealtime(1.5f);
+            foreach (var view in new[] { CameraViews.View.Chase, CameraViews.View.FirstPerson })
+            {
+                if (views) views.SetView(view); yield return new WaitForSecondsRealtime(1.0f);
+                yield return Shot($"c1_hands_{(view == CameraViews.View.Chase ? "outside" : "first_person")}");
+                int w0 = g ? g.Waves : -1;
+                InputSystem.QueueStateEvent(pad, new GamepadState().WithButton(GamepadButton.LeftShoulder));
+                yield return null; yield return null;
+                InputSystem.QueueStateEvent(pad, new GamepadState());
+                yield return new WaitForSecondsRealtime(0.55f);
+                yield return Shot($"c2_fist_wave_{(view == CameraViews.View.Chase ? "outside" : "first_person")}");
+                Check($"C2: LB (the fist button) waves the rider's fist ({(view == CameraViews.View.Chase ? "chase view" : "first person")})", g && g.Waves == w0 + 1 && g.Current == RiderGestures.Kind.Wave, g ? $"waves {w0} -> {g.Waves}, now {g.Current}, weight {g.Weight:0.00}" : "no gestures on the vehicle");
+                yield return new WaitForSecondsRealtime(3.5f);
+            }
+            if (views) views.SetView(CameraViews.View.Chase);
+            InputSystem.RemoveDevice(pad);
+            // the AI's reaction and the winner's celebration: a 1-lap Chastain Glen race with one AI driver
+            RaceController.RouteOverride = "chastain_glen_loop.json"; RaceController.DirectionOverride = "forward"; RaceController.LapsOverride = 1;
+            RaceController.AiCount = 1; RaceController.AiVehiclesOverride = null;
+            race.Reload(); race.StartRace();
+            while (race.State == RaceController.Stage.Countdown) yield return null;
+            var ai = race.Entrants.First(e => !e.IsPlayer);
+            yield return new WaitForSecondsRealtime(6f);
+            int aiWaves0 = RiderGestures.AiWaves;
+            for (int k = 0; k < 5 && RiderGestures.AiWaves == aiWaves0; k++)
+            {
+                // the player's car rammed into the AI's from behind, faster than it
+                var a = ai.Car.Body; var back = a.position - a.transform.forward * 7f;
+                respawn.PlaceAt(back, a.transform.eulerAngles.y); race.NotifyTeleported();
+                yield return new WaitForFixedUpdate();
+                car.Body.linearVelocity = a.linearVelocity + a.transform.forward * 9f;
+                yield return new WaitForSecondsRealtime(2.2f);
+            }
+            var ag = ai.Car.GetComponent<RiderGestures>();
+            if (RiderGestures.AiWaves > aiWaves0) yield return Shot("c2_ai_fist");
+            Check("C2: an AI rider run into by the player shakes a fist at them", RiderGestures.AiWaves > aiWaves0, $"AI waves {RiderGestures.AiWaves - aiWaves0} ({ai.Name}, {ai.VehicleName})");
+            // the player parked: the AI wins and must celebrate
+            respawn.PlaceAt(race.Route.GridPosition, race.Route.GridYaw); race.NotifyTeleported();
+            float t0 = Time.time; while (!ai.Finished && Time.time - t0 < 240f) yield return new WaitForSecondsRealtime(0.5f);
+            yield return new WaitForSecondsRealtime(0.6f);
+            Check("C2: the winner celebrates at the finish (both fists up; in a car out of the window)", ai.Finished && ag && ag.Celebrations > 0, $"{ai.Name} finished {ai.Finished}, celebrations {(ag ? ag.Celebrations : -1)}, now {(ag ? ag.Current.ToString() : "-")}");
+            if (ag && ag.Current == RiderGestures.Kind.Celebrate)
+            {
+                var cam2 = Camera.main; var ch = cam2.GetComponent<ChaseCamera>(); var tgt = ch.target; ch.target = ai.Car.transform; ch.Snap();
+                yield return new WaitForSecondsRealtime(0.4f); yield return Shot("c2_winner_celebrates"); ch.target = tgt; ch.Snap();
+            }
+            race.EndRace();
+            yield return new WaitForSecondsRealtime(1f);
         }
 
         // B6: an express ride in free roam (Boost), first person kept: the vehicle rolled into the shortest stretch at 14 m/s, the express
