@@ -41,8 +41,20 @@ namespace ChastainRush
         }
 
         // a box without the bottom (walls that stand on a foundation), used for the house bodies
+        // Round 27 (A1): set while a settled house is built: the walls under its floor are drawn as a block foundation, 3 cm proud
+        static Color? FoundationTint;
+
         static void BoxNoBottom(MeshBuilder mb, Frame f, float u0, float u1, float y0, float y1, float v0, float v1, Color front, Color sides, Color back)
         {
+            if (FoundationTint.HasValue && y0 < -0.05f && y1 > 0f)
+            {
+                var ft = FoundationTint.Value; FoundationTint = null;
+                BoxNoBottom(mb, f, u0 - 0.03f, u1 + 0.03f, y0, 0f, v0 - 0.03f, v1 + 0.03f, ft, Shade(ft, 0.97f), Shade(ft, 0.94f));
+                BoxF(mb, f, u0 - 0.05f, u1 + 0.05f, -0.02f, 0.06f, v0 - 0.05f, v1 + 0.05f, Shade(ft, 1.12f));   // a cap where the siding starts
+                BoxNoBottom(mb, f, u0, u1, 0f, y1, v0, v1, front, sides, back);
+                FoundationTint = ft;
+                return;
+            }
             Vector3 p(float u, float y, float v) => f.P(u, y, v);
             mb.Tint = front; Face(mb, p(u0, y0, v1), p(u1, y0, v1), p(u1, y1, v1), p(u0, y1, v1), f.F);
             mb.Tint = back; Face(mb, p(u0, y0, v0), p(u1, y0, v0), p(u1, y1, v0), p(u0, y1, v0), -f.F);

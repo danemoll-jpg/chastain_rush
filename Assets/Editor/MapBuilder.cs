@@ -102,8 +102,9 @@ namespace ChastainRush
             CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
             MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
+            SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             BuildRoads(map, terrain, mats, world, paint, hood);
-            BuildBridges(map, mats, world, paint);
+            BuildBridges(map, mats, world, paint, terrain);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildRoadLookup(map);
             BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop);
@@ -536,7 +537,7 @@ namespace ChastainRush
 
         // mapgen holds each bridge level across the water: deck_y is the deck height every ~2 m. The car drives on
         // the deck mesh; the bare-earth channel stays on the terrain underneath.
-        static void BuildBridges(MapData map, Materials mats, Transform parent, Chunks paint)
+        static void BuildBridges(MapData map, Materials mats, Transform parent, Chunks paint, TerrainGrid terrain)
         {
             var top = new MeshBuilder();
             var body = new MeshBuilder();
@@ -583,6 +584,7 @@ namespace ChastainRush
                 }
                 AddPaint(paint, pts, b.@class, b.width, b.oneway, (p, s) => DeckAt(s) + lift, p => false);
             }
+            BuildAbutments(body, terrain);   // Round 27 (A2)
             var root = new GameObject("Bridges").transform;
             root.SetParent(parent, false);
             top.ToObject("BridgeDecks", mats.Asphalt, root, true);

@@ -2732,6 +2732,41 @@ D4. Remove the race's proposal markers once it is built (all proposal markers ar
 D5. Check by script: the AI completes the race, a switch opens its gate, frame rate in a full race in the hub. Dan
    drives it.
 
+**STATUS of Round 27 (Claude, 2026-10-15), Part A DONE, exe rebuilt (2026-10-15 00:23), committed; checked in the exe by script (minimized, muted,
+1280 x 720, `local/round27/`, git-ignored), not yet driven by Dan. Imported from Racer in Part A: nothing.**
+- A1 DONE (`MapBuilder.HouseSettle.cs`). Every styled house on the map swept (Chastain Glen and the three communities; Dan's house locked
+  and never listed). 339 changed: a wall buried more than 0.3 m: the lot cut down to just under the floor 1.4 m round the house with a
+  bank of about 40 degrees back to the natural ground (Round 9's CutLot, cut only; never on a street or sidewalk, a shortcut's line or ramp,
+  a pond, the pools and courts, or below a neighbor's foundation), 72 lots; the floor standing more than 0.3 m over the ground at a wall: the
+  walls under the floor drawn as a gray block foundation with a cap where the siding starts, 327 houses; the back standing more than 1.5 m
+  over the ground: a walk-out basement wall (basement windows, a door where it is tall enough), 103 houses. The floor never moves, so every
+  garage and front door meets its drive as before. The list (id, x, z, before / after): `Data/screenshots/round27/houses_settled.txt`.
+  Worst five before: 636 (2.68 m buried, now -0.12), 1099 (1.37, now -0.12, walk-out), 361 (1.33), 310 (0.88, walk-out), 1252 (0.84); pictures
+  from the exe in `Data/screenshots/round27/` (house_<id>_ne / _sw). Left for Dan: 1614 (Chastain Glen, x 2958 z 1168) still 0.44 m (its
+  street and a neighbor stop the cut) and 1641 (#6's jumped house) 0.37 m (the shortcut's line is protected).
+- A2 DONE (`MapBuilder.BridgeEnds.cs`, `Vehicle/VehicleSurfaceContacts.cs`). Two causes at New Chastain Road. (1) The deck ended 0.13 to
+  0.21 m over the road with the creek bank falling away: now at every bridge end the road's ground is graded up to the deck's end on a smooth
+  curve (cubic Hermite from the deck's grade to the road's, as long as it takes for a car to hold 60 m/s over its crest, 34 to 90 m), the last
+  0.7 m under the deck 2 cm under it, the bank under the end filled, an abutment wall under each end; south deck's last 1.5 m kink (5.6 %)
+  straightened. Steps now 1 to 2 cm (were 13 to 54 cm). (2) What actually threw the Needle 600: its body's predicted (speculative) contacts
+  with the creek bank 0.5 to 1 m UNDER the deck, rising at 30 degrees: PhysX met it at 28 m/s along that slope and kicked the bike up
+  (vertical +5 m/s, 4 m/s lost; seen with a new per-step trace, `ExeShotsRunner` "trace": true, `Checks/ContactTracer.cs`). Terrain
+  under a bridge deck is now not ground for a vehicle on top of that deck (contact ignored; one driving under a bridge keeps them), and
+  terrain 15 cm or more below the body is predicted straight down. Chastain Road over I-575 (both carriageways): OSM's two pieces each got
+  their own deck, so they met 12 m down at the highway (a V at up to 50 %, the bike crashed): now one straight deck between the road's
+  heights at the outer ends, the ground cut under it where it came within 0.1 m. Probe: `ChastainRush.BridgeProbe.Run -probeOut <file>`
+  (Editor batch, rays across New Chastain's ends, the terrain under them, trees under the decks).
+  Drives in the exe at 56 m/s, end to end over each bridge in both directions (from 80 m before to 80 m after):
+  New Chastain Road, both carriageways, both ways: the Needle 600 keeps 98 to 99 % (as on plain road), every wheel down, no air; the
+  Street Classic every wheel down (it tops out at 49 m/s). Before: the bike lost 19 to 38 % and flew up to 1.7 s (one crash).
+  Chastain Road over I-575: north carriageway both ways no air (bike 96 %); south carriageway a 0.1 to 0.2 s light lift at its west end
+  (x 289), no speed lost beyond the climb. Before: 1.6 to 2.5 s in the air, the bike crashed.
+  Left as they were, for Dan: the three I-575 ramp bridges at the map's south edge (x 514 to 543, z 0 to 15; "Phillip Landrum Memorial
+  Highway", "Northwest Corridor Express Lanes"): the map's edge cuts them and their decks climb at 45 to 92 %; a vehicle flies off them
+  whatever the ends do. Say if they should be rebuilt (or closed).
+- For Dan to check: New Chastain Road's bridges at full speed (the Needle 600, both ways, both carriageways); Chastain Road over I-575; the
+  houses on slopes (Chastain Enclave's 636 and 1252 on Weybourne Court, 1099; Commons' 361 and 310).
+
 **DONE, accepted by Dan 2026-10-14 20:21 ("Didn't notice anything. We can mark these all as done"; new issues come as bug reports) — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
 `2026-10-14_17-14-00-187_5d4e5a`, one report, read by Claude). Dan drives it; rebuild into `Builds/ChastainRush/`, commit,
 give the build time.**

@@ -17,7 +17,7 @@ namespace ChastainRush
     {
         // Round 18: path (x, z, x, z, ...) makes a drive follow those points instead of holding straight on; it ends at the last
         // point (or after drive_seconds) and also reports the farthest the car got from the path and the fewest wheels down
-        [Serializable] public class Shot { public string name; public float x, z, yaw, drive_speed, drive_seconds, shot_at = -1f; public float[] path; public float reset_at = -1f, fps_from = -1f; public float[] shot_near, fps_near; public float y = -1000f; }   // Round 24 Part B: y, a height to place at (underground), instead of the ground's   // fps_near (x, z): the frame rate from when the vehicle first comes within 5 m of it   // Round 23 follow-ups: shot_near (x, z): the shot when the vehicle first comes within 3 m of it (in plan)   // Round 23 follow-ups: reset_at (a reset, R, during the drive), fps_from (the frame rate from then on)
+        [Serializable] public class Shot { public string name; public float x, z, yaw, drive_speed, drive_seconds, shot_at = -1f; public float[] path; public float reset_at = -1f, fps_from = -1f; public float[] shot_near, fps_near; public float y = -1000f; public bool trace; }   // Round 27 (A2): trace, a line per physics step to <name>_trace.tsv   // Round 24 Part B: y, a height to place at (underground), instead of the ground's   // fps_near (x, z): the frame rate from when the vehicle first comes within 5 m of it   // Round 23 follow-ups: shot_near (x, z): the shot when the vehicle first comes within 3 m of it (in plan)   // Round 23 follow-ups: reset_at (a reset, R, during the drive), fps_from (the frame rate from then on)
         [Serializable] public class ShotList { public Shot[] shots; }
 
         public string listPath, outputDir;
@@ -25,7 +25,7 @@ namespace ChastainRush
         readonly System.Collections.Generic.List<float> frames = new System.Collections.Generic.List<float>();   // Round 22: frame times during a drive
         bool measuring;
         void Update() { if (measuring) frames.Add(Time.unscaledDeltaTime); }
-        readonly StringBuilder report = new StringBuilder();
+        readonly StringBuilder report = new StringBuilder(), trace = new StringBuilder();
 
         IEnumerator Start()
         {
@@ -72,6 +72,13 @@ namespace ChastainRush
                     }
                     car.Simulate(car.ForwardSpeed < want ? 1f : 0f, car.ForwardSpeed > want + 2f ? 1f : 0f, steer, Time.fixedDeltaTime);
                     t += Time.fixedDeltaTime;
+                    if (s.trace)
+                    {
+                        var bp0 = car.Body.position; string under = Physics.Raycast(bp0 + Vector3.up * 2f, Vector3.down, out var uh, 6f, ~0, QueryTriggerInteraction.Ignore) ? $"{uh.collider.name}\t{bp0.y - uh.point.y:0.000}" : "-\t-";
+                        var ct = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>();
+                        trace.Append(ct.Take().Replace("	", " ") + "	");
+                        trace.AppendLine($"{t:0.000}\t{bp0.x:0.00}\t{bp0.y:0.000}\t{bp0.z:0.00}\t{car.Body.linearVelocity.y:0.00}\t{car.ForwardSpeed:0.00}\t{car.GroundedWheels}\t{Vector3.Angle(car.transform.up, Vector3.up):0.0}\t{under}");
+                    }
                     maxTilt = Mathf.Max(maxTilt, Vector3.Angle(car.transform.up, Vector3.up));
                     air = car.GroundedWheels == 0 ? air + Time.fixedDeltaTime : 0f; if (t > 0.6f) maxAir = Mathf.Max(maxAir, air);   // not the drop from the placing height
                     if (t > 0.3f) minSpeed = Mathf.Min(minSpeed, car.ForwardSpeed);
@@ -89,6 +96,7 @@ namespace ChastainRush
                 }
                 car.enabled = true;
                 measuring = false;
+                if (s.trace) { File.WriteAllText(Path.Combine(outputDir, s.name + "_trace.tsv"), "t\tx\ty\tz\tvy\tspeed\twheels\ttilt\tunder\tclearance\n" + trace); trace.Clear(); }
                 string fps = "";
                 if (frames.Count > 10)
                 {

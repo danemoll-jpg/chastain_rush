@@ -291,6 +291,14 @@ drivers, 15 menus and the garage.
 B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
 underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
 
+**Round 27 Part A (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** every styled house
+settled on its slope (`MapBuilder.HouseSettle.cs`: buried lots cut, block foundations under raised floors, walk-out basement walls; list
+`Data/screenshots/round27/houses_settled.txt`), every bridge end run smoothly onto the road (`MapBuilder.BridgeEnds.cs`: Hermite easing,
+chained OSM pieces joined into one deck, abutments; the I-575 ramps cut by the map's edge left as they were), and terrain under a bridge
+deck no longer a contact for a vehicle on the deck (`VehicleSurfaceContacts.cs`). Checks: `ChastainRush.BridgeProbe.Run -probeOut <file>`
+(Editor batch); `-exeShots` shots take `"trace": true` (a per-step `<name>_trace.tsv` with every body collision, `Checks/ContactTracer.cs`).
+Imported from Racer: nothing.
+
 **Round 26 (see `TODO.md`, status there) is built and checked in the exe by script, driven and accepted by Dan 2026-10-14 20:21 (nothing open; new issues come as bug reports):** Dan's log ramp
 (RE2) and every take-off's foot fitted flush to the ground (`MapBuilder.BigJumps.cs` footBank; log ramps solid with sloped sides;
 `BuildPrism` meets the ground with a 15 degree wedge where an edge stands up to 0.3 m proud); a sweep of every ramp on the built

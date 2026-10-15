@@ -112,7 +112,10 @@ namespace ChastainRush
                 if (!chunks.TryGetValue(key, out var mb)) chunks[key] = mb = new MeshBuilder();
                 if (!detailChunks.TryGetValue(key, out var db)) detailChunks[key] = db = new MeshBuilder();
                 h.detail = db;
+                if (!h.dan && c.hood.Foundation.Contains(h.index)) FoundationTint = FoundationBlock;   // Round 27 (A1): settled on a slope
                 if (!h.dan) BuildHouseWithShortcuts(c, mb, db, h);   // Round 8: a house on a shortcut is opened up or given a roof collider
+                FoundationTint = null;
+                if (!h.dan && c.hood.BackExposure.TryGetValue(h.index, out float bx)) Walkout(db, h, bx, (x, z) => c.terrain.Height(x, z));
                 // the front yard: round shrubs either side of the entry, as in the photos
                 int shrubs = h.dan ? 0 : 3 + (int)(Hash01(h.seed, 81) * 3f);
                 for (int i = 0; i < shrubs; i++)

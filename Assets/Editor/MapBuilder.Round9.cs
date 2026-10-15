@@ -314,6 +314,7 @@ namespace ChastainRush
                 var before = new Dictionary<int, float>();
                 foreach (var h in Houses) before[h.index] = Burial(h);
                 if (target != null) CutLot(target);
+                SettleHouses();        // Round 27 (A1): every buried house's lot cut, foundations under raised floors (MapBuilder.HouseSettle.cs)
                 CutUnderDanDeck();   // Round 10 (BUG-001): no grass through Dan's deck
                 GradeShortcuts();      // Round 12: the shortcuts' grass runs (before the prisms' cuts, which go under their tops)
                 GradePools();          // Round 20 follow-up: R1's pool deck levelled and its bed cut (MapBuilder.R1Pool.cs)
