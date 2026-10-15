@@ -69,6 +69,89 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
+after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
+reported, one check each, short results (CLAUDE.md "Process"); rebuild into `Builds/ChastainRush/` and commit. Building
+numbers are indexes into `Data/map.json` "buildings"; Dan's coordinates are the vehicle's (x, z, heading).
+
+Part A, CANTON ROAD BUSINESSES FACE CANTON ROAD. Dan: "In general not sure why most businesses on Canton road were facing
+away from Canton road without any driveways." Why (Claude): Round 31 picks each building's front as the face looking most
+toward the nearest OSM parking lot or road, any road, so a service road or side street behind a store beats Canton Road; and
+lots were paved only where OSM maps one (9 outside the dressed areas), so most businesses got no lot and no drive.
+A1. THE RULE (Dan said "in general", so it applies to every dressed business along Canton Road, not only his spots): a
+   shop, office, church, school or other business whose lot touches Canton Road, or that stands between Canton Road and the
+   street behind it, has its front toward Canton Road, a paved parking lot between it and the road (stalls, light poles,
+   lamps as Round 31's lots), and a drive from Canton Road into the lot (curb cut, no step). Neighbors share one lot where
+   they stand in a row. Keep OSM's own lots and service roads; join a service road to the lot it serves. Canopies, sheds
+   and garages are not businesses. Check: Dan's spots below, one picture each.
+A2. Dan's spots, each by A1: BUG-005 / BUG-017 (x 3532.61 z 1027.29 h 20; x 3588.14 z 1054.82 h 243): building 7, a strip
+   with Fit Zone Gym, Pho Saigon, Green Leaf Smoothies, U-Store-It, facing W D Anderson Road ("stores should be facing canton
+   and have a parking lot"). BUG-006 (x 3412.71 z 1479.90 h 263): buildings 8, 9, 10 ("business should be facing canton road
+   with a parking lot"). BUG-007 (x 3324.50 z 1582.84 h 74, Westchase Drive): building 12, faces the houses behind it ("again
+   should be facing canton road"). BUG-008 (x 3380.86 z 1703.75 h 69): building 3 ("Face canton road have parking lot").
+   BUG-022 (x 3636.20 z 439.60 h 275): building 88, U-Store-It ("another one turn it around"). BUG-023 (x 3533.79 z 181.78
+   h 211): buildings 20 and 40, the strip with Sparkle Car Wash ("should have parking lot").
+A3. BUG-019 / BUG-020 (x 3643.87 z 696.83 h 39; x 3649.78 z 692.80 h 111): building 76, one 10,900 m2 retail block shown as
+   long blank walls. Dan: "these should all be store fronts with a parking lot here. The corner shop is a pizza place with a
+   drive up restaurant. There should also be a comic book store and another store here", "make these all store fronts".
+   Storefronts along the whole face toward Canton Road with the lot in front (A1); at the corner nearest Dan's spot a pizza
+   place with a drive-up window and its lane round the side; next to it a comic book store, then one more store; the rest
+   ordinary storefronts. Made-up names (sign rules); add the new signs to `make_business_signs.py`. (If the corner shop he
+   means is the small building 77 beside it, it is the pizza place instead; say which in the status.)
+A4. BUG-014 / BUG-015 (x 3489.82 z 1213.04 h 58; x 3488.39 z 1200.49 h 89): building 86 is dressed as a house beside the
+   OSM lot at x 3503 z 1217. Dan: "why does a house have a parking lot", "actually I am pretty sure this is an ice cream shop
+   in the real world". Dress building 86 as an ice cream shop (storefront, a walk-up window, made-up name), using that lot.
+A5. BUG-021 (x 3563.64 z 584.19 h 243): churches 74 and 75 build as overlapping boxes with a steeple in the wrong place
+   ("what kind of monstrosity is this?"). Make it read as one church: wings joined cleanly, one roof per wing with no boxes
+   poking through, the steeple over the main entrance, the front toward Canton Road with a lot (A1). Check: Dan's spot.
+A6. BUG-009 (x 3390.31 z 1772.89 h 49): the unnamed road ends short of the preschool's lot ("this road should connect to the
+   parking lot"); join it to the lot. Dan, 17:27: IGNORE the comment's "Make this an elementary school" (it is building 14,
+   Little Acorns Preschool, and stays one); instead the middle school becomes an elementary school. Both schools (0 by I-575,
+   41 by Canton Road) drew "Noonday Creek Middle School"; make 41 (the one by Canton Road Dan drove past, BUG-018) "Pine
+   Hollow Elementary", and leave 0 the middle school so the map has one of each (Dan to say if he meant both).
+A7. BUG-016 (x 3499.29 z 1136.58 h 94): "Road to nowhere", an unnamed 5 m road ending in grass. Join it to the lot or building
+   it led to (OSM / A1); if it serves nothing, remove it. Check: Dan's spot.
+
+Part B, GRASS IN THE STREETS AND A TRAFFIC JAM.
+B1. Grass showing through the asphalt at: BUG-010 (x 3377.17 z 1656.77 h 157, Canton Road junction), BUG-011 (x 3408.69
+   z 1504.58 h 34, the unnamed road's mouth onto Canton Road: also two shades of gray, "smooth this"), BUG-012 (x 3406.78
+   z 1554.13 h 350), BUG-013 (x 3467.43 z 1242.21 h 161), BUG-018 (x 3556.81 z 825.01 h 21), all on Canton Road, and BUG-024
+   (x 1139.84 z 667.91 h 134, Chastain Road Northwest: a ragged strip down the center line). Round 31's BUG-003 was the
+   same thing (a gap between carriageways / turn lanes, paved over by hand). Dan has now said it six more times ("need to
+   remove grass from streets"), so find the cause in the road build and fix it there, so the road surface is whole and one
+   shade at junctions and between parallel lanes; real grass medians, if OSM maps one, stay. Check: a picture from each
+   of the six spots.
+B2. BUG-010: four traffic cars stopped in a knot in the junction ("Is this a car accident?"). Find why they stopped (each
+   yielding to another, or stuck on the grass seam) and fix it so traffic never locks itself at a junction. Check: Heavy
+   traffic at that junction for 5 minutes, no car stopped there longer than 10 s.
+
+Part C, CHASTAIN LAKES (BUG-025 x 1312.55 z 1080.73 h 54; BUG-026 x 1314.67 z 1085.28 h 331, off Lakeside Drive).
+C1. Round 30 named this neighborhood "Lakeside Drive" (its main street). It is the Chastain Lakes subdivision: name it
+   "Chastain Lakes" in `neighborhoods.json` (a name override in `neighborhoods_rest.py`), its houses unchanged.
+C2. Its amenity area on East Chastain Lake, between the lake, Bells Ferry Road and Lakeside Drive. Buildings 266 and 267
+   (now 10.5 m office blocks, the tall brick and white boxes in BUG-025) are the pool house and the bathhouse. Dan: "there
+   should be a parking lot in front of a pool, pool house and tennis courts", "on the right there should be a swinging bench
+   in front of the lake, a gazebo in a deck on the water and there are always many geese here". From Dan's two pictures
+   (`local/reference_photos/chastain_lakes/`, git-ignored): a rectangular lap pool with lane lines, a concrete deck, lounge
+   chairs and a fence; the pool house (one story, hipped roof) between the pool and the courts, a small bathhouse on the
+   pool's lake side; four tennis courts in two fenced pairs behind the pool toward Bells Ferry Road; a paved lot off
+   Lakeside Drive in front of the pool, pool house and courts; on the lawn toward the lake a porch swing on a frame facing
+   the water; a walk from the lot down to a pier and a gazebo on a deck out on the water; a flock of geese on the lawn and
+   the shore (the Glen pond's geese, they scatter). The lawn north of the lake along Bells Ferry Road has a paved walking path
+   on the shore with a small wooden footbridge where it crosses the stream; Dan: under that bridge and further up the stream
+   are the two pipes, the network's main entrance BF (Round 23). Keep BF and its stream as they are; the bridge only spans
+   the stream. The pictures are Google imagery: look at them for what is there, never trace or measure them (CLAUDE.md
+   licensing); place things from OSM, NAIP and the terrain. Pool house and courts are world, not game layer. Check: Dan's two
+   spots, a picture each, and one from the lot toward the pool.
+
+For Dan to check (when done): Canton Road's storefronts and lots, the pizza / comic book corner, the ice cream shop, the
+church, the elementary school sign, the grass spots, the junction at BUG-010, Chastain Lakes' pool area.
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 31
+**Reviewed: driven by Dan 2026-10-15 16:55 to 17:11 (his notes are Round 32).**
 **Round 31 (Dan, 2026-10-15 14:35; reports BUG-002 to BUG-004 of session `2026-10-15_03-07-51-371_794f57`, read by
 Claude).** Rounds 29 and 30 are not yet reviewed. Fix only what is reported, one check each, short results (CLAUDE.md
 "Process"); rebuild into `Builds/ChastainRush/` and commit.
@@ -116,10 +199,7 @@ For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s
 looks, and the frame rate on Canton Road at 4K.
 Imported from Racer: nothing.
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 30
+## Previous delivery 2: Round 30
 **DONE (Parts A and B built, not yet driven by Dan) — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
 better houses in the remaining neighborhoods. I have no specific styles for other neighborhoods though like I do with my
 own community". Part A then Part B; rebuild into `Builds/ChastainRush/` and commit after each, give the build time.**
@@ -214,7 +294,7 @@ B5: pictures in `local/round30/neighborhoods/`: `street_<key>_<name>.png` (one p
    sheets. For Dan to look at: Willard Drive's first house turns its side to the street (its drive comes from the cross
    street). Imported from Racer: nothing.
 
-## Previous delivery 2: Round 29
+## Previous delivery 3: Round 29
 **DONE (built and checked in the exe by script, not yet driven by Dan) — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
 the build time. Dan drives it.**
 Status: done. GARAGE > Rider... (Racer's Rider page: `Menus/GameMenus.Garage.cs` RenderRider, StepRider, RandomizeRider): Randomize,
@@ -235,161 +315,6 @@ the rider framing of GaragePreview, settings.json's rider), rewritten into GameM
    a turning preview of the rider on the chosen vehicle, controller and keyboard as the other menus, saved between runs
    as Racer saves it, and the player's rider in the game uses it (every vehicle, first person hands' skin / gloves too).
    Port Racer's code (CLAUDE.md); list what came. Pictures from the exe of the page and of three different riders.
-
-## Previous delivery 3: Round 28
-**DONE (Parts A to C, ad0ed37 to 4e4cd51) — Round 28 (Dan, 2026-10-15 03:22, after driving Round 27 including the Underground race; session
-`2026-10-15_03-07-51-371_794f57`, one report, read by Claude). Rebuild into `Builds/ChastainRush/` and commit after each
-part, give the build time. Dan drives it.**
-
-Part A, MANHOLE COVERS STILL MISSING. BUG-001 (vehicle x 2710.04, z 1193.05, heading 86, on Westminister Way, 14 m short
-of MH7 at x 2724, z 1197): "there is no manhole cover here". The screenshot shows plain asphalt ahead: no cover. Dan, again:
-"Still need to make sure it is putting manhole covers in." The Round 25 follow-up's lighter cover is not showing (lost in
-Part A's road / bridge rebuild, drawn under the road, culled, or never built for some). Find why and fix it, then PROVE it:
-a picture from the exe from a driver's height, a few meters back, at EVERY manhole MH1 to MH13, each showing the cover
-(list them). A normal-size cover (about 0.9 m), visibly lighter than the road, flush, no bump (as Round 25 A1).
-
-Part B, UNDERGROUND RACE (Dan's notes, numbered as his):
-B1. "Lets try the shortcuts and see what happens." Build all three as Code proposed them in Part D's status: S1 the leap
-   off M1's mouth over the waterfall to the floor (gate across M1's mouth on the floor side, plate up M5's wall); S2 the
-   dive pipe under M5 between two new junctions (its east junction clear of B8); S3 the high line over J2 (even if it
-   saves little: Dan wants to see it). Each behind its switch gate (the mechanism built in D2), shortcut design rules
-   (CLAUDE.md), the AI by ShortcutStrategy, on the map. Remove the TEST gate if it is still in.
-B2. "The tight hairpin turn right before the finish is a terrible idea. Lets move it down a level where there is some
-   open space." The turn at the top of the mid-to-top ramp onto the top ledge, just before the line. Re-route the lap's
-   end so the turn-round happens on a lower level with room (the mid ledge or the hub floor), a wide, sweeping turn,
-   and the finish line and grid where they fit with it (the grid off the racing line, so a stopped player is not in
-   the way). Code proposes the new end of the lap in the status; build it.
-B3. "The entrance back into the hub I think should have a ramp or something." Where the lap comes back into the hub
-   (M1's mouth onto the mid ledge, or wherever the new route enters): a proper ramp / apron from the pipe onto the
-   ledge, no drop, step or lip, drivable flat out on a bike and a car.
-B4. "Reset button during the race leaves me turned in the wrong direction. It should be following the rule to reset
-   straight forward." In the Underground race a reset (R / Y) must put the vehicle on the route, facing the way the race
-   goes, as in every race (CLAUDE.md / DrainPipe "resets"). Find why it does not here (the route's own heights, the pipe
-   reset taking the vehicle's heading instead of the race's, the ledges) and fix; check a reset at 20 places round the
-   lap (pipes, glass, junctions, ledges, ramps): every one faces forward, on its wheels, on the route.
-B5. "I still think don't want the bike to get turned around sideways so often." Bikes (the Drifter Twin) still end up
-   across the pipe. Find what turns them (wall riding's hold on two wheels, wall contacts, the lean, junction edges,
-   landings) by driving bikes through the whole lap by script with the heading logged; fix so a bike only goes across a
-   pipe when the player steers it there. If the wall riding is the cause, make it gentler for bikes (stronger pull back
-   along the pipe, a higher speed to stick) rather than off.
-B6. "Can the camera stay whatever view you have it in? I drive in first POV and it keeps switching to a follow cam back
-   to first POV." The view the player picks is kept everywhere: the pipe camera (`ChaseCamera.PipeView`, PipeUp) must
-   only change how a CHASE view follows, never switch a first-person / cockpit / hood view to a chase view. Check every
-   view underground, through the express, mouths, the hub, a reset and race start and finish: it never changes by itself.
-   Standing rule for CLAUDE.md: the camera view only changes when the player changes it.
-
-Part C, RIDERS (unrelated; Racer's rider is `Tools/Blender/rider.py`, `RiderLook.cs`, `RiderGestures.cs`, `VehicleVisual.cs`):
-C1. HANDS: "can we fix the drivers' hands so they don't look so bad?" The hands (seen big in first person on the bike's
-   grips) are lumpy blocks. Model proper low-poly hands: a palm, fingers wrapped round the grip / wheel, a thumb, a cuff
-   or glove edge, matching the skin color (or gloves), placed so they sit on the grips and the wheel in every vehicle and
-   follow the steering. Pictures from first person and from outside.
-C2. FIST WAVE AND CELEBRATIONS: "add the waved fist and celebrations from Woodstock Rush". `RiderGestures` is in the code
-   already (fist wave on F / LB; an AI rider waves at whoever ran into it; the winner's victory celebration). Check in the
-   exe whether they work here; make them work as in Woodstock Rush (bring Racer's latest version and anything it added
-   since: more celebrations, the AI's reactions, sounds). Say the buttons.
-C3. HAIR: "can we fix some of the hair styles? Especially short and medium don't really work well. Maybe add some new
-   ones like mohawk, crewcut and spiky". Remodel Short and Medium so they sit on the head properly (no gaps, no clipping
-   through the hat or the head, shaped like real hair), and add Mohawk, Crew cut and Spiky (and Buzz or Curly if cheap),
-   all in the garage's hair list, all working with every hat (a hat hides what it should) and every hair color, and the
-   AI riders' random looks using them. Pictures of each hair style from front, side and back, with and without a hat.
-
-**STATUS of Round 28 Part C (Claude, 2026-10-15): C1, C2, C3 DONE, exe rebuilt (2026-10-15 07:48), committed; checked in the exe by script (muted,
-minimized) and in Blender renders, not yet seen by Dan.**
-- The rider is now made in this repo: Racer's `Tools/Blender/rider.py` and `kit.py` copied (Racer unchanged) and changed here; `blender --background
-  --factory-startup --python Tools/Blender/rider.py` (Blender 3.6 at `F:\blender\blender.exe`, Racer's) writes `Assets/Resources/VehicleModels/Rider.fbx`
-  and `SourceArt/Blender/Rider.blend` (and `Rider-check.txt`: hair split at the hat band, hats covering the head: 0 errors in every pose).
-  Pictures: `Tools/Blender/render_heads.py` (new; Racer's render_rider.py predates the arm parts and was left behind).
-- C1 DONE. The hand was a capsule, a ball for the fist and a ball for the thumb. Now a closed hand round the grip: a palm block from the wrist to
-  the knuckles (over the top of the grip), four fingers curled round the grip's own axis (a bike's bar, the car's rim) and under it, a thumb
-  wrapped under from the inside, fingertips, the wrist into the sleeve; skin colored; in the hand's arm group, so it follows the steering and
-  the gestures as before. Pictures from first person (bike: the left hand on its grip; the right one sits under the debug panel) and outside:
-  `Data/screenshots/round28/c1_c2_hands_gestures.jpg`. Worst-case rider triangles 14,700 (were 8,900).
-- C2 DONE. In the exe, three things did not work: the fist button (LB / F) was bound but never asked for (Racer's VehicleInput asks; now here too),
-  the AI never reacted (RiderGestures had "no AI drivers yet" from Round 14) and nothing triggered the winner's celebration (Racer's RaceDirector
-  does it; now RaceController.Finish: the first finisher with the best total, in a race with others). First person now aims the wave into the
-  view (CameraViews), as Racer. Racer's RiderGestures has nothing newer (4 lines differ: ours), no gesture sounds, and its winner camera shot is
-  left out (the view only changes when the player changes it). Buttons: LB on the controller, F on the keyboard. Check (`-r28Only riders`, a
-  virtual pad, on the Drifter Twin and the Street Classic): LB waves in the chase view and in first person; an AI rammed by the player shakes a
-  fist at it; the AI winner of a 1-lap race celebrates: 8 of 8.
-- C3 DONE. Short and Medium were one smooth shell with a straight cut (a helmet). Short: closer to the head, a ragged brushed-forward fringe,
-  sideburns, small flat locks on the crown. Medium: fuller, a swept fringe, down over the tops of the ears, layered at the back. New: Mohawk (a
-  crest over thin sides), Crew cut (short sides, a little longer on top), Spiky, Buzz, Curly; in the garage's hair list after Bald (saved looks
-  keep their hair) and in the AI riders' random looks. With every hat the hair above the band is hidden and nothing pokes through (Rider-check).
-  Pictures, front / side / back and under each hat: `Data/screenshots/round28/c3_hair_styles.jpg`, `c3_hair_styles_hats_back.jpg`.
-- Imported from Racer in Part C: Tools/Blender/rider.py and kit.py (changed here), the input line that asks for the wave, RiderGestures' AI and
-  first-person rules, RaceDirector's winner celebration rule.
-- For Dan to check: the hands on the grips in first person, the fist (LB / F), the hair styles in the garage.
-
-**STATUS of Round 28 Part B (Claude, 2026-10-15): B1 to B6 DONE, exe rebuilt (2026-10-15 07:01), committed; checked in the exe by script (muted, minimized,
-1280 x 720), not yet driven by Dan.**
-- B2 DONE (the end of the lap; Code's proposal, built). Why the hairpin: M1 comes into the hub at mid level on the west wall and M5 leaves at top
-  level on the south wall (a 20); the mid-to-top ramp arrived on the top ledge pointing west, so every lap ended in a U-turn on the 7 m top ledge.
-  Now: that ramp is gone and THE SPAN replaces it (MapBuilder.NetworkHub.cs BuildSpan): a 9 m deck from the mid ledge's north side straight
-  south across the chasm onto the top ledge in front of M5's mouth, 21 % at its steepest (eased at both ends), M5's water running down it. The lap
-  comes out of M1, turns right and goes round the mid ledge's south, east and north sides (the turn-round, a level down, where there is room:
-  four 90 degree corners on a 9 m ledge, AI held to 9 to 11 m/s there), left onto the span, up it and straight into M5. The LINE is on the span,
-  13 m up it (9 m wide); the GRID is on the mid ledge's north side west of the span, off the lap (40 m from it): a stopped player is in nobody's
-  way. Lap 1370 m (was 1488). Finished AI cars drive on up the span and park on the top ledge west of M5's mouth, off the lap (route
-  inish_park, RoadDriver.DriveToPark; stopped on the line they blocked M5's 5 m mouth).
-- B3 DONE. At M1's mouth the floor runs smoothly onto the mid ledge on the pipe's center line, but a vehicle off center rode the barrel's curve
-  and dropped 1.2 m off its end (probe: ChastainRush.RayProfile.Run, new, Editor batch). An apron (BuildMouthApron): the barrel's lower curve
-  carried 5 m out onto the ledge and eased flat, with sloping skirts, 9.5 m wide: no drop, step or lip anywhere across the mouth.
-- B1 DONE, all three built as proposed (world pipes and junctions, Tools/mapgen/pipe_network.py; the race layer from
-  make_underground_route.py), each behind a striped switch gate (Round 27's mechanism), the AI by ShortcutStrategy, on the map like any route:
-  - S1 "Waterfall leap": out of M1's mouth straight over the ledge's edge with M1's water to the hub's floor, round the pool's west end and up the
-    floor ramp to the east side (124 m against 141 m of the lap; forgives CP5). Its gate is a section of the railing (race only) along the mid
-    ledge's west and south edges, which stop a free fall there taking the same way. Plate: up M5's right-hand wall, 60 m in from the hub (68
-    degrees round: ride the wall).
-  - S2 "Dive pipe": two new junctions on M5 (J14 at its station 205, J15 at 430: the proposal's 389 was 2 m from B8, here 30 m clear), M5's line
-    and floor kept, and a pipe between them diving under M5's bend (to 1.8 m under it; up to 24 % where it climbs back, steeper than the hub's
-    20 % ramps) with a flooded sump at the bottom (170 m against 268 m; forgives CP2). Its line in J15 is a 9 m arc (S2 leaves through the side
-    wall). Plate: on J3's floor 6.5 m off the line. Saves more than the proposal's 45 m because J15 had to move: Dan to judge.
-  - S3 "High line": J1 straight to a high opening 2.5 m up J2's west wall (J2 made 3 m taller and 2 m wider), lined up with M1b across the room:
-    a jump over J2's floor (183 m against 203 m; forgives CP3, CP4). Plate: on J1's floor 6.8 m off the line.
-  The AI go for the plates on detours (lap options, ShortcutStrategy). Round 27's check-only TEST gate is gone (RaceController.ExtraSwitchGates
-  removed).
-- B4 DONE. Cause: a reset in a race inside any pipe, junction or the hub's ledges used the pipes' own reset, which faced the vehicle the way it was
-  pointing (it knew the race's way only on a shortcut's line). Now in the underground race a reset finds the nearest point of the race's line in
-  3D (the lap or a shortcut's; the lap passes over itself at the span), puts the vehicle there on its wheels facing the way the race goes, and
-  never back across the line (CarRecovery.UndergroundSpot, RaceRoute.NearestOnRoute). Same for the AI's own resets near the line, and an AI
-  reset twice on the same shortcut gives it up for the lap. Check: 20 places evenly round the lap (pipes, glass, junctions, ledges, the span),
-  the vehicle put there facing backward then reset: 20 of 20 facing the race's way (0 to 10 degrees off), on its wheels, on the route.
-- B5 DONE. Found by script (-r28Only bikes,bikewall): a whole lap at race pace and riding the walls of M1b at 12, 20 and 28 m/s (steered hard up
-  each wall, let go). A centered lap never turned the bike across by itself; what did: slowed on the roof (throttle off at 20 m/s), the Drifter
-  Twin dropped off and stayed 30 to 37 degrees across for a second, and steered on the wall it went 25 to 37 degrees across. Now for bikes
-  (DrainPipe.cs): held to the wall from 2 m/s faster, at most 20 degrees across on the wall (was 35), pulled back along the pipe 1.6 times as
-  hard, and dropped off the wall or knocked with the steering let go, turned back along the pipe in the air and on the floor. After: 12 of 12
-  wall cases come back along the pipe when let go; the lap: no spell across without steering.
-- B6 DONE. Cause: CameraViews (Racer's) eased first person back to the chase view whenever the vehicle tilted past 70 degrees or wiped out, and
-  every wall ride in a pipe tilts it that far. Now the view never changes by itself. Check: first person chosen, a whole lap (pipes, glass,
-  junctions, M1's mouth, the hub, the span), a reset, the finish and an express ride in free roam: never changed, the camera always at the
-  rider's eyes (13,000 frames).
-- Check (ChastainRush.exe -exeRound28 <dir> [-r28Only race,shortcuts,resets,bikes,bikewall,camera] -vehicle drifter, Checks/Round28Runner.cs): 25 of
-  25. Race: 3 AI (Pebble Coupe, Turf Rocket, Street Classic, taking every open shortcut and switch detour for the check): every switch opened by an
-  AI racer, S1 taken 6 times, S2 6, S3 3; all three finish, no missed checkpoint, 3 to 9 AI resets each; 60 fps (vSync, 1280 x 720, not measured
-  at 3840 x 2160). Pictures: Data/screenshots/round28/b_hub_span_apron_shortcuts.jpg.
-- Left for Dan: the scripted lap at race pace once went off the mid ledge onto the floor at the turn onto the span (a 90 degree corner on a 9 m
-  ledge, no railing there: the floor ramp brings you back); say if it wants a railing. Mouths onto ledges other than M1's still end the barrel
-  at the ledge (not changed: Dan pointed at M1's). Imported from Racer: nothing.
-- For Dan to check: the Underground race (the span, the grid, the line), S1 to S3 and their plates, resets anywhere, bikes on the walls, first
-  person underground.
-
-**STATUS of Round 28 Part A (Claude, 2026-10-15): DONE, exe rebuilt (2026-10-15 03:52), committed; pictures from the exe by script (muted,
-minimized), not yet driven by Dan.**
-- A DONE. Why the covers were missing: every cover was built (13 of 13 in the build log), but it was drawn at the terrain's height + the
-  road's lift + 12 mm, while the street's own triangles over the hole (the hatch) stand 0 to 0.1 m higher on the communities' streets and
-  on slopes. So the street was drawn OVER the cover on MH4, MH7 (Dan's BUG-001), MH10 and MH11, and the two fought (flicker, mostly street)
-  on MH3, MH5 and MH9; only MH1, 2, 6, 8, 12 and 13 showed. Fix (MapBuilder.Network.cs BuildManholeLid): each point of the cover is now set
-  12 mm over the highest street triangle under it. Probe of the built scene (ChastainRush.ManholeProbe.Look -probeOut <file>, new, Editor
-  batch: every drawn surface over each cover): the cover is 12 to 13 mm over the street at its middle and 0.3 m round it on all 13. The
-  cover is a drawing only; what a wheel touches is unchanged since Round 25 (the terrain's own surface), so no bump. Size 0.9 m, lighter
-  cast iron as Round 25.
-- Pictures from the exe, first person in the Street Classic, 12 m back on each manhole's street (-exeShots takes a new "view": "first"):
-  MH1 Parkwood Dr, MH2 Parkwood Dr, MH3 Bloombridge Way, MH4 Rotherhithe Landing, MH5 Bloombridge Way, MH6 Guidhall Trail, MH7 Westminister
-  Way, MH8 Paxton Ct, MH9 Grasmere Ct, MH10 Weybourne Ct, MH11 Chasefield Way, MH12 Laurel Green Ct, MH13 Chastain Lakes Dr: the cover
-  shows in every one (Data/screenshots/round28/a_manholes_all13.jpg, MH7 full size _MH7_westminister.png).
-- This exe also has Part B6's camera change (it compiled into the same build). Imported from Racer: nothing.
-- For Dan to check: Westminister Way (MH7) and any other street manhole.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
