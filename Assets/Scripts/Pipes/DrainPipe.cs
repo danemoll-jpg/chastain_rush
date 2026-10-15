@@ -73,6 +73,13 @@ namespace ChastainRush
         static readonly bool NoSlide = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noPipeSlide") >= 0;   // checks only
         public static readonly bool Round25Walls = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-wallRideRound25") >= 0;   // checks only (Round 26's before)
         public const float StickFromHigh = 10.5f, StickFullHigh = 12.5f, WallPull = 6f, EaseFrom = 35f, MaxAcross = 35f;
+        public const float BikeStickExtra = 2f, BikeAcross = 20f, BikePull = 1.6f;   // Round 28 (B5): the bikes' gentler wall
+        static readonly Dictionary<ArcadeVehicle, bool> bikes = new Dictionary<ArcadeVehicle, bool>();
+        static bool IsBike(ArcadeVehicle c)
+        {
+            if (!bikes.TryGetValue(c, out bool b)) { var cfg = c.GetComponent<VehicleConfiguration>(); b = cfg && cfg.Profile.Motorcycle; bikes[c] = b; }
+            return b;
+        }
         public static int Eased { get; private set; }   // checks: physics steps some vehicle was being eased off the wall before an end      // checks: vehicles put back in the bottom after lying overturned and slow
         static readonly List<DrainPipe> all = new List<DrainPipe>();
         static readonly Collider[] hits = new Collider[16];
@@ -170,6 +177,11 @@ namespace ChastainRush
                 if (car.GroundedWheels >= 2) ride.lastGround = Time.time;
                 float roundNow = Vector3.Angle(n, Vector3.down), upper = Round25Walls ? 0f : Smooth01((roundNow - 70f) / 40f);   // Round 26: 0 on the lower half, 1 on the upper half
                 float from = Mathf.Lerp(StickFrom, StickFromHigh, upper), full = Mathf.Lerp(StickFull, StickFullHigh, upper);
+                // Round 28 (B5, Dan: "I still think don't want the bike to get turned around sideways so often"): gentler for bikes: they
+                // stick from 2 m/s faster, may be steered at most BikeAcross across the pipe on the wall (not MaxAcross) and are pulled back
+                // along it BikePull times as hard
+                bool bike = IsBike(car);
+                if (bike) { from += BikeStickExtra; full += BikeStickExtra; }
                 // Round 26: eased round to the floor before the pipe's end the vehicle is heading for, or an express's entry (ease: 0 to 1)
                 float ease = 0f; var vel = car.Body.linearVelocity; bool player = car.GetComponent<RoadDriver>() == null;
                 if (!Round25Walls && roundNow > 10f)
@@ -198,8 +210,9 @@ namespace ChastainRush
                         }
                         float offDeg = Vector3.SignedAngle(fwd, ax, up), let = Mathf.Max(ease, 1f - Mathf.Clamp01((Mathf.Abs(car.VisualSteering) - 0.15f) / 0.35f));
                         // steered: only the part past MaxAcross is pulled back (on the wall: at the bottom it may turn as it likes)
-                        if (let < 1f && roundNow > 30f && Mathf.Abs(offDeg) > MaxAcross) { offDeg = Mathf.Sign(offDeg) * (Mathf.Abs(offDeg) - MaxAcross) * 2f; let = 1f; }
-                        car.Body.AddTorque(up * (offDeg * Mathf.Deg2Rad * WallPull * (1f + 1.5f * ease) * Mathf.Max(ride.stick, ease) * let), ForceMode.Acceleration);
+                        float across = bike ? BikeAcross : MaxAcross;
+                        if (let < 1f && roundNow > 30f && Mathf.Abs(offDeg) > across) { offDeg = Mathf.Sign(offDeg) * (Mathf.Abs(offDeg) - across) * 2f; let = 1f; }
+                        car.Body.AddTorque(up * (offDeg * Mathf.Deg2Rad * WallPull * (bike ? BikePull : 1f) * (1f + 1.5f * ease) * Mathf.Max(ride.stick, ease) * let), ForceMode.Acceleration);
                     }
                 }
                 // slow on a steep part of the wall: slide down it (the tires' grip would otherwise hold a vehicle parked sideways there)
@@ -213,6 +226,21 @@ namespace ChastainRush
                 float round = Vector3.Angle(n, Vector3.down);
                 if (round > 45f && car.GroundedWheels >= 2) WallSteps++;
                 MostRound = Mathf.Max(MostRound, car.GroundedWheels >= 2 ? round : 0f);
+                // Round 28 (B5): a bike not held to the wall (dropped off it slow, or off the roof, or knocked) with the steering let go is
+                // turned back along the pipe (the way it was going), in the air and on the floor: it lands and rides along the pipe, not
+                // across it. Found in the exe: let go at 20 m/s with the throttle off, the Drifter Twin dropped off the roof and stayed
+                // 30 to 37 degrees across for a second (Round28Runner bikewall)
+                if (bike && player && ride.stick < 0.2f && speed > 3f)
+                {
+                    var fl = Vector3.ProjectOnPlane(car.transform.forward, Vector3.up); var al = Vector3.ProjectOnPlane(along, Vector3.up);
+                    if (fl.sqrMagnitude > 0.01f && al.sqrMagnitude > 0.01f)
+                    {
+                        if (Vector3.Dot(fl, al) < 0f) al = -al;
+                        float yawOff = Vector3.SignedAngle(fl, al, Vector3.up), letGo = 1f - Mathf.Clamp01((Mathf.Abs(car.VisualSteering) - 0.15f) / 0.35f);
+                        if (Mathf.Abs(yawOff) > 20f && letGo > 0f)
+                            car.Body.AddTorque(Vector3.up * ((yawOff - Mathf.Sign(yawOff) * 20f) * Mathf.Deg2Rad * WallPull * BikePull * letGo) - Vector3.Project(car.Body.angularVelocity, Vector3.up) * 2f * letGo, ForceMode.Acceleration);
+                    }
+                }
                 // in the air and not held (off the wall or the roof): turn it upright so it comes down on its wheels; lying on its side
                 // or its roof against the pipe (fewer than two wheels down): roll it back onto its wheels, toward the axis
                 if (car.GroundedWheels == 0 && ride.stick < 0.05f && r.magnitude < radius - 1.2f)

@@ -21,11 +21,15 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M1a | M1 Trunk (J1 to J2, glass under the pond) | 5.0 m | 142 m | 274 to 275 m | J1 to J2; glass under pond W1 (76 m) |
-| M1b | M1 Trunk (J2 to the hub) | 5.0 m | 220 m | 262 to 274 m | J2 to HUB;  |
-| M5a | M5 Enclave Main (J1 to J3, glass along the pond) | 5.0 m | 540 m | 273 to 275 m | J1 to J3; glass under pond W4 (79 m) |
+| M1a | M1 Trunk (J1 to J2, glass under the pond) | 5.0 m | 140 m | 271 to 275 m | J1 to J2; glass under pond W1 (76 m) |
+| M1b | M1 Trunk (J2 to the hub) | 5.0 m | 221 m | 262 to 271 m | J2 to HUB;  |
+| M5a | M5 Enclave Main (J1 to J14) | 5.0 m | 196 m | 274 to 275 m | J1 to J14;  |
+| M5c | M5 Enclave Main (J14 to J15, glass along the pond) | 5.0 m | 209 m | 273 to 274 m | J14 to J15; glass under pond W4 (79 m) |
+| M5d | M5 Enclave Main (J15 to J3) | 5.0 m | 101 m | 273 to 273 m | J15 to J3;  |
+| S2 | S2 Dive pipe (J15 to J14, under M5) | 5.0 m | 116 m | 266 to 274 m | J15 to J14; a flooded sag (slow) |
+| S3 | S3 High line (J1 to J2, in high over J2's floor) | 5.0 m | 130 m | 273 to 275 m | J1 to J2; drops into J2 |
 | M5b | M5 Enclave Main (J3 to the hub) | 5.0 m | 192 m | 272 to 273 m | J3 to HUB;  |
-| B1a | B1 | 5.0 m | 109 m | 274 to 278 m | J2 to K2;  |
+| B1a | B1 | 5.0 m | 108 m | 271 to 278 m | J2 to K2;  |
 | M2g | M2 Lakes Main (K2 to K3) | 5.0 m | 98 m | 278 to 280 m | K2 to K3;  |
 | M2h | M2 Lakes Main (K3 to the hub) | 5.0 m | 172 m | 272 to 280 m | K3 to HUB;  |
 | M2e | M2 Lakes Main (J10 to K1) | 5.0 m | 43 m | 281 to 282 m | J10 to K1;  |
@@ -33,7 +37,7 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 | M2f | M2 Lakes Main (K1 to K2) | 5.0 m | 62 m | 278 to 281 m | K1 to K2;  |
 | B3 | B3 | 3.5 m | 79 m | 280 to 285 m | K3 to MH2; pops out at MH2 |
 | B4a | B4 (down the drop shaft) | 3.5 m | 63 m | 277 to 280 m | K3 to S4; drops into S4 |
-| B4b | B4 | 3.5 m | 63 m | 269 to 274 m | S4 to J2;  |
+| B4b | B4 | 3.5 m | 62 m | 269 to 271 m | S4 to J2;  |
 | B5 | B5 | 3.5 m | 44 m | 269 to 271 m | S4 to D5;  |
 | B6 | B6 | 3.5 m | 114 m | 273 to 284 m | J3 to MH3; pops out at MH3 |
 | B7a | B7 | 3.5 m | 114 m | 273 to 286 m | J3 to K7;  |
@@ -43,7 +47,7 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 | B9b | B9 | 3.5 m | 88 m | 273 to 280 m | K8 to MH5; pops out at MH5 |
 | B10 | B10 | 3.5 m | 81 m | 273 to 273 m | K8 to D10;  |
 
-Chambers: **J2 POND JCT** (junction, x 1628, z 1096, floor 274 m); **J3 ENCLAVE JCT** (junction, x 1785, z 1000, floor 273 m); **THE HUB** (hub, x 1900, z 1145, floor 252 m); **K1** (junction, x 1512, z 1246, floor 281 m); **K2** (junction, x 1585, z 1214, floor 278 m); **K3** (junction, x 1700, z 1230, floor 280 m); **S4 DROP SHAFT** (shaft, x 1660, z 1166, floor 269 m); **D5** (turn, x 1608, z 1180, floor 271 m); **K7** (junction, x 1720, z 890, floor 286 m); **K8** (junction, x 1985, z 1010, floor 273 m); **D10** (turn, x 2060, z 1060, floor 273 m)
+Chambers: **J2 POND JCT** (junction, x 1628, z 1096, floor 271 m); **J3 ENCLAVE JCT** (junction, x 1785, z 1000, floor 273 m); **J14 POND WEST** (junction, x 1601, z 1000, floor 274 m); **J15 POND EAST** (junction, x 1698, z 920, floor 273 m); **THE HUB** (hub, x 1900, z 1145, floor 252 m); **K1** (junction, x 1512, z 1246, floor 281 m); **K2** (junction, x 1585, z 1214, floor 278 m); **K3** (junction, x 1700, z 1230, floor 280 m); **S4 DROP SHAFT** (shaft, x 1660, z 1166, floor 269 m); **D5** (turn, x 1608, z 1180, floor 271 m); **K7** (junction, x 1720, z 890, floor 286 m); **K8** (junction, x 1985, z 1010, floor 273 m); **D10** (turn, x 2060, z 1060, floor 273 m)
 
 Manholes: **MH1** in Parkwood Drive (x 1548, z 1277; riser 12 m); **MH2** in Parkwood Drive (x 1760, z 1277; riser 6 m); **MH3** in Bloombridge Way (x 1879, z 949; riser 10 m); **MH4** in Rotherhithe Landing (x 1708, z 812; riser 11 m); **MH5** in Bloombridge Way (x 2012, z 933; riser 9 m)
 
@@ -125,36 +129,37 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E5 B22 Little Noonday express | B22 (3.5 m) | J8 (20 m along) | Exit Little Noonday (580 m along) | 560 m | 53 m/s | about 12 s | 28 s |
 | E6 GP-L express | GP-L (5.0 m) | GP split (20 m along) | J12 (91 m along) | 71 m | 45 m/s | about 2 s | 4 s |
 | E7 GP-R express | GP-R (5.0 m) | GP split (20 m along) | J13 (106 m along) | 86 m | 45 m/s | about 3 s | 4 s |
-| E8 M1b express | M1b (5.0 m) | J2 (20 m along) | HUB (200 m along) | 180 m | 45 m/s | about 5 s | 9 s |
-| E9 M5a express | M5a (5.0 m) | J1 (20 m along) | glass under W4's start (241 m along) | 221 m | 45 m/s | about 6 s | 11 s |
-| E10 M5a express | M5a (5.0 m) | glass under W4's end (360 m along) | J3 (520 m along) | 160 m | 45 m/s | about 4 s | 8 s |
-| E11 M5b express | M5b (5.0 m) | J3 (20 m along) | HUB (172 m along) | 152 m | 45 m/s | about 4 s | 8 s |
-| E12 B1a express | B1a (5.0 m) | J2 (20 m along) | K2 (89 m along) | 69 m | 45 m/s | about 2 s | 3 s |
-| E13 M2h express | M2h (5.0 m) | K3 (20 m along) | HUB (152 m along) | 132 m | 45 m/s | about 4 s | 7 s |
-| E14 B6 express | B6 (3.5 m) | J3 (20 m along) | MH3's foot (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
-| E15 B7a express | B7a (3.5 m) | J3 (20 m along) | K7 (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
-| E16 B8 express | B8 (3.5 m) | K7 (20 m along) | the flooded sag's start (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
-| E17 B9a express | B9a (3.5 m) | HUB (20 m along) | K8 (105 m along) | 85 m | 45 m/s | about 3 s | 4 s |
-| E18 M3b express | M3b (5.0 m) | J4 (20 m along) | J5 (125 m along) | 105 m | 45 m/s | about 3 s | 5 s |
-| E19 M3c express | M3c (5.0 m) | glass under W15's end (141 m along) | K15 (305 m along) | 164 m | 45 m/s | about 4 s | 8 s |
-| E20 B11 express | B11 (3.5 m) | J4 (20 m along) | Exit Creek Trail (97 m along) | 77 m | 45 m/s | about 2 s | 4 s |
-| E21 B12 express | B12 (3.5 m) | J5 (20 m along) | Exit W12 Pond (198 m along) | 178 m | 45 m/s | about 5 s | 9 s |
-| E22 B14 express | B14 (3.5 m) | J4 (20 m along) | MH7's foot (439 m along) | 419 m | 45 m/s | about 10 s | 21 s |
-| E23 B15 express | B15 (3.5 m) | K15 (20 m along) | Exit W7 Pond (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
-| E24 B27 express | B27 (5.0 m) | J4 (20 m along) | the flooded sag's start (184 m along) | 164 m | 45 m/s | about 4 s | 8 s |
-| E25 B27 express | B27 (5.0 m) | the flooded sag's end (246 m along) | J6 (317 m along) | 71 m | 45 m/s | about 2 s | 4 s |
-| E26 M4b express | M4b (5.0 m) | J6 (20 m along) | J7 (318 m along) | 298 m | 45 m/s | about 7 s | 15 s |
-| E27 M4c express | M4c (5.0 m) | glass under W8's end (182 m along) | J12 (255 m along) | 73 m | 45 m/s | about 2 s | 4 s |
-| E28 B16 express | B16 (3.5 m) | J6 (20 m along) | MH8's foot (355 m along) | 335 m | 45 m/s | about 8 s | 17 s |
-| E29 B17 express | B17 (3.5 m) | J7 (20 m along) | MH9's foot (155 m along) | 135 m | 45 m/s | about 4 s | 7 s |
-| E30 B19a express | B19a (3.5 m) | J13 (20 m along) | K19 (224 m along) | 204 m | 45 m/s | about 5 s | 10 s |
-| E31 B26 express | B26 (3.5 m) | J6 (20 m along) | Exit Under Bridges (90 m along) | 70 m | 45 m/s | about 2 s | 3 s |
-| E32 B20 express | B20 (3.5 m) | J8 (20 m along) | MH11's foot (248 m along) | 228 m | 45 m/s | about 6 s | 11 s |
-| E33 M2a express | M2a (5.0 m) | J10 (20 m along) | glass under W9's start (118 m along) | 98 m | 45 m/s | about 3 s | 5 s |
-| E34 M2b express | M2b (5.0 m) | J9 (20 m along) | glass under W0's start (141 m along) | 121 m | 45 m/s | about 3 s | 6 s |
-| E35 M2c express | M2c (5.0 m) | K25 (20 m along) | Exit Far West Pond (250 m along) | 230 m | 45 m/s | about 6 s | 12 s |
-| E36 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
-| E37 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
+| E8 M1b express | M1b (5.0 m) | J2 (20 m along) | HUB (201 m along) | 181 m | 45 m/s | about 5 s | 9 s |
+| E9 M5a express | M5a (5.0 m) | J1 (20 m along) | J14 (176 m along) | 156 m | 45 m/s | about 4 s | 8 s |
+| E10 M5d express | M5d (5.0 m) | J15 (20 m along) | J3 (81 m along) | 61 m | 45 m/s | about 2 s | 3 s |
+| E11 S3 express | S3 (5.0 m) | J1 (20 m along) | J2 (110 m along) | 90 m | 45 m/s | about 3 s | 5 s |
+| E12 M5b express | M5b (5.0 m) | J3 (20 m along) | HUB (172 m along) | 152 m | 45 m/s | about 4 s | 8 s |
+| E13 B1a express | B1a (5.0 m) | J2 (20 m along) | K2 (88 m along) | 68 m | 45 m/s | about 2 s | 3 s |
+| E14 M2h express | M2h (5.0 m) | K3 (20 m along) | HUB (152 m along) | 132 m | 45 m/s | about 4 s | 7 s |
+| E15 B6 express | B6 (3.5 m) | J3 (20 m along) | MH3's foot (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
+| E16 B7a express | B7a (3.5 m) | J3 (20 m along) | K7 (94 m along) | 74 m | 45 m/s | about 2 s | 4 s |
+| E17 B8 express | B8 (3.5 m) | K7 (20 m along) | the flooded sag's start (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
+| E18 B9a express | B9a (3.5 m) | HUB (20 m along) | K8 (105 m along) | 85 m | 45 m/s | about 3 s | 4 s |
+| E19 M3b express | M3b (5.0 m) | J4 (20 m along) | J5 (125 m along) | 105 m | 45 m/s | about 3 s | 5 s |
+| E20 M3c express | M3c (5.0 m) | glass under W15's end (141 m along) | K15 (305 m along) | 164 m | 45 m/s | about 4 s | 8 s |
+| E21 B11 express | B11 (3.5 m) | J4 (20 m along) | Exit Creek Trail (97 m along) | 77 m | 45 m/s | about 2 s | 4 s |
+| E22 B12 express | B12 (3.5 m) | J5 (20 m along) | Exit W12 Pond (198 m along) | 178 m | 45 m/s | about 5 s | 9 s |
+| E23 B14 express | B14 (3.5 m) | J4 (20 m along) | MH7's foot (439 m along) | 419 m | 45 m/s | about 10 s | 21 s |
+| E24 B15 express | B15 (3.5 m) | K15 (20 m along) | Exit W7 Pond (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
+| E25 B27 express | B27 (5.0 m) | J4 (20 m along) | the flooded sag's start (184 m along) | 164 m | 45 m/s | about 4 s | 8 s |
+| E26 B27 express | B27 (5.0 m) | the flooded sag's end (246 m along) | J6 (317 m along) | 71 m | 45 m/s | about 2 s | 4 s |
+| E27 M4b express | M4b (5.0 m) | J6 (20 m along) | J7 (318 m along) | 298 m | 45 m/s | about 7 s | 15 s |
+| E28 M4c express | M4c (5.0 m) | glass under W8's end (182 m along) | J12 (255 m along) | 73 m | 45 m/s | about 2 s | 4 s |
+| E29 B16 express | B16 (3.5 m) | J6 (20 m along) | MH8's foot (355 m along) | 335 m | 45 m/s | about 8 s | 17 s |
+| E30 B17 express | B17 (3.5 m) | J7 (20 m along) | MH9's foot (155 m along) | 135 m | 45 m/s | about 4 s | 7 s |
+| E31 B19a express | B19a (3.5 m) | J13 (20 m along) | K19 (224 m along) | 204 m | 45 m/s | about 5 s | 10 s |
+| E32 B26 express | B26 (3.5 m) | J6 (20 m along) | Exit Under Bridges (90 m along) | 70 m | 45 m/s | about 2 s | 3 s |
+| E33 B20 express | B20 (3.5 m) | J8 (20 m along) | MH11's foot (248 m along) | 228 m | 45 m/s | about 6 s | 11 s |
+| E34 M2a express | M2a (5.0 m) | J10 (20 m along) | glass under W9's start (118 m along) | 98 m | 45 m/s | about 3 s | 5 s |
+| E35 M2b express | M2b (5.0 m) | J9 (20 m along) | glass under W0's start (141 m along) | 121 m | 45 m/s | about 3 s | 6 s |
+| E36 M2c express | M2c (5.0 m) | K25 (20 m along) | Exit Far West Pond (250 m along) | 230 m | 45 m/s | about 6 s | 12 s |
+| E37 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
+| E38 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
 
 ## What differs from the proposal
 
@@ -171,3 +176,4 @@ On every run of pipe longer than about 100 m between two places where you have a
 - Round 24 Part B (Dan: "shouldn't all main lines intersect here?"): every main now pours into the hub as a waterfall off a ledge. M3 comes in at the mid ledge (it came in at the floor); M4 starts with a new length from J6 straight to the hub's mid ledge (the old J4 to J6 length is B27, an unmarked 5 m branch, with its flooded sag); M2 goes on from J10 through K1, K2 and K3 to the hub's top ledge (the north maze's 5 m line; K1 to K2 widened to 5 m); M6 runs from Nelson Lake to the hub's mid ledge, 2 km (it ran from J9, on M2)
 - Round 24 Part B (Dan: "It is very easy to get turned around in the tunnels"): chevrons on the mains' stripes point the way to the hub along the mains, and every junction on a main has a HUB sign with an arrow beside the main that leads there
 - Round 24 (Dan): L_W8, the launch over the Chastain Glen pond, and its pipe B18 are out (they left a house floating); GP, 100 m away, is that pond's way in and out
+- Round 28 (Dan: "Lets try the shortcuts"): the underground race's switch shortcuts are built as world pipes. S2 the dive pipe: two junctions on M5 (J14, J15; M5's line and floor kept) and a straight pipe between them that dives under M5's bend (up to 24 %) with a flooded sump at the bottom; J15 sits 30 m clear of B8. S3 the high line: J1 straight to a high opening 2.5 m up J2's west wall (J2 3 m taller and 2 m wider), lined up with M1b's opening across the room: you fly over J2's floor

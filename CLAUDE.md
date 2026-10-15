@@ -292,6 +292,13 @@ shortcuts S1 to S3, the hairpin before the line moved down a level, a ramp back 
 turned sideways, the camera keeps the player's view; C riders' hands, fist wave and celebrations, hair styles (fix Short and
 Medium, add Mohawk, Crew cut, Spiky).
 
+**Round 28 (see `TODO.md`, status there):** Part A (the manhole covers drawn over the street's own triangles) and Part B (the Underground race:
+the span replaces the mid-to-top ramp, the line on it, the grid off the lap; S1 to S3 built: J14 / J15 on M5 with the S2 dive pipe, J2 taller
+with S3's high opening; resets on the race's line facing forward; bikes gentler on the walls; the camera view never changes by itself) built and
+checked in the exe by script, not yet driven by Dan. Checks: `ChastainRush.ManholeProbe.Look -probeOut <file>` and `ChastainRush.RayProfile.Run
+-rays "name:x0,z0,y0,x1,z1,y1,step;..." -probeOut <file>` (Editor batch); `ChastainRush.exe -exeRound28 <dir> [-r28Only
+race,shortcuts,resets,bikes,bikewall,camera] -vehicle drifter -logFile <dir>\Player.log`; `-exeShots` takes `"view": "first"`. The exe reads
+the routes Build Map embedded in the scene: a route change needs a full build, not `-playerBuildKeepScene`.
 **Camera view rule (Dan, 2026-10-15):** the camera view only changes when the player changes it; the pipe camera changes how a
 chase view follows, never which view it is.
 

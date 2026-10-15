@@ -124,8 +124,19 @@ namespace ChastainRush
             float rampLen = (ym - y0) / HubRampGrade;
             // floor to the mid ledge: along the floor's -b side, up toward +a, into the mid ledge's +a band (its face at a = hl - iF)
             Ramp(O + u3 * ((hl - iF) - rampLen) - v3 * (hw - iF), O + u3 * (hl - iF) - v3 * (hw - iF), v3, HubRampW, y0, ym, "ramp floor to mid ledge");
-            // mid to the top ledge: along the mid ledge's +b band, up toward -a, into the top ledge's -a band (its face at a = -(hl - iM))
-            Ramp(O + u3 * (-(hl - iM) + rampLen) + v3 * (hw - iM), O + u3 * (-(hl - iM)) + v3 * (hw - iM), -v3, HubRampW, ym, yt, "ramp mid to top ledge");
+            // Round 28 (B2, Dan: "The tight hairpin turn right before the finish is a terrible idea. Lets move it down a level where there is
+            // some open space"): the mid-to-top ramp along the mid ledge's +b band (up toward -a, onto the top ledge's -a end) is gone; THE
+            // SPAN replaces it: a 9 m deck from the mid ledge's -b side straight across the chasm, up onto the top ledge in front of M5's
+            // mouth (its line, a = M5's opening). The race comes round the mid ledge (the turn-round, a level down) and up it into M5
+            var m5 = c.openings.FirstOrDefault(o => o.tube == "M5b");
+            if (m5 != null) BuildSpan(room, root, P, m5.t, hw, iM, iF, ym, yt, up, v3);
+            else Debug.LogWarning("[Round28] the hub: no M5b opening (no span)");
+            // Round 28 (B3, Dan: "The entrance back into the hub I think should have a ramp or something"): an apron out of M1's mouth onto
+            // the mid ledge: the barrel's lower curve carried out 5 m and eased flat, with sloping skirts, so a vehicle riding the barrel's
+            // side comes down onto the ledge instead of dropping off the barrel's end
+            var m1 = c.openings.FirstOrDefault(o => o.tube == "M1b");
+            if (m1 != null) BuildMouthApron(room, P, m1, hl, hw, ym);
+            else Debug.LogWarning("[Round28] the hub: no M1b opening (no apron)");
             // the grates' shafts: square concrete walls from the ceiling up to the ground, a steel grate over each at the ground (solid:
             // a car drives over it), a hole in the terrain under it, daylight down through it (a spotlight and soft beams)
             var grateMb = new MeshBuilder(); var beams = new List<(Vector3 top, float drop)>();
@@ -194,6 +205,15 @@ namespace ChastainRush
                 var mouth = O + nrm * (half - o.inset) + along * o.t;
                 float yLedge = o.lvl == "top" ? yt : ym;
                 var path = new List<(Vector3 from, Vector3 to, bool fall)>();
+                if (o.tube == "M5b" && spanB1 > spanB0)
+                {
+                    // Round 28 (B2): M5's water runs out across the top ledge onto the span and down it to the mid ledge (no sheet through
+                    // the deck); no fall, so no roar here
+                    var q = mouth + up * yLedge;
+                    for (float b = spanB1; b >= spanB0 + 1f; b -= 2f) { var nq = P(spanA, b, SpanY(b) + 0.02f); path.Add((q, nq, false)); q = nq; }
+                    BuildFall(root, path, 2.2f, "HUB waterfall " + o.tube + " (down the span)");
+                    falls++; continue;
+                }
                 var p0 = mouth + up * yLedge; var p1 = mouth - nrm * (o.lvl == "top" ? HubTopW : HubMidW) + up * yLedge;
                 path.Add((p0, p1, false));
                 if (o.lvl == "top")
@@ -247,6 +267,95 @@ namespace ChastainRush
             for (float a = -hl; a <= hl; a += 4f) for (float b = -hw; b <= hw; b += 4f) { var q = P(a, b, 0f); least = Mathf.Min(least, Ground(terrain, q.x, q.z) - (yc + 0.3f)); }
             Debug.Log($"[Round23+] THE HUB: {c.length:0} x {c.width:0} m, floor {y0:0} m, mid ledge {ym:0} m ({HubMidW:0} m wide), top ledge {yt:0} m ({HubTopW:0} m wide), ceiling {yc:0.0} m; least ground over the ceiling {least:0.0} m; {c.openings.Length} pipes in, {falls} waterfalls, {lamps} lamps, ramps at {HubRampGrade * 100f:0} %, a pool {2f * PoolHA:0} x {2f * PoolHB:0} m");
             cells.Cells.Add((root, new Bounds(O + up * ((y0 + yc) * 0.5f), new Vector3(2f * hl + 10f, yc - y0 + 10f, 2f * hl + 10f))));
+        }
+
+        // ---------------------------------------------------------------- Round 28: the span and M1's apron
+        // THE SPAN (B2): a deck 9 m wide on the line of M5's opening (a = its t), from the mid ledge's -b side against the top ledge's face
+        // (b = -(hw - iM), at the mid ledge) to the top ledge's +b face (b = hw - iM, at the top ledge). Flat on the ledge, it climbs from
+        // 3 m out (b = SpanRise) at an even grade with 6 m eased at both ends (21 %), solid 0.6 m thick where it is over the chasm; where it
+        // still lies on the mid ledge its sides slope down to the ledge (a wheel crossing it rolls over, no step). A reset line down its
+        // middle (DrainPipe). Seen from the hub's frame: a along u3, b along v3
+        const float SpanHalf = 4.5f, SpanThick = 0.6f, SpanEase = 6f;
+        static float spanA, spanB0, spanRise, spanB1, spanY0, spanY1;
+        static float SpanY(float b)
+        {
+            float L = spanB1 - spanRise, H = spanY1 - spanY0, g = H / (L - SpanEase), s = b - spanRise;
+            if (s <= 0f) return spanY0;
+            if (s >= L) return spanY1;
+            if (s < SpanEase) return spanY0 + g * s * s / (2f * SpanEase);
+            if (s > L - SpanEase) return spanY1 - g * (L - s) * (L - s) / (2f * SpanEase);
+            return spanY0 + g * (s - SpanEase * 0.5f);
+        }
+        static void BuildSpan(UvMesh room, Transform root, System.Func<float, float, float, Vector3> P, float a0, float hw, float iM, float iF, float ym, float yt, Vector3 up, Vector3 v3)
+        {
+            spanA = a0; spanB0 = -(hw - iM); spanRise = spanB0 + 3f; spanB1 = hw - iM; spanY0 = ym; spanY1 = yt;
+            float ledgeEdge = -(hw - iF);   // where the mid ledge ends and the chasm begins under it
+            float aL = a0 - SpanHalf, aR = a0 + SpanHalf;
+            var bs = new List<float>(); for (float b = spanB0; b < spanB1 - 1e-3f; b += 1f) bs.Add(b); bs.Add(spanB1);
+            if (!bs.Contains(ledgeEdge)) { bs.Add(ledgeEdge); bs.Sort(); }
+            Vector2 Uv(float a, float b) => new Vector2(a / 2.4f, 0.02f + Mathf.Repeat(b / 40f, 0.02f));
+            for (int i = 0; i + 1 < bs.Count; i++)
+            {
+                float b0 = bs[i], b1 = bs[i + 1], y0 = SpanY(b0), y1 = SpanY(b1); bool overLedge = b1 <= ledgeEdge + 1e-3f;
+                // the deck
+                room.Quad(P(aL, b0, y0), P(aL, b1, y1), P(aR, b1, y1), P(aR, b0, y0), Uv(aL, b0), Uv(aL, b1), Uv(aR, b1), Uv(aR, b0), up);
+                if (overLedge)
+                {
+                    // on the mid ledge: skirts sloping 1.5 m out from each side down to the ledge
+                    foreach (float sd in new[] { -1f, 1f })
+                    {
+                        float ae = sd < 0 ? aL : aR, ao = ae + sd * 1.5f;
+                        room.Quad(P(ao, b0, ym), P(ao, b1, ym), P(ae, b1, y1), P(ae, b0, y0), Uv(ao, b0), Uv(ao, b1), Uv(ae, b1), Uv(ae, b0), up);
+                    }
+                }
+                else
+                {
+                    // over the chasm: the sides and the underside
+                    var side = Vector3.Cross(v3, up).normalized;   // toward +a
+                    room.Quad(P(aR, b0, y0), P(aR, b1, y1), P(aR, b1, y1 - SpanThick), P(aR, b0, y0 - SpanThick), new Vector2(b0 / 2.4f, 0.3f), new Vector2(b1 / 2.4f, 0.3f), new Vector2(b1 / 2.4f, 0.25f), new Vector2(b0 / 2.4f, 0.25f), side);
+                    room.Quad(P(aL, b1, y1), P(aL, b0, y0), P(aL, b0, y0 - SpanThick), P(aL, b1, y1 - SpanThick), new Vector2(b1 / 2.4f, 0.3f), new Vector2(b0 / 2.4f, 0.3f), new Vector2(b0 / 2.4f, 0.25f), new Vector2(b1 / 2.4f, 0.25f), -side);
+                    room.Quad(P(aR, b0, y0 - SpanThick), P(aR, b1, y1 - SpanThick), P(aL, b1, y1 - SpanThick), P(aL, b0, y0 - SpanThick), Uv(aR, b0), Uv(aR, b1), Uv(aL, b1), Uv(aL, b0), -up);
+                }
+            }
+            // the face of the deck's edge where it leaves the mid ledge (under it: the chasm)
+            {
+                float yE = SpanY(ledgeEdge);
+                room.Quad(P(aL, ledgeEdge, ym), P(aR, ledgeEdge, ym), P(aR, ledgeEdge, yE - SpanThick), P(aL, ledgeEdge, yE - SpanThick), new Vector2(0f, 0.3f), new Vector2(3f, 0.3f), new Vector2(3f, 0.25f), new Vector2(0f, 0.25f), v3);
+            }
+            // resets on it: a line down its middle
+            var host = new GameObject("Hub the span runtime"); host.transform.SetParent(root, false);
+            var dp = host.AddComponent<DrainPipe>(); dp.id = "HUB the span"; dp.halfWidth = SpanHalf - 0.2f; dp.clearHeight = 6f; dp.radius = 0.1f; dp.barrelFrom = 0f; dp.barrelTo = 0f;
+            var fl = new List<Vector3>(); for (float b = spanB0; b <= spanB1 + 1e-3f; b += 0.5f) fl.Add(P(a0, b, SpanY(b)));
+            dp.floor = fl.ToArray();
+            Debug.Log($"[Round28] THE HUB: the span at a {a0:0.0}, from b {spanB0:0} (mid ledge, {ym:0} m) to b {spanB1:0} (top ledge, {yt:0} m), {2f * SpanHalf:0} m wide, steepest {100f * (yt - ym) / (spanB1 - spanRise - SpanEase):0} %, under it over the mid ledge's edge {SpanY(ledgeEdge) - SpanThick:0.00} m");
+        }
+
+        // the apron out of a pipe's mouth onto its ledge (B3): the barrel's lower curve (to 70 degrees up its side) carried 5 m out from
+        // the mouth and eased flat, its sides sloping on down to the ledge over 2.4 m (34 degrees)
+        static void BuildMouthApron(UvMesh room, System.Func<float, float, float, Vector3> P, NetOpening o, float hl, float hw, float y)
+        {
+            float R = o.d * 0.5f, wC = R * Mathf.Sin(70f * Mathf.Deg2Rad), hC = R - Mathf.Sqrt(R * R - wC * wC), wS = wC + 2.4f, len = 5f;
+            // the mouth's plane and the way out (into the hub), and across: in the hub's frame (a, b)
+            Vector2 mouth, outw, acr;
+            switch (o.wall)
+            {
+                case 0: mouth = new Vector2(hl - o.inset, o.t); outw = new Vector2(-1f, 0f); break;
+                case 1: mouth = new Vector2(o.t, hw - o.inset); outw = new Vector2(0f, -1f); break;
+                case 2: mouth = new Vector2(-(hl - o.inset), o.t); outw = new Vector2(1f, 0f); break;
+                default: mouth = new Vector2(o.t, -(hw - o.inset)); outw = new Vector2(0f, 1f); break;
+            }
+            acr = new Vector2(-outw.y, outw.x);
+            float Hw(float w) { w = Mathf.Abs(w); return w <= wC ? R - Mathf.Sqrt(Mathf.Max(0f, R * R - w * w)) : Mathf.Max(0f, hC * (1f - (w - wC) / (wS - wC))); }
+            float F(float u) { float k = Mathf.Clamp01(u / len); return 1f - k * k * (3f - 2f * k); }
+            Vector3 Q(float u, float w) { var p = mouth + outw * u + acr * w; return P(p.x, p.y, y + Hw(w) * F(u) + 0.005f); }
+            var ws = new List<float>(); for (float w = -wS; w <= wS + 1e-3f; w += 0.3f) ws.Add(w);
+            for (float u = 0f; u < len - 1e-3f; u += 0.5f)
+                for (int i = 0; i + 1 < ws.Count; i++)
+                {
+                    var q00 = Q(u, ws[i]); var q01 = Q(u, ws[i + 1]); var q11 = Q(u + 0.5f, ws[i + 1]); var q10 = Q(u + 0.5f, ws[i]);
+                    room.Quad(q00, q01, q11, q10, new Vector2(ws[i] / 2.4f, 0.02f), new Vector2(ws[i + 1] / 2.4f, 0.02f), new Vector2(ws[i + 1] / 2.4f, 0.04f), new Vector2(ws[i] / 2.4f, 0.04f), Vector3.up);
+                }
+            Debug.Log($"[Round28] THE HUB: an apron out of {o.tube}'s mouth, {len:0} m out, the barrel's curve to {hC:0.00} m up eased flat, {2f * wS:0.0} m wide");
         }
 
         // a waterfall's way: moving water along the flat legs, falling sheets on the drops (NetworkWaterfall: the roar, the mist)

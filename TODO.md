@@ -2729,6 +2729,60 @@ C3. HAIR: "can we fix some of the hair styles? Especially short and medium don't
    all in the garage's hair list, all working with every hat (a hat hides what it should) and every hair color, and the
    AI riders' random looks using them. Pictures of each hair style from front, side and back, with and without a hat.
 
+**STATUS of Round 28 Part B (Claude, 2026-10-15): B1 to B6 DONE, exe rebuilt (2026-10-15 07:01), committed; checked in the exe by script (muted, minimized,
+1280 x 720), not yet driven by Dan.**
+- B2 DONE (the end of the lap; Code's proposal, built). Why the hairpin: M1 comes into the hub at mid level on the west wall and M5 leaves at top
+  level on the south wall (a 20); the mid-to-top ramp arrived on the top ledge pointing west, so every lap ended in a U-turn on the 7 m top ledge.
+  Now: that ramp is gone and THE SPAN replaces it (MapBuilder.NetworkHub.cs BuildSpan): a 9 m deck from the mid ledge's north side straight
+  south across the chasm onto the top ledge in front of M5's mouth, 21 % at its steepest (eased at both ends), M5's water running down it. The lap
+  comes out of M1, turns right and goes round the mid ledge's south, east and north sides (the turn-round, a level down, where there is room:
+  four 90 degree corners on a 9 m ledge, AI held to 9 to 11 m/s there), left onto the span, up it and straight into M5. The LINE is on the span,
+  13 m up it (9 m wide); the GRID is on the mid ledge's north side west of the span, off the lap (40 m from it): a stopped player is in nobody's
+  way. Lap 1370 m (was 1488). Finished AI cars drive on up the span and park on the top ledge west of M5's mouth, off the lap (route
+  inish_park, RoadDriver.DriveToPark; stopped on the line they blocked M5's 5 m mouth).
+- B3 DONE. At M1's mouth the floor runs smoothly onto the mid ledge on the pipe's center line, but a vehicle off center rode the barrel's curve
+  and dropped 1.2 m off its end (probe: ChastainRush.RayProfile.Run, new, Editor batch). An apron (BuildMouthApron): the barrel's lower curve
+  carried 5 m out onto the ledge and eased flat, with sloping skirts, 9.5 m wide: no drop, step or lip anywhere across the mouth.
+- B1 DONE, all three built as proposed (world pipes and junctions, Tools/mapgen/pipe_network.py; the race layer from
+  make_underground_route.py), each behind a striped switch gate (Round 27's mechanism), the AI by ShortcutStrategy, on the map like any route:
+  - S1 "Waterfall leap": out of M1's mouth straight over the ledge's edge with M1's water to the hub's floor, round the pool's west end and up the
+    floor ramp to the east side (124 m against 141 m of the lap; forgives CP5). Its gate is a section of the railing (race only) along the mid
+    ledge's west and south edges, which stop a free fall there taking the same way. Plate: up M5's right-hand wall, 60 m in from the hub (68
+    degrees round: ride the wall).
+  - S2 "Dive pipe": two new junctions on M5 (J14 at its station 205, J15 at 430: the proposal's 389 was 2 m from B8, here 30 m clear), M5's line
+    and floor kept, and a pipe between them diving under M5's bend (to 1.8 m under it; up to 24 % where it climbs back, steeper than the hub's
+    20 % ramps) with a flooded sump at the bottom (170 m against 268 m; forgives CP2). Its line in J15 is a 9 m arc (S2 leaves through the side
+    wall). Plate: on J3's floor 6.5 m off the line. Saves more than the proposal's 45 m because J15 had to move: Dan to judge.
+  - S3 "High line": J1 straight to a high opening 2.5 m up J2's west wall (J2 made 3 m taller and 2 m wider), lined up with M1b across the room:
+    a jump over J2's floor (183 m against 203 m; forgives CP3, CP4). Plate: on J1's floor 6.8 m off the line.
+  The AI go for the plates on detours (lap options, ShortcutStrategy). Round 27's check-only TEST gate is gone (RaceController.ExtraSwitchGates
+  removed).
+- B4 DONE. Cause: a reset in a race inside any pipe, junction or the hub's ledges used the pipes' own reset, which faced the vehicle the way it was
+  pointing (it knew the race's way only on a shortcut's line). Now in the underground race a reset finds the nearest point of the race's line in
+  3D (the lap or a shortcut's; the lap passes over itself at the span), puts the vehicle there on its wheels facing the way the race goes, and
+  never back across the line (CarRecovery.UndergroundSpot, RaceRoute.NearestOnRoute). Same for the AI's own resets near the line, and an AI
+  reset twice on the same shortcut gives it up for the lap. Check: 20 places evenly round the lap (pipes, glass, junctions, ledges, the span),
+  the vehicle put there facing backward then reset: 20 of 20 facing the race's way (0 to 10 degrees off), on its wheels, on the route.
+- B5 DONE. Found by script (-r28Only bikes,bikewall): a whole lap at race pace and riding the walls of M1b at 12, 20 and 28 m/s (steered hard up
+  each wall, let go). A centered lap never turned the bike across by itself; what did: slowed on the roof (throttle off at 20 m/s), the Drifter
+  Twin dropped off and stayed 30 to 37 degrees across for a second, and steered on the wall it went 25 to 37 degrees across. Now for bikes
+  (DrainPipe.cs): held to the wall from 2 m/s faster, at most 20 degrees across on the wall (was 35), pulled back along the pipe 1.6 times as
+  hard, and dropped off the wall or knocked with the steering let go, turned back along the pipe in the air and on the floor. After: 12 of 12
+  wall cases come back along the pipe when let go; the lap: no spell across without steering.
+- B6 DONE. Cause: CameraViews (Racer's) eased first person back to the chase view whenever the vehicle tilted past 70 degrees or wiped out, and
+  every wall ride in a pipe tilts it that far. Now the view never changes by itself. Check: first person chosen, a whole lap (pipes, glass,
+  junctions, M1's mouth, the hub, the span), a reset, the finish and an express ride in free roam: never changed, the camera always at the
+  rider's eyes (13,000 frames).
+- Check (ChastainRush.exe -exeRound28 <dir> [-r28Only race,shortcuts,resets,bikes,bikewall,camera] -vehicle drifter, Checks/Round28Runner.cs): 25 of
+  25. Race: 3 AI (Pebble Coupe, Turf Rocket, Street Classic, taking every open shortcut and switch detour for the check): every switch opened by an
+  AI racer, S1 taken 6 times, S2 6, S3 3; all three finish, no missed checkpoint, 3 to 9 AI resets each; 60 fps (vSync, 1280 x 720, not measured
+  at 3840 x 2160). Pictures: Data/screenshots/round28/b_hub_span_apron_shortcuts.jpg.
+- Left for Dan: the scripted lap at race pace once went off the mid ledge onto the floor at the turn onto the span (a 90 degree corner on a 9 m
+  ledge, no railing there: the floor ramp brings you back); say if it wants a railing. Mouths onto ledges other than M1's still end the barrel
+  at the ledge (not changed: Dan pointed at M1's). Imported from Racer: nothing.
+- For Dan to check: the Underground race (the span, the grid, the line), S1 to S3 and their plates, resets anywhere, bikes on the walls, first
+  person underground.
+
 **STATUS of Round 28 Part A (Claude, 2026-10-15): DONE, exe rebuilt (2026-10-15 03:52), committed; pictures from the exe by script (muted,
 minimized), not yet driven by Dan.**
 - A DONE. Why the covers were missing: every cover was built (13 of 13 in the build log), but it was drawn at the terrain's height + the

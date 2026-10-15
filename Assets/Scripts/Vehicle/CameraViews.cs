@@ -27,7 +27,7 @@ namespace Racer
         public string CurrentName => Names[(int)Current];
         float baseFov, baseNear, baseSmooth, baseHeading;
         bool touched; View lastView;
-        float viewWeight = 1, calmSince = -1;
+        float viewWeight = 1;
         Pose last, blendFrom; float blend = 1, blendLength = .35f;
         static bool Quiet => ChastainRush.CheckRun.Active;
 
@@ -76,14 +76,13 @@ namespace Racer
             touched = false; cam.fieldOfView = baseFov; cam.nearClipPlane = baseNear;
             chase.offsetScale = Vector3.one; chase.positionSmoothTime = baseSmooth; chase.headingResponse = baseHeading;
         }
-        void Settle(ArcadeVehicle car)
-        {
-            var config = car.GetComponent<VehicleConfiguration>();
-            bool rough = (config && config.WipedOut) || car.transform.up.y < .35f;
-            if (rough) calmSince = -1; else if (calmSince < 0) calmSince = Time.time;
-            bool settled = calmSince >= 0 && Time.time - calmSince > .4f;
-            viewWeight = Mathf.MoveTowards(viewWeight, settled ? 1 : 0, Time.unscaledDeltaTime / (settled ? .45f : .3f));
-        }
+        // Chastain Rush, Round 28 (B6, Dan: "I drive in first POV and it keeps switching to a follow cam back to first POV"): Racer eased
+        // first person / front back to the chase view while the vehicle was tilted past 70 degrees or wiped out, and every wall ride in a
+        // pipe tilts it that far. Standing rule: the view only changes when the player changes it, so the player's view is always kept
+        // Chastain Rush, Round 28 (B6, Dan: "I drive in first POV and it keeps switching to a follow cam back to first POV"): Racer eased
+        // first person / front to the chase view while the vehicle was tilted past 70 degrees or wiped out, and every wall ride in a pipe
+        // tilts it that far. Standing rule: the view only changes when the player changes it, so the chosen view is always kept
+        void Settle(ArcadeVehicle car) { viewWeight = 1; }
 
         // ---------- free look (Racer's CameraViews.FreeLook) ----------
         float lookYaw, lookPitch, lookYawSpeed, lookPitchSpeed, mouseYaw, mousePitch;

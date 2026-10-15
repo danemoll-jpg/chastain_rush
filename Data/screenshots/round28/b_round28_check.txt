@@ -1,0 +1,70 @@
+Round 28 check, 2026-10-15 07:01, the exe, 1280 x 720, muted (AudioListener.volume 0).
+vehicle drifter
+== B1 the Underground race, 3 AI taking every open shortcut and every switch's detour
+PASS  the race layer: 10 seals, 2 railings, 3 switch gates S1 to S3  -  10 seals, 2 rails, gates SG1, SG2, SG3
+PASS  the route: 3 shortcuts and 3 switch detours  -  S1, S2, S3, P1, P2, P3
+PASS  the grid is off the lap (the player there is in nobody's way)  -  grid (1870.0, 262.0, 1168.5), 39.8 m from the lap
+PASS  S1 WATERFALL LEAP: a racer over its plate opened it  -  by BLUE at 11 s
+PASS  S2 DIVE PIPE: a racer over its plate opened it  -  by BLUE at 21 s
+PASS  S3 HIGH LINE: a racer over its plate opened it  -  by EMBER at 55 s
+PASS  the AI took S1 once it was open  -  6 times
+PASS  the AI took S2 once it was open  -  6 times
+PASS  the AI took S3 once it was open  -  3 times
+PASS  EMBER (Pebble Coupe) finishes the 3 laps with no missed checkpoint  -  laps 3, total 277.0 s, missed 0, laps 93.0 / 87.0 / 97.0, shortcuts [lap 1 S1, lap 3 S2, lap 3 S1], AI resets 3
+PASS  GOLD (Turf Rocket) finishes the 3 laps with no missed checkpoint  -  laps 3, total 272.6 s, missed 0, laps 91.9 / 97.6 / 83.0, shortcuts [lap 1 S2, lap 1 S1, lap 2 S2, lap 2 S3, lap 2 S1, lap 3 S3, lap 3 S1], AI resets 9
+PASS  BLUE (Street Classic) finishes the 3 laps with no missed checkpoint  -  laps 3, total 275.6 s, missed 0, laps 95.4 / 93.7 / 86.5, shortcuts [lap 1 S2, lap 1 S1, lap 2 S2, lap 3 S2, lap 3 S3], AI resets 6
+INFO  frame rate during the race (the camera on the grid in the hub): 60 fps average, slowest 1 % 59 fps (1280 x 720, vSync 1; not measured at 3840 x 2160)
+== B1 the shortcuts, the player's vehicle driven along each by script
+PASS  S1's gate shut: the vehicle does not get over the ledge's edge  -  STUCK in 3.4 s, ended at (1859.5, 262.5, 1132.8), farthest from the line 1.0 m, fewest wheels down 4
+PASS  S1 WATERFALL LEAP: over its plate opens its gate  -  at (1897.0, 273.8, 1077.4) by YOU
+PASS  S1 S1 Waterfall leap: driven through to its end, on its wheels, never stuck  -  reached its end in 11.0 s, ended at (1942.7, 262.7, 1157.7), farthest from the line 8.6 m, fewest wheels down 0
+PASS  S2 DIVE PIPE: over its plate opens its gate  -  at (1780.4, 272.6, 1004.6) by YOU
+PASS  S2 S2 Dive pipe: driven through to its end, on its wheels, never stuck  -  reached its end in 18.6 s, ended at (1582.5, 274.9, 1002.4), farthest from the line 1.6 m, fewest wheels down 0
+PASS  S3 HIGH LINE: over its plate opens its gate  -  at (1494.7, 275.3, 1148.8) by YOU
+PASS  S3 S3 High line: driven through to its end, on its wheels, never stuck  -  reached its end in 25.2 s, ended at (1645.7, 270.9, 1093.0), farthest from the line 1.7 m, fewest wheels down 0
+== B4 resets at 20 places round the lap (put there facing backward, then a reset as R / Y does)
+       1 s    34 m (HUB the span): from (1919.8, 272.4, 1118.8) facing back -> (1920.4, 272.4, 1118.8), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       2 s   103 m (M5b@122): from (1898.4, 272.8, 1075.9) facing back -> (1898.6, 272.7, 1075.4), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       3 s   171 m (M5b@61): from (1834.1, 273.0, 1054.1) facing back -> (1834.4, 272.9, 1053.8), 1 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       4 s   240 m (J3): from (1787.6, 273.1, 1003.8) facing back -> (1788.1, 273.1, 1003.4), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       5 s   308 m (M5d@0): from (1736.5, 273.5, 958.6) facing back -> (1736.8, 273.4, 958.2), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       6 s   377 m (M5c@181): from (1688.4, 273.8, 909.8) facing back -> (1688.8, 273.7, 909.4), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       7 s   445 m (M5c@121): from (1633.0, 274.2, 894.1) facing back -> (1632.6, 274.1, 893.8), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       8 s   514 m (M5c@60): from (1644.8, 274.5, 959.2) facing back -> (1644.3, 274.5, 959.3), 1 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+       9 s   582 m (J14): from (1609.1, 274.8, 1000.3) facing back -> (1609.1, 274.8, 999.7), 2 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      10 s   651 m (M5a@121): from (1544.1, 275.2, 1017.5) facing back -> (1543.8, 275.1, 1017.1), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      11 s   719 m (M5a@60): from (1503.8, 275.5, 1064.3) facing back -> (1503.4, 275.4, 1064.2), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      12 s   788 m (M5a@0, on P3): from (1492.5, 275.9, 1130.8) facing back -> (1491.3, 275.8, 1128.0), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      13 s   856 m (M1a@0): from (1540.9, 274.6, 1159.2) facing back -> (1541.1, 274.5, 1159.7), 2 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      14 s   925 m (M1a@60): from (1590.6, 272.3, 1112.4) facing back -> (1590.9, 272.3, 1112.8), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      15 s   994 m (M1b@0): from (1653.6, 270.7, 1092.5) facing back -> (1653.6, 270.6, 1093.0), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      16 s  1062 m (M1b@61): from (1721.5, 267.9, 1100.4) facing back -> (1721.4, 267.9, 1100.9), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      17 s  1131 m (M1b@121): from (1787.9, 265.2, 1117.4) facing back -> (1787.8, 265.1, 1117.9), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      18 s  1199 m (HUB mid ledge -a): from (1853.6, 262.7, 1131.8) facing back -> (1853.8, 262.6, 1132.2), 3 deg off the race's way, 4 wheels down, up 0.98, 0.1 m from the line, +0.6 m over it OK
+      19 s  1268 m (HUB mid ledge +b): from (1916.3, 262.5, 1120.9) facing back -> (1916.3, 262.5, 1121.5), 0 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+      20 s  1336 m (HUB mid ledge -b): from (1942.7, 262.5, 1165.9) facing back -> (1942.3, 262.5, 1165.5), 13 deg off the race's way, 4 wheels down, up 1.00, 0.0 m from the line, +0.5 m over it OK
+PASS  every reset faces the way the race goes, on its wheels, on the route  -  20 of 20
+== B5 / B6 the lap by script (heading logged; first person chosen)
+PASS  B6: first person kept through a reset  -  view First person, camera 1.2 m from the vehicle
+INFO  the lap by script in 260 s, NOT finished; spells of 0.25 s or more turned 30 degrees or more across the lap: 1
+      0.40 s turned across, from at s 1234 m (1883.0, 252.5, 1155.5) in a pipe, 0.0 m/s, steering +1.00, 4 wheels down, on a surface 0 deg from level
+PASS  B5: the bike never turned across the lap by itself (steering under half) for a quarter second or more  -  1 spells, 0 with the steering under half
+PASS  B6: first person kept round the whole lap (pipes, glass, junctions, M1's mouth, the hub, the span) and at the finish  -  13000 frames: view changed in 0, camera more than 3 m from the vehicle in 0
+== B5 riding the walls (M1b, free roam, the express off): steered up a wall, then let go
+      12 m/s right wall: up the wall to 66 deg, steered at most 36 deg across; after letting go the nose at most 37 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      12 m/s right wall, throttle off up there: up the wall to 59 deg, steered at most 36 deg across; after letting go the nose at most 36 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      12 m/s left wall: up the wall to 66 deg, steered at most 32 deg across; after letting go the nose at most 37 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      12 m/s left wall, throttle off up there: up the wall to 19 deg, steered at most 32 deg across; after letting go the nose at most 37 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      20 m/s right wall: up the wall to 178 deg, steered at most 27 deg across; after letting go the nose at most 27 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      20 m/s right wall, throttle off up there: up the wall to 178 deg, steered at most 27 deg across; after letting go the nose at most 27 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      20 m/s left wall: up the wall to 178 deg, steered at most 30 deg across; after letting go the nose at most 32 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      20 m/s left wall, throttle off up there: up the wall to 105 deg, steered at most 30 deg across; after letting go the nose at most 32 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      28 m/s right wall: up the wall to 178 deg, steered at most 22 deg across; after letting go the nose at most 20 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      28 m/s right wall, throttle off up there: up the wall to 178 deg, steered at most 22 deg across; after letting go the nose at most 20 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      28 m/s left wall: up the wall to 178 deg, steered at most 28 deg across; after letting go the nose at most 28 deg across, more than 30 deg across from 0.6 s after letting go for 0.00 s OK
+      28 m/s left wall, throttle off up there: up the wall to 168 deg, steered at most 28 deg across; after letting go the nose at most 35 deg across, more than 30 deg across from 0.6 s after letting go for 0.18 s OK
+PASS  B5: let go up a wall, the bike comes back along the pipe (never left across)  -  12 of 12
+== B6 an express ride in free roam (Boost), first person
+PASS  B6: first person kept on an express ride  -  E10 M5d express: rides 1 (E10 M5d express (forward, Boost)); 179 frames: view changed 0, camera more than 3 m away 0
+
+ALL 25 CHECKS PASSED

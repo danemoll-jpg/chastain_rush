@@ -86,6 +86,7 @@ namespace ChastainRush
         public RouteSealJson[] seals;
         public RouteRailJson[] rails;
         public RouteSwitchGateJson[] switch_gates;
+        public float[] finish_park, finish_park_y;   // Round 28: where finished AI cars drive and park, off the lap (x, z ... and heights; RoadDriver)
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
         public bool AllowsVehicle(string id) => vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0;
     }
@@ -207,6 +208,11 @@ namespace ChastainRush
                 // forward: the grid is the map's spawn point on the entrance lane, and the car drives the lead-in to the loop
                 float lx = j.lead_in[0], lz = j.lead_in[1], nx = j.lead_in[2], nz = j.lead_in[3];
                 r.GridPosition = j.lead_in_y != null && j.lead_in_y.Length > 0 ? new Vector3(lx, j.lead_in_y[0], lz) : Ground(lx, lz);   // Round 27
+                if (j.lead_in_y != null && j.lead_in_y.Length * 2 == j.lead_in.Length)   // Round 28: the lead-in's own heights (the grid's ground, Surface)
+                {
+                    r.LeadIn = new Vector3[j.lead_in_y.Length];
+                    for (int i = 0; i < r.LeadIn.Length; i++) r.LeadIn[i] = new Vector3(j.lead_in[2 * i], j.lead_in_y[i], j.lead_in[2 * i + 1]);
+                }
                 r.GridYaw = Mathf.Atan2(nx - lx, nz - lz) * Mathf.Rad2Deg;
                 r.RunInLength = j.lead_in_length_m + gateS;
             }
@@ -316,7 +322,8 @@ namespace ChastainRush
             return Vector3.Lerp(Path[lo], Path[lo + 1], t);
         }
 
-        // Round 10 (checks): the lap distance from the gate, in travel order, of the lap point nearest to p
+        // Round 10 (checks): the lap distance from the gate, in travel order, of the lap point nearest to p (Round 28: on an underground
+        // route, where the lap passes over itself, height counts too: VerticalWeight)
         public float LapStationOf(Vector3 p)
         {
             float best = float.MaxValue, bs = 0f;
@@ -325,6 +332,7 @@ namespace ChastainRush
                 Vector3 a = Flat(Path[i]), b = Flat(Path[i + 1]), ab = b - a, q = Flat(p);
                 float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - a, ab) / ab.sqrMagnitude);
                 float d = (a + ab * t - q).sqrMagnitude;
+                if (Underground) { float dy = Mathf.Lerp(Path[i].y, Path[i + 1].y, t) - p.y; d += VerticalWeight * dy * dy; }
                 if (d < best) { best = d; bs = cum[i] + t * (cum[i + 1] - cum[i]); }
             }
             return Mathf.Repeat(bs - GateS, LapLength);
@@ -338,20 +346,53 @@ namespace ChastainRush
         public bool Underground;
         public RouteJson Data;   // Round 27: the race layer's seals, railings and switch gates (RaceBarriers)
         public static RaceRoute Active;
-        public static Vector3 Surface(float x, float z)
+        // Round 28: nearY (a height near the place asked about) picks the level where the route passes over itself (the span over the mid
+        // ledge); the lead-in counts too (the grid on the top ledge)
+        public static Vector3 Surface(float x, float z, float nearY = float.NaN)
         {
             var r = Active;
             if (r == null || !r.Underground) return Ground(x, z);
             var p = new Vector2(x, z); float best = 900f; float y = float.NaN;
-            var path = r.Path;
-            for (int i = 0; i + 1 < path.Length; i++)
+            void Scan(Vector3[] path)
             {
-                Vector2 a = new Vector2(path[i].x, path[i].z), b = new Vector2(path[i + 1].x, path[i + 1].z), ab = b - a;
-                float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
-                float d = (a + ab * t - p).sqrMagnitude;
-                if (d < best) { best = d; y = Mathf.Lerp(path[i].y, path[i + 1].y, t); }
+                if (path == null) return;
+                for (int i = 0; i + 1 < path.Length; i++)
+                {
+                    Vector2 a = new Vector2(path[i].x, path[i].z), b = new Vector2(path[i + 1].x, path[i + 1].z), ab = b - a;
+                    float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    float d = (a + ab * t - p).sqrMagnitude, yy = Mathf.Lerp(path[i].y, path[i + 1].y, t);
+                    if (!float.IsNaN(nearY)) d += VerticalWeight * (yy - nearY) * (yy - nearY);
+                    if (d < best) { best = d; y = yy; }
+                }
             }
+            Scan(r.Path); Scan(r.LeadIn);
             return float.IsNaN(y) ? Ground(x, z) : new Vector3(x, y, z);
+        }
+        public const float VerticalWeight = 4f;   // Round 28: a meter up or down counts as 2 m across
+        public Vector3[] LeadIn;
+
+        // Round 28 (B4, Dan: "Reset button during the race leaves me turned in the wrong direction"): the nearest point (height counting) of
+        // the lap or of a shortcut's line to p, the way the race goes there, and the line it is on (the lap: null)
+        public Vector3 NearestOnRoute(Vector3 p, out Vector3 forward, out RaceShortcut on, out float along)
+        {
+            float best = float.MaxValue; var at = p; Vector3 fw = Vector3.forward; RaceShortcut onSc = null; float al = 0f;
+            void Scan(Vector3[] path, RaceShortcut sc)
+            {
+                float acc = 0f;
+                for (int i = 0; i + 1 < path.Length; i++)
+                {
+                    Vector3 a = path[i], b = path[i + 1], ab = Flat(b - a); float L = ab.magnitude;
+                    float t = L < 1e-4f ? 0f : Mathf.Clamp01(Vector3.Dot(Flat(p - a), ab) / (L * L));
+                    var q = Vector3.Lerp(a, b, t); float dy = q.y - p.y;
+                    float d = Flat(q - p).sqrMagnitude + VerticalWeight * dy * dy;
+                    if (d < best && L > 1e-4f) { best = d; at = q; fw = ab / L; onSc = sc; al = acc + t * L; }
+                    acc += L;
+                }
+            }
+            Scan(Path, null);
+            foreach (var sc in Shortcuts) Scan(sc.Path, sc);
+            forward = fw; on = onSc; along = al;
+            return at;
         }
         static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
     }

@@ -26,16 +26,10 @@ namespace ChastainRush
             if (race.State != RaceController.Stage.Free) race.EndRace();
             race.Reload();
             Check("the Underground route loads", race.Route != null && race.Route.Name == "Underground" && race.Route.Underground, race.Route != null ? $"{race.Route.Name}, lap {race.Route.LapLength:0} m, {race.Route.Checkpoints.Count} checkpoints" : "none");
-            // the check's own test switch gate (never in the route file): across the mid ledge's north side, its plate 30 m before it
-            var route = race.Route; float sGate = route.LapStationOf(new Vector3(1900f, 262f, 1145f + 23.5f));
-            var gp = route.PointAt(sGate, out var gf); var pp = route.PointAt(sGate - 30f, out _);
-            var test = new RouteSwitchGateJson { id = "TEST", shortcut = "none", label = "TEST GATE", gate = new RouteSealJson { id = "TEST", x = gp.x, y = gp.y, z = gp.z, dx = gf.x, dz = gf.z, w = 9.5f, h = 3f }, sx = pp.x, sy = pp.y, sz = pp.z, sr = 1.8f, nx = 0f, ny = 1f, nz = 0f };
-            RaceController.ExtraSwitchGates.Add(test);
+            // Round 28: the check's TEST switch gate is gone (the route has its own three, S1 to S3: Round28Runner)
             race.StartRace();
-            RaceController.ExtraSwitchGates.Clear();   // only this race's barriers have it
             var gates = race.Barriers ? race.Barriers.Gates : null;
-            Check("the race layer is built: seals, the test switch gate", race.Barriers && race.Barriers.Seals >= 10 && gates != null && gates.Count == 1, race.Barriers ? $"{race.Barriers.Seals} seals, {gates?.Count} switch gates, {race.Barriers.MouthsClosed.Count} mouths closed" : "");
-            if (gates == null || gates.Count == 0) { race.EndRace(); yield break; }
+            Check("the race layer is built: seals, the switch gates", race.Barriers && race.Barriers.Seals >= 10 && gates != null && gates.Count == 3, race.Barriers ? $"{race.Barriers.Seals} seals, {gates?.Count} switch gates, {race.Barriers.MouthsClosed.Count} mouths closed" : "");
             while (race.State == RaceController.Stage.Countdown) yield return null;
             yield return new WaitForSecondsRealtime(1.5f);
             yield return Shot("d5_grid");
@@ -46,7 +40,7 @@ namespace ChastainRush
             var ai = race.Entrants.Where(e => !e.IsPlayer).ToList();
             Check("3 AI drivers on the grid, under the ground", ai.Count == 3 && ai.All(e => e.Car.Body.position.y < 280f), string.Join(", ", ai.Select(e => $"{e.Name} {e.VehicleName} y {e.Car.Body.position.y:0.0}")));
             frames.Clear(); measuring = true;
-            float t0 = Time.time, end = t0 + minutes * 60f, nextShot = t0 + 25f; int shots = 0; bool shotGate = false;
+            float t0 = Time.time, end = t0 + minutes * 60f, nextShot = t0 + 25f; int shots = 0;
             var slowest = ai.ToDictionary(e => e, e => (v: 99f, at: Vector3.zero));
             while (Time.time < end && ai.Any(e => !e.Finished))
             {
@@ -56,7 +50,6 @@ namespace ChastainRush
                     if (e.Finished || !e.ClockStarted) continue;
                     float v = e.Car.ForwardSpeed; if (v < slowest[e].v && Time.time > t0 + 8f) slowest[e] = (v, e.Car.Body.position);
                 }
-                if (!shotGate && gates[0].Open && Time.time > gates[0].OpenedAt + 1.5f) { shotGate = true; yield return Shot("d5_test_gate_open"); }
                 if (Time.time >= nextShot && shots < 4)
                 {
                     nextShot = Time.time + 40f; shots++;
@@ -64,7 +57,6 @@ namespace ChastainRush
                 }
             }
             measuring = false;
-            Check("the test gate's plate opened it (a racer over the plate)", gates[0].Open, gates[0].Open ? $"by {gates[0].OpenedBy} at {gates[0].OpenedAt - t0:0} s" : "never opened");
             foreach (var e in ai)
             {
                 var drv = e.Driver;

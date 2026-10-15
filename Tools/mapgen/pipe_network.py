@@ -121,8 +121,13 @@ CH = {
     "J12": dict(name="J12 GLEN NORTH", kind="junction", at=(2966.0, 908.0), yaw=10.0, size=J5M, stage=0, sign="M4 GLEN MAIN"),
     "J13": dict(name="J13 GLEN SOUTH", kind="junction", at=(2908.0, 704.0), yaw=200.0, size=J5M, stage=0),
     # stage 1: the trunk, the Enclave, the hub, the north and Enclave mazes
-    "J2":  dict(name="J2 POND JCT", kind="junction", at=(1628.0, 1096.0), yaw=95.0, size=J5M, stage=1, sign="M1 TRUNK"),
+    # Round 28 (B1, S3 "High line"): J2 is 3 m taller and 2 m wider, with a high opening (2.5 m up its west wall) that S3 comes in at
+    "J2":  dict(name="J2 POND JCT", kind="junction", at=(1628.0, 1096.0), yaw=95.0, size=(18.0, 20.0, 10.0), drop=2.5, stage=1, sign="M1 TRUNK"),
     "J3":  dict(name="J3 ENCLAVE JCT", kind="junction", at=(1785.0, 1000.0), yaw=45.0, size=J5M, stage=1, sign="M5 ENCLAVE MAIN"),
+    # Round 28 (B1, S2 "Dive pipe"): two junctions on M5 where the dive pipe leaves and rejoins it, at M5's own floor (M5 kept as it was);
+    # J15 at M5's station 430 (the proposal's 389 was 2 m from B8; here 30 m clear of it)
+    "J14": dict(name="J14 POND WEST", kind="junction", at=(1601.4, 999.9), yaw=97.4, size=J5M, stage=1, sign="M5 ENCLAVE MAIN", floor=274.3),
+    "J15": dict(name="J15 POND EAST", kind="junction", at=(1698.0, 919.5), yaw=42.6, size=J5M, stage=1, sign="M5 ENCLAVE MAIN", floor=273.2),
     "HUB": dict(name="THE HUB", kind="hub", at=HUB["c"], yaw=HUB["yaw"], stage=1),
     "K1":  dict(name="K1", kind="junction", at=(1512.0, 1246.0), yaw=0.0, size=J5M, stage=1, sign="M2 LAKES MAIN"),
     "K2":  dict(name="K2", kind="junction", at=(1585.0, 1214.0), yaw=0.0, size=J5M, stage=1, sign="M2 LAKES MAIN"),
@@ -181,8 +186,8 @@ MANHOLES = {
 M6_WAY = [(330.0, 180.0), (620.0, 250.0), (1000.0, 330.0), (1450.0, 470.0), (1790.0, 760.0), (1840.0, 1000.0)]
 
 
-def T(id, name, d, main, stage, a, way, b, glass=(), flood=None, stripe=None):
-    return dict(id=id, name=name, d=d, main=main, stage=stage, a=a, way=way, b=b, glass=list(glass), flood=flood, stripe=stripe)
+def T(id, name, d, main, stage, a, way, b, glass=(), flood=None, stripe=None, under=(), max_grade=None):
+    return dict(id=id, name=name, d=d, main=main, stage=stage, a=a, way=way, b=b, glass=list(glass), flood=flood, stripe=stripe, under=list(under), max_grade=max_grade)
 
 TUBES = [
     # ---- Part B: the two entrances, each barrel its own direction
@@ -193,7 +198,15 @@ TUBES = [
     # ---- stage 1
     T("M1a", "M1 Trunk (J1 to J2, glass under the pond)", MAIN, True, 1, ("ch", "J1"), [(1540.0, 1162.0), (1600.0, 1104.0)], ("ch", "J2"), glass=[1], stripe="M1"),
     T("M1b", "M1 Trunk (J2 to the hub)", MAIN, True, 1, ("ch", "J2"), [(1700.0, 1096.0), (1770.0, 1112.0)], ("ch", "HUB", "mid"), stripe="M1"),
-    T("M5a", "M5 Enclave Main (J1 to J3, glass along the pond)", MAIN, True, 1, ("ch", "J1"), [(1500.0, 1100.0), (1506.0, 1036.0), (1570.0, 1004.0), (1647.0, 994.0), (1645.0, 962.0), (1635.0, 922.0), (1625.0, 895.0), (1662.0, 880.0), (1722.0, 945.0)], ("ch", "J3"), glass=[4], stripe="M5"),
+    # Round 28 (B1, S2): M5a in three lengths, through J14 and J15 (its line as before)
+    T("M5a", "M5 Enclave Main (J1 to J14)", MAIN, True, 1, ("ch", "J1"), [(1500.0, 1100.0), (1506.0, 1036.0), (1570.0, 1004.0)], ("ch", "J14"), stripe="M5"),
+    T("M5c", "M5 Enclave Main (J14 to J15, glass along the pond)", MAIN, True, 1, ("ch", "J14"), [(1647.0, 994.0), (1645.0, 962.0), (1635.0, 922.0), (1625.0, 895.0), (1662.0, 880.0)], ("ch", "J15"), glass=[4], stripe="M5"),
+    T("M5d", "M5 Enclave Main (J15 to J3)", MAIN, True, 1, ("ch", "J15"), [(1722.0, 945.0)], ("ch", "J3"), stripe="M5"),
+    # Round 28 (B1): the underground race's switch shortcuts, world pipes like any other (open in free roam; the race's gates are the race's)
+    #   S2 "Dive pipe": J15 to J14 straight, diving under M5 where it crosses it, a flooded sump at the bottom
+    #   S3 "High line": J1 straight to J2, in high on J2's west wall (a jump across J2's floor), lined up with M1b's opening opposite
+    T("S2", "S2 Dive pipe (J15 to J14, under M5)", MAIN, False, 1, ("ch", "J15"), [], ("ch", "J14"), under=["M5c"], flood="low", max_grade=0.20),
+    T("S3", "S3 High line (J1 to J2, in high over J2's floor)", MAIN, False, 1, ("ch", "J1"), [(1570.0, 1095.0)], ("ch", "J2", "high")),
     T("M5b", "M5 Enclave Main (J3 to the hub)", MAIN, True, 1, ("ch", "J3"), [(1840.0, 1060.0), (1935.0, 1085.0)], ("ch", "HUB", "top"), stripe="M5"),
     T("B1a", "B1", MAIN, False, 1, ("ch", "J2"), [(1600.0, 1150.0)], ("ch", "K2")),
     # Round 24 Part B (item 7, Dan: "shouldn't all main lines intersect here?"): M2 goes on from J10 to the hub through K1, K2 and
@@ -268,6 +281,7 @@ DIFFERS = [
     "Round 24 Part B (Dan: \"shouldn't all main lines intersect here?\"): every main now pours into the hub as a waterfall off a ledge. M3 comes in at the mid ledge (it came in at the floor); M4 starts with a new length from J6 straight to the hub's mid ledge (the old J4 to J6 length is B27, an unmarked 5 m branch, with its flooded sag); M2 goes on from J10 through K1, K2 and K3 to the hub's top ledge (the north maze's 5 m line; K1 to K2 widened to 5 m); M6 runs from Nelson Lake to the hub's mid ledge, 2 km (it ran from J9, on M2)",
     "Round 24 Part B (Dan: \"It is very easy to get turned around in the tunnels\"): chevrons on the mains' stripes point the way to the hub along the mains, and every junction on a main has a HUB sign with an arrow beside the main that leads there",
     "Round 24 (Dan): L_W8, the launch over the Chastain Glen pond, and its pipe B18 are out (they left a house floating); GP, 100 m away, is that pond's way in and out",
+    "Round 28 (Dan: \"Lets try the shortcuts\"): the underground race's switch shortcuts are built as world pipes. S2 the dive pipe: two junctions on M5 (J14, J15; M5's line and floor kept) and a straight pipe between them that dives under M5's bend (up to 24 %) with a flooded sump at the bottom; J15 sits 30 m clear of B8. S3 the high line: J1 straight to a high opening 2.5 m up J2's west wall (J2 3 m taller and 2 m wider), lined up with M1b's opening across the room: you fly over J2's floor",
 ]
 
 
@@ -365,6 +379,20 @@ def spread_openings():
                         raise SystemExit(f"chamber {cid}: openings {ws[i]['tube']} and {ws[i + 1]['tube']} do not fit on wall {wall}")
 
 
+# Round 28 (B1, S3): openings set by hand after spreading: in J2, S3's high opening straight across from M1b's (the jump lands lined up
+# with M1b), M1a's to the north of it (S3 comes in south of M1a's line); in J14, S2 out of the south wall (out of the east wall it ran
+# beside M5 and could not dive under M5's bend in time). A pin is t (on the wall it was given) or (wall, t)
+PINS = {"J2": {"M1a": -6.0, "S3": 1.5, "M1b": 1.5}, "J14": {"S2": (1, 3.0)}}
+def pin_openings():
+    for cid, pins in PINS.items():
+        c = CH[cid]; hl, hw = ch_half(c)
+        for o in openings[cid]:
+            if o["tube"] not in pins: continue
+            pv = pins[o["tube"]]
+            if isinstance(pv, tuple): o["wall"], o["t"] = pv; o["half"] = hw if o["wall"] in (0, 2) else hl
+            else: o["t"] = pv
+
+
 def opening_point(cid, o):
     c = CH[cid]; u, v = ch_frame(c); hl, hw = ch_half(c); ins = o["inset"]
     n = [u, v, (-u[0], -u[1]), (-v[0], -v[1])][o["wall"]]
@@ -439,10 +467,10 @@ def chamber_floor(cid):
 
 
 # ---------------------------------------------------------------- profile
-def max_grade(tb): return 0.10 if tb["main"] else (0.12 if tb["d"] >= 5 else 0.16)
+def max_grade(tb): return tb.get("max_grade") or (0.10 if tb["main"] else (0.12 if tb["d"] >= 5 else 0.16))   # Round 28: S2 its own
 
 
-def profile(s, pts, d, fixed, main, maxg, glass_ranges):
+def profile(s, pts, d, fixed, main, maxg, glass_ranges, caps=None):
     """the floor along the line: the fixed levels (s, y, lock half-length) kept; elsewhere as straight as the grade limit and
     the cover over the crown allow (1.5 m on the mains, 1.2 m in the maze; under a glass stretch the crown 1 m under the water)"""
     n = len(s); cover = 1.5 if main else 1.2
@@ -453,6 +481,9 @@ def profile(s, pts, d, fixed, main, maxg, glass_ranges):
     for (a, b, y) in glass_ranges:
         for i in range(n):
             if a <= s[i] <= b: need[i] = y; inglass[i] = True
+    if caps:   # Round 28: under another pipe where it crosses it
+        for i in range(n):
+            if caps[i] is not None: need[i] = min(need[i], caps[i])
     fs = [f[0] for f in fixed]; fl = [f[1] for f in fixed]
     lock = [False] * n
     for f in fixed:
@@ -500,7 +531,7 @@ def make_heads(tb, ops, est):
             lead = o["inset"] + 12.0
             high = len(e) > 2 and e[2] == "high"
             if CH[cid]["kind"] == "hub": lvl = HUB["levels"][o["lvl"] or "floor"]
-            else: lvl = chamber_floor(cid) + (CH[cid]["drop"] if CH[cid]["kind"] == "shaft" and high else 0.0)
+            else: lvl = chamber_floor(cid) + (CH[cid].get("drop", 0.0) if high else 0.0)   # Round 28: a junction's high opening too (J2, S3)
             segs[k] = [p, add(p, nrm, lead)]; heads[k] = dict(kind="ch", level=lvl, lock=lead, chamber=cid, wall=o["wall"], t=o["t"], inset=o["inset"], lvl=o["lvl"], high=high)
         elif e[0] == "pipe":
             pj = PIPES[e[1]]; U = norm(sub(pj["b"], pj["a"])); p = end_pos(e)
@@ -552,10 +583,21 @@ def run_profile(tb, heads, plan):
         runs.append(cur); run = max(runs, key=len)
         a, b = s[run[0]], s[run[-1]]
         gr.append((a, b, lv - 1.0 - d - 0.05)); glass_out.append(dict(pond=wi, s0=round(a, 1), s1=round(b, 1), surface=round(lv, 2)))
-    floor, cov, grade, g = profile(s, pts, d, fixed, tb["main"], max_grade(tb), gr)
+    caps = None
+    if tb.get("under"):   # Round 28 (S2): its shell 1.8 m under the floor of each pipe it crosses, within 14 m of that pipe's line (the dip survives the smoothing)
+        caps = [None] * len(pts)
+        for oid in tb["under"]:
+            other = BUILT[oid]
+            for i, q in enumerate(pts):
+                near = [o for o in other if abs(o[0] - q[0]) < 15 and abs(o[2] - q[1]) < 15 and math.hypot(o[0] - q[0], o[2] - q[1]) < 14.0]
+                if near:
+                    y = min(o[1] for o in near) - d - 0.3 - 1.8   # shell to shell 1.8 m (the clearance rule is 1.5)
+                    caps[i] = y if caps[i] is None else min(caps[i], y)
+    floor, cov, grade, g = profile(s, pts, d, fixed, tb["main"], max_grade(tb), gr, caps)
     return dict(pts=pts, s=s, floor=floor, cov=cov, grade=grade, g=g, glass=glass_out)
 
 
+BUILT = {}   # Round 28: each tube's floor line as it is built (for 'under')
 def build(stage_max):
     plans = []
     for tb in TUBES:
@@ -565,7 +607,7 @@ def build(stage_max):
             nb = (way[0] if way else end_pos(ends[1])) if k == 0 else (way[-1] if way else end_pos(ends[0]))
             ops[k] = alloc_opening(e[1], nb, tb["d"], e[2] if len(e) > 2 else None, tb["id"])
         plans.append(dict(tb=tb, ops=ops, est={}))
-    spread_openings()
+    spread_openings(); pin_openings()
     for cid in CH: chamber_floor(cid)
     # chamber floors: lowered (never raised: the cover over them) until every pipe between two fixed levels fits its grade
     for it in range(60):
@@ -615,13 +657,15 @@ def build(stage_max):
         pts, s, floor, cov = pr["pts"], pr["s"], pr["floor"], pr["cov"]
         flood_out = None
         if tb["flood"]:   # a flooded sag: the floor dipped 0.9 m over 30 m (a smooth trough), its water 0.55 m deep in the middle
-            fi = min(range(len(pts)), key=lambda i: math.hypot(*sub(pts[i], tb["flood"])))
+            if tb["flood"] == "low": fi = min(range(len(pts)), key=lambda i: floor[i])   # Round 28 (S2): at its lowest point
+            else: fi = min(range(len(pts)), key=lambda i: math.hypot(*sub(pts[i], tb["flood"])))
             c0 = s[fi]
             for i in range(len(s)):
                 x = (s[i] - c0) / 15.0
                 if abs(x) < 1.0: floor[i] -= 0.9 * 0.5 * (1 + math.cos(math.pi * x))
             flood_out = dict(s0=round(c0 - 11.0, 1), s1=round(c0 + 11.0, 1), level=round(floor[fi] + 0.55, 2))
         pts3 = [(pts[i][0], floor[i], pts[i][1]) for i in range(len(pts))]
+        BUILT[tb["id"]] = list(pts3)
         for k in (0, 1):
             h = heads[k]
             if h["kind"] != "mh": continue

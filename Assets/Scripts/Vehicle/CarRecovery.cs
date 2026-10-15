@@ -24,6 +24,12 @@ namespace ChastainRush
             if (TreeTrunks.Instance) TreeTrunks.Instance.Refresh(at);
             var race = RaceController.Instance;
             bool racing = race != null && race.Route != null && (race.State == RaceController.Stage.Racing || race.State == RaceController.Stage.Countdown);
+            // Round 28 (B4, Dan: "Reset button during the race leaves me turned in the wrong direction. It should be following the rule to
+            // reset straight forward"): in the underground race the pipes' own reset (below) faced the vehicle the way it was pointing (it
+            // only knew the race's way on a shortcut's line, never on the lap) and the hub's ledges and junctions are pipes to it. Now: the
+            // nearest point of the race's line (the lap or a shortcut's, height counting: the lap passes over itself), a few meters back
+            // or on, on its own height, facing the way the race goes, upright
+            if (racing && race.Route.Underground && UndergroundSpot(r, race.Route, at, out pos, out yaw)) return true;
             // Round 18 (item 4): inside a drainage pipe or its cuts, back on the pipe's floor, facing along it: the way the race
             // goes through it (a shortcut's line there), else the way the vehicle was heading
             if (DrainPipe.Inside(at, out _) != null)
@@ -74,6 +80,45 @@ namespace ChastainRush
             }
             pos = default; yaw = 0f;
             return false;   // VehicleRespawn falls back to the last stable spot
+        }
+
+        static bool UndergroundSpot(VehicleRespawn r, RaceRoute route, Vector3 at, out Vector3 pos, out float yaw)
+        {
+            var p = route.NearestOnRoute(at, out var f, out var sc, out float along);
+            Vector3 On(float ds, out Vector3 fw)
+            {
+                if (sc == null) { var q = route.PointAt(route.GateS + route.LapStationOf(p) + ds, out fw); return q; }
+                // along the shortcut's line
+                var path = sc.Path; float acc = 0f, want = Mathf.Max(0f, along + ds);
+                for (int i = 0; i + 1 < path.Length; i++)
+                {
+                    var ab = path[i + 1] - path[i]; float L = new Vector2(ab.x, ab.z).magnitude;
+                    if (acc + L >= want || i + 2 == path.Length) { fw = new Vector3(ab.x, 0f, ab.z).normalized; return Vector3.Lerp(path[i], path[i + 1], Mathf.Clamp01((want - acc) / Mathf.Max(L, 1e-4f))); }
+                    acc += L;
+                }
+                fw = f; return p;
+            }
+            float st = sc == null ? route.LapStationOf(p) : 0f, L = route.LapLength;
+            foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f })
+                foreach (float off in new[] { 0f, -1.2f, 1.2f })
+                {
+                    if (sc == null && ((st < 15f && st + ds < 1f) || (st > L - 15f && st + ds > L - 1f))) continue;   // never back across the line
+                    var q = On(ds, out var fw); if (fw.sqrMagnitude < 0.5f) fw = f;
+                    q += Vector3.Cross(Vector3.up, fw).normalized * off;
+                    float y = Mathf.Atan2(fw.x, fw.z) * Mathf.Rad2Deg;
+                    if (ClearNarrow(r, q, y)) { pos = q; yaw = y; return true; }
+                }
+            pos = default; yaw = 0f; return false;
+        }
+
+        // the underground race's check: a narrower box than Clear's (a 5 m pipe's curved floor rises inside Clear's), from 0.5 m up
+        static bool ClearNarrow(VehicleRespawn r, Vector3 q, float yawDeg)
+        {
+            if (ShallowWater.InWater(q + Vector3.up * 0.1f)) return false;
+            var own = r.GetComponent<Rigidbody>();
+            int n = Physics.OverlapBoxNonAlloc(q + Vector3.up * 1.2f, new Vector3(0.9f, 0.6f, 2.2f), hits, Quaternion.Euler(0f, yawDeg, 0f), ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < n; i++) { var h = hits[i]; if (h is TerrainCollider || h.attachedRigidbody == own) continue; return false; }
+            return true;
         }
 
         // nothing but the ground (and triggers) in the car's box there, and (ahead) no trunk or wall within 6 m

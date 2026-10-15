@@ -30,6 +30,7 @@ namespace Racer
         public DriverVariation Variation { get; } = new();
         public ShortcutStrategy Shortcuts { get; } = new();
         public AiShortcut ForcedShortcut;   // checks only: always take this one when it comes
+        public static bool CheckTakeAll;    // Chastain Rush, Round 28 (checks only): take every open shortcut and every lap option when it comes
         public bool? ForceSloppy;           // checks only: a sloppy try (true) or a clean one (false) on a shortcut with 'slip'
         public bool Sloppy { get; private set; }   // Chastain Rush, Round 20 follow-ups: this try at the planned shortcut is a sloppy one
         public AiShortcut RunIn;            // Chastain Rush: from the grid on the entrance lane to the lap (set by RaceController)
@@ -99,6 +100,9 @@ namespace Racer
             bool finished = Racer.Finished;
             if(finished && finishParked) { Car.Body.isKinematic=true; return; }
             Car.Body.isKinematic = false;
+            // Chastain Rush, Round 28: a route with a parking line (the underground race: on the top ledge, off the lap) is driven to it after
+            // the finish and parked there, each car in its own slot (stopped on the line it blocked the 5 m pipe for everyone still racing)
+            if(finished && Race.RouteData!=null && Race.RouteData.finish_park!=null && Race.RouteData.finish_park.Length>=4){ DriveToPark(); return; }
             if (finished && finishRunoff > 55)
             {
                 if(Car.ForwardSpeed<.8f && Car.GroundedWheels>=2)
@@ -280,6 +284,27 @@ namespace Racer
             Car.Simulate(throttle, brake, steering, Time.fixedDeltaTime);
         }
 
+        int parkIndex=-1, parkSlot; Vector3[] park;
+        void DriveToPark()
+        {
+            if(park==null)
+            {
+                var j=Race.RouteData; int n=j.finish_park.Length/2; park=new Vector3[n];
+                for(int i=0;i<n;i++) park[i]=new Vector3(j.finish_park[2*i], j.finish_park_y!=null&&j.finish_park_y.Length==n?j.finish_park_y[i]:Car.Body.position.y, j.finish_park[2*i+1]);
+                parkSlot=Race.TakeParkSlot(); parkIndex=0;
+                // the slot: 9 m back from the line's end per car already parked
+                float back=9f*parkSlot; for(int i=n-1;i>0&&back>0f;i--){ float L=Vector3.Distance(park[i],park[i-1]); if(L>=back){ park[i]=Vector3.Lerp(park[i],park[i-1],back/L); break; } back-=L; n=i; }
+                System.Array.Resize(ref park,n);
+            }
+            var at=Car.Body.position; var target=park[Mathf.Min(parkIndex,park.Length-1)];
+            if(parkIndex<park.Length-1 && Vector3.Distance(new Vector3(at.x,0,at.z),new Vector3(target.x,0,target.z))<4f) { parkIndex++; target=park[parkIndex]; }
+            var to=target-at; to.y=0; float dist=to.magnitude, speed=Car.ForwardSpeed;
+            float steer=Mathf.Clamp(Vector3.SignedAngle(Vector3.ProjectOnPlane(Car.transform.forward,Vector3.up),to,Vector3.up)/25f,-1,1);
+            bool last=parkIndex>=park.Length-1; float want=last?Mathf.Clamp(dist*0.8f,0f,8f):9f;
+            if(last&&dist<1.5f&&speed<0.8f&&Car.GroundedWheels>=2){ Car.Body.linearVelocity=Car.Body.angularVelocity=Vector3.zero; Car.Body.isKinematic=true; finishParked=true; return; }
+            Car.Simulate(speed<want?1f:0f, speed>want+1f?1f:0f, steer, Time.fixedDeltaTime);
+        }
+
         void DecideShortcut(float s)
         {
             if(Racer.Finished || !Racer.ClockStarted || plannedBranch) return;
@@ -294,7 +319,7 @@ namespace Racer
                 var order=Race.Ordered();int place=order.IndexOf(Racer);
                 float rank=order.Count>1?(float)place/(order.Count-1):.5f;
                 var leader=order[0];float gap=Mathf.Max(0,Race.Score(leader)-Race.Score(Racer));
-                if(Shortcuts.TryDecide(branch,Racer.CompletedLaps,rank,gap,out bool take,branch.take)&&take)
+                if(Shortcuts.TryDecide(branch,Racer.CompletedLaps,rank,gap,out bool take,CheckTakeAll?1f:branch.take)&&take)
                 {
                     plannedBranch=branch;
                     // Chastain Rush, Round 20 follow-ups: a sloppy try (R1's pool); Round 21: more often on Easy, less on Hard
@@ -345,6 +370,7 @@ namespace Racer
         // Chastain Rush: Racer's VehicleRespawn.TryRecoverLocal is not imported. The car goes back on its shortcut's line (a few
         // metres behind the furthest point it reached) or on the lap at its own station, facing the way of travel, on the first
         // spot whose box touches nothing but the ground and is not in water (CarRecovery's rule for the player).
+        AiShortcut lastRecoverBranch;   // Chastain Rush, Round 28
         void TryRecover(float current)
         {
             nextRecovery=Time.time+1;
@@ -353,6 +379,10 @@ namespace Racer
             // Chastain Rush: held up on a shortcut by another vehicle (the lines are one car wide): back to the lap, not onto
             // the same line behind it
             if(progressBranch&&obstacleVehicle) progressBranch=null;
+            // Chastain Rush, Round 28: stuck again on the same shortcut (its line put it back where it stuck): give it up, back to the lap
+            // (the underground race's room turns; never a loop of resets)
+            if(progressBranch&&progressBranch==lastRecoverBranch) progressBranch=null;
+            lastRecoverBranch=progressBranch;
             if(progressBranch)
                 foreach(float back in new[]{6f,10f,16f})
                 {
@@ -362,12 +392,15 @@ namespace Racer
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
-                foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f})
+                foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f,18f,26f,34f})   // Chastain Rush, Round 28: further on too (a jam there)
                 {
+                    // Chastain Rush, Round 28: never back across the start / finish line (driving over it again counts a lap with every
+                    // checkpoint missed; at the underground race's start the AI jam in M5's mouth, right at the line)
+                    if((current<20f&&current+ds<1f)||(current>DriveRoad.Length-20f&&current+ds>DriveRoad.Length-1f)) continue;
                     foreach(float off in trail?new[]{0f,lane,-lane}:new[]{lane,0f,-lane,2.5f,-2.5f})
                     {
                         var p=DriveRoad.At(current+ds,out var f); f=Vector3.ProjectOnPlane(f,Vector3.up).normalized;
-                        p+=Vector3.Cross(Vector3.up,f)*off; p=RaceRoute.Surface(p.x,p.z);   // Chastain Rush, Round 27: Surface (the underground race)
+                        p+=Vector3.Cross(Vector3.up,f)*off; p=RaceRoute.Surface(p.x,p.z,p.y);   // Chastain Rush, Round 27: Surface (the underground race); Round 28: at the lap's own height there
                         if(Clear(p,f)){at=p;fwd=f;found=true;break;}
                     }
                     if(found)break;

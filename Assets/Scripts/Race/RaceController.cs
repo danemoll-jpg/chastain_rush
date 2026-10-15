@@ -41,7 +41,6 @@ namespace ChastainRush
         public static string RecordsPathOverride; // checks write somewhere other than the real records
         public static int LapsOverride;           // race this many laps instead of the route file's (checks; Round 16: the race setup menu)
         public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
-        public static readonly List<RouteSwitchGateJson> ExtraSwitchGates = new List<RouteSwitchGateJson>(); // Round 27, checks only: switch gates not in the file
         public static bool EntryPlanesOff;   // checks only (Round 13): shortcuts are taken by their corridor alone
         public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
 
@@ -179,11 +178,6 @@ namespace ChastainRush
                 all.AddRange(ExtraShortcuts);
                 RouteData.official_shortcuts = all.ToArray();
             }
-            if (ExtraSwitchGates.Count > 0)   // Round 27
-            {
-                var gs = new List<RouteSwitchGateJson>(RouteData.switch_gates ?? new RouteSwitchGateJson[0]); gs.AddRange(ExtraSwitchGates);
-                RouteData.switch_gates = gs.ToArray();
-            }
             string dir = DirectionOverride;
             if (!string.IsNullOrEmpty(dir) && !RouteData.Allows(dir)) dir = RouteData.direction;   // Round 18: Noonday Creek is forward only (its jumps face one way)
             Route = RaceRoute.Create(RouteData, dir);
@@ -202,7 +196,7 @@ namespace ChastainRush
             LoadRoute(); // picks up a changed direction
             RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
-            RaceClock = 0f; PlayerFinishedAt = 0f;
+            RaceClock = 0f; PlayerFinishedAt = 0f; parkSlots = 0;
             NewBestLap = NewBestTotal = false;
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f;
@@ -426,6 +420,8 @@ namespace ChastainRush
 
         static string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
 
+        int parkSlots;           // Round 28: finished AI cars' places on the route's parking line (RoadDriver.DriveToPark)
+        public int TakeParkSlot() => parkSlots++;
         void Finish(RaceEntrant e, float at)
         {
             e.Finished = true; e.FinalTotal = at - e.StartAt + e.PenaltyTotal;   // its clock plus every penalty

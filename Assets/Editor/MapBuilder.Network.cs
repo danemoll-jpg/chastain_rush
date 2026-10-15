@@ -628,7 +628,7 @@ namespace ChastainRush
             sump.ToObject("Chamber " + c.id + " sump", mats.House, root, false, false);
             // run time: resets on its floor (a line down its middle, the room's half width), headlights on
             var rh = new GameObject("Chamber " + c.id + " runtime"); rh.transform.SetParent(root, false);
-            var rp = rh.AddComponent<DrainPipe>(); rp.id = c.id; rp.halfWidth = Mathf.Max(hw, hl) - 0.6f; rp.clearHeight = Mathf.Min(h, c.drop > 0f ? c.drop - 0.5f : h); rp.radius = 0.1f; rp.barrelFrom = 0f; rp.barrelTo = 0f;
+            var rp = rh.AddComponent<DrainPipe>(); rp.id = c.id; rp.halfWidth = Mathf.Max(hw, hl) - 0.6f; rp.clearHeight = Mathf.Min(h, c.kind == "shaft" && c.drop > 0f ? c.drop - 0.5f : h); rp.radius = 0.1f; rp.barrelFrom = 0f; rp.barrelTo = 0f;   // Round 28: a junction with a high opening (J2) keeps its full height
             var along = hl >= hw ? u3 : v3; float half = Mathf.Max(hl, hw) - 0.5f;
             var rf = new List<Vector3>(); for (float s = -half; s <= half + 1e-3f; s += 0.5f) rf.Add(C + along * s); rp.floor = rf.ToArray();
             // the ground over it (report)
