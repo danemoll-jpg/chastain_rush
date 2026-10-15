@@ -290,6 +290,10 @@ drivers, 15 menus and the garage.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
+**Round 30 Part A (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** traffic
+(`Assets/Scripts/Traffic/`: `TrafficNetwork` built by `MapBuilder.Traffic.cs`, `TrafficDriver`, `Traffic`, Racer's `AmbientVehicle`),
+Settings > GAMEPLAY > Traffic; a check run has none unless it passes `-traffic Light|Normal|Heavy`. Check: `ChastainRush.exe
+-exeRound30 <dir> -traffic Normal [-r30Only fps,drive,hit,race,pics] -logFile <dir>\Player.log`.
 **Active: Round 30 in `TODO.md`:** Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
 are closed to it; better houses with a look of their own in every neighborhood not yet
 dressed).

@@ -75,6 +75,7 @@ namespace ChastainRush
         // width, lane and passing lane), ai_zones: held speeds
         public string[] directions, vehicles;
         public bool trail;
+        public bool traffic;   // Round 30 (A3): a race on open roads, traffic on its course (none yet: every race closes its roads to traffic)
         public float ai_half_width_m, ai_lane_m, ai_pass_lane_m;
         public RouteAiZoneJson[] ai_zones;
         public RouteAiZoneJson[] ai_zones_reverse;   // Round 21: the reverse race's held speeds (its own jumps), in the reverse lap's stations

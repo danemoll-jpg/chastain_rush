@@ -18,7 +18,7 @@ namespace ChastainRush
     // (display.json); nothing is saved in a check run (it never opens these pages anyway).
     public sealed partial class GameMenus
     {
-        static readonly string[] SettingsTabs = { "audio", "display", "controls" };
+        static readonly string[] SettingsTabs = { "audio", "display", "gameplay", "controls" };   // Round 30 (A3): Racer's GAMEPLAY tab, for Traffic
         InputAction tabPrevious, tabNext;
         readonly List<(MenuGlyph glyph, UnityEngine.UI.Text key, string pad, string keyboard)> bindingRows = new();
 
@@ -102,6 +102,11 @@ namespace ChastainRush
                 Step(n++, "resolution", "Resolution:   " + ScreenSetting.ResolutionLabel, d => { ScreenSetting.StepResolution(d); Show(); });
                 Toggle(n++, "vsync", "VSync", s.vsync, () => Adjust(() => s.vsync = !s.vsync));
                 Step(n++, "fps", "Frame cap: " + s.frameLimit + " FPS", d => Adjust(() => { int[] caps = { 30, 60, 120 }; s.frameLimit = caps[Mathf.Clamp(Array.IndexOf(caps, s.frameLimit) + d, 0, 2)]; }));
+            }
+            if (page == "settings-gameplay")   // Round 30 (A3)
+            {
+                details.gameObject.SetActive(true); details.text = "Traffic drives the roads in free roam and races (a race closes its own roads to it)."; details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 58;
+                Step(n++, "traffic", "Traffic:   " + Traffic.LevelNames[Mathf.Clamp(s.traffic, 0, 3)], d => Adjust(() => s.traffic = Mathf.Clamp(s.traffic + d, 0, 3)));
             }
             if (page == "settings-controls") { RenderControls(n); return; }
             Row(14, "back", "Back", BackPage);

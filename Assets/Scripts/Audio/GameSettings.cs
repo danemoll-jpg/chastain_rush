@@ -29,6 +29,8 @@ namespace Racer
             // Racer 0.75 (RacerSave.Options.rider): the player's rider (the garage's Rider page). Missing in older saves = the
             // default. Chastain Rush, Round 29.
             public RiderLook rider = new();
+            // Chastain Rush, Round 30 (A3): traffic, 0 Off, 1 Light, 2 Normal (the default), 3 Heavy (Traffic/Traffic.cs)
+            public int traffic = 2;
         }
 
         static Options current;

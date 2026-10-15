@@ -2695,6 +2695,29 @@ A3. ON by default everywhere, free roam and races (Dan, 09:54: "cars should not 
 A4. Sounds through the Round 27 AI engine sounds (OtherEngines) with the voice budget; horns.
 A5. Cost: spawn round the player and despawn out of sight; frame rate in free roam at the busiest place (Chastain Road
    at the shops, Normal and Heavy) before and after, reported.
+Part A status: done (built and checked in the exe by script, not yet driven by Dan). Racer's traffic (RaceDirector.CreateCars:
+copies of the player's vehicle as the Street Classic in Racer's traffic bodies, `AmbientVehicle`, the Blender kit TrafficSedan /
+Wagon / Pickup / Van; RoadDriver's traffic driving; the offscreen recycle) now drives the whole road graph: `TrafficNetwork`
+(built by the map build, `MapBuilder.Traffic.cs`: 541 road pieces, 496 junctions and ends from every motorway, primary,
+secondary, tertiary, link, unclassified and residential road and bridge; no service roads, lots or drives), `TrafficDriver`
+(Racer's steering, its traffic corner and braking rules and obstacle query, the lane on the right (one-way roads right of
+middle), the road type's speed: residential 11 m/s, tertiary 16, secondary 18, primary 20, I-575 29; the next road picked
+at each junction (the same road on most often, into a neighborhood now and then), a stop at a junction onto a bigger road
+and a yield to whoever is already in one, a turn round at a dead end; the horn and a moment knocked when the player hits it
+(it is 25% lighter than the Street Classic), a swerve from a vehicle coming at it in its lane, the horn at one in its way),
+`Traffic` (Off / Light 7 / Normal 14 / Heavy 22 cars; 140 to 400 m from the player out of the camera's sight, gone past
+460 m out of sight, stuck or at the map's edge; the pool made while the title menu is up). Settings > GAMEPLAY > Traffic
+(saved in settings.json, default Normal). In a race every road near its line or a closure is closed to traffic (the
+Chastain Glen loop: 23 road pieces; the Underground race: only its closures; a route with "traffic": true would keep its
+roads open); the AI racers slow for traffic ahead with their own obstacle query. Engines: OtherEngines' two traffic voices
+(Racer's), also in free roam; the horn is synthesized. Parked cars in drives: not done (left out to keep the cost down).
+Check: `ChastainRush.exe -exeRound30 <dir> -traffic Normal [-r30Only fps,drive,hit,race,pics] -logFile <dir>\Player.log`
+(10 checks pass; pictures in `local/round30/traffic/`). The busiest place is Canton Road at the shops (the shops are on
+Canton Road, not Chastain Road): standing there at 1280 x 720 with VSync and the frame cap off, Off 378 fps, Normal 172,
+Heavy 99 (not measured at 3840 x 2160). Imported from Racer: AmbientVehicle (copied, split-screen removed), the traffic
+models (TrafficSedan, TrafficWagon, TrafficPickup, TrafficVan .fbx and Tools/Blender/traffic.py), RoadDriver's traffic
+driving and CreateCars' way of making the cars (rewritten for the road graph in TrafficDriver / Traffic), OtherEngines'
+traffic voices.
 
 Part B, BETTER HOUSES IN THE REMAINING NEIGHBORHOODS. Chastain Glen (Dan's, hand-made styles), Grasmere Court, Chastain
 Commons and Chastain Enclave are dressed (Round 7, Round 22); every other neighborhood still has plain boxes. Dan has no
