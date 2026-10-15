@@ -35,7 +35,7 @@ namespace ChastainRush
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
         [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
-        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; }
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; }
         [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; }
 
         // The terrain is a grid of tiles that share their edge samples; this finds the tile under a point.
@@ -82,6 +82,7 @@ namespace ChastainRush
             vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
             var terrain = BuildTerrain(meta, mats);
             SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
+            SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
             var shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
@@ -110,7 +111,8 @@ namespace ChastainRush
             BuildTrafficNetwork(map);   // Round 30 (A1): the road graph the traffic drives on (MapBuilder.Traffic.cs)
             var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
             PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
-            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop, rest);
+            var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
+            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop, rest, biz);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
             RegisterWater(map, world, new Pavement(map));   // Round 15 (item 2c)
@@ -119,8 +121,8 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
-                (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
             if (creek != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks)
             {
                 var f = trees.Field; var br = new List<int>();
@@ -132,6 +134,7 @@ namespace ChastainRush
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
+            BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
@@ -349,6 +352,7 @@ namespace ChastainRush
                 AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
             }
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
+            FillRoadSeam(map, terrain, main);   // Round 31 (BUG-003): no lawn between New Chastain Road and its turn lane (MapBuilder.Round31.cs)
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
             center.ToObjects("ShoppingCenterRoads", mats.Driveway, parent, false);   // the lot's own material and tint
@@ -651,7 +655,7 @@ namespace ChastainRush
 
         static readonly Color OwnerWall = new Color(1.0f, 0.45f, 0.05f), OwnerRoof = new Color(0.62f, 0.22f, 0.04f);
 
-        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood, ShoppingCenter shop, RestNeighborhoods rest)
+        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood, ShoppingCenter shop, RestNeighborhoods rest, Businesses biz)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
@@ -664,6 +668,7 @@ namespace ChastainRush
                 if (hood.OwnsBuilding(i)) continue; // Round 7: styled houses in the area, Dan's house hand-built
                 if (shop.Owns(i)) continue;          // Round 17: the gas station's canopy and the bank are built with the shopping center
                 if (rest.Owns(i)) continue;          // Round 30: the other neighborhoods' styled houses
+                if (biz.Owns(i)) continue;           // Round 31: the businesses, schools, churches and the rest (MapBuilder.Businesses.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;

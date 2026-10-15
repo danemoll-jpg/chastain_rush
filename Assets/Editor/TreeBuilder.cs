@@ -45,7 +45,7 @@ namespace ChastainRush
             public TreeField Field; // the kit meshes, reused by the hand-placed trees of Round 7
         }
 
-        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent, Func<float, float, bool> reject = null, Func<float, float, Vector2> move = null)
+        public static Result Build(string treesBin, Func<float, float, float> ground, float vScale, string generatedDir, Material material, Transform parent, Func<float, float, bool> reject = null, Func<float, float, Vector2> move = null, IList<Vector2> extra = null)   // Round 31: extra, yard trees added by the map build (round the businesses)
         {
             var asset = AssetDatabase.LoadAssetAtPath<GameObject>(KitPath);
             if (asset == null) throw new Exception("Missing " + KitPath);
@@ -70,6 +70,20 @@ namespace ChastainRush
             if (bytes.Length < 8 || bytes[0] != 'C' || bytes[1] != 'R' || bytes[2] != 'T' || bytes[3] != '1') throw new Exception("Bad trees.bin");
             int count = BitConverter.ToInt32(bytes, 4);
             if (bytes.Length != 8 + count * 12) throw new Exception($"trees.bin is {bytes.Length} bytes, expected {8 + count * 12}");
+            if (extra != null && extra.Count > 0)
+            {
+                // Round 31: each extra tree as a trees.bin record (a yard tree at the canopy's edge, its seed from where it stands)
+                var more = new byte[bytes.Length + extra.Count * 12];
+                Buffer.BlockCopy(bytes, 0, more, 0, bytes.Length);
+                for (int k = 0; k < extra.Count; k++)
+                {
+                    int o = bytes.Length + k * 12;
+                    BitConverter.GetBytes(extra[k].x).CopyTo(more, o); BitConverter.GetBytes(extra[k].y).CopyTo(more, o + 4);
+                    BitConverter.GetBytes((ushort)((Mathf.RoundToInt(extra[k].x * 7f) * 31 + Mathf.RoundToInt(extra[k].y * 13f)) & 0xffff)).CopyTo(more, o + 8);
+                    more[o + 10] = 1; more[o + 11] = 20;
+                }
+                bytes = more; count += extra.Count;
+            }
             var result = new Result { Trees = count, KitTriangles = tri.ToString(), Field = field };
             var packed = new byte[count * TreeField.PackedSize];
             int kept = 0;

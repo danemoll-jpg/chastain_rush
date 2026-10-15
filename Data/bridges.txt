@@ -14,7 +14,7 @@ Bridges built by Tools/mapgen/mapgen.py (regenerated every run)
 
 0 water crossings left on the ground (dip under the minimum: culvert or ford):
 
-7 road crossings of streams that OSM maps as a culvert (left on the ground; dip = how far the bare earth sits below a straight line 12 m either side):
+9 road crossings of streams that OSM maps as a culvert (left on the ground; dip = how far the bare earth sits below a straight line 12 m either side):
   Bells Ferry Road Northwest over stream at x=1429 z=1176 (dip 0.08 m)
   Kelly Drive Northeast over stream at x=2624 z=128 (dip 0.01 m)
   North Lakeside Drive Northwest over stream at x=416 z=1454 (dip 0.21 m)
@@ -22,3 +22,5 @@ Bridges built by Tools/mapgen/mapgen.py (regenerated every run)
   Phillip Landrum Memorial Highway over stream at x=223 z=1532 (dip 0.02 m)
   Phillip Landrum Memorial Highway over stream at x=250 z=1538 (dip 0.02 m)
   Southwick Drive Northwest over stream at x=8 z=1644 (dip 0.38 m)
+  motorway_link over stream at x=223 z=1532 (dip 0.01 m)
+  motorway_link over stream at x=257 z=1540 (dip 0.04 m)

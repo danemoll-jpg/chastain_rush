@@ -1,0 +1,10 @@
+Round 30 check, 2026-10-15 14:48, the exe, 1280 x 720 (frame rates here are not 3840 x 2160 numbers), muted.
+PASS  traffic network in the scene  -  541 edges, 496 nodes
+PASS  traffic running  -  level Normal
+
+Frame rate, Canton Road at the shops (beside it at x 3503, z 1166, looking along it), standing, 1280 x 720, VSync and the frame cap off for the measurement:
+      Off      367.8 fps average, worst frame 9 ms; cars 0 (0 within 250 m)
+      Normal   156.1 fps average, worst frame 18 ms; cars 14 (4 within 250 m)
+      Heavy     91.3 fps average, worst frame 23 ms; cars 22 (12 within 250 m)
+
+ALL 2 CHECKS PASSED

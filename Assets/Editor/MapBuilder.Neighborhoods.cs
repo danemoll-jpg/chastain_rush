@@ -47,7 +47,7 @@ namespace ChastainRush
                         }
                 return false;
             }
-            public int Buried;
+            public int Buried, Extra;
         }
 
         // the eras' palettes (East Cobb: painted brick and siding on the ranches, brick fronts on the traditionals, earthy siding
@@ -72,9 +72,43 @@ namespace ChastainRush
             int byDrive = 0;
             for (int n = 0; n < rest.Data.neighborhoods.Length; n++)
             {
-                var nb = rest.Data.neighborhoods[n]; int nseed = nb.key.GetHashCode() & 0x7fffffff;
+                var nb = rest.Data.neighborhoods[n];
                 var segs = rest.Segs[n] = new List<RoadSeg>();
                 foreach (int ri in nb.roads) { var p = ToPoints(map.roads[ri].points); for (int i = 0; i + 1 < p.Count; i++) segs.Add(new RoadSeg { a = p[i], b = p[i + 1], half = map.roads[ri].width * .5f, road = ri }); }
+                foreach (int idx in nb.houses) Dress(idx, n, segs);
+            }
+            // Round 31 (4): the houses outside every neighborhood (along the bigger roads, or too few on a street group: OSM
+            // detached houses and the rectangular terrace units) get the same kit, in the look of the nearest neighborhood, facing
+            // their own drive or else the nearest road within 60 m
+            int extra0 = rest.Houses.Count;
+            var homes = new List<(Vector2 c, int n)>();
+            foreach (var hs in rest.Houses) homes.Add((hs.footprintCentre, rest.Of[hs.index]));
+            for (int idx = 0; idx < map.buildings.Length; idx++)
+            {
+                var b = map.buildings[idx];
+                if (b.type != "detached" && b.type != "house" && b.type != "terrace") continue;
+                if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx)) continue;
+                var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
+                if (b.type == "terrace" && (!BestRectangle(ring, out _, out _, out _, out float thl, out float thw) || Mathf.Abs(PolyArea(ring)) / (4f * thl * thw) < 0.8f)) continue;   // a cross-shaped block: an apartment building (MapBuilder.Businesses.cs)
+                Vector2 c = Vector2.zero; foreach (var q in ring) c += q; c /= ring.Count;
+                int n = -1; float best = float.MaxValue;
+                foreach (var hm in homes) { float d = (hm.c - c).sqrMagnitude; if (d < best) { best = d; n = hm.n; } }
+                if (n < 0) continue;
+                var near = new List<RoadSeg>();
+                for (int ri = 0; ri < map.roads.Length; ri++)
+                {
+                    var r = map.roads[ri]; if (r.@class == "motorway" || r.@class == "motorway_link") continue;
+                    var p = ToPoints(r.points);
+                    for (int i = 0; i + 1 < p.Count; i++) if (SegDist(c, p[i], p[i + 1]) < 60f) near.Add(new RoadSeg { a = p[i], b = p[i + 1], half = r.width * .5f, road = ri });
+                }
+                if (near.Count == 0) continue;
+                Dress(idx, n, near);
+            }
+            rest.Extra = rest.Houses.Count - extra0;
+
+            void Dress(int idx, int n, List<RoadSeg> segs)
+            {
+                var nb = rest.Data.neighborhoods[n]; int nseed = nb.key.GetHashCode() & 0x7fffffff;
                 // the neighborhood's own few colors and its mix of variants
                 var siding = nb.era == "ranch" ? RanchSiding : nb.era == "craftsman" ? CraftsSiding : nb.era == "townhomes" ? TownSiding : TradSiding;
                 var mySiding = Enumerable.Range(0, 4).Select(k => PickOf(siding, nseed, 500 + k)).Distinct().ToArray();
@@ -82,11 +116,10 @@ namespace ChastainRush
                 var myRoof = new[] { PickOf(nb.era == "ranch" || nb.era == "craftsman" ? BrownRoofs : ShingleRoofs, nseed, 520), PickOf(ShingleRoofs, nseed, 521) };
                 var myStone = PickOf(StoneTones, nseed, 530);
                 float brickShare = nb.era == "ranch" ? 0.55f : nb.era == "traditional" ? 0.6f : 0.25f;
-                foreach (int idx in nb.houses)
                 {
-                    if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx)) continue;
+                    if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx)) return;
                     var b = map.buildings[idx]; var ring = ToPoints(b.footprint);
-                    if (ring.Count < 3 || !BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) continue;
+                    if (ring.Count < 3 || !BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) return;
                     float area = Mathf.Abs(PolyArea(ring));
                     // the nearest of its own streets, by the centreline (as the Glen's houses)
                     Vector2 q = c, tan = Vector2.right; float roadHalf = 4f, best = float.MaxValue;
@@ -99,7 +132,7 @@ namespace ChastainRush
                     foreach (var cd in cand) { float dd = Vector2.Dot(cd, toRoad); if (dd > bd) { bd = dd; F = cd; } }
                     bool facadeAlongU = Mathf.Abs(Vector2.Dot(F, U)) < 0.7f;
                     float W = facadeAlongU ? hl * 2f : hw * 2f, D = facadeAlongU ? hw * 2f : hl * 2f;
-                    if (W < 6.5f || D < 6f) continue;   // too small for any of the styles: left as the map's own box
+                    if (W < 6.5f || D < 6f) return;   // too small for any of the styles: left as the map's own box
                     var h = new HouseSpec { index = idx, seed = b.seed, ring = ring, footprintCentre = c, W = W, D = D, nearestRoadPoint = q, roadHalf = roadHalf, community = -1 - n };
                     h.style = EraStyle(nb.era, area, Mathf.Max(W, D), Mathf.Min(W, D), b.seed);
                     if (h.style == HouseStyle.G && W < 12f) h.style = HouseStyle.D;   // a single narrow unit: a plain two-story house
@@ -132,7 +165,7 @@ namespace ChastainRush
                     rest.Houses.Add(h); rest.Owned.Add(idx); rest.Of[idx] = n;
                 }
             }
-            Debug.Log($"[Round30] other neighborhoods: {rest.Data.neighborhoods.Length}, {rest.Houses.Count} houses dressed (styles " +
+            Debug.Log($"[Round30] other neighborhoods: {rest.Data.neighborhoods.Length}, {rest.Houses.Count} houses dressed ({rest.Extra} of them outside every neighborhood, Round 31) (styles " +
                       string.Join(", ", Enum.GetValues(typeof(HouseStyle)).Cast<HouseStyle>().Select(s => $"{s} {rest.Houses.Count(h => h.style == s)}")) +
                       $"), {byDrive} facing down their own drive, {rest.Foundation.Count} block foundations, {rest.BackExposure.Count} walk-out walls, {rest.Buried} with ground over 0.6 m above the floor somewhere (not cut)");
             return rest;

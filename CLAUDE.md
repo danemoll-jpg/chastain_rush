@@ -314,6 +314,11 @@ Settings > GAMEPLAY > Traffic; a check run has none unless it passes `-traffic L
 **Round 30 Part B (see `TODO.md`, status there) is built, pictures from the exe, not yet driven by Dan:** the 24 other
 neighborhoods dressed, one era each (`python Tools/mapgen/neighborhoods_rest.py` writes `Data/neighborhood/neighborhoods.json`,
 re-run after mapgen; `MapBuilder.Neighborhoods.cs`, new styles E to H in `MapBuilder.HouseEras.cs`). Pictures `local/round30/`.
+**Round 31 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** BUG-002 stepped garage
+row, BUG-003 seam paved (`MapBuilder.Round31.cs`), BUG-004 the I-575 / Chastain Road ramps (mapgen keeps `motorway_link`, appended
+after the other roads; `parking` lots in map.json; RampSeams), every other building dressed (`MapBuilder.Businesses.cs`; signs
+`python Tools/handmade/make_business_signs.py`, hand-made, committed). Check lists: `python Tools/mapgen/round31_shots.py` (after Build
+Map), then `ChastainRush.exe -exeShots local/round31/shots_pics.json|shots_ramps.json <dir> -vehicle drifter -logFile <dir>\Player.log`.
 **Was active: Round 30 in `TODO.md`:** Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
 are closed to it; better houses with a look of their own in every neighborhood not yet
 dressed).

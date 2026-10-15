@@ -48,6 +48,9 @@ USER_AGENT = "chastain-rush-mapgen"
 
 DRIVABLE = {"motorway", "trunk", "primary", "secondary", "tertiary", "primary_link", "secondary_link",
             "tertiary_link", "residential", "unclassified", "living_street", "service"}
+# Round 31 (BUG-004): the I-575 / Chastain Road interchange's entrance and exit ramps. They are added after every other
+# road (APPENDED), so the indices of the roads already in map.json, which other data files list, do not move.
+APPENDED = {"motorway_link"}
 
 
 def log(msg):
@@ -179,6 +182,8 @@ def road_width(tags, cfg):
             pass
     if tags.get("oneway") == "yes" and hw.endswith("_link"):
         base = min(base, 6.5)
+    if hw == "motorway_link":
+        base = max(base, 6.0)   # Round 31: a one-lane ramp with its shoulders, wide enough to take flat out
     return round(base, 2)
 
 
@@ -224,6 +229,7 @@ def process_osm(cfg, osm, rect):
         return -margin <= p[0] <= size_x + margin and -margin <= p[1] <= size_z + margin
 
     roads, buildings, water, streams, woods, driveways = [], [], [], [], [], []
+    ramps, parking = [], []   # Round 31: motorway_link ways (appended to roads at the end); surface parking lots
     owner_cfg = None
     owner_path = os.path.join(ROOT, cfg["owner_house_file"])
     if os.path.exists(owner_path):
@@ -237,6 +243,14 @@ def process_osm(cfg, osm, rect):
         if len(pts) < 2:
             continue
         hw = t.get("highway")
+        if hw in APPENDED:
+            if any(inside(p) for p in pts):
+                for run, ids in clip_runs(pts, [n for n in way["nodes"] if n in nodes], inside):
+                    ramps.append({"name": t.get("name", ""), "class": hw, "width": road_width(t, cfg),
+                                  "oneway": t.get("oneway") == "yes", "points": run, "node_ids": ids,
+                                  "bridge": t.get("bridge", "no") not in ("no", ""), "tunnel": t.get("tunnel", "no") not in ("no", ""),
+                                  "osm_id": way["id"]})
+            continue
         if hw in DRIVABLE:
             if hw == "service" and t.get("service") == "driveway":
                 for run, _ in clip_runs(pts, list(range(len(pts))), inside):
@@ -279,6 +293,11 @@ def process_osm(cfg, osm, rect):
         elif t.get("natural") == "wood" or t.get("landuse") == "forest":
             if any(inside(p) for p in pts):
                 woods.append({"outline": pts})
+        elif t.get("amenity") == "parking" and t.get("parking", "surface") == "surface":
+            # Round 31 (4): a surface lot (not a garage or underground), paved by the map build beside its building
+            if way["nodes"][0] == way["nodes"][-1] and len(pts) >= 4 and any(inside(p) for p in pts):
+                ring = pts[:-1]
+                parking.append({"outline": ring if poly_area(ring) > 0 else ring[::-1]})
 
     for rel in (el for el in osm["elements"] if el["type"] == "relation"):
         t = rel.get("tags", {})
@@ -291,6 +310,8 @@ def process_osm(cfg, osm, rect):
                         water.append({"name": t.get("name", ""), "outline": ring if poly_area(ring) > 0 else ring[::-1]})
 
     roads = trim_service_roads(cfg, roads, buildings)
+    ramps.sort(key=lambda r: (r["osm_id"], r["points"][0]))   # a stable order, whatever order OSM lists them in
+    roads += ramps
     spawn = find_spawn(cfg, roads)
     for r in roads:
         r.pop("node_ids")
@@ -299,10 +320,11 @@ def process_osm(cfg, osm, rect):
         "bounds": cfg["bounds"], "utm_epsg": cfg["utm_epsg"], "vertical_scale": vscale(cfg),
         "origin_utm": [w0, s0], "size_x_m": size_x, "size_z_m": size_z,
         "roads": roads, "buildings": buildings, "water": water, "streams": streams, "woods": woods,
-        "driveways": driveways, "spawn": spawn,
+        "driveways": driveways, "spawn": spawn, "parking": parking,
     }
     log(f"OSM: {len(roads)} road ways, {len(buildings)} buildings, {len(water)} water areas, "
-        f"{len(streams)} streams, {len(woods)} woods, {len(driveways)} OSM driveways")
+        f"{len(streams)} streams, {len(woods)} woods, {len(driveways)} OSM driveways, "
+        f"{len(ramps)} motorway ramp pieces (appended), {len(parking)} surface parking lots")
     os.makedirs(LOCAL, exist_ok=True)
     marker_path = os.path.join(LOCAL, "owner_marker.json")
     if owner:
@@ -420,6 +442,7 @@ def flat_for_unity(mapdata):
     out["streams"] = [dict(s, points=flat(s["points"])) for s in mapdata["streams"] if not s["tunnel"]]
     out["woods"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["woods"]]
     out["driveways"] = [dict(d, points=flat(d["points"])) for d in mapdata["driveways"]]
+    out["parking"] = [dict(a, outline=flat(a["outline"])) for a in mapdata.get("parking", [])]
     return out
 
 
@@ -706,6 +729,42 @@ def shape_road_profiles(fl, plans):
             w = np.clip(1.0 - np.abs(pl["s"] - c) / blend, 0.0, 1.0)
             pl["prof"] = pl["prof"] + delta * (w * w * (3 - 2 * w))
             adjusted += 1
+    # Round 31 (BUG-004): a motorway ramp that runs alongside the road it leaves or joins overlaps that road's pavement for
+    # tens of metres before their shared node; there its own profile could sit half a metre off the road's, a step across the
+    # pavement. Where a ramp station overlaps another (non-ramp) road it takes that road's height: fully where they overlap by
+    # 2 m or more, fading back to its own profile as they separate, and only where the two run within about 25 degrees of each
+    # other (a ramp that crosses a road is left to the junction rule). Only ramps move. (A ramp that converges on a road at a
+    # wider angle is smoothed in the map build: MapBuilder.Round31.cs, RampSeams.)
+    others = [(i, pl) for i, pl in enumerate(plans) if pl["road"]["class"] != "motorway_link"]
+    if any(pl["road"]["class"] == "motorway_link" for pl in plans) and others:
+        pts_o = np.concatenate([np.column_stack([pl["dx"], pl["dz"]]) for _, pl in others])
+        h_o = np.concatenate([pl["prof"] for _, pl in others])
+        w_o = np.concatenate([np.full(len(pl["dx"]), pl["road"]["width"] / 2) for _, pl in others])
+        def dirs(pl):
+            tx, tz = np.gradient(pl["dx"]), np.gradient(pl["dz"]); n = np.maximum(np.hypot(tx, tz), 1e-9)
+            return np.column_stack([tx / n, tz / n])
+        d_o = np.concatenate([dirs(pl) for _, pl in others])
+        tree = cKDTree(pts_o)
+        ramp_moved = 0.0
+        for pl in plans:
+            if pl["road"]["class"] != "motorway_link":
+                continue
+            half_r = pl["road"]["width"] / 2
+            d_r = dirs(pl)
+            for k in range(len(pl["prof"])):
+                idx = tree.query_ball_point((pl["dx"][k], pl["dz"][k]), half_r + 12.0)
+                best = 0.0; hb = None   # best: the weight toward the other road
+                for j in idx:
+                    par = float(smoothstep((abs(d_o[j] @ d_r[k]) - 0.85) / 0.06))
+                    ov = half_r + w_o[j] - math.hypot(pts_o[j][0] - pl["dx"][k], pts_o[j][1] - pl["dz"][k])
+                    wt = float(smoothstep(ov / 2.0)) * par
+                    if wt > best: best, hb = wt, h_o[j]
+                if hb is not None:
+                    w = best
+                    new = pl["prof"][k] * (1 - w) + hb * w
+                    ramp_moved = max(ramp_moved, abs(new - pl["prof"][k]))
+                    pl["prof"][k] = new
+        log(f"Ramps: where a motorway ramp overlaps another road it takes that road's height (largest change {ramp_moved:.2f} m)")
     held = 0
     for v in shared:
         for i, c in v:
