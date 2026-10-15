@@ -2673,7 +2673,59 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 28 (Dan, 2026-10-15 03:22, after driving Round 27 including the Underground race; session
+**QUEUED — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
+better houses in the remaining neighborhoods. I have no specific styles for other neighborhoods though like I do with my
+own community". Part A then Part B; rebuild into `Builds/ChastainRush/` and commit after each, give the build time.**
+
+Part A, TRAFFIC. Racer has traffic (left behind in Round 15 / 16). Port it (CLAUDE.md: prefer porting; list what came):
+A1. Cars (and a few trucks / vans, Racer's traffic models) driving the map's roads in their lanes on the right, at road-type
+   speeds (neighborhood streets slow, Chastain Road / Bells Ferry / Canton Road faster, I-575 fastest), turning at
+   intersections, stopping and yielding where Racer's traffic does, pulling in and out of the neighborhoods; parked cars
+   in some driveways if cheap.
+A2. Arcade (CLAUDE.md "a fun arcade game"): the player can hit them; they react as in Racer (knocked, honk, swerve).
+   They are real traffic and CAN block you (Dan, 09:54: "could in fact block you"): a car stopped at a junction or
+   turning in front of you is in the way, as on a real road. They never enter the trail, yards, the pipes or the
+   shortcuts.
+A3. ON by default everywhere, free roam and races (Dan, 09:54: "cars should not be off in races ... But you can turn
+   traffic off in the settings"): a Traffic row in Settings (Off / Light / Normal / Heavy, default Normal), saved. In a
+   race traffic drives only on roads open to it: the current races have none (Noonday Creek is a trail, the Underground
+   race is in the pipes, the Chastain Glen loop is a blocked-off neighborhood), so traffic stays out behind the race
+   barriers and off their routes; a future race on open roads gets traffic on its course. The AI racers deal with
+   traffic too (slow, pass, or hit it). World vs. game layer: traffic is game layer.
+A4. Sounds through the Round 27 AI engine sounds (OtherEngines) with the voice budget; horns.
+A5. Cost: spawn round the player and despawn out of sight; frame rate in free roam at the busiest place (Chastain Road
+   at the shops, Normal and Heavy) before and after, reported.
+
+Part B, BETTER HOUSES IN THE REMAINING NEIGHBORHOODS. Chastain Glen (Dan's, hand-made styles), Grasmere Court, Chastain
+Commons and Chastain Enclave are dressed (Round 7, Round 22); every other neighborhood still has plain boxes. Dan has no
+styles for them, so Code picks believable ones (houses are not set in stone; Dan's house stays locked):
+B1. Group the remaining houses into neighborhoods by their streets (the subdivision each street belongs to; names from
+   OSM where it has them) and list them (name, streets, house count).
+B2. Give each neighborhood ONE consistent look of its own, from the kinds of houses typical of this part of Marietta /
+   East Cobb, so the map reads as different places: 1970s ranches and split-levels (brick and painted wood siding, low
+   roofs, carports); 1980s to 1990s two-story traditionals (brick fronts, siding sides and back, two-car garages, a
+   bonus room over the garage); 2000s craftsman-style (stone or brick wainscot, gables, covered porches); townhome rows
+   where the footprints are rows. Pick the era per neighborhood from its footprints (size, spacing, lot shape) and say
+   why. Within a neighborhood: 3 to 5 variants and a color palette so it is varied but clearly one place.
+B3. Same quality and kit as Chastain Glen's houses (roofs, windows, doors, garages, porches, foundations as settled in
+   Round 27, drives, mailboxes, a few trees and fences), on the real OSM footprints, reusing the communities code
+   (`MapBuilder.Communities.cs`, `communities_area.py`). Breakables as in the other neighborhoods.
+B4. Frame rate: the same LOD / batching as the dressed communities; numbers before and after at two views over the
+   most built-up area.
+B5. Pictures from the exe: one street view per neighborhood, plus an overhead of each, in the status, so Dan can pick
+   changes ("build it, then Dan drives it").
+
+**ACTIVE — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
+the build time. Dan drives it.**
+1. RIDER PAGE. Dan: "There is no place to customize your person". Racer's rider page was left behind in Round 16 (CLAUDE.md
+   list), so the new hands and hair styles (Round 28 Part C) cannot be picked. Port Racer's rider page into the game menu
+   (from the garage, as in Woodstock Rush, or wherever Racer has it): every `RiderLook` option (body, skin, hair with the
+   new styles, hair color, hat, hat color, shirt, shirt color, pants, pants color, and anything Racer's page has besides),
+   a turning preview of the rider on the chosen vehicle, controller and keyboard as the other menus, saved between runs
+   as Racer saves it, and the player's rider in the game uses it (every vehicle, first person hands' skin / gloves too).
+   Port Racer's code (CLAUDE.md); list what came. Pictures from the exe of the page and of three different riders.
+
+**DONE (Parts A to C, ad0ed37 to 4e4cd51) — Round 28 (Dan, 2026-10-15 03:22, after driving Round 27 including the Underground race; session
 `2026-10-15_03-07-51-371_794f57`, one report, read by Claude). Rebuild into `Builds/ChastainRush/` and commit after each
 part, give the build time. Dan drives it.**
 

@@ -287,7 +287,12 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active: Round 28 in `TODO.md` (Dan, 2026-10-15 03:22):** A manhole covers missing (prove all 13 with pictures); B the Underground race:
+**Active: Round 29 in `TODO.md` (Dan, 2026-10-15 09:45):** port Racer's rider page so the player can customize the rider.
+Queued after it: Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
+are closed to it; better houses with a look of their own in every neighborhood not yet
+dressed).
+
+**Round 28 in `TODO.md` (Dan, 2026-10-15 03:22), built (ad0ed37 to 4e4cd51):** A manhole covers missing (prove all 13 with pictures); B the Underground race:
 shortcuts S1 to S3, the hairpin before the line moved down a level, a ramp back into the hub, resets facing forward, bikes not
 turned sideways, the camera keeps the player's view; C riders' hands, fist wave and celebrations, hair styles (fix Short and
 Medium, add Mohawk, Crew cut, Spiky).
