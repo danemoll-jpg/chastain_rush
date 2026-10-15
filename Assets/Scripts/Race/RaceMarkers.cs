@@ -101,7 +101,7 @@ namespace ChastainRush
             float side = Mathf.Sign(Vector3.Dot(leave - p, right));
             var root = new GameObject("Shortcut sign " + sc.Id);
             root.transform.SetParent(transform, false);
-            var at = RaceRoute.Ground(leave.x, leave.z) - fwd * 6f;   // a little before the turn-off
+            var at = RaceRoute.Surface(leave.x, leave.z) - fwd * 6f;   // a little before the turn-off (Round 27: Surface)
             root.transform.SetPositionAndRotation(at, Quaternion.LookRotation(fwd, Vector3.up));
             Box(root.transform, new Vector3(0, 1.2f, 0), new Vector3(0.25f, 2.4f, 0.25f), White);
             Box(root.transform, new Vector3(0, 3.3f, 0.05f), new Vector3(3.4f, 1.8f, 0.15f), White);
@@ -123,20 +123,22 @@ namespace ChastainRush
         {
             var root = Frame(g, "Checkpoint " + g.Id);
             var paint = new List<Renderer>();
-            float h = 7.5f;
+            float h = g.Arch > 0f ? g.Arch : 7.5f;   // Round 27: low in a pipe
             paint.Add(Box(root.transform, new Vector3(-g.HalfWidth, h / 2f, 0), new Vector3(0.9f, h, 0.9f)));
             paint.Add(Box(root.transform, new Vector3(g.HalfWidth, h / 2f, 0), new Vector3(0.9f, h, 0.9f)));
             paint.Add(Box(root.transform, new Vector3(0, h - 0.6f, 0), new Vector3(g.HalfWidth * 2f, 1.2f, 0.5f)));
             var beams = new GameObject("Beams"); beams.transform.SetParent(root.transform, false);
-            foreach (float side in new[] { -1f, 1f })
-                paint.Add(Box(beams.transform, new Vector3(side * g.HalfWidth, 40f, 0), new Vector3(1.0f, 80f, 1.0f)));
+            if (!(RaceController.Instance && RaceController.Instance.Route != null && RaceController.Instance.Route.Underground))   // Round 27: no beams through the ground over a pipe
+                foreach (float side in new[] { -1f, 1f })
+                    paint.Add(Box(beams.transform, new Vector3(side * g.HalfWidth, 40f, 0), new Vector3(1.0f, 80f, 1.0f)));
             return new Arch { root = root, paint = paint.ToArray(), beams = beams, gate = g };
         }
 
         Arch MakeFinish(RaceGate g)
         {
             var root = Frame(g, "Start-finish gate");
-            float h = 7.5f;
+            var rdata = RaceController.Instance ? RaceController.Instance.RouteData : null;
+            float h = rdata != null && rdata.gate_arch_m > 0f ? rdata.gate_arch_m : 7.5f;   // Round 27: under the hub's ceiling
             foreach (float side in new[] { -1f, 1f })
             {
                 // chequered pylons: alternating black and white blocks

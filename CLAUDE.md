@@ -287,9 +287,17 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active: Round 27 in `TODO.md` (Dan, 2026-10-14 20:25):** A buried house walls and the New Chastain bridge's west end;
+**Round 27 in `TODO.md` (Dan, 2026-10-14 20:25), all four parts built (statuses there):** A buried house walls and the New Chastain bridge's west end;
 B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
 underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
+
+**Round 27 Part D (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Underground race
+(`python Tools/mapgen/make_underground_route.py` writes `Data/routes/underground.json` from the network; re-run after `pipe_network.py`,
+then Build Map): the grid on the hub's top ledge, round M5, J1, M1 and the hub's mid ledge, heights from the route (`loop_y`;
+`RaceRoute.Surface` while it runs); during it only, seals across the pipes it does not use and the switch-gate mechanism
+(`Race/RaceBarriers.Underground.cs`; route `seals`, `rails`, `switch_gates`). The proposal's switch shortcuts S1 to S3 are not built (do
+not fit as built; Dan to pick). All proposal markers are gone (`network_markers.py` and `Data/proposals/` removed). Check:
+`ChastainRush.exe -exeRound27 <dir> -r27Only race -logFile <dir>\Player.log`.
 
 **Round 27 Part C (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's settings
 pages (`Menus/GameMenus.Settings.cs`: AUDIO, DISPLAY, CONTROLS; Q / E or LB / RB step the tabs; the Screen row moved to Display) with the

@@ -2732,6 +2732,55 @@ D4. Remove the race's proposal markers once it is built (all proposal markers ar
 D5. Check by script: the AI completes the race, a switch opens its gate, frame rate in a full race in the hub. Dan
    drives it.
 
+**STATUS of Round 27 Part D (Claude, 2026-10-15): D1, D3, D4, D5 DONE; D2 seals DONE, the switch-gate mechanism DONE (checked with a test
+gate), the switch SHORTCUTS S1 to S3 NOT BUILT (they do not fit the network as built: numbers and options below, for Dan to pick); exe
+rebuilt (2026-10-15 02:40), committed; checked in the exe by script (muted, minimized), not yet driven by Dan.**
+- D1 DONE. "Underground" in the race setup menu's Route row (`Data/routes/underground.json`, made by `python
+  Tools/mapgen/make_underground_route.py` from `Data/pipes/network.json`; re-run after `pipe_network.py`, then Build Map). 3 laps (the menu's
+  laps), forward only, every vehicle, the AI, records like the other races. START in the hub (Code's pick): the grid and the line on the
+  hub's TOP LEDGE, south side, 45 m before M5's mouth. The lap (1488 m): along the top ledge -> into M5 -> J3 -> M5a along the Enclave pond
+  (the glass under W4) -> J1 -> M1a (the glass under W1) -> J2 -> M1b -> out of M1's mouth onto the hub's MID LEDGE (west end) -> round the
+  mid ledge, north, east and south sides -> up the mid-to-top ramp -> round the corner onto the top ledge -> the line. It is the
+  proposal's loop driven the other way: as built, the floor ramp climbs east along the north side and the mid-to-top ramp climbs west along
+  the south side, so this is the only way round that only ever goes up the ramps (never down a ramp into racers coming up it) and has no
+  U-turn on a 7 m ledge. Checkpoints (where they stop free cuts; arches low in the pipes, no light beams through the ground): J3, the glass
+  under W4, J1, the glass under W1, the mid ledge's east side. Nothing on the ledges' edges, as built: a fall to the floor costs the climb
+  back up the floor ramp (it comes out on the mid ledge's east side, no faster). Heights: the route's own (new `loop_y`, `lead_in_y`; while
+  an underground route is raced the race's "ground" is the route's height, `RaceRoute.Surface`, for the grid, the AI's passing lane and
+  recovery, the resets and the barriers).
+- D2 seals DONE: barred steel grilles, during this race only (`Race/RaceBarriers.Underground.cs`, from the route's `seals`), across every
+  pipe the race does not use where it opens into J1, J2, J3 and the hub: G1 BF right pipe at J1, G3 B1a and G4 B4b at J2, G5 B6 and G6 B7a at
+  J3, G7 M3, G8 M2, G9 B9, G10 M4, G11 M6 at the hub; and every exit and mouth (16) closed as in every race. Free roam: none of it is there.
+  The SWITCH GATES DONE as a mechanism (route `switch_gates`, `rails`): a striped grille across a shortcut and a yellow plate with a lamp;
+  the first racer over the plate (the player or an AI) opens it for everyone for the rest of the race (it rises, the lamp turns green, "...
+  OPEN" on the screen); the AI never takes a shortcut whose gate is closed and takes an open one by ShortcutStrategy. Railings for ledges
+  are in too (none used).
+  NOT BUILT, the proposal's switch shortcuts (they were drawn before the hub's ramps and the Enclave main were built as they are; Dan picks
+  shortcuts, so nothing nearer was built in their place):
+  - S1 "Waterfall leap" (gate on the top ledge by M5's mouth, a leap to the floor): it was a way DOWN from the top ledge in place of a ramp
+    down; as built there is no ramp down from the top (the race goes up), so it would skip nothing. Option: a leap the other way round the
+    lap (off M1's mouth on the mid ledge, straight out over the waterfall to the floor and up the floor ramp, about 35 m shorter than the
+    mid ledge's north side), its gate across M1's mouth onto the floor side and its plate up M5's wall.
+  - S2 "Across the pond's bend" (M5a 38 % to 72 %): M5 as built bends back across that straight line, so the cut would cross M5 itself.
+    Option: two junctions on M5 (at s 205 and 389) and a pipe between them that dives about 7 m under M5 at 12 to 13 % grades: about 45 m
+    shorter, skips the glass under W4; its east junction must move clear of branch B8.
+  - S3 "High line over J2": M1 runs straight through J2 there, so a pipe over J2 saves only about 28 m on the 1488 m lap.
+- D3 DONE: wall riding on for the player as in every race (Round 26); the pipe express off (races never use it); every exit and mouth
+  closed (none is on the route), no manhole on the route's pipes; the camera rules underground unchanged.
+- D4 DONE: the race's proposal markers removed, and with them the last proposal markers (`Data/proposals/round23_network.json`, their label
+  faces `Assets/HandMade/Proposals/`, `Tools/mapgen/network_markers.py`); the markers' code stays and builds nothing without a file.
+- D5 DONE (`ChastainRush.exe -exeRound27 <dir> -r27Only race [-r27Laps n] [-r27Minutes m]`, `Checks/Round27Runner.Race.cs`): 3 AI drivers
+  (random vehicles: Pebble Coupe, Ridge Scrambler, Longroof GT), the player parked on the floor after GO: all three finish the 3 laps, no
+  missed checkpoint, no AI reset, laps 69 to 80 s (totals 211 / 235 / 235 s); a TEST switch gate (check only) across the mid ledge with its
+  plate 30 m before it: opened by an AI driver (GOLD) at 54 s and every AI through it after. Frame rate in the race in the hub (`-exeProfile
+  -profileOnly race_underground`, vSync off, 1280 x 720, not measured at 3840 x 2160): 156 fps average, slowest 1 % at 11.6 ms; 59 fps
+  with vSync on in the race check. Before the fix the parked player on the grid (which is on the lap's last corner) blocked the AI: a
+  racer leaves the grid at GO, but a player who stops there in a race will be in the way.
+- New: `Tools/mapgen/make_underground_route.py`, `Race/RaceBarriers.Underground.cs`, route fields `loop_y`, `lead_in_y`, `underground`,
+  `gate_arch_m`, checkpoints' `arch_m` / `half_m`, shortcuts' `path_y`, `seals`, `rails`, `switch_gates`. Imported from Racer: nothing.
+- For Dan to check: the Underground race from the menu (the top-ledge start, M5 and M1 with the AI, the mid ledge and the ramp, the
+  corner at the ramp's top); and pick the switch shortcuts (S1 to S3 as above, or others).
+
 **STATUS of Round 27 Part C (Claude, 2026-10-15): C1 DONE, exe rebuilt (2026-10-15 00:39), committed; checked in the exe by script (muted), not yet
 driven by Dan.**
 - C1 DONE (`Menus/GameMenus.Settings.cs`, `Audio/SoundMix.cs`, `ScreenSetting.cs`). Racer's settings pages in the game menu: a SETTINGS row

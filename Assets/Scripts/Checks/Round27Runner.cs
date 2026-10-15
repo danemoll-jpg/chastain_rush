@@ -13,6 +13,7 @@ namespace ChastainRush
     // check (CheckRun), its files in <dir> (its settings.json too: GameSettings keeps a check's settings in the check's folder).
     //   settings  (C1) the menus with a virtual gamepad, as Round 16: title > SETTINGS (Audio) > Master right > RB Display > RB Controls >
     //             LB > B > Audio's Music page > B > B; every page photographed; the saved file and the listener checked.
+    //   race      (D5) the underground race with 3 AI drivers and a test switch gate (Round27Runner.Race.cs)
     public sealed partial class Round27Runner : MonoBehaviour
     {
         public string outputDir;
@@ -32,6 +33,7 @@ namespace ChastainRush
             report.AppendLine($"Round 27 check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted (AudioListener.volume {AudioListener.volume:0}).");
             yield return new WaitForSecondsRealtime(3f);
             if (Only("settings")) yield return Settings();
+            if (Only("race")) yield return Race();
             report.AppendLine();
             report.AppendLine(fails == 0 ? $"ALL {checks} CHECKS PASSED" : $"{fails} OF {checks} CHECKS FAILED");
             File.WriteAllText(Path.Combine(outputDir, "round27.txt"), report.ToString());
@@ -83,6 +85,10 @@ namespace ChastainRush
             Check("B back to Audio", menus.PageName == "title/settings-audio", menus.PageName);
             yield return Press(GamepadButton.East);
             Check("B back to the title", menus.PageName == "title/root", menus.PageName);
+            // out of the menus (FREE ROAM) so a part after this one runs unpaused
+            for (int i = 0; i < 6 && menus.FocusedLabel != "FREE ROAM"; i++) yield return Press(GamepadButton.DpadUp);
+            yield return Press(GamepadButton.South);
+            Check("FREE ROAM closes the menu, the game runs", menus.PageName == "closed" && Time.timeScale > 0f, $"{menus.PageName}, timeScale {Time.timeScale}");
         }
 
         IEnumerator Press(GamepadButton b)

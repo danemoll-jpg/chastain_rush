@@ -49,7 +49,7 @@ namespace ChastainRush
                     {
                         var p = route.PointAt(route.GateS + s + ds, out var f);
                         var right = Vector3.Cross(Vector3.up, f);
-                        var q = RaceRoute.Ground(p.x + right.x * off, p.z + right.z * off);
+                        var q = RaceRoute.Surface(p.x + right.x * off, p.z + right.z * off);
                         float y = Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg;
                         if (Clear(r, q, y, false)) { pos = q; yaw = y; return true; }
                     }
@@ -67,7 +67,7 @@ namespace ChastainRush
                     foreach (float ds in new[] { 0f, 4f, -4f, 8f, -8f })
                         foreach (float off in new[] { 0f, -2f, 2f })
                         {
-                            var q = RaceRoute.Ground(c.x + dir.x * ds + right.x * off, c.y + dir.z * ds + right.z * off);
+                            var q = RaceRoute.Surface(c.x + dir.x * ds + right.x * off, c.y + dir.z * ds + right.z * off);
                             if (Clear(r, q, y, true)) { pos = q; yaw = y; return true; }
                         }
                 }

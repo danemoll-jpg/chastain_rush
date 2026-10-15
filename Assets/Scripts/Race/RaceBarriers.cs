@@ -10,7 +10,7 @@ namespace ChastainRush
     // its verge, with colliders, so the car stops. Built when a race starts, removed in free driving (Racer does the same
     // with its authored course barriers, which are switched on only for the race).
     // Layer note: the barrier is on the default layer like the terrain, so it is solid to the car and to its wheel rays.
-    public sealed class RaceBarriers : MonoBehaviour
+    public sealed partial class RaceBarriers : MonoBehaviour
     {
         public const float Height = 1.5f, Depth = 0.9f, Block = 1.5f, Verge = 3f, ShortcutClearM = 3f;   // a shortcut's line this close to a barrier: the barrier is left out
         public int Count => built.Count;
@@ -61,6 +61,7 @@ namespace ChastainRush
                 foreach (var sc in route.Shortcuts) lines.Add(sc.Path);
                 foreach (int m in mouths.Unused(lines)) { MakeMouthBarrier(mouths, m); MouthsClosed.Add(mouths.ids[m]); }
             }
+            BuildUnderground(route);   // Round 27: the underground race's seals, railings and switch gates (RaceBarriers.Underground.cs)
         }
 
         public readonly List<string> MouthsClosed = new List<string>();   // Round 24 A2: for the checks and the log
@@ -91,7 +92,7 @@ namespace ChastainRush
         public void Clear()
         {
             for (int i = transform.childCount - 1; i >= 0; i--) Destroy(transform.GetChild(i).gameObject);
-            built.Clear();
+            built.Clear(); Gates.Clear(); Seals = Rails = 0;
         }
 
         static float DistToSegment(Vector2 p, Vector2 a, Vector2 b)
@@ -112,7 +113,7 @@ namespace ChastainRush
             {
                 float off = -half + bw * (i + 0.5f);
                 Vector3 p = new Vector3(c.x, 0f, c.z) + lateral * off;
-                float gy = RaceRoute.Ground(p.x, p.z).y;
+                float gy = RaceRoute.Surface(p.x, p.z).y;
                 // each block stands on the ground under it and reaches 1 m below it, so a slope leaves no gap
                 var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.SetParent(root.transform, false);
@@ -126,7 +127,7 @@ namespace ChastainRush
             foreach (float side in new[] { -1f, 1f })
             {
                 Vector3 p = new Vector3(c.x, 0f, c.z) + lateral * (side * half);
-                float gy = RaceRoute.Ground(p.x, p.z).y;
+                float gy = RaceRoute.Surface(p.x, p.z).y;
                 var post = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 post.transform.SetParent(root.transform, false);
                 post.transform.SetPositionAndRotation(new Vector3(p.x, gy + 1.6f, p.z), Quaternion.LookRotation(along, Vector3.up));
@@ -134,7 +135,7 @@ namespace ChastainRush
                 post.GetComponent<Renderer>().sharedMaterial = red;
                 Destroy(post.GetComponent<Collider>());
             }
-            return new Barrier { Data = c, Root = root, Centre = new Vector3(c.x, RaceRoute.Ground(c.x, c.z).y, c.z), Along = along, HalfLength = half };
+            return new Barrier { Data = c, Root = root, Centre = new Vector3(c.x, RaceRoute.Surface(c.x, c.z).y, c.z), Along = along, HalfLength = half };
         }
 
         static Material Unlit(Color col)

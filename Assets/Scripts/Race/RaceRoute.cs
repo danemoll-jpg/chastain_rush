@@ -14,7 +14,7 @@ namespace ChastainRush
     //
     // Round 6: gates are wide and forgiving; official shortcuts (shaped after Racer's WoodlandRoute: a path, an entry plane,
     // the gates it bypasses) and road closures (barriers across roads that leave the course) are part of the route data.
-    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; }
+    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; }   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
 
     // Round 6: an OFFICIAL shortcut. A path from entry to exit, an entry plane across it a little way in (crossing that plane
     // in the direction of the path is "taking the shortcut") and the checkpoints it forgives. Heights come from the world.
@@ -34,7 +34,14 @@ namespace ChastainRush
         public bool lap_option;
         public float ai_take, ai_slip;
         public float[] ai_slip_profile;
+        public float[] path_y;               // Round 27 (the underground race): the path's heights (none: the ground's, or a pipe's floor)
     }
+    // Round 27 (the underground race's race layer, built by RaceBarriers while it runs): a SEAL is a barred grille across a pipe's opening
+    // the race does not use; a RAIL a run of railing (the hub's top ledge); a SWITCH GATE a grille across a shortcut that opens, for the
+    // rest of the race, when any racer drives over its switch (a plate)
+    [Serializable] public class RouteSealJson { public string id, label; public float x, y, z, dx, dz, w, h; }
+    [Serializable] public class RouteRailJson { public string id; public float[] points; public float y, height; }   // points x, z, ...
+    [Serializable] public class RouteSwitchGateJson { public string id, shortcut, label; public RouteSealJson gate; public float sx, sy, sz, sr, nx, ny, nz; }   // sx..sz the plate's middle, sr its reach, n its face's normal
     // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
     [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }
 
@@ -71,6 +78,14 @@ namespace ChastainRush
         public float ai_half_width_m, ai_lane_m, ai_pass_lane_m;
         public RouteAiZoneJson[] ai_zones;
         public RouteAiZoneJson[] ai_zones_reverse;   // Round 21: the reverse race's held speeds (its own jumps), in the reverse lap's stations
+        // Round 27 (the underground race): loop_y / lead_in_y the heights of loop / lead_in (none: the ground's); underground: heights come
+        // from the route, not the terrain over it, while it is raced (RaceRoute.Surface), and its arches are low with no light beams
+        public float[] loop_y, lead_in_y;
+        public bool underground;
+        public float gate_arch_m;   // the start / finish arch's height (0: 7.5 m; under the hub's ceiling)
+        public RouteSealJson[] seals;
+        public RouteRailJson[] rails;
+        public RouteSwitchGateJson[] switch_gates;
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
         public bool AllowsVehicle(string id) => vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0;
     }
@@ -85,6 +100,7 @@ namespace ChastainRush
         public Vector3 Right;
         public float HalfWidth, S;   // S: distance along the lap in travel order from the lap's own start
         public float Below = 6f, Above = 25f;   // metres under / over Position.y that still count (a jump over the gate counts)
+        public float Arch;                      // Round 27: the arch's height (0: the usual 7.5 m)
 
         // True when the step from -> to passes through the gate's opening in the travel direction, at any angle; fraction is
         // how far along the step it happened (so lap times are not rounded to physics steps). reach is the car's own half
@@ -156,7 +172,9 @@ namespace ChastainRush
             var r = new RaceRoute { Name = j.name, Direction = dir, Reverse = dir == "reverse", Laps = Mathf.Max(1, j.laps), LapLength = j.lap_length_m };
             int n = j.loop.Length / 2;
             var pts = new List<Vector3>(n);
-            for (int i = 0; i < n; i++) pts.Add(Ground(j.loop[2 * i], j.loop[2 * i + 1]));
+            bool hasY = j.loop_y != null && j.loop_y.Length == n;   // Round 27: the underground race's own heights
+            for (int i = 0; i < n; i++) pts.Add(hasY ? new Vector3(j.loop[2 * i], j.loop_y[i], j.loop[2 * i + 1]) : Ground(j.loop[2 * i], j.loop[2 * i + 1]));
+            r.Underground = j.underground; r.Data = j;
             if (r.Reverse) pts.Reverse();
             r.Path = pts.ToArray();
             r.cum = new float[n];
@@ -174,9 +192,9 @@ namespace ChastainRush
             order.Sort((x, y) => Mathf.Repeat(x.s - gateS, L).CompareTo(Mathf.Repeat(y.s - gateS, L)));
             for (int i = 0; i < order.Count; i++)
             {
-                var g = r.MakeGate(i + 1, order[i].c.label, order[i].s, j.checkpoint_half_width_m);
+                var g = r.MakeGate(i + 1, order[i].c.label, order[i].s, order[i].c.half_m > 0f ? order[i].c.half_m : j.checkpoint_half_width_m);   // Round 27: half_m
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
-                g.DataId = order[i].c.id;
+                g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m;
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
                 r.Checkpoints.Add(g);
             }
@@ -188,7 +206,7 @@ namespace ChastainRush
             {
                 // forward: the grid is the map's spawn point on the entrance lane, and the car drives the lead-in to the loop
                 float lx = j.lead_in[0], lz = j.lead_in[1], nx = j.lead_in[2], nz = j.lead_in[3];
-                r.GridPosition = Ground(lx, lz);
+                r.GridPosition = j.lead_in_y != null && j.lead_in_y.Length > 0 ? new Vector3(lx, j.lead_in_y[0], lz) : Ground(lx, lz);   // Round 27
                 r.GridYaw = Mathf.Atan2(nx - lx, nz - lz) * Mathf.Rad2Deg;
                 r.RunInLength = j.lead_in_length_m + gateS;
             }
@@ -214,7 +232,8 @@ namespace ChastainRush
                 if (sj.path == null || sj.path.Length < 4) continue;
                 int n = sj.path.Length / 2;
                 var pts = new List<Vector3>(n);
-                for (int i = 0; i < n; i++) { var g = Ground(sj.path[2 * i], sj.path[2 * i + 1]); g.y = DrainPipe.LineHeight(g.x, g.z, g.y); pts.Add(g); }   // Round 18: through a pipe, its floor
+                bool py = sj.path_y != null && sj.path_y.Length == n;   // Round 27: the underground race's own heights
+                for (int i = 0; i < n; i++) { if (py) { pts.Add(new Vector3(sj.path[2 * i], sj.path_y[i], sj.path[2 * i + 1])); continue; } var g = Ground(sj.path[2 * i], sj.path[2 * i + 1]); g.y = DrainPipe.LineHeight(g.x, g.z, g.y); pts.Add(g); }   // Round 18: through a pipe, its floor
                 if (Reverse && d == "both") pts.Reverse();
                 var sc = new RaceShortcut { Id = sj.id, Name = string.IsNullOrEmpty(sj.name) ? sj.id : sj.name, Path = pts.ToArray(), AiSpeed = sj.ai_speed, AiProfile = sj.ai_profile, AiTake = sj.ai_take, AiSlip = sj.ai_slip, AiSlipProfile = sj.ai_slip_profile };
                 var c = new float[pts.Count];
@@ -312,6 +331,28 @@ namespace ChastainRush
         }
 
         public static Vector3 Ground(float x, float z) { float y = GroundQuery.Height(x, z); return new Vector3(x, float.IsNaN(y) ? 0f : y, z); }
+
+        // Round 27 (the underground race): while an underground route is raced (Active), the race's own idea of "the ground" there is the
+        // route's height under the nearest point of its lap (within 30 m), not the terrain far over it: the grid, the AI's passing lane
+        // and its fall-recovery, the resets and the barriers ask Surface. Any other time (and away from the lap) it is the terrain's.
+        public bool Underground;
+        public RouteJson Data;   // Round 27: the race layer's seals, railings and switch gates (RaceBarriers)
+        public static RaceRoute Active;
+        public static Vector3 Surface(float x, float z)
+        {
+            var r = Active;
+            if (r == null || !r.Underground) return Ground(x, z);
+            var p = new Vector2(x, z); float best = 900f; float y = float.NaN;
+            var path = r.Path;
+            for (int i = 0; i + 1 < path.Length; i++)
+            {
+                Vector2 a = new Vector2(path[i].x, path[i].z), b = new Vector2(path[i + 1].x, path[i + 1].z), ab = b - a;
+                float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                float d = (a + ab * t - p).sqrMagnitude;
+                if (d < best) { best = d; y = Mathf.Lerp(path[i].y, path[i + 1].y, t); }
+            }
+            return float.IsNaN(y) ? Ground(x, z) : new Vector3(x, y, z);
+        }
         static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
     }
 }

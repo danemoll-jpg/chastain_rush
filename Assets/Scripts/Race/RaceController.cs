@@ -41,6 +41,7 @@ namespace ChastainRush
         public static string RecordsPathOverride; // checks write somewhere other than the real records
         public static int LapsOverride;           // race this many laps instead of the route file's (checks; Round 16: the race setup menu)
         public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
+        public static readonly List<RouteSwitchGateJson> ExtraSwitchGates = new List<RouteSwitchGateJson>(); // Round 27, checks only: switch gates not in the file
         public static bool EntryPlanesOff;   // checks only (Round 13): shortcuts are taken by their corridor alone
         public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
 
@@ -178,6 +179,11 @@ namespace ChastainRush
                 all.AddRange(ExtraShortcuts);
                 RouteData.official_shortcuts = all.ToArray();
             }
+            if (ExtraSwitchGates.Count > 0)   // Round 27
+            {
+                var gs = new List<RouteSwitchGateJson>(RouteData.switch_gates ?? new RouteSwitchGateJson[0]); gs.AddRange(ExtraSwitchGates);
+                RouteData.switch_gates = gs.ToArray();
+            }
             string dir = DirectionOverride;
             if (!string.IsNullOrEmpty(dir) && !RouteData.Allows(dir)) dir = RouteData.direction;   // Round 18: Noonday Creek is forward only (its jumps face one way)
             Route = RaceRoute.Create(RouteData, dir);
@@ -194,6 +200,7 @@ namespace ChastainRush
         {
             if (!enabled || !car) return;
             LoadRoute(); // picks up a changed direction
+            RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
             RaceClock = 0f; PlayerFinishedAt = 0f;
             NewBestLap = NewBestTotal = false;
@@ -209,7 +216,8 @@ namespace ChastainRush
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
             barriers.Build(Route);   // closed roads appear with the race ...
             FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
-            Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts");
+            Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts"
+                + (barriers.Seals + barriers.Rails + barriers.Gates.Count > 0 ? $", {barriers.Seals} seals, {barriers.Rails} railings, {barriers.Gates.Count} switch gates" : ""));
             markers.Refresh(this);
         }
 
@@ -223,6 +231,7 @@ namespace ChastainRush
             input.enabled = true;
             Say("", 0f);
             if (barriers != null) barriers.Clear();   // ... and go away in free driving
+            RaceRoute.Active = null;   // Round 27
             P.ActiveShortcut = null;
             RemoveAi();
             Log("RACE LEFT");
@@ -289,6 +298,12 @@ namespace ChastainRush
                 if (!e.Car) continue;
                 if (e.Finished) { e.PrevPos = e.Car.transform.position; continue; }
                 Step(e, t0, dt);
+                // Round 27 (the underground race): a racer over a switch's plate opens its gate for everyone, for the rest of the race
+                if (barriers != null && barriers.Gates.Count > 0 && barriers.TryOpen(e.Car.Body.position, e.Name, out var opened))
+                {
+                    Say($"{opened.Data.label} OPEN", 3f);
+                    Log($"switch {opened.Data.id}: {opened.Data.label} opened by {e.Name} at {RaceClock:0.0} s");
+                }
             }
             if (aiActive) TrackAi();
         }
@@ -513,7 +528,7 @@ namespace ChastainRush
                 var a = new AiShortcut { Id = sc.Id, Name = sc.Name, Line = line, FirstForgiven = sc.FirstForgiven, entrySpeed = sc.AiSpeed > 0f ? sc.AiSpeed : AiShortcutSpeed(sc.Id), profile = sc.AiProfile,
                                        take = sc.AiTake, slip = sc.AiSlip, slipProfile = sc.AiSlipProfile };
                 a.entryRoad = AiRoad.Project(sc.Start, out _); a.exitRoad = AiRoad.Project(sc.End, out _);
-                a.Allows = c => AiShortcutAllowed(sc.Id, c);
+                a.Allows = c => AiShortcutAllowed(sc.Id, c) && (barriers == null || barriers.ShortcutOpen(sc.Id));   // Round 27: never through a closed switch gate
                 AiShortcuts.Add(a);
             }
             runIn = RunInLine();
@@ -539,7 +554,7 @@ namespace ChastainRush
             var line = new List<Vector3>();
             if (!Route.Reverse && RouteData.lead_in != null && RouteData.lead_in.Length >= 4)
             {
-                for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) line.Add(RaceRoute.Ground(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
+                for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) line.Add(RaceRoute.Surface(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
             }
             else line.AddRange(Route.SamplePath(Route.GateS - RouteData.reverse_grid_back_m, Route.GateS, 2f));
             var slots = new List<(Vector3, Vector3)>();
@@ -551,7 +566,7 @@ namespace ChastainRush
                 Vector3 best = p;
                 foreach (float k in new[] { 1f, 0.6f, 0.3f, 0f, -0.3f })
                 {
-                    var q = RaceRoute.Ground(p.x + right.x * side * k, p.z + right.z * side * k);
+                    var q = RaceRoute.Surface(p.x + right.x * side * k, p.z + right.z * side * k);
                     if (!Physics.CheckBox(q + Vector3.up * 1.0f, new Vector3(1.1f, 0.6f, 2.4f), Quaternion.LookRotation(f), ~0, QueryTriggerInteraction.Ignore)) { best = q; break; }
                 }
                 slots.Add((best, f));
@@ -576,7 +591,7 @@ namespace ChastainRush
         {
             if (Route.Reverse || RouteData.lead_in == null || RouteData.lead_in.Length < 4) return null;
             var pts = new List<Vector3>();
-            for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) pts.Add(RaceRoute.Ground(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
+            for (int i = 0; i + 1 < RouteData.lead_in.Length; i += 2) pts.Add(RaceRoute.Surface(RouteData.lead_in[i], RouteData.lead_in[i + 1]));
             float j = AiRoad.Project(pts[pts.Count - 1], out _);
             for (float d = 4f; d <= 40f; d += 4f) pts.Add(AiRoad.At(j + d, out _));
             var line = new GameObject("AI run-in").AddComponent<RaceRoad>(); line.transform.SetParent(AiRoad.transform, false);

@@ -265,7 +265,7 @@ namespace Racer
             }
 
             // Racer 0.72: a rival below the world is restored to the nearest course point at once
-            if(!finished&&Car.Body.position.y<RaceRoute.Ground(Car.Body.position.x,Car.Body.position.z).y-20&&Time.time>=nextRecovery)TryRecover(s);
+            if(!finished&&Car.Body.position.y<RaceRoute.Surface(Car.Body.position.x,Car.Body.position.z).y-20&&Time.time>=nextRecovery)TryRecover(s);
             // Chastain Rush, Round 21: wading out of R1's pool is not being stuck (for 12 s; longer, the usual recovery)
             wadeTime=PoolHold.Wading(Car)?wadeTime+Time.fixedDeltaTime:0f;
             if(wadeTime>0f&&wadeTime<12f){stalled=0;routeStuck=branchStuck=rejoinStuck=0;}
@@ -367,7 +367,7 @@ namespace Racer
                     foreach(float off in trail?new[]{0f,lane,-lane}:new[]{lane,0f,-lane,2.5f,-2.5f})
                     {
                         var p=DriveRoad.At(current+ds,out var f); f=Vector3.ProjectOnPlane(f,Vector3.up).normalized;
-                        p+=Vector3.Cross(Vector3.up,f)*off; p=RaceRoute.Ground(p.x,p.z);
+                        p+=Vector3.Cross(Vector3.up,f)*off; p=RaceRoute.Surface(p.x,p.z);   // Chastain Rush, Round 27: Surface (the underground race)
                         if(Clear(p,f)){at=p;fwd=f;found=true;break;}
                     }
                     if(found)break;

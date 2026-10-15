@@ -55,6 +55,7 @@ namespace ChastainRush
                 new Place { name = "race_glen_reverse", route = "chastain_glen_loop.json", dir = "reverse" },
                 new Place { name = "race_creek_forward", route = "noonday_creek.json", dir = "forward" },
                 new Place { name = "race_creek_reverse", route = "noonday_creek.json", dir = "reverse" },
+                new Place { name = "race_underground", route = "underground.json", dir = "forward" },   // Round 27: the grid on the hub's top ledge
                 // the creek-trail exit during a race (closed), seen from the trail 12 m short of it
                 new Place { name = "race_creek_xtrail", route = "noonday_creek.json", dir = "forward", x = 2343f, z = 1099.5f, yaw = 335f },
             };
