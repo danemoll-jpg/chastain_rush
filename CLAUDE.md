@@ -287,7 +287,15 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Round 27 in `TODO.md` (Dan, 2026-10-14 20:25), all four parts built (statuses there):** A buried house walls and the New Chastain bridge's west end;
+**Active: Round 28 in `TODO.md` (Dan, 2026-10-15 03:22):** A manhole covers missing (prove all 13 with pictures); B the Underground race:
+shortcuts S1 to S3, the hairpin before the line moved down a level, a ramp back into the hub, resets facing forward, bikes not
+turned sideways, the camera keeps the player's view; C riders' hands, fist wave and celebrations, hair styles (fix Short and
+Medium, add Mohawk, Crew cut, Spiky).
+
+**Camera view rule (Dan, 2026-10-15):** the camera view only changes when the player changes it; the pipe camera changes how a
+chase view follows, never which view it is.
+
+**Round 27 in `TODO.md` (Dan, 2026-10-14 20:25), all four parts built, driven by Dan 2026-10-15 03:22 (his notes are Round 28) (statuses there):** A buried house walls and the New Chastain bridge's west end;
 B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
 underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
 
@@ -610,7 +618,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-14_17-14-00-187_5d4e5a` (one report: a log ramp's foot is a wall; in TODO.md, Round 26).
+`2026-10-15_03-07-51-371_794f57` (one report: no manhole cover on Westminister Way; in TODO.md, Round 28).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

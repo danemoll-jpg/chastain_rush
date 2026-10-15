@@ -2673,7 +2673,63 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**ACTIVE — Round 27 (Dan, 2026-10-14 20:25): the open items, Woodstock Rush's radio, music folders, AI vehicle sounds and
+**ACTIVE — Round 28 (Dan, 2026-10-15 03:22, after driving Round 27 including the Underground race; session
+`2026-10-15_03-07-51-371_794f57`, one report, read by Claude). Rebuild into `Builds/ChastainRush/` and commit after each
+part, give the build time. Dan drives it.**
+
+Part A, MANHOLE COVERS STILL MISSING. BUG-001 (vehicle x 2710.04, z 1193.05, heading 86, on Westminister Way, 14 m short
+of MH7 at x 2724, z 1197): "there is no manhole cover here". The screenshot shows plain asphalt ahead: no cover. Dan, again:
+"Still need to make sure it is putting manhole covers in." The Round 25 follow-up's lighter cover is not showing (lost in
+Part A's road / bridge rebuild, drawn under the road, culled, or never built for some). Find why and fix it, then PROVE it:
+a picture from the exe from a driver's height, a few meters back, at EVERY manhole MH1 to MH13, each showing the cover
+(list them). A normal-size cover (about 0.9 m), visibly lighter than the road, flush, no bump (as Round 25 A1).
+
+Part B, UNDERGROUND RACE (Dan's notes, numbered as his):
+B1. "Lets try the shortcuts and see what happens." Build all three as Code proposed them in Part D's status: S1 the leap
+   off M1's mouth over the waterfall to the floor (gate across M1's mouth on the floor side, plate up M5's wall); S2 the
+   dive pipe under M5 between two new junctions (its east junction clear of B8); S3 the high line over J2 (even if it
+   saves little: Dan wants to see it). Each behind its switch gate (the mechanism built in D2), shortcut design rules
+   (CLAUDE.md), the AI by ShortcutStrategy, on the map. Remove the TEST gate if it is still in.
+B2. "The tight hairpin turn right before the finish is a terrible idea. Lets move it down a level where there is some
+   open space." The turn at the top of the mid-to-top ramp onto the top ledge, just before the line. Re-route the lap's
+   end so the turn-round happens on a lower level with room (the mid ledge or the hub floor), a wide, sweeping turn,
+   and the finish line and grid where they fit with it (the grid off the racing line, so a stopped player is not in
+   the way). Code proposes the new end of the lap in the status; build it.
+B3. "The entrance back into the hub I think should have a ramp or something." Where the lap comes back into the hub
+   (M1's mouth onto the mid ledge, or wherever the new route enters): a proper ramp / apron from the pipe onto the
+   ledge, no drop, step or lip, drivable flat out on a bike and a car.
+B4. "Reset button during the race leaves me turned in the wrong direction. It should be following the rule to reset
+   straight forward." In the Underground race a reset (R / Y) must put the vehicle on the route, facing the way the race
+   goes, as in every race (CLAUDE.md / DrainPipe "resets"). Find why it does not here (the route's own heights, the pipe
+   reset taking the vehicle's heading instead of the race's, the ledges) and fix; check a reset at 20 places round the
+   lap (pipes, glass, junctions, ledges, ramps): every one faces forward, on its wheels, on the route.
+B5. "I still think don't want the bike to get turned around sideways so often." Bikes (the Drifter Twin) still end up
+   across the pipe. Find what turns them (wall riding's hold on two wheels, wall contacts, the lean, junction edges,
+   landings) by driving bikes through the whole lap by script with the heading logged; fix so a bike only goes across a
+   pipe when the player steers it there. If the wall riding is the cause, make it gentler for bikes (stronger pull back
+   along the pipe, a higher speed to stick) rather than off.
+B6. "Can the camera stay whatever view you have it in? I drive in first POV and it keeps switching to a follow cam back
+   to first POV." The view the player picks is kept everywhere: the pipe camera (`ChaseCamera.PipeView`, PipeUp) must
+   only change how a CHASE view follows, never switch a first-person / cockpit / hood view to a chase view. Check every
+   view underground, through the express, mouths, the hub, a reset and race start and finish: it never changes by itself.
+   Standing rule for CLAUDE.md: the camera view only changes when the player changes it.
+
+Part C, RIDERS (unrelated; Racer's rider is `Tools/Blender/rider.py`, `RiderLook.cs`, `RiderGestures.cs`, `VehicleVisual.cs`):
+C1. HANDS: "can we fix the drivers' hands so they don't look so bad?" The hands (seen big in first person on the bike's
+   grips) are lumpy blocks. Model proper low-poly hands: a palm, fingers wrapped round the grip / wheel, a thumb, a cuff
+   or glove edge, matching the skin color (or gloves), placed so they sit on the grips and the wheel in every vehicle and
+   follow the steering. Pictures from first person and from outside.
+C2. FIST WAVE AND CELEBRATIONS: "add the waved fist and celebrations from Woodstock Rush". `RiderGestures` is in the code
+   already (fist wave on F / LB; an AI rider waves at whoever ran into it; the winner's victory celebration). Check in the
+   exe whether they work here; make them work as in Woodstock Rush (bring Racer's latest version and anything it added
+   since: more celebrations, the AI's reactions, sounds). Say the buttons.
+C3. HAIR: "can we fix some of the hair styles? Especially short and medium don't really work well. Maybe add some new
+   ones like mohawk, crewcut and spiky". Remodel Short and Medium so they sit on the head properly (no gaps, no clipping
+   through the hat or the head, shaped like real hair), and add Mohawk, Crew cut and Spiky (and Buzz or Curly if cheap),
+   all in the garage's hair list, all working with every hat (a hat hides what it should) and every hair color, and the
+   AI riders' random looks using them. Pictures of each hair style from front, side and back, with and without a hat.
+
+**DONE (Parts A to D, d98ebcb to b8013c4; Dan's notes are Round 28) — Round 27 (Dan, 2026-10-14 20:25): the open items, Woodstock Rush's radio, music folders, AI vehicle sounds and
 settings pages, then the underground race.** Dan: "all these: the buried house walls; the drop at the west end of the New
 Chastain bridge; Lets pull over the radio from Woodstock Rush as well as the music folders; Also there was a recent
 addition of ai vehicle sounds in woodstock rush. Lets follow this here as well; the settings pages from Woodstock Rush;
