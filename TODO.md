@@ -2673,7 +2673,66 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**DONE (not yet driven by Dan) — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
+**ACTIVE — Round 27 (Dan, 2026-10-14 20:25): the open items, Woodstock Rush's radio, music folders, AI vehicle sounds and
+settings pages, then the underground race.** Dan: "all these: the buried house walls; the drop at the west end of the New
+Chastain bridge; Lets pull over the radio from Woodstock Rush as well as the music folders; Also there was a recent
+addition of ai vehicle sounds in woodstock rush. Lets follow this here as well; the settings pages from Woodstock Rush;
+the underground race." Do the parts in order; after EACH part rebuild into `Builds/ChastainRush/`, commit, and add a
+line to the status, so Dan can drive each as it lands. Racer is read-only: port its code (CLAUDE.md), list what came.
+
+Part A, WORLD FIXES.
+A1. BURIED HOUSE WALLS. Round 21's report: 16 community houses have a wall buried more than 0.5 m on a slope (worst
+   636 at x 2684, z 632, 2.7 m), plus the 6 houses buried 0.50 to 0.65 m (1630, 1719, 1557, 806, 860, 1657). Houses are
+   not set in stone (CLAUDE.md), but Dan's house is locked: never touch it. Settle every house that has a wall buried
+   more than about 0.3 m or a corner floating: set it at its uphill grade and give the downhill side a visible
+   foundation (block or brick, stepped if it is tall, a walk-out basement wall where it is over about 1.5 m), or grade
+   the ground round it a little where that reads better. Doors and garages meet their drives and paths. Sweep every
+   house on the map, list each one changed (id, x, z, before / after), and pictures from the exe of the worst five.
+A2. NEW CHASTAIN ROAD BRIDGE, WEST END (x 2421, z 766, where New Chastain Road crosses Noonday Creek; not the I-575
+   ramp). Since Round 14: the deck ends 0.2 m above the ground and the creek bank falls away under it, so a fast
+   vehicle leaves the deck with its wheels off the ground and loses 3 to 5 m/s (the Needle 600 at 56 m/s). Make the
+   road run smoothly off the deck onto the ground (an approach slab / the ground graded up to the deck's end, the bank
+   under it filled or walled with an abutment); check both ends of every bridge on the map for the same and fix them.
+   Check: the Needle 600 at full speed over each end in both directions, wheels down, no speed lost.
+
+Part B, AUDIO FROM WOODSTOCK RUSH.
+B1. RADIO AND MUSIC, EXACTLY AS WOODSTOCK RUSH DOES IT (Dan, 20:29: "I'd actually like the music handled exactly the same
+   way as it is. If anything this game is just going to friends but mostly it is just for me. Would like to include it
+   with the repo and the build. On the highly unlikely off chance I market this, I will take the music out then").
+   Port Racer's radio (stations, switching from the controller and keyboard, the on-screen station name, volume,
+   ducking or whatever Racer does) and its music the same way Racer has it: the same folders, the music files copied
+   from Racer into this repo where Racer keeps them, committed (Git LFS if Racer uses it), and in the build as Racer
+   ships them. Any drop-in folder Racer has comes too. Say which folders and how many files / MB came. Same buttons as
+   Racer unless one clashes here (the map is on View, bug capture on R3): say which buttons. Do NOT copy Racer's private
+   signing key or anything secret with it.
+B2. AI VEHICLE SOUNDS. Racer recently added sounds for the AI vehicles: read Racer's recent commits and code for it and
+   port it the same way (each AI racer's engine, and whatever else Racer gives them: skids, landings, hits), 3D, mixed
+   under the player's own vehicle, with a voice budget so a full grid costs little frame rate. Works above ground and
+   in the pipes (echo there if Racer has it; otherwise not needed). Check: frame rate in a full race before and after.
+
+Part C, SETTINGS PAGES FROM WOODSTOCK RUSH.
+C1. Port Racer's settings pages (volume, display, controls, and any others Racer has that fit this game) into the game
+   menu, in Racer's look as the menus already are. Volume gets the radio / music, the engines (own and AI), effects and
+   master. Display takes over the Screen row (full screen, window, resolution) rather than doubling it. Settings save
+   between runs as Racer does. Never in a check run's way (checks stay muted and windowed).
+
+Part D, THE UNDERGROUND RACE. Build it from Dan's vision (Round 23 notes, "A FULL UNDERGROUND RACE") and the race's
+proposal markers (the route, its checkpoints, gates G1 to G10, switch shortcuts S1 to S3 and their switches), as moved to
+fit the network as built.
+D1. A race in the menu like the others (laps, direction where it makes sense, the AI, records), starting near the
+   Bells Ferry entrance or in the hub (Code proposes; say which). Through the hub, along the mains.
+D2. GATES: barred grilles / sluice gates close every side branch off the route during this race only (world vs. game
+   layer: in free roam they are open and gone). SWITCHES: each shortcut sits behind a gate that opens when a racer
+   drives over its switch (a floor plate or lever, off the racing line or up a wall, so unlocking costs a detour or a
+   risk); it stays open for the rest of the race for everyone. Shortcut design rules apply (CLAUDE.md: harder, a fumble
+   costs more than it saves, no free easier way). The AI follows ShortcutStrategy and can hit switches too.
+D3. Wall riding is on for the player (as Round 26); the pipe express is off; manholes and exits on the route closed;
+   checkpoints where they stop free cuts. The camera rules underground stay as they are.
+D4. Remove the race's proposal markers once it is built (all proposal markers are then gone).
+D5. Check by script: the AI completes the race, a switch opens its gate, frame rate in a full race in the hub. Dan
+   drives it.
+
+**DONE, accepted by Dan 2026-10-14 20:21 ("Didn't notice anything. We can mark these all as done"; new issues come as bug reports) — Round 26 (Dan, 2026-10-14 17:17, in a reverse Noonday Creek race on the Round 25 follow-ups exe; session
 `2026-10-14_17-14-00-187_5d4e5a`, one report, read by Claude). Dan drives it; rebuild into `Builds/ChastainRush/`, commit,
 give the build time.**
 1. LOG RAMP IS A WALL (BUG-001, vehicle x 2362.22, z 1256.83, heading 275, reverse race lap 3, the orange SHORTCUT line on
@@ -2764,7 +2823,7 @@ Checks/Round20Runner.R26.cs). Imported from Racer: nothing.**
    and races; the AI drives the bottom as before. Exe, the Street Classic and the Drifter Twin in M4a: up the wall and along it
    (both ride the ceiling at 16 m/s, nose 0 degrees off), a loop at 20 m/s (no speed lost), dropped when slowed on the ceiling
    (let go at 8.7 to 9.4 m/s, back on its wheels), out at the hub 15 to 16 degrees round and upright 0.99, the camera clear.
-- For Dan to check: RE2 from your spot (and N5, RD), the ponds listed, the expresses (E1 is fast), driving on the walls and the
+- Dan, 20:21: all checked and accepted, including the Round 25 wildlife, E1's speed and the camera roll. Was: For Dan to check: RE2 from your spot (and N5, RD), the ponds listed, the expresses (E1 is fast), driving on the walls and the
   ceiling (the feel: the pull back along the pipe, the 35 degree limit, the camera roll), the Round 25 wildlife at the glass (A8).
 
 **DONE (d283f22) — Round 25 follow-ups (Dan, 2026-10-14, after driving the Round 25 exe; session `2026-10-14_15-37-54-171_ea184c`, two reports, read by
@@ -2797,7 +2856,7 @@ above ground at a normal size not completely gone". His picks (asked): build RD 
 - For Dan to check: RD and RE in a reverse Noonday Creek race (and the AI taking them); R1's fences in free roam and in a race; the
   Enclave pond's east bank; the manhole covers.
 
-**DONE (not yet driven by Dan) — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
+**DONE, accepted by Dan 2026-10-14 20:21 (A8 wildlife included) — Round 25 (Dan, 2026-10-14 11:55, after driving the Part B exe; session
 `2026-10-14_11-23-52-092_9ec9c7`, eight reports, read by Claude). Dan: "Looks like we need a bit of cleanup here."
 Part A is cleanup, Part B is two new things for the pipe network. No vehicle drive tests unless cheap: Dan drives it.
 Rebuild the exe into `Builds/ChastainRush/` (the root launcher), commit, short report with the build time.**

@@ -287,7 +287,11 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Round 26 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Dan's log ramp
+**Active: Round 27 in `TODO.md` (Dan, 2026-10-14 20:25):** A buried house walls and the New Chastain bridge's west end;
+B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
+underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
+
+**Round 26 (see `TODO.md`, status there) is built and checked in the exe by script, driven and accepted by Dan 2026-10-14 20:21 (nothing open; new issues come as bug reports):** Dan's log ramp
 (RE2) and every take-off's foot fitted flush to the ground (`MapBuilder.BigJumps.cs` footBank; log ramps solid with sloped sides;
 `BuildPrism` meets the ground with a 15 degree wedge where an edge stands up to 0.3 m proud); a sweep of every ramp on the built
 colliders (`ChastainRush.RampSweep.Run -rampOut <file>`, batch, report only); every pond's bank raised to its water
@@ -297,7 +301,7 @@ the pipe, eased to the floor before an end or an express; `VehicleSurfaceContact
 `ChaseCamera.PipeUp` rolls). Check: `ChastainRush.exe -exeRound26 <dir> [-r26Only ramps,express,walls] [-wallRideRound25]
 -logFile <dir>\Player.log`. Imported from Racer: nothing.
 
-**Round 25 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Part A cleanup: street
+**Round 25 (see `TODO.md`, status there) is built and checked in the exe by script, driven and accepted by Dan 2026-10-14 20:21 (nothing open; new issues come as bug reports):** Part A cleanup: street
 manholes are a hatch of the street itself with a 0.9 m cover, the collider the terrain's own surface, the riser 0.3 m under the street
 (`MapBuilder.Network.cs`; check `ChastainRush.ManholeProbe.Run -probeOut <file>`); mouths set into banks without terrain blades or sky
 gaps (`MapBuilder.Pipes.cs` HoleBehind, RaiseBehindHead), every network pipe under 0.6 m of ground (`MapBuilder.NetworkCover.cs`), a
