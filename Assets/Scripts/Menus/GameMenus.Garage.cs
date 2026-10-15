@@ -14,12 +14,15 @@ namespace ChastainRush
     // turn it, left alone it turns slowly. On the right: the vehicle (left / right through the eleven), its colour, the five
     // stat bars scaled across all eleven (Racer's StatFraction without the campaign upgrades), Done. Choosing a vehicle
     // swaps it where it stands and saves it (VehicleSwitch.Select, as the Round 13 switch did); the colour is saved with it.
-    // Left behind: locked vehicles and silhouettes, the shop, the rider page, the Classic / New model toggle.
+    // Left behind: locked vehicles and silhouettes, the shop, the Classic / New model toggle (this game has only the New models).
+    // Round 29: Racer's Rider page (RaceMenus.Shell.RenderRider, RaceFlow.StepRider / RandomizeRider, the rider framing of
+    // RaceMenus.GaragePreview): GARAGE > Rider..., every RiderLook row, Randomize, the preview framed on the rider (a car's
+    // body hidden), saved in settings.json as Racer saves it (GameSettings.Options.rider).
     public sealed partial class GameMenus
     {
         UnityEngine.UI.RawImage preview; Camera previewCamera; RenderTexture previewTexture; GameObject previewRoot;
         RectTransform garagePanel; Vector2 menuCardSize; bool garageView;
-        float previewYaw = 215, lastTurn = -100, previewRadius = 1; Vector3 previewCenter;
+        float previewYaw = 215, lastTurn = -100, previewRadius = 1, previewMargin = PreviewMargin; Vector3 previewCenter;
         InputAction rotateAction;
         static readonly Vector3 PreviewFocus = new(10000, 10000, 10000);
         const float PreviewPitch = 11, IdleTurnDelay = 3, IdleTurnSpeed = 12, TurnSpeed = 140, PreviewMargin = 1.04f;
@@ -84,7 +87,8 @@ namespace ChastainRush
                 int next = colour < 0 ? (d > 0 ? 0 : VehiclePaint.Count - 1) : colour + d;
                 vehicles.SetColour(next < 0 || next >= VehiclePaint.Count ? -1 : next); Show();
             });
-            Row(2, "done", "Done", BackPage);
+            Row(2, "rider", "Rider…", () => Navigate("rider"));   // Round 29
+            Row(3, "done", "Done", BackPage);
             if (racing) { buttons[0].interactable = false; details.text = profile.Description + "\nThe vehicle can be changed outside a race."; }
             // the stat bars sit under the colour row (display only, no selection)
             ShowGarageStats(profile);
@@ -94,7 +98,45 @@ namespace ChastainRush
             previewRoot = new GameObject("Garage display model"); previewRoot.transform.SetParent(transform, false); previewRoot.transform.position = PreviewFocus;
             config.BuildPreview(previewRoot.transform);
             foreach (var t in previewRoot.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = 31;
-            FramePreview();
+            FramePreview(false);
+        }
+
+        // ---------------------------------------------------------------- Round 29: Racer's Rider page
+        // Each row steps one option (left / right; A does nothing on a row), Randomize picks a whole new look. Saved at once;
+        // the AI riders are drawn at random for each race (RiderLook.Field). The vehicle in the world is put on again with the
+        // new rider when the page is left (Racer rebuilds it on every step; here once, so a race's vehicle is touched once).
+        bool riderChanged;
+        void RenderRider()
+        {
+            var look = RiderLook.Player; var config = car.GetComponent<VehicleConfiguration>();
+            Clear("RIDER", "Choose your rider. Left / right changes a row.\nThe AI riders are random each race.");
+            Row(0, "randomize", "Randomize", RandomizeRider); Row(1, "rider-back", "Back", BackPage);
+            for (int i = 0; i < RiderLook.Fields; i++) { int field = i; Step(2 + i, "rider-" + i, look.Label(i), d => StepRider(field, d)); }
+            EnterGarageView();
+            if (previewRoot) Destroy(previewRoot);
+            previewRoot = new GameObject("Garage display model"); previewRoot.transform.SetParent(transform, false); previewRoot.transform.position = PreviewFocus;
+            config.BuildPreview(previewRoot.transform);
+            foreach (var t in previewRoot.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = 31;
+            FramePreview(true);
+        }
+        public void StepRider(int field, int direction) { GameSettings.Settings.rider.Step(field, direction); RiderChanged(); }
+        public void RandomizeRider()
+        {
+            var current = GameSettings.Settings.rider; RiderLook look; var random = new System.Random();
+            do look = RiderLook.Random(random); while (look.SameAs(current));
+            GameSettings.Settings.rider = look; RiderChanged();
+        }
+        // also used by the Round 29 check to put on a given look
+        public void SetRider(RiderLook look) { GameSettings.Settings.rider = look.Copy().Valid(); RiderChanged(); }
+        void RiderChanged()
+        {
+            RiderLook.Player = GameSettings.Settings.rider; GameSettings.SaveSettings(); riderChanged = true; Show();
+        }
+        // called from Show: off the Rider page with a changed rider, the vehicle in the world wears it
+        void ApplyRiderToVehicle()
+        {
+            if (!riderChanged || (open && page == "rider")) return;
+            riderChanged = false; if (vehicles) vehicles.RebuildVisual();
         }
 
         // ---------------------------------------------------------------- the preview (Racer's GaragePreview)
@@ -110,14 +152,19 @@ namespace ChastainRush
             previewCamera.targetTexture = null; previewCamera.targetTexture = previewTexture; preview.texture = previewTexture;
             if (previewRoot) PlacePreview();
         }
-        void FramePreview()
+        // Round 29 (Racer's GaragePreview): on the Rider page the whole rider, head to feet, is framed and a car's body is
+        // hidden; a small vehicle stays and is framed with the rider (Racer framed only the rider, which cut the bike off)
+        void FramePreview(bool riderPage)
         {
             if (!previewRoot) return;
             var root = previewRoot.transform; root.SetPositionAndRotation(PreviewFocus, Quaternion.identity);
-            var shown = previewRoot.GetComponentsInChildren<Renderer>().Where(r => r.enabled && !(r is ParticleSystemRenderer)).ToArray();
+            var rider = root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == "Rider");
+            var profile = car.GetComponent<VehicleConfiguration>().Profile;
+            if (riderPage && rider && !profile.Small) foreach (var r in previewRoot.GetComponentsInChildren<Renderer>(true)) if (!r.transform.IsChildOf(rider)) r.enabled = false;
+            var shown = (riderPage && rider && !profile.Small ? rider.GetComponentsInChildren<Renderer>() : previewRoot.GetComponentsInChildren<Renderer>()).Where(r => r.enabled && !(r is ParticleSystemRenderer)).ToArray();
             if (shown.Length == 0) return;
             var b = shown[0].bounds; foreach (var r in shown) b.Encapsulate(r.bounds);
-            previewCenter = root.InverseTransformPoint(b.center); previewRadius = Mathf.Max(.3f, b.extents.magnitude);
+            previewCenter = root.InverseTransformPoint(b.center); previewRadius = Mathf.Max(.3f, b.extents.magnitude); previewMargin = riderPage ? 1.16f : PreviewMargin;
             PlacePreview();
         }
         void PlacePreview()
@@ -126,7 +173,7 @@ namespace ChastainRush
             var turn = Quaternion.Euler(0, previewYaw, 0); var root = previewRoot.transform;
             root.SetPositionAndRotation(PreviewFocus - turn * previewCenter, turn);
             float aspect = Mathf.Max(.2f, (float)previewTexture.width / previewTexture.height), half = previewCamera.fieldOfView * .5f * Mathf.Deg2Rad;
-            float fit = Mathf.Min(half, Mathf.Atan(Mathf.Tan(half) * aspect)), distance = previewRadius * PreviewMargin / Mathf.Sin(fit);
+            float fit = Mathf.Min(half, Mathf.Atan(Mathf.Tan(half) * aspect)), distance = previewRadius * previewMargin / Mathf.Sin(fit);
             var look = Quaternion.Euler(PreviewPitch, 0, 0); previewCamera.transform.SetPositionAndRotation(PreviewFocus - look * Vector3.forward * distance, look);
             previewCamera.aspect = aspect; previewCamera.nearClipPlane = .05f; previewCamera.farClipPlane = distance + previewRadius * 2 + 5;
         }

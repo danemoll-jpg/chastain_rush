@@ -287,8 +287,10 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
-**Active: Round 29 in `TODO.md` (Dan, 2026-10-15 09:45):** port Racer's rider page so the player can customize the rider.
-Queued after it: Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
+**Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
+GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
+-exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
+**Active: Round 30 in `TODO.md`:** Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
 are closed to it; better houses with a look of their own in every neighborhood not yet
 dressed).
 

@@ -26,6 +26,9 @@ namespace Racer
             public string musicSource = "";
             public bool musicRecursive = true;
             public string radioChannel = "";
+            // Racer 0.75 (RacerSave.Options.rider): the player's rider (the garage's Rider page). Missing in older saves = the
+            // default. Chastain Rush, Round 29.
+            public RiderLook rider = new();
         }
 
         static Options current;
@@ -44,6 +47,7 @@ namespace Racer
                 if (current.version != 1 || bad(current.master) || bad(current.ambience) || bad(current.feedback) || bad(current.vehicle) || bad(current.music) || bad(current.effects) || (current.frameLimit != 30 && current.frameLimit != 60 && current.frameLimit != 120)) current = new Options();
             }
             catch (Exception e) { Debug.LogWarning("[Settings] unreadable, defaults used: " + e.Message); current = new Options(); }
+            current.rider = (current.rider ?? new RiderLook()).Valid(); RiderLook.Player = current.rider;   // Racer's RaceFlow: RiderLook.Player = Save.Settings.rider
         }
 
         public static void SaveSettings()
@@ -62,7 +66,7 @@ namespace Racer
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void Boot() { current = null; ApplySettings(); }
+        static void Boot() { current = null; ApplySettings(); RiderLook.Player = Settings.rider; }   // Round 29: the saved rider before any vehicle is built
     }
 
     // Racer's AtomicSave: replace the file in one step, keeping the previous one as .bak; Windows readers can briefly hold

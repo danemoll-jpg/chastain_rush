@@ -79,6 +79,15 @@ namespace ChastainRush
             Save();
         }
 
+        // Round 29: the rider changed on the garage's Rider page: the vehicle is put on again with the new rider (Racer's
+        // RaceFlow.RebuildPlayerVisual), its paint and motion kept
+        public void RebuildVisual()
+        {
+            var car = GetComponent<ArcadeVehicle>(); var v = car.Body.linearVelocity; var w = car.Body.angularVelocity;
+            config.Apply(config.profileId); if (Colour >= 0) config.SetBodyColor(Colour);
+            car.Body.linearVelocity = v; car.Body.angularVelocity = w;
+        }
+
         void Save()
         {
             if (checkRun) return;

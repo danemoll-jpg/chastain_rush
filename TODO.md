@@ -2715,8 +2715,19 @@ B4. Frame rate: the same LOD / batching as the dressed communities; numbers befo
 B5. Pictures from the exe: one street view per neighborhood, plus an overhead of each, in the status, so Dan can pick
    changes ("build it, then Dan drives it").
 
-**ACTIVE — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
+**DONE (built and checked in the exe by script, not yet driven by Dan) — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
 the build time. Dan drives it.**
+Status: done. GARAGE > Rider... (Racer's Rider page: `Menus/GameMenus.Garage.cs` RenderRider, StepRider, RandomizeRider): Randomize,
+Back, then a row per RiderLook option (Body, Skin tone, Hair with the Round 28 styles, Hair color, Hat, Hat color, Shirt, Shirt color,
+Pants, Pants color: everything Racer's page has; Racer's Classic / New toggle not needed, this game has only the New models), left /
+right changes a row, A never does, B back; the turning preview framed on the rider (a car's body hidden; a bike, ATV or mower shown
+whole with the rider: Racer framed only the rider, which cut the bike off). Saved at once in settings.json as Racer does
+(`GameSettings.Options.rider`), loaded at start before any vehicle is built; the vehicle in the world is put on again with the new
+rider when the page is left (`VehicleSwitch.RebuildVisual`), so every vehicle and the first-person hands wear it (skin color on the
+hands; the AI riders stay random, never the player's look). Check: `ChastainRush.exe -exeRound29 <dir> -logFile <dir>\Player.log`
+(`Checks/Round29Runner.cs`, 14 checks pass; pictures of the page and of three riders on the Needle 600, the Street Classic and the
+ATV, outside and first person, in `local/round29/`). Imported from Racer: the Rider page (RenderRider, StepRider, RandomizeRider,
+the rider framing of GaragePreview, settings.json's rider), rewritten into GameMenus; RiderLook was already here (Round 13 / 28).
 1. RIDER PAGE. Dan: "There is no place to customize your person". Racer's rider page was left behind in Round 16 (CLAUDE.md
    list), so the new hands and hair styles (Round 28 Part C) cannot be picked. Port Racer's rider page into the game menu
    (from the garage, as in Woodstock Rush, or wherever Racer has it): every `RiderLook` option (body, skin, hair with the

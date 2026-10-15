@@ -17,7 +17,7 @@ namespace ChastainRush
     // focus itself one row per press (RaceMenus.Navigation), the bright focus frame, the button prompts along the bottom
     // drawn by MenuGlyph, the release barrier of MenuInput, and the garage (GameMenus.Garage.cs). Racer's RaceFlow is
     // replaced by the small flow below; its campaign, shop, unlocks, police, split-screen, playlists, courses, radio,
-    // records boards, rider page and on-screen keyboard are left behind (Round 27 brought the radio and the settings tabs).
+    // records boards and on-screen keyboard are left behind (Round 27 brought the radio and the settings tabs, Round 29 the rider page).
     //   Start / Esc / Enter   open the menu while driving; on the menu's first page they close it again (resume)
     //   B / Esc               back one page (on the first page of the pause menu: resume)
     // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, SETTINGS, QUIT GAME), the pause menu (free driving: RESUME,
@@ -347,6 +347,7 @@ namespace ChastainRush
             CapturePage();
             shade.SetActive(open);
             LeaveGarageView();
+            ApplyRiderToVehicle();   // Round 29
             if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
             renderedKey = "";
             if (!open) return;
@@ -374,6 +375,7 @@ namespace ChastainRush
                 case "race": RenderRaceSetup(); return;
                 case "opponents": RenderOpponents(); return;
                 case "garage": RenderGarage(); return;
+                case "rider": RenderRider(); return;   // Round 29
                 case "debug": RenderDebug(); return;
             }
             if (title)
