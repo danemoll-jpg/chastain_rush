@@ -1,0 +1,88 @@
+using System;
+using System.IO;
+using System.Threading;
+using UnityEngine;
+
+namespace Racer
+{
+    // Chastain Rush, Round 27 (B1): Racer's settings (RacerSave.Options, the settings part only: the volumes and the radio's
+    // choices; Racer keeps records and other options in the same file, this game keeps those in its own files), saved as Racer
+    // does: settings.json written with AtomicSave (below), loaded with FromJsonOverwrite into the defaults so a missing field
+    // keeps its default, all defaults if the version or a volume is out of range. Beside the race records (persistentDataPath).
+    // A check run never reads or writes it: its settings live in the check's own folder (CheckRun.Dir), and it stays muted
+    // (ApplySettings leaves AudioListener.volume to CheckRun there).
+    public static class GameSettings
+    {
+        [Serializable] public sealed class Options
+        {
+            public int version = 1;
+            public float master = .8f, ambience = 1, feedback = .65f, vehicle = .75f;
+            public float music = .6f;
+            public bool radioOn = true;
+            public string musicFolder = "";
+            public string musicSource = "";
+            public bool musicRecursive = true;
+            public string radioChannel = "";
+        }
+
+        static Options current;
+        public static Options Settings { get { if (current == null) Load(); return current; } }
+        public static string DirectoryPath => ChastainRush.CheckRun.Active ? ChastainRush.CheckRun.Dir : Application.persistentDataPath;
+        public static string FilePath => Path.Combine(DirectoryPath, "settings.json");
+        public static event Action Changed;
+
+        static void Load()
+        {
+            current = new Options();
+            try
+            {
+                if (File.Exists(FilePath)) JsonUtility.FromJsonOverwrite(File.ReadAllText(FilePath), current);
+                bool bad(float v) => float.IsNaN(v) || v < 0 || v > 1;
+                if (current.version != 1 || bad(current.master) || bad(current.ambience) || bad(current.feedback) || bad(current.vehicle) || bad(current.music)) current = new Options();
+            }
+            catch (Exception e) { Debug.LogWarning("[Settings] unreadable, defaults used: " + e.Message); current = new Options(); }
+        }
+
+        public static void SaveSettings()
+        {
+            try { AtomicSave.Write(FilePath, JsonUtility.ToJson(Settings, true)); }
+            catch (Exception e) { Debug.LogWarning("[Settings] not saved: " + e.Message); }
+            Changed?.Invoke();
+        }
+
+        public static void ApplySettings()
+        {
+            if (!ChastainRush.CheckRun.Active) AudioListener.volume = Settings.master;   // a check run stays muted (CheckRun)
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void Boot() { current = null; ApplySettings(); }
+    }
+
+    // Racer's AtomicSave: replace the file in one step, keeping the previous one as .bak; Windows readers can briefly hold
+    // either path after a replace, so it retries
+    public static class AtomicSave
+    {
+        public static int Retries { get; private set; }
+        public static string LastFailure { get; private set; }
+        public static void Write(string path, string contents)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            for (int attempt = 0; ; attempt++)
+            {
+                try
+                {
+                    string temp = path + ".tmp"; File.WriteAllText(temp, contents);
+                    if (File.Exists(path)) File.Replace(temp, path, path + ".bak"); else File.Move(temp, path);
+                    return;
+                }
+                catch (Exception error) when (error is IOException || error is UnauthorizedAccessException)
+                {
+                    LastFailure = error.GetType().Name + " / " + error.HResult + " / " + error.Message;
+                    if (attempt >= 4) throw;
+                    Retries++; Thread.Sleep(10 << attempt);
+                }
+            }
+        }
+    }
+}

@@ -63,6 +63,7 @@ namespace ChastainRush
                 options = dev ? BuildOptions.Development : BuildOptions.None,
             });
             var s = report.summary;
+            string music = s.result == BuildResult.Succeeded ? CopyMusic(root, dir) : "music not copied (build failed)";   // Round 27 (B1)
             string persistent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", PlayerSettings.companyName, PlayerSettings.productName);
             var lines = new[]
             {
@@ -73,6 +74,8 @@ namespace ChastainRush
                 $"Run-time files (persistentDataPath): {persistent}",
                 "  race_records.json, bump_log.txt, DebugReports/<session>/ (bug reports), Player.log",
                 "Keys: Esc twice quits, F2 or P frame-rate counter, F3 or [ debug panel, F4 or ] bug capture, F6 or \\ debug menu, T race, X leave race, R reset car",
+                "Radio (Round 27, Racer's): D-pad down or N station / off, D-pad right or . next song, D-pad left or , previous, D-pad up or I what is playing",
+                music,
             };
             File.WriteAllLines(Path.Combine(dir, "BUILD_INFO.txt"), lines.Concat(report.steps.SelectMany(st => st.messages)
                 .Where(m => m.type == LogType.Error || m.type == LogType.Exception).Select(m => "ERROR " + m.content)));
@@ -83,6 +86,38 @@ namespace ChastainRush
             int missing = report.steps.SelectMany(st => st.messages).Count(m => m.content.Contains("is missing or no valid script is attached"));
             if (missing > 0) throw new InvalidOperationException($"Player build: {missing} components have a missing script (a MonoBehaviour must live in a file named after it); the exe would not load");
             return report;
+        }
+
+        // Round 27 (B1): the music as Racer ships it (Racer's Tools/Package-Racer.ps1): the songs staged in BundleMusic/ (committed here)
+        // go into Music/ beside the exe, folder by folder (each top folder is a station), with Music/README.txt, and RADIO.md beside
+        // the exe. Files already there with the same size and time are left as they are (the music is 771 MB); anything in Music/
+        // that is not in BundleMusic/ is removed, so the build ships exactly what is staged.
+        static string CopyMusic(string root, string dir)
+        {
+            string from = Path.Combine(root, "BundleMusic"), to = Path.Combine(dir, "Music");
+            if (!Directory.Exists(from)) return "Music: BundleMusic/ missing, no music shipped";
+            Directory.CreateDirectory(to);
+            int copied = 0, kept = 0, removed = 0; long bytes = 0;
+            var wanted = new System.Collections.Generic.HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var f in Directory.EnumerateFiles(from, "*", SearchOption.AllDirectories))
+            {
+                string rel = f.Substring(from.Length + 1), dst = Path.Combine(to, rel);
+                if (rel.StartsWith(".")) continue;
+                wanted.Add(Path.GetFullPath(dst));
+                var fi = new FileInfo(f); bytes += fi.Length;
+                var di = new FileInfo(dst);
+                if (di.Exists && di.Length == fi.Length && di.LastWriteTimeUtc == fi.LastWriteTimeUtc) { kept++; continue; }
+                Directory.CreateDirectory(Path.GetDirectoryName(dst));
+                File.Copy(f, dst, true); File.SetLastWriteTimeUtc(dst, fi.LastWriteTimeUtc); copied++;
+            }
+            string readme = Path.Combine(to, "README.txt");
+            File.WriteAllText(readme, "The radio's bundled music (Settings > Audio > Music: Source Bundled). Each folder here is one station; songs loose in this folder are \"General\". Add DRM-free MP3, PCM WAV or Ogg Vorbis files, then Rescan. See RADIO.md beside the game.");
+            wanted.Add(Path.GetFullPath(readme));
+            foreach (var f in Directory.EnumerateFiles(to, "*", SearchOption.AllDirectories).ToList())
+                if (!wanted.Contains(Path.GetFullPath(f))) { File.Delete(f); removed++; }
+            string doc = Path.Combine(root, "Docs", "RADIO.md");
+            if (File.Exists(doc)) File.Copy(doc, Path.Combine(dir, "RADIO.md"), true);
+            return $"Music: {wanted.Count - 1} files, {bytes / 1048576.0:0} MB from BundleMusic/ in Music/ ({copied} copied, {kept} already there, {removed} removed)";
         }
     }
 }

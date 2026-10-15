@@ -2732,6 +2732,34 @@ D4. Remove the race's proposal markers once it is built (all proposal markers ar
 D5. Check by script: the AI completes the race, a switch opens its gate, frame rate in a full race in the hub. Dan
    drives it.
 
+**STATUS of Round 27 Part B (Claude, 2026-10-15): B1 and B2 DONE, exe rebuilt (2026-10-15 00:31), committed; checked in the exe by script (muted),
+not yet driven or heard by Dan.**
+- B1 DONE. Racer's radio (`Audio/LocalRadio.cs`, `MusicCollection.cs`, `AudioCeiling.cs`, the tag reader `Assets/Plugins/LocalRadio/`
+  ATL.dll and Ude.NetStandard.dll with their licenses) and its settings storage (`Audio/GameSettings.cs`: Racer's RacerSave.Options, the
+  volumes and the radio's choices, `settings.json` beside the race records, Racer's AtomicSave; a check run keeps its own copy and stays
+  muted). Exactly as Racer: each folder in the music folder is a station (songs loose in it are "General"), shuffled with a history per
+  station, MP3 / WAV / Ogg, the station name for 2.5 s then "Artist / Song" for 5 s at the bottom center, music volume 60 % by default
+  (Racer's), master 80 % (Racer's), Bundled music (`Music/` beside the exe) or a custom folder (`Music` beside the records, made with a
+  README.txt). The music: Racer's `BundleMusic/` copied into this repo's `BundleMusic/` and committed (Racer keeps it out of git and uses no
+  LFS; Dan asked for it in the repo): 4 folders, 189 files, 771 MB (Groove 34, Louis Prima 20, Punk Rock Classics 95, Rock Classics 40;
+  2 of them .m4a, which the radio skips as Racer does). The build copies it into `Builds/ChastainRush/Music/` as Racer's packager does
+  (`PlayerBuild.CopyMusic`; only changed files are copied, anything not staged is removed) and puts `Docs/RADIO.md` beside the exe.
+  Buttons, while driving (free roam or a race; not with a menu, the map or the debug menu open): D-pad down / N station then Off, D-pad
+  right next song, D-pad left previous, D-pad up show what is playing (all Racer's); the keyboard's next / previous are . and , because
+  Racer's ] and [ are this game's bug capture and debug panel. No ducking (Racer ducks under thunder and its police radio; neither is
+  here). Check (`-radio` lets a check run start it): 4 stations, 187 songs found; "Groove: 04 - Pow.mp3" loaded and playing.
+- B2 DONE. Racer's OtherEngines (0.113, `Vehicle/OtherEngines.cs`): the AI cars' engines from the same synthesized loops and rev model as
+  the player's, in 3D from where each car is, its profile's pitch, at 0.7 of the player's level (under the player's own engine), only the
+  nearest 4 within 140 m through a pool of voices that fade in and out; heard from the countdown until the AI stop. Racer gives its other
+  vehicles nothing else (skids, landings and hits are the player's VehicleAudio only), and has no echo in its tunnels, so neither here.
+  Round 15's whole VehicleAudio on each AI car (6 looping voices each, always on) is gone. Frame rate in a full race, 3 AI (`-exeProfile
+  -profileOnly race_glen_forward,race_creek_forward,race_creek_xtrail`, vSync off, 1280 x 720, not measured at 3840 x 2160): before 216 /
+  135 / 140 fps, after 236 / 139 / 140 fps. Check: 3 AI voices playing in the race.
+- Imported from Racer in Part B: LocalRadio (+ WindowsFolder), MusicCollection, AudioCeiling, ATL.dll and Ude.NetStandard.dll (+ licenses),
+  RacerSave.Options' settings fields and AtomicSave (as GameSettings), OtherEngines, VehicleSoundSynthesis.Shared; the music (BundleMusic).
+  Left behind: LauncherBridge (no launcher here), the launcher's personal music folder, its signing key (not copied), the ducking.
+- For Dan to check: the radio's buttons and how loud the music sits under the engines; the AI engines in a race.
+
 **STATUS of Round 27 (Claude, 2026-10-15), Part A DONE, exe rebuilt (2026-10-15 00:23), committed; checked in the exe by script (minimized, muted,
 1280 x 720, `local/round27/`, git-ignored), not yet driven by Dan. Imported from Racer in Part A: nothing.**
 - A1 DONE (`MapBuilder.HouseSettle.cs`). Every styled house on the map swept (Chastain Glen and the three communities; Dan's house locked

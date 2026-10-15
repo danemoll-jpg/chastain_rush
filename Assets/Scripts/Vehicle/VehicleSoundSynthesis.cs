@@ -6,6 +6,9 @@ namespace Racer
     // Original synthesis for Racer, dedicated to CC0. No sampled recordings.
     public static class VehicleSoundSynthesis
     {
+        // 0.113 Part E: one shared copy per kind for the other vehicles' engines (the output is fixed per kind) (Chastain Rush, Round 27: with OtherEngines)
+        static readonly AudioClip[] shared = new AudioClip[7];
+        public static AudioClip Shared(string name, int kind) { if (!shared[kind]) { shared[kind] = Create(name, kind); shared[kind].hideFlags = HideFlags.DontUnloadUnusedAsset; } return shared[kind]; }
         public static AudioClip Create(string name, int kind)
         {
             const int rate = 44100;

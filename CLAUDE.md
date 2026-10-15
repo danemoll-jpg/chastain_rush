@@ -291,6 +291,12 @@ drivers, 15 menus and the garage.
 B Racer's radio, its music handled exactly as in Racer (committed and in the build; Dan, 20:29: for himself and friends, he removes it if he ever sells the game) and AI vehicle sounds; C Racer's settings pages; D the
 underground race (gates, switches). Rounds 24 to 26 accepted by Dan 20:21.
 
+**Round 27 Part B (see `TODO.md`, status there) is built and checked in the exe by script, not yet heard by Dan:** Racer's radio
+(`Audio/LocalRadio.cs`; stations are the folders of `Music/` beside the exe; D-pad down / N station, right / . next, left / , previous,
+up / I what is playing) with its settings in `Audio/GameSettings.cs` (`settings.json` beside the records); the music is committed in
+`BundleMusic/` (771 MB, plain git like Racer's, no LFS) and copied by the exe build into `Builds/ChastainRush/Music/`; a check run starts
+the radio only with `-radio`. Racer's OtherEngines for the AI engines (`Vehicle/OtherEngines.cs`). Docs: `Docs/RADIO.md`.
+
 **Round 27 Part A (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** every styled house
 settled on its slope (`MapBuilder.HouseSettle.cs`: buried lots cut, block foundations under raised floors, walk-out basement walls; list
 `Data/screenshots/round27/houses_settled.txt`), every bridge end run smoothly onto the road (`MapBuilder.BridgeEnds.cs`: Hermite easing,

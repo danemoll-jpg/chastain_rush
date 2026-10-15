@@ -598,12 +598,12 @@ namespace ChastainRush
                 var clone = Instantiate(car.gameObject);
                 clone.name = AiNames[n];
                 // the player's own parts that an AI car must not have: the vehicle switch, the player's input and reset, any
-                // check probes; its engine sound is made again below as a 3D sound driven by the AI's pedals
+                // check probes; its engine is heard through OtherEngines (Round 27: the nearest four AI engines, in 3D, Racer 0.113)
                 foreach (var mb in clone.GetComponents<MonoBehaviour>())
                 {
                     if (mb is VehicleInput || mb is VehicleRespawn) { mb.enabled = false; continue; }
                     if (mb is ArcadeVehicle || mb is VehicleConfiguration || mb is RampHold || mb is WaterFeedback || mb is RiderGestures || mb is VehicleLights) continue;
-                    mb.enabled = false; if (mb is VehicleAudio) DestroyImmediate(mb); else Destroy(mb);   // VehicleAudio is added again below (one per object)
+                    mb.enabled = false; if (mb is VehicleAudio) DestroyImmediate(mb); else Destroy(mb);   // Round 27 (B2): no VehicleAudio on an AI car; OtherEngines plays the nearest AI engines (Racer 0.113)
                 }
                 foreach (var src in clone.GetComponents<AudioSource>()) Destroy(src);
                 foreach (Transform child in clone.transform) if (child.name == "Headlight") Destroy(child.gameObject);   // VehicleLights makes its own
@@ -623,7 +623,6 @@ namespace ChastainRush
                 e.Driver = driver;
                 driver.Initialize(this, ai, e, .94f + n * .025f, n);   // Racer's pace spread for rivals
                 driver.RunIn = runIn;
-                var sound = clone.AddComponent<VehicleAudio>(); sound.driver = driver;
                 e.Reset();
                 Entrants.Add(e);
                 if (TreeTrunks.Instance) TreeTrunks.Instance.Track(clone.transform);

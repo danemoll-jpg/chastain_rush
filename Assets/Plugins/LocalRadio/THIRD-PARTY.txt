@@ -1,0 +1,9 @@
+ATL 6.26.0, .NET Standard 2.1 DLL, MIT
+https://github.com/Zeugma440/atldotnet/tree/60f5e39dd6a7a71174b91777505d33fe434291bb
+https://api.nuget.org/v3-flatcontainer/z440.atl.core/6.26.0/z440.atl.core.6.26.0.nupkg
+No ATL source modifications. Only read APIs are used.
+
+Ude.NetStandard 1.2.0, .NET Standard 2.0 DLL, unmodified, MPL 1.1 election
+https://github.com/yinyue200/ude
+https://api.nuget.org/v3-flatcontainer/ude.netstandard/1.2.0/ude.netstandard.1.2.0.nupkg
+Source code is available at the upstream project above. The original code is Mozilla Universal Charset Detector, ported to C# by the contributors listed in the source. No source modifications were made for Racer.

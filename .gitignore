@@ -21,3 +21,5 @@ __pycache__/
 # Unity crash-recovery scenes
 Assets/_Recovery/
 Assets/_Recovery.meta
+# Round 27: the radio's bundled folder in the Editor (beside Assets); the build copies BundleMusic/ into Builds/ChastainRush/Music/
+/Music/

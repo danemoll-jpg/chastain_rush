@@ -19,7 +19,7 @@ namespace Racer
         public float Slip { get; private set; }
         public float RoadWeight => road;
         public int ImpactCount { get; private set; }
-        public const float Volume = .75f;   // Chastain Rush: Racer's default Settings.vehicle
+        public static float Volume => GameSettings.Settings.vehicle;   // Chastain Rush, Round 27: Racer's Settings.vehicle (GameSettings; default .75)
         // Chastain Rush, Round 15 (item 11): an AI driver's vehicle makes its engine sound too, heard in 3D from where it is
         // (Racer removes the engine audio from its rivals). Its pedals come from its RoadDriver instead of the player's input.
         [System.NonSerialized] public RoadDriver driver;
@@ -46,7 +46,7 @@ namespace Racer
         {
             if (!car || !car.Body) return;
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
-            float volume = Volume;   // Chastain Rush: Racer's default vehicle volume (no settings menu yet, Round 15)
+            float volume = Volume;   // Chastain Rush: Racer's Settings.vehicle (Round 27)
             float speed = Racing ? Mathf.Abs(car.ForwardSpeed) : 0;
             bool grounded = Racing && car.GroundedWheels >= 2;
             float pedal = driver ? (car.ForwardSpeed < -.6f ? driver.LastBrake : driver.LastThrottle) : Racing && input ? (car.ForwardSpeed < -.6f ? input.BrakeReverse : input.Throttle) : 0;   // Chastain Rush: the AI's pedals (Round 15)
