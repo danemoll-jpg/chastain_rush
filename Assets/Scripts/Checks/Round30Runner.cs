@@ -46,6 +46,7 @@ namespace ChastainRush
             if (Want("hit")) yield return Hit(traffic);
             if (Want("race")) yield return Race(traffic, net);
             if (Want("pics")) yield return Pics(traffic);
+            if (only.Split(',').Contains("houses")) yield return Houses(traffic);   // Part B (only when asked)
             Finish();
         }
 
@@ -201,6 +202,26 @@ namespace ChastainRush
                 yield return Shot("pic_" + name);
                 if (views) views.SetView(CameraViews.View.Chase);
             }
+        }
+
+        // Part B (B4): the frame rate at two street views in the most built-up neighborhoods (Guidhall Trail, Lakeside), traffic
+        // off, VSync and the frame cap off; the chase view and the far chase view at each
+        IEnumerator Houses(Traffic traffic)
+        {
+            Traffic.ForcedLevel = 0; QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1;
+            report.AppendLine(); report.AppendLine("Frame rate over the most built-up neighborhoods, traffic Off, 1280 x 720, VSync and the frame cap off:");
+            foreach (var (name, x, z, yaw) in new[] { ("guidhall_cambridge_drive", 2878.8f, 1553.0f, 107.5f), ("lakeside_chastain_lakes_drive", 917.9f, 1172.2f, 114.1f) })
+                foreach (var view in new[] { CameraViews.View.Chase, CameraViews.View.FarChase })
+                {
+                    PlaceCar(x, z, yaw); if (views) views.SetView(view);
+                    yield return new WaitForSecondsRealtime(4f);
+                    float t = 0; int frames = 0; float worst = 0;
+                    while (t < 8f) { yield return null; float dt = Time.unscaledDeltaTime; t += dt; frames++; worst = Mathf.Max(worst, dt); }
+                    Note($"{name,-32} {view,-9} {frames / t,6:0.0} fps average, worst frame {worst * 1000:0} ms");
+                    yield return Shot($"houses_{name}_{view.ToString().ToLower()}");
+                }
+            if (views) views.SetView(CameraViews.View.Chase);
+            QualitySettings.vSyncCount = 1; Application.targetFrameRate = 60;
         }
 
         IEnumerator Shot(string name)

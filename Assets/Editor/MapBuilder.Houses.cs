@@ -20,7 +20,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        enum HouseStyle { A, B, C, D }
+        enum HouseStyle { A, B, C, D, E, F, G, H }   // Round 30 (B2): E split-level, F craftsman, G townhome row, H ranch with a carport (MapBuilder.HouseEras.cs)
 
         sealed class HouseSpec
         {
@@ -44,6 +44,7 @@ namespace ChastainRush
             public float roadHalf;
             public int community;                 // Round 22: 0 Chastain Glen, else 1 + the index in Data/neighborhood/communities.json
             public int garageBays = 2;            // Round 22: 3 on the larger Chastain Enclave houses (styles A and B)
+            public Color stoneC;                  // Round 30: the craftsman houses' stacked stone
         }
 
         // ------------------------------------------------------------ palettes (from the photos)
@@ -138,6 +139,10 @@ namespace ChastainRush
                 case HouseStyle.A: BuildA(mb, h); break;
                 case HouseStyle.B: BuildB(mb, h); break;
                 case HouseStyle.C: BuildC(mb, h); break;
+                case HouseStyle.E: BuildE(mb, h); break;   // Round 30
+                case HouseStyle.F: BuildF(mb, h); break;
+                case HouseStyle.G: BuildG(mb, h); break;
+                case HouseStyle.H: BuildH(mb, h); break;
                 default: BuildD(mb, h); break;
             }
             if (!h.dan) BackAndSides(h.detail ?? mb, h);   // Round 10
@@ -160,7 +165,7 @@ namespace ChastainRush
             var f0 = h.frame;
             var b = new Frame { O = f0.O, R = -f0.R, F = -f0.F, M = f0.M };   // turned round: u to the right as seen from behind
             float W = h.W, D = h.D, back = D / 2; int s = h.seed;
-            bool two = h.style != HouseStyle.C;
+            bool two = h.style != HouseStyle.C && h.style != HouseStyle.H;   // Round 30: H is one story too
             // the usable stretch of the back wall (style B: the main block only; its garage wing is set forward and one storey)
             float u0 = -W / 2 + 0.7f, u1 = W / 2 - 0.7f;
             if (h.style == HouseStyle.B) u1 = W / 2 - GarageWidth(h) - 0.5f;

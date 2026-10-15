@@ -2673,7 +2673,7 @@ an overhead; Dan picks; build after. ONE ENTRANCE IS ALREADY DECIDED:
   (M or View) draws the lines, names and (zoomed in) the points. Remove them all when Dan has chosen.
 - Exe: `Builds/ChastainRush/ChastainRush.exe` (`Play Chastain Rush.bat`). Imported from Racer: nothing.
 
-**QUEUED — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
+**DONE (Parts A and B built, not yet driven by Dan) — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
 better houses in the remaining neighborhoods. I have no specific styles for other neighborhoods though like I do with my
 own community". Part A then Part B; rebuild into `Builds/ChastainRush/` and commit after each, give the build time.**
 
@@ -2737,6 +2737,35 @@ B4. Frame rate: the same LOD / batching as the dressed communities; numbers befo
    most built-up area.
 B5. Pictures from the exe: one street view per neighborhood, plus an overhead of each, in the status, so Dan can pick
    changes ("build it, then Dan drives it").
+Part B status: done (built; pictures from the exe, not yet driven by Dan).
+B1: `python Tools/mapgen/neighborhoods_rest.py` (re-run after mapgen) writes `Data/neighborhood/neighborhoods.json`: 24
+   neighborhoods, 1539 houses (streets joined without going out onto a bigger road; names from OSM where it has them,
+   Canterbury, else the main street). Full list with streets and numbers: `local/round30/neighborhoods/list.txt`.
+B2: one era each, from the footprints (OSM footprints include the garage and are coarse, so the spacing between houses, the
+   lot width, says the most): ranch (wide lots, 32 m or more apart): Embry Lane 157, Blackwell Circle 13, Suburban Drive
+   33, Willard Drive 31, Pine Manor 29, Westmoreland Drive 14, Chastain Trace 7; craftsman (big footprints packed under 26
+   m apart): Guidhall Trail 252, Canterbury 7, Estates Landing Drive 21; townhome rows (under 18 m apart): The Willows 31;
+   traditional (the rest, 26 to 32 m apart): Centerview Drive 109, Lakeside Drive 219, Kathryn Drive 141, Southwick Drive
+   53, Hartley Woods Drive 120, Windridge Drive 18, Station Drive 86, Sellers Way 15, Chastain Crossing 30, Old Farm Walk
+   74, Lansing Drive 13, Parkwood Drive 30, Chastain Manor Way 36. New styles (`MapBuilder.HouseEras.cs`): E split-level,
+   F craftsman (stone wainscot, carriage garage doors, a porch on stone piers with tapered columns, shingles in the gables),
+   G townhome row (units side by side, alternating brick and siding, a door, stoop and one-car garage each), H ranch with a
+   carport. Mixes: ranch E / C / H; traditional A / D / B (brick fronts) / C; craftsman F / A; townhomes G. Each
+   neighborhood has its own few siding, brick and roof colors (picked by its key) from its era's palette.
+B3: `MapBuilder.Neighborhoods.cs`: Chastain Glen's house kit on the real footprints, each house facing down its own OSM
+   drive (1507 of 1535; the rest face their street), the garage at the drive; floor at the foot of the garage; Round 27's
+   block foundation (1003) and walk-out wall (600) where the ground falls away; shrubs, one box collider, a breakable
+   mailbox (799), a breakable privacy fence behind about a third (477, kept off roads, drives, buildings, water, the trail,
+   the shortcuts and the pipe cuts); no tree inside a house. Not done: the lot cuts of Round 27 (477 houses have ground more
+   than 0.6 m over their floor somewhere, as the plain boxes did; no ground was cut map-wide), curbs, sidewalks and lamps
+   on these streets (not asked for).
+B4: same chunking as the Glen (128 m mesh chunks, details in a shadowless mesh). Frame rate, traffic off, 1280 x 720, VSync
+   and the cap off (not measured at 3840 x 2160): Guidhall Trail (Cambridge Drive) chase 371 -> 342 fps, far chase 377 ->
+   344; Lakeside (Chastain Lakes Drive) chase 290 -> 277, far chase 320 -> 262.
+B5: pictures in `local/round30/neighborhoods/`: `street_<key>_<name>.png` (one per neighborhood, from the exe) and
+   `overhead_<key>_<name>.png` (the built scene from above; magenta is outside the map), `streets.png` / `overheads.png`
+   sheets. For Dan to look at: Willard Drive's first house turns its side to the street (its drive comes from the cross
+   street). Imported from Racer: nothing.
 
 **DONE (built and checked in the exe by script, not yet driven by Dan) — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
 the build time. Dan drives it.**

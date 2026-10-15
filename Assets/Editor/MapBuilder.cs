@@ -108,7 +108,9 @@ namespace ChastainRush
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildRoadLookup(map);
             BuildTrafficNetwork(map);   // Round 30 (A1): the road graph the traffic drives on (MapBuilder.Traffic.cs)
-            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop);
+            var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
+            PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
+            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop, rest);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
             RegisterWater(map, world, new Pavement(map));   // Round 15 (item 2c)
@@ -117,7 +119,7 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)));
             if (creek != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks)
             {
@@ -129,6 +131,7 @@ namespace ChastainRush
             trees.Field.gameObject.AddComponent<TreeTrunks>();
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
+            BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
@@ -648,7 +651,7 @@ namespace ChastainRush
 
         static readonly Color OwnerWall = new Color(1.0f, 0.45f, 0.05f), OwnerRoof = new Color(0.62f, 0.22f, 0.04f);
 
-        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood, ShoppingCenter shop)
+        static void BuildBuildings(MapData map, TerrainGrid terrain, Materials mats, Transform parent, OwnerMarker owner, Neighborhood hood, ShoppingCenter shop, RestNeighborhoods rest)
         {
             const float cell = 256f;
             var chunks = new Dictionary<Vector2Int, MeshBuilder>();
@@ -660,6 +663,7 @@ namespace ChastainRush
                 var b = map.buildings[i];
                 if (hood.OwnsBuilding(i)) continue; // Round 7: styled houses in the area, Dan's house hand-built
                 if (shop.Owns(i)) continue;          // Round 17: the gas station's canopy and the bank are built with the shopping center
+                if (rest.Owns(i)) continue;          // Round 30: the other neighborhoods' styled houses
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;

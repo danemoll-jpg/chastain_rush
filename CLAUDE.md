@@ -294,7 +294,10 @@ GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSe
 (`Assets/Scripts/Traffic/`: `TrafficNetwork` built by `MapBuilder.Traffic.cs`, `TrafficDriver`, `Traffic`, Racer's `AmbientVehicle`),
 Settings > GAMEPLAY > Traffic; a check run has none unless it passes `-traffic Light|Normal|Heavy`. Check: `ChastainRush.exe
 -exeRound30 <dir> -traffic Normal [-r30Only fps,drive,hit,race,pics] -logFile <dir>\Player.log`.
-**Active: Round 30 in `TODO.md`:** Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
+**Round 30 Part B (see `TODO.md`, status there) is built, pictures from the exe, not yet driven by Dan:** the 24 other
+neighborhoods dressed, one era each (`python Tools/mapgen/neighborhoods_rest.py` writes `Data/neighborhood/neighborhoods.json`,
+re-run after mapgen; `MapBuilder.Neighborhoods.cs`, new styles E to H in `MapBuilder.HouseEras.cs`). Pictures `local/round30/`.
+**Was active: Round 30 in `TODO.md`:** Round 30 (traffic ported from Racer, on in free roam and races, can block you, Off in Settings; the current race courses
 are closed to it; better houses with a look of their own in every neighborhood not yet
 dressed).
 
