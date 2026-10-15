@@ -697,7 +697,25 @@ namespace ChastainRush
             else Debug.LogWarning($"[Round25] manhole {m.id}: no street triangles over its hole (no hatch drawn)");
             {
                 var cover = Sub(mats.Paint); const int seg = 20; const float Rc = 0.45f;
-                float Lift(float qx, float qz) => Ground(terrain, qx, qz) + road.lift + 0.012f - y;
+                // Round 28 (A, BUG-001 on Westminister Way: "there is no manhole cover here"): the cover sat at the terrain + the road's
+                // lift, but the street's own triangles over the hole stand 0 to 0.1 m higher on the communities' streets and on slopes, so
+                // the street was drawn over it (MH4, MH7, MH10, MH11) or fought it (MH3, MH5, MH9). Now 12 mm over the highest street
+                // triangle under each of its points (the terrain + lift only where there is no street)
+                float Street(float qx, float qz)
+                {
+                    float best = float.NegativeInfinity;
+                    if (street != null)
+                        foreach (var (_, a, b, cc, _, _, _) in street)
+                        {
+                            float v0x = b.x - a.x, v0z = b.z - a.z, v1x = cc.x - a.x, v1z = cc.z - a.z, v2x = qx - a.x, v2z = qz - a.z;
+                            float den = v0x * v1z - v1x * v0z; if (Mathf.Abs(den) < 1e-9f) continue;
+                            float u = (v2x * v1z - v1x * v2z) / den, w = (v0x * v2z - v2x * v0z) / den;
+                            if (u < -1e-4f || w < -1e-4f || u + w > 1f + 1e-4f) continue;
+                            best = Mathf.Max(best, a.y + u * (b.y - a.y) + w * (cc.y - a.y));
+                        }
+                    return float.IsNegativeInfinity(best) ? Ground(terrain, qx, qz) + road.lift : best;
+                }
+                float Lift(float qx, float qz) => Street(qx, qz) + 0.012f - y;
                 Vector3 Q(float a, float rr) { float qx = c.x + Mathf.Cos(a) * rr, qz = c.y + Mathf.Sin(a) * rr; return new Vector3(qx - c.x, Lift(qx, qz), qz - c.y); }
                 void Ring(float r0, float r1, Color colr)
                 {

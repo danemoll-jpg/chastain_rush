@@ -2729,6 +2729,23 @@ C3. HAIR: "can we fix some of the hair styles? Especially short and medium don't
    all in the garage's hair list, all working with every hat (a hat hides what it should) and every hair color, and the
    AI riders' random looks using them. Pictures of each hair style from front, side and back, with and without a hat.
 
+**STATUS of Round 28 Part A (Claude, 2026-10-15): DONE, exe rebuilt (2026-10-15 03:52), committed; pictures from the exe by script (muted,
+minimized), not yet driven by Dan.**
+- A DONE. Why the covers were missing: every cover was built (13 of 13 in the build log), but it was drawn at the terrain's height + the
+  road's lift + 12 mm, while the street's own triangles over the hole (the hatch) stand 0 to 0.1 m higher on the communities' streets and
+  on slopes. So the street was drawn OVER the cover on MH4, MH7 (Dan's BUG-001), MH10 and MH11, and the two fought (flicker, mostly street)
+  on MH3, MH5 and MH9; only MH1, 2, 6, 8, 12 and 13 showed. Fix (MapBuilder.Network.cs BuildManholeLid): each point of the cover is now set
+  12 mm over the highest street triangle under it. Probe of the built scene (ChastainRush.ManholeProbe.Look -probeOut <file>, new, Editor
+  batch: every drawn surface over each cover): the cover is 12 to 13 mm over the street at its middle and 0.3 m round it on all 13. The
+  cover is a drawing only; what a wheel touches is unchanged since Round 25 (the terrain's own surface), so no bump. Size 0.9 m, lighter
+  cast iron as Round 25.
+- Pictures from the exe, first person in the Street Classic, 12 m back on each manhole's street (-exeShots takes a new "view": "first"):
+  MH1 Parkwood Dr, MH2 Parkwood Dr, MH3 Bloombridge Way, MH4 Rotherhithe Landing, MH5 Bloombridge Way, MH6 Guidhall Trail, MH7 Westminister
+  Way, MH8 Paxton Ct, MH9 Grasmere Ct, MH10 Weybourne Ct, MH11 Chasefield Way, MH12 Laurel Green Ct, MH13 Chastain Lakes Dr: the cover
+  shows in every one (Data/screenshots/round28/a_manholes_all13.jpg, MH7 full size _MH7_westminister.png).
+- This exe also has Part B6's camera change (it compiled into the same build). Imported from Racer: nothing.
+- For Dan to check: Westminister Way (MH7) and any other street manhole.
+
 **DONE (Parts A to D, d98ebcb to b8013c4; Dan's notes are Round 28) — Round 27 (Dan, 2026-10-14 20:25): the open items, Woodstock Rush's radio, music folders, AI vehicle sounds and
 settings pages, then the underground race.** Dan: "all these: the buried house walls; the drop at the west end of the New
 Chastain bridge; Lets pull over the radio from Woodstock Rush as well as the music folders; Also there was a recent

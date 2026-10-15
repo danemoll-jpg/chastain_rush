@@ -17,7 +17,7 @@ namespace ChastainRush
     {
         // Round 18: path (x, z, x, z, ...) makes a drive follow those points instead of holding straight on; it ends at the last
         // point (or after drive_seconds) and also reports the farthest the car got from the path and the fewest wheels down
-        [Serializable] public class Shot { public string name; public float x, z, yaw, drive_speed, drive_seconds, shot_at = -1f; public float[] path; public float reset_at = -1f, fps_from = -1f; public float[] shot_near, fps_near; public float y = -1000f; public bool trace; }   // Round 27 (A2): trace, a line per physics step to <name>_trace.tsv   // Round 24 Part B: y, a height to place at (underground), instead of the ground's   // fps_near (x, z): the frame rate from when the vehicle first comes within 5 m of it   // Round 23 follow-ups: shot_near (x, z): the shot when the vehicle first comes within 3 m of it (in plan)   // Round 23 follow-ups: reset_at (a reset, R, during the drive), fps_from (the frame rate from then on)
+        [Serializable] public class Shot { public string name; public float x, z, yaw, drive_speed, drive_seconds, shot_at = -1f; public float[] path; public float reset_at = -1f, fps_from = -1f; public float[] shot_near, fps_near; public float y = -1000f; public bool trace; public string view; }   // Round 28: view, the camera view for this shot ("first", "front", "far"; none: chase)   // Round 27 (A2): trace, a line per physics step to <name>_trace.tsv   // Round 24 Part B: y, a height to place at (underground), instead of the ground's   // fps_near (x, z): the frame rate from when the vehicle first comes within 5 m of it   // Round 23 follow-ups: shot_near (x, z): the shot when the vehicle first comes within 3 m of it (in plan)   // Round 23 follow-ups: reset_at (a reset, R, during the drive), fps_from (the frame rate from then on)
         [Serializable] public class ShotList { public Shot[] shots; }
 
         public string listPath, outputDir;
@@ -40,6 +40,8 @@ namespace ChastainRush
             foreach (var s in list.shots)
             {
                 var p = s.y > -999f ? new Vector3(s.x, s.y, s.z) : RaceRoute.Ground(s.x, s.z);
+                var views = FindAnyObjectByType<CameraViews>();   // Round 28 (A: "a picture from a driver's height")
+                if (views) views.SetView(s.view == "first" ? CameraViews.View.FirstPerson : s.view == "front" ? CameraViews.View.Front : s.view == "far" ? CameraViews.View.FarChase : CameraViews.View.Chase);
                 respawn.PlaceAt(p + Vector3.up * 0.3f, s.yaw);
                 yield return new WaitForSecondsRealtime(2.5f);
                 if (s.drive_speed <= 0f) { yield return Capture(s.name); report.AppendLine($"{s.name}: car at ({s.x:0.0}, {p.y:0.0}, {s.z:0.0}) heading {s.yaw:0}"); continue; }

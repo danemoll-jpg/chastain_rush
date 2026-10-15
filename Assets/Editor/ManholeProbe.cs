@@ -62,6 +62,52 @@ namespace ChastainRush
             Debug.Log("[Round25] manhole probe: " + string.Join(" | ", lines.Where(l => !l.StartsWith("   "))));
             EditorApplication.Exit(0);
         }
+        // Round 28 (A): what is DRAWN over each manhole's cover. ChastainRush.ManholeProbe.Look -probeOut <file>. For each lid, every mesh
+        // renderer with a triangle over the cover's middle and 0.3 m round it: its name, material, render queue and height against the cover's
+        public static void Look()
+        {
+            string outPath = Arg("-probeOut") ?? "manhole_look.txt";
+            EditorSceneManager.OpenScene("Assets/Generated/ChastainPrototype.unity");
+            var lines = new List<string>();
+            var rends = Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None);
+            foreach (var ml in Object.FindObjectsByType<ManholeLid>(FindObjectsSortMode.None).OrderBy(m => m.name))
+            {
+                var home = ml.lid.position; lines.Add($"{ml.name} at ({home.x:0.0}, {home.y:0.00}, {home.z:0.0})");
+                var probes = new[] { Vector2.zero, new Vector2(0.3f, 0f), new Vector2(-0.3f, 0f), new Vector2(0f, 0.3f), new Vector2(0f, -0.3f) };
+                foreach (var r in rends)
+                {
+                    if (!r.enabled || !r.gameObject.activeInHierarchy) continue;
+                    var b = r.bounds; if (home.x < b.min.x - 1f || home.x > b.max.x + 1f || home.z < b.min.z - 1f || home.z > b.max.z + 1f) continue;
+                    var mf = r.GetComponent<MeshFilter>(); if (!mf || !mf.sharedMesh || !mf.sharedMesh.isReadable) continue;
+                    var mesh = mf.sharedMesh; var tr = r.transform; var vs = mesh.vertices.Select(v => tr.TransformPoint(v)).ToArray();
+                    for (int sm = 0; sm < mesh.subMeshCount; sm++)
+                    {
+                        var t = mesh.GetTriangles(sm); var hs = new List<string>();
+                        foreach (var pr in probes)
+                        {
+                            var q = new Vector2(home.x + pr.x, home.z + pr.y); float best = float.NaN;
+                            for (int i = 0; i + 2 < t.Length; i += 3)
+                            {
+                                Vector3 a = vs[t[i]], bb = vs[t[i + 1]], c = vs[t[i + 2]];
+                                var v0 = new Vector2(bb.x - a.x, bb.z - a.z); var v1 = new Vector2(c.x - a.x, c.z - a.z); var v2 = new Vector2(q.x - a.x, q.y - a.z);
+                                float den = v0.x * v1.y - v1.x * v0.y; if (Mathf.Abs(den) < 1e-9f) continue;
+                                float u = (v2.x * v1.y - v1.x * v2.y) / den, w = (v0.x * v2.y - v2.x * v0.y) / den;
+                                if (u < -1e-4f || w < -1e-4f || u + w > 1f + 1e-4f) continue;
+                                float y = a.y + u * (bb.y - a.y) + w * (c.y - a.y); if (float.IsNaN(best) || y > best) best = y;
+                            }
+                            hs.Add(float.IsNaN(best) ? "-" : (best - home.y).ToString("+0.000;-0.000"));
+                        }
+                        if (hs.All(h => h == "-")) continue;
+                        var mat = sm < r.sharedMaterials.Length ? r.sharedMaterials[sm] : null;
+                        lines.Add($"   {r.name} [{(mat ? mat.name : "none")} q{(mat ? mat.renderQueue : 0)} {(mat && mat.shader ? mat.shader.name : "")}] center,+x,-x,+z,-z: {string.Join(" ", hs)}");
+                    }
+                }
+                var tt = Terrain.activeTerrains.FirstOrDefault(x => { var tp = x.transform.position; var sz = x.terrainData.size; return home.x >= tp.x && home.x <= tp.x + sz.x && home.z >= tp.z && home.z <= tp.z + sz.z; });
+                if (tt) lines.Add($"   terrain: {tt.SampleHeight(home) + tt.transform.position.y - home.y:+0.000;-0.000}");
+            }
+            File.WriteAllLines(outPath, lines);
+            EditorApplication.Exit(0);
+        }
         static string Arg(string name) { var a = System.Environment.GetCommandLineArgs(); int i = System.Array.IndexOf(a, name); return i >= 0 && i + 1 < a.Length ? a[i + 1] : null; }
     }
 }
