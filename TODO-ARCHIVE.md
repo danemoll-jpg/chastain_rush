@@ -3920,3 +3920,110 @@ For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s
 (x 252, z 1603), and 0.30 s on the SB exit just after it leaves I-575 (x 231, z 1423). Also check the dressed buildings'
 looks, and the frame rate on Canton Road at 4K.
 Imported from Racer: nothing.
+
+## Round 32 (moved from TODO.md on 2026-10-16 when Dan reviewed Round 35; word for word)
+
+## Previous delivery 3: Round 32
+**Reviewed: passed by Dan 2026-10-15 22:35, nothing to report.**
+**Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
+after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
+reported, one check each, short results (CLAUDE.md "Process"); rebuild into `Builds/ChastainRush/` and commit. Building
+numbers are indexes into `Data/map.json` "buildings"; Dan's coordinates are the vehicle's (x, z, heading).
+
+Part A, CANTON ROAD BUSINESSES FACE CANTON ROAD. Dan: "In general not sure why most businesses on Canton road were facing
+away from Canton road without any driveways." Why (Claude): Round 31 picks each building's front as the face looking most
+toward the nearest OSM parking lot or road, any road, so a service road or side street behind a store beats Canton Road; and
+lots were paved only where OSM maps one (9 outside the dressed areas), so most businesses got no lot and no drive.
+A1. THE RULE (Dan said "in general", so it applies to every dressed business along Canton Road, not only his spots): a
+   shop, office, church, school or other business whose lot touches Canton Road, or that stands between Canton Road and the
+   street behind it, has its front toward Canton Road, a paved parking lot between it and the road (stalls, light poles,
+   lamps as Round 31's lots), and a drive from Canton Road into the lot (curb cut, no step). Neighbors share one lot where
+   they stand in a row. Keep OSM's own lots and service roads; join a service road to the lot it serves. Canopies, sheds
+   and garages are not businesses. Check: Dan's spots below, one picture each.
+A2. Dan's spots, each by A1: BUG-005 / BUG-017 (x 3532.61 z 1027.29 h 20; x 3588.14 z 1054.82 h 243): building 7, a strip
+   with Fit Zone Gym, Pho Saigon, Green Leaf Smoothies, U-Store-It, facing W D Anderson Road ("stores should be facing canton
+   and have a parking lot"). BUG-006 (x 3412.71 z 1479.90 h 263): buildings 8, 9, 10 ("business should be facing canton road
+   with a parking lot"). BUG-007 (x 3324.50 z 1582.84 h 74, Westchase Drive): building 12, faces the houses behind it ("again
+   should be facing canton road"). BUG-008 (x 3380.86 z 1703.75 h 69): building 3 ("Face canton road have parking lot").
+   BUG-022 (x 3636.20 z 439.60 h 275): building 88, U-Store-It ("another one turn it around"). BUG-023 (x 3533.79 z 181.78
+   h 211): buildings 20 and 40, the strip with Sparkle Car Wash ("should have parking lot").
+A3. BUG-019 / BUG-020 (x 3643.87 z 696.83 h 39; x 3649.78 z 692.80 h 111): building 76, one 10,900 m2 retail block shown as
+   long blank walls. Dan: "these should all be store fronts with a parking lot here. The corner shop is a pizza place with a
+   drive up restaurant. There should also be a comic book store and another store here", "make these all store fronts".
+   Storefronts along the whole face toward Canton Road with the lot in front (A1); at the corner nearest Dan's spot a pizza
+   place with a drive-up window and its lane round the side; next to it a comic book store, then one more store; the rest
+   ordinary storefronts. Made-up names (sign rules); add the new signs to `make_business_signs.py`. (If the corner shop he
+   means is the small building 77 beside it, it is the pizza place instead; say which in the status.)
+A4. BUG-014 / BUG-015 (x 3489.82 z 1213.04 h 58; x 3488.39 z 1200.49 h 89): building 86 is dressed as a house beside the
+   OSM lot at x 3503 z 1217. Dan: "why does a house have a parking lot", "actually I am pretty sure this is an ice cream shop
+   in the real world". Dress building 86 as an ice cream shop (storefront, a walk-up window, made-up name), using that lot.
+A5. BUG-021 (x 3563.64 z 584.19 h 243): churches 74 and 75 build as overlapping boxes with a steeple in the wrong place
+   ("what kind of monstrosity is this?"). Make it read as one church: wings joined cleanly, one roof per wing with no boxes
+   poking through, the steeple over the main entrance, the front toward Canton Road with a lot (A1). Check: Dan's spot.
+A6. BUG-009 (x 3390.31 z 1772.89 h 49): the unnamed road ends short of the preschool's lot ("this road should connect to the
+   parking lot"); join it to the lot. Dan, 17:27: IGNORE the comment's "Make this an elementary school" (it is building 14,
+   Little Acorns Preschool, and stays one); instead the middle school becomes an elementary school. Both schools (0 by I-575,
+   41 by Canton Road) drew "Noonday Creek Middle School"; make 41 (the one by Canton Road Dan drove past, BUG-018) "Pine
+   Hollow Elementary", and leave 0 the middle school so the map has one of each (Dan to say if he meant both).
+A7. BUG-016 (x 3499.29 z 1136.58 h 94): "Road to nowhere", an unnamed 5 m road ending in grass. Join it to the lot or building
+   it led to (OSM / A1); if it serves nothing, remove it. Check: Dan's spot.
+
+Part B, GRASS IN THE STREETS AND A TRAFFIC JAM.
+B1. Grass showing through the asphalt at: BUG-010 (x 3377.17 z 1656.77 h 157, Canton Road junction), BUG-011 (x 3408.69
+   z 1504.58 h 34, the unnamed road's mouth onto Canton Road: also two shades of gray, "smooth this"), BUG-012 (x 3406.78
+   z 1554.13 h 350), BUG-013 (x 3467.43 z 1242.21 h 161), BUG-018 (x 3556.81 z 825.01 h 21), all on Canton Road, and BUG-024
+   (x 1139.84 z 667.91 h 134, Chastain Road Northwest: a ragged strip down the center line). Round 31's BUG-003 was the
+   same thing (a gap between carriageways / turn lanes, paved over by hand). Dan has now said it six more times ("need to
+   remove grass from streets"), so find the cause in the road build and fix it there, so the road surface is whole and one
+   shade at junctions and between parallel lanes; real grass medians, if OSM maps one, stay. Check: a picture from each
+   of the six spots.
+B2. BUG-010: four traffic cars stopped in a knot in the junction ("Is this a car accident?"). Find why they stopped (each
+   yielding to another, or stuck on the grass seam) and fix it so traffic never locks itself at a junction. Check: Heavy
+   traffic at that junction for 5 minutes, no car stopped there longer than 10 s.
+
+Part C, CHASTAIN LAKES (BUG-025 x 1312.55 z 1080.73 h 54; BUG-026 x 1314.67 z 1085.28 h 331, off Lakeside Drive).
+C1. Round 30 named this neighborhood "Lakeside Drive" (its main street). It is the Chastain Lakes subdivision: name it
+   "Chastain Lakes" in `neighborhoods.json` (a name override in `neighborhoods_rest.py`), its houses unchanged.
+C2. Its amenity area on East Chastain Lake, between the lake, Bells Ferry Road and Lakeside Drive. Buildings 266 and 267
+   (now 10.5 m office blocks, the tall brick and white boxes in BUG-025) are the pool house and the bathhouse. Dan: "there
+   should be a parking lot in front of a pool, pool house and tennis courts", "on the right there should be a swinging bench
+   in front of the lake, a gazebo in a deck on the water and there are always many geese here". From Dan's two pictures
+   (`local/reference_photos/chastain_lakes/`, git-ignored): a rectangular lap pool with lane lines, a concrete deck, lounge
+   chairs and a fence; the pool house (one story, hipped roof) between the pool and the courts, a small bathhouse on the
+   pool's lake side; four tennis courts in two fenced pairs behind the pool toward Bells Ferry Road; a paved lot off
+   Lakeside Drive in front of the pool, pool house and courts; on the lawn toward the lake a porch swing on a frame facing
+   the water; a walk from the lot down to a pier and a gazebo on a deck out on the water; a flock of geese on the lawn and
+   the shore (the Glen pond's geese, they scatter). The lawn north of the lake along Bells Ferry Road has a paved walking path
+   on the shore with a small wooden footbridge where it crosses the stream; Dan: under that bridge and further up the stream
+   are the two pipes, the network's main entrance BF (Round 23). Keep BF and its stream as they are; the bridge only spans
+   the stream. The pictures are Google imagery: look at them for what is there, never trace or measure them (CLAUDE.md
+   licensing); place things from OSM, NAIP and the terrain. Pool house and courts are world, not game layer. Check: Dan's two
+   spots, a picture each, and one from the lot toward the pool.
+
+For Dan to check (when done): Canton Road's storefronts and lots, the pizza / comic book corner, the ice cream shop, the
+church, the elementary school sign, the grass spots, the junction at BUG-010, Chastain Lakes' pool area.
+
+**Round 32 status (Claude, 2026-10-15): all built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by
+Dan. Build 2026-10-15 20:39.** Evidence: `Data/screenshots/round32/` (a picture from each of Dan's spots, `<bug>.png`; overheads `lots_*.png`).
+A1 DONE. 46 Canton Road businesses face it (`MapBuilder.Round32.cs`): a walk along each face toward it, a lot out to 3 m short of the
+   road (stalls, curbs, poles; neighbors' lots joined into one), a drive where no service road joins it already (13), service roads in
+   a lot paved as the lot. Lots never cross a house, a street or a store in front. Check: Dan's spots below, `lots_*.png`.
+A2 DONE. 7, 8 to 10, 12, 3, 88, 20 / 40 face Canton Road with lots (`bug005` to `bug008`, `bug022`, `bug023`; `front_12_from_canton`,
+   `front_88_from_canton`: from Dan's BUG-007 / 017 / 022 spots you now see their backs).
+A3 DONE. 76 is storefronts on every face toward its lot; the corner is 76's own northwest corner (not 77): Lucky Slice Pizza with a
+   drive-up window and lane on its side, then Panel & Page Comics, then Hometown Hardware (`bug019`, `bug020`, `pizza_driveup_side`).
+A4 DONE. 86 is Cold Spoon Creamery, a storefront and a walk-up window on its lot (`icecream_86_front`, `bug014`, `bug015`).
+A5 DONE. 74 is three gabled wings, the door, sign and one steeple at the north wing's east end toward Canton Road; 75 three gabled
+   blocks, no steeple (`bug021`, `church_74_steeple`).
+A6 DONE. Road 564623219 runs on into the preschool's lot (`bug009`); 41 is Pine Hollow Elementary, 0 stays the middle school (`bug018`).
+A7 DONE. Roads 768422193 / 768422194 lead to a lot paved between them (from NAIP), neither ends in grass (`bug016`).
+B1 DONE. Cause: every road ribbon had only its two edges on the ground, so the ground under the middle showed through. Every road is
+   now a grid on the highest ground near each vertex (Round 11's Glen method); a service road's cells on another road are left to it
+   (one shade at mouths). Check: `bug010` to `bug013`, `bug018`, `bug024`.
+B2 DONE. Cause: cars across each other's way in a junction each waited for the other forever. One at a time, the first takes its turn
+   (`TrafficDriver`, `Traffic.TakesTurn`). Check: Heavy, 5 min at the junction: longest stand 1.3 s (`round32_junction.txt`).
+C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.ChastainLakes.cs`): 266 pool house, 267 bathhouse, a 21 m
+   lap pool, deck, loungers, iron fence, four courts in two fenced pairs, the lot, swing, pier and gazebo, 18 geese, the shore path
+   with a footbridge over BF's stream (BF untouched). Check: `bug025`, `bug026`, `lakes_lot_to_pool`, `lakes_courts`.
+For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
+footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.

@@ -69,6 +69,95 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 36 (Dan, 2026-10-16 10:36, after the Round 35 exe: "All is good").** Round 35 is reviewed (Dan did not check the
+Underground race's start line; he will report it if it is wrong). Parts A to D in order; rebuild into `Builds/ChastainRush/`
+and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
+Racer is read-only; port its finished code (CLAUDE.md), list what came.
+
+Part A, THE KROGER LOT BECOMES A STUNT PARK, WITH WOODSTOCK RUSH'S STUNT VEHICLES. Dan: "change the Kroger parking lot into a
+stunt course (we could import the stunt vehicles from Woodstock Rush and make a bigger version of the stunt course where you can
+get up on top of the building area with stunts up there. Would like to get big air on these".
+A1. Racer's stunt vehicles and stunt play, ported: the Clay Hopper, the Skywhip 250 and the Clay Hopper Cup (Racer
+   `Tools/Blender/stuntbike.py`, `stuntbuggy.py`, their profiles, air steering in ArcadeVehicle); the trick scoring
+   (`ArcadeActivities.Stunts.cs`: flips, rolls, spins, the loop and barrel-roll tricks, landings and bails with Racer's 1.5 s
+   recovery window, the multiplier per trick type, the 5 s combo chain), `TrickHud`, the Stunt event (`StuntEvent`) and Top 10
+   Best Combos (`StuntProgress`, on the Records page with the other boards). The garage as Racer: stunt vehicles shown when the
+   garage is opened for the Stunt event; how Racer offers them in Free Roam, the same here. Leave Stunt Races and the Stunt
+   chapter behind (no campaign here) unless the Stunt event needs a piece of them.
+A2. The park: Racer's Red Clay Stunt Park (`StuntPark.cs`) is the starting point, made BIGGER and laid on the Kroger center's
+   lot (`MapBuilder.ShoppingCenter.cs` LotRing, about 260 x 190 m round the supermarket at x 3270, z 1150 and the shop row
+   along its north). Dan (10:57): "The course should seem like someone specifically designed it for the purpose of being a
+   stunt course", "it is meant to be inspired by the stunt course in Rush USA" (the stunt arena of Rush 2: Extreme Racing USA).
+   So THIS PARK IS THE EXCEPTION to the "ramps look like something that could be there" rule: a purpose-built stunt course,
+   built ramps and structures (steel and plywood ramps, painted kickers and tables, quarter-pipes, a half-pipe, the loop, a
+   corkscrew / barrel-roll ramp, towers and decks, gaps over cars and a bus), bold course colors, banners and arrows painted as
+   a stunt park's own, lit at night. Inspired by Rush 2's arena (its spirit: big ramps everywhere, lines that chain one stunt
+   into the next, levels to climb, a lot of air), copied from none: our own layout and look (Racer's rule). The lot's stalls
+   and paint go. Every ramp still the size its job needs and landing on a slope sized to its launch (A3).
+A2b. INTO THE STORES (Dan: "I could also see smashing through the store windows and having stunts inside as well"): the shop
+   row's and the supermarket's front windows break when driven through (glass that shatters, as the other breakables; they
+   come back when the player leaves the area or on a reset, so the park works again), and inside at least the supermarket a
+   stunt run: aisles turned into lanes, kickers and a ramp up to a mezzanine or out through a back wall or skylight onto the
+   roof (A3). The shops' interiors are new (the buildings were shells): simple, readable, enough to drive through. Dan: "We
+   can start with something and build from there": build a first version that works end to end and say what could come
+   next.
+A3. UP ON THE ROOFS (Dan: "get up on top of the building area with stunts up there"): ramps up onto the supermarket's roof
+   and the shop row's roof (the buildings stay, their fronts as they are), a stunt area on the roofs (kickers, a gap between
+   roofs, quarter-pipes on the parapets), and big drops / launches off the roof edges onto landings in the park below. BIG AIR
+   (Dan: "Would like to get big air on these"): the biggest launches give several seconds of air for two or three trick types
+   with a stunt vehicle; every jump lands on a down-slope sized to its launch (Racer's ballistic sizing, Tools/Report106
+   size.py); one mesh per ramp profile, no seams (Racer's lessons).
+A4. Keep: the gas station and its breakable pumps, the abandoned bank, Canton Road and the other roads as they are; the Chastain
+   Ridge race's line on Canton Road and its S1 shortcut untouched (protected geometry; the park's edge kept off the road, a
+   tire wall or barrier where it meets a road, openings where its drives were). The world / game rule: the park and its ramps
+   are world; the Stunt event, its start and its scoring are game layer.
+A5. Free Roam: driving into the park scores tricks as Racer's park does (a flight that takes off in the park counts wherever it
+   lands); the Stunt event starts at its entrance as in Racer. On the map.
+Check in the exe by script: the biggest launch and a roof launch flown flat out on a stunt vehicle (air time, height, landing);
+a backflip + roll landed and scored; the Stunt event run once; pictures: the park from above, the roofs, each big feature,
+the trick panel. Frame rate at the park (1280 x 720) before and after.
+
+Part B, FREE ROAM EVENTS FROM WOODSTOCK RUSH. Dan: "We can probably add free roam events." Port Racer's free roam activities
+(`ArcadeActivities` with jumps, speed traps and smash, `ActivitySite`, `ActivityRecords`, the medals and their displays, the
+HUD lines and prompts; leave the acorns and anything tied to Woodstock places behind). Code picks the sites on this map and
+lists them: jumps on the existing big jumps and ramps (the Noonday Creek jumps, the Ridge leap, shortcut ramps, the stunt
+park's biggest), speed traps on the long fast roads (Canton Road, New Chastain Road, Chastain Road, Bells Ferry Road), smash
+runs where breakables stand in a row (mailboxes, fences, the gas pumps). About as many of each as Racer's map had for its
+size; each with gold / silver / bronze targets from a scripted run; on the map and the minimap as Racer shows them. Free Roam
+only, never in races. Check: one of each kind run in the exe by script, scored and medaled; a picture of the map with the
+sites.
+
+Part C, MORE FIRE HYDRANTS. Dan: "We should have more fire hydrants around in general." Breakable hydrants (Racer's, squirting
+water, as the Glen's) along every street of the map, at real spacing: about every 150 m on neighborhood streets, about every
+100 m on the commercial roads (Canton Road, the shopping streets), at street corners and in front of the schools, churches
+and businesses; at the curb, never in a drive, a lot entrance, a shortcut's line, a jump or a race line. Same LOD / batching
+as the other street furniture. Say how many. Check: two pictures (a neighborhood street, Canton Road) and the frame rate at
+Canton Road before and after.
+
+Part D, HYDRANTS TIED TO THE UNDERGROUND (Dan: "I also feel like the fire hydrants should maybe somehow be tied into the
+underground area"; of the ideas Claude offered he picked these two, 10:57: "1 and 2 are kind of what I was thinking so lets go
+with those"):
+D1. SECRET ENTRANCES: a few hydrants (one beside each street manhole MH1 to MH13, and others where a new manhole fits over a
+   network pipe or junction) are rigged: knock one over and the nearby manhole's cover blows off (a bang, water, the cover
+   flying) and the way down into the network is open, as the network's manholes already lead in. Nothing marks which hydrants
+   are rigged beyond the manhole being near (found, not signposted). The cover is back after a while or a reset.
+D2. GEYSERS: breaking a hydrant sends a column of water up out of a manhole or storm grate down the street for several seconds;
+   driving into it launches the vehicle high (big air, tricks count as anywhere in Free Roam), roughly upright, landing on the
+   street. At least one geyser per neighborhood with hydrants, and some along Canton Road.
+Free Roam only; in races hydrants break as before, no cover blows and no geyser (the races' pipes stay sealed). Dan (11:01): "free roam only for now, but this concept could be used as a shortcut idea in races": so build both so a race
+   route could switch one on later (a rigged hydrant opening a manhole into a pipe shortcut, a geyser launching over something),
+   but use none in a race now. World: the
+hydrant-to-manhole links; their effects run in Free Roam. Check in the exe by script: one rigged hydrant knocked over, the
+cover off, the vehicle drives down into the network; one geyser launch (height, air time, landing); pictures of both.
+
+For Dan to check (when done): the stunt park and its roofs on the Clay Hopper and the Skywhip, the Stunt event and its Top 10,
+smashing into the stores and the run inside, the free roam events, the hydrants, a rigged hydrant and a geyser.
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 35
+**Reviewed: passed by Dan 2026-10-16 10:36 ("All is good"; the Underground start line not checked yet).**
 **Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
 Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
 `Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and
@@ -141,10 +230,7 @@ C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1
    ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
 For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 34
+## Previous delivery 2: Round 34
 **Reviewed: driven by Dan 2026-10-16 07:49 (an Underground race; his notes are Round 35).**
 **Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
 after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
@@ -238,7 +324,7 @@ For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), B
    after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
    exceptions in every exe log. Frame rate not measured.
 
-## Previous delivery 2: Round 33
+## Previous delivery 3: Round 33
 **Reviewed: driven by Dan 2026-10-16 01:35 to 01:51 (his notes are Round 34).**
 **Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
 screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
@@ -307,111 +393,6 @@ Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI rese
    course; only the 18 road pieces at the barriers are closed to it, and the grid is cleared at the start (`Traffic.Close`).
 For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
 rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
-
-## Previous delivery 3: Round 32
-**Reviewed: passed by Dan 2026-10-15 22:35, nothing to report.**
-**Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
-after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
-reported, one check each, short results (CLAUDE.md "Process"); rebuild into `Builds/ChastainRush/` and commit. Building
-numbers are indexes into `Data/map.json` "buildings"; Dan's coordinates are the vehicle's (x, z, heading).
-
-Part A, CANTON ROAD BUSINESSES FACE CANTON ROAD. Dan: "In general not sure why most businesses on Canton road were facing
-away from Canton road without any driveways." Why (Claude): Round 31 picks each building's front as the face looking most
-toward the nearest OSM parking lot or road, any road, so a service road or side street behind a store beats Canton Road; and
-lots were paved only where OSM maps one (9 outside the dressed areas), so most businesses got no lot and no drive.
-A1. THE RULE (Dan said "in general", so it applies to every dressed business along Canton Road, not only his spots): a
-   shop, office, church, school or other business whose lot touches Canton Road, or that stands between Canton Road and the
-   street behind it, has its front toward Canton Road, a paved parking lot between it and the road (stalls, light poles,
-   lamps as Round 31's lots), and a drive from Canton Road into the lot (curb cut, no step). Neighbors share one lot where
-   they stand in a row. Keep OSM's own lots and service roads; join a service road to the lot it serves. Canopies, sheds
-   and garages are not businesses. Check: Dan's spots below, one picture each.
-A2. Dan's spots, each by A1: BUG-005 / BUG-017 (x 3532.61 z 1027.29 h 20; x 3588.14 z 1054.82 h 243): building 7, a strip
-   with Fit Zone Gym, Pho Saigon, Green Leaf Smoothies, U-Store-It, facing W D Anderson Road ("stores should be facing canton
-   and have a parking lot"). BUG-006 (x 3412.71 z 1479.90 h 263): buildings 8, 9, 10 ("business should be facing canton road
-   with a parking lot"). BUG-007 (x 3324.50 z 1582.84 h 74, Westchase Drive): building 12, faces the houses behind it ("again
-   should be facing canton road"). BUG-008 (x 3380.86 z 1703.75 h 69): building 3 ("Face canton road have parking lot").
-   BUG-022 (x 3636.20 z 439.60 h 275): building 88, U-Store-It ("another one turn it around"). BUG-023 (x 3533.79 z 181.78
-   h 211): buildings 20 and 40, the strip with Sparkle Car Wash ("should have parking lot").
-A3. BUG-019 / BUG-020 (x 3643.87 z 696.83 h 39; x 3649.78 z 692.80 h 111): building 76, one 10,900 m2 retail block shown as
-   long blank walls. Dan: "these should all be store fronts with a parking lot here. The corner shop is a pizza place with a
-   drive up restaurant. There should also be a comic book store and another store here", "make these all store fronts".
-   Storefronts along the whole face toward Canton Road with the lot in front (A1); at the corner nearest Dan's spot a pizza
-   place with a drive-up window and its lane round the side; next to it a comic book store, then one more store; the rest
-   ordinary storefronts. Made-up names (sign rules); add the new signs to `make_business_signs.py`. (If the corner shop he
-   means is the small building 77 beside it, it is the pizza place instead; say which in the status.)
-A4. BUG-014 / BUG-015 (x 3489.82 z 1213.04 h 58; x 3488.39 z 1200.49 h 89): building 86 is dressed as a house beside the
-   OSM lot at x 3503 z 1217. Dan: "why does a house have a parking lot", "actually I am pretty sure this is an ice cream shop
-   in the real world". Dress building 86 as an ice cream shop (storefront, a walk-up window, made-up name), using that lot.
-A5. BUG-021 (x 3563.64 z 584.19 h 243): churches 74 and 75 build as overlapping boxes with a steeple in the wrong place
-   ("what kind of monstrosity is this?"). Make it read as one church: wings joined cleanly, one roof per wing with no boxes
-   poking through, the steeple over the main entrance, the front toward Canton Road with a lot (A1). Check: Dan's spot.
-A6. BUG-009 (x 3390.31 z 1772.89 h 49): the unnamed road ends short of the preschool's lot ("this road should connect to the
-   parking lot"); join it to the lot. Dan, 17:27: IGNORE the comment's "Make this an elementary school" (it is building 14,
-   Little Acorns Preschool, and stays one); instead the middle school becomes an elementary school. Both schools (0 by I-575,
-   41 by Canton Road) drew "Noonday Creek Middle School"; make 41 (the one by Canton Road Dan drove past, BUG-018) "Pine
-   Hollow Elementary", and leave 0 the middle school so the map has one of each (Dan to say if he meant both).
-A7. BUG-016 (x 3499.29 z 1136.58 h 94): "Road to nowhere", an unnamed 5 m road ending in grass. Join it to the lot or building
-   it led to (OSM / A1); if it serves nothing, remove it. Check: Dan's spot.
-
-Part B, GRASS IN THE STREETS AND A TRAFFIC JAM.
-B1. Grass showing through the asphalt at: BUG-010 (x 3377.17 z 1656.77 h 157, Canton Road junction), BUG-011 (x 3408.69
-   z 1504.58 h 34, the unnamed road's mouth onto Canton Road: also two shades of gray, "smooth this"), BUG-012 (x 3406.78
-   z 1554.13 h 350), BUG-013 (x 3467.43 z 1242.21 h 161), BUG-018 (x 3556.81 z 825.01 h 21), all on Canton Road, and BUG-024
-   (x 1139.84 z 667.91 h 134, Chastain Road Northwest: a ragged strip down the center line). Round 31's BUG-003 was the
-   same thing (a gap between carriageways / turn lanes, paved over by hand). Dan has now said it six more times ("need to
-   remove grass from streets"), so find the cause in the road build and fix it there, so the road surface is whole and one
-   shade at junctions and between parallel lanes; real grass medians, if OSM maps one, stay. Check: a picture from each
-   of the six spots.
-B2. BUG-010: four traffic cars stopped in a knot in the junction ("Is this a car accident?"). Find why they stopped (each
-   yielding to another, or stuck on the grass seam) and fix it so traffic never locks itself at a junction. Check: Heavy
-   traffic at that junction for 5 minutes, no car stopped there longer than 10 s.
-
-Part C, CHASTAIN LAKES (BUG-025 x 1312.55 z 1080.73 h 54; BUG-026 x 1314.67 z 1085.28 h 331, off Lakeside Drive).
-C1. Round 30 named this neighborhood "Lakeside Drive" (its main street). It is the Chastain Lakes subdivision: name it
-   "Chastain Lakes" in `neighborhoods.json` (a name override in `neighborhoods_rest.py`), its houses unchanged.
-C2. Its amenity area on East Chastain Lake, between the lake, Bells Ferry Road and Lakeside Drive. Buildings 266 and 267
-   (now 10.5 m office blocks, the tall brick and white boxes in BUG-025) are the pool house and the bathhouse. Dan: "there
-   should be a parking lot in front of a pool, pool house and tennis courts", "on the right there should be a swinging bench
-   in front of the lake, a gazebo in a deck on the water and there are always many geese here". From Dan's two pictures
-   (`local/reference_photos/chastain_lakes/`, git-ignored): a rectangular lap pool with lane lines, a concrete deck, lounge
-   chairs and a fence; the pool house (one story, hipped roof) between the pool and the courts, a small bathhouse on the
-   pool's lake side; four tennis courts in two fenced pairs behind the pool toward Bells Ferry Road; a paved lot off
-   Lakeside Drive in front of the pool, pool house and courts; on the lawn toward the lake a porch swing on a frame facing
-   the water; a walk from the lot down to a pier and a gazebo on a deck out on the water; a flock of geese on the lawn and
-   the shore (the Glen pond's geese, they scatter). The lawn north of the lake along Bells Ferry Road has a paved walking path
-   on the shore with a small wooden footbridge where it crosses the stream; Dan: under that bridge and further up the stream
-   are the two pipes, the network's main entrance BF (Round 23). Keep BF and its stream as they are; the bridge only spans
-   the stream. The pictures are Google imagery: look at them for what is there, never trace or measure them (CLAUDE.md
-   licensing); place things from OSM, NAIP and the terrain. Pool house and courts are world, not game layer. Check: Dan's two
-   spots, a picture each, and one from the lot toward the pool.
-
-For Dan to check (when done): Canton Road's storefronts and lots, the pizza / comic book corner, the ice cream shop, the
-church, the elementary school sign, the grass spots, the junction at BUG-010, Chastain Lakes' pool area.
-
-**Round 32 status (Claude, 2026-10-15): all built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by
-Dan. Build 2026-10-15 20:39.** Evidence: `Data/screenshots/round32/` (a picture from each of Dan's spots, `<bug>.png`; overheads `lots_*.png`).
-A1 DONE. 46 Canton Road businesses face it (`MapBuilder.Round32.cs`): a walk along each face toward it, a lot out to 3 m short of the
-   road (stalls, curbs, poles; neighbors' lots joined into one), a drive where no service road joins it already (13), service roads in
-   a lot paved as the lot. Lots never cross a house, a street or a store in front. Check: Dan's spots below, `lots_*.png`.
-A2 DONE. 7, 8 to 10, 12, 3, 88, 20 / 40 face Canton Road with lots (`bug005` to `bug008`, `bug022`, `bug023`; `front_12_from_canton`,
-   `front_88_from_canton`: from Dan's BUG-007 / 017 / 022 spots you now see their backs).
-A3 DONE. 76 is storefronts on every face toward its lot; the corner is 76's own northwest corner (not 77): Lucky Slice Pizza with a
-   drive-up window and lane on its side, then Panel & Page Comics, then Hometown Hardware (`bug019`, `bug020`, `pizza_driveup_side`).
-A4 DONE. 86 is Cold Spoon Creamery, a storefront and a walk-up window on its lot (`icecream_86_front`, `bug014`, `bug015`).
-A5 DONE. 74 is three gabled wings, the door, sign and one steeple at the north wing's east end toward Canton Road; 75 three gabled
-   blocks, no steeple (`bug021`, `church_74_steeple`).
-A6 DONE. Road 564623219 runs on into the preschool's lot (`bug009`); 41 is Pine Hollow Elementary, 0 stays the middle school (`bug018`).
-A7 DONE. Roads 768422193 / 768422194 lead to a lot paved between them (from NAIP), neither ends in grass (`bug016`).
-B1 DONE. Cause: every road ribbon had only its two edges on the ground, so the ground under the middle showed through. Every road is
-   now a grid on the highest ground near each vertex (Round 11's Glen method); a service road's cells on another road are left to it
-   (one shade at mouths). Check: `bug010` to `bug013`, `bug018`, `bug024`.
-B2 DONE. Cause: cars across each other's way in a junction each waited for the other forever. One at a time, the first takes its turn
-   (`TrafficDriver`, `Traffic.TakesTurn`). Check: Heavy, 5 min at the junction: longest stand 1.3 s (`round32_junction.txt`).
-C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.ChastainLakes.cs`): 266 pool house, 267 bathhouse, a 21 m
-   lap pool, deck, loungers, iron fence, four courts in two fenced pairs, the lot, swing, pier and gazebo, 18 geese, the shore path
-   with a footbridge over BF's stream (BF untouched). Check: `bug025`, `bug026`, `lakes_lot_to_pool`, `lakes_courts`.
-For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
-footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
