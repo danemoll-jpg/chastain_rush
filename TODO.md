@@ -69,6 +69,73 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
+after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
+is fine ("it can be pretty long"); do not stop for design questions, decide and say what you decided in the status. Parts A
+to C in order; rebuild into `Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process").
+
+Part A, DAN'S REPORTS (Dan's spots are the vehicle's x, z, heading).
+A1. BUMPS on Canton Road Northeast's northbound lane, the race's line, where an unnamed 5 m road lies along / over it (a
+   lighter slab of asphalt in the lane): BUG-001 (x 3578.24 z 676.43 h 20, "flatten bump"), BUG-002 (x 3575.74 z 744.73
+   h 356, "another bump"), BUG-003 (x 3567.94 z 818.99 h 353, "another bump"). Flatten them so the lane is one smooth surface
+   at speed, at the three spots and on that same unnamed road's stretch between them. Check: drive the stretch flat out on
+   the Drifter Twin, no bump-log event from z 650 to 840.
+A2. GRASS: BUG-004 (x 3324.51 z 1038.83 h 171, unnamed 5 m road off Chastain Corner, beside S1's barricade): "remove grass
+   from road". Check: a picture from Dan's spot.
+A3. DRIVEWAY: BUG-010 (x 3325.65 z 1024.61 h 137): the same unnamed 5 m road stops short of the house ahead. Dan: "assume
+   this is a driveway to the house. Please take the driveway to the house." Run it on to the house's garage / front. Check:
+   a picture from Dan's spot.
+A4. NO STALL LINES ON SLOPES. BUG-005 (x 3556.21 z 673.26 h 359): "can we not put parking spaces on hills? It just looks
+   weird. It can be a parking lot just remove the lines"; BUG-006 (x 3585.47 z 641.98 h 159), BUG-008 (x 3558.24 z 348.95
+   h 200), BUG-009 (x 3561.59 z 209.83 h 230): the same. Dan said it four times, so as a rule: a lot's stall lines are
+   drawn only where the lot is near level (pick the grade, about 5 %, and say it); steeper parts of a lot stay paved with no
+   lines. Check: a picture from each of the four spots.
+A5. STRAY WHITE LINES: BUG-007 (x 3571.53 z 585.98 h 177, on Canton Road): "lets clean up these weird white lines". Edge and
+   lane lines of the roads and lots that meet Canton Road there are painted across Canton Road's lanes. As a rule: a road's
+   or lot's paint stops at the edge of the road it joins; only the through road's own paint crosses a junction. Check: a
+   picture from Dan's spot.
+A6. THE FIRST CROSSING ENDED LAP 1 (found by Claude in Dan's screenshots, not a comment of his): in the Chastain Ridge race,
+   Dan stopped at BUG-001 21 s after the start, 24 m short of the line (the grid is on Canton Road behind it); when he then
+   crossed the line, lap 1 counted as done with all 6 checkpoints missed (BUG-002: "Lap 2 / 3", "Penalty +30 s (6 missed)"),
+   and its 54 s set the route's best lap (0:54.391), and the best total (3:29) holds that short lap too. Fix: from the grid,
+   the first crossing of the line starts lap 1 and never ends one (look at why: the grid / lead-in lies on the loop itself
+   before the gate). Check the other three routes for the same fault and say. Remove Chastain Ridge's best lap and best total
+   from Dan's records (back the file up first, beside it; nothing else in it changed). Check: from the grid, cross the line,
+   the HUD says lap 1, no penalty.
+
+Part B, THE RADIO KEEPS ITS SONG WHEN THE GAME LOSES FOCUS. Dan: "sometimes something takes the focus away from the game and
+every time click back to the game it skips to the next song. Let it stay on the same song." Losing and getting back focus
+(Alt-Tab, a pop-up, a click on another window) never changes the song: it pauses with the game and goes on from the same
+place in the same song when focus comes back (or keeps playing if the game keeps running unfocused; Dan's own exe pauses).
+Same for the game's own pause menu. Only the player's controls and a song's real end change the song. Find why it skips
+(likely the radio reads a stopped AudioSource as "song over"). Check by script in the exe: mid-song, lose and regain focus
+five times (and a pause / unpause): same song each time, position within 1 s of where it was. (Sound on only for that
+moment, then off: CLAUDE.md "Test quietly".)
+
+Part C, TOP 10 RECORDS FROM WOODSTOCK RUSH. Dan: "Perhaps we can pull in top 10 records as well this round?" Port Racer's
+records boards (RecordBoards, RecordView, PlayerNames and what they need, e.g. Racer's on-screen keyboard if it is how a
+name is typed with a controller; CLAUDE.md: prefer porting, list what came):
+C1. A Top 10 of best totals and a Top 10 of best laps for each race route (all four) and each direction it offers, with the
+   lap count as Racer keys its boards, each entry
+   with the player's name, time, vehicle and date as Racer shows them.
+C2. The player's name as in Racer: asked once (or set in the garage / settings, wherever Racer has it), controller first
+   (CLAUDE.md), saved; a new Top 10 time at the finish shows its place on the finish panel as Racer does. AI racers' times go
+   on the boards only if Racer puts them there.
+C3. A Records page in the menus to browse every board (left / right changes the route / direction, B back), as Racer's.
+C4. Dan's existing records (`race_records.json`, minus A6's two) carried onto the boards with his name once he gives it
+   (until then as Racer shows an unnamed entry). Saved the way Racer saves (never corrupt; loading never writes).
+   A check never writes Dan's real records (CLAUDE.md): check runs use their own folder.
+Check in the exe by script (a virtual pad): enter a name with the controller, finish a 1-lap race, the time is on the board
+at the right place, the Records page shows every board; pictures of the name entry, the finish panel and a board.
+
+For Dan to check (when done): Canton Road's lane at speed, the lots on slopes, the white lines at BUG-007, the driveway,
+lap counting from the grid, the radio after Alt-Tab, his name and the Top 10 boards.
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 33
+**Reviewed: driven by Dan 2026-10-16 01:35 to 01:51 (his notes are Round 34).**
 **Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
 screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
 measure it; lay the course on OSM's roads). Dan: "How about this route... the dotted line would be a jump... i think this
@@ -137,10 +204,7 @@ Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI rese
 For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
 rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 32
+## Previous delivery 2: Round 32
 **Reviewed: passed by Dan 2026-10-15 22:35, nothing to report.**
 **Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
 after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
@@ -245,7 +309,7 @@ C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.Chastain
 For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
 footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
 
-## Previous delivery 2: Round 31
+## Previous delivery 3: Round 31
 **Reviewed: driven by Dan 2026-10-15 16:55 to 17:11 (his notes are Round 32).**
 **Round 31 (Dan, 2026-10-15 14:35; reports BUG-002 to BUG-004 of session `2026-10-15_03-07-51-371_794f57`, read by
 Claude).** Rounds 29 and 30 are not yet reviewed. Fix only what is reported, one check each, short results (CLAUDE.md
@@ -293,101 +357,6 @@ For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s
 (x 252, z 1603), and 0.30 s on the SB exit just after it leaves I-575 (x 231, z 1423). Also check the dressed buildings'
 looks, and the frame rate on Canton Road at 4K.
 Imported from Racer: nothing.
-
-## Previous delivery 3: Round 30
-**DONE (Parts A and B built, not yet driven by Dan) — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
-better houses in the remaining neighborhoods. I have no specific styles for other neighborhoods though like I do with my
-own community". Part A then Part B; rebuild into `Builds/ChastainRush/` and commit after each, give the build time.**
-
-Part A, TRAFFIC. Racer has traffic (left behind in Round 15 / 16). Port it (CLAUDE.md: prefer porting; list what came):
-A1. Cars (and a few trucks / vans, Racer's traffic models) driving the map's roads in their lanes on the right, at road-type
-   speeds (neighborhood streets slow, Chastain Road / Bells Ferry / Canton Road faster, I-575 fastest), turning at
-   intersections, stopping and yielding where Racer's traffic does, pulling in and out of the neighborhoods; parked cars
-   in some driveways if cheap.
-A2. Arcade (CLAUDE.md "a fun arcade game"): the player can hit them; they react as in Racer (knocked, honk, swerve).
-   They are real traffic and CAN block you (Dan, 09:54: "could in fact block you"): a car stopped at a junction or
-   turning in front of you is in the way, as on a real road. They never enter the trail, yards, the pipes or the
-   shortcuts.
-A3. ON by default everywhere, free roam and races (Dan, 09:54: "cars should not be off in races ... But you can turn
-   traffic off in the settings"): a Traffic row in Settings (Off / Light / Normal / Heavy, default Normal), saved. In a
-   race traffic drives only on roads open to it: the current races have none (Noonday Creek is a trail, the Underground
-   race is in the pipes, the Chastain Glen loop is a blocked-off neighborhood), so traffic stays out behind the race
-   barriers and off their routes; a future race on open roads gets traffic on its course. The AI racers deal with
-   traffic too (slow, pass, or hit it). World vs. game layer: traffic is game layer.
-A4. Sounds through the Round 27 AI engine sounds (OtherEngines) with the voice budget; horns.
-A5. Cost: spawn round the player and despawn out of sight; frame rate in free roam at the busiest place (Chastain Road
-   at the shops, Normal and Heavy) before and after, reported.
-Part A status: done (built and checked in the exe by script, not yet driven by Dan). Racer's traffic (RaceDirector.CreateCars:
-copies of the player's vehicle as the Street Classic in Racer's traffic bodies, `AmbientVehicle`, the Blender kit TrafficSedan /
-Wagon / Pickup / Van; RoadDriver's traffic driving; the offscreen recycle) now drives the whole road graph: `TrafficNetwork`
-(built by the map build, `MapBuilder.Traffic.cs`: 541 road pieces, 496 junctions and ends from every motorway, primary,
-secondary, tertiary, link, unclassified and residential road and bridge; no service roads, lots or drives), `TrafficDriver`
-(Racer's steering, its traffic corner and braking rules and obstacle query, the lane on the right (one-way roads right of
-middle), the road type's speed: residential 11 m/s, tertiary 16, secondary 18, primary 20, I-575 29; the next road picked
-at each junction (the same road on most often, into a neighborhood now and then), a stop at a junction onto a bigger road
-and a yield to whoever is already in one, a turn round at a dead end; the horn and a moment knocked when the player hits it
-(it is 25% lighter than the Street Classic), a swerve from a vehicle coming at it in its lane, the horn at one in its way),
-`Traffic` (Off / Light 7 / Normal 14 / Heavy 22 cars; 140 to 400 m from the player out of the camera's sight, gone past
-460 m out of sight, stuck or at the map's edge; the pool made while the title menu is up). Settings > GAMEPLAY > Traffic
-(saved in settings.json, default Normal). In a race every road near its line or a closure is closed to traffic (the
-Chastain Glen loop: 23 road pieces; the Underground race: only its closures; a route with "traffic": true would keep its
-roads open); the AI racers slow for traffic ahead with their own obstacle query. Engines: OtherEngines' two traffic voices
-(Racer's), also in free roam; the horn is synthesized. Parked cars in drives: not done (left out to keep the cost down).
-Check: `ChastainRush.exe -exeRound30 <dir> -traffic Normal [-r30Only fps,drive,hit,race,pics] -logFile <dir>\Player.log`
-(10 checks pass; pictures in `local/round30/traffic/`). The busiest place is Canton Road at the shops (the shops are on
-Canton Road, not Chastain Road): standing there at 1280 x 720 with VSync and the frame cap off, Off 378 fps, Normal 172,
-Heavy 99 (not measured at 3840 x 2160). Imported from Racer: AmbientVehicle (copied, split-screen removed), the traffic
-models (TrafficSedan, TrafficWagon, TrafficPickup, TrafficVan .fbx and Tools/Blender/traffic.py), RoadDriver's traffic
-driving and CreateCars' way of making the cars (rewritten for the road graph in TrafficDriver / Traffic), OtherEngines'
-traffic voices.
-
-Part B, BETTER HOUSES IN THE REMAINING NEIGHBORHOODS. Chastain Glen (Dan's, hand-made styles), Grasmere Court, Chastain
-Commons and Chastain Enclave are dressed (Round 7, Round 22); every other neighborhood still has plain boxes. Dan has no
-styles for them, so Code picks believable ones (houses are not set in stone; Dan's house stays locked):
-B1. Group the remaining houses into neighborhoods by their streets (the subdivision each street belongs to; names from
-   OSM where it has them) and list them (name, streets, house count).
-B2. Give each neighborhood ONE consistent look of its own, from the kinds of houses typical of this part of Marietta /
-   East Cobb, so the map reads as different places: 1970s ranches and split-levels (brick and painted wood siding, low
-   roofs, carports); 1980s to 1990s two-story traditionals (brick fronts, siding sides and back, two-car garages, a
-   bonus room over the garage); 2000s craftsman-style (stone or brick wainscot, gables, covered porches); townhome rows
-   where the footprints are rows. Pick the era per neighborhood from its footprints (size, spacing, lot shape) and say
-   why. Within a neighborhood: 3 to 5 variants and a color palette so it is varied but clearly one place.
-B3. Same quality and kit as Chastain Glen's houses (roofs, windows, doors, garages, porches, foundations as settled in
-   Round 27, drives, mailboxes, a few trees and fences), on the real OSM footprints, reusing the communities code
-   (`MapBuilder.Communities.cs`, `communities_area.py`). Breakables as in the other neighborhoods.
-B4. Frame rate: the same LOD / batching as the dressed communities; numbers before and after at two views over the
-   most built-up area.
-B5. Pictures from the exe: one street view per neighborhood, plus an overhead of each, in the status, so Dan can pick
-   changes ("build it, then Dan drives it").
-Part B status: done (built; pictures from the exe, not yet driven by Dan).
-B1: `python Tools/mapgen/neighborhoods_rest.py` (re-run after mapgen) writes `Data/neighborhood/neighborhoods.json`: 24
-   neighborhoods, 1539 houses (streets joined without going out onto a bigger road; names from OSM where it has them,
-   Canterbury, else the main street). Full list with streets and numbers: `local/round30/neighborhoods/list.txt`.
-B2: one era each, from the footprints (OSM footprints include the garage and are coarse, so the spacing between houses, the
-   lot width, says the most): ranch (wide lots, 32 m or more apart): Embry Lane 157, Blackwell Circle 13, Suburban Drive
-   33, Willard Drive 31, Pine Manor 29, Westmoreland Drive 14, Chastain Trace 7; craftsman (big footprints packed under 26
-   m apart): Guidhall Trail 252, Canterbury 7, Estates Landing Drive 21; townhome rows (under 18 m apart): The Willows 31;
-   traditional (the rest, 26 to 32 m apart): Centerview Drive 109, Lakeside Drive 219, Kathryn Drive 141, Southwick Drive
-   53, Hartley Woods Drive 120, Windridge Drive 18, Station Drive 86, Sellers Way 15, Chastain Crossing 30, Old Farm Walk
-   74, Lansing Drive 13, Parkwood Drive 30, Chastain Manor Way 36. New styles (`MapBuilder.HouseEras.cs`): E split-level,
-   F craftsman (stone wainscot, carriage garage doors, a porch on stone piers with tapered columns, shingles in the gables),
-   G townhome row (units side by side, alternating brick and siding, a door, stoop and one-car garage each), H ranch with a
-   carport. Mixes: ranch E / C / H; traditional A / D / B (brick fronts) / C; craftsman F / A; townhomes G. Each
-   neighborhood has its own few siding, brick and roof colors (picked by its key) from its era's palette.
-B3: `MapBuilder.Neighborhoods.cs`: Chastain Glen's house kit on the real footprints, each house facing down its own OSM
-   drive (1507 of 1535; the rest face their street), the garage at the drive; floor at the foot of the garage; Round 27's
-   block foundation (1003) and walk-out wall (600) where the ground falls away; shrubs, one box collider, a breakable
-   mailbox (799), a breakable privacy fence behind about a third (477, kept off roads, drives, buildings, water, the trail,
-   the shortcuts and the pipe cuts); no tree inside a house. Not done: the lot cuts of Round 27 (477 houses have ground more
-   than 0.6 m over their floor somewhere, as the plain boxes did; no ground was cut map-wide), curbs, sidewalks and lamps
-   on these streets (not asked for).
-B4: same chunking as the Glen (128 m mesh chunks, details in a shadowless mesh). Frame rate, traffic off, 1280 x 720, VSync
-   and the cap off (not measured at 3840 x 2160): Guidhall Trail (Cambridge Drive) chase 371 -> 342 fps, far chase 377 ->
-   344; Lakeside (Chastain Lakes Drive) chase 290 -> 277, far chase 320 -> 262.
-B5: pictures in `local/round30/neighborhoods/`: `street_<key>_<name>.png` (one per neighborhood, from the exe) and
-   `overhead_<key>_<name>.png` (the built scene from above; magenta is outside the map), `streets.png` / `overheads.png`
-   sheets. For Dan to look at: Willard Drive's first house turns its side to the street (its drive comes from the cross
-   street). Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
