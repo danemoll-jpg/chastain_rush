@@ -70,6 +70,18 @@ namespace Racer
             var a=sw.gameObject.AddComponent<ArcadeActivities>();a.Initialize(Path.GetDirectoryName(RaceController.RecordsPath()));
         }
         public static string Root=>Path.GetDirectoryName(RaceController.RecordsPath());
+        // Chastain Rush, Round 37 (split screen): whose scoring this is (2: player 2's vehicle, made by SplitSession); Racer's split-screen rule:
+        // jumps, speed traps and smashes score and show for each player, nothing is written to the activity records; tricks and combos count
+        public int Player{get;private set;}=1;
+        public void InitializeSecond(string root,int player)
+        {
+            Player=player;race=RaceController.Instance;car=GetComponent<ArcadeVehicle>();configuration=GetComponent<VehicleConfiguration>();path=null;
+            Records=new ActivityRecords(root,Results);
+            GetComponent<VehicleRespawn>().Respawned+=Recovered;FenceChunk.PanelBrokenBy+=Smash;
+            var contacts=gameObject.AddComponent<ActivityLandingContact>();contacts.activities=this;
+            if(!GetComponent<TrickHud>())gameObject.AddComponent<TrickHud>().activities=this;
+            SetSites(FindObjectsByType<ActivitySite>(FindObjectsSortMode.None),false);NewSession();
+        }
         public void Initialize(string root)
         {
             Instance=this;race=RaceController.Instance;car=GetComponent<ArcadeVehicle>();configuration=GetComponent<VehicleConfiguration>();path=Path.Combine(root,"activities-v1.json");
@@ -84,11 +96,12 @@ namespace Racer
         }
         void Start(){if(!configuration)configuration=GetComponent<VehicleConfiguration>();}
         // Round 36 (Part B): the sites made from the activities file
-        public void SetSites(IEnumerable<ActivitySite> sites)
+        public void SetSites(IEnumerable<ActivitySite> sites)=>SetSites(sites,true);
+        public void SetSites(IEnumerable<ActivitySite> sites,bool onMap)
         {
             Sites=sites.Where(s=>s).OrderBy(s=>s.id).ToArray();Selected=Sites.FirstOrDefault(s=>s.kind!=ActivitySite.Kind.Speed);
             // Racer's ExplorationMap / RacingMiniMap activity markers: every site on the map and the minimap (Free Roam), coloured by kind
-            foreach(var pl in mapPlaces)WorldMap.Places.Remove(pl);mapPlaces.Clear();
+            foreach(var pl in mapPlaces)WorldMap.Places.Remove(pl);mapPlaces.Clear();if(!onMap)return;
             foreach(var s in Sites){var pl=new WorldMap.Place{label=s.title,at=s.transform.position,small=true,color=s.kind==ActivitySite.Kind.Jump?new Color(.35f,.85f,1f):s.kind==ActivitySite.Kind.Speed?new Color(1f,.85f,.25f):new Color(1f,.45f,.35f)};mapPlaces.Add(pl);WorldMap.Places.Add(pl);}
         }
         readonly List<WorldMap.Place> mapPlaces=new();
@@ -210,13 +223,14 @@ namespace Racer
         {
             if(!float.IsFinite(value)||value<=0)return;int medal=site.Medal(value,configuration.profileId);var best=PersonalBest(site);
             bool improved=best==null||value>best.value;
-            if(site.kind!=ActivitySite.Kind.Smash)Records.Add(new ActivityRecords.Entry{id=Guid.NewGuid().ToString("N"),key=Key(site),site=site.id,vehicle=configuration.profileId,date=DateTime.UtcNow.ToString("o"),value=value,airtime=site.kind==ActivitySite.Kind.Jump?LastAirtime:0,medal=medal});
+            bool keep=!SplitScreen.Active&&path!=null;   // Round 37: Racer's split screen writes no activity records
+            if(keep&&site.kind!=ActivitySite.Kind.Smash)Records.Add(new ActivityRecords.Entry{id=Guid.NewGuid().ToString("N"),key=Key(site),site=site.id,vehicle=configuration.profileId,date=DateTime.UtcNow.ToString("o"),value=value,airtime=site.kind==ActivitySite.Kind.Jump?LastAirtime:0,medal=medal});
             if(site.kind==ActivitySite.Kind.Jump)LastJumpAward=value;
             LastAwardSite=site;
             var own=Results.results.FirstOrDefault(b=>b.key==Key(site));if(own==null){own=new Best{key=Key(site)};Results.results.Add(own);}own.value=Mathf.Max(own.value,value);own.medal=Mathf.Max(own.medal,medal);Awards++;
             string measurement=Measurement(site,value)+" / PB "+Measurement(site,Mathf.Max(own.value,best?.value??0));
             Message(site.title+" / "+measurement+"\n"+(improved?"NEW BEST":"personal best retained")+(site.kind==ActivitySite.Kind.Jump?$" / {LastAirtime:0.00}s":""),6);LastMedal=medal;ResultValue=Measurement(site,value);
-            try{AtomicSave.Write(path,JsonUtility.ToJson(Results,true));}catch(Exception e){Message("Activity result could not be saved: "+e.Message,6);}
+            if(keep)try{AtomicSave.Write(path,JsonUtility.ToJson(Results,true));}catch(Exception e){Message("Activity result could not be saved: "+e.Message,6);}
         }
         void Message(string value,float seconds){Feedback=value;feedbackUntil=Time.time+seconds;LastMedal=-1;feedbackStunt=false;}bool feedbackStunt;
         void OnDestroy(){foreach(var pl in mapPlaces)WorldMap.Places.Remove(pl);FenceChunk.PanelBrokenBy-=Smash;if(car&&car.TryGetComponent<VehicleRespawn>(out var respawn))respawn.Respawned-=Recovered;if(Instance==this)Instance=null;}

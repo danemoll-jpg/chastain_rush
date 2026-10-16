@@ -118,7 +118,7 @@ namespace ChastainRush
             {
                 if (!d.gameObject.activeSelf) continue;
                 var p = d.Car.Body.position;
-                bool far = (new Vector2(p.x, p.z) - at2).sqrMagnitude > 460f * 460f;
+                bool far = SplitScreen.DistanceToPlayers(p, at) > 460f;   // Round 37: the nearer player (split screen)
                 if ((far || d.WantsRecycle) && AmbientVehicle.Offscreen(p)) { if (Spawn(d, false)) Recycled++; }
             }
             int placed = 0;
@@ -133,7 +133,7 @@ namespace ChastainRush
             for (int e = 0; e < net.EdgeCount; e++)
             {
                 if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12) continue;
-                var mid = net.Point(e, net.PointCount(e) / 2); if ((mid - at2).sqrMagnitude > 520f * 520f) continue;
+                var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue;
                 candidates.Add(e); total += net.Length[e]; weights.Add(total);
             }
             if (candidates.Count == 0) return false;
@@ -143,7 +143,7 @@ namespace ChastainRush
                 float r = UnityEngine.Random.value * total; int k = weights.BinarySearch(r); if (k < 0) k = ~k; int e = candidates[Mathf.Min(k, candidates.Count - 1)];
                 int n = net.PointCount(e); int i = UnityEngine.Random.Range(1, n); float t = UnityEngine.Random.value;
                 var a = net.Point(e, i - 1); var b = net.Point(e, i); var q = Vector2.Lerp(a, b, t);
-                float dist = (q - at2).magnitude; if (dist < min || dist > 400f) continue;
+                float dist = Near(q, at2); if (dist < min || dist > 400f) continue;
                 int dir = net.Oneway(e) ? 1 : (UnityEngine.Random.value < .5f ? 1 : -1);
                 var tan = (b - a).normalized * dir; var right = new Vector2(tan.y, -tan.x);
                 float lane = net.Oneway(e) ? (net.Half(e) >= 4.5f ? net.Half(e) * .45f : 0f) : Mathf.Clamp(net.Half(e) * .5f, 1.3f, 2.6f);
@@ -160,6 +160,13 @@ namespace ChastainRush
                 return true;
             }
             return false;
+        }
+        // Round 37: the distance from a road point to the nearer player (split screen: both; else the one)
+        static float Near(Vector2 q, Vector2 p1)
+        {
+            float d = (q - p1).magnitude; var p2 = SplitScreen.P2Car;
+            if (p2) d = Mathf.Min(d, (q - new Vector2(p2.Body.position.x, p2.Body.position.z)).magnitude);
+            return d;
         }
         // the ground's height under a road point: the terrain's (traffic is never put on a bridge, so a deck over the road is skipped)
         bool Ground(Vector2 q, out float y)
@@ -237,6 +244,7 @@ namespace ChastainRush
             }
             foreach (var o in Cars) if (o && o != me && o.gameObject.activeSelf && Busy(o.Car.Body)) return false;
             if (Busy(PlayerBody)) return false;
+            if (SplitScreen.P2Car && Busy(SplitScreen.P2Car.Body)) return false;   // Round 37
             var race = RaceController.Instance;
             if (race) foreach (var en in race.Entrants) if (!en.IsPlayer && en.Car && Busy(en.Car.Body)) return false;
             return true;

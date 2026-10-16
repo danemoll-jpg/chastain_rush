@@ -186,7 +186,7 @@ namespace Racer
             // 0.108 Part D: the Top 10 Best Combos (in the park; in the Stunt event only while the player's round still counts)
             LastComboPlace = 0;
             if (park && StuntPark.Current && StuntEvent.Counts(car))
-                LastComboPlace = StuntProgress.RecordComboTop(PlayerNames.Player, configuration.profileId, total, links, LastComboTricks);
+                LastComboPlace = Player == 2 && ChastainRush.SplitScreen.P2Ai ? 0 : StuntProgress.RecordComboTop(ChastainRush.SplitScreen.Active ? ChastainRush.SplitScreen.NameOf(Player) : PlayerNames.Player, configuration.profileId, total, links, LastComboTricks);   // Round 37: each player's name; never the AI's
             string top = LastComboPlace > 0 ? $"\nNEW TOP 10 COMBO — #{LastComboPlace}" : "";
             if (bail != null) StuntSay($"BAILED / {bail}\nCOMBO ENDED · x{links} · {total:N0} pts" + top, 4);
             else if (links > 1) StuntSay($"COMBO x{links} / {total:N0} pts" + top, 3.5f);
@@ -195,7 +195,7 @@ namespace Racer
             if (bail != null) Result($"BAILED  ·  COMBO x{links} BANKED  +{total:N0}", 2); else if (links > 1 || top != "") Result($"COMBO x{links}  +{total:N0}" + (LastComboPlace > 0 ? $"  ·  TOP 10 #{LastComboPlace}" : ""), 1);
             ComboBanked?.Invoke(total, park);
             // the best single combo in Free Roam (not the Stunt event)
-            if (!StuntEvent.InEvent(car)) StuntProgress.RecordCombo(total, configuration.profileId);
+            if (!StuntEvent.InEvent(car) && Player == 1) StuntProgress.RecordCombo(total, configuration.profileId);
         }
         void Bail(string why)
         {

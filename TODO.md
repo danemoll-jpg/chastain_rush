@@ -124,6 +124,32 @@ A DONE. Cause: the park's ramps, landings, tables, loop and inside ramps are mes
    BIG AIR, the shop row drop, the roof gap and the tower gap still leave at their designed speed (Round 36's aimed launches, so they land on
    their slopes); that cap is at the lip, not on the ramp.
    For Dan to check, not changed: K1's foot is 4.7 m from the abandoned bank's west wall, so it has no straight run-up (not measured).
+**Part B built and checked in the exe by script (two virtual controllers, minimized 1280 x 720, muted; 12 of 12 checks), not yet driven by Dan.**
+Evidence: `Data/screenshots/round37/` (`b_check.txt`, `b_fps_runs.txt`, `37b_*.png`). Check: `-r37Only splitmenu,splitrace,splitai,splitroam,splitpark,splitevent,splitpics,splitfps`.
+B1 DONE. Top / bottom (player 1 on top) or left / right (the setup's Screen row, settings.json); each controller drives its own player only
+   (the keyboard goes with player 1); "Player 2: AI driver": Racer's race AI in a race, the traffic driver cruising the roads in Free Roam.
+B2 DONE. Race (any route either way, AI rivals as race setup, traffic as Settings > Gameplay; the Underground race is a route like any), Free Roam,
+   Stunt park (Free Roam from the park's start line) and the Stunt event for two (Racer's riders: each their own points). Activities: jumps,
+   speed traps and tricks score for each; nothing written to the activity records (Racer). Check: race 1:15.5 / 1:21.0, both finished;
+   AI player 2 finished; a backflip each off BIG AIR (1,397 / 1,378 pts); the event for two.
+B3 DONE. Each half has its own HUD (lap, place, times, next checkpoint, messages, Free Roam's day and clock, the other player's direction and
+   distance), minimap, trick panel, camera view (X / V on their own controller; player 2's remembered apart), resets and garage (player 2's
+   vehicle and color in `vehicle2.json`, rider in settings.json). One radio for both, one day / night and weather (player 2's view gets its own
+   rain, snow, stars, moon, mist, as Racer).
+B4 DONE. Top 10s under each player's name (laps, races, combos, the Stunt event); player 2's name typed on their own controller; the results show both.
+B5 DONE. Traffic comes and goes out of both views and round both players; junctions wait for both; geese answer the nearer player; the pipe
+   network is drawn round both views.
+B6 DONE. SPLIT SCREEN on the title and Free Roam menus; player 1's controller works the setup; A or Start on another controller joins; either
+   player's Start pauses; B goes back.
+B7 MEASURED, target NOT MET in these runs. The PC was busy (50 to 75 % CPU from OBS, Chrome and Task Manager), so the runs vary; not measured at
+   3840 x 2160. Free Roam at Canton Road: split 74 / 37 / 65 fps vs one player 121 / 84 / 81. Chastain Ridge race with traffic: split 34 fps vs one
+   player 38 (and 20 vs 32). Racer's split-screen savings are in (detail 0.6, shadows 0.6, 1000 m far plane).
+Decided: the Stunt event with player 2 as the AI is player 1's alone on one view (Racer); split screen keeps the race setup's own settings; player
+   2 starts the race beside player 1 on the grid.
+Imported from Racer: see CLAUDE.md (Round 37). Not built: Racer's winner shot, Police Chase, Speed Patrol, Getaway, Stunt Races (none are in this game).
+For Dan to check: split screen at 3840 x 2160 (F2 shows the frame rate); both layouts, a race, Free Roam, the stunt park, player 2 as the AI; the
+   Underground race for two (not run by script).
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 19:48 (BUILD_INFO.txt).
 
 ## QUEUED rounds
 None.

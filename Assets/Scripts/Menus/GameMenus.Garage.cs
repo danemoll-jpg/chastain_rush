@@ -73,6 +73,7 @@ namespace ChastainRush
 
         void RenderGarage()
         {
+            if (splitGarage && garagePlayer == 2) { RenderGarage2(); return; }   // Round 37: player 2's garage (GameMenus.Split.cs)
             var config = car.GetComponent<VehicleConfiguration>(); var profile = config.Profile;
             // Round 36 (Racer 0.106 Part C / 0.120 Part E): opened for the Stunt event the garage holds the stunt vehicles only; from race setup
             // only the vehicles that race (no stunt vehicle); in Free Roam all of them
@@ -112,6 +113,7 @@ namespace ChastainRush
         bool riderChanged;
         void RenderRider()
         {
+            if (splitGarage && garagePlayer == 2) { RenderRider2(); return; }   // Round 37
             var look = RiderLook.Player; var config = car.GetComponent<VehicleConfiguration>();
             Clear("RIDER", "Choose your rider. Left / right changes a row.\nThe AI riders are random each race.");
             Row(0, "randomize", "Randomize", RandomizeRider); Row(1, "rider-back", "Back", BackPage);
@@ -163,7 +165,7 @@ namespace ChastainRush
             if (!previewRoot) return;
             var root = previewRoot.transform; root.SetPositionAndRotation(PreviewFocus, Quaternion.identity);
             var rider = root.GetComponentsInChildren<Transform>(true).FirstOrDefault(t => t.name == "Rider");
-            var profile = car.GetComponent<VehicleConfiguration>().Profile;
+            var profile = GarageProfile;   // Round 37: player 2's in their garage
             if (riderPage && rider && !profile.Small) foreach (var r in previewRoot.GetComponentsInChildren<Renderer>(true)) if (!r.transform.IsChildOf(rider)) r.enabled = false;
             var shown = (riderPage && rider && !profile.Small ? rider.GetComponentsInChildren<Renderer>() : previewRoot.GetComponentsInChildren<Renderer>()).Where(r => r.enabled && !(r is ParticleSystemRenderer)).ToArray();
             if (shown.Length == 0) return;

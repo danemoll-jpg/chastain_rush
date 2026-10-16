@@ -37,7 +37,7 @@ namespace ChastainRush
         void LateUpdate()
         {
             var look = Racer.WorldLook.Current;
-            bool show = look && look.Mode == "Free Roam" && !GameMenus.Open && !WorldMap.IsOpen;
+            bool show = look && look.Mode == "Free Roam" && !GameMenus.Open && !WorldMap.IsOpen && !SplitScreen.Active;   // Round 37: each half shows its own (SplitHud)
             if (panel.activeSelf != show) panel.SetActive(show);
             if (show) { day.text = "Day " + look.Day; time.text = look.Clock; moon.Phase = look.MoonPhase; }
         }

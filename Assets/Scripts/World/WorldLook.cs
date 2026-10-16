@@ -350,7 +350,7 @@ namespace Racer
         }
 
         // Chastain Rush: the camera under the terrain (the pipes, junctions and the hub): 0 at the surface, 1 from 6 m down
-        static float UndergroundAt(Camera cam)
+        public static float UndergroundAt(Camera cam)
         {
             if (!cam) return 0;
             var p = cam.transform.position;

@@ -129,6 +129,15 @@ namespace ChastainRush
             {
                 if (Do("parkramps")) yield return Guard(R37RampsPart());
                 if (Do("parkloop")) yield return Guard(R37LoopPart());
+                // Part B (Round20Runner.R37B.cs): split screen with two virtual controllers
+                if (Do("splitmenu")) yield return Guard(R37SplitMenu());
+                if (Do("splitrace")) yield return Guard(R37SplitRace(false));
+                if (Do("splitai")) yield return Guard(R37SplitRace(true));
+                if (Do("splitroam")) yield return Guard(R37SplitRoam());
+                if (Do("splitpark")) yield return Guard(R37SplitPark());
+                if (Do("splitevent")) yield return Guard(R37SplitEvent());
+                if (Do("splitpics")) yield return Guard(R37SplitPics());
+                if (Do("splitfps")) yield return Guard(R37SplitFps());
             }
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();

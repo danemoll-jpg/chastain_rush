@@ -103,7 +103,7 @@ namespace ChastainRush
         VehicleRespawn respawn;
         bool wasInputEnabled, aiActive;
         float messageUntil, goFlashUntil, nextEstimateSample;
-        readonly RaceEntrant P = new RaceEntrant { Name = "YOU" };
+        readonly RaceEntrant P = new RaceEntrant { Name = "YOU", Seat = 1 };
         RaceMarkers markers;
         RaceBarriers barriers;
         BoxCollider carBox;
@@ -242,12 +242,13 @@ namespace ChastainRush
             attempt = Guid.NewGuid().ToString("N"); lapRanks.Clear(); LastLapRank = RaceRank = 0;   // Round 34 (C2): Racer's RaceFlow at the countdown
             Boards.BeginAttempt(); FinishCards.Begin(Boards, BoardCategory, BestLap, BestTotal);
             if (State == Stage.Free) wasInputEnabled = input.enabled;
-            State = Stage.Countdown; CountdownRemaining = 3f;
+            State = Stage.Countdown; CountdownRemaining = 3f; attempt2 = Guid.NewGuid().ToString("N");
             RemoveAi();
             PlaceOnGrid();
-            P.Reset();
+            P.Reset(); P.Name = SplitScreen.Active ? SplitScreen.NameOf(1) : "YOU";   // Round 37: in split screen each player by name
             Entrants.Clear(); Entrants.Add(P);
             SpawnAi();   // Round 15: the AI drivers on the grid ahead of the player
+            SeatPlayerTwo();   // Round 37: split screen's player 2
             input.enabled = false;
             Say("Get ready", 2f);
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
@@ -317,6 +318,7 @@ namespace ChastainRush
             if (State == Stage.Countdown)
             {
                 car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero;
+                foreach (var h in Entrants) if (h.Seat == 2 && h.Driver == null && h.Car) { h.Car.Body.linearVelocity = Vector3.zero; h.Car.Body.angularVelocity = Vector3.zero; }   // Round 37
                 CountdownRemaining -= dt;
                 if (CountdownRemaining <= 0f)
                 {
@@ -397,8 +399,8 @@ namespace ChastainRush
 
         void MissMessage(RaceEntrant e, List<int> skipped)
         {
-            if (skipped.Count == 0 || !e.IsPlayer) return;
-            Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s", 4f);
+            if (skipped.Count == 0 || !e.IsHuman) return;
+            SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s", 4f);
         }
 
         void OnCheckpoint(RaceEntrant e, int index, float at)
@@ -428,7 +430,7 @@ namespace ChastainRush
             e.ShortcutsTaken.Add($"lap {e.CompletedLaps + 1} {sc.Id}");
             Log(e, $"SHORTCUT {sc.Id} entered at {at:0.000} ({how}): checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
             if (skipped.Count > 0) MissMessage(e, skipped);
-            else if (e.IsPlayer) Say($"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
+            else if (e.IsHuman) SayTo(e, $"Shortcut: {sc.Name}  (checkpoint{(free.Count > 1 ? "s" : "")} {string.Join(", ", free)} skipped, no penalty)", 4f);
             if (e.IsPlayer) markers.Refresh(this);
         }
 
@@ -445,7 +447,8 @@ namespace ChastainRush
             {
                 e.ClockStarted = true; e.StartAt = e.LapStart = at; e.NextCheckpoint = 0; e.Missed.Clear(); e.Forgiven.Clear();
                 e.PenaltyTotal = e.LapPenalty = 0f; e.MissedTotal = 0; e.PenaltyLog.Clear();
-                if (e.IsPlayer) { Say("Lap 1 - go!", 3f); markers.Refresh(this); }
+                if (e.IsHuman) SayTo(e, "Lap 1 - go!", 3f);
+                if (e.IsPlayer) markers.Refresh(this);
                 Log(e, "START LINE crossed: clock started");
                 return;
             }
@@ -463,14 +466,15 @@ namespace ChastainRush
             e.LapTimes.Add(lap); e.CompletedLaps++;
             bool best = false;
             if (e.IsPlayer) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
-            if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o")); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
+            if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
+            else if (e.Seat == 2 && e.IsHuman) Boards.Add(attempt2 + "/lap/" + lapNo, BoardCategory, false, lap, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));   // Round 37: player 2's own, under their name
             string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
             string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
             e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
-            if (e.IsPlayer)
+            if (e.IsHuman)
             {
-                if (skipped.Count > 0) Say($"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
-                else Say($"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
+                if (skipped.Count > 0) SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                else SayTo(e, $"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
@@ -498,16 +502,23 @@ namespace ChastainRush
                 var g = w != null ? w.Car.GetComponent<RiderGestures>() : null;
                 if (g && g.Celebrate()) Log(w, "celebrates the win");
             }
+            if (e.Seat == 2 && e.IsHuman)
+            {
+                // Round 37: player 2's race on the Top 10 under their name (Racer's SplitRace.Record)
+                e.RaceRank = Boards.Add(attempt2 + "/race", BoardCategory, true, e.FinalTotal, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));
+                Log(e, $"TOP 10: race {(e.RaceRank > 0 ? "#" + e.RaceRank : "not on the board")}");
+                SayTo(e, $"Finished! Total {Fmt(e.FinalTotal)}", 10f);
+            }
             if (!e.IsPlayer) return;
             State = Stage.Finished; PlayerFinishedAt = RaceClock;
             float total = e.FinalTotal;
             bool bestTotal = BestTotal <= 0f || total < BestTotal;
             if (bestTotal) { BestTotal = total; NewBestTotal = true; }
             SaveRecords();
-            RaceRank = Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"));   // Round 34 (C1, C2)
+            RaceRank = Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 34 (C1, C2)
             FinishCards.Finish(e.LapTimes, lapRanks.ToArray(), attempt, total, RaceRank);
             Log($"TOP 10: race {(RaceRank > 0 ? "#" + RaceRank : "not on the board")}, laps {string.Join(" ", lapRanks.ConvertAll(x => x > 0 ? "#" + x : "-"))}");
-            Say($"Finished! Total {Fmt(total)}", 10f);
+            SayTo(e, $"Finished! Total {Fmt(total)}", 10f);
             markers.Refresh(this);
         }
 
@@ -619,7 +630,8 @@ namespace ChastainRush
 
         // Racer's grid: the player at the back on the old grid spot, the AI drivers ahead at 8, 15 and 22 m, either side of the
         // lane (2.2 m off the line), each moved toward the line if its spot is not clear.
-        List<(Vector3 pos, Vector3 fwd)> GridSlots()
+        List<(Vector3 pos, Vector3 fwd)> GridSlots() => GridSlots(AiCount);
+        List<(Vector3 pos, Vector3 fwd)> GridSlots(int count)
         {
             var line = new List<Vector3>();
             if (!Route.Reverse && RouteData.lead_in != null && RouteData.lead_in.Length >= 4)
@@ -628,10 +640,13 @@ namespace ChastainRush
             }
             else line.AddRange(Route.SamplePath(Route.GateS - RouteData.reverse_grid_back_m, Route.GateS, 2f));
             var slots = new List<(Vector3, Vector3)>();
-            for (int n = 0; n < AiCount; n++)
+            for (int n = 0; n < count; n++)
             {
-                float d = 8f + n * 7f; float side = n % 2 == 0 ? 2.2f : -2.2f;
+                // Round 37: the last of count slots for split screen's player 2 is beside the player (on the old grid spot's other side)
+                bool beside = count > AiCount && n == count - 1;
+                float d = beside ? 0f : 8f + n * 7f; float side = beside ? -2.6f : n % 2 == 0 ? 2.2f : -2.2f;
                 var p = Along(line, d, out var f);
+                if (beside) { p = Route.GridPosition; f = Quaternion.Euler(0, Route.GridYaw, 0) * Vector3.forward; }
                 var right = Vector3.Cross(Vector3.up, f).normalized;
                 Vector3 best = p;
                 foreach (float k in new[] { 1f, 0.6f, 0.3f, 0f, -0.3f })
@@ -721,6 +736,7 @@ namespace ChastainRush
             for (int i = Entrants.Count - 1; i >= 0; i--)
             {
                 var e = Entrants[i]; if (e.IsPlayer) continue;
+                if (e.Seat == 2) { if (e.Driver) { e.Driver.enabled = false; Destroy(e.Driver); } if (e.Car) { e.Car.Body.isKinematic = false; e.Car.enabled = true; } Entrants.RemoveAt(i); continue; }   // Round 37: player 2's vehicle stays (split screen)
                 if (e.Car) { if (TreeTrunks.Instance) TreeTrunks.Instance.Untrack(e.Car.transform); e.Car.gameObject.SetActive(false); Destroy(e.Car.gameObject); }
                 Entrants.RemoveAt(i);
             }
@@ -817,6 +833,8 @@ namespace ChastainRush
         // ---------------------------------------------------------------- text
 
         void Say(string text, float seconds) { Message = text; messageUntil = Time.time + seconds; }
+        // Round 37: a racer's own line (the player's is the one-player HUD's message too)
+        void SayTo(RaceEntrant e, string text, float seconds) { if (e.IsPlayer) Say(text, seconds); e.Message = text; e.MessageUntil = Time.time + seconds; }
         void Log(string text) { Logged?.Invoke(text); if (!Application.isBatchMode) Debug.Log("[Race] " + text); }
         void Log(RaceEntrant e, string text) => Log(e.IsPlayer ? text : e.Name + ": " + text);   // Round 15: the AI drivers' events carry their name
 
@@ -830,6 +848,45 @@ namespace ChastainRush
         // The next gate the driver should aim for, and how far it is; used by the HUD arrow.
         public RaceGate Target => State == Stage.Free || Route == null ? null
             : !ClockStarted ? Route.Gate : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
+
+        // ---------------------------------------------------------------- Round 37: split screen's player 2 (Racer's SplitRace.PlayerTwo)
+        // Player 2 races in the race as a racer of its own, under the same rules: a human on their own device, or (Player 2: AI driver) Racer's AI
+        // driving player 2's vehicle. On the grid player 2 takes the first slot ahead of the player (Racer: the first rival slot); the AI rivals
+        // follow. Their laps and race go on the Top 10 under their name; the race is over for the menus when every human has finished.
+        string attempt2 = "";
+        public RaceEntrant HumanEntrant(int player) => player == 1 ? P : Entrants.Find(x => x.Seat == 2);
+        public bool HumanFinished(int player) { var e = HumanEntrant(player); return e != null && e.Finished; }
+        public bool AllHumansFinished { get { if (!P.Finished) return false; var e = HumanEntrant(2); return e == null || !e.IsHuman || e.Finished; } }
+        public bool GoShowing => State == Stage.Racing && Time.time < goFlashUntil;
+        public float LapClockOf(RaceEntrant e) => e.ClockStarted && State != Stage.Free ? RaceClock - e.LapStart + e.LapPenalty : 0f;
+        public float TotalClockOf(RaceEntrant e) => (e.ClockStarted ? (e.Finished ? e.FinalTotal - e.PenaltyTotal : RaceClock - e.StartAt) : 0f) + e.PenaltyTotal;
+        public RaceGate TargetOf(RaceEntrant e) => State == Stage.Free || Route == null ? null : !e.ClockStarted ? Route.Gate : e.NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[e.NextCheckpoint] : Route.Gate;
+        static string VehicleOf(RaceEntrant e) => e.Car && e.Car.GetComponent<VehicleConfiguration>() ? e.Car.GetComponent<VehicleConfiguration>().profileId : "original";
+        void SeatPlayerTwo()
+        {
+            var s = SplitScreen.Session; if (!s || !s.P2) return;
+            var p2 = s.P2; s.StopCruise();
+            // a vehicle the route allows (Noonday Creek: the trail's), as for player 1
+            var cfg = p2.GetComponent<VehicleConfiguration>(); var sw = p2.GetComponent<VehicleSwitch>();
+            if (cfg && RouteData != null && !RouteData.AllowsVehicle(cfg.profileId)) { string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[Mathf.Min(1, RouteData.vehicles.Length - 1)] : "original"; if (sw) sw.Select(id); else cfg.Apply(id); }
+            var slot = GridSlots(AiCount + 1)[AiCount];   // behind the rivals' slots: the player's own row
+            var rot = Quaternion.LookRotation(slot.fwd, Vector3.up);
+            var e = new RaceEntrant { Name = SplitScreen.NameOf(2), Car = p2, Box = p2.GetComponentInChildren<BoxCollider>(), Seat = 2 };
+            var respawn = p2.GetComponent<VehicleRespawn>();
+            if (SplitScreen.P2Ai)
+            {
+                if (AiRoad == null) BuildAiRoad();
+                p2.enabled = false; p2.Body.isKinematic = true;
+                p2.Body.position = slot.pos + Vector3.up * Mathf.Max(.4f, p2.suspensionLength - Physics.gravity.magnitude / p2.springStrength);
+                p2.Body.rotation = rot; p2.transform.SetPositionAndRotation(p2.Body.position, rot); p2.Body.linearVelocity = p2.Body.angularVelocity = Vector3.zero; p2.ClearSteering();
+                var driver = p2.gameObject.AddComponent<RoadDriver>(); e.Driver = driver;
+                driver.Initialize(this, p2, e, .97f, AiCount); driver.RunIn = runIn;
+                aiActive = true;
+            }
+            else if (respawn) respawn.PlaceAt(slot.pos + Vector3.up * .3f, rot.eulerAngles.y);
+            e.Reset(); Entrants.Add(e);
+            Log($"PLAYER 2 {e.Name} ({(SplitScreen.P2Ai ? "AI" : "human")}): {cfg?.Profile.Name} on the grid at ({slot.pos.x:0.0}, {slot.pos.z:0.0})");
+        }
 
         public string DebugLine => State == Stage.Free ? null
             : $"Race {State}  lap {Mathf.Min(CompletedLaps + 1, LapsInRace)}/{LapsInRace}  next {(Target != null ? (Target.Id == 0 ? "start line" : "CP" + Target.Id) : "-")}  {Fmt(Clock)}  penalty +{PenaltyTotal:0}s";
@@ -872,13 +929,15 @@ namespace ChastainRush
         void OnGUI()
         {
             if (Route == null || !car || GameMenus.Open || WorldMap.IsOpen) return;   // Round 16: not drawn under a menu (Round 20: nor the map)
+            if (SplitScreen.Active && !(State != Stage.Free && AllHumansFinished)) return;   // Round 37: each half's own HUD (SplitHud)
             Styles();
             float s = Mathf.Max(1f, Screen.height / 800f);
             var old = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float w = Screen.width / s, h = Screen.height / s;
 
-            if (State == Stage.Free) DrawFree(w, h);
+            if (SplitScreen.Active) DrawResults(w, h);   // Round 37: split screen's race is over for both: the results alone
+            else if (State == Stage.Free) DrawFree(w, h);
             else
             {
                 DrawTimers(w, h);
@@ -972,7 +1031,7 @@ namespace ChastainRush
             var r = new Rect((w - 860) / 2f, h * 0.12f, 860, 418 + extra);
             GUI.Box(r, GUIContent.none, panel);
             Shadowed(new Rect(r.x + 20, r.y + 10, r.width, 44), "FINISH", big);
-            Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : "") + (PenaltyTotal > 0f ? $"   (clock {Fmt(FinalTotal - PenaltyTotal)} + {PenaltyTotal:0} s penalties)" : ""), small);
+            Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), (SplitScreen.Active ? $"{SplitScreen.NameOf(1)}   " : "") + $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : "") + (PenaltyTotal > 0f ? $"   (clock {Fmt(FinalTotal - PenaltyTotal)} + {PenaltyTotal:0} s penalties)" : ""), small);
             float best = 0f; foreach (var l in LapTimes) if (best <= 0f || l < best) best = l;
             Shadowed(new Rect(r.x + 20, r.y + 88, r.width, 30), $"Best lap this race   <b>{Fmt(best)}</b>" + (NewBestLap ? "   NEW BEST" : ""), small);
             // Round 34 (C2): Racer's finish cards: what the best lap and the total did on the Top 10
@@ -991,9 +1050,11 @@ namespace ChastainRush
                     var e = order[i];
                     string time = e.Finished ? Fmt(e.FinalTotal) + (e.Estimated ? "  (estimated)" : "") + (e.PenaltyTotal > 0f ? $"  incl. +{e.PenaltyTotal:0} s penalty" : "") : "racing...";
                     string line = $"{i + 1}.  {e.Name,-6}  {e.VehicleName,-18}  {time}";
-                    Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), e.IsPlayer ? $"<color=#FFC747>{line}</color>" : line, small); y += 26;
+                    Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), e.IsPlayer || e.Seat == 2 ? $"<color=#FFC747>{line}</color>" : line, small); y += 26;
                 }
             }
+            var p2 = HumanEntrant(2);
+            if (SplitScreen.Active && p2 != null) Shadowed(new Rect(r.x + 20, r.yMax - 60, r.width, 26), $"{SplitScreen.NameOf(2)}   Total time   <b>{Fmt(p2.FinalTotal)}</b>" + (p2.Estimated ? " (estimated)" : "") + (p2.RaceRank > 0 ? $"   <color=#4CF2CF>Top 10 #{p2.RaceRank}</color>" : ""), small);
             Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "Start / Esc  menu: race again or free roam", small);
         }
     }

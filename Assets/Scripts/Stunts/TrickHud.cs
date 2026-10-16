@@ -39,7 +39,8 @@ namespace Racer
         void OnGUI()
         {
             if (Event.current.type != EventType.Repaint || !activities || GameMenus.Open || WorldMap.IsOpen) return;
-            var cam = Camera.main; if (!cam || !cam.isActiveAndEnabled) return;
+            var cam = SplitScreen.Session ? (activities.Player == 2 ? SplitScreen.Session.Cam2 : SplitScreen.Session.Cam1) : Camera.main;   // Round 37: its player's half
+            if (!cam || !cam.isActiveAndEnabled) return;
             var lines = Lines(activities); if (lines.Count == 0) return;
             var view = cam.pixelRect;
             int size = Mathf.Max(15, Mathf.RoundToInt(view.height / 30f)), small = Mathf.Max(12, Mathf.RoundToInt(size * .7f));

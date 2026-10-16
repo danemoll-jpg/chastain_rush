@@ -133,6 +133,7 @@ namespace ChastainRush
 
         void Update()
         {
+            if (started) UpdateSplitDevices();   // Round 37 (GameMenus.Split.cs): the split setup answers player 1's device (the name keyboard player 2's)
             if (!started || MenuInput.Blocked || WorldMap.OwnsInput) return;   // Round 20: the map has the buttons (B / Esc close it)
             var hud = DeveloperHud.Instance;
             if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
@@ -145,6 +146,7 @@ namespace ChastainRush
                 if (pages.Count > 0) { BackPage(); return; }
             }
             if (!open) return;
+            UpdateSplitJoin();   // Round 37: A or Start on another controller joins it as player 2
             if (back.WasPressedThisFrame()) { BackPage(); return; }
             UpdateSettingsTabs();   // Round 27 (C1): Q / E, LB / RB
             UpdateNavigation();
@@ -365,6 +367,7 @@ namespace ChastainRush
             if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
             renderedKey = "";
             if (!open) return;
+            ResetSplitRowColors();   // Round 37: the split page's player rows are colored
             if (modal != null) { Clear(modal, modalMessage); Row(0, "confirm", modalLabel, () => { var c = modalConfirm; modal = null; c(); }); Row(1, "cancel", "Cancel", () => { modal = null; Show(); }); }
             else Render();
             // up / down follow the rows as drawn (Racer 0.91 Part A)
@@ -397,7 +400,9 @@ namespace ChastainRush
                 case "stunt-results": RenderStuntResults(); return;
                 case "activities": RenderActivities(); return;   // Round 36 (Part B)
                 case "keyboard": RenderKeyboard(); return;   // Round 34 (C2)
+                case "split": RenderSplit(); return;   // Round 37 (GameMenus.Split.cs)
             }
+            if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
             if (title)
             {
                 Clear("CHASTAIN RUSH", "Chastain Glen, Marietta, Georgia.   " + (race ? race.Route.Name + ", " + Current.laps + " laps" : ""));
@@ -405,10 +410,11 @@ namespace ChastainRush
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 RoamWeatherRow(2);   // Round 35 (Part C)
                 Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
-                Row(4, "garage", "GARAGE", () => OpenGarage("all"));
-                Row(5, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(6, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(7, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(4, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
+                Row(5, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(6, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(7, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(8, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
@@ -420,6 +426,7 @@ namespace ChastainRush
                 RoamWeatherRow(fr++);   // Round 35 (Part C)
                 Row(fr++, "race", "RACE", () => Navigate("race"));
                 Row(fr++, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's Free Roam menu > STUNT EVENT
+                Row(fr++, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37
                 fr = ActivityRows(fr);   // Round 36 (Part B)
                 Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
                 Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)

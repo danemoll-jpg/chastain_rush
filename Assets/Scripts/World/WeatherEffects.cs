@@ -165,7 +165,11 @@ namespace Racer
         {
             var look = WorldLook.Current; if (!look || look.Preset == null) return;
             var p = look.Preset; var cam = Camera.main; if (!cam) return;
-            const float density = 1;   // Chastain Rush: no split-screen
+            // Chastain Rush, Round 37: Racer's split-screen second view (0.92 Part F), back with split screen
+            var cam2 = ChastainRush.SplitScreen.Session ? ChastainRush.SplitScreen.Session.Cam2 : null; bool split = cam2 && cam2.isActiveAndEnabled;
+            if (split != splitLayers) { splitLayers = split; foreach (Component c in new Component[] { rain, snow, stars, moon, mist }) Layer(c, split ? ChastainRush.SplitSession.View1Layer : 0); }
+            if (split) SecondView(p, look, cam2); else EndSecondView();
+            float density = split ? SplitDensity : 1;
             // Under cover: something solid within 45 m straight above the camera.
             if (Time.unscaledTime >= nextCoverCheck)
             {
@@ -211,6 +215,51 @@ namespace Racer
             if (Time.unscaledTime >= nextVehicleScan) { nextVehicleScan = Time.unscaledTime + 1; foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) if (!v.GetComponent<VehicleLights>()) v.gameObject.AddComponent<VehicleLights>(); }
             lightsLevel = Mathf.MoveTowards(lightsLevel, p.lights, Time.unscaledDeltaTime);
             VehicleLights.Level = lightsLevel;
+        }
+        // 0.92 Part F: split-screen gives the second view its own falling rain and snow, stars, moon and ground mist (each view's are drawn on its own
+        // layer, hidden from the other view, so nothing shows doubled or in one half only); the clouds, lighting, lightning flash and thunder stay one
+        // for both. Falling weather is half as dense in split-screen. Chastain Rush, Round 37: ported back (cover: also under the terrain)
+        ParticleSystem rain2, snow2, stars2; ParticleSystemRenderer starRenderer2; MoonDisc moon2; DawnMist mist2;
+        float rainLevel2, snowLevel2, nextCoverCheck2; bool covered2, splitLayers;
+        public const float SplitDensity = .5f;
+        static void Layer(Component c, int layer) { if (c) foreach (var t in c.GetComponentsInChildren<Transform>(true)) t.gameObject.layer = layer; }
+        void SecondView(LookPreset p, WorldLook look, Camera cam2)
+        {
+            if (!rain2)
+            {
+                rain2 = Make("Rain (view 2)", rainMat, true); snow2 = Make("Snow (view 2)", snowMat, false); stars2 = Stars();
+                moon2 = new GameObject("Moon (view 2)").AddComponent<MoonDisc>(); moon2.transform.SetParent(transform, false);
+                mist2 = new GameObject("Mist (view 2)").AddComponent<DawnMist>(); mist2.transform.SetParent(transform, false);
+                foreach (Component c in new Component[] { rain2, snow2, stars2, moon2, mist2 }) Layer(c, ChastainRush.SplitSession.View2Layer);
+            }
+            if (Time.unscaledTime >= nextCoverCheck2)
+            {
+                nextCoverCheck2 = Time.unscaledTime + .2f; var at = cam2.transform.position;
+                bool now = Physics.Raycast(at + Vector3.up * .5f, Vector3.up, 45, ~0, QueryTriggerInteraction.Ignore) || UnderCaveMesh(at) || WorldLook.UndergroundAt(cam2) > 0f;
+                if (now && !covered2) { rain2.Clear(); snow2.Clear(); }
+                covered2 = now;
+            }
+            float shelter = covered2 ? 0 : 1;
+            rainLevel2 = Mathf.MoveTowards(rainLevel2, p.rain * shelter, Time.unscaledDeltaTime * 2); snowLevel2 = Mathf.MoveTowards(snowLevel2, p.snowfall * shelter, Time.unscaledDeltaTime * 2);
+            var pos = cam2.transform.position; var fwd = Vector3.ProjectOnPlane(cam2.transform.forward, Vector3.up).normalized;
+            rain2.transform.position = pos + fwd * 10 + Vector3.up * 17; snow2.transform.position = pos + fwd * 12 + Vector3.up * 13;
+            Rate(rain2, rainLevel2 * 3600 * SplitDensity); Rate(snow2, snowLevel2 * 1700 * SplitDensity);
+            if (p.rain <= 0 && rainLevel2 <= 0 && rain2.particleCount > 0) rain2.Clear();
+            if (p.snowfall <= 0 && snowLevel2 <= 0 && snow2.particleCount > 0) snow2.Clear();
+            starRenderer2 ??= stars2.GetComponent<ParticleSystemRenderer>(); starRenderer2.enabled = starLevel > .02f; stars2.transform.position = pos;
+            if (look.Mode != "Menu")
+            {
+                var (mElev, mAz, phase, shown) = ShownMoon(look);
+                float dark = Mathf.Clamp01(p.stars * 1.2f) * (1 - Mathf.Max(p.rain, p.snowfall));
+                moon2.Show(cam2, mElev, mAz, phase, shown * dark * Mathf.SmoothStep(0, 1, Mathf.InverseLerp(-1, 4, mElev)));
+            }
+            else moon2.Show(cam2, -10, 0, .5f, 0);
+            mist2.Set(snowMat, cam2, look.Mode == "Menu" || covered2 ? 0 : p.mist * (1 - Mathf.Max(p.rain, p.snowfall) * .5f), p.fogColor);
+        }
+        void EndSecondView()
+        {
+            if (!rain2 || !rain2.isPlaying && rain2.particleCount == 0 && !(starRenderer2 && starRenderer2.enabled) && !moon2.Visible && mist2.Level <= 0) return;
+            rain2.Clear(); snow2.Clear(); Rate(rain2, 0); Rate(snow2, 0); if (starRenderer2) starRenderer2.enabled = false; moon2.Show(Camera.main, -10, 0, .5f, 0); mist2.Set(snowMat, Camera.main, 0, Color.white);
         }
         // ---------- 0.73 lightning and thunder ----------
         void Storm(LookPreset p, WorldLook look)

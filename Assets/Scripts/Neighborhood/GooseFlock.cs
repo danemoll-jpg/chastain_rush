@@ -197,6 +197,9 @@ namespace ChastainRush
         {
             if (car == null) { car = FindAnyObjectByType<ArcadeVehicle>(); if (car == null) return; }
             float dt = Mathf.Min(Time.deltaTime, 0.05f);
+            // Round 37 (split screen): the flock answers the nearer player
+            var p2 = SplitScreen.P2Car; var p1 = SplitScreen.P1Car;
+            if (p2 && p1 && birds.Count > 0) { var c0 = birds[0].pos; car = (p2.transform.position - c0).sqrMagnitude < (p1.transform.position - c0).sqrMagnitude ? p2 : p1; }
             Vector3 cp = car.transform.position;
             Vector3 cv = car.Body.linearVelocity; cv.y = 0f;
             float carSpeed = cv.magnitude;

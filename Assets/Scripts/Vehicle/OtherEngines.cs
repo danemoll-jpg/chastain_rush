@@ -105,7 +105,7 @@ namespace Racer
             ArcadeVehicle player = traffic && traffic.PlayerBody ? traffic.PlayerBody.GetComponent<ArcadeVehicle>() : null;
             if (race) foreach (var e in race.Entrants) if (e.IsPlayer) player = e.Car;
             bool Eligible(ArcadeVehicle c) => c && c != player && c.gameObject.activeInHierarchy && c.Body && !HasOwnAudio(c);
-            if (racing) foreach (var e in race.Entrants) if (!e.IsPlayer && Eligible(e.Car)) candidates.Add(e.Car);
+            if (racing) foreach (var e in race.Entrants) if (e.Seat == 0 && Eligible(e.Car)) candidates.Add(e.Car);   // Round 37: not split screen's player 2 (its own VehicleAudio)
             int rivals = candidates.Count;
             if (traffic) foreach (var d in traffic.Cars) if (d && Eligible(d.Car)) candidates.Add(d.Car);   // Racer: (car, traffic)
             wanted.Clear();

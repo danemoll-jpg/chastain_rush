@@ -79,7 +79,10 @@ namespace ChastainRush
             Step(n++, "stunt-tab", stuntResultTab == 0 ? "TOP 10 BEST COMBOS" + (fresh > 0 ? $"  ({fresh} new)" : "") : "STUNT EVENT TOP 10", d => { stuntResultTab = 1 - stuntResultTab; Show(); });
             int first = n; var widths = new[] { .24f, .14f, .14f, .18f, .14f, .16f };
             TableRow(n++, "header", new[] { "Player", "Points", "Medal", "Best combo", "Tricks", "Bails" }, widths, () => { });
-            TableRow(n++, "stunt-player", new[] { PlayerNames.Player + (e.Place > 0 ? $"  (Top 10 #{e.Place})" : ""), e.Points.ToString("N0"), MedalUi.Name(e.Medal), e.Best > 0 ? e.Best.ToString("N0") : "—", e.Acts ? e.Acts.Tricks.ToString() : "0", e.Acts ? e.Acts.Bails.ToString() : "0" }, widths, () => { }, true);
+            TableRow(n++, "stunt-player", new[] { (SplitScreen.Active ? SplitScreen.NameOf(1) : PlayerNames.Player) + (e.Place > 0 ? $"  (Top 10 #{e.Place})" : ""), e.Points.ToString("N0"), MedalUi.Name(e.Medal), e.Best > 0 ? e.Best.ToString("N0") : "—", e.Acts ? e.Acts.Tricks.ToString() : "0", e.Acts ? e.Acts.Bails.ToString() : "0" }, widths, () => { }, true);
+            var r2 = e.Of(2);   // Round 37: the split-screen event's player 2
+            if (r2 != null) TableRow(n++, "stunt-player2", new[] { SplitScreen.NameOf(2) + (r2.place > 0 ? $"  (Top 10 #{r2.place})" : ""), r2.points.ToString("N0"), MedalUi.Name(r2.medal), r2.best > 0 ? r2.best.ToString("N0") : "—", r2.acts ? r2.acts.Tricks.ToString() : "0", r2.acts ? r2.acts.Bails.ToString() : "0" }, widths, () => { }, true);
+            if (r2 != null) details.text = (e.Winner == 0 ? "A DRAW" : SplitScreen.NameOf(e.Winner).ToUpperInvariant() + " WINS") + "   ·   " + details.text;
             Table(first, n, 28, 18);
             first = n;
             n = stuntResultTab == 0 ? ComboTable(n, e) : StuntTopTable(n, e.Place);

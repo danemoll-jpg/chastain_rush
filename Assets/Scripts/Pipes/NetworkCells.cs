@@ -43,9 +43,10 @@ namespace ChastainRush
             next = Time.unscaledTime + Every;
             var cam = Camera.main; if (!cam) return;
             var p = cam.transform.position; int count = 0;
+            var cam2 = SplitScreen.Session ? SplitScreen.Session.Cam2 : null; var p2 = cam2 ? cam2.transform.position : p;   // Round 37: split screen's second view
             for (int i = 0; i < roots.Length; i++)
             {
-                bool want = bounds[i].SqrDistance(p) < Reach * Reach;
+                bool want = bounds[i].SqrDistance(p) < Reach * Reach || bounds[i].SqrDistance(p2) < Reach * Reach;
                 if (want != on[i]) Set(i, want);
                 if (want) count++;
             }

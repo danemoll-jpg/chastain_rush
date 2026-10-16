@@ -96,6 +96,7 @@ namespace Racer
         }
         public static bool Offscreen(Vector3 point)
         {
+            if(ChastainRush.SplitScreen.Active)return !ChastainRush.SplitScreen.InAView(point,.2f);   // Chastain Rush, Round 37: out of both views (Racer's split-screen rule)
             var camera=Camera.main;if(!camera)return false;var view=camera.WorldToViewportPoint(point);
             return view.z< -8||view.x<-.2f||view.x>1.2f||view.y<-.2f||view.y>1.2f;
         }

@@ -31,6 +31,8 @@ namespace ChastainRush
         const float RimInset = 11;
 
         public static MiniMap Instance { get; private set; }
+        // Round 37 (split screen): whose minimap this is (2: made by SplitSession for player 2's half; it follows player 1's on / off)
+        public int player = 1;
         public bool Shown { get; private set; }
         ArcadeVehicle car; RaceRoute route; RaceController race;
         RawImage picture; Text north, key; RectTransform panel; Image panelImage;
@@ -50,7 +52,8 @@ namespace ChastainRush
         }
 
         // GameShell.Boot: one per game
-        public static void Boot(GameObject host)
+        public static MiniMap Boot(GameObject host) => Boot(host, 1);
+        public static MiniMap Boot(GameObject host, int player)
         {
             var tex = Resources.Load<Texture2D>("WorldMapPicture");
             var canvasGo = new GameObject("Minimap canvas", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler));
@@ -85,13 +88,14 @@ namespace ChastainRush
             n.transform.SetParent(cr, false); n.font = font; n.fontSize = 16; n.fontStyle = FontStyle.Bold; n.alignment = TextAnchor.MiddleCenter;
             n.color = Color.white; n.raycastTarget = false; n.text = "N"; n.rectTransform.sizeDelta = new Vector2(22, 22);
             var edge = n.gameObject.AddComponent<Outline>(); edge.effectColor = new Color(0, 0, 0, .9f); edge.effectDistance = new Vector2(1.2f, -1.2f);
-            map.picture = pic; map.north = n; map.key = label; map.panel = rect; map.panelImage = img;
+            map.picture = pic; map.north = n; map.key = label; map.panel = rect; map.panelImage = img; map.player = player;
+            return map;
         }
 
         protected override void Awake()
         {
             base.Awake(); if (!Application.isPlaying) return;
-            Instance = this;
+            if (!Instance) Instance = this;
             var e = GroundQuery.Extent(); world = e.width > 0 ? e : new Rect(0, 0, 3983, 1918);
             toggle = new InputAction("Minimap on / off (free roam)", InputActionType.Button);
             toggle.AddBinding("<Keyboard>/j"); toggle.AddBinding("<Gamepad>/buttonEast"); toggle.Enable();
@@ -110,6 +114,7 @@ namespace ChastainRush
         {
             race = RaceController.Instance;
             bool roam = !race || race.State == RaceController.Stage.Free;
+            if (player == 2) return;   // Round 37: player 2's follows player 1's on / off
             if (toggle != null && roam && toggle.WasPressedThisFrame() && !GameMenus.Open && !WorldMap.IsOpen && !MenuInput.Blocked
                 && !(DeveloperHud.Instance && (DeveloperHud.Instance.MenuOpen || DeveloperHud.Instance.CommentOpen)))
                 SetRoamShown(hidden);
@@ -149,14 +154,24 @@ namespace ChastainRush
 
         void LateUpdate()
         {
-            if (!car) car = FindAnyObjectByType<ArcadeVehicle>();
+            // Round 37: in split screen each player's own vehicle (player 1's is the scene's player, never a traffic car or player 2's)
+            if (SplitScreen.Active) car = player == 2 ? SplitScreen.P2Car : SplitScreen.P1Car;
+            else if (player == 2) car = null;
+            else if (!car || car.name == "PLAYER 2") car = SplitScreen.P1Car ? SplitScreen.P1Car : FindPlayer();
             race = RaceController.Instance;
             bool roam = !race || race.State == RaceController.Stage.Free;
-            bool visible = car && !GameMenus.Open && !WorldMap.IsOpen && (!roam || !hidden);
+            bool hiddenNow = player == 2 && Instance ? Instance.hidden : hidden;
+            bool visible = car && !GameMenus.Open && !WorldMap.IsOpen && (!roam || !hiddenNow) && !(SplitScreen.OneView && player == 2);
             Shown = visible;
             canvasRenderer.SetAlpha(visible ? 1 : 0);
             panelImage.enabled = visible; key.enabled = visible; north.enabled = visible; if (picture) picture.enabled = visible;
-            panel.anchoredPosition = new Vector2(-18, roam ? -18 : -82);   // in a race, under the place readout
+            if (SplitScreen.Active && !SplitScreen.OneView)
+            {
+                // Round 37: the top right of this player's half, a little smaller (Racer's .78)
+                bool lr = SplitScreen.LeftRight; var a = lr ? new Vector2(player == 1 ? .5f : 1f, 1f) : new Vector2(1f, player == 1 ? 1f : .5f);
+                panel.anchorMin = panel.anchorMax = a; panel.pivot = new Vector2(1, 1); panel.anchoredPosition = new Vector2(-14, -14); panel.localScale = Vector3.one * .78f;
+            }
+            else { panel.anchorMin = panel.anchorMax = panel.pivot = new Vector2(1, 1); panel.localScale = Vector3.one; panel.anchoredPosition = new Vector2(-18, roam ? -18 : -82); }   // in a race, under the place readout
             if (!visible) return;
             if (!roam && (race.Route != route || raceLines.Count == 0)) CacheRace();
             if (roam && route != null) { route = null; raceLines.Clear(); }
@@ -183,6 +198,7 @@ namespace ChastainRush
             SetVerticesDirty();
         }
 
+        static ArcadeVehicle FindPlayer() { foreach (var sw in FindObjectsByType<VehicleSwitch>(FindObjectsSortMode.None)) if (sw.player == 1) return sw.GetComponent<ArcadeVehicle>(); return FindAnyObjectByType<ArcadeVehicle>(); }
         Vector2 Rim(Vector2 d)
         {
             var r = rectTransform.rect; float hx = r.width * .5f - RimInset, hy = r.height * .5f - RimInset;
@@ -219,11 +235,17 @@ namespace ChastainRush
                 Bar(vh, route.Gate.Position, route.Gate.Right, Color.white);
                 foreach (var e in race.Entrants)
                 {
-                    if (e.IsPlayer || !e.Car) continue;
+                    if (e.Car == car || !e.Car || e.Seat == 2 && SplitScreen.Active) continue;   // Round 37: the other player is drawn below
                     var p = Project(e.Car.transform.position);
                     if (!bounds.Contains(p)) continue;
                     Diamond(vh, p, 5, new Color(.03f, .06f, .08f)); Diamond(vh, p, 3.5f, Color.white);
                 }
+            }
+            // Round 37 (split screen): the other player, in their color (player 1 teal, player 2 gold)
+            if (SplitScreen.Active && !SplitScreen.OneView)
+            {
+                var other = player == 1 ? SplitScreen.P2Car : SplitScreen.P1Car;
+                if (other) { var q = Project(other.transform.position); if (bounds.Contains(q)) { Diamond(vh, q, 6.5f, new Color(.03f, .06f, .08f)); Diamond(vh, q, 5f, player == 1 ? new Color(1, .74f, .25f) : new Color(.3f, .95f, .81f)); } }
             }
             // E, S and W ticks on the rim (the N is a label), at right angles to north
             var c = bounds.center;

@@ -1,0 +1,41 @@
+Round 37 Part B7: three frame-rate runs of -r37Only splitfps -traffic Normal, 1280 x 720 minimized (not measured at 3840 x 2160), the PC busy with other programs (CPU 50-75 %: OBS, Chrome, Task Manager)
+
+Round 37 check, 2026-10-16 19:22, the exe, 1280 x 720, muted.
+
+=== Part B7: the frame rate split screen (1280 x 720, not measured at 3840 x 2160; traffic 2)
+INFO  one player, Canton Road by the shops: 29 fps average, slowest 1 % 2 fps; 14 traffic cars
+INFO  split screen Free Roam, Canton Road by the shops: 27 fps average, slowest 1 % 4 fps; 14 traffic cars
+INFO  one player, a Chastain Ridge race (3 AI rivals, traffic): 32 fps average, slowest 1 % 5 fps; 14 traffic cars
+INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 20 fps average, slowest 1 % 5 fps; 14 traffic cars
+
+0 of 0 checks passed.
+
+Round 37 check, 2026-10-16 19:54, the exe, 1280 x 720, muted.
+
+=== Part B7: the frame rate split screen (1280 x 720, not measured at 3840 x 2160; traffic 2)
+INFO  one player, Canton Road by the shops: 84 fps average, slowest 1 % 19 fps; 14 traffic cars
+INFO  split screen Free Roam, Canton Road by the shops: 37 fps average, slowest 1 % 6 fps; 14 traffic cars
+INFO  one player, a Chastain Ridge race (3 AI rivals, traffic): 6 fps average, slowest 1 % 2 fps; 14 traffic cars
+INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 27 fps average, slowest 1 % 7 fps; 14 traffic cars
+
+0 of 0 checks passed.
+
+Round 37 check, 2026-10-16 19:55, the exe, 1280 x 720, muted.
+
+=== Part B7: the frame rate split screen (1280 x 720, not measured at 3840 x 2160; traffic 2)
+INFO  one player, Canton Road by the shops: 81 fps average, slowest 1 % 15 fps; 14 traffic cars
+INFO  split screen Free Roam, Canton Road by the shops: 65 fps average, slowest 1 % 15 fps; 14 traffic cars
+INFO  one player, a Chastain Ridge race (3 AI rivals, traffic): 38 fps average, slowest 1 % 3 fps; 14 traffic cars
+INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 34 fps average, slowest 1 % 10 fps; 14 traffic cars
+
+0 of 0 checks passed.
+
+An earlier run (19:19, before the one-player race was added to the list):
+Round 37 check, 2026-10-16 19:19, the exe, 1280 x 720, muted.
+
+=== Part B7: the frame rate split screen (1280 x 720, not measured at 3840 x 2160; traffic 2)
+INFO  one player, Canton Road by the shops: 121 fps average, slowest 1 % 58 fps
+INFO  split screen Free Roam, Canton Road by the shops: 74 fps average, slowest 1 % 45 fps
+INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 39 fps average, slowest 1 % 22 fps
+
+0 of 0 checks passed.

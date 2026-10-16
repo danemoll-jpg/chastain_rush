@@ -1,0 +1,37 @@
+Round 37 check, 2026-10-16 19:48, the exe, 1280 x 720, muted.
+
+=== Part B6: the title menu with two controllers (player 1's pad opens SPLIT SCREEN, player 2's pad joins)
+PASS  B6: SPLIT SCREEN from the title menu on player 1's controller, player 2 joins with A on theirs, Free Roam started with two humans  -  setup page True (player 1: Controller 1), player 2 joined True (Controller 2), running True
+PASS  B6: either player's Start pauses split screen (its own pause menu), B resumes  -  paused True, resumed True
+
+=== Part B2: a 1-lap race for two, each on their own controller (Chastain Glen loop, no rivals)
+  grid: player 1 Street Classic, player 2 KYLE Ridge Scrambler
+  Player: 1:15.457, KYLE: 1:21.048, in 88 s; order Player, KYLE
+  Top 10: player 1 race #1, player 2 race #2; boards True in the check's own folder
+PASS  B2: a 1-lap race for two, each player on their own controller and half: both finish, both on the finishing order and the Top 10 under their names  -  88 s
+
+=== Part B1 / B2: a 1-lap race with player 2 as the AI (player 1 on a controller)
+  grid: player 1 Street Classic, player 2 AI Ridge Scrambler
+  Player: 1:15.410, AI: 0:43.785, in 82 s; order AI, Player
+PASS  B1: player 2 as the AI races the lap in its own half and finishes  -  82 s
+PASS  B1: in Free Roam player 2 as the AI cruises the roads (the traffic driver)  -  127 m in 15 s
+
+=== Part B2 / B3: Free Roam for two, each on their own controller
+PASS  B1: each controller drives only its own player's vehicle (pad 1 drives, pad 2 left alone)  -  player 1 moved 93 m, player 2 0.0 m
+PASS  B3: each player's own reset (Y on player 2's controller resets player 2 only)  -  player 2 reset True, player 1 stayed True
+PASS  B3: each player's own camera view (X on player 2's controller changes player 2's view only)  -  player 2 Chase -> FarChase (then back), player 1 kept Chase
+PASS  B2: Free Roam for two: both drive their own vehicle  -  player 2 moved 125 m in 10 s
+
+=== Part B2: the stunt park for two: each player off BIG AIR with a backflip, scored on their own trick panel
+  player 1 (Player, Clay Hopper): 'BACKFLIP' 1,397 pts
+  player 2 (KYLE, Skywhip 250): 'BACKFLIP' 1,378 pts
+PASS  B2: the stunt park for two: a trick each, each scored on their own (Player 1's and player 2's ArcadeActivities)
+
+=== Part B2 / B4: the Stunt event for two (a 30 s round for the check; 10 minutes in play)
+  Player: 0 pts, Top 10 #2; KYLE: 1,072 pts, Top 10 #1; winner KYLE
+PASS  B2 / B4: the Stunt event for two: both held 3 s on the line, each their own points, both humans on the Stunt event Top 10 under their names  -  held True
+
+=== Part B1 / B3: pictures of both layouts (37b_layout_*.png)
+PASS  B1: pictures of both layouts, Free Roam and a race (37b_layout_*.png)
+
+12 of 12 checks passed.

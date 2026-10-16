@@ -46,6 +46,11 @@ namespace Racer
             public int roamDay = 12;
             public bool lightningFlashes = true;
             public bool weatherGrip = true;
+            // Racer 0.90 to 0.94 (RacerSave.Options.splitLeftRight; the second player's name, rider): split screen's layout (left / right, else
+            // top / bottom) and player 2's name and rider. Chastain Rush, Round 37 (player 2's vehicle and color: vehicle2.json, VehicleSwitch)
+            public bool splitLeftRight;
+            public string player2Name = "";
+            public RiderLook rider2 = new();
         }
 
         static Options current;
@@ -65,6 +70,7 @@ namespace Racer
             }
             catch (Exception e) { Debug.LogWarning("[Settings] unreadable, defaults used: " + e.Message); current = new Options(); }
             current.rider = (current.rider ?? new RiderLook()).Valid(); RiderLook.Player = current.rider;   // Racer's RaceFlow: RiderLook.Player = Save.Settings.rider
+            current.rider2 = (current.rider2 ?? new RiderLook()).Valid(); current.player2Name ??= "";   // Round 37: split screen's player 2
         }
 
         public static void SaveSettings()

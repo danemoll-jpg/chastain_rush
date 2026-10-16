@@ -22,6 +22,16 @@ namespace Racer
             public static Pose Lerp(Pose a, Pose b, float t) => new(Vector3.Lerp(a.position, b.position, t), Quaternion.Slerp(a.rotation, b.rotation, t), Mathf.Lerp(a.fov, b.fov, t), Mathf.Lerp(a.near, b.near, t));
         }
         const string Key = "ChastainRush.CameraView";
+        // Round 37 (Racer 0.94 Part B, split screen): whose view this is. 0: the one player (X / V on any device, as before); 1 or 2: that player's own
+        // device only (its VehicleInput's view button), and player 2's choice remembered apart. The view only changes when that player changes it.
+        int player;
+        public void SetPlayer(int p)
+        {
+            player = p;
+            var t = chase ? chase.target : null; t?.GetComponent<VehicleInput>()?.ConsumeView();   // a press from before split screen does not count
+            if (p == 2 && !Quiet) { var v = (View)Mathf.Clamp(PlayerPrefs.GetInt(Key + ".Player2", 0), 0, Names.Length - 1); Current = v; lastView = v; }
+        }
+        string PrefKey => player == 2 ? Key + ".Player2" : Key;
         Camera cam; ChaseCamera chase; ArcadeVehicle car; InputAction cycle;
         public View Current { get; private set; }
         public string CurrentName => Names[(int)Current];
@@ -43,11 +53,18 @@ namespace Racer
         public void SetView(View v)
         {
             if (v == Current) return; Current = v;
-            if (!Quiet) { PlayerPrefs.SetInt(Key, (int)v); PlayerPrefs.Save(); }
+            if (!Quiet) { PlayerPrefs.SetInt(PrefKey, (int)v); PlayerPrefs.Save(); }
         }
         public void NextView() => SetView((View)(((int)Current + 1) % Names.Length));
         static bool CanDrive => !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput;
-        void Update() { if (CanDrive && cycle.WasPressedThisFrame()) NextView(); }
+        void Update()
+        {
+            if (player == 0) { if (CanDrive && cycle.WasPressedThisFrame()) NextView(); return; }
+            // split screen: the view button of this player's own vehicle (VehicleInput answers only their device)
+            if (!car && chase && chase.target) car = chase.target.GetComponent<ArcadeVehicle>();
+            var input = car ? car.GetComponent<VehicleInput>() : null;
+            if (input && input.ConsumeView() && CanDrive) NextView();
+        }
         void StartBlend(float length = .35f) { blendFrom = last; blend = 0; blendLength = length; }
 
         void LateUpdate()

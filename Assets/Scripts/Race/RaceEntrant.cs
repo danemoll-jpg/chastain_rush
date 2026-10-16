@@ -13,8 +13,13 @@ namespace ChastainRush
     {
         public string Name;
         public ArcadeVehicle Car;
-        public RoadDriver Driver;          // null for the player
-        public bool IsPlayer => Driver == null;
+        public RoadDriver Driver;          // null for a human
+        // Round 37 (split screen): 1 = the player, 2 = split screen's player 2 (a human, or the AI driving their vehicle), 0 = an AI rival
+        public int Seat;
+        public bool IsPlayer => Seat == 1;
+        public bool IsHuman => Seat == 1 || Seat == 2 && Driver == null;
+        public string Message = ""; public float MessageUntil;   // Round 37: this racer's own line on their half of the screen
+        public int RaceRank;                                     // Round 37: player 2's race on the Top 10
         public BoxCollider Box;
         public Vector3 PrevPos;
         public bool ClockStarted;

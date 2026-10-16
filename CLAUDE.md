@@ -339,6 +339,16 @@ from the world's launches and `Data/activities/targets.json`; `MapBuilder.Activi
 event,glass,inside,rooframp,pics,measure,acts,mappic,hydrants,cfps,rig,geyser] -logFile <dir>\Player.log` (`Checks/Round20Runner.R36*.cs`; `measure` writes
 targets.json). Imported from Racer: StuntPark's builders, ArcadeActivities (+Stunts, +Smash), ActivitySite, ActivityRecords, StuntEvent, StuntProgress, TrickHud,
 MedalUi, DisplayUnits, the stunt profiles, Cup livery, air steering, RaceMenus.Stunt (into GameMenus), StuntBike / StuntBuggy models and their Blender scripts.
+**Round 37 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the stunt park's ramps and loop keep
+your speed (every "Stunt park ..." collider registered with `VehicleSurfaceContacts`, the roofs' and store floors' slab seams, the loop's own normal,
+frictionless body contacts on the park, wheels pushing square to a park surface, `ArcadeVehicle`'s carry on the park's ramps and loop; check switches
+`-r37ParkContactsOff -r37CarryOff -r37SpringUp` give Round 36's behavior); B Racer's split screen (`Assets/Scripts/Split/`: `SplitScreen`, `SplitSession`,
+`SplitHud`; `Menus/GameMenus.Split.cs`; player 2's seat in `RaceController` (`RaceEntrant.Seat`); player 2's vehicle `vehicle2.json`, name / rider / layout
+in settings.json; `StuntEvent` riders; per-player `CameraViews`, `MiniMap`, `TrickHud`, `ArcadeActivities`). Check: `ChastainRush.exe -exeRound37 <dir>
+[-r37Only parkramps,parkloop,splitmenu,splitrace,splitai,splitroam,splitpark,splitevent,splitpics,splitfps] [-r37Ramp <names>] [-traffic Normal] -logFile
+<dir>\Player.log` (`Checks/Round20Runner.R37*.cs`; two virtual controllers, input counted without focus in a check). Imported from Racer: SplitScreen /
+SplitRace / SplitRoam / SplitHud / RaceMenus.Split (rewritten for this game's race, menus and IMGUI HUD), StuntEvent's riders, WeatherEffects' second view,
+CameraViews' per-player view; left behind: Police Chase, Speed Patrol, Getaway, Stunt Races, the winner shot, SplitBench.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
