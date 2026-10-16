@@ -4027,3 +4027,75 @@ C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.Chastain
    with a footbridge over BF's stream (BF untouched). Check: `bug025`, `bug026`, `lakes_lot_to_pool`, `lakes_courts`.
 For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
 footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
+
+## Round 33 (moved from TODO.md on 2026-10-16 when Dan reviewed Round 36; word for word)
+
+## Previous delivery 3: Round 33
+**Reviewed: driven by Dan 2026-10-16 01:35 to 01:51 (his notes are Round 34).**
+**Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
+screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
+measure it; lay the course on OSM's roads). Dan: "How about this route... the dotted line would be a jump... i think this
+is the highest point on the map". Round 32 is reviewed. Build it, then Dan drives it (CLAUDE.md); short results; rebuild into
+`Builds/ChastainRush/` and commit.
+
+The course (Claude read the sketch against `Data/map.json` and the heightmap; game heights; one lap about 1.9 km):
+1. Canton Road Northeast NORTH from the New Chastain Road junction (x 3467-3579, z 390) to Chastain Corner Northeast (x 3507,
+   z 1086). The sketch's arrows point north on Canton Road.
+2. Left onto Chastain Corner Northeast (OSM 9139438), southwest and downhill (322 m to 304 m) to New Chastain Road (x 3152,
+   z 760).
+3. Straight across both carriageways of New Chastain Road onto Chastain Ridge Drive Northeast (OSM 1360406918, 1360406916,
+   1360406917, 243965590), round its loop the way it runs: west along z 706, south up the ridge to the crest (334 m at
+   x 3077, z 620), then east, downhill, to the drive's dead end at x 3152, z 632 (323.5 m). This is the high ground Dan
+   means. (The map's highest ground is at its south edge by Canton Road, 367 m; this ridge is the highest on the loop.)
+4. THE JUMP (the sketch's dotted line): off the dead end, east over houses 923, 706, 1231 and the hollow behind them
+   (about 303 m at x 3200-3230, no stream mapped), down onto New Chastain Road's southeast-bound carriageway (OSM 9151940)
+   at about x 3250-3290, z 560-610 (about 310 m). Part of the lap, not a shortcut: every vehicle the route offers makes it
+   flat out from the crest; say in the status which vehicles it offers and why. Take-off dressed as something that could be
+   there and whose real size fits (CLAUDE.md lesson: a dirt pile, a raised dump-truck bed, not hay bales or a flatbed if it
+   is bigger than they are). Landing smooth onto the road, no step (the jump rules). Coming up short never traps: a way out
+   of the hollow onto New Chastain Road, and a reset puts the vehicle on New Chastain Road past the landing, facing on.
+   The houses are jumped over, not changed.
+5. New Chastain Road southeast, climbing from 310 m to 326 m, to Canton Road, and left onto Canton Road: the lap.
+
+Shortcuts (the sketch's two red lines; their arrowheads match that direction), built by the shortcut design rules
+(CLAUDE.md: harder than the road, rewarding, a hint at the turn-off that could be there, no easier free way through):
+S1. Top: off Canton Road short of the Chastain Corner junction, west past the restaurant (Tacos La Villa in real life) and
+   the business lots onto Chastain Corner Northeast. Forgives what it skips.
+S2. Bottom: off New Chastain Road before the Canton Road junction (about x 3330, z 470), east-northeast through the business
+   lots between the churches (74 at x 3520, z 571; 75 at x 3526, z 523) and the shops, to Canton Road (about z 560).
+   Forgives what it skips. Code finds each line and says in the status what each one jumps or threads through.
+
+Race layer, as the other routes: `Data/routes/chastain_ridge.json` (a make_ script like the others), checkpoints (one just
+past the landing), the grid, the lap's direction only (no reverse unless it works by itself), side roads closed by
+barriers. Open roads: traffic stays on the course (route "traffic": true, Round 30 A3), so traffic drives Canton Road,
+Chastain Corner and New Chastain Road during the race, and can be in the landing zone; the AI racers deal with it. The AI
+take S1 / S2 by ShortcutStrategy and make human mistakes (CLAUDE.md). On the race setup menu's Route row; on the map.
+Check: the jump flat out in each offered vehicle (lands on the road, how far, how high), one AI race of 3 laps with
+traffic Normal (everyone finishes), a reset in the hollow. Pictures: the take-off from the crest, the flight, the landing,
+each shortcut's turn-off.
+
+For Dan to check (when done): the whole lap flat out, the jump, S1 and S2, traffic in the race.
+
+**Round 33 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 00:55.** Evidence: `Data/screenshots/round33/` (`round33_check.txt`, 9 of 9 checks; pictures `33_*.png`).
+Course DONE. `python Tools/mapgen/make_ridge_route.py` writes `Data/routes/chastain_ridge.json` (on the Route row and the map; "traffic": true)
+   and `Data/tracks/chastain_ridge.json` (built by `MapBuilder.ChastainRidge.cs`). Lap 2072 m on OSM's roads, forward only; two-way roads raced on
+   their right-hand lane; gate on Canton Road at z 700, CP1 Chastain Corner, CP2 down it, CP3 the ridge's crest, CP4 past the landing, CP5 New
+   Chastain, CP6 Canton Road; 23 side-road barriers (none where the leap lands).
+The Ridge leap DONE. A 2.8 m dirt pile at Chastain Ridge Drive's dead end (road-work fill, 14 m long: its real size), an aimed launch (32.9 m/s
+   at 22 degrees for every vehicle onto the lip at 10 m/s or more, so all eleven vehicles are offered and all make it flat out): 3.5 s in the air,
+   8.5 m over the lip, over house 706 (8 m clear; 923 and 1231 are beside the line, not under it; no house changed), down 106 m out within 2.5 m of
+   the southeast carriageway's centerline, upright (`33_takeoff_from_the_crest`, `33_flight_chase`, `33_landing_chase`). Landing across the road at
+   speed runs on into the woods east of it: those 55 trees snap when hit (2 of 11 stopped dead on trunks before). Short of the road: a ramp graded
+   along the embankment out of the hollow (54 m, 12 %; driven out in 7.5 s), and a race reset anywhere from the lip to the landing puts the vehicle on
+   New Chastain Road 120 m out, on the line, facing on (route `reset_skip`, `CarRecovery`).
+S1 "Knoll hop" DONE. Off Canton Road west across the lot north of the canopy (4) and the shops (6), a dirt pile (2.6 m) onto the top of the knoll
+   beside Chastain Corner, across it and off its west edge onto Chastain Corner: 1.3 s of air, saves 49 m, forgives CP1. Threads past 4 and 6, jumps
+   nothing built. Hint: worn tracks and a knocked-over road-closed barricade; the pile is in sight from Canton Road (`33_S1_turn_off`).
+S2 "Storage hop" DONE. Off New Chastain Road east up the bank, a dirt pile (2.8 m) over the self-storage garage row 63 (6.4 m clear), across the
+   open ground and out between the churches (75 passed 5 m off) by their drive onto Canton Road: 2.0 s of air, saves 154 m, forgives CP5 and CP6.
+   Hint: tracks and the barricade (`33_S2_turn_off`, `33_S2_pile`). Free cuts round 63 or through the lots miss CP5 / CP6 (5 s each).
+Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI reset; S1 and S2 taken by ShortcutStrategy. Traffic keeps driving the
+   course; only the 18 road pieces at the barriers are closed to it, and the grid is cleared at the start (`Traffic.Close`).
+For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
+rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).

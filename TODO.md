@@ -69,6 +69,51 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 37 (Dan, 2026-10-16 17:05; reports BUG-001 to BUG-003 of session `2026-10-16_16-59-30-505_bc23a8`, read by Claude,
+after the Round 36 exe: free roam in the stunt park on the Skywhip 250, at night in the rain).** Round 36 is reviewed. Dan: "I
+don't know where to find the fire hydrants so I will report if i have issues later as i come across the special ones" (no
+change to Part D; no hints for them). Parts A and B in order; rebuild into `Builds/ChastainRush/` and commit after each;
+short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
+
+Part A, THE STUNT PARK'S RAMPS SLOW YOU DOWN. Standing rule (Dan, Round 12): ramps must not slow the vehicle's progress.
+BUG-001 (x 3315.82 z 1131.96 h 307, the teal ramp ahead): "ramp slows". BUG-002 (x 3367.30 z 1183.43 h 53, at the loop by
+the shop row): "Loop slows on both sides". BUG-003 (x 3330.24 z 1168.18 h 268, the green ramp ahead): "Green ramp slows".
+Find why (a step or seam where the ramp meets the floor, the ramp's collider or physics material, the aimed-launch speed cap
+of BigJump on these ramps, the loop's own steering, the grip in rain reading a ramp as grass, the Skywhip's profile) and fix
+it for every ramp in the park, the loop's way in and way out (both sides) and the roof and inside ramps too, since all were
+built the same way: a vehicle keeps its speed onto and up a ramp, losing only what the climb itself takes. Check in the exe:
+each of Dan's three, the loop both ways, and every other launch in the park flown flat out on the Skywhip 250 and the Clay
+Hopper, dry and in rain; speed at the foot vs. at the lip against what gravity alone would take (list them).
+
+Part B, SPLIT SCREEN FROM WOODSTOCK RUSH. Dan: "Lets go ahead and add split screen". Port Racer's split screen
+(`SplitScreen`, `SplitHud`, `SplitRoam`, `RaceMenus.Split`; Racer at `C:\Users\danmo\Racer`, read-only; prefer porting, list
+what came), as Racer has it (sequel notes):
+B1. Two players, top / bottom by default or left / right (a setting); each controller its own player (keyboard with player 1
+   as Racer); player 2 can be the AI so Dan can test it alone.
+B2. Races for two (every route, both directions, with or without AI rivals and traffic), Free Roam for two, the Stunt Park and
+   the Stunt event for two (each player their own score, Racer's split-screen stunt rules), the Free Roam activities for two
+   (each their own attempt), the Underground race for two.
+B3. Each view its own HUD (lap, checkpoints, minimap, trick panel, Free Roam clock), its own camera view (the view only changes
+   when that player changes it), its own resets, its own garage pick and rider look (player 2's rider look and vehicle saved
+   apart). One shared radio either player controls (Racer); one day / night and weather for both.
+B4. Names: the Top 10 takes each player's name as Racer does in split screen (player 2 asked for a name with the on-screen
+   keyboard on their own controller); the finish panel shows both.
+B5. Traffic, geese, breakables and the rest of the world work round both players (traffic spawns and despawns out of both
+   cameras' sight).
+B6. Menus: a Split Screen entry on the title menu as Racer has it, controller first (CLAUDE.md), B back.
+B7. Cost: frame rate split screen in Free Roam at Canton Road by the shops and in a Chastain Ridge race with traffic, both at
+   1280 x 720 (reported as not measured at 3840 x 2160); Dan's target from Woodstock Rush is 60 fps split screen on his PC.
+Check in the exe by script with two virtual pads (and player 2 as the AI): a 1-lap race for two finished by both, Free Roam
+for two, the stunt park for two with a trick each; pictures of both layouts.
+
+For Dan to check (when done): the park's ramps and the loop at speed; split screen (both layouts, a race, Free Roam, the stunt
+park, player 2 as the AI).
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 36
+**Reviewed: driven by Dan 2026-10-16 16:59 (the stunt park; his notes are Round 37).**
 **Round 36 (Dan, 2026-10-16 10:36, after the Round 35 exe: "All is good").** Round 35 is reviewed (Dan did not check the
 Underground race's start line; he will report it if it is wrong). Parts A to D in order; rebuild into `Builds/ChastainRush/`
 and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
@@ -190,10 +235,7 @@ D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton R
    For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 16:38 (BUILD_INFO.txt).
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 35
+## Previous delivery 2: Round 35
 **Reviewed: passed by Dan 2026-10-16 10:36 ("All is good"; the Underground start line not checked yet).**
 **Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
 Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
@@ -267,7 +309,7 @@ C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1
    ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
 For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
 
-## Previous delivery 2: Round 34
+## Previous delivery 3: Round 34
 **Reviewed: driven by Dan 2026-10-16 07:49 (an Underground race; his notes are Round 35).**
 **Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
 after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
@@ -360,76 +402,6 @@ Imported from Racer: RecordBoards, PlayerNames, FinishPresentation (`Race/Record
 For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), BUG-007, the driveway, a race from the grid, the radio
    after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
    exceptions in every exe log. Frame rate not measured.
-
-## Previous delivery 3: Round 33
-**Reviewed: driven by Dan 2026-10-16 01:35 to 01:51 (his notes are Round 34).**
-**Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
-screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
-measure it; lay the course on OSM's roads). Dan: "How about this route... the dotted line would be a jump... i think this
-is the highest point on the map". Round 32 is reviewed. Build it, then Dan drives it (CLAUDE.md); short results; rebuild into
-`Builds/ChastainRush/` and commit.
-
-The course (Claude read the sketch against `Data/map.json` and the heightmap; game heights; one lap about 1.9 km):
-1. Canton Road Northeast NORTH from the New Chastain Road junction (x 3467-3579, z 390) to Chastain Corner Northeast (x 3507,
-   z 1086). The sketch's arrows point north on Canton Road.
-2. Left onto Chastain Corner Northeast (OSM 9139438), southwest and downhill (322 m to 304 m) to New Chastain Road (x 3152,
-   z 760).
-3. Straight across both carriageways of New Chastain Road onto Chastain Ridge Drive Northeast (OSM 1360406918, 1360406916,
-   1360406917, 243965590), round its loop the way it runs: west along z 706, south up the ridge to the crest (334 m at
-   x 3077, z 620), then east, downhill, to the drive's dead end at x 3152, z 632 (323.5 m). This is the high ground Dan
-   means. (The map's highest ground is at its south edge by Canton Road, 367 m; this ridge is the highest on the loop.)
-4. THE JUMP (the sketch's dotted line): off the dead end, east over houses 923, 706, 1231 and the hollow behind them
-   (about 303 m at x 3200-3230, no stream mapped), down onto New Chastain Road's southeast-bound carriageway (OSM 9151940)
-   at about x 3250-3290, z 560-610 (about 310 m). Part of the lap, not a shortcut: every vehicle the route offers makes it
-   flat out from the crest; say in the status which vehicles it offers and why. Take-off dressed as something that could be
-   there and whose real size fits (CLAUDE.md lesson: a dirt pile, a raised dump-truck bed, not hay bales or a flatbed if it
-   is bigger than they are). Landing smooth onto the road, no step (the jump rules). Coming up short never traps: a way out
-   of the hollow onto New Chastain Road, and a reset puts the vehicle on New Chastain Road past the landing, facing on.
-   The houses are jumped over, not changed.
-5. New Chastain Road southeast, climbing from 310 m to 326 m, to Canton Road, and left onto Canton Road: the lap.
-
-Shortcuts (the sketch's two red lines; their arrowheads match that direction), built by the shortcut design rules
-(CLAUDE.md: harder than the road, rewarding, a hint at the turn-off that could be there, no easier free way through):
-S1. Top: off Canton Road short of the Chastain Corner junction, west past the restaurant (Tacos La Villa in real life) and
-   the business lots onto Chastain Corner Northeast. Forgives what it skips.
-S2. Bottom: off New Chastain Road before the Canton Road junction (about x 3330, z 470), east-northeast through the business
-   lots between the churches (74 at x 3520, z 571; 75 at x 3526, z 523) and the shops, to Canton Road (about z 560).
-   Forgives what it skips. Code finds each line and says in the status what each one jumps or threads through.
-
-Race layer, as the other routes: `Data/routes/chastain_ridge.json` (a make_ script like the others), checkpoints (one just
-past the landing), the grid, the lap's direction only (no reverse unless it works by itself), side roads closed by
-barriers. Open roads: traffic stays on the course (route "traffic": true, Round 30 A3), so traffic drives Canton Road,
-Chastain Corner and New Chastain Road during the race, and can be in the landing zone; the AI racers deal with it. The AI
-take S1 / S2 by ShortcutStrategy and make human mistakes (CLAUDE.md). On the race setup menu's Route row; on the map.
-Check: the jump flat out in each offered vehicle (lands on the road, how far, how high), one AI race of 3 laps with
-traffic Normal (everyone finishes), a reset in the hollow. Pictures: the take-off from the crest, the flight, the landing,
-each shortcut's turn-off.
-
-For Dan to check (when done): the whole lap flat out, the jump, S1 and S2, traffic in the race.
-
-**Round 33 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
-Build 2026-10-16 00:55.** Evidence: `Data/screenshots/round33/` (`round33_check.txt`, 9 of 9 checks; pictures `33_*.png`).
-Course DONE. `python Tools/mapgen/make_ridge_route.py` writes `Data/routes/chastain_ridge.json` (on the Route row and the map; "traffic": true)
-   and `Data/tracks/chastain_ridge.json` (built by `MapBuilder.ChastainRidge.cs`). Lap 2072 m on OSM's roads, forward only; two-way roads raced on
-   their right-hand lane; gate on Canton Road at z 700, CP1 Chastain Corner, CP2 down it, CP3 the ridge's crest, CP4 past the landing, CP5 New
-   Chastain, CP6 Canton Road; 23 side-road barriers (none where the leap lands).
-The Ridge leap DONE. A 2.8 m dirt pile at Chastain Ridge Drive's dead end (road-work fill, 14 m long: its real size), an aimed launch (32.9 m/s
-   at 22 degrees for every vehicle onto the lip at 10 m/s or more, so all eleven vehicles are offered and all make it flat out): 3.5 s in the air,
-   8.5 m over the lip, over house 706 (8 m clear; 923 and 1231 are beside the line, not under it; no house changed), down 106 m out within 2.5 m of
-   the southeast carriageway's centerline, upright (`33_takeoff_from_the_crest`, `33_flight_chase`, `33_landing_chase`). Landing across the road at
-   speed runs on into the woods east of it: those 55 trees snap when hit (2 of 11 stopped dead on trunks before). Short of the road: a ramp graded
-   along the embankment out of the hollow (54 m, 12 %; driven out in 7.5 s), and a race reset anywhere from the lip to the landing puts the vehicle on
-   New Chastain Road 120 m out, on the line, facing on (route `reset_skip`, `CarRecovery`).
-S1 "Knoll hop" DONE. Off Canton Road west across the lot north of the canopy (4) and the shops (6), a dirt pile (2.6 m) onto the top of the knoll
-   beside Chastain Corner, across it and off its west edge onto Chastain Corner: 1.3 s of air, saves 49 m, forgives CP1. Threads past 4 and 6, jumps
-   nothing built. Hint: worn tracks and a knocked-over road-closed barricade; the pile is in sight from Canton Road (`33_S1_turn_off`).
-S2 "Storage hop" DONE. Off New Chastain Road east up the bank, a dirt pile (2.8 m) over the self-storage garage row 63 (6.4 m clear), across the
-   open ground and out between the churches (75 passed 5 m off) by their drive onto Canton Road: 2.0 s of air, saves 154 m, forgives CP5 and CP6.
-   Hint: tracks and the barricade (`33_S2_turn_off`, `33_S2_pile`). Free cuts round 63 or through the lots miss CP5 / CP6 (5 s each).
-Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI reset; S1 and S2 taken by ShortcutStrategy. Traffic keeps driving the
-   course; only the 18 road pieces at the barriers are closed to it, and the grid is cleared at the start (`Traffic.Close`).
-For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
-rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
