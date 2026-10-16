@@ -298,7 +298,7 @@ namespace Racer
         }
         void Update()
         {
-            source.volume=Settings.music*.32f;   // Chastain Rush: no thunder, police radio or title speech to dip under;// 0.76: dips under thunder; 0.99: and a little while the police radio speaks
+            source.volume=Settings.music*.32f*(1-.4f*WeatherEffects.Duck);   // Chastain Rush: no police radio or title speech to dip under (Round 35: the thunder's dip back);// 0.76: dips under thunder; 0.99: and a little while the police radio speaks
             if(scan!=null&&scan.IsCompleted)
             {
                 var result=scan.IsCompletedSuccessfully?scan.Result:new MusicCollection.Result{Error="Scan failed; try another folder"};scan=null;

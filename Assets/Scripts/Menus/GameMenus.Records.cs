@@ -67,7 +67,7 @@ namespace ChastainRush
         // ---------------------------------------------------------------- the RECORDS page
         int recordTrack = -1, recordBoard; string recordsVehicle = "All vehicles";
         List<(string route, string direction)> RecordTracks() => race ? race.RecordTracks() : new List<(string, string)>();
-        static string TrackTitle((string route, string direction) t) => t.route + " - " + (t.direction == "reverse" ? "Reverse" : "Forward");
+        static string TrackTitle((string route, string direction) t) => t.route + " - " + (t.direction.StartsWith("reverse") ? "Reverse" : "Forward") + (t.direction.EndsWith("-rain") ? ", rain" : t.direction.EndsWith("-snow") ? ", snow" : "");   // Round 35: the weather's boards
         static bool OnTrack((string route, string direction) t, string category) => RecordBoards.LapCategory(category) == t.route + "|" + t.direction;
         static string RecordDate(string date) => DateTime.TryParse(date, null, System.Globalization.DateTimeStyles.RoundtripKind, out var d) ? d.ToLocalTime().ToString("d MMM yyyy") : "—";
         void OpenRecords() { recordTrack = -1; recordsVehicle = "All vehicles"; Navigate("records"); }

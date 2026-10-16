@@ -321,6 +321,14 @@ the radio keeps its song on focus loss (`LocalRadio.Hold`), Racer's Top 10 board
 records; the player's name in settings.json) with the RECORDS page and on-screen keyboard (`Menus/GameMenus.Records.cs`). Check:
 `ChastainRush.exe -exeRound34 <dir> [-r34Only lap,bumps,radio,records] [-radio] -logFile <dir>\Player.log` (`Checks/Round20Runner.R34*.cs`).
 Imported from Racer: RecordBoards, PlayerNames, FinishPresentation, the Records page and on-screen keyboard (rewritten into GameMenus).
+**Round 35 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Underground race's line
+on M5's straight (`make_underground_route.py` `gate_s`, route `gate_ring_m`, `finish_park_gap_m` / `finish_park_speed`); the radio's voice
+priority 0 (`LocalRadio`); Racer's day / night and weather (`Assets/Scripts/World/`: WorldLook (race conditions from `GameMenus.Current`,
+Free Roam's in settings.json), WeatherEffects, WeatherSky, SkyClouds (`Lift`), MoonIcon, WeatherGrip; new `NightLamps`, `RoamClock`;
+`ChastainRush/VertexLit` reads `_RacerWet`, `_RacerSnow`, `_RacerLamps` and `_SnowCover`). Check: `ChastainRush.exe -exeRound35 <dir>
+[-r35Only line,radio,cpics,grip,fps] [-radio] [-r35RadioOld] [-lookOff] [-r35Off clouds,effects,lamps,look,pin,probes] -traffic Normal
+-logFile <dir>\Player.log` (`Checks/Round20Runner.R35*.cs`). Imported from Racer: the files above, ArcadeVehicle's weather grip, thunder
+ducking, their shaders and materials; left behind: SnowScenes, the gates' Glow, the water probes (cost), split-screen, Trailer Mode.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).

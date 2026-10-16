@@ -102,11 +102,13 @@ namespace ChastainRush
                 Step(n++, "resolution", "Resolution:   " + ScreenSetting.ResolutionLabel, d => { ScreenSetting.StepResolution(d); Show(); });
                 Toggle(n++, "vsync", "VSync", s.vsync, () => Adjust(() => s.vsync = !s.vsync));
                 Step(n++, "fps", "Frame cap: " + s.frameLimit + " FPS", d => Adjust(() => { int[] caps = { 30, 60, 120 }; s.frameLimit = caps[Mathf.Clamp(Array.IndexOf(caps, s.frameLimit) + d, 0, 2)]; }));
+                Toggle(n++, "lightning", "Lightning flashes", s.lightningFlashes, () => Adjust(() => s.lightningFlashes = !s.lightningFlashes));   // Round 35 (Part C): Racer's Display row (Off: the thunder stays, no flash)
             }
             if (page == "settings-gameplay")   // Round 30 (A3)
             {
                 details.gameObject.SetActive(true); details.text = "Traffic drives the roads in free roam and races (a race closes its own roads to it)."; details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 58;
                 Step(n++, "traffic", "Traffic:   " + Traffic.LevelNames[Mathf.Clamp(s.traffic, 0, 3)], d => Adjust(() => s.traffic = Mathf.Clamp(s.traffic + d, 0, 3)));
+                Step(n++, "weather-grip", "Weather affects grip:   " + (s.weatherGrip ? "On" : "Off"), d => Adjust(() => s.weatherGrip = !s.weatherGrip));   // Round 35 (Part C): Racer's Gameplay row
                 Row(n++, "player-name", "Player name:   " + PlayerNames.Player + "   (A: change)", () => OpenNameEntry(s.playerName, PlayerNames.SetPlayer));   // Round 34 (C2): Racer's Settings > Gameplay row
             }
             if (page == "settings-controls") { RenderControls(n); return; }

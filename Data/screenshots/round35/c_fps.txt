@@ -1,0 +1,6 @@
+Frame rate alone, parked at Canton Road by the shops, 1280 x 720 (not measured at 3840 x 2160); the PC in use, numbers vary about 10 %:
+before (-lookOff) INFO  day: 285 fps average, slowest 1 % 113 fps (vSync 0, cap -1)
+after INFO  day: 266 fps average, slowest 1 % 98 fps (vSync 0, cap -1)
+after INFO  night: 218 fps average, slowest 1 % 63 fps (vSync 0, cap -1)
+after INFO  rain: 214 fps average, slowest 1 % 66 fps (vSync 0, cap -1)
+Cost found and removed: Racer's realtime sky-reflection probes over the water: 331 fps without, 229 with (local/round35/fps2_*).

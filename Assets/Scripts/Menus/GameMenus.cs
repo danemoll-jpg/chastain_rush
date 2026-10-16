@@ -31,7 +31,7 @@ namespace ChastainRush
         public static bool Open => Instance && Instance.open;
 
         // ---------------------------------------------------------------- settings (race setup), saved beside the records
-        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; public string route = ""; }   // Round 18: route (a file name; "" = the Chastain Glen loop)
+        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; public string route = ""; public int timeOfDay = 0, weather = 0; }   // Round 35 (Part C): the race's time of day (0 Day, 1 Dusk, 2 Night, 3 Dawn) and weather (0 Clear, 1 Rain, 2 Snow), Racer's race setup   // Round 18: route (a file name; "" = the Chastain Glen loop)
         public static Settings Current = new Settings();
         static string SettingsPath()
         {
@@ -397,22 +397,24 @@ namespace ChastainRush
                 Clear("CHASTAIN RUSH", "Chastain Glen, Marietta, Georgia.   " + (race ? race.Route.Name + ", " + Current.laps + " laps" : ""));
                 Row(0, "race", "RACE", () => Navigate("race"));
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
-                Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(4, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(5, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                RoamWeatherRow(2);   // Round 35 (Part C)
+                Row(3, "garage", "GARAGE", () => Navigate("garage"));
+                Row(4, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(5, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(6, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free)
             {
                 Clear("PAUSED", "Free roam");
                 Row(0, "resume", "RESUME", CloseMenu);
-                Row(1, "race", "RACE", () => Navigate("race"));
-                Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(4, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-                Row(5, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
-                Row(6, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                RoamWeatherRow(1);   // Round 35 (Part C)
+                Row(2, "race", "RACE", () => Navigate("race"));
+                Row(3, "garage", "GARAGE", () => Navigate("garage"));
+                Row(4, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(5, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
+                Row(6, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
+                Row(7, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
@@ -492,6 +494,13 @@ namespace ChastainRush
         void GameMenuFromDebug() { if (pages.Count > 0) BackPage(); else { CapturePage(); page = "root"; MenuInput.ConsumeThroughRelease(); Show(); } }
 
         static readonly string[] DifficultyNames = { "Easy", "Normal", "Hard" };
+        // Round 35 (Part C): Racer's Free Roam "Weather" row (its EXPLORE page; here on the title and the free-roam pause menu):
+        // left / right, Clear / Rain / Snow, at once (the world's weather, settings.json)
+        void RoamWeatherRow(int index)
+        {
+            var s = Racer.GameSettings.Settings;
+            Step(index, "roam-weather", "Weather:   " + (Racer.Weather)Mathf.Clamp(s.roamWeather, 0, 2), d => { s.roamWeather = (Mathf.Clamp(s.roamWeather, 0, 2) + d + 3) % 3; Racer.GameSettings.SaveSettings(); Show(); });
+        }
         void RenderRaceSetup()
         {
             var r = race ? race.Route : null; var rd = race ? race.RouteData : null;
@@ -511,18 +520,22 @@ namespace ChastainRush
             Step(2, "direction", oneWay ? "Direction:   Forward (one way only)" : $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { if (oneWay) return; Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
             Step(3, "mode", $"Opponents:   {(Current.opponents ? "3 AI drivers" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
             Step(4, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
-            Row(5, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
-            buttons[5].interactable = Current.opponents;
+            // Round 35 (Part C): Racer's Time of Day and Weather rows (left / right; Racer's menu order Dawn, Day, Dusk, Night)
+            var order = Racer.LookPresets.MenuOrder; int ti = Mathf.Max(0, Array.IndexOf(order, (Racer.TimeOfDay)Mathf.Clamp(Current.timeOfDay, 0, 3)));
+            Step(5, "timeofday", "Time of Day:   " + order[ti], d => { Current.timeOfDay = (int)order[(ti + d + order.Length) % order.Length]; Changed(); });
+            Step(6, "weather", "Weather:   " + (Racer.Weather)Mathf.Clamp(Current.weather, 0, 2), d => { Current.weather = (Mathf.Clamp(Current.weather, 0, 2) + d + 3) % 3; Changed(); });
+            Row(7, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
+            buttons[7].interactable = Current.opponents;
             if (smallOnly)
             {
                 // the trail's vehicles only (cars are not offered): left / right picks one, as the garage would
                 var cfg = car.GetComponent<VehicleConfiguration>(); var ids = rd.vehicles;
                 int vi = Mathf.Max(0, Array.IndexOf(ids, cfg ? cfg.profileId : ids[0]));
-                Step(6, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
+                Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
             }
-            else Row(6, "garage", "Garage…", () => Navigate("garage"));
-            Row(7, "start", "START RACE", StartRace);
-            Row(8, "back", "Back", BackPage);
+            else Row(8, "garage", "Garage…", () => Navigate("garage"));
+            Row(9, "start", "START RACE", StartRace);
+            Row(10, "back", "Back", BackPage);
         }
 
         // Round 18: a route with a vehicle list (Noonday Creek): a player in anything else is put in its first vehicle when the

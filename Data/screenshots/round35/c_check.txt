@@ -1,0 +1,20 @@
+Round 35 check, 2026-10-16 09:37, the exe, 1280 x 720, muted.
+
+=== Part C: pictures at three places, noon / dusk / night / rain / snow
+      noon: Free Roam Day 12 12:01 (Day) / Clear; sun 1.25, fog 100-650 m, lamps level 0.00, 0 street lamps and light poles (0 lit near)
+      dusk: Free Roam Day 12 19:43 (Dusk) / Clear; sun 0.13, fog 100-650 m, lamps level 0.61, 297 street lamps and light poles (0 lit near)
+      night: Free Roam Day 12 23:31 (Night) / Clear; sun 0.42, fog 100-650 m, lamps level 1.00, 297 street lamps and light poles (0 lit near)
+      rain: Free Roam Day 12 12:01 (Day Rain) / Rain; sun 0.48, fog 100-650 m, lamps level 0.00, 297 street lamps and light poles (0 lit near)
+      snow: Free Roam Day 12 12:01 (Day Snow) / Snow; sun 0.69, fog 100-650 m, lamps level 0.00, 297 street lamps and light poles (0 lit near)
+PASS  Part C: pictures taken at three places in five conditions (c_*.png)  -  street, canton, hub x noon, dusk, night, rain, snow
+
+=== Part C: a race in rain: the grip
+PASS  Part C: a race in rain has lower grip on the road (85 % on paved, Racer's) and stops longer  -  Clear: grip 100 % (Clear), from 23.1 m/s stopped in 8.2 m; Rain: grip 85 % (Rain), from 22.9 m/s stopped in 9.2 m; Rain, setting Off: grip 100 % (Clear), from 23.1 m/s stopped in 8.2 m
+PASS  Part C: with Weather affects grip Off, rain grips as Clear  -  Clear 8.2 m, Rain with the setting Off 8.2 m
+
+=== Part C: frame rate parked at Canton Road by the shops (after; 1280 x 720, not measured at 3840 x 2160)
+INFO  day: 246 fps average, slowest 1 % 89 fps (vSync 0, cap -1)
+INFO  night: 234 fps average, slowest 1 % 88 fps (vSync 0, cap -1)
+INFO  rain: 229 fps average, slowest 1 % 78 fps (vSync 0, cap -1)
+
+3 of 3 checks passed.

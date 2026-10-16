@@ -64,7 +64,7 @@ namespace Racer
             if (!engine || Disabled) { foreach (var v in voices) Stop(v); Playing = 0; return; }
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
             if (Time.unscaledTime >= nextPick) { nextPick = Time.unscaledTime + .25f; Pick(race, racing, traffic); }
-            float volume = GameSettings.Settings.vehicle * Quieter;   // Chastain Rush: no split-screen or weather ducking
+            float volume = GameSettings.Settings.vehicle * (1 - .3f * WeatherEffects.Duck) * Quieter;   // Chastain Rush: no split-screen (Round 35: the thunder's dip back)
             Playing = 0;
             foreach (var v in voices)
             {

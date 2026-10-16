@@ -91,7 +91,7 @@ namespace Racer
         {
             levels[index] = immediate ? 0 : Mathf.MoveTowards(levels[index], target, dt * .4f);
             // 0.76: the engine dips a little while thunder rolls (WeatherEffects.Duck), so the thunder stands out.
-            voices[index].volume = levels[index] * volume;   // Chastain Rush: no weather
+            voices[index].volume = levels[index] * volume * (1 - .3f * WeatherEffects.Duck);   // 0.76: the engine dips a little while thunder rolls (Chastain Rush, Round 35)
         }
         public void Silence()
         {

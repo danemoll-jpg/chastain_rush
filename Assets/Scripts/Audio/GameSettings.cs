@@ -36,6 +36,14 @@ namespace Racer
             public string playerName = "";
             public string[] knownNames = new string[0];
             public bool nameAsked;
+            // Racer 0.72 to 0.97 (RacerSave.Options): the Free Roam weather (0 Clear, 1 Rain, 2 Snow), its clock and calendar (a new game
+            // starts on day 12, near a full moon, at 08:00), the lightning flash (Settings > Display) and the weather's grip (Settings >
+            // Gameplay). Chastain Rush, Round 35 (Part C): the world's conditions; a race's are the race setup's (GameMenus)
+            public int roamWeather = 0;
+            public float roamHour = 8f;
+            public int roamDay = 12;
+            public bool lightningFlashes = true;
+            public bool weatherGrip = true;
         }
 
         static Options current;

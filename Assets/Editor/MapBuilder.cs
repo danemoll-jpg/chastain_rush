@@ -1193,13 +1193,15 @@ namespace ChastainRush
                 AssetDatabase.Refresh();
                 // ChastainRush/VertexLit: lit by the sun, shadows and fog, coloured per vertex (roads, houses, paint, trees).
                 // Roads, paint and driveways carry a depth offset so that what lies on the ground does not flicker with it.
-                Asphalt = MakeVertexLit("Asphalt", new Color(0.18f, 0.18f, 0.19f), 0f, -1f, -1f);
+                // Round 35 (Part C): in snow the roads, paint, drives and walks take less cover than the ground (_SnowCover), so they still read
+                Action<Material> packed = m => m.SetFloat("_SnowCover", 0.45f), trodden = m => m.SetFloat("_SnowCover", 0.7f);
+                Asphalt = MakeVertexLit("Asphalt", new Color(0.18f, 0.18f, 0.19f), 0f, -1f, -1f, packed);
                 Concrete = MakeVertexLit("Concrete", new Color(0.55f, 0.55f, 0.53f), 0f, 0f, 0f);
-                ServiceAsphalt = MakeVertexLit("ServiceAsphalt", new Color(0.30f, 0.30f, 0.30f), 0f, -1f, -1f);
+                ServiceAsphalt = MakeVertexLit("ServiceAsphalt", new Color(0.30f, 0.30f, 0.30f), 0f, -1f, -1f, packed);
                 House = MakeVertexLit("House", Color.white, 0f, 0f, 0f);
-                Paint = MakeVertexLit("RoadPaint", Color.white, 0f, -3f, -3f);
-                Driveway = MakeVertexLit("Driveway", Color.white, 0f, -1f, -1f);
-                Sidewalk = MakeVertexLit("Sidewalk", Color.white, 0f, -2f, -2f);   // Round 11: drawn over the drives it crosses
+                Paint = MakeVertexLit("RoadPaint", Color.white, 0f, -3f, -3f, packed);
+                Driveway = MakeVertexLit("Driveway", Color.white, 0f, -1f, -1f, trodden);
+                Sidewalk = MakeVertexLit("Sidewalk", Color.white, 0f, -2f, -2f, trodden);   // Round 11: drawn over the drives it crosses
                 // Round 15: instancing and the leaf tint are set before the asset is written; set after, they lived only in memory,
                 // and the exe drew no trees (and nothing after them) whenever the material was read back from disk
                 Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f, m => { m.enableInstancing = true; m.SetFloat("_LeafTint", 1f); });

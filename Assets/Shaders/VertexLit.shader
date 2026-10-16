@@ -5,6 +5,11 @@
 //   _Sway      0 for static meshes; 1 for trees (vertex alpha = how much a vertex moves, uv0.x = 1 on leaves)
 //   _LeafTint  1 for trees: patch-coherent darker/lighter green per tree, from where the tree stands
 //   _OffsetFactor/_OffsetUnits  depth bias, so paint lies on a road without flickering
+// Round 35 (Part C): the weather and the night (Racer's WorldLook sets the globals _RacerWet and _RacerSnow, 0..1):
+//   wet  - upward faces darker, with a sheen of the main light (roads, drives, roofs);
+//   snow - upward faces whitened, by _SnowCover (1; the roads, paint, drives and walks less, so they still read);
+//   the scene's other lights (headlights, the street lamps) light it too at night (_RacerLamps: 0 by day and underground, so
+//   the accepted day and the pipe network look as before).
 Shader "ChastainRush/VertexLit"
 {
     Properties
@@ -14,6 +19,7 @@ Shader "ChastainRush/VertexLit"
         _LeafTint ("Leaf tint", Float) = 0
         _OffsetFactor ("Depth offset factor", Float) = 0
         _OffsetUnits ("Depth offset units", Float) = 0
+        _SnowCover ("Snow cover (Round 35)", Float) = 1
     }
     SubShader
     {
@@ -26,7 +32,9 @@ Shader "ChastainRush/VertexLit"
             float _LeafTint;
             float _OffsetFactor;
             float _OffsetUnits;
+            float _SnowCover;
         CBUFFER_END
+        float _RacerWet, _RacerSnow, _RacerLamps;
         struct A { float4 positionOS : POSITION; float3 normalOS : NORMAL; float4 color : COLOR; float2 uv : TEXCOORD0; UNITY_VERTEX_INPUT_INSTANCE_ID };
         float3 Origin() { return float3(UNITY_MATRIX_M._m03, UNITY_MATRIX_M._m13, UNITY_MATRIX_M._m23); }
         float3 Sway(float3 world, float weight)
@@ -64,6 +72,7 @@ Shader "ChastainRush/VertexLit"
             #pragma multi_compile _ _MAIN_LIGHT_SHADOWS _MAIN_LIGHT_SHADOWS_CASCADE _MAIN_LIGHT_SHADOWS_SCREEN
             #pragma multi_compile_fragment _ _SHADOWS_SOFT _SHADOWS_SOFT_LOW _SHADOWS_SOFT_MEDIUM _SHADOWS_SOFT_HIGH
             #pragma multi_compile_fog
+            #pragma multi_compile _ _ADDITIONAL_LIGHTS_VERTEX _ADDITIONAL_LIGHTS
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             struct V
@@ -104,9 +113,32 @@ Shader "ChastainRush/VertexLit"
                     albedo *= lerp(half3(1, 1, 1), tint, v.leaf);
                 }
                 float3 n = normalize(v.normalWS);
+                // Round 35: wet and snowy ground (upward faces)
+                half up = saturate((n.y - 0.55) / 0.3);
+                albedo = lerp(albedo, half3(0.88, 0.90, 0.94), _RacerSnow * _SnowCover * up);
+                half wet = _RacerWet * up * (1 - _RacerSnow);
+                albedo *= 1 - 0.3 * wet;
                 Light light = GetMainLight(TransformWorldToShadowCoord(v.world));
                 half3 direct = light.color * saturate(dot(n, light.direction)) * light.shadowAttenuation;
                 half3 c = albedo * (direct + SampleSH(n));
+                if (wet > 0.001)
+                {
+                    float3 view = normalize(GetWorldSpaceViewDir(v.world));
+                    half spec = pow(saturate(dot(reflect(-view, n), light.direction)), 40) * light.shadowAttenuation;
+                    c += light.color * spec * 0.45 * wet;
+                }
+                // Round 35: the other lights (per pixel, no shadows): headlights, the street lamps, the pipes' lamps
+                #if defined(_ADDITIONAL_LIGHTS) || defined(_ADDITIONAL_LIGHTS_VERTEX)
+                if (_RacerLamps > 0.001)
+                {
+                uint lights = GetAdditionalLightsCount();
+                for (uint li = 0u; li < lights; ++li)
+                {
+                    Light l = GetAdditionalLight(li, v.world);
+                    c += albedo * l.color * saturate(dot(n, l.direction)) * l.distanceAttenuation * _RacerLamps;
+                }
+                }
+                #endif
                 c = MixFog(c, v.fog);
                 return half4(c, 1);
             }

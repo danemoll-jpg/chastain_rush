@@ -127,7 +127,9 @@ namespace ChastainRush
                 return boards;
             }
         }
-        public string BoardCategory => Route != null ? RecordBoards.Category(Route.Name, Route.Direction, Route.Laps) : "";
+        public string BoardCategory => Route != null ? RecordBoards.Category(Route.Name, RecordDirection, Route.Laps) : "";
+        // Round 35 (Part C): Racer's WeatherGrip.RecordTag: a race in rain or snow (with the grip setting On) keeps its times apart ("forward-rain")
+        string RecordDirection => Route.Direction + Racer.WeatherGrip.RecordTag(Racer.WeatherGrip.ChosenFor());
         public readonly FinishPresentation FinishCards = new FinishPresentation();
         string attempt = ""; readonly List<int> lapRanks = new List<int>();
         public int LastLapRank { get; private set; }
@@ -141,7 +143,12 @@ namespace ChastainRush
                 try
                 {
                     var j = JsonUtility.FromJson<RouteJson>(embeddedRouteJsons[i]); if (j == null || string.IsNullOrEmpty(j.name)) continue;
-                    foreach (var d in new[] { "forward", "reverse" }) if (j.Allows(d) && (d == "forward" || j.directions != null && j.directions.Length > 0 || j.reverse_grid_back_m > 0f)) list.Add((j.name, d));
+                    foreach (var d in new[] { "forward", "reverse" }) if (j.Allows(d) && (d == "forward" || j.directions != null && j.directions.Length > 0 || j.reverse_grid_back_m > 0f))
+                    {
+                        list.Add((j.name, d));
+                        // Round 35 (Part C): a wet or snowy board, once it has a time
+                        foreach (var w in new[] { "-rain", "-snow" }) { string key = j.name + "|" + d + w; if (Boards != null && (Boards.Top(c => RecordBoards.LapCategory(c) == key, false).Count > 0 || Boards.Top(c => RecordBoards.LapCategory(c) == key, true).Count > 0)) list.Add((j.name, d + w)); }
+                    }
                 }
                 catch (Exception) { }
             }
@@ -767,7 +774,7 @@ namespace ChastainRush
 
         // Round 13: kept per vehicle. The Street Classic ("original", the retired prototype's own tuning) keeps the key the
         // records had before, so its best times carry on; every other vehicle adds its id
-        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.Name}|{Route.Direction}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
+        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.Name}|{RecordDirection}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
         public void ReloadRecords() { if (Route != null) LoadRecords(); }   // Round 13: after a vehicle switch
 
         public static string RecordsPath()

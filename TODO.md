@@ -115,6 +115,32 @@ gives full grip.
 For Dan to check (when done): the Underground race's new line, the radio through a race and underground, a day in free roam,
 rain, snow and a storm, a race at night.
 
+**Round 35 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 10:02.** Evidence: `Data/screenshots/round35/` (`a_*`, `b_*`, `c_*`; street pictures in `local/round35/`, not committed).
+A DONE. The line (the start: one line) is 95 m into M5 from the hub, on its 80 m straight: 62 m of straight pipe before it (heading
+   within 0.1 degree), 19 m after (`make_underground_route.py` `gate_s` 139.8 m). Same loop, cut elsewhere: lap length unchanged
+   (1370 m); records kept. Drawn as a checkered hoop round the pipe (route `gate_ring_m`). The grid stays on the mid ledge (202 m run-in).
+   Decided: finished AI cars drive on to J3 and park along its far wall, off the lap (`finish_park_gap_m`, `_speed`). Check: picture from
+   30 m back; 3-lap race, 3 AI, every shortcut taken, no missed checkpoint (`a_underground_race_check.txt`).
+B DONE. Cause: the radio's voice had priority 180 (least important) with 32 real voices; the pipes' streams, waterfalls, AI engines and
+   traffic (128 to 160) took it. Now priority 0 and past the glass stretches' low-pass (`LocalRadio`). Check, whole Underground and Ridge
+   races (traffic Normal), every frame: before, silent for most of the Underground race (40 s gaps) and up to 8 s on the Ridge; after,
+   no gap except the song change (`b_radio_*_check.txt`).
+C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1 min = 1 hour, 30-day moon, starts day 12 08:00), its
+   Weather on the title and free-roam pause menus; RACE SETUP has Time of Day (Dawn / Day / Dusk / Night) and Weather (race_settings.json,
+   the game layer); SETTINGS: Display > Lightning flashes, Gameplay > Weather affects grip; top-left Free Roam clock with the moon.
+   Night: moon, stars, headlights; street lamps and light poles glow, the nearest 8 cast light (new: Racer has none); the roads now take
+   headlights. Rain / snow: falling weather, clouds, thunder and lightning, wet sheen, snow on ground, roofs and trees, ice on ponds,
+   grip 85 % paved / 75 % grass in rain (70 / 62 % snow). Underground: no weather, the light unchanged; no wet grip there.
+   Check: three places x noon / dusk / night / rain / snow (`c_*.png`); rain race brakes 9.2 m vs 8.2 m, setting Off 8.2 m.
+   Frame rate at the shops, 1280 x 720 (not 3840 x 2160): before 285 fps; after day 266, night 218, rain 214 (`c_fps.txt`).
+   Decided: Clear Day is this game's day; other looks are Racer's relative to it. Racer's water reflection probes left out (1.4 ms a frame).
+   Left behind: SnowScenes (Racer's sled and pool scenes are at Woodstock places, made of its pedestrians), the gates' night glow (unlit
+   here already), split-screen, Trailer Mode. Wet / snow times keep their own Top 10 boards (Racer's record tag).
+   Imported from Racer: WorldLook, WeatherEffects, WeatherSky, SkyClouds, MoonIcon, WeatherGrip, ArcadeVehicle's grip lines, thunder
+   ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
+For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
+
 ## QUEUED rounds
 None.
 

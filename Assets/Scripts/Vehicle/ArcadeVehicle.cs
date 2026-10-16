@@ -41,6 +41,7 @@ namespace Racer
         float steer;
         public float VisualSteering => steer;
         public float WaterImmersion { get; private set; }
+        public float GripScale { get; private set; } = 1; // 0.97 Part B: the weather's multiplier on the tyres' grip under this vehicle (1 = dry). Chastain Rush, Round 35 (Part C)
         public float WaterSurface { get; private set; }
         // Chastain Rush, Round 19: the "up" a wheel's ground must face and the vehicle settles to in the air (world up; a drainage
         // pipe's DrainPipe turns it toward the pipe's axis while it holds a fast vehicle to the wall)
@@ -73,13 +74,14 @@ namespace Racer
         public void Simulate(float throttle, float brakeReverse, float steering, float dt)
         {
             // Round 13: Racer's current ArcadeVehicle (0.97) re-applied here: the vehicle profile's contact mode and the small
-            // vehicles' wipeout. Its weather grip stays behind (WaterFeedback came in Round 15) (clear weather: the grip scale is always 1)
+            // vehicles' wipeout (WaterFeedback came in Round 15, the weather grip in Round 35)
             var configuration = GetComponent<VehicleConfiguration>();
             if(configuration) configuration.PrepareContacts();
             if (configuration && configuration.WipedOut && transform.up.y<.35f) { throttle = 0; steering *= .25f; }
             GroundedWheels = 0;
             SuspensionLift = 0;
             Vector3 normal = Vector3.zero;
+            var weather = WeatherGrip.InEffect; float gripSum = 0; int gripCount = 0; // 0.97 Part B (Chastain Rush, Round 35)
             foreach (Vector3 local in suspensionPoints)
             {
                 Vector3 origin = transform.TransformPoint(local);
@@ -87,6 +89,7 @@ namespace Racer
                 if (Vector3.Dot(hit.normal, SurfaceUp) < 0.35f) continue;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
                 GroundedWheels++;
                 normal += hit.normal;
+                if (weather != Weather.Clear) { gripSum += WeatherGrip.ForHit(weather, hit.collider, hit.point); gripCount++; }
                 float compression = suspensionLength - hit.distance;
                 float speed = Vector3.Dot(Body.GetPointVelocity(origin), transform.up);
                 float lift = Mathf.Clamp(compression * springStrength - speed * suspensionDamping, 0, maxSuspensionAcceleration);
@@ -94,6 +97,9 @@ namespace Racer
                 Body.AddForceAtPosition(transform.up * (lift / suspensionPoints.Length), origin, ForceMode.Acceleration);
             }
             bool grounded = GroundedWheels >= 2;
+            // 0.97 Part B: the grip of the surface under the wheels, eased in so crossing a verge or a patch of ice is not a snap
+            if (weather == Weather.Clear) GripScale = 1; else if (gripCount > 0) GripScale = Mathf.MoveTowards(GripScale, gripSum / gripCount, 2.5f * dt);
+            float gs = GripScale;
             float immersed=ShallowWater.Sample(this,out float surface);
             WaterSurface=surface;
             WaterImmersion=immersed<=0?0:Mathf.MoveTowards(WaterImmersion,immersed,dt*2.5f);
@@ -106,9 +112,9 @@ namespace Racer
             {
                 // Opposite pedal brakes first. Holding it through a stop engages the other direction.
                 float drive;
-                if (brakeReverse > 0.05f && speedForward > 0.6f) drive = -braking * brakeReverse;
-                else if (throttle > 0.05f && speedForward < -0.6f) drive = braking * throttle;
-                else drive = throttle * acceleration * Mathf.Clamp01(1 - Mathf.Max(0, speedForward) / topSpeed)
+                if (brakeReverse > 0.05f && speedForward > 0.6f) drive = -braking * gs * brakeReverse;
+                else if (throttle > 0.05f && speedForward < -0.6f) drive = braking * gs * throttle;
+                else drive = throttle * acceleration * Mathf.Lerp(1, gs, .5f) * Mathf.Clamp01(1 - Mathf.Max(0, speedForward) / topSpeed)
                            - brakeReverse * reverseAcceleration * Mathf.Clamp01(1 - Mathf.Max(0, -speedForward) / reverseSpeed);
                 if (throttle < 0.05f && brakeReverse < 0.05f) drive -= speedForward * coastingDrag;
                 drive *= Mathf.Lerp(1,.48f,WaterImmersion);
@@ -126,7 +132,9 @@ namespace Racer
                 }
                 Body.AddForce(-Vector3.ProjectOnPlane(Body.linearVelocity,up)*(.95f*WaterImmersion),ForceMode.Acceleration);
                 float sideways = Vector3.Dot(Body.linearVelocity, right);
-                Body.AddForce(-right * Mathf.Clamp(sideways * lateralGrip, -maxGripAcceleration, maxGripAcceleration), ForceMode.Acceleration);
+                // wet or snowy ground: a lower ceiling on the sideways grip; in snow also a slower pull back (more slide, slower recovery)
+                float recover = gs >= 1 ? 1 : weather == Weather.Snow ? gs : Mathf.Sqrt(gs);
+                Body.AddForce(-right * Mathf.Clamp(sideways * lateralGrip * recover, -maxGripAcceleration * gs, maxGripAcceleration * gs), ForceMode.Acceleration);
                 float angle = Mathf.Lerp(slowSteerAngle, fastSteerAngle, Mathf.Clamp01(Mathf.Abs(speedForward) / topSpeed));
                 float yaw = Mathf.Tan(steer * angle * Mathf.Deg2Rad) * speedForward / wheelbase;
                 yaw = Mathf.Clamp(yaw, -1.6f, 1.6f);
