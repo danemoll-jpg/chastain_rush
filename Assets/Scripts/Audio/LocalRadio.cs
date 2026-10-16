@@ -207,6 +207,7 @@ namespace Racer
         public void Next()
         {
             if(!Settings.radioOn||Scanning)return;
+            pendingSeek=0f;   // Chastain Rush, Round 34: a new song starts at its start
             if(library.Count==0){Status="No playable files. Settings / Music / Open folder, then Rescan";ShowSong();return;}
             if(bag.Count==0)
             {
@@ -222,6 +223,7 @@ namespace Racer
         public void Previous()
         {
             if(!Settings.radioOn||Scanning)return;
+            pendingSeek=0f;   // Chastain Rush, Round 34
             while(history.Count>0){var path=history[^1];history.RemoveAt(history.Count-1);if(library.Contains(path)&&!failed.Contains(path)){Play(path,false);return;}}
             ShowSong();
         }
@@ -259,16 +261,40 @@ namespace Racer
         }
         void StartClip()
         {
-            lastPlayed=current;
+            lastPlayed=current;held=false;songLength=clip.length;   // Chastain Rush, Round 34
             source.clip=clip;source.volume=Settings.music*.32f;
             if(Settings.radioOn)source.Play();
+            if(pendingSeek>0f){try{source.time=Mathf.Min(pendingSeek,clip.length-.1f);}catch{}}   // Chastain Rush, Round 34: the same song again, where it was
+            else resumeTries=0;
+            lastTime=pendingSeek;pendingSeek=0f;
             retryAt=Time.unscaledTime+1.5f; // Give a newly opened streaming voice time to start.
             loading=null;Status="Ready / "+library.Count+" tracks";SongToast();
             Debug.Log("[Radio] playing "+ChannelName+": "+Path.GetFileName(current)+$" ({clip.length:0} s)");   // Chastain Rush: for checks
         }
-        void Fail(string path){failed.Add(path);loading=null;Status="Skipped unreadable or oversized audio";song=Status;SongToast(4);retryAt=Time.unscaledTime+.5f;}
+        void Fail(string path){pendingSeek=0f;failed.Add(path);loading=null;Status="Skipped unreadable or oversized audio";song=Status;SongToast(4);retryAt=Time.unscaledTime+.5f;}
         void StopLoad(){revision++;if(request!=null){request.Abort();request.Dispose();request=null;}if(loading!=null){StopCoroutine(loading);loading=null;}}
         
+        // Chastain Rush, Round 34 (Part B, Dan: "every time click back to the game it skips to the next song. Let it stay on the same
+        // song"): losing focus pauses the song where it is, getting it back goes on from there (only the player's controls and a
+        // song's real end change the song). The game's own menus never touch it (ignoreListenerPause).
+        float lastTime,resumeFrom,pendingSeek,songLength;int resumeTries;bool held;   // songLength: kept apart, a reset audio device destroys the clip
+        public bool Held=>held;
+        void OnApplicationFocus(bool focus)=>Hold(!focus);
+        void OnApplicationPause(bool paused)=>Hold(paused);
+        public void Hold(bool hold)   // public for the check (Checks/Round20Runner.R34.cs)
+        {
+            if(hold){if(!held&&source.isPlaying&&clip){lastTime=source.time;source.Pause();held=true;}return;}
+            if(!held)return;
+            held=false;retryAt=Time.unscaledTime+1.5f;
+            if(clip&&source.clip==clip&&Settings.radioOn){source.UnPause();if(!source.isPlaying)Resume();}
+        }
+        void Resume()
+        {
+            resumeTries++;resumeFrom=lastTime;
+            Debug.Log($"[Radio] going on with {Path.GetFileName(current)} at {lastTime:0.0} s"+(resumeTries>1?" (the voice is gone: the same file again)":""));
+            if(resumeTries==1&&clip&&source.clip==clip){try{source.time=Mathf.Min(lastTime,clip.length-.1f);}catch{}source.Play();return;}
+            pendingSeek=lastTime;Play(current,false);   // a reset audio device leaves a streamed clip dead: the same song again from the file, at the same place
+        }
         void Update()
         {
             source.volume=Settings.music*.32f;   // Chastain Rush: no thunder, police radio or title speech to dip under;// 0.76: dips under thunder; 0.99: and a little while the police radio speaks
@@ -290,7 +316,14 @@ namespace Racer
             if(metadata!=null&&metadata.IsCompleted){if(metadata.IsCompletedSuccessfully&&clip&&metadataPath==current&&metadataRevision==revision){song=metadata.Result;SongToast();}metadata=null;}
             if(metadata==null&&clip&&(metadataPath!=current||metadataRevision!=revision)){metadataPath=current;metadataRevision=revision;var path=current;metadata=Task.Run(()=>ReadTitle(path));}
             if(picker!=null&&picker.IsCompleted){var path=picker.Result;picker=null;if(path!=null)SetFolder(path);}
-            if(!Scanning&&Settings.radioOn&&loading==null&&!source.isPlaying&&library.Count>0&&Time.unscaledTime>=retryAt){retryAt=Time.unscaledTime+1;Next();}
+            // Chastain Rush, Round 34 (Part B): a song ends only at its end. Racer read any stopped voice as the song's end, so a voice
+            // stopped by the window losing focus (or the audio device being reset) skipped to the next song; now it goes on from where it was.
+            if(source.isPlaying&&clip){if(source.time>.05f){lastTime=source.time;if(source.time>resumeFrom+1f)resumeTries=0;}}
+            else if(!held&&!Scanning&&Settings.radioOn&&loading==null&&library.Count>0&&Time.unscaledTime>=retryAt)
+            {
+                retryAt=Time.unscaledTime+1;
+                if(current!=null&&lastTime>0f&&lastTime<songLength-2f&&resumeTries<3)Resume();else{lastTime=0f;resumeTries=0;Next();}
+            }
             // Chastain Rush: while driving (free roam or a race), not while a menu, the map or the debug menu has the input
             if(ChastainRush.GameMenus.Open||MenuInput.Blocked||ChastainRush.WorldMap.OwnsInput||(ChastainRush.DeveloperHud.Instance&&ChastainRush.DeveloperHud.Instance.MenuOpen))return;
             var k=Keyboard.current;var g=Gamepad.current;

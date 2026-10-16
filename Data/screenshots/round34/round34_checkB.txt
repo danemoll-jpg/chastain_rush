@@ -1,0 +1,7 @@
+Round 34 check, 2026-10-16 03:03, the exe, 1280 x 720, muted.
+
+=== Part B: the radio keeps its song when the game loses focus
+PASS  Part B: focus lost and back five times (the fifth with the audio device reset): the same song, within 1 s of where it was  -  07 - Time Is Tight.mp3; 1: 5.2 s -> 5.2 s same song; 2: 7.2 s -> 7.2 s same song; 3: 9.2 s -> 9.2 s same song; 4: 11.2 s -> 11.2 s same song; 5 (and the device reset): 13.2 s -> 13.2 s same song
+PASS  Part B: the game's pause and back: the same song, still playing  -  15.2 s -> 18.2 s, same song
+
+2 of 2 checks passed.
