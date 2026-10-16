@@ -131,6 +131,36 @@ at the right place, the Records page shows every board; pictures of the name ent
 For Dan to check (when done): Canton Road's lane at speed, the lots on slopes, the white lines at BUG-007, the driveway,
 lap counting from the grid, the radio after Alt-Tab, his name and the Top 10 boards.
 
+**Round 34 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 03:36.** Evidence: `Data/screenshots/round34/` (`round34_check*.txt`; `A_bug*.png` from Dan's spots; Part C `34_*.png`).
+A1, A2 DONE. Cause: service roads ending at Canton Road's / Chastain Corner's centerline levelled flat strips across the lanes (steps of
+   0.3-0.4 m). Mapgen `road_flatten.wider_wins_rects` (those two places only): a road's level core keeps its height where a narrower road
+   ends on it. Canton's worst sag 0.33 m before, 0.02 m after; 40 m/s from z 630 to 860, no bump-log event; Chastain Corner no grass.
+A3 DONE. Road 564629063 runs on 20.3 m to building 2158's wall (`MapBuilder.Round34.cs`; OSM calls 2158 retail, not re-dressed).
+A4 DONE. Decided: stall lines only where the stall's ground is at most a 5 % grade corner to corner and its middle within 8 cm
+   (`StallLevel`), on every business lot: 1,848 of 2,552 stalls now unpainted. Shopping center and Chastain Lakes lots (graded) unchanged.
+A5 DONE. Rule: pieces of one street share paint only where one runs straight on from the other at the same width; otherwise a road's
+   paint stops on the road it joins (`RoadIndex.CoversPaint`). Canton Road's carriageways no longer paint an X at BUG-007.
+A6 DONE. Cause: any forward crossing of the line ended a lap; back over the line and across again counted lap 1 with every checkpoint
+   missed (no log of Dan's run; his 54 s lap fits). Now only after a checkpoint or the lap's far half (`RaceEntrant.LapAway`). Shared code:
+   all four routes had it and are fixed; none starts past its line. Check: clock starts at the line, lap 1; back and across: still lap 1.
+   Dan's `race_records.json`: the Chastain Ridge entry removed, backup `race_records.before-round34.json` beside it.
+B DONE. Cause: Racer's radio took any stopped voice for the song's end. Focus lost pauses the song, focus back goes on from there; a voice
+   killed by an audio-device reset reloads the same song at the same place (`LocalRadio.Hold`). Check: 5 cycles and a pause, same song and
+   position. (Racer has the same bug; not edited.)
+C DONE. Racer's Top 10 per route and direction: best laps, best races (each lap count, shown together with a Laps column); name, time,
+   vehicle, date; the player's times only (as Racer). Name asked once on the title menu with Racer's on-screen keyboard (A types, X
+   deletes, Y space, Start saves, B cancels), changed in SETTINGS > GAMEPLAY; finish panel shows Racer's cards (TOP 10 TIME! #n ...);
+   RECORDS on the title, pause and race-over menus (left / right: route and direction, laps / races, vehicle; B back). Dan's bests carried
+   as legacy entries shown as "Player" until he gives his name; nothing written until his first new time or name (`top-ten-v1.json`,
+   AtomicSave, an unreadable file never overwritten). Check 11 of 11 with a virtual pad in the check's own folder (run `-r34Only records`
+   on its own: after the lap part the boards are already open and its test bests are not read, 2 C4 fails in the all-parts run).
+Imported from Racer: RecordBoards, PlayerNames, FinishPresentation (`Race/RecordBoards.cs`, trimmed); RaceMenus' Records page, table rows and
+   on-screen keyboard (rewritten into `Menus/GameMenus.Records.cs`). Left behind: Describe, RecordView, Migrate, Adopt, the InputField draft.
+For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), BUG-007, the driveway, a race from the grid, the radio
+   after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
+   exceptions in every exe log. Frame rate not measured.
+
 ## QUEUED rounds
 None.
 

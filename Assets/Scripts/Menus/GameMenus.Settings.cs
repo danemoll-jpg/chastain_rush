@@ -107,6 +107,7 @@ namespace ChastainRush
             {
                 details.gameObject.SetActive(true); details.text = "Traffic drives the roads in free roam and races (a race closes its own roads to it)."; details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 58;
                 Step(n++, "traffic", "Traffic:   " + Traffic.LevelNames[Mathf.Clamp(s.traffic, 0, 3)], d => Adjust(() => s.traffic = Mathf.Clamp(s.traffic + d, 0, 3)));
+                Row(n++, "player-name", "Player name:   " + PlayerNames.Player + "   (A: change)", () => OpenNameEntry(s.playerName, PlayerNames.SetPlayer));   // Round 34 (C2): Racer's Settings > Gameplay row
             }
             if (page == "settings-controls") { RenderControls(n); return; }
             Row(14, "back", "Back", BackPage);

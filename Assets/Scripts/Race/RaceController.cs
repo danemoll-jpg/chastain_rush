@@ -115,6 +115,40 @@ namespace ChastainRush
         [Serializable] class RecordFile { public List<RecordEntry> entries = new List<RecordEntry>(); }
         RecordFile records = new RecordFile();
 
+        // Round 34 (C1, C2): Racer's Top 10 boards (Race/RecordBoards.cs) beside race_records.json (a check's own folder in a check),
+        // opened once; the player's every lap and finished race go on them (Racer's RaceFlow.LapCompleted; the AI's never do)
+        static RecordBoards boards; static string boardsDir;
+        public static RecordBoards Boards
+        {
+            get
+            {
+                string dir = Path.GetDirectoryName(RecordsPath());
+                if (boards == null || boardsDir != dir) { boardsDir = dir; boards = new RecordBoards(dir, RecordsPath()); }
+                return boards;
+            }
+        }
+        public string BoardCategory => Route != null ? RecordBoards.Category(Route.Name, Route.Direction, Route.Laps) : "";
+        public readonly FinishPresentation FinishCards = new FinishPresentation();
+        string attempt = ""; readonly List<int> lapRanks = new List<int>();
+        public int LastLapRank { get; private set; }
+        public int RaceRank { get; private set; }
+        // every route and the directions it is raced in, for the Records page
+        public List<(string route, string direction)> RecordTracks()
+        {
+            var list = new List<(string, string)>();
+            for (int i = 0; i < (routeFileNames?.Length ?? 0); i++)
+            {
+                try
+                {
+                    var j = JsonUtility.FromJson<RouteJson>(embeddedRouteJsons[i]); if (j == null || string.IsNullOrEmpty(j.name)) continue;
+                    foreach (var d in new[] { "forward", "reverse" }) if (j.Allows(d) && (d == "forward" || j.directions != null && j.directions.Length > 0 || j.reverse_grid_back_m > 0f)) list.Add((j.name, d));
+                }
+                catch (Exception) { }
+            }
+            return list;
+        }
+        string VehicleId => car && car.GetComponent<VehicleConfiguration>() ? car.GetComponent<VehicleConfiguration>().profileId : "original";
+
         // ---------------------------------------------------------------- setup
 
         void Awake() { Instance = this; }
@@ -198,6 +232,8 @@ namespace ChastainRush
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
             RaceClock = 0f; PlayerFinishedAt = 0f; winnerCelebrated = false; parkSlots = 0;
             NewBestLap = NewBestTotal = false;
+            attempt = Guid.NewGuid().ToString("N"); lapRanks.Clear(); LastLapRank = RaceRank = 0;   // Round 34 (C2): Racer's RaceFlow at the countdown
+            Boards.BeginAttempt(); FinishCards.Begin(Boards, BoardCategory, BestLap, BestTotal);
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f;
             RemoveAi();
@@ -419,6 +455,7 @@ namespace ChastainRush
             e.LapTimes.Add(lap); e.CompletedLaps++;
             bool best = false;
             if (e.IsPlayer) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
+            if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o")); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
             string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
             string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
             e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
@@ -459,6 +496,9 @@ namespace ChastainRush
             bool bestTotal = BestTotal <= 0f || total < BestTotal;
             if (bestTotal) { BestTotal = total; NewBestTotal = true; }
             SaveRecords();
+            RaceRank = Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"));   // Round 34 (C1, C2)
+            FinishCards.Finish(e.LapTimes, lapRanks.ToArray(), attempt, total, RaceRank);
+            Log($"TOP 10: race {(RaceRank > 0 ? "#" + RaceRank : "not on the board")}, laps {string.Join(" ", lapRanks.ConvertAll(x => x > 0 ? "#" + x : "-"))}");
             Say($"Finished! Total {Fmt(total)}", 10f);
             markers.Refresh(this);
         }
@@ -921,14 +961,17 @@ namespace ChastainRush
             // Round 15 (item 11): the finishing order with names, vehicles and times (penalties included), under the player's own lines
             var order = Ordered();
             float extra = Entrants.Count > 1 ? 40 + 26 * order.Count : 0;
-            var r = new Rect((w - 760) / 2f, h * 0.12f, 760, 390 + extra);
+            var r = new Rect((w - 860) / 2f, h * 0.12f, 860, 418 + extra);
             GUI.Box(r, GUIContent.none, panel);
             Shadowed(new Rect(r.x + 20, r.y + 10, r.width, 44), "FINISH", big);
             Shadowed(new Rect(r.x + 20, r.y + 60, r.width, 30), $"Total time   <b>{Fmt(FinalTotal)}</b>" + (NewBestTotal ? "   NEW BEST" : "") + (PenaltyTotal > 0f ? $"   (clock {Fmt(FinalTotal - PenaltyTotal)} + {PenaltyTotal:0} s penalties)" : ""), small);
             float best = 0f; foreach (var l in LapTimes) if (best <= 0f || l < best) best = l;
             Shadowed(new Rect(r.x + 20, r.y + 88, r.width, 30), $"Best lap this race   <b>{Fmt(best)}</b>" + (NewBestLap ? "   NEW BEST" : ""), small);
-            Shadowed(new Rect(r.x + 20, r.y + 116, r.width, 30), $"Record: best lap {Fmt(BestLap)}   best total {Fmt(BestTotal)}", small);
-            float y = r.y + 154;
+            // Round 34 (C2): Racer's finish cards: what the best lap and the total did on the Top 10
+            string Card(string what, FinishPresentation.Result c) => c == null ? $"{what}   -" : $"<b>{what}</b>   " + (c.rank > 0 ? $"<color=#4CF2CF>{c.headline}   #{c.rank}</color>" : c.headline) + "   " + c.comparison.Replace("\n", "   ");
+            Shadowed(new Rect(r.x + 20, r.y + 116, r.width - 30, 30), Card("TOP 10  BEST LAP", FinishCards.Lap), small);
+            Shadowed(new Rect(r.x + 20, r.y + 144, r.width - 30, 30), Card("TOP 10  TOTAL RACE", FinishCards.Race), small);
+            float y = r.y + 182;
             Shadowed(new Rect(r.x + 20, y, r.width, 26), PenaltyTotal > 0f ? $"<color=#ffb040>Penalties  +{PenaltyTotal:0} s  ({MissedTotal} missed checkpoint{(MissedTotal == 1 ? "" : "s")}, {MissPenaltySeconds:0} s each)</color>" : "Penalties  none", small); y += 28;
             foreach (var line in LapLog) { Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), line, small); y += 24; }
             if (Entrants.Count > 1)

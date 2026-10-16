@@ -1,0 +1,27 @@
+Round 34 check, 2026-10-16 03:36, the exe, 1280 x 720, muted.
+
+=== A6: the first crossing of the line (Chastain Ridge, from the grid)
+PASS  A6: from the grid, the clock starts at the first crossing of the line: lap 1, no penalty  -  grid z 630, line z 700; clock not started 6 m short of the line; after it: started True, HUD lap 1, penalty 0 s, clock 1.8 s
+PASS  A6: back over the line and across it again: still lap 1, no penalty  -  HUD lap 1, laps counted 0, penalty 0 s
+
+=== A1: Canton Road Northeast's northbound lane, the Drifter Twin flat out
+PASS  A1: no bump-log event from z 650 to z 840 at speed  -  top speed 40.1 m/s, least wheels down 4, longest air 0.18 s, events in the stretch 0
+
+=== Part B: the radio keeps its song when the game loses focus
+PASS  Part B: focus lost and back five times (the fifth with the audio device reset): the same song, within 1 s of where it was  -  09 - Shambala.mp3; 1: 26.3 s -> 26.3 s same song; 2: 28.3 s -> 28.3 s same song; 3: 30.3 s -> 30.3 s same song; 4: 32.3 s -> 32.3 s same song; 5 (and the device reset): 34.3 s -> 34.3 s same song
+PASS  Part B: the game's pause and back: the same song, still playing  -  36.4 s -> 39.4 s, same song
+
+=== Part C: Top 10 boards, the player's name, the Records page (the check's own files)
+FAIL  C4: the bests are carried onto the boards, unnamed, nothing written yet (loading never writes)  -  lap board 0, race board 0, file not written
+PASS  C2: the welcome asks the name on the on-screen keyboard  -  title/keyboard: WELCOME: WHAT'S YOUR NAME?
+PASS  C2: the name typed with the controller and saved (Start)  -  typed "Dan", player name "Dan", page title/root, settings C:\Users\danmo\chastain_rush\local\round34\checkFinal\settings.json
+FAIL  C4: the carried entries take the name, saved to the check's own boards file
+PASS  C1: the 1-lap race finished; its lap is on the lap board at the right place, named, with vehicle and date  -  lap 54.716 s, missed 0: place 1 (expected 1) of 1; board: 1. 0:54.716 Dan drifter
+PASS  C1: its total is on the 1-lap race board (#1, a new board)  -  total 54.716 s, rank 1
+PASS  C2: the finish panel has the places  -  FIRST COURSE RECORD! #1 / FIRST COURSE RECORD! #1
+PASS  C3: RECORDS opens on the route just raced, best laps  -  race/records: Chastain Glen loop - Forward
+PASS  C3: right on the board row: best races  -  BEST RACES
+PASS  C3: left / right steps through every route and direction and back round  -  Chastain Glen loop - Forward, Chastain Glen loop - Reverse   (no times yet), Chastain Ridge - Forward   (no times yet), Noonday Creek - Forward   (no times yet), Noonday Creek - Reverse   (no times yet), Underground - Forward   (no times yet) (routes and directions: 6)
+PASS  C3: B goes back  -  race/root
+
+14 of 16 checks passed.

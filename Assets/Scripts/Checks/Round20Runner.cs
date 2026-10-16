@@ -91,6 +91,7 @@ namespace ChastainRush
                 if (Do("lap")) yield return Guard(R34Lap());
                 if (Do("bumps")) yield return Guard(R34Bumps());
                 if (Do("radio")) yield return Guard(R34Radio());   // Part B (Round20Runner.R34B.cs)
+                if (Do("records")) yield return Guard(R34Records());   // Part C (Round20Runner.R34C.cs)
             }
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();

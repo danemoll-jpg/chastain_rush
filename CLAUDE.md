@@ -314,6 +314,13 @@ drivers, 15 menus and the garage.
 open roads (Canton Road, Chastain Corner, Chastain Ridge Drive, the Ridge leap off its dead end onto New Chastain Road; S1 Knoll hop, S2
 Storage hop; dirt piles with aimed launches, `MapBuilder.ChastainRidge.cs`; `reset_skip` in `CarRecovery`; traffic on the course, `Traffic.Close`).
 Imported from Racer: nothing.
+**Round 34 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Dan's Round 33 reports
+(mapgen `road_flatten.wider_wins_rects`; stall lines only on near-level ground, `StallLevel`; a road's paint stops on the road it joins,
+`RoadIndex.CoversPaint`; BUG-010's drive, `MapBuilder.Round34.cs`), a line crossing with no lap driven never ends a lap (`RaceEntrant.LapAway`),
+the radio keeps its song on focus loss (`LocalRadio.Hold`), Racer's Top 10 boards (`Race/RecordBoards.cs`: `top-ten-v1.json` beside the
+records; the player's name in settings.json) with the RECORDS page and on-screen keyboard (`Menus/GameMenus.Records.cs`). Check:
+`ChastainRush.exe -exeRound34 <dir> [-r34Only lap,bumps,radio,records] [-radio] -logFile <dir>\Player.log` (`Checks/Round20Runner.R34*.cs`).
+Imported from Racer: RecordBoards, PlayerNames, FinishPresentation, the Records page and on-screen keyboard (rewritten into GameMenus).
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
@@ -678,7 +685,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-15_03-07-51-371_794f57` through BUG-026 (BUG-001 in Round 28; BUG-002 to 004 in Round 31; BUG-005 to 026 in Round 32).
+`2026-10-16_01-35-35-872_a132c0` through BUG-010 (Round 34; before it `2026-10-15_03-07-51-371_794f57` through BUG-026, Rounds 28 to 32).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

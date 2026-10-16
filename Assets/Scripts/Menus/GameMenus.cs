@@ -17,7 +17,8 @@ namespace ChastainRush
     // focus itself one row per press (RaceMenus.Navigation), the bright focus frame, the button prompts along the bottom
     // drawn by MenuGlyph, the release barrier of MenuInput, and the garage (GameMenus.Garage.cs). Racer's RaceFlow is
     // replaced by the small flow below; its campaign, shop, unlocks, police, split-screen, playlists, courses, radio,
-    // records boards and on-screen keyboard are left behind (Round 27 brought the radio and the settings tabs, Round 29 the rider page).
+    // records boards and on-screen keyboard are left behind (Round 27 brought the radio and the settings tabs, Round 29 the rider page,
+    // Round 34 the records boards, the RECORDS page and the on-screen keyboard for the player's name: GameMenus.Records.cs).
     //   Start / Esc / Enter   open the menu while driving; on the menu's first page they close it again (resume)
     //   B / Esc               back one page (on the first page of the pause menu: resume)
     // Pages: the title menu when the game starts (RACE, FREE ROAM, GARAGE, SETTINGS, QUIT GAME), the pause menu (free driving: RESUME,
@@ -105,6 +106,7 @@ namespace ChastainRush
             if (race) race.Reload();   // Round 18: the saved route
             Build();
             OpenMenu(true);
+            AskNameOnce();   // Round 34 (C2): Racer's welcome
         }
 
         // ---------------------------------------------------------------- open / close (the game pauses under a menu)
@@ -132,6 +134,7 @@ namespace ChastainRush
             if (!started || MenuInput.Blocked || WorldMap.OwnsInput) return;   // Round 20: the map has the buttons (B / Esc close it)
             var hud = DeveloperHud.Instance;
             if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
+            if (open && UpdateKeyboard()) return;   // Round 34: the on-screen keyboard's own keys (Delete, Space, Start / Enter saves)
             if (menuKey.WasPressedThisFrame())
             {
                 if (!open) { if (hud && hud.Visible) OpenDebug(); else OpenMenu(false); return; }   // Round 17: Start with the debug panel up opens the debug menu
@@ -156,7 +159,8 @@ namespace ChastainRush
         {
             if (ownedUiActions) { ownedUiActions.Disable(); Destroy(ownedUiActions); }
             if (menuActions) { menuActions.Disable(); Destroy(menuActions); }
-            back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput();
+            back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
+            if (textKeyboard != null) textKeyboard.onTextInput -= TypedCharacter;
             if (submitReference) Destroy(submitReference);
             if (previewRoot) Destroy(previewRoot); if (previewCamera) Destroy(previewCamera.gameObject); if (previewTexture) { previewTexture.Release(); Destroy(previewTexture); }
         }
@@ -180,7 +184,7 @@ namespace ChastainRush
             var map = new InputActionMap("Game menu"); menuActions.AddActionMap(map);
             submit = map.AddAction("Menu confirm", InputActionType.Button); submit.AddBinding("<Keyboard>/space"); submit.AddBinding("<Gamepad>/buttonSouth");
             submitReference = InputActionReference.Create(submit); uiModule.submit = submitReference; uiModule.cancel = null; submit.Enable();
-            back = new InputAction("Back", InputActionType.Button, "<Keyboard>/escape"); back.AddBinding("<Gamepad>/buttonEast"); back.AddBinding("<Keyboard>/backspace"); back.Enable();
+            back = new InputAction("Back", InputActionType.Button, "<Keyboard>/escape"); back.AddBinding("<Gamepad>/buttonEast"); back.AddBinding("<Keyboard>/backspace"); back.Enable();   // (on the keyboard page Backspace deletes: UpdateKeyboard runs first)
             menuKey = new InputAction("Menu", InputActionType.Button, "<Gamepad>/start"); menuKey.AddBinding("<Keyboard>/enter"); menuKey.AddBinding("<Keyboard>/escape"); menuKey.Enable();
             adjustAction = new InputAction("Adjust", InputActionType.Value);
             adjustAction.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/leftArrow").With("Positive", "<Keyboard>/rightArrow"); adjustAction.AddBinding("<Gamepad>/dpad/x");
@@ -200,7 +204,7 @@ namespace ChastainRush
             content.gameObject.AddComponent<UnityEngine.UI.ContentSizeFitter>().verticalFit = UnityEngine.UI.ContentSizeFitter.FitMode.PreferredSize;
             scroll.viewport = viewport; scroll.content = content;
             details = Label("Details", content, 20, 0); details.gameObject.AddComponent<UnityEngine.UI.LayoutElement>();
-            for (int i = 0; i < 32; i++)   // Round 27: 32 (the settings' Controls page has 26 rows)
+            for (int i = 0; i < 64; i++)   // Round 27: 32 (the settings' Controls page has 26 rows); Round 34: 64 (the on-screen keyboard has 57)
             {
                 var rect = Rect("Action " + i, content);
                 rect.gameObject.AddComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 44;
@@ -222,6 +226,7 @@ namespace ChastainRush
                 }
                 buttons.Add(button);
             }
+            rowColors = buttons[0].colors;   // Round 34: a table row's colors are put back after it
             BuildFooter();
             BuildGarage();
             BuildSettingsInput();   // Round 27 (C1)
@@ -268,8 +273,12 @@ namespace ChastainRush
             Set(0, valueRow && modal == null, pad ? "<Gamepad>/dpad" : "<Keyboard>/leftRight", "Change");
             Set(1, !valueRow || modal != null, pad ? "<Gamepad>/buttonSouth" : "<Keyboard>/space", "Select");
             Set(2, !(title && pages.Count == 0 && modal == null), pad ? "<Gamepad>/buttonEast" : "<Keyboard>/escape", pages.Count == 0 && modal == null ? "Resume" : "Back");
-            Set(3, true, pad ? "<Gamepad>/dpad" : "<Keyboard>/arrows", "Navigate");
-            Set(4, garageView, pad ? "<Gamepad>/rightStick" : "<Keyboard>/q", pad ? "Rotate" : "/ E  Rotate");
+            if (KeyboardPage && modal == null) { Set(3, true, pad ? "<Gamepad>/buttonWest" : "<Keyboard>/backspace", "Delete"); Set(4, pad, "<Gamepad>/buttonNorth", "Space"); }   // Round 34: Racer's keyboard prompts
+            else
+            {
+                Set(3, true, pad ? "<Gamepad>/dpad" : "<Keyboard>/arrows", "Navigate");
+                Set(4, garageView, pad ? "<Gamepad>/rightStick" : "<Keyboard>/q", pad ? "Rotate" : "/ E  Rotate");
+            }
             // keep the focused row in view (Racer's UpdateShell)
             var current = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null;
             if (current && current != lastFocus && current.transform.IsChildOf(content))
@@ -295,6 +304,7 @@ namespace ChastainRush
         void BackPage()
         {
             if (modal != null) { modal = null; MenuInput.ConsumeThroughRelease(); Show(); return; }
+            if (KeyboardPage) { CloseKeyboard(false); return; }   // Round 34
             if (pages.Count > 0) { CapturePage(); page = pages.Pop(); MenuInput.ConsumeThroughRelease(); Show(); return; }
             if (!title) CloseMenu();
         }
@@ -305,6 +315,7 @@ namespace ChastainRush
 
         void Clear(string head, string summary)
         {
+            ResetLaterLayout();   // Round 34
             foreach (var b in buttons) { b.gameObject.SetActive(false); b.interactable = true; }
             adjustments.Clear(); registry.Clear();
             heading.text = head; details.text = summary ?? "";
@@ -354,8 +365,9 @@ namespace ChastainRush
             if (modal != null) { Clear(modal, modalMessage); Row(0, "confirm", modalLabel, () => { var c = modalConfirm; modal = null; c(); }); Row(1, "cancel", "Cancel", () => { modal = null; Show(); }); }
             else Render();
             // up / down follow the rows as drawn (Racer 0.91 Part A)
-            var active = buttons.Where(b => b.gameObject.activeSelf && b.interactable).OrderBy(b => b.transform.GetSiblingIndex()).ToList();
+            var active = buttons.Where(b => b.gameObject.activeSelf && b.interactable).OrderBy(DrawnOrder).ToList();   // Round 34: rows in groups by their group's place
             for (int i = 0; i < active.Count; i++) active[i].navigation = new UnityEngine.UI.Navigation { mode = UnityEngine.UI.Navigation.Mode.Explicit, selectOnUp = active[(i + active.Count - 1) % active.Count], selectOnDown = active[(i + 1) % active.Count] };
+            ConfigureKeyboardFocus();   // Round 34
             Canvas.ForceUpdateCanvases();
             GameObject focus = null;
             if (modal == null && pageMemory.TryGetValue(PageKey, out var name)) focus = active.FirstOrDefault(b => b.name == name)?.gameObject;
@@ -377,6 +389,8 @@ namespace ChastainRush
                 case "garage": RenderGarage(); return;
                 case "rider": RenderRider(); return;   // Round 29
                 case "debug": RenderDebug(); return;
+                case "records": RenderRecords(); return;   // Round 34 (C3)
+                case "keyboard": RenderKeyboard(); return;   // Round 34 (C2)
             }
             if (title)
             {
@@ -384,8 +398,9 @@ namespace ChastainRush
                 Row(0, "race", "RACE", () => Navigate("race"));
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(4, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(3, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(4, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(5, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free)
@@ -394,9 +409,10 @@ namespace ChastainRush
                 Row(0, "resume", "RESUME", CloseMenu);
                 Row(1, "race", "RACE", () => Navigate("race"));
                 Row(2, "garage", "GARAGE", () => Navigate("garage"));
-                Row(3, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-                Row(4, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
-                Row(5, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(3, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(4, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
+                Row(5, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
+                Row(6, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
@@ -406,6 +422,7 @@ namespace ChastainRush
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
+            Row(n++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
             Row(n++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
             Row(n++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
@@ -570,6 +587,7 @@ namespace ChastainRush
             var k = Keyboard.current;
             if (k != null) { if (k.upArrowKey.isPressed || k.wKey.isPressed) y += 1; if (k.downArrowKey.isPressed || k.sKey.isPressed) y -= 1; }
             if (Mathf.Abs(y) >= .5f && Mathf.Abs(y) >= Mathf.Abs(x)) return new Vector2Int(0, y > 0 ? 1 : -1);
+            if (KeyboardPage) { if (k != null) { if (k.leftArrowKey.isPressed) x -= 1; if (k.rightArrowKey.isPressed) x += 1; } if (Mathf.Abs(x) >= .5f) return new Vector2Int(x > 0 ? 1 : -1, 0); }   // Round 34: over the keys
             return Vector2Int.zero;   // left / right change a value (UpdateAdjust), they do not move the focus
         }
         void UpdateNavigation()
@@ -582,7 +600,7 @@ namespace ChastainRush
             var current = EventSystem.current.currentSelectedGameObject; var from = current ? current.GetComponent<UnityEngine.UI.Selectable>() : null;
             if (!from || !from.gameObject.activeInHierarchy)
             { var top = buttons.FirstOrDefault(b => b.gameObject.activeInHierarchy && b.interactable); if (top) EventSystem.current.SetSelectedGameObject(top.gameObject); return; }
-            var next = dir.y > 0 ? from.FindSelectableOnUp() : from.FindSelectableOnDown();
+            var next = dir.x != 0 ? (dir.x > 0 ? from.FindSelectableOnRight() : from.FindSelectableOnLeft()) : dir.y > 0 ? from.FindSelectableOnUp() : from.FindSelectableOnDown();
             if (next && next.gameObject.activeInHierarchy && next.interactable) EventSystem.current.SetSelectedGameObject(next.gameObject);
         }
         InputActionReference moduleMove; bool moduleMoveOn = true;

@@ -31,6 +31,11 @@ namespace Racer
             public RiderLook rider = new();
             // Chastain Rush, Round 30 (A3): traffic, 0 Off, 1 Light, 2 Normal (the default), 3 Heavy (Traffic/Traffic.cs)
             public int traffic = 2;
+            // Racer 0.94 Part A (RacerSave.Options.playerName / knownNames): the player's name for the Top 10 (PlayerNames). Chastain Rush,
+            // Round 34; nameAsked: the welcome has asked it once
+            public string playerName = "";
+            public string[] knownNames = new string[0];
+            public bool nameAsked;
         }
 
         static Options current;

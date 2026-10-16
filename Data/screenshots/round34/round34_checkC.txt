@@ -1,0 +1,16 @@
+Round 34 check, 2026-10-16 03:39, the exe, 1280 x 720, muted.
+
+=== Part C: Top 10 boards, the player's name, the Records page (the check's own files)
+PASS  C4: the bests are carried onto the boards, unnamed, nothing written yet (loading never writes)  -  lap board 2, race board 2, file not written
+PASS  C2: the welcome asks the name on the on-screen keyboard  -  title/keyboard: WELCOME: WHAT'S YOUR NAME?
+PASS  C2: the name typed with the controller and saved (Start)  -  typed "Dan", player name "Dan", page title/root, settings C:\Users\danmo\chastain_rush\local\round34\checkFinalC\settings.json
+PASS  C4: the carried entries take the name, saved to the check's own boards file  -  Dan 42.364 original, Dan 44.035 drifter
+PASS  C1: the 1-lap race finished; its lap is on the lap board at the right place, named, with vehicle and date  -  lap 54.716 s, missed 0: place 3 (expected 3) of 3; board: 1. 0:42.364 Dan original legacy | 2. 0:44.035 Dan drifter legacy | 3. 0:54.716 Dan drifter
+PASS  C1: its total is on the 1-lap race board (#1, a new board)  -  total 54.716 s, rank 1
+PASS  C2: the finish panel has the places  -  PODIUM TIME! #3 / FIRST COURSE RECORD! #1
+PASS  C3: RECORDS opens on the route just raced, best laps  -  race/records: Chastain Glen loop - Forward
+PASS  C3: right on the board row: best races  -  BEST RACES
+PASS  C3: left / right steps through every route and direction and back round  -  Chastain Glen loop - Forward, Chastain Glen loop - Reverse   (no times yet), Chastain Ridge - Forward   (no times yet), Noonday Creek - Forward   (no times yet), Noonday Creek - Reverse   (no times yet), Underground - Forward   (no times yet) (routes and directions: 6)
+PASS  C3: B goes back  -  race/root
+
+11 of 11 checks passed.
