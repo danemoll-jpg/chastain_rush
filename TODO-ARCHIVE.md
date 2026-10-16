@@ -3869,3 +3869,54 @@ B5: pictures in `local/round30/neighborhoods/`: `street_<key>_<name>.png` (one p
    `overhead_<key>_<name>.png` (the built scene from above; magenta is outside the map), `streets.png` / `overheads.png`
    sheets. For Dan to look at: Willard Drive's first house turns its side to the street (its drive comes from the cross
    street). Imported from Racer: nothing.
+
+## Round 31 (moved from TODO.md on 2026-10-16 when Dan reviewed Round 34; word for word)
+
+## Previous delivery 3: Round 31
+**Reviewed: driven by Dan 2026-10-15 16:55 to 17:11 (his notes are Round 32).**
+**Round 31 (Dan, 2026-10-15 14:35; reports BUG-002 to BUG-004 of session `2026-10-15_03-07-51-371_794f57`, read by
+Claude).** Rounds 29 and 30 are not yet reviewed. Fix only what is reported, one check each, short results (CLAUDE.md
+"Process"); rebuild into `Builds/ChastainRush/` and commit.
+1. BURIED BUILDING (BUG-002, vehicle x 3544.56, z 495.74, heading 266, 12 m off an unnamed road): "this looks like maybe it
+   is too far in the ground". The building straight ahead shows only its roof above the grass. Set that building on the
+   ground at its proper height (foundation as Round 27). Check: a picture from Dan's spot.
+2. GRASS ON THE ROAD (BUG-003, vehicle x 1524.43, z 561.77, on New Chastain Road, heading 48): "need to remove grass from
+   streets". A ragged strip of grass shows through the road along the center line ahead of Dan's spot. Remove it there so
+   the asphalt and its center markings are whole. Check: a picture from Dan's spot.
+3. I-575 RAMPS (BUG-004, vehicle x 319.08, z 984.29, on I-575 southbound under the Chastain Road bridge): "Should have
+   entrance and exit ramps". The Chastain Road interchange has no ramps (the map build drops OSM's motorway_link ways;
+   `Data/map.json` has none). Build this interchange's entrance and exit ramps from OSM's motorway_link ways, joined to
+   I-575 and to Chastain Road at their real places, with grades a vehicle drives flat out, and traffic using them. Check:
+   drive each ramp on and off once.
+4. DRESS THE BUILDINGS OUTSIDE THE NEIGHBORHOODS (Dan: "I want to have the buildings that aren't part of a neighborhood
+   also dressed up. Much of Canton Road would be businesses or schools."). Every building not in a dressed neighborhood or
+   the shopping center gets a look that fits what OSM says it is: offices, retail and commercial strips (storefronts,
+   signs with made-up names, Dan 2026-10-10: "Store names can be faked"), schools, churches, industrial and warehouses,
+   each with a paved parking lot and drive where it has one, lamps, a few trees; untagged ones along Canton Road as small
+   businesses. Signs follow the sign rules (CLAUDE.md). Same LOD / batching as the neighborhoods. Check: one picture per
+   kind, and the frame rate on Canton Road before and after.
+
+**Round 31 status (Claude, 2026-10-15): all four built and checked in the exe by script (minimized 1280 x 720, muted), not yet
+driven by Dan. Build 2026-10-15 16:35.** Evidence: `Data/screenshots/round31/`.
+1. DONE. BUG-002's building is a 131 m garage row on ground rising 6 m along it. It is stepped into segments, each with its own
+   floor, and has a block foundation where it stands over the ground (`MapBuilder.Businesses.cs` SettleBody). The same rule applies
+   to every long dressed building on a slope (12 stepped). Check: `bug002_dan_spot.png`.
+2. DONE. The grass was the seam between New Chastain Road's westbound carriageway and its turn lane onto Bells Ferry Road
+   (6.3 to 8.4 m apart). The seam is paved over 79 m (`MapBuilder.Round31.cs`). Check: `bug003_dan_spot.png`.
+3. DONE. mapgen now keeps OSM's 18 `motorway_link` pieces of this interchange, appended after the other roads so no index
+   moves. Width is 6 m or more; parking lots are kept too. Terrain changed only at x 156 to 532; other roads, buildings,
+   bridges and trees are unchanged. A ramp overlapping a road it runs alongside takes that road's height (mapgen). The step
+   where the NB ramps meet Chastain Road is smoothed (RampSeams). Traffic drives them (561 road links, was 541).
+   Check: each ramp driven flat out at 45 m/s in the Drifter (`ramp_drives.txt`). All four end on the road; most tilt 9 deg.
+4. DONE. 276 buildings dressed by OSM type (`MapBuilder.Businesses.cs`): shops 37 (storefronts, awnings, made-up names from
+   `Tools/handmade/make_business_signs.py`), offices 39, industrial 24, churches 4 (steeple), schools 3 (flagpole), the fire
+   station, apartments 92, garages 29, sheds 37, canopies on posts 10. Untagged buildings within 90 m of Canton Road are shops.
+   191 more houses outside every neighborhood get the Round 30 house kit, in the look of the nearest neighborhood. 9 OSM
+   parking lots are paved, with 452 stalls and 59 breakable light poles; 268 trees. One picture per kind: `kind_*.png`.
+   Frame rate at Canton Road by the shops (Round 30 method, standing, 1280 x 720, uncapped; not measured at 3840 x 2160),
+   before -> after: traffic Off 368 -> 347, Normal 156 -> 128, Heavy 91 -> 78 (`fps_before.txt`, `fps_after.txt`).
+Decisions: no parking lots were invented where OSM maps none (only 9 outside the dressed areas). Sign names are all made up.
+For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s where the NB entrance merges onto I-575
+(x 252, z 1603), and 0.30 s on the SB exit just after it leaves I-575 (x 231, z 1423). Also check the dressed buildings'
+looks, and the frame rate on Canton Road at 4K.
+Imported from Racer: nothing.

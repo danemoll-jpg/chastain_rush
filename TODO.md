@@ -69,6 +69,57 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
+Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
+`Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and
+say what you decided in the status.
+
+Part A, THE UNDERGROUND RACE'S FINISH LINE ON A STRAIGHT. BUG-001 (x 1933.29 z 1171.30 h 262, THE HUB floor, at the finish
+panel). Dan: "My first complaint was that the finish line is after a hairpin turn. The finish line needs to be on a straight
+stretch." (His Round 28 B2 complaint; Round 28 moved the turn-round to the mid ledge, four 90 degree corners, and put the line
+13 m up the span, so the line still comes right after the turn.) Put the line (and the start: they are one line) on a
+straight stretch of the lap with straight road before it, enough that a racer is lined up and at speed when crossing, e.g.
+in a straight run of a pipe; the grid off the racing line as now, or behind the line on that straight, wherever it fits.
+Checkpoints, shortcuts' forgiveness and resets as before. Dan's records for the Underground race stay (the lap is the same
+loop; only where it is cut changes); say if the lap length changed. Check: a picture of the line from 30 m before it, a
+scripted 3-lap race with the AI.
+
+Part B, THE RADIO CUTS OUT. Dan: "there is something wrong with the radio. It seems to cut out especially in races. in the
+underground network it didn't play at all." (Round 34 B fixed the song skipping on focus; this is different.) Find why: the
+likely cause is Unity's voice limit (more sounds than real voices: AI engines, traffic voices, the pipes' streams, waterfalls
+and the hub's water, breaks), dropping the radio's voice because nothing marks it as the most important, or something in
+the pipes (a reverb / low-pass zone, the pipe camera, a mute meant for something else). Fix: the radio plays everywhere and
+in every race, the underground included, never dropped or muted by other sounds (its voice top priority, 2D; the other
+sounds share what is left, as Racer's voice budget does); it goes on through pipes, warps and the express, resets and race
+start / finish. Check in the exe by script: a whole Underground race and a whole Chastain Ridge race (traffic Normal) with
+the radio on, logging every frame whether its voice is really playing (not virtual); no gap longer than the song changes.
+(Sound on only as needed; muted otherwise: CLAUDE.md "Test quietly".)
+
+Part C, DAY / NIGHT AND WEATHER FROM WOODSTOCK RUSH. Dan: "Lets throw Day/night cycle and weather into this round. Use the
+same system as Woodstock Rush." Port Racer's system as it is (CLAUDE.md: prefer porting, list what came): `WorldLook`,
+`WeatherSky`, `WeatherEffects`, `SkyClouds`, `MoonIcon`, `SnowScenes`, thunder and lightning, `WeatherGrip` (rain, snow and
+ice grip on paved / dirt / grass, with its setting to turn it off), and their settings and menu rows as Racer has them
+(Free Roam's clock, 1 minute = 1 hour; how a race picks its time and weather; whatever Racer's race setup offers).
+C1. Night: the sky, the moon and stars as Racer; vehicles' headlights on (VehicleLights); street lamps and the lots' light
+   poles lit; whatever else Racer lights at night (windows, signs) if it has it.
+C2. Weather: rain, snow, storms with thunder and lightning, wet / snowy ground and grip as Racer. Never inside the pipe
+   network, junctions or the hub (no rain or snow falling underground, the lighting there unchanged by the sky), nor under a
+   roof or a bridge if Racer handles that.
+C3. World vs. game layer (CLAUDE.md): the day / night and weather are world; a race's chosen conditions are game layer.
+C4. Cost: frame rate in free roam at the busiest place (Canton Road at the shops) by day, at night and in rain, before and
+   after (1280 x 720, reported as not measured at 3840 x 2160).
+Check in the exe by script: pictures of the same three places (Dan's house street, Canton Road at the shops, the hub) at noon,
+dusk, night, in rain and in snow; a race started in rain shows lower grip on the HUD / handling as Racer; the setting off
+gives full grip.
+
+For Dan to check (when done): the Underground race's new line, the radio through a race and underground, a day in free roam,
+rain, snow and a storm, a race at night.
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 34
+**Reviewed: driven by Dan 2026-10-16 07:49 (an Underground race; his notes are Round 35).**
 **Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
 after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
 is fine ("it can be pretty long"); do not stop for design questions, decide and say what you decided in the status. Parts A
@@ -161,10 +212,7 @@ For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), B
    after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
    exceptions in every exe log. Frame rate not measured.
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 33
+## Previous delivery 2: Round 33
 **Reviewed: driven by Dan 2026-10-16 01:35 to 01:51 (his notes are Round 34).**
 **Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
 screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
@@ -234,7 +282,7 @@ Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI rese
 For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
 rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
 
-## Previous delivery 2: Round 32
+## Previous delivery 3: Round 32
 **Reviewed: passed by Dan 2026-10-15 22:35, nothing to report.**
 **Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
 after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
@@ -338,55 +386,6 @@ C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.Chastain
    with a footbridge over BF's stream (BF untouched). Check: `bug025`, `bug026`, `lakes_lot_to_pool`, `lakes_courts`.
 For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
 footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
-
-## Previous delivery 3: Round 31
-**Reviewed: driven by Dan 2026-10-15 16:55 to 17:11 (his notes are Round 32).**
-**Round 31 (Dan, 2026-10-15 14:35; reports BUG-002 to BUG-004 of session `2026-10-15_03-07-51-371_794f57`, read by
-Claude).** Rounds 29 and 30 are not yet reviewed. Fix only what is reported, one check each, short results (CLAUDE.md
-"Process"); rebuild into `Builds/ChastainRush/` and commit.
-1. BURIED BUILDING (BUG-002, vehicle x 3544.56, z 495.74, heading 266, 12 m off an unnamed road): "this looks like maybe it
-   is too far in the ground". The building straight ahead shows only its roof above the grass. Set that building on the
-   ground at its proper height (foundation as Round 27). Check: a picture from Dan's spot.
-2. GRASS ON THE ROAD (BUG-003, vehicle x 1524.43, z 561.77, on New Chastain Road, heading 48): "need to remove grass from
-   streets". A ragged strip of grass shows through the road along the center line ahead of Dan's spot. Remove it there so
-   the asphalt and its center markings are whole. Check: a picture from Dan's spot.
-3. I-575 RAMPS (BUG-004, vehicle x 319.08, z 984.29, on I-575 southbound under the Chastain Road bridge): "Should have
-   entrance and exit ramps". The Chastain Road interchange has no ramps (the map build drops OSM's motorway_link ways;
-   `Data/map.json` has none). Build this interchange's entrance and exit ramps from OSM's motorway_link ways, joined to
-   I-575 and to Chastain Road at their real places, with grades a vehicle drives flat out, and traffic using them. Check:
-   drive each ramp on and off once.
-4. DRESS THE BUILDINGS OUTSIDE THE NEIGHBORHOODS (Dan: "I want to have the buildings that aren't part of a neighborhood
-   also dressed up. Much of Canton Road would be businesses or schools."). Every building not in a dressed neighborhood or
-   the shopping center gets a look that fits what OSM says it is: offices, retail and commercial strips (storefronts,
-   signs with made-up names, Dan 2026-10-10: "Store names can be faked"), schools, churches, industrial and warehouses,
-   each with a paved parking lot and drive where it has one, lamps, a few trees; untagged ones along Canton Road as small
-   businesses. Signs follow the sign rules (CLAUDE.md). Same LOD / batching as the neighborhoods. Check: one picture per
-   kind, and the frame rate on Canton Road before and after.
-
-**Round 31 status (Claude, 2026-10-15): all four built and checked in the exe by script (minimized 1280 x 720, muted), not yet
-driven by Dan. Build 2026-10-15 16:35.** Evidence: `Data/screenshots/round31/`.
-1. DONE. BUG-002's building is a 131 m garage row on ground rising 6 m along it. It is stepped into segments, each with its own
-   floor, and has a block foundation where it stands over the ground (`MapBuilder.Businesses.cs` SettleBody). The same rule applies
-   to every long dressed building on a slope (12 stepped). Check: `bug002_dan_spot.png`.
-2. DONE. The grass was the seam between New Chastain Road's westbound carriageway and its turn lane onto Bells Ferry Road
-   (6.3 to 8.4 m apart). The seam is paved over 79 m (`MapBuilder.Round31.cs`). Check: `bug003_dan_spot.png`.
-3. DONE. mapgen now keeps OSM's 18 `motorway_link` pieces of this interchange, appended after the other roads so no index
-   moves. Width is 6 m or more; parking lots are kept too. Terrain changed only at x 156 to 532; other roads, buildings,
-   bridges and trees are unchanged. A ramp overlapping a road it runs alongside takes that road's height (mapgen). The step
-   where the NB ramps meet Chastain Road is smoothed (RampSeams). Traffic drives them (561 road links, was 541).
-   Check: each ramp driven flat out at 45 m/s in the Drifter (`ramp_drives.txt`). All four end on the road; most tilt 9 deg.
-4. DONE. 276 buildings dressed by OSM type (`MapBuilder.Businesses.cs`): shops 37 (storefronts, awnings, made-up names from
-   `Tools/handmade/make_business_signs.py`), offices 39, industrial 24, churches 4 (steeple), schools 3 (flagpole), the fire
-   station, apartments 92, garages 29, sheds 37, canopies on posts 10. Untagged buildings within 90 m of Canton Road are shops.
-   191 more houses outside every neighborhood get the Round 30 house kit, in the look of the nearest neighborhood. 9 OSM
-   parking lots are paved, with 452 stalls and 59 breakable light poles; 268 trees. One picture per kind: `kind_*.png`.
-   Frame rate at Canton Road by the shops (Round 30 method, standing, 1280 x 720, uncapped; not measured at 3840 x 2160),
-   before -> after: traffic Off 368 -> 347, Normal 156 -> 128, Heavy 91 -> 78 (`fps_before.txt`, `fps_after.txt`).
-Decisions: no parking lots were invented where OSM maps none (only 9 outside the dressed areas). Sign names are all made up.
-For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s where the NB entrance merges onto I-575
-(x 252, z 1603), and 0.30 s on the SB exit just after it leaves I-575 (x 231, z 1423). Also check the dressed buildings'
-looks, and the frame rate on Canton Road at 4K.
-Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
