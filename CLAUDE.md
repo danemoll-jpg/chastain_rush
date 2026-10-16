@@ -329,6 +329,16 @@ Free Roam's in settings.json), WeatherEffects, WeatherSky, SkyClouds (`Lift`), M
 [-r35Only line,radio,cpics,grip,fps] [-radio] [-r35RadioOld] [-lookOff] [-r35Off clouds,effects,lamps,look,pin,probes] -traffic Normal
 -logFile <dir>\Player.log` (`Checks/Round20Runner.R35*.cs`). Imported from Racer: the files above, ArcadeVehicle's weather grip, thunder
 ducking, their shaders and materials; left behind: SnowScenes, the gates' Glow, the water probes (cost), split-screen, Trailer Mode.
+**Round 36 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the Kroger lot as the Chastain Corner
+Stunt Park (`python Tools/mapgen/make_stunt_park.py [--plot]` writes `Data/tracks/stunt_park.json`, re-run after mapgen; built by `MapBuilder.StuntPark.cs` /
+`.StuntParkStores.cs`; boards `python Tools/handmade/make_stunt_signs.py`, hand-made, committed; runtime `Assets/Scripts/Stunts/`), Racer's stunt vehicles,
+trick scoring, the Stunt event and its Top 10s; B Racer's Free Roam activities (`python Tools/mapgen/make_activities.py` writes `Data/activities/free_roam.json`
+from the world's launches and `Data/activities/targets.json`; `MapBuilder.Activities.cs`, game layer; sites alone into the built scene:
+`-executeMethod ChastainRush.MapBuilder.RebuildActivitiesFromCommandLine`); C 529 more hydrants and D rigged hydrants and geysers (`MapBuilder.Hydrants.cs`,
+`Neighborhood/HydrantLinks.cs`, `Geyser.cs`, `ManholeLid.BlowOpen`; `inRaces` per link). Check: `ChastainRush.exe -exeRound36 <dir> [-r36Only fps,air,tricks,
+event,glass,inside,rooframp,pics,measure,acts,mappic,hydrants,cfps,rig,geyser] -logFile <dir>\Player.log` (`Checks/Round20Runner.R36*.cs`; `measure` writes
+targets.json). Imported from Racer: StuntPark's builders, ArcadeActivities (+Stunts, +Smash), ActivitySite, ActivityRecords, StuntEvent, StuntProgress, TrickHud,
+MedalUi, DisplayUnits, the stunt profiles, Cup livery, air steering, RaceMenus.Stunt (into GameMenus), StuntBike / StuntBuggy models and their Blender scripts.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
