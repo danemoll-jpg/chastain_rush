@@ -69,6 +69,55 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 33 (Dan, 2026-10-15 22:49): a new race on open roads, "Chastain Ridge", from Dan's sketch** (a Google Maps
+screenshot with his marker lines, `local/round33/route_sketch.png`, git-ignored: Google, so look at it, never trace or
+measure it; lay the course on OSM's roads). Dan: "How about this route... the dotted line would be a jump... i think this
+is the highest point on the map". Round 32 is reviewed. Build it, then Dan drives it (CLAUDE.md); short results; rebuild into
+`Builds/ChastainRush/` and commit.
+
+The course (Claude read the sketch against `Data/map.json` and the heightmap; game heights; one lap about 1.9 km):
+1. Canton Road Northeast NORTH from the New Chastain Road junction (x 3467-3579, z 390) to Chastain Corner Northeast (x 3507,
+   z 1086). The sketch's arrows point north on Canton Road.
+2. Left onto Chastain Corner Northeast (OSM 9139438), southwest and downhill (322 m to 304 m) to New Chastain Road (x 3152,
+   z 760).
+3. Straight across both carriageways of New Chastain Road onto Chastain Ridge Drive Northeast (OSM 1360406918, 1360406916,
+   1360406917, 243965590), round its loop the way it runs: west along z 706, south up the ridge to the crest (334 m at
+   x 3077, z 620), then east, downhill, to the drive's dead end at x 3152, z 632 (323.5 m). This is the high ground Dan
+   means. (The map's highest ground is at its south edge by Canton Road, 367 m; this ridge is the highest on the loop.)
+4. THE JUMP (the sketch's dotted line): off the dead end, east over houses 923, 706, 1231 and the hollow behind them
+   (about 303 m at x 3200-3230, no stream mapped), down onto New Chastain Road's southeast-bound carriageway (OSM 9151940)
+   at about x 3250-3290, z 560-610 (about 310 m). Part of the lap, not a shortcut: every vehicle the route offers makes it
+   flat out from the crest; say in the status which vehicles it offers and why. Take-off dressed as something that could be
+   there and whose real size fits (CLAUDE.md lesson: a dirt pile, a raised dump-truck bed, not hay bales or a flatbed if it
+   is bigger than they are). Landing smooth onto the road, no step (the jump rules). Coming up short never traps: a way out
+   of the hollow onto New Chastain Road, and a reset puts the vehicle on New Chastain Road past the landing, facing on.
+   The houses are jumped over, not changed.
+5. New Chastain Road southeast, climbing from 310 m to 326 m, to Canton Road, and left onto Canton Road: the lap.
+
+Shortcuts (the sketch's two red lines; their arrowheads match that direction), built by the shortcut design rules
+(CLAUDE.md: harder than the road, rewarding, a hint at the turn-off that could be there, no easier free way through):
+S1. Top: off Canton Road short of the Chastain Corner junction, west past the restaurant (Tacos La Villa in real life) and
+   the business lots onto Chastain Corner Northeast. Forgives what it skips.
+S2. Bottom: off New Chastain Road before the Canton Road junction (about x 3330, z 470), east-northeast through the business
+   lots between the churches (74 at x 3520, z 571; 75 at x 3526, z 523) and the shops, to Canton Road (about z 560).
+   Forgives what it skips. Code finds each line and says in the status what each one jumps or threads through.
+
+Race layer, as the other routes: `Data/routes/chastain_ridge.json` (a make_ script like the others), checkpoints (one just
+past the landing), the grid, the lap's direction only (no reverse unless it works by itself), side roads closed by
+barriers. Open roads: traffic stays on the course (route "traffic": true, Round 30 A3), so traffic drives Canton Road,
+Chastain Corner and New Chastain Road during the race, and can be in the landing zone; the AI racers deal with it. The AI
+take S1 / S2 by ShortcutStrategy and make human mistakes (CLAUDE.md). On the race setup menu's Route row; on the map.
+Check: the jump flat out in each offered vehicle (lands on the road, how far, how high), one AI race of 3 laps with
+traffic Normal (everyone finishes), a reset in the hollow. Pictures: the take-off from the crest, the flight, the landing,
+each shortcut's turn-off.
+
+For Dan to check (when done): the whole lap flat out, the jump, S1 and S2, traffic in the race.
+
+## QUEUED rounds
+None.
+
+## Previous delivery 1 (newest): Round 32
+**Reviewed: passed by Dan 2026-10-15 22:35, nothing to report.**
 **Round 32 (Dan, 2026-10-15 17:27; reports BUG-005 to BUG-026 of session `2026-10-15_03-07-51-371_794f57`, read by Claude,
 after driving the Round 31 exe).** Rounds 29 to 31 are reviewed (driven by Dan; what he found is below). Fix only what is
 reported, one check each, short results (CLAUDE.md "Process"); rebuild into `Builds/ChastainRush/` and commit. Building
@@ -172,10 +221,7 @@ C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.Chastain
 For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
 footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 31
+## Previous delivery 2: Round 31
 **Reviewed: driven by Dan 2026-10-15 16:55 to 17:11 (his notes are Round 32).**
 **Round 31 (Dan, 2026-10-15 14:35; reports BUG-002 to BUG-004 of session `2026-10-15_03-07-51-371_794f57`, read by
 Claude).** Rounds 29 and 30 are not yet reviewed. Fix only what is reported, one check each, short results (CLAUDE.md
@@ -224,7 +270,7 @@ For Dan to check: the four ramps. There are two small hops at full speed: 0.18 s
 looks, and the frame rate on Canton Road at 4K.
 Imported from Racer: nothing.
 
-## Previous delivery 2: Round 30
+## Previous delivery 3: Round 30
 **DONE (Parts A and B built, not yet driven by Dan) — Round 30 (Dan, 2026-10-15 09:50), after Round 29. Dan: "I would like to add traffic and maybe we can make
 better houses in the remaining neighborhoods. I have no specific styles for other neighborhoods though like I do with my
 own community". Part A then Part B; rebuild into `Builds/ChastainRush/` and commit after each, give the build time.**
@@ -318,28 +364,6 @@ B5: pictures in `local/round30/neighborhoods/`: `street_<key>_<name>.png` (one p
    `overhead_<key>_<name>.png` (the built scene from above; magenta is outside the map), `streets.png` / `overheads.png`
    sheets. For Dan to look at: Willard Drive's first house turns its side to the street (its drive comes from the cross
    street). Imported from Racer: nothing.
-
-## Previous delivery 3: Round 29
-**DONE (built and checked in the exe by script, not yet driven by Dan) — Round 29 (Dan, 2026-10-15 09:45, after the Round 28 exe). Rebuild into `Builds/ChastainRush/`, commit, give
-the build time. Dan drives it.**
-Status: done. GARAGE > Rider... (Racer's Rider page: `Menus/GameMenus.Garage.cs` RenderRider, StepRider, RandomizeRider): Randomize,
-Back, then a row per RiderLook option (Body, Skin tone, Hair with the Round 28 styles, Hair color, Hat, Hat color, Shirt, Shirt color,
-Pants, Pants color: everything Racer's page has; Racer's Classic / New toggle not needed, this game has only the New models), left /
-right changes a row, A never does, B back; the turning preview framed on the rider (a car's body hidden; a bike, ATV or mower shown
-whole with the rider: Racer framed only the rider, which cut the bike off). Saved at once in settings.json as Racer does
-(`GameSettings.Options.rider`), loaded at start before any vehicle is built; the vehicle in the world is put on again with the new
-rider when the page is left (`VehicleSwitch.RebuildVisual`), so every vehicle and the first-person hands wear it (skin color on the
-hands; the AI riders stay random, never the player's look). Check: `ChastainRush.exe -exeRound29 <dir> -logFile <dir>\Player.log`
-(`Checks/Round29Runner.cs`, 14 checks pass; pictures of the page and of three riders on the Needle 600, the Street Classic and the
-ATV, outside and first person, in `local/round29/`). Imported from Racer: the Rider page (RenderRider, StepRider, RandomizeRider,
-the rider framing of GaragePreview, settings.json's rider), rewritten into GameMenus; RiderLook was already here (Round 13 / 28).
-1. RIDER PAGE. Dan: "There is no place to customize your person". Racer's rider page was left behind in Round 16 (CLAUDE.md
-   list), so the new hands and hair styles (Round 28 Part C) cannot be picked. Port Racer's rider page into the game menu
-   (from the garage, as in Woodstock Rush, or wherever Racer has it): every `RiderLook` option (body, skin, hair with the
-   new styles, hair color, hat, hat color, shirt, shirt color, pants, pants color, and anything Racer's page has besides),
-   a turning preview of the rider on the chosen vehicle, controller and keyboard as the other menus, saved between runs
-   as Racer saves it, and the player's rider in the game uses it (every vehicle, first person hands' skin / gloves too).
-   Port Racer's code (CLAUDE.md); list what came. Pictures from the exe of the page and of three different riders.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
