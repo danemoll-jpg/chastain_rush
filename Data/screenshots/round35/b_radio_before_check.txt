@@ -1,0 +1,9 @@
+Round 35 check, 2026-10-16 08:50, the exe, 1280 x 720, muted.
+
+=== Part B: the radio through whole races
+      (BEFORE: the radio's voice as it was, priority 180, through the listener's effects)
+      voices: 32 real, 512 virtual; the radio's priority 180, bypasses the listener's effects False
+FAIL  Part B, the Underground race: the radio's voice really playing every frame (gaps only across song changes)  -  1138 frames over 139 s, 1104 not playing (0 song changes with a gap, 0 songs started); 6 other gaps, the longest 40.35 s at (1708, 269, 1098), stopped; up to 54 sounds playing at once; AI finished 3 of 3
+FAIL  Part B, the Chastain Ridge race: the radio's voice really playing every frame (gaps only across song changes)  -  1146 frames over 113 s, 163 not playing (0 song changes with a gap, 1 songs started); 5 other gaps, the longest 8.20 s at (3238, 308, 939), stopped; up to 35 sounds playing at once; AI finished 3 of 3
+
+0 of 2 checks passed.

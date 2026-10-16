@@ -52,7 +52,7 @@ namespace ChastainRush
             if (tag == "round33" && parts == null) parts = new[] { "jump", "shortcuts", "hollow", "pics", "race" };   // Round 33 (Round20Runner.R33.cs)
             if (tag == "round34" && parts == null) parts = new[] { "lap", "bumps", "radio", "records" };   // Round 34 (Round20Runner.R34*.cs)
             bool Do(string p) => parts == null || parts.Contains(p);
-            if (tag == "round35" && parts == null) parts = new[] { "line" };   // Round 35 (Round20Runner.R35*.cs)
+            if (tag == "round35" && parts == null) parts = new[] { "line", "radio" };   // Round 35 (Round20Runner.R35*.cs)
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
             if (Do("map")) yield return Guard(MapCheck());
@@ -98,6 +98,7 @@ namespace ChastainRush
             if (tag == "round35")
             {
                 if (Do("line")) yield return Guard(R35Line());
+                if (Do("radio")) yield return Guard(R35Radio());   // Part B (Round20Runner.R35B.cs)
             }
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();

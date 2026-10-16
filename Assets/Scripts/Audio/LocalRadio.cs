@@ -80,7 +80,8 @@ namespace Racer
         public void Initialize()
         {
             source=gameObject.AddComponent<AudioSource>(); source.playOnAwake=false;source.volume=0;
-            source.spatialBlend=0; source.ignoreListenerPause=true; source.priority=180;
+            source.spatialBlend=0; source.ignoreListenerPause=true; source.priority=0;   // Chastain Rush, Round 35 (Part B): the most important voice (Racer: 180): with 32 real voices, the pipes' streams, waterfalls, AI engines and traffic (all 128 to 160) took the radio's voice
+            source.bypassListenerEffects=true;   // Chastain Rush, Round 35 (Part B): not through the listener's low-pass (the glass stretches' underwater muffle, PipeAquarium)
             if(string.IsNullOrEmpty(Settings.musicSource))Settings.musicSource=string.IsNullOrEmpty(Settings.musicFolder)?"bundled":"custom";
             if(string.IsNullOrWhiteSpace(Settings.musicFolder)) Settings.musicFolder=Path.Combine(Application.persistentDataPath,"Music");
             GameSettings.SaveSettings();
