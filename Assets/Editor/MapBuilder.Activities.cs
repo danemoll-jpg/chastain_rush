@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Racer;
+using UnityEditor;
 using UnityEngine;
 
 // Round 36 (Part B): Racer's Free Roam activities (ArcadeActivities: jumps, speed traps, smash runs) on this map (Dan: "We can probably add free
@@ -17,7 +18,25 @@ namespace ChastainRush
         [Serializable] class ActivityJson { public string id, title, kind, jump, props, note; public float x, z, fx, fz, radius, bronze, silver, gold, seconds; public int count; public float[] vb, vs, vg; }
         [Serializable] class ActivitiesJson { public ActivityJson[] sites; }
 
-        static void BuildActivities(TerrainGrid t, Materials mats)
+        // checks' shortcut: the sites alone put again into the built scene (new targets from the exe's runs) without a whole Build Map
+        public static void RebuildActivitiesFromCommandLine()
+        {
+            try
+            {
+                var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ScenePath);
+                foreach (var g in scene.GetRootGameObjects().Where(g => g.name.StartsWith("Free roam activities"))) UnityEngine.Object.DestroyImmediate(g);
+                var tiles = UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None);
+                var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
+                var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height };
+                foreach (var tr in tiles) { int i = Mathf.RoundToInt(tr.transform.position.x / meta.tile_w_m), j = Mathf.RoundToInt(tr.transform.position.z / meta.tile_d_m); grid.Tiles[i, j] = tr; }
+                var house = AssetDatabase.LoadAssetAtPath<Material>(GeneratedDir + "/House.mat");
+                BuildActivities(grid, null, house);
+                UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, ScenePath);
+                EditorApplication.Exit(0);
+            }
+            catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
+        }
+        static void BuildActivities(TerrainGrid t, Materials mats, Material houseMat = null)
         {
             var path = Path.Combine(ProjectRoot, "Data/activities/free_roam.json");
             if (!File.Exists(path)) { Debug.LogWarning("[Round36] " + path + " missing (Tools/mapgen/make_activities.py): no Free Roam activities"); return; }
@@ -77,7 +96,7 @@ namespace ChastainRush
                     log.Add($"{s.id}: {cands.Count} {s.props} props, around ({mid.x:0}, {mid.z:0})");
                 }
             }
-            posts.ToObject("SpeedCameraPosts", mats.House, root, false, true);
+            posts.ToObject("SpeedCameraPosts" + (mats == null ? "_" + DateTime.Now.Ticks : ""), mats != null ? mats.House : houseMat, root, false, true);
             Debug.Log($"[Round36] Free Roam activities: {root.childCount - 1} sites: " + string.Join("; ", log));
         }
     }

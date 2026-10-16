@@ -1,0 +1,26 @@
+Round 36 check, 2026-10-16 14:45, the exe, 1280 x 720, muted.
+
+=== Part B: the speed traps flat out on the four base vehicles (the medal targets from these runs)
+  Bells Ferry Road speed trap  Street Classic 103 mph   Longroof GT 107 mph   Needle 600 125 mph   Trail Four 116 mph
+PASS  Bells Ferry Road speed trap: every base vehicle's crossing was timed  -  45.9, 47.7, 55.8, 51.9
+  Canton Road speed trap 1     Street Classic 94 mph   Longroof GT 97 mph   Needle 600 114 mph   Trail Four 107 mph
+PASS  Canton Road speed trap 1: every base vehicle's crossing was timed  -  42.2, 43.2, 50.9, 47.6
+    Needle 600 from 400 m back not timed: run end 'stopped', stopped at (404, 933), -301 m along
+    Needle 600 from 250 m back not timed: run end 'stopped', stopped at (301, 944), -200 m along
+    Needle 600: timed from 150 m back
+  Chastain Road speed trap     Street Classic 78 mph   Longroof GT 78 mph   Needle 600 92 mph   Trail Four 87 mph
+PASS  Chastain Road speed trap: every base vehicle's crossing was timed  -  35.1, 35.0, 41.0, 38.9
+  New Chastain Road speed trap 1 Street Classic 100 mph   Longroof GT 103 mph   Needle 600 121 mph   Trail Four 113 mph
+PASS  New Chastain Road speed trap 1: every base vehicle's crossing was timed  -  44.5, 46.1, 54.2, 50.5
+    Street Classic from 400 m back not timed: run end 'stopped', stopped at (2607, 691), -396 m along
+    Street Classic: timed from 250 m back
+    Longroof GT from 400 m back not timed: run end 'stopped', stopped at (2607, 691), -397 m along
+    Longroof GT: timed from 250 m back
+    Needle 600 from 400 m back not timed: run end 'stopped', stopped at (2608, 691), -396 m along
+    Needle 600: timed from 250 m back
+    Trail Four from 400 m back not timed: run end 'stopped', stopped at (2608, 691), -396 m along
+    Trail Four: timed from 250 m back
+  New Chastain Road speed trap 2 Street Classic 91 mph   Longroof GT 92 mph   Needle 600 108 mph   Trail Four 102 mph
+PASS  New Chastain Road speed trap 2: every base vehicle's crossing was timed  -  40.6, 41.3, 48.3, 45.7
+
+5 of 5 checks passed.

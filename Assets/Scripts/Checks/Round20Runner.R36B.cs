@@ -28,15 +28,22 @@ namespace ChastainRush
                 for (int k = 0; k < 4; k++)
                 {
                     yield return Vehicle(BaseIds[k]);
-                    // along the road: RoadLookup's line through the trap, 400 m back, 30 m on
-                    var f = Flat(s.forward).normalized; var line = new List<Vector3>();
-                    for (float d = -400f; d <= 30f; d += 5f) { var p = s.transform.position + f * d; line.Add(RaceRoute.Surface(p.x, p.z)); }
-                    var road = RoadLookup.Instance;
-                    if (road != null) for (int i = 0; i < line.Count; i++) if (road.NearestPoint(line[i], out var c, out _)) line[i] = RaceRoute.Surface(c.x, c.y);
-                    Place(line[0], line[2] - line[0], 10f); yield return new WaitForSecondsRealtime(.2f);
-                    float before = a.LastSpeed; var run = new Run();
-                    yield return StartCoroutine(DriveLine(line, 99f, 40f, run));
-                    speeds[k] = a.LastSpeed != before ? a.LastSpeed : 0f;
+                    // along the road: RoadLookup's line through the trap, 400 m back (250 m, then 150 m, if the vehicle stops on the way), 30 m on
+                    var f = Flat(s.forward).normalized;
+                    foreach (float back in new[] { 400f, 250f, 150f })
+                    {
+                        var line = new List<Vector3>();
+                        for (float d = -back; d <= 30f; d += 5f) { var p = s.transform.position + f * d; line.Add(RaceRoute.Surface(p.x, p.z)); }
+                        var road = RoadLookup.Instance;
+                        if (road != null) for (int i = 0; i < line.Count; i++) if (road.NearestPoint(line[i], out var c, out _)) line[i] = RaceRoute.Surface(c.x, c.y);
+                        Place(line[0], line[2] - line[0], 10f); yield return new WaitForSecondsRealtime(.2f);
+                        float before = a.LastSpeed; var run = new Run();
+                        yield return StartCoroutine(DriveLine(line, 99f, 40f, run));
+                        speeds[k] = a.LastSpeed != before ? a.LastSpeed : 0f;
+                        var at = car.Body.position;
+                        if (speeds[k] > 0f) { if (back < 400f) report.AppendLine($"    {Nm(BaseIds[k])}: timed from {back:0} m back"); break; }
+                        report.AppendLine($"    {Nm(BaseIds[k])} from {back:0} m back not timed: run end '{run.end}', stopped at ({at.x:0}, {at.z:0}), {Vector3.Dot(at - s.transform.position, f):0} m along");
+                    }
                 }
                 report.AppendLine($"  {s.title,-28} " + string.Join("   ", BaseIds.Select((id, i) => $"{Nm(id)} {MedalUi.Mph(speeds[i])}")));
                 Check($"{s.title}: every base vehicle's crossing was timed", speeds.All(v => v > 5f), string.Join(", ", speeds.Select(v => v.ToString("0.0"))));

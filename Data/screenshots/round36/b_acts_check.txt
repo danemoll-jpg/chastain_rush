@@ -1,0 +1,13 @@
+Round 36 check, 2026-10-16 14:51, the exe, 1280 x 720, muted.
+
+=== Part B: one of each kind, by script: scored and medaled
+  17 sites: Footbridge leap (Jump), Fallen tree leap (Jump), Outcrop leap (Jump), Outfall leap (Jump), Shop row drop (Jump), BIG AIR (Jump), Ridge leap (Jump), Storage hop (Jump), Mailbox run (Smash), Pump smash (Smash), Shop row smash (Smash), Street lamp smash (Smash), Bells Ferry Road speed trap (Speed), Canton Road speed trap 1 (Speed), Chastain Road speed trap (Speed), New Chastain Road speed trap 1 (Speed), New Chastain Road speed trap 2 (Speed)
+PASS  speed trap (Bells Ferry Road speed trap): scored and medaled  -  123 mph, GOLD, 'Bells Ferry Road speed trap / 123 mph / PB 123 mph / NEW BEST'
+PASS  jump (BIG AIR): a timed attempt, landed, scored and medaled  -  226 ft, medal SILVER, 'BIG AIR / 226 ft / PB 226 ft / NEW BEST / 3.04s' site=jump-park-mega invalid=False why= verticalImpact=15.71 contactImpact=15.00 contactUp=0.98 up=0.90 wiped=False air=3.04 distance=68.85
+PASS  smash run (Pump smash): a timed attempt, its props counted, scored and medaled  -  2 of 4, 'Pump smash / 2 props / PB 2 props / NEW BEST', medal BRONZE
+PASS  the results are kept (the check's own activities-v1.json and activity-records-v2.json)
+
+=== Part B: the map with the sites
+PASS  the map opened with the sites on it  -  18 places
+
+5 of 5 checks passed.

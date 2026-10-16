@@ -171,6 +171,13 @@ A4 DONE. The Ridge race's line, S1 and Canton Road untouched (grading stops 1 m 
 Imported from Racer: StuntPark (its ramp, loop and prop builders ported into the map build; its queries at run time), ArcadeActivities (+Stunts, +Smash), ActivitySite,
    ActivityRecords, StuntEvent, StuntProgress, TrickHud, MedalUi, DisplayUnits, the stunt profiles and Cup livery, air steering, RaceMenus.Stunt (rewritten into
    GameMenus), StuntBike.fbx, StuntBuggy.fbx, Tools/Blender stuntbike.py, stuntbuggy.py, bikes.py. Left behind: Stunt Races, the Stunt chapter, split-screen.
+**Part B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round36/b_*`. Sites: `python Tools/mapgen/make_activities.py`
+   (`Data/activities/free_roam.json`, targets `Data/activities/targets.json`), built by `MapBuilder.Activities.cs` under their own game-layer root.
+B DONE. 17 sites: 8 jumps (BJ1, BJ3, BJ4, P1J, the Ridge leap, S2, BIG AIR, shop row drop), 5 speed traps with camera posts (Canton, New Chastain x2, Chastain,
+   Bells Ferry; both ways), 4 smash runs (12 mailboxes, the 4 pumps, 30 shop-row panels, 10 street lamps). On the map and minimap; Start > ACTIVITIES; results on
+   the Records page; Free Roam only. Targets: speed traps 95 / 85 / 72 % of each base vehicle's flat-out run; jumps from their sized flights. Check: Bells Ferry
+   123 mph GOLD, BIG AIR 226 ft SILVER, pump smash BRONZE, the map picture. Fixed in the port: a landing is judged upright against the slope, not world up.
+   Seen in the scripted runs, not changed: on Chastain Road near (300 to 400, 940) and New Chastain Road near (2607, 691) the scripted drive stopped dead.
 
 ## QUEUED rounds
 None.

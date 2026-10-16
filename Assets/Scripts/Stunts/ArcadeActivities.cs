@@ -110,6 +110,12 @@ namespace Racer
         public void Cancel(){AttemptActive=false;smashed.Clear();warm=0;ResetFlight();}
         public void NewSession(){Cancel();armed.Clear();sampled=false;warm=0;blockedUntil=Time.time+1;Feedback=null;feedbackUntil=0;LastDistance=LastAirtime=LastSpeed=LastJumpAward=0;StuntSession();}
         // 0.111 Part B: a reset never cancels a smash attempt (the count and the clock go on)
+        Vector3 SupportNormal()
+        {
+            Vector3 n=Vector3.zero;
+            foreach(var point in car.suspensionPoints)if(Physics.Raycast(car.transform.TransformPoint(point),-car.transform.up,out var hit,car.suspensionLength+.3f,car.groundMask,QueryTriggerInteraction.Ignore))n+=hit.normal;
+            return n.sqrMagnitude>0?n.normalized:Vector3.up;
+        }
         void Recovered(){bool smashing=AttemptActive&&Selected&&Selected.kind==ActivitySite.Kind.Smash;if(smashing)Message(Selected.title+" / reset: keep smashing ("+SmashCount+")",3);else{if(AttemptActive)Message("Attempt canceled by recovery / retry from the menu",4);Cancel();}armed.Clear();sampled=false;warm=0;blockedUntil=Time.time+2;if(ComboLinks>0)EndCombo(null);StuntReset();} // 0.106: a reset banks the open combo
         // 0.106 Part D: the Stunt event's end: the open combo counts
         public void EndStuntCombo(){if(ComboLinks>0)EndCombo(null);StuntReset();}
@@ -161,7 +167,10 @@ namespace Racer
                     // 0.91 Part C: a jump counts if the vehicle survives it: down on its wheels, upright, not wiped out, not in the water.
                     if(car.WaterImmersion>.05f)Reject("Landed in the water");
                     if(configuration.WipedOut)Reject("Wiped out on landing");
-                    if(car.transform.up.y<.65f)Reject(car.transform.up.y<0?"Landed upside down":"Landed on your side");
+                    // Chastain Rush, Round 36: upright against the ground under the wheels, not world up (the stunt park's landings are 28 to
+                    // 36 degrees, steeper than Racer's: a vehicle square on such a slope was "on its side" to world up)
+                    float upright=Vector3.Dot(car.transform.up,SupportNormal());
+                    if(upright<.65f)Reject(upright<0?"Landed upside down":"Landed on your side");
                     if(stable>=.3f)
                     {
                         float distance=Vector3.ProjectOnPlane(landing-takeoff,Vector3.up).magnitude;
