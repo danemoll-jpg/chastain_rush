@@ -24,6 +24,14 @@ namespace Racer
         // faces' normals point sideways and down, so those contacts kept PhysX's internal-edge normals, tilted back against the travel,
         // and a body touching the wall it rode on lost 3 to 9 m/s a step (the Drifter Twin came off the wall). -wallRideRound25: as before
         static volatile HashSet<EntityId> barrels = new();
+        static volatile HashSet<EntityId> parks = new();   // Round 37: the stunt park's surfaces (frictionless under the vehicle)
+        // Round 37: the park's roofs and store floors are rows of box colliders side by side (MapBuilder.StuntParkStores.cs SlabRect); a vehicle
+        // crossing a seam met the next box's edge (the Skywhip 250 lost 8 m/s in one step at BIG AIR's foot): a contact at a slab's top face is
+        // pushed straight up (the box's top y, world up)
+        static volatile Dictionary<EntityId, float> slabs = new();
+        static EntityId loopId; static Vector3 loopOrigin, loopForward; static float loopRadius;   // Round 37: the park's loop (read on the main thread)
+        static readonly bool ParkFaceNormals = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37ParkFaceNormals") >= 0;   // checks only
+        static readonly bool ParkFriction = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37ParkFriction") >= 0;   // checks only
         static readonly bool Round25Walls = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-wallRideRound25") >= 0;
         public static long BarrelCorrections;
         // Round 14: Racer applies this to all of its driving ground (every "Ground_" mesh); here the ground is the terrain
@@ -49,7 +57,7 @@ namespace Racer
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Reset()
         {
-            surfaces = new(); vehicles = new(); ramps = new(); fields = new(); barrels = new(); deckCells = new(); UnderDeckIgnored = 0; initialized = false; registeredScene = default; RampCorrections = 0; TerrainCorrections = 0; BarrelCorrections = 0;
+            surfaces = new(); vehicles = new(); ramps = new(); fields = new(); barrels = new(); parks = new(); slabs = new(); deckCells = new(); UnderDeckIgnored = 0; initialized = false; registeredScene = default; RampCorrections = 0; TerrainCorrections = 0; BarrelCorrections = 0;
             Physics.ContactModifyEvent -= Correct;
             Physics.ContactModifyEvent += Correct;
             Physics.ContactModifyEventCCD -= CorrectCcd;
@@ -57,18 +65,29 @@ namespace Racer
         }
 
         public static bool IsShortcutSurface(string n) => n.StartsWith("sc", System.StringComparison.Ordinal);
+        // Round 37 (Part A, BUG-001 to BUG-003 "ramp slows", "loop slows on both sides"): the stunt park's ramps, landings, tables, the loop and
+        // the stores' ramps are mesh colliders named "Stunt park ..." (MapBuilder.StuntPark.cs), not "sc...", so they were never registered and
+        // a stunt vehicle's body (speculative CCD) met their internal-edge normals, tilted back against the travel, as #6's kicker did in
+        // Round 10. They are ramps now; the loop's ribbon is driven all the way round, so "from above" there is the vehicle's up (as a pipe's
+        // barrel, Round 26). -r37ParkContactsOff: as before (checks only, to measure the difference)
+        static readonly bool ParkContactsOff = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37ParkContactsOff") >= 0;
+        public static bool IsStuntParkSurface(string n) => !ParkContactsOff && n.StartsWith("Stunt park ", System.StringComparison.Ordinal);
+        // the loop, and (Round 37) every curved park surface: the half-pipe and the quarter-pipes turn the vehicle up past 57 degrees, where a
+        // world-up test left their contacts uncorrected (30 m/s down to 6 to 10 m/s half way up the half-pipe in the first check)
+        static readonly bool ParkWorldUp = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37ParkWorldUp") >= 0;   // checks only: world up off the loop, as the first fix
+        static bool StuntParkFromVehicleUp(string n) => n == "Stunt park loop" || !ParkWorldUp && n.StartsWith("Stunt park ", System.StringComparison.Ordinal);
 
         public static void Register(BoxCollider box)
         {
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-noSurfaceContacts") >= 0) { Debug.Log("[VehicleSurfaceContacts] off (-noSurfaceContacts)"); return; }   // checks only: measure without it
             if (!initialized || registeredScene != box.gameObject.scene)
             {
-                var next = new Dictionary<EntityId, Face[]>(); var nextRamps = new HashSet<EntityId>(); var nextBarrels = new HashSet<EntityId>(); var nextDecks = new Dictionary<long, float>();
+                var next = new Dictionary<EntityId, Face[]>(); var nextRamps = new HashSet<EntityId>(); var nextBarrels = new HashSet<EntityId>(); var nextParks = new HashSet<EntityId>(); var nextDecks = new Dictionary<long, float>();
                 foreach (var mesh in Object.FindObjectsByType<MeshCollider>())
                 {
                     if (mesh.gameObject.scene != box.gameObject.scene) continue;
                     if (mesh.attachedRigidbody || !mesh.sharedMesh || !mesh.sharedMesh.isReadable) continue;
-                    bool ramp = IsShortcutSurface(mesh.name);
+                    bool ramp = IsShortcutSurface(mesh.name) || IsStuntParkSurface(mesh.name);   // Round 37: the stunt park's
                     if (!ramp && mesh.name != "BridgeDecks") continue;   // Round 14: the bridge decks are driving ground too
                     var vertices = mesh.sharedMesh.vertices; var indices = mesh.sharedMesh.triangles;
                     var t = mesh.transform; for (int v = 0; v < vertices.Length; v++) vertices[v] = t.TransformPoint(vertices[v]);
@@ -95,9 +114,18 @@ namespace Racer
                                 }
                         }
                     if (ramp) nextRamps.Add(mesh.GetEntityId());
-                    if (ramp && !Round25Walls && mesh.name.EndsWith(" barrel", System.StringComparison.Ordinal)) nextBarrels.Add(mesh.GetEntityId());   // Round 26
+                    if (ramp && !Round25Walls && (mesh.name.EndsWith(" barrel", System.StringComparison.Ordinal) || IsStuntParkSurface(mesh.name) && StuntParkFromVehicleUp(mesh.name))) nextBarrels.Add(mesh.GetEntityId());   // Round 26
+                    if (IsStuntParkSurface(mesh.name) && !ParkFriction) nextParks.Add(mesh.GetEntityId());   // Round 37
+                    if (IsStuntParkSurface(mesh.name) && mesh.name == "Stunt park loop") loopId = mesh.GetEntityId();
                     mesh.hasModifiableContacts = true;
                 }
+                var nextSlabs = new Dictionary<EntityId, float>();   // Round 37: the park's roof and store-floor slabs
+                if (!ParkContactsOff)
+                    foreach (var b in Object.FindObjectsByType<BoxCollider>())
+                    {
+                        if (b.gameObject.scene != box.gameObject.scene || b.attachedRigidbody || !(b.name == "Stunt park roof" || b.name == "Stunt park store floor")) continue;
+                        nextSlabs[b.GetEntityId()] = b.transform.TransformPoint(b.center + Vector3.up * b.size.y * .5f).y; b.hasModifiableContacts = true;
+                    }
                 var nextFields = new Dictionary<EntityId, Field>();   // Round 14: the terrain tiles
                 foreach (var tc in Object.FindObjectsByType<TerrainCollider>())
                 {
@@ -109,9 +137,10 @@ namespace Racer
                     nextFields[tc.GetEntityId()] = new Field { H = flat, Res = res, X = tc.transform.position.x, Z = tc.transform.position.z, StepX = d.size.x / (res - 1), StepZ = d.size.z / (res - 1) };
                     tc.hasModifiableContacts = true;
                 }
-                surfaces = next; ramps = nextRamps; barrels = nextBarrels; fields = nextFields; deckCells = nextDecks; initialized = true; registeredScene = box.gameObject.scene;
-                Debug.Log($"[VehicleSurfaceContacts] {nextRamps.Count} shortcut surfaces, {next.Count - nextRamps.Count} bridge deck meshes, {nextFields.Count} terrain tiles registered");
+                surfaces = next; ramps = nextRamps; barrels = nextBarrels; parks = nextParks; slabs = nextSlabs; fields = nextFields; deckCells = nextDecks; initialized = true; registeredScene = box.gameObject.scene;
+                Debug.Log($"[VehicleSurfaceContacts] {nextRamps.Count} shortcut and stunt park surfaces, {next.Count - nextRamps.Count} bridge deck meshes, {nextFields.Count} terrain tiles registered");
             }
+            if (StuntPark.Current) { loopOrigin = StuntPark.LoopOrigin; loopForward = StuntPark.LoopForward; loopRadius = StuntPark.LoopRadius; }   // Round 37
             var copy = new Dictionary<EntityId, Box>(vehicles);
             copy[box.GetEntityId()] = new Box { Center = Vector3.Scale(box.center, box.transform.lossyScale), Half = Vector3.Scale(box.size * .5f, box.transform.lossyScale) };
             vehicles = copy;
@@ -127,7 +156,7 @@ namespace Racer
 
         static void CorrectPairs(NativeArray<ModifiableContactPair> pairs, bool ccd)
         {
-            var terrain = surfaces; var bodies = vehicles; var rampIds = ramps; var tiles = fields; var barrelIds = barrels;
+            var terrain = surfaces; var bodies = vehicles; var rampIds = ramps; var tiles = fields; var barrelIds = barrels; var parkIds = parks; var slabTops = slabs;
             for (int i = 0; i < pairs.Length; i++)
             {
                 var pair = pairs[i];
@@ -138,6 +167,13 @@ namespace Racer
                 var rotation = first ? pair.rotation : pair.otherRotation;
                 var center = (first ? pair.position : pair.otherPosition) + rotation * box.Center;
                 if (!ccd && tiles.TryGetValue(surfaceId, out var field)) { CorrectTerrain(ref pair, field, first, center, rotation, box); continue; }
+                if (!ccd && slabTops.TryGetValue(surfaceId, out float slabTop))   // Round 37: a park slab's top face
+                {
+                    var upN = first ? Vector3.up : Vector3.down;
+                    for (int k = 0; k < pair.contactCount; k++)
+                        if (pair.GetPoint(k).y >= slabTop - .08f && Vector3.Dot(pair.GetNormal(k), upN) < .98f) { pair.SetNormal(k, upN); System.Threading.Interlocked.Increment(ref RampCorrections); }
+                    continue;
+                }
                 if (!terrain.TryGetValue(surfaceId, out var faces)) continue;
                 bool barrel = barrelIds.Contains(surfaceId); var bodyUp = rotation * Vector3.up;   // Round 26
                 for (int k = 0; k < pair.contactCount; k++)
@@ -149,7 +185,21 @@ namespace Racer
                     if ((barrel ? Vector3.Dot(n, bodyUp) : n.y) < .55f || Vector3.Dot(center - surface.Point, n) < 0) continue;
                     if (barrel && n.y < .55f) System.Threading.Interlocked.Increment(ref BarrelCorrections);
                     var normal = first ? n : -n;
+                    // Round 37: in the loop a long body's corners reach into the curve ahead of and behind the wheels, where even the true face normal
+                    // leans back against the travel (the Clay Hopper went from 24 to 13 m/s in one step near the top): there the ribbon's own inward
+                    // normal under the body's centre is used (StuntPark's loop: In(phi) = -forward sin phi + up cos phi), across the travel, never against it
+                    if (!ccd && surfaceId == loopId && !ParkFaceNormals && loopRadius > 0f)
+                    {
+                        var rel = center - loopOrigin; float fw = Vector3.Dot(rel, loopForward), up = rel.y; float phi = Mathf.Atan2(fw, loopRadius - up);
+                        var radial = (-loopForward * Mathf.Sin(phi) + Vector3.up * Mathf.Cos(phi)).normalized; n = radial;
+                        normal = first ? radial : -radial;
+                    }
                     if (ccd) normal = -normal;
+                    // Round 37 (BUG-002, "Loop slows on both sides"): in the loop and up the half-pipe at speed the curve presses the body onto the
+                    // park's surface far harder than the suspension holds (180 m/s^2 in the 5 m loop at 30 m/s against 45), and the body's sliding
+                    // friction under that load took 32 m/s down to 13 over the top. The wheels' own grip (ArcadeVehicle) drives and steers there, so a
+                    // body resting on a park surface slides on it without friction: no speed lost but the climb's (-r37ParkFriction: as before)
+                    if (!ccd && parkIds.Contains(surfaceId)) { pair.SetDynamicFriction(k, 0f); pair.SetStaticFriction(k, 0f); }
                     if (Vector3.Dot(pair.GetNormal(k), normal) > .98f) continue;
                     float radius = Mathf.Abs(Vector3.Dot(rotation * Vector3.right, n)) * box.Half.x
                         + Mathf.Abs(Vector3.Dot(rotation * Vector3.up, n)) * box.Half.y

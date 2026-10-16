@@ -61,6 +61,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound33") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round33"; }   // Round 33: the Chastain Ridge race (Round20Runner.R33.cs)
                 if (args[i] == "-exeRound35") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round35"; }   // Round 35 (Round20Runner.R35*.cs)
                 if (args[i] == "-exeRound36") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round36"; }   // Round 36 (Round20Runner.R36*.cs)
+                if (args[i] == "-exeRound37") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round37"; }   // Round 37 (Round20Runner.R37*.cs)
                 if (args[i] == "-exeRound34") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round34"; }   // Round 34 (Round20Runner.R34*.cs)
                 if (args[i] == "-exeShortcut") { var r = go.AddComponent<ShortcutCheckRunner>(); r.outputDir = args[i + 1]; Application.runInBackground = true; }   // Round 10: the shortcut check in the exe (-shortcutOnly <id>, -shortcutSpeeds 20,30, -shortcutNoRace)
                 if (args[i] == "-exeProfile") { var r = go.AddComponent<ProfileRunner>(); r.outputDir = args[i + 1]; }   // Round 24 A2: where the frame time goes

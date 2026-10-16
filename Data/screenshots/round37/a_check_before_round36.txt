@@ -1,0 +1,115 @@
+Round 37 check, 2026-10-16 17:31, the exe, 1280 x 720, muted.
+
+=== Part A: the stunt park's ramps flat out (speed at the foot -> at the lip, against gravity alone over the rise)  [-r37ParkContactsOff: AS ROUND 36]
+  -- dry (Clear)
+  Skywhip 250    K1 kicker                                NOT MEASURED: never rose (reached 7.2 of 35.7 m); body touched AbandonedBank
+  Skywhip 250    K2 table                                  30.0 ->  18.8 m/s over 1.15 m (gravity alone:  29.6; SHORT 10.8), worst step 5.64 m/s; body touched AbandonedBank, Stunt park K1 kicker, Stunt park K2 table
+  Skywhip 250    Barrel-roll ramp                         NOT MEASURED: never rose (reached -0.3 of 34.0 m); body touched Stunt park store wall
+  Skywhip 250    Barrel-roll landing (back)                 6.1 ->  11.7 m/s over 1.35 m (gravity alone:   3.3; kept), worst step 0.94 m/s; body touched Stunt park Barrel-roll ramp, Stunt park Barrel-roll landing
+  Skywhip 250    Bus gap take-off                           2.8 ->  25.0 m/s over 3.52 m (gravity alone:   0.0; kept), worst step 2.66 m/s; body touched Stunt park Barrel-roll landing, Stunt park Bus gap take-off
+  Skywhip 250    Bus gap landing (back)                    29.7 ->  28.3 m/s over 2.32 m (gravity alone:  28.9; SHORT 0.6), worst step 6.41 m/s; body touched Stunt park Bus gap landing
+  Skywhip 250    Car gap take-off                          30.0 ->   7.4 m/s over 11.92 m (gravity alone:  25.8; SHORT 18.4), worst step 29.19 m/s; body touched Stunt park Half-pipe, Terrain_5_1, Stunt park Car gap take-off
+  Skywhip 250    Car gap landing (back)                    33.1 ->  17.8 m/s over 2.51 m (gravity alone:  32.4; SHORT 14.6), worst step 21.21 m/s; body touched Terrain_5_1, Stunt park Car gap landing
+  Skywhip 250    Half-pipe west (half way up)               8.6 ->  10.5 m/s over 1.29 m (gravity alone:   7.0; kept), worst step 0.00 m/s; body touched Stunt park Half-pipe
+  Skywhip 250    Half-pipe east (half way up)               7.4 ->   7.5 m/s over 1.69 m (gravity alone:   4.6; kept), worst step 0.02 m/s; body touched Stunt park Half-pipe
+  Skywhip 250    Roof quarter-pipe west (half way up)      26.6 ->  19.7 m/s over 1.62 m (gravity alone:  26.0; SHORT 6.3), worst step 3.77 m/s; body touched Stunt park roof, Stunt park Roof quarter-pipe (west)
+  Skywhip 250    Roof quarter-pipe east (half way up)      13.3 ->  13.2 m/s over 0.67 m (gravity alone:  12.8; kept), worst step 0.01 m/s; body touched Stunt park Roof table, Stunt park roof, Stunt park Roof quarter-pipe (shop row east end)
+  Skywhip 250    Roof table                                10.0 ->   5.3 m/s over 0.90 m (gravity alone:   9.1; SHORT 3.8), worst step 9.34 m/s; body touched Stunt park Roof gap landing, Stunt park roof, Stunt park Roof table
+  Skywhip 250    BIG AIR take-off                          35.1 ->  26.2 m/s over 1.54 m (gravity alone:  34.7; SHORT 8.6), worst step 8.27 m/s; body touched Stunt park roof, Stunt park BIG AIR take-off
+  Skywhip 250    BIG AIR landing (back)                    30.0 ->  21.7 m/s over 5.92 m (gravity alone:  28.0; SHORT 6.2), worst step 11.92 m/s; body touched Stunt park BIG AIR landing
+  Skywhip 250    BIG AIR back                              32.6 ->  22.8 m/s over 7.38 m (gravity alone:  30.3; SHORT 7.5), worst step 15.86 m/s; body touched Stunt park BIG AIR back
+  Skywhip 250    Shop row drop take-off                    21.1 ->  21.6 m/s over 0.59 m (gravity alone:  20.8; kept), worst step 0.02 m/s; body touched Stunt park Shop row drop take-off
+  Skywhip 250    Shop row drop landing (back, BUG-001)     30.0 ->  18.2 m/s over 4.13 m (gravity alone:  28.6; SHORT 10.4), worst step 11.97 m/s; body touched Stunt park Shop row drop landing
+  Skywhip 250    Roof gap take-off                         19.4 ->  19.9 m/s over 0.85 m (gravity alone:  19.0; kept), worst step 0.15 m/s; body touched Stunt park Roof gap take-off
+  Skywhip 250    Roof gap landing (back)                   12.2 ->  18.7 m/s over 2.97 m (gravity alone:   9.5; kept), worst step 0.00 m/s; body touched Stunt park Roof gap landing
+  Skywhip 250    Tower gap take-off                        30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park roof, Stunt park store floor
+  Skywhip 250    Tower gap landing (back, BUG-003)         30.0 ->  22.2 m/s over 6.53 m (gravity alone:  27.8; SHORT 5.5), worst step 13.13 m/s; body touched Stunt park Tower gap landing
+  Skywhip 250    Roof ramp (to the roof)                   30.0 ->  36.7 m/s over 4.97 m (gravity alone:  28.3; kept), worst step 0.34 m/s; body touched Terrain_5_1, Stunt park Roof ramp
+  Skywhip 250    Mezzanine ramp (inside)                   30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park store floor, Terrain_4_1
+  Clay Hopper    K1 kicker                                NOT MEASURED: never rose (reached 7.0 of 35.7 m); body touched AbandonedBank
+  Clay Hopper    K2 table                                  22.9 ->  21.8 m/s over 1.79 m (gravity alone:  22.1; SHORT 0.3), worst step 0.01 m/s; body touched AbandonedBank, Stunt park K1 kicker
+  Clay Hopper    Barrel-roll ramp                         NOT MEASURED: never rose (reached -0.5 of 34.0 m); body touched Stunt park store wall
+  Clay Hopper    Barrel-roll landing (back)                10.0 ->  14.5 m/s over 4.19 m (gravity alone:   4.1; kept), worst step 0.01 m/s; body touched Stunt park Barrel-roll ramp
+  Clay Hopper    Bus gap take-off                          12.5 ->  24.8 m/s over 3.29 m (gravity alone:   9.6; kept), worst step 0.00 m/s; body touched Stunt park Barrel-roll landing, Stunt park Bus gap take-off
+  Clay Hopper    Bus gap landing (back)                    29.5 ->  26.2 m/s over 2.34 m (gravity alone:  28.7; SHORT 2.4), worst step 9.42 m/s; body touched Stunt park Bus gap landing
+  Clay Hopper    Car gap take-off                          29.4 ->   9.0 m/s over 9.73 m (gravity alone:  26.0; SHORT 17.0), worst step 5.14 m/s; body touched Stunt park Half-pipe, Terrain_5_1
+  Clay Hopper    Car gap landing (back)                    32.1 ->  19.7 m/s over 2.55 m (gravity alone:  31.3; SHORT 11.6), worst step 16.91 m/s; body touched Stunt park Car gap landing
+  Clay Hopper    Half-pipe west (half way up)               7.3 ->   7.3 m/s over 1.58 m (gravity alone:   4.7; kept), worst step 0.02 m/s; body touched Stunt park Half-pipe
+  Clay Hopper    Half-pipe east (half way up)               7.4 ->   7.3 m/s over 1.77 m (gravity alone:   4.5; kept), worst step 0.00 m/s; body touched Stunt park Half-pipe
+  Clay Hopper    Roof quarter-pipe west (half way up)       5.9 ->   5.9 m/s over 1.66 m (gravity alone:   1.5; kept), worst step 0.00 m/s; body touched Stunt park Roof quarter-pipe (west)
+  Clay Hopper    Roof quarter-pipe east (half way up)      28.2 ->  26.8 m/s over 3.60 m (gravity alone:  26.9; SHORT 0.1), worst step 0.01 m/s; body touched Stunt park Roof table
+  Clay Hopper    Roof table                                21.8 ->  22.5 m/s over 0.70 m (gravity alone:  21.5; kept), worst step 0.02 m/s; body touched Stunt park Roof table
+  Clay Hopper    BIG AIR take-off                          15.4 ->  17.0 m/s over 1.04 m (gravity alone:  14.8; kept), worst step 0.00 m/s; body touched Stunt park roof, Stunt park BIG AIR take-off
+  Clay Hopper    BIG AIR landing (back)                    21.9 ->  24.2 m/s over 6.08 m (gravity alone:  18.9; kept), worst step 0.00 m/s; body touched Stunt park BIG AIR landing
+  Clay Hopper    BIG AIR back                              31.1 ->  21.9 m/s over 7.43 m (gravity alone:  28.7; SHORT 6.8), worst step 15.28 m/s; body touched Stunt park BIG AIR back
+  Clay Hopper    Shop row drop take-off                    24.3 ->  24.3 m/s over 0.53 m (gravity alone:  24.1; kept), worst step 0.15 m/s; body touched Stunt park Shop row drop take-off
+  Clay Hopper    Shop row drop landing (back, BUG-001)     29.4 ->  17.8 m/s over 4.10 m (gravity alone:  28.0; SHORT 10.2), worst step 12.37 m/s; body touched Stunt park Shop row drop landing
+  Clay Hopper    Roof gap take-off                         19.4 ->  19.8 m/s over 0.76 m (gravity alone:  19.0; kept), worst step 0.24 m/s; body touched Stunt park Roof gap take-off
+  Clay Hopper    Roof gap landing (back)                   30.4 ->  30.6 m/s over 3.01 m (gravity alone:  29.4; kept), worst step 0.41 m/s; body touched Stunt park Roof gap landing
+  Clay Hopper    Tower gap take-off                        30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park roof, Terrain_4_1
+  Clay Hopper    Tower gap landing (back, BUG-003)         17.3 ->  21.7 m/s over 6.92 m (gravity alone:  12.8; kept), worst step 0.00 m/s; body touched Stunt park Tower gap landing
+  Clay Hopper    Roof ramp (to the roof)                   29.4 ->  35.7 m/s over 5.14 m (gravity alone:  27.7; kept), worst step 0.24 m/s; body touched Stunt park Roof ramp
+  Clay Hopper    Mezzanine ramp (inside)                   30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park store floor
+  -- rain (Rain)
+  Skywhip 250    K1 kicker                                NOT MEASURED: never rose (reached 7.2 of 35.7 m); body touched Terrain_5_1, AbandonedBank
+  Skywhip 250    K2 table                                  30.0 ->  17.1 m/s over 0.82 m (gravity alone:  29.7; SHORT 12.6), worst step 12.33 m/s; body touched AbandonedBank, Stunt park K1 kicker, Stunt park K2 table
+  Skywhip 250    Barrel-roll ramp                         NOT MEASURED: never rose (reached -0.3 of 34.0 m); body touched Stunt park store wall
+  Skywhip 250    Barrel-roll landing (back)                 5.7 ->   8.9 m/s over 1.43 m (gravity alone:   2.0; kept), worst step 4.74 m/s; body touched Stunt park Barrel-roll ramp, Stunt park Barrel-roll landing
+  Skywhip 250    Bus gap take-off                          13.1 ->  24.0 m/s over 3.55 m (gravity alone:  10.1; kept), worst step 0.00 m/s; body touched Stunt park Barrel-roll landing, Stunt park Bus gap take-off
+  Skywhip 250    Bus gap landing (back)                    29.7 ->  20.0 m/s over 2.39 m (gravity alone:  28.9; SHORT 9.0), worst step 13.90 m/s; body touched Stunt park Bus gap landing
+  Skywhip 250    Car gap take-off                           9.4 ->   5.1 m/s over 4.97 m (gravity alone:   0.0; kept), worst step 6.79 m/s; body touched Stunt park Half-pipe, Terrain_5_1
+  Skywhip 250    Car gap landing (back)                    32.7 ->  14.3 m/s over 2.62 m (gravity alone:  31.9; SHORT 17.7), worst step 17.91 m/s; body touched Terrain_5_1, Stunt park Car gap landing
+  Skywhip 250    Half-pipe west (half way up)               8.6 ->  10.2 m/s over 1.38 m (gravity alone:   6.8; kept), worst step 0.00 m/s; body touched Stunt park Half-pipe
+  Skywhip 250    Half-pipe east (half way up)               7.4 ->   7.5 m/s over 1.70 m (gravity alone:   4.6; kept), worst step 0.02 m/s; body touched Stunt park Half-pipe
+  Skywhip 250    Roof quarter-pipe west (half way up)       6.1 ->   6.0 m/s over 1.55 m (gravity alone:   2.6; kept), worst step 0.05 m/s; body touched Stunt park roof, Stunt park Roof quarter-pipe (west)
+  Skywhip 250    Roof quarter-pipe east (half way up)      13.0 ->  12.8 m/s over 0.69 m (gravity alone:  12.5; kept), worst step 0.01 m/s; body touched Stunt park Roof table, Stunt park roof, Stunt park Roof quarter-pipe (shop row east end)
+  Skywhip 250    Roof table                                11.7 ->   4.0 m/s over 0.93 m (gravity alone:  10.9; SHORT 6.8), worst step 12.25 m/s; body touched Stunt park Roof gap landing, Stunt park roof, Stunt park Roof table
+  Skywhip 250    BIG AIR take-off                          26.8 ->  25.6 m/s over 1.09 m (gravity alone:  26.4; SHORT 0.8), worst step 1.07 m/s; body touched Stunt park roof, Stunt park BIG AIR take-off
+  Skywhip 250    BIG AIR landing (back)                    30.0 ->  24.0 m/s over 5.71 m (gravity alone:  28.0; SHORT 4.0), worst step 10.78 m/s; body touched Stunt park BIG AIR landing
+  Skywhip 250    BIG AIR back                              32.3 ->  21.8 m/s over 7.41 m (gravity alone:  29.9; SHORT 8.1), worst step 20.20 m/s; body touched Stunt park BIG AIR back
+  Skywhip 250    Shop row drop take-off                    21.6 ->  21.9 m/s over 0.61 m (gravity alone:  21.4; kept), worst step 0.05 m/s; body touched Stunt park Shop row drop take-off
+  Skywhip 250    Shop row drop landing (back, BUG-001)     30.0 ->  17.6 m/s over 4.18 m (gravity alone:  28.6; SHORT 10.9), worst step 12.14 m/s; body touched Stunt park Shop row drop landing
+  Skywhip 250    Roof gap take-off                         19.7 ->  20.1 m/s over 0.82 m (gravity alone:  19.2; kept), worst step 0.10 m/s; body touched Stunt park Roof gap take-off
+  Skywhip 250    Roof gap landing (back)                   12.1 ->  18.3 m/s over 3.00 m (gravity alone:   9.3; kept), worst step 0.00 m/s; body touched Stunt park Roof gap landing
+  Skywhip 250    Tower gap take-off                        30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park roof, Stunt park store floor
+  Skywhip 250    Tower gap landing (back, BUG-003)         30.0 ->  21.5 m/s over 6.52 m (gravity alone:  27.8; SHORT 6.3), worst step 14.52 m/s; body touched Stunt park Tower gap landing
+  Skywhip 250    Roof ramp (to the roof)                   30.0 ->  36.1 m/s over 5.07 m (gravity alone:  28.3; kept), worst step 0.36 m/s; body touched Terrain_5_1, Stunt park Roof ramp
+  Skywhip 250    Mezzanine ramp (inside)                   30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park store floor, Terrain_4_1
+  Clay Hopper    K1 kicker                                NOT MEASURED: never rose (reached 7.0 of 35.7 m); body touched AbandonedBank
+  Clay Hopper    K2 table                                  24.3 ->  23.2 m/s over 2.07 m (gravity alone:  23.5; SHORT 0.3), worst step 0.01 m/s; body touched AbandonedBank, Stunt park K1 kicker
+  Clay Hopper    Barrel-roll ramp                         NOT MEASURED: never rose (reached -0.5 of 34.0 m); body touched Stunt park store wall
+  Clay Hopper    Barrel-roll landing (back)                 9.7 ->  14.0 m/s over 3.93 m (gravity alone:   4.1; kept), worst step 0.01 m/s; body touched Stunt park Barrel-roll ramp
+  Clay Hopper    Bus gap take-off                          12.0 ->  23.8 m/s over 3.37 m (gravity alone:   8.8; kept), worst step 0.00 m/s; body touched Stunt park Barrel-roll landing, Stunt park Bus gap take-off
+  Clay Hopper    Bus gap landing (back)                    29.5 ->  20.7 m/s over 2.43 m (gravity alone:  28.6; SHORT 7.9), worst step 10.16 m/s; body touched Stunt park Bus gap landing
+  Clay Hopper    Car gap take-off                          29.4 ->   9.8 m/s over 8.21 m (gravity alone:  26.6; SHORT 16.8), worst step 5.40 m/s; body touched Stunt park Half-pipe, Terrain_5_1, Stunt park Car gap take-off
+  Clay Hopper    Car gap landing (back)                    31.7 ->  22.3 m/s over 2.49 m (gravity alone:  31.0; SHORT 8.7), worst step 11.10 m/s; body touched Stunt park Car gap landing
+  Clay Hopper    Half-pipe west (half way up)               7.3 ->   7.3 m/s over 1.58 m (gravity alone:   4.7; kept), worst step 0.00 m/s; body touched Stunt park Half-pipe
+  Clay Hopper    Half-pipe east (half way up)               7.4 ->   7.4 m/s over 1.77 m (gravity alone:   4.5; kept), worst step 0.00 m/s; body touched Stunt park Half-pipe
+  Clay Hopper    Roof quarter-pipe west (half way up)       5.9 ->   5.9 m/s over 1.66 m (gravity alone:   1.4; kept), worst step 0.00 m/s; body touched Stunt park roof, Stunt park Roof quarter-pipe (west)
+  Clay Hopper    Roof quarter-pipe east (half way up)      28.1 ->  26.7 m/s over 3.58 m (gravity alone:  26.8; SHORT 0.1), worst step 0.01 m/s; body touched Stunt park Roof table
+  Clay Hopper    Roof table                                23.1 ->  23.4 m/s over 0.70 m (gravity alone:  22.8; kept), worst step 0.26 m/s; body touched Stunt park Roof table
+  Clay Hopper    BIG AIR take-off                          15.3 ->  15.3 m/s over 1.11 m (gravity alone:  14.5; kept), worst step 1.03 m/s; body touched Stunt park BIG AIR take-off
+  Clay Hopper    BIG AIR landing (back)                    21.2 ->  21.9 m/s over 6.16 m (gravity alone:  18.1; kept), worst step 1.75 m/s; body touched Stunt park BIG AIR landing
+  Clay Hopper    BIG AIR back                              31.2 ->  21.5 m/s over 7.48 m (gravity alone:  28.8; SHORT 7.3), worst step 17.66 m/s; body touched Stunt park BIG AIR back
+  Clay Hopper    Shop row drop take-off                    24.4 ->  24.2 m/s over 0.53 m (gravity alone:  24.2; kept), worst step 0.18 m/s; body touched Stunt park Shop row drop take-off
+  Clay Hopper    Shop row drop landing (back, BUG-001)     29.4 ->  18.0 m/s over 4.21 m (gravity alone:  28.0; SHORT 10.0), worst step 10.30 m/s; body touched Stunt park Shop row drop landing
+  Clay Hopper    Roof gap take-off                         19.6 ->  19.8 m/s over 0.79 m (gravity alone:  19.2; kept), worst step 0.09 m/s; body touched Stunt park Roof gap take-off
+  Clay Hopper    Roof gap landing (back)                   30.2 ->  30.3 m/s over 2.99 m (gravity alone:  29.3; kept), worst step 0.39 m/s; body touched Stunt park Roof gap landing
+  Clay Hopper    Tower gap take-off                        30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park roof, Terrain_4_1
+  Clay Hopper    Tower gap landing (back, BUG-003)         16.7 ->  20.8 m/s over 6.71 m (gravity alone:  12.1; kept), worst step 0.00 m/s; body touched Stunt park Tower gap landing
+  Clay Hopper    Roof ramp (to the roof)                   29.4 ->  35.1 m/s over 5.12 m (gravity alone:  27.7; kept), worst step 0.56 m/s; body touched Stunt park Roof ramp
+  Clay Hopper    Mezzanine ramp (inside)                   30.0 ->  30.0 m/s over 0.00 m (gravity alone:  30.0; kept), worst step 0.00 m/s; body touched Stunt park store wall, Stunt park store floor
+FAIL  every ramp of the park keeps its speed onto and up it: at the lip within 1 m/s of what gravity alone leaves, no step losing over 1.5 m/s  -  dry Skywhip 250 K1 kicker; dry Skywhip 250 K2 table; dry Skywhip 250 Barrel-roll ramp; dry Skywhip 250 Bus gap take-off; dry Skywhip 250 Bus gap landing (back); dry Skywhip 250 Car gap take-off; dry Skywhip 250 Car gap landing (back); dry Skywhip 250 Roof quarter-pipe west (half way up); dry Skywhip 250 Roof table; dry Skywhip 250 BIG AIR take-off; dry Skywhip 250 BIG AIR landing (back); dry Skywhip 250 BIG AIR back; dry Skywhip 250 Shop row drop landing (back, BUG-001); dry Skywhip 250 Tower gap landing (back, BUG-003); dry Clay Hopper K1 kicker; dry Clay Hopper Barrel-roll ramp; dry Clay Hopper Bus gap landing (back); dry Clay Hopper Car gap take-off; dry Clay Hopper Car gap landing (back); dry Clay Hopper BIG AIR back; dry Clay Hopper Shop row drop landing (back, BUG-001); rain Skywhip 250 K1 kicker; rain Skywhip 250 K2 table; rain Skywhip 250 Barrel-roll ramp; rain Skywhip 250 Barrel-roll landing (back); rain Skywhip 250 Bus gap landing (back); rain Skywhip 250 Car gap take-off; rain Skywhip 250 Car gap landing (back); rain Skywhip 250 Roof table; rain Skywhip 250 BIG AIR landing (back); rain Skywhip 250 BIG AIR back; rain Skywhip 250 Shop row drop landing (back, BUG-001); rain Skywhip 250 Tower gap landing (back, BUG-003); rain Clay Hopper K1 kicker; rain Clay Hopper Barrel-roll ramp; rain Clay Hopper Bus gap landing (back); rain Clay Hopper Car gap take-off; rain Clay Hopper Car gap landing (back); rain Clay Hopper BIG AIR landing (back); rain Clay Hopper BIG AIR back; rain Clay Hopper Shop row drop landing (back, BUG-001)
+
+=== Part A: the loop, both ways (BUG-002)
+  dry  Skywhip 250    way in               32.7 m/s 3 m before, 32.7 into it, 10.6 at the top (gravity alone 29.5), 18.7 out; worst step 9.89 m/s
+  dry  Skywhip 250    way out (backward)   34.4 m/s 3 m before, 6.9 into it, 10.5 at the top (gravity alone 0.0), 18.8 out; worst step 1.30 m/s
+  dry  Clay Hopper    way in               32.8 m/s 3 m before, 32.7 into it, 10.4 at the top (gravity alone 29.6), 17.5 out; worst step 11.93 m/s
+  dry  Clay Hopper    way out (backward)   32.7 m/s 3 m before, 8.9 into it, 11.4 at the top (gravity alone 0.0), 18.0 out; worst step 1.82 m/s
+  rain Skywhip 250    way in               32.3 m/s 3 m before, 32.2 into it, 10.2 at the top (gravity alone 29.0), 18.3 out; worst step 18.95 m/s
+  rain Skywhip 250    way out (backward)   33.9 m/s 3 m before, 6.6 into it, 10.8 at the top (gravity alone 0.0), 18.4 out; worst step 0.57 m/s
+  rain Clay Hopper    way in               32.4 m/s 3 m before, 32.4 into it, 9.9 at the top (gravity alone 29.2), 17.1 out; worst step 22.69 m/s
+  rain Clay Hopper    way out (backward)   32.2 m/s 3 m before, 9.7 into it, 10.8 at the top (gravity alone 0.0), 17.5 out; worst step 0.51 m/s
+FAIL  the loop both ways: in, over the top and out at the speed it went in (within 1.5 m/s), no step losing over 1.5 m/s  -  dry Skywhip 250 way in; dry Clay Hopper way in; dry Clay Hopper way out (backward); rain Skywhip 250 way in; rain Clay Hopper way in
+
+0 of 2 checks passed.

@@ -53,6 +53,9 @@ namespace Racer
         [System.NonSerialized] public float airControl;
         public const float AirTipRate = 5.5f, AirRollRate = 5.5f, AirSpinRate = 5f, AirResponse = 16f;
         public bool AirSteering { get; private set; }
+        float rideEnergy = float.NegativeInfinity, lastSpeed;   // Round 37: per unit mass, on the park's ramps and loop
+        static readonly bool CarryOff = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37CarryOff") >= 0;   // Round 37, checks only
+        static readonly bool SpringUp = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r37SpringUp") >= 0;   // Round 37, checks only
 
         void Awake()
         {
@@ -87,7 +90,7 @@ namespace Racer
             if (configuration && configuration.WipedOut && transform.up.y<.35f) { throttle = 0; steering *= .25f; }
             GroundedWheels = 0;
             SuspensionLift = 0;
-            Vector3 normal = Vector3.zero; bool onLoop = false;   // Round 36: the stunt park's loop (Racer 0.106)
+            Vector3 normal = Vector3.zero; bool onLoop = false; int parkWheels = 0;   // Round 36: the stunt park's loop (Racer 0.106); Round 37: wheels on its ramps
             var weather = WeatherGrip.InEffect; float gripSum = 0; int gripCount = 0; // 0.97 Part B (Chastain Rush, Round 35)
             foreach (Vector3 local in suspensionPoints)
             {
@@ -96,13 +99,18 @@ namespace Racer
                 bool loop = StuntPark.Loop(hit.collider); if (loop) onLoop = true;   // Round 36: the stunt park's loop holds the wheels all the way round (Racer 0.106)
                 if (Vector3.Dot(hit.normal, SurfaceUp) < 0.35f && !loop) continue;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
                 GroundedWheels++;
+                if (loop || hit.collider is MeshCollider && StuntPark.Surface(hit.collider)) parkWheels++;   // Round 37: on the park's ramps
                 normal += hit.normal;
                 if (weather != Weather.Clear) { gripSum += WeatherGrip.ForHit(weather, hit.collider, hit.point); gripCount++; }
                 float compression = suspensionLength - hit.distance;
                 float speed = Vector3.Dot(Body.GetPointVelocity(origin), transform.up);
                 float lift = Mathf.Clamp(compression * springStrength - speed * suspensionDamping, 0, maxSuspensionAcceleration);
                 SuspensionLift += lift / suspensionPoints.Length;
-                Body.AddForceAtPosition(transform.up * (lift / suspensionPoints.Length), origin, ForceMode.Acceleration);
+                // Chastain Rush, Round 37 (BUG-002, "Loop slows on both sides"): on the stunt park's surfaces a wheel pushes square to the surface it is
+                // on; along the vehicle's own up, which lags the loop's and the half-pipe's curve, part of the spring pushed back against the travel
+                // (the Skywhip 250 lost 5 m/s entering the loop). Everywhere else as Racer (transform.up). -r37SpringUp: as before (checks only)
+                var push = (loop || StuntPark.Surface(hit.collider)) && !SpringUp ? hit.normal : transform.up;
+                Body.AddForceAtPosition(push * (lift / suspensionPoints.Length), origin, ForceMode.Acceleration);
             }
             bool grounded = GroundedWheels >= 2;
             // 0.97 Part B: the grip of the surface under the wheels, eased in so crossing a verge or a patch of ice is not a snap
@@ -158,6 +166,22 @@ namespace Racer
                 }
                 Body.AddTorque(up * ((yaw - Vector3.Dot(Body.angularVelocity, up)) * yawResponse), ForceMode.Acceleration);
             }
+            // Chastain Rush, Round 37 (BUG-001 to BUG-003, "ramp slows", "Loop slows on both sides"; standing rule: ramps never slow you): on the
+            // stunt park's ramps and round its loop the vehicle keeps its speed but for what the height takes (its speed and height when it came
+            // on, and what it gains on the throttle, kept as energy per unit mass). The 5 m loop and the 6 m half-pipe and quarter-pipes at 30 m/s
+            // turn a body faster than its suspension follows, and the solver took 3 m/s more than the climb half way up a quarter-pipe and 7 more
+            // over the loop's top. Like RampHold's landing carry, arcade by design, the park only. On the ramps only while the throttle is held
+            // (coasting and braking slow as anywhere), and a knock (over 3 m/s in one step: the bus, a wall) is never given back.
+            // -r37CarryOff: as before (checks only)
+            bool carry = !CarryOff && grounded && brakeReverse < .05f && (onLoop || parkWheels >= 2 && throttle > .05f);
+            var vNow = Body.linearVelocity; float g9 = -Physics.gravity.y, yNow = Body.position.y, eNow = .5f * vNow.sqrMagnitude + g9 * yNow;
+            if (carry)
+            {
+                if (rideEnergy == float.NegativeInfinity || eNow > rideEnergy || !onLoop && lastSpeed - vNow.magnitude > 3f) rideEnergy = eNow;
+                else { float want = 2f * (rideEnergy - g9 * yNow); if (want > vNow.sqrMagnitude && vNow.sqrMagnitude > 1f) { vNow *= Mathf.Sqrt(want / vNow.sqrMagnitude); Body.linearVelocity = vNow; } }
+            }
+            else rideEnergy = float.NegativeInfinity;
+            lastSpeed = vNow.magnitude;
             // Damped alignment resists roll, follows ramp slope, and gently settles attitude in flight.
             Vector3 tilt = Vector3.Cross(transform.up, up);
             Vector3 tiltVelocity = Vector3.ProjectOnPlane(Body.angularVelocity, up);

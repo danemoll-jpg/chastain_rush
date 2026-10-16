@@ -66,6 +66,15 @@ namespace Racer
         }
         public static bool OnPark(Vector3 p) => Inside(p) && p.y > Current.FloorY(p.x, p.z) - 3;
         public static bool Loop(Collider c) => Current && Current.loopCollider && c == Current.loopCollider;
+        // Round 37 (Part A): a collider of the park's ramps, landings, tables, loop or stores (MapBuilder.StuntPark.cs names them "Stunt park ..."),
+        // cached per collider (ArcadeVehicle asks for every wheel, every physics step)
+        static readonly System.Collections.Generic.Dictionary<EntityId, bool> surfaces = new();
+        public static bool Surface(Collider c)
+        {
+            if (!c || c is TerrainCollider) return false; var id = c.GetEntityId();
+            if (!surfaces.TryGetValue(id, out bool on)) surfaces[id] = on = c.name.StartsWith("Stunt park ", System.StringComparison.Ordinal);
+            return on;
+        }
         public static Vector3 LoopOrigin => Current ? Current.loopOrigin : Vector3.zero;
         public static Vector3 LoopForward => Current ? Current.loopForward : Vector3.right;
         public static Vector3 LoopSide => Current ? Current.loopSide : Vector3.back;

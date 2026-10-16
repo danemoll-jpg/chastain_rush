@@ -1,0 +1,97 @@
+weather,vehicle,ramp,v_foot,v_lip,dh,v_gravity,short,worst_step,touched
+dry,stuntbike,K1 kicker,0.00,0.00,0.00,0.00,0.00,0.00,AbandonedBank Stunt park K1 kicker
+dry,stuntbike,K2 table,30.73,30.16,1.20,30.35,0.19,0.01,AbandonedBank Stunt park K1 kicker
+dry,stuntbike,Barrel-roll ramp,32.38,32.10,3.61,31.27,-0.83,0.91,Stunt park Barrel-roll ramp
+dry,stuntbike,Barrel-roll landing (back),25.73,25.24,0.93,25.37,0.13,0.01,Stunt park Barrel-roll ramp
+dry,stuntbike,Bus gap take-off,21.59,25.20,3.17,20.09,-5.10,0.00,Stunt park Barrel-roll landing Stunt park Bus gap take-off
+dry,stuntbike,Bus gap landing (back),34.59,35.51,3.13,33.70,-1.82,0.24,Stunt park Bus gap landing
+dry,stuntbike,Car gap take-off,31.96,32.77,1.48,31.50,-1.27,0.00,Stunt park Half-pipe Stunt park Car gap take-off
+dry,stuntbike,Car gap landing (back),35.16,35.76,2.16,34.55,-1.21,0.04,Terrain_5_1 Stunt park Car gap landing
+dry,stuntbike,Half-pipe west (half way up),29.65,29.83,1.18,29.26,-0.57,0.45,Stunt park Half-pipe
+dry,stuntbike,Half-pipe east (half way up),30.34,30.01,1.45,29.87,-0.14,0.15,Stunt park Half-pipe
+dry,stuntbike,Roof quarter-pipe west (half way up),34.55,33.85,1.48,34.13,0.28,0.39,Stunt park Roof quarter-pipe (west)
+dry,stuntbike,Roof quarter-pipe east (half way up),27.86,27.79,0.08,27.83,0.04,0.01,Stunt park Roof table
+dry,stuntbike,Roof table,35.07,35.19,0.87,34.83,-0.36,0.02,Stunt park Roof table
+dry,stuntbike,BIG AIR take-off (to 1 m before its aimed lip),35.52,35.31,0.70,35.33,0.02,0.14,Stunt park BIG AIR take-off
+dry,stuntbike,BIG AIR landing (back),35.36,35.53,6.30,33.56,-1.97,0.06,Stunt park BIG AIR landing
+dry,stuntbike,BIG AIR back,33.99,35.14,7.08,31.88,-3.27,0.08,Stunt park BIG AIR back
+dry,stuntbike,Shop row drop take-off,31.53,31.77,0.78,31.28,-0.49,0.02,Stunt park Shop row drop take-off
+dry,stuntbike,Shop row drop landing (back, BUG-001),35.22,34.96,4.91,33.83,-1.13,0.16,Stunt park Shop row drop landing
+dry,stuntbike,Roof gap take-off,34.69,34.69,0.77,34.47,-0.22,0.12,Stunt park Roof gap take-off
+dry,stuntbike,Roof gap landing (back),30.68,32.07,2.98,29.71,-2.36,0.00,Stunt park Roof gap landing
+dry,stuntbike,Tower gap take-off,28.69,29.13,0.33,28.58,-0.56,0.00,Stunt park Tower gap take-off
+dry,stuntbike,Tower gap landing (back, BUG-003),35.32,35.71,7.47,33.18,-2.52,0.35,Stunt park Tower gap landing
+dry,stuntbike,Roof ramp (to the roof),34.10,37.32,7.33,31.92,-5.40,0.02,Terrain_5_1 Stunt park Roof ramp
+dry,stuntbike,Mezzanine ramp (inside),12.72,21.59,4.21,8.91,-12.68,0.00,Stunt park mezzanine ramp
+dry,stuntbuggy,K1 kicker,0.00,0.00,0.00,0.00,0.00,0.00,AbandonedBank Stunt park K1 kicker
+dry,stuntbuggy,K2 table,30.24,29.69,1.11,29.88,0.19,0.01,AbandonedBank Stunt park K1 kicker
+dry,stuntbuggy,Barrel-roll ramp,31.61,31.66,3.26,30.59,-1.08,0.56,Stunt park Barrel-roll ramp
+dry,stuntbuggy,Barrel-roll landing (back),28.20,27.82,0.73,27.95,0.12,0.01,Stunt park Barrel-roll ramp
+dry,stuntbuggy,Bus gap take-off,21.15,24.46,3.05,19.69,-4.77,0.00,Stunt park Barrel-roll landing Stunt park Bus gap take-off
+dry,stuntbuggy,Bus gap landing (back),34.14,34.68,2.90,33.30,-1.38,0.01,Stunt park Bus gap landing
+dry,stuntbuggy,Car gap take-off,31.96,32.25,1.25,31.58,-0.67,0.00,Stunt park Half-pipe Stunt park Car gap take-off
+dry,stuntbuggy,Car gap landing (back),34.40,34.62,1.97,33.84,-0.79,0.14,Stunt park Car gap landing
+dry,stuntbuggy,Half-pipe west (half way up),29.68,29.77,1.07,29.33,-0.44,0.26,Stunt park Half-pipe
+dry,stuntbuggy,Half-pipe east (half way up),29.95,29.57,1.28,29.53,-0.03,0.53,Stunt park Half-pipe
+dry,stuntbuggy,Roof quarter-pipe west (half way up),33.81,33.34,1.03,33.51,0.17,0.68,Stunt park Roof quarter-pipe (west)
+dry,stuntbuggy,Roof quarter-pipe east (half way up),27.73,27.71,0.02,27.73,0.01,0.01,Stunt park Roof table
+dry,stuntbuggy,Roof table,34.29,34.41,0.79,34.06,-0.35,0.22,Stunt park Roof table
+dry,stuntbuggy,BIG AIR take-off (to 1 m before its aimed lip),34.61,34.38,0.55,34.45,0.07,0.19,Stunt park BIG AIR take-off
+dry,stuntbuggy,BIG AIR landing (back),34.66,34.59,6.25,32.84,-1.75,0.07,Stunt park BIG AIR landing
+dry,stuntbuggy,BIG AIR back,33.09,33.75,7.16,30.89,-2.86,0.18,Stunt park BIG AIR back
+dry,stuntbuggy,Shop row drop take-off,31.17,31.21,0.51,31.01,-0.20,0.01,Stunt park Shop row drop take-off
+dry,stuntbuggy,Shop row drop landing (back, BUG-001),34.35,34.42,4.63,33.00,-1.42,0.25,Stunt park Shop row drop landing
+dry,stuntbuggy,Roof gap take-off,34.02,33.85,0.65,33.83,-0.02,0.42,Stunt park Roof gap take-off
+dry,stuntbuggy,Roof gap landing (back),30.54,31.52,3.08,29.53,-1.99,0.16,Stunt park Roof gap landing
+dry,stuntbuggy,Tower gap take-off,28.50,28.76,0.22,28.42,-0.34,0.00,Stunt park Tower gap take-off
+dry,stuntbuggy,Tower gap landing (back, BUG-003),34.58,34.83,7.43,32.41,-2.42,0.48,Stunt park Tower gap landing
+dry,stuntbuggy,Roof ramp (to the roof),33.79,36.03,7.49,31.54,-4.49,0.03,Stunt park Roof ramp
+dry,stuntbuggy,Mezzanine ramp (inside),12.64,20.99,4.30,8.69,-12.30,0.00,Stunt park mezzanine ramp
+rain,stuntbike,K1 kicker,0.00,0.00,0.00,0.00,0.00,0.00,AbandonedBank Stunt park K1 kicker
+rain,stuntbike,K2 table,30.51,29.88,1.29,30.09,0.20,0.01,AbandonedBank Stunt park K1 kicker
+rain,stuntbike,Barrel-roll ramp,32.12,32.01,3.52,31.02,-0.99,0.92,Stunt park Barrel-roll ramp
+rain,stuntbike,Barrel-roll landing (back),26.02,25.50,1.03,25.63,0.13,0.01,Stunt park Barrel-roll ramp
+rain,stuntbike,Bus gap take-off,20.61,24.12,3.19,19.03,-5.09,0.00,Stunt park Barrel-roll landing Stunt park Bus gap take-off
+rain,stuntbike,Bus gap landing (back),34.14,34.80,2.96,33.28,-1.52,0.13,Stunt park Bus gap landing
+rain,stuntbike,Car gap take-off,31.70,32.43,1.45,31.25,-1.19,0.00,Stunt park Half-pipe Stunt park Car gap take-off
+rain,stuntbike,Car gap landing (back),34.60,35.07,2.19,33.97,-1.10,0.01,Terrain_5_1 Stunt park Car gap landing
+rain,stuntbike,Half-pipe west (half way up),29.63,29.78,1.18,29.23,-0.55,0.45,Stunt park Half-pipe
+rain,stuntbike,Half-pipe east (half way up),30.26,29.95,1.44,29.78,-0.16,0.22,Stunt park Half-pipe
+rain,stuntbike,Roof quarter-pipe west (half way up),34.13,33.67,1.33,33.75,0.08,0.43,Stunt park Roof quarter-pipe (west)
+rain,stuntbike,Roof quarter-pipe east (half way up),27.77,27.71,0.08,27.74,0.04,0.01,Stunt park Roof table
+rain,stuntbike,Roof table,34.60,34.77,0.84,34.36,-0.41,0.00,Stunt park Roof table
+rain,stuntbike,BIG AIR take-off (to 1 m before its aimed lip),35.08,35.06,0.60,34.92,-0.14,0.20,Stunt park BIG AIR take-off
+rain,stuntbike,BIG AIR landing (back),34.83,34.81,6.35,33.00,-1.82,0.05,Stunt park BIG AIR landing
+rain,stuntbike,BIG AIR back,33.48,34.55,7.15,31.31,-3.23,0.19,Stunt park BIG AIR back
+rain,stuntbike,Shop row drop take-off,31.40,31.59,0.77,31.16,-0.43,0.03,Stunt park Shop row drop take-off
+rain,stuntbike,Shop row drop landing (back, BUG-001),34.57,34.37,5.03,33.11,-1.26,0.07,Stunt park Shop row drop landing
+rain,stuntbike,Roof gap take-off,34.47,34.40,0.94,34.20,-0.20,0.08,Stunt park Roof gap take-off
+rain,stuntbike,Roof gap landing (back),30.59,31.83,2.97,29.63,-2.20,0.00,Stunt park Roof gap landing
+rain,stuntbike,Tower gap take-off,28.46,28.98,0.41,28.32,-0.66,0.00,Stunt park Tower gap take-off
+rain,stuntbike,Tower gap landing (back, BUG-003),34.69,34.92,7.37,32.54,-2.38,0.12,Stunt park Tower gap landing
+rain,stuntbike,Roof ramp (to the roof),33.57,36.71,7.35,31.35,-5.35,0.02,Terrain_5_1 Stunt park Roof ramp
+rain,stuntbike,Mezzanine ramp (inside),12.62,20.91,4.19,8.78,-12.13,0.00,Stunt park mezzanine ramp
+rain,stuntbuggy,K1 kicker,0.00,0.00,0.00,0.00,0.00,0.00,AbandonedBank Stunt park K1 kicker
+rain,stuntbuggy,K2 table,30.13,29.58,1.08,29.77,0.19,0.01,AbandonedBank Stunt park K1 kicker
+rain,stuntbuggy,Barrel-roll ramp,31.36,31.40,3.52,30.24,-1.16,0.50,Stunt park Barrel-roll ramp
+rain,stuntbuggy,Barrel-roll landing (back),28.04,27.67,0.70,27.80,0.13,0.01,Stunt park Barrel-roll ramp
+rain,stuntbuggy,Bus gap take-off,20.12,23.38,3.04,18.58,-4.80,0.00,Stunt park Barrel-roll landing Stunt park Bus gap take-off
+rain,stuntbuggy,Bus gap landing (back),33.55,34.12,3.02,32.65,-1.47,0.24,Stunt park Bus gap landing
+rain,stuntbuggy,Car gap take-off,31.64,31.94,1.22,31.26,-0.68,0.03,Stunt park Half-pipe Stunt park Car gap take-off
+rain,stuntbuggy,Car gap landing (back),33.90,34.04,2.06,33.30,-0.74,0.09,Stunt park Car gap landing
+rain,stuntbuggy,Half-pipe west (half way up),29.58,29.63,1.05,29.23,-0.40,0.28,Stunt park Half-pipe
+rain,stuntbuggy,Half-pipe east (half way up),29.87,29.50,1.26,29.45,-0.05,0.54,Stunt park Half-pipe
+rain,stuntbuggy,Roof quarter-pipe west (half way up),33.49,33.06,1.38,33.09,0.03,1.08,Stunt park Roof quarter-pipe (west)
+rain,stuntbuggy,Roof quarter-pipe east (half way up),27.59,27.59,0.00,27.59,0.00,0.00,Stunt park Roof table
+rain,stuntbuggy,Roof table,33.95,33.97,0.74,33.74,-0.24,0.20,Stunt park Roof table
+rain,stuntbuggy,BIG AIR take-off (to 1 m before its aimed lip),34.34,34.20,0.48,34.20,0.00,0.27,Stunt park BIG AIR take-off
+rain,stuntbuggy,BIG AIR landing (back),34.03,33.95,6.36,32.15,-1.81,0.22,Stunt park BIG AIR landing
+rain,stuntbuggy,BIG AIR back,32.63,33.16,7.22,30.38,-2.79,0.25,Stunt park BIG AIR back
+rain,stuntbuggy,Shop row drop take-off,31.01,31.11,0.50,30.85,-0.26,0.14,Stunt park Shop row drop take-off
+rain,stuntbuggy,Shop row drop landing (back, BUG-001),33.76,33.82,4.70,32.36,-1.45,0.40,Stunt park Shop row drop landing
+rain,stuntbuggy,Roof gap take-off,33.54,33.55,0.57,33.38,-0.17,0.20,Stunt park Roof gap take-off
+rain,stuntbuggy,Roof gap landing (back),30.42,31.28,3.08,29.41,-1.87,0.17,Stunt park Roof gap landing
+rain,stuntbuggy,Tower gap take-off,28.29,28.49,0.18,28.23,-0.27,0.00,Stunt park Tower gap take-off
+rain,stuntbuggy,Tower gap landing (back, BUG-003),34.00,34.00,7.43,31.79,-2.21,0.14,Stunt park Tower gap landing
+rain,stuntbuggy,Roof ramp (to the roof),33.33,35.50,7.44,31.06,-4.44,0.08,Stunt park Roof ramp
+rain,stuntbuggy,Mezzanine ramp (inside),12.54,20.35,4.28,8.56,-11.78,0.00,Stunt park mezzanine ramp

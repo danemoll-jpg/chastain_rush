@@ -109,6 +109,22 @@ for two, the stunt park for two with a trick each; pictures of both layouts.
 For Dan to check (when done): the park's ramps and the loop at speed; split screen (both layouts, a race, Free Roam, the stunt
 park, player 2 as the AI).
 
+**Round 37 status (Claude, 2026-10-16): Part A built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
+Evidence: `Data/screenshots/round37/` (`a_check_after.txt`, `a_check_before_round36.txt`, `a_ramps_*.csv`). Check: `ChastainRush.exe -exeRound37 <dir> -r37Only parkramps,parkloop`.
+A DONE. Cause: the park's ramps, landings, tables, loop and inside ramps are mesh colliders named "Stunt park ...", never registered with
+   `VehicleSurfaceContacts` (Round 10's fix covers the "sc..." shortcut ramps), so a stunt vehicle's body met PhysX's edge normals, leaning back
+   against the travel. Fixed for every park surface, plus what the check found next: on the loop and the 6 m half-pipe / quarter-pipes the body's
+   contacts slide without friction and the loop uses its own inward normal; the wheels push square to a park surface; the roofs' and store floors'
+   box seams no longer catch a body (8 m/s lost at BIG AIR's foot); and an arcade carry (as RampHold's landings): on the park's ramps with the
+   throttle held, and round the loop, a vehicle keeps its speed but for the climb (a knock over 3 m/s, a crash, is never given back).
+   Dan's spots on the Skywhip, 30 m/s at the foot: drop landing 18.2 m/s on top before (gravity alone 28.6), tower landing 22.2 (27.8); after,
+   every launch, landing, table, pipe, roof and inside ramp on both stunt vehicles, dry and rain, ends within 0.3 m/s of gravity alone. The
+   loop: 10.6 m/s over the top before (gravity 29.5), 29.7 after, and out as fast as in; driven backward (the way out) 2 runs of 8 exit 1.9 m/s
+   slower or take one knock at the top (given back in the next step).
+   BIG AIR, the shop row drop, the roof gap and the tower gap still leave at their designed speed (Round 36's aimed launches, so they land on
+   their slopes); that cap is at the lip, not on the ramp.
+   For Dan to check, not changed: K1's foot is 4.7 m from the abandoned bank's west wall, so it has no straight run-up (not measured).
+
 ## QUEUED rounds
 None.
 
