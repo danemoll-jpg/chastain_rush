@@ -147,6 +147,31 @@ C2. Its amenity area on East Chastain Lake, between the lake, Bells Ferry Road a
 For Dan to check (when done): Canton Road's storefronts and lots, the pizza / comic book corner, the ice cream shop, the
 church, the elementary school sign, the grass spots, the junction at BUG-010, Chastain Lakes' pool area.
 
+**Round 32 status (Claude, 2026-10-15): all built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by
+Dan. Build 2026-10-15 20:39.** Evidence: `Data/screenshots/round32/` (a picture from each of Dan's spots, `<bug>.png`; overheads `lots_*.png`).
+A1 DONE. 46 Canton Road businesses face it (`MapBuilder.Round32.cs`): a walk along each face toward it, a lot out to 3 m short of the
+   road (stalls, curbs, poles; neighbors' lots joined into one), a drive where no service road joins it already (13), service roads in
+   a lot paved as the lot. Lots never cross a house, a street or a store in front. Check: Dan's spots below, `lots_*.png`.
+A2 DONE. 7, 8 to 10, 12, 3, 88, 20 / 40 face Canton Road with lots (`bug005` to `bug008`, `bug022`, `bug023`; `front_12_from_canton`,
+   `front_88_from_canton`: from Dan's BUG-007 / 017 / 022 spots you now see their backs).
+A3 DONE. 76 is storefronts on every face toward its lot; the corner is 76's own northwest corner (not 77): Lucky Slice Pizza with a
+   drive-up window and lane on its side, then Panel & Page Comics, then Hometown Hardware (`bug019`, `bug020`, `pizza_driveup_side`).
+A4 DONE. 86 is Cold Spoon Creamery, a storefront and a walk-up window on its lot (`icecream_86_front`, `bug014`, `bug015`).
+A5 DONE. 74 is three gabled wings, the door, sign and one steeple at the north wing's east end toward Canton Road; 75 three gabled
+   blocks, no steeple (`bug021`, `church_74_steeple`).
+A6 DONE. Road 564623219 runs on into the preschool's lot (`bug009`); 41 is Pine Hollow Elementary, 0 stays the middle school (`bug018`).
+A7 DONE. Roads 768422193 / 768422194 lead to a lot paved between them (from NAIP), neither ends in grass (`bug016`).
+B1 DONE. Cause: every road ribbon had only its two edges on the ground, so the ground under the middle showed through. Every road is
+   now a grid on the highest ground near each vertex (Round 11's Glen method); a service road's cells on another road are left to it
+   (one shade at mouths). Check: `bug010` to `bug013`, `bug018`, `bug024`.
+B2 DONE. Cause: cars across each other's way in a junction each waited for the other forever. One at a time, the first takes its turn
+   (`TrafficDriver`, `Traffic.TakesTurn`). Check: Heavy, 5 min at the junction: longest stand 1.3 s (`round32_junction.txt`).
+C1 DONE. "Chastain Lakes" in `neighborhoods.json`. C2 DONE (`MapBuilder.ChastainLakes.cs`): 266 pool house, 267 bathhouse, a 21 m
+   lap pool, deck, loungers, iron fence, four courts in two fenced pairs, the lot, swing, pier and gazebo, 18 geese, the shore path
+   with a footbridge over BF's stream (BF untouched). Check: `bug025`, `bug026`, `lakes_lot_to_pool`, `lakes_courts`.
+For Dan to check: the storefronts and lots along Canton Road, whether the corner shop he meant is 76's corner (A3), the church, the
+footbridge's look, the courts' places (from NAIP), traffic at junctions. Frame rate not measured. Imported from Racer: nothing.
+
 ## QUEUED rounds
 None.
 

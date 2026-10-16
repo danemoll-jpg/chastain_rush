@@ -22,6 +22,7 @@ namespace ChastainRush
         public static readonly int[] LevelCars = { 0, 7, 14, 22 };
         public static int ForcedLevel = -1;   // checks: -traffic <name>
         public static int Horns;              // checks
+        public static int KnotsUntied;        // Round 32 (B2): checks
         public static AudioClip HornClip { get; private set; }
         public readonly List<TrafficDriver> Cars = new();
         public Rigidbody PlayerBody => player ? player.Body : null;
@@ -208,6 +209,19 @@ namespace ChastainRush
             foreach (int o in net.Adjacent(node)) if (o != e) top = Mathf.Max(top, net.Rank(o));
             return top > rank;
         }
+        // Round 32 (B2): of the cars within 25 m that have stood 3 s or more held by one across their way, the first one listed
+        // goes (one at a time, so the knot unwinds instead of all of them driving into each other)
+        public bool TakesTurn(TrafficDriver me)
+        {
+            var p = me.Car.Body.position;
+            foreach (var o in Cars)
+            {
+                if (o == me) return true;
+                if (o && o.gameObject.activeSelf && o.Jammed > 3f && (o.Car.Body.position - p).sqrMagnitude < 25f * 25f) return false;
+            }
+            return true;
+        }
+
         // nothing in the junction or about to enter it (other traffic, the player, the AI racers)
         public bool JunctionClear(int node, TrafficDriver me)
         {

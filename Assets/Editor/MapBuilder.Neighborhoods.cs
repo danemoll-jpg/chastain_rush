@@ -87,7 +87,7 @@ namespace ChastainRush
             {
                 var b = map.buildings[idx];
                 if (b.type != "detached" && b.type != "house" && b.type != "terrace") continue;
-                if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx)) continue;
+                if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx) || Round32NotHouses.Contains(idx)) continue;   // Round 32 (A4): the ice cream shop
                 var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (b.type == "terrace" && (!BestRectangle(ring, out _, out _, out _, out float thl, out float thw) || Mathf.Abs(PolyArea(ring)) / (4f * thl * thw) < 0.8f)) continue;   // a cross-shaped block: an apartment building (MapBuilder.Businesses.cs)
                 Vector2 c = Vector2.zero; foreach (var q in ring) c += q; c /= ring.Count;

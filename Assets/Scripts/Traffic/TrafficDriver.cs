@@ -20,12 +20,13 @@ namespace ChastainRush
         public bool WantsRecycle { get; private set; }     // stuck, off the road or at the map's edge: Traffic moves it when nobody sees
         public float Pace { get; private set; } = 1;
         public string State { get; private set; } = "";   // checks
+        public float Jammed { get; private set; }          // Round 32 (B2): how long it has stood blocked by a car across its way
 
         Traffic owner; TrafficNetwork net;
         readonly List<(int edge, int dir)> route = new();
         readonly List<Vector2> path = new(); readonly List<float> cum = new(); readonly List<float> nodeS = new();
         readonly List<Vector2> scratch = new();
-        int projIndex; float stalled, knockedUntil, swerveUntil, nextHorn, blockedFor, stopHeld, upsideDown;
+        int projIndex; float stalled, knockedUntil, swerveUntil, nextHorn, blockedFor, stopHeld, upsideDown, goUntil;
         int stopNode = -1, passedNode = -1;
         AudioSource horn;
         readonly RaycastHit[] hits = new RaycastHit[16];
@@ -180,20 +181,30 @@ namespace ChastainRush
             // fences, signs and mailboxes break); a vehicle coming at it in its lane: swerve to the curb and sound the horn.
             float range = 6 + Mathf.Max(0, speed) * 1.5f;
             int count = Physics.SphereCastNonAlloc(body.position + Vector3.up * .35f, .8f, transform.forward, hits, range, ~0, QueryTriggerInteraction.Ignore);
-            bool blocked = false;
+            // Round 32 (B2, BUG-010: four cars stood in a knot in a junction, "Is this a car accident?"): cars crossing each other's
+            // way in a junction each saw the other in its sphere cast and waited for it, for ever (the stall reverse only runs when
+            // nothing ahead holds the car back). A car held 3 s by one standing across its way takes its turn when it is the
+            // first of the knot (Traffic.TakesTurn): for 4 s it drives on past cars across its way (never the player, never the
+            // car in front of it in its lane); a knot that still does not clear in 25 s is moved off when nobody sees it.
+            bool blocked = false, across = false, going = Time.time < goUntil;
             for (int i = 0; i < count; i++)
             {
                 var hit = hits[i];
                 if (!hit.rigidbody || hit.rigidbody == body || hit.collider is TerrainCollider) continue;
                 if (!hit.rigidbody.GetComponent<ArcadeVehicle>()) continue;
+                bool crossing = hit.rigidbody != owner.PlayerBody && Vector3.Angle(Flat(hit.rigidbody.transform.forward), Flat(transform.forward)) > 35f;
+                if (going && crossing) continue;
                 float aheadSpeed = Mathf.Max(0, Vector3.Dot(hit.rigidbody.linearVelocity, transform.forward));
                 float allowed = Mathf.Sqrt(Mathf.Max(0, aheadSpeed * aheadSpeed + 2 * Judgment * (hit.distance - 4.5f)));
-                target = Mathf.Min(target, allowed); blocked |= allowed < 2;
+                target = Mathf.Min(target, allowed); blocked |= allowed < 2; across |= crossing && allowed < 2;
                 bool player = hit.rigidbody == owner.PlayerBody;
                 float closing = -Vector3.Dot(hit.rigidbody.linearVelocity, transform.forward);
                 if (player && closing > 6 && hit.distance < 30) { swerveUntil = Time.time + 1.5f; Horn(); }
             }
             blockedFor = blocked && speed < 1 ? blockedFor + Time.fixedDeltaTime : 0;
+            Jammed = across && speed < 1 ? Jammed + Time.fixedDeltaTime : going ? Jammed : 0;
+            if (!going && Jammed > 3f && owner.TakesTurn(this)) { goUntil = Time.time + 4f; Traffic.KnotsUntied++; }
+            if (Jammed > 25f) WantsRecycle = true;
             if (blockedFor > 3f) { Horn(); blockedFor = -4f; }
 
             float throttle = speed < target ? Mathf.Clamp01((target - speed) * .5f) : 0;
@@ -211,6 +222,8 @@ namespace ChastainRush
             LastThrottle = throttle;
             Car.Simulate(throttle, brake, steering, Time.fixedDeltaTime);
         }
+
+        static Vector3 Flat(Vector3 v) { v.y = 0; return v; }
 
         void OnCollisionEnter(Collision c)
         {

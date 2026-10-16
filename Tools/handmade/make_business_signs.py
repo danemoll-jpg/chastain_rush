@@ -82,6 +82,16 @@ KINDS = [
         ("CHASTAIN COMMONS VILLAS", (240, 236, 228), (60, 50, 40), "georgiab.ttf"),
         ("WILLOW BEND TOWNHOMES", (60, 60, 80), (240, 236, 228), "georgiab.ttf"),
     ]),
+    # Round 32 (A3, A4): the pizza place, the comic book store and the hardware store at building 76's corner (Dan: "The corner
+    # shop is a pizza place with a drive up restaurant. There should also be a comic book store and another store here"), the
+    # pizza place's drive-up sign, the ice cream shop (building 86). Rows 49 to 53 (MapBuilder.Round32.cs Sign*).
+    ("special", [
+        ("LUCKY SLICE PIZZA", (180, 30, 25), (255, 235, 150), "impact.ttf"),
+        ("PANEL & PAGE COMICS", (30, 30, 36), (250, 210, 40), "impact.ttf"),
+        ("HOMETOWN HARDWARE", (200, 40, 30), (255, 255, 255), "arialbd.ttf"),
+        ("COLD SPOON CREAMERY", (250, 236, 240), (200, 70, 120), "georgiab.ttf"),
+        ("DRIVE-UP WINDOW", (180, 30, 25), (255, 255, 255), "arialbd.ttf"),
+    ]),
 ]
 
 

@@ -48,6 +48,7 @@ namespace ChastainRush
             public int index, seed; public BizKind kind; public string type;
             public List<Vector2> ring; public Vector2 c; public float area, height, pitch; public bool pitched;
             public int front = -1; public Vector2 frontN;
+            public bool canton;                                     // Round 32 (A1): faces Canton Road (MapBuilder.Round32.cs)
             public float floorY, baseY;
             public List<(List<Vector2> ring, float floor)> steps;   // a stepped body (BUG-002), else null
         }
@@ -58,11 +59,17 @@ namespace ChastainRush
             public readonly HashSet<int> Owned = new HashSet<int>();
             public readonly List<List<Vector2>> Lots = new List<List<Vector2>>();
             public readonly List<Vector2> Trees = new List<Vector2>();
+            public readonly List<List<Vector2>> NewLots = new List<List<Vector2>>(), Walks = new List<List<Vector2>>();   // Round 32 (A1)
+            public readonly List<(Vector2 a, Vector2 b, float half)> Drives = new List<(Vector2, Vector2, float)>();
+            public (Vector2 a, Vector2 b, Vector2 n)? PizzaLane;
             public bool Owns(int i) => Owned.Contains(i);
+            public bool InNewLot(Vector2 p) { foreach (var lot in NewLots) if (InPolygon(p, lot)) return true; return false; }
             public bool RejectTree(float x, float z)
             {
                 var p = new Vector2(x, z);
                 foreach (var lot in Lots) if (InPolygon(p, lot) || RingDist(p, lot) < 1.0f) return true;
+                foreach (var w in Walks) if (InPolygon(p, w) || RingDist(p, w) < 1.0f) return true;
+                foreach (var d in Drives) if (SegDist(p, d.a, d.b) < d.half + 1.5f) return true;
                 return false;
             }
             public readonly StringBuilder Log = new StringBuilder();
@@ -74,11 +81,17 @@ namespace ChastainRush
             // roads (no motorways) and lots, for the fronts
             var segs = new List<(Vector2 a, Vector2 b, float half)>();
             var canton = new List<(Vector2 a, Vector2 b)>();
+            var cantonHalf = new List<(Vector2 a, Vector2 b, float half)>(); var cross = new List<(Vector2 a, Vector2 b)>();   // Round 32 (A1)
             foreach (var r in map.roads)
             {
                 if (r.@class == "motorway" || r.@class == "motorway_link") continue;
-                var p = ToPoints(r.points);
-                for (int i = 0; i + 1 < p.Count; i++) { segs.Add((p[i], p[i + 1], r.width * 0.5f)); if ((r.name ?? "").StartsWith("Canton Road")) canton.Add((p[i], p[i + 1])); }
+                var p = ToPoints(r.points); bool isCanton = (r.name ?? "").StartsWith("Canton Road");
+                for (int i = 0; i + 1 < p.Count; i++)
+                {
+                    segs.Add((p[i], p[i + 1], r.width * 0.5f));
+                    if (isCanton) { canton.Add((p[i], p[i + 1])); cantonHalf.Add((p[i], p[i + 1], r.width * 0.5f)); }
+                    else if (r.@class != "service") cross.Add((p[i], p[i + 1]));
+                }
             }
             // the lots: OSM's surface parking outside the dressed areas (the Glen's pool lot, the Enclave's) and off the shopping center's
             if (map.parking != null)
@@ -102,6 +115,7 @@ namespace ChastainRush
             {
                 if (owner != null && owner.index == i) continue;   // Dan's house is never touched
                 if (hood.OwnsBuilding(i) || shop.Owns(i) || i == shop.Center || rest.Owns(i)) continue;
+                if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;
@@ -124,9 +138,11 @@ namespace ChastainRush
                     default: k = area < 60f ? BizKind.Shed : byCanton ? BizKind.Shop : area >= 1500f ? BizKind.Industrial : BizKind.Office; break;
                 }
                 if ((k == BizKind.Apartments || k == BizKind.Garage) && area < 40f) k = BizKind.Shed;
+                if (i == IceCreamShop) k = BizKind.Shop;   // Round 32 (A4): Dan, "I am pretty sure this is an ice cream shop"
                 var z = new Biz { index = i, seed = b.seed, kind = k, type = b.type, ring = ring, c = c, area = area, height = b.height, pitched = b.roof == "gable", pitch = b.pitch_deg };
-                // the front: the face that looks most toward the nearest lot or road
+                // the front: the face that looks most toward the nearest lot or road (Round 32: on Canton Road, toward Canton Road)
                 float best = float.MinValue;
+                if (!PickCantonFront(z, cantonHalf, cross))
                 for (int e = 0; e < ring.Count; e++)
                 {
                     Vector2 a = ring[e], bb = ring[(e + 1) % ring.Count]; float len = Vector2.Distance(a, bb); if (len < 3f) continue;
@@ -144,6 +160,7 @@ namespace ChastainRush
                 biz.Items.Add(z); biz.Owned.Add(i);
                 kinds[k] = kinds.TryGetValue(k, out int nk) ? nk + 1 : 1;
             }
+            PlanCantonLots(biz, map, cantonHalf, cross, new HashSet<int>());   // Round 32 (A1)
             // a few trees: two off the front corners of each larger building, one off each lot corner, never on a road, a drive,
             // a lot, in or within 3 m of any building
             var all = new List<(Vector2 lo, Vector2 hi, List<Vector2> ring)>();
@@ -295,6 +312,7 @@ namespace ChastainRush
                 signs.Add(c, new Vector2(f.F.x, f.F.z), w, h, row); signsShown++;
             }
 
+            bool pizzaDone = false, pizzaWindow = false;
             foreach (var z in biz.Items.OrderBy(q => q.c.y).ThenBy(q => q.c.x))
             {
                 var body = At(bodies, z.c); var det = At(details, z.c);
@@ -314,6 +332,7 @@ namespace ChastainRush
                 // --- the body (a foundation band under the floor where it stands over the ground)
                 if (z.kind == BizKind.Canopy) { CanopyOnPosts(body, z, t, wallH); continue; }
                 var parts = z.steps ?? new List<(List<Vector2>, float)> { (z.ring, z.floorY) };
+                if (HasWings(z.index)) { BuildChurchWings(body, z, wall, roofC, wallH); parts = new List<(List<Vector2>, float)>(); }   // Round 32 (A5)
                 foreach (var (ring, floor) in parts)
                 {
                     float top = floor + wallH;
@@ -326,7 +345,7 @@ namespace ChastainRush
                             for (int e = 0; e < ring.Count; e++) Parapet(body, ring[e], ring[(e + 1) % ring.Count], ring, top, Shade(wall, 0.85f));
                     }
                 }
-                float eave = z.pitched ? WallTopUnderRoof(z, wallH) : wallH;
+                float eave = HasWings(z.index) ? 9f : z.pitched ? WallTopUnderRoof(z, wallH) : wallH;
                 // --- the front and the other faces (a stepped body: each step's own outer faces, at its own floor)
                 var faces = new List<(Vector2 a, Vector2 b, float floor, bool front)>();
                 if (z.steps == null) for (int e = 0; e < z.ring.Count; e++) faces.Add((z.ring[e], z.ring[(e + 1) % z.ring.Count], z.floorY, e == z.front));
@@ -338,18 +357,43 @@ namespace ChastainRush
                             Vector2 sd = (sb - sa).normalized, sn = new Vector2(sd.y, -sd.x); if (InPolygon((sa + sb) * 0.5f + sn * 0.3f, sr)) sn = -sn;
                             faces.Add((sa, sb, sf, Vector2.Dot(sn, z.frontN) > 0.9f));
                         }
-                foreach (var (a, b, floorHere, front) in faces)
+                foreach (var (a, b, floorHere, front0) in faces)
                 {
                     float len = Vector2.Distance(a, b); if (len < 2.5f) continue;
                     Vector2 d = (b - a) / len, n = new Vector2(d.y, -d.x); if (InPolygon((a + b) * 0.5f + n * 0.3f, z.ring)) n = -n;
                     Vector2 m = (a + b) * 0.5f;
+                    // Round 32 (A1 / A3: "make these all store fronts"): a Canton Road shop has storefronts on every face onto its lot
+                    bool front = front0 || (z.canton && z.kind == BizKind.Shop && len >= 5f && (Vector2.Dot(n, z.frontN) > 0.7f || biz.InNewLot(m + n * (LotWalk + 2f))));
+                    // A3: at 76's corner by Dan's spot the face toward the lot is the pizza place's front, the other its drive-up side
+                    bool atCorner = z.index == PizzaStrip && (Vector2.Distance(a, PizzaCorner) < 2f || Vector2.Distance(b, PizzaCorner) < 2f);
+                    bool pizzaFront = atCorner && n.y < -0.7f, pizzaSide = atCorner && n.x < -0.7f;
+                    if (pizzaFront) front = true; if (pizzaSide) front = false;
                     var f = MakeFrame(new Vector3(m.x, floorHere, m.y), n, 1f);
                     // the frame's u runs to the right seen from outside; that is along +d or -d
                     float half = len / 2f;
                     switch (z.kind)
                     {
                         case BizKind.Shop:
-                            if (front) ShopFronts(det, f, half, eave, z, Sign, Next);
+                            if (front)
+                            {
+                                System.Func<int, int> row = null;
+                                if (pizzaFront)
+                                {
+                                    // the units in order from the corner: the pizza place, the comic book store, the hardware store
+                                    var cornerU = Vector2.Dot(PizzaCorner - m, f.R.x * Vector2.right + f.R.z * Vector2.up);
+                                    row = k => PizzaRow(k);
+                                    ShopFronts(det, f, half, eave, z, Sign, Next, row, cornerU > 0f);
+                                }
+                                else if (z.index == IceCreamShop) { ShopFronts(det, f, half * 0.55f, eave, z, Sign, Next, k => SignIceCream, false); WalkUpWindow(det, f, half * 0.72f); }
+                                else ShopFronts(det, f, half, eave, z, Sign, Next, null, false);
+                                pizzaDone |= z.index == PizzaStrip && row != null;
+                            }
+                            else if (pizzaSide)
+                            {
+                                var cu = Vector2.Dot(PizzaCorner - m, f.R.x * Vector2.right + f.R.z * Vector2.up);
+                                DriveUpWindow(det, f, cu + (cu < 0f ? 4.5f : -4.5f), Sign); pizzaWindow = true;
+                                biz.PizzaLane = (a, b, n);   // its lane, painted with the lot
+                            }
                             else FrontQuad(det, f, -half + 0.05f, half - 0.05f, -0.3f, 0.7f, 0.03f, Shade(wall, 0.78f));
                             if (!front && len > 12f && Vector2.Dot(n, z.frontN) < -0.9f) ServiceDoor(det, f, half * 0.4f);
                             break;
@@ -364,7 +408,8 @@ namespace ChastainRush
                             break;
                         case BizKind.Church:
                             TallWindows(det, f, half, eave, front);
-                            if (front) ChurchFront(body, det, f, half, eave, wall, z, Sign, Next);
+                            if (front && z.index == 74) ChurchEastDoor(body, det, z, wallH, Sign, Next);   // Round 32 (A5): the door, sign and steeple toward Canton Road
+                            else if (front) ChurchFront(body, det, f, half, eave, wall, z, Sign, Next, z.index != 75);
                             break;
                         case BizKind.School:
                             Windows(det, f, half, eave, 3.2f, 1.6f, 1.6f, front ? 4.5f : 0f, BizTrim);
@@ -395,9 +440,26 @@ namespace ChastainRush
             int stalls = 0, lampsN = 0;
             var roadSegs = new List<(Vector2 a, Vector2 b, float half)>();
             foreach (var r in map.roads) { var p = ToPoints(r.points); for (int i = 0; i + 1 < p.Count; i++) roadSegs.Add((p[i], p[i + 1], r.width * 0.5f)); }
+            roadSegs.AddRange(biz.Drives);   // Round 32 (A1): the drives cut the curbs and keep stalls and poles off them
             var bizRings = biz.Items.Select(q => q.ring).ToList();
+            // Round 32 (A1): the walks in front of the stores (concrete, a little above the lot) and the drives (the lot's asphalt)
+            foreach (var w in biz.Walks) { var mb = lotMb.At(Centroid(w)); mb.Tint = new Color(0.70f, 0.69f, 0.66f); DrapePoly(mb, w, 1.5f, 0.075f * vScale, t, 10); }
+            foreach (var dr in biz.Drives)
+            {
+                var mb = lotMb.At(dr.a); mb.Tint = LotAsphalt; Vector2 dd = (dr.b - dr.a).normalized, nn = new Vector2(-dd.y, dd.x);
+                Strip(mb, dr.a, dr.b, nn, -dr.half, dr.half, 0.045f * vScale, t);
+            }
+            if (biz.PizzaLane.HasValue)
+            {
+                var (pla, plb, pln) = biz.PizzaLane.Value;
+                var pm = lotPaint.At(pla); Vector2 pld = (plb - pla).normalized;
+                PaintLine(pm, pla + pln * 4.2f - pld * 6f, plb + pln * 4.2f + pld * 2f, 0.15f, 0.065f * vScale, t);   // the drive-up lane round the side
+            }
+            int lotNo = 0;
             foreach (var lot in biz.Lots)
             {
+                int self = lotNo++;
+                bool InOther(Vector2 q) { for (int j = 0; j < biz.Lots.Count; j++) if (j != self && InPolygon(q, biz.Lots[j])) return true; return false; }   // Round 32: lots that overlap
                 Vector2 c = Vector2.zero; foreach (var p in lot) c += p; c /= lot.Count;
                 var mb = lotMb.At(c); mb.Tint = LotAsphalt;
                 DrapePoly(mb, lot, 1.5f, 0.05f * vScale, t, 12);
@@ -410,7 +472,7 @@ namespace ChastainRush
                     for (float s = 0f; s < len; s += 1f)
                     {
                         Vector2 p0 = a + d * s, p1 = a + d * Mathf.Min(len, s + 1f);
-                        if (Clearance(roadSegs, (p0 + p1) * 0.5f) < 0.6f) continue;
+                        if (Clearance(roadSegs, (p0 + p1) * 0.5f) < 0.6f || InOther((p0 + p1) * 0.5f)) continue;
                         walks.Tint = new Color(0.70f, 0.69f, 0.66f); Strip(walks, p0, p1, n, 0f, 0.35f, 0.08f * vScale, t);
                     }
                     // stalls along the edges long enough for them: 2.8 m apart, 5.2 m deep
@@ -418,7 +480,7 @@ namespace ChastainRush
                         for (float s = 1.5f; s + 2.8f <= len - 1.5f; s += 2.8f)
                         {
                             Vector2 p0 = a + d * s, p1 = p0 + n * 5.2f, p2 = p0 + d * 2.8f, p3 = p2 + n * 5.2f;
-                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r));
+                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3);
                             if (!ok) continue;
                             var pm = lotPaint.At(p0); PaintLine(pm, p0 + n * 0.3f, p1, 0.12f, 0.065f * vScale, t); stalls++;
                             if (s + 5.6f > len - 1.5f || !InPolygon(p3 + d * 2.8f, lot)) PaintLine(pm, p2 + n * 0.3f, p3, 0.12f, 0.065f * vScale, t);
@@ -427,7 +489,7 @@ namespace ChastainRush
                     for (float s = 8f; s < len - 4f; s += 32f)
                     {
                         var p = a + d * s + n * 0.7f; float gy = Ground(t, p.x, p.y);
-                        if (Clearance(roadSegs, p) < 1.5f) continue;
+                        if (Clearance(roadSegs, p) < 1.5f || InOther(p) || bizRings.Any(r => InPolygon(p, r) || RingDist(p, r) < 1.5f)) continue;
                         var lb = lamps.Begin(p); var dark = new Color(0.20f, 0.20f, 0.22f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy - 0.1f, p.y), 4.6f, 0.18f, dark), gy + 0.1f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy + 4.5f, p.y), 4.4f, 0.15f, dark), gy + 0.1f);
@@ -441,6 +503,25 @@ namespace ChastainRush
                         lampsN++;
                     }
                 }
+                // Round 32 (A1): a new lot's middle in double rows of stalls along its longest edge, 18 m apart (5.2 m stalls each
+                // side of the row's line, a 7.6 m aisle between rows)
+                if (!biz.NewLots.Contains(lot)) continue;
+                int le = 0; float ll = 0f; for (int i = 0; i < lot.Count; i++) { float l = Vector2.Distance(lot[i], lot[(i + 1) % lot.Count]); if (l > ll) { ll = l; le = i; } }
+                Vector2 A = lot[le], U = (lot[(le + 1) % lot.Count] - A).normalized, N = new Vector2(-U.y, U.x); if (!InPolygon((A + lot[(le + 1) % lot.Count]) * 0.5f + N * 0.5f, lot)) N = -N;
+                float span = lot.Max(q => Vector2.Dot(q - A, N)), u0 = lot.Min(q => Vector2.Dot(q - A, U)), u1 = lot.Max(q => Vector2.Dot(q - A, U));
+                for (float v = 5.2f + 7.6f + 5.2f; v + 5.2f + 6f < span; v += 18f)
+                    for (float u = u0 + 1.5f; u + 2.8f < u1; u += 2.8f)
+                    {
+                        var p0 = A + U * u + N * v; var p2 = p0 + U * 2.8f;
+                        foreach (float side in new[] { -1f, 1f })
+                        {
+                            var p1 = p0 + N * (5.2f * side); var p3 = p2 + N * (5.2f * side);
+                            bool ok = InPolygon(p0, lot) && InPolygon(p1, lot) && InPolygon(p2, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f
+                                      && !bizRings.Any(r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3);
+                            if (!ok) continue;
+                            PaintLine(lotPaint.At(p0), p0 + N * (0.1f * side), p1, 0.12f, 0.065f * vScale, t); stalls++;
+                        }
+                    }
             }
 
             foreach (var kv in bodies) kv.Value.ToObject($"BusinessBodies_{kv.Key.x}_{kv.Key.y}", mats.House, root, true);
@@ -489,10 +570,11 @@ namespace ChastainRush
             BoxF(mb, f, -len / 2f, len / 2f, -0.15f, 0.55f, -0.3f, 0.06f, c);
         }
 
-        static void ShopFronts(MeshBuilder d, Frame f, float half, float eave, Biz z, System.Action<MeshBuilder, Frame, float, float, float, int, float> sign, System.Func<BizKind, int, int> next)
+        static void ShopFronts(MeshBuilder d, Frame f, float half, float eave, Biz z, System.Action<MeshBuilder, Frame, float, float, float, int, float> sign, System.Func<BizKind, int, int> next,
+                               System.Func<int, int> special = null, bool fromRight = false)   // Round 32: a row per unit, counted from the left end (or the right)
         {
             float len = half * 2f;
-            bool big = len > 70f && z.area > 2500f;
+            bool big = len > 70f && z.area > 2500f && !z.canton;   // Round 32 (A3): on Canton Road a long front is a row of stores
             int units = big ? 1 : Mathf.Max(1, Mathf.RoundToInt(len / 9f));
             float w = len / units;
             for (int k = 0; k < units; k++)
@@ -507,7 +589,8 @@ namespace ChastainRush
                 BoxF(d, f, uc - (big ? gw / 2f + 1f : w / 2f - 0.2f), uc + (big ? gw / 2f + 1f : w / 2f - 0.2f), 3.05f, 3.2f, 0.02f, 1.6f, PickOf(AwningColors, z.seed, 30 + k));
                 float sw = big ? Mathf.Min(18f, len * 0.3f) : Mathf.Clamp(w - 2f, 3.5f, 7.5f), sh = sw / 8f;
                 float sy = Mathf.Min(3.45f + sh / 2f + 0.3f, eave - sh / 2f - 0.25f);
-                if (sy - sh / 2f > 3.25f) sign(d, f, uc, sy, sw, next(BizKind.Shop, z.seed), 0.18f);
+                int sr = special != null ? special(fromRight ? units - 1 - k : k) : -1;
+                if (sy - sh / 2f > 3.25f) sign(d, f, uc, sy, sw, sr >= 0 ? sr : next(BizKind.Shop, z.seed), 0.18f);
             }
         }
 
@@ -590,12 +673,13 @@ namespace ChastainRush
             }
         }
 
-        static void ChurchFront(MeshBuilder body, MeshBuilder d, Frame f, float half, float eave, Color wall, Biz z, System.Action<MeshBuilder, Frame, float, float, float, int, float> sign, System.Func<BizKind, int, int> next)
+        static void ChurchFront(MeshBuilder body, MeshBuilder d, Frame f, float half, float eave, Color wall, Biz z, System.Action<MeshBuilder, Frame, float, float, float, int, float> sign, System.Func<BizKind, int, int> next, bool steeple = true)
         {
             FrontQuad(d, f, -1.4f, 1.4f, 0f, 3.0f, 0.05f, BizTrim);
             FrontQuad(d, f, -1.25f, 1.25f, 0f, 2.85f, 0.07f, new Color(0.36f, 0.22f, 0.13f));
             FrontQuad(d, f, -0.03f, 0.03f, 0f, 2.85f, 0.08f, new Color(0.25f, 0.15f, 0.09f));
             if (eave > 4.6f) sign(d, f, 0f, 3.75f, Mathf.Min(6.5f, half * 1.2f), next(BizKind.Church, z.seed), 0.15f);
+            if (!steeple) return;   // Round 32 (A5): 75 is the church's hall; the one steeple is 74's
             // the steeple: a square tower over the door, above the ridge, a spire on it (white)
             float ridge = z.height, tw = 1.6f;
             float t0 = ridge + 3.0f;
@@ -626,7 +710,7 @@ namespace ChastainRush
         static void SchoolFront(MeshBuilder d, Frame f, float half, float eave, Biz z, System.Action<MeshBuilder, Frame, float, float, float, int, float> sign)
         {
             Entrance(d, f, 0f, 4f, BizGlass);
-            int row = z.type == "kindergarten" ? SignPreschool : BizSignRows[BizKind.School].first + (int)(Mix(z.seed, 77) % (uint)BizSignRows[BizKind.School].count);
+            int row = z.type == "kindergarten" ? SignPreschool : z.index == ElementarySchool ? SignElementary : SignMiddle;   // Round 32 (A6): one of each
             float w = Mathf.Min(9f, half * 1.4f);
             if (eave > 3.6f + w / 16f + 0.4f) sign(d, f, 0f, Mathf.Min(eave - w / 16f - 0.3f, 3.6f + w / 16f + 0.15f), w, row, 0.15f);
         }

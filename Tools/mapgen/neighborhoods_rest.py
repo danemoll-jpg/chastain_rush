@@ -111,6 +111,8 @@ ERA = {
     'craftsman': '2000s craftsman-style: stone or brick wainscot, front gables, covered porches with tapered columns',
     'townhomes': 'townhome rows: two-story units joined in a row, each with its own door, a one-car garage or a stoop',
 }
+# Round 32 (C1): names OSM does not have, by the name the main street gave. Lakeside Drive is the Chastain Lakes subdivision.
+NAME_OVERRIDE = {'Lakeside Drive': 'Chastain Lakes'}
 out = dict(note='Round 30 (Tools/mapgen/neighborhoods_rest.py). Read by MapBuilder.Neighborhoods.cs.', neighborhoods=[])
 rows = []
 for gi, g in enumerate(groups):
@@ -137,6 +139,7 @@ for gi, g in enumerate(groups):
     nb = dict(key=f"n{len(out['neighborhoods'])}", name=name or (main.replace(' Northeast', '').replace(' Northwest', '')),
               osm_name=bool(name), era=era, roads=sorted(g), houses=sorted(hs), streets=names,
               median_area=round(med_a), median_spacing=round(med_s), rows=round(rowish, 2), x=round(allc[0]), z=round(allc[1]), why=why)
+    nb['name'] = NAME_OVERRIDE.get(nb['name'], nb['name'])
     out['neighborhoods'].append(nb)
     rows.append(nb)
 json.dump(out, open(os.path.join(ROOT, 'Data/neighborhood/neighborhoods.json'), 'w'))

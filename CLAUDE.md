@@ -314,6 +314,13 @@ Settings > GAMEPLAY > Traffic; a check run has none unless it passes `-traffic L
 **Round 30 Part B (see `TODO.md`, status there) is built, pictures from the exe, not yet driven by Dan:** the 24 other
 neighborhoods dressed, one era each (`python Tools/mapgen/neighborhoods_rest.py` writes `Data/neighborhood/neighborhoods.json`,
 re-run after mapgen; `MapBuilder.Neighborhoods.cs`, new styles E to H in `MapBuilder.HouseEras.cs`). Pictures `local/round30/`.
+**Round 32 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Canton Road's businesses
+face it with walks, lots and drives (`MapBuilder.Round32.cs`; the pizza / comic book corner of building 76, the ice cream shop 86, church
+74's wings and steeple, Pine Hollow Elementary, BUG-009 / BUG-016 roads), every road a ground-following grid (`BuildRoads`: no grass in the
+streets), traffic knots untied (`TrafficDriver` Jammed, `Traffic.TakesTurn`), Chastain Lakes' amenity area (`MapBuilder.ChastainLakes.cs`;
+the name in `neighborhoods_rest.py`). Checks: `ChastainRush.exe -exeShots local/round32/shots.json <dir> -vehicle drifter -logFile
+<dir>\Player.log`; `ChastainRush.exe -exeRound32 <dir> -traffic Heavy [-r32Minutes 5] -logFile <dir>\Player.log`. Build Map writes
+`Assets/Generated/round32_lots.txt` (the new lots, walks, drives, fronts) for overhead pictures. Imported from Racer: nothing.
 **Round 31 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** BUG-002 stepped garage
 row, BUG-003 seam paved (`MapBuilder.Round31.cs`), BUG-004 the I-575 / Chastain Road ramps (mapgen keeps `motorway_link`, appended
 after the other roads; `parking` lots in map.json; RampSeams), every other building dressed (`MapBuilder.Businesses.cs`; signs
@@ -661,7 +668,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-15_03-07-51-371_794f57` through BUG-004 (BUG-001 in Round 28; BUG-002 to 004 in TODO.md, Round 31).
+`2026-10-15_03-07-51-371_794f57` through BUG-026 (BUG-001 in Round 28; BUG-002 to 004 in Round 31; BUG-005 to 026 in Round 32).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

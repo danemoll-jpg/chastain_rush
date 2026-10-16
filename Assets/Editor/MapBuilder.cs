@@ -104,14 +104,18 @@ namespace ChastainRush
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
             MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
-            BuildRoads(map, terrain, mats, world, paint, hood);
+            var lakes = PlanChastainLakes(map, terrain);   // Round 32 (C2): the Chastain Lakes amenity area, graded before anything samples the ground (MapBuilder.ChastainLakes.cs)
+            // Round 32: the houses and businesses are planned before the roads are built (A1: a service road lying in a new lot is
+            // paved as the lot); none of them changes the ground the roads lie on
+            var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
+            PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
+            lakes.PlanFences(hood.Fences);   // Round 32 (C2): no back-yard fence across the area; the pool's iron fence
+            var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
+            BuildRoads(map, terrain, mats, world, paint, hood, biz);
             BuildBridges(map, mats, world, paint, terrain);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
             BuildRoadLookup(map);
             BuildTrafficNetwork(map);   // Round 30 (A1): the road graph the traffic drives on (MapBuilder.Traffic.cs)
-            var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
-            PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
-            var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
             BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop, rest, biz);
             BuildDriveways(map, terrain, mats, world, hood);
             BuildWater(map, terrain, mats, world, hood);
@@ -121,7 +125,7 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
             if (creek != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks)
             {
@@ -135,6 +139,7 @@ namespace ChastainRush
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
             BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
+            BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
@@ -314,7 +319,7 @@ namespace ChastainRush
             }
         }
 
-        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint, Neighborhood hood)
+        static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint, Neighborhood hood, Businesses biz = null)
         {
             var main = new Chunks();
             var service = new Chunks();
@@ -328,6 +333,8 @@ namespace ChastainRush
                 // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the
                 // street it joins. In the lighter service shade it read as a pale patch on the carriageway (01_spawn.png).
                 var mb = IsCenterRoad(r) ? center : r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
+                bool aisle = r.@class == "service" && biz != null && pts.Count(q => biz.InNewLot(q)) * 2 > pts.Count;
+                if (aisle) mb = center;   // Round 32 (A1): an aisle of a new lot: the lot's asphalt, no edge strips
                 var self = r;
                 if (hood.IsStreetRoad(ri))
                 {
@@ -346,10 +353,21 @@ namespace ChastainRush
                              p => hood.OtherRoadCovers(road, p, 0.1f) || hood.InCornerZone(road, p, hw - 0.7f) || hood.InBulbZone(p, 0.45f) || hood.InMedianFill(p) || JoinPaintStops(self.osm_id, p, hw));   // Round 18 (A): road b is one of these
                     continue;
                 }
-                foreach (var run in Runs(pts, 96f)) AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain);
-                AddDisc(mb.At(pts[0]), pts[0], r.width * 0.5f, lift - 0.004f, terrain);
-                AddDisc(mb.At(pts[pts.Count - 1]), pts[pts.Count - 1], r.width * 0.5f, lift - 0.004f, terrain);
-                AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
+                // Round 32 (B1, "need to remove grass from streets", six more spots): a ribbon with only its two edges on the ground let
+                // the lawn show through wherever the ground under the middle (a crown, a junction's level match) stood above the
+                // straight line between the edges, as a ragged strip down the center line or patches in a junction. Every road is
+                // now the Glen's grid (Round 11): a vertex every 1.6 m across and 1.5 m along, each on the highest ground near it.
+                // A service road's cells that lie on another road's pavement are left to that road (two shades of gray at a mouth).
+                int across = Mathf.Clamp(Mathf.CeilToInt(r.width / 1.6f), 2, 10);
+                Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f)) : (Func<Vector2, bool>)null;
+                foreach (var run in Runs(pts, 96f))
+                {
+                    var dense = Densify(run, 1.5f);
+                    RibbonGridMax(mb.At(run[run.Count / 2]), dense, Enumerable.Repeat(r.width, dense.Count).ToArray(), lift, terrain, across, true, onOther);
+                }
+                foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
+                    if (onOther == null || !onOther(e)) DiscGrid(mb.At(e), e, r.width * 0.5f, lift - 0.004f, terrain, 24);
+                if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
             }
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             FillRoadSeam(map, terrain, main);   // Round 31 (BUG-003): no lawn between New Chastain Road and its turn lane (MapBuilder.Round31.cs)
@@ -669,6 +687,7 @@ namespace ChastainRush
                 if (shop.Owns(i)) continue;          // Round 17: the gas station's canopy and the bank are built with the shopping center
                 if (rest.Owns(i)) continue;          // Round 30: the other neighborhoods' styled houses
                 if (biz.Owns(i)) continue;           // Round 31: the businesses, schools, churches and the rest (MapBuilder.Businesses.cs)
+                if (LakesOwns(i)) continue;          // Round 32 (C2): the Chastain Lakes pool house and bathhouse (MapBuilder.ChastainLakes.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;
