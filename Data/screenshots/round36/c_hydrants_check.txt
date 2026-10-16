@@ -1,0 +1,22 @@
+Round 36 check, 2026-10-16 15:50, the exe, 1280 x 720, muted.
+
+=== Part C: the hydrants
+PASS  more hydrants along the streets  -  568 hydrants on the map, 529 of them new this round
+  36c_hydrants_neighborhood_street: the hydrant at (1662, 1455)
+  36c_hydrants_canton_road: the hydrant at (3511, 1017)
+
+=== Part C: frame rate parked at Canton Road by the shops (1280 x 720, not measured at 3840 x 2160)
+INFO  Canton Road by the shops: 293 fps average, slowest 1 % 127 fps
+
+=== Part D1: a rigged hydrant: the manhole's cover blows off, the way down into the network
+  11 rigged hydrants, 23 geysers
+  the hydrant at (1552, 1272): broken False, its manhole (1546, 1277) closed
+  the hydrant at (971, 963): broken True, its manhole (975, 960) OPEN
+  drove into it: 7.8 m under the street, not in a pipe
+PASS  a rigged hydrant knocked over: its manhole's cover blows off and the vehicle drives down into the network  -  7.8 m under the street
+
+=== Part D2: a geyser
+FAIL  the geyser's hydrant knocked over: the geyser erupts  -  hydrant (3635, 1168) NOT broken, grate (3628, 1189) not erupting
+PASS  the geyser throws the vehicle high and it comes down on the street  -  13.4 m up, 3.12 s in the air, came down 44 m on, on the street
+
+3 of 4 checks passed.

@@ -46,14 +46,22 @@ namespace ChastainRush
             QualitySettings.vSyncCount = vs; Application.targetFrameRate = cap;
         }
 
-        // drive into the hydrant at h (along the street, 30 m run-in), at `speed`
-        IEnumerator HitHydrant(Vector3 h, float speed)
+        // drive into the hydrant (chunk's panel) at `speed`: along the street from 30 m back, the other way, then in from the road at an angle, until it breaks
+        IEnumerator HitHydrant(FenceChunk chunk, int panel, float speed)
         {
-            var road = RoadLookup.Instance; Vector3 fwd = Vector3.forward; if (road != null && road.NearestPoint(h, out _, out var tdir)) fwd = new Vector3(tdir.x, 0, tdir.y).normalized;
-            var a = RaceRoute.Surface(h.x - fwd.x * 30f, h.z - fwd.z * 30f); var b = RaceRoute.Surface(h.x + fwd.x * 10f, h.z + fwd.z * 10f);
-            var line = Straight(a, b); line[line.Count / 2] = h;
-            Place(a, b - a, speed * .7f); yield return new WaitForSecondsRealtime(.2f);
-            yield return StartCoroutine(DriveLine(Straight(a, RaceRoute.Surface(h.x, h.z)).Concat(Straight(RaceRoute.Surface(h.x, h.z), b).Skip(1)).ToList(), speed, 15f, new Run()));
+            var h = chunk.transform.TransformPoint(chunk.panels[panel].centre);
+            var road = RoadLookup.Instance; Vector3 fwd = Vector3.forward, toRoad = Vector3.zero;
+            if (road != null && road.NearestPoint(h, out var c, out var tdir)) { fwd = new Vector3(tdir.x, 0, tdir.y).normalized; toRoad = Flat(new Vector3(c.x, 0, c.y) - h).normalized; }
+            var froms = new List<Vector3> { -fwd, fwd };
+            if (toRoad != Vector3.zero) { froms.Add((toRoad * .6f - fwd).normalized); froms.Add((toRoad * .6f + fwd).normalized); }
+            foreach (var from in froms)
+            {
+                if (chunk.broken[panel]) yield break;
+                var a = RaceRoute.Surface(h.x + from.x * 30f, h.z + from.z * 30f); var at = RaceRoute.Surface(h.x, h.z); var b = RaceRoute.Surface(h.x - from.x * 10f, h.z - from.z * 10f);
+                Place(a, at - a, speed * .7f); yield return new WaitForSecondsRealtime(.2f);
+                yield return StartCoroutine(DriveLine(Straight(a, at).Concat(Straight(at, b).Skip(1)).ToList(), speed, 15f, new Run()));
+                yield return new WaitForSecondsRealtime(.3f);
+            }
         }
         IEnumerator R36Rig()
         {
@@ -66,22 +74,56 @@ namespace ChastainRush
             foreach (var r in links.rigs.Take(3))
             {
                 var h = r.chunk.transform.TransformPoint(r.chunk.panels[r.panel].centre);
-                yield return HitHydrant(h, 12f); yield return new WaitForSecondsRealtime(1.2f);
+                yield return HitHydrant(r.chunk, r.panel, 12f); yield return new WaitForSecondsRealtime(1.2f);
                 bool broke = r.chunk.broken[r.panel], open = r.lid.Open;
                 report.AppendLine($"  the hydrant at ({h.x:0}, {h.z:0}): broken {broke}, its manhole ({r.lid.lid.position.x:0}, {r.lid.lid.position.z:0}) {(open ? "OPEN" : "closed")}");
                 if (!open) continue;
-                var m = r.lid.transform.position; var home = r.lid.lid.position;
-                yield return Still("36d_rigged_manhole_open", home + Vector3.up * 5f + Vector3.Cross(Vector3.up, r.lid.outward) * 6f, home, 60f);
+                // the hole's middle: the riser's trigger under it (the cover itself is flying by now)
+                var trig = FindObjectsByType<ManholeTrigger>(FindObjectsSortMode.None).FirstOrDefault(tr => tr.owner == r.lid);
+                var mid = trig ? trig.transform.position : r.lid.lid.position; var home = new Vector3(mid.x, GroundQuery.Height(mid.x, mid.z), mid.z);
+                yield return new WaitForSecondsRealtime(2.5f);   // the burst's water gone
+                foreach (float k in new[] { -2f, -1f, 0f, 1f, 2f })
+                {
+                    var o = home + r.lid.outward * k + Vector3.up * 3f;
+                    var hits = Physics.RaycastAll(o, Vector3.down, 20f, ~0, QueryTriggerInteraction.Ignore).OrderBy(x => x.distance).Take(2);
+                    report.AppendLine($"    probe {k:+0;-0;0} m along outward: " + string.Join(", ", hits.Select(x => $"{x.collider.name} at {o.y - x.distance - home.y:0.00} m")));
+                }
+                yield return Still("36d_rigged_manhole_open", home + r.lid.outward * 7f + Vector3.up * 4f + Vector3.Cross(Vector3.up, r.lid.outward) * 3f, home, 60f);
                 // drive into the hole: from 20 m back along the riser's way out (the riser climbs toward `outward`), against it, slowly
                 var dir = -r.lid.outward; dir.y = 0; dir.Normalize();
+                // under the street: below the terrain's surface at the vehicle (the terrain is holed over the riser; its height is the street's)
+                float Under() { var q = car.Body.position; return GroundQuery.Height(q.x, q.z) - q.y; }
                 var a = RaceRoute.Surface(home.x - dir.x * 20f, home.z - dir.z * 20f);
                 var line = Straight(a, home); line.Add(home + dir * 12f + Vector3.down * 8f);
-                Place(a, dir, 4f); yield return new WaitForSecondsRealtime(.2f);
-                var run = new Run(); yield return StartCoroutine(DriveLine(line, 7f, 14f, run, null, rr => car.Body.position.y < home.y - 4f));
-                float below = home.y - car.Body.position.y; bool inPipe = DrainPipe.InsideAny(car.Body.position);
+                foreach (float v in new[] { 3.5f, 1.5f, 6f, 10f })
+                {
+                    // the check's teleport is a reset, and a reset closes the covers (HydrantLinks): knocked open again, as by the hydrant
+                    Place(a, dir, Mathf.Min(v, 2f)); yield return new WaitForSecondsRealtime(.2f);
+                    if (!r.lid.Open) { r.lid.BlowOpen(HydrantLinks.OpenSeconds); report.AppendLine("    (the teleport closed the cover: blown open again)"); }
+                    bool watch = v < 2f; float lastLog = -1f;
+                    IEnumerator Watch()
+                    {
+                        while (watch)
+                        {
+                            yield return new WaitForFixedUpdate();
+                            var q = car.Body.position; float along = Vector3.Dot(Flat(q - home), r.lid.outward);
+                            if (Mathf.Abs(along) > 4f || Time.time - lastLog < .15f) continue; lastLog = Time.time;
+                            var hits = car.suspensionPoints.Select(sp => { var o = car.transform.TransformPoint(sp); return Physics.Raycast(o, -car.transform.up, out var hh, car.suspensionLength, car.groundMask, QueryTriggerInteraction.Ignore) ? hh.collider.name.Split(' ')[0] + (hh.collider.name.Contains("barrel") ? "B" : "") : "-"; });
+                            var under = Physics.OverlapSphere(q - car.transform.up * .6f, .7f, ~0, QueryTriggerInteraction.Ignore).Where(cc => cc.attachedRigidbody != car.Body).Select(cc => cc.name).Distinct();
+                            report.AppendLine($"      {along:+0.0;-0.0} m: y {q.y - home.y:+0.00;-0.00}, wheels {car.GroundedWheels} [{string.Join(" ", hits)}], under the body: {string.Join(", ", under)}");
+                        }
+                    }
+                    var wco = StartCoroutine(Watch());
+                    var run = new Run(); yield return StartCoroutine(DriveLine(line, v, 16f, run, null, rr => Under() > 3f));
+                    watch = false;
+                    report.AppendLine($"    at {v:0.0} m/s: {Under():0.0} m under the street, {Flat(car.Body.position - home).magnitude:0.0} m from the hole");
+                    if (Under() > 3f) break;
+                }
+                yield return new WaitForSecondsRealtime(.6f);
+                float below = Under(), off = Flat(car.Body.position - home).magnitude; bool inPipe = DrainPipe.InsideAny(car.Body.position);
                 yield return Capture("36d_down_the_manhole");
-                report.AppendLine($"  drove into it: {below:0.0} m under the street, {(inPipe ? "inside the network's pipe" : "not in a pipe")}");
-                Check("a rigged hydrant knocked over: its manhole's cover blows off and the vehicle drives down into the network", below > 3f || inPipe, $"{below:0.0} m under the street");
+                report.AppendLine($"  drove into it: {below:0.0} m under the street, {off:0.0} m from the manhole, {(inPipe ? "inside the network's pipe" : "not in a pipe")}");
+                Check("a rigged hydrant knocked over: its manhole's cover blows off and the vehicle drives down into the network", below > 3f || inPipe, $"{below:0.0} m under the street's surface, {off:0.0} m from the hole");
                 any = true; break;
             }
             if (!any) Check("a rigged hydrant knocked over opens its manhole", false);
@@ -93,8 +135,9 @@ namespace ChastainRush
             if (race.State != RaceController.Stage.Free) race.EndRace();
             yield return Vehicle("original");
             var s = links.spouts[0]; var h = s.chunk.transform.TransformPoint(s.chunk.panels[s.panel].centre); var g = s.geyser.transform.position;
-            yield return HitHydrant(h, 10f); yield return new WaitForSecondsRealtime(.3f);
-            Check("the geyser's hydrant knocked over: the geyser erupts", s.geyser.Erupting, $"hydrant ({h.x:0}, {h.z:0}), grate ({g.x:0}, {g.z:0})");
+            yield return HitHydrant(s.chunk, s.panel, 12f); yield return new WaitForSecondsRealtime(.3f);
+            Check("the geyser's hydrant knocked over: the geyser erupts", s.chunk.broken[s.panel] && s.geyser.Erupting, $"hydrant ({h.x:0}, {h.z:0}) {(s.chunk.broken[s.panel] ? "broken" : "NOT broken")}, grate ({g.x:0}, {g.z:0}) {(s.geyser.Erupting ? "erupting" : "not erupting")}");
+            if (s.geyser.Erupting) yield return Still("36d_geyser_erupting", g - s.geyser.along * 18f + Vector3.up * 3f + Vector3.Cross(Vector3.up, s.geyser.along) * 5f, g + Vector3.up * 6f, 60f);
             // drive into it along the street at 15 m/s
             var d = s.geyser.along; var a = RaceRoute.Surface(g.x - d.x * 45f, g.z - d.z * 45f); var b = RaceRoute.Surface(g.x + d.x * 90f, g.z + d.z * 90f);
             bool launched = false; System.Action<Geyser, ArcadeVehicle> hook = (gy, c) => { if (gy == s.geyser && c == car) launched = true; }; Geyser.Launched += hook;

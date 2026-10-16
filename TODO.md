@@ -178,6 +178,16 @@ B DONE. 17 sites: 8 jumps (BJ1, BJ3, BJ4, P1J, the Ridge leap, S2, BIG AIR, shop
    the Records page; Free Roam only. Targets: speed traps 95 / 85 / 72 % of each base vehicle's flat-out run; jumps from their sized flights. Check: Bells Ferry
    123 mph GOLD, BIG AIR 226 ft SILVER, pump smash BRONZE, the map picture. Fixed in the port: a landing is judged upright against the slope, not world up.
    Seen in the scripted runs, not changed: on Chastain Road near (300 to 400, 940) and New Chastain Road near (2607, 691) the scripted drive stopped dead.
+**Parts C and D built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round36/36c_*`, `36d_*`, `c_*`, `d_*`. Built by `MapBuilder.Hydrants.cs`.
+C DONE. 529 more hydrants (568 on the map): 307 along the streets (150 m, 100 m on commercial roads), 153 at corners, 39 in front of schools, churches and
+   businesses, 30 for D. Kept off pavement, drives, lots, race and shortcut lines, jumps, trails, the park, water and pipe cuts. Same breakable chunks as the Glen's.
+   Frame rate at Canton Road (1280 x 720, not 3840 x 2160): 304 fps before, 293 to 311 after.
+D1 DONE. 11 of the 13 street manholes have a rigged hydrant (4 of them the Glen's own); MH at (2966, 1091) and (2010, 935) have no free curb spot. Knocked over:
+   a bang, water, the cover flies, the hole stays open 45 s (a reset closes it). Decided: no new manholes (each needs a new riser into the network). Check: the hydrant
+   at (1552, 1272) knocked over, the car drove down into the pipe 7.7 m under the street.
+D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton Road; a grate in the gutter, its hydrant 22 m up the street. Check: 13.4 m up,
+   3.1 s in the air, down on the street 43 m on. Both kinds Free Roam only; each link has `inRaces` (off) so a route could switch one on later.
+   For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
 
 ## QUEUED rounds
 None.

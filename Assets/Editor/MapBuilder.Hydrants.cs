@@ -53,8 +53,8 @@ namespace ChastainRush
                 for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++) if (bgrid.TryGetValue(c + new Vector2Int(dx, dz), out var l)) foreach (var r in l) if (InPolygon(p, r) || RingDist(p, r) < 1.2f) return true;
                 return false;
             }
-            var placed = new List<Vector2>();
-            foreach (var c in UnityEngine.Object.FindObjectsByType<HydrantChunk>(FindObjectsSortMode.None)) { var fc = c.GetComponent<FenceChunk>(); if (fc) foreach (var pn in fc.panels) { var w = fc.transform.TransformPoint(pn.centre); placed.Add(new Vector2(w.x, w.z)); } }
+            var placed = new List<Vector2>(); var older = new List<(Vector2 p, FenceChunk c, int i)>();
+            foreach (var c in UnityEngine.Object.FindObjectsByType<HydrantChunk>(FindObjectsSortMode.None)) { var fc = c.GetComponent<FenceChunk>(); if (fc) for (int i = 0; i < fc.panels.Length; i++) { var w = fc.transform.TransformPoint(fc.panels[i].centre); placed.Add(new Vector2(w.x, w.z)); older.Add((new Vector2(w.x, w.z), fc, i)); } }
             int glen = placed.Count;
             var why = new Dictionary<string, int>();
             bool Ok(Vector2 p, float spacing = 20f)
@@ -141,14 +141,17 @@ namespace ChastainRush
             }
             // ---------------- Part D1: a rigged hydrant beside each street manhole
             var lids = UnityEngine.Object.FindObjectsByType<ManholeLid>(FindObjectsSortMode.None);
-            var rigAt = new List<(Vector2 p, ManholeLid lid)>();
+            var rigAt = new List<(Vector2 p, ManholeLid lid)>(); var rigOld = new List<HydrantLinks.Rig>(); var noRig = new List<string>();
             foreach (var lid in lids)
             {
                 var m = new Vector2(lid.lid.position.x, lid.lid.position.z);
                 float best = 30f; Vector2 foot = default, dir = default; float half = 0f;
                 foreach (var s in segs) { var ab = s.b - s.a; float tt = Mathf.Clamp01(Vector2.Dot(m - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-4f)); var f = s.a + ab * tt; float d = Vector2.Distance(m, f); if (d < best) { best = d; foot = f; dir = ab.normalized; half = s.half; } }
-                if (best >= 30f) continue;
+                if (best >= 30f) { noRig.Add($"({m.x:0}, {m.y:0}) no street within 30 m"); continue; }
                 bool done = false;
+                // one of the Glen's hydrants already standing within 15 m of the manhole is the rigged one
+                var near = older.Where(o => (o.p - m).sqrMagnitude < 15f * 15f).OrderBy(o => (o.p - m).sqrMagnitude).ToList();
+                if (near.Count > 0) { rigOld.Add(new HydrantLinks.Rig { chunk = near[0].c, panel = near[0].i, lid = lid }); rigs++; continue; }
                 foreach (float along in new[] { 6f, -6f, 9f, -9f, 12f, -12f, 4f, -4f })
                     foreach (float side in new[] { 1f, -1f })
                     {
@@ -156,6 +159,12 @@ namespace ChastainRush
                         var p = foot + dir * along + new Vector2(dir.y, -dir.x) * side * (half + 1.1f);
                         if (Ok(p, 8f)) { Put(p, (int)(m.x * 3 + m.y)); rigAt.Add((p, lid)); rigs++; done = true; }
                     }
+                if (!done)
+                {
+                    // the curb is taken: the new hydrant nearest it (within 15 m of the manhole) is rigged instead
+                    var mine = order.Select((q, k) => (q, k)).Where(o => (o.q - m).sqrMagnitude < 15f * 15f).OrderBy(o => (o.q - m).sqrMagnitude).ToList();
+                    if (mine.Count > 0) { rigAt.Add((mine[0].q, lid)); rigs++; } else noRig.Add($"({m.x:0}, {m.y:0}) no curb spot");
+                }
             }
             // ---------------- Part D2: the geysers: on a straight stretch of a neighborhood's street (and three along Canton Road), a hydrant 22 m up
             // the street from a grate in the gutter; 70 m or more of straight street either way of the grate, so a throw comes down on the street
@@ -205,6 +214,7 @@ namespace ChastainRush
             var links = new GameObject("HydrantLinks").AddComponent<HydrantLinks>(); links.transform.SetParent(root, false);
             var rigList = new List<HydrantLinks.Rig>(); var spoutList = new List<HydrantLinks.Spout>();
             foreach (var (p, lid) in rigAt) { var (c, i) = Find(p); if (c) rigList.Add(new HydrantLinks.Rig { chunk = c, panel = i, lid = lid }); }
+            rigList.AddRange(rigOld);
             foreach (var g in geysersAt)
             {
                 var (c, i) = Find(g.hydrant); if (!c) continue;
@@ -218,7 +228,7 @@ namespace ChastainRush
             }
             links.rigs = rigList.ToArray(); links.spouts = spoutList.ToArray();
             grates.ToObject("GeyserGrates", mats.House, root, false, false);
-            Debug.Log($"[Round36] hydrants: {order.Count} more ({streets} along the streets, {corners} at corners, {fronts} in front of schools, churches and businesses, {rigs} rigged beside manholes, {geysersAt.Count} by geysers); the Glen's {glen} kept; {lids.Length} manholes, {rigList.Count} rigged; {spoutList.Count} geysers: " +
+            Debug.Log($"[Round36] hydrants: {order.Count} more ({streets} along the streets, {corners} at corners, {fronts} in front of schools, churches and businesses, {rigs} rigged beside manholes, {geysersAt.Count} by geysers); the Glen's {glen} kept; {lids.Length} manholes, {rigList.Count} rigged{(noRig.Count > 0 ? " (none at " + string.Join(", ", noRig) + ")" : "")}; {spoutList.Count} geysers: " +
                       string.Join(", ", geysersAt.Select(g => $"({g.grate.x:0}, {g.grate.y:0})")) + "; left out: " + string.Join(", ", why.Select(kv => $"{kv.Value} {kv.Key}")));
         }
         [Serializable] class HoodsFile { public HoodJson[] neighborhoods; }

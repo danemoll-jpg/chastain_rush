@@ -1,0 +1,6 @@
+Round 36 check, 2026-10-16 14:53, the exe, 1280 x 720, muted.
+
+=== Part C: frame rate parked at Canton Road by the shops (1280 x 720, not measured at 3840 x 2160)
+INFO  Canton Road by the shops: 304 fps average, slowest 1 % 155 fps
+
+0 of 0 checks passed.

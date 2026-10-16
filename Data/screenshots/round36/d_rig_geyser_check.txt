@@ -1,0 +1,20 @@
+Round 36 check, 2026-10-16 16:14, the exe, 1280 x 720, muted.
+
+=== Part D1: a rigged hydrant: the manhole's cover blows off, the way down into the network
+  11 rigged hydrants, 23 geysers
+  the hydrant at (1552, 1272): broken True, its manhole (1551, 1280) OPEN
+    probe -2 m along outward: Terrain_2_1 at 0.23 m, sc Net B2b barrel at -5.03 m
+    probe -1 m along outward: sc Net B2b barrel at -3.84 m
+    probe 0 m along outward: sc Net B2b barrel at -2.65 m
+    probe +1 m along outward: sc Net B2b barrel at -1.46 m
+    probe +2 m along outward: sc Net B2b barrel at -0.55 m
+    (the teleport closed the cover: blown open again)
+    at 3.5 m/s: 3.1 m under the street, 2.3 m from the hole
+  drove into it: 7.7 m under the street, 5.0 m from the manhole, inside the network's pipe
+PASS  a rigged hydrant knocked over: its manhole's cover blows off and the vehicle drives down into the network  -  7.7 m under the street's surface, 5.0 m from the hole
+
+=== Part D2: a geyser
+PASS  the geyser's hydrant knocked over: the geyser erupts  -  hydrant (3635, 1168) broken, grate (3628, 1189) erupting
+PASS  the geyser throws the vehicle high and it comes down on the street  -  13.4 m up, 3.12 s in the air, came down 43 m on, on the street
+
+3 of 3 checks passed.
