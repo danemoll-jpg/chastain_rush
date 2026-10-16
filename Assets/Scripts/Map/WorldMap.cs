@@ -39,6 +39,10 @@ namespace ChastainRush
         public static readonly List<Proposal> Proposals = new List<Proposal>();
         public static readonly List<ProposalMark> ProposalMarks = new List<ProposalMark>();
         public static string ProposalLegend = "";
+        // Round 36: places drawn on the map in Free Roam (the stunt park, Part B's activities: Racer's ExplorationMap activity markers), with an
+        // optional outline
+        public sealed class Place { public string label; public Vector3 at; public Color color; public Vector3[] outline; public bool small; }
+        public static readonly List<Place> Places = new List<Place>();
 
         InputActionMap mapActions; InputAction mapToggle, panAction, zoomInAction, zoomOutAction, centerAction, layersAction, backAction;
         GameObject panel; RawImage picture; WorldMapOverlay overlay; Text status, heading, cursor, north, legend; Font font;
@@ -248,6 +252,15 @@ namespace ChastainRush
                 {
                     var t = Pooled(proposalLabels, pi++, "Proposal", 12); t.text = "● " + net.labels[i]; t.color = new Color(.95f, .88f, .6f); t.fontStyle = FontStyle.Bold;
                     t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, net.labelAt[i]);
+                }
+            // Round 36: the places (the stunt park, the activities), in Free Roam; the small ones (activity sites) zoomed in a little
+            if (race == null || race.State == RaceController.Stage.Free)
+                foreach (var pl in Places)
+                {
+                    if (pl.outline != null && pl.outline.Length > 2) lines.Add(new WorldMapOverlay.Path { points = pl.outline, tint = pl.color, closed = true, width = 2.5f });
+                    if (pl.small && zoom < 1.4f) continue;
+                    var t = Pooled(proposalLabels, pi++, "Proposal", pl.small ? 12 : 15); t.text = (pl.small ? "◆ " : "★ ") + pl.label; t.color = pl.color; t.fontStyle = FontStyle.Bold;
+                    t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, pl.at);
                 }
             for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
             overlay.SetView(world, center, zoom, lines, bars);

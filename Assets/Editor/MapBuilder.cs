@@ -86,6 +86,8 @@ namespace ChastainRush
             var shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
+            Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
+            if (Park != null) GradeStuntPark(map, terrain, Park);
             var world = new GameObject("World").transform;
             var paint = new Chunks();
             // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
@@ -149,6 +151,7 @@ namespace ChastainRush
             BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
             BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
+            if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop);   // Round 36 (Part A2): the stunt park, its stores and roofs
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
             BuildCreekTrack(map, terrain, mats, world, creek);   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
@@ -405,7 +408,7 @@ namespace ChastainRush
                 // now the Glen's grid (Round 11): a vertex every 1.6 m across and 1.5 m along, each on the highest ground near it.
                 // A service road's cells that lie on another road's pavement are left to that road (two shades of gray at a mouth).
                 int across = Mathf.Clamp(Mathf.CeilToInt(r.width / 1.6f), 2, 10);
-                Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f)) : (Func<Vector2, bool>)null;
+                Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f) || (Park != null && IsCenterRoad(self) && (Park.InFloor(p) || Park.InBuilding(p)))) : (Func<Vector2, bool>)null;   // Round 36: the lot's own service roads are the park's floor
                 foreach (var run in Runs(pts, 96f))
                 {
                     var dense = Densify(run, 1.5f);
@@ -413,7 +416,7 @@ namespace ChastainRush
                 }
                 foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
                     if (onOther == null || !onOther(e)) DiscGrid(mb.At(e), e, r.width * 0.5f, lift - 0.004f, terrain, 24);
-                if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.CoversPaint(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
+                if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.CoversPaint(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f) || (Park != null && (Park.InFloor(p) || Park.InBuilding(p))));   // Round 18 (A); Round 36: no road paint in the stunt park
             }
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             FillRoadSeam(map, terrain, main);   // Round 31 (BUG-003): no lawn between New Chastain Road and its turn lane (MapBuilder.Round31.cs)

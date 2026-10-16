@@ -22,6 +22,8 @@ namespace ChastainRush
     {
         UnityEngine.UI.RawImage preview; Camera previewCamera; RenderTexture previewTexture; GameObject previewRoot;
         RectTransform garagePanel; Vector2 menuCardSize; bool garageView;
+        string garageFor = "all";   // Round 36: "all" (Free Roam), "race" (race setup), "stunt" (the Stunt event's setup)
+        void OpenGarage(string forWhat) { garageFor = forWhat; Navigate("garage"); }
         float previewYaw = 215, lastTurn = -100, previewRadius = 1, previewMargin = PreviewMargin; Vector3 previewCenter;
         InputAction rotateAction;
         static readonly Vector3 PreviewFocus = new(10000, 10000, 10000);
@@ -72,7 +74,9 @@ namespace ChastainRush
         void RenderGarage()
         {
             var config = car.GetComponent<VehicleConfiguration>(); var profile = config.Profile;
-            var all = VehicleProfile.All; int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
+            // Round 36 (Racer 0.106 Part C / 0.120 Part E): opened for the Stunt event the garage holds the stunt vehicles only; from race setup
+            // only the vehicles that race (no stunt vehicle); in Free Roam all of them
+            var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt : true).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
             Clear(profile.Name + " / " + profile.Class, profile.Description);
             heading.text = profile.Name + " / " + profile.Class;
             bool racing = race && race.State != RaceController.Stage.Free;

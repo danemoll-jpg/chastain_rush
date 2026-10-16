@@ -1,0 +1,60 @@
+Round 36 check, 2026-10-16 13:56, the exe, 1280 x 720, muted.
+
+=== frame rate, parked (1280 x 720, not measured at 3840 x 2160)
+INFO  Canton Road by the shops (Round 35's spot): 284 fps average, slowest 1 % 152 fps
+INFO  in the park, at its start line looking west: 268 fps average, slowest 1 % 152 fps
+INFO  inside the supermarket: 278 fps average, slowest 1 % 153 fps
+
+=== Part A3: the big air off the roofs, flat out on the stunt vehicles (aimed launches: every vehicle over the lip at 3 m/s or more leaves at the design speed)
+  BIG AIR        Clay Hopper      onto the lip at 18.2 m/s, off it at 27 m/s 32 deg: 3.04 s in the air, 10.7 m over the lip at the top, came down 69.8 m out on Stunt park BIG AIR landing (its face 27 deg), upright 1.00, rolled on
+PASS  BIG AIR on the Clay Hopper: launched, landed upright on the park (the landing's slope or table) and rolled on
+PASS  BIG AIR on the Clay Hopper: several seconds of air (3 s or more)  -  3.04 s
+  BIG AIR        Skywhip 250      onto the lip at 23.0 m/s, off it at 27 m/s 32 deg: 3.06 s in the air, 10.7 m over the lip at the top, came down 69.5 m out on Stunt park BIG AIR landing (its face 21 deg), upright 1.00, rolled on
+PASS  BIG AIR on the Skywhip 250: launched, landed upright on the park (the landing's slope or table) and rolled on
+PASS  BIG AIR on the Skywhip 250: several seconds of air (3 s or more)  -  3.06 s
+  Shop row drop  Clay Hopper      onto the lip at 19.4 m/s, off it at 19 m/s 20 deg: 2.18 s in the air, 2.8 m over the lip at the top, came down 40.3 m out on Stunt park Shop row drop landing (its face 15 deg), upright 1.00, rolled on
+PASS  Shop row drop on the Clay Hopper: launched, landed upright on the park (the landing's slope or table) and rolled on
+  Shop row drop  Skywhip 250      onto the lip at 19.6 m/s, off it at 19 m/s 20 deg: 2.18 s in the air, 2.7 m over the lip at the top, came down 40.1 m out on Stunt park Shop row drop landing (its face 17 deg), upright 1.00, rolled on
+PASS  Shop row drop on the Skywhip 250: launched, landed upright on the park (the landing's slope or table) and rolled on
+  Tower gap      Clay Hopper      onto the lip at 19.5 m/s, off it at 17 m/s 12 deg: 1.64 s in the air, 1.2 m over the lip at the top, came down 28.9 m out on Stunt park Tower gap landing (its face 28 deg), upright 1.00, rolled on
+PASS  Tower gap on the Clay Hopper: launched, landed upright on the park (the landing's slope or table) and rolled on
+  Tower gap      Skywhip 250      onto the lip at 19.8 m/s, off it at 17 m/s 12 deg: 1.74 s in the air, 1.2 m over the lip at the top, came down 30.5 m out on Stunt park Tower gap landing (its face 23 deg), upright 1.00, rolled on
+PASS  Tower gap on the Skywhip 250: launched, landed upright on the park (the landing's slope or table) and rolled on
+  Roof gap       Clay Hopper      onto the lip at 21.3 m/s, off it at 22 m/s 24 deg: 1.94 s in the air, 4.8 m over the lip at the top, came down 40.5 m out on Stunt park roof (its face 0 deg), upright 1.00, rolled on
+PASS  Roof gap on the Clay Hopper: launched, landed upright on the park (the landing's slope or table) and rolled on
+  Roof gap       Skywhip 250      onto the lip at 21.5 m/s, off it at 22 m/s 24 deg: 1.96 s in the air, 4.7 m over the lip at the top, came down 40.0 m out on Stunt park roof (its face 0 deg), upright 1.00, rolled on
+PASS  Roof gap on the Skywhip 250: launched, landed upright on the park (the landing's slope or table) and rolled on
+
+=== Part A1: a backflip + roll off BIG AIR on the Clay Hopper (the stick through the player's input), landed and scored
+  try 1: turned pitch -382 deg, roll -198 deg; landed 'CLEAN JUMP / 129.3 ft / 1.94 s' for 588 pts (1.94 s, 4.2 m up), touched 168 deg from upright, BAILED: Landed on the roof
+  try 2: turned pitch -376 deg, roll -203 deg; landed 'CLEAN JUMP / 129.3 ft / 1.94 s' for 588 pts (1.94 s, 4.2 m up), touched 164 deg from upright, BAILED: Landed on the roof
+  try 3: turned pitch -374 deg, roll -201 deg; landed 'CLEAN JUMP / 129.3 ft / 1.94 s' for 588 pts (1.94 s, 4.2 m up), touched 164 deg from upright, BAILED: Landed on the roof
+  the trick panel in the air: 'BACKFLIP / +1,015 on the line'; after landing: 'BAILED | BAILED | BAILED'; the last combo banked 588 pts (x1, J), Top 10 Best Combos #3
+FAIL  a backflip + roll off BIG AIR, landed on its wheels and scored (with the x2 for two trick types)  -  3 tries
+FAIL  the trick panel showed the tricks in the air and the result after  -  BACKFLIP / +1,015 on the line
+PASS  the banked combo is on the Top 10 Best Combos (the check's own file)  -  C:\Users\danmo\AppData\Local\Temp\cr36\a5\stunt-park-v1.json
+
+=== Part A1: the Stunt event once (a 45 s round for the check; 10 minutes in play)
+PASS  the Stunt event starts on its line, held 3 s, then GO  -  0.0 m from the line, held True
+  from the line west over the mega hill: reached the stores, 0 tricks, combo x0
+  BIG AIR with a backflip: 'BACKFLIP', event points 1,369
+  start: Skywhip 250 at (3464.54, 318.16, 1149.84)
+  21.8s +1369 (BACKFLIP; x1: BF) Top 10 combo #2
+  0:00: done
+  results: 1,369 pts, NO MEDAL, best combo 1,369, tricks 1, bails 3, Top 10 #1
+PASS  the Stunt event ended, counted the combos banked in the park and wrote its Top 10 entry  -  1,369 pts, NO MEDAL, best combo 1,369, Top 10 #1
+
+=== Part A2b: into the stores
+PASS  through the supermarket's windows: the glass broke and the vehicle went on inside  -  2 panes broken, on to the back of the store, slowest 15.2 m/s
+PASS  along the shop row: in through a window and through the partitions to its west end  -  10 partition panels broken, reached the west end
+PASS  the windows and partitions come back (a reset in the park, or leaving it)
+
+=== Part A2b: the supermarket's mezzanine and the ramp up through the skylight onto the roof
+PASS  up the mezzanine ramp, along the deck and up the skylight ramp: on the roof  -  ended at 324.05 m (the roof at 323.35), reached
+
+=== Part A3: the roof ramp from the floor
+PASS  the roof ramp: from the floor up onto the supermarket's roof  -  ended at 324.00 m, on the roof
+
+=== pictures (36_*.png)
+
+18 of 20 checks passed.

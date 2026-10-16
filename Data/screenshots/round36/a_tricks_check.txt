@@ -1,0 +1,10 @@
+Round 36 check, 2026-10-16 14:04, the exe, 1280 x 720, muted.
+
+=== Part A1: a backflip + roll off BIG AIR on the Clay Hopper (the stick through the player's input), landed and scored
+  try 1: turned pitch -568 deg, roll -340 deg; landed 'SKETCHY LANDING / DOUBLE BACKFLIP + ROLL  x2' for 4,498 pts (4.28 s, 10.0 m up), touched 89 deg from upright
+  the trick panel in the air: 'BACKFLIP / +744 on the line'; after landing: 'LANDED  +4,498 / COMBO x1  ·  4,498  ·  4.6 s'; the last combo banked 4,498 pts (x1, 2BF+R), Top 10 Best Combos #1
+PASS  a backflip + roll off BIG AIR, landed on its wheels and scored (with the x2 for two trick types)  -  1 tries
+PASS  the trick panel showed the tricks in the air and the result after  -  BACKFLIP / +744 on the line
+PASS  the banked combo is on the Top 10 Best Combos (the check's own file)  -  C:\Users\danmo\AppData\Local\Temp\cr36\a6\stunt-park-v1.json
+
+3 of 3 checks passed.

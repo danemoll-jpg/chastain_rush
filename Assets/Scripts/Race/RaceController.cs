@@ -281,7 +281,8 @@ namespace ChastainRush
         void EnsureAllowedVehicle()
         {
             if (PlayerVehicleAllowed) return;
-            var sw = car.GetComponent<VehicleSwitch>(); string id = RouteData.vehicles[0];
+            // Round 36: a stunt vehicle in a race goes back to the Street Classic (Racer's EligibleVehicle), or the trail's first vehicle
+            var sw = car.GetComponent<VehicleSwitch>(); string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[0] : "original";
             if (sw) sw.Select(id); else car.GetComponent<VehicleConfiguration>()?.Apply(id);
             Log($"vehicle not allowed on {RouteData.name}: switched to {id}");
         }

@@ -48,7 +48,7 @@ namespace ChastainRush
         {
             public int Center = -1, Canopy = -1, Bank = -1;
             public List<Vector2> Lot;
-            public bool Owns(int i) => i == Canopy || i == Bank;   // built here; the center itself is an ordinary building plus fronts
+            public bool Owns(int i) => i == Canopy || i == Bank || (Park != null && i == Center);   // built here; the center itself is an ordinary building plus fronts (Round 36: in the stunt park it is built there, MapBuilder.StuntParkStores.cs)
             public string Log = "";
 
             public static ShoppingCenter Find(MapData map)
@@ -344,6 +344,7 @@ namespace ChastainRush
                 float len = Vector2.Distance(f.a, f.b);
                 walkStrips.Add((f.a, f.b, n));
                 SidewalkStrip(walks, f.a, f.b, n, 3.5f, WalkLift, t);
+                if (Park != null && f.first != SignSouthFirst) continue;   // Round 36: the stunt park builds these fronts (smash-through windows)
                 if (f.market) { MarketFront(solid, root, signMat, f.a, d, n, len, t, retailTop); shops++; continue; }
                 float w = len / f.count;
                 for (int k = 0; k < f.count; k++) { ShopFront(solid, root, signMat, f.a + d * (w * (k + 0.5f)), d, n, w, f.first + k, t, retailTop, k); shops++; }
@@ -370,7 +371,7 @@ namespace ChastainRush
             const float Bay = 5.4f, Aisle = 7.0f, Pitch = 2.8f, Island = 2.0f;
             int stalls = 0, islands = 0;
             float uMin = sc.Lot.Min(p => Vector2.Dot(p, U)), uMax = sc.Lot.Max(p => Vector2.Dot(p, U)), vMin = sc.Lot.Min(p => Vector2.Dot(p, V));
-            for (float vRow = vTop - 3.5f - Aisle - 2f * Bay; vRow > vMin; vRow -= 2f * Bay + Aisle)
+            for (float vRow = vTop - 3.5f - Aisle - 2f * Bay; vRow > vMin && Park == null; vRow -= 2f * Bay + Aisle)   // Round 36: no stalls in the stunt park
             {
                 // one double row: stalls from vRow to vRow + 2 Bay, a line between the halves
                 var ok = new List<bool>(); var us = new List<float>();

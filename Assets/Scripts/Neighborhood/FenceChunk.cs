@@ -41,6 +41,10 @@ namespace ChastainRush
         // Round 10: a panel broke (the chunk, its index, its centre in the world); everything was restored (a race started)
         public static event System.Action<FenceChunk, int, Vector3> PanelBroken;
         public static event System.Action AllRestored;
+        // Round 36: which vehicle broke it (the smash activities count the player's, Racer's BreakableProp.BrokenByVehicle); one chunk put back
+        // on its own (the stunt park's windows and displays, StuntPark.RestoreBreakables)
+        public static event System.Action<FenceChunk, int, ArcadeVehicle> PanelBrokenBy;
+        public static event System.Action<FenceChunk> Restored;
 
         Mesh live;
         Vector3[] original, current, srcNormals;
@@ -93,6 +97,7 @@ namespace ChastainRush
                     if (facePanel[f] == panelIndex && faces[f] && faces[f].enabled) { SpawnFace(faces[f], dir, speed, f, pieces[panel.firstPiece].restY); faces[f].enabled = false; }
             BreakSounds.Play(transform.TransformPoint(panel.centre), speed, sound);   // Round 15, item 3
             PanelBroken?.Invoke(this, panelIndex, transform.TransformPoint(panel.centre));
+            PanelBrokenBy?.Invoke(this, panelIndex, car);   // Round 36
             // a little speed lost, at most MaxCostPerStep in one physics step however many panels go at once
             if (lastCostFrame != Time.frameCount) { lastCostFrame = Time.frameCount; costThisStep = 0f; }
             float cost = Mathf.Min(SpeedCostPerPanel, MaxCostPerStep - costThisStep);
@@ -193,6 +198,8 @@ namespace ChastainRush
             }
         }
 
+        // Round 36: this chunk alone (its flying pieces are left to land); true if anything came back
+        public bool RestoreOwn() { bool any = broken != null && System.Array.IndexOf(broken, true) >= 0; if (!any) return false; Restore(); Restored?.Invoke(this); return true; }
         void Restore()
         {
             if (broken == null) return;

@@ -24,6 +24,15 @@ namespace Racer
         // 0.99 Part E: what earns a Reward vehicle: "acorn" (the mower), "police-car" or "police-bike" (PoliceProgress)
         public string Unlock = "acorn";
         public bool IsPolice => Unlock != null && Unlock.StartsWith("police");
+        // 0.106 Part C: a stunt vehicle (Unlock "stunt-..."): air steering (AirControl, ArcadeVehicle), Free Roam and the Stunt event only
+        // (Chastain Rush, Round 36: never in a race or an AI roster; nothing is locked here, so all three are offered at once)
+        public float AirControl;
+        public bool Stunt => Unlock != null && Unlock.StartsWith("stunt");
+        // 0.111 Part D: a Cup edition's livery (VehiclePaint.Livery). Chastain Rush, Round 36: only the Clay Hopper Cup (Racer's other four Cup
+        // editions are championship prizes and there is no campaign here)
+        public string Cup, CupBase; public Color Livery; public string[] Gold;
+        public bool CupEdition => Cup != null;
+        public const float CupBoost = 1.05f;
         static VehicleProfile[] all; public static VehicleProfile[] All => all ??= BuildAll(); // built on first use
         static VehicleProfile[] BuildAll() => new VehicleProfile[] {
             new() { Id="original", Name="Street Classic", Class="Car", Description="Balanced handling / high stability / strong contact", Speed=49, Acceleration=14.5f, Grip=25, Response=8, Mass=1200, Wheelbase=2.6f, Pitch=1, Size=new(1.85f,.65f,3.7f), Camera=new(0,3.6f,-7.5f),
@@ -54,7 +63,28 @@ namespace Racer
             new() { Id="mower", Name="Turf Rocket", Class="Mower", Description="Riding mower / the acorn reward / top speed, grip and handling, solid in contact", Speed=61, Acceleration=18, Grip=32, Response=12, Mass=760, Wheelbase=1.6f, Pitch=1.75f, Size=new(1.15f,.65f,2.1f), Camera=new(0,3.1f,-6.6f),
                 Model="TurfRocket", Seat=new(0,.22f,-.52f), Base="moto", Upright=27, Air=.24f, Reward=true, SolidContact=true },
             // Chastain Rush (Round 13): Racer's two police vehicles (Police, PoliceBike) stay behind
+            // Round 36 (Part A1): Racer 0.106 Part C's two stunt vehicles (Tools/Blender/stuntbuggy.py, stuntbike.py) and 0.119 Part C's Clay
+            // Hopper Cup, appended (saved choices are ids, so nothing earlier moves)
+            StuntBuggy, StuntBike,
+            StuntCup(MakeCup(StuntBuggy, "hoppercup", "Clay Hopper Cup", "cup-stunt", new(.86f,.4f,.06f), "chrome", "cream")),
         };
+        // 0.111 Part D: a championship's prize: an existing vehicle's model and handling with its own livery (the cup's colour, gold trim and a gold
+        // cup on each side, VehiclePaint.Livery) and about +5% on the five garage stats (top speed, acceleration, grip, handling, weight / contact).
+        static VehicleProfile MakeCup(VehicleProfile b, string id, string name, string cup, Color livery, params string[] gold)
+        {
+            const float k = CupBoost;
+            return new() { Id=id, Name=name, Class=b.Class, Description=b.Description.Split('/')[0].Trim()+" / championship edition: about 5% up on every stat", Speed=b.Speed*k, Acceleration=b.Acceleration*k, Grip=b.Grip*k, Response=b.Response*k, Mass=b.Mass*k,
+                Wheelbase=b.Wheelbase, Pitch=b.Pitch, Size=b.Size, Camera=b.Camera, Model=b.Model, Pose=b.Pose, Base=b.Base??b.Id, Seat=b.Seat, FrontPivot=b.FrontPivot, FrontAxis=b.FrontAxis, FrontGain=b.FrontGain,
+                Upright=b.Upright, Air=b.Air, Suspension=b.Suspension, Lean=b.Lean, SolidContact=b.SolidContact, Cup=cup, CupBase=b.Id, Livery=livery, Gold=gold };
+        }
+        static VehicleProfile StuntCup(VehicleProfile p) { p.Reward = true; p.Unlock = "stunt-cup"; p.AirControl = 1; return p; }
+        public const string StuntCupId = "hoppercup";
+        // a light buggy on long suspension (the ATV's family for the activity tables): open frame and roll cage, the cars' seated pose on the centre line
+        public static readonly VehicleProfile StuntBuggy = new() { Id="stuntbuggy", Name="Clay Hopper", Class="Buggy", Description="Stunt buggy / long-travel suspension / steer it in the air: flips, rolls, spins", Speed=50, Acceleration=17.5f, Grip=29, Response=10.5f, Mass=520, Wheelbase=2.1f, Pitch=1.25f, Size=new(1.5f,.7f,2.8f), Camera=new(0,3.4f,-7f),
+                Model="StuntBuggy", Seat=new(0,.06f,-.28f), Base="atv", Upright=24, Air=.16f, Suspension=.85f, Reward=true, Unlock="stunt-buggy", AirControl=1 };
+        // a freestyle dirt bike on the Ridge Scrambler's frame and handling family, the Dirt rider pose
+        public static readonly VehicleProfile StuntBike = new() { Id="stuntbike", Name="Skywhip 250", Class="Motorcycle", Description="Stunt motorcycle / freestyle dirt bike / steer it in the air: flips, rolls, spins", Speed=55, Acceleration=18, Grip=31, Response=11.5f, Mass=190, Wheelbase=1.56f, Pitch=1.35f, Size=new(.7f,.9f,2.3f), Camera=new(0,3.2f,-6.6f),
+                Model="StuntBike", Pose="Dirt", FrontPivot=new(0,-.16f,.80f), FrontAxis=new(0,.80f,-.33f), FrontGain=9, Base="moto", Upright=23, Air=.2f, Suspension=.75f, Lean=.6f, Reward=true, Unlock="stunt-gold", AirControl=1 };
         public static VehicleProfile Find(string id)
         {
             foreach(var profile in All) if(profile.Id==id) return profile;

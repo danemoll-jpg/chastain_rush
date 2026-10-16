@@ -46,6 +46,13 @@ namespace Racer
         // Chastain Rush, Round 19: the "up" a wheel's ground must face and the vehicle settles to in the air (world up; a drainage
         // pipe's DrainPipe turns it toward the pipe's axis while it holds a fast vehicle to the wall)
         [System.NonSerialized] public Vector3 SurfaceUp = Vector3.up;
+        // 0.106 Part C: air steering, stunt vehicles only (VehicleConfiguration sets it from the profile; 0 = none, every other vehicle as before).
+        // While all wheels are off the ground the player's input turns the vehicle about its own axes (VehicleInput.AirPitch / Steering /
+        // AirSpin) toward these rates; the flight's self-levelling is off while the stick is held, so a flip carries on, and on when it is let go.
+        // Chastain Rush, Round 36 (Racer's rivals' AiAir stays behind: no Stunt Races here)
+        [System.NonSerialized] public float airControl;
+        public const float AirTipRate = 5.5f, AirRollRate = 5.5f, AirSpinRate = 5f, AirResponse = 16f;
+        public bool AirSteering { get; private set; }
 
         void Awake()
         {
@@ -80,13 +87,14 @@ namespace Racer
             if (configuration && configuration.WipedOut && transform.up.y<.35f) { throttle = 0; steering *= .25f; }
             GroundedWheels = 0;
             SuspensionLift = 0;
-            Vector3 normal = Vector3.zero;
+            Vector3 normal = Vector3.zero; bool onLoop = false;   // Round 36: the stunt park's loop (Racer 0.106)
             var weather = WeatherGrip.InEffect; float gripSum = 0; int gripCount = 0; // 0.97 Part B (Chastain Rush, Round 35)
             foreach (Vector3 local in suspensionPoints)
             {
                 Vector3 origin = transform.TransformPoint(local);
                 if (!gameObject.scene.GetPhysicsScene().Raycast(origin, -transform.up, out RaycastHit hit, suspensionLength, groundMask, QueryTriggerInteraction.Ignore)) continue;
-                if (Vector3.Dot(hit.normal, SurfaceUp) < 0.35f) continue;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
+                bool loop = StuntPark.Loop(hit.collider); if (loop) onLoop = true;   // Round 36: the stunt park's loop holds the wheels all the way round (Racer 0.106)
+                if (Vector3.Dot(hit.normal, SurfaceUp) < 0.35f && !loop) continue;   // Chastain Rush, Round 19: SurfaceUp (Vector3.up in Racer)
                 GroundedWheels++;
                 normal += hit.normal;
                 if (weather != Weather.Clear) { gripSum += WeatherGrip.ForHit(weather, hit.collider, hit.point); gripCount++; }
@@ -138,13 +146,37 @@ namespace Racer
                 float angle = Mathf.Lerp(slowSteerAngle, fastSteerAngle, Mathf.Clamp01(Mathf.Abs(speedForward) / topSpeed));
                 float yaw = Mathf.Tan(steer * angle * Mathf.Deg2Rad) * speedForward / wheelbase;
                 yaw = Mathf.Clamp(yaw, -1.6f, 1.6f);
+                // 0.106 Part A: on the stunt park's loop the vehicle follows the ribbon's line (as a car follows a track's curve), whatever the steering
+                if (onLoop)
+                {
+                    var along = StuntPark.LoopTangent(Body.position, out float off); if (Vector3.Dot(along, transform.forward) < 0) along = -along;
+                    float error = Vector3.SignedAngle(forward, Vector3.ProjectOnPlane(along, up).normalized, up) * Mathf.Deg2Rad;
+                    off = Mathf.Clamp(off, -2.5f, 2.5f);
+                    // along the line, aiming back toward its centre the further off it is; and held on it (a track holds a car to its curve)
+                    yaw = Mathf.Clamp(error * 6 - off * .7f * Mathf.Sign(Vector3.Dot(Vector3.Cross(up, forward), StuntPark.LoopSide)) * Mathf.Sign(speedForward), -2.5f, 2.5f);
+                    Body.AddForce(-Vector3.ProjectOnPlane(StuntPark.LoopSide, up).normalized * (off * 5), ForceMode.Acceleration);
+                }
                 Body.AddTorque(up * ((yaw - Vector3.Dot(Body.angularVelocity, up)) * yawResponse), ForceMode.Acceleration);
             }
             // Damped alignment resists roll, follows ramp slope, and gently settles attitude in flight.
             Vector3 tilt = Vector3.Cross(transform.up, up);
             Vector3 tiltVelocity = Vector3.ProjectOnPlane(Body.angularVelocity, up);
-            AlignmentTorque = ((tilt * uprightStrength - tiltVelocity * uprightDamping) * (grounded ? 1 : airStability)).magnitude;
-            Body.AddTorque((tilt * uprightStrength - tiltVelocity * uprightDamping) * (grounded ? 1 : airStability), ForceMode.Acceleration);
+            // 0.106 Part C: a stunt vehicle in the air with the stick held: no self-levelling, the stick sets the turn rates instead (Round 36)
+            bool air = playerStep && airControl > 0 && GroundedWheels == 0 && !(configuration && configuration.WipedOut);
+            if (playerStep) input.AirActive = airControl > 0 && GroundedWheels == 0;
+            float tip = air ? input.AirPitch : 0, rollInput = air ? steering : 0, spin = air ? input.AirSpin : 0;
+            AirSteering = air && (Mathf.Abs(tip) > .1f || Mathf.Abs(rollInput) > .1f || Mathf.Abs(spin) > .1f);
+            float level = grounded ? 1 : AirSteering ? 0 : airStability;
+            AlignmentTorque = ((tilt * uprightStrength - tiltVelocity * uprightDamping) * level).magnitude;
+            Body.AddTorque((tilt * uprightStrength - tiltVelocity * uprightDamping) * level, ForceMode.Acceleration);
+            if (AirSteering)
+            {
+                var w = transform.InverseTransformDirection(Body.angularVelocity); float k = AirResponse * airControl * dt;
+                if (Mathf.Abs(tip) > .1f) w.x = Mathf.MoveTowards(w.x, tip * AirTipRate, k);            // stick forward: nose down
+                if (Mathf.Abs(rollInput) > .1f) w.z = Mathf.MoveTowards(w.z, -rollInput * AirRollRate, k); // stick right: roll right
+                if (Mathf.Abs(spin) > .1f) w.y = Mathf.MoveTowards(w.y, spin * AirSpinRate, k);            // right: spin clockwise from above
+                Body.angularVelocity = transform.TransformDirection(w);
+            }
         }
 
         public void ClearSteering() { steer = 0; WaterImmersion=0; WaterSurface=0; GetComponent<WaterFeedback>()?.Clear(); GetComponent<VehicleConfiguration>()?.Recover(); }   // Round 13: Racer 0.97 (Round 15: with its WaterFeedback)

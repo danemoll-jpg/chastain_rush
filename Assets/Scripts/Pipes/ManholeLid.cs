@@ -40,6 +40,24 @@ namespace ChastainRush
             BreakSounds.Play(home, Mathf.Max(8f, body.linearVelocity.magnitude), BreakSounds.Kind.Iron);
         }
 
+        // Round 36 (Part D1): a rigged hydrant knocked over blows the cover off from above (a bang, the water, the cover flying), and the hole stays
+        // open `openFor` seconds (the way down the riser into the network), then closes once nothing is over it; a reset closes it at once
+        public float openFor = 5f;
+        public bool Open => flying >= 0f || gone >= 0f;
+        public static int Blown { get; private set; }   // checks
+        public void BlowOpen(float seconds)
+        {
+            if (flying >= 0f || gone >= 0f) return;
+            Blown++; openFor = seconds;
+            if (lidCollider) lidCollider.enabled = false;
+            vel = Vector3.up * Random.Range(13f, 17f) + outward * Random.Range(1f, 3f) + Vector3.Cross(Vector3.up, outward) * Random.Range(-2f, 2f);
+            spin = new Vector3(Random.Range(-720f, 720f), Random.Range(-300f, 300f), Random.Range(-720f, 720f));
+            flying = 0f;
+            BreakSounds.Play(home, 22f, BreakSounds.Kind.Iron);
+            Geyser.Spray(home, 2.5f, 9f);
+        }
+        public void CloseNow() { if (!(flying >= 0f || gone >= 0f)) return; flying = -1f; gone = -1f; lid.SetPositionAndRotation(home, homeRot); if (lidCollider) lidCollider.enabled = true; if (lidRenderer) lidRenderer.enabled = true; openFor = 5f; }
+
         void Update()
         {
             float dt = Time.deltaTime;
@@ -52,9 +70,9 @@ namespace ChastainRush
             else if (gone >= 0f)
             {
                 gone += dt;
-                if (gone > 5f && !Occupied())
+                if (gone > openFor && !Occupied())
                 {
-                    gone = -1f; lid.SetPositionAndRotation(home, homeRot); if (lidCollider) lidCollider.enabled = true; if (lidRenderer) lidRenderer.enabled = true;
+                    gone = -1f; openFor = 5f; lid.SetPositionAndRotation(home, homeRot); if (lidCollider) lidCollider.enabled = true; if (lidRenderer) lidRenderer.enabled = true;
                 }
             }
         }

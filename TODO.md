@@ -153,6 +153,25 @@ cover off, the vehicle drives down into the network; one geyser launch (height, 
 For Dan to check (when done): the stunt park and its roofs on the Clay Hopper and the Skywhip, the Stunt event and its Top 10,
 smashing into the stores and the run inside, the free roam events, the hydrants, a rigged hydrant and a geyser.
 
+**Round 36 status (Claude, 2026-10-16): Part A built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
+Evidence: `Data/screenshots/round36/` (`a_*`; layout `a_park_layout.png`). Data: `python Tools/mapgen/make_stunt_park.py` (`Data/tracks/stunt_park.json`), built by `MapBuilder.StuntPark.cs` / `.StuntParkStores.cs`.
+A1 DONE. The Clay Hopper, Skywhip 250 and Clay Hopper Cup with air steering; Racer's trick scoring, trick panel, Stunt event (10 min, combo overtime) and both Top 10s
+   (Records page). Decided: all three stunt vehicles offered at once (no unlocks here), in the Free Roam garage and the event's; never in a race (a race start
+   puts the Street Classic on) or the AI's picks. Check: a backflip + roll off BIG AIR on the Clay Hopper, 4.3 s up, 4,498 pts, Top 10 #1; the event run once.
+A2 DONE. "Chastain Corner Stunt Park" (a made-up name): the floor graded to one plane (the lot's 2 % rise kept, level by the store fronts), stalls and paint gone,
+   painted pads; K1 kicker, K2 table, barrel roll, bus gap, car gap (5 wrecks), half-pipe, the loop, BIG AIR's landing hill, a tower, catch fence and tire wall
+   (openings at the 4 drives), floodlights (lit at night), boards. The knoll by Chastain Corner left as it is, inside the fence. Gas station and bank unchanged.
+A2b DONE (first version). 43 store windows and 44 shop-row partition panels break and come back (reset in the park, or 160 m away); inside: checkouts that
+   break, 8 shelf aisles with kickers, a mezzanine with a drop-in, a ramp up through a skylight onto the roof. Next could be: shop interiors, more inside lines.
+A3 DONE. Roof ramp (42 m, 12 deg); BIG AIR off the supermarket's front, shop row drop, tower gap, roof gap over an atrium (aimed launches, sized landings);
+   roof quarter-pipes and a table. Check: BIG AIR 3.0-3.1 s up on both stunt vehicles; every launch lands upright on its slope; inside and roof ramps reach the roof.
+A5 DONE. Free Roam scores tricks everywhere (a flight off the park counts wherever it lands); the Stunt event's prompt at the entrance; the park on the map and minimap.
+A4 DONE. The Ridge race's line, S1 and Canton Road untouched (grading stops 1 m off every road outside the lot). Frame rate (1280 x 720, not 3840 x 2160) at Round 35's
+   Canton Road spot: before 315 fps, after 284-295; in the park 268-275; inside the store 246-278.
+Imported from Racer: StuntPark (its ramp, loop and prop builders ported into the map build; its queries at run time), ArcadeActivities (+Stunts, +Smash), ActivitySite,
+   ActivityRecords, StuntEvent, StuntProgress, TrickHud, MedalUi, DisplayUnits, the stunt profiles and Cup livery, air steering, RaceMenus.Stunt (rewritten into
+   GameMenus), StuntBike.fbx, StuntBuggy.fbx, Tools/Blender stuntbike.py, stuntbuggy.py, bikes.py. Left behind: Stunt Races, the Stunt chapter, split-screen.
+
 ## QUEUED rounds
 None.
 

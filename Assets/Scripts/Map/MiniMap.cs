@@ -204,6 +204,14 @@ namespace ChastainRush
             if (under)
                 foreach (var s in pipeLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) { Line(vh, a, b, 6, new Color(.02f, .04f, .05f)); Line(vh, a, b, 4, s.c); } }
             foreach (var s in raceLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) Line(vh, a, b, s.w, s.c); }
+            // Round 36: Racer's stunt park and activity sites on the minimap (Free Roam): the park's outline, a diamond at each place
+            if (!race || race.State == RaceController.Stage.Free)
+                foreach (var pl in WorldMap.Places)
+                {
+                    if (pl.outline != null) for (int i = 0; i < pl.outline.Length; i++) { var a = Project(pl.outline[i]); var b = Project(pl.outline[(i + 1) % pl.outline.Length]); if (In(a, b)) Line(vh, a, b, 3, pl.color); }
+                    var p = Project(pl.at); if (!bounds.Contains(p)) continue;
+                    Diamond(vh, p, pl.small ? 5 : 7, new Color(.03f, .06f, .08f)); Diamond(vh, p, pl.small ? 3.5f : 5f, pl.color);
+                }
             if (route != null && race && race.State != RaceController.Stage.Free)
             {
                 // the checkpoints across the course (blue), the start / finish (white)

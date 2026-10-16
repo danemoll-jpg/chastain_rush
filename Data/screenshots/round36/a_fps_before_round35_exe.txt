@@ -1,0 +1,8 @@
+Round 35 check, 2026-10-16 12:24, the exe, 1280 x 720, muted.
+
+=== Part C: frame rate parked at Canton Road by the shops (after; 1280 x 720, not measured at 3840 x 2160)
+INFO  day: 315 fps average, slowest 1 % 163 fps (vSync 0, cap -1)
+INFO  night: 296 fps average, slowest 1 % 160 fps (vSync 0, cap -1)
+INFO  rain: 311 fps average, slowest 1 % 162 fps (vSync 0, cap -1)
+
+0 of 0 checks passed.

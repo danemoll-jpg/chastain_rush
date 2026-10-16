@@ -105,6 +105,7 @@ namespace ChastainRush
             LoadSettings(race); ApplySettings();
             if (race) race.Reload();   // Round 18: the saved route
             Build();
+            StuntEvent.Finished += ShowStuntResults;   // Round 36 (A1)
             OpenMenu(true);
             AskNameOnce();   // Round 34 (C2): Racer's welcome
         }
@@ -124,6 +125,7 @@ namespace ChastainRush
             if (!open) return;
             CapturePage();
             open = false; modal = null; LeaveGarageView();
+            if (StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done) StuntEvent.End();   // Round 36: off the results, back in Free Roam
             Time.timeScale = savedTimeScale; AudioListener.pause = false;
             MenuInput.ConsumeThroughRelease(submit);
             Show();
@@ -161,6 +163,7 @@ namespace ChastainRush
             if (menuActions) { menuActions.Disable(); Destroy(menuActions); }
             back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
             if (textKeyboard != null) textKeyboard.onTextInput -= TypedCharacter;
+            StuntEvent.Finished -= ShowStuntResults;
             if (submitReference) Destroy(submitReference);
             if (previewRoot) Destroy(previewRoot); if (previewCamera) Destroy(previewCamera.gameObject); if (previewTexture) { previewTexture.Release(); Destroy(previewTexture); }
         }
@@ -390,6 +393,9 @@ namespace ChastainRush
                 case "rider": RenderRider(); return;   // Round 29
                 case "debug": RenderDebug(); return;
                 case "records": RenderRecords(); return;   // Round 34 (C3)
+                case "stunt": RenderStuntSetup(); return;   // Round 36 (A1)
+                case "stunt-results": RenderStuntResults(); return;
+                case "activities": RenderActivities(); return;   // Round 36 (Part B)
                 case "keyboard": RenderKeyboard(); return;   // Round 34 (C2)
             }
             if (title)
@@ -398,23 +404,28 @@ namespace ChastainRush
                 Row(0, "race", "RACE", () => Navigate("race"));
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 RoamWeatherRow(2);   // Round 35 (Part C)
-                Row(3, "garage", "GARAGE", () => Navigate("garage"));
-                Row(4, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(5, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(6, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
+                Row(4, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(5, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(6, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(7, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
+            if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
             if (stage == RaceController.Stage.Free)
             {
-                Clear("PAUSED", "Free roam");
-                Row(0, "resume", "RESUME", CloseMenu);
-                RoamWeatherRow(1);   // Round 35 (Part C)
-                Row(2, "race", "RACE", () => Navigate("race"));
-                Row(3, "garage", "GARAGE", () => Navigate("garage"));
-                Row(4, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(5, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
-                Row(6, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
-                Row(7, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Clear("PAUSED", "Free roam" + (StuntPark.Current && car && StuntPark.Inside(car.Body.position, 30) ? "  ·  " + StuntPark.Title : ""));
+                int fr = 0;
+                Row(fr++, "resume", "RESUME", CloseMenu);
+                RoamWeatherRow(fr++);   // Round 35 (Part C)
+                Row(fr++, "race", "RACE", () => Navigate("race"));
+                Row(fr++, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's Free Roam menu > STUNT EVENT
+                fr = ActivityRows(fr);   // Round 36 (Part B)
+                Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(fr++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
+                Row(fr++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
+                Row(fr++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
@@ -533,7 +544,7 @@ namespace ChastainRush
                 int vi = Mathf.Max(0, Array.IndexOf(ids, cfg ? cfg.profileId : ids[0]));
                 Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
             }
-            else Row(8, "garage", "Garage…", () => Navigate("garage"));
+            else Row(8, "garage", "Garage…", () => OpenGarage("race"));
             Row(9, "start", "START RACE", StartRace);
             Row(10, "back", "Back", BackPage);
         }
@@ -572,6 +583,7 @@ namespace ChastainRush
         void StartRace()
         {
             ApplySettings();
+            StuntEvent.End();   // Round 36: a race ends the Stunt event
             title = false; CloseMenu();
             if (race) race.StartRace();
         }

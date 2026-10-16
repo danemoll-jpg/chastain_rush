@@ -18,6 +18,13 @@ namespace Racer
         public Vector2 MouseDelta { get; private set; }
         public InputAction[] CurrentBindings => new[]{throttle,brake,steering,reset,fist};
         public bool UsingGamepad { get; private set; }
+        // 0.106 Part C: air steering (stunt vehicles only, ArcadeVehicle): left stick up / down (W / S, arrows) tips the vehicle forward / back, left /
+        // right (Steering: A / D) rolls it, the right stick left / right or the bumpers (Q / E) spin it flat. AirActive: the vehicle is airborne and
+        // steerable, so the right stick and LB spin it instead of looking around or waving. Chastain Rush, Round 36
+        public float AirPitch { get; private set; }
+        public float AirSpin { get; private set; }
+        [System.NonSerialized] public bool AirActive;
+        InputAction airPitch, airSpin;
         public string ResetControlLabel
         {
             get
@@ -35,7 +42,7 @@ namespace Racer
         public void Bind(InputDevice device)
         {
             if (device == Device && throttle != null) return;
-            bool on = isActiveAndEnabled; if (throttle != null) { OnDisable(); foreach (var a in CurrentBindings) a.Dispose(); view.Dispose(); look.Dispose(); }
+            bool on = isActiveAndEnabled; if (throttle != null) { OnDisable(); foreach (var a in CurrentBindings) a.Dispose(); view.Dispose(); look.Dispose(); airPitch?.Dispose(); airSpin?.Dispose(); }
             Create(device); if (on) OnEnable();
         }
         void Create(InputDevice device)
@@ -60,31 +67,41 @@ namespace Racer
             // 0.94 Part B: the camera view button, read per player in split-screen (CameraViews)
             view = new InputAction("Change view", InputActionType.Button); Add(view, "<Gamepad>/buttonWest"); Add(view, "<Keyboard>/v");
             look = new InputAction("Look around", InputActionType.Value, expectedControlType: "Vector2"); Add(look, "<Gamepad>/rightStick", "stickDeadzone(min=0.2,max=0.95)");
+            airPitch = new InputAction("Air tip", InputActionType.Value); Add(airPitch, "<Gamepad>/leftStick/y", "axisDeadzone(min=0.15,max=0.95)");
+            if (keys) { airPitch.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/s").With("Positive", "<Keyboard>/w"); airPitch.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/downArrow").With("Positive", "<Keyboard>/upArrow"); }
+            airSpin = new InputAction("Air spin", InputActionType.Value); Add(airSpin, "<Gamepad>/rightStick/x", "axisDeadzone(min=0.2,max=0.95)");
+            if (pad) airSpin.AddCompositeBinding("1DAxis").With("Negative", P("<Gamepad>/leftShoulder")).With("Positive", P("<Gamepad>/rightShoulder"));
+            if (keys) airSpin.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/q").With("Positive", "<Keyboard>/e");
             if (device != null) UsingGamepad = device is Gamepad;
             throttle.performed+=Used; brake.performed+=Used; steering.performed+=Used; reset.performed+=Used; fist.performed+=Used;
         }
 
-        void OnEnable() { throttle.Enable(); brake.Enable(); steering.Enable(); reset.Enable(); fist.Enable(); view.Enable(); look.Enable(); }
+        void OnEnable() { throttle.Enable(); brake.Enable(); steering.Enable(); reset.Enable(); fist.Enable(); view.Enable(); look.Enable(); airPitch.Enable(); airSpin.Enable(); }
         void Update()
         {
             Throttle = throttle.ReadValue<float>();
             BrakeReverse = brake.ReadValue<float>();
             Steering = steering.ReadValue<float>();
             Look = look.ReadValue<Vector2>();
+            AirPitch = airPitch.ReadValue<float>(); AirSpin = Mathf.Clamp(airSpin.ReadValue<float>(), -1, 1);
+            if (AirActive) Look = Vector2.zero;   // 0.106: the right stick spins a stunt vehicle in the air (Round 36)
             var mouse = Device == null || Device is Keyboard ? Mouse.current : null; MouseLook = mouse != null && mouse.rightButton.isPressed; MouseDelta = MouseLook ? mouse.delta.ReadValue() : Vector2.zero;
             resetRequested |= reset.WasPressedThisFrame(); viewRequested |= view.WasPressedThisFrame();
             // Chastain Rush, Round 28 (C2): the fist wave was bound but never asked for (Racer's VehicleInput does it here): LB / F, not
             // while a menu, the map or the debug menu has the controls
-            if (fist.WasPressedThisFrame() && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)
+            if (fist.WasPressedThisFrame() && !AirActive && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)
                 GetComponent<RiderGestures>()?.Wave();
         }
+        // Round 36, checks only: a check drives through the player's own input path (so the stunt vehicles' air steering works as for a player)
+        [System.NonSerialized] public bool Scripted; [System.NonSerialized] public float sThrottle, sBrake, sSteer, sPitch, sSpin;
+        void LateUpdate() { if (Scripted) { Throttle = sThrottle; BrakeReverse = sBrake; Steering = sSteer; AirPitch = sPitch; AirSpin = sSpin; } }
         public bool ConsumeReset() { bool result = resetRequested; resetRequested = false; return result; }
         public bool ConsumeView() { bool result = viewRequested; viewRequested = false; return result; }
         void OnDisable()
         {
-            throttle.Disable(); brake.Disable(); steering.Disable(); reset.Disable(); fist.Disable(); view.Disable(); look.Disable(); viewRequested = false; Look = MouseDelta = Vector2.zero; MouseLook = false;
+            throttle.Disable(); brake.Disable(); steering.Disable(); reset.Disable(); fist.Disable(); view.Disable(); look.Disable(); airPitch.Disable(); airSpin.Disable(); viewRequested = false; AirPitch = AirSpin = 0; Look = MouseDelta = Vector2.zero; MouseLook = false;
             Throttle = BrakeReverse = Steering = 0; resetRequested = false;
         }
-        void OnDestroy() { throttle.Dispose(); brake.Dispose(); steering.Dispose(); reset.Dispose(); fist.Dispose(); view.Dispose(); look.Dispose(); }
+        void OnDestroy() { throttle.Dispose(); brake.Dispose(); steering.Dispose(); reset.Dispose(); fist.Dispose(); view.Dispose(); look.Dispose(); airPitch.Dispose(); airSpin.Dispose(); }
     }
 }

@@ -53,6 +53,7 @@ namespace Racer
         // A colour or the champion's scheme (the plain gold when the scheme is not earned).
         public static void Scheme(Transform root,int i)
         {
+            if(HasLivery(root))return; // 0.111 Part D: a Cup edition keeps its livery (Chastain Rush, Round 36)
             if(i==Champion)i=2;   // Chastain Rush: no campaign
             Apply(root,Of(i),i==Champion?.7f:.22f);Roundel(root,i==Champion);
         }
@@ -79,6 +80,49 @@ namespace Racer
                 Part(face,"Disc",Disc(radius),roundelWhite,0);
                 Part(face,"Number",One(radius),roundelBlack,-.003f);
             }
+        }
+        // 0.111 Part D: a Cup edition's livery: the body in the cup's colour (its trim slots are gold in the model, VehicleVisual) and a small gold
+        // cup on each side of the painted body, placed as the champion's roundel is. Fixed: the player's colour choice does not change it.
+        // Chastain Rush, Round 36: for the Clay Hopper Cup
+        public static bool HasLivery(Transform root)=>root&&System.Linq.Enumerable.Any(root.GetComponentsInChildren<Transform>(true),t=>t.name=="Cup livery");
+        static Material cupGold;
+        public static void Livery(Transform root,VehicleProfile p)
+        {
+            Apply(root,p.Livery,.45f);
+            if(!PaintBounds(root,out var min,out var max))return;
+            if(!cupGold){cupGold=new Material(Shader.Find("Universal Render Pipeline/Unlit")){name="Cup emblem"};cupGold.SetColor("_BaseColor",new Color(1f,.76f,.2f));}
+            var holder=new GameObject("Cup livery").transform;holder.SetParent(root,false);holder.gameObject.layer=root.gameObject.layer;
+            var centre=(min+max)*.5f;float size=Mathf.Clamp(Mathf.Min(max.y-min.y,max.z-min.z)*.3f,.08f,.26f);
+            for(int side=-1;side<=1;side+=2)
+            {
+                var face=new GameObject("Side").transform;face.SetParent(holder,false);face.gameObject.layer=root.gameObject.layer;
+                face.localPosition=new Vector3(side<0?min.x-.006f:max.x+.006f,centre.y+(max.y-min.y)*.08f,centre.z+(max.z-min.z)*.12f);face.localRotation=Quaternion.LookRotation(new Vector3(-side,0,0));
+                Part(face,"Cup",Trophy(size),cupGold,0);
+            }
+        }
+        // the painted body's bounds in root space (active paint renderers)
+        static bool PaintBounds(Transform root,out Vector3 min,out Vector3 max)
+        {
+            bool any=false;min=Vector3.one*1e6f;max=-min;
+            foreach(var r in root.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                if(!IsBodyPaint(r.sharedMaterial)||!r.gameObject.activeInHierarchy)continue;var mf=r.GetComponent<MeshFilter>();if(!mf||!mf.sharedMesh)continue;var b=mf.sharedMesh.bounds;
+                for(int k=0;k<8;k++){var c=root.InverseTransformPoint(r.transform.TransformPoint(b.center+Vector3.Scale(b.extents,new Vector3((k&1)*2-1,(k&2)-1,(k&4)/2-1))));min=Vector3.Min(min,c);max=Vector3.Max(max,c);any=true;}
+            }
+            return any;
+        }
+        // a trophy in a square of side `size`: foot, stem, a bowl wider at the top and two handles (the roundel's quad winding)
+        static Mesh Trophy(float size)
+        {
+            float u=size/10;var v=new System.Collections.Generic.List<Vector3>();var t=new System.Collections.Generic.List<int>();
+            void Quad(Vector2 a,Vector2 b,Vector2 c,Vector2 d){int s=v.Count;v.Add(a*u);v.Add(b*u);v.Add(c*u);v.Add(d*u);t.AddRange(new[]{s,s+2,s+1,s,s+3,s+2});}
+            Quad(new(-3,-5),new(3,-5),new(3,-4),new(-3,-4));
+            Quad(new(-1.8f,-4),new(1.8f,-4),new(1.8f,-3.3f),new(-1.8f,-3.3f));
+            Quad(new(-.6f,-3.3f),new(.6f,-3.3f),new(.6f,-.8f),new(-.6f,-.8f));
+            Quad(new(-1.6f,-.8f),new(1.6f,-.8f),new(4,5),new(-4,5));
+            Quad(new(3.4f,3.6f),new(5.2f,3.6f),new(5.2f,4.4f),new(3.4f,4.4f));Quad(new(4.4f,1),new(5.2f,1),new(5.2f,3.6f),new(4.4f,3.6f));Quad(new(2.4f,1),new(4.4f,1),new(4.4f,1.8f),new(2.4f,1.8f));
+            Quad(new(-5.2f,3.6f),new(-3.4f,3.6f),new(-3.4f,4.4f),new(-5.2f,4.4f));Quad(new(-5.2f,1),new(-4.4f,1),new(-4.4f,3.6f),new(-5.2f,3.6f));Quad(new(-4.4f,1),new(-2.4f,1),new(-2.4f,1.8f),new(-4.4f,1.8f));
+            var m=new Mesh{name="Cup emblem"};m.SetVertices(v);m.SetTriangles(t,0);m.RecalculateNormals();m.RecalculateBounds();return m;
         }
         static void Part(Transform face,string name,Mesh mesh,Material m,float z){var g=new GameObject(name);g.layer=face.gameObject.layer;g.transform.SetParent(face,false);g.transform.localPosition=new Vector3(0,0,z);g.AddComponent<MeshFilter>().sharedMesh=mesh;var r=g.AddComponent<MeshRenderer>();r.sharedMaterial=m;r.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;}
         static Mesh Disc(float radius)

@@ -17,6 +17,7 @@ namespace ChastainRush
         public string id, look;
         public Vector3 lip, dir;          // the lip's middle (world), the jump's direction (flat, unit)
         public float halfWidth = 3.5f, vmax = 27f, angle = 20f, vmin = 0f;   // angle: the lip's, degrees
+        public float boostFrom = 10f;   // Round 36: vmin applies from this speed over the lip (the stunt park's roof launches: 3 m/s, so nobody rolls off a roof's edge)
         public static int Governed { get; private set; }
         public static event System.Action<BigJump, ArcadeVehicle, float> Launched;   // the jump, the vehicle, its speed off the lip (before any cap)
         static readonly List<BigJump> all = new List<BigJump>();
@@ -46,7 +47,7 @@ namespace ChastainRush
                 Launched?.Invoke(this, car, speed);
                 if (speed > vmax) Governed++;
                 float s = Mathf.Min(speed, vmax), a = angle * Mathf.Deg2Rad, side = Vector3.Dot(v, left) * 0.5f;
-                if (vmin > 0f && speed >= 10f) s = Mathf.Max(s, vmin);
+                if (vmin > 0f && speed >= boostFrom) s = Mathf.Max(s, vmin);
                 car.Body.linearVelocity = dir * (s * Mathf.Cos(a)) + Vector3.up * (s * Mathf.Sin(a)) + left * side;
             }
         }

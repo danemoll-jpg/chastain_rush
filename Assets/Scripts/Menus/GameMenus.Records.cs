@@ -84,8 +84,11 @@ namespace ChastainRush
         void RenderRecords()
         {
             var tracks = RecordTracks(); var boards = RaceController.Boards;
-            if (recordTrack < 0 || recordTrack >= tracks.Count) ChooseRecordTrack(tracks);
+            int pagesN = tracks.Count + (StuntPark.Current ? 2 : 0) + (ArcadeActivities.Instance && ArcadeActivities.Instance.Sites.Length > 0 ? 1 : 0);   // Round 36 (A1): the Stunt event Top 10 and the Top 10 Best Combos after the routes; (B) the activities
+            if (recordTrack < 0 || recordTrack >= pagesN) ChooseRecordTrack(tracks);
             Clear("RECORDS", "");
+            if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0)) { RenderActivityRecords(pagesN); return; }
+            if (recordTrack >= tracks.Count) { RenderStuntRecords(recordTrack - tracks.Count, pagesN); return; }
             if (tracks.Count == 0 || boards == null) { details.gameObject.SetActive(true); details.text = "No routes."; Row(0, "back", "Back", BackPage); return; }
             var track = tracks[recordTrack]; bool raceBoard = recordBoard == 1;
             var vehicles = boards.TopVehicles(c => OnTrack(track, c), raceBoard);
@@ -93,7 +96,7 @@ namespace ChastainRush
             var board = boards.Top(c => OnTrack(track, c), raceBoard, recordsVehicle == "All vehicles" ? null : recordsVehicle);
             int row = 0;
             Step(row++, "record-track", TrackTitle(track) + (vehicles.Length > 0 || boards.TopVehicles(c => OnTrack(track, c), !raceBoard).Length > 0 ? "" : "   (no times yet)"),
-                 d => { recordTrack = (recordTrack + d + tracks.Count) % tracks.Count; recordsVehicle = "All vehicles"; Show(); });
+                 d => { recordTrack = (recordTrack + d + pagesN) % pagesN; recordsVehicle = "All vehicles"; Show(); });
             Step(row++, "record-board", raceBoard ? "BEST RACES" : "BEST LAPS", d => { recordBoard = 1 - recordBoard; recordsVehicle = "All vehicles"; Show(); });
             if (vehicles.Length > 1 || recordsVehicle != "All vehicles")
             {
@@ -120,6 +123,42 @@ namespace ChastainRush
             Table(firstRow, row);
             Row(row, "back", "Back", BackPage); buttons[row].transform.SetAsLastSibling();
             details.transform.SetSiblingIndex(1);   // the controls, the line saying what is shown, the table, Back
+        }
+
+        // Round 36 (A1): Racer's Records > STUNTS (the Stunt event Top 10, Free Roam's best single combo) and > COMBOS (the Top 10 Best Combos), as two
+        // more pages of the route row (left / right reaches them after the routes)
+        void RenderStuntRecords(int which, int pagesN)
+        {
+            Step(0, "record-track", which == 0 ? "STUNT EVENT TOP 10" : "TOP 10 BEST COMBOS", d => { recordTrack = (recordTrack + d + pagesN) % pagesN; Show(); });
+            Controls(0, 1);
+            details.gameObject.SetActive(true); details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 56;
+            details.text = which == 0
+                ? "STUNT EVENT · " + StuntProgress.Minutes + " minutes at " + StuntPark.Title + "\nFree Roam's best single combo: " + (StuntProgress.BestCombo > 0 ? $"{StuntProgress.BestCombo:N0} pts ({VehicleProfile.Find(StuntProgress.BestComboVehicle).Name}, {StuntProgress.BestComboDate})" : "none yet")
+                : "TOP 10 BEST COMBOS · the Stunt event and Free Roam at " + StuntPark.Title + "\nBF backflip · FF frontflip · R roll · BR barrel roll · 360 spin · LOOP · J jump";
+            int first = 1, row = which == 0 ? StuntTopTable(1, 0) : ComboTable(1, null);
+            Table(first, row);
+            Row(row, "back", "Back", BackPage); buttons[row].transform.SetAsLastSibling();
+            details.transform.SetSiblingIndex(1);
+        }
+
+        // Round 36 (B): Racer's Records > the activities: every site, your best with the vehicle you drive now and the medal (Racer keys them per vehicle)
+        void RenderActivityRecords(int pagesN)
+        {
+            var a = ArcadeActivities.Instance;
+            Step(0, "record-track", "FREE ROAM ACTIVITIES", d => { recordTrack = (recordTrack + d + pagesN) % pagesN; Show(); });
+            Controls(0, 1);
+            details.gameObject.SetActive(true); details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 28;
+            var cfg = car ? car.GetComponent<VehicleConfiguration>() : null; details.text = "Your bests with the " + (cfg ? cfg.Profile.Name : "vehicle") + " (each vehicle has its own) · jumps, speed traps and smash runs";
+            var w = new[] { .40f, .16f, .22f, .22f }; int row = 1, first = 1;
+            TableRow(row++, "act-header", new[] { "Activity", "Kind", "Best", "Medal" }, w, () => { });
+            foreach (var s in a.Sites)
+            {
+                var pb = a.PersonalBest(s);
+                TableRow(row++, "act-" + s.id, new[] { s.title, s.kind == ActivitySite.Kind.Jump ? "Jump" : s.kind == ActivitySite.Kind.Speed ? "Speed trap" : "Smash", pb != null ? ArcadeActivities.Measurement(s, pb.value) : "—", pb != null ? MedalUi.Name(pb.medal) : "—" }, w, () => { }, pb != null && pb.medal >= 3);
+            }
+            Table(first, row, 26, 17);
+            Row(row, "back", "Back", BackPage); buttons[row].transform.SetAsLastSibling();
+            details.transform.SetSiblingIndex(1);
         }
 
         // ---------------------------------------------------------------- the on-screen keyboard (Racer's RaceMenus.Entry.cs)

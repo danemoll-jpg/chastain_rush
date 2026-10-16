@@ -46,6 +46,12 @@ namespace ChastainRush
                         }
                 if (DrainPipe.Recover(at, r.transform.forward, raceFwd, r.GetComponent<Rigidbody>(), out pos, out yaw)) return true;
             }
+            // Round 36 (Racer 0.106 Part A, 0.107 Part C): inside the stunt park (its floor, the stores, the roofs) back onto its floor at the
+            // nearest clear spot, facing as the map build set it; in the Stunt event any reset is back into the park
+            var vehicle = r.GetComponent<ArcadeVehicle>();
+            if (!racing && StuntPark.Current && (StuntEvent.InEvent(vehicle) || StuntPark.Inside(at, 6f)))
+                foreach (var (spot, facing) in StuntPark.ResetsNear(at))
+                    if (Clear(r, spot, facing.eulerAngles.y, false)) { pos = spot; yaw = facing.eulerAngles.y; return true; }
             if (racing)
             {
                 var route = race.Route;
