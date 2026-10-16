@@ -1,0 +1,18 @@
+Round 28 check, 2026-10-16 08:36, the exe, 1280 x 720, muted (AudioListener.volume 0).
+vehicle drifter
+== B1 the Underground race, 3 AI taking every open shortcut and every switch's detour
+PASS  the race layer: 10 seals, 2 railings, 3 switch gates S1 to S3  -  10 seals, 2 rails, gates SG1, SG2, SG3
+PASS  the route: 3 shortcuts and 3 switch detours  -  S1, S2, S3, P1, P2, P3
+PASS  the grid is off the lap (the player there is in nobody's way)  -  grid (1870.0, 262.0, 1168.5), 39.8 m from the lap
+PASS  S1 WATERFALL LEAP: a racer over its plate opened it  -  by EMBER at 91 s
+PASS  S2 DIVE PIPE: a racer over its plate opened it  -  by BLUE at 19 s
+PASS  S3 HIGH LINE: a racer over its plate opened it  -  by EMBER at 51 s
+PASS  the AI took S1 once it was open  -  5 times
+PASS  the AI took S2 once it was open  -  6 times
+PASS  the AI took S3 once it was open  -  4 times
+PASS  EMBER (Sundown Roadster) finishes the 3 laps with no missed checkpoint  -  laps 3, total 265.1 s, missed 0, laps 80.5 / 87.6 / 97.0, shortcuts [lap 2 S2, lap 2 S3, lap 3 S2, lap 3 S1], AI resets 3
+PASS  GOLD (Drifter Twin) finishes the 3 laps with no missed checkpoint  -  laps 3, total 258.8 s, missed 0, laps 80.6 / 95.6 / 82.6, shortcuts [lap 2 S2, lap 2 S1, lap 3 S3, lap 3 S1], AI resets 6
+PASS  BLUE (Needle 600) finishes the 3 laps with no missed checkpoint  -  laps 3, total 281.9 s, missed 0, laps 84.1 / 99.9 / 97.8, shortcuts [lap 1 S2, lap 2 S2, lap 2 S3, lap 2 S1, lap 3 S2, lap 3 S3, lap 3 S1], AI resets 7
+INFO  frame rate during the race (the camera on the grid in the hub): 60 fps average, slowest 1 % 52 fps (1280 x 720, vSync 1; not measured at 3840 x 2160)
+
+ALL 12 CHECKS PASSED

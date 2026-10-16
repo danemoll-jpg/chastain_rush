@@ -1,0 +1,6 @@
+Round 35 check, 2026-10-16 08:36, the exe, 1280 x 720, muted.
+
+=== Part A: the Underground race's line on a straight
+PASS  the line has 60 m of straight before it (heading within 3 degrees of the line's) and 15 m after it  -  line at lap station 139.8 m of 1370.4 m (lap unchanged), widest heading change in the 60 m before it 0.1 deg, 15 m after 0.4 deg, run-in from the grid 202 m
+
+1 of 1 checks passed.

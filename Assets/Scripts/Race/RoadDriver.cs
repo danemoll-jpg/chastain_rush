@@ -293,14 +293,14 @@ namespace Racer
                 for(int i=0;i<n;i++) park[i]=new Vector3(j.finish_park[2*i], j.finish_park_y!=null&&j.finish_park_y.Length==n?j.finish_park_y[i]:Car.Body.position.y, j.finish_park[2*i+1]);
                 parkSlot=Race.TakeParkSlot(); parkIndex=0;
                 // the slot: 9 m back from the line's end per car already parked
-                float back=9f*parkSlot; for(int i=n-1;i>0&&back>0f;i--){ float L=Vector3.Distance(park[i],park[i-1]); if(L>=back){ park[i]=Vector3.Lerp(park[i],park[i-1],back/L); break; } back-=L; n=i; }
+                float back=(j.finish_park_gap_m>0f?j.finish_park_gap_m:9f)*parkSlot; for(int i=n-1;i>0&&back>0f;i--){ float L=Vector3.Distance(park[i],park[i-1]); if(L>=back){ park[i]=Vector3.Lerp(park[i],park[i-1],back/L); break; } back-=L; n=i; }
                 System.Array.Resize(ref park,n);
             }
             var at=Car.Body.position; var target=park[Mathf.Min(parkIndex,park.Length-1)];
             if(parkIndex<park.Length-1 && Vector3.Distance(new Vector3(at.x,0,at.z),new Vector3(target.x,0,target.z))<4f) { parkIndex++; target=park[parkIndex]; }
             var to=target-at; to.y=0; float dist=to.magnitude, speed=Car.ForwardSpeed;
             float steer=Mathf.Clamp(Vector3.SignedAngle(Vector3.ProjectOnPlane(Car.transform.forward,Vector3.up),to,Vector3.up)/25f,-1,1);
-            bool last=parkIndex>=park.Length-1; float want=last?Mathf.Clamp(dist*0.8f,0f,8f):9f;
+            bool last=parkIndex>=park.Length-1; float want=last?Mathf.Clamp(dist*0.8f,0f,8f):(Race.RouteData.finish_park_speed>0f?Race.RouteData.finish_park_speed:9f);
             if(last&&dist<1.5f&&speed<0.8f&&Car.GroundedWheels>=2){ Car.Body.linearVelocity=Car.Body.angularVelocity=Vector3.zero; Car.Body.isKinematic=true; finishParked=true; return; }
             Car.Simulate(speed<want?1f:0f, speed>want+1f?1f:0f, steer, Time.fixedDeltaTime);
         }

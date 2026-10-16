@@ -332,26 +332,35 @@ zone("onto the span", s_foot - 14, s_foot + 6, 8.5)
 zone("J3", s_near(centre("J3"), after=5) - 10, s_near(centre("J3"), after=5) + 10, 15.0)
 zone("J1", s_near(centre("J1"), after=5) - 10, s_near(centre("J1"), after=5) + 10, 13.0)
 
+# ---- Round 35 (Dan: "The finish line needs to be on a straight stretch"): the line (the start: one line) 95 m into M5b from the hub,
+# on its 80 m straight (33 to 114 m in): 62 m of straight pipe before it, past S1's plate (45 to 75 m in, ridden on the wall), 19 m
+# after it. The loop itself is unchanged (the same lap, cut at gate_s): the span, the top ledge and the S-bend into the pipe are run-in.
+LINE_IN_M5B = 95.0
+GATE_S = s_near(head(pts("M5b", rev=True), LINE_IN_M5B)[-1], after=5.0)
+
 # ---- the grid: on the mid ledge's north side west of the span (the lap comes along it from the east and turns onto the span: west of
 # the span it is off the lap), facing east, then right onto the span and up it to the line
 NB = -(HW - (IM + IF) / 2.0)
 lead = [H(-30, NB, MID), H(10, NB, MID), H(15.5, NB + 0.6, MID), HM(18.8, NB + 3.6), HM(A5, -14.0), HM(A5, GATE_B)]
-park = [HM(A5, SPAN_B1 - 6.0), H(A5 - 3.0, SPAN_B1 + 2.5, TOP), H(A5 - 10.0, HW - 3.5, TOP), H(-46.0, HW - 3.5, TOP)]
+# Round 35: finished AI cars drive on down M5b (at 14 m/s: a slow car in the 5 m pipe held up the racers behind) into J3 and park along
+# its +v wall, off the lap (in from M5b at v -0.4, out to M5d at v -2.1; S2's plate is on the -v side), 6 m apart
+park = every(pts("M5b", rev=True), 4.0)
+park = [q for q in park if s_near(q, after=5.0) > GATE_S + 6.0] + [local("J3", 6.0, 3.0), local("J3", 3.0, 6.0), local("J3", -7.0, 6.0)]
 route = dict(
     name="Underground", direction="forward", directions=["forward"], laps=3, underground=True, trail=True,
     source="Tools/mapgen/make_underground_route.py from Data/pipes/network.json. Coordinates are map meters (= Unity x, z); heights are "
            "the route's own (loop_y, lead_in_y, path_y): the network's floors and the hub's levels.",
-    lap_length_m=round(L, 1), gate_s=0.0, gate_half_width_m=4.2, gate_arch_m=5.0, checkpoint_half_width_m=2.2, gate_below_m=4.0, gate_above_m=6.0,
+    lap_length_m=round(L, 1), gate_s=round(GATE_S, 1), gate_half_width_m=2.2, gate_arch_m=4.0, gate_ring_m=T["M5b"]["d"] * 0.5, checkpoint_half_width_m=2.2, gate_below_m=4.0, gate_above_m=6.0,
     reverse_grid_back_m=30.0, ai_half_width_m=1.6, ai_lane_m=0.6, ai_pass_lane_m=1.2,
     loop=[round(v, 2) for p in lap for v in (p[0], p[2])], loop_y=[round(p[1], 2) for p in lap],
     lead_in=[round(v, 2) for p in lead for v in (p[0], p[2])], lead_in_y=[round(p[1], 2) for p in lead], lead_in_length_m=round(flat_len(lead), 1),
     checkpoints=cps, junctions=[], loop_pieces=[], official_shortcuts=shortcuts, closures=[], ai_zones=zones,
     seals=seals, rails=rails, switch_gates=switch_gates,
-    # finished AI cars drive on up the span, right onto the top ledge west of M5's mouth (off the lap) and park there, 9 m apart
     finish_park=[round(v, 2) for p in park for v in (p[0], p[2])], finish_park_y=[round(p[1], 2) for p in park],
+    finish_park_gap_m=6.0, finish_park_speed=14.0,
 )
 json.dump(route, open(OUT, "w", encoding="utf-8"), indent=1)
-print(f"wrote {OUT}: lap {L:.0f} m ({len(lap)} points), {len(cps)} checkpoints at " + ", ".join(f"{c['label']} {c['s']:.0f} m" for c in cps)
+print(f"wrote {OUT}: line at {GATE_S:.1f} m; lap {L:.0f} m ({len(lap)} points), {len(cps)} checkpoints at " + ", ".join(f"{c['label']} {c['s']:.0f} m" for c in cps)
       + f"; {len(seals)} seals; {len(rails)} rails; AI zones " + ", ".join(f"{z['id']} {z['s0']:.0f}-{z['s1']:.0f} at {z['speed']}" for z in zones))
 for sc in shortcuts:
     n = len(sc["path"]) // 2; line = [(sc["path"][2 * i], sc["path_y"][i], sc["path"][2 * i + 1]) for i in range(n)]

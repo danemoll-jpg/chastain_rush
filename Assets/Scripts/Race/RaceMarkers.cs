@@ -139,6 +139,19 @@ namespace ChastainRush
             var root = Frame(g, "Start-finish gate");
             var rdata = RaceController.Instance ? RaceController.Instance.RouteData : null;
             float h = rdata != null && rdata.gate_arch_m > 0f ? rdata.gate_arch_m : 7.5f;   // Round 27: under the hub's ceiling
+            if (rdata != null && rdata.gate_ring_m > 0f)
+            {
+                // Round 35: the line in a pipe (the Underground race, M5's straight): a checkered band round the pipe's wall, two rows deep
+                float r = rdata.gate_ring_m - 0.15f; const int n = 24; float seg = 2f * Mathf.PI * r / n + 0.02f;
+                for (int k = 0; k < n; k++)
+                    for (int row = 0; row < 2; row++)
+                    {
+                        float a = (k + 0.5f) * 2f * Mathf.PI / n;
+                        var c = Box(root.transform, new Vector3(Mathf.Sin(a) * r, rdata.gate_ring_m - Mathf.Cos(a) * r, (row - 0.5f) * 0.9f), new Vector3(seg, 0.3f, 0.9f), ((k + row) % 2 == 0) ? Black : White);
+                        c.transform.localRotation = Quaternion.Euler(0f, 0f, a * Mathf.Rad2Deg);
+                    }
+                return new Arch { root = root, paint = new Renderer[0], beams = new GameObject("none"), gate = g };
+            }
             foreach (float side in new[] { -1f, 1f })
             {
                 // chequered pylons: alternating black and white blocks
