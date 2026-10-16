@@ -190,6 +190,23 @@ namespace ChastainRush
         }
 
         static Vector2 ClosestOnSeg(Vector2 q, Vector2 a, Vector2 b) { var ab = b - a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude); return a + ab * t; }
+        // Round 34 (A4, BUG-005 / 006 / 008 / 009: "can we not put parking spaces on hills? ... just remove the lines"): a stall's
+        // lines are painted only where the lot is near level: no more than a 5 % grade between any two of the stall's corners
+        // and its middle within 8 cm of their mean (no hump or hollow). Steeper parts of a lot stay paved with no lines.
+        const float StallMaxGrade = 0.05f, StallMaxHump = 0.08f;
+        static bool StallLevel(Vector2 a, Vector2 b, Vector2 c, Vector2 d, TerrainGrid t, ref int sloped)
+        {
+            var q = new[] { a, b, c, d }; var h = q.Select(p => Ground(t, p.x, p.y)).ToArray();
+            bool ok = true;
+            for (int i = 0; i < 4 && ok; i++)
+                for (int j = i + 1; j < 4; j++)
+                    if (Mathf.Abs(h[i] - h[j]) > StallMaxGrade * Mathf.Max(1f, Vector2.Distance(q[i], q[j]))) { ok = false; break; }
+            var m = (a + b + c + d) * 0.25f;
+            if (ok && Mathf.Abs(Ground(t, m.x, m.y) - h.Average()) > StallMaxHump) ok = false;
+            if (!ok) sloped++;
+            return ok;
+        }
+
         static Vector2 Closest(List<Vector2> ring, Vector2 q) { Vector2 best = ring[0]; float bd = float.MaxValue; for (int i = 0; i < ring.Count; i++) { var c = ClosestOnSeg(q, ring[i], ring[(i + 1) % ring.Count]); float d = (c - q).sqrMagnitude; if (d < bd) { bd = d; best = c; } } return best; }
 
         // the floor: the ground at the front, raised to within 1.2 m of the highest ground under the walls; a long rectangle whose
@@ -437,7 +454,7 @@ namespace ChastainRush
 
             // --- the lots
             var lotMb = new Chunks { Tint = LotAsphalt }; var lotPaint = new Chunks(); var lamps = new Breakables();
-            int stalls = 0, lampsN = 0;
+            int stalls = 0, lampsN = 0, stallsSloped = 0;
             var roadSegs = new List<(Vector2 a, Vector2 b, float half)>();
             foreach (var r in map.roads) { var p = ToPoints(r.points); for (int i = 0; i + 1 < p.Count; i++) roadSegs.Add((p[i], p[i + 1], r.width * 0.5f)); }
             roadSegs.AddRange(biz.Drives);   // Round 32 (A1): the drives cut the curbs and keep stalls and poles off them
@@ -480,7 +497,7 @@ namespace ChastainRush
                         for (float s = 1.5f; s + 2.8f <= len - 1.5f; s += 2.8f)
                         {
                             Vector2 p0 = a + d * s, p1 = p0 + n * 5.2f, p2 = p0 + d * 2.8f, p3 = p2 + n * 5.2f;
-                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3);
+                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             var pm = lotPaint.At(p0); PaintLine(pm, p0 + n * 0.3f, p1, 0.12f, 0.065f * vScale, t); stalls++;
                             if (s + 5.6f > len - 1.5f || !InPolygon(p3 + d * 2.8f, lot)) PaintLine(pm, p2 + n * 0.3f, p3, 0.12f, 0.065f * vScale, t);
@@ -517,7 +534,7 @@ namespace ChastainRush
                         {
                             var p1 = p0 + N * (5.2f * side); var p3 = p2 + N * (5.2f * side);
                             bool ok = InPolygon(p0, lot) && InPolygon(p1, lot) && InPolygon(p2, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f
-                                      && !bizRings.Any(r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3);
+                                      && !bizRings.Any(r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             PaintLine(lotPaint.At(p0), p0 + N * (0.1f * side), p1, 0.12f, 0.065f * vScale, t); stalls++;
                         }
@@ -530,7 +547,7 @@ namespace ChastainRush
             lotPaint.ToObjects("BusinessLotPaint", mats.Paint, root, false);
             if (lampsN > 0) lamps.ToObjects("BusinessLotLamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             if (signMat != null) signs.ToObjects(root, signMat);
-            biz.Log.Append($"{signsShown} signs, {biz.Lots.Count} lots with {stalls} stalls and {lampsN} light poles");
+            biz.Log.Append($"{signsShown} signs, {biz.Lots.Count} lots with {stalls} stalls ({stallsSloped} left unpainted on a slope, Round 34) and {lampsN} light poles");
             Debug.Log(biz.Log.ToString());
             // views for the pictures: one per kind (the largest of each), from 40 m in front of its front
             var views = new StringBuilder("kind\tindex\tx\tz\tyaw\tcx\tcz\n");

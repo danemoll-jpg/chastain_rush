@@ -113,6 +113,7 @@ namespace ChastainRush
             PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
             lakes.PlanFences(hood.Fences);   // Round 32 (C2): no back-yard fence across the area; the pool's iron fence
             var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
+            Round34Drives(biz, map);   // Round 34 (A3, BUG-010): the road that stopped short of building 2158 runs on to it (MapBuilder.Round34.cs)
             BuildRoads(map, terrain, mats, world, paint, hood, biz);
             BuildBridges(map, mats, world, paint, terrain);
             paint.ToObjects("RoadPaint", mats.Paint, world, false);
@@ -325,6 +326,43 @@ namespace ChastainRush
                 }
                 return false;
             }
+
+            // Round 34 (A5, BUG-007): for paint. A road's paint stops on the pavement of any road it joins; only the through road's
+            // own paint crosses. Pieces of the same street count as one road only where one runs straight on from the other at the
+            // same width and direction of travel; a narrower piece (a one-way carriageway meeting the two-way road) stops on the
+            // wider one, and two carriageways that meet nose to tail stop on each other (they painted an X across Canton Road).
+            public bool CoversPaint(Vector2 p, Road self, float margin = 0.1f)
+            {
+                if (!grid.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.y / Cell)), out var l)) return false;
+                foreach (int id in l)
+                {
+                    var s = segs[id];
+                    if (s.road == self) continue;
+                    if (SameStreet(s.road, self) && (s.road.width < self.width - 0.01f || RunsOn(self, s.road))) continue;
+                    var ab = s.b - s.a;
+                    float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
+                    if ((s.a + ab * t - p).magnitude < s.half + margin) return true;
+                }
+                return false;
+            }
+
+            // b continues a: same width and one-way-ness, an end of one on an end of the other, heading on within 40 degrees
+            static bool RunsOn(Road a, Road b)
+            {
+                if (Mathf.Abs(a.width - b.width) > 0.01f || a.oneway != b.oneway) return false;
+                var pa = ToPoints(a.points); var pb = ToPoints(b.points);
+                if (pa.Count < 2 || pb.Count < 2) return false;
+                foreach (bool aEnd in new[] { false, true })
+                    foreach (bool bEnd in new[] { false, true })
+                    {
+                        Vector2 ea = aEnd ? pa[pa.Count - 1] : pa[0], eb = bEnd ? pb[pb.Count - 1] : pb[0];
+                        if ((ea - eb).sqrMagnitude > 0.25f) continue;
+                        Vector2 outA = aEnd ? (pa[pa.Count - 1] - pa[pa.Count - 2]) : (pa[0] - pa[1]);   // leaving a at its end
+                        Vector2 inB = bEnd ? (pb[pb.Count - 2] - pb[pb.Count - 1]) : (pb[1] - pb[0]);   // entering b from its end
+                        if (Vector2.Dot(outA.normalized, inB.normalized) > 0.766f) return true;
+                    }
+                return false;
+            }
         }
 
         static void BuildRoads(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Chunks paint, Neighborhood hood, Businesses biz = null)
@@ -375,7 +413,7 @@ namespace ChastainRush
                 }
                 foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
                     if (onOther == null || !onOther(e)) DiscGrid(mb.At(e), e, r.width * 0.5f, lift - 0.004f, terrain, 24);
-                if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.Covers(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
+                if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.CoversPaint(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f));   // Round 18 (A)
             }
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             FillRoadSeam(map, terrain, main);   // Round 31 (BUG-003): no lawn between New Chastain Road and its turn lane (MapBuilder.Round31.cs)

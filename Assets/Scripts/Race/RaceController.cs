@@ -318,6 +318,14 @@ namespace ChastainRush
                 // Round 13: in the shortcut's corridor counts as taking it too (the entry plane can be passed round)
                 else if (e.ActiveShortcut != sc && e.ClockStarted && sc.LastForgiven >= e.NextCheckpoint && sc.InCorridor(pos)) hits.Add((1f, 3000 + i));
             }
+            // Round 34 (A6): whether this lap has really been driven: the racer has been on the far half of the loop (a quarter to three
+            // quarters of a lap past the line), sampled twice a second until it has, or has passed a checkpoint
+            if (e.ClockStarted && !e.LapAway && t0 >= e.NextAwayCheck)
+            {
+                e.NextAwayCheck = t0 + 0.5f;
+                float st = Route.LapStationOf(pos), L = Route.LapLength;
+                if (st > 0.25f * L && st < 0.75f * L) e.LapAway = true;
+            }
             hits.Sort((a, b) => a.f.CompareTo(b.f));
             foreach (var h in hits)
             {
@@ -397,6 +405,13 @@ namespace ChastainRush
                 Log(e, "START LINE crossed: clock started");
                 return;
             }
+            // Round 34 (A6, Dan's Chastain Ridge race: lap 1 counted at 54 s with all six checkpoints missed): crossing the line again
+            // without having gone round (backed over it and crossed again, or never left it) neither ends a lap nor costs anything
+            if (!e.LapAway && e.NextCheckpoint == 0)
+            {
+                Log(e, $"START LINE crossed again at {at:0.000} with no lap driven: ignored");
+                return;
+            }
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(e, k, at); skipped.Add(k + 1); }
             float raw = at - e.LapStart, lap = raw + e.LapPenalty;
@@ -414,7 +429,7 @@ namespace ChastainRush
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
-            e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null;
+            e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false;
             if (e.IsPlayer) markers.Refresh(this);
         }
 

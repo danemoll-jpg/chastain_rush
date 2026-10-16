@@ -18,6 +18,7 @@ namespace ChastainRush
         public BoxCollider Box;
         public Vector3 PrevPos;
         public bool ClockStarted;
+        public bool LapAway; public float NextAwayCheck;   // Round 34 (A6): this lap has gone round to its far half (or passed a checkpoint)
         public float StartAt, LapStart;    // race clock at its first start-line crossing, and at the start of its lap
         public int CompletedLaps, NextCheckpoint, MissedTotal;
         public float PenaltyTotal, LapPenalty;
@@ -34,7 +35,7 @@ namespace ChastainRush
 
         public void Reset()
         {
-            ClockStarted = false; StartAt = LapStart = 0f; CompletedLaps = NextCheckpoint = MissedTotal = 0;
+            ClockStarted = LapAway = false; NextAwayCheck = 0f; StartAt = LapStart = 0f; CompletedLaps = NextCheckpoint = MissedTotal = 0;
             PenaltyTotal = LapPenalty = 0f; ActiveShortcut = null; Finished = Estimated = false; FinalTotal = FinishedAt = 0f;
             LapTimes.Clear(); Missed.Clear(); Forgiven.Clear(); PenaltyLog.Clear(); LapLog.Clear(); ShortcutsTaken.Clear();
             if (Car) PrevPos = Car.transform.position;

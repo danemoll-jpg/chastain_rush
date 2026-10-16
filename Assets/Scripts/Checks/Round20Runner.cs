@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,18 +43,19 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
             if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races", "revlap", "fwdlap", "revslow", "revrace" };   // Round 21's default parts
             if (tag == "round26" && parts == null) parts = new[] { "ramps", "express", "walls" };   // Round 26 (Round20Runner.R26.cs)
             if (tag == "round33" && parts == null) parts = new[] { "jump", "shortcuts", "hollow", "pics", "race" };   // Round 33 (Round20Runner.R33.cs)
+            if (tag == "round34" && parts == null) parts = new[] { "lap", "bumps", "radio", "records" };   // Round 34 (Round20Runner.R34*.cs)
             bool Do(string p) => parts == null || parts.Contains(p);
             if (Do("bj1")) yield return Guard(Bj1());
             if (Do("ramp")) yield return Guard(Ramp(ids));
             if (Do("map")) yield return Guard(MapCheck());
-            if (Do("lap")) yield return Guard(Lap(ids));
+            if (Do("lap") && tag != "round34") yield return Guard(Lap(ids));
             // the follow-ups (Round20Runner.Follow.cs)
             if (Do("fences")) yield return Guard(Fences());
             if (Do("tramp")) yield return Guard(Tramp());
@@ -84,6 +85,12 @@ namespace ChastainRush
             if (Do("hollow")) yield return Guard(R33Hollow());
             if (Do("pics")) yield return Guard(R33Pics());
             if (Do("race")) yield return Guard(R33Race());
+            // Round 34 (Round20Runner.R34*.cs)
+            if (tag == "round34")
+            {
+                if (Do("lap")) yield return Guard(R34Lap());
+                if (Do("bumps")) yield return Guard(R34Bumps());
+            }
             report.AppendLine(); report.AppendLine($"{checks - fails} of {checks} checks passed.");
             Flush();
             yield return new WaitForSecondsRealtime(0.5f);

@@ -832,6 +832,11 @@ def build_terrain(cfg, dem_path, mapdata):
     best_w = np.zeros_like(h)
     best_d = np.full_like(h, np.inf)
     target = np.zeros_like(h)
+    # Round 34 (A1, BUG-001 to 003): inside these rectangles a road's level core keeps its own height where a narrower road
+    # ends on it (a service road that meets Canton Road at its centerline levelled a flat strip across the lane, steps of
+    # 0.3-0.4 m). There a cell in a road's core (weight 1) goes to the widest road whose core it is in; elsewhere unchanged.
+    wide_rects = fl.get("wider_wins_rects", [])
+    best_k = np.zeros_like(h)
     plans = []
     for road in mapdata["roads"]:
         if road["tunnel"]:
@@ -892,6 +897,15 @@ def build_terrain(cfg, dem_path, mapdata):
             TIE = 1e-3
             better = (wgt > best_w[sl] + TIE) | ((np.abs(wgt - best_w[sl]) <= TIE) & (d < best_d[sl]))
             better &= wgt > 0
+            if wide_rects:
+                inr = np.zeros(X.shape, bool)
+                for x0, z0, x1, z1 in wide_rects:
+                    inr |= (X >= x0) & (X <= x1) & (Z >= z0) & (Z <= z1)
+                if inr.any():
+                    k_new = np.where(wgt >= 0.999, road["width"], 0.0)
+                    k_old = best_k[sl]
+                    better = np.where(inr, (k_new > k_old) | ((k_new == k_old) & better), better)
+                    best_k[sl] = np.where(better, k_new, k_old)
             best_w[sl] = np.where(better, wgt, best_w[sl])
             best_d[sl] = np.where(better, d, best_d[sl])
             target[sl] = np.where(better, ha + t * (hb - ha), target[sl])
