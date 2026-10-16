@@ -262,6 +262,12 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (`build_r3`), `MapBuilder.Playground.cs`, `Trampoline.cs`. Check: `ChastainRush.exe -exeRound18 <dir> [-r18Only
   j4|pipe|r3|ai|race|pics] [-r18Vehicles ids] -logFile <dir>\Player.log` (Checks/Round18Runner*.cs).
 
+- Round 33: the Chastain Ridge race on open roads: `python Tools/mapgen/make_ridge_route.py [--plot]` writes
+  `Data/routes/chastain_ridge.json` (route `"traffic": true`, `reset_skip`) and `Data/tracks/chastain_ridge.json` (the three dirt
+  piles, landing zones, cleared lines, the hollow's ramp; built by `MapBuilder.ChastainRidge.cs`); re-run after mapgen, then Build Map.
+  Check: `ChastainRush.exe -exeRound33 <dir> [-r33Only jump,shortcuts,hollow,pics,race] -traffic Normal -logFile <dir>\Player.log`
+  (`Checks/Round20Runner.R33.cs`).
+
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.** Rounds before the last three deliveries are in `TODO-ARCHIVE.md` (search it; "see `TODO.md`" below for an old round means there).
 
@@ -304,6 +310,10 @@ bales, penalties wrongly charged on #6), then Racer's eleven player vehicles
 with their sound and a temporary D-pad vehicle switch. Queued: 14 three AI
 drivers, 15 menus and the garage.
 
+**Round 33 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Chastain Ridge race on
+open roads (Canton Road, Chastain Corner, Chastain Ridge Drive, the Ridge leap off its dead end onto New Chastain Road; S1 Knoll hop, S2
+Storage hop; dirt piles with aimed launches, `MapBuilder.ChastainRidge.cs`; `reset_skip` in `CarRecovery`; traffic on the course, `Traffic.Close`).
+Imported from Racer: nothing.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).

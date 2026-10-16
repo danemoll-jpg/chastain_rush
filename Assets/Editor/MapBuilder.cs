@@ -96,6 +96,8 @@ namespace ChastainRush
             BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
             var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
             GradeCreekTrack(map, terrain, creek);
+            var ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
+            GradeRidge(terrain, ridge);
             Net = null;
             var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
             var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
@@ -125,14 +127,19 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
-            if (creek != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks)
+            if (creek != null || ridge != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
             {
-                var f = trees.Field; var br = new List<int>();
-                for (int i = 0; i < f.count; i++) { var t = TreeField.Unpack(f.data, i); if (creek.Breakable(t.x, t.z)) br.Add(i); }
+                var f = trees.Field; var br = new List<int>(); int nr = 0;
+                for (int i = 0; i < f.count; i++)
+                {
+                    var t = TreeField.Unpack(f.data, i);
+                    if (creek != null && creek.Breakable(t.x, t.z)) br.Add(i);
+                    else if (ridge != null && ridge.Breakable(t.x, t.z)) { br.Add(i); nr++; }
+                }
                 f.breakable = br.ToArray();
-                Debug.Log($"[Round19] Noonday Creek trail: {br.Count} trees within {creek.Data.break_half_m:0.0} m of its line are breakable");
+                Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing");
             }
             trees.Field.gameObject.AddComponent<TreeTrunks>();
             Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
@@ -144,6 +151,7 @@ namespace ChastainRush
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
             if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
             BuildCreekTrack(map, terrain, mats, world, creek);   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
+            BuildRidge(terrain, mats, world, ridge);             // Round 33: the Chastain Ridge race's dirt piles and landing zones
             BuildPipes(terrain, mats, world, pipes);             // Round 18 (4)
             BuildNetwork(terrain, mats, world, net, pipes);      // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
             if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");

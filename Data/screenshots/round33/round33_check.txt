@@ -1,0 +1,32 @@
+Round 33 check, 2026-10-16 00:55, the exe, 1280 x 720, muted.
+
+=== The Ridge leap: each vehicle flat out from the crest (on the lap's line), off the dirt pile onto New Chastain Road
+  Street Classic     onto the lip at 28.5 m/s (off it at 32.9), 3.50 s in the air, 8.5 m over the lip at the top, down 106 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Longroof GT        onto the lip at 28.2 m/s (off it at 32.9), 3.48 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Needle 600         onto the lip at 32.2 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Trail Four         onto the lip at 30.8 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.3 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Sundown Roadster   onto the lip at 28.9 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Highball Fastback  onto the lip at 22.2 m/s (off it at 32.9), 3.48 s in the air, 8.3 m over the lip at the top, down 105 m out, 2.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Pebble Coupe       onto the lip at 29.1 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Skyfin Cruiser     onto the lip at 27.3 m/s (off it at 32.9), 3.50 s in the air, 8.4 m over the lip at the top, down 105 m out, 0.6 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Ridge Scrambler    onto the lip at 31.3 m/s (off it at 32.9), 3.56 s in the air, 8.8 m over the lip at the top, down 106 m out, 0.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Drifter Twin       onto the lip at 30.6 m/s (off it at 32.9), 3.50 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Turf Rocket        onto the lip at 32.1 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.4 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+PASS  the Ridge leap: every vehicle flat out from the crest lands on New Chastain Road (within 6 m of the carriageway's centerline), on its wheels, and drives on  -  11 vehicles
+
+=== S1 and S2 on their lines, flat out (the Street Classic): over the dirt pile, landed, back on the lap
+PASS  Knoll hop: over its dirt pile, landed and back on the lap  -  onto the lip at 23.9 m/s (off it at 25.0), 1.34 s in the air, landed at (3433.1, 1047.0) upright 0.96; back on the lap in 11.3 s
+PASS  Storage hop: over its dirt pile, landed and back on the lap  -  onto the lip at 18.5 m/s (off it at 25.0), 2.02 s in the air, landed at (3381.5, 473.5) upright 0.98; back on the lap in 18.9 s
+
+=== Short of the road: in the hollow
+PASS  a reset in the hollow (race): onto New Chastain Road past the landing, facing on  -  from (3222, 616) to (3266.1, 583.2), 120 m out from the lip, 0.0 m from the line, 0 degrees off the race's way
+PASS  the way out of the hollow: driven up the graded ramp onto New Chastain Road  -  out in 7.5 s, slowest 7.4 m/s
+
+=== A race: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  traffic stays on the course (open roads): only the barred side roads closed to it  -  18 road pieces closed, 23 barriers
+PASS  EMBER (Turf Rocket) finishes the 3 laps  -  total 219.1 s, laps 74.3 / 64.1 / 80.7, missed 0, shortcuts lap 1 s2_storage_hop, lap 3 s2_storage_hop, AI resets 0
+PASS  GOLD (Longroof GT) finishes the 3 laps  -  total 261.6 s, laps 84.0 / 78.8 / 98.8, missed 0, shortcuts lap 1 s2_storage_hop, lap 2 s1_knoll_hop, lap 2 s2_storage_hop, lap 3 s2_storage_hop, AI resets 1
+PASS  BLUE (Highball Fastback) finishes the 3 laps  -  total 216.6 s, laps 71.6 / 69.6 / 75.5, missed 0, shortcuts none, AI resets 0
+      AI within 15 m of a traffic car: 84 half-second samples
+
+9 of 9 checks passed.

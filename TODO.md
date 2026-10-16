@@ -113,6 +113,30 @@ each shortcut's turn-off.
 
 For Dan to check (when done): the whole lap flat out, the jump, S1 and S2, traffic in the race.
 
+**Round 33 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 00:55.** Evidence: `Data/screenshots/round33/` (`round33_check.txt`, 9 of 9 checks; pictures `33_*.png`).
+Course DONE. `python Tools/mapgen/make_ridge_route.py` writes `Data/routes/chastain_ridge.json` (on the Route row and the map; "traffic": true)
+   and `Data/tracks/chastain_ridge.json` (built by `MapBuilder.ChastainRidge.cs`). Lap 2072 m on OSM's roads, forward only; two-way roads raced on
+   their right-hand lane; gate on Canton Road at z 700, CP1 Chastain Corner, CP2 down it, CP3 the ridge's crest, CP4 past the landing, CP5 New
+   Chastain, CP6 Canton Road; 23 side-road barriers (none where the leap lands).
+The Ridge leap DONE. A 2.8 m dirt pile at Chastain Ridge Drive's dead end (road-work fill, 14 m long: its real size), an aimed launch (32.9 m/s
+   at 22 degrees for every vehicle onto the lip at 10 m/s or more, so all eleven vehicles are offered and all make it flat out): 3.5 s in the air,
+   8.5 m over the lip, over house 706 (8 m clear; 923 and 1231 are beside the line, not under it; no house changed), down 106 m out within 2.5 m of
+   the southeast carriageway's centerline, upright (`33_takeoff_from_the_crest`, `33_flight_chase`, `33_landing_chase`). Landing across the road at
+   speed runs on into the woods east of it: those 55 trees snap when hit (2 of 11 stopped dead on trunks before). Short of the road: a ramp graded
+   along the embankment out of the hollow (54 m, 12 %; driven out in 7.5 s), and a race reset anywhere from the lip to the landing puts the vehicle on
+   New Chastain Road 120 m out, on the line, facing on (route `reset_skip`, `CarRecovery`).
+S1 "Knoll hop" DONE. Off Canton Road west across the lot north of the canopy (4) and the shops (6), a dirt pile (2.6 m) onto the top of the knoll
+   beside Chastain Corner, across it and off its west edge onto Chastain Corner: 1.3 s of air, saves 49 m, forgives CP1. Threads past 4 and 6, jumps
+   nothing built. Hint: worn tracks and a knocked-over road-closed barricade; the pile is in sight from Canton Road (`33_S1_turn_off`).
+S2 "Storage hop" DONE. Off New Chastain Road east up the bank, a dirt pile (2.8 m) over the self-storage garage row 63 (6.4 m clear), across the
+   open ground and out between the churches (75 passed 5 m off) by their drive onto Canton Road: 2.0 s of air, saves 154 m, forgives CP5 and CP6.
+   Hint: tracks and the barricade (`33_S2_turn_off`, `33_S2_pile`). Free cuts round 63 or through the lots miss CP5 / CP6 (5 s each).
+Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI reset; S1 and S2 taken by ShortcutStrategy. Traffic keeps driving the
+   course; only the 18 road pieces at the barriers are closed to it, and the grid is cleared at the start (`Traffic.Close`).
+For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
+rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
+
 ## QUEUED rounds
 None.
 

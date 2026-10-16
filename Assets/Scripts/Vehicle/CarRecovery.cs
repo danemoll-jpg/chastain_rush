@@ -50,6 +50,14 @@ namespace ChastainRush
             {
                 var route = race.Route;
                 float s = route.LapStationOf(at);
+                // Round 33 (the Ridge leap is part of the lap): the lap's line crosses the hollow in the air; a reset anywhere from the
+                // lip to the landing puts the vehicle on New Chastain Road past the landing, facing on (never in the hollow under the flight)
+                if (!route.Reverse && route.Data?.reset_skip != null)
+                    foreach (var k in route.Data.reset_skip)
+                    {
+                        float a = Mathf.Repeat(k.s0 - route.Data.gate_s, route.LapLength), b = Mathf.Repeat(k.s1 - route.Data.gate_s, route.LapLength);
+                        if (Mathf.Repeat(s - a, route.LapLength) <= Mathf.Repeat(b - a, route.LapLength)) { s = Mathf.Repeat(k.to_s - route.Data.gate_s, route.LapLength); break; }
+                    }
                 foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f, -15f })
                     foreach (float off in new[] { 0f, -2f, 2f, -3.5f, 3.5f })
                     {

@@ -13,7 +13,8 @@ namespace ChastainRush
     //   - Cars appear 140 to 400 m from the player where the camera does not see (the first ones from 60 m), and go when they are
     //     more than 460 m away out of sight, or stuck, or at the map's edge, out of sight; they come back somewhere else.
     //   - In a race, the race's own roads are closed to it (every road near the route's line or a closure, for a route on the
-    //     ground; an underground route closes only its closures), unless the route says "traffic": true (a race on open roads).
+    //     ground; an underground route closes only its closures), unless the route says "traffic": true (a race on open roads: Round 33,
+    //     only the side roads barred for the race are closed, and the grid is cleared at the start).
     //     A car on a closed road at the start is moved; one that comes to a closed road turns off or round.
     public sealed class Traffic : MonoBehaviour
     {
@@ -266,7 +267,18 @@ namespace ChastainRush
                 // the race starts from the grid: every car on a closed road is moved now (the countdown hides it)
                 foreach (var d in Cars) if (d && d.gameObject.activeSelf && (forbidden[Mathf.Max(0, d.Edge)] || OnClosed(d))) Spawn(d, false);
             }
-            Debug.Log($"[Traffic] {(stage == RaceController.Stage.Free ? "free roam: every road open" : $"race {rd?.name}: {ClosedRoads} road pieces closed to traffic")}");
+            else if (stage != RaceController.Stage.Free && rd != null && rd.traffic)
+            {
+                // Round 33 (a race on open roads, the Chastain Ridge): traffic keeps driving the course; only the side roads barred for the
+                // race are closed to it (the pieces at each barrier), so no car drives into a barrier, and the grid is cleared for the start
+                if (rd.closures != null)
+                    for (int e = 0; e < net.EdgeCount; e++)
+                        foreach (var c in rd.closures) if (net.Distance(e, new Vector2(c.x, c.z)) < 6f) { forbidden[e] = true; ClosedRoads++; break; }
+                var grid = race.Route != null ? race.Route.GridPosition : Vector3.zero;
+                foreach (var d in Cars)
+                    if (d && d.gameObject.activeSelf && (forbidden[Mathf.Max(0, d.Edge)] || OnClosed(d) || (race.Route != null && (d.Car.Body.position - grid).sqrMagnitude < 130f * 130f))) Spawn(d, false);
+            }
+            Debug.Log($"[Traffic] {(stage == RaceController.Stage.Free ? "free roam: every road open" : $"race {rd?.name}: {ClosedRoads} road pieces closed to traffic{(rd != null && rd.traffic ? " (open roads: only the barred side roads)" : "")}")}");
         }
         bool OnClosed(TrafficDriver d)
         {

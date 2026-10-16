@@ -28,11 +28,14 @@ namespace ChastainRush
     {
         static readonly Color OldWood = new Color(0.46f, 0.38f, 0.28f), WetWood = new Color(0.34f, 0.28f, 0.21f), Granite = new Color(0.56f, 0.55f, 0.52f), RootEarth = new Color(0.33f, 0.25f, 0.17f);
 
-        static void BuildBigJumps(TerrainGrid terrain, Materials mats, Transform parent, CreekTrack ct)
+        static void BuildBigJumps(TerrainGrid terrain, Materials mats, Transform parent, CreekTrack ct) => BuildBigJumps(terrain, mats, parent, ct.Data.big_jumps, "Big jumps");
+
+        // Round 33: any list of big jumps (the Chastain Ridge race's three dirt piles, MapBuilder.ChastainRidge.cs)
+        static void BuildBigJumps(TerrainGrid terrain, Materials mats, Transform parent, CtBigJump[] jumps, string rootName)
         {
-            if (ct.Data.big_jumps == null || ct.Data.big_jumps.Length == 0) return;
-            var root = new GameObject("Big jumps").transform; root.SetParent(parent, false);
-            foreach (var b in ct.Data.big_jumps)
+            if (jumps == null || jumps.Length == 0) return;
+            var root = new GameObject(rootName).transform; root.SetParent(parent, false);
+            foreach (var b in jumps)
             {
                 var L = new Vector2(b.lip[0], b.lip[1]); var d = new Vector2(b.dir[0], b.dir[1]).normalized; var nl = new Vector2(-d.y, d.x);
                 var O = L - d * b.ramp_m; float y0 = Ground(terrain, O.x, O.y) - 0.02f, y1 = b.lip_y, k = Mathf.Tan(b.angle_deg * Mathf.Deg2Rad), hw = b.width * 0.5f;
@@ -165,6 +168,17 @@ namespace ChastainRush
                     BuildPrism(Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.40f, 0.28f, 0.18f)), terrain, mats, jr);   // a dirt lip (DirtPileLook)
                     if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw, "earth", new Color(0.40f, 0.28f, 0.18f), 15f);   // Round 21: earth down the bank
                     Debug.Log($"[Round19] {b.id} step-down: a dirt lip {b.ramp_m:0.0} m long from {y0:0.00} m to {y1:0.00} m ({b.angle_deg:0} degrees at the lip) on the bank's edge, {b.width:0.0} m wide");
+                }
+                else if (b.look == "dirtpile")
+                {
+                    // Round 33 (the Chastain Ridge race): a pile of fill dirt dumped where work is going on (a dead end waiting to be
+                    // extended, a lot's edge, a bank being cut), 2.6 to 2.8 m high and 11 to 14 m long: the size such a pile is. Drawn as
+                    // shortcut #6's dirt pile (DirtPileLook, prism kind "kicker"); its back an earth slope down to the ground (a vehicle
+                    // too slow to be launched rolls down it, never off a wall)
+                    var dirt = new Color(0.40f, 0.29f, 0.19f);
+                    BuildPrism(Prism("kicker", KickerProfile(), b.ramp_m, hw, dirt), terrain, mats, jr);
+                    if (b.back_angle > 0f) BuildBack(b, terrain, mats, jr, L, d, nl, y1, hw, "earth", dirt, 14f);
+                    Debug.Log($"[Round33] {b.id} dirt pile: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; an aimed launch at {b.vmin:0.0} m/s");
                 }
                 else if (b.look == "fallen_tree")
                 {
