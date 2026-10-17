@@ -4271,3 +4271,128 @@ C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1
    Imported from Racer: WorldLook, WeatherEffects, WeatherSky, SkyClouds, MoonIcon, WeatherGrip, ArcadeVehicle's grip lines, thunder
    ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
 For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
+
+## Round 36 (moved from TODO.md on 2026-10-17 when Dan reviewed Round 39; word for word)
+
+## Previous delivery 3: Round 36
+**Reviewed: driven by Dan 2026-10-16 16:59 (the stunt park; his notes are Round 37).**
+**Round 36 (Dan, 2026-10-16 10:36, after the Round 35 exe: "All is good").** Round 35 is reviewed (Dan did not check the
+Underground race's start line; he will report it if it is wrong). Parts A to D in order; rebuild into `Builds/ChastainRush/`
+and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
+Racer is read-only; port its finished code (CLAUDE.md), list what came.
+
+Part A, THE KROGER LOT BECOMES A STUNT PARK, WITH WOODSTOCK RUSH'S STUNT VEHICLES. Dan: "change the Kroger parking lot into a
+stunt course (we could import the stunt vehicles from Woodstock Rush and make a bigger version of the stunt course where you can
+get up on top of the building area with stunts up there. Would like to get big air on these".
+A1. Racer's stunt vehicles and stunt play, ported: the Clay Hopper, the Skywhip 250 and the Clay Hopper Cup (Racer
+   `Tools/Blender/stuntbike.py`, `stuntbuggy.py`, their profiles, air steering in ArcadeVehicle); the trick scoring
+   (`ArcadeActivities.Stunts.cs`: flips, rolls, spins, the loop and barrel-roll tricks, landings and bails with Racer's 1.5 s
+   recovery window, the multiplier per trick type, the 5 s combo chain), `TrickHud`, the Stunt event (`StuntEvent`) and Top 10
+   Best Combos (`StuntProgress`, on the Records page with the other boards). The garage as Racer: stunt vehicles shown when the
+   garage is opened for the Stunt event; how Racer offers them in Free Roam, the same here. Leave Stunt Races and the Stunt
+   chapter behind (no campaign here) unless the Stunt event needs a piece of them.
+A2. The park: Racer's Red Clay Stunt Park (`StuntPark.cs`) is the starting point, made BIGGER and laid on the Kroger center's
+   lot (`MapBuilder.ShoppingCenter.cs` LotRing, about 260 x 190 m round the supermarket at x 3270, z 1150 and the shop row
+   along its north). Dan (10:57): "The course should seem like someone specifically designed it for the purpose of being a
+   stunt course", "it is meant to be inspired by the stunt course in Rush USA" (the stunt arena of Rush 2: Extreme Racing USA).
+   So THIS PARK IS THE EXCEPTION to the "ramps look like something that could be there" rule: a purpose-built stunt course,
+   built ramps and structures (steel and plywood ramps, painted kickers and tables, quarter-pipes, a half-pipe, the loop, a
+   corkscrew / barrel-roll ramp, towers and decks, gaps over cars and a bus), bold course colors, banners and arrows painted as
+   a stunt park's own, lit at night. Inspired by Rush 2's arena (its spirit: big ramps everywhere, lines that chain one stunt
+   into the next, levels to climb, a lot of air), copied from none: our own layout and look (Racer's rule). The lot's stalls
+   and paint go. Every ramp still the size its job needs and landing on a slope sized to its launch (A3).
+A2b. INTO THE STORES (Dan: "I could also see smashing through the store windows and having stunts inside as well"): the shop
+   row's and the supermarket's front windows break when driven through (glass that shatters, as the other breakables; they
+   come back when the player leaves the area or on a reset, so the park works again), and inside at least the supermarket a
+   stunt run: aisles turned into lanes, kickers and a ramp up to a mezzanine or out through a back wall or skylight onto the
+   roof (A3). The shops' interiors are new (the buildings were shells): simple, readable, enough to drive through. Dan: "We
+   can start with something and build from there": build a first version that works end to end and say what could come
+   next.
+A3. UP ON THE ROOFS (Dan: "get up on top of the building area with stunts up there"): ramps up onto the supermarket's roof
+   and the shop row's roof (the buildings stay, their fronts as they are), a stunt area on the roofs (kickers, a gap between
+   roofs, quarter-pipes on the parapets), and big drops / launches off the roof edges onto landings in the park below. BIG AIR
+   (Dan: "Would like to get big air on these"): the biggest launches give several seconds of air for two or three trick types
+   with a stunt vehicle; every jump lands on a down-slope sized to its launch (Racer's ballistic sizing, Tools/Report106
+   size.py); one mesh per ramp profile, no seams (Racer's lessons).
+A4. Keep: the gas station and its breakable pumps, the abandoned bank, Canton Road and the other roads as they are; the Chastain
+   Ridge race's line on Canton Road and its S1 shortcut untouched (protected geometry; the park's edge kept off the road, a
+   tire wall or barrier where it meets a road, openings where its drives were). The world / game rule: the park and its ramps
+   are world; the Stunt event, its start and its scoring are game layer.
+A5. Free Roam: driving into the park scores tricks as Racer's park does (a flight that takes off in the park counts wherever it
+   lands); the Stunt event starts at its entrance as in Racer. On the map.
+Check in the exe by script: the biggest launch and a roof launch flown flat out on a stunt vehicle (air time, height, landing);
+a backflip + roll landed and scored; the Stunt event run once; pictures: the park from above, the roofs, each big feature,
+the trick panel. Frame rate at the park (1280 x 720) before and after.
+
+Part B, FREE ROAM EVENTS FROM WOODSTOCK RUSH. Dan: "We can probably add free roam events." Port Racer's free roam activities
+(`ArcadeActivities` with jumps, speed traps and smash, `ActivitySite`, `ActivityRecords`, the medals and their displays, the
+HUD lines and prompts; leave the acorns and anything tied to Woodstock places behind). Code picks the sites on this map and
+lists them: jumps on the existing big jumps and ramps (the Noonday Creek jumps, the Ridge leap, shortcut ramps, the stunt
+park's biggest), speed traps on the long fast roads (Canton Road, New Chastain Road, Chastain Road, Bells Ferry Road), smash
+runs where breakables stand in a row (mailboxes, fences, the gas pumps). About as many of each as Racer's map had for its
+size; each with gold / silver / bronze targets from a scripted run; on the map and the minimap as Racer shows them. Free Roam
+only, never in races. Check: one of each kind run in the exe by script, scored and medaled; a picture of the map with the
+sites.
+
+Part C, MORE FIRE HYDRANTS. Dan: "We should have more fire hydrants around in general." Breakable hydrants (Racer's, squirting
+water, as the Glen's) along every street of the map, at real spacing: about every 150 m on neighborhood streets, about every
+100 m on the commercial roads (Canton Road, the shopping streets), at street corners and in front of the schools, churches
+and businesses; at the curb, never in a drive, a lot entrance, a shortcut's line, a jump or a race line. Same LOD / batching
+as the other street furniture. Say how many. Check: two pictures (a neighborhood street, Canton Road) and the frame rate at
+Canton Road before and after.
+
+Part D, HYDRANTS TIED TO THE UNDERGROUND (Dan: "I also feel like the fire hydrants should maybe somehow be tied into the
+underground area"; of the ideas Claude offered he picked these two, 10:57: "1 and 2 are kind of what I was thinking so lets go
+with those"):
+D1. SECRET ENTRANCES: a few hydrants (one beside each street manhole MH1 to MH13, and others where a new manhole fits over a
+   network pipe or junction) are rigged: knock one over and the nearby manhole's cover blows off (a bang, water, the cover
+   flying) and the way down into the network is open, as the network's manholes already lead in. Nothing marks which hydrants
+   are rigged beyond the manhole being near (found, not signposted). The cover is back after a while or a reset.
+D2. GEYSERS: breaking a hydrant sends a column of water up out of a manhole or storm grate down the street for several seconds;
+   driving into it launches the vehicle high (big air, tricks count as anywhere in Free Roam), roughly upright, landing on the
+   street. At least one geyser per neighborhood with hydrants, and some along Canton Road.
+Free Roam only; in races hydrants break as before, no cover blows and no geyser (the races' pipes stay sealed). Dan (11:01): "free roam only for now, but this concept could be used as a shortcut idea in races": so build both so a race
+   route could switch one on later (a rigged hydrant opening a manhole into a pipe shortcut, a geyser launching over something),
+   but use none in a race now. World: the
+hydrant-to-manhole links; their effects run in Free Roam. Check in the exe by script: one rigged hydrant knocked over, the
+cover off, the vehicle drives down into the network; one geyser launch (height, air time, landing); pictures of both.
+
+For Dan to check (when done): the stunt park and its roofs on the Clay Hopper and the Skywhip, the Stunt event and its Top 10,
+smashing into the stores and the run inside, the free roam events, the hydrants, a rigged hydrant and a geyser.
+
+**Round 36 status (Claude, 2026-10-16): Part A built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
+Evidence: `Data/screenshots/round36/` (`a_*`; layout `a_park_layout.png`). Data: `python Tools/mapgen/make_stunt_park.py` (`Data/tracks/stunt_park.json`), built by `MapBuilder.StuntPark.cs` / `.StuntParkStores.cs`.
+A1 DONE. The Clay Hopper, Skywhip 250 and Clay Hopper Cup with air steering; Racer's trick scoring, trick panel, Stunt event (10 min, combo overtime) and both Top 10s
+   (Records page). Decided: all three stunt vehicles offered at once (no unlocks here), in the Free Roam garage and the event's; never in a race (a race start
+   puts the Street Classic on) or the AI's picks. Check: a backflip + roll off BIG AIR on the Clay Hopper, 4.3 s up, 4,498 pts, Top 10 #1; the event run once.
+A2 DONE. "Chastain Corner Stunt Park" (a made-up name): the floor graded to one plane (the lot's 2 % rise kept, level by the store fronts), stalls and paint gone,
+   painted pads; K1 kicker, K2 table, barrel roll, bus gap, car gap (5 wrecks), half-pipe, the loop, BIG AIR's landing hill, a tower, catch fence and tire wall
+   (openings at the 4 drives), floodlights (lit at night), boards. The knoll by Chastain Corner left as it is, inside the fence. Gas station and bank unchanged.
+A2b DONE (first version). 43 store windows and 44 shop-row partition panels break and come back (reset in the park, or 160 m away); inside: checkouts that
+   break, 8 shelf aisles with kickers, a mezzanine with a drop-in, a ramp up through a skylight onto the roof. Next could be: shop interiors, more inside lines.
+A3 DONE. Roof ramp (42 m, 12 deg); BIG AIR off the supermarket's front, shop row drop, tower gap, roof gap over an atrium (aimed launches, sized landings);
+   roof quarter-pipes and a table. Check: BIG AIR 3.0-3.1 s up on both stunt vehicles; every launch lands upright on its slope; inside and roof ramps reach the roof.
+A5 DONE. Free Roam scores tricks everywhere (a flight off the park counts wherever it lands); the Stunt event's prompt at the entrance; the park on the map and minimap.
+A4 DONE. The Ridge race's line, S1 and Canton Road untouched (grading stops 1 m off every road outside the lot). Frame rate (1280 x 720, not 3840 x 2160) at Round 35's
+   Canton Road spot: before 315 fps, after 284-295; in the park 268-275; inside the store 246-278.
+Imported from Racer: StuntPark (its ramp, loop and prop builders ported into the map build; its queries at run time), ArcadeActivities (+Stunts, +Smash), ActivitySite,
+   ActivityRecords, StuntEvent, StuntProgress, TrickHud, MedalUi, DisplayUnits, the stunt profiles and Cup livery, air steering, RaceMenus.Stunt (rewritten into
+   GameMenus), StuntBike.fbx, StuntBuggy.fbx, Tools/Blender stuntbike.py, stuntbuggy.py, bikes.py. Left behind: Stunt Races, the Stunt chapter, split-screen.
+**Part B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round36/b_*`. Sites: `python Tools/mapgen/make_activities.py`
+   (`Data/activities/free_roam.json`, targets `Data/activities/targets.json`), built by `MapBuilder.Activities.cs` under their own game-layer root.
+B DONE. 17 sites: 8 jumps (BJ1, BJ3, BJ4, P1J, the Ridge leap, S2, BIG AIR, shop row drop), 5 speed traps with camera posts (Canton, New Chastain x2, Chastain,
+   Bells Ferry; both ways), 4 smash runs (12 mailboxes, the 4 pumps, 30 shop-row panels, 10 street lamps). On the map and minimap; Start > ACTIVITIES; results on
+   the Records page; Free Roam only. Targets: speed traps 95 / 85 / 72 % of each base vehicle's flat-out run; jumps from their sized flights. Check: Bells Ferry
+   123 mph GOLD, BIG AIR 226 ft SILVER, pump smash BRONZE, the map picture. Fixed in the port: a landing is judged upright against the slope, not world up.
+   Seen in the scripted runs, not changed: on Chastain Road near (300 to 400, 940) and New Chastain Road near (2607, 691) the scripted drive stopped dead.
+**Parts C and D built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round36/36c_*`, `36d_*`, `c_*`, `d_*`. Built by `MapBuilder.Hydrants.cs`.
+C DONE. 529 more hydrants (568 on the map): 307 along the streets (150 m, 100 m on commercial roads), 153 at corners, 39 in front of schools, churches and
+   businesses, 30 for D. Kept off pavement, drives, lots, race and shortcut lines, jumps, trails, the park, water and pipe cuts. Same breakable chunks as the Glen's.
+   Frame rate at Canton Road (1280 x 720, not 3840 x 2160): 304 fps before, 293 to 311 after.
+D1 DONE. 11 of the 13 street manholes have a rigged hydrant (4 of them the Glen's own); MH at (2966, 1091) and (2010, 935) have no free curb spot. Knocked over:
+   a bang, water, the cover flies, the hole stays open 45 s (a reset closes it). Decided: no new manholes (each needs a new riser into the network). Check: the hydrant
+   at (1552, 1272) knocked over, the car drove down into the pipe 7.7 m under the street.
+D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton Road; a grate in the gutter, its hydrant 22 m up the street. Check: 13.4 m up,
+   3.1 s in the air, down on the street 43 m on. Both kinds Free Roam only; each link has `inRaces` (off) so a route could switch one on later.
+   For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 16:38 (BUILD_INFO.txt).
