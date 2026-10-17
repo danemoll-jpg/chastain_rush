@@ -1,0 +1,36 @@
+Round 39 check, 2026-10-17 06:57, the exe, 1280 x 720, muted.
+
+=== Part B: more variety in the people (the mix, the street walkers)
+  baked: 1770 groups: football trios 238, coffee pairs 34, shop walkers 4, on the phone 257, two talking 517, gardening 208, to the mailbox 115, kids playing 397; 516 on porches
+PASS  coffee pairs about 1 group in 40 at most  -  34 of 1770
+  walkers' streets: 210 lines, 15479 points, 206 links
+  08:00 in the Glen: walkers 7 (target 7 near a view): dogs 3, families 1, couples 0, joggers 3; standing groups out 10
+  12:00 in the Glen: walkers 4 (target 4 near a view): dogs 0, families 3, couples 0, joggers 1; standing groups out 19
+  18:00 in the Glen: walkers 8 (target 8 near a view): dogs 3, families 2, couples 2, joggers 1; standing groups out 9
+  02:00 in the Glen: walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0; standing groups out 0
+PASS  walkers out round the player (dog walkers, families, couples, joggers over the day)  -  dog walkers 6, families 6, couples 2, joggers 5
+PASS  never two coffee pairs out at once  -  most out at once 1
+  rain at 17:30: walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0
+PASS  nobody walks in the rain  -  0 groups out
+
+=== Part B: pictures (Parkwood Drive, 9 am)
+  39_walker_dog: group 40 at (1537, 1281) (201 figures: people + 100 x dogs + 1000 x stroller)
+  39_walker_family: group 48 at (1609, 1282) (1003 figures: people + 100 x dogs + 1000 x stroller)
+  39_walker_jogger: group 59 at (1526, 1281) (1 figures: people + 100 x dogs + 1000 x stroller)
+  39_walker_couple: group 67 at (1573, 1281) (2 figures: people + 100 x dogs + 1000 x stroller)
+  39_life_kids: group 325 (Yard, 3 people) at (1537, 1291)
+  39_life_gardening: no such group came out near (1510, 1258)
+  39_life_mail: group 1347 (Porch, 1 people) at (1727, 1413)
+  39_life_talking: group 328 (Drive, 2 people) at (1471, 1298)
+PASS  pictures of walkers and the new actions written  -  39_walker_*.png, 39_life_*.png
+
+=== Part B: a vehicle driven at walkers
+PASS  walkers step out of the way of a vehicle coming at them  -  1 times
+
+=== Part B: the frame rate on a Glen street (1280 x 720, not measured at 3840 x 2160): the walkers off ('before') and on, 8 am
+INFO  before: 311 fps average, slowest 1 % 190 fps; walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0; the life's scripts 0.010 ms a frame
+INFO  after : 293 fps average, slowest 1 % 182 fps; walkers 7 (target 7 near a view): dogs 3, families 1, couples 0, joggers 3; the life's scripts 0.018 ms a frame
+INFO  before: 313 fps average, slowest 1 % 192 fps; walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0; the life's scripts 0.010 ms a frame
+INFO  after : 309 fps average, slowest 1 % 186 fps; walkers 7 (target 7 near a view): dogs 2, families 2, couples 2, joggers 1; the life's scripts 0.021 ms a frame
+
+6 of 6 checks passed.

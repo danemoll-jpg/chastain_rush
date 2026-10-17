@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -54,6 +54,7 @@ namespace ChastainRush
             bool Do(string p) => parts == null || parts.Contains(p);
             if (tag == "round35" && parts == null) parts = new[] { "line", "radio", "cpics", "grip", "fps" };   // Round 35 (Round20Runner.R35*.cs)
             if (tag == "round37" && parts == null) parts = new[] { "parkramps", "parkloop" };   // Round 37 (Round20Runner.R37*.cs)
+            if (tag == "round39" && parts == null) parts = new[] { "walkers", "walkpics", "walkdodge", "walkfps" };   // Round 39 (Round20Runner.R39*.cs)
             if (tag == "round38" && parts == null) parts = new[] { "bankhop", "bankthrough", "bankpics", "smash", "shoprow", "shopramp", "vault", "cpics", "cfps", "rivals", "splitai", "life", "lifepics", "lifefps" };   // Round 38 (Round20Runner.R38*.cs)
             if (tag == "round36" && parts == null) parts = new[] { "fps", "air", "tricks", "event", "glass", "inside", "rooframp", "pics" };   // Round 36 (Round20Runner.R36*.cs)
             if (Do("bj1")) yield return Guard(Bj1());
@@ -124,6 +125,16 @@ namespace ChastainRush
                 if (Do("cfps")) yield return Guard(R36CantonFps());
                 if (Do("rig")) yield return Guard(R36Rig());
                 if (Do("geyser")) yield return Guard(R36Geyser());
+            }
+            // Round 39 (Round20Runner.R39*.cs)
+            if (tag == "round39")
+            {
+                if (Do("walkers")) yield return Guard(R39Walkers());      // Part B
+                if (Do("walkpics")) yield return Guard(R39WalkPics());
+                if (Do("walkdodge")) yield return Guard(R39WalkDodge());
+                if (Do("walkfps")) yield return Guard(R39WalkFps());
+                // PART C
+                // PART D
             }
             // Round 38 (Round20Runner.R38*.cs)
             if (tag == "round38")

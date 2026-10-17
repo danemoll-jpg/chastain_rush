@@ -21,6 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         static readonly HashSet<string> HouseTypes = new() { "detached", "terrace", "semidetached_house", "house" };
+        static string ActionName(byte a) => a switch { 0 => "football trios", 1 => "coffee pairs", 3 => "walkers (shops)", 4 => "on the phone", 5 => "two talking", 6 => "gardening", 7 => "to the mailbox", 8 => "kids playing", _ => "action " + a };
 
         static void BuildLife(MapData map, TerrainGrid t, Transform parent, Neighborhood hood, RestNeighborhoods rest, Businesses biz, ChastainLakes lakes, CreekTrack creek, Ridge ridge, TreeField trees, OwnerMarker owner)
         {
@@ -96,7 +97,7 @@ namespace ChastainRush
             bool Free(Vector2 p, float gap) { foreach (var q in taken) if ((q - p).sqrMagnitude < gap * gap) return false; return true; }
             void Add(Vector2 p, Vector2 face, AmbientLife.Kind kind, int count, int action, Vector2 walk = default)
             { groups.Add(new AmbientLife.Group { at = At(p), yaw = Yaw(face), kind = kind, count = (byte)count, action = (byte)action, walk = new Vector3(walk.x, 0, walk.y) }); taken.Add(p); }
-            int houses = 0;
+            int houses = 0, coffees = 0;
             for (int bi = 0; bi < map.buildings.Length; bi++)
             {
                 var b = map.buildings[bi]; if (!HouseTypes.Contains(b.type)) continue;
@@ -108,22 +109,42 @@ namespace ChastainRush
                 float s = 0f; while (s < 40f && InPolygon(c + n * (s + .25f), ring)) s += .25f; var front = c + n * s;
                 float depth = RoadEdge(front, out _); houses++;
                 uint h = Mix(bi, 38);
-                // the porch: by the front door, facing the street (one, or two talking)
+                // Round 39 (Part B, Dan: "far too many people drinking coffee ... some variety other than people just standing around"): the coffee
+                // pair only at about 1 house in 40 (and AmbientLife lets one out at a time), a porch group at a third of the houses (was every one), and
+                // the rest doing something: two talking, someone gardening, someone walking down to the mailbox, kids playing tag
+                bool coffee = Mix(bi, 39) % 40 == 0;
+                // the porch: by the front door, facing the street: one on the phone, two talking, or one walking down to the mailbox and back
                 var porch = front + n * 1.4f;
-                if (Ok(porch) && Flat(porch, 1.2f) && Free(porch, 10f)) Add(porch, n, AmbientLife.Kind.Porch, h % 3 == 0 ? 2 : 1, h % 3 == 0 ? 1 : 4);
-                // the yard: half way to the street; a football trio where it is deep and flat, else two with mugs
+                if (h % 3 == 0 && Ok(porch) && Flat(porch, 1.2f) && Free(porch, 10f))
+                {
+                    int what = (int)((h >> 2) % 3);
+                    if (coffee) { Add(porch, n, AmbientLife.Kind.Porch, 2, AmbientLife.Coffee); coffees++; coffee = false; }
+                    else if (what == 2 && depth >= 6f) { var box = front + n * (depth - 1.2f); Add((porch + box) * .5f, n, AmbientLife.Kind.Porch, 1, AmbientLife.Mail, (box - porch) * .5f); }
+                    else Add(porch, n, AmbientLife.Kind.Porch, what == 1 ? 2 : 1, what == 1 ? AmbientLife.Talking : AmbientLife.Gesture);
+                }
+                // the yard: half way to the street; a football trio where it is deep and flat, kids playing tag, two talking; or someone gardening
+                // by the house's front
                 if (depth >= 8f)
                 {
                     var yard = front + n * Mathf.Min(depth * .5f, 12f) + side * ((h >> 3) % 2 == 0 ? 3f : -3f);
-                    bool trio = depth >= 14f && Flat(yard, 3.5f) && (h >> 5) % 3 == 0;
-                    if (Ok(yard) && Flat(yard, 1.5f) && Free(yard, 14f)) Add(yard, trio ? side : n, AmbientLife.Kind.Yard, trio ? 3 : 2, trio ? 0 : 1);
+                    bool trio = depth >= 14f && Flat(yard, 3.5f) && (h >> 5) % 3 == 0; int what = (int)((h >> 9) % 4);
+                    if (!trio && what == 1) yard = front + n * 2.2f + side * ((h >> 3) % 2 == 0 ? 3.5f : -3.5f);   // the flower bed along the front
+                    if (Ok(yard) && Flat(yard, what == 1 ? 1f : 1.5f) && Free(yard, 14f))
+                    {
+                        if (trio) Add(yard, side, AmbientLife.Kind.Yard, 3, AmbientLife.Football);
+                        else if (coffee) { Add(yard, n, AmbientLife.Kind.Yard, 2, AmbientLife.Coffee); coffees++; coffee = false; }
+                        else if (what == 1) Add(yard, n, AmbientLife.Kind.Yard, 1, AmbientLife.Gardening);
+                        else if (what == 2) Add(yard, n, AmbientLife.Kind.Yard, 2, AmbientLife.Talking);
+                        else if (Flat(yard, 3f)) Add(yard, n, AmbientLife.Kind.Yard, 2 + (int)((h >> 11) % 2), AmbientLife.Kids);
+                        else Add(yard, n, AmbientLife.Kind.Yard, 2, AmbientLife.Talking);
+                    }
                 }
-                // the drive: a point of the drive by the house (paved, not the road), two talking by the garage
+                // the drive: a point of the drive by the house (paved, not the road): two talking by the garage, or kids playing
                 for (float off = -9f; off <= 9f; off += 1.5f)
                 {
                     var d = front + n * 3.5f + side * off;
                     if (!pave.On(d, 0f) || RoadEdge(d, out _) < 4f) continue;
-                    if (Ok(d, true) && Free(d, 12f) && (h >> 7) % 2 == 0) Add(d, side, AmbientLife.Kind.Drive, 2, 1);
+                    if (Ok(d, true) && Free(d, 12f) && (h >> 7) % 2 == 0) Add(d, side, AmbientLife.Kind.Drive, 2, (h >> 13) % 3 == 1 && Flat(d, 2.5f) ? AmbientLife.Kids : AmbientLife.Talking);
                     break;
                 }
             }
@@ -144,7 +165,8 @@ namespace ChastainRush
                 {
                     var a = ring[i]; var b = ring[(i + 1) % ring.Count]; var mid = (a + b) * .5f; var o = (mid - c).normalized; var p = mid + o * 1.8f;
                     if (Beds.Wet(p.x, p.y) || BuildingDist(p) < .8f || NearLine(p, 8f)) continue;
-                    Add(p, -o, AmbientLife.Kind.Pool, 2, 1); poolGroups++;
+                    bool cf = Mix(i * 31 + (int)p.x, 40) % 40 == 0; if (cf) coffees++;
+                    Add(p, -o, AmbientLife.Kind.Pool, 2, cf ? AmbientLife.Coffee : AmbientLife.Talking); poolGroups++;   // Round 39: talking (the rare coffee pair)
                 }
             }
             // the shops' walks: walkers along each walk's long side, every 30 m
@@ -160,10 +182,49 @@ namespace ChastainRush
                     {
                         var p = wc + wu * s; float half = Mathf.Min(6f, hl - Mathf.Abs(s) - 1f);
                         if (NearLine(p, 5f) || Park != null && Park.InPark(p) || BuildingDist(p) < 1.2f || !Free(p, 18f)) continue;   // (off the shop fronts: their walkers pass 0.8 m or more from the wall)
-                        Add(p, wu, AmbientLife.Kind.Shop, 2, (shops % 3 == 2) ? 1 : 3, wu * half); shops++;
+                        Add(p, wu, AmbientLife.Kind.Shop, 2, (shops % 3 == 2) ? AmbientLife.Talking : AmbientLife.Walkers, wu * half); shops++;   // Round 39: talking, not coffee
                     }
                 }
             var life = root.gameObject.AddComponent<AmbientLife>(); life.groups = groups.ToArray();
+            string mix = string.Join(", ", groups.GroupBy(g => g.action).OrderBy(g => g.Key).Select(g => $"{ActionName(g.Key)} {g.Count()}"));
+            // ---------------- Round 39 (Part B): the neighborhoods' streets for the walkers (AmbientLife.Walkers.cs): each street's centerline, its walking
+            // line's offset (on the sidewalk where there is one, otherwise at the street's edge), its points within 5 m of a race or shortcut line, and
+            // which street ends meet (within 4 m)
+            var streets = new List<(List<Vector2> pts, float off)>(); int onWalks = 0;
+            var streetRoads = new HashSet<int>();
+            for (int ri = 0; ri < map.roads.Length; ri++) if (hood.IsStreetRoad(ri) || hood.IsAreaRoad(ri)) streetRoads.Add(ri);
+            if (rest?.Data?.neighborhoods != null) foreach (var nb in rest.Data.neighborhoods) if (nb.roads != null) foreach (int ri in nb.roads) if (ri >= 0 && ri < map.roads.Length) streetRoads.Add(ri);
+            foreach (int ri in streetRoads.OrderBy(i => i))
+            {
+                var r = map.roads[ri]; if (r.tunnel || r.points == null || r.points.Length < 4 || r.@class == "service") continue;
+                var pts = Densify(ToPoints(r.points), 3f); float half = r.width * .5f;
+                // a sidewalk: its band 1.9 to 3.3 m past the pavement's edge (MapBuilder.Round11.cs) on either side at most of the street's points
+                int hits = 0, tries = 0;
+                for (int i = 1; i < pts.Count; i += 3) { var tg = (pts[i] - pts[i - 1]).normalized; var nr = new Vector2(tg.y, -tg.x); tries++; if (DriveBands.At(pts[i] + nr * (half + 2.6f)) == "sidewalk" || DriveBands.At(pts[i] - nr * (half + 2.6f)) == "sidewalk") hits++; }
+                bool walk = tries > 0 && hits * 2 >= tries; if (walk) onWalks++;
+                streets.Add((pts, half + (walk ? 2.6f : .7f)));
+            }
+            var sp = new List<Vector2>(); var first = new List<int>(); var offs = new List<float>(); var race = new List<bool>();
+            foreach (var (pts, off) in streets) { first.Add(sp.Count); offs.Add(off); foreach (var q in pts) { sp.Add(q); race.Add(NearLine(q, off + 5f)); } }
+            first.Add(sp.Count);
+            var linkFirst = new List<int>(); var linkList = new List<int>();
+            for (int l = 0; l < streets.Count; l++)
+                for (int e = 0; e < 2; e++)
+                {
+                    linkFirst.Add(linkList.Count); var at = e == 0 ? streets[l].pts[0] : streets[l].pts[streets[l].pts.Count - 1];
+                    for (int o = 0; o < streets.Count; o++)
+                    {
+                        if (o == l) continue; var op = streets[o].pts;
+                        if ((op[0] - at).sqrMagnitude < 16f) linkList.Add(2 * o); else if ((op[op.Count - 1] - at).sqrMagnitude < 16f) linkList.Add(2 * o + 1);
+                    }
+                }
+            linkFirst.Add(linkList.Count);
+            life.streetPts = sp.ToArray(); life.streetFirst = first.ToArray(); life.streetOff = offs.ToArray(); life.streetRace = race.ToArray(); life.linkFirst = linkFirst.ToArray(); life.links = linkList.ToArray();
+            // what Round 38's rule made coffee pairs of the same places: every two-person porch (all of these), every yard group but the football trios,
+            // every drive and pool-deck group, a third of the shops' walkers
+            int coffeeR38 = groups.Count(g => g.kind == AmbientLife.Kind.Porch || g.kind == AmbientLife.Kind.Drive || g.kind == AmbientLife.Kind.Pool || (g.kind == AmbientLife.Kind.Yard && g.action != AmbientLife.Football) || (g.kind == AmbientLife.Kind.Shop && g.action == AmbientLife.Talking));
+            Debug.Log($"[Round39] life: the mix {mix}; coffee pairs {coffees} of {groups.Count} groups (1 in {(coffees > 0 ? groups.Count / coffees : 0)}; Round 38's rule on these places: {coffeeR38}); walkers' streets {streets.Count} ({onWalks} on a sidewalk, the rest at the street's edge), " +
+                      $"{sp.Count} points ({race.Count(x => x)} within 5 m of a race line), {linkList.Count} links between street ends");
 
             // ---------------- the animals' habitats
             var habitats = new List<Wildlife.Habitat>(); var animalAt = new Dictionary<Wildlife.Species, List<Vector2>>();

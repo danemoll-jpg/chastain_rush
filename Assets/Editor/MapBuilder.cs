@@ -28,7 +28,7 @@ namespace ChastainRush
             { "living_street", 0.06f }, { "service", 0.05f },
         };
 
-        [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; public long osm_id; public bool bridge; }
+        [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; public long osm_id; public bool bridge; public bool tunnel; public int maxspeed_mph; }   // Round 39: tunnel, maxspeed_mph (the police)
         [Serializable] class Building { public string type; public float height; public float[] footprint; public string roof; public float pitch_deg; public int seed; }
         [Serializable] class Driveway { public float[] points; public float width; public string source; }
         [Serializable] class Area { public string name; public float[] outline; }
