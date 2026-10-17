@@ -128,7 +128,7 @@ CHECKPOINTS = [
 SETTINGS = {
     "name": "Chastain Ridge",
     "direction": "forward",
-    "directions": ["forward"],      # the jump only works one way
+    "directions": ["forward", "reverse"],   # Round 39 (C): the reverse lap climbs the ridge (loop_rev)
     "laps": 3,
     "traffic": True,                # Round 30 (A3): a race on open roads
     "gate_half_width_m": 12.0,
@@ -297,8 +297,6 @@ for sid, name, path, sa, sb, bj, f, k, L in (("S1", "Knoll hop", p1, s1a, s1b, b
 # ---------------------------------------------------------------- the race layer: AI zones, reset skip, closures, junctions
 ai_zones = [{"id": "ridge_leap", "s0": round(s_lip - 80.0, 1), "s1": round(s_lip + 2.0, 1), "speed": 26.0}]
 reset_skip = [{"id": "ridge_leap", "s0": round(s_lip - 3.0, 1), "s1": round(s_land + 4.0, 1), "to_s": round(s_land + 25.0, 1)}]
-course_lines = [lap]
-def course_dist(q): return min(seg_dist(q, a, b) for a, b in zip(lap[:-1], lap[1:]))
 def walk(p, k, step):
     arc = 0.0; i = k
     while 0 <= i + step < len(p):
@@ -310,60 +308,188 @@ def walk(p, k, step):
             yield arc + d, (a[0] + (b[0] - a[0]) * d / seg, a[1] + (b[1] - a[1]) * d / seg), ((b[0] - a[0]) / seg, (b[1] - a[1]) / seg)
         arc += seg; i += step
 roads_pts = [pts(r["points"]) for r in roads]
-def follow(ri, k, step, arc0, depth, seen):
-    p = roads_pts[ri]; last = None
-    for d, q, tan in walk(p, k, step):
-        last = (arc0 + d, q, tan)
-        if course_dist(q) >= SETTINGS["closure_clear_m"]: return (arc0 + d, q, tan, ri)
-        if arc0 + d > 120: return None
-    if last is None or depth >= 3: return None
-    end = p[-1] if step > 0 else p[0]
-    for rj, pj in enumerate(roads_pts):
-        if rj == ri or rj in seen or roads[rj]["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
-        for kj in (0, len(pj) - 1):
-            if math.dist(pj[kj], end) < 1.5:
-                res = follow(rj, kj, 1 if kj == 0 else -1, last[0], depth + 1, seen | {ri})
-                if res: return res
-    return None
-box = (min(q[0] for q in lap) - 150, max(q[0] for q in lap) + 150, min(q[1] for q in lap) - 150, max(q[1] for q in lap) + 150)
-closures, stubs, junc = [], [], []
-for ri, r in enumerate(roads):
-    if r["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
-    p = roads_pts[ri]
-    if not any(box[0] < x < box[1] and box[2] < z < box[3] for x, z in p): continue
-    on = [course_dist(v) < max(2.5, r["width"] / 4.0 + 1.0) for v in p]
-    for k in range(len(p)):
-        if not on[k]: continue
-        for step in (1, -1):
-            nb = k + step
-            if not (0 <= nb < len(p)) or on[nb]: continue
-            contact = p[k]
-            # the carriageway the Ridge leap lands on: its piece from the Chastain Corner crossing to the landing is barred at the
-            # crossing only (a barrier just short of the landing would stand in the flight's last meters)
-            if r["osm_id"] == 9151940 and math.dist(contact, Pl) < 40.0: continue
-            res = follow(ri, k, step, 0.0, 0, frozenset())
-            nm = r["name"] or "(unnamed " + r["class"] + ")"
-            if res is None: stubs.append({"road": nm, "osm_id": r["osm_id"], "contact": [round(contact[0], 1), round(contact[1], 1)]}); continue
-            arc, q, tan, rj = res
-            sj = nearest_s(lap, contact)
-            junc.append((sj[1], nm))
-            closures.append({"road": nm, "osm_id": r["osm_id"], "x": round(q[0], 2), "z": round(q[1], 2), "dx": round(tan[0], 4), "dz": round(tan[1], 4),
-                             "width_m": roads[rj]["width"], "junction_s": round(sj[1], 1), "contact": [round(contact[0], 1), round(contact[1], 1)], "arc_m": round(arc, 1),
-                             "barrier_on": roads[rj]["name"] or "(unnamed " + roads[rj]["class"] + ")"})
-closures.sort(key=lambda c: -c["width_m"])
-kept = []
-for c in closures:
-    if any(math.dist((c["x"], c["z"]), (o["x"], o["z"])) < 5.0 and abs(c["dx"] * o["dx"] + c["dz"] * o["dz"]) > 0.8 for o in kept): continue
-    # never across a shortcut's line
-    if any(seg_dist((c["x"], c["z"]), a, b) < c["width_m"] / 2 + 4.0 for path in (p1, p2) for a, b in zip(path[:-1], path[1:])): print(f"  (no barrier on {c['road']} at ({c['x']:.0f}, {c['z']:.0f}): on a shortcut's line)"); continue
-    kept.append(c)
-closures = sorted(kept, key=lambda c: c["junction_s"])
-for i, c in enumerate(closures, 1): c["id"] = f"B{i}"; c["label"] = f"{c['road']} at lap {c['junction_s']:.0f} m"
-junc.sort(); merged = []
-for s, nm in junc:
-    if merged and s - merged[-1]["s"] < 6: merged[-1]["roads"].append(nm); continue
-    merged.append({"s": round(s, 1), "roads": [nm]})
-for j in merged: j["roads"] = sorted(set(j["roads"])); j["pos"] = [round(v, 1) for v in point_at(lap, j["s"], C)]
+def closures_for(lap, sc_paths, skip):
+    """barriers across every road that leaves this lap (and the junction list), as Round 33's; Round 39: a function, for the reverse lap too"""
+    def course_dist(q): return min(seg_dist(q, a, b) for a, b in zip(lap[:-1], lap[1:]))
+    def follow(ri, k, step, arc0, depth, seen):
+        p = roads_pts[ri]; last = None
+        for d, q, tan in walk(p, k, step):
+            last = (arc0 + d, q, tan)
+            if course_dist(q) >= SETTINGS["closure_clear_m"]: return (arc0 + d, q, tan, ri)
+            if arc0 + d > 120: return None
+        if last is None or depth >= 3: return None
+        end = p[-1] if step > 0 else p[0]
+        for rj, pj in enumerate(roads_pts):
+            if rj == ri or rj in seen or roads[rj]["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
+            for kj in (0, len(pj) - 1):
+                if math.dist(pj[kj], end) < 1.5:
+                    res = follow(rj, kj, 1 if kj == 0 else -1, last[0], depth + 1, seen | {ri})
+                    if res: return res
+        return None
+    box = (min(q[0] for q in lap) - 150, max(q[0] for q in lap) + 150, min(q[1] for q in lap) - 150, max(q[1] for q in lap) + 150)
+    closures, stubs, junc = [], [], []
+    for ri, r in enumerate(roads):
+        if r["class"] in ("motorway", "motorway_link", "trunk", "trunk_link"): continue
+        p = roads_pts[ri]
+        if not any(box[0] < x < box[1] and box[2] < z < box[3] for x, z in p): continue
+        on = [course_dist(v) < max(2.5, r["width"] / 4.0 + 1.0) for v in p]
+        for k in range(len(p)):
+            if not on[k]: continue
+            for step in (1, -1):
+                nb = k + step
+                if not (0 <= nb < len(p)) or on[nb]: continue
+                contact = p[k]
+                # the carriageway the Ridge leap lands on: its piece from the Chastain Corner crossing to the landing is barred at the
+                # crossing only (a barrier just short of the landing would stand in the flight's last meters)
+                if skip(r, contact): continue
+                res = follow(ri, k, step, 0.0, 0, frozenset())
+                nm = r["name"] or "(unnamed " + r["class"] + ")"
+                if res is None: stubs.append({"road": nm, "osm_id": r["osm_id"], "contact": [round(contact[0], 1), round(contact[1], 1)]}); continue
+                arc, q, tan, rj = res
+                sj = nearest_s(lap, contact)
+                junc.append((sj[1], nm))
+                closures.append({"road": nm, "osm_id": r["osm_id"], "x": round(q[0], 2), "z": round(q[1], 2), "dx": round(tan[0], 4), "dz": round(tan[1], 4),
+                                 "width_m": roads[rj]["width"], "junction_s": round(sj[1], 1), "contact": [round(contact[0], 1), round(contact[1], 1)], "arc_m": round(arc, 1),
+                                 "barrier_on": roads[rj]["name"] or "(unnamed " + roads[rj]["class"] + ")"})
+    closures.sort(key=lambda c: -c["width_m"])
+    kept = []
+    for c in closures:
+        if any(math.dist((c["x"], c["z"]), (o["x"], o["z"])) < 5.0 and abs(c["dx"] * o["dx"] + c["dz"] * o["dz"]) > 0.8 for o in kept): continue
+        # never across a shortcut's line
+        if any(seg_dist((c["x"], c["z"]), a, b) < c["width_m"] / 2 + 4.0 for path in sc_paths for a, b in zip(path[:-1], path[1:])): print(f"  (no barrier on {c['road']} at ({c['x']:.0f}, {c['z']:.0f}): on a shortcut's line)"); continue
+        kept.append(c)
+    closures = sorted(kept, key=lambda c: c["junction_s"])
+    for i, c in enumerate(closures, 1): c["id"] = f"B{i}"; c["label"] = f"{c['road']} at lap {c['junction_s']:.0f} m"
+    junc.sort(); merged = []
+    for s, nm in junc:
+        if merged and s - merged[-1]["s"] < 6: merged[-1]["roads"].append(nm); continue
+        merged.append({"s": round(s, 1), "roads": [nm]})
+    for j in merged: j["roads"] = sorted(set(j["roads"])); j["pos"] = [round(v, 1) for v in point_at(lap, j["s"], cum(lap))]
+    return closures, stubs, merged
+# the carriageway the Ridge leap lands on: its piece from the Chastain Corner crossing to the landing is barred at the crossing only
+# (a barrier just short of the landing would stand in the flight's last meters)
+closures, stubs, merged = closures_for(lap, (p1, p2), lambda r, contact: r["osm_id"] == 9151940 and math.dist(contact, Pl) < 40.0)
+
+# ---------------------------------------------------------------- Round 39 (C): the reverse lap, THE RIDGE CLIMB and the shortcuts backward
+# The reverse is a lap of its own (RaceRoute: loop_rev and the *_rev fields), not the forward loop run backward: two-way roads on their
+# right-hand lane for this direction, Canton Road's southbound and New Chastain Road's northwest-bound carriageways.
+#   Canton Road south from Chastain Corner to New Chastain Road; right onto New Chastain Road northwest, downhill; THE RIDGE CLIMB up
+#   onto the dead end; Chastain Ridge Drive the way OSM runs it (west from the dead end, over the crest, north down the ridge, east
+#   along z 706); straight across New Chastain Road onto Chastain Corner, uphill; right onto Canton Road: the lap.
+# THE RIDGE CLIMB: a pile of road-work fill pushed out over the hollow's edge just past the southbound carriageway's west shoulder,
+# north of the way out of the hollow (it never covers it). Its ramp rises 2.8 m from the shoulder like the forward pile's; its lip
+# stands about 7 m over the hollow's floor. An aimed launch (vmin = vmax) up over the hollow and house 706 that comes down a few
+# meters past the forward pile's lip, on its ramp face (the forward take-off is the climb's landing ramp), and on down it onto the
+# drive. Short of it: the hollow, and the way out of it back to New Chastain Road (Round 33). A reset between the climb's foot and
+# the landing puts the vehicle on Chastain Ridge Drive past the landing, facing on (reset_skip_rev).
+CLIMB_LIP = (3221.0, 632.0)
+CLIMB = dict(ramp=11.0, width=6.0, rise=2.8, angle=40.0, back=30.0)
+CLIMB_DOWN_RAMP_M = 6.0        # where it lands: this far down the forward pile's ramp face from its lip
+CLIMB_RUNUP = [(3272.0, 597.0), (3260.0, 616.0), (3246.0, 632.0)]   # off the northwest-bound carriageway, across both, to the pile's foot
+# reverse S1 "Knoll drop": off Chastain Corner up the knoll's northeast shoulder, across its top, down its east face, up the S1 pile's
+# back (24 deg) and off its lip into the lot (a launch off the back, rev_angle / rev_vmax, as the creek's jumps), onto Canton Road south
+RS1_CTRL = [(3398.0, 1058.0), (3421.0, 1060.0), (3430.0, 1050.0), (3436.0, 1041.0), (3446.0, 1044.0), (3456.0, 1046.4)]
+RS1_REV = dict(angle=24.0, vmax=15.0)
+RS1_AFTER = [(3492.0, 1040.0), (3506.0, 1028.0)]
+RS1_JOIN = (3519.0, 1012.0)
+# S2 backward is not built: the garage row (63) stands between its landing and its pile's back, so there is no run at the back to
+# take off from; it is a forward-only shortcut (direction "forward": not in a reverse race)
+CHECKPOINTS_REV = [
+    (3565.0, 470.0, "Canton Road"),
+    (3430.0, 413.0, "New Chastain Road"),
+    (3104.0, 620.0, "past the climb"),          # a cut through the yards up to the drive misses it
+    (3090.0, 707.0, "Chastain Ridge Drive"),
+    (3236.0, 927.0, "up Chastain Corner"),
+    (3490.0, 1081.0, "Chastain Corner"),        # the Knoll drop skips it
+]
+RF_ = (RL[0] - dR[0] * RIDGE["ramp"], RL[1] - dR[1] * RIDGE["ramp"])
+def fwd_ramp_y(back):   # the forward pile's ramp face, 'back' m behind its lip (MapBuilder.BigJumps.cs KickerProfile)
+    y0 = ground(*RF_) - 0.02; k = math.tan(math.radians(RIDGE["angle"])); R = ridge_y - y0; Lk = min(RIDGE["ramp"], 2 * R / k); u = max(0.0, Lk - back)
+    return y0 + k * u * u / (2 * Lk)
+CT = (RL[0] - dR[0] * CLIMB_DOWN_RAMP_M, RL[1] - dR[1] * CLIMB_DOWN_RAMP_M)
+D_c = math.dist(CLIMB_LIP, CT); dC = ((CT[0] - CLIMB_LIP[0]) / D_c, (CT[1] - CLIMB_LIP[1]) / D_c)
+CF = (CLIMB_LIP[0] - dC[0] * CLIMB["ramp"], CLIMB_LIP[1] - dC[1] * CLIMB["ramp"])
+climb_y = ground(*CF) + CLIMB["rise"]
+dy_c = fwd_ramp_y(CLIMB_DOWN_RAMP_M) - climb_y; th = math.radians(CLIMB["angle"])
+CLIMB_SPEED = round(math.sqrt(9.81 * D_c * D_c / (2 * math.cos(th) ** 2 * (D_c * math.tan(th) - dy_c))), 1)
+vxc = CLIMB_SPEED * math.cos(th); t_l = math.dist(CLIMB_LIP, RL) / vxc
+over_lip = climb_y + CLIMB_SPEED * math.sin(th) * t_l - 4.905 * t_l * t_l - ridge_y
+houses_c = {}
+for k_ in range(1, int(D_c)):
+    q = (CLIMB_LIP[0] + dC[0] * k_, CLIMB_LIP[1] + dC[1] * k_); tt = k_ / vxc; y = climb_y + CLIMB_SPEED * math.sin(th) * tt - 4.905 * tt * tt
+    for i, ring, h, kind in B:
+        if near_box(i, q, 2.0) and poly_dist(q, ring) < 1.0:
+            houses_c[i] = round(min(houses_c.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
+print(f"Ridge climb: lip ({CLIMB_LIP[0]:.1f}, {CLIMB_LIP[1]:.1f}) at {climb_y:.2f} m ({climb_y - ground(*CLIMB_LIP):.1f} m over its own ground, {CLIMB['rise']} m over its foot on the shoulder), "
+      f"foot {nearest_s(pts(by_osm[9151940]['points']), CF)[0]:.1f} m from the southbound carriageway's centerline; {CLIMB['angle']} deg, bearing {math.degrees(math.atan2(dC[0], dC[1])) % 360:.1f}; "
+      f"aimed at {CLIMB_SPEED} m/s to land {CLIMB_DOWN_RAMP_M} m down the forward pile's ramp, {D_c:.1f} m away, {t_l:.2f} s to the forward lip, "
+      f"{(CLIMB_SPEED * math.sin(th)) ** 2 / 19.62:.1f} m up; passes {over_lip:.1f} m over the forward lip; clearance over roofs {houses_c}")
+for dv in (-1.0, 1.0):
+    t2 = math.dist(CLIMB_LIP, RL) / ((CLIMB_SPEED + dv) * math.cos(th)); print(f"    ({CLIMB_SPEED + dv:.1f} m/s: {climb_y + (CLIMB_SPEED + dv) * math.sin(th) * t2 - 4.905 * t2 * t2 - ridge_y:+.1f} m over the forward lip)")
+SPEC_REV = [
+    ("Canton Road Northeast", 1416681832, way(1416681832, rev=True, a=(3507.0, 1086.0)), True),
+    ("Canton Road", 330735258, way(330735258), False),
+    ("Canton Road", 330735259, way(330735259), False),
+]
+line_r, offs_r = [], []
+for name, osm, seg, two_way in SPEC_REV:
+    if line_r and math.dist(line_r[-1], seg[0]) > 0.5: raise SystemExit(f"the reverse lap breaks before {name} ({osm}): gap {math.dist(line_r[-1], seg[0]):.1f} m")
+    seg = resample(seg, 3.0); off = by_osm[osm]["width"] / 4.0 if two_way else 0.0
+    line_r += seg if not line_r else seg[1:]; offs_r += [off] * (len(seg) if not offs_r else len(seg) - 1)
+nw = way(290282527, a=line_r[-1], b=CLIMB_RUNUP[0])
+for q in resample(nw, 3.0)[1:]: line_r.append(q); offs_r.append(0.0)
+runup = chaikin([line_r[-1]] + CLIMB_RUNUP + [CF], 3)
+for q in resample(runup, 3.0)[1:] + resample([CF, CLIMB_LIP], 2.0)[1:]: line_r.append(q); offs_r.append(0.0)
+for q in resample([CLIMB_LIP, CT], 4.0)[1:] + resample([CT, RF_], 2.0)[1:]: line_r.append(q); offs_r.append(0.0)
+drive = way(243965590, a=RF_)
+for osm in (None, 1360406917, 1360406916, 1360406918, 1360406923, 9139438):
+    seg = drive if osm is None else pts(by_osm[osm]["points"])
+    if math.dist(line_r[-1], seg[0]) > 1.0: raise SystemExit(f"the reverse lap breaks before {osm}: gap {math.dist(line_r[-1], seg[0]):.1f} m")
+    two = osm in (1360406923, 9139438)
+    for q in resample(seg, 3.0)[1:]: line_r.append(q); offs_r.append(by_osm[osm]["width"] / 4.0 if two else 0.0)
+if math.dist(line_r[0], line_r[-1]) > 0.5: raise SystemExit("the reverse lap does not close: gap %.1f m" % math.dist(line_r[0], line_r[-1]))
+line_r[-1] = line_r[0]; offs_r[-1] = offs_r[0]
+Nr = len(line_r); sm_r = [sum(offs_r[max(0, i - 5):min(Nr, i + 6)]) / len(offs_r[max(0, i - 5):min(Nr, i + 6)]) for i in range(Nr)]
+lap_r = []
+for i in range(Nr):
+    a, b = line_r[max(0, i - 1)], line_r[min(Nr - 1, i + 1)]; t = (b[0] - a[0], b[1] - a[1]); n = math.hypot(*t) or 1.0
+    lap_r.append((line_r[i][0] + t[1] / n * sm_r[i], line_r[i][1] - t[0] / n * sm_r[i]))
+lap_r[-1] = lap_r[0]
+Cr = cum(lap_r); L_rev = Cr[-1]
+def SR(q): return nearest_s(lap_r, q)[1]
+gate_s_rev = round(SR(GATE_AT), 1)
+cps_rev = []
+for i, (x, z, label) in enumerate(CHECKPOINTS_REV, 1):
+    s_ = round(SR((x, z)), 1); p_ = point_at(lap_r, s_, Cr); cps_rev.append({"id": i, "s": s_, "pos": [round(p_[0], 1), round(p_[1], 1)], "label": label})
+if [c["id"] for c in sorted(cps_rev, key=lambda c: (c["s"] - gate_s_rev) % L_rev)] != [c["id"] for c in cps_rev]: raise SystemExit("reverse checkpoints are not in lap order from the gate")
+s_clip = SR(CLIMB_LIP); s_cfoot = SR(CF); s_cland = SR(CT)
+print(f"reverse lap {L_rev:.0f} m, gate at s {gate_s_rev}; climb foot s {s_cfoot:.0f}, lip s {s_clip:.0f}, landing s {s_cland:.0f}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps_rev))
+# reverse S1 "Knoll drop": the S1 pile's back is its take-off
+d1b = (-d1[0], -d1[1])
+s1r0 = SR(RS1_CTRL[0]); q0 = point_at(lap_r, s1r0, Cr)
+v_r = RS1_REV["vmax"]
+fr = flight(S1_LIP, d1b, bj1["lip_y"], v_r, RS1_REV["angle"])
+path_r = chaikin([q0] + RS1_CTRL[1:] + [S1_LIP], 3) + resample([S1_LIP, fr["at"]], 3.0)[1:]
+s1r1 = SR(RS1_JOIN); q1 = point_at(lap_r, s1r1, Cr)
+path_r = resample(path_r + chaikin([fr["at"]] + RS1_AFTER + [q1], 3)[1:], 2.0)
+fg_r = [c["id"] for c in cps_rev if (c["s"] - s1r0) % L_rev < (s1r1 - s1r0) % L_rev]
+plen_r = cum(path_r)[-1]; sLip_r = nearest_s(path_r, S1_LIP)[1]; sLand_r = nearest_s(path_r, fr["at"])[1]
+print(f"reverse S1 Knoll drop: leaves the reverse lap at s {s1r0:.0f}, rejoins at s {s1r1:.0f}: {plen_r:.0f} m against {(s1r1 - s1r0) % L_rev:.0f} m (saves {(s1r1 - s1r0) % L_rev - plen_r:.0f} m); "
+      f"forgives CP {fg_r}; off the S1 pile's back at {RS1_REV['angle']} deg, {v_r} m/s at most: {fr}")
+bj1["rev_angle"] = RS1_REV["angle"]; bj1["rev_vmax"] = v_r
+shortcuts.append({"id": "s1r_knoll_drop", "name": "Knoll drop", "direction": "reverse", "path": [round(v, 2) for q in path_r for v in q], "half_width_m": 3.5,
+                  "entry_inset_m": 22.0, "entry_margin_m": 1.5, "forgives": fg_r, "ai_speed": 18.0,
+                  "ai_profile": [round(v, 1) for v in (0.0, 14.0, 20.0, 12.0, sLip_r - 14.0, 12.0, sLip_r + 1.0, 14.0, sLand_r + 2.0, 12.0, plen_r - 12.0, 14.0)]})
+# the reverse race layer
+ai_zones_rev = [{"id": "ridge_climb", "s0": round(s_cfoot - 45.0, 1), "s1": round(s_clip + 1.0, 1), "speed": 17.0}]
+reset_skip_rev = [{"id": "ridge_climb", "s0": round(s_cfoot - 3.0, 1), "s1": round(s_cland + 4.0, 1), "to_s": round(s_cland + 30.0, 1)}]
+closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (path_r,), lambda r, contact: False)
+print(f"reverse closures: {len(closures_rev)}; dead-end stubs not barred: {len(stubs_rev)}")
+for c in closures_rev: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}), road width {c['width_m']:.0f} m")
+climb_bj = {"id": "CLIMB", "look": "dirtpile", "s_lip": -1.0, "lip": [round(CLIMB_LIP[0], 2), round(CLIMB_LIP[1], 2)], "dir": [round(dC[0], 5), round(dC[1], 5)],
+            "height": round(climb_y - ground(*CLIMB_LIP), 2), "lip_y": round(climb_y, 3), "angle_deg": CLIMB["angle"], "ramp_m": CLIMB["ramp"], "width": CLIMB["width"],
+            "land_from": round(D_c - 12.0, 1), "land_to": round(D_c + 25.0, 1), "vmin": CLIMB_SPEED, "vmax": CLIMB_SPEED, "design": CLIMB_SPEED, "back_angle": CLIMB["back"],
+            "flights": {str(CLIMB_SPEED): [round(t_l, 2), round(D_c, 1), round((CLIMB_SPEED * math.sin(th)) ** 2 / 19.62, 1)]}}
 
 # ---------------------------------------------------------------- the world pieces (Data/tracks/chastain_ridge.json)
 rbj = {"id": "RL", "look": "dirtpile", "s_lip": -1.0, "lip": [round(RL[0], 2), round(RL[1], 2)], "dir": [round(dR[0], 5), round(dR[1], 5)], "height": RIDGE["height"],
@@ -376,20 +502,24 @@ def zone(L, d, a, b, half_a, half_b):
                                    (L[0] + d[0] * b - n[0] * half_b, L[1] + d[1] * b - n[1] * half_b), (L[0] + d[0] * a - n[0] * half_a, L[1] + d[1] * a - n[1] * half_a)] for v in q]
 landings = [{"id": "RL", "poly": zone(RL, dR, rf["dist"] - 30.0, rf["dist"] + 45.0, 14.0, 20.0)},
             {"id": "S1", "poly": zone(S1_LIP, d1, 8.0, f1["dist"] + 30.0, 7.0, 9.0)},
-            {"id": "S2", "poly": zone(S2_LIP, d2, 8.0, f2["dist"] + 14.0, 7.0, 9.0)}]
+            {"id": "S2", "poly": zone(S2_LIP, d2, 8.0, f2["dist"] + 14.0, 7.0, 9.0)},
+            {"id": "CLIMB", "poly": zone(CLIMB_LIP, dC, D_c - 12.0, D_c + 24.0, 6.0, 8.0)}]
 def flat(p): return [round(v, 2) for q in p for v in q]
 clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0] + dR[0] * (rf["dist"] - 45.0), RL[1] + dR[1] * (rf["dist"] - 45.0)), (RL[0] + dR[0] * (rf["dist"] + 30.0), RL[1] + dR[1] * (rf["dist"] + 30.0))]), "half": 9.0},
          {"id": "RL run-up and pile", "points": flat([RIDGE_RUNUP_FROM, RL]), "half": 6.0},
          {"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "half": 7.0},
          {"id": "S1", "points": flat(p1[::3] + [p1[-1]]), "half": 6.0},
-         {"id": "S2", "points": flat(p2[::3] + [p2[-1]]), "half": 6.0}]
+         {"id": "S2", "points": flat(p2[::3] + [p2[-1]]), "half": 6.0},
+         {"id": "RC run-up and pile", "points": flat([CLIMB_RUNUP[-1], CF, CLIMB_LIP]), "half": 6.0},
+         {"id": "RC the landing on the dead end", "points": flat([CT, RF_, (3112.0, 621.0)]), "half": 6.0},
+         {"id": "S1 backward (Knoll drop)", "points": flat(path_r[::3] + [path_r[-1]]), "half": 6.0}]
 # the run-out past the landing: a vehicle that lands across the road at speed runs on into the woods east of it; the trees there
 # snap when hit (TreeField.breakable) instead of stopping it dead (Round 33 check: 4 of 11 vehicles stopped on trunks 30-40 m past the road)
 breaks = [{"id": "RL run-out", "points": flat([(RL[0] + dR[0] * (rf["dist"] + 6.0), RL[1] + dR[1] * (rf["dist"] + 6.0)), (RL[0] + dR[0] * (rf["dist"] + 75.0), RL[1] + dR[1] * (rf["dist"] + 75.0))]), "half": 22.0},
           # and the woods along the road's east side beyond it, where a vehicle turning back to the road after the landing runs
           {"id": "RL run-out along the road", "points": flat([(Pl[0] + 32.0, Pl[1] + 4.0), (Pl[0] + 52.0, Pl[1] - 60.0)]), "half": 18.0}]
 track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/mapgen/make_ridge_route.py (MapBuilder.ChastainRidge.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [rbj, bj1, bj2], "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
+         "big_jumps": [rbj, bj1, bj2, climb_bj], "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
          "grades": [{"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "y": [round(ground(*HOLLOW_RAMP[0]), 2), round(ground(*HOLLOW_RAMP[1]), 2)], "half": 4.0, "blend": 5.0,
                      "keep_off": flat(NC), "keep_off_m": 5.0}]}
 route = dict(SETTINGS)
@@ -398,6 +528,9 @@ route.update({
     "lap_length_m": round(L_lap, 1), "loop": flat(lap), "gate_s": gate_s, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
     "checkpoints": cps, "junctions": merged, "loop_pieces": pieces, "official_shortcuts": shortcuts, "closures": closures,
     "closure_stubs_not_barred": stubs, "ai_zones": ai_zones, "reset_skip": reset_skip,
+    # Round 39 (C): the reverse lap of its own (RaceRoute: loop_rev and the *_rev fields)
+    "lap_length_rev_m": round(L_rev, 1), "loop_rev": flat(lap_r), "gate_s_rev": gate_s_rev, "checkpoints_rev": cps_rev, "junctions_rev": merged_rev,
+    "closures_rev": closures_rev, "ai_zones_reverse": ai_zones_rev, "reset_skip_rev": reset_skip_rev,
 })
 os.makedirs(os.path.dirname(OUT_TRACK), exist_ok=True)
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)

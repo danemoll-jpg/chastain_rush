@@ -89,6 +89,16 @@ namespace ChastainRush
         public RouteRailJson[] rails;
         public RouteSwitchGateJson[] switch_gates;
         public RouteResetSkipJson[] reset_skip;   // Round 33 (the Ridge leap): a reset between s0 and s1 (forward) puts the vehicle at to_s, past the landing
+        // Round 39 (C, the reverse Chastain Ridge): a reverse lap of its own, in travel order, when the reverse is not the loop run backward (other
+        // carriageways, right-hand lanes the other way, a jump that only works one way): its gate, checkpoints, junctions, closures and reset skips
+        // in its own stations; ai_zones_reverse are in them too
+        public float[] loop_rev;
+        public float gate_s_rev, lap_length_rev_m;
+        public RouteCheckpointJson[] checkpoints_rev;
+        public RouteJunctionJson[] junctions_rev;
+        public RouteClosureJson[] closures_rev;
+        public RouteResetSkipJson[] reset_skip_rev;
+        public bool OwnReverse => loop_rev != null && loop_rev.Length >= 8;
         public float[] finish_park, finish_park_y;   // Round 28: where finished AI cars drive and park, off the lap (x, z ... and heights; RoadDriver)
         public float finish_park_gap_m, finish_park_speed;   // Round 35: the parked cars' spacing (0: 9 m) and the drive there (0: 9 m/s)
         public float gate_ring_m;   // Round 35: the line is in a pipe of this radius: a checkered hoop round the pipe's wall instead of the arch
@@ -158,6 +168,7 @@ namespace ChastainRush
     {
         public string Name, Direction;
         public bool Reverse;
+        public bool OwnReverse;             // Round 39: the reverse runs the route's own reverse lap (loop_rev), not the loop backward
         public int Laps;
         public float LapLength, GateS;     // GateS: where the gate is on the path, from the path start
         public Vector3[] Path;              // closed, in travel order (last point = first point)
@@ -176,25 +187,27 @@ namespace ChastainRush
             string dir = string.IsNullOrEmpty(directionOverride) ? j.direction : directionOverride;
             if (dir != "forward" && dir != "reverse") throw new Exception($"Route direction must be \"forward\" or \"reverse\", not \"{dir}\"");
             var r = new RaceRoute { Name = j.name, Direction = dir, Reverse = dir == "reverse", Laps = Mathf.Max(1, j.laps), LapLength = j.lap_length_m };
-            int n = j.loop.Length / 2;
+            r.OwnReverse = r.Reverse && j.OwnReverse;   // Round 39
+            var loop = r.OwnReverse ? j.loop_rev : j.loop;
+            int n = loop.Length / 2;
             var pts = new List<Vector3>(n);
-            bool hasY = j.loop_y != null && j.loop_y.Length == n;   // Round 27: the underground race's own heights
-            for (int i = 0; i < n; i++) pts.Add(hasY ? new Vector3(j.loop[2 * i], j.loop_y[i], j.loop[2 * i + 1]) : Ground(j.loop[2 * i], j.loop[2 * i + 1]));
+            bool hasY = !r.OwnReverse && j.loop_y != null && j.loop_y.Length == n;   // Round 27: the underground race's own heights
+            for (int i = 0; i < n; i++) pts.Add(hasY ? new Vector3(loop[2 * i], j.loop_y[i], loop[2 * i + 1]) : Ground(loop[2 * i], loop[2 * i + 1]));
             r.Underground = j.underground; r.Data = j;
-            if (r.Reverse) pts.Reverse();
+            if (r.Reverse && !r.OwnReverse) pts.Reverse();
             r.Path = pts.ToArray();
             r.cum = new float[n];
             for (int i = 1; i < n; i++) r.cum[i] = r.cum[i - 1] + Flat(r.Path[i] - r.Path[i - 1]).magnitude;
             r.LapLength = r.cum[n - 1];
             float L = r.LapLength;
 
-            float gateS = r.Reverse ? L - j.gate_s : j.gate_s;
+            float gateS = r.OwnReverse ? j.gate_s_rev : r.Reverse ? L - j.gate_s : j.gate_s;
             r.GateS = gateS;
             r.Gate = r.MakeGate(0, "Start / finish", gateS, j.gate_half_width_m);
             if (j.gate_below_m > 0f) r.Gate.Below = j.gate_below_m;
             if (j.gate_above_m > 0f) r.Gate.Above = j.gate_above_m;
             var order = new List<(float s, RouteCheckpointJson c)>();
-            foreach (var c in j.checkpoints) order.Add((r.Reverse ? L - c.s : c.s, c));
+            foreach (var c in r.OwnReverse ? j.checkpoints_rev : j.checkpoints) order.Add((r.OwnReverse ? c.s : r.Reverse ? L - c.s : c.s, c));
             order.Sort((x, y) => Mathf.Repeat(x.s - gateS, L).CompareTo(Mathf.Repeat(y.s - gateS, L)));
             for (int i = 0; i < order.Count; i++)
             {
@@ -204,9 +217,9 @@ namespace ChastainRush
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
                 r.Checkpoints.Add(g);
             }
-            foreach (var jn in j.junctions) r.Junctions.Add($"{Mathf.Repeat((r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");
+            foreach (var jn in (r.OwnReverse ? j.junctions_rev : j.junctions) ?? new RouteJunctionJson[0]) r.Junctions.Add($"{Mathf.Repeat((r.OwnReverse ? jn.s : r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");
             r.BuildShortcuts(j);
-            if (j.closures != null) r.Closures.AddRange(j.closures);
+            var closures = r.OwnReverse ? j.closures_rev : j.closures; if (closures != null) r.Closures.AddRange(closures);   // Round 39: the reverse lap's own
 
             if (!r.Reverse)
             {

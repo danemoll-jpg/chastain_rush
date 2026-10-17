@@ -254,6 +254,8 @@ namespace ChastainRush
 
         public bool Forbidden(int e) => forbidden != null && e >= 0 && forbidden[e];
         public int ClosedRoads { get; private set; }
+        // the race's barriers in the direction raced (Round 39: the reverse Chastain Ridge has its own)
+        static IEnumerable<RouteClosureJson> RaceClosures(RaceController race, RouteJson rd) => race && race.Route != null ? (IEnumerable<RouteClosureJson>)race.Route.Closures : rd?.closures ?? new RouteClosureJson[0];
         void Close(RaceController race, RaceController.Stage stage)
         {
             Array.Clear(forbidden, 0, forbidden.Length); ClosedRoads = 0;
@@ -265,9 +267,9 @@ namespace ChastainRush
                 if (surface)
                 {
                     void Line(float[] pts) { if (pts == null) return; for (int i = 0; i + 1 < pts.Length; i += 2) marks.Add((new Vector2(pts[i], pts[i + 1]), 14f)); }
-                    Line(rd.loop); Line(rd.lead_in);
+                    if (race.Route != null && race.Route.OwnReverse) Line(rd.loop_rev); else { Line(rd.loop); Line(rd.lead_in); }   // Round 39: the reverse lap of its own
                 }
-                if (rd.closures != null) foreach (var c in rd.closures) marks.Add((new Vector2(c.x, c.z), 10f));
+                foreach (var c in RaceClosures(race, rd)) marks.Add((new Vector2(c.x, c.z), 10f));
                 for (int e = 0; e < net.EdgeCount; e++)
                 {
                     foreach (var (p, r) in marks) if (net.Distance(e, p) < r) { forbidden[e] = true; ClosedRoads++; break; }
@@ -279,9 +281,9 @@ namespace ChastainRush
             {
                 // Round 33 (a race on open roads, the Chastain Ridge): traffic keeps driving the course; only the side roads barred for the
                 // race are closed to it (the pieces at each barrier), so no car drives into a barrier, and the grid is cleared for the start
-                if (rd.closures != null)
-                    for (int e = 0; e < net.EdgeCount; e++)
-                        foreach (var c in rd.closures) if (net.Distance(e, new Vector2(c.x, c.z)) < 6f) { forbidden[e] = true; ClosedRoads++; break; }
+                var barred = RaceClosures(race, rd);
+                for (int e = 0; e < net.EdgeCount; e++)
+                    foreach (var c in barred) if (net.Distance(e, new Vector2(c.x, c.z)) < 6f) { forbidden[e] = true; ClosedRoads++; break; }
                 var grid = race.Route != null ? race.Route.GridPosition : Vector3.zero;
                 foreach (var d in Cars)
                     if (d && d.gameObject.activeSelf && (forbidden[Mathf.Max(0, d.Edge)] || OnClosed(d) || (race.Route != null && (d.Car.Body.position - grid).sqrMagnitude < 130f * 130f))) Spawn(d, false);

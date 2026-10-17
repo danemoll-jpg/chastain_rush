@@ -33,6 +33,7 @@ namespace ChastainRush
             {
                 var rj = JsonUtility.FromJson<RouteJson>(File.ReadAllText(f));
                 if (rj.loop != null && rj.loop.Length > 3) lines.Add(ToPoints(rj.loop));
+                if (rj.loop_rev != null && rj.loop_rev.Length > 3) lines.Add(ToPoints(rj.loop_rev));   // Round 39: a reverse lap of its own
                 if (rj.lead_in != null && rj.lead_in.Length > 3) lines.Add(ToPoints(rj.lead_in));
                 if (rj.official_shortcuts != null) foreach (var sc in rj.official_shortcuts) if (sc.path != null) lines.Add(ToPoints(sc.path));
             }

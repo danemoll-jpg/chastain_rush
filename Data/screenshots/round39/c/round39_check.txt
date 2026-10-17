@@ -1,0 +1,79 @@
+Round 39 check, 2026-10-17 07:30, the exe, 1280 x 720, muted.
+
+=== Round 21: the reverse Noonday Creek race, three AI drivers (trail vehicles), the player parked
+  reverse: 5 checkpoints in travel order: CP1 at 477 m (south loop, west side), CP2 at 700 m (south loop), CP3 at 1399 m (down the east side), CP4 at 1740 m (at the hairpin), CP5 at 2020 m (up the creek); the start / finish at (2358, 1008), the grid at (2352, 1053) facing 170 deg
+  Noonday Creek, reverse, Normal: 3 laps, all finished (304 s of race time)
+    GOLD  Drifter Twin     4:58.663 penalties +0 s, recoveries 0, shortcuts: lap 1 ra_pipe_dive, lap 3 ra_pipe_dive; mistakes: wide line 4, early braking 1, late braking 2, short jump 1
+    EMBER Trail Four       5:00.598 penalties +0 s, recoveries 0, shortcuts: lap 1 rc_creek_leap_back; mistakes: wide line 5, early braking 2, jump off line 1, short jump 1
+    BLUE  Drifter Twin     5:02.250 penalties +0 s, recoveries 0, shortcuts: lap 2 rd_gully_leap; mistakes: wide line 2, early braking 4, late braking 1, short jump 2
+      BLUE: route=Gully leap; lap=1; risk=0.015; rank=0.00; gap=0.0; probability=0.135; roll=0.179; choice=main
+      BLUE: route=Creek leap back; lap=1; risk=0.015; rank=0.00; gap=0.0; probability=0.135; roll=0.372; choice=main
+      GOLD: route=Gully leap; lap=1; risk=-0.005; rank=0.33; gap=13.2; probability=0.237; roll=0.424; choice=main
+      GOLD: route=Creek leap back; lap=1; risk=-0.005; rank=0.33; gap=13.2; probability=0.237; roll=0.382; choice=main
+      EMBER: route=Gully leap; lap=1; risk=-0.012; rank=0.67; gap=28.5; probability=0.351; roll=0.874; choice=main
+      EMBER: route=Creek leap back; lap=1; risk=-0.012; rank=0.67; gap=28.4; probability=0.351; roll=0.191; choice=shortcut
+      BLUE: route=Flood-plain run; lap=1; risk=0.015; rank=0.00; gap=0.0; probability=0.135; roll=0.608; choice=main
+      GOLD: route=Flood-plain run; lap=1; risk=-0.005; rank=0.33; gap=14.7; probability=0.238; roll=0.959; choice=main
+      BLUE: route=Pipe dive; lap=1; risk=0.015; rank=0.00; gap=0.0; probability=0.135; roll=0.976; choice=main
+      GOLD: route=Pipe dive; lap=1; risk=-0.005; rank=0.33; gap=16.1; probability=0.238; roll=0.076; choice=shortcut
+      EMBER: route=Flood-plain run; lap=1; risk=-0.012; rank=0.67; gap=80.0; probability=0.382; roll=0.407; choice=main
+      BLUE: route=Gully leap; lap=2; risk=0.015; rank=0.00; gap=0.0; probability=0.135; roll=0.083; choice=shortcut
+      GOLD: route=Gully leap; lap=2; risk=-0.005; rank=0.33; gap=19.1; probability=0.240; roll=0.319; choice=main
+      GOLD: route=Creek leap back; lap=2; risk=-0.005; rank=0.33; gap=19.1; probability=0.240; roll=0.532; choice=main
+      GOLD: route=Flood-plain run; lap=2; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.368; choice=main
+      EMBER: route=Flood-plain run; lap=2; risk=-0.012; rank=0.33; gap=36.4; probability=0.243; roll=0.373; choice=main
+      GOLD: route=Pipe dive; lap=2; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.185; choice=main
+      BLUE: route=Flood-plain run; lap=2; risk=0.015; rank=0.67; gap=58.1; probability=0.396; roll=0.609; choice=main
+      EMBER: route=Pipe dive; lap=2; risk=-0.012; rank=0.33; gap=40.5; probability=0.245; roll=0.781; choice=main
+      GOLD: route=Gully leap; lap=3; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.236; choice=main
+      GOLD: route=Creek leap back; lap=3; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.865; choice=main
+      EMBER: route=Gully leap; lap=3; risk=-0.012; rank=0.33; gap=34.1; probability=0.241; roll=0.674; choice=main
+      EMBER: route=Creek leap back; lap=3; risk=-0.012; rank=0.33; gap=34.1; probability=0.241; roll=0.432; choice=main
+      BLUE: route=Creek leap back; lap=3; risk=0.015; rank=0.67; gap=62.1; probability=0.399; roll=0.944; choice=main
+      GOLD: route=Flood-plain run; lap=3; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.434; choice=main
+      GOLD: route=Pipe dive; lap=3; risk=-0.005; rank=0.00; gap=0.0; probability=0.115; roll=0.062; choice=shortcut
+      EMBER: route=Flood-plain run; lap=3; risk=-0.012; rank=0.33; gap=76.1; probability=0.266; roll=0.885; choice=main
+      BLUE: route=Flood-plain run; lap=3; risk=0.015; rank=0.67; gap=93.1; probability=0.417; roll=0.903; choice=main
+PASS  the reverse Noonday Creek race: three AI drivers in trail vehicles, all finish  -  mistakes: wide line 11, early braking 7, jump off line 1, late braking 3, short jump 4, curb clip 0
+
+=== THE RIDGE CLIMB (the reverse Chastain Ridge): each vehicle flat out along the reverse lap, off the road-work pile up onto the dead end
+  Street Classic     onto the lip at 22.4 m/s (off it at 31.4), 3.12 s in the air, 22.2 m over the lip at the top, down 3.4 m past the forward pile's lip, 0.5 m from the line, upright 1.00; drove on
+  Longroof GT        onto the lip at 21.2 m/s (off it at 31.4), 3.04 s in the air, 22.2 m over the lip at the top, down 1.6 m past the forward pile's lip, 1.0 m from the line, upright 0.99; drove on
+  Needle 600         onto the lip at 25.4 m/s (off it at 31.4), 3.18 s in the air, 22.1 m over the lip at the top, down 3.7 m past the forward pile's lip, 0.0 m from the line, upright 1.00; drove on
+  Trail Four         onto the lip at 24.3 m/s (off it at 31.4), 3.16 s in the air, 22.1 m over the lip at the top, down 4.0 m past the forward pile's lip, 0.2 m from the line, upright 1.00; drove on
+  Sundown Roadster   onto the lip at 22.7 m/s (off it at 31.4), 3.08 s in the air, 22.2 m over the lip at the top, down 2.5 m past the forward pile's lip, 0.4 m from the line, upright 1.00; drove on
+  Highball Fastback  onto the lip at 22.6 m/s (off it at 31.4), 3.14 s in the air, 22.2 m over the lip at the top, down 3.2 m past the forward pile's lip, 0.9 m from the line, upright 1.00; drove on
+  Pebble Coupe       onto the lip at 22.5 m/s (off it at 31.4), 3.12 s in the air, 22.2 m over the lip at the top, down 2.5 m past the forward pile's lip, 0.5 m from the line, upright 1.00; drove on
+  Skyfin Cruiser     onto the lip at 21.0 m/s (off it at 31.4), 3.08 s in the air, 22.2 m over the lip at the top, down 1.7 m past the forward pile's lip, 0.9 m from the line, upright 1.00; drove on
+  Ridge Scrambler    onto the lip at 24.8 m/s (off it at 31.4), 3.20 s in the air, 22.2 m over the lip at the top, down 3.8 m past the forward pile's lip, 0.0 m from the line, upright 1.00; drove on
+  Drifter Twin       onto the lip at 24.6 m/s (off it at 31.4), 3.16 s in the air, 22.1 m over the lip at the top, down 3.0 m past the forward pile's lip, 0.1 m from the line, upright 1.00; drove on
+  Turf Rocket        onto the lip at 25.1 m/s (off it at 31.4), 3.18 s in the air, 22.1 m over the lip at the top, down 4.3 m past the forward pile's lip, 0.2 m from the line, upright 1.00; drove on
+PASS  THE RIDGE CLIMB: every vehicle the route offers, flat out, lands on the dead end (on or past the forward pile's ramp), on its wheels, and drives on  -  11 vehicles
+
+=== The Ridge leap: each vehicle flat out from the crest (on the lap's line), off the dirt pile onto New Chastain Road
+  Street Classic     onto the lip at 28.6 m/s (off it at 32.9), 3.50 s in the air, 8.5 m over the lip at the top, down 106 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Longroof GT        onto the lip at 28.3 m/s (off it at 32.9), 3.48 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.7 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Needle 600         onto the lip at 32.2 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.6 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Trail Four         onto the lip at 30.8 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.3 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Sundown Roadster   onto the lip at 28.9 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Highball Fastback  onto the lip at 28.8 m/s (off it at 32.9), 3.48 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.4 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Pebble Coupe       onto the lip at 29.1 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Skyfin Cruiser     onto the lip at 27.5 m/s (off it at 32.9), 3.50 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Ridge Scrambler    onto the lip at 31.3 m/s (off it at 32.9), 3.56 s in the air, 8.8 m over the lip at the top, down 106 m out, 0.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Drifter Twin       onto the lip at 30.6 m/s (off it at 32.9), 3.50 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Turf Rocket        onto the lip at 32.1 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.4 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Clay Hopper        onto the lip at 30.4 m/s (off it at 32.9), 3.56 s in the air, 9.0 m over the lip at the top, down 107 m out, 1.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Skywhip 250        onto the lip at 31.5 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.6 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Clay Hopper Cup    onto the lip at 31.6 m/s (off it at 32.9), 3.56 s in the air, 8.9 m over the lip at the top, down 107 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+PASS  the Ridge leap: every vehicle flat out from the crest lands on New Chastain Road (within 6 m of the carriageway's centerline), on its wheels, and drives on  -  14 vehicles
+
+=== Short of the climb (reverse race): a reset in the hollow
+PASS  a reset in the hollow short of the climb (reverse race): onto Chastain Ridge Drive past the landing, facing on  -  from (3214, 628) to (3114.2, 621.4), 36 m past the forward pile's lip, 0.0 m from the line, 0 degrees off the race's way
+
+=== The reverse race: 3 laps, 3 AI, traffic Normal, the player parked off the course
+  route Chastain Ridge reverse (its own reverse lap: True), 2039 m, 6 checkpoints, 1 shortcuts (Knoll drop), 20 barriers
+PASS  EMBER (Needle 600) finishes the 3 reverse laps  -  total 229.8 s, laps 82.4 / 69.4 / 78.0, missed 0, shortcuts lap 3 s1r_knoll_drop
+PASS  GOLD (Turf Rocket) finishes the 3 reverse laps  -  total 254.4 s, laps 80.9 / 85.1 / 88.4, missed 0, shortcuts lap 1 s1r_knoll_drop
+PASS  BLUE (Street Classic) finishes the 3 reverse laps  -  total 273.7 s, laps 77.8 / 96.8 / 99.1, missed 0, shortcuts lap 1 s1r_knoll_drop, lap 2 s1r_knoll_drop, lap 3 s1r_knoll_drop
+
+7 of 7 checks passed.

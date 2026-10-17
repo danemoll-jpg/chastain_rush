@@ -133,7 +133,11 @@ namespace ChastainRush
                 if (Do("walkpics")) yield return Guard(R39WalkPics());
                 if (Do("walkdodge")) yield return Guard(R39WalkDodge());
                 if (Do("walkfps")) yield return Guard(R39WalkFps());
-                // PART C
+                if (Do("climb")) yield return Guard(R39Climb(ids));        // Part C (Round20Runner.R39C.cs)
+                if (Do("fwdleap")) yield return Guard(R33Jump(ids));   // the forward Ridge leap re-flown (Round 33's check)
+                if (Do("climbreset")) yield return Guard(R39ClimbReset());
+                if (Do("ridgerev")) yield return Guard(R39RevRace());
+                if (Do("revpics")) yield return Guard(R39RevPics());
                 // PART D
             }
             // Round 38 (Round20Runner.R38*.cs)

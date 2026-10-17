@@ -105,7 +105,43 @@ namespace ChastainRush
                     go.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray();
                 }
             BuildBigJumps(terrain, mats, root, ridge.Data.big_jumps, "Dirt piles");
+            // Round 39 (C): THE RIDGE CLIMB is road-work fill: traffic cones along its foot and sides, a road-closed barricade beside it
+            var climb = ridge.Data.big_jumps?.FirstOrDefault(j => j.id == "CLIMB");
+            if (climb != null) RoadWorkDressing(terrain, mats, root, climb);
             Debug.Log($"[Round33] Chastain Ridge: {ridge.Data.big_jumps?.Length ?? 0} dirt piles, {ridge.Data.landing_zones?.Length ?? 0} landing zones; {ridge.TreesRemoved} trees kept off the run-ups, flights' last meters, landings and the way out of the hollow");
+        }
+        // Round 39 (C): cones and a standing barricade round a dirt pile (look only, no colliders: nothing to snag a vehicle on its run-up)
+        static void RoadWorkDressing(TerrainGrid terrain, Materials mats, Transform parent, CtBigJump b)
+        {
+            var L = new Vector2(b.lip[0], b.lip[1]); var d = new Vector2(b.dir[0], b.dir[1]).normalized; var nl = new Vector2(-d.y, d.x);
+            var F = L - d * b.ramp_m; float hw = b.width * 0.5f; var mb = new MeshBuilder(); int cones = 0;
+            foreach (float side in new[] { -1f, 1f })
+                for (float s = -1.5f; s <= b.ramp_m * 0.6f; s += 2.5f) { Cone(mb, terrain, F + d * s + nl * side * (hw + 1.6f + 0.4f * Hash01(cones, 39))); cones++; }
+            var bar = F - d * 1f + nl * (hw + 4.5f); float yaw = Mathf.Atan2(d.x, d.y) * Mathf.Rad2Deg;
+            StandingBarricade(mb, terrain, bar, yaw);
+            var go = mb.ToObject(b.id + " road work", mats.House, parent, false); go.GetComponent<MeshRenderer>().shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
+            Debug.Log($"[Round39] {b.id}: road-work fill: {cones} cones along its foot and sides, a road-closed barricade at ({bar.x:0}, {bar.y:0})");
+        }
+        static void Cone(MeshBuilder mb, TerrainGrid terrain, Vector2 at)
+        {
+            var c = new Vector3(at.x, Ground(terrain, at.x, at.y), at.y);
+            Beam(mb, c, c + Vector3.up * 0.04f, 0.38f, 0.38f, new Color(0.08f, 0.08f, 0.08f));
+            float[] w = { 0.26f, 0.2f, 0.15f, 0.1f, 0.06f }; Color[] col = { BarrierOrange, BarrierWhite, BarrierOrange, BarrierWhite, BarrierOrange };
+            for (int i = 0; i < w.Length; i++) Beam(mb, c + Vector3.up * (0.04f + 0.13f * i), c + Vector3.up * (0.04f + 0.13f * (i + 1)), w[i], w[i], col[i]);
+        }
+        // a type III road-closed barricade standing: two striped boards on A-frame legs
+        static void StandingBarricade(MeshBuilder mb, TerrainGrid terrain, Vector2 at, float yawDeg)
+        {
+            float g = Ground(terrain, at.x, at.y), a = yawDeg * Mathf.Deg2Rad;
+            var u = new Vector3(Mathf.Sin(a), 0f, Mathf.Cos(a)); var n = new Vector3(u.z, 0f, -u.x); var c = new Vector3(at.x, g, at.y);
+            foreach (float h in new[] { 0.65f, 1.05f })
+            {
+                var b0 = c - u * 1.2f + Vector3.up * h;
+                for (int i = 0; i < 6; i++) Beam(mb, b0 + u * (0.4f * i), b0 + u * (0.4f * (i + 1)), 0.04f, 0.25f, i % 2 == 0 ? BarrierOrange : BarrierWhite, n);
+            }
+            foreach (float s in new[] { -0.9f, 0.9f })
+                foreach (float f in new[] { -1f, 1f })
+                    Beam(mb, c + u * s + n * f * 0.35f, c + u * s + Vector3.up * 1.2f, 0.06f, 0.06f, BarrierWhite);
         }
     }
 }
