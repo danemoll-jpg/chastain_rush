@@ -4099,3 +4099,99 @@ Race DONE. 3 laps, 3 AI, traffic Normal: all three finished, 0 missed, 1 AI rese
    course; only the 18 road pieces at the barriers are closed to it, and the grid is cleared at the start (`Traffic.Close`).
 For Dan to check: the whole lap flat out, the leap (how the landing across the road feels), S1 and S2 and their hints, traffic in the race. Frame
 rate not measured. Imported from Racer: nothing. Seen in passing, not changed: every exe log has 7 FenceChunk.Awake exceptions (also in Round 32's).
+
+## Round 34 (moved from TODO.md on 2026-10-16 when Dan reviewed Round 37; word for word)
+
+## Previous delivery 3: Round 34
+**Reviewed: driven by Dan 2026-10-16 07:49 (an Underground race; his notes are Round 35).**
+**Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
+after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
+is fine ("it can be pretty long"); do not stop for design questions, decide and say what you decided in the status. Parts A
+to C in order; rebuild into `Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process").
+
+Part A, DAN'S REPORTS (Dan's spots are the vehicle's x, z, heading).
+A1. BUMPS on Canton Road Northeast's northbound lane, the race's line, where an unnamed 5 m road lies along / over it (a
+   lighter slab of asphalt in the lane): BUG-001 (x 3578.24 z 676.43 h 20, "flatten bump"), BUG-002 (x 3575.74 z 744.73
+   h 356, "another bump"), BUG-003 (x 3567.94 z 818.99 h 353, "another bump"). Flatten them so the lane is one smooth surface
+   at speed, at the three spots and on that same unnamed road's stretch between them. Check: drive the stretch flat out on
+   the Drifter Twin, no bump-log event from z 650 to 840.
+A2. GRASS: BUG-004 (x 3324.51 z 1038.83 h 171, unnamed 5 m road off Chastain Corner, beside S1's barricade): "remove grass
+   from road". Check: a picture from Dan's spot.
+A3. DRIVEWAY: BUG-010 (x 3325.65 z 1024.61 h 137): the same unnamed 5 m road stops short of the house ahead. Dan: "assume
+   this is a driveway to the house. Please take the driveway to the house." Run it on to the house's garage / front. Check:
+   a picture from Dan's spot.
+A4. NO STALL LINES ON SLOPES. BUG-005 (x 3556.21 z 673.26 h 359): "can we not put parking spaces on hills? It just looks
+   weird. It can be a parking lot just remove the lines"; BUG-006 (x 3585.47 z 641.98 h 159), BUG-008 (x 3558.24 z 348.95
+   h 200), BUG-009 (x 3561.59 z 209.83 h 230): the same. Dan said it four times, so as a rule: a lot's stall lines are
+   drawn only where the lot is near level (pick the grade, about 5 %, and say it); steeper parts of a lot stay paved with no
+   lines. Check: a picture from each of the four spots.
+A5. STRAY WHITE LINES: BUG-007 (x 3571.53 z 585.98 h 177, on Canton Road): "lets clean up these weird white lines". Edge and
+   lane lines of the roads and lots that meet Canton Road there are painted across Canton Road's lanes. As a rule: a road's
+   or lot's paint stops at the edge of the road it joins; only the through road's own paint crosses a junction. Check: a
+   picture from Dan's spot.
+A6. THE FIRST CROSSING ENDED LAP 1 (found by Claude in Dan's screenshots, not a comment of his): in the Chastain Ridge race,
+   Dan stopped at BUG-001 21 s after the start, 24 m short of the line (the grid is on Canton Road behind it); when he then
+   crossed the line, lap 1 counted as done with all 6 checkpoints missed (BUG-002: "Lap 2 / 3", "Penalty +30 s (6 missed)"),
+   and its 54 s set the route's best lap (0:54.391), and the best total (3:29) holds that short lap too. Fix: from the grid,
+   the first crossing of the line starts lap 1 and never ends one (look at why: the grid / lead-in lies on the loop itself
+   before the gate). Check the other three routes for the same fault and say. Remove Chastain Ridge's best lap and best total
+   from Dan's records (back the file up first, beside it; nothing else in it changed). Check: from the grid, cross the line,
+   the HUD says lap 1, no penalty.
+
+Part B, THE RADIO KEEPS ITS SONG WHEN THE GAME LOSES FOCUS. Dan: "sometimes something takes the focus away from the game and
+every time click back to the game it skips to the next song. Let it stay on the same song." Losing and getting back focus
+(Alt-Tab, a pop-up, a click on another window) never changes the song: it pauses with the game and goes on from the same
+place in the same song when focus comes back (or keeps playing if the game keeps running unfocused; Dan's own exe pauses).
+Same for the game's own pause menu. Only the player's controls and a song's real end change the song. Find why it skips
+(likely the radio reads a stopped AudioSource as "song over"). Check by script in the exe: mid-song, lose and regain focus
+five times (and a pause / unpause): same song each time, position within 1 s of where it was. (Sound on only for that
+moment, then off: CLAUDE.md "Test quietly".)
+
+Part C, TOP 10 RECORDS FROM WOODSTOCK RUSH. Dan: "Perhaps we can pull in top 10 records as well this round?" Port Racer's
+records boards (RecordBoards, RecordView, PlayerNames and what they need, e.g. Racer's on-screen keyboard if it is how a
+name is typed with a controller; CLAUDE.md: prefer porting, list what came):
+C1. A Top 10 of best totals and a Top 10 of best laps for each race route (all four) and each direction it offers, with the
+   lap count as Racer keys its boards, each entry
+   with the player's name, time, vehicle and date as Racer shows them.
+C2. The player's name as in Racer: asked once (or set in the garage / settings, wherever Racer has it), controller first
+   (CLAUDE.md), saved; a new Top 10 time at the finish shows its place on the finish panel as Racer does. AI racers' times go
+   on the boards only if Racer puts them there.
+C3. A Records page in the menus to browse every board (left / right changes the route / direction, B back), as Racer's.
+C4. Dan's existing records (`race_records.json`, minus A6's two) carried onto the boards with his name once he gives it
+   (until then as Racer shows an unnamed entry). Saved the way Racer saves (never corrupt; loading never writes).
+   A check never writes Dan's real records (CLAUDE.md): check runs use their own folder.
+Check in the exe by script (a virtual pad): enter a name with the controller, finish a 1-lap race, the time is on the board
+at the right place, the Records page shows every board; pictures of the name entry, the finish panel and a board.
+
+For Dan to check (when done): Canton Road's lane at speed, the lots on slopes, the white lines at BUG-007, the driveway,
+lap counting from the grid, the radio after Alt-Tab, his name and the Top 10 boards.
+
+**Round 34 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 03:36.** Evidence: `Data/screenshots/round34/` (`round34_check*.txt`; `A_bug*.png` from Dan's spots; Part C `34_*.png`).
+A1, A2 DONE. Cause: service roads ending at Canton Road's / Chastain Corner's centerline levelled flat strips across the lanes (steps of
+   0.3-0.4 m). Mapgen `road_flatten.wider_wins_rects` (those two places only): a road's level core keeps its height where a narrower road
+   ends on it. Canton's worst sag 0.33 m before, 0.02 m after; 40 m/s from z 630 to 860, no bump-log event; Chastain Corner no grass.
+A3 DONE. Road 564629063 runs on 20.3 m to building 2158's wall (`MapBuilder.Round34.cs`; OSM calls 2158 retail, not re-dressed).
+A4 DONE. Decided: stall lines only where the stall's ground is at most a 5 % grade corner to corner and its middle within 8 cm
+   (`StallLevel`), on every business lot: 1,848 of 2,552 stalls now unpainted. Shopping center and Chastain Lakes lots (graded) unchanged.
+A5 DONE. Rule: pieces of one street share paint only where one runs straight on from the other at the same width; otherwise a road's
+   paint stops on the road it joins (`RoadIndex.CoversPaint`). Canton Road's carriageways no longer paint an X at BUG-007.
+A6 DONE. Cause: any forward crossing of the line ended a lap; back over the line and across again counted lap 1 with every checkpoint
+   missed (no log of Dan's run; his 54 s lap fits). Now only after a checkpoint or the lap's far half (`RaceEntrant.LapAway`). Shared code:
+   all four routes had it and are fixed; none starts past its line. Check: clock starts at the line, lap 1; back and across: still lap 1.
+   Dan's `race_records.json`: the Chastain Ridge entry removed, backup `race_records.before-round34.json` beside it.
+B DONE. Cause: Racer's radio took any stopped voice for the song's end. Focus lost pauses the song, focus back goes on from there; a voice
+   killed by an audio-device reset reloads the same song at the same place (`LocalRadio.Hold`). Check: 5 cycles and a pause, same song and
+   position. (Racer has the same bug; not edited.)
+C DONE. Racer's Top 10 per route and direction: best laps, best races (each lap count, shown together with a Laps column); name, time,
+   vehicle, date; the player's times only (as Racer). Name asked once on the title menu with Racer's on-screen keyboard (A types, X
+   deletes, Y space, Start saves, B cancels), changed in SETTINGS > GAMEPLAY; finish panel shows Racer's cards (TOP 10 TIME! #n ...);
+   RECORDS on the title, pause and race-over menus (left / right: route and direction, laps / races, vehicle; B back). Dan's bests carried
+   as legacy entries shown as "Player" until he gives his name; nothing written until his first new time or name (`top-ten-v1.json`,
+   AtomicSave, an unreadable file never overwritten). Check 11 of 11 with a virtual pad in the check's own folder (run `-r34Only records`
+   on its own: after the lap part the boards are already open and its test bests are not read, 2 C4 fails in the all-parts run).
+Imported from Racer: RecordBoards, PlayerNames, FinishPresentation (`Race/RecordBoards.cs`, trimmed); RaceMenus' Records page, table rows and
+   on-screen keyboard (rewritten into `Menus/GameMenus.Records.cs`). Left behind: Describe, RecordView, Migrate, Adopt, the InputField draft.
+For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), BUG-007, the driveway, a race from the grid, the radio
+   after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
+   exceptions in every exe log. Frame rate not measured.

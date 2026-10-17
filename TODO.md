@@ -69,6 +69,69 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 38 (Dan, 2026-10-16 21:34; report BUG-001 of session `2026-10-16_21-19-50-140_b75298`, read by Claude, after the
+Round 37 exe).** Round 37 is reviewed (Dan: the split-screen AI player 2 is only for testing, "No one is going to be splitting
+the screen with AI"; he missed START at first, no change asked). Dan picked this round from Claude's list: "AI stunt rivals,
+Life in the world, More inside the stores, The Bank part of stunt course, Smashing through things should count for your
+stunts". Parts A to E in order; rebuild into `Builds/ChastainRush/` and commit after each; short results (CLAUDE.md
+"Process"). Decide design questions yourself and say what you decided. Racer (`C:\Users\danmo\Racer`) is read-only; port its
+finished code, list what came.
+
+Part A, THE BANK IN THE STUNT PARK. BUG-001 (x 3413.02 z 1095.12 h 73, the abandoned bank ahead): "Can we make this bank part
+of the course as well because otherwise this ramp is kind of useless the way it is positioned" (Round 37 noted K1's foot is
+4.7 m from the bank's west wall, no run-up). Bring the abandoned bank into the park: a way up onto its roof and stunts there
+(a launch off it, or a gap to the next roof), a line through it (its boarded windows and door break), and K1 moved or turned
+so it has a run-up and leads somewhere (onto or over the bank). The bank stays abandoned-looking (boarded, the FOR LEASE
+banner). Check: K1 flown flat out on the Clay Hopper and the Skywhip, the bank's roof reached, the line through it driven;
+pictures.
+
+Part B, SMASHING COUNTS FOR STUNTS. Dan: "Smashing through things should count for your stunts". Wherever tricks score (Free
+Roam and the Stunt event, every vehicle): breaking something (store and bank windows and doors, the shop row's partitions,
+checkouts and shelves, the park's breakable props, fences, mailboxes, lamps, hydrants, pumps, signs, trees that break) adds
+stunt points, bigger things more (Dan, 21:37: "fuel pumps should also count...": the gas station's four pumps count, and
+   with their explosion they are among the biggest smashes), and links a combo like a trick (on the ground within the combo gap, it keeps the chain
+going); a smash in mid-air counts as a trick type of its own for the flight's multiplier ("SMASH"). Shown on the trick panel
+("SMASH: STORE WINDOW +150"). The smash runs (Round 36 B) keep their own scoring. Decide the points and say them. Check: a run
+through the store windows into a jump, scored with the smashes in its combo; a mid-air smash raising the multiplier.
+
+Part C, MORE INSIDE THE STORES. Round 36 A2b built the supermarket's inside run; the shop row's shops are empty shells
+("Next could be: shop interiors, more inside lines"). Give the shop row interiors (simple, readable rooms that fit each
+shop's made-up name: counters, racks, tables, chairs, that break) and lines through them: from shop to shop through the
+partitions, a ramp up and out through the roof or a back wall, a kicker out through the front window into the park; and the
+bank's inside (Part A) with its vault door to burst through. Same reset as the windows (they come back when the player leaves
+or resets). Check: driven through end to end on a stunt vehicle; pictures; frame rate inside (1280 x 720) before / after.
+
+Part D, AI STUNT RIVALS. Dan asked "is there the ability to play ai on the stunt course?" (now: no; the split-screen AI
+player 2 is the traffic driver, which in BUG-001 "wandered off the course and is just continually running into the wall").
+Port Racer's stunt rivals (`RivalTricks` in `StuntRace.cs`, ArcadeVehicle's AI air steering, the rivals' scoring by the same
+rule as the player, the AI's mistakes and bails) to the stunt park: the Stunt event gets rivals (a row in its setup: None /
+1 / 2 / 3, and difficulty), riding stunt vehicles through the park on lines Code authors (every big feature, the roofs, the
+stores, the bank), doing tricks at the launches and smashing as the player does (Part B); live standings on the HUD and a
+results table at the end (the player's Top 10 stays the player's own, as Racer). The rivals stay in the park, never out on
+the roads, and follow CLAUDE.md "The AI is not perfect". The split-screen AI player 2 in the Stunt event and the Stunt park
+uses this stunt AI too (fixes BUG-001's wandering). Check: a Stunt event with 3 rivals run in the exe: every rival scores, none
+leaves the park or sticks on a wall; a picture of rivals mid-trick and of the results.
+
+Part E, LIFE IN THE WORLD. Port Racer's ambient life to this map (as Racer has it; leave behind what is tied to Woodstock
+places and Racer's scripted Dan / Kyle scenes): `AmbientLife` (residents in yards, driveways, on porches, at the pool at
+Chastain Lakes and the Enclave, walking at the shops, doing their actions), `HouseholdSchedule` (who is out depends on the
+time of day; fewer at night, none out in rain or snow if Racer does that), `Wildlife` (the kinds of animals Racer has that
+live in Georgia suburbs and woods: deer, rabbits, squirrels, birds; in the woods along Noonday Creek and the green spaces),
+`WoodlandAmbience` (the woods' sound), `UndergroundLife` (in the pipe network as Racer has it in its storm drain). Nobody and
+nothing stands on a road, a race line, a jump or a shortcut; they react as in Racer when a vehicle comes close; never in a
+race's way. Day / night and weather aware (Round 35). Same cost rules (a pool round the player, culled out of view); frame
+rate at Canton Road and on a Glen street before / after (1280 x 720). Check: pictures of people in the Glen, at Chastain
+Lakes and the shops; animals in the woods; a vehicle driving past them.
+
+For Dan to check (when done): the bank in the park, smashing in your combos, the shop and bank interiors, a Stunt event with
+rivals, people and animals around the map.
+
+## QUEUED rounds
+None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
+more tracks ... we will have to keep reorganizing it otherwise"); a REVERSE of the Chastain Ridge race ("need to think how to make it work").
+
+## Previous delivery 1 (newest): Round 37
+**Reviewed: driven by Dan 2026-10-16 21:19 (split screen and the stunt park; his notes are Round 38).**
 **Round 37 (Dan, 2026-10-16 17:05; reports BUG-001 to BUG-003 of session `2026-10-16_16-59-30-505_bc23a8`, read by Claude,
 after the Round 36 exe: free roam in the stunt park on the Skywhip 250, at night in the rain).** Round 36 is reviewed. Dan: "I
 don't know where to find the fire hydrants so I will report if i have issues later as i come across the special ones" (no
@@ -151,10 +214,7 @@ For Dan to check: split screen at 3840 x 2160 (F2 shows the frame rate); both la
    Underground race for two (not run by script).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 19:48 (BUILD_INFO.txt).
 
-## QUEUED rounds
-None.
-
-## Previous delivery 1 (newest): Round 36
+## Previous delivery 2: Round 36
 **Reviewed: driven by Dan 2026-10-16 16:59 (the stunt park; his notes are Round 37).**
 **Round 36 (Dan, 2026-10-16 10:36, after the Round 35 exe: "All is good").** Round 35 is reviewed (Dan did not check the
 Underground race's start line; he will report it if it is wrong). Parts A to D in order; rebuild into `Builds/ChastainRush/`
@@ -277,7 +337,7 @@ D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton R
    For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 16:38 (BUILD_INFO.txt).
 
-## Previous delivery 2: Round 35
+## Previous delivery 3: Round 35
 **Reviewed: passed by Dan 2026-10-16 10:36 ("All is good"; the Underground start line not checked yet).**
 **Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
 Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
@@ -350,100 +410,6 @@ C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1
    Imported from Racer: WorldLook, WeatherEffects, WeatherSky, SkyClouds, MoonIcon, WeatherGrip, ArcadeVehicle's grip lines, thunder
    ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
 For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
-
-## Previous delivery 3: Round 34
-**Reviewed: driven by Dan 2026-10-16 07:49 (an Underground race; his notes are Round 35).**
-**Round 34 (Dan, 2026-10-16 02:05; reports BUG-001 to BUG-010 of session `2026-10-16_01-35-35-872_a132c0`, read by Claude,
-after driving the Round 33 exe, the Chastain Ridge race).** Round 33 is reviewed. Dan is asleep while this runs: a long round
-is fine ("it can be pretty long"); do not stop for design questions, decide and say what you decided in the status. Parts A
-to C in order; rebuild into `Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process").
-
-Part A, DAN'S REPORTS (Dan's spots are the vehicle's x, z, heading).
-A1. BUMPS on Canton Road Northeast's northbound lane, the race's line, where an unnamed 5 m road lies along / over it (a
-   lighter slab of asphalt in the lane): BUG-001 (x 3578.24 z 676.43 h 20, "flatten bump"), BUG-002 (x 3575.74 z 744.73
-   h 356, "another bump"), BUG-003 (x 3567.94 z 818.99 h 353, "another bump"). Flatten them so the lane is one smooth surface
-   at speed, at the three spots and on that same unnamed road's stretch between them. Check: drive the stretch flat out on
-   the Drifter Twin, no bump-log event from z 650 to 840.
-A2. GRASS: BUG-004 (x 3324.51 z 1038.83 h 171, unnamed 5 m road off Chastain Corner, beside S1's barricade): "remove grass
-   from road". Check: a picture from Dan's spot.
-A3. DRIVEWAY: BUG-010 (x 3325.65 z 1024.61 h 137): the same unnamed 5 m road stops short of the house ahead. Dan: "assume
-   this is a driveway to the house. Please take the driveway to the house." Run it on to the house's garage / front. Check:
-   a picture from Dan's spot.
-A4. NO STALL LINES ON SLOPES. BUG-005 (x 3556.21 z 673.26 h 359): "can we not put parking spaces on hills? It just looks
-   weird. It can be a parking lot just remove the lines"; BUG-006 (x 3585.47 z 641.98 h 159), BUG-008 (x 3558.24 z 348.95
-   h 200), BUG-009 (x 3561.59 z 209.83 h 230): the same. Dan said it four times, so as a rule: a lot's stall lines are
-   drawn only where the lot is near level (pick the grade, about 5 %, and say it); steeper parts of a lot stay paved with no
-   lines. Check: a picture from each of the four spots.
-A5. STRAY WHITE LINES: BUG-007 (x 3571.53 z 585.98 h 177, on Canton Road): "lets clean up these weird white lines". Edge and
-   lane lines of the roads and lots that meet Canton Road there are painted across Canton Road's lanes. As a rule: a road's
-   or lot's paint stops at the edge of the road it joins; only the through road's own paint crosses a junction. Check: a
-   picture from Dan's spot.
-A6. THE FIRST CROSSING ENDED LAP 1 (found by Claude in Dan's screenshots, not a comment of his): in the Chastain Ridge race,
-   Dan stopped at BUG-001 21 s after the start, 24 m short of the line (the grid is on Canton Road behind it); when he then
-   crossed the line, lap 1 counted as done with all 6 checkpoints missed (BUG-002: "Lap 2 / 3", "Penalty +30 s (6 missed)"),
-   and its 54 s set the route's best lap (0:54.391), and the best total (3:29) holds that short lap too. Fix: from the grid,
-   the first crossing of the line starts lap 1 and never ends one (look at why: the grid / lead-in lies on the loop itself
-   before the gate). Check the other three routes for the same fault and say. Remove Chastain Ridge's best lap and best total
-   from Dan's records (back the file up first, beside it; nothing else in it changed). Check: from the grid, cross the line,
-   the HUD says lap 1, no penalty.
-
-Part B, THE RADIO KEEPS ITS SONG WHEN THE GAME LOSES FOCUS. Dan: "sometimes something takes the focus away from the game and
-every time click back to the game it skips to the next song. Let it stay on the same song." Losing and getting back focus
-(Alt-Tab, a pop-up, a click on another window) never changes the song: it pauses with the game and goes on from the same
-place in the same song when focus comes back (or keeps playing if the game keeps running unfocused; Dan's own exe pauses).
-Same for the game's own pause menu. Only the player's controls and a song's real end change the song. Find why it skips
-(likely the radio reads a stopped AudioSource as "song over"). Check by script in the exe: mid-song, lose and regain focus
-five times (and a pause / unpause): same song each time, position within 1 s of where it was. (Sound on only for that
-moment, then off: CLAUDE.md "Test quietly".)
-
-Part C, TOP 10 RECORDS FROM WOODSTOCK RUSH. Dan: "Perhaps we can pull in top 10 records as well this round?" Port Racer's
-records boards (RecordBoards, RecordView, PlayerNames and what they need, e.g. Racer's on-screen keyboard if it is how a
-name is typed with a controller; CLAUDE.md: prefer porting, list what came):
-C1. A Top 10 of best totals and a Top 10 of best laps for each race route (all four) and each direction it offers, with the
-   lap count as Racer keys its boards, each entry
-   with the player's name, time, vehicle and date as Racer shows them.
-C2. The player's name as in Racer: asked once (or set in the garage / settings, wherever Racer has it), controller first
-   (CLAUDE.md), saved; a new Top 10 time at the finish shows its place on the finish panel as Racer does. AI racers' times go
-   on the boards only if Racer puts them there.
-C3. A Records page in the menus to browse every board (left / right changes the route / direction, B back), as Racer's.
-C4. Dan's existing records (`race_records.json`, minus A6's two) carried onto the boards with his name once he gives it
-   (until then as Racer shows an unnamed entry). Saved the way Racer saves (never corrupt; loading never writes).
-   A check never writes Dan's real records (CLAUDE.md): check runs use their own folder.
-Check in the exe by script (a virtual pad): enter a name with the controller, finish a 1-lap race, the time is on the board
-at the right place, the Records page shows every board; pictures of the name entry, the finish panel and a board.
-
-For Dan to check (when done): Canton Road's lane at speed, the lots on slopes, the white lines at BUG-007, the driveway,
-lap counting from the grid, the radio after Alt-Tab, his name and the Top 10 boards.
-
-**Round 34 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
-Build 2026-10-16 03:36.** Evidence: `Data/screenshots/round34/` (`round34_check*.txt`; `A_bug*.png` from Dan's spots; Part C `34_*.png`).
-A1, A2 DONE. Cause: service roads ending at Canton Road's / Chastain Corner's centerline levelled flat strips across the lanes (steps of
-   0.3-0.4 m). Mapgen `road_flatten.wider_wins_rects` (those two places only): a road's level core keeps its height where a narrower road
-   ends on it. Canton's worst sag 0.33 m before, 0.02 m after; 40 m/s from z 630 to 860, no bump-log event; Chastain Corner no grass.
-A3 DONE. Road 564629063 runs on 20.3 m to building 2158's wall (`MapBuilder.Round34.cs`; OSM calls 2158 retail, not re-dressed).
-A4 DONE. Decided: stall lines only where the stall's ground is at most a 5 % grade corner to corner and its middle within 8 cm
-   (`StallLevel`), on every business lot: 1,848 of 2,552 stalls now unpainted. Shopping center and Chastain Lakes lots (graded) unchanged.
-A5 DONE. Rule: pieces of one street share paint only where one runs straight on from the other at the same width; otherwise a road's
-   paint stops on the road it joins (`RoadIndex.CoversPaint`). Canton Road's carriageways no longer paint an X at BUG-007.
-A6 DONE. Cause: any forward crossing of the line ended a lap; back over the line and across again counted lap 1 with every checkpoint
-   missed (no log of Dan's run; his 54 s lap fits). Now only after a checkpoint or the lap's far half (`RaceEntrant.LapAway`). Shared code:
-   all four routes had it and are fixed; none starts past its line. Check: clock starts at the line, lap 1; back and across: still lap 1.
-   Dan's `race_records.json`: the Chastain Ridge entry removed, backup `race_records.before-round34.json` beside it.
-B DONE. Cause: Racer's radio took any stopped voice for the song's end. Focus lost pauses the song, focus back goes on from there; a voice
-   killed by an audio-device reset reloads the same song at the same place (`LocalRadio.Hold`). Check: 5 cycles and a pause, same song and
-   position. (Racer has the same bug; not edited.)
-C DONE. Racer's Top 10 per route and direction: best laps, best races (each lap count, shown together with a Laps column); name, time,
-   vehicle, date; the player's times only (as Racer). Name asked once on the title menu with Racer's on-screen keyboard (A types, X
-   deletes, Y space, Start saves, B cancels), changed in SETTINGS > GAMEPLAY; finish panel shows Racer's cards (TOP 10 TIME! #n ...);
-   RECORDS on the title, pause and race-over menus (left / right: route and direction, laps / races, vehicle; B back). Dan's bests carried
-   as legacy entries shown as "Player" until he gives his name; nothing written until his first new time or name (`top-ten-v1.json`,
-   AtomicSave, an unreadable file never overwritten). Check 11 of 11 with a virtual pad in the check's own folder (run `-r34Only records`
-   on its own: after the lap part the boards are already open and its test bests are not read, 2 C4 fails in the all-parts run).
-Imported from Racer: RecordBoards, PlayerNames, FinishPresentation (`Race/RecordBoards.cs`, trimmed); RaceMenus' Records page, table rows and
-   on-screen keyboard (rewritten into `Menus/GameMenus.Records.cs`). Left behind: Describe, RecordView, Migrate, Adopt, the InputField draft.
-For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), BUG-007, the driveway, a race from the grid, the radio
-   after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
-   exceptions in every exe log. Frame rate not measured.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
