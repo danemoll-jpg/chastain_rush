@@ -1,0 +1,8 @@
+Deer calls remain original procedural sound design for Racer.
+Coyote audio supplied and selected by Dan, 2026-09-28:
+ANMLWdog-coyote_howling-Elevenlabs.mp3
+The complete supplied MP3 is retained unchanged. Unity imports mono PCM for
+spatial playback at original pitch, with the existing ambient attenuation and
+occasional scheduling. No replacement recording, generated sound, excerpt,
+time stretching or effects were substituted. Prior NPS replacement retired.
+Other wildlife recordings and their LICENSE.txt remain unchanged.

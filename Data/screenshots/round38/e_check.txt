@@ -1,0 +1,33 @@
+Round 38 check, 2026-10-17 01:33, the exe, 1280 x 720, muted.
+
+=== Part E: life in the world (Racer's AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife)
+  baked: 1913 groups (Yard 278, Porch 1537, Drive 82, Pool 11, Shop 5), 3759 habitats (Bird 1236, Squirrel 1236, Frog 66, Deer 509, Coyote 261, Turkey 451)
+  noon: hour 12.2, views 1, 5 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 5 out, 31 figures free
+  the Glen: 5 groups out at noon, 0 at 2 am (hour 12.1, views 1, 5 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 5 out, 31 figures free)
+PASS  people out round the player by day, few at night (LifeSchedule)  -  5 at noon, 0 at 2 am
+  driven at group 1800 (Porch, 1 people, 47 m away)
+PASS  a resident steps out of the way of a vehicle coming at them  -  1 stepped aside
+  the woods near (2250, 1211): 10 animals out round the player: Bird 37 m, Bird 71 m, Deer 89 m, Bird 104 m, Deer 137 m, Bird 150 m
+  driven at the Bird from 30 m: came within 15.4 m at 0.3 m/s (stopped stopped); 1 fled; 10 out
+PASS  animals in the woods round the player; driven past, they flee (Racer's escape)  -  1 fled, 10 out, 1 seen
+PASS  no group of people within 6 m of the current race route's line  -  nearest 8.7 m
+
+=== Part E: pictures (noon)
+  38_life_glen_yard: group 357 (Yard, 3 people, action 0) at (1498, 1416); hour 12.1, views 1, 21 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 14 out, 13 figures free
+  38_life_glen_porch: group 1800 (Porch, 1 people, action 4) at (1514, 1257); hour 12.1, views 1, 7 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 11 out, 20 figures free
+  38_life_lakes_pool: group 1898 (Pool, 2 people, action 1) at (1349, 1111); hour 12.1, views 1, 5 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 11 out, 20 figures free
+  38_life_shops: group 1908 (Shop, 2 people, action 3) at (3689, 628); hour 12.2, views 1, 4 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 1 out, 34 figures free
+  38_life_woods_animals: a Deer at (2250, 1213)
+PASS  pictures of people and animals written  -  38_life_*.png
+
+=== Part E: the frame rate, parked (1280 x 720, not measured at 3840 x 2160): the life hidden ('before') and on (noon)
+INFO  before Canton Road by the shops (Round 35's spot): 295 fps average, slowest 1 % 176 fps
+INFO  before a Chastain Glen street: 256 fps average, slowest 1 % 100 fps
+INFO  after  Canton Road by the shops (Round 35's spot): 269 fps average, slowest 1 % 105 fps; 1 groups out, 9 animals; the life's scripts 0.010 ms a frame
+INFO  after  a Chastain Glen street: 259 fps average, slowest 1 % 122 fps; 4 groups out, 10 animals; the life's scripts 0.009 ms a frame
+INFO  before Canton Road by the shops (Round 35's spot): 265 fps average, slowest 1 % 109 fps
+INFO  before a Chastain Glen street: 257 fps average, slowest 1 % 102 fps
+INFO  after  Canton Road by the shops (Round 35's spot): 264 fps average, slowest 1 % 112 fps; 0 groups out, 9 animals; the life's scripts 0.010 ms a frame
+INFO  after  a Chastain Glen street: 249 fps average, slowest 1 % 97 fps; 3 groups out, 10 animals; the life's scripts 0.010 ms a frame
+
+5 of 5 checks passed.

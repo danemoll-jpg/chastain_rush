@@ -159,6 +159,8 @@ namespace ChastainRush
             BuildPipes(terrain, mats, world, pipes);             // Round 18 (4)
             BuildNetwork(terrain, mats, world, net, pipes);      // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
             BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge);   // Round 36 (Parts C, D): hydrants along every street, rigged ones and geysers (MapBuilder.Hydrants.cs)
+            try { BuildLife(map, terrain, world, hood, rest, biz, lakes, creek, ridge, trees.Field, LoadOwner()); }   // Round 38 (Part E): Racer's ambient life, where it lives (MapBuilder.Life.cs)
+            catch (Exception e) { Debug.LogError("[Round38] life not built: " + e); }
             if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");
             BakeMapPicture(map, terrain, shop, creek, trees.Field);   // Round 20 (2): the picture under the in-game map (MapBuilder.MapPicture.cs)
 
