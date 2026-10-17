@@ -1,0 +1,13 @@
+Chastain Rush exe shots, 2026-10-17 06:15:37, screen 1280x720, built exe
+a1_bug001: car at (3453.2, 320.6, 1074.7) heading 272
+a2_bug002: car at (3156.7, 300.9, 1248.1) heading 150
+a2_bug003: car at (3168.7, 298.1, 1230.4) heading 142
+a2_drive_out: drive at 14.0 m/s for 4.0 s from (3172.0, 1225.0) heading 322: broke 0 panel(s); lowest speed after the start 0.0 m/s (100% below), most tilt 28 deg, STOPPED, longest with no wheel down 0.20 s; frame rate 59 fps average, slowest 1% of frames 59 fps (1280 x 720); lowest at (3172.2, 297.4, 1225.7); ended at (3145.9, 301.5, 1260.6) above ground
+a2_drive_in: drive at 14.0 m/s for 6.0 s from (3149.5, 1261.0) heading 148: broke 0 panel(s); lowest speed after the start 13.2 m/s (5% below), most tilt 18 deg, kept going, longest with no wheel down 0.10 s; frame rate 59 fps average, slowest 1% of frames 57 fps (1280 x 720); lowest at (3174.8, 296.9, 1224.2); ended at (3175.0, 296.8, 1224.0) underground; path followed to its end in 3.3 s, farthest from it 0.59 m at (3171.6, 1227.7), fewest wheels down 0 first at (3155.4, 1252.1)
+a3_bug005: car at (3073.1, 306.2, 997.1) heading 360
+a3_drive_north: drive at 30.0 m/s for 6.0 s from (3060.0, 950.7) heading 27: broke 0 panel(s); lowest speed after the start 27.3 m/s (9% below), most tilt 10 deg, kept going, longest with no wheel down 0.00 s; frame rate 59 fps average, slowest 1% of frames 59 fps (1280 x 720); lowest at (3060.3, 300.2, 951.2); ended at (3090.9, 314.3, 1045.3) above ground; path followed to its end in 3.5 s, farthest from it 0.14 m at (3080.6, 1025.0), fewest wheels down 3 first at (3082.3, 1029.1)
+a3_drive_south: drive at 30.0 m/s for 6.0 s from (3091.6, 1046.4) heading 211: broke 0 panel(s); lowest speed after the start 26.9 m/s (10% below), most tilt 10 deg, kept going, longest with no wheel down 0.60 s; frame rate 59 fps average, slowest 1% of frames 59 fps (1280 x 720); lowest at (3061.1, 300.2, 952.3); ended at (3060.8, 300.2, 951.8) above ground; path followed to its end in 3.5 s, farthest from it 1.83 m at (3078.2, 1023.3), fewest wheels down 0 first at (3081.9, 1030.4)
+a4_bug004: car at (2685.6, 292.9, 1632.1) heading 102
+a4_lot_to_pool: car at (2699.0, 293.5, 1641.0) heading 55
+a4_deck: car at (2716.0, 294.2, 1652.0) heading 50
+a4_courts: car at (2711.0, 293.1, 1628.0) heading 150

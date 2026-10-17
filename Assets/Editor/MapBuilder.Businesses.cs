@@ -99,7 +99,7 @@ namespace ChastainRush
                 {
                     var ring = ToPoints(a.outline); if (ring.Count < 3) continue;
                     Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;
-                    if ((hood.Bounds != null && hood.Bounds.Contains(c)) || InPolygon(c, shop.Lot) || hood.RejectTree(c.x, c.y)) { biz.Log.Append($"lot at ({c.x:0}, {c.y:0}) left to its dressed area; "); continue; }
+                    if ((hood.Bounds != null && hood.Bounds.Contains(c)) || InPolygon(c, shop.Lot) || hood.RejectTree(c.x, c.y) || CoursonLotAt(c)) { biz.Log.Append($"lot at ({c.x:0}, {c.y:0}) left to its dressed area; "); continue; }
                     bool nearOwned = false;
                     for (int i = 0; i < map.buildings.Length && !nearOwned; i++)
                     {
@@ -116,6 +116,7 @@ namespace ChastainRush
                 if (owner != null && owner.index == i) continue;   // Dan's house is never touched
                 if (hood.OwnsBuilding(i) || shop.Owns(i) || i == shop.Center || rest.Owns(i)) continue;
                 if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
+                if (CoursonOwns(i)) continue;   // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;

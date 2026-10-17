@@ -249,7 +249,7 @@ def process_osm(cfg, osm, rect):
                     ramps.append({"name": t.get("name", ""), "class": hw, "width": road_width(t, cfg),
                                   "oneway": t.get("oneway") == "yes", "points": run, "node_ids": ids,
                                   "bridge": t.get("bridge", "no") not in ("no", ""), "tunnel": t.get("tunnel", "no") not in ("no", ""),
-                                  "osm_id": way["id"]})
+                                  "osm_id": way["id"], "maxspeed_mph": maxspeed_mph(t)})
             continue
         if hw in DRIVABLE:
             if hw == "service" and t.get("service") == "driveway":
@@ -264,7 +264,7 @@ def process_osm(cfg, osm, rect):
                 roads.append({"name": t.get("name", ""), "class": hw, "width": road_width(t, cfg),
                               "oneway": t.get("oneway") == "yes", "points": run, "node_ids": ids,
                               "bridge": t.get("bridge", "no") not in ("no", ""), "tunnel": t.get("tunnel", "no") not in ("no", ""),
-                              "osm_id": way["id"]})
+                              "osm_id": way["id"], "maxspeed_mph": maxspeed_mph(t)})
         elif "building" in t and way["nodes"][0] == way["nodes"][-1] and len(pts) >= 4:
             ring = pts[:-1]
             cx = sum(p[0] for p in ring) / len(ring)
@@ -776,9 +776,107 @@ def shape_road_profiles(fl, plans):
         pl["prof"], _ = limit_curvature(pl["prof"], half, sag_max, pl["fixed"])
     moved = np.concatenate([np.abs(pl["prof"] - b) for pl, b in zip(plans, before)])
     log(f"Road profiles: curvature limit {sag_max:g} m over +-{half} m (crest radius {half * half / (2 * sag_max):.0f} m), "
-        f"{len(shared)} junction nodes ({adjusted} road ends levelled to the wider road over {blend:g} m); "
+        f"{len(shared)} junction nodes ({adjusted} road ends levelled to the wider road over {blend:g} m; "
         f"{(moved > 0.02).mean() * 100:.1f}% of {len(moved)} stations moved more than 2 cm, "
         f"{(moved > 0.10).mean() * 100:.2f}% more than 10 cm, max {moved.max():.2f} m, mean of those moved {moved[moved > 0.02].mean():.2f} m")
+
+
+def junction_stems(fl, plans):
+    """Round 39 (A1 BUG-001, A3 BUG-005): a road that ENDS on another road that runs on through the junction (a T, or a
+    service road ending at a street's centerline) is that junction's stem. Its cross-section is level, so on a sloping through
+    road its flat end won the cells of the through road's pavement nearest its own centerline: a level wedge into the lane,
+    0.3-0.5 m out of the through road's grade (Chasefield Way on Chastain Glen Lane), or a strip standing over the road mesh
+    (grass on Chastain Corner). Round 34's wider_wins_rects fixed two such places by hand. Here, for every stem end: the
+    through road's centerline near the junction (its own profile) as short segments, which build_terrain uses to warp the
+    stem's surface onto the through road's (see there). Returns {plan index: [(end_station, through_segments, core_t)]}."""
+    tol = 1.5
+    pts = [np.column_stack([pl["dx"], pl["dz"]]) for pl in plans]
+    lo = np.array([p.min(axis=0) for p in pts]) - tol; hi = np.array([p.max(axis=0) for p in pts]) + tol
+    def tangent(pl, end):
+        n = len(pl["dx"]); k = min(4, n - 1)
+        if end == 0: v = np.array([pl["dx"][k] - pl["dx"][0], pl["dz"][k] - pl["dz"][0]])
+        else: v = np.array([pl["dx"][n - 1 - k] - pl["dx"][-1], pl["dz"][n - 1 - k] - pl["dz"][-1]])
+        return v / max(np.hypot(*v), 1e-9)
+    stems = {}
+    for i, pl in enumerate(plans):
+        if pl["road"]["class"] == "motorway_link":
+            continue
+        for end in (0, -1):
+            if (end == 0 and pl["road"].get("taper_start")) or (end == -1 and pl["road"].get("taper_end")):
+                continue
+            E = pts[i][end]
+            near = np.where((lo[:, 0] <= E[0]) & (hi[:, 0] >= E[0]) & (lo[:, 1] <= E[1]) & (hi[:, 1] >= E[1]))[0]
+            interior, ends = [], []
+            for j in near:
+                if j == i:
+                    continue
+                d = np.hypot(pts[j][:, 0] - E[0], pts[j][:, 1] - E[1]); k = int(np.argmin(d))
+                if d[k] > tol:
+                    continue
+                pj = plans[j]; core_j = pj["road"]["width"] / 2 + fl["shoulder_m"]; L = pj["s"][-1]
+                if pj["s"][k] > core_j and L - pj["s"][k] > core_j:
+                    interior.append((j, k))
+                elif pj["s"][k] <= 0.5 or L - pj["s"][k] <= 0.5:
+                    ends.append((j, 0 if pj["s"][k] <= 0.5 else -1))
+            through = []
+            if interior:
+                j, k = max(interior, key=lambda t: plans[t[0]]["road"]["width"])
+                through = [(j, k)]
+            else:
+                ti = tangent(pl, end)
+                for a in range(len(ends)):
+                    for b in range(a + 1, len(ends)):
+                        (ja, ea), (jb, eb) = ends[a], ends[b]
+                        ta, tb = tangent(plans[ja], ea), tangent(plans[jb], eb)
+                        if ta @ tb < -0.85 and ti @ ta > -0.85 and ti @ tb > -0.85:
+                            through = [(ja, 0 if ea == 0 else len(plans[ja]["s"]) - 1), (jb, 0 if eb == 0 else len(plans[jb]["s"]) - 1)]
+                            break
+                    if through:
+                        break
+            if not through:
+                continue
+            # a T, not a Y: the stem meets the through road at 40 degrees or more (two roads that leave a node side by side
+            # share their pavement for metres; there each keeps its own surface, as before)
+            ti = tangent(pl, end); jt, kt = through[0]; pt = plans[jt]
+            k0, k1 = max(0, kt - 3), min(len(pt["dx"]) - 1, kt + 3)
+            tt = np.array([pt["dx"][k1] - pt["dx"][k0], pt["dz"][k1] - pt["dz"][k0]]); tt = tt / max(np.hypot(*tt), 1e-9)
+            if abs(ti @ tt) > 0.766:
+                continue
+            segs = []
+            for j, k in through:
+                pj = plans[j]; sel = np.where(np.abs(pj["s"] - pj["s"][k]) <= 40.0)[0]
+                if len(sel) < 2:
+                    continue
+                a0, a1 = sel[0], sel[-1]
+                segs.append(np.column_stack([pj["dx"][a0:a1], pj["dz"][a0:a1], pj["dx"][a0 + 1:a1 + 1], pj["dz"][a0 + 1:a1 + 1],
+                                             pj["prof"][a0:a1], pj["prof"][a0 + 1:a1 + 1]]))
+            if not segs:
+                continue
+            core_t = max(plans[j]["road"]["width"] for j, _ in through) / 2 + fl["shoulder_m"]
+            stems.setdefault(i, []).append((0.0 if end == 0 else float(pl["s"][-1]), np.concatenate(segs), core_t))
+    return stems
+
+
+def through_surface(segs, X, Z):
+    """distance from each cell to the through road's centerline and the through road's height at the nearest point"""
+    ax, az, bx, bz, ha, hb = (segs[:, c][None, :] for c in range(6))
+    vx, vz = bx - ax, bz - az; L2 = np.maximum(vx * vx + vz * vz, 1e-9)
+    x = X.reshape(-1, 1); z = Z.reshape(-1, 1)
+    t = np.clip(((x - ax) * vx + (z - az) * vz) / L2, 0, 1)
+    d = np.hypot(x - (ax + t * vx), z - (az + t * vz))
+    k = np.argmin(d, axis=1); r = np.arange(len(k))
+    return d[r, k].reshape(X.shape), (ha + t * (hb - ha))[r, k].reshape(X.shape)
+
+
+def maxspeed_mph(tags):
+    """Round 39 (D2): OSM's posted speed limit in mph ("45 mph", or km/h as a bare number), 0 when the way has none"""
+    v = (tags.get("maxspeed") or "").strip().lower()
+    try:
+        if v.endswith("mph"): return int(round(float(v[:-3])))
+        if v and v.replace(".", "", 1).isdigit(): return int(round(float(v) * 0.621371))
+    except ValueError:
+        pass
+    return 0
 
 
 def smoothstep(t):
@@ -859,7 +957,10 @@ def build_terrain(cfg, dem_path, mapdata):
             prof = np.convolve(padded, np.ones(2 * win + 1) / (2 * win + 1), mode="valid")
         plans.append({"road": road, "s": s, "dx": dx, "dz": dz, "prof": prof, "pts": pts, "cum": cum})
     shape_road_profiles(fl, plans)
-    for plan in plans:
+    stems = junction_stems(fl, plans) if fl.get("junction_warp_m", 0) > 0 else {}
+    warp = float(fl.get("junction_warp_m", 0)); warped = 0
+    log(f"Junctions: {sum(len(v) for v in stems.values())} road ends meet a road that runs on through (warped onto it over {warp:g} m)")
+    for pi, plan in enumerate(plans):
         road, s, dx, dz, prof = plan["road"], plan["s"], plan["dx"], plan["dz"], plan["prof"]
         core = road["width"] / 2 + fl["shoulder_m"]
         reach = core + fl["blend_m"]
@@ -880,6 +981,25 @@ def build_terrain(cfg, dem_path, mapdata):
             t_raw = ((X - ax) * vx + (Z - az) * vz) / L2
             t = np.clip(t_raw, 0, 1)
             d = np.hypot(X - (ax + t * vx), Z - (az + t * vz))
+            tgt = ha + t * (hb - ha)
+            # Round 39 (A1, A3): a junction stem's surface near the through road is the through road's own surface (its height at
+            # the nearest point of its centerline), fading back to the stem's level cross-section from the through road's level
+            # core out over junction_warp_m, and along the stem over its last core + warp + 4 m. Inside the through road's core
+            # the two roads now ask the same height, so neither can level a wedge across the other.
+            for s_end, segs, core_t in stems.get(pi, ()):
+                if min(abs(s[a] - s_end), abs(s[a + 1] - s_end)) > core_t + warp + 1.0:
+                    continue
+                sp = s[a] + t * (s[a + 1] - s[a])
+                along = np.abs(sp - s_end)
+                f = smoothstep((along - core_t) / warp)
+                if (f >= 1).all():
+                    continue
+                # the stem's level cross-section tilted to the through road's surface: the through road's height here less
+                # its height under the stem's centerline at the same station (the profile already holds that), fading out
+                _, ht = through_surface(segs, X, Z)
+                _, hc = through_surface(segs, ax + t * vx, az + t * vz)
+                tgt = tgt + (ht - hc) * (1 - f)
+                warped += 1
             wgt = np.clip((reach - d) / fl["blend_m"], 0, 1)
             wgt = wgt * wgt * (3 - 2 * wgt)  # smoothstep
             # next to a bridge the levelling fades out over taper_m, so the terrain meets the deck end untouched
@@ -908,8 +1028,9 @@ def build_terrain(cfg, dem_path, mapdata):
                     best_k[sl] = np.where(better, k_new, k_old)
             best_w[sl] = np.where(better, wgt, best_w[sl])
             best_d[sl] = np.where(better, d, best_d[sl])
-            target[sl] = np.where(better, ha + t * (hb - ha), target[sl])
+            target[sl] = np.where(better, tgt, target[sl])
     h = (h * (1 - best_w) + target * best_w).astype(np.float32)
+    if stems: log(f"Junctions: {warped} stem segments warped onto their through road")
 
     lo, hi = float(h.min()) - 1.0, float(h.max()) + 1.0
     norm = np.round((h - lo) / (hi - lo) * 65535).astype("<u2")

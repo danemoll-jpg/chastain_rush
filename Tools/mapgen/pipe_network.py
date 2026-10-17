@@ -430,6 +430,21 @@ def fillet(pts, radii, keep_first=0.0, keep_last=0.0):
     return out
 
 
+def dekink(line):
+    """Round 39 (A2, BUG-003 in B21 at X_SHOPS): a fillet squeezed between a short leg and a kept end could fold back on itself in a
+    zig-zag of sub-metre steps, which the barrel drew as a wall across the pipe; such points (a turn of over 70 degrees with a step
+    under 1.5 m on either side) are dropped"""
+    pts = list(line); changed = True
+    while changed and len(pts) > 2:
+        changed = False
+        for i in range(1, len(pts) - 1):
+            a, b, c = pts[i - 1], pts[i], pts[i + 1]; d1 = sub(b, a); d2 = sub(c, b); l1 = math.hypot(*d1); l2 = math.hypot(*d2)
+            if l1 < 1e-6 or l2 < 1e-6: del pts[i]; changed = True; break
+            ang = math.degrees(math.acos(max(-1.0, min(1.0, dot(d1, d2) / (l1 * l2)))))
+            if ang > 70 and min(l1, l2) < 1.5: del pts[i]; changed = True; break
+    return pts
+
+
 def densify(line, step=1.0):
     out = [line[0]]
     for k in range(len(line) - 1):
@@ -559,7 +574,7 @@ def run_profile(tb, heads, plan):
     d = tb["d"]; R = d * 0.5
     rad = 22.0 if d >= 5 else 12.0
     kf = 0.0 if heads[0]["kind"] == "pipe" else 3.0; kl = 0.0 if heads[1]["kind"] == "pipe" else 3.0
-    pts = densify(fillet(plan, rad, keep_first=kf, keep_last=kl), 1.0)
+    pts = densify(dekink(fillet(plan, rad, keep_first=kf, keep_last=kl)), 1.0)
     # the tightest bend (radius from three points 4 m apart): under twice the pipe's radius its inside would fold
     tight = 1e9
     for i in range(4, len(pts) - 4):

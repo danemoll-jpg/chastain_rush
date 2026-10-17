@@ -359,7 +359,7 @@ namespace ChastainRush
         {
             const float Slope = 1f / 3f;   // Round 25 (A2, BUG-002, Dan stuck on the bank beside X_LNC's wingwall): 1 in 3 (was 1 in 2)
             float Bc(float s) => p.HalfAt(Mathf.Max(s, p.WallFrom)) + CutWall + CopingOut;
-            float most = 0f; int lowered = 0, kept = 0;
+            float most = 0f; int lowered = 0, kept = 0; var why = new Dictionary<string, int>();   // Round 39: what kept them
             float reach = 2f * (p.HeadTop - p.Y(p.S1)) + 14f;
             var corners = new[] { p.P(-6f, -Bc(0f) - reach), p.P(-6f, Bc(0f) + reach), p.P(p.S1 + 12f, -Bc(p.S1) - reach), p.P(p.S1 + 12f, Bc(p.S1) + reach) };
             EditTerrain(terrain, BoundsOf(corners, 1f), (x, z, y) =>
@@ -377,10 +377,11 @@ namespace ChastainRush
                 // cell's grass down with it, a green blade from the floor up to the bank behind the headwall or beside the walls
                 if (s >= p.WallFrom - 1f && s <= p.S1 + p.HoleBehind - 0.5f && lat <= p.HalfAt(sc) + CutWall - 0.5f) target = p.Y(sc) - 0.15f;
                 if (target >= y - 0.01f) return y;
-                if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
-                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
+                var band = DriveBands.At(q, 0.3f); if (band != null) { kept++; why[band] = why.TryGetValue(band, out int nb) ? nb + 1 : 1; return y; }
+                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; why["a building"] = why.TryGetValue("a building", out int nw) ? nw + 1 : 1; return y; } target = Mathf.Lerp(y, target, w); }
                 lowered++; most = Mathf.Max(most, y - target); if (y - target > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}"); return target;
             });
+            if (why.Count > 0) Debug.Log($"[Round39] pipe {p.J.id}: the bank's grading kept by " + string.Join(", ", why.Select(kv => kv.Key + " " + kv.Value)));
             Debug.Log($"[Round24] pipe {p.J.id}: set into a bank: an open channel graded {p.WallFrom:0.0} m from the mouth to the wingwalls, the apron and wingwalls {p.S1 - p.WallFrom:0.0} m to the headwall (its top {p.HeadTop:0.00} m), the ground beside at 1 in 2; {lowered} samples lowered (up to {most:0.00} m)" + (kept > 0 ? $"; {kept} on a road, drive, sidewalk or the trail or by a building left as they were" : ""));
         }
 
@@ -401,7 +402,9 @@ namespace ChastainRush
                 float target = top - 0.5f * d;
                 if (target <= y + 0.01f) return y;
                 if (DriveBands.At(q, 0.3f) != null) { kept++; return y; }
-                float w = NearBuilding(q); if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
+                float w = NearBuilding(q);
+                if (w < 1f && Retaining.Contains(p.J.id)) { float cap = BuildingBase(terrain, q) - 0.1f; target = Mathf.Min(target, cap); if (target <= y + 0.01f) { kept++; return y; } w = 1f; }   // Round 39 (A2): up to the house's own base
+                if (w < 1f) { if (w <= 0f) { kept++; return y; } target = Mathf.Lerp(y, target, w); }
                 raised++; most = Mathf.Max(most, target - y); if (target - y > 0.15f) Regraded.Add($"{x:0.00} {z:0.00} {target - y:0.00} {p.J.id}");
                 return target;
             });
@@ -440,6 +443,22 @@ namespace ChastainRush
         // Round 24 Part B (the rules: no house left floating or cut): the mouths' grading leaves the ground within 2 m of a building as it is and
         // eases in from there over 4 m (the building footprints of Data/map.json)
         static readonly List<(List<Vector2> f, Rect b)> Footprints = new List<(List<Vector2>, Rect)>();
+        // Round 39 (A2, BUG-002 at X_SHOPS, 4 m from house 2175): where a building keeps the bank's ground from being graded, the wingwalls
+        // stand up as retaining walls to the ground they hold (no grass teeth over the coping), and the ground behind the headwall may be
+        // raised beside the building up to the building's own lowest ground (no coping or barrel bare against the sky). Only the mouths
+        // listed (Dan's spot); the other mouths a building or road keeps ungraded are listed in the round's report, not changed
+        static readonly HashSet<string> Retaining = new HashSet<string> { "X_SHOPS" };
+        static float BuildingBase(TerrainGrid t, Vector2 q)   // the lowest ground round the nearest building's footprint within 6 m
+        {
+            float best = float.MaxValue, lo = float.MaxValue;
+            foreach (var (f, b) in Footprints)
+            {
+                if (q.x < b.xMin - 6f || q.x > b.xMax + 6f || q.y < b.yMin - 6f || q.y > b.yMax + 6f) continue;
+                float d = InPolygon(q, f) ? 0f : DistToEdges(q, f); if (d >= best) continue;
+                best = d; lo = float.MaxValue; foreach (var v in f) lo = Mathf.Min(lo, Ground(t, v.x, v.y));
+            }
+            return lo;
+        }
         static float NearBuilding(Vector2 q)   // 0 at a building (and within 2 m), 1 from 6 m away
         {
             float best = float.MaxValue;
@@ -652,7 +671,13 @@ namespace ChastainRush
                     float h1 = p.HalfAt(s); for (float o = h1; o <= h1 + CopingOut + 1e-3f; o += 0.3f) { var q = p.P(s, side * o); lo = Mathf.Min(lo, Ground(terrain, q.x, q.y)); }
                     return Mathf.Max(lo, p.Y(s)) + 0.02f;
                 }
-                if (p.Bank) return p.WingTop(s);           // Round 24 Part B: wingwalls in a graded bank
+                if (p.Bank && !Retaining.Contains(p.J.id)) return p.WingTop(s);           // Round 24 Part B: wingwalls in a graded bank
+                if (p.Bank)   // Round 39 (A2): a retaining wall where the ground beside it was kept higher than the wingwall
+                {
+                    float hk = float.MinValue, hw0 = p.HalfAt(s);
+                    for (float o = hw0; o <= hw0 + CopingOut + 0.7f; o += 0.3f) { var q = p.P(s, side * o); hk = Mathf.Max(hk, Ground(terrain, q.x, q.y)); }
+                    return Mathf.Max(p.WingTop(s), hk + 0.12f);
+                }
                 if (p.J.covered) return p.Roof(s) + 0.3f;  // Round 24 Part B: up to the roof slab (the berm over it)
                 float hi = float.MinValue;
                 float h0 = p.HalfAt(s); for (float o = h0; o <= h0 + CopingOut + 0.3f; o += 0.3f) { var q = p.P(s, side * o); hi = Mathf.Max(hi, Ground(terrain, q.x, q.y)); }

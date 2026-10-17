@@ -109,12 +109,15 @@ namespace ChastainRush
             MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             var lakes = PlanChastainLakes(map, terrain);   // Round 32 (C2): the Chastain Lakes amenity area, graded before anything samples the ground (MapBuilder.ChastainLakes.cs)
+            var courson = PlanCoursonSwim(map, terrain);   // Round 39 (A4): the swim and tennis amenity off Courson Street (MapBuilder.CoursonSwim.cs)
             // Round 32: the houses and businesses are planned before the roads are built (A1: a service road lying in a new lot is
             // paved as the lot); none of them changes the ground the roads lie on
             var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
             PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
             lakes.PlanFences(hood.Fences);   // Round 32 (C2): no back-yard fence across the area; the pool's iron fence
+            courson?.PlanFences(hood.Fences);   // Round 39 (A4): likewise round the Courson Street pool
             var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
+            if (courson != null) biz.Trees.AddRange(courson.Trees);   // Round 39 (A4): the Courson Street lot's island trees
             Round34Drives(biz, map);   // Round 34 (A3, BUG-010): the road that stopped short of building 2158 runs on to it (MapBuilder.Round34.cs)
             BuildRoads(map, terrain, mats, world, paint, hood, biz);
             BuildBridges(map, mats, world, paint, terrain);
@@ -130,7 +133,7 @@ namespace ChastainRush
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
             if (creek != null || ridge != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
             {
@@ -150,6 +153,7 @@ namespace ChastainRush
             BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
             BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
             BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
+            BuildCoursonSwim(map, terrain, mats, world, courson);   // Round 39 (A4)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
             if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop);   // Round 36 (Part A2): the stunt park, its stores and roofs
             BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
@@ -386,7 +390,7 @@ namespace ChastainRush
                 // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the
                 // street it joins. In the lighter service shade it read as a pale patch on the carriageway (01_spawn.png).
                 var mb = IsCenterRoad(r) ? center : r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
-                bool aisle = r.@class == "service" && biz != null && pts.Count(q => biz.InNewLot(q)) * 2 > pts.Count;
+                bool aisle = r.@class == "service" && ((biz != null && pts.Count(q => biz.InNewLot(q)) * 2 > pts.Count) || pts.Count(q => CoursonLotAt(q)) * 2 > pts.Count);   // Round 39 (A4): and the Courson Street pool's drive
                 if (aisle) mb = center;   // Round 32 (A1): an aisle of a new lot: the lot's asphalt, no edge strips
                 var self = r;
                 if (hood.IsStreetRoad(ri))
@@ -741,6 +745,7 @@ namespace ChastainRush
                 if (rest.Owns(i)) continue;          // Round 30: the other neighborhoods' styled houses
                 if (biz.Owns(i)) continue;           // Round 31: the businesses, schools, churches and the rest (MapBuilder.Businesses.cs)
                 if (LakesOwns(i)) continue;          // Round 32 (C2): the Chastain Lakes pool house and bathhouse (MapBuilder.ChastainLakes.cs)
+                if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, sum = 0f;

@@ -1,0 +1,4 @@
+--- 2026-10-17 06:15:34 play session started ---
+2026-10-17 06:16:06 | t=28.4s | JOLT     | x=3061.6 y=300.3 z=953.8 | Chastain Glen Lane (0.0 m from centerline) | 28.1 m/s (63 mph) vy=+1.9 m/s | vertical speed changed +2.1 m/s in 0.1 s
+2026-10-17 06:16:12 | t=34.5s | AIRBORNE | x=3091.0 y=314.4 z=1045.4 | Chastain Glen Lane (0.0 m from centerline) | 29.3 m/s (66 mph) vy=-2.5 m/s | left the ground (position is where it took off)
+2026-10-17 06:16:12 | t=34.9s | LANDED   | x=3081.6 y=312.3 z=1029.9 | Chastain Glen Lane (1.0 m from centerline) | 29.1 m/s (65 mph) vy=-6.4 m/s | after 0.60 s in the air, peak -0.01 m against takeoff, 18.1 m from takeoff

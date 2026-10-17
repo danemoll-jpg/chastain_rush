@@ -39,7 +39,8 @@
     "sag_max_m": 0.06,
     "sag_half_chord_m": 3.0,
     "junction_blend_m": 12.0,
-  "wider_wins_rects": [[3530, 640, 3620, 860], [3300, 1015, 3350, 1050]]
+  "wider_wins_rects": [[3530, 640, 3620, 860], [3300, 1015, 3350, 1050]],
+  "junction_warp_m": 8.0
   },
   "building_heights_m": {
     "default": 7.0,

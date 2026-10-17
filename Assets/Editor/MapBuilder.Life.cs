@@ -129,7 +129,7 @@ namespace ChastainRush
             }
             int yards = groups.Count(g => g.kind == AmbientLife.Kind.Yard), porches = groups.Count(g => g.kind == AmbientLife.Kind.Porch), drives = groups.Count(g => g.kind == AmbientLife.Kind.Drive);
             // the pool decks: Chastain Lakes' (its pool's rectangle) and the Enclave's (communities.json): two talking on each side
-            var pools = new List<List<Vector2>>(); if (lakes != null) pools.Add(lakes.Pool);
+            var pools = new List<List<Vector2>>(); if (lakes != null) pools.Add(lakes.Pool); if (CoursonLapPool != null) pools.Add(CoursonLapPool);   // Round 39 (A4): the Courson Street pool
             try
             {
                 var cj = File.ReadAllText(Path.Combine(ProjectRoot, "Data/neighborhood/communities.json")); var cm = JsonUtility.FromJson<CommunitiesJson>(cj);

@@ -1,0 +1,2 @@
+--- 2026-10-17 06:17:29 play session started ---
+2026-10-17 06:17:38 | t=5.8s | JOLT     | x=3063.9 y=300.8 z=959.3 | Chastain Glen Lane (0.0 m from centerline) | 28.1 m/s (63 mph) vy=+3.2 m/s | vertical speed changed +3.2 m/s in 0.1 s
