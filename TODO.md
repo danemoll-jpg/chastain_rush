@@ -126,6 +126,41 @@ Lakes and the shops; animals in the woods; a vehicle driving past them.
 For Dan to check (when done): the bank in the park, smashing in your combos, the shop and bank interiors, a Stunt event with
 rivals, people and animals around the map.
 
+**Round 38 status (Claude, 2026-10-17): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
+Evidence: `Data/screenshots/round38/` (`abcd_check.txt`, `e_check.txt`, `38_*.png`, `park_layout.png`). Check: `ChastainRush.exe -exeRound38 <dir>`.
+A DONE. The bank is the park's: hollow, boarded doors (west) and drive-up bay (east) that break, a line straight through it from the bus gap's run-out.
+   K1 turned round as the BANK HOP: an aimed pop-up (17.2 m/s at 62 deg) 10.7 m from its wall onto its roof, 2.3 s up; the BANK DROP off the roof's north
+   edge (16 m/s at 10 deg) onto a 38 deg landing in the lane between the canopy and the half-pipe. Clay Hopper and Skywhip: hop, roof, drop, landing upright.
+   Decided: parapet 1.1 m (0.6 m on the hop's side); a berm along the east edge was tried and dropped (it threw a fast vehicle off the roof); the 5th
+   container moved out of the bay's run-out.
+B DONE. A smash links the combo like a trick (a burst within 1.2 s is one link), keeps the 5 s chain, and in the air is SMASH, a trick type for the
+   multiplier (a smash in the last 0.3 s before a takeoff counts in the flight). Points: fence 25, furniture 60, mailbox / sign 75, display 80, shop wall /
+   lamp / washer 100, counter 120, window / boarded door / floodlight 150, hydrant / teller counter 200, tree 250, cash cart 300, gas pump 600, vault
+   door 1,000. Check: in at a window, through the shops, out of the pizza window: SM · SM · SM; with a backflip BACKFLIP + SMASH x2.
+C DONE. 77 breakable things in the ten shops (each its own room: coffee tables, boxes, a wok counter and lanterns, salon chairs and mirrors, pizza
+   counter, dental chair, clothes racks, flower tables, washers); the shop ramp (37 m, 16 deg) from the supermarket's north end up through a hatch
+   onto the roof gap's run-up; the pizza window kicker (aimed, out through a 3.6 m window onto a sized landing); the bank's teller counter, vault
+   (round door) and cash carts. Frame rate inside, 1280 x 720: no change beyond the run-to-run noise (272 / 277 / 317 fps without, 265 / 280 / 302 with).
+D DONE. Stunt event setup: Rivals None / 1 / 2 / 3 (default 3) and Easy / Normal / Hard (settings.json). Rivals ride 9 authored lines through every
+   big feature (not the car gap: too short a run-up), Racer's tricks and bails, the player's scoring and smashes, live standings on the event panel,
+   everyone in the results (never on the Top 10). 180 s check round: EMBER 13,135, GOLD 9,573, BLUE 5,982; none outside the park; 1 to 4 resets each.
+   Split screen's AI player 2 rides the same lines in the park and the event (BUG-001), 0 s outside the park.
+E DONE. Racer's ambient life on this map (`Scripts/World/Life/`, placed by `MapBuilder.Life.cs`): 1,913 groups of people (porches 1,537, yards 278,
+   drives 82, the Lakes' and the Enclave's pool decks 11, the shops' walks 5), lent from a pool of 36 figures to the groups near the view, out of sight;
+   Racer's football trio, coffee pairs, walkers. Who is out: new LifeSchedule (Racer's HouseholdSchedule is its Dan / Kyle visits): fewest at night,
+   nobody in yards, drives or pools in rain or snow. 3,759 habitats for Racer's songbirds, squirrels, deer, coyotes, turkeys (in threes) and frogs,
+   up to 10 out near the view, by their hours; they flee as Racer's. Woods' wind and birds by the tree cover; rats at 6 network entrances, drips in 23
+   chambers. Kept 5 m off race and shortcut lines (the street's middle), 30 m off jumps, off pavement, the park, water. Decided (new): people turn to
+   watch a vehicle and step out of the way of one coming at them (no colliders). Check: the Glen 5 groups out at noon, 0 at 2 am; one stepped aside;
+   a songbird fled; frame rate at Canton Road and a Glen street the same with and without it (269 / 259 vs 295 / 256 fps, run-to-run noise; its
+   scripts 0.01 ms a frame). Thin: only 5 groups on the shops' walks (the walks are narrow strips against the stores).
+Imported from Racer: RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the
+   wildlife recordings. Left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+Also fixed: the other neighborhoods' mailboxes had the Glen's asset names, so 7 mailbox cells lost their mesh and could not break.
+For Dan to check: the bank hop and drop, smashing out of the pizza window, the shop rooms and the shop ramp, a Stunt event with 3 rivals, people in the
+   yards / at the pools / at the shops and animals in the woods, at 3840 x 2160.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 01:32 (BUILD_INFO.txt).
+
 ## QUEUED rounds
 None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
 more tracks ... we will have to keep reorganizing it otherwise"); a REVERSE of the Chastain Ridge race ("need to think how to make it work").

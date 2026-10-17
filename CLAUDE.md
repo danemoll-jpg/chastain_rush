@@ -349,6 +349,18 @@ in settings.json; `StuntEvent` riders; per-player `CameraViews`, `MiniMap`, `Tri
 <dir>\Player.log` (`Checks/Round20Runner.R37*.cs`; two virtual controllers, input counted without focus in a check). Imported from Racer: SplitScreen /
 SplitRace / SplitRoam / SplitHud / RaceMenus.Split (rewritten for this game's race, menus and IMGUI HUD), StuntEvent's riders, WeatherEffects' second view,
 CameraViews' per-player view; left behind: Police Chase, Speed Patrol, Getaway, Stunt Races, the winner shot, SplitBench.
+**Round 38 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the abandoned bank is the stunt
+park's (`MapBuilder.StuntParkBank.cs`: hollow, parapets, boarded doors that break; K1 turned round as the BANK HOP, an aimed pop-up onto its roof;
+the BANK DROP off its north edge, sized in `make_stunt_park.py`; base "bank" for park ramps); B smashing scores as stunts (`ArcadeActivities.SmashStunts.cs`:
+`Value(chunk)` the points, a burst is one link, SMASH a trick type in the air; `TreeTrunks.SnappedBy`); C the shop row's rooms, the shop ramp up through
+the roof, the pizza window kicker, the bank's teller counter and vault (`MapBuilder.StuntParkShops.cs`); D stunt rivals in the Stunt event
+(`Stunts/StuntRival.cs`: the park's authored lines `make_stunt_park.py` AI_LINES -> `StuntPark.aiLines`, Racer's RivalTricks, `ArcadeVehicle.AiAir`;
+`StuntEvent.RivalCount` / settings `stuntRivals`, `stuntDifficulty`; split screen's AI player 2 rides them: `SplitSession.StuntRide`); E Racer's
+ambient life (`Scripts/World/Life/`: AmbientLife, LifeSchedule, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice; placed by `MapBuilder.Life.cs`;
+Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -exeRound38 <dir> [-r38Only bankhop,bankthrough,bankpics,smash,shoprow,
+shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
+RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
+left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
@@ -713,7 +725,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-16_01-35-35-872_a132c0` through BUG-010 (Round 34; before it `2026-10-15_03-07-51-371_794f57` through BUG-026, Rounds 28 to 32).
+`2026-10-16_21-19-50-140_b75298` through BUG-001 (Round 38; before it `2026-10-16_01-35-35-872_a132c0` through BUG-010, Round 34).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
