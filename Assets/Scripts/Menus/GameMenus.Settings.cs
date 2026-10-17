@@ -109,6 +109,8 @@ namespace ChastainRush
                 details.gameObject.SetActive(true); details.text = "Traffic drives the roads in free roam and races (a race closes its own roads to it)."; details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 58;
                 Step(n++, "traffic", "Traffic:   " + Traffic.LevelNames[Mathf.Clamp(s.traffic, 0, 3)], d => Adjust(() => s.traffic = Mathf.Clamp(s.traffic + d, 0, 3)));
                 Step(n++, "weather-grip", "Weather affects grip:   " + (s.weatherGrip ? "On" : "Off"), d => Adjust(() => s.weatherGrip = !s.weatherGrip));   // Round 35 (Part C): Racer's Gameplay row
+                Step(n++, "hidden-police", "Hidden police:   " + (s.hiddenPolice ? "On" : "Off"), d => Adjust(() => s.hiddenPolice = !s.hiddenPolice));   // Round 39 (Part D): Racer's Gameplay rows
+                Step(n++, "hidden-police-level", "Hidden police difficulty:   " + new[] { "Easy", "Normal", "Hard" }[Mathf.Clamp(s.hiddenPoliceDifficulty, 0, 2)], d => Adjust(() => s.hiddenPoliceDifficulty = Mathf.Clamp(s.hiddenPoliceDifficulty + d, 0, 2)));
                 Row(n++, "player-name", "Player name:   " + PlayerNames.Player + "   (A: change)", () => OpenNameEntry(s.playerName, PlayerNames.SetPlayer));   // Round 34 (C2): Racer's Settings > Gameplay row
             }
             if (page == "settings-controls") { RenderControls(n); return; }

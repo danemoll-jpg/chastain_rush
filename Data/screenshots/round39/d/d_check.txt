@@ -1,0 +1,43 @@
+Round 39 check, 2026-10-17 09:14, the exe, 1280 x 720, muted.
+
+=== Part D: Getaway (one player, the Needle 600 driven flat out as a human would; the heat five times faster in the check)
+PASS  Getaway: a cop is behind the runner at the start, lights and siren on  -  2 cops, the first 70 m back
+  backups: 3 cops at 4 s, the newest 346 m away
+  heat 2 at 4 s (2 cops); heat 3 at 8 s (3 cops)
+  the radio: Dispatch, unit in pursuit. Suspect on the road.  |  Backup requested.  |  Unit three, joining from The Willows.  |  Suspect turning onto Chastain Corner.  |  Suspect turning onto Canton Road.  |  Requesting roadblocks and more units.  |  Unit four, joining from Chastain Corner.  |  Lost visual. Last seen on Canton Road.  |  Suspect in custody.
+FAIL  Getaway: the heat climbs to 5 with backups, a roadblock and the helicopter  -  heat 3, backups True, roadblock False, helicopter False
+PASS  Getaway on Hard at heat 5: the cops catch a human-like runner flat out on the Needle 600 (or the run says how long it lasted)  -  CAUGHT after 0:11 at heat 3, 0 cops dodged
+
+=== Part D: Getaway escapes (Easy on the road, and into the pipe network)
+FAIL  Getaway on Easy: a human-like runner on the roads can escape  -  CAUGHT after 1:30 (escape meter best 0.20)
+PASS  Getaway: down in the pipe network the cops cannot follow and the runner escapes  -  underground True, ESCAPED 15 s after going down; radio: Dispatch, unit in pursuit. Suspect on the road. | Suspect went underground. We can't follow. | Units posted at the exits on Estates Landing Drive. | We lost the suspect.
+
+=== Part D: Speed Patrol (traffic Normal)
+PASS  Speed Patrol: the player's vehicle is the Patrol Car  -  police
+PASS  Speed Patrol: a speeder clocked by the radar, chased with the lights and pulled over: points  -  clocked True (11 over), pursuit False, caught True, points 105, catches 1
+PASS  Speed Patrol over: the player's own vehicle is back  -  original
+
+=== Part D: a hidden cruiser (Free Roam, -hiddenPolice)
+  12 hiding places: Bells Ferry Road Northwest (1457, 1008), Bells Ferry Road Northwest (1435, 1187), New Chastain Road (3344, 436), Bells Ferry Road Northeast (1543, 100), Chastain Road Northwest (277, 952), Bells Ferry Road Northwest (1233, 1590), New Chastain Road (2194, 738), Bells Ferry Road Northwest (1469, 701), Hartley Woods Drive Northeast (1668, 1613) street, Blackwell Circle (3381, 914) street, Suburban Drive Northwest (2022, 1747) street, Crestmore Drive Northwest (1804, 1867) street; active 3
+  the cruiser on Bells Ferry Road Northwest at (1435, 1187), the limit there 45 mph; Hidden police: nearest 80 m (Bells Ferry Road Northwest) · 0 mph vs 55 (45+10) · on road yes · quiet 0 s
+PASS  a pass at 10+ mph over the limit in front of a hidden cruiser starts a chase (heat 1, the cruiser pulls out)  -  CLOCKED at 68 mph in a 45: CLOCKED 68 in a 45; Hidden police: nearest 540 m (Hartley Woods Drive Northeast) · 69 mph vs 55 (45+10) · on road yes · quiet chase on
+
+=== Part D: Cop vs Runner for two (split screen, two virtual controllers)
+PASS  round 1: player 1 is the cop in the Patrol Car, player 2 runs  -  police
+PASS  round 1: the cop catches the runner (the bust meter)  -  KYLE ran (Ridge Scrambler): CAUGHT after 0:13
+PASS  round 2: player 2 is the cop in the Patrol Car, player 1 runs  -  police
+PASS  round 2: the cop catches the runner (the bust meter)  -  Player ran (Street Classic): CAUGHT after 0:12
+PASS  two rounds, the roles swapped  -  2 rounds: KYLE ran (Ridge Scrambler): CAUGHT after 0:13; Player ran (Street Classic): CAUGHT after 0:12
+PASS  after the chase: split screen ended, player 1's own vehicle back  -  split False, original
+
+=== Part D: the police radio (Tools/Audio/police-radio-lines.csv; Dan's voice to come)
+  the script: loaded; e.g. "Suspect heading north on Canton Road.", "Unit three, joining from New Chastain Road.", "Roadblock set up on Chastain Corner ahead of the suspect."
+  Dan's drop-in folder has none yet (C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\Sounds\PoliceRadio); the built-in folder is not there
+PASS  with no clip recorded, a radio call is text only (nothing played)  -  221.5s R01 text only [R01:none]
+PASS  a clip in the drop-in folder is played (the radio effect on it, the music ducked)  -  223.0s R02 1.35s [R02:drop-in]
+
+=== Part D: the frame rate in a heat-5 chase at Canton Road (1280 x 720, not measured at 3840 x 2160)
+INFO  before (no chase): 159 fps average, slowest 1 % 87 fps
+INFO  heat 5 chase: 111 fps average, slowest 1 % 56 fps; 6 cops, 0 roadblocks, helicopter True
+
+15 of 17 checks passed.

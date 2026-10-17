@@ -1,0 +1,7 @@
+Round 39 check, 2026-10-17 09:33, the exe, 1280 x 720, muted.
+
+=== Part D: Getaway escapes (Easy on the road, and into the pipe network)
+FAIL  Getaway on Easy: a human-like runner on the roads can escape (hiding off the road once out of sight; up to 3 tries)  -  caught after 2:01 (escape meter best 0.00); caught after 2:02 (escape meter best 0.00); still chased after 2:30 (escape meter best 0.00)
+PASS  Getaway: down in the pipe network the cops cannot follow and the runner escapes  -  underground True, ESCAPED 15 s after going down; radio: Dispatch, unit in pursuit. Suspect on the road. | Suspect went underground. We can't follow. | Units posted at the exits on Estates Landing Drive. | We lost the suspect.
+
+1 of 2 checks passed.

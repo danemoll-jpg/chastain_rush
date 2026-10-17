@@ -84,9 +84,11 @@ namespace ChastainRush
         void RenderRecords()
         {
             var tracks = RecordTracks(); var boards = RaceController.Boards;
-            int pagesN = tracks.Count + (StuntPark.Current ? 2 : 0) + (ArcadeActivities.Instance && ArcadeActivities.Instance.Sites.Length > 0 ? 1 : 0);   // Round 36 (A1): the Stunt event Top 10 and the Top 10 Best Combos after the routes; (B) the activities
+            int acts = ArcadeActivities.Instance && ArcadeActivities.Instance.Sites.Length > 0 ? 1 : 0;
+            int pagesN = tracks.Count + (StuntPark.Current ? 2 : 0) + acts + 2;   // Round 39 (Part D): the Getaway and Speed Patrol Top 10s last   // Round 36 (A1): the Stunt event Top 10 and the Top 10 Best Combos after the routes; (B) the activities
             if (recordTrack < 0 || recordTrack >= pagesN) ChooseRecordTrack(tracks);
             Clear("RECORDS", "");
+            if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0) + acts) { RenderPoliceRecords(recordTrack - (tracks.Count + (StuntPark.Current ? 2 : 0) + acts), pagesN); return; }   // Round 39
             if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0)) { RenderActivityRecords(pagesN); return; }
             if (recordTrack >= tracks.Count) { RenderStuntRecords(recordTrack - tracks.Count, pagesN); return; }
             if (tracks.Count == 0 || boards == null) { details.gameObject.SetActive(true); details.text = "No routes."; Row(0, "back", "Back", BackPage); return; }

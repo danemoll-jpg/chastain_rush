@@ -171,6 +171,7 @@ namespace ChastainRush
             new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
             BuildRace(mats);
             BuildActivities(terrain, mats);   // Round 36 (Part B): Racer's Free Roam activities, game layer (MapBuilder.Activities.cs)
+            BuildPolice(map);                 // Round 39 (Part D): the police's roads and radio script, game layer (MapBuilder.Police.cs)
             BuildProposalMarkers(terrain, world);   // Round 23 (Part B): TEMPORARY proposal markers (the underground pipe network), hidden until the debug menu shows them
             PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
 

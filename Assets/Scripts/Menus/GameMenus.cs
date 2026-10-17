@@ -106,6 +106,7 @@ namespace ChastainRush
             if (race) race.Reload();   // Round 18: the saved route
             Build();
             StuntEvent.Finished += ShowStuntResults;   // Round 36 (A1)
+            PoliceSession.Finished += ShowPoliceResults;   // Round 39 (Part D)
             OpenMenu(true);
             AskNameOnce();   // Round 34 (C2): Racer's welcome
         }
@@ -126,6 +127,7 @@ namespace ChastainRush
             CapturePage();
             open = false; modal = null; LeaveGarageView();
             if (StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done) StuntEvent.End();   // Round 36: off the results, back in Free Roam
+            if (PoliceSession.Running && PoliceSession.Done && page != "police-results") PoliceSession.Stop();   // Round 39: off the results, back in Free Roam
             Time.timeScale = savedTimeScale; AudioListener.pause = false;
             MenuInput.ConsumeThroughRelease(submit);
             Show();
@@ -166,6 +168,7 @@ namespace ChastainRush
             back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
             if (textKeyboard != null) textKeyboard.onTextInput -= TypedCharacter;
             StuntEvent.Finished -= ShowStuntResults;
+            PoliceSession.Finished -= ShowPoliceResults;
             if (submitReference) Destroy(submitReference);
             if (previewRoot) Destroy(previewRoot); if (previewCamera) Destroy(previewCamera.gameObject); if (previewTexture) { previewTexture.Release(); Destroy(previewTexture); }
         }
@@ -401,7 +404,10 @@ namespace ChastainRush
                 case "activities": RenderActivities(); return;   // Round 36 (Part B)
                 case "keyboard": RenderKeyboard(); return;   // Round 34 (C2)
                 case "split": RenderSplit(); return;   // Round 37 (GameMenus.Split.cs)
+                case "police": RenderPoliceSetup(); return;   // Round 39 (GameMenus.Police.cs)
+                case "police-results": RenderPoliceResults(); return;
             }
+            if (!title && stage == RaceController.Stage.Free && PoliceSession.Running) { RenderPolicePause(); return; }   // Round 39: before the split pause (the mode owns its split)
             if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
             if (title)
             {
@@ -410,11 +416,12 @@ namespace ChastainRush
                 Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
                 RoamWeatherRow(2);   // Round 35 (Part C)
                 Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
-                Row(4, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
-                Row(5, "garage", "GARAGE", () => OpenGarage("all"));
-                Row(6, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(7, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(8, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(4, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D)
+                Row(5, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
+                Row(6, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(7, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(8, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(9, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
@@ -426,6 +433,7 @@ namespace ChastainRush
                 RoamWeatherRow(fr++);   // Round 35 (Part C)
                 Row(fr++, "race", "RACE", () => Navigate("race"));
                 Row(fr++, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's Free Roam menu > STUNT EVENT
+                Row(fr++, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D): Getaway, Speed Patrol, Cop vs Runner
                 Row(fr++, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37
                 fr = ActivityRows(fr);   // Round 36 (Part B)
                 Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));

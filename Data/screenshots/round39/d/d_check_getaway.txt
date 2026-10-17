@@ -1,0 +1,18 @@
+Round 39 check, 2026-10-17 09:21, the exe, 1280 x 720, muted.
+
+=== Part D: Getaway (one player, the Needle 600 driven flat out as a human would; the heat five times faster in the check)
+PASS  Getaway: a cop is behind the runner at the start, lights and siren on  -  2 cops, the first 70 m back
+  backups: 3 cops at 4 s, the newest 335 m away
+  the helicopter at 13 s
+  a roadblock at 14 s, 264 m from the runner
+  try 1: CAUGHT after 0:14 at heat 5
+  heat 2 at 4 s (2 cops); heat 3 at 8 s (3 cops); heat 4 at 10 s (4 cops); heat 5 at 14 s (5 cops)
+  the radio: Dispatch, unit in pursuit. Suspect on the road.  |  Backup requested.  |  Unit three, joining from The Willows.  |  Suspect turning onto Chastain Corner.  |  Suspect turning onto Canton Road.  |  Requesting roadblocks and more units.  |  Unit four, joining from Canton Road.  |  Suspect rammed a unit!  |  Air support inbound. Eyes on the suspect.  |  Air one, Air one, I have the suspect in the light.  |  Suspect turning onto The Willows.  |  Suspect turning onto Canton Road.  |  Roadblock set up on Canton Road ahead of the suspect.  |  Unit one, joining from Canton Road.
+PASS  Getaway: the heat climbs to 5 with backups, a roadblock and the helicopter  -  top heat 5, backups True, roadblock True, helicopter True
+PASS  Getaway on Hard at heat 5: the cops catch a human-like runner flat out on the Needle 600 (or the run says how long it lasted)  -  CAUGHT after 0:14 at heat 5, 1 cops dodged
+
+=== Part D: Getaway escapes (Easy on the road, and into the pipe network)
+FAIL  Getaway on Easy: a human-like runner on the roads can escape  -  CAUGHT after 1:40 (escape meter best 0.59)
+PASS  Getaway: down in the pipe network the cops cannot follow and the runner escapes  -  underground True, ESCAPED 15 s after going down; radio: Dispatch, unit in pursuit. Suspect on the road. | Suspect went underground. We can't follow. | Units posted at the exits on Estates Landing Drive. | We lost the suspect.
+
+4 of 5 checks passed.

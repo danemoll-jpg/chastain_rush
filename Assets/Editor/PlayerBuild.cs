@@ -64,6 +64,7 @@ namespace ChastainRush
             });
             var s = report.summary;
             string music = s.result == BuildResult.Succeeded ? CopyMusic(root, dir) : "music not copied (build failed)";   // Round 27 (B1)
+            if (s.result == BuildResult.Succeeded) CopyPoliceRadio(root, dir);   // Round 39 (Part D)
             string persistent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", PlayerSettings.companyName, PlayerSettings.productName);
             var lines = new[]
             {
@@ -88,6 +89,17 @@ namespace ChastainRush
             return report;
         }
 
+        // Round 39 (Part D): Dan's police radio clips (Tools/Audio/police_radio_studio.py writes SourceArt/Audio/PoliceRadio/<id>.wav) into
+        // ChastainRush_Data/PoliceRadio/, where the game looks after the drop-in folder; none recorded yet: nothing copied, the radio is text
+        static void CopyPoliceRadio(string root, string dir)
+        {
+            string from = Path.Combine(root, "SourceArt", "Audio", "PoliceRadio"), to = Path.Combine(dir, Path.GetFileNameWithoutExtension(ExeName) + "_Data", "PoliceRadio");
+            if (Directory.Exists(to)) Directory.Delete(to, true);
+            if (!Directory.Exists(from)) { Debug.Log("[Round39] police radio: no clips recorded yet (SourceArt/Audio/PoliceRadio missing): the calls are text"); return; }
+            Directory.CreateDirectory(to); int n = 0;
+            foreach (var f in Directory.GetFiles(from)) { var e = Path.GetExtension(f).ToLowerInvariant(); if (e != ".wav") continue; File.Copy(f, Path.Combine(to, Path.GetFileName(f)), true); n++; }
+            Debug.Log($"[Round39] police radio: {n} clips copied into {to}");
+        }
         // Round 27 (B1): the music as Racer ships it (Racer's Tools/Package-Racer.ps1): the songs staged in BundleMusic/ (committed here)
         // go into Music/ beside the exe, folder by folder (each top folder is a station), with Music/README.txt, and RADIO.md beside
         // the exe. Files already there with the same size and time are left as they are (the music is 771 MB); anything in Music/

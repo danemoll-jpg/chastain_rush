@@ -62,7 +62,7 @@ namespace Racer
             // pose on the centre line, hands on its wheel. Engine note: the shared engine audio pitched up (Pitch).
             new() { Id="mower", Name="Turf Rocket", Class="Mower", Description="Riding mower / the acorn reward / top speed, grip and handling, solid in contact", Speed=61, Acceleration=18, Grip=32, Response=12, Mass=760, Wheelbase=1.6f, Pitch=1.75f, Size=new(1.15f,.65f,2.1f), Camera=new(0,3.1f,-6.6f),
                 Model="TurfRocket", Seat=new(0,.22f,-.52f), Base="moto", Upright=27, Air=.24f, Reward=true, SolidContact=true },
-            // Chastain Rush (Round 13): Racer's two police vehicles (Police, PoliceBike) stay behind
+            // Chastain Rush (Round 13): Racer's two police vehicles (Police, PoliceBike) stay behind (Round 39: ported, kept out of All, below)
             // Round 36 (Part A1): Racer 0.106 Part C's two stunt vehicles (Tools/Blender/stuntbuggy.py, stuntbike.py) and 0.119 Part C's Clay
             // Hopper Cup, appended (saved choices are ids, so nothing earlier moves)
             StuntBuggy, StuntBike,
@@ -85,8 +85,15 @@ namespace Racer
         // a freestyle dirt bike on the Ridge Scrambler's frame and handling family, the Dirt rider pose
         public static readonly VehicleProfile StuntBike = new() { Id="stuntbike", Name="Skywhip 250", Class="Motorcycle", Description="Stunt motorcycle / freestyle dirt bike / steer it in the air: flips, rolls, spins", Speed=55, Acceleration=18, Grip=31, Response=11.5f, Mass=190, Wheelbase=1.56f, Pitch=1.35f, Size=new(.7f,.9f,2.3f), Camera=new(0,3.2f,-6.6f),
                 Model="StuntBike", Pose="Dirt", FrontPivot=new(0,-.16f,.80f), FrontAxis=new(0,.80f,-.33f), FrontGain=9, Base="moto", Upright=23, Air=.2f, Suspension=.75f, Lean=.6f, Reward=true, Unlock="stunt-gold", AirControl=1 };
+        // Round 39 (Part D): Racer 0.94's patrol car (Tools/Blender/police.py) and 0.99's police motorcycle (Tools/Blender/policebike.py): the police modes'
+        // vehicles only (the cops, the player in Speed Patrol and as the cop in Cop vs Runner), kept out of All so never in the garage, races or rosters
+        public static readonly VehicleProfile Police = new() { Id="police", Name="Patrol Car", Class="Car", Description="Police only / fast and planted / strong contact", Speed=55, Acceleration=16.5f, Grip=26, Response=8.2f, Mass=1550, Wheelbase=2.8f, Pitch=.9f, Size=new(2,.75f,4.7f), Camera=new(0,3.8f,-8.2f),
+                Model="PatrolCar", Seat=new(-.42f,.05f,-.15f), Base="tourer", Reward=true, Unlock="police-car" };
+        public static readonly VehicleProfile PoliceBike = new() { Id="policebike", Name="Patrol Cycle", Class="Motorcycle", Description="Police motorcycle / Needle 600 family / quick and nimble / fragile on impacts", Speed=58, Acceleration=17.5f, Grip=31, Response=11.5f, Mass=240, Wheelbase=1.65f, Pitch=1.4f, Size=new(.65f,.8f,2.25f), Camera=new(0,3,-6.5f),
+                Model="PoliceBike", Pose="Moto", FrontPivot=new(0,-.2f,.825f), FrontAxis=new(0,.76f,-.305f), FrontGain=9, Base="moto", Reward=true, Unlock="police-bike" };
         public static VehicleProfile Find(string id)
         {
+            if(id==Police.Id) return Police; if(id==PoliceBike.Id) return PoliceBike;   // Round 39
             foreach(var profile in All) if(profile.Id==id) return profile;
             return All[0];
         }

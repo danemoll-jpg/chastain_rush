@@ -138,7 +138,13 @@ namespace ChastainRush
                 if (Do("climbreset")) yield return Guard(R39ClimbReset());
                 if (Do("ridgerev")) yield return Guard(R39RevRace());
                 if (Do("revpics")) yield return Guard(R39RevPics());
-                // PART D
+                if (Do("getaway")) yield return Guard(R39Getaway());        // Part D (Round20Runner.R39D.cs)
+                if (Do("escape")) yield return Guard(R39Escape());
+                if (Do("patrol")) yield return Guard(R39Patrol());
+                if (Do("hidden")) yield return Guard(R39Hidden());
+                if (Do("chase2")) yield return Guard(R39Chase2());
+                if (Do("radio")) yield return Guard(R39Radio());
+                if (Do("policefps")) yield return Guard(R39PoliceFps());
             }
             // Round 38 (Round20Runner.R38*.cs)
             if (tag == "round38")

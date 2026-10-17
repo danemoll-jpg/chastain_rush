@@ -60,7 +60,7 @@ namespace Racer
             var st = race ? race.State : ChastainRush.RaceController.Stage.Free;
             bool racing = race && st != ChastainRush.RaceController.Stage.Free;
             var traffic = ChastainRush.Traffic.Instance;
-            bool engine = racing || (traffic && traffic.Cars.Count > 0) || StuntRival.All.Count > 0;   // Round 30 (A4); Round 38: the stunt rivals
+            bool engine = racing || (traffic && traffic.Cars.Count > 0) || StuntRival.All.Count > 0 || CopDriver.All.Count > 0;   // Round 30 (A4); Round 38: the stunt rivals
             if (!engine || Disabled) { foreach (var v in voices) Stop(v); Playing = 0; return; }
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
             if (Time.unscaledTime >= nextPick) { nextPick = Time.unscaledTime + .25f; Pick(race, racing, traffic); }
@@ -92,6 +92,7 @@ namespace Racer
         {
             var road = car.GetComponent<RoadDriver>(); if (road && road.enabled) return road.LastThrottle;
             var t = car.GetComponent<ChastainRush.TrafficDriver>(); if (t && t.enabled) return t.LastThrottle;   // Round 30
+            var cop = car.GetComponent<CopDriver>(); if (cop && cop.enabled) return cop.LastThrottle;   // Round 39: the cops
             return 0;
         }
         static void Stop(Voice v)
@@ -107,6 +108,7 @@ namespace Racer
             bool Eligible(ArcadeVehicle c) => c && c != player && c.gameObject.activeInHierarchy && c.Body && !HasOwnAudio(c);
             if (racing) foreach (var e in race.Entrants) if (e.Seat == 0 && Eligible(e.Car)) candidates.Add(e.Car);   // Round 37: not split screen's player 2 (its own VehicleAudio)
             foreach (var rv in StuntRival.All) if (rv && rv.Scoring && Eligible(rv.car)) candidates.Add(rv.car);   // Round 38: the stunt rivals
+            foreach (var cd in CopDriver.All) if (cd && Eligible(cd.Car)) candidates.Add(cd.Car);   // Round 39: the cops (heard as rivals)
             int rivals = candidates.Count;
             if (traffic) foreach (var d in traffic.Cars) if (d && Eligible(d.Car)) candidates.Add(d.Car);   // Racer: (car, traffic)
             wanted.Clear();

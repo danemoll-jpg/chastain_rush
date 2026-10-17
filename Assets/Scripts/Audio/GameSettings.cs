@@ -38,6 +38,7 @@ namespace Racer
             public bool nameAsked;
             // Racer 0.120 Part E (RacerSave.Options.stuntVehicleId): the Stunt event's vehicle, the default next time. Chastain Rush, Round 36
             public string stuntVehicleId = "stuntbuggy";
+            public bool hiddenPolice = true; public int hiddenPoliceDifficulty = 1;   // Round 39 (Part D): Racer's hidden police in Free Roam and how keen they are
             public int stuntRivals = 3, stuntDifficulty = 1;   // Round 38 (Part D): the Stunt event's rivals (0 to 3) and their difficulty (Easy, Normal, Hard)
             // Racer 0.72 to 0.97 (RacerSave.Options): the Free Roam weather (0 Clear, 1 Rain, 2 Snow), its clock and calendar (a new game
             // starts on day 12, near a full moon, at 08:00), the lightning flash (Settings > Display) and the weather's grip (Settings >

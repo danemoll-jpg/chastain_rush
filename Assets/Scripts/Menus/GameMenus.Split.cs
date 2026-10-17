@@ -38,7 +38,7 @@ namespace ChastainRush
         // A or Start on a controller that no player holds (or Enter on a keyboard nobody holds) joins it as player 2 (Racer's UpdateSplitJoin)
         void UpdateSplitJoin()
         {
-            if (!open || page != "split" || modal != null) return;
+            if (!open || (page != "split" && page != "police") || modal != null) return;   // Round 39: the POLICE page joins player 2 too
             if (SplitScreen.P1Device != null && !SplitScreen.P1Device.added) { SplitScreen.P1Device = null; Show(); return; }
             if (SplitScreen.P2Device != null && !SplitScreen.P2Device.added) { SplitScreen.P2Device = null; SplitScreen.P2Ai = true; Show(); return; }
             foreach (var pad in Gamepad.all) if (!Assigned(pad) && (pad.buttonSouth.wasPressedThisFrame || pad.startButton.wasPressedThisFrame)) { Join(pad); return; }
@@ -73,7 +73,7 @@ namespace ChastainRush
         void UpdateSplitDevices()
         {
             InputDevice who = null;
-            if (open && modal == null && page == "split") who = SplitScreen.P1Device;
+            if (open && modal == null && (page == "split" || page == "police")) who = SplitScreen.P1Device;
             else if (open && KeyboardPage && keyboardFor == 2) who = SplitScreen.P2Device;
             else if (open && modal == null && splitGarage && (page == "garage" || page == "rider")) who = garagePlayer == 2 && SplitScreen.P2Device != null ? SplitScreen.P2Device : SplitScreen.P1Device;
             if (who != null) { RestrictMenuDevices(who); restricted = true; }

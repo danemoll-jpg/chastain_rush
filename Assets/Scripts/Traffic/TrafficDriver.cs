@@ -15,6 +15,7 @@ namespace ChastainRush
     public sealed class TrafficDriver : MonoBehaviour
     {
         public ArcadeVehicle Car { get; private set; }
+        public float SpeedOverride = -1;   // Round 39 (Part D): m/s, Speed Patrol's speeders (Racer's RoadDriver.SpeedOverride); -1 the road's own
         public float LastThrottle { get; private set; }   // OtherEngines
         public int Edge => route.Count > 0 ? route[0].edge : -1;
         public bool WantsRecycle { get; private set; }     // stuck, off the road or at the map's edge: Traffic moves it when nobody sees
@@ -144,7 +145,7 @@ namespace ChastainRush
             float steering = Mathf.Clamp(Mathf.Atan(2 * Car.wheelbase * Mathf.Sin(angle) / look) / maxAngle, -1, 1);
 
             // the road's speed, the bends ahead (Racer's traffic: corner grip 7.5, judgment 8), the next road's speed
-            float target = net.Speed(route[0].edge) * Pace;
+            float target = SpeedOverride >= 0 ? SpeedOverride : net.Speed(route[0].edge) * Pace;   // Round 39 (Part D): a speeder in Speed Patrol
             for (float d = 0; d <= 80 && s + d + 6 < end; d += 6)
             {
                 var a = PathAt(s + d); var b = PathAt(s + d + 6); var c = PathAt(s + d + 12);
@@ -152,7 +153,7 @@ namespace ChastainRush
                 float curve = Mathf.Sqrt(CornerGrip / Mathf.Max(.0015f, curvature));
                 target = Mathf.Min(target, Mathf.Sqrt(curve * curve + 2 * Judgment * Mathf.Max(0, d - 6)));
             }
-            if (route.Count > 1) { float toNode = nodeS[0] - s; float v = net.Speed(route[1].edge) * Pace; target = Mathf.Min(target, Mathf.Sqrt(v * v + 2 * Judgment * Mathf.Max(0, toNode))); }
+            if (route.Count > 1) { float toNode = nodeS[0] - s; float v = SpeedOverride >= 0 ? SpeedOverride : net.Speed(route[1].edge) * Pace; target = Mathf.Min(target, Mathf.Sqrt(v * v + 2 * Judgment * Mathf.Max(0, toNode))); }
             // the end of what is planned: a dead end (turn round slowly), the map's edge or a closed road (stop there)
             if (route.Count == 1) target = Mathf.Min(target, Mathf.Sqrt(2 * Judgment * Mathf.Max(0, end - s - 4)));
             if (route.Count == 1 && end - s < 6) WantsRecycle = true;
