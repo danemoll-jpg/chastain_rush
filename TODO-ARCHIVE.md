@@ -4195,3 +4195,79 @@ Imported from Racer: RecordBoards, PlayerNames, FinishPresentation (`Race/Record
 For Dan to check: the lane at speed, the lots on slopes (fewer lines: right?), BUG-007, the driveway, a race from the grid, the radio
    after Alt-Tab, your name, a new time on the boards. Seen, not changed: BUG-009's lot shows grass on its mound; 7 FenceChunk.Awake
    exceptions in every exe log. Frame rate not measured.
+
+## Round 35 (moved from TODO.md on 2026-10-17 when Dan reviewed Round 38; word for word)
+
+## Previous delivery 3: Round 35
+**Reviewed: passed by Dan 2026-10-16 10:36 ("All is good"; the Underground start line not checked yet).**
+**Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
+Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
+`Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and
+say what you decided in the status.
+
+Part A, THE UNDERGROUND RACE'S FINISH LINE ON A STRAIGHT. BUG-001 (x 1933.29 z 1171.30 h 262, THE HUB floor, at the finish
+panel). Dan: "My first complaint was that the finish line is after a hairpin turn. The finish line needs to be on a straight
+stretch." (His Round 28 B2 complaint; Round 28 moved the turn-round to the mid ledge, four 90 degree corners, and put the line
+13 m up the span, so the line still comes right after the turn.) Put the line (and the start: they are one line) on a
+straight stretch of the lap with straight road before it, enough that a racer is lined up and at speed when crossing, e.g.
+in a straight run of a pipe; the grid off the racing line as now, or behind the line on that straight, wherever it fits.
+Checkpoints, shortcuts' forgiveness and resets as before. Dan's records for the Underground race stay (the lap is the same
+loop; only where it is cut changes); say if the lap length changed. Check: a picture of the line from 30 m before it, a
+scripted 3-lap race with the AI.
+
+Part B, THE RADIO CUTS OUT. Dan: "there is something wrong with the radio. It seems to cut out especially in races. in the
+underground network it didn't play at all." (Round 34 B fixed the song skipping on focus; this is different.) Find why: the
+likely cause is Unity's voice limit (more sounds than real voices: AI engines, traffic voices, the pipes' streams, waterfalls
+and the hub's water, breaks), dropping the radio's voice because nothing marks it as the most important, or something in
+the pipes (a reverb / low-pass zone, the pipe camera, a mute meant for something else). Fix: the radio plays everywhere and
+in every race, the underground included, never dropped or muted by other sounds (its voice top priority, 2D; the other
+sounds share what is left, as Racer's voice budget does); it goes on through pipes, warps and the express, resets and race
+start / finish. Check in the exe by script: a whole Underground race and a whole Chastain Ridge race (traffic Normal) with
+the radio on, logging every frame whether its voice is really playing (not virtual); no gap longer than the song changes.
+(Sound on only as needed; muted otherwise: CLAUDE.md "Test quietly".)
+
+Part C, DAY / NIGHT AND WEATHER FROM WOODSTOCK RUSH. Dan: "Lets throw Day/night cycle and weather into this round. Use the
+same system as Woodstock Rush." Port Racer's system as it is (CLAUDE.md: prefer porting, list what came): `WorldLook`,
+`WeatherSky`, `WeatherEffects`, `SkyClouds`, `MoonIcon`, `SnowScenes`, thunder and lightning, `WeatherGrip` (rain, snow and
+ice grip on paved / dirt / grass, with its setting to turn it off), and their settings and menu rows as Racer has them
+(Free Roam's clock, 1 minute = 1 hour; how a race picks its time and weather; whatever Racer's race setup offers).
+C1. Night: the sky, the moon and stars as Racer; vehicles' headlights on (VehicleLights); street lamps and the lots' light
+   poles lit; whatever else Racer lights at night (windows, signs) if it has it.
+C2. Weather: rain, snow, storms with thunder and lightning, wet / snowy ground and grip as Racer. Never inside the pipe
+   network, junctions or the hub (no rain or snow falling underground, the lighting there unchanged by the sky), nor under a
+   roof or a bridge if Racer handles that.
+C3. World vs. game layer (CLAUDE.md): the day / night and weather are world; a race's chosen conditions are game layer.
+C4. Cost: frame rate in free roam at the busiest place (Canton Road at the shops) by day, at night and in rain, before and
+   after (1280 x 720, reported as not measured at 3840 x 2160).
+Check in the exe by script: pictures of the same three places (Dan's house street, Canton Road at the shops, the hub) at noon,
+dusk, night, in rain and in snow; a race started in rain shows lower grip on the HUD / handling as Racer; the setting off
+gives full grip.
+
+For Dan to check (when done): the Underground race's new line, the radio through a race and underground, a day in free roam,
+rain, snow and a storm, a race at night.
+
+**Round 35 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
+Build 2026-10-16 10:02.** Evidence: `Data/screenshots/round35/` (`a_*`, `b_*`, `c_*`; street pictures in `local/round35/`, not committed).
+A DONE. The line (the start: one line) is 95 m into M5 from the hub, on its 80 m straight: 62 m of straight pipe before it (heading
+   within 0.1 degree), 19 m after (`make_underground_route.py` `gate_s` 139.8 m). Same loop, cut elsewhere: lap length unchanged
+   (1370 m); records kept. Drawn as a checkered hoop round the pipe (route `gate_ring_m`). The grid stays on the mid ledge (202 m run-in).
+   Decided: finished AI cars drive on to J3 and park along its far wall, off the lap (`finish_park_gap_m`, `_speed`). Check: picture from
+   30 m back; 3-lap race, 3 AI, every shortcut taken, no missed checkpoint (`a_underground_race_check.txt`).
+B DONE. Cause: the radio's voice had priority 180 (least important) with 32 real voices; the pipes' streams, waterfalls, AI engines and
+   traffic (128 to 160) took it. Now priority 0 and past the glass stretches' low-pass (`LocalRadio`). Check, whole Underground and Ridge
+   races (traffic Normal), every frame: before, silent for most of the Underground race (40 s gaps) and up to 8 s on the Ridge; after,
+   no gap except the song change (`b_radio_*_check.txt`).
+C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1 min = 1 hour, 30-day moon, starts day 12 08:00), its
+   Weather on the title and free-roam pause menus; RACE SETUP has Time of Day (Dawn / Day / Dusk / Night) and Weather (race_settings.json,
+   the game layer); SETTINGS: Display > Lightning flashes, Gameplay > Weather affects grip; top-left Free Roam clock with the moon.
+   Night: moon, stars, headlights; street lamps and light poles glow, the nearest 8 cast light (new: Racer has none); the roads now take
+   headlights. Rain / snow: falling weather, clouds, thunder and lightning, wet sheen, snow on ground, roofs and trees, ice on ponds,
+   grip 85 % paved / 75 % grass in rain (70 / 62 % snow). Underground: no weather, the light unchanged; no wet grip there.
+   Check: three places x noon / dusk / night / rain / snow (`c_*.png`); rain race brakes 9.2 m vs 8.2 m, setting Off 8.2 m.
+   Frame rate at the shops, 1280 x 720 (not 3840 x 2160): before 285 fps; after day 266, night 218, rain 214 (`c_fps.txt`).
+   Decided: Clear Day is this game's day; other looks are Racer's relative to it. Racer's water reflection probes left out (1.4 ms a frame).
+   Left behind: SnowScenes (Racer's sled and pool scenes are at Woodstock places, made of its pedestrians), the gates' night glow (unlit
+   here already), split-screen, Trailer Mode. Wet / snow times keep their own Top 10 boards (Racer's record tag).
+   Imported from Racer: WorldLook, WeatherEffects, WeatherSky, SkyClouds, MoonIcon, WeatherGrip, ArcadeVehicle's grip lines, thunder
+   ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
+For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.

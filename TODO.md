@@ -69,6 +69,141 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 39 (Dan, 2026-10-17 03:30; reports BUG-001 to BUG-005 of session `2026-10-17_03-04-04-461_b78d3f`, read by Claude,
+after the Round 38 exe: Free Roam on the Drifter Twin).** Round 38 is reviewed. Dan is asleep while this runs: a long round
+("this can be a long round"). Parts A to D in order; rebuild into `Builds/ChastainRush/` and commit after each; short results
+(CLAUDE.md "Process"). Decide design questions yourself and say what you decided; do not stop for them. Racer
+(`C:\Users\danmo\Racer`) is read-only; port its finished code, list what came. Look at each report's screenshot
+(`%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\2026-10-17_03-04-04-461_b78d3f\Screenshots\`).
+
+Part A, DAN'S SPOTS (fix exactly where he stood; list similar places seen, do not change them).
+A1. GRASS ON THE ROAD. BUG-001 (x 3460.23 z 1074.44 h 272, Chastain Corner Northeast, 2.3 m off its centerline, near the Canton
+   Road junction): "have i not reported this grass before". Yes, the same kind of thing: Round 34 A2 (x 3324.51 z 1038.83, the
+   unnamed road off Chastain Corner) and earlier on Canton Road (archive, "GRASS IN THE STREETS"). This spot is new. Find why
+   the earlier fixes did not cover it (git history first) and fix that cause, not only a patch here; say what the cause was
+   and if the fix changed other places. Check: a picture from Dan's spot.
+A2. THE PIPE EXIT BEHIND THE SHOPS (X_SHOPS, "Exit Behind Shops", x 3153 z 1256). BUG-002 (x 3153.25 z 1254.19 h 150, at its
+   mouth): "clean this up". BUG-003 (x 3163.74 z 1238.82 h 112, 3 m inside): "why does th wall stick out like this". Look at
+   both pictures; make the mouth and the inside clean (no ragged ground, gaps or a wall standing out of the pipe's shape),
+   the pipe still drivable in and out. Check: pictures from both of Dan's spots.
+A3. UNEVEN ROAD ON CHASTAIN GLEN LANE. BUG-005 (x 3073.12 z 990.05 h 0, on Chastain Glen Lane, 0.15 m from its centerline):
+   "what happened here? Extremely uneven here". This is the starter loop's road and it was smooth before: check git history
+   for what changed it (Round 36 hydrants / manholes / geysers, Round 38 life or anything else near there) and restore the
+   road (Standing rule 5: restore the known-good first). Check: a picture from Dan's spot; drive it flat out both ways on the
+   Drifter Twin, no bump-log event.
+A4. POOL AND TENNIS COURTS. BUG-004 (x 2678.77 z 1633.55 h 102, an unnamed 5 m road): "this looks like it should be a pool
+   and tennis courts here. I have a screenshot for it". It is the swim and tennis amenity on Courson Street Northeast (the
+   "Guidhall Trail" area, n4 in `Data/neighborhood/neighborhoods.json`); Dan's road is the service road OSM 829254243 off
+   Courson Street into its lot; OSM's flat-roof buildings at about (2722, 1651) and (2712, 1676) are its clubhouse and pool
+   house. Dan's picture is a Google Maps aerial (not in the repo; Google, so it is never traced or measured): place everything
+   from OSM and NAIP. Claude's notes on what it shows: on the east side of Courson Street, the clubhouse (two storeys, gray
+   gable roof, like the houses) beside the street; behind it, east, a fenced pool deck with lounge chairs all round, a large
+   rectangular lap pool with lane lines and a smaller free-form wading pool joined at its east end; a small pool house on the
+   deck's south side; south of the clubhouse a paved lot off Courson Street (a crosswalk at its mouth, about 30 angled stalls
+   in two rows, trees in islands); a walking path curving from the lot east past the pool house and down to the courts; four
+   tennis courts in one row (blue courts on a green surround, nets, one tall fence round all four) southeast of the lot, with
+   two small blue shade canopies and benches beside them; woods to the east and south. Build it in the Enclave pool's and
+   courts' style (Round 24, `MapBuilder.Communities.cs`): pool water, deck, fences, courts, lot, path; the fence and loungers
+   breakable as elsewhere; Round 38's pool-deck people use it as the Enclave's. Check: a picture from Dan's spot and one from
+   above.
+
+Part B, MORE VARIETY IN THE PEOPLE (Round 38 E). Dan: "There are far too many people drinking coffee. The whole point of it
+before was a specific scripted scene for my friend and I in Woodstock while growing up. I don't mind keeping but it
+shouldn't be showing up so much. it would be cooler to have people walking around the neighborhood sometimes families and
+sometimes people walking dogs. just at least some variety other than people just standing around drinking coffee."
+B1. Coffee pairs become rare: a handful on the whole map (about 1 group in 40 at most), never two in sight at once. Fewer
+   people just standing (Round 38 put 1,537 of 1,913 groups on porches); the standing ones do a mix of Racer's other actions
+   (whatever Racer's AmbientLife has: kids playing, gardening, getting the mail, washing a car, and so on). Say the mix.
+B2. People walking the neighborhoods: dog walkers (one person with one or two dogs on leashes; the dogs sniff, stop, pull),
+   families (two adults with one to three kids, sometimes a stroller), couples, joggers. They walk along the streets of the
+   Glen, Grasmere Court, the Commons, the Enclave, Chastain Lakes and the other neighborhoods (on a sidewalk where there is one,
+   otherwise at the street's edge), turning at corners and walking on, not on a loop you can see repeat. More in the morning
+   and evening, a few dog walkers after dark, nobody in rain or snow (LifeSchedule). Dogs are new: simple dog figures in a few
+   sizes and colors, made the way the people figures are (a Blender script in `Tools/Blender`). They step out of a vehicle's
+   way as the others do (Round 38: no colliders). In Free Roam they may walk any street's edge; during a race none within 5 m
+   of the race line (as now). Same pool and culling as Round 38; frame rate on a Glen street before / after (1280 x 720).
+Check: pictures of a dog walker, a family and a jogger in the Glen; counts of each kind on the map and of coffee pairs before /
+after; a vehicle driven at walkers (they step aside).
+
+Part C, REVERSE CHASTAIN RIDGE. Dan: "come up with a way to reverse chastain ridge" (held since Round 38; the problem is the
+Ridge leap, which drops 13 m off Chastain Ridge Drive's dead end onto New Chastain Road and cannot be driven backward).
+Claude's design, build it:
+C1. The reverse lap: Canton Road SOUTH from Chastain Corner to New Chastain Road; right onto New Chastain Road NORTHWEST,
+   downhill; THE RIDGE CLIMB (C2) up onto the dead end; Chastain Ridge Drive backward (west from the dead end, over the crest,
+   north down the ridge, east along z 706); straight across New Chastain Road onto Chastain Corner Northeast, uphill; right
+   onto Canton Road: the lap. Two-way roads raced on their right-hand lane for this direction. The same gate on Canton Road
+   at z 700; the grid behind it on the southbound side; checkpoints in reverse order (one just past the climb's landing);
+   the same side-road barriers.
+C2. THE RIDGE CLIMB, the leap the other way, an UP jump: off New Chastain Road on the hollow's side, about where the forward
+   leap lands (x 3250-3290, z 560-610), a launch west over the hollow and house 706 up onto the dead end. Land on the back
+   (west-facing) slope of the forward leap's 2.8 m road-work dirt pile, which becomes the climb's landing ramp, or, if that
+   slope is not long enough for the flight, grade a landing slope at the dead end sized to it (the forward take-off must still
+   work: check both). An aimed launch like the forward leap's, so every vehicle the route offers makes it flat out; big air,
+   over the same houses, none changed. Dressed as more road-work fill (its real size, CLAUDE.md lesson). Coming up short never
+   traps: the Round 33 ramp out of the hollow (54 m, 12 %) leads back to New Chastain Road, and a race reset between the
+   launch and the landing puts the vehicle on Chastain Ridge Drive past the landing, facing on (`reset_skip` for reverse).
+C3. Shortcuts in reverse: S1 (Knoll hop) and S2 (Storage hop) the other way where the land gives each a take-off on its other
+   side (the creek track's "every big jump has a back" pattern), built by the shortcut rules (harder than the road, a hint
+   that could be there, no free easier way, forgives what it skips); where one cannot work in reverse, it is closed in a
+   reverse race and the status says why.
+C4. The route's `directions` gets reverse (Route row and the map, as the other routes); `ai_zones_reverse`; the AI take the
+   reverse shortcuts by ShortcutStrategy and make human mistakes; traffic on the course as forward ("traffic": true).
+Check: the climb flat out in each offered vehicle (height, air, landing upright on the slope); the forward leap re-flown once;
+a reset short of the climb; one AI race of 3 laps reverse with traffic Normal (everyone finishes). Pictures: the climb's
+take-off from New Chastain Road, the flight, the landing, each reverse shortcut's turn-off. Dan's forward records stay; the
+reverse gets its own boards (as the other routes' reverse).
+
+Part D, POLICE FROM WOODSTOCK RUSH. Dan: "Lets add police this round". Port Racer's police as Racer has it (sequel notes
+section 4 "Police", `Docs/FROM-WOODSTOCK-RUSH.md`; Round 37 noted none of it is in this game): `GetawayChase` (AI cops chase
+you: heat 1 to 5, backups placed ahead out of sight, exits covered when you go off-road, the escape meter, roadblocks, the
+helicopter from heat 4), `CopDriver`, `RoadNet` (built from this map's roads, with this map's road and place names),
+`PoliceChase` (Cop vs Runner, two players, split screen), `SpeedPatrol` (radar, catch speeders for points), `HiddenPolice`
+(parked cruisers in Free Roam that start a chase if you pass 10+ mph over the limit; its setting), `PoliceHelicopter`,
+`PoliceLights`, `PoliceRadio`, the Patrol Car and Patrol Cycle (`Tools/Blender/police.py`, `policebike.py`, their profiles),
+Racer's police records / Top 10s. Leave behind what is campaign-only (no campaign here).
+D1. Dan's rules from Woodstock Rush (sequel notes section 6): police modes are Free Roam only, never in a race; solo play never
+   swaps roles; being chased by AI is Getaway; a chase starts immediately with a cop behind you; escalation (heat, backups,
+   helicopter) is visible and announced. Put the modes where players look (a POLICE entry on the Free Roam menu: Getaway,
+   Speed Patrol, and Police Chase for two; not hidden under Split Screen, Racer's mistake). Controller first, B back.
+D2. This map: speed limits from OSM where tagged, otherwise by road type (say the defaults); hidden cruisers on the long fast
+   roads and a few in the neighborhoods (say how many and where); cops never follow down into the pipe network: decide what
+   going underground does to a chase (for example the helicopter and the cars lose sight, the escape meter fills) and say it;
+   the stunt park, the creek trail and the shortcuts are fair ground for a runner (cops follow off-road as Racer's do).
+D3. The radio voice. Dan (03:47): "I will create a different voice. You can give me new voice lines and a little app to run
+   the lines for. Lets actually use street names instead of landmarks." So: no Sheriff John Paul, no landmark lines, and Code
+   generates no audio. Claude wrote the lines and the app (in the repo, uncommitted until this round's first commit):
+   `Tools/Audio/police-radio-lines.csv` (id, text, when, map_names): R01-R20 whole lines (Racer's, plus R19 / R20 for going
+   into and out of the pipe network), P01-P15 phrase pieces that a STREET follows (P11-P14 "Suspect heading north / south /
+   east / west on...", P15 "Suspect turning onto..."), U1-U7 units, S01-S08 Speed Patrol, H01-H04 hidden police, and D001-D136
+   every named street on the map spoken without the Northeast / Northwest suffix (`map_names` lists the OSM names each one
+   covers; motorways left out). No L (landmark) lines. `Tools/Audio/police_radio_studio.py` (`Police Radio Studio.bat`): Dan's
+   app, which writes `<id>.wav` (mono, 24 kHz; extra takes `R05a`, `R05b`) into `SourceArt/Audio/PoliceRadio/` and copies each
+   into the drop-in folder `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\PoliceRadio\`.
+   The game: PoliceRadio reads these IDs (Racer's piece-joining kept: unit + phrase + street + ending); every place it would name
+   is the STREET the suspect or unit is on or heading to (nearest named street from RoadNet / `map_names`; off-road: the nearest
+   street ahead; the direction lines from the suspect's heading); it loads clips from the drop-in folder first, then the
+   built-in `SourceArt` folder (no rebuild needed for new clips); a missing clip falls back to the call as on-screen text only,
+   as Racer, so the round works with no audio yet. Do not change the CSV's IDs; fix a line's text only if the game needs it
+   and say so. The radio voice plays alongside the music radio as Racer (music ducking), at a priority under it (Round 35 B).
+D4. Split screen (Round 37): Police Chase for two, and Getaway / Speed Patrol for two as Racer has them.
+D5. Racer's lesson (sequel notes section 8): Getaway "caught the runner in 114 s" with a scripted runner in the editor but
+   never caught Dan in the built game. Check in the exe the way Dan plays: a human-like runner (the fastest road vehicle,
+   flat out, taking shortcuts and off-road cuts); the cops must be able to catch him at high heat, and escape must be
+   possible too. Say the result of each.
+Check in the exe by script: a Getaway run from heat 1 to the helicopter (pictures: a cop behind at the start, a roadblock,
+backups, the helicopter), one caught and one escaped; a Speed Patrol run scoring a catch; a hidden cruiser starting a chase
+at 10+ mph over; Police Chase for two with two virtual pads; the radio calls shown as text with no clips, and one clip played from the drop-in folder if any exist (sound briefly on, then off).
+Frame rate in a heat-5 chase at Canton Road (1280 x 720).
+
+For Dan to check (when done): the spots from his reports, people walking dogs and families out, the reverse Chastain Ridge
+race and its climb, Getaway / Speed Patrol / hidden cruisers / Police Chase in Free Roam, at 3840 x 2160.
+
+## QUEUED rounds
+None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
+more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
+
+## Previous delivery 1 (newest): Round 38
+**Reviewed: driven by Dan 2026-10-17 03:04 to 03:19 (Free Roam on the Drifter Twin; his notes are Round 39).**
 **Round 38 (Dan, 2026-10-16 21:34; report BUG-001 of session `2026-10-16_21-19-50-140_b75298`, read by Claude, after the
 Round 37 exe).** Round 37 is reviewed (Dan: the split-screen AI player 2 is only for testing, "No one is going to be splitting
 the screen with AI"; he missed START at first, no change asked). Dan picked this round from Claude's list: "AI stunt rivals,
@@ -161,11 +296,7 @@ For Dan to check: the bank hop and drop, smashing out of the pizza window, the s
    yards / at the pools / at the shops and animals in the woods, at 3840 x 2160.
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 01:32 (BUILD_INFO.txt).
 
-## QUEUED rounds
-None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
-more tracks ... we will have to keep reorganizing it otherwise"); a REVERSE of the Chastain Ridge race ("need to think how to make it work").
-
-## Previous delivery 1 (newest): Round 37
+## Previous delivery 2: Round 37
 **Reviewed: driven by Dan 2026-10-16 21:19 (split screen and the stunt park; his notes are Round 38).**
 **Round 37 (Dan, 2026-10-16 17:05; reports BUG-001 to BUG-003 of session `2026-10-16_16-59-30-505_bc23a8`, read by Claude,
 after the Round 36 exe: free roam in the stunt park on the Skywhip 250, at night in the rain).** Round 36 is reviewed. Dan: "I
@@ -249,7 +380,7 @@ For Dan to check: split screen at 3840 x 2160 (F2 shows the frame rate); both la
    Underground race for two (not run by script).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 19:48 (BUILD_INFO.txt).
 
-## Previous delivery 2: Round 36
+## Previous delivery 3: Round 36
 **Reviewed: driven by Dan 2026-10-16 16:59 (the stunt park; his notes are Round 37).**
 **Round 36 (Dan, 2026-10-16 10:36, after the Round 35 exe: "All is good").** Round 35 is reviewed (Dan did not check the
 Underground race's start line; he will report it if it is wrong). Parts A to D in order; rebuild into `Builds/ChastainRush/`
@@ -371,80 +502,6 @@ D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton R
    3.1 s in the air, down on the street 43 m on. Both kinds Free Roam only; each link has `inRaces` (off) so a route could switch one on later.
    For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 16:38 (BUILD_INFO.txt).
-
-## Previous delivery 3: Round 35
-**Reviewed: passed by Dan 2026-10-16 10:36 ("All is good"; the Underground start line not checked yet).**
-**Round 35 (Dan, 2026-10-16 08:00; report BUG-001 of session `2026-10-16_07-49-24-735_80f94d`, read by Claude, after the
-Round 34 exe: an Underground race, finished 3rd, Top 10 working).** Round 34 is reviewed. Parts A to C in order; rebuild into
-`Builds/ChastainRush/` and commit after each part; short results (CLAUDE.md "Process"). Decide design questions yourself and
-say what you decided in the status.
-
-Part A, THE UNDERGROUND RACE'S FINISH LINE ON A STRAIGHT. BUG-001 (x 1933.29 z 1171.30 h 262, THE HUB floor, at the finish
-panel). Dan: "My first complaint was that the finish line is after a hairpin turn. The finish line needs to be on a straight
-stretch." (His Round 28 B2 complaint; Round 28 moved the turn-round to the mid ledge, four 90 degree corners, and put the line
-13 m up the span, so the line still comes right after the turn.) Put the line (and the start: they are one line) on a
-straight stretch of the lap with straight road before it, enough that a racer is lined up and at speed when crossing, e.g.
-in a straight run of a pipe; the grid off the racing line as now, or behind the line on that straight, wherever it fits.
-Checkpoints, shortcuts' forgiveness and resets as before. Dan's records for the Underground race stay (the lap is the same
-loop; only where it is cut changes); say if the lap length changed. Check: a picture of the line from 30 m before it, a
-scripted 3-lap race with the AI.
-
-Part B, THE RADIO CUTS OUT. Dan: "there is something wrong with the radio. It seems to cut out especially in races. in the
-underground network it didn't play at all." (Round 34 B fixed the song skipping on focus; this is different.) Find why: the
-likely cause is Unity's voice limit (more sounds than real voices: AI engines, traffic voices, the pipes' streams, waterfalls
-and the hub's water, breaks), dropping the radio's voice because nothing marks it as the most important, or something in
-the pipes (a reverb / low-pass zone, the pipe camera, a mute meant for something else). Fix: the radio plays everywhere and
-in every race, the underground included, never dropped or muted by other sounds (its voice top priority, 2D; the other
-sounds share what is left, as Racer's voice budget does); it goes on through pipes, warps and the express, resets and race
-start / finish. Check in the exe by script: a whole Underground race and a whole Chastain Ridge race (traffic Normal) with
-the radio on, logging every frame whether its voice is really playing (not virtual); no gap longer than the song changes.
-(Sound on only as needed; muted otherwise: CLAUDE.md "Test quietly".)
-
-Part C, DAY / NIGHT AND WEATHER FROM WOODSTOCK RUSH. Dan: "Lets throw Day/night cycle and weather into this round. Use the
-same system as Woodstock Rush." Port Racer's system as it is (CLAUDE.md: prefer porting, list what came): `WorldLook`,
-`WeatherSky`, `WeatherEffects`, `SkyClouds`, `MoonIcon`, `SnowScenes`, thunder and lightning, `WeatherGrip` (rain, snow and
-ice grip on paved / dirt / grass, with its setting to turn it off), and their settings and menu rows as Racer has them
-(Free Roam's clock, 1 minute = 1 hour; how a race picks its time and weather; whatever Racer's race setup offers).
-C1. Night: the sky, the moon and stars as Racer; vehicles' headlights on (VehicleLights); street lamps and the lots' light
-   poles lit; whatever else Racer lights at night (windows, signs) if it has it.
-C2. Weather: rain, snow, storms with thunder and lightning, wet / snowy ground and grip as Racer. Never inside the pipe
-   network, junctions or the hub (no rain or snow falling underground, the lighting there unchanged by the sky), nor under a
-   roof or a bridge if Racer handles that.
-C3. World vs. game layer (CLAUDE.md): the day / night and weather are world; a race's chosen conditions are game layer.
-C4. Cost: frame rate in free roam at the busiest place (Canton Road at the shops) by day, at night and in rain, before and
-   after (1280 x 720, reported as not measured at 3840 x 2160).
-Check in the exe by script: pictures of the same three places (Dan's house street, Canton Road at the shops, the hub) at noon,
-dusk, night, in rain and in snow; a race started in rain shows lower grip on the HUD / handling as Racer; the setting off
-gives full grip.
-
-For Dan to check (when done): the Underground race's new line, the radio through a race and underground, a day in free roam,
-rain, snow and a storm, a race at night.
-
-**Round 35 status (Claude, 2026-10-16): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.
-Build 2026-10-16 10:02.** Evidence: `Data/screenshots/round35/` (`a_*`, `b_*`, `c_*`; street pictures in `local/round35/`, not committed).
-A DONE. The line (the start: one line) is 95 m into M5 from the hub, on its 80 m straight: 62 m of straight pipe before it (heading
-   within 0.1 degree), 19 m after (`make_underground_route.py` `gate_s` 139.8 m). Same loop, cut elsewhere: lap length unchanged
-   (1370 m); records kept. Drawn as a checkered hoop round the pipe (route `gate_ring_m`). The grid stays on the mid ledge (202 m run-in).
-   Decided: finished AI cars drive on to J3 and park along its far wall, off the lap (`finish_park_gap_m`, `_speed`). Check: picture from
-   30 m back; 3-lap race, 3 AI, every shortcut taken, no missed checkpoint (`a_underground_race_check.txt`).
-B DONE. Cause: the radio's voice had priority 180 (least important) with 32 real voices; the pipes' streams, waterfalls, AI engines and
-   traffic (128 to 160) took it. Now priority 0 and past the glass stretches' low-pass (`LocalRadio`). Check, whole Underground and Ridge
-   races (traffic Normal), every frame: before, silent for most of the Underground race (40 s gaps) and up to 8 s on the Ridge; after,
-   no gap except the song change (`b_radio_*_check.txt`).
-C DONE (Racer's system; Dan's look kept by day). Free Roam runs Racer's clock (1 min = 1 hour, 30-day moon, starts day 12 08:00), its
-   Weather on the title and free-roam pause menus; RACE SETUP has Time of Day (Dawn / Day / Dusk / Night) and Weather (race_settings.json,
-   the game layer); SETTINGS: Display > Lightning flashes, Gameplay > Weather affects grip; top-left Free Roam clock with the moon.
-   Night: moon, stars, headlights; street lamps and light poles glow, the nearest 8 cast light (new: Racer has none); the roads now take
-   headlights. Rain / snow: falling weather, clouds, thunder and lightning, wet sheen, snow on ground, roofs and trees, ice on ponds,
-   grip 85 % paved / 75 % grass in rain (70 / 62 % snow). Underground: no weather, the light unchanged; no wet grip there.
-   Check: three places x noon / dusk / night / rain / snow (`c_*.png`); rain race brakes 9.2 m vs 8.2 m, setting Off 8.2 m.
-   Frame rate at the shops, 1280 x 720 (not 3840 x 2160): before 285 fps; after day 266, night 218, rain 214 (`c_fps.txt`).
-   Decided: Clear Day is this game's day; other looks are Racer's relative to it. Racer's water reflection probes left out (1.4 ms a frame).
-   Left behind: SnowScenes (Racer's sled and pool scenes are at Woodstock places, made of its pedestrians), the gates' night glow (unlit
-   here already), split-screen, Trailer Mode. Wet / snow times keep their own Top 10 boards (Racer's record tag).
-   Imported from Racer: WorldLook, WeatherEffects, WeatherSky, SkyClouds, MoonIcon, WeatherGrip, ArcadeVehicle's grip lines, thunder
-   ducking, 4 shaders, 7 materials and the ice texture (`Assets/Scripts/World/`, `Assets/Shaders/Weather/`, `Assets/Resources/`).
-For Dan to check: the new line and its run-in; the radio in a race and underground; a day in free roam; rain, snow, a storm; a night race.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

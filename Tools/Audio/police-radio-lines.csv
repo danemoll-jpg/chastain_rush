@@ -1,0 +1,191 @@
+id,text,when,map_names
+R01,"Dispatch, unit in pursuit. Suspect on the road.",Chase starts,
+R02,Visual on the suspect.,A cop sees you again,
+R03,Suspect in custody.,Caught,
+R04,We lost the suspect.,You escaped,
+R05,Time's up. The suspect is gone.,The round clock ran out,
+R06,Air support inbound. Eyes on the suspect.,Helicopter joins (heat 4),
+R07,"Air one, I have the suspect in the light.",Helicopter spots you,
+R08,"Air one, lost them under the trees.",Helicopter loses you,
+R09,The suspect got through the roadblock.,You passed a roadblock,
+R10,Units covering the exits.,Cops sent to exits (no street known),
+R11,Suspect rammed a unit!,You hit a cop,
+R12,"All units, all units, suspect still at large.",Heat 5,
+R13,Backup requested.,Heat 2,
+R14,Requesting roadblocks and more units.,Heat 3,
+R15,Every unit responding.,Heat 5,
+R16,Suspect is running cross-country.,Off-road for a while while seen,
+R17,Pull over! Pull over now!,"Loudspeaker, cop close behind",
+R18,Stop the vehicle!,"Loudspeaker, alternative",
+R19,Suspect went underground. We can't follow.,You drop into the pipe network,
+R20,Suspect's back up on the street.,You come out of the pipe network while seen,
+P01,Lost visual. Last seen on...,street follows,
+P02,"Suspect off-road, heading toward...",street follows,
+P03,Suspect back on...,street follows,
+P04,Units posted at the exits on...,street follows,
+P05,...and...,joiner between two streets,
+P06,Roadblock set up on...,street follows,
+P07,...ahead of the suspect.,"ending, after the street",
+P08,...joining from...,"after the unit number, street follows",
+P09,...rejoining from...,"after the unit number, street follows",
+P10,Speeder heading down...,"street follows (hidden police, Speed Patrol)",
+P11,Suspect heading north on...,street follows,
+P12,Suspect heading south on...,street follows,
+P13,Suspect heading east on...,street follows,
+P14,Suspect heading west on...,street follows,
+P15,Suspect turning onto...,street follows,
+U1,"Unit one,",unit number,
+U2,"Unit two,",unit number,
+U3,"Unit three,",unit number,
+U4,"Unit four,",unit number,
+U5,"Unit five,",unit number,
+U6,"Unit six,",unit number,
+U7,"Air one,",helicopter,
+S01,"Dispatch to all units, speeders reported in the area.",Speed Patrol starts,
+S02,Clocked him.,Radar catches a speeder,
+S03,Speeder's running!,Speeder flees,
+S04,Suspect pulled over. Nice work.,Catch,
+S05,Speeder got away.,Escape,
+S06,"Watch it, that was a civilian.",You hit traffic,
+S07,"No violation, let them go.",Wrong pull-over,
+S08,"Time's up, finish your chase.",Clock ends,
+H01,"Unit in position, watching the road.",Passing close to a hidden cruiser (optional),
+H02,Got a speeder! In pursuit.,A hidden cruiser clocks you,
+H03,Suspect's gone. Back to patrol.,You escaped; Free Roam carries on,
+H04,Suspect in custody.,Caught; Free Roam carries on,
+D001,New Chastain Road.,street name,New Chastain Road
+D002,Chastain Road.,street name,Chastain Road Northwest
+D003,Canton Road.,street name,Canton Road;Canton Road Northeast
+D004,Bells Ferry Road.,street name,Bells Ferry Road Northeast;Bells Ferry Road Northwest
+D005,Hartley Woods Drive.,street name,Hartley Woods Drive Northeast
+D006,Chastain Meadows Parkway.,street name,Chastain Meadows Parkway Northwest
+D007,Chastain Glen Lane.,street name,Chastain Glen Lane
+D008,Lakeside Drive.,street name,Lakeside Drive Northwest
+D009,Old Farm Walk.,street name,Old Farm Walk Northeast
+D010,North Lakeside Drive.,street name,North Lakeside Drive Northwest
+D011,Kensington Drive.,street name,Kensington Drive
+D012,Embry Lane.,street name,Embry Lane Northeast
+D013,Suburban Drive.,street name,Suburban Drive Northwest
+D014,Kelly Drive.,street name,Kelly Drive Northeast
+D015,Guidhall Trail.,street name,Guidhall Trail
+D016,Centerview Drive.,street name,Centerview Drive Northeast
+D017,Westchase Drive.,street name,Westchase Drive
+D018,Parkwood Drive.,street name,Parkwood Drive
+D019,Kathryn Drive.,street name,Kathryn Drive Northeast
+D020,Sumter Drive.,street name,Sumter Drive Northeast
+D021,Rotherhithe Landing.,street name,Rotherhithe Landing
+D022,Blackwell Road.,street name,Blackwell Road;Blackwell Road Northeast
+D023,Bloombridge Way.,street name,Bloombridge Way
+D024,Chastain Corner.,street name,Chastain Corner Northeast
+D025,Joel Drive.,street name,Joel Drive
+D026,Chastain Lakes Drive.,street name,Chastain Lakes Drive;Chastain Lakes Drive Northwest
+D027,Suholden Circle.,street name,Suholden Circle Northeast
+D028,Chastain Crossing.,street name,Chastain Crossing;Chastain Crossing Northeast
+D029,Cambridge Drive.,street name,Cambridge Drive
+D030,Townpark Drive.,street name,Townpark Drive Northwest
+D031,Chastain Center Boulevard.,street name,Chastain Center Boulevard Northwest
+D032,Coventry Drive.,street name,Coventry Drive Northeast
+D033,Wilson Road.,street name,Wilson Road Northwest
+D034,Crestmore Drive.,street name,Crestmore Drive Northwest
+D035,Pine Manor.,street name,Pine Manor Northeast
+D036,Windridge Drive.,street name,Windridge Drive
+D037,Courson Street.,street name,Courson Street Northeast
+D038,Weybourne Court.,street name,Weybourne Court Northeast
+D039,The Willows.,street name,The Willows
+D040,Lowe Trail.,street name,Lowe Trail Northeast
+D041,Worley Drive.,street name,Worley Drive
+D042,Hilltop Drive.,street name,Hilltop Drive Northeast
+D043,Blackwell Circle.,street name,Blackwell Circle
+D044,Westminister Way.,street name,Westminister Way
+D045,Station Drive.,street name,Station Drive Northwest
+D046,Paxton Circle.,street name,Paxton Circle
+D047,Crawford Circle.,street name,Crawford Circle
+D048,Southwick Drive.,street name,Southwick Drive Northwest
+D049,Ballew Drive.,street name,Ballew Drive
+D050,Westmoreland Drive.,street name,Westmoreland Drive Northwest
+D051,Fowler Drive.,street name,Fowler Drive
+D052,West Station Drive.,street name,West Station Drive Northwest
+D053,Sherryforth Drive.,street name,Sherryforth Drive
+D054,Guynelle Drive.,street name,Guynelle Drive Northeast
+D055,Chastain Meadows Court.,street name,Chastain Meadows Court
+D056,Noonday Drive.,street name,Noonday Drive Northeast
+D057,Junction Drive.,street name,Junction Drive Northwest
+D058,Chastain Ridge Drive.,street name,Chastain Ridge Drive Northeast
+D059,Chastain Gardens Drive.,street name,Chastain Gardens Drive Northwest
+D060,W. D. Anderson Road.,street name,W D Anderson Road Northeast
+D061,Willard Drive.,street name,Willard Drive Northeast
+D062,Elaine Circle.,street name,Elaine Circle Northeast
+D063,Chastain Manor Way.,street name,Chastain Manor Way
+D064,Christine Drive.,street name,Christine Drive Northeast
+D065,Bernard Drive.,street name,Bernard Drive Northeast
+D066,Clarington Drive.,street name,Clarington Drive
+D067,Estates Landing Drive.,street name,Estates Landing Drive
+D068,Big Shanty Road.,street name,Big Shanty Road Northwest
+D069,Blackwell Valley Drive.,street name,Blackwell Valley Drive Northeast
+D070,Lyndon Drive.,street name,Lyndon Drive
+D071,Hadley Farm Drive.,street name,Hadley Farm Drive
+D072,Laurel Green Court.,street name,Laurel Green Court Northwest
+D073,Chasefield Way.,street name,Chasefield Way
+D074,Hayworth Drive.,street name,Hayworth Drive Northeast
+D075,Glenbarrett Court.,street name,Glenbarrett Court
+D076,Lakeside Point.,street name,Lakeside Point Northwest
+D077,Station Lane.,street name,Station Lane Northwest
+D078,Daisy Circle.,street name,Daisy Circle Northeast
+D079,McKay Lane.,street name,McKay Lane Northeast
+D080,Whisperwill Drive.,street name,Whisperwill Drive
+D081,Lansing Drive.,street name,Lansing Drive Northwest
+D082,West Junction Court.,street name,West Junction Court Northwest
+D083,Paxton Drive.,street name,Paxton Drive Northeast
+D084,Ethridge Place.,street name,Ethridge Place Northwest
+D085,Chastain Trail.,street name,Chastain Trail
+D086,Lowe Drive.,street name,Lowe Drive Northeast
+D087,Jesica Lane.,street name,Jesica Lane Northeast
+D088,Chastain Landings Court.,street name,Chastain Landings Court
+D089,Courtfield Trace.,street name,Courtfield Trace
+D090,Kathryn Lane.,street name,Kathryn Lane Northeast
+D091,Ethridge Drive.,street name,Ethridge Drive Northwest
+D092,Jesica Way.,street name,Jesica Way Northeast
+D093,Claybrooke Drive.,street name,Claybrooke Drive Northeast
+D094,Fairview Drive.,street name,Fairview Drive
+D095,Sellers Way.,street name,Sellers Way Northeast
+D096,Candace Lane.,street name,Candace Lane
+D097,Brads Court.,street name,Brads Court Northeast
+D098,Penland Drive.,street name,Penland Drive
+D099,Red Oak Drive.,street name,Red Oak Drive Northeast
+D100,Virginia Drive.,street name,Virginia Drive Northeast
+D101,Lowe Way.,street name,Lowe Way Northeast
+D102,Grasmere Court.,street name,Grasmere Court Northeast
+D103,Westcote Court.,street name,Westcote Court
+D104,Chastain Trace.,street name,Chastain Trace Northeast
+D105,Jesica Trace.,street name,Jesica Trace Northeast
+D106,Brickelberry Court.,street name,Brickelberry Court
+D107,Hartley Way.,street name,Hartley Way Northeast
+D108,Glenbarrett Lane.,street name,Glenbarrett Lane
+D109,Northside Drive.,street name,Northside Drive Northwest
+D110,Paxton Court.,street name,Paxton Court Northeast
+D111,Middlegate Court.,street name,Middlegate Court Northeast
+D112,Chasefield Court.,street name,Chasefield Court
+D113,Silverwood Court.,street name,Silverwood Court Northeast
+D114,Lockhart Court.,street name,Lockhart Court Northeast
+D115,Stillwood Court.,street name,Stillwood Court Northeast
+D116,Nivera Court.,street name,Nivera Court
+D117,Lakeside Terrace.,street name,Lakeside Terrace Northwest
+D118,Clara Drive.,street name,Clara Drive
+D119,Fairview Court.,street name,Fairview Court Northwest
+D120,Saers Court.,street name,Saers Court
+D121,Junction Court.,street name,Junction Court Northwest
+D122,Jesica Court.,street name,Jesica Court Northeast
+D123,Northlake Point.,street name,Northlake Point Northwest
+D124,Henford Court.,street name,Henford Court Northeast
+D125,Eastlake Point.,street name,Eastlake Point Northwest
+D126,Chastain Manor Court.,street name,Chastain Manor Court
+D127,Nackington Path.,street name,Nackington Path
+D128,Bankside Point.,street name,Bankside Point
+D129,McGinnis Trail.,street name,McGinnis Trail
+D130,Boat Rock Lane.,street name,Boat Rock Lane Northwest
+D131,Hadley Ridge Court.,street name,Hadley Ridge Court Northeast
+D132,Fouse Court.,street name,Fouse Court
+D133,Southwick Court.,street name,Southwick Court Northwest
+D134,Chastain Court.,street name,Chastain Court Northeast
+D135,Lowe Court.,street name,Lowe Court Northwest
+D136,Chastain Place.,street name,Chastain Place
