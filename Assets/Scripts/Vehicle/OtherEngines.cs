@@ -60,7 +60,7 @@ namespace Racer
             var st = race ? race.State : ChastainRush.RaceController.Stage.Free;
             bool racing = race && st != ChastainRush.RaceController.Stage.Free;
             var traffic = ChastainRush.Traffic.Instance;
-            bool engine = racing || (traffic && traffic.Cars.Count > 0);   // Round 30 (A4)
+            bool engine = racing || (traffic && traffic.Cars.Count > 0) || StuntRival.All.Count > 0;   // Round 30 (A4); Round 38: the stunt rivals
             if (!engine || Disabled) { foreach (var v in voices) Stop(v); Playing = 0; return; }
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
             if (Time.unscaledTime >= nextPick) { nextPick = Time.unscaledTime + .25f; Pick(race, racing, traffic); }
@@ -106,6 +106,7 @@ namespace Racer
             if (race) foreach (var e in race.Entrants) if (e.IsPlayer) player = e.Car;
             bool Eligible(ArcadeVehicle c) => c && c != player && c.gameObject.activeInHierarchy && c.Body && !HasOwnAudio(c);
             if (racing) foreach (var e in race.Entrants) if (e.Seat == 0 && Eligible(e.Car)) candidates.Add(e.Car);   // Round 37: not split screen's player 2 (its own VehicleAudio)
+            foreach (var rv in StuntRival.All) if (rv && rv.Scoring && Eligible(rv.car)) candidates.Add(rv.car);   // Round 38: the stunt rivals
             int rivals = candidates.Count;
             if (traffic) foreach (var d in traffic.Cars) if (d && Eligible(d.Car)) candidates.Add(d.Car);   // Racer: (car, traffic)
             wanted.Clear();

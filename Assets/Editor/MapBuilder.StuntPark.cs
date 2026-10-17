@@ -31,6 +31,7 @@ namespace ChastainRush
             public float u, v, du, dv, width, bank_end, u_top, angle, r, top_flat, h, th, v_design, lip_u, lip_v, side_u, side_v, radius, shift; public int k;
             public float[] profile, atrium;
         }
+        [Serializable] class StuntAiLineData { public string id; public string[] next; public float[] weights, points, speeds; }   // Round 38 (Part D)
         [Serializable] class StuntParkData
         {
             public string title; public float[] U, V; public int center_building;
@@ -38,6 +39,9 @@ namespace ChastainRush
             public float[] floor, outline, lot_south, canopy, bank; public StuntFeature[] features;
             public float[] market_glass, shelves, shelf_u, checkouts, aisle_kickers, mezz, mezz_ramp, mezz_dropin, skylight; public float shelf_h, shelf_d, checkout_u; public int shop_fronts;
             public float[] start, entrance, openings, resets, lights; public string[] landings;
+            public float[] bank_ring, bank_doors, bank_roof_resets; public float bank_roof, bank_parapet;
+            public float[] shop_ramp, bank_vault, bank_teller;   // Round 38 (Part C): MapBuilder.StuntParkShops.cs
+            public StuntAiLineData[] ai_lines; public float[] ai_grid;   // Round 38 (Part D): the stunt rivals' lines (StuntRival)   // Round 38 (Part A): the bank in the park (MapBuilder.StuntParkBank.cs)
         }
 
         // the park as the build uses it (null: no park file, the lot stays a parking lot)
@@ -62,7 +66,8 @@ namespace ChastainRush
                 return y;
             }
             public float FloorAt(Vector2 world) { var q = UVof(world); return FloorUVy(q.x, q.y); }
-            public float Base(string b, float u, float v) => b == "roof" ? D.roof_y : b == "front" ? D.front_y : FloorUVy(u, v);
+            public float Base(string b, float u, float v) => b == "roof" ? D.roof_y : b == "front" ? D.front_y : b == "bank" ? D.bank_roof : FloorUVy(u, v);
+            public bool HasBank => D.bank_ring != null && D.bank_ring.Length >= 6 && D.bank_roof > 0f;   // Round 38: the bank is the park's (built by MapBuilder.StuntParkBank.cs)
             public bool InFloor(Vector2 world) => InPolygon(world, Floor);
             public bool InBuilding(Vector2 world) => InPolygon(world, Ring);
             public bool InPark(Vector2 world) => InPolygon(world, Outline);
@@ -107,7 +112,7 @@ namespace ChastainRush
                 else { float dist = RingDist(w2, p.Floor); if (dist >= 6f) return y; w = Smooth01(1f - dist / 6f); }
                 var q = p.UVof(w2);
                 w *= Smooth01((Clearance(outside, w2) - 1f) / 3f);
-                w *= 1f - Mathf.Max(Keep(canopy, q), Keep(bank, q));
+                w *= 1f - Mathf.Max(Keep(canopy, q), p.HasBank ? 0f : Keep(bank, q));   // Round 38: the bank's pad is graded with the floor (the bank is the park's)
                 if (w <= 1e-3f) return y;
                 float ny = y + w * (p.FloorUVy(q.x, q.y) - y); most = Mathf.Max(most, Mathf.Abs(ny - y)); n++;
                 return ny;
@@ -151,6 +156,7 @@ namespace ChastainRush
             "drop" => (STeal, SC(.12f, .62f, .62f), 3f, SC(.05f, .38f, .38f), SWhite),
             "roofgap" => (SPurple, SC(.56f, .28f, .72f), 2f, SC(.32f, .12f, .44f), SWhite),
             "tower" => (SGreen, SC(.22f, .62f, .30f), 3f, SSteelDark, SYellow),
+            "bank" => (SC(.14f, .42f, .24f), SC(.18f, .50f, .29f), 3f, SC(.08f, .28f, .15f), SYellow),   // Round 38: the bank drop's landing (money green)
             "dirt" => (SOrange, SC(.98f, .55f, .14f), 2.5f, SC(.62f, .30f, .06f), SWhite),
             _ => (SPly, SPlyDark, 2f, SPlyDark, SRed),
         };
@@ -275,6 +281,7 @@ namespace ChastainRush
             ParkPads(p, root, mats);
             ParkSigns(p, props, root, signMat);
             BuildStuntStores(map, t, mats, root, p, sc);   // MapBuilder.StuntParkStores.cs
+            if (p.HasBank) BuildParkBank(map, t, mats, root, p, signMat);   // Round 38 (Part A): MapBuilder.StuntParkBank.cs
             vis.ToObject("StuntParkRamps", mats.House, root, false, true);
             props.ToObject("StuntParkProps", mats.House, root, false, true);
             // holes in the ground under the stores (their floors are slabs; MapBuilder.StuntParkStores.cs)
@@ -433,7 +440,7 @@ namespace ChastainRush
             // containers in the south-east pocket (some two high), the park's colours
             var cols = new[] { SC(.70f, .16f, .12f), SC(.16f, .34f, .70f), SC(.95f, .70f, .10f), SC(.16f, .55f, .30f), SC(.92f, .45f, .08f) };
             int k = 0;
-            foreach (var (u, v, two) in new[] { (3618f, 352f, true), (3618f, 358.6f, false), (3630f, 352f, false), (3630f, 358.6f, true), (3624f, 386f, false) })
+            foreach (var (u, v, two) in new[] { (3618f, 352f, true), (3618f, 358.6f, false), (3630f, 352f, false), (3630f, 358.6f, true), (3630f, 368f, false) })   // Round 38: the fifth container moved out of the bank's run-out (was 3624, 386)
             {
                 var w = p.W(u, v); float y = p.FloorUVy(u, v); var along = p.Dir3(0, 1);
                 ParkContainer(m, root, new Vector3(w.x, y, w.y), p.Dir3(1, 0), cols[k % cols.Length]);
@@ -554,7 +561,7 @@ namespace ChastainRush
             }
             // SMASH IN! in front of the supermarket's windows and of the shop row, readable by a rider heading for them
             FloorDecal(root, OnFloor(p.D.front_u + 7f, 404f), p.Dir3(0, 1), p.Dir3(-1, 0), 14f, 1.1f, SignSmash, signMat, true);
-            FloorDecal(root, OnFloor(3525f, p.D.row_v - 7f), p.Dir3(1, 0), p.Dir3(0, 1), 14f, 1.1f, SignSmash, signMat, true);
+            FloorDecal(root, OnFloor(3510f, p.D.row_v - 7f), p.Dir3(1, 0), p.Dir3(0, 1), 14f, 1.1f, SignSmash, signMat, true);   // Round 38: west of the pizza window's landing
         }
         // the course's paint: under every floor feature a pad in its colour (darker), 2.5 m round it, with a white border (an arena's painted zones)
         static void ParkPads(StuntParkPlan p, Transform root, Materials mats)
@@ -631,6 +638,7 @@ namespace ChastainRush
             Board(3440f, 461f, 1.8f, -1, 0, SignTower, 5.2f, "roof");            // the tower gap, on the roof
             Board(3504f, 489.5f, 1.8f, -1, 0, SignRoofGap, 5.2f, "roof");        // the roof gap
             Board(3482f, 489.5f, 1.8f, 0, 1, SignShopDrop, 5.2f, "roof");        // the shop row drop, facing north (the run-up)
+            if (p.HasBank) Board(3596.8f, 389.5f, 1.6f, 0, -1, SignBankDrop, 4.4f, "bank");   // Round 38: on the bank's roof, beside the drop's kicker (west of it), facing a rider heading north (BANK HOP: on its wall)
             // START: a gantry over the start line (two posts and the board across the lane, facing the way the riders come from the entrance)
             var st = d.start; Board(st[0] + 3f, st[1], 4.6f, 1, 0, SignStart, 10f);
         }
@@ -652,16 +660,23 @@ namespace ChastainRush
                 bool roof = v > d.row_v + .5f && u > 3451f && u < 3592f, inside = p.InBuilding(w);
                 spots.Add(new Vector3(w.x, roof ? d.roof_y : inside ? d.front_y + .02f : p.FloorUVy(u, v), w.y)); yaws.Add(Mathf.Atan2(dd.x, dd.z) * Mathf.Rad2Deg);
             }
+            var br = d.bank_roof_resets ?? new float[0];   // Round 38: on the bank's roof
+            for (int i = 0; i + 3 < br.Length; i += 4) { var w = p.W(br[i], br[i + 1]); var dd = p.Dir3(br[i + 2], br[i + 3]); spots.Add(new Vector3(w.x, d.bank_roof, w.y)); yaws.Add(Mathf.Atan2(dd.x, dd.z) * Mathf.Rad2Deg); }
             c.resetSpots = spots.ToArray(); c.resetYaws = yaws.ToArray();
             c.loopCollider = p.LoopCollider; c.loopOrigin = p.LoopOrigin; c.loopForward = p.LoopForward; c.loopSide = p.LoopSide;
             var lf = d.features.FirstOrDefault(f => f.kind == "loop"); if (lf != null) { c.loopRadius = lf.radius; c.loopShift = lf.shift; c.loopWidth = lf.width; }
-            c.barrelLip = p.BarrelLip; c.barrelForward = p.BarrelForward; c.roofY = d.roof_y; c.storeFloorY = d.front_y;
+            c.barrelLip = p.BarrelLip; c.barrelForward = p.BarrelForward; c.roofY = d.roof_y; c.storeFloorY = d.front_y; c.bankRoofY = p.HasBank ? d.bank_roof : 0f;
             c.breakables = p.Breakables.Where(b => b).Distinct().ToArray();
+            // Round 38 (Part D): the rivals' lines and their places on the start line
+            c.aiLines = (d.ai_lines ?? new StuntAiLineData[0]).Select(l => new StuntPark.AiLine { id = l.id, next = l.next, weights = l.weights, speeds = l.speeds,
+                points = Enumerable.Range(0, l.points.Length / 3).Select(i => new Vector3(l.points[3 * i], l.points[3 * i + 1], l.points[3 * i + 2])).ToArray() }).ToArray();
+            var grid = Pairs(d.ai_grid ?? new float[0]); c.aiGrid = grid.Select(q => { var uv = p.UVof(q); return new Vector3(q.x, p.FloorUVy(uv.x, uv.y) + .3f, q.y); }).ToArray();
+            p.Log.Add($"{c.aiLines.Length} rival lines ({c.aiLines.Sum(l => l.points.Length)} points), {c.aiGrid.Length} rival places on the start line");
         }
 
         // ------------------------------------------------------------ the sign atlas (Tools/handmade/make_stunt_signs.py; its row order)
         const int SignPark = 0, SignBigAir = 1, SignRoofAccess = 2, SignSmash = 3, SignLoop = 4, SignBarrel = 5, SignHalfPipe = 6, SignTower = 7, SignRoofGap = 8, SignBus = 9,
-                  SignCarGap = 10, SignStart = 11, SignChevrons = 12, SignChecker = 13, SignAllAir = 14, SignShopDrop = 15, SignDropIn = 16, SignUpToRoof = 17, SignChevronsRed = 18;
+                  SignCarGap = 10, SignStart = 11, SignChevrons = 12, SignChecker = 13, SignAllAir = 14, SignShopDrop = 15, SignDropIn = 16, SignUpToRoof = 17, SignChevronsRed = 18, SignBankHop = 19, SignBankDrop = 20;
         static Material StuntSignMaterial()
         {
             const string path = "Assets/HandMade/StuntPark/StuntSigns.png";

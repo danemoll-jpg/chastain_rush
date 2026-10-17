@@ -155,7 +155,7 @@ namespace ChastainRush
             var s = SplitScreen.Begin(mode);
             if (mode == SplitScreen.Kind.Race) { if (race) race.StartRace(); }
             else if (mode == SplitScreen.Kind.Stunt) StuntEvent.Begin(s.P1, s.P2, s.Activities2);
-            else if (SplitScreen.P2Ai) s.Cruise();
+            else if (SplitScreen.P2Ai) { if (mode == SplitScreen.Kind.StuntPark) s.StuntRide(); else s.Cruise(); }   // Round 38: in the park, the stunt AI
         }
         public void EndSplit(bool toSetup)
         {
@@ -178,7 +178,7 @@ namespace ChastainRush
             Row(n++, "resume", finished ? "SEE THE RESULTS" : "RESUME", CloseMenu); buttons[0].interactable = missing == null;
             if (racing) Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", () => { if (finished) { CloseMenu(); race.StartRace(); } else Confirm("RESTART THE RACE?", "Both players go back to the grid.", "RESTART", () => { CloseMenu(); race.StartRace(); }); });
             if (ev && ev.State != StuntEvent.Phase.Done) Row(n++, "stunt-restart", "RESTART THE EVENT", () => Confirm("RESTART THE STUNT EVENT?", "A new round; the points so far are cleared.", "RESTART", () => { CloseMenu(); ev.Rematch(); }));
-            if (!racing && !ev && StuntPark.Current && !SplitScreen.OneView) Row(n++, "split-stunt", "STUNT EVENT FOR TWO", () => { var ss = SplitScreen.Session; CloseMenu(); var rs = car.GetComponent<VehicleRespawn>(); if (rs) rs.PlaceAt(StuntPark.StartPos, StuntPark.Current.startYaw); StuntEvent.Begin(ss.P1, ss.P2, ss.Activities2); });
+            if (!racing && !ev && StuntPark.Current && !SplitScreen.OneView) Row(n++, "split-stunt", "STUNT EVENT FOR TWO", () => { var ss = SplitScreen.Session; CloseMenu(); var rs = car.GetComponent<VehicleRespawn>(); if (rs) rs.PlaceAt(StuntPark.StartPos, StuntPark.Current.startYaw); if (SplitScreen.P2Ai) ss.StuntRide(); StuntEvent.Begin(ss.P1, ss.P2, ss.Activities2); });   // Round 38: an AI player 2 rides the park's lines
             Row(n++, "change-setup", "CHANGE SETUP", () => Confirm("END AND CHANGE THE SETUP?", "Both players return to the split-screen setup.", "CHANGE SETUP", () => EndSplit(true)));
             Row(n++, "end-split", "END SPLIT SCREEN", () => Confirm("END SPLIT SCREEN?", "Back to one player in Free Roam.", "END", () => EndSplit(false)));
             Row(n++, "records", "RECORDS", OpenRecords);

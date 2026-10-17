@@ -33,16 +33,21 @@ namespace ChastainRush
             MedalUi.TargetsRow(medals, details.font, StuntTargetStrings, 22, 30, 0, Color.white, "MEDALS");
             string Vehicle(string id) { var p = VehicleProfile.Find(id); return $"{p.Name} (stunt {p.Class.ToLowerInvariant()})"; }
             Step(0, "stunt-vehicle", "Vehicle:   " + Vehicle(StuntChoice), d => { var list = StuntVehicles; int i = System.Array.FindIndex(list, v => v.Id == StuntChoice); StuntChoice = list[((i < 0 ? 0 : i) + d + list.Length) % list.Length].Id; if (vehicles) vehicles.Select(StuntChoice); Show(); });
-            Row(1, "stunt-garage", "Garage…", () => { if (vehicles && car.GetComponent<VehicleConfiguration>().profileId != StuntChoice) vehicles.Select(StuntChoice); OpenGarage("stunt"); });
-            Row(2, "stunt-start", "START STUNT EVENT", StartStunt);
-            var colors = buttons[2].colors; colors.normalColor = new(.1f, .38f, .35f); buttons[2].colors = colors; buttons[2].GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 54;
-            Row(3, "stunt-back", "Back", BackPage);
+            // Round 38 (Part D): AI stunt rivals, None to 3, and their difficulty (saved in settings.json)
+            var gs = GameSettings.Settings; string[] diff = { "Easy", "Normal", "Hard" };
+            Step(1, "stunt-rivals", "Rivals:   " + (gs.stuntRivals <= 0 ? "None" : gs.stuntRivals.ToString()), d => { gs.stuntRivals = (gs.stuntRivals + d + 4) % 4; if (!CheckRun.Active) GameSettings.SaveSettings(); Show(); });
+            Step(2, "stunt-difficulty", "Rivals' difficulty:   " + diff[Mathf.Clamp(gs.stuntDifficulty, 0, 2)], d => { gs.stuntDifficulty = (gs.stuntDifficulty + d + 3) % 3; if (!CheckRun.Active) GameSettings.SaveSettings(); Show(); });
+            Row(3, "stunt-garage", "Garage…", () => { if (vehicles && car.GetComponent<VehicleConfiguration>().profileId != StuntChoice) vehicles.Select(StuntChoice); OpenGarage("stunt"); });
+            Row(4, "stunt-start", "START STUNT EVENT", StartStunt);
+            var colors = buttons[4].colors; colors.normalColor = new(.1f, .38f, .35f); buttons[4].colors = colors; buttons[4].GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 54;
+            Row(5, "stunt-back", "Back", BackPage);
         }
         void StartStunt()
         {
             // the garage may have put on another stunt vehicle: that is the choice
             var cfg = car.GetComponent<VehicleConfiguration>(); if (cfg.Profile.Stunt) StuntChoice = cfg.profileId; else if (vehicles) vehicles.Select(StuntChoice);
             title = false; CloseMenu();
+            StuntEvent.RivalCount = GameSettings.Settings.stuntRivals; StuntEvent.RivalDifficulty = GameSettings.Settings.stuntDifficulty;   // Round 38
             StuntEvent.Begin(car);
         }
         void RenderStuntPause()
@@ -82,7 +87,14 @@ namespace ChastainRush
             TableRow(n++, "stunt-player", new[] { (SplitScreen.Active ? SplitScreen.NameOf(1) : PlayerNames.Player) + (e.Place > 0 ? $"  (Top 10 #{e.Place})" : ""), e.Points.ToString("N0"), MedalUi.Name(e.Medal), e.Best > 0 ? e.Best.ToString("N0") : "—", e.Acts ? e.Acts.Tricks.ToString() : "0", e.Acts ? e.Acts.Bails.ToString() : "0" }, widths, () => { }, true);
             var r2 = e.Of(2);   // Round 37: the split-screen event's player 2
             if (r2 != null) TableRow(n++, "stunt-player2", new[] { SplitScreen.NameOf(2) + (r2.place > 0 ? $"  (Top 10 #{r2.place})" : ""), r2.points.ToString("N0"), MedalUi.Name(r2.medal), r2.best > 0 ? r2.best.ToString("N0") : "—", r2.acts ? r2.acts.Tricks.ToString() : "0", r2.acts ? r2.acts.Bails.ToString() : "0" }, widths, () => { }, true);
-            if (r2 != null) details.text = (e.Winner == 0 ? "A DRAW" : SplitScreen.NameOf(e.Winner).ToUpperInvariant() + " WINS") + "   ·   " + details.text;
+            if (r2 != null && e.Rivals.Count == 0) details.text = (e.Winner == 0 ? "A DRAW" : SplitScreen.NameOf(e.Winner).ToUpperInvariant() + " WINS") + "   ·   " + details.text;
+            // Round 38 (Part D): with rivals, everyone by points (the rivals are never on the Top 10)
+            if (e.Rivals.Count > 0)
+            {
+                var st = e.Standings; int you = st.FindIndex(x => x.player == 1);
+                foreach (var rv in st.Where(x => x.rival)) TableRow(n++, "stunt-rival-" + rv.name, new[] { rv.name + "  (AI)", rv.points.ToString("N0"), "—", rv.best > 0 ? rv.best.ToString("N0") : "—", rv.Tricks.ToString(), rv.Bails.ToString() }, widths, () => { });
+                details.text = $"YOU FINISHED {Ordinal(you + 1)} OF {st.Count}   ·   " + (st[0].player == 0 ? st[0].name + " WINS" : (st[0].player == 1 ? "YOU WIN" : SplitScreen.NameOf(st[0].player).ToUpperInvariant() + " WINS")) + "   ·   " + details.text;
+            }
             Table(first, n, 28, 18);
             first = n;
             n = stuntResultTab == 0 ? ComboTable(n, e) : StuntTopTable(n, e.Place);
@@ -93,6 +105,7 @@ namespace ChastainRush
             for (int k = n - 2; k <= n; k++) buttons[k].transform.SetAsLastSibling();
             void colors(int i) { var c = buttons[i].colors; c.normalColor = new(.1f, .38f, .35f); buttons[i].colors = c; buttons[i].GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 54; }
         }
+        static string Ordinal(int n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "TH" : (n % 10) switch { 1 => "ST", 2 => "ND", 3 => "RD", _ => "TH" });
         // 0.109 Part B: the Top 10 Best Combos (rows from n): this event's entries highlighted with their place ("NEW #3")
         int ComboTable(int n, StuntEvent e)
         {

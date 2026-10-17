@@ -305,7 +305,7 @@ namespace ChastainRush
             }
             foreach (var kv in chunks) kv.Value.ToObject($"Houses_{kv.Key.x}_{kv.Key.y}", mats.House, hroot, false);
             foreach (var kv in detail) kv.Value.ToObject($"HouseDetail_{kv.Key.x}_{kv.Key.y}", mats.House, hroot, false, false);
-            mailboxes.ToObjects("Mailboxes", mats.House, root, 1.25f, BreakSounds.Kind.Mailbox);
+            mailboxes.ToObjects("MailboxesRest", mats.House, root, 1.25f, BreakSounds.Kind.Mailbox);   // Round 38: its own name (the Glen's are "Mailboxes": the same mesh asset names overwrote 7 of them, left unbreakable)
             File.WriteAllText(Path.Combine(ProjectRoot, GeneratedDir, "neighborhood_views.tsv"), "key\tname\tera\tx\tz\tyaw\tcx\tcz\n" + views);
             Debug.Log($"[Round30] built {rest.Houses.Count} houses in {chunks.Count} chunks, {mail} mailboxes, {rest.Fences.Count} back-yard fences; street views in {GeneratedDir}/neighborhood_views.tsv");
         }

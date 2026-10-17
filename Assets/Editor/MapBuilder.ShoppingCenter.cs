@@ -462,7 +462,7 @@ namespace ChastainRush
             }
 
             // --- the abandoned bank
-            if (bankRing != null) BuildBank(map, t, mats, root, solid, signMat, bankRing, map.buildings[sc.Bank]);
+            if (bankRing != null && (Park == null || !Park.HasBank)) BuildBank(map, t, mats, root, solid, signMat, bankRing, map.buildings[sc.Bank]);
 
             ground.ToObject("ShoppingLot", mats.Driveway, root, false, false);
             walks.ToObject("ShoppingSidewalks", mats.Sidewalk, root, false, false);

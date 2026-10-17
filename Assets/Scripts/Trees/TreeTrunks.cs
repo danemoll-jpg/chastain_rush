@@ -38,6 +38,7 @@ namespace ChastainRush
 
         public static bool IsTrunk(Collider c) => c is CapsuleCollider && c.name == "trunk";
         public static int Snapped { get; private set; }   // checks: trees snapped since the start
+        public static event System.Action<ArcadeVehicle, Vector3> SnappedBy;   // Round 38 (Part B): a tree snapped by this vehicle (a smash for the stunts)
         public const float SnapSpeedCost = 0.05f;          // fraction of horizontal speed lost per tree (a fence panel: 0.035)
         bool[] breakable, broken;
 
@@ -96,6 +97,7 @@ namespace ChastainRush
             FallingTree.Spawn(field, i, dir);
             BreakSounds.Play(new Vector3(tx[i], ty[i] + 1f, tz[i]), Mathf.Max(6f, speed), BreakSounds.Kind.Wood);
             body.linearVelocity = new Vector3(v.x * (1f - SnapSpeedCost), v.y, v.z * (1f - SnapSpeedCost));
+            SnappedBy?.Invoke(car, new Vector3(tx[i], ty[i], tz[i]));
         }
 
         // Round 15 (item 9): the AI drivers' cars get trunk colliders round them too: a pool of ExtraPool each, ExtraRadius

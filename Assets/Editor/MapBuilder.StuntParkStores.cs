@@ -47,8 +47,8 @@ namespace ChastainRush
             Vector2 rowE = new Vector2(3416f, 1207f), rowW = new Vector2(3284.9f, 1179.1f); var rowD = (rowW - rowE).normalized; float rowLen = Vector2.Distance(rowE, rowW), shopW = rowLen / d.shop_fronts;
             for (int k = 0; k < d.shop_fronts; k++)
             {
-                var c = rowE + rowD * (shopW * (k + .5f)); float half = shopW / 2f - .6f;
-                openings.Add((c - rowD * half, c + rowD * half, 2.95f)); glassPanes.Add((c - rowD * half, c + rowD * half, 2.8f, false));
+                var c = rowE + rowD * (shopW * (k + .5f)); float half = shopW / 2f - .6f; bool tall = PizzaShop(p, c, shopW);   // Round 38: the pizza window, 3.6 m
+                openings.Add((c - rowD * half, c + rowD * half, tall ? 3.6f : 2.95f)); glassPanes.Add((c - rowD * half, c + rowD * half, tall ? 3.45f : 2.8f, false));
             }
             foreach (var f in d.features)
             {
@@ -87,13 +87,15 @@ namespace ChastainRush
             // ---------------- the floor slab and the roof slab (rasters of 0.5 m cells in the store's frame, merged into rectangles)
             var skylight = d.skylight; var atrium = d.features.FirstOrDefault(f => f.id == "GAP")?.atrium;
             var skyRamp = SkylightRamp(p);   // where the skylight ramp is, and the roof hole over it (u from)
-            bool InHole(float u, float v) => u > skyRamp.holeU0 && u < skylight[1] && v > skylight[2] && v < skylight[3] || atrium != null && atrium.Length == 4 && u > atrium[0] && u < atrium[1] && v > atrium[2] && v < atrium[3];
+            var shopRamp = ShopRamp(p);      // Round 38 (Part C): the shop ramp's hatch (MapBuilder.StuntParkShops.cs)
+            bool InHole(float u, float v) => shopRamp != null && u > shopRamp.holeU0 && u < shopRamp.topU && Mathf.Abs(v - shopRamp.v) < shopRamp.width * .5f + .3f || u > skyRamp.holeU0 && u < skylight[1] && v > skylight[2] && v < skylight[3] || atrium != null && atrium.Length == 4 && u > atrium[0] && u < atrium[1] && v > atrium[2] && v < atrium[3];
             var floorRects = StoreRaster(p, ring, .5f, (u, v) => true);
             var roofRects = StoreRaster(p, ring, .5f, (u, v) => !InHole(u, v));
             foreach (var r in floorRects) SlabRect(p, inside, root, r, floorY + .02f, .3f, StoreFloor, StoreFloor * .8f, "Stunt park store floor", true);
             foreach (var r in roofRects) SlabRect(p, shell, root, r, roof, SlabT, RoofTop, Ceiling, "Stunt park roof", false);
             // the holes' edges (the slab's thickness), and low curbs along the atrium's long sides
             HoleEdges(p, shell, skyRamp.holeU0, skylight[1], skylight[2], skylight[3], roof);
+            if (shopRamp != null) HoleEdges(p, shell, shopRamp.holeU0, shopRamp.topU, shopRamp.v - shopRamp.width * .5f - .3f, shopRamp.v + shopRamp.width * .5f + .3f, roof);
             if (atrium != null && atrium.Length == 4)
             {
                 HoleEdges(p, shell, atrium[0], atrium[1], atrium[2], atrium[3], roof);
@@ -123,12 +125,16 @@ namespace ChastainRush
             // ---------------- inside
             int parts = ShopPartitions(p, root, mats, inside, rowE, rowD, shopW, floorY, roof);
             int shelves = MarketInside(p, root, mats, inside, floorY, roof, parkSigns);
+            BuildShopRamp(p, inside, inside, root);                          // Round 38 (Part C): MapBuilder.StuntParkShops.cs
+            BuildShopRooms(p, root, mats, inside, rowE, rowD, shopW);
             CeilingLights(p, root, mats, floorRects, roof);
             shell.ToObject("StuntParkStoreShell", mats.House, root, false, true);
             inside.ToObject("StuntParkStoreInside", mats.House, root, false, true);
             p.Log.Add($"the stores: {wallPieces} wall pieces, {floorRects.Count} floor and {roofRects.Count} roof slabs, {panes} window panes, {parts} partitions, {shelves} shelves, {holed} ground cells holed");
         }
 
+        // Round 38 (Part C): the shop whose window the PIZZA launch goes out of (its u range holds the launch's lip)
+        static bool PizzaShop(StuntParkPlan p, Vector2 c, float shopW) { var f = p.D.features.FirstOrDefault(x => x.id == "PIZZA"); if (f == null) return false; return Mathf.Abs(p.UVof(c).x - f.lip_u) < shopW * .5f; }
         // one wall piece from a to b on the footprint's line, inward 0.4 m, y0 to y1 (its outside and inside faces, its top, its ends)
         static void WallPiece(MeshBuilder mb, Transform root, Vector2 a, Vector2 b, Vector2 n, float y0, float y1, float top)
         {
@@ -218,10 +224,10 @@ namespace ChastainRush
             for (int k = 0; k < d.shop_fronts; k++)
             {
                 var c = rowE + rowD * (shopW * (k + .5f)); var f = MakeFrame(new Vector3(c.x, floorY, c.y), nOut, 1f);
-                var awning = ShopAwnings[k % ShopAwnings.Length]; float half = shopW / 2f - .6f;
-                BoxF(mb, f, -half - .15f, half + .15f, 2.95f, 3.05f, 0f, .2f, FrameC);
-                BoxF(mb, f, -shopW / 2f + .2f, shopW / 2f - .2f, 3.05f, 3.2f, .02f, 1.6f, awning);
-                float sy = Mathf.Min(4.0f, roof - floorY - .6f), bw2 = Mathf.Min(9f, shopW - 1.6f), bh2 = bw2 * .078f;
+                var awning = ShopAwnings[k % ShopAwnings.Length]; float half = shopW / 2f - .6f; float wt = PizzaShop(p, c, shopW) ? .65f : 0f;   // Round 38: over the taller pizza window
+                BoxF(mb, f, -half - .15f, half + .15f, 2.95f + wt, 3.05f + wt, 0f, .2f, FrameC);
+                BoxF(mb, f, -shopW / 2f + .2f, shopW / 2f - .2f, 3.05f + wt, 3.2f + wt, .02f, 1.6f, awning);
+                float sy = Mathf.Min(4.0f + wt * .6f, roof - floorY - .6f), bw2 = Mathf.Min(9f, shopW - 1.6f), bh2 = bw2 * .078f;
                 BoxF(mb, f, -bw2 / 2f - .1f, bw2 / 2f + .1f, sy - bh2 / 2f - .1f, sy + bh2 / 2f + .1f, .02f, .18f, SC(.16f, .16f, .17f));
                 if (signMat != null) AtlasPlate(root, f.P(0f, sy, .19f), -f.F, bw2, bh2, SignRowFirst + k, signMat);
             }
@@ -237,9 +243,12 @@ namespace ChastainRush
                 // to the back wall: the first point along +v that leaves the footprint (less the wall)
                 float depth = 0f; while (depth < 40f && InPolygon(front + inward * (depth + .25f), ring)) depth += .25f; depth -= WallT + .05f;
                 int panels = Mathf.Max(2, Mathf.RoundToInt(depth / 3.9f));
+                var sr = ShopRamp(p); float pu = p.UVof(front).x; bool rampCrosses = sr != null && pu > sr.footU && pu < sr.topU;   // Round 38: open over the shop ramp
+                float bandLo = sr != null ? sr.v - sr.width * .5f - .4f : 0f, bandHi = sr != null ? sr.v + sr.width * .5f + .4f : 0f;
                 for (int i = 0; i < panels; i++)
                 {
                     var a = front + inward * (depth * i / panels); var b = front + inward * (depth * (i + 1) / panels); var mid = (a + b) * .5f;
+                    if (rampCrosses && p.UVof(b).y > bandLo && p.UVof(a).y < bandHi) continue;
                     var mb = walls.Begin(mid); var side = new Vector3(rowD.x, 0, rowD.y);
                     for (int sy = 0; sy < 2; sy++)
                     {
@@ -250,7 +259,14 @@ namespace ChastainRush
                     walls.End(new Vector3(mid.x, floorY + 1.8f, mid.y), side, Vector2.Distance(a, b), 3.6f, .8f); n++;
                 }
                 // above: the wall to the ceiling (no collider: nothing drives up there)
-                var top0 = front; var top1 = front + inward * depth; inside.Tint = WallIn; BoxWorld(inside, top0, top1, new Vector3(rowD.x, 0, rowD.y), .14f, floorY + 3.6f, roof - SlabT);
+                var top0 = front; var top1 = front + inward * depth; inside.Tint = WallIn;
+                if (rampCrosses)
+                {
+                    float fv = p.UVof(front).y; var cutA = front + inward * (bandLo - fv); var cutB = front + inward * (bandHi - fv);
+                    BoxWorld(inside, top0, cutA, new Vector3(rowD.x, 0, rowD.y), .14f, floorY + 3.6f, roof - SlabT);
+                    inside.Tint = WallIn; BoxWorld(inside, cutB, top1, new Vector3(rowD.x, 0, rowD.y), .14f, floorY + 3.6f, roof - SlabT);
+                }
+                else BoxWorld(inside, top0, top1, new Vector3(rowD.x, 0, rowD.y), .14f, floorY + 3.6f, roof - SlabT);
             }
             var wr = walls.ToObjects("StuntParkPartitions", mats.House, root, .4f, BreakSounds.Kind.Wood);
             p.Breakables.AddRange(wr.GetComponentsInChildren<FenceChunk>());
@@ -359,6 +375,7 @@ namespace ChastainRush
                 {
                     var w = p.W(u, v); if (!InPolygon(w, ring) || RingDist(w, ring) < 1.5f) continue;
                     if (u > p.D.skylight[0] - 1 && u < p.D.skylight[1] + 1 && v > p.D.skylight[2] - 1 && v < p.D.skylight[3] + 1) continue;
+                    if (InShopRampBand(ShopRamp(p), u, v, 1f)) continue;   // Round 38: not over the shop ramp
                     SBox(lights, new Vector3(w.x, roof - SlabT - .12f, w.y), p.Dir3(1, 0), new Vector3(.5f, .1f, 3.6f), Color.white);
                 }
             var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "StuntParkCeilingLight" }; mat.SetColor("_BaseColor", new Color(1f, .97f, .9f));

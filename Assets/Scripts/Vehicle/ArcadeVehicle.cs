@@ -49,8 +49,10 @@ namespace Racer
         // 0.106 Part C: air steering, stunt vehicles only (VehicleConfiguration sets it from the profile; 0 = none, every other vehicle as before).
         // While all wheels are off the ground the player's input turns the vehicle about its own axes (VehicleInput.AirPitch / Steering /
         // AirSpin) toward these rates; the flight's self-levelling is off while the stick is held, so a flip carries on, and on when it is let go.
-        // Chastain Rush, Round 36 (Racer's rivals' AiAir stays behind: no Stunt Races here)
+        // Chastain Rush, Round 36 (Racer's rivals' AiAir stays behind: no Stunt Races here); Round 38 (Part D): Racer's AiAir ported for the
+        // stunt rivals (StuntRival): an AI vehicle (driven through Simulate, not the player's step) turns toward AiAirInput while AiAir is on
         [System.NonSerialized] public float airControl;
+        [System.NonSerialized] public bool AiAir; [System.NonSerialized] public Vector3 AiAirInput;   // x tip, y spin, z roll, each -1..1
         public const float AirTipRate = 5.5f, AirRollRate = 5.5f, AirSpinRate = 5f, AirResponse = 16f;
         public bool AirSteering { get; private set; }
         float rideEnergy = float.NegativeInfinity, lastSpeed;   // Round 37: per unit mass, on the park's ramps and loop
@@ -187,18 +189,19 @@ namespace Racer
             Vector3 tiltVelocity = Vector3.ProjectOnPlane(Body.angularVelocity, up);
             // 0.106 Part C: a stunt vehicle in the air with the stick held: no self-levelling, the stick sets the turn rates instead (Round 36)
             bool air = playerStep && airControl > 0 && GroundedWheels == 0 && !(configuration && configuration.WipedOut);
+            bool aiAir = !playerStep && AiAir && airControl > 0 && GroundedWheels == 0 && !(configuration && configuration.WipedOut);   // Round 38 (Racer)
             if (playerStep) input.AirActive = airControl > 0 && GroundedWheels == 0;
-            float tip = air ? input.AirPitch : 0, rollInput = air ? steering : 0, spin = air ? input.AirSpin : 0;
-            AirSteering = air && (Mathf.Abs(tip) > .1f || Mathf.Abs(rollInput) > .1f || Mathf.Abs(spin) > .1f);
+            float tip = air ? input.AirPitch : aiAir ? AiAirInput.x : 0, rollInput = air ? steering : aiAir ? AiAirInput.z : 0, spin = air ? input.AirSpin : aiAir ? AiAirInput.y : 0;
+            AirSteering = aiAir || air && (Mathf.Abs(tip) > .1f || Mathf.Abs(rollInput) > .1f || Mathf.Abs(spin) > .1f);
             float level = grounded ? 1 : AirSteering ? 0 : airStability;
             AlignmentTorque = ((tilt * uprightStrength - tiltVelocity * uprightDamping) * level).magnitude;
             Body.AddTorque((tilt * uprightStrength - tiltVelocity * uprightDamping) * level, ForceMode.Acceleration);
             if (AirSteering)
             {
                 var w = transform.InverseTransformDirection(Body.angularVelocity); float k = AirResponse * airControl * dt;
-                if (Mathf.Abs(tip) > .1f) w.x = Mathf.MoveTowards(w.x, tip * AirTipRate, k);            // stick forward: nose down
-                if (Mathf.Abs(rollInput) > .1f) w.z = Mathf.MoveTowards(w.z, -rollInput * AirRollRate, k); // stick right: roll right
-                if (Mathf.Abs(spin) > .1f) w.y = Mathf.MoveTowards(w.y, spin * AirSpinRate, k);            // right: spin clockwise from above
+                if (aiAir || Mathf.Abs(tip) > .1f) w.x = Mathf.MoveTowards(w.x, tip * AirTipRate, k);            // stick forward: nose down
+                if (aiAir || Mathf.Abs(rollInput) > .1f) w.z = Mathf.MoveTowards(w.z, -rollInput * AirRollRate, k); // stick right: roll right
+                if (aiAir || Mathf.Abs(spin) > .1f) w.y = Mathf.MoveTowards(w.y, spin * AirSpinRate, k);            // right: spin clockwise from above
                 Body.angularVelocity = transform.TransformDirection(w);
             }
         }

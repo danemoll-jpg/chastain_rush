@@ -65,6 +65,8 @@ ROWS_OUT = [
     board("DROP IN", ORG, WHT, band=BLK, arrows=">"),                          # 16 the inside: the mezzanine's drop
     board("UP TO THE ROOF", (60, 64, 70), YEL, band=YEL, arrows=">"),          # 17 the skylight ramp
     None,                                                                      # 18 chevrons (red on white)
+    board("BANK HOP", (30, 110, 60), (250, 215, 60), band=(250, 215, 60), arrows=">"),   # 19 Round 38: K1, the pop-up onto the bank's roof
+    board("BANK DROP", (30, 110, 60), WHT, band=(250, 215, 60)),               # 20 Round 38: off the bank's roof, north
 ]
 
 def main():

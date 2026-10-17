@@ -33,6 +33,11 @@ namespace Racer
         public float loopRadius = 5f, loopShift = 6.5f, loopWidth = 5.6f;
         public Vector3 barrelLip, barrelForward = Vector3.right;
         public float roofY, storeFloorY;   // the stores' roof and floor (checks, the resets)
+        public float bankRoofY;            // Round 38 (Part A): the bank's roof (0: the bank is not the park's)
+        // Round 38 (Part D): the stunt rivals' lines (make_stunt_park.py AI_LINES; StuntRival drives them) and their places on the start line
+        [System.Serializable] public sealed class AiLine { public string id; public Vector3[] points; public float[] speeds; public string[] next; public float[] weights; }
+        [Header("The stunt rivals (Round 38)")]
+        public AiLine[] aiLines; public Vector3[] aiGrid;
         [Header("Breakables that come back")]
         public FenceChunk[] breakables;
         public const float RestoreAway = 160f;

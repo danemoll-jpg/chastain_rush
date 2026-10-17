@@ -79,7 +79,8 @@ namespace Racer
             public string Names => string.Join(" + ", names);
             public string Multiplier => types > 1 ? $"x{types}" : "";
         }
-        public static FlightScore Score(Vector3 turn, bool barrel, float distance, float air, bool live = false)
+        // Chastain Rush, Round 38 (Part B): smashPoints / smashes, what the vehicle broke in this flight: SMASH, a trick type of its own
+        public static FlightScore Score(Vector3 turn, bool barrel, float distance, float air, bool live = false, int smashPoints = 0, int smashes = 0)
         {
             var s = new FlightScore();
             int Turns(float d) => live ? (int)Mathf.Sign(d) * Mathf.FloorToInt((Mathf.Abs(d) + 60) / 360) : Mathf.RoundToInt(d / 360);
@@ -88,6 +89,7 @@ namespace Racer
             if (flips != 0) { int n = Mathf.Abs(flips); s.names.Add(Times(n) + (flips < 0 ? "BACKFLIP" : "FRONTFLIP")); s.shorts.Add((n > 1 ? n.ToString() : "") + (flips < 0 ? "BF" : "FF")); s.tricks += FlipPoints * n; s.types++; }
             if (rolls != 0) { int n = Mathf.Abs(rolls); s.names.Add(Times(n) + (barrel ? "BARREL ROLL" : "ROLL")); s.shorts.Add((n > 1 ? n.ToString() : "") + (barrel ? "BR" : "R")); s.tricks += RollPoints * n + (barrel ? BarrelPoints : 0); s.types++; }
             if (spins > 0) { s.names.Add(spins * 360 + " SPIN"); s.shorts.Add((spins * 360).ToString()); s.tricks += SpinPoints * spins; s.types++; }
+            if (smashes > 0) { s.names.Add(smashes > 1 ? $"SMASH x{smashes}" : "SMASH"); s.shorts.Add("SM"); s.tricks += smashPoints; s.types++; }   // Round 38
             s.jump = Mathf.RoundToInt(Mathf.Min(distance, 250) * 10 + Mathf.Min(air, 12) * 100);
             s.points = (s.tricks + s.jump) * Mathf.Max(1, s.types);
             return s;
@@ -96,14 +98,14 @@ namespace Racer
         // Chastain Rush: also in Free Roam inside the park, where the tricks are what the place is for
         public bool TrickBox => StuntsOn && car && (StuntEvent.InEvent(car) || StuntPark.Current && StuntPark.Inside(car.Body.position, 20));
         // in the air: the tricks turned so far, the multiplier and the points on the line (null on the ground)
-        public FlightScore Live => sFlying && sAir > .2f && car ? Score(sTurn, sBarrel, Vector3.ProjectOnPlane(car.Body.position - sTakeoff, Vector3.up).magnitude, sAir, true) : null;
+        public FlightScore Live => sFlying && sAir > .2f && car ? Score(sTurn, sBarrel, Vector3.ProjectOnPlane(car.Body.position - sTakeoff, Vector3.up).magnitude, sAir, true, sSmashPoints, sSmashes) : null;
         // the last flight's outcome ("LANDED +1,240", "BAILED", "NOT COUNTED"), for a moment after it
         public string LastResult { get; private set; } = ""; public float LastResultAt { get; private set; } = -100; public int LastResultKind { get; private set; } // 1 landed, 2 bailed, 3 not counted
         // 0.120 Part A: a stunt line; where the trick panel carries them (TrickBox) it is left out of the activity lines (Hud)
         void StuntSay(string value, float seconds) { Message(value, seconds); feedbackStunt = true; }
         void Result(string text, int kind) { LastResult = text; LastResultAt = Time.time; LastResultKind = kind; }
         public int LastFlightTypes { get; private set; }
-        void StuntReset() { sFlying = false; sBarrel = false; sGround = sAir = sStable = 0; sTouch = sTilt = -1; sTurn = Vector3.zero; loopAcc = 0; loopPrev = float.NaN; loopOut = 1; }
+        void StuntReset() { SmashReset(); sFlying = false; sBarrel = false; sGround = sAir = sStable = 0; sTouch = sTilt = -1; sTurn = Vector3.zero; loopAcc = 0; loopPrev = float.NaN; loopOut = 1; }
         void StuntSession() { StuntReset(); ComboLinks = ComboPoints = 0; ComboInPark = true; sSince = 0; comboTricks.Clear(); }
 
         void StuntStep(Vector3 p, float dt, bool grounded)
@@ -119,7 +121,7 @@ namespace Racer
                 if (any) { sGround += dt; if (ComboLinks > 0 && !(StuntPark.Current && loopOut < .2f)) { sSince += dt; if (sSince >= ComboGap) EndCombo(null); } }
                 else if (sGround >= .2f && car.Body.linearVelocity.magnitude > 3 && !configuration.WipedOut)
                 {
-                    sFlying = true; sAir = 0; sStable = 0; sTouch = sTilt = -1; sTurn = Vector3.zero; sTakeoff = previous; sTop = previous.y;
+                    TakeOff(); sFlying = true; sAir = 0; sStable = 0; sTouch = sTilt = -1; sTurn = Vector3.zero; sTakeoff = previous; sTop = previous.y;   // Round 38: TakeOff (a smash just before the takeoff is the flight's)
                     sBarrel = StuntPark.Current && Vector3.Distance(previous, StuntPark.BarrelLip) < 7 && Vector3.Dot(car.Body.linearVelocity, StuntPark.BarrelForward) > 3;
                 }
                 else sGround = 0;
@@ -147,14 +149,19 @@ namespace Racer
             sStable += dt; if (sStable < .3f) return;
             // down on the wheels
             sFlying = false; sGround = sStable; LastTouchTilt = sTilt; LastSketchy = sTilt >= 60; LastBail = "";
-            if (sAir < MinStuntAir || Vector3.ProjectOnPlane(sLanding - sTakeoff, Vector3.up).magnitude < MinStuntDistance && Mathf.Abs(sTurn.y) < 300) return; // a hop: no jump, and no break in the combo
+            if (sAir < MinStuntAir || Vector3.ProjectOnPlane(sLanding - sTakeoff, Vector3.up).magnitude < MinStuntDistance && Mathf.Abs(sTurn.y) < 300)
+            {
+                // a hop: no jump, and no break in the combo (Round 38: what it smashed counts as smashed on the ground)
+                if (sSmashes > 0) { int pts = sSmashPoints; string nm = sSmashName; SmashReset(); SmashStunt(nm, pts); }
+                return;
+            }
             Landed();
         }
         // the tricks of a flight that ended on its wheels
         void Landed()
         {
             float distance = Vector3.ProjectOnPlane(sLanding - sTakeoff, Vector3.up).magnitude;
-            var f = Score(sTurn, sBarrel, distance, sAir);
+            var f = Score(sTurn, sBarrel, distance, sAir, false, sSmashPoints, sSmashes); SmashReset();
             Tricks += f.names.Count; LastStuntRotation = new Vector3(sTurn.x, sTurn.y, sTurn.z); LastFlightTypes = f.types; LastStuntAir = sAir; LastStuntHeight = sTop - sTakeoff.y;
             string line = f.names.Count > 0 ? f.Names + (f.types > 1 ? "  " + f.Multiplier : "") : $"{(LastSketchy ? "JUMP" : "CLEAN JUMP")} / {DisplayUnits.Jump(distance)} / {sAir:0.00} s";
             if (LastSketchy) line = "SKETCHY LANDING\n" + line;
@@ -201,7 +208,7 @@ namespace Racer
         {
             if (!sFlying) return;
             bool tried = sAir >= MinStuntAir || sTurn.magnitude > 90;
-            sFlying = false; sGround = 0; Bails++; LastBail = why; LastTouchTilt = sTilt; Result("BAILED", 2);
+            SmashReset(); sFlying = false; sGround = 0; Bails++; LastBail = why; LastTouchTilt = sTilt; Result("BAILED", 2);
             if (tried || ComboLinks > 0) EndCombo(why);
         }
         // the first touch of a flight (a wheel or the body): its tilt from upright, and the recovery window starts

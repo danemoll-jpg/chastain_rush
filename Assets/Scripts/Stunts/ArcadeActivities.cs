@@ -77,7 +77,7 @@ namespace Racer
         {
             Player=player;race=RaceController.Instance;car=GetComponent<ArcadeVehicle>();configuration=GetComponent<VehicleConfiguration>();path=null;
             Records=new ActivityRecords(root,Results);
-            GetComponent<VehicleRespawn>().Respawned+=Recovered;FenceChunk.PanelBrokenBy+=Smash;
+            GetComponent<VehicleRespawn>().Respawned+=Recovered;FenceChunk.PanelBrokenBy+=Smash;FenceChunk.PanelBrokenBy+=SmashPanel;ChastainRush.TreeTrunks.SnappedBy+=SmashTree;
             var contacts=gameObject.AddComponent<ActivityLandingContact>();contacts.activities=this;
             if(!GetComponent<TrickHud>())gameObject.AddComponent<TrickHud>().activities=this;
             SetSites(FindObjectsByType<ActivitySite>(FindObjectsSortMode.None),false);NewSession();
@@ -88,7 +88,7 @@ namespace Racer
             if(File.Exists(path))try{Results=JsonUtility.FromJson<Archive>(File.ReadAllText(path))??new();if(Results.results==null)Results.results=new();}catch(Exception e){Debug.LogWarning("Activity save could not be read: "+e.Message);}
             Records=new ActivityRecords(root,Results);
             StuntProgress.Load(root);
-            GetComponent<VehicleRespawn>().Respawned+=Recovered;FenceChunk.PanelBrokenBy+=Smash;
+            GetComponent<VehicleRespawn>().Respawned+=Recovered;FenceChunk.PanelBrokenBy+=Smash;FenceChunk.PanelBrokenBy+=SmashPanel;ChastainRush.TreeTrunks.SnappedBy+=SmashTree;
             var contacts=gameObject.AddComponent<ActivityLandingContact>();contacts.activities=this;
             if(!GetComponent<ActivityHud>())gameObject.AddComponent<ActivityHud>().activities=this;
             if(!GetComponent<TrickHud>())gameObject.AddComponent<TrickHud>().activities=this;
@@ -233,7 +233,7 @@ namespace Racer
             if(keep)try{AtomicSave.Write(path,JsonUtility.ToJson(Results,true));}catch(Exception e){Message("Activity result could not be saved: "+e.Message,6);}
         }
         void Message(string value,float seconds){Feedback=value;feedbackUntil=Time.time+seconds;LastMedal=-1;feedbackStunt=false;}bool feedbackStunt;
-        void OnDestroy(){foreach(var pl in mapPlaces)WorldMap.Places.Remove(pl);FenceChunk.PanelBrokenBy-=Smash;if(car&&car.TryGetComponent<VehicleRespawn>(out var respawn))respawn.Respawned-=Recovered;if(Instance==this)Instance=null;}
+        void OnDestroy(){foreach(var pl in mapPlaces)WorldMap.Places.Remove(pl);FenceChunk.PanelBrokenBy-=Smash;FenceChunk.PanelBrokenBy-=SmashPanel;ChastainRush.TreeTrunks.SnappedBy-=SmashTree;if(car&&car.TryGetComponent<VehicleRespawn>(out var respawn))respawn.Respawned-=Recovered;if(Instance==this)Instance=null;}
     }
     public sealed class ActivityLandingContact:MonoBehaviour {public ArcadeActivities activities;void OnCollisionEnter(Collision c){if(!activities||activities.PlayerObject!=gameObject)return;foreach(var contact in c.contacts)activities.SolidContact(contact.normal,Mathf.Abs(Vector3.Dot(c.relativeVelocity,contact.normal)),contact.point);}}
 }

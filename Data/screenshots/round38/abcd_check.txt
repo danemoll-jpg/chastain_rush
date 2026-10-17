@@ -1,0 +1,105 @@
+Round 38 check, 2026-10-17 00:50, the exe, 1280 x 720, muted.
+
+=== Part A: K1, the BANK HOP, flat out onto the bank's roof, then round the roof and off the BANK DROP (the player's input)
+  Clay Hopper      hop: onto K1's lip at 27.4 m/s, 2.36 s up, came down on Stunt park roof at 329.41 m (the bank's roof 328.63), upright 0.98; drop: onto its lip at 5.3 m/s, 1.40 s up, came down on Stunt park Bank drop landing, upright 1.00, rolled on
+PASS  K1 on the Clay Hopper: launched and landed upright on the bank's roof
+PASS  the BANK DROP on the Clay Hopper: launched off the roof, landed upright on its landing and rolled on
+  Skywhip 250      hop: onto K1's lip at 27.6 m/s, 2.32 s up, came down on Stunt park roof at 329.29 m (the bank's roof 328.63), upright 0.99; drop: onto its lip at 5.0 m/s, 1.48 s up, came down on Stunt park Bank drop landing, upright 1.00, rolled on
+PASS  K1 on the Skywhip 250: launched and landed upright on the bank's roof
+PASS  the BANK DROP on the Skywhip 250: launched off the roof, landed upright on its landing and rolled on
+
+=== Part A: the line through the bank (in at its boarded front doors, out of its boarded bay)
+  Clay Hopper      4 of 4 sheets broken, out the far side, slowest 18.5 m/s
+PASS  through the bank on the Clay Hopper: both boarded doorways broken and out of the far side
+  Skywhip 250      4 of 4 sheets broken, out the far side, slowest 17.6 m/s
+PASS  through the bank on the Skywhip 250: both boarded doorways broken and out of the far side
+  Street Classic   4 of 4 sheets broken, out the far side, slowest 18.5 m/s
+PASS  through the bank on the Street Classic: both boarded doorways broken and out of the far side
+PASS  the boards come back with the park's breakables
+
+=== Part A: pictures
+PASS  pictures of the bank written  -  38_bank_*.png
+
+=== Part B: smashing counts for stunts (the player's input on the Clay Hopper)
+    broke: StuntParkWindows_26_9 #19 at u 3505.3 v 469.7 y 315.8 (the car at u 3505.6 v 467.9, wheels 4); StuntParkDisplays_25_9 #0 at u 3503.3 v 473.5 y 315.2 (the car at u 3506.2 v 471.8, wheels 4); StuntParkDisplays_26_9 #4 at u 3506.3 v 477.0 y 315.2 (the car at u 3507.6 v 475.2, wheels 4); StuntParkPartitions_26_9 #26 at u 3512.0 v 479.6 y 316.2 (the car at u 3510.2 v 477.9, wheels 4); StuntParkPartitions_26_9 #22 at u 3525.4 v 480.6 y 316.2 (the car at u 3523.7 v 479.8, wheels 4); StuntParkWindows_26_9 #13 at u 3532.1 v 469.7 y 316.1 (the car at u 3531.9 v 471.5, wheels 4)
+  the pizza kicker: launched (onto its lip at 8.2 m/s); window panes broken 2
+  plain: 6 smashes (SMASH: STORE WINDOW  +150 | SMASH x2: DISPLAY  +80 | SMASH x3: DISPLAY  +80 | SMASH x4: SHOP WALL  +100 | SMASH: SHOP WALL  +100); the flight out of the window: 'SMASH' 526 pts, x1; the combo banked 3,108 pts x3: SM · SM · SM
+PASS  a run in through a shop window, along the shops and out of the pizza window: the smashes are links of the combo (SM) and the flight out counts SMASH
+    broke: StuntParkWindows_26_9 #19 at u 3505.3 v 469.7 y 315.8 (the car at u 3505.6 v 467.9, wheels 4); StuntParkDisplays_25_9 #0 at u 3503.3 v 473.5 y 315.2 (the car at u 3506.2 v 471.8, wheels 4); StuntParkDisplays_26_9 #4 at u 3506.3 v 477.0 y 315.2 (the car at u 3507.6 v 475.2, wheels 4); StuntParkPartitions_26_9 #26 at u 3512.0 v 479.6 y 316.2 (the car at u 3510.2 v 477.9, wheels 4); StuntParkPartitions_26_9 #22 at u 3525.4 v 480.6 y 316.2 (the car at u 3523.7 v 479.8, wheels 4); StuntParkWindows_26_9 #13 at u 3532.1 v 469.7 y 316.1 (the car at u 3531.9 v 471.5, wheels 4)
+  the pizza kicker: launched (onto its lip at 8.2 m/s); window panes broken 2
+  with a backflip: 6 smashes (SMASH: STORE WINDOW  +150 | SMASH x2: DISPLAY  +80 | SMASH x3: DISPLAY  +80 | SMASH x4: SHOP WALL  +100 | SMASH: SHOP WALL  +100); the flight out of the window: 'BACKFLIP + SMASH  x2' 1,642 pts, x2; the combo banked 6,456 pts x3: SM · SM · BF+SM
+PASS  a backflip out of the pizza window: BACKFLIP + SMASH, the smash a trick type of its own (the flight's x2)
+  the points (ArcadeActivities.Value): STORE WINDOW 150, SHOP WALL 100, FURNITURE 60, COUNTER 120, BOARDED DOOR 150, VAULT DOOR 1000, TREE 250, GAS PUMP 600, HYDRANT 200, STREET LAMP 100, MAILBOX 75, SIGN 75, FENCE 25
+
+=== Part C: the shop row end to end on the Skywhip 250 (in at the coffee shop's window, west through every shop)
+  into the supermarket in 18.9 s; broke 8 partition panels, 14 of 77 things in the rooms, 1 window panes; slowest 8.6 m/s
+PASS  the shop row driven end to end through its rooms (in at the east end, out into the supermarket)
+
+=== Part C: the shop ramp, from the supermarket's north end up through the roof and over the roof gap
+  Clay Hopper      up the ramp: highest 329.54 m (the roof 323.35); the roof gap launched; ended at 324.32 m, on the far side of the gap
+PASS  the shop ramp on the Clay Hopper: up onto the roof and over the roof gap
+  Skywhip 250      up the ramp: highest 329.32 m (the roof 323.35); the roof gap launched; ended at 323.95 m, on the far side of the gap
+PASS  the shop ramp on the Skywhip 250: up onto the roof and over the roof gap
+
+=== Part C: through the bank: the teller counter, the vault door, the cash carts, out of the bay
+  out of the bay; broke the boards 4, tellers 1, the vault door 3, cash carts 2; the panel said: SMASH x2: BOARDED DOOR  +150 | SMASH x3: TELLER COUNTER  +200 | SMASH x4: VAULT DOOR  +1,000 | SMASH x5: CASH CART  +300 | SMASH x6: CASH CART  +300 | SMASH x8: BOARDED DOOR  +150
+PASS  through the bank's vault door and out of the bay (the door bursts; a smash for the stunts)
+
+=== Part C: pictures
+PASS  pictures of the rooms, the shop ramp and the vault written  -  38_room_*.png, 38_shop_ramp_*.png, 38_bank_lobby_and_vault.png
+
+=== Part C: the frame rate inside, parked (1280 x 720, not measured at 3840 x 2160): without the new rooms (hidden: 'before') and with them
+INFO  before the shop row, looking west along the shops: 272 fps average, slowest 1 % 118 fps
+INFO  before inside the supermarket: 277 fps average, slowest 1 % 123 fps
+INFO  before the bank's lobby: 317 fps average, slowest 1 % 144 fps
+INFO  after  the shop row, looking west along the shops: 265 fps average, slowest 1 % 104 fps
+INFO  after  inside the supermarket: 280 fps average, slowest 1 % 127 fps
+INFO  after  the bank's lobby: 302 fps average, slowest 1 % 121 fps
+
+=== Part D: a Stunt event with 3 rivals (Normal; a 180 s round for the check, 10 minutes in play)
+  the menus: closed
+PASS  3 rivals on stunt vehicles on the start line beside the player, held with them  -  EMBER Skywhip 250, GOLD Clay Hopper, BLUE Clay Hopper
+  EMBER      13,135 pts, best combo 4,372, tricks 3, bails 0, flights 15, smashes 6, recoveries 1, outside the park 0.0 s; lines hub sw_bus hub sw_hop hub sw_rr roof_tower hub sw_hop hub sw_rr roof_tower
+  GOLD        9,573 pts, best combo 1,986, tricks 4, bails 0, flights 22, smashes 2, recoveries 2, outside the park 0.0 s; lines hub sw_hop hub sw_bus hub sw_hop hub sw_bus hub sw_hop hub sw_hop
+  BLUE        5,982 pts, best combo 982, tricks 5, bails 0, flights 18, smashes 0, recoveries 4, outside the park 0.0 s; lines hub sw_rr roof_drop sw_hop hub sw_hop hub sw_hop hub sw_hop
+  CHECK           0 pts, best combo 0, tricks 3, bails 0
+PASS  every rival scored  -  EMBER 13,135, GOLD 9,573, BLUE 5,982
+PASS  no rival left the park (never 2 s outside it)  -  EMBER 0.0 s, GOLD 0.0 s, BLUE 0.0 s
+PASS  no rival stuck on a wall (each back on its line within seconds, at most 4 recoveries in the round)  -  EMBER 1, GOLD 2, BLUE 4
+PASS  the results list everyone by points; the rivals are not on the Top 10
+
+=== Part D: split screen's AI player 2 in the stunt park (BUG-001: it cruised off the course into a wall)
+  player 2 (AI) on the Skywhip 250: 1359 m in 90 s, 0.0 s outside the park, recoveries 0, lines hub sw_hop hub sw_hop hub sw_rr roof_tower; its own scoring: 2 tricks, best combo 2,448
+PASS  the AI player 2 rides the park's lines in the stunt park (never out of the park, never stuck), its tricks scored as a player's
+
+=== Part E: life in the world (Racer's AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife)
+  baked: 1742 groups (Yard 280, Porch 1270, Drive 176, Pool 11, Shop 5), 3518 habitats (Bird 1169, Squirrel 1162, Frog 66, Deer 469, Coyote 241, Turkey 411)
+  noon: hour 12.2, views 1, 7 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 3 out, 33 figures free
+  the Glen: 3 groups out at noon, 0 at 2 am (hour 12.1, views 1, 7 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 3 out, 33 figures free)
+FAIL  people out round the player by day, few at night (LifeSchedule)  -  3 at noon, 0 at 2 am
+  driven at group 308 (Porch, 1 people, 16 m away)
+FAIL  a resident steps out of the way of a vehicle coming at them  -  0 stepped aside
+  the woods near (2302, 1206): 10 animals out round the player: Deer 2 m, Bird 71 m, Squirrel 91 m, Turkey 92 m, Bird 103 m, Deer 122 m
+  driven at the Deer: 0 fled
+FAIL  animals in the woods round the player; driven past, they flee (Racer's escape)  -  0 fled, 10 out, 7 seen
+PASS  no group of people within 6 m of the current race route's line  -  nearest 9.2 m
+
+=== Part E: pictures (noon)
+  38_life_glen_yard: no Yard group came out near (1567, 1262) (hour 12.3, views 1, 8 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 4 out, 32 figures free)
+  38_life_glen_porch: group 308 (Porch, 1 people, action 4) at (1544, 1255); hour 12.3, views 1, 9 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 4 out, 32 figures free
+  38_life_lakes_pool: group 1727 (Pool, 2 people, action 1) at (1349, 1111); hour 12.3, views 1, 3 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 11 out, 21 figures free
+  38_life_shops: group 1738 (Shop, 2 people, action 3) at (3686, 586); hour 12.4, views 1, 3 groups within 150 m, 0 of them out by the hour, 0 waiting out of sight, 2 out, 32 figures free
+  38_life_woods_animals: a Bird at (2250, 1214)
+PASS  pictures of people and animals written  -  38_life_*.png
+
+=== Part E: the frame rate, parked (1280 x 720, not measured at 3840 x 2160): the life hidden ('before') and on (noon)
+INFO  before Canton Road by the shops (Round 35's spot): 132 fps average, slowest 1 % 21 fps
+INFO  before a Chastain Glen street: 175 fps average, slowest 1 % 49 fps
+INFO  after  Canton Road by the shops (Round 35's spot): 255 fps average, slowest 1 % 102 fps; 2 groups out, 10 animals; the life's scripts 0.008 ms a frame
+INFO  after  a Chastain Glen street: 250 fps average, slowest 1 % 105 fps; 1 groups out, 10 animals; the life's scripts 0.007 ms a frame
+INFO  before Canton Road by the shops (Round 35's spot): 246 fps average, slowest 1 % 103 fps
+INFO  before a Chastain Glen street: 258 fps average, slowest 1 % 108 fps
+INFO  after  Canton Road by the shops (Round 35's spot): 267 fps average, slowest 1 % 114 fps; 0 groups out, 10 animals; the life's scripts 0.007 ms a frame
+INFO  after  a Chastain Glen street: 262 fps average, slowest 1 % 115 fps; 3 groups out, 10 animals; the life's scripts 0.008 ms a frame
+
+24 of 27 checks passed.

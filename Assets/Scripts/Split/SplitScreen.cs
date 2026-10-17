@@ -166,6 +166,7 @@ namespace ChastainRush
         public void Cruise()
         {
             if (!P2 || !SplitScreen.P2Ai) return;
+            if (Rider2) { Destroy(Rider2); Rider2 = null; }   // Round 38
             if (Cruiser) { DestroyImmediate(Cruiser); Cruiser = null; }
             var net = TrafficNetwork.Instance; var traffic = Traffic.Instance; if (!net || !traffic) return;
             // the nearest point of the nearest road open to traffic (not a bridge), its lane on the side player 2 is heading
@@ -189,7 +190,20 @@ namespace ChastainRush
             Cruiser = P2.gameObject.AddComponent<TrafficDriver>(); Cruiser.Initialize(traffic, P2);
             Cruiser.Place(best, dir, 0, pos, net.Speed(best) * .6f);
         }
-        public void StopCruise() { if (Cruiser) { Destroy(Cruiser); Cruiser = null; } }
+        public void StopCruise() { if (Cruiser) { Destroy(Cruiser); Cruiser = null; } if (Rider2) { Destroy(Rider2); Rider2 = null; } }
+        // Round 38 (Part D, BUG-001 of session 2026-10-16_21-19-50-140_b75298: "the AI wandered off the course and is just continually running into the
+        // wall"): in the stunt park and the Stunt event the AI player 2 rides the park's lines as a stunt rival (StuntRival), its tricks scored by its
+        // own ArcadeActivities as a player's
+        public StuntRival Rider2 { get; private set; }
+        public void StuntRide()
+        {
+            if (!P2 || !SplitScreen.P2Ai || !StuntPark.Current) return;
+            if (Cruiser) { DestroyImmediate(Cruiser); Cruiser = null; }
+            if (Rider2) return;
+            P2.GetComponent<VehicleInput>().enabled = false;
+            if (!StuntPark.Inside(P2.Body.position, 10f) && P1) PlaceBeside(P2, P1.transform, 4.5f);
+            Rider2 = P2.gameObject.AddComponent<StuntRival>(); Rider2.Initialize(P2, "AI", 1, System.Environment.TickCount, false);
+        }
 
         void Cameras()
         {

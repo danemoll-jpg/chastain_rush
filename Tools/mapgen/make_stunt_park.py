@@ -113,8 +113,8 @@ def ramp(fid, name, prof, u, v, du, dv, width, look, base="floor", bank_end=0.0,
     return prof
 
 # --- the floor (Racer's sizes, natural physics)
-# K-line, westbound (start line -> K1 -> K2 -> on to the stores or round to the roof ramp)
-ramp("K1", "K1 kicker", kicker(1.0, 20).drop(), 3588, 374, -1, 0, 7, "ply")
+# K-line, westbound (start line -> K2 -> on to the stores or round to the roof ramp). Round 38 (Part A, BUG-001: "Can we make this bank part of
+# the course ... otherwise this ramp is kind of useless the way it is positioned"): K1 is turned round and is the BANK HOP, below.
 k2 = kicker(2.0, 25); k2.flat(14).landing(18, 3, 10); ramp("K2", "K2 table", k2, 3570, 374, -1, 0, 9, "table")
 # the roof ramp: up from the floor to the supermarket's roof at its south-east corner, westbound (absolute heights: built by the map build)
 F.append(dict(kind="climb", id="RR", name="Roof ramp", u_top=3448.9, v=356.0, du=-1, dv=0, width=10, to="roof", angle=12.0, r=30.0, top_flat=2.5, look="steel"))
@@ -156,6 +156,46 @@ qp = Prof().arc(5, 70); qp.flat(1.2).drop(); ramp("RQPW", "Roof quarter-pipe (we
 qp2 = Prof().arc(4.5, 70); qp2.flat(1.0).drop(); ramp("RQPE", "Roof quarter-pipe (shop row east end)", qp2, 3585.0, 481.5, 1, 0, 18, "ply", base="roof")
 rt = kicker(1.2, 20); rt.flat(6).landing(14, 2, 6); ramp("RT", "Roof table", rt, 3556.0, 481.5, 1, 0, 8, "table", base="roof")
 
+
+# ------------------------------------------------------------------ Round 38 (Part A): the abandoned bank in the park (base "bank": over BANK_ROOF)
+# The bank (OSM building 1, commercial, 10.5 m) stands boxed in at the park's east end (the lot's fence 29 m east of it, 14 m south), so its
+# roof is reached by an aimed pop-up and left by an aimed drop:
+#   K1, the BANK HOP: K1 turned round to face the bank, a steep launch (2.5 m, curved to 60 deg) 10.7 m from its west wall, with the K-line's
+#     floor behind it as the run-up (over K2's table the other way, or straight along the lane). Every vehicle over its lip leaves at 17.2 m/s
+#     at 62 deg (BigJump), tops out 2.2 m over the roof just past the wall and comes down on the roof's west half with 8 m/s left (2.2 s up).
+#   On the roof: a 0.6 m parapet round it (a low berm along the east edge turns a vehicle that does not stop), the BANK DROP off the north edge.
+#   The BANK DROP: an aimed launch off the roof's north edge, north over the start lane onto a landing sized to it in the lane between the gas
+#     station's canopy and the half-pipe (its table clear of the start lane, its run-out across the car gap's run-up).
+#   Through it: its boarded front doors (west) and the boarded drive-up bay (east) break; inside, one tall hall (Part C dresses it).
+BANK_RING = [(3592.77, 393.25), (3592.72, 373.71), (3596.22, 373.69), (3596.21, 370.22), (3596.2, 365.22), (3596.19, 359.19), (3602.97, 359.16), (3609.61, 359.13),
+           (3609.61, 365.34), (3609.63, 370.21), (3609.69, 393.17)]
+assert m["buildings"][1]["type"] == "commercial" and abs(m["buildings"][1]["height"] - 10.5) < .01, "building 1 is not the bank any more: re-check"
+BANK_ROOF = round(sum(floor_y(u, v) for u, v in BANK_RING) / len(BANK_RING) + m["buildings"][1]["height"], 3)   # its pad graded to the floor plane
+BANK_PARAPET = 0.6
+BANKDROP_V, BANKDROP_A = 16.0, 10.0   # the BANK DROP's flight: its landing's table starts 18 m out, clear of the start lane (v 399.5 to 407.5)
+BANK_HOP = dict(lip_u=3582.0, v=377.5, h=2.5, th=60.0, width=8.0, v_design=17.2, angle=62.0)
+ramp("K1", "Bank hop", kicker(BANK_HOP["h"], BANK_HOP["th"]).drop(), BANK_HOP["lip_u"] - lip_of(BANK_HOP["h"], BANK_HOP["th"]), BANK_HOP["v"], 1, 0, BANK_HOP["width"], "launch",
+     note="Round 38: K1 turned round, the pop-up onto the bank's roof")
+F.append(dict(kind="stepup", id="K1", name="Bank hop", u_lip=BANK_HOP["lip_u"], v=BANK_HOP["v"], du=1, dv=0, width=BANK_HOP["width"], base="floor", h=BANK_HOP["h"],
+              th=BANK_HOP["th"], v_design=BANK_HOP["v_design"], angle=BANK_HOP["angle"], note="aimed up onto the bank's roof"))
+F.append(dict(kind="bigjump", id="BANKDROP", name="Bank drop", u=3605.0, v_lip=393.25 - 0.4, du=0, dv=1, width=8, base="bank", h=0.8, th=12.0, v_design=BANKDROP_V, angle=BANKDROP_A,
+              landing=dict(contact_h=2.6, slope_less=3.0, up=3.0, table=4.0, rb=12.0, width=9.0, back=0.0, look="bank"), note="the bank roof's north edge, northbound over the start lane"))
+BANK_DOORS = [("west", 3592.75, 388.0, 6.0, 3.2), ("east", 3609.65, 388.0, 6.0, 3.2)]   # (side, u, v middle, width, height): boarded, breakable
+
+# ------------------------------------------------------------------ Round 38 (Part C): more inside the stores
+# The shop row's ten shops get rooms that fit their made-up names (built by MapBuilder.StuntParkShops.cs: counters, racks, tables, chairs, all breakable;
+# the hall's front 8 m kept as the shop-to-shop run through the partitions) and two lines:
+#   SHOP RAMP: up through the roof. A steel ramp along the back of the laundry, the florist and the taqueria (k9 to k7), eastbound, from the
+#     supermarket's north end (its run-up) up 9 m through a hatch in the roof, arriving on the shop row's roof in the roof gap's lane, 7 m short of
+#     its kicker (so the line goes on over the atrium). The partitions it passes are open over its width.
+#   PIZZA WINDOW: an aimed kicker inside Corner Slice Pizza (k4), out through its front window into the park, onto a landing sized to it.
+# The bank (Part A) gets its teller counter across the lobby and its vault against the east wall, the vault door (breakable) on the line through.
+SHOP_RAMP = dict(v=481.5, width=6.0, u_top=3497.0, angle=16.0, r=20.0)
+F.append(dict(kind="bigjump", id="PIZZA", name="Pizza window", u=3532.0, v_lip=ROW_V + 1.0, du=0, dv=-1, width=4, base="front", h=0.45, th=30.0, v_design=17.0, angle=36.0,
+              landing=dict(contact_h=0.4, slope_less=3.0, up=3.0, table=4.0, rb=12.0, width=8.0, back=0.0, look="drop"), note="Corner Slice Pizza's kicker, out through its front window"))
+BANK_VAULT = dict(u0=3603.0, u1=3609.25, v0=383.6, v1=392.4, door_w=3.0, door_h=3.0)   # against the east wall, behind the bay
+BANK_TELLER = dict(u=3599.0, v0=373.9, v1=392.9)                                       # the counter across the lobby (breakable)
+
 # ------------------------------------------------------------------ the inside (base "front": over FRONT_Y, the stores' level floor)
 INSIDE = dict(
     market_glass=[(389.0, 419.0), (426.0, 435.0)],            # the supermarket's front windows (v ranges at u = FRONT_U)
@@ -168,8 +208,54 @@ INSIDE = dict(
     partitions=9,
 )
 
+# ------------------------------------------------------------------ Round 38 (Part D): the stunt rivals' lines (Assets/Scripts/Stunts/StuntRival.cs)
+# A graph of lines through the park, each a list of points (u, v, base, speed): base "f" the floor, "r" the roofs, "s" the stores' floor, "b" the
+# bank's roof, a number an absolute height (the roof ramp, the shop ramp: interpolated); speed the most to arrive with there (0: as the bends allow; a
+# natural kicker's own; the aimed launches take any speed). Each line ends where the next ones begin (next: ids with weights): the hub (east, the
+# start lane westbound) -> SW (south-west, by the store front) -> the roof ramp, the bus line or the bank hop; the roof (R) -> BIG AIR, the tower and
+# loop, or the shop row drop; after BIG AIR (M) -> home, or into the shops and out of the pizza window. Every big feature is on one: the roof ramp,
+# the roofs, BIG AIR, the tower gap, the loop, the half-pipe's trough, the shop row drop, the barrel roll, the bus gap, the bank through its doors
+# and vault, K2, the bank hop, the bank drop, the shop row's windows, partitions and rooms, the pizza window. Left out: the car gap (its run-up is
+# 10 m between the half-pipe and the kicker: too short for a line that holds) and the walls of the half-pipe and the roof quarter-pipes.
+RR_FOOT, RR_TOP = 3499.0, 3448.9
+def rr_y(u): t = min(1.0, max(0.0, (RR_FOOT - u) / (RR_FOOT - RR_TOP))); return floor_y(RR_FOOT, 356.0) + t * (ROOF_Y - floor_y(RR_FOOT, 356.0))
+AI_LINES = {
+    "hub": ([(3612, 398.6, "f", 0), (3580, 398.6, "f", 0), (3540, 398.6, "f", 0), (3495, 398.4, "f", 0), (3478, 397, "f", 12), (3466, 394, "f", 10), (3462, 388, "f", 10)], [("sw_rr", 35), ("sw_bus", 35), ("sw_hop", 30)]),
+    "sw_rr": ([(3462, 388, "f", 10), (3462, 378, "f", 9), (3466, 368, "f", 8), (3482, 366, "f", 9), (3497, 366, "f", 7), (3504, 364, "f", 5), (3505, 359, "f", 5), (3501, 356, "f", 6),
+               (3498, 356, rr_y(3498), 12), (3475, 356, rr_y(3475), 0), (3452, 356, rr_y(3452), 0), (3440, 357, "r", 9), (3428, 362, "r", 8), (3422, 372, "r", 9), (3422, 380, "r", 10)],
+              [("roof_big", 45), ("roof_tower", 35), ("roof_drop", 20)]),
+    "roof_big": ([(3422, 380, "r", 10), (3422, 394, "r", 9), (3427, 404, "r", 9), (3436, 409.5, "r", 0), (3446, 410, "r", 0), (3455.1, 410, "r", 0), (3500, 410, "f", 0),
+                  (3530, 410, "f", 0), (3545, 410, "f", 0)], [("m_home", 50), ("m_pizza", 50)]),
+    "roof_tower": ([(3422, 380, "r", 10), (3422, 420, "r", 0), (3424, 436, "r", 9), (3430, 448, "r", 8), (3437, 452, "r", 0), (3448.1, 452, "r", 0), (3470, 452, "f", 0),
+                    (3490, 452.5, "f", 0), (3510, 456, "f", 16), (3528, 460, "f", 18), (3540, 460, "f", 18), (3550, 460, "f", 18), (3557, 453.5, "f", 0),
+                    (3575, 453.5, "f", 0), (3598, 454, "f", 12), (3611, 455, "f", 9), (3619, 452, "f", 8), (3621, 444, "f", 10), (3621, 420, "f", 10), (3621, 404, "f", 8),
+                    (3614, 399.5, "f", 8), (3612, 398.6, "f", 8)], [("hub", 1)]),
+    "roof_drop": ([(3422, 380, "r", 10), (3422, 420, "r", 0), (3426, 440, "r", 10), (3433, 458, "r", 9), (3443, 472, "r", 8), (3455, 480.5, "r", 8), (3465, 481, "r", 7),
+                   (3471, 479, "r", 6), (3474, 476, "r", 6), (3474, 469.1, "r", 0), (3474, 440, "f", 0), (3474, 425, "f", 0), (3473, 410, "f", 12), (3466, 400, "f", 10),
+                   (3462, 388, "f", 10)], [("sw_bus", 50), ("sw_hop", 50)]),
+    "sw_bus": ([(3462, 388, "f", 10), (3463, 386, "f", 9), (3467, 384, "f", 11), (3474, 383.5, "f", 13), (3488, 383.5, "f", 0), (3500, 384, "f", 0), (3506, 386, "f", 17),
+                (3512, 387.5, "f", 17), (3526.7, 388, "f", 17), (3545, 388, "f", 0), (3560, 388, "f", 0), (3585, 388, "f", 13), (3592.7, 388, "f", 12), (3600, 388, "f", 12),
+                (3606, 388, "f", 12), (3612, 388, "f", 10), (3619, 389, "f", 8), (3623, 393, "f", 7), (3619, 398.6, "f", 7), (3612, 398.6, "f", 8)], [("hub", 1)]),
+    "sw_hop": ([(3462, 388, "f", 10), (3462, 380, "f", 9), (3466, 372.5, "f", 9), (3480, 371, "f", 11), (3505, 371.5, "f", 11), (3530, 373.5, "f", 10), (3547, 374.5, "f", 9),
+                (3561, 375, "f", 9), (3572, 377, "f", 0), (3582, 377.5, "f", 0), (3600, 377.5, "b", 0), (3604, 382, "b", 6), (3605, 386.5, "b", 0), (3605, 392.85, "b", 0),
+                (3605, 420, "f", 0), (3605, 438, "f", 0), (3608, 446, "f", 10), (3614, 452, "f", 8), (3620, 451, "f", 8), (3621, 444, "f", 10), (3621, 420, "f", 10),
+                (3621, 404, "f", 8), (3614, 399.5, "f", 8), (3612, 398.6, "f", 8)], [("hub", 1)]),
+    "m_home": ([(3545, 410, "f", 0), (3575, 409, "f", 0), (3596, 406, "f", 12), (3610, 405, "f", 9), (3619, 403, "f", 7), (3620, 399.5, "f", 7), (3612, 398.6, "f", 8)], [("hub", 1)]),
+    "m_pizza": ([(3545, 410, "f", 14), (3551, 417, "f", 10), (3549, 430, "f", 10), (3536, 444, "f", 10), (3518, 455, "f", 9), (3506, 463, "f", 8), (3505, 469.5, "s", 8),
+                 (3507, 476, "s", 7), (3513, 480, "s", 7), (3525, 480, "s", 7), (3529, 479, "s", 5), (3532, 476, "s", 4), (3532, 472.2, "s", 4), (3532, 470.5, "s", 0),
+                 (3532, 455, "f", 0), (3532, 440, "f", 0), (3533, 434, "f", 10), (3541, 426, "f", 10), (3551, 418, "f", 11), (3566, 410, "f", 0), (3596, 406, "f", 12), (3610, 405, "f", 9),
+                 (3619, 403, "f", 7), (3620, 399.5, "f", 7), (3612, 398.6, "f", 8)], [("hub", 1)]),
+}
+def ai_y(u, v, b):
+    if isinstance(b, (int, float)): return float(b)
+    return {"f": floor_y(u, v), "r": ROOF_Y, "s": FRONT_Y, "b": BANK_ROOF}[b]
+# the rivals' places on the start line (beside and behind the player's: u, v)
+AI_GRID = [(3628.0, 399.0), (3628.0, 408.0), (3637.0, 403.5)]
+
 # ------------------------------------------------------------------ ballistics (the aimed launches), for the layout and the plot
 def lip_height(f):
+    if f.get("base") == "bank": return BANK_ROOF + f["h"]
+    if f.get("base") == "floor": return floor_y(*lip_uv(f)) + f["h"]
     return (ROOF_Y if f.get("base") == "roof" else FRONT_Y) + f["h"]
 # the flight is the body's: it leaves the lip between 0.8 m under and 0.3 m over the lip's height (the exe's flights, Round 36: the Clay Hopper
 # low, the Skywhip high) and its wheels find the ground when it is 0.8 m over it (the suspension's reach)
@@ -253,7 +339,8 @@ def feature_out(f):
     o = dict(FIELDS)
     for key in FIELDS:
         if key in f: o[key] = f[key]
-    if f["kind"] == "bigjump": o["lip_u"], o["lip_v"] = lip_uv(f); o["u"], o["v"] = o["lip_u"], o["lip_v"]
+    if f["kind"] in ("bigjump", "stepup"): o["lip_u"], o["lip_v"] = lip_uv(f); o["u"], o["v"] = o["lip_u"], o["lip_v"]
+    if f["kind"] == "stepup": o["kind"] = "bigjump"   # Round 38: an aimed launch with no landing hill (the bank hop lands on the bank's roof)
     if f["kind"] == "climb": o["u"] = f["u_top"]
     if f["kind"] == "loop": o["side_u"], o["side_v"] = f["side"]
     if "profile" in f: o["profile"] = flat(f["profile"])
@@ -272,9 +359,15 @@ def write():
                start=[3628.0, 403.5, -1.0, 0.0], entrance=[3630.0, 403.5, 26.0],
                openings=flat([(3640.0, 398.0), (3640.0, 409.0), (3545.0, 341.4), (3554.0, 341.7), (3455.0, 326.4), (3466.0, 330.0), (3609.0, 467.7), (3619.0, 467.3)]),
                resets=flat([(3628, 403.5, -1, 0), (3560, 400, -1, 0), (3470, 404, 1, 0), (3466, 372, 1, 0), (3490, 438, 1, 0), (3530, 440, 1, 0), (3600, 452, -1, 0), (3606, 400, -1, 0),
-                            (3600, 374, -1, 0), (3420, 395, 1, 0), (3545, 482, 1, 0), (3420, 380, 1, 0)]),
+                            (3600, 388, 1, 0), (3420, 395, 1, 0), (3545, 482, 1, 0), (3420, 380, 1, 0)]),
                lights=flat([(3462, 338), (3510, 366), (3592, 366), (3634, 350), (3634, 396), (3634, 444), (3600, 465), (3540, 466), (3462, 466), (3540, 425)]),
-               landings=LANDINGS)
+               landings=LANDINGS,
+               bank_ring=flat(BANK_RING), bank_roof_resets=flat([(3601.0, 381.0, 0, 1)]),
+               ai_lines=[dict(id=k, next=[n for n, _ in nx], weights=[float(w) for _, w in nx], points=[c for (u, v, b, sp) in pts for c in (round(W(u, v)[0], 3), round(ai_y(u, v, b), 3), round(W(u, v)[1], 3))],
+                              speeds=[float(sp) for (_, _, _, sp) in pts]) for k, (pts, nx) in AI_LINES.items()],
+               ai_grid=flat([W(u, v) for u, v in AI_GRID]),
+               shop_ramp=[SHOP_RAMP[k] for k in ("v", "width", "u_top", "angle", "r")], bank_vault=[BANK_VAULT[k] for k in ("u0", "u1", "v0", "v1", "door_w", "door_h")],
+               bank_teller=[BANK_TELLER[k] for k in ("u", "v0", "v1")], bank_roof=BANK_ROOF, bank_parapet=BANK_PARAPET, bank_doors=[c for d in BANK_DOORS for c in ((0.0 if d[0] == "west" else 1.0), d[1], d[2], d[3], d[4])])
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(out, open(OUT, "w"), indent=1)
     print("wrote", OUT, f"roof {ROOF_Y:.2f}, the stores' floor {FRONT_Y:.2f}, plane {PLANE}")
@@ -300,9 +393,12 @@ def plot():
             u0, v0 = lip_uv(f); fl = flight(f); end = f["landing_ramp"]
             s1 = math.hypot(end["u"] - u0, end["v"] - v0) + end["length"]
             ax.plot([u0, u0 + f["du"] * s1], [v0, v0 + f["dv"] * s1], "r:", lw=1); ax.text(u0, v0, f["id"], color="r", fontsize=8)
+    for k, (pts, nx) in AI_LINES.items():   # Round 38: the rivals' lines
+        ax.plot([p[0] for p in pts], [p[1] for p in pts], "-", lw=.8, color="magenta"); ax.text(pts[len(pts) // 2][0], pts[len(pts) // 2][1], k, fontsize=5, color="magenta")
     ax.set_aspect("equal"); ax.grid(True, lw=.3); ax.set_xlim(3360, 3650); ax.set_ylim(320, 500)
     os.makedirs(os.path.join(ROOT, "local/round36"), exist_ok=True)
     plt.savefig(os.path.join(ROOT, "local/round36/park_layout.png"), dpi=120, bbox_inches="tight"); print("plot written")
+    plt.savefig(os.path.join(ROOT, "Data/screenshots/round38/park_layout.png"), dpi=120, bbox_inches="tight")
 
 if __name__ == "__main__":
     report(); write()

@@ -64,6 +64,7 @@ namespace ChastainRush
         void Awake()
         {
             filter = GetComponent<MeshFilter>();
+            if (!source || !filter) { Debug.LogWarning($"[FenceChunk] {name} under {(transform.parent ? transform.parent.name : "-")}: no mesh (its asset was overwritten in the map build?): not breakable"); broken = new bool[panels != null ? panels.Length : 0]; enabled = false; return; }   // Round 38
             live = Instantiate(source);
             live.name = source.name + " (live)";
             filter.sharedMesh = live;
