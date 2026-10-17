@@ -39,3 +39,17 @@ INFO  split screen Free Roam, Canton Road by the shops: 74 fps average, slowest 
 INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 39 fps average, slowest 1 % 22 fps
 
 0 of 0 checks passed.
+
+After the B7 fix (ShallowWater: each stream box's world rectangle tested before its transform call), release exe built 2026-10-16 20:18,
+1280 x 720 minimized and muted (not measured at 3840 x 2160), CPU about 40 % busy with other programs:
+=== Part B7: the frame rate split screen (1280 x 720, not measured at 3840 x 2160; traffic 2)
+INFO  one player, Canton Road by the shops: 179 fps average, slowest 1 % 106 fps; 14 traffic cars
+INFO  split screen Free Roam, Canton Road by the shops: 106 fps average, slowest 1 % 41 fps; 14 traffic cars
+INFO  one player, a Chastain Ridge race (3 AI rivals, traffic): 76 fps average, slowest 1 % 21 fps; 14 traffic cars
+INFO  split screen, a Chastain Ridge race (3 AI rivals, traffic): 55 fps average, slowest 1 % 18 fps; 14 traffic cars
+
+Where the time went (dev build, -exeProfile -profileOnly race_ridge -traffic Normal; b7_profile/): ShallowWater.Sample, called for every
+vehicle every physics step over every water area (hundreds of 6 m stream boxes, each a Transform.InverseTransformPoint), was 8 ms of a
+one-player Ridge frame and 15 ms split (split's slower frames run more physics steps per frame, so it fed itself). After: 0.3 / 0.5 ms;
+all FixedUpdate scripts 23 ms -> 3 ms split. Dev build: one player 26 -> 90 fps, split 16 -> 62 fps. GPU 4 to 7 ms split; the second
+camera's rendering costs about 6 ms of main thread and IMGUI about 5 ms: not changed (60 fps reached without them).

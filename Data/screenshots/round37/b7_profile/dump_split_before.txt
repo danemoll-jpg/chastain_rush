@@ -1,0 +1,159 @@
+C:\Users\danmo\AppData\Local\Temp\claude\C--Users-danmo-chastain-rush\1b0c0d7a-0631-4b7e-b6f9-2d2a7c92f65f\scratchpad\prof_raw\race_ridge_split.raw: 241 frames (main thread), ms per frame
+-- self time, top 40
+    21.92  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+     7.07  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+     3.05  Physics.SphereCastNonAlloc
+     2.54  Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+     2.40  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+     2.11  Assembly-CSharp.dll!Racer::ArcadeVehicle.FixedUpdate() [Invoke]
+     1.87  Profiler.FlushMemoryCounters
+     1.57  Assembly-CSharp.dll!ChastainRush::PipeStream.Update() [Invoke]
+     0.77  PxsContext.contactManagerDiscreteUpdate
+     0.76  Assembly-CSharp.dll!ChastainRush::RaceController.FixedUpdate() [Invoke]
+     0.59  Inl_RenderPipeline.BeginCameraRendering
+     0.58  FixedBehaviourUpdate
+     0.42  Physics.Raycast
+     0.41  WaitForJobGroupID
+     0.39  PxScene.simulate
+     0.37  Assembly-CSharp.dll!Racer::VehicleLights.LateUpdate() [Invoke]
+     0.37  BehaviourUpdate
+     0.35  Assembly-CSharp.dll!Racer::WeatherEffects.LateUpdate() [Invoke]
+     0.34  FinalizeUpdateTask
+     0.29  CanvasUpdate.PreRender
+     0.29  Assembly-CSharp.dll!ChastainRush::BigJump.FixedUpdate() [Invoke]
+     0.27  Physics.SwapPhysXBuffersJob
+     0.26  RenderLoop.CleanupNodeQueue
+     0.26  QueuePrepareIntegrateMainThreadObjects
+     0.25  PlayerLoop
+     0.23  RenderLoop.ScheduleDraw
+     0.22  AudioManager.FixedUpdate
+     0.18  Assembly-CSharp.dll!Racer::RiderGestures.LateUpdate() [Invoke]
+     0.16  Inl_On Record Render Graph
+     0.14  SetPlayerFocus
+     0.14  GUI.Repaint
+     0.14  Assembly-CSharp.dll!Racer::AmbientVehicle.LateUpdate() [Invoke]
+     0.13  RenderLoop.Sort
+     0.13  Assembly-CSharp.dll!ChastainRush::FenceChunk.Update() [Invoke]
+     0.12  Idle
+     0.11  TransformChangeSystem
+     0.11  Assembly-CSharp.dll!ChastainRush::RampHold.FixedUpdate() [Invoke]
+     0.10  TerrainManager.CullAllTerrains
+     0.10  ExecuteRenderGraph
+     0.09  Physics.UpdateRigidbodies
+-- total time by path, top 80 (calls per frame)
+    59.26  (1)  PlayerLoop
+    41.48  (3)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate
+    41.48  (3)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate
+    24.00  (41.7)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+     8.30  (11.9)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+     7.56  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering
+     7.20  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke]
+     7.19  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal
+     7.16  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack
+     4.38  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit
+     3.45  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera
+     3.44  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > ExecuteRenderGraph
+     3.09  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > ExecuteRenderGraph > UIEvents.IMGUIRenderOverlays
+     3.09  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > ExecuteRenderGraph > UIEvents.IMGUIRenderOverlays > GUI.Repaint
+     2.55  (869.9)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+     2.46  (1)  PlayerLoop > Update.ScriptRunBehaviourUpdate
+     2.46  (1)  PlayerLoop > Update.ScriptRunBehaviourUpdate > BehaviourUpdate
+     2.45  (3)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate
+     2.40  (6)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+     2.20  (3)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage
+     2.20  (3)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate
+     2.15  (3)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!Racer::ArcadeVehicle.FixedUpdate() [Invoke]
+     2.15  (3)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate > PxScene.simulate
+     1.94  (1)  PlayerLoop > PostLateUpdate.ProfilerEndFrame
+     1.94  (1)  PlayerLoop > PostLateUpdate.ProfilerEndFrame > Profiler.FlushCounters
+     1.88  (41.7)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke] > Physics.SphereCastNonAlloc
+     1.87  (1)  PlayerLoop > PostLateUpdate.ProfilerEndFrame > Profiler.FlushCounters > Profiler.FlushMemoryCounters
+     1.57  (12.9)  PlayerLoop > Update.ScriptRunBehaviourUpdate > BehaviourUpdate > Assembly-CSharp.dll!ChastainRush::PipeStream.Update() [Invoke]
+     1.42  (1)  PlayerLoop > PreLateUpdate.ScriptRunBehaviourLateUpdate
+     1.42  (1)  PlayerLoop > PreLateUpdate.ScriptRunBehaviourLateUpdate > LateBehaviourUpdate
+     1.17  (11.9)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke] > Physics.SphereCastNonAlloc
+     1.09  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera
+     0.93  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera
+     0.83  (3.1)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate > PxScene.simulate > PxsContext.contactManagerDiscreteUpdate
+     0.77  (3)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::RaceController.FixedUpdate() [Invoke]
+     0.74  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable
+     0.60  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable
+     0.59  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_RenderPipeline.BeginCameraRendering
+     0.38  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases
+     0.38  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases > UIEvents.WillRenderCanvases
+     0.37  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases > UIEvents.WillRenderCanvases > UGUI.Rendering.UpdateBatches
+     0.37  (18.8)  PlayerLoop > PreLateUpdate.ScriptRunBehaviourLateUpdate > LateBehaviourUpdate > Assembly-CSharp.dll!Racer::VehicleLights.LateUpdate() [Invoke]
+     0.36  (1)  PlayerLoop > PreLateUpdate.ScriptRunBehaviourLateUpdate > LateBehaviourUpdate > Assembly-CSharp.dll!Racer::WeatherEffects.LateUpdate() [Invoke]
+     0.34  (2.9)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate > PxScene.simulate > FinalizeUpdateTask
+     0.34  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable > CullResults.CreateSharedRendererScene
+     0.33  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases > UIEvents.WillRenderCanvases > UGUI.Rendering.UpdateBatches > UnityEngine.UIModule.dll!UnityEngine::Canvas.SendWillRenderCanvases() [Invoke]
+     0.32  (4)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > Shadows.PrepareDrawShadows
+     0.32  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases > UIEvents.WillRenderCanvases > UGUI.Rendering.UpdateBatches > UnityEngine.UIModule.dll!UnityEngine::Canvas.SendWillRenderCanvases() [Invoke] > Render
+     0.32  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable > CullResults.CreateSharedRendererScene > EndRenderQueueExtraction
+     0.30  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera
+     0.30  (1)  PlayerLoop > PostLateUpdate.PlayerUpdateCanvases > UIEvents.WillRenderCanvases > UGUI.Rendering.UpdateBatches > UnityEngine.UIModule.dll!UnityEngine::Canvas.SendWillRenderCanvases() [Invoke] > Render > CanvasUpdate.PreRender
+     0.29  (74.5)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::BigJump.FixedUpdate() [Invoke]
+     0.29  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > ExecuteRenderGraph
+     0.28  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > Shadows.PrepareDrawShadows > EndRenderQueueExtraction
+     0.27  (3)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate > PxScene.simulate > Physics.FetchPhysXResults
+     0.27  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable > CullResults.CreateSharedRendererScene
+     0.26  (2.9)  PlayerLoop > FixedUpdate.PhysicsFixedUpdate > Physics.RunSimulationStage > Physics.Simulate > PxScene.simulate > Physics.FetchPhysXResults > Physics.SwapPhysXBuffersJob
+     0.25  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable > CullResults.CreateSharedRendererScene > EndRenderQueueExtraction
+     0.24  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > DestroyCullResults
+     0.23  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable > TerrainManager.CullAllTerrains
+     0.23  (3)  PlayerLoop > FixedUpdate.AudioFixedUpdate
+     0.22  (3)  PlayerLoop > FixedUpdate.AudioFixedUpdate > AudioManager.FixedUpdate
+     0.22  (4)  PlayerLoop > PostLateUpdate.FinishFrameRendering > DestroyCullResults > RenderLoop.CleanupNodeQueue
+     0.22  (1)  PlayerLoop > PostLateUpdate.UpdateAllRenderers
+     0.21  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > Shadows.PrepareDrawShadows > EndRenderQueueExtraction > WaitForJobGroupID
+     0.20  (1.5)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > WaitForJobGroupID
+     0.20  (166.8)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke] > Physics.Raycast
+     0.19  (1)  PlayerLoop > PostLateUpdate.UpdateAudio
+     0.19  (1)  PlayerLoop > PostLateUpdate.UpdateAudio > AudioManager.Update
+     0.18  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable > TerrainManager.CullAllTerrains
+     0.18  (18.8)  PlayerLoop > PreLateUpdate.ScriptRunBehaviourLateUpdate > LateBehaviourUpdate > Assembly-CSharp.dll!Racer::RiderGestures.LateUpdate() [Invoke]
+     0.18  (14.9)  PlayerLoop > FixedUpdate.ScriptRunBehaviourFixedUpdate > FixedBehaviourUpdate > Assembly-CSharp.dll!ChastainRush::RampHold.FixedUpdate() [Invoke]
+     0.18  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable > CullResults.CreateSharedRendererScene > EndRenderQueueExtraction > WaitForJobGroupID
+     0.17  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable > CullResults.CreateSharedRendererScene > EndRenderQueueExtraction > WaitForJobGroupID
+     0.16  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > ExecuteRenderGraph > RenderLoop.ScheduleDraw
+     0.15  (2)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_ScriptableRenderContext.Submit > UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > ExecuteRenderGraph > RenderLoop.ScheduleDraw
+     0.15  (0)  PlayerLoop > SetPlayerFocus
+     0.15  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > CullScriptable > SceneCulling
+     0.14  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Main Camera > CullScriptable > SceneCulling
+     0.14  (1)  PlayerLoop > PostLateUpdate.FinishFrameRendering > UnityEngine.CoreModule.dll!UnityEngine.Rendering::RenderPipelineManager.DoRenderLoop_Internal() [Invoke] > Inl_UniversalRenderTotal > Inl_RenderCameraStack > Inl_UniversalRenderPipeline.RenderSingleCameraInternal: Player 2 camera > Inl_ExecuteRenderGraph
+-- the five slowest frames: their top self times
+frame 67: 206.2 ms
+      94.25  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+      25.33  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+      10.42  Physics.SphereCastNonAlloc
+      10.15  SetPlayerFocus
+       8.79  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+       8.11  Assembly-CSharp.dll!Racer::ArcadeVehicle.FixedUpdate() [Invoke]
+frame 69: 203.1 ms
+      88.73  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+      37.26  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+      12.78  Physics.SphereCastNonAlloc
+      11.98  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+       8.32  Assembly-CSharp.dll!Racer::ArcadeVehicle.FixedUpdate() [Invoke]
+       8.10  Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+frame 187: 201.9 ms
+      95.15  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+      29.33  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+      11.79  SetPlayerFocus
+       9.03  Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+       8.47  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+       7.41  Physics.SphereCastNonAlloc
+frame 66: 194.2 ms
+      93.46  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+      23.52  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+      13.26  Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+      10.05  Physics.SphereCastNonAlloc
+       7.45  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+       7.26  PlayerLoop
+frame 189: 190.9 ms
+      78.83  Assembly-CSharp.dll!ChastainRush::TrafficDriver.FixedUpdate() [Invoke]
+      30.34  Assembly-CSharp.dll!Racer::RoadDriver.FixedUpdate() [Invoke]
+      13.36  Assembly-CSharp.dll!ChastainRush::DrainPipe.FixedUpdate() [Invoke]
+      11.87  Assembly-CSharp.dll!Racer::VehicleRespawn.FixedUpdate() [Invoke]
+       9.89  Assembly-CSharp.dll!Racer::ArcadeVehicle.FixedUpdate() [Invoke]
+       7.94  Physics.SphereCastNonAlloc

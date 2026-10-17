@@ -22,7 +22,16 @@ namespace Racer
             foreach (var w in Active) if (w && w.Contains(p) && p.y < w.Surface + above && p.y > w.Surface - 3f) return true;
             return false;
         }
-        void OnEnable() { if (!Active.Contains(this)) Active.Add(this); Freeze(Frozen); }
+        void OnEnable() { if (!Active.Contains(this)) Active.Add(this); Freeze(Frozen); if (!Outlined) BoxBounds(); }
+        // Chastain Rush, Round 37 (B7, split screen's frame rate): a box's world x, z rectangle, so Contains turns away water far from the point
+        // with plain arithmetic. Sample runs for every vehicle every physics step over every area (hundreds of stream boxes), and the transform
+        // call for each box was 8 ms of a 1-player Chastain Ridge race frame with traffic and 15 ms split. The map's water does not move.
+        void BoxBounds()
+        {
+            Vector2 lo = new(float.MaxValue, float.MaxValue), hi = new(float.MinValue, float.MinValue);
+            for (int i = 0; i < 4; i++) { var c = transform.TransformPoint(new Vector3((i & 1) == 0 ? -.5f : .5f, 0, (i & 2) == 0 ? -.5f : .5f)); var q = new Vector2(c.x, c.z); lo = Vector2.Min(lo, q); hi = Vector2.Max(hi, q); }
+            bounds = Rect.MinMaxRect(lo.x - .01f, lo.y - .01f, hi.x + .01f, hi.y + .01f);
+        }
         void OnDisable() => Active.Remove(this);
         // 0.73 Snow: every body of water freezes (WorldLook sets this from the conditions). Vehicles then ride ON the ice:
         // a collidable top face, the same shape as the water, is switched on. The water still slows a vehicle exactly as
@@ -63,16 +72,18 @@ namespace Racer
                     if ((outline[i].y > point.z) != (outline[j].y > point.z) && point.x < (outline[j].x - outline[i].x) * (point.z - outline[i].y) / (outline[j].y - outline[i].y) + outline[i].x) inside = !inside;
                 return inside;
             }
+            if (!bounds.Contains(new Vector2(point.x, point.z))) return false;   // Chastain Rush, Round 37 (BoxBounds)
             var p = transform.InverseTransformPoint(point);
             return round ? p.x*p.x+p.z*p.z < .25f : Mathf.Abs(p.x)<.5f && Mathf.Abs(p.z)<.5f;
         }
         public static float Sample(ArcadeVehicle car, out float surface)
         {
             surface=0; float result=0;
-            if(ChastainRush.DryPatch.Contains(car.Body.position)) return 0;   // Chastain Rush, Round 19: on P1's rock bar, not wading
+            var at=car.Body.position;   // Chastain Rush, Round 37: read once, not per area
+            if(ChastainRush.DryPatch.Contains(at)) return 0;   // Chastain Rush, Round 19: on P1's rock bar, not wading
             foreach(var water in Active)
             {
-                if(!water || water.gameObject.scene!=car.gameObject.scene || !water.Contains(car.Body.position)) continue;
+                if(!water || !water.Contains(at) || water.gameObject.scene!=car.gameObject.scene) continue;   // Chastain Rush, Round 37: the cheap test first
                 // Use wheel/body immersion, never an x/z-only trigger. Overflying jumps stay dry.
                 float bottom=car.Body.position.y-car.suspensionLength;
                 // Frozen: a vehicle over the ice is measured as if it stood the same height above the bed under the ice,

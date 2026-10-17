@@ -25,7 +25,7 @@ namespace ChastainRush
         readonly StringBuilder report = new StringBuilder();
         ArcadeVehicle car; VehicleRespawn respawn; RaceController race;
 
-        struct Place { public string name; public float x, z, yaw, y; public string route, dir; }
+        struct Place { public string name; public float x, z, yaw, y; public string route, dir; public bool split; }
 
         IEnumerator Start()
         {
@@ -58,6 +58,9 @@ namespace ChastainRush
                 new Place { name = "race_underground", route = "underground.json", dir = "forward" },   // Round 27: the grid on the hub's top ledge
                 // the creek-trail exit during a race (closed), seen from the trail 12 m short of it
                 new Place { name = "race_creek_xtrail", route = "noonday_creek.json", dir = "forward", x = 2343f, z = 1099.5f, yaw = 335f },
+                // Round 37 B7: the Chastain Ridge race (add -traffic Normal), one player and split screen with an AI player 2
+                new Place { name = "race_ridge", route = "chastain_ridge.json", dir = "forward" },
+                new Place { name = "race_ridge_split", route = "chastain_ridge.json", dir = "forward", split = true },
             };
             if (!string.IsNullOrEmpty(only)) places = places.Where(p => only.Split(',').Any(o => p.name.Contains(o))).ToList();
             foreach (var p in places)
@@ -68,6 +71,8 @@ namespace ChastainRush
                     RaceController.AiCount = 3; RaceController.AiVehiclesOverride = null;
                     if (race.State != RaceController.Stage.Free) race.EndRace();
                     race.Reload();
+                    SplitScreen.End();
+                    if (p.split) { SplitScreen.P1Device = UnityEngine.InputSystem.Keyboard.current; SplitScreen.P2Device = null; SplitScreen.P2Ai = true; SplitScreen.Begin(SplitScreen.Kind.Race); }
                     race.StartRace();
                     while (race.State == RaceController.Stage.Countdown) yield return null;
                     if (p.x != 0f) { respawn.PlaceAt(RaceRoute.Ground(p.x, p.z) + Vector3.up * 0.3f, p.yaw); race.NotifyTeleported(); }
@@ -82,6 +87,7 @@ namespace ChastainRush
                 }
                 yield return Measure(p.name, raw);
                 if (shots) yield return Capture(p.name);
+                if (p.split) { if (race.State != RaceController.Stage.Free) race.EndRace(); SplitScreen.End(); }
             }
             if (race.State != RaceController.Stage.Free) race.EndRace();
             File.WriteAllText(Path.Combine(outputDir, "profile.txt"), report.ToString());
