@@ -361,6 +361,26 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 39 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A Dan's spots: mapgen tilts the last
+8 m of every road end that meets a road running on through onto it (`junction_stems`, config `road_flatten.junction_warp_m`; BUG-001 / BUG-005);
+`pipe_network.py` drops a fillet that folds back (`dekink`); `MapBuilder.Pipes.cs` `Retaining` (X_SHOPS only): wingwalls hold kept ground, the
+ground behind the headwall up to a house's base; the Courson Street pool and courts (`MapBuilder.CoursonSwim.cs`, `CoursonOwns`). B the people's mix
+(`MapBuilder.Life.cs`: coffee 1 house in 40, talking, gardening, mailbox, kids) and street walkers (`World/Life/AmbientLife.Walkers.cs`: dog walkers,
+families, couples, joggers on the baked streets; `LifeSchedule.Walkers`). C the reverse Chastain Ridge, a lap of its own (route `loop_rev`,
+`gate_s_rev`, `checkpoints_rev`, `junctions_rev`, `closures_rev`, `reset_skip_rev`, `ai_zones_reverse`; `RaceRoute.OwnReverse`), THE RIDGE CLIMB
+(`make_ridge_route.py`, jump id CLIMB, road-work dressing in `MapBuilder.ChastainRidge.cs`), reverse S1 Knoll drop. D Racer's police
+(`Assets/Scripts/Police/`: GetawayChase, CopDriver, RoadNet + PoliceRoads (the map's roads and limits, `MapBuilder.Police.cs`), PoliceChase,
+SpeedPatrol, HiddenPolice, PoliceHelicopter, PoliceLights, PoliceRadio + PoliceRadioScript + PoliceRadioVoice, PoliceKit, PoliceSession,
+PoliceHud; `Menus/GameMenus.Police.cs`: POLICE on the title and Free Roam menus, results, RECORDS Getaway / Speed Patrol Top 10s
+`getaway-v1.json`, `speed-patrol-v1.json`; settings `hiddenPolice`, `hiddenPoliceDifficulty`; `VehicleProfile.Police` / `PoliceBike` kept out of
+All; `TrafficDriver.SpeedOverride`). The radio reads `Tools/Audio/police-radio-lines.csv` (embedded by Build Map); clips `<id>.wav` from the
+drop-in `Sounds\PoliceRadio\` beside the records, then `ChastainRush_Data\PoliceRadio\` (the exe build copies `SourceArt/Audio/PoliceRadio/`);
+none recorded: text only. Check: `ChastainRush.exe -exeRound39 <dir> [-r39Only walkers,walkpics,walkdodge,walkfps,climb,fwdleap,climbreset,ridgerev,
+revpics,getaway,escape,patrol,hidden,chase2,radio,policefps] [-hiddenPolice] -traffic Normal -logFile <dir>\Player.log`
+(`Checks/Round20Runner.R39*.cs`). Imported from Racer: GetawayChase, CopDriver, RoadNet, PoliceChase, SpeedPatrol (+PatrolContacts), HiddenPolice,
+PoliceHelicopter, PoliceLights, PoliceRadio (+voice), the Patrol Car and Patrol Cycle (PatrolCar.fbx, PoliceBike.fbx, `Tools/Blender/police.py`,
+`policebike.py`, with `cars.py`, `needle600.py` they import), the police menus and records pages (rewritten into GameMenus); left behind:
+PoliceProgress (unlocks), the campaign's police goals, PoliceRadioSync (Racer's editor clip import).
 **Round 29 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Racer's rider page,
 GARAGE > Rider... (`Menus/GameMenus.Garage.cs`), saved in settings.json (`GameSettings.Options.rider`). Check: `ChastainRush.exe
 -exeRound29 <dir> -logFile <dir>\Player.log`. Imported from Racer: the Rider page (rewritten into GameMenus).
@@ -725,7 +745,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-16_21-19-50-140_b75298` through BUG-001 (Round 38; before it `2026-10-16_01-35-35-872_a132c0` through BUG-010, Round 34).
+`2026-10-17_03-04-04-461_b78d3f` through BUG-005 (Round 39; before it `2026-10-16_21-19-50-140_b75298` through BUG-001, Round 38).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

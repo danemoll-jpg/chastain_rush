@@ -198,6 +198,37 @@ Frame rate in a heat-5 chase at Canton Road (1280 x 720).
 For Dan to check (when done): the spots from his reports, people walking dogs and families out, the reverse Chastain Ridge
 race and its climb, Getaway / Speed Patrol / hidden cruisers / Police Chase in Free Roam, at 3840 x 2160.
 
+**Status (Claude, 2026-10-17): Parts A to D built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round39/a` to `d`.
+A1 / A3 DONE, one cause (git: Round 34's `wider_wins_rects` only levelled a narrower road ending on a wider one, in two boxes): a side street of equal
+   width laid its own level cross-section into the through road's slope. Mapgen now tilts the last 8 m of every road end meeting a road that runs on
+   through onto that road (`junction_warp_m`): 442 junctions map-wide, so other places changed (roughness humps 2,422 -> 1,758 samples, sharp steps
+   1,493 -> 1,057). Chastain Corner: no grass. Glen Lane: flat out both ways on the Drifter Twin, wheels down, no bump-log event on the road.
+A2 DONE. BUG-003: B21's bend folded back on itself (`dekink`), a clean tube. BUG-002: house 2175, 4 m off, kept the bank ungraded: X_SHOPS's
+   wingwalls retain it, the ground behind the headwall rises to the house's base; driven in and out. Same kept ground, not changed: BF, X_W20, X_W11,
+   X_BRIDGE, X_STREAM.
+A4 DONE. Courson Street pool and courts from OSM: clubhouse, deck, lap and wading pool, pool house, 4 courts in one fence, 2 blue canopies, crosswalk,
+   path, breakable loungers and fences, pool-deck people; the lot holds 21 angled stalls with its 2 tree islands (OSM's lot is 38 m: not 30).
+B DONE. Coffee pairs 1,528 -> 34 of 1,770 groups, one out at a time. Porch groups at a third of the houses (1,537 -> 516). Mix: talking 517, kids
+   397, phone 257, football 238, gardening 208, mailbox 115. Walkers on 210 streets (sidewalk where there is one): dog walkers (1 or 2 dogs: sniff,
+   stop, pull; 3 sizes, 5 coats), families (a stroller 1 in 3), couples, joggers; 7 near you mornings, 8 evenings, 4 midday, a few dog walkers after
+   dark, none in rain or snow or within 5 m of a race line; they step aside. Glen Lane 311 / 313 fps without, 293 / 309 with 7 groups out.
+C DONE. Reverse Chastain Ridge, a lap of its own (2,039 m, 6 CPs, own record boards). THE RIDGE CLIMB: road-work fill (cones, a barricade) by the
+   southbound carriageway, aimed at 31.4 m/s and 40 deg onto the forward pile's ramp face; resets short of it go past it. Reverse S1 Knoll drop (saves
+   45 m); no reverse S2 (the garage row stands where its run-up would be). Climb on all 11 vehicles, forward leap on all 14, 3 AI x 3 laps finish.
+D DONE. Racer's police, Free Roam only: POLICE on the title and Free Roam menus (Getaway, Speed Patrol, Cop vs Runner, 1 or 2 players), results,
+   RECORDS Top 10s. Limits: OSM where tagged (113 roads), else interstate 65, ramps 45, trunk 55, primary 45, secondary 40, tertiary 35, street 25,
+   service 15. Hidden cruisers: 8 on Bells Ferry, New Chastain and Chastain Roads, 4 on Hartley Woods Dr, Blackwell Cir, Suburban Dr, Crestmore Dr.
+   Decided: cops never enter the pipes (down there you cannot be busted and escape twice as fast). Radio: CSV IDs, street names, text until Dan's
+   clips exist. Checked: heat 1 to 5 with backups, a roadblock, the helicopter, caught on Hard; escape into the pipes; a Speed Patrol catch; a hidden
+   cruiser at 68 in a 45; Cop vs Runner for two with roles swapped; radio text and a clip; heat 5 at Canton Road 111 fps (159 without). NOT shown: my
+   scripted runner never got away on Easy on the roads (best 59 % of the escape meter in 7 tries; Easy was eased: 92 % cop pace, catch-up 1.08 x,
+   seen within 90 m, 12 s hidden). Escape on the roads is for Dan to judge.
+Imported from Racer: GetawayChase, CopDriver, RoadNet, PoliceChase, SpeedPatrol, HiddenPolice, PoliceHelicopter, PoliceLights, PoliceRadio, the Patrol
+   Car and Cycle with their Blender scripts, the police menus and records (rewritten). Left behind: PoliceProgress, the campaign's police goals.
+For Dan to check: Chastain Corner and Glen Lane, the X_SHOPS pipe, the Courson pool, walkers and dogs, the reverse Ridge and its climb, Getaway on
+   Easy (can you lose them?), Speed Patrol, hidden cruisers, Cop vs Runner, at 3840 x 2160 (frame rates here are 1280 x 720).
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 10:31 (BUILD_INFO.txt); a final smoke run on it passed 7 of 7 (`round39/d/final_check.txt`).
+
 ## QUEUED rounds
 None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
 more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)

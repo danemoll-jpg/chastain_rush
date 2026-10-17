@@ -1,0 +1,27 @@
+Round 39 check, 2026-10-17 10:31, the exe, 1280 x 720, muted.
+
+=== Part B: more variety in the people (the mix, the street walkers)
+  baked: 1770 groups: football trios 238, coffee pairs 34, shop walkers 4, on the phone 257, two talking 517, gardening 208, to the mailbox 115, kids playing 397; 516 on porches
+PASS  coffee pairs about 1 group in 40 at most  -  34 of 1770
+  walkers' streets: 210 lines, 15479 points, 206 links
+  08:00 in the Glen: walkers 8 (target 7 near a view): dogs 3, families 1, couples 1, joggers 3; standing groups out 10
+  12:00 in the Glen: walkers 4 (target 4 near a view): dogs 1, families 2, couples 0, joggers 1; standing groups out 19
+  18:00 in the Glen: walkers 8 (target 8 near a view): dogs 3, families 2, couples 2, joggers 1; standing groups out 9
+  02:00 in the Glen: walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0; standing groups out 0
+PASS  walkers out round the player (dog walkers, families, couples, joggers over the day)  -  dog walkers 7, families 5, couples 3, joggers 5
+PASS  never two coffee pairs out at once  -  most out at once 1
+  rain at 17:30: walkers 0 (target 0 near a view): dogs 0, families 0, couples 0, joggers 0
+PASS  nobody walks in the rain  -  0 groups out
+
+=== Part D: a hidden cruiser (Free Roam, -hiddenPolice)
+  12 hiding places: Bells Ferry Road Northwest (1457, 1008), Bells Ferry Road Northwest (1435, 1187), New Chastain Road (3344, 436), Bells Ferry Road Northeast (1543, 100), Chastain Road Northwest (277, 952), Bells Ferry Road Northwest (1233, 1590), New Chastain Road (2194, 738), Bells Ferry Road Northwest (1469, 701), Hartley Woods Drive Northeast (1668, 1613) street, Blackwell Circle (3381, 914) street, Suburban Drive Northwest (2022, 1747) street, Crestmore Drive Northwest (1804, 1867) street; active 3
+  the cruiser on Bells Ferry Road Northwest at (1435, 1187), the limit there 45 mph; Hidden police: nearest 80 m (Bells Ferry Road Northwest) · 0 mph vs 55 (45+10) · on road yes · quiet 0 s
+PASS  a pass at 10+ mph over the limit in front of a hidden cruiser starts a chase (heat 1, the cruiser pulls out)  -  CLOCKED at 68 mph in a 45: CLOCKED 68 in a 45; Hidden police: nearest 510 m (Bells Ferry Road Northwest) · 69 mph vs 55 (45+10) · on road yes · quiet chase on
+
+=== Part D: the police radio (Tools/Audio/police-radio-lines.csv; Dan's voice to come)
+  the script: loaded; e.g. "Suspect heading north on Canton Road.", "Unit three, joining from New Chastain Road.", "Roadblock set up on Chastain Corner ahead of the suspect."
+  Dan's drop-in folder has none yet (C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\Sounds\PoliceRadio); the built-in folder is not there
+PASS  with no clip recorded, a radio call is text only (nothing played)
+PASS  a clip in the drop-in folder is played (the radio effect on it, the music ducked)  -  71.6s R02 1.35s [R02:drop-in]
+
+7 of 7 checks passed.

@@ -192,11 +192,21 @@ namespace ChastainRush
             var hp = HiddenPolice.Current; if (!hp) { Check("hidden police are in the build", false); yield break; }
             report.AppendLine($"  {hp.All.Count} hiding places: {string.Join(", ", hp.All.Select(s => $"{s.road} ({s.pos.x:0}, {s.pos.z:0}){(s.fast ? "" : " street")}"))}; active {hp.Active.Count}");
             hp.LastEnd = -999; hp.AttachedAt = -999;
-            var spot = hp.Active.FirstOrDefault(s => s.fast) ?? hp.Active.FirstOrDefault(); if (spot == null) { Check("a hidden cruiser placed", false); yield break; }
-            var net = RoadNet.Shared; int node = net.Nearest(spot.pos, out _, 60); var t = net.Tangent(node);
-            // along the road past it: 80 m before its node to 60 m after, on the road's line there (a path over the network turned off onto other roads)
-            var c0 = net.P[node]; var start = RaceRoute.Surface(c0.x - t.x * 80f, c0.z - t.z * 80f); var end = RaceRoute.Surface(c0.x + t.x * 60f, c0.z + t.z * 60f);
-            var path = Straight(start, end, 3f).Select(q => RaceRoute.Surface(q.x, q.z)).ToList();
+            // a hiding place whose straight run (80 m before its road node to 60 m after) stays on its own road (one by an interchange ran onto I-575):
+            // the active ones first, else one made active for the check (said in the report)
+            var net = RoadNet.Shared; var roads = PoliceRoads.Instance; HiddenPolice.Spot spot = null; int node = -1; Vector3 t = Vector3.forward; Vector3 start = default, end = default; List<Vector3> path = null;
+            foreach (var cand in hp.Active.Where(x => x.fast).Concat(hp.Active).Concat(hp.All.Where(x => x.fast)).Concat(hp.All))
+            {
+                int nd = net.Nearest(cand.pos, out _, 60); if (nd < 0) continue; var tt = net.Tangent(nd); var c0 = net.P[nd];
+                var st = RaceRoute.Surface(c0.x - tt.x * 80f, c0.z - tt.z * 80f); var en = RaceRoute.Surface(c0.x + tt.x * 60f, c0.z + tt.z * 60f);
+                var line = Straight(st, en, 3f).Select(q => RaceRoute.Surface(q.x, q.z)).ToList();
+                roads.LimitAt(c0, out _, out int road0); bool ok = road0 >= 0;
+                foreach (var q in line) { roads.LimitAt(q, out bool on, out int rq); if (!on || rq < 0 || roads.names[rq] != roads.names[road0]) { ok = false; break; } }
+                if (!ok) continue;
+                spot = cand; node = nd; t = tt; start = st; end = en; path = line; break;
+            }
+            if (spot == null) { Check("a hidden cruiser with a straight run past it on its own road", false); yield break; }
+            if (!hp.Active.Contains(spot)) { hp.Active.Add(spot); report.AppendLine($"  (made active for the check: {spot.road})"); }
             respawn.PlaceAt(start + Vector3.up * .5f, Mathf.Atan2(t.x, t.z) * Mathf.Rad2Deg); race.NotifyTeleported(); yield return new WaitForSecondsRealtime(2f);
             int limit = PoliceKit.LimitAt(spot.pos, out _); report.AppendLine($"  the cruiser on {spot.road} at ({spot.pos.x:0}, {spot.pos.z:0}), the limit there {limit} mph; {hp.DebugLine}");
             yield return Still("39_hidden_cruiser", spot.pos - spot.forward * 14f + t * 10f + Vector3.up * 3f, spot.pos + Vector3.up, 60f);
