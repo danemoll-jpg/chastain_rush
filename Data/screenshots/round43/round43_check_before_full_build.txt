@@ -1,0 +1,42 @@
+Round 43 check, 2026-10-18 17:03, the exe, 1280 x 720, muted.
+
+=== A1: THE PLUME ON BOTH CARRIAGEWAYS (reverse Chastain Ridge, CP3 next as in Dan's BUG-001)
+  covers: RP at (3255.9, 631.2), RP2 13.1 m left of it; water from 5.0 m right of RP to 23.1 m left
+  Drifter Twin     left carriageway             into it at -1.0 m/s: thrown by plume RP2; down at (3240.5, 335.1, 619.6), 96 m from the landing; both covers blown True
+  Drifter Twin     left carriageway, far edge   into it at -1.0 m/s: thrown by plume RP2; down at (3131.5, 328.4, 620.9), 13 m from the landing; both covers blown True
+  Drifter Twin     median                       into it at -1.0 m/s: thrown by plume RP; down at (3130.5, 328.7, 620.3), 14 m from the landing; both covers blown True
+  Street Classic   left carriageway             into it at -1.0 m/s: thrown by plume RP2; down at (3241.1, 326.1, 622.3), 97 m from the landing; both covers blown True
+  Street Classic   left carriageway, far edge   into it at -1.0 m/s: thrown by plume RP2; down at (3238.2, 321.7, 613.7), 94 m from the landing; both covers blown True
+  Street Classic   median                       into it at -1.0 m/s: thrown by plume RP; down at (3130.2, 328.7, 620.3), 14 m from the landing; both covers blown True
+FAIL  A1 (a): along the left carriageway, its far edge and the median at race speed, both vehicles are thrown onto the dead end
+PASS  A1 (a): the two covers blow together
+  reset from the left carriageway, 30 m past the cover: to (3269.8, 604.6), 30 m short of the cover, facing it 1.00; penalty 0 s, next CP3
+  reset from the left carriageway, 90 m past: to (3269.8, 604.6), 30 m short of the cover, facing it 1.00; penalty 0 s, next CP3
+  reset from the median, 20 m past: to (3269.8, 604.6), 30 m short of the cover, facing it 1.00; penalty 0 s, next CP3
+  reset from the left carriageway, 60 m short: to (3269.8, 604.6), 30 m short of the cover, facing it 1.00; penalty 0 s, next CP3
+PASS  A1 (c, d): resets from the left carriageway and the median past the cover (and short of it): short of the cover, facing it, no penalty
+  reset mid-flight (in the air True, 1.2 s after the throw): to (3114.2, 621.4), lap 1257 m against the landing's 1227 m; penalty 0 s, next CP3 -> CP3
+PASS  A1 (c, d): a reset mid-flight: past the landing, no penalty
+
+=== B1: THE CLEAN-LAP GHOST (Chastain Glen loop, forward, Street Classic, solo)
+  ghost on: True (files: C:\Users\danmo\AppData\Local\Temp\claude\r43\check1\CleanLapGhosts)
+  laps 59.61, 59.54 (missed 0); after lap 1: "NEW CLEAN-LAP GHOST / 0:59.610"; ghost files 1; ghost seen on lap 2 True, nearest 0.0 m; picture False
+PASS  B1: the first clean lap makes a ghost; the second lap is raced against it (shown)
+PASS  B1: the ghost is never solid (no collider on it)
+  the race with a reset: reset True, finished True (54.46 s); ghost: "Lap left out of clean-lap ghosts: reset, teleport, missed checkpoint or recording limit."; saved ghost unchanged True
+PASS  B1: a lap with a reset makes no ghost
+
+=== C1: THE WINNER SHOT (Chastain Glen loop, 1 lap, 3 AI drivers)
+  the player wins: the shot began True, on YOU (winner YOU), over after 2.3 s, then the results
+PASS  C1: the player wins: the winner shot on the winner, then the results
+  first AI over the line after 46 s: BLUE
+  an AI wins: the shot began True, on YOU (winner YOU), over after 2.3 s, then the results
+FAIL  C1: an AI wins: the winner shot on the winner, then the results
+
+=== D1: TRAILER MODE (Free Roam, then a race)
+  Free Roam: HUD hidden True; free camera moved 25.1 m; screenshot ChastainRush_2026-10-18_17-09-18-439.png; slow motion 0.25x; race not counted True; after: speed 1.00, step 0.0200 (was 0.0200)
+PASS  D1: Trailer Mode in Free Roam: clean screen, free camera, screenshot, slow motion, all back after
+  a race: HUD hidden True; free camera moved 25.2 m; screenshot ChastainRush_2026-10-18_17-09-35-878.png; slow motion 0.25x; race not counted True; after: speed 1.00, step 0.0200 (was 0.0200)
+PASS  D1: Trailer Mode in a race: clean screen, free camera, screenshot, slow motion, all back after
+
+9 of 11 checks passed.

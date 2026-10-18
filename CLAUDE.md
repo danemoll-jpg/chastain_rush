@@ -288,7 +288,8 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   references into them set again) and, with the Exe entry, builds the exe from it:
   `Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.MapBuilder.QuickExeFromCommandLine -quickParts <steps> -logFile <file>`
   (`QuickFromCommandLine`: the scene only; `-dumpOut <file>`: the scene's fingerprint after). Steps that can be rebuilt alone: Businesses,
-  ChurchCrypt (`church` = both), Ridge (the roof ramp included), Pipes (the network's exits' ground). A change to the planning (grading,
+  ChurchCrypt (`church` = both), Ridge (the roof ramp included), Pipes (the network's exits' ground). Tree clearing (a track's `clear_lines`) is the Trees
+  step's, so a new or moved clear line needs the full build (Round 43). A change to the planning (grading,
   the layout of houses, roads or lots) or to a step not on that list needs the full build, and so does the round's last build (the rule
   above: one full Build Map at the end). If the scene was built or saved by anything else since the record, the quick build refuses.
   Times on Dan's PC (Round 42, with the PC in use): full Build Map 11 to 18 min (was 32); Ridge quick to a playable exe 5 min; church
@@ -296,6 +297,9 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   Proof a quick build matches a full one: `ChastainRush.SceneDump.Run -dumpOut <file> [-dumpDetail <text>]` (Editor batch: one line per
   object and per terrain block, with what its components refer to) of both, then `python Tools/scene_diff.py <a> <b> [--box x0,z0,x1,z1]`.
   `ChastainRush.MeshProbe.Run` takes `-probeTop <y>` (rays from under a roof).
+- Round 43 check: `ChastainRush.exe -exeRound43 <dir> [-r43Only plume,ghost,winner,trailer] -logFile <dir>\Player.log` (`Checks/Round20Runner.R43*.cs`).
+  Trailer Mode: F8 or the pause menu's TRAILER MODE page (`Trailer/TrailerMode.cs`); screenshots to `Screenshots\` beside DebugReports.
+  Ghosts: `CleanLapGhosts\` beside the race records (`Race/CleanLapGhost.cs`). A quick build now refreshes the race's route copies.
 - Round 42 check: `ChastainRush.exe -exeRound42 <dir> [-r42Only windows,aisle,plume] -logFile <dir>\Player.log` (`Checks/Round20Runner.R42.cs`).
 
 ## Where things stand
@@ -391,6 +395,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 43 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the manhole plume on both
+carriageways (a second cover RP2 in the southeast-bound one, `ManholePlume.group`), race resets near it short of the cover (route
+`reset_skip_rev` `short_area` / `short_s`, `CarRecovery`) and a reset never charges the checkpoints it skips (`RaceController.ForgiveReset`);
+B Racer's clean-lap ghost (`Race/CleanLapGhost.cs`, Race Setup's Ghost row, RECORDS > GHOST board); C Racer's winner shot (`Race/WinnerShot.cs`);
+D Racer's Trailer Mode (`Trailer/`, `Vehicle/CameraViews.Trailer.cs`, `Menus/GameMenus.Trailer.cs`, `WorldLook.TrailerConditions`; IMGUI HUDs ask
+`TrailerMode.HudHidden`; a race in it sets `RaceController.NoRecords`). Imported from Racer: CleanLapGhost, WinnerShot, TrailerMode (+Panel),
+CameraViews.Trailer, RaceMenus.Trailer (into GameMenus), WorldLook's Trailer conditions; left behind: TrailerRecorder (Editor only), the waypoint beacon.
 **Round 42 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A quick builds
 (`MapBuilder.Quick.cs`, "Quick builds" under Commands; the full Build Map 32 -> 11 to 18 min, same scene; `SceneDump`, `Tools/scene_diff.py`);
 B1 church 74's windows beside the doors break and lead to the stair (`MapBuilder.ChurchCrypt.cs` ChurchWindows, `Neighborhood/RestoreOnReset.cs`),
@@ -799,7 +810,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-18_10-15-07-747_d1c371` through BUG-003 (Round 42; before it `2026-10-17_21-06-21-561_3280ac` through BUG-001, Round 41).
+`2026-10-18_16-02-03-115_cda8a3` through BUG-001 (Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

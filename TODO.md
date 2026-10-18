@@ -133,6 +133,26 @@ D1. The pause menu's Trailer Mode as in Racer (its camera, slow motion, HUD and 
 For Dan to check (when done): get past the plume on the left (you can't), a reset there; a race against your ghost; the winner
 shot; Trailer Mode.
 
+**Status (Claude, 2026-10-18): Parts A to D built and checked in the exe by script (11 of 11), not yet driven by Dan.** Evidence `Data/screenshots/round43/`.
+A1 DONE. (a) A second cover in the southeast-bound carriageway, abeam the first, blowing with it; the two waters run from the right curb across
+   both carriageways and the median to 6 m past the far curb; both throw to the same landing. (b) Gap: beyond that the bank rises into the trees;
+   not driven there. (c) A race reset anywhere on New Chastain Road from CP2 to 100 m past the cover (either carriageway, median, verges): 30 m short
+   of the cover, facing it; only a reset in the flight goes past the landing. (d) A reset never charges the checkpoints its own placement skips.
+   Check: Drifter Twin and Street Classic along the left carriageway, its far edge and the median: 6 of 6 thrown onto the dead end; resets from
+   the left carriageway and the median past the cover: short of it, no penalty; mid-flight: past the landing, no penalty; pictures from Dan's spot.
+B1 DONE. Racer's clean-lap ghost on every route and direction, per vehicle; Race Setup's Ghost row (off until turned on); RECORDS > GHOST board.
+   Check: two Chastain Glen laps, the second against the first's ghost (picture in `local/round43/`, Dan's neighborhood); a lap with a reset: none.
+C1 DONE. Racer's winner shot before the results (race with opponents). Check: the player wins (on YOU) and an AI wins (on BLUE), then the results.
+D1 DONE. Racer's Trailer Mode: F8 or pause menu > TRAILER MODE; nine cameras, slow motion, clean screen, arches hidden, screenshots to
+   `Screenshots\`, Free Roam time / weather / moon. While it is on, P, `,` `.`, the D-pad, controller B, R3 and LB do the Trailer Mode thing
+   (F2, F4 / ], F still work). Free look was already here (Round 24). Left behind: Racer's Editor-only video recorder.
+   Check: Free Roam and a race: HUD gone, free camera flown 25 m, a screenshot, 0.25x and back, the race not counted.
+Process: one full Build Map + exe at the end (Build Map 600 s); Part A's world change through a Ridge quick build first. Found on the way: a quick
+   build does not redo the Trees step, so a new tree-clear line needs the full build (it was why the first check's left-lane throws hit a tree).
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 17:24 (BUILD_INFO.txt). Commits: A, B, C, D, this status.
+For Dan to check: around the plume on the left and a reset there; the ghost (it reads fairly solid pale cyan, say if it should be more see-through);
+   the winner shot; Trailer Mode from the pause menu with the controller.
+
 ## QUEUED rounds
 **Round 44, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 43 is reviewed).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
