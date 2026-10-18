@@ -47,8 +47,10 @@ namespace ChastainRush
         }
 
         // a polygon lying on the terrain: ear-clipped, then split until no edge is longer than 'step' so it follows the ground
-        static void DrapePoly(MeshBuilder mb, List<Vector2> ring, float step, float lift, TerrainGrid t, int maxDepth = 6)   // Round 17: maxDepth (a 300 m lot needs more)
+        // Round 42 (B2): 'cut' leaves out what lies in those rectangles (finer triangles near them, so the edge follows them to 0.3 m)
+        static void DrapePoly(MeshBuilder mb, List<Vector2> ring, float step, float lift, TerrainGrid t, int maxDepth = 6, List<Rect> cut = null)   // Round 17: maxDepth (a 300 m lot needs more)
         {
+            bool Near(Vector2 a, Vector2 b, Vector2 c) { if (cut == null) return false; var r = Rect.MinMaxRect(Mathf.Min(a.x, Mathf.Min(b.x, c.x)), Mathf.Min(a.y, Mathf.Min(b.y, c.y)), Mathf.Max(a.x, Mathf.Max(b.x, c.x)), Mathf.Max(a.y, Mathf.Max(b.y, c.y))); foreach (var k in cut) if (k.Overlaps(r)) return true; return false; }
             if (ring.Count < 3) return;
             var r = new List<Vector2>(ring);
             if (PolyArea(r) < 0f) r.Reverse();
@@ -58,13 +60,15 @@ namespace ChastainRush
             {
                 float l0 = (a - b).magnitude, l1 = (b - cc).magnitude, l2 = (cc - a).magnitude;
                 float m = Mathf.Max(l0, Mathf.Max(l1, l2));
-                if (m > step && depth < maxDepth)
+                bool near = Near(a, b, cc);
+                if ((m > step && depth < maxDepth) || (near && m > .3f && depth < maxDepth + 8))
                 {
                     if (m == l0) { var mid = (a + b) / 2; Emit(a, mid, cc, depth + 1); Emit(mid, b, cc, depth + 1); }
                     else if (m == l1) { var mid = (b + cc) / 2; Emit(a, b, mid, depth + 1); Emit(a, mid, cc, depth + 1); }
                     else { var mid = (cc + a) / 2; Emit(a, b, mid, depth + 1); Emit(mid, b, cc, depth + 1); }
                     return;
                 }
+                if (near) { var ce = (a + b + cc) / 3f; foreach (var k in cut) if (k.Contains(ce)) return; }
                 int v = mb.Vertex(new Vector3(a.x, Ground(t, a.x, a.y) + lift, a.y));
                 mb.Vertex(new Vector3(b.x, Ground(t, b.x, b.y) + lift, b.y));
                 mb.Vertex(new Vector3(cc.x, Ground(t, cc.x, cc.y) + lift, cc.y));
@@ -114,7 +118,7 @@ namespace ChastainRush
                 }
             var tex = new Texture2D(N, N, TextureFormat.RGBA32, true) { name = uturn ? "SignNoUTurn" : "SignNoParking", wrapMode = TextureWrapMode.Clamp };
             tex.SetPixels(px); tex.Apply();
-            AssetDatabase.CreateAsset(tex, $"{GeneratedDir}/{tex.name}.asset");
+            tex = GenAsset(tex, $"{GeneratedDir}/{tex.name}.asset");
             return tex;
         }
 
@@ -128,7 +132,7 @@ namespace ChastainRush
             mesh.uv = new[] { new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1), new Vector2(0, 1) };  // the plate faces -z locally, so u runs with +x
             mesh.triangles = new[] { 0, 2, 1, 0, 3, 2 };
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/SignQuad_{parent.childCount}_{mat.name}_{Mathf.Abs(centre.x.GetHashCode() ^ centre.z.GetHashCode())}.asset");
+            mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/SignQuad_{parent.childCount}_{mat.name}_{Mathf.Abs(centre.x.GetHashCode() ^ centre.z.GetHashCode())}.asset");
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
             var r = go.AddComponent<MeshRenderer>(); r.sharedMaterial = mat; r.shadowCastingMode = ShadowCastingMode.Off;
             return go;
@@ -214,7 +218,7 @@ namespace ChastainRush
             {
                 var m = new Material(Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Texture")) { name = "Sign_" + tx.name };
                 m.SetTexture("_BaseMap", tx); m.SetColor("_BaseColor", Color.white); m.mainTexture = tx;
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{m.name}.mat");
+                m = GenAsset(m, $"{GeneratedDir}/{m.name}.mat");
                 return m;
             }
             var mp = SignMat(texP); var mu = SignMat(texU);

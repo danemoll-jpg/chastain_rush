@@ -78,7 +78,10 @@ namespace ChastainRush
             // ---------------- the walls with their openings (the doors in the north wing's east wall); both faces, a box collider a piece
             float dTop = F + cd.door_h, dz0 = dz - cd.door_w * .5f, dz1 = dz + cd.door_w * .5f;
             int pieces = 0; float nb = Mathf.Min(nw.baseY, F), sb = Mathf.Min(sp.baseY, F);   // the walls from the ground (no foundation band under a hollow wing)
-            pieces += ChWall(church, root, new Vector2(nw.x1, nw.z0), new Vector2(nw.x1, nw.z1), Vector2.right, nb, nw.eave, nw, new[] { (dz0 - nw.z0, dz1 - nw.z0, F, dTop) });
+            // Round 42 (B1, BUG-001: "cant the window breakout too?"): a tall window either side of the doors, open to the floor, glass that breaks
+            var wins = ChurchWindows(cd, dz); float wTop = F + ChWinH;
+            pieces += ChWall(church, root, new Vector2(nw.x1, nw.z0), new Vector2(nw.x1, nw.z1), Vector2.right, nb, nw.eave, nw,
+                             new[] { (dz0 - nw.z0, dz1 - nw.z0, F, dTop) }.Concat(wins.Select(w => (w.z0 - nw.z0, w.z1 - nw.z0, F, wTop))).ToArray());
             pieces += ChWall(church, root, new Vector2(nw.x0, nw.z1), new Vector2(nw.x1, nw.z1), Vector2.up, nb, nw.eave, nw, null);
             pieces += ChWall(church, root, new Vector2(nw.x0, nw.z0), new Vector2(nw.x1, nw.z0), Vector2.down, nb, nw.eave, nw, null);
             pieces += ChWall(church, root, new Vector2(sp.x0, sp.z0), new Vector2(sp.x0, sp.z1), Vector2.left, sb, sp.eave, sp, new[] { (sz0 - sp.z0, sz1 - sp.z0, sb - 2f, F) });   // the stairwell runs on under it into the vault
@@ -126,7 +129,7 @@ namespace ChastainRush
             for (float z = sz1 + 1.4f; z < sp.z1 - ChWallT - .8f; z += 1.15f) foreach (float side in new[] { -1f, 1f }) { Pew(new Vector3(ax + side * (.7f + pl * .5f), F, z), Vector3.right, pl, Vector3.forward); }
             // the north wing: rows beside the stairwell, facing west (the crossing)
             foreach (var (za, zb) in new[] { (nw.z0 + ChWallT + .3f, sz0 - .9f), (sz1 + .9f, nw.z1 - ChWallT - .3f) })
-                if (zb - za > 1.2f) for (float x = nw.x0 + 2.0f; x < sx1 - .6f; x += 1.15f) Pew(new Vector3(x, F, (za + zb) * .5f), Vector3.forward, zb - za, Vector3.right);
+                if (zb - za > 1.2f) for (float x = nw.x0 + 2.0f; x < sx1 - ChLanding - .6f; x += 1.15f) Pew(new Vector3(x, F, (za + zb) * .5f), Vector3.forward, zb - za, Vector3.right);
             deco.Tint = ChCarpet;
             Face(deco, new Vector3(sx1, F + .02f, dz - 1.1f), new Vector3(nw.x1 - .05f, F + .02f, dz - 1.1f), new Vector3(nw.x1 - .05f, F + .02f, dz + 1.1f), new Vector3(sx1, F + .02f, dz + 1.1f), Vector3.up);
             Face(deco, new Vector3(ax - .7f, F + .02f, chZ), new Vector3(ax + .7f, F + .02f, chZ), new Vector3(ax + .7f, F + .02f, sz0 - .1f), new Vector3(ax - .7f, F + .02f, sz0 - .1f), Vector3.up);
@@ -135,7 +138,7 @@ namespace ChastainRush
             foreach (float side in new[] { -1f, 1f })
             {
                 float zr = dz + side * (hw + .15f);
-                BoxWorld(rail, new Vector2(sx0 + ChWallT, zr), new Vector2(sx1, zr), new Vector3(0f, 0f, 1f), .3f, F, F + .95f);
+                BoxWorld(rail, new Vector2(sx0 + ChWallT, zr), new Vector2(sx1 - ChLanding, zr), new Vector3(0f, 0f, 1f), .3f, F, F + .95f);
             }
             var rg = rail.ToObject("Crypt stairwell balustrade", mats.House, root, false); AddCollider(rg, rail, "crypt balustrade collider");
             // ---------------- the doors (wood) that break
@@ -152,13 +155,36 @@ namespace ChastainRush
                 bw.End(new Vector3(x, F + cd.door_h * .5f, (z0 + z1) * .5f), Vector3.right, cd.door_w * .5f, cd.door_h, 1.2f); leaves++;
             }
             bw.ToObjects("Crypt church doors", mats.House, root, .3f, BreakSounds.Kind.Wood);
-            // the way in: the lawn in front of the doors up to the floor (a ramp if the floor stands over it)
+            // the windows' glass (3 x 3 shards a window, as the stunt park's store windows), back when the player resets near them; their trim
+            var glass = new Breakables();
+            foreach (var (wz0, wz1) in wins)
+            {
+                float x = nw.x1 - ChWallT * .5f; var mb = glass.Begin(new Vector2(x, (wz0 + wz1) * .5f));
+                for (int sx = 0; sx < 3; sx++) for (int sy = 0; sy < 3; sy++)
+                {
+                    float za = Mathf.Lerp(wz0, wz1, sx / 3f), zb = Mathf.Lerp(wz0, wz1, (sx + 1) / 3f), ya = Mathf.Lerp(F, wTop, sy / 3f), yb = Mathf.Lerp(F, wTop, (sy + 1) / 3f); int c = sx + sy;
+                    glass.Piece(() =>
+                    {
+                        mb.Tint = c % 2 == 0 ? ChGlass : ChGlass * .9f;
+                        foreach (float side in new[] { 1f, -1f })
+                            Face(mb, new Vector3(x + side * .02f, ya, za), new Vector3(x + side * .02f, ya, zb), new Vector3(x + side * .02f, yb, zb), new Vector3(x + side * .02f, yb, za), Vector3.right * side);
+                    }, F + .05f);
+                }
+                glass.End(new Vector3(x, (F + wTop) * .5f, (wz0 + wz1) * .5f), Vector3.right, wz1 - wz0, wTop - F, 1.2f);
+                church.Tint = BizTrim;   // the trim round it outside (as the other tall windows)
+                foreach (var (za, zb, ya, yb) in new[] { (wz0 - .12f, wz0, F, wTop + .12f), (wz1, wz1 + .12f, F, wTop + .12f), (wz0, wz1, wTop, wTop + .12f) })
+                    Face(church, new Vector3(nw.x1 + .03f, ya, za), new Vector3(nw.x1 + .03f, ya, zb), new Vector3(nw.x1 + .03f, yb, zb), new Vector3(nw.x1 + .03f, yb, za), Vector3.right);
+            }
+            var glassRoot = glass.ToObjects("Crypt church windows", mats.House, root, .3f, BreakSounds.Kind.Glass);
+            glassRoot.gameObject.AddComponent<RestoreOnReset>().Fill(glassRoot.GetComponentsInChildren<FenceChunk>(), 60f);
+            // the way in: the lawn in front of the doors up to the floor (a ramp if the floor stands over it). Round 42 (B1): always, across the
+            // doors and both windows: where the floor stands under the lawn the ground dips at the wall (the wing's ground is cut under its floor),
+            // a 0.3 m step at the threshold that stopped a car not at speed
             {
                 float outY = Ground(terrain, nw.x1 + 3.5f, dz), rise = F - outY;
-                if (rise > .05f)
                 {
                     var pr = new List<float>(); for (float s = 0f; s <= 4.01f; s += .5f) { pr.Add(s); pr.Add(Mathf.Lerp(Ground(terrain, nw.x1 + 4f - s, dz) - .05f, F + .01f, Smooth01(s / 4f))); }
-                    var O = new Vector2(nw.x1 + 4f, dz); var axv = Vector2.left; var nl = new Vector2(0f, 1f); float w = cd.door_w * .5f + .4f;
+                    var O = new Vector2(nw.x1 + 4f, dz); var axv = Vector2.left; var nl = new Vector2(0f, 1f); float w = Mathf.Max(cd.door_w * .5f, wins.Max(q => Mathf.Max(q.z1 - dz, dz - q.z0))) + .4f;   // Round 42: and in front of the windows
                     BuildPrism(new ScPrism { name = "sc church door ramp", kind = "earth", origin = new[] { O.x, O.y }, axis = new[] { axv.x, axv.y }, profile = pr.ToArray(), colour = new[] { .55f, .53f, .50f }, skirt_edges = new[] { 1, 3 },
                                               poly = new[] { O + nl * w, O - nl * w, O + axv * 4f - nl * w, O + axv * 4f + nl * w }.SelectMany(q => new[] { q.x, q.y }).ToArray() }, terrain, mats, root);
                 }
@@ -389,6 +415,16 @@ namespace ChastainRush
             Debug.Log($"[Round41] crypt: church 74's north wing and spine hollow (floor {F:0.00} m): {pieces} wall pieces, doors {cd.door_w:0.0} x {cd.door_h:0.0} m ({leaves} leaves), {pews} pews, {holed} stairwell holes; " +
                       $"the line {L.S[L.N - 1]:0} m from the doors to the lip: {steps} steps drawn, the hall's {tombs} tombs, {stands} candle stands and {urns} urns (break), {niches} niches, {candles} candles, {lights} lights; " +
                       $"the cover over the vault {least:0.00} m at least (at {leastS:0} m); the cut from the portal ({cd.s_portal:0} m) to the lip, its walls up to {wallMost:0.0} m, {cutHoles} holes; the lip at {L.Y[L.N - 1]:0.00} m ({L.P[L.N - 1].x:0.0}, {L.P[L.N - 1].y:0.0})");
+        }
+
+        // Round 42 (B1): the tall windows beside the front doors (z0..z1 along the north wing's east wall), as wide as a car, open to the floor
+        const float ChWinW = 2.4f, ChWinGap = .7f, ChWinH = 4.2f;
+        const float ChLanding = 3f;   // the stair's top 3 m open at its sides (no balustrade, no pews beside it): from a window a car turns onto it
+        static readonly Color ChGlass = new Color(0.28f, 0.30f, 0.46f);   // the other tall windows' glass (MapBuilder.Businesses.cs TallWindows)
+        static (float z0, float z1)[] ChurchWindows(RidgeCrypt cd, float dz)
+        {
+            float a = cd.door_w * .5f + ChWinGap;
+            return new[] { (dz - a - ChWinW, dz - a), (dz + a, dz + a + ChWinW) };
         }
 
         static float CrRise(float half) => Mathf.Min(half * .55f, 2.2f);   // the vault's arch over the walls

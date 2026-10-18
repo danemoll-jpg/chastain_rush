@@ -104,13 +104,7 @@ namespace ChastainRush
             bool everOn = false; run = new Run(); drive = StartCoroutine(DriveLine(nw, 30f, 20f, run, null, r => { everOn |= pl.Erupting; return false; }, 5f)); yield return drive;
             Check("forward race: the plume never blows (driven through its place at 30 m/s)", !everOn && ManholePlume.Throws == th0, $"erupted {everOn}, thrown {ManholePlume.Throws - th0}");
             race.EndRace(); RaceController.DirectionOverride = null; RaceController.AiCount = 3; yield return new WaitForSecondsRealtime(.5f);
-            // Free Roam: at it at speed northwest-bound: it blows and throws; it shuts again after a while
-            th0 = ManholePlume.Throws;
-            Place(nw[0], nw[2] - nw[0], 20f); yield return new WaitForFixedUpdate();
-            run = new Run(); everOn = false; drive = StartCoroutine(DriveLine(nw, 30f, 20f, run, null, r => { everOn |= pl.Erupting; return ManholePlume.Throws > th0 && car.GroundedWheels > 0 && run.time > 3f; }, 5f)); yield return drive;
-            Check("Free Roam: it blows when you come at it at speed and throws you", everOn && ManholePlume.Throws > th0, $"erupted {everOn}, thrown {ManholePlume.Throws - th0}");
-            float t0 = Time.time; while (pl.Erupting && Time.time - t0 < 40f) yield return new WaitForSecondsRealtime(.5f);
-            Check($"Free Roam: it shuts again after {ManholePlume.FreeRoamSeconds:0} s", !pl.Erupting, $"shut {Time.time - t0:0} s after the throw");
+            // Round 42 (BUG-003): Free Roam no longer blows it (Round42Runner checks that)
         }
 
         IEnumerator R40PlumePics()

@@ -289,7 +289,7 @@ namespace ChastainRush
                     var mesh = new Mesh { name = go.name };
                     mesh.SetVertices(kv.Value.v); mesh.SetUVs(0, kv.Value.uv); mesh.SetTriangles(kv.Value.tri, 0);
                     mesh.RecalculateNormals(); mesh.RecalculateBounds();
-                    AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/{go.name}.asset");
+                    mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/{go.name}.asset");
                     go.AddComponent<MeshFilter>().sharedMesh = mesh;
                     var r = go.AddComponent<MeshRenderer>(); r.sharedMaterial = mat; r.shadowCastingMode = ShadowCastingMode.Off;
                 }
@@ -304,7 +304,7 @@ namespace ChastainRush
             var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "BusinessSigns" };   // lit, depth-tested, one-sided
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white);
             m.SetFloat("_Smoothness", 0.2f); m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/BusinessSigns.mat");
+            m = GenAsset(m, GeneratedDir + "/BusinessSigns.mat");
             return m;
         }
 
@@ -427,7 +427,8 @@ namespace ChastainRush
                             else if (len > 10f) FrontQuad(det, f, -half + 1f, half - 1f, eave - 1.6f, eave - 0.9f, 0.04f, BizGlass);
                             break;
                         case BizKind.Church:
-                            TallWindows(det, f, half, eave, front);
+                            bool hollowEast = z.index == 74 && ChurchHollows.Count > 0 && Mathf.Abs(m.x - ChurchWings[2].x1) < 1.5f && m.y > ChurchWings[2].z0 && m.y < ChurchWings[2].z1;
+                            if (!hollowEast) TallWindows(det, f, half, eave, front);   // Round 42 (B1): the north wing's east wall (the doors') has the crypt's windows (they break)
                             if (front && z.index == 74) ChurchEastDoor(body, det, z, wallH, Sign, Next);   // Round 32 (A5): the door, sign and steeple toward Canton Road
                             else if (front) ChurchFront(body, det, f, half, eave, wall, z, Sign, Next, z.index != 75);
                             break;
@@ -462,6 +463,7 @@ namespace ChastainRush
             foreach (var r in map.roads) { var p = ToPoints(r.points); for (int i = 0; i + 1 < p.Count; i++) roadSegs.Add((p[i], p[i + 1], r.width * 0.5f)); }
             roadSegs.AddRange(biz.Drives);   // Round 32 (A1): the drives cut the curbs and keep stalls and poles off them
             var bizRings = biz.Items.Select(q => q.ring).ToList();
+            var roadGrid = new SegGrid(roadSegs, 3f);   // Round 42 (A): every use below compares with less than 3 m
             // Round 32 (A1): the walks in front of the stores (concrete, a little above the lot) and the drives (the lot's asphalt)
             foreach (var w in biz.Walks) { var mb = lotMb.At(Centroid(w)); mb.Tint = new Color(0.70f, 0.69f, 0.66f); DrapePoly(mb, w, 1.5f, 0.075f * vScale, t, 10); }
             foreach (var dr in biz.Drives)
@@ -482,7 +484,7 @@ namespace ChastainRush
                 bool InOther(Vector2 q) { for (int j = 0; j < biz.Lots.Count; j++) if (j != self && InPolygon(q, biz.Lots[j])) return true; return false; }   // Round 32: lots that overlap
                 Vector2 c = Vector2.zero; foreach (var p in lot) c += p; c /= lot.Count;
                 var mb = lotMb.At(c); mb.Tint = LotAsphalt;
-                DrapePoly(mb, lot, 1.5f, 0.05f * vScale, t, 12);
+                DrapePoly(mb, lot, 1.5f, 0.05f * vScale, t, 12, ChurchHollows.Count > 0 ? ChurchHollows.Values.Select(h => Rect.MinMaxRect(h.x0, h.z0, h.x1, h.z1)).ToList() : null);   // Round 42 (B2, BUG-002): never through the hollow church (it stood over its aisle and stair)
                 var walks = lotMb.At(c);
                 for (int i = 0; i < lot.Count; i++)
                 {
@@ -492,7 +494,7 @@ namespace ChastainRush
                     for (float s = 0f; s < len; s += 1f)
                     {
                         Vector2 p0 = a + d * s, p1 = a + d * Mathf.Min(len, s + 1f);
-                        if (Clearance(roadSegs, (p0 + p1) * 0.5f) < 0.6f || InOther((p0 + p1) * 0.5f)) continue;
+                        if (roadGrid.Clearance((p0 + p1) * 0.5f) < 0.6f || InOther((p0 + p1) * 0.5f)) continue;
                         walks.Tint = new Color(0.70f, 0.69f, 0.66f); Strip(walks, p0, p1, n, 0f, 0.35f, 0.08f * vScale, t);
                     }
                     // stalls along the edges long enough for them: 2.8 m apart, 5.2 m deep
@@ -500,7 +502,7 @@ namespace ChastainRush
                         for (float s = 1.5f; s + 2.8f <= len - 1.5f; s += 2.8f)
                         {
                             Vector2 p0 = a + d * s, p1 = p0 + n * 5.2f, p2 = p0 + d * 2.8f, p3 = p2 + n * 5.2f;
-                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
+                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && roadGrid.Clearance((p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             var pm = lotPaint.At(p0); PaintLine(pm, p0 + n * 0.3f, p1, 0.12f, 0.065f * vScale, t); stalls++;
                             if (s + 5.6f > len - 1.5f || !InPolygon(p3 + d * 2.8f, lot)) PaintLine(pm, p2 + n * 0.3f, p3, 0.12f, 0.065f * vScale, t);
@@ -509,7 +511,7 @@ namespace ChastainRush
                     for (float s = 8f; s < len - 4f; s += 32f)
                     {
                         var p = a + d * s + n * 0.7f; float gy = Ground(t, p.x, p.y);
-                        if (Clearance(roadSegs, p) < 1.5f || InOther(p) || bizRings.Any(r => InPolygon(p, r) || RingDist(p, r) < 1.5f)) continue;
+                        if (roadGrid.Clearance(p) < 1.5f || InOther(p) || bizRings.Any(r => InPolygon(p, r) || RingDist(p, r) < 1.5f)) continue;
                         var lb = lamps.Begin(p); var dark = new Color(0.20f, 0.20f, 0.22f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy - 0.1f, p.y), 4.6f, 0.18f, dark), gy + 0.1f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy + 4.5f, p.y), 4.4f, 0.15f, dark), gy + 0.1f);
@@ -536,7 +538,7 @@ namespace ChastainRush
                         foreach (float side in new[] { -1f, 1f })
                         {
                             var p1 = p0 + N * (5.2f * side); var p3 = p2 + N * (5.2f * side);
-                            bool ok = InPolygon(p0, lot) && InPolygon(p1, lot) && InPolygon(p2, lot) && InPolygon(p3, lot) && Clearance(roadSegs, (p0 + p3) * 0.5f) > 1f
+                            bool ok = InPolygon(p0, lot) && InPolygon(p1, lot) && InPolygon(p2, lot) && InPolygon(p3, lot) && roadGrid.Clearance((p0 + p3) * 0.5f) > 1f
                                       && !bizRings.Any(r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             PaintLine(lotPaint.At(p0), p0 + N * (0.1f * side), p1, 0.12f, 0.065f * vScale, t); stalls++;

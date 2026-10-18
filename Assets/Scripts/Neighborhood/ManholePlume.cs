@@ -14,8 +14,8 @@ namespace ChastainRush
     //   - armed in a race (the reverse Chastain Ridge): it blows when the first racer comes within 'trigger' of it (or drives into it first),
     //     and gushes for the rest of the race;
     //   - in a race that does not arm it (the forward Chastain Ridge, every other route): it never blows;
-    //   - Free Roam: it blows when a player comes at it the way it runs at 12 m/s or more within 45 m, throws the same way, and shuts again
-    //     after 25 s (the cover back once nothing is over it).
+    //   - Free Roam (Getaway and the other activities included): it never blows, the cover stays shut (Round 42, BUG-003, Dan: "thought this
+    //     only come on during the race...i am in free roam"; Round 40 had it blow in Free Roam too).
     public sealed class ManholePlume : MonoBehaviour
     {
         public string id;
@@ -24,7 +24,6 @@ namespace ChastainRush
         public float right = 5f, left = 9f, halfLength = 3.5f, angle = 40f, trigger = 80f, height = 16f;
         public Vector3 target, targetDir = Vector3.forward;
         public Material sprayMaterial;
-        public const float FreeRoamSeconds = 25f, FreeRoamReach = 45f, FreeRoamSpeed = 12f;
         public static int Throws { get; private set; }
         public static readonly List<ManholePlume> All = new List<ManholePlume>();
         public bool Erupting => left0 > 0f;
@@ -73,34 +72,19 @@ namespace ChastainRush
             bool r = race && race.State != RaceController.Stage.Free && race.RouteData != null;
             if (r != racing) { racing = r; Shut(); }
             Armed = r && ArmedBy(race);
-            if (r && !Armed) { if (Erupting) Shut(); return; }
-            float dt = Time.fixedDeltaTime;
-            if (Erupting && left0 < 1e5f) { left0 -= dt; if (left0 <= 0f) { Shut(); return; } }
+            if (!Armed) { if (Erupting) Shut(); return; }   // Round 42 (BUG-003): only a race that arms it; never in Free Roam
             if (!Erupting)
-            {
-                if (Armed)
+                foreach (var e in race.Entrants)
                 {
-                    foreach (var e in race.Entrants)
-                    {
-                        if (e == null || !e.Car) continue;
-                        Where(e.Car.Body.position, out float a, out float s);
-                        if (a < halfLength && a > -trigger && Mathf.Abs(s) < 25f) { Erupt(1e9f); break; }
-                    }
+                    if (e == null || !e.Car) continue;
+                    Where(e.Car.Body.position, out float a, out float s);
+                    if (a < halfLength && a > -trigger && Mathf.Abs(s) < 25f) { Erupt(1e9f); break; }
                 }
-                else
-                    foreach (var c in DrainPipe.Vehicles)
-                    {
-                        var vi = c ? c.GetComponent<VehicleInput>() : null;
-                        if (!c || c.Body == null || !Thrown(c) || !vi || !vi.enabled) continue;
-                        Where(c.Body.position, out float a, out float s);
-                        if (a < halfLength && a > -FreeRoamReach && s <= right + 2f && s >= -left - 2f && Vector3.Dot(c.Body.linearVelocity, along) >= FreeRoamSpeed) { Erupt(FreeRoamSeconds); break; }
-                    }
-            }
             foreach (var c in DrainPipe.Vehicles)
             {
                 if (!c || c.Body == null || c.Body.isKinematic || !Thrown(c) || !InPlume(c.Body.position)) continue;
                 // a racer that gets here before it has blown (the first one) still gets it: it blows now
-                if (!Erupting) { if (Armed) Erupt(1e9f); else continue; }
+                if (!Erupting) Erupt(1e9f);
                 if (recent.TryGetValue(c.Body, out float at) && Time.time - at < 2.5f) continue;
                 var f = c.GetComponent<GuidedFlight>(); if (f && f.Flying) continue;
                 recent[c.Body] = Time.time;
