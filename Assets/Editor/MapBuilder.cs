@@ -98,8 +98,10 @@ namespace ChastainRush
             BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
             var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
             GradeCreekTrack(map, terrain, creek);
+            ChurchHollow = null;
             var ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
             GradeRidge(terrain, ridge);
+            GradeNewChastainMedian(map, terrain);   // Round 40 (B2): New Chastain Road's median straight across, before anything samples the ground (MapBuilder.Round40.cs)
             Net = null;
             var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
             var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
@@ -132,6 +134,7 @@ namespace ChastainRush
             // own rules already keep them off its streets, drives and the shortcut lines): one standing within 0.6 m of a
             // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
             var pave = new Pavement(map);
+            biz.Trees.AddRange(MedianTrees(map, ridge));   // Round 40 (B2): trees down New Chastain Road's median
             var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
                 (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                 (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
@@ -152,6 +155,7 @@ namespace ChastainRush
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
             BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
+            BuildChurchClimb(terrain, mats, world);   // Round 40 (A7): church 74's north wing hollow for the church leap (MapBuilder.ChurchClimb.cs)
             BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
             BuildCoursonSwim(map, terrain, mats, world, courson);   // Round 39 (A4)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
@@ -350,14 +354,19 @@ namespace ChastainRush
                 {
                     var s = segs[id];
                     if (s.road == self) continue;
-                    if (SameStreet(s.road, self) && (s.road.width < self.width - 0.01f || RunsOn(self, s.road))) continue;
+                    // Round 40 (B1, BUG-008: "These cross lines again in the middle of the road"): two one-way carriageways of the same street
+                    // where they split (Canton Road's at Worley Drive): the wider one's lines ran on across the narrower one's lanes (a narrower
+                    // same-street piece only lets the through road's paint over it when it is a one-way carriageway meeting a two-way road)
+                    bool narrower = s.road.width < self.width - 0.01f, split = narrower && self.oneway && s.road.oneway;
+                    if (SameStreet(s.road, self) && ((narrower && !split) || RunsOn(self, s.road))) continue;
                     var ab = s.b - s.a;
                     float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / ab.sqrMagnitude);
-                    if ((s.a + ab * t - p).magnitude < s.half + margin) return true;
+                    if ((s.a + ab * t - p).magnitude < s.half + margin) { if (split && SameStreet(s.road, self)) { SplitStops++; SplitPairs.Add((self.osm_id, s.road.osm_id)); } return true; }
                 }
                 return false;
             }
 
+            public int SplitStops; public readonly HashSet<(long, long)> SplitPairs = new HashSet<(long, long)>();   // Round 40 (B1): paint samples stopped by the split rule, and where
             // b continues a: same width and one-way-ness, an end of one on an end of the other, heading on within 40 degrees
             static bool RunsOn(Road a, Road b)
             {
@@ -432,6 +441,8 @@ namespace ChastainRush
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
             center.ToObjects("ShoppingCenterRoads", mats.Driveway, parent, false);   // the lot's own material and tint
+            Debug.Log($"[Round40] B1: paint stopped where two one-way carriageways of one street split: {others.SplitPairs.Count} carriageway pairs, {others.SplitStops} paint samples (lines that ran across the other's lanes): " +
+                      string.Join(", ", others.SplitPairs.Select(q => $"{q.Item1} over {q.Item2}")));
         }
 
         // Round 5: the race controller. The route itself is data (Data/routes/*.json, from Tools/mapgen/make_route.py), laid over
@@ -749,17 +760,18 @@ namespace ChastainRush
                 if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
-                float lo = float.MaxValue, sum = 0f;
+                float lo = float.MaxValue, hi = float.MinValue, sum = 0f;
                 Vector2 c = Vector2.zero;
                 foreach (var p in ring)
                 {
                     float g = Ground(terrain, p.x, p.y);
-                    lo = Mathf.Min(lo, g);
+                    lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g);
                     sum += g;
                     c += p;
                 }
                 c /= ring.Count;
                 float baseY = lo - 0.5f * vScale, topY = sum / ring.Count + b.height;
+                if (RaisedBuildings.Contains(i)) topY = hi + 0.1f + b.height;   // Round 40 (C): Dan's buried building: its walls their full height over the highest ground
                 bool isOwner = owner != null && owner.index == i;
                 bool pitched = b.roof == "gable";
                 Color wall = isOwner ? OwnerWall : pitched ? PickColour(WallPalette, b.seed, 1) : PickColour(FlatWallPalette, b.seed, 1);

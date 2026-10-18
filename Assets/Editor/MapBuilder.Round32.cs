@@ -250,8 +250,10 @@ namespace ChastainRush
         // the wings of one church: walls, a gable roof per wing (lower wings tuck under the spine's ridge), the gable ends filled
         static void BuildChurchWings(MeshBuilder body, Biz z, Color wall, Color roof, float wallH)
         {
+            int wi = -1;
             foreach (var w in ChurchWings.Where(q => q.b == z.index))
             {
+                wi++;
                 var ring = new List<Vector2> { new Vector2(w.x0, w.z0), new Vector2(w.x1, w.z0), new Vector2(w.x1, w.z1), new Vector2(w.x0, w.z1) };
                 float top = z.floorY + wallH - w.drop;
                 float floor = z.floorY;
@@ -260,7 +262,9 @@ namespace ChastainRush
                 Vector2 U = w.ridgeX ? Vector2.right : Vector2.up, V = w.ridgeX ? Vector2.up : Vector2.right;
                 float hl = (w.ridgeX ? w.x1 - w.x0 : w.z1 - w.z0) / 2f, hw = (w.ridgeX ? w.z1 - w.z0 : w.x1 - w.x0) / 2f;
                 float rise = Mathf.Min(Mathf.Tan(z.pitch * Mathf.Deg2Rad) * hw, 0.45f * (top - floor)), eave = top - rise;
-                Extrude(body, ring, floor, eave, wall, roof, false);
+                // Round 40 (A7): 74's north wing is hollow for the church leap: its walls are MapBuilder.ChurchClimb.cs' (openings, both faces, colliders)
+                if (ChurchHollowWing(z.index, wi)) ChurchHollow = new ChurchShell { x0 = w.x0, z0 = w.z0, x1 = w.x1, z1 = w.z1, floor = floor, eave = eave, top = top, baseY = z.baseY, wall = wall, roof = roof };
+                else Extrude(body, ring, floor, eave, wall, roof, false);
                 const float oh = 0.35f; float slope = rise / hw, dropY = eave - slope * oh;
                 Vector3 W(float a, float b2, float y) { var q = c + U * a + V * b2; return new Vector3(q.x, y, q.y); }
                 body.Tint = roof;
@@ -279,9 +283,13 @@ namespace ChastainRush
             var w = ChurchWings[2]; float top = wallH - w.drop; float hw = (w.z1 - w.z0) / 2f;   // heights from the floor (the frame's)
             float eave = top - Mathf.Min(Mathf.Tan(z.pitch * Mathf.Deg2Rad) * hw, 0.45f * wallH);
             var f = MakeFrame(new Vector3(w.x1, z.floorY, (w.z0 + w.z1) / 2f), Vector2.right, 1f);
-            FrontQuad(det, f, -1.6f, 1.6f, 0f, 3.4f, 0.05f, BizTrim);
-            FrontQuad(det, f, -1.45f, 1.45f, 0f, 3.25f, 0.07f, new Color(0.36f, 0.22f, 0.13f));
-            FrontQuad(det, f, -0.03f, 0.03f, 0f, 3.25f, 0.08f, new Color(0.25f, 0.15f, 0.09f));
+            if (ChurchHollow == null)   // Round 40 (A7): the church leap's doors are real (MapBuilder.ChurchClimb.cs); only their frame here
+            {
+                FrontQuad(det, f, -1.6f, 1.6f, 0f, 3.4f, 0.05f, BizTrim);
+                FrontQuad(det, f, -1.45f, 1.45f, 0f, 3.25f, 0.07f, new Color(0.36f, 0.22f, 0.13f));
+                FrontQuad(det, f, -0.03f, 0.03f, 0f, 3.25f, 0.08f, new Color(0.25f, 0.15f, 0.09f));
+            }
+            else { var cdw = RidgeNow.Data.church; float hdw = cdw.door_w * .5f + .2f; FrontQuad(det, f, -hdw - .15f, -hdw, 0f, cdw.door_h + .2f, 0.05f, BizTrim); FrontQuad(det, f, hdw, hdw + .15f, 0f, cdw.door_h + .2f, 0.05f, BizTrim); FrontQuad(det, f, -hdw - .15f, hdw + .15f, cdw.door_h, cdw.door_h + .2f, 0.05f, BizTrim); }
             sign(det, f, 0f, Mathf.Min(eave - 0.6f, 4.3f), Mathf.Min(7f, hw * 1.3f), next(BizKind.Church, z.seed), 0.15f);
             FrontQuad(det, f, -0.7f, 0.7f, eave + 0.6f, eave + 2.6f, 0.05f, BizTrim);   // a round-topped window in the gable (squared)
             FrontQuad(det, f, -0.55f, 0.55f, eave + 0.7f, eave + 2.5f, 0.07f, new Color(0.28f, 0.30f, 0.46f));

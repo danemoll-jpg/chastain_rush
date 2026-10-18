@@ -23,6 +23,9 @@ namespace ChastainRush
         {
             (new Vector2(2941f, 756f), 24f, 4f, 8f, "BUG-001 Chastain Glen Lane at New Chastain Road (the entrance)"),
             (new Vector2(3152f, 756f), 30f, 8f, 14f, "BUG-002 New Chastain Road at Chastain Corner Northeast"),
+            // Round 40 (A3, BUG-003 of session 2026-10-17_12-09-19-449_081d93, "bumpy"): where Hilltop Drive and the service road opposite end on
+            // New Chastain Road's northwest-bound carriageway (the reverse Chastain Ridge's line), a 6 cm crest then a 9 cm dip within 4 m
+            (new Vector2(3467f, 404f), 16f, 4f, 8f, "Round 40 BUG-003 New Chastain Road at Hilltop Drive"),
         };
         const float SeamStep = 0.5f;
 

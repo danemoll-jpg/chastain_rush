@@ -98,6 +98,7 @@ namespace ChastainRush
         public RouteJunctionJson[] junctions_rev;
         public RouteClosureJson[] closures_rev;
         public RouteResetSkipJson[] reset_skip_rev;
+        public string[] plumes, plumes_rev;   // Round 40 (A1): the manhole plumes this race arms in each direction (ManholePlume: none listed, it never blows in the race)
         public bool OwnReverse => loop_rev != null && loop_rev.Length >= 8;
         public float[] finish_park, finish_park_y;   // Round 28: where finished AI cars drive and park, off the lap (x, z ... and heights; RoadDriver)
         public float finish_park_gap_m, finish_park_speed;   // Round 35: the parked cars' spacing (0: 9 m) and the drive there (0: 9 m/s)

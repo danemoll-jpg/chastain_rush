@@ -54,6 +54,7 @@ namespace Racer
         float wadeTime;   // checks: sloppy tries at a shortcut (R1)
         bool finishParked;
         AiShortcut plannedBranch, progressBranch;
+        float branchLast = -1f;   // Chastain Rush, Round 40
         float branchBest, branchStuck;
         float routeStuck, progressStation;
         bool progressSample;
@@ -154,7 +155,10 @@ namespace Racer
                 if(progressBranch==plannedBranch || (toEntry<=2&&toEntry>-15)) activeBranch=plannedBranch;
                 else if(toEntry<=-15) plannedBranch=null;   // went past the turn-off without taking it
             }
-            float branchS=activeBranch?activeBranch.Project(Car.Body.position,out _):0;
+            // Chastain Rush, Round 40: on a shortcut its station is looked for near where it was (the church leap's line passes under itself in
+            // plan: the aisle runs in under the gallery), from its start when it is new
+            float branchS=activeBranch?(activeBranch==progressBranch&&branchLast>=0?activeBranch.Line.ProjectNear(Car.Body.position,branchLast,25f,out _):activeBranch.Project(Car.Body.position,out _)):0;
+            branchLast=activeBranch?branchS:-1;
             // the end of the shortcut: back to the road
             if(activeBranch && branchS>=activeBranch.Length-3){ plannedBranch=null; activeBranch=null; }
             if(activeBranch!=progressBranch){ if(activeBranch) ShortcutsTaken++; progressBranch=activeBranch;branchBest=branchS;branchStuck=0;}
@@ -494,6 +498,7 @@ namespace Racer
             for (float d = 6f; d < 60f && s + d + 6f < Length; d += 2f)
             {
                 Vector3 a = At(s + d - 6f, out _), b = At(s + d, out _), c = At(s + d + 6f, out _);
+                if (ChurchTurn.HeldAt(b)) continue;   // Chastain Rush, Round 40: a held bend (the church leap's) is taken at the line's own speed
                 a.y = b.y = c.y = 0f;
                 float area2 = Mathf.Abs(Vector3.Cross(b - a, c - a).y); if (area2 < 1e-3f) continue;
                 float r = (b - a).magnitude * (c - b).magnitude * (c - a).magnitude / (2f * area2);

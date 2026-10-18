@@ -88,7 +88,7 @@ namespace ChastainRush
                 var b = map.buildings[idx];
                 if (b.type != "detached" && b.type != "house" && b.type != "terrace") continue;
                 if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx) || Round32NotHouses.Contains(idx)) continue;   // Round 32 (A4): the ice cream shop
-                var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
+                var ring = MovedRing(idx, ToPoints(b.footprint)); if (ring.Count < 3) continue;
                 if (b.type == "terrace" && (!BestRectangle(ring, out _, out _, out _, out float thl, out float thw) || Mathf.Abs(PolyArea(ring)) / (4f * thl * thw) < 0.8f)) continue;   // a cross-shaped block: an apartment building (MapBuilder.Businesses.cs)
                 Vector2 c = Vector2.zero; foreach (var q in ring) c += q; c /= ring.Count;
                 int n = -1; float best = float.MaxValue;
@@ -118,7 +118,7 @@ namespace ChastainRush
                 float brickShare = nb.era == "ranch" ? 0.55f : nb.era == "traditional" ? 0.6f : 0.25f;
                 {
                     if (hood.OwnsBuilding(idx) || shop.Owns(idx) || rest.Owned.Contains(idx)) return;
-                    var b = map.buildings[idx]; var ring = ToPoints(b.footprint);
+                    var b = map.buildings[idx]; var ring = MovedRing(idx, ToPoints(b.footprint));   // Round 40 (A6): a house moved a little for a shortcut
                     if (ring.Count < 3 || !BestRectangle(ring, out Vector2 c, out Vector2 U, out Vector2 V, out float hl, out float hw)) return;
                     float area = Mathf.Abs(PolyArea(ring));
                     // the nearest of its own streets, by the centreline (as the Glen's houses)
@@ -153,6 +153,7 @@ namespace ChastainRush
                     float lo = float.MaxValue, hi = float.MinValue;
                     foreach (var p in ring) { float gy = terrain.Height(p.x, p.y); lo = Mathf.Min(lo, gy); hi = Mathf.Max(hi, gy); }
                     h.floorY = terrain.Height(g.x, g.z) + 0.16f;
+                    if (RaisedBuildings.Contains(idx)) h.floorY = Mathf.Max(h.floorY, hi + 0.12f);   // Round 40 (C): Dan's buried house, set on the ground
                     h.baseY = Mathf.Min(lo, h.floorY) - 0.45f;
                     h.frame.O = new Vector3(c.x, h.floorY, c.y);
                     h.garageCentre = new Vector3(g.x, h.floorY, g.z);
@@ -204,7 +205,7 @@ namespace ChastainRush
             var grid = new Dictionary<Vector2Int, List<List<Vector2>>>();
             foreach (var b in map.buildings)
             {
-                var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
+                var ring = MovedRing(System.Array.IndexOf(map.buildings, b), ToPoints(b.footprint)); if (ring.Count < 3) continue;
                 var c = ring.Aggregate(Vector2.zero, (s, p) => s + p) / ring.Count; var k = new Vector2Int(Mathf.FloorToInt(c.x / 40f), Mathf.FloorToInt(c.y / 40f));
                 if (!grid.TryGetValue(k, out var l)) grid[k] = l = new List<List<Vector2>>(); l.Add(ring);
             }

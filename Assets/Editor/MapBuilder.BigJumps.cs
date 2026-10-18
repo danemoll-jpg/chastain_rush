@@ -321,8 +321,16 @@ namespace ChastainRush
                     Debug.Log($"[Round20+] {b.id} log ramp: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
                 }
                 // Round 20 follow-ups: the hint at a turn-off (N2: a road-closed barricade knocked over on its side) and worn tire tracks
-                if (b.hint != null && b.hint.kind == "barricade") Barricade(look, terrain, new Vector2(b.hint.x, b.hint.z), b.hint.yaw);
-                if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, jr, ToPoints(b.tracks), b.id + " worn tracks");
+                // Round 40 (A4, BUG-004): S1's and S2's clues are hidden in a reverse race of their route (they mark no shortcut that way)
+                var clueMb = look; var clueAt = jr;
+                if (!string.IsNullOrEmpty(b.clues_hidden_reverse_of) && (b.hint != null || b.tracks != null))
+                {
+                    var h = new GameObject(b.id + " clues (hidden in a reverse race)"); h.transform.SetParent(jr, false);
+                    h.AddComponent<RaceOnly>().hideInReverseOf = b.clues_hidden_reverse_of; clueAt = h.transform; clueMb = new MeshBuilder();
+                }
+                if (b.hint != null && b.hint.kind == "barricade") Barricade(clueMb, terrain, new Vector2(b.hint.x, b.hint.z), b.hint.yaw);
+                if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, clueAt, ToPoints(b.tracks), b.id + " worn tracks");
+                if (clueMb != look && clueMb.Count > 0) { var cg = clueMb.ToObject(b.id + " barricade", mats.House, clueAt, false); cg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 if (look.Count > 0) { var lg = look.ToObject(b.id + " look", mats.House, jr, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 // the runtime side: the launch speed cap
                 var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg; bj.vmin = b.vmin;

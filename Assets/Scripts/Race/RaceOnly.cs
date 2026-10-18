@@ -12,15 +12,19 @@ namespace ChastainRush
         // Round 25 (Dan, BUG-001 at R1's side-yard fences: "can we only make these unbreakable in the race? Let them all be breakable in
         // free roam"): 'any' stands in a race in either direction; 'freeRoam' stands only outside races (the breakable copy)
         public bool any, freeRoam;
+        // Round 40 (A4, BUG-004: "This reads as a shortcut when it isnt going this direction"): 'hideInReverseOf' stands everywhere except in
+        // a reverse race of that route (S1's and S2's turn-off clues on the Chastain Ridge)
+        public string hideInReverseOf;
         bool shown = true;
 
-        void Start() => Apply(false);
+        void Start() => Apply(!string.IsNullOrEmpty(hideInReverseOf));
 
         void Update()
         {
             var race = RaceController.Instance;
             bool racing = race != null && race.State != RaceController.Stage.Free && race.Route != null;
-            bool on = freeRoam ? !racing : racing && (any || race.Route.Reverse == reverse);
+            bool on = !string.IsNullOrEmpty(hideInReverseOf) ? !(racing && race.Route.Reverse && race.Route.Name == hideInReverseOf)
+                    : freeRoam ? !racing : racing && (any || race.Route.Reverse == reverse);
             if (on != shown) Apply(on);
         }
 

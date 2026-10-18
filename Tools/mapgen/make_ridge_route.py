@@ -370,62 +370,63 @@ def closures_for(lap, sc_paths, skip):
 # (a barrier just short of the landing would stand in the flight's last meters)
 closures, stubs, merged = closures_for(lap, (p1, p2), lambda r, contact: r["osm_id"] == 9151940 and math.dist(contact, Pl) < 40.0)
 
-# ---------------------------------------------------------------- Round 39 (C): the reverse lap, THE RIDGE CLIMB and the shortcuts backward
+# ---------------------------------------------------------------- Round 39 (C) / Round 40 (A): the reverse lap, the manhole plume, the reverse shortcuts
 # The reverse is a lap of its own (RaceRoute: loop_rev and the *_rev fields), not the forward loop run backward: two-way roads on their
 # right-hand lane for this direction, Canton Road's southbound and New Chastain Road's northwest-bound carriageways.
-#   Canton Road south from Chastain Corner to New Chastain Road; right onto New Chastain Road northwest, downhill; THE RIDGE CLIMB up
+#   Canton Road south from Chastain Corner to New Chastain Road; right onto New Chastain Road northwest, downhill; THE MANHOLE PLUME up
 #   onto the dead end; Chastain Ridge Drive the way OSM runs it (west from the dead end, over the crest, north down the ridge, east
 #   along z 706); straight across New Chastain Road onto Chastain Corner, uphill; right onto Canton Road: the lap.
-# THE RIDGE CLIMB: a pile of road-work fill pushed out over the hollow's edge just past the southbound carriageway's west shoulder,
-# north of the way out of the hollow (it never covers it). Its ramp rises 2.8 m from the shoulder like the forward pile's; its lip
-# stands about 7 m over the hollow's floor. An aimed launch (vmin = vmax) up over the hollow and house 706 that comes down a few
-# meters past the forward pile's lip, on its ramp face (the forward take-off is the climb's landing ramp), and on down it onto the
-# drive. Short of it: the hollow, and the way out of it back to New Chastain Road (Round 33). A reset between the climb's foot and
-# the landing puts the vehicle on Chastain Ridge Drive past the landing, facing on (reset_skip_rev).
-CLIMB_LIP = (3221.0, 632.0)
-CLIMB = dict(ramp=11.0, width=6.0, rise=2.8, angle=40.0, back=30.0)
-CLIMB_DOWN_RAMP_M = 6.0        # where it lands: this far down the forward pile's ramp face from its lip
-CLIMB_RUNUP = [(3272.0, 597.0), (3260.0, 616.0), (3246.0, 632.0)]   # off the northwest-bound carriageway, across both, to the pile's foot
-# reverse S1 "Knoll drop": off Chastain Corner up the knoll's northeast shoulder, across its top, down its east face, up the S1 pile's
-# back (24 deg) and off its lip into the lot (a launch off the back, rev_angle / rev_vmax, as the creek's jumps), onto Canton Road south
-RS1_CTRL = [(3398.0, 1058.0), (3421.0, 1060.0), (3430.0, 1050.0), (3436.0, 1041.0), (3446.0, 1044.0), (3456.0, 1046.4)]
-RS1_REV = dict(angle=24.0, vmax=15.0)
-RS1_AFTER = [(3492.0, 1040.0), (3506.0, 1028.0)]
-RS1_JOIN = (3519.0, 1012.0)
-# S2 backward is not built: the garage row (63) stands between its landing and its pile's back, so there is no run at the back to
-# take off from; it is a forward-only shortcut (direction "forward": not in a reverse race)
+# Round 40 (A1 / A2, Dan BUG-001 / BUG-002 of session 2026-10-17_12-09-19-449_081d93: "lets use a fire hydrant water plume instead ...
+# Not everything needs to be dirt pile jump"; then, 12:45: "a manhole cover that blows up as the first driver gets close to it and you
+# can't bypass the plume"): Round 39's road-work climb is gone. A manhole cover in the northwest-bound carriageway, on the line you drive
+# straight on along (12 m past Dan's BUG-001 spot); it blows (ManholePlume) and a water plume covers the whole carriageway, curb to the
+# far side of the median, so anything driving on along it goes through it. The plume throws a vehicle on an aimed flight (GuidedFlight:
+# from where the vehicle is in it to the same landing, whatever its line in) west over the hollow and house 706, onto the forward pile's
+# ramp face 6 m down from its lip (as the climb landed), and on down onto the drive. Short of it (it never is: the plume is the road):
+# the hollow and its way out back to New Chastain Road (Round 33). A reset between the cover and the landing puts the vehicle on
+# Chastain Ridge Drive past the landing, facing on (reset_skip_rev).
+PLUME_S = 440.0               # along New Chastain Road's northwest-bound carriageway (OSM 290282527) from its start
+PLUME_ANGLE = 40.0            # the throw's angle (degrees over the horizontal)
+PLUME_DOWN_RAMP_M = 6.0       # where it lands: this far down the forward pile's ramp face from its lip
+PLUME_RIGHT_M, PLUME_LEFT_M, PLUME_HALF_LEN_M = 5.0, 9.0, 3.5   # the plume across the carriageway: to the curb and past it, to the far side of the median; along it
+PLUME_TRIGGER_M = 80.0        # it blows when the first racer comes within this of it
+# Round 40 (A5, BUG-006: "lets not count this as an official shortcut this way"): no reverse S1 (Round 39's Knoll drop is gone, the S1
+# pile's back is only a back again). S2 backward was never built (the garage row stands where its run at the pile's back would be).
+# Round 40 (A4, BUG-004: "This reads as a shortcut when it isnt going this direction"): in a reverse race S1's and S2's turn-off clues
+# (worn tracks, the knocked-over barricade) are hidden (clues_hidden_reverse_of; MapBuilder.BigJumps.cs, RaceOnly).
 CHECKPOINTS_REV = [
-    (3565.0, 470.0, "Canton Road"),
+    (3565.0, 470.0, "Canton Road"),             # the church leap skips it
     (3430.0, 413.0, "New Chastain Road"),
-    (3104.0, 620.0, "past the climb"),          # a cut through the yards up to the drive misses it
-    (3090.0, 707.0, "Chastain Ridge Drive"),
+    (3104.0, 620.0, "past the plume"),          # a cut through the yards up to the drive misses it
+    (3090.0, 707.0, "Chastain Ridge Drive"),    # the crest cut skips it
     (3236.0, 927.0, "up Chastain Corner"),
-    (3490.0, 1081.0, "Chastain Corner"),        # the Knoll drop skips it
+    (3490.0, 1081.0, "Chastain Corner"),
 ]
 RF_ = (RL[0] - dR[0] * RIDGE["ramp"], RL[1] - dR[1] * RIDGE["ramp"])
 def fwd_ramp_y(back):   # the forward pile's ramp face, 'back' m behind its lip (MapBuilder.BigJumps.cs KickerProfile)
     y0 = ground(*RF_) - 0.02; k = math.tan(math.radians(RIDGE["angle"])); R = ridge_y - y0; Lk = min(RIDGE["ramp"], 2 * R / k); u = max(0.0, Lk - back)
     return y0 + k * u * u / (2 * Lk)
-CT = (RL[0] - dR[0] * CLIMB_DOWN_RAMP_M, RL[1] - dR[1] * CLIMB_DOWN_RAMP_M)
-D_c = math.dist(CLIMB_LIP, CT); dC = ((CT[0] - CLIMB_LIP[0]) / D_c, (CT[1] - CLIMB_LIP[1]) / D_c)
-CF = (CLIMB_LIP[0] - dC[0] * CLIMB["ramp"], CLIMB_LIP[1] - dC[1] * CLIMB["ramp"])
-climb_y = ground(*CF) + CLIMB["rise"]
-dy_c = fwd_ramp_y(CLIMB_DOWN_RAMP_M) - climb_y; th = math.radians(CLIMB["angle"])
-CLIMB_SPEED = round(math.sqrt(9.81 * D_c * D_c / (2 * math.cos(th) ** 2 * (D_c * math.tan(th) - dy_c))), 1)
-vxc = CLIMB_SPEED * math.cos(th); t_l = math.dist(CLIMB_LIP, RL) / vxc
-over_lip = climb_y + CLIMB_SPEED * math.sin(th) * t_l - 4.905 * t_l * t_l - ridge_y
-houses_c = {}
-for k_ in range(1, int(D_c)):
-    q = (CLIMB_LIP[0] + dC[0] * k_, CLIMB_LIP[1] + dC[1] * k_); tt = k_ / vxc; y = climb_y + CLIMB_SPEED * math.sin(th) * tt - 4.905 * tt * tt
+CT = (RL[0] - dR[0] * PLUME_DOWN_RAMP_M, RL[1] - dR[1] * PLUME_DOWN_RAMP_M); CT_y = fwd_ramp_y(PLUME_DOWN_RAMP_M)
+NWc = pts(by_osm[290282527]["points"]); cNW = cum(NWc)
+PP = point_at(NWc, PLUME_S, cNW); _a = point_at(NWc, PLUME_S - 2.0, cNW); _b = point_at(NWc, PLUME_S + 2.0, cNW)
+PDIR = ((_b[0] - _a[0]) / math.dist(_a, _b), (_b[1] - _a[1]) / math.dist(_a, _b))   # northwest, the way the carriageway runs
+PP_y = ground(*PP)
+D_p = math.dist(PP, CT); dP = ((CT[0] - PP[0]) / D_p, (CT[1] - PP[1]) / D_p)
+def ballistic_u(L, dy, th): return math.sqrt(9.81 * L * L / (2 * (L * math.tan(th) - dy)))   # the horizontal speed for a flight of L m at angle th that ends dy higher
+thP = math.radians(PLUME_ANGLE); uP = ballistic_u(D_p, CT_y - PP_y, thP); vyP = uP * math.tan(thP)
+houses_p, low_p = {}, []
+for k_ in range(1, int(D_p)):
+    q = (PP[0] + dP[0] * k_, PP[1] + dP[1] * k_); tt = k_ / uP; y = PP_y + vyP * tt - 4.905 * tt * tt
+    low_p.append((k_, y - ground(*q)))
     for i, ring, h, kind in B:
         if near_box(i, q, 2.0) and poly_dist(q, ring) < 1.0:
-            houses_c[i] = round(min(houses_c.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
-print(f"Ridge climb: lip ({CLIMB_LIP[0]:.1f}, {CLIMB_LIP[1]:.1f}) at {climb_y:.2f} m ({climb_y - ground(*CLIMB_LIP):.1f} m over its own ground, {CLIMB['rise']} m over its foot on the shoulder), "
-      f"foot {nearest_s(pts(by_osm[9151940]['points']), CF)[0]:.1f} m from the southbound carriageway's centerline; {CLIMB['angle']} deg, bearing {math.degrees(math.atan2(dC[0], dC[1])) % 360:.1f}; "
-      f"aimed at {CLIMB_SPEED} m/s to land {CLIMB_DOWN_RAMP_M} m down the forward pile's ramp, {D_c:.1f} m away, {t_l:.2f} s to the forward lip, "
-      f"{(CLIMB_SPEED * math.sin(th)) ** 2 / 19.62:.1f} m up; passes {over_lip:.1f} m over the forward lip; clearance over roofs {houses_c}")
-for dv in (-1.0, 1.0):
-    t2 = math.dist(CLIMB_LIP, RL) / ((CLIMB_SPEED + dv) * math.cos(th)); print(f"    ({CLIMB_SPEED + dv:.1f} m/s: {climb_y + (CLIMB_SPEED + dv) * math.sin(th) * t2 - 4.905 * t2 * t2 - ridge_y:+.1f} m over the forward lip)")
+            houses_p[i] = round(min(houses_p.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
+tl = math.dist(PP, RL) / uP; over_lip_p = PP_y + vyP * tl - 4.905 * tl * tl - ridge_y
+print(f"Manhole plume: at ({PP[0]:.1f}, {PP[1]:.1f}) {PP_y:.2f} m, {PLUME_S:.0f} m along the northwest-bound carriageway, its way {math.degrees(math.atan2(PDIR[0], PDIR[1])) % 360:.0f} deg; "
+      f"the throw at {PLUME_ANGLE} deg toward bearing {math.degrees(math.atan2(dP[0], dP[1])) % 360:.0f}, {D_p:.1f} m to the forward pile's ramp ({CT_y - PP_y:+.1f} m): "
+      f"{uP:.1f} m/s across, {vyP:.1f} up ({math.hypot(uP, vyP):.1f} m/s), {D_p / uP:.2f} s, {vyP * vyP / 19.62:.1f} m up; {over_lip_p:.1f} m over the forward lip; roofs under it {houses_p}")
+# the trees under the flight's lower part kept off (clearance over the ground under 22 m), and off its first meters over the road and the median
+clear_p = [k_ for k_, c in low_p if c < 22.0]
 SPEC_REV = [
     ("Canton Road Northeast", 1416681832, way(1416681832, rev=True, a=(3507.0, 1086.0)), True),
     ("Canton Road", 330735258, way(330735258), False),
@@ -436,11 +437,9 @@ for name, osm, seg, two_way in SPEC_REV:
     if line_r and math.dist(line_r[-1], seg[0]) > 0.5: raise SystemExit(f"the reverse lap breaks before {name} ({osm}): gap {math.dist(line_r[-1], seg[0]):.1f} m")
     seg = resample(seg, 3.0); off = by_osm[osm]["width"] / 4.0 if two_way else 0.0
     line_r += seg if not line_r else seg[1:]; offs_r += [off] * (len(seg) if not offs_r else len(seg) - 1)
-nw = way(290282527, a=line_r[-1], b=CLIMB_RUNUP[0])
+nw = way(290282527, a=line_r[-1], b=PP)
 for q in resample(nw, 3.0)[1:]: line_r.append(q); offs_r.append(0.0)
-runup = chaikin([line_r[-1]] + CLIMB_RUNUP + [CF], 3)
-for q in resample(runup, 3.0)[1:] + resample([CF, CLIMB_LIP], 2.0)[1:]: line_r.append(q); offs_r.append(0.0)
-for q in resample([CLIMB_LIP, CT], 4.0)[1:] + resample([CT, RF_], 2.0)[1:]: line_r.append(q); offs_r.append(0.0)
+for q in resample([PP, CT], 4.0)[1:] + resample([CT, RF_], 2.0)[1:]: line_r.append(q); offs_r.append(0.0)
 drive = way(243965590, a=RF_)
 for osm in (None, 1360406917, 1360406916, 1360406918, 1360406923, 9139438):
     seg = drive if osm is None else pts(by_osm[osm]["points"])
@@ -462,34 +461,133 @@ cps_rev = []
 for i, (x, z, label) in enumerate(CHECKPOINTS_REV, 1):
     s_ = round(SR((x, z)), 1); p_ = point_at(lap_r, s_, Cr); cps_rev.append({"id": i, "s": s_, "pos": [round(p_[0], 1), round(p_[1], 1)], "label": label})
 if [c["id"] for c in sorted(cps_rev, key=lambda c: (c["s"] - gate_s_rev) % L_rev)] != [c["id"] for c in cps_rev]: raise SystemExit("reverse checkpoints are not in lap order from the gate")
-s_clip = SR(CLIMB_LIP); s_cfoot = SR(CF); s_cland = SR(CT)
-print(f"reverse lap {L_rev:.0f} m, gate at s {gate_s_rev}; climb foot s {s_cfoot:.0f}, lip s {s_clip:.0f}, landing s {s_cland:.0f}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps_rev))
-# reverse S1 "Knoll drop": the S1 pile's back is its take-off
-d1b = (-d1[0], -d1[1])
-s1r0 = SR(RS1_CTRL[0]); q0 = point_at(lap_r, s1r0, Cr)
-v_r = RS1_REV["vmax"]
-fr = flight(S1_LIP, d1b, bj1["lip_y"], v_r, RS1_REV["angle"])
-path_r = chaikin([q0] + RS1_CTRL[1:] + [S1_LIP], 3) + resample([S1_LIP, fr["at"]], 3.0)[1:]
-s1r1 = SR(RS1_JOIN); q1 = point_at(lap_r, s1r1, Cr)
-path_r = resample(path_r + chaikin([fr["at"]] + RS1_AFTER + [q1], 3)[1:], 2.0)
-fg_r = [c["id"] for c in cps_rev if (c["s"] - s1r0) % L_rev < (s1r1 - s1r0) % L_rev]
-plen_r = cum(path_r)[-1]; sLip_r = nearest_s(path_r, S1_LIP)[1]; sLand_r = nearest_s(path_r, fr["at"])[1]
-print(f"reverse S1 Knoll drop: leaves the reverse lap at s {s1r0:.0f}, rejoins at s {s1r1:.0f}: {plen_r:.0f} m against {(s1r1 - s1r0) % L_rev:.0f} m (saves {(s1r1 - s1r0) % L_rev - plen_r:.0f} m); "
-      f"forgives CP {fg_r}; off the S1 pile's back at {RS1_REV['angle']} deg, {v_r} m/s at most: {fr}")
-bj1["rev_angle"] = RS1_REV["angle"]; bj1["rev_vmax"] = v_r
-shortcuts.append({"id": "s1r_knoll_drop", "name": "Knoll drop", "direction": "reverse", "path": [round(v, 2) for q in path_r for v in q], "half_width_m": 3.5,
-                  "entry_inset_m": 22.0, "entry_margin_m": 1.5, "forgives": fg_r, "ai_speed": 18.0,
-                  "ai_profile": [round(v, 1) for v in (0.0, 14.0, 20.0, 12.0, sLip_r - 14.0, 12.0, sLip_r + 1.0, 14.0, sLand_r + 2.0, 12.0, plen_r - 12.0, 14.0)]})
+s_plume = SR(PP); s_pland = SR(CT)
+print(f"reverse lap {L_rev:.0f} m, gate at s {gate_s_rev}; plume s {s_plume:.0f}, landing s {s_pland:.0f}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps_rev))
+def flat(p): return [round(v, 2) for q in p for v in q]
+def forgiven_rev(sa, sb): return [c["id"] for c in cps_rev if (c["s"] - sa) % L_rev < (sb - sa) % L_rev]
+
+# Round 40 (A6, BUG-005: "lets put a new shortcut here straight through to the next checkpoint. Just make an obstacle so it is a bit of a
+# challenge but saves time if you dont crash"): THE CREST CUT, reverse only. Off Chastain Ridge Drive at the crest just past CP3, north
+# straight down the slope through the gap between houses 1245 and 1076 (5.5 m: 1245 moved 1.6 m west, MapBuilder.Round40.cs), through the one gap in a boulder wall terracing the back
+# yards (a real thing on a slope this steep: it runs from house 946's wall to past 767, so there is no way round it), between houses
+# 1014 and 1092 and down onto the drive past CP4. The obstacle is threading the two gaps at speed on a 27 % slope: a clean run saves
+# time, a boulder or a wall costs more. The hint at the turn-off: worn tire tracks into the gap between the houses.
+CREST_CTRL = [(3101.0, 621.0), (3096.5, 626.0), (3092.2, 632.0), (3090.95, 636.5), (3090.95, 648.0), (3088.6, 656.0), (3083.6, 664.0),
+              (3081.5, 671.5), (3080.8, 681.0), (3083.0, 692.0), (3091.0, 701.0)]
+CREST_JOIN = (3103.0, 705.5)
+CREST_WALL = dict(z=671.5, x0=3047.0, x1=3136.0, gap=(3081.5, 5.2), r=(0.65, 0.95), step=1.55)   # Round 40: below the steepest drop (z 650-660), its gap over the one between 1014 and 1092   # the boulder wall: its line, the gap (middle, width), the boulders' sizes
+s_cr0 = SR(CREST_CTRL[0]); s_cr1 = SR(CREST_JOIN)
+crest = resample(chaikin([point_at(lap_r, s_cr0, Cr)] + CREST_CTRL[1:] + [point_at(lap_r, s_cr1, Cr)], 2), 2.0)
+fg_cr = forgiven_rev(s_cr0, s_cr1)
+boulders = []
+x_ = CREST_WALL["x0"]; k_ = 0
+while x_ <= CREST_WALL["x1"]:
+    g0, gw = CREST_WALL["gap"]
+    if abs(x_ - g0) > gw / 2 + 0.8 and not any(near_box(i, (x_, CREST_WALL["z"]), 2.0) and poly_dist((x_, CREST_WALL["z"]), ring) < 1.2 for i, ring, h, kind in B):
+        r_ = CREST_WALL["r"][0] + (CREST_WALL["r"][1] - CREST_WALL["r"][0]) * ((k_ * 0.618) % 1.0)
+        boulders.append([round(x_, 2), round(CREST_WALL["z"] + 0.35 * math.sin(k_ * 1.7), 2), round(r_, 2)])
+    x_ += CREST_WALL["step"]; k_ += 1
+plen_cr = cum(crest)[-1]
+_cc = cum(crest); _gy = [ground(*q) for q in crest]
+_off_road = [nearest_s(lap_r, q)[0] > 9.0 for q in crest]   # never on the drive: the strip and its blend stay 9 m off the lap's line
+_keep = [k for k in range(len(crest)) if _off_road[k]]
+crest_g = [crest[k] for k in _keep]
+crest_gy = [round(sum(_gy[j] * math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(crest))) / sum(math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(crest))), 2) for k in _keep]
+print(f"crest cut's line graded: {len(crest_g)} points (from {_cc[_keep[0]]:.0f} to {_cc[_keep[-1]]:.0f} m along it), the ground moved by up to {max(abs(a - _gy[k]) for k, a in zip(_keep, crest_gy)):.2f} m")
+print(f"crest cut: leaves the reverse lap at s {s_cr0:.0f}, rejoins at s {s_cr1:.0f}: {plen_cr:.0f} m against {(s_cr1 - s_cr0) % L_rev:.0f} m on the lap; forgives CP {fg_cr}; "
+      f"{len(boulders)} boulders in the wall at z {CREST_WALL['z']}, its gap at x {CREST_WALL['gap'][0]} ({CREST_WALL['gap'][1]} m); buildings within 3 m of its line: "
+      f"{ {i: round(min(poly_dist(q, ring) for q in crest), 1) for i, ring, h, kind in B if near_box(i, crest[len(crest) // 2], 60) and min(poly_dist(q, ring) for q in crest) < 3.0} }")
+st_cr = cum(crest)
+def st_at(path, q): return nearest_s(path, q)[1]
+sGap0, sGap1, sWall, sGap2 = st_at(crest, (3090.95, 637.0)), st_at(crest, (3090.95, 648.0)), st_at(crest, (CREST_WALL["gap"][0], CREST_WALL["z"])), st_at(crest, (3080.3, 681.0))
+
+# Round 40 (A7, BUG-007: "you can drive through the front doors of the church, wind you way up top and jump from the steeple area"):
+# THE CHURCH LEAP, reverse only. Off Canton Road southbound just past the start, across the church's front lawn, in through its front
+# doors (they break) under the steeple; inside (MapBuilder.ChurchClimb.cs): the aisle west past the pews, up onto the chancel, round the
+# altar and up a ramp along the north wall, round onto the gallery under the steeple and up it to the big window in the south wall at the
+# tower's foot (glass that breaks); out of it on an aimed flight (GuidedLaunch / GuidedFlight) over the church's south wing, church 75 and
+# the garage row, curving round onto New Chastain Road on the race line heading west. Every number of the inside is here (the builder
+# reads them): the path in plan, its height over the church's floor along it, the deck's width.
+CH = dict(door=(3535.0, 576.95), door_w=4.4, door_h=4.2, window=(3529.4, 3534.6), lane=4.6, lip_h=7.0)
+CH_APPROACH = [(3567.0, 618.0), (3562.5, 606.0), (3555.0, 594.0), (3547.0, 584.5), (3540.5, 578.6)]
+def arc(c, r, a0, a1, n):   # points c + r (sin a, cos a), a from a0 to a1 degrees
+    return [(c[0] + r * math.sin(math.radians(a0 + (a1 - a0) * k / n)), c[1] + r * math.cos(math.radians(a0 + (a1 - a0) * k / n))) for k in range(n + 1)]
+UC, UR, KC, KR = (3519.6, 578.6), 3.6, (3528.0, 578.6), 3.6
+CH_INSIDE = [(3535.0, 576.95), (3532.0, 576.6), (3528.0, 575.3), (3523.0, 575.0)] + arc(UC, UR, 180.0, 360.0, 12)[0:] + [(3523.5, 582.2)] + arc(KC, KR, 0.0, 90.0, 8) + [(3531.6, 576.0), (3531.8, 572.5), (3531.9, 569.6)]
+# the heights over the floor along the inside (station from the door, height): flat to the chancel's ramp, up 1 m onto it, round the altar
+# climbing, up the ramp along the north wall, round the corner, up the gallery to the lip (its last 3 m steeper: a kicker)
+ins = resample(CH_INSIDE, 0.5); cin = cum(ins)
+s_u0 = st_at(ins, (3519.6, 575.0)); s_u1 = st_at(ins, (3519.6, 582.2)); s_k0 = st_at(ins, (3528.0, 582.2)); s_k1 = st_at(ins, (3531.6, 578.6)); s_lip = cin[-1]
+CH_Y = [(0.0, 0.0), (st_at(ins, (3528.5, 575.3)), 0.0), (st_at(ins, (3522.6, 575.0)), 1.0), (s_u0, 1.0), (s_u1, 2.2), (s_k0, 4.4), (s_k1, 5.0), (s_lip - 3.0, 6.0), (s_lip, CH["lip_h"])]
+# the flight: from the lip (heading south) over the south wing (its ridge 15.5 m over the floor, 14 m on) to the race line on New Chastain
+# Road heading west, past the junction; aimed: the vehicle's speed along its curve is what lands it there at this angle
+CH_LAND = (3440.0, None)   # x on the race line, just past CP2 (it forgives CP1 and CP2)
+CH_ANGLE = 38.0   # the least that clears the south wing's ridge with room (the scan below)
+CH_GRAVITY = 1.6  # the flight falls this much heavier than anything else (GuidedFlight): the same curve, a quicker flight
+ring74 = next(ring for i, ring, h, kind in B if i == 74)
+floor74 = max(ground(*q) for q in resample(ring74 + [ring74[0]], 1.0)) - 1.1   # about where the map build puts the church's floor
+lipP = ins[-1]; lip_y = floor74 + CH["lip_h"]
+s_land = SR((CH_LAND[0], 404.0)); landP = point_at(lap_r, s_land, Cr); _f = point_at(lap_r, s_land + 3.0, Cr)
+landDir = ((_f[0] - landP[0]) / math.dist(landP, _f), (_f[1] - landP[1]) / math.dist(landP, _f))
+lipDir = ((ins[-1][0] - ins[-3][0]) / math.dist(ins[-1], ins[-3]), (ins[-1][1] - ins[-3][1]) / math.dist(ins[-1], ins[-3]))
+def hermite(P0, T0, P1, T1, n):
+    out = []
+    for k in range(n + 1):
+        t = k / n; h00, h10, h01, h11 = 2 * t ** 3 - 3 * t * t + 1, t ** 3 - 2 * t * t + t, -2 * t ** 3 + 3 * t * t, t ** 3 - t * t
+        out.append((h00 * P0[0] + h10 * T0[0] + h01 * P1[0] + h11 * T1[0], h00 * P0[1] + h10 * T0[1] + h01 * P1[1] + h11 * T1[1]))
+    return out
+chord = math.dist(lipP, landP)
+fl = hermite(lipP, (lipDir[0] * chord, lipDir[1] * chord), landP, (landDir[0] * chord, landDir[1] * chord), 200)
+Lfl = cum(fl)[-1]; thC = math.radians(CH_ANGLE); uC = ballistic_u(Lfl, ground(*landP) - lip_y, thC) * math.sqrt(CH_GRAVITY); vyC = uC * math.tan(thC)
+roofs_c = {}; cfl = cum(fl)
+for k_, q in enumerate(fl):
+    tt = cfl[k_] / uC; y = lip_y + vyC * tt - 4.905 * tt * tt
+    for i, ring, h, kind in B:
+        if near_box(i, q, 1.0) and poly_dist(q, ring) < 0.5:
+            roofs_c[i] = round(min(roofs_c.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
+print(f"church leap: the lip ({lipP[0]:.1f}, {lipP[1]:.1f}) about {lip_y:.1f} m ({CH['lip_h']} m over the floor at about {floor74:.1f}); the flight {Lfl:.0f} m along its curve "
+      f"(chord {chord:.0f} m, from bearing {math.degrees(math.atan2(lipDir[0], lipDir[1])) % 360:.0f} to {math.degrees(math.atan2(landDir[0], landDir[1])) % 360:.0f}) at {CH_ANGLE} deg: "
+      f"{uC:.1f} m/s along it, {vyC:.1f} up, {Lfl / uC:.2f} s, {vyC * vyC / (19.62 * CH_GRAVITY):.1f} m up; lands at ({landP[0]:.1f}, {landP[1]:.1f}) {ground(*landP):.1f} m, lap s {s_land:.0f}; roofs under it {roofs_c}")
+for th_ in (20, 25, 30, 35, 40, 44):
+    u_ = ballistic_u(Lfl, ground(*landP) - lip_y, math.radians(th_)); vy_ = u_ * math.tan(math.radians(th_))
+    k_r = next(k for k, q in enumerate(fl) if q[1] <= 555.0); tt = cfl[k_r] / u_; yr = lip_y + vy_ * tt - 4.905 * tt * tt
+    print(f"    at {th_} deg: {u_:.1f} m/s along, {Lfl / u_:.2f} s, over the south wing's ridge by {yr - (floor74 + 15.5):+.1f} m")
+s_ch0 = SR(CH_APPROACH[0]); s_ch1 = s_land + 30.0
+after_c = resample([point_at(lap_r, s_land + k_ * 2.0, Cr) for k_ in range(16)], 2.0)
+church = resample(chaikin([point_at(lap_r, s_ch0, Cr)] + CH_APPROACH[1:] + [CH["door"]], 2), 2.0)[:-1] + ins[::2] + [ins[-1]] + fl[2::4] + [landP] + after_c[1:]
+fg_ch = forgiven_rev(s_ch0, s_ch1)
+plen_ch = cum(church)[-1]
+print(f"church leap: leaves the reverse lap at s {s_ch0:.0f}, rejoins at s {s_ch1:.0f}: {plen_ch:.0f} m against {(s_ch1 - s_ch0) % L_rev:.0f} m on the lap; forgives CP {fg_ch}")
+sDoor = st_at(church, CH["door"]); sLipC = st_at(church, lipP); sLandC = st_at(church, landP)
+shortcuts.append({"id": "rc_crest_cut", "name": "Crest cut", "direction": "reverse", "path": flat(crest), "half_width_m": 3.0,
+                  "entry_inset_m": 14.0, "entry_margin_m": 1.0, "forgives": fg_cr, "ai_speed": 17.0,
+                  # slow through the gap between the houses, slower through the boulders' gap, then on down
+                  "ai_profile": [round(v, 1) for v in (0.0, 18.0, sGap0 - 2.0, 17.0, sGap1, 17.0, sWall - 3.0, 16.0, sWall + 2.0, 16.0, sGap2, 15.0, plen_cr - 8.0, 16.0)],
+                  # a sloppy try: too fast through the gaps (a wall, a boulder)
+                  "ai_slip": 0.22, "ai_slip_profile": [round(v, 1) for v in (0.0, 21.0, sGap0 - 2.0, 21.0, sGap1, 20.0, sWall - 3.0, 20.0, sWall + 2.0, 19.0, plen_cr - 8.0, 19.0)]})
+shortcuts.append({"id": "rch_church_leap", "name": "Church leap", "direction": "reverse", "path": flat(church), "half_width_m": 3.0,
+                  "entry_inset_m": round(max(10.0, sDoor - 8.0), 1), "entry_margin_m": 1.5, "forgives": fg_ch, "ai_speed": 16.0,
+                  "ai_profile": [round(v, 1) for v in (0.0, 16.0, sDoor - 4.0, 14.0, sDoor + s_u0 - 4.0, 13.0, sDoor + s_u1, 13.0, sDoor + s_k0 - 2.0, 13.0, sDoor + s_k1, 12.0, sLipC + 1.0, 12.0, sLandC + 2.0, 20.0, plen_ch - 6.0, 22.0)],
+                  "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 17.0, sDoor - 4.0, 16.0, sDoor + s_u0 - 4.0, 15.0, sDoor + s_u1, 14.0, sDoor + s_k0 - 2.0, 14.0, sDoor + s_k1, 12.0, sLipC + 1.0, 10.0, sLandC + 2.0, 20.0, plen_ch - 6.0, 22.0)]})
+church_data = {"building": 74, "door": [CH["door"][0], CH["door"][1]], "door_w": CH["door_w"], "door_h": CH["door_h"], "window": list(CH["window"]), "lane": CH["lane"],
+               "inside": flat(ins), "inside_y": [round(v, 2) for q in CH_Y for v in q], "lip": [round(lipP[0], 2), round(lipP[1], 2)], "lip_dir": [round(lipDir[0], 5), round(lipDir[1], 5)],
+               "target": [round(landP[0], 2), round(landP[1], 2)], "target_dir": [round(landDir[0], 5), round(landDir[1], 5)], "angle_deg": CH_ANGLE, "gravity": CH_GRAVITY,
+               "altar": [UC[0], UC[1]], "corner": [KC[0], KC[1]], "turn_r": UR}
 # the reverse race layer
-ai_zones_rev = [{"id": "ridge_climb", "s0": round(s_cfoot - 45.0, 1), "s1": round(s_clip + 1.0, 1), "speed": 17.0}]
-reset_skip_rev = [{"id": "ridge_climb", "s0": round(s_cfoot - 3.0, 1), "s1": round(s_cland + 4.0, 1), "to_s": round(s_cland + 30.0, 1)}]
-closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (path_r,), lambda r, contact: False)
+ai_zones_rev = [{"id": "manhole_plume", "s0": round(s_plume - 90.0, 1), "s1": round(s_plume + 1.0, 1), "speed": 25.0}]
+reset_skip_rev = [{"id": "manhole_plume", "s0": round(s_plume - 3.0, 1), "s1": round(s_pland + 4.0, 1), "to_s": round(s_pland + 30.0, 1)}]
+closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (crest, church[:int(sLipC / 2.0) + 1], after_c), lambda r, contact: False)
+# the barrier across the northwest-bound carriageway past the plume: 40 m on (12 m past the cover it stood in the plume's first meters)
+for c in closures_rev:
+    if c["osm_id"] == 290282527 and math.dist((c["x"], c["z"]), PP) < 35.0:
+        q = point_at(NWc, PLUME_S + 40.0, cNW); q2 = point_at(NWc, PLUME_S + 42.0, cNW); c["x"], c["z"] = round(q[0], 2), round(q[1], 2)
+        c["dx"], c["dz"] = round((q2[0] - q[0]) / math.dist(q, q2), 4), round((q2[1] - q[1]) / math.dist(q, q2), 4); c["arc_m"] = 40.0
+        print(f"  (the barrier on New Chastain Road past the plume moved 40 m on, to ({q[0]:.0f}, {q[1]:.0f}))")
 print(f"reverse closures: {len(closures_rev)}; dead-end stubs not barred: {len(stubs_rev)}")
 for c in closures_rev: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}), road width {c['width_m']:.0f} m")
-climb_bj = {"id": "CLIMB", "look": "dirtpile", "s_lip": -1.0, "lip": [round(CLIMB_LIP[0], 2), round(CLIMB_LIP[1], 2)], "dir": [round(dC[0], 5), round(dC[1], 5)],
-            "height": round(climb_y - ground(*CLIMB_LIP), 2), "lip_y": round(climb_y, 3), "angle_deg": CLIMB["angle"], "ramp_m": CLIMB["ramp"], "width": CLIMB["width"],
-            "land_from": round(D_c - 12.0, 1), "land_to": round(D_c + 25.0, 1), "vmin": CLIMB_SPEED, "vmax": CLIMB_SPEED, "design": CLIMB_SPEED, "back_angle": CLIMB["back"],
-            "flights": {str(CLIMB_SPEED): [round(t_l, 2), round(D_c, 1), round((CLIMB_SPEED * math.sin(th)) ** 2 / 19.62, 1)]}}
+plume = {"id": "RP", "at": [round(PP[0], 2), round(PP[1], 2)], "y": round(PP_y, 2), "dir": [round(PDIR[0], 5), round(PDIR[1], 5)], "right_m": PLUME_RIGHT_M, "left_m": PLUME_LEFT_M,
+         "half_len_m": PLUME_HALF_LEN_M, "target": [round(CT[0], 2), round(CT_y, 2), round(CT[1], 2)], "target_dir": [round(-dR[0], 5), round(-dR[1], 5)], "angle_deg": PLUME_ANGLE, "trigger_m": PLUME_TRIGGER_M}
+for b_ in (bj1, bj2): b_["clues_hidden_reverse_of"] = SETTINGS["name"]
 
 # ---------------------------------------------------------------- the world pieces (Data/tracks/chastain_ridge.json)
 rbj = {"id": "RL", "look": "dirtpile", "s_lip": -1.0, "lip": [round(RL[0], 2), round(RL[1], 2)], "dir": [round(dR[0], 5), round(dR[1], 5)], "height": RIDGE["height"],
@@ -503,25 +601,30 @@ def zone(L, d, a, b, half_a, half_b):
 landings = [{"id": "RL", "poly": zone(RL, dR, rf["dist"] - 30.0, rf["dist"] + 45.0, 14.0, 20.0)},
             {"id": "S1", "poly": zone(S1_LIP, d1, 8.0, f1["dist"] + 30.0, 7.0, 9.0)},
             {"id": "S2", "poly": zone(S2_LIP, d2, 8.0, f2["dist"] + 14.0, 7.0, 9.0)},
-            {"id": "CLIMB", "poly": zone(CLIMB_LIP, dC, D_c - 12.0, D_c + 24.0, 6.0, 8.0)}]
+            {"id": "PLUME", "poly": zone(PP, dP, D_p - 12.0, D_p + 24.0, 6.0, 8.0)},   # Round 40: the plume's landing (as the climb's was)
+            {"id": "CHURCH", "poly": zone(landP, landDir, -25.0, 35.0, 9.0, 9.0)}]      # Round 40: the church leap's, on New Chastain Road
 def flat(p): return [round(v, 2) for q in p for v in q]
 clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0] + dR[0] * (rf["dist"] - 45.0), RL[1] + dR[1] * (rf["dist"] - 45.0)), (RL[0] + dR[0] * (rf["dist"] + 30.0), RL[1] + dR[1] * (rf["dist"] + 30.0))]), "half": 9.0},
          {"id": "RL run-up and pile", "points": flat([RIDGE_RUNUP_FROM, RL]), "half": 6.0},
          {"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "half": 7.0},
          {"id": "S1", "points": flat(p1[::3] + [p1[-1]]), "half": 6.0},
          {"id": "S2", "points": flat(p2[::3] + [p2[-1]]), "half": 6.0},
-         {"id": "RC run-up and pile", "points": flat([CLIMB_RUNUP[-1], CF, CLIMB_LIP]), "half": 6.0},
+         {"id": "the plume's flight, its lower part", "points": flat([(PP[0] + dP[0] * k_, PP[1] + dP[1] * k_) for k_ in clear_p[::4]] + [(PP[0] + dP[0] * clear_p[-1], PP[1] + dP[1] * clear_p[-1])]), "half": 6.0},
          {"id": "RC the landing on the dead end", "points": flat([CT, RF_, (3112.0, 621.0)]), "half": 6.0},
-         {"id": "S1 backward (Knoll drop)", "points": flat(path_r[::3] + [path_r[-1]]), "half": 6.0}]
+         {"id": "the crest cut", "points": flat(crest[::2] + [crest[-1]]), "half": 4.0},
+         {"id": "the church leap's way to the doors", "points": flat(church[:int(sDoor / 2.0) + 1]), "half": 4.0}]
 # the run-out past the landing: a vehicle that lands across the road at speed runs on into the woods east of it; the trees there
 # snap when hit (TreeField.breakable) instead of stopping it dead (Round 33 check: 4 of 11 vehicles stopped on trunks 30-40 m past the road)
 breaks = [{"id": "RL run-out", "points": flat([(RL[0] + dR[0] * (rf["dist"] + 6.0), RL[1] + dR[1] * (rf["dist"] + 6.0)), (RL[0] + dR[0] * (rf["dist"] + 75.0), RL[1] + dR[1] * (rf["dist"] + 75.0))]), "half": 22.0},
           # and the woods along the road's east side beyond it, where a vehicle turning back to the road after the landing runs
           {"id": "RL run-out along the road", "points": flat([(Pl[0] + 32.0, Pl[1] + 4.0), (Pl[0] + 52.0, Pl[1] - 60.0)]), "half": 18.0}]
 track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/mapgen/make_ridge_route.py (MapBuilder.ChastainRidge.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [rbj, bj1, bj2, climb_bj], "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
+         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "church": church_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
          "grades": [{"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "y": [round(ground(*HOLLOW_RAMP[0]), 2), round(ground(*HOLLOW_RAMP[1]), 2)], "half": 4.0, "blend": 5.0,
-                     "keep_off": flat(NC), "keep_off_m": 5.0}]}
+                     "keep_off": flat(NC), "keep_off_m": 5.0},
+                    # Round 40 (A6): the crest cut's line through the back yards smoothed along it (a Gaussian of the ground over 5 m: the slope stays,
+                    # the lumps that threw a vehicle at speed go), 3 m wide, blending back over 2 m; from the drive's edge to the drive's edge
+                    {"id": "the crest cut's line", "points": flat(crest_g), "y": crest_gy, "half": 1.5, "blend": 2.0}]}
 route = dict(SETTINGS)
 route.update({
     "source": "Tools/mapgen/make_ridge_route.py from Data/map.json. Coordinates are map meters (= Unity x, z); heights come from the world.",
@@ -531,6 +634,7 @@ route.update({
     # Round 39 (C): the reverse lap of its own (RaceRoute: loop_rev and the *_rev fields)
     "lap_length_rev_m": round(L_rev, 1), "loop_rev": flat(lap_r), "gate_s_rev": gate_s_rev, "checkpoints_rev": cps_rev, "junctions_rev": merged_rev,
     "closures_rev": closures_rev, "ai_zones_reverse": ai_zones_rev, "reset_skip_rev": reset_skip_rev,
+    "plumes_rev": ["RP"],   # Round 40: the manhole plume blows in a reverse race (ManholePlume)
 })
 os.makedirs(os.path.dirname(OUT_TRACK), exist_ok=True)
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)
