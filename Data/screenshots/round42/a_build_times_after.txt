@@ -1,0 +1,43 @@
+Build Map: 654.1 s
+    112.3 s  Network
+     89.9 s  Rest
+     85.6 s  Neighborhood
+     84.1 s  Roads
+     49.9 s  Businesses
+     29.7 s  Hydrants
+     28.3 s  Driveways
+     23.2 s  Trees
+     16.2 s  StuntPark
+     14.7 s  Life
+     11.8 s  Pipes
+     11.1 s  MouthSweep
+      9.1 s  CreekTrack
+      9.1 s  CarveWaterBeds and BuryCulvert
+      8.2 s  GradeNewChastainMedian
+      7.4 s  BuildTerrain
+      7.1 s  BuildSky
+      6.9 s  Shortcuts
+      6.7 s  hood.RegradeAndReport
+      6.5 s  PlanBusinesses and Round34Drives
+      4.4 s  EditorSceneManager.SaveScene
+      4.1 s  MapPicture
+      3.6 s  ChurchCrypt
+      3.3 s  CoursonSwim
+      3.1 s  ChastainLakes
+      3.0 s  StuntPark plan
+      2.8 s  Ridge
+      2.7 s  ReportTreesOnLines
+      2.3 s  ShoppingCenter
+      2.0 s  SmoothRampSeams
+      1.5 s  PlanPipes
+      0.8 s  GradeCreekTrack
+      0.5 s  GameLayer
+      0.4 s  Water
+      0.3 s  PlanCoursonSwim
+      0.3 s  Buildings
+      0.3 s  LoadRest
+      0.3 s  RoadData
+      0.3 s  Player
+      0.1 s  SmoothBridgeEnds
+      0.0 s  AssetDatabase.SaveAssets and the step record
+      0.0 s  GradeRidge

@@ -625,9 +625,15 @@ namespace ChastainRush
         static PhysicsMaterial rampMaterial;
         static PhysicsMaterial RampMaterial()
         {
-            if (rampMaterial) return rampMaterial;
-            rampMaterial = new PhysicsMaterial("ShortcutRamp") { dynamicFriction = 0f, staticFriction = 0f, bounciness = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounceCombine = PhysicsMaterialCombine.Minimum };
-            rampMaterial = GenAsset(rampMaterial, GeneratedDir + "/ShortcutRamp.physicMaterial");
+            // Round 42: only ever the asset as stored (the object made here stopped being it partway through a full build: the crypt's
+            // colliders, made after the houses' assets were saved, were saved with no material; a quick build gave them this one)
+            // and never made again over itself (that leaves what was given the old one with nothing)
+            if (rampMaterial && AssetDatabase.Contains(rampMaterial)) return rampMaterial;
+            string path = GeneratedDir + "/ShortcutRamp.physicMaterial";
+            var fresh = new PhysicsMaterial("ShortcutRamp") { dynamicFriction = 0f, staticFriction = 0f, bounciness = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounceCombine = PhysicsMaterialCombine.Minimum };
+            var stored = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(path);
+            if (stored) { EditorUtility.CopySerialized(fresh, stored); stored.name = "ShortcutRamp"; EditorUtility.SetDirty(stored); rampMaterial = stored; }
+            else { AssetDatabase.CreateAsset(fresh, path); rampMaterial = fresh; }
             return rampMaterial;
         }
 

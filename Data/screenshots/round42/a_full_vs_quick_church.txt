@@ -1,0 +1,9 @@
+a: local/round42/dump_f3.txt (46173 lines)
+b: local/round42/dump_q4.txt (46173 lines)
+box: 3490,500,3560,620
+outside the box: 4 differences (4 objects, 0 terrain blocks)
+  changed: O /Free roam activities (game layer)/Mailbox run
+  changed: O /Free roam activities (game layer)/Shop row smash
+  changed: O /World/Hydrants (Round 36)/HydrantLinks
+  changed: O /World/Neighborhoods/HouseColliders/sc roof house 1092
+inside the box: 0 differences (0 objects, 0 terrain blocks)

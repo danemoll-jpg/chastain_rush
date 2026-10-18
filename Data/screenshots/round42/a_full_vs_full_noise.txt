@@ -1,0 +1,7 @@
+a: local/round42/dump_f1b.txt (46173 lines)
+b: local/round42/dump_f2.txt (46173 lines)
+outside the box: 3 differences (3 objects, 0 terrain blocks)
+  changed: O /Free roam activities (game layer)/Shop row smash
+  changed: O /Free roam activities (game layer)/Street lamp smash
+  changed: O /World/Hydrants (Round 36)/HydrantLinks
+inside the box: 0 differences (0 objects, 0 terrain blocks)

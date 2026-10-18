@@ -18,7 +18,8 @@ namespace ChastainRush
     public static class SceneDump
     {
         static readonly CultureInfo CI = CultureInfo.InvariantCulture;
-        static readonly Regex InstanceIds = new Regex("\"(instanceID|m_FileID|fileID)\":-?\\d+", RegexOptions.Compiled);
+        // object references inside a component's JSON (ids and asset GUIDs): what they point at is compared apart, by place or contents (SceneRefs)
+        static readonly Regex InstanceIds = new Regex("\"(instanceID|m_FileID|fileID)\":-?\\d+|\"guid\":\"[0-9a-f]*\"", RegexOptions.Compiled);
 
         public static void Run()
         {

@@ -1,0 +1,22 @@
+Round 42 check, 2026-10-18 14:21, the exe, 1280 x 720, muted.
+
+=== B1: THE CHURCH'S WINDOWS (Free Roam): in through each window beside the doors and on down the stair
+  Street Classic   the south window: 1 panes broken; down the stair at (3517.3, 328.31, 577.3), slowest 8.6 m/s
+  Street Classic   the north window: 1 panes broken; down the stair at (3517.4, 328.32, 576.6), slowest 8.6 m/s
+  Drifter Twin     the south window: 1 panes broken; down the stair at (3517.4, 328.18, 577.2), slowest 8.6 m/s
+  Drifter Twin     the north window: 1 panes broken; down the stair at (3517.5, 328.19, 576.7), slowest 8.7 m/s
+PASS  B1: each window breaks when driven into
+PASS  B1: in through a window, on to the aisle and down the stair (as through the doors)
+PASS  B1: the glass is whole again after a reset beside the church  -  broken before the reset 1, after 0
+
+=== B2: THE AISLE AND THE STAIR: the vehicle on what is drawn
+PASS  B2: from the doors down the stair the vehicle rides on the drawn floor (within 0.15 m of it)  -  164 samples, worst 0.01 m; down
+
+=== B3: THE MANHOLE PLUME: shut in Free Roam, blows in the reverse race
+  Free Roam the way it runs: past it at -1 m/s, through; erupted False
+  Free Roam the other way: past it at -1 m/s, through; erupted False
+PASS  B3: Free Roam, past it both ways at speed: the cover stays shut  -  erupted False, thrown 0
+PASS  B3: the reverse Chastain Ridge race: shut at the start, it blows ahead of the first racer  -  shut at the start True; it blew with the racer 79 m away
+PASS  B3: after the race it is shut
+
+7 of 7 checks passed.

@@ -1,0 +1,17 @@
+Round 42 Part A: build times on Dan's PC, 2026-10-18 (the PC was in use the whole time: the same step took 1.5 to 2 times as long from one run to the next)
+
+Full Build Map (MapBuilder.Build)            before: 1936 s (a_build_times_before.txt)   after: 897, 926, 1088, 646, 654 s (a_build_times_after.txt)
+  same result as before: the Round 41 scene and the first full build after the change differ in 3 objects only, the same 3 that differ
+  between any two full builds (a_full_vs_full_noise.txt: the free-roam activities and hydrant links list objects found in no fixed order)
+Quick build, Ridge (the roof ramp's step), no script changes, to a playable exe:   298 s wall
+  (Unity start and import 35 s, open the scene 17 s, planning about 85 s, the step 4 s, save 8 s, exe 96 s, exit)
+Quick build, church (Businesses + ChurchCrypt), B1's last change (editor code) to a playable exe: 497 s wall, of which a scene dump 16 s
+  (Unity start and editor code compile 78 s, planning about 95 s, Businesses 110 s, ChurchCrypt 4 s, exe 106 s)
+  earlier church runs: 596 s and 619 s (the game's own scripts had changed too: the exe recompiled them, 66 s)
+Area build (a box of the map): not made. The builders are map-wide (roads, houses, businesses and trees are meshes in 128 m cells
+  mixing everything there), so a box rebuild is nearly a full build; the fast path is a builder step instead (CLAUDE.md "Quick builds").
+Proof: the final full build against the quick church build (a_full_vs_quick_church.txt): inside the church's box 0 differences; outside
+  the 3 build-noise objects and house 1092's roof collider (the full build now gives it its ramp material, below; the quick build did
+  not rebuild that step).
+Found by the comparison: in a full build the frictionless "ShortcutRamp" physics material was lost by the colliders made between the
+  houses' asset save and the shortcuts (the crypt's 4 colliders, house 1092's roof): the material is now only ever the stored asset.

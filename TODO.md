@@ -124,6 +124,25 @@ B3. THE PLUME IN FREE ROAM. BUG-003 (x 3234.92 z 652.88 h 151, New Chastain Road
 
 For Dan to check (when done): the church windows and the aisle, the plume off in Free Roam; from now on, how fast fixes come.
 
+**Status (Claude, 2026-10-18): Parts A and B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round42/`.
+A DONE, target met for a one-builder fix, not for the church. Build Map is now its planning plus named steps; a full build records each step's
+   objects and terrain samples (`BuildCache/steps/`); a quick build reruns chosen steps on the saved scene, then the exe (`MapBuilder.Quick.cs`,
+   commands in CLAUDE.md "Quick builds"). Decided: steps, not a map box (the builders are map-wide; a box is nearly a full build). Quick-capable:
+   Businesses, ChurchCrypt ("church"), Ridge, Pipes. Full Build Map 32 min -> 11 to 18 min, same scene (4 report/grading loops indexed).
+   Timed (PC in use): Ridge quick to a playable exe 298 s; church quick to the exe 497 s (its Businesses step is 1 to 2 min). Proof: final full
+   build vs the quick church build, 0 differences round the church (`a_full_vs_quick_church.txt`); 3 objects differ between ANY two full builds
+   (build noise, `a_full_vs_full_noise.txt`). Times: `a_timings.txt`. Pipes is marked quick-capable but was not compared against a full build.
+   Found by the comparison and fixed: a full build left the crypt's 4 colliders and house 1092's roof without their frictionless ramp material.
+B1 DONE. A tall window (2.4 x 4.2 m, open to the floor) either side of the doors, glass that breaks, whole again after a reset; the old drawn windows
+   on that wall gone; the way in always built (a 0.3 m dip at the threshold stopped a slow car); the stair's top 3 m open at its sides (balustrade
+   and pews start 3 m back) so a car turns onto it. Check: Street Classic and Drifter Twin in through each window and down the stair, 4 of 4.
+B2 DONE. The business lot's paving was drawn through the church at the old ground (0.3 to 0.5 m over the aisle, across the stairwell:
+   `b2_before_mesh_probe.txt`); now cut out. Check: down the aisle and stair the wheels within 0.01 m of the drawn steps; pictures from Dan's spot.
+B3 DONE. The plume only in a race that arms it; Free Roam (Getaway included) never. Check: Free Roam both ways shut; reverse race blows at 79 m.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 14:19 (BUILD_INFO.txt). Commits: Part A, Part B, this status.
+For Dan to check: in through a church window and down the stair; the aisle from the doors; the plume in Free Roam at night; the crypt's walls and
+   floor now slide like the other ramps (frictionless body contact) and so does house 1092's roof: say if the crypt or the crest cut feel different.
+
 ## QUEUED rounds
 None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
 more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)

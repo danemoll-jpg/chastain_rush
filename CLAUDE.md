@@ -291,8 +291,8 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   ChurchCrypt (`church` = both), Ridge (the roof ramp included), Pipes (the network's exits' ground). A change to the planning (grading,
   the layout of houses, roads or lots) or to a step not on that list needs the full build, and so does the round's last build (the rule
   above: one full Build Map at the end). If the scene was built or saved by anything else since the record, the quick build refuses.
-  Times on Dan's PC (Round 42, with the PC in use): full Build Map 15 min (was 32); Ridge quick to a playable exe 5 min; church quick to
-  the exe about 7 to 10 min (its Businesses step is a minute or two). Step times: `Assets/Generated/build_times.txt`, `quick_times.txt`.
+  Times on Dan's PC (Round 42, with the PC in use): full Build Map 11 to 18 min (was 32); Ridge quick to a playable exe 5 min; church
+  quick to the exe about 8 min (its Businesses step is one to two minutes). Step times: `Assets/Generated/build_times.txt`, `quick_times.txt`.
   Proof a quick build matches a full one: `ChastainRush.SceneDump.Run -dumpOut <file> [-dumpDetail <text>]` (Editor batch: one line per
   object and per terrain block, with what its components refer to) of both, then `python Tools/scene_diff.py <a> <b> [--box x0,z0,x1,z1]`.
   `ChastainRush.MeshProbe.Run` takes `-probeTop <y>` (rays from under a roof).
@@ -391,6 +391,12 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 42 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A quick builds
+(`MapBuilder.Quick.cs`, "Quick builds" under Commands; the full Build Map 32 -> 11 to 18 min, same scene; `SceneDump`, `Tools/scene_diff.py`);
+B1 church 74's windows beside the doors break and lead to the stair (`MapBuilder.ChurchCrypt.cs` ChurchWindows, `Neighborhood/RestoreOnReset.cs`),
+B2 the business lot no longer drawn through the church (`DrapePoly` cut), B3 the manhole plume never in Free Roam (`ManholePlume`). The ramp
+physics material is only ever the stored asset (a full build had left the crypt's and house 1092's roof colliders without it). Check:
+`ChastainRush.exe -exeRound42 <dir> [-r42Only windows,aisle,plume] -logFile <dir>\Player.log`. Imported from Racer: nothing.
 **Round 41 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the church leap replaced by THE CRYPT
 (reverse Chastain Ridge, shortcut `rch_crypt`: church 74's north wing and spine hollow, the stair, the vaulted hall, the catacomb, the exit stair out of the bank
 into the graveyard, a real jump onto New Chastain Road; `MapBuilder.ChurchCrypt.cs`, its line and floor from `make_ridge_route.py` (track `crypt`, route
@@ -793,7 +799,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-17_21-06-21-561_3280ac` through BUG-001 (Round 41; before it `2026-10-17_12-09-19-449_081d93` through BUG-011, Round 40).
+`2026-10-18_10-15-07-747_d1c371` through BUG-003 (Round 42; before it `2026-10-17_21-06-21-561_3280ac` through BUG-001, Round 41).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

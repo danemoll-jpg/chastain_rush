@@ -1,0 +1,100 @@
+south: from (3541.0, 330.50, 572.3) to (3529.0, 330.50, 572.3)
+     0.00  y 330.467  n.y 1.00  Terrain_5_0
+     0.25  y 330.470 step +0.003  n.y 1.00  Terrain_5_0
+     0.50  y 330.473 step +0.003  n.y 1.00  Terrain_5_0
+     0.75  y 330.475 step +0.002  n.y 1.00  Terrain_5_0
+     1.00  y 330.480 step +0.004  n.y 1.00  Terrain_5_0
+     1.25  y 330.483 step +0.004  n.y 1.00  Terrain_5_0
+     1.50  y 330.489 step +0.006  n.y 1.00  Terrain_5_0
+     1.75  y 330.499 step +0.010  n.y 1.00  Terrain_5_0
+     2.00  y 330.506 step +0.007  n.y 1.00  Terrain_5_0
+     2.25  y 330.517 step +0.011  n.y 1.00  Terrain_5_0
+     2.50  y 330.528 step +0.011  n.y 1.00  Terrain_5_0
+     2.75  y 330.539 step +0.011  n.y 1.00  Terrain_5_0
+     3.00  y 330.552 step +0.014  n.y 1.00  Terrain_5_0
+     3.25  y 330.566 step +0.014  n.y 1.00  Terrain_5_0
+     3.50  y 330.581 step +0.014  n.y 1.00  Terrain_5_0
+     3.75  y 330.598 step +0.017  n.y 1.00  Terrain_5_0
+     4.00  y 330.618 step +0.021  n.y 1.00  Terrain_5_0
+     4.25  y 330.633 step +0.015  n.y 1.00  Terrain_5_0
+     4.50  y 330.652 step +0.019  n.y 1.00  Terrain_5_0
+     4.75  y 330.671 step +0.019  n.y 1.00  Terrain_5_0
+     5.00  y 330.689 step +0.018  n.y 1.00  Terrain_5_0
+     5.25  y 330.708 step +0.018  n.y 1.00  Terrain_5_0
+     5.50  y 330.474 step -0.234  n.y 0.62  Terrain_5_0
+     5.75  y 330.160 step -0.315  n.y 0.62  Terrain_5_0
+     6.00  y 330.498 step +0.338  n.y 1.00  sc church floor
+     6.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     6.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     6.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    11.00  y 331.398 step +0.900  n.y 1.00  church pew
+    11.25  y 331.398 step +0.000  n.y 1.00  church pew
+    11.50  y 330.498 step -0.900  n.y 1.00  sc church floor
+    11.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    12.00  y 331.398 step +0.900  n.y 1.00  church pew
+north: from (3541.0, 330.50, 581.7) to (3529.0, 330.50, 581.7)
+     0.00  y 330.505  n.y 1.00  Terrain_5_0
+     0.25  y 330.509 step +0.005  n.y 1.00  Terrain_5_0
+     0.50  y 330.514 step +0.005  n.y 1.00  Terrain_5_0
+     0.75  y 330.519 step +0.006  n.y 1.00  Terrain_5_0
+     1.00  y 330.525 step +0.006  n.y 1.00  Terrain_5_0
+     1.25  y 330.533 step +0.008  n.y 1.00  Terrain_5_0
+     1.50  y 330.542 step +0.009  n.y 1.00  Terrain_5_0
+     1.75  y 330.552 step +0.011  n.y 1.00  Terrain_5_0
+     2.00  y 330.564 step +0.011  n.y 1.00  Terrain_5_0
+     2.25  y 330.578 step +0.014  n.y 1.00  Terrain_5_0
+     2.50  y 330.593 step +0.016  n.y 0.99  Terrain_5_0
+     2.75  y 330.610 step +0.017  n.y 0.99  Terrain_5_0
+     3.00  y 330.630 step +0.020  n.y 1.00  Terrain_5_0
+     3.25  y 330.646 step +0.016  n.y 1.00  Terrain_5_0
+     3.50  y 330.665 step +0.018  n.y 0.99  Terrain_5_0
+     3.75  y 330.682 step +0.017  n.y 1.00  Terrain_5_0
+     4.00  y 330.695 step +0.014  n.y 1.00  Terrain_5_0
+     4.25  y 330.710 step +0.015  n.y 1.00  Terrain_5_0
+     4.50  y 330.716 step +0.006  n.y 1.00  Terrain_5_0
+     4.75  y 330.722 step +0.005  n.y 1.00  Terrain_5_0
+     5.00  y 330.726 step +0.005  n.y 1.00  Terrain_5_0
+     5.25  y 330.731 step +0.005  n.y 1.00  Terrain_5_0
+     5.50  y 330.486 step -0.245  n.y 0.61  Terrain_5_0
+     5.75  y 330.164 step -0.322  n.y 0.61  Terrain_5_0
+     6.00  y 330.498 step +0.333  n.y 1.00  sc church floor
+     6.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     6.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     6.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     7.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     8.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+     9.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.00  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.25  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.50  y 330.498 step +0.000  n.y 1.00  sc church floor
+    10.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    11.00  y 331.398 step +0.900  n.y 1.00  church pew
+    11.25  y 331.398 step +0.000  n.y 1.00  church pew
+    11.50  y 330.498 step -0.900  n.y 1.00  sc church floor
+    11.75  y 330.498 step +0.000  n.y 1.00  sc church floor
+    12.00  y 331.398 step +0.900  n.y 1.00  church pew
