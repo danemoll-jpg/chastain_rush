@@ -84,6 +84,52 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 42 (Dan, 2026-10-18 10:30; reports BUG-001 to BUG-003 of session `2026-10-18_10-15-07-747_d1c371`, read by Claude,
+after the Round 41 exe: a reverse Chastain Ridge race through the crypt, then Getaway in Free Roam at night).** Round 41 is
+reviewed. Dan asked whether to do the queued quick-rebuild round first; Claude's answer: yes, and use his three reports as its
+first real fixes. Part A, then Part B; the one-rebuild and tuning-limit rules (top of this file) apply. Short results.
+
+Part A, QUICK AREA REBUILDS (queued by Dan 2026-10-18 06:18, word for word below).
+
+**Round 42, QUICK AREA REBUILDS (queued by Dan, 2026-10-18 06:18: "yes"; start after Round 41 is reviewed).** Today any world
+   change, even one house's roof, needs the whole Build Map (about 30 min) because the whole world is generated in one pass.
+   Woodstock Rush was also generated from a real map, but once its world was accepted, later fixes and shortcuts were focused,
+   repeatable operations on the saved scene (Racer `Docs/CR015/VALIDATION.md`, `Docs/PHASE5_VALIDATION.md`,
+   `Docs/VEGETATION_VALIDATION.md`: "focused authoring", "refresh only", the whole-environment rebuild guarded) and took minutes.
+   Give this project a fast path that fits its generated pipeline (Code decides how and says why): for example Build Map limited
+   to an area (a box in map coordinates: its terrain tiles, buildings, props, road pieces and colliders rebuilt, the rest of the
+   saved scene untouched), and / or one object rebuilt by id (a house, a pipe exit, a shortcut's pieces). Rules: the full Build
+   Map stays the reference and must give the same result as the area builds that came before it (check by comparing the scene
+   outside and inside the box); nothing hand-edited in the scene (edits always go through the generator or its data). Target:
+   a small world fix (a roof collider, a ramp on a roof, the ground at a pipe exit) from change to a playable exe in under 5
+   minutes on Dan's PC. Check: time a full build, an area build and an object build; show the area build of a real fix gives
+   the same scene as a full build. Document the commands in CLAUDE.md "Commands" and use them from then on.
+
+   Order: build the fast path first and its checks; then do Part B with it (not with a full Build Map), timing each fix from
+   change to playable exe. One full Build Map at the very end proves the area builds matched it.
+
+Part B, DAN'S REPORTS, made with Part A's fast path.
+B1. THE CHURCH'S WINDOWS. BUG-001 (x 3545.85 z 570.53 h 295, at the church's broken front doors, reverse race): "cant the
+   window breakout too?" The tall windows beside the doors break when driven into (glass as the store windows, back after a
+   reset), and a vehicle going in through one reaches the aisle as through the doors. Check: driven in through a window.
+B2. SINKING IN THE AISLE. BUG-002 (x 3532.41 z 578.01 h 268, on the aisle just inside, the stair down ahead): "you sink into
+   the floor. You should be able to see the stairs". The vehicle runs below the drawn aisle (only the rider's head shows):
+   the drawn floor and the solid floor do not match (Round 41's MeshProbe). Make them one surface all the way from the doors
+   down the stair into the crypt, so the vehicle drives on what you see and the stair is in view ahead. Check: a picture from
+   Dan's spot and one on the stair, the wheels on the drawn floor.
+B3. THE PLUME IN FREE ROAM. BUG-003 (x 3234.92 z 652.88 h 151, New Chastain Road at night, Free Roam Getaway): "thought this
+   only come on during the race...i am in free roam". Round 40 decided it blows in Free Roam too; Dan expected race only. The
+   manhole plume only in the reverse Chastain Ridge race; in Free Roam the cover stays shut. (Code only: no map build.)
+   Check: Free Roam past it both ways at speed, shut; a reverse race, it blows.
+
+For Dan to check (when done): the church windows and the aisle, the plume off in Free Roam; from now on, how fast fixes come.
+
+## QUEUED rounds
+None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
+more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
+
+## Previous delivery 1 (newest): Round 41
+**Reviewed: driven by Dan 2026-10-18 10:15 (a reverse Chastain Ridge race through the crypt and Getaway; his notes are Round 42).**
 **Round 41 (Dan, 2026-10-17 21:17; report BUG-001 of session `2026-10-17_21-06-21-561_3280ac`, read by Claude, after the
 Round 40 exe: the reverse Chastain Ridge (best lap 0:59.627) and Free Roam at dusk).** Round 40 is reviewed. Dan: "Getaway seemed
 to work as I expected" (no change). Parts A to C in order; rebuild into `Builds/ChastainRush/` and commit after each; short
@@ -146,24 +192,7 @@ C DONE. BF, X_W20, X_W11 (BUG-001), X_BRIDGE, X_STREAM get X_SHOPS's `Retaining`
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 07:49 (BUILD_INFO.txt). A commit per part.
 For Dan to check: the crypt flat out (time on a bike), its graveyard jump, the crest roof ramp (a bike's landing), the five exits (X_STREAM's mouth up close).
 
-## QUEUED rounds
-**Round 42, QUICK AREA REBUILDS (queued by Dan, 2026-10-18 06:18: "yes"; start after Round 41 is reviewed).** Today any world
-change, even one house's roof, needs the whole Build Map (about 30 min) because the whole world is generated in one pass.
-Woodstock Rush was also generated from a real map, but once its world was accepted, later fixes and shortcuts were focused,
-repeatable operations on the saved scene (Racer `Docs/CR015/VALIDATION.md`, `Docs/PHASE5_VALIDATION.md`,
-`Docs/VEGETATION_VALIDATION.md`: "focused authoring", "refresh only", the whole-environment rebuild guarded) and took minutes.
-Give this project a fast path that fits its generated pipeline (Code decides how and says why): for example Build Map limited
-to an area (a box in map coordinates: its terrain tiles, buildings, props, road pieces and colliders rebuilt, the rest of the
-saved scene untouched), and / or one object rebuilt by id (a house, a pipe exit, a shortcut's pieces). Rules: the full Build
-Map stays the reference and must give the same result as the area builds that came before it (check by comparing the scene
-outside and inside the box); nothing hand-edited in the scene (edits always go through the generator or its data). Target:
-a small world fix (a roof collider, a ramp on a roof, the ground at a pipe exit) from change to a playable exe in under 5
-minutes on Dan's PC. Check: time a full build, an area build and an object build; show the area build of a real fix gives
-the same scene as a full build. Document the commands in CLAUDE.md "Commands" and use them from then on.
-None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
-more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
-
-## Previous delivery 1 (newest): Round 40
+## Previous delivery 2: Round 40
 **Reviewed: driven by Dan 2026-10-17 21:06 (the reverse Chastain Ridge and Free Roam; his notes are Round 41; Getaway "worked as I expected").**
 **Round 40 (Dan, 2026-10-17 12:31; reports BUG-001 to BUG-011 of session `2026-10-17_12-09-19-449_081d93`, read by Claude,
 after the Round 39 exe: a reverse Chastain Ridge race on the Drifter Twin, finished 3rd, then Free Roam).** Round 39 is
@@ -282,7 +311,7 @@ Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 
 For Dan to check: the plume from BUG-001's spot; the crest cut flat out; the church leap (is a break-even show line OK, or should it land further on?);
    Canton Road's lines at Worley Drive; New Chastain's median; the Canton Road cruisers; houses 802 and 594. Still his: the police, the X_SHOPS pipe.
 
-## Previous delivery 2: Round 39
+## Previous delivery 3: Round 39
 **Reviewed: driven by Dan 2026-10-17 12:09 to 12:29 (a reverse Chastain Ridge race and Free Roam; his notes are Round 40; the police and the X_SHOPS pipe not yet checked).**
 **Round 39 (Dan, 2026-10-17 03:30; reports BUG-001 to BUG-005 of session `2026-10-17_03-04-04-461_b78d3f`, read by Claude,
 after the Round 38 exe: Free Roam on the Drifter Twin).** Round 38 is reviewed. Dan is asleep while this runs: a long round
@@ -443,100 +472,6 @@ Imported from Racer: GetawayChase, CopDriver, RoadNet, PoliceChase, SpeedPatrol,
 For Dan to check: Chastain Corner and Glen Lane, the X_SHOPS pipe, the Courson pool, walkers and dogs, the reverse Ridge and its climb, Getaway on
    Easy (can you lose them?), Speed Patrol, hidden cruisers, Cop vs Runner, at 3840 x 2160 (frame rates here are 1280 x 720).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 10:31 (BUILD_INFO.txt); a final smoke run on it passed 7 of 7 (`round39/d/final_check.txt`).
-
-## Previous delivery 3: Round 38
-**Reviewed: driven by Dan 2026-10-17 03:04 to 03:19 (Free Roam on the Drifter Twin; his notes are Round 39).**
-**Round 38 (Dan, 2026-10-16 21:34; report BUG-001 of session `2026-10-16_21-19-50-140_b75298`, read by Claude, after the
-Round 37 exe).** Round 37 is reviewed (Dan: the split-screen AI player 2 is only for testing, "No one is going to be splitting
-the screen with AI"; he missed START at first, no change asked). Dan picked this round from Claude's list: "AI stunt rivals,
-Life in the world, More inside the stores, The Bank part of stunt course, Smashing through things should count for your
-stunts". Parts A to E in order; rebuild into `Builds/ChastainRush/` and commit after each; short results (CLAUDE.md
-"Process"). Decide design questions yourself and say what you decided. Racer (`C:\Users\danmo\Racer`) is read-only; port its
-finished code, list what came.
-
-Part A, THE BANK IN THE STUNT PARK. BUG-001 (x 3413.02 z 1095.12 h 73, the abandoned bank ahead): "Can we make this bank part
-of the course as well because otherwise this ramp is kind of useless the way it is positioned" (Round 37 noted K1's foot is
-4.7 m from the bank's west wall, no run-up). Bring the abandoned bank into the park: a way up onto its roof and stunts there
-(a launch off it, or a gap to the next roof), a line through it (its boarded windows and door break), and K1 moved or turned
-so it has a run-up and leads somewhere (onto or over the bank). The bank stays abandoned-looking (boarded, the FOR LEASE
-banner). Check: K1 flown flat out on the Clay Hopper and the Skywhip, the bank's roof reached, the line through it driven;
-pictures.
-
-Part B, SMASHING COUNTS FOR STUNTS. Dan: "Smashing through things should count for your stunts". Wherever tricks score (Free
-Roam and the Stunt event, every vehicle): breaking something (store and bank windows and doors, the shop row's partitions,
-checkouts and shelves, the park's breakable props, fences, mailboxes, lamps, hydrants, pumps, signs, trees that break) adds
-stunt points, bigger things more (Dan, 21:37: "fuel pumps should also count...": the gas station's four pumps count, and
-   with their explosion they are among the biggest smashes), and links a combo like a trick (on the ground within the combo gap, it keeps the chain
-going); a smash in mid-air counts as a trick type of its own for the flight's multiplier ("SMASH"). Shown on the trick panel
-("SMASH: STORE WINDOW +150"). The smash runs (Round 36 B) keep their own scoring. Decide the points and say them. Check: a run
-through the store windows into a jump, scored with the smashes in its combo; a mid-air smash raising the multiplier.
-
-Part C, MORE INSIDE THE STORES. Round 36 A2b built the supermarket's inside run; the shop row's shops are empty shells
-("Next could be: shop interiors, more inside lines"). Give the shop row interiors (simple, readable rooms that fit each
-shop's made-up name: counters, racks, tables, chairs, that break) and lines through them: from shop to shop through the
-partitions, a ramp up and out through the roof or a back wall, a kicker out through the front window into the park; and the
-bank's inside (Part A) with its vault door to burst through. Same reset as the windows (they come back when the player leaves
-or resets). Check: driven through end to end on a stunt vehicle; pictures; frame rate inside (1280 x 720) before / after.
-
-Part D, AI STUNT RIVALS. Dan asked "is there the ability to play ai on the stunt course?" (now: no; the split-screen AI
-player 2 is the traffic driver, which in BUG-001 "wandered off the course and is just continually running into the wall").
-Port Racer's stunt rivals (`RivalTricks` in `StuntRace.cs`, ArcadeVehicle's AI air steering, the rivals' scoring by the same
-rule as the player, the AI's mistakes and bails) to the stunt park: the Stunt event gets rivals (a row in its setup: None /
-1 / 2 / 3, and difficulty), riding stunt vehicles through the park on lines Code authors (every big feature, the roofs, the
-stores, the bank), doing tricks at the launches and smashing as the player does (Part B); live standings on the HUD and a
-results table at the end (the player's Top 10 stays the player's own, as Racer). The rivals stay in the park, never out on
-the roads, and follow CLAUDE.md "The AI is not perfect". The split-screen AI player 2 in the Stunt event and the Stunt park
-uses this stunt AI too (fixes BUG-001's wandering). Check: a Stunt event with 3 rivals run in the exe: every rival scores, none
-leaves the park or sticks on a wall; a picture of rivals mid-trick and of the results.
-
-Part E, LIFE IN THE WORLD. Port Racer's ambient life to this map (as Racer has it; leave behind what is tied to Woodstock
-places and Racer's scripted Dan / Kyle scenes): `AmbientLife` (residents in yards, driveways, on porches, at the pool at
-Chastain Lakes and the Enclave, walking at the shops, doing their actions), `HouseholdSchedule` (who is out depends on the
-time of day; fewer at night, none out in rain or snow if Racer does that), `Wildlife` (the kinds of animals Racer has that
-live in Georgia suburbs and woods: deer, rabbits, squirrels, birds; in the woods along Noonday Creek and the green spaces),
-`WoodlandAmbience` (the woods' sound), `UndergroundLife` (in the pipe network as Racer has it in its storm drain). Nobody and
-nothing stands on a road, a race line, a jump or a shortcut; they react as in Racer when a vehicle comes close; never in a
-race's way. Day / night and weather aware (Round 35). Same cost rules (a pool round the player, culled out of view); frame
-rate at Canton Road and on a Glen street before / after (1280 x 720). Check: pictures of people in the Glen, at Chastain
-Lakes and the shops; animals in the woods; a vehicle driving past them.
-
-For Dan to check (when done): the bank in the park, smashing in your combos, the shop and bank interiors, a Stunt event with
-rivals, people and animals around the map.
-
-**Round 38 status (Claude, 2026-10-17): built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
-Evidence: `Data/screenshots/round38/` (`abcd_check.txt`, `e_check.txt`, `38_*.png`, `park_layout.png`). Check: `ChastainRush.exe -exeRound38 <dir>`.
-A DONE. The bank is the park's: hollow, boarded doors (west) and drive-up bay (east) that break, a line straight through it from the bus gap's run-out.
-   K1 turned round as the BANK HOP: an aimed pop-up (17.2 m/s at 62 deg) 10.7 m from its wall onto its roof, 2.3 s up; the BANK DROP off the roof's north
-   edge (16 m/s at 10 deg) onto a 38 deg landing in the lane between the canopy and the half-pipe. Clay Hopper and Skywhip: hop, roof, drop, landing upright.
-   Decided: parapet 1.1 m (0.6 m on the hop's side); a berm along the east edge was tried and dropped (it threw a fast vehicle off the roof); the 5th
-   container moved out of the bay's run-out.
-B DONE. A smash links the combo like a trick (a burst within 1.2 s is one link), keeps the 5 s chain, and in the air is SMASH, a trick type for the
-   multiplier (a smash in the last 0.3 s before a takeoff counts in the flight). Points: fence 25, furniture 60, mailbox / sign 75, display 80, shop wall /
-   lamp / washer 100, counter 120, window / boarded door / floodlight 150, hydrant / teller counter 200, tree 250, cash cart 300, gas pump 600, vault
-   door 1,000. Check: in at a window, through the shops, out of the pizza window: SM · SM · SM; with a backflip BACKFLIP + SMASH x2.
-C DONE. 77 breakable things in the ten shops (each its own room: coffee tables, boxes, a wok counter and lanterns, salon chairs and mirrors, pizza
-   counter, dental chair, clothes racks, flower tables, washers); the shop ramp (37 m, 16 deg) from the supermarket's north end up through a hatch
-   onto the roof gap's run-up; the pizza window kicker (aimed, out through a 3.6 m window onto a sized landing); the bank's teller counter, vault
-   (round door) and cash carts. Frame rate inside, 1280 x 720: no change beyond the run-to-run noise (272 / 277 / 317 fps without, 265 / 280 / 302 with).
-D DONE. Stunt event setup: Rivals None / 1 / 2 / 3 (default 3) and Easy / Normal / Hard (settings.json). Rivals ride 9 authored lines through every
-   big feature (not the car gap: too short a run-up), Racer's tricks and bails, the player's scoring and smashes, live standings on the event panel,
-   everyone in the results (never on the Top 10). 180 s check round: EMBER 13,135, GOLD 9,573, BLUE 5,982; none outside the park; 1 to 4 resets each.
-   Split screen's AI player 2 rides the same lines in the park and the event (BUG-001), 0 s outside the park.
-E DONE. Racer's ambient life on this map (`Scripts/World/Life/`, placed by `MapBuilder.Life.cs`): 1,913 groups of people (porches 1,537, yards 278,
-   drives 82, the Lakes' and the Enclave's pool decks 11, the shops' walks 5), lent from a pool of 36 figures to the groups near the view, out of sight;
-   Racer's football trio, coffee pairs, walkers. Who is out: new LifeSchedule (Racer's HouseholdSchedule is its Dan / Kyle visits): fewest at night,
-   nobody in yards, drives or pools in rain or snow. 3,759 habitats for Racer's songbirds, squirrels, deer, coyotes, turkeys (in threes) and frogs,
-   up to 10 out near the view, by their hours; they flee as Racer's. Woods' wind and birds by the tree cover; rats at 6 network entrances, drips in 23
-   chambers. Kept 5 m off race and shortcut lines (the street's middle), 30 m off jumps, off pavement, the park, water. Decided (new): people turn to
-   watch a vehicle and step out of the way of one coming at them (no colliders). Check: the Glen 5 groups out at noon, 0 at 2 am; one stepped aside;
-   a songbird fled; frame rate at Canton Road and a Glen street the same with and without it (269 / 259 vs 295 / 256 fps, run-to-run noise; its
-   scripts 0.01 ms a frame). Thin: only 5 groups on the shops' walks (the walks are narrow strips against the stores).
-Imported from Racer: RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the
-   wildlife recordings. Left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
-Also fixed: the other neighborhoods' mailboxes had the Glen's asset names, so 7 mailbox cells lost their mesh and could not break.
-For Dan to check: the bank hop and drop, smashing out of the pizza window, the shop rooms and the shop ramp, a Stunt event with 3 rivals, people in the
-   yards / at the pools / at the shops and animals in the woods, at 3840 x 2160.
-Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 01:32 (BUILD_INFO.txt).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
