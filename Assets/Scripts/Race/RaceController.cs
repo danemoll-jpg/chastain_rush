@@ -59,6 +59,11 @@ namespace ChastainRush
         public RouteJson RouteData { get; private set; }
         // the player's race (Round 15: these read the player's RaceEntrant; the AI drivers have their own, in Entrants)
         public float RaceClock { get; private set; }    // Round 15: seconds since GO, the same for every racer
+        public ArcadeVehicle PlayerCar => car;           // Round 43 (B1: the ghost)
+        // Round 43 (Part D): Racer's rule: a race run in Trailer Mode does not count for records (no best times, Top 10 or ghost)
+        public bool NoRecords { get; private set; }
+        public void MarkNoRecords(string why) { if (NoRecords || State == Stage.Free) return; NoRecords = true; Log($"{why}: this race does not count for records"); }
+        public CleanLapGhost Ghost { get; private set; } // Round 43 (B1): Racer's clean-lap ghost of the player's best lap
         public float Clock => P.ClockStarted ? (P.Finished ? P.FinalTotal - P.PenaltyTotal : RaceClock - P.StartAt) : 0f;   // seconds since the player first crossed the start line
         public float LapClock => P.ClockStarted && State != Stage.Free ? RaceClock - P.LapStart + P.LapPenalty : 0f;   // with this lap's penalties
         public float TotalClock => Clock + PenaltyTotal;                                                    // with all penalties
@@ -170,6 +175,7 @@ namespace ChastainRush
             carBox = car.GetComponentInChildren<BoxCollider>();
             P.Car = car; P.Box = carBox;
             if (respawn) respawn.Respawned += OnRespawned;
+            Ghost = gameObject.AddComponent<CleanLapGhost>(); Ghost.Initialize(this, Path.GetDirectoryName(RecordsPath()));   // Round 43 (B1)
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
@@ -237,10 +243,11 @@ namespace ChastainRush
             LoadRoute(); // picks up a changed direction
             RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
-            RaceClock = 0f; PlayerFinishedAt = 0f; winnerCelebrated = false; parkSlots = 0;
+            RaceClock = 0f; PlayerFinishedAt = 0f; winnerCelebrated = false; parkSlots = 0; NoRecords = false;
             NewBestLap = NewBestTotal = false;
             attempt = Guid.NewGuid().ToString("N"); lapRanks.Clear(); LastLapRank = RaceRank = 0;   // Round 34 (C2): Racer's RaceFlow at the countdown
             Boards.BeginAttempt(); FinishCards.Begin(Boards, BoardCategory, BestLap, BestTotal);
+            if (Ghost) Ghost.ResetSession();   // Round 43 (B1)
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f; attempt2 = Guid.NewGuid().ToString("N");
             RemoveAi();
@@ -297,7 +304,7 @@ namespace ChastainRush
         }
 
         void OnRespawned() { P.PrevPos = car.transform.position; } // a reset is a teleport: it must not count as crossing anything
-        public void NotifyTeleported() { P.PrevPos = car.transform.position; } // checks that move the car by hand say so, as a reset does
+        public void NotifyTeleported() { P.PrevPos = car.transform.position; if (Ghost) Ghost.Invalidate(); } // checks that move the car by hand say so, as a reset does (Round 43: and no ghost from that lap)
 
         // How far the car's body reaches sideways across a gate at the moment of crossing (half the car's box, turned to the gate).
         static float Reach(RaceEntrant e, RaceGate g)
@@ -376,6 +383,7 @@ namespace ChastainRush
             foreach (var h in hits)
             {
                 float at = t0 + h.f * dt;
+                crossing = Vector3.Lerp(prevPos, pos, h.f);   // Round 43 (B1): where the line was crossed, for the ghost
                 if (h.id == 0) OnGate(e, at);
                 else if (h.id < 1000) OnCheckpoint(e, h.id - 1, at);
                 else if (h.id < 2000) OnShortcutEntry(e, Route.Shortcuts[h.id - 1000], at, "its entry plane");
@@ -434,14 +442,6 @@ namespace ChastainRush
             if (e.IsPlayer) markers.Refresh(this);
         }
 
-        void OnShortcutExit(RaceEntrant e, RaceShortcut sc, float at)
-        {
-            if (e.ActiveShortcut != sc) return;
-            e.ActiveShortcut = null;
-            Log(e, $"SHORTCUT {sc.Id} left at {at:0.000}");
-        }
-
-        void OnGate(RaceEntrant e, float at)
         // Round 43 (A1 d, Dan BUG-001: the reset "say you miss 3 checkpoints"): a race reset that puts the vehicle further on along the lap
         // than the lap point it was nearest to forgives the checkpoints in between (as a shortcut's are); one that puts it back forgives
         // nothing. Stations are the lap's own (from the line). Checkpoints still waiting before the first forgiven one were really missed.
@@ -467,9 +467,19 @@ namespace ChastainRush
             if (e.IsPlayer) markers.Refresh(this);
         }
 
+        void OnShortcutExit(RaceEntrant e, RaceShortcut sc, float at)
+        {
+            if (e.ActiveShortcut != sc) return;
+            e.ActiveShortcut = null;
+            Log(e, $"SHORTCUT {sc.Id} left at {at:0.000}");
+        }
+
+        Vector3 crossing;
+        void OnGate(RaceEntrant e, float at)
         {
             if (!e.ClockStarted)
             {
+                if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, false, false, true);   // Round 43 (B1): the ghost's recording starts
                 e.ClockStarted = true; e.StartAt = e.LapStart = at; e.NextCheckpoint = 0; e.Missed.Clear(); e.Forgiven.Clear();
                 e.PenaltyTotal = e.LapPenalty = 0f; e.MissedTotal = 0; e.PenaltyLog.Clear();
                 if (e.IsHuman) SayTo(e, "Lap 1 - go!", 3f);
@@ -490,8 +500,9 @@ namespace ChastainRush
             int lapNo = e.CompletedLaps + 1;
             e.LapTimes.Add(lap); e.CompletedLaps++;
             bool best = false;
-            if (e.IsPlayer) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
-            if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
+            if (e.IsPlayer && !NoRecords) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
+            if (e.IsPlayer && NoRecords) lapRanks.Add(0);
+            else if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
             else if (e.Seat == 2 && e.IsHuman) Boards.Add(attempt2 + "/lap/" + lapNo, BoardCategory, false, lap, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));   // Round 37: player 2's own, under their name
             string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
             string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
@@ -502,6 +513,7 @@ namespace ChastainRush
                 else SayTo(e, $"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
+            if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, true, e.CompletedLaps >= Route.Laps, e.Missed.Count == 0 && !NoRecords);   // Round 43 (B1)
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
             e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false;
             if (e.IsPlayer) markers.Refresh(this);
@@ -537,14 +549,16 @@ namespace ChastainRush
             if (!e.IsPlayer) return;
             State = Stage.Finished; PlayerFinishedAt = RaceClock;
             float total = e.FinalTotal;
-            bool bestTotal = BestTotal <= 0f || total < BestTotal;
+            bool bestTotal = !NoRecords && (BestTotal <= 0f || total < BestTotal);
             if (bestTotal) { BestTotal = total; NewBestTotal = true; }
-            SaveRecords();
-            RaceRank = Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 34 (C1, C2)
+            if (!NoRecords) SaveRecords();
+            RaceRank = NoRecords ? 0 : Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 34 (C1, C2)
             FinishCards.Finish(e.LapTimes, lapRanks.ToArray(), attempt, total, RaceRank);
             Log($"TOP 10: race {(RaceRank > 0 ? "#" + RaceRank : "not on the board")}, laps {string.Join(" ", lapRanks.ConvertAll(x => x > 0 ? "#" + x : "-"))}");
             SayTo(e, $"Finished! Total {Fmt(total)}", 10f);
             markers.Refresh(this);
+            // Round 43 (C1): Racer's winner shot before the results, in a race with opponents (not split screen): the best total among those finished
+            if (Entrants.Count > 1 && !SplitScreen.Active) { RaceEntrant won = null; foreach (var x in Entrants) if (x.Finished && x.Car && (won == null || x.FinalTotal < won.FinalTotal)) won = x; if (won != null) { WinnerShot.Begin(this, won.Car, won.Name, won == P); Log(won, "the winner shot"); } }
         }
 
         // ---------------------------------------------------------------- Round 15: the AI drivers
@@ -953,7 +967,7 @@ namespace ChastainRush
 
         void OnGUI()
         {
-            if (Route == null || !car || GameMenus.Open || WorldMap.IsOpen) return;   // Round 16: not drawn under a menu (Round 20: nor the map)
+            if (Route == null || !car || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;   // Round 43: Trailer Mode's clean screen; Round 16: not drawn under a menu (Round 20: nor the map)
             if (SplitScreen.Active && !(State != Stage.Free && AllHumansFinished)) return;   // Round 37: each half's own HUD (SplitHud)
             Styles();
             float s = Mathf.Max(1f, Screen.height / 800f);
@@ -969,7 +983,7 @@ namespace ChastainRush
                 DrawPlace(w, h);
                 DrawGuide(w, h);
                 DrawCountdown(w, h);
-                if (State == Stage.Finished) DrawResults(w, h);
+                if (State == Stage.Finished && !WinnerShot.Active) DrawResults(w, h);   // Round 43 (C1): held back during the winner shot (Racer 0.82)
                 if (Message.Length > 0 && Time.time < messageUntil && State != Stage.Finished)
                     Shadowed(new Rect(0, h * 0.74f, w, 40), $"<b>{Message}</b>", new GUIStyle(small) { fontSize = 26, alignment = TextAnchor.MiddleCenter, richText = true, normal = { textColor = Color.white } });
             }

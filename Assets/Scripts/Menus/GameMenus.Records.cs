@@ -13,7 +13,8 @@ namespace ChastainRush
     //   first row changes the route and direction, the second the board (best laps / best races, every race length with a Laps
     //   column), the third (when more than one vehicle has times there) the vehicle; then the Top 10 as Racer's table (rank, time,
     //   name, [laps,] vehicle, date; the player's own and this race's new entries lit); B back. Racer's speed traps, jumps,
-    //   ghost, stunts and combos tabs are left behind (this game has none of them).
+    //   stunts and combos tabs are left behind (this game has none of them). Round 43 (B1): the ghost tab is back, as the board row's
+    //   third value (GHOST).
     //   The on-screen keyboard (RaceMenus.Entry.cs OpenKeyboard / OpenNameEntry): 50 keys and Shift, caret, Delete, Space,
     //   SAVE, Cancel; the D-pad / stick moves over the keys, A types, X deletes, Y a space, Start or Enter saves, B cancels;
     //   a keyboard types straight in. Racer's InputField draft (and its paste) is a plain line here with the caret drawn.
@@ -92,14 +93,16 @@ namespace ChastainRush
             if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0)) { RenderActivityRecords(pagesN); return; }
             if (recordTrack >= tracks.Count) { RenderStuntRecords(recordTrack - tracks.Count, pagesN); return; }
             if (tracks.Count == 0 || boards == null) { details.gameObject.SetActive(true); details.text = "No routes."; Row(0, "back", "Back", BackPage); return; }
-            var track = tracks[recordTrack]; bool raceBoard = recordBoard == 1;
+            var track = tracks[recordTrack];
+            if (recordBoard == 2) { RenderGhostBoard(track); return; }   // Round 43 (B1)
+            bool raceBoard = recordBoard == 1;
             var vehicles = boards.TopVehicles(c => OnTrack(track, c), raceBoard);
             if (recordsVehicle != "All vehicles" && !vehicles.Contains(recordsVehicle)) recordsVehicle = "All vehicles";
             var board = boards.Top(c => OnTrack(track, c), raceBoard, recordsVehicle == "All vehicles" ? null : recordsVehicle);
             int row = 0;
             Step(row++, "record-track", TrackTitle(track) + (vehicles.Length > 0 || boards.TopVehicles(c => OnTrack(track, c), !raceBoard).Length > 0 ? "" : "   (no times yet)"),
                  d => { recordTrack = (recordTrack + d + pagesN) % pagesN; recordsVehicle = "All vehicles"; Show(); });
-            Step(row++, "record-board", raceBoard ? "BEST RACES" : "BEST LAPS", d => { recordBoard = 1 - recordBoard; recordsVehicle = "All vehicles"; Show(); });
+            Step(row++, "record-board", raceBoard ? "BEST RACES" : "BEST LAPS", d => { recordBoard = (recordBoard + d + 3) % 3; recordsVehicle = "All vehicles"; Show(); });
             if (vehicles.Length > 1 || recordsVehicle != "All vehicles")
             {
                 var choices = vehicles.Prepend("All vehicles").ToList();
@@ -125,6 +128,30 @@ namespace ChastainRush
             Table(firstRow, row);
             Row(row, "back", "Back", BackPage); buttons[row].transform.SetAsLastSibling();
             details.transform.SetSiblingIndex(1);   // the controls, the line saying what is shown, the table, Back
+        }
+
+        // Round 43 (B1): Racer's Records > GHOST tab (RaceMenus.RecordsResults recordTab 4), as the board row's third value: what the ghost is,
+        // the clean-lap ghosts saved for this route and direction (one per vehicle), and the Ghost on / off row
+        void RenderGhostBoard((string route, string direction) track)
+        {
+            var tracks = RecordTracks(); int pagesN = tracks.Count + (StuntPark.Current ? 2 : 0) + (ArcadeActivities.Instance && ArcadeActivities.Instance.Sites.Length > 0 ? 1 : 0) + 2;
+            int row = 0;
+            Step(row++, "record-track", TrackTitle(track), d => { recordTrack = (recordTrack + d + pagesN) % pagesN; Show(); });
+            Step(row++, "record-board", "GHOST", d => { recordBoard = (recordBoard + d + 3) % 3; Show(); });
+            Controls(0, row);
+            var ghost = race ? race.Ghost : null; bool rev = track.direction.StartsWith("reverse");
+            var saved = ghost ? ghost.Saved(track.route, rev) : new List<(string vehicle, double seconds, string date)>();
+            details.gameObject.SetActive(true);
+            details.text = "Race your best compatible clean lap.\n" + (ghost ? ghost.Status : "No ghost here.") + "\nNo resets, teleports or missed checkpoints. Official shortcuts count."
+                + (saved.Count == 0 ? $"\nNo clean-lap ghosts on {track.route} ({(rev ? "reverse" : "forward")}) yet." : "");
+            details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 120;
+            if (ghost) Toggle(row++, "ghost", "Ghost", ghost.Enabled, () => { ghost.Toggle(); Show(); });
+            var widths = new[] { .3f, .4f, .3f }; int first = row;
+            if (saved.Count > 0) TableRow(row++, "header", new[] { "Time", "Vehicle", "Date" }, widths, () => { });
+            foreach (var g in saved) TableRow(row++, "ghost-" + row, new[] { RaceController.Fmt((float)g.seconds), VehicleProfile.Find(g.vehicle).Name, RecordDate(g.date) }, widths, () => { });
+            Table(first, row);
+            Row(row, "back", "Back", BackPage); buttons[row].transform.SetAsLastSibling();
+            details.transform.SetSiblingIndex(1);
         }
 
         // Round 36 (A1): Racer's Records > STUNTS (the Stunt event Top 10, Free Roam's best single combo) and > COMBOS (the Top 10 Best Combos), as two

@@ -406,6 +406,8 @@ namespace ChastainRush
                 case "split": RenderSplit(); return;   // Round 37 (GameMenus.Split.cs)
                 case "police": RenderPoliceSetup(); return;   // Round 39 (GameMenus.Police.cs)
                 case "police-results": RenderPoliceResults(); return;
+                case "trailer": RenderTrailer(); return;   // Round 43 (Part D, GameMenus.Trailer.cs)
+                case "trailer-help": RenderTrailerHelp(); return;
             }
             if (!title && stage == RaceController.Stage.Free && PoliceSession.Running) { RenderPolicePause(); return; }   // Round 39: before the split pause (the mode owns its split)
             if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
@@ -438,6 +440,7 @@ namespace ChastainRush
                 fr = ActivityRows(fr);   // Round 36 (Part B)
                 Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
                 Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(fr++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D): Racer's pause menu > Trailer / Photo Mode
                 Row(fr++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
                 Row(fr++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
                 Row(fr++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
@@ -451,6 +454,7 @@ namespace ChastainRush
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
             Row(n++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+            Row(n++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D)
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
             Row(n++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
             Row(n++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
@@ -560,8 +564,13 @@ namespace ChastainRush
                 Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
             }
             else Row(8, "garage", "Garage…", () => OpenGarage("race"));
-            Row(9, "start", "START RACE", StartRace);
-            Row(10, "back", "Back", BackPage);
+            // Round 43 (B1): Racer's Ghost row (RaceMenus.Core: on / off, saved); its details say what the current route has
+            var ghost = race ? race.Ghost : null;
+            if (ghost) { ghost.Refresh(); Toggle(9, "ghost", "Ghost", ghost.Enabled, () => { ghost.Toggle(); Show(); }); } else Row(9, "ghost", "Ghost:   -", () => { });
+            if (ghost && !SplitScreen.Active) details.text += "\nGhost: " + ghost.Status + " No resets, teleports or missed checkpoints; shortcuts count.";
+            if (ghost) details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = Mathf.Min(200, 28 * (details.text.Count(c => c == '\n') + 1) + 6);
+            Row(10, "start", "START RACE", StartRace);
+            Row(11, "back", "Back", BackPage);
         }
 
         // Round 18: a route with a vehicle list (Noonday Creek): a player in anything else is put in its first vehicle when the
