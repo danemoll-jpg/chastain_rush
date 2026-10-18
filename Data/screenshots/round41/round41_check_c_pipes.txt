@@ -1,0 +1,11 @@
+Round 41 check, 2026-10-18 07:18, the exe, 1280 x 720, muted.
+
+=== C: the five pipe exits (BF, X_W20, X_W11, X_BRIDGE, X_STREAM): from outside, BUG-001's spot, driven in and out
+  BF        in through (slowest 9.8 m/s), out through (slowest 10.1 m/s)
+  X_W20     in through (slowest 10.8 m/s), out through (slowest 9.5 m/s)
+  X_W11     in STOPPED stopped (slowest 0.2 m/s), out STOPPED stopped (slowest 0.2 m/s)
+  X_BRIDGE  in through (slowest 1.4 m/s), out through (slowest 9.3 m/s)
+  X_STREAM  in STOPPED stopped (slowest 0.0 m/s), out through (slowest 1.9 m/s)
+FAIL  C: each of the five exits driven in and out  -  not: X_W11, X_STREAM
+
+0 of 1 checks passed.

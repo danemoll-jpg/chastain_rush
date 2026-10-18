@@ -446,8 +446,9 @@ namespace ChastainRush
         // Round 39 (A2, BUG-002 at X_SHOPS, 4 m from house 2175): where a building keeps the bank's ground from being graded, the wingwalls
         // stand up as retaining walls to the ground they hold (no grass teeth over the coping), and the ground behind the headwall may be
         // raised beside the building up to the building's own lowest ground (no coping or barrel bare against the sky). Only the mouths
-        // listed (Dan's spot); the other mouths a building or road keeps ungraded are listed in the round's report, not changed
-        static readonly HashSet<string> Retaining = new HashSet<string> { "X_SHOPS" };
+        // listed (Round 39: Dan's spot; Round 41: the five he chose)
+        // Round 41 (C, BUG-001 of session 2026-10-17_21-06-21-561_3280ac at X_W11, "sloppy"; Dan 21:20: all five): the same at BF, X_W20, X_W11, X_BRIDGE and X_STREAM
+        static readonly HashSet<string> Retaining = new HashSet<string> { "X_SHOPS", "BF", "X_W20", "X_W11", "X_BRIDGE", "X_STREAM" };
         static float BuildingBase(TerrainGrid t, Vector2 q)   // the lowest ground round the nearest building's footprint within 6 m
         {
             float best = float.MaxValue, lo = float.MaxValue;

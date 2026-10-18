@@ -133,13 +133,17 @@ namespace ChastainRush
                 car.Body.position = RaceRoute.Ground(a.x - d.x * 60f, a.y - d.y * 60f) + Vector3.up; car.Body.linearVelocity = Vector3.zero;
                 yield return Still($"41_pipe_{id}_outside", m - d3 * 18f + n3 * 5f + Vector3.up * 5f, m + Vector3.up * 1.5f, 60f);
                 yield return Still($"41_pipe_{id}_side", m - d3 * 6f + n3 * 14f + Vector3.up * 6f, m + Vector3.up * .5f, 62f);
-                // in: from 30 m out along the pipe's line to 15 m inside; out: from 12 m inside to 30 m out
-                List<Vector3> L(float s0, float s1) { var l = new List<Vector3>(); for (float s = s0; (s1 > s0) ? s <= s1 : s >= s1; s += s1 > s0 ? 2f : -2f) { var q = a + d * s; var g = RaceRoute.Ground(q.x, q.y); g.y = DrainPipe.LineHeight(q.x, q.y, g.y); l.Add(g); } return l; }
-                var lin = L(-30f, 15f); Place(lin[0], lin[2] - lin[0], 8f); yield return new WaitForFixedUpdate();
+                // in: from 12 m out in front of the cut's outer end along its own floor (the cut may bend) to 24 m along it; out: back the same way
+                var dp = FindObjectsByType<DrainPipe>(FindObjectsSortMode.None).Where(q => q.floor != null && q.floor.Length > 10).OrderBy(q => Vector2.Distance(new Vector2(q.floor[0].x, q.floor[0].z), a)).FirstOrDefault();
+                if (dp == null || Vector2.Distance(new Vector2(dp.floor[0].x, dp.floor[0].z), a) > 6f) { bad.Add(id + " (no pipe found)"); continue; }
+                var f0 = dp.floor[0]; var fo = dp.floor[0] - dp.floor[Mathf.Min(6, dp.floor.Length - 1)]; fo.y = 0f; fo.Normalize();
+                var lin = new List<Vector3>(); for (float o = 12f; o > .5f; o -= 2f) lin.Add(RaceRoute.Ground(f0.x + fo.x * o, f0.z + fo.z * o));
+                float acc = 0f; for (int i = 0; i < dp.floor.Length && acc < 24f; i++) { if (i > 0) acc += Vector3.Distance(dp.floor[i - 1], dp.floor[i]); if (i % 2 == 0) lin.Add(dp.floor[i]); }
+                Place(lin[0], lin[2] - lin[0], 6f); yield return new WaitForFixedUpdate();
                 var rin = new Run(); yield return DriveLine(lin, 14f, 25f, rin, null, null, 5f, true, null);
-                var lout = L(12f, -30f); Place(lout[0], lout[2] - lout[0], 4f); yield return new WaitForFixedUpdate();
+                var lout = Enumerable.Reverse(lin).ToList(); Place(lout[0], lout[2] - lout[0], 4f); yield return new WaitForFixedUpdate();
                 var rout = new Run(); yield return DriveLine(lout, 14f, 25f, rout, null, null, 5f, true, null);
-                if (!rin.reached || !rout.reached) bad.Add(id);
+                if (!rin.reached || !rout.reached) { bad.Add(id); File.WriteAllLines(Path.Combine(outputDir, $"pipe_{id}_in.csv"), rin.trail.Select(q => $"{q.x:0.00},{q.y:0.00},{q.z:0.00}")); File.WriteAllLines(Path.Combine(outputDir, $"pipe_{id}_out.csv"), rout.trail.Select(q => $"{q.x:0.00},{q.y:0.00},{q.z:0.00}")); }
                 report.AppendLine($"  {id,-9} in {(rin.reached ? "through" : "STOPPED " + rin.end)} (slowest {rin.minSpeed:0.0} m/s), out {(rout.reached ? "through" : "STOPPED " + rout.end)} (slowest {rout.minSpeed:0.0} m/s)");
             }
             Check("C: each of the five exits driven in and out", bad.Count == 0, bad.Count == 0 ? "" : "not: " + string.Join(", ", bad));
