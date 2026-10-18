@@ -508,10 +508,12 @@ namespace ChastainRush
             foreach (var sc in hood.ShortcutData.shortcuts)
             {
                 var pts = ToPoints(sc.path); int n = 0;
+                // Round 42 (A): which pieces of the line are off the street, once (asked per trunk and piece it took 16 minutes of the build)
+                var off = new bool[Mathf.Max(pts.Count - 1, 0)]; for (int k = 0; k + 1 < pts.Count; k++) off[k] = hood.RoadClearance((pts[k] + pts[k + 1]) * 0.5f) > 0.5f;
                 foreach (var q in trunks)
                     for (int k = 0; k + 1 < pts.Count; k++)
                     {
-                        if (hood.RoadClearance((pts[k] + pts[k + 1]) * 0.5f) <= 0.5f) continue;
+                        if (!off[k]) continue;
                         var ab = pts[k + 1] - pts[k]; float u = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - pts[k], ab) / ab.sqrMagnitude);
                         float d = (pts[k] + ab * u - q).magnitude;
                         if (d < Neighborhood.TreeClearHalf) { n++; sb.AppendLine($"  {sc.id}: trunk at ({q.x:0.0}, {q.y:0.0}) {d:0.00} m from the line"); break; }
@@ -613,7 +615,7 @@ namespace ChastainRush
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white);
             m.SetFloat("_Smoothness", 0.1f);
             m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/ShortcutSign.mat");
+            m = GenAsset(m, GeneratedDir + "/ShortcutSign.mat");
             return m;
         }
 
@@ -625,7 +627,7 @@ namespace ChastainRush
         {
             if (rampMaterial) return rampMaterial;
             rampMaterial = new PhysicsMaterial("ShortcutRamp") { dynamicFriction = 0f, staticFriction = 0f, bounciness = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounceCombine = PhysicsMaterialCombine.Minimum };
-            AssetDatabase.CreateAsset(rampMaterial, GeneratedDir + "/ShortcutRamp.physicMaterial");
+            rampMaterial = GenAsset(rampMaterial, GeneratedDir + "/ShortcutRamp.physicMaterial");
             return rampMaterial;
         }
 
@@ -864,7 +866,7 @@ namespace ChastainRush
             }
             var cm = new Mesh { name = pr.name + " collider", indexFormat = IndexFormat.UInt32 };
             cm.SetVertices(wv); cm.SetTriangles(wt, 0); cm.RecalculateNormals(); cm.RecalculateBounds();
-            AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/{pr.name} collider.asset");
+            cm = GenAsset(cm, $"{GeneratedDir}/Meshes/{pr.name} collider.asset");
             var mc = go.AddComponent<MeshCollider>(); mc.sharedMesh = cm; mc.sharedMaterial = RampMaterial();
             // Round 16 (B): the heap's skirt, solid, frictionless like the ramp, on a child (not a held surface; its name starts
             // "sc" so VehicleSurfaceContacts treats it as a ramp surface: its slope, not the triangle edges, pushes the body)
@@ -872,7 +874,7 @@ namespace ChastainRush
             {
                 var hm = new Mesh { name = pr.name + " heap collider", indexFormat = IndexFormat.UInt32 };
                 hm.SetVertices(heap.Verts); hm.SetTriangles(heap.Tris, 0); hm.RecalculateNormals(); hm.RecalculateBounds();
-                AssetDatabase.CreateAsset(hm, $"{GeneratedDir}/Meshes/{pr.name} heap collider.asset");
+                hm = GenAsset(hm, $"{GeneratedDir}/Meshes/{pr.name} heap collider.asset");
                 var hgo = new GameObject(pr.name + " heap"); hgo.transform.SetParent(go.transform, false);
                 var hc = hgo.AddComponent<MeshCollider>(); hc.sharedMesh = hm; hc.sharedMaterial = RampMaterial();
                 Debug.Log($"[Round16] B (BUG-002): {pr.name}: the dirt pile's skirt is solid ({heap.Tris.Count / 3} triangles)");

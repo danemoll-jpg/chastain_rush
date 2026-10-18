@@ -54,7 +54,7 @@ namespace ChastainRush
             {
                 var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };
                 mesh.SetVertices(V); mesh.SetUVs(0, U); mesh.SetTriangles(T, 0); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
                 var go = new GameObject(name); go.transform.SetParent(parent, false);
                 go.AddComponent<MeshFilter>().sharedMesh = mesh;
                 var r = go.AddComponent<MeshRenderer>(); r.sharedMaterial = m; r.shadowCastingMode = ShadowCastingMode.Off;
@@ -297,7 +297,7 @@ namespace ChastainRush
             var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (m) return m;
             m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
             m.SetColor("_BaseColor", c); m.SetFloat("_Smoothness", 0.25f); m.EnableKeyword("_EMISSION"); m.SetColor("_EmissionColor", c * 0.18f);
-            AssetDatabase.CreateAsset(m, path); return m;
+            m = GenAsset(m, path); return m;
         }
         static Material netGrille;
 
@@ -394,7 +394,7 @@ namespace ChastainRush
                 mesh.SetVertices(bv); mesh.SetUVs(0, buv); bool hasGlass = gt.Count > 0;
                 mesh.subMeshCount = hasGlass ? 2 : 1; mesh.SetTriangles(bt, 0); if (hasGlass) mesh.SetTriangles(gt, 1);
                 mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Net {t.id} {cellStart}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/Net {t.id} {cellStart}.asset");
                 var go = new GameObject("sc Net " + t.id + " barrel"); go.transform.SetParent(cell, false);
                 go.AddComponent<MeshFilter>().sharedMesh = mesh;
                 var mr = go.AddComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
@@ -475,7 +475,7 @@ namespace ChastainRush
                         var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; }
                         var smesh = new Mesh { name = $"Net {t.id} {cellStart} stream", indexFormat = IndexFormat.UInt32 };
                         smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
-                        AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Net {t.id} {cellStart} stream.asset");
+                        smesh = GenAsset(smesh, $"{GeneratedDir}/Meshes/Net {t.id} {cellStart} stream.asset");
                         var sgo = new GameObject($"Net {t.id} {cellStart} stream"); sgo.transform.SetParent(cell, false);
                         sgo.AddComponent<MeshFilter>().sharedMesh = smesh; var smr = sgo.AddComponent<MeshRenderer>(); smr.sharedMaterial = pipeWater; smr.shadowCastingMode = ShadowCastingMode.Off;
                         var ps = sgo.AddComponent<PipeStream>(); ps.line = line.ToArray(); ps.water = pipeWater; ps.splash = pipeSplash;
@@ -529,7 +529,7 @@ namespace ChastainRush
             if (floodWater) return floodWater;
             floodWater = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "PipeFloodWater" };
             floodWater.SetColor("_BaseColor", new Color(0.22f, 0.32f, 0.30f)); floodWater.SetFloat("_Smoothness", 0.95f);
-            AssetDatabase.CreateAsset(floodWater, GeneratedDir + "/PipeFloodWater.mat");
+            floodWater = GenAsset(floodWater, GeneratedDir + "/PipeFloodWater.mat");
             return floodWater;
         }
 
@@ -753,7 +753,7 @@ namespace ChastainRush
             foreach (var kv in byMat) { int off = allV.Count; allV.AddRange(kv.Value.v); allC.AddRange(kv.Value.col); tris.Add(kv.Value.t.Select(q => q + off).ToList()); mlist.Add(kv.Key); }
             mesh.SetVertices(allV); mesh.SetColors(allC); mesh.subMeshCount = tris.Count; for (int i = 0; i < tris.Count; i++) mesh.SetTriangles(tris[i], i);
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Manhole hatch {m.id}.asset");
+            mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/Manhole hatch {m.id}.asset");
             var lidGo = new GameObject("Manhole " + m.id + " hatch (the street over it, a cover)"); lidGo.transform.SetParent(root, false); lidGo.transform.position = home;
             lidGo.AddComponent<MeshFilter>().sharedMesh = mesh;
             var lr = lidGo.AddComponent<MeshRenderer>(); lr.sharedMaterials = mlist.ToArray(); lr.shadowCastingMode = ShadowCastingMode.Off; lr.receiveGI = ReceiveGI.LightProbes;
@@ -780,7 +780,7 @@ namespace ChastainRush
                     ct.AddRange(new[] { a, e, d, a, d, b });   // up-facing
                 }
                 var cm = new Mesh { name = "Manhole floor collider " + m.id, indexFormat = IndexFormat.UInt32 }; cm.SetVertices(cv); cm.SetTriangles(ct, 0); cm.RecalculateNormals(); cm.RecalculateBounds();
-                AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/Manhole floor collider {m.id}.asset");
+                cm = GenAsset(cm, $"{GeneratedDir}/Meshes/Manhole floor collider {m.id}.asset");
                 var fgo = new GameObject("Manhole " + m.id + " floor over the hole (collider: the terrain's surface)"); fgo.transform.SetParent(root, false);
                 mc = fgo.AddComponent<MeshCollider>(); mc.sharedMesh = cm;
                 Debug.Log($"[Round25] manhole {m.id}: the hatch is the street's own {(street != null ? street.Count : 0)} triangles and a 0.9 m cover; the floor over its {lc.cells.Count} hole cells is the terrain's surface ({keys.Count} cells)");

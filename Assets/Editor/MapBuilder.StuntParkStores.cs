@@ -379,7 +379,7 @@ namespace ChastainRush
                     SBox(lights, new Vector3(w.x, roof - SlabT - .12f, w.y), p.Dir3(1, 0), new Vector3(.5f, .1f, 3.6f), Color.white);
                 }
             var mat = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "StuntParkCeilingLight" }; mat.SetColor("_BaseColor", new Color(1f, .97f, .9f));
-            AssetDatabase.CreateAsset(mat, GeneratedDir + "/StuntParkCeilingLight.mat");
+            mat = GenAsset(mat, GeneratedDir + "/StuntParkCeilingLight.mat");
             lights.ToObject("StuntParkCeilingLights", mat, root, false, false);
         }
     }

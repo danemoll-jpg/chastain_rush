@@ -173,7 +173,7 @@ namespace ChastainRush
                             bt.Add(v0); bt.Add(v0 + 1); bt.Add(v0 + 2); bt.Add(v0); bt.Add(v0 + 2); bt.Add(v0 + 3);
                         }
                 var bm = new Mesh { name = "Hub daylight beams" }; bm.SetVertices(bv); bm.SetUVs(0, buv); bm.SetColors(bc); bm.SetTriangles(bt, 0); bm.RecalculateBounds();
-                AssetDatabase.CreateAsset(bm, $"{GeneratedDir}/Meshes/Hub daylight beams.asset");
+                bm = GenAsset(bm, $"{GeneratedDir}/Meshes/Hub daylight beams.asset");
                 var bgo = new GameObject("Hub daylight beams"); bgo.transform.SetParent(root, false); bgo.AddComponent<MeshFilter>().sharedMesh = bm;
                 var br = bgo.AddComponent<MeshRenderer>(); br.sharedMaterial = clearShaft; br.shadowCastingMode = ShadowCastingMode.Off;
             }
@@ -184,7 +184,7 @@ namespace ChastainRush
                 {
                     hubPool = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "HubPool" };
                     hubPool.SetColor("_BaseColor", new Color(0.16f, 0.34f, 0.40f)); hubPool.SetFloat("_Smoothness", 0.96f);
-                    AssetDatabase.CreateAsset(hubPool, GeneratedDir + "/HubPool.mat");
+                    hubPool = GenAsset(hubPool, GeneratedDir + "/HubPool.mat");
                 }
                 float ws = y0 - 0.04f; var wm = new MeshBuilder();
                 Face(wm, P(-PoolHA, -PoolHB, ws), P(PoolHA, -PoolHB, ws), P(PoolHA, PoolHB, ws), P(-PoolHA, PoolHB, ws), up);
@@ -366,7 +366,7 @@ namespace ChastainRush
                 waterfallMat = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")) { name = "NetworkWaterfall" };
                 waterfallMat.SetTexture("_BaseMap", pipeWater.GetTexture("_BaseMap")); waterfallMat.SetColor("_BaseColor", new Color(0.80f, 0.90f, 0.95f, 0.75f));
                 MakeTransparent(waterfallMat); waterfallMat.SetFloat("_Cull", 0f);
-                AssetDatabase.CreateAsset(waterfallMat, GeneratedDir + "/NetworkWaterfall.mat");
+                waterfallMat = GenAsset(waterfallMat, GeneratedDir + "/NetworkWaterfall.mat");
             }
             var go = new GameObject(name); go.transform.SetParent(parent, false);
             var sv = new List<Vector3>(); var suv = new List<Vector2>(); var st = new List<int>();   // the flat runs (pipeWater, PipeStream)
@@ -399,7 +399,7 @@ namespace ChastainRush
             {
                 var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; }
                 var m = new Mesh { name = name + " runs", indexFormat = IndexFormat.UInt32 }; m.SetVertices(sv); m.SetUVs(0, suv); m.SetTriangles(st, 0); m.RecalculateNormals(); m.RecalculateBounds();
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/Meshes/{name} runs.asset");
+                m = GenAsset(m, $"{GeneratedDir}/Meshes/{name} runs.asset");
                 var r = new GameObject(name + " runs"); r.transform.SetParent(go.transform, false); r.AddComponent<MeshFilter>().sharedMesh = m;
                 var mr = r.AddComponent<MeshRenderer>(); mr.sharedMaterial = pipeWater; mr.shadowCastingMode = ShadowCastingMode.Off;
                 var ps = r.AddComponent<PipeStream>(); ps.line = line.ToArray(); ps.water = pipeWater; ps.splash = pipeSplash;
@@ -407,7 +407,7 @@ namespace ChastainRush
             if (ft.Count > 0)
             {
                 var m = new Mesh { name = name + " falls" }; m.SetVertices(fv); m.SetUVs(0, fuv); m.SetTriangles(ft, 0); m.RecalculateNormals(); m.RecalculateBounds();
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/Meshes/{name} falls.asset");
+                m = GenAsset(m, $"{GeneratedDir}/Meshes/{name} falls.asset");
                 var f = new GameObject(name + " falls"); f.transform.SetParent(go.transform, false); f.AddComponent<MeshFilter>().sharedMesh = m;
                 var mr = f.AddComponent<MeshRenderer>(); mr.sharedMaterial = waterfallMat; mr.shadowCastingMode = ShadowCastingMode.Off;
                 var wf = go.AddComponent<NetworkWaterfall>(); wf.material = waterfallMat; wf.bottoms = bottoms.ToArray(); wf.splash = pipeSplash;

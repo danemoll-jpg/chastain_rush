@@ -184,7 +184,7 @@ namespace ChastainRush
             }
             for (int i = 0; i < 24; i++) { int a = i * 2, b = ((i + 1) % 24) * 2; col.Tri(a, b, a + 1); col.Tri(b, b + 1, a + 1); }
             var cm = new Mesh { name = "Trampoline collider" }; cm.SetVertices(col.Verts); cm.SetTriangles(col.Tris, 0); cm.RecalculateBounds();
-            AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/Trampoline collider.asset");
+            cm = GenAsset(cm, $"{GeneratedDir}/Meshes/Trampoline collider.asset");
             var cgo = new GameObject("Trampoline collider"); cgo.transform.SetParent(root, false);
             var mc = cgo.AddComponent<MeshCollider>(); mc.sharedMesh = cm; mc.convex = true; mc.sharedMaterial = RampMaterial();
             var t = tramp.AddComponent<Trampoline>();

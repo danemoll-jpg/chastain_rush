@@ -190,7 +190,7 @@ namespace ChastainRush
             if (col.Count == 0) return null;
             var g = new GameObject(name); g.transform.SetParent(parent, false);
             var mesh = col.ToMesh(name + " collider");
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/StuntPark_{name.Replace(' ', '_').Replace('(', '_').Replace(')', '_')}_{parent.childCount}.asset");
+            mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/StuntPark_{name.Replace(' ', '_').Replace('(', '_').Replace(')', '_')}_{parent.childCount}.asset");
             var mc = g.AddComponent<MeshCollider>(); mc.sharedMesh = mesh; return mc;
         }
         static void SolidBox(Transform parent, Vector3 bottom, Vector3 forward, Vector3 size, string name)
@@ -608,7 +608,7 @@ namespace ChastainRush
             bool up = Vector3.Cross(mesh.vertices[2] - mesh.vertices[0], mesh.vertices[1] - mesh.vertices[0]).y > 0;
             mesh.triangles = up ? new[] { 0, 2, 1, 0, 3, 2 } : new[] { 0, 1, 2, 0, 2, 3 };
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/StuntParkDecal_{root.childCount}_{row}.asset");
+            mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/StuntParkDecal_{root.childCount}_{row}.asset");
             go.AddComponent<MeshFilter>().sharedMesh = mesh; var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = mat; mr.shadowCastingMode = ShadowCastingMode.Off;
         }
 
@@ -685,7 +685,7 @@ namespace ChastainRush
             // lit and depth-tested (hidden by anything in front), one-sided: the store signs' material
             var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "StuntSigns" };
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white); m.SetFloat("_Smoothness", 0.2f); m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/StuntSigns.mat");
+            m = GenAsset(m, GeneratedDir + "/StuntSigns.mat");
             return m;
         }
     }

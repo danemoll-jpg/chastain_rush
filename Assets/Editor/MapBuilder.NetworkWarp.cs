@@ -151,7 +151,7 @@ namespace ChastainRush
             var m = AssetDatabase.LoadAssetAtPath<Material>(path); if (m) return m;
             m = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")) { name = "ExpressStreak" };
             m.SetColor("_BaseColor", new Color(0.85f, 0.97f, 1f, 0.6f)); MakeTransparent(m);
-            AssetDatabase.CreateAsset(m, path); return m;
+            m = GenAsset(m, path); return m;
         }
     }
 }

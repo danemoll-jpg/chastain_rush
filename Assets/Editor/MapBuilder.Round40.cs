@@ -24,14 +24,27 @@ namespace ChastainRush
         static readonly Dictionary<int, Vector2> HouseMoves = new Dictionary<int, Vector2> { { 1245, new Vector2(-1.6f, 0f) } };
         static List<Vector2> MovedRing(int index, List<Vector2> ring) => HouseMoves.TryGetValue(index, out var d) ? ring.Select(p => p + d).ToList() : ring;
 
-        sealed class MedianSide { public Road road; public List<Vector2> p; public float half; }
+        sealed class MedianSide { public Road road; public List<Vector2> p; public float half; public Dictionary<Vector2Int, List<int>> cells; }
         static List<MedianSide> MedianSides(MapData map) => map.roads.Where(r => r.name == "New Chastain Road" && r.oneway && !r.bridge)
                                                                        .Select(r => new MedianSide { road = r, p = ToPoints(r.points), half = r.width * .5f }).ToList();
         // the nearest point of a side's centerline to q, its distance, and the side's direction there
         static float SideDist(MedianSide s, Vector2 q, out Vector2 at, out Vector2 dir)
         {
             float best = float.MaxValue; at = q; dir = Vector2.up;
-            for (int i = 0; i + 1 < s.p.Count; i++)
+            // Round 42 (A): only the segments within 22 m of q's 8 m cell (a side farther than 22 m is never used: InMedian); same result
+            if (s.cells == null)
+            {
+                s.cells = new Dictionary<Vector2Int, List<int>>();
+                for (int i = 0; i + 1 < s.p.Count; i++)
+                {
+                    Vector2 a = s.p[i], b = s.p[i + 1];
+                    for (int x = Mathf.FloorToInt((Mathf.Min(a.x, b.x) - 23f) / 8f); x <= Mathf.FloorToInt((Mathf.Max(a.x, b.x) + 23f) / 8f); x++)
+                        for (int z = Mathf.FloorToInt((Mathf.Min(a.y, b.y) - 23f) / 8f); z <= Mathf.FloorToInt((Mathf.Max(a.y, b.y) + 23f) / 8f); z++)
+                        { var k = new Vector2Int(x, z); if (!s.cells.TryGetValue(k, out var l)) s.cells[k] = l = new List<int>(); l.Add(i); }
+                }
+            }
+            if (!s.cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(q.x / 8f), Mathf.FloorToInt(q.y / 8f)), out var near)) return 99f;
+            foreach (int i in near)
             {
                 var c = ClosestOnSeg(q, s.p[i], s.p[i + 1]); float d = (c - q).sqrMagnitude;
                 if (d < best) { best = d; at = c; dir = (s.p[i + 1] - s.p[i]).normalized; }
@@ -56,20 +69,43 @@ namespace ChastainRush
             return true;
         }
 
+        // the roads that cross or join the median (every road but New Chastain Road's carriageways). Round 42 (A): only those whose bounds come within
+        // 120 m of 'near' (CrossDist starts at 99 m, so the result is the same; every road of the map made the build's median grading take minutes)
+        static List<(Road r, List<Vector2> p)> CrossRoads(MapData map, Rect near)
+        {
+            return map.roads.Where(r => r.name != "New Chastain Road" || !r.oneway).Select(r => (r, p: ToPoints(r.points)))
+                .Where(rp => rp.p.Count > 0 && rp.p.Max(q => q.x) > near.xMin - 120f && rp.p.Min(q => q.x) < near.xMax + 120f && rp.p.Max(q => q.y) > near.yMin - 120f && rp.p.Min(q => q.y) < near.yMax + 120f).ToList();
+        }
+
         static void GradeNewChastainMedian(MapData map, TerrainGrid terrain)
         {
             var sides = MedianSides(map); if (sides.Count < 2) return;
-            var cross = map.roads.Where(r => r.name != "New Chastain Road" || !r.oneway).Select(r => (r, p: ToPoints(r.points))).ToList();
-            float CrossDist(Vector2 q) { float m = 99f; foreach (var (r, p) in cross) for (int i = 0; i + 1 < p.Count; i++) { float d = Vector2.Distance(q, ClosestOnSeg(q, p[i], p[i + 1])) - r.width * .5f; if (d < m) m = d; } return m; }
             var box = Rect.MinMaxRect(sides.Min(s => s.p.Min(q => q.x)), sides.Min(s => s.p.Min(q => q.y)), sides.Max(s => s.p.Max(q => q.x)), sides.Max(s => s.p.Max(q => q.y)));
+            var cross = CrossRoads(map, box);
+            float CrossDist(Vector2 q) { float m = 99f; foreach (var (r, p) in cross) for (int i = 0; i + 1 < p.Count; i++) { float d = Vector2.Distance(q, ClosestOnSeg(q, p[i], p[i + 1])) - r.width * .5f; if (d < m) m = d; } return m; }
             // the edges' heights read before anything moves (the edges are road, never in a median)
             var before = new Dictionary<Vector2Int, float>();
             float G(Vector2 q) { var k = new Vector2Int(Mathf.RoundToInt(q.x * 4f), Mathf.RoundToInt(q.y * 4f)); if (!before.TryGetValue(k, out float y)) before[k] = y = Ground(terrain, q.x, q.y); return y; }
             var plan = new List<(float x, float z, float y, float w)>();
+            // Round 42 (A): only the 8 m cells within reach of a carriageway (InMedian needs both within 22 m); the rest of the box was most of
+            // a minute and a half of the build. Same result
+            const float Cell = 8f; var near = new HashSet<Vector2Int>();
+            foreach (var sd in sides)
+                for (int i = 0; i + 1 < sd.p.Count; i++)
+                {
+                    Vector2 a = sd.p[i], b = sd.p[i + 1]; float pad = 22f + Cell;
+                    for (int cx = Mathf.FloorToInt((Mathf.Min(a.x, b.x) - pad) / Cell); cx <= Mathf.FloorToInt((Mathf.Max(a.x, b.x) + pad) / Cell); cx++)
+                        for (int cz = Mathf.FloorToInt((Mathf.Min(a.y, b.y) - pad) / Cell); cz <= Mathf.FloorToInt((Mathf.Max(a.y, b.y) + pad) / Cell); cz++)
+                        {
+                            var cc = new Vector2((cx + .5f) * Cell, (cz + .5f) * Cell);
+                            if (Vector2.Distance(cc, ClosestOnSeg(cc, a, b)) <= 22f + Cell * .71f) near.Add(new Vector2Int(cx, cz));
+                        }
+                }
             for (float x = box.xMin; x <= box.xMax; x += .5f)
                 for (float z = box.yMin; z <= box.yMax; z += .5f)
                 {
                     var q = new Vector2(x, z);
+                    if (!near.Contains(new Vector2Int(Mathf.FloorToInt(x / Cell), Mathf.FloorToInt(z / Cell)))) continue;
                     if (!InMedian(sides, q, out var ea, out var eb, out float t, out float width)) continue;
                     float w = Smooth01((CrossDist(q) - 2f) / 6f); if (w <= 0f) continue;
                     float edgeIn = Mathf.Min(t, 1f - t) * width;   // meters in from the nearer edge
@@ -96,7 +132,7 @@ namespace ChastainRush
         static List<Vector2> MedianTrees(MapData map, Ridge ridge)
         {
             var sides = MedianSides(map); var trees = new List<Vector2>(); if (sides.Count < 2) return trees;
-            var cross = map.roads.Where(r => r.name != "New Chastain Road" || !r.oneway).Select(r => (r, p: ToPoints(r.points))).ToList();
+            var cross = CrossRoads(map, Rect.MinMaxRect(sides.Min(s => s.p.Min(q => q.x)) - 30f, sides.Min(s => s.p.Min(q => q.y)) - 30f, sides.Max(s => s.p.Max(q => q.x)) + 30f, sides.Max(s => s.p.Max(q => q.y)) + 30f));
             float CrossDist(Vector2 q) { float m = 99f; foreach (var (r, p) in cross) for (int i = 0; i + 1 < p.Count; i++) { float d = Vector2.Distance(q, ClosestOnSeg(q, p[i], p[i + 1])) - r.width * .5f; if (d < m) m = d; } return m; }
             var keepOff = new List<Vector2>();   // the manhole plume and the Ridge leap's landing: open ground there
             if (ridge?.Data?.plumes != null) foreach (var pl in ridge.Data.plumes) keepOff.Add(new Vector2(pl.at[0], pl.at[1]));

@@ -134,10 +134,10 @@ namespace ChastainRush
         static void ClearMaterials()
         {
             if (clearGlass) return;
-            Material M(string shader, string name, Action<Material> set) { var m = new Material(Shader.Find(shader)) { name = name }; set(m); AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat"); return m; }
+            Material M(string shader, string name, Action<Material> set) { var m = new Material(Shader.Find(shader)) { name = name }; set(m); m = GenAsset(m, $"{GeneratedDir}/{name}.mat"); return m; }
             clearGlass = M("ChastainRush/PipeGlass", "PipeGlass", m => { m.SetColor("_BaseColor", new Color(0.55f, 0.85f, 0.90f, 0.10f)); m.SetColor("_EdgeColor", new Color(0.70f, 0.92f, 1.0f, 0.55f)); m.SetFloat("_Power", 3f); });
             clearHaze = M("ChastainRush/PipeGlass", "PipeWaterHaze", m => { m.SetColor("_BaseColor", new Color(0.10f, 0.42f, 0.46f, 0.16f)); m.SetColor("_EdgeColor", new Color(0.12f, 0.45f, 0.50f, 0.30f)); m.SetFloat("_Power", 1.5f); m.renderQueue = 2990; });
-            var rip = RippleTexture(); AssetDatabase.CreateAsset(rip, GeneratedDir + "/UnderwaterRipple.asset");
+            var rip = RippleTexture(); rip = GenAsset(rip, GeneratedDir + "/UnderwaterRipple.asset");
             clearSurface = M("ChastainRush/UnderwaterScroll", "UnderwaterSurface", m => { m.SetTexture("_BaseMap", rip); m.SetTextureScale("_BaseMap", new Vector2(0.12f, 0.12f)); m.SetColor("_BaseColor", new Color(0.62f, 0.90f, 0.92f)); m.SetFloat("_Cull", (float)CullMode.Back); });
             clearShaft = M("ChastainRush/UnderwaterScroll", "UnderwaterShaft", m => { m.SetColor("_BaseColor", new Color(0.30f, 0.42f, 0.36f)); m.SetFloat("_Src", (float)BlendMode.One); m.SetFloat("_Dst", (float)BlendMode.One); m.SetFloat("_ZWrite", 0f); m.SetFloat("_Shaft", 1f); m.renderQueue = 3000; });
             clearWeed = M("ChastainRush/Fish", "PondWeed", m => { m.SetFloat("_Wag", 0.25f); m.SetFloat("_WagSize", 0.22f); m.SetFloat("_Mode", 1f); });
@@ -340,7 +340,7 @@ namespace ChastainRush
                 if (n0.y > 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; }
             }
             var smesh = new Mesh { name = "Pipe " + p.Id + " surface from below" }; smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetColors(Enumerable.Repeat(Color.white, sv.Count).ToList()); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {p.Id} surface from below.asset");
+            smesh = GenAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {p.Id} surface from below.asset");
             var sgo = new GameObject("Pipe " + p.Id + " clear stretch - the surface from below"); sgo.transform.SetParent(root, false);
             sgo.AddComponent<MeshFilter>().sharedMesh = smesh; var srr = sgo.AddComponent<MeshRenderer>(); srr.sharedMaterial = clearSurface; srr.shadowCastingMode = ShadowCastingMode.Off;
             // ---- light shafts: crossed quads slanting down from the surface (uv.y 0 at the top), beside and over the tube
@@ -364,7 +364,7 @@ namespace ChastainRush
                 nShafts++;
             }
             var shm = new Mesh { name = "Pipe " + p.Id + " light shafts" }; shm.SetVertices(shv); shm.SetUVs(0, shuv); shm.SetColors(shc); shm.SetTriangles(sht, 0); shm.RecalculateBounds();
-            AssetDatabase.CreateAsset(shm, $"{GeneratedDir}/Meshes/Pipe {p.Id} light shafts.asset");
+            shm = GenAsset(shm, $"{GeneratedDir}/Meshes/Pipe {p.Id} light shafts.asset");
             var shgo = new GameObject("Pipe " + p.Id + " clear stretch - light shafts"); shgo.transform.SetParent(root, false);
             shgo.AddComponent<MeshFilter>().sharedMesh = shm; var shr = shgo.AddComponent<MeshRenderer>(); shr.sharedMaterial = clearShaft; shr.shadowCastingMode = ShadowCastingMode.Off;
             // ---- water haze: two faint layers in the deep water, inset copies of its cross-section, along the stretch

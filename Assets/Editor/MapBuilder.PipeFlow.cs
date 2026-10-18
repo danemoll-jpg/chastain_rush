@@ -22,7 +22,7 @@ namespace ChastainRush
             {
                 creekFlow = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "CreekFlow" };
                 creekFlow.SetTexture("_BaseMap", pipeWater.GetTexture("_BaseMap")); creekFlow.SetColor("_BaseColor", new Color(0.36f, 0.52f, 0.62f)); creekFlow.SetFloat("_Smoothness", 0.92f);
-                AssetDatabase.CreateAsset(creekFlow, GeneratedDir + "/CreekFlow.mat");
+                creekFlow = GenAsset(creekFlow, GeneratedDir + "/CreekFlow.mat");
             }
             float Surface(Vector2 q, float lift)
             {
@@ -70,7 +70,7 @@ namespace ChastainRush
                 { var n0 = Vector3.Cross(v[tr[1]] - v[tr[0]], v[tr[2]] - v[tr[0]]); if (n0.y < 0f) for (int i = 0; i < tr.Count; i += 3) { int x = tr[i + 1]; tr[i + 1] = tr[i + 2]; tr[i + 2] = x; } }
                 string name = $"Pipe {p.J.id}{(p.J.twin ? (bl < 0f ? "R" : "L") : "")} creek flowing in";
                 var mesh = new Mesh { name = name, indexFormat = IndexFormat.UInt32 }; mesh.SetVertices(v); mesh.SetUVs(0, uv); mesh.SetTriangles(tr, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
                 var go = new GameObject(name); go.transform.SetParent(parent, false);
                 go.AddComponent<MeshFilter>().sharedMesh = mesh; var mr = go.AddComponent<MeshRenderer>(); mr.sharedMaterial = creekFlow; mr.shadowCastingMode = ShadowCastingMode.Off;
                 var ps = go.AddComponent<PipeStream>(); ps.line = mid.ToArray(); ps.water = creekFlow; ps.splash = pipeSplash;

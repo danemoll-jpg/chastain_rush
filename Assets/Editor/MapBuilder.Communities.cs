@@ -565,7 +565,7 @@ namespace ChastainRush
             m.SetFloat("_Smoothness", 0.2f);
             if (cutout) { m.SetFloat("_AlphaClip", 1f); m.SetFloat("_Cutoff", 0.5f); m.EnableKeyword("_ALPHATEST_ON"); }
             m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+            m = GenAsset(m, $"{GeneratedDir}/{name}.mat");
             return m;
         }
 

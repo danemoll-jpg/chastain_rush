@@ -55,7 +55,7 @@ namespace ChastainRush
                 {
                     m = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "Proposal" + mats.Count };
                     m.SetColor("_BaseColor", c);
-                    AssetDatabase.CreateAsset(m, $"{GeneratedDir}/Proposal{mats.Count}.mat");
+                    m = GenAsset(m, $"{GeneratedDir}/Proposal{mats.Count}.mat");
                     mats[c] = m;
                 }
                 return m;
@@ -108,7 +108,7 @@ namespace ChastainRush
                 labelMat = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "ProposalLabels" };
                 labelMat.SetTexture("_BaseMap", tex); labelMat.mainTexture = tex; labelMat.SetColor("_BaseColor", Color.white);
                 labelMat.SetFloat("_Cull", (float)CullMode.Back);   // one-sided, depth-tested
-                AssetDatabase.CreateAsset(labelMat, GeneratedDir + "/ProposalLabels.mat");
+                labelMat = GenAsset(labelMat, GeneratedDir + "/ProposalLabels.mat");
             }
             else Debug.LogWarning("[Round23] Assets/HandMade/Proposals/ProposalLabels.png missing (Tools/handmade/make_proposal_labels.py): no labels");
             int rows = (doc.marks.Length + LabelCols - 1) / LabelCols;
@@ -131,7 +131,7 @@ namespace ChastainRush
                 mesh.uv = new[] { new Vector2(u0 + iu, v0 + iv), new Vector2(u1 - iu, v0 + iv), new Vector2(u1 - iu, v1 - iv), new Vector2(u0 + iu, v1 - iv) };
                 mesh.triangles = new[] { 0, 3, 2, 0, 2, 1 };   // the face toward -z: the pivot's +z points away from the camera
                 mesh.RecalculateNormals(); mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/ProposalLabel{i}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/ProposalLabel{i}.asset");
                 board.AddComponent<MeshFilter>().sharedMesh = mesh;
                 var r = board.AddComponent<MeshRenderer>(); r.sharedMaterial = labelMat; r.shadowCastingMode = ShadowCastingMode.Off;
                 boards.Add(pivot);

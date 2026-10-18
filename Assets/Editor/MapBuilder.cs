@@ -62,142 +62,132 @@ namespace ChastainRush
 
         public static void BuildFromCommandLine()
         {
-            try { Build(); EditorApplication.Exit(0); }
+            try { Build(); var d = QuickArg("-dumpOut"); if (d != null) { EditorSceneManager.OpenScene(ScenePath); SceneDump.Write(d); } EditorApplication.Exit(0); }   // Round 42: -dumpOut, the scene's fingerprint (SceneDump)
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
 
+        // Round 42 (Part A): the build is its planning (the ground graded; the houses, businesses, pipes and the rest laid out: Plan, below) and
+        // then its steps, each a builder of the scene (Steps, MapBuilder.Quick.cs). A full build records what each step made and which terrain
+        // samples it changed (BuildCache/steps), so that a quick build can rebuild a few steps on the saved scene (MapBuilder.Quick.cs).
         public static void Build()
         {
-            ProjectSetup.EnsureUrp();
-            var map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
-            var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
-
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            var mats = new Materials();
-
-            BuildSky(mats);
-
-            // vertical_scale (config.json) is already baked into the terrain heights and building heights by mapgen;
-            // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
-            vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
-            var terrain = BuildTerrain(meta, mats);
-            SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
-            SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
-            var shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
-            GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
-            JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
-            Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
-            if (Park != null) GradeStuntPark(map, terrain, Park);
-            var world = new GameObject("World").transform;
-            var paint = new Chunks();
-            // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
-            // houses and driveways are not built here
-            var hood = Neighborhood.Load(map, terrain);
-            hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
-            CarveWaterBeds(map, terrain);   // Round 15 (item 2): a bed under every pond, lake and stream (MapBuilder.Water.cs)
-            BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
-            var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
-            GradeCreekTrack(map, terrain, creek);
-            ChurchHollows.Clear(); RoofRampHouse = null;
-            var ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
-            GradeRidge(terrain, ridge);
-            GradeNewChastainMedian(map, terrain);   // Round 40 (B2): New Chastain Road's median straight across, before anything samples the ground (MapBuilder.Round40.cs)
-            Net = null;
-            var net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
-            var pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
-            RaisePondBanks(terrain, pipes);          // Round 25 (BUG-002) / Round 26: every pond's banks meet its water (MapBuilder.PondBank.cs)
-            CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
-            PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
-            MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
-            SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
-            var lakes = PlanChastainLakes(map, terrain);   // Round 32 (C2): the Chastain Lakes amenity area, graded before anything samples the ground (MapBuilder.ChastainLakes.cs)
-            var courson = PlanCoursonSwim(map, terrain);   // Round 39 (A4): the swim and tennis amenity off Courson Street (MapBuilder.CoursonSwim.cs)
-            // Round 32: the houses and businesses are planned before the roads are built (A1: a service road lying in a new lot is
-            // paved as the lot); none of them changes the ground the roads lie on
-            var rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
-            PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
-            lakes.PlanFences(hood.Fences);   // Round 32 (C2): no back-yard fence across the area; the pool's iron fence
-            courson?.PlanFences(hood.Fences);   // Round 39 (A4): likewise round the Courson Street pool
-            var biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
-            if (courson != null) biz.Trees.AddRange(courson.Trees);   // Round 39 (A4): the Courson Street lot's island trees
-            Round34Drives(biz, map);   // Round 34 (A3, BUG-010): the road that stopped short of building 2158 runs on to it (MapBuilder.Round34.cs)
-            BuildRoads(map, terrain, mats, world, paint, hood, biz);
-            BuildBridges(map, mats, world, paint, terrain);
-            paint.ToObjects("RoadPaint", mats.Paint, world, false);
-            BuildRoadLookup(map);
-            BuildTrafficNetwork(map);   // Round 30 (A1): the road graph the traffic drives on (MapBuilder.Traffic.cs)
-            BuildBuildings(map, terrain, mats, world, LoadOwner(), hood, shop, rest, biz);
-            BuildDriveways(map, terrain, mats, world, hood);
-            BuildWater(map, terrain, mats, world, hood);
-            RegisterWater(map, world, new Pavement(map));   // Round 15 (item 2c)
-            // Round 10 (item 7): trees are solid now, so no trunk may stand on a road or a drive anywhere on the map (the area's
-            // own rules already keep them off its streets, drives and the shortcut lines): one standing within 0.6 m of a
-            // road's or a drive's edge is moved out to 1.5 m past the edge, or dropped if that is on pavement too
-            var pave = new Pavement(map);
-            biz.Trees.AddRange(MedianTrees(map, ridge));   // Round 40 (B2): trees down New Chastain Road's median
-            var trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
-                (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
-            if (creek != null || ridge != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
-            {
-                var f = trees.Field; var br = new List<int>(); int nr = 0;
-                for (int i = 0; i < f.count; i++)
-                {
-                    var t = TreeField.Unpack(f.data, i);
-                    if (creek != null && creek.Breakable(t.x, t.z)) br.Add(i);
-                    else if (ridge != null && ridge.Breakable(t.x, t.z)) { br.Add(i); nr++; }
-                }
-                f.breakable = br.ToArray();
-                Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing");
-            }
-            trees.Field.gameObject.AddComponent<TreeTrunks>();
-            Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
-            BuildNeighborhood(map, terrain, mats, world, hood, trees);
-            BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
-            BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
-            BuildChurchCrypt(terrain, mats, world);   // Round 41 (A): church 74 hollow, the crypt under it and the graveyard (MapBuilder.ChurchCrypt.cs; was Round 40's church leap)
-            BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
-            BuildCoursonSwim(map, terrain, mats, world, courson);   // Round 39 (A4)
-            BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank
-            if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop);   // Round 36 (Part A2): the stunt park, its stores and roofs
-            BuildShortcuts(hood, terrain, mats, world);   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
-            if (hood.ShortcutData != null) ReportTreesOnLines(hood, trees);
-            BuildCreekTrack(map, terrain, mats, world, creek);   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
-            BuildRidge(terrain, mats, world, ridge);             // Round 33: the Chastain Ridge race's dirt piles and landing zones
-            BuildPipes(terrain, mats, world, pipes);             // Round 18 (4)
-            BuildNetwork(terrain, mats, world, net, pipes);      // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
-            BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge);   // Round 36 (Parts C, D): hydrants along every street, rigged ones and geysers (MapBuilder.Hydrants.cs)
-            try { BuildLife(map, terrain, world, hood, rest, biz, lakes, creek, ridge, trees.Field, LoadOwner()); }   // Round 38 (Part E): Racer's ambient life, where it lives (MapBuilder.Life.cs)
-            catch (Exception e) { Debug.LogError("[Round38] life not built: " + e); }
-            if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");
-            BakeMapPicture(map, terrain, shop, creek, trees.Field);   // Round 20 (2): the picture under the in-game map (MapBuilder.MapPicture.cs)
-
-            new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
-            BuildRace(mats);
-            BuildActivities(terrain, mats);   // Round 36 (Part B): Racer's Free Roam activities, game layer (MapBuilder.Activities.cs)
-            BuildPolice(map);                 // Round 39 (Part D): the police's roads and radio script, game layer (MapBuilder.Police.cs)
-            BuildProposalMarkers(terrain, world);   // Round 23 (Part B): TEMPORARY proposal markers (the underground pipe network), hidden until the debug menu shows them
-            PlayerSetup.Place(map.spawn.x, map.spawn.z, map.spawn.heading_deg, terrain.Height(map.spawn.x, map.spawn.z), terrain.BaseY);
-
-            EditorSceneManager.SaveScene(scene, ScenePath);
+            BuildClock.Start("Build Map");
+            var c = new Ctx();
+            Plan(c, false);
+            var rec = new StepRecorder(c, true);
+            foreach (var st in Steps(c)) rec.Run(st);
+            EditorSceneManager.SaveScene(c.scene, ScenePath);
+            BuildClock.Lap("EditorSceneManager.SaveScene");
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
             AssetDatabase.SaveAssets();
+            rec.SaveManifest();
+            BuildClock.Lap("AssetDatabase.SaveAssets and the step record");
+            var trees = c.trees; var map = c.map; var meta = c.meta;
             Debug.Log($"[MapBuilder] Trees: {trees.Trees} ({trees.Woods} in woods, {trees.Yards} in yards); per species " +
                       string.Join(", ", TreeField.SpeciesNames.Select((nm, i) => nm + " " + trees.PerSpecies[i])) + $"; kit triangles: {trees.KitTriangles}");
             Debug.Log($"[MapBuilder] Built {ScenePath}: {map.roads.Length} roads, {map.buildings.Length} buildings, " +
                       $"{map.bridges.Length} bridges, {map.water.Length} water areas, {meta.tiles_x}x{meta.tiles_z} terrain tiles, spawn on {map.spawn.street}, vertical scale {vScale:0.##}");
+            BuildClock.Done(Path.Combine(ProjectRoot, GeneratedDir, "build_times.txt"));
+        }
+
+        // everything a step reads from the planning (and from the steps before it)
+        sealed class Ctx
+        {
+            public UnityEngine.SceneManagement.Scene scene; public MapData map; public TerrainMeta meta; public Materials mats; public TerrainGrid terrain;
+            public ShoppingCenter shop; public Transform world; public Chunks paint; public Neighborhood hood; public CreekTrack creek; public Ridge ridge;
+            public Network net; public Pipes pipes; public ChastainLakes lakes; public CoursonSwim courson; public RestNeighborhoods rest; public Businesses biz;
+            public Pavement pave; public TreeBuilder.Result trees; public bool quick;
+        }
+
+        // the planning: the ground graded and everything laid out, before anything is built. 'quick': on the saved scene (MapBuilder.Quick.cs), the
+        // materials loaded rather than made, the terrain in memory only (not the scene's), no sky
+        static void Plan(Ctx c, bool quick)
+        {
+            c.quick = quick;
+            ProjectSetup.EnsureUrp();
+            var map = c.map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
+            var meta = c.meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
+
+            if (!quick)
+            {
+                c.scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                c.mats = new Materials();
+                BuildSky(c.mats);
+            }
+            else { c.scene = EditorSceneManager.GetActiveScene(); c.mats = Materials.Load(); }
+            BuildClock.Lap("BuildSky");
+
+            // vertical_scale (config.json) is already baked into the terrain heights and building heights by mapgen;
+            // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
+            vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
+            var terrain = c.terrain = BuildTerrain(meta, c.mats, quick);
+            BuildClock.Lap("BuildTerrain");
+            SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
+            SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
+            BuildClock.Lap("SmoothRampSeams");
+            var shop = c.shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
+            GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
+            JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
+            Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
+            if (Park != null) GradeStuntPark(map, terrain, Park);
+            BuildClock.Lap("StuntPark plan");
+            c.world = quick ? c.scene.GetRootGameObjects().First(g => g.name == "World").transform : new GameObject("World").transform;
+            c.paint = new Chunks();
+            // Round 7: the Chastain Glen area is dressed by hand-made / styled content (MapBuilder.Neighborhood.cs); its
+            // houses and driveways are not built here
+            var hood = c.hood = Neighborhood.Load(map, terrain);
+            hood.RegradeAndReport();   // Round 9 (BUG-005): the buried house's lot is cut down to it, before anything samples the ground
+            BuildClock.Lap("hood.RegradeAndReport");
+            CarveWaterBeds(map, terrain);   // Round 15 (item 2): a bed under every pond, lake and stream (MapBuilder.Water.cs)
+            BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
+            BuildClock.Lap("CarveWaterBeds and BuryCulvert");
+            var creek = c.creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
+            GradeCreekTrack(map, terrain, creek);
+            BuildClock.Lap("GradeCreekTrack");
+            ChurchHollows.Clear(); RoofRampHouse = null;
+            var ridge = c.ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
+            GradeRidge(terrain, ridge);
+            BuildClock.Lap("GradeRidge");
+            GradeNewChastainMedian(map, terrain);   // Round 40 (B2): New Chastain Road's median straight across, before anything samples the ground (MapBuilder.Round40.cs)
+            BuildClock.Lap("GradeNewChastainMedian");
+            Net = null;
+            var net = c.net = LoadNetwork();            // Round 23 follow-ups: the underground pipe network (Data/pipes/network.json; MapBuilder.Network.cs)
+            var pipes = c.pipes = PlanPipes(terrain, NetworkExitPipes(net), map);    // Round 18 (4): drive-through pipes under the ground, terrain holes over their cuts (MapBuilder.Pipes.cs); Round 23 follow-ups: and the network's exits
+            BuildClock.Lap("PlanPipes");
+            RaisePondBanks(terrain, pipes);          // Round 25 (BUG-002) / Round 26: every pond's banks meet its water (MapBuilder.PondBank.cs)
+            CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
+            PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
+            MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
+            BuildClock.Lap("MouthSweep");
+            SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
+            BuildClock.Lap("SmoothBridgeEnds");
+            var lakes = c.lakes = PlanChastainLakes(map, terrain);   // Round 32 (C2): the Chastain Lakes amenity area, graded before anything samples the ground (MapBuilder.ChastainLakes.cs)
+            var courson = c.courson = PlanCoursonSwim(map, terrain);   // Round 39 (A4): the swim and tennis amenity off Courson Street (MapBuilder.CoursonSwim.cs)
+            BuildClock.Lap("PlanCoursonSwim");
+            // Round 32: the houses and businesses are planned before the roads are built (A1: a service road lying in a new lot is
+            // paved as the lot); none of them changes the ground the roads lie on
+            var rest = c.rest = LoadRest(map, terrain, hood, shop);   // Round 30 (B): the other neighborhoods' houses (MapBuilder.Neighborhoods.cs)
+            BuildClock.Lap("LoadRest");
+            PlanRestFences(map, rest, hood, shop, creek, pipes, net); hood.Fences.AddRange(rest.Fences);   // their back-yard fences, built with the Glen's
+            lakes.PlanFences(hood.Fences);   // Round 32 (C2): no back-yard fence across the area; the pool's iron fence
+            courson?.PlanFences(hood.Fences);   // Round 39 (A4): likewise round the Courson Street pool
+            var biz = c.biz = PlanBusinesses(map, terrain, hood, shop, rest);   // Round 31 (4): every other building dressed by what it is (MapBuilder.Businesses.cs)
+            if (courson != null) biz.Trees.AddRange(courson.Trees);   // Round 39 (A4): the Courson Street lot's island trees
+            Round34Drives(biz, map);   // Round 34 (A3, BUG-010): the road that stopped short of building 2158 runs on to it (MapBuilder.Round34.cs)
+            BuildClock.Lap("PlanBusinesses and Round34Drives");
         }
 
         // ------------------------------------------------------------ terrain
 
-        static TerrainGrid BuildTerrain(TerrainMeta meta, Materials mats)
+        // Round 42: 'quick' (a quick build's planning, MapBuilder.Quick.cs): the tiles' data in memory only, under a temporary root, the scene's own untouched
+        static TerrainGrid BuildTerrain(TerrainMeta meta, Materials mats, bool quick = false)
         {
             int res = meta.tile_resolution, cells = res - 1;
             var bytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, "terrain.r16"));
             if (bytes.Length != (long)meta.grid_x * meta.grid_z * 2) throw new Exception($"terrain.r16 is {bytes.Length} bytes, expected {(long)meta.grid_x * meta.grid_z * 2}");
-            foreach (var guid in AssetDatabase.FindAssets("TerrainData t:TerrainData", new[] { GeneratedDir })) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(guid));
+            if (!quick) foreach (var guid in AssetDatabase.FindAssets("TerrainData t:TerrainData", new[] { GeneratedDir })) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(guid));
             var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height };
-            var root = new GameObject("Terrain").transform;
+            var root = new GameObject(quick ? QuickTerrainRoot : "Terrain").transform;
             var heights = new float[res, res];
             for (int tz = 0; tz < meta.tiles_z; tz++)
                 for (int tx = 0; tx < meta.tiles_x; tx++)
@@ -213,7 +203,7 @@ namespace ChastainRush
                     data.size = new Vector3(meta.tile_w_m, meta.max_height - meta.min_height, meta.tile_d_m);
                     data.SetHeights(0, 0, heights);
                     data.terrainLayers = new[] { mats.GrassLayer };
-                    AssetDatabase.CreateAsset(data, $"{GeneratedDir}/TerrainData_{tx}_{tz}.asset");
+                    if (!quick) data = GenAsset(data, $"{GeneratedDir}/TerrainData_{tx}_{tz}.asset");
 
                     var go = Terrain.CreateTerrainGameObject(data);
                     go.name = $"Terrain_{tx}_{tz}";
@@ -223,8 +213,8 @@ namespace ChastainRush
                     terrain.heightmapPixelError = 3f;
                     terrain.basemapDistance = 2000f;
                     terrain.drawTreesAndFoliage = false;
-                    terrain.groupingID = 1;
-                    terrain.allowAutoConnect = true;
+                    terrain.groupingID = quick ? 42 : 1;   // Round 42: a quick build's memory tiles never join the scene's
+                    terrain.allowAutoConnect = !quick;
                     if (mats.TerrainMaterial != null) terrain.materialTemplate = mats.TerrainMaterial;
                     grid.Tiles[tx, tz] = terrain;
                 }
@@ -1194,7 +1184,7 @@ namespace ChastainRush
                 mesh.SetTriangles(tris, 0);
                 mesh.RecalculateNormals();
                 mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/{name}.asset");
                 go.AddComponent<MeshFilter>().sharedMesh = mesh;
                 var renderer = go.AddComponent<MeshRenderer>();
                 renderer.sharedMaterial = mat;
@@ -1210,6 +1200,18 @@ namespace ChastainRush
             public readonly Material Asphalt, Concrete, ServiceAsphalt, House, Paint, Driveway, Sidewalk, Foliage, Sky, Beacon, Water, TerrainMaterial;
             public readonly Material GateBlack, GateWhite, RaceNext, RaceLater, RaceMissed, RaceShortcut; // Round 5 race markers (unlit); Round 8 shortcut entries
             public readonly TerrainLayer GrassLayer;
+
+            // Round 42: the materials a full build made, read back (a quick build, MapBuilder.Quick.cs, must not replace what the scene uses)
+            public static Materials Load() => new Materials(0);
+            Materials(int _)
+            {
+                T L<T>(string file) where T : UnityEngine.Object { var a = AssetDatabase.LoadAssetAtPath<T>($"{GeneratedDir}/{file}"); if (a == null) throw new Exception($"quick build: {GeneratedDir}/{file} is missing (run a full Build Map)"); return a; }
+                Asphalt = L<Material>("Asphalt.mat"); Concrete = L<Material>("Concrete.mat"); ServiceAsphalt = L<Material>("ServiceAsphalt.mat"); House = L<Material>("House.mat");
+                Paint = L<Material>("RoadPaint.mat"); Driveway = L<Material>("Driveway.mat"); Sidewalk = L<Material>("Sidewalk.mat"); Foliage = L<Material>("Foliage.mat");
+                Sky = L<Material>("Sky.mat"); Beacon = L<Material>("Beacon.mat"); Water = L<Material>("Water.mat"); TerrainMaterial = AssetDatabase.LoadAssetAtPath<Material>($"{GeneratedDir}/Terrain.mat");
+                GateBlack = L<Material>("GateBlack.mat"); GateWhite = L<Material>("GateWhite.mat"); RaceNext = L<Material>("RaceNext.mat"); RaceLater = L<Material>("RaceLater.mat");
+                RaceMissed = L<Material>("RaceMissed.mat"); RaceShortcut = L<Material>("RaceShortcut.mat"); GrassLayer = L<TerrainLayer>("Grass.terrainlayer");
+            }
 
             public Materials()
             {
@@ -1232,7 +1234,7 @@ namespace ChastainRush
                 Foliage = MakeVertexLit("Foliage", Color.white, 1f, 0f, 0f, m => { m.enableInstancing = true; m.SetFloat("_LeafTint", 1f); });
                 Sky = new Material(Shader.Find("ChastainRush/SkyGradient")) { name = "Sky" };
                 Sky.SetColor("_Horizon", HazeColor);
-                AssetDatabase.CreateAsset(Sky, GeneratedDir + "/Sky.mat");
+                Sky = GenAsset(Sky, GeneratedDir + "/Sky.mat");
                 Beacon = Make("Beacon", new Color(1.0f, 0.55f, 0.1f), 0f, new Color(2.5f, 1.2f, 0.2f));
                 Water = Make("Water", new Color(0.16f, 0.32f, 0.50f), 0.85f);
                 GateBlack = MakeUnlit("GateBlack", new Color(0.05f, 0.05f, 0.05f));
@@ -1247,15 +1249,15 @@ namespace ChastainRush
                 for (int i = 0; i < 16; i++) px[i] = new Color(0.36f, 0.46f, 0.27f, 0f); // URP terrain reads smoothness from alpha
                 tex.SetPixels(px);
                 tex.Apply();
-                AssetDatabase.CreateAsset(tex, GeneratedDir + "/GrassFlat.asset");
+                tex = GenAsset(tex, GeneratedDir + "/GrassFlat.asset");
                 GrassLayer = new TerrainLayer { diffuseTexture = tex, tileSize = new Vector2(10f, 10f) };
-                AssetDatabase.CreateAsset(GrassLayer, GeneratedDir + "/Grass.terrainlayer");
+                GrassLayer = GenAsset(GrassLayer, GeneratedDir + "/Grass.terrainlayer");
 
                 var terrainShader = Shader.Find("Universal Render Pipeline/Terrain/Lit");
                 if (terrainShader != null)
                 {
                     TerrainMaterial = new Material(terrainShader);
-                    AssetDatabase.CreateAsset(TerrainMaterial, GeneratedDir + "/Terrain.mat");
+                    TerrainMaterial = GenAsset(TerrainMaterial, GeneratedDir + "/Terrain.mat");
                 }
             }
 
@@ -1269,7 +1271,7 @@ namespace ChastainRush
                 m.SetFloat("_OffsetFactor", offsetFactor);
                 m.SetFloat("_OffsetUnits", offsetUnits);
                 setup?.Invoke(m);
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+                m = GenAsset(m, $"{GeneratedDir}/{name}.mat");
                 return m;
             }
 
@@ -1278,7 +1280,7 @@ namespace ChastainRush
                 var shader = Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color");
                 var m = new Material(shader) { name = name, color = color };
                 m.SetColor("_BaseColor", color);
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+                m = GenAsset(m, $"{GeneratedDir}/{name}.mat");
                 return m;
             }
 
@@ -1293,7 +1295,7 @@ namespace ChastainRush
                     m.EnableKeyword("_EMISSION");
                     m.SetColor("_EmissionColor", emission.Value);
                 }
-                AssetDatabase.CreateAsset(m, $"{GeneratedDir}/{name}.mat");
+                m = GenAsset(m, $"{GeneratedDir}/{name}.mat");
                 return m;
             }
         }

@@ -19,6 +19,7 @@ namespace ChastainRush
     {
         public const string OutputDir = "Builds/ChastainRush";
         public const string ExeName = "ChastainRush.exe";
+        public static bool KeepScene;   // Round 42: a quick build (MapBuilder.Quick.cs) made the scene just before; build from it
 
         [MenuItem("Chastain Rush/Build Executable")]
         public static void BuildMenu() => Build();
@@ -34,7 +35,7 @@ namespace ChastainRush
             if (Application.isPlaying) throw new InvalidOperationException("Leave Play mode first.");
             // the exe always gets a fresh scene from the current data (Round 15: -playerBuildKeepScene, for a code-only rebuild
             // during a round, builds from the scene already made; the last build of a round never uses it)
-            if (Array.IndexOf(Environment.GetCommandLineArgs(), "-playerBuildKeepScene") < 0) MapBuilder.Build();
+            if (!KeepScene && Array.IndexOf(Environment.GetCommandLineArgs(), "-playerBuildKeepScene") < 0) MapBuilder.Build();
 
             PlayerSettings.companyName = "Chastain Rush";
             PlayerSettings.productName = "Chastain Rush";

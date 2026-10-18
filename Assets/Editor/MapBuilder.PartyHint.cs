@@ -90,7 +90,7 @@ namespace ChastainRush
             if (tex == null) { Debug.LogWarning("[Round19] " + path + " missing (Tools/handmade/make_party_sign.py): no party sign face"); return null; }
             var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white); m.SetFloat("_Smoothness", 0.1f); m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/" + name + ".mat");
+            m = GenAsset(m, GeneratedDir + "/" + name + ".mat");
             return m;
         }
 

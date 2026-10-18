@@ -11,13 +11,14 @@ namespace ChastainRush
     // Round 41: what is drawn (not what is solid) over a rectangle of the built scene. Editor batch, no Play mode:
     // ChastainRush.MeshProbe.Run -meshRects "name:x0,z0,x1,z1,step;..." -probeOut <file>. Every drawn mesh whose bounds reach the rectangle gets a
     // temporary mesh collider on its own layer; then a ray down every 'step' m: the top drawn surface and its object, and the top collider
-    // (what a vehicle stands on) for comparison. Report only.
+    // (what a vehicle stands on) for comparison. Report only. Round 42: -probeTop <y> starts the rays there (inside a building).
     public static class MeshProbe
     {
         const int Layer = 31;
         public static void Run()
         {
             string outPath = Arg("-probeOut") ?? "mesh_probe.txt", spec = Arg("-meshRects") ?? "";
+            float top = float.Parse(Arg("-probeTop") ?? "600", CultureInfo.InvariantCulture);   // Round 42: rays from under a roof
             EditorSceneManager.OpenScene("Assets/Generated/ChastainPrototype.unity");
             var ci = CultureInfo.InvariantCulture; var sb = new StringBuilder();
             var rends = Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None);
@@ -41,7 +42,7 @@ namespace ChastainRush
                 for (float z = z1; z >= z0 - 1e-3f; z -= step)
                     for (float x = x0; x <= x1 + 1e-3f; x += step)
                     {
-                        var o = new Vector3(x, 600f, z);
+                        var o = new Vector3(x, top, z);
                         string drawn = Physics.Raycast(o, Vector3.down, out var h, 1000f, 1 << Layer, QueryTriggerInteraction.Ignore) ? $"{h.point.y:0.00} ({h.collider.name.Substring(6)})" : "none";
                         string solid = Physics.Raycast(o, Vector3.down, out var s, 1000f, ~(1 << Layer), QueryTriggerInteraction.Ignore) ? $"{s.point.y:0.00} ({s.collider.name})" : "none";
                         sb.AppendLine($"  {x:0.0}, {z:0.0}: {drawn} | {solid}");

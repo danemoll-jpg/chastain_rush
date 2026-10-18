@@ -23,3 +23,5 @@ Assets/_Recovery/
 Assets/_Recovery.meta
 # Round 27: the radio's bundled folder in the Editor (beside Assets); the build copies BundleMusic/ into Builds/ChastainRush/Music/
 /Music/
+# Round 42: what each Build Map step made and changed, for quick builds (MapBuilder.Quick.cs)
+BuildCache/

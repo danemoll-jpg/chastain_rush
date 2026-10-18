@@ -656,7 +656,7 @@ namespace ChastainRush
             mesh.uv = new[] { new Vector2(0.004f, v0 + 0.002f), new Vector2(0.996f, v0 + 0.002f), new Vector2(0.996f, v1 - 0.002f), new Vector2(0.004f, v1 - 0.002f) };
             mesh.triangles = new[] { 0, 2, 1, 0, 3, 2 };
             mesh.RecalculateNormals(); mesh.RecalculateBounds();
-            AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/StoreSign_{parent.childCount}_{row}_{Mathf.Abs(centre.x.GetHashCode() ^ centre.z.GetHashCode())}.asset");
+            mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/StoreSign_{parent.childCount}_{row}_{Mathf.Abs(centre.x.GetHashCode() ^ centre.z.GetHashCode())}.asset");
             go.AddComponent<MeshFilter>().sharedMesh = mesh;
             var r = go.AddComponent<MeshRenderer>(); r.sharedMaterial = mat; r.shadowCastingMode = ShadowCastingMode.Off;
             return go;
@@ -672,7 +672,7 @@ namespace ChastainRush
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white);
             m.SetFloat("_Smoothness", 0.2f);
             m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/StoreSigns.mat");
+            m = GenAsset(m, GeneratedDir + "/StoreSigns.mat");
             return m;
         }
     }

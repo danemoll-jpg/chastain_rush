@@ -195,6 +195,31 @@ namespace ChastainRush
             return best;
         }
 
+        // Round 42 (A): Clearance with the segments by cell: the same value wherever it is under 'reach' (above it, some value over 'reach'), for
+        // callers that only compare it with less than 'reach' (the business lots asked every road segment of the map, per meter of curb and stall)
+        sealed class SegGrid
+        {
+            const float Cell = 16f;
+            readonly List<(Vector2 a, Vector2 b, float half)> segs; readonly Dictionary<Vector2Int, List<int>> grid = new Dictionary<Vector2Int, List<int>>();
+            public SegGrid(List<(Vector2 a, Vector2 b, float half)> segs, float reach)
+            {
+                this.segs = segs;
+                for (int i = 0; i < segs.Count; i++)
+                {
+                    var s = segs[i]; float pad = s.half + reach;
+                    for (int x = Mathf.FloorToInt((Mathf.Min(s.a.x, s.b.x) - pad) / Cell); x <= Mathf.FloorToInt((Mathf.Max(s.a.x, s.b.x) + pad) / Cell); x++)
+                        for (int z = Mathf.FloorToInt((Mathf.Min(s.a.y, s.b.y) - pad) / Cell); z <= Mathf.FloorToInt((Mathf.Max(s.a.y, s.b.y) + pad) / Cell); z++)
+                        { var k = new Vector2Int(x, z); if (!grid.TryGetValue(k, out var l)) grid[k] = l = new List<int>(); l.Add(i); }
+                }
+            }
+            public float Clearance(Vector2 q)
+            {
+                if (!grid.TryGetValue(new Vector2Int(Mathf.FloorToInt(q.x / Cell), Mathf.FloorToInt(q.y / Cell)), out var l)) return float.MaxValue;
+                float best = float.MaxValue; foreach (int i in l) { var s = segs[i]; best = Mathf.Min(best, SegDist(q, s.a, s.b) - s.half); }
+                return best;
+            }
+        }
+
         // a square-celled grid of world samples (x east, z north) for smoothing the ground
         sealed class HeightGrid
         {

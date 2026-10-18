@@ -184,6 +184,13 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (this restates "World changes only where Dan pointed" above; it binds the planner writing `TODO.md` too).
 - **Targeted testing only:** one check per fix, where it changed. Dan drives the full courses himself.
 - **Batch small fixes into one round** rather than several, since the build and cleanup happen once per round.
+- **One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
+  7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
+  world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
+  `-playerBuildKeepScene`); each part still gets its own commit and its own targeted check on that one build. (2) Tuning
+  limit: if a number the round asks for (time saved, air time, height, speed) is not met after two attempts, stop tuning it,
+  report the numbers in the status and move on; Dan decides. Optional ideas in Dan's notes ("could", "maybe") are built as
+  the simple version, not as requirements to tune.
 - Dan starts a fresh planning chat every few rounds: `TODO.md` carries the state, so it must always say where things are.
 
 ## Commands
@@ -273,6 +280,23 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   piles, landing zones, cleared lines, the hollow's ramp; built by `MapBuilder.ChastainRidge.cs`); re-run after mapgen, then Build Map.
   Check: `ChastainRush.exe -exeRound33 <dir> [-r33Only jump,shortcuts,hollow,pics,race] -traffic Normal -logFile <dir>\Player.log`
   (`Checks/Round20Runner.R33.cs`).
+
+- **Quick builds (Round 42; use them from now on for a world fix).** Build Map is its planning (about a minute) then named steps
+  (`MapBuilder.Quick.cs` `Steps`: Roads, Buildings, ..., Businesses, ChurchCrypt, ..., Ridge, Pipes, ...). A full Build Map records
+  what each step made and every terrain sample it changed in `BuildCache/steps/` (git-ignored). A quick build reruns only the
+  named steps on the saved scene (planning replayed, the ground rewound to before them, later steps' samples put back, other objects'
+  references into them set again) and, with the Exe entry, builds the exe from it:
+  `Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.MapBuilder.QuickExeFromCommandLine -quickParts <steps> -logFile <file>`
+  (`QuickFromCommandLine`: the scene only; `-dumpOut <file>`: the scene's fingerprint after). Steps that can be rebuilt alone: Businesses,
+  ChurchCrypt (`church` = both), Ridge (the roof ramp included), Pipes (the network's exits' ground). A change to the planning (grading,
+  the layout of houses, roads or lots) or to a step not on that list needs the full build, and so does the round's last build (the rule
+  above: one full Build Map at the end). If the scene was built or saved by anything else since the record, the quick build refuses.
+  Times on Dan's PC (Round 42, with the PC in use): full Build Map 15 min (was 32); Ridge quick to a playable exe 5 min; church quick to
+  the exe about 7 to 10 min (its Businesses step is a minute or two). Step times: `Assets/Generated/build_times.txt`, `quick_times.txt`.
+  Proof a quick build matches a full one: `ChastainRush.SceneDump.Run -dumpOut <file> [-dumpDetail <text>]` (Editor batch: one line per
+  object and per terrain block, with what its components refer to) of both, then `python Tools/scene_diff.py <a> <b> [--box x0,z0,x1,z1]`.
+  `ChastainRush.MeshProbe.Run` takes `-probeTop <y>` (rays from under a roof).
+- Round 42 check: `ChastainRush.exe -exeRound42 <dir> [-r42Only windows,aisle,plume] -logFile <dir>\Player.log` (`Checks/Round20Runner.R42.cs`).
 
 ## Where things stand
 **Always check `TODO.md` for the current objective before starting work.** Rounds before the last three deliveries are in `TODO-ARCHIVE.md` (search it; "see `TODO.md`" below for an old round means there).

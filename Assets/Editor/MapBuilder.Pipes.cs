@@ -514,21 +514,21 @@ namespace ChastainRush
             var root = new GameObject("Pipes").transform; root.SetParent(world, false);
             // the pipe's inside: lit by its lamps and the headlights (URP Lit takes point and spot lights; the vertex-lit map shader
             // does not). Round 19: stained, darker concrete (a texture made here, PipeGrimeTexture)
-            var grime = PipeGrimeTexture(); AssetDatabase.CreateAsset(grime, GeneratedDir + "/PipeGrime.asset");
+            var grime = PipeGrimeTexture(); grime = GenAsset(grime, GeneratedDir + "/PipeGrime.asset");
             pipeConcrete = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "PipeConcrete" };
             pipeConcrete.SetTexture("_BaseMap", grime); pipeConcrete.SetColor("_BaseColor", new Color(0.66f, 0.65f, 0.62f)); pipeConcrete.SetFloat("_Smoothness", 0.2f);
-            AssetDatabase.CreateAsset(pipeConcrete, GeneratedDir + "/PipeConcrete.mat");
+            pipeConcrete = GenAsset(pipeConcrete, GeneratedDir + "/PipeConcrete.mat");
             pipeLamp = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "PipeLamp" };
             pipeLamp.SetColor("_BaseColor", new Color(0.9f, 0.78f, 0.55f)); pipeLamp.EnableKeyword("_EMISSION"); pipeLamp.SetColor("_EmissionColor", new Color(1.3f, 1.0f, 0.6f));
-            AssetDatabase.CreateAsset(pipeLamp, GeneratedDir + "/PipeLamp.mat");
+            pipeLamp = GenAsset(pipeLamp, GeneratedDir + "/PipeLamp.mat");
             // Round 19: the stream (moving water: PipeStream scrolls it) and its splashes
-            var wt = PipeWaterTexture(); AssetDatabase.CreateAsset(wt, GeneratedDir + "/PipeWater.asset");
+            var wt = PipeWaterTexture(); wt = GenAsset(wt, GeneratedDir + "/PipeWater.asset");
             pipeWater = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = "PipeWater" };
             pipeWater.SetTexture("_BaseMap", wt); pipeWater.SetColor("_BaseColor", new Color(0.62f, 0.70f, 0.72f)); pipeWater.SetFloat("_Smoothness", 0.93f);   // opaque and glossy (a transparent one did not show in the exe)
-            AssetDatabase.CreateAsset(pipeWater, GeneratedDir + "/PipeWater.mat");
+            pipeWater = GenAsset(pipeWater, GeneratedDir + "/PipeWater.mat");
             pipeSplash = new Material(Shader.Find("Universal Render Pipeline/Particles/Unlit")) { name = "PipeSplash" };
             pipeSplash.SetColor("_BaseColor", new Color(0.78f, 0.84f, 0.86f, 0.7f)); MakeTransparent(pipeSplash);
-            AssetDatabase.CreateAsset(pipeSplash, GeneratedDir + "/PipeSplash.mat");
+            pipeSplash = GenAsset(pipeSplash, GeneratedDir + "/PipeSplash.mat");
             DriveBands.SaveWalks(ProjectRoot);
             foreach (var p in pipes.Plans) BuildPipe(terrain, mats, root, p);
             // Round 24 A2 (A3): every mouth, for the race's closures (PipeMouths): the mouth's middle on its floor and a point on the
@@ -843,7 +843,7 @@ namespace ChastainRush
                 }
                 var mesh = new Mesh { name = "Pipe " + bid, indexFormat = IndexFormat.UInt32 };
                 mesh.SetVertices(bv); mesh.SetUVs(0, buv); mesh.subMeshCount = p.Clear ? 2 : 1; mesh.SetTriangles(bt, 0); if (p.Clear) mesh.SetTriangles(gt, 1); mesh.RecalculateNormals(); mesh.RecalculateTangents(); mesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(mesh, $"{GeneratedDir}/Meshes/Pipe {bid}.asset");
+                mesh = GenAsset(mesh, $"{GeneratedDir}/Meshes/Pipe {bid}.asset");
                 var bgo = new GameObject("sc Pipe " + bid + " barrel"); bgo.transform.SetParent(root, false);   // Round 19: "sc" (as the cuts)
                 bgo.AddComponent<MeshFilter>().sharedMesh = mesh;
                 var mr = bgo.AddComponent<MeshRenderer>(); mr.shadowCastingMode = ShadowCastingMode.Off;
@@ -920,7 +920,7 @@ namespace ChastainRush
                 { var n0 = Vector3.Cross(sv[st[1]] - sv[st[0]], sv[st[2]] - sv[st[0]]); if (n0.y < 0f) for (int i = 0; i < st.Count; i += 3) { int x = st[i + 1]; st[i + 1] = st[i + 2]; st[i + 2] = x; } }
                 var smesh = new Mesh { name = "Pipe " + bid + " stream", indexFormat = IndexFormat.UInt32 };
                 smesh.SetVertices(sv); smesh.SetUVs(0, suv); smesh.SetTriangles(st, 0); smesh.RecalculateNormals(); smesh.RecalculateBounds();
-                AssetDatabase.CreateAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {bid} stream.asset");
+                smesh = GenAsset(smesh, $"{GeneratedDir}/Meshes/Pipe {bid} stream.asset");
                 var sgo = new GameObject("Pipe " + bid + " stream"); sgo.transform.SetParent(root, false);
                 sgo.AddComponent<MeshFilter>().sharedMesh = smesh;
                 var smr = sgo.AddComponent<MeshRenderer>(); smr.sharedMaterial = pipeWater; smr.shadowCastingMode = ShadowCastingMode.Off;
@@ -1017,7 +1017,7 @@ namespace ChastainRush
         {
             var cm = new Mesh { name = name, indexFormat = IndexFormat.UInt32 };
             cm.SetVertices(mb.Verts); cm.SetTriangles(mb.Tris, 0); cm.RecalculateNormals(); cm.RecalculateBounds();
-            AssetDatabase.CreateAsset(cm, $"{GeneratedDir}/Meshes/{name}.asset");
+            cm = GenAsset(cm, $"{GeneratedDir}/Meshes/{name}.asset");
             var mc = go.AddComponent<MeshCollider>(); mc.sharedMesh = cm; mc.sharedMaterial = RampMaterial();
         }
 

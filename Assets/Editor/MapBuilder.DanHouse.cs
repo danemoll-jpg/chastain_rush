@@ -44,7 +44,7 @@ namespace ChastainRush
             string path = HandMadeDir + "/DanHouse.asset";
             var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null) { EditorUtility.CopySerialized(mesh, existing); AssetDatabase.SaveAssets(); return existing; }
-            AssetDatabase.CreateAsset(mesh, path);
+            mesh = GenAsset(mesh, path);
             return mesh;
         }
 

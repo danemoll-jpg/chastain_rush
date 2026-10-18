@@ -21,7 +21,7 @@ namespace ChastainRush
             var m = new Material(Shader.Find("Universal Render Pipeline/Lit") ?? Shader.Find("Standard")) { name = "PondWater" };
             m.SetColor("_BaseColor", new Color(0.12f, 0.19f, 0.15f)); m.color = new Color(0.12f, 0.19f, 0.15f);
             m.SetFloat("_Smoothness", 0.30f); m.SetFloat("_Glossiness", 0.30f);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/PondWater.mat");
+            m = GenAsset(m, GeneratedDir + "/PondWater.mat");
             return m;
         }
 
@@ -37,10 +37,10 @@ namespace ChastainRush
                 }
             var tex = new Texture2D(N, N, TextureFormat.RGBA32, false) { name = "SprayDot", wrapMode = TextureWrapMode.Clamp };
             tex.SetPixels(px); tex.Apply();
-            AssetDatabase.CreateAsset(tex, GeneratedDir + "/SprayDot.asset");
+            tex = GenAsset(tex, GeneratedDir + "/SprayDot.asset");
             var m = new Material(Shader.Find("Sprites/Default")) { name = "FountainSpray" };
             m.mainTexture = tex;
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/FountainSpray.mat");
+            m = GenAsset(m, GeneratedDir + "/FountainSpray.mat");
             return m;
         }
 

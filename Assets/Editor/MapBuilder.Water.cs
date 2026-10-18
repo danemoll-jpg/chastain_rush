@@ -99,13 +99,24 @@ namespace ChastainRush
             if (map.bridges != null) pave.AddLines(map.bridges.Select(b => (ToPoints(b.points), b.width * 0.5f)));
             var blds = new List<(List<Vector2> ring, Rect r)>();
             foreach (var b in map.buildings) { if (b.footprint == null || b.footprint.Length < 6) continue; var r = ToPoints(b.footprint); blds.Add((r, BoundsOf(r, 4f))); }
+            // Round 42 (A): the buildings by 32 m cell (each sample looked at every building of the map: most of a minute of the build); same result
+            var bcell = new Dictionary<Vector2Int, List<int>>();
+            for (int i = 0; i < blds.Count; i++)
+            {
+                var r = blds[i].r;
+                for (int cx = Mathf.FloorToInt(r.xMin / 32f); cx <= Mathf.FloorToInt(r.xMax / 32f); cx++)
+                    for (int cz = Mathf.FloorToInt(r.yMin / 32f); cz <= Mathf.FloorToInt(r.yMax / 32f); cz++)
+                    { var k = new Vector2Int(cx, cz); if (!bcell.TryGetValue(k, out var l)) bcell[k] = l = new List<int>(); l.Add(i); }
+            }
+            var none = new List<int>();
             // the weight of the cut: 0 on and near pavement and buildings, 1 well clear of them
             float Weight(Vector2 p)
             {
                 float w = Mathf.Clamp01((pave.Clearance(p, 6f) - 2f) / 3f);
                 if (w <= 0f) return 0f;
-                foreach (var (ring, r) in blds)
-                    if (r.Contains(p)) { float d = InPolygon(p, ring) ? 0f : DistToEdges(p, ring); w = Mathf.Min(w, Mathf.Clamp01((d - 1.5f) / 2f)); if (w <= 0f) return 0f; }
+                if (!bcell.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / 32f), Mathf.FloorToInt(p.y / 32f)), out var near)) near = none;
+                foreach (int bi in near)
+                    if (blds[bi].r.Contains(p)) { var ring = blds[bi].ring; float d = InPolygon(p, ring) ? 0f : DistToEdges(p, ring); w = Mathf.Min(w, Mathf.Clamp01((d - 1.5f) / 2f)); if (w <= 0f) return 0f; }
                 return w;
             }
             // 1. levels and surfaces, on the untouched ground

@@ -662,7 +662,7 @@ namespace ChastainRush
             m.SetFloat("_Smoothness", 0.25f);
             m.SetFloat("_AlphaClip", 1f); m.SetFloat("_Cutoff", 0.5f); m.EnableKeyword("_ALPHATEST_ON");
             m.SetFloat("_Cull", (float)CullMode.Back);
-            AssetDatabase.CreateAsset(m, GeneratedDir + "/MonumentSign.mat");
+            m = GenAsset(m, GeneratedDir + "/MonumentSign.mat");
             return m;
         }
 
