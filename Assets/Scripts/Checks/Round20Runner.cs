@@ -136,6 +136,9 @@ namespace ChastainRush
                 if (Do("cryptcrash")) yield return Guard(R41CryptCrash());
                 if (Do("cryptpics")) yield return Guard(R41CryptPics());
                 if (Do("ridgerace")) yield return Guard(R40RevRace());
+                if (Do("crest")) yield return Guard(R41Crest());              // Part B (Round20Runner.R41B.cs)
+                if (Do("crestpics")) yield return Guard(R41CrestPics());
+                if (Do("pipes")) yield return Guard(R41Pipes());              // Part C
             }
             // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round40")

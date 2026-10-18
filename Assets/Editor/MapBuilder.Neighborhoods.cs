@@ -260,7 +260,7 @@ namespace ChastainRush
                 if (!detail.TryGetValue(key, out var db)) detail[key] = db = new MeshBuilder();
                 h.detail = db;
                 if (rest.Foundation.Contains(h.index)) FoundationTint = FoundationBlock;
-                BuildHouse(mb, h);
+                if (h.index == RoofRampHouseIndex) SolidRoofHouse(mb, h, colRoot); else BuildHouse(mb, h);   // Round 41 (B): the crest cut's house, its roof solid (MapBuilder.Round41.cs)
                 FoundationTint = null;
                 if (rest.BackExposure.TryGetValue(h.index, out float bx)) Walkout(db, h, bx, (x, z) => terrain.Height(x, z));
                 int shrubs = 2 + (int)(Hash01(h.seed, 81) * 3f);

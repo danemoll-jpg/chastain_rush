@@ -1,0 +1,11 @@
+Round 41 check, 2026-10-18 06:31, the exe, 1280 x 720, muted.
+
+=== B: THE CREST CUT'S ROOF RAMP (reverse race): taken right and missed, flat out, against the lap
+  Drifter Twin       the lap 9.0 s; taken right 7.9 s (saves 1.0 s), touched sc roofer's ramp, sc roof house 1092, off the ramp 2.76 s in the air, down at (3115, 727) upright 0.89, on; missed 10.2 s (+1.2 s against the lap), touched nothing
+  Street Classic     the lap 9.9 s; taken right 7.3 s (saves 2.5 s), touched nothing, off the ramp -1.00 s in the air, down at (NaN, 0) upright -1.00, on; missed 10.4 s (+0.5 s against the lap), touched nothing
+  Needle 600         the lap 8.6 s; taken right -1.0 s (-), touched nothing, off the ramp -1.00 s in the air, down at (NaN, 0) upright -1.00, on; missed never through (), touched nothing
+FAIL  B: the roof ramp taken right saves time against the lap (Drifter Twin, Street Classic, Needle 600)  -  not: Needle 600
+FAIL  B: taken right, every one comes down on its wheels past CP4 and drives on  -  not: Street Classic, Needle 600
+PASS  B: missed, it is slower than the lap
+
+1 of 3 checks passed.

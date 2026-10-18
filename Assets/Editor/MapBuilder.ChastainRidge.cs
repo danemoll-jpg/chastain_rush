@@ -27,7 +27,7 @@ namespace ChastainRush
         [Serializable] class RidgePlume { public string id; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
         // Round 41 (A): the crypt (MapBuilder.ChurchCrypt.cs): its line from the doors to the lip, the floor's heights along it, its stations, the graveyard
         [Serializable] class RidgeCrypt { public int building; public float[] door, line, y, lip_dir, graveyard, gate, graves, trees; public float door_w, door_h, s_top, s_foot, s_west, s_hall, s_bend0, s_bend1, s_portal, lane, hall_w, clear; }
-        [Serializable] class RidgeFile { public CtBigJump[] big_jumps; public CtZone[] landing_zones; public RidgeClear[] clear_lines, break_lines; public RidgeGrade[] grades; public RidgePlume[] plumes; public RidgeCrypt crypt; public float[] boulders, crest_tracks; }
+        [Serializable] class RidgeFile { public CtBigJump[] big_jumps; public CtZone[] landing_zones; public RidgeClear[] clear_lines, break_lines; public RidgeGrade[] grades; public RidgePlume[] plumes; public RidgeCrypt crypt; public RidgeRoofRamp roof_ramp; public float[] boulders, crest_tracks; }
 
         const string RidgeTrackFile = "Data/tracks/chastain_ridge.json";
         static Ridge RidgeNow;   // for the back-yard fences' planning (PlanRestFences: none on a cleared line)
@@ -136,6 +136,7 @@ namespace ChastainRush
             // Round 40 (A1 / A2): the manhole plume replaces Round 39's road-work climb (its dirt, cones and barricade are gone)
             if (ridge.Data.plumes != null) foreach (var pl in ridge.Data.plumes) BuildPlume(terrain, mats, root, pl);
             BuildCrestCut(terrain, mats, root, ridge);   // Round 40 (A6)
+            BuildRoofRamp(terrain, mats, root, ridge);   // Round 41 (B): the roofer's ramp on house 1092 (MapBuilder.Round41.cs)
             Debug.Log($"[Round33] Chastain Ridge: {ridge.Data.big_jumps?.Length ?? 0} dirt piles, {ridge.Data.landing_zones?.Length ?? 0} landing zones; {ridge.TreesRemoved} trees kept off the run-ups, flights' last meters, landings and the way out of the hollow");
         }
         // Round 40 (A1 / A2): a street manhole's cover, flush on the carriageway (the street's own look: a dark iron disc with a rim and a grid, no

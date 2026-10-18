@@ -467,39 +467,94 @@ def flat(p): return [round(v, 2) for q in p for v in q]
 def forgiven_rev(sa, sb): return [c["id"] for c in cps_rev if (c["s"] - sa) % L_rev < (sb - sa) % L_rev]
 
 # Round 40 (A6, BUG-005: "lets put a new shortcut here straight through to the next checkpoint. Just make an obstacle so it is a bit of a
-# challenge but saves time if you dont crash"): THE CREST CUT, reverse only. Off Chastain Ridge Drive at the crest just past CP3, north
-# straight down the slope through the gap between houses 1245 and 1076 (5.5 m: 1245 moved 1.6 m west, MapBuilder.Round40.cs), through the one gap in a boulder wall terracing the back
-# yards (a real thing on a slope this steep: it runs from house 946's wall to past 767, so there is no way round it), between houses
-# 1014 and 1092 and down onto the drive past CP4. The obstacle is threading the two gaps at speed on a 27 % slope: a clean run saves
-# time, a boulder or a wall costs more. The hint at the turn-off: worn tire tracks into the gap between the houses.
-CREST_CTRL = [(3101.0, 621.0), (3096.5, 626.0), (3092.2, 632.0), (3090.95, 636.5), (3090.95, 648.0), (3088.6, 656.0), (3083.6, 664.0),
-              (3081.5, 671.5), (3080.8, 681.0), (3083.0, 692.0), (3091.0, 701.0)]
-CREST_JOIN = (3103.0, 705.5)
-CREST_WALL = dict(z=671.5, x0=3047.0, x1=3136.0, gap=(3081.5, 5.2), r=(0.65, 0.95), step=1.55)   # Round 40: below the steepest drop (z 650-660), its gap over the one between 1014 and 1092   # the boulder wall: its line, the gap (middle, width), the boulders' sizes
-s_cr0 = SR(CREST_CTRL[0]); s_cr1 = SR(CREST_JOIN)
-crest = resample(chaikin([point_at(lap_r, s_cr0, Cr)] + CREST_CTRL[1:] + [point_at(lap_r, s_cr1, Cr)], 2), 2.0)
+# challenge but saves time if you dont crash"): THE CREST CUT, reverse only. Round 41 (B, Dan 2026-10-17 21:17: "I asked for an obstacle to
+# make it so that you it hit right and there was no obstacle, you even clip through the roof of the house that you land on. Could easily put a
+# second ramp on the house you pass through the roof of at a slightly different angle to add challenge"): off Chastain Ridge Drive at the
+# crest, right through the gap between houses 1245 and 1076 (1245 moved 1.6 m west, Round 40), straight down the slope (a vehicle at speed
+# flies off the crest and comes down on it) to the terrace behind house 1092, whose back roof slope starts at the terrace's level: its roof is
+# solid now (it had only a box to the eaves, so a vehicle sank 2.4 m into it). On it, a roofer's ramp of boards on shingle bundles, set 29
+# degrees right of the line down the slope: line up on it from the terrace and it is a real jump (physics only) over the front yard and the
+# drive past CP4, down on the lawn beside the drive where it runs on north-east (the landing: from the drive at 32 m to 63 m on, a falling lawn).
+# Miss it and the roof itself throws you north over the ridge, into house 692 or on over it towards Chastain Road. Round 40's boulder wall
+# across the back yards lay where the line comes down: its middle (over the line) is gone; boulders now fill 1092's two side yards, so the roof
+# is the only way through (no easier free way round it); the wall's two ends stay. The hint at the turn-off: worn tire tracks into the gap.
+def bdir(b): return (math.sin(math.radians(b)), math.cos(math.radians(b)))
+CREST_CTRL = [(3101.0, 621.0), (3096.5, 626.0), (3092.6, 632.0), (3091.0, 637.0), (3091.0, 649.0)]
+RR = dict(house=1092, foot=(3094.6, 675.9), arc_r=32.0, head=27.0, length=12.0, width=3.8, rise_deg=16.0, lip_deg=19.0)   # the roofer's ramp
+RR_DESIGN = 20.0     # the AI's speed off it (lands about 46 m on)
+RR_AFTER = [(3134.0, 734.0)]   # on from the landing to the drive
+CREST_WALL = dict(z=671.5, x0=3047.0, x1=3136.0, open=(3081.0, 3108.0), r=(0.65, 0.95), step=1.55)   # Round 41: the wall's middle (over the line) left out
+_rd = bdir(RR["head"]); _rf = RR["foot"]; rr_lip = (_rf[0] + _rd[0] * RR["length"], _rf[1] + _rd[1] * RR["length"])
+rr_foot_y = ground(*_rf) + 0.05
+def rr_y(s):   # the board's top along it: rise_deg, the last 3 m bending up to lip_deg
+    k1, k2 = math.tan(math.radians(RR["rise_deg"])), math.tan(math.radians(RR["lip_deg"])); L_ = RR["length"]; s0 = L_ - 3.0
+    if s <= s0: return rr_foot_y + k1 * s
+    u = s - s0; return rr_foot_y + k1 * s0 + k1 * u + (k2 - k1) * u * u / 6.0
+rr_lip_y = rr_y(RR["length"])
+def rr_flight(v):
+    th = math.radians(RR["lip_deg"]); vx, vy = v * math.cos(th), v * math.sin(th); t = 0.0; q = rr_lip
+    while t < 6.0:
+        t += 0.01; q = (rr_lip[0] + _rd[0] * vx * t, rr_lip[1] + _rd[1] * vx * t); y = rr_lip_y + vy * t - 4.905 * t * t
+        if y <= ground(*q): break
+    return t, vx * t, q, vy * vy / 19.62
+for v in (14.0, 17.0, RR_DESIGN, 23.0, 26.0, 30.0):
+    t_, d_, q_, top_ = rr_flight(v); dd, ss = nearest_s(lap_r, q_)
+    near = {i: round(poly_dist(q_, ring), 1) for i, ring, h, kind in B if near_box(i, q_, 8.0) and poly_dist(q_, ring) < 8.0}
+    print(f"    off the roofer's ramp ({RR['lip_deg']:.0f} deg) at {v:.0f} m/s: {t_:.2f} s, {d_:.0f} m, {top_:.1f} m up, down at ({q_[0]:.1f}, {q_[1]:.1f}), {dd:.1f} m from the race line at s {ss:.0f}; houses within 8 m {near}")
+# what the flight passes: house 692's east wall and 809's corner, along the line (2 m steps, the flight at the AI's speed)
+_th = math.radians(RR["lip_deg"]); _vx, _vy = RR_DESIGN * math.cos(_th), RR_DESIGN * math.sin(_th)
+_tD, _dD, rr_land, _ = rr_flight(RR_DESIGN)
+_pass = {}
+for d in range(0, int(_dD) + 1):
+    q = (rr_lip[0] + _rd[0] * d, rr_lip[1] + _rd[1] * d)
+    for i, ring, h, kind in B:
+        if i != RR["house"] and near_box(i, q, 4.0) and poly_dist(q, ring) < 4.0: _pass[i] = round(min(_pass.get(i, 99.0), poly_dist(q, ring)), 1)
+print(f"the roofer's ramp on house {RR['house']}: foot ({_rf[0]:.1f}, {_rf[1]:.1f}) {rr_foot_y:.2f} m, lip ({rr_lip[0]:.1f}, {rr_lip[1]:.1f}) {rr_lip_y:.2f} m, heading {RR['head']:.0f}; "
+      f"the flight at {RR_DESIGN:.0f} m/s passes within 4 m of {_pass}")
+# the way onto the ramp: north out of the gap, then one arc that arrives square to the ramp's foot (Round 41 check: a kink there threw a vehicle off it crooked)
+_cc_ = (_rf[0] + RR["arc_r"] * math.sin(math.radians(RR["head"] + 90.0)), _rf[1] + RR["arc_r"] * math.cos(math.radians(RR["head"] + 90.0)))   # the turn's centre, right of the ramp's line
+_arc_pts = [(_cc_[0] + RR["arc_r"] * math.sin(math.radians(RR["head"] * _k / 12.0 - 90.0)), _cc_[1] + RR["arc_r"] * math.cos(math.radians(RR["head"] * _k / 12.0 - 90.0))) for _k in range(13)]
+_pre = resample(chaikin([point_at(lap_r, SR(CREST_CTRL[0]), Cr)] + CREST_CTRL[1:], 2) + _arc_pts, 2.0)
+_ramp = [(_rf[0] + _rd[0] * s, _rf[1] + _rd[1] * s) for s in (2.0, 4.0, 6.0, 8.0, 10.0, RR["length"])]
+_fl_c = [(rr_lip[0] + _rd[0] * d, rr_lip[1] + _rd[1] * d) for d in range(2, int(_dD), 2)]
+_fl_cy = [rr_lip_y + _vy * (d / _vx) - 4.905 * (d / _vx) ** 2 for d in range(2, int(_dD), 2)]
+s_cr1 = SR(RR_AFTER[-1]) + 12.0; CREST_JOIN = point_at(lap_r, s_cr1, Cr)
+_post = resample(chaikin([rr_land] + RR_AFTER + [CREST_JOIN], 2), 2.0)
+crest = _pre + _ramp + _fl_c + _post
+crest_y = [round(ground(*q), 2) for q in _pre] + [round(rr_y(s), 2) for s in (2.0, 4.0, 6.0, 8.0, 10.0, RR["length"])] + [round(v, 2) for v in _fl_cy] + [round(ground(*q), 2) for q in _post]
+s_cr0 = SR(CREST_CTRL[0])
 fg_cr = forgiven_rev(s_cr0, s_cr1)
+# the boulders: the wall's ends (Round 40's, its middle left out), and two rows filling 1092's side yards (1014 | 1092, 1092 | 809)
 boulders = []
 x_ = CREST_WALL["x0"]; k_ = 0
 while x_ <= CREST_WALL["x1"]:
-    g0, gw = CREST_WALL["gap"]
-    if abs(x_ - g0) > gw / 2 + 0.8 and not any(near_box(i, (x_, CREST_WALL["z"]), 2.0) and poly_dist((x_, CREST_WALL["z"]), ring) < 1.2 for i, ring, h, kind in B):
+    if not (CREST_WALL["open"][0] < x_ < CREST_WALL["open"][1]) and not any(near_box(i, (x_, CREST_WALL["z"]), 2.0) and poly_dist((x_, CREST_WALL["z"]), ring) < 1.2 for i, ring, h, kind in B):
         r_ = CREST_WALL["r"][0] + (CREST_WALL["r"][1] - CREST_WALL["r"][0]) * ((k_ * 0.618) % 1.0)
         boulders.append([round(x_, 2), round(CREST_WALL["z"] + 0.35 * math.sin(k_ * 1.7), 2), round(r_, 2)])
     x_ += CREST_WALL["step"]; k_ += 1
+_side = 0
+for z_row in (679.5, 684.0):
+    for x0_, x1_ in ((3070.0, 3084.6), (3103.4, 3111.0)):
+        x_ = x0_ + 0.4
+        while x_ <= x1_:
+            q = (x_, z_row + 0.3 * math.sin(x_ * 1.3)); r_ = 0.75 + 0.2 * ((x_ * 0.618) % 1.0)
+            if not any(near_box(i, q, 2.5) and poly_dist(q, ring) < r_ + 0.35 for i, ring, h, kind in B):
+                boulders.append([round(q[0], 2), round(q[1], 2), round(r_, 2)]); _side += 1
+            x_ += 1.45
 plen_cr = cum(crest)[-1]
-_cc = cum(crest); _gy = [ground(*q) for q in crest]
-_off_road = [nearest_s(lap_r, q)[0] > 9.0 for q in crest]   # never on the drive: the strip and its blend stay 9 m off the lap's line
-_keep = [k for k in range(len(crest)) if _off_road[k]]
-crest_g = [crest[k] for k in _keep]
-crest_gy = [round(sum(_gy[j] * math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(crest))) / sum(math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(crest))), 2) for k in _keep]
-print(f"crest cut's line graded: {len(crest_g)} points (from {_cc[_keep[0]]:.0f} to {_cc[_keep[-1]]:.0f} m along it), the ground moved by up to {max(abs(a - _gy[k]) for k, a in zip(_keep, crest_gy)):.2f} m")
+# the line's ground smoothed along it (Round 40's Gaussian over 5 m: the slope stays, the lumps go), from the crest's edge to the slope's foot only
+_cc = cum(_pre); _gy = [ground(*q) for q in _pre]
+_keep = [k for k in range(len(_pre)) if nearest_s(lap_r, _pre[k])[0] > 9.0 and _pre[k][1] < 668.0]
+crest_g = [_pre[k] for k in _keep]
+crest_gy = [round(sum(_gy[j] * math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(_pre))) / sum(math.exp(-((_cc[j] - _cc[k]) / 5.0) ** 2 / 2) for j in range(len(_pre))), 2) for k in _keep]
+print(f"crest cut's line graded: {len(crest_g)} points, the ground moved by up to {max(abs(a - _gy[k]) for k, a in zip(_keep, crest_gy)):.2f} m")
 print(f"crest cut: leaves the reverse lap at s {s_cr0:.0f}, rejoins at s {s_cr1:.0f}: {plen_cr:.0f} m against {(s_cr1 - s_cr0) % L_rev:.0f} m on the lap; forgives CP {fg_cr}; "
-      f"{len(boulders)} boulders in the wall at z {CREST_WALL['z']}, its gap at x {CREST_WALL['gap'][0]} ({CREST_WALL['gap'][1]} m); buildings within 3 m of its line: "
-      f"{ {i: round(min(poly_dist(q, ring) for q in crest), 1) for i, ring, h, kind in B if near_box(i, crest[len(crest) // 2], 60) and min(poly_dist(q, ring) for q in crest) < 3.0} }")
+      f"{len(boulders) - _side} boulders left of the wall, {_side} in house {RR['house']}'s side yards")
 st_cr = cum(crest)
 def st_at(path, q): return nearest_s(path, q)[1]
-sGap0, sGap1, sWall, sGap2 = st_at(crest, (3090.95, 637.0)), st_at(crest, (3090.95, 648.0)), st_at(crest, (CREST_WALL["gap"][0], CREST_WALL["z"])), st_at(crest, (3080.3, 681.0))
+sGap0, sGap1, sFoot, sLipR, sLandR = st_at(crest, (3091.0, 637.0)), st_at(crest, (3091.0, 649.0)), st_at(crest, _rf), st_at(crest, rr_lip), st_at(crest, rr_land)
+roof_ramp = {"house": RR["house"], "foot": [_rf[0], _rf[1]], "dir": [round(_rd[0], 5), round(_rd[1], 5)], "length": RR["length"], "width": RR["width"],
+             "profile": [round(v, 3) for s in [x * 0.5 for x in range(int(RR["length"] * 2) + 1)] for v in (s, rr_y(s))]}
 
 # Round 41 (A, Dan 2026-10-17 21:17: "Lets not do fake jumps off of ramps ... For this particular one, lets make it go downstairs instead to an
 # underground crypt, you emerge out in graveyard with a jump that is made of the stairs of the exit. This should make it enough to get a few
@@ -652,12 +707,12 @@ crypt_data = {"building": 74, "door": list(CR["door"]), "door_w": CR["door_w"], 
               "s_portal": round(s_portal, 2), "lane": CR["lane"], "hall_w": CR["hall_w"], "clear": CR["clear"], "lip_dir": [round(bdir(LH_)[0], 5), round(bdir(LH_)[1], 5)],
               "graveyard": flat(GY_RING), "gate": [_gate[0], _gate[1], _gate[2]], "graves": [v for g_ in graves for v in g_], "trees": [v for t_ in gy_trees for v in t_]}
 
-shortcuts.append({"id": "rc_crest_cut", "name": "Crest cut", "direction": "reverse", "path": flat(crest), "half_width_m": 3.0,
+shortcuts.append({"id": "rc_crest_cut", "name": "Crest cut", "direction": "reverse", "path": flat(crest), "path_y": crest_y, "half_width_m": 3.0,
                   "entry_inset_m": 14.0, "entry_margin_m": 1.0, "forgives": fg_cr, "ai_speed": 17.0,
-                  # slow through the gap between the houses, slower through the boulders' gap, then on down
-                  "ai_profile": [round(v, 1) for v in (0.0, 18.0, sGap0 - 2.0, 17.0, sGap1, 17.0, sWall - 3.0, 16.0, sWall + 2.0, 16.0, sGap2, 15.0, plen_cr - 8.0, 16.0)],
-                  # a sloppy try: too fast through the gaps (a wall, a boulder)
-                  "ai_slip": 0.22, "ai_slip_profile": [round(v, 1) for v in (0.0, 21.0, sGap0 - 2.0, 21.0, sGap1, 20.0, sWall - 3.0, 20.0, sWall + 2.0, 19.0, plen_cr - 8.0, 19.0)]})
+                  # Round 41: through the gap between the houses, down the slope, lined up on the roofer's ramp and off it at the jump's speed
+                  "ai_profile": [round(v, 1) for v in (0.0, 18.0, sGap0 - 2.0, 17.0, sGap1, 18.0, sFoot - 6.0, 18.0, sFoot, RR_DESIGN, sLipR, RR_DESIGN, sLandR + 4.0, 18.0, plen_cr - 8.0, 20.0)],
+                  # a sloppy try: too fast down the slope (it misses the ramp's line)
+                  "ai_slip": 0.22, "ai_slip_profile": [round(v, 1) for v in (0.0, 22.0, sGap0 - 2.0, 22.0, sGap1, 24.0, sFoot - 6.0, 25.0, sFoot, 25.0, sLipR, 25.0, sLandR + 4.0, 18.0, plen_cr - 8.0, 20.0)]})
 shortcuts.append({"id": "rch_crypt", "name": "Crypt", "direction": "reverse", "path": flat(church), "path_y": church_y, "half_width_m": 3.0,
                   "entry_inset_m": round(max(10.0, sDoor - 8.0), 1), "entry_margin_m": 1.5, "forgives": fg_ch, "ai_speed": 20.0,
                   # Round 41: through the doors, down the stair, round the hall, flat out down the catacomb, braked for the bend, up the stair to the lip at the jump's speed
@@ -693,7 +748,8 @@ landings = [{"id": "RL", "poly": zone(RL, dR, rf["dist"] - 30.0, rf["dist"] + 45
             {"id": "S1", "poly": zone(S1_LIP, d1, 8.0, f1["dist"] + 30.0, 7.0, 9.0)},
             {"id": "S2", "poly": zone(S2_LIP, d2, 8.0, f2["dist"] + 14.0, 7.0, 9.0)},
             {"id": "PLUME", "poly": zone(PP, dP, D_p - 12.0, D_p + 24.0, 6.0, 8.0)},   # Round 40: the plume's landing (as the climb's was)
-            {"id": "CRYPT", "poly": zone(L_, bdir(LH_), 22.0, 72.0, 7.0, 11.0)}]      # Round 41: the crypt's jump, the graveyard's gate to the far side of the carriageway
+            {"id": "CRYPT", "poly": zone(L_, bdir(LH_), 22.0, 72.0, 7.0, 11.0)},
+            {"id": "ROOF", "poly": zone(rr_lip, _rd, 24.0, 92.0, 9.0, 13.0)}]      # Round 41 (B): the roofer's ramp's, the lawn beside the drive      # Round 41: the crypt's jump, the graveyard's gate to the far side of the carriageway
 def flat(p): return [round(v, 2) for q in p for v in q]
 clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0] + dR[0] * (rf["dist"] - 45.0), RL[1] + dR[1] * (rf["dist"] - 45.0)), (RL[0] + dR[0] * (rf["dist"] + 30.0), RL[1] + dR[1] * (rf["dist"] + 30.0))]), "half": 9.0},
          {"id": "RL run-up and pile", "points": flat([RIDGE_RUNUP_FROM, RL]), "half": 6.0},
@@ -703,6 +759,7 @@ clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0
          {"id": "the plume's flight, its lower part", "points": flat([(PP[0] + dP[0] * k_, PP[1] + dP[1] * k_) for k_ in clear_p[::4]] + [(PP[0] + dP[0] * clear_p[-1], PP[1] + dP[1] * clear_p[-1])]), "half": 6.0},
          {"id": "RC the landing on the dead end", "points": flat([CT, RF_, (3112.0, 621.0)]), "half": 6.0},
          {"id": "the crest cut", "points": flat(crest[::2] + [crest[-1]]), "half": 4.0},
+         {"id": "the roofer's ramp jump's landing", "points": flat([rr_lip, (rr_lip[0] + _rd[0] * 90.0, rr_lip[1] + _rd[1] * 90.0)]), "half": 10.0},
          {"id": "the crypt's way to the doors", "points": flat(_appr + [CR["door"]]), "half": 4.0},
          {"id": "the crypt's cut, the graveyard, the jump and its landing", "points": flat([crypt[int(s_portal) - 2], L_, (L_[0] + bdir(LH_)[0] * 75.0, L_[1] + bdir(LH_)[1] * 75.0)]), "half": 9.0},
          {"id": "the graveyard", "points": flat([(3407.0, 449.0), (3363.0, 457.0)]), "half": 13.0}]
@@ -712,7 +769,7 @@ breaks = [{"id": "RL run-out", "points": flat([(RL[0] + dR[0] * (rf["dist"] + 6.
           # and the woods along the road's east side beyond it, where a vehicle turning back to the road after the landing runs
           {"id": "RL run-out along the road", "points": flat([(Pl[0] + 32.0, Pl[1] + 4.0), (Pl[0] + 52.0, Pl[1] - 60.0)]), "half": 18.0}]
 track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/mapgen/make_ridge_route.py (MapBuilder.ChastainRidge.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "crypt": crypt_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
+         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "crypt": crypt_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "roof_ramp": roof_ramp, "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
          "grades": [{"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "y": [round(ground(*HOLLOW_RAMP[0]), 2), round(ground(*HOLLOW_RAMP[1]), 2)], "half": 4.0, "blend": 5.0,
                      "keep_off": flat(NC), "keep_off_m": 5.0},
                     # Round 40 (A6): the crest cut's line through the back yards smoothed along it (a Gaussian of the ground over 5 m: the slope stays,

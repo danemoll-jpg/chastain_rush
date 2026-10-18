@@ -98,7 +98,7 @@ namespace ChastainRush
             BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
             var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
             GradeCreekTrack(map, terrain, creek);
-            ChurchHollows.Clear();
+            ChurchHollows.Clear(); RoofRampHouse = null;
             var ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
             GradeRidge(terrain, ridge);
             GradeNewChastainMedian(map, terrain);   // Round 40 (B2): New Chastain Road's median straight across, before anything samples the ground (MapBuilder.Round40.cs)
