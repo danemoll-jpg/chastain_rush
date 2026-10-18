@@ -4396,3 +4396,89 @@ D2 DONE. 23 geysers: one per neighborhood with hydrants, the Glen, 3 on Canton R
    3.1 s in the air, down on the street 43 m on. Both kinds Free Roam only; each link has `inRaces` (off) so a route could switch one on later.
    For Dan to check: while a hole is open, the street round it shows the grass under it and small gaps (the same look as a burst from below since Round 25).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 16:38 (BUILD_INFO.txt).
+
+## Round 37 (moved from TODO.md on 2026-10-17 when Dan reviewed Round 40; word for word)
+
+## Previous delivery 3: Round 37
+**Reviewed: driven by Dan 2026-10-16 21:19 (split screen and the stunt park; his notes are Round 38).**
+**Round 37 (Dan, 2026-10-16 17:05; reports BUG-001 to BUG-003 of session `2026-10-16_16-59-30-505_bc23a8`, read by Claude,
+after the Round 36 exe: free roam in the stunt park on the Skywhip 250, at night in the rain).** Round 36 is reviewed. Dan: "I
+don't know where to find the fire hydrants so I will report if i have issues later as i come across the special ones" (no
+change to Part D; no hints for them). Parts A and B in order; rebuild into `Builds/ChastainRush/` and commit after each;
+short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
+
+Part A, THE STUNT PARK'S RAMPS SLOW YOU DOWN. Standing rule (Dan, Round 12): ramps must not slow the vehicle's progress.
+BUG-001 (x 3315.82 z 1131.96 h 307, the teal ramp ahead): "ramp slows". BUG-002 (x 3367.30 z 1183.43 h 53, at the loop by
+the shop row): "Loop slows on both sides". BUG-003 (x 3330.24 z 1168.18 h 268, the green ramp ahead): "Green ramp slows".
+Find why (a step or seam where the ramp meets the floor, the ramp's collider or physics material, the aimed-launch speed cap
+of BigJump on these ramps, the loop's own steering, the grip in rain reading a ramp as grass, the Skywhip's profile) and fix
+it for every ramp in the park, the loop's way in and way out (both sides) and the roof and inside ramps too, since all were
+built the same way: a vehicle keeps its speed onto and up a ramp, losing only what the climb itself takes. Check in the exe:
+each of Dan's three, the loop both ways, and every other launch in the park flown flat out on the Skywhip 250 and the Clay
+Hopper, dry and in rain; speed at the foot vs. at the lip against what gravity alone would take (list them).
+
+Part B, SPLIT SCREEN FROM WOODSTOCK RUSH. Dan: "Lets go ahead and add split screen". Port Racer's split screen
+(`SplitScreen`, `SplitHud`, `SplitRoam`, `RaceMenus.Split`; Racer at `C:\Users\danmo\Racer`, read-only; prefer porting, list
+what came), as Racer has it (sequel notes):
+B1. Two players, top / bottom by default or left / right (a setting); each controller its own player (keyboard with player 1
+   as Racer); player 2 can be the AI so Dan can test it alone.
+B2. Races for two (every route, both directions, with or without AI rivals and traffic), Free Roam for two, the Stunt Park and
+   the Stunt event for two (each player their own score, Racer's split-screen stunt rules), the Free Roam activities for two
+   (each their own attempt), the Underground race for two.
+B3. Each view its own HUD (lap, checkpoints, minimap, trick panel, Free Roam clock), its own camera view (the view only changes
+   when that player changes it), its own resets, its own garage pick and rider look (player 2's rider look and vehicle saved
+   apart). One shared radio either player controls (Racer); one day / night and weather for both.
+B4. Names: the Top 10 takes each player's name as Racer does in split screen (player 2 asked for a name with the on-screen
+   keyboard on their own controller); the finish panel shows both.
+B5. Traffic, geese, breakables and the rest of the world work round both players (traffic spawns and despawns out of both
+   cameras' sight).
+B6. Menus: a Split Screen entry on the title menu as Racer has it, controller first (CLAUDE.md), B back.
+B7. Cost: frame rate split screen in Free Roam at Canton Road by the shops and in a Chastain Ridge race with traffic, both at
+   1280 x 720 (reported as not measured at 3840 x 2160); Dan's target from Woodstock Rush is 60 fps split screen on his PC.
+Check in the exe by script with two virtual pads (and player 2 as the AI): a 1-lap race for two finished by both, Free Roam
+for two, the stunt park for two with a trick each; pictures of both layouts.
+
+For Dan to check (when done): the park's ramps and the loop at speed; split screen (both layouts, a race, Free Roam, the stunt
+park, player 2 as the AI).
+
+**Round 37 status (Claude, 2026-10-16): Part A built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
+Evidence: `Data/screenshots/round37/` (`a_check_after.txt`, `a_check_before_round36.txt`, `a_ramps_*.csv`). Check: `ChastainRush.exe -exeRound37 <dir> -r37Only parkramps,parkloop`.
+A DONE. Cause: the park's ramps, landings, tables, loop and inside ramps are mesh colliders named "Stunt park ...", never registered with
+   `VehicleSurfaceContacts` (Round 10's fix covers the "sc..." shortcut ramps), so a stunt vehicle's body met PhysX's edge normals, leaning back
+   against the travel. Fixed for every park surface, plus what the check found next: on the loop and the 6 m half-pipe / quarter-pipes the body's
+   contacts slide without friction and the loop uses its own inward normal; the wheels push square to a park surface; the roofs' and store floors'
+   box seams no longer catch a body (8 m/s lost at BIG AIR's foot); and an arcade carry (as RampHold's landings): on the park's ramps with the
+   throttle held, and round the loop, a vehicle keeps its speed but for the climb (a knock over 3 m/s, a crash, is never given back).
+   Dan's spots on the Skywhip, 30 m/s at the foot: drop landing 18.2 m/s on top before (gravity alone 28.6), tower landing 22.2 (27.8); after,
+   every launch, landing, table, pipe, roof and inside ramp on both stunt vehicles, dry and rain, ends within 0.3 m/s of gravity alone. The
+   loop: 10.6 m/s over the top before (gravity 29.5), 29.7 after, and out as fast as in; driven backward (the way out) 2 runs of 8 exit 1.9 m/s
+   slower or take one knock at the top (given back in the next step).
+   BIG AIR, the shop row drop, the roof gap and the tower gap still leave at their designed speed (Round 36's aimed launches, so they land on
+   their slopes); that cap is at the lip, not on the ramp.
+   For Dan to check, not changed: K1's foot is 4.7 m from the abandoned bank's west wall, so it has no straight run-up (not measured).
+**Part B built and checked in the exe by script (two virtual controllers, minimized 1280 x 720, muted; 12 of 12 checks), not yet driven by Dan.**
+Evidence: `Data/screenshots/round37/` (`b_check.txt`, `b_fps_runs.txt`, `37b_*.png`). Check: `-r37Only splitmenu,splitrace,splitai,splitroam,splitpark,splitevent,splitpics,splitfps`.
+B1 DONE. Top / bottom (player 1 on top) or left / right (the setup's Screen row, settings.json); each controller drives its own player only
+   (the keyboard goes with player 1); "Player 2: AI driver": Racer's race AI in a race, the traffic driver cruising the roads in Free Roam.
+B2 DONE. Race (any route either way, AI rivals as race setup, traffic as Settings > Gameplay; the Underground race is a route like any), Free Roam,
+   Stunt park (Free Roam from the park's start line) and the Stunt event for two (Racer's riders: each their own points). Activities: jumps,
+   speed traps and tricks score for each; nothing written to the activity records (Racer). Check: race 1:15.5 / 1:21.0, both finished;
+   AI player 2 finished; a backflip each off BIG AIR (1,397 / 1,378 pts); the event for two.
+B3 DONE. Each half has its own HUD (lap, place, times, next checkpoint, messages, Free Roam's day and clock, the other player's direction and
+   distance), minimap, trick panel, camera view (X / V on their own controller; player 2's remembered apart), resets and garage (player 2's
+   vehicle and color in `vehicle2.json`, rider in settings.json). One radio for both, one day / night and weather (player 2's view gets its own
+   rain, snow, stars, moon, mist, as Racer).
+B4 DONE. Top 10s under each player's name (laps, races, combos, the Stunt event); player 2's name typed on their own controller; the results show both.
+B5 DONE. Traffic comes and goes out of both views and round both players; junctions wait for both; geese answer the nearer player; the pipe
+   network is drawn round both views.
+B6 DONE. SPLIT SCREEN on the title and Free Roam menus; player 1's controller works the setup; A or Start on another controller joins; either
+   player's Start pauses; B goes back.
+B7 MEASURED, target NOT MET in these runs. The PC was busy (50 to 75 % CPU from OBS, Chrome and Task Manager), so the runs vary; not measured at
+   3840 x 2160. Free Roam at Canton Road: split 74 / 37 / 65 fps vs one player 121 / 84 / 81. Chastain Ridge race with traffic: split 34 fps vs one
+   player 38 (and 20 vs 32). Racer's split-screen savings are in (detail 0.6, shadows 0.6, 1000 m far plane).
+Decided: the Stunt event with player 2 as the AI is player 1's alone on one view (Racer); split screen keeps the race setup's own settings; player
+   2 starts the race beside player 1 on the grid.
+Imported from Racer: see CLAUDE.md (Round 37). Not built: Racer's winner shot, Police Chase, Speed Patrol, Getaway, Stunt Races (none are in this game).
+For Dan to check: split screen at 3840 x 2160 (F2 shows the frame rate); both layouts, a race, Free Roam, the stunt park, player 2 as the AI; the
+   Underground race for two (not run by script).
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 19:48 (BUILD_INFO.txt).

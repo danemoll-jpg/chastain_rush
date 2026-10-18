@@ -62,6 +62,13 @@ Before dressing a ramp as an object, check that the real object is about
 that tall and that steep. If it is not, say so and offer objects that are
 (a dirt pile, a raised dump-truck bed) instead of stretching the object.
 
+**Real jumps off ramps — DECIDED (2026-10-17).** Dan: "Lets not do fake jumps off of ramps. If there is a ramp we do
+actual jumps only. If we do something on a scripted jump path it has to be something creative and not just a ramp. Lets keep
+this as a standing rule." From now on a ramp, kicker, pile or stair launches by physics alone: no aimed or scripted flight
+off it (the landing is sized to the real flight instead). A scripted or aimed path is allowed only for something that is not a
+ramp and is creative (a water plume, a geyser, a trampoline). Launches built before this rule are left as they are until Dan
+points at one.
+
 ## Process (Dan, 2026-10-15; full rules in CLAUDE.md "Process")
 This file holds only: the standing rules above, the CURRENT round, QUEUED rounds, the last three "Previous delivery"
 sections, and the technical notes at the end. Everything older is in `TODO-ARCHIVE.md`, word for word: search it when
@@ -69,6 +76,55 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 41 (Dan, 2026-10-17 21:17; report BUG-001 of session `2026-10-17_21-06-21-561_3280ac`, read by Claude, after the
+Round 40 exe: the reverse Chastain Ridge (best lap 0:59.627) and Free Roam at dusk).** Round 40 is reviewed. Dan: "Getaway seemed
+to work as I expected" (no change). Parts A to C in order; rebuild into `Builds/ChastainRush/` and commit after each; short
+results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided. First, add the new standing rule
+"Real jumps off ramps" (top of this file) to CLAUDE.md's standing rules in the same words.
+
+Part A, THE CHURCH SHORTCUT, REDONE (reverse Chastain Ridge; Round 40 A7's church leap). Dan: "Lets not do fake jumps off of
+ramps. If there is a ramp we do actual jumps only. If we do something on a scripted jump path it has to be something creative
+and not just a ramp. ... For this particular one, lets make it go downstairs instead to an underground crypt, you emerge out in
+graveyard with a jump that is made of the stairs of the exit. This should make it enough to get a few seconds bonus". Remove
+the church leap (the climb inside, the gallery, the aimed flight out of the stained-glass window); keep the front doors that
+break and the church's outside look. New line: in through the front doors, down the aisle, down a stair (driven as a ramp) into
+a crypt under the church (stone vaults, tombs, candles; breakables as the other interiors, simple and readable), along it and
+out under the churchyard, up the crypt's exit stair into a graveyard beside the church (new: headstones, a few that break,
+an iron fence, old trees; on the side toward New Chastain Road), where the top of the exit stair and its stone surround make the
+launch: a REAL jump (no aimed or scripted flight, the rule), over the graveyard, landing on a down-slope sized to it (the
+graveyard's slope graded for it, or a landing on New Chastain Road's bank), rejoining New Chastain Road on the race line heading
+northwest, forgiving the checkpoints it skips. "A few seconds bonus": taken flat out and clean it saves at least 2 to 3 s
+against the road on every vehicle the route offers (Round 40's leap broke even); a botched exit or a crash in the crypt costs
+more than it saves. Reverse only. Check: driven through flat out on two vehicles (time saved, air time, landing upright),
+one crash; pictures of the doors, the stair down, the crypt, the exit stair from below, the jump, the landing. The AI take it by
+ShortcutStrategy with mistakes.
+
+Part B, THE CREST CUT NEEDS ITS OBSTACLE (Round 40 A6, reverse). Dan: "I asked for an obstacle to make it so that you it hit
+right and there was no obstacle, you even clip through the roof of the house that you land on. Could easily put a second ramp
+on the house you pass through the roof of at a slightly different angle to add challenge". Find the house a vehicle flies
+onto off the crest cut's slope (the bump log and a flat-out run on the Drifter Twin and a motorcycle) and why it clipped through
+its roof (no roof collider, a gap in it, or the roof below its mesh): its roof is solid. Then Dan's obstacle: a second ramp on
+that roof, set at a slightly different angle from the line you arrive on, so you have to land right and line up to take it;
+a REAL jump off it (the rule) onto a landing sized to it that rejoins at or past CP4. Built so it could be there (a roofer's
+ramp of boards and shingles bundles, or similar; the ramp-look lesson). Miss it and you drop off the roof's side, slower
+than the road. Taken right it still saves time. Round 40's boulder wall stays only if it does not block that line; say. Check:
+taken right and missed, on the Drifter Twin, the Street Classic and a motorcycle; the time saved; pictures.
+
+Part C, PIPE EXITS. BUG-001 (x 2676.13 z 448.57 h 39, off Joel Drive at the network's Exit W11 Pond, x 2686 z 430, at dusk):
+"not sure if it is the same one but it is sloppy". It is a different exit from Round 39's X_SHOPS. Round 39 A2 noted the same
+kept, ungraded ground at BF, X_W20, X_W11, X_BRIDGE and X_STREAM; Dan (21:20) chose to clean up all five: the same treatment
+Round 39 gave X_SHOPS (a clean headwall and wingwalls, the bank behind them graded tidy, no ragged ground or flaps at the mouth;
+houses near them untouched), each still drivable in and out. Check: a picture of each from outside, and BUG-001's spot.
+
+For Dan to check (when done): the crypt shortcut, the crest cut's roof ramp, the five pipe exits. Still his: the X_SHOPS pipe,
+Speed Patrol, hidden cruisers (Canton Road's included), Cop vs Runner.
+
+## QUEUED rounds
+None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
+more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
+
+## Previous delivery 1 (newest): Round 40
+**Reviewed: driven by Dan 2026-10-17 21:06 (the reverse Chastain Ridge and Free Roam; his notes are Round 41; Getaway "worked as I expected").**
 **Round 40 (Dan, 2026-10-17 12:31; reports BUG-001 to BUG-011 of session `2026-10-17_12-09-19-449_081d93`, read by Claude,
 after the Round 39 exe: a reverse Chastain Ridge race on the Drifter Twin, finished 3rd, then Free Roam).** Round 39 is
 reviewed, in part: Dan has not tried the police yet ("I didn't see any police so haven't tested them yet") and has not found
@@ -186,11 +242,7 @@ Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 
 For Dan to check: the plume from BUG-001's spot; the crest cut flat out; the church leap (is a break-even show line OK, or should it land further on?);
    Canton Road's lines at Worley Drive; New Chastain's median; the Canton Road cruisers; houses 802 and 594. Still his: the police, the X_SHOPS pipe.
 
-## QUEUED rounds
-None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
-more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
-
-## Previous delivery 1 (newest): Round 39
+## Previous delivery 2: Round 39
 **Reviewed: driven by Dan 2026-10-17 12:09 to 12:29 (a reverse Chastain Ridge race and Free Roam; his notes are Round 40; the police and the X_SHOPS pipe not yet checked).**
 **Round 39 (Dan, 2026-10-17 03:30; reports BUG-001 to BUG-005 of session `2026-10-17_03-04-04-461_b78d3f`, read by Claude,
 after the Round 38 exe: Free Roam on the Drifter Twin).** Round 38 is reviewed. Dan is asleep while this runs: a long round
@@ -352,7 +404,7 @@ For Dan to check: Chastain Corner and Glen Lane, the X_SHOPS pipe, the Courson p
    Easy (can you lose them?), Speed Patrol, hidden cruisers, Cop vs Runner, at 3840 x 2160 (frame rates here are 1280 x 720).
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 10:31 (BUILD_INFO.txt); a final smoke run on it passed 7 of 7 (`round39/d/final_check.txt`).
 
-## Previous delivery 2: Round 38
+## Previous delivery 3: Round 38
 **Reviewed: driven by Dan 2026-10-17 03:04 to 03:19 (Free Roam on the Drifter Twin; his notes are Round 39).**
 **Round 38 (Dan, 2026-10-16 21:34; report BUG-001 of session `2026-10-16_21-19-50-140_b75298`, read by Claude, after the
 Round 37 exe).** Round 37 is reviewed (Dan: the split-screen AI player 2 is only for testing, "No one is going to be splitting
@@ -445,90 +497,6 @@ Also fixed: the other neighborhoods' mailboxes had the Glen's asset names, so 7 
 For Dan to check: the bank hop and drop, smashing out of the pizza window, the shop rooms and the shop ramp, a Stunt event with 3 rivals, people in the
    yards / at the pools / at the shops and animals in the woods, at 3840 x 2160.
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 01:32 (BUILD_INFO.txt).
-
-## Previous delivery 3: Round 37
-**Reviewed: driven by Dan 2026-10-16 21:19 (split screen and the stunt park; his notes are Round 38).**
-**Round 37 (Dan, 2026-10-16 17:05; reports BUG-001 to BUG-003 of session `2026-10-16_16-59-30-505_bc23a8`, read by Claude,
-after the Round 36 exe: free roam in the stunt park on the Skywhip 250, at night in the rain).** Round 36 is reviewed. Dan: "I
-don't know where to find the fire hydrants so I will report if i have issues later as i come across the special ones" (no
-change to Part D; no hints for them). Parts A and B in order; rebuild into `Builds/ChastainRush/` and commit after each;
-short results (CLAUDE.md "Process"). Decide design questions yourself and say what you decided.
-
-Part A, THE STUNT PARK'S RAMPS SLOW YOU DOWN. Standing rule (Dan, Round 12): ramps must not slow the vehicle's progress.
-BUG-001 (x 3315.82 z 1131.96 h 307, the teal ramp ahead): "ramp slows". BUG-002 (x 3367.30 z 1183.43 h 53, at the loop by
-the shop row): "Loop slows on both sides". BUG-003 (x 3330.24 z 1168.18 h 268, the green ramp ahead): "Green ramp slows".
-Find why (a step or seam where the ramp meets the floor, the ramp's collider or physics material, the aimed-launch speed cap
-of BigJump on these ramps, the loop's own steering, the grip in rain reading a ramp as grass, the Skywhip's profile) and fix
-it for every ramp in the park, the loop's way in and way out (both sides) and the roof and inside ramps too, since all were
-built the same way: a vehicle keeps its speed onto and up a ramp, losing only what the climb itself takes. Check in the exe:
-each of Dan's three, the loop both ways, and every other launch in the park flown flat out on the Skywhip 250 and the Clay
-Hopper, dry and in rain; speed at the foot vs. at the lip against what gravity alone would take (list them).
-
-Part B, SPLIT SCREEN FROM WOODSTOCK RUSH. Dan: "Lets go ahead and add split screen". Port Racer's split screen
-(`SplitScreen`, `SplitHud`, `SplitRoam`, `RaceMenus.Split`; Racer at `C:\Users\danmo\Racer`, read-only; prefer porting, list
-what came), as Racer has it (sequel notes):
-B1. Two players, top / bottom by default or left / right (a setting); each controller its own player (keyboard with player 1
-   as Racer); player 2 can be the AI so Dan can test it alone.
-B2. Races for two (every route, both directions, with or without AI rivals and traffic), Free Roam for two, the Stunt Park and
-   the Stunt event for two (each player their own score, Racer's split-screen stunt rules), the Free Roam activities for two
-   (each their own attempt), the Underground race for two.
-B3. Each view its own HUD (lap, checkpoints, minimap, trick panel, Free Roam clock), its own camera view (the view only changes
-   when that player changes it), its own resets, its own garage pick and rider look (player 2's rider look and vehicle saved
-   apart). One shared radio either player controls (Racer); one day / night and weather for both.
-B4. Names: the Top 10 takes each player's name as Racer does in split screen (player 2 asked for a name with the on-screen
-   keyboard on their own controller); the finish panel shows both.
-B5. Traffic, geese, breakables and the rest of the world work round both players (traffic spawns and despawns out of both
-   cameras' sight).
-B6. Menus: a Split Screen entry on the title menu as Racer has it, controller first (CLAUDE.md), B back.
-B7. Cost: frame rate split screen in Free Roam at Canton Road by the shops and in a Chastain Ridge race with traffic, both at
-   1280 x 720 (reported as not measured at 3840 x 2160); Dan's target from Woodstock Rush is 60 fps split screen on his PC.
-Check in the exe by script with two virtual pads (and player 2 as the AI): a 1-lap race for two finished by both, Free Roam
-for two, the stunt park for two with a trick each; pictures of both layouts.
-
-For Dan to check (when done): the park's ramps and the loop at speed; split screen (both layouts, a race, Free Roam, the stunt
-park, player 2 as the AI).
-
-**Round 37 status (Claude, 2026-10-16): Part A built and checked in the exe by script (minimized 1280 x 720, muted), not yet driven by Dan.**
-Evidence: `Data/screenshots/round37/` (`a_check_after.txt`, `a_check_before_round36.txt`, `a_ramps_*.csv`). Check: `ChastainRush.exe -exeRound37 <dir> -r37Only parkramps,parkloop`.
-A DONE. Cause: the park's ramps, landings, tables, loop and inside ramps are mesh colliders named "Stunt park ...", never registered with
-   `VehicleSurfaceContacts` (Round 10's fix covers the "sc..." shortcut ramps), so a stunt vehicle's body met PhysX's edge normals, leaning back
-   against the travel. Fixed for every park surface, plus what the check found next: on the loop and the 6 m half-pipe / quarter-pipes the body's
-   contacts slide without friction and the loop uses its own inward normal; the wheels push square to a park surface; the roofs' and store floors'
-   box seams no longer catch a body (8 m/s lost at BIG AIR's foot); and an arcade carry (as RampHold's landings): on the park's ramps with the
-   throttle held, and round the loop, a vehicle keeps its speed but for the climb (a knock over 3 m/s, a crash, is never given back).
-   Dan's spots on the Skywhip, 30 m/s at the foot: drop landing 18.2 m/s on top before (gravity alone 28.6), tower landing 22.2 (27.8); after,
-   every launch, landing, table, pipe, roof and inside ramp on both stunt vehicles, dry and rain, ends within 0.3 m/s of gravity alone. The
-   loop: 10.6 m/s over the top before (gravity 29.5), 29.7 after, and out as fast as in; driven backward (the way out) 2 runs of 8 exit 1.9 m/s
-   slower or take one knock at the top (given back in the next step).
-   BIG AIR, the shop row drop, the roof gap and the tower gap still leave at their designed speed (Round 36's aimed launches, so they land on
-   their slopes); that cap is at the lip, not on the ramp.
-   For Dan to check, not changed: K1's foot is 4.7 m from the abandoned bank's west wall, so it has no straight run-up (not measured).
-**Part B built and checked in the exe by script (two virtual controllers, minimized 1280 x 720, muted; 12 of 12 checks), not yet driven by Dan.**
-Evidence: `Data/screenshots/round37/` (`b_check.txt`, `b_fps_runs.txt`, `37b_*.png`). Check: `-r37Only splitmenu,splitrace,splitai,splitroam,splitpark,splitevent,splitpics,splitfps`.
-B1 DONE. Top / bottom (player 1 on top) or left / right (the setup's Screen row, settings.json); each controller drives its own player only
-   (the keyboard goes with player 1); "Player 2: AI driver": Racer's race AI in a race, the traffic driver cruising the roads in Free Roam.
-B2 DONE. Race (any route either way, AI rivals as race setup, traffic as Settings > Gameplay; the Underground race is a route like any), Free Roam,
-   Stunt park (Free Roam from the park's start line) and the Stunt event for two (Racer's riders: each their own points). Activities: jumps,
-   speed traps and tricks score for each; nothing written to the activity records (Racer). Check: race 1:15.5 / 1:21.0, both finished;
-   AI player 2 finished; a backflip each off BIG AIR (1,397 / 1,378 pts); the event for two.
-B3 DONE. Each half has its own HUD (lap, place, times, next checkpoint, messages, Free Roam's day and clock, the other player's direction and
-   distance), minimap, trick panel, camera view (X / V on their own controller; player 2's remembered apart), resets and garage (player 2's
-   vehicle and color in `vehicle2.json`, rider in settings.json). One radio for both, one day / night and weather (player 2's view gets its own
-   rain, snow, stars, moon, mist, as Racer).
-B4 DONE. Top 10s under each player's name (laps, races, combos, the Stunt event); player 2's name typed on their own controller; the results show both.
-B5 DONE. Traffic comes and goes out of both views and round both players; junctions wait for both; geese answer the nearer player; the pipe
-   network is drawn round both views.
-B6 DONE. SPLIT SCREEN on the title and Free Roam menus; player 1's controller works the setup; A or Start on another controller joins; either
-   player's Start pauses; B goes back.
-B7 MEASURED, target NOT MET in these runs. The PC was busy (50 to 75 % CPU from OBS, Chrome and Task Manager), so the runs vary; not measured at
-   3840 x 2160. Free Roam at Canton Road: split 74 / 37 / 65 fps vs one player 121 / 84 / 81. Chastain Ridge race with traffic: split 34 fps vs one
-   player 38 (and 20 vs 32). Racer's split-screen savings are in (detail 0.6, shadows 0.6, 1000 m far plane).
-Decided: the Stunt event with player 2 as the AI is player 1's alone on one view (Racer); split screen keeps the race setup's own settings; player
-   2 starts the race beside player 1 on the grid.
-Imported from Racer: see CLAUDE.md (Round 37). Not built: Racer's winner shot, Police Chase, Speed Patrol, Getaway, Stunt Races (none are in this game).
-For Dan to check: split screen at 3840 x 2160 (F2 shows the frame rate); both layouts, a race, Free Roam, the stunt park, player 2 as the AI; the
-   Underground race for two (not run by script).
-Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-16 19:48 (BUILD_INFO.txt).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
