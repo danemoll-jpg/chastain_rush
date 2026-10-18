@@ -361,6 +361,16 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 40 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the reverse Chastain Ridge
+(`make_ridge_route.py`): the manhole plume replaces Round 39's climb (`Neighborhood/ManholePlume.cs`, cover via `ManholeLid`; route `plumes` /
+`plumes_rev` arm it; `Vehicle/GuidedFlight.cs`, an aimed flight along a Hermite curve from wherever the vehicle is); BUG-003's bump smoothed
+(`SeamSpots` in `MapBuilder.Round17.cs`); S1 / S2 clues hidden in a reverse race (`RaceOnly.hideInReverseOf`, CtBigJump `clues_hidden_reverse_of`);
+no reverse S1; the crest cut (boulder wall, house 1245 moved 1.6 m west: `HouseMoves` in `MapBuilder.Round40.cs`) and the church leap (church
+74's north wing hollow: `MapBuilder.ChurchClimb.cs`; `Neighborhood/GuidedLaunch.cs`, `Neighborhood/ChurchTurn.cs` held bends). B the split
+carriageways' paint rule (`RoadIndex.CoversPaint`), New Chastain Road's median and its trees (`MapBuilder.Round40.cs`), two hidden cruisers on
+Canton Road (`HiddenPolice.CantonSpots`). C houses 802 and 594 raised (`RaisedBuildings`). Check: `ChastainRush.exe -exeRound40 <dir> [-r40Only
+plume,plumewhen,plumepics,fwdleap,corner,clues,crest,church,churchpics,ridgerace,lines,median,cantoncop,houses] [-traffic Normal] [-hiddenPolice]
+-logFile <dir>\Player.log` (`Checks/Round20Runner.R40*.cs`). Imported from Racer: nothing.
 **Round 39 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A Dan's spots: mapgen tilts the last
 8 m of every road end that meets a road running on through onto it (`junction_stems`, config `road_flatten.junction_warp_m`; BUG-001 / BUG-005);
 `pipe_network.py` drops a fillet that folds back (`dekink`); `MapBuilder.Pipes.cs` `Retaining` (X_SHOPS only): wingwalls hold kept ground, the
@@ -745,7 +755,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-17_03-04-04-461_b78d3f` through BUG-005 (Round 39; before it `2026-10-16_21-19-50-140_b75298` through BUG-001, Round 38).
+`2026-10-17_12-09-19-449_081d93` through BUG-011 (Round 40; before it `2026-10-17_03-04-04-461_b78d3f` through BUG-005, Round 39).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

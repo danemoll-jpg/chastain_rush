@@ -155,6 +155,37 @@ For Dan to check (when done): the reverse Ridge (the manhole plume, the crest sh
 on Canton Road, New Chastain's median, the hidden cop on Canton Road, the two houses. Still his from Round 39: the police (POLICE on the title and Free Roam
 menus; hidden cruisers on Bells Ferry, New Chastain and Chastain Roads and four neighborhood streets) and the X_SHOPS pipe.
 
+**Status (Claude, 2026-10-17): Parts A to C built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round40/`.
+A1/A2 DONE. Round 39's climb (dirt, cones, barricade) gone. A manhole cover on the northwest-bound lane 12 m past Dan's BUG-001 spot; it blows 80 m before the
+   first racer and gushes all race; the plume covers lanes, shoulder and median; an aimed flight onto the forward pile's ramp face. All 11 vehicles from left
+   lane, right lane and shoulder: thrown, 3.9 s air, 28-30 m up, down 3-4 m on the ramp face, upright. Traffic and police cars pass unthrown. Decided: forward
+   race never blows; Free Roam blows at 12+ m/s northwest-bound within 45 m, shuts after 25 s. Forward leap re-flown on all 14.
+A3 DONE. A 6 cm crest and 9 cm dip where Hilltop Drive and a service road end on the lane: smoothed there only. Drifter Twin flat out: no bump event.
+A4/A5 DONE. S1's and S2's tracks and barricades hidden in a reverse race (shown forward and in Free Roam). Reverse S1 removed.
+A6 DONE. CREST CUT: through the gap between houses 1245 and 1076 (1245 moved 1.6 m west: 5.5 m gap), then the one gap in a boulder wall terracing the back
+   yards (moved below the steepest drop, its gap over the one between 1014 and 1092), onto the drive past CP4 (forgiven). Its line graded smooth (the slope
+   kept). Worn tracks at the turn-off. Flat out on the line: the Street Classic saves 1.6 s; the motorcycles break even (they fly on the slope). 1.6 m off
+   the line: a crash at the house corner or slowed by the boulders.
+A7 DONE. CHURCH LEAP: in the front doors (break), aisle past pews, round the altar, up along the north wall, round onto the gallery under the steeple, out
+   the stained-glass window (breaks) on a curving aimed flight (4.7 s) over the south wing onto New Chastain Road heading west, past CP2 (forgives CP1, CP2).
+   The two bends inside are held (arcade). Against the road: Drifter Twin +1.4 s, Street Classic -0.5 s. It is a show line that about breaks even: the
+   church stands beside the road it skips, so the climb inside costs what the flight saves (see For Dan to check).
+   AI: 3 reverse laps x 3 AI, traffic Normal, all finish, no missed checkpoints, both shortcuts taken by ShortcutStrategy; a race taking every shortcut,
+   sloppy tries included: all finish. With traffic Normal 2 of 47 scripted runs on Chastain Ridge Drive were stopped by a car turning at the dead end
+   (both pass with traffic off).
+B1 DONE. Cause: two one-way carriageways of one street where they split (Canton Road at Worley Drive) let the wider one's lines run over the other's lanes.
+   Rule fixed map-wide: 14 carriageway pairs (Chastain Road NW 4, Canton Road 1, Chastain Meadows Pkwy 1, Townpark Dr 1, I-575 ramps 7).
+B2 DONE. New Chastain Road's median straight across between the carriageways' edges (up to 0.83 m moved), crossings left; 65 trees down it (none within
+   35 m of a crossing, the plume or the Ridge leap's landing).
+B3 DONE. Two hidden cruisers on Canton Road south of New Chastain: in the lot by building 26's drive (3590, 293) and at Worley Drive's mouth (3600, 118),
+   nose to the road; one always in use. Both start a chase at 65 in a 45.
+C DONE. House 802 set on its ground (floor over its highest corner, foundation on the low side). Garage row 594 stands on flat ground: its walls were 2.6 m
+   under a roof as wide as the building; now 3.7 m.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-17 20:24 (BUILD_INFO.txt). One build for all three parts (a map build is 30 min);
+   three commits, the shared map-build files with Part A.
+For Dan to check: the plume from BUG-001's spot; the crest cut flat out; the church leap (is a break-even show line OK, or should it land further on?);
+   Canton Road's lines at Worley Drive; New Chastain's median; the Canton Road cruisers; houses 802 and 594. Still his: the police, the X_SHOPS pipe.
+
 ## QUEUED rounds
 None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
 more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)

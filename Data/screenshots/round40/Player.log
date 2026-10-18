@@ -1,0 +1,496 @@
+Mono path[0] = 'C:/Users/danmo/chastain_rush/Builds/ChastainRush/ChastainRush_Data/Managed'
+Mono config path = 'C:/Users/danmo/chastain_rush/Builds/ChastainRush/MonoBleedingEdge/etc'
+CodeReloadManager initialized
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+Initialize engine version: 6000.6.1f1 (7efac9f6c10e)
+[EntityIdStore] init: VM path (explicit commit), pageSize=4096, blockCount=1048576, entitiesPerBlock=256, slots reserved=4294967296 bytes
+[Subsystems] Discovering subsystems at path C:/Users/danmo/chastain_rush/Builds/ChastainRush/ChastainRush_Data/UnitySubsystems
+[D3D12 Device Filter] Vendor Name: NVIDIA
+[D3D12 Device Filter] Device Name: NVIDIA GeForce GTX 1660 Ti
+[D3D12 Device Filter] Driver Version: 32.0.16.1062
+[D3D12 Device Filter] Feature Level: 12.1
+[D3D12 Device Filter] Graphics Memory: 5966 MB
+[D3D12 Device Filter] Processor Count: 8
+[D3D12 Device Filter] Device Type: Discrete
+GfxDevice: creating device client; kGfxThreadingModeSplitJobs
+d3d12: failed to query info queue interface (0x80004002).
+Direct3D:
+    Version:         Direct3D 12 [level 12.1]
+    Renderer:        NVIDIA GeForce GTX 1660 Ti (ID=0x2182)
+    Vendor:          NVIDIA
+    VRAM:            5966 MB
+    App VRAM Budget: 5198 MB
+    Driver:          32.0.16.1062
+Begin MonoManager ReloadAssembly
+- Finished resetting the current domain, in  0.021 seconds
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+[Check] muted; check files go to C:\Users\danmo\chastain_rush\Data\screenshots\round40
+<RI> Initializing input.
+Using Windows.Gaming.Input
+UnloadTime: 0.730300 ms
+[VehicleSurfaceContacts] 381 shortcut and stunt park surfaces, 1 bridge deck meshes, 18 terrain tiles registered
+[Vehicle] Street Classic (original)
+[Police] road network: 8683 nodes on 623 roads, 15 parts (largest 7946 nodes), 2172 ms
+[Police] hidden police: 14 hiding places of 983 found (10 on the fast roads, 4 in the neighborhoods): Canton Road (3590, 293), Canton Road (3600, 118), Bells Ferry Road Northwest (1457, 1008), Bells Ferry Road Northwest (1435, 1187), New Chastain Road (3344, 436), Bells Ferry Road Northeast (1543, 100), Chastain Road Northwest (277, 952), Bells Ferry Road Northwest (1233, 1590), New Chastain Road (2194, 738), Bells Ferry Road Northwest (1469, 701), Hartley Woods Drive Northeast (1698, 1614), Blackwell Circle (3381, 914), Suburban Drive Northwest (2022, 1747), Crestmore Drive Northwest (1834, 1851)
+[Sounds] drop-ins from C:/Users/danmo/AppData/LocalLow/Chastain Rush/Chastain Rush\Sounds: 1 goose honks, 0 heron calls, 1 trampoline bounces; breaks wood/metal/glass/water/boom: 0/0/0/0/0
+[OtherEngines] state Free; AI 0, traffic 1, wanted 0, voices playing 0
+[Vehicle] switched to Street Classic (original)
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[Race] GO
+[Vehicle] switched to Street Classic (original)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Vehicle] switched to Street Classic (original)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Street Classic (original)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+Direct3D: detected that IDXGISwapChain::GetFrameStatistics is broken (it does not return proper timestamps). Delta time will now be calculated using cpu-side time stampling until the game window is moved.
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 2
+[Vehicle] switched to Longroof GT (tourer)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Longroof GT (tourer)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 1
+[Vehicle] switched to Longroof GT (tourer)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Needle 600 (moto)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Vehicle] switched to Needle 600 (moto)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Needle 600 (moto)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Vehicle] switched to Trail Four (atv)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 1
+[Vehicle] switched to Trail Four (atv)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Trail Four (atv)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Sundown Roadster (roadster)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Sundown Roadster (roadster)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Sundown Roadster (roadster)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Highball Fastback (fastback)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Highball Fastback (fastback)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Highball Fastback (fastback)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Pebble Coupe (pebble)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Pebble Coupe (pebble)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Pebble Coupe (pebble)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Skyfin Cruiser (skyfin)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Skyfin Cruiser (skyfin)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Skyfin Cruiser (skyfin)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Vehicle] switched to Ridge Scrambler (scrambler)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Ridge Scrambler (scrambler)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 0
+[Vehicle] switched to Ridge Scrambler (scrambler)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Turf Rocket (mower)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Turf Rocket (mower)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Vehicle] switched to Turf Rocket (mower)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Race] RACE LEFT
+[Vehicle] switched to Drifter Twin (drifter)
+[Traffic] free roam: every road open
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[Race] GO
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Race] RACE LEFT
+[Traffic] free roam: every road open
+[Race] RACE START requested: Chastain Ridge, forward, 3 laps, lap 2072 m, 6 checkpoints, run-in 381 m, 23 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[Race] GO
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Race] RACE LEFT
+[Traffic] free roam: every road open
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 3
+[Vehicle] switched to Drifter Twin (drifter)
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[OtherEngines] state Countdown; AI 0, traffic 14, wanted 0, voices playing 0
+[Race] GO
+[Race] RACE LEFT
+[Vehicle] switched to Street Classic (original)
+[Traffic] free roam: every road open
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Free; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Longroof GT (tourer)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Needle 600 (moto)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Trail Four (atv)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Sundown Roadster (roadster)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Highball Fastback (fastback)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Pebble Coupe (pebble)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Skyfin Cruiser (skyfin)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Ridge Scrambler (scrambler)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Turf Rocket (mower)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Clay Hopper (stuntbuggy)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Skywhip 250 (stuntbike)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Clay Hopper Cup (hoppercup)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Drifter Twin (drifter)
+[Race] RACE START requested: Chastain Ridge, forward, 3 laps, lap 2072 m, 6 checkpoints, run-in 381 m, 23 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[OtherEngines] state Countdown; AI 0, traffic 14, wanted 0, voices playing 0
+[Race] GO
+[Race] RACE LEFT
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Race] RACE LEFT
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Street Classic (original)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[Vehicle] switched to Needle 600 (moto)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[Race] RACE LEFT
+[Traffic] free roam: every road open
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Traffic] race Chastain Ridge: 18 road pieces closed to traffic (open roads: only the barred side roads)
+[OtherEngines] state Countdown; AI 0, traffic 14, wanted 0, voices playing 0
+[Race] GO
+[Vehicle] switched to Drifter Twin (drifter)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 1
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 1
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Vehicle] switched to Street Classic (original)
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 1, voices playing 2
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Race] RACE LEFT
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Race] START LINE crossed: clock started
+[OtherEngines] state Racing; AI 0, traffic 14, wanted 0, voices playing 0
+[Race] RACE LEFT
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver EMBER: Street Classic (original) on the grid at (3565.2, 736.8)
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver GOLD: Trail Four (atv) on the grid at (3570.1, 730.2)
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver BLUE: Drifter Twin (drifter) on the grid at (3566.1, 722.9)
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[Race] GO
+[Race] BLUE: START LINE crossed: clock started
+[Race] GOLD: START LINE crossed: clock started
+[Race] EMBER: START LINE crossed: clock started
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 0, voices playing 0
+[Race] BLUE: CHECKPOINT 1 at 9.284
+[Race] EMBER: CHECKPOINT 1 at 10.426
+AI_JUDGMENT seed=1146602088 driver=BLUE event=1 type=curb clip station=707.7 speed=18.48
+[Race] GOLD: CHECKPOINT 1 at 13.262
+[Race] BLUE: CHECKPOINT 2 at 16.895
+[Race] EMBER: CHECKPOINT 2 at 18.400
+[Race] GOLD: CHECKPOINT 2 at 20.663
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[Race] BLUE: CHECKPOINT 3 at 30.824
+[Race] EMBER: CHECKPOINT 3 at 33.235
+[Race] EMBER: SHORTCUT rc_crest_cut entered at 34.261 (its corridor): checkpoints 4 forgiven
+[Race] GOLD: CHECKPOINT 3 at 34.987
+[Race] GOLD: SHORTCUT rc_crest_cut entered at 35.941 (its corridor): checkpoints 4 forgiven
+[Race] BLUE: CHECKPOINT 4 at 37.080
+[AI] EMBER recovery: at (3087.1,633.7) speed 0.0, station 1293, stalled 4.8 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 3
+[Race] BLUE: CHECKPOINT 5 at 44.765
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[AI] GOLD recovery: at (3087.5,634.4) speed 0.0, station 1292, stalled 5.0 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 6
+[Race] EMBER: SHORTCUT rc_crest_cut left at 45.842
+AI_JUDGMENT seed=1146602088 driver=EMBER event=1 type=late braking station=1460.4 speed=17.48
+[Race] GOLD: SHORTCUT rc_crest_cut left at 51.282
+AI_JUDGMENT seed=1146602088 driver=GOLD event=1 type=wide line station=1464.3 speed=17.92
+[Race] BLUE: CHECKPOINT 6 at 53.659
+[Race] EMBER: CHECKPOINT 5 at 53.921
+AI_JUDGMENT seed=1146602088 driver=BLUE event=2 type=curb clip station=69.8 speed=34.30
+[Race] GOLD: CHECKPOINT 5 at 58.693
+[Race] EMBER: CHECKPOINT 6 at 63.651
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 3, voices playing 3
+[Race] BLUE: LAP 1 COUNTED 64.762 (clock 64.762 + penalty 0.0)
+[Race] GOLD: CHECKPOINT 6 at 67.681
+[Race] BLUE: CHECKPOINT 1 at 73.646
+[Race] EMBER: LAP 1 COUNTED 74.544 (clock 74.544 + penalty 0.0); forgiven CP4
+[Race] GOLD: LAP 1 COUNTED 77.378 (clock 77.378 + penalty 0.0); forgiven CP4
+[Race] BLUE: CHECKPOINT 2 at 81.269
+[Race] EMBER: CHECKPOINT 1 at 84.318
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 1, voices playing 1
+[Race] GOLD: CHECKPOINT 1 at 86.945
+[Race] EMBER: CHECKPOINT 2 at 92.495
+[Race] GOLD: CHECKPOINT 2 at 94.336
+AI_JUDGMENT seed=1146602088 driver=EMBER event=2 type=wide line station=915.6 speed=36.48
+[Race] BLUE: CHECKPOINT 3 at 95.514
+[Race] BLUE: SHORTCUT rc_crest_cut entered at 96.456 (its corridor): checkpoints 4 forgiven
+[Race] BLUE: SHORTCUT rc_crest_cut left at 103.805
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 1
+AI_JUDGMENT seed=1146602088 driver=GOLD event=2 type=early braking station=1232.9 speed=27.59
+[Race] EMBER: CHECKPOINT 3 at 107.056
+AI_JUDGMENT seed=1146602088 driver=BLUE event=3 type=curb clip station=1566.3 speed=38.39
+[Race] GOLD: CHECKPOINT 3 at 108.321
+[Race] BLUE: CHECKPOINT 5 at 111.236
+[Race] EMBER: CHECKPOINT 4 at 113.835
+[Race] GOLD: CHECKPOINT 4 at 114.864
+[Race] BLUE: CHECKPOINT 6 at 120.487
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 3, voices playing 3
+[Race] EMBER: CHECKPOINT 5 at 135.634
+[Race] BLUE: LAP 2 COUNTED 68.973 (clock 68.973 + penalty 0.0); forgiven CP4
+[Race] GOLD: CHECKPOINT 5 at 136.365
+AI_JUDGMENT seed=1146602088 driver=EMBER event=3 type=wide line station=1801.1 speed=17.43
+[Race] BLUE: CHECKPOINT 1 at 142.632
+AI_JUDGMENT seed=1146602088 driver=GOLD event=3 type=late braking station=1831.6 speed=12.05
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 4, voices playing 4
+AI_JUDGMENT seed=1146602088 driver=BLUE event=4 type=early braking station=759.3 speed=34.09
+[Race] EMBER: CHECKPOINT 6 at 150.034
+[Race] BLUE: CHECKPOINT 2 at 150.247
+[Race] GOLD: CHECKPOINT 6 at 152.120
+[Race] EMBER: LAP 2 COUNTED 86.498 (clock 86.498 + penalty 0.0)
+[Race] BLUE: CHECKPOINT 3 at 164.179
+[Race] GOLD: LAP 2 COUNTED 84.583 (clock 84.583 + penalty 0.0)
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[Race] GOLD: SHORTCUT rch_church_leap entered at 169.499 (its corridor): checkpoints 1,2 forgiven
+[Race] BLUE: CHECKPOINT 4 at 170.473
+[Race] EMBER: CHECKPOINT 1 at 170.820
+[Race] BLUE: CHECKPOINT 5 at 178.087
+[Race] EMBER: CHECKPOINT 2 at 179.001
+[Race] GOLD: SHORTCUT rch_church_leap left at 180.802
+[Race] BLUE: CHECKPOINT 6 at 187.002
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 3, voices playing 3
+AI_JUDGMENT seed=1146602088 driver=BLUE event=5 type=curb clip station=90.6 speed=37.57
+[Race] EMBER: CHECKPOINT 3 at 193.859
+[Race] EMBER: SHORTCUT rc_crest_cut entered at 194.885 (its corridor): checkpoints 4 forgiven
+[Race] GOLD: CHECKPOINT 3 at 195.386
+AI_JUDGMENT seed=1146602088 driver=GOLD event=4 type=wide line station=1379.0 speed=26.25
+[AI] EMBER recovery: at (3087.1,633.7) speed 0.0, station 1293, stalled 4.8 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 3
+AI_JUDGMENT seed=1146602088 driver=EMBER event=4 type=late braking station=1299.4 speed=12.19
+[Race] GOLD: CHECKPOINT 4 at 201.981
+[Race] BLUE: LAP 3 COUNTED 71.555 (clock 71.555 + penalty 0.0)
+[Race] BLUE: FINISH total 205.289 (clock 205.289 + penalties 0.0); laps 64.762 68.973 71.555; place 1
+[Race] BLUE: celebrates the win
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[Race] EMBER: SHORTCUT rc_crest_cut left at 208.102
+[Race] GOLD: CHECKPOINT 5 at 209.460
+[Race] EMBER: CHECKPOINT 5 at 215.986
+[Race] GOLD: CHECKPOINT 6 at 218.432
+[Race] EMBER: CHECKPOINT 6 at 225.787
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 3, voices playing 4
+[AI] EMBER recovery: at (3504.8,1086.9) speed 1.9, station 0, stalled 0.0 s, no progress route 5.5 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 1
+[Race] GOLD: LAP 3 COUNTED 74.750 (clock 74.750 + penalty 0.0); forgiven CP1,CP2
+[Race] GOLD: FINISH total 236.711 (clock 236.711 + penalties 0.0); laps 77.378 84.583 74.750; place 2
+[Race] EMBER: LAP 3 COUNTED 81.776 (clock 81.776 + penalty 0.0); forgiven CP4
+[Race] EMBER: FINISH total 242.817 (clock 242.817 + penalties 0.0); laps 74.544 86.498 81.776; place 3
+[Race] RACE LEFT
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver EMBER: Pebble Coupe (pebble) on the grid at (3565.2, 736.8)
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver GOLD: Highball Fastback (fastback) on the grid at (3570.1, 730.2)
+Setting angular velocity of a kinematic body is not supported.
+Setting linear velocity of a kinematic body is not supported.
+[Race] AI driver BLUE: Highball Fastback (fastback) on the grid at (3566.1, 722.9)
+[Race] RACE START requested: Chastain Ridge, reverse, 3 laps, lap 2043 m, 6 checkpoints, run-in 45 m, 21 road barriers, 2 official shortcuts
+[OtherEngines] state Countdown; AI 3, traffic 14, wanted 4, voices playing 4
+[Race] GO
+[Race] BLUE: START LINE crossed: clock started
+[Race] GOLD: START LINE crossed: clock started
+[Race] EMBER: START LINE crossed: clock started
+[Race] BLUE: SHORTCUT rch_church_leap entered at 7.780 (its corridor): checkpoints 1,2 forgiven
+[Race] GOLD: SHORTCUT rch_church_leap entered at 7.800 (its corridor): checkpoints 1,2 forgiven
+[Race] EMBER: SHORTCUT rch_church_leap entered at 8.620 (its corridor): checkpoints 1,2 forgiven
+[AI] EMBER recovery: at (3541.2,579.4) speed 0.0, station 519, stalled 0.5 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rch_church_leap, on rch_church_leap, obstacle 'GOLD@3.7', tilt 2
+[AI] GOLD recovery: at (3535.5,577.1) speed 1.6, station 523, stalled 0.0 s, no progress route 0.0 / shortcut 5.1 / rejoin 0.0 s, planned rch_church_leap, on rch_church_leap, obstacle '', tilt 4
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+AI_JUDGMENT seed=1574420239 driver=BLUE event=1 type=wide line station=840.3 speed=21.92
+[Race] BLUE: SHORTCUT rch_church_leap left at 18.294
+AI_JUDGMENT seed=1574420239 driver=EMBER event=1 type=curb clip station=731.1 speed=26.62
+[Race] GOLD: SHORTCUT rch_church_leap left at 25.236
+[Race] EMBER: SHORTCUT rch_church_leap left at 27.972
+[Race] BLUE: CHECKPOINT 3 at 32.996
+[Race] BLUE: SHORTCUT rc_crest_cut entered at 34.061 (its corridor): checkpoints 4 forgiven
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+AI_JUDGMENT seed=1574420239 driver=GOLD event=1 type=late braking station=1233.9 speed=27.91
+[AI] BLUE recovery: at (3087.1,633.3) speed 0.0, station 1293, stalled 4.9 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 2
+[Race] GOLD: CHECKPOINT 3 at 39.647
+[Race] EMBER: CHECKPOINT 3 at 41.884
+[Race] BLUE: SHORTCUT rc_crest_cut left at 45.563
+[Race] GOLD: CHECKPOINT 4 at 46.909
+[Race] EMBER: CHECKPOINT 4 at 48.827
+[Race] BLUE: CHECKPOINT 5 at 55.364
+[Race] GOLD: CHECKPOINT 5 at 55.634
+[AI] EMBER recovery: at (3108.4,701.5) speed 1.6, station 1467, stalled 0.0 s, no progress route 5.2 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 8
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+AI_JUDGMENT seed=1574420239 driver=EMBER event=2 type=late braking station=1525.2 speed=25.52
+[Race] EMBER: CHECKPOINT 5 at 64.997
+[Race] BLUE: CHECKPOINT 6 at 65.043
+[Race] GOLD: CHECKPOINT 6 at 65.738
+AI_JUDGMENT seed=1574420239 driver=BLUE event=2 type=curb clip station=76.7 speed=34.20
+[Race] EMBER: CHECKPOINT 6 at 74.524
+AI_JUDGMENT seed=1574420239 driver=GOLD event=2 type=curb clip station=311.6 speed=41.39
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[Race] BLUE: LAP 1 COUNTED 76.325 (clock 76.325 + penalty 0.0); forgiven CP1,CP2,CP4
+[Race] GOLD: LAP 1 COUNTED 77.070 (clock 77.070 + penalty 0.0); forgiven CP1,CP2
+[Race] BLUE: SHORTCUT rch_church_leap entered at 83.538 (its corridor): checkpoints 1,2 forgiven
+[Race] GOLD: SHORTCUT rch_church_leap entered at 84.358 (its corridor): checkpoints 1,2 forgiven
+[Race] EMBER: LAP 1 COUNTED 85.322 (clock 85.322 + penalty 0.0); forgiven CP1,CP2
+[Race] EMBER: SHORTCUT rch_church_leap entered at 93.336 (its corridor): checkpoints 1,2 forgiven
+[Race] BLUE: SHORTCUT rch_church_leap left at 94.074
+[Race] GOLD: SHORTCUT rch_church_leap left at 94.911
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+AI_JUDGMENT seed=1574420239 driver=EMBER event=3 type=late braking station=840.5 speed=21.27
+[Race] EMBER: SHORTCUT rch_church_leap left at 103.938
+[Race] BLUE: CHECKPOINT 3 at 108.776
+[Race] GOLD: CHECKPOINT 3 at 109.617
+[Race] BLUE: SHORTCUT rc_crest_cut entered at 109.834 (its corridor): checkpoints 4 forgiven
+[Race] GOLD: SHORTCUT rc_crest_cut entered at 110.673 (its corridor): checkpoints 4 forgiven
+[AI] BLUE recovery: at (3087.1,633.3) speed 0.0, station 1293, stalled 4.9 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 1
+AI_JUDGMENT seed=1574420239 driver=BLUE event=4 type=wide line station=1298.5 speed=12.02
+[Race] EMBER: CHECKPOINT 3 at 118.525
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[Race] GOLD: SHORTCUT rc_crest_cut left at 121.429
+AI_JUDGMENT seed=1574420239 driver=GOLD event=3 type=early braking station=1460.1 speed=17.35
+[Race] BLUE: SHORTCUT rc_crest_cut left at 123.012
+[Race] EMBER: CHECKPOINT 4 at 125.077
+[AI] BLUE recovery: at (3113.6,707.0) speed 0.3, station 1473, stalled 4.8 s, no progress route 5.0 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle 'GOLD@2.0', tilt 7
+[AI] GOLD recovery: at (3116.9,710.0) speed 1.7, station 1477, stalled 0.0 s, no progress route 5.0 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle 'Traffic 5@1.7', tilt 6
+[Race] GOLD: CHECKPOINT 5 at 137.428
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 1, voices playing 1
+AI_JUDGMENT seed=1574420239 driver=EMBER event=4 type=late braking station=1534.2 speed=31.30
+[AI] BLUE recovery: at (3210.9,859.9) speed 1.9, station 1656, stalled 0.0 s, no progress route 5.2 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 4
+[Race] BLUE: CHECKPOINT 5 at 145.275
+[Race] GOLD: CHECKPOINT 6 at 147.094
+AI_JUDGMENT seed=1574420239 driver=BLUE event=5 type=early braking station=1799.8 speed=29.59
+[AI] EMBER recovery: at (3217.8,874.5) speed 1.7, station 1672, stalled 0.0 s, no progress route 5.2 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 2
+[Race] EMBER: CHECKPOINT 5 at 152.720
+[Race] BLUE: CHECKPOINT 6 at 155.335
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 4, voices playing 5
+[Race] GOLD: LAP 2 COUNTED 81.246 (clock 81.246 + penalty 0.0); forgiven CP1,CP2,CP4
+[AI] BLUE recovery: at (3505.4,1086.2) speed 1.8, station 2056, stalled 0.0 s, no progress route 5.5 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 2
+[Race] GOLD: SHORTCUT rch_church_leap entered at 165.579 (its corridor): checkpoints 1,2 forgiven
+[Race] EMBER: CHECKPOINT 6 at 170.689
+[AI] BLUE recovery: at (3514.4,1088.0) speed 4.8, station 2054, stalled 0.0 s, no progress route 0.0 / shortcut 0.0 / rejoin 5.0 s, planned -, on -, obstacle '', tilt 2
+AI_JUDGMENT seed=1574420239 driver=GOLD event=4 type=early braking station=840.3 speed=21.92
+[Race] GOLD: SHORTCUT rch_church_leap left at 176.135
+AI_JUDGMENT seed=1574420239 event=5 type=short jump
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 3, voices playing 4
+[Race] EMBER: LAP 2 COUNTED 96.784 (clock 96.784 + penalty 0.0); forgiven CP1,CP2
+[Race] BLUE: LAP 2 COUNTED 107.689 (clock 107.689 + penalty 0.0); forgiven CP1,CP2,CP4
+[Race] EMBER: SHORTCUT rch_church_leap entered at 190.104 (its corridor): checkpoints 1,2 forgiven
+[Race] BLUE: SHORTCUT rch_church_leap entered at 191.224 (its corridor): checkpoints 1,2 forgiven
+[Race] GOLD: CHECKPOINT 3 at 191.842
+[Race] GOLD: SHORTCUT rc_crest_cut entered at 192.904 (its corridor): checkpoints 4 forgiven
+[AI] GOLD recovery: at (3087.2,633.3) speed 0.0, station 1293, stalled 4.9 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 2
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 3
+AI_JUDGMENT seed=1574420239 driver=EMBER event=5 type=late braking station=840.5 speed=21.27
+[Race] EMBER: SHORTCUT rch_church_leap left at 200.710
+AI_JUDGMENT seed=1574420239 driver=BLUE event=6 type=wide line station=840.2 speed=21.93
+[Race] BLUE: SHORTCUT rch_church_leap left at 201.783
+[Race] GOLD: SHORTCUT rc_crest_cut left at 204.411
+AI_JUDGMENT seed=1574420239 driver=GOLD event=6 type=curb clip station=1552.9 speed=34.62
+[Race] GOLD: CHECKPOINT 5 at 212.281
+[Race] EMBER: CHECKPOINT 3 at 215.483
+[Race] EMBER: SHORTCUT rc_crest_cut entered at 216.529 (its corridor): checkpoints 4 forgiven
+[Race] BLUE: CHECKPOINT 3 at 216.549
+[Race] BLUE: SHORTCUT rc_crest_cut entered at 217.610 (its corridor): checkpoints 4 forgiven
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 2, voices playing 2
+[AI] EMBER recovery: at (3087.3,633.7) speed 0.0, station 1293, stalled 4.9 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 3
+[Race] GOLD: CHECKPOINT 6 at 221.955
+[AI] BLUE recovery: at (3089.8,634.0) speed 0.4, station 1290, stalled 4.7 s, no progress route 0.0 / shortcut 5.0 / rejoin 0.0 s, planned rc_crest_cut, on rc_crest_cut, obstacle '', tilt 21
+[Race] EMBER: SHORTCUT rc_crest_cut left at 228.145
+[Race] BLUE: SHORTCUT rc_crest_cut left at 233.482
+[Race] GOLD: LAP 3 COUNTED 74.873 (clock 74.873 + penalty 0.0); forgiven CP1,CP2,CP4
+[Race] GOLD: FINISH total 233.189 (clock 233.189 + penalties 0.0); laps 77.070 81.246 74.873; place 1
+[Race] GOLD: celebrates the win
+[AI] EMBER recovery: at (3153.0,746.5) speed 0.7, station 1529, stalled 0.0 s, no progress route 5.0 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 6
+AI_JUDGMENT seed=1574420239 driver=EMBER event=6 type=early braking station=1536.1 speed=12.14
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 1, voices playing 1
+[AI] BLUE recovery: at (3121.1,705.7) speed 1.7, station 1478, stalled 0.0 s, no progress route 5.3 / shortcut 0.0 / rejoin 0.0 s, planned -, on -, obstacle '', tilt 6
+[Race] EMBER: CHECKPOINT 5 at 243.858
+[Race] BLUE: CHECKPOINT 5 at 248.782
+AI_JUDGMENT seed=1574420239 driver=BLUE event=7 type=curb clip station=1920.0 speed=31.91
+[Race] BLUE: CHECKPOINT 6 at 258.619
+[OtherEngines] state Racing; AI 3, traffic 14, wanted 4, voices playing 4
+[Race] EMBER: CHECKPOINT 6 at 262.991
+[Race] BLUE: LAP 3 COUNTED 85.899 (clock 85.899 + penalty 0.0); forgiven CP1,CP2,CP4
+[Race] BLUE: FINISH total 269.913 (clock 269.913 + penalties 0.0); laps 76.325 107.689 85.899; place 2
+AI_JUDGMENT seed=1574420239 driver=EMBER event=7 type=curb clip station=376.5 speed=41.98
+[Race] EMBER: LAP 3 COUNTED 91.749 (clock 91.749 + penalty 0.0); forgiven CP1,CP2,CP4
+[Race] EMBER: FINISH total 273.856 (clock 273.856 + penalties 0.0); laps 85.322 96.784 91.749; place 3
+[Race] RACE LEFT
+[Traffic] free roam: every road open
+[OtherEngines] state Free; AI 0, traffic 14, wanted 0, voices playing 0
+[Vehicle] switched to Highball Fastback (fastback)
+[OtherEngines] state Free; AI 0, traffic 14, wanted 0, voices playing 0
+[OtherEngines] state Free; AI 0, traffic 14, wanted 2, voices playing 2
+[OtherEngines] state Free; AI 2, traffic 14, wanted 2, voices playing 2
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+Input System module state changed to: ShutdownInProgress.
+Input Polling Thread exited.
+Input System module state changed to: Shutdown.
+CodeReloadManager destroyed

@@ -1,0 +1,75 @@
+{
+    "version": 1,
+    "results": [
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/original/forward",
+            "value": 104.40309143066406,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/tourer/forward",
+            "value": 104.03962707519531,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/moto/forward",
+            "value": 105.16098022460938,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/atv/forward",
+            "value": 104.96671295166016,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/roadster/forward",
+            "value": 104.72545623779297,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/fastback/forward",
+            "value": 103.87626647949219,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/pebble/forward",
+            "value": 104.62890625,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/skyfin/forward",
+            "value": 104.25045776367188,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/scrambler/forward",
+            "value": 105.73448181152344,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/drifter/forward",
+            "value": 22.253829956054688,
+            "medal": 0
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/mower/forward",
+            "value": 105.07032012939453,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/stuntbuggy/forward",
+            "value": 105.8791732788086,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/stuntbike/forward",
+            "value": 104.0572280883789,
+            "medal": 3
+        },
+        {
+            "key": "jump-rl/chastain-v1/activities-v2/hoppercup/forward",
+            "value": 105.60379791259766,
+            "medal": 3
+        }
+    ]
+}

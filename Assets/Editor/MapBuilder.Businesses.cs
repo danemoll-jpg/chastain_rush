@@ -220,6 +220,7 @@ namespace ChastainRush
             float frontY = Ground(t, fm.x, fm.y);
             z.baseY = lo - 0.5f * vScale;
             z.floorY = Mathf.Max(frontY, hi - 1.2f) + 0.1f;
+            if (RaisedBuildings.Contains(z.index)) { z.floorY = hi + 0.1f; return; }   // Round 40 (C): Dan's buried building, set on the ground (its floor over the highest ground, no steps)
             if (z.kind == BizKind.Canopy) return;
             if (!BestRectangle(z.ring, out var c, out var U, out var V, out float hl, out float hw) || z.area / (4f * hl * hw) < 0.85f || hl * 2f < 30f) return;
             float g0 = Ground(t, (c - U * hl).x, (c - U * hl).y), g1 = Ground(t, (c + U * hl).x, (c + U * hl).y);
@@ -335,6 +336,7 @@ namespace ChastainRush
             {
                 var body = At(bodies, z.c); var det = At(details, z.c);
                 float wallH = Mathf.Max(3.0f, z.height);
+                if (RaisedBuildings.Contains(z.index)) wallH += 2.0f;   // Round 40 (C, BUG-011): the garage row's 27 m wide roof took most of its 4.8 m: its walls stood 2.6 m, sunk-looking; now 3.7 m under the roof
                 Color wall, roofC = PickColour(FlatRoofPalette, z.seed, 2);
                 switch (z.kind)
                 {

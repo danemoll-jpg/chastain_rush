@@ -1,0 +1,58 @@
+Round 40 check, 2026-10-17 20:25, the exe, 1280 x 720, muted.
+
+=== A1 / A2: THE MANHOLE PLUME (reverse race): each vehicle flat out along New Chastain Road into it, from three lines
+  Street Classic     left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Street Classic     right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Street Classic     shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        shoulder   thrown at 28.7 m/s across, 3.98 s in the air, 29.6 m up, down 3.2 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.9 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.4 m up, down 4.0 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.6 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.4 m up, down 4.0 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Skyfin Cruiser     left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Skyfin Cruiser     right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Skyfin Cruiser     shoulder   thrown at 28.7 m/s across, 3.98 s in the air, 29.5 m up, down 3.2 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.3 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.0 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.9 m on the forward pile's ramp face, upright 1.00; drove on
+PASS  the manhole plume: every vehicle the reverse race offers, flat out from the left lane, the right lane and the shoulder, thrown onto the dead end, upright, and on  -  11 vehicles x 3 lines
+
+=== A6: THE CREST CUT (reverse race): driven clean and crashed, against the lap
+  Drifter Twin       at the AI's careful speeds 6.5 s (through)
+  Drifter Twin       the lap 6.8 s; the crest cut flat out on the line 6.8 s (saves 0.0 s, through); flat out 1.6 m off the line crashed (through, slowed)
+FAIL  A6: the crest cut driven clean saves time (the Drifter Twin)  -  lap 6.8 s, cut 6.8 s
+  Street Classic     at the AI's careful speeds 6.5 s (through)
+  Street Classic     the lap 7.5 s; the crest cut flat out on the line 5.9 s (saves 1.6 s, through); flat out 1.6 m off the line 7.4 s (-0.1 s against the lap)
+  Needle 600         at the AI's careful speeds 6.5 s (through)
+  Needle 600         the lap 6.6 s; the crest cut flat out on the line -1.0 s (-, through); flat out 1.6 m off the line crashed (through, slowed)
+
+=== B1: lines across the road (BUG-008, Canton Road at Worley Drive)
+PASS  B1: pictures written from Dan's spot  -  40_bug008_*.png
+
+=== B2: New Chastain Road's median
+  heights across (24 m, west to east): (3058, 760): 297.93 297.80 297.68 297.56 297.44 297.34 297.24 297.14 297.08 297.02 297.00 296.98 296.97 296.98 296.98 297.00 297.02 297.03 297.06 297.08 297.10 297.13 297.15 297.17 297.19 297.21 297.22 297.24 297.25 297.27 297.28 297.30 297.32 297.34 297.36 297.38 297.41 297.43 297.46 297.48 297.50 297.52 297.54 297.56 297.58 297.60 297.62 297.64 297.67; (3200, 700): 306.64 306.84 307.00 307.14 307.25 307.34 307.41 307.46 307.49 307.51 307.54 307.56 307.58 307.60 307.61 307.62 307.62 307.63 307.63 307.63 307.64 307.64 307.64 307.65 307.65 307.66 307.66 307.66 307.67 307.67 307.67 307.68 307.68 307.68 307.71 307.85 307.99 308.07 308.20 308.32 308.42 308.52 308.62 308.75 308.83 308.88 308.90 308.92 308.94; (3300, 540): 311.40 311.40 311.40 311.40 311.39 311.40 311.39 311.39 311.39 311.39 311.39 311.39 311.40 311.43 311.41 311.39 311.37 311.34 311.30 311.25 311.19 311.13 311.09 311.09 311.09 311.09 311.09 311.09 311.09 311.09 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.09 311.15 311.26 311.42 311.66 311.94 312.30 312.72; (3330, 490): 314.59 314.58 314.58 314.58 314.58 314.57 314.57 314.55 314.45 314.36 314.26 314.16 314.09 314.02 313.94 313.80 313.74 313.75 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.73 313.73 313.73 313.74 313.73 313.73 313.74 313.76 313.80 313.86 313.94 314.05 314.17 314.30 314.43 314.55 314.66 314.77 314.88; 
+PASS  B2: pictures written from Dan's spot and another stretch  -  40_bug009_median.png, 40_median_stretch2.png, 40_median_from_above.png
+
+=== C: the two buried houses
+PASS  C: pictures written from Dan's two spots  -  40_bug010_*.png, 40_bug011_*.png
+
+4 of 5 checks passed.

@@ -1,0 +1,121 @@
+Round 40 check, 2026-10-17 19:34, the exe, 1280 x 720, muted.
+
+=== A1 / A2: THE MANHOLE PLUME (reverse race): each vehicle flat out along New Chastain Road into it, from three lines
+  Street Classic     left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Street Classic     right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Street Classic     shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Longroof GT        shoulder   thrown at 28.7 m/s across, 3.98 s in the air, 29.6 m up, down 3.2 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Needle 600         shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.9 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Trail Four         shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.4 m up, down 4.0 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Sundown Roadster   shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Highball Fastback  shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.6 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.4 m up, down 4.0 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Pebble Coupe       shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; STOPPED stopped
+  Skyfin Cruiser     left lane  thrown at 28.1 m/s across, 3.86 s in the air, 28.4 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Skyfin Cruiser     right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.1 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Skyfin Cruiser     shoulder   thrown at 28.7 m/s across, 3.98 s in the air, 29.5 m up, down 3.2 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.3 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    right lane thrown at 28.5 m/s across, 3.94 s in the air, 29.0 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Ridge Scrambler    shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.5 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.5 m on the forward pile's ramp face, upright 1.00; drove on
+  Drifter Twin       shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.8 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        left lane  thrown at 28.1 m/s across, 3.88 s in the air, 28.2 m up, down 4.1 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        right lane thrown at 28.5 m/s across, 3.94 s in the air, 28.9 m up, down 3.6 m on the forward pile's ramp face, upright 1.00; drove on
+  Turf Rocket        shoulder   thrown at 28.7 m/s across, 4.00 s in the air, 29.4 m up, down 3.9 m on the forward pile's ramp face, upright 1.00; drove on
+FAIL  the manhole plume: every vehicle the reverse race offers, flat out from the left lane, the right lane and the shoulder, thrown onto the dead end, upright, and on  -  not: Pebble Coupe shoulder
+
+=== A1: when the plume blows
+PASS  reverse race: the cover is shut until the first racer comes, then it blows ahead of them  -  shut at the start True; it blew with the racer 79 m away
+PASS  reverse race: it keeps gushing  -  erupting True 10 s after it blew
+PASS  after the race it is shut
+PASS  forward race: the plume never blows (driven through its place at 30 m/s)  -  erupted False, thrown 0
+PASS  Free Roam: it blows when you come at it at speed and throws you  -  erupted True, thrown 1
+PASS  Free Roam: it shuts again after 25 s  -  shut 20 s after the throw
+
+=== A1: pictures of the plume
+
+=== The Ridge leap: each vehicle flat out from the crest (on the lap's line), off the dirt pile onto New Chastain Road
+  Street Classic     onto the lip at 28.5 m/s (off it at 32.9), 3.50 s in the air, 8.5 m over the lip at the top, down 106 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Longroof GT        onto the lip at 28.2 m/s (off it at 32.9), 3.48 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Needle 600         onto the lip at 32.2 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Trail Four         onto the lip at 30.0 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.4 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Sundown Roadster   onto the lip at 28.9 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Highball Fastback  onto the lip at 20.2 m/s (off it at 32.9), 3.46 s in the air, 8.2 m over the lip at the top, down 105 m out, 0.3 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Pebble Coupe       onto the lip at 29.1 m/s (off it at 32.9), 3.52 s in the air, 8.6 m over the lip at the top, down 106 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Skyfin Cruiser     onto the lip at 27.5 m/s (off it at 32.9), 3.50 s in the air, 8.3 m over the lip at the top, down 105 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Ridge Scrambler    onto the lip at 31.3 m/s (off it at 32.9), 3.56 s in the air, 8.8 m over the lip at the top, down 106 m out, 0.5 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Drifter Twin       NEVER LEFT THE LIP, on down New Chastain Road
+  Turf Rocket        onto the lip at 32.1 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 106 m out, 0.4 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Clay Hopper        onto the lip at 30.4 m/s (off it at 32.9), 3.56 s in the air, 9.0 m over the lip at the top, down 107 m out, 1.1 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Skywhip 250        onto the lip at 31.5 m/s (off it at 32.9), 3.52 s in the air, 8.4 m over the lip at the top, down 105 m out, 0.2 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+  Clay Hopper Cup    onto the lip at 31.6 m/s (off it at 32.9), 3.56 s in the air, 8.9 m over the lip at the top, down 107 m out, 0.8 m from the carriageway's centerline (the lap's line), upright 1.00, on down New Chastain Road
+FAIL  the Ridge leap: every vehicle flat out from the crest lands on New Chastain Road (within 6 m of the carriageway's centerline), on its wheels, and drives on  -  not: Drifter Twin
+
+=== A3: the reverse lap's turn from Canton Road onto New Chastain Road (BUG-003), the Drifter Twin flat out
+PASS  A3: no bump-log event through the junction and on to Dan's spot at speed  -  slowest 8.6 m/s through the turn, least wheels down 4, longest air 0.16 s; events 0
+
+=== A4 / A5: S1's and S2's clues, no reverse S1
+PASS  A4: S1's and S2's turn-off clues hidden in a reverse race, shown in Free Roam and a forward race  -  2 clue holders; Free Roam shown True, forward shown True, reverse hidden True
+PASS  A5: no reverse S1 (the reverse race's shortcuts)  -  Crest cut, Church leap
+
+=== A6: THE CREST CUT (reverse race): driven clean and crashed, against the lap
+  Drifter Twin       at the AI's careful speeds 6.4 s (through)
+    crash run stopped at (3092.4, 634.8) [trail crest_drifter_crash.csv]
+  Drifter Twin       the lap 6.8 s; the crest cut flat out on the line 6.7 s (saves 0.1 s, through); flat out 1.6 m off the line crashed (STOPPED stopped)
+FAIL  A6: the crest cut driven clean saves time (the Drifter Twin)  -  lap 6.8 s, cut 6.7 s
+  Street Classic     at the AI's careful speeds 6.5 s (through)
+    crash run stopped at (3091.8, 634.7) [trail crest_original_crash.csv]
+  Street Classic     the lap 7.5 s; the crest cut flat out on the line 5.8 s (saves 1.6 s, through); flat out 1.6 m off the line crashed (STOPPED stopped)
+  Needle 600         at the AI's careful speeds 6.4 s (through)
+  Needle 600         the lap 6.6 s; the crest cut flat out on the line 5.5 s (saves 1.1 s, through); flat out 1.6 m off the line 7.1 s (+0.5 s against the lap)
+
+=== A7: THE CHURCH LEAP (reverse race): driven flat out on two vehicles, against the road
+  Drifter Twin       the road 12.3 s; the church leap 13.7 s (+1.4 s against the road); launched at 43.7 m/s along the curve, 4.7 s planned, 4.6 s in the air, came down at (3443, 407) upright 1.00; flight ended: hit (touched Terrain_5_0) after 4.64 s at (3443, 325, 407); pieces broken 3; on along New Chastain Road
+  Street Classic     the road 13.5 s; the church leap 13.0 s (-0.5 s against the road); launched at 43.7 m/s along the curve, 4.7 s planned, 4.6 s in the air, came down at (3443, 407) upright 1.00; flight ended: hit after 4.64 s at (3443, 325, 407); pieces broken 4; on along New Chastain Road
+PASS  A7: the church leap driven through flat out (in the doors, up, out of the window, onto New Chastain Road, upright, on) on two vehicles
+
+=== A7: pictures of the church leap
+
+=== Part A: the reverse race, 3 laps, 3 AI, traffic Normal, the player parked off the course
+  Chastain Ridge reverse: 2043 m, 6 checkpoints, shortcuts Crest cut, Church leap, 21 barriers
+PASS  EMBER (Street Classic) finishes the 3 reverse laps  -  total 242.8 s, laps 74.5 / 86.5 / 81.8, missed 0, shortcuts lap 1 rc_crest_cut, lap 3 rc_crest_cut
+PASS  GOLD (Trail Four) finishes the 3 reverse laps  -  total 236.7 s, laps 77.4 / 84.6 / 74.7, missed 0, shortcuts lap 1 rc_crest_cut, lap 3 rch_church_leap
+PASS  BLUE (Drifter Twin) finishes the 3 reverse laps  -  total 205.3 s, laps 64.8 / 69.0 / 71.6, missed 0, shortcuts lap 2 rc_crest_cut
+INFO  thrown by the plume 9, church leaps 1, AI sloppy tries on the shortcuts 0
+
+=== Part A: the reverse race, 3 laps, 3 AI, traffic Normal (every AI driver takes every shortcut: sloppy tries as they come), the player parked off the course
+  Chastain Ridge reverse: 2043 m, 6 checkpoints, shortcuts Crest cut, Church leap, 21 barriers
+PASS  EMBER (Pebble Coupe) finishes the 3 reverse laps taking every shortcut  -  total 273.9 s, laps 85.3 / 96.8 / 91.7, missed 0, shortcuts lap 1 rch_church_leap, lap 2 rch_church_leap, lap 3 rch_church_leap, lap 3 rc_crest_cut
+PASS  GOLD (Highball Fastback) finishes the 3 reverse laps taking every shortcut  -  total 233.2 s, laps 77.1 / 81.2 / 74.9, missed 0, shortcuts lap 1 rch_church_leap, lap 2 rch_church_leap, lap 2 rc_crest_cut, lap 3 rch_church_leap, lap 3 rc_crest_cut
+PASS  BLUE (Highball Fastback) finishes the 3 reverse laps taking every shortcut  -  total 269.9 s, laps 76.3 / 107.7 / 85.9, missed 0, shortcuts lap 1 rch_church_leap, lap 1 rc_crest_cut, lap 2 rch_church_leap, lap 2 rc_crest_cut, lap 3 rch_church_leap, lap 3 rc_crest_cut
+INFO  thrown by the plume 9, church leaps 8, AI sloppy tries on the shortcuts 1: BLUE rc_crest_cut lap 2
+
+=== B1: lines across the road (BUG-008, Canton Road at Worley Drive)
+PASS  B1: pictures written from Dan's spot  -  40_bug008_*.png
+
+=== B2: New Chastain Road's median
+  heights across (24 m, west to east): (3058, 760): 297.93 297.80 297.68 297.56 297.44 297.34 297.24 297.14 297.08 297.02 297.00 296.98 296.97 296.98 296.98 297.00 297.02 297.03 297.06 297.08 297.10 297.13 297.15 297.17 297.19 297.21 297.22 297.24 297.25 297.27 297.28 297.30 297.32 297.34 297.36 297.38 297.41 297.43 297.46 297.48 297.50 297.52 297.54 297.56 297.58 297.60 297.62 297.64 297.67; (3200, 700): 306.64 306.84 307.00 307.14 307.25 307.34 307.41 307.46 307.49 307.51 307.54 307.56 307.58 307.60 307.61 307.62 307.62 307.63 307.63 307.63 307.64 307.64 307.64 307.65 307.65 307.66 307.66 307.66 307.67 307.67 307.67 307.68 307.68 307.68 307.71 307.85 307.99 308.07 308.20 308.32 308.42 308.52 308.62 308.75 308.83 308.88 308.90 308.92 308.94; (3300, 540): 311.40 311.40 311.40 311.40 311.39 311.40 311.39 311.39 311.39 311.39 311.39 311.39 311.40 311.43 311.41 311.39 311.37 311.34 311.30 311.25 311.19 311.13 311.09 311.09 311.09 311.09 311.09 311.09 311.09 311.09 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.08 311.09 311.15 311.26 311.42 311.66 311.94 312.30 312.72; (3330, 490): 314.59 314.58 314.58 314.58 314.58 314.57 314.57 314.55 314.45 314.36 314.26 314.16 314.09 314.02 313.94 313.80 313.74 313.75 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.74 313.73 313.73 313.73 313.74 313.73 313.73 313.74 313.76 313.80 313.86 313.94 314.05 314.17 314.30 314.43 314.55 314.66 314.77 314.88; 
+PASS  B2: pictures written from Dan's spot and another stretch  -  40_bug009_median.png, 40_median_stretch2.png, 40_median_from_above.png
+
+=== B3: a hidden cruiser on Canton Road (Free Roam, -hiddenPolice)
+  Canton Road's hiding places: (3590, 293) facing -90, (3600, 118) facing -90; in use Bells Ferry Road Northwest, Canton Road, Blackwell Circle, Crestmore Drive Northwest
+PASS  B3: one of Canton Road's hiding places is in use  -  2 Canton Road places
+PASS  B3: speeding past the hidden cruiser at (3590, 293) on Canton Road starts a chase  -  CLOCKED at 64 mph in a 45: CLOCKED 64 in a 45; Hidden police: nearest 238 m (Canton Road) · 65 mph vs 55 (45+10) · on road yes · quiet chase on
+PASS  B3: speeding past the hidden cruiser at (3600, 118) on Canton Road starts a chase  -  CLOCKED at 65 mph in a 45: CLOCKED 65 in a 45; Hidden police: nearest 764 m (Blackwell Circle) · 65 mph vs 55 (45+10) · on road yes · quiet chase on
+
+=== C: the two buried houses
+PASS  C: pictures written from Dan's two spots  -  40_bug010_*.png, 40_bug011_*.png
+
+22 of 25 checks passed.
