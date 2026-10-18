@@ -89,7 +89,7 @@ namespace Racer
             resetRequested |= reset.WasPressedThisFrame(); viewRequested |= view.WasPressedThisFrame();
             // Chastain Rush, Round 28 (C2): the fist wave was bound but never asked for (Racer's VehicleInput does it here): LB / F, not
             // while a menu, the map or the debug menu has the controls
-            if (fist.WasPressedThisFrame() && !AirActive && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)
+            if (fist.WasPressedThisFrame() && !AirActive && !(ChastainRush.TrailerMode.Active && fist.activeControl?.device is Gamepad) && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)
                 GetComponent<RiderGestures>()?.Wave();
         }
         // Round 36, checks only: a check drives through the player's own input path (so the stunt vehicles' air steering works as for a player)

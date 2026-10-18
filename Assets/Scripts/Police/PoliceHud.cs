@@ -40,7 +40,7 @@ namespace Racer
         }
         void OnGUI()
         {
-            if (Event.current.type != EventType.Repaint || GameMenus.Open || WorldMap.IsOpen) return;
+            if (Event.current.type != EventType.Repaint || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
             if (!PoliceKit.FreeRoam) return;
             bool any = GetawayChase.Current || SpeedPatrol.Current || PoliceChase.Current || Time.unscaledTime - HiddenPolice.FlashAt < 2.6f || Time.unscaledTime - HiddenPolice.LineAt < 4f;
             if (!any) return;

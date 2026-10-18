@@ -327,7 +327,8 @@ namespace Racer
             }
             // Chastain Rush: while driving (free roam or a race), not while a menu, the map or the debug menu has the input
             if(ChastainRush.GameMenus.Open||MenuInput.Blocked||ChastainRush.WorldMap.OwnsInput||(ChastainRush.DeveloperHud.Instance&&ChastainRush.DeveloperHud.Instance.MenuOpen))return;
-            var k=Keyboard.current;var g=Gamepad.current;
+            var k=Keyboard.current;var g=ChastainRush.TrailerMode.Active?null:Gamepad.current;// 0.77: the D-pad works the Trailer Mode cameras
+            if(ChastainRush.TrailerMode.Active&&(k?.periodKey.wasPressedThisFrame==true||k?.commaKey.wasPressedThisFrame==true))k=null;// Round 43: , and . are Trailer Mode's clock
             // Chastain Rush: . / , for next / previous ([ and ] are the debug panel and bug capture here)
             if(k?.periodKey.wasPressedThisFrame==true||g?.dpad.right.wasPressedThisFrame==true)Next();
             else if(k?.commaKey.wasPressedThisFrame==true||g?.dpad.left.wasPressedThisFrame==true)Previous();

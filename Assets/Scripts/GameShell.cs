@@ -95,7 +95,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance;
             bool hudBusy = hud != null && (hud.MenuOpen || hud.CommentOpen || hud.Capturing);
             // Round 9: P as well, for a keyboard that needs Fn for F2 (not while a bug comment is being typed)
-            if (k.f2Key.wasPressedThisFrame || (k.pKey.wasPressedThisFrame && !hudBusy)) ShowFps = !ShowFps;
+            if (k.f2Key.wasPressedThisFrame || (k.pKey.wasPressedThisFrame && !hudBusy && !TrailerMode.Active)) ShowFps = !ShowFps;   // Round 43: P is Trailer Mode's screenshot while it is on
             // Round 16: Esc opens the menus (QUIT GAME is there); press-twice-to-quit is left only for a run without them (a check)
             if (k.escapeKey.wasPressedThisFrame && !hudBusy && GameMenus.Instance == null && !WorldMap.OwnsInput)
             {
@@ -121,7 +121,7 @@ namespace ChastainRush
             var old = GUI.matrix;
             GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float w = Screen.width / s, h = Screen.height / s;
-            if (ShowFps)
+            if (ShowFps && !TrailerMode.HudHidden)   // Round 43 (Part D): Trailer Mode's clean screen
             {
                 string t = $"{Fps:0} fps   1% low {LowFps:0}   {1000f / Mathf.Max(Fps, 1f):0.0} ms";
                 Label(new Rect(w - 520, 8, 506, 30), t, style);

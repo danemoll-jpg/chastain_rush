@@ -118,7 +118,7 @@ namespace ChastainRush
             // Round 17: capture works with the panel hidden too (the panel is drawn on the captured frame either way)
             // Round 20 (item 2): the controller's View / Select is the map's now (as in Woodstock Rush); bug capture took the right
             // stick's click (free while driving); not while the map is open (its own center button)
-            if (!GameMenus.Open && !WorldMap.OwnsInput && ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.rightStickButton.wasPressedThisFrame))) CaptureBug();
+            if (!GameMenus.Open && !WorldMap.OwnsInput && ((k != null && (k.f4Key.wasPressedThisFrame || k.rightBracketKey.wasPressedThisFrame)) || (g != null && g.rightStickButton.wasPressedThisFrame && !TrailerMode.Active))) CaptureBug();   // Round 43: R3 is Trailer Mode's screenshot while it is on
             bool f6 = k != null && (k.f6Key.wasPressedThisFrame || k.backslashKey.wasPressedThisFrame);
             // Round 17: with the game menus (the game Dan plays) F6 / \ opens their controller-driven debug page; the IMGUI menu
             // below is left for check runs, which have no game menus. Start is the game menu's (Round 16).
@@ -276,7 +276,7 @@ namespace ChastainRush
 
         void OnGUI()
         {
-            if (!car) return;
+            if (!car || TrailerMode.HudHidden) return;   // Round 43 (Part D): Trailer Mode's clean screen
             Styles();
             float s = Mathf.Max(1f, Screen.height / 800f);
             var old = GUI.matrix;

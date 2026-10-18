@@ -365,7 +365,7 @@ namespace Racer
         static GUIStyle label;
         void OnGUI()
         {
-            if (Event.current.type != EventType.Repaint || !car || GameMenus.Open || WorldMap.IsOpen) return;
+            if (Event.current.type != EventType.Repaint || !car || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
             bool line = Time.time < LineUntil && LastLine != "";
             foreach (var cam in Camera.allCameras)
             {

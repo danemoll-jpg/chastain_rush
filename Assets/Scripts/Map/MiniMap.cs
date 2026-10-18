@@ -115,7 +115,7 @@ namespace ChastainRush
             race = RaceController.Instance;
             bool roam = !race || race.State == RaceController.Stage.Free;
             if (player == 2) return;   // Round 37: player 2's follows player 1's on / off
-            if (toggle != null && roam && toggle.WasPressedThisFrame() && !GameMenus.Open && !WorldMap.IsOpen && !MenuInput.Blocked
+            if (toggle != null && roam && toggle.WasPressedThisFrame() && !TrailerMode.Active && !GameMenus.Open && !WorldMap.IsOpen && !MenuInput.Blocked
                 && !(DeveloperHud.Instance && (DeveloperHud.Instance.MenuOpen || DeveloperHud.Instance.CommentOpen)))
                 SetRoamShown(hidden);
         }
@@ -161,7 +161,7 @@ namespace ChastainRush
             race = RaceController.Instance;
             bool roam = !race || race.State == RaceController.Stage.Free;
             bool hiddenNow = player == 2 && Instance ? Instance.hidden : hidden;
-            bool visible = car && !GameMenus.Open && !WorldMap.IsOpen && (!roam || !hiddenNow) && !(SplitScreen.OneView && player == 2);
+            bool visible = car && !GameMenus.Open && !WorldMap.IsOpen && !TrailerMode.HudHidden && (!roam || !hiddenNow) && !(SplitScreen.OneView && player == 2);
             Shown = visible;
             canvasRenderer.SetAlpha(visible ? 1 : 0);
             panelImage.enabled = visible; key.enabled = visible; north.enabled = visible; if (picture) picture.enabled = visible;

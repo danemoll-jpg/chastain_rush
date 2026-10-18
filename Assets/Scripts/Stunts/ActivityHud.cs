@@ -14,7 +14,7 @@ namespace Racer
         void OnDestroy() { if (back) Destroy(back); }
         void OnGUI()
         {
-            if (Event.current.type != EventType.Repaint || !activities || GameMenus.Open || WorldMap.IsOpen) return;
+            if (Event.current.type != EventType.Repaint || !activities || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
             var race = RaceController.Instance; if (race && race.State != RaceController.Stage.Free) return;
             if (SplitScreen.Active) return;   // Round 37: SplitHud draws each half's
             float s = Mathf.Max(1f, Screen.height / 800f); var old = GUI.matrix; GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));

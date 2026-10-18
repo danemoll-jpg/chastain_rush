@@ -38,7 +38,7 @@ namespace Racer
 
         void OnGUI()
         {
-            if (Event.current.type != EventType.Repaint || !activities || GameMenus.Open || WorldMap.IsOpen) return;
+            if (Event.current.type != EventType.Repaint || !activities || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
             if (Racer.GetawayChase.Current || Racer.SpeedPatrol.Current || Racer.PoliceChase.Current) return;   // Round 39: the police modes' heat and radio own the top of the screen
             var cam = SplitScreen.Session ? (activities.Player == 2 ? SplitScreen.Session.Cam2 : SplitScreen.Session.Cam1) : Camera.main;   // Round 37: its player's half
             if (!cam || !cam.isActiveAndEnabled) return;

@@ -9,9 +9,10 @@ namespace Racer
     // run neither reads nor writes it). Look around: right stick (pulled straight back = look behind) or the right mouse button held
     // with the mouse moved; it eases back behind the vehicle when let go. ChaseCamera keeps tracking the chase pose underneath every
     // view (including its steady pipe view), so look-around works underground too. Left behind: RaceFlow, split-screen, Trailer Mode,
-    // the winner shot, per-player views, R3 look-behind (R3 is bug capture here).
+    // the winner shot, per-player views, R3 look-behind (R3 is bug capture here). Round 43 (Part D): Trailer Mode's cameras are back
+    // (CameraViews.Trailer.cs, ChastainRush.TrailerMode); Round 43 (Part C): the winner shot (ChastainRush.WinnerShot).
     [DefaultExecutionOrder(50)]
-    public sealed class CameraViews : MonoBehaviour
+    public sealed partial class CameraViews : MonoBehaviour
     {
         public enum View { Chase, FarChase, FirstPerson, Front }
         public static readonly string[] Names = { "Chase", "Far chase", "First person", "Front" };
@@ -59,6 +60,7 @@ namespace Racer
         static bool CanDrive => !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput;
         void Update()
         {
+            if (ChastainRush.TrailerMode.Active) return;   // Round 43 (Part D): X / D-pad work the Trailer Mode cameras (Racer)
             if (player == 0) { if (CanDrive && cycle.WasPressedThisFrame()) NextView(); return; }
             // split screen: the view button of this player's own vehicle (VehicleInput answers only their device)
             if (!car && chase && chase.target) car = chase.target.GetComponent<ArcadeVehicle>();
@@ -75,12 +77,18 @@ namespace Racer
             Settle(car);
             if (lastView != Current) { lastView = Current; StartBlend(); }
             var chasePose = new Pose(chase.ChasePosition, chase.ChaseRotation, baseFov, baseNear);
-            chase.offsetScale = Current == View.FarChase ? new Vector3(1, 1.55f, 1.5f) : Vector3.one;
-            chase.positionSmoothTime = baseSmooth; chase.headingResponse = baseHeading;
-            bool own = Current == View.FirstPerson || Current == View.Front;
-            var pose = own ? Pose.Lerp(chasePose, Current == View.FirstPerson ? FirstPerson(car, chasePose) : FrontView(car, chasePose), Mathf.SmoothStep(0, 1, viewWeight)) : chasePose;
-            UpdateFreeLook(car); pose = DriveLook(pose, car, own && viewWeight > .5f);
-            if (!own && blend >= 1 && Current == View.Chase && !Looking) { Hide(null, false); if (touched) Release(); last = chasePose; return; }
+            Pose pose;
+            if (ChastainRush.TrailerMode.Active && player == 0) pose = TrailerPose(chasePose, car, out ShownTrailer);   // Round 43 (Part D): Racer's Trailer Mode cameras
+            else
+            {
+                trailerShot = null;
+                chase.offsetScale = Current == View.FarChase ? new Vector3(1, 1.55f, 1.5f) : Vector3.one;
+                chase.positionSmoothTime = baseSmooth; chase.headingResponse = baseHeading;
+                bool own = Current == View.FirstPerson || Current == View.Front;
+                pose = own ? Pose.Lerp(chasePose, Current == View.FirstPerson ? FirstPerson(car, chasePose) : FrontView(car, chasePose), Mathf.SmoothStep(0, 1, viewWeight)) : chasePose;
+                UpdateFreeLook(car); pose = DriveLook(pose, car, own && viewWeight > .5f);
+                if (!own && blend >= 1 && Current == View.Chase && !Looking) { Hide(null, false); if (touched) Release(); last = chasePose; return; }
+            }
             if (blend < 1) { blend = Mathf.Min(1, blend + Time.unscaledDeltaTime / blendLength); pose = Pose.Lerp(blendFrom, pose, Mathf.SmoothStep(0, 1, blend)); }
             Hide(car, InsideHead(car, pose.position));
             transform.SetPositionAndRotation(pose.position, pose.rotation);
