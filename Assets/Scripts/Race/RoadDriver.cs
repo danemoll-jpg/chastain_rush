@@ -498,7 +498,6 @@ namespace Racer
             for (float d = 6f; d < 60f && s + d + 6f < Length; d += 2f)
             {
                 Vector3 a = At(s + d - 6f, out _), b = At(s + d, out _), c = At(s + d + 6f, out _);
-                if (ChurchTurn.HeldAt(b)) continue;   // Chastain Rush, Round 40: a held bend (the church leap's) is taken at the line's own speed
                 a.y = b.y = c.y = 0f;
                 float area2 = Mathf.Abs(Vector3.Cross(b - a, c - a).y); if (area2 < 1e-3f) continue;
                 float r = (b - a).magnitude * (c - b).magnitude * (c - a).magnitude / (2f * area2);

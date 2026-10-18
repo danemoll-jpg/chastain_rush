@@ -158,6 +158,12 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   the neighborhoods): a shortcut's turn-off gets a clear hint, something
   that could be there (a party sign and balloons, worn tracks, a rock bar),
   never a game arrow or arch.
+- **Real jumps off ramps** (Dan, 2026-10-17). Dan: "Lets not do fake jumps off of ramps. If there is a ramp we do
+  actual jumps only. If we do something on a scripted jump path it has to be something creative and not just a ramp. Lets keep
+  this as a standing rule." From now on a ramp, kicker, pile or stair launches by physics alone: no aimed or scripted flight
+  off it (the landing is sized to the real flight instead). A scripted or aimed path is allowed only for something that is not a
+  ramp and is creative (a water plume, a geyser, a trampoline). Launches built before this rule are left as they are until Dan
+  points at one.
 - **"This should be fun."** Forgiving resets, escapable water and pits, no
   cheap traps.
 - **Claims need proof.** Before saying done, look at the result where Dan

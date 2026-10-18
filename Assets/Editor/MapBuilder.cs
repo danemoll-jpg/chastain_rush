@@ -98,7 +98,7 @@ namespace ChastainRush
             BuryCulvert(map, hood, terrain);   // Round 16 (A): the pond's culvert headwall set into the bank (MapBuilder.Pond.cs)
             var creek = CreekTrack.Load();     // Round 18 (3): the Noonday Creek trail graded into the ground (MapBuilder.CreekTrack.cs)
             GradeCreekTrack(map, terrain, creek);
-            ChurchHollow = null;
+            ChurchHollows.Clear();
             var ridge = RidgeNow = Ridge.Load();   // Round 33: the Chastain Ridge race's dirt piles and the way out of the hollow (MapBuilder.ChastainRidge.cs)
             GradeRidge(terrain, ridge);
             GradeNewChastainMedian(map, terrain);   // Round 40 (B2): New Chastain Road's median straight across, before anything samples the ground (MapBuilder.Round40.cs)
@@ -155,7 +155,7 @@ namespace ChastainRush
             BuildNeighborhood(map, terrain, mats, world, hood, trees);
             BuildRest(map, terrain, mats, world, rest);   // Round 30 (B)
             BuildBusinesses(map, terrain, mats, world, biz);   // Round 31 (4)
-            BuildChurchClimb(terrain, mats, world);   // Round 40 (A7): church 74's north wing hollow for the church leap (MapBuilder.ChurchClimb.cs)
+            BuildChurchCrypt(terrain, mats, world);   // Round 41 (A): church 74 hollow, the crypt under it and the graveyard (MapBuilder.ChurchCrypt.cs; was Round 40's church leap)
             BuildChastainLakes(map, terrain, mats, world, lakes);   // Round 32 (C2)
             BuildCoursonSwim(map, terrain, mats, world, courson);   // Round 39 (A4)
             BuildShoppingCenter(map, terrain, mats, world, shop);   // Round 17 (Part B): lot, shop fronts, gas station, the bank

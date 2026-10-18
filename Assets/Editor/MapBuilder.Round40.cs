@@ -101,6 +101,7 @@ namespace ChastainRush
             var keepOff = new List<Vector2>();   // the manhole plume and the Ridge leap's landing: open ground there
             if (ridge?.Data?.plumes != null) foreach (var pl in ridge.Data.plumes) keepOff.Add(new Vector2(pl.at[0], pl.at[1]));
             if (ridge?.Data?.landing_zones != null) foreach (var z in ridge.Data.landing_zones.Where(z => z.id == "RL" || z.id == "CHURCH")) { var p = ToPoints(z.poly); keepOff.Add(new Vector2(p.Average(q => q.x), p.Average(q => q.y))); }
+            if (ridge?.Data?.landing_zones != null) foreach (var z in ridge.Data.landing_zones.Where(z => z.id == "CRYPT")) keepOff.AddRange(ToPoints(z.poly));   // Round 41: the crypt's jump comes down and turns there (its whole zone and 35 m round it)
             int skipped = 0;
             foreach (var s in sides)
             {

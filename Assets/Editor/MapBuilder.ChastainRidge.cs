@@ -22,11 +22,12 @@ namespace ChastainRush
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
         [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off; public float half, blend, keep_off_m; }
-        // Round 40 (A): the manhole plume (ManholePlume), the church leap's inside and flight (MapBuilder.ChurchClimb.cs), the crest cut's boulder wall
+        // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
-        [Serializable] class RidgeChurch { public int building; public float[] door, window, inside, inside_y, lip, lip_dir, target, target_dir, altar, corner; public float door_w, door_h, lane, angle_deg, turn_r, gravity; }
-        [Serializable] class RidgeFile { public CtBigJump[] big_jumps; public CtZone[] landing_zones; public RidgeClear[] clear_lines, break_lines; public RidgeGrade[] grades; public RidgePlume[] plumes; public RidgeChurch church; public float[] boulders, crest_tracks; }
+        // Round 41 (A): the crypt (MapBuilder.ChurchCrypt.cs): its line from the doors to the lip, the floor's heights along it, its stations, the graveyard
+        [Serializable] class RidgeCrypt { public int building; public float[] door, line, y, lip_dir, graveyard, gate, graves, trees; public float door_w, door_h, s_top, s_foot, s_west, s_hall, s_bend0, s_bend1, s_portal, lane, hall_w, clear; }
+        [Serializable] class RidgeFile { public CtBigJump[] big_jumps; public CtZone[] landing_zones; public RidgeClear[] clear_lines, break_lines; public RidgeGrade[] grades; public RidgePlume[] plumes; public RidgeCrypt crypt; public float[] boulders, crest_tracks; }
 
         const string RidgeTrackFile = "Data/tracks/chastain_ridge.json";
         static Ridge RidgeNow;   // for the back-yard fences' planning (PlanRestFences: none on a cleared line)

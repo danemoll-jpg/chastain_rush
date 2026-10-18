@@ -1,0 +1,20 @@
+Round 41 check, 2026-10-18 04:57, the exe, 1280 x 720, muted.
+
+=== A: pictures of the crypt
+PASS  A: pictures written  -  41_crypt_*.png, 41_graveyard.png
+
+=== Part A: the reverse race, 3 laps, 3 AI, traffic Normal, the player parked off the course
+  Chastain Ridge reverse: 2043 m, 6 checkpoints, shortcuts Crest cut, Crypt, 21 barriers
+PASS  EMBER (Trail Four) finishes the 3 reverse laps  -  total 218.8 s, laps 72.0 / 83.8 / 63.0, missed 0, shortcuts lap 1 rch_crypt, lap 2 rch_crypt
+PASS  GOLD (Highball Fastback) finishes the 3 reverse laps  -  total 213.7 s, laps 76.4 / 67.6 / 69.6, missed 0, shortcuts none
+PASS  BLUE (Trail Four) finishes the 3 reverse laps  -  total 229.2 s, laps 73.7 / 86.5 / 69.0, missed 0, shortcuts lap 1 rc_crest_cut, lap 2 rch_crypt
+INFO  thrown by the plume 9, AI sloppy tries on the shortcuts 0
+
+=== Part A: the reverse race, 3 laps, 3 AI, traffic Normal (every AI driver takes every shortcut: sloppy tries as they come), the player parked off the course
+  Chastain Ridge reverse: 2043 m, 6 checkpoints, shortcuts Crest cut, Crypt, 21 barriers
+PASS  EMBER (Ridge Scrambler) finishes the 3 reverse laps taking every shortcut  -  total 239.4 s, laps 81.1 / 75.6 / 82.7, missed 0, shortcuts lap 1 rch_crypt, lap 1 rc_crest_cut, lap 2 rch_crypt, lap 2 rc_crest_cut, lap 3 rch_crypt, lap 3 rc_crest_cut
+PASS  GOLD (Longroof GT) finishes the 3 reverse laps taking every shortcut  -  total 257.5 s, laps 85.3 / 84.3 / 87.9, missed 0, shortcuts lap 1 rch_crypt, lap 1 rc_crest_cut, lap 2 rc_crest_cut, lap 3 rch_crypt, lap 3 rc_crest_cut
+PASS  BLUE (Sundown Roadster) finishes the 3 reverse laps taking every shortcut  -  total 248.3 s, laps 81.1 / 90.7 / 76.5, missed 0, shortcuts lap 1 rch_crypt, lap 1 rc_crest_cut, lap 2 rch_crypt, lap 2 rc_crest_cut, lap 3 rc_crest_cut
+INFO  thrown by the plume 9, AI sloppy tries on the shortcuts 2: EMBER rc_crest_cut lap 1, EMBER rch_crypt lap 2
+
+7 of 7 checks passed.

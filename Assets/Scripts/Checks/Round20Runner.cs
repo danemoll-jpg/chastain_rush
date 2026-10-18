@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -55,7 +55,8 @@ namespace ChastainRush
             if (tag == "round35" && parts == null) parts = new[] { "line", "radio", "cpics", "grip", "fps" };   // Round 35 (Round20Runner.R35*.cs)
             if (tag == "round37" && parts == null) parts = new[] { "parkramps", "parkloop" };   // Round 37 (Round20Runner.R37*.cs)
             if (tag == "round39" && parts == null) parts = new[] { "walkers", "walkpics", "walkdodge", "walkfps" };   // Round 39 (Round20Runner.R39*.cs)
-            if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "church", "churchpics", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
+            if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
+            if (tag == "round41" && parts == null) parts = new[] { "crypt", "cryptcrash", "cryptpics", "ridgerace" };   // Round 41 (Round20Runner.R41*.cs)
             if (tag == "round38" && parts == null) parts = new[] { "bankhop", "bankthrough", "bankpics", "smash", "shoprow", "shopramp", "vault", "cpics", "cfps", "rivals", "splitai", "life", "lifepics", "lifefps" };   // Round 38 (Round20Runner.R38*.cs)
             if (tag == "round36" && parts == null) parts = new[] { "fps", "air", "tricks", "event", "glass", "inside", "rooframp", "pics" };   // Round 36 (Round20Runner.R36*.cs)
             if (Do("bj1")) yield return Guard(Bj1());
@@ -127,6 +128,15 @@ namespace ChastainRush
                 if (Do("rig")) yield return Guard(R36Rig());
                 if (Do("geyser")) yield return Guard(R36Geyser());
             }
+            // Round 41 (Round20Runner.R41*.cs)
+            if (tag == "round41")
+            {
+                if (Do("crypt")) yield return Guard(R41Crypt(ids));          // Part A
+                if (Do("cryptin")) yield return Guard(R41CryptIn(ids));
+                if (Do("cryptcrash")) yield return Guard(R41CryptCrash());
+                if (Do("cryptpics")) yield return Guard(R41CryptPics());
+                if (Do("ridgerace")) yield return Guard(R40RevRace());
+            }
             // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round40")
             {
@@ -137,8 +147,6 @@ namespace ChastainRush
                 if (Do("corner")) yield return Guard(R40Corner());
                 if (Do("clues")) yield return Guard(R40Clues());
                 if (Do("crest")) yield return Guard(R40Crest());
-                if (Do("church")) yield return Guard(R40Church());
-                if (Do("churchpics")) yield return Guard(R40ChurchPics());
                 if (Do("ridgerace")) yield return Guard(R40RevRace());
                 if (Do("lines")) yield return Guard(R40Lines());              // Part B (Round20Runner.R40B.cs)
                 if (Do("median")) yield return Guard(R40Median());
@@ -389,7 +397,6 @@ namespace ChastainRush
                 for (float d = 4f; d <= 40f; d += 4f)
                 {
                     Vector3 a = At(line, cum, s + d - 4f), b = At(line, cum, s + d), c = At(line, cum, s + d + 4f);
-                    if (ChurchTurn.HeldAt(b)) continue;   // Round 40: the church leap's held bends
                     float area = Mathf.Abs(Vector3.Cross(Flat(b - a), Flat(c - a)).y); if (area < 1e-3f) continue;
                     float r = Flat(b - a).magnitude * Flat(c - b).magnitude * Flat(c - a).magnitude / (2f * area);
                     want = Mathf.Min(want, Mathf.Sqrt(Mathf.Pow(Mathf.Sqrt(0.8f * car.maxGripAcceleration * r), 2f) + 2f * 0.8f * car.braking * Mathf.Max(0f, d - 6f)));

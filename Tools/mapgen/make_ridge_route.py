@@ -501,82 +501,173 @@ st_cr = cum(crest)
 def st_at(path, q): return nearest_s(path, q)[1]
 sGap0, sGap1, sWall, sGap2 = st_at(crest, (3090.95, 637.0)), st_at(crest, (3090.95, 648.0)), st_at(crest, (CREST_WALL["gap"][0], CREST_WALL["z"])), st_at(crest, (3080.3, 681.0))
 
-# Round 40 (A7, BUG-007: "you can drive through the front doors of the church, wind you way up top and jump from the steeple area"):
-# THE CHURCH LEAP, reverse only. Off Canton Road southbound just past the start, across the church's front lawn, in through its front
-# doors (they break) under the steeple; inside (MapBuilder.ChurchClimb.cs): the aisle west past the pews, up onto the chancel, round the
-# altar and up a ramp along the north wall, round onto the gallery under the steeple and up it to the big window in the south wall at the
-# tower's foot (glass that breaks); out of it on an aimed flight (GuidedLaunch / GuidedFlight) over the church's south wing, church 75 and
-# the garage row, curving round onto New Chastain Road on the race line heading west. Every number of the inside is here (the builder
-# reads them): the path in plan, its height over the church's floor along it, the deck's width.
-CH = dict(door=(3535.0, 576.95), door_w=4.4, door_h=4.2, window=(3529.4, 3534.6), lane=4.6, lip_h=7.0)
-CH_APPROACH = [(3567.0, 618.0), (3562.5, 606.0), (3555.0, 594.0), (3547.0, 584.5), (3540.5, 578.6)]
-def arc(c, r, a0, a1, n):   # points c + r (sin a, cos a), a from a0 to a1 degrees
-    return [(c[0] + r * math.sin(math.radians(a0 + (a1 - a0) * k / n)), c[1] + r * math.cos(math.radians(a0 + (a1 - a0) * k / n))) for k in range(n + 1)]
-UC, UR, KC, KR = (3519.6, 578.6), 3.6, (3528.0, 578.6), 3.6
-CH_INSIDE = [(3535.0, 576.95), (3532.0, 576.6), (3528.0, 575.3), (3523.0, 575.0)] + arc(UC, UR, 180.0, 360.0, 12)[0:] + [(3523.5, 582.2)] + arc(KC, KR, 0.0, 90.0, 8) + [(3531.6, 576.0), (3531.8, 572.5), (3531.9, 569.6)]
-# the heights over the floor along the inside (station from the door, height): flat to the chancel's ramp, up 1 m onto it, round the altar
-# climbing, up the ramp along the north wall, round the corner, up the gallery to the lip (its last 3 m steeper: a kicker)
-ins = resample(CH_INSIDE, 0.5); cin = cum(ins)
-s_u0 = st_at(ins, (3519.6, 575.0)); s_u1 = st_at(ins, (3519.6, 582.2)); s_k0 = st_at(ins, (3528.0, 582.2)); s_k1 = st_at(ins, (3531.6, 578.6)); s_lip = cin[-1]
-CH_Y = [(0.0, 0.0), (st_at(ins, (3528.5, 575.3)), 0.0), (st_at(ins, (3522.6, 575.0)), 1.0), (s_u0, 1.0), (s_u1, 2.2), (s_k0, 4.4), (s_k1, 5.0), (s_lip - 3.0, 6.0), (s_lip, CH["lip_h"])]
-# the flight: from the lip (heading south) over the south wing (its ridge 15.5 m over the floor, 14 m on) to the race line on New Chastain
-# Road heading west, past the junction; aimed: the vehicle's speed along its curve is what lands it there at this angle
-CH_LAND = (3440.0, None)   # x on the race line, just past CP2 (it forgives CP1 and CP2)
-CH_ANGLE = 38.0   # the least that clears the south wing's ridge with room (the scan below)
-CH_GRAVITY = 1.6  # the flight falls this much heavier than anything else (GuidedFlight): the same curve, a quicker flight
-ring74 = next(ring for i, ring, h, kind in B if i == 74)
-floor74 = max(ground(*q) for q in resample(ring74 + [ring74[0]], 1.0)) - 1.1   # about where the map build puts the church's floor
-lipP = ins[-1]; lip_y = floor74 + CH["lip_h"]
-s_land = SR((CH_LAND[0], 404.0)); landP = point_at(lap_r, s_land, Cr); _f = point_at(lap_r, s_land + 3.0, Cr)
-landDir = ((_f[0] - landP[0]) / math.dist(landP, _f), (_f[1] - landP[1]) / math.dist(landP, _f))
-lipDir = ((ins[-1][0] - ins[-3][0]) / math.dist(ins[-1], ins[-3]), (ins[-1][1] - ins[-3][1]) / math.dist(ins[-1], ins[-3]))
-def hermite(P0, T0, P1, T1, n):
-    out = []
-    for k in range(n + 1):
-        t = k / n; h00, h10, h01, h11 = 2 * t ** 3 - 3 * t * t + 1, t ** 3 - 2 * t * t + t, -2 * t ** 3 + 3 * t * t, t ** 3 - t * t
-        out.append((h00 * P0[0] + h10 * T0[0] + h01 * P1[0] + h11 * T1[0], h00 * P0[1] + h10 * T0[1] + h01 * P1[1] + h11 * T1[1]))
+# Round 41 (A, Dan 2026-10-17 21:17: "Lets not do fake jumps off of ramps ... For this particular one, lets make it go downstairs instead to an
+# underground crypt, you emerge out in graveyard with a jump that is made of the stairs of the exit. This should make it enough to get a few
+# seconds bonus"): THE CRYPT, reverse only; Round 40's church leap (the climb, the gallery, the aimed flight out of the window) is gone.
+# Off Canton Road southbound just past the start, across the church's front lawn, in through its front doors (they break), down the aisle and
+# down a straight stair (driven as a ramp) through the nave (church 74's north wing and its spine are hollow: MapBuilder.ChurchCrypt.cs) into
+# the crypt under the spine; round to the southwest in its vaulted hall (tombs, candles), then the catacomb under the churchyard, the storage
+# row (63) and its lot, a bend to the right under the lot's bank and up the exit stair out of the bank into the graveyard below it, beside New
+# Chastain Road. The top of the stair and its stone surround are the launch: a real jump (the standing rule: no aimed flight), over the
+# graveyard and its open gate onto New Chastain Road's northwest-bound carriageway. The ground right beside the church is S2's (its landing and
+# its way out between the churches), so the graveyard is on the low ground between the lot's bank and New Chastain Road, the side toward it.
+# The bend before the exit stair sets the jump: round it at its grip (about 24 m/s) the stair brings a vehicle to the lip at 25 to 30 m/s and it
+# lands on the carriageway 40 to 57 m on; too fast round the bend is its wall, too slow at the lip and it comes down among the headstones.
+def bdir(b): return (math.sin(math.radians(b)), math.cos(math.radians(b)))
+def arc_from(p, head, R, turn, n=16):   # turn > 0: to the right (the bearing grows)
+    sgn = 1 if turn > 0 else -1; rd = bdir(head + 90 * sgn); c = (p[0] + rd[0] * R, p[1] + rd[1] * R); out = []
+    for k in range(1, n + 1):
+        h = head + turn * k / n; rr = bdir(h - 90 * sgn); out.append((c[0] + rr[0] * R, c[1] + rr[1] * R))
     return out
-chord = math.dist(lipP, landP)
-fl = hermite(lipP, (lipDir[0] * chord, lipDir[1] * chord), landP, (landDir[0] * chord, landDir[1] * chord), 200)
-Lfl = cum(fl)[-1]; thC = math.radians(CH_ANGLE); uC = ballistic_u(Lfl, ground(*landP) - lip_y, thC) * math.sqrt(CH_GRAVITY); vyC = uC * math.tan(thC)
-roofs_c = {}; cfl = cum(fl)
-for k_, q in enumerate(fl):
-    tt = cfl[k_] / uC; y = lip_y + vyC * tt - 4.905 * tt * tt
-    for i, ring, h, kind in B:
-        if near_box(i, q, 1.0) and poly_dist(q, ring) < 0.5:
-            roofs_c[i] = round(min(roofs_c.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
-print(f"church leap: the lip ({lipP[0]:.1f}, {lipP[1]:.1f}) about {lip_y:.1f} m ({CH['lip_h']} m over the floor at about {floor74:.1f}); the flight {Lfl:.0f} m along its curve "
-      f"(chord {chord:.0f} m, from bearing {math.degrees(math.atan2(lipDir[0], lipDir[1])) % 360:.0f} to {math.degrees(math.atan2(landDir[0], landDir[1])) % 360:.0f}) at {CH_ANGLE} deg: "
-      f"{uC:.1f} m/s along it, {vyC:.1f} up, {Lfl / uC:.2f} s, {vyC * vyC / (19.62 * CH_GRAVITY):.1f} m up; lands at ({landP[0]:.1f}, {landP[1]:.1f}) {ground(*landP):.1f} m, lap s {s_land:.0f}; roofs under it {roofs_c}")
-for th_ in (20, 25, 30, 35, 40, 44):
-    u_ = ballistic_u(Lfl, ground(*landP) - lip_y, math.radians(th_)); vy_ = u_ * math.tan(math.radians(th_))
-    k_r = next(k for k, q in enumerate(fl) if q[1] <= 555.0); tt = cfl[k_r] / u_; yr = lip_y + vy_ * tt - 4.905 * tt * tt
-    print(f"    at {th_} deg: {u_:.1f} m/s along, {Lfl / u_:.2f} s, over the south wing's ridge by {yr - (floor74 + 15.5):+.1f} m")
-s_ch0 = SR(CH_APPROACH[0]); s_ch1 = s_land + 30.0
-after_c = resample([point_at(lap_r, s_land + k_ * 2.0, Cr) for k_ in range(16)], 2.0)
-church = resample(chaikin([point_at(lap_r, s_ch0, Cr)] + CH_APPROACH[1:] + [CH["door"]], 2), 2.0)[:-1] + ins[::2] + [ins[-1]] + fl[2::4] + [landP] + after_c[1:]
+CR = dict(door=(3535.0, 576.95), door_w=5.6, door_h=4.4, stair_top=(3530.5, 576.95), stair_foot=(3501.0, 576.95), hall_r=30.0, hall_w=13.0, lane=7.0, hall_lead=6.0,
+          bend_r=40.0, lip=(3385.0, 450.0), lip_head=296.0, exit_stair=22.0, clear=5.5, cover=0.6, lip_up=0.85, floor=330.5, hall_floor=324.0, bend_floor=317.5)   # bend_floor: the vault stays covered under the parking lot's lane (x 3416) and opens in the bank west of it
+# the way to the doors: off the southbound lane in one arc, then straight in square to them (Round 41 checks: Round 40's tighter turn, then an arc ending at
+# the doors, put fast vehicles into the wall beside them)
+CR_ARC_R, CR_RUN_IN = 28.0, 6.0   # the arc ends 7.5 m short of the doors: a straight run-in square to them (a vehicle cuts an arc's inside)
+_ac = (CR["door"][0] + CR_RUN_IN, CR["door"][1] + CR_ARC_R)
+CR_APPROACH = [(_ac[0] + CR_ARC_R, _ac[1] + 14.0)] + [(_ac[0] + CR_ARC_R * math.cos(math.radians(a)), _ac[1] - CR_ARC_R * math.sin(math.radians(a))) for a in range(0, 91, 6)]
+L_ = CR["lip"]; LH_ = CR["lip_head"]; F2_ = (L_[0] - bdir(LH_)[0] * CR["exit_stair"], L_[1] - bdir(LH_)[1] * CR["exit_stair"])
+def _build(h1):
+    hall = [(CR["stair_foot"][0] - CR["hall_lead"], CR["stair_foot"][1])] + arc_from((CR["stair_foot"][0] - CR["hall_lead"], CR["stair_foot"][1]), 270.0, CR["hall_r"], h1 - 270.0); back = arc_from(F2_, LH_ + 180.0, CR["bend_r"], -(LH_ - h1)); return hall, back
+def _miss(h1):
+    hall, back = _build(h1); E, B0 = hall[-1], back[-1]; return abs((math.degrees(math.atan2(B0[0] - E[0], B0[1] - E[1])) % 360) - h1)
+cr_h1 = min((x * 0.05 for x in range(3000, 5200)), key=_miss)   # the catacomb's bearing: the hall's arc and the bend's meet it tangent
+_hall, _back = _build(cr_h1)
+crypt = resample([CR["door"], CR["stair_top"], CR["stair_foot"]] + _hall + [_back[-1]] + list(reversed(_back))[1:] + [F2_, L_], 1.0)
+cc = cum(crypt)
+s_top, s_foot, s_hall1, s_bend0, s_bend1 = (st_at(crypt, q) for q in (CR["stair_top"], CR["stair_foot"], _hall[-1], _back[-1], F2_))
+s_lipc = cc[-1]
+# the least ground over the crypt (6 m either side) and the floor under it: a 5.5 m clear vault under 0.6 m of cover at least
+def _low(k):
+    a, b = crypt[max(k - 1, 0)], crypt[min(k + 1, len(crypt) - 1)]; t = (b[0] - a[0], b[1] - a[1]); n_ = math.hypot(*t) or 1.0; nn = (-t[1] / n_, t[0] / n_)
+    return min(ground(crypt[k][0] + nn[0] * o, crypt[k][1] + nn[1] * o) for o in (-6.0, -3.0, 0.0, 3.0, 6.0))
+cr_low = [_low(k) for k in range(len(crypt))]
+cr_lim = [v - CR["cover"] - CR["clear"] for v in cr_low]
+lip_y_c = ground(*L_) + CR["lip_up"]
+def stair_u(u, r):   # 0 to 1, straight between ends rounded over r (a fraction) at each end
+    m = 1.0 / (1.0 - r)
+    if u < r: return m * u * u / (2 * r)
+    if u > 1 - r: return 1.0 - m * (1 - u) ** 2 / (2 * r)
+    return m * (u - r / 2)
+# the floor: the stair from the church's floor down to the hall; the hall level; then the most a 9 % grade allows under the cover's limit
+cr_y = []
+for k, s_ in enumerate(cc):
+    if s_ <= s_top: y = CR["floor"]
+    elif s_ <= s_foot: y = CR["floor"] + (CR["hall_floor"] - CR["floor"]) * stair_u((s_ - s_top) / (s_foot - s_top), 3.0 / (s_foot - s_top))
+    elif s_ >= s_bend1: y = None
+    else: y = min(CR["hall_floor"], cr_lim[k] - 0.15, CR["bend_floor"] if s_ >= s_bend0 - 12.0 else 1e9)
+    cr_y.append(y)
+_k1 = next(k for k, s_ in enumerate(cc) if s_ > s_foot); _k2 = next(k for k, s_ in enumerate(cc) if s_ >= s_bend1)
+for _ in range(2):
+    for k in range(_k1, _k2): cr_y[k] = min(cr_y[k], cr_lim[k] - 0.15) if cc[k] < s_bend0 else cr_y[k]
+    for k in range(_k1, _k2): cr_y[k] = min(cr_y[k], cr_y[k - 1] + 0.08)
+    for k in range(_k2 - 2, _k1 - 1, -1): cr_y[k] = min(cr_y[k], cr_y[k + 1] + 0.08)
+# eased (a running mean over 11 m, never over the cover's limit): no crest a vehicle at speed comes light over before the bend (Round 41 check)
+for _ in range(3):
+    _sm = cr_y[:]
+    for k in range(_k1 + 5, _k2 - 5): _sm[k] = min(sum(cr_y[k - 5:k + 6]) / 11.0, cr_lim[k] - 0.15 if cc[k] < s_bend0 else 1e9)
+    cr_y = _sm
+_k0 = next(k for k, s_ in enumerate(cc) if s_ >= s_bend0)
+for k in range(_k0, _k2): cr_y[k] = cr_y[_k0 - 1]   # level round the bend (it opens into the bank's cut there)
+_yb = cr_y[_k2 - 1]
+for k in range(_k2, len(crypt)): u = (cc[k] - cc[_k2 - 1]) / (s_lipc - cc[_k2 - 1]); cr_y[k] = _yb + (lip_y_c - _yb) * u   # the exit stair
+# where the vault opens: from the portal (its clear height reaches the cover's limit) to the lip the stair is an open cut in the bank
+s_portal = next(cc[k] for k in range(len(crypt)) if cc[k] > s_bend0 and cr_y[k] + CR["clear"] > cr_low[k] - CR["cover"])
+s_west = st_at(crypt, (3502.6, 576.95))   # the spine's west wall: the stairwell is in the church to here, the vault from here
+_over = max(cr_y[k] + CR["clear"] - (cr_low[k] - CR["cover"]) for k in range(len(crypt)) if s_west <= cc[k] < s_portal)
+if _over > 0.01: raise SystemExit(f"the crypt's vault stands {_over:.2f} m into its cover")
+_gr = [(cr_y[k + 1] - cr_y[k]) / max(cc[k + 1] - cc[k], 1e-6) for k in range(len(crypt) - 1)]
+_pk = next(k for k in range(len(crypt)) if cc[k] >= s_portal)
+print(f"crypt: the portal at ({crypt[_pk][0]:.1f}, {crypt[_pk][1]:.1f}); the catacomb's bearing {cr_h1:.1f}; door to lip {s_lipc:.0f} m (the stair {s_top:.0f}-{s_foot:.0f}, the hall to {s_hall1:.0f}, the catacomb to {s_bend0:.0f}, the bend to "
+      f"{s_bend1:.0f}, the portal at {s_portal:.0f}, the lip at {s_lipc:.0f}); floor {min(cr_y):.2f} to {CR['hall_floor']:.2f} m, the lip {lip_y_c:.2f} m; grades {min(_gr) * 100:.0f} % to {max(_gr) * 100:.0f} %")
+# the flight from the lip (heading 288 over the graveyard onto the carriageway), a real one: where each speed comes down
+_ang = math.atan2(cr_y[-1] - cr_y[-4], cc[-1] - cc[-4])
+def cr_flight(v):
+    vx, vy = v * math.cos(_ang), v * math.sin(_ang); t = 0.0; q = L_
+    while t < 6.0:
+        t += 0.01; q = (L_[0] + bdir(LH_)[0] * vx * t, L_[1] + bdir(LH_)[1] * vx * t); y = lip_y_c + vy * t - 4.905 * t * t
+        if y <= ground(*q): break
+    return t, vx * t, q, vy * vy / 19.62
+CR_DESIGN = 30.0
+for v in (22.0, 25.0, CR_DESIGN, 30.0, 34.0):
+    t_, d_, q_, top_ = cr_flight(v); dd, ss = nearest_s(lap_r, q_)
+    print(f"    off the lip ({math.degrees(_ang):.0f} deg) at {v:.0f} m/s: {t_:.2f} s, {d_:.0f} m, {top_:.1f} m up, down at ({q_[0]:.1f}, {q_[1]:.1f}), {dd:.1f} m from the race line at s {ss:.0f}")
+_tD, _dD, cr_land, _ = cr_flight(CR_DESIGN)
+s_cland = SR(cr_land); s_ch0 = SR(CR_APPROACH[0]); s_ch1 = s_cland + 30.0
+_fl = [(L_[0] + bdir(LH_)[0] * d, L_[1] + bdir(LH_)[1] * d) for d in range(2, int(_dD), 2)]
+_vx, _vy = CR_DESIGN * math.cos(_ang), CR_DESIGN * math.sin(_ang)
+_fl_y = [lip_y_c + _vy * (d / _vx) - 4.905 * (d / _vx) ** 2 for d in range(2, int(_dD), 2)]
+_after = resample([point_at(lap_r, s_cland + k_ * 2.0, Cr) for k_ in range(16)], 2.0)
+_appr = resample([point_at(lap_r, s_ch0, Cr)] + CR_APPROACH[1:] + [CR["door"]], 2.0)[:-1]
+_join = chaikin(_fl[-4:] + _after[1:6], 3)   # the flight's line eased onto the lap's (no kink where a vehicle comes down)
+_join_y = [ground(*q) for q in _join]
+church = _appr + crypt[::2] + [crypt[-1]] + _fl[:-4] + resample(_join, 2.0) + _after[6:]
+church_y = [round(ground(*q), 2) for q in _appr] + [round(cr_y[k], 2) for k in range(0, len(crypt), 2)] + [round(cr_y[-1], 2)] + [round(v, 2) for v in _fl_y[:-4]] + [round(ground(*q), 2) for q in resample(_join, 2.0)] + [round(ground(*q), 2) for q in _after[6:]]
 fg_ch = forgiven_rev(s_ch0, s_ch1)
+_canton = [point_at(lap_r, s_ch0 + d, Cr) for d in range(-60, 60, 4)]
+_ac_c = cum(_appr); _ag_g = [ground(*q) for q in _appr]
+_agk = [k for k, q in enumerate(_appr) if nearest_s(_canton, q)[0] > 4.0 and q[0] > CR["door"][0] + 4.0]   # off the road (its edge 2.9 m from the race line) and short of the doors
+_ag = [_appr[k] for k in _agk]
+_gs = lambda k: sum(_ag_g[j] * math.exp(-((_ac_c[j] - _ac_c[k]) / 6.0) ** 2 / 2) for j in range(len(_appr))) / sum(math.exp(-((_ac_c[j] - _ac_c[k]) / 6.0) ** 2 / 2) for j in range(len(_appr)))
+_sA = _ac_c[_agk[0]]; _kB = min(_agk, key=lambda k: abs(_ac_c[k] - (_sA + 24.0))); _yA, _yB = _ag_g[_agk[0]], _gs(_kB)
+# from the road's edge a steady 5 % up to the lawn (it rose 1 m in 8 m there), then the lawn smoothed
+_agy = [round(_yA + (_yB - _yA) * (_ac_c[k] - _sA) / (_ac_c[_kB] - _sA), 2) if _ac_c[k] <= _ac_c[_kB] else round(_gs(k), 2) for k in _agk]
+print(f"the crypt's way to the doors graded: {len(_ag)} points, the ground moved by up to {max(abs(a - _ag_g[k]) for k, a in zip(_agk, _agy)):.2f} m")
 plen_ch = cum(church)[-1]
-print(f"church leap: leaves the reverse lap at s {s_ch0:.0f}, rejoins at s {s_ch1:.0f}: {plen_ch:.0f} m against {(s_ch1 - s_ch0) % L_rev:.0f} m on the lap; forgives CP {fg_ch}")
-sDoor = st_at(church, CH["door"]); sLipC = st_at(church, lipP); sLandC = st_at(church, landP)
+sDoor = st_at(church, CR["door"]); sLipC = st_at(church, L_); sLandC = st_at(church, cr_land)
+sHall = sDoor + s_foot; sBend0 = sDoor + s_bend0; sBend1 = sDoor + s_bend1; sCat = sDoor + s_hall1
+print(f"crypt: leaves the reverse lap at s {s_ch0:.0f}, rejoins at s {s_ch1:.0f}: {plen_ch:.0f} m against {(s_ch1 - s_ch0) % L_rev:.0f} m on the lap; forgives CP {fg_ch}")
+# the graveyard: an iron fence round the low ground below the bank (its gate open where the flight leaves it, onto the road), headstones in
+# rows, a few that break (beside the flight's line, where a short or crooked landing goes), old trees; nothing on the flight's line
+GY_RING = [(3407.5, 461.5), (3407.5, 437.0), (3396.0, 436.0), (3383.0, 442.5), (3370.0, 451.0), (3361.0, 461.5)]
+def _fl_d(q):   # off the flight's line (from the lip, 60 m on)
+    b = (L_[0] + bdir(LH_)[0] * 60.0, L_[1] + bdir(LH_)[1] * 60.0); return seg_dist(q, L_, b)
+def _cut_d(q): return min(seg_dist(q, crypt[k], crypt[k + 1]) for k in range(len(crypt) - 1) if cc[k] >= s_portal - 2.0)
+def _inside(q, ring):
+    ins = False
+    for i in range(len(ring)):
+        a, b = ring[i], ring[(i + 1) % len(ring)]
+        if (a[1] > q[1]) != (b[1] > q[1]) and q[0] < (b[0] - a[0]) * (q[1] - a[1]) / (b[1] - a[1]) + a[0]: ins = not ins
+    return ins
+graves = []
+_rd = bdir(LH_ + 90.0); _fd = bdir(LH_)
+for i_ in range(-12, 13):
+    for j_ in range(-20, 21):
+        q = (L_[0] + _fd[0] * j_ * 2.2 + _rd[0] * i_ * 2.6, L_[1] + _fd[1] * j_ * 2.2 + _rd[1] * i_ * 2.6)
+        if not _inside(q, GY_RING) or min(seg_dist(q, GY_RING[i], GY_RING[(i + 1) % len(GY_RING)]) for i in range(len(GY_RING))) < 1.6 or _fl_d(q) < 4.2 or _cut_d(q) < 5.6: continue
+        h_ = (i_ * 7 + j_ * 13) % 5
+        graves.append([round(q[0], 2), round(q[1], 2), round((LH_ + 180.0 + (h_ - 2) * 3.0) % 360, 1), h_, 1 if _fl_d(q) < 7.5 and (i_ + j_) % 2 == 0 else 0])
+gy_trees = [[x, z, r] for x, z, r in ((3403.0, 458.0, 0.55), (3373.0, 457.5, 0.6), (3400.0, 439.5, 0.5), (3385.0, 459.5, 0.5)) if _fl_d((x, z)) > 8.0 and _cut_d((x, z)) > 6.0]
+_gate = None
+for i in range(len(GY_RING)):
+    a, b = GY_RING[i], GY_RING[(i + 1) % len(GY_RING)]
+    for k_ in range(0, 61):
+        q = (L_[0] + _fd[0] * k_, L_[1] + _fd[1] * k_)
+        if seg_dist(q, a, b) < 0.6: _gate = (i, round(q[0], 2), round(q[1], 2)); break
+    if _gate: break
+print(f"graveyard: {len(graves)} headstones ({sum(g_[4] for g_ in graves)} that break), {len(gy_trees)} old trees, the gate (fence side {_gate[0]}) where the flight leaves it at ({_gate[1]}, {_gate[2]}); "
+      f"the fence from the race line {min(nearest_s(lap_r, q)[0] for q in GY_RING):.1f} m at least")
+crypt_data = {"building": 74, "door": list(CR["door"]), "door_w": CR["door_w"], "door_h": CR["door_h"], "line": flat(crypt), "y": [round(v, 3) for v in cr_y],
+              "s_top": round(s_top, 2), "s_foot": round(s_foot, 2), "s_west": round(s_west, 2), "s_hall": round(s_hall1, 2), "s_bend0": round(s_bend0, 2), "s_bend1": round(s_bend1, 2),
+              "s_portal": round(s_portal, 2), "lane": CR["lane"], "hall_w": CR["hall_w"], "clear": CR["clear"], "lip_dir": [round(bdir(LH_)[0], 5), round(bdir(LH_)[1], 5)],
+              "graveyard": flat(GY_RING), "gate": [_gate[0], _gate[1], _gate[2]], "graves": [v for g_ in graves for v in g_], "trees": [v for t_ in gy_trees for v in t_]}
+
 shortcuts.append({"id": "rc_crest_cut", "name": "Crest cut", "direction": "reverse", "path": flat(crest), "half_width_m": 3.0,
                   "entry_inset_m": 14.0, "entry_margin_m": 1.0, "forgives": fg_cr, "ai_speed": 17.0,
                   # slow through the gap between the houses, slower through the boulders' gap, then on down
                   "ai_profile": [round(v, 1) for v in (0.0, 18.0, sGap0 - 2.0, 17.0, sGap1, 17.0, sWall - 3.0, 16.0, sWall + 2.0, 16.0, sGap2, 15.0, plen_cr - 8.0, 16.0)],
                   # a sloppy try: too fast through the gaps (a wall, a boulder)
                   "ai_slip": 0.22, "ai_slip_profile": [round(v, 1) for v in (0.0, 21.0, sGap0 - 2.0, 21.0, sGap1, 20.0, sWall - 3.0, 20.0, sWall + 2.0, 19.0, plen_cr - 8.0, 19.0)]})
-shortcuts.append({"id": "rch_church_leap", "name": "Church leap", "direction": "reverse", "path": flat(church), "half_width_m": 3.0,
-                  "entry_inset_m": round(max(10.0, sDoor - 8.0), 1), "entry_margin_m": 1.5, "forgives": fg_ch, "ai_speed": 16.0,
-                  "ai_profile": [round(v, 1) for v in (0.0, 16.0, sDoor - 4.0, 14.0, sDoor + s_u0 - 4.0, 13.0, sDoor + s_u1, 13.0, sDoor + s_k0 - 2.0, 13.0, sDoor + s_k1, 12.0, sLipC + 1.0, 12.0, sLandC + 2.0, 20.0, plen_ch - 6.0, 22.0)],
-                  "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 17.0, sDoor - 4.0, 16.0, sDoor + s_u0 - 4.0, 15.0, sDoor + s_u1, 14.0, sDoor + s_k0 - 2.0, 14.0, sDoor + s_k1, 12.0, sLipC + 1.0, 10.0, sLandC + 2.0, 20.0, plen_ch - 6.0, 22.0)]})
-church_data = {"building": 74, "door": [CH["door"][0], CH["door"][1]], "door_w": CH["door_w"], "door_h": CH["door_h"], "window": list(CH["window"]), "lane": CH["lane"],
-               "inside": flat(ins), "inside_y": [round(v, 2) for q in CH_Y for v in q], "lip": [round(lipP[0], 2), round(lipP[1], 2)], "lip_dir": [round(lipDir[0], 5), round(lipDir[1], 5)],
-               "target": [round(landP[0], 2), round(landP[1], 2)], "target_dir": [round(landDir[0], 5), round(landDir[1], 5)], "angle_deg": CH_ANGLE, "gravity": CH_GRAVITY,
-               "altar": [UC[0], UC[1]], "corner": [KC[0], KC[1]], "turn_r": UR}
+shortcuts.append({"id": "rch_crypt", "name": "Crypt", "direction": "reverse", "path": flat(church), "path_y": church_y, "half_width_m": 3.0,
+                  "entry_inset_m": round(max(10.0, sDoor - 8.0), 1), "entry_margin_m": 1.5, "forgives": fg_ch, "ai_speed": 20.0,
+                  # Round 41: through the doors, down the stair, round the hall, flat out down the catacomb, braked for the bend, up the stair to the lip at the jump's speed
+                  "ai_profile": [round(v, 1) for v in (0.0, 24.0, sDoor - 6.0, 22.0, sHall + 2.0, 24.0, sCat, 25.0, sCat + 20.0, 36.0, sBend0 - 30.0, 36.0, sBend0, 27.0, sBend1, 27.0, sLipC, CR_DESIGN, sLandC + 4.0, 24.0, plen_ch - 6.0, 26.0)],
+                  # a sloppy try: in too hot round the hall and the bend (a tomb, the wall), or out of the bend slow (short among the headstones)
+                  "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 24.0, sDoor - 6.0, 22.0, sHall + 2.0, 28.0, sCat, 28.0, sCat + 20.0, 38.0, sBend0 - 30.0, 38.0, sBend0, 33.0, sBend1, 22.0, sLipC, 22.0, sLandC + 4.0, 22.0, plen_ch - 6.0, 26.0)]})
 # the reverse race layer
 ai_zones_rev = [{"id": "manhole_plume", "s0": round(s_plume - 90.0, 1), "s1": round(s_plume + 1.0, 1), "speed": 25.0}]
 reset_skip_rev = [{"id": "manhole_plume", "s0": round(s_plume - 3.0, 1), "s1": round(s_pland + 4.0, 1), "to_s": round(s_pland + 30.0, 1)}]
-closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (crest, church[:int(sLipC / 2.0) + 1], after_c), lambda r, contact: False)
+closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (crest, _appr, _fl + _after), lambda r, contact: False)   # Round 41: the crypt's ways above ground only
 # the barrier across the northwest-bound carriageway past the plume: 40 m on (12 m past the cover it stood in the plume's first meters)
 for c in closures_rev:
     if c["osm_id"] == 290282527 and math.dist((c["x"], c["z"]), PP) < 35.0:
@@ -602,7 +693,7 @@ landings = [{"id": "RL", "poly": zone(RL, dR, rf["dist"] - 30.0, rf["dist"] + 45
             {"id": "S1", "poly": zone(S1_LIP, d1, 8.0, f1["dist"] + 30.0, 7.0, 9.0)},
             {"id": "S2", "poly": zone(S2_LIP, d2, 8.0, f2["dist"] + 14.0, 7.0, 9.0)},
             {"id": "PLUME", "poly": zone(PP, dP, D_p - 12.0, D_p + 24.0, 6.0, 8.0)},   # Round 40: the plume's landing (as the climb's was)
-            {"id": "CHURCH", "poly": zone(landP, landDir, -25.0, 35.0, 9.0, 9.0)}]      # Round 40: the church leap's, on New Chastain Road
+            {"id": "CRYPT", "poly": zone(L_, bdir(LH_), 22.0, 72.0, 7.0, 11.0)}]      # Round 41: the crypt's jump, the graveyard's gate to the far side of the carriageway
 def flat(p): return [round(v, 2) for q in p for v in q]
 clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0] + dR[0] * (rf["dist"] - 45.0), RL[1] + dR[1] * (rf["dist"] - 45.0)), (RL[0] + dR[0] * (rf["dist"] + 30.0), RL[1] + dR[1] * (rf["dist"] + 30.0))]), "half": 9.0},
          {"id": "RL run-up and pile", "points": flat([RIDGE_RUNUP_FROM, RL]), "half": 6.0},
@@ -612,19 +703,24 @@ clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0
          {"id": "the plume's flight, its lower part", "points": flat([(PP[0] + dP[0] * k_, PP[1] + dP[1] * k_) for k_ in clear_p[::4]] + [(PP[0] + dP[0] * clear_p[-1], PP[1] + dP[1] * clear_p[-1])]), "half": 6.0},
          {"id": "RC the landing on the dead end", "points": flat([CT, RF_, (3112.0, 621.0)]), "half": 6.0},
          {"id": "the crest cut", "points": flat(crest[::2] + [crest[-1]]), "half": 4.0},
-         {"id": "the church leap's way to the doors", "points": flat(church[:int(sDoor / 2.0) + 1]), "half": 4.0}]
+         {"id": "the crypt's way to the doors", "points": flat(_appr + [CR["door"]]), "half": 4.0},
+         {"id": "the crypt's cut, the graveyard, the jump and its landing", "points": flat([crypt[int(s_portal) - 2], L_, (L_[0] + bdir(LH_)[0] * 75.0, L_[1] + bdir(LH_)[1] * 75.0)]), "half": 9.0},
+         {"id": "the graveyard", "points": flat([(3407.0, 449.0), (3363.0, 457.0)]), "half": 13.0}]
 # the run-out past the landing: a vehicle that lands across the road at speed runs on into the woods east of it; the trees there
 # snap when hit (TreeField.breakable) instead of stopping it dead (Round 33 check: 4 of 11 vehicles stopped on trunks 30-40 m past the road)
 breaks = [{"id": "RL run-out", "points": flat([(RL[0] + dR[0] * (rf["dist"] + 6.0), RL[1] + dR[1] * (rf["dist"] + 6.0)), (RL[0] + dR[0] * (rf["dist"] + 75.0), RL[1] + dR[1] * (rf["dist"] + 75.0))]), "half": 22.0},
           # and the woods along the road's east side beyond it, where a vehicle turning back to the road after the landing runs
           {"id": "RL run-out along the road", "points": flat([(Pl[0] + 32.0, Pl[1] + 4.0), (Pl[0] + 52.0, Pl[1] - 60.0)]), "half": 18.0}]
 track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/mapgen/make_ridge_route.py (MapBuilder.ChastainRidge.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "church": church_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
+         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "crypt": crypt_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
          "grades": [{"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "y": [round(ground(*HOLLOW_RAMP[0]), 2), round(ground(*HOLLOW_RAMP[1]), 2)], "half": 4.0, "blend": 5.0,
                      "keep_off": flat(NC), "keep_off_m": 5.0},
                     # Round 40 (A6): the crest cut's line through the back yards smoothed along it (a Gaussian of the ground over 5 m: the slope stays,
                     # the lumps that threw a vehicle at speed go), 3 m wide, blending back over 2 m; from the drive's edge to the drive's edge
-                    {"id": "the crest cut's line", "points": flat(crest_g), "y": crest_gy, "half": 1.5, "blend": 2.0}]}
+                    {"id": "the crest cut's line", "points": flat(crest_g), "y": crest_gy, "half": 1.5, "blend": 2.0},
+                    # Round 41 (A): the crypt's way to the doors smoothed along it (a Gaussian of the ground over 6 m: the lawn's 0.8 m rise off Canton
+                    # Road's edge threw a vehicle into the air in the middle of its turn), kept off the road and short of the doors
+                    {"id": "the crypt's way to the doors", "points": flat(_ag), "y": _agy, "half": 3.5, "blend": 3.0, "keep_off": flat(_canton), "keep_off_m": 4.0}]}
 route = dict(SETTINGS)
 route.update({
     "source": "Tools/mapgen/make_ridge_route.py from Data/map.json. Coordinates are map meters (= Unity x, z); heights come from the world.",

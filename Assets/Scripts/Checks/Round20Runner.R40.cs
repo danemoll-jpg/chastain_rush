@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace ChastainRush
 {
-    // Round 40 Part A in the exe (-exeRound40 <dir> -r40Only plume,plumewhen,plumepics,corner,clues,crest,church,churchpics,ridgerace -traffic Normal):
+    // Round 40 Part A in the exe (-exeRound40 <dir> -r40Only plume,plumewhen,plumepics,corner,clues,crest,ridgerace -traffic Normal):
     //   plume       every vehicle the reverse race offers, flat out along New Chastain Road into the manhole plume from the left lane, the right lane
     //               and the shoulder: thrown, the air, where it comes down (meters down the forward pile's ramp face), upright, on along the drive
     //   plumewhen   the first racer's arrival with the cover still shut (where it blew), a forward race (it never blows), Free Roam (it blows at
@@ -16,8 +16,7 @@ namespace ChastainRush
     //   corner      A3: the reverse lap through the Canton Road / New Chastain Road junction on the Drifter Twin flat out: no bump-log event
     //   clues       A4 / A5: S1's and S2's clues hidden in a reverse race (shown in a forward race and Free Roam), no reverse S1, a picture from BUG-004
     //   crest       A6: the crest cut driven clean and crashed, against the lap
-    //   church      A7: the church leap driven flat out on two vehicles: doors, launch, air, landing, against the road
-    //   churchpics  the doors, inside, the take-off, the landing
+    //   (church, churchpics: Round 40's church leap, removed in Round 41 for the crypt: Round20Runner.R41.cs)
     //   ridgerace   3 laps reverse, 3 AI, traffic Normal: everyone finishes; the AI's shortcuts (then a race where they take every one: sloppy tries)
     public sealed partial class Round20Runner
     {
@@ -237,52 +236,6 @@ namespace ChastainRush
             var w = RaceRoute.Surface(3084f, 662f); yield return Still("40_crest_boulder_wall", w + new Vector3(-6f, 4f, -12f), w + Vector3.up * .5f, 62f);
         }
 
-        IEnumerator R40Church()
-        {
-            report.AppendLine(); report.AppendLine("=== A7: THE CHURCH LEAP (reverse race): driven flat out on two vehicles, against the road");
-            yield return StartRevRace();
-            var sc = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "rch_church_leap"); var sj = race.RouteData.official_shortcuts.FirstOrDefault(s => s.id == "rch_church_leap");
-            if (sc == null || sj == null) { Check("the church leap is in the reverse race", false); race.EndRace(); yield break; }
-            string src = null; float u = 0f, T = 0f; System.Action<ArcadeVehicle, string, float, float> hook = (c, s, uu, tt) => { if (c == car) { src = s; u = uu; T = tt; } };
-            GuidedFlight.Began += hook;
-            var bad = new List<string>();
-            foreach (var id in new[] { "drifter", "original" })
-            {
-                yield return Vehicle(id);
-                float road = -1f, leap = -1f;
-                var r0 = new Run(); yield return TimedShortcut(sc.Id, false, 0f, null, r0, v => road = v);
-                src = null; var r1 = new Run(); int broke = FenceChunk.BrokenPanels;
-                yield return TimedShortcut(sc.Id, true, 0f, sj.ai_profile, r1, v => leap = v);
-                bool ok = src != null && src.Contains("church") && r1.reached && r1.upAtLanding > .7f;
-                if (!ok) { bad.Add(Nm(id)); File.WriteAllLines(Path.Combine(outputDir, $"church_{id}.csv"), r1.trail.Select(q => $"{q.x:0.00},{q.y:0.00},{q.z:0.00}")); }
-                var tgt = race.RouteData.official_shortcuts.First(s => s.id == "rch_church_leap");
-                report.AppendLine($"  {Nm(id),-18} the road {road:0.0} s; the church leap {leap:0.0} s ({(leap > 0 && road > 0 ? $"{leap - road:+0.0;-0.0} s against the road" : "-")}); {(src != null ? $"launched at {u:0.0} m/s along the curve, {T:0.0} s planned, {r1.maxAir:0.0} s in the air, came down at ({r1.firstLanding.x:0}, {r1.firstLanding.z:0}) upright {r1.upAtLanding:0.00}" : "NEVER LAUNCHED")}; " +
-                                  $"flight ended: {GuidedFlight.LastEnd}; pieces broken {FenceChunk.BrokenPanels - broke}; {(r1.reached ? "on along New Chastain Road" : "STOPPED " + r1.end + $" at ({car.Body.position.x:0.0}, {car.Body.position.y:0.0}, {car.Body.position.z:0.0})")}");
-                race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;   // the doors and the window back for the next one
-            }
-            GuidedFlight.Began -= hook;
-            race.EndRace(); RaceController.DirectionOverride = null;
-            Check("A7: the church leap driven through flat out (in the doors, up, out of the window, onto New Chastain Road, upright, on) on two vehicles", bad.Count == 0, bad.Count == 0 ? "" : "not: " + string.Join(", ", bad));
-        }
-
-        IEnumerator R40ChurchPics()
-        {
-            report.AppendLine(); report.AppendLine("=== A7: pictures of the church leap");
-            var gl = FindObjectsByType<GuidedLaunch>(FindObjectsSortMode.None).FirstOrDefault(g => g.id == "church"); if (gl == null) { Check("the church leap's launch is in the build", false); yield break; }
-            yield return StartRevRace();
-            car.Body.position = RaceRoute.Surface(3600f, 640f) + Vector3.up; car.Body.linearVelocity = Vector3.zero;
-            var door = RaceRoute.Surface(3535.0f, 576.95f);
-            yield return Still("40_church_doors", door + new Vector3(22f, 3f, 6f), door + Vector3.up * 3f, 60f);
-            yield return Still("40_church_inside_aisle", door + new Vector3(-1.5f, 2.2f, -1.5f), door + new Vector3(-16f, 1.5f, 1.5f), 75f);
-            yield return Still("40_church_inside_climb", new Vector3(3515.0f, gl.lip.y - 3.5f, 572.0f), new Vector3(3531f, gl.lip.y - 2f, 580f), 75f);
-            yield return Still("40_church_takeoff", gl.lip + new Vector3(-12f, 4f, -10f), gl.lip + Vector3.up, 62f);
-            var side = Vector3.Cross(Vector3.up, (gl.target - gl.lip).normalized);
-            var mid = Vector3.Lerp(gl.lip, gl.target, .5f);
-            yield return Still("40_church_flight_above", mid + Vector3.up * 140f - side * 30f, mid, 70f);
-            yield return Still("40_church_landing", gl.target + gl.targetDir * 35f + Vector3.up * 6f + side * 6f, gl.target + Vector3.up, 62f);
-            race.EndRace(); RaceController.DirectionOverride = null;
-        }
-
         IEnumerator R40RevRace()
         {
             foreach (bool all in new[] { false, true })
@@ -292,7 +245,7 @@ namespace ChastainRush
                 yield return StartRevRace(3);
                 report.AppendLine($"  {race.Route.Name} {race.Route.Direction}: {race.Route.LapLength:0} m, {race.Route.Checkpoints.Count} checkpoints, shortcuts {string.Join(", ", race.Route.Shortcuts.Select(s => s.Name))}, {race.Route.Closures.Count} barriers");
                 respawn.PlaceAt(RaceRoute.Surface(3420f, 985f) + Vector3.up * .4f, 0f); race.NotifyTeleported();
-                var ai = race.Entrants.Where(e => !e.IsPlayer).ToList(); int th0 = ManholePlume.Throws, gl0 = GuidedLaunch.Launches;
+                var ai = race.Entrants.Where(e => !e.IsPlayer).ToList(); int th0 = ManholePlume.Throws;
                 Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
                 float end = Time.realtimeSinceStartup + 9f * 60f;
                 var sloppy = new HashSet<string>();
@@ -305,7 +258,7 @@ namespace ChastainRush
                 foreach (var e in ai)
                     Check($"{e.Name} ({e.VehicleName}) finishes the 3 reverse laps{(all ? " taking every shortcut" : "")}", e.Finished,
                           $"{(e.Finished ? $"total {e.FinalTotal:0.0} s" : $"not finished, laps {e.CompletedLaps}")}, laps {string.Join(" / ", e.LapTimes.Select(x => x.ToString("0.0")))}, missed {e.MissedTotal}, shortcuts {(e.ShortcutsTaken.Count > 0 ? string.Join(", ", e.ShortcutsTaken) : "none")}");
-                report.AppendLine($"INFO  thrown by the plume {ManholePlume.Throws - th0}, church leaps {GuidedLaunch.Launches - gl0}, AI sloppy tries on the shortcuts {sloppy.Count}{(sloppy.Count > 0 ? ": " + string.Join(", ", sloppy) : "")}");
+                report.AppendLine($"INFO  thrown by the plume {ManholePlume.Throws - th0}, AI sloppy tries on the shortcuts {sloppy.Count}{(sloppy.Count > 0 ? ": " + string.Join(", ", sloppy) : "")}");
                 race.EndRace();
             }
             RoadDriver.CheckTakeAll = false; RaceController.DirectionOverride = null;
