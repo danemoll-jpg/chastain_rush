@@ -154,7 +154,59 @@ For Dan to check: around the plume on the left and a reset there; the ghost (it 
    the winner shot; Trailer Mode from the pause menu with the controller.
 
 ## QUEUED rounds
-**Round 44, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 43 is reviewed).** Dan: "lets go with goose eggs. We can
+**Round 44, THE CHASTAIN LAKES RACE (Dan, 2026-10-18 18:10; START NOW, before Round 43 is driven: Dan is away and asked for
+the next track to be made meanwhile; Round 43 stays as delivered above until he drives it).** Dan: "Can we go ahead and create the
+next track? I want to use the Chastain Lakes subdivision ... On it I have the forward trail marked out, please be aware there is a
+trail that runs behind the pool across the bridge and by the lake going all the way to bells ferry this race will utilize. ... I
+have also added two shortcuts. One is through the gazebo, I want it to jump and land in a hole in the lake that will tunnel through
+and pop out of manhole in the road, [the other one] that I marked revolves around going between a couple of houses and hitting a
+ramp to take jump drivers over the lake. Most of the track already exists in the game so I am hoping that it will be good."
+Dan's map and 7 photos (taken 2026-10-17): `local/reference_photos/chastain_lakes/r44_*` (git-ignored, never commit; look, never
+trace). The map is Google satellite with his yellow route, yellow arrows beside it for the direction (Dan, 18:15: "arrows for the
+direction of the track") and two red shortcuts, around West Chastain Lake and Chastain Lakes / East Chastain Lake. Claude's reading:
+- THE LAP, COUNTERCLOCKWISE (Dan's arrows, and the only direction both shortcuts work): North Lakeside Drive westbound across the top, round the
+  west loop on Lakeside Drive, Lakeside Drive east and south past Laurel Green Court along the bottom, on to the Chastain Lakes
+  amenity area (Round 32, `MapBuilder.ChastainLakes.cs`), then THE LAKE TRAIL north to Bells Ferry Road and back onto North
+  Lakeside Drive at its Bells Ferry end. Roads off the lap are blocked as on every course (the short yellow strokes off the
+  route on the map are Dan's direction arrows, not roads).
+- THE LAKE TRAIL (photos 2 to 7; Round 32 built part of it from NAIP): from the lot, the concrete walk with timber edging down past
+  the pool's granite retaining wall, iron fence on brick pillars and the white bathhouse (photo 2); a gravel path with tan brick
+  edging along the shore (photo 3) to the brown wooden footbridge over the concrete spillway with granite wingwalls (photos 6, 7;
+  in real life closed with caution tape and 2x4s across it: keep that, breakable, as a fun touch); then north along the gravel
+  path on the dam's grassy crest, the lake on the left going north, the lawn falling right to the outflow stream and the double
+  box culvert under Bells Ferry Road (photos 4, 5), to North Lakeside Drive. Wide enough for every offered vehicle with room to
+  pass (Noonday Creek's lesson: wider than real), keeping its look (gravel, edging, the bridge's color and rails); the bridge
+  widened to fit. BF and the stream untouched as Round 32 required, unless the trail cannot pass otherwise (say so).
+- SHORTCUT EAST, THE GAZEBO (photo 1: the white gazebo, square hipped gray-green roof, on a white-railed pier off the lawn, riprap
+  shore, the porch swing and a bench): coming along Lakeside Drive toward the lot, off onto the walk to the pier, along the pier,
+  through the gazebo (its far railing breaks) and off its end, down into a HOLE IN THE LAKE: a round bell-mouth overflow drain in
+  the lake (a "morning glory" spillway, a real lake fixture), water pouring over its lip. Into it, a tunnel under the lake north,
+  up and out through a manhole that pops in North Lakeside Drive near the Bestower Foundation (Dan's red line), back on the
+  course facing west. Skips the lake trail and the Bells Ferry corner; forgives the checkpoints there. Use what the pipe network
+  already has (drops, pipes, PipeStream water, pop-out manhole covers, Round 40's plume if it helps the exit); it may join the
+  network (the M2 Lakes main and BF are close) but in this race the way through is one clear run (other ways gated as the
+  Underground race does). Off the end of the gazebo is a real drop (physics); landing in the drain mouth is the skill (miss it and
+  you are in the lake: slowed, the shallow-water rules); the drain's mouth sized so a line straight off the pier at speed makes it.
+  A clear hint at the turn-off (CLAUDE.md shortcut hints). Must save time at race speed, and carry some risk.
+- SHORTCUT WEST, THE LAKE JUMP: on North Lakeside Drive westbound near the top-left (Dan's red line), off between two houses (the
+  gap made to work as Round 40 did with 1245, a house moved slightly or altered only if needed, and said), through the back yards
+  down to a ramp on West Chastain Lake's north shore, a jump over the lake's arm, landing on the south / west shore by Lakeside
+  Drive, skipping the west loop; forgives its checkpoints. A real physics jump (standing rule): the ramp dressed as something that
+  could be there at its real size (CLAUDE.md lesson), using the high bank's height; the landing sized to the real flight. First
+  measure the gap on Dan's line: if no offered vehicle can clear it with a real jump there, use the narrowest crossing near his
+  line that works and say how far it moved; if none works, build the turn-off and ramp to the shore and stop there, reporting the
+  gap and the speed it would need (Dan decides).
+- THE RACE: start / finish on a straight of Code's choice not near a shortcut; checkpoints as the other courses; laps so the race
+  takes about as long as a Chastain Ridge race; forward only for now (reverse later if Dan wants it). Everything the other courses
+  have: the route's directions, AI (3 rivals, `ai_zones`, ShortcutStrategy for both shortcuts, human mistakes), traffic as forward
+  Ridge, records boards, ghosts (Round 43), the minimap and map overlay, the Race Setup row, the radio. Name: "Chastain Lakes".
+Check: a lap by each shortcut and one by the trail (Street Classic and Drifter Twin), times compared; the west jump's flight on all
+offered vehicles (height, air, landing upright); the gazebo drop into the drain from a straight line at speed, and a miss; one AI
+race of the full laps with traffic Normal (everyone finishes). Pictures: the trail from photo 3's and photo 4's spots, the
+footbridge, the gazebo, the drain, the manhole popping, the west ramp and landing. One full Build Map at the end.
+For Dan to check: drive the Chastain Lakes race, both shortcuts and the lake trail.
+
+**Round 45, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 44).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
 later". Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20
 left behind: exploration fog and its save, destinations and travel, waypoints, the collectible areas), with goose eggs in place
