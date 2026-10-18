@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Racer;
 using UnityEngine;
 
@@ -16,9 +17,13 @@ namespace ChastainRush
     //   - in a race that does not arm it (the forward Chastain Ridge, every other route): it never blows;
     //   - Free Roam (Getaway and the other activities included): it never blows, the cover stays shut (Round 42, BUG-003, Dan: "thought this
     //     only come on during the race...i am in free roam"; Round 40 had it blow in Free Roam too).
+    // Round 43 (A1, Dan BUG-001: "you can go to the left of this and miss the hydrant"): a second cover in the southeast-bound carriageway,
+    // abeam the first, in the same 'group': whichever blows first blows the other, and the two waters together cover both carriageways,
+    // the median and the verge beyond the far curb, so there is no way past. Both throw to the same landing.
     public sealed class ManholePlume : MonoBehaviour
     {
         public string id;
+        public string group;   // Round 43 (A1): the covers of one group blow together (New Chastain Road: one in each carriageway)
         public ManholeLid cover;
         public Vector3 along = Vector3.forward;   // the way the carriageway runs here (flat, unit)
         public float right = 5f, left = 9f, halfLength = 3.5f, angle = 40f, trigger = 80f, height = 16f;
@@ -58,6 +63,7 @@ namespace ChastainRush
             if (cover) cover.BlowOpen(seconds > 1e5f ? 1e7f : seconds);
             BreakSounds.Play(transform.position, 24f, BreakSounds.Kind.Hydrant);
             water = Curtain();
+            foreach (var o in All.ToArray()) if (o != this && !string.IsNullOrEmpty(group) && o.group == group && o.Armed) o.Erupt(seconds);
         }
         public void Shut()
         {

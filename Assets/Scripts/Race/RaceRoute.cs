@@ -44,7 +44,7 @@ namespace ChastainRush
     [Serializable] public class RouteSwitchGateJson { public string id, shortcut, label; public RouteSealJson gate; public float sx, sy, sz, sr, nx, ny, nz; }   // sx..sz the plate's middle, sr its reach, n its face's normal
     // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
     [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }
-    [Serializable] public class RouteResetSkipJson { public string id; public float s0, s1, to_s; }   // Round 33: stations in the route file's own numbering
+    [Serializable] public class RouteResetSkipJson { public string id; public float s0, s1, to_s, short_s; public float[] short_area; }   // Round 43: short_area / short_s (CarRecovery)   // Round 33: stations in the route file's own numbering
 
     // A road that leaves the course and is not part of an official shortcut: a barrier stands across it during a race.
     [Serializable]

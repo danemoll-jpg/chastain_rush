@@ -330,6 +330,16 @@ namespace ChastainRush
             }
             UnityEngine.Object.DestroyImmediate(tmpRoot);
             BuildClock.Lap($"the ground written ({tilesChanged} tiles changed)");
+            // Round 43: the race's copies of the route files (data, read by the exe) taken afresh, as a full build's BuildRace does
+            foreach (var go in scene.GetRootGameObjects())
+                foreach (var race in go.GetComponentsInChildren<RaceController>(true))
+                {
+                    var files = race.routeFileNames ?? new string[0]; var dir = Path.Combine(ProjectRoot, "Data/routes");
+                    race.embeddedRouteJsons = files.Select(f => File.Exists(Path.Combine(dir, f)) ? File.ReadAllText(Path.Combine(dir, f)) : "").ToArray();
+                    var main = Path.Combine(dir, race.routeFileName ?? ""); if (File.Exists(main)) race.embeddedRouteJson = File.ReadAllText(main);
+                    EditorUtility.SetDirty(race);
+                    Debug.Log($"[QuickBuild] race routes taken afresh: {string.Join(", ", files)}");
+                }
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();

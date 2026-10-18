@@ -61,11 +61,20 @@ namespace ChastainRush
                 // Round 39: and in the reverse Chastain Ridge, from the climb's foot to its landing: on Chastain Ridge Drive past the landing
                 var skips = route.Data == null ? null : route.OwnReverse ? route.Data.reset_skip_rev : !route.Reverse ? route.Data.reset_skip : null;
                 float gs = route.Data == null ? 0f : route.OwnReverse ? route.Data.gate_s_rev : route.Data.gate_s;
+                // Round 43 (A1 c, Dan BUG-001: "The reset will put you well past the location and say you miss 3 checkpoints"): a skip with a
+                // 'short_area' (the reverse Chastain Ridge's plume) goes on past the landing only for a vehicle in the plume's flight; a reset
+                // anywhere in that area (New Chastain Road from the checkpoint before the plume to past it, both carriageways, the median, the
+                // verges) puts the vehicle short of the cover, facing it, whatever lap point it was nearest
+                var flight = r.GetComponent<GuidedFlight>(); bool flying = flight && flight.Flying;
+                float s0 = s;
                 if (skips != null)
                     foreach (var k in skips)
                     {
+                        bool shortArea = k.short_area != null && k.short_area.Length >= 6;
+                        if (shortArea && !flying && Inside(k.short_area, at.x, at.z)) { s = Mathf.Repeat(k.short_s - gs, route.LapLength); break; }
                         float a = Mathf.Repeat(k.s0 - gs, route.LapLength), b = Mathf.Repeat(k.s1 - gs, route.LapLength);
-                        if (Mathf.Repeat(s - a, route.LapLength) <= Mathf.Repeat(b - a, route.LapLength)) { s = Mathf.Repeat(k.to_s - gs, route.LapLength); break; }
+                        if (Mathf.Repeat(s - a, route.LapLength) <= Mathf.Repeat(b - a, route.LapLength) && (!shortArea || flying || !Inside(k.short_area, at.x, at.z)))
+                        { s = Mathf.Repeat(k.to_s - gs, route.LapLength); break; }
                     }
                 foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f, -15f })
                     foreach (float off in new[] { 0f, -2f, 2f, -3.5f, 3.5f })
@@ -74,7 +83,14 @@ namespace ChastainRush
                         var right = Vector3.Cross(Vector3.up, f);
                         var q = RaceRoute.Surface(p.x + right.x * off, p.z + right.z * off);
                         float y = Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg;
-                        if (Clear(r, q, y, false)) { pos = q; yaw = y; return true; }
+                        if (Clear(r, q, y, false))
+                        {
+                            pos = q; yaw = y;
+                            // Round 43 (A1 d): the checkpoints this placement itself jumps over (from the lap point the vehicle was nearest to
+                            // where it is put) are forgiven, never charged
+                            race.ForgiveReset(vehicle, s0, Mathf.Repeat(s + ds, route.LapLength));
+                            return true;
+                        }
                     }
             }
             else
@@ -97,6 +113,17 @@ namespace ChastainRush
             }
             pos = default; yaw = 0f;
             return false;   // VehicleRespawn falls back to the last stable spot
+        }
+
+        static bool Inside(float[] poly, float x, float z)
+        {
+            bool c = false; int n = poly.Length / 2;
+            for (int i = 0, j = n - 1; i < n; j = i++)
+            {
+                float xi = poly[2 * i], zi = poly[2 * i + 1], xj = poly[2 * j], zj = poly[2 * j + 1];
+                if ((zi > z) != (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi) + xi) c = !c;
+            }
+            return c;
         }
 
         static bool UndergroundSpot(VehicleRespawn r, RaceRoute route, Vector3 at, out Vector3 pos, out float yaw)

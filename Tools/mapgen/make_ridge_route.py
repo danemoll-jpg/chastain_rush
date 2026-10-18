@@ -427,6 +427,26 @@ print(f"Manhole plume: at ({PP[0]:.1f}, {PP[1]:.1f}) {PP_y:.2f} m, {PLUME_S:.0f}
       f"{uP:.1f} m/s across, {vyP:.1f} up ({math.hypot(uP, vyP):.1f} m/s), {D_p / uP:.2f} s, {vyP * vyP / 19.62:.1f} m up; {over_lip_p:.1f} m over the forward lip; roofs under it {houses_p}")
 # the trees under the flight's lower part kept off (clearance over the ground under 22 m), and off its first meters over the road and the median
 clear_p = [k_ for k_, c in low_p if c < 22.0]
+# Round 43 (A1, Dan BUG-001 of session 2026-10-18_16-02-03-115_cda8a3: "you can go to the left of this and miss the hydrant and then get stuck
+# in the road"): the plume covered only the northwest-bound carriageway, so the southeast-bound one beside it (on its left, across the median)
+# was a way past. A second cover in that carriageway, abeam the first, blowing with it (ManholePlume.group): its water runs from where the
+# first's ends (the median's far side) across that carriageway, past its far curb onto the verge, and it throws to the same landing.
+SEc = pts(by_osm[9151940]["points"]); _d2, _s2 = nearest_s(SEc, PP); PP2 = point_at(SEc, _s2); PP2_y = ground(*PP2)
+_side = (PDIR[1], -PDIR[0])   # to the right of the way it runs (Unity: Cross(up, along))
+lat2 = (PP2[0] - PP[0]) * _side[0] + (PP2[1] - PP[1]) * _side[1]   # negative: on the left
+PLUME2_RIGHT_M = round(-lat2 - PLUME_LEFT_M + 1.5, 2)   # back over the first's left edge by 1.5 m
+PLUME2_LEFT_M = round(by_osm[9151940]["width"] / 2.0 + 6.0, 2)   # past its far curb, the shoulder and the verge
+D_p2 = math.dist(PP2, CT); dP2 = ((CT[0] - PP2[0]) / D_p2, (CT[1] - PP2[1]) / D_p2)
+uP2 = ballistic_u(D_p2, CT_y - PP2_y, thP); vyP2 = uP2 * math.tan(thP); low_p2, houses_p2 = [], {}
+for k_ in range(1, int(D_p2)):
+    q = (PP2[0] + dP2[0] * k_, PP2[1] + dP2[1] * k_); tt = k_ / uP2; y = PP2_y + vyP2 * tt - 4.905 * tt * tt
+    low_p2.append((k_, y - ground(*q)))
+    for i, ring, h, kind in B:
+        if near_box(i, q, 2.0) and poly_dist(q, ring) < 1.0:
+            houses_p2[i] = round(min(houses_p2.get(i, 1e9), y - (min(ground(*p_) for p_ in ring) + h)), 1)
+clear_p2 = [k_ for k_, c in low_p2 if c < 22.0]
+print(f"Manhole plume 2 (Round 43): at ({PP2[0]:.1f}, {PP2[1]:.1f}) {PP2_y:.2f} m in the southeast-bound carriageway, {-lat2:.1f} m left of the first; "
+      f"its water {PLUME2_RIGHT_M} m right, {PLUME2_LEFT_M} m left; {D_p2:.1f} m to the landing, {D_p2 / uP2:.2f} s; roofs under it {houses_p2}")
 SPEC_REV = [
     ("Canton Road Northeast", 1416681832, way(1416681832, rev=True, a=(3507.0, 1086.0)), True),
     ("Canton Road", 330735258, way(330735258), False),
@@ -722,6 +742,17 @@ shortcuts.append({"id": "rch_crypt", "name": "Crypt", "direction": "reverse", "p
 # the reverse race layer
 ai_zones_rev = [{"id": "manhole_plume", "s0": round(s_plume - 90.0, 1), "s1": round(s_plume + 1.0, 1), "speed": 25.0}]
 reset_skip_rev = [{"id": "manhole_plume", "s0": round(s_plume - 3.0, 1), "s1": round(s_pland + 4.0, 1), "to_s": round(s_pland + 30.0, 1)}]
+# Round 43 (A1 c): only a reset during the plume's flight goes on past the landing (CarRecovery: a GuidedFlight in the air). A reset anywhere
+# on New Chastain Road from the checkpoint before the plume to 100 m past it, either carriageway, the median or the verges ('short_area',
+# 30 m left of the northwest-bound carriageway's middle, 15 m right) puts the vehicle on the lap 30 m short of the cover, facing it.
+_s_cp = nearest_s(NWc, (CHECKPOINTS_REV[1][0], CHECKPOINTS_REV[1][1]))[1]
+_band = [point_at(NWc, v, cNW) for v in [_s_cp + i * (PLUME_S + 100.0 - _s_cp) / 40.0 for i in range(41)]]
+_bl, _br = [], []
+for i, q in enumerate(_band):
+    a, b = _band[max(0, i - 1)], _band[min(len(_band) - 1, i + 1)]; t = (b[0] - a[0], b[1] - a[1]); n = math.hypot(*t) or 1.0; r_ = (t[1] / n, -t[0] / n)
+    _bl.append((q[0] - r_[0] * 30.0, q[1] - r_[1] * 30.0)); _br.append((q[0] + r_[0] * 15.0, q[1] + r_[1] * 15.0))
+reset_skip_rev[0]["short_s"] = round(s_plume - 30.0, 1)
+reset_skip_rev[0]["short_area"] = [round(v, 2) for q in _br + _bl[::-1] for v in q]
 closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (crest, _appr, _fl + _after), lambda r, contact: False)   # Round 41: the crypt's ways above ground only
 # the barrier across the northwest-bound carriageway past the plume: 40 m on (12 m past the cover it stood in the plume's first meters)
 for c in closures_rev:
@@ -732,7 +763,9 @@ for c in closures_rev:
 print(f"reverse closures: {len(closures_rev)}; dead-end stubs not barred: {len(stubs_rev)}")
 for c in closures_rev: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}), road width {c['width_m']:.0f} m")
 plume = {"id": "RP", "at": [round(PP[0], 2), round(PP[1], 2)], "y": round(PP_y, 2), "dir": [round(PDIR[0], 5), round(PDIR[1], 5)], "right_m": PLUME_RIGHT_M, "left_m": PLUME_LEFT_M,
-         "half_len_m": PLUME_HALF_LEN_M, "target": [round(CT[0], 2), round(CT_y, 2), round(CT[1], 2)], "target_dir": [round(-dR[0], 5), round(-dR[1], 5)], "angle_deg": PLUME_ANGLE, "trigger_m": PLUME_TRIGGER_M}
+         "half_len_m": PLUME_HALF_LEN_M, "target": [round(CT[0], 2), round(CT_y, 2), round(CT[1], 2)], "target_dir": [round(-dR[0], 5), round(-dR[1], 5)], "angle_deg": PLUME_ANGLE, "trigger_m": PLUME_TRIGGER_M,
+         "group": "RP"}
+plume2 = dict(plume, id="RP2", at=[round(PP2[0], 2), round(PP2[1], 2)], y=round(PP2_y, 2), right_m=PLUME2_RIGHT_M, left_m=PLUME2_LEFT_M)   # Round 43 (A1)
 for b_ in (bj1, bj2): b_["clues_hidden_reverse_of"] = SETTINGS["name"]
 
 # ---------------------------------------------------------------- the world pieces (Data/tracks/chastain_ridge.json)
@@ -757,6 +790,7 @@ clear = [{"id": "RL flight's last meters and the landing", "points": flat([(RL[0
          {"id": "S1", "points": flat(p1[::3] + [p1[-1]]), "half": 6.0},
          {"id": "S2", "points": flat(p2[::3] + [p2[-1]]), "half": 6.0},
          {"id": "the plume's flight, its lower part", "points": flat([(PP[0] + dP[0] * k_, PP[1] + dP[1] * k_) for k_ in clear_p[::4]] + [(PP[0] + dP[0] * clear_p[-1], PP[1] + dP[1] * clear_p[-1])]), "half": 6.0},
+         {"id": "the second plume's flight, its lower part (Round 43)", "points": flat([(PP2[0] + dP2[0] * k_, PP2[1] + dP2[1] * k_) for k_ in clear_p2[::4]] + [(PP2[0] + dP2[0] * clear_p2[-1], PP2[1] + dP2[1] * clear_p2[-1])]), "half": 6.0},
          {"id": "RC the landing on the dead end", "points": flat([CT, RF_, (3112.0, 621.0)]), "half": 6.0},
          {"id": "the crest cut", "points": flat(crest[::2] + [crest[-1]]), "half": 4.0},
          {"id": "the roofer's ramp jump's landing", "points": flat([rr_lip, (rr_lip[0] + _rd[0] * 90.0, rr_lip[1] + _rd[1] * 90.0)]), "half": 10.0},
@@ -769,7 +803,7 @@ breaks = [{"id": "RL run-out", "points": flat([(RL[0] + dR[0] * (rf["dist"] + 6.
           # and the woods along the road's east side beyond it, where a vehicle turning back to the road after the landing runs
           {"id": "RL run-out along the road", "points": flat([(Pl[0] + 32.0, Pl[1] + 4.0), (Pl[0] + 52.0, Pl[1] - 60.0)]), "half": 18.0}]
 track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/mapgen/make_ridge_route.py (MapBuilder.ChastainRidge.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [rbj, bj1, bj2], "plumes": [plume], "crypt": crypt_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "roof_ramp": roof_ramp, "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
+         "big_jumps": [rbj, bj1, bj2], "plumes": [plume, plume2], "crypt": crypt_data, "boulders": [v for b_ in boulders for v in b_], "crest_tracks": flat(crest[:int(sGap1 / 2.0) + 1]), "roof_ramp": roof_ramp, "landing_zones": landings, "clear_lines": clear, "break_lines": breaks,
          "grades": [{"id": "the way out of the hollow", "points": flat(HOLLOW_RAMP), "y": [round(ground(*HOLLOW_RAMP[0]), 2), round(ground(*HOLLOW_RAMP[1]), 2)], "half": 4.0, "blend": 5.0,
                      "keep_off": flat(NC), "keep_off_m": 5.0},
                     # Round 40 (A6): the crest cut's line through the back yards smoothed along it (a Gaussian of the ground over 5 m: the slope stays,
@@ -787,7 +821,7 @@ route.update({
     # Round 39 (C): the reverse lap of its own (RaceRoute: loop_rev and the *_rev fields)
     "lap_length_rev_m": round(L_rev, 1), "loop_rev": flat(lap_r), "gate_s_rev": gate_s_rev, "checkpoints_rev": cps_rev, "junctions_rev": merged_rev,
     "closures_rev": closures_rev, "ai_zones_reverse": ai_zones_rev, "reset_skip_rev": reset_skip_rev,
-    "plumes_rev": ["RP"],   # Round 40: the manhole plume blows in a reverse race (ManholePlume)
+    "plumes_rev": ["RP", "RP2"],   # Round 40: the manhole plume blows in a reverse race (ManholePlume); Round 43: and its twin
 })
 os.makedirs(os.path.dirname(OUT_TRACK), exist_ok=True)
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)

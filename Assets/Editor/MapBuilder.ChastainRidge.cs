@@ -24,7 +24,7 @@ namespace ChastainRush
         [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off; public float half, blend, keep_off_m; }
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
-        [Serializable] class RidgePlume { public string id; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
+        [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
         // Round 41 (A): the crypt (MapBuilder.ChurchCrypt.cs): its line from the doors to the lip, the floor's heights along it, its stations, the graveyard
         [Serializable] class RidgeCrypt { public int building; public float[] door, line, y, lip_dir, graveyard, gate, graves, trees; public float door_w, door_h, s_top, s_foot, s_west, s_hall, s_bend0, s_bend1, s_portal, lane, hall_w, clear; }
         [Serializable] class RidgeFile { public CtBigJump[] big_jumps; public CtZone[] landing_zones; public RidgeClear[] clear_lines, break_lines; public RidgeGrade[] grades; public RidgePlume[] plumes; public RidgeCrypt crypt; public RidgeRoofRamp roof_ramp; public float[] boulders, crest_tracks; }
@@ -164,6 +164,7 @@ namespace ChastainRush
             var mp = go.AddComponent<ManholePlume>(); mp.id = pl.id; mp.cover = lid; mp.along = along; mp.right = pl.right_m; mp.left = pl.left_m; mp.halfLength = pl.half_len_m;
             mp.angle = pl.angle_deg; mp.trigger = pl.trigger_m; mp.target = new Vector3(pl.target[0], pl.target[1], pl.target[2]); mp.targetDir = new Vector3(pl.target_dir[0], 0f, pl.target_dir[1]);
             mp.sprayMaterial = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial();
+            mp.group = string.IsNullOrEmpty(pl.group) ? pl.id : pl.group;   // Round 43 (A1): covers in one group blow together
             Debug.Log($"[Round40] manhole plume {pl.id} at ({c.x:0.0}, {c.z:0.0}) {c.y:0.00} m: across the carriageway {pl.right_m:0} m right, {pl.left_m:0} m left, {pl.half_len_m * 2f:0} m along; throws at {pl.angle_deg:0} deg to ({pl.target[0]:0.0}, {pl.target[1]:0.0}, {pl.target[2]:0.0}); blows {pl.trigger_m:0} m before the first racer");
         }
 

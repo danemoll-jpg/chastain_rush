@@ -442,6 +442,31 @@ namespace ChastainRush
         }
 
         void OnGate(RaceEntrant e, float at)
+        // Round 43 (A1 d, Dan BUG-001: the reset "say you miss 3 checkpoints"): a race reset that puts the vehicle further on along the lap
+        // than the lap point it was nearest to forgives the checkpoints in between (as a shortcut's are); one that puts it back forgives
+        // nothing. Stations are the lap's own (from the line). Checkpoints still waiting before the first forgiven one were really missed.
+        public void ForgiveReset(ArcadeVehicle car, float from, float to)
+        {
+            if (State != Stage.Racing || Route == null || !car) return;
+            var e = Entrants.Find(x => x.Car == car); if (e == null || !e.ClockStarted || e.Finished) return;
+            float L = Route.LapLength, span = Mathf.Repeat(to - from, L);
+            if (span <= 0.01f || span > 0.5f * L) return;
+            int first = -1, last = -1;
+            for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++)
+            {
+                float d = Mathf.Repeat(Route.Checkpoints[k].S - from, L);
+                if (d <= span) { if (first < 0) first = k; last = k; }
+            }
+            if (first < 0) return;
+            var skipped = new List<int>(); var free = new List<int>();
+            for (int k = e.NextCheckpoint; k < first; k++) { Miss(e, k, RaceClock); skipped.Add(k + 1); }
+            for (int k = first; k <= last; k++) { e.Forgiven.Add(k); free.Add(k + 1); }
+            e.NextCheckpoint = last + 1;
+            Log(e, $"RESET at {RaceClock:0.000}: placed on from lap {from:0} m to {to:0} m; checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
+            MissMessage(e, skipped);
+            if (e.IsPlayer) markers.Refresh(this);
+        }
+
         {
             if (!e.ClockStarted)
             {
