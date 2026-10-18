@@ -8,7 +8,7 @@ namespace Racer
     // Chastain Rush, Round 39 (Part D): Racer's hidden police (0.99 Part D) on this map. Hiding places beside the roads (found once from the road
     // network: a flat, clear verge, the patrol car parked nose to the road, lights off): on the long fast roads (posted 40 mph or more, the interstate
     // left out: Canton Road, New Chastain Road, Chastain Road, Bells Ferry Road, Blackwell Road ...) up to eight, and in the neighborhoods' streets up to
-    // four, at least 170 m apart, twelve at most. Two to four are used at a time and one moves now and then while the player cannot see it. A hidden cop
+    // four, at least 170 m apart, twelve at most; Round 40: and two by hand on Canton Road, one of them always in use. Two to four are used at a time and one moves now and then while the player cannot see it. A hidden cop
     // sees the player within 70 m either way with a clear line of sight; on the road and more than 10 mph over its limit (PoliceRoads: OSM's or the
     // class's) it flashes "CLOCKED 58 in a 45", pulls out with lights and siren, and a Getaway chase starts where the player is (GetawayChase.
     // BeginEmbedded: heat 1, Settings' difficulty). Escaped: "You lost them"; busted: the vehicle set at the roadside. Free Roam carries on, nothing kept.
@@ -20,6 +20,8 @@ namespace Racer
         public static HiddenPolice Current { get; private set; }
         public sealed class Spot { public Vector3 pos, forward; public string road; public bool fast; public ArcadeVehicle prop; public float movedAt, heardAt = -999; }
         public readonly List<Spot> All = new(), Active = new();
+        public readonly List<Spot> Canton = new();   // Round 40 (B3)
+        static readonly (float x, float z, float yaw)[] CantonSpots = { (3589.5f, 292.5f, 270f), (3600.0f, 117.5f, 270f) };
         RoadNet net; float attachedAt, lastEnd = -999, nextTick, nextMove; public RoadNet Net => net;
         public static string Flash = ""; public static float FlashAt = -99; public static string Line = ""; public static float LineAt = -99;
         public float AttachedAt { get => attachedAt; set => attachedAt = value; } public float LastEnd { get => lastEnd; set => lastEnd = value; }
@@ -66,6 +68,16 @@ namespace Racer
                     found.Add(new Spot { pos = pos, forward = forward, road = net.RoadNames[r], fast = fast });
                 }
             }
+            // Chastain Rush, Round 40 (B3, Dan: "I feel like there should be a hidden cop on canton road as well"): two hiding places on Canton Road
+            // south of New Chastain Road, where a speed trap would really sit, chosen by hand: in the lot at the mouth of the drive by building 26,
+            // and at the mouth of Worley Drive, each nose to Canton Road (off the races' lines, the stunt park, the shortcuts and the Canton Road
+            // speed-trap post at the north end). One of them is always among those in use.
+            foreach (var (x, z, yaw) in CantonSpots)
+            {
+                if (!Physics.Raycast(new Vector3(x, 400f, z), Vector3.down, out var hit, 500f, ~0, QueryTriggerInteraction.Ignore) || !(hit.collider is TerrainCollider)) { Debug.LogWarning($"[Police] no ground for the Canton Road hiding place ({x:0}, {z:0})"); continue; }
+                var cs = new Spot { pos = hit.point, forward = Quaternion.Euler(0, yaw, 0) * Vector3.forward, road = "Canton Road", fast = true };
+                found.RemoveAll(f => (f.pos - cs.pos).sqrMagnitude < 170 * 170); All.Add(cs); Canton.Add(cs);
+            }
             foreach (var (fast, want0) in new[] { (true, 8), (false, 4) })
             {
                 int want = want0;
@@ -73,7 +85,9 @@ namespace Racer
             }
             Debug.Log($"[Police] hidden police: {All.Count} hiding places of {found.Count} found ({All.Count(s => s.fast)} on the fast roads, {All.Count(s => !s.fast)} in the neighborhoods): " + string.Join(", ", All.Select(s => $"{s.road} ({s.pos.x:0}, {s.pos.z:0})")));
         }
-        void Pick(int count) { Active.Clear(); foreach (var s in All.OrderBy(_ => Random.value).Take(count)) { Active.Add(s); s.movedAt = Time.time; } }
+        void Pick(int count) { Active.Clear(); foreach (var s in All.OrderBy(_ => Random.value).Take(count)) { Active.Add(s); s.movedAt = Time.time; } KeepCanton(); }
+        // Round 40 (B3): one of Canton Road's hiding places always in use
+        void KeepCanton() { if (Canton.Count == 0 || Active.Any(Canton.Contains)) return; var c = Canton.OrderBy(_ => Random.value).First(); Active.Add(c); c.movedAt = Time.time; }
         void ReplaceUsed()
         {
             int want = Random.Range(2, 5); var me = PoliceKit.Player(1);
@@ -82,6 +96,7 @@ namespace Racer
                 var free = All.Where(s => !Active.Contains(s) && (!me || Vector3.Distance(s.pos, me.Body.position) > 250)).OrderBy(_ => Random.value).FirstOrDefault(); if (free == null) break;
                 Active.Add(free); free.movedAt = Time.time;
             }
+            KeepCanton();
         }
 
         // ---------- each frame ----------
@@ -150,7 +165,7 @@ namespace Racer
         {
             var out1 = Active.Where(s => Vector3.Distance(s.pos, me) > 260 && !s.prop && Time.time - s.movedAt > 90).OrderBy(_ => Random.value).FirstOrDefault(); if (out1 == null) return;
             var target = All.Where(s => !Active.Contains(s) && Vector3.Distance(s.pos, me) > 260).OrderBy(_ => Random.value).FirstOrDefault(); if (target == null) return;
-            Active.Remove(out1); Active.Add(target); target.movedAt = Time.time;
+            Active.Remove(out1); Active.Add(target); target.movedAt = Time.time; KeepCanton();
         }
         void DropProp(Spot s) { if (s.prop) { Destroy(s.prop.gameObject); s.prop = null; } }
     }
