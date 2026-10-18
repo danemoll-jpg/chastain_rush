@@ -143,7 +143,7 @@ B DONE. CREST CUT: house 1092 (the one you land on) had a box only to its eaves 
 C DONE. BF, X_W20, X_W11 (BUG-001), X_BRIDGE, X_STREAM get X_SHOPS's `Retaining`: wingwalls retain the kept ground, the bank behind them raised to a house's
    base, houses untouched. Pictures of each and BUG-001's spot. Driven in and out: BF, X_W20, X_BRIDGE. X_W11's outer end is its pond (stalls in the water).
    X_STREAM's drive was not a valid test.
-Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 08:02 (BUILD_INFO.txt). A commit per part.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 07:49 (BUILD_INFO.txt). A commit per part.
 For Dan to check: the crypt flat out (time on a bike), its graveyard jump, the crest roof ramp (a bike's landing), the five exits (X_STREAM's mouth up close).
 
 ## QUEUED rounds
