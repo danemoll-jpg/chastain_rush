@@ -69,6 +69,14 @@ off it (the landing is sized to the real flight instead). A scripted or aimed pa
 ramp and is creative (a water plume, a geyser, a trampoline). Launches built before this rule are left as they are until Dan
 points at one.
 
+**One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
+7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
+world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
+`-playerBuildKeepScene`); each part still gets its own commit and its own targeted check on that one build. (2) Tuning
+limit: if a number the round asks for (time saved, air time, height, speed) is not met after two attempts, stop tuning it,
+report the numbers in the status and move on; Dan decides. Optional ideas in Dan's notes ("could", "maybe") are built as
+the simple version, not as requirements to tune. Copy both rules into CLAUDE.md's "Process" in the same words.
+
 ## Process (Dan, 2026-10-15; full rules in CLAUDE.md "Process")
 This file holds only: the standing rules above, the CURRENT round, QUEUED rounds, the last three "Previous delivery"
 sections, and the technical notes at the end. Everything older is in `TODO-ARCHIVE.md`, word for word: search it when
@@ -119,7 +127,39 @@ houses near them untouched), each still drivable in and out. Check: a picture of
 For Dan to check (when done): the crypt shortcut, the crest cut's roof ramp, the five pipe exits. Still his: the X_SHOPS pipe,
 Speed Patrol, hidden cruisers (Canton Road's included), Cop vs Runner.
 
+**Status (Claude, 2026-10-18): Parts A to C built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round41/`. The standing rule is in CLAUDE.md.
+A PARTLY DONE. THE CRYPT replaces the church leap (climb, gallery, aimed flight gone). One arc off Canton Road square to the front doors (they break), the aisle, a straight
+   stair through the nave (north wing and spine hollow: pews, chancel, altar), a vaulted hall (pillars, tombs, candles; stands and urns break), the catacomb under the
+   churchyard, the storage row and its lot, a wide bend, a 22 m exit stair out of the bank into the new graveyard (iron fence, gate open where the jump leaves, 36
+   headstones of which 3 break, old trees). Real jump off the stair's top and surround: 1.4-1.6 s air, down 0.2-5.3 m from the race line, every vehicle upright.
+   Forgives CP1, CP2. Flat out against the road: cars save 1.3 to 2.4 s (Street Classic 2.0), the bikes, ATV and mower 1.1 to 1.9 s. NOT met: "2 to 3 s on every
+   vehicle". The bikes come into the exit bend at 40 m/s and run wide. Crash in the hall: Street Classic stopped, Drifter Twin 0.2 s ahead of the road (a crash
+   should cost more). AI: 2 races of 3 reverse laps with traffic Normal, all finish, crypt taken by ShortcutStrategy, sloppy tries seen.
+   Decided: the graveyard is on the low ground between the storage lot's bank and New Chastain Road. The ground beside the church is S2's landing and exit.
+B DONE. CREST CUT: house 1092 (the one you land on) had a box only to its eaves under a roof drawn 2.4 m higher; its own mesh is its collider now. On it a roofer's
+   ramp (boards on shingle bundles, 12 m, 27 deg right of the line down the slope; the line arcs square onto it). Real jump onto the lawn beside the drive past CP4,
+   about 2.7 s air. Taken right vs the lap: Street Classic saves 2.5 s, Drifter Twin 1.0 s. Needle 600 crashed on landing (lip about 15 m over the lawn). Missed
+   (straight on over the ridge): slower than the lap on all three. Boulder wall: middle (over the line) gone, ends kept, side yards filled.
+C DONE. BF, X_W20, X_W11 (BUG-001), X_BRIDGE, X_STREAM get X_SHOPS's `Retaining`: wingwalls retain the kept ground, the bank behind them raised to a house's
+   base, houses untouched. Pictures of each and BUG-001's spot. Driven in and out: BF, X_W20, X_BRIDGE. X_W11's outer end is its pond (stalls in the water).
+   X_STREAM's drive was not a valid test.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 08:02 (BUILD_INFO.txt). A commit per part.
+For Dan to check: the crypt flat out (time on a bike), its graveyard jump, the crest roof ramp (a bike's landing), the five exits (X_STREAM's mouth up close).
+
 ## QUEUED rounds
+**Round 42, QUICK AREA REBUILDS (queued by Dan, 2026-10-18 06:18: "yes"; start after Round 41 is reviewed).** Today any world
+change, even one house's roof, needs the whole Build Map (about 30 min) because the whole world is generated in one pass.
+Woodstock Rush was also generated from a real map, but once its world was accepted, later fixes and shortcuts were focused,
+repeatable operations on the saved scene (Racer `Docs/CR015/VALIDATION.md`, `Docs/PHASE5_VALIDATION.md`,
+`Docs/VEGETATION_VALIDATION.md`: "focused authoring", "refresh only", the whole-environment rebuild guarded) and took minutes.
+Give this project a fast path that fits its generated pipeline (Code decides how and says why): for example Build Map limited
+to an area (a box in map coordinates: its terrain tiles, buildings, props, road pieces and colliders rebuilt, the rest of the
+saved scene untouched), and / or one object rebuilt by id (a house, a pipe exit, a shortcut's pieces). Rules: the full Build
+Map stays the reference and must give the same result as the area builds that came before it (check by comparing the scene
+outside and inside the box); nothing hand-edited in the scene (edits always go through the generator or its data). Target:
+a small world fix (a roof collider, a ramp on a roof, the ground at a pipe exit) from change to a playable exe in under 5
+minutes on Dan's PC. Check: time a full build, an area build and an object build; show the area build of a real fix gives
+the same scene as a full build. Document the commands in CLAUDE.md "Commands" and use them from then on.
 None. Held by Dan (2026-10-16 21:34), not to start until he says: the CAMPAIGN ("I want to hold off on campaign until we get
 more tracks ... we will have to keep reorganizing it otherwise"). (The reverse of Chastain Ridge, also held then, is Round 39 C.)
 

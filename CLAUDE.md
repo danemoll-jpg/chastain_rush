@@ -367,6 +367,14 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 41 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the church leap replaced by THE CRYPT
+(reverse Chastain Ridge, shortcut `rch_crypt`: church 74's north wing and spine hollow, the stair, the vaulted hall, the catacomb, the exit stair out of the bank
+into the graveyard, a real jump onto New Chastain Road; `MapBuilder.ChurchCrypt.cs`, its line and floor from `make_ridge_route.py` (track `crypt`, route
+`path_y`); GuidedLaunch and ChurchTurn removed). B the crest cut over house 1092: its roof solid (its mesh its collider), a roofer's ramp on it
+(`MapBuilder.Round41.cs`, track `roof_ramp`). C BF, X_W20, X_W11, X_BRIDGE, X_STREAM in `Retaining` (`MapBuilder.Pipes.cs`). Check: `ChastainRush.exe -exeRound41 <dir>
+[-r41Only crypt,cryptin,cryptcrash,cryptpics,ridgerace,crest,crestpics,pipes] [-r20Vehicles ids] [-traffic Normal] -logFile <dir>\Player.log`
+(`Checks/Round20Runner.R41*.cs`). `ChastainRush.MeshProbe.Run -meshRects "name:x0,z0,x1,z1,step;..." -probeOut <file>` (Editor batch): what is drawn
+against what is solid over a rectangle of the built scene. Imported from Racer: nothing.
 **Round 40 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the reverse Chastain Ridge
 (`make_ridge_route.py`): the manhole plume replaces Round 39's climb (`Neighborhood/ManholePlume.cs`, cover via `ManholeLid`; route `plumes` /
 `plumes_rev` arm it; `Vehicle/GuidedFlight.cs`, an aimed flight along a Hermite curve from wherever the vehicle is); BUG-003's bump smoothed
@@ -761,7 +769,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-17_12-09-19-449_081d93` through BUG-011 (Round 40; before it `2026-10-17_03-04-04-461_b78d3f` through BUG-005, Round 39).
+`2026-10-17_21-06-21-561_3280ac` through BUG-001 (Round 41; before it `2026-10-17_12-09-19-449_081d93` through BUG-011, Round 40).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
