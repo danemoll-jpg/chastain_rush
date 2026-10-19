@@ -19,9 +19,10 @@ namespace ChastainRush
     //           readout of map x, z under the cursor and at the player; the other racers in a race; the current route with its
     //           start / finish and numbered checkpoints in travel order; A / Space shows the shortcuts and pipes (off by default);
     //           "© OpenStreetMap contributors" on the map; zoom is by a factor (1 to 16)
-    //   left    exploration fog and its save, destinations and travel, waypoints, acorn areas, track browsing, the action sheet
+    //   left    track browsing, the action sheet (Round 48 brought the rest: exploration fog and its save, destinations and travel,
+    //           waypoints, and the acorn areas as the goose egg areas: WorldMap.Explore.cs, Explore/)
     // Bug capture (F4 / ] and its debug-menu row) moved to the right stick's click on the controller (DeveloperHud).
-    public sealed class WorldMap : MonoBehaviour
+    public sealed partial class WorldMap : MonoBehaviour
     {
         public static WorldMap Instance { get; private set; }
         public static bool IsOpen => Instance && Instance.Opened;
@@ -74,6 +75,7 @@ namespace ChastainRush
             panAction = mapActions.AddAction("Pan", InputActionType.Value); panAction.AddBinding("<Gamepad>/leftStick");
             panAction.AddCompositeBinding("2DVector").With("Up", "<Keyboard>/w").With("Down", "<Keyboard>/s").With("Left", "<Keyboard>/a").With("Right", "<Keyboard>/d");
             panAction.AddCompositeBinding("2DVector").With("Up", "<Keyboard>/upArrow").With("Down", "<Keyboard>/downArrow").With("Left", "<Keyboard>/leftArrow").With("Right", "<Keyboard>/rightArrow");
+            BuildExploreControls();   // Round 48 (WorldMap.Explore.cs)
             mapActions.Enable();
         }
 
@@ -89,6 +91,7 @@ namespace ChastainRush
             if (mapActions == null || MenuInput.Blocked) return;
             if (mapToggle.WasPressedThisFrame()) { MenuInput.ConsumeThroughRelease(mapToggle); if (Opened) Close(); else if (CanOpen()) Open(); return; }
             if (!Opened) return;
+            if (UpdateExplore()) { ClampView(); Draw(); return; }   // Round 48: places, travel, the waypoint, the egg areas
             if (backAction.WasPressedThisFrame()) { MenuInput.ConsumeThroughRelease(backAction); Close(); return; }
             float dt = Time.unscaledDeltaTime;
             Vector2 pan = panAction.ReadValue<Vector2>(); if (pan.sqrMagnitude > .04f) center += new Vector2(pan.x, pan.y * world.width / world.height) * dt * .4f / zoom;
@@ -113,7 +116,7 @@ namespace ChastainRush
         }
         public void Close()
         {
-            MenuInput.ConsumeThroughRelease(); closedFrame = Time.frameCount;
+            MenuInput.ConsumeThroughRelease(); closedFrame = Time.frameCount; CancelTravel();
             if (panel) panel.SetActive(false);
             Time.timeScale = savedTimeScale; AudioListener.pause = false;
         }
@@ -160,6 +163,7 @@ namespace ChastainRush
             picture = r.gameObject.AddComponent<RawImage>(); picture.texture = Resources.Load<Texture2D>("WorldMapPicture"); picture.raycastTarget = false;
             r.gameObject.AddComponent<RectMask2D>();
             var ov = RectUI("Lines", r, Vector2.zero, new Vector2(w, h)); overlay = ov.gameObject.AddComponent<WorldMapOverlay>(); overlay.raycastTarget = false;
+            BuildExploreUI(r, w, h);   // Round 48: the fog under the lines, the egg areas' list, the travel question
             heading = Label("Player heading", r, Vector2.zero, new Vector2(35, 35), 27); heading.color = Color.cyan; heading.text = "▲";
             cursor = Label("Cursor", r, Vector2.zero, new Vector2(25, 25), 22); cursor.text = "+";
             north = Label("North", r, new Vector2(w / 2 - 26, h / 2 - 34), new Vector2(40, 52), 18); north.text = "▲\nN"; north.fontStyle = FontStyle.Bold; north.lineSpacing = .8f;
@@ -167,7 +171,7 @@ namespace ChastainRush
             legend = Label("Legend", r, new Vector2(-w / 2 + 8, h / 2 - 10), new Vector2(560, 120), 14, TextAnchor.UpperLeft); legend.rectTransform.pivot = new Vector2(0, 1); legend.supportRichText = true;
             status = Label("Map status", panel.transform, new Vector2(0, -298), new Vector2(1240, 24), 17);
             Label("Controls", panel.transform, new Vector2(0, -330), new Vector2(1240, 22), 15).text =
-                "Left stick / WASD: pan   ·   RT / LT  or  = / -: zoom   ·   Right stick click / Home: center on you   ·   A / Space: shortcuts and pipes   ·   B / Esc  or  View / M: close";
+                "Stick / WASD: pan  ·  RT / LT, = / -: zoom  ·  RS click / Home: center  ·  A / Space: shortcuts, pipes  ·  LB / RB, Q / E: places  ·  X / T: travel  ·  Y / F: waypoint  ·  D-pad ↑ ↓: egg areas  ·  B / Esc: close";
         }
 
         Vector2 ScreenPoint(Vector3 p) { var uv = Normalized(p); return Vector2.Scale((uv - center) * zoom, picture.rectTransform.rect.size); }
@@ -263,6 +267,7 @@ namespace ChastainRush
                     t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f); Marker(t, pl.at);
                 }
             for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
+            DrawExplore(lines, race == null || race.State == RaceController.Stage.Free);   // Round 48 (WorldMap.Explore.cs)
             overlay.SetView(world, center, zoom, lines, bars);
             // the other racers (a race only), then the player on top
             int ri = 0;
@@ -280,7 +285,7 @@ namespace ChastainRush
             var at = WorldPoint(center);
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
                         + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   A / Space: shortcuts" : "A / Space: show the shortcuts and pipes")
-                        + (Proposals.Count > 0 ? "\n" + ProposalLegend : "");
+                        + (Proposals.Count > 0 ? "\n" + ProposalLegend : "") + "\n" + ExploreStatus();
             status.text = $"Cursor  x {at.x:0}  z {at.z:0}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }
     }

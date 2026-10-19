@@ -1,0 +1,39 @@
+Round 48 check, 2026-10-19 03:36, the exe, 1280 x 720, muted.
+
+=== THE EGG HUNT: a pickup by driving through
+  100 eggs in 11 areas; save C:\Users\danmo\chastain_rush\local\round48\check4\goose-eggs-v1.json
+PASS  the save is the check's own  -  C:\Users\danmo\chastain_rush\local\round48\check4\goose-eggs-v1.json
+PASS  an egg driven through is counted, saved and shown  -  egg-003 (Chastain Glen: Chastain Glen: by Chastain Glen Lane); found 0 -> 1; banner "GOOSE EGG FOUND   1 / 100 / Chastain Glen   1 / 12"
+
+=== THE TIERS (the check's own save)
+PASS  10 eggs: the tier 1 notice, and the tier saved  -  tiers raised 10; banner "TIER 1 REACHED:  10 EGGS / Goose eggs 10 / 100   ·   Chastain Glen  10 / 12"; saved tiers 10
+PASS  25 eggs: the tier 2 notice  -  banner "TIER 2 REACHED:  25 EGGS / Goose eggs 25 / 100   ·   Chastain Lakes  6 / 9"
+PASS  a restart of the hunt: no eggs found, the tiers kept  -  found 0, tiers 10,25
+
+=== THE MAP: fog, the egg areas
+  explored cells 30 of 19200
+PASS  driving reveals the map (the fog lifts round where the car has been)  -  30 cells
+PASS  the map shows the areas (pictures)  -  Chastain Glen 3 / 12, Grasmere, Commons and Enclave 0 / 7, Chastain Lakes 0 / 9, Chastain Ridge and Canton Road 0 / 9, Chastain Corner 0 / 10, Noonday Creek 0 / 10, Underground 0 / 12, North neighborhoods 0 / 9, Bells Ferry neighborhoods 0 / 7, East neighborhoods 0 / 8, South neighborhoods 0 / 7
+
+=== TRAVEL to a discovered place
+PASS  a place not yet driven to can not be traveled to  -  Discover a place by driving to it first.
+PASS  driving to Chastain Corner Stunt Park discovers it
+PASS  travel from Southwick Drive to Chastain Corner Stunt Park: arrived on its spot, facing along its road  -  0.0 m from it, 0 degrees off; Arrived at Chastain Corner Stunt Park.
+
+=== A WAYPOINT
+PASS  a waypoint: the beam and the HUD line  -  WAYPOINT   392 ft
+PASS  arriving within 15 m clears it  -  arrivals 1
+
+=== IN A RACE: no eggs
+PASS  in a race the eggs are hidden and driving through one takes nothing  -  tokens shown 0, found 4 -> 4
+
+=== pictures of eggs, easy and hard
+  egg-004 Chastain Glen (easy, ground): Chastain Glen: by Glenbarrett Lane at (3060, 299.8, 943)
+  egg-038 Chastain Corner (hard, ground): stunt park / corner: on the market's roof (building 28) at (3508, 339.8, 341)
+  egg-058 Underground (hard, fixed): in M1 Trunk (J1 to J2, glass under the pond) at (1562, 274.3, 1141)
+  egg-054 Noonday Creek (hard, fixed): over BJ1 at (2326, 284.6, 1209)
+  egg-026 Chastain Lakes (hard, ground): on the dock to the party boat at (569, 302.0, 1374)
+  egg-087 East neighborhoods (hard, ground): Pine Manor: behind house 1061 at (3910, 308.8, 366)
+PASS  pictures written  -  48_egg_*.png
+
+14 of 14 checks passed.

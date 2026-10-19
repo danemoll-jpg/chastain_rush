@@ -405,6 +405,14 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 48 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the goose egg hunt and exploration (Racer's acorn
+hunt): `python Tools/mapgen/make_eggs.py [--plot]` writes `Data/explore/eggs.json` (100 eggs, 11 areas, tiers, 35 places; re-run after mapgen or a course / network change),
+built by `MapBuilder.Eggs.cs` (game layer; eggs alone into the built scene: `-executeMethod ChastainRush.MapBuilder.RebuildEggsFromCommandLine`); runtime `Assets/Scripts/Explore/`
+(EggHunt, EggAreas, EggBanner, Exploration, ExplorationPlaces, WaypointGuide), the map's part `Map/WorldMap.Explore.cs`, the pause menu's GOOSE EGGS page
+`Menus/GameMenus.Eggs.cs`. Saves `goose-eggs-v1.json`, `exploration-map-v1.json` beside the race records. A MonoBehaviour must be in a file of its own name (one inside
+another's file broke the scene in the exe: "level0 is corrupted"). Check: `ChastainRush.exe -exeRound48 <dir> [-r48Only eggpickup,eggtier,eggmap,eggtravel,eggwaypoint,
+eggrace,eggpics] -logFile <dir>\Player.log` (`Checks/Round20Runner.R48.cs`). Imported from Racer: ExplorationCollection, AcornAreas, AcornBanner, Synth, ExplorationMap's
+fog / destinations / travel / waypoint, WaypointGuide (rewritten into the files above).
 **Round 47 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** reverse Chastain Lakes (`make_lakes_route.py`
 `loop_rev` and the *_rev fields, no reverse shortcuts; the forward shortcuts shut in a reverse race: two `closures_rev` barriers, `RaceOnly.showInReverseOf` the drain's
 grate, `LakeDrain.shutReverseOf`); BUG-001's drives onto Chastain Road dropped (`MapBuilder.Round47.cs`). Check: `ChastainRush.exe -exeRound47 <dir> [-r47Only

@@ -408,6 +408,7 @@ namespace ChastainRush
                 case "police-results": RenderPoliceResults(); return;
                 case "trailer": RenderTrailer(); return;   // Round 43 (Part D, GameMenus.Trailer.cs)
                 case "trailer-help": RenderTrailerHelp(); return;
+                case "eggs": RenderEggs(); return;   // Round 48 (GameMenus.Eggs.cs)
             }
             if (!title && stage == RaceController.Stage.Free && PoliceSession.Running) { RenderPolicePause(); return; }   // Round 39: before the split pause (the mode owns its split)
             if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
@@ -429,7 +430,7 @@ namespace ChastainRush
             if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
             if (stage == RaceController.Stage.Free)
             {
-                Clear("PAUSED", "Free roam" + (StuntPark.Current && car && StuntPark.Inside(car.Body.position, 30) ? "  ·  " + StuntPark.Title : ""));
+                Clear("PAUSED", "Free roam" + (StuntPark.Current && car && StuntPark.Inside(car.Body.position, 30) ? "  ·  " + StuntPark.Title : "") + EggLine);   // Round 48: the egg count
                 int fr = 0;
                 Row(fr++, "resume", "RESUME", CloseMenu);
                 RoamWeatherRow(fr++);   // Round 35 (Part C)
@@ -438,6 +439,7 @@ namespace ChastainRush
                 Row(fr++, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D): Getaway, Speed Patrol, Cop vs Runner
                 Row(fr++, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37
                 fr = ActivityRows(fr);   // Round 36 (Part B)
+                if (EggHunt.Instance) Row(fr++, "eggs", "GOOSE EGGS", () => Navigate("eggs"));   // Round 48 (GameMenus.Eggs.cs)
                 Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
                 Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
                 Row(fr++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D): Racer's pause menu > Trailer / Photo Mode

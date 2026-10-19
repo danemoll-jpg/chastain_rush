@@ -34,7 +34,8 @@ namespace ChastainRush
             Instance = go.AddComponent<GameShell>();
             var carGo = FindAnyObjectByType<ArcadeVehicle>().gameObject;
             if (!carGo.GetComponent<RampHold>()) carGo.AddComponent<RampHold>();   // Round 10: held shortcut ramp tops
-            WorldMap.Boot(go);   // Round 20 (item 2): the map, on View / Select and M (Map/WorldMap.cs)
+            WorldMap.Boot(go);
+            Exploration.Boot(go);   // Round 48: the map's fog, places, travel and waypoint (Explore/Exploration.cs)   // Round 20 (item 2): the map, on View / Select and M (Map/WorldMap.cs)
             MiniMap.Boot(go);    // Round 24 A2 (A5): Racer's minimap (Map/MiniMap.cs)
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
@@ -67,6 +68,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound44") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round44"; }   // Round 44 (Round20Runner.R44.cs)
                 if (args[i] == "-exeRound45") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round45"; }   // Round 45 (Round20Runner.R45.cs)
                 if (args[i] == "-exeRound46") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round46"; }   // Round 46 (Round20Runner.R46.cs)
+                if (args[i] == "-exeRound48") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round48"; }   // Round 48 (Round20Runner.R48.cs)
                 if (args[i] == "-exeRound47") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round47"; }   // Round 47 (Round20Runner.R47.cs)
                 if (args[i] == "-exeRound42") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round42"; }   // Round 42 (Round20Runner.R42.cs)
                 if (args[i] == "-exeRound41") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round41"; }   // Round 41 (Round20Runner.R41*.cs)
