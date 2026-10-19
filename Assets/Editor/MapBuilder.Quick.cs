@@ -87,7 +87,7 @@ namespace ChastainRush
                     var pave = c.pave = new Pavement(map);
                     biz.Trees.AddRange(MedianTrees(map, ridge));   // Round 40 (B2): trees down New Chastain Road's median
                     var trees = c.trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
+                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts
                         (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
                     if (creek != null || ridge != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
                     {
@@ -120,6 +120,7 @@ namespace ChastainRush
                 S("Ridge", () => BuildRidge(terrain, mats, world, ridge), true, () => QuickRoofRampHouse(rest)),
                 S("Pipes", () => BuildPipes(terrain, mats, world, pipes), true),   // Round 18 (4)
                 S("Network", () => BuildNetwork(terrain, mats, world, net, pipes)),   // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
+                S("LakesRace", () => BuildLakesRace(terrain, mats, world)),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs)
                 S("Hydrants", () => BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge)),   // Round 36 (Parts C, D)
                 S("Life", () =>
                 {

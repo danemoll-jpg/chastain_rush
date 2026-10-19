@@ -55,7 +55,10 @@ namespace ChastainRush
             public readonly Vector2 PierRoot = new Vector2(1301.5f, 1098.5f), PierDir = new Vector2(-0.825f, 0.565f).normalized;
             public const float PierLen = 15f, GazeboHalf = 3.2f;
             public readonly List<Vector2> PierWalk = new List<Vector2> { new Vector2(1317f, 1087f), new Vector2(1310f, 1091f), new Vector2(1304f, 1096f), new Vector2(1301.5f, 1098.5f) };
-            public readonly Vector2 BridgeS = new Vector2(1351.3f, 1132.5f), BridgeN = new Vector2(1353.3f, 1151.0f);
+            public Vector2 BridgeS = new Vector2(1351.3f, 1132.5f), BridgeN = new Vector2(1353.3f, 1151.0f);
+            // Round 44 (the Chastain Lakes race, MapBuilder.LakesRace.cs): the footbridge, the pier and the gazebo wide enough to drive (the
+            // race's track file sets them; Round 32's sizes otherwise), the footbridge's south end 7 m east so the lake trail meets it in one S
+            public float BridgeHW = 1.3f, PierHW = 1.2f, GH = GazeboHalf; public bool RaceTrail;
             public readonly List<Vector2> CourtWalk = new List<Vector2> { new Vector2(1361.5f, 1090f), new Vector2(1369f, 1094f), new Vector2(1374.5f, 1099f), new Vector2(1374.5f, 1124f), new Vector2(1368f, 1128.5f), new Vector2(1360f, 1130.5f), new Vector2(1351.3f, 1132.5f) };
             public readonly List<Vector2> ShorePath = new List<Vector2> { new Vector2(1353.3f, 1151.0f), new Vector2(1353.5f, 1160f), new Vector2(1357f, 1175f), new Vector2(1360f, 1185f), new Vector2(1363f, 1195f), new Vector2(1365f, 1205f), new Vector2(1368f, 1215f), new Vector2(1372f, 1225f), new Vector2(1375f, 1230f), new Vector2(1378f, 1235f) };
             public const float WalkW = 1.8f, PathW = 2.2f;
@@ -82,9 +85,9 @@ namespace ChastainRush
                 foreach (var r in OwnedRings) if (InPolygon(p, r) || RingDist(p, r) < m + 0.5f) return true;
                 foreach (var c in Courts) if (InBox(p, c.C, c.HX, c.HZ, m)) return true;
                 if (LineDist(p, PierWalk) < WalkW / 2f + m || LineDist(p, CourtWalk) < PathW / 2f + m || LineDist(p, ShorePath) < PathW / 2f + m) return true;
-                if (SegDist(p, BridgeS, BridgeN) < 1.5f + m || (p - Swing).magnitude < 2.5f + m) return true;
-                var pe = PierRoot + PierDir * (PierLen + 2f * GazeboHalf);
-                return SegDist(p, PierRoot, pe) < GazeboHalf + m;
+                if (SegDist(p, BridgeS, BridgeN) < BridgeHW + 0.2f + m || (p - Swing).magnitude < 2.5f + m) return true;
+                var pe = PierRoot + PierDir * (PierLen + 2f * GH);
+                return SegDist(p, PierRoot, pe) < GH + m;
             }
             public bool RejectTree(float x, float z) => Blocks(new Vector2(x, z), 1.5f);
 
@@ -112,6 +115,12 @@ namespace ChastainRush
         static ChastainLakes PlanChastainLakes(MapData map, TerrainGrid t)
         {
             var k = new ChastainLakes();
+            var lx = LakesExtra;   // Round 44
+            if (lx != null && lx.bridge != null && lx.bridge.Length >= 4)
+            {
+                k.BridgeS = new Vector2(lx.bridge[0], lx.bridge[1]); k.BridgeN = new Vector2(lx.bridge[2], lx.bridge[3]);
+                k.BridgeHW = lx.bridge_half; k.PierHW = lx.pier_half; k.GH = lx.gazebo_half; k.RaceTrail = lx.trail != null && lx.trail.Length >= 4;
+            }
             for (int wi = 0; wi < map.water.Length; wi++) if (map.water[wi].name == "East Chastain Lake") { k.Lake = wi; break; }
             if (k.Lake >= 0 && Beds != null && k.Lake < Beds.Rings.Count)
             {
@@ -295,17 +304,22 @@ namespace ChastainRush
             DrapePoly(walks.At(k.Sidewalk[0]), k.Sidewalk, 0.5f, 0.095f, t, 8);
 
             // --- the walks and the dam path (pale concrete, on the ground), and the footbridge over the outflow stream
-            var bridge = LakesFootbridge(wood, root, t, k, boards, boardsDark);
+            var tape = new Breakables();   // Round 44: the footbridge's caution tape and 2x4s
+            var bridge = LakesFootbridge(wood, root, t, k, boards, boardsDark, tape);
+            if (tape.Count > 0) tape.ToObjects("LakesBridgeTape", mats.House, root, 0.4f, BreakSounds.Kind.Wood);
             var courtWalk = new List<Vector2>(k.CourtWalk); var shore = new List<Vector2>(k.ShorePath);
             if (bridge.ok) { courtWalk[courtWalk.Count - 1] = bridge.s; shore[0] = bridge.n; }
             foreach (var (line, w) in new[] { (k.PierWalk, ChastainLakes.WalkW), (courtWalk, ChastainLakes.PathW), (shore, ChastainLakes.PathW) })
             {
+                if (k.RaceTrail && line != k.PierWalk) continue;   // Round 44: the lake trail (MapBuilder.LakesRace.cs) takes the court walk's and the dam path's place
                 var pts = Densify(line, 1f);
                 RibbonGridMax(walks.At(pts[pts.Count / 2]), pts, Enumerable.Repeat(w, pts.Count).ToArray(), 0.07f, t, 2);
             }
 
             // --- the pier and the gazebo on its deck out on the water
-            LakesPier(wood, root, t, k, boards, boardsDark);
+            var gazeboRail = new Breakables();   // Round 44: the gazebo's far rail
+            LakesPier(wood, root, t, k, boards, boardsDark, k.RaceTrail ? gazeboRail : null);
+            if (gazeboRail.Count > 0) gazeboRail.ToObjects("LakesGazeboRail", mats.House, root, 0.4f, BreakSounds.Kind.Wood);
 
             // --- the porch swing on its A-frame on the lawn, facing the water (breaks like the patio furniture)
             {
@@ -406,7 +420,7 @@ namespace ChastainRush
 
         // the footbridge: from where the bank on the south reaches the deck's level to where the north bank does, nothing in the
         // channel. Returns its two ends (the walks join them).
-        static (bool ok, Vector2 s, Vector2 n) LakesFootbridge(MeshBuilder wood, Transform root, TerrainGrid t, ChastainLakes k, Color boards, Color dark)
+        static (bool ok, Vector2 s, Vector2 n) LakesFootbridge(MeshBuilder wood, Transform root, TerrainGrid t, ChastainLakes k, Color boards, Color dark, Breakables tape = null)
         {
             Vector2 BS = k.BridgeS, BN = k.BridgeN; float L = (BN - BS).magnitude; var D = (BN - BS) / L;
             float G(float s) { var q = BS + D * s; return Ground(t, q.x, q.y); }
@@ -420,7 +434,41 @@ namespace ChastainRush
             if (len < 3f || deckY - gLow < 1f) { k.Log.Add($"footbridge NOT built: the banks give a {len:0.0} m span {deckY - gLow:0.0} m over the stream"); return (false, BS, BN); }
             Vector2 A = BS + D * s0, B = BS + D * s1, mid = (A + B) * 0.5f;
             var bf = MakeFrame(new Vector3(mid.x, deckY, mid.y), D, 1f);   // v along the bridge, u across
-            const float HW = 1.3f;
+            float HW = k.BridgeHW;
+            if (k.RaceTrail)
+            {
+                // Round 44 check: the south bank stands up to 2 m over the north one, so a level deck at the lower bank left a 2 m step off the
+                // south bank onto it (a bike fell there). The race's bridge runs from bank to bank (its whole line), its deck sloping from one to
+                // the other: the frame's 'along' carries the slope (posts and rails stay upright)
+                s0 = 0f; s1 = L; len = L; A = BS; B = BN; mid = (A + B) * 0.5f;
+                float yA = G(0f) + 0.03f, yB = G(L) + 0.03f; deckY = (yA + yB) * 0.5f;
+                bf = MakeFrame(new Vector3(mid.x, deckY, mid.y), D, 1f); bf.F = new Vector3(bf.F.x, (yB - yA) / L, bf.F.z);
+                if (deckY - gLow < 1f) { k.Log.Add($"footbridge NOT built: {deckY - gLow:0.0} m over the stream"); return (false, BS, BN); }
+            }
+            if (k.RaceTrail && tape != null)
+            {
+                // Round 44 (photo 6: in real life the bridge is closed with caution tape and 2x4s): two 2x4s lashed across from rail to rail at
+                // hip height near the south end, and one fallen across, the tape wound round them and between the rails; they break (wood)
+                var yellow = new Color(0.98f, 0.84f, 0.10f); var pine = new Color(0.86f, 0.74f, 0.50f);
+                foreach (var (v, y, skew) in new[] { (-len / 2f + 1.6f, 0.95f, 0.35f), (-len / 2f + 2.6f, 0.55f, -0.25f) })
+                {
+                    var c = bf.P(0f, y, v); var pm = tape.Begin(new Vector2(c.x, c.z));
+                    tape.Piece(() =>
+                    {
+                        Beam(pm, bf.P(-HW + 0.05f, y + skew * 0.5f, v), bf.P(HW - 0.05f, y - skew * 0.5f, v), 0.045f, 0.09f, pine);
+                        foreach (float u in new[] { -HW + 0.4f, 0f, HW - 0.5f }) Beam(pm, bf.P(u - 0.06f, y + 0.07f - skew * u / (2f * HW), v - 0.05f), bf.P(u + 0.06f, y + 0.07f - skew * u / (2f * HW), v + 0.05f), 0.03f, 0.06f, yellow);
+                    }, deckY + 0.05f);
+                    tape.Piece(() =>
+                    {
+                        Beam(pm, bf.P(-HW + 0.05f, 1.0f, v + 0.4f), bf.P(0f, 0.62f, v + 0.6f), 0.008f, 0.06f, yellow);
+                        Beam(pm, bf.P(0f, 0.62f, v + 0.6f), bf.P(HW - 0.05f, 0.95f, v + 0.3f), 0.008f, 0.06f, yellow);
+                    }, deckY + 0.02f);
+                    tape.End(c, bf.R, 2f * HW, 1.4f, 0.6f);
+                }
+                var fc = bf.P(0.3f, 0.05f, -len / 2f + 4.2f); var fm = tape.Begin(new Vector2(fc.x, fc.z));
+                tape.Piece(() => Beam(fm, bf.P(-HW + 0.6f, 0.05f, -len / 2f + 3.6f), bf.P(HW - 0.8f, 0.05f, -len / 2f + 4.8f), 0.045f, 0.09f, pine), deckY + 0.05f);
+                tape.End(fc, bf.R, 2f * HW - 1f, 0.3f, 1.2f);
+            }
             BoxF(wood, bf, -HW, HW, -0.12f, 0f, -len / 2f, len / 2f, boards);
             wood.Tint = dark;
             for (float v = -len / 2f + 0.3f; v < len / 2f; v += 0.3f) Face(wood, bf.P(-HW, 0.004f, v - 0.012f), bf.P(HW, 0.004f, v - 0.012f), bf.P(HW, 0.004f, v + 0.012f), bf.P(-HW, 0.004f, v + 0.012f), Vector3.up);
@@ -432,11 +480,11 @@ namespace ChastainRush
                 BoxF(wood, bf, s * (HW - 0.06f) - 0.03f, s * (HW - 0.06f) + 0.03f, 0.50f, 0.56f, -len / 2f, len / 2f, boards);              // middle rail
                 var rc = new GameObject("Footbridge rail"); rc.transform.SetParent(root, false);
                 rc.transform.SetPositionAndRotation(bf.P(s * (HW - 0.06f), 0.55f, 0f), Quaternion.LookRotation(bf.F, Vector3.up));
-                rc.AddComponent<BoxCollider>().size = new Vector3(0.12f, 1.1f, len);
+                rc.AddComponent<BoxCollider>().size = new Vector3(0.12f, 1.1f, len * bf.F.magnitude);
             }
             var dc = new GameObject("Footbridge deck"); dc.transform.SetParent(root, false);
             dc.transform.SetPositionAndRotation(bf.P(0f, -0.15f, 0f), Quaternion.LookRotation(bf.F, Vector3.up));
-            dc.AddComponent<BoxCollider>().size = new Vector3(HW * 2f, 0.3f, len);
+            dc.AddComponent<BoxCollider>().size = new Vector3(HW * 2f, 0.3f, len * bf.F.magnitude);
             float clear = float.NaN;
             if (Beds != null && Beds.NearStream(BS + D * sLow, out float sd, out float surf) && sd < 6f) clear = deckY - 0.45f - surf;
             k.Log.Add($"footbridge {len:0.0} x {HW * 2f:0.0} m at {deckY:0.00} m from ({A.x:0.0}, {A.y:0.0}) to ({B.x:0.0}, {B.y:0.0}), underside {(float.IsNaN(clear) ? "?" : clear.ToString("0.0"))} m over the stream, {deckY - gLow:0.0} m over the channel's floor");
@@ -444,12 +492,12 @@ namespace ChastainRush
         }
 
         // the pier from the shore at the end of the walk, and the gazebo on a deck at its end; deck, gazebo deck, rails and posts solid
-        static void LakesPier(MeshBuilder wood, Transform root, TerrainGrid t, ChastainLakes k, Color boards, Color dark)
+        static void LakesPier(MeshBuilder wood, Transform root, TerrainGrid t, ChastainLakes k, Color boards, Color dark, Breakables rail = null)
         {
             var R = k.PierRoot;
             float y = Mathf.Max(Ground(t, R.x, R.y) + 0.03f, k.LakeY + 0.45f);
             var pf = MakeFrame(new Vector3(R.x, y, R.y), k.PierDir, 1f);   // v out along the pier
-            const float PL = ChastainLakes.PierLen, GH = ChastainLakes.GazeboHalf, HW = 1.2f;
+            const float PL = ChastainLakes.PierLen; float GH = k.GH, HW = k.PierHW;
             float gc = PL + GH;
             BoxF(wood, pf, -HW, HW, -0.15f, 0f, -0.6f, PL, boards);
             BoxF(wood, pf, -GH, GH, -0.15f, 0f, PL, PL + 2f * GH, boards);
@@ -469,31 +517,67 @@ namespace ChastainRush
                 rc.transform.SetPositionAndRotation(pf.P(s * (HW - 0.06f), 0.55f, (0.5f + PL) / 2f), Quaternion.LookRotation(pf.F, Vector3.up));
                 rc.AddComponent<BoxCollider>().size = new Vector3(0.12f, 1.1f, PL - 0.5f);
             }
-            // the gazebo: eight white posts, a rail between them (open toward the pier), an eight-sided roof
-            const float GR = 2.75f, EH = 2.6f; var white = new Color(0.94f, 0.94f, 0.92f); var roofC = new Color(0.30f, 0.36f, 0.34f);
-            var postAt = new List<Vector2>();
-            for (int i = 0; i < 8; i++) { float a = (22.5f + 45f * i) * Mathf.Deg2Rad; postAt.Add(new Vector2(Mathf.Cos(a) * GR, gc + Mathf.Sin(a) * GR)); }
-            for (int i = 0; i < 8; i++)
+            // Round 44 (photo 1): the gazebo square, white, a hipped gray-green roof: corner posts, three arches along each side, the side toward
+            // the pier open and the far side's middle open between two posts with a rail across it that breaks (the Lake drain shortcut goes
+            // through: in along the pier, out over the rail, off the deck's end); rails along both long sides
+            const float EH = 2.7f; var white = new Color(0.94f, 0.94f, 0.92f); var roofC = new Color(0.30f, 0.36f, 0.34f);
+            float g0 = PL, g1 = PL + 2f * GH, ins = 0.1f;
+            void Post(float u, float v)
             {
-                var p = postAt[i]; BoxF(wood, pf, p.x - 0.09f, p.x + 0.09f, 0f, EH, p.y - 0.09f, p.y + 0.09f, white);
+                BoxF(wood, pf, u - 0.1f, u + 0.1f, 0f, EH, v - 0.1f, v + 0.1f, white);
                 var pc = new GameObject("Gazebo post"); pc.transform.SetParent(root, false);
-                pc.transform.SetPositionAndRotation(pf.P(p.x, EH / 2f, p.y), Quaternion.LookRotation(pf.F, Vector3.up));
+                pc.transform.SetPositionAndRotation(pf.P(u, EH / 2f, v), Quaternion.LookRotation(pf.F, Vector3.up));
                 pc.AddComponent<BoxCollider>().size = new Vector3(0.2f, EH, 0.2f);
-                var q = postAt[(i + 1) % 8]; var m = (p + q) * 0.5f;
-                if (m.y < gc - GR * 0.8f) continue;   // the side toward the pier stays open
-                Beam(wood, pf.P(p.x, 0.95f, p.y), pf.P(q.x, 0.95f, q.y), 0.07f, 0.07f, white);
-                Beam(wood, pf.P(p.x, EH - 0.12f, p.y), pf.P(q.x, EH - 0.12f, q.y), 0.12f, 0.16f, white);
-                for (float s = 0.15f; s < 1f; s += 0.15f) { var b = Vector2.Lerp(p, q, s); Beam(wood, pf.P(b.x, 0.05f, b.y), pf.P(b.x, 0.93f, b.y), 0.035f, 0.035f, white); }
             }
-            var top = pf.P(0f, EH, gc);
-            Cyl(wood, top, 1.5f, GR + 0.6f, 0f, roofC, 8);
-            wood.Tint = Shade(white, 0.9f);
-            for (int i = 0; i < 8; i++)
+            void Arch(Vector2 a, Vector2 b)   // the beam over two posts, a shallow arch under it
             {
-                float a0 = 45f * i * Mathf.Deg2Rad, a1 = 45f * (i + 1) * Mathf.Deg2Rad, r = GR + 0.6f;
-                TriFace(wood, top, top + new Vector3(Mathf.Cos(a0) * r, 0f, Mathf.Sin(a0) * r), top + new Vector3(Mathf.Cos(a1) * r, 0f, Mathf.Sin(a1) * r), Vector3.down);
+                Beam(wood, pf.P(a.x, EH - 0.12f, a.y), pf.P(b.x, EH - 0.12f, b.y), 0.14f, 0.18f, white);
+                for (int s = 0; s < 6; s++) { var p0 = Vector2.Lerp(a, b, s / 6f); var p1 = Vector2.Lerp(a, b, (s + 1) / 6f); float h0 = 0.45f * Mathf.Sin(Mathf.PI * s / 6f), h1 = 0.45f * Mathf.Sin(Mathf.PI * (s + 1) / 6f); Beam(wood, pf.P(p0.x, EH - 0.62f + h0, p0.y), pf.P(p1.x, EH - 0.62f + h1, p1.y), 0.05f, 0.06f, white); }
             }
-            Cyl(wood, top + Vector3.up * 1.45f, 0.4f, 0.08f, 0.02f, white, 6);   // the finial
+            void Rail(Vector2 a, Vector2 b, MeshBuilder into)
+            {
+                Beam(into, pf.P(a.x, 0.95f, a.y), pf.P(b.x, 0.95f, b.y), 0.07f, 0.07f, white);
+                for (float s = 0.08f; s < 1f; s += 0.08f) { var q = Vector2.Lerp(a, b, s); Beam(into, pf.P(q.x, 0.05f, q.y), pf.P(q.x, 0.93f, q.y), 0.035f, 0.035f, white); }
+            }
+            float ux = GH - ins, side = GH - 0.9f;   // the far side's opening: posts at +-side (Round 44 check: at +-1.6 m a bike 2 m off the line met its rail)
+            var corners = new[] { new Vector2(-ux, g0 + ins), new Vector2(ux, g0 + ins), new Vector2(ux, g1 - ins), new Vector2(-ux, g1 - ins) };
+            foreach (var c in corners) Post(c.x, c.y);
+            foreach (float u in new[] { -side, side }) Post(u, g1 - ins);
+            foreach (float s in new[] { -1f, 1f })
+            {
+                float u = s * ux; float l = (g1 - g0 - 2f * ins) / 3f;
+                for (int i = 1; i < 3; i++) Post(u, g0 + ins + l * i);
+                for (int i = 0; i < 3; i++) { var a = new Vector2(u, g0 + ins + l * i); var b = new Vector2(u, g0 + ins + l * (i + 1)); Arch(a, b); Rail(a, b, wood); }
+                var rc = new GameObject("Gazebo rail"); rc.transform.SetParent(root, false);
+                rc.transform.SetPositionAndRotation(pf.P(u, 0.55f, (g0 + g1) / 2f), Quaternion.LookRotation(pf.F, Vector3.up));
+                rc.AddComponent<BoxCollider>().size = new Vector3(0.12f, 1.1f, g1 - g0);
+            }
+            Arch(corners[0], corners[1]);   // the side toward the pier: open under its arch
+            Arch(corners[3], new Vector2(-side, g1 - ins)); Arch(new Vector2(-side, g1 - ins), new Vector2(side, g1 - ins)); Arch(new Vector2(side, g1 - ins), corners[2]);
+            Rail(corners[3], new Vector2(-side, g1 - ins), wood); Rail(new Vector2(side, g1 - ins), corners[2], wood);
+            foreach (float s in new[] { -1f, 1f })
+            {
+                var rc = new GameObject("Gazebo rail"); rc.transform.SetParent(root, false);
+                rc.transform.SetPositionAndRotation(pf.P(s * (ux + side) / 2f, 0.55f, g1 - ins), Quaternion.LookRotation(pf.F, Vector3.up));
+                rc.AddComponent<BoxCollider>().size = new Vector3(ux - side, 1.1f, 0.12f);
+            }
+            if (rail != null)   // the far rail between the two middle posts: it breaks
+            {
+                var rcn = pf.P(0f, 0.5f, g1 - ins); var rm = rail.Begin(new Vector2(rcn.x, rcn.z));
+                rail.Piece(() => Rail(new Vector2(-side + 0.1f, g1 - ins), new Vector2(0f, g1 - ins), rm), y);
+                rail.Piece(() => Rail(new Vector2(0f, g1 - ins), new Vector2(side - 0.1f, g1 - ins), rm), y);
+                rail.End(rcn, pf.R, 2f * side, 1.0f, 0.4f);
+            }
+            // the hipped roof: four slopes from the eaves (0.5 m out) up to a short ridge-less peak, gray-green shingles, the soffit white
+            float er = GH + 0.5f, peak = 1.9f; var e0 = pf.P(0f, EH, g0 + GH);
+            Vector3 Eave(float u, float v) => pf.P(u, EH, g0 + GH + v);
+            var top = pf.P(0f, EH + peak, g0 + GH);
+            var eav = new[] { Eave(-er, -er), Eave(er, -er), Eave(er, er), Eave(-er, er) };
+            wood.Tint = roofC;
+            for (int i = 0; i < 4; i++) { var a = eav[i]; var b = eav[(i + 1) % 4]; var nrm = Vector3.Cross(b - a, top - a).normalized; if (nrm.y < 0f) nrm = -nrm; TriFace(wood, a, b, top, nrm); }
+            wood.Tint = Shade(white, 0.9f);
+            Face(wood, eav[0], eav[1], eav[2], eav[3], Vector3.down);
+            Cyl(wood, top + Vector3.up * 0.02f, 0.4f, 0.08f, 0.02f, white, 6);   // the finial
             foreach (var (c, hx, lz) in new[] { (PL / 2f - 0.3f, HW, PL + 0.6f), (gc, GH, 2f * GH) })
             {
                 var dc = new GameObject(c > PL ? "Gazebo deck" : "Pier deck"); dc.transform.SetParent(root, false);

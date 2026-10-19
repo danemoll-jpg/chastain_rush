@@ -332,7 +332,8 @@ namespace ChastainRush
                 if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, clueAt, ToPoints(b.tracks), b.id + " worn tracks");
                 if (clueMb != look && clueMb.Count > 0) { var cg = clueMb.ToObject(b.id + " barricade", mats.House, clueAt, false); cg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
                 if (look.Count > 0) { var lg = look.ToObject(b.id + " look", mats.House, jr, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On; }
-                // the runtime side: the launch speed cap
+                // the runtime side: the launch speed cap (Round 44: none on a real jump, it launches by physics alone)
+                if (b.physics) { Debug.Log($"[Round44] {b.id}: a real jump, no launch control"); continue; }
                 var bj = jr.gameObject.AddComponent<BigJump>(); bj.id = b.id; bj.look = b.look; bj.lip = new Vector3(L.x, y1, L.y); bj.dir = new Vector3(d.x, 0f, d.y); bj.halfWidth = hw; bj.vmax = b.vmax; bj.angle = b.angle_deg; bj.vmin = b.vmin;
                 if (b.rev_vmax > 0f)   // Round 21: the reverse take-off off the back, at the same lip
                 {

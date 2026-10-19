@@ -109,10 +109,11 @@ Exits: **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780)
 | B23 | B23 | 3.5 m | 112 m | 284 to 294 m | J9 to MH12; pops out at MH12 |
 | B24 | B24 | 3.5 m | 308 m | 284 to 301 m | J9 to MH13; pops out at MH13 |
 | B25 | B25 | 3.5 m | 56 m | 296 to 296 m | K25 to X_STREAM; comes out at exit lake stream |
+| B28 | B28 (the lake drain to North Lakeside Drive) | 5.0 m | 238 m | 276 to 294 m | LD to MH14; pops out at MH14 |
 
-Chambers: **J9 LAKES JCT** (junction, x 868, z 1236, floor 284 m); **K25** (junction, x 560, z 1418, floor 296 m)
+Chambers: **J9 LAKES JCT** (junction, x 868, z 1236, floor 284 m); **K25** (junction, x 560, z 1418, floor 296 m); **LD LAKE DRAIN** (turn, x 1276, z 1116, floor 276 m)
 
-Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 19 m); **MH13** in Chastain Lakes Drive Northwest (x 977, z 962; riser 8 m)
+Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 19 m); **MH13** in Chastain Lakes Drive Northwest (x 977, z 962; riser 8 m); **MH14** in North Lakeside Drive Northwest (x 1180, z 1326; riser 7 m)
 
 Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 118); **Exit Lake Stream** (x 470, z 1425)
 
@@ -160,6 +161,7 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E36 M2c express | M2c (5.0 m) | K25 (20 m along) | Exit Far West Pond (250 m along) | 230 m | 45 m/s | about 6 s | 12 s |
 | E37 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
 | E38 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
+| E39 B28 express | B28 (5.0 m) | LD (20 m along) | MH14's foot (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
 
 ## What differs from the proposal
 

@@ -34,7 +34,7 @@ namespace ChastainRush
         [Serializable] class NetFlood { public float s0, s1, level; }
         [Serializable] class NetTube { public string id, name; public float d; public bool main; public int stage, to_hub; public float[] stripe; public NetEnd a, b; public float[] pts; public NetGlass[] glass; public NetFlood flood; }
         [Serializable] class NetOpening { public int wall; public float t, d, inset; public string tube, lvl; public bool high; }
-        [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling; public int stage; public NetOpening[] openings; }
+        [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling, roof_open; public int stage; public NetOpening[] openings; }   // Round 44: roof_open, LD's hole under the lake drain
         [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; }
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
         [Serializable] class NetExpress { public string id, name, tube; public float s0, s1, top; }   // Round 25 (B2): the pipe express's stretches; Round 26: top, its own top speed
@@ -596,6 +596,8 @@ namespace ChastainRush
                     float a1 = Mathf.Min(a + 2f, hl), b1 = Mathf.Min(b + 2f, hw);
                     Vector3 P(float aa, float bb, float yy) => C + u3 * aa + v3 * bb + up * yy;
                     room.Quad(P(a, b, 0f), P(a1, b, 0f), P(a1, b1, 0f), P(a, b1, 0f), new Vector2(a / 2.4f, 0.02f), new Vector2(a1 / 2.4f, 0.02f), new Vector2(a1 / 2.4f, 0.04f), new Vector2(a / 2.4f, 0.04f), up);
+                    // Round 44: no ceiling tile under the lake drain's shaft (LD: a tile any part of which is inside the hole; the shaft's own collar closes the rest)
+                    if (c.roof_open > 0f && new Vector2(Mathf.Max(Mathf.Abs(a), Mathf.Abs(a1)) - 1f, Mathf.Max(Mathf.Abs(b), Mathf.Abs(b1)) - 1f).magnitude < c.roof_open) continue;
                     room.Quad(P(a, b, h), P(a1, b, h), P(a1, b1, h), P(a, b1, h), new Vector2(a / 2.4f, 0.5f), new Vector2(a1 / 2.4f, 0.5f), new Vector2(a1 / 2.4f, 0.52f), new Vector2(a / 2.4f, 0.52f), -up);
                 }
             // the four walls with the round openings of their pipes (built or stubs: every opening is open)

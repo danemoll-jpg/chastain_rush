@@ -36,10 +36,11 @@ namespace ChastainRush
         {
             public RidgeFile Data;
             public int TreesRemoved;
-            public static Ridge Load()
+            // Round 44: any track file of this shape (the Chastain Lakes race's too: MapBuilder.LakesRace.cs)
+            public static Ridge Load(string file = RidgeTrackFile)
             {
-                string path = Path.Combine(ProjectRoot, RidgeTrackFile);
-                if (!File.Exists(path)) { Debug.Log("[Round33] no " + RidgeTrackFile + " (Tools/mapgen/make_ridge_route.py): no Chastain Ridge pieces"); return null; }
+                string path = Path.Combine(ProjectRoot, file);
+                if (!File.Exists(path)) { Debug.Log("[Round33] no " + file + ": no pieces from it"); return null; }
                 return new Ridge { Data = JsonUtility.FromJson<RidgeFile>(File.ReadAllText(path)) };
             }
             // on a cleared line (no tree, no back-yard fence)

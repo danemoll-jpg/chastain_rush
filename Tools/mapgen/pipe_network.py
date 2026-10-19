@@ -149,6 +149,11 @@ CH = {
     # stage 4: the lakes
     "J9":  dict(name="J9 LAKES JCT", kind="junction", at=(868.0, 1236.0), yaw=110.0, size=J5M, stage=4, sign="M2 LAKES MAIN", floor=284.0),
     "K25": dict(name="K25", kind="junction", at=(560.0, 1418.0), yaw=110.0, size=J5M, stage=4, sign="M2 LAKES MAIN"),
+    # Round 44 (Dan, 2026-10-18: the Chastain Lakes race's gazebo shortcut, "jump and land in a hole in the lake that will tunnel through and
+    # pop out of manhole in the road"): LD, the room at the foot of the lake drain (a morning-glory spillway's shaft, built by
+    # MapBuilder.LakesRace.cs) 31 m out from the gazebo pier's root on its line; its roof open under the shaft ('roof_open', the hole's
+    # radius). Its floor under M2a's crossing (B28 goes under M2a). A dead end of its own: not joined to the rest of the network.
+    "LD":  dict(name="LD LAKE DRAIN", kind="turn", at=(1275.9, 1116.0), yaw=0.0, size=(12.0, 12.0, 6.0), stage=4, floor=275.5, roof_open=4.6),
 }
 
 # exits (secret ways out: a small cut and headwall in a bank; a way in too), outfalls (the same, a lip at the mouth, out over
@@ -178,6 +183,7 @@ MANHOLES = {
     "MH7": ("Westminister Way", (2700.0, 1260.0)), "MH8": ("Paxton Court Northeast", (2124.0, 620.0)), "MH9": ("Grasmere Court Northeast", (2730.0, 800.0)),
     "MH10": ("Weybourne Court Northeast", (2690.0, 650.0)), "MH11": ("Chasefield Way", (3000.0, 1120.0)), "MH12": ("Laurel Green Court Northwest", (815.0, 1160.0)),
     "MH13": ("Chastain Lakes Drive Northwest", (960.0, 980.0)),
+    "MH14": ("North Lakeside Drive Northwest", (1180.0, 1326.0)),   # Round 44: the lake drain's way out, its riser climbing west (the race's way)
 }
 
 # tubes: (id, name, diameter, main?, stage, end a, way points, end b, extras). Ends: ("ch", id[, level]), ("pipe", entrance id,
@@ -265,6 +271,8 @@ TUBES = [
     T("B23", "B23", NARROW, False, 4, ("ch", "J9"), [], ("mh", "MH12")),
     T("B24", "B24", NARROW, False, 4, ("ch", "J9"), [(930.0, 1090.0)], ("mh", "MH13")),
     T("B25", "B25", NARROW, False, 4, ("ch", "K25"), [(520.0, 1450.0)], ("x", "X_STREAM")),
+    # Round 44: the lake drain's tunnel, from LD under the lake (and under M2a) north to MH14 in North Lakeside Drive
+    T("B28", "B28 (the lake drain to North Lakeside Drive)", MAIN, False, 4, ("ch", "LD"), [(1268.0, 1150.0), (1240.0, 1215.0), (1215.0, 1290.0)], ("mh", "MH14"), under=["M2a"]),
 ]
 
 DIFFERS = [
@@ -732,6 +740,7 @@ def build(stage_max):
             e["ceiling"] = round(lo - 1.8, 2); e["ground_min"] = round(lo, 2)
         else:
             e.update(length=c["size"][0], width=c["size"][1], height=c["size"][2], floor=c["floor"], drop=c.get("drop", 0.0))
+            if c.get("roof_open"): e["roof_open"] = c["roof_open"]   # Round 44: LD's roof open under the lake drain's shaft
         for o in e["openings"]:
             tb = next(t for t in TUBES if t["id"] == o["tube"])
             o["high"] = any(en[0] == "ch" and en[1] == cid and len(en) > 2 and en[2] == "high" for en in (tb["a"], tb["b"]))
