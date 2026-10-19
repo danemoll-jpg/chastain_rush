@@ -395,6 +395,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 44 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Chastain Lakes race (forward only, 2 laps,
+traffic): `python Tools/mapgen/make_lakes_route.py [--plot [x0,x1,z0,z1]]` writes `Data/routes/chastain_lakes.json` and `Data/tracks/chastain_lakes.json` (re-run after
+mapgen and after `pipe_network.py`; it reads network.json), built by `MapBuilder.LakesRace.cs` (the lake trail, the lake drain, the W pile; `LakesNow` is a `Ridge` loaded
+from that file: its grades, cleared lines, landing zone) and `MapBuilder.ChastainLakes.cs` (footbridge, pier and gazebo sized from the file). The lake drain: LD, B28,
+MH14 in `pipe_network.py` (a chamber's `roof_open`), runtime `Neighborhood/LakeDrain.cs`. A big jump with `"physics": true` gets no BigJump (a real jump). Check:
+`ChastainRush.exe -exeRound44 <dir> [-r44Only times,wjump,drain,lakesrace,pics] [-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R44.cs`).
+Imported from Racer: nothing.
 **Round 43 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the manhole plume on both
 carriageways (a second cover RP2 in the southeast-bound one, `ManholePlume.group`), race resets near it short of the cover (route
 `reset_skip_rev` `short_area` / `short_s`, `CarRecovery`) and a reset never charges the checkpoints it skips (`RaceController.ForgiveReset`);

@@ -153,7 +153,6 @@ Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 
 For Dan to check: around the plume on the left and a reset there; the ghost (it reads fairly solid pale cyan, say if it should be more see-through);
    the winner shot; Trailer Mode from the pause menu with the controller.
 
-## QUEUED rounds
 **Round 44, THE CHASTAIN LAKES RACE (Dan, 2026-10-18 18:10; START NOW, before Round 43 is driven: Dan is away and asked for
 the next track to be made meanwhile; Round 43 stays as delivered above until he drives it).** Dan: "Can we go ahead and create the
 next track? I want to use the Chastain Lakes subdivision ... On it I have the forward trail marked out, please be aware there is a
@@ -206,6 +205,26 @@ race of the full laps with traffic Normal (everyone finishes). Pictures: the tra
 footbridge, the gazebo, the drain, the manhole popping, the west ramp and landing. One full Build Map at the end.
 For Dan to check: drive the Chastain Lakes race, both shortcuts and the lake trail.
 
+**Status (Claude, 2026-10-18): built and checked in the exe by script (final build: 6 of 8 checks pass; both fails are the NOT MET item below), not yet driven by Dan.** Evidence `Data/screenshots/round44/`.
+- The race: 2770 m lap, 2 laps, forward only, open roads, 9 checkpoints, 16 barriers (`Tools/mapgen/make_lakes_route.py`). AI race, 2 laps, traffic Normal: all 3 finish
+  (197 to 234 s; a Chastain Ridge race is about 230 to 240 s), 0 missed, both shortcuts taken.
+- The lake trail: 7 m, concrete with timber edging to the footbridge, gravel with tan brick edging along the dam's crest; the footbridge 6.8 m wide, moved 9 m east
+  at its south end so the trail meets it square (it still spans the outflow below the spillway; BF and the stream untouched), its deck sloping bank to bank, tape and
+  2x4s breakable. Trail by Street Classic / Drifter Twin, lot to North Lakeside Drive past the manhole: 26.3 / 26.5 s.
+- E LAKE DRAIN: a hard left (12 m) off the lot's drive onto the pier (4.4 m now), through the gazebo (square as photo 1, far rail breaks), a drain 9 m past it (LakeDrain:
+  a scripted drop, not a ramp), LD and B28 under the lake (pipe_network.py), out of MH14 facing west. Both vehicles: down the drain, the cover pops, on; saves 9.2 / 10.7 s.
+  A miss (into the lake beside it): slowed, not taken, a reset puts it on the race's line.
+- W LAKE JUMP: through the 5.3 m gap between 142 and 143 (no house moved), a 3 m dredging-spoil pile, a real jump over 33 m of water, moved about 20 m west of Dan's line
+  (the narrowest crossing; on his line it is about 80 m). All 11 vehicles clear the water and land upright (39 to 55 m, 1.8 to 2.2 s air at 22 to 26 m/s off the pile:
+  they do not reach the AI's 28 down the yards). Saves 2.4 / 2.0 s (Street Classic / Drifter Twin; the 2nd build's run, `round44_check_build2.txt`).
+- NOT MET: the way back onto Lakeside Drive climbs a 2.7 m bank onto the road (the lake arm's tip and its bed are just east). The AI drives it, but the check's own
+  scripted driver ran on across the road and stopped south of it on 6 of 11 vehicles; tried twice, stopped there (tuning limit).
+- Process: THREE full builds, not one (the 1st build's checks found the drain sending cars the wrong way, a 50-degree bend onto the footbridge, a 3 m gazebo opening;
+  the 2nd, a 2 m step onto the footbridge); code-only exe rebuilds otherwise. Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), 2026-10-18 20:16.
+For Dan to check (the race above): the lake trail and the footbridge; the drain's drop and the manhole; the lake jump and the bank back onto Lakeside Drive (say if
+  it should come out elsewhere); whether the drain saves too much (about 9 s).
+
+## QUEUED rounds
 **Round 45, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 44).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
 later". Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20
