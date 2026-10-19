@@ -1,0 +1,25 @@
+Round 50 check, 2026-10-19 15:06, the exe, 1280 x 720, muted.
+
+=== A. THE KICKER LINE, both jumps, flat out (reverse race), timed against the lap's own way
+  Kicker jump: forgives Lakeside Drive south
+  Street Classic   the lap's way 12.1 s; the kicker line 11.2 s, saves 0.9 s
+      the kicker: off the lip at 21.1 m/s, 2.24 s in the air, 6.7 m over the lip, down at (1187, 302.0, 991) 42 m out, upright 0.99
+      the carport: off the eave at 27.6 m/s, 2.34 s in the air, 5.3 m over it, down at (1076, 301.4, 973) 61 m out, upright 1.00; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 11.0 s; the kicker line 10.2 s, saves 0.9 s
+      the kicker: off the lip at 21.1 m/s, 2.30 s in the air, 6.8 m over the lip, down at (1187, 301.7, 991) 42 m out, upright 0.99
+      the carport: off the eave at 30.9 m/s, 2.44 s in the air, 6.2 m over it, down at (1066, 302.0, 971) 71 m out, upright 1.00; deepest in a shrub bed 0.00
+FAIL  A: the kicker line flat out (Street Classic, Drifter Twin): both jumps clean (over the brush and the bed), on to the lap, saving more than Round 49's 1.1 s  -  not: Street Classic, Drifter Twin
+
+=== A. THE SAME GROUND WITHOUT THE JUMPS (Street Classic, flat out): each must be slower than the lap's own way (times without the 5 s penalty for CP5)
+  the lap's own way 12.1 s
+  1. beside both ramps (the valley's brush, the bed between 231 and 230): 19.4 s (+7.2 s against the lap's way); deepest in a bed 1.00 at (1219, 992), slowest 3.8 m/s
+  2. the kicker, then beside the carport (the bed between 231 and 230): 14.7 s (+2.6 s against the lap's way); deepest in a bed 1.00 at (1117, 977), slowest 5.3 m/s
+  3. beside the kicker (the valley's brush), then the carport: 16.0 s (+3.9 s against the lap's way); deepest in a bed 1.00 at (1219, 992), slowest 3.8 m/s
+  4. across the lake round the valley's brush, then the carport: 31.9 s (+19.7 s against the lap's way); deepest in a bed 1.00 at (1183, 1048), slowest 1.9 m/s
+  5. the kicker, then down Northlake Point and round its barrier (the hedge): 15.2 s (+3.1 s against the lap's way); deepest in a bed 1.00 at (1121, 939), slowest 6.6 m/s
+PASS  A: every way over the shortcut's ground without its jumps is slower than the plain lap
+
+=== pictures
+PASS  pictures written  -  50_*.png
+
+2 of 3 checks passed.

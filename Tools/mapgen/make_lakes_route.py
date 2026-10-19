@@ -530,11 +530,13 @@ K_LAND = along(K_LIP, dK, 46.0)
 # of Northlake Point: "There could be a second jump in this area as well again with bushes or something so you can't just drive through this way"):
 # THE CARPORT. A tall two-car metal carport at the end of Northlake Point, its east legs folded under by a storm: its roof sheet lies on the ground
 # at its east edge, bent up (the collapsed side) into the straight part still held by its two standing west legs. Why a carport: metal carports are
-# really in these yards; at its true size (22 ft wide, 24 ft deep, 12 ft legs: an RV-height one) its roof is a 6.7 m wide ramp to a 3.2 m eave at 30 degrees, the
+# really in these yards; at its true size (22 ft wide, 24 ft deep) its roof is a 6.7 m wide ramp, the
 # jump this spot needs (west over the shrub bed between 231 and 230 to the lap past CP5); not a pile, not another kids' ramp, and wide enough to hit
 # after the first landing (a dump truck's raised bed, the other candidate, is 2.4 m wide). A real jump (physics only). Its line: off the kicker's
 # landing, an 8 degree bend, straight up the roof.
-C_BEARING, C_LEN, C_BEND, C_ANGLE, C_W = 264.0, 7.0, 3.0, 30.0, 6.7   # horizontal length, its bent foot, the angle at the eave, the roof's width
+# Round 50 check, tuning try 1: at 30 degrees (eave 3.2 m) a flat-out car left it at 26 to 30 m/s on a 3.1 s, 70 m lob and the line saved only 0.4 to
+# 0.5 s; at 20 degrees (its west legs buckled halfway: the eave 2 m up) the flight is lower and quicker, and 16 m/s still comes down in the bed
+C_BEARING, C_LEN, C_BEND, C_ANGLE, C_W = 264.0, 7.0, 3.0, 20.0, 6.7   # horizontal length, its bent foot, the angle at the eave, the roof's width
 C_FOOT = (1143.5, 979.5)
 dC = bdir(C_BEARING); kc = math.tan(math.radians(C_ANGLE))
 C_LIP = along(C_FOOT, dC, C_LEN)

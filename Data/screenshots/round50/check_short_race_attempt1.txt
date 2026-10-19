@@ -1,0 +1,36 @@
+Round 50 check, 2026-10-19 14:53, the exe, 1280 x 720, muted.
+
+=== A. THE KICKER LINE, both jumps, flat out (reverse race), timed against the lap's own way
+  Kicker jump: forgives Lakeside Drive south
+  Street Classic   the lap's way 12.1 s; the kicker line 11.2 s, saves 0.9 s
+      the kicker: off the lip at 21.1 m/s, 2.24 s in the air, 6.7 m over the lip, down at (1187, 302.0, 991) 42 m out, upright 0.99
+      the carport: off the eave at 27.6 m/s, 2.34 s in the air, 5.3 m over it, down at (1076, 301.4, 973) 61 m out, upright 1.00; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 34.8 s; the kicker line 10.2 s, saves 24.6 s
+      the kicker: off the lip at 21.1 m/s, 2.30 s in the air, 6.8 m over the lip, down at (1187, 301.7, 991) 42 m out, upright 0.99
+      the carport: off the eave at 30.9 m/s, 2.44 s in the air, 6.2 m over it, down at (1066, 302.0, 971) 71 m out, upright 1.00; deepest in a shrub bed 0.00
+FAIL  A: the kicker line flat out (Street Classic, Drifter Twin): both jumps clean (over the brush and the bed), on to the lap, saving more than Round 49's 1.1 s  -  not: Street Classic
+
+=== A. THE SAME GROUND WITHOUT THE JUMPS (Street Classic, flat out): each must be slower than the lap's own way (times without the 5 s penalty for CP5)
+  the lap's own way 12.6 s
+  1. beside both ramps (the valley's brush, the bed between 231 and 230): 19.4 s (+6.7 s against the lap's way); deepest in a bed 1.00 at (1219, 992), slowest 3.8 m/s
+  2. the kicker, then beside the carport (the bed between 231 and 230): 14.7 s (+2.1 s against the lap's way); deepest in a bed 1.00 at (1117, 977), slowest 5.3 m/s
+  3. beside the kicker (the valley's brush), then the carport: 16.0 s (+3.4 s against the lap's way); deepest in a bed 1.00 at (1219, 992), slowest 3.8 m/s
+  4. across the lake round the valley's brush, then the carport: did not get through (stopped, at (1264, 1033)); deepest in a bed 0.00 at (0, 0), slowest 0.1 m/s
+  5. the kicker, then down Northlake Point and round its barrier (the hedge): 15.2 s (+2.6 s against the lap's way); deepest in a bed 1.00 at (1121, 939), slowest 6.6 m/s
+PASS  A: every way over the shortcut's ground without its jumps is slower than the plain lap
+
+=== A. SHORT JUMPS (Street Classic): each must lose more than the line saves (slower than the lap's own way)
+  off the kicker at 16 m/s: 13.4 s (+1.3 s against the lap's way 12.1 s); deepest in a bed 1.00 at (1198, 994); kicker off the lip at 17.2 m/s, 2.16 s in the air, 4.0 m over the lip, down at (1198, 297.0, 994) 31 m out IN THE HOLLOW, upright 0.98; carport off the eave at 26.4 m/s, 2.32 s in the air, 5.3 m over it, down at (1079, 301.4, 973) 58 m out, upright 1.00
+  off the carport at 14 m/s: 13.7 s (+1.6 s against the lap's way 12.1 s); deepest in a bed 1.00 at (1113, 977); kicker off the lip at 21.1 m/s, 2.24 s in the air, 6.7 m over the lip, down at (1187, 302.1, 991) 42 m out, upright 0.99; carport off the eave at 14.4 m/s, 1.62 s in the air, 1.7 m over it, down at (1113, 300.5, 977) 24 m out IN THE SHRUB BED, upright 0.99
+PASS  A: a short jump (either) costs more than the line saves
+
+=== the reverse race, 2 laps, 3 AI, twice, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Skyfin Cruiser) finishes the 2 reverse laps  -  total 226.6 s, laps 116.7 / 109.9, missed 0, shortcuts none
+PASS  race 1: GOLD (Street Classic) finishes the 2 reverse laps  -  total 231.5 s, laps 120.5 / 111.0, missed 0, shortcuts lap 1 r_kicker_jump, lap 1 r_lake_intake, lap 2 r_kicker_jump, lap 2 r_lake_intake
+PASS  race 1: BLUE (Ridge Scrambler) finishes the 2 reverse laps  -  total 196.5 s, laps 101.5 / 95.0, missed 0, shortcuts lap 1 r_kicker_jump, lap 1 r_lake_intake
+PASS  race 2: EMBER (Pebble Coupe) finishes the 2 reverse laps  -  total 210.4 s, laps 107.4 / 102.9, missed 0, shortcuts lap 2 r_kicker_jump, lap 2 r_lake_intake
+PASS  race 2: GOLD (Ridge Scrambler) finishes the 2 reverse laps  -  total 193.0 s, laps 96.4 / 96.6, missed 0, shortcuts lap 1 r_lake_intake, lap 2 r_lake_intake
+PASS  race 2: BLUE (Trail Four) finishes the 2 reverse laps  -  total 202.3 s, laps 101.9 / 100.4, missed 0, shortcuts lap 1 r_lake_intake
+INFO  the AI in two reverse races: off the kicker 4 times (short 0), off the carport 4 times (short into the bed 0)
+
+8 of 9 checks passed.

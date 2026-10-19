@@ -1,0 +1,37 @@
+Round 50 check, 2026-10-19 14:28, the exe, 1280 x 720, muted.
+
+=== the reverse race, 2 laps, 3 AI, twice, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Needle 600) finishes the 2 reverse laps  -  total 184.1 s, laps 92.8 / 91.3, missed 0, shortcuts none
+PASS  race 1: GOLD (Sundown Roadster) finishes the 2 reverse laps  -  total 205.1 s, laps 102.8 / 102.3, missed 0, shortcuts lap 1 r_lake_intake
+PASS  race 1: BLUE (Sundown Roadster) finishes the 2 reverse laps  -  total 242.9 s, laps 113.6 / 129.3, missed 0, shortcuts lap 2 r_kicker_jump
+PASS  race 2: EMBER (Trail Four) finishes the 2 reverse laps  -  total 262.6 s, laps 140.8 / 121.9, missed 0, shortcuts lap 1 r_kicker_jump, lap 1 r_lake_intake, lap 2 r_kicker_jump, lap 2 r_lake_intake
+PASS  race 2: GOLD (Turf Rocket) finishes the 2 reverse laps  -  total 245.6 s, laps 90.7 / 154.9, missed 0, shortcuts lap 1 r_lake_intake, lap 2 r_kicker_jump
+PASS  race 2: BLUE (Street Classic) finishes the 2 reverse laps  -  total 248.0 s, laps 108.2 / 139.8, missed 0, shortcuts none
+INFO  the AI in two reverse races: off the kicker 4 times (short 0), off the carport 4 times (short into the bed 4) (BLUE (Sundown Roadster) short off the carport into the bed, lap 2; EMBER (Trail Four) short off the carport into the bed, lap 1; GOLD (Turf Rocket) short off the carport into the bed, lap 2; EMBER (Trail Four) short off the carport into the bed, lap 2)
+
+=== B. THE LAKE TRAIL: both directions, every offered vehicle at the race's held speeds, 2 m to the side of the path (partly on the grass)
+  forward  Street Classic     +2 m through in 16.6 s, slowest 9.8 m/s, most off its line 0.7 m
+  forward  Longroof GT        -2 m through in 17.1 s, slowest 9.8 m/s, most off its line 1.1 m
+  forward  Needle 600         +2 m through in 16.4 s, slowest 9.1 m/s, most off its line 0.9 m
+  forward  Trail Four         -2 m through in 16.7 s, slowest 9.8 m/s, most off its line 0.9 m
+  forward  Sundown Roadster   +2 m through in 16.6 s, slowest 9.8 m/s, most off its line 0.6 m
+  forward  Highball Fastback  -2 m through in 17.0 s, slowest 9.8 m/s, most off its line 1.0 m
+  forward  Pebble Coupe       +2 m through in 16.6 s, slowest 9.8 m/s, most off its line 0.7 m
+  forward  Skyfin Cruiser     -2 m through in 17.1 s, slowest 9.8 m/s, most off its line 1.0 m
+  forward  Ridge Scrambler    +2 m through in 16.4 s, slowest 9.8 m/s, most off its line 0.9 m
+  forward  Drifter Twin       -2 m through in 16.8 s, slowest 8.0 m/s, most off its line 0.9 m
+  forward  Turf Rocket        +2 m through in 16.4 s, slowest 9.8 m/s, most off its line 0.9 m
+  reverse  Street Classic     -2 m through in 17.1 s, slowest 9.7 m/s, most off its line 0.7 m
+  reverse  Longroof GT        +2 m through in 17.6 s, slowest 9.8 m/s, most off its line 1.1 m
+  reverse  Needle 600         -2 m through in 16.8 s, slowest 9.7 m/s, most off its line 0.9 m
+  reverse  Trail Four         +2 m through in 17.2 s, slowest 9.8 m/s, most off its line 1.0 m
+  reverse  Sundown Roadster   -2 m through in 17.1 s, slowest 9.7 m/s, most off its line 0.7 m
+  reverse  Highball Fastback  +2 m through in 17.4 s, slowest 9.8 m/s, most off its line 1.0 m
+  reverse  Pebble Coupe       -2 m through in 17.1 s, slowest 9.7 m/s, most off its line 0.7 m
+  reverse  Skyfin Cruiser     +2 m through in 17.7 s, slowest 9.8 m/s, most off its line 0.9 m
+  reverse  Ridge Scrambler    -2 m through in 16.9 s, slowest 9.8 m/s, most off its line 0.9 m
+  reverse  Drifter Twin       +2 m through in 17.2 s, slowest 9.7 m/s, most off its line 0.9 m
+  reverse  Turf Rocket        -2 m through in 16.8 s, slowest 9.8 m/s, most off its line 0.9 m
+PASS  B: the lake trail both ways, every offered vehicle at the race's speeds, 2 m off the path (on the grass beside it): no stop
+
+7 of 7 checks passed.

@@ -1,0 +1,30 @@
+Round 50 check, 2026-10-19 14:22, the exe, 1280 x 720, muted.
+
+=== A. THE KICKER LINE, both jumps, flat out (reverse race), timed against the lap's own way
+  Kicker jump: forgives Lakeside Drive south
+  Street Classic   the lap's way 12.1 s; the kicker line 11.6 s, saves 0.5 s
+      the kicker: off the lip at 21.1 m/s, 2.24 s in the air, 6.7 m over the lip, down at (1187, 302.0, 991) 42 m out, upright 0.99
+      the carport: off the eave at 26.4 m/s, 3.16 s in the air, 10.6 m over it, down at (1067, 301.8, 971) 70 m out, upright 1.00; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 11.0 s; the kicker line 10.6 s, saves 0.4 s
+      the kicker: off the lip at 21.1 m/s, 2.30 s in the air, 6.8 m over the lip, down at (1187, 301.7, 991) 42 m out, upright 0.99
+      the carport: off the eave at 30.2 m/s, 3.34 s in the air, 12.0 m over it, down at (1056, 302.3, 971) 81 m out, upright 1.00; deepest in a shrub bed 0.00
+FAIL  A: the kicker line flat out (Street Classic, Drifter Twin): both jumps clean (over the brush and the bed), on to the lap, saving more than Round 49's 1.1 s  -  not: Street Classic, Drifter Twin
+
+=== A. THE SAME GROUND WITHOUT THE JUMPS (Street Classic, flat out): each must be slower than the lap's own way (times without the 5 s penalty for CP5)
+  the lap's own way 12.1 s
+  1. beside both ramps (the valley's brush, the bed between 231 and 230): did not get through (stopped, at (1229, 1008)); deepest in a bed 0.00 at (0, 0), slowest 0.2 m/s
+  2. the kicker, then beside the carport (the bed between 231 and 230): did not get through (stopped, at (1147, 986)); deepest in a bed 0.00 at (0, 0), slowest 0.0 m/s
+  3. beside the kicker (the valley's brush), then the carport: did not get through (stopped, at (1229, 1008)); deepest in a bed 0.00 at (0, 0), slowest 0.2 m/s
+  4. across the lake round the valley's brush, then the carport: did not get through (stopped, at (1264, 1033)); deepest in a bed 0.00 at (0, 0), slowest 0.1 m/s
+  5. the kicker, then down Northlake Point and round its barrier (the hedge): 15.2 s (+3.1 s against the lap's way); deepest in a bed 1.00 at (1121, 939), slowest 6.6 m/s
+PASS  A: every way over the shortcut's ground without its jumps is slower than the plain lap
+
+=== A. SHORT JUMPS (Street Classic): each must lose more than the line saves (slower than the lap's own way)
+  off the kicker at 16 m/s: 13.9 s (+1.8 s against the lap's way 12.1 s); deepest in a bed 1.00 at (1198, 994); kicker off the lip at 17.1 m/s, 2.16 s in the air, 4.0 m over the lip, down at (1198, 297.0, 994) 31 m out IN THE HOLLOW, upright 0.98; carport off the eave at 25.1 m/s, 3.04 s in the air, 9.5 m over it, down at (1073, 301.6, 972) 64 m out, upright 1.00
+  off the carport at 14 m/s: 13.4 s (+1.3 s against the lap's way 12.1 s); deepest in a bed 1.00 at (1110, 976); kicker off the lip at 21.1 m/s, 2.26 s in the air, 6.8 m over the lip, down at (1187, 302.1, 991) 42 m out, upright 0.99; carport off the eave at 14.1 m/s, 2.12 s in the air, 3.3 m over it, down at (1110, 300.7, 976) 27 m out IN THE SHRUB BED, upright 0.99
+PASS  A: a short jump (either) costs more than the line saves
+
+=== pictures
+PASS  pictures written  -  50_*.png
+
+3 of 4 checks passed.

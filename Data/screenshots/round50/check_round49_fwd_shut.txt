@@ -1,0 +1,6 @@
+PASS  free roam: both hints shown, no grate on the intake  -  intake clues True, grate False, kicker clues True
+PASS  forward race: barriers across the intake's track and the kicker's way; the hints hidden, the intake's grate on and the intake shut  -  intake clues False, grate True, kicker clues False; 18 barriers
+PASS  forward race: a vehicle dropped on the intake sits on its grate  -  at +1.9 m from the water
+PASS  reverse race: both shortcuts in it, the hints shown, no grate  -  intake clues True, grate False, kicker clues True; shortcuts Lake intake, Kicker jump
+PASS  forward: its two shortcuts, 18 barriers (16 and the two reverse shortcuts' ways)
+PASS  forward lap on the Street Classic: counted, 0 missed  -  laps 1, lap 104.1 s, missed 0, penalty 0 s, slowest 6.8 m/s, most off the line 1.3 m

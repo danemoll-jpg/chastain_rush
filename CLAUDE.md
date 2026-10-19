@@ -415,6 +415,11 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 50 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the reverse kicker line's second jump, a
+collapsed carport at the end of Northlake Point, and shrub beds across every free way (`MapBuilder.LakesKicker.cs`; `make_lakes_route.py` C_*, SHRUB_BEDS;
+runtime `Neighborhood/ShrubBeds.cs`, Racer's ShortcutUndergrowth); the lake trail at its real width on a level bench (`GradeAlong` blend_left / blend_r);
+no JUMP sign. Check: `ChastainRush.exe -exeRound50 <dir> [-r50Only kclean,kcheat,kshort,krace,ktrail,kpics] [-traffic Normal] -logFile <dir>\Player.log`
+(`Checks/Round20Runner.R50.cs`; kcheat drives the shortcut's ground without its jumps). Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
 **Round 49 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** reverse Chastain Lakes shortcuts and the
 lake trail moved (`make_lakes_route.py`: the trail behind the pool to a footbridge over the spillway, `TRAIL_CTRL` / `BRIDGE_S`, `CONCRETE_TO`; the reverse
 section writes `r_lake_intake` and `r_kicker_jump`, both shut in a forward race by two barriers, `fwd_shut`). A the intake: `pipe_network.py` LI (roof open),
@@ -872,7 +877,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-19_01-29-19-650_77c31b` through BUG-001 (Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-19_13-25-47-596_f0f013` through BUG-004 (Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

@@ -45,7 +45,8 @@ namespace ChastainRush
         // the shortcut's line with its points near a ramp moved 'side' m to its left (eased in and out over 12 m): round the ramp, not up it
         static List<Vector3> Beside(Vector3[] path, Vector3 foot, Vector3 lip, Vector3 dir, float side)
         {
-            var left = Vector3.Cross(dir, Vector3.up).normalized * -1f; var outp = new List<Vector3>();
+            var left = Vector3.Cross(dir, Vector3.up).normalized;   // the open side: the kicker's south (237's yard), the carport's south (the cul-de-sac)
+            var outp = new List<Vector3>();
             foreach (var q in path)
             {
                 float s = Vector3.Dot(Flat(q - foot), dir), len = Vector3.Dot(Flat(lip - foot), dir);
@@ -61,6 +62,26 @@ namespace ChastainRush
             var o = new List<Vector3>();
             for (int i = 0; i + 1 < l.Count; i++) { int n = Mathf.Max(1, Mathf.CeilToInt(Flat(l[i + 1] - l[i]).magnitude / step)); for (int k = 0; k < n; k++) { var p = Vector3.Lerp(l[i], l[i + 1], k / (float)n); o.Add(RaceRoute.Surface(p.x, p.z)); } }
             o.Add(l[l.Count - 1]); return o;
+        }
+        // a driver's line round the tree trunks (the check's driver steers straight at a point; a player weaves): each point within 2.6 m of a trunk
+        // pushed out sideways, a few passes
+        static List<Vector3> Dodge(List<Vector3> line)
+        {
+            var trunks = new List<Vector2>(); float x0 = line.Min(q => q.x) - 5f, x1 = line.Max(q => q.x) + 5f, z0 = line.Min(q => q.z) - 5f, z1 = line.Max(q => q.z) + 5f;
+            foreach (var f in FindObjectsByType<TreeField>(FindObjectsSortMode.None))
+                for (int i = 0; i < f.count; i++)
+                {
+                    float x = System.BitConverter.ToSingle(f.data, i * TreeField.PackedSize), z = System.BitConverter.ToSingle(f.data, i * TreeField.PackedSize + 8);
+                    if (x > x0 && x < x1 && z > z0 && z < z1) trunks.Add(new Vector2(x, z));
+                }
+            var p = line.Select(q => new Vector2(q.x, q.z)).ToList();
+            for (int pass = 0; pass < 4; pass++)
+                for (int i = 1; i + 1 < p.Count; i++)
+                {
+                    var t = (p[i + 1] - p[i - 1]).normalized; var n = new Vector2(-t.y, t.x);
+                    foreach (var tr in trunks) { var d = p[i] - tr; if (d.magnitude < 2.6f) p[i] += n * (Vector2.Dot(d, n) >= 0f ? 1f : -1f) * (2.6f - Mathf.Abs(Vector2.Dot(d, n))); }
+                }
+            return p.Select(q => RaceRoute.Surface(q.x, q.y)).ToList();
         }
         sealed class Jump2 { public KickRes k1 = new KickRes(), k2 = new KickRes(); public float bedMax; public Vector3 bedAt; }
         void Jump2Watch(Jump2 j, bool shots)
@@ -117,10 +138,11 @@ namespace ChastainRush
             var bothBeside = Beside(Beside(path, kFoot, KickerLip, KickerDir, 7f).ToArray(), CarportFoot, CarportLip, CarportDir, 7.5f);
             var kickThenBeside = Beside(path, CarportFoot, CarportLip, CarportDir, 7.5f);
             var besideThenCarport = Beside(path, kFoot, KickerLip, KickerDir, 7f);
-            // across the lake: from the turn-off between 238 and 239 to the lake's arm, west across it north of the valley's brush, ashore in the pocket,
+            // across the lake: from the turn-off up 239's back yard to the lake's arm, west across it north of the valley's brush (its cattails), ashore in the pocket,
             // on to the carport's line
             int iC = System.Array.FindIndex(path, q => Flat(q - CarportFoot).magnitude < 14f);
-            var lake = Pts(1262f, 1037f, 1250f, 1040f, 1228f, 1050f, 1200f, 1056f, 1184f, 1052f, 1180f, 1040f, 1186f, 1030f, 1186f, 1005f, 1172f, 989f);
+            var lake = path.TakeWhile(q => q.x > 1241f).ToList();   // the turn-off and the gap between 239 and 237, then north up 239's back yard
+            lake.AddRange(Pts(1232f, 1012f, 1228f, 1030f, 1222f, 1046f, 1205f, 1054f, 1186f, 1053f, 1179f, 1041f, 1186f, 1030f, 1186f, 1005f, 1172f, 989f));
             lake.AddRange(path.Skip(Mathf.Max(0, iC)));
             // the kicker, then down Northlake Point (the cul-de-sac, the road) and round its barrier's west end onto the lap at CP5
             int iL = System.Array.FindIndex(path, q => Vector3.Dot(Flat(q - KickerLip), KickerDir) > 52f);
@@ -128,6 +150,7 @@ namespace ChastainRush
             road2.AddRange(Pts(1165f, 982f, 1148f, 974f, 1141f, 955f, 1133f, 940f, 1121f, 940f, 1112f, 934f, 1103f, 935f));
             float sCp = AbsStation(RaceRoute.Surface(1103f, 935f)), sEnd = AbsStation(path[path.Length - 1]); if (sEnd < sCp) sEnd += race.Route.LapLength;
             road2.AddRange(LapSlice(sCp + 2f, sEnd));
+            bothBeside = Dodge(bothBeside); kickThenBeside = Dodge(kickThenBeside); besideThenCarport = Dodge(besideThenCarport); lake = Dodge(lake); road2 = Dodge(road2);
             var runs = new (string name, List<Vector3> line)[]
             {
                 ("beside both ramps (the valley's brush, the bed between 231 and 230)", bothBeside),
@@ -193,7 +216,7 @@ namespace ChastainRush
                         if (Flat(p - KickerLip).magnitude < 4f && (!atK.TryGetValue(e, out int l) || l != e.CompletedLaps)) { atK[e] = e.CompletedLaps; kTries++; lowK.Remove(e); }
                         if (atK.ContainsKey(e) && !lowK.Contains(e) && p.y < 297.5f && p.x > 1185f && p.x < 1228f && p.z > 975f && p.z < 1020f) { lowK.Add(e); kShort++; lines.Add($"{e.Name} ({e.VehicleName}) short off the kicker, lap {e.CompletedLaps + 1}"); }
                         if (Flat(p - CarportLip).magnitude < 4f && (!atC.TryGetValue(e, out int l2) || l2 != e.CompletedLaps)) { atC[e] = e.CompletedLaps; cTries++; lowC.Remove(e); }
-                        if (atC.ContainsKey(e) && !lowC.Contains(e) && p.x < 1130f && p.x > 1095f && ShrubBeds.CoverageAt(p) > 0.5f) { lowC.Add(e); cShort++; lines.Add($"{e.Name} ({e.VehicleName}) short off the carport into the bed, lap {e.CompletedLaps + 1}"); }
+                        if (atC.ContainsKey(e) && !lowC.Contains(e) && e.Car.GroundedWheels >= 2 && p.x < 1130f && p.x > 1095f && ShrubBeds.CoverageAt(p) > 0.5f) { lowC.Add(e); cShort++; lines.Add($"{e.Name} ({e.VehicleName}) short off the carport into the bed, lap {e.CompletedLaps + 1}"); }
                     }
                     yield return new WaitForSecondsRealtime(.1f);
                 }
