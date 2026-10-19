@@ -375,6 +375,7 @@ namespace Racer
         // metres behind the furthest point it reached) or on the lap at its own station, facing the way of travel, on the first
         // spot whose box touches nothing but the ground and is not in water (CarRecovery's rule for the player).
         AiShortcut lastRecoverBranch;   // Chastain Rush, Round 28
+        int unplaced;                   // Chastain Rush, Round 49: tries in a row that found no clear spot
         void TryRecover(float current)
         {
             nextRecovery=Time.time+1;
@@ -396,7 +397,7 @@ namespace Racer
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
-                foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f,18f,26f,34f})   // Chastain Rush, Round 28: further on too (a jam there)
+                foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f,18f,26f,34f,-26f,46f,60f})   // Chastain Rush, Round 28: further on too (a jam there); Round 49: and further still
                 {
                     // Chastain Rush, Round 28: never back across the start / finish line (driving over it again counts a lap with every
                     // checkpoint missed; at the underground race's start the AI jam in M5's mouth, right at the line)
@@ -410,7 +411,20 @@ namespace Racer
                     if(found)break;
                 }
             }
-            if(!found) return;
+            // Chastain Rush, Round 49 check (a mower wedged under the lake trail's footbridge, every spot within 34 m touching the bridge, the rails or
+            // the water: 180 tries, never moved): after four tries with no clear spot it goes back on the lap's middle 20 m on anyway (never a trap)
+            if(!found)
+            {
+                if(++unplaced<4) return;
+                for(float ds=20f;ds<=120f&&!found;ds+=10f)
+                {
+                    var p0=DriveRoad.At(current+ds,out var f0); f0=Vector3.ProjectOnPlane(f0,Vector3.up).normalized; var q=RaceRoute.Surface(p0.x,p0.z,p0.y);
+                    if(!Covered(q)&&!ShallowWater.InWater(q+Vector3.up*.1f)){at=q;fwd=f0;found=true;}
+                }
+                if(!found) return;
+                plannedBranch=null; progressBranch=null;
+            }
+            unplaced=0;
             var rot=Quaternion.LookRotation(fwd,Vector3.up);
             Car.Body.position=at+Vector3.up*.5f; Car.Body.rotation=rot; transform.SetPositionAndRotation(Car.Body.position,rot);
             Car.Body.linearVelocity=Car.Body.angularVelocity=Vector3.zero; Car.ClearSteering(); Physics.SyncTransforms();
@@ -446,9 +460,17 @@ namespace Racer
             return false;
         }
 
+        // Chastain Rush, Round 49 check: a spot with something over it (the lake trail's footbridge: the lap's height there is the ground under the
+        // deck, the stream bed; two AI cars were put back under it again and again). Not in the underground race (its pipes have a ceiling)
+        bool Covered(Vector3 q)
+        {
+            if(RaceRoute.Active!=null&&RaceRoute.Active.Underground) return false;
+            return Physics.Raycast(q+Vector3.up*.6f,Vector3.up,out var hit,8f,~0,QueryTriggerInteraction.Ignore)&&hit.collider.attachedRigidbody==null&&!(hit.collider is TerrainCollider);
+        }
         bool Clear(Vector3 q,Vector3 f)
         {
             if(ShallowWater.InWater(q+Vector3.up*.1f)) return false;
+            if(Covered(q)) return false;
             var rot=Quaternion.LookRotation(Vector3.ProjectOnPlane(f,Vector3.up).normalized,Vector3.up);
             var box=Car.GetComponent<BoxCollider>(); var half=box?box.size*.5f+new Vector3(.3f,0,.4f):new Vector3(1.3f,.7f,2.4f);
             int n=Physics.OverlapBoxNonAlloc(q+Vector3.up*(half.y+.35f),half,overlap,rot,~0,QueryTriggerInteraction.Ignore);

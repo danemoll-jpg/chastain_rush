@@ -190,7 +190,11 @@ def off_lake(q, ring, gap):   # pushed east (away from the water) until its midd
 dam = [off_lake(q, EAST, TRAIL_LAKE_GAP) for q in chaikin(DAM_CTRL, 3)]
 bf_line = pts(by_osm[BF]["points"])
 _d, s_bfj = nearest_s(bf_line, BF_JOIN)
-trail = resample(lake_trail + [BRIDGE_S] + resample([BRIDGE_S, BRIDGE_N], 2.0)[1:] + chaikin([BRIDGE_N] + dam[::6] + [point_at(bf_line, s_bfj)], 2)[1:], 2.0)
+# Round 49 check: the trail ran straight off the footbridge's north end into the dam's line (a 25 degree bend on the rail end: in reverse an AI
+# hit it and a mower slid off beside the bridge); now 6 m straight on along the bridge first
+_bd = ((BRIDGE_N[0] - BRIDGE_S[0]) / math.dist(BRIDGE_S, BRIDGE_N), (BRIDGE_N[1] - BRIDGE_S[1]) / math.dist(BRIDGE_S, BRIDGE_N)); BRIDGE_X = (BRIDGE_N[0] + _bd[0] * 6.0, BRIDGE_N[1] + _bd[1] * 6.0)
+_dam0 = [q for q in dam[::6] if q[1] > BRIDGE_X[1] + 4.0]
+trail = resample(lake_trail + [BRIDGE_S] + resample([BRIDGE_S, BRIDGE_N, BRIDGE_X], 2.0)[1:] + chaikin([BRIDGE_X] + _dam0 + [point_at(bf_line, s_bfj)], 2)[1:], 2.0)
 _kb = nearest_s(trail, BRIDGE_N)[1]; _ct = cum(trail)
 _kbs = nearest_s(trail, BRIDGE_S)[1]
 trail = [q if _kbs - 1.0 <= _ct[k] <= _kb + 3.0 else off_lake(q, EAST, TRAIL_LAKE_GAP) for k, q in enumerate(trail)]   # the tread kept off the water after the smoothing too (Round 49: the shore behind the pool as well)
@@ -537,9 +541,10 @@ print(f"B: leaves the reverse lap at s {s_k0:.0f}, rejoins at s {s_k1:.0f}: {cum
       f"and 246 ({min(poly_dist(along(K_LIP, dK, k), pts(m['buildings'][246]['footprint'])) for k in range(40, 70)):.1f} m)")
 rev_shortcuts = [
     {"id": "r_lake_intake", "name": "Lake intake", "direction": "reverse", "path": flat(ipath), "path_y": ipath_y, "half_width_m": 3.0,
-     "entry_inset_m": round(sIRoot - 2.0, 1), "entry_margin_m": 1.0, "forgives": fg_i, "ai_speed": 22.0,
+     # the AI off the jetty's end at 23 m/s: at 18 it hit the riser's 1.2 m wall every time (the check's driver clears it at 21.5 to 24)
+     "entry_inset_m": round(sIRoot - 2.0, 1), "entry_margin_m": 1.0, "forgives": fg_i, "ai_speed": 24.0,
      # up the track and along the jetty lined up, off its end at the jetty's speed, flat out along the tube and up the riser
-     "ai_profile": [round(v, 1) for v in (0.0, 15.0, sIRoot - 10.0, 15.0, sIRoot, 17.0, sIEdge, 18.0, sIDrop + 6.0, 22.0, cum(ipath)[-1] - 10.0, 22.0)],
+     "ai_profile": [round(v, 1) for v in (0.0, 15.0, sIRoot - 14.0, 16.0, sIRoot, 21.0, sIEdge, 23.0, sIDrop + 6.0, 22.0, cum(ipath)[-1] - 10.0, 22.0)],
      # a sloppy try: off the end too slow (short, into the lake)
      "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 15.0, sIRoot - 10.0, 12.0, sIRoot, 9.0, sIEdge, 8.0, sIDrop + 6.0, 22.0, cum(ipath)[-1] - 10.0, 22.0)]},
     {"id": "r_kicker_jump", "name": "Kicker jump", "direction": "reverse", "path": flat(kpath), "path_y": kpath_y, "half_width_m": 3.5,
