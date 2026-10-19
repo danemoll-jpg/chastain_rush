@@ -319,7 +319,8 @@ for v in (8.0, 12.0, 16.0, 20.0, 24.0, 28.0):
 
 shortcuts = [
     {"id": "w_lake_jump", "name": "Boat jump", "direction": "forward", "path": flat(wpath), "path_y": wpath_y, "half_width_m": 3.5,
-     "entry_inset_m": 14.0, "entry_margin_m": 1.5, "forgives": fg_w, "ai_speed": 18.0,
+     # ai_speed caps the AI's whole run (RoadDriver.AiShortcut.SpeedAt): flat out here, the profile slows it for the turn and after the landing
+     "entry_inset_m": 14.0, "entry_margin_m": 1.5, "forgives": fg_w, "ai_speed": W_DESIGN,
      # the turn off the road, then flat out down the run-up, the dock and up the slide; easy after the landing (a hard left onto Lakeside Drive)
      "ai_profile": [round(v, 1) for v in (0.0, 16.0, 26.0, 18.0, 46.0, W_DESIGN, sWLip, W_DESIGN, sWLand + 2.0, 14.0, cum(wpath)[-1] - 8.0, 16.0)],
      # a sloppy try (Dan's rule: the AI is not perfect): eased off down the run-up, too slow up the slide, into the lake

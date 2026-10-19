@@ -195,7 +195,7 @@ namespace ChastainRush
                     foreach (var e in ai)
                     {
                         if (!e.Car) continue; var p = e.Car.Body.position;
-                        bool onIt = p.x > 555f && p.x < 580f && p.z > 1340f && p.z < 1380f && p.y > 300.9f;   // on the boat
+                        bool onIt = p.x > 553f && p.x < 583f && p.z > 1345f && p.z < 1388f;   // on the dock or the boat
                         bool wet = p.x > 540f && p.x < 590f && p.z > 1268f && p.z < 1380f && ShallowWater.InWater(p + Vector3.up * .1f);
                         if (onIt && (!onBoat.TryGetValue(e, out int lap) || lap != e.CompletedLaps)) { onBoat[e] = e.CompletedLaps; tries++; wetHere.Remove(e); }
                         if (wet && onBoat.ContainsKey(e) && !wetHere.Contains(e)) { wetHere.Add(e); falls++; lines.Add($"{e.Name} ({e.VehicleName}) fell in on lap {e.CompletedLaps + 1}"); }
