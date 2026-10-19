@@ -305,6 +305,8 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   Proof a quick build matches a full one: `ChastainRush.SceneDump.Run -dumpOut <file> [-dumpDetail <text>]` (Editor batch: one line per
   object and per terrain block, with what its components refer to) of both, then `python Tools/scene_diff.py <a> <b> [--box x0,z0,x1,z1]`.
   `ChastainRush.MeshProbe.Run` takes `-probeTop <y>` (rays from under a roof).
+- Check runs of the exe minimized and not activated (Round 45): start it through `Win32_Process.Create` with `Win32_ProcessStartup.ShowWindow
+  = 7` (SW_SHOWMINNOACTIVE), `-screen-fullscreen 0 -screen-width 1280 -screen-height 720`, and its own `-logFile`.
 - Round 43 check: `ChastainRush.exe -exeRound43 <dir> [-r43Only plume,ghost,winner,trailer] -logFile <dir>\Player.log` (`Checks/Round20Runner.R43*.cs`).
   Trailer Mode: F8 or the pause menu's TRAILER MODE page (`Trailer/TrailerMode.cs`); screenshots to `Screenshots\` beside DebugReports.
   Ghosts: `CleanLapGhosts\` beside the race records (`Race/CleanLapGhost.cs`). A quick build now refreshes the race's route copies.
@@ -403,6 +405,18 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 45 (see `TODO.md`, status there) is built and checked in the exe by script, not yet heard by Dan:** the police radio in Dan's two
+ElevenLabs voices (cop, helicopter pilot): `police-radio-lines.csv` column `speaker` (cop / pilot / cop+pilot, a pilot take `<id>_air.wav`),
+`PoliceRadio` plays a call with a pilot line from the pilot's set only (rotor thump under it); the studio's Cop and Helicopter pilot boxes and
+`python Tools/Audio/police_radio_studio.py --make-missing` (no window; the key from ELEVENLABS_API_KEY, never printed); 190 clips in
+`SourceArt/Audio/PoliceRadio/`. Check: `ChastainRush.exe -exeRound45 <dir> -logFile <dir>\Player.log` (`Checks/Round20Runner.R45.cs`). Imported from Racer: nothing.
+**Round 46 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Chastain Lakes boat jump
+(`make_lakes_route.py` W, `lakes.boat` in the track file; `MapBuilder.LakesBoat.cs`: dock, pontoon party boat, solid slide chute, PARTY sign;
+Round 44's spoil pile gone; route `CLEAR_OVERRIDE` puts Lakeside Point's barrier 45 m down it); glass under water for B28, B12, S2 and M3c's second
+pond (`pipe_network.py` `glass`). Lessons: a shortcut's `ai_speed` caps the AI's whole run; a thin open board ("slide"/"deck" kinds) is not for a
+fast compression (use a solid prism); no upright face where two driven surfaces meet flush (`ScPrism.no_face`); every prism its own name (collider
+meshes are saved by name). Check: `ChastainRush.exe -exeRound46 <dir> [-r46Only speed,boattrace,boat,boattimes,boatrace,drain,pics] [-traffic Normal]
+-logFile <dir>\Player.log` (`Checks/Round20Runner.R46.cs`; run `boat` without traffic). Imported from Racer: nothing.
 **Round 44 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Chastain Lakes race (forward only, 2 laps,
 traffic): `python Tools/mapgen/make_lakes_route.py [--plot [x0,x1,z0,z1]]` writes `Data/routes/chastain_lakes.json` and `Data/tracks/chastain_lakes.json` (re-run after
 mapgen and after `pipe_network.py`; it reads network.json), built by `MapBuilder.LakesRace.cs` (the lake trail, the lake drain, the W pile; `LakesNow` is a `Ridge` loaded

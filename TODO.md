@@ -296,6 +296,22 @@ sometimes falls in (human mistakes); a drive through the drain's aquarium run. P
 slide, the flight, the landing, the aquarium run from inside.
 For Dan to check: the boat jump (a clean run and a miss); the aquarium under the lake.
 
+**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (final build: 11 of 12), not yet driven by Dan.** Evidence `Data/screenshots/round46/`.
+A DONE. The BOAT JUMP: off North Lakeside Drive by Bankside Point (a PARTY sign with balloons, worn tracks), down between houses 146 and 147 (no house moved)
+   to a dock, a 20 m two-deck pontoon party boat, up its water slide (solid chute, low walls, 4.5 m over the water, 23 degrees at the top); a real jump down
+   the lake's south arm, 77 m of water, onto Lakeside Drive at Lakeside Point (its barrier 45 m down it for long landings). Spoil pile and narrow crossing gone.
+   Run-up measured first: 34 to 38 m/s at the shore flat out. Full speed: 11 of 11 clear and land upright, 90 to 111 m out (1.0 to 1.6 s more air than Round 44,
+   8 to 10 m over the top). 80 %: 11 of 11 come down in the lake, 61 to 74 m out (the arm's shallow end: they wade out up the bank). 10 degrees off: 9 hit the
+   chute's walls and drop in 13 to 54 m out; the Street Classic and Pebble Coupe +10 never reached the slide in the check's run (FAIL as written). Saves 5.0 s
+   (Street Classic) and 4.0 s (Drifter Twin). AI race x2, traffic Normal: all 6 finish, 0 missed; the AI took the boat jump 7 times (laps with it 95 to 138 s).
+B DONE. Glass where the drain's tunnel runs under East Chastain Lake: B28's whole 140 m (its dive under M2a included; LD, the drop's room, stays concrete).
+   By the new rule also: B12 under the big lake (44 m), S2 under the Enclave pond (13 m), M3c under pond W14 (12 m). No pipe's floor moved. Not converted:
+   the 11 pipes that pass under a creek (M5a, M5b, B9a, B10, M3b, M3c, B11, B14, M4a, B27, M6; a creek has no bed to set glass in). Check: through the drain, 5 s in glass.
+Found and fixed in the exe (why FOUR full builds, not one): cars stopped dead on the boat (a thin open slide board under 3.5 g; a deck under the slide; upright
+   faces at flush joints; the dock sharing the deck's collider), then every AI car fell in (`ai_speed` capped its run at 18 m/s). Tuning: none needed.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-19 00:37 (BUILD_INFO.txt).
+For Dan to check: the boat jump flat out, slow and crooked (is wading out of the arm's shallow end enough of a cost?); B28's glass from the drain; the creek list.
+
 **Round 47, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 46).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
 later". Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20

@@ -1,0 +1,50 @@
+Round 46 check, 2026-10-19 00:38, the exe, 1280 x 720, muted.
+
+=== A. THE BOAT JUMP: every offered vehicle from the lap, flat out straight up the slide; at 80 % speed; 10 degrees off the line (a real jump: no launch control)
+  Street Classic full at the slide's foot 36.4 m/s, off the top at 36.8 m/s; 2.82 s in the air, 9.1 m over the top, down at (561, 1256) 97 m out, upright 1.00; on along Lakeside Drive
+  Longroof GT full   at the slide's foot 36.9 m/s, off the top at 37.2 m/s; 2.70 s in the air, 8.4 m over the top, down at (561, 1258) 94 m out, upright 1.00; on along Lakeside Drive
+  Needle 600 full    at the slide's foot 39.4 m/s, off the top at 39.6 m/s; 2.92 s in the air, 9.9 m over the top, down at (560, 1245) 107 m out, upright 1.00; on along Lakeside Drive
+  Trail Four full    at the slide's foot 38.6 m/s, off the top at 39.3 m/s; 2.96 s in the air, 10.3 m over the top, down at (560, 1245) 107 m out, upright 1.00; on along Lakeside Drive
+  Sundown Roadster full at the slide's foot 36.5 m/s, off the top at 37.0 m/s; 2.76 s in the air, 8.6 m over the top, down at (561, 1257) 95 m out, upright 1.00; on along Lakeside Drive
+  Highball Fastback full at the slide's foot 37.8 m/s, off the top at 38.2 m/s; 2.82 s in the air, 9.3 m over the top, down at (560, 1252) 101 m out, upright 1.00; on along Lakeside Drive
+  Pebble Coupe full  at the slide's foot 35.6 m/s, off the top at 36.0 m/s; 2.78 s in the air, 8.7 m over the top, down at (561, 1259) 93 m out, upright 1.00; on along Lakeside Drive
+  Skyfin Cruiser full at the slide's foot 36.1 m/s, off the top at 36.3 m/s; 2.66 s in the air, 8.2 m over the top, down at (561, 1262) 90 m out, upright 1.00; on along Lakeside Drive
+  Ridge Scrambler full at the slide's foot 38.4 m/s, off the top at 38.9 m/s; 2.90 s in the air, 9.4 m over the top, down at (561, 1248) 104 m out, upright 1.00; on along Lakeside Drive
+  Drifter Twin full  at the slide's foot 38.1 m/s, off the top at 37.8 m/s; 2.80 s in the air, 8.8 m over the top, down at (560, 1254) 99 m out, upright 1.00; on along Lakeside Drive
+  Turf Rocket full   at the slide's foot 39.5 m/s, off the top at 40.5 m/s; 2.98 s in the air, 10.4 m over the top, down at (559, 1241) 111 m out, upright 1.00; on along Lakeside Drive
+PASS  A: every offered vehicle flat out straight up the slide clears the water and lands on its wheels
+  Street Classic 80% (29.1) at the slide's foot 29.0 m/s, off the top at 28.9 m/s; 2.28 s in the air, 5.5 m over the top, down at (563, 1289) 63 m out, upright 1.00; on along Lakeside Drive
+  Longroof GT 80% (29.5) at the slide's foot 29.3 m/s, off the top at 29.4 m/s; 2.26 s in the air, 5.2 m over the top, down at (563, 1289) 63 m out, upright 1.00; on along Lakeside Drive
+  Needle 600 80% (31.5) at the slide's foot 31.2 m/s, off the top at 31.5 m/s; 2.46 s in the air, 6.5 m over the top, down at (563, 1280) 72 m out, upright 1.00; on along Lakeside Drive
+  Trail Four 80% (30.9) at the slide's foot 30.5 m/s, off the top at 30.8 m/s; 2.44 s in the air, 6.3 m over the top, down at (562, 1282) 70 m out, upright 1.00; on along Lakeside Drive
+  Sundown Roadster 80% (29.2) at the slide's foot 29.1 m/s, off the top at 29.1 m/s; 2.34 s in the air, 5.8 m over the top, down at (563, 1288) 64 m out, upright 1.00; on along Lakeside Drive
+  Highball Fastback 80% (30.2) at the slide's foot 30.0 m/s, off the top at 30.0 m/s; 2.34 s in the air, 5.7 m over the top, down at (563, 1286) 66 m out, upright 1.00; on along Lakeside Drive
+  Pebble Coupe 80% (28.5) at the slide's foot 28.5 m/s, off the top at 28.2 m/s; 2.30 s in the air, 5.3 m over the top, down at (563, 1291) 61 m out, upright 1.00; on along Lakeside Drive
+  Skyfin Cruiser 80% (28.9) at the slide's foot 28.6 m/s, off the top at 28.9 m/s; 2.22 s in the air, 5.0 m over the top, down at (563, 1291) 62 m out, upright 1.00; on along Lakeside Drive
+  Ridge Scrambler 80% (30.7) at the slide's foot 30.8 m/s, off the top at 30.7 m/s; 2.46 s in the air, 6.4 m over the top, down at (562, 1282) 70 m out, upright 1.00; on along Lakeside Drive
+  Drifter Twin 80% (30.5) at the slide's foot 30.0 m/s, off the top at 30.5 m/s; 2.36 s in the air, 5.8 m over the top, down at (562, 1284) 68 m out, upright 1.00; on along Lakeside Drive
+  Turf Rocket 80% (31.6) at the slide's foot 31.3 m/s, off the top at 31.4 m/s; 2.52 s in the air, 6.9 m over the top, down at (562, 1279) 74 m out, upright 1.00; on along Lakeside Drive
+PASS  A: at 80 % of its full speed every offered vehicle comes down in the lake
+  Street Classic +10 deg at the slide's foot -1.0 m/s, off the top at -1.0 m/s; 0.00 s in the air, -340282300000000000000000000000000000000.0 m over the top, down at (NaN, 0) -1 m out, upright -1.00
+  Longroof GT -10 deg at the slide's foot 22.2 m/s, off the top at 25.4 m/s; 2.02 s in the air, 3.8 m over the top, down at (568, 1302) 50 m out, upright 1.00; on along Lakeside Drive
+  Needle 600 +10 deg at the slide's foot 23.0 m/s, off the top at 10.9 m/s; 1.34 s in the air, 0.7 m over the top, down at (563, 1337) 16 m out IN THE LAKE, upright 0.96
+  Trail Four -10 deg at the slide's foot 24.3 m/s, off the top at 13.5 m/s; 1.76 s in the air, 1.8 m over the top, down at (571, 1330) 22 m out IN THE LAKE, upright 0.98
+  Sundown Roadster +10 deg at the slide's foot 21.5 m/s, off the top at 25.2 m/s; 2.26 s in the air, 4.4 m over the top, down at (559, 1299) 54 m out IN THE LAKE, upright 1.00
+  Highball Fastback -10 deg at the slide's foot 22.3 m/s, off the top at 26.2 m/s; 2.06 s in the air, 4.3 m over the top, down at (568, 1300) 52 m out, upright 1.00; on along Lakeside Drive
+  Pebble Coupe +10 deg at the slide's foot -1.0 m/s, off the top at -1.0 m/s; 0.00 s in the air, -340282300000000000000000000000000000000.0 m over the top, down at (NaN, 0) -1 m out, upright -1.00
+  Skyfin Cruiser -10 deg at the slide's foot 21.9 m/s, off the top at 12.9 m/s; 1.32 s in the air, 0.7 m over the top, down at (571, 1333) 19 m out IN THE LAKE, upright 0.99
+  Ridge Scrambler +10 deg at the slide's foot 22.6 m/s, off the top at 9.3 m/s; 1.30 s in the air, 0.5 m over the top, down at (563, 1340) 13 m out IN THE LAKE, upright 0.99
+  Drifter Twin -10 deg at the slide's foot 24.4 m/s, off the top at 9.2 m/s; 1.22 s in the air, 0.4 m over the top, down at (571, 1339) 13 m out IN THE LAKE, upright 0.98
+  Turf Rocket +10 deg at the slide's foot 24.2 m/s, off the top at 12.1 m/s; 1.66 s in the air, 1.4 m over the top, down at (562, 1334) 19 m out IN THE LAKE, upright 0.99
+FAIL  A: 10 degrees off the line into the chute, flat out, every offered vehicle comes down in the lake  -  not: Street Classic, Pebble Coupe
+  a reset from where the last run ended: to (828.4, 1518.9), 0.0 m from the race's line
+
+=== A. the boat jump against the lap's own way over the same ground, flat out (Street Classic, Drifter Twin)
+  Street Classic   the lap's way 18.9 s; the boat jump 13.9 s: saves 5.0 s
+  Drifter Twin     the lap's way 17.1 s; the boat jump 13.1 s: saves 4.0 s
+PASS  A: the boat jump taken clean and flat out saves time against the lap's own way (both vehicles)
+
+=== pictures
+PASS  pictures written  -  46_*.png
+
+4 of 5 checks passed.

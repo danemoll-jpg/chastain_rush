@@ -1,0 +1,16 @@
+Round 46 check, 2026-10-19 00:51, the exe, 1280 x 720, muted.
+
+=== the Chastain Lakes race, 2 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Sundown Roadster) finishes the 2 laps  -  total 240.6 s, laps 114.6 / 126.0, missed 0, shortcuts lap 1 w_lake_jump
+PASS  race 1: GOLD (Pebble Coupe) finishes the 2 laps  -  total 242.3 s, laps 138.2 / 104.1, missed 0, shortcuts lap 1 w_lake_jump, lap 2 w_lake_jump, lap 2 e_lake_drain
+PASS  race 1: BLUE (Needle 600) finishes the 2 laps  -  total 216.4 s, laps 120.9 / 95.4, missed 0, shortcuts none
+PASS  race 2: EMBER (Highball Fastback) finishes the 2 laps  -  total 237.7 s, laps 103.3 / 134.5, missed 0, shortcuts lap 1 w_lake_jump, lap 1 e_lake_drain, lap 2 w_lake_jump, lap 2 e_lake_drain
+PASS  race 2: GOLD (Trail Four) finishes the 2 laps  -  total 242.9 s, laps 119.3 / 123.6, missed 0, shortcuts lap 1 w_lake_jump, lap 1 e_lake_drain, lap 2 w_lake_jump, lap 2 e_lake_drain
+PASS  race 2: BLUE (Turf Rocket) finishes the 2 laps  -  total 214.6 s, laps 95.0 / 119.6, missed 0, shortcuts lap 1 e_lake_drain
+INFO  the AI on the boat 1 times in two races: 1 cleared it, 0 fell in
+
+=== B. the lake drain's run under East Chastain Lake in glass (B28), Street Classic
+  down the drain True; in glass for 5.1 s; out of MH14 True; on along North Lakeside Drive
+PASS  B: down the drain, through B28's glass under the lake, out of the manhole and on
+
+7 of 7 checks passed.

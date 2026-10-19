@@ -1,0 +1,16 @@
+Round 46 check, 2026-10-18 22:46, the exe, 1280 x 720, muted.
+
+=== Round 46 (design): flat out down the boat jump's run-up, North Lakeside Drive to the shore (trees off)
+  Street Classic     z 1480: 22.0  z 1450: 27.5  z 1420: 30.3  z 1400: 33.0  z 1390: 33.7  z 1383: 34.8  (max off the line 0.1 m)
+  Longroof GT        z 1480: 22.0  z 1450: 27.8  z 1420: 30.4  z 1400: 33.4  z 1390: 34.3  z 1383: -  (max off the line 0.1 m)
+  Needle 600         z 1480: 23.0  z 1450: 28.2  z 1420: 31.6  z 1400: 35.3  z 1390: 36.2  z 1383: -  (max off the line 0.2 m)
+  Trail Four         z 1480: 22.5  z 1450: 27.5  z 1420: 30.9  z 1400: 34.4  z 1390: 35.1  z 1383: 36.6  (max off the line 0.1 m)
+  Sundown Roadster   z 1480: 22.1  z 1450: 27.6  z 1420: 30.5  z 1400: 32.9  z 1390: 33.7  z 1383: 34.9  (max off the line 0.1 m)
+  Highball Fastback  z 1480: 22.6  z 1450: 28.5  z 1420: 31.2  z 1400: 34.2  z 1390: 35.0  z 1383: 36.3  (max off the line 0.1 m)
+  Pebble Coupe       z 1480: 21.9  z 1450: 27.3  z 1420: 30.0  z 1400: 32.5  z 1390: 33.3  z 1383: 34.4  (max off the line 0.1 m)
+  Skyfin Cruiser     z 1480: 21.8  z 1450: 27.4  z 1420: 29.9  z 1400: 33.0  z 1390: 33.9  z 1383: 34.9  (max off the line 0.1 m)
+  Ridge Scrambler    z 1480: 22.9  z 1450: 27.9  z 1420: 31.3  z 1400: 35.0  z 1390: 35.8  z 1383: -  (max off the line 0.1 m)
+  Drifter Twin       z 1480: 22.3  z 1450: 27.9  z 1420: 30.8  z 1400: 34.1  z 1390: 35.1  z 1383: 36.2  (max off the line 0.1 m)
+  Turf Rocket        z 1480: 23.0  z 1450: 28.3  z 1420: 32.0  z 1400: 35.2  z 1390: 35.8  z 1383: 37.5  (max off the line 0.1 m)
+
+0 of 0 checks passed.
