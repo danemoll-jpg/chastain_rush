@@ -1,0 +1,45 @@
+Round 49 check, 2026-10-19 12:03, the exe, 1280 x 720, muted.
+
+=== C. THE LAKE TRAIL BEHIND THE POOL: both directions, every offered vehicle, at the race's held speeds (the route's AI zones)
+  forward  Street Classic     through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.8, 1099.9), most off the line 0.2 m
+  forward  Longroof GT        through in 13.4 s, slowest 9.8 m/s at (1318.6, 298.8, 1099.6), most off the line 0.3 m
+  forward  Needle 600         through in 13.3 s, slowest 7.1 m/s at (1340.9, 296.6, 1137.9) by Footbridge rail, Footbridge deck, most off the line 0.5 m
+  forward  Trail Four         through in 13.3 s, slowest 9.8 m/s at (1318.3, 298.7, 1099.3), most off the line 0.5 m
+  forward  Sundown Roadster   through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.9, 1099.3), most off the line 0.2 m
+  forward  Highball Fastback  through in 13.3 s, slowest 9.8 m/s at (1318.5, 298.7, 1100.2), most off the line 0.3 m
+  forward  Pebble Coupe       through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.8, 1099.4), most off the line 0.2 m
+  forward  Skyfin Cruiser     through in 13.5 s, slowest 9.8 m/s at (1318.5, 298.5, 1101.2), most off the line 0.3 m
+  forward  Ridge Scrambler    through in 13.2 s, slowest 9.8 m/s at (1318.3, 298.7, 1100.2), most off the line 0.5 m
+  forward  Drifter Twin       through in 13.3 s, slowest 9.7 m/s at (1340.9, 296.6, 1137.8) by Footbridge rail, Footbridge deck, most off the line 0.4 m
+  forward  Turf Rocket        through in 13.2 s, slowest 9.8 m/s at (1318.3, 298.6, 1099.6), most off the line 0.5 m
+  reverse  Street Classic     through in 15.2 s, slowest 4.7 m/s at (1291.8, 299.3, 1066.4) by Traffic 5, most off the line 0.4 m
+  reverse  Longroof GT        through in 14.2 s, slowest 9.8 m/s at (1318.4, 298.8, 1099.4), most off the line 0.3 m
+  reverse  Needle 600         through in 13.9 s, slowest 9.7 m/s at (1319.0, 297.0, 1109.1), most off the line 0.5 m
+  reverse  Trail Four         through in 14.0 s, slowest 9.8 m/s at (1318.5, 298.2, 1102.1), most off the line 0.5 m
+  reverse  Sundown Roadster   through in 14.1 s, slowest 9.7 m/s at (1318.7, 297.3, 1108.3), most off the line 0.3 m
+  reverse  Highball Fastback  through in 14.0 s, slowest 9.7 m/s at (1318.5, 297.6, 1106.7), most off the line 0.3 m
+  reverse  Pebble Coupe       through in 14.1 s, slowest 9.8 m/s at (1318.5, 298.9, 1098.7), most off the line 0.3 m
+  reverse  Skyfin Cruiser     through in 14.2 s, slowest 9.7 m/s at (1318.5, 297.5, 1107.4), most off the line 0.3 m
+  reverse  Ridge Scrambler    through in 13.9 s, slowest 9.8 m/s at (1318.9, 297.3, 1108.2), most off the line 0.5 m
+  reverse  Drifter Twin       through in 14.0 s, slowest 9.7 m/s at (1318.8, 297.3, 1107.6), most off the line 0.4 m
+  reverse  Turf Rocket        through in 13.9 s, slowest 9.7 m/s at (1319.1, 297.0, 1109.3), most off the line 0.5 m
+PASS  C: the lake trail behind the pool, both directions, every offered vehicle at the race's speeds: no stop
+
+=== the forward race (the trail moved): one lap
+  Chastain Lakes forward: 2732 m, 9 checkpoints, shortcuts Boat jump, Lake drain, 18 barriers
+PASS  forward: its two shortcuts, 18 barriers (16 and the two reverse shortcuts' ways)
+PASS  forward lap on the Street Classic: counted, 0 missed  -  laps 1, lap 160.1 s, missed 0, penalty 0 s, slowest 3.1 m/s, most off the line 1.7 m
+
+=== the reverse race, 2 laps, 3 AI, twice, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Drifter Twin) finishes the 2 reverse laps  -  total 203.8 s, laps 104.1 / 99.7, missed 0, shortcuts none
+PASS  race 1: GOLD (Needle 600) finishes the 2 reverse laps  -  total 204.8 s, laps 108.0 / 96.8, missed 0, shortcuts none
+PASS  race 1: BLUE (Highball Fastback) finishes the 2 reverse laps  -  total 253.6 s, laps 107.9 / 145.7, missed 0, shortcuts lap 1 r_kicker_jump, lap 2 r_lake_intake
+FAIL  race 2: EMBER (Sundown Roadster) finishes the 2 reverse laps  -  not finished, laps 0, laps , missed 0, shortcuts none
+PASS  race 2: GOLD (Pebble Coupe) finishes the 2 reverse laps  -  total 271.2 s, laps 122.1 / 149.1, missed 0, shortcuts lap 1 r_lake_intake, lap 2 r_lake_intake
+PASS  race 2: BLUE (Ridge Scrambler) finishes the 2 reverse laps  -  total 185.8 s, laps 92.9 / 92.9, missed 0, shortcuts none
+INFO  the AI in two reverse races: down the intake 0 times, missed it 3; off the kicker 1 times, short into the hollow 0 (BLUE (Highball Fastback) missed the intake on lap 2; GOLD (Pebble Coupe) missed the intake on lap 1; GOLD (Pebble Coupe) missed the intake on lap 2)
+
+=== pictures
+PASS  pictures written  -  49_*.png
+
+9 of 10 checks passed.

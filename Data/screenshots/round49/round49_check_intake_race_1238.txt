@@ -1,0 +1,24 @@
+Round 49 check, 2026-10-19 12:39, the exe, 1280 x 720, muted.
+
+=== A. THE INTAKE (reverse race): clean, timed against the lap's own way; too slow off the jetty
+  Lake intake: forgives Lakeside Drive, the west loop, Bankside Point
+  Street Classic   the lap's way 32.9 s; the intake 17.1 s (off the jetty at 21.8 m/s, down the shaft True, in glass 2.3 s, out of MH15 True, on along North Lakeside Drive): saves 15.8 s
+  Drifter Twin     the lap's way -1.0 s; the intake 15.6 s (off the jetty at 23.7 m/s, down the shaft True, in glass 2.2 s, out of MH15 True, on along North Lakeside Drive): saves -99.0 s
+FAIL  A: the intake taken clean (Street Classic, Drifter Twin): down the shaft, through the glass, out of the manhole past CP9, and it saves time  -  not: Drifter Twin
+PASS  A: off the jetty too slow (9 m/s): in the lake, not taken; a reset puts it back on the race's line  -  in the lake True, taken False, reset to (582, 1262), 0.0 m from the line
+
+=== the forward race (the trail moved): one lap
+  Chastain Lakes forward: 2732 m, 9 checkpoints, shortcuts Boat jump, Lake drain, 18 barriers
+PASS  forward: its two shortcuts, 18 barriers (16 and the two reverse shortcuts' ways)
+PASS  forward lap on the Street Classic: counted, 0 missed  -  laps 1, lap 140.0 s, missed 0, penalty 0 s, slowest 2.0 m/s, most off the line 1.3 m
+
+=== the reverse race, 2 laps, 3 AI, twice, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Ridge Scrambler) finishes the 2 reverse laps  -  total 210.8 s, laps 111.3 / 99.5, missed 0, shortcuts lap 1 r_kicker_jump
+PASS  race 1: GOLD (Longroof GT) finishes the 2 reverse laps  -  total 243.4 s, laps 110.7 / 132.7, missed 0, shortcuts lap 2 r_lake_intake
+PASS  race 1: BLUE (Needle 600) finishes the 2 reverse laps  -  total 182.5 s, laps 91.0 / 91.5, missed 0, shortcuts none
+PASS  race 2: EMBER (Pebble Coupe) finishes the 2 reverse laps  -  total 242.0 s, laps 127.8 / 114.2, missed 0, shortcuts lap 2 r_lake_intake
+PASS  race 2: GOLD (Longroof GT) finishes the 2 reverse laps  -  total 241.4 s, laps 117.5 / 123.9, missed 0, shortcuts lap 1 r_kicker_jump, lap 1 r_lake_intake
+PASS  race 2: BLUE (Sundown Roadster) finishes the 2 reverse laps  -  total 256.8 s, laps 132.0 / 124.7, missed 0, shortcuts none
+INFO  the AI in two reverse races: down the intake 3 times, missed it 0; off the kicker 2 times, short into the hollow 1 (EMBER (Ridge Scrambler) came up short off the kicker on lap 1)
+
+9 of 10 checks passed.

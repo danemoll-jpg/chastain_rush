@@ -1,0 +1,29 @@
+Round 49 check, 2026-10-19 11:34, the exe, 1280 x 720, muted.
+
+=== B. THE KICKER (reverse race): flat out, timed against the lap's own way; held to 16 m/s at the kicker's lip
+  Kicker jump: forgives Lakeside Drive south
+  Street Classic   the lap's way 12.1 s; the kicker 11.0 s: off the lip at 21.1 m/s, 2.22 s in the air, 6.6 m over the lip, down at (1188, 302.0, 991) 42 m out, upright 0.99; on to the lap: saves 1.1 s
+  Drifter Twin     the lap's way 11.0 s; the kicker 10.4 s: off the lip at 21.2 m/s, 2.30 s in the air, 6.7 m over the lip, down at (1187, 301.6, 991) 42 m out, upright 1.00; on to the lap: saves 0.6 s
+FAIL  B: the kicker flat out (Street Classic, Drifter Twin): clears the hollow, lands on its wheels, on to the lap past CP5, and it saves time  -  not: Drifter Twin
+PASS  B: off the kicker at 16 m/s: short, down in the hollow; a reset puts it back on the race's line  -  off the lip at 17.2 m/s, 2.16 s in the air, 4.1 m over the lip, down at (1198, 297.2, 994) 31 m out IN THE HOLLOW, upright 0.98; reset to (1043, 997), 0.0 m from the line
+
+=== the reverse race, 2 laps, 3 AI, twice, traffic Normal, the player parked off the course
+PASS  race 1: EMBER (Skyfin Cruiser) finishes the 2 reverse laps  -  total 264.5 s, laps 115.2 / 149.3, missed 0, shortcuts lap 2 r_kicker_jump, lap 2 r_lake_intake
+PASS  race 1: GOLD (Highball Fastback) finishes the 2 reverse laps  -  total 234.9 s, laps 117.1 / 117.8, missed 0, shortcuts none
+PASS  race 1: BLUE (Pebble Coupe) finishes the 2 reverse laps  -  total 265.9 s, laps 115.1 / 150.8, missed 0, shortcuts lap 2 r_kicker_jump
+PASS  race 2: EMBER (Longroof GT) finishes the 2 reverse laps  -  total 260.6 s, laps 129.4 / 131.2, missed 0, shortcuts lap 1 r_kicker_jump
+PASS  race 2: GOLD (Highball Fastback) finishes the 2 reverse laps  -  total 258.9 s, laps 122.7 / 136.1, missed 0, shortcuts lap 1 r_lake_intake
+FAIL  race 2: BLUE (Turf Rocket) finishes the 2 reverse laps  -  not finished, laps 1, laps 116.3, missed 0, shortcuts lap 1 r_kicker_jump
+INFO  the AI in two reverse races: down the intake 2 times, missed it 0; off the kicker 4 times, short into the hollow 0
+
+=== D. THE MAP: the left stick pans (to every edge), the right stick moves the pointer, A acts under it (a virtual gamepad); a click (a virtual mouse)
+  the places: Southwick Drive (76, 1770), Old Farm Walk (3883, 1706), Pine Manor (3737, 267), Chastain Lakes (805, 1191); discovered 4 of 4
+  north-west the pointer 6 m from the map's corner after the pan; on Southwick Drive True; A asked to travel True; traveled: 0 m from it
+  north-east the pointer 6 m from the map's corner after the pan; on Old Farm Walk True; A asked to travel True; traveled: 0 m from it
+  south-east the pointer 6 m from the map's corner after the pan; on Pine Manor True; A asked to travel True; traveled: 0 m from it
+  south-west the pointer 6 m from the map's corner after the pan; on Chastain Lakes True; A asked to travel True; traveled: 0 m from it
+PASS  D: from each corner of the map, the left stick brings the corner under the pointer, the pointer chooses a place there (A) and travel takes you to it
+PASS  D: Y sets the waypoint where the pointer is, off the view's center  -  pointer 457, -291 from the middle; the waypoint 0.0 m from the pointer's spot, 707 m from the view's center
+PASS  D: the mouse is the pointer: moved onto a place, a click asks to travel there  -  under the mouse True, asked True
+
+9 of 11 checks passed.

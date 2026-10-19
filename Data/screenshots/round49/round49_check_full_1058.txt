@@ -1,0 +1,66 @@
+Round 49 check, 2026-10-19 10:59, the exe, 1280 x 720, muted.
+
+=== C. THE LAKE TRAIL BEHIND THE POOL: both directions, every offered vehicle, at the race's held speeds (the route's AI zones)
+  forward  Street Classic     through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.8, 1099.8), most off the line 0.2 m
+  forward  Longroof GT        through in 13.4 s, slowest 9.8 m/s at (1318.6, 298.8, 1099.6), most off the line 0.3 m
+  forward  Needle 600         through in 13.4 s, slowest 6.3 m/s at (1341.0, 296.6, 1137.9) by Footbridge rail, Footbridge deck, most off the line 0.5 m
+  forward  Trail Four         through in 13.3 s, slowest 9.8 m/s at (1318.3, 298.4, 1101.0), most off the line 0.5 m
+  forward  Sundown Roadster   through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.8, 1099.3), most off the line 0.2 m
+  forward  Highball Fastback  through in 13.3 s, slowest 9.8 m/s at (1318.5, 298.7, 1100.0), most off the line 0.3 m
+  forward  Pebble Coupe       through in 13.4 s, slowest 9.8 m/s at (1318.5, 298.8, 1099.8), most off the line 0.2 m
+  forward  Skyfin Cruiser     through in 13.5 s, slowest 9.8 m/s at (1318.5, 298.5, 1101.2), most off the line 0.3 m
+  forward  Ridge Scrambler    through in 13.2 s, slowest 9.8 m/s at (1318.3, 298.6, 1100.4), most off the line 0.5 m
+  forward  Drifter Twin       through in 13.4 s, slowest 7.1 m/s at (1340.9, 296.6, 1137.8) by Footbridge rail, Footbridge deck, most off the line 0.4 m
+  forward  Turf Rocket        through in 13.3 s, slowest 9.8 m/s at (1318.3, 298.7, 1099.2), most off the line 0.5 m
+  reverse  Street Classic     through in 14.0 s, slowest 9.7 m/s at (1318.6, 297.6, 1106.9), most off the line 0.3 m
+  reverse  Longroof GT        through in 14.1 s, slowest 9.7 m/s at (1318.4, 297.7, 1106.4), most off the line 0.3 m
+  reverse  Needle 600         through in 13.8 s, slowest 9.7 m/s at (1319.0, 297.0, 1108.9), most off the line 0.5 m
+  reverse  Trail Four         through in 13.9 s, slowest 9.8 m/s at (1318.8, 297.4, 1107.2), most off the line 0.5 m
+  reverse  Sundown Roadster   through in 14.0 s, slowest 9.7 m/s at (1318.7, 297.4, 1108.1), most off the line 0.3 m
+  reverse  Highball Fastback  through in 14.0 s, slowest 9.7 m/s at (1318.5, 297.5, 1107.4), most off the line 0.3 m
+  reverse  Pebble Coupe       through in 14.0 s, slowest 9.7 m/s at (1318.7, 297.4, 1107.7), most off the line 0.2 m
+  reverse  Skyfin Cruiser     through in 14.1 s, slowest 9.7 m/s at (1318.6, 297.3, 1108.3), most off the line 0.3 m
+  reverse  Ridge Scrambler    through in 13.8 s, slowest 9.7 m/s at (1318.9, 297.3, 1108.0), most off the line 0.5 m
+  reverse  Drifter Twin       through in 13.9 s, slowest 9.7 m/s at (1318.7, 297.5, 1106.8), most off the line 0.4 m
+  reverse  Turf Rocket        through in 13.8 s, slowest 9.7 m/s at (1319.0, 297.0, 1109.1), most off the line 0.5 m
+PASS  C: the lake trail behind the pool, both directions, every offered vehicle at the race's speeds: no stop
+
+=== A. THE INTAKE (reverse race): clean, timed against the lap's own way; too slow off the jetty
+  Lake intake: forgives Lakeside Drive, the west loop, Bankside Point
+  Street Classic   the lap's way 22.3 s; the intake 17.1 s (off the jetty at 21.5 m/s, down the shaft True, in glass 2.3 s, out of MH15 True, on along North Lakeside Drive): saves 5.2 s
+  Drifter Twin     the lap's way 20.4 s; the intake 15.6 s (off the jetty at 23.7 m/s, down the shaft True, in glass 2.2 s, out of MH15 True, on along North Lakeside Drive): saves 4.8 s
+PASS  A: the intake taken clean (Street Classic, Drifter Twin): down the shaft, through the glass, out of the manhole past CP9, and it saves time
+PASS  A: off the jetty too slow (9 m/s): in the lake, not taken; a reset puts it back on the race's line  -  in the lake True, taken False, reset to (582, 1262), 0.0 m from the line
+
+=== B. THE KICKER (reverse race): flat out, timed against the lap's own way; held to 16 m/s at the kicker's lip
+  Kicker jump: forgives Lakeside Drive south
+  Street Classic   the lap's way 12.1 s; the kicker 11.0 s: off the lip at 21.1 m/s, 2.22 s in the air, 6.6 m over the lip, down at (1188, 302.0, 991) 42 m out, upright 0.99; on to the lap: saves 1.1 s
+  Drifter Twin     the lap's way 11.0 s; the kicker 10.4 s: off the lip at 21.2 m/s, 2.30 s in the air, 6.7 m over the lip, down at (1187, 301.6, 991) 42 m out, upright 1.00; on to the lap: saves 0.6 s
+FAIL  B: the kicker flat out (Street Classic, Drifter Twin): clears the hollow, lands on its wheels, on to the lap past CP5, and it saves time  -  not: Drifter Twin
+PASS  B: off the kicker at 16 m/s: short, down in the hollow; a reset puts it back on the race's line  -  off the lip at 17.2 m/s, 2.16 s in the air, 4.1 m over the lip, down at (1198, 297.2, 994) 31 m out IN THE HOLLOW, upright 0.98; reset to (1043, 997), 0.0 m from the line
+
+=== A / B closed in a forward race, open in a reverse race and Free Roam
+PASS  free roam: both hints shown, no grate on the intake  -  intake clues True, grate False, kicker clues True
+PASS  forward race: barriers across the intake's track and the kicker's way; the hints hidden, the intake's grate on and the intake shut  -  intake clues False, grate True, kicker clues False; 18 barriers
+PASS  forward race: a vehicle dropped on the intake sits on its grate  -  at +1.9 m from the water
+PASS  reverse race: both shortcuts in it, the hints shown, no grate  -  intake clues True, grate False, kicker clues True; shortcuts Lake intake, Kicker jump
+
+=== the forward race (the trail moved): one lap
+  Chastain Lakes forward: 2732 m, 9 checkpoints, shortcuts Boat jump, Lake drain, 18 barriers
+PASS  forward: its two shortcuts, 18 barriers (16 and the two reverse shortcuts' ways)
+PASS  forward lap on the Street Classic: counted, 0 missed  -  laps 1, lap 104.0 s, missed 0, penalty 0 s, slowest 6.8 m/s, most off the line 1.3 m
+
+=== D. THE MAP: the left stick pans (to every edge), the right stick moves the pointer, A acts under it (a virtual gamepad); a click (a virtual mouse)
+  the places: Southwick Drive (76, 1770), Old Farm Walk (3883, 1706), Pine Manor (3737, 267), Chastain Lakes (805, 1191); discovered 4 of 4
+  north-west the pointer 6 m from the map's corner after the pan; on Southwick Drive True; A asked to travel True; traveled: 0 m from it
+  north-east the pointer 6 m from the map's corner after the pan; on Old Farm Walk True; A asked to travel True; traveled: 0 m from it
+  south-east the pointer 6 m from the map's corner after the pan; on Pine Manor True; A asked to travel True; traveled: 0 m from it
+  south-west the pointer 6 m from the map's corner after the pan; on Chastain Lakes True; A asked to travel True; traveled: 0 m from it
+PASS  D: from each corner of the map, the left stick brings the corner under the pointer, the pointer chooses a place there (A) and travel takes you to it
+PASS  D: Y sets the waypoint where the pointer is, off the view's center  -  pointer 457, -291 from the middle; the waypoint 0.0 m from the pointer's spot, 707 m from the view's center
+PASS  D: the mouse is the pointer: moved onto a place, a click asks to travel there  -  under the mouse True, asked True
+
+=== pictures
+PASS  pictures written  -  49_*.png
+
+14 of 15 checks passed.

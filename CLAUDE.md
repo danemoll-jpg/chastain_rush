@@ -405,6 +405,16 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 49 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** reverse Chastain Lakes shortcuts and the
+lake trail moved (`make_lakes_route.py`: the trail behind the pool to a footbridge over the spillway, `TRAIL_CTRL` / `BRIDGE_S`, `CONCRETE_TO`; the reverse
+section writes `r_lake_intake` and `r_kicker_jump`, both shut in a forward race by two barriers, `fwd_shut`). A the intake: `pipe_network.py` LI (roof open),
+B29 (glass under West Chastain Lake, under M2b), MH15; `MapBuilder.LakesIntake.cs` (jetty, square riser, `LakeDrain` with `shutForwardOf`, `curtain` off; sign
+`python Tools/handmade/make_intake_sign.py`, hand-made, committed). B the kids' kicker (`MapBuilder.LakesKicker.cs`, a real jump, landing zone RK).
+`RaceOnly.hideInForwardOf` / `showInForwardOf`. D the map's pointer (`WorldMap.cs`: left stick pans and carries the pointer to the edges, right stick / mouse
+is the pointer, A / click chooses under it, X / Y act at it; center on the D-pad's left, shortcuts and pipes on its right). Check: `ChastainRush.exe -exeRound49
+<dir> [-r49Only lktrail,lkintake,lkkicker,lkshut,lkfwd,lkrace,lkmap,lkpics] [-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R49.cs`).
+The AI's recovery never puts a car under a structure (`RoadDriver.Covered`: the lap's height on a bridge is the ground under it) and looks on along
+the lap after four failed tries. Imported from Racer: nothing.
 **Round 48 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the goose egg hunt and exploration (Racer's acorn
 hunt): `python Tools/mapgen/make_eggs.py [--plot]` writes `Data/explore/eggs.json` (100 eggs, 11 areas, tiers, 35 places; re-run after mapgen or a course / network change),
 built by `MapBuilder.Eggs.cs` (game layer; eggs alone into the built scene: `-executeMethod ChastainRush.MapBuilder.RebuildEggsFromCommandLine`); runtime `Assets/Scripts/Explore/`
@@ -852,7 +862,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-19_01-29-19-650_77c31b` through BUG-001 (Round 47; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-19_01-29-19-650_77c31b` through BUG-001 (Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

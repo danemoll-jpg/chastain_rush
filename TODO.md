@@ -142,6 +142,33 @@ with no stops; forward race unchanged otherwise. Pictures: each turn-off and hin
 CP9, the launch and landing past CP5, the trail behind the pool from photo 2's spot.
 For Dan to check: both reverse shortcuts; the trail behind the pool both ways; the map's pointer.
 
+**Status (Claude, 2026-10-19): A to D built and checked in the exe by script (14 of 15 on the full set; the AI race on the last build 6 of 6), not yet driven by Dan.** Evidence `Data/screenshots/round49/`.
+A DONE. THE INTAKE: off Lakeside Drive 45 m before CP7, right up the point's service track (the lake association's LAKE INTAKE sign, worn ruts), along a 6 m
+   concrete jetty 2 m over West Chastain Lake, off its end into a square concrete riser 11.5 m out (walls 1.2 m out of the water, trash racks, buoys), down its shaft
+   to LI, B29 in glass under the lake (52 m), under M2b by the north shore, up MH15 onto North Lakeside Drive 30 m past CP9, facing east. Forgives CP7 to CP9 (Dan's line:
+   it skips the west loop). Clean: off the jetty at 21.5 / 23.7 m/s, saves 5.2 s (Street Classic) and 4.8 s (Drifter Twin). Off the jetty at 9 m/s: into the riser's wall
+   and the lake, not taken; a reset puts you on the race's line (under about 16 m/s you hit the wall; a car short in the lake can not climb in: taken only from the air).
+B DONE (time saved small). THE KICKER: just past CP4 a JUMP! board, a 28 m arc through 239's front yard and between 239 and 237, down the back yard to the
+   neighborhood kids' plywood kicker (3.5 m, 35 degrees; a kids' ramp because it is truly that shape in a back yard), a real jump west over the creek hollow below
+   the lake's tip, between 232 and 246, on through the yards to the lap past CP5 (forgives CP5). Physics can not reach the lap past CP5 itself (165 m); the flight is
+   the hollow. Tuning (two tries, stopped): try 1 17.8 / 20.1 m/s at the lip, both short; try 2 (kicker 7 m further down its line, wider turn) 21.1 / 21.2 m/s, 42 m,
+   lands upright; at 17 m/s it comes down in the hollow (out along it, or a reset). NOT MET: it saves only 1.1 s (Street Classic) and 0.6 s (Drifter Twin).
+C DONE. The trail from the lot behind the bathhouse (concrete), round the pool deck's corner (gravel, tan brick) to the footbridge, now over the spillway where the
+   outflow leaves the lake; grass between the pool house and the courts; the lot's 1.1 m step at its corner ramped at 16 %; the porch swing moved 20 m off the line.
+   The trail runs 6 m straight off the bridge's north end before it bends onto the dam (a reverse AI hit the rail end; a mower slid off into the outflow).
+   All 11 vehicles both ways at the race's speeds, no stop (slowest 9.7 m/s; the Needle 600 7.1 m/s brushing the bridge's rail forward). Round 47's NOT MET is gone.
+D DONE. Left stick / WASD pans and carries the pointer on to the map's edges; right stick / mouse is the pointer; A / click chooses under it (a place: travel; an egg
+   area: show), X travels, Y sets the waypoint at the pointer; center moved to D-pad left, shortcuts and pipes to D-pad right. Check: from all four corners a place
+   chosen with the pointer and traveled to; a waypoint 707 m off the view's center; a mouse click on a place asks to travel.
+Both shortcuts are shut in a forward race (barriers B17 / B18, clues hidden, a grate on the intake), open in reverse and Free Roam; the forward lap unchanged (104.0 s, 0
+   missed). AI reverse race x2, traffic Normal (last build): all 6 finish, 0 missed; down the intake 3 times (its jetty speed raised to 23 m/s: at 18 every AI hit the
+   wall), off the kicker 2 times, 1 short into the hollow. The AI's recovery no longer puts a car under a structure (it put two back under the footbridge, in the
+   stream, again and again: `RoadDriver.Covered`), and after four tries with no clear spot it looks on along the lap (never a trap).
+Build: seven full builds, not one (each fix was found in the exe: the intake's wall and catch, the two kicker tries, the lot's step, the kicker's entry plane (every car
+   on the lap crossed it), the map's controls line, the bridge's north end, the AI's recovery and jetty speed); `Builds/ChastainRush/` 2026-10-19 12:38. Imported from Racer: nothing.
+For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
+   ways; the map's pointer and pan with a controller and the mouse.
+
 ## QUEUED rounds
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
