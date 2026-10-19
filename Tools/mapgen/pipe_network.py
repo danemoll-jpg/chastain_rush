@@ -211,7 +211,7 @@ TUBES = [
     # Round 28 (B1): the underground race's switch shortcuts, world pipes like any other (open in free roam; the race's gates are the race's)
     #   S2 "Dive pipe": J15 to J14 straight, diving under M5 where it crosses it, a flooded sump at the bottom
     #   S3 "High line": J1 straight to J2, in high on J2's west wall (a jump across J2's floor), lined up with M1b's opening opposite
-    T("S2", "S2 Dive pipe (J15 to J14, under M5)", MAIN, False, 1, ("ch", "J15"), [], ("ch", "J14"), under=["M5c"], flood="low", max_grade=0.20),
+    T("S2", "S2 Dive pipe (J15 to J14, under M5)", MAIN, False, 1, ("ch", "J15"), [], ("ch", "J14"), glass=[4], under=["M5c"], flood="low", max_grade=0.20),
     T("S3", "S3 High line (J1 to J2, in high over J2's floor)", MAIN, False, 1, ("ch", "J1"), [(1570.0, 1095.0)], ("ch", "J2", "high")),
     T("M5b", "M5 Enclave Main (J3 to the hub)", MAIN, True, 1, ("ch", "J3"), [(1840.0, 1060.0), (1935.0, 1085.0)], ("ch", "HUB", "top"), stripe="M5"),
     T("B1a", "B1", MAIN, False, 1, ("ch", "J2"), [(1600.0, 1150.0)], ("ch", "K2")),
@@ -237,10 +237,10 @@ TUBES = [
     # Round 24 Part B (item 7): M3 now pours into the hub as a waterfall off the mid ledge (it came in at the floor)
     T("M3a", "M3 Noonday Main (J4 to the hub)", MAIN, True, 2, ("ch", "J4"), [(2150.0, 1185.0), (2030.0, 1160.0)], ("ch", "HUB", "mid"), stripe="M3"),
     T("M3b", "M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1)", MAIN, True, 2, ("ch", "J4"), [(2294.0, 1262.0), (2302.0, 1318.0)], ("ch", "J5"), stripe="M3"),
-    T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1600.0), (2436.0, 1566.0)], ("ch", "K15"), glass=[15], stripe="M3"),
+    T("M3c", "M3 Noonday Main (J5 up the big lake in glass, to K15)", MAIN, True, 2, ("ch", "J5"), [(2364.0, 1400.0), (2374.0, 1480.0), (2378.0, 1586.0), (2420.0, 1600.0), (2436.0, 1566.0)], ("ch", "K15"), glass=[15, 14], stripe="M3"),
     T("M3d", "M3 Noonday Main (the launch over the big lake)", MAIN, True, 2, ("ch", "K15"), [(2472.0, 1522.0), (2440.0, 1522.0)], ("x", "L_W15"), stripe="M3"),
     T("B11", "B11", NARROW, False, 2, ("ch", "J4"), [(2300.0, 1150.0), (2290.0, 1106.5)], ("x", "X_TRAIL")),   # Round 24 A2: in from the west
-    T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2452.0, 1462.0), (2512.0, 1486.0)], ("x", "X_W12")),
+    T("B12", "B12", NARROW, False, 2, ("ch", "J5"), [(2452.0, 1462.0), (2512.0, 1486.0)], ("x", "X_W12"), glass=[15]),
     T("B13", "B13", NARROW, False, 2, ("ch", "K15"), [], ("mh", "MH6")),
     T("B14", "B14", NARROW, False, 2, ("ch", "J4"), [(2420.0, 1236.0), (2560.0, 1256.0)], ("mh", "MH7")),
     T("B15", "B15", NARROW, False, 2, ("ch", "K15"), [(2478.0, 1640.0), (2484.0, 1700.0)], ("x", "X_W7")),
@@ -272,7 +272,7 @@ TUBES = [
     T("B24", "B24", NARROW, False, 4, ("ch", "J9"), [(930.0, 1090.0)], ("mh", "MH13")),
     T("B25", "B25", NARROW, False, 4, ("ch", "K25"), [(520.0, 1450.0)], ("x", "X_STREAM")),
     # Round 44: the lake drain's tunnel, from LD under the lake (and under M2a) north to MH14 in North Lakeside Drive
-    T("B28", "B28 (the lake drain to North Lakeside Drive)", MAIN, False, 4, ("ch", "LD"), [(1268.0, 1150.0), (1240.0, 1215.0), (1215.0, 1290.0)], ("mh", "MH14"), under=["M2a"]),
+    T("B28", "B28 (the lake drain to North Lakeside Drive)", MAIN, False, 4, ("ch", "LD"), [(1268.0, 1150.0), (1240.0, 1215.0), (1215.0, 1290.0)], ("mh", "MH14"), glass=[9], under=["M2a"]),
 ]
 
 DIFFERS = [

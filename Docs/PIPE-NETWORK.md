@@ -26,7 +26,7 @@ Chambers: **J1 SOUTH FORK** (junction, x 1496, z 1148, floor 275 m); **J10 NORTH
 | M5a | M5 Enclave Main (J1 to J14) | 5.0 m | 196 m | 274 to 275 m | J1 to J14;  |
 | M5c | M5 Enclave Main (J14 to J15, glass along the pond) | 5.0 m | 209 m | 273 to 274 m | J14 to J15; glass under pond W4 (79 m) |
 | M5d | M5 Enclave Main (J15 to J3) | 5.0 m | 101 m | 273 to 273 m | J15 to J3;  |
-| S2 | S2 Dive pipe (J15 to J14, under M5) | 5.0 m | 116 m | 266 to 274 m | J15 to J14; a flooded sag (slow) |
+| S2 | S2 Dive pipe (J15 to J14, under M5) | 5.0 m | 116 m | 266 to 274 m | J15 to J14; glass under pond W4 (13 m); a flooded sag (slow) |
 | S3 | S3 High line (J1 to J2, in high over J2's floor) | 5.0 m | 130 m | 273 to 275 m | J1 to J2; drops into J2 |
 | M5b | M5 Enclave Main (J3 to the hub) | 5.0 m | 192 m | 272 to 273 m | J3 to HUB;  |
 | B1a | B1 | 5.0 m | 108 m | 271 to 278 m | J2 to K2;  |
@@ -59,10 +59,10 @@ Exits: **Exit W20 Pond** (x 1374, z 800)
 |---|---|---|---|---|---|
 | M3a | M3 Noonday Main (J4 to the hub) | 5.0 m | 330 m | 262 to 269 m | J4 to HUB;  |
 | M3b | M3 Noonday Main (J4 to J5, under Noonday Creek, west of P1) | 5.0 m | 145 m | 267 to 269 m | J4 to J5;  |
-| M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 325 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m) |
+| M3c | M3 Noonday Main (J5 up the big lake in glass, to K15) | 5.0 m | 325 m | 268 to 270 m | J5 to K15; glass under pond W15 (92 m), pond W14 (12 m) |
 | M3d | M3 Noonday Main (the launch over the big lake) | 5.0 m | 73 m | 270 to 271 m | K15 to L_W15; comes out at launch big lake |
 | B11 | B11 | 3.5 m | 117 m | 269 to 272 m | J4 to X_TRAIL; comes out at exit creek trail |
-| B12 | B12 | 3.5 m | 218 m | 268 to 273 m | J5 to X_W12; comes out at exit w12 pond |
+| B12 | B12 | 3.5 m | 218 m | 268 to 273 m | J5 to X_W12; glass under pond W15 (44 m); comes out at exit w12 pond |
 | B13 | B13 | 3.5 m | 92 m | 270 to 279 m | K15 to MH6; pops out at MH6 |
 | B14 | B14 | 3.5 m | 459 m | 269 to 278 m | J4 to MH7; pops out at MH7 |
 | B15 | B15 | 3.5 m | 143 m | 270 to 274 m | K15 to X_W7; comes out at exit w7 pond |
@@ -109,7 +109,7 @@ Exits: **Exit W11 Pond** (x 2686, z 430); **Exit Under Bridges** (x 2422, z 780)
 | B23 | B23 | 3.5 m | 112 m | 284 to 294 m | J9 to MH12; pops out at MH12 |
 | B24 | B24 | 3.5 m | 308 m | 284 to 301 m | J9 to MH13; pops out at MH13 |
 | B25 | B25 | 3.5 m | 56 m | 296 to 296 m | K25 to X_STREAM; comes out at exit lake stream |
-| B28 | B28 (the lake drain to North Lakeside Drive) | 5.0 m | 238 m | 276 to 294 m | LD to MH14; pops out at MH14 |
+| B28 | B28 (the lake drain to North Lakeside Drive) | 5.0 m | 238 m | 276 to 294 m | LD to MH14; glass under pond W9 (140 m); pops out at MH14 |
 
 Chambers: **J9 LAKES JCT** (junction, x 868, z 1236, floor 284 m); **K25** (junction, x 560, z 1418, floor 296 m); **LD LAKE DRAIN** (turn, x 1276, z 1116, floor 276 m)
 
@@ -142,9 +142,9 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E17 B8 express | B8 (3.5 m) | K7 (20 m along) | the flooded sag's start (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
 | E18 B9a express | B9a (3.5 m) | HUB (20 m along) | K8 (105 m along) | 85 m | 45 m/s | about 3 s | 4 s |
 | E19 M3b express | M3b (5.0 m) | J4 (20 m along) | J5 (125 m along) | 105 m | 45 m/s | about 3 s | 5 s |
-| E20 M3c express | M3c (5.0 m) | glass under W15's end (141 m along) | K15 (305 m along) | 164 m | 45 m/s | about 4 s | 8 s |
+| E20 M3c express | M3c (5.0 m) | glass under W15's end (141 m along) | glass under W14's start (246 m along) | 105 m | 45 m/s | about 3 s | 5 s |
 | E21 B11 express | B11 (3.5 m) | J4 (20 m along) | Exit Creek Trail (97 m along) | 77 m | 45 m/s | about 2 s | 4 s |
-| E22 B12 express | B12 (3.5 m) | J5 (20 m along) | Exit W12 Pond (198 m along) | 178 m | 45 m/s | about 5 s | 9 s |
+| E22 B12 express | B12 (3.5 m) | glass under W15's end (82 m along) | Exit W12 Pond (198 m along) | 117 m | 45 m/s | about 3 s | 6 s |
 | E23 B14 express | B14 (3.5 m) | J4 (20 m along) | MH7's foot (439 m along) | 419 m | 45 m/s | about 10 s | 21 s |
 | E24 B15 express | B15 (3.5 m) | K15 (20 m along) | Exit W7 Pond (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
 | E25 B27 express | B27 (5.0 m) | J4 (20 m along) | the flooded sag's start (184 m along) | 164 m | 45 m/s | about 4 s | 8 s |
@@ -161,7 +161,6 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E36 M2c express | M2c (5.0 m) | K25 (20 m along) | Exit Far West Pond (250 m along) | 230 m | 45 m/s | about 6 s | 12 s |
 | E37 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
 | E38 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
-| E39 B28 express | B28 (5.0 m) | LD (20 m along) | MH14's foot (218 m along) | 198 m | 45 m/s | about 5 s | 10 s |
 
 ## What differs from the proposal
 
