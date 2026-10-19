@@ -1,0 +1,35 @@
+Round 45 check, 2026-10-18 22:37, the exe, 1280 x 720, muted.
+
+=== Round 45: the police voices (Dan's ElevenLabs cop and helicopter pilot)
+PASS  the build's PoliceRadio folder has the clips  -  190 clips (187 cop, 3 pilot) in C:/Users/danmo/chastain_rush/Builds/ChastainRush/ChastainRush_Data\PoliceRadio
+  top heat 5, the helicopter up at 12 s
+  played: 12.8s R01 2.65s voice cop [R01:drop-in]
+  played: 19.7s R13 1.28s voice cop [R13:drop-in]
+  played: 21.3s U3+P08+D039 3.03s voice cop [U3:drop-in,P08:drop-in,D039:drop-in]
+  played: 23.7s R14 2.33s voice cop [R14:drop-in]
+  played: 26.3s U4+P08+D003 3.06s voice cop [U4:drop-in,P08:cached,D003:drop-in]
+  played: 27.7s R06 2.69s voice cop [R06:drop-in]
+  played: 30.7s P06+D003+P07 3.77s voice cop [P06:drop-in,D003:cached,P07:drop-in]
+  played: 31.7s R15 1.60s voice cop [R15:drop-in]
+  played: 35.8s P03+D032 2.87s voice cop [P03:drop-in,D032:drop-in]
+  played: 38.9s P15+D032 2.57s voice cop [P15:drop-in,D032:cached]
+  played: 41.7s P15+D003 2.48s voice cop [P15:cached,D003:cached]
+  played: 44.5s R03 1.67s voice cop [R03:drop-in]
+  played: 46.4s R01 2.65s voice cop [R01:cached]
+  played: 49.3s P15+D032 2.57s voice cop [P15:cached,D032:cached]
+  played: 51.4s R13 1.28s voice cop [R13:cached]
+  played: 53.0s U3+P08+D003 3.01s voice cop [U3:cached,P08:cached,D003:cached]
+  played: 55.5s R14 2.33s voice cop [R14:cached]
+  played: 58.0s U4+P08+D003 3.06s voice cop [U4:cached,P08:cached,D003:cached]
+  played: 59.5s R06 2.69s voice cop [R06:cached]
+  played: 62.4s P06+D003+P07 3.77s voice cop [P06:cached,D003:cached,P07:cached]
+  played: 63.5s R15 1.60s voice cop [R15:cached]
+  played: 65.3s U2+P08+D003 3.07s voice cop [U2:drop-in,P08:cached,D003:cached]
+  played: 68.7s P11+D003 2.66s voice cop [P11:drop-in,D003:cached]
+  played: 71.6s P15+D024 5.35s voice cop [P15:cached,D024:drop-in]
+PASS  in the Getaway, a cop call is played in the cop's voice  -  12.8s R01 2.65s voice cop [R01:drop-in]
+PASS  in the Getaway at heat 4, an Air one call is played in the pilot's voice (never mixed: every piece from the pilot's set)  -  80.4s R08 2.45s voice pilot [R08:drop-in]
+  heard (sound on 2.4 s, then off): 87.0s R14 2.33s voice cop [R14:cached]
+  heard (sound on 3.9 s, then off): 89.6s U7+R07 3.59s voice pilot [U7:drop-in,R07:drop-in]
+
+3 of 3 checks passed.

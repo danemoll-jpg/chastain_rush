@@ -256,6 +256,17 @@ Check: the clip count per voice against the CSV; in the exe, a Getaway to heat 4
 call heard (sound briefly on, then off) and logged with which voice set played. Exe rebuilt with `-playerBuildKeepScene` (no map
 build). For Dan to check: the radio in a Getaway, a cop call and the helicopter's.
 
+**Status (Claude, 2026-10-18): built and checked in the exe by script (3 of 3), not yet heard by Dan.** Evidence `Data/screenshots/round45/round45_check.txt`.
+A1 DONE. The csv's new `speaker` column: R07, R08, U7 "pilot", the other 187 "cop" (a "cop+pilot" piece would get a pilot take `<id>_air`). Air one's calls
+   today are whole pilot lines (U7+R07, R08), so no piece needs an `_air` take yet. `PoliceRadio`: a call with a pilot line in it is played from the
+   pilot's set only (a missing pilot take: text only, never the cop's voice in it); an older scene's csv (no column): "Air one..." lines are the pilot's.
+A2 DONE. The studio: Cop and Helicopter pilot voice boxes (Dan's IDs filled in), each line made with its speaker's voice; `--make-missing` from the command line.
+A3 DONE. 190 clips made with Dan's key from the environment (not printed): 187 cop, 3 pilot, 0 failed (`SourceArt/Audio/PoliceRadio/`, committed; also copied
+   to the drop-in folder by the studio). The pilot's calls get a rotor thump (about 4.6 a second) under the radio effect, in the game (the clips stay clean).
+Check: a Getaway on the Needle 600 to heat 5: cop calls in the cop voice (R01, units + streets), the helicopter's R08 in the pilot's; then R14 and U7+R07 heard.
+Build: code only (`-playerBuildKeepScene`), 2026-10-18 22:36; the round's playable build is Round 46's full build. For Dan to check: a Getaway, a cop call
+   and the helicopter's (does the rotor thump sit right under the voice?).
+
 **Round 46, CHASTAIN LAKES SHORTCUTS REDONE (Dan, 2026-10-18 22:19, after driving Round 44; start after Round 45).** Round 44
 is otherwise accepted (Dan: "The only other issue I found is on the other shortcut"). The two new standing rules at the top of
 this file apply (shortcuts must be a risk; pipes through water are aquarium pipes). One full Build Map at the end.

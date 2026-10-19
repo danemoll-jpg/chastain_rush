@@ -17,21 +17,33 @@ namespace Racer
     // (%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\Sounds\PoliceRadio\, read at run time: no rebuild for new clips), then the built-in
     // SourceArt folder copied beside the exe (PoliceRadio\ in the build's data); none: the line shows as text only. Joined, trimmed and run through
     // Racer's radio effect, one at a time, queued; the music radio ducks under it (LocalRadio), the voice under the music radio's own priority.
+    // Round 45: two voices, Dan's ElevenLabs cop and helicopter pilot. The csv's speaker column: "cop", "pilot" (Air one: R07, R08, U7) or
+    // "cop+pilot" (a piece both can say: the pilot's take is <id>_air.wav). A call with any pilot line in it is the pilot's, whole: every
+    // other piece in it is played from its _air take (none: the call is text only); never two voices in one call. An older scene's csv has
+    // no speaker column: a line that starts "Air one" is the pilot's.
     public static class PoliceRadio
     {
         static Dictionary<string, string> display; static Dictionary<string, string> streetOf;   // id -> text; OSM name -> D id
+        static HashSet<string> pilotLines;   // Round 45: the lines only the pilot says
         public static void Load(string csv)
         {
-            display = new Dictionary<string, string>(); streetOf = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            display = new Dictionary<string, string>(); streetOf = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); pilotLines = new HashSet<string>();
             if (string.IsNullOrEmpty(csv)) return;
             var lines = csv.Replace("\r", "").Split('\n');
+            int speakerCol = Fields(lines[0]).FindIndex(h => h.Trim() == "speaker");
             for (int i = 1; i < lines.Length; i++)
             {
                 var f = Fields(lines[i]); if (f.Count < 2 || string.IsNullOrEmpty(f[0])) continue;
                 string id = f[0].Trim(), text = f[1].Trim(); display[id] = text;
                 if (f.Count >= 4 && id.StartsWith("D")) foreach (var n in f[3].Split(';', '|')) { var nm = n.Trim(); if (nm.Length > 0 && !streetOf.ContainsKey(nm)) streetOf[nm] = id; }
+                string sp = speakerCol >= 0 && f.Count > speakerCol ? f[speakerCol].Trim().ToLowerInvariant() : text.StartsWith("Air one") ? "pilot" : "cop";
+                if (sp == "pilot") pilotLines.Add(id);
             }
         }
+        // Round 45: the pilot speaks this call (any of its pieces is a pilot line)
+        public static bool IsPilotCall(string[] ids) { Ensure(); return ids != null && ids.Any(id => id != null && pilotLines.Contains(id)); }
+        // the file a piece is played from in a call: its own, or in a pilot call a cop piece's pilot take
+        public static string ClipId(string id, bool pilotCall) { Ensure(); return pilotCall && !pilotLines.Contains(id) ? id + "_air" : id; }
         static List<string> Fields(string line)
         {
             var r = new List<string>(); var cur = new System.Text.StringBuilder(); bool q = false;
@@ -43,7 +55,7 @@ namespace Racer
             }
             r.Add(cur.ToString()); return r;
         }
-        static void Ensure() { if (display == null) Load(PoliceRadioScript.Instance ? PoliceRadioScript.Instance.csv : ""); }
+        static void Ensure() { if (display == null || pilotLines == null) Load(PoliceRadioScript.Instance ? PoliceRadioScript.Instance.csv : ""); }
         public static bool Has(string id) { Ensure(); return display.ContainsKey(id); }
 
         // the words on screen: the pieces joined ("Suspect heading north on..." + "Canton Road." -> "Suspect heading north on Canton Road.")
@@ -138,8 +150,9 @@ namespace Racer
             float target = source.isPlaying ? 1 : 0; Duck = Mathf.MoveTowards(Duck, target, Time.unscaledDeltaTime * (target > Duck ? 6f : 1.5f));
             if (source.isPlaying || Time.unscaledTime < busyUntil || queue.Count == 0) return;
             var item = queue.Dequeue(); if (Time.unscaledTime - item.at > 8 && !item.priority) return;
-            var clip = Build(item.ids); if (!clip) { Played.Add($"{Time.unscaledTime:F1}s {string.Join("+", item.ids)} text only [{lastSources}]"); return; }
-            Played.Add($"{Time.unscaledTime:F1}s {string.Join("+", item.ids)} {clip.length:F2}s [{lastSources}]"); currentPriority = item.priority; source.clip = clip; source.Play(); busyUntil = Time.unscaledTime + clip.length + .25f;
+            bool pilot = PoliceRadio.IsPilotCall(item.ids); string set = pilot ? "pilot" : "cop";   // Round 45: which voice set the call is played from
+            var clip = Build(item.ids, pilot); if (!clip) { Played.Add($"{Time.unscaledTime:F1}s {string.Join("+", item.ids)} text only voice {set} [{lastSources}]"); return; }
+            Played.Add($"{Time.unscaledTime:F1}s {string.Join("+", item.ids)} {clip.length:F2}s voice {set} [{lastSources}]"); currentPriority = item.priority; source.clip = clip; source.Play(); busyUntil = Time.unscaledTime + clip.length + .25f;
         }
 
         // ---- the clips: the drop-in folder first, then the build's own copy of SourceArt/Audio/PoliceRadio
@@ -195,27 +208,43 @@ namespace Racer
             }
             catch (Exception e) { Debug.LogWarning("[PoliceRadio] " + path + ": " + e.Message); return null; }
         }
-        AudioClip Build(string[] ids)
+        AudioClip Build(string[] ids, bool pilot)
         {
-            var parts = new List<float[]>(); int total = 0; var sources = new List<string>();
+            var parts = new List<float[]>(); int total = 0; var sources = new List<string>(); bool gap = false;
             foreach (var id in ids)
             {
-                var takes = Takes(id, out var from); sources.Add(id + ":" + from); if (takes.Count == 0) continue;
+                var clipId = PoliceRadio.ClipId(id, pilot);
+                var takes = Takes(clipId, out var from); sources.Add(clipId + ":" + from); if (takes.Count == 0) { gap = true; continue; }
                 var s = takes[rng.Next(takes.Count)]; parts.Add(s); total += s.Length + (int)(Gap * Rate);
             }
             lastSources = string.Join(",", sources);
-            if (parts.Count == 0) return null;
+            if (parts.Count == 0 || (pilot && gap)) return null;   // Round 45: a pilot call missing a pilot take is text only (never the cop's voice in it)
             var line = new float[total]; int at = 0; foreach (var p in parts) { Array.Copy(p, 0, line, at, p.Length); at += p.Length + (int)(Gap * Rate); }
-            var shaped = Radio(line); var clip = AudioClip.Create("Police radio " + string.Join("+", ids), shaped.Length, 1, Rate, false); clip.SetData(shaped, 0); return clip;
+            var shaped = Radio(line, pilot); var clip = AudioClip.Create("Police radio " + string.Join("+", ids), shaped.Length, 1, Rate, false); clip.SetData(shaped, 0); return clip;
         }
         // Racer's radio effect: high-pass 300 Hz, low-pass 3,400 Hz, a light tanh distortion, a click and a burst of static at each end
-        float[] Radio(float[] x)
+        float[] Radio(float[] x, bool pilot = false)
         {
             Biquad(x, 300, true); Biquad(x, 3400, false);
             float peak = 0; foreach (var v in x) peak = Mathf.Max(peak, Mathf.Abs(v)); float gain = peak > 1e-4f ? .8f / peak : 1; float drive = 1.7f, norm = (float)Math.Tanh(drive);
+            if (pilot) Rotor(x, peak);   // Round 45: the helicopter's rotor thumping under the pilot's voice, inside the radio's band
             for (int i = 0; i < x.Length; i++) x[i] = (float)Math.Tanh(drive * x[i] * gain) / norm * .85f;
             int lead = (int)(.16f * Rate), tail = (int)(.12f * Rate); var y = new float[x.Length + lead + tail]; Array.Copy(x, 0, y, lead, x.Length);
             Burst(y, 0, lead, .5f); Burst(y, lead + x.Length, tail, .4f); return y;
+        }
+        // Round 45: a low rotor thump, about 4.6 blade passes a second: band-limited noise and a 95 Hz body (its harmonics pass the radio's
+        // high-pass through the distortion after), each pass a sharp attack and a quick fall, about a quarter of the voice's peak
+        void Rotor(float[] x, float voicePeak)
+        {
+            var n = new float[x.Length]; double phase = 0;
+            for (int i = 0; i < x.Length; i++) n[i] = (float)(rng.NextDouble() * 2 - 1);
+            Biquad(n, 700, false); Biquad(n, 300, true); float np = 1e-4f; foreach (var v in n) np = Mathf.Max(np, Mathf.Abs(v));
+            for (int i = 0; i < x.Length; i++)
+            {
+                phase += 4.6 / Rate; float t = (float)(phase - Math.Floor(phase)); float env = Mathf.Exp(-t * 9f) * Mathf.Clamp01(t * 60f);
+                float body = Mathf.Sin(2 * Mathf.PI * 95f * i / Rate) * .5f + n[i] / np;
+                x[i] += body * env * voicePeak * .28f;
+            }
         }
         void Burst(float[] y, int start, int length, float click)
         {
