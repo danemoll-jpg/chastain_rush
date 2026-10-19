@@ -15,9 +15,8 @@ using UnityEngine.Rendering;
 //                    the water pouring over its lip, its shaft down to LD (Data/pipes/network.json; its roof open under the shaft) where B28
 //                    runs under the lake to MH14's riser in North Lakeside Drive. LakeDrain takes a vehicle that comes into the bell down the
 //                    shaft and sends it on into B28 (not a ramp: a scripted drop is allowed for it, the standing rule of 2026-10-17)
-//   WJ               the lake jump's pile of dredging spoil on West Chastain Lake's north shore (MapBuilder.BigJumps.cs, look "dirtpile",
-//                    'physics': a real jump, no launch control), its landing zone, worn tracks from North Lakeside Drive and a knocked-over
-//                    barricade (the hint at the turn-off)
+//   WJ               Round 46: the boat jump (MapBuilder.LakesBoat.cs: a dock, a pontoon party boat, its water slide the ramp; a real
+//                    jump, no launch control) and its landing zone (Round 44's pile of dredging spoil is gone)
 //   cleared lines    no trees or back-yard fences on the trail, the shortcuts' ways, the flight's last meters and the landing
 namespace ChastainRush
 {
@@ -28,6 +27,7 @@ namespace ChastainRush
             public float[] trail, concrete_to, bridge, pier_root, pier_dir, drain, drain_exit, drain_tracks, drain_hint;
             public float trail_w, bridge_half, pier_len, pier_half, gazebo_half, drain_r, shaft_r;
             public string drain_chamber;
+            public LakesBoatData boat;   // Round 46: the boat jump (MapBuilder.LakesBoat.cs)
         }
         [Serializable] class LakesTrackJson { public LakesExtraData lakes; }
         const string LakesTrackFile = "Data/tracks/chastain_lakes.json";
@@ -51,7 +51,8 @@ namespace ChastainRush
                     var go = new GameObject("Landing zone " + z.id); go.transform.SetParent(root, false);
                     go.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray();
                 }
-            BuildBigJumps(terrain, mats, root, LakesNow.Data.big_jumps, "Lake jump pile");
+            BuildBigJumps(terrain, mats, root, LakesNow.Data.big_jumps, "Lake jump pile");   // none since Round 46 (the boat jump)
+            BuildLakeBoat(terrain, mats, root, LakesExtra.boat);
             BuildLakeTrail(terrain, mats, root, LakesExtra);
             BuildLakeDrain(terrain, mats, root, LakesExtra);
             Debug.Log($"[Round44] Chastain Lakes race: the trail, the lake drain, {LakesNow.Data.big_jumps?.Length ?? 0} pile; {LakesNow.TreesRemoved} trees kept off the trail and the shortcuts' lines");

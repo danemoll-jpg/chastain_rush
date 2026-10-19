@@ -7,9 +7,10 @@ One lap, forward only, counterclockwise round the lakes (Dan's arrows):
      (its caution tape and 2x4s breakable), north along the dam's crest with the lake on the left, onto Bells Ferry Road
   4. Bells Ferry Road north to North Lakeside Drive, left: the lap
 Shortcuts (Dan's two red lines):
-  W "Lake jump": off North Lakeside Drive westbound, between houses 142 and 143, down the back yards to a pile of dredging spoil on
-     West Chastain Lake's north shore, a real jump (physics only) over the lake's west arm onto its west shore, down past house 140
-     onto Lakeside Drive. Skips the west loop.
+  W "Boat jump" (Round 46; Round 44's spoil pile is gone): off North Lakeside Drive westbound by Bankside Point, down between houses
+     146 and 147 to a dock on West Chastain Lake's north shore, onto a pontoon party boat tied up off its end and up its water slide,
+     a real jump (physics only) down the lake's south arm (77 m of water) onto Lakeside Drive at Lakeside Point (MapBuilder.LakesBoat.cs).
+     Skips the west loop and Lakeside Drive's west end.
   E "Lake drain": off Lakeside Drive just short of the lot, across the lawn, along the gazebo pier and through the gazebo (its far
      railing breaks), off the end into the lake drain (a morning-glory spillway, MapBuilder.LakesRace.cs), down its shaft into LD and
      along B28 (Tools/mapgen/pipe_network.py) under the lake, up MH14's riser and out of the manhole in North Lakeside Drive, facing
@@ -20,7 +21,7 @@ Hand choices are the constants below; everything else is computed (re-run after 
 Assets/Generated/terrain.r16 and Data/pipes/network.json). It writes:
   Data/routes/chastain_lakes.json   the race (RaceRoute.cs format)
   Data/tracks/chastain_lakes.json   what the map build makes (MapBuilder.LakesRace.cs): the trail, the widened footbridge, pier and
-                                    gazebo, the lake drain, the spoil pile (big_jumps, physics only), landing zones, cleared lines, grades
+                                    gazebo, the lake drain, the boat jump (lakes.boat), landing zones, cleared lines, grades
 Picture for checking (git-ignored, it shows houses): local/round44/layout.png with --plot.
 
 Usage: python Tools/mapgen/make_lakes_route.py [--plot]
@@ -140,15 +141,21 @@ CHECKPOINTS = [
     (1361.0, 1200.0, "the dam"),
     (1385.0, 1310.0, "Bells Ferry Road"),
 ]
-# W, the lake jump: the turn-off, the gap between 142 and 143, down the yards to the pile; the pile; on from the landing
-# the gap between 142 and 143 is 5.3 m at its narrowest (Round 40's crest cut threads 5.5 m): the line down its middle, no house moved
-W_CTRL = [(500.0, 1500.0), (496.0, 1487.0), (494.8, 1477.0), (495.4, 1470.0), (496.6, 1462.0), (497.8, 1455.0), (500.5, 1440.0)]
-W_LIP = (505.5, 1399.5)              # on the north shore, 1 m short of the water
-W_BEARING = 186.0
-W_PILE = dict(height=3.0, angle=24.0, ramp=13.0, width=7.0, back=24.0)
-W_AFTER = [(519.0, 1318.0), (529.5, 1300.0), (532.0, 1286.0)]   # past house 140's east end, west of the lake arm's tip (its bed and the 3 m bank up to the road east of x 535)
-W_JOIN = (532.0, 1264.0)
-W_DESIGN = 28.0                      # the AI's speed off the pile
+# W, the boat jump (Round 46, Dan 2026-10-18 22:19: "a boat off the dock that has a large slide on it that can be used for a ramp"; Round 44's
+# spoil pile and its narrow crossing are gone): off North Lakeside Drive by Bankside Point, down between houses 146 and 147 to a dock on West
+# Chastain Lake's north shore; a pontoon party boat tied up off its end, its big water slide the ramp (driven up from the main deck to its top
+# over the bow); a real jump (physics alone) down the lake's south arm, 77 m of water on the line, onto Lakeside Drive at Lakeside Point.
+# The run-up is the line measured in the exe (Round 46: 34.4 to 37.5 m/s at the shore, flat out, every offered vehicle)
+W_RUN = [(578.5, 1503.0), (574.8, 1450.0), (571.5, 1410.0)]
+W_BEARING = 184.0
+W_LIP = (567.3, 1352.0)               # the slide's top over the boat's bow
+# a big two-deck pontoon party boat (20 m, 7 m beam), its main deck 1.0 m over the water; its slide tops out 4.5 m over the water, 23 degrees
+# at the top (a curve from the main deck, as a slide's run-out is); the chute 4.6 m wide between low walls
+BOAT = dict(lip_over=4.5, angle=23.0, deck_over=1.0, beam=7.0, chute=4.6, length=20.0, dock_w=5.0, wall=0.6)
+W_DESIGN = 40.0                       # the AI flat out down the run-up (no vehicle reaches it there)
+W_SLIP = 27.0                         # a sloppy AI try: off the slide at this, into the lake
+W_REJOIN_PAST = 35.0                  # rejoins the lap this far east of Lakeside Point
+W_SIGN = (589.0, 1496.6)              # the hint: a PARTY sign with balloons on North Lakeside Drive's south verge, facing the westbound lap
 # E, the lake drain: off Lakeside Drive, across the lawn, onto the pier on its line; the drain 9.5 m past the gazebo's end
 PIER_ROOT = (1301.5, 1098.5); PIER_DIR = (-0.825, 0.565); PIER_LEN = 15.0; GAZEBO_HALF = 3.5; PIER_HW = 2.2
 DRAIN_AT = 31.0                      # along the pier's line from its root (LD in pipe_network.py stands here)
@@ -223,47 +230,52 @@ for i, c in enumerate(cps, 1): c["id"] = i
 print(f"gate at s {gate_s}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps))
 def forgiven(sa, sb): return [c["id"] for c in cps if (c["s"] - sa) % L_lap < (sb - sa) % L_lap]
 
-# ---------------------------------------------------------------- W, the lake jump (a real jump: physics only, the landing sized to it)
-dW = bdir(W_BEARING); W_FOOT = (W_LIP[0] - dW[0] * W_PILE["ramp"], W_LIP[1] - dW[1] * W_PILE["ramp"])
-w_lip_y = ground(*W_LIP) + W_PILE["height"]
+# ---------------------------------------------------------------- W, the boat jump (a real jump: physics only, the landing sized to it)
+dW = bdir(W_BEARING)
+deck_yW, w_lip_y = WEST_Y + BOAT["deck_over"], WEST_Y + BOAT["lip_over"]
+kW = math.tan(math.radians(BOAT["angle"])); slide_len = 2 * (w_lip_y - deck_yW) / kW
+STERN = (W_LIP[0] - dW[0] * BOAT["length"], W_LIP[1] - dW[1] * BOAT["length"])
+if not inside(STERN, WEST): raise SystemExit(f"the boat's stern {STERN} is not in the water")
+_k = next(k for k in range(1, 200) if not inside((STERN[0] - dW[0] * k * 0.5, STERN[1] - dW[1] * k * 0.5), WEST))
+DOCK_ROOT = (STERN[0] - dW[0] * (_k * 0.5 + 2.0), STERN[1] - dW[1] * (_k * 0.5 + 2.0))   # 2 m up the bank from the water's edge
+SLIDE_FOOT = (W_LIP[0] - dW[0] * slide_len, W_LIP[1] - dW[1] * slide_len)
 def flight(L, d, y0, v, ang, max_t=6.0):
-    vx, vy = v * math.cos(math.radians(ang)), v * math.sin(math.radians(ang)); t = 0.0; top = y0; wet = False
+    vx, vy = v * math.cos(math.radians(ang)), v * math.sin(math.radians(ang)); t = 0.0; top = y0
     while t < max_t:
         t += 0.01; s = vx * t; q = (L[0] + d[0] * s, L[1] + d[1] * s); y = y0 + vy * t - 4.905 * t * t; top = max(top, y)
         g = WEST_Y if inside(q, WEST) else ground(*q)
         if t > 0.15 and y <= g: return {"t": round(t, 2), "dist": round(s, 1), "at": (round(q[0], 1), round(q[1], 1)), "y": round(y, 2), "top": round(top - y0, 1), "wet": inside(q, WEST)}
     return None
-wet_from = next(k * 0.5 for k in range(400) if inside((W_LIP[0] + dW[0] * k * 0.5, W_LIP[1] + dW[1] * k * 0.5), WEST))
-wet_to = next(k * 0.5 for k in range(int(wet_from * 2) + 1, 400) if not inside((W_LIP[0] + dW[0] * k * 0.5, W_LIP[1] + dW[1] * k * 0.5), WEST))
-print(f"W lake jump: lip ({W_LIP[0]}, {W_LIP[1]}) {w_lip_y:.2f} m ({W_PILE['height']} m over the shore, {W_PILE['angle']} deg), bearing {W_BEARING}; "
-      f"the water from {wet_from:.1f} m to {wet_to:.1f} m out ({wet_to - wet_from:.1f} m across), West Chastain Lake at {WEST_Y:.2f} m")
+wet_to = next(k * 0.5 for k in range(1, 400) if not inside((W_LIP[0] + dW[0] * k * 0.5, W_LIP[1] + dW[1] * k * 0.5), WEST))
+print(f"W boat jump: dock {math.dist(DOCK_ROOT, STERN):.1f} m from ({DOCK_ROOT[0]:.1f}, {DOCK_ROOT[1]:.1f}); the boat {BOAT['length']} m, deck {deck_yW:.2f} m; the slide {slide_len:.1f} m "
+      f"to its top at ({W_LIP[0]}, {W_LIP[1]}) {w_lip_y:.2f} m ({BOAT['lip_over']} m over the water, {BOAT['angle']} deg), bearing {W_BEARING}; "
+      f"the water {wet_to:.1f} m on from the top (West Chastain Lake at {WEST_Y:.2f} m)")
 w_flights = {}
-for v in (18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0):
-    f = flight(W_LIP, dW, w_lip_y, v, W_PILE["angle"]); w_flights[v] = f
+for v in (24.0, 26.0, 28.0, 30.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0, 38.0):
+    f = flight(W_LIP, dW, w_lip_y, v, BOAT["angle"]); w_flights[v] = f
     near = {i: round(poly_dist(f["at"], ring), 1) for i, ring, h in B if near_box(i, f["at"], 8.0) and poly_dist(f["at"], ring) < 8.0}
-    print(f"    off the pile at {v:.0f} m/s: {f['t']:.2f} s, {f['dist']:.0f} m, {f['top']:.1f} m up, down at {f['at']} {f['y']:.1f} m{' IN THE LAKE' if f['wet'] else ''}; houses within 8 m {near}")
-w_min = min(v for v, f in w_flights.items() if not f["wet"])
-fD = w_flights[W_DESIGN]
-# the line: road to the pile's foot, the pile, the flight (straight on), the landing, on to Lakeside Drive
-s_w0 = S(W_CTRL[0]); s_w1 = S(W_JOIN) + 6.0
-w_pre = resample(chaikin([point_at(lap, s_w0, C)] + W_CTRL[1:] + [W_FOOT], 3), 2.0)
-w_pile = resample([W_FOOT, W_LIP], 2.0)[1:]
-w_fl = [(W_LIP[0] + dW[0] * k, W_LIP[1] + dW[1] * k) for k in range(2, int(fD["dist"]), 2)]
-w_post = resample(chaikin([fD["at"]] + W_AFTER + [point_at(lap, s_w1, C)], 3), 2.0)
-wpath = w_pre + w_pile + w_fl + w_post
-def pile_y(s):   # the pile's top 's' m from its foot (MapBuilder.BigJumps.cs KickerProfile)
-    y0 = ground(*W_FOOT) - 0.02; k = math.tan(math.radians(W_PILE["angle"])); R = w_lip_y - y0; Lk = min(W_PILE["ramp"], 2 * R / k); u = max(0.0, s - (W_PILE["ramp"] - Lk))
-    return y0 + k * u * u / (2 * Lk)
-_vx, _vy = W_DESIGN * math.cos(math.radians(W_PILE["angle"])), W_DESIGN * math.sin(math.radians(W_PILE["angle"]))
-wpath_y = [round(ground(*q), 2) for q in w_pre] + [round(pile_y(math.dist(W_FOOT, q)), 2) for q in w_pile] + \
+    print(f"    off the slide at {v:.0f} m/s: {f['t']:.2f} s, {f['dist']:.0f} m, {f['top']:.1f} m up, down at {f['at']} {f['y']:.1f} m{' IN THE LAKE' if f['wet'] else ''}; houses within 8 m {near}")
+# the line: the turn-off, the run-up, the dock, the boat and its slide, the flight (straight on), the landing at Lakeside Point, east on the lap
+s_w0 = S((592.0, 1503.0))
+turn = chaikin([point_at(lap, s_w0, C), (581.0, 1503.5), W_RUN[0], (577.6, 1490.0)], 3)
+w_pre = resample(turn + [W_RUN[1], W_RUN[2], DOCK_ROOT], 2.0)
+w_boat = resample([DOCK_ROOT, STERN, W_LIP], 2.0)[1:]
+LAND = (W_LIP[0] + dW[0] * 92.0, W_LIP[1] + dW[1] * 92.0)   # Lakeside Point's mouth (a lip speed of about 34 m/s)
+s_land = S(LAND); s_w1 = s_land + W_REJOIN_PAST
+w_fl = [(W_LIP[0] + dW[0] * k, W_LIP[1] + dW[1] * k) for k in range(2, 92, 2)]
+w_post = resample(chaikin([LAND, (561.6, 1255.0), (568.0, 1254.0), point_at(lap, s_land + 14.0, C), point_at(lap, s_w1, C)], 3), 2.0)
+wpath = w_pre + w_boat + w_fl + w_post
+def slide_y(q):
+    u = math.dist(SLIDE_FOOT, q) if math.dist(STERN, q) > math.dist(STERN, SLIDE_FOOT) else 0.0
+    return deck_yW + kW * u * u / (2 * slide_len)
+_vx, _vy = 34.0 * math.cos(math.radians(BOAT["angle"])), 34.0 * math.sin(math.radians(BOAT["angle"]))
+wpath_y = [round(ground(*q), 2) for q in w_pre] + [round(min(ground(*q), deck_yW) if not inside(q, WEST) else slide_y(q), 2) for q in w_boat] + \
           [round(w_lip_y + _vy * (math.dist(W_LIP, q) / _vx) - 4.905 * (math.dist(W_LIP, q) / _vx) ** 2, 2) for q in w_fl] + [round(ground(*q), 2) for q in w_post]
 gap_houses = {i: round(min(poly_dist(q, ring) for q in w_pre), 1) for i, ring, h in B if any(near_box(i, q, 8.0) for q in w_pre) and min(poly_dist(q, ring) for q in w_pre) < 8.0}
-post_houses = {i: round(min(poly_dist(q, ring) for q in w_post), 1) for i, ring, h in B if any(near_box(i, q, 8.0) for q in w_post) and min(poly_dist(q, ring) for q in w_post) < 8.0}
-post_water = min(ring_dist(q, WEST) if not inside(q, WEST) else -1.0 for q in w_post)
 fg_w = forgiven(s_w0, s_w1)
 print(f"W: leaves the lap at s {s_w0:.0f}, rejoins at s {s_w1:.0f}: {cum(wpath)[-1]:.0f} m against {(s_w1 - s_w0) % L_lap:.0f} m on the lap; forgives CP {fg_w}; "
-      f"clears the water from {w_min:.0f} m/s; houses by the way down (m): {gap_houses}; by the way on: {post_houses}, the water {post_water:.1f} m from it at least")
-sWF, sWL, sWLand = nearest_s(wpath, W_FOOT)[1], nearest_s(wpath, W_LIP)[1], nearest_s(wpath, fD["at"])[1]
+      f"houses by the run-up (m): {gap_houses}")
+sWDock, sWLip, sWLand = nearest_s(wpath, DOCK_ROOT)[1], nearest_s(wpath, W_LIP)[1], nearest_s(wpath, LAND)[1]
 
 # ---------------------------------------------------------------- E, the lake drain
 pd = (PIER_DIR[0] / math.hypot(*PIER_DIR), PIER_DIR[1] / math.hypot(*PIER_DIR))
@@ -306,12 +318,12 @@ for v in (8.0, 12.0, 16.0, 20.0, 24.0, 28.0):
     t = math.sqrt(2 * (deck_y + 0.6 - EAST_Y) / 9.81); print(f"    off the gazebo at {v:.0f} m/s: down to the water {v * t:.1f} m out (the catch from {DRAIN_AT - PIER_LEN - 2 * GAZEBO_HALF - DRAIN_R:.1f} to {DRAIN_AT - PIER_LEN - 2 * GAZEBO_HALF + DRAIN_R:.1f} m)")
 
 shortcuts = [
-    {"id": "w_lake_jump", "name": "Lake jump", "direction": "forward", "path": flat(wpath), "path_y": wpath_y, "half_width_m": 3.5,
+    {"id": "w_lake_jump", "name": "Boat jump", "direction": "forward", "path": flat(wpath), "path_y": wpath_y, "half_width_m": 3.5,
      "entry_inset_m": 14.0, "entry_margin_m": 1.5, "forgives": fg_w, "ai_speed": 18.0,
-     # through the gap slow, down the yards to the pile at the jump's speed, easy after the landing
-     "ai_profile": [round(v, 1) for v in (0.0, 14.0, 30.0, 15.0, sWF - 40.0, 20.0, sWF - 6.0, W_DESIGN, sWL, W_DESIGN, sWLand + 4.0, 15.0, cum(wpath)[-1] - 8.0, 16.0)],
-     # a sloppy try: too hot through the gap (a house's corner, a fence) or long off the pile
-     "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 17.0, 30.0, 19.0, sWF - 40.0, 24.0, sWF - 6.0, 33.0, sWL, 33.0, sWLand + 4.0, 15.0, cum(wpath)[-1] - 8.0, 16.0)]},
+     # the turn off the road, then flat out down the run-up, the dock and up the slide; easy after the landing (a hard left onto Lakeside Drive)
+     "ai_profile": [round(v, 1) for v in (0.0, 16.0, 26.0, 18.0, 46.0, W_DESIGN, sWLip, W_DESIGN, sWLand + 2.0, 14.0, cum(wpath)[-1] - 8.0, 16.0)],
+     # a sloppy try (Dan's rule: the AI is not perfect): eased off down the run-up, too slow up the slide, into the lake
+     "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 16.0, 26.0, 18.0, 46.0, 24.0, sWDock, W_SLIP, sWLip, W_SLIP, sWLand + 2.0, 14.0, cum(wpath)[-1] - 8.0, 16.0)]},
     {"id": "e_lake_drain", "name": "Lake drain", "direction": "forward", "path": flat(epath), "path_y": epath_y, "half_width_m": 3.0,
      "entry_inset_m": round(sEPier + 4.0, 1), "entry_margin_m": 1.0, "forgives": fg_e, "ai_speed": 18.0,
      # across the lawn and onto the pier lined up, along it and off the end at the pier's speed, flat out along the tube and up the riser
@@ -332,13 +344,14 @@ def walk(p, k, step):
             yield arc + d, (a[0] + (b[0] - a[0]) * d / seg, a[1] + (b[1] - a[1]) * d / seg), ((b[0] - a[0]) / seg, (b[1] - a[1]) / seg)
         arc += seg; i += step
 roads_pts = [pts(r["points"]) for r in roads]
+CLEAR_OVERRIDE = {9134890: 45.0}   # Round 46: Lakeside Point's barrier 45 m down it (the boat jump's long landings run out on it)
 def closures_for(lap, sc_paths):
     def course_dist(q): return min(seg_dist(q, a, b) for a, b in zip(lap[:-1], lap[1:]))
     def follow(ri, k, step, arc0, depth, seen):
         p = roads_pts[ri]; last = None
         for d, q, tan in walk(p, k, step):
             last = (arc0 + d, q, tan)
-            if course_dist(q) >= SETTINGS["closure_clear_m"]: return (arc0 + d, q, tan, ri)
+            if course_dist(q) >= CLEAR_OVERRIDE.get(roads[ri]["osm_id"], SETTINGS["closure_clear_m"]): return (arc0 + d, q, tan, ri)
             if arc0 + d > 120: return None
         if last is None or depth >= 3: return None
         end = p[-1] if step > 0 else p[0]
@@ -400,17 +413,11 @@ def zone(L, d, a, b, half_a, half_b):
     n = (-d[1], d[0])
     return [round(v, 2) for q in [(L[0] + d[0] * a + n[0] * half_a, L[1] + d[1] * a + n[1] * half_a), (L[0] + d[0] * b + n[0] * half_b, L[1] + d[1] * b + n[1] * half_b),
                                    (L[0] + d[0] * b - n[0] * half_b, L[1] + d[1] * b - n[1] * half_b), (L[0] + d[0] * a - n[0] * half_a, L[1] + d[1] * a - n[1] * half_a)] for v in q]
-land_from = max(wet_to - 2.0, w_flights[min(w_flights)]["dist"])
-land_to = w_flights[34.0]["dist"] + 5.0
-pile = {"id": "WJ", "look": "dirtpile", "physics": True, "s_lip": -1.0, "lip": [round(W_LIP[0], 2), round(W_LIP[1], 2)], "dir": [round(dW[0], 5), round(dW[1], 5)],
-        "height": W_PILE["height"], "lip_y": round(w_lip_y, 3), "angle_deg": W_PILE["angle"], "ramp_m": W_PILE["ramp"], "width": W_PILE["width"],
-        "land_from": round(land_from, 1), "land_to": round(land_to, 1), "vmin": 0.0, "vmax": 0.0, "design": W_DESIGN, "back_angle": W_PILE["back"],
-        "flights": {str(v): [f["t"], f["dist"], f["top"]] for v, f in w_flights.items()},
-        "tracks": flat(w_pre[: int(max(2, (sWF - 20.0) / 2.0))]),
-        "hint": {"kind": "barricade", "x": round(W_CTRL[1][0] - 4.5, 2), "z": round(W_CTRL[1][1] + 1.0, 2), "yaw": 160.0}}
+land_from = wet_to - 2.0
+land_to = w_flights[38.0]["dist"] + 8.0
 landings = [{"id": "WJ", "poly": zone(W_LIP, dW, land_from, land_to, 9.0, 12.0)}]
-clear = [{"id": "W the way down to the pile", "points": flat(w_pre[::2] + [w_pre[-1]]), "half": 4.5},
-         {"id": "W the pile and the flight's last meters", "points": flat([W_FOOT, W_LIP]), "half": 6.0},
+clear = [{"id": "W the run-up to the dock", "points": flat(w_pre[::2] + [w_pre[-1]]), "half": 5.0},
+         {"id": "W the dock and the boat", "points": flat([DOCK_ROOT, W_LIP]), "half": 6.0},
          {"id": "W the landing", "points": flat([(W_LIP[0] + dW[0] * land_from, W_LIP[1] + dW[1] * land_from), (W_LIP[0] + dW[0] * land_to, W_LIP[1] + dW[1] * land_to)]), "half": 11.0},
          {"id": "W the way on to Lakeside Drive", "points": flat(w_post[::2] + [w_post[-1]]), "half": 4.5},
          {"id": "E the lawn to the pier", "points": flat(e_pre[::2] + [e_pre[-1]]), "half": 4.5},
@@ -432,13 +439,10 @@ def smooth_line(p, sig, k0, k1):
     return [p[k] for k in range(k0, k1)], [round(sum(g_[j] * math.exp(-((c_[j] - c_[k]) / sig) ** 2 / 2) for j in range(len(p))) / sum(math.exp(-((c_[j] - c_[k]) / sig) ** 2 / 2) for j in range(len(p))), 2) for k in range(k0, k1)]
 k0w = next(k for k, q in enumerate(w_pre) if nearest_s(lap, q)[0] > 12.0); k1w = len(w_pre) - 3
 gw, gwy = smooth_line(w_pre, 5.0, k0w, k1w)
-k1p = next(k for k in range(len(w_post) - 1, -1, -1) if nearest_s(lap, w_post[k])[0] > 10.0)
-gp, gpy = smooth_line(w_post, 5.0, 3, k1p)
 k1e = len(e_pre) - 2; k0e = next(k for k, q in enumerate(e_pre) if nearest_s(lap, q)[0] > 6.0)
 ge, gey = smooth_line(e_pre, 5.0, k0e, k1e)
 grades = [{"id": "the lake trail", "points": flat(grade_trail), "y": grade_trail_y, "half": 2.5, "blend": 1.0},   # its middle 5 m (the tread's edges follow the ground): never into the lake (4.2 m off it)
-          {"id": "W the way down to the pile", "points": flat(gw), "y": gwy, "half": 2.5, "blend": 2.0},
-          {"id": "W the way on to Lakeside Drive", "points": flat(gp), "y": gpy, "half": 2.5, "blend": 2.0},
+          {"id": "W the run-up to the dock", "points": flat(gw), "y": gwy, "half": 2.5, "blend": 2.0},
           {"id": "E the lawn to the pier", "points": flat(ge), "y": gey, "half": 2.5, "blend": 2.0}]
 # no grade reaches a road (the roads are the terrain flattened: an edit there is a bump) or the water (a lake's bed): such points are left out
 ROAD_SEGS = [(a, b, r["width"] / 2.0) for r in roads for a, b in zip(pts(r["points"])[:-1], pts(r["points"])[1:])]
@@ -463,9 +467,15 @@ lakes = {"trail": flat(trail), "trail_w": TRAIL_W, "concrete_to": flat([BRIDGE_S
          "pier_root": list(PIER_ROOT), "pier_dir": [round(pd[0], 5), round(pd[1], 5)], "pier_len": PIER_LEN, "pier_half": PIER_HW, "gazebo_half": GAZEBO_HALF,
          "drain": [round(DRAIN[0], 2), round(DRAIN[1], 2)], "drain_r": DRAIN_R, "shaft_r": SHAFT_R, "drain_chamber": "LD",
          "drain_exit": [round(tube3[0][0], 2), round(tube3[0][1], 2), round(tube3[0][2], 2)], "drain_tracks": flat(e_pre[2:-1]),
-         "drain_hint": [round(e_pre[len(e_pre) // 3][0] + 3.0, 2), round(e_pre[len(e_pre) // 3][1] - 2.0, 2), 300.0]}
-track = {"note": "Round 44: the Chastain Lakes race's world pieces, from Tools/mapgen/make_lakes_route.py (MapBuilder.LakesRace.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [pile], "landing_zones": landings, "clear_lines": clear, "break_lines": [], "grades": grades, "lakes": lakes}
+         "drain_hint": [round(e_pre[len(e_pre) // 3][0] + 3.0, 2), round(e_pre[len(e_pre) // 3][1] - 2.0, 2), 300.0],
+         # Round 46: the boat jump (MapBuilder.LakesBoat.cs)
+         "boat": {"lip": [round(W_LIP[0], 2), round(W_LIP[1], 2)], "dir": [round(dW[0], 5), round(dW[1], 5)], "lip_y": round(w_lip_y, 3), "deck_y": round(deck_yW, 3),
+                  "water_y": round(WEST_Y, 3), "angle_deg": BOAT["angle"], "slide_m": round(slide_len, 2), "chute": BOAT["chute"], "wall": BOAT["wall"], "beam": BOAT["beam"],
+                  "length": BOAT["length"], "dock_root": [round(DOCK_ROOT[0], 2), round(DOCK_ROOT[1], 2)], "dock_w": BOAT["dock_w"],
+                  "sign": [W_SIGN[0], W_SIGN[1], 90.0], "tracks": flat(w_pre[3:int(len(w_pre) * 0.75)]),
+                  "flights": {str(v): [f["t"], f["dist"], f["top"], f["wet"]] for v, f in w_flights.items()}}}
+track = {"note": "Round 44 (Round 46: the boat jump): the Chastain Lakes race's world pieces, from Tools/mapgen/make_lakes_route.py (MapBuilder.LakesRace.cs). Coordinates are map meters (= Unity x, z).",
+         "big_jumps": [], "landing_zones": landings, "clear_lines": clear, "break_lines": [], "grades": grades, "lakes": lakes}
 route = dict(SETTINGS)
 route.update({
     "source": "Tools/mapgen/make_lakes_route.py from Data/map.json and Data/pipes/network.json. Coordinates are map meters (= Unity x, z); heights come from the world.",
