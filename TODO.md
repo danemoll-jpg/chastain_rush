@@ -108,13 +108,33 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
-(none: waiting for Dan's next notes)
+**Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN AND HINTS (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
+reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
+No world changes: NO Build Map this round (code and Resources only, then the exe). Short results.
+Dan's assets, in `SourceArt/Title/` (committed by Claude; use them unaltered, convert only as the engine needs):
+- `ChastainRushCover.png` (1672 x 941): the cover art. Title lettering upper centre, the jumping car centre, the bike left;
+  keep its "(c) OpenStreetMap contributors" credit visible (bottom right) on both screens.
+- `TitleVoice_MonsterTruckGuy.mp3` (1.07 s, ElevenLabs): the spoken title, "Chastain Rush".
+- `ChastainRushTheme.mp3` (34.4 s): the title theme.
+A. THE STARTUP TITLE, as Racer's (`Racer/Assets/Scripts/StartupTitle.cs`, its `Resources/Title/`): at launch the cover full screen
+   (cover, not stretched; cropped evenly on other aspect ratios), the voice speaks the title once, the theme plays under it
+   (opening then loop, as Racer splits its theme, or the whole track looped if it does not split cleanly: Code says which), and a
+   "press to continue" prompt (keyboard and controller glyphs) goes on to the title menu. Skipped in check runs as Racer does.
+B. THE LOADING SCREEN, as Racer's (`LoadingScreen.cs`): the same cover as the full-screen picture for every scene load (launch, a
+   race, Free Roam, back to the menu), the real progress bar, what is loading (race / route inset on the map as Racer does) in a
+   dark band along the bottom, clear of the lettering and the car; fades out once the world is built and the first frames rendered.
+C. HINTS: one rotating tip on the loading screen, as Racer's, rewritten for THIS game's real controls and features (check each
+   binding in the code: reset, camera, map, waypoint, bug capture, free look / Trailer Mode, egg hunt, shortcuts, police...).
+   American English.
+Check (exe, minimized, muted except one brief listen to confirm the voice and theme play, then off): launch to the title menu
+by keyboard and by controller; a race and Free Roam load behind the cover with the bar moving; the tips cycle. Pictures: the title
+screen and a loading screen at 1080p and at 4K (the only full-screen use).
+For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips.
 
 ## QUEUED rounds
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
   it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- STARTUP POLISH (2026-10-18): Racer's spoken title, loading screen and hints; Dan: "i Would want 5 but we don't have a cover yet".
 
 ## Previous delivery 1 (newest): Round 50
 **Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
