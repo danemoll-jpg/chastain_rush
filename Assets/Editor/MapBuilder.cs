@@ -106,6 +106,7 @@ namespace ChastainRush
             c.quick = quick;
             ProjectSetup.EnsureUrp();
             var map = c.map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
+            Round47Drives(map);   // Round 47 (B): the drives on Chastain Road at Dan's spot go to their own street
             var meta = c.meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
 
             if (!quick)
@@ -1071,6 +1072,7 @@ namespace ChastainRush
 
         static List<Vector2> Densify(List<Vector2> pts, float step)
         {
+            if (pts.Count == 0) return new List<Vector2>();   // Round 47 (B): a dropped drive has no points
             var o = new List<Vector2> { pts[0] };
             for (int i = 1; i < pts.Count; i++)
             {

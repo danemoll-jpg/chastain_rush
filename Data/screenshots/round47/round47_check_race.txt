@@ -1,0 +1,9 @@
+Round 47 check, 2026-10-19 02:54, the exe, 1280 x 720, muted.
+
+=== A. the reverse race: all laps, 3 AI, traffic Normal, the player parked off the course
+  Chastain Lakes reverse, 2 laps of 2751 m
+PASS  EMBER (Pebble Coupe) finishes the reverse laps, 0 missed  -  total 273.8 s, laps 144.6 / 129.2, missed 0
+PASS  GOLD (Needle 600) finishes the reverse laps, 0 missed  -  total 215.0 s, laps 102.6 / 112.4, missed 0
+PASS  BLUE (Pebble Coupe) finishes the reverse laps, 0 missed  -  total 254.7 s, laps 116.1 / 138.6, missed 0
+
+3 of 3 checks passed.

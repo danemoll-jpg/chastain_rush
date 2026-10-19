@@ -107,7 +107,7 @@ WEST_Y, EAST_Y = pond_level(WEST), pond_level(EAST)
 SETTINGS = {
     "name": "Chastain Lakes",
     "direction": "forward",
-    "directions": ["forward"],       # forward only for now (Dan: reverse later if he wants it)
+    "directions": ["forward", "reverse"],   # Round 47 (A): the reverse lap of its own (loop_rev), no shortcuts that way yet
     "laps": 2,
     "traffic": True,
     "gate_half_width_m": 12.0,
@@ -410,6 +410,55 @@ ai_zones = [{"id": "lot", "s0": round(s_lot - 25.0, 1), "s1": round(s_lot + 30.0
             {"id": "onto Bells Ferry Road", "s0": round(s_bf - 12.0, 1), "s1": round(s_bf + 6.0, 1), "speed": 12.0}]
 
 # ---------------------------------------------------------------- the world pieces (Data/tracks/chastain_lakes.json)
+# ---------------------------------------------------------------- Round 47 (A, Dan 2026-10-19 01:43): the reverse lap, no shortcuts
+# "Can we build the Reverse version of this track ... I don't expect the current short cuts to work and I want to decide on the shortcuts after I
+# drive it in reverse." The same roads and the lake trail driven clockwise, a lap of its own as the reverse Chastain Ridge (RaceRoute: loop_rev and
+# the *_rev fields): on two-way roads the other lane (the forward lap's centerline reversed, set off to its right), the trail north to south.
+# Both shortcuts are closed in a reverse race: a barrier across the boat jump's way between houses 146 and 147 and one across the pier's foot (the
+# lake drain's grate is shut and the PARTY sign and the worn tracks hidden: MapBuilder.LakesBoat.cs / LakesRace.cs, RaceOnly, LakeDrain).
+line_r, sm_r = line[::-1], sm[::-1]
+lap_r = []
+for i in range(N):
+    a, b = line_r[max(0, i - 1)], line_r[min(N - 1, i + 1)]; t = (b[0] - a[0], b[1] - a[1]); n = math.hypot(*t) or 1.0
+    lap_r.append((line_r[i][0] + t[1] / n * sm_r[i], line_r[i][1] - t[0] / n * sm_r[i]))
+lap_r[-1] = lap_r[0]
+Cr = cum(lap_r); L_rev = Cr[-1]
+def SR(q): return nearest_s(lap_r, q)[1]
+gate_s_rev = round(SR(GATE_AT), 1)
+cps_rev = []
+for x, z, label in CHECKPOINTS:
+    s_ = round(SR((x, z)), 1); p_ = point_at(lap_r, s_, Cr); cps_rev.append({"s": s_, "pos": [round(p_[0], 1), round(p_[1], 1)], "label": label})
+cps_rev = sorted(cps_rev, key=lambda c: (c["s"] - gate_s_rev) % L_rev)
+for i, c in enumerate(cps_rev, 1): c["id"] = i
+print(f"reverse lap {L_rev:.0f} m, gate at s {gate_s_rev}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps_rev))
+closures_rev, stubs_rev, merged_rev = closures_for(lap_r, ())
+# a stub the reverse lane passes too near to bar (North Lakeside Drive's 12 m spur at x 645: the lane 4 m nearer its end) keeps the forward barrier
+for st in list(stubs_rev):
+    fw = [dict(c) for c in closures if c["osm_id"] == st["osm_id"]]
+    for c in fw: c["junction_s"] = round(SR(tuple(c["contact"])), 1); c["label"] = f"{c['road']} at lap {c['junction_s']:.0f} m"
+    if fw: closures_rev += fw; stubs_rev.remove(st)
+closures_rev.sort(key=lambda c: c["junction_s"])
+for i, c in enumerate(closures_rev, 1): c["id"] = f"B{i}"
+def shut(cid, label, at, along, width):
+    n = math.hypot(*along); sj = SR(at)
+    return {"road": label, "osm_id": 0, "x": round(at[0], 2), "z": round(at[1], 2), "dx": round(along[0] / n, 4), "dz": round(along[1] / n, 4), "width_m": round(width, 1),
+            "junction_s": round(sj, 1), "contact": [round(at[0], 1), round(at[1], 1)], "arc_m": 0.0, "barrier_on": label, "id": cid, "label": f"{label} (shut in reverse)"}
+# the boat jump: across its way where it passes between houses 146 and 147 (the gap's width, wall to wall)
+_kg = min(range(len(w_pre)), key=lambda k: poly_dist(w_pre[k], pts(m["buildings"][146]["footprint"])) + poly_dist(w_pre[k], pts(m["buildings"][147]["footprint"])))
+_qg = w_pre[_kg]; _gap = poly_dist(_qg, pts(m["buildings"][146]["footprint"])) + poly_dist(_qg, pts(m["buildings"][147]["footprint"]))
+_ga = (w_pre[min(_kg + 1, len(w_pre) - 1)][0] - w_pre[max(_kg - 1, 0)][0], w_pre[min(_kg + 1, len(w_pre) - 1)][1] - w_pre[max(_kg - 1, 0)][1])
+# the lake drain: across the pier's foot, on the lawn 1.5 m short of its root (the deck stands proud of the ground further out)
+_pf = along_pier(-1.5)
+closures_rev += [shut(f"B{len(closures_rev) + 1}", "the boat jump's way", _qg, _ga, _gap), shut(f"B{len(closures_rev) + 2}", "the pier", _pf, pd, 2 * PIER_HW)]
+print(f"reverse closures: {len(closures_rev)} (the boat jump's way shut between 146 and 147, a {_gap:.1f} m gap, at ({_qg[0]:.0f}, {_qg[1]:.0f}); the pier's foot at ({_pf[0]:.0f}, {_pf[1]:.0f})); "
+      f"dead-end stubs not barred: {len(stubs_rev)}")
+s_lot_r, s_br_r, s_bf_r = SR((1322.0, 1084.0)), SR(BRIDGE_S), SR(BF_JOIN)
+s_brn_r = SR(BRIDGE_N)
+ai_zones_rev = [{"id": "off Bells Ferry Road", "s0": round(s_bf_r - 12.0, 1), "s1": round(s_bf_r + 8.0, 1), "speed": 12.0},
+                {"id": "the dam", "s0": round(s_bf_r + 8.0, 1), "s1": round(s_brn_r - 25.0, 1), "speed": 20.0},
+                {"id": "footbridge", "s0": round(s_brn_r - 25.0, 1), "s1": round(s_br_r + 25.0, 1), "speed": 12.0},
+                {"id": "lot", "s0": round(s_lot_r - 30.0, 1), "s1": round(s_lot_r + 25.0, 1), "speed": 14.0}]
+
 def zone(L, d, a, b, half_a, half_b):
     n = (-d[1], d[0])
     return [round(v, 2) for q in [(L[0] + d[0] * a + n[0] * half_a, L[1] + d[1] * a + n[1] * half_a), (L[0] + d[0] * b + n[0] * half_b, L[1] + d[1] * b + n[1] * half_b),
@@ -466,14 +515,14 @@ for gr in grades:
     p = pts(gr["points"]); print(f"  grade {gr['id']}: {len(p)} points, the ground moved by up to {max(abs(a - ground(*q)) for q, a in zip(p, gr['y'])):.2f} m")
 lakes = {"trail": flat(trail), "trail_w": TRAIL_W, "concrete_to": flat([BRIDGE_S]), "bridge": flat([BRIDGE_S, BRIDGE_N]), "bridge_half": 3.4,
          "pier_root": list(PIER_ROOT), "pier_dir": [round(pd[0], 5), round(pd[1], 5)], "pier_len": PIER_LEN, "pier_half": PIER_HW, "gazebo_half": GAZEBO_HALF,
-         "drain": [round(DRAIN[0], 2), round(DRAIN[1], 2)], "drain_r": DRAIN_R, "shaft_r": SHAFT_R, "drain_chamber": "LD",
+         "drain": [round(DRAIN[0], 2), round(DRAIN[1], 2)], "drain_r": DRAIN_R, "shaft_r": SHAFT_R, "drain_chamber": "LD", "shut_reverse_of": SETTINGS["name"],
          "drain_exit": [round(tube3[0][0], 2), round(tube3[0][1], 2), round(tube3[0][2], 2)], "drain_tracks": flat(e_pre[2:-1]),
          "drain_hint": [round(e_pre[len(e_pre) // 3][0] + 3.0, 2), round(e_pre[len(e_pre) // 3][1] - 2.0, 2), 300.0],
          # Round 46: the boat jump (MapBuilder.LakesBoat.cs)
          "boat": {"lip": [round(W_LIP[0], 2), round(W_LIP[1], 2)], "dir": [round(dW[0], 5), round(dW[1], 5)], "lip_y": round(w_lip_y, 3), "deck_y": round(deck_yW, 3),
                   "water_y": round(WEST_Y, 3), "angle_deg": BOAT["angle"], "slide_m": round(slide_len, 2), "chute": BOAT["chute"], "wall": BOAT["wall"], "beam": BOAT["beam"],
                   "length": BOAT["length"], "dock_root": [round(DOCK_ROOT[0], 2), round(DOCK_ROOT[1], 2)], "dock_w": BOAT["dock_w"],
-                  "sign": [W_SIGN[0], W_SIGN[1], 90.0], "tracks": flat(w_pre[3:int(len(w_pre) * 0.75)]),
+                  "sign": [W_SIGN[0], W_SIGN[1], 90.0], "clues_hidden_reverse_of": SETTINGS["name"], "tracks": flat(w_pre[3:int(len(w_pre) * 0.75)]),
                   "flights": {str(v): [f["t"], f["dist"], f["top"], f["wet"]] for v, f in w_flights.items()}}}
 track = {"note": "Round 44 (Round 46: the boat jump): the Chastain Lakes race's world pieces, from Tools/mapgen/make_lakes_route.py (MapBuilder.LakesRace.cs). Coordinates are map meters (= Unity x, z).",
          "big_jumps": [], "landing_zones": landings, "clear_lines": clear, "break_lines": [], "grades": grades, "lakes": lakes}
@@ -483,6 +532,9 @@ route.update({
     "lap_length_m": round(L_lap, 1), "loop": flat(lap), "gate_s": gate_s, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
     "checkpoints": cps, "junctions": merged, "loop_pieces": pieces, "official_shortcuts": shortcuts, "closures": closures,
     "closure_stubs_not_barred": stubs, "ai_zones": ai_zones,
+    # Round 47 (A): the reverse lap of its own (RaceRoute: loop_rev and the *_rev fields); no reverse shortcuts
+    "lap_length_rev_m": round(L_rev, 1), "loop_rev": flat(lap_r), "gate_s_rev": gate_s_rev, "checkpoints_rev": cps_rev, "junctions_rev": merged_rev,
+    "closures_rev": closures_rev, "ai_zones_reverse": ai_zones_rev,
 })
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)
 json.dump(track, open(OUT_TRACK, "w", encoding="utf-8"), indent=1)

@@ -19,6 +19,7 @@ namespace ChastainRush
         public Vector3 exit;               // B28's mouth on LD's floor
         public float exitSpeed = 20f;
         public Material sprayMaterial;
+        public string shutReverseOf;       // Round 47 (A): shut (its grate on, no drop) in a reverse race of this route
         public static int Swallowed { get; private set; }
         public static event System.Action<ArcadeVehicle> Took;   // checks
         public static readonly List<LakeDrain> All = new List<LakeDrain>();
@@ -38,6 +39,7 @@ namespace ChastainRush
 
         void FixedUpdate()
         {
+            if (!string.IsNullOrEmpty(shutReverseOf) && RaceOnly.ReverseRaceOf(shutReverseOf)) { down.Clear(); return; }
             foreach (var c in DrainPipe.Vehicles)
             {
                 if (!c || c.Body == null || c.Body.isKinematic || down.ContainsKey(c) || !InBell(c.Body.position)) continue;

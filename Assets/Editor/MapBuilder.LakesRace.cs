@@ -27,6 +27,7 @@ namespace ChastainRush
             public float[] trail, concrete_to, bridge, pier_root, pier_dir, drain, drain_exit, drain_tracks, drain_hint;
             public float trail_w, bridge_half, pier_len, pier_half, gazebo_half, drain_r, shaft_r;
             public string drain_chamber;
+            public string shut_reverse_of;   // Round 47 (A): the drain shut (a grate over it, its tracks hidden) in a reverse race of this route
             public LakesBoatData boat;   // Round 46: the boat jump (MapBuilder.LakesBoat.cs)
         }
         [Serializable] class LakesTrackJson { public LakesExtraData lakes; }
@@ -142,7 +143,32 @@ namespace ChastainRush
             d.mouth = new Vector3(c2.x, wy, c2.y); d.radius = R + 1.5f; d.shaftRadius = r; d.floorY = ld.floor; d.exit = ex;   // the pull a little wider than the lip
             d.sprayMaterial = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial();
             // the hint at the turn-off: worn tracks across the lawn to the pier
-            if (lx.drain_tracks != null && lx.drain_tracks.Length >= 6) WornRuts(terrain, mats, go.transform, ToPoints(lx.drain_tracks), "Lake drain worn tracks");
+            var clues = go.transform;
+            if (!string.IsNullOrEmpty(lx.shut_reverse_of))
+            {
+                // Round 47 (A): in a reverse race of its route the drain is shut: a steel grate over the bell at its rim (solid, drivable), the tracks hidden
+                d.shutReverseOf = lx.shut_reverse_of;
+                var hide = new GameObject("Lake drain clues (hidden in a reverse race)"); hide.transform.SetParent(go.transform, false);
+                hide.AddComponent<RaceOnly>().hideInReverseOf = lx.shut_reverse_of; clues = hide.transform;
+                var show = new GameObject("Lake drain grate (a reverse race only)"); show.transform.SetParent(go.transform, false);
+                show.AddComponent<RaceOnly>().showInReverseOf = lx.shut_reverse_of;
+                var gm = new MeshBuilder(); var steel = new Color(0.30f, 0.31f, 0.32f); float gy = rim + 0.06f;
+                for (float u = -R + 0.4f; u < R; u += 0.6f)   // bars both ways inside the rim, a ring round it
+                {
+                    float w = Mathf.Sqrt(Mathf.Max(0f, R * R - u * u));
+                    Beam(gm, new Vector3(c2.x + u, gy, c2.y - w), new Vector3(c2.x + u, gy, c2.y + w), 0.06f, 0.06f, steel);
+                    Beam(gm, new Vector3(c2.x - w, gy + 0.08f, c2.y + u), new Vector3(c2.x + w, gy + 0.08f, c2.y + u), 0.06f, 0.06f, steel);
+                }
+                var gl = gm.ToObject("Lake drain grate", mats.House, show.transform, false); gl.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+                var plate = new MeshBuilder(); plate.Tint = new Color(0.16f, 0.17f, 0.18f);   // the solid plate under the bars, the bell's width: what is driven on
+                for (int i = 0; i < N; i++)
+                {
+                    float a0 = i * Mathf.PI * 2f / N, a1 = (i + 1) * Mathf.PI * 2f / N;
+                    TriFace(plate, new Vector3(c2.x, gy - 0.02f, c2.y), At(R, a1, gy - 0.02f), At(R, a0, gy - 0.02f), Vector3.up);
+                }
+                plate.ToObject("Lake drain grate plate", mats.House, show.transform, true, false);
+            }
+            if (lx.drain_tracks != null && lx.drain_tracks.Length >= 6) WornRuts(terrain, mats, clues, ToPoints(lx.drain_tracks), "Lake drain worn tracks");
             Debug.Log($"[Round44] the lake drain at ({c2.x:0.0}, {c2.y:0.0}): the water {wy:0.00} m, the bell's rim {rim:0.00} m, {R:0.0} m across its lip, the shaft {2f * r:0.0} m wide " +
                       $"down {rim - ceil:0.0} m to {ld.id}'s roof ({ceil:0.00} m), its floor {ld.floor:0.00} m; {cut} terrain cells cut; on into B28 at ({ex.x:0.0}, {ex.y:0.0}, {ex.z:0.0})");
         }

@@ -1011,6 +1011,7 @@
   "drain_r": 4.8,
   "shaft_r": 4.2,
   "drain_chamber": "LD",
+  "shut_reverse_of": "Chastain Lakes",
   "drain_exit": [
    1274.51,
    275.5,
@@ -1079,6 +1080,7 @@
     1496.6,
     90.0
    ],
+   "clues_hidden_reverse_of": "Chastain Lakes",
    "tracks": [
     586.11,
     1502.36,

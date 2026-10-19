@@ -15,15 +15,24 @@ namespace ChastainRush
         // Round 40 (A4, BUG-004: "This reads as a shortcut when it isnt going this direction"): 'hideInReverseOf' stands everywhere except in
         // a reverse race of that route (S1's and S2's turn-off clues on the Chastain Ridge)
         public string hideInReverseOf;
+        // Round 47 (A): 'showInReverseOf' stands only in a reverse race of that route (the Chastain Lakes drain's grate)
+        public string showInReverseOf;
         bool shown = true;
 
         void Start() => Apply(!string.IsNullOrEmpty(hideInReverseOf));
+
+        public static bool ReverseRaceOf(string route)
+        {
+            var race = RaceController.Instance;
+            return race != null && race.State != RaceController.Stage.Free && race.Route != null && race.Route.Reverse && race.Route.Name == route;
+        }
 
         void Update()
         {
             var race = RaceController.Instance;
             bool racing = race != null && race.State != RaceController.Stage.Free && race.Route != null;
-            bool on = !string.IsNullOrEmpty(hideInReverseOf) ? !(racing && race.Route.Reverse && race.Route.Name == hideInReverseOf)
+            bool on = !string.IsNullOrEmpty(showInReverseOf) ? ReverseRaceOf(showInReverseOf)
+                    : !string.IsNullOrEmpty(hideInReverseOf) ? !(racing && race.Route.Reverse && race.Route.Name == hideInReverseOf)
                     : freeRoam ? !racing : racing && (any || race.Route.Reverse == reverse);
             if (on != shown) Apply(on);
         }

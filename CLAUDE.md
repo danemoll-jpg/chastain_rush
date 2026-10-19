@@ -405,6 +405,11 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 47 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** reverse Chastain Lakes (`make_lakes_route.py`
+`loop_rev` and the *_rev fields, no reverse shortcuts; the forward shortcuts shut in a reverse race: two `closures_rev` barriers, `RaceOnly.showInReverseOf` the drain's
+grate, `LakeDrain.shutReverseOf`); BUG-001's drives onto Chastain Road dropped (`MapBuilder.Round47.cs`). Check: `ChastainRush.exe -exeRound47 <dir> [-r47Only
+lkrevlap,lkfwdlap,lkrevshut,lkrevrace,lkrevpics,drives] [-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R47.cs`). A check part's name must not be one
+the runner's other rounds use at its top level (map, race, pics, revlap, revrace ...: they would run too). Imported from Racer: nothing.
 **Round 45 (see `TODO.md`, status there) is built and checked in the exe by script, not yet heard by Dan:** the police radio in Dan's two
 ElevenLabs voices (cop, helicopter pilot): `police-radio-lines.csv` column `speaker` (cop / pilot / cop+pilot, a pilot take `<id>_air.wav`),
 `PoliceRadio` plays a call with a pilot line from the pilot's set only (rotor thump under it); the studio's Cop and Helicopter pilot boxes and
@@ -839,7 +844,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-18_16-02-03-115_cda8a3` through BUG-001 (Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-19_01-29-19-650_77c31b` through BUG-001 (Round 47; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

@@ -23,6 +23,7 @@ namespace ChastainRush
         [Serializable] class LakesBoatData
         {
             public float[] lip, dir, dock_root, sign, tracks;
+            public string clues_hidden_reverse_of;   // Round 47 (A): the sign and the tracks are hidden in a reverse race of this route
             public float lip_y, deck_y, water_y, angle_deg, slide_m, chute, wall, beam, length, dock_w;
         }
 
@@ -157,8 +158,14 @@ namespace ChastainRush
             var lg = look.ToObject("WB boat look", mats.House, go, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 
             // the hint: the PARTY sign with its balloons, worn tracks down the yards
-            if (b.sign != null && b.sign.Length >= 3) BoatPartySign(terrain, mats, go, new Vector2(b.sign[0], b.sign[1]), b.sign[2]);
-            if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, go, ToPoints(b.tracks), "WB worn tracks");
+            var clues = go;
+            if (!string.IsNullOrEmpty(b.clues_hidden_reverse_of))
+            {
+                var h = new GameObject("WB clues (hidden in a reverse race)"); h.transform.SetParent(go, false);
+                h.AddComponent<RaceOnly>().hideInReverseOf = b.clues_hidden_reverse_of; clues = h.transform;
+            }
+            if (b.sign != null && b.sign.Length >= 3) BoatPartySign(terrain, mats, clues, new Vector2(b.sign[0], b.sign[1]), b.sign[2]);
+            if (b.tracks != null && b.tracks.Length >= 6) WornRuts(terrain, mats, clues, ToPoints(b.tracks), "WB worn tracks");
             Debug.Log($"[Round46] the boat jump: dock {dl:0.0} m from ({dock.x:0.0}, {dock.y:0.0}); the boat {b.length:0} x {b.beam:0.0} m, its deck {b.deck_y:0.00} m ({b.deck_y - b.water_y:0.0} m over the water); " +
                       $"the slide {b.slide_m:0.0} m up to {SlideY(b.slide_m):0.00} m ({SlideY(b.slide_m) - b.water_y:0.0} m over the water, {b.angle_deg:0} degrees) at ({L.x:0.0}, {L.y:0.0}), its chute {b.chute:0.0} m between {b.wall:0.0} m walls");
         }

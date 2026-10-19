@@ -1,0 +1,11 @@
+Round 47 check, 2026-10-19 03:07, the exe, 1280 x 720, muted.
+
+=== A. REVERSE CHASTAIN LAKES: a lap from the grid (the check's own driver, no AI)
+  Chastain Lakes reverse: own reverse lap True, 2751 m, 2 laps, 9 checkpoints (North Lakeside Drive, Bells Ferry Road, the dam, the amenity lot, Lakeside Drive south, Laurel Green Court, Lakeside Drive, the west loop, Bankside Point), 0 shortcuts, 18 barriers
+PASS  A: the reverse is a lap of its own, with no shortcuts
+  stopped by: Terrain_2_1
+FAIL  reverse lap on the Street Classic: counted, 0 missed  -  laps 0, lap -, missed 0, penalty 0 s, STOPPED stopped at (1376, 1100); slowest 0.0 m/s, most off the line 5.5 m
+  stopped by: Terrain_2_1
+FAIL  reverse lap on the Drifter Twin: counted, 0 missed  -  laps 0, lap -, missed 0, penalty 0 s, STOPPED  at (1375, 1100); slowest 0.0 m/s, most off the line 5.2 m
+
+1 of 3 checks passed.

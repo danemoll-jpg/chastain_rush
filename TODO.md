@@ -117,6 +117,23 @@ B. THE DRIVEWAYS ON CHASTAIN ROAD. BUG-001 (x 1304.53 z 581.52 h 304, Chastain R
    picture from Dan's spot, no drive on Chastain Road; each of those houses' drives meets its own street.
 For Dan to check: the reverse Chastain Lakes race (then he picks its shortcuts); the drives at his spot.
 
+**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (11 of 14 over the runs; the 2 lap fails are the NOT MET item), not yet driven by Dan.** Evidence `Data/screenshots/round47/`.
+A DONE. Reverse Chastain Lakes is a lap of its own (`make_lakes_route.py`: `loop_rev` on the right-hand lane, 2751 m, 2 laps, 9 checkpoints, `ai_zones_reverse`, 16 road
+   barriers plus two that shut the forward shortcuts); Direction: reverse in Race Setup; records and ghosts are per direction as on every course. In a reverse race the
+   boat jump's way is barred between houses 146 and 147, the pier is barred at its foot, the drain has a steel grate over it (drivable, the drop off: `LakeDrain.shutReverseOf`),
+   the PARTY sign and both sets of worn tracks are hidden (`RaceOnly.hideInReverseOf` / new `showInReverseOf`); all back in Free Roam. Nothing else changed.
+   Checks: AI race, 2 laps, traffic Normal: all 3 finish, 0 missed (215 to 274 s). Forward race unchanged (both shortcuts, 16 barriers; a lap 105.9 s, 0 missed). A car dropped
+   on the drain sits on the grate.
+   NOT MET: the check's own scripted driver can not finish a reverse lap (Street Classic and Drifter Twin): on the downhill S-bend south of the footbridge, between the pool
+   house and the tennis courts (x 1375 z 1100), it drifts 2 m wide and drops off the trail's graded middle (the edge falls about 2 m toward the courts) onto the court fence.
+   Tried twice (held speed 12, then 8 m/s), stopped (tuning limit). The AI drives it. Picture `47_reverse_original_stopped.png`.
+B DONE. The four townhouses of the row on Chastain Road's north side at Dan's spot (buildings 2307, 2310, 2311, 2314) had mapgen drives onto Chastain Road; each
+   would have to cross the house behind it to reach the complex's own street, so all four are dropped (lawn and sidewalk there now; `MapBuilder.Round47.cs`, this row only).
+   Pictures from Dan's spot: `47_drives_dans_spot*.png`.
+Build: one full Build Map (Build 1 crashed on an empty drive, fixed, rebuilt), then code-only exe rebuilds for the check; `Builds/ChastainRush/` 2026-10-19 03:07.
+For Dan to check: drive reverse Chastain Lakes (and pick its shortcuts); the downhill bend south of the footbridge in reverse (does the trail's edge by the courts need
+   grading?); the drives at his spot.
+
 ## QUEUED rounds
 **Round 48, GOOSE EGG HUNT AND EXPLORATION (Dan, 2026-10-18 16:25; start after Round 47).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
