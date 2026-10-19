@@ -1,0 +1,42 @@
+Round 44 check, 2026-10-18 19:37, the exe, 1280 x 720, muted.
+
+=== THE CHASTAIN LAKES RACE: each shortcut against the lap's own way over the same ground, flat out (Street Classic, Drifter Twin)
+  Chastain Lakes: lap 2770 m, 9 checkpoints, shortcuts Lake jump, Lake drain, 16 barriers
+  Lake jump   Street Classic   the lap's way 14.7 s; the shortcut 12.3 s: saves 2.4 s
+  Lake jump   Drifter Twin     the lap's way 13.4 s; the shortcut 11.4 s: saves 2.0 s
+  Lake drain  Street Classic   the lap's way 26.2 s; the shortcut 17.1 s: saves 9.1 s
+  Lake drain  Drifter Twin     the lap's way -1.0 s (STOPPED stopped); the shortcut 15.7 s: saves -99.0 s
+      the lap's way stopped at (1357.4, 294.7, 1136.8)
+FAIL  each shortcut taken clean and flat out saves time against the lap's own way, on both vehicles  -  not: Lake drain on the Drifter Twin
+
+=== W, THE LAKE JUMP: every vehicle the route offers, held to 28 m/s at the pile (the AI's speed), a real jump
+  Street Classic     off the pile at 22.8 m/s; 1.96 s in the air, 3.8 m over the lip, down at (501, 1356) 44 m out, upright 0.99; on along Lakeside Drive
+  Longroof GT        off the pile at 22.4 m/s; 1.78 s in the air, 2.8 m over the lip, down at (501, 1359) 41 m out, upright 1.00; on along Lakeside Drive
+  Needle 600         off the pile at 26.3 m/s; 2.14 s in the air, 4.8 m over the lip, down at (500, 1346) 54 m out, upright 0.99; on along Lakeside Drive
+  Trail Four         off the pile at 25.7 m/s; 2.14 s in the air, 4.7 m over the lip, down at (500, 1347) 52 m out, upright 1.00; on along Lakeside Drive
+  Sundown Roadster   off the pile at 23.4 m/s; 2.00 s in the air, 4.0 m over the lip, down at (500, 1354) 46 m out, upright 1.00; on along Lakeside Drive
+  Highball Fastback  off the pile at 23.1 m/s; 1.86 s in the air, 3.3 m over the lip, down at (500, 1357) 43 m out, upright 1.00; on along Lakeside Drive
+  Pebble Coupe       off the pile at 23.2 m/s; 2.06 s in the air, 4.4 m over the lip, down at (501, 1353) 46 m out, upright 1.00; on along Lakeside Drive
+  Skyfin Cruiser     off the pile at 21.7 m/s; 1.76 s in the air, 2.7 m over the lip, down at (501, 1361) 39 m out, upright 1.00; STOPPED stopped at (548.4, 304.0, 1252.3)
+  Ridge Scrambler    off the pile at 25.7 m/s; 2.14 s in the air, 4.7 m over the lip, down at (500, 1347) 52 m out, upright 1.00; STOPPED stopped at (517.6, 302.8, 1244.7)
+  Drifter Twin       off the pile at 24.9 m/s; 2.06 s in the air, 4.3 m over the lip, down at (500, 1350) 50 m out, upright 1.00; on along Lakeside Drive
+  Turf Rocket        off the pile at 26.4 m/s; 2.16 s in the air, 5.1 m over the lip, down at (500, 1345) 55 m out, upright 1.00; on along Lakeside Drive
+FAIL  W: every offered vehicle at the AI's speed clears the lake, lands on its wheels and drives on to Lakeside Drive  -  not: Skyfin Cruiser, Ridge Scrambler
+
+=== E, THE LAKE DRAIN: off the gazebo on a straight line at speed, down the drain, through B28, out of MH14; and a miss
+  Street Classic   off the gazebo's end at 19.5 m/s; down the drain; out of MH14 (the cover popped); on along North Lakeside Drive, in 20.9 s
+  Drifter Twin     off the gazebo's end at 23.2 m/s; down the drain; out of MH14 (the cover popped); on along North Lakeside Drive, in 19.2 s
+PASS  E: off the gazebo on its line at speed, down the drain and out of the manhole onto North Lakeside Drive (both vehicles)
+  a miss (Street Classic, the lawn into the lake 12 m east of the drain at 16 m/s): not taken; in the water at (1293, 1137), 7.9 m/s after 8 s; a reset: to (1321.6, 1083.8), 0.0 m from the race's line
+PASS  E: a miss is in the lake (slowed, not taken) and a reset puts it back on the race's line
+
+=== THE CHASTAIN LAKES RACE, 2 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  EMBER (Sundown Roadster) finishes the 2 laps  -  total 252.3 s, laps 129.3 / 123.0, missed 0, shortcuts lap 2 w_lake_jump
+PASS  GOLD (Skyfin Cruiser) finishes the 2 laps  -  total 244.5 s, laps 144.3 / 100.2, missed 0, shortcuts lap 2 e_lake_drain
+PASS  BLUE (Ridge Scrambler) finishes the 2 laps  -  total 220.0 s, laps 100.5 / 119.5, missed 0, shortcuts lap 1 e_lake_drain, lap 2 w_lake_jump
+INFO  taken by the lake drain during the race: 2
+
+=== pictures
+PASS  pictures written  -  44_*.png
+
+6 of 8 checks passed.
