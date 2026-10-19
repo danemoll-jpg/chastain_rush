@@ -5065,3 +5065,112 @@ Process: one full Build Map + exe at the end (Build Map 600 s); Part A's world c
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-18 17:24 (BUILD_INFO.txt). Commits: A, B, C, D, this status.
 For Dan to check: around the plume on the left and a reset there; the ghost (it reads fairly solid pale cyan, say if it should be more see-through);
    the winner shot; Trailer Mode from the pause menu with the controller.
+
+## Round 44 (moved from TODO.md on 2026-10-19 when Dan reviewed Rounds 47 and 48; word for word)
+
+## Previous delivery 3: Round 44
+**Reviewed: Dan drove the Round 46 build 2026-10-19 01:29 (Free Roam and the Chastain Lakes race); no reports on this round (his one note is Round 47).**
+**Round 44, THE CHASTAIN LAKES RACE (Dan, 2026-10-18 18:10; START NOW, before Round 43 is driven: Dan is away and asked for
+the next track to be made meanwhile; Round 43 stays as delivered above until he drives it).** Dan: "Can we go ahead and create the
+next track? I want to use the Chastain Lakes subdivision ... On it I have the forward trail marked out, please be aware there is a
+trail that runs behind the pool across the bridge and by the lake going all the way to bells ferry this race will utilize. ... I
+have also added two shortcuts. One is through the gazebo, I want it to jump and land in a hole in the lake that will tunnel through
+and pop out of manhole in the road, [the other one] that I marked revolves around going between a couple of houses and hitting a
+ramp to take jump drivers over the lake. Most of the track already exists in the game so I am hoping that it will be good."
+Dan's map and 7 photos (taken 2026-10-17): `local/reference_photos/chastain_lakes/r44_*` (git-ignored, never commit; look, never
+trace). The map is Google satellite with his yellow route, yellow arrows beside it for the direction (Dan, 18:15: "arrows for the
+direction of the track") and two red shortcuts, around West Chastain Lake and Chastain Lakes / East Chastain Lake. Claude's reading:
+- THE LAP, COUNTERCLOCKWISE (Dan's arrows, and the only direction both shortcuts work): North Lakeside Drive westbound across the top, round the
+  west loop on Lakeside Drive, Lakeside Drive east and south past Laurel Green Court along the bottom, on to the Chastain Lakes
+  amenity area (Round 32, `MapBuilder.ChastainLakes.cs`), then THE LAKE TRAIL north to Bells Ferry Road and back onto North
+  Lakeside Drive at its Bells Ferry end. Roads off the lap are blocked as on every course (the short yellow strokes off the
+  route on the map are Dan's direction arrows, not roads).
+- THE LAKE TRAIL (photos 2 to 7; Round 32 built part of it from NAIP): from the lot, the concrete walk with timber edging down past
+  the pool's granite retaining wall, iron fence on brick pillars and the white bathhouse (photo 2); a gravel path with tan brick
+  edging along the shore (photo 3) to the brown wooden footbridge over the concrete spillway with granite wingwalls (photos 6, 7;
+  in real life closed with caution tape and 2x4s across it: keep that, breakable, as a fun touch); then north along the gravel
+  path on the dam's grassy crest, the lake on the left going north, the lawn falling right to the outflow stream and the double
+  box culvert under Bells Ferry Road (photos 4, 5), to North Lakeside Drive. Wide enough for every offered vehicle with room to
+  pass (Noonday Creek's lesson: wider than real), keeping its look (gravel, edging, the bridge's color and rails); the bridge
+  widened to fit. BF and the stream untouched as Round 32 required, unless the trail cannot pass otherwise (say so).
+- SHORTCUT EAST, THE GAZEBO (photo 1: the white gazebo, square hipped gray-green roof, on a white-railed pier off the lawn, riprap
+  shore, the porch swing and a bench): coming along Lakeside Drive toward the lot, off onto the walk to the pier, along the pier,
+  through the gazebo (its far railing breaks) and off its end, down into a HOLE IN THE LAKE: a round bell-mouth overflow drain in
+  the lake (a "morning glory" spillway, a real lake fixture), water pouring over its lip. Into it, a tunnel under the lake north,
+  up and out through a manhole that pops in North Lakeside Drive near the Bestower Foundation (Dan's red line), back on the
+  course facing west. Skips the lake trail and the Bells Ferry corner; forgives the checkpoints there. Use what the pipe network
+  already has (drops, pipes, PipeStream water, pop-out manhole covers, Round 40's plume if it helps the exit); it may join the
+  network (the M2 Lakes main and BF are close) but in this race the way through is one clear run (other ways gated as the
+  Underground race does). Off the end of the gazebo is a real drop (physics); landing in the drain mouth is the skill (miss it and
+  you are in the lake: slowed, the shallow-water rules); the drain's mouth sized so a line straight off the pier at speed makes it.
+  A clear hint at the turn-off (CLAUDE.md shortcut hints). Must save time at race speed, and carry some risk.
+- SHORTCUT WEST, THE LAKE JUMP: on North Lakeside Drive westbound near the top-left (Dan's red line), off between two houses (the
+  gap made to work as Round 40 did with 1245, a house moved slightly or altered only if needed, and said), through the back yards
+  down to a ramp on West Chastain Lake's north shore, a jump over the lake's arm, landing on the south / west shore by Lakeside
+  Drive, skipping the west loop; forgives its checkpoints. A real physics jump (standing rule): the ramp dressed as something that
+  could be there at its real size (CLAUDE.md lesson), using the high bank's height; the landing sized to the real flight. First
+  measure the gap on Dan's line: if no offered vehicle can clear it with a real jump there, use the narrowest crossing near his
+  line that works and say how far it moved; if none works, build the turn-off and ramp to the shore and stop there, reporting the
+  gap and the speed it would need (Dan decides).
+- THE RACE: start / finish on a straight of Code's choice not near a shortcut; checkpoints as the other courses; laps so the race
+  takes about as long as a Chastain Ridge race; forward only for now (reverse later if Dan wants it). Everything the other courses
+  have: the route's directions, AI (3 rivals, `ai_zones`, ShortcutStrategy for both shortcuts, human mistakes), traffic as forward
+  Ridge, records boards, ghosts (Round 43), the minimap and map overlay, the Race Setup row, the radio. Name: "Chastain Lakes".
+Check: a lap by each shortcut and one by the trail (Street Classic and Drifter Twin), times compared; the west jump's flight on all
+offered vehicles (height, air, landing upright); the gazebo drop into the drain from a straight line at speed, and a miss; one AI
+race of the full laps with traffic Normal (everyone finishes). Pictures: the trail from photo 3's and photo 4's spots, the
+footbridge, the gazebo, the drain, the manhole popping, the west ramp and landing. One full Build Map at the end.
+For Dan to check: drive the Chastain Lakes race, both shortcuts and the lake trail.
+
+**Status (Claude, 2026-10-18): built and checked in the exe by script (final build: 6 of 8 checks pass; both fails are the NOT MET item below), not yet driven by Dan.** Evidence `Data/screenshots/round44/`.
+- The race: 2770 m lap, 2 laps, forward only, open roads, 9 checkpoints, 16 barriers (`Tools/mapgen/make_lakes_route.py`). AI race, 2 laps, traffic Normal: all 3 finish
+  (197 to 234 s; a Chastain Ridge race is about 230 to 240 s), 0 missed, both shortcuts taken.
+- The lake trail: 7 m, concrete with timber edging to the footbridge, gravel with tan brick edging along the dam's crest; the footbridge 6.8 m wide, moved 9 m east
+  at its south end so the trail meets it square (it still spans the outflow below the spillway; BF and the stream untouched), its deck sloping bank to bank, tape and
+  2x4s breakable. Trail by Street Classic / Drifter Twin, lot to North Lakeside Drive past the manhole: 26.3 / 26.5 s.
+- E LAKE DRAIN: a hard left (12 m) off the lot's drive onto the pier (4.4 m now), through the gazebo (square as photo 1, far rail breaks), a drain 9 m past it (LakeDrain:
+  a scripted drop, not a ramp), LD and B28 under the lake (pipe_network.py), out of MH14 facing west. Both vehicles: down the drain, the cover pops, on; saves 9.2 / 10.7 s.
+  A miss (into the lake beside it): slowed, not taken, a reset puts it on the race's line.
+- W LAKE JUMP: through the 5.3 m gap between 142 and 143 (no house moved), a 3 m dredging-spoil pile, a real jump over 33 m of water, moved about 20 m west of Dan's line
+  (the narrowest crossing; on his line it is about 80 m). All 11 vehicles clear the water and land upright (39 to 55 m, 1.8 to 2.2 s air at 22 to 26 m/s off the pile:
+  they do not reach the AI's 28 down the yards). Saves 2.4 / 2.0 s (Street Classic / Drifter Twin; the 2nd build's run, `round44_check_build2.txt`).
+- NOT MET: the way back onto Lakeside Drive climbs a 2.7 m bank onto the road (the lake arm's tip and its bed are just east). The AI drives it, but the check's own
+  scripted driver ran on across the road and stopped south of it on 6 of 11 vehicles; tried twice, stopped there (tuning limit).
+- Process: THREE full builds, not one (the 1st build's checks found the drain sending cars the wrong way, a 50-degree bend onto the footbridge, a 3 m gazebo opening;
+  the 2nd, a 2 m step onto the footbridge); code-only exe rebuilds otherwise. Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), 2026-10-18 20:16.
+For Dan to check (the race above): the lake trail and the footbridge; the drain's drop and the manhole; the lake jump and the bank back onto Lakeside Drive (say if
+  it should come out elsewhere); whether the drain saves too much (about 9 s).
+
+## Round 45 (moved from TODO.md on 2026-10-19 when Dan reviewed Rounds 47 and 48; word for word)
+
+## Previous delivery 2: Round 45
+**Reviewed: Dan drove the Round 46 build 2026-10-19 01:29 (Free Roam and the Chastain Lakes race); no reports on this round (his one note is Round 47).**
+**Round 45, THE POLICE VOICES (Dan, 2026-10-18 21:53; small, can start now; Rounds 43 and 44 stay as delivered until Dan drives
+them).** Dan made two ElevenLabs voices for this game's police radio (Round 40 asked for his own voice, not Woodstock Rush's):
+"I created two voices for the police: 1) For the cop cars, voice id - g8CcnC07pMG4qiREyAqr 2) Helicopter pilot, voice id -
+TTipgIQvJszYvCktGfAa". No clips exist yet (`SourceArt/Audio/PoliceRadio/` is empty: the calls show as text only).
+A1. Who speaks what: every line in `Tools/Audio/police-radio-lines.csv` gets a speaker, "cop" (the cars and dispatch) or "pilot"
+   (the helicopter: R07, R08, U7 "Air one," and any other line only the helicopter says; R06 "Air support inbound" is dispatch,
+   so cop). A call the game stitches from pieces (unit + phrase + street + ending) for Air one is spoken by the pilot whole: the
+   pieces such a call can use get a pilot take too (Code names them, e.g. `<id>_air`), and PoliceRadio picks the pilot set for
+   Air one's calls and the cop set for every other unit's. No mixing voices inside one call.
+A2. Police Radio Studio (`Tools/Audio/police_radio_studio.py`): two voice boxes, Cop and Helicopter pilot, filled in with Dan's two
+   IDs above (voice IDs are not secrets; the API key still never goes in the project); each line made with its speaker's voice;
+   "make all missing" makes every clip not yet made, both voices. Keep everything else as it is.
+A3. Make the clips: if Dan's API key is on this PC (ELEVENLABS_API_KEY or the studio's settings.json), run the studio's generation
+   from the command line for every missing line (do not print or copy the key); otherwise stop after A2 and tell Dan to press
+   "make all missing". The pilot's lines through the same radio effect plus a low rotor thump under them (simple; Code's choice).
+Check: the clip count per voice against the CSV; in the exe, a Getaway to heat 4 on a test setting: one cop call and one Air one
+call heard (sound briefly on, then off) and logged with which voice set played. Exe rebuilt with `-playerBuildKeepScene` (no map
+build). For Dan to check: the radio in a Getaway, a cop call and the helicopter's.
+
+**Status (Claude, 2026-10-18): built and checked in the exe by script (3 of 3), not yet heard by Dan.** Evidence `Data/screenshots/round45/round45_check.txt`.
+A1 DONE. The csv's new `speaker` column: R07, R08, U7 "pilot", the other 187 "cop" (a "cop+pilot" piece would get a pilot take `<id>_air`). Air one's calls
+   today are whole pilot lines (U7+R07, R08), so no piece needs an `_air` take yet. `PoliceRadio`: a call with a pilot line in it is played from the
+   pilot's set only (a missing pilot take: text only, never the cop's voice in it); an older scene's csv (no column): "Air one..." lines are the pilot's.
+A2 DONE. The studio: Cop and Helicopter pilot voice boxes (Dan's IDs filled in), each line made with its speaker's voice; `--make-missing` from the command line.
+A3 DONE. 190 clips made with Dan's key from the environment (not printed): 187 cop, 3 pilot, 0 failed (`SourceArt/Audio/PoliceRadio/`, committed; also copied
+   to the drop-in folder by the studio). The pilot's calls get a rotor thump (about 4.6 a second) under the radio effect, in the game (the clips stay clean).
+Check: a Getaway on the Needle 600 to heat 5: cop calls in the cop voice (R01, units + streets), the helicopter's R08 in the pilot's; then R14 and U7+R07 heard.
+Build: code only (`-playerBuildKeepScene`), 2026-10-18 22:36; the round's playable build is Round 46's full build. For Dan to check: a Getaway, a cop call
+   and the helicopter's (does the rotor thump sit right under the voice?).
