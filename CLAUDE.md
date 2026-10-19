@@ -136,6 +136,14 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   free way through the same ground (Dan's R1 report: "there is literally
   nothing stopping you"). Propose candidates on markers when Dan asks; build
   once he picks.
+- **Shortcuts must be a risk** (Dan, 2026-10-18): "A shortcut has to be somewhat challenging so that is a risk to take it
+  and to make people wonder if it is worth the risk (which I thought was there from the beginning)". Round 44's lake jump
+  failed this ("just a simple ramp that jumps a narrow part of the lake"). Getting it wrong must cost (into the water, a crash,
+  a miss that loses more than it saves). Never choose the easiest crossing or shortest gap to make a check pass; if the risky
+  version will not work, report it instead of building a safe one.
+- **Pipes through water are aquarium pipes** (Dan, 2026-10-18): "All pipes that go through a body of water must be aquarium
+  pipes." Under or through a lake, pond or creek, a pipe or tunnel is a glass run (`PipeAquarium`, `MapBuilder.ClearPipe.cs`),
+  never plain concrete.
 - **Build the world to be reused** (Dan, 2026-10-12: "once this game is complete
   ... I can completely reuse the map for another kind of game maybe in post
   apocalyptic world where there would be people living there. so i do want to

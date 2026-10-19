@@ -69,6 +69,18 @@ off it (the landing is sized to the real flight instead). A scripted or aimed pa
 ramp and is creative (a water plume, a geyser, a trampoline). Launches built before this rule are left as they are until Dan
 points at one.
 
+**Shortcuts must be a risk — STANDING RULE (Dan, 2026-10-18 22:19).** Dan, on Round 44's lake jump: "It fails the rule that it
+should be challenging. It is just a simple ramp that jumps a narrow part of the lake. Not challenging at all." and "A shortcut has
+to be somewhat challenging so that is a risk to take it and to make people wonder if it is worth the risk (which I thought was
+there from the beginning)". Every shortcut, now and later: a driver who gets it wrong pays for it (comes up short into the water,
+misses the gap, crashes, loses more than it saves), so taking it is a real decision. Never pick the easiest crossing or the
+shortest gap to make a check pass; if the risky version cannot be made to work, report that instead of building a safe one.
+
+**Pipes through water are aquarium pipes — STANDING RULE (Dan, 2026-10-18 22:19).** "All pipes that go through a body of water
+must be aquarium pipes." Any pipe or tunnel that passes under or through a lake, pond or creek is a glass aquarium run there (as
+the network's glass mains: `PipeAquarium`, `MapBuilder.ClearPipe.cs`: the water above, fish, weeds, light shafts), never a plain
+concrete pipe.
+
 **One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
 7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
 world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
@@ -225,7 +237,55 @@ For Dan to check (the race above): the lake trail and the footbridge; the drain'
   it should come out elsewhere); whether the drain saves too much (about 9 s).
 
 ## QUEUED rounds
-**Round 45, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 44).** Dan: "lets go with goose eggs. We can
+**Round 45, THE POLICE VOICES (Dan, 2026-10-18 21:53; small, can start now; Rounds 43 and 44 stay as delivered until Dan drives
+them).** Dan made two ElevenLabs voices for this game's police radio (Round 40 asked for his own voice, not Woodstock Rush's):
+"I created two voices for the police: 1) For the cop cars, voice id - g8CcnC07pMG4qiREyAqr 2) Helicopter pilot, voice id -
+TTipgIQvJszYvCktGfAa". No clips exist yet (`SourceArt/Audio/PoliceRadio/` is empty: the calls show as text only).
+A1. Who speaks what: every line in `Tools/Audio/police-radio-lines.csv` gets a speaker, "cop" (the cars and dispatch) or "pilot"
+   (the helicopter: R07, R08, U7 "Air one," and any other line only the helicopter says; R06 "Air support inbound" is dispatch,
+   so cop). A call the game stitches from pieces (unit + phrase + street + ending) for Air one is spoken by the pilot whole: the
+   pieces such a call can use get a pilot take too (Code names them, e.g. `<id>_air`), and PoliceRadio picks the pilot set for
+   Air one's calls and the cop set for every other unit's. No mixing voices inside one call.
+A2. Police Radio Studio (`Tools/Audio/police_radio_studio.py`): two voice boxes, Cop and Helicopter pilot, filled in with Dan's two
+   IDs above (voice IDs are not secrets; the API key still never goes in the project); each line made with its speaker's voice;
+   "make all missing" makes every clip not yet made, both voices. Keep everything else as it is.
+A3. Make the clips: if Dan's API key is on this PC (ELEVENLABS_API_KEY or the studio's settings.json), run the studio's generation
+   from the command line for every missing line (do not print or copy the key); otherwise stop after A2 and tell Dan to press
+   "make all missing". The pilot's lines through the same radio effect plus a low rotor thump under them (simple; Code's choice).
+Check: the clip count per voice against the CSV; in the exe, a Getaway to heat 4 on a test setting: one cop call and one Air one
+call heard (sound briefly on, then off) and logged with which voice set played. Exe rebuilt with `-playerBuildKeepScene` (no map
+build). For Dan to check: the radio in a Getaway, a cop call and the helicopter's.
+
+**Round 46, CHASTAIN LAKES SHORTCUTS REDONE (Dan, 2026-10-18 22:19, after driving Round 44; start after Round 45).** Round 44
+is otherwise accepted (Dan: "The only other issue I found is on the other shortcut"). The two new standing rules at the top of
+this file apply (shortcuts must be a risk; pipes through water are aquarium pipes). One full Build Map at the end.
+A. THE WEST LAKE JUMP, REDONE. Dan: "I would have asked for this Shortcut to be redone anyway. It fails the rule that it should be
+   challenging. It is just a simple ramp that jumps a narrow part of the lake. ... My first option would be to make a bigger ramp
+   and point further down the track. You will be forced to clear a bigger part of the lake so if you don't hit it correctly you
+   fall into the lake. Also can we come up with something other than another dirt pile? I am thinking you come upon a boat off
+   the dock that has a large slide on it that can be used for a ramp."
+   Remove Round 44's dredging-spoil pile and its narrow crossing. Through the back yards (the 142 / 143 gap or another, Code's
+   choice) to a DOCK on West Chastain Lake's north shore, and tied up off its end a party BOAT (a pontoon boat) with a big water
+   slide on its top deck: the slide is the ramp (you drive along the dock, onto the boat and up the slide). Its real size must
+   fit a boat-top slide (CLAUDE.md lesson on ramp sizes); the boat may be big. A REAL physics jump off the slide's lip (standing
+   rule), aimed further down the course than Round 44's (Dan's red line and beyond: over the wide part of the lake, about 80 m
+   of water on his line), landing on Lakeside Drive or its shoulder further along the lap, so the climb up Round 44's 2.7 m bank
+   (its NOT MET item) is gone. Hit it right (full speed, straight up the slide) and you clear the water; come in slow or crooked
+   and you fall into the lake (slowed, the shallow / deep-water rules, a reset puts you on the race's line, never trapped). It
+   must still save time when made. The boat and dock can stay in Free Roam as world (the slide drivable there too). A hint at the
+   turn-off as the other shortcuts. Tuning limit: if the full-speed clearance or the time saved is not met after two tries, stop
+   and report the numbers (distance needed vs reached per vehicle) for Dan.
+B. THE DRAIN'S TUNNEL AS AN AQUARIUM PIPE. Dan: "The part that goes under the lake should be an aquarium pipe." Round 44's LD and
+   B28 under Chastain Lakes become glass aquarium runs wherever they are under the water (the network's glass mains' look and
+   life: fish, weeds, light shafts, the lake surface above), concrete only where they run under land. Because of the new rule:
+   list any other pipe in the network that passes under water without glass, convert it the same way, and say which.
+Check: the west jump on all 11 offered vehicles at full speed straight up the slide (clears, lands upright, height and air) and
+at 80 % speed or 10 degrees off line (falls in the lake); time saved (Street Classic, Drifter Twin); the AI takes it and
+sometimes falls in (human mistakes); a drive through the drain's aquarium run. Pictures: the dock and boat from the turn-off, the
+slide, the flight, the landing, the aquarium run from inside.
+For Dan to check: the boat jump (a clean run and a miss); the aquarium under the lake.
+
+**Round 47, GOOSE EGG HUNT (Dan, 2026-10-18 16:25; start after Round 46).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
 later". Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20
 left behind: exploration fog and its save, destinations and travel, waypoints, the collectible areas), with goose eggs in place
