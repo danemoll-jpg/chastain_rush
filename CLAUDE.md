@@ -415,6 +415,12 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 51 (see `TODO.md`, status there) is built and checked in the exe by script, not yet seen by Dan:** startup polish from Dan's assets
+(`SourceArt/Title/`): Racer's StartupTitle and LoadingScreen (`Assets/Scripts/Title/`; cover, voice and theme in `Assets/Resources/Title/`, import settings
+`Assets/Editor/TitleArtImport.cs`), the loading tips, the exe icon (`Assets/HandMade/Title/GameIcon.png`, set by PlayerBuild). Both never in a check run except
+`ChastainRush.exe -exeRound51 <dir> [-r51Press key|pad] [-r51Only listen,roam,race,tips,pics] -logFile <dir>\Player.log` (`Checks/Round51Runner.cs`). Under the
+paused title menu the audio clock (dspTime) stands still: start title sounds with Play, never PlayScheduled. IMGUI draws over every canvas: an IMGUI HUD
+hides while `TrailerMode.HudHidden` (now also under the title and the loading screen). Imported from Racer: StartupTitle, LoadingScreen.
 **Round 50 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the reverse kicker line's second jump, a
 collapsed carport at the end of Northlake Point, and shrub beds across every free way (`MapBuilder.LakesKicker.cs`; `make_lakes_route.py` C_*, SHRUB_BEDS;
 runtime `Neighborhood/ShrubBeds.cs`, Racer's ShortcutUndergrowth); the lake trail at its real width on a level bench (`GradeAlong` blend_left / blend_r);

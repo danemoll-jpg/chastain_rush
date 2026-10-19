@@ -326,7 +326,7 @@ namespace ChastainRush
             {
                 car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero;
                 foreach (var h in Entrants) if (h.Seat == 2 && h.Driver == null && h.Car) { h.Car.Body.linearVelocity = Vector3.zero; h.Car.Body.angularVelocity = Vector3.zero; }   // Round 37
-                CountdownRemaining -= dt;
+                if (!LoadingScreen.Holding) CountdownRemaining -= dt;   // Round 51: the countdown starts once the loading screen has gone
                 if (CountdownRemaining <= 0f)
                 {
                     State = Stage.Racing; input.enabled = true; goFlashUntil = Time.time + 1.0f; RaceClock = 0f;

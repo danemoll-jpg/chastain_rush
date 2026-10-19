@@ -32,7 +32,8 @@ namespace ChastainRush
         public static bool Active { get; private set; }
         public static TrailerMode Instance { get; private set; }
         // every HUD drawn with OnGUI asks this (true: draw nothing)
-        public static bool HudHidden => Active && Instance && !Instance.HudShown && !GameMenus.Open && !WorldMap.OwnsInput;
+        public static bool HudHidden => CleanScreen || LoadingScreen.Holding || StartupTitle.Active;   // Round 51: and under the loading screen and the title (IMGUI draws over every canvas)
+        static bool CleanScreen => Active && Instance && !Instance.HudShown && !GameMenus.Open && !WorldMap.OwnsInput;
         public bool HudShown { get; private set; }
         public bool GuidesShown { get; private set; }
         public bool HalfSpeed { get; private set; }
@@ -202,7 +203,7 @@ namespace ChastainRush
         void LateUpdate()
         {
             // clean screen: the HUD canvases go (the IMGUI HUDs ask HudHidden); menus and the map still show when opened
-            bool clean = HudHidden;
+            bool clean = CleanScreen;   // Round 51: Trailer Mode's own (HudHidden also covers the loading screen and title, which are canvases)
             if (clean && Time.unscaledTime >= nextCanvasLook) { nextCanvasLook = Time.unscaledTime + 1f; FindHudCanvases(); }
             if (clean || cleaned)
             {

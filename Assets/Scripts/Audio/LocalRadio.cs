@@ -298,7 +298,7 @@ namespace Racer
         }
         void Update()
         {
-            source.volume=Settings.music*.32f*(1-.4f*WeatherEffects.Duck)*(1-.45f*PoliceRadioVoice.Duck);   // Round 39: and under the police radio   // Chastain Rush: no police radio or title speech to dip under (Round 35: the thunder's dip back);// 0.76: dips under thunder; 0.99: and a little while the police radio speaks
+            source.volume=ChastainRush.StartupTitle.Quiet?0:Settings.music*.32f*(1-.4f*WeatherEffects.Duck)*(1-.45f*PoliceRadioVoice.Duck);   // Round 51: silent under the title's voice and theme (Racer: StartupTitle.SpeechPending)   // Round 39: and under the police radio   // Chastain Rush: no police radio or title speech to dip under (Round 35: the thunder's dip back);// 0.76: dips under thunder; 0.99: and a little while the police radio speaks
             if(scan!=null&&scan.IsCompleted)
             {
                 var result=scan.IsCompletedSuccessfully?scan.Result:new MusicCollection.Result{Error="Scan failed; try another folder"};scan=null;

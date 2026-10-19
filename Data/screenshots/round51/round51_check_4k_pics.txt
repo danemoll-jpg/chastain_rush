@@ -1,0 +1,12 @@
+Round 51 check, 2026-10-19 19:30, the exe, 3840 x 2160, muted (AudioListener.volume 0). Press to continue by pad.
+PASS  loading screen up at launch  -  CHASTAIN RUSH, bar 0.00
+PASS  launch: the bar moves up to the end, then the screen goes  -  3 samples 0.00 0.00 0.00 0.30 0.30 0.92; up 9.72 s after the scene loaded
+PASS  launch: what is loading and a tip are shown  -  The Chastain Corner Stunt Park fills the old Kroger lot: ramps, a loop and the abandoned bank. STUNT EVENT scores your tricks.
+PASS  the title is up over the title menu after the loading screen  -  title/root
+PASS  the prompt waits: still on the title
+PASS  one controller button (A) goes on to the title menu  -  title/root
+PASS  the press did not also act on the menu  -  focus RACE -> RACE
+PASS  the theme stops with the title
+PASS  held picture: the race's loading screen with its route  -  Chastain Glen loop
+
+ALL 9 CHECKS PASSED

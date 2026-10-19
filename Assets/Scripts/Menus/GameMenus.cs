@@ -109,6 +109,8 @@ namespace ChastainRush
             PoliceSession.Finished += ShowPoliceResults;   // Round 39 (Part D)
             OpenMenu(true);
             AskNameOnce();   // Round 34 (C2): Racer's welcome
+            StartupTitle.Begin();   // Round 51 (Part A): Dan's cover, the spoken title and the theme over the title menu
+            LoadingScreen.Started();   // Round 51 (Part B): the launch's work is done; the loading screen fades after the first frames
         }
 
         // ---------------------------------------------------------------- open / close (the game pauses under a menu)
@@ -136,7 +138,7 @@ namespace ChastainRush
         void Update()
         {
             if (started) UpdateSplitDevices();   // Round 37 (GameMenus.Split.cs): the split setup answers player 1's device (the name keyboard player 2's)
-            if (!started || MenuInput.Blocked || WorldMap.OwnsInput) return;   // Round 20: the map has the buttons (B / Esc close it)
+            if (!started || MenuInput.Blocked || WorldMap.OwnsInput || StartupTitle.Blocking || LoadingScreen.Holding) return;   // Round 20: the map has the buttons (B / Esc close it)   // Round 51: not under the title or the loading screen
             var hud = DeveloperHud.Instance;
             if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
             if (open && UpdateKeyboard()) return;   // Round 34: the on-screen keyboard's own keys (Delete, Space, Start / Enter saves)
@@ -271,7 +273,7 @@ namespace ChastainRush
         }
         void UpdateShell()
         {
-            if (uiModule) uiModule.enabled = open && !MenuInput.UiBlocked;
+            if (uiModule) uiModule.enabled = open && !MenuInput.UiBlocked && !StartupTitle.Blocking && !LoadingScreen.Holding;   // Round 51: not under the title or the loading screen
             ModuleMove(!open);
             UpdateFocusFrame();
             if (!open) return;
@@ -416,7 +418,7 @@ namespace ChastainRush
             {
                 Clear("CHASTAIN RUSH", "Chastain Glen, Marietta, Georgia.   " + (race ? race.Route.Name + ", " + Current.laps + " laps" : ""));
                 Row(0, "race", "RACE", () => Navigate("race"));
-                Row(1, "roam", "FREE ROAM", () => { title = false; CloseMenu(); });
+                Row(1, "roam", "FREE ROAM", () => { title = false; LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
                 RoamWeatherRow(2);   // Round 35 (Part C)
                 Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
                 Row(4, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D)
@@ -454,7 +456,7 @@ namespace ChastainRush
             if (!finished) Row(n++, "resume", "RESUME", CloseMenu);
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
-            Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { race.EndRace(); CloseMenu(); });
+            Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); race.EndRace(); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
             Row(n++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
             Row(n++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D)
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
@@ -611,7 +613,17 @@ namespace ChastainRush
             ApplySettings();
             StuntEvent.End();   // Round 36: a race ends the Stunt event
             title = false; CloseMenu();
-            if (race) race.StartRace();
+            if (race) StartCoroutine(RaceBehindCover());
+        }
+        // Round 51 (Part B): the race is set up behind the loading screen (its route on the map); its countdown waits for the screen
+        System.Collections.IEnumerator RaceBehindCover()
+        {
+            race.Reload();
+            var r = race.Route;
+            LoadingScreen.Cover("RACE", r != null ? $"{r.Name}\n{r.Laps} laps, {r.Direction}\n{(RaceController.AiCount > 0 ? "3 AI drivers" : "solo")}" : "", r);
+            yield return null; yield return null;   // the screen is drawn before the work
+            race.StartRace();
+            LoadingScreen.Started();
         }
 
         static void Quit()

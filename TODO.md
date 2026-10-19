@@ -134,6 +134,25 @@ by keyboard and by controller; a race and Free Roam load behind the cover with t
 screen and a loading screen at 1080p and at 4K (the only full-screen use).
 For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips; the icon on the exe and taskbar.
 
+**Status (Claude, 2026-10-19): A to D built and checked in the exe by script, not yet seen by Dan.** Evidence `Data/screenshots/round51/`
+(`round51_check_pad.txt` 19/19, `round51_check_key.txt` 11/11, `round51_check_4k_pics.txt`, pictures at 720p, 1080p and 4K). No Build Map.
+A DONE. Racer's StartupTitle ported (`Assets/Scripts/Title/StartupTitle.cs`): the cover over the whole screen (cropped evenly), the voice once 0.9 s after
+   the loading screen goes, then the theme. THEME: the WHOLE TRACK LOOPED, not split: its two choruses are alike but not the same (waveforms match only
+   0.4 to 0.5), so no clean loop point; it ends on its own fade and starts again. Both sounds decoded MP3 to WAV in `Assets/Resources/Title/` (no MP3 gap at
+   the loop). Racer schedules on the audio clock; under our paused title menu that clock stands still, so here they start by the real clock. One brief
+   listen at the listener: voice RMS 0.097, theme 0.027. Space, and A on a pad, each go to the title menu without also pressing it. Radio silent meanwhile.
+B DONE. Racer's LoadingScreen ported (`Title/LoadingScreen.cs`). This game is one scene, so it covers the launch, every race start or restart (route
+   inset on the map, the countdown held until it goes) and Free Roam (from the title or leaving a race); there is no "back to the menu" load here. Bar:
+   race 0.08 to 0.99 over 0.6 s, Free Roam the same; the launch is one long frame of start-up work (the police road net alone 2.4 s), so its bar jumps
+   0.30 to 0.92 in three steps. The race HUD and other IMGUI drawing are hidden under it (`TrailerMode.HudHidden`). The OSM credit: the cover's own on
+   the title; written on a plate on the loading screen (the band darkens the painted one); written in when a screen's shape crops it.
+C DONE. 16 tips for this game's real controls (each binding checked in the code), changing every 5 s (check: 2 changes in 12 s).
+D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (PlayerBuild), so the window and taskbar too (`exe_icon_32.png`). The build makes no
+   desktop shortcut and a .bat cannot carry an icon.
+4K: one run full screen at 3840 x 2160 for the pictures only (about 40 s), as the brief allows. Build `Builds/ChastainRush/` 2026-10-19 19:28. Imported from
+Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
+For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
+
 ## QUEUED rounds
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing

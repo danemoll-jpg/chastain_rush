@@ -45,6 +45,11 @@ namespace ChastainRush
             PlayerSettings.runInBackground = false;
             PlayerSettings.usePlayerLog = true;
             PlayerSettings.SplashScreen.showUnityLogo = false;
+            // Round 51 (Part D): the game's icon, the rider on the bike from Dan's cover (SourceArt/Title/GameIcon.png; a copy in
+            // Assets/HandMade/Title/): the exe's icon, which Windows also shows on the window and the taskbar
+            var icon = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/HandMade/Title/GameIcon.png");
+            if (icon) PlayerSettings.SetIcons(UnityEditor.Build.NamedBuildTarget.Unknown, new[] { icon }, IconKind.Any);
+            else Debug.LogWarning("Round 51: Assets/HandMade/Title/GameIcon.png missing: the exe keeps Unity's icon");
             // Round 24 A2: -playerBuildDev makes a development build (profiler markers on) in Builds/ChastainRushDev instead, for
             // ProfileRunner; Dan's exe is never a development build
             bool dev = Array.IndexOf(Environment.GetCommandLineArgs(), "-playerBuildDev") >= 0;

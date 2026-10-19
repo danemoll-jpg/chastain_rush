@@ -1,0 +1,27 @@
+Round 51 check, 2026-10-19 19:29, the exe, 1280 x 720, muted (AudioListener.volume 0). Press to continue by pad.
+PASS  loading screen up at launch  -  CHASTAIN RUSH, bar 0.00
+PASS  launch: the bar moves up to the end, then the screen goes  -  3 samples 0.00 0.00 0.00 0.30 0.30 0.92; up 7.18 s after the scene loaded
+PASS  launch: what is loading and a tip are shown  -  An official shortcut forgives the checkpoints it skips. A missed checkpoint anywhere else costs 5 seconds.
+PASS  the title is up over the title menu after the loading screen  -  title/root
+      theme: time 4.05 s, volume 0.27, mute False, enabled True, samples max 0.276, 48000 Hz 2 ch, load Loaded, listener 1 paused True, rms now 0.024
+      voice began 0.9 s, theme 1.7 s after the loading screen went
+PASS  the voice speaks the title once (heard at the listener)  -  starts 1, peak RMS 0.097, clip 1.07 s
+PASS  the theme plays after it, looped (heard at the listener)  -  played True, playing True, voice playing False, peak RMS 0.027, clip 34.4 s, loop True
+PASS  the prompt waits: still on the title
+PASS  one controller button (A) goes on to the title menu  -  title/root
+PASS  the press did not also act on the menu  -  focus RACE -> RACE
+PASS  the theme stops with the title
+PASS  D-pad down: FREE ROAM  -  FREE ROAM
+PASS  FREE ROAM loads behind the cover, the bar moving  -  32 samples 0.05 0.21 0.37 0.64 0.80 0.99; up 0.62 s
+PASS  then Free Roam: the menu closed, the game running  -  closed, timeScale 1
+PASS  race setup: START RACE  -  free/race START RACE
+PASS  RACE loads behind the cover, the bar moving, its route on the map  -  21 samples 0.07 0.57 0.67 0.77 0.88 0.99; route inset True; up 0.60 s; Chastain Glen loop
+PASS  the countdown waits for the screen  -  countdown under the screen 3.00 s
+PASS  then the countdown runs  -  Countdown 2.00
+PASS  the tips change every 5 s  -  2 changes
+      V (X on a controller) changes the camera view. Hold the right mouse button or push the right stick to look around.
+      M (View on a controller) opens the map: F (Y) sets a waypoint to drive to, T (X) travels to a place.
+      J (B on a controller) shows or hides the minimap.
+PASS  held picture: the race's loading screen with its route  -  Chastain Glen loop
+
+ALL 19 CHECKS PASSED
