@@ -231,8 +231,7 @@ namespace ChastainRush
             status = Label("Map status", panel.transform, new Vector2(0, -297), new Vector2(1240, 24), 17);
             // Round 49: two lines (one did not fit a 1280-wide screen)
             var controls = Label("Controls", panel.transform, new Vector2(0, -333), new Vector2(1240, 40), 14); controls.lineSpacing = 1.05f;
-            controls.text = "Left stick / WASD: pan  ·  right stick / mouse: pointer  ·  A / click: choose what is under the pointer  ·  RT / LT, = / -: zoom  ·  D-pad ◀ / Home: center on you
-" +
+            controls.text = "Left stick / WASD: pan  ·  right stick / mouse: pointer  ·  A / click: choose what is under the pointer  ·  RT / LT, = / -: zoom  ·  D-pad ◀ / Home: center on you\n" +
                             "D-pad ▶ / Space: shortcuts and pipes  ·  LB / RB: places  ·  X / T: travel  ·  Y / F: waypoint  ·  D-pad ▲ ▼: egg areas  ·  B / Esc: close";
         }
 
