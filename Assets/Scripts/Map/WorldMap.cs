@@ -22,6 +22,12 @@ namespace ChastainRush
     //   left    track browsing, the action sheet (Round 48 brought the rest: exploration fog and its save, destinations and travel,
     //           waypoints, and the acorn areas as the goose egg areas: WorldMap.Explore.cs, Explore/)
     // Bug capture (F4 / ] and its debug-menu row) moved to the right stick's click on the controller (DeveloperHud).
+    // Round 49 (D, Dan 2026-10-19: "there needs to be two different controls, 1 to move the map around and a pointer to be able to select things on
+    // the map"): the left stick / WASD pans (and once the view is at the map's edge it carries the pointer on to that edge, so every corner can be
+    // brought under it), the right stick / the mouse moves a pointer freely over the picture (it stays where it is while you pan); A / Enter / a
+    // click acts on what is under the pointer (a discovered place: travel there; an egg area: show it), X travels to the place under it (or the
+    // chosen one), Y sets the waypoint where it points; zoom keeps the point under the pointer still. The right stick's click (center on the
+    // player) moved to the D-pad's left, A's old job (the shortcuts and pipes) to the D-pad's right.
     public sealed partial class WorldMap : MonoBehaviour
     {
         public static WorldMap Instance { get; private set; }
@@ -45,10 +51,12 @@ namespace ChastainRush
         public sealed class Place { public string label; public Vector3 at; public Color color; public Vector3[] outline; public bool small; }
         public static readonly List<Place> Places = new List<Place>();
 
-        InputActionMap mapActions; InputAction mapToggle, panAction, zoomInAction, zoomOutAction, centerAction, layersAction, backAction;
+        InputActionMap mapActions; InputAction mapToggle, panAction, zoomInAction, zoomOutAction, centerAction, layersAction, backAction, pointerAction, actAction;
         GameObject panel; RawImage picture; WorldMapOverlay overlay; Text status, heading, cursor, north, legend; Font font;
         readonly List<Text> racerDots = new List<Text>(), gateLabels = new List<Text>(), proposalLabels = new List<Text>();
         Rect world; float zoom = 1f, savedTimeScale = 1f; Vector2 center = new Vector2(.5f, .5f); int closedFrame = -10;
+        Vector2 pointer;   // Round 49: the pointer, in the picture's own units from its middle (as a marker's anchoredPosition)
+        Vector2 pressAt; float dragged; bool pressing;   // the mouse: a press that moves under 6 px before its release is a click
         ArcadeVehicle car; RaceController race;
         const float MaxZoom = 16f;
 
@@ -69,8 +77,10 @@ namespace ChastainRush
             InputAction ButtonAction(string name, string keyboard, string controller) { var a = mapActions.AddAction(name, InputActionType.Button); a.AddBinding(keyboard); a.AddBinding(controller); return a; }
             mapToggle = ButtonAction("Open / close", "<Keyboard>/m", "<Gamepad>/select");
             backAction = ButtonAction("Back", "<Keyboard>/escape", "<Gamepad>/buttonEast");
-            centerAction = ButtonAction("Center on player", "<Keyboard>/home", "<Gamepad>/rightStickPress");
-            layersAction = ButtonAction("Shortcuts and pipes", "<Keyboard>/space", "<Gamepad>/buttonSouth");
+            centerAction = ButtonAction("Center on player", "<Keyboard>/home", "<Gamepad>/dpad/left");   // Round 49: was the right stick's click
+            layersAction = ButtonAction("Shortcuts and pipes", "<Keyboard>/space", "<Gamepad>/dpad/right");   // Round 49: was A
+            actAction = ButtonAction("Choose under the pointer", "<Keyboard>/enter", "<Gamepad>/buttonSouth");   // Round 49
+            pointerAction = mapActions.AddAction("Pointer", InputActionType.Value); pointerAction.AddBinding("<Gamepad>/rightStick");
             zoomOutAction = ButtonAction("Zoom out", "<Keyboard>/minus", "<Gamepad>/leftTrigger"); zoomInAction = ButtonAction("Zoom in", "<Keyboard>/equals", "<Gamepad>/rightTrigger");
             panAction = mapActions.AddAction("Pan", InputActionType.Value); panAction.AddBinding("<Gamepad>/leftStick");
             panAction.AddCompositeBinding("2DVector").With("Up", "<Keyboard>/w").With("Down", "<Keyboard>/s").With("Left", "<Keyboard>/a").With("Right", "<Keyboard>/d");
@@ -94,14 +104,63 @@ namespace ChastainRush
             if (UpdateExplore()) { ClampView(); Draw(); return; }   // Round 48: places, travel, the waypoint, the egg areas
             if (backAction.WasPressedThisFrame()) { MenuInput.ConsumeThroughRelease(backAction); Close(); return; }
             float dt = Time.unscaledDeltaTime;
-            Vector2 pan = panAction.ReadValue<Vector2>(); if (pan.sqrMagnitude > .04f) center += new Vector2(pan.x, pan.y * world.width / world.height) * dt * .4f / zoom;
-            zoom = Mathf.Clamp(zoom * Mathf.Exp((zoomInAction.ReadValue<float>() - zoomOutAction.ReadValue<float>()) * dt * 1.6f), 1f, MaxZoom);
-            var m = Mouse.current; if (m != null && Mathf.Abs(m.scroll.ReadValue().y) > 0.01f) zoom = Mathf.Clamp(zoom * (m.scroll.ReadValue().y > 0 ? 1.15f : 1f / 1.15f), 1f, MaxZoom);
-            if (m != null && m.leftButton.isPressed) { var d = m.delta.ReadValue(); center -= new Vector2(d.x / picture.rectTransform.rect.width, d.y / picture.rectTransform.rect.height) * (720f / Screen.height) / zoom; }
+            Vector2 pan = panAction.ReadValue<Vector2>(); if (pan.sqrMagnitude > .04f) PanStep(new Vector2(pan.x, pan.y * world.width / world.height) * dt * .4f / zoom);
+            // Round 49: the pointer (the right stick: a quarter of the picture's width a second at full tilt, slower near the middle of the stick)
+            Vector2 ps = pointerAction.ReadValue<Vector2>(); if (ps.sqrMagnitude > .04f) MovePointer(ps * ps.magnitude * picture.rectTransform.rect.width * .45f * dt);
+            float zk = Mathf.Exp((zoomInAction.ReadValue<float>() - zoomOutAction.ReadValue<float>()) * dt * 1.6f);
+            var m = Mouse.current; if (m != null && Mathf.Abs(m.scroll.ReadValue().y) > 0.01f) zk *= m.scroll.ReadValue().y > 0 ? 1.15f : 1f / 1.15f;
+            if (Mathf.Abs(zk - 1f) > 1e-5f) ZoomAtPointer(zk);
+            if (m != null)
+            {
+                // the mouse is the pointer while it moves; a drag pans (the pointer stays on the map under it), a click acts on what is under it
+                var mp = m.position.ReadValue(); var md = m.delta.ReadValue();
+                if (md.sqrMagnitude > 0.01f && RectTransformUtility.ScreenPointToLocalPointInRectangle(picture.rectTransform, mp, null, out var local)) SetPointer(local);
+                if (m.leftButton.wasPressedThisFrame) { pressing = true; pressAt = mp; dragged = 0f; }
+                if (pressing && m.leftButton.isPressed)
+                {
+                    dragged = Mathf.Max(dragged, (mp - pressAt).magnitude);
+                    if (dragged >= 6f) center -= new Vector2(md.x / picture.rectTransform.rect.width, md.y / picture.rectTransform.rect.height) * (720f / Screen.height) / zoom;
+                }
+                if (pressing && m.leftButton.wasReleasedThisFrame) { pressing = false; if (dragged < 6f) { ActAtPointer(); return; } }
+            }
+            if (actAction.WasPressedThisFrame()) { ActAtPointer(); return; }
             if (centerAction.WasPressedThisFrame()) CenterOnPlayer();
             if (layersAction.WasPressedThisFrame()) ShowLayers = !ShowLayers;
             ClampView();
             Draw();
+        }
+
+        // Round 49: a pan; whatever the view's edge keeps it from moving carries the pointer on toward that edge instead
+        void PanStep(Vector2 duv)
+        {
+            var before = center; center += duv; ClampView();
+            var left = duv - (center - before);
+            if (left.sqrMagnitude > 1e-12f) MovePointer(Vector2.Scale(left * zoom, picture.rectTransform.rect.size));
+        }
+        public void MovePointer(Vector2 by) => SetPointer(pointer + by);
+        public void SetPointer(Vector2 local)
+        {
+            var half = picture != null ? picture.rectTransform.rect.size * .5f - Vector2.one * 3f : Vector2.zero;
+            pointer = new Vector2(Mathf.Clamp(local.x, -half.x, half.x), Mathf.Clamp(local.y, -half.y, half.y));
+        }
+        public Vector2 Pointer => pointer;
+        public RectTransform PictureTransform => picture != null ? picture.rectTransform : null;   // checks
+        public Vector2 PointerUV => picture != null ? center + new Vector2(pointer.x / picture.rectTransform.rect.width, pointer.y / picture.rectTransform.rect.height) / zoom : center;
+        public Vector3 PointerWorld => WorldPoint(PointerUV);
+        // zoom with the point under the pointer kept where it is
+        public void ZoomAtPointer(float factor)
+        {
+            var uv = PointerUV; zoom = Mathf.Clamp(zoom * factor, 1f, MaxZoom);
+            if (picture != null) center = uv - new Vector2(pointer.x / picture.rectTransform.rect.width, pointer.y / picture.rectTransform.rect.height) / zoom;
+            ClampView();
+        }
+        // the pointer onto a world point (the view panned so it is on the picture): for the checks
+        public void PointAt(Vector3 p)
+        {
+            var uv = Normalized(p);
+            if (picture == null) return;
+            SetPointer(Vector2.Scale((uv - center) * zoom, picture.rectTransform.rect.size));
+            if ((PointerUV - uv).magnitude * zoom > 0.01f) { center = uv; ClampView(); SetPointer(Vector2.Scale((uv - center) * zoom, picture.rectTransform.rect.size)); }
         }
 
         // for the checks (and the debug menu): the same as the buttons
@@ -111,7 +170,7 @@ namespace ChastainRush
             race = RaceController.Instance; if (!car) car = FindAnyObjectByType<ArcadeVehicle>();
             savedTimeScale = Time.timeScale > 0f ? Time.timeScale : 1f; Time.timeScale = 0f; AudioListener.pause = true;
             if (!panel) BuildUI();
-            zoom = Mathf.Max(zoom, 2.5f); CenterOnPlayer();
+            zoom = Mathf.Max(zoom, 2.5f); CenterOnPlayer(); pointer = Vector2.zero; pressing = false;
             panel.SetActive(true); EventSystem.current?.SetSelectedGameObject(null); Draw();
         }
         public void Close()
@@ -165,13 +224,16 @@ namespace ChastainRush
             var ov = RectUI("Lines", r, Vector2.zero, new Vector2(w, h)); overlay = ov.gameObject.AddComponent<WorldMapOverlay>(); overlay.raycastTarget = false;
             BuildExploreUI(r, w, h);   // Round 48: the fog under the lines, the egg areas' list, the travel question
             heading = Label("Player heading", r, Vector2.zero, new Vector2(35, 35), 27); heading.color = Color.cyan; heading.text = "▲";
-            cursor = Label("Cursor", r, Vector2.zero, new Vector2(25, 25), 22); cursor.text = "+";
+            cursor = Label("Cursor", r, Vector2.zero, new Vector2(44, 44), 38); cursor.text = "✛"; cursor.color = new Color(1f, .93f, .45f);   // Round 49: the pointer, big enough to follow
             north = Label("North", r, new Vector2(w / 2 - 26, h / 2 - 34), new Vector2(40, 52), 18); north.text = "▲\nN"; north.fontStyle = FontStyle.Bold; north.lineSpacing = .8f;
             var credit = Label("Credit", r, new Vector2(w / 2 - 6, -h / 2 + 10), new Vector2(300, 18), 13, TextAnchor.MiddleRight); credit.rectTransform.pivot = new Vector2(1, .5f); credit.text = "© OpenStreetMap contributors";
             legend = Label("Legend", r, new Vector2(-w / 2 + 8, h / 2 - 10), new Vector2(560, 120), 14, TextAnchor.UpperLeft); legend.rectTransform.pivot = new Vector2(0, 1); legend.supportRichText = true;
-            status = Label("Map status", panel.transform, new Vector2(0, -298), new Vector2(1240, 24), 17);
-            Label("Controls", panel.transform, new Vector2(0, -330), new Vector2(1240, 22), 15).text =
-                "Stick / WASD: pan  ·  RT / LT, = / -: zoom  ·  RS click / Home: center  ·  A / Space: shortcuts, pipes  ·  LB / RB, Q / E: places  ·  X / T: travel  ·  Y / F: waypoint  ·  D-pad ↑ ↓: egg areas  ·  B / Esc: close";
+            status = Label("Map status", panel.transform, new Vector2(0, -297), new Vector2(1240, 24), 17);
+            // Round 49: two lines (one did not fit a 1280-wide screen)
+            var controls = Label("Controls", panel.transform, new Vector2(0, -333), new Vector2(1240, 40), 14); controls.lineSpacing = 1.05f;
+            controls.text = "Left stick / WASD: pan  ·  right stick / mouse: pointer  ·  A / click: choose what is under the pointer  ·  RT / LT, = / -: zoom  ·  D-pad ◀ / Home: center on you
+" +
+                            "D-pad ▶ / Space: shortcuts and pipes  ·  LB / RB: places  ·  X / T: travel  ·  Y / F: waypoint  ·  D-pad ▲ ▼: egg areas  ·  B / Esc: close";
         }
 
         Vector2 ScreenPoint(Vector3 p) { var uv = Normalized(p); return Vector2.Scale((uv - center) * zoom, picture.rectTransform.rect.size); }
@@ -281,12 +343,12 @@ namespace ChastainRush
             for (int i = ri; i < racerDots.Count; i++) racerDots[i].gameObject.SetActive(false);
             var pp = car && car.Body ? car.Body.position : Vector3.zero;
             Marker(heading, pp); heading.rectTransform.localRotation = Quaternion.Euler(0, 0, car ? -car.transform.eulerAngles.y : 0f); heading.transform.SetAsLastSibling();
-            cursor.rectTransform.anchoredPosition = Vector2.zero; cursor.gameObject.SetActive(true);
-            var at = WorldPoint(center);
+            cursor.rectTransform.anchoredPosition = pointer; cursor.gameObject.SetActive(true); cursor.transform.SetAsLastSibling();   // Round 49: the pointer
+            var at = PointerWorld;
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
-                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   A / Space: shortcuts" : "A / Space: show the shortcuts and pipes")
+                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   D-pad ▶ / Space: shortcuts" : "D-pad ▶ / Space: show the shortcuts and pipes")
                         + (Proposals.Count > 0 ? "\n" + ProposalLegend : "") + "\n" + ExploreStatus();
-            status.text = $"Cursor  x {at.x:0}  z {at.z:0}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
+            status.text = $"Pointer  x {at.x:0}  z {at.z:0}{UnderPointerText()}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }
     }
 }

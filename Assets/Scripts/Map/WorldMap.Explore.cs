@@ -13,6 +13,8 @@ namespace ChastainRush
     //                list of areas with their directions at the side; D-pad up / down (Page Up / Page Down) steps through them, centered
     //   destinations the discovered places, LB / RB (Q / E) step through them; X (T): travel there, A to confirm, B to cancel (Free Roam only)
     //   waypoint     Y (F): set at the cursor or the chosen place, again on it to clear; Backspace / left stick click: clear
+    // Round 49 (D): the pointer (WorldMap.cs) chooses: A / a click on a discovered place asks to travel there, on an egg area shows it; X travels to
+    // the place under the pointer (else the chosen one); Y sets the waypoint where the pointer is (on a place: that place)
     public sealed partial class WorldMap
     {
         InputAction prevPlace, nextPlace, travelAction, waypointAction, clearWaypointAction, areaPrev, areaNext, confirmYes;
@@ -57,7 +59,7 @@ namespace ChastainRush
             if (!ex) return false;
             if (prevPlace.WasPressedThisFrame()) StepPlace(-1);
             else if (nextPlace.WasPressedThisFrame()) StepPlace(1);
-            else if (travelAction.WasPressedThisFrame()) RequestTravel(selectedPlace);
+            else if (travelAction.WasPressedThisFrame()) { int at = PlaceUnderPointer(); RequestTravel(at >= 0 ? at : selectedPlace); }
             else if (waypointAction.WasPressedThisFrame()) ToggleWaypoint();
             else if (clearWaypointAction.WasPressedThisFrame()) ex.ClearWaypoint();
             else if (areaNext.WasPressedThisFrame()) StepArea(1);
@@ -72,7 +74,7 @@ namespace ChastainRush
             var ex = Exploration.Instance; var known = KnownPlaces();
             if (known.Length == 0) { selectedPlace = -1; if (ex) ex.Message = "Discover places by driving to them."; return; }
             int at = System.Array.IndexOf(known, selectedPlace); selectedPlace = known[(at + d + known.Length) % known.Length];
-            center = Normalized(ex.destinations[selectedPlace].position); zoom = Mathf.Max(zoom, 3f); ClampView();
+            center = Normalized(ex.destinations[selectedPlace].position); zoom = Mathf.Max(zoom, 3f); ClampView(); PointAt(ex.destinations[selectedPlace].position);   // Round 49: the pointer on it
         }
         public void StepArea(int d)
         {
@@ -84,17 +86,60 @@ namespace ChastainRush
             var all = EggAreas.Of(EggHunt.Instance); if (i < 0 || i >= all.Length || picture == null) return;
             selectedArea = i; selectedPlace = -1; var b = all[selectedArea].bounds; center = Normalized(b.center);
             var ext = Vector2.Scale(Normalized(b.max) - Normalized(b.min), picture.rectTransform.rect.size);
-            zoom = Mathf.Clamp(Mathf.Min(picture.rectTransform.rect.width / Mathf.Max(1, ext.x), picture.rectTransform.rect.height / Mathf.Max(1, ext.y)) * .8f, 1f, 8f); ClampView();
+            zoom = Mathf.Clamp(Mathf.Min(picture.rectTransform.rect.width / Mathf.Max(1, ext.x), picture.rectTransform.rect.height / Mathf.Max(1, ext.y)) * .8f, 1f, 8f); ClampView(); PointAt(b.center);
         }
-        void ToggleWaypoint()
+        // Round 49: where the pointer is (on a discovered place: that place); again on it clears it
+        public void ToggleWaypoint()
         {
-            var ex = Exploration.Instance; var p = selectedPlace >= 0 ? ex.destinations[selectedPlace].position : WorldPoint(center);
-            if (ex.Waypoint.HasValue && ScreenPoint(ex.Waypoint.Value).magnitude < 12f && selectedPlace < 0) ex.ClearWaypoint(); else ex.SetWaypoint(p);
+            var ex = Exploration.Instance; if (!ex) return; int at = PlaceUnderPointer(); var p = at >= 0 ? ex.destinations[at].position : PointerWorld;
+            if (ex.Waypoint.HasValue && (ScreenPoint(ex.Waypoint.Value) - pointer).magnitude < 12f) ex.ClearWaypoint(); else ex.SetWaypoint(p);
+        }
+
+        // Round 49: what is under the pointer: a discovered place within 16 (picture units) of it, else an egg area whose outline holds it (Free Roam)
+        public int PlaceUnderPointer()
+        {
+            var ex = Exploration.Instance; if (!ex || picture == null) return -1; int best = -1; float bd = 16f;
+            for (int i = 0; i < ex.destinations.Length; i++)
+            {
+                if (!ex.Discovered(ex.destinations[i].id)) continue;
+                float dd = (ScreenPoint(ex.destinations[i].position) - pointer).magnitude; if (dd < bd) { bd = dd; best = i; }
+            }
+            return best;
+        }
+        public int AreaUnderPointer()
+        {
+            var hunt = EggHunt.Instance; if (!hunt || (race != null && race.State != RaceController.Stage.Free)) return -1;
+            var all = EggAreas.Of(hunt); var q = PointerWorld; var p2 = new Vector2(q.x, q.z);
+            for (int i = 0; i < all.Length; i++) foreach (var r in all[i].regions) if (r.outline != null && r.outline.Length > 2 && Inside(p2, r.outline)) return i;
+            return -1;
+        }
+        static bool Inside(Vector2 p, Vector3[] ring)
+        {
+            bool c = false;
+            for (int i = 0, j = ring.Length - 1; i < ring.Length; j = i++)
+                if ((ring[i].z > p.y) != (ring[j].z > p.y) && p.x < (ring[j].x - ring[i].x) * (p.y - ring[i].z) / (ring[j].z - ring[i].z) + ring[i].x) c = !c;
+            return c;
+        }
+        // A / Enter / a click: a place under the pointer asks to travel there (Free Roam), an egg area shows it
+        public void ActAtPointer()
+        {
+            var ex = Exploration.Instance; int at = PlaceUnderPointer();
+            if (at >= 0) { selectedPlace = at; RequestTravel(at); return; }
+            int ai = AreaUnderPointer();
+            if (ai >= 0) { SelectArea(ai); return; }
+            if (ex) ex.Message = "Nothing to choose here: point at a discovered place or an egg area.";
+        }
+        string UnderPointerText()
+        {
+            var ex = Exploration.Instance; int at = PlaceUnderPointer();
+            if (at >= 0) return $"   ·   {ex.destinations[at].title}  (A: travel)";
+            int ai = AreaUnderPointer(); if (ai >= 0) return $"   ·   {EggAreas.Of(EggHunt.Instance)[ai].name}  (A: show)";
+            return "";
         }
         public void RequestTravel(int index)
         {
             var ex = Exploration.Instance; if (!ex) return;
-            if (index < 0 || index >= ex.destinations.Length) { ex.Message = "Choose a discovered place first (LB / RB)."; return; }
+            if (index < 0 || index >= ex.destinations.Length) { ex.Message = "Point at a discovered place first (or LB / RB)."; return; }
             if (!Exploration.CanTravel) { ex.Message = "Travel is in Free Roam only."; return; }
             pendingTravel = index; confirmText.text = $"Travel to {ex.destinations[index].title}?\n\n<size=22>A / Enter: travel      B / Esc: cancel</size>"; confirmText.supportRichText = true;
             confirm.SetActive(true); confirm.transform.SetAsLastSibling(); MenuInput.ConsumeThroughRelease();
@@ -147,15 +192,15 @@ namespace ChastainRush
             areaList.transform.parent.gameObject.SetActive(hunt && free); areaList.text = list.ToString(); areaList.transform.parent.SetAsLastSibling();   // over the region names
             for (int i = ai; i < areaLabels.Count; i++) areaLabels[i].gameObject.SetActive(false);
             // the discovered places (the chosen one ◆) and the waypoint
-            int pi = 0;
+            int pi = 0, hover = PlaceUnderPointer();   // Round 49: the place under the pointer shown as the chosen one
             if (ex)
                 for (int i = 0; i < ex.destinations.Length; i++)
                 {
-                    var d = ex.destinations[i]; if (!ex.Discovered(d.id)) continue;
-                    var t = Pooled(placeLabels, pi++, "Place", i == selectedPlace ? 15 : 13); t.text = (i == selectedPlace ? "◆ " : "● ") + d.title;
-                    t.color = i == selectedPlace ? Color.white : new Color(.85f, .95f, 1f, .9f); t.fontStyle = i == selectedPlace ? FontStyle.Bold : FontStyle.Normal;
+                    var d = ex.destinations[i]; if (!ex.Discovered(d.id)) continue; bool hi = i == selectedPlace || i == hover;
+                    var t = Pooled(placeLabels, pi++, "Place", hi ? 15 : 13); t.text = (hi ? "◆ " : "● ") + d.title;
+                    t.color = hi ? Color.white : new Color(.85f, .95f, 1f, .9f); t.fontStyle = hi ? FontStyle.Bold : FontStyle.Normal;
                     t.alignment = TextAnchor.MiddleLeft; t.rectTransform.pivot = new Vector2(0.04f, .5f);
-                    if (Marker(t, d.position) && zoom < 2f && i != selectedPlace) t.text = "●";
+                    if (Marker(t, d.position) && zoom < 2f && !hi) t.text = "●";
                 }
             for (int i = pi; i < placeLabels.Count; i++) placeLabels[i].gameObject.SetActive(false);
             if (ex && ex.Waypoint.HasValue) { Marker(waypointMark, ex.Waypoint.Value); waypointMark.transform.SetAsLastSibling(); } else waypointMark.gameObject.SetActive(false);

@@ -56,9 +56,9 @@ namespace ChastainRush
                 float z0 = map.Zoom; yield return Hold(new GamepadState { rightTrigger = 1f }, 1.0f); float z1 = map.Zoom;
                 yield return Hold(new GamepadState { leftTrigger = 1f }, 0.4f); float z2 = map.Zoom;
                 var c0 = map.Center; yield return Hold(new GamepadState { leftStick = new Vector2(1f, 0.5f) }, 0.8f); var c1 = map.Center;
-                yield return Press(GamepadButton.South); bool layers = map.ShowLayers;
+                yield return Press(GamepadButton.DpadRight); bool layers = map.ShowLayers;   // Round 49: the D-pad's right (A chooses under the pointer)
                 yield return Capture($"2_map_{tag}_zoomed_panned_layers");
-                yield return Press(GamepadButton.RightStick);
+                yield return Press(GamepadButton.DpadLeft);   // Round 49: the D-pad's left (was the right stick's click)
                 var mine = map.Normalized(car.Body.position); bool centered = (map.Center - mine).magnitude < 0.01f;
                 bool noCapture = !DeveloperHud.Instance || (!DeveloperHud.Instance.Capturing && !DeveloperHud.Instance.CommentOpen);
                 yield return Press(GamepadButton.East);
