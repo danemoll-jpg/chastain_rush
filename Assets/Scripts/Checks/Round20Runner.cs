@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -57,6 +57,7 @@ namespace ChastainRush
             if (tag == "round39" && parts == null) parts = new[] { "walkers", "walkpics", "walkdodge", "walkfps" };   // Round 39 (Round20Runner.R39*.cs)
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
+            if (tag == "round49" && parts == null) parts = new[] { "lktrail", "lkintake", "lkkicker", "lkshut", "lkfwd", "lkmap", "lkpics" };   // Round 49 (Round20Runner.R49.cs); lkrace with -traffic Normal
             if (tag == "round48" && parts == null) parts = new[] { "eggpickup", "eggtier", "eggmap", "eggtravel", "eggwaypoint", "eggrace", "eggpics" };   // Round 48 (Round20Runner.R48.cs)
             if (tag == "round47" && parts == null) parts = new[] { "lkrevlap", "lkfwdlap", "lkrevshut", "lkrevpics", "drives" };   // Round 47 (Round20Runner.R47.cs); lkrevrace with -traffic Normal
             if (tag == "round46" && parts == null) parts = new[] { "boat", "boattimes", "boatrace", "drain", "pics" };   // Round 46 (Round20Runner.R46.cs)
@@ -134,6 +135,18 @@ namespace ChastainRush
                 if (Do("cfps")) yield return Guard(R36CantonFps());
                 if (Do("rig")) yield return Guard(R36Rig());
                 if (Do("geyser")) yield return Guard(R36Geyser());
+            }
+            // Round 49 (Round20Runner.R49.cs): the reverse Chastain Lakes shortcuts, the lake trail behind the pool, the map's pointer
+            if (tag == "round49")
+            {
+                if (Do("lktrail")) yield return Guard(R49Trail(ids));
+                if (Do("lkintake")) yield return Guard(R49Intake());
+                if (Do("lkkicker")) yield return Guard(R49Kicker());
+                if (Do("lkshut")) yield return Guard(R49Shut());
+                if (Do("lkfwd")) yield return Guard(R49Fwd());
+                if (Do("lkrace")) yield return Guard(R49Race());
+                if (Do("lkmap")) yield return Guard(R49Map());
+                if (Do("lkpics")) yield return Guard(R49Pics());
             }
             // Round 48 (Round20Runner.R48.cs): the goose egg hunt and exploration
             if (tag == "round48")
