@@ -141,6 +141,16 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   failed this ("just a simple ramp that jumps a narrow part of the lake"). Getting it wrong must cost (into the water, a crash,
   a miss that loses more than it saves). Never choose the easiest crossing or shortest gap to make a check pass; if the risky
   version will not work, report it instead of building a safe one.
+- **No free way round a shortcut** (Dan, 2026-10-19, after Round 49's kicker "really did nothing ... you could just drive
+  through this area and skip the ramp and nothing will slow you down"). Block every free way through a shortcut's ground with
+  things you can drive through that slow you hard (bushes, hedges, gardens, woodpiles, breakable fences), placed so the stunt
+  carries you over them. Every shortcut check drives its ground WITHOUT the stunt; that run must be slower than the plain lap.
+- **Tire tracks are the hint** (Dan, 2026-10-19: "the tire tracks are enough to know it is a shortcut ... we can stop putting
+  these signs up"). Where a turn-off has clear worn tracks, no sign is added.
+- **Paths look like the real ones** (Dan, 2026-10-19, the Chastain Lakes trail: "i really don't think it needs to be widened.
+  vehicles can also drive in the grass"). A footpath or trail is built at its real width, lying flat on graded ground, with
+  smooth drivable grass beside it; the race line may use the grass. (Noonday Creek's trail was widened at Dan's request; that
+  stays.)
 - **Pipes through water are aquarium pipes** (Dan, 2026-10-18): "All pipes that go through a body of water must be aquarium
   pipes." Under or through a lake, pond or creek, a pipe or tunnel is a glass run (`PipeAquarium`, `MapBuilder.ClearPipe.cs`),
   never plain concrete.

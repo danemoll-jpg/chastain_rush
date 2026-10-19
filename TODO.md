@@ -81,6 +81,18 @@ must be aquarium pipes." Any pipe or tunnel that passes under or through a lake,
 the network's glass mains: `PipeAquarium`, `MapBuilder.ClearPipe.cs`: the water above, fish, weeds, light shafts), never a plain
 concrete pipe.
 
+**No free way round a shortcut — STANDING RULE (Dan, 2026-10-19 13:37).** Dan, after Round 49's kicker: "little frustrating to
+wait this long and it still ignores my shortcut rule about making them more challenging. The tube one was fine but the ramp one
+really did nothing. As it is you could just drive through this area and skip the ramp and nothing will slow you down." A
+shortcut's ground must not be drivable at speed without doing its stunt: block the free ways with things that could be there and
+that you can drive through but slow you right down (bushes, hedges, a garden, a woodpile, fences that break), placed so the stunt
+carries you over or past them. Every shortcut check from now on includes DRIVING THE SHORTCUT'S GROUND WITHOUT THE STUNT (round
+the ramp, beside it, the other yards): that run must be slower than the plain lap; if it is not, the shortcut is not done.
+
+**Tire tracks are the hint — STANDING RULE (Dan, 2026-10-19 13:29).** "why do we have a "jump" sign? the tire tracks are enough to
+know it is a shortcut. I think at this point we can stop putting these signs up for this when there are clear tire tracks laid
+out". From now on, where a shortcut's turn-off has clear worn tire tracks, no sign (no JUMP, PARTY or other board) is added.
+
 **One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
 7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
 world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
@@ -96,6 +108,51 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
+reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
+Lakes race at night on the Drifter Twin).** Round 49 is reviewed (the intake and the map are accepted). The two new standing rules
+at the top of this file apply first (no free way round a shortcut; tire tracks are the hint). ONE full Build Map at the end:
+plan the whole line on paper first (the run without the stunt included), use quick builds while working; Round 49 took seven full
+builds. Tuning limit. Short results.
+A. THE KICKER: BLOCK THE FREE WAY, AND A SECOND JUMP. Dan: "the ramp one really did nothing. As it is you could just drive through
+   this area and skip the ramp and nothing will slow you down." BUG-003 (x 1207.19 z 1004.53 h 214, the yards on the kicker's line
+   between CP4 and CP5, reverse): "as a follow up this issue should have bushes that you can drive through but will slow you down,
+   this is to prevent people from just driving through here". BUG-004 (x 1161.78 z 982.28 h 227, at Northlake Point, where the
+   kicker's line crosses that cul-de-sac): "There could be a second jump in this area as well again with bushes or something so you
+   can't just drive through this way".
+   (1) Bushes (dense shrubs / a hedge row, drivable through, slowing you hard: a real cost, as fences do now) across every free way
+   through these yards on both sides of Northlake Point, so the only fast way is through the air. (2) The kids' kicker stays; its
+   flight carries you over the first bushes. (3) A SECOND JUMP on the same line at Dan's BUG-004 spot: from Northlake Point on over
+   the next yards' bushes toward the lap past CP5, landing on or next to the lap heading the race's way. A real physics launch
+   (ramp rule), something that could be on a cul-de-sac or in a yard at its true size (not a dirt pile, not another kids' kicker:
+   Code picks and says why). (4) Done right (both jumps clean) it must save clearly more than Round 49's 1.1 s; missed (short, slow,
+   or round the ramps) you are in the bushes and lose more than you would have saved. The AI takes it and sometimes fails.
+B. THE LAKE TRAIL, AS THE PHOTOS SHOW IT. BUG-001 (x 1307.56 z 1105.97 h 87, behind the pool, reverse): "why does this look so
+   sloppy and why is the sidewalk on hanging on the hill like this. Cant you use the reference photos to see how the real path is
+   not slopped down from the hill. Also i really don't think it needs to be widened. vehicles can also drive in the grass so i don't
+   see the issue just having it look normal". Rebuild the path's piece from the lot behind the pool to the footbridge to look like
+   photos 2 and 3 (`local/reference_photos/chastain_lakes/r44_2*`, `r44_3*`): its REAL width (about 1.5 m concrete walk with timber
+   edging past the pool's granite wall, then about 2 m gravel with tan brick edging), lying flat on graded ground that follows the
+   hill (no path tilted sideways or hanging off a slope, no sharp-edged cut faces; the bank beside it soft and grassed or pine
+   straw as in the photos). The race line is NOT held to the path: vehicles run on the path and the grass beside it, so the grass
+   either side is smooth and drivable at race speed. Same treatment on the dam path north of the bridge (real width, flat, grass
+   either side). This replaces Round 44's "7 m, wider than real" for this trail only.
+C. NO JUMP SIGN. BUG-002 (x 1268.79 z 1040.35 h 187, the kicker's turn-off on Lakeside Drive): take the JUMP! board away; the tire
+   tracks stay as the hint (new standing rule).
+Check: the kicker line clean (both jumps; time saved, Street Classic and Drifter Twin); the same ground WITHOUT the jumps (round
+each ramp, through the bushes, through other yards): slower than the plain lap; a short first jump; the AI race reverse, traffic
+Normal, all finish. The trail both ways on all 11 vehicles at race speed, no stop, partly on the grass. Pictures: Dan's BUG-001,
+BUG-003 and BUG-004 spots, the second jump, the trail from photo 2's and photo 3's spots next to the photos.
+For Dan to check: the kicker line and its second jump (and try to cheat it); the trail behind the pool; the turn-off without the sign.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- STARTUP POLISH (2026-10-18): Racer's spoken title, loading screen and hints; Dan: "i Would want 5 but we don't have a cover yet".
+
+## Previous delivery 1 (newest): Round 49
+**Reviewed: Dan drove the Round 49 build 2026-10-19 13:25 (a reverse Chastain Lakes race at night); his notes are Round 50 (the intake "was fine"; the kicker, the trail and the sign were not).**
 **Round 49, REVERSE CHASTAIN LAKES SHORTCUTS, THE LAKE TRAIL WHERE IT REALLY IS, and the map's pointer (Dan, 2026-10-19 08:37,
 after driving the Round 48 build; his two in-game map pictures: `local/reference_photos/chastain_lakes/r49_rev_shortcut1_cp7_cp9_map.png` and
 `r49_rev_shortcut2_cp4_cp5_map.png`).** Rounds 47 and 48 are reviewed. The
@@ -169,13 +226,7 @@ Build: seven full builds, not one (each fix was found in the exe: the intake's w
 For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
    ways; the map's pointer and pan with a controller and the mouse.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- STARTUP POLISH (2026-10-18): Racer's spoken title, loading screen and hints; Dan: "i Would want 5 but we don't have a cover yet".
-
-## Previous delivery 1 (newest): Round 48
+## Previous delivery 2: Round 48
 **Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
 **Round 48, GOOSE EGG HUNT AND EXPLORATION (Dan, 2026-10-18 16:25; started after Round 47).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
@@ -215,7 +266,7 @@ Imported from Racer: ExplorationCollection (as EggHunt), AcornAreas (as EggAreas
 For Dan to check: the eggs (easy and hard: are the hard ones hard enough, the air ones over the jumps reachable?), the tiers' notices, the map's fog, areas, travel and
   waypoint; what each tier unlocks (to decide).
 
-## Previous delivery 2: Round 47
+## Previous delivery 3: Round 47
 **Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
 **Round 47, REVERSE CHASTAIN LAKES and a driveway fix (Dan, 2026-10-19 01:43; report BUG-001 of session
 `2026-10-19_01-29-19-650_77c31b`, read by Claude, after the Round 46 exe: Free Roam at night on the Drifter Twin).** Rounds 43 to 46
@@ -254,53 +305,6 @@ B DONE. The four townhouses of the row on Chastain Road's north side at Dan's sp
 Build: one full Build Map (Build 1 crashed on an empty drive, fixed, rebuilt), then code-only exe rebuilds for the check; `Builds/ChastainRush/` 2026-10-19 03:07.
 For Dan to check: drive reverse Chastain Lakes (and pick its shortcuts); the downhill bend south of the footbridge in reverse (does the trail's edge by the courts need
    grading?); the drives at his spot.
-
-## Previous delivery 3: Round 46
-**Reviewed: Dan drove the Round 46 build 2026-10-19 01:29 (Free Roam and the Chastain Lakes race); no reports on this round (his one note is Round 47).**
-**Round 46, CHASTAIN LAKES SHORTCUTS REDONE (Dan, 2026-10-18 22:19, after driving Round 44; start after Round 45).** Round 44
-is otherwise accepted (Dan: "The only other issue I found is on the other shortcut"). The two new standing rules at the top of
-this file apply (shortcuts must be a risk; pipes through water are aquarium pipes). One full Build Map at the end.
-A. THE WEST LAKE JUMP, REDONE. Dan: "I would have asked for this Shortcut to be redone anyway. It fails the rule that it should be
-   challenging. It is just a simple ramp that jumps a narrow part of the lake. ... My first option would be to make a bigger ramp
-   and point further down the track. You will be forced to clear a bigger part of the lake so if you don't hit it correctly you
-   fall into the lake. Also can we come up with something other than another dirt pile? I am thinking you come upon a boat off
-   the dock that has a large slide on it that can be used for a ramp."
-   Remove Round 44's dredging-spoil pile and its narrow crossing. Through the back yards (the 142 / 143 gap or another, Code's
-   choice) to a DOCK on West Chastain Lake's north shore, and tied up off its end a party BOAT (a pontoon boat) with a big water
-   slide on its top deck: the slide is the ramp (you drive along the dock, onto the boat and up the slide). Its real size must
-   fit a boat-top slide (CLAUDE.md lesson on ramp sizes); the boat may be big. A REAL physics jump off the slide's lip (standing
-   rule), aimed further down the course than Round 44's (Dan's red line and beyond: over the wide part of the lake, about 80 m
-   of water on his line), landing on Lakeside Drive or its shoulder further along the lap, so the climb up Round 44's 2.7 m bank
-   (its NOT MET item) is gone. Hit it right (full speed, straight up the slide) and you clear the water; come in slow or crooked
-   and you fall into the lake (slowed, the shallow / deep-water rules, a reset puts you on the race's line, never trapped). It
-   must still save time when made. The boat and dock can stay in Free Roam as world (the slide drivable there too). A hint at the
-   turn-off as the other shortcuts. Tuning limit: if the full-speed clearance or the time saved is not met after two tries, stop
-   and report the numbers (distance needed vs reached per vehicle) for Dan.
-B. THE DRAIN'S TUNNEL AS AN AQUARIUM PIPE. Dan: "The part that goes under the lake should be an aquarium pipe." Round 44's LD and
-   B28 under Chastain Lakes become glass aquarium runs wherever they are under the water (the network's glass mains' look and
-   life: fish, weeds, light shafts, the lake surface above), concrete only where they run under land. Because of the new rule:
-   list any other pipe in the network that passes under water without glass, convert it the same way, and say which.
-Check: the west jump on all 11 offered vehicles at full speed straight up the slide (clears, lands upright, height and air) and
-at 80 % speed or 10 degrees off line (falls in the lake); time saved (Street Classic, Drifter Twin); the AI takes it and
-sometimes falls in (human mistakes); a drive through the drain's aquarium run. Pictures: the dock and boat from the turn-off, the
-slide, the flight, the landing, the aquarium run from inside.
-For Dan to check: the boat jump (a clean run and a miss); the aquarium under the lake.
-
-**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (final build: 11 of 12), not yet driven by Dan.** Evidence `Data/screenshots/round46/`.
-A DONE. The BOAT JUMP: off North Lakeside Drive by Bankside Point (a PARTY sign with balloons, worn tracks), down between houses 146 and 147 (no house moved)
-   to a dock, a 20 m two-deck pontoon party boat, up its water slide (solid chute, low walls, 4.5 m over the water, 23 degrees at the top); a real jump down
-   the lake's south arm, 77 m of water, onto Lakeside Drive at Lakeside Point (its barrier 45 m down it for long landings). Spoil pile and narrow crossing gone.
-   Run-up measured first: 34 to 38 m/s at the shore flat out. Full speed: 11 of 11 clear and land upright, 90 to 111 m out (1.0 to 1.6 s more air than Round 44,
-   8 to 10 m over the top). 80 %: 11 of 11 come down in the lake, 61 to 74 m out (the arm's shallow end: they wade out up the bank). 10 degrees off: 9 hit the
-   chute's walls and drop in 13 to 54 m out; the Street Classic and Pebble Coupe +10 never reached the slide in the check's run (FAIL as written). Saves 5.0 s
-   (Street Classic) and 4.0 s (Drifter Twin). AI race x2, traffic Normal: all 6 finish, 0 missed; the AI took the boat jump 7 times (laps with it 95 to 138 s).
-B DONE. Glass where the drain's tunnel runs under East Chastain Lake: B28's whole 140 m (its dive under M2a included; LD, the drop's room, stays concrete).
-   By the new rule also: B12 under the big lake (44 m), S2 under the Enclave pond (13 m), M3c under pond W14 (12 m). No pipe's floor moved. Not converted:
-   the 11 pipes that pass under a creek (M5a, M5b, B9a, B10, M3b, M3c, B11, B14, M4a, B27, M6; a creek has no bed to set glass in). Check: through the drain, 5 s in glass.
-Found and fixed in the exe (why FOUR full builds, not one): cars stopped dead on the boat (a thin open slide board under 3.5 g; a deck under the slide; upright
-   faces at flush joints; the dock sharing the deck's collider), then every AI car fell in (`ai_speed` capped its run at 18 m/s). Tuning: none needed.
-Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-19 00:37 (BUILD_INFO.txt).
-For Dan to check: the boat jump flat out, slow and crooked (is wading out of the arm's shallow end enough of a cost?); B28's glass from the drain; the creek list.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

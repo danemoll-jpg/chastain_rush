@@ -5174,3 +5174,52 @@ A3 DONE. 190 clips made with Dan's key from the environment (not printed): 187 c
 Check: a Getaway on the Needle 600 to heat 5: cop calls in the cop voice (R01, units + streets), the helicopter's R08 in the pilot's; then R14 and U7+R07 heard.
 Build: code only (`-playerBuildKeepScene`), 2026-10-18 22:36; the round's playable build is Round 46's full build. For Dan to check: a Getaway, a cop call
    and the helicopter's (does the rotor thump sit right under the voice?).
+
+## Round 46 (moved from TODO.md on 2026-10-19 when Dan reviewed Round 49; word for word)
+
+## Previous delivery 3: Round 46
+**Reviewed: Dan drove the Round 46 build 2026-10-19 01:29 (Free Roam and the Chastain Lakes race); no reports on this round (his one note is Round 47).**
+**Round 46, CHASTAIN LAKES SHORTCUTS REDONE (Dan, 2026-10-18 22:19, after driving Round 44; start after Round 45).** Round 44
+is otherwise accepted (Dan: "The only other issue I found is on the other shortcut"). The two new standing rules at the top of
+this file apply (shortcuts must be a risk; pipes through water are aquarium pipes). One full Build Map at the end.
+A. THE WEST LAKE JUMP, REDONE. Dan: "I would have asked for this Shortcut to be redone anyway. It fails the rule that it should be
+   challenging. It is just a simple ramp that jumps a narrow part of the lake. ... My first option would be to make a bigger ramp
+   and point further down the track. You will be forced to clear a bigger part of the lake so if you don't hit it correctly you
+   fall into the lake. Also can we come up with something other than another dirt pile? I am thinking you come upon a boat off
+   the dock that has a large slide on it that can be used for a ramp."
+   Remove Round 44's dredging-spoil pile and its narrow crossing. Through the back yards (the 142 / 143 gap or another, Code's
+   choice) to a DOCK on West Chastain Lake's north shore, and tied up off its end a party BOAT (a pontoon boat) with a big water
+   slide on its top deck: the slide is the ramp (you drive along the dock, onto the boat and up the slide). Its real size must
+   fit a boat-top slide (CLAUDE.md lesson on ramp sizes); the boat may be big. A REAL physics jump off the slide's lip (standing
+   rule), aimed further down the course than Round 44's (Dan's red line and beyond: over the wide part of the lake, about 80 m
+   of water on his line), landing on Lakeside Drive or its shoulder further along the lap, so the climb up Round 44's 2.7 m bank
+   (its NOT MET item) is gone. Hit it right (full speed, straight up the slide) and you clear the water; come in slow or crooked
+   and you fall into the lake (slowed, the shallow / deep-water rules, a reset puts you on the race's line, never trapped). It
+   must still save time when made. The boat and dock can stay in Free Roam as world (the slide drivable there too). A hint at the
+   turn-off as the other shortcuts. Tuning limit: if the full-speed clearance or the time saved is not met after two tries, stop
+   and report the numbers (distance needed vs reached per vehicle) for Dan.
+B. THE DRAIN'S TUNNEL AS AN AQUARIUM PIPE. Dan: "The part that goes under the lake should be an aquarium pipe." Round 44's LD and
+   B28 under Chastain Lakes become glass aquarium runs wherever they are under the water (the network's glass mains' look and
+   life: fish, weeds, light shafts, the lake surface above), concrete only where they run under land. Because of the new rule:
+   list any other pipe in the network that passes under water without glass, convert it the same way, and say which.
+Check: the west jump on all 11 offered vehicles at full speed straight up the slide (clears, lands upright, height and air) and
+at 80 % speed or 10 degrees off line (falls in the lake); time saved (Street Classic, Drifter Twin); the AI takes it and
+sometimes falls in (human mistakes); a drive through the drain's aquarium run. Pictures: the dock and boat from the turn-off, the
+slide, the flight, the landing, the aquarium run from inside.
+For Dan to check: the boat jump (a clean run and a miss); the aquarium under the lake.
+
+**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (final build: 11 of 12), not yet driven by Dan.** Evidence `Data/screenshots/round46/`.
+A DONE. The BOAT JUMP: off North Lakeside Drive by Bankside Point (a PARTY sign with balloons, worn tracks), down between houses 146 and 147 (no house moved)
+   to a dock, a 20 m two-deck pontoon party boat, up its water slide (solid chute, low walls, 4.5 m over the water, 23 degrees at the top); a real jump down
+   the lake's south arm, 77 m of water, onto Lakeside Drive at Lakeside Point (its barrier 45 m down it for long landings). Spoil pile and narrow crossing gone.
+   Run-up measured first: 34 to 38 m/s at the shore flat out. Full speed: 11 of 11 clear and land upright, 90 to 111 m out (1.0 to 1.6 s more air than Round 44,
+   8 to 10 m over the top). 80 %: 11 of 11 come down in the lake, 61 to 74 m out (the arm's shallow end: they wade out up the bank). 10 degrees off: 9 hit the
+   chute's walls and drop in 13 to 54 m out; the Street Classic and Pebble Coupe +10 never reached the slide in the check's run (FAIL as written). Saves 5.0 s
+   (Street Classic) and 4.0 s (Drifter Twin). AI race x2, traffic Normal: all 6 finish, 0 missed; the AI took the boat jump 7 times (laps with it 95 to 138 s).
+B DONE. Glass where the drain's tunnel runs under East Chastain Lake: B28's whole 140 m (its dive under M2a included; LD, the drop's room, stays concrete).
+   By the new rule also: B12 under the big lake (44 m), S2 under the Enclave pond (13 m), M3c under pond W14 (12 m). No pipe's floor moved. Not converted:
+   the 11 pipes that pass under a creek (M5a, M5b, B9a, B10, M3b, M3c, B11, B14, M4a, B27, M6; a creek has no bed to set glass in). Check: through the drain, 5 s in glass.
+Found and fixed in the exe (why FOUR full builds, not one): cars stopped dead on the boat (a thin open slide board under 3.5 g; a deck under the slide; upright
+   faces at flush joints; the dock sharing the deck's collider), then every AI car fell in (`ai_speed` capped its run at 18 m/s). Tuning: none needed.
+Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-19 00:37 (BUILD_INFO.txt).
+For Dan to check: the boat jump flat out, slow and crooked (is wading out of the arm's shallow end enough of a cost?); B28's glass from the drain; the creek list.
