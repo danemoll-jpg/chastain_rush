@@ -125,8 +125,15 @@ TRAIL_LAKE_GAP = 4.2                 # the tread's middle at least this far from
 # the lake trail, hand points: the lot's aisle, between pool house 266 and the north courts, the bend onto the footbridge, the
 # footbridge (moved 7 m east at its south end so the trail meets it in one S: it still spans the outflow just below the spillway), the
 # dam's crest (Round 32's shore path pushed off the water), the lawn up to Bells Ferry Road
-BRIDGE_S, BRIDGE_N = (1362.0, 1130.0), (1354.5, 1150.0)   # Round 44 check: the trail met the bridge in a 50 degree bend (cars hit its rail ends); now square to it, 8 m clear of the pool fence's corner
-TRAIL_CTRL = [(1322.0, 1084.0), (1345.0, 1084.5), (1360.0, 1087.0), (1370.5, 1092.0), (1373.6, 1099.0), (1373.6, 1108.0), (1370.4, 1115.0), (1366.6, 1120.0), (1364.8, 1122.5)]
+# Round 49 (C, Dan 2026-10-19 08:37: "the trail goes behind the pool and twists around to the bridge, not between the pool area and the tennis
+# courts"): from the lot's west end north past the bathhouse (267) on its lake side (photo 2: the concrete walk below the pool's granite wall and
+# iron fence), round the pool deck's north-west corner and along its north side, then a bend onto the footbridge (photo 3: gravel with tan brick
+# edging, the lake on the left); the footbridge moved and turned to meet it (it spans the spillway where the outflow leaves the lake). The piece between the pool
+# house and the courts is gone (grass again).
+BRIDGE_S, BRIDGE_N = (1342.0, 1138.5), (1351.0, 1151.5)   # over the spillway where the outflow leaves the lake (photos 3 and 7)
+TRAIL_CTRL = [(1308.0, 1074.4), (1314.0, 1079.6), (1317.8, 1085.5), (1319.0, 1093.0), (1318.2, 1101.0), (1318.4, 1108.0), (1320.0, 1115.0), (1323.5, 1121.0),
+              (1328.0, 1126.5), (1333.5, 1131.5), (1338.3, 1135.4)]
+CONCRETE_TO = (1320.6, 1117.0)       # photo 2's concrete walk past the bathhouse; gravel with tan brick edging from here on (photo 3)
 DAM_CTRL = [(1351.4, 1156.5), (1353.5, 1165.0), (1357.0, 1175.0), (1360.0, 1185.0), (1363.0, 1195.0), (1365.0, 1205.0), (1368.0, 1215.0), (1372.0, 1225.0),
             (1378.0, 1235.0), (1388.0, 1245.0), (1398.5, 1253.5)]
 BF_JOIN = (1407.0, 1260.0)           # onto Bells Ferry Road's northbound lane
@@ -185,12 +192,15 @@ bf_line = pts(by_osm[BF]["points"])
 _d, s_bfj = nearest_s(bf_line, BF_JOIN)
 trail = resample(lake_trail + [BRIDGE_S] + resample([BRIDGE_S, BRIDGE_N], 2.0)[1:] + chaikin([BRIDGE_N] + dam[::6] + [point_at(bf_line, s_bfj)], 2)[1:], 2.0)
 _kb = nearest_s(trail, BRIDGE_N)[1]; _ct = cum(trail)
-trail = [q if _ct[k] <= _kb + 3.0 else off_lake(q, EAST, TRAIL_LAKE_GAP) for k, q in enumerate(trail)]   # the dam's tread kept off the water after the smoothing too
+_kbs = nearest_s(trail, BRIDGE_S)[1]
+trail = [q if _kbs - 1.0 <= _ct[k] <= _kb + 3.0 else off_lake(q, EAST, TRAIL_LAKE_GAP) for k, q in enumerate(trail)]   # the tread kept off the water after the smoothing too (Round 49: the shore behind the pool as well)
 _kk = [k for k, q in enumerate(trail) if _ct[k] > _kb + 1.0]
 for _ in range(3):   # and eased again (the push leaves steps)
     trail = [trail[k] if k not in _kk or k + 1 >= len(trail) else ((trail[k - 1][0] + 2 * trail[k][0] + trail[k + 1][0]) / 4, (trail[k - 1][1] + 2 * trail[k][1] + trail[k + 1][1]) / 4) for k in range(len(trail))]
 _h266 = pts(m["buildings"][266]["footprint"])
-print(f"the trail: between house 266 ({min(poly_dist(q, _h266) for q in trail):.1f} m) and the north courts ({min(1377.0 - q[0] for q in trail if 1094 < q[1] < 1129):.1f} m) at least;")
+_h267 = pts(m["buildings"][267]["footprint"]); _deck = [(1332.0, 1095.4), (1356.2, 1095.4), (1356.2, 1124.6), (1332.0, 1124.6)]   # the pool deck's fence (MapBuilder.ChastainLakes.cs)
+print(f"the trail (Round 49): its middle from bathhouse 267 {min(poly_dist(q, _h267) for q in trail):.1f} m, from the pool fence {min(poly_dist(q, _deck) for q in trail):.1f} m, "
+      f"from the lake {min(ring_dist(q, EAST) for k, q in enumerate(trail) if _ct[k] < _kb - 1.0 and q[1] > 1092.0):.1f} m before the footbridge, from pool house 266 {min(poly_dist(q, _h266) for q in trail):.1f} m")
 print(f"the trail: {cum(trail)[-1]:.0f} m; its middle from the lake {min(ring_dist(q, EAST) for k, q in enumerate(trail) if _ct[k] > _kb + 1.0):.1f} m at least past the footbridge")
 SPEC = [("North Lakeside Drive", NL, way(NL), True), ("Lakeside Drive", LD, way(LD, a=(378.2, 1422.0)), True)]
 pieces, line, offs = [], [], []
@@ -404,8 +414,9 @@ print(f"closures (barriers while racing): {len(closures)}; dead-end stubs not ba
 for c in closures: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}), road width {c['width_m']:.0f} m")
 # the AI along the trail: held to the trail's pace through the lot, the S onto the footbridge and the turn onto Bells Ferry Road
 s_lot, s_br, s_bf = S((1322.0, 1084.0)), S(BRIDGE_S), S(BF_JOIN)
-ai_zones = [{"id": "lot", "s0": round(s_lot - 25.0, 1), "s1": round(s_lot + 30.0, 1), "speed": 14.0},
-            {"id": "footbridge", "s0": round(s_br - 25.0, 1), "s1": round(s_br + 26.0, 1), "speed": 12.0},
+ai_zones = [{"id": "lot", "s0": round(s_lot - 25.0, 1), "s1": round(s_lot + 10.0, 1), "speed": 14.0},
+            {"id": "behind the pool", "s0": round(s_lot + 10.0, 1), "s1": round(s_br - 6.0, 1), "speed": 10.0},   # Round 49 (C): round the bathhouse and the deck's corner
+            {"id": "footbridge", "s0": round(s_br - 6.0, 1), "s1": round(s_br + 26.0, 1), "speed": 12.0},
             {"id": "the dam", "s0": round(s_br + 26.0, 1), "s1": round(s_bf - 12.0, 1), "speed": 20.0},
             {"id": "onto Bells Ferry Road", "s0": round(s_bf - 12.0, 1), "s1": round(s_bf + 6.0, 1), "speed": 12.0}]
 
@@ -431,7 +442,129 @@ for x, z, label in CHECKPOINTS:
 cps_rev = sorted(cps_rev, key=lambda c: (c["s"] - gate_s_rev) % L_rev)
 for i, c in enumerate(cps_rev, 1): c["id"] = i
 print(f"reverse lap {L_rev:.0f} m, gate at s {gate_s_rev}; checkpoints: " + ", ".join(f"CP{c['id']} s {c['s']} {c['label']}" for c in cps_rev))
-closures_rev, stubs_rev, merged_rev = closures_for(lap_r, ())
+# ---------------------------------------------------------------- Round 49 (Dan, 2026-10-19 08:37): the reverse race's two shortcuts
+def forgiven_rev(sa, sb): return [c["id"] for c in cps_rev if (c["s"] - sa) % L_rev < (sb - sa) % L_rev]
+def unit(v): n = math.hypot(*v) or 1.0; return (v[0] / n, v[1] / n)
+def along(o, d, k): return (o[0] + d[0] * k, o[1] + d[1] * k)
+# A, THE INTAKE ("Lets do a similar idea as the gazebo shortcut on the forward race. On the bit of land that sticks out before the CP, jump into an
+# intake with into a tunnel across the lake and you come out of a manhole just after the 9 cp in the correct direction"): westbound on Lakeside
+# Drive, 45 m before CP7, right onto the lake association's service track up the point east of Lakeside Point (a sign at its mouth, worn ruts), along
+# the intake's concrete jetty off the point's tip (6 m wide, 2 m over the water: off its side you are in the lake) and off its end into the intake,
+# a square concrete riser in the lake 11.5 m out (MapBuilder.LakesIntake.cs). LakeDrain takes a vehicle that comes in over its weir down its shaft
+# to LI and on into B29 (pipe_network.py), glass under West Chastain Lake, under M2b by the north shore, up MH15's riser onto North Lakeside Drive
+# 30 m past CP9, facing east. Too slow off the jetty (under about 11 m/s) and you come down short in the lake; off line and you miss the weir.
+I_AT, I_EDGE = (581.6, 1318.0), (582.6, 1306.5)   # LI in pipe_network.py stands under I_AT
+I_PAD_LEN, I_PAD_HALF, I_PAD_OVER = 11.0, 3.0, 2.0
+I_R, I_SHAFT, I_WALL = 4.0, 3.6, 4.6                # the catch (the weir's inside), the shaft, the riser's outside (half widths)
+I_WALL_UP = 1.2                                     # the riser's walls over the water (Round 49 check: at 0.35 m a car short in the lake waded up and climbed in)
+I_FROM = (606.0, 1262.0)
+I_REJOIN_PAST = 45.0
+I_SIGN = (612.0, 1269.6, 90.0)                      # on Lakeside Drive's north verge at the track's mouth, facing the westbound lap
+dI = unit((I_AT[0] - I_EDGE[0], I_AT[1] - I_EDGE[1])); I_ROOT = along(I_EDGE, dI, -I_PAD_LEN); pad_y = WEST_Y + I_PAD_OVER
+li = next(c for c in NET["chambers"] if c["id"] == "LI")
+if math.dist((li["x"], li["z"]), I_AT) > 0.5: raise SystemExit(f"LI ({li['x']}, {li['z']}) is not under the intake {I_AT}: pipe_network.py")
+b29 = next(t for t in NET["tubes"] if t["id"] == "B29"); tp9 = b29["pts"]; tube9 = [(tp9[i], tp9[i + 1], tp9[i + 2]) for i in range(0, len(tp9), 3)]
+mh15 = next(h for h in NET["manholes"] if h["id"] == "MH15")
+s_i0 = SR(I_FROM); s_i1 = SR((mh15["x"], mh15["z"])) + I_REJOIN_PAST
+i_turn = chaikin([point_at(lap_r, s_i0, Cr), (603.0, 1268.5), (595.0, 1279.0), along(I_ROOT, dI, -5.0), I_ROOT], 3)
+i_pre = resample(i_turn, 2.0)
+i_pad = [along(I_ROOT, dI, k) for k in range(2, int(I_PAD_LEN), 2)] + [I_EDGE]
+i_drop = [along(I_EDGE, dI, k) for k in range(2, 11, 2)] + [I_AT]
+i_tube = [(q[0], q[2]) for q in tube9[::2]] + [(tube9[-1][0], tube9[-1][2])]; i_tube_y = [q[1] for q in tube9[::2]] + [tube9[-1][1]]
+i_out = resample([(mh15["x"], mh15["z"]), point_at(lap_r, s_i1, Cr)], 2.0)[1:]
+ipath = i_pre + i_pad + i_drop + i_tube + i_out
+ipath_y = [round(ground(*q), 2) for q in i_pre] + [round(pad_y, 2)] * len(i_pad) + [round(WEST_Y, 2)] * len(i_drop) + [round(v, 2) for v in i_tube_y] + [round(ground(*q), 2) for q in i_out]
+fg_i = forgiven_rev(s_i0, s_i1)
+sIRoot, sIEdge, sIDrop = nearest_s(ipath, I_ROOT)[1], nearest_s(ipath, I_EDGE)[1], nearest_s(ipath, I_AT)[1]
+_tl9 = sum(math.dist(tube9[i], tube9[i + 1]) for i in range(len(tube9) - 1))
+print(f"A intake: the jetty {I_PAD_LEN:.0f} m x {2 * I_PAD_HALF:.0f} m from ({I_ROOT[0]:.1f}, {I_ROOT[1]:.1f}) at {pad_y:.2f} m ({I_PAD_OVER} m over West Chastain Lake); the intake at {I_AT} "
+      f"{math.dist(I_EDGE, I_AT):.1f} m off its end, its catch {I_R} m; LI's floor {li['floor']} m; B29 {_tl9:.0f} m to MH15 at ({mh15['x']:.0f}, {mh15['z']:.0f}) {mh15['y']:.1f} m, "
+      f"its riser heading {math.degrees(math.atan2(*mh15['dir'])) % 360:.0f} deg")
+for v in (8.0, 10.0, 12.0, 16.0, 20.0, 25.0):
+    t_ = math.sqrt(2 * I_PAD_OVER / 9.81); print(f"    off the jetty at {v:.0f} m/s: down to the water {v * t_:.1f} m out (the catch from {math.dist(I_EDGE, I_AT) - I_R:.1f} to {math.dist(I_EDGE, I_AT) + I_R:.1f} m)")
+print(f"A: leaves the reverse lap at s {s_i0:.0f}, rejoins at s {s_i1:.0f}: {cum(ipath)[-1]:.0f} m against {(s_i1 - s_i0) % L_rev:.0f} m on the lap; forgives CP {fg_i}")
+
+# B, THE KICKER ("around CP 4, you go between houses and find a ramp that jumps past 5. It should be a fairly large jump, I would prefer something other
+# than a dirt ramp"): southbound past CP4, right through the front yard of 239 and between 239 and 237, down the back yard to the neighborhood kids'
+# big wooden BMX kicker (plywood on a 2x6 frame, 3 m at its lip, 32 degrees, built out over the slope: MapBuilder.LakesKicker.cs), a real jump
+# (physics only) west over the creek hollow below the lake's south tip, between houses 232 and 246, onto the end of Northlake Point and on through the
+# yards to the lap past CP5. Come in slow and you drop into the hollow (the creek bottom 4 to 8 m down; out along it to the lap's bend, a slow way).
+# Physics cannot reach the lap itself past CP5 from here (165 m at least): the flight is the hollow (about 55 m), the rest is driven.
+# Round 49 check, tuning try 1: the first kicker (lip 9.6 m further up this line, 3 m, 32 deg, a 20 m turn off the lap) gave 17.8 / 20.1 m/s at its lip
+# flat out and both came down in the hollow; now one 28 m arc off the lap (it starts just past CP4) onto the line through the gap, 15 m of straight
+# down the yard, the kicker 3.5 m and 35 deg: about 20 m/s clears the hollow, 18 m/s comes down on its far side, slower in it
+# tuning try 2: try 1 cleared at 22 m/s flat out but a run at 18 m/s cleared too (too little risk); the kicker 3 m back up its line (a longer gap)
+K_X, K_BEARING, K_BACK, K_H, K_ANGLE, K_W, K_TURN_R = (1270.5, 1011.8), 256.0, 33.9, 3.5, 35.0, 4.6, 28.0   # K_X: where the kicker's line meets the lap
+dK = bdir(K_BEARING); kk = math.tan(math.radians(K_ANGLE)); k_len = 2 * K_H / kk
+K_LIP = (K_X[0] + dK[0] * (K_BACK + k_len), K_X[1] + dK[1] * (K_BACK + k_len))
+K_REJOIN = (1066.0, 971.0)
+K_SIGN = (1263.6, 1028.5, 0.0)                     # a hand-painted JUMP! sign on the lap's west verge at the turn-off, facing the southbound lap
+K_FOOT = along(K_LIP, dK, -k_len)
+k_foot_y = ground(*K_FOOT); k_lip_y = k_foot_y + K_H
+def k_flight(v, ang=K_ANGLE, max_t=6.0):
+    vx, vy = v * math.cos(math.radians(ang)), v * math.sin(math.radians(ang)); t = 0.0; top = k_lip_y
+    while t < max_t:
+        t += 0.01; s = vx * t; q = along(K_LIP, dK, s); y = k_lip_y + vy * t - 4.905 * t * t; top = max(top, y)
+        g = EAST_Y if inside(q, EAST) else ground(*q)
+        if t > 0.15 and y <= g: return {"t": round(t, 2), "dist": round(s, 1), "at": (round(q[0], 1), round(q[1], 1)), "y": round(y, 2), "g": round(g, 2), "top": round(top - k_lip_y, 1)}
+    return None
+print(f"B kicker: foot ({K_FOOT[0]:.1f}, {K_FOOT[1]:.1f}) {k_foot_y:.2f} m, lip {K_LIP} {k_lip_y:.2f} m ({k_lip_y - ground(*K_LIP):.1f} m over the ground under it), {k_len:.1f} m long, "
+      f"{K_ANGLE:.0f} deg at the lip, bearing {K_BEARING:.0f}")
+k_flights = {}
+for v in (14.0, 16.0, 17.0, 18.0, 19.0, 20.0, 22.0, 24.0, 26.0, 28.0):
+    f = k_flight(v); k_flights[v] = f
+    near = {i: round(poly_dist(f["at"], ring), 1) for i, ring, h in B if near_box(i, f["at"], 10.0) and poly_dist(f["at"], ring) < 10.0}
+    print(f"    off the kicker at {v:.0f} m/s: {f['t']:.2f} s, {f['dist']:.0f} m, {f['top']:.1f} m up, down at {f['at']} on {f['g']:.1f} m{' IN THE HOLLOW' if f['g'] < 299.0 else ''}; houses within 10 m {near}")
+K_LAND = along(K_LIP, dK, 50.0)
+# the arc: tangent to the lap (heading south) and to the kicker's line; it meets the line at the gap between 239 and 237
+_kt = K_TURN_R * math.tan(math.radians((K_BEARING - 180.0) / 2.0)); _kc = (K_X[0] - K_TURN_R, K_X[1] + _kt)
+_arc = [(_kc[0] + K_TURN_R * math.cos(math.radians(-a)), _kc[1] + K_TURN_R * math.sin(math.radians(-a))) for a in np.linspace(0.0, K_BEARING - 180.0, 20)]
+s_k0 = SR(_arc[0])
+k_pre = resample([point_at(lap_r, s_k0, Cr)] + _arc[1:] + [K_FOOT], 2.0)
+k_ramp = [along(K_FOOT, dK, k) for k in range(2, int(k_len) + 1, 2)] + [K_LIP]
+k_fl = [along(K_LIP, dK, k) for k in range(2, 50, 2)]
+s_k1 = SR(K_REJOIN) + 6.0
+k_post = resample(chaikin([K_LAND, (1160.0, 985.0), (1150.0, 983.5), (1131.0, 980.5), (1110.0, 976.5), (1090.0, 970.0), point_at(lap_r, s_k1 - 10.0, Cr), point_at(lap_r, s_k1, Cr)], 3), 2.0)
+kpath = k_pre + k_ramp + k_fl + k_post
+_vx, _vy = 21.0 * math.cos(math.radians(K_ANGLE)), 25.0 * math.sin(math.radians(K_ANGLE))
+kpath_y = [round(ground(*q), 2) for q in k_pre] + [round(k_foot_y + kk * math.dist(K_FOOT, q) ** 2 / (2 * k_len), 2) for q in k_ramp] + \
+          [round(k_lip_y + _vy * (math.dist(K_LIP, q) / _vx) - 4.905 * (math.dist(K_LIP, q) / _vx) ** 2, 2) for q in k_fl] + [round(ground(*q), 2) for q in k_post]
+fg_k = forgiven_rev(s_k0 + 30.0, s_k1)   # from its entry plane (30 m in): the arc leaves the lap just past CP4
+sKFoot, sKLip, sKLand = nearest_s(kpath, K_FOOT)[1], nearest_s(kpath, K_LIP)[1], nearest_s(kpath, K_LAND)[1]
+k_houses = {i: round(min(poly_dist(q, ring) for q in k_pre + k_post), 1) for i, ring, h in B if any(near_box(i, q, 8.0) for q in k_pre + k_post) and min(poly_dist(q, ring) for q in k_pre + k_post) < 8.0}
+print(f"B: leaves the reverse lap at s {s_k0:.0f}, rejoins at s {s_k1:.0f}: {cum(kpath)[-1]:.0f} m against {(s_k1 - s_k0) % L_rev:.0f} m on the lap; forgives CP {fg_k}; "
+      f"houses by its ways (m): {k_houses}; the flight's line between 232 ({min(poly_dist(along(K_LIP, dK, k), pts(m['buildings'][232]['footprint'])) for k in range(40, 70)):.1f} m) "
+      f"and 246 ({min(poly_dist(along(K_LIP, dK, k), pts(m['buildings'][246]['footprint'])) for k in range(40, 70)):.1f} m)")
+rev_shortcuts = [
+    {"id": "r_lake_intake", "name": "Lake intake", "direction": "reverse", "path": flat(ipath), "path_y": ipath_y, "half_width_m": 3.0,
+     "entry_inset_m": round(sIRoot - 2.0, 1), "entry_margin_m": 1.0, "forgives": fg_i, "ai_speed": 22.0,
+     # up the track and along the jetty lined up, off its end at the jetty's speed, flat out along the tube and up the riser
+     "ai_profile": [round(v, 1) for v in (0.0, 15.0, sIRoot - 10.0, 15.0, sIRoot, 17.0, sIEdge, 18.0, sIDrop + 6.0, 22.0, cum(ipath)[-1] - 10.0, 22.0)],
+     # a sloppy try: off the end too slow (short, into the lake)
+     "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 15.0, sIRoot - 10.0, 12.0, sIRoot, 9.0, sIEdge, 8.0, sIDrop + 6.0, 22.0, cum(ipath)[-1] - 10.0, 22.0)]},
+    {"id": "r_kicker_jump", "name": "Kicker jump", "direction": "reverse", "path": flat(kpath), "path_y": kpath_y, "half_width_m": 3.5,
+     # its entry plane 30 m in, 14 m off the lap (at 14 m in the arc was still beside the road: every car on the lap crossed it)
+     "entry_inset_m": 30.0, "entry_margin_m": 1.5, "forgives": fg_k, "ai_speed": 34.0,
+     # flat out through the yard and up the kicker; easy after the landing (the yards to the lap)
+     "ai_profile": [round(v, 1) for v in (0.0, 22.0, 16.0, 24.0, sKFoot - 8.0, 34.0, sKLip, 34.0, sKLand + 4.0, 15.0, cum(kpath)[-1] - 8.0, 18.0)],
+     # a sloppy try: eased off into the kicker, short, into the hollow
+     "ai_slip": 0.2, "ai_slip_profile": [round(v, 1) for v in (0.0, 22.0, 16.0, 20.0, sKFoot - 8.0, 17.0, sKLip, 17.0, sKLand + 4.0, 15.0, cum(kpath)[-1] - 8.0, 18.0)]},
+]
+shortcuts += rev_shortcuts
+# both closed in a forward race (as the forward ones are in reverse): a barrier across the track 12 m off Lakeside Drive and one across the gap between
+# 239 and 237; the clues hidden and the intake's grate on (RaceOnly.hideInForwardOf / showInForwardOf, LakeDrain.shutForwardOf)
+def shut_fwd(label, at, d, width):
+    n = math.hypot(*d); sj = S(at)
+    return {"road": label, "osm_id": 0, "x": round(at[0], 2), "z": round(at[1], 2), "dx": round(d[0] / n, 4), "dz": round(d[1] / n, 4), "width_m": round(width, 1),
+            "junction_s": round(sj, 1), "contact": [round(at[0], 1), round(at[1], 1)], "arc_m": 0.0, "barrier_on": label, "label": f"{label} (shut forward)"}
+_ki = min(range(len(i_pre)), key=lambda k: abs(math.dist(i_pre[k], point_at(lap_r, s_i0, Cr)) - 12.0))
+_kg2 = min(range(len(k_pre)), key=lambda k: poly_dist(k_pre[k], pts(m["buildings"][239]["footprint"])) + poly_dist(k_pre[k], pts(m["buildings"][237]["footprint"])))
+_gap2 = poly_dist(k_pre[_kg2], pts(m["buildings"][239]["footprint"])) + poly_dist(k_pre[_kg2], pts(m["buildings"][237]["footprint"]))
+def _dir(p, k): return (p[min(k + 1, len(p) - 1)][0] - p[max(k - 1, 0)][0], p[min(k + 1, len(p) - 1)][1] - p[max(k - 1, 0)][1])
+fwd_shut = [shut_fwd("the intake's track", i_pre[_ki], _dir(i_pre, _ki), 8.0), shut_fwd("the kicker's way", k_pre[_kg2], _dir(k_pre, _kg2), _gap2)]
+print(f"forward race: the intake's track shut at ({i_pre[_ki][0]:.0f}, {i_pre[_ki][1]:.0f}), the kicker's way between 239 and 237 ({_gap2:.1f} m) at ({k_pre[_kg2][0]:.0f}, {k_pre[_kg2][1]:.0f})")
+closures_rev, stubs_rev, merged_rev = closures_for(lap_r, (i_pre + i_out, k_pre + k_post))
+for c in fwd_shut: c["id"] = f"B{len(closures) + 1}"; closures.append(c)   # Round 49: the reverse shortcuts shut in a forward race
 # a stub the reverse lane passes too near to bar (North Lakeside Drive's 12 m spur at x 645: the lane 4 m nearer its end) keeps the forward barrier
 for st in list(stubs_rev):
     fw = [dict(c) for c in closures if c["osm_id"] == st["osm_id"]]
@@ -456,8 +589,10 @@ s_lot_r, s_br_r, s_bf_r = SR((1322.0, 1084.0)), SR(BRIDGE_S), SR(BF_JOIN)
 s_brn_r = SR(BRIDGE_N)
 ai_zones_rev = [{"id": "off Bells Ferry Road", "s0": round(s_bf_r - 12.0, 1), "s1": round(s_bf_r + 8.0, 1), "speed": 12.0},
                 {"id": "the dam", "s0": round(s_bf_r + 8.0, 1), "s1": round(s_brn_r - 25.0, 1), "speed": 20.0},
-                {"id": "footbridge", "s0": round(s_brn_r - 25.0, 1), "s1": round(s_br_r + 25.0, 1), "speed": 12.0},
-                {"id": "lot", "s0": round(s_lot_r - 30.0, 1), "s1": round(s_lot_r + 25.0, 1), "speed": 14.0}]
+                {"id": "footbridge", "s0": round(s_brn_r - 25.0, 1), "s1": round(s_br_r + 6.0, 1), "speed": 12.0},
+                {"id": "behind the pool", "s0": round(s_br_r + 6.0, 1), "s1": round(s_lot_r - 10.0, 1), "speed": 10.0},   # Round 49 (C)
+                {"id": "lot", "s0": round(s_lot_r - 10.0, 1), "s1": round(s_lot_r + 25.0, 1), "speed": 14.0}]
+ai_zones = [z for z in ai_zones if z["s1"] > z["s0"]]; ai_zones_rev = [z for z in ai_zones_rev if z["s1"] > z["s0"]]
 
 def zone(L, d, a, b, half_a, half_b):
     n = (-d[1], d[0])
@@ -466,12 +601,18 @@ def zone(L, d, a, b, half_a, half_b):
 land_from = wet_to - 2.0
 land_to = w_flights[38.0]["dist"] + 8.0
 landings = [{"id": "WJ", "poly": zone(W_LIP, dW, land_from, land_to, 9.0, 12.0)}]
+landings.append({"id": "RK", "poly": zone(K_LIP, dK, 30.0, 85.0, 7.0, 9.0)})   # Round 49 (B): the kicker's landing past the hollow
 clear = [{"id": "W the run-up to the dock", "points": flat(w_pre[::2] + [w_pre[-1]]), "half": 5.0},
          {"id": "W the dock and the boat", "points": flat([DOCK_ROOT, W_LIP]), "half": 6.0},
          {"id": "W the landing", "points": flat([(W_LIP[0] + dW[0] * land_from, W_LIP[1] + dW[1] * land_from), (W_LIP[0] + dW[0] * land_to, W_LIP[1] + dW[1] * land_to)]), "half": 11.0},
          {"id": "W the way on to Lakeside Drive", "points": flat(w_post[::2] + [w_post[-1]]), "half": 4.5},
          {"id": "E the lawn to the pier", "points": flat(e_pre[::2] + [e_pre[-1]]), "half": 4.5},
-         {"id": "the lake trail", "points": flat(trail[::2] + [trail[-1]]), "half": TRAIL_W / 2.0 + 1.5}]
+         {"id": "the lake trail", "points": flat(trail[::2] + [trail[-1]]), "half": TRAIL_W / 2.0 + 1.5},
+         # Round 49: the reverse shortcuts' ways (A the service track and the jetty; B the yard, the kicker, the flight over the hollow, the way on)
+         {"id": "A the intake's track", "points": flat(i_pre[::2] + [i_pre[-1], I_EDGE]), "half": 4.5},
+         {"id": "B the run-up to the kicker", "points": flat(k_pre[::2] + [k_pre[-1], K_LIP]), "half": 4.5},
+         {"id": "B the flight over the hollow", "points": flat([K_LIP, along(K_LIP, dK, 85.0)]), "half": 6.0},
+         {"id": "B the way on to Lakeside Drive", "points": flat(k_post[::2] + [k_post[-1]]), "half": 4.5}]
 # the trail's ground smoothed along its line (a Gaussian over 6 m: the dam's slope stays, the lumps go), 7 m wide, off the lot, the pool
 # deck, the courts, the buildings and the stream (BF and the stream are left as they are: nothing graded within 7 m of the stream)
 streams = [pts(s["points"]) for s in m["streams"]]
@@ -482,6 +623,15 @@ keep = [k for k, q in enumerate(trail) if not near_stream(q, 7.0) and not any(b[
         and not any(near_box(i, q, 5.0) and poly_dist(q, ring) < 5.0 for i, ring, h in B)]
 def gauss(k, sig): return sum(tg[j] * math.exp(-((tc[j] - tc[k]) / sig) ** 2 / 2) for j in range(len(trail))) / sum(math.exp(-((tc[j] - tc[k]) / sig) ** 2 / 2) for j in range(len(trail)))
 grade_trail = [trail[k] for k in keep]; grade_trail_y = [round(gauss(k, 6.0), 2) for k in keep]
+# Round 49 check: the lot is set level at the median of its ground (MapBuilder.ChastainLakes.cs, 1.5 m samples), 0.7 m over the ground at its west end;
+# the trail's smoothed ground left a 1.1 m step 2 m off its north-west corner (in reverse the weaker cars all but stalled climbing it). Off the lot the
+# trail's ground meets the lot's level at its edge and falls at most 16 % from it (it only fills: up to about 0.6 m) until it meets the slope
+_lot = (1316.0, 1362.0, 1076.0, 1092.0)
+_ls = sorted(ground(1339.0 + x, 1084.0 + z) for x in np.arange(-23.0, 23.0 + 1e-6, 1.5) for z in np.arange(-8.0, 8.0 + 1e-6, 1.5)); LOT_Y = _ls[len(_ls) // 2]
+def _lot_d(q): return math.hypot(max(0.0, _lot[0] - q[0], q[0] - _lot[1]), max(0.0, _lot[2] - q[1], q[1] - _lot[3]))
+_filled = max([0.0] + [max(0.0, LOT_Y - 0.16 * _lot_d(q) - y_) for q, y_ in zip(grade_trail, grade_trail_y)])
+grade_trail_y = [round(max(y_, LOT_Y - 0.16 * _lot_d(q)), 2) for q, y_ in zip(grade_trail, grade_trail_y)]
+print(f"the trail off the lot (its level {LOT_Y:.2f} m): ramped at 16 % from its edge, filled by up to {_filled:.2f} m")
 # the lake jump's way down through the yards smoothed the same way (the lawns' steps and the gap's lumps: a vehicle at speed comes to the
 # pile straight), from 12 m off North Lakeside Drive to the pile's foot; and the way on from the landing to Lakeside Drive
 def smooth_line(p, sig, k0, k1):
@@ -494,6 +644,14 @@ ge, gey = smooth_line(e_pre, 5.0, k0e, k1e)
 grades = [{"id": "the lake trail", "points": flat(grade_trail), "y": grade_trail_y, "half": 2.5, "blend": 1.0},   # its middle 5 m (the tread's edges follow the ground): never into the lake (4.2 m off it)
           {"id": "W the run-up to the dock", "points": flat(gw), "y": gwy, "half": 2.5, "blend": 2.0},
           {"id": "E the lawn to the pier", "points": flat(ge), "y": gey, "half": 2.5, "blend": 2.0}]
+# Round 49: the intake's track up the point to the jetty's root (its last meters level with the jetty), the kicker's run-up, the way on from its landing
+k0i = next(k for k, q in enumerate(i_pre) if nearest_s(lap_r, q)[0] > 10.0); gi_, giy = smooth_line(i_pre, 5.0, k0i, len(i_pre))
+giy = [min(y_, pad_y) if math.dist(q, I_ROOT) < 8.0 else y_ for q, y_ in zip(gi_, giy)]
+k0k = next(k for k, q in enumerate(k_pre) if nearest_s(lap_r, q)[0] > 10.0); gk_, gky = smooth_line(k_pre, 5.0, k0k, len(k_pre) - 2)
+k1p = next(k for k in range(len(k_post) - 1, -1, -1) if nearest_s(lap_r, k_post[k])[0] > 8.0); gp_, gpy = smooth_line(k_post, 5.0, 4, k1p)
+grades += [{"id": "A the intake's track", "points": flat(gi_), "y": giy, "half": 2.5, "blend": 2.0},
+           {"id": "B the run-up to the kicker", "points": flat(gk_), "y": gky, "half": 2.5, "blend": 2.0},
+           {"id": "B the way on", "points": flat(gp_), "y": gpy, "half": 2.5, "blend": 2.0}]
 # no grade reaches a road (the roads are the terrain flattened: an edit there is a bump) or the water (a lake's bed): such points are left out
 ROAD_SEGS = [(a, b, r["width"] / 2.0) for r in roads for a, b in zip(pts(r["points"])[:-1], pts(r["points"])[1:])]
 def clear_of(q, reach):
@@ -513,7 +671,7 @@ def split_runs(gr):
 grades = [g for gr in grades for g in split_runs(gr)]
 for gr in grades:
     p = pts(gr["points"]); print(f"  grade {gr['id']}: {len(p)} points, the ground moved by up to {max(abs(a - ground(*q)) for q, a in zip(p, gr['y'])):.2f} m")
-lakes = {"trail": flat(trail), "trail_w": TRAIL_W, "concrete_to": flat([BRIDGE_S]), "bridge": flat([BRIDGE_S, BRIDGE_N]), "bridge_half": 3.4,
+lakes = {"trail": flat(trail), "trail_w": TRAIL_W, "concrete_to": flat([CONCRETE_TO]), "bridge": flat([BRIDGE_S, BRIDGE_N]), "bridge_half": 3.4,
          "pier_root": list(PIER_ROOT), "pier_dir": [round(pd[0], 5), round(pd[1], 5)], "pier_len": PIER_LEN, "pier_half": PIER_HW, "gazebo_half": GAZEBO_HALF,
          "drain": [round(DRAIN[0], 2), round(DRAIN[1], 2)], "drain_r": DRAIN_R, "shaft_r": SHAFT_R, "drain_chamber": "LD", "shut_reverse_of": SETTINGS["name"],
          "drain_exit": [round(tube3[0][0], 2), round(tube3[0][1], 2), round(tube3[0][2], 2)], "drain_tracks": flat(e_pre[2:-1]),
@@ -523,7 +681,16 @@ lakes = {"trail": flat(trail), "trail_w": TRAIL_W, "concrete_to": flat([BRIDGE_S
                   "water_y": round(WEST_Y, 3), "angle_deg": BOAT["angle"], "slide_m": round(slide_len, 2), "chute": BOAT["chute"], "wall": BOAT["wall"], "beam": BOAT["beam"],
                   "length": BOAT["length"], "dock_root": [round(DOCK_ROOT[0], 2), round(DOCK_ROOT[1], 2)], "dock_w": BOAT["dock_w"],
                   "sign": [W_SIGN[0], W_SIGN[1], 90.0], "clues_hidden_reverse_of": SETTINGS["name"], "tracks": flat(w_pre[3:int(len(w_pre) * 0.75)]),
-                  "flights": {str(v): [f["t"], f["dist"], f["top"], f["wet"]] for v, f in w_flights.items()}}}
+                  "flights": {str(v): [f["t"], f["dist"], f["top"], f["wet"]] for v, f in w_flights.items()}},
+         # Round 49 (A): the intake (MapBuilder.LakesIntake.cs) and its jetty; LI (pipe_network.py) under it, B29 on from its wall
+         "intake": {"at": list(I_AT), "edge": list(I_EDGE), "dir": [round(dI[0], 5), round(dI[1], 5)], "pad_len": I_PAD_LEN, "pad_half": I_PAD_HALF, "pad_y": round(pad_y, 3),
+                    "water_y": round(WEST_Y, 3), "catch_r": I_R, "shaft_r": I_SHAFT, "wall": I_WALL, "wall_up": I_WALL_UP, "chamber": "LI",
+                    "exit": [round(tube9[0][0], 2), round(tube9[0][1], 2), round(tube9[0][2], 2)], "sign": list(I_SIGN), "tracks": flat(i_pre[3:]),
+                    "shut_forward_of": SETTINGS["name"]},
+         # Round 49 (B): the kids' wooden kicker (MapBuilder.LakesKicker.cs): a real jump
+         "kicker": {"lip": list(K_LIP), "dir": [round(dK[0], 5), round(dK[1], 5)], "foot": [round(K_FOOT[0], 2), round(K_FOOT[1], 2)], "foot_y": round(k_foot_y, 3),
+                    "lip_y": round(k_lip_y, 3), "len": round(k_len, 2), "width": K_W, "angle_deg": K_ANGLE, "sign": list(K_SIGN), "tracks": flat(k_pre[3:-2]),
+                    "clues_hidden_forward_of": SETTINGS["name"], "flights": {str(v): [f["t"], f["dist"], f["top"], f["g"]] for v, f in k_flights.items()}}}
 track = {"note": "Round 44 (Round 46: the boat jump): the Chastain Lakes race's world pieces, from Tools/mapgen/make_lakes_route.py (MapBuilder.LakesRace.cs). Coordinates are map meters (= Unity x, z).",
          "big_jumps": [], "landing_zones": landings, "clear_lines": clear, "break_lines": [], "grades": grades, "lakes": lakes}
 route = dict(SETTINGS)
@@ -553,6 +720,8 @@ if "--plot" in sys.argv:
         if any(x0 < x < x1 and z0 < z < z1 for x, z in p): ax.plot(*zip(*p), color="#999", lw=r["width"] * 0.25)
     ax.plot(*zip(*lap), "b-", lw=1.0)
     for path in (wpath, epath): ax.plot(*zip(*path), "r-", lw=1.0)
+    for path in (ipath, kpath): ax.plot(*zip(*path), "m-", lw=1.0)   # Round 49: the reverse shortcuts
+    ax.plot(*zip(*lap_r), "c--", lw=0.6)
     for c in cps: ax.plot(*c["pos"], "go"); ax.text(c["pos"][0] + 5, c["pos"][1], f"CP{c['id']}", color="g", clip_on=True)
     for c in closures: ax.plot(c["x"], c["z"], "kx")
     for z_ in landings: ax.fill(*zip(*pts(z_["poly"])), color="y", alpha=0.4)

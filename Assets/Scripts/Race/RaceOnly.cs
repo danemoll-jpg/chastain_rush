@@ -17,14 +17,21 @@ namespace ChastainRush
         public string hideInReverseOf;
         // Round 47 (A): 'showInReverseOf' stands only in a reverse race of that route (the Chastain Lakes drain's grate)
         public string showInReverseOf;
+        // Round 49: the same for a forward race of that route (the reverse Chastain Lakes shortcuts' clues and the intake's grate)
+        public string hideInForwardOf, showInForwardOf;
         bool shown = true;
 
-        void Start() => Apply(!string.IsNullOrEmpty(hideInReverseOf));
+        void Start() => Apply(!string.IsNullOrEmpty(hideInReverseOf) || !string.IsNullOrEmpty(hideInForwardOf));
 
         public static bool ReverseRaceOf(string route)
         {
             var race = RaceController.Instance;
             return race != null && race.State != RaceController.Stage.Free && race.Route != null && race.Route.Reverse && race.Route.Name == route;
+        }
+        public static bool ForwardRaceOf(string route)
+        {
+            var race = RaceController.Instance;
+            return race != null && race.State != RaceController.Stage.Free && race.Route != null && !race.Route.Reverse && race.Route.Name == route;
         }
 
         void Update()
@@ -32,7 +39,9 @@ namespace ChastainRush
             var race = RaceController.Instance;
             bool racing = race != null && race.State != RaceController.Stage.Free && race.Route != null;
             bool on = !string.IsNullOrEmpty(showInReverseOf) ? ReverseRaceOf(showInReverseOf)
+                    : !string.IsNullOrEmpty(showInForwardOf) ? ForwardRaceOf(showInForwardOf)
                     : !string.IsNullOrEmpty(hideInReverseOf) ? !(racing && race.Route.Reverse && race.Route.Name == hideInReverseOf)
+                    : !string.IsNullOrEmpty(hideInForwardOf) ? !ForwardRaceOf(hideInForwardOf)
                     : freeRoam ? !racing : racing && (any || race.Route.Reverse == reverse);
             if (on != shown) Apply(on);
         }

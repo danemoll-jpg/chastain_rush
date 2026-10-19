@@ -154,6 +154,10 @@ CH = {
     # MapBuilder.LakesRace.cs) 31 m out from the gazebo pier's root on its line; its roof open under the shaft ('roof_open', the hole's
     # radius). Its floor under M2a's crossing (B28 goes under M2a). A dead end of its own: not joined to the rest of the network.
     "LD":  dict(name="LD LAKE DRAIN", kind="turn", at=(1275.9, 1116.0), yaw=0.0, size=(12.0, 12.0, 6.0), stage=4, floor=275.5, roof_open=4.6),
+    # Round 49 (A, Dan 2026-10-19 08:37: the reverse Chastain Lakes shortcut, "jump into an intake with into a tunnel across the lake and you come out
+    # of a manhole just after the 9 cp in the correct direction"): LI, the room at the foot of West Chastain Lake's intake (its square riser built by
+    # MapBuilder.LakesIntake.cs) 11.5 m off the tip of the point east of Lakeside Point; its roof open under the shaft. A dead end of its own.
+    "LI":  dict(name="LI LAKE INTAKE", kind="turn", at=(581.6, 1318.0), yaw=20.0, size=(12.0, 12.0, 6.0), stage=4, floor=291.0, roof_open=4.0),
 }
 
 # exits (secret ways out: a small cut and headwall in a bank; a way in too), outfalls (the same, a lip at the mouth, out over
@@ -184,6 +188,7 @@ MANHOLES = {
     "MH10": ("Weybourne Court Northeast", (2690.0, 650.0)), "MH11": ("Chasefield Way", (3000.0, 1120.0)), "MH12": ("Laurel Green Court Northwest", (815.0, 1160.0)),
     "MH13": ("Chastain Lakes Drive Northwest", (960.0, 980.0)),
     "MH14": ("North Lakeside Drive Northwest", (1180.0, 1326.0)),   # Round 44: the lake drain's way out, its riser climbing west (the race's way)
+    "MH15": ("North Lakeside Drive Northwest", (672.0, 1496.0)),    # Round 49: the intake's way out, just past the reverse race's CP9, its riser climbing east (the reverse race's way)
 }
 
 # tubes: (id, name, diameter, main?, stage, end a, way points, end b, extras). Ends: ("ch", id[, level]), ("pipe", entrance id,
@@ -273,6 +278,8 @@ TUBES = [
     T("B25", "B25", NARROW, False, 4, ("ch", "K25"), [(520.0, 1450.0)], ("x", "X_STREAM")),
     # Round 44: the lake drain's tunnel, from LD under the lake (and under M2a) north to MH14 in North Lakeside Drive
     T("B28", "B28 (the lake drain to North Lakeside Drive)", MAIN, False, 4, ("ch", "LD"), [(1268.0, 1150.0), (1240.0, 1215.0), (1215.0, 1290.0)], ("mh", "MH14"), glass=[9], under=["M2a"]),
+    # Round 49: the intake's tunnel, from LI north across West Chastain Lake in glass, under M2b by the north shore, to MH15 in North Lakeside Drive
+    T("B29", "B29 (the lake intake to North Lakeside Drive)", MAIN, False, 4, ("ch", "LI"), [(596.0, 1352.0), (628.0, 1414.0), (646.0, 1460.0)], ("mh", "MH15"), glass=[0], under=["M2b"], max_grade=0.18),
 ]
 
 DIFFERS = [

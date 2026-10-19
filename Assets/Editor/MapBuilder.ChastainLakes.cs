@@ -62,7 +62,7 @@ namespace ChastainRush
             public readonly List<Vector2> CourtWalk = new List<Vector2> { new Vector2(1361.5f, 1090f), new Vector2(1369f, 1094f), new Vector2(1374.5f, 1099f), new Vector2(1374.5f, 1124f), new Vector2(1368f, 1128.5f), new Vector2(1360f, 1130.5f), new Vector2(1351.3f, 1132.5f) };
             public readonly List<Vector2> ShorePath = new List<Vector2> { new Vector2(1353.3f, 1151.0f), new Vector2(1353.5f, 1160f), new Vector2(1357f, 1175f), new Vector2(1360f, 1185f), new Vector2(1363f, 1195f), new Vector2(1365f, 1205f), new Vector2(1368f, 1215f), new Vector2(1372f, 1225f), new Vector2(1375f, 1230f), new Vector2(1378f, 1235f) };
             public const float WalkW = 1.8f, PathW = 2.2f;
-            public readonly Vector2 Swing = new Vector2(1315f, 1107f);
+            public readonly Vector2 Swing = new Vector2(1299.5f, 1089.5f);   // Round 49 (C): moved 20 m south-west, off the lake trail's new line behind the pool (it stood on it)
 
             public int Lake = -1; public float LakeY; public List<Vector2> LakeRing;
             readonly HashSet<int> owned = new HashSet<int>();

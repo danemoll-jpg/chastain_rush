@@ -20,6 +20,12 @@ namespace ChastainRush
         public float exitSpeed = 20f;
         public Material sprayMaterial;
         public string shutReverseOf;       // Round 47 (A): shut (its grate on, no drop) in a reverse race of this route
+        public string shutForwardOf;       // Round 49 (A): the same in a forward race (West Chastain Lake's intake, the reverse race's shortcut)
+        public bool curtain = true;
+        // Round 49 check: only a vehicle that comes in over the weir from the air is taken (one that came down short in the lake and waded up to the
+        // intake drove straight in: no cost for missing the jump); a vehicle in the lake's water near it is not taken for 2 s after
+        public bool fromAirOnly;
+        readonly Dictionary<Rigidbody, float> wetAt = new Dictionary<Rigidbody, float>();        // Round 49: the morning-glory's ring of water over its lip (the intake draws its own over its weir)
         public static int Swallowed { get; private set; }
         public static event System.Action<ArcadeVehicle> Took;   // checks
         public static readonly List<LakeDrain> All = new List<LakeDrain>();
@@ -29,7 +35,7 @@ namespace ChastainRush
 
         void OnEnable() { All.Add(this); }
         void OnDisable() { All.Remove(this); }
-        void Start() { Curtain(); }
+        void Start() { if (curtain) Curtain(); }
 
         public bool InBell(Vector3 p)
         {
@@ -40,9 +46,18 @@ namespace ChastainRush
         void FixedUpdate()
         {
             if (!string.IsNullOrEmpty(shutReverseOf) && RaceOnly.ReverseRaceOf(shutReverseOf)) { down.Clear(); return; }
+            if (!string.IsNullOrEmpty(shutForwardOf) && RaceOnly.ForwardRaceOf(shutForwardOf)) { down.Clear(); return; }
             foreach (var c in DrainPipe.Vehicles)
             {
-                if (!c || c.Body == null || c.Body.isKinematic || down.ContainsKey(c) || !InBell(c.Body.position)) continue;
+                if (!c || c.Body == null || c.Body.isKinematic || down.ContainsKey(c)) continue;
+                if (fromAirOnly)
+                {
+                    var q = c.Body.position - mouth; q.y = 0f;
+                    if (q.sqrMagnitude > (radius + 15f) * (radius + 15f)) continue;
+                    if (ShallowWater.InWater(c.Body.position + Vector3.up * 0.1f)) wetAt[c.Body] = Time.time;
+                    if (wetAt.TryGetValue(c.Body, out float w) && Time.time - w < 2f) continue;
+                }
+                if (!InBell(c.Body.position)) continue;
                 if (recent.TryGetValue(c.Body, out float at) && Time.time - at < 3f) continue;
                 down[c] = new Drop { t = 0f, last = c.Body.position }; recent[c.Body] = Time.time; Swallowed++; Took?.Invoke(c);
                 BreakSounds.Play(c.Body.position, 16f, BreakSounds.Kind.Hydrant);   // a splash
