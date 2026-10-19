@@ -5223,3 +5223,45 @@ Found and fixed in the exe (why FOUR full builds, not one): cars stopped dead on
    faces at flush joints; the dock sharing the deck's collider), then every AI car fell in (`ai_speed` capped its run at 18 m/s). Tuning: none needed.
 Build: `Builds/ChastainRush/` (`Play Chastain Rush.bat`), full build 2026-10-19 00:37 (BUILD_INFO.txt).
 For Dan to check: the boat jump flat out, slow and crooked (is wading out of the arm's shallow end enough of a cost?); B28's glass from the drain; the creek list.
+
+## Round 47 (moved from TODO.md on 2026-10-19 when Dan reviewed Round 50; word for word)
+
+## Previous delivery 3: Round 47
+**Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
+**Round 47, REVERSE CHASTAIN LAKES and a driveway fix (Dan, 2026-10-19 01:43; report BUG-001 of session
+`2026-10-19_01-29-19-650_77c31b`, read by Claude, after the Round 46 exe: Free Roam at night on the Drifter Twin).** Rounds 43 to 46
+are reviewed. One full Build Map at the end (or quick builds if only those steps change); short results.
+A. REVERSE CHASTAIN LAKES. Dan: "Can we build the Reverse version of this track. I assume we can just turn it around the other way
+   without other changes. I don't expect the current short cuts to work and I want to decide on the shortcuts after I drive it in
+   reverse." The same lap driven clockwise, as the reverse Chastain Ridge was added (Round 39): its own lap in the race menu
+   (Direction: reverse), checkpoints and arrows the other way, the route's `directions` reverse, `ai_zones_reverse`, its own
+   records boards and ghosts, traffic as forward, the same laps. NO shortcuts in reverse: the boat jump's turn-off and the gazebo
+   drain are closed in a reverse race (blocked as any road off the lap, the PARTY sign hidden; the drain's cover shut) and leave no
+   easier free way; the lake trail, footbridge and dam path driven north to south. Fix only what turning it round breaks (a
+   barrier facing the wrong way, a checkpoint on a blind crest, a landing zone in the way); change nothing else. Check: a reverse
+   lap each on Street Classic and Drifter Twin; one AI race, all laps, traffic Normal (everyone finishes, 0 missed); the forward
+   race unchanged (one lap). Pictures: the start, the footbridge from the north, where each forward shortcut is closed.
+B. THE DRIVEWAYS ON CHASTAIN ROAD. BUG-001 (x 1304.53 z 581.52 h 304, Chastain Road Northwest, Free Roam): "These driveways
+   shouldn't be here. The driveways would be from inside the neighborhood not on Chastain". The houses along this side of Chastain
+   Road at Dan's spot have drives out onto Chastain Road; they belong to the neighborhood behind them, so their drives go to that
+   neighborhood's own street, or are dropped where none can reach, and nothing joins Chastain Road there (a lawn and the sidewalk
+   instead). Only this row (the houses of that neighborhood that back onto Chastain Road), not a map-wide change. Check: a
+   picture from Dan's spot, no drive on Chastain Road; each of those houses' drives meets its own street.
+For Dan to check: the reverse Chastain Lakes race (then he picks its shortcuts); the drives at his spot.
+
+**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (11 of 14 over the runs; the 2 lap fails are the NOT MET item), not yet driven by Dan.** Evidence `Data/screenshots/round47/`.
+A DONE. Reverse Chastain Lakes is a lap of its own (`make_lakes_route.py`: `loop_rev` on the right-hand lane, 2751 m, 2 laps, 9 checkpoints, `ai_zones_reverse`, 16 road
+   barriers plus two that shut the forward shortcuts); Direction: reverse in Race Setup; records and ghosts are per direction as on every course. In a reverse race the
+   boat jump's way is barred between houses 146 and 147, the pier is barred at its foot, the drain has a steel grate over it (drivable, the drop off: `LakeDrain.shutReverseOf`),
+   the PARTY sign and both sets of worn tracks are hidden (`RaceOnly.hideInReverseOf` / new `showInReverseOf`); all back in Free Roam. Nothing else changed.
+   Checks: AI race, 2 laps, traffic Normal: all 3 finish, 0 missed (215 to 274 s). Forward race unchanged (both shortcuts, 16 barriers; a lap 105.9 s, 0 missed). A car dropped
+   on the drain sits on the grate.
+   NOT MET: the check's own scripted driver can not finish a reverse lap (Street Classic and Drifter Twin): on the downhill S-bend south of the footbridge, between the pool
+   house and the tennis courts (x 1375 z 1100), it drifts 2 m wide and drops off the trail's graded middle (the edge falls about 2 m toward the courts) onto the court fence.
+   Tried twice (held speed 12, then 8 m/s), stopped (tuning limit). The AI drives it. Picture `47_reverse_original_stopped.png`.
+B DONE. The four townhouses of the row on Chastain Road's north side at Dan's spot (buildings 2307, 2310, 2311, 2314) had mapgen drives onto Chastain Road; each
+   would have to cross the house behind it to reach the complex's own street, so all four are dropped (lawn and sidewalk there now; `MapBuilder.Round47.cs`, this row only).
+   Pictures from Dan's spot: `47_drives_dans_spot*.png`.
+Build: one full Build Map (Build 1 crashed on an empty drive, fixed, rebuilt), then code-only exe rebuilds for the check; `Builds/ChastainRush/` 2026-10-19 03:07.
+For Dan to check: drive reverse Chastain Lakes (and pick its shortcuts); the downhill bend south of the footbridge in reverse (does the trail's edge by the courts need
+   grading?); the drives at his spot.

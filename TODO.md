@@ -108,6 +108,16 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+(none: waiting for Dan's next notes)
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- STARTUP POLISH (2026-10-18): Racer's spoken title, loading screen and hints; Dan: "i Would want 5 but we don't have a cover yet".
+
+## Previous delivery 1 (newest): Round 50
+**Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
 **Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
 reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
 Lakes race at night on the Drifter Twin).** Round 49 is reviewed (the intake and the map are accepted). The two new standing rules
@@ -163,13 +173,7 @@ C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.
 Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
 For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- STARTUP POLISH (2026-10-18): Racer's spoken title, loading screen and hints; Dan: "i Would want 5 but we don't have a cover yet".
-
-## Previous delivery 1 (newest): Round 49
+## Previous delivery 2: Round 49
 **Reviewed: Dan drove the Round 49 build 2026-10-19 13:25 (a reverse Chastain Lakes race at night); his notes are Round 50 (the intake "was fine"; the kicker, the trail and the sign were not).**
 **Round 49, REVERSE CHASTAIN LAKES SHORTCUTS, THE LAKE TRAIL WHERE IT REALLY IS, and the map's pointer (Dan, 2026-10-19 08:37,
 after driving the Round 48 build; his two in-game map pictures: `local/reference_photos/chastain_lakes/r49_rev_shortcut1_cp7_cp9_map.png` and
@@ -244,7 +248,7 @@ Build: seven full builds, not one (each fix was found in the exe: the intake's w
 For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
    ways; the map's pointer and pan with a controller and the mouse.
 
-## Previous delivery 2: Round 48
+## Previous delivery 3: Round 48
 **Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
 **Round 48, GOOSE EGG HUNT AND EXPLORATION (Dan, 2026-10-18 16:25; started after Round 47).** Dan: "lets go with goose eggs. We can
 have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
@@ -283,46 +287,6 @@ Imported from Racer: ExplorationCollection (as EggHunt), AcornAreas (as EggAreas
   waypoint (into Exploration and WorldMap.Explore), WaypointGuide; left behind: VehicleUnlocks, UnlockNotice, the track browser and action sheet, place-name labels.
 For Dan to check: the eggs (easy and hard: are the hard ones hard enough, the air ones over the jumps reachable?), the tiers' notices, the map's fog, areas, travel and
   waypoint; what each tier unlocks (to decide).
-
-## Previous delivery 3: Round 47
-**Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
-**Round 47, REVERSE CHASTAIN LAKES and a driveway fix (Dan, 2026-10-19 01:43; report BUG-001 of session
-`2026-10-19_01-29-19-650_77c31b`, read by Claude, after the Round 46 exe: Free Roam at night on the Drifter Twin).** Rounds 43 to 46
-are reviewed. One full Build Map at the end (or quick builds if only those steps change); short results.
-A. REVERSE CHASTAIN LAKES. Dan: "Can we build the Reverse version of this track. I assume we can just turn it around the other way
-   without other changes. I don't expect the current short cuts to work and I want to decide on the shortcuts after I drive it in
-   reverse." The same lap driven clockwise, as the reverse Chastain Ridge was added (Round 39): its own lap in the race menu
-   (Direction: reverse), checkpoints and arrows the other way, the route's `directions` reverse, `ai_zones_reverse`, its own
-   records boards and ghosts, traffic as forward, the same laps. NO shortcuts in reverse: the boat jump's turn-off and the gazebo
-   drain are closed in a reverse race (blocked as any road off the lap, the PARTY sign hidden; the drain's cover shut) and leave no
-   easier free way; the lake trail, footbridge and dam path driven north to south. Fix only what turning it round breaks (a
-   barrier facing the wrong way, a checkpoint on a blind crest, a landing zone in the way); change nothing else. Check: a reverse
-   lap each on Street Classic and Drifter Twin; one AI race, all laps, traffic Normal (everyone finishes, 0 missed); the forward
-   race unchanged (one lap). Pictures: the start, the footbridge from the north, where each forward shortcut is closed.
-B. THE DRIVEWAYS ON CHASTAIN ROAD. BUG-001 (x 1304.53 z 581.52 h 304, Chastain Road Northwest, Free Roam): "These driveways
-   shouldn't be here. The driveways would be from inside the neighborhood not on Chastain". The houses along this side of Chastain
-   Road at Dan's spot have drives out onto Chastain Road; they belong to the neighborhood behind them, so their drives go to that
-   neighborhood's own street, or are dropped where none can reach, and nothing joins Chastain Road there (a lawn and the sidewalk
-   instead). Only this row (the houses of that neighborhood that back onto Chastain Road), not a map-wide change. Check: a
-   picture from Dan's spot, no drive on Chastain Road; each of those houses' drives meets its own street.
-For Dan to check: the reverse Chastain Lakes race (then he picks its shortcuts); the drives at his spot.
-
-**Status (Claude, 2026-10-19): A and B built and checked in the exe by script (11 of 14 over the runs; the 2 lap fails are the NOT MET item), not yet driven by Dan.** Evidence `Data/screenshots/round47/`.
-A DONE. Reverse Chastain Lakes is a lap of its own (`make_lakes_route.py`: `loop_rev` on the right-hand lane, 2751 m, 2 laps, 9 checkpoints, `ai_zones_reverse`, 16 road
-   barriers plus two that shut the forward shortcuts); Direction: reverse in Race Setup; records and ghosts are per direction as on every course. In a reverse race the
-   boat jump's way is barred between houses 146 and 147, the pier is barred at its foot, the drain has a steel grate over it (drivable, the drop off: `LakeDrain.shutReverseOf`),
-   the PARTY sign and both sets of worn tracks are hidden (`RaceOnly.hideInReverseOf` / new `showInReverseOf`); all back in Free Roam. Nothing else changed.
-   Checks: AI race, 2 laps, traffic Normal: all 3 finish, 0 missed (215 to 274 s). Forward race unchanged (both shortcuts, 16 barriers; a lap 105.9 s, 0 missed). A car dropped
-   on the drain sits on the grate.
-   NOT MET: the check's own scripted driver can not finish a reverse lap (Street Classic and Drifter Twin): on the downhill S-bend south of the footbridge, between the pool
-   house and the tennis courts (x 1375 z 1100), it drifts 2 m wide and drops off the trail's graded middle (the edge falls about 2 m toward the courts) onto the court fence.
-   Tried twice (held speed 12, then 8 m/s), stopped (tuning limit). The AI drives it. Picture `47_reverse_original_stopped.png`.
-B DONE. The four townhouses of the row on Chastain Road's north side at Dan's spot (buildings 2307, 2310, 2311, 2314) had mapgen drives onto Chastain Road; each
-   would have to cross the house behind it to reach the complex's own street, so all four are dropped (lawn and sidewalk there now; `MapBuilder.Round47.cs`, this row only).
-   Pictures from Dan's spot: `47_drives_dans_spot*.png`.
-Build: one full Build Map (Build 1 crashed on an empty drive, fixed, rebuilt), then code-only exe rebuilds for the check; `Builds/ChastainRush/` 2026-10-19 03:07.
-For Dan to check: drive reverse Chastain Lakes (and pick its shortcuts); the downhill bend south of the footbridge in reverse (does the trail's edge by the courts need
-   grading?); the drives at his spot.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
