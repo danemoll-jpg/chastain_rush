@@ -108,7 +108,7 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
-**Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN AND HINTS (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
+**Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
 reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
 No world changes: NO Build Map this round (code and Resources only, then the exe). Short results.
 Dan's assets, in `SourceArt/Title/` (committed by Claude; use them unaltered, convert only as the engine needs):
@@ -126,10 +126,13 @@ B. THE LOADING SCREEN, as Racer's (`LoadingScreen.cs`): the same cover as the fu
 C. HINTS: one rotating tip on the loading screen, as Racer's, rewritten for THIS game's real controls and features (check each
    binding in the code: reset, camera, map, waypoint, bug capture, free look / Trailer Mode, egg hunt, shortcuts, police...).
    American English.
+D. THE GAME ICON (Dan, 18:29: "can we make this the icon (trim closet to the motorcycle if needed)"): the rider on the bike from
+   the cover, cropped square by Claude: `SourceArt/Title/GameIcon.png` (512 x 512) and `GameIcon.ico` (16 to 256). Make it the
+   exe's icon (Player Settings default icon) and the window / taskbar icon, and the desktop shortcut's if the build makes one.
 Check (exe, minimized, muted except one brief listen to confirm the voice and theme play, then off): launch to the title menu
 by keyboard and by controller; a race and Free Roam load behind the cover with the bar moving; the tips cycle. Pictures: the title
 screen and a loading screen at 1080p and at 4K (the only full-screen use).
-For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips.
+For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips; the icon on the exe and taskbar.
 
 ## QUEUED rounds
 Held by Dan, not to start until he says:
