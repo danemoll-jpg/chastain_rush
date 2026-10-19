@@ -120,7 +120,7 @@ namespace ChastainRush
                 S("Ridge", () => BuildRidge(terrain, mats, world, ridge), true, () => QuickRoofRampHouse(rest)),
                 S("Pipes", () => BuildPipes(terrain, mats, world, pipes), true),   // Round 18 (4)
                 S("Network", () => BuildNetwork(terrain, mats, world, net, pipes)),   // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
-                S("LakesRace", () => BuildLakesRace(terrain, mats, world)),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs)
+                S("LakesRace", () => BuildLakesRace(map, terrain, mats, world)),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs)
                 S("Hydrants", () => BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge)),   // Round 36 (Parts C, D)
                 S("Life", () =>
                 {

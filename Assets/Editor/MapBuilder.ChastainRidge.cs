@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off; public float half, blend, keep_off_m; }
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left; public float half, blend, keep_off_m, blend_r; }   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -103,21 +103,29 @@ namespace ChastainRush
         }
 
         // Round 40 (A6): along a line with a height at each point (the crest cut's smoothed profile): the ground within 'half' of the line set to the
-        // line's height there, blending back over 'blend'
+        // line's height there, blending back over 'blend'. Round 50 (B, the lake trail's bench): a blend of its own on each side when given, per
+        // point on the left (blend_left: the lake leaves less room), blend_r on the right
         static void GradeAlong(TerrainGrid terrain, RidgeGrade gr)
         {
-            var p = ToPoints(gr.points); float reach = gr.half + gr.blend, most = 0f; int n = 0;
+            var p = ToPoints(gr.points);
+            bool sides = gr.blend_left != null && gr.blend_left.Length == p.Count;
+            float br = gr.blend_r > 0f ? gr.blend_r : gr.blend;
+            float reach = gr.half + Mathf.Max(gr.blend, Mathf.Max(br, sides ? gr.blend_left.Max() : 0f)), most = 0f; int n = 0;
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
             EditTerrain(terrain, area, (x, z, y) =>
             {
-                var q = new Vector2(x, z); float best = float.MaxValue, target = y;
+                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend;
                 for (int i = 0; i + 1 < p.Count; i++)
                 {
                     var ab = p[i + 1] - p[i]; float t = Mathf.Clamp01(Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (p[i] + ab * t - q).magnitude;
-                    if (d < best) { best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t); }
+                    if (d < best)
+                    {
+                        best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
+                        if (sides) { var v = q - p[i]; blend = ab.x * v.y - ab.y * v.x > 0f ? Mathf.Lerp(gr.blend_left[i], gr.blend_left[i + 1], t) : br; }   // > 0: on the left
+                    }
                 }
-                if (best >= reach) return y;
-                float w = best <= gr.half ? 1f : Smooth01(1f - (best - gr.half) / gr.blend), ny = y + w * (target - y);
+                if (best >= gr.half + blend) return y;
+                float w = best <= gr.half ? 1f : Smooth01(1f - (best - gr.half) / blend), ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;
             });
             Debug.Log($"[Round40] {gr.id}: graded along {p.Count} points, {gr.half * 2f:0} m wide; {n} samples moved, by up to {most:0.00} m");

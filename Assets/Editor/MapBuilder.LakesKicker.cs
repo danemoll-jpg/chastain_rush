@@ -12,18 +12,28 @@ using UnityEngine.Rendering;
 //   the kicker  4.6 m wide, 9.6 m long, curving up to 32 degrees at its lip: solid (its plywood top and sides are the collider), the frame,
 //               braces, painted stripes and the kids' graffiti look only. A real jump off its lip (physics alone: no launch control, the
 //               standing rule of 2026-10-17), west over the creek hollow below East Chastain Lake's south tip; the landing (zone RK) past it
-//   the hint    a hand-painted JUMP! board (R1's, Tools/handmade/make_party_sign.py) on the lap's verge at the turn-off, its arrow to the
-//               yard; worn tracks across the yards; hidden in a forward race (the forward race's barrier across the gap is the route's)
+//   the hint    worn tracks across the yards, hidden in a forward race (the forward race's barrier across the gap is the route's). Round 50 (C):
+//               no JUMP! board (Dan: "the tire tracks are enough to know it is a shortcut")
+// Round 50 (A, Dan 2026-10-19 13:37: "you could just drive through this area and skip the ramp and nothing will slow you down"):
+//   the carport     the second jump, at the end of Northlake Point: a tall two-car metal carport with closed sides, its east legs folded under by
+//                   a storm, its roof sheet down on the ground at its east edge and bent up into the part its two west legs still hold (the
+//                   'carport' entry). Solid (roof and side panels are the collider); a real jump off its west eave; the landing (zone RC) past
+//                   the shrub bed between 231 and 230
+//   the shrub beds  across every free way through these yards (the 'shrub_beds' entry): brush under the trees in the valley, cattails where a
+//                   bed runs into the lake, new shrub beds (boxwood, holly, azaleas) in the yards. Look only: ShrubBeds (Racer's
+//                   ShortcutUndergrowth) slows a vehicle driving through them
 namespace ChastainRush
 {
     public static partial class MapBuilder
     {
         [Serializable] class LakesKickerData
         {
-            public float[] lip, dir, foot, sign, tracks;
+            public float[] lip, dir, foot, tracks;
             public float foot_y, lip_y, len, width, angle_deg;
             public string clues_hidden_forward_of;
         }
+        [Serializable] class LakesCarportData { public float[] foot, dir; public float len, bend, angle_deg, width; }
+        [Serializable] class LakesShrubBed { public string id; public float[] points; public float half; }
 
         static readonly Color Plywood = new Color(0.74f, 0.60f, 0.42f), PlywoodDark = new Color(0.55f, 0.43f, 0.29f), Lumber = new Color(0.66f, 0.55f, 0.40f);
 
@@ -70,41 +80,121 @@ namespace ChastainRush
                     Face(look, W(s, 0f, 0.016f), W(s - 1.0f, side * 1.3f, 0.016f), W(s - 1.25f, side * 1.3f, 0.016f), W(s - 0.25f, 0f, 0.016f), Vector3.up);
             var lg = look.ToObject("RK kicker look", mats.House, go, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
 
-            // the hint
+            // the hint: the worn tracks (hidden in a forward race)
             var clues = go;
             if (!string.IsNullOrEmpty(k.clues_hidden_forward_of))
             {
                 var h = new GameObject("RK clues (hidden in a forward race)"); h.transform.SetParent(go, false);
                 h.AddComponent<RaceOnly>().hideInForwardOf = k.clues_hidden_forward_of; clues = h.transform;
             }
-            if (k.sign != null && k.sign.Length >= 3) KickerJumpSign(terrain, mats, clues, new Vector2(k.sign[0], k.sign[1]), k.sign[2]);
             if (k.tracks != null && k.tracks.Length >= 6) WornRuts(terrain, mats, clues, ToPoints(k.tracks), "RK worn tracks");
             Debug.Log($"[Round49] the kicker: foot ({foot.x:0.0}, {foot.y:0.0}) {k.foot_y:0.00} m, lip ({lip.x:0.0}, {lip.y:0.0}) {Y(k.len):0.00} m ({Y(k.len) - Ground(terrain, lip.x, lip.y):0.0} m over the ground there), " +
                       $"{k.len:0.0} m long, {k.width:0.0} m wide, {k.angle_deg:0} degrees at the lip");
         }
 
-        // R1's hand-painted JUMP! board on two posts at the turn-off, its arrow right (toward the gap); breaks like a mailbox
-        static void KickerJumpSign(TerrainGrid terrain, Materials mats, Transform parent, Vector2 at, float yawDeg)
+        // Round 50 (A): the collapsed carport. Its roof: flat on the ground at its east edge, bent up over 'bend' m (the folded side) to the straight
+        // part at angle_deg up to the west eave; its heights from the ground built here (the foot's ground). The prism is the roof and the closed
+        // side and end panels down to the ground (all solid, one collider); the look: roof ribs, trim, the west legs and the folded east legs
+        static void BuildLakeCarport(TerrainGrid terrain, Materials mats, Transform root, LakesCarportData c)
         {
-            var facing = new Vector2(Mathf.Sin(yawDeg * Mathf.Deg2Rad), Mathf.Cos(yawDeg * Mathf.Deg2Rad));
-            var f = MakeFrame(new Vector3(at.x, 0f, at.y), facing, 1f);
-            float lo = float.MaxValue, hi = float.MinValue;
-            foreach (float u in new[] { -1.5f, 1.5f }) { var q = f.P(u, 0f, -0.05f); float g = Ground(terrain, q.x, q.z); lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g); }
-            f.O.y = hi;
-            var br = new Breakables(); var mb = br.Begin(at);
-            var post = new Color(0.40f, 0.31f, 0.22f); var edge = new Color(0.93f, 0.91f, 0.86f);
-            foreach (float u in new[] { -1.45f, 1.45f }) br.Piece(() => BoxF(mb, f, u - 0.06f, u + 0.06f, lo - hi - 0.3f, 2.6f, -0.1f, -0.01f, post), lo + 0.05f);
-            foreach (float u in new[] { -0.8f, 0.8f }) br.Piece(() => BoxF(mb, f, u - 0.8f, u + 0.8f, 0.9f, 2.5f, -0.01f, 0.03f, edge), lo + 0.05f);
-            var mat = PartySignMaterial(false, "JumpSign");
-            if (mat != null)
+            if (c == null || c.foot == null || c.foot.Length < 2) return;
+            var go = new GameObject("Carport jump").transform; go.SetParent(root, false);
+            var d = new Vector2(c.dir[0], c.dir[1]).normalized; var nl = new Vector2(-d.y, d.x); var foot = new Vector2(c.foot[0], c.foot[1]); var lip = foot + d * c.len;
+            float kc = Mathf.Tan(c.angle_deg * Mathf.Deg2Rad), hw = c.width * 0.5f, fy = Ground(terrain, foot.x, foot.y);
+            float Rise(float s) { s = Mathf.Clamp(s, 0f, c.len); return s <= c.bend ? kc * s * s / (2f * c.bend) : kc * c.bend / 2f + kc * (s - c.bend); }
+            var prof = new List<float>(); for (float s = 0f; s <= c.len + 1e-3f; s += 0.25f) { prof.Add(s); prof.Add(fy + Rise(s)); }
+            var roof = new Color(0.58f, 0.24f, 0.20f);   // a barn-red painted steel roof and sides
+            var pr = new ScPrism
             {
-                var plate = SignPlate(parent, f.P(0f, 1.7f, 0.035f), -f.F, 1f, mat);
-                plate.name = "Jump sign face RK"; plate.transform.localScale = new Vector3(3.2f, 1.6f, 1f);
-                br.Face(plate);
+                name = "sc RC carport", kind = "ramp", no_face = new[] { 0 }, origin = new[] { foot.x, foot.y }, axis = new[] { d.x, d.y }, profile = prof.ToArray(),
+                colour = new[] { roof.r, roof.g, roof.b },
+                poly = new[] { foot + nl * hw, foot - nl * hw, lip - nl * hw, lip + nl * hw }.SelectMany(q => new[] { q.x, q.y }).ToArray()
+            };
+            BuildPrism(pr, terrain, mats, go);
+            // the look: the roof's ribs running down the slope (every 0.76 m, as a 3 ft panel's), white trim along the eave and the sides, the two
+            // standing west legs (boxed steel) at the eave's corners, the folded east legs lying flat by the foot, a crumpled sheet's edge at the foot
+            var look = new MeshBuilder(); var trim = new Color(0.92f, 0.92f, 0.90f); var steel = new Color(0.55f, 0.56f, 0.57f);
+            Vector3 W(float s, float lat, float up) { var q = foot + d * s + nl * lat; return new Vector3(q.x, fy + Rise(s) + up, q.y); }
+            for (float lat = -hw + 0.38f; lat < hw; lat += 0.76f)
+                for (float s = 0f; s < c.len - 1e-3f; s += 0.5f) Beam(look, W(s, lat, 0.02f), W(Mathf.Min(c.len, s + 0.5f), lat, 0.02f), 0.05f, 0.03f, Shade(roof, 0.82f));
+            for (float s = 0f; s < c.len - 1e-3f; s += 0.5f)
+                foreach (float side in new[] { -1f, 1f }) Beam(look, W(s, side * (hw - 0.03f), 0.03f), W(Mathf.Min(c.len, s + 0.5f), side * (hw - 0.03f), 0.03f), 0.08f, 0.06f, trim);
+            Beam(look, W(c.len - 0.03f, -hw, 0.03f), W(c.len - 0.03f, hw, 0.03f), 0.06f, 0.08f, trim);   // the eave
+            foreach (float side in new[] { -1f, 1f })
+            {
+                var top = W(c.len - 0.08f, side * (hw + 0.05f), -0.06f); float g = Ground(terrain, top.x, top.z);
+                Beam(look, new Vector3(top.x, g - 0.1f, top.z), top, 0.07f, 0.07f, steel);   // a standing west leg
+                var f0 = W(0.4f, side * (hw + 0.1f), 0f); var f1 = foot + d * 3.6f + nl * side * (hw + 0.45f);
+                Beam(look, new Vector3(f0.x, Ground(terrain, f0.x, f0.z) + 0.06f, f0.z), new Vector3(f1.x, Ground(terrain, f1.x, f1.y) + 0.06f, f1.y), 0.07f, 0.07f, steel);   // a folded east leg on the grass
             }
-            br.End(f.P(0f, 1.7f, -0.03f), f.F, 3.6f, 3.0f, 0.9f);
-            br.ToObjects("Jump sign RK", mats.House, parent, 1f, BreakSounds.Kind.Wood);
-            Debug.Log($"[Round49] the kicker's JUMP! sign at ({at.x:0.0}, {at.y:0.0}), facing {yawDeg:0}, its arrow right");
+            var lg = look.ToObject("RC carport look", mats.House, go, false); lg.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            Debug.Log($"[Round50] the carport: foot ({foot.x:0.0}, {foot.y:0.0}) {fy:0.00} m, eave ({lip.x:0.0}, {lip.y:0.0}) {fy + Rise(c.len):0.00} m ({fy + Rise(c.len) - Ground(terrain, lip.x, lip.y):0.0} m over the ground there), " +
+                      $"{c.len:0.0} m long, {c.width:0.0} m wide, {c.angle_deg:0} degrees at the eave");
         }
+
+        // Round 50 (A): the shrub beds' look and their ShrubBeds. Shrubs on a 1.5 m grid (jittered) inside each bed, none on a road, drive, sidewalk or
+        // trail (DriveBands), in a building or on the shortcuts' carport; in the lake, cattails; the valley's bed is brush (bigger, darker, looser),
+        // the yards' beds are planted shrubs (boxwood and holly greens, a pink azalea here and there, as in the photos)
+        static readonly Color[] BrushGreens = { new Color(0.16f, 0.27f, 0.12f), new Color(0.20f, 0.30f, 0.13f), new Color(0.24f, 0.29f, 0.14f), new Color(0.30f, 0.27f, 0.15f) };
+        static void BuildShrubBeds(TerrainGrid terrain, Materials mats, Transform root, LakesShrubBed[] beds, MapData map, Vector2[] keepOff)
+        {
+            if (beds == null || beds.Length == 0) return;
+            var go = new GameObject("Shrub beds"); go.transform.SetParent(root, false);
+            var shrubs = new Chunks(); var reeds = new Chunks();
+            var segA = new List<Vector2>(); var segB = new List<Vector2>(); var segH = new List<float>();
+            var rings = map.buildings.Select(bd => ToPoints(bd.footprint)).Where(r => r.Count >= 3).ToList();
+            int nShrub = 0, nReed = 0, nSkip = 0;
+            for (int bi = 0; bi < beds.Length; bi++)
+            {
+                var bed = beds[bi]; var p = ToPoints(bed.points); if (p.Count < 2) continue;
+                for (int i = 0; i + 1 < p.Count; i++) { segA.Add(p[i]); segB.Add(p[i + 1]); segH.Add(bed.half); }
+                bool brush = bed.half > 8f;   // the valley's
+                float Dist(Vector2 q) { float best = float.MaxValue; for (int i = 0; i + 1 < p.Count; i++) best = Mathf.Min(best, SegDist(q, p[i], p[i + 1])); return best; }
+                float x0 = p.Min(q => q.x) - bed.half, x1 = p.Max(q => q.x) + bed.half, z0 = p.Min(q => q.y) - bed.half, z1 = p.Max(q => q.y) + bed.half;
+                var near = rings.Where(r => r.Any(v => v.x > x0 - 30f && v.x < x1 + 30f && v.y > z0 - 30f && v.y < z1 + 30f)).ToList();
+                float step = brush ? 1.7f : 1.4f; int n = 0;
+                for (float x = x0; x <= x1; x += step)
+                    for (float z = z0; z <= z1; z += step)
+                    {
+                        n++; int seed = bi * 100003 + n;
+                        var q = new Vector2(x + (Hash01(seed, 1) - 0.5f) * step * 0.8f, z + (Hash01(seed, 2) - 0.5f) * step * 0.8f);
+                        if (Dist(q) > bed.half - 0.3f - 0.6f * Hash01(seed, 3)) continue;
+                        if (DriveBands.At(q, 0.6f) != null || keepOff.Any(k => (k - q).sqrMagnitude < 25f) || near.Any(r => InPolygon(q, r) || RingDist(q, r) < 0.6f)) { nSkip++; continue; }
+                        float wy = Beds != null ? WaterSurfaceAt(q) : float.NaN;
+                        if (!float.IsNaN(wy))
+                        {
+                            // cattails: a clump of thin blades out of the water, a brown head on a few
+                            var mb = reeds.At(q); float bed_ = Ground(terrain, q.x, q.y);
+                            for (int k = 0; k < 7; k++)
+                            {
+                                var o = new Vector2(Hash01(seed, 10 + k) - 0.5f, Hash01(seed, 20 + k) - 0.5f) * 0.9f; float h = 1.3f + 0.8f * Hash01(seed, 30 + k);
+                                var lean = new Vector3(Hash01(seed, 40 + k) - 0.5f, 0f, Hash01(seed, 50 + k) - 0.5f) * 0.35f;
+                                var s0 = new Vector3(q.x + o.x, bed_, q.y + o.y); var s1 = new Vector3(q.x + o.x, wy + h, q.y + o.y) + lean;
+                                Beam(mb, s0, s1, 0.035f, 0.035f, Color.Lerp(new Color(0.30f, 0.42f, 0.17f), new Color(0.45f, 0.48f, 0.22f), Hash01(seed, 60 + k)));
+                                if (k < 3) Beam(mb, s1 - (s1 - s0).normalized * 0.45f, s1 - (s1 - s0).normalized * 0.12f, 0.07f, 0.07f, new Color(0.36f, 0.22f, 0.12f));
+                            }
+                            nReed++; continue;
+                        }
+                        float gy = Ground(terrain, q.x, q.y);
+                        if (brush)
+                        {
+                            float r = 0.8f + 0.8f * Hash01(seed, 4); var col = PickOf(BrushGreens, seed, 5);
+                            Blob(shrubs.At(q), new Vector3(q.x, gy - 0.1f, q.y), new Vector3(r, r * (0.9f + 0.5f * Hash01(seed, 6)), r * (0.8f + 0.3f * Hash01(seed, 7))), col * 1.15f, col * 0.7f, 7, 4, true, seed);
+                        }
+                        else
+                        {
+                            float r = 0.6f + 0.45f * Hash01(seed, 4);
+                            var col = Hash01(seed, 8) < 0.12f ? new Color(0.72f, 0.30f, 0.52f) : PickOf(ShrubGreens, seed, 5);   // an azalea in bloom now and then
+                            Blob(shrubs.At(q), new Vector3(q.x, gy - 0.05f, q.y), new Vector3(r, r * (1.0f + 0.4f * Hash01(seed, 6)), r), col * 1.15f, col * 0.75f, 8, 4, true, seed);
+                        }
+                        nShrub++;
+                    }
+            }
+            shrubs.ToObjects("Shrub beds look", mats.House, go.transform, false);
+            reeds.ToObjects("Shrub beds cattails", mats.House, go.transform, false);
+            var sb = go.AddComponent<ShrubBeds>(); sb.a = segA.ToArray(); sb.b = segB.ToArray(); sb.half = segH.ToArray();
+            Debug.Log($"[Round50] shrub beds: {beds.Length} beds ({string.Join(", ", beds.Select(b => b.id))}), {nShrub} shrubs, {nReed} cattail clumps, {nSkip} spots left bare (roads, drives, walks, buildings, the carport)");
+        }
+
     }
 }

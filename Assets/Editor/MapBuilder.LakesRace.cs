@@ -8,8 +8,9 @@ using UnityEngine.Rendering;
 // Round 44 (Dan, 2026-10-18 18:10): the world pieces of the "Chastain Lakes" race, from Data/tracks/chastain_lakes.json
 // (Tools/mapgen/make_lakes_route.py). World, not race layer: they stand in Free Roam too (the race is Data/routes/chastain_lakes.json):
 //   the lake trail   the amenity lot to Bells Ferry Road (photos 2 to 5): concrete with timber edging from the lot past the bathhouse (Round 49:
-//                    behind the pool), then gravel with tan brick edging to the footbridge and along the dam's crest; 7 m wide (wider than real: every vehicle, room to pass), its ground
-//                    smoothed along it (the grades, in the planning). The footbridge, pier and gazebo are Round 32's, widened
+//                    behind the pool), then gravel with tan brick edging to the footbridge, gravel with grass edges along the dam's crest; Round 50
+//                    (B): at its real width (1.5 m, 2 m, 1.5 m: Dan, "i really don't think it needs to be widened. vehicles can also drive in the
+//                    grass"), on a level bench with soft banks either side (the grades, in the planning). The footbridge, pier and gazebo are Round 32's, widened
 //                    (MapBuilder.ChastainLakes.cs, sizes from this file), the bridge's caution tape and 2x4s and the gazebo's far rail breakable
 //   the lake drain   a morning-glory spillway in East Chastain Lake 9 m past the gazebo's end: a concrete bell standing just out of the water,
 //                    the water pouring over its lip, its shaft down to LD (Data/pipes/network.json; its roof open under the shaft) where B28
@@ -26,12 +27,14 @@ namespace ChastainRush
         [Serializable] class LakesExtraData
         {
             public float[] trail, concrete_to, bridge, pier_root, pier_dir, drain, drain_exit, drain_tracks, drain_hint;
-            public float trail_w, bridge_half, pier_len, pier_half, gazebo_half, drain_r, shaft_r;
+            public float trail_w, concrete_w, gravel_w, dam_w, bridge_half, pier_len, pier_half, gazebo_half, drain_r, shaft_r;
             public string drain_chamber;
             public string shut_reverse_of;   // Round 47 (A): the drain shut (a grate over it, its tracks hidden) in a reverse race of this route
             public LakesBoatData boat;   // Round 46: the boat jump (MapBuilder.LakesBoat.cs)
             public LakesIntakeData intake;   // Round 49 (A): the reverse race's intake (MapBuilder.LakesIntake.cs)
             public LakesKickerData kicker;   // Round 49 (B): the reverse race's kicker (MapBuilder.LakesKicker.cs)
+            public LakesCarportData carport;   // Round 50 (A): its second jump, the collapsed carport
+            public LakesShrubBed[] shrub_beds;   // Round 50 (A): the shrub beds across the free ways (ShrubBeds)
         }
         [Serializable] class LakesTrackJson { public LakesExtraData lakes; }
         const string LakesTrackFile = "Data/tracks/chastain_lakes.json";
@@ -45,7 +48,7 @@ namespace ChastainRush
             return JsonUtility.FromJson<LakesTrackJson>(File.ReadAllText(path))?.lakes;
         }
 
-        static void BuildLakesRace(TerrainGrid terrain, Materials mats, Transform world)
+        static void BuildLakesRace(MapData map, TerrainGrid terrain, Materials mats, Transform world)
         {
             if (LakesNow == null || LakesExtra == null) { Debug.Log("[Round44] no " + LakesTrackFile + ": no Chastain Lakes race pieces"); return; }
             var root = new GameObject("Chastain Lakes race").transform; root.SetParent(world, false);
@@ -59,6 +62,8 @@ namespace ChastainRush
             BuildLakeBoat(terrain, mats, root, LakesExtra.boat);
             BuildLakeIntake(terrain, mats, root, LakesExtra.intake);   // Round 49
             BuildLakeKicker(terrain, mats, root, LakesExtra.kicker);
+            BuildLakeCarport(terrain, mats, root, LakesExtra.carport);   // Round 50
+            BuildShrubBeds(terrain, mats, root, LakesExtra.shrub_beds, map, LakesExtra.carport?.foot != null ? new[] { new Vector2(LakesExtra.carport.foot[0], LakesExtra.carport.foot[1]) } : new Vector2[0]);
             BuildLakeTrail(terrain, mats, root, LakesExtra);
             BuildLakeDrain(terrain, mats, root, LakesExtra);
             Debug.Log($"[Round44] Chastain Lakes race: the trail, the lake drain, {LakesNow.Data.big_jumps?.Length ?? 0} pile; {LakesNow.TreesRemoved} trees kept off the trail and the shortcuts' lines");
@@ -74,7 +79,7 @@ namespace ChastainRush
             int iS = Enumerable.Range(0, p.Count).OrderBy(i => (p[i] - bs).sqrMagnitude).First(), iN = Enumerable.Range(0, p.Count).OrderBy(i => (p[i] - bn).sqrMagnitude).First();
             var concrete = new Chunks { Tint = ConcreteLight }; var gravel = new Chunks { Tint = new Color(0.47f, 0.48f, 0.49f) };
             var timber = new Chunks { Tint = new Color(0.44f, 0.38f, 0.30f) }; var brick = new Chunks { Tint = new Color(0.86f, 0.75f, 0.56f) };
-            float w = lx.trail_w;
+            float w = lx.trail_w;   // Round 50: set per piece below
             List<Vector2> Offset(List<Vector2> l, float d)
             {
                 var o = new List<Vector2>();
@@ -84,6 +89,7 @@ namespace ChastainRush
             void Tread(List<Vector2> run, Chunks surf, Chunks edge, float edgeW)
             {
                 if (run.Count < 2) return;
+                if (edgeW <= 0f) { var dd = Densify(run, 1f); RibbonGridMax(surf.At(dd[dd.Count / 2]), dd, Enumerable.Repeat(w, dd.Count).ToArray(), 0.06f, terrain, 4); return; }   // Round 50: the dam's gravel, grass edges
                 var d = Densify(run, 1f);
                 RibbonGridMax(surf.At(d[d.Count / 2]), d, Enumerable.Repeat(w, d.Count).ToArray(), 0.06f, terrain, 4);
                 foreach (float s in new[] { -1f, 1f })
@@ -100,14 +106,14 @@ namespace ChastainRush
             var after = p.Skip(iN).ToList();
             // the gravel ends a few meters short of Bells Ferry Road (its shoulder)
             var bf = after.Count > 6 ? after.Take(after.Count - 3).ToList() : after;
-            Tread(first, concrete, timber, 0.25f);
-            Tread(toBridge, gravel, brick, 0.22f);
-            Tread(bf, gravel, brick, 0.22f);
+            w = lx.concrete_w > 0f ? lx.concrete_w : lx.trail_w; Tread(first, concrete, timber, 0.25f);
+            w = lx.gravel_w > 0f ? lx.gravel_w : lx.trail_w; Tread(toBridge, gravel, brick, 0.22f);
+            w = lx.dam_w > 0f ? lx.dam_w : lx.trail_w; Tread(bf, gravel, brick, lx.dam_w > 0f ? 0f : 0.22f);
             concrete.ToObjects("Lake trail concrete", mats.Sidewalk, root, false);
             gravel.ToObjects("Lake trail gravel", mats.Driveway, root, false);
             timber.ToObjects("Lake trail timber edging", mats.House, root, false);
             brick.ToObjects("Lake trail brick edging", mats.House, root, false);
-            Debug.Log($"[Round44] the lake trail: {Densify(first, 1f).Count} m of concrete past the bathhouse, {Densify(toBridge, 1f).Count} m of gravel to the footbridge, {Densify(bf, 1f).Count} m of gravel along the dam, {w:0.0} m wide");
+            Debug.Log($"[Round44] the lake trail: {Densify(first, 1f).Count} m of concrete past the bathhouse, {Densify(toBridge, 1f).Count} m of gravel to the footbridge, {Densify(bf, 1f).Count} m of gravel along the dam; {lx.concrete_w:0.0} / {lx.gravel_w:0.0} / {lx.dam_w:0.0} m wide");
         }
 
         // the morning-glory spillway: the bell (a concrete ring just out of the water, its lip flaring down to the lake bed), the shaft down to LD's
