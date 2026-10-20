@@ -108,6 +108,51 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 52, A NEW TRACK: EMBRY LANE (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
+reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
+on a Google map: `local/reference_photos/embry_lane/r52_route_map.jpg`, reference only, never traced or measured).** Round 51 is
+reviewed. Dan: "For right now I'd like to add another track. Can we have it built forward and reverse but not worry about the
+shortcuts. I want to decide once the track is there. I don't care which way is forward and reverse." ONE full Build Map at the end
+(quick builds while working). Tuning limit. Short results.
+A. THE TRACK. The neighborhood south of New Chastain Road, west of Canton Road. Dan's red line, read by Claude against `Data/map.json`
+   (OSM names differ from Google's; Google's "Crawford Cir" north of the corner is OSM's Hayworth Drive):
+   Joel Drive west from Hayworth Drive (about x 3000 z 414) to its west end (2645, 423), round the bend into Embry Lane NE and
+   east along it (to 3231, 528), down Embry's east end (3245, 470; 3258, 412) to Suholden Circle NE (3284, 300), west on Suholden
+   Circle to its bend (3196, 303) and south on it to Kelly Drive NE (about x 3141), west on Kelly Drive to Crawford Circle (2987,
+   about z 100), north on Crawford Circle's east leg and Hayworth Drive back to Joel Drive. About 2.0 km a lap (Claude's estimate).
+   Forward = that direction, reverse = the other (Dan does not mind which). Built like the other races (`Data/routes/*.json`,
+   `Data/tracks/`, menus, records, AI, ghosts, checkpoints, the loading screen's route inset); 3 laps by default. Start / finish on
+   a straight Code picks and says where. Name "Embry Lane" for now (Dan may rename it).
+   NO SHORTCUTS this round. Dan's yellow marks are his possible shortcut spots, not built: Lyndon Drive between Embry Lane and Joel
+   Drive, and Elaine Circle from Joel Drive to Suholden Circle. Every road that leaves the lap is closed in a race (standing rule),
+   these two included: Lyndon Drive (both sides of Joel), Elaine Circle, Joel Drive east of Hayworth to Embry, Hayworth north of
+   Joel, Crawford Circle's west leg, Kelly Drive west of Crawford and east of Suholden, Suholden Circle east toward Hilltop, and
+   Suholden south of Kelly. Dan's red dab at Chance Road / Suholden Drive is south of the map's edge: not part of this round.
+B. THE HOUSES (all three on or by the new lap):
+   BUG-001 (x 2764.81 z 565.33 h 179, behind the houses between Embry Lane and Weybourne Court): "House on left is buried. House on
+   the right has windows hanging in the air". BUG-002 (x 3231.02 z 503.06 h 240, Embry Lane NE at its east corner): "thiss house is
+   buried and incomplete". BUG-003 (x 2943.80 z 419.43 h 3, Joel Drive): "this driveway needs to be fixed. Also the house entrance
+   is hanging in the air" (the drive climbs the bank to nowhere with a hole in it; the front door floats above the brick base, no steps).
+   Find why houses on these steep lots are sunk or floating and fix it at Dan's three spots; the same fault on the houses that face
+   the new lap is fixed too, since Dan will drive past them (Claude's scope, the lap's roads only, said here so Dan knows). Drive
+   at BUG-003: from the road up to the house's garage, at a drivable grade, no hole; the entrance with steps or a stoop down to the ground.
+Check: forward and reverse, AI races x2 each, traffic Normal: all finish, 0 missed; every closure shut (try each road above);
+the lap on all 11 vehicles both ways, no stop. Pictures: Dan's three spots before and after, the start / finish, each closure.
+For Dan to check: drive Embry Lane both ways (and pick its shortcuts); the houses at his three spots and along the lap.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 51
+**Reviewed: Dan drove the Round 51 build 2026-10-19 19:45 (Free Roam); no reports on it (his three notes are Round 52).**
 **Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
 reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
 No world changes: NO Build Map this round (code and Resources only, then the exe). Short results.
@@ -153,12 +198,7 @@ D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (Pla
 Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
 For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 50
+## Previous delivery 2: Round 50
 **Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
 **Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
 reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
@@ -215,7 +255,7 @@ C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.
 Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
 For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.
 
-## Previous delivery 2: Round 49
+## Previous delivery 3: Round 49
 **Reviewed: Dan drove the Round 49 build 2026-10-19 13:25 (a reverse Chastain Lakes race at night); his notes are Round 50 (the intake "was fine"; the kicker, the trail and the sign were not).**
 **Round 49, REVERSE CHASTAIN LAKES SHORTCUTS, THE LAKE TRAIL WHERE IT REALLY IS, and the map's pointer (Dan, 2026-10-19 08:37,
 after driving the Round 48 build; his two in-game map pictures: `local/reference_photos/chastain_lakes/r49_rev_shortcut1_cp7_cp9_map.png` and
@@ -289,46 +329,6 @@ Build: seven full builds, not one (each fix was found in the exe: the intake's w
    on the lap crossed it), the map's controls line, the bridge's north end, the AI's recovery and jetty speed); `Builds/ChastainRush/` 2026-10-19 12:38. Imported from Racer: nothing.
 For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
    ways; the map's pointer and pan with a controller and the mouse.
-
-## Previous delivery 3: Round 48
-**Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
-**Round 48, GOOSE EGG HUNT AND EXPLORATION (Dan, 2026-10-18 16:25; started after Round 47).** Dan: "lets go with goose eggs. We can
-have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
-later".
-Dan, 2026-10-19 01:43: he wants ALL of what Claude listed from Woodstock Rush, not only the eggs: "Exploration collectibles.
-Woodstock Rush had an acorn hunt with a map that fills in as you explore, discovered destinations, fast travel and waypoints ... I
-wanted everything else mentioned here ... Remember I want 100 and different amount of eggs will unlock different things which I
-haven't decided that part exactly yet." So the map fog, discovered destinations, fast travel and waypoints below are required, not optional.
-Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20
-left behind: exploration fog and its save, destinations and travel, waypoints, the collectible areas), with goose eggs in place
-of acorns. 100 eggs (a few in a straw nest, or one alone; the look Code's choice) across the whole map: every neighborhood, the
-shopping center and stunt park (roofs included), the creek trail, along shortcuts, and in the pipe network; a mix of easy ones
-by the road and hard ones that take a jump or a find. Free Roam only (hidden in races). Found by driving through; the count shows
-for a few seconds when one is found (as Racer 0.79), the total in the pause menu and on the map by area (not exact spots).
-TIERS instead of Racer's one reward: 10, 25, 50, 75 and 100 eggs (Claude's proposal; Dan may change them); reaching one shows a
-notice and is saved; what each unlocks is decided later (nothing locked or unlocked by them yet). A restart of the hunt as in
-Racer (other saves kept). Check: a pick-up, a tier notice (test save), the map's areas, a travel; pictures of a few eggs, easy
-and hard.
-
-**Status (Claude, 2026-10-19): built and checked in the exe by script (14 of 14), not yet driven by Dan.** Evidence `Data/screenshots/round48/`.
-- 100 goose eggs (three in a straw nest) in 11 areas, 52 easy (by a road) and 48 hard: 12 in pipes (5 in the glass under ponds and lakes, the hub), 8 in the air over jumps
-  (Noonday Creek's, the Ridge leap, the boat jump), 5 on roofs (the stunt park's market, bank and shop row, the corner's garages and warehouse), 7 on shortcut lines, the
-  crypt, the dock, the drain's glass, back yards. `python Tools/mapgen/make_eggs.py [--plot]` writes `Data/explore/eggs.json` (eggs, areas, tiers, 35 places); Build Map's
-  game layer (`MapBuilder.Eggs.cs`); the game: `Explore/EggHunt.cs` (Racer's ExplorationCollection), `EggAreas`, `EggBanner`. Free Roam only (no race, stunt event,
-  police or split screen). Saves `goose-eggs-v1.json` and `exploration-map-v1.json` beside the race records (a check run's own folder).
-- Found by driving through: the banner "GOOSE EGG FOUND 1 / 100" with its area and count for 4 s. TIERS 10, 25, 50, 75, 100: "TIER n REACHED" for 7 s with a fanfare,
-  saved; nothing locked or unlocked by them yet. Pause menu: the count, a GOOSE EGGS page (tiers, each area with where it is, SHOW ON THE MAP, RESTART THE HUNT: tiers,
-  the map and all other saves kept).
-- The map (`Map/WorldMap.Explore.cs`, `Explore/Exploration.cs`, `WaypointGuide.cs`): fog lifting where you have driven (20 m cells, saved); the egg areas outlined with
-  counts and a list (D-pad up / down); places discovered within 45 m, LB / RB to choose, X to travel (A confirms, Free Roam only); Y sets a waypoint (a beam and
-  "WAYPOINT 392 ft" on the HUD; cleared on arrival).
-- Check: a pickup by driving, tier 1 and 2 notices on a test save, a restart (tiers kept), the fog, the areas, a travel across the map (on the spot, facing along its
-  road), a waypoint and arrival, no eggs in a race. Pictures of an easy egg and hard ones (roof, glass pipe, over BJ1, the dock, a back yard).
-Build: one full Build Map (eggs placed into the scene alone first for the checks), then a code-only exe rebuild (the banner's size); `Builds/ChastainRush/` 2026-10-19 03:35.
-Imported from Racer: ExplorationCollection (as EggHunt), AcornAreas (as EggAreas), AcornBanner and Synth (as EggBanner), ExplorationMap's fog, destinations, travel and
-  waypoint (into Exploration and WorldMap.Explore), WaypointGuide; left behind: VehicleUnlocks, UnlockNotice, the track browser and action sheet, place-name labels.
-For Dan to check: the eggs (easy and hard: are the hard ones hard enough, the air ones over the jumps reachable?), the tiers' notices, the map's fog, areas, travel and
-  waypoint; what each tier unlocks (to decide).
 
 ## Technical notes (standing)
 Technical Notes / Blockers

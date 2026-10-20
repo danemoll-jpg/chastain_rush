@@ -5265,3 +5265,45 @@ B DONE. The four townhouses of the row on Chastain Road's north side at Dan's sp
 Build: one full Build Map (Build 1 crashed on an empty drive, fixed, rebuilt), then code-only exe rebuilds for the check; `Builds/ChastainRush/` 2026-10-19 03:07.
 For Dan to check: drive reverse Chastain Lakes (and pick its shortcuts); the downhill bend south of the footbridge in reverse (does the trail's edge by the courts need
    grading?); the drives at his spot.
+
+## Round 48 (moved from TODO.md on 2026-10-19 when Dan reviewed Round 51; word for word)
+
+## Previous delivery 3: Round 48
+**Reviewed: Dan drove the Round 48 build 2026-10-19 (reverse Chastain Lakes, the map); his notes are Round 49.**
+**Round 48, GOOSE EGG HUNT AND EXPLORATION (Dan, 2026-10-18 16:25; started after Round 47).** Dan: "lets go with goose eggs. We can
+have 100 of them spread around with tier unlocks instead of just one unlock. We can worry about what exactly gets unlocked
+later".
+Dan, 2026-10-19 01:43: he wants ALL of what Claude listed from Woodstock Rush, not only the eggs: "Exploration collectibles.
+Woodstock Rush had an acorn hunt with a map that fills in as you explore, discovered destinations, fast travel and waypoints ... I
+wanted everything else mentioned here ... Remember I want 100 and different amount of eggs will unlock different things which I
+haven't decided that part exactly yet." So the map fog, discovered destinations, fast travel and waypoints below are required, not optional.
+Port Racer's exploration (`ExplorationCollection.cs`, `AcornAreas.cs`, `AcornNotices.cs`, and the WorldMap parts Round 20
+left behind: exploration fog and its save, destinations and travel, waypoints, the collectible areas), with goose eggs in place
+of acorns. 100 eggs (a few in a straw nest, or one alone; the look Code's choice) across the whole map: every neighborhood, the
+shopping center and stunt park (roofs included), the creek trail, along shortcuts, and in the pipe network; a mix of easy ones
+by the road and hard ones that take a jump or a find. Free Roam only (hidden in races). Found by driving through; the count shows
+for a few seconds when one is found (as Racer 0.79), the total in the pause menu and on the map by area (not exact spots).
+TIERS instead of Racer's one reward: 10, 25, 50, 75 and 100 eggs (Claude's proposal; Dan may change them); reaching one shows a
+notice and is saved; what each unlocks is decided later (nothing locked or unlocked by them yet). A restart of the hunt as in
+Racer (other saves kept). Check: a pick-up, a tier notice (test save), the map's areas, a travel; pictures of a few eggs, easy
+and hard.
+
+**Status (Claude, 2026-10-19): built and checked in the exe by script (14 of 14), not yet driven by Dan.** Evidence `Data/screenshots/round48/`.
+- 100 goose eggs (three in a straw nest) in 11 areas, 52 easy (by a road) and 48 hard: 12 in pipes (5 in the glass under ponds and lakes, the hub), 8 in the air over jumps
+  (Noonday Creek's, the Ridge leap, the boat jump), 5 on roofs (the stunt park's market, bank and shop row, the corner's garages and warehouse), 7 on shortcut lines, the
+  crypt, the dock, the drain's glass, back yards. `python Tools/mapgen/make_eggs.py [--plot]` writes `Data/explore/eggs.json` (eggs, areas, tiers, 35 places); Build Map's
+  game layer (`MapBuilder.Eggs.cs`); the game: `Explore/EggHunt.cs` (Racer's ExplorationCollection), `EggAreas`, `EggBanner`. Free Roam only (no race, stunt event,
+  police or split screen). Saves `goose-eggs-v1.json` and `exploration-map-v1.json` beside the race records (a check run's own folder).
+- Found by driving through: the banner "GOOSE EGG FOUND 1 / 100" with its area and count for 4 s. TIERS 10, 25, 50, 75, 100: "TIER n REACHED" for 7 s with a fanfare,
+  saved; nothing locked or unlocked by them yet. Pause menu: the count, a GOOSE EGGS page (tiers, each area with where it is, SHOW ON THE MAP, RESTART THE HUNT: tiers,
+  the map and all other saves kept).
+- The map (`Map/WorldMap.Explore.cs`, `Explore/Exploration.cs`, `WaypointGuide.cs`): fog lifting where you have driven (20 m cells, saved); the egg areas outlined with
+  counts and a list (D-pad up / down); places discovered within 45 m, LB / RB to choose, X to travel (A confirms, Free Roam only); Y sets a waypoint (a beam and
+  "WAYPOINT 392 ft" on the HUD; cleared on arrival).
+- Check: a pickup by driving, tier 1 and 2 notices on a test save, a restart (tiers kept), the fog, the areas, a travel across the map (on the spot, facing along its
+  road), a waypoint and arrival, no eggs in a race. Pictures of an easy egg and hard ones (roof, glass pipe, over BJ1, the dock, a back yard).
+Build: one full Build Map (eggs placed into the scene alone first for the checks), then a code-only exe rebuild (the banner's size); `Builds/ChastainRush/` 2026-10-19 03:35.
+Imported from Racer: ExplorationCollection (as EggHunt), AcornAreas (as EggAreas), AcornBanner and Synth (as EggBanner), ExplorationMap's fog, destinations, travel and
+  waypoint (into Exploration and WorldMap.Explore), WaypointGuide; left behind: VehicleUnlocks, UnlockNotice, the track browser and action sheet, place-name labels.
+For Dan to check: the eggs (easy and hard: are the hard ones hard enough, the air ones over the jumps reachable?), the tiers' notices, the map's fog, areas, travel and
+  waypoint; what each tier unlocks (to decide).
