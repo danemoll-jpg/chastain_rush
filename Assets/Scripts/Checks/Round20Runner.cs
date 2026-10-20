@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -57,6 +57,7 @@ namespace ChastainRush
             if (tag == "round39" && parts == null) parts = new[] { "walkers", "walkpics", "walkdodge", "walkfps" };   // Round 39 (Round20Runner.R39*.cs)
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
+            if (tag == "round52" && parts == null) parts = new[] { "ahlap", "ahshut", "ahpics", "ahhouses" };   // Round 52 (Round20Runner.R52.cs); ahrace with -traffic Normal
             if (tag == "round50" && parts == null) parts = new[] { "kclean", "kcheat", "kshort", "ktrail", "kpics" };   // Round 50 (Round20Runner.R50.cs); krace with -traffic Normal
             if (tag == "round49" && parts == null) parts = new[] { "lktrail", "lkintake", "lkkicker", "lkshut", "lkfwd", "lkmap", "lkpics" };   // Round 49 (Round20Runner.R49.cs); lkrace with -traffic Normal
             if (tag == "round48" && parts == null) parts = new[] { "eggpickup", "eggtier", "eggmap", "eggtravel", "eggwaypoint", "eggrace", "eggpics" };   // Round 48 (Round20Runner.R48.cs)
@@ -169,6 +170,15 @@ namespace ChastainRush
                 if (Do("eggwaypoint")) yield return Guard(R48Waypoint());
                 if (Do("eggrace")) yield return Guard(R48Race());
                 if (Do("eggpics")) yield return Guard(R48Pics());
+            }
+            // Round 52 (Round20Runner.R52.cs): the Addison Heights race, Dan's three houses
+            if (tag == "round52")
+            {
+                if (Do("ahhouses")) yield return Guard(R52Houses());
+                if (Do("ahshut")) yield return Guard(R52Shut());
+                if (Do("ahpics")) yield return Guard(R52Pics());
+                if (Do("ahrace")) foreach (var dr in new[] { "forward", "reverse" }) for (int k = 1; k <= 2; k++) yield return Guard(R52Race(dr, k));
+                if (Do("ahlap")) yield return Guard(R52Laps(ids));
             }
             // Round 47 (Round20Runner.R47.cs): reverse Chastain Lakes, the drives on Chastain Road
             if (tag == "round47")
