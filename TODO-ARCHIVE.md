@@ -5307,3 +5307,80 @@ Imported from Racer: ExplorationCollection (as EggHunt), AcornAreas (as EggAreas
   waypoint (into Exploration and WorldMap.Explore), WaypointGuide; left behind: VehicleUnlocks, UnlockNotice, the track browser and action sheet, place-name labels.
 For Dan to check: the eggs (easy and hard: are the hard ones hard enough, the air ones over the jumps reachable?), the tiers' notices, the map's fog, areas, travel and
   waypoint; what each tier unlocks (to decide).
+
+## Round 49 (moved from TODO.md on 2026-10-20 when Dan reviewed Round 52; word for word)
+
+## Previous delivery 3: Round 49
+**Reviewed: Dan drove the Round 49 build 2026-10-19 13:25 (a reverse Chastain Lakes race at night); his notes are Round 50 (the intake "was fine"; the kicker, the trail and the sign were not).**
+**Round 49, REVERSE CHASTAIN LAKES SHORTCUTS, THE LAKE TRAIL WHERE IT REALLY IS, and the map's pointer (Dan, 2026-10-19 08:37,
+after driving the Round 48 build; his two in-game map pictures: `local/reference_photos/chastain_lakes/r49_rev_shortcut1_cp7_cp9_map.png` and
+`r49_rev_shortcut2_cp4_cp5_map.png`).** Rounds 47 and 48 are reviewed. The
+standing shortcut rules apply (a real risk; a hint at the turn-off; ramps jump by physics only; pipes through water are aquarium
+pipes). One full Build Map at the end; tuning limit; short results.
+A. REVERSE SHORTCUT 1, THE INTAKE. Dan: "Lets do a similar idea as the gazebo shortcut on the forward race. On the bit of land that
+   sticks out before the CP, jump into an intake with into a tunnel across the lake and you come out of a manhole just after the 9
+   cp in the correct direction". His picture: reverse Lakeside Drive westbound along the south side of West Chastain Lake toward
+   CP7; just before CP7 (east of it) a point of land sticks north into the lake. Off the lap onto that point (a hint at the
+   turn-off), off its tip into a lake INTAKE (a structure that could be there: an intake / overflow mouth in the water, its look
+   Code's choice, not a copy of the gazebo's drain), down into a tunnel north across the lake (glass aquarium wherever it is under
+   the water: standing rule), up and out of a manhole that pops on North Lakeside Drive just past CP9, facing east (the reverse
+   direction), back on the lap. Forgives the checkpoints it skips. Risk: miss the intake and you are in the lake (slowed, never
+   trapped, a reset on the race's line). As the forward drain, the drop into it may be scripted (it is not a ramp); getting into
+   its mouth is the skill. Reverse races only (closed in the forward race as the forward ones are in reverse; open in Free Roam).
+B. REVERSE SHORTCUT 2, THE BIG JUMP PAST CP5. Dan: "around CP 4, you go between houses and find a ramp that jumps past 5. It should
+   be a fairly large jump, I would prefer something other than a dirt ramp but i don't know". His picture: reverse, the lap comes
+   south through CP4, curves round the bottom of a wooded hollow and runs back northwest through CP5. Off the lap near CP4 between
+   two houses on the hollow's side (a hint at the turn-off), to a launch that sends you over the hollow and lands on the lap past
+   CP5, heading the race's way; forgives CP5. A REAL physics jump (ramp rule), fairly large. NOT a dirt pile: something that could
+   be in a back yard and is truly that size (CLAUDE.md lesson on ramp sizes); Code picks and says why, for example the neighborhood
+   kids' big wooden skate / BMX kicker, a car hauler with its bed tilted down, or a half-built deck or roof on a house being
+   worked on. Risk: come in slow or crooked and you drop into the hollow (trees, the slope; a slow way back up, never trapped).
+C. THE LAKE TRAIL WHERE IT REALLY IS (both directions). Dan: "Code complained about the path not working for some vehicles. Part of
+   the problem is the path is on the map incorrectly. If you refer to my pics and the map, the trail goes behind the pool and twists
+   around to the bridge, not between the pool area and the tennis courts. I drove the correct route where the path should be and
+   had no problems". Move the trail's piece from the lot to the footbridge: from the lot, BEHIND the pool (on its lake side, past
+   the pool's granite retaining wall, iron fence and the bathhouse: photo 2), then twisting down along the shore to the footbridge
+   (photo 3, gravel with tan brick edging); `local/reference_photos/chastain_lakes/r44_2*` and `r44_3*` and Dan's route map
+   `r44_route_map.jpg`. The piece between the pool area and the tennis courts goes (grass again; the courts' fence untouched). Both
+   races' lines, checkpoints, AI zones and barriers follow it; the gazebo drain and the footbridge stay. This also replaces
+   Round 47's NOT MET item (the S-bend by the courts). Keep its width (Round 44: 7 m).
+D. THE MAP: A POINTER, AND PAN TO EVERY EDGE. Dan: "The way the map is you can't move it all the way to select any area on the map,
+   there needs to be two different controls, 1 to move the map around and a pointer to be able to select things on the map".
+   Controller: the left stick pans the map, and it can bring EVERY part of the map (all four edges and corners) under the
+   pointer; the RIGHT stick moves a pointer freely over the screen, and A / the action buttons act on what is under the pointer
+   (a discovered place to travel to, an egg area, a waypoint where it points), not on the screen's center. The pointer stays
+   where it is when you pan. Keyboard / mouse: WASD / arrows pan, the mouse is the pointer (click to select, drag to pan). Whatever
+   the right stick's click did on the map moves to another button and the on-screen controls line says so. Check: from each corner
+   of the map, select a place there and travel; a waypoint set with the pointer off-center.
+Check (all): reverse lap with each shortcut (Street Classic, Drifter Twin), time saved; the intake missed (into the lake) and the
+jump short (into the hollow); the AI takes both and sometimes fails; the trail in both directions on all 11 vehicles at race speed
+with no stops; forward race unchanged otherwise. Pictures: each turn-off and hint, the intake, the aquarium run, the manhole past
+CP9, the launch and landing past CP5, the trail behind the pool from photo 2's spot.
+For Dan to check: both reverse shortcuts; the trail behind the pool both ways; the map's pointer.
+
+**Status (Claude, 2026-10-19): A to D built and checked in the exe by script (14 of 15 on the full set; the AI race on the last build 6 of 6), not yet driven by Dan.** Evidence `Data/screenshots/round49/`.
+A DONE. THE INTAKE: off Lakeside Drive 45 m before CP7, right up the point's service track (the lake association's LAKE INTAKE sign, worn ruts), along a 6 m
+   concrete jetty 2 m over West Chastain Lake, off its end into a square concrete riser 11.5 m out (walls 1.2 m out of the water, trash racks, buoys), down its shaft
+   to LI, B29 in glass under the lake (52 m), under M2b by the north shore, up MH15 onto North Lakeside Drive 30 m past CP9, facing east. Forgives CP7 to CP9 (Dan's line:
+   it skips the west loop). Clean: off the jetty at 21.5 / 23.7 m/s, saves 5.2 s (Street Classic) and 4.8 s (Drifter Twin). Off the jetty at 9 m/s: into the riser's wall
+   and the lake, not taken; a reset puts you on the race's line (under about 16 m/s you hit the wall; a car short in the lake can not climb in: taken only from the air).
+B DONE (time saved small). THE KICKER: just past CP4 a JUMP! board, a 28 m arc through 239's front yard and between 239 and 237, down the back yard to the
+   neighborhood kids' plywood kicker (3.5 m, 35 degrees; a kids' ramp because it is truly that shape in a back yard), a real jump west over the creek hollow below
+   the lake's tip, between 232 and 246, on through the yards to the lap past CP5 (forgives CP5). Physics can not reach the lap past CP5 itself (165 m); the flight is
+   the hollow. Tuning (two tries, stopped): try 1 17.8 / 20.1 m/s at the lip, both short; try 2 (kicker 7 m further down its line, wider turn) 21.1 / 21.2 m/s, 42 m,
+   lands upright; at 17 m/s it comes down in the hollow (out along it, or a reset). NOT MET: it saves only 1.1 s (Street Classic) and 0.6 s (Drifter Twin).
+C DONE. The trail from the lot behind the bathhouse (concrete), round the pool deck's corner (gravel, tan brick) to the footbridge, now over the spillway where the
+   outflow leaves the lake; grass between the pool house and the courts; the lot's 1.1 m step at its corner ramped at 16 %; the porch swing moved 20 m off the line.
+   The trail runs 6 m straight off the bridge's north end before it bends onto the dam (a reverse AI hit the rail end; a mower slid off into the outflow).
+   All 11 vehicles both ways at the race's speeds, no stop (slowest 9.7 m/s; the Needle 600 7.1 m/s brushing the bridge's rail forward). Round 47's NOT MET is gone.
+D DONE. Left stick / WASD pans and carries the pointer on to the map's edges; right stick / mouse is the pointer; A / click chooses under it (a place: travel; an egg
+   area: show), X travels, Y sets the waypoint at the pointer; center moved to D-pad left, shortcuts and pipes to D-pad right. Check: from all four corners a place
+   chosen with the pointer and traveled to; a waypoint 707 m off the view's center; a mouse click on a place asks to travel.
+Both shortcuts are shut in a forward race (barriers B17 / B18, clues hidden, a grate on the intake), open in reverse and Free Roam; the forward lap unchanged (104.0 s, 0
+   missed). AI reverse race x2, traffic Normal (last build): all 6 finish, 0 missed; down the intake 3 times (its jetty speed raised to 23 m/s: at 18 every AI hit the
+   wall), off the kicker 2 times, 1 short into the hollow. The AI's recovery no longer puts a car under a structure (it put two back under the footbridge, in the
+   stream, again and again: `RoadDriver.Covered`), and after four tries with no clear spot it looks on along the lap (never a trap).
+Build: seven full builds, not one (each fix was found in the exe: the intake's wall and catch, the two kicker tries, the lot's step, the kicker's entry plane (every car
+   on the lap crossed it), the map's controls line, the bridge's north end, the AI's recovery and jetty speed); `Builds/ChastainRush/` 2026-10-19 12:38. Imported from Racer: nothing.
+For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
+   ways; the map's pointer and pan with a controller and the mouse.

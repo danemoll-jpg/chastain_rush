@@ -108,6 +108,57 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
+`2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
+Round 52 is reviewed: "the track itself is good". Both shortcuts are FORWARD only. Standing rules apply (real risk; no free way round
+a shortcut; tire tracks are the hint, no signs; ramps a real physics jump; nothing slows a car on a ramp). ONE full Build Map at the
+end (plan each line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
+A. THE LYNDON DRIVE SHORTCUT: ROAD CREW AND FRESH CONCRETE (Dan's own design). BUG-002 (x 2812.09 z 419.97 h 2, Lyndon Drive at Joel
+   Drive, heading north): "Forward shortcut starts here. The challenge is that constructions crews are here working on the road. A whole
+   part of the road is all freshly poured concrete if you try to drive through it you are slowed like you would be if you were driving
+   in water. A ramp, I am thinking consisting of a trailer that was for the roller and other equipent has its ramp down and there are
+   boards leaned up against the truck so as to get some extra height so you can clear the concrete and finish the shortcut". BUG-003
+   (x 2810.37 z 511.52 h 25, Lyndon at Embry Lane): "shortcut merges back to the road here". So: off Joel Drive north up Lyndon Drive
+   to Embry Lane, skipping the lap's west end. A road-crew site on Lyndon: an equipment trailer (the roller's) with its ramp down and
+   boards leaned against the truck for extra height as the launch (real jump), the roller and other equipment parked, cones, then a
+   stretch of freshly poured concrete across the whole road that slows you like water (Racer's / Round 9's water drag); clear it in the
+   air and you land on firm road and merge onto Embry Lane at Dan's spot. Miss (short, slow, round the trailer) and you are in the wet
+   concrete: slower than the plain lap. Note: Lyndon skips about 270 m of the lap (Claude's estimate, about 10 s); the concrete and the
+   jump must bring a clean run down to a few seconds saved (as the other shortcuts), Code says the numbers. The barrier at Lyndon (both
+   ends) goes; Lyndon south of Joel stays closed. Wet concrete looks wet (darker, glossy) with tire ruts if driven through.
+B. THE ELAINE CIRCLE JUMP. BUG-005 (x 3194.96 z 306.83 h 286, Suholden Circle at Elaine Circle): "Shorcut forward starts here". The
+   crest at that corner, then Elaine Circle drops away downhill west: a big natural jump. Dan, asked how to use it (it would cut about
+   415 m, some 15 s, so as a plain shortcut everyone would take it, and as an alternate path the whole Kelly / Crawford loop would always
+   be skipped): "It does take too much out of the route, but I hate to lose it. ... this jump will miss the track most likely. At least
+   every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main road".
+   So: keep the natural jump off the crest as it is (no ramp needed; find where cars really land at race speed, several vehicles);
+   from that landing build a longer way back to the lap (through the yards / woods beside Elaine, a winding off-road line with its own
+   fun: dips, a small jump, tight between trees), so that a clean run saves only a few seconds. Code picks where it rejoins (the lap
+   heading the race's way, e.g. Crawford Circle / Hayworth Drive northbound or Joel Drive westbound) and says why. Elaine Circle's own
+   road below the landing must not be a free fast way back (standing rule: brush beds or the like that slow you). The barrier at the
+   Elaine corner goes (the crest stays open); the lap's line through that corner is unchanged for those who do not take it.
+C. BUG-004 (x 3201.59 z 332.55 h 80, beside Elaine Circle just below the corner, on B's line): "fix this house" (the picture: a huge
+   grey wall slab standing up beside the house, the house broken apart). Fix it; B's line passes it, so it must look right from there.
+D. BUG-001 (x 2809.71 z 512.68 h 62, Lyndon Drive at Embry Lane, A's merge): "EVEN THIS SPOT OUT" (a crease / bump where Lyndon's crown
+   meets Embry's). Smooth the junction so A's landing and merge ride clean.
+Check: each shortcut clean (time saved, Street Classic and Drifter Twin), short / missed (slower than the plain lap), and its free
+way round (slower); the AI takes each sometimes, forward race x2 traffic Normal, all finish; reverse race unchanged (both shortcuts
+shut in reverse). Pictures: Dan's five spots, the crew site, the wet concrete, B's landing and its way back, the house.
+For Dan to check: both shortcuts forward (try to cheat them); the house at BUG-004; the Lyndon / Embry junction.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 52
+**Reviewed: Dan drove the Round 52 build 2026-10-20 01:26 (Addison Heights forward, Free Roam): "the track itself is good"; his notes are Round 53.**
 **Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
 reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
 on a Google map: `local/reference_photos/embry_lane/r52_route_map.jpg`, reference only, never traced or measured).** Round 51 is
@@ -166,18 +217,7 @@ Not changed (Dan's call): the same floating windows on about 100 other style E h
 For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
    Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 51
+## Previous delivery 2: Round 51
 **Reviewed: Dan drove the Round 51 build 2026-10-19 19:45 (Free Roam); no reports on it (his three notes are Round 52).**
 **Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
 reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
@@ -224,7 +264,7 @@ D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (Pla
 Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
 For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
 
-## Previous delivery 2: Round 50
+## Previous delivery 3: Round 50
 **Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
 **Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
 reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
@@ -280,81 +320,6 @@ B DONE. The trail at its real width: concrete 1.5 m (timber edging), gravel 2 m 
 C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.1 s, 0 missed, 18 barriers; shut checks pass).
 Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
 For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.
-
-## Previous delivery 3: Round 49
-**Reviewed: Dan drove the Round 49 build 2026-10-19 13:25 (a reverse Chastain Lakes race at night); his notes are Round 50 (the intake "was fine"; the kicker, the trail and the sign were not).**
-**Round 49, REVERSE CHASTAIN LAKES SHORTCUTS, THE LAKE TRAIL WHERE IT REALLY IS, and the map's pointer (Dan, 2026-10-19 08:37,
-after driving the Round 48 build; his two in-game map pictures: `local/reference_photos/chastain_lakes/r49_rev_shortcut1_cp7_cp9_map.png` and
-`r49_rev_shortcut2_cp4_cp5_map.png`).** Rounds 47 and 48 are reviewed. The
-standing shortcut rules apply (a real risk; a hint at the turn-off; ramps jump by physics only; pipes through water are aquarium
-pipes). One full Build Map at the end; tuning limit; short results.
-A. REVERSE SHORTCUT 1, THE INTAKE. Dan: "Lets do a similar idea as the gazebo shortcut on the forward race. On the bit of land that
-   sticks out before the CP, jump into an intake with into a tunnel across the lake and you come out of a manhole just after the 9
-   cp in the correct direction". His picture: reverse Lakeside Drive westbound along the south side of West Chastain Lake toward
-   CP7; just before CP7 (east of it) a point of land sticks north into the lake. Off the lap onto that point (a hint at the
-   turn-off), off its tip into a lake INTAKE (a structure that could be there: an intake / overflow mouth in the water, its look
-   Code's choice, not a copy of the gazebo's drain), down into a tunnel north across the lake (glass aquarium wherever it is under
-   the water: standing rule), up and out of a manhole that pops on North Lakeside Drive just past CP9, facing east (the reverse
-   direction), back on the lap. Forgives the checkpoints it skips. Risk: miss the intake and you are in the lake (slowed, never
-   trapped, a reset on the race's line). As the forward drain, the drop into it may be scripted (it is not a ramp); getting into
-   its mouth is the skill. Reverse races only (closed in the forward race as the forward ones are in reverse; open in Free Roam).
-B. REVERSE SHORTCUT 2, THE BIG JUMP PAST CP5. Dan: "around CP 4, you go between houses and find a ramp that jumps past 5. It should
-   be a fairly large jump, I would prefer something other than a dirt ramp but i don't know". His picture: reverse, the lap comes
-   south through CP4, curves round the bottom of a wooded hollow and runs back northwest through CP5. Off the lap near CP4 between
-   two houses on the hollow's side (a hint at the turn-off), to a launch that sends you over the hollow and lands on the lap past
-   CP5, heading the race's way; forgives CP5. A REAL physics jump (ramp rule), fairly large. NOT a dirt pile: something that could
-   be in a back yard and is truly that size (CLAUDE.md lesson on ramp sizes); Code picks and says why, for example the neighborhood
-   kids' big wooden skate / BMX kicker, a car hauler with its bed tilted down, or a half-built deck or roof on a house being
-   worked on. Risk: come in slow or crooked and you drop into the hollow (trees, the slope; a slow way back up, never trapped).
-C. THE LAKE TRAIL WHERE IT REALLY IS (both directions). Dan: "Code complained about the path not working for some vehicles. Part of
-   the problem is the path is on the map incorrectly. If you refer to my pics and the map, the trail goes behind the pool and twists
-   around to the bridge, not between the pool area and the tennis courts. I drove the correct route where the path should be and
-   had no problems". Move the trail's piece from the lot to the footbridge: from the lot, BEHIND the pool (on its lake side, past
-   the pool's granite retaining wall, iron fence and the bathhouse: photo 2), then twisting down along the shore to the footbridge
-   (photo 3, gravel with tan brick edging); `local/reference_photos/chastain_lakes/r44_2*` and `r44_3*` and Dan's route map
-   `r44_route_map.jpg`. The piece between the pool area and the tennis courts goes (grass again; the courts' fence untouched). Both
-   races' lines, checkpoints, AI zones and barriers follow it; the gazebo drain and the footbridge stay. This also replaces
-   Round 47's NOT MET item (the S-bend by the courts). Keep its width (Round 44: 7 m).
-D. THE MAP: A POINTER, AND PAN TO EVERY EDGE. Dan: "The way the map is you can't move it all the way to select any area on the map,
-   there needs to be two different controls, 1 to move the map around and a pointer to be able to select things on the map".
-   Controller: the left stick pans the map, and it can bring EVERY part of the map (all four edges and corners) under the
-   pointer; the RIGHT stick moves a pointer freely over the screen, and A / the action buttons act on what is under the pointer
-   (a discovered place to travel to, an egg area, a waypoint where it points), not on the screen's center. The pointer stays
-   where it is when you pan. Keyboard / mouse: WASD / arrows pan, the mouse is the pointer (click to select, drag to pan). Whatever
-   the right stick's click did on the map moves to another button and the on-screen controls line says so. Check: from each corner
-   of the map, select a place there and travel; a waypoint set with the pointer off-center.
-Check (all): reverse lap with each shortcut (Street Classic, Drifter Twin), time saved; the intake missed (into the lake) and the
-jump short (into the hollow); the AI takes both and sometimes fails; the trail in both directions on all 11 vehicles at race speed
-with no stops; forward race unchanged otherwise. Pictures: each turn-off and hint, the intake, the aquarium run, the manhole past
-CP9, the launch and landing past CP5, the trail behind the pool from photo 2's spot.
-For Dan to check: both reverse shortcuts; the trail behind the pool both ways; the map's pointer.
-
-**Status (Claude, 2026-10-19): A to D built and checked in the exe by script (14 of 15 on the full set; the AI race on the last build 6 of 6), not yet driven by Dan.** Evidence `Data/screenshots/round49/`.
-A DONE. THE INTAKE: off Lakeside Drive 45 m before CP7, right up the point's service track (the lake association's LAKE INTAKE sign, worn ruts), along a 6 m
-   concrete jetty 2 m over West Chastain Lake, off its end into a square concrete riser 11.5 m out (walls 1.2 m out of the water, trash racks, buoys), down its shaft
-   to LI, B29 in glass under the lake (52 m), under M2b by the north shore, up MH15 onto North Lakeside Drive 30 m past CP9, facing east. Forgives CP7 to CP9 (Dan's line:
-   it skips the west loop). Clean: off the jetty at 21.5 / 23.7 m/s, saves 5.2 s (Street Classic) and 4.8 s (Drifter Twin). Off the jetty at 9 m/s: into the riser's wall
-   and the lake, not taken; a reset puts you on the race's line (under about 16 m/s you hit the wall; a car short in the lake can not climb in: taken only from the air).
-B DONE (time saved small). THE KICKER: just past CP4 a JUMP! board, a 28 m arc through 239's front yard and between 239 and 237, down the back yard to the
-   neighborhood kids' plywood kicker (3.5 m, 35 degrees; a kids' ramp because it is truly that shape in a back yard), a real jump west over the creek hollow below
-   the lake's tip, between 232 and 246, on through the yards to the lap past CP5 (forgives CP5). Physics can not reach the lap past CP5 itself (165 m); the flight is
-   the hollow. Tuning (two tries, stopped): try 1 17.8 / 20.1 m/s at the lip, both short; try 2 (kicker 7 m further down its line, wider turn) 21.1 / 21.2 m/s, 42 m,
-   lands upright; at 17 m/s it comes down in the hollow (out along it, or a reset). NOT MET: it saves only 1.1 s (Street Classic) and 0.6 s (Drifter Twin).
-C DONE. The trail from the lot behind the bathhouse (concrete), round the pool deck's corner (gravel, tan brick) to the footbridge, now over the spillway where the
-   outflow leaves the lake; grass between the pool house and the courts; the lot's 1.1 m step at its corner ramped at 16 %; the porch swing moved 20 m off the line.
-   The trail runs 6 m straight off the bridge's north end before it bends onto the dam (a reverse AI hit the rail end; a mower slid off into the outflow).
-   All 11 vehicles both ways at the race's speeds, no stop (slowest 9.7 m/s; the Needle 600 7.1 m/s brushing the bridge's rail forward). Round 47's NOT MET is gone.
-D DONE. Left stick / WASD pans and carries the pointer on to the map's edges; right stick / mouse is the pointer; A / click chooses under it (a place: travel; an egg
-   area: show), X travels, Y sets the waypoint at the pointer; center moved to D-pad left, shortcuts and pipes to D-pad right. Check: from all four corners a place
-   chosen with the pointer and traveled to; a waypoint 707 m off the view's center; a mouse click on a place asks to travel.
-Both shortcuts are shut in a forward race (barriers B17 / B18, clues hidden, a grate on the intake), open in reverse and Free Roam; the forward lap unchanged (104.0 s, 0
-   missed). AI reverse race x2, traffic Normal (last build): all 6 finish, 0 missed; down the intake 3 times (its jetty speed raised to 23 m/s: at 18 every AI hit the
-   wall), off the kicker 2 times, 1 short into the hollow. The AI's recovery no longer puts a car under a structure (it put two back under the footbridge, in the
-   stream, again and again: `RoadDriver.Covered`), and after four tries with no clear spot it looks on along the lap (never a trap).
-Build: seven full builds, not one (each fix was found in the exe: the intake's wall and catch, the two kicker tries, the lot's step, the kicker's entry plane (every car
-   on the lap crossed it), the map's controls line, the bridge's north end, the AI's recovery and jetty speed); `Builds/ChastainRush/` 2026-10-19 12:38. Imported from Racer: nothing.
-For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
-   ways; the map's pointer and pan with a controller and the mouse.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
