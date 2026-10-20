@@ -7,7 +7,9 @@ Data/map.json). Forward and reverse, no shortcuts yet (Dan picks them once he ha
   4. Kelly Drive west to Crawford Circle, north up Crawford Circle's east leg and Hayworth Drive back to Joel Drive: the lap
 Reverse is the same roads the other way, a lap of its own (RaceRoute: loop_rev and the *_rev fields), as Chastain Lakes'.
 Open roads ("traffic": true), two-way roads raced on their right-hand lane, as the other open-road races. Every road that leaves the lap is
-barred in a race (closures, from the roads themselves). No world pieces: no track file.
+barred in a race (closures, from the roads themselves).
+World pieces (Data/tracks/addison_heights.json, read by MapBuilder.Round52.cs): one cleared line, no tree trunk within 1.5 m of the lap's road edge
+(Round 52 check: AI drivers coming down Embry Lane's 30 % hill ran into trunks standing in the gutter and one missed a checkpoint).
 
 Hand choices are the constants below; everything else is computed, so it re-runs after any mapgen run. It writes
 Data/routes/addison_heights.json. Picture for checking (git-ignored, it shows houses): local/round52/layout.png with --plot.
@@ -18,6 +20,8 @@ import json, math, os, sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 OUT_ROUTE = os.path.join(ROOT, "Data/routes/addison_heights.json")
+OUT_TRACK = os.path.join(ROOT, "Data/tracks/addison_heights.json")
+EDGE_CLEAR_M = 1.5   # no trunk this close to the lap's road edge
 m = json.load(open(os.path.join(ROOT, "Data/map.json"), encoding="utf-8"))
 roads = m["roads"]; by_osm = {r["osm_id"]: r for r in roads}
 
@@ -230,7 +234,12 @@ if os.path.exists(OUT_ROUTE):
     try: route["direction"] = json.load(open(OUT_ROUTE, encoding="utf-8"))["direction"]
     except Exception: pass
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)
-print("wrote", os.path.relpath(OUT_ROUTE, ROOT))
+# the cleared line: the roads' centerline (both lanes), half the road's width plus EDGE_CLEAR_M
+centre = resample(line, 6.0)
+track = {"note": "Round 52: the Addison Heights race's world pieces, from Tools/mapgen/make_addison_route.py (MapBuilder.Round52.cs). Coordinates are map meters (= Unity x, z).",
+         "clear_lines": [{"id": "the lap's road edges", "points": flat(centre), "half": round(max(by_osm[o]["width"] for _, o, _ in SPEC) / 2.0 + EDGE_CLEAR_M, 2)}]}
+json.dump(track, open(OUT_TRACK, "w", encoding="utf-8"), indent=1)
+print("wrote", os.path.relpath(OUT_ROUTE, ROOT), "and", os.path.relpath(OUT_TRACK, ROOT))
 
 if "--plot" in sys.argv:
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt

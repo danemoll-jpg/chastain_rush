@@ -29,6 +29,10 @@ namespace ChastainRush
         static List<(List<Vector2> ring, Rect box)> r52Buildings;
         static readonly List<string> R52Log = new List<string>();
         [Serializable] class R52RouteJson { public float[] loop; }
+        // the race's cleared line (Data/tracks/addison_heights.json): no tree trunk within 1.5 m of the lap's road edge (Round 52 check: AI drivers coming
+        // down Embry Lane's 30 % hill hit trunks standing in the gutter); read with the other races' track files, used by the Trees step
+        const string AddisonTrackFile = "Data/tracks/addison_heights.json";
+        static Ridge AddisonNow;
 
         static void R52Load(MapData map)
         {

@@ -162,6 +162,7 @@ namespace ChastainRush
             BuildClock.Lap("MouthSweep");
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             BuildClock.Lap("SmoothBridgeEnds");
+            AddisonNow = Ridge.Load(AddisonTrackFile);   // Round 52: the Addison Heights race's cleared line (MapBuilder.Round52.cs)
             LakesNow = Ridge.Load(LakesTrackFile); LakesExtra = LoadLakesExtra();   // Round 44: the Chastain Lakes race's world pieces (MapBuilder.LakesRace.cs), read before the amenity area is planned
             var lakes = c.lakes = PlanChastainLakes(map, terrain);   // Round 32 (C2): the Chastain Lakes amenity area, graded before anything samples the ground (MapBuilder.ChastainLakes.cs)
             GradeRidge(terrain, LakesNow);   // Round 44: the lake trail and the shortcuts' ways smoothed along their lines (after the amenity area's levels)

@@ -142,6 +142,30 @@ Check: forward and reverse, AI races x2 each, traffic Normal: all finish, 0 miss
 the lap on all 11 vehicles both ways, no stop. Pictures: Dan's three spots before and after, the start / finish, each closure.
 For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at his three spots and along the lap.
 
+**Status (Claude, 2026-10-20): A and B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round52/`.
+A DONE. `python Tools/mapgen/make_addison_route.py [--plot]` writes `Data/routes/addison_heights.json` (and `Data/tracks/addison_heights.json`, one cleared line).
+   Lap 2040 m forward (Dan's direction), 2065 m reverse (its own lane), 3 laps, traffic, 8 checkpoints. START / FINISH on Kelly Drive at x 3055 (between
+   Suholden and Crawford: 155 m straight, 5 to 8 %); not Joel Drive, which falls 40 % and more west of Hayworth. 14 barriers each way, every road in the brief.
+   Check (`round52_check.txt`, 62 of 62, build 2): a lap each way on all 14 vehicles, none stops (74 to 82 s); all 28 barrier tries hold (driven at from the lap).
+   AI races x2 each way, traffic Normal: every AI finishes all 3 laps in all 8 races (24 of 24), but NOT MET "0 missed": one AI missed one checkpoint in each of the
+   last two runs (build 3: in reverse, it hit a trunk in the gutter on Embry Lane's 30 % hill and ended in a yard, CP4; final build: a Needle 600, forward CP8
+   on Suholden Circle's downhill, cause not found). One fix tried (no trunk within 1.5 m of the lap's road edge, the cleared line), then stopped (tuning limit).
+   The AI is slow here: laps 84 to 174 s against the check driver's 75 s (traffic queues at the Kelly / Suholden corner; AI drivers leave the road on Embry Lane's
+   30 % hill). `round52_check_final.txt` (its two lap failures are the check's own driver with traffic left on: behind a traffic van at that corner).
+B DONE. Cause: the other neighborhoods' houses stand at the ground at their garage doors and nothing round them was graded (Round 27's settling ran for the Glen
+   and the communities only); their drives were mapgen's straight lines draped at any grade (BUG-003: 39 %, the ground bulging through); no steps at any door.
+   Style E (split-level) also drew its upstairs back windows across its one-story wing, over the roof (BUG-001's right house, 996). Fixed for Dan's four houses
+   (910, 996, 615, 1135) and the 69 that face the lap (list `houses_settled.txt`, `MapBuilder.Round52.cs`): the floor where a drive from the street reaches it at
+   20 % or less (23 floors moved, 1135 down 4.3 m), the drive from the street straight to the garage graded under it, the lot cut with a yard that falls to the
+   house at about 1 in 3 (Round 27's 40 degree bank still looked sunk from Dan's spots: tried first, changed), a stoop and steps at the door, E's windows on its block.
+   Pictures `bug00N_before.png` / `_after.png` / `_after_wide.png`.
+Builds: four full builds, not one (the first stopped on a half-written check file; the softer lot cut and the cleared line were both found in the exe).
+   `Builds/ChastainRush/` 2026-10-20 00:39. Imported from Racer: nothing.
+Not changed (Dan's call): the same floating windows on about 100 other style E houses elsewhere on the map; the same unsettled houses and steep drives in the other
+   neighborhoods (Round 30's log counts 501 with ground over their floor).
+For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
+   Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
+
 ## QUEUED rounds
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing

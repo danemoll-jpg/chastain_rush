@@ -1,0 +1,23 @@
+Round 20 check, 2026-10-20 00:10, the exe, 1280 x 720, muted.
+
+=== A. the forward race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1: EMBER (Street Classic) finishes, 0 missed  -  total 333.0 s, laps 112.4 / 115.5 / 105.2, missed 0
+PASS  forward #1: GOLD (Skyfin Cruiser) finishes, 0 missed  -  total 440.6 s, laps 155.0 / 160.2 / 125.4, missed 0
+PASS  forward #1: BLUE (Pebble Coupe) finishes, 0 missed  -  total 348.5 s, laps 110.3 / 122.2 / 116.1, missed 0
+
+=== A. the forward race #2: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #2: EMBER (Skyfin Cruiser) finishes, 0 missed  -  total 347.2 s, laps 120.0 / 128.3 / 98.8, missed 0
+PASS  forward #2: GOLD (Skyfin Cruiser) finishes, 0 missed  -  total 396.3 s, laps 128.2 / 148.6 / 119.6, missed 0
+PASS  forward #2: BLUE (Trail Four) finishes, 0 missed  -  total 311.5 s, laps 121.0 / 106.9 / 83.5, missed 0
+
+=== A. the reverse race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #1: EMBER (Turf Rocket) finishes, 0 missed  -  total 313.1 s, laps 105.9 / 113.2 / 93.9, missed 0
+FAIL  reverse #1: GOLD (Street Classic) finishes, 0 missed  -  total 368.2 s, laps 120.1 / 133.5 / 114.5, missed 1
+PASS  reverse #1: BLUE (Drifter Twin) finishes, 0 missed  -  total 279.0 s, laps 105.4 / 85.5 / 88.1, missed 0
+
+=== A. the reverse race #2: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #2: EMBER (Trail Four) finishes, 0 missed  -  total 351.2 s, laps 139.4 / 93.9 / 117.9, missed 0
+PASS  reverse #2: GOLD (Turf Rocket) finishes, 0 missed  -  total 357.5 s, laps 139.1 / 119.4 / 99.1, missed 0
+PASS  reverse #2: BLUE (Skyfin Cruiser) finishes, 0 missed  -  total 367.9 s, laps 133.2 / 131.9 / 102.8, missed 0
+
+11 of 12 checks passed.

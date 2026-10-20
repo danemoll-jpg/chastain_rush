@@ -1,0 +1,37 @@
+Round 20 check, 2026-10-20 00:39, the exe, 1280 x 720, muted.
+
+=== B. Dan's three spots (free roam)
+PASS  B: pictures at Dan's three spots written  -  52_bug00*.png
+
+=== A. the forward race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1: EMBER (Sundown Roadster) finishes, 0 missed  -  total 288.4 s, laps 92.2 / 103.1 / 93.1, missed 0
+PASS  forward #1: GOLD (Longroof GT) finishes, 0 missed  -  total 359.1 s, laps 116.3 / 125.1 / 117.7, missed 0
+PASS  forward #1: BLUE (Longroof GT) finishes, 0 missed  -  total 350.0 s, laps 125.9 / 89.9 / 134.2, missed 0
+
+=== A. the forward race #2: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #2: EMBER (Needle 600) finishes, 0 missed  -  total 311.9 s, laps 101.7 / 88.0 / 122.2, missed 0
+PASS  forward #2: GOLD (Needle 600) finishes, 0 missed  -  total 319.0 s, laps 95.0 / 108.2 / 115.8, missed 0
+FAIL  forward #2: BLUE (Needle 600) finishes, 0 missed  -  total 287.9 s, laps 96.7 / 83.6 / 107.5, missed 1
+
+=== A. the reverse race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #1: EMBER (Highball Fastback) finishes, 0 missed  -  total 374.5 s, laps 105.9 / 114.7 / 153.9, missed 0
+PASS  reverse #1: GOLD (Drifter Twin) finishes, 0 missed  -  total 274.8 s, laps 84.1 / 94.9 / 95.9, missed 0
+PASS  reverse #1: BLUE (Skyfin Cruiser) finishes, 0 missed  -  total 418.0 s, laps 172.5 / 118.9 / 126.5, missed 0
+
+=== A. the reverse race #2: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #2: EMBER (Highball Fastback) finishes, 0 missed  -  total 396.3 s, laps 144.0 / 137.2 / 115.1, missed 0
+PASS  reverse #2: GOLD (Longroof GT) finishes, 0 missed  -  total 363.9 s, laps 174.3 / 92.9 / 96.7, missed 0
+PASS  reverse #2: BLUE (Turf Rocket) finishes, 0 missed  -  total 303.4 s, laps 113.5 / 87.7 / 102.3, missed 0
+
+=== A. ADDISON HEIGHTS: a lap from the grid each way on every vehicle (the check's own driver, no AI)
+  Addison Heights forward: own reverse lap False, 2040 m, 3 laps, traffic True, 8 checkpoints (Crawford Circle, Hayworth Drive, Joel Drive, Embry Lane, Embry Lane at Lyndon, Embry Lane east, Suholden Circle, Suholden Circle south), 0 shortcuts, 14 barriers; the line at (3055, 112)
+PASS  A: forward: 3 laps, no shortcuts, open roads
+PASS  forward lap on the Street Classic: counted, 0 missed, no stop  -  laps 1, lap 83.0 s, missed 0, slowest 0.6 m/s, most off the line 6.8 m, longest air 1.7 s
+PASS  forward lap on the Drifter Twin: counted, 0 missed, no stop  -  laps 1, lap 137.2 s, missed 0, slowest 0.0 m/s, most off the line 4.4 m, longest air 2.2 s
+  Addison Heights reverse: own reverse lap True, 2065 m, 3 laps, traffic True, 8 checkpoints (Suholden Circle south, Suholden Circle, Embry Lane east, Embry Lane at Lyndon, Embry Lane, Joel Drive, Hayworth Drive, Crawford Circle), 0 shortcuts, 14 barriers; the line at (3055, 108)
+PASS  A: reverse: 3 laps, no shortcuts, open roads
+  stopped by: Terrain_4_0, Traffic 11
+FAIL  reverse lap on the Street Classic: counted, 0 missed, no stop  -  laps 0, lap -, missed 0, STOPPED stopped at (3149, 103); slowest 0.0 m/s, most off the line 7.3 m, longest air 0.0 s
+PASS  reverse lap on the Drifter Twin: counted, 0 missed, no stop  -  laps 1, lap 155.9 s, missed 0, slowest 0.1 m/s, most off the line 3.6 m, longest air 0.2 s
+
+17 of 19 checks passed.

@@ -415,6 +415,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 52 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Addison Heights race (forward and reverse, no
+shortcuts): `python Tools/mapgen/make_addison_route.py [--plot]` writes `Data/routes/addison_heights.json` and `Data/tracks/addison_heights.json` (a cleared line: no trunk
+at the road's edge; read by `MapBuilder.Round52.cs` as `AddisonNow`); re-run after mapgen, then Build Map. Houses on its steep lots settled (`MapBuilder.Round52.cs`:
+Dan's 910, 996, 615, 1135 and the houses facing the lap: floor at a drivable drive, the drive graded, the lot cut gently, a stoop and steps; style E's back windows on its
+block); list `Data/screenshots/round52/houses_settled.txt`. Check: `ChastainRush.exe -exeRound52 <dir> [-r52Only ahlap,ahshut,ahrace,ahpics,ahhouses] [-traffic Normal]
+[-r20Minutes 100] -logFile <dir>\Player.log` (`Checks/Round20Runner.R52.cs`). `RaceRoute.RunInLength` assumes the lead-in ends at the loop's start (the Glen loop's):
+for a route whose lead-in ends at the gate use `lead_in_length_m`. Imported from Racer: nothing.
 **Round 51 (see `TODO.md`, status there) is built and checked in the exe by script, not yet seen by Dan:** startup polish from Dan's assets
 (`SourceArt/Title/`): Racer's StartupTitle and LoadingScreen (`Assets/Scripts/Title/`; cover, voice and theme in `Assets/Resources/Title/`, import settings
 `Assets/Editor/TitleArtImport.cs`), the loading tips, the exe icon (`Assets/HandMade/Title/GameIcon.png`, set by PlayerBuild). Both never in a check run except
@@ -883,7 +890,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-19_13-25-47-596_f0f013` through BUG-004 (Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-19_19-45-10-079_0a133b` through BUG-003 (Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
