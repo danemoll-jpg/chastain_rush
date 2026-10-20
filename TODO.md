@@ -108,26 +108,28 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
-**Round 52, A NEW TRACK: EMBRY LANE (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
+**Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
 reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
 on a Google map: `local/reference_photos/embry_lane/r52_route_map.jpg`, reference only, never traced or measured).** Round 51 is
 reviewed. Dan: "For right now I'd like to add another track. Can we have it built forward and reverse but not worry about the
 shortcuts. I want to decide once the track is there. I don't care which way is forward and reverse." ONE full Build Map at the end
 (quick builds while working). Tuning limit. Short results.
 A. THE TRACK. The neighborhood south of New Chastain Road, west of Canton Road. Dan's red line, read by Claude against `Data/map.json`
-   (OSM names differ from Google's; Google's "Crawford Cir" north of the corner is OSM's Hayworth Drive):
+   (Dan, 22:38: "The roads matched the game roads, they just arent all visible in the zoomed out map I gave you"; use the
+   game's own roads and names: the short leg north from Crawford Circle to Joel Drive is Hayworth Drive in the data):
    Joel Drive west from Hayworth Drive (about x 3000 z 414) to its west end (2645, 423), round the bend into Embry Lane NE and
    east along it (to 3231, 528), down Embry's east end (3245, 470; 3258, 412) to Suholden Circle NE (3284, 300), west on Suholden
    Circle to its bend (3196, 303) and south on it to Kelly Drive NE (about x 3141), west on Kelly Drive to Crawford Circle (2987,
    about z 100), north on Crawford Circle's east leg and Hayworth Drive back to Joel Drive. About 2.0 km a lap (Claude's estimate).
    Forward = that direction, reverse = the other (Dan does not mind which). Built like the other races (`Data/routes/*.json`,
    `Data/tracks/`, menus, records, AI, ghosts, checkpoints, the loading screen's route inset); 3 laps by default. Start / finish on
-   a straight Code picks and says where. Name "Embry Lane" for now (Dan may rename it).
+   a straight Code picks and says where. Name: "Addison Heights" (Dan, 22:38: "I could be wrong but I think this is called
+   Addison Heights"; Claude could not confirm it online, so the name is Dan's and easy to change).
    NO SHORTCUTS this round. Dan's yellow marks are his possible shortcut spots, not built: Lyndon Drive between Embry Lane and Joel
    Drive, and Elaine Circle from Joel Drive to Suholden Circle. Every road that leaves the lap is closed in a race (standing rule),
    these two included: Lyndon Drive (both sides of Joel), Elaine Circle, Joel Drive east of Hayworth to Embry, Hayworth north of
    Joel, Crawford Circle's west leg, Kelly Drive west of Crawford and east of Suholden, Suholden Circle east toward Hilltop, and
-   Suholden south of Kelly. Dan's red dab at Chance Road / Suholden Drive is south of the map's edge: not part of this round.
+   Suholden south of Kelly. The red dab at Chance Road / Suholden Drive is a stray mark (Dan, 22:38): ignore it.
 B. THE HOUSES (all three on or by the new lap):
    BUG-001 (x 2764.81 z 565.33 h 179, behind the houses between Embry Lane and Weybourne Court): "House on left is buried. House on
    the right has windows hanging in the air". BUG-002 (x 3231.02 z 503.06 h 240, Embry Lane NE at its east corner): "thiss house is
@@ -138,7 +140,7 @@ B. THE HOUSES (all three on or by the new lap):
    at BUG-003: from the road up to the house's garage, at a drivable grade, no hole; the entrance with steps or a stoop down to the ground.
 Check: forward and reverse, AI races x2 each, traffic Normal: all finish, 0 missed; every closure shut (try each road above);
 the lap on all 11 vehicles both ways, no stop. Pictures: Dan's three spots before and after, the start / finish, each closure.
-For Dan to check: drive Embry Lane both ways (and pick its shortcuts); the houses at his three spots and along the lap.
+For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at his three spots and along the lap.
 
 ## QUEUED rounds
 Held by Dan, not to start until he says:
