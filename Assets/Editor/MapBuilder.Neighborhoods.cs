@@ -154,6 +154,12 @@ namespace ChastainRush
                     foreach (var p in ring) { float gy = terrain.Height(p.x, p.y); lo = Mathf.Min(lo, gy); hi = Mathf.Max(hi, gy); }
                     h.floorY = terrain.Height(g.x, g.z) + 0.16f;
                     if (RaisedBuildings.Contains(idx)) h.floorY = Mathf.Max(h.floorY, hi + 0.12f);   // Round 40 (C): Dan's buried house, set on the ground
+                    if (R52Target(map, idx, q, c))   // Round 52 (B): Dan's three spots and the houses facing the Addison Heights lap (MapBuilder.Round52.cs)
+                    {
+                        Round52Settle(map, terrain, h);
+                        lo = float.MaxValue; hi = float.MinValue;
+                        foreach (var p in ring) { float gy = terrain.Height(p.x, p.y); lo = Mathf.Min(lo, gy); hi = Mathf.Max(hi, gy); }
+                    }
                     h.baseY = Mathf.Min(lo, h.floorY) - 0.45f;
                     h.frame.O = new Vector3(c.x, h.floorY, c.y);
                     h.garageCentre = new Vector3(g.x, h.floorY, g.z);
@@ -166,6 +172,7 @@ namespace ChastainRush
                     rest.Houses.Add(h); rest.Owned.Add(idx); rest.Of[idx] = n;
                 }
             }
+            Round52Report();
             Debug.Log($"[Round30] other neighborhoods: {rest.Data.neighborhoods.Length}, {rest.Houses.Count} houses dressed ({rest.Extra} of them outside every neighborhood, Round 31) (styles " +
                       string.Join(", ", Enum.GetValues(typeof(HouseStyle)).Cast<HouseStyle>().Select(s => $"{s} {rest.Houses.Count(h => h.style == s)}")) +
                       $"), {byDrive} facing down their own drive, {rest.Foundation.Count} block foundations, {rest.BackExposure.Count} walk-out walls, {rest.Buried} with ground over 0.6 m above the floor somewhere (not cut)");

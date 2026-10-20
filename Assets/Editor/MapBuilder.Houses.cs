@@ -45,6 +45,7 @@ namespace ChastainRush
             public int community;                 // Round 22: 0 Chastain Glen, else 1 + the index in Data/neighborhood/communities.json
             public int garageBays = 2;            // Round 22: 3 on the larger Chastain Enclave houses (styles A and B)
             public Color stoneC;                  // Round 30: the craftsman houses' stacked stone
+            public bool r52;                      // Round 52 (B): settled on the Addison Heights lap: a stoop and steps at the door, style E's windows on its block only
         }
 
         // ------------------------------------------------------------ palettes (from the photos)
@@ -169,19 +170,23 @@ namespace ChastainRush
             // the usable stretch of the back wall (style B: the main block only; its garage wing is set forward and one storey)
             float u0 = -W / 2 + 0.7f, u1 = W / 2 - 0.7f;
             if (h.style == HouseStyle.B) u1 = W / 2 - GarageWidth(h) - 0.5f;
+            // Round 52 (B, BUG-001): style E's one-story wing (the +u side, back frame u < W/2 - its block's width) has its back wall 0.4 m in and no
+            // upstairs: on the Round 52 houses its low windows sit on that wall and the upstairs ones over the block only
+            bool e52 = h.r52 && h.style == HouseStyle.E; float eBlock = W / 2 - SplitBlockWidth(h);
+            Func<float, float> pl = uc => e52 && uc < eBlock ? back - 0.4f : back;
             // lower: a door, a row of low windows (two or three), one or two more windows
             var lower = new List<(float w, Action<float> draw)>();
             bool slide = Hash01(s, 201) < 0.6f;
             if (h.backReserve == null)
             {
-                if (slide) lower.Add((1.75f, uc => { FrontQuad(d, b, uc - 0.875f, uc + 0.875f, 0f, 2.25f, back + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.75f, uc - 0.04f, 0.05f, 2.15f, back + 0.04f, h.glassC); FrontQuad(d, b, uc + 0.04f, uc + 0.75f, 0.05f, 2.15f, back + 0.04f, h.glassC); }));
-                else lower.Add((1.0f, uc => { FrontQuad(d, b, uc - 0.5f, uc + 0.5f, 0f, 2.2f, back + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.42f, uc + 0.42f, 0f, 2.12f, back + 0.04f, Shade(h.doorC, 1.2f)); FrontQuad(d, b, uc - 0.3f, uc + 0.3f, 1.1f, 1.95f, back + 0.055f, h.glassC); }));
+                if (slide) lower.Add((1.75f, uc => { FrontQuad(d, b, uc - 0.875f, uc + 0.875f, 0f, 2.25f, pl(uc) + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.75f, uc - 0.04f, 0.05f, 2.15f, pl(uc) + 0.04f, h.glassC); FrontQuad(d, b, uc + 0.04f, uc + 0.75f, 0.05f, 2.15f, pl(uc) + 0.04f, h.glassC); }));
+                else lower.Add((1.0f, uc => { FrontQuad(d, b, uc - 0.5f, uc + 0.5f, 0f, 2.2f, pl(uc) + 0.02f, h.trimC); FrontQuad(d, b, uc - 0.42f, uc + 0.42f, 0f, 2.12f, pl(uc) + 0.04f, Shade(h.doorC, 1.2f)); FrontQuad(d, b, uc - 0.3f, uc + 0.3f, 1.1f, 1.95f, pl(uc) + 0.055f, h.glassC); }));
             }
             int row = Hash01(s, 202) < 0.5f ? 3 : 2;
             float rw = Mathf.Lerp(0.78f, 0.9f, Hash01(s, 203));
-            lower.Add((row * (rw + 0.1f) - 0.1f, uc => { for (int k = 0; k < row; k++) WindowF(d, b, uc - (row - 1) * (rw + 0.1f) / 2f + k * (rw + 0.1f), 1.35f, rw, 1.2f, back, h, false); }));
+            lower.Add((row * (rw + 0.1f) - 0.1f, uc => { for (int k = 0; k < row; k++) WindowF(d, b, uc - (row - 1) * (rw + 0.1f) / 2f + k * (rw + 0.1f), 1.35f, rw, 1.2f, pl(uc), h, false); }));
             int singles = Hash01(s, 204) < 0.45f ? 2 : 1;
-            for (int k = 0; k < singles; k++) lower.Add((0.95f, uc => WindowF(d, b, uc, 1.4f, 0.95f, 1.25f, back, h, false)));
+            for (int k = 0; k < singles; k++) lower.Add((0.95f, uc => WindowF(d, b, uc, 1.4f, 0.95f, 1.25f, pl(uc), h, false)));
             // upper: a triple (or a pair) and one or two single windows
             var upper = new List<(float w, Action<float> draw)>();
             if (two)
@@ -192,13 +197,13 @@ namespace ChastainRush
                 for (int k = 0; k < us; k++) upper.Add((0.95f, uc => WindowF(d, b, uc, 4.1f, 0.95f, 1.4f, back, h, false)));
             }
             PlaceRow(lower, u0, u1, Hash01(s, 207), h.backReserve);
-            PlaceRow(upper, u0, u1, Hash01(s, 208), null);
+            PlaceRow(upper, e52 ? eBlock + 0.5f : u0, u1, Hash01(s, 208), null);
             // the side away from the garage (+u): one or two windows down, one up (if two storeys); style D also one up on the garage end
             float vf0 = -D / 2 + 1.2f, vf1 = (h.style == HouseStyle.A ? D / 2 - 1.3f : h.style == HouseStyle.C ? D / 2 - 1.0f : D / 2) - 1.2f;
             int sideLow = Hash01(s, 209) < 0.5f ? 2 : 1;
             if (h.sideLowFree) sideLow = 0;
             for (int k = 0; k < sideLow; k++) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, sideLow == 1 ? 0.5f : (k == 0 ? 0.2f : 0.8f)), 1.4f, 0.95f, 1.25f);
-            if (two) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, 0.25f + 0.5f * Hash01(s, 210)), 4.1f, 0.95f, 1.4f);
+            if (two && !e52) SideWindow(d, h, 1f, Mathf.Lerp(vf0, vf1, 0.25f + 0.5f * Hash01(s, 210)), 4.1f, 0.95f, 1.4f);
             if (h.style == HouseStyle.D) SideWindow(d, h, -1f, 0f, 4.1f, 0.95f, 1.4f);
         }
 
@@ -273,6 +278,7 @@ namespace ChastainRush
             }
             // doorstep
             BoxF(mb, f, uc - w / 2 - side - 0.35f, uc + w / 2 + side + 0.35f, -0.12f, 0.0f, v, v + 1.0f, new Color(0.66f, 0.64f, 0.61f));
+            StoopR52(mb, f, uc - w / 2 - side - 0.35f, uc + w / 2 + side + 0.35f, v, h);   // Round 52 (B): steps down to the ground
             if (pediment)
             {
                 // a pediment over the door: white triangle on two pilasters

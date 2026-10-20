@@ -1,0 +1,77 @@
+Round 20 check, 2026-10-19 23:44, the exe, 1280 x 720, muted.
+
+=== B. Dan's three spots (free roam)
+PASS  B: pictures at Dan's three spots written  -  52_bug00*.png
+
+=== A. forward: every road off the lap barred (driven at from the lap)
+PASS  A: forward: all 14 barriers built  -  open: none
+PASS  A: forward: Lyndon Drive at lap 199 m shut  -  from the lap at (2813, 417) to the barrier at (2813, 432): got -2.1 m past it
+PASS  A: forward: Lyndon Drive at lap 199 m shut  -  from the lap at (2813, 417) to the barrier at (2813, 407): got -2.3 m past it
+PASS  A: forward: Lyndon Drive at lap 614 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 529): got -2.1 m past it
+PASS  A: forward: Lyndon Drive at lap 614 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 504): got -2.3 m past it
+PASS  A: forward: Hayworth Drive Northeast at lap 785 m shut  -  from the lap at (2982, 528) to the barrier at (2985, 514): got -2.2 m past it
+PASS  A: forward: Joel Drive at lap 1152 m shut  -  from the lap at (3258, 412) to the barrier at (3244, 412): got -2.3 m past it
+PASS  A: forward: Suholden Circle Northeast at lap 1265 m shut  -  from the lap at (3284, 300) to the barrier at (3294, 300): got -2.2 m past it
+PASS  A: forward: Elaine Circle Northeast at lap 1340 m shut  -  from the lap at (3208, 308) to the barrier at (3182, 315): got -2.3 m past it
+PASS  A: forward: Suholden Circle Northeast at lap 1584 m shut  -  from the lap at (3140, 97) to the barrier at (3140, 86): got -2.3 m past it
+PASS  A: forward: Kelly Drive Northeast at lap 1584 m shut  -  from the lap at (3140, 97) to the barrier at (3151, 96): got -2.2 m past it
+PASS  A: forward: Kelly Drive Northeast at lap 1736 m shut  -  from the lap at (2987, 120) to the barrier at (2977, 121): got -2.1 m past it
+PASS  A: forward: Crawford Circle at lap 1922 m shut  -  from the lap at (2979, 305) to the barrier at (2969, 309): got -2.3 m past it
+PASS  A: forward: Joel Drive at lap 2038 m shut  -  from the lap at (3012, 414) to the barrier at (3026, 414): got -2.3 m past it
+PASS  A: forward: Hayworth Drive Northeast at lap 2038 m shut  -  from the lap at (3012, 414) to the barrier at (3008, 428): got -1.0 m past it
+
+=== A. reverse: every road off the lap barred (driven at from the lap)
+PASS  A: reverse: all 14 barriers built  -  open: none
+PASS  A: reverse: Joel Drive at lap 0 m shut  -  from the lap at (3012, 414) to the barrier at (3022, 414): got -2.2 m past it
+PASS  A: reverse: Hayworth Drive Northeast at lap 0 m shut  -  from the lap at (3012, 414) to the barrier at (3008, 426): got -2.1 m past it
+PASS  A: reverse: Crawford Circle at lap 117 m shut  -  from the lap at (2979, 305) to the barrier at (2966, 310): got -2.3 m past it
+PASS  A: reverse: Kelly Drive Northeast at lap 305 m shut  -  from the lap at (2987, 120) to the barrier at (2973, 122): got -2.0 m past it
+PASS  A: reverse: Suholden Circle Northeast at lap 463 m shut  -  from the lap at (3140, 97) to the barrier at (3140, 83): got -2.1 m past it
+PASS  A: reverse: Kelly Drive Northeast at lap 463 m shut  -  from the lap at (3140, 97) to the barrier at (3154, 95): got -2.3 m past it
+PASS  A: reverse: Elaine Circle Northeast at lap 706 m shut  -  from the lap at (3212, 303) to the barrier at (3200, 313): got -2.3 m past it
+PASS  A: reverse: Suholden Circle Northeast at lap 778 m shut  -  from the lap at (3284, 300) to the barrier at (3298, 300): got -2.1 m past it
+PASS  A: reverse: Joel Drive at lap 896 m shut  -  from the lap at (3258, 412) to the barrier at (3248, 412): got -2.2 m past it
+PASS  A: reverse: Hayworth Drive Northeast at lap 1269 m shut  -  from the lap at (2982, 528) to the barrier at (2984, 518): got -2.2 m past it
+PASS  A: reverse: Lyndon Drive at lap 1440 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 533): got -2.0 m past it
+PASS  A: reverse: Lyndon Drive at lap 1440 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 508): got -2.3 m past it
+PASS  A: reverse: Lyndon Drive at lap 1867 m shut  -  from the lap at (2813, 417) to the barrier at (2813, 428): got -2.2 m past it
+PASS  A: reverse: Lyndon Drive at lap 1867 m shut  -  from the lap at (2813, 417) to the barrier at (2814, 403): got -2.2 m past it
+
+=== pictures: the start / finish, the barriers
+PASS  pictures written  -  52_*.png
+
+=== A. ADDISON HEIGHTS: a lap from the grid each way on every vehicle (the check's own driver, no AI)
+  Addison Heights forward: own reverse lap False, 2040 m, 3 laps, traffic True, 8 checkpoints (Crawford Circle, Hayworth Drive, Joel Drive, Embry Lane, Embry Lane at Lyndon, Embry Lane east, Suholden Circle, Suholden Circle south), 0 shortcuts, 14 barriers; the line at (3055, 112)
+PASS  A: forward: 3 laps, no shortcuts, open roads
+PASS  forward lap on the Street Classic: counted, 0 missed, no stop  -  laps 1, lap 79.2 s, missed 0, slowest 6.5 m/s, most off the line 6.4 m, longest air 1.7 s
+PASS  forward lap on the Longroof GT: counted, 0 missed, no stop  -  laps 1, lap 81.7 s, missed 0, slowest 6.3 m/s, most off the line 7.7 m, longest air 1.9 s
+PASS  forward lap on the Needle 600: counted, 0 missed, no stop  -  laps 1, lap 74.3 s, missed 0, slowest 7.2 m/s, most off the line 6.8 m, longest air 2.3 s
+PASS  forward lap on the Trail Four: counted, 0 missed, no stop  -  laps 1, lap 75.2 s, missed 0, slowest 7.1 m/s, most off the line 6.4 m, longest air 2.2 s
+PASS  forward lap on the Sundown Roadster: counted, 0 missed, no stop  -  laps 1, lap 78.8 s, missed 0, slowest 6.5 m/s, most off the line 6.7 m, longest air 1.8 s
+PASS  forward lap on the Highball Fastback: counted, 0 missed, no stop  -  laps 1, lap 79.6 s, missed 0, slowest 6.4 m/s, most off the line 7.8 m, longest air 1.9 s
+PASS  forward lap on the Pebble Coupe: counted, 0 missed, no stop  -  laps 1, lap 79.3 s, missed 0, slowest 6.7 m/s, most off the line 6.5 m, longest air 1.7 s
+PASS  forward lap on the Skyfin Cruiser: counted, 0 missed, no stop  -  laps 1, lap 83.1 s, missed 0, slowest 6.2 m/s, most off the line 7.4 m, longest air 1.6 s
+PASS  forward lap on the Ridge Scrambler: counted, 0 missed, no stop  -  laps 1, lap 74.8 s, missed 0, slowest 7.1 m/s, most off the line 6.5 m, longest air 2.3 s
+PASS  forward lap on the Drifter Twin: counted, 0 missed, no stop  -  laps 1, lap 75.8 s, missed 0, slowest 7.0 m/s, most off the line 6.3 m, longest air 2.2 s
+PASS  forward lap on the Turf Rocket: counted, 0 missed, no stop  -  laps 1, lap 74.4 s, missed 0, slowest 7.3 m/s, most off the line 6.7 m, longest air 2.2 s
+PASS  forward lap on the Clay Hopper: counted, 0 missed, no stop  -  laps 1, lap 79.3 s, missed 0, slowest 6.4 m/s, most off the line 6.5 m, longest air 1.7 s
+PASS  forward lap on the Skywhip 250: counted, 0 missed, no stop  -  laps 1, lap 79.3 s, missed 0, slowest 6.5 m/s, most off the line 6.5 m, longest air 1.7 s
+PASS  forward lap on the Clay Hopper Cup: counted, 0 missed, no stop  -  laps 1, lap 79.3 s, missed 0, slowest 6.4 m/s, most off the line 6.4 m, longest air 1.7 s
+  Addison Heights reverse: own reverse lap True, 2065 m, 3 laps, traffic True, 8 checkpoints (Suholden Circle south, Suholden Circle, Embry Lane east, Embry Lane at Lyndon, Embry Lane, Joel Drive, Hayworth Drive, Crawford Circle), 0 shortcuts, 14 barriers; the line at (3055, 108)
+PASS  A: reverse: 3 laps, no shortcuts, open roads
+PASS  reverse lap on the Street Classic: counted, 0 missed, no stop  -  laps 1, lap 78.8 s, missed 0, slowest 6.4 m/s, most off the line 5.1 m, longest air 1.7 s
+PASS  reverse lap on the Longroof GT: counted, 0 missed, no stop  -  laps 1, lap 79.7 s, missed 0, slowest 6.0 m/s, most off the line 6.6 m, longest air 1.7 s
+PASS  reverse lap on the Needle 600: counted, 0 missed, no stop  -  laps 1, lap 75.4 s, missed 0, slowest 7.6 m/s, most off the line 4.8 m, longest air 1.3 s
+PASS  reverse lap on the Trail Four: counted, 0 missed, no stop  -  laps 1, lap 75.6 s, missed 0, slowest 7.5 m/s, most off the line 4.8 m, longest air 1.6 s
+PASS  reverse lap on the Sundown Roadster: counted, 0 missed, no stop  -  laps 1, lap 79.4 s, missed 0, slowest 6.6 m/s, most off the line 5.2 m, longest air 1.2 s
+PASS  reverse lap on the Highball Fastback: counted, 0 missed, no stop  -  laps 1, lap 79.1 s, missed 0, slowest 6.8 m/s, most off the line 6.4 m, longest air 1.7 s
+PASS  reverse lap on the Pebble Coupe: counted, 0 missed, no stop  -  laps 1, lap 79.2 s, missed 0, slowest 6.2 m/s, most off the line 5.2 m, longest air 1.2 s
+PASS  reverse lap on the Skyfin Cruiser: counted, 0 missed, no stop  -  laps 1, lap 81.8 s, missed 0, slowest 5.8 m/s, most off the line 6.1 m, longest air 1.3 s
+PASS  reverse lap on the Ridge Scrambler: counted, 0 missed, no stop  -  laps 1, lap 74.9 s, missed 0, slowest 7.5 m/s, most off the line 4.9 m, longest air 1.8 s
+PASS  reverse lap on the Drifter Twin: counted, 0 missed, no stop  -  laps 1, lap 76.7 s, missed 0, slowest 7.2 m/s, most off the line 4.5 m, longest air 1.3 s
+PASS  reverse lap on the Turf Rocket: counted, 0 missed, no stop  -  laps 1, lap 74.3 s, missed 0, slowest 7.7 m/s, most off the line 5.0 m, longest air 1.8 s
+PASS  reverse lap on the Clay Hopper: counted, 0 missed, no stop  -  laps 1, lap 78.8 s, missed 0, slowest 6.4 m/s, most off the line 5.1 m, longest air 1.8 s
+PASS  reverse lap on the Skywhip 250: counted, 0 missed, no stop  -  laps 1, lap 78.8 s, missed 0, slowest 6.4 m/s, most off the line 5.1 m, longest air 1.7 s
+PASS  reverse lap on the Clay Hopper Cup: counted, 0 missed, no stop  -  laps 1, lap 78.8 s, missed 0, slowest 6.4 m/s, most off the line 5.2 m, longest air 1.7 s
+
+62 of 62 checks passed.
