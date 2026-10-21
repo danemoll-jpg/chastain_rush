@@ -416,7 +416,8 @@ shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\P
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
 **Round 55 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights: Round 54's Elaine valley way
-taken out and the jump Dan meant (off Elaine's west bend) NOT built (cars land on the bank just above the Crawford / Hayworth corner: options in TODO.md); the line
+taken out; the Elaine jump off the bend built as Dan's option 2 (hedges along the bank's foot, a graded bench north past 960 to Hayworth; track `worn_tracks`,
+`BuildAddison55`; Elaine barred north of the bend); the line
 moved to Embry Lane's east end (`make_addison_route.py` GATE_AT, records_as "Addison Heights (Embry Lane line)"); the bounce house's voice at the castle with the
 trampoline's sound; Dan's two bumps (`MapBuilder.Round55.cs`: track `smooth_spots`, a blur; `vertical_curves`); the AI goes round a slower car instead of sitting on
 its bumper (`RoadDriver` Passes, BehindSeconds, PassFix). Check: `ChastainRush.exe -exeRound55 <dir> [-r55Only eprobe,etimes,line,bounce,erace,epics] [-r55PassOff]
