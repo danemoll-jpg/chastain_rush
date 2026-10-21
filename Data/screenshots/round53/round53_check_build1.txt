@@ -1,0 +1,25 @@
+Round 53 check, 2026-10-21 02:11, the exe, 1280 x 720, muted.
+
+=== THE TWO FORWARD SHORTCUTS, flat out on their lines, timed against the lap's own way over the same ground
+  Lyndon road crew: forgives Joel Drive, Embry Lane
+  Street Classic   the lap's way 16.3 s; the shortcut 6.5 s, saves 9.8 s; most off its line 0.8 m; off it at 25.7 m/s, 1.76 s in the air, down 44 m on at (2812, 503); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 15.2 s; the shortcut 6.1 s, saves 9.1 s; most off its line 9.0 m; off it at 27.9 m/s, 1.96 s in the air, down 51 m on at (2812, 510); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+PASS  Lyndon road crew flat out (Street Classic, Drifter Twin): through clean (never on the concrete or in a bed), faster than the lap's way
+  Elaine jump: forgives Suholden Circle south
+  Street Classic   the lap's way 13.0 s; the shortcut -1.0 s, saves -99.0 s; STOPPED stopped at (3085, 95); most off its line 28.0 m; off it at 17.5 m/s, 0.76 s in the air, down 89 m on at (3107, 287); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 12.0 s; the shortcut 13.7 s, saves -1.7 s; most off its line 11.9 m; off it at 19.0 m/s, 0.78 s in the air, down 90 m on at (3106, 286); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+FAIL  Elaine jump flat out (Street Classic, Drifter Twin): through clean (never on the concrete or in a bed), faster than the lap's way  -  not: Street Classic, Drifter Twin
+
+=== THE FLAGGER (free roam)
+  at (2810.0, 446.9): -2.0 m along the trailer from its foot, 3.2 m left of its middle (its edge 1.3 m)
+PASS  A: the launch line passes the flagger, 2 m or more from him  -  nearest 3.2 m; he stepped aside 0 times
+PASS  A: a car driven at the flagger: he steps off the road  -  stepped aside 1 times; nearest 3.4 m
+
+=== D. THE LYNDON / EMBRY JUNCTION (free roam; Round 52's build: merge 1.24 m/s, 0 wheels down; Embry 1.60 m/s)
+PASS  D: the merge from Lyndon onto Embry at 14 m/s: all wheels down, no jolt over 0.6 m/s  -  biggest change of vertical speed in one step 0.15 m/s at (2811.7, 505.1); fewest wheels down 4; slowest 13.1 m/s
+PASS  D: Embry Lane through the junction at 22 m/s: all wheels down, no jolt over 0.6 m/s  -  biggest change of vertical speed in one step 0.14 m/s at (2819.6, 516.8); fewest wheels down 4; slowest 20.8 m/s
+
+=== pictures (free roam)
+PASS  pictures written  -  53_*.png
+
+6 of 7 checks passed.

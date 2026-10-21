@@ -1,0 +1,66 @@
+Round 53 check, 2026-10-21 03:01, the exe, 1280 x 720, muted.
+
+=== THE LYNDON ROAD CREW, flat out on its line, timed against the lap's own way over the same ground
+  Lyndon road crew: forgives Joel Drive, Embry Lane
+  Street Classic   the lap's way 16.3 s; the shortcut 6.5 s, saves 9.8 s; most off its line 0.8 m; off it at 25.7 m/s, 1.76 s in the air, down 44 m on at (2812, 503); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 15.2 s; the shortcut 10.8 s, saves 4.4 s; most off its line 12.5 m; off it at 27.9 m/s, 1.96 s in the air, down 51 m on at (2812, 510); on the wet concrete 0.0 s; deepest in a shrub bed 0.00
+PASS  Lyndon road crew flat out (Street Classic, Drifter Twin): through clean (never on the concrete or in a bed), faster than the lap's way
+
+=== THE SHORTCUT'S GROUND WITHOUT THE JUMP (Street Classic, flat out): each must be slower than the lap's own way
+  the lap's own way past Lyndon Drive 16.3 s
+  1. round the trailer on its left (between it and the west curb, past the flagger), on through the concrete: 16.5 s (+0.2 s against the lap's way); on the wet concrete 11.0 s, deepest in a bed 0.00, slowest 3.2 m/s, longest air 1.1 s
+  2. round the trailer on its right (between it and the east curb), on through the concrete: 16.6 s (+0.3 s against the lap's way); on the wet concrete 11.1 s, deepest in a bed 0.00, slowest 3.2 m/s, longest air 1.1 s
+  3. through the west yards (the shrub beds) beside the concrete: 17.9 s (+1.6 s against the lap's way); on the wet concrete 0.0 s, deepest in a bed 1.00, slowest 4.4 m/s, longest air 1.1 s
+  4. through the east yards (round the parked truck and roller, the shrub beds) beside the concrete: did not get through (stopped, at (2816, 442)); on the wet concrete 0.0 s, deepest in a bed 0.00, slowest 0.0 m/s, longest air 1.1 s
+PASS  every way over the shortcut's ground without the jump is slower than the plain lap
+
+=== SHORT / MISSED (Street Classic): each must lose more than the shortcut saves (slower than the lap's own way)
+  A off the planks held to 15 m/s: 13.1 s (-3.2 s against the lap's way 16.3 s); off it at 16.3 m/s, 1.22 s in the air, down 19 m on at (2813, 478); on the wet concrete 6.4 s (in at 13.5 m/s); deepest in a shrub bed 0.00; ruts in the slab 512
+  A off the planks held to 18 m/s: 11.0 s (-5.3 s against the lap's way 16.3 s); off it at 19.3 m/s, 1.38 s in the air, down 26 m on at (2813, 485); on the wet concrete 4.2 s (in at 16.2 m/s); deepest in a shrub bed 0.00; ruts in the slab 592
+FAIL  short off the planks (15 and 18 m/s): each slower than the lap's own way
+
+=== THE FLAGGER (free roam)
+  at (2810.0, 446.9): -2.0 m along the trailer from its foot, 3.2 m left of its middle (its edge 1.3 m)
+PASS  A: the launch line passes the flagger, 2 m or more from him  -  nearest 3.2 m; he stepped aside 0 times
+PASS  A: a car driven at the flagger: he steps off the road  -  stepped aside 1 times; nearest 3.4 m
+
+=== D. THE LYNDON / EMBRY JUNCTION (free roam; Round 52's build: merge 1.24 m/s, 0 wheels down; Embry 1.60 m/s)
+PASS  D: the merge from Lyndon onto Embry at 14 m/s: all wheels down, no jolt over 0.6 m/s  -  biggest change of vertical speed in one step 0.10 m/s at (2818.7, 515.2); fewest wheels down 4; slowest 3.6 m/s
+PASS  D: Embry Lane through the junction at 22 m/s: all wheels down, no jolt over 0.6 m/s  -  biggest change of vertical speed in one step 0.14 m/s at (2819.6, 516.8); fewest wheels down 4; slowest 20.8 m/s
+
+=== A. forward: every road off the lap barred (driven at from the lap)
+PASS  A: forward: all 12 barriers built  -  open: none
+PASS  A: forward: Lyndon Drive at lap 199 m shut  -  from the lap at (2813, 417) to the barrier at (2813, 407): got -2.3 m past it
+PASS  A: forward: Lyndon Drive at lap 614 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 529): got -2.3 m past it
+PASS  A: forward: Hayworth Drive Northeast at lap 785 m shut  -  from the lap at (2982, 528) to the barrier at (2985, 514): got -2.3 m past it
+PASS  A: forward: Joel Drive at lap 1152 m shut  -  from the lap at (3258, 412) to the barrier at (3244, 412): got -2.3 m past it
+PASS  A: forward: Suholden Circle Northeast at lap 1265 m shut  -  from the lap at (3284, 300) to the barrier at (3294, 300): got -2.3 m past it
+PASS  A: forward: Elaine Circle Northeast at lap 1340 m shut  -  from the lap at (3208, 308) to the barrier at (3182, 315): got -2.3 m past it
+PASS  A: forward: Suholden Circle Northeast at lap 1584 m shut  -  from the lap at (3140, 97) to the barrier at (3140, 86): got -2.3 m past it
+PASS  A: forward: Kelly Drive Northeast at lap 1584 m shut  -  from the lap at (3140, 97) to the barrier at (3151, 96): got -2.3 m past it
+PASS  A: forward: Kelly Drive Northeast at lap 1736 m shut  -  from the lap at (2987, 120) to the barrier at (2977, 121): got -2.3 m past it
+PASS  A: forward: Crawford Circle at lap 1922 m shut  -  from the lap at (2979, 305) to the barrier at (2969, 309): got -2.3 m past it
+PASS  A: forward: Joel Drive at lap 2038 m shut  -  from the lap at (3012, 414) to the barrier at (3026, 414): got -2.3 m past it
+PASS  A: forward: Hayworth Drive Northeast at lap 2038 m shut  -  from the lap at (3012, 414) to the barrier at (3008, 428): got -0.7 m past it
+
+=== A. reverse: every road off the lap barred (driven at from the lap)
+PASS  A: reverse: all 14 barriers built  -  open: none
+PASS  A: reverse: Joel Drive at lap 0 m shut  -  from the lap at (3012, 414) to the barrier at (3022, 414): got -2.3 m past it
+PASS  A: reverse: Hayworth Drive Northeast at lap 0 m shut  -  from the lap at (3012, 414) to the barrier at (3008, 426): got -1.0 m past it
+PASS  A: reverse: Crawford Circle at lap 117 m shut  -  from the lap at (2979, 305) to the barrier at (2966, 310): got -2.3 m past it
+PASS  A: reverse: Kelly Drive Northeast at lap 305 m shut  -  from the lap at (2987, 120) to the barrier at (2973, 122): got -2.3 m past it
+PASS  A: reverse: Suholden Circle Northeast at lap 463 m shut  -  from the lap at (3140, 97) to the barrier at (3140, 83): got -2.3 m past it
+PASS  A: reverse: Kelly Drive Northeast at lap 463 m shut  -  from the lap at (3140, 97) to the barrier at (3154, 95): got -2.3 m past it
+PASS  A: reverse: Elaine Circle Northeast at lap 706 m shut  -  from the lap at (3212, 303) to the barrier at (3200, 313): got -2.3 m past it
+PASS  A: reverse: Suholden Circle Northeast at lap 778 m shut  -  from the lap at (3284, 300) to the barrier at (3298, 300): got -2.3 m past it
+PASS  A: reverse: Joel Drive at lap 896 m shut  -  from the lap at (3258, 412) to the barrier at (3248, 412): got -2.3 m past it
+PASS  A: reverse: Hayworth Drive Northeast at lap 1269 m shut  -  from the lap at (2982, 528) to the barrier at (2984, 518): got -2.3 m past it
+PASS  A: reverse: Lyndon Drive at lap 1440 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 533): got -2.3 m past it
+PASS  A: reverse: Lyndon Drive at lap 1440 m shut  -  from the lap at (2811, 518) to the barrier at (2811, 508): got -2.3 m past it
+PASS  A: reverse: Lyndon Drive at lap 1867 m shut  -  from the lap at (2813, 417) to the barrier at (2813, 428): got -2.3 m past it
+PASS  A: reverse: Lyndon Drive at lap 1867 m shut  -  from the lap at (2813, 417) to the barrier at (2814, 403): got -2.3 m past it
+
+=== pictures (free roam)
+PASS  pictures written  -  53_*.png
+
+35 of 36 checks passed.

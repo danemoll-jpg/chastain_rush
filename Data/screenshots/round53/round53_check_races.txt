@@ -1,0 +1,21 @@
+Round 53 check, 2026-10-21 03:12, the exe, 1280 x 720, muted.
+
+=== the forward race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1: EMBER (Street Classic) finishes, 0 missed  -  total 319.0 s, laps 114.1 / 101.4 / 103.5, missed 0, shortcuts lap 2 f_lyndon_crew, lap 3 f_lyndon_crew
+PASS  forward #1: GOLD (Highball Fastback) finishes, 0 missed  -  total 360.1 s, laps 112.3 / 126.8 / 121.1, missed 0, shortcuts none
+PASS  forward #1: BLUE (Needle 600) finishes, 0 missed  -  total 229.8 s, laps 75.0 / 85.9 / 68.9, missed 0, shortcuts lap 1 f_lyndon_crew, lap 3 f_lyndon_crew
+INFO  no AI driver in the wet concrete
+
+=== the forward race #2: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #2: EMBER (Trail Four) finishes, 0 missed  -  total 314.9 s, laps 110.6 / 99.5 / 104.9, missed 0, shortcuts none
+PASS  forward #2: GOLD (Skyfin Cruiser) finishes, 0 missed  -  total 372.6 s, laps 119.3 / 140.6 / 112.8, missed 0, shortcuts none
+FAIL  forward #2: BLUE (Ridge Scrambler) finishes, 0 missed  -  total 283.4 s, laps 101.3 / 80.4 / 101.7, missed 1, shortcuts none
+INFO  no AI driver in the wet concrete
+
+=== the reverse race #1: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #1: EMBER (Pebble Coupe) finishes, 0 missed  -  total 358.7 s, laps 127.9 / 114.9 / 115.9, missed 0, shortcuts none
+PASS  reverse #1: GOLD (Longroof GT) finishes, 0 missed  -  total 369.0 s, laps 132.2 / 116.8 / 120.0, missed 0, shortcuts none
+PASS  reverse #1: BLUE (Turf Rocket) finishes, 0 missed  -  total 353.5 s, laps 126.4 / 102.0 / 125.1, missed 0, shortcuts none
+INFO  no AI driver in the wet concrete
+
+8 of 9 checks passed.

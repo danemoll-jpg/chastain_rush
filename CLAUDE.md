@@ -415,6 +415,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 53 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights' forward shortcut up Lyndon
+Drive (`make_addison_route.py` f_lyndon_crew; Lyndon's two barriers open forward only): the road crew (`MapBuilder.Round53.cs`, step Addison: the tilt trailer and
+planks, a real jump; truck, roller, mixer, cones; `Neighborhood/Flagger.cs` with the paddle from `python Tools/handmade/make_stop_paddle.py`, hand-made, committed;
+`Neighborhood/WetConcrete.cs`, the fresh slab: drag, ruts; shrub beds), Lyndon's crew stretch out of the traffic and police graphs (`R53Pieces`); house 1089's carport
+(BuildH, `R53Carports`); the Lyndon / Embry junction evened (`R53EvenJunction`). The Elaine jump (B) is not built: the finish on Kelly Drive leaves it no way back
+that saves time (options in TODO.md). Check: `ChastainRush.exe -exeRound53 <dir> [-r53Only sclean,scheat,sshort,sflag,sjunction,ahshut,spics,srace,srevrace]
+[-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R53.cs`). Imported from Racer: nothing.
 **Round 52 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Addison Heights race (forward and reverse, no
 shortcuts): `python Tools/mapgen/make_addison_route.py [--plot]` writes `Data/routes/addison_heights.json` and `Data/tracks/addison_heights.json` (a cleared line: no trunk
 at the road's edge; read by `MapBuilder.Round52.cs` as `AddisonNow`); re-run after mapgen, then Build Map. Houses on its steep lots settled (`MapBuilder.Round52.cs`:
@@ -890,7 +897,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-19_19-45-10-079_0a133b` through BUG-003 (Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-20_01-26-12-613_8b4dc1` through BUG-005 (Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
