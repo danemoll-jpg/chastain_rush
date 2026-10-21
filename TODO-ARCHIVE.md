@@ -5492,3 +5492,65 @@ D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (Pla
 4K: one run full screen at 3840 x 2160 for the pictures only (about 40 s), as the brief allows. Build `Builds/ChastainRush/` 2026-10-19 19:28. Imported from
 Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
 For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
+
+## Round 52 (moved from TODO.md on 2026-10-21 when Dan reviewed Round 55; word for word)
+
+## Previous delivery 3: Round 52
+**Reviewed: Dan drove the Round 52 build 2026-10-20 01:26 (Addison Heights forward, Free Roam): "the track itself is good"; his notes are Round 53.**
+**Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
+reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
+on a Google map: `local/reference_photos/embry_lane/r52_route_map.jpg`, reference only, never traced or measured).** Round 51 is
+reviewed. Dan: "For right now I'd like to add another track. Can we have it built forward and reverse but not worry about the
+shortcuts. I want to decide once the track is there. I don't care which way is forward and reverse." ONE full Build Map at the end
+(quick builds while working). Tuning limit. Short results.
+A. THE TRACK. The neighborhood south of New Chastain Road, west of Canton Road. Dan's red line, read by Claude against `Data/map.json`
+   (Dan, 22:38: "The roads matched the game roads, they just arent all visible in the zoomed out map I gave you"; use the
+   game's own roads and names: the short leg north from Crawford Circle to Joel Drive is Hayworth Drive in the data):
+   Joel Drive west from Hayworth Drive (about x 3000 z 414) to its west end (2645, 423), round the bend into Embry Lane NE and
+   east along it (to 3231, 528), down Embry's east end (3245, 470; 3258, 412) to Suholden Circle NE (3284, 300), west on Suholden
+   Circle to its bend (3196, 303) and south on it to Kelly Drive NE (about x 3141), west on Kelly Drive to Crawford Circle (2987,
+   about z 100), north on Crawford Circle's east leg and Hayworth Drive back to Joel Drive. About 2.0 km a lap (Claude's estimate).
+   Forward = that direction, reverse = the other (Dan does not mind which). Built like the other races (`Data/routes/*.json`,
+   `Data/tracks/`, menus, records, AI, ghosts, checkpoints, the loading screen's route inset); 3 laps by default. Start / finish on
+   a straight Code picks and says where. Name: "Addison Heights" (Dan, 22:38: "I could be wrong but I think this is called
+   Addison Heights"; Claude could not confirm it online, so the name is Dan's and easy to change).
+   NO SHORTCUTS this round. Dan's yellow marks are his possible shortcut spots, not built: Lyndon Drive between Embry Lane and Joel
+   Drive, and Elaine Circle from Joel Drive to Suholden Circle. Every road that leaves the lap is closed in a race (standing rule),
+   these two included: Lyndon Drive (both sides of Joel), Elaine Circle, Joel Drive east of Hayworth to Embry, Hayworth north of
+   Joel, Crawford Circle's west leg, Kelly Drive west of Crawford and east of Suholden, Suholden Circle east toward Hilltop, and
+   Suholden south of Kelly. The red dab at Chance Road / Suholden Drive is a stray mark (Dan, 22:38): ignore it.
+B. THE HOUSES (all three on or by the new lap):
+   BUG-001 (x 2764.81 z 565.33 h 179, behind the houses between Embry Lane and Weybourne Court): "House on left is buried. House on
+   the right has windows hanging in the air". BUG-002 (x 3231.02 z 503.06 h 240, Embry Lane NE at its east corner): "thiss house is
+   buried and incomplete". BUG-003 (x 2943.80 z 419.43 h 3, Joel Drive): "this driveway needs to be fixed. Also the house entrance
+   is hanging in the air" (the drive climbs the bank to nowhere with a hole in it; the front door floats above the brick base, no steps).
+   Find why houses on these steep lots are sunk or floating and fix it at Dan's three spots; the same fault on the houses that face
+   the new lap is fixed too, since Dan will drive past them (Claude's scope, the lap's roads only, said here so Dan knows). Drive
+   at BUG-003: from the road up to the house's garage, at a drivable grade, no hole; the entrance with steps or a stoop down to the ground.
+Check: forward and reverse, AI races x2 each, traffic Normal: all finish, 0 missed; every closure shut (try each road above);
+the lap on all 11 vehicles both ways, no stop. Pictures: Dan's three spots before and after, the start / finish, each closure.
+For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at his three spots and along the lap.
+
+**Status (Claude, 2026-10-20): A and B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round52/`.
+A DONE. `python Tools/mapgen/make_addison_route.py [--plot]` writes `Data/routes/addison_heights.json` (and `Data/tracks/addison_heights.json`, one cleared line).
+   Lap 2040 m forward (Dan's direction), 2065 m reverse (its own lane), 3 laps, traffic, 8 checkpoints. START / FINISH on Kelly Drive at x 3055 (between
+   Suholden and Crawford: 155 m straight, 5 to 8 %); not Joel Drive, which falls 40 % and more west of Hayworth. 14 barriers each way, every road in the brief.
+   Check (`round52_check.txt`, 62 of 62, build 2): a lap each way on all 14 vehicles, none stops (74 to 82 s); all 28 barrier tries hold (driven at from the lap).
+   AI races x2 each way, traffic Normal: every AI finishes all 3 laps in all 8 races (24 of 24), but NOT MET "0 missed": one AI missed one checkpoint in each of the
+   last two runs (build 3: in reverse, it hit a trunk in the gutter on Embry Lane's 30 % hill and ended in a yard, CP4; final build: a Needle 600, forward CP8
+   on Suholden Circle's downhill, cause not found). One fix tried (no trunk within 1.5 m of the lap's road edge, the cleared line), then stopped (tuning limit).
+   The AI is slow here: laps 84 to 174 s against the check driver's 75 s (traffic queues at the Kelly / Suholden corner; AI drivers leave the road on Embry Lane's
+   30 % hill). `round52_check_final.txt` (its two lap failures are the check's own driver with traffic left on: behind a traffic van at that corner).
+B DONE. Cause: the other neighborhoods' houses stand at the ground at their garage doors and nothing round them was graded (Round 27's settling ran for the Glen
+   and the communities only); their drives were mapgen's straight lines draped at any grade (BUG-003: 39 %, the ground bulging through); no steps at any door.
+   Style E (split-level) also drew its upstairs back windows across its one-story wing, over the roof (BUG-001's right house, 996). Fixed for Dan's four houses
+   (910, 996, 615, 1135) and the 69 that face the lap (list `houses_settled.txt`, `MapBuilder.Round52.cs`): the floor where a drive from the street reaches it at
+   20 % or less (23 floors moved, 1135 down 4.3 m), the drive from the street straight to the garage graded under it, the lot cut with a yard that falls to the
+   house at about 1 in 3 (Round 27's 40 degree bank still looked sunk from Dan's spots: tried first, changed), a stoop and steps at the door, E's windows on its block.
+   Pictures `bug00N_before.png` / `_after.png` / `_after_wide.png`.
+Builds: four full builds, not one (the first stopped on a half-written check file; the softer lot cut and the cleared line were both found in the exe).
+   `Builds/ChastainRush/` 2026-10-20 00:39. Imported from Racer: nothing.
+Not changed (Dan's call): the same floating windows on about 100 other style E houses elsewhere on the map; the same unsettled houses and steep drives in the other
+   neighborhoods (Round 30's log counts 501 with ground over their floor).
+For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
+   Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).

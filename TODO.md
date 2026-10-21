@@ -108,6 +108,51 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 56, THE ELAINE SHORTCUT: LAND ON CRAWFORD CIRCLE, A WAY BACK FROM THERE, A BLOCKED ENTRY WITH TIRE MARKS; a jerk on Elaine;
+the things on Joel Drive (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session `2026-10-21_17-00-50-815_f90718`, read by
+Claude, after the Round 55 exe: Addison Heights forward on the Drifter Twin).** Round 55 is reviewed. Dan: "still not quite hitting the
+mark on the Elaine shortcut". Standing rules apply. ONE full Build Map at the end (plan the line on paper first; quick builds while
+working). Tuning limit. Short results.
+A. WHERE A GOOD JUMP LANDS, AND THE WAY BACK FROM THERE. BUG-004 (x 2947.19 z 315.69 h 141, ON Crawford Circle's west leg, the closed
+   road between the Hayworth / Crawford corner and Lyndon Drive, a barrier just ahead): "A good jump will tak you here. The path should
+   work back from the main road from here. If it is off the main track for a bit as long as it joins back with some time savings".
+   So the target is no longer Round 55's bench and hedges on the bank: a GOOD jump off Elaine's west bend (Round 55's launch, natural,
+   no ramp) carries you over the bank and down onto Crawford Circle's west leg at Dan's spot. From there the shortcut is a way back to
+   the lap, off the main track for a while, joining it heading the race's way with SOME time saved (Dan accepts more than "a few
+   seconds" here; Code reports the number). Code picks the way back and says why (e.g. west along Crawford's west leg, then Lyndon
+   Drive north to Joel Drive westbound; if so, decide what happens at Joel / Lyndon, where the road-crew shortcut starts straight
+   ahead: no accidental chaining unless it is fair; say what was chosen).
+   A SHORT jump (not enough speed, off line) comes down on the bank / at the corner and pays for it (hedges or similar, as Round 55),
+   so the good jump is the reward. Make the launch able to reach Dan's spot at a good race speed on the Drifter Twin and the Street
+   Classic (natural lip only shaped, as before; tuning limit). Remove what Round 55 built that this does not need (bench, gaps, hedges
+   that now block the good line) and keep what still makes the short jump costly. Crawford's west-leg barrier moves so the landing and
+   the way back are open forward and stay shut in reverse.
+B. THE ENTRY: BLOCKED, WITH TIRE MARKS. BUG-003 (x 3205.88 z 303.90 h 287, Suholden Circle at the Elaine turn-off): "there should be an
+   indicator that the road to the right is a shortcut. Maybe actually block the road off and make tiremarks right after it". Put a
+   breakable road-closed barricade (sawhorses / a striped board, as a road crew would) across Elaine's mouth, with tire marks on the
+   road right after it, so it reads as "people go through here". Breaking it must not slow you (as fences); it resets each lap / race.
+C. BUG-002 (x 3088.66 z 307.72 h 294, Elaine Circle on the shortcut's run-up): "there is something here that causes my vehicle to jerk to
+   the righ. Please check the road in this area". Find it (a ridge, a camber change, an edge, a collider) and fix it; check at speed.
+D. BUG-001 (x 2963.10 z 411.11 h 264, Joel Drive west of Hayworth, on the lap): "why is this here? and what is it?" (the picture: orange
+   round bases with red tops standing in the road and beside it). Say what they are; if they have no purpose a racer can read, remove them.
+Check: the good jump (Drifter Twin and Street Classic: launch speed, where they land, time saved), a short jump (cost), the ways round;
+the barricade breaks without slowing; the AI takes it sometimes, forward race x2 traffic Normal, all finish; reverse unchanged.
+Pictures: Dan's four spots, the jump from behind, the landing on Crawford, the way back.
+For Dan to check: the Elaine shortcut (good and short jumps, the barricade and tire marks); the jerk on Elaine; Joel Drive at his spot.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 55
+**Reviewed: Dan drove the Round 55 build 2026-10-21 17:00 (Addison Heights forward): the Elaine shortcut is "still not quite hitting the mark" (Round 56); B to E no complaint.**
 **Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
 2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
 Addison Heights forward and reverse on the Drifter Twin).** Round 54 is reviewed. Standing rules apply. ONE full Build Map at the end
@@ -186,18 +231,7 @@ E DONE (modest). The AI pulls out round a slower car once the other lane is clea
 Builds: nine full builds (the junction curve took two; option 2 took five: layout, two tunings, the barrier, the landing arc). `Builds/ChastainRush/` 2026-10-21 16:11. Imported from Racer: nothing.
 For Dan to check: the Elaine jump (land, brake hard, right onto the bench; is the corner through the hedge too easy?); the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 54
+## Previous delivery 2: Round 54
 **Reviewed: Dan drove the Round 54 build 2026-10-21 12:16 (Addison Heights both ways): "The reverse shortcuts are fine" (A2, A3 accepted; the bounce house needs a sound); A1 (the Elaine jump) "is a fail"; the rest no complaint. His notes are Round 55.**
 **Round 54, ADDISON HEIGHTS: THE ELAINE JUMP, TWO REVERSE SHORTCUTS, BUMPS, SIGNS, A HARDER AI; a missed finish line; COMPLETE RACE;
 fixes on three other tracks (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session `2026-10-21_03-39-54-769_591b8d`, read by Claude, after
@@ -296,7 +330,7 @@ Builds: four full builds, not one (after the checks: the slide's foot and rail, 
 For Dan to check: Addison Heights both ways (the new line, Elaine, the terrace on the Drifter, the bounce house, Lyndon's hedges: try to cheat them, the bumps, the signs,
    the AI on Hard); miss a line; COMPLETE RACE; the Glen loop's barriers, the PARTY sign, the slide off its middle; Chastain Lakes at MH15 and out of MH14.
 
-## Previous delivery 2: Round 53
+## Previous delivery 3: Round 53
 **Reviewed: Dan drove the Round 53 build 2026-10-21 03:39 (Addison Heights both ways, Chastain Glen reverse, Chastain Lakes); no complaint about A (the Lyndon shortcut stands as built), C or D; B: he chose option (1), now Round 54 A1.**
 **Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
 `2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
@@ -360,66 +394,6 @@ Races, traffic Normal: forward x2, reverse x1, 9 of 9 AI finish; the AI took Lyn
    Barriers: 12 forward and 14 reverse all hold.
 Builds: two full builds (the second for A's tuning and B taken out); `Builds/ChastainRush/` 2026-10-21 02:59. Imported from Racer: nothing.
 For Dan to check: the Lyndon shortcut (try to cheat it; is a 4 to 10 s saving OK?); pick B's option; the carport at BUG-004; the Lyndon / Embry junction.
-
-## Previous delivery 3: Round 52
-**Reviewed: Dan drove the Round 52 build 2026-10-20 01:26 (Addison Heights forward, Free Roam): "the track itself is good"; his notes are Round 53.**
-**Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
-reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
-on a Google map: `local/reference_photos/embry_lane/r52_route_map.jpg`, reference only, never traced or measured).** Round 51 is
-reviewed. Dan: "For right now I'd like to add another track. Can we have it built forward and reverse but not worry about the
-shortcuts. I want to decide once the track is there. I don't care which way is forward and reverse." ONE full Build Map at the end
-(quick builds while working). Tuning limit. Short results.
-A. THE TRACK. The neighborhood south of New Chastain Road, west of Canton Road. Dan's red line, read by Claude against `Data/map.json`
-   (Dan, 22:38: "The roads matched the game roads, they just arent all visible in the zoomed out map I gave you"; use the
-   game's own roads and names: the short leg north from Crawford Circle to Joel Drive is Hayworth Drive in the data):
-   Joel Drive west from Hayworth Drive (about x 3000 z 414) to its west end (2645, 423), round the bend into Embry Lane NE and
-   east along it (to 3231, 528), down Embry's east end (3245, 470; 3258, 412) to Suholden Circle NE (3284, 300), west on Suholden
-   Circle to its bend (3196, 303) and south on it to Kelly Drive NE (about x 3141), west on Kelly Drive to Crawford Circle (2987,
-   about z 100), north on Crawford Circle's east leg and Hayworth Drive back to Joel Drive. About 2.0 km a lap (Claude's estimate).
-   Forward = that direction, reverse = the other (Dan does not mind which). Built like the other races (`Data/routes/*.json`,
-   `Data/tracks/`, menus, records, AI, ghosts, checkpoints, the loading screen's route inset); 3 laps by default. Start / finish on
-   a straight Code picks and says where. Name: "Addison Heights" (Dan, 22:38: "I could be wrong but I think this is called
-   Addison Heights"; Claude could not confirm it online, so the name is Dan's and easy to change).
-   NO SHORTCUTS this round. Dan's yellow marks are his possible shortcut spots, not built: Lyndon Drive between Embry Lane and Joel
-   Drive, and Elaine Circle from Joel Drive to Suholden Circle. Every road that leaves the lap is closed in a race (standing rule),
-   these two included: Lyndon Drive (both sides of Joel), Elaine Circle, Joel Drive east of Hayworth to Embry, Hayworth north of
-   Joel, Crawford Circle's west leg, Kelly Drive west of Crawford and east of Suholden, Suholden Circle east toward Hilltop, and
-   Suholden south of Kelly. The red dab at Chance Road / Suholden Drive is a stray mark (Dan, 22:38): ignore it.
-B. THE HOUSES (all three on or by the new lap):
-   BUG-001 (x 2764.81 z 565.33 h 179, behind the houses between Embry Lane and Weybourne Court): "House on left is buried. House on
-   the right has windows hanging in the air". BUG-002 (x 3231.02 z 503.06 h 240, Embry Lane NE at its east corner): "thiss house is
-   buried and incomplete". BUG-003 (x 2943.80 z 419.43 h 3, Joel Drive): "this driveway needs to be fixed. Also the house entrance
-   is hanging in the air" (the drive climbs the bank to nowhere with a hole in it; the front door floats above the brick base, no steps).
-   Find why houses on these steep lots are sunk or floating and fix it at Dan's three spots; the same fault on the houses that face
-   the new lap is fixed too, since Dan will drive past them (Claude's scope, the lap's roads only, said here so Dan knows). Drive
-   at BUG-003: from the road up to the house's garage, at a drivable grade, no hole; the entrance with steps or a stoop down to the ground.
-Check: forward and reverse, AI races x2 each, traffic Normal: all finish, 0 missed; every closure shut (try each road above);
-the lap on all 11 vehicles both ways, no stop. Pictures: Dan's three spots before and after, the start / finish, each closure.
-For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at his three spots and along the lap.
-
-**Status (Claude, 2026-10-20): A and B built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round52/`.
-A DONE. `python Tools/mapgen/make_addison_route.py [--plot]` writes `Data/routes/addison_heights.json` (and `Data/tracks/addison_heights.json`, one cleared line).
-   Lap 2040 m forward (Dan's direction), 2065 m reverse (its own lane), 3 laps, traffic, 8 checkpoints. START / FINISH on Kelly Drive at x 3055 (between
-   Suholden and Crawford: 155 m straight, 5 to 8 %); not Joel Drive, which falls 40 % and more west of Hayworth. 14 barriers each way, every road in the brief.
-   Check (`round52_check.txt`, 62 of 62, build 2): a lap each way on all 14 vehicles, none stops (74 to 82 s); all 28 barrier tries hold (driven at from the lap).
-   AI races x2 each way, traffic Normal: every AI finishes all 3 laps in all 8 races (24 of 24), but NOT MET "0 missed": one AI missed one checkpoint in each of the
-   last two runs (build 3: in reverse, it hit a trunk in the gutter on Embry Lane's 30 % hill and ended in a yard, CP4; final build: a Needle 600, forward CP8
-   on Suholden Circle's downhill, cause not found). One fix tried (no trunk within 1.5 m of the lap's road edge, the cleared line), then stopped (tuning limit).
-   The AI is slow here: laps 84 to 174 s against the check driver's 75 s (traffic queues at the Kelly / Suholden corner; AI drivers leave the road on Embry Lane's
-   30 % hill). `round52_check_final.txt` (its two lap failures are the check's own driver with traffic left on: behind a traffic van at that corner).
-B DONE. Cause: the other neighborhoods' houses stand at the ground at their garage doors and nothing round them was graded (Round 27's settling ran for the Glen
-   and the communities only); their drives were mapgen's straight lines draped at any grade (BUG-003: 39 %, the ground bulging through); no steps at any door.
-   Style E (split-level) also drew its upstairs back windows across its one-story wing, over the roof (BUG-001's right house, 996). Fixed for Dan's four houses
-   (910, 996, 615, 1135) and the 69 that face the lap (list `houses_settled.txt`, `MapBuilder.Round52.cs`): the floor where a drive from the street reaches it at
-   20 % or less (23 floors moved, 1135 down 4.3 m), the drive from the street straight to the garage graded under it, the lot cut with a yard that falls to the
-   house at about 1 in 3 (Round 27's 40 degree bank still looked sunk from Dan's spots: tried first, changed), a stoop and steps at the door, E's windows on its block.
-   Pictures `bug00N_before.png` / `_after.png` / `_after_wide.png`.
-Builds: four full builds, not one (the first stopped on a half-written check file; the softer lot cut and the cleared line were both found in the exe).
-   `Builds/ChastainRush/` 2026-10-20 00:39. Imported from Racer: nothing.
-Not changed (Dan's call): the same floating windows on about 100 other style E houses elsewhere on the map; the same unsettled houses and steep drives in the other
-   neighborhoods (Round 30's log counts 501 with ground over their floor).
-For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
-   Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
