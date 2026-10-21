@@ -798,6 +798,29 @@ namespace ChastainRush
             trig.AddComponent<ManholeTrigger>().owner = ml;   // not a cell: the lid is seen from anywhere up the street
         }
 
+        // Round 54 (E1, Dan BUG-009 on North Lakeside Drive: "something right here slows me down"): a manhole's floor over the hole is the
+        // terrain's surface as it was when the network was built; a later step that grades the ground round it (the Chastain Lakes race's, for
+        // MH15) left the floor's edge standing out of the road, and the vehicle's body met that edge head on (21 m/s to 0 in two steps). After
+        // every step that changes the ground, each floor is put back on the ground as it now is.
+        static void RefitManholeFloors(TerrainGrid terrain, Transform world)
+        {
+            int floors = 0; float worst = 0f; string worstName = "";
+            foreach (var mc in world.GetComponentsInChildren<MeshCollider>(true))
+            {
+                if (!mc.name.StartsWith("Manhole ") || !mc.name.Contains(" floor over the hole") || !mc.sharedMesh) continue;
+                var mesh = mc.sharedMesh; var v = mesh.vertices; var t = mc.transform; float moved = 0f;
+                for (int i = 0; i < v.Length; i++)
+                {
+                    var w = t.TransformPoint(v[i]); float g = Ground(terrain, w.x, w.z);
+                    moved = Mathf.Max(moved, Mathf.Abs(g - w.y)); w.y = g; v[i] = t.InverseTransformPoint(w);
+                }
+                mesh.vertices = v; mesh.RecalculateNormals(); mesh.RecalculateBounds(); EditorUtility.SetDirty(mesh);
+                mc.sharedMesh = null; mc.sharedMesh = mesh; floors++;
+                if (moved > worst) { worst = moved; worstName = mc.name; }
+            }
+            Debug.Log($"[Round54] {floors} manhole floors refitted to the finished ground; the most moved {worst:0.000} m ({worstName})");
+        }
+
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)
         // the stretch's frame (Round 25: also for its terrain holes, ClearFrame.ToSL: the nearest point of the pipe's line)
         static ClearFrame NetGlassFrame(NetTubeGeo g, NetGlass gl, float[] TS, float surface)

@@ -38,6 +38,25 @@ namespace ChastainRush
             spin = new Vector3(Random.Range(-540f, 540f), Random.Range(-200f, 200f), Random.Range(-540f, 540f));
             flying = 0f;
             BreakSounds.Play(home, Mathf.Max(8f, body.linearVelocity.magnitude), BreakSounds.Kind.Iron);
+            rider = body; riderUntil = Time.time + 2f;   // Round 54 (E2)
+        }
+
+        // Round 54 (E2, Dan BUG-010 at MH14, the Lake drain's way out onto North Lakeside Drive: "can we have it land more in line with the
+        // track or at least have it jump in that direction"): a vehicle riding the riser's barrel came out turned 55 degrees off the street and
+        // flew into the yards. As it clears the street it is turned to the way the riser comes out (outward, along the street), its speed
+        // across the ground kept, once; the climb and the flight are its own
+        Rigidbody rider; float riderUntil;
+        public static int Straightened { get; private set; }   // checks
+        void FixedUpdate()
+        {
+            if (!rider) return;
+            if (Time.time > riderUntil) { rider = null; return; }
+            var d = rider.position - home; if (rider.position.y < home.y + slope.x * d.x + slope.y * d.z + 0.3f) return;
+            var o = new Vector3(outward.x, 0f, outward.z).normalized; var v = rider.linearVelocity; var h = new Vector3(v.x, 0f, v.z);
+            float turn = Vector3.SignedAngle(new Vector3(rider.transform.forward.x, 0f, rider.transform.forward.z), o, Vector3.up);
+            rider.linearVelocity = o * Mathf.Max(h.magnitude, Vector3.Dot(h, o)) + Vector3.up * v.y;
+            rider.rotation = Quaternion.AngleAxis(turn, Vector3.up) * rider.rotation; rider.angularVelocity = new Vector3(rider.angularVelocity.x, 0f, rider.angularVelocity.z);
+            Straightened++; rider = null;
         }
 
         // Round 36 (Part D1): a rigged hydrant knocked over blows the cover off from above (a bang, the water, the cover flying), and the hole stays

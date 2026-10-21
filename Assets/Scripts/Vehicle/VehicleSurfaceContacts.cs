@@ -64,6 +64,7 @@ namespace Racer
             Physics.ContactModifyEventCCD += CorrectCcd;
         }
 
+        static bool IsManholeFloor(string n) => n.StartsWith("Manhole ", System.StringComparison.Ordinal) && n.Contains(" floor over the hole");
         public static bool IsShortcutSurface(string n) => n.StartsWith("sc", System.StringComparison.Ordinal);
         // Round 37 (Part A, BUG-001 to BUG-003 "ramp slows", "loop slows on both sides"): the stunt park's ramps, landings, tables, the loop and
         // the stores' ramps are mesh colliders named "Stunt park ..." (MapBuilder.StuntPark.cs), not "sc...", so they were never registered and
@@ -88,7 +89,8 @@ namespace Racer
                     if (mesh.gameObject.scene != box.gameObject.scene) continue;
                     if (mesh.attachedRigidbody || !mesh.sharedMesh || !mesh.sharedMesh.isReadable) continue;
                     bool ramp = IsShortcutSurface(mesh.name) || IsStuntParkSurface(mesh.name);   // Round 37: the stunt park's
-                    if (!ramp && mesh.name != "BridgeDecks") continue;   // Round 14: the bridge decks are driving ground too
+                    // Round 54 (E1): a manhole's floor over the hole is the street's ground there (MapBuilder.Network.cs), with its faces' normals as the decks'
+                    if (!ramp && mesh.name != "BridgeDecks" && !IsManholeFloor(mesh.name)) continue;   // Round 14: the bridge decks are driving ground too
                     var vertices = mesh.sharedMesh.vertices; var indices = mesh.sharedMesh.triangles;
                     var t = mesh.transform; for (int v = 0; v < vertices.Length; v++) vertices[v] = t.TransformPoint(vertices[v]);
                     var faces = new Face[indices.Length / 3];
