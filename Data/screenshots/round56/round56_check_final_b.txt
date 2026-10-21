@@ -1,0 +1,10 @@
+Round 56 check, 2026-10-21 19:47, the exe, 1280 x 720, muted.
+
+=== B. the barricade across Elaine's mouth
+PASS  it stands only in a forward Addison Heights race  -  forward True, reverse False, free roam False
+PASS  driven through at 22 m/s: it breaks and costs no speed  -  1 barricade(s) broken; 21.7 m/s 2.5 m before it, 21.8 m/s 2.5 m past it
+PASS  whole again once nobody is near  -  0 still broken 7 s after the car left
+
+=== pictures
+
+3 of 3 checks passed.

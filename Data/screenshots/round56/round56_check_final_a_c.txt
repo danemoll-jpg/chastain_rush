@@ -1,0 +1,34 @@
+Round 56 check, 2026-10-21 19:18, the exe, 1280 x 720, muted.
+
+=== A. THE ELAINE JUMP (forward): off the shaped lip, down the bank, over the corner onto Crawford's west leg, back round 1143
+  Elaine jump: forgives Suholden Circle south, Kelly Drive, Crawford Circle, Hayworth Drive
+  Street Classic   the lap's way 27.4 s; the shortcut 21.4 s, saves 6.0 s; off at 20.8 m/s, longest air 3.34 s, first down at (2960, 313), deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 25.1 s; the shortcut 20.4 s, saves 4.7 s; off at 15.0 m/s, longest air 4.68 s, first down at (3196, 316), deepest in a shrub bed 0.00
+PASS  Elaine jump flat out (Street Classic, Drifter Twin): through, taken, faster than the lap's way
+  1. short: 15 m/s off the lip: 27.6 s (+0.2 s against the lap's way); off at 20.8 m/s, longest air 0.90 s, first down at (3049, 308), deepest in a shrub bed 2.00, slowest 3.5 m/s
+  2. no jump: over the edge at 8 m/s, down through the brush: 33.9 s (+6.5 s against the lap's way); off at 20.8 m/s, longest air 0.88 s, first down at (3041, 307), deepest in a shrub bed 2.00, slowest 3.4 m/s
+  3. round the barrier: Elaine north, 960's drive, down the bank to the corner: 29.8 s (+2.4 s against the lap's way); off at 19.7 m/s, longest air 0.86 s, first down at (3050, 315), deepest in a shrub bed 2.00, slowest 1.9 m/s
+PASS  Elaine jump: short, missed, or its ground without the stunt, each slower than the plain lap
+  Street Classic   the jump at 24 m/s, on round 1143: 21.0 s; off at 20.8 m/s, longest air 1.82 s, first down at (3016, 310), deepest in a shrub bed 1.00
+  Drifter Twin     the jump at 24 m/s, on round 1143: 18.7 s; off at 15.0 m/s, longest air 3.62 s, first down at (3196, 316), deepest in a shrub bed 0.00
+  (for Dan) Street Classic   the good jump, then right up Hayworth at the corner: did not get through (stopped); off at 20.8 m/s, longest air 3.34 s, first down at (2960, 313), deepest in a shrub bed 0.00
+  (for Dan) Drifter Twin     the good jump, then right up Hayworth at the corner: 19.9 s; off at 15.0 m/s, longest air 4.68 s, first down at (3196, 316), deepest in a shrub bed 1.56
+
+=== B. the barricade across Elaine's mouth
+PASS  it stands only in a forward Addison Heights race  -  forward True, reverse False, free roam False
+PASS  driven through at 22 m/s: it breaks and costs no speed  -  1 barricade(s) broken; 21.7 m/s 2.5 m before it, 21.8 m/s 2.5 m past it
+PASS  whole again once nobody is near  -  0 still broken 7 s after the car left
+
+=== C. up Elaine's climb (Dan's BUG-002 at x 3088.66 z 307.72): free roam, straight on, the heading's swing and the body's contacts
+  Drifter Twin     lane z 305.5 at 22 m/s: the heading's fastest swing 0 deg/s at (3076.9, 305.5); most sideways speed 0.0 m/s; 
+  Drifter Twin     lane z 305.5 at 28 m/s: the heading's fastest swing 0 deg/s at (3107.9, 305.5); most sideways speed 0.0 m/s; 
+  Drifter Twin     lane z 309.0 at 22 m/s: the heading's fastest swing 0 deg/s at (3132.2, 309.0); most sideways speed 0.0 m/s; 
+  Drifter Twin     lane z 309.0 at 28 m/s: the heading's fastest swing 0 deg/s at (3126.8, 309.0); most sideways speed 0.0 m/s; 
+  Street Classic   lane z 305.5 at 22 m/s: the heading's fastest swing 0 deg/s at (3133.8, 305.5); most sideways speed 0.0 m/s; 
+  Street Classic   lane z 305.5 at 28 m/s: the heading's fastest swing 0 deg/s at (3125.7, 305.5); most sideways speed 0.0 m/s; 
+  Street Classic   lane z 309.0 at 22 m/s: the heading's fastest swing 0 deg/s at (3134.3, 309.0); most sideways speed 0.1 m/s; 
+  Street Classic   lane z 309.0 at 28 m/s: the heading's fastest swing 1 deg/s at (3126.2, 309.0); most sideways speed 0.1 m/s; 
+
+=== pictures
+
+5 of 5 checks passed.

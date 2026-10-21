@@ -415,6 +415,14 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 56 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights' Elaine jump off a shaped
+lip (the bend's crest raised 1 m on Elaine's own line, track grade "A1 the lip") onto the lower bank, over the Crawford / Hayworth corner and down Crawford's
+west leg (BUG-004), back through the yards round 1143 onto Hayworth (grade and smooth line "A1 the way back"); the bench gone; the upper bank's brush twice as
+strong (`ShrubBeds.strength`, track `shrub_beds[].strength`); Crawford's west-leg barrier past the way back. B the barricade across Elaine
+(`MapBuilder.Round56.cs`, track `elaine_mouth`; `FenceChunk.free`: no speed lost; `Neighborhood/RestoreWhenClear.cs`); C Elaine's valley one vertical curve;
+D the Joel terrace's flower pots gone. Check: `ChastainRush.exe -exeRound56 <dir> [-r56Only eprobe56,ejump,ebarricade,ejerk,erace,epics] [-traffic Normal]
+-logFile <dir>\Player.log` (`Checks/Round20Runner.R56.cs`). A builder's parent object stays at the origin when its meshes are in world coordinates.
+Imported from Racer: nothing.
 **Round 55 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights: Round 54's Elaine valley way
 taken out; the Elaine jump off the bend built as Dan's option 2 (hedges along the bank's foot, a graded bench north past 960 to Hayworth; track `worn_tracks`,
 `BuildAddison55`; Elaine barred north of the bend); the line
@@ -916,7 +924,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-21_12-16-40-990_d377b3` through BUG-003 (Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-21_17-00-50-815_f90718` through BUG-004 (Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,
