@@ -17,7 +17,7 @@ namespace ChastainRush
     //   epics       Dan's four spots, the jump from behind, the landing and the run onto Crawford, the way back
     public sealed partial class Round20Runner
     {
-        static readonly Vector3 E56Lip = new Vector3(3047f, 0f, 309.3f);
+        static readonly Vector3 E56Lip = new Vector3(3047f, 0f, 307.8f);   // make_addison_route.py E_LIP
 
         IEnumerator R56Jump()
         {
@@ -71,7 +71,7 @@ namespace ChastainRush
             yield return StartRoute("addison_heights.json", "forward", 0);
             var sc = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "f_elaine_jump");
             if (sc == null) { race.EndRace(); yield break; }
-            var dE = new Vector3(Mathf.Sin(264f * Mathf.Deg2Rad), 0f, Mathf.Cos(264f * Mathf.Deg2Rad));
+            var dE = new Vector3(Mathf.Sin(267f * Mathf.Deg2Rad), 0f, Mathf.Cos(267f * Mathf.Deg2Rad));
             foreach (var vid in new[] { "original", "drifter" })
                 foreach (float cap in new[] { 99f, 22f, 18f })
                 {
