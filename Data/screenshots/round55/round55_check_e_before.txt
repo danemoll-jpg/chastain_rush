@@ -1,0 +1,19 @@
+Round 55 check, 2026-10-21 13:44, the exe, 1280 x 720, muted.
+
+=== E. addison_heights.json forward #1 on Hard: 3 laps, 3 AI, traffic Normal, passing as before (-r55PassOff)
+PASS  addison_heights.json forward #1: EMBER (Sundown Roadster) finishes  -  total 274.0 s, laps 92.2 / 94.5 / 87.3; passes 25, close behind a car under 10 m/s 35.6 s, resets 2
+PASS  addison_heights.json forward #1: GOLD (Needle 600) finishes  -  total 227.7 s, laps 93.0 / 64.7 / 70.1; passes 22, close behind a car under 10 m/s 10.0 s, resets 0
+PASS  addison_heights.json forward #1: BLUE (Turf Rocket) finishes  -  total 285.5 s, laps 74.0 / 108.8 / 102.8; passes 15, close behind a car under 10 m/s 54.0 s, resets 1
+
+=== E. addison_heights.json reverse #1 on Hard: 3 laps, 3 AI, traffic Normal, passing as before (-r55PassOff)
+PASS  addison_heights.json reverse #1: EMBER (Turf Rocket) finishes  -  total 250.7 s, laps 78.7 / 100.2 / 71.8; passes 15, close behind a car under 10 m/s 9.7 s, resets 0
+PASS  addison_heights.json reverse #1: GOLD (Pebble Coupe) finishes  -  total 249.3 s, laps 82.0 / 89.7 / 77.6; passes 22, close behind a car under 10 m/s 12.0 s, resets 2
+PASS  addison_heights.json reverse #1: BLUE (Longroof GT) finishes  -  total 319.5 s, laps 77.4 / 106.9 / 135.2; passes 10, close behind a car under 10 m/s 20.8 s, resets 3
+
+=== E. chastain_lakes.json forward #1 on Hard: 3 laps, 3 AI, traffic Normal, passing as before (-r55PassOff)
+PASS  chastain_lakes.json forward #1: EMBER (Longroof GT) finishes  -  total 229.7 s, laps 130.9 / 98.8; passes 12, close behind a car under 10 m/s 1.1 s, resets 5
+PASS  chastain_lakes.json forward #1: GOLD (Highball Fastback) finishes  -  total 245.6 s, laps 124.4 / 121.1; passes 1, close behind a car under 10 m/s 0.0 s, resets 8
+PASS  chastain_lakes.json forward #1: BLUE (Longroof GT) finishes  -  total 211.8 s, laps 112.5 / 99.2; passes 8, close behind a car under 10 m/s 5.6 s, resets 2
+  all races (as before): 130 passes by 9 AI drivers (14.4 each), close behind a car under 10 m/s 149 s in all (16.5 s each)
+
+9 of 9 checks passed.

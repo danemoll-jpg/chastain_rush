@@ -536,9 +536,9 @@ track["level_lines"] = [{"id": "the lap's roads", "points": flat(resample(line, 
 track["smooth_spots"] = [{"id": "BUG-001 Hayworth Drive at Crawford Circle", "at": [2982.0, 311.0], "r": 13.0, "fade": 5.0, "sigma": 2.5},
                          {"id": "BUG-003 Kelly Drive at Suholden Circle", "at": [3135.5, 100.5], "r": 10.0, "fade": 5.0, "sigma": 2.5}]
 # and at BUG-001 the grade change itself (Crawford Circle's 7 % into Hayworth Drive's 25 % within a few meters: a 0.26 m sag over +-3 m, a jolt at
-# speed) made a road's vertical curve: the two grades joined by a parabola 20 m long (it fills the corner 0.45 m), across the road (R55VerticalCurves)
+# speed) made a road's vertical curve: the two grades joined over 24 m (a parabola: it fills the corner about 0.6 m), across the road (R55VerticalCurves)
 _vc = [q for q in resample(line, 1.0) if 255.0 < q[1] < 345.0 and q[0] < 3000.0]
-track["vertical_curves"] = [{"id": "BUG-001 Crawford Circle into Hayworth Drive", "points": flat(_vc), "length": 20.0, "fit": 12.0, "half": 4.3, "blend": 4.0}]
+track["vertical_curves"] = [{"id": "BUG-001 Crawford Circle into Hayworth Drive", "points": flat(_vc), "at": [2981.0, 305.5], "length": 24.0, "fit": 6.0, "half": 4.3, "blend": 4.0}]
 track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [round(dL[0], 5), round(dL[1], 5)], "deck": T_DECK, "deck_angle_deg": T_DECK_ANG,
                  "plank": T_PLANK, "plank_angle_deg": T_PLANK_ANG, "width": T_W,
                  "concrete": flat([along(c_mid(CONC_FROM), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, -4.5), along(c_mid(CONC_FROM), nL, -4.5)]),

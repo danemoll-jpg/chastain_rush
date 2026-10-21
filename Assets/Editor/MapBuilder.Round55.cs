@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 
 // Round 55 (Dan, 2026-10-21 12:28; reports BUG-001 to BUG-003 of session 2026-10-21_12-16-40-990_d377b3): Addison Heights' two bumps, from
@@ -11,11 +12,12 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class R55Spot { public string id; public float[] at; public float r, fade, sigma; }
-        [Serializable] class R55Curve { public string id; public float[] points; public float length, fit, half, blend; }
+        [Serializable] class R55Curve { public string id; public float[] points, at; public float length, fit, half, blend; }
         [Serializable] class R55File { public R55Spot[] smooth_spots; public R55Curve[] vertical_curves; }
 
-        // a road's vertical curve: along the line, the ground's grade over its first and last 'fit' m (least squares), the two grades joined by a
-        // parabola 'length' m long about where they meet; set across the road ('half', blending back over 'blend'), the ground outside the curve as it is
+        // a road's vertical curve: along the line, 'length' m about the point nearest 'at' (where the grades meet), the ground replaced by the cubic that
+        // meets the ground's own height and grade at both ends (over a kink between two steady grades, the road's parabolic vertical curve); set across
+        // the road ('half', blending back over 'blend')
         static void R55VerticalCurves(TerrainGrid terrain, R55File d)
         {
             if (d?.vertical_curves == null) return;
@@ -24,27 +26,42 @@ namespace ChastainRush
                 var p = ToPoints(vc.points); int n = p.Count; if (n < 8) continue;
                 var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (p[i] - p[i - 1]).magnitude;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
-                (float a, float g) Fit(Func<int, bool> pick)
-                {
-                    float sx = 0f, sy = 0f, sxx = 0f, sxy = 0f; int m = 0;
-                    for (int i = 0; i < n; i++) if (pick(i)) { sx += cs[i]; sy += raw[i]; sxx += cs[i] * cs[i]; sxy += cs[i] * raw[i]; m++; }
-                    float g = (m * sxy - sx * sy) / Mathf.Max(1e-6f, m * sxx - sx * sx); return ((sy - g * sx) / m, g);
-                }
-                float L = cs[n - 1];
-                var (a1, g1) = Fit(i => cs[i] <= vc.fit); var (a2, g2) = Fit(i => cs[i] >= L - vc.fit);
-                float sP = Mathf.Abs(g2 - g1) < 1e-4f ? L * 0.5f : (a1 - a2) / (g2 - g1), s0 = sP - vc.length * 0.5f, s1 = sP + vc.length * 0.5f;
+                var at = new Vector2(vc.at[0], vc.at[1]); int ic = 0; for (int i = 1; i < n; i++) if ((p[i] - at).sqrMagnitude < (p[ic] - at).sqrMagnitude) ic = i;
+                float s0 = cs[ic] - vc.length * 0.5f, s1 = cs[ic] + vc.length * 0.5f;
+                float H(float s) { int i = 0; while (i + 2 < n && cs[i + 1] < s) i++; return Mathf.Lerp(raw[i], raw[i + 1], Mathf.InverseLerp(cs[i], cs[i + 1], s)); }
+                float y0 = H(s0), y1 = H(s1), g0 = (H(s0) - H(s0 - vc.fit)) / vc.fit, g1 = (H(s1 + vc.fit) - H(s1)) / vc.fit, L = s1 - s0;
                 var pts = new System.Collections.Generic.List<float>(); var ys = new System.Collections.Generic.List<float>(); float most = 0f;
                 for (int i = 0; i < n; i++)
                 {
-                    if (cs[i] < s0 - 2f || cs[i] > s1 + 2f) continue;
-                    float x = Mathf.Clamp(cs[i] - s0, 0f, vc.length);
-                    float y = cs[i] < s0 || cs[i] > s1 ? raw[i] : a1 + g1 * cs[i] + (g2 - g1) / (2f * vc.length) * x * x;
+                    if (cs[i] < s0 - 8f || cs[i] > s1 + 8f) continue;
+                    float t = Mathf.Clamp01((cs[i] - s0) / L), t2 = t * t, t3 = t2 * t;
+                    float y = cs[i] < s0 || cs[i] > s1 ? raw[i] : (2f * t3 - 3f * t2 + 1f) * y0 + (t3 - 2f * t2 + t) * L * g0 + (-2f * t3 + 3f * t2) * y1 + (t3 - t2) * L * g1;
                     pts.Add(p[i].x); pts.Add(p[i].y); ys.Add(y); most = Mathf.Max(most, Mathf.Abs(y - raw[i]));
                 }
                 if (ys.Count < 3) continue;
-                GradeAlong(terrain, new RidgeGrade { id = vc.id, points = pts.ToArray(), y = ys.ToArray(), half = vc.half, blend = vc.blend });
-                Debug.Log($"[Round55] D: {vc.id}: grades {g1 * 100f:0.0} % and {g2 * 100f:0.0} % joined by a {vc.length:0} m vertical curve about {sP:0} m along its line (the ground moved by up to {most:0.00} m)");
+                SetAlong(terrain, pts.ToArray(), ys.ToArray(), vc.half, vc.blend, 6f);
+                Debug.Log($"[Round55] D: {vc.id}: {g0 * 100f:0.0} % into {g1 * 100f:0.0} % over a {L:0} m vertical curve (the ground moved by up to {most:0.00} m)");
             }
+        }
+
+        // as GradeAlong, but nothing past the line's ends (GradeAlong's end caps level a disc round each end), and faded in from each end over 'fadeEnds'
+        static void SetAlong(TerrainGrid terrain, float[] flat, float[] y, float half, float blend, float fadeEnds)
+        {
+            var p = ToPoints(flat); int n = p.Count; float reach = half + blend;
+            var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (p[i] - p[i - 1]).magnitude; float L = cs[n - 1];
+            var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
+            EditTerrain(terrain, area, (x, z, gy) =>
+            {
+                var q = new Vector2(x, z); float best = float.MaxValue, target = gy, along = 0f; bool past = false;
+                for (int i = 0; i + 1 < n; i++)
+                {
+                    var ab = p[i + 1] - p[i]; float tu = Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(tu); float dd = (p[i] + ab * t - q).magnitude;
+                    if (dd < best) { best = dd; target = Mathf.Lerp(y[i], y[i + 1], t); along = Mathf.Lerp(cs[i], cs[i + 1], t); past = (i == 0 && tu < 0f) || (i == n - 2 && tu > 1f); }
+                }
+                if (best >= reach || past) return gy;
+                float w = (best <= half ? 1f : Smooth01(1f - (best - half) / blend)) * Smooth01(Mathf.Min(along, L - along) / fadeEnds);
+                return gy + w * (target - gy);
+            });
         }
 
         // the ground's own heights blurred (a Gaussian of 'sigma', so planes and steady grades stay as they are), full within 'r' of the spot,

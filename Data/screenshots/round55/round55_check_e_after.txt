@@ -1,0 +1,31 @@
+Round 55 check, 2026-10-21 13:31, the exe, 1280 x 720, muted.
+
+=== E. addison_heights.json forward #1 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
+PASS  addison_heights.json forward #1: EMBER (Longroof GT) finishes  -  total 272.8 s, laps 96.3 / 78.4 / 98.1; passes 11, close behind a car under 10 m/s 21.8 s, resets 2
+PASS  addison_heights.json forward #1: GOLD (Needle 600) finishes  -  total 221.7 s, laps 75.8 / 70.3 / 75.6; passes 17, close behind a car under 10 m/s 5.9 s, resets 0
+PASS  addison_heights.json forward #1: BLUE (Sundown Roadster) finishes  -  total 346.1 s, laps 108.1 / 115.5 / 122.6; passes 22, close behind a car under 10 m/s 59.2 s, resets 4
+
+=== E. addison_heights.json forward #2 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
+PASS  addison_heights.json forward #2: EMBER (Highball Fastback) finishes  -  total 248.5 s, laps 81.2 / 75.2 / 92.1; passes 14, close behind a car under 10 m/s 9.2 s, resets 1
+PASS  addison_heights.json forward #2: GOLD (Needle 600) finishes  -  total 217.5 s, laps 73.8 / 69.7 / 74.0; passes 14, close behind a car under 10 m/s 0.0 s, resets 0
+PASS  addison_heights.json forward #2: BLUE (Skyfin Cruiser) finishes  -  total 249.7 s, laps 75.0 / 72.8 / 101.9; passes 15, close behind a car under 10 m/s 10.4 s, resets 0
+
+=== E. addison_heights.json reverse #1 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
+PASS  addison_heights.json reverse #1: EMBER (Sundown Roadster) finishes  -  total 293.1 s, laps 83.2 / 94.9 / 115.1; passes 12, close behind a car under 10 m/s 21.6 s, resets 0
+PASS  addison_heights.json reverse #1: GOLD (Sundown Roadster) finishes  -  total 321.3 s, laps 105.2 / 134.1 / 81.9; passes 9, close behind a car under 10 m/s 25.1 s, resets 2
+PASS  addison_heights.json reverse #1: BLUE (Sundown Roadster) finishes  -  total 259.5 s, laps 82.7 / 88.4 / 88.4; passes 4, close behind a car under 10 m/s 14.4 s, resets 1
+
+=== E. addison_heights.json reverse #2 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
+PASS  addison_heights.json reverse #2: EMBER (Drifter Twin) finishes  -  total 275.3 s, laps 83.5 / 100.0 / 91.7; passes 23, close behind a car under 10 m/s 20.8 s, resets 2
+PASS  addison_heights.json reverse #2: GOLD (Ridge Scrambler) finishes  -  total 217.5 s, laps 73.8 / 72.0 / 71.7; passes 16, close behind a car under 10 m/s 0.0 s, resets 0
+PASS  addison_heights.json reverse #2: BLUE (Sundown Roadster) finishes  -  total 278.5 s, laps 92.2 / 94.6 / 91.7; passes 21, close behind a car under 10 m/s 16.4 s, resets 1
+
+=== E. chastain_lakes.json forward #1 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
+PASS  chastain_lakes.json forward #1: EMBER (Pebble Coupe) finishes  -  total 250.3 s, laps 118.3 / 132.0; passes 2, close behind a car under 10 m/s 0.3 s, resets 8
+PASS  chastain_lakes.json forward #1: GOLD (Street Classic) finishes  -  total 231.4 s, laps 121.0 / 110.4; passes 4, close behind a car under 10 m/s 0.0 s, resets 6
+PASS  chastain_lakes.json forward #1: BLUE (Drifter Twin) finishes  -  total 189.1 s, laps 97.9 / 91.2; passes 4, close behind a car under 10 m/s 0.0 s, resets 1
+  all races (Round 55): 188 passes by 15 AI drivers (12.5 each), close behind a car under 10 m/s 205 s in all (13.7 s each)
+
+=== pictures (free roam)
+
+15 of 15 checks passed.

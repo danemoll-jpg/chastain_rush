@@ -1,0 +1,6 @@
+Round 55 D: the built ground (ChastainRush.GroundGrid, 0.5 m) along each lane of the Addison Heights lap; the worst height off the straight line over +-3 m
+(positive: a crest, negative: a sag). Before = the Round 54 build.
+BUG-001 Hayworth Drive at Crawford Circle   before  forward lane +0.31 / -0.33   reverse lane +0.60 / -0.33
+                                            after   forward lane  -0.17 (sag)     reverse lane -0.20 (sag)
+BUG-003 Kelly Drive at Suholden Circle      before  pitch under a car at Dan's heading 0, 5, 12, 18, 14, 8, 6 % over 5 m (a ridge), twist 0.32 m
+                                            after   3, 4, 5, 5, 6, 7, 8 %, twist under 0.05 m; worst +-3 m 0.10

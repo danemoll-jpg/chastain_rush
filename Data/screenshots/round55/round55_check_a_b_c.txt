@@ -1,0 +1,22 @@
+Round 55 check, 2026-10-21 13:14, the exe, 1280 x 720, muted.
+
+=== A. off Elaine Circle's west bend (Dan's BUG-002 spot): timed against the lap, free roam (no barriers), nothing built there
+  Street Classic:
+    the lap's way (Suholden, Kelly, Crawford, Hayworth): 27.2 s
+    off the bend, down the bank, onto Hayworth at the corner: did not get there (stopped at (2996, 302)), off the bend at 19.2 m/s, 1.4 s in the air, down at (3015, 307)
+    off the bend, across the corner, round 1143 back to Hayworth: did not get there (stopped at (2943, 301)), off the bend at 19.3 m/s, 1.5 s in the air, down at (3014, 308)
+  Drifter Twin:
+    the lap's way (Suholden, Kelly, Crawford, Hayworth): 25.0 s
+    off the bend, down the bank, onto Hayworth at the corner: 14.4 s (-10.6 s), off the bend at 21.2 m/s, 1.8 s in the air, down at (3003, 305)
+    off the bend, across the corner, round 1143 back to Hayworth: 22.5 s (-2.4 s), off the bend at 21.5 m/s, 1.8 s in the air, down at (3002, 305)
+
+=== B. the start / finish on Embry Lane's east end
+PASS  forward: the line at (3246, 457) (Embry Lane's east end), every car on the grid within 60 m behind it and on the road  -  records as "Addison Heights (Embry Lane line)"; grid (3233, 516) (3232, 508) (3238, 502) (3235, 494); first checkpoint Suholden Circle, 9 checkpoints
+PASS  reverse: the line at (3250, 458) (Embry Lane's east end), every car on the grid within 60 m behind it and on the road  -  records as "Addison Heights (Embry Lane line)"; grid (3260, 414) (3260, 423) (3254, 429) (3257, 436); first checkpoint Embry Lane east, 9 checkpoints
+
+=== C. the bounce house's sound (reverse race, Street Classic, flat out into it)
+PASS  C: thrown, and the trampoline's sound plays from the castle  -  throws 1; playing at the throw True; clip "trampoline" (drop-ins: 1); the voice 3.0 m from the arch, reaches 120 m
+
+=== pictures (free roam)
+
+3 of 3 checks passed.
