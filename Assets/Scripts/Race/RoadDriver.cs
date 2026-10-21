@@ -44,6 +44,12 @@ namespace Racer
         public float BrakingSeconds { get; private set; }
         public AiShortcut OnShortcut => progressBranch;
         public int ShortcutsTaken { get; private set; }
+        // Chastain Rush, Round 55 (E, Dan: "the AI drivers need to be smart enough to drive around cars ... I see them stuck to bumpers"): for the checks,
+        // the passes made (out into the other lane past a slower car and back) and the time spent close behind a car at under 10 m/s
+        public int Passes { get; private set; }
+        public float BehindSeconds { get; private set; }
+        bool passing; float passLaneNow = float.NaN;
+        public static bool PassFix = true;   // checks: false (-r55PassOff) drives as before Round 55, for the before / after numbers
 
         public RaceRoad DriveRoad => Race.AiRoad;
         public float Lane => lane;   // Chastain Rush, Round 21: DriverVariation's curb clip goes to this side
@@ -153,8 +159,15 @@ namespace Racer
                     desiredLane = trail ? (slowerLane > 0f ? -passLane : passLane) : (lane > 0 ? -passLane : passLane);
                 // Commit to a pass only when its destination lane has room alongside and ahead.
                 float currentLane=Vector3.Dot(Car.Body.position-DriveRoad.At(s,out _),Vector3.Cross(Vector3.up,tangent).normalized);
+                bool laneHeld=false;
                 if(Mathf.Abs(desiredLane-currentLane)>1 && !LaneClear(s,desiredLane,speed))
-                    desiredLane=trail?Mathf.Clamp(currentLane,-passLane,passLane):Mathf.Clamp(currentLane,-driveHalfWidth+1.2f,driveHalfWidth-1.2f);
+                { laneHeld=true; desiredLane=trail?Mathf.Clamp(currentLane,-passLane,passLane):Mathf.Clamp(currentLane,-driveHalfWidth+1.2f,driveHalfWidth-1.2f); }
+                // Chastain Rush, Round 55 (E): a pass is under way while it heads for (or holds) the other lane, clear, past a slower car; it counts once
+                // it is back in its own lane with nothing slower ahead
+                if (slowerAhead && !laneHeld && Mathf.Abs(desiredLane - lane) > 1f) { passing = true; passLaneNow = desiredLane; }
+                else if (laneHeld) passLaneNow = float.NaN;
+                else if (passing && !slowerAhead && Mathf.Abs(currentLane - lane) < 1f) { passing = false; passLaneNow = float.NaN; Passes++; }
+                if (!slowerAhead && Mathf.Abs(currentLane - lane) < 1f) passLaneNow = float.NaN;
             }
 
             DecideShortcut(s);
@@ -258,7 +271,16 @@ namespace Racer
                 // ignores static ground inside a committed run-up").
                 if((activeBranch||trail||(plannedBranch&&Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length)<40))&&!hit.rigidbody) continue;   // Round 18: on the trail too
                 float aheadSpeed=hit.rigidbody?Mathf.Max(0,Vector3.Dot(hit.rigidbody.linearVelocity,transform.forward)):0;
-                float allowed = Mathf.Sqrt(Mathf.Max(0,aheadSpeed*aheadSpeed+2*judgment*(hit.distance-4)));
+                // Chastain Rush, Round 55 (E): a car it is pulling out round (the pass lane chosen and clear) does not stop it: it goes on past at
+                // 4 m/s more than that car, never stopping on its bumper; a car it cannot pass yet it follows a car length back (8 m to the hit, Racer's 4 m: room to pull out)
+                float keep = 4f, floor = 0f;
+                if (PassFix && hit.rigidbody && hit.rigidbody != Car.Body)
+                {
+                    float hitLane = Vector3.Dot(hit.rigidbody.position - DriveRoad.At(s, out _), Vector3.Cross(Vector3.up, tangent).normalized);
+                    if (!float.IsNaN(passLaneNow) && Mathf.Abs(hitLane - passLaneNow) > 2.1f) floor = aheadSpeed + 4f;   // pulling out round it: on past it
+                    else keep = 8f;
+                }
+                float allowed = Mathf.Max(floor, Mathf.Sqrt(Mathf.Max(0,aheadSpeed*aheadSpeed+2*judgment*(hit.distance-keep))));
                 if(allowed<TargetSpeed){LastObstacle=hit.collider.name+"@"+hit.distance.ToString("F1");obstacleVehicle=hit.rigidbody!=null;}
                 TargetSpeed = Mathf.Min(TargetSpeed, allowed);
             }
@@ -296,6 +318,7 @@ namespace Racer
                 TryRecover(s);
 
             LastThrottle=throttle; LastBrake=brake; if(brake>.1f) BrakingSeconds+=Time.fixedDeltaTime;
+            if(!finished&&obstacleVehicle&&speed<10f) BehindSeconds+=Time.fixedDeltaTime;   // Round 55 (E): close behind a car, slow
             Car.Simulate(throttle, brake, steering, Time.fixedDeltaTime);
         }
 
