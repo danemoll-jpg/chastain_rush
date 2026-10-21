@@ -1,0 +1,45 @@
+Round 54 check, 2026-10-21 07:53, the exe, 1280 x 720, muted.
+
+=== D1. traffic at the race barriers (traffic Normal), 90 s of each race at double speed
+PASS  chastain_glen_loop.json reverse: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  9 barriers; 0 turned round at one; samples within 8 m of one 0
+PASS  chastain_glen_loop.json reverse: a car driven at a barrier on its closed road stops short and turns round, never pushes  -  B1 (Courtfield Trace at lap 71 m): came within 19.4 m, did not turn, longest pushing 0.0 s; B3 (Chasefield Way at lap 201 m): came within 33.3 m, did not turn, longest pushing 0.0 s; B4 (Chasefield Way at lap 643 m): came within 37.0 m, did not turn, longest pushing 0.0 s
+PASS  chastain_lakes.json forward: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  18 barriers; 0 turned round at one; samples within 8 m of one 0
+PASS  chastain_lakes.json forward: a car driven at a barrier on its closed road stops short and turns round, never pushes  -  B1 (Boat Rock Lane Northwest at lap 106 m): came within 16.2 m, did not turn, longest pushing 0.0 s; B2 (Saers Court at lap 322 m): came within 52.7 m, did not turn, longest pushing 0.0 s; B3 (Candace Lane at lap 495 m): came within 26.9 m, did not turn, longest pushing 0.0 s
+PASS  addison_heights.json forward: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  11 barriers; 0 turned round at one; samples within 8 m of one 0
+PASS  addison_heights.json forward: a car driven at a barrier on its closed road stops short and turns round, never pushes  -  B2 (Lyndon Drive at lap 614 m): came within 8.4 m, did not turn, longest pushing 0.0 s; B5 (Suholden Circle Northeast at lap 1265 m): came within 21.2 m, did not turn, longest pushing 0.0 s; B6 (Suholden Circle Northeast at lap 1584 m): came within 2.2 m, turned round, longest pushing 0.0 s
+
+=== A7. Addison Heights forward #1 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1 Hard: EMBER (Highball Fastback) finishes  -  total 308.8 s, laps 124.7 / 93.0 / 91.1, missed 0, shortcuts lap 2 f_elaine_jump, lap 3 f_lyndon_crew
+PASS  forward #1 Hard: GOLD (Skyfin Cruiser) finishes  -  total 282.9 s, laps 127.6 / 80.9 / 74.4, missed 0, shortcuts lap 2 f_lyndon_crew, lap 3 f_lyndon_crew, lap 3 f_elaine_jump
+PASS  forward #1 Hard: BLUE (Longroof GT) finishes  -  total 306.9 s, laps 126.8 / 83.5 / 96.6, missed 0, shortcuts lap 3 f_lyndon_crew
+
+=== A7. Addison Heights forward #2 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #2 Hard: EMBER (Sundown Roadster) finishes  -  total 303.0 s, laps 126.1 / 98.2 / 78.7, missed 0, shortcuts lap 2 f_lyndon_crew
+PASS  forward #2 Hard: GOLD (Highball Fastback) finishes  -  total 295.4 s, laps 91.4 / 93.0 / 111.0, missed 0, shortcuts lap 2 f_lyndon_crew
+PASS  forward #2 Hard: BLUE (Turf Rocket) finishes  -  total 275.2 s, laps 110.1 / 98.5 / 66.6, missed 0, shortcuts lap 1 f_lyndon_crew, lap 1 f_elaine_jump, lap 3 f_lyndon_crew
+
+=== A7. Addison Heights reverse #1 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #1 Hard: EMBER (Highball Fastback) finishes  -  total 305.7 s, laps 92.0 / 78.5 / 135.2, missed 0, shortcuts lap 1 r_bounce_house, lap 1 r_joel_terrace, lap 2 r_joel_terrace, lap 3 r_joel_terrace
+PASS  reverse #1 Hard: GOLD (Drifter Twin) finishes  -  total 235.8 s, laps 79.1 / 81.1 / 75.6, missed 0, shortcuts lap 1 r_joel_terrace, lap 2 r_joel_terrace, lap 3 r_joel_terrace
+PASS  reverse #1 Hard: BLUE (Trail Four) finishes  -  total 275.6 s, laps 88.6 / 76.6 / 110.5, missed 0, shortcuts lap 1 r_joel_terrace, lap 2 r_joel_terrace, lap 3 r_bounce_house, lap 3 r_joel_terrace
+
+=== A7. Addison Heights reverse #2 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #2 Hard: EMBER (Sundown Roadster) finishes  -  total 271.9 s, laps 93.6 / 90.9 / 87.4, missed 0, shortcuts lap 1 r_joel_terrace, lap 2 r_bounce_house, lap 2 r_joel_terrace, lap 3 r_joel_terrace
+PASS  reverse #2 Hard: GOLD (Pebble Coupe) finishes  -  total 294.7 s, laps 122.1 / 86.4 / 86.2, missed 0, shortcuts lap 1 r_bounce_house, lap 1 r_joel_terrace, lap 2 r_joel_terrace, lap 3 r_joel_terrace
+PASS  reverse #2 Hard: BLUE (Needle 600) finishes  -  total 221.7 s, laps 71.7 / 73.9 / 76.1, missed 0, shortcuts lap 1 r_joel_terrace, lap 2 r_joel_terrace, lap 3 r_joel_terrace
+  Hard, all races: best 66.6 s, median 86.4 s, slowest 135.2 s (24 flying laps)
+PASS  A7: on Hard the AI's best flying laps are with Dan's (1:12 to 1:15): best within 1:20  -  best 66.6 s, median 86.4 s, slowest 135.2 s (24 flying laps)
+
+=== A7. Addison Heights forward #1 on Easy: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1 Easy: EMBER (Ridge Scrambler) finishes  -  total 305.3 s, laps 119.4 / 98.4 / 87.6, missed 0, shortcuts lap 2 f_lyndon_crew, lap 2 f_elaine_jump, lap 3 f_lyndon_crew
+PASS  forward #1 Easy: GOLD (Skyfin Cruiser) finishes  -  total 343.2 s, laps 126.1 / 93.6 / 123.5, missed 0, shortcuts lap 2 f_lyndon_crew
+PASS  forward #1 Easy: BLUE (Ridge Scrambler) finishes  -  total 292.5 s, laps 108.2 / 91.7 / 92.6, missed 0, shortcuts 
+
+=== A7. Addison Heights forward #1 on Normal: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1 Normal: EMBER (Skyfin Cruiser) finishes  -  total 271.9 s, laps 81.2 / 78.9 / 111.8, missed 0, shortcuts lap 1 f_lyndon_crew, lap 2 f_lyndon_crew, lap 2 f_elaine_jump
+PASS  forward #1 Normal: GOLD (Turf Rocket) finishes  -  total 261.9 s, laps 81.1 / 97.5 / 83.3, missed 0, shortcuts lap 1 f_elaine_jump, lap 2 f_elaine_jump, lap 3 f_lyndon_crew
+PASS  forward #1 Normal: BLUE (Ridge Scrambler) finishes  -  total 255.6 s, laps 91.7 / 68.7 / 95.2, missed 0, shortcuts lap 1 f_elaine_jump, lap 2 f_lyndon_crew
+  Easy: best 87.6 s, median 93.6 s, slowest 123.5 s (6 flying laps); Normal: best 68.7 s, median 95.2 s, slowest 111.8 s (6 flying laps)
+FAIL  A7: Easy slower than Normal (median flying lap)  -  Easy best 87.6 s, median 93.6 s, slowest 123.5 s (6 flying laps); Normal best 68.7 s, median 95.2 s, slowest 111.8 s (6 flying laps)
+
+25 of 26 checks passed.

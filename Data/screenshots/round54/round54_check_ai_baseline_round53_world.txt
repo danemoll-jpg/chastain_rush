@@ -1,0 +1,42 @@
+Round 54 check, 2026-10-21 06:12, the exe, 1280 x 720, muted.
+
+=== B. a missed line (Noonday Creek, its own vehicle): the lap still counts, the 5 s penalty
+PASS  the start line starts the clock
+PASS  lap 1 counts when the line is passed 15 m off its middle (outside the arch)  -  laps 1, penalty 5 s, the log: Lap 1  start / finish line  +5 s  missed
+PASS  passing the line's plane 70 m off (a cut) counts nothing  -  laps 1
+PASS  lap 2 at the line  -  laps 2
+PASS  the last lap missed at the line: the race ends there with the penalty  -  finished True, total 10.3 s, penalty 10 s, laps 5.1 / 0.2 / 5.1
+
+=== C. COMPLETE RACE (the Chastain Glen loop, 1 lap, 3 AI)
+PASS  the player has finished, the AI still racing  -  player True, AI finished 0
+FAIL  the COMPLETE RACE button shows (with its glyph)  -  can True, button missing
+PASS  every AI is classified at an estimated finish, the button gone  -  EMBER 0:44.429 (estimated); GOLD 0:55.599 (estimated); BLUE 0:43.978 (estimated)
+
+=== D1. traffic at the race barriers (traffic Normal), 90 s of each race at double speed
+PASS  chastain_glen_loop.json reverse: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  9 barriers; 0 turned round at one; samples within 8 m of one 0
+PASS  chastain_lakes.json forward: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  18 barriers; 0 turned round at one; samples within 8 m of one 0
+PASS  addison_heights.json forward: no traffic car pushes at a barrier (4 s or more with the throttle on, standing)  -  12 barriers; 0 turned round at one; samples within 8 m of one 0
+
+=== A7. Addison Heights forward #1 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #1 Hard: EMBER (Turf Rocket) finishes  -  total 276.7 s, laps 82.7 / 94.1 / 100.0, missed 0, shortcuts lap 1 f_lyndon_crew, lap 3 f_lyndon_crew
+PASS  forward #1 Hard: GOLD (Trail Four) finishes  -  total 267.2 s, laps 89.7 / 94.9 / 82.7, missed 0, shortcuts 
+PASS  forward #1 Hard: BLUE (Street Classic) finishes  -  total 377.2 s, laps 108.8 / 133.0 / 135.3, missed 0, shortcuts 
+
+=== A7. Addison Heights forward #2 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  forward #2 Hard: EMBER (Longroof GT) finishes  -  total 376.4 s, laps 122.1 / 144.1 / 110.2, missed 0, shortcuts 
+PASS  forward #2 Hard: GOLD (Ridge Scrambler) finishes  -  total 274.1 s, laps 95.6 / 90.9 / 87.6, missed 1, shortcuts 
+PASS  forward #2 Hard: BLUE (Pebble Coupe) finishes  -  total 357.4 s, laps 132.0 / 142.3 / 83.0, missed 0, shortcuts lap 3 f_lyndon_crew
+
+=== A7. Addison Heights reverse #1 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #1 Hard: EMBER (Pebble Coupe) finishes  -  total 351.6 s, laps 151.4 / 91.5 / 108.6, missed 0, shortcuts 
+PASS  reverse #1 Hard: GOLD (Longroof GT) finishes  -  total 432.5 s, laps 157.8 / 150.0 / 124.7, missed 0, shortcuts 
+PASS  reverse #1 Hard: BLUE (Turf Rocket) finishes  -  total 329.6 s, laps 131.8 / 94.8 / 103.0, missed 0, shortcuts 
+
+=== A7. Addison Heights reverse #2 on Hard: 3 laps, 3 AI, traffic Normal, the player parked off the course
+PASS  reverse #2 Hard: EMBER (Turf Rocket) finishes  -  total 315.2 s, laps 106.3 / 96.0 / 112.8, missed 0, shortcuts 
+PASS  reverse #2 Hard: GOLD (Sundown Roadster) finishes  -  total 388.3 s, laps 143.4 / 94.0 / 150.9, missed 0, shortcuts 
+PASS  reverse #2 Hard: BLUE (Skyfin Cruiser) finishes  -  total 396.8 s, laps 140.8 / 115.7 / 140.3, missed 0, shortcuts 
+  Hard, all races: best 82.7 s, median 108.6 s, slowest 150.9 s (24 flying laps)
+FAIL  A7: on Hard the AI's best flying laps are with Dan's (1:12 to 1:15): best within 1:20  -  best 82.7 s, median 108.6 s, slowest 150.9 s (24 flying laps)
+
+22 of 24 checks passed.

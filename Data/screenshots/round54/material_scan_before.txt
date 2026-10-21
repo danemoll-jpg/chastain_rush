@@ -1,0 +1,2 @@
+4731 renderers, 1 empty or broken material slots
+World/Shortcuts/Shortcut r3_trampoline (Trampoline hop)/Party sign face r3_trampoline slot 0: no material at (3009.2, 296.7, 1212.3)

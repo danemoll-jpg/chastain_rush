@@ -1,0 +1,50 @@
+Round 54 check, 2026-10-21 07:44, the exe, 1280 x 720, muted.
+
+=== B. a missed line (Noonday Creek, its own vehicle): the lap still counts, the 5 s penalty
+PASS  the start line starts the clock
+PASS  lap 1 counts when the line is passed 15 m off its middle (outside the arch)  -  laps 1, penalty 5 s, the log: Lap 1  start / finish line  +5 s  missed
+PASS  passing the line's plane 70 m off (a cut) counts nothing  -  laps 1
+PASS  lap 2 at the line  -  laps 2
+PASS  the last lap missed at the line: the race ends there with the penalty  -  finished True, total 10.3 s, penalty 10 s, laps 5.1 / 0.2 / 5.1
+
+=== C. COMPLETE RACE (the Chastain Glen loop, 1 lap, 3 AI)
+PASS  the player has finished, the AI still racing  -  player True, AI finished 0
+PASS  the COMPLETE RACE button shows (with its glyph)  -  can True, button True
+PASS  every AI is classified at an estimated finish, the button gone  -  EMBER 0:52.070 (estimated); GOLD 0:55.658 (estimated); BLUE 0:55.319 (estimated)
+
+=== A1. THE ELAINE JUMP (forward), flat out, timed against the lap's own way over the same ground
+  Elaine jump: forgives Suholden Circle south, Kelly Drive
+  Street Classic   the lap's way 20.1 s; the shortcut 18.7 s, saves 1.4 s; STOPPED stopped at (2967, 198); off at 20.8 m/s, longest air 1.58 s, first down at (3101, 305), deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 18.6 s; the shortcut -1.0 s, saves -99.0 s; STOPPED stopped at (2973, 187); off at 15.0 m/s, longest air 1.36 s, first down at (3196, 316), deepest in a shrub bed 0.00
+FAIL  Elaine jump flat out (Street Classic, Drifter Twin): through, taken, faster than the lap's way  -  not: Street Classic, Drifter Twin
+  1. down Elaine Circle on the ground (no jump: held to 13 m/s over the crest), then the way: 18.2 s (-1.9 s against the lap's way); off at 20.8 m/s, longest air 1.12 s, first down at (3101, 305), deepest in a shrub bed 0.00, slowest 6.6 m/s
+  2. from the valley along Elaine west, through the yards (960's, 1007's) to Crawford Circle south of the line: did not get through (stopped, at (3041, 284)); off at 32.0 m/s, longest air 1.46 s, first down at (3162, 309), deepest in a shrub bed 1.00, slowest 0.1 m/s
+FAIL  Elaine jump: short, missed, or its ground without the stunt, each slower than the plain lap  -  faster: down Elaine Circle on the ground (no jump: held to 13 m/s over the crest), then the way
+
+=== A2. THE JOEL TERRACE (reverse), flat out, timed against the lap's own way over the same ground
+  Joel terrace: forgives Hayworth Drive
+  Street Classic   the lap's way 7.8 s; the shortcut 7.1 s, saves 0.8 s; off at 20.0 m/s, longest air 1.52 s, first down at (2990, 385), deepest in a shrub bed 1.00
+  Drifter Twin     the lap's way 7.4 s; the shortcut 12.7 s, saves -5.3 s; off at 27.8 m/s, longest air 1.72 s, first down at (2995, 383), deepest in a shrub bed 1.00
+FAIL  Joel terrace flat out (Street Classic, Drifter Twin): through, taken, faster than the lap's way  -  not: Drifter Twin
+  1. short: 12 m/s off the terrace's edge: 8.7 s (+0.8 s against the lap's way); off at 20.1 m/s, longest air 1.54 s, first down at (2991, 385), deepest in a shrub bed 1.00, slowest 4.1 m/s
+  2. down the bank beside the terrace (east of it), no jump: did not get through (stopped, at (2972, 397)); off at 25.2 m/s, longest air 0.76 s, first down at (2971, 397), deepest in a shrub bed 1.00, slowest 0.2 m/s
+  3. down the bank west of the terrace, no jump: did not get through (stopped, at (2963, 395)); off at 14.3 m/s, longest air 0.76 s, first down at (2956, 399), deepest in a shrub bed 1.00, slowest 0.0 m/s
+PASS  Joel terrace: short, missed, or its ground without the stunt, each slower than the plain lap
+
+=== A3. THE BOUNCE HOUSE (reverse), flat out, timed against the lap's own way over the same ground
+  Bounce house: forgives Suholden Circle south, Suholden Circle
+  Street Classic   the lap's way 12.1 s; the shortcut 14.8 s, saves -2.7 s; off at 20.5 m/s, longest air 3.22 s, first down at (3248, 263), deepest in a shrub bed 0.00
+  Drifter Twin     the lap's way 11.0 s; the shortcut 17.2 s, saves -6.2 s; off at 15.0 m/s, longest air 2.82 s, first down at (3149, 168), deepest in a shrub bed 0.00
+FAIL  Bounce house flat out (Street Classic, Drifter Twin): through, taken, faster than the lap's way  -  not: Street Classic, Drifter Twin
+  1. slow into the bounce house (9 m/s): bounced back: did not get through (stopped, at (3209, 223)); off at 20.5 m/s, longest air 0.82 s, first down at (3182, 183), deepest in a shrub bed 1.00, slowest 0.0 m/s
+  2. round the bounce house: the yards, the bluff's south end and up the hill to Suholden Circle: 21.3 s (+9.3 s against the lap's way); off at 10.9 m/s, longest air 1.28 s, first down at (3262, 256), deepest in a shrub bed 1.00, slowest 4.1 m/s
+PASS  Bounce house: short, missed, or its ground without the stunt, each slower than the plain lap
+
+=== E2. out of MH14 (the Lake drain shortcut's way up onto North Lakeside Drive): turned along the street as it clears it, where it comes down
+  Street Classic   NO POP; heading off the street's line as it cleared it NaN deg; first down -; STOPPED stopped
+  Drifter Twin     out of MH14; heading off the street's line as it cleared it -1 deg; first down -; on along North Lakeside Drive
+FAIL  E2: out of MH14 along the street (within 10 deg) and down on the road (within 6 m of the manhole's line)  -  not: Street Classic, Drifter Twin
+
+=== pictures (free roam)
+
+10 of 15 checks passed.
