@@ -83,14 +83,21 @@ namespace ChastainRush
             ruts.ToObject(name, mats.Driveway, parent, false, false);
         }
 
+        // Round 54 (D2, Dan BUG-007: the PARTY sign drawn solid magenta): the Chastain Lakes boat's sign (MapBuilder.LakesBoat.cs) made
+        // PartySign.mat again in the same build; a full build's CreateAsset replaces the file, so the Glen sign's plate was left pointing at
+        // a material that no longer existed. Now one material per face (left / right arrow), made once per build and shared.
+        static readonly Dictionary<string, Material> partySignMats = new Dictionary<string, Material>();
         static Material PartySignMaterial(bool left, string name)
         {
-            string path = "Assets/HandMade/Shortcut/" + name + (left ? "Left.png" : "Right.png");
+            string key = name + (left ? "Left" : "Right");
+            if (partySignMats.TryGetValue(key, out var made) && made != null && AssetDatabase.Contains(made)) return made;
+            string path = "Assets/HandMade/Shortcut/" + key + ".png";
             var tex = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             if (tex == null) { Debug.LogWarning("[Round19] " + path + " missing (Tools/handmade/make_party_sign.py): no party sign face"); return null; }
-            var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
+            var m = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = key };
             m.SetTexture("_BaseMap", tex); m.mainTexture = tex; m.SetColor("_BaseColor", Color.white); m.SetFloat("_Smoothness", 0.1f); m.SetFloat("_Cull", (float)CullMode.Back);
-            m = GenAsset(m, GeneratedDir + "/" + name + ".mat");
+            m = GenAsset(m, GeneratedDir + "/" + key + ".mat");
+            partySignMats[key] = m;
             return m;
         }
 
