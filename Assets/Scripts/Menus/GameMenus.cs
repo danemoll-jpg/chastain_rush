@@ -141,6 +141,7 @@ namespace ChastainRush
             if (!started || MenuInput.Blocked || WorldMap.OwnsInput || StartupTitle.Blocking || LoadingScreen.Holding) return;   // Round 20: the map has the buttons (B / Esc close it)   // Round 51: not under the title or the loading screen
             var hud = DeveloperHud.Instance;
             if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
+            if (UpdateComplete()) return;   // Round 54 (C): COMPLETE RACE while the menus are closed
             if (open && UpdateKeyboard()) return;   // Round 34: the on-screen keyboard's own keys (Delete, Space, Start / Enter saves)
             if (menuKey.WasPressedThisFrame())
             {
@@ -200,6 +201,7 @@ namespace ChastainRush
             adjustAction.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/leftArrow").With("Positive", "<Keyboard>/rightArrow"); adjustAction.AddBinding("<Gamepad>/dpad/x");
             adjustAction.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/a").With("Positive", "<Keyboard>/d"); adjustAction.AddBinding("<Gamepad>/leftStick/x"); adjustAction.Enable();
 
+            BuildCompleteButton(canvas.transform);   // Round 54 (C): under the menu's shade, over the race
             shade = Rect("Menu shade", canvas.transform).gameObject; Stretch(shade.GetComponent<RectTransform>(), 0, 0, 0, 0);
             shade.AddComponent<UnityEngine.UI.Image>().color = new Color(.015f, .025f, .04f, .78f);
             card = Rect("Menu card", shade.transform); card.anchorMin = card.anchorMax = card.pivot = new Vector2(.5f, .5f); card.sizeDelta = new Vector2(1020, 656);
@@ -454,6 +456,7 @@ namespace ChastainRush
             Clear(finished ? "RACE OVER" : "PAUSED", race.Route.Name + ", " + race.Route.Laps + " laps, " + race.Route.Direction + (RaceController.AiCount > 0 ? ", 3 AI drivers" : ", solo"));
             int n = 0;
             if (!finished) Row(n++, "resume", "RESUME", CloseMenu);
+            if (race.CanSimulateRemaining) Row(n++, "complete", "COMPLETE RACE", () => { race.CompleteRace(); CloseMenu(); });   // Round 54 (C)
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); race.EndRace(); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
