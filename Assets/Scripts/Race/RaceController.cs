@@ -132,7 +132,7 @@ namespace ChastainRush
                 return boards;
             }
         }
-        public string BoardCategory => Route != null ? RecordBoards.Category(Route.Name, RecordDirection, Route.Laps) : "";
+        public string BoardCategory => Route != null ? RecordBoards.Category(Route.RecordName, RecordDirection, Route.Laps) : "";
         // Round 35 (Part C): Racer's WeatherGrip.RecordTag: a race in rain or snow (with the grip setting On) keeps its times apart ("forward-rain")
         string RecordDirection => Route.Direction + Racer.WeatherGrip.RecordTag(Racer.WeatherGrip.ChosenFor());
         public readonly FinishPresentation FinishCards = new FinishPresentation();
@@ -140,6 +140,8 @@ namespace ChastainRush
         public int LastLapRank { get; private set; }
         public int RaceRank { get; private set; }
         // every route and the directions it is raced in, for the Records page
+        public static readonly Dictionary<string, string> RecordTitles = new Dictionary<string, string>();   // Round 54 (A1): records name -> route name
+        public static string RecordTitle(string recordName) => RecordTitles.TryGetValue(recordName, out var t) ? t : recordName;
         public List<(string route, string direction)> RecordTracks()
         {
             var list = new List<(string, string)>();
@@ -150,9 +152,10 @@ namespace ChastainRush
                     var j = JsonUtility.FromJson<RouteJson>(embeddedRouteJsons[i]); if (j == null || string.IsNullOrEmpty(j.name)) continue;
                     foreach (var d in new[] { "forward", "reverse" }) if (j.Allows(d) && (d == "forward" || j.directions != null && j.directions.Length > 0 || j.reverse_grid_back_m > 0f))
                     {
-                        list.Add((j.name, d));
+                        string rn = string.IsNullOrEmpty(j.records_as) ? j.name : j.records_as; RecordTitles[rn] = j.name;   // Round 54 (A1): kept under records_as, shown by name
+                        list.Add((rn, d));
                         // Round 35 (Part C): a wet or snowy board, once it has a time
-                        foreach (var w in new[] { "-rain", "-snow" }) { string key = j.name + "|" + d + w; if (Boards != null && (Boards.Top(c => RecordBoards.LapCategory(c) == key, false).Count > 0 || Boards.Top(c => RecordBoards.LapCategory(c) == key, true).Count > 0)) list.Add((j.name, d + w)); }
+                        foreach (var w in new[] { "-rain", "-snow" }) { string key = rn + "|" + d + w; if (Boards != null && (Boards.Top(c => RecordBoards.LapCategory(c) == key, false).Count > 0 || Boards.Top(c => RecordBoards.LapCategory(c) == key, true).Count > 0)) list.Add((rn, d + w)); }
                     }
                 }
                 catch (Exception) { }
@@ -361,6 +364,7 @@ namespace ChastainRush
             Vector3 pos = e.Car.transform.position, prevPos = e.PrevPos;
             var hits = new List<(float f, int id)>();
             if (Route.Gate.Crossed(prevPos, pos, Reach(e, Route.Gate), out float fg)) hits.Add((fg, 0));
+            else if (e.ClockStarted && e.NextCheckpoint >= Route.Checkpoints.Count && LineMissedWide(e, prevPos, pos, out float fw)) hits.Add((fw, 4000));   // Round 54 (B)
             for (int i = 0; i < Route.Checkpoints.Count; i++)
                 if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(e, Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
             for (int i = 0; i < Route.Shortcuts.Count; i++)
@@ -385,6 +389,7 @@ namespace ChastainRush
                 float at = t0 + h.f * dt;
                 crossing = Vector3.Lerp(prevPos, pos, h.f);   // Round 43 (B1): where the line was crossed, for the ghost
                 if (h.id == 0) OnGate(e, at);
+                else if (h.id == 4000) OnLineMissed(e, at);
                 else if (h.id < 1000) OnCheckpoint(e, h.id - 1, at);
                 else if (h.id < 2000) OnShortcutEntry(e, Route.Shortcuts[h.id - 1000], at, "its entry plane");
                 else if (h.id < 3000) OnShortcutExit(e, Route.Shortcuts[h.id - 2000], at);
@@ -414,19 +419,6 @@ namespace ChastainRush
         void OnCheckpoint(RaceEntrant e, int index, float at)
         {
             if (!e.ClockStarted) return;       // before the first start-line crossing there is no lap to be on
-            // Round 54 (B, Dan on Noonday Creek: missed the finish line on lap 2 "it didnt advance my lap"): a racer waiting for the line
-            // (every checkpoint of the lap met) who reaches an early checkpoint of the next lap went past the line without crossing it:
-            // the line is a missed checkpoint like any other. The lap is counted here, with the 5 s penalty, and this checkpoint goes
-            // on the new lap. On the last lap the race ends here (the time from the line to this checkpoint is part of the cost).
-            int n = Route.Checkpoints.Count;
-            if (e.NextCheckpoint >= n && index < n - 1)
-            {
-                e.Missed.Add(n); e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
-                e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  {(e.CompletedLaps + 1 >= Route.Laps ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s  missed");
-                Log(e, $"PENALTY +{MissPenaltySeconds:0} s: missed the line on lap {e.CompletedLaps + 1}, found at CP{index + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
-                CountLap(e, at, true);
-                if (e.Finished) return;
-            }
             if (index < e.NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < index; k++) { Miss(e, k, at); skipped.Add(k + 1); }
@@ -478,6 +470,33 @@ namespace ChastainRush
             Log(e, $"RESET at {RaceClock:0.000}: placed on from lap {from:0} m to {to:0} m; checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
             MissMessage(e, skipped);
             if (e.IsPlayer) markers.Refresh(this);
+        }
+
+        // Round 54 (B, Dan on Noonday Creek: missed the finish line on lap 2 and "it didnt advance my lap"): the line missed is a missed checkpoint
+        // like any other. A racer waiting for the line (every checkpoint of the lap met or forgiven) who goes past it outside its arch, within
+        // LineMissReach of it, on the lap's last or first stretch, has its lap counted there with the 5 s penalty; on the last lap that ends its race
+        // there. A racer who never comes near the line (a cut through the yards) still has no lap until it crosses it, as before.
+        public const float LineMissReach = 40f;
+        bool LineMissedWide(RaceEntrant e, Vector3 from, Vector3 to, out float fraction)
+        {
+            fraction = 0f; var g = Route.Gate;
+            Vector3 a = from - g.Position, b = to - g.Position;
+            float za = Vector3.Dot(a, g.Forward), zb = Vector3.Dot(b, g.Forward);
+            if (!(za < 0f && zb >= 0f)) return false;
+            fraction = -za / (zb - za); var hit = Vector3.Lerp(a, b, fraction);
+            float side = Mathf.Abs(Vector3.Dot(hit, g.Right));
+            if (side > LineMissReach || hit.y < -g.Below - 10f || hit.y > g.Above + 10f) return false;
+            float L = Route.LapLength, d = Route.LapStationOf(Vector3.Lerp(from, to, fraction));   // from the line, in travel order
+            return d < 0.1f * L || d > 0.75f * L;   // near the line along the lap (not another stretch that passes its plane)
+        }
+        void OnLineMissed(RaceEntrant e, float at)
+        {
+            int n = Route.Checkpoints.Count;
+            e.Missed.Add(n); e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
+            bool last = e.CompletedLaps + 1 >= Route.Laps;
+            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  {(last ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s  missed");
+            Log(e, $"PENALTY +{MissPenaltySeconds:0} s: went past the {(last ? "finish" : "start / finish")} line outside it on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
+            CountLap(e, at, true);
         }
 
         void OnShortcutExit(RaceEntrant e, RaceShortcut sc, float at)
@@ -870,7 +889,7 @@ namespace ChastainRush
 
         // Round 13: kept per vehicle. The Street Classic ("original", the retired prototype's own tuning) keeps the key the
         // records had before, so its best times carry on; every other vehicle adds its id
-        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.Name}|{RecordDirection}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
+        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.RecordName}|{RecordDirection}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
         public void ReloadRecords() { if (Route != null) LoadRecords(); }   // Round 13: after a vehicle switch
 
         public static string RecordsPath()

@@ -68,7 +68,7 @@ namespace ChastainRush
         // ---------------------------------------------------------------- the RECORDS page
         int recordTrack = -1, recordBoard; string recordsVehicle = "All vehicles";
         List<(string route, string direction)> RecordTracks() => race ? race.RecordTracks() : new List<(string, string)>();
-        static string TrackTitle((string route, string direction) t) => t.route + " - " + (t.direction.StartsWith("reverse") ? "Reverse" : "Forward") + (t.direction.EndsWith("-rain") ? ", rain" : t.direction.EndsWith("-snow") ? ", snow" : "");   // Round 35: the weather's boards
+        static string TrackTitle((string route, string direction) t) => RaceController.RecordTitle(t.route) + " - " + (t.direction.StartsWith("reverse") ? "Reverse" : "Forward") + (t.direction.EndsWith("-rain") ? ", rain" : t.direction.EndsWith("-snow") ? ", snow" : "");   // Round 35: the weather's boards
         static bool OnTrack((string route, string direction) t, string category) => RecordBoards.LapCategory(category) == t.route + "|" + t.direction;
         static string RecordDate(string date) => DateTime.TryParse(date, null, System.Globalization.DateTimeStyles.RoundtripKind, out var d) ? d.ToLocalTime().ToString("d MMM yyyy") : "—";
         void OpenRecords() { recordTrack = -1; recordsVehicle = "All vehicles"; Navigate("records"); }
@@ -76,7 +76,7 @@ namespace ChastainRush
         void ChooseRecordTrack(List<(string route, string direction)> tracks)
         {
             var boards = RaceController.Boards;
-            int last = race && race.Route != null ? tracks.FindIndex(t => t.route == race.Route.Name && t.direction == race.Route.Direction) : -1;
+            int last = race && race.Route != null ? tracks.FindIndex(t => t.route == race.Route.RecordName && t.direction == race.Route.Direction) : -1;
             bool Has(int i) => boards != null && (boards.Top(c => OnTrack(tracks[i], c), false).Count > 0 || boards.Top(c => OnTrack(tracks[i], c), true).Count > 0);
             if (last >= 0 && (Has(last) || race.State != RaceController.Stage.Free)) { recordTrack = last; return; }
             for (int i = 0; i < tracks.Count; i++) if (Has(i)) { recordTrack = i; return; }
@@ -143,7 +143,7 @@ namespace ChastainRush
             var saved = ghost ? ghost.Saved(track.route, rev) : new List<(string vehicle, double seconds, string date)>();
             details.gameObject.SetActive(true);
             details.text = "Race your best compatible clean lap.\n" + (ghost ? ghost.Status : "No ghost here.") + "\nNo resets, teleports or missed checkpoints. Official shortcuts count."
-                + (saved.Count == 0 ? $"\nNo clean-lap ghosts on {track.route} ({(rev ? "reverse" : "forward")}) yet." : "");
+                + (saved.Count == 0 ? $"\nNo clean-lap ghosts on {RaceController.RecordTitle(track.route)} ({(rev ? "reverse" : "forward")}) yet." : "");
             details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 120;
             if (ghost) Toggle(row++, "ghost", "Ghost", ghost.Enabled, () => { ghost.Toggle(); Show(); });
             var widths = new[] { .3f, .4f, .3f }; int first = row;

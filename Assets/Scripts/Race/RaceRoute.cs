@@ -62,6 +62,8 @@ namespace ChastainRush
     public class RouteJson
     {
         public string name, direction;
+        // Round 54 (A1): the name its records are kept under when the lap changed and the old times no longer compare (Addison Heights' moved line); none: name
+        public string records_as;
         public int laps;
         public float lap_length_m, lead_in_length_m, gate_s, gate_half_width_m, checkpoint_half_width_m, reverse_grid_back_m;
         public float gate_below_m, gate_above_m;   // Round 6: how far under / over the road surface a crossing still counts
@@ -79,7 +81,11 @@ namespace ChastainRush
         public bool traffic;   // Round 30 (A3): a race on open roads, traffic on its course (none yet: every race closes its roads to traffic)
         public float ai_half_width_m, ai_lane_m, ai_pass_lane_m;
         public RouteAiZoneJson[] ai_zones;
-        public RouteAiZoneJson[] ai_zones_reverse;   // Round 21: the reverse race's held speeds (its own jumps), in the reverse lap's stations
+        public RouteAiZoneJson[] ai_zones_reverse;
+        // Round 54 (A7, Dan on Addison Heights: "even on hard I beat the AI really bad"): a hilly course's own limits for the AI, Easy / Normal / Hard:
+        // the speed it holds on a grade over 14 % (RoadDriver's hillTargets, 26 / 32 / 35 m/s) and how hard a crest it takes at speed (the 'g' of
+        // sqrt(g / crest), 6.5 / 7.6 / 8.2: it keeps its wheels on the ground; more lets it fly a crest as a player does). None: RoadDriver's own
+        public float[] ai_hill_targets, ai_crest_g;   // Round 21: the reverse race's held speeds (its own jumps), in the reverse lap's stations
         // Round 27 (the underground race): loop_y / lead_in_y the heights of loop / lead_in (none: the ground's); underground: heights come
         // from the route, not the terrain over it, while it is raced (RaceRoute.Surface), and its arches are low with no light beams
         public float[] loop_y, lead_in_y;
@@ -168,6 +174,7 @@ namespace ChastainRush
     public sealed class RaceRoute
     {
         public string Name, Direction;
+        public string RecordName;   // Round 54 (A1): RouteJson.records_as, or Name
         public bool Reverse;
         public bool OwnReverse;             // Round 39: the reverse runs the route's own reverse lap (loop_rev), not the loop backward
         public int Laps;
@@ -187,7 +194,7 @@ namespace ChastainRush
         {
             string dir = string.IsNullOrEmpty(directionOverride) ? j.direction : directionOverride;
             if (dir != "forward" && dir != "reverse") throw new Exception($"Route direction must be \"forward\" or \"reverse\", not \"{dir}\"");
-            var r = new RaceRoute { Name = j.name, Direction = dir, Reverse = dir == "reverse", Laps = Mathf.Max(1, j.laps), LapLength = j.lap_length_m };
+            var r = new RaceRoute { Name = j.name, RecordName = string.IsNullOrEmpty(j.records_as) ? j.name : j.records_as, Direction = dir, Reverse = dir == "reverse", Laps = Mathf.Max(1, j.laps), LapLength = j.lap_length_m };
             r.OwnReverse = r.Reverse && j.OwnReverse;   // Round 39
             var loop = r.OwnReverse ? j.loop_rev : j.loop;
             int n = loop.Length / 2;

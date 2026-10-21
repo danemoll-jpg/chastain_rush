@@ -31,7 +31,7 @@ namespace ChastainRush
         public static CleanLapGhost Instance { get; private set; }
         ArcadeVehicle Car => race ? race.PlayerCar : null;
         string VehicleId => Car && Car.GetComponent<VehicleConfiguration>() ? Car.GetComponent<VehicleConfiguration>().profileId : "original";
-        public string Key => race.Route == null ? "" : race.Route.Name + "/" + (race.Route.Reverse ? "reverse" : "forward") + "/" + VehicleId + "/" + Rules;
+        public string Key => race.Route == null ? "" : race.Route.RecordName + "/" + (race.Route.Reverse ? "reverse" : "forward") + "/" + VehicleId + "/" + Rules;
         public string Root => root;
 
         public void Initialize(RaceController owner, string saveRoot)

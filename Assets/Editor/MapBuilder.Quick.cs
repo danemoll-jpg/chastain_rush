@@ -89,17 +89,18 @@ namespace ChastainRush
                     var trees = c.trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
                         (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)) || (AddisonNow != null && AddisonNow.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts; Round 52: off Addison Heights' road edges
                         (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
-                    if (creek != null || ridge != null)   // Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
+                    if (creek != null || ridge != null || AddisonNow != null)   // Round 54 (A7): Addison Heights' road sides too; Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
                     {
-                        var f = trees.Field; var br = new List<int>(); int nr = 0;
+                        var f = trees.Field; var br = new List<int>(); int nr = 0, na = 0;
                         for (int i = 0; i < f.count; i++)
                         {
                             var t = TreeField.Unpack(f.data, i);
                             if (creek != null && creek.Breakable(t.x, t.z)) br.Add(i);
                             else if (ridge != null && ridge.Breakable(t.x, t.z)) { br.Add(i); nr++; }
+                            else if (AddisonNow != null && AddisonNow.Breakable(t.x, t.z)) { br.Add(i); na++; }
                         }
                         f.breakable = br.ToArray();
-                        Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing");
+                        Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr - na} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing; [Round54] {na} beside the Addison Heights lap");
                     }
                     trees.Field.gameObject.AddComponent<TreeTrunks>();
                     Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");

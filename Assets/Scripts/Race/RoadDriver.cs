@@ -137,6 +137,16 @@ namespace Racer
                             if (along < nearest) { nearest = along; slowerLane = Vector3.Dot(other.Car.transform.position - DriveRoad.At(s, out _), Vector3.Cross(Vector3.up, tangent).normalized); }
                         }
                     }
+                // Chastain Rush, Round 54 (A7: on Addison Heights' open roads the AI queued behind traffic and stalled into resets): a slower traffic
+                // car ahead in its lane is passed as a racer is (when the other lane is clear: LaneClear)
+                if (!trail && ChastainRush.Traffic.Instance)
+                    foreach (var t in ChastainRush.Traffic.Instance.Cars)
+                    {
+                        if (!t || !t.gameObject.activeSelf) continue;
+                        var delta = t.Car.Body.position - transform.position;
+                        float along = Vector3.Dot(delta, tangent), side = Mathf.Abs(Vector3.Dot(delta, Vector3.Cross(Vector3.up, tangent)));
+                        if (along > 4 && along < 50 && side < 3.5f && t.Car.ForwardSpeed < speed + 2) { slowerAhead = true; if (along < nearest) nearest = along; }
+                    }
                 // Chastain Rush: either side (Racer passes on its left of a two-lane road); Round 19: on a trail, the side away from the
                 // slower vehicle (it passed on the side away from its own lane, and when the slower one was on that side it never went)
                 if (slowerAhead)
@@ -212,10 +222,11 @@ namespace Racer
                     DriveRoad.At(s + Direction * d, out var f);DriveRoad.At(s + Direction * (d + 8), out var next);
                     float curvature = Vector3.Angle(Vector3.ProjectOnPlane(f,Vector3.up),Vector3.ProjectOnPlane(next,Vector3.up)) * Mathf.Deg2Rad / 8;
                     float curveSpeed = Mathf.Sqrt(cornerGrip / Mathf.Max(.00015f, curvature));
-                    float hillSpeed = Mathf.Abs(f.y) > .14f ? hillTargets[skill] : Car.topSpeed;
+                    var rd = Race ? Race.RouteData : null;   // Chastain Rush, Round 54 (A7): a hilly course's own limits (RouteJson.ai_hill_targets, ai_crest_g)
+                    float hillSpeed = Mathf.Abs(f.y) > .14f ? (rd?.ai_hill_targets != null && rd.ai_hill_targets.Length == 3 ? rd.ai_hill_targets[skill] : hillTargets[skill]) : Car.topSpeed;
                     // Without downforce, a convex crest cannot support v²/r greater than gravity.
                     float crest=Mathf.Max(0,Mathf.Asin(f.y)-Mathf.Asin(next.y))/8;
-                    if (crest>.001f) hillSpeed=Mathf.Min(hillSpeed,Mathf.Sqrt((skill>0?(skill==2?8.2f:7.6f):6.5f)/crest));
+                    if (crest>.001f) hillSpeed=Mathf.Min(hillSpeed,Mathf.Sqrt((rd?.ai_crest_g != null && rd.ai_crest_g.Length == 3 ? rd.ai_crest_g[skill] : skill>0?(skill==2?8.2f:7.6f):6.5f)/crest));
                     TargetSpeed = Mathf.Min(TargetSpeed, Mathf.Sqrt(Mathf.Pow(Mathf.Min(curveSpeed, hillSpeed), 2) + 2 * judgment * Mathf.Max(0, d - 12)));
                 }
 
@@ -488,6 +499,15 @@ namespace Racer
                 return along>-12&&along<Mathf.Max(18,speed*.9f)&&Mathf.Abs(lanePosition-targetLane)<laneGap;
             }
             foreach(var other in Race.Entrants)if(other!=null&&other!=Racer&&other.Car&&Blocks(other.Car))return false;
+            // Chastain Rush, Round 54 (A7): and the traffic in that lane, an oncoming car as far ahead as it closes in two and a half seconds
+            if(ChastainRush.Traffic.Instance)
+                foreach(var t in ChastainRush.Traffic.Instance.Cars)
+                {
+                    if(!t||!t.gameObject.activeSelf) continue;
+                    var b=t.Car.Body; var delta=b.position-Car.Body.position; float along=Vector3.Dot(delta,forward), lanePosition=Vector3.Dot(b.position-center,right);
+                    float closing=Mathf.Max(0,speed-Vector3.Dot(b.linearVelocity,forward));
+                    if(along>-12&&along<Mathf.Max(18,speed*.9f)+closing*2.5f&&Mathf.Abs(lanePosition-targetLane)<laneGap+.5f) return false;
+                }
             return true;
         }
     }

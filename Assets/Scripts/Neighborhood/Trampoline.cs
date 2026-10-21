@@ -39,7 +39,7 @@ namespace ChastainRush
         }
 
         // a springy "boing": a tone that bends up then down with a fast vibrato, dying away (synthesized, as the goose's honk)
-        static AudioClip Boing()
+        internal static AudioClip Boing()   // Round 54: the bounce house too
         {
             const int rate = 22050; int n = (int)(rate * 0.7f); var d = new float[n]; float ph = 0f;
             for (int i = 0; i < n; i++)

@@ -38,7 +38,8 @@ namespace ChastainRush
         }
 
         // planning, after the houses and businesses (their floors are set), before the roads are built: D the junction evened
-        static void Round53Plan(MapData map, TerrainGrid terrain) => R53EvenJunction(map, terrain);
+        // Round 54 (A1): and the Elaine jump's way graded along its line (AddisonNow's grades: its smoothed ground, the hump)
+        static void Round53Plan(MapData map, TerrainGrid terrain) { R54LevelLap(terrain); R53EvenJunction(map, terrain); GradeRidge(terrain, AddisonNow); }   // Round 54 (A5): the lap levelled first, the Lyndon junction evened on it
 
         // ------------------------------------------------------------ D: the Lyndon / Embry junction
         static void R53EvenJunction(MapData map, TerrainGrid terrain)
@@ -95,7 +96,7 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ C: house 1089's carport
-        static readonly HashSet<int> R53Carports = new HashSet<int> { 1089 };
+        static readonly HashSet<int> R53Carports = new HashSet<int> { 1089, 615 };   // Round 54 (A4, BUG-001 "finish this house"): 615 at Embry Lane's east corner, the same open carport
         static void R53Carport(MeshBuilder mb, Frame f, HouseSpec h, float s, float hE, float yb)
         {
             float W = h.W, D = h.D, v0 = -D / 2 + 2.2f;
@@ -120,6 +121,7 @@ namespace ChastainRush
                 }
             var parked = BuildRoadCrew(terrain, mats, root, AddisonExtra.crew);
             BuildShrubBeds(terrain, mats, root, AddisonExtra.shrub_beds, map, parked.ToArray());   // no shrub under the parked truck and roller
+            BuildAddison54(terrain, mats, root);   // Round 54: the terrace, the bounce house, the curve signs (MapBuilder.Round54.cs)
             Debug.Log($"[Round53] Addison Heights: the road crew on Lyndon Drive, {AddisonExtra.shrub_beds?.Length ?? 0} shrub beds");
         }
 
