@@ -27,12 +27,25 @@ namespace ChastainRush
                 int iLip = path.FindIndex(q => Flat(q - E56Lip).magnitude < 1.5f);
                 return new List<(string, List<Vector3>, float[])>
                 {
-                    ("short: 15 m/s off the lip", path, HoldFrom(sc, RaceRoute.Surface(E56Lip.x, E56Lip.z), 15f)),
-                    ("no jump: over the edge at 8 m/s, down through the brush", path, HoldFrom(sc, RaceRoute.Surface(E56Lip.x, E56Lip.z), 8f)),
+                    ("short: 15 m/s off the lip", path, Held(sc, 15f)),
+                    ("no jump: over the edge at 8 m/s, down through the brush", path, Held(sc, 8f)),
                     ("round the barrier: Elaine north, 960's drive, down the bank to the corner", Dodge(Pts(3218f, 305f, 3208f, 308f, 3197f, 314.5f, 3182f, 314.5f, 3162f, 310f, 3139f, 307f, 3069f, 307f, 3058f, 310f, 3040f, 322f, 3030f, 334f, 3012f, 338f, 3000f, 326f, 2993f, 310f, 2985f, 308f, 2972f, 308.5f, 2958f, 311f, 2948.5f, 313.2f)
                         .Concat(path.Skip(path.FindIndex(q => Flat(q - new Vector3(2948.5f, 0f, 313.2f)).magnitude < 2.5f))).ToList()), null),
                 };
             }, null, "56");
+            // the good jump at a race speed (24 m/s off the lip, as the AI): down near the corner, on round 1143
+            yield return StartRoute("addison_heights.json", "forward", 0);
+            var s1 = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "f_elaine_jump");
+            if (s1 != null)
+                foreach (var vid in new[] { "original", "drifter" })
+                {
+                    yield return Vehicle(vid);
+                    var r = new Run(); float t = -1f; var w = new R54Watch();
+                    yield return TimedVia(s1, s1.Path.ToList(), r, x => t = x, () => R54Track(w), Held(s1, 24f));
+                    yield return Capture($"56_A_{vid}_24_end");
+                    report.AppendLine($"  {Nm(vid),-16} the jump at 24 m/s, on round 1143: {(r.reached && t > 0f ? $"{t:0.0} s" : "did not get through (" + r.end + $" at ({car.Body.position.x:0}, {car.Body.position.z:0}))")}; {R54Line(w)}");
+                }
+            race.EndRace(); RaceController.DirectionOverride = null;
             // the good jump, then up Hayworth at the corner (the lap) instead of on round 1143: not a cheat (the corner is the lap), reported for Dan
             yield return StartRoute("addison_heights.json", "forward", 0);
             var s2 = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "f_elaine_jump");
@@ -84,6 +97,13 @@ namespace ChastainRush
                     Flush();
                 }
             race.EndRace(); RaceController.DirectionOverride = null;
+        }
+
+        // the shortcut's line held to 'speed' from 80 m before the lip to 30 m past it (TimedVia's stations: its 60 m lead-in first)
+        static float[] Held(RaceShortcut sc, float speed)
+        {
+            float s = 60f; for (int i = 1; i < sc.Path.Length; i++) { if (Flat(sc.Path[i] - E56Lip).magnitude < 1.5f) break; s += Flat(sc.Path[i] - sc.Path[i - 1]).magnitude; }
+            return new[] { s - 80f, speed, s + 30f, speed };
         }
 
         IEnumerator R56Barricade()
@@ -175,7 +195,7 @@ namespace ChastainRush
             }
             race.EndRace(); RaceController.DirectionOverride = null;
             Vector3 S(float x, float z, float up) => RaceRoute.Surface(x, z) + Vector3.up * up;
-            yield return Still("56_A_the_jump_from_behind", S(3070f, 307.5f, 2.4f), S(2985f, 305f, 0f), 60f);
+            yield return Still("56_A_the_jump_from_behind", S(3072f, 307.5f, 6f), S(2985f, 306f, 0f), 60f);
             yield return Still("56_A_the_landing_and_the_corner", S(2960f, 296f, 6f), S(3010f, 307f, 2f), 60f);
             yield return Still("56_A_the_run_onto_crawford", S(2995f, 300f, 4f), S(2945f, 314f, 0f), 60f);
             yield return Still("56_A_the_way_back", S(2944f, 312f, 3.5f), S(2950f, 356f, 1f), 60f);

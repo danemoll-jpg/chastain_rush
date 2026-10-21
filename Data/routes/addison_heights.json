@@ -2318,8 +2318,12 @@
    "ai_profile": [
     0.0,
     30.0,
-    198.3,
+    108.3,
     30.0,
+    158.3,
+    24.0,
+    198.3,
+    24.0,
     250.3,
     20.0,
     285.8,
@@ -3158,15 +3162,15 @@
   {
    "road": "Crawford Circle west of the way back",
    "osm_id": 0,
-   "x": 2932.0,
-   "z": 311.7,
+   "x": 2890.0,
+   "z": 312.6,
    "dx": -0.9995,
    "dz": 0.03,
    "width_m": 8.0,
    "junction_s": 1921.8,
    "contact": [
-    2932.0,
-    311.7
+    2890.0,
+    312.6
    ],
    "arc_m": 0.0,
    "barrier_on": "Crawford Circle west of the way back",

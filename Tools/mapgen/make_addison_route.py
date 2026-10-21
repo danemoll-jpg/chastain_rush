@@ -437,12 +437,13 @@ E_BEDS = [("A1 the bank's foot south of the jump's line (Crawford Circle's east 
           # down to the foot hedge's gap (Round 56 check: round the barrier and down it was a way in)
           ("A1 the upper bank on the jump's line", [along(E_LIP, dE, 18.0), along(E_LIP, dE, 36.0)], 6.0),
           ("A1 the upper bank south of the jump's line", [along(along(E_LIP, dE, 18.0), (dE[1], -dE[0]), -12.0), along(along(E_LIP, dE, 38.0), (dE[1], -dE[0]), -12.0)], 7.0),
-          ("A1 the bank west of 960", [(3008.0, 317.0), (3005.0, 341.0)], 6.0),
+          ("A1 the bank west of 960", [(3008.0, 317.0), (3005.0, 341.0)], 8.0),
           ("A1 960's east yard to the barrier", [(3037.0, 326.0), (3030.0, 314.0)], 5.0),   # Round 55 check: 6 m wide, a way round the barrier was 3 s faster than the jump
           ("A1 across the wedge north of 960's drive", [(3018.0, 342.0), (3034.5, 346.0)], 3.0),
           ("A1 east of the barrier", [(3056.0, 326.5), (3066.0, 340.0)], 3.0),
           ("A1 the bank south of the flight (1007, 2090)", [(3060.0, 298.0), (3040.0, 285.0), (3016.0, 262.0)], 8.0)]
-E_WEST_BAR = ((2932.0, 311.7), (-0.999, 0.03))   # Round 56: across Crawford Circle's west leg past the way back (a forward race): not on to Lyndon Drive
+E_WEST_BAR = ((2890.0, 312.6), (-0.999, 0.03))   # Round 56: across Crawford Circle's west leg 56 m past the way back (a forward race): not on to Lyndon Drive; room to
+                                                 # stop after overshooting the turn (Round 56 check: flat out a Street Classic comes off the lip at 30 m/s and down at x 2960)
 ELAINE_BAR = ((3048.6, 326.0), (-0.235, 0.972))   # across Elaine north of the bend (a forward race)
 
 # ---------------------------------------------------------------- A2, THE JOEL DRIVE TERRACE (REVERSE)
@@ -531,7 +532,7 @@ shortcuts = [
     {"id": "f_elaine_jump", "name": "Elaine jump", "direction": "forward", "path": flat(epath), "path_y": poly_g(e_pre[:-1]) + [lip_y] + [e_arc(q) for q in e_fl] + e_post_y[1:],
      "half_width_m": 3.5, "entry_inset_m": round(nearest_s(epath, (3172.0, 312.0))[1], 1), "entry_margin_m": 1.5, "forgives": fg_e, "ai_speed": 30.0,
      # flat out up Elaine and off the edge, on across the corner and down the west leg, steady round 1143 and up onto Hayworth
-     "ai_profile": [round(v, 1) for v in (0.0, 30.0, cum(e_pre)[-1], 30.0, cum(e_pre)[-1] + math.dist(E_LIP, E_LAND_AT) + 2.0, 20.0, sE_back - 12.0, 13.0, sE_back + 6.0, 10.0, sE_join, 11.0, cum(epath)[-1], 14.0)],
+     "ai_profile": [round(v, 1) for v in (0.0, 30.0, cum(e_pre)[-1] - 90.0, 30.0, cum(e_pre)[-1] - 40.0, 24.0, cum(e_pre)[-1], 24.0, cum(e_pre)[-1] + math.dist(E_LIP, E_LAND_AT) + 2.0, 20.0, sE_back - 12.0, 13.0, sE_back + 6.0, 10.0, sE_join, 11.0, cum(epath)[-1], 14.0)],
      # a sloppy try: eased off up Elaine (a short jump, into the brush)
      "ai_slip": 0.15, "ai_slip_profile": [round(v, 1) for v in (0.0, 30.0, cum(e_pre)[-1] - 70.0, 15.0, cum(e_pre)[-1], 15.0, cum(e_pre)[-1] + 45.0, 8.0, sE_back + 6.0, 10.0, cum(epath)[-1], 12.0)]},
     {"id": "r_joel_terrace", "name": "Joel terrace", "direction": "reverse", "path": flat(tpath), "path_y": tpath_y, "half_width_m": 3.0,
