@@ -30,7 +30,7 @@ namespace ChastainRush
             var u2 = new Vector2(tw.u[0], tw.u[1]).normalized; var n2 = new Vector2(-u2.y, u2.x);
             Vector3 W(Vector2 q, float y) => new Vector3(q.x, y, q.y);
             float G(Vector2 q) => Ground(terrain, q.x, q.y);
-            var look = new MeshBuilder(); var solid = new MeshBuilder();
+            var look = new MeshBuilder(); var solid = new MeshBuilder(); var rails = new MeshBuilder();
 
             // ---- the tower: posts outside the run, rails along the sides, the canopy, a ladder
             var D0 = new Vector2(tw.o[0], tw.o[1]);
@@ -93,14 +93,19 @@ namespace ChastainRush
                     float s1 = Mathf.Min(pg.slide.len, s + 0.5f);
                     float y0 = Profile(slidePr.profile, s), y1 = Profile(slidePr.profile, s1);
                     float h0 = SideH(s), h1 = SideH(s1);   // the sides rise from nothing at the foot (nothing to catch a wheel)
+                    // Round 54 (D3, Dan BUG-008 "i kept losing momentum on this slide"): over the flared foot the sides close in at 24 degrees to the
+                    // travel, and a vehicle coming in a little off the middle ran up onto one and hit its edge (the Drifter Twin 19 to 8.6 m/s in one
+                    // step). There they are look only; from the end of the flare on they are solid, a collider of their own named as the shortcut
+                    // surfaces (VehicleSurfaceContacts: a contact from above gets the true face normal) with the ramp material
+                    var rb = s < pg.slide.flare ? look : rails;
                     foreach (float side in new[] { 1f, -1f })
                     {
                         var a = O + U * s + Nn * side * HalfAt(s); var b = O + U * s1 + Nn * side * HalfAt(s1); var ao = a + Nn * side * 0.14f; var bo = b + Nn * side * 0.14f;
-                        solid.Tint = Shade(SlideYellow, 0.88f);
-                        Face(solid, W(a, y0 - 0.25f), W(b, y1 - 0.25f), W(b, y1 + h1), W(a, y0 + h0), new Vector3(-Nn.x * side, 0f, -Nn.y * side));
-                        Face(solid, W(ao, y0 - 0.25f), W(bo, y1 - 0.25f), W(bo, y1 + h1), W(ao, y0 + h0), new Vector3(Nn.x * side, 0f, Nn.y * side));
-                        solid.Tint = Shade(SlideYellow, 1.05f);
-                        Face(solid, W(a, y0 + h0), W(b, y1 + h1), W(bo, y1 + h1), W(ao, y0 + h0), Vector3.up);
+                        rb.Tint = Shade(SlideYellow, 0.88f);
+                        Face(rb, W(a, y0 - 0.25f), W(b, y1 - 0.25f), W(b, y1 + h1), W(a, y0 + h0), new Vector3(-Nn.x * side, 0f, -Nn.y * side));
+                        Face(rb, W(ao, y0 - 0.25f), W(bo, y1 - 0.25f), W(bo, y1 + h1), W(ao, y0 + h0), new Vector3(Nn.x * side, 0f, Nn.y * side));
+                        rb.Tint = Shade(SlideYellow, 1.05f);
+                        Face(rb, W(a, y0 + h0), W(b, y1 + h1), W(bo, y1 + h1), W(ao, y0 + h0), Vector3.up);
                     }
                 }
                 for (float s = 3f; s < pg.slide.len - 1f; s += 3.5f)
@@ -193,6 +198,7 @@ namespace ChastainRush
             var lookGo = look.ToObject("Play set and trampoline", mats.House, root, false);
             var solidGo = solid.ToObject("Play set (solid parts)", mats.House, root, false);
             AddCollider(solidGo, solid, "Play set collider");
+            if (rails.Verts.Count > 0) { var railGo = rails.ToObject("sc R3 play set slide rails", mats.House, root, false); AddCollider(railGo, rails, "sc R3 play set slide rails"); }   // Round 54 (D3)
             Debug.Log($"[Round18] R3 play set: tower deck {tw.len:0.0} x {2f * tw.half:0.0} m at {tw.deck_y:0.00} m (canopy {tw.roof_y - tw.deck_y:0.0} m over it), slide {2f * pg.slide.half:0.0} m wide and {pg.slide.len:0} m long; trampoline {2f * R:0} m across the mat ({2f * (R + pad):0.0} m with the pad) at {tr.mat_y:0.00} m, aimed at ({tr.target[0]:0.0}, {tr.target[2]:0.0}) in {tr.flight_s:0.0} s");
         }
     }
