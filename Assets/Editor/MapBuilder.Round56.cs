@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 // Round 56 (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session 2026-10-21_17-00-50-815_f90718): Addison Heights.
 //   A  the Elaine jump lands on the lower bank and runs on over the Crawford / Hayworth corner down Crawford's west leg (BUG-004), then back through the
 //      yards round 1143 onto Hayworth: all data (Tools/mapgen/make_addison_route.py: its lip and way back graded, brush on the upper bank, the hedge's gap)
-//   B  BUG-003: a road-closed barricade across Elaine Circle's mouth (three type III barricades, breakable, no speed lost, whole again for the next car;
+//   B  BUG-003: a road-closed barricade across Elaine Circle's mouth (three type III barricades 17 m along Elaine, ahead on the right from Dan's spot, breakable, no speed lost, whole again for the next car;
 //      a forward race only) and tire marks on the road from it up Elaine (track "elaine_mouth"); built in the step Addison
 namespace ChastainRush
 {

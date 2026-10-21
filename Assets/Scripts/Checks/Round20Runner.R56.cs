@@ -122,7 +122,7 @@ namespace ChastainRush
             Check("it stands only in a forward Addison Heights race", fwdShown && !revShown && !freeShown, $"forward {fwdShown}, reverse {revShown}, free roam {freeShown}");
             var chunks = root.GetComponentsInChildren<FenceChunk>(true);
             yield return Vehicle("original");
-            var at = root.transform.position; var d = new Vector3(-0.6227f, 0f, 0.7824f);
+            var at = root.transform.position; var d = new Vector3(-0.932f, 0f, 0.3624f);   // the track file's elaine_mouth dir
             var line = new List<Vector3> { RaceRoute.Surface(at.x - d.x * 30f, at.z - d.z * 30f), RaceRoute.Surface(at.x - d.x * 15f, at.z - d.z * 15f), RaceRoute.Surface(at.x, at.z), RaceRoute.Surface(at.x + d.x * 15f, at.z + d.z * 15f), RaceRoute.Surface(at.x + d.x * 25f, at.z + d.z * 25f) };
             line = Dense(line, 2f);
             int b0 = FenceChunk.TotalBroken(); float before = -1f, after = -1f;

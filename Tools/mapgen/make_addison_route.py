@@ -648,10 +648,12 @@ track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [rou
                  # Lyndon Drive between Joel Drive and Embry Lane is out of the traffic's and the police's road graph (the crew has it)
                  "closed_road": {"osm_id": LYNDON, "from": list(lyn[2]), "to": list(lyn[3])}}
 # Round 56 (B, Dan BUG-003 at x 3205.88 z 303.90, Suholden Circle at the Elaine turn-off: "there should be an indicator that the road to the right is a
-# shortcut. Maybe actually block the road off and make tiremarks right after it"): a road-closed barricade across Elaine's mouth, 5 m in from Suholden
+# shortcut. Maybe actually block the road off and make tiremarks right after it"): a road-closed barricade across Elaine's mouth, 17 m in along it from Suholden
 # (three type III barricades, breakable, no speed lost, whole again for the next car; a forward race only: MapBuilder.Round56.cs), and tire marks on the
 # road from it up Elaine for 28 m along the shortcut's line
-_j = (3212.0, 302.8); _d = unit((3208.1 - _j[0], 307.7 - _j[1])); E_MOUTH = along(_j, _d, 5.0)
+# (Round 56 check: 5 m in, it stood beside Dan's spot, behind him: Suholden and Elaine part slowly; 17 m in, Elaine is its own road and it is ahead on his right)
+_el = resample([q for q in ela if q[0] > 3150.0][::-1], 0.5); _cs = cum(_el); _k = min(range(len(_el)), key=lambda i: abs(_cs[i] - 17.0))
+E_MOUTH = _el[_k]; _d = unit((_el[_k + 2][0] - _el[_k - 2][0], _el[_k + 2][1] - _el[_k - 2][1]))
 _i0 = min(range(len(e_pre)), key=lambda i: math.dist(e_pre[i], E_MOUTH))
 track["elaine_mouth"] = {"at": [round(E_MOUTH[0], 2), round(E_MOUTH[1], 2)], "dir": [round(_d[0], 4), round(_d[1], 4)], "width": 8.0,
                          "marks": flat(resample([along(E_MOUTH, _d, 1.5)] + [q for q in e_pre[_i0 + 1:] if math.dist(q, E_MOUTH) < 30.0], 1.0))}
