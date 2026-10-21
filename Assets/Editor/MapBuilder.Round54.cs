@@ -148,13 +148,8 @@ namespace ChastainRush
             Wall(o - nl * hw + dir * t.len, o - nl * hw, -nl, t.len, 0f);
             Wall(o + dir * t.len - nl * hw, o + dir * t.len + nl * hw, dir, t.len, t.len);
             Beam(look, W(o + dir * (t.len - 0.1f) - nl * hw, Top(t.len) + 0.02f), W(o + dir * (t.len - 0.1f) + nl * hw, Top(t.len) + 0.02f), 0.2f, 0.06f, Shade(tie, 1.15f));
-            // a pot of flowers at each street corner of it (look only, off the line)
-            foreach (float side in new[] { -1f, 1f })
-            {
-                var q = o + nl * side * (hw - 0.45f) + dir * 0.6f; float g = Top(0.6f);
-                Cyl(look, W(q, g), 0.45f, 0.28f, 0.34f, new Color(0.62f, 0.33f, 0.20f), 10);
-                Blob(look, W(q, g + 0.45f), new Vector3(0.38f, 0.3f, 0.38f), new Color(0.85f, 0.25f, 0.45f), new Color(0.25f, 0.45f, 0.18f), 8, 3, true, side);
-            }
+            // (Round 56, Dan BUG-001 on Joel Drive: "why is this here? and what is it?": the two flower pots at its street corners, one standing in the
+            // road, are gone)
             look.ToObject("A2 terrace look", mats.House, go, false);
             Debug.Log($"[Round54] A2: the terrace at ({o.x:0.0}, {o.y:0.0}) {y:0.00} m, {t.len:0} m out at heading {Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg:0}, {t.width:0} m wide, " +
                       $"its edge {Top(t.len) - Ground(terrain, (o + dir * t.len).x, (o + dir * t.len).y):0.0} m over the ground");
