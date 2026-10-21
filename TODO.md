@@ -108,6 +108,69 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
+2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
+Addison Heights forward and reverse on the Drifter Twin).** Round 54 is reviewed. Standing rules apply. ONE full Build Map at the end
+(plan the line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
+A. THE ELAINE SHORTCUT (FORWARD), REDONE. Dan: "the new forward one is a fail. It looks like it did literally nothing but mark a line
+   on the map, not to mention that it bypasses the feature I wanted to utilize which is the place in the bug report". BUG-002 (x 3053.14
+   z 309.33 h 271, ON Elaine Circle heading west, at the west end of its straight where it bends north to Joel): "The shortcut makes no
+   sense at all. Not even sure where it wants me to go. Plus where you start you are too close to the end of this so it is really
+   confusing because starting from back it looks like a shortcut at the very beginning of the race. I wanted the jump here as it is a
+   natural jump."
+   Claude's mistake in Round 53 B: the jump is NOT the crest at the Suholden corner (Dan's Round 53 BUG-005 is only where you turn off
+   the lap onto Elaine); it is HERE, at Elaine's west bend: drive west along Elaine from the corner, and instead of following the bend
+   north, go straight off its edge: the ground drops away west and you fly (Dan, Round 53: "this jump will miss the track most likely.
+   At least every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main
+   road"). So:
+   (1) The way: off the lap at the Suholden / Elaine corner, west along Elaine's own road to the bend, straight off the edge at Dan's
+       spot (a natural launch: keep the ground's own lip, smooth it only so it launches cleanly and straight, no ramp). Elaine north of
+       the bend, on to Joel, stays closed (barrier) so there is no plain road way round.
+   (2) The landing: drive it at race speed (several vehicles) and find where cars really come down; build there: a clear landing
+       (graded, drivable) and a visible way on from it (worn dirt path / tire tracks through the yards and trees, cleared of trunks,
+       readable at speed) that is a little longer and joins the lap heading the race's way (Hayworth Drive or Joel Drive northbound /
+       westbound, Code picks and says why). It must LOOK like a way: someone seeing it from Elaine knows where to go.
+       Dan, 12:33: "that is why before I asked for a landing spot that forced the user to drive through some backyards and stuff to
+       get back to the road to get rid of part of the advantage it got, this is especially the case because you will likely overshoot
+       your the road anyway." So expect cars to overshoot Hayworth and come down in the yards beyond it: the way back from there winds
+       through those backyards (round sheds, between fences, past play sets: breakable fences and the like are fine) before it reaches
+       the road. That backyard run is what takes back most of the time the jump gains.
+   (3) Throw away Round 54 A1's valley way to Crawford and its beds (the map line Dan saw), and any of its leftovers.
+   (4) A clean run saves a few seconds; missed (short, off line) costs more; no free way round (standing rules). Code reports the numbers.
+       It skips about 350 m of lap (Claude's estimate); if a sensible-looking way cannot bring it down to a few seconds, stop and report.
+B. THE START / FINISH MOVED AGAIN. Round 54 put it on Crawford Circle's east leg (z 245), just before where A rejoins: from the grid it
+   looks like a shortcut at the start. Put the line where it is not in the part A skips (Suholden south, Kelly, Crawford, Hayworth up to
+   A's rejoin) and not in sight of A's ends from the grid, on as straight and level a stretch as the lap has (Joel / Embry / Suholden
+   Circle); Code picks and says why. Both directions; records (keep old times apart as Round 54 did), checkpoints, grid, AI to suit.
+C. THE BOUNCE HOUSE'S SOUND. Dan: "the bouncy castle should use the same sound effect as the trampoline instead of making no sound at
+   all." Use the trampoline's bounce sound (`Audio/SoundDropIns.cs` Bounces, Dan's drop-in or the made one, one at random per bounce).
+D. BUMPS. BUG-001 (x 2977.66 z 308.73 h 14, Hayworth Drive at Crawford Circle): "smooth this bump". BUG-003 (x 3136.36 z 97.41 h 6,
+   Kelly Drive at Suholden Circle): "smooth this". Smooth both junctions.
+E. THE AI DRIVES ROUND CARS (all tracks). Dan, 12:33: "the AI drivers need to be smart enough to drive around cars. I think this is part
+   of the problem. I see them stuck to bumpers as opposed to trying to get around other vehicles". Race AI must overtake: when a traffic
+   car, a parked car or another racer is ahead and slower, pull out and pass where the road (or the grass beside it) has room, else
+   hold back a car length and take the next gap; never sit pushing a bumper. This is likely part of why the AI is slow on Addison
+   Heights (Round 52 and 54's traffic queues). Check on Addison Heights and one other track with traffic Normal: count AI passes, time
+   spent stuck behind a car (before / after), all finish.
+Check: A clean (time saved, Street Classic and Drifter Twin), short, and the ways round; the AI takes it sometimes; forward and reverse
+races x2, traffic Normal, all finish. Pictures: Dan's spot looking west (the drop), the landing, the way on from it, the new start line
+from the grid, the two junctions.
+For Dan to check: the Elaine jump and its way on through the backyards; the new start / finish; the bounce house's sound; the two bumps;
+the AI passing traffic and each other.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 54
+**Reviewed: Dan drove the Round 54 build 2026-10-21 12:16 (Addison Heights both ways): "The reverse shortcuts are fine" (A2, A3 accepted; the bounce house needs a sound); A1 (the Elaine jump) "is a fail"; the rest no complaint. His notes are Round 55.**
 **Round 54, ADDISON HEIGHTS: THE ELAINE JUMP, TWO REVERSE SHORTCUTS, BUMPS, SIGNS, A HARDER AI; a missed finish line; COMPLETE RACE;
 fixes on three other tracks (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session `2026-10-21_03-39-54-769_591b8d`, read by Claude, after
 the Round 53 exe: Addison Heights races, a reverse Chastain Glen loop, Chastain Lakes and Free Roam, on the Drifter Twin).** Round 53 is
@@ -205,18 +268,7 @@ Builds: four full builds, not one (after the checks: the slide's foot and rail, 
 For Dan to check: Addison Heights both ways (the new line, Elaine, the terrace on the Drifter, the bounce house, Lyndon's hedges: try to cheat them, the bumps, the signs,
    the AI on Hard); miss a line; COMPLETE RACE; the Glen loop's barriers, the PARTY sign, the slide off its middle; Chastain Lakes at MH15 and out of MH14.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 53
+## Previous delivery 2: Round 53
 **Reviewed: Dan drove the Round 53 build 2026-10-21 03:39 (Addison Heights both ways, Chastain Glen reverse, Chastain Lakes); no complaint about A (the Lyndon shortcut stands as built), C or D; B: he chose option (1), now Round 54 A1.**
 **Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
 `2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
@@ -281,7 +333,7 @@ Races, traffic Normal: forward x2, reverse x1, 9 of 9 AI finish; the AI took Lyn
 Builds: two full builds (the second for A's tuning and B taken out); `Builds/ChastainRush/` 2026-10-21 02:59. Imported from Racer: nothing.
 For Dan to check: the Lyndon shortcut (try to cheat it; is a 4 to 10 s saving OK?); pick B's option; the carport at BUG-004; the Lyndon / Embry junction.
 
-## Previous delivery 2: Round 52
+## Previous delivery 3: Round 52
 **Reviewed: Dan drove the Round 52 build 2026-10-20 01:26 (Addison Heights forward, Free Roam): "the track itself is good"; his notes are Round 53.**
 **Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
 reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
@@ -340,53 +392,6 @@ Not changed (Dan's call): the same floating windows on about 100 other style E h
    neighborhoods (Round 30's log counts 501 with ground over their floor).
 For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
    Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
-
-## Previous delivery 3: Round 51
-**Reviewed: Dan drove the Round 51 build 2026-10-19 19:45 (Free Roam); no reports on it (his three notes are Round 52).**
-**Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
-reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
-No world changes: NO Build Map this round (code and Resources only, then the exe). Short results.
-Dan's assets, in `SourceArt/Title/` (committed by Claude; use them unaltered, convert only as the engine needs):
-- `ChastainRushCover.png` (1672 x 941): the cover art. Title lettering upper centre, the jumping car centre, the bike left;
-  keep its "(c) OpenStreetMap contributors" credit visible (bottom right) on both screens.
-- `TitleVoice_MonsterTruckGuy.mp3` (1.07 s, ElevenLabs): the spoken title, "Chastain Rush".
-- `ChastainRushTheme.mp3` (34.4 s): the title theme.
-A. THE STARTUP TITLE, as Racer's (`Racer/Assets/Scripts/StartupTitle.cs`, its `Resources/Title/`): at launch the cover full screen
-   (cover, not stretched; cropped evenly on other aspect ratios), the voice speaks the title once, the theme plays under it
-   (opening then loop, as Racer splits its theme, or the whole track looped if it does not split cleanly: Code says which), and a
-   "press to continue" prompt (keyboard and controller glyphs) goes on to the title menu. Skipped in check runs as Racer does.
-B. THE LOADING SCREEN, as Racer's (`LoadingScreen.cs`): the same cover as the full-screen picture for every scene load (launch, a
-   race, Free Roam, back to the menu), the real progress bar, what is loading (race / route inset on the map as Racer does) in a
-   dark band along the bottom, clear of the lettering and the car; fades out once the world is built and the first frames rendered.
-C. HINTS: one rotating tip on the loading screen, as Racer's, rewritten for THIS game's real controls and features (check each
-   binding in the code: reset, camera, map, waypoint, bug capture, free look / Trailer Mode, egg hunt, shortcuts, police...).
-   American English.
-D. THE GAME ICON (Dan, 18:29: "can we make this the icon (trim closet to the motorcycle if needed)"): the rider on the bike from
-   the cover, cropped square by Claude: `SourceArt/Title/GameIcon.png` (512 x 512) and `GameIcon.ico` (16 to 256). Make it the
-   exe's icon (Player Settings default icon) and the window / taskbar icon, and the desktop shortcut's if the build makes one.
-Check (exe, minimized, muted except one brief listen to confirm the voice and theme play, then off): launch to the title menu
-by keyboard and by controller; a race and Free Roam load behind the cover with the bar moving; the tips cycle. Pictures: the title
-screen and a loading screen at 1080p and at 4K (the only full-screen use).
-For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips; the icon on the exe and taskbar.
-
-**Status (Claude, 2026-10-19): A to D built and checked in the exe by script, not yet seen by Dan.** Evidence `Data/screenshots/round51/`
-(`round51_check_pad.txt` 19/19, `round51_check_key.txt` 11/11, `round51_check_4k_pics.txt`, pictures at 720p, 1080p and 4K). No Build Map.
-A DONE. Racer's StartupTitle ported (`Assets/Scripts/Title/StartupTitle.cs`): the cover over the whole screen (cropped evenly), the voice once 0.9 s after
-   the loading screen goes, then the theme. THEME: the WHOLE TRACK LOOPED, not split: its two choruses are alike but not the same (waveforms match only
-   0.4 to 0.5), so no clean loop point; it ends on its own fade and starts again. Both sounds decoded MP3 to WAV in `Assets/Resources/Title/` (no MP3 gap at
-   the loop). Racer schedules on the audio clock; under our paused title menu that clock stands still, so here they start by the real clock. One brief
-   listen at the listener: voice RMS 0.097, theme 0.027. Space, and A on a pad, each go to the title menu without also pressing it. Radio silent meanwhile.
-B DONE. Racer's LoadingScreen ported (`Title/LoadingScreen.cs`). This game is one scene, so it covers the launch, every race start or restart (route
-   inset on the map, the countdown held until it goes) and Free Roam (from the title or leaving a race); there is no "back to the menu" load here. Bar:
-   race 0.08 to 0.99 over 0.6 s, Free Roam the same; the launch is one long frame of start-up work (the police road net alone 2.4 s), so its bar jumps
-   0.30 to 0.92 in three steps. The race HUD and other IMGUI drawing are hidden under it (`TrailerMode.HudHidden`). The OSM credit: the cover's own on
-   the title; written on a plate on the loading screen (the band darkens the painted one); written in when a screen's shape crops it.
-C DONE. 16 tips for this game's real controls (each binding checked in the code), changing every 5 s (check: 2 changes in 12 s).
-D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (PlayerBuild), so the window and taskbar too (`exe_icon_32.png`). The build makes no
-   desktop shortcut and a .bat cannot carry an icon.
-4K: one run full screen at 3840 x 2160 for the pictures only (about 40 s), as the brief allows. Build `Builds/ChastainRush/` 2026-10-19 19:28. Imported from
-Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
-For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

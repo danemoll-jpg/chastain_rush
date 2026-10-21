@@ -5443,3 +5443,52 @@ B DONE. The trail at its real width: concrete 1.5 m (timber edging), gravel 2 m 
 C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.1 s, 0 missed, 18 barriers; shut checks pass).
 Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
 For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.
+
+## Round 51 (moved from TODO.md on 2026-10-21 when Dan reviewed Round 54; word for word)
+
+## Previous delivery 3: Round 51
+**Reviewed: Dan drove the Round 51 build 2026-10-19 19:45 (Free Roam); no reports on it (his three notes are Round 52).**
+**Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
+reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
+No world changes: NO Build Map this round (code and Resources only, then the exe). Short results.
+Dan's assets, in `SourceArt/Title/` (committed by Claude; use them unaltered, convert only as the engine needs):
+- `ChastainRushCover.png` (1672 x 941): the cover art. Title lettering upper centre, the jumping car centre, the bike left;
+  keep its "(c) OpenStreetMap contributors" credit visible (bottom right) on both screens.
+- `TitleVoice_MonsterTruckGuy.mp3` (1.07 s, ElevenLabs): the spoken title, "Chastain Rush".
+- `ChastainRushTheme.mp3` (34.4 s): the title theme.
+A. THE STARTUP TITLE, as Racer's (`Racer/Assets/Scripts/StartupTitle.cs`, its `Resources/Title/`): at launch the cover full screen
+   (cover, not stretched; cropped evenly on other aspect ratios), the voice speaks the title once, the theme plays under it
+   (opening then loop, as Racer splits its theme, or the whole track looped if it does not split cleanly: Code says which), and a
+   "press to continue" prompt (keyboard and controller glyphs) goes on to the title menu. Skipped in check runs as Racer does.
+B. THE LOADING SCREEN, as Racer's (`LoadingScreen.cs`): the same cover as the full-screen picture for every scene load (launch, a
+   race, Free Roam, back to the menu), the real progress bar, what is loading (race / route inset on the map as Racer does) in a
+   dark band along the bottom, clear of the lettering and the car; fades out once the world is built and the first frames rendered.
+C. HINTS: one rotating tip on the loading screen, as Racer's, rewritten for THIS game's real controls and features (check each
+   binding in the code: reset, camera, map, waypoint, bug capture, free look / Trailer Mode, egg hunt, shortcuts, police...).
+   American English.
+D. THE GAME ICON (Dan, 18:29: "can we make this the icon (trim closet to the motorcycle if needed)"): the rider on the bike from
+   the cover, cropped square by Claude: `SourceArt/Title/GameIcon.png` (512 x 512) and `GameIcon.ico` (16 to 256). Make it the
+   exe's icon (Player Settings default icon) and the window / taskbar icon, and the desktop shortcut's if the build makes one.
+Check (exe, minimized, muted except one brief listen to confirm the voice and theme play, then off): launch to the title menu
+by keyboard and by controller; a race and Free Roam load behind the cover with the bar moving; the tips cycle. Pictures: the title
+screen and a loading screen at 1080p and at 4K (the only full-screen use).
+For Dan to check: launch the exe (title, voice, theme); a race and Free Roam loading; read the tips; the icon on the exe and taskbar.
+
+**Status (Claude, 2026-10-19): A to D built and checked in the exe by script, not yet seen by Dan.** Evidence `Data/screenshots/round51/`
+(`round51_check_pad.txt` 19/19, `round51_check_key.txt` 11/11, `round51_check_4k_pics.txt`, pictures at 720p, 1080p and 4K). No Build Map.
+A DONE. Racer's StartupTitle ported (`Assets/Scripts/Title/StartupTitle.cs`): the cover over the whole screen (cropped evenly), the voice once 0.9 s after
+   the loading screen goes, then the theme. THEME: the WHOLE TRACK LOOPED, not split: its two choruses are alike but not the same (waveforms match only
+   0.4 to 0.5), so no clean loop point; it ends on its own fade and starts again. Both sounds decoded MP3 to WAV in `Assets/Resources/Title/` (no MP3 gap at
+   the loop). Racer schedules on the audio clock; under our paused title menu that clock stands still, so here they start by the real clock. One brief
+   listen at the listener: voice RMS 0.097, theme 0.027. Space, and A on a pad, each go to the title menu without also pressing it. Radio silent meanwhile.
+B DONE. Racer's LoadingScreen ported (`Title/LoadingScreen.cs`). This game is one scene, so it covers the launch, every race start or restart (route
+   inset on the map, the countdown held until it goes) and Free Roam (from the title or leaving a race); there is no "back to the menu" load here. Bar:
+   race 0.08 to 0.99 over 0.6 s, Free Roam the same; the launch is one long frame of start-up work (the police road net alone 2.4 s), so its bar jumps
+   0.30 to 0.92 in three steps. The race HUD and other IMGUI drawing are hidden under it (`TrailerMode.HudHidden`). The OSM credit: the cover's own on
+   the title; written on a plate on the loading screen (the band darkens the painted one); written in when a screen's shape crops it.
+C DONE. 16 tips for this game's real controls (each binding checked in the code), changing every 5 s (check: 2 changes in 12 s).
+D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (PlayerBuild), so the window and taskbar too (`exe_icon_32.png`). The build makes no
+   desktop shortcut and a .bat cannot carry an icon.
+4K: one run full screen at 3840 x 2160 for the pictures only (about 40 s), as the brief allows. Build `Builds/ChastainRush/` 2026-10-19 19:28. Imported from
+Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
+For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
