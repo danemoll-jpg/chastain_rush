@@ -24,6 +24,7 @@ namespace ChastainRush
         public static int ForcedLevel = -1;   // checks: -traffic <name>
         public static int Horns;              // checks
         public static int KnotsUntied;        // Round 32 (B2): checks
+        public static int TurnedAtBarriers;   // Round 54 (D1): checks
         public static AudioClip HornClip { get; private set; }
         public readonly List<TrafficDriver> Cars = new();
         public Rigidbody PlayerBody => player ? player.Body : null;
@@ -100,7 +101,8 @@ namespace ChastainRush
             if (Cars.Count < LevelCars[Level]) Make();
             if (Time.timeScale == 0) return;
             var race = RaceController.Instance; var stage = race ? race.State : RaceController.Stage.Free;
-            if ((stage == RaceController.Stage.Free) != (lastStage == RaceController.Stage.Free)) { Close(race, stage); }
+            // Round 54 (D1): also at every race (re)start (the grid's countdown), when the closures may have changed (another route, the other way)
+            if ((stage == RaceController.Stage.Free) != (lastStage == RaceController.Stage.Free) || stage == RaceController.Stage.Countdown && lastStage != RaceController.Stage.Countdown) { Close(race, stage); }
             lastStage = stage;
             if (Time.time < nextManage) return;
             nextManage = Time.time + .4f;
@@ -253,6 +255,7 @@ namespace ChastainRush
         // ------------------------------------------------------------ races: the race's roads closed to traffic
 
         public bool Forbidden(int e) => forbidden != null && e >= 0 && forbidden[e];
+        public int ClosureVersion { get; private set; }   // Round 54 (D1): each driver re-plans when it changes
         public int ClosedRoads { get; private set; }
         // the race's barriers in the direction raced (Round 39: the reverse Chastain Ridge has its own)
         static IEnumerable<RouteClosureJson> RaceClosures(RaceController race, RouteJson rd) => race && race.Route != null ? (IEnumerable<RouteClosureJson>)race.Route.Closures : rd?.closures ?? new RouteClosureJson[0];
@@ -270,6 +273,7 @@ namespace ChastainRush
                     if (race.Route != null && race.Route.OwnReverse) Line(rd.loop_rev); else { Line(rd.loop); Line(rd.lead_in); }   // Round 39: the reverse lap of its own
                 }
                 foreach (var c in RaceClosures(race, rd)) marks.Add((new Vector2(c.x, c.z), 10f));
+                foreach (var b in Barriers(race)) marks.Add((b, 10f));   // Round 54 (D1): every barrier as built
                 for (int e = 0; e < net.EdgeCount; e++)
                 {
                     foreach (var (p, r) in marks) if (net.Distance(e, p) < r) { forbidden[e] = true; ClosedRoads++; break; }
@@ -281,14 +285,22 @@ namespace ChastainRush
             {
                 // Round 33 (a race on open roads, the Chastain Ridge): traffic keeps driving the course; only the side roads barred for the
                 // race are closed to it (the pieces at each barrier), so no car drives into a barrier, and the grid is cleared for the start
-                var barred = RaceClosures(race, rd);
+                var barred = new List<Vector2>(); foreach (var c in RaceClosures(race, rd)) barred.Add(new Vector2(c.x, c.z));
+                barred.AddRange(Barriers(race));   // Round 54 (D1): every barrier as built
                 for (int e = 0; e < net.EdgeCount; e++)
-                    foreach (var c in barred) if (net.Distance(e, new Vector2(c.x, c.z)) < 6f) { forbidden[e] = true; ClosedRoads++; break; }
+                    foreach (var c in barred) if (net.Distance(e, c) < 6f) { forbidden[e] = true; ClosedRoads++; break; }
                 var grid = race.Route != null ? race.Route.GridPosition : Vector3.zero;
                 foreach (var d in Cars)
                     if (d && d.gameObject.activeSelf && (forbidden[Mathf.Max(0, d.Edge)] || OnClosed(d) || (race.Route != null && (d.Car.Body.position - grid).sqrMagnitude < 130f * 130f))) Spawn(d, false);
             }
+            ClosureVersion++;
             Debug.Log($"[Traffic] {(stage == RaceController.Stage.Free ? "free roam: every road open" : $"race {rd?.name}: {ClosedRoads} road pieces closed to traffic{(rd != null && rd.traffic ? " (open roads: only the barred side roads)" : "")}")}");
+        }
+        // Round 54 (D1): where the race's barriers really stand (RaceBarriers.Built), as well as the route's closures
+        static IEnumerable<Vector2> Barriers(RaceController race)
+        {
+            if (race == null || race.Barriers == null) yield break;
+            foreach (var b in race.Barriers.Built) yield return new Vector2(b.Centre.x, b.Centre.z);
         }
         bool OnClosed(TrafficDriver d)
         {

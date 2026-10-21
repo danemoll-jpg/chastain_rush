@@ -28,7 +28,7 @@ namespace ChastainRush
         readonly List<Vector2> path = new(); readonly List<float> cum = new(); readonly List<float> nodeS = new();
         readonly List<Vector2> scratch = new();
         int projIndex; float stalled, knockedUntil, swerveUntil, nextHorn, blockedFor, stopHeld, upsideDown, goUntil;
-        int stopNode = -1, passedNode = -1;
+        int stopNode = -1, passedNode = -1, closureVersion = -1;
         AudioSource horn;
         readonly RaycastHit[] hits = new RaycastHit[16];
         const float CornerGrip = 7.5f, Judgment = 8f;   // Racer's traffic values
@@ -126,6 +126,7 @@ namespace ChastainRush
         {
             if (!owner || route.Count == 0 || Time.timeScale == 0) return;
             var body = Car.Body; var p2 = new Vector2(body.position.x, body.position.z);
+            if (owner.ClosureVersion != closureVersion) { closureVersion = owner.ClosureVersion; Replan(); }   // Round 54 (D1)
             float s = Project(p2);
             // past the end of the first edge: on to the next
             if (route.Count > 1 && s > nodeS[0] + 1)
@@ -188,9 +189,17 @@ namespace ChastainRush
             // first of the knot (Traffic.TakesTurn): for 4 s it drives on past cars across its way (never the player, never the
             // car in front of it in its lane); a knot that still does not clear in 25 s is moved off when nobody sees it.
             bool blocked = false, across = false, going = Time.time < goUntil;
+            float barrierAt = float.MaxValue;
             for (int i = 0; i < count; i++)
             {
                 var hit = hits[i];
+                // Round 54 (D1, Dan BUG-006: "cars ignore there are barriers and keep trying to drive throuh them"): a race barrier in its
+                // lane is a closed road: stop short of it and turn round (Traffic also closes the roads the barriers stand on)
+                if (!hit.rigidbody && hit.distance > 0f && !(hit.collider is TerrainCollider) && hit.collider.GetComponentInParent<RaceBarriers>())
+                {
+                    var lane = PathAt(s + hit.distance); if ((new Vector2(hit.point.x, hit.point.z) - lane).magnitude < 3f) barrierAt = Mathf.Min(barrierAt, hit.distance);
+                    continue;
+                }
                 if (!hit.rigidbody || hit.rigidbody == body || hit.collider is TerrainCollider) continue;
                 if (!hit.rigidbody.GetComponent<ArcadeVehicle>()) continue;
                 bool crossing = hit.rigidbody != owner.PlayerBody && Vector3.Angle(Flat(hit.rigidbody.transform.forward), Flat(transform.forward)) > 35f;
@@ -201,6 +210,11 @@ namespace ChastainRush
                 bool player = hit.rigidbody == owner.PlayerBody;
                 float closing = -Vector3.Dot(hit.rigidbody.linearVelocity, transform.forward);
                 if (player && closing > 6 && hit.distance < 30) { swerveUntil = Time.time + 1.5f; Horn(); }
+            }
+            if (barrierAt < float.MaxValue)
+            {
+                target = Mathf.Min(target, Mathf.Sqrt(2 * Judgment * Mathf.Max(0, barrierAt - 6f))); State = "closed";
+                if (speed < 1.5f && barrierAt < 14f) { TurnRound(); return; }
             }
             blockedFor = blocked && speed < 1 ? blockedFor + Time.fixedDeltaTime : 0;
             Jammed = across && speed < 1 ? Jammed + Time.fixedDeltaTime : going ? Jammed : 0;
@@ -222,6 +236,22 @@ namespace ChastainRush
 
             LastThrottle = throttle;
             Car.Simulate(throttle, brake, steering, Time.fixedDeltaTime);
+        }
+
+        // Round 54 (D1): the roads ahead are planned again when the race's closures change: the plan stops before a closed road and
+        // goes on from there (Traffic.PickNext never picks one)
+        void Replan()
+        {
+            for (int k = 1; k < route.Count; k++) if (owner.Forbidden(route[k].edge)) { route.RemoveRange(k, route.Count - k); break; }
+            Extend(); Rebuild();
+        }
+        // a barrier across its road: back the way it came on a two-way road (a one-way one is moved off when nobody sees it)
+        void TurnRound()
+        {
+            var (e, dir) = route[0];
+            if (net.Oneway(e)) { WantsRecycle = true; return; }
+            route.Clear(); route.Add((e, -dir)); stopNode = passedNode = -1; stalled = 0;
+            Extend(); Rebuild(); Traffic.TurnedAtBarriers++;
         }
 
         static Vector3 Flat(Vector3 v) { v.y = 0; return v; }
