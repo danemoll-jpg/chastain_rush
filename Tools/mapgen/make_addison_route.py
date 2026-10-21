@@ -474,14 +474,16 @@ B3_BEDS = [("A3 the bluff's foot", [(3200.0, 172.0), (3206.0, 200.0), (3205.0, 2
 SIGNS = [{"id": "Embry Lane westbound", "at": [2705.0, 520.2], "yaw": 90.0, "face": "TurnLeft", "plate": "Advisory15"},
          {"id": "Embry Lane northbound", "at": [2649.6, 458.0], "yaw": 180.0, "face": "TurnRight", "plate": "Advisory15"}]
 
+# entry planes off the lap (the final build's check: on Joel Drive the terrace's entry was in the lap's own lane and every car past it 'took' it):
+# Elaine's 25 m down Elaine past the corner, the terrace's at its edge
 shortcuts = [
     {"id": "f_elaine_jump", "name": "Elaine jump", "direction": "forward", "path": flat(epath), "path_y": poly_g(e_pre) + e_way_y[1:], "half_width_m": 3.5,
-     "entry_inset_m": round(nearest_s(epath, (3190.0, 309.0))[1], 1), "entry_margin_m": 1.5, "forgives": fg_e, "ai_speed": 26.0,
+     "entry_inset_m": round(nearest_s(epath, (3172.0, 312.0))[1], 1), "entry_margin_m": 1.5, "forgives": fg_e, "ai_speed": 26.0,
      # flat out over the crest, steady down the way (its bends and hump)
      "ai_profile": [round(v, 1) for v in (0.0, 24.0, cum(e_pre)[-1] - 10.0, 26.0, cum(e_pre)[-1] + 4.0, 15.0, cum(epath)[-1] - 30.0, 15.0, cum(epath)[-1], 18.0)],
      "ai_slip": 0.15, "ai_slip_profile": [round(v, 1) for v in (0.0, 18.0, cum(e_pre)[-1] - 10.0, 18.0, cum(e_pre)[-1] + 4.0, 12.0, cum(epath)[-1], 15.0)]},
     {"id": "r_joel_terrace", "name": "Joel terrace", "direction": "reverse", "path": flat(tpath), "path_y": tpath_y, "half_width_m": 3.0,
-     "entry_inset_m": round(nearest_s(tpath, T2_ROOT)[1] - 4.0, 1), "entry_margin_m": 1.5, "forgives": fg_t, "ai_speed": 20.0,
+     "entry_inset_m": round(nearest_s(tpath, T2_EDGE)[1], 1), "entry_margin_m": 1.5, "forgives": fg_t, "ai_speed": 20.0,
      "ai_profile": [round(v, 1) for v in (0.0, 15.0, nearest_s(tpath, T2_ROOT)[1], 20.0, nearest_s(tpath, T2_EDGE)[1] + 40.0, 14.0, cum(tpath)[-1], 14.0)],
      "ai_slip": 0.15, "ai_slip_profile": [round(v, 1) for v in (0.0, 13.0, nearest_s(tpath, T2_EDGE)[1], 12.0, cum(tpath)[-1], 12.0)]},
     {"id": "r_bounce_house", "name": "Bounce house", "direction": "reverse", "path": flat(bpath), "path_y": bpath_y, "half_width_m": 3.0,
