@@ -445,9 +445,13 @@ b3d = (math.sin(math.radians(B3_HEAD)), math.cos(math.radians(B3_HEAD)))
 B3_CENTRE = along(B3_FRONT, b3d, 2.6)
 s_b0 = S_rev((3139.5, 145.0)); s_b1 = S_rev((3283.5, 318.0))   # Round 54 check: onto Embry Lane's east end, past the corner (at Suholden Circle's stretch it saved nothing)
 B3_TARGET = point_at(lap_r, s_b1, Cr)
-B3_FLIGHT = 3.2
+B3_FLIGHT = 3.2   # the shortest flight whose arc clears the ground under it by 5 m (the final build's check: at 3.2 s it came down on the hill's top)
 b_pre = resample(chaikin([point_at(lap_r, s_b0, Cr), (3146.0, 160.0), (3160.0, 169.0), (3175.0, 178.0)] + [along(B3_FRONT, b3d, -6.0), B3_FRONT], 2), 2.0)
 b3_y0 = ground(*B3_FRONT) + 0.6; b3_y1 = ground(*B3_TARGET) + 0.6
+def b3_clear(T):
+    vy = (b3_y1 - b3_y0 + 4.905 * T * T) / T
+    return min(b3_y0 + vy * (T * k / 40) - 4.905 * (T * k / 40) ** 2 - ground(B3_FRONT[0] + (B3_TARGET[0] - B3_FRONT[0]) * k / 40, B3_FRONT[1] + (B3_TARGET[1] - B3_FRONT[1]) * k / 40) for k in range(4, 37))
+while b3_clear(B3_FLIGHT) < 5.0 and B3_FLIGHT < 6.0: B3_FLIGHT = round(B3_FLIGHT + 0.1, 1)
 b3_vy = (b3_y1 - b3_y0 + 4.905 * B3_FLIGHT ** 2) / B3_FLIGHT
 b_fl = [((B3_FRONT[0] + (B3_TARGET[0] - B3_FRONT[0]) * k / 16), (B3_FRONT[1] + (B3_TARGET[1] - B3_FRONT[1]) * k / 16)) for k in range(1, 16)]
 b_fl_y = [round(b3_y0 + b3_vy * (B3_FLIGHT * k / 16) - 4.905 * (B3_FLIGHT * k / 16) ** 2, 2) for k in range(1, 16)]
