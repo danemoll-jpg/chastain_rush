@@ -224,7 +224,7 @@ namespace ChastainRush
                 race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;
                 yield return TimedLakes(sc, false, r0, t => road = t);
                 race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;
-                int forgiven0 = race.Player.Forgiven.Count;
+                { var pl = race.Player; pl.ClockStarted = true; pl.StartAt = pl.LapStart = race.RaceClock; pl.NextCheckpoint = 0; pl.LapAway = true; }   // placed mid-lap: its clock running, so the shortcut counts
                 yield return TimedLakes(sc, true, r1, t => via = t, 60f, null, 0f, () => R54Track(w));
                 bool taken = race.Player.ShortcutsTaken.Any(s => s.EndsWith(id));
                 yield return Capture($"54_{id}_{vid}_clean_end");
