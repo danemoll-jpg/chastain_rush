@@ -30,14 +30,17 @@ namespace ChastainRush
         static readonly List<ArcadeVehicle> cars = new List<ArcadeVehicle>();
         float wobble = -10f, nextScan;
         Vector3 lookScale = Vector3.one;
-        AudioSource voice;
+        AudioSource voice; AudioClip made;
 
         void Start()
         {
             inward.y = 0f; inward.Normalize();
             if (look) lookScale = look.localScale;
-            voice = gameObject.AddComponent<AudioSource>();
-            voice.clip = Trampoline.Boing(); voice.spatialBlend = 1f; voice.minDistance = 8f; voice.maxDistance = 120f; voice.playOnAwake = false; SoundMix.Track(voice, 0.9f, SoundMix.Kind.Effects);
+            // Round 55 (C, Dan: "the bouncy castle should use the same sound effect as the trampoline instead of making no sound at all"): the voice
+            // stood on this object, at the world's origin (the castle is placed by 'front'), so it was never heard: it is the castle's own now
+            var at = new GameObject("Bounce house voice").transform; at.SetParent(transform, false); at.position = front + inward * (depth * 0.5f) + Vector3.up * 1.5f;
+            voice = at.gameObject.AddComponent<AudioSource>();
+            voice.clip = made = Trampoline.Boing(); voice.spatialBlend = 1f; voice.minDistance = 8f; voice.maxDistance = 120f; voice.playOnAwake = false; SoundMix.Track(voice, 0.9f, SoundMix.Kind.Effects);
         }
 
         void FixedUpdate()
@@ -63,7 +66,18 @@ namespace ChastainRush
             }
         }
 
-        void Boing(float pitch) { wobble = Time.time; if (voice) { voice.pitch = pitch; voice.Play(); } }
+        // Round 55 (C): the trampoline's sound, as Trampoline.Bounce plays it: Dan's drop-in (Sounds\Trampoline\trampoline*, one at random per
+        // bounce, at its own pitch) or the made one
+        void Boing(float pitch)
+        {
+            wobble = Time.time; if (!voice) return;
+            var drop = SoundDropIns.Instance != null ? SoundDropIns.Instance.Bounces : null;
+            if (drop != null && drop.Count > 0) { voice.clip = drop[Random.Range(0, drop.Count)]; voice.pitch = 1f; }
+            else { voice.clip = made; voice.pitch = pitch; }
+            voice.Play(); LastClip = voice.clip ? voice.clip.name : "";
+        }
+        public static string LastClip { get; private set; } = "";   // for the checks
+        public AudioSource Voice => voice;
 
         void Bump(ArcadeVehicle car)
         {
