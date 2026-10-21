@@ -39,7 +39,7 @@ namespace ChastainRush
 
         // planning, after the houses and businesses (their floors are set), before the roads are built: D the junction evened
         // Round 54 (A1): and the Elaine jump's way graded along its line (AddisonNow's grades: its smoothed ground, the hump)
-        static void Round53Plan(MapData map, TerrainGrid terrain) { R54LevelLap(terrain); R53EvenJunction(map, terrain); GradeRidge(terrain, AddisonNow); }   // Round 54 (A5): the lap levelled first, the Lyndon junction evened on it
+        static void Round53Plan(MapData map, TerrainGrid terrain) { R54LevelLap(terrain); R53EvenJunction(map, terrain); GradeRidge(terrain, AddisonNow); R54SmoothJoins(terrain); }   // Round 54 (A5): the lap levelled first, the Lyndon junction evened on it
 
         // ------------------------------------------------------------ D: the Lyndon / Embry junction
         static void R53EvenJunction(MapData map, TerrainGrid terrain)

@@ -58,7 +58,7 @@ namespace ChastainRush
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
             if (tag == "round52" && parts == null) parts = new[] { "ahlap", "ahshut", "ahpics", "ahhouses" };   // Round 52 (Round20Runner.R52.cs); ahrace with -traffic Normal
-            if (tag == "round54" && parts == null) parts = new[] { "linemiss", "complete", "elaine", "terrace", "bounce", "a54pics" };   // Round 54 (Round20Runner.R54.cs); aihard, aiscale, barriers with -traffic Normal
+            if (tag == "round54" && parts == null) parts = new[] { "linemiss", "complete", "elaine", "terrace", "bounce", "mh14", "a54pics" };   // Round 54 (Round20Runner.R54.cs); aihard, aiscale, barriers with -traffic Normal
             if (tag == "round53" && parts == null) parts = new[] { "sclean", "scheat", "sshort", "sflag", "sjunction", "ahshut", "spics" };   // Round 53 (Round20Runner.R53.cs); srace, srevrace with -traffic Normal
             if (tag == "round50" && parts == null) parts = new[] { "kclean", "kcheat", "kshort", "ktrail", "kpics" };   // Round 50 (Round20Runner.R50.cs); krace with -traffic Normal
             if (tag == "round49" && parts == null) parts = new[] { "lktrail", "lkintake", "lkkicker", "lkshut", "lkfwd", "lkmap", "lkpics" };   // Round 49 (Round20Runner.R49.cs); lkrace with -traffic Normal
@@ -182,6 +182,7 @@ namespace ChastainRush
                 if (Do("terrace")) yield return Guard(R54Terrace());
                 if (Do("bounce")) yield return Guard(R54Bounce());
                 if (Do("barriers")) yield return Guard(R54Barriers());
+                if (Do("mh14")) yield return Guard(R54Mh14());
                 if (Do("aihard")) yield return Guard(R54AiHard());
                 if (Do("aiscale")) yield return Guard(R54AiScale());
                 if (Do("a54pics")) yield return Guard(R54Pics());

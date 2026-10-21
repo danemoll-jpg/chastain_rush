@@ -390,7 +390,8 @@ e_way_y = e_profile()
 print(f"A1 Elaine: leaves the lap at s {s_e0:.0f}, rejoins at s {s_e1:.0f}: {cum(epath)[-1]:.0f} m against {(s_e1 - s_e0) % L_lap:.0f} m on the lap "
       f"(Elaine {cum(e_pre)[-1]:.0f} m, the way {cum(e_post)[-1]:.0f} m); forgives CP {fg_e}; houses by the way {houses_near(e_post, 6.0)}")
 E_BEDS = [("A1 between Elaine and Hayworth (960)", [(3044.0, 345.0), (3036.0, 316.0), (3020.0, 300.0)], 7.0),
-          ("A1 between Elaine and Crawford (1007, 2090)", [(3060.0, 300.0), (3040.0, 286.0), (3016.0, 262.0)], 7.5),
+          ("A1 between Elaine and Crawford (1007, 2090)", [(3060.0, 300.0), (3040.0, 286.0), (3016.0, 262.0)], 9.0),
+          ("A1 Crawford Circle's east yards", [(3004.0, 206.0), (3005.0, 250.0), (3004.0, 292.0)], 4.5),   # Round 54 check: a cut that way was 1 s faster than the lap
           ("A1 the drainage's west side", [(3070.0, 288.0), (3066.0, 250.0), (3064.0, 214.0)], 5.0),
           ("A1 the drainage's east side", [(3110.0, 295.0), (3104.0, 250.0)], 4.5)]
 
@@ -402,7 +403,7 @@ E_BEDS = [("A1 between Elaine and Hayworth (960)", [(3044.0, 345.0), (3036.0, 31
 # (it forgives Hayworth Drive's checkpoint). Short (too slow off the edge) is the steep bank and its shrubs; off line is 710 or 1143. Shrub beds on
 # the bank either side of the terrace (a car driven down the bank without the jump) and across the slope under the flight.
 T2_ROOT = (2956.0, 409.6)                    # the terrace's middle at Joel Drive's south edge (Joel's crest: the bank falls 40 % below it)
-T2_HEAD = 140.0                              # the way it points (degrees from north): down the slope toward Hayworth Drive, east of 1143
+T2_HEAD = 125.0                              # the way it points (degrees from north): down the slope toward Hayworth Drive (Round 54 check: at 140 a car coming over Joel's crest could not make the turn onto it)
 T2_LEN, T2_W, T2_LIP = 10.0, 7.0, 0.3         # out over the slope, across, the edge board's rise over its last 2 m
 d2 = (math.sin(math.radians(T2_HEAD)), math.cos(math.radians(T2_HEAD))); n2 = (-d2[1], d2[0])
 T2_EDGE = along(T2_ROOT, d2, T2_LEN)
@@ -442,9 +443,9 @@ B3_FRONT = (3189.0, 189.0)                   # the castle's front (its open arch
 B3_HEAD = 50.0                               # the way a car drives into it
 b3d = (math.sin(math.radians(B3_HEAD)), math.cos(math.radians(B3_HEAD)))
 B3_CENTRE = along(B3_FRONT, b3d, 2.6)
-s_b0 = S_rev((3139.5, 145.0)); s_b1 = S_rev((3263.0, 299.0))
+s_b0 = S_rev((3139.5, 145.0)); s_b1 = S_rev((3283.5, 318.0))   # Round 54 check: onto Embry Lane's east end, past the corner (at Suholden Circle's stretch it saved nothing)
 B3_TARGET = point_at(lap_r, s_b1, Cr)
-B3_FLIGHT = 3.6
+B3_FLIGHT = 3.2
 b_pre = resample(chaikin([point_at(lap_r, s_b0, Cr), (3146.0, 160.0), (3160.0, 169.0), (3175.0, 178.0)] + [along(B3_FRONT, b3d, -6.0), B3_FRONT], 2), 2.0)
 b3_y0 = ground(*B3_FRONT) + 0.6; b3_y1 = ground(*B3_TARGET) + 0.6
 b3_vy = (b3_y1 - b3_y0 + 4.905 * B3_FLIGHT ** 2) / B3_FLIGHT
@@ -533,10 +534,11 @@ T_LAND = {"id": "TL", "poly": band([along(T2_EDGE, d2, k) for k in range(12, 58,
 track["landing_zones"] = [A_LAND, E_LAND, T_LAND]
 track["shrub_beds"] = [{"id": n_, "points": flat(l_), "half": h_} for n_, l_, h_ in A_BEDS + E_BEDS + T2_BEDS + B3_BEDS]
 # Round 54: the Elaine way graded along its line (its smoothed ground, the hump), its trees cleared; the terrace; the bounce house; the signs
-track["grades"] = [{"id": "A1 the Elaine way", "points": flat(e_post), "y": e_way_y, "half": 2.6, "blend": 2.5}]
+track["grades"] = [{"id": "A1 the Elaine way", "points": flat(e_post[:-12]), "y": e_way_y[:-12], "half": 2.6, "blend": 2.5}]
 track["clear_lines"].append({"id": "A1 the Elaine way", "points": flat(e_post), "half": 3.0})
 track["clear_lines"].append({"id": "A2 the terrace's flight", "points": flat([T2_ROOT, T2_EDGE] + t_fl + t_post[:6]), "half": 3.5})
 track["clear_lines"].append({"id": "A3 the way to the bounce house", "points": flat(b_pre), "half": 3.0})
+track["clear_lines"].append({"id": "A3 under the throw", "points": flat([B3_FRONT] + b_fl + [B3_TARGET]), "half": 3.5})   # it passes a few metres over the hill: no trunk under it
 track["terrace"] = {"root": [round(T2_ROOT[0], 2), round(T2_ROOT[1], 2)], "dir": [round(d2[0], 5), round(d2[1], 5)], "len": T2_LEN, "width": T2_W, "lip": T2_LIP, "y": t2_y}
 track["bounce_house"] = {"front": [round(B3_FRONT[0], 2), round(B3_FRONT[1], 2)], "dir": [round(b3d[0], 5), round(b3d[1], 5)], "target": [round(B3_TARGET[0], 2), round(b3_y1, 2), round(B3_TARGET[1], 2)],
                          "flight": B3_FLIGHT, "land_yaw": round(land_yaw, 1), "tracks": flat(b_pre)}
@@ -547,6 +549,12 @@ track["signs"] = SIGNS
 # Round 54 (A7): the trees beside the lap snap when hit (TreeTrunks), as on the Noonday Creek trail: the AI drivers on Hard ran wide into trunks at the
 # bends and were stuck there (14 of their 47 resets in the first two races); a player who runs wide is never stopped dead either
 track["break_lines"] = [{"id": "the lap's road sides", "points": flat(centre), "half": round(max(by_osm[o]["width"] for _, o, _ in SPEC) / 2.0 + 5.0, 2)}]
+# Round 54 check: where the ways come down onto the levelled lap (the AI tipped and stuck at Hayworth Drive's edge below the terrace): graded again in
+# the build from the ground as it is after the levelling (R54SmoothJoins); the Elaine way's own grade stops short of Crawford Circle
+e_join = e_post[-14:]
+t_join = [along(T2_EDGE, d2, 22.0)] + t_post
+track["smooth_lines"] = [{"id": "A1 the way onto Crawford Circle", "points": flat(e_join), "half": 2.8, "blend": 2.5},
+                         {"id": "A2 down onto Hayworth Drive", "points": flat(resample(t_join, 2.0)), "half": 3.0, "blend": 3.0}]
 track["level_lines"] = [{"id": "the lap's roads", "points": flat(resample(line, 1.0)), "half": round(max(by_osm[o]["width"] for _, o, _ in SPEC) / 2.0 + 0.3, 2), "blend": 3.0}]
 track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [round(dL[0], 5), round(dL[1], 5)], "deck": T_DECK, "deck_angle_deg": T_DECK_ANG,
                  "plank": T_PLANK, "plank_angle_deg": T_PLANK_ANG, "width": T_W,

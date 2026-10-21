@@ -536,7 +536,7 @@ namespace ChastainRush
             foreach (var sc in hood.ShortcutData.shortcuts)
             {
                 var sroot = new GameObject("Shortcut " + sc.id + " (" + sc.name + ")").transform; sroot.SetParent(root, false);
-                foreach (var pr in sc.prisms) { if (pr.kind == "slide") FitFootToGround(pr, terrain); BuildPrism(pr, terrain, mats, sroot); prisms++; }
+                foreach (var pr in sc.prisms) { if (pr.kind == "slide") { FitFootToGround(pr, terrain); FitGroundToSlideFoot(pr, terrain, sc.playground?.slide); } BuildPrism(pr, terrain, mats, sroot); prisms++; }
                 BuildShortcutSign(hood, terrain, mats, sroot, sc);   // Round 12, item 3
                 SlidingDoorTracks(hood, terrain, mats, sroot, sc);   // Round 24 A3, item B2
                 if (sc.playground != null && sc.playground.trampoline != null && sc.playground.trampoline.r > 0f) { BuildPlayground(sc, terrain, mats, sroot); if (sc.sign_face == "party") BuildPartyDressing(sc, terrain, mats, sroot); }   // Round 18 (R3); Round 19: the party
@@ -644,6 +644,26 @@ namespace ChastainRush
             float delta = Ground(terrain, pr.origin[0], pr.origin[1]) - 0.03f - pr.profile[1];
             for (int i = 0; i + 1 < pr.profile.Length; i += 2) pr.profile[i + 1] += delta * (1f - Smooth01(pr.profile[i] / 6f));
             Debug.Log($"[Round18] {pr.name}: its foot moved {delta:+0.00;-0.00} m onto the ground");
+        }
+
+        // Round 54 (D3, Dan BUG-008 "i kept losing momentum on this slide"): the slide's foot flares to 9 m wide over ground that is not level across it, so
+        // off its middle the foot's edge stood out of the grass and a vehicle met it square (the Drifter Twin 17 to 5 m/s in one step). The ground under
+        // the foot's first 2 m and for 4 m before it is set to the slide's own surface there, across its whole width and a metre beyond: it runs onto
+        // the board with no edge
+        static void FitGroundToSlideFoot(ScPrism pr, TerrainGrid terrain, ScSlide sl)
+        {
+            var O = new Vector2(pr.origin[0], pr.origin[1]); var U = new Vector2(pr.axis[0], pr.axis[1]).normalized; var N = new Vector2(-U.y, U.x);
+            float half = (sl != null && sl.foot_half > 0f ? sl.foot_half : 4.5f) + 1f, most = 0f;
+            var area = Rect.MinMaxRect(O.x - 8f, O.y - 8f, O.x + 8f, O.y + 8f);
+            EditTerrain(terrain, area, (x, z, y) =>
+            {
+                var q = new Vector2(x, z) - O; float s = Vector2.Dot(q, U), lat = Mathf.Abs(Vector2.Dot(q, N));
+                if (s < -4f || s > 2f || lat > half + 1.5f) return y;
+                float target = Profile(pr.profile, Mathf.Max(0f, s)) - 0.03f;
+                float w = (s < 0f ? Smooth01((s + 4f) / 4f) : 1f) * (lat <= half ? 1f : Smooth01(1f - (lat - half) / 1.5f));
+                float ny = y + w * (target - y); most = Mathf.Max(most, Mathf.Abs(ny - y)); return ny;
+            });
+            Debug.Log($"[Round54] D3: the ground under {pr.name}'s foot set to its surface, moved by up to {most:0.00} m");
         }
 
         static float Profile(float[] pr, float s)

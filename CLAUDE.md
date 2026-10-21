@@ -415,6 +415,18 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 54 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights (`make_addison_route.py`;
+`MapBuilder.Round54.cs`, built in the step Addison): the line on Crawford Circle's east leg (route `records_as`: the old times kept apart), the Elaine jump (forward,
+its way graded by `GradeRidge(AddisonNow)` in `Round53Plan`), the Joel terrace (reverse, prism `sc A2 terrace`), the bounce house (reverse, `Neighborhood/BounceHouse.cs`,
+an aimed throw as the trampoline), house 615's carport, the lap's roads levelled across their width (`R54LevelLap`, track `level_lines`), sharp-curve signs (`python
+Tools/handmade/make_curve_sign.py`, hand-made, committed), AI limits per route (`ai_hill_targets`, `ai_crest_g`), the AI passing traffic, breakable trees beside the lap
+(track `break_lines`), Lyndon's hedges. B a line missed within 40 m counts the lap with +5 s (`RaceController.LineMissedWide`); C Racer's COMPLETE RACE
+(`Menus/GameMenus.Complete.cs`, `RaceController.CompleteRace`); D1 traffic replans and turns round at barriers (`TrafficDriver.Replan / TurnRound`); D2 one material
+per party sign face; D3 R3's slide rails; E1 manhole floors refitted after every grading step (step ManholeFloors) and in `VehicleSurfaceContacts`; E2 `ManholeLid`
+turns a vehicle along the riser as it clears the street. Tools: `ChastainRush.GroundGrid.Run -gridRects "name:x0,z0,x1,z1,step;..." | -gridLines <file> -gridOut <dir>`
+(the built ground), `ChastainRush.MaterialScan.Run -scanOut <file>` (empty or broken material slots: what draws magenta). Check: `ChastainRush.exe -exeRound54 <dir>
+[-r54Only linemiss,complete,elaine,terrace,bounce,mh14,a54pics,barriers,aihard,aiscale] [-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R54.cs`).
+Imported from Racer: COMPLETE RACE (RaceMenus' button and FinalizeUnfinishedAi, rewritten into GameMenus / RaceController).
 **Round 53 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights' forward shortcut up Lyndon
 Drive (`make_addison_route.py` f_lyndon_crew; Lyndon's two barriers open forward only): the road crew (`MapBuilder.Round53.cs`, step Addison: the tilt trailer and
 planks, a real jump; truck, roller, mixer, cones; `Neighborhood/Flagger.cs` with the paddle from `python Tools/handmade/make_stop_paddle.py`, hand-made, committed;
@@ -897,7 +909,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-20_01-26-12-613_8b4dc1` through BUG-005 (Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-21_03-39-54-769_591b8d` through BUG-010 (Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

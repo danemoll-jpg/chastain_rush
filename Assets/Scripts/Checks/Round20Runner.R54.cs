@@ -272,6 +272,35 @@ namespace ChastainRush
             ("round the bounce house: the yards, the bluff's south end and up the hill to Suholden Circle", Dodge(Pts(3146f, 160f, 3175f, 172f, 3212f, 168f, 3238f, 190f, 3256f, 230f, 3262f, 270f, 3264f, 299f)), null),
         });
 
+        // ------------------------------------------------------------ E2: out of MH14 along the street
+        IEnumerator R54Mh14()
+        {
+            report.AppendLine(); report.AppendLine("=== E2. out of MH14 (the Lake drain shortcut's way up onto North Lakeside Drive): turned along the street as it clears it, where it comes down");
+            yield return StartLakesRace();
+            var sc = LakesSc("e_lake_drain");
+            if (sc == null) { Check("the lake drain shortcut is in the build", false); race.EndRace(); yield break; }
+            var mh = new Vector3(1180.08f, 0f, 1326.25f); var street = new Vector3(-0.9564f, 0f, 0.2921f);   // network.json MH14: x, z, dir
+            var bad = new List<string>();
+            foreach (var id in new[] { "original", "drifter" })
+            {
+                yield return Vehicle(id);
+                int st0 = ManholeLid.Straightened, mh0 = ManholeLid.Bursts; var run = new Run(); float outHead = float.NaN; Vector3 down = new Vector3(float.NaN, 0f, 0f); bool up = false;
+                yield return TimedLakes(sc, true, run, t => { }, 40f, null, 0f, () =>
+                {
+                    var p = car.Body.position;
+                    if (float.IsNaN(outHead) && ManholeLid.Straightened > st0) { var v = Flat(car.Body.linearVelocity); outHead = Vector3.SignedAngle(street, v, Vector3.up); up = true; }
+                    if (up && float.IsNaN(down.x) && car.GroundedWheels >= 2 && Flat(p - mh).magnitude > 3f) down = p;
+                });
+                float lateral = float.IsNaN(down.x) ? 99f : Mathf.Abs(Vector3.Dot(Flat(down - mh), Vector3.Cross(Vector3.up, street)));
+                bool ok = ManholeLid.Bursts > mh0 && !float.IsNaN(outHead) && Mathf.Abs(outHead) < 10f && lateral < 6f;
+                if (!ok) bad.Add(Nm(id));
+                report.AppendLine($"  {Nm(id),-16} {(ManholeLid.Bursts > mh0 ? "out of MH14" : "NO POP")}; heading off the street's line as it cleared it {outHead:0} deg; first down {(float.IsNaN(down.x) ? "-" : $"at ({down.x:0}, {down.z:0}), {Vector3.Dot(Flat(down - mh), street):0} m along the street, {lateral:0.0} m off its middle")}; {(run.reached ? "on along North Lakeside Drive" : "STOPPED " + run.end)}");
+                race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;
+            }
+            Check("E2: out of MH14 along the street (within 10 deg) and down on the road (within 6 m of the manhole's line)", bad.Count == 0, bad.Count == 0 ? "" : "not: " + string.Join(", ", bad));
+            race.EndRace(); RaceController.DirectionOverride = null;
+        }
+
         // ------------------------------------------------------------ pictures
         IEnumerator R54Pics()
         {

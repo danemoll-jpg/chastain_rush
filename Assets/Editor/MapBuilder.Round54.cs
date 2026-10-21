@@ -24,7 +24,7 @@ namespace ChastainRush
         [Serializable] class R54Bounce { public float[] front, dir, target, tracks; public float flight, land_yaw; }
         [Serializable] class R54Sign { public string id, face, plate; public float[] at; public float yaw; }
         [Serializable] class R54Level { public string id; public float[] points; public float half, blend; }
-        [Serializable] class R54File { public R54Terrace terrace; public R54Bounce bounce_house; public R54Sign[] signs; public R54Level[] level_lines; }
+        [Serializable] class R54File { public R54Terrace terrace; public R54Bounce bounce_house; public R54Sign[] signs; public R54Level[] level_lines, smooth_lines; }
 
         // ------------------------------------------------------------ A5: the lap's roads levelled (planning, before the roads are built)
         // Dan (BUG-002, Suholden Circle): "there are lot of these bumps throuhout the course in both idrections. Can we flatten these all out". Measured on
@@ -32,6 +32,28 @@ namespace ChastainRush
         // in 6 m: the house lots, the drives and the junction stems graded into the road's edges after mapgen levelled it) and three creases at the
         // junctions (Joel / Hayworth, Hayworth / Crawford, Suholden / Kelly). Across the road's width the ground is set to the road's own centerline
         // profile, that profile smoothed over a few meters (a Gaussian, 2.5 m: grades and crests stay, the creases go), blending back over 'blend'
+        // the shortcuts' ways where they come down onto the levelled lap (A1 onto Crawford Circle, A2 onto Hayworth Drive): the ground along each line
+        // as it is after the levelling, smoothed along it (a Gaussian, 4 m) so it runs onto the road with no ledge, set across its width
+        static void R54SmoothJoins(TerrainGrid terrain)
+        {
+            var d = LoadAddison54(); if (d?.smooth_lines == null) return;
+            foreach (var ln in d.smooth_lines)
+            {
+                var p = ToPoints(ln.points); int n = p.Count; if (n < 3) continue;
+                var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
+                var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (p[i] - p[i - 1]).magnitude;
+                var y = new float[n];
+                for (int i = 0; i < n; i++)
+                {
+                    float sw = 0f, sy = 0f;
+                    for (int j = 0; j < n; j++) { float k = Mathf.Exp(-0.5f * (cs[j] - cs[i]) * (cs[j] - cs[i]) / 16f); sw += k; sy += raw[j] * k; }
+                    y[i] = sy / sw;
+                }
+                y[n - 1] = raw[n - 1]; y[0] = raw[0];   // its ends stay where they meet the road and the slope
+                GradeAlong(terrain, new RidgeGrade { id = ln.id, points = ln.points, y = y, half = ln.half, blend = ln.blend });
+            }
+        }
+
         static void R54LevelLap(TerrainGrid terrain)
         {
             var d = LoadAddison54(); if (d?.level_lines == null) return;

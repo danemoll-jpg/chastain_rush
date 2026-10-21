@@ -49,10 +49,10 @@ namespace ChastainRush
                 if (!car || car.Body == null || car.Body.isKinematic) continue;
                 if (cooldown.TryGetValue(car, out float cd) && Time.time < cd) continue;
                 var p = car.Body.position - front; float along = Vector3.Dot(p, inward), lat = Vector3.Dot(p, right);
-                if (along < -0.5f || along > depth || Mathf.Abs(lat) > halfWidth + 0.4f || p.y < -1f || p.y > height + 0.5f) continue;
+                if (along < -0.5f || along > depth || Mathf.Abs(lat) > halfWidth + 0.4f || p.y < -1f || p.y > height + 2.8f) continue;   // the yard rises to it: cars arrive in the air
                 cooldown[car] = Time.time + 1.0f;
                 var v = car.Body.linearVelocity; float into = Vector3.Dot(v, inward);
-                if (into >= minSpeed && along < depth * 0.6f) Throw(car); else Bump(car);
+                if (into >= minSpeed) Throw(car); else Bump(car);
             }
             for (int i = flying.Count - 1; i >= 0; i--) if (!Fly(flying[i])) flying.RemoveAt(i);
             if (look)
