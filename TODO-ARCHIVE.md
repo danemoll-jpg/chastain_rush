@@ -5384,3 +5384,62 @@ Build: seven full builds, not one (each fix was found in the exe: the intake's w
    on the lap crossed it), the map's controls line, the bridge's north end, the AI's recovery and jetty speed); `Builds/ChastainRush/` 2026-10-19 12:38. Imported from Racer: nothing.
 For Dan to check: the intake (clean, and short off the jetty); the kicker (is 1 s enough reward, or move the turn-off or landing?); the trail behind the pool both
    ways; the map's pointer and pan with a controller and the mouse.
+
+## Round 50 (moved from TODO.md on 2026-10-21 when Dan reviewed Round 53; word for word)
+
+## Previous delivery 3: Round 50
+**Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
+**Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
+reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
+Lakes race at night on the Drifter Twin).** Round 49 is reviewed (the intake and the map are accepted). The two new standing rules
+at the top of this file apply first (no free way round a shortcut; tire tracks are the hint). ONE full Build Map at the end:
+plan the whole line on paper first (the run without the stunt included), use quick builds while working; Round 49 took seven full
+builds. Tuning limit. Short results.
+A. THE KICKER: BLOCK THE FREE WAY, AND A SECOND JUMP. Dan: "the ramp one really did nothing. As it is you could just drive through
+   this area and skip the ramp and nothing will slow you down." BUG-003 (x 1207.19 z 1004.53 h 214, the yards on the kicker's line
+   between CP4 and CP5, reverse): "as a follow up this issue should have bushes that you can drive through but will slow you down,
+   this is to prevent people from just driving through here". BUG-004 (x 1161.78 z 982.28 h 227, at Northlake Point, where the
+   kicker's line crosses that cul-de-sac): "There could be a second jump in this area as well again with bushes or something so you
+   can't just drive through this way".
+   (1) Bushes (dense shrubs / a hedge row, drivable through, slowing you hard: a real cost, as fences do now) across every free way
+   through these yards on both sides of Northlake Point, so the only fast way is through the air. (2) The kids' kicker stays; its
+   flight carries you over the first bushes. (3) A SECOND JUMP on the same line at Dan's BUG-004 spot: from Northlake Point on over
+   the next yards' bushes toward the lap past CP5, landing on or next to the lap heading the race's way. A real physics launch
+   (ramp rule), something that could be on a cul-de-sac or in a yard at its true size (not a dirt pile, not another kids' kicker:
+   Code picks and says why). (4) Done right (both jumps clean) it must save clearly more than Round 49's 1.1 s; missed (short, slow,
+   or round the ramps) you are in the bushes and lose more than you would have saved. The AI takes it and sometimes fails.
+B. THE LAKE TRAIL, AS THE PHOTOS SHOW IT. BUG-001 (x 1307.56 z 1105.97 h 87, behind the pool, reverse): "why does this look so
+   sloppy and why is the sidewalk on hanging on the hill like this. Cant you use the reference photos to see how the real path is
+   not slopped down from the hill. Also i really don't think it needs to be widened. vehicles can also drive in the grass so i don't
+   see the issue just having it look normal". Rebuild the path's piece from the lot behind the pool to the footbridge to look like
+   photos 2 and 3 (`local/reference_photos/chastain_lakes/r44_2*`, `r44_3*`): its REAL width (about 1.5 m concrete walk with timber
+   edging past the pool's granite wall, then about 2 m gravel with tan brick edging), lying flat on graded ground that follows the
+   hill (no path tilted sideways or hanging off a slope, no sharp-edged cut faces; the bank beside it soft and grassed or pine
+   straw as in the photos). The race line is NOT held to the path: vehicles run on the path and the grass beside it, so the grass
+   either side is smooth and drivable at race speed. Same treatment on the dam path north of the bridge (real width, flat, grass
+   either side). This replaces Round 44's "7 m, wider than real" for this trail only.
+C. NO JUMP SIGN. BUG-002 (x 1268.79 z 1040.35 h 187, the kicker's turn-off on Lakeside Drive): take the JUMP! board away; the tire
+   tracks stay as the hint (new standing rule).
+Check: the kicker line clean (both jumps; time saved, Street Classic and Drifter Twin); the same ground WITHOUT the jumps (round
+each ramp, through the bushes, through other yards): slower than the plain lap; a short first jump; the AI race reverse, traffic
+Normal, all finish. The trail both ways on all 11 vehicles at race speed, no stop, partly on the grass. Pictures: Dan's BUG-001,
+BUG-003 and BUG-004 spots, the second jump, the trail from photo 2's and photo 3's spots next to the photos.
+For Dan to check: the kicker line and its second jump (and try to cheat it); the trail behind the pool; the turn-off without the sign.
+
+**Status (Claude, 2026-10-19): A to C built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round50/`.
+A DONE, time saved NOT MET. THE CARPORT (second jump, BUG-004): a storm-collapsed two-car metal carport at the end of Northlake Point, its east legs folded, the
+   roof sheet (6.7 m wide, 20 degrees, eave 2 m up) the ramp, a real jump west over the shrub bed between 231 and 230 to the lap past CP5 (`MapBuilder.LakesKicker.cs`).
+   Why: metal carports are really in these yards and at true size this is the launch the spot needs, wide enough to hit after the first landing (a dump truck's
+   raised bed, the other candidate, is 2.4 m wide). SHRUB BEDS (BUG-003): Racer's ShortcutUndergrowth ported as `Neighborhood/ShrubBeds.cs` (drag 2.5/s: hard, never
+   stuck); brush down the valley under the kicker, cattails where it meets the lake, planted beds 231 to the lake, between 231 and 230, from 230 and 233 to Northlake
+   Point's race barrier, 233 to the valley: the pocket between the jumps can only be crossed fast through the air.
+   Clean, both jumps: Street Classic and Drifter Twin each save 0.9 s (Round 49: 1.1 / 0.6). Tuning (one try, stopped): at 30 degrees the carport lobbed cars 70 m
+   in 3.1 s and saved 0.4 to 0.5 s; at 20 degrees 0.9 s. Most of the time goes in the turn-off arc onto the kicker's line (Round 49's), which I left as Dan accepted it.
+   Without the jumps (Dan's rule), all slower than the plain lap (12.1 s): beside both ramps +7.2 s, kicker then beside the carport +2.6 s, beside the kicker then
+   the carport +3.9 s, across the lake +19.7 s, kicker then down Northlake Point round its barrier +3.1 s (times before the 5 s CP5 penalty). Short: off the kicker at
+   16 m/s +1.3 s, off the carport at 14 m/s +1.6 s. AI reverse race x2, traffic Normal: all 6 finish, 0 missed; kicker line 4 times, 0 short.
+B DONE. The trail at its real width: concrete 1.5 m (timber edging), gravel 2 m (tan brick) to the footbridge, the dam's gravel 1.5 m (grass edges), on a level 4 m
+   bench with soft banks (3.5 m uphill, the lake's room on its left: `GradeAlong` blend_left / blend_r). All 11 vehicles both ways 2 m off the path: no stop (slowest 8.0 m/s).
+C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.1 s, 0 missed, 18 barriers; shut checks pass).
+Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
+For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.

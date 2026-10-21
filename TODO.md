@@ -108,6 +108,84 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 54, ADDISON HEIGHTS: THE ELAINE JUMP, TWO REVERSE SHORTCUTS, BUMPS, SIGNS, A HARDER AI; a missed finish line; COMPLETE RACE;
+fixes on three other tracks (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session `2026-10-21_03-39-54-769_591b8d`, read by Claude, after
+the Round 53 exe: Addison Heights races, a reverse Chastain Glen loop, Chastain Lakes and Free Roam, on the Drifter Twin).** Round 53 is
+reviewed. Standing rules apply (shortcuts: real risk, no free way round, tire tracks as the hint, real physics on ramps, nothing slows a
+car on a ramp; every road off the lap closed). ONE full Build Map at the end (plan every line on paper first, the run without the stunt
+included; quick builds while working). Tuning limit. Short results.
+A. ADDISON HEIGHTS.
+A1. START / FINISH MOVED, AND THE ELAINE JUMP BUILT (Round 53 B, FORWARD). Dan picked Code's option (1): move the start / finish to
+   Crawford Circle's east leg (straight, about 7 %), so the way back from the Elaine landing can rejoin past the line on Crawford Circle
+   / Hayworth Drive and save a few seconds. Then build Round 53 B as briefed there (the natural jump off the crest at Suholden / Elaine,
+   no ramp; from where cars really land, a longer winding way back with its own fun; Elaine's own road below the landing not a free
+   way back). Move the checkpoints, grid, records keys (old Addison records can be dropped: the lap changed) and AI to suit, both ways.
+A2. A REVERSE SHORTCUT JUMP OFF JOEL DRIVE. BUG-003 (x 2921.86 z 410.63 h 141, Joel Drive, reverse race, CP7 next): "can we put a
+   shortcut jump through here? Should be able to catch a lot fo air" (the picture: the ground drops away south of Joel toward the
+   houses below). Code designs it from there toward the lap ahead (Hayworth / Crawford southbound); a real launch that is at its true
+   size and could be there (not another dirt pile: Code picks and says why), big air.
+A3. A CREATIVE REVERSE SHORTCUT ON SUHOLDEN. BUG-004 (x 3146.65 z 162.26 h 56, 10 m off Suholden Circle among the yards, reverse race,
+   just after the start): "lets put a shortcut through here too. something creative." Code designs it (from Suholden northbound
+   through these yards toward Suholden Circle's east end / Embry ahead) using something that belongs in a neighborhood (as the slide
+   and trampoline, the boat, the carport, the road crew), not a dirt ramp; says what and why.
+   (A2, A3: confirm from the lap which direction each faces; Dan's headings say reverse. Each saves a few seconds clean, loses missed.)
+A4. BUG-001 (x 3219.72 z 504.50 h 188, Embry Lane's east corner): "finish this house" (the picture: bare beige walls with no roof or
+   windows, open frame). Finish it.
+A5. BUG-002 (x 3142.71 z 242.77 h 21, Suholden Circle): "there are lot of these bumps throuhout the course in both idrections. Can we
+   flatten these all out". Find the jolts on the Addison Heights lap both ways (bump log / a scripted drive at race speed) and smooth
+   them; list where.
+A6. BUG-005 (x 2717.40 z 515.53 h 269, Embry Lane before its west bend): "lets put some slow down signs here. Warning of a sharp turn".
+   Yellow sharp-curve warning signs with an advisory speed plate, both approaches to the bend (breakable, as all signs).
+A7. THE AI IS TOO EASY. Dan: "On the new track. even on hard I beat the AI really bad." Round 52 found why the AI is slow here
+   (Embry Lane's 30 % hill, traffic queues at the Kelly / Suholden corner). On Hard the AI should race Dan close (his laps 1:12 to
+   1:15 on the Drifter Twin); Normal and Easy scale down as on the other tracks. Report Hard's lap times. Tuning limit.
+A8. FEWER SHRUBS AT THE LYNDON SHORTCUT (Round 53 A). Dan, 04:46: "there are far too many shrubs in the Lyndon shortcut. THese aren't
+   all necesary just enough to make someone not try to cut through but also look natural." Thin the shrub beds to what still makes
+   the yards slower than the jump (keep the cheat check passing), set like real yard plantings (beds along fences, foundations and
+   borders, gaps between them), not a carpet.
+B. A MISSED FINISH LINE MUST STILL COUNT THE LAP. Dan: "on the trail race [Noonday Creek] that missed the finish cp on my second lap,
+   instead of counting it as a missed cp, it didnt advance my lap." Missing the finish / start line is a missed checkpoint like any
+   other: the lap advances (on reaching the next checkpoint) and the missed-checkpoint penalty applies. Fix it in the race code for
+   every track, the last lap's finish included (Code decides how a missed final line ends the race, and says).
+C. COMPLETE RACE, FROM WOODSTOCK RUSH. Dan: "on Woodstock Rush there was the option to simulate the times of the rest of the ai racers
+   when you were done with the race. can we implement this here?" Port Racer's COMPLETE RACE (`RaceMenus.Finish.cs`,
+   `CanSimulateRemaining` in `RaceMenus.cs`): when the player has finished, a button (with its glyph) fills in the unfinished
+   racers' times from their pace and places, straight to the results; records only for real finishes, as Racer.
+D. CHASTAIN GLEN LOOP.
+D1. BUG-006 (x 3064.10 z 953.77, Chastain Glen Lane, a reverse race): "can we stop having cars trying to go through barriers. They
+   should detect the roads are closed and not constantly try to get through them". Traffic must treat a race's closed roads as
+   closed: route round them (or turn back), never push at a barrier. Dan, 04:46: "It is a global issue anytime there are barriers,
+   cars ignore there are barriers and keep trying to drive throuh them": fix it in the traffic code for every barrier in every race
+   (and any other barrier traffic meets), not per track; check at barriers on at least three tracks.
+D2. BUG-007 (x 2997.82 z 1209.19, Chastain Glen Lane, Free Roam): "first time I see the sign didn't load." (the picture: the party
+   sign with the balloons drawn solid magenta: a missing material / shader in the build). Fix it, and check for any other magenta.
+D3. BUG-008 (x 3034.29 z 1185.30 h 98, on the playground slide, R3): "i kept losing momentum on this slide". The slide must not slow
+   you (standing rule): find what drags (friction, joints, the lip) and fix it.
+E. CHASTAIN LAKES.
+E1. BUG-009 (x 684.06 z 1498.46 h 270, North Lakeside Drive just after the start, lap 3): "something right here slows me down". Find
+   and remove it.
+E2. BUG-010 (x 1166.43 z 1343.72 h 343, airborne 12.7 m off North Lakeside Drive, lap 3, 439 m from the finish): "if this is not a
+   natural jump (outside of the shortcut) can we have it land more in line with the track or at least have it jump in that direction".
+   If it is not part of a shortcut, shape the take-off so the car flies along the lap and lands on it.
+Check: Addison Heights both ways (each shortcut clean / short / round it; the AI on Hard x2 each way with Dan-like lap times; all
+finish); B on Noonday Creek (miss the line on lap 2: lap advances, penalty shown; and the final line); C after a finish; D1 traffic at
+the Glen loop's barriers; D3 the slide's exit speed before / after; E1 speed through Dan's spot before / after; E2 the flight line.
+For Dan to check: Addison Heights both ways (new start, the Elaine jump, A2, A3, Lyndon's shrubs, the signs, the bumps, the AI on Hard); miss a finish
+line; COMPLETE RACE; the Glen loop's barriers, the sign and the slide; Chastain Lakes at his two spots.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 53
+**Reviewed: Dan drove the Round 53 build 2026-10-21 03:39 (Addison Heights both ways, Chastain Glen reverse, Chastain Lakes); no complaint about A (the Lyndon shortcut stands as built), C or D; B: he chose option (1), now Round 54 A1.**
 **Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
 `2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
 Round 52 is reviewed: "the track itself is good". Both shortcuts are FORWARD only. Standing rules apply (real risk; no free way round
@@ -171,18 +249,7 @@ Races, traffic Normal: forward x2, reverse x1, 9 of 9 AI finish; the AI took Lyn
 Builds: two full builds (the second for A's tuning and B taken out); `Builds/ChastainRush/` 2026-10-21 02:59. Imported from Racer: nothing.
 For Dan to check: the Lyndon shortcut (try to cheat it; is a 4 to 10 s saving OK?); pick B's option; the carport at BUG-004; the Lyndon / Embry junction.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 52
+## Previous delivery 2: Round 52
 **Reviewed: Dan drove the Round 52 build 2026-10-20 01:26 (Addison Heights forward, Free Roam): "the track itself is good"; his notes are Round 53.**
 **Round 52, A NEW TRACK: ADDISON HEIGHTS (forward and reverse, no shortcuts yet), and three house fixes there (Dan, 2026-10-19 22:23;
 reports BUG-001 to BUG-003 of session `2026-10-19_19-45-10-079_0a133b`, read by Claude, from Free Roam in the Round 51 exe; his route
@@ -242,7 +309,7 @@ Not changed (Dan's call): the same floating windows on about 100 other style E h
 For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
    Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
 
-## Previous delivery 2: Round 51
+## Previous delivery 3: Round 51
 **Reviewed: Dan drove the Round 51 build 2026-10-19 19:45 (Free Roam); no reports on it (his three notes are Round 52).**
 **Round 51, STARTUP POLISH: THE TITLE, THE LOADING SCREEN, HINTS AND THE ICON (Dan, 2026-10-19 18:24; he supplied the assets).** Round 50 is
 reviewed (approved). Dan: "Start up polish: here are the assets to make the Startup. We will use this screen for loading screens as well".
@@ -288,63 +355,6 @@ D DONE. `GameIcon.png` (copy in `Assets/HandMade/Title/`) is the exe's icon (Pla
 4K: one run full screen at 3840 x 2160 for the pictures only (about 40 s), as the brief allows. Build `Builds/ChastainRush/` 2026-10-19 19:28. Imported from
 Racer: StartupTitle, LoadingScreen (rewritten for one scene and this game's route); left behind: the title's fallback listener, Hints.cs (in-play hints).
 For Dan to check: listen to the title (does the whole-track loop sound right?); a race and Free Roam loading; the tips; the icon on the exe and taskbar.
-
-## Previous delivery 3: Round 50
-**Reviewed: Dan approved the Round 50 build 2026-10-19 17:04 ("I approve the latest update").**
-**Round 50, THE KICKER SHORTCUT MADE A REAL RISK, THE LAKE TRAIL AS IT REALLY LOOKS, no JUMP sign (Dan, 2026-10-19 13:37;
-reports BUG-001 to BUG-004 of session `2026-10-19_13-25-47-596_f0f013`, read by Claude, after the Round 49 exe: a reverse Chastain
-Lakes race at night on the Drifter Twin).** Round 49 is reviewed (the intake and the map are accepted). The two new standing rules
-at the top of this file apply first (no free way round a shortcut; tire tracks are the hint). ONE full Build Map at the end:
-plan the whole line on paper first (the run without the stunt included), use quick builds while working; Round 49 took seven full
-builds. Tuning limit. Short results.
-A. THE KICKER: BLOCK THE FREE WAY, AND A SECOND JUMP. Dan: "the ramp one really did nothing. As it is you could just drive through
-   this area and skip the ramp and nothing will slow you down." BUG-003 (x 1207.19 z 1004.53 h 214, the yards on the kicker's line
-   between CP4 and CP5, reverse): "as a follow up this issue should have bushes that you can drive through but will slow you down,
-   this is to prevent people from just driving through here". BUG-004 (x 1161.78 z 982.28 h 227, at Northlake Point, where the
-   kicker's line crosses that cul-de-sac): "There could be a second jump in this area as well again with bushes or something so you
-   can't just drive through this way".
-   (1) Bushes (dense shrubs / a hedge row, drivable through, slowing you hard: a real cost, as fences do now) across every free way
-   through these yards on both sides of Northlake Point, so the only fast way is through the air. (2) The kids' kicker stays; its
-   flight carries you over the first bushes. (3) A SECOND JUMP on the same line at Dan's BUG-004 spot: from Northlake Point on over
-   the next yards' bushes toward the lap past CP5, landing on or next to the lap heading the race's way. A real physics launch
-   (ramp rule), something that could be on a cul-de-sac or in a yard at its true size (not a dirt pile, not another kids' kicker:
-   Code picks and says why). (4) Done right (both jumps clean) it must save clearly more than Round 49's 1.1 s; missed (short, slow,
-   or round the ramps) you are in the bushes and lose more than you would have saved. The AI takes it and sometimes fails.
-B. THE LAKE TRAIL, AS THE PHOTOS SHOW IT. BUG-001 (x 1307.56 z 1105.97 h 87, behind the pool, reverse): "why does this look so
-   sloppy and why is the sidewalk on hanging on the hill like this. Cant you use the reference photos to see how the real path is
-   not slopped down from the hill. Also i really don't think it needs to be widened. vehicles can also drive in the grass so i don't
-   see the issue just having it look normal". Rebuild the path's piece from the lot behind the pool to the footbridge to look like
-   photos 2 and 3 (`local/reference_photos/chastain_lakes/r44_2*`, `r44_3*`): its REAL width (about 1.5 m concrete walk with timber
-   edging past the pool's granite wall, then about 2 m gravel with tan brick edging), lying flat on graded ground that follows the
-   hill (no path tilted sideways or hanging off a slope, no sharp-edged cut faces; the bank beside it soft and grassed or pine
-   straw as in the photos). The race line is NOT held to the path: vehicles run on the path and the grass beside it, so the grass
-   either side is smooth and drivable at race speed. Same treatment on the dam path north of the bridge (real width, flat, grass
-   either side). This replaces Round 44's "7 m, wider than real" for this trail only.
-C. NO JUMP SIGN. BUG-002 (x 1268.79 z 1040.35 h 187, the kicker's turn-off on Lakeside Drive): take the JUMP! board away; the tire
-   tracks stay as the hint (new standing rule).
-Check: the kicker line clean (both jumps; time saved, Street Classic and Drifter Twin); the same ground WITHOUT the jumps (round
-each ramp, through the bushes, through other yards): slower than the plain lap; a short first jump; the AI race reverse, traffic
-Normal, all finish. The trail both ways on all 11 vehicles at race speed, no stop, partly on the grass. Pictures: Dan's BUG-001,
-BUG-003 and BUG-004 spots, the second jump, the trail from photo 2's and photo 3's spots next to the photos.
-For Dan to check: the kicker line and its second jump (and try to cheat it); the trail behind the pool; the turn-off without the sign.
-
-**Status (Claude, 2026-10-19): A to C built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round50/`.
-A DONE, time saved NOT MET. THE CARPORT (second jump, BUG-004): a storm-collapsed two-car metal carport at the end of Northlake Point, its east legs folded, the
-   roof sheet (6.7 m wide, 20 degrees, eave 2 m up) the ramp, a real jump west over the shrub bed between 231 and 230 to the lap past CP5 (`MapBuilder.LakesKicker.cs`).
-   Why: metal carports are really in these yards and at true size this is the launch the spot needs, wide enough to hit after the first landing (a dump truck's
-   raised bed, the other candidate, is 2.4 m wide). SHRUB BEDS (BUG-003): Racer's ShortcutUndergrowth ported as `Neighborhood/ShrubBeds.cs` (drag 2.5/s: hard, never
-   stuck); brush down the valley under the kicker, cattails where it meets the lake, planted beds 231 to the lake, between 231 and 230, from 230 and 233 to Northlake
-   Point's race barrier, 233 to the valley: the pocket between the jumps can only be crossed fast through the air.
-   Clean, both jumps: Street Classic and Drifter Twin each save 0.9 s (Round 49: 1.1 / 0.6). Tuning (one try, stopped): at 30 degrees the carport lobbed cars 70 m
-   in 3.1 s and saved 0.4 to 0.5 s; at 20 degrees 0.9 s. Most of the time goes in the turn-off arc onto the kicker's line (Round 49's), which I left as Dan accepted it.
-   Without the jumps (Dan's rule), all slower than the plain lap (12.1 s): beside both ramps +7.2 s, kicker then beside the carport +2.6 s, beside the kicker then
-   the carport +3.9 s, across the lake +19.7 s, kicker then down Northlake Point round its barrier +3.1 s (times before the 5 s CP5 penalty). Short: off the kicker at
-   16 m/s +1.3 s, off the carport at 14 m/s +1.6 s. AI reverse race x2, traffic Normal: all 6 finish, 0 missed; kicker line 4 times, 0 short.
-B DONE. The trail at its real width: concrete 1.5 m (timber edging), gravel 2 m (tan brick) to the footbridge, the dam's gravel 1.5 m (grass edges), on a level 4 m
-   bench with soft banks (3.5 m uphill, the lake's room on its left: `GradeAlong` blend_left / blend_r). All 11 vehicles both ways 2 m off the path: no stop (slowest 8.0 m/s).
-C DONE. The JUMP! board gone; the worn tracks stay. Forward race unchanged (104.1 s, 0 missed, 18 barriers; shut checks pass).
-Build: two full builds (the second for the carport's try) plus a final one; `Builds/ChastainRush/` 2026-10-19 15:26. Imported from Racer: ShortcutUndergrowth (as ShrubBeds).
-For Dan to check: the kicker line and the carport (try to cheat it); is 0.9 s enough, or move the turn-off or flatten the kicker (your call); the trail behind the pool.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
