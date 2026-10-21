@@ -415,6 +415,12 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 55 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights: Round 54's Elaine valley way
+taken out and the jump Dan meant (off Elaine's west bend) NOT built (cars land on the bank just above the Crawford / Hayworth corner: options in TODO.md); the line
+moved to Embry Lane's east end (`make_addison_route.py` GATE_AT, records_as "Addison Heights (Embry Lane line)"); the bounce house's voice at the castle with the
+trampoline's sound; Dan's two bumps (`MapBuilder.Round55.cs`: track `smooth_spots`, a blur; `vertical_curves`); the AI goes round a slower car instead of sitting on
+its bumper (`RoadDriver` Passes, BehindSeconds, PassFix). Check: `ChastainRush.exe -exeRound55 <dir> [-r55Only eprobe,etimes,line,bounce,erace,epics] [-r55PassOff]
+[-traffic Normal] -logFile <dir>\Player.log` (`Checks/Round20Runner.R55.cs`). Imported from Racer: nothing.
 **Round 54 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights (`make_addison_route.py`;
 `MapBuilder.Round54.cs`, built in the step Addison): the line on Crawford Circle's east leg (route `records_as`: the old times kept apart), the Elaine jump (forward,
 its way graded by `GradeRidge(AddisonNow)` in `Round53Plan`), the Joel terrace (reverse, prism `sc A2 terrace`), the bounce house (reverse, `Neighborhood/BounceHouse.cs`,
@@ -909,7 +915,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-21_03-39-54-769_591b8d` through BUG-010 (Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-21_12-16-40-990_d377b3` through BUG-003 (Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

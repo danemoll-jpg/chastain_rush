@@ -158,6 +158,32 @@ from the grid, the two junctions.
 For Dan to check: the Elaine jump and its way on through the backyards; the new start / finish; the bounce house's sound; the two bumps;
 the AI passing traffic and each other.
 
+**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan. A is NOT BUILT (stopped and reported, as the
+brief allows).** Evidence `Data/screenshots/round55/` (check reports, pictures). Bug reports read: session `2026-10-21_12-16-40-990_d377b3`, BUG-001 to 003.
+A NOT BUILT; A(3) DONE. Round 54's valley way, its beds, grade, cleared line and landing zone are gone; Elaine is barred at the corner again (forward).
+   Measured in the exe (free roam, `round55_check_a_b_c.txt`): flat out up Elaine cars reach the bend at only 14 to 21 m/s (Elaine climbs 26 % to it) and
+   come down on the bank 35 to 46 m out, 10 to 20 m above the lap's own Crawford / Hayworth corner; nobody gets across Hayworth in the air (even a 30 deg
+   kicker at 20 m/s would land on the corner). Drifter Twin: the lap's way 25.0 s; off the bend and down onto Hayworth at the corner 14.4 s (saves 10.6 s);
+   off the bend, across the corner, round 1143 through the yards back to Hayworth (Dan's backyard way) 22.5 s (saves 2.4 s). Street Classic: lap 27.2 s;
+   both jump lines stopped by a trunk on the bank. The backyard way is the right size, but nothing can force it: every landing is on the bank just above
+   the corner, so braking and turning onto Hayworth there is 8 s better, and a hedge at the bank's foot is crossed by the clean run too.
+   Options for Dan: (1) build it with the turn at the corner left open: about 10 s saved, far more than "a few seconds"; (2) wall the bank's foot with
+   deep hedges so the only way off the bank is a graded bench north round 960 to Hayworth at z 375 (a car that plows through still reaches the corner:
+   not measured); (3) leave Elaine a closed road, as now.
+B DONE. The line on Embry Lane's east end at (3246, 457) (5 to 9 %, straight; every flatter straight is inside a shortcut's skipped part or too short),
+   60 m lead-in from the corner; the reverse grid ends short of Joel Drive. Records as "Addison Heights (Embry Lane line)"; a checkpoint on Crawford
+   Circle where the line was. Both grids on the road (check); no shortcut end in sight of them (`55_B_*_grid.png`).
+C DONE. The bounce house's voice stood at the world's origin (never heard); now at the castle, playing the trampoline's sound (Dan's drop-in
+   `trampoline.mp3` or the made one). Check: thrown, playing, 3 m from the arch.
+D DONE. Both were ridges the levelling left on the corners' outsides: Kelly / Suholden (pitch under a car 0, 5, 12, 18, 14, 8 %) now 3 to 8 % with no
+   spike; Hayworth / Crawford (0.31 m and 0.6 m crests over +-3 m) blurred, and the 8 % into 22 % grade change made a 24 m vertical curve
+   (`MapBuilder.Round55.cs`): no crest left, a sag of 0.17 to 0.20 m over +-3 m remains where the bend and the grade change meet (two tries; `bumps.txt`).
+E DONE (modest). The AI pulls out round a slower car once the other lane is clear and goes on past instead of stopping on its bumper; otherwise it waits
+   a car length back. Hard, traffic Normal, every AI finished (8 races, 24 drivers): close behind a car under 10 m/s on Addison Heights 23.7 s per driver
+   before, 17.1 s after; Chastain Lakes about 2 s before and after. Passes 14 to 18 per driver both ways (`round55_check_e_before.txt`, `_after.txt`).
+Builds: four full builds (the junction curve took two tries: the first left a crest at its start). `Builds/ChastainRush/` 2026-10-21 14:15. Imported from Racer: nothing.
+For Dan to check: pick an option for the Elaine jump; the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
+
 ## QUEUED rounds
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
