@@ -216,7 +216,7 @@ namespace ChastainRush
                 if (i0 >= 0 && p.Count - i0 > 3) WornRuts(terrain, mats, go, p.GetRange(i0, p.Count - i0 - 1), "Worn tracks A3");
             }
             var bh = go.gameObject.AddComponent<BounceHouse>();
-            bh.front = new Vector3(front.x, y0, front.y); bh.inward = new Vector3(inward.x, 0f, inward.y); bh.halfWidth = W2; bh.depth = D; bh.height = H; bh.look = holder;
+            bh.front = new Vector3(front.x, y0, front.y); bh.inward = new Vector3(inward.x, 0f, inward.y); bh.halfWidth = W2; bh.depth = D; bh.height = H; bh.look = holder; bh.minSpeed = 10.5f;   // the final build's check: a bike up the grass reached it at 11 to 13 m/s and was bounced back
             bh.target = new Vector3(b.target[0], Ground(terrain, b.target[0], b.target[2]) + 0.6f, b.target[2]); bh.flight = b.flight; bh.landYaw = b.land_yaw;
             Debug.Log($"[Round54] A3: the bounce house at ({front.x:0.0}, {front.y:0.0}) {y0:0.00} m, its arch facing {Mathf.Atan2(-inward.x, -inward.y) * Mathf.Rad2Deg:0}; " +
                       $"it throws to ({bh.target.x:0.0}, {bh.target.y:0.0}, {bh.target.z:0.0}) in {b.flight:0.0} s, landing heading {b.land_yaw:0}");
