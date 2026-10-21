@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -58,6 +58,7 @@ namespace ChastainRush
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
             if (tag == "round52" && parts == null) parts = new[] { "ahlap", "ahshut", "ahpics", "ahhouses" };   // Round 52 (Round20Runner.R52.cs); ahrace with -traffic Normal
+            if (tag == "round54" && parts == null) parts = new[] { "linemiss", "complete", "elaine", "terrace", "bounce", "a54pics" };   // Round 54 (Round20Runner.R54.cs); aihard, aiscale, barriers with -traffic Normal
             if (tag == "round53" && parts == null) parts = new[] { "sclean", "scheat", "sshort", "sflag", "sjunction", "ahshut", "spics" };   // Round 53 (Round20Runner.R53.cs); srace, srevrace with -traffic Normal
             if (tag == "round50" && parts == null) parts = new[] { "kclean", "kcheat", "kshort", "ktrail", "kpics" };   // Round 50 (Round20Runner.R50.cs); krace with -traffic Normal
             if (tag == "round49" && parts == null) parts = new[] { "lktrail", "lkintake", "lkkicker", "lkshut", "lkfwd", "lkmap", "lkpics" };   // Round 49 (Round20Runner.R49.cs); lkrace with -traffic Normal
@@ -171,6 +172,19 @@ namespace ChastainRush
                 if (Do("eggwaypoint")) yield return Guard(R48Waypoint());
                 if (Do("eggrace")) yield return Guard(R48Race());
                 if (Do("eggpics")) yield return Guard(R48Pics());
+            }
+            // Round 54 (Round20Runner.R54.cs): Addison Heights' new shortcuts and AI, the missed line, COMPLETE RACE, traffic at barriers
+            if (tag == "round54")
+            {
+                if (Do("linemiss")) yield return Guard(R54LineMiss());
+                if (Do("complete")) yield return Guard(R54Complete());
+                if (Do("elaine")) yield return Guard(R54Elaine());
+                if (Do("terrace")) yield return Guard(R54Terrace());
+                if (Do("bounce")) yield return Guard(R54Bounce());
+                if (Do("barriers")) yield return Guard(R54Barriers());
+                if (Do("aihard")) yield return Guard(R54AiHard());
+                if (Do("aiscale")) yield return Guard(R54AiScale());
+                if (Do("a54pics")) yield return Guard(R54Pics());
             }
             // Round 53 (Round20Runner.R53.cs): Addison Heights' Lyndon road crew, the junction, the house
             if (tag == "round53")

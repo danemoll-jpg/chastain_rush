@@ -26,6 +26,10 @@ namespace ChastainRush
             completeRoot.gameObject.SetActive(false);
         }
 
+        // checks only (Round20Runner.R54.cs): the title menu shut, as FREE ROAM does, so the race's own screens show
+        public void CloseForCheck() { title = false; pages.Clear(); CloseMenu(); }
+        public bool CompleteButtonShowing => completeRoot && completeRoot.gameObject.activeInHierarchy;
+
         bool CompleteShowing => race && !open && race.CanSimulateRemaining && !WinnerShot.Active && !TrailerMode.HudHidden;
 
         // in Update, before the menus take the keys: the confirm binding completes the race while the button shows
