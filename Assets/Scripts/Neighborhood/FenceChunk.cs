@@ -23,6 +23,7 @@ namespace ChastainRush
         public BreakSounds.Kind sound;     // Round 15: what it sounds like when a panel breaks (set by MapBuilder)
         public MeshRenderer[] faces;       // Round 16 (D): a sign's printed face (its own textured quad), hidden and thrown off with its panel
         public int[] facePanel;            // the panel each face belongs to
+        public bool free;                  // Round 56 (B): breaking it costs no speed (the Elaine barricade: the shortcut's hint, not an obstacle)
         public float debrisDrop = 0.55f;   // Round 9: how far below a piece's centre its debris comes to rest (mailboxes use more: the box sits 1.2 m up)
 
         // tuning
@@ -100,6 +101,7 @@ namespace ChastainRush
             PanelBroken?.Invoke(this, panelIndex, transform.TransformPoint(panel.centre));
             PanelBrokenBy?.Invoke(this, panelIndex, car);   // Round 36
             // a little speed lost, at most MaxCostPerStep in one physics step however many panels go at once
+            if (free) return;
             if (lastCostFrame != Time.frameCount) { lastCostFrame = Time.frameCount; costThisStep = 0f; }
             float cost = Mathf.Min(SpeedCostPerPanel, MaxCostPerStep - costThisStep);
             if (cost > 0f)

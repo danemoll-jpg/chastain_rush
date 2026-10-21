@@ -123,6 +123,7 @@ namespace ChastainRush
             BuildShrubBeds(terrain, mats, root, AddisonExtra.shrub_beds, map, parked.ToArray());   // no shrub under the parked truck and roller
             BuildAddison54(terrain, mats, root);   // Round 54: the terrace, the bounce house, the curve signs (MapBuilder.Round54.cs)
             BuildAddison55(terrain, mats, root);   // Round 55: the Elaine jump's worn tracks (MapBuilder.Round55.cs)
+            BuildAddison56(terrain, mats, root);   // Round 56: the barricade and tire marks at Elaine's mouth (MapBuilder.Round56.cs)
             Debug.Log($"[Round53] Addison Heights: the road crew on Lyndon Drive, {AddisonExtra.shrub_beds?.Length ?? 0} shrub beds");
         }
 
