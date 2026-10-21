@@ -4,6 +4,7 @@ using UnityEngine;
 
 // Round 55 (Dan, 2026-10-21 12:28; reports BUG-001 to BUG-003 of session 2026-10-21_12-16-40-990_d377b3): Addison Heights' two bumps, from
 // Data/tracks/addison_heights.json "smooth_spots" (Tools/mapgen/make_addison_route.py), in the planning after the lap is levelled (Round53Plan).
+//   A  the Elaine jump (Dan's option 2): its worn tracks (BuildAddison55, the step Addison); its bench grade, cleared line, landing zone and hedges are data
 //   D  BUG-001 (Hayworth Drive at Crawford Circle) and BUG-003 (Kelly Drive at Suholden Circle): the ridge the levelling leaves along each corner's
 //      bisector (R54LevelLap sets each point to its nearest piece of the lap's line, and at a corner the nearest piece changes there) blurred away;
 //      at BUG-001 first the grade change itself made a vertical curve ("vertical_curves")
@@ -13,7 +14,20 @@ namespace ChastainRush
     {
         [Serializable] class R55Spot { public string id; public float[] at; public float r, fade, sigma; }
         [Serializable] class R55Curve { public string id; public float[] points, at; public float length, fit, half, blend; }
-        [Serializable] class R55File { public R55Spot[] smooth_spots; public R55Curve[] vertical_curves; }
+        [Serializable] class R55Ruts { public string id; public float[] points; }
+        [Serializable] class R55File { public R55Spot[] smooth_spots; public R55Curve[] vertical_curves; public R55Ruts[] worn_tracks; }
+
+        // A (Dan picked option 2): the Elaine jump's world pieces that are not plain data for the planning (its bench grade, cleared line, landing zone and
+        // hedges are AddisonNow's / AddisonExtra's): worn tire tracks off the bend's edge, down the bank and along the bench (the hint)
+        static void BuildAddison55(TerrainGrid terrain, Materials mats, Transform root)
+        {
+            string path = System.IO.Path.Combine(ProjectRoot, AddisonTrackFile);
+            if (!System.IO.File.Exists(path)) return;
+            var d = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(path));
+            if (d?.worn_tracks == null) return;
+            foreach (var w in d.worn_tracks)
+                if (w.points != null && w.points.Length >= 6) { WornRuts(terrain, mats, root, ToPoints(w.points), w.id); Debug.Log($"[Round55] A: worn tracks: {w.id}"); }
+        }
 
         // a road's vertical curve: along the line, 'length' m about the point nearest 'at' (where the grades meet), the ground replaced by the cubic that
         // meets the ground's own height and grade at both ends (over a kink between two steady grades, the road's parabolic vertical curve); set across

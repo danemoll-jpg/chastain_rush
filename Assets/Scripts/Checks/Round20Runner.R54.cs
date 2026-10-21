@@ -209,7 +209,7 @@ namespace ChastainRush
         }
         static string R54Line(R54Watch w) => $"off at {w.lipV:0.0} m/s, longest air {w.air:0.00} s, first down at {(float.IsNaN(w.firstDown.x) ? "-" : $"({w.firstDown.x:0}, {w.firstDown.z:0})")}, deepest in a shrub bed {w.bedMax:0.00}";
 
-        IEnumerator R54Shortcut(string id, string dir, string title, System.Func<RaceShortcut, List<(string name, List<Vector3> line, float[] prof)>> cheats, float[] shortProf = null)
+        IEnumerator R54Shortcut(string id, string dir, string title, System.Func<RaceShortcut, List<(string name, List<Vector3> line, float[] prof)>> cheats, float[] shortProf = null, string tag = "54")
         {
             report.AppendLine(); report.AppendLine($"=== {title}");
             yield return StartRoute("addison_heights.json", dir, 0);
@@ -227,7 +227,7 @@ namespace ChastainRush
                 { var pl = race.Player; pl.ClockStarted = true; pl.StartAt = pl.LapStart = race.RaceClock; pl.NextCheckpoint = 0; pl.LapAway = true; }   // placed mid-lap: its clock running, so the shortcut counts
                 yield return TimedLakes(sc, true, r1, t => via = t, 60f, null, 0f, () => R54Track(w));
                 bool taken = race.Player.ShortcutsTaken.Any(s => s.EndsWith(id));
-                yield return Capture($"54_{id}_{vid}_clean_end");
+                yield return Capture($"{tag}_{id}_{vid}_clean_end");
                 float saved = road > 0f && via > 0f ? road - via : -99f;
                 if (vid == "original") roadOrig = road;
                 if (!(r1.reached && saved > 0f && taken)) bad.Add(Nm(vid));
@@ -240,7 +240,7 @@ namespace ChastainRush
             {
                 var r = new Run(); float t = -1f; var w = new R54Watch();
                 yield return TimedVia(sc, line, r, x => t = x, () => R54Track(w), prof);
-                yield return Capture($"54_{id}_other_{++n}_end");
+                yield return Capture($"{tag}_{id}_other_{++n}_end");
                 bool slower = !r.reached || t < 0f || t > roadOrig;
                 if (!slower) faster.Add(name);
                 report.AppendLine($"  {n}. {name}: {(r.reached && t > 0f ? $"{t:0.0} s ({t - roadOrig:+0.0;-0.0} s against the lap's way)" : "did not get through (" + r.end + $", at ({car.Body.position.x:0}, {car.Body.position.z:0}))")}; {R54Line(w)}, slowest {r.minSpeed:0.0} m/s");

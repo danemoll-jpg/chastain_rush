@@ -16,7 +16,9 @@ namespace ChastainRush
     //   bounce     C: the bounce house thrown into (reverse race): its voice at the castle, the clip it played
     //   erace      E: Addison Heights forward x2 and reverse x2 and Chastain Lakes forward, Hard, 3 AI, traffic as given: every AI finishes; its
     //              passes and the time it spent close behind a car under 10 m/s (-r55PassOff: as before Round 55, for the before numbers)
-    //   epics      Dan's spots and the new line from the grid
+    //   elaine     A (option 2): the Elaine jump flat out (Street Classic, Drifter Twin) against the lap's way; through the hedge at the corner, off the
+//              bench through the hedge, no jump (over the edge slowly), round the barrier: each slower than the lap
+//   epics      Dan's spots and the new line from the grid
     public sealed partial class Round20Runner
     {
         static readonly Vector3 ElaineLip = new Vector3(3052f, 0f, 309.5f);
@@ -96,6 +98,21 @@ namespace ChastainRush
             }
         }
 
+        // ------------------------------------------------------------ A (option 2): the Elaine jump, its bench, the ways round it
+        IEnumerator R55Elaine() => R54Shortcut("f_elaine_jump", "forward", "A. THE ELAINE JUMP (forward, option 2), flat out, timed against the lap's own way over the same ground", sc =>
+        {
+            float sb = AbsStation(sc.Path[sc.Path.Length - 1]);
+            List<Vector3> Then(List<Vector3> l, Vector3 at) { float sa = AbsStation(at); if (sb < sa) sb += race.Route.LapLength; l.AddRange(LapSlice(sa, sb)); return l; }
+            var elaine = new[] { 3218f, 305f, 3208f, 308f, 3197f, 314.5f, 3182f, 314.5f, 3162f, 310f, 3139f, 307f, 3069f, 307f, 3059f, 308f, 3052f, 309.5f, 3032.2f, 306.7f, 3012.4f, 303.9f };
+            return new List<(string, List<Vector3>, float[])>
+            {
+                ("off the bend, then straight through the hedge at the bank's foot onto the corner", Then(Pts(elaine.Concat(new[] { 2997f, 303.5f, 2986f, 309f }).ToArray()), RaceRoute.Surface(2986f, 312f)), null),
+                ("off the bend, onto the bench, then west through the hedge onto Hayworth at z 330", Then(Pts(elaine.Concat(new[] { 3006f, 309f, 3005f, 318f, 3003f, 326f, 2992f, 331f }).ToArray()), RaceRoute.Surface(2991f, 333f)), null),
+                ("no jump: over the edge held to 10 m/s, down the bank, the bench", sc.Path.ToList(), HoldFrom(sc, RaceRoute.Surface(3052f, 309.5f), 10f)),
+                ("round the barrier: Elaine north, 960's drive, onto the bench", Then(Dodge(Pts(3218f, 305f, 3208f, 308f, 3197f, 314.5f, 3182f, 314.5f, 3162f, 310f, 3139f, 307f, 3069f, 307f, 3058f, 310f, 3040f, 322f, 3034f, 334f, 3020f, 338f, 3011f, 343f, 3016f, 356f, 3019f, 366f, 3014f, 380f, 3011f, 386f)), RaceRoute.Surface(3011f, 388f)), null),
+            };
+        }, null, "55");
+
         // ------------------------------------------------------------ B: the line
         IEnumerator R55Line()
         {
@@ -154,7 +171,7 @@ namespace ChastainRush
                 var d = e.Driver;
                 behind.Add(d ? d.BehindSeconds : 0f); passes.Add(d ? d.Passes : 0);
                 Check($"{file} {dir} #{n}: {e.Name} ({e.VehicleName}) finishes", e.Finished && !e.Estimated,
-                      $"{(e.Finished ? $"total {e.FinalTotal:0.0} s" : $"not finished, laps {e.CompletedLaps}")}, laps {string.Join(" / ", e.LapTimes.Select(x => x.ToString("0.0")))}; passes {(d ? d.Passes : 0)}, close behind a car under 10 m/s {(d ? d.BehindSeconds : 0f):0.0} s, resets {(d ? d.RecoveryCount : 0)}");
+                      $"{(e.Finished ? $"total {e.FinalTotal:0.0} s" : $"not finished, laps {e.CompletedLaps}")}, laps {string.Join(" / ", e.LapTimes.Select(x => x.ToString("0.0")))}; shortcuts {string.Join(", ", e.ShortcutsTaken)}; passes {(d ? d.Passes : 0)}, close behind a car under 10 m/s {(d ? d.BehindSeconds : 0f):0.0} s, resets {(d ? d.RecoveryCount : 0)}");
             }
             car.enabled = true; RoadDriver.Difficulty = prev;
             race.EndRace(); RaceController.DirectionOverride = null;
@@ -163,6 +180,7 @@ namespace ChastainRush
         {
             var lines = new List<string>(); var behind = new List<float>(); var passes = new List<int>();
             bool off = System.Environment.GetCommandLineArgs().Contains("-r55PassOff"); RoadDriver.PassFix = !off;
+            if (System.Environment.GetCommandLineArgs().Contains("-r55FwdOnly")) { foreach (var (f, d, n) in new[] { ("addison_heights.json", "forward", 1), ("addison_heights.json", "forward", 2) }) yield return Guard(R55AiRace(f, d, n, lines, behind, passes)); yield break; }
             var plan = off ? new[] { ("addison_heights.json", "forward", 1), ("addison_heights.json", "reverse", 1), ("chastain_lakes.json", "forward", 1) }
                            : new[] { ("addison_heights.json", "forward", 1), ("addison_heights.json", "forward", 2), ("addison_heights.json", "reverse", 1), ("addison_heights.json", "reverse", 2), ("chastain_lakes.json", "forward", 1) };
             foreach (var (f, d, n) in plan) yield return Guard(R55AiRace(f, d, n, lines, behind, passes));

@@ -58,7 +58,7 @@ namespace ChastainRush
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
             if (tag == "round52" && parts == null) parts = new[] { "ahlap", "ahshut", "ahpics", "ahhouses" };   // Round 52 (Round20Runner.R52.cs); ahrace with -traffic Normal
-            if (tag == "round55" && parts == null) parts = new[] { "etimes", "line", "bounce", "epics" };   // Round 55 (Round20Runner.R55.cs); erace with -traffic Normal
+            if (tag == "round55" && parts == null) parts = new[] { "elaine", "line", "bounce", "epics" };   // Round 55 (Round20Runner.R55.cs); erace with -traffic Normal
             if (tag == "round54" && parts == null) parts = new[] { "linemiss", "complete", "elaine", "terrace", "bounce", "mh14", "a54pics" };   // Round 54 (Round20Runner.R54.cs); aihard, aiscale, barriers with -traffic Normal
             if (tag == "round53" && parts == null) parts = new[] { "sclean", "scheat", "sshort", "sflag", "sjunction", "ahshut", "spics" };   // Round 53 (Round20Runner.R53.cs); srace, srevrace with -traffic Normal
             if (tag == "round50" && parts == null) parts = new[] { "kclean", "kcheat", "kshort", "ktrail", "kpics" };   // Round 50 (Round20Runner.R50.cs); krace with -traffic Normal
@@ -179,6 +179,7 @@ namespace ChastainRush
             {
                 if (Do("eprobe")) yield return Guard(R55Probe());
                 if (Do("etimes")) yield return Guard(R55Times());
+                if (Do("elaine")) yield return Guard(R55Elaine());
                 if (Do("line")) yield return Guard(R55Line());
                 if (Do("bounce")) yield return Guard(R55Bounce());
                 if (Do("erace")) yield return Guard(R55Race());

@@ -1,0 +1,14 @@
+Round 55 check, 2026-10-21 14:57, the exe, 1280 x 720, muted.
+
+=== A. THE ELAINE JUMP (forward, option 2), flat out, timed against the lap's own way over the same ground
+  Elaine jump: forgives Suholden Circle south, Kelly Drive, Crawford Circle, Hayworth Drive
+  Street Classic   the lap's way 28.3 s; the shortcut 19.6 s, saves 8.7 s; off at 20.6 m/s, longest air 1.78 s, first down at (3014, 306), deepest in a shrub bed 1.00
+  Drifter Twin     the lap's way 26.0 s; the shortcut 20.6 s, saves 5.4 s; off at 15.0 m/s, longest air 1.86 s, first down at (3196, 316), deepest in a shrub bed 1.00
+PASS  Elaine jump flat out (Street Classic, Drifter Twin): through, taken, faster than the lap's way
+  1. off the bend, then straight through the hedge at the bank's foot onto the corner: 21.1 s (-7.2 s against the lap's way); off at 19.7 m/s, longest air 1.46 s, first down at (3015, 306), deepest in a shrub bed 1.00, slowest 6.1 m/s
+  2. off the bend, onto the bench, then west through the hedge onto Hayworth at z 330: 23.2 s (-5.1 s against the lap's way); off at 19.7 m/s, longest air 1.46 s, first down at (3015, 306), deepest in a shrub bed 1.00, slowest 1.5 m/s
+  3. no jump: over the edge held to 10 m/s, down the bank, the bench: did not get through (stopped, at (2999, 315)); off at 20.6 m/s, longest air 0.40 s, first down at (3039, 308), deepest in a shrub bed 0.00, slowest 0.2 m/s
+  4. round the barrier: Elaine north, 960's drive, onto the bench: 16.4 s (-11.9 s against the lap's way); off at 19.7 m/s, longest air 0.86 s, first down at (3031, 330), deepest in a shrub bed 0.93, slowest 6.1 m/s
+FAIL  Elaine jump: short, missed, or its ground without the stunt, each slower than the plain lap  -  faster: off the bend, then straight through the hedge at the bank's foot onto the corner; off the bend, onto the bench, then west through the hedge onto Hayworth at z 330; round the barrier: Elaine north, 960's drive, onto the bench
+
+1 of 2 checks passed.
