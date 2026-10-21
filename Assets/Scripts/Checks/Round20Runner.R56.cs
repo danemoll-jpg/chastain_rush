@@ -122,7 +122,7 @@ namespace ChastainRush
             Check("it stands only in a forward Addison Heights race", fwdShown && !revShown && !freeShown, $"forward {fwdShown}, reverse {revShown}, free roam {freeShown}");
             var chunks = root.GetComponentsInChildren<FenceChunk>(true);
             yield return Vehicle("original");
-            var at = root.transform.position; var d = new Vector3(-0.932f, 0f, 0.3624f);   // the track file's elaine_mouth dir
+            var at = root.GetComponent<RestoreWhenClear>().at; var d = new Vector3(-0.932f, 0f, 0.3624f);   // the track file's elaine_mouth dir
             var line = new List<Vector3> { RaceRoute.Surface(at.x - d.x * 30f, at.z - d.z * 30f), RaceRoute.Surface(at.x - d.x * 15f, at.z - d.z * 15f), RaceRoute.Surface(at.x, at.z), RaceRoute.Surface(at.x + d.x * 15f, at.z + d.z * 15f), RaceRoute.Surface(at.x + d.x * 25f, at.z + d.z * 25f) };
             line = Dense(line, 2f);
             int b0 = FenceChunk.TotalBroken(); float before = -1f, after = -1f;
@@ -193,6 +193,7 @@ namespace ChastainRush
                 if (v) v.SetView(CameraViews.View.Chase);
                 yield return new WaitForSecondsRealtime(1f); yield return Capture($"56_{nm}_chase");
             }
+            yield return Still("56_B_the_barricade_from_suholden", RaceRoute.Surface(3222f, 303.5f) + Vector3.up * 2.2f, RaceRoute.Surface(3199.3f, 313.5f) + Vector3.up * 0.6f, 60f);
             race.EndRace(); RaceController.DirectionOverride = null;
             Vector3 S(float x, float z, float up) => RaceRoute.Surface(x, z) + Vector3.up * up;
             yield return Still("56_A_the_jump_from_behind", S(3072f, 307.5f, 6f), S(2985f, 306f, 0f), 60f);

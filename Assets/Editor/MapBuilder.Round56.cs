@@ -22,9 +22,8 @@ namespace ChastainRush
             var m = JsonUtility.FromJson<R56File>(System.IO.File.ReadAllText(path))?.elaine_mouth;
             if (m?.at == null || m.at.Length < 2) return;
             var go = new GameObject("Elaine barricade (forward race)"); go.transform.SetParent(root, false);
-            go.transform.position = new Vector3(m.at[0], Ground(terrain, m.at[0], m.at[1]), m.at[1]);
-            go.AddComponent<RaceOnly>().showInForwardOf = AddisonRouteName();
-            go.AddComponent<RestoreWhenClear>();
+            go.AddComponent<RaceOnly>().showInForwardOf = AddisonRouteName();   // at the origin: its meshes are in world coordinates
+            go.AddComponent<RestoreWhenClear>().at = new Vector3(m.at[0], Ground(terrain, m.at[0], m.at[1]), m.at[1]);
             var at = new Vector2(m.at[0], m.at[1]); var d = new Vector2(m.dir[0], m.dir[1]).normalized; var across = new Vector2(d.y, -d.x);
             // three barricades side by side across the road, each its own panel: two striped boards on A-frame legs, 2.4 m long, 1.1 m tall
             var br = new Breakables(); var u3 = new Vector3(across.x, 0f, across.y); var f3 = new Vector3(d.x, 0f, d.y);

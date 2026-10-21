@@ -8,6 +8,7 @@ namespace ChastainRush
     // metres for 'after' seconds (so every lap shows it standing), as well as at race start (FenceChunk.RestoreAll).
     public sealed class RestoreWhenClear : MonoBehaviour
     {
+        public Vector3 at;                 // where it stands (the object itself stays at the origin: its meshes are in world coordinates)
         public float clear = 25f, after = 4f;
         FenceChunk[] chunks;
         ArcadeVehicle[] vehicles;
@@ -20,7 +21,7 @@ namespace ChastainRush
             if (vehicles == null || Time.time >= nextScan) { vehicles = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextScan = Time.time + 1f; }
             float c2 = clear * clear; bool near = false;
             foreach (var v in vehicles)
-                if (v && v.isActiveAndEnabled && (v.transform.position - transform.position).sqrMagnitude < c2) { near = true; break; }
+                if (v && v.isActiveAndEnabled && (v.transform.position - at).sqrMagnitude < c2) { near = true; break; }
             if (near) { quietSince = Time.time; return; }
             if (Time.time - quietSince < after) return;
             foreach (var ch in chunks) if (ch) ch.RestoreOwn();
