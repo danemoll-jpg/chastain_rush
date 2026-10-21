@@ -82,13 +82,14 @@ SETTINGS = {
     "closure_clear_m": 12.0,
     "closure_extra_width_m": 6.0,
     # Round 54 (A1): the line moved, so the old Addison Heights times do not compare: records, Top 10s and ghosts are kept under this name
-    "records_as": "Addison Heights (Crawford Circle line)",
+    # Round 55 (B): moved again (to Embry Lane's east end): kept apart from both earlier lines
+    "records_as": "Addison Heights (Embry Lane line)",
     # Round 54 (A7, Dan: "even on hard I beat the AI really bad"; his laps 1:12 to 1:15): the AI's own limits on this hilly course, Easy / Normal / Hard
     # (RoadDriver: 26 / 32 / 35 m/s on a grade over 14 %, crests taken at sqrt(6.5 / 7.6 / 8.2 / crest)). Tuning try 1
     "ai_hill_targets": [28.0, 36.0, 44.0],
     "ai_crest_g": [6.5, 8.5, 11.0],
 }
-LEAD_IN_M = 70.0
+LEAD_IN_M = 60.0   # Round 55: from the end of Embry Lane's corner to the line
 JOEL, EMBRY, EMBRY_E, SUHOLDEN, KELLY, CRAWFORD, HAYWORTH = 9122504, 9134327, 1360431992, 9133976, 330740879, 9133382, 9140536
 J_HAY = (3012.0, 414.0)      # Joel Drive / Hayworth Drive
 J_WEST = (2645.0, 423.0)     # Joel Drive's west end, Embry Lane's start
@@ -99,7 +100,12 @@ J_CRAW_TOP = (2979.0, 305.0) # Crawford Circle's east leg / Hayworth Drive
 # the start / finish. Round 52: Kelly Drive's straight between Suholden Circle and Crawford Circle. Round 54 (A1, Dan picked Code's option (1)):
 # on Crawford Circle's east leg (straight, about 7 %), so the Elaine jump's way back can rejoin the lap on Crawford south of the line and still
 # cross it. The forward lead-in (70 m, z 175 to 245) and the reverse grid (45 m before the line, under the Hayworth corner) sit on the straight
-GATE_AT = (2986.5, 245.0)
+# Round 55 (B, Dan: "where you start you are too close to the end of this so it is really confusing because starting from back it looks like a
+# shortcut at the very beginning of the race"): on Embry Lane's east end, the straight from its corner south to Suholden Circle (170 m, 5 to 9 %).
+# (the line 60 m past its corner, the forward lead-in that 60 m). Every flatter straight of the lap is inside a shortcut's skipped part (Embry Lane west: Lyndon's; Crawford Circle, Kelly Drive: the Elaine way's
+# ground) or too short (Joel Drive's 50 m before its 40 % drop, Embry Lane's crest); no shortcut ends in sight of its grid: the forward grid looks
+# south to the Suholden corner (the Elaine corner is round it, behind houses), the reverse grid's back is 75 m short of the bounce house's landing
+GATE_AT = (3246.3, 457.5)   # 52 m before Joel Drive's end: the reverse grid (45 m) stops short of it
 CHECKPOINTS = [
     (2700.0, 419.0, "Joel Drive"),
     (2740.0, 516.0, "Embry Lane"),               # past the bend: a cut from Joel Drive to Embry Lane through the yards misses it
@@ -108,6 +114,7 @@ CHECKPOINTS = [
     (3255.0, 302.0, "Suholden Circle"),
     (3136.0, 190.0, "Suholden Circle south"),
     (3060.0, 109.0, "Kelly Drive"),              # Round 54: where the line was (Crawford Circle's checkpoint was 20 m from the new line)
+    (2987.0, 200.0, "Crawford Circle"),          # Round 55: where the line was in Round 54
     (2999.0, 350.0, "Hayworth Drive"),
 ]
 
@@ -357,43 +364,12 @@ ela = pts(by_osm[ELAINE]["points"])
 
 # ================================================================ Round 54 (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session
 # 2026-10-21_03-39-54-769_591b8d): the Elaine jump (forward, Round 53 B with the line moved), two reverse shortcuts, the sharp-curve signs.
-# ---------------------------------------------------------------- A1, THE ELAINE JUMP (FORWARD)
-# Dan (Round 53, BUG-005): "Shorcut forward starts here" (Suholden Circle at Elaine Circle) ... "this jump will miss the track most likely ... Perhaps
-# we can build off where it lands, have the path be a little longer before you join the main road". Straight on at the corner instead of turning
-# south: Elaine Circle drops away west off the crest (a natural jump, no ramp: the road's own crest), down into its valley; from there a way
-# graded through the back yards and the woods down the valley's drainage, between the houses (632, 747, 2160 on one side, 2090 / 2075 / 1120 on
-# the other), past 686 and 2153 onto Crawford Circle's east leg 60 m south of the line: it forgives Suholden Circle south and Kelly Drive. Its own
-# fun: the dips of the drainage, a hump to hop at its middle, tight between the trees (cleared 3 m each side of its line, no more). Elaine Circle on
-# west of the valley is a dead end in a race (its barrier at Joel Drive stays); shrub beds in the yards between it and Hayworth / Crawford (960,
-# 1007, 2090) stop a cut that way, and down the drainage's sides.
-E_FROM = (3242.0, 303.0)                     # on the lap (Suholden Circle, westbound), before the corner
-E_VALLEY_X = 3104.0                          # where the way leaves Elaine Circle (the valley's floor)
-E_WAY = [(3096.0, 292.0), (3089.0, 270.0), (3083.0, 246.0), (3085.0, 222.0), (3091.0, 200.0), (3086.0, 186.0), (3068.0, 181.5), (3044.0, 182.5),
-         (3022.0, 180.5), (3002.0, 183.0)]
-E_HUMP = (3085.5, 228.0)                     # a hump on the way (an earth berm across it): a small hop
-s_e0 = S(E_FROM); s_e1 = S((2988.5, 185.0)) + 12.0
-e_road = [q for q in ela if q[0] > E_VALLEY_X][::-1]          # Elaine from the corner west to the valley
-e_pre = resample(chaikin([point_at(lap, s_e0, C), (3215.0, 304.5)] + e_road[1:] + [(E_VALLEY_X, 307.0)], 2), 2.0)
-e_post = resample(chaikin([(E_VALLEY_X, 307.0)] + E_WAY + [point_at(lap, s_e1 - 12.0, C), point_at(lap, s_e1, C)], 3), 2.0)
-epath = e_pre + e_post[1:]
-fg_e = forgiven(s_e0 + 10.0, s_e1)
-def e_profile():
-    # the way's own height: the ground along it smoothed over 6 m (its dips stay, no steps), the hump 0.9 m high over 10 m
-    raw = poly_g(e_post); cs = cum(e_post); out = []
-    for i in range(len(e_post)):
-        w = [(raw[j], math.exp(-0.5 * ((cs[j] - cs[i]) / 3.0) ** 2)) for j in range(len(e_post)) if abs(cs[j] - cs[i]) < 9]
-        y = sum(a * b for a, b in w) / sum(b for _, b in w)
-        dh = math.dist(e_post[i], E_HUMP); y += 0.9 * max(0.0, 1.0 - (dh / 5.0) ** 2)
-        out.append(round(y, 2))
-    return out
-e_way_y = e_profile()
-print(f"A1 Elaine: leaves the lap at s {s_e0:.0f}, rejoins at s {s_e1:.0f}: {cum(epath)[-1]:.0f} m against {(s_e1 - s_e0) % L_lap:.0f} m on the lap "
-      f"(Elaine {cum(e_pre)[-1]:.0f} m, the way {cum(e_post)[-1]:.0f} m); forgives CP {fg_e}; houses by the way {houses_near(e_post, 6.0)}")
-E_BEDS = [("A1 between Elaine and Hayworth (960)", [(3044.0, 345.0), (3036.0, 316.0), (3020.0, 300.0)], 7.0),
-          ("A1 between Elaine and Crawford (1007, 2090)", [(3060.0, 300.0), (3040.0, 286.0), (3016.0, 262.0)], 9.0),
-          ("A1 Crawford Circle's east yards", [(3004.0, 206.0), (3005.0, 250.0), (3004.0, 292.0)], 4.5),   # Round 54 check: a cut that way was 1 s faster than the lap
-          ("A1 the drainage's west side", [(3070.0, 288.0), (3066.0, 250.0), (3064.0, 214.0)], 5.0),
-          ("A1 the drainage's east side", [(3110.0, 295.0), (3104.0, 250.0)], 4.5)]
+# ---------------------------------------------------------------- A1, THE ELAINE JUMP (FORWARD): taken out in Round 55
+# Round 54 built it off the crest at the Suholden corner with a way down the valley to Crawford Circle; Dan (Round 55, BUG-002): "a fail ... it
+# bypasses the feature I wanted to utilize", the jump he meant is off Elaine's west bend (x 3053 z 309) toward Hayworth Drive. Round 55 removed the
+# valley way, its beds, grade, cleared line and landing zone, and did not build the new one (its numbers and options in TODO.md, Round 55 status):
+# off the bend at the speeds cars reach up Elaine (14 to 21 m/s) they come down on the bank 35 to 46 m out, 10 to 20 m above the lap's own
+# Crawford / Hayworth corner, so no way through the yards can be forced. Elaine Circle is barred at the corner again in a forward race.
 
 # ---------------------------------------------------------------- A2, THE JOEL DRIVE TERRACE (REVERSE)
 # Dan (BUG-003, Joel Drive, a reverse race, CP7 next): "can we put a shortcut jump through here? Should be able to catch a lot fo air". South of
@@ -477,11 +453,6 @@ SIGNS = [{"id": "Embry Lane westbound", "at": [2705.0, 520.2], "yaw": 90.0, "fac
 # entry planes off the lap (the final build's check: on Joel Drive the terrace's entry was in the lap's own lane and every car past it 'took' it):
 # Elaine's 25 m down Elaine past the corner, the terrace's at its edge
 shortcuts = [
-    {"id": "f_elaine_jump", "name": "Elaine jump", "direction": "forward", "path": flat(epath), "path_y": poly_g(e_pre) + e_way_y[1:], "half_width_m": 3.5,
-     "entry_inset_m": round(nearest_s(epath, (3172.0, 312.0))[1], 1), "entry_margin_m": 1.5, "forgives": fg_e, "ai_speed": 26.0,
-     # flat out over the crest, steady down the way (its bends and hump)
-     "ai_profile": [round(v, 1) for v in (0.0, 24.0, cum(e_pre)[-1] - 10.0, 26.0, cum(e_pre)[-1] + 4.0, 15.0, cum(epath)[-1] - 30.0, 15.0, cum(epath)[-1], 18.0)],
-     "ai_slip": 0.15, "ai_slip_profile": [round(v, 1) for v in (0.0, 18.0, cum(e_pre)[-1] - 10.0, 18.0, cum(e_pre)[-1] + 4.0, 12.0, cum(epath)[-1], 15.0)]},
     {"id": "r_joel_terrace", "name": "Joel terrace", "direction": "reverse", "path": flat(tpath), "path_y": tpath_y, "half_width_m": 3.0,
      "entry_inset_m": round(nearest_s(tpath, T2_EDGE)[1], 1), "entry_margin_m": 1.5, "forgives": fg_t, "ai_speed": 20.0,
      "ai_profile": [round(v, 1) for v in (0.0, 15.0, nearest_s(tpath, T2_ROOT)[1], 20.0, nearest_s(tpath, T2_EDGE)[1] + 40.0, 14.0, cum(tpath)[-1], 14.0)],
@@ -501,8 +472,7 @@ shortcuts = [
 def bar(label, at, d, width, Sf, note):
     n = math.hypot(*d); return {"road": label, "osm_id": 0, "x": round(at[0], 2), "z": round(at[1], 2), "dx": round(d[0] / n, 4), "dz": round(d[1] / n, 4), "width_m": round(width, 1),
                                 "junction_s": round(Sf(at), 1), "contact": [round(at[0], 1), round(at[1], 1)], "arc_m": 0.0, "barrier_on": label, "label": f"{label} ({note})"}
-dropped = [c for c in closures if c["osm_id"] == LYNDON and 425.0 < c["z"] < 510.0
-           or c["osm_id"] == ELAINE and math.dist((c["x"], c["z"]), (3195.0, 310.0)) < 25.0]   # Round 54 (A1): the Elaine corner opens forward
+dropped = [c for c in closures if c["osm_id"] == LYNDON and 425.0 < c["z"] < 510.0]
 closures = [c for c in closures if c not in dropped]
 for lst in (closures,):
     lst.sort(key=lambda c: c["junction_s"])
@@ -534,14 +504,11 @@ def band(line, half):
         a_, b_ = L_[max(0, i - 1)], L_[min(len(L_) - 1, i + 1)]; t_ = unit((b_[0] - a_[0], b_[1] - a_[1])); n_ = (-t_[1], t_[0])
         left.append(along(L_[i], n_, half)); right.append(along(L_[i], n_, -half))
     return [round(v, 2) for q in left + right[::-1] for v in q]
-# Round 54: where cars come down off the Elaine crest (Elaine Circle from 20 to 90 m past the corner) and below the terrace (15 to 60 m out)
-E_LAND = {"id": "EL", "poly": band([q for q in e_pre if 3108.0 < q[0] < 3178.0], 6.0)}
+# Round 54: where cars come down below the terrace (15 to 60 m out)
 T_LAND = {"id": "TL", "poly": band([along(T2_EDGE, d2, k) for k in range(12, 58, 3)], 6.0)}
-track["landing_zones"] = [A_LAND, E_LAND, T_LAND]
-track["shrub_beds"] = [{"id": n_, "points": flat(l_), "half": h_} for n_, l_, h_ in A_BEDS + E_BEDS + T2_BEDS + B3_BEDS]
-# Round 54: the Elaine way graded along its line (its smoothed ground, the hump), its trees cleared; the terrace; the bounce house; the signs
-track["grades"] = [{"id": "A1 the Elaine way", "points": flat(e_post[:-12]), "y": e_way_y[:-12], "half": 2.6, "blend": 2.5}]
-track["clear_lines"].append({"id": "A1 the Elaine way", "points": flat(e_post), "half": 3.0})
+track["landing_zones"] = [A_LAND, T_LAND]
+track["shrub_beds"] = [{"id": n_, "points": flat(l_), "half": h_} for n_, l_, h_ in A_BEDS + T2_BEDS + B3_BEDS]
+# Round 54: the terrace, the bounce house, the signs
 track["clear_lines"].append({"id": "A2 the terrace's flight", "points": flat([T2_ROOT, T2_EDGE] + t_fl + t_post[:6]), "half": 3.5})
 track["clear_lines"].append({"id": "A3 the way to the bounce house", "points": flat(b_pre), "half": 3.0})
 track["clear_lines"].append({"id": "A3 under the throw", "points": flat([B3_FRONT] + b_fl + [B3_TARGET]), "half": 3.5})   # it passes a few metres over the hill: no trunk under it
@@ -556,12 +523,22 @@ track["signs"] = SIGNS
 # bends and were stuck there (14 of their 47 resets in the first two races); a player who runs wide is never stopped dead either
 track["break_lines"] = [{"id": "the lap's road sides", "points": flat(centre), "half": round(max(by_osm[o]["width"] for _, o, _ in SPEC) / 2.0 + 5.0, 2)}]
 # Round 54 check: where the ways come down onto the levelled lap (the AI tipped and stuck at Hayworth Drive's edge below the terrace): graded again in
-# the build from the ground as it is after the levelling (R54SmoothJoins); the Elaine way's own grade stops short of Crawford Circle
-e_join = e_post[-14:]
+# the build from the ground as it is after the levelling (R54SmoothJoins)
 t_join = [along(T2_EDGE, d2, 22.0)] + t_post
-track["smooth_lines"] = [{"id": "A1 the way onto Crawford Circle", "points": flat(e_join), "half": 2.8, "blend": 2.5},
-                         {"id": "A2 down onto Hayworth Drive", "points": flat(resample(t_join, 2.0)), "half": 3.0, "blend": 3.0}]
+track["smooth_lines"] = [{"id": "A2 down onto Hayworth Drive", "points": flat(resample(t_join, 2.0)), "half": 3.0, "blend": 3.0}]
 track["level_lines"] = [{"id": "the lap's roads", "points": flat(resample(line, 1.0)), "half": round(max(by_osm[o]["width"] for _, o, _ in SPEC) / 2.0 + 0.3, 2), "blend": 3.0}]
+# Round 55 (D): Dan's two bumps, BUG-001 (x 2977.66 z 308.73, Hayworth Drive at Crawford Circle: "smooth this bump") and BUG-003 (x 3136.36 z 97.41,
+# Kelly Drive at Suholden Circle: "smooth this"). Measured on the built ground: at each corner the levelling (R54LevelLap: each point set to its nearest
+# piece of the lap's line) leaves a ridge along the corner's bisector, where the nearest piece changes (Kelly / Suholden: the pitch under a car going
+# 0, 5, 12, 18, 14, 8, 6 % over 5 m; Hayworth / Crawford: a 0.6 m crest and 0.3 m sags over +-3 m in the reverse lane). The ground there smoothed
+# in the build (MapBuilder.Round55.cs R55SmoothSpots): a Gaussian blur of the ground's own heights (planes and grades stay as they are), full inside
+# 'r' of the spot, fading out over 'fade', two passes
+track["smooth_spots"] = [{"id": "BUG-001 Hayworth Drive at Crawford Circle", "at": [2982.0, 311.0], "r": 13.0, "fade": 5.0, "sigma": 2.5},
+                         {"id": "BUG-003 Kelly Drive at Suholden Circle", "at": [3135.5, 100.5], "r": 10.0, "fade": 5.0, "sigma": 2.5}]
+# and at BUG-001 the grade change itself (Crawford Circle's 7 % into Hayworth Drive's 25 % within a few meters: a 0.26 m sag over +-3 m, a jolt at
+# speed) made a road's vertical curve: the two grades joined by a parabola 20 m long (it fills the corner 0.45 m), across the road (R55VerticalCurves)
+_vc = [q for q in resample(line, 1.0) if 255.0 < q[1] < 345.0 and q[0] < 3000.0]
+track["vertical_curves"] = [{"id": "BUG-001 Crawford Circle into Hayworth Drive", "points": flat(_vc), "length": 20.0, "fit": 12.0, "half": 4.3, "blend": 4.0}]
 track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [round(dL[0], 5), round(dL[1], 5)], "deck": T_DECK, "deck_angle_deg": T_DECK_ANG,
                  "plank": T_PLANK, "plank_angle_deg": T_PLANK_ANG, "width": T_W,
                  "concrete": flat([along(c_mid(CONC_FROM), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, -4.5), along(c_mid(CONC_FROM), nL, -4.5)]),

@@ -8,8 +8,7 @@ using UnityEngine.Rendering;
 // Round 54 (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session 2026-10-21_03-39-54-769_591b8d): Addison Heights' new world pieces, from
 // Data/tracks/addison_heights.json (Tools/mapgen/make_addison_route.py); the race's side (the shortcuts, the line, the barriers) is Data/routes/addison_heights.json.
 // They stand in Free Roam too (world), built in the step "Addison" with Round 53's road crew.
-//   A1 the Elaine jump's way: graded along its line in the planning (GradeRidge on AddisonNow: its smoothed ground and a hump), its trees cleared
-//      (AddisonNow's clear lines), its landing zone EL on Elaine Circle below the crest
+//   A1 the Elaine jump's way: taken out in Round 55 (its grade, cleared line, beds and landing zone were data in the track file)
 //   A2 the Joel Drive terrace (BUG-003): a backyard terrace level with the street, held up by a timber retaining wall, 10 m out over the 1 in 2.5 slope;
 //      its top and its edge board one solid prism ("sc A2 terrace": a real jump by physics alone), the wall's ties drawn on its sides; landing zone TL
 //   A3 the bounce house (BUG-004): an inflatable castle at the bluff's foot behind 1192 and 1047 (Neighborhood/BounceHouse.cs, no collider), balloons on
