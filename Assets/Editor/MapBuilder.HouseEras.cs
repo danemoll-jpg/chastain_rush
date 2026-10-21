@@ -156,6 +156,7 @@ namespace ChastainRush
             foreach (float v in new[] { D / 2 - 0.2f, 0f })
                 BoxF(mb, f, -W / 2 + 0.05f, -W / 2 + 0.25f, 0f, hE, v - 0.1f, v + 0.1f, post);
             BoxF(mb, f, -W / 2, s, hE - 0.25f, hE, D / 2 - 0.25f, D / 2, h.trimC);   // the carport's front beam
+            if (R53Carports.Contains(h.index)) R53Carport(mb, f, h, s, hE, yb);   // Round 53 (C, BUG-004): a floor, a ceiling and a side beam
             // the entry, the picture window (three panes), a pair of bedroom windows with shutters
             float doorU = s + 1.2f;
             FrontDoor(d, f, doorU, D / 2, h, false, false);

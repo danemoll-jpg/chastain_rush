@@ -16,7 +16,8 @@ namespace ChastainRush
         static void BuildTrafficNetwork(MapData map)
         {
             var lines = new List<(List<Vector2> pts, string cls, bool oneway, float half, bool bridge, string name)>();
-            foreach (var r in map.roads) if (System.Array.IndexOf(TrafficClasses, r.@class) >= 0 && r.points != null && r.points.Length >= 4) lines.Add((ToPoints(r.points), r.@class, r.oneway, r.width * .5f, r.bridge, r.name ?? ""));
+            foreach (var r in map.roads) if (System.Array.IndexOf(TrafficClasses, r.@class) >= 0 && r.points != null && r.points.Length >= 4)
+                    foreach (var piece in R53Pieces(r.osm_id, ToPoints(r.points))) lines.Add((piece, r.@class, r.oneway, r.width * .5f, r.bridge, r.name ?? ""));   // Round 53: Lyndon Drive's crew site left out
             foreach (var b in map.bridges) if (System.Array.IndexOf(TrafficClasses, b.@class) >= 0 && b.points != null && b.points.Length >= 4) lines.Add((ToPoints(b.points), b.@class, b.oneway, b.width * .5f, true, b.name ?? ""));
 
             Vector2Int Key(Vector2 p) => new(Mathf.RoundToInt(p.x * 10), Mathf.RoundToInt(p.y * 10));

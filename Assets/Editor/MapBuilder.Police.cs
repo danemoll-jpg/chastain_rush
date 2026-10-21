@@ -17,7 +17,7 @@ namespace ChastainRush
             var root = new GameObject("Police (game layer)");
             var roads = root.AddComponent<PoliceRoads>();
             var lines = map.roads.Where(r => r.points != null && r.points.Length >= 4 && !r.tunnel && System.Array.IndexOf(PoliceClasses, r.@class) >= 0)
-                .Select(r => (pts: ToPoints(r.points), cls: r.@class, half: r.width * .5f, name: r.name ?? "", limit: r.maxspeed_mph > 0 ? r.maxspeed_mph : PoliceRoads.DefaultLimit(r.@class)))
+                .SelectMany(r => R53Pieces(r.osm_id, ToPoints(r.points)).Select(p => (pts: p, cls: r.@class, half: r.width * .5f, name: r.name ?? "", limit: r.maxspeed_mph > 0 ? r.maxspeed_mph : PoliceRoads.DefaultLimit(r.@class))))   // Round 53: Lyndon Drive's crew site left out
                 .Concat(map.bridges.Where(b => b.points != null && b.points.Length >= 4 && System.Array.IndexOf(PoliceClasses, b.@class) >= 0)
                 .Select(b => (pts: ToPoints(b.points), cls: b.@class, half: b.width * .5f, name: b.name ?? "", limit: PoliceRoads.DefaultLimit(b.@class)))).ToList();
             var first = new int[lines.Count + 1]; var pts = new System.Collections.Generic.List<Vector2>();

@@ -1,5 +1,5 @@
 {
- "note": "Round 52: the Addison Heights race's world pieces, from Tools/mapgen/make_addison_route.py (MapBuilder.Round52.cs). Coordinates are map meters (= Unity x, z).",
+ "note": "Round 52 / 53: the Addison Heights race's world pieces, from Tools/mapgen/make_addison_route.py (MapBuilder.Round52.cs, MapBuilder.Round53.cs). Coordinates are map meters (= Unity x, z).",
  "clear_lines": [
   {
    "id": "the lap's road edges",
@@ -693,5 +693,103 @@
    ],
    "half": 5.5
   }
- ]
+ ],
+ "landing_zones": [
+  {
+   "id": "LY",
+   "poly": [
+    2806.92,
+    499.71,
+    2806.69,
+    511.7,
+    2815.49,
+    511.87,
+    2815.72,
+    499.87
+   ]
+  }
+ ],
+ "shrub_beds": [
+  {
+   "id": "A Lyndon's west yards",
+   "points": [
+    2801.94,
+    436.0,
+    2800.6,
+    506.0
+   ],
+   "half": 6.3
+  },
+  {
+   "id": "A between 1160 and 825",
+   "points": [
+    2797.0,
+    470.0,
+    2776.0,
+    470.0
+   ],
+   "half": 8.6
+  },
+  {
+   "id": "A Lyndon's east yards",
+   "points": [
+    2824.35,
+    446.0,
+    2823.2,
+    506.0
+   ],
+   "half": 7.6
+  },
+  {
+   "id": "A between 1134 and 1027",
+   "points": [
+    2830.0,
+    464.0,
+    2852.0,
+    464.0
+   ],
+   "half": 6.8
+  }
+ ],
+ "crew": {
+  "foot": [
+   2813.19,
+   449.0
+  ],
+  "dir": [
+   -0.01914,
+   0.99982
+  ],
+  "deck": 6.8,
+  "deck_angle_deg": 9.5,
+  "plank": 3.0,
+  "plank_angle_deg": 22.0,
+  "width": 2.6,
+  "concrete": [
+   2807.56,
+   461.21,
+   2806.8,
+   500.7,
+   2815.8,
+   500.88,
+   2816.55,
+   461.38
+  ],
+  "flagger": [
+   2810.03,
+   446.94
+  ],
+  "closed_road": {
+   "osm_id": 9148109,
+   "from": [
+    2812.9,
+    417.16
+   ],
+   "to": [
+    2811.09,
+    511.69
+   ]
+  }
+ },
+ "route_name": "Addison Heights"
 }
