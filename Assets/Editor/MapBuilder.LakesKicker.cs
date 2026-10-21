@@ -33,7 +33,7 @@ namespace ChastainRush
             public string clues_hidden_forward_of;
         }
         [Serializable] class LakesCarportData { public float[] foot, dir; public float len, bend, angle_deg, width; }
-        [Serializable] class LakesShrubBed { public string id; public float[] points; public float half; }
+        [Serializable] class LakesShrubBed { public string id; public float[] points; public float half, strength; }   // Round 56: strength (0 or 1: as before)
 
         static readonly Color Plywood = new Color(0.74f, 0.60f, 0.42f), PlywoodDark = new Color(0.55f, 0.43f, 0.29f), Lumber = new Color(0.66f, 0.55f, 0.40f);
 
@@ -141,13 +141,13 @@ namespace ChastainRush
             if (beds == null || beds.Length == 0) return;
             var go = new GameObject("Shrub beds"); go.transform.SetParent(root, false);
             var shrubs = new Chunks(); var reeds = new Chunks();
-            var segA = new List<Vector2>(); var segB = new List<Vector2>(); var segH = new List<float>();
+            var segA = new List<Vector2>(); var segB = new List<Vector2>(); var segH = new List<float>(); var segS = new List<float>();
             var rings = map.buildings.Select(bd => ToPoints(bd.footprint)).Where(r => r.Count >= 3).ToList();
             int nShrub = 0, nReed = 0, nSkip = 0;
             for (int bi = 0; bi < beds.Length; bi++)
             {
                 var bed = beds[bi]; var p = ToPoints(bed.points); if (p.Count < 2) continue;
-                for (int i = 0; i + 1 < p.Count; i++) { segA.Add(p[i]); segB.Add(p[i + 1]); segH.Add(bed.half); }
+                for (int i = 0; i + 1 < p.Count; i++) { segA.Add(p[i]); segB.Add(p[i + 1]); segH.Add(bed.half); segS.Add(bed.strength > 0f ? bed.strength : 1f); }
                 bool brush = bed.half > 8f;   // the valley's
                 float Dist(Vector2 q) { float best = float.MaxValue; for (int i = 0; i + 1 < p.Count; i++) best = Mathf.Min(best, SegDist(q, p[i], p[i + 1])); return best; }
                 float x0 = p.Min(q => q.x) - bed.half, x1 = p.Max(q => q.x) + bed.half, z0 = p.Min(q => q.y) - bed.half, z1 = p.Max(q => q.y) + bed.half;
@@ -192,7 +192,7 @@ namespace ChastainRush
             }
             shrubs.ToObjects("Shrub beds look", mats.House, go.transform, false);
             reeds.ToObjects("Shrub beds cattails", mats.House, go.transform, false);
-            var sb = go.AddComponent<ShrubBeds>(); sb.a = segA.ToArray(); sb.b = segB.ToArray(); sb.half = segH.ToArray();
+            var sb = go.AddComponent<ShrubBeds>(); sb.a = segA.ToArray(); sb.b = segB.ToArray(); sb.half = segH.ToArray(); sb.strength = segS.ToArray();
             Debug.Log($"[Round50] shrub beds: {beds.Length} beds ({string.Join(", ", beds.Select(b => b.id))}), {nShrub} shrubs, {nReed} cattail clumps, {nSkip} spots left bare (roads, drives, walks, buildings, the carport)");
         }
 

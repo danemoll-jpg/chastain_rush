@@ -50,6 +50,42 @@ namespace ChastainRush
             race.EndRace(); RaceController.DirectionOverride = null;
         }
 
+        // the flight itself: flat out along the shortcut's line (a forward race, the clock running), the speed and heading at the lip, then the car every 0.1 s
+        // until 25 m past its first touchdown
+        IEnumerator R56Probe()
+        {
+            report.AppendLine(); report.AppendLine("=== A. probe: off the shaped lip flat out");
+            yield return StartRoute("addison_heights.json", "forward", 0);
+            var sc = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "f_elaine_jump");
+            if (sc == null) { race.EndRace(); yield break; }
+            var dE = new Vector3(Mathf.Sin(264f * Mathf.Deg2Rad), 0f, Mathf.Cos(264f * Mathf.Deg2Rad));
+            foreach (var vid in new[] { "original", "drifter" })
+                foreach (float cap in new[] { 99f, 22f, 18f })
+                {
+                    yield return Vehicle(vid);
+                    float sa = AbsStation(sc.Path[0]); var line = LapSlice(sa - 60f, sa).ToList(); line.AddRange(sc.Path);
+                    race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;
+                    Place(line[0], line[2] - line[0], 15f); yield return new WaitForFixedUpdate();
+                    var run = new Run(); bool past = false; float clock = 0f, next = 0f, air = 0f; Vector3 down = new Vector3(float.NaN, 0f, 0f); var sb = new System.Text.StringBuilder();
+                    yield return DriveLine(line, cap, 40f, run, null, r =>
+                    {
+                        var p = car.Body.position; var v = car.Body.linearVelocity; clock += Time.fixedDeltaTime;
+                        if (!past && Vector3.Dot(Flat(p - E56Lip), dE) > 0f && Flat(p - E56Lip).magnitude < 10f)
+                        {
+                            past = true; next = clock;
+                            sb.Append($"lip at ({p.x:0.0}, {p.y:0.0}, {p.z:0.0}) {v.magnitude:0.0} m/s heading {Mathf.Atan2(v.x, v.z) * Mathf.Rad2Deg:0} climbing {Mathf.Asin(Mathf.Clamp(v.y / Mathf.Max(v.magnitude, .1f), -1f, 1f)) * Mathf.Rad2Deg:0} deg, wheels {car.GroundedWheels};");
+                        }
+                        if (past && clock >= next) { next += .1f; sb.Append($" ({p.x:0}, {p.y:0.0}, {p.z:0}) {car.GroundedWheels}w;"); }
+                        if (past) { if (car.GroundedWheels == 0) air += Time.fixedDeltaTime; else { if (air > .3f && float.IsNaN(down.x)) down = p; air = 0f; } }
+                        return past && (clock - next > 8f || (!float.IsNaN(down.x) && Flat(p - down).magnitude > 25f));
+                    }, 5f, true);
+                    report.AppendLine($"  {Nm(vid),-16} cap {cap:0}: {(past ? sb.ToString() : "never reached the lip: " + run.end + $" at ({car.Body.position.x:0}, {car.Body.position.z:0})")}");
+                    report.AppendLine($"      first down {(float.IsNaN(down.x) ? "-" : $"({down.x:0.0}, {down.z:0.0}), {Flat(down - E56Lip).magnitude:0} m out")}");
+                    Flush();
+                }
+            race.EndRace(); RaceController.DirectionOverride = null;
+        }
+
         IEnumerator R56Barricade()
         {
             report.AppendLine(); report.AppendLine("=== B. the barricade across Elaine's mouth");

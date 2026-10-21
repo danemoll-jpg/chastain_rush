@@ -16,6 +16,7 @@ namespace ChastainRush
     {
         public Vector2[] a, b;          // each bed's line, piece by piece (x, z)
         public float[] half;            // the half width of the bed each piece belongs to
+        public float[] strength;        // Round 56: the drag's multiple for each piece (none: 1; the Elaine jump's bank, 2: brush on a steep downhill slows a car too little)
         public const float Drag = 2.5f; // per second of the horizontal speed, at full strength
         public const float Fade = 1.5f; // full strength to this far inside a bed's edge
 
@@ -34,7 +35,7 @@ namespace ChastainRush
             bounds = Rect.MinMaxRect(x0, z0, x1, z1);
         }
 
-        // 0 outside every bed, 1 more than Fade inside one
+        // 0 outside every bed, 1 more than Fade inside one (times its strength)
         public float Coverage(Vector3 position)
         {
             var q = new Vector2(position.x, position.z);
@@ -44,7 +45,7 @@ namespace ChastainRush
             {
                 var ab = b[i] - a[i]; float t = Mathf.Clamp01(Vector2.Dot(q - a[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
                 float d = (a[i] + ab * t - q).magnitude;
-                if (d < half[i]) best = Mathf.Max(best, Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(half[i], half[i] - Fade, d)));
+                if (d < half[i]) best = Mathf.Max(best, Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(half[i], half[i] - Fade, d)) * (strength != null && i < strength.Length ? strength[i] : 1f));
             }
             return best;
         }

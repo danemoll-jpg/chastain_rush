@@ -383,8 +383,8 @@ ela = pts(by_osm[ELAINE]["points"])
 # anyway"); it never reaches Joel / Lyndon, so it cannot run on into the road-crew shortcut. A short jump (under about 18 m/s off the edge, or off line)
 # comes down on the upper bank in deep brush (two beds 20 to 40 m out, from 960's corner to the hedge south of the flight).
 E_FROM = (3242.0, 303.0)                     # on the lap (Suholden Circle, westbound), before the corner
-E_LIP = (3047.0, 309.3)                      # the bend's crest, 1.5 m past the road's outer edge: the way off it
-E_HEAD = 264.0                               # straight on off the bend (Elaine runs 271 into it; 264 clears 960's south corner by 5 m)
+E_LIP = (3047.0, 307.8)                      # the bend's crest on Elaine's own straight line (Round 56 check: a lip 2 m north of it put cars off at 282 to 296 degrees, into 960)
+E_HEAD = 267.0                               # straight on off the bend (Elaine runs 271 into it; 267 clears 960's south corner by 4.5 m, the lot cut south of it by 3.5 m)
 dE = (math.sin(math.radians(E_HEAD)), math.cos(math.radians(E_HEAD)))
 E_LIP_UP = 1.0                               # the crest raised this much at its edge (the run-up's own climb carried on: about 20 %, 11 degrees)
 E_LAND_AT = along(E_LIP, dE, 50.0)           # paper (a 12 degree lip): Street Classic at 19 m/s down 45 m out, Drifter Twin at 21.5 m/s 58 m
@@ -393,8 +393,8 @@ E_BACK = [(2943.5, 320.0), (2943.0, 330.0), (2944.0, 340.0), (2944.5, 347.0), (2
           (2984.0, 357.5), (2991.5, 353.8)]   # between 884 and 1143, round 1143 (5 m and more off its walls), to the yard's edge by Hayworth
 E_JOIN = (2999.6, 352.6)                     # onto Hayworth Drive (northbound) by CP 5 (from the yard's edge: a smoothed join onto the levelled road, smooth_lines)
 s_e0 = S(E_FROM); s_e1 = S(E_JOIN) + 12.0
-e_road = [q for q in ela if q[0] > 3053.0][::-1]                 # Elaine from the corner west to the bend
-e_pre = resample(chaikin([point_at(lap, s_e0, C), (3215.0, 304.5)] + e_road[1:] + [along(E_LIP, dE, -6.0), E_LIP], 2), 2.0)
+e_road = [q for q in ela if q[0] > 3062.0][::-1]                 # Elaine from the corner west to the bend's start
+e_pre = resample(chaikin([point_at(lap, s_e0, C), (3215.0, 304.5)] + e_road[1:] + [along(E_LIP, dE, -10.0), along(E_LIP, dE, -4.0), E_LIP], 2), 2.0)
 e_fl = [along(E_LIP, dE, k) for k in range(3, 50, 3)] + [E_LAND_AT]
 e_post = resample(chaikin([E_LAND_AT] + E_RUN + E_BACK + [E_JOIN, point_at(lap, s_e1 - 4.0, C), point_at(lap, s_e1, C)], 2), 2.0)
 epath = e_pre + e_fl + e_post[1:]
@@ -433,9 +433,11 @@ E_FOOT_S = [(2993.0, 252.0), (2992.5, 272.0), (2991.5, 290.0), (2991.0, 296.0)]
 E_FOOT_N = [(2991.8, 314.0), (2994.6, 322.0), (2998.2, 330.0), (3001.4, 337.0), (3004.1, 344.0), (3008.6, 355.0), (3012.4, 364.0), (3014.6, 371.0), (3016.6, 381.0), (3018.2, 392.0)]
 E_BEDS = [("A1 the bank's foot south of the jump's line (Crawford Circle's east side)", E_FOOT_S, 3.0),
           ("A1 the bank's foot north of the jump's line (Hayworth Drive's east side)", E_FOOT_N, 3.0),
-          # Round 56: where a short jump comes down, 20 to 40 m out: across the line and south of it to the hedge below 1007 / 2090
-          ("A1 the upper bank on the jump's line", [along(E_LIP, dE, 20.0), along(E_LIP, dE, 40.0)], 6.0),
-          ("A1 the upper bank south of the jump's line", [along(along(E_LIP, dE, 20.0), (dE[1], -dE[0]), -12.0), along(along(E_LIP, dE, 42.0), (dE[1], -dE[0]), -12.0)], 7.0),
+          # Round 56: where a short jump comes down, 18 to 36 m out: across the line and south of it to the hedge below 1007 / 2090; and the bank west of 960
+          # down to the foot hedge's gap (Round 56 check: round the barrier and down it was a way in)
+          ("A1 the upper bank on the jump's line", [along(E_LIP, dE, 18.0), along(E_LIP, dE, 36.0)], 6.0),
+          ("A1 the upper bank south of the jump's line", [along(along(E_LIP, dE, 18.0), (dE[1], -dE[0]), -12.0), along(along(E_LIP, dE, 38.0), (dE[1], -dE[0]), -12.0)], 7.0),
+          ("A1 the bank west of 960", [(3008.0, 317.0), (3005.0, 341.0)], 6.0),
           ("A1 960's east yard to the barrier", [(3037.0, 326.0), (3030.0, 314.0)], 5.0),   # Round 55 check: 6 m wide, a way round the barrier was 3 s faster than the jump
           ("A1 across the wedge north of 960's drive", [(3018.0, 342.0), (3034.5, 346.0)], 3.0),
           ("A1 east of the barrier", [(3056.0, 326.5), (3066.0, 340.0)], 3.0),
@@ -590,9 +592,11 @@ def band(line, half):
     return [round(v, 2) for q in left + right[::-1] for v in q]
 # Round 54: where cars come down below the terrace (15 to 60 m out)
 T_LAND = {"id": "TL", "poly": band([along(T2_EDGE, d2, k) for k in range(12, 58, 3)], 6.0)}
-E_LAND = {"id": "EL", "poly": band([along(E_LIP, dE, k) for k in range(40, 64, 3)], 7.0)}   # Round 56: the lower bank where a good jump comes down
+E_LAND = {"id": "EL", "poly": band([along(E_LIP, dE, k) for k in range(37, 64, 3)], 7.0)}   # Round 56: the lower bank where a good jump comes down
 track["landing_zones"] = [A_LAND, E_LAND, T_LAND]
 track["shrub_beds"] = [{"id": n_, "points": flat(l_), "half": h_} for n_, l_, h_ in A_BEDS + E_BEDS + T2_BEDS + B3_BEDS]
+for b_ in track["shrub_beds"]:   # Round 56: the Elaine jump's bank, twice the drag (brush on a steep downhill slows a car too little)
+    if b_["id"].startswith("A1 the upper bank") or b_["id"].startswith("A1 the bank west of 960") or b_["id"].startswith("A1 960's east yard"): b_["strength"] = 2.0
 # Round 54: the terrace, the bounce house, the signs
 track["grades"] = [{"id": "A1 the lip (the bend's crest carried up to an edge)", "points": flat(e_lip_line), "y": e_lip_y, "half": 3.5, "blend": 2.0},
                    {"id": "A1 the way back (round 1143 onto Hayworth Drive)", "points": flat(e_back), "y": e_back_h, "half": 2.6, "blend": 2.5}]

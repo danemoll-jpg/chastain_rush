@@ -178,6 +178,7 @@ namespace ChastainRush
             // Round 56 (Round20Runner.R56.cs): the Elaine jump onto Crawford's west leg and its way back, the barricade, the jerk on Elaine
             if (tag == "round56")
             {
+                if (Do("eprobe56")) yield return Guard(R56Probe());
                 if (Do("ejump")) yield return Guard(R56Jump());
                 if (Do("ebarricade")) yield return Guard(R56Barricade());
                 if (Do("ejerk")) yield return Guard(R56Jerk());
