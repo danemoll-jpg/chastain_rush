@@ -414,6 +414,19 @@ namespace ChastainRush
         void OnCheckpoint(RaceEntrant e, int index, float at)
         {
             if (!e.ClockStarted) return;       // before the first start-line crossing there is no lap to be on
+            // Round 54 (B, Dan on Noonday Creek: missed the finish line on lap 2 "it didnt advance my lap"): a racer waiting for the line
+            // (every checkpoint of the lap met) who reaches an early checkpoint of the next lap went past the line without crossing it:
+            // the line is a missed checkpoint like any other. The lap is counted here, with the 5 s penalty, and this checkpoint goes
+            // on the new lap. On the last lap the race ends here (the time from the line to this checkpoint is part of the cost).
+            int n = Route.Checkpoints.Count;
+            if (e.NextCheckpoint >= n && index < n - 1)
+            {
+                e.Missed.Add(n); e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
+                e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  {(e.CompletedLaps + 1 >= Route.Laps ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s  missed");
+                Log(e, $"PENALTY +{MissPenaltySeconds:0} s: missed the line on lap {e.CompletedLaps + 1}, found at CP{index + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
+                CountLap(e, at, true);
+                if (e.Finished) return;
+            }
             if (index < e.NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < index; k++) { Miss(e, k, at); skipped.Add(k + 1); }
@@ -494,6 +507,12 @@ namespace ChastainRush
                 Log(e, $"START LINE crossed again at {at:0.000} with no lap driven: ignored");
                 return;
             }
+            CountLap(e, at, false);
+        }
+
+        // the lap ends: at the line, or (Round 54, B) at the next lap's checkpoint when the line was missed
+        void CountLap(RaceEntrant e, float at, bool lineMissed)
+        {
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(e, k, at); skipped.Add(k + 1); }
             float raw = at - e.LapStart, lap = raw + e.LapPenalty;
@@ -509,7 +528,8 @@ namespace ChastainRush
             e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
             if (e.IsHuman)
             {
-                if (skipped.Count > 0) SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                if (lineMissed) SayTo(e, $"Missed the {(e.CompletedLaps >= Route.Laps ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                else if (skipped.Count > 0) SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
                 else SayTo(e, $"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
@@ -519,7 +539,7 @@ namespace ChastainRush
             if (e.IsPlayer) markers.Refresh(this);
         }
 
-        static string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add("CP" + (k + 1)); return "missed " + string.Join(", ", names); }
+        string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add(k >= Route.Checkpoints.Count ? "the line" : "CP" + (k + 1)); return "missed " + string.Join(", ", names); }
 
         bool winnerCelebrated;   // Round 28 (C2)
         int parkSlots;           // Round 28: finished AI cars' places on the route's parking line (RoadDriver.DriveToPark)
@@ -784,10 +804,30 @@ namespace ChastainRush
 
         // Racer's AiFinishEstimate: each AI driver's pace is sampled every second; once the player has finished and
         // PlayerFinishWait has passed, any AI driver still racing is classified at its estimated finish.
+        // Round 54 (C, Dan: "on Woodstock Rush there was the option to simulate the times of the rest of the ai racers when you were
+        // done with the race"): Racer's COMPLETE RACE (RaceMenus.CanSimulateRemaining, RaceDirector.FinalizeUnfinishedAi). Once the player
+        // has finished, the AI drivers still racing are classified now at their estimated finish (as the 60 s wait would) and stop where
+        // they are, out of the way. Records are only ever the player's real finish (already saved at the line).
+        public bool CanSimulateRemaining => State == Stage.Finished && !SplitScreen.Active && aiActive && Entrants.Exists(x => !x.IsPlayer && !x.IsHuman && !x.Finished && x.Car);
+        bool completeNow;
+        public void CompleteRace()
+        {
+            if (!CanSimulateRemaining) return;
+            completeNow = true; TrackAi(); completeNow = false;
+            foreach (var e in Entrants)
+            {
+                if (e.IsPlayer || !e.Estimated || !e.Car) continue;
+                if (e.Driver) e.Driver.enabled = false;
+                if (!e.Car.Body.isKinematic) e.Car.Body.linearVelocity = e.Car.Body.angularVelocity = Vector3.zero;
+                e.Car.Body.isKinematic = true; e.Car.Body.detectCollisions = false;   // Racer: frozen in place, out of every contact
+            }
+            Log("COMPLETE RACE: the AI still racing are classified at their estimated finishes");
+        }
+
         void TrackAi()
         {
             bool sample = RaceClock >= nextEstimateSample; if (sample) nextEstimateSample = RaceClock + 1f;
-            bool estimate = State == Stage.Finished && RaceClock - PlayerFinishedAt >= PlayerFinishWait;
+            bool estimate = State == Stage.Finished && (completeNow || RaceClock - PlayerFinishedAt >= PlayerFinishWait);
             bool any = false;
             foreach (var e in Entrants)
             {
