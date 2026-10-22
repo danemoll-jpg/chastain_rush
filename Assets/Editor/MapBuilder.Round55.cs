@@ -82,6 +82,9 @@ namespace ChastainRush
         // fading out over 'fade'; two passes
         static void R55SmoothSpots(TerrainGrid terrain)
         {
+            // Round 58 (D): the Chastain Ridge track's vertical curves too (Chastain Ridge Drive's valley, Dan's BUG-003), the same way
+            string ridgePath = System.IO.Path.Combine(ProjectRoot, RidgeTrackFile);
+            if (System.IO.File.Exists(ridgePath)) R55VerticalCurves(terrain, JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(ridgePath)));
             string path = System.IO.Path.Combine(ProjectRoot, AddisonTrackFile);
             if (!System.IO.File.Exists(path)) return;
             var d = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(path));

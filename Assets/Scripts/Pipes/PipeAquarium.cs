@@ -25,6 +25,15 @@ namespace ChastainRush
         public Vector3 a0, a1;              // the tube's axis at the stretch's two ends
         public float radius = 2.5f, surfaceY, bottomY, topHalf = 8f, bottomHalf = 3.8f;
         public Material[] fishMaterials;    // small, sunfish, big; Round 25: turtle, snake, water bird
+        // Round 58 (C): other tubes' glass near this stretch (capsules: axis a..b, radius r to the glass's outside): a fish or a critter inside one
+        // is not drawn (it would swim inside another pipe)
+        public Vector3[] avoidA, avoidB; public float[] avoidR;
+        bool Avoided(Vector3 q)
+        {
+            if (avoidA == null) return false;
+            for (int i = 0; i < avoidA.Length; i++) { var a = avoidA[i]; var ab = avoidB[i] - a; float t = Mathf.Clamp01(Vector3.Dot(q - a, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); if ((a + ab * t - q).sqrMagnitude < avoidR[i] * avoidR[i]) return true; }
+            return false;
+        }
         public Vector3[] path; public float[] rim, bottom;   // Round 25: the axis every meter, the deep water's half width there, its bed
         public Vector3[] rests; public float[] restYaw;       // Round 25: turtles resting on the bed or a log
         public static PipeAquarium Instance { get; private set; }
@@ -189,11 +198,13 @@ namespace ChastainRush
             foreach (var f in fish)
             {
                 var fwd = f.vel; fwd.y *= 0.4f; if (fwd.sqrMagnitude < 1e-4f) fwd = along;
+                if (Avoided(f.pos)) continue;   // Round 58 (C)
                 mats[f.kind].Add(Matrix4x4.TRS(f.pos, Quaternion.LookRotation(fwd.normalized, Vector3.up), Vector3.one * f.size));
             }
             foreach (var c in critters)
             {
                 var fwd = c.vel; fwd.y = c.kind == 3 && c.rest < 0 ? fwd.y * 0.3f : 0f; if (fwd.sqrMagnitude < 1e-4f) fwd = along;
+                if (Avoided(c.pos)) continue;   // Round 58 (C)
                 mats[c.kind].Add(Matrix4x4.TRS(c.pos, Quaternion.LookRotation(fwd.normalized, Vector3.up), Vector3.one * c.size));
             }
             for (int k = 0; k < Kinds; k++)

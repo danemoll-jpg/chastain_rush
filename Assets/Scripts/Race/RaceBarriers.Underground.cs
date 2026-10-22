@@ -74,14 +74,16 @@ namespace ChastainRush
             return root;
         }
 
-        // a railing along a polyline at height y: posts every 2.5 m, a top and a middle rail, solid
+        // a railing along a polyline at height y (Round 58: or each point's own, ys): posts every 2.5 m, a top and a middle rail, solid
         void Rail(RouteRailJson r)
         {
             var root = new GameObject("Rail " + r.id); root.transform.SetParent(transform, false);
             float h = r.height > 0f ? r.height : 1.1f;
             for (int i = 0; i + 3 < r.points.Length; i += 2)
             {
-                var a = new Vector3(r.points[i], r.y, r.points[i + 1]); var b = new Vector3(r.points[i + 2], r.y, r.points[i + 3]);
+                // Round 58 (B): a rail up the span's side has each point's own height
+                bool own = r.ys != null && r.ys.Length * 2 == r.points.Length;
+                var a = new Vector3(r.points[i], own ? r.ys[i / 2] : r.y, r.points[i + 1]); var b = new Vector3(r.points[i + 2], own ? r.ys[i / 2 + 1] : r.y, r.points[i + 3]);
                 var d = b - a; float len = d.magnitude; if (len < 0.05f) continue;
                 var seg = new GameObject("segment"); seg.transform.SetParent(root.transform, false);
                 seg.transform.SetPositionAndRotation((a + b) * 0.5f, Quaternion.LookRotation(d / len, Vector3.up));

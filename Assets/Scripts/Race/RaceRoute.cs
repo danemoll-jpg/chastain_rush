@@ -40,7 +40,7 @@ namespace ChastainRush
     // the race does not use; a RAIL a run of railing (the hub's top ledge); a SWITCH GATE a grille across a shortcut that opens, for the
     // rest of the race, when any racer drives over its switch (a plate)
     [Serializable] public class RouteSealJson { public string id, label; public float x, y, z, dx, dz, w, h; }
-    [Serializable] public class RouteRailJson { public string id; public float[] points; public float y, height; }   // points x, z, ...
+    [Serializable] public class RouteRailJson { public string id; public float[] points; public float y, height; public float[] ys; }   // points x, z, ...; Round 58: ys, each point's own height (the span's sides)
     [Serializable] public class RouteSwitchGateJson { public string id, shortcut, label; public RouteSealJson gate; public float sx, sy, sz, sr, nx, ny, nz; }   // sx..sz the plate's middle, sr its reach, n its face's normal
     // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
     [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }

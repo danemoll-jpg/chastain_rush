@@ -812,6 +812,13 @@ track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/m
                     # Round 41 (A): the crypt's way to the doors smoothed along it (a Gaussian of the ground over 6 m: the lawn's 0.8 m rise off Canton
                     # Road's edge threw a vehicle into the air in the middle of its turn), kept off the road and short of the doors
                     {"id": "the crypt's way to the doors", "points": flat(_ag), "y": _agy, "half": 3.5, "blend": 3.0, "keep_off": flat(_canton), "keep_off_m": 4.0}]}
+# Round 58 (D, Dan BUG-003 at x 3082.26 z 708.71 on Chastain Ridge Drive, lap 3: "there is a bump somewhere around here that always messes me up"):
+# measured on the built ground along the lap, 50 m before his spot (the way he drives, west) the drive comes down from New Chastain Road at -13 %,
+# lies on a 10 m level shelf at the valley's foot (x 3131 to 3140), then turns up to +15 % within about 8 m (a 1.9 g sag at 35 m/s); the valley made
+# one vertical curve from just past the junction (x 3142) to x 3123 (MapBuilder.Round55.cs R55VerticalCurves, the same as Addison Heights'), across the
+# drive. The ground at his spot itself is smooth (within 2 cm of a 4 m blur)
+_v58 = [q for q in resample(lap, 1.0) if 3095.0 < q[0] < 3165.0 and 700.0 < q[1] < 790.0]
+track["vertical_curves"] = [{"id": "Round 58 BUG-003 Chastain Ridge Drive's valley", "points": flat(_v58), "at": [3133.5, 725.0], "length": 40.0, "fit": 5.0, "half": 4.5, "blend": 4.0}]
 route = dict(SETTINGS)
 route.update({
     "source": "Tools/mapgen/make_ridge_route.py from Data/map.json. Coordinates are map meters (= Unity x, z); heights come from the world.",

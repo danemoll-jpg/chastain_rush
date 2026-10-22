@@ -128,7 +128,8 @@ namespace Racer
             float look = trail ? Mathf.Clamp(4 + speed * .22f, 5, 11) : Mathf.Clamp(7 + speed * .48f, 8, 25);
             float desiredLane = lane;
             if(finished) { finishRunoff += speed*Time.fixedDeltaTime; desiredLane=Mathf.Min(4.7f,driveHalfWidth); }
-            if (!finished)
+            if (!finished && Agency && !trail) desiredLane = PassLane(s, tangent, speed, driveHalfWidth);
+            else if (!finished)
             {
                 bool slowerAhead = false; float slowerLane = 0f, nearest = float.MaxValue;
                 foreach (var other in Race.Entrants)
@@ -210,6 +211,9 @@ namespace Racer
             float angle = Mathf.Atan2(local.x, local.z);
             float maxAngle = Mathf.Lerp(Car.slowSteerAngle, Car.fastSteerAngle, Mathf.Clamp01(speed / Car.topSpeed)) * Mathf.Deg2Rad;
             float steering = Mathf.Clamp(Mathf.Atan(2 * Car.wheelbase * Mathf.Sin(angle) / look) / maxAngle, -1, 1);
+            // Chastain Rush, Round 58 (A4/A5): pure pursuit steers by the sine of the angle to its target, which is near nothing when the target is
+            // straight behind (after a spin it drove on the wrong way "for a bit before turning around"): past 100 degrees, full lock to that side
+            if (Agency && Mathf.Abs(angle) > 1.75f) steering = Mathf.Sign(angle);
             if(activeBranch) steering=activeBranch.Steer(Car,branchS,0,out angle);   // Chastain Rush: the shortcut's own line
             else if(trail) steering=trailLine.Steer(Car,s,desiredLane,out angle);   // Round 18: close to the trail's line
             float runS=0;
@@ -256,6 +260,8 @@ namespace Racer
                 }
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
                 TargetSpeed = Mathf.Min(TargetSpeed, 10);
+            float freeTarget = TargetSpeed;   // Round 58: what it wants before anything in front holds it (A3: wanting to go and not moving is being blocked)
+            bool unblocking = Agency && Time.time < unblockUntil;
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.
             float range = 6 + speed * 1.5f;
             float radius=Mathf.Min(.7f,Car.GetComponent<BoxCollider>().size.x*.5f+.12f);
@@ -270,6 +276,7 @@ namespace Racer
                 // dirt pile, the door frame it is aimed through. Only other vehicles count there (Racer: "the obstacle sensor
                 // ignores static ground inside a committed run-up").
                 if((activeBranch||trail||(plannedBranch&&Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length)<40))&&!hit.rigidbody) continue;   // Round 18: on the trail too
+                if(unblocking&&!hit.rigidbody) continue;   // Round 58 (A3): steering round what it backed away from, at a crawl
                 float aheadSpeed=hit.rigidbody?Mathf.Max(0,Vector3.Dot(hit.rigidbody.linearVelocity,transform.forward)):0;
                 // Chastain Rush, Round 55 (E): a car it is pulling out round (the pass lane chosen and clear) does not stop it: it goes on past at
                 // 4 m/s more than that car, never stopping on its bumper; a car it cannot pass yet it follows a car length back (8 m to the hit, Racer's 4 m: room to pull out)
@@ -298,7 +305,9 @@ namespace Racer
                 stalled += Time.fixedDeltaTime;
             else
                 stalled = 0;
-            if ((stalled > 5 && stalled < 8) || (routeStuck>8 && routeStuck<11))
+            if (Agency && !finished && AgencyStep(ref throttle, ref brake, ref steering, s, speed, angle, tangent, lateral, freeTarget, activeBranch))
+                return;   // Round 58: put back on the line
+            if (!Agency && ((stalled > 5 && stalled < 8) || (routeStuck>8 && routeStuck<11)))
             {
                 throttle = 0;
                 brake = .45f;
@@ -320,6 +329,161 @@ namespace Racer
             LastThrottle=throttle; LastBrake=brake; if(brake>.1f) BrakingSeconds+=Time.fixedDeltaTime;
             if(!finished&&obstacleVehicle&&speed<10f) BehindSeconds+=Time.fixedDeltaTime;   // Round 55 (E): close behind a car, slow
             Car.Simulate(throttle, brake, steering, Time.fixedDeltaTime);
+        }
+
+        // ---------------------------------------------------------------- Chastain Rush, Round 58 (A): drivers with agency
+        // Dan, watching the AI in replays on Hard: wrecked bikes lying 5 s before restarting, no effort round cars, 10 to 15 s against a tree,
+        // driving in reverse for a stretch, driving off the wrong way after a crash. "Seems they have no agency to beat me." The same on every
+        // difficulty (difficulty is pace and skill, never these):
+        //   down       on its side or upside down, near the ground and not flying: put back on the line facing forward after 0.35 s
+        //   blocked    wanting to go (its speed before whatever is in front) and not moving for 1 s: back up 1.1 s steering the nose to the
+        //              more open side, then crawl round it 1.4 s past static things; no 5 m of progress 4 s after the first back-up: put back
+        //   reversing  rolling backwards outside a back-up: the brake pedal was reverse there (Simulate's brakeReverse below 0.6 m/s forward),
+        //              so a car rolling back after a knock with its target under its speed kept reversing; now it is on the throttle (brakes, then forward)
+        //   wrong way  heading against the lap (over 100 degrees off) while moving: full lock round (above), slowed to turn; still the wrong
+        //              way 3.5 s on: put back
+        //   passing    PassLane: a slower car ahead (racer or traffic, out to 2.5 s ahead) is passed on whichever side is clear, the other lane,
+        //              the shoulder or the grass beside the road (to 2.2 m past the road's edge); the side is kept until it is past;
+        //              behind one for 1.5 s the oncoming check is shortened (a gap is taken rather than followed)
+        // -r58AgencyOff (checks only) drives as before Round 58, for the before / after numbers.
+        public static bool Agency = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r58AgencyOff") < 0;
+        public int DownResets { get; private set; }
+        public int BlockResets { get; private set; }
+        public int WrongWayResets { get; private set; }
+        public int BackUps { get; private set; }
+        public int UTurns { get; private set; }
+        float downFor, blockFor, wrongFor, backupUntil = -1f, unblockUntil = -1f, blockStart = -1f, blockStation, unblockSide, lastUrgent = -99f, wrongStart = -1f;
+        float behindFor; ArcadeVehicle passWho; float passSide;
+        static readonly RaycastHit[] probe = new RaycastHit[8];
+
+        bool AgencyStep(ref float throttle, ref float brake, ref float steering, float s, float speed, float angle, Vector3 tangent, float lateral, float freeTarget, AiShortcut activeBranch)
+        {
+            float dt = Time.fixedDeltaTime, now = Time.time, vf = Car.ForwardSpeed;
+            var pos = Car.Body.position; var up = Car.transform.up;
+            if (Car.Body.isKinematic || PoolHold.Wading(Car)) { downFor = blockFor = wrongFor = 0f; return false; }
+            // down: on its side or over, close to the ground, not flying (a pipe's walls are ridden: there only when nearly stopped)
+            bool inPipe = DrainPipe.InsideAny(pos);
+            bool lying = up.y < .5f && Car.GroundedWheels < 2 && Car.Body.linearVelocity.magnitude < (inPipe ? 3f : 8f) && Physics.Raycast(pos + Vector3.up * .2f, Vector3.down, 2.6f, ~0, QueryTriggerInteraction.Ignore);
+            downFor = lying ? downFor + dt : 0f;
+            if (downFor > .35f && Urgent(s)) { DownResets++; return true; }
+
+            // blocked: progress since it was first blocked clears it
+            if (blockStart >= 0f)
+            {
+                float moved = Mathf.Repeat(s - blockStation + DriveRoad.Length * .5f, DriveRoad.Length) - DriveRoad.Length * .5f;
+                if (activeBranch ? speed > 4f && now > backupUntil + 1f : moved > 5f) { blockStart = -1f; blockFor = 0f; }
+                else if (now - blockStart > 4f && Urgent(s)) { BlockResets++; blockStart = -1f; return true; }
+            }
+            if (now < backupUntil)
+            {
+                throttle = 0f; brake = 1f; steering = -unblockSide;   // in reverse the nose swings the other way: toward the open side
+                blockFor = 0f; return false;
+            }
+            if (now < unblockUntil)
+            {
+                steering = Mathf.Clamp(steering + unblockSide, -1f, 1f);
+                float want = Mathf.Min(freeTarget, 7f); throttle = speed < want ? 1f : 0f; brake = 0f;
+            }
+            bool wants = freeTarget > 3f && !finishParked;
+            blockFor = wants && vf < 1.2f ? blockFor + dt : 0f;
+            if (blockFor > 1f)
+            {
+                blockFor = 0f; BackUps++;
+                if (blockStart < 0f) { blockStart = now; blockStation = s; }
+                unblockSide = OpenSide(angle, lateral);
+                backupUntil = now + 1.1f; unblockUntil = backupUntil + 1.4f;
+                throttle = 0f; brake = 1f; steering = -unblockSide; return false;
+            }
+
+            // rolling backwards outside a back-up: on the throttle (it brakes the roll, then drives on)
+            if (vf < -.6f) { throttle = 1f; brake = 0f; }
+
+            // the wrong way along the lap (not on a shortcut's own line, not flying, near the lap)
+            if (!activeBranch && !RunIn && Car.GroundedWheels >= 1 && Mathf.Abs(lateral) < DriveRoad.HalfWidth(s) + 12f)
+            {
+                var f = Vector3.ProjectOnPlane(Car.transform.forward, Vector3.up).normalized; var tg = Vector3.ProjectOnPlane(tangent, Vector3.up).normalized;
+                bool against = Vector3.Dot(f, tg) < -.17f && Mathf.Abs(vf) > .5f;
+                if (against)
+                {
+                    if (wrongStart < 0f) { wrongStart = now; UTurns++; }
+                    wrongFor += dt;
+                    // turning round: slow enough to turn on the spot (full lock comes from the steering above)
+                    if (vf > 7f) { throttle = 0f; brake = 1f; } else if (now >= backupUntil) { throttle = Mathf.Max(throttle, .6f); brake = 0f; }
+                    if (now - wrongStart > 3.5f && Urgent(s)) { WrongWayResets++; wrongStart = -1f; return true; }
+                }
+                else if (Vector3.Dot(f, tg) > .3f) wrongStart = -1f;
+            }
+            return false;
+        }
+
+        // the more open side ahead (+1 right, -1 left): two short probes 35 degrees either side; even, toward the line's target, then the road's middle
+        float OpenSide(float angle, float lateral)
+        {
+            var o = Car.Body.position + Vector3.up * .5f; var f = Vector3.ProjectOnPlane(Car.transform.forward, Vector3.up).normalized;
+            float Free(float deg)
+            {
+                var d = Quaternion.AngleAxis(deg, Vector3.up) * f; float best = 12f;
+                int n = Physics.RaycastNonAlloc(o, d, probe, 12f, ~0, QueryTriggerInteraction.Ignore);
+                for (int i = 0; i < n; i++) if (probe[i].rigidbody != Car.Body && probe[i].normal.y < .55f && !(probe[i].collider is TerrainCollider)) best = Mathf.Min(best, probe[i].distance);
+                return best;
+            }
+            float r = Free(35f), l = Free(-35f);
+            if (Mathf.Abs(r - l) > 1.5f) return r > l ? 1f : -1f;
+            if (Mathf.Abs(angle) > .1f) return Mathf.Sign(angle);
+            return lateral > 0f ? -1f : 1f;
+        }
+
+        // put back on the line now (not more than once a second); true when it was moved
+        bool Urgent(float s)
+        {
+            if (Time.time - lastUrgent < 1f) return false;
+            lastUrgent = Time.time; int before = RecoveryCount;
+            TryRecover(s);
+            downFor = blockFor = wrongFor = 0f; backupUntil = unblockUntil = -1f; wrongStart = -1f; blockStart = -1f;
+            return RecoveryCount != before;
+        }
+
+        // the lane to drive in: its own, or past the slower car ahead on the clear side
+        float PassLane(float s, Vector3 tangent, float speed, float halfWidth)
+        {
+            var right = Vector3.Cross(Vector3.up, tangent).normalized; var center = DriveRoad.At(s, out _);
+            float reach = Mathf.Max(50f, speed * 2.5f), currentLane = Vector3.Dot(Car.Body.position - center, right);
+            ArcadeVehicle slow = null; float nearest = float.MaxValue;
+            void Consider(ArcadeVehicle c)
+            {
+                if (!c || c == Car) return;
+                var delta = c.Body.position - Car.Body.position; float along = Vector3.Dot(delta, tangent), side = Mathf.Abs(Vector3.Dot(delta, right));
+                if (along > 3f && along < reach && side < 3.2f && c.ForwardSpeed < speed + 2f && along < nearest) { nearest = along; slow = c; }
+            }
+            foreach (var other in Race.Entrants) if (other != null && other != Racer) Consider(other.Car);
+            if (ChastainRush.Traffic.Instance) foreach (var t in ChastainRush.Traffic.Instance.Cars) if (t && t.gameObject.activeSelf) Consider(t.Car);
+            // the one being passed: kept until it is behind
+            if (passWho && passWho != slow)
+            {
+                float along = Vector3.Dot(passWho.Body.position - Car.Body.position, tangent);
+                if (along > -4f && along < reach && passWho.gameObject.activeInHierarchy) slow = passWho; else passWho = null;
+            }
+            behindFor = obstacleVehicle && speed < 12f ? behindFor + Time.fixedDeltaTime : 0f;
+            if (!slow)
+            {
+                if (passing && Mathf.Abs(currentLane - lane) < 1f) { passing = false; Passes++; }
+                passLaneNow = float.NaN; passWho = null;
+                return lane;
+            }
+            float slowLane = Vector3.Dot(slow.Body.position - center, right), edge = halfWidth + 2.2f, gap = 2.9f;
+            float Option(float side) => Mathf.Clamp(slowLane + side * gap, -edge, edge);
+            bool Fits(float side) => Mathf.Abs(Option(side) - slowLane) > 2.3f;
+            bool relaxed = behindFor > 1.5f;
+            float first = passWho == slow ? passSide : (Mathf.Abs(slowLane) > .6f ? -Mathf.Sign(slowLane) : (lane > 0 ? -1f : 1f));
+            foreach (float side in new[] { first, -first })
+                if (Fits(side) && LaneClear(s, Option(side), speed, relaxed, slow))
+                {
+                    passWho = slow; passSide = side; passing = true; passLaneNow = Option(side);
+                    return passLaneNow;
+                }
+            // no room yet: behind it, a car length back (the obstacle sensor), ready to go
+            passLaneNow = float.NaN;
+            return Mathf.Clamp(currentLane, -edge + 1f, edge - 1f);
         }
 
         int parkIndex=-1, parkSlot; Vector3[] park;
@@ -517,24 +681,24 @@ namespace Racer
             return true;
         }
 
-        bool LaneClear(float s,float targetLane,float speed)
+        bool LaneClear(float s,float targetLane,float speed,bool relaxed=false,ArcadeVehicle skip=null)   // Round 58: relaxed, the oncoming look shortened; 'passing' not counted
         {
             var center=DriveRoad.At(s,out var forward);var right=Vector3.Cross(Vector3.up,forward).normalized;
             bool Blocks(ArcadeVehicle other)
             {
                 var delta=other.Body.position-Car.Body.position;float along=Vector3.Dot(delta,forward);
                 float lanePosition=Vector3.Dot(other.Body.position-center,right);
-                return along>-12&&along<Mathf.Max(18,speed*.9f)&&Mathf.Abs(lanePosition-targetLane)<laneGap;
+                return other!=skip&&along>-12&&along<Mathf.Max(18,speed*.9f)&&Mathf.Abs(lanePosition-targetLane)<laneGap;
             }
             foreach(var other in Race.Entrants)if(other!=null&&other!=Racer&&other.Car&&Blocks(other.Car))return false;
             // Chastain Rush, Round 54 (A7): and the traffic in that lane, an oncoming car as far ahead as it closes in two and a half seconds
             if(ChastainRush.Traffic.Instance)
                 foreach(var t in ChastainRush.Traffic.Instance.Cars)
                 {
-                    if(!t||!t.gameObject.activeSelf) continue;
+                    if(!t||!t.gameObject.activeSelf||t.Car==skip) continue;
                     var b=t.Car.Body; var delta=b.position-Car.Body.position; float along=Vector3.Dot(delta,forward), lanePosition=Vector3.Dot(b.position-center,right);
                     float closing=Mathf.Max(0,speed-Vector3.Dot(b.linearVelocity,forward));
-                    if(along>-12&&along<Mathf.Max(18,speed*.9f)+closing*2.5f&&Mathf.Abs(lanePosition-targetLane)<laneGap+.5f) return false;
+                    if(along>-12&&along<Mathf.Max(18,speed*.9f)+closing*(relaxed?1.2f:2.5f)&&Mathf.Abs(lanePosition-targetLane)<laneGap+.5f) return false;
                 }
             return true;
         }

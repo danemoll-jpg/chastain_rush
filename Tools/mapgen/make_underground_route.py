@@ -9,8 +9,8 @@ there is some open space"; "The entrance back into the hub I think should have a
   ledge's south, east and north sides (the turn-round, a level down) -> left onto THE SPAN, straight up across the chasm onto the top
   ledge -> M5's mouth.
 The grid is on the mid ledge's north side west of the span, off the lap: a stopped player is not in anyone's way. The mid-to-top ramp is gone (the
-span replaces it), so the mid ledge is a ring. Railings (the race only) along the mid ledge's west and south edges where a fall to the
-floor would be a free S1.
+span replaces it), so the mid ledge is a ring. Railings (the race only) along every edge of the pit the race passes (Round 58; Round 28
+had the west and south-west only) and along the span's sides over the chasm; open only at S1's gate and the top of S1's floor ramp.
 SWITCH SHORTCUTS (Round 27's proposal, as built; each behind a striped grille that rises for everyone, for the rest of the race, once any
 racer drives over its plate):
   S1 "Waterfall leap": straight on out of M1's mouth over the ledge's edge (its grille, a gate in the railing) with M1's water, down to
@@ -216,6 +216,22 @@ rails = [
     dict(id="R1", points=P2(H(EDGE_A, -EDGE_B, MID)) + P2(H(EDGE_A, T1 - G_HALF, MID)), y=MID, height=1.1),
     dict(id="R2", points=P2(H(EDGE_A, T1 + G_HALF, MID)) + P2(H(EDGE_A, EDGE_B, MID)) + P2(H(-12.0, EDGE_B, MID)), y=MID, height=1.1),
 ]
+# Round 58 (B, Dan BUG-001 at the hub: "it still allows you falll down the pit of you are going to fastt, The gate should extend all th way down"):
+# the race runs the whole mid ledge ring and over the span, so every edge of the pit it passes is railed, not only the west and south-west
+# where a fall was a free S1: the south side's east half and the east side down to S1's floor ramp (its top comes in at the east side's -b
+# end, HUB_RAMP_W wide: left open, it is S1's way back up), the north side either side of the span, and the span's two sides over the chasm
+# (their heights follow the span: 'ys')
+HUB_RAMP_W, SPAN_HALF = 8.0, 4.5
+rails += [
+    dict(id="R3", points=P2(H(-12.0, EDGE_B, MID)) + P2(H(-EDGE_A, EDGE_B, MID)) + P2(H(-EDGE_A, -EDGE_B + HUB_RAMP_W, MID)), y=MID, height=1.1),
+    dict(id="R4", points=P2(H(EDGE_A, -EDGE_B, MID)) + P2(H(A5 - SPAN_HALF, -EDGE_B, MID)), y=MID, height=1.1),
+    dict(id="R5", points=P2(H(A5 + SPAN_HALF, -EDGE_B, MID)) + P2(H(-EDGE_A, -EDGE_B, MID)), y=MID, height=1.1),
+]
+for side, rid in ((-1, "R6"), (1, "R7")):
+    bs = [-EDGE_B + 2.0 * k for k in range(int(2 * EDGE_B / 2.0) + 1)]
+    if bs[-1] < EDGE_B: bs.append(EDGE_B)
+    rails.append(dict(id=rid, points=[v for b in bs for v in P2(H(A5 + side * SPAN_HALF, b, MID))], y=MID, height=1.1,
+                      ys=[round(span_y(b), 2) for b in bs]))
 
 
 # ---- the switch gates

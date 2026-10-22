@@ -842,9 +842,10 @@ namespace ChastainRush
                 }
                 return new Vector2(at, lat);
             }
-            // Round 57 (C): the other tubes' axes within reach of the stretch (NetGlassAvoid's stretches only)
+            // Round 57 (C): the other tubes' axes within reach of the stretch (NetGlassAvoid's stretches only); Round 58 (C): every stretch (its weeds,
+            // rocks and fish keep out of them; the bed only for NetGlassAvoid's: AvoidBed)
             List<(Vector3, Vector3, float)> others = null;
-            if (Net != null && NetGlassAvoid.Contains(g.J.id))
+            if (Net != null)
             {
                 others = new List<(Vector3, Vector3, float)>(); float reach = TS.Max() + 6f;
                 var mid = new List<Vector2>(); for (float s = gl.s0; s <= gl.s1; s += 2f) { var q = At(s); mid.Add(new Vector2(q.x, q.z)); }
@@ -861,7 +862,8 @@ namespace ChastainRush
             return new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = TS.Min(), AxisY = axis,
                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
                                     TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)], ToSL = ToSL,
-                                    Water = gl.pond >= 0 && gl.pond < Beds.Rings.Count ? Beds.Rings[gl.pond] : null, Others = others };
+                                    Water = gl.pond >= 0 && gl.pond < Beds.Rings.Count ? Beds.Rings[gl.pond] : null, Others = others,
+                                    AvoidBed = NetGlassAvoid.Contains(g.J.id) };
         }
         static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, float[] TS, NetCells cells)
         {

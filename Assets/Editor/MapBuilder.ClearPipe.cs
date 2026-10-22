@@ -209,6 +209,11 @@ namespace ChastainRush
             // across it 10 m apart). Other network tubes near the stretch: the bed is kept under each one (a flat floor 0.4 m under it, 1 m either
             // side of it) and the end faces stop at it. Only for the stretches listed in NetGlassAvoid (S2; B28, the same fault in M2a, at Dan's yes)
             public List<(Vector3 a, Vector3 b, float r)> Others;
+            // Round 58 (C, Dan BUG-002 in M5c: "plants shouldn't be growing through the grass", water plants standing up inside the tube): every
+            // network glass stretch now knows the other tubes near it, and its weeds, rocks, logs and fish keep out of them; the bed itself is
+            // kept under them only where AvoidBed (NetGlassAvoid's stretches, as Round 57; elsewhere it is counted in the build log, report only)
+            public bool AvoidBed;
+            public bool NearAnother(Vector3 w, float pad) => NearOther(w, GlassOut + pad, false, out _, out _);
             bool NearOther(Vector3 w, float pad, bool flat, out float axisY, out float r)
             {
                 axisY = 0f; r = 0f; if (Others == null) return false;
@@ -225,7 +230,7 @@ namespace ChastainRush
             public float BowlY(float s, float lat)
             {
                 float y0 = BowlY0(s, lat);
-                if (Others != null && NearOther(W(s, lat, 0f), GlassOut + 1.0f, true, out float oy, out float orr))
+                if (AvoidBed && Others != null && NearOther(W(s, lat, 0f), GlassOut + 1.0f, true, out float oy, out float orr))
                 {
                     float cap = oy - orr - GlassOut - 0.4f;
                     if (cap > Bottom(s) - 0.5f) y0 = Mathf.Min(y0, cap);   // a tube in the bowl's depth (one deep under the bed is left alone)
@@ -255,7 +260,7 @@ namespace ChastainRush
             float surf = p.Surface, bot = axisY - R - TrenchBelow, top = surf - 0.03f, bedY = surf - BedDepth;
             float Gnd(float s, float lat) { var w = W(s, lat, 0f); return Ground(terrain, w.x, w.z); }
             // Round 25 (A5 / A7): the deep water is the bowl under the surface and the ground (ClearFrame.BowlY)
-            bool Inside(float s, float lat, float y) => y >= p.BowlY(s, lat) && y <= Mathf.Min(top, Gnd(s, lat)) && !p.InOther(W(s, lat, y));   // Round 57 (C): never across another tube
+            bool Inside(float s, float lat, float y) => y >= p.BowlY(s, lat) && y <= Mathf.Min(top, Gnd(s, lat)) && !(p.AvoidBed && p.InOther(W(s, lat, y)));   // Round 57 (C): never across another tube
             float Depth01(float y) => Mathf.InverseLerp(top, bot, y);
             Color Under(Color c, float y) => Color.Lerp(c, new Color(0.10f, 0.26f, 0.28f), 0.25f + 0.55f * Depth01(y));
             var silt = new Color(0.42f, 0.42f, 0.32f); var stone = new Color(0.46f, 0.47f, 0.44f);
@@ -304,10 +309,19 @@ namespace ChastainRush
                 if (mf && mf.sharedMesh) { var v = mf.sharedMesh.vertices; var tri = mf.sharedMesh.triangles; var tr = bedGo.transform;
                     for (int i = 0; i + 2 < tri.Length; i += 3) { var a0 = tr.TransformPoint(v[tri[i]]); var a1 = tr.TransformPoint(v[tri[i + 1]]); var a2 = tr.TransformPoint(v[tri[i + 2]]);
                         if (p.InOther(a0) || p.InOther(a1) || p.InOther(a2) || p.InOther((a0 + a1 + a2) / 3f)) inside++; } }
-                Debug.Log($"[Round57] C: pipe {p.Id}: clear of {p.Others.Count} other tube segments nearby; bed triangles touching one of them: {inside}");
+                Debug.Log($"[Round57] C: pipe {p.Id}: {(p.AvoidBed ? "clear of" : "(bed not kept clear: report only)")} {p.Others.Count} other tube segments nearby; bed triangles touching one of them: {inside}");
             }
             // rocks on the bowl's bed and slopes (look only), never on the tube's line
-            var rocks = new MeshBuilder(); int nRocks = 0;
+            var rocks = new MeshBuilder(); int nRocks = 0, nKept = 0;   // Round 58 (C): nKept, rocks / weed clumps / logs left out (in or at another tube)
+            // Round 58 (C): and never in its own tube at another station (on a curved stretch a point well to the side at one station can be
+            // near the axis at another): the axis every half meter
+            var ownAxis = new List<Vector3>(); for (float s = p.C0; s <= p.C1 + 1e-3f; s += 0.5f) ownAxis.Add(W(s, 0f, AY(s)));
+            bool InTube(Vector3 w, float pad)
+            {
+                if (p.NearAnother(w, pad)) return true;
+                float lim = R + GlassOut + pad; for (int k = 0; k + 1 < ownAxis.Count; k++) { var a = ownAxis[k]; var ab = ownAxis[k + 1] - a; float tt = Mathf.Clamp01(Vector3.Dot(w - a, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude)); if ((a + ab * tt - w).sqrMagnitude < lim * lim) return true; }
+                return false;
+            }
             int rockN = Mathf.Max(46, Mathf.RoundToInt(len * 1.5f));   // Round 24 Part B: as many per meter on a long stretch
             for (int i = 0; i < rockN; i++)
             {
@@ -316,6 +330,7 @@ namespace ChastainRush
                 if (Mathf.Abs(lat) < R + 0.9f) continue;
                 float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.2f) continue;
                 var cc = W(s, lat, y - 0.1f); float r = 0.25f + 0.5f * Hash01(i, 1221);
+                if (InTube(cc, r + 0.3f) || InTube(cc + up3 * r, r + 0.3f)) { nKept++; continue; }   // Round 58 (C): never in another tube
                 rocks.Tint = Under(Shade(stone, 0.7f + 0.35f * Hash01(i, 1223)), y);
                 var apex = cc + up3 * r * (0.7f + 0.5f * Hash01(i, 1225));
                 Vector3[] dirs = { Vector3.right, (Vector3.right + Vector3.forward).normalized, Vector3.forward, (Vector3.forward + Vector3.left).normalized, Vector3.left, (Vector3.left + Vector3.back).normalized, Vector3.back, (Vector3.back + Vector3.right).normalized };
@@ -334,6 +349,8 @@ namespace ChastainRush
                 if (Mathf.Abs(lat) < R + 0.9f) continue;
                 float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.2f || y > top - 0.4f) continue;
                 var at = W(s, lat, y);
+                float tallest = Mathf.Min(2.7f, top - y - 0.15f);
+                if (InTube(at, 0.6f) || InTube(at + up3 * (tallest * 0.5f), 0.6f) || InTube(at + up3 * tallest, 0.6f)) { nKept++; continue; }   // Round 58 (C): never through another tube's glass
                 int blades = 4 + (int)(5 * Hash01(i, 1239));
                 for (int b = 0; b < blades; b++)
                 {
@@ -454,6 +471,8 @@ namespace ChastainRush
             var aq = root.gameObject.AddComponent<PipeAquarium>();
             aq.a0 = W(p.C0, 0f, AY(p.C0)); aq.a1 = W(p.C1, 0f, AY(p.C1)); aq.radius = R; aq.surfaceY = surf; aq.bottomY = bot; aq.topHalf = Enumerable.Range(0, 9).Min(k => p.Rim(Mathf.Lerp(p.C0, p.C1, k / 8f))); aq.bottomHalf = R;
             aq.fishMaterials = fishMats;
+            if (p.Others != null && p.Others.Count > 0)   // Round 58 (C): the other tubes' glass (a fish or a turtle there is not drawn)
+            { aq.avoidA = p.Others.Select(o => o.a).ToArray(); aq.avoidB = p.Others.Select(o => o.b).ToArray(); aq.avoidR = p.Others.Select(o => o.r + GlassOut + 0.25f).ToArray(); }
             // Round 25 (A8): the tube's line every meter, the deep water's half width and bed along it; turtles' resting spots on the bowl's
             // slopes beside the tube, every other one on a sunken log (look only)
             {
@@ -468,6 +487,7 @@ namespace ChastainRush
                     if (Mathf.Abs(lat) > p.Rim(s) - 0.8f) continue;
                     float y = BedAt(s, lat); if (y > Gnd(s, lat) - 0.3f || y > top - 1.0f || y < AY(s) - R - 0.2f && Mathf.Abs(lat) < R + 1.8f) continue;
                     float yaw = 360f * Hash01(i, 1307); bool log = (rests.Count & 1) == 1;
+                    if (InTube(W(s, lat, y), log ? 2.0f : 0.8f)) { nKept++; continue; }   // Round 58 (C)
                     if (log)   // a log 3 m long lying on the bed, the turtle on it
                     {
                         var dir = Quaternion.Euler(0f, yaw, 0f) * Vector3.forward; var c0 = W(s, lat, y + 0.18f); var a = c0 - dir * 1.5f; var b = c0 + dir * 1.5f;
@@ -481,7 +501,7 @@ namespace ChastainRush
                 if (logs.Count > 0) logs.ToObject("Pipe " + p.Id + " clear stretch - sunken logs", mats.House, root, false, false);
                 aq.rests = rests.ToArray(); aq.restYaw = yaws.ToArray();
             }
-            Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the deep water round it (Round 25: a bowl in the bed) {2f * aq.topHalf:0} m wide (narrowest) to {2f * Enumerable.Range(0, 9).Max(k => p.Rim(Mathf.Lerp(p.C0, p.C1, k / 8f))):0} m, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps, {nShafts} light shafts, {ribAt.Count} steel ribs; {aq.rests.Length} turtles' resting spots");
+            Debug.Log($"[Round21+] pipe {p.Id}: clear stretch {p.C0:0.0} to {p.C1:0.0} m ({len:0.0} m of glass), its axis at {axisY:0.00} m, the crown {surf - (axisY + R + GlassOut):0.00} m under the surface ({surf:0.00} m); the deep water round it (Round 25: a bowl in the bed) {2f * aq.topHalf:0} m wide (narrowest) to {2f * Enumerable.Range(0, 9).Max(k => p.Rim(Mathf.Lerp(p.C0, p.C1, k / 8f))):0} m, its bed {bot:0.00} m ({surf - bot:0.0} m deep), {nRocks} rocks, {nClumps} weed clumps (Round 58: {nKept} left out at another tube), {nShafts} light shafts, {ribAt.Count} steel ribs; {aq.rests.Length} turtles' resting spots");
         }
 
         // the pool's own surface, from above, at the small pond's level (no shadow: the trench under it is lit)
