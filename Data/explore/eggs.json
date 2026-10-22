@@ -1499,6 +1499,24 @@
    "y": 0.0,
    "fixed": false,
    "yaw": 185.3
+  },
+  {
+   "id": "kennesaw-summit",
+   "title": "Kennesaw Mountain summit",
+   "x": -1122.98,
+   "z": -5870.01,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 49.4
+  },
+  {
+   "id": "kennesaw-visitor-center",
+   "title": "Kennesaw Mountain visitor center",
+   "x": -929.66,
+   "z": -5228.32,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 87.1
   }
  ]
 }
