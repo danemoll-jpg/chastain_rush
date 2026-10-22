@@ -5722,3 +5722,146 @@ Builds: four full builds, not one (after the checks: the slide's foot and rail, 
    off the lap). `Builds/ChastainRush/` 2026-10-21 08:49. Tools: `ChastainRush.GroundGrid.Run`, `ChastainRush.MaterialScan.Run` (CLAUDE.md).
 For Dan to check: Addison Heights both ways (the new line, Elaine, the terrace on the Drifter, the bounce house, Lyndon's hedges: try to cheat them, the bumps, the signs,
    the AI on Hard); miss a line; COMPLETE RACE; the Glen loop's barriers, the PARTY sign, the slide off its middle; Chastain Lakes at MH15 and out of MH14.
+
+## Round 55 (moved from TODO.md on 2026-10-22 when Dan reviewed Rounds 58 and 59; word for word)
+
+## Previous delivery 3: Round 55
+**Reviewed: Dan drove the Round 55 build 2026-10-21 17:00 (Addison Heights forward): the Elaine shortcut is "still not quite hitting the mark" (Round 56); B to E no complaint.**
+**Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
+2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
+Addison Heights forward and reverse on the Drifter Twin).** Round 54 is reviewed. Standing rules apply. ONE full Build Map at the end
+(plan the line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
+A. THE ELAINE SHORTCUT (FORWARD), REDONE. Dan: "the new forward one is a fail. It looks like it did literally nothing but mark a line
+   on the map, not to mention that it bypasses the feature I wanted to utilize which is the place in the bug report". BUG-002 (x 3053.14
+   z 309.33 h 271, ON Elaine Circle heading west, at the west end of its straight where it bends north to Joel): "The shortcut makes no
+   sense at all. Not even sure where it wants me to go. Plus where you start you are too close to the end of this so it is really
+   confusing because starting from back it looks like a shortcut at the very beginning of the race. I wanted the jump here as it is a
+   natural jump."
+   Claude's mistake in Round 53 B: the jump is NOT the crest at the Suholden corner (Dan's Round 53 BUG-005 is only where you turn off
+   the lap onto Elaine); it is HERE, at Elaine's west bend: drive west along Elaine from the corner, and instead of following the bend
+   north, go straight off its edge: the ground drops away west and you fly (Dan, Round 53: "this jump will miss the track most likely.
+   At least every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main
+   road"). So:
+   (1) The way: off the lap at the Suholden / Elaine corner, west along Elaine's own road to the bend, straight off the edge at Dan's
+       spot (a natural launch: keep the ground's own lip, smooth it only so it launches cleanly and straight, no ramp). Elaine north of
+       the bend, on to Joel, stays closed (barrier) so there is no plain road way round.
+   (2) The landing: drive it at race speed (several vehicles) and find where cars really come down; build there: a clear landing
+       (graded, drivable) and a visible way on from it (worn dirt path / tire tracks through the yards and trees, cleared of trunks,
+       readable at speed) that is a little longer and joins the lap heading the race's way (Hayworth Drive or Joel Drive northbound /
+       westbound, Code picks and says why). It must LOOK like a way: someone seeing it from Elaine knows where to go.
+       Dan, 12:33: "that is why before I asked for a landing spot that forced the user to drive through some backyards and stuff to
+       get back to the road to get rid of part of the advantage it got, this is especially the case because you will likely overshoot
+       your the road anyway." So expect cars to overshoot Hayworth and come down in the yards beyond it: the way back from there winds
+       through those backyards (round sheds, between fences, past play sets: breakable fences and the like are fine) before it reaches
+       the road. That backyard run is what takes back most of the time the jump gains.
+   (3) Throw away Round 54 A1's valley way to Crawford and its beds (the map line Dan saw), and any of its leftovers.
+   (4) A clean run saves a few seconds; missed (short, off line) costs more; no free way round (standing rules). Code reports the numbers.
+       It skips about 350 m of lap (Claude's estimate); if a sensible-looking way cannot bring it down to a few seconds, stop and report.
+B. THE START / FINISH MOVED AGAIN. Round 54 put it on Crawford Circle's east leg (z 245), just before where A rejoins: from the grid it
+   looks like a shortcut at the start. Put the line where it is not in the part A skips (Suholden south, Kelly, Crawford, Hayworth up to
+   A's rejoin) and not in sight of A's ends from the grid, on as straight and level a stretch as the lap has (Joel / Embry / Suholden
+   Circle); Code picks and says why. Both directions; records (keep old times apart as Round 54 did), checkpoints, grid, AI to suit.
+C. THE BOUNCE HOUSE'S SOUND. Dan: "the bouncy castle should use the same sound effect as the trampoline instead of making no sound at
+   all." Use the trampoline's bounce sound (`Audio/SoundDropIns.cs` Bounces, Dan's drop-in or the made one, one at random per bounce).
+D. BUMPS. BUG-001 (x 2977.66 z 308.73 h 14, Hayworth Drive at Crawford Circle): "smooth this bump". BUG-003 (x 3136.36 z 97.41 h 6,
+   Kelly Drive at Suholden Circle): "smooth this". Smooth both junctions.
+E. THE AI DRIVES ROUND CARS (all tracks). Dan, 12:33: "the AI drivers need to be smart enough to drive around cars. I think this is part
+   of the problem. I see them stuck to bumpers as opposed to trying to get around other vehicles". Race AI must overtake: when a traffic
+   car, a parked car or another racer is ahead and slower, pull out and pass where the road (or the grass beside it) has room, else
+   hold back a car length and take the next gap; never sit pushing a bumper. This is likely part of why the AI is slow on Addison
+   Heights (Round 52 and 54's traffic queues). Check on Addison Heights and one other track with traffic Normal: count AI passes, time
+   spent stuck behind a car (before / after), all finish.
+Check: A clean (time saved, Street Classic and Drifter Twin), short, and the ways round; the AI takes it sometimes; forward and reverse
+races x2, traffic Normal, all finish. Pictures: Dan's spot looking west (the drop), the landing, the way on from it, the new start line
+from the grid, the two junctions.
+For Dan to check: the Elaine jump and its way on through the backyards; the new start / finish; the bounce house's sound; the two bumps;
+the AI passing traffic and each other.
+
+**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round55/` (check reports,
+pictures). Bug reports read: session `2026-10-21_12-16-40-990_d377b3`, BUG-001 to 003.
+A BUILT AS DAN'S OPTION 2 (Dan, 2026-10-21 after the first report: "option 2"); TIME NOT MET, TUNING LIMIT REACHED. Round 54's valley way is gone. Measured
+   first (`round55_check_a_b_c.txt`): up Elaine's 26 % cars reach the bend at 14 to 21 m/s and come down on the bank 35 to 46 m out, just above the
+   Crawford / Hayworth corner (with nothing there: lap 25.0 s, land and turn at the corner 14.4 s, Drifter Twin). Built: off the bend's own edge (no ramp),
+   worn tracks down the bank (the hint), a landing zone, a graded bench curving right off the landing, north between 960 and the hedge, an S through the
+   wedge, onto Hayworth through a gap at z 376 to 392 (forgives CP 2 to 5); a 6 m hedge along the bank's foot from Crawford Circle up Hayworth's east side to
+   z 373; Elaine barred north of the bend (16 m wide, forward), hedges at its ends, across 960's yard and across the wedge; the 1007 / 2090 bank hedged.
+   Numbers (`round55_check_a_option2_*.txt`; the scripted driver lands at 20 m/s about 20 m from the hedge and must turn hard right, so runs vary by 3 s):
+   clean, Street Classic saves 8.7 s (try 1) and 4.6 s (try 2), and in the final build ran wide into the hedge; Drifter Twin saves 5.4, 5.0 and 4.9 s.
+   Ways round, final build: straight down through the hedge at the corner 18.6 s (cars can bounce over a 6 m hedge off the bank; 8.5 m caught the clean
+   run too, tried and reverted); off the bench west through the hedge 25.2 s; over the edge slowly and the bench 20.1 s (the same way, no air); round the
+   barrier through 960's drive stopped in the hedges (it was 16.5 s before the barrier was widened). Lap's way 28.3 s (Street Classic), 26.0 s (Drifter).
+   The AI took it 5 times in two forward races (try 2's layout), every AI finished.
+B DONE. The line on Embry Lane's east end at (3246, 457) (5 to 9 %, straight; every flatter straight is inside a shortcut's skipped part or too short),
+   60 m lead-in from the corner; the reverse grid ends short of Joel Drive. Records as "Addison Heights (Embry Lane line)"; a checkpoint on Crawford
+   Circle where the line was. Both grids on the road (check); no shortcut end in sight of them (`55_B_*_grid.png`).
+C DONE. The bounce house's voice stood at the world's origin (never heard); now at the castle, playing the trampoline's sound (Dan's drop-in
+   `trampoline.mp3` or the made one). Check: thrown, playing, 3 m from the arch.
+D DONE. Both were ridges the levelling left on the corners' outsides: Kelly / Suholden (pitch under a car 0, 5, 12, 18, 14, 8 %) now 3 to 8 % with no
+   spike; Hayworth / Crawford (0.31 m and 0.6 m crests over +-3 m) blurred, and the 8 % into 22 % grade change made a 24 m vertical curve
+   (`MapBuilder.Round55.cs`): no crest left, a sag of 0.17 to 0.20 m over +-3 m remains where the bend and the grade change meet (two tries; `bumps.txt`).
+E DONE (modest). The AI pulls out round a slower car once the other lane is clear and goes on past instead of stopping on its bumper; otherwise it waits
+   a car length back. Hard, traffic Normal, every AI finished (8 races, 24 drivers): close behind a car under 10 m/s on Addison Heights 23.7 s per driver
+   before, 17.1 s after; Chastain Lakes about 2 s before and after. Passes 14 to 18 per driver both ways (`round55_check_e_before.txt`, `_after.txt`).
+Builds: nine full builds (the junction curve took two; option 2 took five: layout, two tunings, the barrier, the landing arc). `Builds/ChastainRush/` 2026-10-21 16:11. Imported from Racer: nothing.
+For Dan to check: the Elaine jump (land, brake hard, right onto the bench; is the corner through the hedge too easy?); the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
+
+## Round 56 (moved from TODO.md on 2026-10-22 when Dan reviewed Rounds 58 and 59; word for word)
+
+## Previous delivery 2: Round 56
+**Reviewed: Dan drove the Round 56 build 2026-10-21 21:15 (Addison Heights, Underground); no complaint about the Elaine shortcut, the barricade, the jerk or Joel Drive; his notes are Round 57.**
+**Round 56, THE ELAINE SHORTCUT: LAND ON CRAWFORD CIRCLE, A WAY BACK FROM THERE, A BLOCKED ENTRY WITH TIRE MARKS; a jerk on Elaine;
+the things on Joel Drive (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session `2026-10-21_17-00-50-815_f90718`, read by
+Claude, after the Round 55 exe: Addison Heights forward on the Drifter Twin).** Round 55 is reviewed. Dan: "still not quite hitting the
+mark on the Elaine shortcut". Standing rules apply. ONE full Build Map at the end (plan the line on paper first; quick builds while
+working). Tuning limit. Short results.
+A. WHERE A GOOD JUMP LANDS, AND THE WAY BACK FROM THERE. BUG-004 (x 2947.19 z 315.69 h 141, ON Crawford Circle's west leg, the closed
+   road between the Hayworth / Crawford corner and Lyndon Drive, a barrier just ahead): "A good jump will tak you here. The path should
+   work back from the main road from here. If it is off the main track for a bit as long as it joins back with some time savings".
+   So the target is no longer Round 55's bench and hedges on the bank: a GOOD jump off Elaine's west bend (Round 55's launch, natural,
+   no ramp) carries you over the bank and down onto Crawford Circle's west leg at Dan's spot. From there the shortcut is a way back to
+   the lap, off the main track for a while, joining it heading the race's way with SOME time saved (Dan accepts more than "a few
+   seconds" here; Code reports the number). Code picks the way back and says why (e.g. west along Crawford's west leg, then Lyndon
+   Drive north to Joel Drive westbound; if so, decide what happens at Joel / Lyndon, where the road-crew shortcut starts straight
+   ahead: no accidental chaining unless it is fair; say what was chosen).
+   A SHORT jump (not enough speed, off line) comes down on the bank / at the corner and pays for it (hedges or similar, as Round 55),
+   so the good jump is the reward. Make the launch able to reach Dan's spot at a good race speed on the Drifter Twin and the Street
+   Classic (natural lip only shaped, as before; tuning limit). Remove what Round 55 built that this does not need (bench, gaps, hedges
+   that now block the good line) and keep what still makes the short jump costly. Crawford's west-leg barrier moves so the landing and
+   the way back are open forward and stay shut in reverse.
+B. THE ENTRY: BLOCKED, WITH TIRE MARKS. BUG-003 (x 3205.88 z 303.90 h 287, Suholden Circle at the Elaine turn-off): "there should be an
+   indicator that the road to the right is a shortcut. Maybe actually block the road off and make tiremarks right after it". Put a
+   breakable road-closed barricade (sawhorses / a striped board, as a road crew would) across Elaine's mouth, with tire marks on the
+   road right after it, so it reads as "people go through here". Breaking it must not slow you (as fences); it resets each lap / race.
+C. BUG-002 (x 3088.66 z 307.72 h 294, Elaine Circle on the shortcut's run-up): "there is something here that causes my vehicle to jerk to
+   the righ. Please check the road in this area". Find it (a ridge, a camber change, an edge, a collider) and fix it; check at speed.
+D. BUG-001 (x 2963.10 z 411.11 h 264, Joel Drive west of Hayworth, on the lap): "why is this here? and what is it?" (the picture: orange
+   round bases with red tops standing in the road and beside it). Say what they are; if they have no purpose a racer can read, remove them.
+Check: the good jump (Drifter Twin and Street Classic: launch speed, where they land, time saved), a short jump (cost), the ways round;
+the barricade breaks without slowing; the AI takes it sometimes, forward race x2 traffic Normal, all finish; reverse unchanged.
+Pictures: Dan's four spots, the jump from behind, the landing on Crawford, the way back.
+For Dan to check: the Elaine shortcut (good and short jumps, the barricade and tire marks); the jerk on Elaine; Joel Drive at his spot.
+
+**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round56/` (check reports, pictures).
+Bug reports read: session `2026-10-21_17-00-50-815_f90718`, BUG-001 to 004.
+A DONE. Round 55's bench and its hedge gap gone. The lip: the bend's crest on Elaine's own line, raised 1 m to an edge (20 %, no ramp), heading 267. Flat out a
+   Street Classic leaves it at 30 m/s and comes down 87 m out at (2960, 313), Dan's spot; at 21 m/s 44 m out, on the lower bank (a landing zone). The run on:
+   through a gap in the bank's foot hedge, over the Crawford / Hayworth corner, down Crawford's west leg. The way back (Code's pick): from Dan's spot north
+   between 884 and 1143, round 1143, up onto Hayworth by CP 5, graded at 22 % with worn tracks; it never reaches Joel / Lyndon, so it cannot run on into
+   the road-crew shortcut. Crawford's west-leg barrier moved 56 m past the way back (forward only; reverse unchanged). The short jump comes down in
+   brush, 18 to 36 m out, at twice the usual drag (`ShrubBeds` strength). Times against the lap's way (`round56_check_final_a_c.txt`): clean, Street Classic
+   saves 6.0 s, Drifter Twin 6.0 s. Against the lap: short (15 m/s off the lip) +0.0 s, a tie; no jump +6.5 s; round the barrier +1.4 s.
+   Turning up Hayworth at the corner after the jump: Drifter Twin 17.4 s against 19.1 s round 1143 (a quicker way for a rider who can stop).
+   Two layout attempts: the first lip, 2 m north of Elaine's line, turned cars into house 960 (`round56_check_a_try1.txt`, `_try2_probe.txt`).
+B DONE. Three breakable type III barricades across Elaine 17 m in from Suholden (ahead on the right from Dan's spot), tire marks up Elaine behind them.
+   Forward race only. 22 m/s through them: 21.7 then 21.8 m/s, no speed lost. Whole again 7 s after the car leaves (`RestoreWhenClear`).
+C DONE (Dan watched the check drive it: "half way up the hill to the ramp to the right side of the road"). Traced flat out from Suholden: at 26 m/s, where
+   the climb steepens from 17 to 31 %, the suspension squeezes until the body's right front corner dips 10 cm into the road (x 3091; the Drifter Twin
+   at 3075 and 3098): kicked up 0.3 m, rolled 7 degrees, heading swung right at up to 470 deg/s (`round56_check_c_before.txt`). Fixed there only: on the
+   climb the road does not push on a body the right way up (the wheels carry it; `BodyGlide`, `VehicleSurfaceContacts.Glide`, track `body_glide`).
+   After: no swing on the climb for either vehicle (`round56_check_final_a_c.txt`). Elaine's valley also made one even vertical curve (x 3155 to 3078).
+D DONE. Two flower pots (Round 54's, at the Joel terrace's street corners); no purpose for a racer, removed.
+Races: forward x2 and reverse x1, Hard, traffic Normal, 9 of 9 AI finished; the AI took the Elaine jump 5 times (`round56_check_races.txt`).
+Builds: seven full builds and one stopped (two layout tries, the barrier move, the barricade moved and drawn in place, the jerk's fix twice).
+`Builds/ChastainRush/` 2026-10-21 20:52. Imported from Racer: nothing.
+For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
+tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.

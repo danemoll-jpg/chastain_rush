@@ -108,6 +108,108 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 60, TOWN CENTER AT COBB MADE TO LOOK LIKE ITSELF, DRIVABLE INSIDE ON BOTH LEVELS WITH THINGS TO SMASH; the Chastain Road overpass
+over I-75 (Dan, 2026-10-22 05:37; report BUG-001 of session `2026-10-22_05-11-54-864_7498e6`, read by Claude, after the Round 59 exe).**
+Rounds 58 and 59 are reviewed ("I didn't notice any frame rate issues"). ONE full Build Map at the end (quick builds while working: the
+mall as its own quick-build area). Tuning limit. Short results.
+A. THE MALL. Dan: "Can we make town center look like town center. I have a link here with a bunch of pics
+   https://rs.locationshub.com/Home/Mosaic?rsLocationId=042-10006196. You can get a good idea what it looks like on the outside and I
+   would have to have it generically decorated on the inside but based on reality. It is a two level mall. I would want to be able to
+   drive through it and have smashable things throughout."
+   PHOTOS: the page is a gallery of about 85 photos (ga.reel-scout.com). Claude could not open them from here (blocked); Code: download
+   them into `local/reference_photos/town_center/` and look at them (exterior entrances, anchors, interior courts, food court, levels).
+   If Code cannot reach them either, say so in the status and work from what is known; Dan can save some there. Reference only (as the
+   Google / NAIP rules): never used as textures, never traced; store and brand names faked (as the Kroger center).
+   What is known (malls.com): an enclosed two-level regional mall, about 1.28 million sq ft, between I-75 and I-575; anchors Macy's (and a
+   Macy's Men's & Furniture Gallery), Belk, JCPenney (in the old Mervyn's), formerly Sears; a north wing added in 1993; a food court
+   (renovated 2008), a children's play area, seating areas. Use the real OSM footprint Round 59 already placed.
+   (1) OUTSIDE as the photos show it: the building's shape and height from its footprint, the materials and colors, the entrances (canopies,
+       glass doors, entry signs), the anchors' own facades (fake names), parking lots and the ring road as they are.
+   (2) INSIDE, generically decorated but based on reality: two levels of concourses along the real wings, center / court atriums open to
+       both levels with railings and skylights, escalators, stairs and elevators, storefronts with glass fronts and fake names, kiosks,
+       benches, planters, a food court with counters, tables and chairs, the play area. Anchors: a way into at least one anchor's store.
+   (3) DRIVE THROUGH IT: in through the entrance doors (breakable glass), along both levels, between levels by ramps a car can take (e.g.
+       the escalators / stairs treated as drivable ramps, or a car ramp where a court allows), out through another entrance or an anchor.
+       Wide enough for every vehicle; nothing a car wedges in. A drop from the upper level into a court is allowed (big air) where it lands
+       cleanly.
+   (4) SMASHABLE THROUGHOUT (the shopping center / stunt park's breakables family): store glass, kiosks, benches, planters, signs, trash
+       cans, mannequins, food court tables and chairs, displays; breaking them must not stop a car (as fences). Shoppers inside, a few,
+       who get out of the way as the game's other people do.
+   (5) Lights inside (day and night), sounds (echo inside if simple). Keep the frame rate: the interior drawn only when near / inside.
+   Free Roam only this round (no race); a fast-travel spot at the main entrance.
+B. BUG-001 (x -1051.61 z 420.74 h 73, Chastain Road on its overpass over I-75): "This needs some smoothing" (Dan: "The overpass over 75 is
+   very bumpy"). Smooth the deck, its ends and approaches both ways (and its pair's other carriageway); check at speed, all vehicles.
+Check: drive in, through both levels, between levels, out, on all 11 vehicles (no wedge); smash a sample of each breakable without
+losing speed; frame rate inside and in the lot (1080p) against Round 59's numbers; the overpass both ways (jolts before / after).
+Pictures: the outside from the main entrance and an anchor (next to a photo if Code has them), each level, a court, the food court.
+For Dan to check: Town Center inside and out; drive it and smash it; the overpass.
+
+## QUEUED rounds
+**Round 61, THE MAP EXTENSION, STAGE 2: THE COBB COUNTY AIRPORT (Dan, 2026-10-22 05:37: "I feel comfortable expanding this out" after
+stage 1). Start after Round 60 when Dan says (he has to drive 60 first).** As Round 59 (in the archive / Previous delivery): extend west to
+take in Cobb County International Airport (McCollum Field: its runway, taxiways, hangars and terminal) with a margin, the same way (new land
+at negative x, nothing that exists moves), everything that uses the map extended, and the numbers before / after.
+Dan also noticed Laura Lake in the new land (Round 59 calls it "a real quarry", far south-west, about 200 m deep at 1.5x): "Oddly enough I
+had no clue about the laura lake which code refered to as a quary. its a very cool area where we could have some really big jumps".
+What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 59
+**Reviewed: Dan drove the Round 59 build 2026-10-22 05:11 (free roam in the new land): "I didn't notice any frame rate issues"; his notes are Round 60.**
+**Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
+stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
+rebuild at the end (plus whatever the new data import needs). Dan is not watching: decide, write it down, go on; stop and report only
+for something that cannot be undone or if the world becomes unplayable.
+What was written up (2026-10-19, Dan's map `local/reference_photos/extension/town_center_ksu_airport.jpg`, Google: reference only, never
+traced): extend the map west and south to take in Town Center at Cobb (the mall and the shopping around it) and Kennesaw State
+University's Kennesaw campus. NOT the Cobb County airport (stage 2, later). Today's bounds: south 34.0294, north 34.0477, west -84.566,
+east -84.5234 (3983 x 1918 m). Claude's estimate for stage 1: about 6.3 x 4.2 km (about 26 km2, 3.5x). The 1 m USGS tile already in use
+covers it (to 33.955 S, -84.619 W). Code sets the exact new bounds from OSM (the mall's ring road and the campus with a margin; the
+north and east edges stay) and says what they are.
+1. KEEP THE EXISTING WORLD WHERE IT IS. Every existing coordinate (hand-placed houses, tracks, routes, shortcuts, pipes, eggs, records,
+   replays, Dan's bug positions, CLAUDE.md notes) must still mean the same place: the new land gets coordinates outside the old range
+   (e.g. negative x / z, or an offset applied everywhere consistently with every data file converted and checked). Code picks and says
+   why; nothing hand-built may move or be lost. Every race still runs as before (lap lengths, checkpoints, records unchanged).
+2. THE NEW LAND, GENERATED AS THE REST WAS (OSM roads, buildings, water, woods; USGS terrain at 1.5x): roads and their junctions,
+   buildings from their footprints (the mall, the stores, the campus buildings and stadium as big generic buildings; no hand polish),
+   parking lots, trees, streams and ponds, bridges where roads cross water. I-75 and I-575 and their interchange through the new area:
+   drivable, overpasses where roads cross them, as well as the generator can do (Dan expects highways to be the weak spot; no heroics).
+   The old west edge (I-575's collapsed overpass, Round 9) is now inside the map: join it up.
+3. EVERYTHING THAT USES THE MAP covers the new land: traffic and police road nets, the map screen and minimap, exploration fog and
+   destinations (new ones: Town Center, KSU), fast travel, free roam spawns unchanged, the quick-rebuild areas, the loading screen's inset.
+   No new races or eggs this round.
+4. MEASURE (Dan wanted this before deciding on stage 2): full Build Map time, exe size, load time, memory, and frame rate at 1080p in
+   the old neighborhood and in the new area (Town Center, KSU, the interchange), before and after; tree and building counts. If frame
+   rate or load time gets much worse, report it with the cause rather than tune for hours (tuning limit).
+Check: every race still runs (one AI race per track); free roam drive from Chastain Glen to Town Center and to KSU without falling
+through the world; pictures of the mall, the campus, the interchange, the old I-575 edge joined.
+For Dan to check: drive to Town Center and KSU; the highways; the numbers (go on to stage 2, the airport, or not).
+
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round59/`.
+1 DONE. The new land is west and south of the old map, at negative x / z (`Tools/mapgen/mapgen_extend.py`, config `extension`: 4 tiles west, 3 south). Why: nothing that exists has
+   to change. The core is generated first exactly as before (map.json's lists, trees.bin's trees and terrain.r16 checked byte for byte), the new pieces are appended after it (house,
+   road and bridge numbers unchanged), the terrain grid grows by whole core-size tiles (the same samples on the same spots, the core's pasted in, the new eased onto it over 40 m),
+   heights on the core's datum (the 16-bit terrain's step is now 4.2 mm over the wider range: houses' floors moved up to 1 cm, `houses_settled.txt`). Unity reads `terrain_full.r16` (origin -2655.33, -1918); the python scripts keep reading the core's terrain.r16. Bounds (from OSM, KSU's and the mall's
+   outlines with a margin, the north and east edges kept): south 34.01268, west -84.59575, north 34.04582, east -84.52292; 6638 x 3836 m (25.5 km2, 3.3x).
+2 DONE. 2252 road pieces, 40 bridges, 3147 buildings (the mall, stores and campus as Round 31's dressed businesses: 1281 in all now), 43 ponds, 87 streams, 69 parking lots,
+   87,614 trees. I-575 and its Chastain Road overpass cross the old south edge with no seam (bridge decks met within 0.2 to 0.8 m and eased); I-75 / I-575 drivable on the generated
+   ground (a weak spot as Dan expected: plain decks where OSM tags a bridge, no hand work). A real quarry in the far south-west (floor 166.7 m, about 200 m deep at 1.5x).
+3 DONE. Traffic and police nets (1602 traffic nodes, was 507), the map picture (8192 px wide, 0.8 m a pixel), minimap, exploration fog (Dan's saved fog renumbered onto the larger
+   grid: on a copy of his save all 3660 cells and 11 places kept, the same ground), fast-travel destinations Town Center and KSU (`add_extension_places.py`), loading inset. Spawns unchanged.
+4 Numbers, before / after (1920 x 1080 window, not measured at 3840 x 2160): Build Map 845 s / 1955 s; exe data 626 / 1357 MB; world up 6.5 / 19.4 s after start; Unity memory
+   1065 / 1838 MB; terrain tiles 18 / 60; trees in the scene 54,943 / 142,282; buildings 2388 / 5535. Frame rate parked, average / slowest 1 %: old neighborhood (Canton Road) 182 / 67 ->
+   122 / 39; Town Center 171 / 51; KSU 154 / 53; the interchange 158 / 53; the old I-575 edge 169 / 57. Not tuned (the round's rule): the old neighborhood lost a third, most likely
+   the things spread over the whole map that run every frame whatever the distance (people groups 1765 -> 3512, hydrants 536 -> 1915, traffic network 3.8x) and more far objects drawn.
+Check: every race still runs (11 courses and directions, one AI race each on Hard, traffic Normal: 33 of 33 finish, `round59_check_races.txt`); free roam Chastain Glen to Town
+   Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
+Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
+`Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.
+
+## Previous delivery 2: Round 58
+**Reviewed: Dan drove the Round 58 / 59 build 2026-10-22; no complaint about the AI or B to D.**
 **Round 58, AI DRIVERS WITH AGENCY (recover, pass, never wrong way), and three fixes (Dan, 2026-10-22 01:20; reports BUG-001 to BUG-003
 of session `2026-10-22_00-37-30-154_d7ca87`, read by Claude, after the Round 57 exe: Underground, Chastain Ridge and replays). THEN
 ROUND 59 (the map extension, stage 1, below in QUEUED): Dan went to bed and asked for both; do 58, commit, then start 59 without
@@ -172,62 +274,7 @@ D DONE. The bump is the valley 50 m before his spot (the drive comes down at -13
    Left: 3.4 m to the inside of the bend at x 3040, off the asphalt, still lifts a Drifter Twin's wheels (for Dan to judge).
 `Builds/ChastainRush/` 2026-10-22 03:17. Imported from Racer: nothing.
 
-## QUEUED rounds
-**Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
-stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
-rebuild at the end (plus whatever the new data import needs). Dan is not watching: decide, write it down, go on; stop and report only
-for something that cannot be undone or if the world becomes unplayable.
-What was written up (2026-10-19, Dan's map `local/reference_photos/extension/town_center_ksu_airport.jpg`, Google: reference only, never
-traced): extend the map west and south to take in Town Center at Cobb (the mall and the shopping around it) and Kennesaw State
-University's Kennesaw campus. NOT the Cobb County airport (stage 2, later). Today's bounds: south 34.0294, north 34.0477, west -84.566,
-east -84.5234 (3983 x 1918 m). Claude's estimate for stage 1: about 6.3 x 4.2 km (about 26 km2, 3.5x). The 1 m USGS tile already in use
-covers it (to 33.955 S, -84.619 W). Code sets the exact new bounds from OSM (the mall's ring road and the campus with a margin; the
-north and east edges stay) and says what they are.
-1. KEEP THE EXISTING WORLD WHERE IT IS. Every existing coordinate (hand-placed houses, tracks, routes, shortcuts, pipes, eggs, records,
-   replays, Dan's bug positions, CLAUDE.md notes) must still mean the same place: the new land gets coordinates outside the old range
-   (e.g. negative x / z, or an offset applied everywhere consistently with every data file converted and checked). Code picks and says
-   why; nothing hand-built may move or be lost. Every race still runs as before (lap lengths, checkpoints, records unchanged).
-2. THE NEW LAND, GENERATED AS THE REST WAS (OSM roads, buildings, water, woods; USGS terrain at 1.5x): roads and their junctions,
-   buildings from their footprints (the mall, the stores, the campus buildings and stadium as big generic buildings; no hand polish),
-   parking lots, trees, streams and ponds, bridges where roads cross water. I-75 and I-575 and their interchange through the new area:
-   drivable, overpasses where roads cross them, as well as the generator can do (Dan expects highways to be the weak spot; no heroics).
-   The old west edge (I-575's collapsed overpass, Round 9) is now inside the map: join it up.
-3. EVERYTHING THAT USES THE MAP covers the new land: traffic and police road nets, the map screen and minimap, exploration fog and
-   destinations (new ones: Town Center, KSU), fast travel, free roam spawns unchanged, the quick-rebuild areas, the loading screen's inset.
-   No new races or eggs this round.
-4. MEASURE (Dan wanted this before deciding on stage 2): full Build Map time, exe size, load time, memory, and frame rate at 1080p in
-   the old neighborhood and in the new area (Town Center, KSU, the interchange), before and after; tree and building counts. If frame
-   rate or load time gets much worse, report it with the cause rather than tune for hours (tuning limit).
-Check: every race still runs (one AI race per track); free roam drive from Chastain Glen to Town Center and to KSU without falling
-through the world; pictures of the mall, the campus, the interchange, the old I-575 edge joined.
-For Dan to check: drive to Town Center and KSU; the highways; the numbers (go on to stage 2, the airport, or not).
-
-**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round59/`.
-1 DONE. The new land is west and south of the old map, at negative x / z (`Tools/mapgen/mapgen_extend.py`, config `extension`: 4 tiles west, 3 south). Why: nothing that exists has
-   to change. The core is generated first exactly as before (map.json's lists, trees.bin's trees and terrain.r16 checked byte for byte), the new pieces are appended after it (house,
-   road and bridge numbers unchanged), the terrain grid grows by whole core-size tiles (the same samples on the same spots, the core's pasted in, the new eased onto it over 40 m),
-   heights on the core's datum (the 16-bit terrain's step is now 4.2 mm over the wider range: houses' floors moved up to 1 cm, `houses_settled.txt`). Unity reads `terrain_full.r16` (origin -2655.33, -1918); the python scripts keep reading the core's terrain.r16. Bounds (from OSM, KSU's and the mall's
-   outlines with a margin, the north and east edges kept): south 34.01268, west -84.59575, north 34.04582, east -84.52292; 6638 x 3836 m (25.5 km2, 3.3x).
-2 DONE. 2252 road pieces, 40 bridges, 3147 buildings (the mall, stores and campus as Round 31's dressed businesses: 1281 in all now), 43 ponds, 87 streams, 69 parking lots,
-   87,614 trees. I-575 and its Chastain Road overpass cross the old south edge with no seam (bridge decks met within 0.2 to 0.8 m and eased); I-75 / I-575 drivable on the generated
-   ground (a weak spot as Dan expected: plain decks where OSM tags a bridge, no hand work). A real quarry in the far south-west (floor 166.7 m, about 200 m deep at 1.5x).
-3 DONE. Traffic and police nets (1602 traffic nodes, was 507), the map picture (8192 px wide, 0.8 m a pixel), minimap, exploration fog (Dan's saved fog renumbered onto the larger
-   grid: on a copy of his save all 3660 cells and 11 places kept, the same ground), fast-travel destinations Town Center and KSU (`add_extension_places.py`), loading inset. Spawns unchanged.
-4 Numbers, before / after (1920 x 1080 window, not measured at 3840 x 2160): Build Map 845 s / 1955 s; exe data 626 / 1357 MB; world up 6.5 / 19.4 s after start; Unity memory
-   1065 / 1838 MB; terrain tiles 18 / 60; trees in the scene 54,943 / 142,282; buildings 2388 / 5535. Frame rate parked, average / slowest 1 %: old neighborhood (Canton Road) 182 / 67 ->
-   122 / 39; Town Center 171 / 51; KSU 154 / 53; the interchange 158 / 53; the old I-575 edge 169 / 57. Not tuned (the round's rule): the old neighborhood lost a third, most likely
-   the things spread over the whole map that run every frame whatever the distance (people groups 1765 -> 3512, hydrants 536 -> 1915, traffic network 3.8x) and more far objects drawn.
-Check: every race still runs (11 courses and directions, one AI race each on Hard, traffic Normal: 33 of 33 finish, `round59_check_races.txt`); free roam Chastain Glen to Town
-   Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
-Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
-`Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION, STAGE 2: the Cobb County airport (after Dan has seen stage 1).
-
-## Previous delivery 1 (newest): Round 57
+## Previous delivery 3: Round 57
 **Reviewed: Dan drove the Round 57 build 2026-10-22 00:37 (Underground, Chastain Ridge, replays): "The replays seem to work fine"; A to E no complaint; his notes are Round 58.**
 **Round 57, RACE REPLAYS; fixes on Addison Heights and the Underground; COMPLETE RACE on the pad (Dan, 2026-10-21 21:35; reports BUG-001
 to BUG-005 of session `2026-10-21_21-15-52-689_2c460b`, read by Claude, after the Round 56 exe: Addison Heights and the Underground race
@@ -304,145 +351,6 @@ Follow-up (Dan's yes, 2026-10-22): B28's glass bed under West Chastain Lake had 
    the only touch of B28's bed is a flat floor contact with no speed lost (`round57_check_m2a.txt`; `-exeRound57 <dir> -r57Only m2a`).
 `Builds/ChastainRush/` 2026-10-21 23:39. Imported from Racer: nothing.
 For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; M2a under West Chastain Lake in free roam; a replay with each camera, the #1s, save one and find it on REPLAYS.
-
-## Previous delivery 2: Round 56
-**Reviewed: Dan drove the Round 56 build 2026-10-21 21:15 (Addison Heights, Underground); no complaint about the Elaine shortcut, the barricade, the jerk or Joel Drive; his notes are Round 57.**
-**Round 56, THE ELAINE SHORTCUT: LAND ON CRAWFORD CIRCLE, A WAY BACK FROM THERE, A BLOCKED ENTRY WITH TIRE MARKS; a jerk on Elaine;
-the things on Joel Drive (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session `2026-10-21_17-00-50-815_f90718`, read by
-Claude, after the Round 55 exe: Addison Heights forward on the Drifter Twin).** Round 55 is reviewed. Dan: "still not quite hitting the
-mark on the Elaine shortcut". Standing rules apply. ONE full Build Map at the end (plan the line on paper first; quick builds while
-working). Tuning limit. Short results.
-A. WHERE A GOOD JUMP LANDS, AND THE WAY BACK FROM THERE. BUG-004 (x 2947.19 z 315.69 h 141, ON Crawford Circle's west leg, the closed
-   road between the Hayworth / Crawford corner and Lyndon Drive, a barrier just ahead): "A good jump will tak you here. The path should
-   work back from the main road from here. If it is off the main track for a bit as long as it joins back with some time savings".
-   So the target is no longer Round 55's bench and hedges on the bank: a GOOD jump off Elaine's west bend (Round 55's launch, natural,
-   no ramp) carries you over the bank and down onto Crawford Circle's west leg at Dan's spot. From there the shortcut is a way back to
-   the lap, off the main track for a while, joining it heading the race's way with SOME time saved (Dan accepts more than "a few
-   seconds" here; Code reports the number). Code picks the way back and says why (e.g. west along Crawford's west leg, then Lyndon
-   Drive north to Joel Drive westbound; if so, decide what happens at Joel / Lyndon, where the road-crew shortcut starts straight
-   ahead: no accidental chaining unless it is fair; say what was chosen).
-   A SHORT jump (not enough speed, off line) comes down on the bank / at the corner and pays for it (hedges or similar, as Round 55),
-   so the good jump is the reward. Make the launch able to reach Dan's spot at a good race speed on the Drifter Twin and the Street
-   Classic (natural lip only shaped, as before; tuning limit). Remove what Round 55 built that this does not need (bench, gaps, hedges
-   that now block the good line) and keep what still makes the short jump costly. Crawford's west-leg barrier moves so the landing and
-   the way back are open forward and stay shut in reverse.
-B. THE ENTRY: BLOCKED, WITH TIRE MARKS. BUG-003 (x 3205.88 z 303.90 h 287, Suholden Circle at the Elaine turn-off): "there should be an
-   indicator that the road to the right is a shortcut. Maybe actually block the road off and make tiremarks right after it". Put a
-   breakable road-closed barricade (sawhorses / a striped board, as a road crew would) across Elaine's mouth, with tire marks on the
-   road right after it, so it reads as "people go through here". Breaking it must not slow you (as fences); it resets each lap / race.
-C. BUG-002 (x 3088.66 z 307.72 h 294, Elaine Circle on the shortcut's run-up): "there is something here that causes my vehicle to jerk to
-   the righ. Please check the road in this area". Find it (a ridge, a camber change, an edge, a collider) and fix it; check at speed.
-D. BUG-001 (x 2963.10 z 411.11 h 264, Joel Drive west of Hayworth, on the lap): "why is this here? and what is it?" (the picture: orange
-   round bases with red tops standing in the road and beside it). Say what they are; if they have no purpose a racer can read, remove them.
-Check: the good jump (Drifter Twin and Street Classic: launch speed, where they land, time saved), a short jump (cost), the ways round;
-the barricade breaks without slowing; the AI takes it sometimes, forward race x2 traffic Normal, all finish; reverse unchanged.
-Pictures: Dan's four spots, the jump from behind, the landing on Crawford, the way back.
-For Dan to check: the Elaine shortcut (good and short jumps, the barricade and tire marks); the jerk on Elaine; Joel Drive at his spot.
-
-**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round56/` (check reports, pictures).
-Bug reports read: session `2026-10-21_17-00-50-815_f90718`, BUG-001 to 004.
-A DONE. Round 55's bench and its hedge gap gone. The lip: the bend's crest on Elaine's own line, raised 1 m to an edge (20 %, no ramp), heading 267. Flat out a
-   Street Classic leaves it at 30 m/s and comes down 87 m out at (2960, 313), Dan's spot; at 21 m/s 44 m out, on the lower bank (a landing zone). The run on:
-   through a gap in the bank's foot hedge, over the Crawford / Hayworth corner, down Crawford's west leg. The way back (Code's pick): from Dan's spot north
-   between 884 and 1143, round 1143, up onto Hayworth by CP 5, graded at 22 % with worn tracks; it never reaches Joel / Lyndon, so it cannot run on into
-   the road-crew shortcut. Crawford's west-leg barrier moved 56 m past the way back (forward only; reverse unchanged). The short jump comes down in
-   brush, 18 to 36 m out, at twice the usual drag (`ShrubBeds` strength). Times against the lap's way (`round56_check_final_a_c.txt`): clean, Street Classic
-   saves 6.0 s, Drifter Twin 6.0 s. Against the lap: short (15 m/s off the lip) +0.0 s, a tie; no jump +6.5 s; round the barrier +1.4 s.
-   Turning up Hayworth at the corner after the jump: Drifter Twin 17.4 s against 19.1 s round 1143 (a quicker way for a rider who can stop).
-   Two layout attempts: the first lip, 2 m north of Elaine's line, turned cars into house 960 (`round56_check_a_try1.txt`, `_try2_probe.txt`).
-B DONE. Three breakable type III barricades across Elaine 17 m in from Suholden (ahead on the right from Dan's spot), tire marks up Elaine behind them.
-   Forward race only. 22 m/s through them: 21.7 then 21.8 m/s, no speed lost. Whole again 7 s after the car leaves (`RestoreWhenClear`).
-C DONE (Dan watched the check drive it: "half way up the hill to the ramp to the right side of the road"). Traced flat out from Suholden: at 26 m/s, where
-   the climb steepens from 17 to 31 %, the suspension squeezes until the body's right front corner dips 10 cm into the road (x 3091; the Drifter Twin
-   at 3075 and 3098): kicked up 0.3 m, rolled 7 degrees, heading swung right at up to 470 deg/s (`round56_check_c_before.txt`). Fixed there only: on the
-   climb the road does not push on a body the right way up (the wheels carry it; `BodyGlide`, `VehicleSurfaceContacts.Glide`, track `body_glide`).
-   After: no swing on the climb for either vehicle (`round56_check_final_a_c.txt`). Elaine's valley also made one even vertical curve (x 3155 to 3078).
-D DONE. Two flower pots (Round 54's, at the Joel terrace's street corners); no purpose for a racer, removed.
-Races: forward x2 and reverse x1, Hard, traffic Normal, 9 of 9 AI finished; the AI took the Elaine jump 5 times (`round56_check_races.txt`).
-Builds: seven full builds and one stopped (two layout tries, the barrier move, the barricade moved and drawn in place, the jerk's fix twice).
-`Builds/ChastainRush/` 2026-10-21 20:52. Imported from Racer: nothing.
-For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
-tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.
-
-## Previous delivery 3: Round 55
-**Reviewed: Dan drove the Round 55 build 2026-10-21 17:00 (Addison Heights forward): the Elaine shortcut is "still not quite hitting the mark" (Round 56); B to E no complaint.**
-**Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
-2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
-Addison Heights forward and reverse on the Drifter Twin).** Round 54 is reviewed. Standing rules apply. ONE full Build Map at the end
-(plan the line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
-A. THE ELAINE SHORTCUT (FORWARD), REDONE. Dan: "the new forward one is a fail. It looks like it did literally nothing but mark a line
-   on the map, not to mention that it bypasses the feature I wanted to utilize which is the place in the bug report". BUG-002 (x 3053.14
-   z 309.33 h 271, ON Elaine Circle heading west, at the west end of its straight where it bends north to Joel): "The shortcut makes no
-   sense at all. Not even sure where it wants me to go. Plus where you start you are too close to the end of this so it is really
-   confusing because starting from back it looks like a shortcut at the very beginning of the race. I wanted the jump here as it is a
-   natural jump."
-   Claude's mistake in Round 53 B: the jump is NOT the crest at the Suholden corner (Dan's Round 53 BUG-005 is only where you turn off
-   the lap onto Elaine); it is HERE, at Elaine's west bend: drive west along Elaine from the corner, and instead of following the bend
-   north, go straight off its edge: the ground drops away west and you fly (Dan, Round 53: "this jump will miss the track most likely.
-   At least every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main
-   road"). So:
-   (1) The way: off the lap at the Suholden / Elaine corner, west along Elaine's own road to the bend, straight off the edge at Dan's
-       spot (a natural launch: keep the ground's own lip, smooth it only so it launches cleanly and straight, no ramp). Elaine north of
-       the bend, on to Joel, stays closed (barrier) so there is no plain road way round.
-   (2) The landing: drive it at race speed (several vehicles) and find where cars really come down; build there: a clear landing
-       (graded, drivable) and a visible way on from it (worn dirt path / tire tracks through the yards and trees, cleared of trunks,
-       readable at speed) that is a little longer and joins the lap heading the race's way (Hayworth Drive or Joel Drive northbound /
-       westbound, Code picks and says why). It must LOOK like a way: someone seeing it from Elaine knows where to go.
-       Dan, 12:33: "that is why before I asked for a landing spot that forced the user to drive through some backyards and stuff to
-       get back to the road to get rid of part of the advantage it got, this is especially the case because you will likely overshoot
-       your the road anyway." So expect cars to overshoot Hayworth and come down in the yards beyond it: the way back from there winds
-       through those backyards (round sheds, between fences, past play sets: breakable fences and the like are fine) before it reaches
-       the road. That backyard run is what takes back most of the time the jump gains.
-   (3) Throw away Round 54 A1's valley way to Crawford and its beds (the map line Dan saw), and any of its leftovers.
-   (4) A clean run saves a few seconds; missed (short, off line) costs more; no free way round (standing rules). Code reports the numbers.
-       It skips about 350 m of lap (Claude's estimate); if a sensible-looking way cannot bring it down to a few seconds, stop and report.
-B. THE START / FINISH MOVED AGAIN. Round 54 put it on Crawford Circle's east leg (z 245), just before where A rejoins: from the grid it
-   looks like a shortcut at the start. Put the line where it is not in the part A skips (Suholden south, Kelly, Crawford, Hayworth up to
-   A's rejoin) and not in sight of A's ends from the grid, on as straight and level a stretch as the lap has (Joel / Embry / Suholden
-   Circle); Code picks and says why. Both directions; records (keep old times apart as Round 54 did), checkpoints, grid, AI to suit.
-C. THE BOUNCE HOUSE'S SOUND. Dan: "the bouncy castle should use the same sound effect as the trampoline instead of making no sound at
-   all." Use the trampoline's bounce sound (`Audio/SoundDropIns.cs` Bounces, Dan's drop-in or the made one, one at random per bounce).
-D. BUMPS. BUG-001 (x 2977.66 z 308.73 h 14, Hayworth Drive at Crawford Circle): "smooth this bump". BUG-003 (x 3136.36 z 97.41 h 6,
-   Kelly Drive at Suholden Circle): "smooth this". Smooth both junctions.
-E. THE AI DRIVES ROUND CARS (all tracks). Dan, 12:33: "the AI drivers need to be smart enough to drive around cars. I think this is part
-   of the problem. I see them stuck to bumpers as opposed to trying to get around other vehicles". Race AI must overtake: when a traffic
-   car, a parked car or another racer is ahead and slower, pull out and pass where the road (or the grass beside it) has room, else
-   hold back a car length and take the next gap; never sit pushing a bumper. This is likely part of why the AI is slow on Addison
-   Heights (Round 52 and 54's traffic queues). Check on Addison Heights and one other track with traffic Normal: count AI passes, time
-   spent stuck behind a car (before / after), all finish.
-Check: A clean (time saved, Street Classic and Drifter Twin), short, and the ways round; the AI takes it sometimes; forward and reverse
-races x2, traffic Normal, all finish. Pictures: Dan's spot looking west (the drop), the landing, the way on from it, the new start line
-from the grid, the two junctions.
-For Dan to check: the Elaine jump and its way on through the backyards; the new start / finish; the bounce house's sound; the two bumps;
-the AI passing traffic and each other.
-
-**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round55/` (check reports,
-pictures). Bug reports read: session `2026-10-21_12-16-40-990_d377b3`, BUG-001 to 003.
-A BUILT AS DAN'S OPTION 2 (Dan, 2026-10-21 after the first report: "option 2"); TIME NOT MET, TUNING LIMIT REACHED. Round 54's valley way is gone. Measured
-   first (`round55_check_a_b_c.txt`): up Elaine's 26 % cars reach the bend at 14 to 21 m/s and come down on the bank 35 to 46 m out, just above the
-   Crawford / Hayworth corner (with nothing there: lap 25.0 s, land and turn at the corner 14.4 s, Drifter Twin). Built: off the bend's own edge (no ramp),
-   worn tracks down the bank (the hint), a landing zone, a graded bench curving right off the landing, north between 960 and the hedge, an S through the
-   wedge, onto Hayworth through a gap at z 376 to 392 (forgives CP 2 to 5); a 6 m hedge along the bank's foot from Crawford Circle up Hayworth's east side to
-   z 373; Elaine barred north of the bend (16 m wide, forward), hedges at its ends, across 960's yard and across the wedge; the 1007 / 2090 bank hedged.
-   Numbers (`round55_check_a_option2_*.txt`; the scripted driver lands at 20 m/s about 20 m from the hedge and must turn hard right, so runs vary by 3 s):
-   clean, Street Classic saves 8.7 s (try 1) and 4.6 s (try 2), and in the final build ran wide into the hedge; Drifter Twin saves 5.4, 5.0 and 4.9 s.
-   Ways round, final build: straight down through the hedge at the corner 18.6 s (cars can bounce over a 6 m hedge off the bank; 8.5 m caught the clean
-   run too, tried and reverted); off the bench west through the hedge 25.2 s; over the edge slowly and the bench 20.1 s (the same way, no air); round the
-   barrier through 960's drive stopped in the hedges (it was 16.5 s before the barrier was widened). Lap's way 28.3 s (Street Classic), 26.0 s (Drifter).
-   The AI took it 5 times in two forward races (try 2's layout), every AI finished.
-B DONE. The line on Embry Lane's east end at (3246, 457) (5 to 9 %, straight; every flatter straight is inside a shortcut's skipped part or too short),
-   60 m lead-in from the corner; the reverse grid ends short of Joel Drive. Records as "Addison Heights (Embry Lane line)"; a checkpoint on Crawford
-   Circle where the line was. Both grids on the road (check); no shortcut end in sight of them (`55_B_*_grid.png`).
-C DONE. The bounce house's voice stood at the world's origin (never heard); now at the castle, playing the trampoline's sound (Dan's drop-in
-   `trampoline.mp3` or the made one). Check: thrown, playing, 3 m from the arch.
-D DONE. Both were ridges the levelling left on the corners' outsides: Kelly / Suholden (pitch under a car 0, 5, 12, 18, 14, 8 %) now 3 to 8 % with no
-   spike; Hayworth / Crawford (0.31 m and 0.6 m crests over +-3 m) blurred, and the 8 % into 22 % grade change made a 24 m vertical curve
-   (`MapBuilder.Round55.cs`): no crest left, a sag of 0.17 to 0.20 m over +-3 m remains where the bend and the grade change meet (two tries; `bumps.txt`).
-E DONE (modest). The AI pulls out round a slower car once the other lane is clear and goes on past instead of stopping on its bumper; otherwise it waits
-   a car length back. Hard, traffic Normal, every AI finished (8 races, 24 drivers): close behind a car under 10 m/s on Addison Heights 23.7 s per driver
-   before, 17.1 s after; Chastain Lakes about 2 s before and after. Passes 14 to 18 per driver both ways (`round55_check_e_before.txt`, `_after.txt`).
-Builds: nine full builds (the junction curve took two; option 2 took five: layout, two tunings, the barrier, the landing arc). `Builds/ChastainRush/` 2026-10-21 16:11. Imported from Racer: nothing.
-For Dan to check: the Elaine jump (land, brake hard, right onto the bench; is the corner through the hedge too easy?); the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
