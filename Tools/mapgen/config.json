@@ -12,9 +12,19 @@
     "tiles_south": 3,
     "seam_m": 40.0
   },
+  "extension2": {
+    "stage": 2,
+    "name": "West to Summerbrooke and south over Kennesaw Mountain, Cobb County International Airport (Round 61)",
+    "tiles_west": 9,
+    "tiles_south": 10,
+    "seam_m": 40.0
+  },
   "utm_epsg": 26916,
   "elevation_tiles": [
-    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif"
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif",
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x71y377_GA_Statewide_2018_B18_DRRA.tif",
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y376_GA_Statewide_2018_B18_DRRA.tif",
+    "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x71y376_GA_Statewide_2018_B18_DRRA.tif"
   ],
   "vertical_scale": 1.5,
   "road_widths_m": {

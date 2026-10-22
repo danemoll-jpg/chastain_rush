@@ -95,5 +95,47 @@ mway = [p for r in list(M["roads"]) + list(M["bridges"]) if r["class"] in ("moto
 for name, q, onm in (("Town Center", tc, False), ("KSU", ksu, False), ("I-75 and I-575", inter, True), ("the old I-575 edge", edge, True)):
     at = min(mway, key=lambda p: math.dist(p, q)) if onm else nodes[nearest(q)]
     place(name, at, 0.0, 160.0, 260.0)
-json.dump({"places": places, "drives": drives}, open(OUT, "w", encoding="utf-8"), indent=1)
-print(f"{len(places)} places, {len(drives)} drives -> {OUT}")
+import sys
+if "--round61" not in sys.argv:
+    json.dump({"places": places, "drives": drives}, open(OUT, "w", encoding="utf-8"), indent=1)
+    print(f"{len(places)} places, {len(drives)} drives -> {OUT}")
+else:
+    # Round 61 (stage 2): Round 59's places kept (the numbers compare), and the airport, the summit, the mountain's woods, the mountain road
+    # and the join at -84.619 (the first elevation tile's west edge, UTM 720000 E); drives from Chastain Glen to the summit and to the airport
+    OUT = os.path.join(ROOT, "local", "round61", "r61_places.json"); os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    drives = []
+    summit_road = None
+    for r in M["roads"]:
+        if not r["name"].startswith("Kennesaw Mountain Drive"): continue
+        for p in pts(r["points"]):
+            if summit_road is None or math.dist(p, ll(33.9762125, -84.5796556)) < math.dist(summit_road, ll(33.9762125, -84.5796556)): summit_road = p
+    runway = None
+    for a_ in M.get("aeroways", []):
+        if a_["kind"] == "runway":
+            q = pts(a_["points"]); runway = q[len(q) // 2]; break
+    airport_q = ll(34.0143797, -84.5960295)
+    for name, q in (("Chastain Glen to the Kennesaw Mountain summit", summit_road), ("Chastain Glen to the airport", airport_q)):
+        if q is None: print(f"{name}: no target"); continue
+        line, L = path(spawn, q)
+        if line is None: print(f"{name}: no way along the roads"); continue
+        print(f"{name}: {L:.0f} m, {len(line)} points")
+        drives.append({"name": name, "points": [round(v, 2) for p in line for v in p]})
+    keep = places; places = []
+    for pl in keep: places.append(pl)
+    if runway: place("the airport", runway, 0.0, 120.0, 400.0)
+    if summit_road:
+        # the summit, looking back east over the map (eye 12 m over the summit's lot, the target 900 m east)
+        places.append({"name": "the summit", "x": round(summit_road[0], 1), "z": round(summit_road[1], 1), "yaw": 90.0,
+                       "look": [round(summit_road[0], 1), 0.0, round(summit_road[1], 1), round(summit_road[0] + 900.0, 1), 0.0, round(summit_road[1], 1)], "h": 12.0})
+    # the mountain's woods: a point 250 m north-west of the summit on no road; the mountain road half way up the drive
+    woods = ll(33.9785, -84.5835); places.append({"name": "the mountain's woods", "x": round(woods[0], 1), "z": round(woods[1], 1), "yaw": 135.0, "h": 40.0,
+                                                  "look": [round(woods[0] - 80, 1), 0.0, round(woods[1] + 80, 1), round(woods[0], 1), 0.0, round(woods[1], 1)]})
+    kmd = [p for r in M["roads"] if r["name"].startswith("Kennesaw Mountain Drive") for p in pts(r["points"])]
+    if kmd:
+        mid = kmd[len(kmd) // 2]; place("the mountain road", mid, 200.0, 30.0, 90.0)
+    jx = 720000.0 - ox
+    jbest = min(nodes, key=lambda k: abs(k[0] - jx) + 0.0 * k[1])
+    jroad = min((nodes[k] for k in nodes if abs(nodes[k][0] - jx) < 3), key=lambda p: abs(p[1] - 300.0), default=nodes[jbest])
+    place("the join at -84.619", jroad, 90.0, 120.0, 300.0)
+    json.dump({"places": places, "drives": drives}, open(OUT, "w", encoding="utf-8"), indent=1)
+    print(f"{len(places)} places, {len(drives)} drives -> {OUT}")

@@ -35,18 +35,25 @@ def log(msg):
     print(msg, flush=True)
 
 
-def extend(cfg, core_rect, core, core_h, core_meta, refresh):
-    ext = cfg["extension"]
+def extend(cfg, core_rect, core, core_h, core_meta, refresh, ext=None, prev_box=None, last=True):
+    """One stage of the extension. Round 61 (stage 2): 'ext' the stage's config ("extension", "extension2"); 'core_rect', 'core_h' and
+    'core_meta' the map so far (stage 1: the core; stage 2: the core with stage 1: its UTM rectangle, terrain grid and meta); 'prev_box'
+    that map's rectangle in the core's frame (x0, z0, x1, z1; stage 1: 0, 0 and the core's size). The new land is whole tiles west and
+    south of it; everything there is appended after what exists. 'last': this stage writes the terrain. Returns (grid, meta, UTM rect)."""
+    ext = ext or cfg["extension"]
+    stage = int(ext.get("stage", 1))
     kx, kz = int(ext["tiles_west"]), int(ext["tiles_south"])
     tw, td = core_meta["tile_w_m"], core_meta["tile_d_m"]
     cells = cfg["terrain"]["tile_resolution"] - 1
-    Wc, Hc = core["size_x_m"], core["size_z_m"]
-    ox, oz = kx * tw, kz * td                       # the core's south-west corner in the extension's own frame
+    px0, pz0, px1, pz1 = prev_box or (0.0, 0.0, core["size_x_m"], core["size_z_m"])
+    Wc, Hc = px1 - px0, pz1 - pz0                   # the map so far
+    ox, oz = kx * tw, kz * td                       # its south-west corner in this stage's own frame
+    gx0, gz0 = px0 - ox, pz0 - oz                   # this stage's frame origin in the core's frame (stage 1: -ox, -oz)
     cw0, cs0, ce0, cn0 = core_rect
     erect = (cw0 - ox, cs0 - oz, ce0, cn0)          # the whole map, UTM (its west and south edges fall between whole metres)
     We, He = ce0 - erect[0], cn0 - erect[1]
-    log(f"Extension (stage {ext.get('stage', 1)}): {kx} tiles west and {kz} south of the core ({tw:.2f} x {td:.2f} m tiles): "
-        f"the map is now {We:.0f} x {He:.0f} m, x {-ox:.1f} to {Wc:.0f}, z {-oz:.1f} to {Hc:.0f}")
+    log(f"Extension (stage {stage}): {kx} tiles west and {kz} south of the map so far ({tw:.2f} x {td:.2f} m tiles): "
+        f"the map is now {We:.0f} x {He:.0f} m, x {gx0:.2f} to {px1:.0f}, z {gz0:.2f} to {pz1:.0f}")
     tr = M.Transformer.from_crs(cfg["utm_epsg"], 4326, always_xy=True)
     sw, ne = tr.transform(erect[0], erect[1]), tr.transform(erect[2], erect[3])
     log(f"Extension: bounds south {sw[1]:.5f}, west {sw[0]:.5f}, north {ne[1]:.5f}, east {ne[0]:.5f}")
@@ -55,7 +62,7 @@ def extend(cfg, core_rect, core, core_h, core_meta, refresh):
         return ox <= p[0] <= ox + Wc and oz <= p[1] <= oz + Hc
 
     # ---- OSM for the whole map, kept to what lies outside the core
-    osm = fetch_osm_ext(cfg, refresh, erect)
+    osm = fetch_osm_ext(cfg, refresh, erect, stage)
     em = M.process_osm(cfg, osm, erect, owner_marker=False)
     out = lambda p: not in_core(p)
     roads = []
@@ -81,15 +88,22 @@ def extend(cfg, core_rect, core, core_h, core_meta, refresh):
     log(f"Extension: OSM outside the core: {len(em['roads'])} road pieces, {len(em['buildings'])} buildings, {len(em['water'])} water areas, "
         f"{len(em['streams'])} streams, {len(em['woods'])} woods, {len(em['driveways'])} OSM driveways, {len(em['parking'])} parking lots")
 
+    # Round 61 (stage 2, B): the airport's runways, taxiways and aprons (over the whole map: the runway runs on into stage 1's land) and the
+    # trails (named paths and tracks in the new land: Kennesaw Mountain's), for the map build; kept off by the new trees
+    air, trails = ([], []) if stage < 2 else aeroways_and_trails(cfg, osm, erect, We, He, in_core)
+    if stage >= 2:
+        log(f"Extension: {sum(1 for a in air if a['kind'] == 'runway')} runways, {sum(1 for a in air if a['kind'] == 'taxiway')} taxiways, "
+            f"{sum(1 for a in air if a['kind'] == 'apron')} aprons; {len(trails)} trail pieces ({sum(sum(math.dist(a, b) for a, b in zip(t['points'], t['points'][1:])) for t in trails):.0f} m)")
+
     # the core's things in the extension's frame (for levelling, driveways and trees near the seam)
     def sh(pts, dx, dz): return [(round(p[0] + dx, 2), round(p[1] + dz, 2)) for p in pts]
-    core_roads_e = [dict(r, points=sh(r["points"], ox, oz)) for r in core["roads"]]
-    core_bridges_e = [dict(b, points=sh(b["points"], ox, oz)) for b in core["bridges"]]
-    core_build_e = [dict(b, footprint=sh(b["footprint"], ox, oz)) for b in core["buildings"]]
+    core_roads_e = [dict(r, points=sh(r["points"], -gx0, -gz0)) for r in core["roads"]]
+    core_bridges_e = [dict(b, points=sh(b["points"], -gx0, -gz0)) for b in core["bridges"]]
+    core_build_e = [dict(b, footprint=sh(b["footprint"], -gx0, -gz0)) for b in core["buildings"]]
 
     # ---- the DEM and the terrain grid
     drect = (math.floor(erect[0]), math.floor(erect[1]), math.ceil(erect[2]), math.ceil(erect[3]))
-    dem_path = build_heightmap_ext(cfg, drect)
+    dem_path = build_heightmap_ext(cfg, drect, stage)
     with rasterio.open(dem_path) as src:
         dem = src.read(1)[::-1].astype(np.float32)   # row 0 = south
     nx, nz = core_meta["tiles_x"] + kx, core_meta["tiles_z"] + kz
@@ -146,40 +160,53 @@ def extend(cfg, core_rect, core, core_h, core_meta, refresh):
     log(f"Extension: the seam eased over {seam:g} m (the most a new sample moved to meet the core: {np.abs(delta).max():.2f} m)")
 
     lo, hi = float(h.min()) - 1.0, float(h.max()) + 1.0
-    norm = np.round((h - lo) / (hi - lo) * 65535).astype("<u2")
-    norm.tofile(os.path.join(M.GENERATED, "terrain_full.r16"))
     meta = dict(core_meta)
     meta.update({"grid_x": gx_n, "grid_z": gz_n, "tiles_x": nx, "tiles_z": nz, "size_x_m": We, "size_z_m": He,
-                 "origin_x_m": -ox, "origin_z_m": -oz, "min_height": lo, "max_height": hi, "core_tiles": [kx, kz, core_meta["tiles_x"], core_meta["tiles_z"]]})
-    with open(os.path.join(M.GENERATED, "terrain_full.json"), "w", encoding="utf-8") as f:
-        json.dump(meta, f, indent=1)
-    log(f"Extension: terrain {gx_n} x {gz_n} samples = {nx} x {nz} tiles, origin ({-ox:.2f}, {-oz:.2f}), heights {h.min():.2f}-{h.max():.2f} m "
-        f"(quantum {(hi - lo) / 65535 * 1000:.1f} mm) -> Assets/Generated/terrain_full.r16")
+                 "origin_x_m": gx0, "origin_z_m": gz0, "min_height": lo, "max_height": hi, "core_tiles": [kx, kz, core_meta["tiles_x"], core_meta["tiles_z"]]})
+    if stage > 1:   # Round 61: core_tiles stays stage 1's (the core's place in the grid moves by this stage's tiles: see stage<N>_tiles)
+        meta["core_tiles"] = core_meta.get("core_tiles"); meta[f"stage{stage}_tiles"] = [kx, kz, core_meta["tiles_x"], core_meta["tiles_z"]]
+    if last:
+        norm = np.round((h - lo) / (hi - lo) * 65535).astype("<u2")
+        norm.tofile(os.path.join(M.GENERATED, "terrain_full.r16"))
+        del norm
+        with open(os.path.join(M.GENERATED, "terrain_full.json"), "w", encoding="utf-8") as f:
+            json.dump(meta, f, indent=1)
+        log(f"Extension: terrain {gx_n} x {gz_n} samples = {nx} x {nz} tiles, origin ({gx0:.2f}, {gz0:.2f}), heights {h.min():.2f}-{h.max():.2f} m "
+            f"(quantum {(hi - lo) / 65535 * 1000:.1f} mm) -> Assets/Generated/terrain_full.r16")
 
     # ---- driveways for the new houses (to any road, the core's near the seam too)
     tmp = dict(em, roads=em["roads"] + core_roads_e, size_x_m=We, size_z_m=He)
     M.plan_driveways(cfg, tmp)
 
     # ---- trees outside the core, on the core's own cell grid
-    new_trees = plan_trees_ext(cfg, em, core_roads_e, core_bridges_e, core_build_e, erect, We, He, ox, oz, Wc, Hc)
+    keep_off = [{"points": a["points"], "width": a["width"]} for a in air if a["kind"] != "apron"] + [{"points": a["outline"] + a["outline"][:1], "width": 4.0} for a in air if a["kind"] == "apron"]         + [{"points": t["points"], "width": t["width"] + 1.0} for t in trails]
+    new_trees = plan_trees_ext(cfg, em, core_roads_e + keep_off, core_bridges_e, core_build_e, erect, We, He, gx0, gz0, (px0, pz0, px1, pz1), stage, (ox, oz))
 
     # ---- into the core's frame, appended after the core's own
-    for r in em["roads"]: r["points"] = sh(r["points"], -ox, -oz)
-    for b in em["bridges"]: b["points"] = sh(b["points"], -ox, -oz)
-    for b in em["buildings"]: b["footprint"] = sh(b["footprint"], -ox, -oz)
-    for w in em["water"]: w["outline"] = sh(w["outline"], -ox, -oz)
-    for w in em["woods"]: w["outline"] = sh(w["outline"], -ox, -oz)
-    for a in em["parking"]: a["outline"] = sh(a["outline"], -ox, -oz)
-    for st in em["streams"]: st["points"] = sh(st["points"], -ox, -oz)
-    for d in em["driveways"]: d["points"] = sh(d["points"], -ox, -oz)
+    for r in em["roads"]: r["points"] = sh(r["points"], gx0, gz0)
+    for b in em["bridges"]: b["points"] = sh(b["points"], gx0, gz0)
+    for b in em["buildings"]: b["footprint"] = sh(b["footprint"], gx0, gz0)
+    for w in em["water"]: w["outline"] = sh(w["outline"], gx0, gz0)
+    for w in em["woods"]: w["outline"] = sh(w["outline"], gx0, gz0)
+    for a in em["parking"]: a["outline"] = sh(a["outline"], gx0, gz0)
+    for st in em["streams"]: st["points"] = sh(st["points"], gx0, gz0)
+    for d in em["driveways"]: d["points"] = sh(d["points"], gx0, gz0)
+    if stage >= 2:
+        for a in air:
+            if "points" in a: a["points"] = sh(a["points"], gx0, gz0)
+            if "outline" in a: a["outline"] = sh(a["outline"], gx0, gz0)
+        for t in trails: t["points"] = sh(t["points"], gx0, gz0)
+        core["aeroways"] = core.get("aeroways", []) + air
+        core["trails"] = core.get("trails", []) + trails
     n0 = {key: len(core[key]) for key in ("roads", "bridges", "buildings", "water", "streams", "woods", "driveways", "parking")}
     n_first = dict(n0, streams=sum(1 for s_ in core["streams"] if not s_["tunnel"]))   # as map.json lists them (tunnels are left out of it)
     for key in n0: core[key] = core[key] + em[key]
-    core["extent_m"] = [round(-ox, 3), round(-oz, 3), Wc, Hc]
-    core["extension"] = {"stage": ext.get("stage", 1), "name": ext.get("name", ""), "first": n_first,
+    core["extent_m"] = [round(gx0, 3), round(gz0, 3), px1, pz1]
+    core["extension" if stage == 1 else f"extension{stage}"] = {"stage": stage, "name": ext.get("name", ""), "first": n_first,
                          "bounds": {"south": round(sw[1], 6), "west": round(sw[0], 6), "north": round(ne[1], 6), "east": round(ne[0], 6)}}
     append_trees(new_trees)
     log(f"Extension: appended {', '.join(f'{len(core[key]) - n0[key]} {key}' for key in n0)}; {len(new_trees[0])} trees")
+    return h, meta, erect
 
 
 def near_box(pts, ox, oz, W, H, m):
@@ -213,10 +240,10 @@ def join_bridges(core_b, new_b, tol=0.6, ease=20.0):
     return joined
 
 
-def fetch_osm_ext(cfg, refresh, rect):
+def fetch_osm_ext(cfg, refresh, rect, stage=1):
     south, west, north, east = M.osm_bbox(cfg, rect)
     key = f'{south:.5f},{west:.5f},{north:.5f},{east:.5f}'
-    path = os.path.join(M.RAW, "osm_ext1.json")
+    path = os.path.join(M.RAW, f"osm_ext{stage}.json")
     if os.path.exists(path) and not refresh:
         with open(path, encoding="utf-8") as f:
             data = json.load(f)
@@ -241,7 +268,7 @@ def fetch_osm_ext(cfg, refresh, rect):
     return data
 
 
-def build_heightmap_ext(cfg, rect):
+def build_heightmap_ext(cfg, rect, stage=1):
     srcs = [rasterio.open(p) for p in M.tile_paths(cfg)]
     w, s, e, n = rect
     arr, transform = M.merge(srcs, bounds=(w, s, e, n), res=1.0, nodata=-999999.0)
@@ -249,7 +276,8 @@ def build_heightmap_ext(cfg, rect):
     missing = int((arr <= -9999).sum())
     if missing:
         raise SystemExit(f"Extension DEM: {missing} cells have no data - add the neighbouring tile to config.json")
-    out = os.path.join(M.DATA, "heightmap_ext_1m.tif")
+    # Round 61: stage 2's crop (a couple of hundred MB) is too big for the repository: it stays in raw/ (made again from the tiles)
+    out = os.path.join(M.DATA, "heightmap_ext_1m.tif") if stage == 1 else os.path.join(M.RAW, f"heightmap_ext{stage}_1m.tif")
     profile = dict(driver="GTiff", height=arr.shape[0], width=arr.shape[1], count=1, dtype="float32", crs=srcs[0].crs, transform=transform,
                    compress="deflate", predictor=3, nodata=-999999.0)
     with rasterio.open(out, "w", **profile) as dst:
@@ -259,7 +287,7 @@ def build_heightmap_ext(cfg, rect):
     return out
 
 
-def fetch_naip_ext(cfg, rect, W, H):
+def fetch_naip_ext(cfg, rect, W, H, stage=1, inner=None):
     """NAIP for the whole map in pieces under the service's size limit (cached in raw/naip_ext1_*.tif), mosaicked; (4, H, W), row 0 = north.
     A piece the service keeps timing out on is asked for in four smaller ones (twice over); what still cannot be had is left at 0
     (plan_trees_ext uses mapgen's rule there instead of the imagery)."""
@@ -271,7 +299,9 @@ def fetch_naip_ext(cfg, rect, W, H):
 
     def get(x0, x1, r0, r1, name, depth):
         bw, be, bn, bs = w + x0, w + x1, n - r0, n - r1
-        path = os.path.join(M.RAW, f"naip_ext1_{name}.tif"); key = f"{bw},{bs},{be},{bn}"; keypath = path + ".key"
+        if inner is not None and x0 >= inner[0] and H - r1 >= inner[1]:   # Round 61: a piece well inside the map so far (it keeps its own trees)
+            return
+        path = os.path.join(M.RAW, f"naip_ext{stage}_{name}.tif"); key = f"{bw},{bs},{be},{bn}"; keypath = path + ".key"
         if not (os.path.exists(path) and os.path.exists(keypath) and open(keypath).read() == key):
             q = urllib.parse.urlencode({"bbox": key, "bboxSR": cfg["utm_epsg"], "imageSR": cfg["utm_epsg"], "size": f"{x1 - x0},{r1 - r0}",
                                         "format": "tiff", "pixelType": "U8", "interpolation": "RSP_NearestNeighbor", "f": "image"})
@@ -306,9 +336,10 @@ def fetch_naip_ext(cfg, rect, W, H):
     return img, missing
 
 
-def plan_trees_ext(cfg, em, core_roads_e, core_bridges_e, core_build_e, erect, We, He, ox, oz, Wc, Hc):
+def plan_trees_ext(cfg, em, core_roads_e, core_bridges_e, core_build_e, erect, We, He, gx0, gz0, prev_box, stage=1, prev_at=None):
     """mapgen.plan_trees' rule on the whole map, on the core's own cell grid (a cell's place and seed are those it would have had), kept
-    outside the core. Returns arrays (x, z, seed, kind, depth) in the core's frame."""
+    outside the map so far ('prev_box', the core's frame; this stage's frame starts at gx0, gz0 there; 'prev_at' where that map's
+    south-west corner is in this stage's frame). Returns arrays (x, z, seed, kind, depth) in the core's frame."""
     tc = cfg["trees"]
     md = dict(em, roads=em["roads"] + core_roads_e, bridges=em["bridges"] + core_bridges_e, buildings=em["buildings"] + core_build_e,
               size_x_m=We, size_z_m=He)
@@ -316,7 +347,7 @@ def plan_trees_ext(cfg, em, core_roads_e, core_bridges_e, core_build_e, erect, W
     masks = M.keep_off_masks(cfg, md)
     blocked = masks["roads"] | masks["buildings"] | masks["water"] | masks["driveways"]
     near_bld = ndi.distance_transform_edt(~masks["buildings"])
-    naip, missing = fetch_naip_ext(cfg, erect, W, H)
+    naip, missing = fetch_naip_ext(cfg, erect, W, H, stage, None if stage == 1 else (prev_at[0] + 150.0, prev_at[1] + 150.0))
     canopy = M.canopy_from_naip(cfg, naip)
     if missing:   # mapgen's rule where the imagery could not be had: woods more than rule_forest_distance_m from any road or building
         far = ndi.distance_transform_edt(~(masks["buildings"] | masks["roads"])) > tc["rule_forest_distance_m"]
@@ -324,17 +355,18 @@ def plan_trees_ext(cfg, em, core_roads_e, core_bridges_e, core_build_e, erect, W
         log(f"Extension: {len(missing)} imagery pieces could not be had: the rule there")
     depth = ndi.distance_transform_edt(canopy)
     S = tc["cell_m"]
-    i_lo, i_hi = int(math.floor(-ox / S)) - 1, int(math.ceil(Wc / S)) + 1
-    j_lo, j_hi = int(math.floor(-oz / S)) - 1, int(math.ceil(Hc / S)) + 1
+    px0, pz0, px1, pz1 = prev_box
+    i_lo, i_hi = int(math.floor(gx0 / S)) - 1, int(math.ceil((gx0 + We) / S)) + 1
+    j_lo, j_hi = int(math.floor(gz0 / S)) - 1, int(math.ceil((gz0 + He) / S)) + 1
     ii, jj = np.meshgrid(np.arange(i_lo, i_hi), np.arange(j_lo, j_hi), indexing="ij")
     u = 0.12 + 0.76 * M.hash01(ii, jj, 1)
     v = 0.12 + 0.76 * M.hash01(ii, jj, 2)
     xc, zc = (ii + u) * S, (jj + v) * S                       # the core's frame
-    x, z = xc + ox, zc + oz                                   # the extension's
+    x, z = xc - gx0, zc - gz0                                 # the extension's
     c = np.clip(x.astype(int), 0, W - 1)
     r = np.clip((H - z).astype(int), 0, H - 1)
     ok = (x < W - 2) & (z < H - 2) & (x > 2) & (z > 2)
-    ok &= ~((xc >= 0) & (xc <= Wc) & (zc >= 0) & (zc <= Hc))   # the core's trees are the core's
+    ok &= ~((xc >= px0) & (xc <= px1) & (zc >= pz0) & (zc <= pz1))   # the map so far keeps its own trees
     ok &= canopy[r, c] & ~blocked[r, c]
     yard = near_bld[r, c] < tc["yard_distance_m"]
     ok &= ~yard | (M.hash01(ii, jj, 3) < tc["yard_keep"])
@@ -360,3 +392,39 @@ def append_trees(t):
         f.write(data[8:])
         f.write(rec.tobytes())
     log(f"Extension: trees.bin {n} core trees + {len(rec)} new = {n + len(rec)}")
+
+
+def aeroways_and_trails(cfg, osm, rect, W, H, in_core):
+    """Round 61 (B): from the stage's OSM, in its frame: aeroway runways and taxiways (lines, OSM's width or 30 / 15 m) and aprons
+    (outlines) anywhere on the map; named trails (highway path / footway / bridleway / track with "Trail" or "Trace" in the name) outside
+    the map so far, at their real width (OSM's, or 1.5 m, a track 3 m)."""
+    tr = M.Transformer.from_crs(4326, cfg["utm_epsg"], always_xy=True)
+    w0, s0 = rect[0], rect[1]
+    nodes = {}
+    for el in osm["elements"]:
+        if el["type"] == "node":
+            x, y = tr.transform(el["lon"], el["lat"])
+            nodes[el["id"]] = (round(x - w0, 2), round(y - s0, 2))
+    inside = lambda p: -1e-6 <= p[0] <= W + 1e-6 and -1e-6 <= p[1] <= H + 1e-6
+
+    def width(t, d):
+        try: return float(str(t.get("width", "")).replace("m", "").strip())
+        except ValueError: return d
+    air, trails = [], []
+    for el in osm["elements"]:
+        if el["type"] != "way": continue
+        t = el.get("tags", {}); pts = [nodes[n] for n in el["nodes"] if n in nodes]
+        if len(pts) < 2: continue
+        aw, hw, name = t.get("aeroway"), t.get("highway"), t.get("name", "")
+        if aw in ("runway", "taxiway"):
+            for run, _ in M.clip_runs(pts, list(range(len(pts))), inside):
+                if len(run) >= 2: air.append({"kind": aw, "name": name or t.get("ref", ""), "width": width(t, 30.0 if aw == "runway" else 15.0), "points": run, "osm_id": el["id"]})
+        elif aw == "apron" and el["nodes"][0] == el["nodes"][-1] and len(pts) >= 4 and all(inside(p) for p in pts):
+            ring = pts[:-1]
+            air.append({"kind": "apron", "name": name, "outline": ring if M.poly_area(ring) > 0 else ring[::-1], "osm_id": el["id"]})
+        elif hw in ("path", "footway", "bridleway", "track") and ("Trail" in name or "Trace" in name):
+            for run, _ in M.clip_runs(pts, list(range(len(pts))), lambda p: inside(p) and not in_core(p)):
+                if len(run) >= 2 and sum(math.dist(a, b) for a, b in zip(run, run[1:])) > 3.0:
+                    trails.append({"name": name, "kind": hw, "width": width(t, 3.0 if hw == "track" else 1.5), "points": run, "osm_id": el["id"]})
+    air.sort(key=lambda a: (a["kind"], a["osm_id"])); trails.sort(key=lambda a: (a["osm_id"], a["points"][0]))
+    return air, trails

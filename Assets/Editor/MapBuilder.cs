@@ -35,7 +35,9 @@ namespace ChastainRush
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
         [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
-        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; }
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; public MapExt extension; public Aeroway[] aeroways; public TrailLine[] trails; }   // Round 61: aeroways, trails (MapBuilder.Airport.cs)
+        // Round 61: map.json's "extension" (stage 1): where each list's new entries start (first.roads: the first road of the map extension)
+        [Serializable] class MapExt { public MapExtFirst first; } [Serializable] class MapExtFirst { public int roads, bridges, buildings; }
         // Round 59: the whole map's rectangle (x0, z0, x1, z1): map.json's extent_m (the extension reaches to negative x / z), else 0..size
         static Rect MapExtent(MapData m) => m.extent_m != null && m.extent_m.Length == 4 ? Rect.MinMaxRect(m.extent_m[0], m.extent_m[1], m.extent_m[2], m.extent_m[3]) : new Rect(0f, 0f, m.size_x_m, m.size_z_m);
         [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; public float origin_x_m, origin_z_m; }
@@ -132,12 +134,15 @@ namespace ChastainRush
             SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
             SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
             BuildClock.Lap("SmoothRampSeams");
+            R61LevelMains(map, terrain);         // Round 61 (D): the map extension's main roads levelled across their width, blurred along (MapBuilder.Round61.cs)
+            BuildClock.Lap("R61LevelMains");
             var shop = c.shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
             Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
             if (Park != null) GradeStuntPark(map, terrain, Park);
             Mall = PlanMall(map, terrain);   // Round 60 (A): Town Center, its doors' aprons graded (MapBuilder.Mall.cs)
+            Airport = PlanAirport(map, terrain);   // Round 61 (B): the airport's runways, taxiways and aprons, Kennesaw Mountain's trails graded (MapBuilder.Airport.cs)
             BuildClock.Lap("StuntPark plan");
             c.world = quick ? c.scene.GetRootGameObjects().First(g => g.name == "World").transform : new GameObject("World").transform;
             c.paint = new Chunks();

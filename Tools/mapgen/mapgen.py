@@ -443,6 +443,10 @@ def flat_for_unity(mapdata):
     out["woods"] = [dict(w, outline=flat(w["outline"])) for w in mapdata["woods"]]
     out["driveways"] = [dict(d, points=flat(d["points"])) for d in mapdata["driveways"]]
     out["parking"] = [dict(a, outline=flat(a["outline"])) for a in mapdata.get("parking", [])]
+    if "aeroways" in mapdata:   # Round 61: the map extension's airport and trails (mapgen_extend.aeroways_and_trails)
+        out["aeroways"] = [dict(a, **({"points": flat(a["points"])} if "points" in a else {}), **({"outline": flat(a["outline"])} if "outline" in a else {})) for a in mapdata["aeroways"]]
+    if "trails" in mapdata:
+        out["trails"] = [dict(t, points=flat(t["points"])) for t in mapdata["trails"]]
     return out
 
 
@@ -1412,7 +1416,10 @@ def main():
     plan_trees(cfg, mapdata, rect)
     if cfg.get("extension"):   # Round 59: the map extension (Tools/mapgen/mapgen_extend.py): new land appended, the core as it was
         import mapgen_extend
-        mapgen_extend.extend(cfg, rect, mapdata, core_h, core_meta, args.refresh_osm)
+        ext2 = cfg.get("extension2")   # Round 61: stage 2 appended after stage 1 as stage 1 was after the core
+        h1, meta1, rect1 = mapgen_extend.extend(cfg, rect, mapdata, core_h, core_meta, args.refresh_osm, last=not ext2)
+        if ext2:
+            mapgen_extend.extend(cfg, rect1, mapdata, h1, meta1, args.refresh_osm, ext=ext2, prev_box=tuple(mapdata["extent_m"]), last=True)
     write_map(mapdata)
     log("Done. In Unity: Chastain Rush > Build Map (or run the batch build).")
 
