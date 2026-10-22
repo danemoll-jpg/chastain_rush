@@ -95,9 +95,19 @@ namespace ChastainRush
             var dir = new Vector3(tx[i] - body.position.x, 0f, tz[i] - body.position.z);
             if (speed > 1f) dir = Vector3.Lerp(dir.normalized, new Vector3(v.x, 0f, v.z) / speed, 0.6f);
             FallingTree.Spawn(field, i, dir);
+            SnappedTree?.Invoke(i, dir);   // Round 57 (F): the replay
             BreakSounds.Play(new Vector3(tx[i], ty[i] + 1f, tz[i]), Mathf.Max(6f, speed), BreakSounds.Kind.Wood);
             body.linearVelocity = new Vector3(v.x * (1f - SnapSpeedCost), v.y, v.z * (1f - SnapSpeedCost));
             SnappedBy?.Invoke(car, new Vector3(tx[i], ty[i], tz[i]));
+        }
+
+        // Round 57 (F): a tree snapped (its index, the way it fell); a race replay snaps it again at its moment (quiet: hidden, no fall, no sound)
+        public static event System.Action<int, Vector3> SnappedTree;
+        public void ReplaySnap(int i, Vector3 dir, bool show)
+        {
+            if (i < 0 || i >= broken.Length || broken[i]) return;
+            broken[i] = true; field.SetHidden(i, true);
+            if (show) { FallingTree.Spawn(field, i, dir); BreakSounds.Play(new Vector3(tx[i], ty[i] + 1f, tz[i]), 12f, BreakSounds.Kind.Wood); }
         }
 
         // Round 15 (item 9): the AI drivers' cars get trunk colliders round them too: a pool of ExtraPool each, ExtraRadius

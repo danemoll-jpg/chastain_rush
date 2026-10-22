@@ -92,7 +92,7 @@ namespace ChastainRush
         bool CanOpen()
         {
             var hud = DeveloperHud.Instance;
-            if (GameMenus.Open || (hud && (hud.MenuOpen || hud.CommentOpen || hud.Capturing))) return false;
+            if (GameMenus.Open || ReplayViewer.Active || (hud && (hud.MenuOpen || hud.CommentOpen || hud.Capturing))) return false;   // Round 57 (F)
             return car && picture != null || Resources.Load<Texture2D>("WorldMapPicture") != null;
         }
 

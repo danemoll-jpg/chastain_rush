@@ -135,6 +135,7 @@ namespace ChastainRush
         public string BoardCategory => Route != null ? RecordBoards.Category(Route.RecordName, RecordDirection, Route.Laps) : "";
         // Round 35 (Part C): Racer's WeatherGrip.RecordTag: a race in rain or snow (with the grip setting On) keeps its times apart ("forward-rain")
         string RecordDirection => Route.Direction + Racer.WeatherGrip.RecordTag(Racer.WeatherGrip.ChosenFor());
+        public string RecordDirectionTag => RecordDirection;   // Round 57 (F): a replay's direction as the records key it
         public readonly FinishPresentation FinishCards = new FinishPresentation();
         string attempt = ""; readonly List<int> lapRanks = new List<int>();
         public int LastLapRank { get; private set; }
@@ -179,6 +180,7 @@ namespace ChastainRush
             P.Car = car; P.Box = carBox;
             if (respawn) respawn.Respawned += OnRespawned;
             Ghost = gameObject.AddComponent<CleanLapGhost>(); Ghost.Initialize(this, Path.GetDirectoryName(RecordsPath()));   // Round 43 (B1)
+            gameObject.AddComponent<ReplayRecorder>();   // Round 57 (F): every race recorded
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
@@ -206,6 +208,20 @@ namespace ChastainRush
             return list;
         }
         public string CurrentFile { get; private set; }
+        string currentJson;
+        // Round 57 (F): the embedded route file's text (the replay keeps its hash: a course changed since is said on the REPLAYS page), and the course
+        // made from it (the race's barriers round a replay watched from the page)
+        public string RouteJsonOf(string file)
+        {
+            if (routeFileNames == null || routeFileNames.Length == 0) return file == routeFileName ? embeddedRouteJson : null;
+            int k = Array.IndexOf(routeFileNames, file); return k >= 0 ? embeddedRouteJsons[k] : null;
+        }
+        public string RouteHashOf(string file) { var j = RouteJsonOf(file); return j == null ? "" : ReplayData.Hash(j); }
+        public RaceRoute RouteFor(string file, string direction)
+        {
+            var j = RouteJsonOf(file); if (string.IsNullOrEmpty(j)) return null;
+            try { var d = JsonUtility.FromJson<RouteJson>(j); return RaceRoute.Create(d, d.Allows(direction) ? direction : d.direction); } catch (Exception) { return null; }
+        }
 
         void LoadRoute()
         {
@@ -215,7 +231,7 @@ namespace ChastainRush
                 int k = Mathf.Max(0, Array.IndexOf(routeFileNames, RouteOverride));
                 file = routeFileNames[k]; json = embeddedRouteJsons[k];
             }
-            CurrentFile = file;
+            CurrentFile = file; currentJson = json;
 #if UNITY_EDITOR
             string path = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "Data", "routes", file));
             if (File.Exists(path)) json = File.ReadAllText(path);
@@ -267,6 +283,7 @@ namespace ChastainRush
             Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts"
                 + (barriers.Seals + barriers.Rails + barriers.Gates.Count > 0 ? $", {barriers.Seals} seals, {barriers.Rails} railings, {barriers.Gates.Count} switch gates" : ""));
             markers.Refresh(this);
+            GetComponent<ReplayRecorder>()?.Begin(CurrentFile, currentJson, BoardCategory);   // Round 57 (F)
         }
 
         // Round 18: the race setup menu changed the route (free roam only): load it so the menu shows its name and length
@@ -553,6 +570,7 @@ namespace ChastainRush
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
             if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, true, e.CompletedLaps >= Route.Laps, e.Missed.Count == 0 && !NoRecords);   // Round 43 (B1)
+            GetComponent<ReplayRecorder>()?.Lap(e, lapNo, at - raw, at, e.IsPlayer && lapRanks.Count > 0 ? lapRanks[lapRanks.Count - 1] : 0);   // Round 57 (F): a new #1 lap keeps its replay
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
             e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false;
             if (e.IsPlayer) markers.Refresh(this);
@@ -585,7 +603,7 @@ namespace ChastainRush
                 Log(e, $"TOP 10: race {(e.RaceRank > 0 ? "#" + e.RaceRank : "not on the board")}");
                 SayTo(e, $"Finished! Total {Fmt(e.FinalTotal)}", 10f);
             }
-            if (!e.IsPlayer) return;
+            if (!e.IsPlayer) { GetComponent<ReplayRecorder>()?.Finished(e, 0); return; }
             State = Stage.Finished; PlayerFinishedAt = RaceClock;
             float total = e.FinalTotal;
             bool bestTotal = !NoRecords && (BestTotal <= 0f || total < BestTotal);
@@ -593,6 +611,7 @@ namespace ChastainRush
             if (!NoRecords) SaveRecords();
             RaceRank = NoRecords ? 0 : Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 34 (C1, C2)
             FinishCards.Finish(e.LapTimes, lapRanks.ToArray(), attempt, total, RaceRank);
+            GetComponent<ReplayRecorder>()?.Finished(e, RaceRank);   // Round 57 (F): a new #1 race keeps its replay
             Log($"TOP 10: race {(RaceRank > 0 ? "#" + RaceRank : "not on the board")}, laps {string.Join(" ", lapRanks.ConvertAll(x => x > 0 ? "#" + x : "-"))}");
             SayTo(e, $"Finished! Total {Fmt(total)}", 10f);
             markers.Refresh(this);

@@ -57,7 +57,7 @@ namespace ChastainRush
             report.AppendLine(); report.AppendLine("=== B. COMPLETE RACE pressed (Addison Heights, 1 lap, 3 AI): the pad's A, then the keyboard's Space");
             InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
             if (pad == null) pad = InputSystem.AddDevice<Gamepad>("Round57 virtual pad");
-            var menus = GameMenus.Create(); yield return new WaitForSecondsRealtime(1.5f); if (menus) menus.CloseForCheck();
+            yield return R57Menus(); var menus = r57menus;   // one menu object for the whole run (made again with traffic about, it can take a traffic car for the player's)
             foreach (var how in new[] { "pad A", "keyboard Space" })
             {
                 yield return StartRoute("addison_heights.json", "forward", 3, 1);
@@ -85,7 +85,6 @@ namespace ChastainRush
                 yield return Capture("57_B_after_" + (how == "pad A" ? "pad" : "space"));
                 race.EndRace(); RaceController.DirectionOverride = null; RaceController.LapsOverride = 0;
             }
-            if (menus) Destroy(menus.gameObject);
         }
 
         // ------------------------------------------------------------ C: M5c both ways, every vehicle
@@ -97,15 +96,23 @@ namespace ChastainRush
             float s0 = AbsStation(M57Spot);
             var line = LapSlice(s0 - 70f, s0 + 70f, 1f);
             report.AppendLine($"  the line: from ({line[0].x:0}, {line[0].y:0.0}, {line[0].z:0}) to ({line[line.Count - 1].x:0}, {line[line.Count - 1].y:0.0}, {line[line.Count - 1].z:0}), {line.Count} points");
-            foreach (var vid in VehicleProfile.All.Select(v => v.Id))
+            var only = System.Environment.GetCommandLineArgs().SkipWhile(x => x != "-r57Vehicles").Skip(1).FirstOrDefault()?.Split(',');
+            foreach (var vid in VehicleProfile.All.Select(v => v.Id).Where(v => only == null || only.Contains(v)))
                 foreach (var back in new[] { false, true })
                 {
                     var l = back ? Enumerable.Reverse(line).ToList() : line;
                     yield return Vehicle(vid);
                     Place(l[0], l[2] - l[0], 15f); yield return new WaitForFixedUpdate();
-                    var run = new Run();
-                    yield return DriveLine(l, 40f, 25f, run, M57Spot);
-                    report.AppendLine($"  {Nm(vid),-16} {(back ? "J14 to J15 (against the race)" : "J15 to J14 (the race's way)")}: {(run.reached ? $"through in {run.time:0.0} s" : "NOT through (" + run.end + $") at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0})")}, at Dan's spot {run.speedAt:0.0} m/s, slowest {run.minSpeed:0.0} m/s");
+                    var run = new Run(); float tt = 0f, slow = 99f; Vector3 slowAt = Vector3.zero; string touch = "";
+                    var ct = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); ct.Take();
+                    yield return DriveLine(l, 40f, 25f, run, M57Spot, r =>
+                    {
+                        tt += Time.fixedDeltaTime; float v = Flat(car.Body.linearVelocity).magnitude;
+                        if (tt > 0.5f && v < slow) { slow = v; slowAt = car.Body.position; }
+                        var st = ct.Take(); if (st.Length > 0 && touch.Length < 600) touch += $"[{tt:0.00} s {v:0.0} m/s] " + st;
+                        return false;
+                    });
+                    report.AppendLine($"  {Nm(vid),-16} {(back ? "J14 to J15 (against the race)" : "J15 to J14 (the race's way)")}: {(run.reached ? $"through in {run.time:0.0} s" : "NOT through (" + run.end + $") at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0})")}, at Dan's spot {run.speedAt:0.0} m/s, slowest {run.minSpeed:0.0} m/s at ({slowAt.x:0.0}, {slowAt.y:0.0}, {slowAt.z:0.0}); body contacts: {(touch.Length > 0 ? touch : "none")}");
                     Check($"C M5c {(back ? "back" : "the race's way")} {Nm(vid)}: through, never stopped", run.reached && run.minSpeed > 3f, $"{run.end}, slowest {run.minSpeed:0.0} m/s");
                 }
             race.EndRace();
@@ -164,7 +171,7 @@ namespace ChastainRush
                             yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
                             car.Simulate(1f, 0f, 0f, Time.fixedDeltaTime);
                             var p = car.Body.position;
-                            if (Vector3.Dot(p - at, n) > 0.6f) through = true;
+                            if (p.x > 1861.6f && p.z > 1126.6f) through = true;   // past the west edge (R1, SG1) or the south edge (R2): over the drop (the ledge runs on east along z 1117 to 1126)
                             if (p.y < Y - 1.5f) fell = true;
                         }
                         car.enabled = true;

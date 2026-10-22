@@ -35,11 +35,14 @@ namespace Racer
         public int GroundedWheels { get; private set; }
         public float SuspensionLift { get; private set; }
         public float AlignmentTorque { get; private set; }
-        public float ForwardSpeed => Vector3.Dot(Body.linearVelocity, transform.forward);
+        public float ForwardSpeed => Puppet ? PuppetSpeed : Vector3.Dot(Body.linearVelocity, transform.forward);
+        // Chastain Rush, Round 57 (F): a race replay's puppet (ReplayViewer): kinematic, its speed and steering from the recording, so the wheels,
+        // the front end, the lean, the rider's arms and its engine follow them
+        [System.NonSerialized] public bool Puppet; [System.NonSerialized] public float PuppetSpeed, PuppetSteer;
         public Rigidbody Body { get; private set; }
         VehicleInput input;
         float steer;
-        public float VisualSteering => steer;
+        public float VisualSteering => Puppet ? PuppetSteer : steer;
         public float WaterImmersion { get; private set; }
         public float GripScale { get; private set; } = 1; // 0.97 Part B: the weather's multiplier on the tyres' grip under this vehicle (1 = dry). Chastain Rush, Round 35 (Part C)
         public float WaterSurface { get; private set; }

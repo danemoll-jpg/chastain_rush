@@ -1,0 +1,162 @@
+Round 57 check, 2026-10-21 22:06, the exe, 1280 x 720, muted.
+
+=== A. Embry Lane onto Suholden Circle (Dan's BUG-001 at x 3279.17 z 308.15): flat out on the lap's line, both ways
+  forward (down Embry, right onto Suholden), Drifter Twin     fastest pitch 12 deg/s at (3265.4, 298.2) at 20.3 m/s; fastest roll 14 deg/s; the biggest step in vertical speed 0.13 m/s at (3263.9, 298.9); fewest wheels down 4; through
+PASS  A forward (down Embry, right onto Suholden) Drifter Twin: rides through flat (all wheels down, no jolt over 1 m/s in a step)  -  wheels 4, step 0.13 m/s, pitch 12 deg/s
+  forward (down Embry, right onto Suholden), Street Classic   fastest pitch 14 deg/s at (3266.6, 297.9) at 18.1 m/s; fastest roll 14 deg/s; the biggest step in vertical speed 0.12 m/s at (3265.0, 298.8); fewest wheels down 4; through
+PASS  A forward (down Embry, right onto Suholden) Street Classic: rides through flat (all wheels down, no jolt over 1 m/s in a step)  -  wheels 4, step 0.12 m/s, pitch 14 deg/s
+  reverse (Suholden, left up Embry), Drifter Twin     fastest pitch 7 deg/s at (3267.2, 302.8) at 22.7 m/s; fastest roll 5 deg/s; the biggest step in vertical speed 0.10 m/s at (3267.2, 302.8); fewest wheels down 4; through
+PASS  A reverse (Suholden, left up Embry) Drifter Twin: rides through flat (all wheels down, no jolt over 1 m/s in a step)  -  wheels 4, step 0.10 m/s, pitch 7 deg/s
+  reverse (Suholden, left up Embry), Street Classic   fastest pitch 8 deg/s at (3265.9, 302.8) at 22.3 m/s; fastest roll 7 deg/s; the biggest step in vertical speed 0.09 m/s at (3266.8, 302.8); fewest wheels down 4; through
+PASS  A reverse (Suholden, left up Embry) Street Classic: rides through flat (all wheels down, no jolt over 1 m/s in a step)  -  wheels 4, step 0.09 m/s, pitch 8 deg/s
+
+=== B. COMPLETE RACE pressed (Addison Heights, 1 lap, 3 AI): the pad's A, then the keyboard's Space
+PASS  B (pad A): the player has finished, the AI racing, the button shows  -  finished True, can True, button True
+PASS  B (pad A): pressed, every AI is classified (estimated), the button gone  -  EMBER 1:21.083 (estimated); GOLD 1:26.148 (estimated); BLUE 1:11.494 (estimated)
+PASS  B (keyboard Space): the player has finished, the AI racing, the button shows  -  finished True, can True, button True
+PASS  B (keyboard Space): pressed, every AI is classified (estimated), the button gone  -  EMBER 1:30.584 (estimated); GOLD 1:29.007 (estimated); BLUE 1:30.881 (estimated)
+
+=== C. M5c (Dan's BUG-003 / BUG-004 at x 1642.07 z 950.60): the race's line from 70 m before his spot to 70 m past it, flat out, both ways, every vehicle
+  the line: from (1648, 273.5, 886) to (1623, 274.2, 998), 141 points
+  Street Classic   J15 to J14 (the race's way): through in 6.5 s, at Dan's spot 30.0 m/s, slowest 16.5 m/s
+PASS  C M5c the race's way Street Classic: through, never stopped  -  , slowest 16.5 m/s
+  Street Classic   J14 to J15 (against the race): through in 6.4 s, at Dan's spot 28.2 m/s, slowest 16.6 m/s
+PASS  C M5c back Street Classic: through, never stopped  -  , slowest 16.6 m/s
+  Longroof GT      J15 to J14 (the race's way): through in 6.6 s, at Dan's spot 29.5 m/s, slowest 16.3 m/s
+PASS  C M5c the race's way Longroof GT: through, never stopped  -  , slowest 16.3 m/s
+  Longroof GT      J14 to J15 (against the race): through in 6.5 s, at Dan's spot 28.1 m/s, slowest 16.2 m/s
+PASS  C M5c back Longroof GT: through, never stopped  -  , slowest 16.2 m/s
+  Needle 600       J15 to J14 (the race's way): through in 5.8 s, at Dan's spot 33.9 m/s, slowest 18.7 m/s
+PASS  C M5c the race's way Needle 600: through, never stopped  -  , slowest 18.7 m/s
+  Needle 600       J14 to J15 (against the race): through in 5.7 s, at Dan's spot 32.3 m/s, slowest 18.7 m/s
+PASS  C M5c back Needle 600: through, never stopped  -  , slowest 18.7 m/s
+  Trail Four       J15 to J14 (the race's way): through in 6.0 s, at Dan's spot 32.9 m/s, slowest 18.1 m/s
+PASS  C M5c the race's way Trail Four: through, never stopped  -  , slowest 18.1 m/s
+  Trail Four       J14 to J15 (against the race): through in 6.1 s, at Dan's spot 30.1 m/s, slowest 18.1 m/s
+PASS  C M5c back Trail Four: through, never stopped  -  , slowest 18.1 m/s
+  Sundown Roadster J15 to J14 (the race's way): through in 6.4 s, at Dan's spot 30.7 m/s, slowest 16.9 m/s
+PASS  C M5c the race's way Sundown Roadster: through, never stopped  -  , slowest 16.9 m/s
+  Sundown Roadster J14 to J15 (against the race): through in 6.3 s, at Dan's spot 28.6 m/s, slowest 16.9 m/s
+PASS  C M5c back Sundown Roadster: through, never stopped  -  , slowest 16.9 m/s
+  Highball Fastback J15 to J14 (the race's way): through in 6.5 s, at Dan's spot 30.7 m/s, slowest 16.3 m/s
+PASS  C M5c the race's way Highball Fastback: through, never stopped  -  , slowest 16.3 m/s
+  Highball Fastback J14 to J15 (against the race): through in 6.4 s, at Dan's spot 29.1 m/s, slowest 16.2 m/s
+PASS  C M5c back Highball Fastback: through, never stopped  -  , slowest 16.2 m/s
+  Pebble Coupe     J15 to J14 (the race's way): through in 6.3 s, at Dan's spot 30.6 m/s, slowest 17.4 m/s
+PASS  C M5c the race's way Pebble Coupe: through, never stopped  -  , slowest 17.4 m/s
+  Pebble Coupe     J14 to J15 (against the race): through in 6.3 s, at Dan's spot 28.2 m/s, slowest 17.4 m/s
+PASS  C M5c back Pebble Coupe: through, never stopped  -  , slowest 17.4 m/s
+  Skyfin Cruiser   J15 to J14 (the race's way): through in 7.7 s, at Dan's spot 28.2 m/s, slowest 2.0 m/s
+FAIL  C M5c the race's way Skyfin Cruiser: through, never stopped  -  , slowest 2.0 m/s
+  Skyfin Cruiser   J14 to J15 (against the race): through in 6.6 s, at Dan's spot 27.4 m/s, slowest 15.9 m/s
+PASS  C M5c back Skyfin Cruiser: through, never stopped  -  , slowest 15.9 m/s
+  Ridge Scrambler  J15 to J14 (the race's way): through in 5.9 s, at Dan's spot 32.8 m/s, slowest 18.4 m/s
+PASS  C M5c the race's way Ridge Scrambler: through, never stopped  -  , slowest 18.4 m/s
+  Ridge Scrambler  J14 to J15 (against the race): through in 5.8 s, at Dan's spot 31.3 m/s, slowest 18.4 m/s
+PASS  C M5c back Ridge Scrambler: through, never stopped  -  , slowest 18.4 m/s
+  Drifter Twin     J15 to J14 (the race's way): through in 5.9 s, at Dan's spot 32.9 m/s, slowest 18.1 m/s
+PASS  C M5c the race's way Drifter Twin: through, never stopped  -  , slowest 18.1 m/s
+  Drifter Twin     J14 to J15 (against the race): through in 5.9 s, at Dan's spot 30.8 m/s, slowest 18.1 m/s
+PASS  C M5c back Drifter Twin: through, never stopped  -  , slowest 18.1 m/s
+  Turf Rocket      J15 to J14 (the race's way): through in 5.9 s, at Dan's spot 34.1 m/s, slowest 18.7 m/s
+PASS  C M5c the race's way Turf Rocket: through, never stopped  -  , slowest 18.7 m/s
+  Turf Rocket      J14 to J15 (against the race): through in 6.0 s, at Dan's spot 31.0 m/s, slowest 18.3 m/s
+PASS  C M5c back Turf Rocket: through, never stopped  -  , slowest 18.3 m/s
+  Clay Hopper      J15 to J14 (the race's way): through in 6.0 s, at Dan's spot 32.1 m/s, slowest 17.8 m/s
+PASS  C M5c the race's way Clay Hopper: through, never stopped  -  , slowest 17.8 m/s
+  Clay Hopper      J14 to J15 (against the race): through in 6.0 s, at Dan's spot 29.8 m/s, slowest 17.8 m/s
+PASS  C M5c back Clay Hopper: through, never stopped  -  , slowest 17.8 m/s
+  Skywhip 250      J15 to J14 (the race's way): through in 6.0 s, at Dan's spot 32.6 m/s, slowest 18.4 m/s
+PASS  C M5c the race's way Skywhip 250: through, never stopped  -  , slowest 18.4 m/s
+  Skywhip 250      J14 to J15 (against the race): through in 5.8 s, at Dan's spot 31.5 m/s, slowest 18.4 m/s
+PASS  C M5c back Skywhip 250: through, never stopped  -  , slowest 18.4 m/s
+  Clay Hopper Cup  J15 to J14 (the race's way): through in 5.8 s, at Dan's spot 33.2 m/s, slowest 18.2 m/s
+PASS  C M5c the race's way Clay Hopper Cup: through, never stopped  -  , slowest 18.2 m/s
+  Clay Hopper Cup  J14 to J15 (against the race): through in 5.9 s, at Dan's spot 30.5 m/s, slowest 18.3 m/s
+PASS  C M5c back Clay Hopper Cup: through, never stopped  -  , slowest 18.3 m/s
+
+=== C. the Underground race, 3 laps, 3 AI on Hard, the player parked off the line: every AI finishes; its recoveries
+  EMBER (Needle 600): 3:20.078, laps 71.9 / 66.0 / 62.2, recoveries 2 (within 60 m of Dan's spot 0)
+PASS  C Underground race: EMBER finishes
+  GOLD (Needle 600): 4:21.885, laps 85.1 / 77.3 / 99.5, recoveries 6 (within 60 m of Dan's spot 1)
+PASS  C Underground race: GOLD finishes
+  BLUE (Ridge Scrambler): 3:17.224, laps 73.6 / 62.7 / 60.9, recoveries 2 (within 60 m of Dan's spot 0)
+PASS  C Underground race: BLUE finishes
+
+=== D. the hub's mid ledge (Dan's BUG-005 at x 1854.67 z 1132.51): into rail R1, the closed gate SG1 and rail R2 flat out
+  Drifter Twin     into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.4, 262.5, 1150.0)
+PASS  D Drifter Twin into R1 (west edge, x 1861) at 90 deg: held
+  Drifter Twin     into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1860.3, 262.5, 1125.2)
+PASS  D Drifter Twin into R1 (west edge, x 1861) at 45 deg: held
+  Drifter Twin     into R1 (west edge, x 1861) at 20 deg, 30 m/s: THROUGH, ended at (1867.2, 262.5, 1117.5)
+FAIL  D Drifter Twin into R1 (west edge, x 1861) at 20 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.4, 262.5, 1132.8)
+PASS  D Drifter Twin into SG1 closed (x 1861) at 90 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 45 deg, 30 m/s: THROUGH, ended at (1862.7, 262.5, 1118.3)
+FAIL  D Drifter Twin into SG1 closed (x 1861) at 45 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 20 deg, 30 m/s: THROUGH, ended at (1864.7, 262.5, 1117.4)
+FAIL  D Drifter Twin into SG1 closed (x 1861) at 20 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.1, 262.5, 1124.4)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 90 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1939.2, 262.5, 1125.3)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 45 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.7, 262.5, 1125.3)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 20 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1858.8, 262.6, 1150.0)
+PASS  D Street Classic into R1 (west edge, x 1861) at 90 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into R1 (west edge, x 1861) at 45 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into R1 (west edge, x 1861) at 20 deg: held
+  Street Classic   into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1858.8, 262.6, 1132.7)
+PASS  D Street Classic into SG1 closed (x 1861) at 90 deg: held
+  Street Classic   into SG1 closed (x 1861) at 45 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into SG1 closed (x 1861) at 45 deg: held
+  Street Classic   into SG1 closed (x 1861) at 20 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into SG1 closed (x 1861) at 20 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.0, 262.6, 1123.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 90 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1928.0, 262.6, 1124.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 45 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.1, 262.6, 1124.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 20 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.5, 262.5, 1150.0)
+PASS  D Trail Four into R1 (west edge, x 1861) at 90 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1856.5, 262.5, 1118.2)
+PASS  D Trail Four into R1 (west edge, x 1861) at 45 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1859.6, 262.5, 1126.7)
+PASS  D Trail Four into R1 (west edge, x 1861) at 20 deg: held
+  Trail Four       into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.5, 262.5, 1132.7)
+PASS  D Trail Four into SG1 closed (x 1861) at 90 deg: held
+  Trail Four       into SG1 closed (x 1861) at 45 deg, 30 m/s: THROUGH, ended at (1861.9, 262.5, 1118.3)
+FAIL  D Trail Four into SG1 closed (x 1861) at 45 deg: held
+  Trail Four       into SG1 closed (x 1861) at 20 deg, 30 m/s: THROUGH, ended at (1880.6, 262.5, 1117.7)
+FAIL  D Trail Four into SG1 closed (x 1861) at 20 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.0, 262.5, 1124.5)
+PASS  D Trail Four into R2 (south edge, z 1126) at 90 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1941.3, 262.5, 1125.0)
+PASS  D Trail Four into R2 (south edge, z 1126) at 45 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.8, 262.5, 1125.0)
+PASS  D Trail Four into R2 (south edge, z 1126) at 20 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.6, 262.5, 1150.0)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 90 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1860.6, 262.5, 1124.5)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 45 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1860.5, 262.5, 1124.9)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 20 deg: held
+  Needle 600       into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.6, 262.5, 1132.7)
+PASS  D Needle 600 into SG1 closed (x 1861) at 90 deg: held
+  Needle 600       into SG1 closed (x 1861) at 45 deg, 30 m/s: THROUGH, ended at (1863.4, 262.5, 1118.2)
+FAIL  D Needle 600 into SG1 closed (x 1861) at 45 deg: held
+  Needle 600       into SG1 closed (x 1861) at 20 deg, 30 m/s: THROUGH, ended at (1875.0, 262.5, 1117.3)
+FAIL  D Needle 600 into SG1 closed (x 1861) at 20 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.1, 262.5, 1124.6)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 90 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1942.7, 262.5, 1125.4)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 45 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.9, 262.5, 1125.4)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 20 deg: held
+
+=== Pictures
+
+67 of 75 checks passed.

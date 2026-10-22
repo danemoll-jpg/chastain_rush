@@ -1,0 +1,12 @@
+Round 57 check, 2026-10-21 22:27, the exe, 1280 x 720, muted.
+
+=== F. the #1 replays: Addison Heights forward, 1 lap, no AI: slow (the first #1s), fast (replaced), slow again (kept)
+  slow (14 m/s at most): lap 148.26 s, lap rank #1, race rank #1; kept: #1 lap 148.26 s 2026-10-22T02:27:24.6956333Z, #1 race 148.26 s 2026-10-22T02:27:24.6956333Z; stopped (the race was left) at 153.1 s; 3903 racer frames, 0 traffic frames, 0 events; #1 race kept C:\Users\danmo\chastain_rush\local\round57\check_f2\Replays\best\Addison Heights (Embry Lane line)_forward_laps1.race.crreplay; #1 lap kept C:\Users\danmo\chastain_rush\local\round57\check_f2\Replays\best\Addison Heights (Embry Lane line)_forward.lap.crreplay
+  fast (30 m/s at most): lap 79.48 s, lap rank #1, race rank #1; kept: #1 lap 79.48 s 2026-10-22T02:28:44.8152015Z, #1 race 79.48 s 2026-10-22T02:28:44.8152015Z; stopped (the race was left) at 82.8 s; 2145 racer frames, 0 traffic frames, 0 events; #1 race kept C:\Users\danmo\chastain_rush\local\round57\check_f2\Replays\best\Addison Heights (Embry Lane line)_forward_laps1.race.crreplay; #1 lap kept C:\Users\danmo\chastain_rush\local\round57\check_f2\Replays\best\Addison Heights (Embry Lane line)_forward.lap.crreplay
+  slow again (15 m/s at most): lap 139.07 s, lap rank #2, race rank #2; kept: #1 lap 79.48 s 2026-10-22T02:28:44.8152015Z, #1 race 79.48 s 2026-10-22T02:28:44.8152015Z; stopped (the race was left) at 143.7 s; 3667 racer frames, 0 traffic frames, 0 events
+PASS  F: the first race's #1 lap and race replays are kept
+PASS  F: the faster race replaced both  -  148.26 -> 79.48, 148.26 -> 79.48
+PASS  F: the slower one after did not
+PASS  F: the #1 lap's replay plays that lap (a little either side)  -  81.5 s for a 79.5 s lap
+
+4 of 4 checks passed.

@@ -86,7 +86,8 @@ namespace Racer
             AirPitch = airPitch.ReadValue<float>(); AirSpin = Mathf.Clamp(airSpin.ReadValue<float>(), -1, 1);
             if (AirActive) Look = Vector2.zero;   // 0.106: the right stick spins a stunt vehicle in the air (Round 36)
             var mouse = Device == null || Device is Keyboard ? Mouse.current : null; MouseLook = mouse != null && mouse.rightButton.isPressed; MouseDelta = MouseLook ? mouse.delta.ReadValue() : Vector2.zero;
-            resetRequested |= reset.WasPressedThisFrame(); viewRequested |= view.WasPressedThisFrame();
+            bool replayKeys = ChastainRush.GameMenus.ReplayButtonsShowing;   // Round 57 (F): X and Y are WATCH and SAVE REPLAY on the finish screen
+            resetRequested |= !replayKeys && reset.WasPressedThisFrame(); viewRequested |= !replayKeys && view.WasPressedThisFrame();
             // Chastain Rush, Round 28 (C2): the fist wave was bound but never asked for (Racer's VehicleInput does it here): LB / F, not
             // while a menu, the map or the debug menu has the controls
             if (fist.WasPressedThisFrame() && !AirActive && !(ChastainRush.TrailerMode.Active && fist.activeControl?.device is Gamepad) && !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput)

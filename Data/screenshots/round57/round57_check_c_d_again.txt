@@ -1,0 +1,92 @@
+Round 57 check, 2026-10-21 22:17, the exe, 1280 x 720, muted.
+
+=== C. M5c (Dan's BUG-003 / BUG-004 at x 1642.07 z 950.60): the race's line from 70 m before his spot to 70 m past it, flat out, both ways, every vehicle
+  the line: from (1648, 273.5, 886) to (1623, 274.2, 998), 141 points
+  Street Classic   J15 to J14 (the race's way): through in 6.5 s, at Dan's spot 30.0 m/s, slowest 16.5 m/s at (1645.4, 274.9, 987.0); body contacts: none
+PASS  C M5c the race's way Street Classic: through, never stopped  -  , slowest 16.5 m/s
+  Street Classic   J14 to J15 (against the race): through in 6.4 s, at Dan's spot 28.2 m/s, slowest 16.6 m/s at (1639.2, 275.0, 994.3); body contacts: none
+PASS  C M5c back Street Classic: through, never stopped  -  , slowest 16.6 m/s
+  Skyfin Cruiser   J15 to J14 (the race's way): through in 7.7 s, at Dan's spot 28.2 m/s, slowest 2.0 m/s at (1629.4, 274.5, 898.9); body contacts: [0.90 s 16.5 m/s] enter:sc Net M5c barrel:n(0.28,0.85,0.44):p(1635.0,274.03,889.7):J0.0 [0.92 s 16.6 m/s] stay:sc Net M5c barrel:n(0.38,0.76,0.52):p(1634.7,274.05,889.9):J75.9 [0.94 s 16.8 m/s] stay:sc Net M5c barrel:n(0.38,0.76,0.52):p(1634.4,274.06,890.1):J57.3 [0.98 s 16.7 m/s] stay:sc Net M5c barrel:n(0.42,0.76,0.50):p(1633.8,274.09,890.5):J201.2 [1.06 s 16.5 m/s] stay:sc Net M5c barrel:n(0.45,0.76,0.46):p(1632.6,274.16,891.4):J102.3 [1.10 s 16.5 m/s] stay:sc Net M5c barrel:n(0.47,0.76,0.45):p(1632.1,274.18,891.9):J16.6 [1.12 s 16.6 m/s] stay:sc Net M5c barrel:n(0.49,0.76,0.43):p(1631.8,274.20,892.2):J108.8 
+FAIL  C M5c the race's way Skyfin Cruiser: through, never stopped  -  , slowest 2.0 m/s
+  Skyfin Cruiser   J14 to J15 (against the race): through in 6.6 s, at Dan's spot 27.4 m/s, slowest 15.9 m/s at (1638.1, 275.0, 995.0); body contacts: [0.96 s 16.1 m/s] enter:sc Net M5c barrel:n(-0.17,0.85,-0.49):p(1637.4,274.60,996.8):J0.0 [1.02 s 16.1 m/s] stay:sc Net M5c barrel:n(-0.21,0.85,-0.48):p(1638.6,274.61,996.3):J118.5 [1.04 s 16.0 m/s] stay:sc Net M5c barrel:n(-0.26,0.76,-0.59):p(1638.8,274.64,996.3):J27.2 [1.06 s 16.1 m/s] stay:sc Net M5c barrel:n(-0.29,0.76,-0.58):p(1639.1,274.65,996.2):J114.5 [1.08 s 15.9 m/s] stay:sc Net M5c barrel:n(-0.30,0.76,-0.57):p(1639.4,274.67,996.0):J64.3 [1.14 s 15.9 m/s] stay:sc Net M5c barrel:n(-0.35,0.76,-0.55):p(1640.4,274.70,995.6):J146.5 [1.20 s 16.0 m/s] stay:sc Net M5c barrel:n(-0.38,0.76,-0.52):p(1641.3,274.74,995.0):J157.3 
+PASS  C M5c back Skyfin Cruiser: through, never stopped  -  , slowest 15.9 m/s
+  Drifter Twin     J15 to J14 (the race's way): through in 5.9 s, at Dan's spot 32.9 m/s, slowest 18.1 m/s at (1643.7, 274.8, 989.7); body contacts: [0.12 s 15.0 m/s] enter:sc Net M5c barrel:n(0.09,0.97,0.21):p(1644.7,273.56,886.5):J0.0 [1.34 s 19.0 m/s] enter:Pipe M5c W4 clear stretch - the deep water bed:n(-0.13,0.99,-0.07):p(1630.2,273.84,901.5):J0.0 [1.66 s 21.5 m/s] enter:sc Net M5c barrel:n(-0.20,0.98,0.02):p(1630.8,273.88,907.7):J0.0 [3.16 s 33.1 m/s] enter:Pipe S2 W4 clear stretch - the deep water bed:n(0.00,1.00,-0.01):p(1641.8,273.43,947.6):J0.0 [3.56 s 29.0 m/s] enter:Pipe S2 W4 clear stretch - the deep water bed:n(0.08,1.00,-0.05):p(1644.6,273.50,959.9):J0.0 [3.78 s 30.4 m/s] enter:sc Net M5c barrel:n(0.23,0.97,-0.02):p(1644.9,274.01,966.6):J0.0 
+PASS  C M5c the race's way Drifter Twin: through, never stopped  -  , slowest 18.1 m/s
+  Drifter Twin     J14 to J15 (against the race): through in 5.9 s, at Dan's spot 30.8 m/s, slowest 18.1 m/s at (1638.4, 274.7, 994.5); body contacts: [0.14 s 14.9 m/s] enter:sc Net M5c barrel:n(-0.03,0.97,-0.23):p(1626.7,274.27,997.9):J0.0 [1.86 s 22.7 m/s] enter:Pipe M5c W4 clear stretch - the deep water bed:n(0.19,0.98,-0.01):p(1646.0,274.05,977.7):J0.0 [2.34 s 26.8 m/s] enter:sc Net M5c barrel:n(0.10,1.00,-0.01):p(1645.4,273.99,965.9):J0.0 [2.42 s 27.5 m/s] enter:Pipe S2 W4 clear stretch - the deep water bed:n(0.12,0.99,-0.02):p(1645.2,273.52,963.3):J0.0 [2.88 s 30.7 m/s] enter:Pipe S2 W4 clear stretch - the deep water bed:n(0.02,1.00,-0.01):p(1642.5,273.45,950.6):J0.0 [4.34 s 20.7 m/s] enter:sc Net M5c barrel:n(-0.04,1.00,0.01):p(1629.8,273.66,908.0):J0.0 
+PASS  C M5c back Drifter Twin: through, never stopped  -  , slowest 18.1 m/s
+
+=== D. the hub's mid ledge (Dan's BUG-005 at x 1854.67 z 1132.51): into rail R1, the closed gate SG1 and rail R2 flat out
+  Drifter Twin     into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.4, 262.5, 1150.0)
+PASS  D Drifter Twin into R1 (west edge, x 1861) at 90 deg: held
+  Drifter Twin     into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1860.4, 262.5, 1125.1)
+PASS  D Drifter Twin into R1 (west edge, x 1861) at 45 deg: held
+  Drifter Twin     into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1867.5, 262.5, 1117.5)
+PASS  D Drifter Twin into R1 (west edge, x 1861) at 20 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.4, 262.5, 1132.8)
+PASS  D Drifter Twin into SG1 closed (x 1861) at 90 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 45 deg, 30 m/s: held, ended at (1863.4, 262.5, 1118.4)
+PASS  D Drifter Twin into SG1 closed (x 1861) at 45 deg: held
+  Drifter Twin     into SG1 closed (x 1861) at 20 deg, 30 m/s: held, ended at (1864.5, 262.5, 1117.4)
+PASS  D Drifter Twin into SG1 closed (x 1861) at 20 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.1, 262.5, 1124.4)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 90 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1939.2, 262.5, 1125.3)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 45 deg: held
+  Drifter Twin     into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.7, 262.5, 1125.3)
+PASS  D Drifter Twin into R2 (south edge, z 1126) at 20 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1858.8, 262.6, 1150.0)
+PASS  D Street Classic into R1 (west edge, x 1861) at 90 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into R1 (west edge, x 1861) at 45 deg: held
+  Street Classic   into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into R1 (west edge, x 1861) at 20 deg: held
+  Street Classic   into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1858.8, 262.6, 1132.7)
+PASS  D Street Classic into SG1 closed (x 1861) at 90 deg: held
+  Street Classic   into SG1 closed (x 1861) at 45 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into SG1 closed (x 1861) at 45 deg: held
+  Street Classic   into SG1 closed (x 1861) at 20 deg, 30 m/s: held, ended at (1859.8, 262.6, 1118.9)
+PASS  D Street Classic into SG1 closed (x 1861) at 20 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.0, 262.6, 1123.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 90 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1928.0, 262.6, 1124.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 45 deg: held
+  Street Classic   into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.1, 262.6, 1124.8)
+PASS  D Street Classic into R2 (south edge, z 1126) at 20 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.5, 262.5, 1150.0)
+PASS  D Trail Four into R1 (west edge, x 1861) at 90 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1856.5, 262.5, 1118.2)
+PASS  D Trail Four into R1 (west edge, x 1861) at 45 deg: held
+  Trail Four       into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1859.6, 262.5, 1126.4)
+PASS  D Trail Four into R1 (west edge, x 1861) at 20 deg: held
+  Trail Four       into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.5, 262.5, 1132.8)
+PASS  D Trail Four into SG1 closed (x 1861) at 90 deg: held
+  Trail Four       into SG1 closed (x 1861) at 45 deg, 30 m/s: held, ended at (1870.6, 262.5, 1117.7)
+PASS  D Trail Four into SG1 closed (x 1861) at 45 deg: held
+  Trail Four       into SG1 closed (x 1861) at 20 deg, 30 m/s: held, ended at (1876.1, 262.5, 1117.7)
+PASS  D Trail Four into SG1 closed (x 1861) at 20 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.0, 262.5, 1124.5)
+PASS  D Trail Four into R2 (south edge, z 1126) at 90 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1941.1, 262.5, 1125.0)
+PASS  D Trail Four into R2 (south edge, z 1126) at 45 deg: held
+  Trail Four       into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.8, 262.5, 1125.0)
+PASS  D Trail Four into R2 (south edge, z 1126) at 20 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 90 deg, 30 m/s: held, ended at (1859.6, 262.5, 1150.0)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 90 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 45 deg, 30 m/s: held, ended at (1860.6, 262.5, 1124.5)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 45 deg: held
+  Needle 600       into R1 (west edge, x 1861) at 20 deg, 30 m/s: held, ended at (1860.5, 262.9, 1122.4)
+PASS  D Needle 600 into R1 (west edge, x 1861) at 20 deg: held
+  Needle 600       into SG1 closed (x 1861) at 90 deg, 30 m/s: held, ended at (1859.5, 262.5, 1132.8)
+PASS  D Needle 600 into SG1 closed (x 1861) at 90 deg: held
+  Needle 600       into SG1 closed (x 1861) at 45 deg, 30 m/s: held, ended at (1861.1, 262.5, 1124.5)
+PASS  D Needle 600 into SG1 closed (x 1861) at 45 deg: held
+  Needle 600       into SG1 closed (x 1861) at 20 deg, 30 m/s: held, ended at (1857.1, 262.5, 1118.1)
+PASS  D Needle 600 into SG1 closed (x 1861) at 20 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 90 deg, 30 m/s: held, ended at (1874.0, 262.5, 1124.6)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 90 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 45 deg, 30 m/s: held, ended at (1942.0, 262.5, 1125.4)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 45 deg: held
+  Needle 600       into R2 (south edge, z 1126) at 20 deg, 30 m/s: held, ended at (1946.9, 262.5, 1125.4)
+PASS  D Needle 600 into R2 (south edge, z 1126) at 20 deg: held
+
+41 of 42 checks passed.

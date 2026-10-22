@@ -59,12 +59,17 @@ namespace ChastainRush
         public void Erupt(float seconds)
         {
             if (Erupting) { left0 = Mathf.Max(left0, seconds); return; }
+            Erupted?.Invoke(this, seconds);   // Round 57 (F): the replay
             left0 = seconds; EruptedAt = Time.time;
             if (cover) cover.BlowOpen(seconds > 1e5f ? 1e7f : seconds);
             BreakSounds.Play(transform.position, 24f, BreakSounds.Kind.Hydrant);
             water = Curtain();
             foreach (var o in All.ToArray()) if (o != this && !string.IsNullOrEmpty(group) && o.group == group && o.Armed) o.Erupt(seconds);
         }
+        // Round 57 (F): a race replay's plumes
+        public static event System.Action<ManholePlume, float> Erupted;
+        public static void ReplayErupt(Vector3 at, float seconds) { foreach (var m in All) if (m && (m.transform.position - at).sqrMagnitude < 4f) { m.Erupt(seconds); return; } }
+        public static void ShutAll() { foreach (var m in All.ToArray()) if (m && m.Erupting) m.Shut(); }
         public void Shut()
         {
             left0 = 0f; EruptedAt = -1f;

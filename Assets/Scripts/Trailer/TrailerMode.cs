@@ -32,7 +32,7 @@ namespace ChastainRush
         public static bool Active { get; private set; }
         public static TrailerMode Instance { get; private set; }
         // every HUD drawn with OnGUI asks this (true: draw nothing)
-        public static bool HudHidden => CleanScreen || LoadingScreen.Holding || StartupTitle.Active;   // Round 51: and under the loading screen and the title (IMGUI draws over every canvas)
+        public static bool HudHidden => CleanScreen || LoadingScreen.Holding || StartupTitle.Active || ReplayViewer.Active;   // Round 57 (F): a replay has its own   // Round 51: and under the loading screen and the title (IMGUI draws over every canvas)
         static bool CleanScreen => Active && Instance && !Instance.HudShown && !GameMenus.Open && !WorldMap.OwnsInput;
         public bool HudShown { get; private set; }
         public bool GuidesShown { get; private set; }

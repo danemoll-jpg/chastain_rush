@@ -30,6 +30,7 @@ namespace Racer
         public void SetBodyColor(int index) { if(Profile.IsPolice||Profile.CupEdition) return;   // 0.111: a Cup edition keeps its livery (Round 36)
             if(index>=0 && index<=VehiclePaint.Champion) { SetPaint(VehiclePaint.Of(index)); selectedScheme=index; VehiclePaint.Scheme(transform,index); } }
         public void SetPaint(Color color) { selectedPaint=color; selectedScheme=-1; VehiclePaint.Apply(transform,color); VehiclePaint.Roundel(transform,false); }
+        public Color? Paint => selectedPaint;   // Chastain Rush, Round 57 (F): the replay records each racer's paint
         public bool WipedOut => Time.time < crashUntil;
         public int VehicleContactEvents { get; private set; }
         public void Recover() { crashUntil=0; overturned=upright=0; }

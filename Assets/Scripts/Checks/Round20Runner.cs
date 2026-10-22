@@ -185,6 +185,8 @@ namespace ChastainRush
                 if (Do("m5cai")) yield return Guard(R57M5cAi());
                 if (Do("hub")) yield return Guard(R57Hub());
                 if (Do("cpics57")) yield return Guard(R57Pics());
+                if (only != null && parts.Contains("replaybest")) yield return Guard(R57Best());   // F (Round20Runner.R57F.cs): only when asked
+                if (only != null && parts.Contains("replay")) yield return Guard(R57Replay());
             }
             // Round 56 (Round20Runner.R56.cs): the Elaine jump onto Crawford's west leg and its way back, the barricade, the jerk on Elaine
             if (tag == "round56")

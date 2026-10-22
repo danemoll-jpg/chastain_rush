@@ -1,0 +1,33 @@
+Round 57 check, 2026-10-21 23:15, the exe, 1280 x 720, muted.
+
+=== B. COMPLETE RACE pressed (Addison Heights, 1 lap, 3 AI): the pad's A, then the keyboard's Space
+PASS  B (pad A): the player has finished, the AI racing, the button shows  -  finished True, can True, button True
+PASS  B (pad A): pressed, every AI is classified (estimated), the button gone  -  EMBER 1:28.144 (estimated); GOLD 1:21.449 (estimated); BLUE 1:11.512 (estimated)
+PASS  B (keyboard Space): the player has finished, the AI racing, the button shows  -  finished True, can True, button True
+PASS  B (keyboard Space): pressed, every AI is classified (estimated), the button gone  -  EMBER 1:19.868 (estimated); GOLD 1:18.760 (estimated); BLUE 1:31.494 (estimated)
+
+=== F. RACE REPLAYS: Addison Heights forward, 3 laps, 3 AI, traffic Normal
+  the driver's line: 2806 points; a mailbox on lap 1 at (3133.6, 132.5), 3.6 m off the lap
+  the check's driver was stuck 1 time(s) and went on 30 m further: (2912, 718) at 142 s
+PASS  F: the player finished the 3 laps  -  laps 3 (101.6 / 54.3 / 169.3), shortcuts lap 2 f_elaine_jump, 
+  panels broken in the race: 17; shortcuts taken lap 2 f_elaine_jump
+PASS  F: WATCH / SAVE REPLAY show on the finish screen
+PASS  F: X on the finish screen opens the replay  -  stopped (watched from the finish screen) at 316.5 s; 31952 racer frames, 44730 traffic frames, 41 events; #1 race kept C:\Users\danmo\chastain_rush\local\round57\check_f8\Replays\best\Addison Heights (Embry Lane line)_forward_laps3.race.crreplay; REPLAY SAVED
+  recorded: stopped (watched from the finish screen) at 316.5 s; 31952 racer frames, 44730 traffic frames, 41 events; #1 race kept C:\Users\danmo\chastain_rush\local\round57\check_f8\Replays\best\Addison Heights (Embry Lane line)_forward_laps3.race.crreplay; REPLAY SAVED
+PASS  F: the replay's positions match the race (every racer every 3 s) within 0.5 m  -  416 samples, median 0.000 m, the most off: 0.006 m YOU at 17.0 s (3172, 298) 22 m/s; 0.006 m BLUE at 56.0 s (3015, 394) 22 m/s; 0.006 m YOU at 65.0 s (2645, 493) 24 m/s
+PASS  F: each racer's puppet stands where the recording puts it  -  0.000 m
+PASS  F: each broken panel is whole just before its moment and broken just after (of 17)  -  12 on time; 
+  events: 41 (Tree 8, Panel 17, Gesture 8, Restore 8); panels: Mailbox 4, Lamp 2, Wood 11
+PASS  F: TV cameras placed along the way and one showing the racer  -  136 cameras, showing #66
+PASS  F: the chase camera follows the focused racer's puppet
+PASS  F: the free camera moves with the left stick  -  14.9 m
+  pad: A pause True; RT 1 s +4.0 s; LT 1 s -4.0 s; X slow x0.5; Y camera True; RB racer True; D-pad right to 108.1 s; D-pad up restart True; D-pad down HUD True
+PASS  F: the pad's controls (A, RT, LT, X, Y, RB, D-pad)
+PASS  F: the keys (Space, C, H, Home)
+PASS  F: B leaves the replay (the finish screen back)
+PASS  F: Y on the finish screen saved it  -  C:\Users\danmo\chastain_rush\local\round57\check_f8\Replays\saved\Addison Heights forward 2026-10-21 23.21.36.crreplay
+  one 3-lap replay with traffic: 1724 KB (C:\Users\danmo\chastain_rush\local\round57\check_f8\Replays\saved\Addison Heights forward 2026-10-21 23.21.36.crreplay)
+PASS  F: the REPLAYS page lists the saved race and the #1 lap and race  -  #1 LAP    Addison Heights forward   0:00.800   Oct 21, 2026 11:15 PM | #1 RACE   Addison Heights forward, 1 lap   0:00.800   Oct 21, 2026 11:15 PM | SAVED   Addison Heights forward 2026-10-21 23.21.36 | #1 RACE   Addison Heights forward, 3 laps   5:25.235   Oct 21, 2026 11:16 PM
+PASS  F: a saved replay plays from the page  -  Addison Heights forward 2026-10-21 23.21.36
+
+19 of 19 checks passed.

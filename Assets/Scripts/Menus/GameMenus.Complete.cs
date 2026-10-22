@@ -35,6 +35,9 @@ namespace ChastainRush
 
         // checks only (Round20Runner.R54.cs): the title menu shut, as FREE ROAM does, so the race's own screens show
         public void CloseForCheck() { title = false; pages.Clear(); CloseMenu(); }
+        // Round 57 checks: the REPLAYS page, and its first saved replay watched
+        public void OpenReplaysForCheck() { title = false; OpenMenu(false); Navigate("replays"); }
+        public void WatchFirstSavedForCheck() { var s = ReplayData.List(false); if (s.Count > 0) WatchFile(s[0].path); }
         public bool CompleteButtonShowing => completeRoot && completeRoot.gameObject.activeInHierarchy;
 
         bool CompleteShowing => race && !open && race.CanSimulateRemaining && !WinnerShot.Active && !TrailerMode.HudHidden;

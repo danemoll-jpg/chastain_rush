@@ -202,6 +202,8 @@ namespace ChastainRush
             if (p2 && p1 && birds.Count > 0) { var c0 = birds[0].pos; car = (p2.transform.position - c0).sqrMagnitude < (p1.transform.position - c0).sqrMagnitude ? p2 : p1; }
             Vector3 cp = car.transform.position;
             Vector3 cv = car.Body.linearVelocity; cv.y = 0f;
+            bool replay = ReplayViewer.Active && ReplayViewer.GooseTarget;   // Round 57 (F): a race replay's player scatters them
+            if (replay) { cp = ReplayViewer.GooseTarget.position; cv = ReplayViewer.GooseVelocity; cv.y = 0f; }
             float carSpeed = cv.magnitude;
             float scare = Mathf.Min(ScareMax, ScareBase + ScarePerMps * carSpeed);
             float lossThisFrame = 0f;
@@ -211,7 +213,7 @@ namespace ChastainRush
                 float dist = d.magnitude;
                 bool airborne = b.mode == Mode.Fly && b.pos.y > GroundY(b.pos.x, b.pos.z, b.landZone.kind == ZoneKind.Water) + 1.3f;
                 // driving through the flock: a goose the car reaches (still on the ground, running or just lifting off) costs a little speed
-                if (!airborne && !b.isHeron && dist < HitRadius && carSpeed > 1.5f && Time.time > b.nextHit && lossThisFrame < 0.05f)
+                if (!replay && !airborne && !b.isHeron && dist < HitRadius && carSpeed > 1.5f && Time.time > b.nextHit && lossThisFrame < 0.05f)
                 {
                     b.nextHit = Time.time + HitCooldown;
                     lossThisFrame += HitSpeedLoss;

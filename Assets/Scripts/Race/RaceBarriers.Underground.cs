@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ChastainRush
@@ -134,12 +135,27 @@ namespace ChastainRush
                 var d = p - new Vector3(g.Data.sx, g.Data.sy, g.Data.sz);
                 float reach = g.Data.sr > 0f ? g.Data.sr : 1.6f;
                 if (d.magnitude > reach + 0.8f) continue;   // the body's middle is up to 0.8 m off the plate's surface
-                g.Open = true; g.OpenedAt = Time.time; g.OpenedBy = who;
+                g.Open = true; g.OpenedAt = Time.time; g.OpenedBy = who; GateOpened?.Invoke(Gates.IndexOf(g));   // Round 57 (F)
                 if (g.Block) g.Block.enabled = false;
                 if (g.Lamp) g.Lamp.sharedMaterial = lampGreen;
                 opened = g; return true;
             }
             return false;
+        }
+
+        // Round 57 (F): a race replay's gates: all shut (going back in time) or as they were (leaving the replay); one opened at its moment
+        public static event System.Action<int> GateOpened;
+        bool[] liveGates;
+        public void ResetGatesForReplay(bool shut)
+        {
+            if (shut) { if (liveGates == null) liveGates = Gates.Select(g => g.Open).ToArray(); for (int i = 0; i < Gates.Count; i++) SetGate(i, false); }
+            else if (liveGates != null) { for (int i = 0; i < Gates.Count && i < liveGates.Length; i++) SetGate(i, liveGates[i]); liveGates = null; }
+        }
+        public void OpenGateForReplay(int i) { if (i < 0 || i >= Gates.Count || Gates[i].Open) return; var g = Gates[i]; g.Open = true; g.OpenedAt = Time.time; if (g.Block) g.Block.enabled = false; if (g.Lamp) g.Lamp.sharedMaterial = lampGreen; }
+        void SetGate(int i, bool open)
+        {
+            var g = Gates[i]; g.Open = open; g.OpenedAt = Time.time - 10f; if (g.Block) g.Block.enabled = !open; if (g.Lamp) g.Lamp.sharedMaterial = open ? lampGreen : lampRed;
+            if (g.Grille) g.Grille.position = g.Closed + (open ? Vector3.up * (g.Data.gate.h + 3.0f) : Vector3.zero);
         }
 
         // a shortcut behind a switch gate is open only once its switch has been hit

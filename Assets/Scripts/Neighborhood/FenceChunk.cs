@@ -224,6 +224,46 @@ namespace ChastainRush
             AllRestored?.Invoke();
         }
 
+        // Round 57 (F): a race replay breaks the panel whose middle is at 'at' (the one recorded), as a car at 'vel' would; quiet: no pieces, no sound
+        // (going back in time puts the world as it was). PanelBroken is raised (a hydrant's water, a pump's blast), PanelBrokenBy is not
+        public static bool ReplayBreak(Vector3 at, int panelHint, Vector3 vel, bool show)
+        {
+            if (!Find(at, panelHint, out var c, out int i)) return false;
+            if (c.broken[i]) return true;
+            c.broken[i] = true; BrokenPanels++;
+            var panel = c.panels[i]; float speed = new Vector2(vel.x, vel.z).magnitude; var dir = speed > 0.1f ? new Vector3(vel.x, 0f, vel.z) / speed : c.transform.forward;
+            for (int k = 0; k < panel.pieceCount; k++)
+            {
+                var piece = c.pieces[panel.firstPiece + k];
+                if (show) c.SpawnDebris(piece, dir, Mathf.Max(speed, 6f), k);
+                for (int v = 0; v < piece.vertexCount; v++) c.current[piece.vertexStart + v] = piece.centre;
+            }
+            c.live.vertices = c.current; c.live.RecalculateBounds();
+            if (c.faces != null)
+                for (int f = 0; f < c.faces.Length; f++)
+                    if (c.facePanel[f] == i && c.faces[f] && c.faces[f].enabled) { if (show) c.SpawnFace(c.faces[f], dir, Mathf.Max(speed, 6f), f, c.pieces[panel.firstPiece].restY); c.faces[f].enabled = false; }
+            if (show) BreakSounds.Play(c.transform.TransformPoint(panel.centre), Mathf.Max(speed, 6f), c.sound);
+            PanelBroken?.Invoke(c, i, c.transform.TransformPoint(panel.centre));
+            return true;
+        }
+        public static bool ReplayRestore(Vector3 at) => Find(at, 0, out var c, out _) && c.RestoreOwn();   // Round 57 (F): a chunk put back at its moment
+        public static bool BrokenAt(Vector3 at) => Find(at, -1, out var c, out int i) && c.broken[i];
+        static bool Find(Vector3 at, int hint, out FenceChunk chunk, out int panel)
+        {
+            chunk = null; panel = -1; float best = 0.3f * 0.3f;
+            foreach (var c in all)
+            {
+                if (c.panels == null || c.broken == null || c.live == null) continue;
+                if (hint >= 0 && hint < c.panels.Length && (c.transform.TransformPoint(c.panels[hint].centre) - at).sqrMagnitude < best) { chunk = c; panel = hint; return true; }
+            }
+            foreach (var c in all)
+            {
+                if (c.panels == null || c.broken == null || c.live == null) continue;
+                for (int i = 0; i < c.panels.Length; i++) { float d = (c.transform.TransformPoint(c.panels[i].centre) - at).sqrMagnitude; if (d < best) { best = d; chunk = c; panel = i; } }
+            }
+            return chunk != null;
+        }
+
         public static int TotalBroken()
         {
             int n = 0;

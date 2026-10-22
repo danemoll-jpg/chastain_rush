@@ -141,7 +141,10 @@ namespace ChastainRush
             if (!started || MenuInput.Blocked || WorldMap.OwnsInput || StartupTitle.Blocking || LoadingScreen.Holding) return;   // Round 20: the map has the buttons (B / Esc close it)   // Round 51: not under the title or the loading screen
             var hud = DeveloperHud.Instance;
             if (hud && (hud.CommentOpen || hud.Capturing || hud.MenuOpen)) return;   // Round 17: the bug comment box has the keys
+            if (ReplayViewer.Active)   // Round 57 (F): the replay has the controls (B / Esc / Start leave it); the finish screen's buttons wait
+            { if (replayRoot && replayRoot.gameObject.activeSelf) replayRoot.gameObject.SetActive(false); if (completeRoot && completeRoot.gameObject.activeSelf) completeRoot.gameObject.SetActive(false); return; }
             if (UpdateComplete()) return;   // Round 54 (C): COMPLETE RACE while the menus are closed
+            if (UpdateReplayButtons()) return;   // Round 57 (F): WATCH / SAVE REPLAY on the finish screen
             if (open && UpdateKeyboard()) return;   // Round 34: the on-screen keyboard's own keys (Delete, Space, Start / Enter saves)
             if (menuKey.WasPressedThisFrame())
             {
@@ -168,7 +171,7 @@ namespace ChastainRush
         {
             if (ownedUiActions) { ownedUiActions.Disable(); Destroy(ownedUiActions); }
             if (menuActions) { menuActions.Disable(); Destroy(menuActions); }
-            back?.Dispose(); menuKey?.Dispose(); completeAction?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
+            back?.Dispose(); menuKey?.Dispose(); completeAction?.Dispose(); watchAction?.Dispose(); saveAction?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
             if (textKeyboard != null) textKeyboard.onTextInput -= TypedCharacter;
             StuntEvent.Finished -= ShowStuntResults;
             PoliceSession.Finished -= ShowPoliceResults;
@@ -202,6 +205,7 @@ namespace ChastainRush
             adjustAction.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/a").With("Positive", "<Keyboard>/d"); adjustAction.AddBinding("<Gamepad>/leftStick/x"); adjustAction.Enable();
 
             BuildCompleteButton(canvas.transform);   // Round 54 (C): under the menu's shade, over the race
+            BuildReplayButtons(canvas.transform);   // Round 57 (F)
             shade = Rect("Menu shade", canvas.transform).gameObject; Stretch(shade.GetComponent<RectTransform>(), 0, 0, 0, 0);
             shade.AddComponent<UnityEngine.UI.Image>().color = new Color(.015f, .025f, .04f, .78f);
             card = Rect("Menu card", shade.transform); card.anchorMin = card.anchorMax = card.pivot = new Vector2(.5f, .5f); card.sizeDelta = new Vector2(1020, 656);
@@ -413,6 +417,8 @@ namespace ChastainRush
                 case "trailer": RenderTrailer(); return;   // Round 43 (Part D, GameMenus.Trailer.cs)
                 case "trailer-help": RenderTrailerHelp(); return;
                 case "eggs": RenderEggs(); return;   // Round 48 (GameMenus.Eggs.cs)
+                case "replays": RenderReplays(); return;   // Round 57 (F, GameMenus.Replays.cs)
+                case "replay-one": RenderReplayOne(); return;
             }
             if (!title && stage == RaceController.Stage.Free && PoliceSession.Running) { RenderPolicePause(); return; }   // Round 39: before the split pause (the mode owns its split)
             if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
@@ -427,8 +433,9 @@ namespace ChastainRush
                 Row(5, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
                 Row(6, "garage", "GARAGE", () => OpenGarage("all"));
                 Row(7, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(8, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(9, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                Row(8, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
+                Row(9, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(10, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
@@ -446,6 +453,7 @@ namespace ChastainRush
                 if (EggHunt.Instance) Row(fr++, "eggs", "GOOSE EGGS", () => Navigate("eggs"));   // Round 48 (GameMenus.Eggs.cs)
                 Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
                 Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(fr++, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
                 Row(fr++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D): Racer's pause menu > Trailer / Photo Mode
                 Row(fr++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
                 Row(fr++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
@@ -460,7 +468,10 @@ namespace ChastainRush
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); race.EndRace(); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
+            if (finished && ReplayRecorder.Instance && (ReplayRecorder.Instance.Recording || ReplayRecorder.Instance.Last != null))
+            { Row(n++, "watch-replay", "WATCH REPLAY", WatchLastReplay); Row(n++, "save-replay", "SAVE REPLAY", SaveLastReplay); }   // Round 57 (F)
             Row(n++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+            Row(n++, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
             Row(n++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D)
             Row(n++, "debug", "DEBUG", () => Navigate("debug"));   // Round 17
             Row(n++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1)
