@@ -5865,3 +5865,83 @@ Builds: seven full builds and one stopped (two layout tries, the barrier move, t
 `Builds/ChastainRush/` 2026-10-21 20:52. Imported from Racer: nothing.
 For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
 tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.
+
+## Round 57 (moved from TODO.md on 2026-10-22 when Dan reviewed Round 60; word for word)
+
+## Previous delivery 3: Round 57
+**Reviewed: Dan drove the Round 57 build 2026-10-22 00:37 (Underground, Chastain Ridge, replays): "The replays seem to work fine"; A to E no complaint; his notes are Round 58.**
+**Round 57, RACE REPLAYS; fixes on Addison Heights and the Underground; COMPLETE RACE on the pad (Dan, 2026-10-21 21:35; reports BUG-001
+to BUG-005 of session `2026-10-21_21-15-52-689_2c460b`, read by Claude, after the Round 56 exe: Addison Heights and the Underground race
+on the Drifter Twin).** Round 56 is reviewed. Do A to E first (their one full Build Map, commit), then F (code only, no map rebuild).
+Tuning limit. Short results.
+A. BUG-001 (x 3279.17 z 308.15 h 184, Embry Lane's foot where it turns onto Suholden Circle, Addison Heights): "flatten this corner".
+   Smooth it (grade, crown and camber through the turn) so it rides flat at race speed both ways.
+B. BUG-002 (finish screen, Addison Heights): "a button doesn't complete the race". COMPLETE RACE (Round 54 C) shows the A glyph but
+   pressing A on the controller does nothing (it worked from the keyboard later: BUG-005's results show "(estimated)"). Make the pad's
+   A (and the keyboard key) press it; check both in the exe.
+C. THE UNDERGROUND RACE: WEDGED, AND A BLOCKED TUBE. BUG-003 (x 1642.07 z 950.60 h 188, pipes "M5c M5 Enclave Main: middle, 29 m", lap 1,
+   CP3 next): "somehow I got wedged here" (the picture: the screen all dark green, the camera inside the pipe wall). BUG-004 (same spot,
+   turned round, h 8): "the tube is completley blocked" (the picture: an AI rider on an ATV stopped in the pipe ahead). Find why a car
+   wedges at this point of M5c (a seam, a step, a narrowing, a joint between pipe pieces) and fix it; find why the tube is blocked (the
+   stopped ATV, or geometry) and fix that: the AI must never sit stuck in a pipe (recover / reset as on roads). Keep the camera out of
+   the pipe wall. Drive M5c both ways at race speed on all vehicles, no stop.
+D. BUG-005 (x 1854.67 z 1132.51 h 92, THE HUB's floor, Underground race): "this is not enough to prevent yopu from going over the railing or
+   under it". The hub's railings must hold a car: solid down to the floor (no gap under) and high enough not to be jumped or climbed at
+   race speed (or a wall behind them), all round where the race passes. Check: drive at them flat out from the race line, none get through.
+E. THE ELAINE SHORTCUT AND THE REST OF ROUND 56: accepted, no change.
+F. RACE REPLAYS (new, not in Racer). Dan: "can we go ahead and create race replays? Would want it to automatically replace top 1 laps
+   and races with the ability to save any race you want." (Earlier, 2026-10-20: "be able to watch your race you just ran and move the
+   camera around differently".)
+   (1) RECORD every race: every racer (player, AI, split-screen, police in the race) with position, rotation, steering, wheel spin and
+       suspension, lights, rider animation state; plus the world events a race causes so they play again at the same moment: breakables
+       (mailboxes, fences, hydrants and their water, signs, gas pumps exploding, barricades), geese scattering, manhole plumes, bounce
+       house / trampoline bounces, shortcut barriers, traffic cars, and the sounds (engine, impacts, horns, the race's sounds). The race
+       radio / music is not recorded (the replay plays the radio live, or none: Code picks).
+   (2) WATCH: on the finish screen, WATCH REPLAY (pad glyph and key). Controls: play / pause, rewind, fast forward, slow motion, jump to
+       a lap, restart; HUD off by default (toggle). Cameras: the chase camera on any racer (switch racer), the free camera (Trailer
+       Mode's free look), and TV-style roadside cameras placed along the course that cut automatically as the racers pass (the fun way to
+       watch a jump or a shortcut). All controllable with the controller.
+   (3) KEEP: automatically, per track and direction, the replay of the #1 TOP 10 lap and of the #1 TOP 10 race; a new #1 replaces the old
+       one. The best-lap replay plays just that lap (the others as they were then). SAVE: from the finish screen (and from the replay
+       viewer) the player can save any race replay to keep, named by track, direction, date and time.
+   (4) A REPLAYS page in the menus: the kept #1 lap / race per track and the saved ones; watch or delete (the #1s cannot be deleted
+       from there, only replaced). Replays live beside the records in the save folder; report the size of one 3-lap replay.
+   (5) If the map, a track or a shortcut changes later, an old replay may no longer fit the world: mark replays with the build / track
+       version and say on the page if one is older (still playable, the world may differ). Records keys as the records use.
+   Check (exe, minimized, muted): race Addison Heights forward 3 laps (with the Lyndon jump, a smashed barricade and a mailbox), finish,
+   watch the replay: positions match the race within a small error (report it), the breakables break on time, each camera works, the
+   controls work by pad and keys; beat a lap and a race record and see the #1 replays replaced; save a race and find it on the page.
+   Pictures: the replay from each camera kind, the page.
+For Dan to check: the Embry / Suholden corner; COMPLETE RACE with A; the Underground's M5c and the hub's railings; watch a replay with each
+camera, then try the #1s and save one.
+
+**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round57/` (check reports, pictures).
+Bug reports read: session `2026-10-21_21-15-52-689_2c460b`, BUG-001 to 005.
+A DONE. Embry climbs south at 10 % into the corner; Suholden west of it had been levelled flat, so the turn crossed a 0.45 m step on a diagonal. The turn's arc is now one
+   vertical curve, 10 % into level over 40 m, flat across 5.5 m either side, then blurred (ground moved up to 0.71 m). Flat out both ways, Drifter Twin and Street Classic:
+   all wheels down, biggest step in vertical speed 0.09 to 0.13 m/s (`round57_check_a_d.txt`, `57_A_*`).
+B DONE. The cause: the button listened to the menus' confirm action, which the UI module switches off whenever the menus are closed, so neither A nor Space
+   reached it (the "(estimated)" times on BUG-005 came from the 60 s wait). It has its own action now. Pad A and Space each complete the race (`round57_check_b_f.txt`).
+C DONE. The wedge and the blockage were S2's glass bed (Round 46): S2 dives under M5c and its bowl's bed cut through M5c's tube in two bands 10 m apart (Dan's
+   green screen is that bed). The bed is kept under the tube now (build log: 0 bed triangles inside another tube). The AI was put back between the two bands
+   over and over: when it gets stuck within 15 m of its last stuck spot, it is now put back 20 m or more further on. The pipe camera never goes past a wall.
+   M5c flat out both ways on all 14 vehicles: through, 27 to 34 m/s at Dan's spot. One exception: the Skyfin Cruiser drops to 2 m/s at the check's own start,
+   placed sideways on the bend out of J15, 56 m from his spot. Underground race, 3 AI on Hard: all finish.
+D DONE. Rails R1 and R2 and the closed gate SG1 are solid from under the ledge up to 3 m, 0.6 m thick, with a low third bar. Four vehicles hit each one at 30 m/s at
+   90, 45 and 20 degrees: none got over or under. The grille that hung 2 m up after S1's switch opened it (it looked like a rail you could drive under) now lifts
+   4.6 m clear. B28's glass bed had the same fault as S2's, inside M2a: fixed at Dan's yes (follow-up below).
+E no change.
+F DONE (code only: no map rebuild, as the round says). Every race is recorded: racers 25 times a second (pose, speed, steering, pedal), traffic 10 times a second,
+   and breaks, restores, trees, plumes, switch gates and gestures. Engines play from the replay; the radio plays live. Finish screen: WATCH REPLAY (X / V) and SAVE REPLAY (Y / K).
+   Viewer: A play / pause, RT fast forward, LT rewind, X slow motion, Y camera (TV, chase, free), LB / RB racer, D-pad lap / restart / HUD (HUD off by default), View save, B leave.
+   The REPLAYS page is on the title, free roam and race menus. Each #1 Top 10 lap and race per course and direction is kept, and a new #1 replaces it. The page marks a replay
+   recorded on another build or before its course changed. Check, Addison 3 laps, 3 AI, Normal traffic: replay within 0.006 m of the race (416 samples); 12 of 12 breaks on time
+   (mailboxes, lamps, the barricade and its restores); every camera, every pad and key control, save, the page, playing from the page: 19 of 19.
+   #1s: slow kept, faster replaced, slower left alone (4 of 4). Size: 1.1 to 1.7 MB for a 4 to 5 minute 3-lap race with Normal traffic.
+   The Lyndon jump was in an earlier run's replay; in the final run the check's driver got stuck in traffic and was put back past it.
+Follow-up (Dan's yes, 2026-10-22): B28's glass bed under West Chastain Lake had cut through M2a near x 1295 z 1164 (0.07 m from M2a's axis). It is now kept
+   under M2a like S2's (`NetGlassAvoid` S2, B28). Build log: 8 bed triangles still flagged, but all are 0.10 to 0.32 m OUTSIDE M2a's wall (the check counts anything
+   within 0.35 m); none is inside the tube. Free roam, M2a 70 m either side, flat out, both ways, all 14 vehicles: through, 30 to 38 m/s at the spot, slowest 18.9 m/s;
+   the only touch of B28's bed is a flat floor contact with no speed lost (`round57_check_m2a.txt`; `-exeRound57 <dir> -r57Only m2a`).
+`Builds/ChastainRush/` 2026-10-21 23:39. Imported from Racer: nothing.
+For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; M2a under West Chastain Lake in free roam; a replay with each camera, the #1s, save one and find it on REPLAYS.
