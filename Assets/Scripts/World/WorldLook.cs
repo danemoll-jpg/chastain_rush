@@ -364,14 +364,10 @@ namespace Racer
         {
             if (!cam) return 0;
             var p = cam.transform.position;
-            foreach (var t in Terrain.activeTerrains)
-            {
-                if (!t || !t.terrainData) continue; var o = t.GetPosition(); var size = t.terrainData.size;
-                if (p.x < o.x || p.z < o.z || p.x > o.x + size.x || p.z > o.z + size.z) continue;
-                float depth = t.SampleHeight(p) + o.y - p.y;
-                return Mathf.SmoothStep(0, 1, Mathf.InverseLerp(1f, 6f, depth));
-            }
-            return 0;
+            var t = ChastainRush.GroundQuery.TileAt(p.x, p.z, out var o);   // Chastain Rush, Round 61: the tile grid (was a search of every tile each frame)
+            if (!t) return 0;
+            float depth = t.SampleHeight(p) + o.y - p.y;
+            return Mathf.SmoothStep(0, 1, Mathf.InverseLerp(1f, 6f, depth));
         }
 
         public void Apply(LookPreset p)
@@ -498,11 +494,9 @@ namespace Racer
         static bool IsWater(Material m) => m && (m.name.IndexOf("water", StringComparison.OrdinalIgnoreCase) >= 0 || m.name.StartsWith("Lake blue green") || m.name.StartsWith("Pool turquoise"));
         static bool BelowGround(Bounds b)
         {
-            foreach (var t in Terrain.activeTerrains)
             {
-                if (!t || !t.terrainData) continue; var o = t.GetPosition(); var size = t.terrainData.size; var c = b.center;
-                if (c.x < o.x || c.z < o.z || c.x > o.x + size.x || c.z > o.z + size.z) continue;
-                return b.max.y < t.SampleHeight(c) + o.y - 2f;
+                var c = b.center; var t = ChastainRush.GroundQuery.TileAt(c.x, c.z, out var o);   // Chastain Rush, Round 61: the tile grid
+                if (t) return b.max.y < t.SampleHeight(c) + o.y - 2f;
             }
             return false;
         }

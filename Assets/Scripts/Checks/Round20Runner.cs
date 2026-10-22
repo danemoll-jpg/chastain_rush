@@ -197,6 +197,7 @@ namespace ChastainRush
                 if (Do("fps")) yield return Guard(R59Fps());
                 if (Do("drive")) yield return Guard(R59Drive());
                 if (Do("pics59")) yield return Guard(R59Pics());
+                if (only != null && only.Split(',').Contains("fps61x")) yield return Guard(R61Experiments());   // Round 61 (C): what costs, at the old neighborhood (Round20Runner.R61.cs); only when named
             }
             // Round 58 (Round20Runner.R58.cs): the AI with agency, the hub's pit, M5c's plants, the Ridge bump
             if (tag == "round58")

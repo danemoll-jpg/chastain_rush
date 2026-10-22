@@ -53,13 +53,8 @@ namespace Racer
         // more than 2 m under the terrain: in a pipe, a junction or the hub (their open cuts at the mouths are not)
         static bool Underground(Vector3 p)
         {
-            foreach (var t in Terrain.activeTerrains)
-            {
-                if (!t || !t.terrainData) continue; var o = t.GetPosition(); var size = t.terrainData.size;
-                if (p.x < o.x || p.z < o.z || p.x > o.x + size.x || p.z > o.z + size.z) continue;
-                return t.SampleHeight(p) + o.y - p.y > 2f;
-            }
-            return false;
+            var t = ChastainRush.GroundQuery.TileAt(p.x, p.z, out var o);   // Chastain Rush, Round 61: the tile grid (was a search of every tile)
+            return t && t.SampleHeight(p) + o.y - p.y > 2f;
         }
     }
 }

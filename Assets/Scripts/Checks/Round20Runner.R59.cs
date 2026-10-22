@@ -56,10 +56,10 @@ namespace ChastainRush
             {
                 respawn.PlaceAt(RaceRoute.Surface(at.x, at.y) + Vector3.up * 0.4f, yaw); race.NotifyTeleported();
                 yield return new WaitForSecondsRealtime(4f);
-                var frames = new List<float>(); float t0 = Time.realtimeSinceStartup;
-                while (Time.realtimeSinceStartup - t0 < 10f) { yield return null; frames.Add(Time.unscaledDeltaTime); }
+                var frames = new List<float>(); float t0 = Time.realtimeSinceStartup; var ft = new R61Timing();
+                while (Time.realtimeSinceStartup - t0 < 10f) { yield return null; frames.Add(Time.unscaledDeltaTime); ft.Add(); }
                 var sorted = frames.OrderBy(x => x).ToList(); float p99 = sorted[Mathf.Min(sorted.Count - 1, (int)(sorted.Count * 0.99f))];
-                report.AppendLine($"INFO  {name}: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps");
+                report.AppendLine($"INFO  {name}: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps{ft}");
                 yield return Capture("59_fps_" + new string(name.Where(char.IsLetterOrDigit).Take(24).ToArray()));
             }
             QualitySettings.vSyncCount = vs; Application.targetFrameRate = cap;
@@ -92,8 +92,8 @@ namespace ChastainRush
         // the terrain's own height under p (not a deck or a roof)
         static float R59Terrain(Vector3 p)
         {
-            foreach (var t in Terrain.activeTerrains) { var o = t.transform.position; var s = t.terrainData.size; if (p.x >= o.x && p.x <= o.x + s.x && p.z >= o.z && p.z <= o.z + s.z) return t.SampleHeight(p) + o.y; }
-            return float.NegativeInfinity;
+            var t = GroundQuery.TileAt(p.x, p.z, out var o);   // Round 61: the tile grid
+            return t ? t.SampleHeight(p) + o.y : float.NegativeInfinity;
         }
 
         static Vector3 R59Eye(R59Place p)

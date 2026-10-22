@@ -13,16 +13,37 @@ namespace Racer
         public float surfaceY;
         Rect bounds;
         public static readonly List<ShallowWater> Active = new();
+        // Chastain Rush, Round 61 (C): the areas by 64 m cell (the map extension has 12,600 of them: every one was tested for every vehicle every
+        // physics step); made again when an area comes or goes
+        const float Cell = 64f;
+        static readonly Dictionary<Vector2Int, List<ShallowWater>> cells = new();
+        static readonly List<ShallowWater> none = new();
+        static bool cellsDirty = true;
+        static List<ShallowWater> Near(Vector3 p)
+        {
+            if (cellsDirty)
+            {
+                cells.Clear(); cellsDirty = false;
+                foreach (var w in Active)
+                {
+                    if (!w) continue; var b = w.bounds;
+                    for (int cx = Mathf.FloorToInt(b.xMin / Cell); cx <= Mathf.FloorToInt(b.xMax / Cell); cx++)
+                        for (int cz = Mathf.FloorToInt(b.yMin / Cell); cz <= Mathf.FloorToInt(b.yMax / Cell); cz++)
+                        { var k = new Vector2Int(cx, cz); if (!cells.TryGetValue(k, out var l)) cells[k] = l = new List<ShallowWater>(); l.Add(w); }
+                }
+            }
+            return cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.z / Cell)), out var list) ? list : none;
+        }
         void Awake() { if (outline != null && outline.Length > 2) { Vector2 lo = outline[0], hi = outline[0]; foreach (var q in outline) { lo = Vector2.Min(lo, q); hi = Vector2.Max(hi, q); } bounds = Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y); } }
         bool Outlined => outline != null && outline.Length > 2;
         // Chastain Rush, Round 15: true when p is in water (inside an area and below its surface); a reset never lands there
         public static bool InWater(Vector3 p, float above = 0.3f)
         {
             if (ChastainRush.DryPatch.Contains(p)) return false;   // Chastain Rush, Round 19: P1's rock bar
-            foreach (var w in Active) if (w && w.Contains(p) && p.y < w.Surface + above && p.y > w.Surface - 3f) return true;
+            foreach (var w in Near(p)) if (w && w.Contains(p) && p.y < w.Surface + above && p.y > w.Surface - 3f) return true;
             return false;
         }
-        void OnEnable() { if (!Active.Contains(this)) Active.Add(this); Freeze(Frozen); if (!Outlined) BoxBounds(); }
+        void OnEnable() { if (!Active.Contains(this)) Active.Add(this); Freeze(Frozen); if (!Outlined) BoxBounds(); cellsDirty = true; }
         // Chastain Rush, Round 37 (B7, split screen's frame rate): a box's world x, z rectangle, so Contains turns away water far from the point
         // with plain arithmetic. Sample runs for every vehicle every physics step over every area (hundreds of stream boxes), and the transform
         // call for each box was 8 ms of a 1-player Chastain Ridge race frame with traffic and 15 ms split. The map's water does not move.
@@ -32,7 +53,7 @@ namespace Racer
             for (int i = 0; i < 4; i++) { var c = transform.TransformPoint(new Vector3((i & 1) == 0 ? -.5f : .5f, 0, (i & 2) == 0 ? -.5f : .5f)); var q = new Vector2(c.x, c.z); lo = Vector2.Min(lo, q); hi = Vector2.Max(hi, q); }
             bounds = Rect.MinMaxRect(lo.x - .01f, lo.y - .01f, hi.x + .01f, hi.y + .01f);
         }
-        void OnDisable() => Active.Remove(this);
+        void OnDisable() { Active.Remove(this); cellsDirty = true; }
         // 0.73 Snow: every body of water freezes (WorldLook sets this from the conditions). Vehicles then ride ON the ice:
         // a collidable top face, the same shape as the water, is switched on. The water still slows a vehicle exactly as
         // much as it does today (Sample measures the depth as if the vehicle were on the bed under the ice); no grip change.
@@ -81,7 +102,7 @@ namespace Racer
             surface=0; float result=0;
             var at=car.Body.position;   // Chastain Rush, Round 37: read once, not per area
             if(ChastainRush.DryPatch.Contains(at)) return 0;   // Chastain Rush, Round 19: on P1's rock bar, not wading
-            foreach(var water in Active)
+            foreach(var water in Near(at))   // Chastain Rush, Round 61: the areas in the vehicle's cell
             {
                 if(!water || !water.Contains(at) || water.gameObject.scene!=car.gameObject.scene) continue;   // Chastain Rush, Round 37: the cheap test first
                 // Use wheel/body immersion, never an x/z-only trigger. Overflying jumps stay dry.

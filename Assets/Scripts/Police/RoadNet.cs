@@ -61,7 +61,7 @@ namespace Racer
                     if (best >= 0) net.Link(end, best, 1.2f);
                 }
             net.Components();
-            Debug.Log($"[Police] road network: {net.Count} nodes on {roads.Count} roads, {net.ComponentCount} parts (largest {net.Component.Count(c => c == net.LargestComponent)} nodes), {watch.ElapsedMilliseconds} ms");
+            Debug.Log($"[Police] road network: {net.Count} nodes on {roads.Count} roads, {net.ComponentCount} parts (largest {net.largestSize} nodes), {watch.ElapsedMilliseconds} ms");
             return net;
         }
         static Vector2 At(List<Vector2> pts, float s)
@@ -143,9 +143,14 @@ namespace Racer
                 c++;
             }
             ComponentCount = c;
+            // Chastain Rush, Round 61 (C): the largest part counted once here (it was counted again on every call: the build's own log line asked
+            // for it once per node, 142,000 times over the stage 2 map: 12 minutes at start-up)
+            var sizes = new int[c]; foreach (int k in Component) sizes[k]++;
+            largest = -1; largestSize = 0; for (int k = 0; k < c; k++) if (sizes[k] > largestSize) { largestSize = sizes[k]; largest = k; }
         }
+        int largest = -1, largestSize;
         public int ComponentCount { get; private set; }
-        public int LargestComponent => Component == null || Count == 0 ? -1 : Component.GroupBy(x => x).OrderByDescending(x => x.Count()).First().Key;
+        public int LargestComponent => Component == null || Count == 0 ? -1 : largest;
         public int Ahead(int node, Vector3 heading, float metres)
         {
             int cur = node; float walked = 0; Vector3 dir = heading; dir.y = 0; if (dir.sqrMagnitude < .01f) dir = Tangent(node); dir.Normalize(); int prev = -1;

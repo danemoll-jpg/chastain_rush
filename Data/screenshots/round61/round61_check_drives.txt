@@ -1,0 +1,29 @@
+Round 59 check, 2026-10-22 17:05, the exe, 1920 x 1080, muted.
+
+=== Load and size
+INFO  the world up 38.7 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 5182 MB, allocated 4840 MB
+INFO  terrain: 304 tiles, x -8629.8 to 3983.0, z -8311.3 to 1918.0 (12613 x 10229 m)
+INFO  trees: 920484
+PASS  load: the world covers the extension (west of x 0 and south of z 0)  -  (x:-8629.83, y:-8311.33, width:12612.83, height:10229.33)
+
+=== Frame rate, uncapped, parked, chase camera, 1920 x 1080 (not measured at 3840 x 2160)
+INFO  old neighborhood (Canton Road by the shops): 88 fps average, slowest 1 % 31 fps
+INFO  Town Center: 89 fps average, slowest 1 % 33 fps
+INFO  KSU: 99 fps average, slowest 1 % 26 fps
+INFO  I-75 and I-575: 109 fps average, slowest 1 % 29 fps
+INFO  the old I-575 edge: 109 fps average, slowest 1 % 30 fps
+INFO  the airport: 107 fps average, slowest 1 % 30 fps
+INFO  the summit: 111 fps average, slowest 1 % 32 fps
+INFO  the mountain's woods: 121 fps average, slowest 1 % 35 fps
+INFO  the mountain road: 119 fps average, slowest 1 % 42 fps
+INFO  the join at -84.619: 115 fps average, slowest 1 % 30 fps
+
+=== Free roam drives along the roads, Street Classic, up to 25 m/s
+  Chastain Glen to the Kennesaw Mountain summit: 12430 m, through in 514 s; lowest the body's middle against the ground under it 0.22 m at (1733, -682); under the ground 0.0 s
+PASS  drive Chastain Glen to the Kennesaw Mountain summit: through, never under the ground  -  through, under 0.0 s
+  Chastain Glen to the airport: 7303 m, through in 300 s; lowest the body's middle against the ground under it 0.26 m at (-895, 449); under the ground 0.0 s
+PASS  drive Chastain Glen to the airport: through, never under the ground  -  through, under 0.0 s
+
+=== Pictures
+
+3 of 3 checks passed.
