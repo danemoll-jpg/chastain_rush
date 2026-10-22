@@ -108,6 +108,64 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 57, RACE REPLAYS; fixes on Addison Heights and the Underground; COMPLETE RACE on the pad (Dan, 2026-10-21 21:35; reports BUG-001
+to BUG-005 of session `2026-10-21_21-15-52-689_2c460b`, read by Claude, after the Round 56 exe: Addison Heights and the Underground race
+on the Drifter Twin).** Round 56 is reviewed. Do A to E first (their one full Build Map, commit), then F (code only, no map rebuild).
+Tuning limit. Short results.
+A. BUG-001 (x 3279.17 z 308.15 h 184, Embry Lane's foot where it turns onto Suholden Circle, Addison Heights): "flatten this corner".
+   Smooth it (grade, crown and camber through the turn) so it rides flat at race speed both ways.
+B. BUG-002 (finish screen, Addison Heights): "a button doesn't complete the race". COMPLETE RACE (Round 54 C) shows the A glyph but
+   pressing A on the controller does nothing (it worked from the keyboard later: BUG-005's results show "(estimated)"). Make the pad's
+   A (and the keyboard key) press it; check both in the exe.
+C. THE UNDERGROUND RACE: WEDGED, AND A BLOCKED TUBE. BUG-003 (x 1642.07 z 950.60 h 188, pipes "M5c M5 Enclave Main: middle, 29 m", lap 1,
+   CP3 next): "somehow I got wedged here" (the picture: the screen all dark green, the camera inside the pipe wall). BUG-004 (same spot,
+   turned round, h 8): "the tube is completley blocked" (the picture: an AI rider on an ATV stopped in the pipe ahead). Find why a car
+   wedges at this point of M5c (a seam, a step, a narrowing, a joint between pipe pieces) and fix it; find why the tube is blocked (the
+   stopped ATV, or geometry) and fix that: the AI must never sit stuck in a pipe (recover / reset as on roads). Keep the camera out of
+   the pipe wall. Drive M5c both ways at race speed on all vehicles, no stop.
+D. BUG-005 (x 1854.67 z 1132.51 h 92, THE HUB's floor, Underground race): "this is not enough to prevent yopu from going over the railing or
+   under it". The hub's railings must hold a car: solid down to the floor (no gap under) and high enough not to be jumped or climbed at
+   race speed (or a wall behind them), all round where the race passes. Check: drive at them flat out from the race line, none get through.
+E. THE ELAINE SHORTCUT AND THE REST OF ROUND 56: accepted, no change.
+F. RACE REPLAYS (new, not in Racer). Dan: "can we go ahead and create race replays? Would want it to automatically replace top 1 laps
+   and races with the ability to save any race you want." (Earlier, 2026-10-20: "be able to watch your race you just ran and move the
+   camera around differently".)
+   (1) RECORD every race: every racer (player, AI, split-screen, police in the race) with position, rotation, steering, wheel spin and
+       suspension, lights, rider animation state; plus the world events a race causes so they play again at the same moment: breakables
+       (mailboxes, fences, hydrants and their water, signs, gas pumps exploding, barricades), geese scattering, manhole plumes, bounce
+       house / trampoline bounces, shortcut barriers, traffic cars, and the sounds (engine, impacts, horns, the race's sounds). The race
+       radio / music is not recorded (the replay plays the radio live, or none: Code picks).
+   (2) WATCH: on the finish screen, WATCH REPLAY (pad glyph and key). Controls: play / pause, rewind, fast forward, slow motion, jump to
+       a lap, restart; HUD off by default (toggle). Cameras: the chase camera on any racer (switch racer), the free camera (Trailer
+       Mode's free look), and TV-style roadside cameras placed along the course that cut automatically as the racers pass (the fun way to
+       watch a jump or a shortcut). All controllable with the controller.
+   (3) KEEP: automatically, per track and direction, the replay of the #1 TOP 10 lap and of the #1 TOP 10 race; a new #1 replaces the old
+       one. The best-lap replay plays just that lap (the others as they were then). SAVE: from the finish screen (and from the replay
+       viewer) the player can save any race replay to keep, named by track, direction, date and time.
+   (4) A REPLAYS page in the menus: the kept #1 lap / race per track and the saved ones; watch or delete (the #1s cannot be deleted
+       from there, only replaced). Replays live beside the records in the save folder; report the size of one 3-lap replay.
+   (5) If the map, a track or a shortcut changes later, an old replay may no longer fit the world: mark replays with the build / track
+       version and say on the page if one is older (still playable, the world may differ). Records keys as the records use.
+   Check (exe, minimized, muted): race Addison Heights forward 3 laps (with the Lyndon jump, a smashed barricade and a mailbox), finish,
+   watch the replay: positions match the race within a small error (report it), the breakables break on time, each camera works, the
+   controls work by pad and keys; beat a lap and a race record and see the #1 replays replaced; save a race and find it on the page.
+   Pictures: the replay from each camera kind, the page.
+For Dan to check: the Embry / Suholden corner; COMPLETE RACE with A; the Underground's M5c and the hub's railings; watch a replay with each
+camera, then try the #1s and save one.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
+  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
+  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
+  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
+  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
+  Claude writes the round when Dan says go.
+
+## Previous delivery 1 (newest): Round 56
+**Reviewed: Dan drove the Round 56 build 2026-10-21 21:15 (Addison Heights, Underground); no complaint about the Elaine shortcut, the barricade, the jerk or Joel Drive; his notes are Round 57.**
 **Round 56, THE ELAINE SHORTCUT: LAND ON CRAWFORD CIRCLE, A WAY BACK FROM THERE, A BLOCKED ENTRY WITH TIRE MARKS; a jerk on Elaine;
 the things on Joel Drive (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session `2026-10-21_17-00-50-815_f90718`, read by
 Claude, after the Round 55 exe: Addison Heights forward on the Drifter Twin).** Round 55 is reviewed. Dan: "still not quite hitting the
@@ -165,18 +223,7 @@ Builds: seven full builds and one stopped (two layout tries, the barrier move, t
 For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
 tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 55
+## Previous delivery 2: Round 55
 **Reviewed: Dan drove the Round 55 build 2026-10-21 17:00 (Addison Heights forward): the Elaine shortcut is "still not quite hitting the mark" (Round 56); B to E no complaint.**
 **Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
 2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
@@ -256,7 +303,7 @@ E DONE (modest). The AI pulls out round a slower car once the other lane is clea
 Builds: nine full builds (the junction curve took two; option 2 took five: layout, two tunings, the barrier, the landing arc). `Builds/ChastainRush/` 2026-10-21 16:11. Imported from Racer: nothing.
 For Dan to check: the Elaine jump (land, brake hard, right onto the bench; is the corner through the hedge too easy?); the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
 
-## Previous delivery 2: Round 54
+## Previous delivery 3: Round 54
 **Reviewed: Dan drove the Round 54 build 2026-10-21 12:16 (Addison Heights both ways): "The reverse shortcuts are fine" (A2, A3 accepted; the bounce house needs a sound); A1 (the Elaine jump) "is a fail"; the rest no complaint. His notes are Round 55.**
 **Round 54, ADDISON HEIGHTS: THE ELAINE JUMP, TWO REVERSE SHORTCUTS, BUMPS, SIGNS, A HARDER AI; a missed finish line; COMPLETE RACE;
 fixes on three other tracks (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session `2026-10-21_03-39-54-769_591b8d`, read by Claude, after
@@ -354,71 +401,6 @@ Builds: four full builds, not one (after the checks: the slide's foot and rail, 
    off the lap). `Builds/ChastainRush/` 2026-10-21 08:49. Tools: `ChastainRush.GroundGrid.Run`, `ChastainRush.MaterialScan.Run` (CLAUDE.md).
 For Dan to check: Addison Heights both ways (the new line, Elaine, the terrace on the Drifter, the bounce house, Lyndon's hedges: try to cheat them, the bumps, the signs,
    the AI on Hard); miss a line; COMPLETE RACE; the Glen loop's barriers, the PARTY sign, the slide off its middle; Chastain Lakes at MH15 and out of MH14.
-
-## Previous delivery 3: Round 53
-**Reviewed: Dan drove the Round 53 build 2026-10-21 03:39 (Addison Heights both ways, Chastain Glen reverse, Chastain Lakes); no complaint about A (the Lyndon shortcut stands as built), C or D; B: he chose option (1), now Round 54 A1.**
-**Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
-`2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
-Round 52 is reviewed: "the track itself is good". Both shortcuts are FORWARD only. Standing rules apply (real risk; no free way round
-a shortcut; tire tracks are the hint, no signs; ramps a real physics jump; nothing slows a car on a ramp). ONE full Build Map at the
-end (plan each line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
-A. THE LYNDON DRIVE SHORTCUT: ROAD CREW AND FRESH CONCRETE (Dan's own design). BUG-002 (x 2812.09 z 419.97 h 2, Lyndon Drive at Joel
-   Drive, heading north): "Forward shortcut starts here. The challenge is that constructions crews are here working on the road. A whole
-   part of the road is all freshly poured concrete if you try to drive through it you are slowed like you would be if you were driving
-   in water. A ramp, I am thinking consisting of a trailer that was for the roller and other equipent has its ramp down and there are
-   boards leaned up against the truck so as to get some extra height so you can clear the concrete and finish the shortcut". BUG-003
-   (x 2810.37 z 511.52 h 25, Lyndon at Embry Lane): "shortcut merges back to the road here". So: off Joel Drive north up Lyndon Drive
-   to Embry Lane, skipping the lap's west end. A road-crew site on Lyndon: an equipment trailer (the roller's) with its ramp down and
-   boards leaned against the truck for extra height as the launch (real jump), the roller and other equipment parked, cones, then a
-   stretch of freshly poured concrete across the whole road that slows you like water (Racer's / Round 9's water drag); clear it in the
-   air and you land on firm road and merge onto Embry Lane at Dan's spot. Miss (short, slow, round the trailer) and you are in the wet
-   concrete: slower than the plain lap. Note: Lyndon skips about 270 m of the lap (Claude's estimate, about 10 s); the concrete and the
-   jump must bring a clean run down to a few seconds saved (as the other shortcuts), Code says the numbers. The barrier at Lyndon (both
-   ends) goes; Lyndon south of Joel stays closed. Wet concrete looks wet (darker, glossy) with tire ruts if driven through.
-   THE FLAGGER (Dan, 2026-10-21 01:07): "on the Lyndon drive shortcut, I want there to be a man, right before the ramp but to the
-   left of it. He should be waving a handheld stop sign, motioning to the driver to stop". A road-crew worker (hard hat, hi-vis vest)
-   standing just before the trailer ramp on its left (as you approach northbound), holding a STOP / SLOW paddle with the STOP side
-   toward the driver, waving it and his free arm in a stop motion, looping. Clear of the ramp's line so he never blocks the launch;
-   if a car does come at him, he gets out of the way as the game's other people do (Claude's addition, not Dan's words).
-B. THE ELAINE CIRCLE JUMP. BUG-005 (x 3194.96 z 306.83 h 286, Suholden Circle at Elaine Circle): "Shorcut forward starts here". The
-   crest at that corner, then Elaine Circle drops away downhill west: a big natural jump. Dan, asked how to use it (it would cut about
-   415 m, some 15 s, so as a plain shortcut everyone would take it, and as an alternate path the whole Kelly / Crawford loop would always
-   be skipped): "It does take too much out of the route, but I hate to lose it. ... this jump will miss the track most likely. At least
-   every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main road".
-   So: keep the natural jump off the crest as it is (no ramp needed; find where cars really land at race speed, several vehicles);
-   from that landing build a longer way back to the lap (through the yards / woods beside Elaine, a winding off-road line with its own
-   fun: dips, a small jump, tight between trees), so that a clean run saves only a few seconds. Code picks where it rejoins (the lap
-   heading the race's way, e.g. Crawford Circle / Hayworth Drive northbound or Joel Drive westbound) and says why. Elaine Circle's own
-   road below the landing must not be a free fast way back (standing rule: brush beds or the like that slow you). The barrier at the
-   Elaine corner goes (the crest stays open); the lap's line through that corner is unchanged for those who do not take it.
-C. BUG-004 (x 3201.59 z 332.55 h 80, beside Elaine Circle just below the corner, on B's line): "fix this house" (the picture: a huge
-   grey wall slab standing up beside the house, the house broken apart). Fix it; B's line passes it, so it must look right from there.
-D. BUG-001 (x 2809.71 z 512.68 h 62, Lyndon Drive at Embry Lane, A's merge): "EVEN THIS SPOT OUT" (a crease / bump where Lyndon's crown
-   meets Embry's). Smooth the junction so A's landing and merge ride clean.
-Check: each shortcut clean (time saved, Street Classic and Drifter Twin), short / missed (slower than the plain lap), and its free
-way round (slower); the AI takes each sometimes, forward race x2 traffic Normal, all finish; reverse race unchanged (both shortcuts
-shut in reverse). Pictures: Dan's five spots, the crew site with the flagger, the wet concrete, B's landing and its way back, the house.
-For Dan to check: both shortcuts forward (try to cheat them); the house at BUG-004; the Lyndon / Embry junction.
-
-**Status (Claude, 2026-10-21): A, C, D built and checked in the exe by script, not yet driven by Dan; B built, driven and taken out (does not fit).** Evidence `Data/screenshots/round53/`.
-A DONE, time saved NOT MET. The roller's tilt-deck trailer (2.6 m wide, its true width) with eight planks leaned on its front rack: a real jump, lip 2.35 m at 22 deg
-   (`MapBuilder.Round53.cs`). The boards lean on the trailer's rack, not on the truck: a truck in front would stand in the concrete and launch you into its cab.
-   So its flatbed truck and the roller are parked on the east lawn, the mixer past Embry. Also: cones, the flagger on the trailer's left with a STOP / SLOW paddle
-   (`Neighborhood/Flagger.cs`; he steps off the road if you drive at him), 39.5 m of fresh concrete with ruts (`WetConcrete`), shrub beds in the yards.
-   Lyndon's two barriers are open forward only. Clean, flat out: saves 9.8 s (Street Classic) / 4.4 s (Drifter Twin); cars leave the planks at 26 to 28 m/s and fly 44 to 51 m.
-   Without the jump, all slower than the lap: round the trailer +0.2 / +0.3 s, through the yards +1.6 s; the east side is blocked by the truck.
-   Short off the planks: 15 m/s saves 3.2 s, 18 m/s saves 5.3 s (NOT MET). Tuning (two tries, stopped): first 26 m of concrete at half the drag lost only 3 s round
-   the trailer; then 39.5 m, drag 4/s, longer beds. The cause: Lyndon is 123 m against 450 m of lap, so even a fumble saves time.
-B NOT BUILT. The finish line is on Kelly Drive, so the way back from Elaine's valley must rejoin Kelly before the line, and Suholden Circle is already the straight way
-   there: the woods way was 330 m against 332 m of lap; Drifter Twin 1.7 s slower. Your options: (1) move the start / finish to Crawford Circle's east leg
-   (straight, 7 %) so the way can rejoin Crawford or Hayworth and save a few seconds (Code's pick); (2) drop B. Elaine stays barred at the corner.
-C DONE. 1089 is a ranch whose carport stood open over the falling yard (no floor, posts in the air). It now has a floor to the ground, a ceiling and a side beam.
-D DONE. Junction smoothed along Embry's grade. Merging from Lyndon at 14 m/s: before, all four wheels left the ground (1.24 m/s jolt); now none (0.10 m/s).
-   Along Embry at 22 m/s: 1.60 m/s jolt before, 0.14 m/s after.
-Races, traffic Normal: forward x2, reverse x1, 9 of 9 AI finish; the AI took Lyndon 4 times, all clean. One missed checkpoint (Ridge Scrambler, no shortcut, as Round 52).
-   Barriers: 12 forward and 14 reverse all hold.
-Builds: two full builds (the second for A's tuning and B taken out); `Builds/ChastainRush/` 2026-10-21 02:59. Imported from Racer: nothing.
-For Dan to check: the Lyndon shortcut (try to cheat it; is a 4 to 10 s saving OK?); pick B's option; the carport at BUG-004; the Lyndon / Embry junction.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

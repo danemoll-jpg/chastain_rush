@@ -5554,3 +5554,70 @@ Not changed (Dan's call): the same floating windows on about 100 other style E h
    neighborhoods (Round 30's log counts 501 with ground over their floor).
 For Dan to check: drive Addison Heights both ways (and pick its shortcuts); the houses at your three spots and along the lap; is Kelly Drive right for the start?
    Watch the AI on Embry Lane's hill (do you want AI speed zones there, or wider checkpoints?).
+
+## Round 53 (moved from TODO.md on 2026-10-21 when Dan reviewed Round 56; word for word)
+
+## Previous delivery 3: Round 53
+**Reviewed: Dan drove the Round 53 build 2026-10-21 03:39 (Addison Heights both ways, Chastain Glen reverse, Chastain Lakes); no complaint about A (the Lyndon shortcut stands as built), C or D; B: he chose option (1), now Round 54 A1.**
+**Round 53, ADDISON HEIGHTS' TWO FORWARD SHORTCUTS, a house and a bump (Dan, 2026-10-20 12:38; reports BUG-001 to BUG-005 of session
+`2026-10-20_01-26-12-613_8b4dc1`, read by Claude, after the Round 52 exe: Addison Heights forward and Free Roam on the Drifter Twin).**
+Round 52 is reviewed: "the track itself is good". Both shortcuts are FORWARD only. Standing rules apply (real risk; no free way round
+a shortcut; tire tracks are the hint, no signs; ramps a real physics jump; nothing slows a car on a ramp). ONE full Build Map at the
+end (plan each line on paper first, the run without the stunt included; quick builds while working). Tuning limit. Short results.
+A. THE LYNDON DRIVE SHORTCUT: ROAD CREW AND FRESH CONCRETE (Dan's own design). BUG-002 (x 2812.09 z 419.97 h 2, Lyndon Drive at Joel
+   Drive, heading north): "Forward shortcut starts here. The challenge is that constructions crews are here working on the road. A whole
+   part of the road is all freshly poured concrete if you try to drive through it you are slowed like you would be if you were driving
+   in water. A ramp, I am thinking consisting of a trailer that was for the roller and other equipent has its ramp down and there are
+   boards leaned up against the truck so as to get some extra height so you can clear the concrete and finish the shortcut". BUG-003
+   (x 2810.37 z 511.52 h 25, Lyndon at Embry Lane): "shortcut merges back to the road here". So: off Joel Drive north up Lyndon Drive
+   to Embry Lane, skipping the lap's west end. A road-crew site on Lyndon: an equipment trailer (the roller's) with its ramp down and
+   boards leaned against the truck for extra height as the launch (real jump), the roller and other equipment parked, cones, then a
+   stretch of freshly poured concrete across the whole road that slows you like water (Racer's / Round 9's water drag); clear it in the
+   air and you land on firm road and merge onto Embry Lane at Dan's spot. Miss (short, slow, round the trailer) and you are in the wet
+   concrete: slower than the plain lap. Note: Lyndon skips about 270 m of the lap (Claude's estimate, about 10 s); the concrete and the
+   jump must bring a clean run down to a few seconds saved (as the other shortcuts), Code says the numbers. The barrier at Lyndon (both
+   ends) goes; Lyndon south of Joel stays closed. Wet concrete looks wet (darker, glossy) with tire ruts if driven through.
+   THE FLAGGER (Dan, 2026-10-21 01:07): "on the Lyndon drive shortcut, I want there to be a man, right before the ramp but to the
+   left of it. He should be waving a handheld stop sign, motioning to the driver to stop". A road-crew worker (hard hat, hi-vis vest)
+   standing just before the trailer ramp on its left (as you approach northbound), holding a STOP / SLOW paddle with the STOP side
+   toward the driver, waving it and his free arm in a stop motion, looping. Clear of the ramp's line so he never blocks the launch;
+   if a car does come at him, he gets out of the way as the game's other people do (Claude's addition, not Dan's words).
+B. THE ELAINE CIRCLE JUMP. BUG-005 (x 3194.96 z 306.83 h 286, Suholden Circle at Elaine Circle): "Shorcut forward starts here". The
+   crest at that corner, then Elaine Circle drops away downhill west: a big natural jump. Dan, asked how to use it (it would cut about
+   415 m, some 15 s, so as a plain shortcut everyone would take it, and as an alternate path the whole Kelly / Crawford loop would always
+   be skipped): "It does take too much out of the route, but I hate to lose it. ... this jump will miss the track most likely. At least
+   every time I tried it. Perhaps we can build off where it lands, have the path be a little longer before you join the main road".
+   So: keep the natural jump off the crest as it is (no ramp needed; find where cars really land at race speed, several vehicles);
+   from that landing build a longer way back to the lap (through the yards / woods beside Elaine, a winding off-road line with its own
+   fun: dips, a small jump, tight between trees), so that a clean run saves only a few seconds. Code picks where it rejoins (the lap
+   heading the race's way, e.g. Crawford Circle / Hayworth Drive northbound or Joel Drive westbound) and says why. Elaine Circle's own
+   road below the landing must not be a free fast way back (standing rule: brush beds or the like that slow you). The barrier at the
+   Elaine corner goes (the crest stays open); the lap's line through that corner is unchanged for those who do not take it.
+C. BUG-004 (x 3201.59 z 332.55 h 80, beside Elaine Circle just below the corner, on B's line): "fix this house" (the picture: a huge
+   grey wall slab standing up beside the house, the house broken apart). Fix it; B's line passes it, so it must look right from there.
+D. BUG-001 (x 2809.71 z 512.68 h 62, Lyndon Drive at Embry Lane, A's merge): "EVEN THIS SPOT OUT" (a crease / bump where Lyndon's crown
+   meets Embry's). Smooth the junction so A's landing and merge ride clean.
+Check: each shortcut clean (time saved, Street Classic and Drifter Twin), short / missed (slower than the plain lap), and its free
+way round (slower); the AI takes each sometimes, forward race x2 traffic Normal, all finish; reverse race unchanged (both shortcuts
+shut in reverse). Pictures: Dan's five spots, the crew site with the flagger, the wet concrete, B's landing and its way back, the house.
+For Dan to check: both shortcuts forward (try to cheat them); the house at BUG-004; the Lyndon / Embry junction.
+
+**Status (Claude, 2026-10-21): A, C, D built and checked in the exe by script, not yet driven by Dan; B built, driven and taken out (does not fit).** Evidence `Data/screenshots/round53/`.
+A DONE, time saved NOT MET. The roller's tilt-deck trailer (2.6 m wide, its true width) with eight planks leaned on its front rack: a real jump, lip 2.35 m at 22 deg
+   (`MapBuilder.Round53.cs`). The boards lean on the trailer's rack, not on the truck: a truck in front would stand in the concrete and launch you into its cab.
+   So its flatbed truck and the roller are parked on the east lawn, the mixer past Embry. Also: cones, the flagger on the trailer's left with a STOP / SLOW paddle
+   (`Neighborhood/Flagger.cs`; he steps off the road if you drive at him), 39.5 m of fresh concrete with ruts (`WetConcrete`), shrub beds in the yards.
+   Lyndon's two barriers are open forward only. Clean, flat out: saves 9.8 s (Street Classic) / 4.4 s (Drifter Twin); cars leave the planks at 26 to 28 m/s and fly 44 to 51 m.
+   Without the jump, all slower than the lap: round the trailer +0.2 / +0.3 s, through the yards +1.6 s; the east side is blocked by the truck.
+   Short off the planks: 15 m/s saves 3.2 s, 18 m/s saves 5.3 s (NOT MET). Tuning (two tries, stopped): first 26 m of concrete at half the drag lost only 3 s round
+   the trailer; then 39.5 m, drag 4/s, longer beds. The cause: Lyndon is 123 m against 450 m of lap, so even a fumble saves time.
+B NOT BUILT. The finish line is on Kelly Drive, so the way back from Elaine's valley must rejoin Kelly before the line, and Suholden Circle is already the straight way
+   there: the woods way was 330 m against 332 m of lap; Drifter Twin 1.7 s slower. Your options: (1) move the start / finish to Crawford Circle's east leg
+   (straight, 7 %) so the way can rejoin Crawford or Hayworth and save a few seconds (Code's pick); (2) drop B. Elaine stays barred at the corner.
+C DONE. 1089 is a ranch whose carport stood open over the falling yard (no floor, posts in the air). It now has a floor to the ground, a ceiling and a side beam.
+D DONE. Junction smoothed along Embry's grade. Merging from Lyndon at 14 m/s: before, all four wheels left the ground (1.24 m/s jolt); now none (0.10 m/s).
+   Along Embry at 22 m/s: 1.60 m/s jolt before, 0.14 m/s after.
+Races, traffic Normal: forward x2, reverse x1, 9 of 9 AI finish; the AI took Lyndon 4 times, all clean. One missed checkpoint (Ridge Scrambler, no shortcut, as Round 52).
+   Barriers: 12 forward and 14 reverse all hold.
+Builds: two full builds (the second for A's tuning and B taken out); `Builds/ChastainRush/` 2026-10-21 02:59. Imported from Racer: nothing.
+For Dan to check: the Lyndon shortcut (try to cheat it; is a 4 to 10 s saving OK?); pick B's option; the carport at BUG-004; the Lyndon / Embry junction.
