@@ -25,7 +25,7 @@ namespace ChastainRush
         [Serializable] class Road { public string name; public string @class; public float width; public bool oneway; public float[] points; }
         [Serializable] class Bridge { public string name; public string @class; public float width; public float[] points; public float[] deck_y; }
         [Serializable] class MapData { public Road[] roads; public Bridge[] bridges; }
-        [Serializable] class TerrainMeta { public float tile_w_m; public float tile_d_m; public int tiles_x; public int tiles_z; }
+        [Serializable] class TerrainMeta { public float tile_w_m; public float tile_d_m; public int tiles_x; public int tiles_z; public float origin_x_m, origin_z_m; }
 
         const float RayHeight = 1.5f; // rays start this far above the expected surface: above the car's roof, below a house's eaves
         const float Step = 0.25f, TrackOffset = 0.85f, StepLimit = 0.03f, HumpLimit = 0.10f, HumpHalf = 3f, ChunkCell = 128f;
@@ -55,7 +55,7 @@ namespace ChastainRush
             EditorSceneManager.OpenScene(MapBuilder.ScenePath);
             Physics.SyncTransforms();
             var map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(root, "Data/map.json")));
-            var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(root, "Assets/Generated/terrain.json")));
+            var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(root, File.Exists(Path.Combine(root, "Assets/Generated/terrain_full.json")) ? "Assets/Generated/terrain_full.json" : "Assets/Generated/terrain.json")));
 
             // the player car is part of the scene but not part of the road
             foreach (var c in UnityEngine.Object.FindObjectsByType<Collider>()) if (c.attachedRigidbody != null) c.enabled = false;
@@ -335,8 +335,8 @@ namespace ChastainRush
             if (Mathf.Min(cx, cz) < 1.5f) tags.Add("chunk-boundary");
             // terrain tile seams
             // (interior seams only; the map's outer edge is not a seam)
-            float kx = Mathf.Round(e.x / meta.tile_w_m), kz = Mathf.Round(e.z / meta.tile_d_m);
-            float sx = kx >= 1 && kx <= meta.tiles_x - 1 ? Mathf.Abs(e.x - kx * meta.tile_w_m) : 1e9f, sz = kz >= 1 && kz <= meta.tiles_z - 1 ? Mathf.Abs(e.z - kz * meta.tile_d_m) : 1e9f;
+            float kx = Mathf.Round((e.x - meta.origin_x_m) / meta.tile_w_m), kz = Mathf.Round((e.z - meta.origin_z_m) / meta.tile_d_m);   // Round 59: the grid's origin
+            float sx = kx >= 1 && kx <= meta.tiles_x - 1 ? Mathf.Abs(e.x - meta.origin_x_m - kx * meta.tile_w_m) : 1e9f, sz = kz >= 1 && kz <= meta.tiles_z - 1 ? Mathf.Abs(e.z - meta.origin_z_m - kz * meta.tile_d_m) : 1e9f;
             if (Mathf.Min(sx, sz) < 1.5f) tags.Add("tile-seam");
             if (nearHighway(new Vector2(e.x, e.z))) tags.Add("i575-zone");
             if (nearOther(new Vector2(e.x, e.z), selfIdx, out var other)) tags.Add("junction:" + other);

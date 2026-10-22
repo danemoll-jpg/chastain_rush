@@ -1481,6 +1481,24 @@
    "y": 262.0,
    "fixed": true,
    "yaw": 90.0
+  },
+  {
+   "id": "town-center",
+   "title": "Town Center at Cobb",
+   "x": 442.63,
+   "z": -1591.54,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 60.7
+  },
+  {
+   "id": "ksu",
+   "title": "Kennesaw State University",
+   "x": -1858.74,
+   "z": 987.44,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 185.3
   }
  ]
 }

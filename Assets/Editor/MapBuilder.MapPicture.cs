@@ -18,9 +18,9 @@ namespace ChastainRush
 
         sealed class Raster
         {
-            public readonly int W, H; public readonly float Sx, Sz; public readonly Color32[] Px;
-            public Raster(int w, int h, float sizeX, float sizeZ) { W = w; H = h; Sx = w / sizeX; Sz = h / sizeZ; Px = new Color32[w * h]; }
-            Vector2 P(Vector2 q) => new Vector2(q.x * Sx, q.y * Sz);
+            public readonly int W, H; public readonly float Sx, Sz, X0, Z0; public readonly Color32[] Px;   // Round 59: X0, Z0 the map's south-west corner
+            public Raster(int w, int h, Rect world) { W = w; H = h; Sx = w / world.width; Sz = h / world.height; X0 = world.xMin; Z0 = world.yMin; Px = new Color32[w * h]; }
+            Vector2 P(Vector2 q) => new Vector2((q.x - X0) * Sx, (q.y - Z0) * Sz);
             void Span(int y, float x0, float x1, Color32 c, float a)
             {
                 if (y < 0 || y >= H) return;
@@ -77,11 +77,13 @@ namespace ChastainRush
 
         static void BakeMapPicture(MapData map, TerrainGrid terrain, ShoppingCenter shop, CreekTrack ct, TreeField trees)
         {
-            const int W = 4096; int H = Mathf.RoundToInt(W * map.size_z_m / map.size_x_m);
-            var r = new Raster(W, H, map.size_x_m, map.size_z_m);
+            // Round 59: over the whole map (the extension's too); 8192 wide once the map is over 4.5 km (about 0.8 m a pixel; 4096 kept the core's 1 m)
+            var ext = MapExtent(map);
+            int W = ext.width > 4500f ? 8192 : 4096; int H = Mathf.RoundToInt(W * ext.height / ext.width);
+            var r = new Raster(W, H, ext);
             // the ground: a grass green, lit from the north-west by the ground's slope (sampled every other pixel)
-            int hw = W / 2, hh = H / 2; var hgt = new float[hw * hh]; float cx = map.size_x_m / hw, cz = map.size_z_m / hh;
-            for (int j = 0; j < hh; j++) for (int i = 0; i < hw; i++) hgt[j * hw + i] = terrain.Height(Mathf.Min((i + 0.5f) * cx, map.size_x_m - 0.5f), Mathf.Min((j + 0.5f) * cz, map.size_z_m - 0.5f));
+            int hw = W / 2, hh = H / 2; var hgt = new float[hw * hh]; float cx = ext.width / hw, cz = ext.height / hh;
+            for (int j = 0; j < hh; j++) for (int i = 0; i < hw; i++) hgt[j * hw + i] = terrain.Height(ext.xMin + Mathf.Min((i + 0.5f) * cx, ext.width - 0.5f), ext.yMin + Mathf.Min((j + 0.5f) * cz, ext.height - 0.5f));
             float lo = hgt.Min(), hi = hgt.Max();
             var light = new Vector3(-1f, 1.4f, 1f).normalized;
             for (int y = 0; y < H; y++)
@@ -125,10 +127,10 @@ namespace ChastainRush
             AssetDatabase.ImportAsset(MapPicturePath, ImportAssetOptions.ForceUpdate);
             if (AssetImporter.GetAtPath(MapPicturePath) is TextureImporter ti)
             {
-                ti.textureType = TextureImporterType.Default; ti.maxTextureSize = 4096; ti.mipmapEnabled = true; ti.wrapMode = TextureWrapMode.Clamp;
+                ti.textureType = TextureImporterType.Default; ti.maxTextureSize = W; ti.mipmapEnabled = true; ti.wrapMode = TextureWrapMode.Clamp;
                 ti.textureCompression = TextureImporterCompression.CompressedHQ; ti.npotScale = TextureImporterNPOTScale.None; ti.SaveAndReimport();
             }
-            Debug.Log($"[Round20] the map's picture: {W} x {H} ({map.size_x_m / W:0.00} m a pixel), {MapPicturePath}");
+            Debug.Log($"[Round20] the map's picture: {W} x {H} ({ext.width / W:0.00} m a pixel), {MapPicturePath}");
         }
         [System.Serializable] class WoodsFile { public Area[] woods; }
     }

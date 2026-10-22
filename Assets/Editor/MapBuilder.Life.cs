@@ -233,11 +233,14 @@ namespace ChastainRush
             Vector2 Escape(Vector2 p) { RoadEdge(p, out var q); var e = p - q; return e.sqrMagnitude > .01f ? e.normalized : Vector2.up; }   // away from the nearest road
             void Hab(Wildlife.Species s, Vector2 p, Vector2 esc) { habitats.Add(new Wildlife.Habitat { species = s, position = At(p) + Vector3.up * .03f, escape = new Vector3(esc.x, 0, esc.y) }); if (!animalAt.TryGetValue(s, out var l)) animalAt[s] = l = new List<Vector2>(); l.Add(p); }
             // the tree cover grid (40 m cells) from the trees as planted
-            float cell = 40f; int gw = Mathf.CeilToInt(map.size_x_m / cell), gh = Mathf.CeilToInt(map.size_z_m / cell); var count = new int[gw * gh];
+            // Round 59: the grid over the whole map; the animals' places from the core's trees only (the map extension's trees follow them in
+            // trees.bin: the core's habitats stay as they were)
+            var lext = MapExtent(map);
+            float cell = 40f; int gw = Mathf.CeilToInt(lext.width / cell), gh = Mathf.CeilToInt(lext.height / cell); var count = new int[gw * gh];
             var tf = trees; var treeList = new List<Vector2>();
-            for (int i = 0; i < tf.count; i++) { var tr = TreeField.Unpack(tf.data, i); int x = Mathf.Clamp((int)(tr.x / cell), 0, gw - 1), z = Mathf.Clamp((int)(tr.z / cell), 0, gh - 1); count[z * gw + x]++; treeList.Add(new Vector2(tr.x, tr.z)); }
+            for (int i = 0; i < tf.count; i++) { var tr = TreeField.Unpack(tf.data, i); int x = Mathf.Clamp((int)((tr.x - lext.xMin) / cell), 0, gw - 1), z = Mathf.Clamp((int)((tr.z - lext.yMin) / cell), 0, gh - 1); count[z * gw + x]++; if (tr.x >= 0f && tr.z >= 0f) treeList.Add(new Vector2(tr.x, tr.z)); }
             var cover = count.Select(n => (byte)Mathf.Clamp(n * 255 / 28, 0, 255)).ToArray();
-            float Cover(Vector2 p) { int x = Mathf.Clamp((int)(p.x / cell), 0, gw - 1), z = Mathf.Clamp((int)(p.y / cell), 0, gh - 1); return cover[z * gw + x] / 255f; }
+            float Cover(Vector2 p) { int x = Mathf.Clamp((int)((p.x - lext.xMin) / cell), 0, gw - 1), z = Mathf.Clamp((int)((p.y - lext.yMin) / cell), 0, gh - 1); return cover[z * gw + x] / 255f; }
             var rng = new System.Random(3838);
             foreach (int i in Enumerable.Range(0, treeList.Count).OrderBy(_ => rng.Next()))
             {

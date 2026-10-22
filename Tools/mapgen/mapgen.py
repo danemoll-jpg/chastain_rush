@@ -211,7 +211,7 @@ def vscale(cfg):
     return k
 
 
-def process_osm(cfg, osm, rect):
+def process_osm(cfg, osm, rect, owner_marker=True):   # Round 59: owner_marker False for the map extension (the core run writes it)
     w0, s0, e0, n0 = rect
     tr = Transformer.from_crs(4326, cfg["utm_epsg"], always_xy=True)
     nodes = {}
@@ -232,7 +232,7 @@ def process_osm(cfg, osm, rect):
     ramps, parking = [], []   # Round 31: motorway_link ways (appended to roads at the end); surface parking lots
     owner_cfg = None
     owner_path = os.path.join(ROOT, cfg["owner_house_file"])
-    if os.path.exists(owner_path):
+    if owner_marker and os.path.exists(owner_path):
         with open(owner_path, encoding="utf-8") as f:
             owner_cfg = json.load(f)
     owner = None
@@ -924,7 +924,13 @@ def build_terrain(cfg, dem_path, mapdata):
     at_grade, culvert_hits = plan_bridges(cfg, mapdata, sample)
     rpt = write_bridge_report(mapdata["bridges"], at_grade, culvert_hits)
     log(f"Bridges: {len(mapdata['bridges'])} built, {len(at_grade)} crossings left at grade -> {rpt}")
+    h = flatten_roads(cfg, h, sample, mapdata["roads"], sx, sz, gx_n, gz_n)
+    return finish_terrain(cfg, h, raw, gx_n, gz_n, nx, nz, W, H, sx, sz, k, datum, src_min, src_max)
 
+
+def flatten_roads(cfg, h, sample, roads, sx, sz, gx_n, gz_n):
+    """The roads levelled across their width into the terrain samples h (Round 59: its own function, so the map extension
+    levels its roads the same way)."""
     fl = cfg["road_flatten"]
     taper = cfg["bridges"]["end_taper_m"]
     best_w = np.zeros_like(h)
@@ -936,7 +942,7 @@ def build_terrain(cfg, dem_path, mapdata):
     wide_rects = fl.get("wider_wins_rects", [])
     best_k = np.zeros_like(h)
     plans = []
-    for road in mapdata["roads"]:
+    for road in roads:
         if road["tunnel"]:
             continue
         pts = np.array(road["points"], dtype=np.float64)
@@ -1031,7 +1037,11 @@ def build_terrain(cfg, dem_path, mapdata):
             target[sl] = np.where(better, tgt, target[sl])
     h = (h * (1 - best_w) + target * best_w).astype(np.float32)
     if stems: log(f"Junctions: {warped} stem segments warped onto their through road")
+    return h
 
+
+def finish_terrain(cfg, h, raw, gx_n, gz_n, nx, nz, W, H, sx, sz, k, datum, src_min, src_max):
+    tc = cfg["terrain"]
     lo, hi = float(h.min()) - 1.0, float(h.max()) + 1.0
     norm = np.round((h - lo) / (hi - lo) * 65535).astype("<u2")
     os.makedirs(GENERATED, exist_ok=True)
@@ -1049,6 +1059,7 @@ def build_terrain(cfg, dem_path, mapdata):
         f"road flattening moved {(moved > 0.05).mean() * 100:.1f}% of samples, max {moved.max():.2f} m -> {out}")
     log(f"Elevation check: USGS crop {src_min:.3f}-{src_max:.3f} m (x{k:g} about {datum:.3f} -> "
         f"{src_min:.3f}-{datum + (src_max - datum) * k:.3f} m expected); terrain {h.min():.3f}-{h.max():.3f} m")
+    return h, meta
 
 
 # ---------------------------------------------------------------- shared raster of what trees must keep off
@@ -1396,9 +1407,12 @@ def main():
     osm = fetch_osm(cfg, args.refresh_osm, rect)
     dem = build_heightmap(cfg, rect)
     mapdata = process_osm(cfg, osm, rect)
-    build_terrain(cfg, dem, mapdata)
+    core_h, core_meta = build_terrain(cfg, dem, mapdata)
     plan_driveways(cfg, mapdata)
     plan_trees(cfg, mapdata, rect)
+    if cfg.get("extension"):   # Round 59: the map extension (Tools/mapgen/mapgen_extend.py): new land appended, the core as it was
+        import mapgen_extend
+        mapgen_extend.extend(cfg, rect, mapdata, core_h, core_meta, args.refresh_osm)
     write_map(mapdata)
     log("Done. In Unity: Chastain Rush > Build Map (or run the batch build).")
 

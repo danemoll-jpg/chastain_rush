@@ -35,18 +35,24 @@ namespace ChastainRush
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
         [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
-        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; }
-        [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; }
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; }
+        // Round 59: the whole map's rectangle (x0, z0, x1, z1): map.json's extent_m (the extension reaches to negative x / z), else 0..size
+        static Rect MapExtent(MapData m) => m.extent_m != null && m.extent_m.Length == 4 ? Rect.MinMaxRect(m.extent_m[0], m.extent_m[1], m.extent_m[2], m.extent_m[3]) : new Rect(0f, 0f, m.size_x_m, m.size_z_m);
+        [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; public float origin_x_m, origin_z_m; }
+        // Round 59 (the map extension): the whole grid is terrain_full.json / .r16 when mapgen made one (its origin west and south of the core's,
+        // at negative x / z); terrain.json / .r16 stay the core's (the python scripts that sample the ground read those)
+        static string TerrainFile(string ext) => File.Exists(Path.Combine(ProjectRoot, GeneratedDir, "terrain_full.json")) ? "terrain_full" + ext : "terrain" + ext;
+        static TerrainMeta LoadTerrainMeta() => JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, TerrainFile(".json"))));
 
         // The terrain is a grid of tiles that share their edge samples; this finds the tile under a point.
         sealed class TerrainGrid
         {
             public Terrain[,] Tiles;
-            public float TileW, TileD, BaseY;
+            public float TileW, TileD, BaseY, OriginX, OriginZ;   // Round 59: OriginX / OriginZ, the grid's south-west corner
             public Terrain At(float x, float z)
             {
-                int i = Mathf.Clamp(Mathf.FloorToInt(x / TileW), 0, Tiles.GetLength(0) - 1);
-                int j = Mathf.Clamp(Mathf.FloorToInt(z / TileD), 0, Tiles.GetLength(1) - 1);
+                int i = Mathf.Clamp(Mathf.FloorToInt((x - OriginX) / TileW), 0, Tiles.GetLength(0) - 1);
+                int j = Mathf.Clamp(Mathf.FloorToInt((z - OriginZ) / TileD), 0, Tiles.GetLength(1) - 1);
                 return Tiles[i, j];
             }
             public float Height(float x, float z) => At(x, z).SampleHeight(new Vector3(x, 0f, z)) + BaseY;
@@ -107,7 +113,7 @@ namespace ChastainRush
             ProjectSetup.EnsureUrp();
             var map = c.map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
             Round47Drives(map);   // Round 47 (B): the drives on Chastain Road at Dan's spot go to their own street
-            var meta = c.meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
+            var meta = c.meta = LoadTerrainMeta();
 
             if (!quick)
             {
@@ -189,10 +195,10 @@ namespace ChastainRush
         static TerrainGrid BuildTerrain(TerrainMeta meta, Materials mats, bool quick = false)
         {
             int res = meta.tile_resolution, cells = res - 1;
-            var bytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, "terrain.r16"));
-            if (bytes.Length != (long)meta.grid_x * meta.grid_z * 2) throw new Exception($"terrain.r16 is {bytes.Length} bytes, expected {(long)meta.grid_x * meta.grid_z * 2}");
+            var bytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, TerrainFile(".r16")));
+            if (bytes.Length != (long)meta.grid_x * meta.grid_z * 2) throw new Exception($"{TerrainFile(".r16")} is {bytes.Length} bytes, expected {(long)meta.grid_x * meta.grid_z * 2}");
             if (!quick) foreach (var guid in AssetDatabase.FindAssets("TerrainData t:TerrainData", new[] { GeneratedDir })) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(guid));
-            var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height };
+            var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height, OriginX = meta.origin_x_m, OriginZ = meta.origin_z_m };
             var root = new GameObject(quick ? QuickTerrainRoot : "Terrain").transform;
             var heights = new float[res, res];
             for (int tz = 0; tz < meta.tiles_z; tz++)
@@ -214,7 +220,7 @@ namespace ChastainRush
                     var go = Terrain.CreateTerrainGameObject(data);
                     go.name = $"Terrain_{tx}_{tz}";
                     go.transform.SetParent(root, false);
-                    go.transform.position = new Vector3(tx * meta.tile_w_m, meta.min_height, tz * meta.tile_d_m);
+                    go.transform.position = new Vector3(meta.origin_x_m + tx * meta.tile_w_m, meta.min_height, meta.origin_z_m + tz * meta.tile_d_m);
                     var terrain = go.GetComponent<Terrain>();
                     terrain.heightmapPixelError = 3f;
                     terrain.basemapDistance = 2000f;

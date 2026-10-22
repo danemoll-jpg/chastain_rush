@@ -19,7 +19,7 @@ namespace ChastainRush
     public sealed class Exploration : MonoBehaviour
     {
         [Serializable] public sealed class Destination { public string id, title; public Vector3 position; public float yaw; public bool fixedY; }
-        [Serializable] public sealed class Data { public int version = 1; public string world = World; public List<int> visited = new List<int>(); public List<string> landmarks = new List<string>(); }
+        [Serializable] public sealed class Data { public int version = 1; public string world = World; public List<int> visited = new List<int>(); public List<string> landmarks = new List<string>(); public float ox, oz; public int cols; }   // Round 59: ox, oz, cols the grid the cells were numbered on (0: the core map's, before the extension)
         public const string World = "chastain-v1";
         public const float Cell = 20f, Reveal = 48f, Discover = 45f;
         public Destination[] destinations = new Destination[0];
@@ -43,8 +43,12 @@ namespace ChastainRush
 
         void Start()
         {
-            var e = GroundQuery.Extent(); world = e.width > 0 ? e : new Rect(0, 0, 3983, 1918);
-            cols = Mathf.CeilToInt(world.width / Cell); rows = Mathf.CeilToInt(world.height / Cell);
+            var e = GroundQuery.Extent(); e = e.width > 0 ? e : new Rect(0, 0, 3983, 1918);
+            // Round 59: the cells on whole multiples of Cell from the world's origin (the map extension starts at negative x / z), so a cell found on
+            // the core map is the same ground on any larger one
+            float gx0 = Mathf.Floor(e.xMin / Cell) * Cell, gz0 = Mathf.Floor(e.yMin / Cell) * Cell;
+            cols = Mathf.CeilToInt((e.xMax - gx0) / Cell); rows = Mathf.CeilToInt((e.yMax - gz0) / Cell);
+            world = new Rect(gx0, gz0, cols * Cell, rows * Cell);
             var hunt = FindAnyObjectByType<EggHunt>(FindObjectsInactive.Include);
             var src = hunt ? hunt.GetComponent<ExplorationPlaces>() : FindAnyObjectByType<ExplorationPlaces>(FindObjectsInactive.Include);
             if (src) destinations = src.destinations;
@@ -55,7 +59,12 @@ namespace ChastainRush
                 if (File.Exists(path)) data = JsonUtility.FromJson<Data>(File.ReadAllText(path)) ?? new Data();
                 if (data.world != World || data.version != 1) throw new IOException("Incompatible map data kept");
                 data.visited ??= new List<int>(); data.landmarks ??= new List<string>();
-                foreach (int c in data.visited) if (c >= 0 && c < cols * rows) visited.Add(c);
+                // Round 59: cells saved on another grid (the core map's: ox 0, oz 0, 200 columns) renumbered onto this one
+                int oc = data.cols > 0 ? data.cols : Mathf.CeilToInt(3983f / Cell);
+                int dx = Mathf.RoundToInt((data.ox - world.xMin) / Cell), dz = Mathf.RoundToInt((data.oz - world.yMin) / Cell);
+                foreach (int c in data.visited) { int x = c % oc + dx, y = c / oc + dz; if (c >= 0 && x >= 0 && x < cols && y >= 0 && y < rows) visited.Add(y * cols + x); }
+                if (data.cols != cols || data.ox != world.xMin || data.oz != world.yMin) dirty = true;
+                data.ox = world.xMin; data.oz = world.yMin; data.cols = cols;
             }
             catch (Exception ex) { error = "Map save unavailable: " + ex.Message; }
             Version++;

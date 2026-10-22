@@ -257,7 +257,7 @@ namespace ChastainRush
         static bool EdgeCut(Bridge b, MapData map)
         {
             var (a, z) = Ends(b, false);
-            bool Edge(Vector2 p) => p.x < 2f || p.y < 2f || p.x > map.size_x_m - 2f || p.y > map.size_z_m - 2f;
+            var mext = MapExtent(map); bool Edge(Vector2 p) => p.x < mext.xMin + 2f || p.y < mext.yMin + 2f || p.x > mext.xMax - 2f || p.y > mext.yMax - 2f;   // Round 59: the whole map's edge
             return Edge(a) || Edge(z);
         }
         static (Vector2 a, Vector2 z) Ends(Bridge b, bool rev)

@@ -26,9 +26,9 @@ namespace ChastainRush
                 var scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(ScenePath);
                 foreach (var g in scene.GetRootGameObjects().Where(g => g.name.StartsWith("Free roam activities"))) UnityEngine.Object.DestroyImmediate(g);
                 var tiles = UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None);
-                var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, "terrain.json")));
-                var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height };
-                foreach (var tr in tiles) { int i = Mathf.RoundToInt(tr.transform.position.x / meta.tile_w_m), j = Mathf.RoundToInt(tr.transform.position.z / meta.tile_d_m); grid.Tiles[i, j] = tr; }
+                var meta = LoadTerrainMeta();   // Round 59
+                var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height, OriginX = meta.origin_x_m, OriginZ = meta.origin_z_m };
+                foreach (var tr in tiles) { int i = Mathf.RoundToInt((tr.transform.position.x - meta.origin_x_m) / meta.tile_w_m), j = Mathf.RoundToInt((tr.transform.position.z - meta.origin_z_m) / meta.tile_d_m); grid.Tiles[i, j] = tr; }
                 var house = AssetDatabase.LoadAssetAtPath<Material>(GeneratedDir + "/House.mat");
                 BuildActivities(grid, null, house);
                 UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene, ScenePath);
