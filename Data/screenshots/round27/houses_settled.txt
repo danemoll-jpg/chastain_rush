@@ -2,81 +2,81 @@ Round 27 (A1): every styled house on the map swept (Dan's house locked, not list
 more than 0.3 m (the ground above its floor at the wall: the lot is cut down round it) or its floor stands more than 0.3 m over
 the ground at a wall (a block foundation is drawn under the floor; a walk-out basement wall at the back over 1.5 m).
 The floor never moves, so garages and front doors meet their drives as before. Worst first.
-339 houses changed: 72 lots cut, 327 block foundations, 103 walk-out basement walls; 2 still buried more than 0.3 m (see the line).
+339 houses changed: 73 lots cut, 327 block foundations, 103 walk-out basement walls; 2 still buried more than 0.3 m (see the line).
 
   308  x    1831  z    976  community 3    style A  buried -0.15 -> -0.15 m   floor over ground 5.89 -> 5.89 m   block foundation, walk-out basement wall at the back (5.9 m)
   364  x    2069  z    763  community 3    style A  buried 0.00 ->  0.00 m   floor over ground 4.95 -> 4.95 m   block foundation, walk-out basement wall at the back (4.8 m)
   305  x    1764  z    981  community 3    style B  buried -0.13 -> -0.13 m   floor over ground 4.85 -> 4.85 m   block foundation, walk-out basement wall at the back (4.7 m)
-  983  x    2684  z    663  community 2    style D  buried -0.14 -> -0.14 m   floor over ground 4.71 -> 4.71 m   block foundation, walk-out basement wall at the back (4.5 m)
   941  x    2683  z    695  community 2    style B  buried -0.19 -> -0.19 m   floor over ground 4.71 -> 4.71 m   block foundation, walk-out basement wall at the back (4.6 m)
-  304  x    1742  z    984  community 3    style A  buried -0.08 -> -0.08 m   floor over ground 4.63 -> 4.63 m   block foundation, walk-out basement wall at the back (4.5 m)
+  983  x    2684  z    663  community 2    style D  buried -0.14 -> -0.14 m   floor over ground 4.71 -> 4.71 m   block foundation, walk-out basement wall at the back (4.5 m)
+  304  x    1742  z    984  community 3    style A  buried -0.07 -> -0.07 m   floor over ground 4.63 -> 4.63 m   block foundation, walk-out basement wall at the back (4.5 m)
   294  x    1627  z    811  community 3    style B  buried 0.19 ->  0.19 m   floor over ground 4.53 -> 4.53 m   block foundation, walk-out basement wall at the back (4.5 m)
   392  x    1625  z    724  community 3    style B  buried 0.06 ->  0.06 m   floor over ground 4.52 -> 4.52 m   block foundation, walk-out basement wall at the back (4.5 m)
- 1677  x    3113  z   1038  Chastain Glen  style A  buried 0.44 -> -0.12 m   floor over ground 4.47 -> 4.47 m   lot cut (260 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (4.4 m)
+ 1677  x    3113  z   1038  Chastain Glen  style A  buried 0.44 -> -0.12 m   floor over ground 4.47 -> 4.47 m   lot cut (262 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (4.4 m)
   926  x    2693  z    846  community 1    style B  buried -0.14 -> -0.14 m   floor over ground 4.45 -> 4.45 m   block foundation, walk-out basement wall at the back (4.4 m)
-  302  x    1694  z    975  community 3    style A  buried -0.19 -> -0.19 m   floor over ground 4.45 -> 4.45 m   block foundation, walk-out basement wall at the back (4.4 m)
+  302  x    1694  z    975  community 3    style A  buried -0.18 -> -0.18 m   floor over ground 4.45 -> 4.45 m   block foundation, walk-out basement wall at the back (4.4 m)
   354  x    2079  z    849  community 3    style B  buried -0.14 -> -0.14 m   floor over ground 4.40 -> 4.40 m   block foundation, walk-out basement wall at the back (4.2 m)
- 1693  x    2931  z   1108  Chastain Glen  style A  buried -0.10 -> -0.10 m   floor over ground 4.36 -> 4.36 m   block foundation, walk-out basement wall at the back (4.3 m)
-  309  x    1852  z    975  community 3    style A  buried -0.10 -> -0.10 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.2 m)
-  748  x    2891  z    642  community 2    style D  buried -0.17 -> -0.17 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.4 m)
+  309  x    1852  z    975  community 3    style A  buried -0.11 -> -0.11 m   floor over ground 4.36 -> 4.36 m   block foundation, walk-out basement wall at the back (4.2 m)
+ 1693  x    2931  z   1108  Chastain Glen  style A  buried -0.10 -> -0.10 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.3 m)
+  748  x    2891  z    642  community 2    style D  buried -0.17 -> -0.17 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.3 m)
+  306  x    1786  z    977  community 3    style B  buried -0.08 -> -0.08 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.2 m)
   667  x    2682  z    647  community 2    style C  buried -0.02 -> -0.02 m   floor over ground 4.35 -> 4.35 m   block foundation, walk-out basement wall at the back (4.3 m)
-  306  x    1786  z    977  community 3    style B  buried -0.08 -> -0.08 m   floor over ground 4.34 -> 4.34 m   block foundation, walk-out basement wall at the back (4.2 m)
   307  x    1808  z    975  community 3    style B  buried -0.20 -> -0.20 m   floor over ground 4.34 -> 4.34 m   block foundation, walk-out basement wall at the back (4.3 m)
   311  x    1895  z    966  community 3    style B  buried -0.17 -> -0.17 m   floor over ground 4.34 -> 4.34 m   block foundation, walk-out basement wall at the back (4.2 m)
   896  x    2684  z    679  community 2    style A  buried -0.16 -> -0.16 m   floor over ground 4.33 -> 4.33 m   block foundation, walk-out basement wall at the back (4.3 m)
   793  x    2687  z    980  Chastain Glen  style A  buried -0.16 -> -0.16 m   floor over ground 4.29 -> 4.29 m   block foundation, walk-out basement wall at the back (4.3 m)
   395  x    1689  z    742  community 3    style B  buried 0.02 ->  0.02 m   floor over ground 4.28 -> 4.28 m   block foundation, walk-out basement wall at the back (4.2 m)
   313  x    1940  z    967  community 3    style D  buried 0.24 ->  0.24 m   floor over ground 4.27 -> 4.27 m   block foundation, walk-out basement wall at the back (3.9 m)
-  301  x    1687  z    955  community 3    style A  buried -0.12 -> -0.12 m   floor over ground 4.27 -> 4.27 m   block foundation, walk-out basement wall at the back (4.2 m)
+  301  x    1687  z    955  community 3    style A  buried -0.12 -> -0.12 m   floor over ground 4.26 -> 4.26 m   block foundation, walk-out basement wall at the back (4.2 m)
   347  x    1965  z    877  community 3    style A  buried 0.14 ->  0.14 m   floor over ground 4.26 -> 4.26 m   block foundation, walk-out basement wall at the back (4.2 m)
  1891  x    3147  z   1159  Chastain Glen  style D  buried -0.15 -> -0.15 m   floor over ground 4.26 -> 4.26 m   block foundation, walk-out basement wall at the back (4.2 m)
   290  x    1540  z    804  community 3    style B  buried -0.17 -> -0.17 m   floor over ground 4.22 -> 4.22 m   block foundation, walk-out basement wall at the back (4.2 m)
   394  x    1647  z    726  community 3    style A  buried 0.28 ->  0.28 m   floor over ground 4.21 -> 4.21 m   block foundation, walk-out basement wall at the back (4.2 m)
-  349  x    2013  z    868  community 3    style B  buried -0.14 -> -0.14 m   floor over ground 4.17 -> 4.17 m   block foundation, walk-out basement wall at the back (4.2 m)
   353  x    2082  z    873  community 3    style A  buried -0.16 -> -0.16 m   floor over ground 4.16 -> 4.16 m   block foundation, walk-out basement wall at the back (4.1 m)
-  316  x    2032  z    944  community 3    style B  buried -0.08 -> -0.08 m   floor over ground 4.15 -> 4.15 m   block foundation, walk-out basement wall at the back (4.2 m)
-  297  x    1648  z    874  community 3    style B  buried 0.08 ->  0.08 m   floor over ground 4.14 -> 4.14 m   block foundation, walk-out basement wall at the back (4.0 m)
-  296  x    1648  z    850  community 3    style A  buried 0.18 ->  0.18 m   floor over ground 4.13 -> 4.13 m   block foundation, walk-out basement wall at the back (4.1 m)
+  349  x    2013  z    868  community 3    style B  buried -0.14 -> -0.14 m   floor over ground 4.16 -> 4.16 m   block foundation, walk-out basement wall at the back (4.2 m)
+  316  x    2032  z    944  community 3    style B  buried -0.08 -> -0.08 m   floor over ground 4.15 -> 4.15 m   block foundation, walk-out basement wall at the back (4.1 m)
+  297  x    1648  z    874  community 3    style B  buried 0.08 ->  0.08 m   floor over ground 4.15 -> 4.15 m   block foundation, walk-out basement wall at the back (4.0 m)
   843  x    3094  z    999  Chastain Glen  style A  buried -0.14 -> -0.14 m   floor over ground 4.13 -> 4.13 m   block foundation, walk-out basement wall at the back (4.1 m)
+  296  x    1648  z    850  community 3    style A  buried 0.18 ->  0.18 m   floor over ground 4.13 -> 4.13 m   block foundation, walk-out basement wall at the back (4.1 m)
   346  x    1943  z    876  community 3    style B  buried -0.16 -> -0.16 m   floor over ground 4.07 -> 4.07 m   block foundation, walk-out basement wall at the back (4.1 m)
   298  x    1655  z    895  community 3    style B  buried -0.07 -> -0.07 m   floor over ground 4.05 -> 4.05 m   block foundation, walk-out basement wall at the back (4.1 m)
- 1255  x    2690  z   1000  Chastain Glen  style B  buried -0.14 -> -0.14 m   floor over ground 4.04 -> 4.04 m   block foundation, walk-out basement wall at the back (4.0 m)
+ 1255  x    2690  z   1000  Chastain Glen  style B  buried -0.14 -> -0.14 m   floor over ground 4.05 -> 4.05 m   block foundation, walk-out basement wall at the back (4.0 m)
   341  x    1834  z    887  community 3    style A  buried -0.11 -> -0.11 m   floor over ground 4.02 -> 4.02 m   block foundation, walk-out basement wall at the back (4.0 m)
   343  x    1900  z    876  community 3    style A  buried -0.06 -> -0.06 m   floor over ground 4.02 -> 4.02 m   block foundation, walk-out basement wall at the back (4.0 m)
   314  x    1993  z    965  community 3    style A  buried 0.09 ->  0.09 m   floor over ground 4.00 -> 4.00 m   block foundation, walk-out basement wall at the back (4.0 m)
- 1796  x    3109  z   1100  Chastain Glen  style A  buried -0.19 -> -0.19 m   floor over ground 3.99 -> 3.99 m   block foundation, walk-out basement wall at the back (3.9 m)
+ 1796  x    3109  z   1100  Chastain Glen  style A  buried -0.18 -> -0.18 m   floor over ground 3.99 -> 3.99 m   block foundation, walk-out basement wall at the back (3.9 m)
  1078  x    2909  z    652  community 2    style D  buried -0.08 -> -0.08 m   floor over ground 3.98 -> 3.98 m   block foundation, walk-out basement wall at the back (4.0 m)
-  398  x    1668  z    734  community 3    style A  buried -0.15 -> -0.15 m   floor over ground 3.96 -> 3.96 m   block foundation, walk-out basement wall at the back (3.9 m)
- 1780  x    2978  z   1039  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 3.96 -> 3.96 m   block foundation, walk-out basement wall at the back (3.8 m)
-  371  x    1976  z    763  community 3    style A  buried 0.04 ->  0.04 m   floor over ground 3.95 -> 3.95 m   block foundation, walk-out basement wall at the back (3.9 m)
+  371  x    1976  z    763  community 3    style A  buried 0.03 ->  0.03 m   floor over ground 3.96 -> 3.96 m   block foundation, walk-out basement wall at the back (3.9 m)
+  398  x    1668  z    734  community 3    style A  buried -0.14 -> -0.14 m   floor over ground 3.95 -> 3.95 m   block foundation, walk-out basement wall at the back (3.9 m)
+ 1780  x    2978  z   1039  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 3.95 -> 3.95 m   block foundation, walk-out basement wall at the back (3.8 m)
   356  x    2069  z    807  community 3    style A  buried 0.04 ->  0.04 m   floor over ground 3.91 -> 3.91 m   block foundation, walk-out basement wall at the back (3.9 m)
+  340  x    1792  z    887  community 3    style B  buried -0.02 -> -0.02 m   floor over ground 3.91 -> 3.91 m   block foundation, walk-out basement wall at the back (3.9 m)
   397  x    1709  z    747  community 3    style A  buried 0.03 ->  0.03 m   floor over ground 3.91 -> 3.91 m   block foundation, walk-out basement wall at the back (3.9 m)
   930  x    3102  z   1018  Chastain Glen  style A  buried -0.07 -> -0.07 m   floor over ground 3.91 -> 3.91 m   block foundation, walk-out basement wall at the back (3.8 m)
-  340  x    1792  z    887  community 3    style B  buried -0.02 -> -0.02 m   floor over ground 3.90 -> 3.90 m   block foundation, walk-out basement wall at the back (3.9 m)
- 1588  x    2942  z   1088  Chastain Glen  style C  buried 0.05 ->  0.05 m   floor over ground 3.90 -> 3.90 m   block foundation, walk-out basement wall at the back (3.9 m)
  1075  x    2934  z    711  community 2    style A  buried -0.23 -> -0.23 m   floor over ground 3.90 -> 3.90 m   block foundation, walk-out basement wall at the back (3.9 m)
+ 1588  x    2942  z   1088  Chastain Glen  style C  buried 0.06 ->  0.06 m   floor over ground 3.90 -> 3.90 m   block foundation, walk-out basement wall at the back (3.9 m)
   352  x    2079  z    896  community 3    style B  buried -0.01 -> -0.01 m   floor over ground 3.89 -> 3.89 m   block foundation, walk-out basement wall at the back (3.9 m)
-  315  x    2014  z    956  community 3    style B  buried 0.26 ->  0.26 m   floor over ground 3.88 -> 3.88 m   block foundation, walk-out basement wall at the back (3.9 m)
-  853  x    2918  z    695  community 2    style A  buried 0.06 ->  0.06 m   floor over ground 3.88 -> 3.88 m   block foundation, walk-out basement wall at the back (3.9 m)
+  315  x    2014  z    956  community 3    style B  buried 0.26 ->  0.26 m   floor over ground 3.89 -> 3.89 m   block foundation, walk-out basement wall at the back (3.9 m)
+  853  x    2918  z    695  community 2    style A  buried 0.06 ->  0.06 m   floor over ground 3.89 -> 3.89 m   block foundation, walk-out basement wall at the back (3.9 m)
   339  x    1813  z    887  community 3    style B  buried -0.20 -> -0.20 m   floor over ground 3.88 -> 3.88 m   block foundation, walk-out basement wall at the back (3.9 m)
-  989  x    2918  z    669  community 2    style A  buried 0.12 ->  0.12 m   floor over ground 3.86 -> 3.86 m   block foundation, walk-out basement wall at the back (3.9 m)
+  989  x    2918  z    669  community 2    style A  buried 0.11 ->  0.11 m   floor over ground 3.86 -> 3.86 m   block foundation, walk-out basement wall at the back (3.9 m)
  1533  x    2966  z   1055  Chastain Glen  style A  buried 0.41 -> -0.12 m   floor over ground 3.85 -> 3.85 m   lot cut (180 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.7 m)
   355  x    2074  z    828  community 3    style A  buried -0.15 -> -0.15 m   floor over ground 3.85 -> 3.85 m   block foundation, walk-out basement wall at the back (3.8 m)
- 1987  x    2792  z   1023  Chastain Glen  style D  buried -0.07 -> -0.07 m   floor over ground 3.81 -> 3.81 m   block foundation, walk-out basement wall at the back (3.8 m)
  1122  x    2685  z    715  community 2    style A  buried 0.05 ->  0.05 m   floor over ground 3.81 -> 3.81 m   block foundation, walk-out basement wall at the back (3.8 m)
-  300  x    1680  z    931  community 3    style A  buried -0.05 -> -0.05 m   floor over ground 3.81 -> 3.81 m   block foundation, walk-out basement wall at the back (3.8 m)
+ 1987  x    2792  z   1023  Chastain Glen  style D  buried -0.07 -> -0.07 m   floor over ground 3.81 -> 3.81 m   block foundation, walk-out basement wall at the back (3.8 m)
+  358  x    2057  z    741  community 3    style A  buried 0.59 -> -0.12 m   floor over ground 3.80 -> 3.80 m   lot cut (299 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.6 m)
   317  x    2051  z    932  community 3    style B  buried -0.03 -> -0.03 m   floor over ground 3.80 -> 3.80 m   block foundation, walk-out basement wall at the back (3.7 m)
-  358  x    2057  z    741  community 3    style A  buried 0.60 -> -0.12 m   floor over ground 3.80 -> 3.80 m   lot cut (299 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.6 m)
- 1862  x    2830  z   1044  Chastain Glen  style D  buried -0.24 -> -0.24 m   floor over ground 3.79 -> 3.79 m   block foundation, walk-out basement wall at the back (3.8 m)
+  300  x    1680  z    931  community 3    style A  buried -0.04 -> -0.04 m   floor over ground 3.80 -> 3.80 m   block foundation, walk-out basement wall at the back (3.8 m)
   292  x    1584  z    808  community 3    style B  buried 0.09 ->  0.09 m   floor over ground 3.79 -> 3.79 m   block foundation, walk-out basement wall at the back (3.8 m)
- 1202  x    3047  z    988  Chastain Glen  style A  buried -0.09 -> -0.09 m   floor over ground 3.78 -> 3.78 m   block foundation, walk-out basement wall at the back (3.8 m)
+ 1862  x    2830  z   1044  Chastain Glen  style D  buried -0.24 -> -0.24 m   floor over ground 3.79 -> 3.79 m   block foundation, walk-out basement wall at the back (3.8 m)
+ 1202  x    3047  z    988  Chastain Glen  style A  buried -0.09 -> -0.09 m   floor over ground 3.79 -> 3.79 m   block foundation, walk-out basement wall at the back (3.8 m)
   604  x    3028  z   1000  Chastain Glen  style C  buried -0.22 -> -0.22 m   floor over ground 3.78 -> 3.78 m   block foundation, walk-out basement wall at the back (3.8 m)
-  854  x    3012  z   1013  Chastain Glen  style C  buried -0.12 -> -0.12 m   floor over ground 3.78 -> 3.78 m   block foundation, walk-out basement wall at the back (3.7 m)
  2102  x    2995  z   1025  Chastain Glen  style A  buried -0.03 -> -0.03 m   floor over ground 3.78 -> 3.78 m   block foundation, walk-out basement wall at the back (3.8 m)
-  303  x    1717  z    986  community 3    style A  buried -0.13 -> -0.13 m   floor over ground 3.77 -> 3.77 m   block foundation, walk-out basement wall at the back (3.7 m)
-  310  x    1873  z    970  community 3    style B  buried 0.88 -> -0.12 m   floor over ground 3.76 -> 3.76 m   lot cut (197 samples, up to 1.1 m); block foundation, walk-out basement wall at the back (3.8 m)
+  854  x    3012  z   1013  Chastain Glen  style C  buried -0.12 -> -0.12 m   floor over ground 3.78 -> 3.78 m   block foundation, walk-out basement wall at the back (3.7 m)
+  303  x    1717  z    986  community 3    style A  buried -0.13 -> -0.13 m   floor over ground 3.76 -> 3.76 m   block foundation, walk-out basement wall at the back (3.7 m)
+  310  x    1873  z    970  community 3    style B  buried 0.88 -> -0.12 m   floor over ground 3.76 -> 3.76 m   lot cut (196 samples, up to 1.1 m); block foundation, walk-out basement wall at the back (3.8 m)
   351  x    2067  z    915  community 3    style B  buried 0.04 ->  0.04 m   floor over ground 3.76 -> 3.76 m   block foundation, walk-out basement wall at the back (3.7 m)
-  357  x    2066  z    787  community 3    style A  buried 0.39 -> -0.12 m   floor over ground 3.74 -> 3.74 m   lot cut (213 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.7 m)
+  357  x    2066  z    787  community 3    style A  buried 0.39 -> -0.12 m   floor over ground 3.74 -> 3.74 m   lot cut (212 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.7 m)
  1557  x    2953  z   1072  Chastain Glen  style A  buried 0.63 -> -0.12 m   floor over ground 3.72 -> 3.72 m   lot cut (206 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.5 m)
  1615  x    3025  z   1151  Chastain Glen  style A  buried -0.16 -> -0.16 m   floor over ground 3.71 -> 3.71 m   block foundation, walk-out basement wall at the back (3.7 m)
   345  x    1922  z    876  community 3    style A  buried 0.18 ->  0.18 m   floor over ground 3.70 -> 3.70 m   block foundation, walk-out basement wall at the back (3.7 m)
@@ -84,262 +84,262 @@ The floor never moves, so garages and front doors meet their drives as before. W
   291  x    1562  z    806  community 3    style B  buried 0.16 ->  0.16 m   floor over ground 3.68 -> 3.68 m   block foundation, walk-out basement wall at the back (3.7 m)
   293  x    1605  z    808  community 3    style A  buried 0.25 ->  0.25 m   floor over ground 3.58 -> 3.58 m   block foundation, walk-out basement wall at the back (3.6 m)
   295  x    1649  z    817  community 3    style B  buried -0.04 -> -0.04 m   floor over ground 3.58 -> 3.58 m   block foundation, walk-out basement wall at the back (3.6 m)
-  312  x    1917  z    965  community 3    style B  buried 0.55 -> -0.12 m   floor over ground 3.57 -> 3.57 m   lot cut (242 samples, up to 1.1 m); block foundation, walk-out basement wall at the back (3.5 m)
- 1552  x    2811  z   1033  Chastain Glen  style D  buried -0.07 -> -0.07 m   floor over ground 3.53 -> 3.53 m   block foundation, walk-out basement wall at the back (3.5 m)
+  312  x    1917  z    965  community 3    style B  buried 0.54 -> -0.12 m   floor over ground 3.57 -> 3.57 m   lot cut (242 samples, up to 1.1 m); block foundation, walk-out basement wall at the back (3.5 m)
  2088  x    2690  z   1021  Chastain Glen  style C  buried -0.16 -> -0.16 m   floor over ground 3.53 -> 3.53 m   block foundation, walk-out basement wall at the back (3.5 m)
-  420  x    1509  z    770  community 3    style A  buried 0.42 -> -0.12 m   floor over ground 3.50 -> 3.50 m   lot cut (128 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.5 m)
-  713  x    2773  z   1013  Chastain Glen  style A  buried 0.17 ->  0.17 m   floor over ground 3.47 -> 3.47 m   block foundation, walk-out basement wall at the back (3.5 m)
- 1691  x    3009  z   1136  Chastain Glen  style A  buried 0.16 ->  0.16 m   floor over ground 3.46 -> 3.46 m   block foundation, walk-out basement wall at the back (3.5 m)
+ 1552  x    2811  z   1033  Chastain Glen  style D  buried -0.07 -> -0.07 m   floor over ground 3.53 -> 3.53 m   block foundation, walk-out basement wall at the back (3.5 m)
+  420  x    1509  z    770  community 3    style A  buried 0.42 -> -0.12 m   floor over ground 3.51 -> 3.51 m   lot cut (129 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.5 m)
+  713  x    2773  z   1013  Chastain Glen  style A  buried 0.18 ->  0.18 m   floor over ground 3.47 -> 3.47 m   block foundation, walk-out basement wall at the back (3.5 m)
+ 1691  x    3009  z   1136  Chastain Glen  style A  buried 0.15 ->  0.15 m   floor over ground 3.47 -> 3.47 m   block foundation, walk-out basement wall at the back (3.5 m)
  1224  x    2680  z    826  community 1    style C  buried -0.09 -> -0.09 m   floor over ground 3.46 -> 3.46 m   block foundation, walk-out basement wall at the back (3.5 m)
-  348  x    1989  z    873  community 3    style A  buried 0.71 -> -0.12 m   floor over ground 3.46 -> 3.46 m   lot cut (242 samples, up to 1.0 m); block foundation, walk-out basement wall at the back (3.4 m)
-  289  x    1516  z    795  community 3    style A  buried 0.56 -> -0.12 m   floor over ground 3.45 -> 3.45 m   lot cut (154 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.3 m)
-  419  x    1514  z    749  community 3    style B  buried 0.04 ->  0.04 m   floor over ground 3.43 -> 3.43 m   block foundation, walk-out basement wall at the back (2.9 m)
-  299  x    1667  z    916  community 3    style D  buried 0.23 ->  0.23 m   floor over ground 3.39 -> 3.39 m   block foundation, walk-out basement wall at the back (3.3 m)
- 1719  x    3156  z   1117  Chastain Glen  style A  buried 0.63 -> -0.12 m   floor over ground 3.33 -> 3.33 m   lot cut (359 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.3 m)
+  348  x    1989  z    873  community 3    style A  buried 0.72 -> -0.12 m   floor over ground 3.45 -> 3.45 m   lot cut (242 samples, up to 1.0 m); block foundation, walk-out basement wall at the back (3.4 m)
+  289  x    1516  z    795  community 3    style A  buried 0.56 -> -0.12 m   floor over ground 3.45 -> 3.45 m   lot cut (155 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.3 m)
+  419  x    1514  z    749  community 3    style B  buried 0.04 ->  0.04 m   floor over ground 3.44 -> 3.44 m   block foundation, walk-out basement wall at the back (2.9 m)
+  299  x    1667  z    916  community 3    style D  buried 0.22 ->  0.22 m   floor over ground 3.39 -> 3.39 m   block foundation, walk-out basement wall at the back (3.3 m)
+ 1719  x    3156  z   1117  Chastain Glen  style A  buried 0.63 -> -0.12 m   floor over ground 3.33 -> 3.33 m   lot cut (361 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.3 m)
  1249  x    2955  z    711  community 2    style D  buried 0.29 ->  0.29 m   floor over ground 3.27 -> 3.27 m   block foundation, walk-out basement wall at the back (3.3 m)
- 1695  x    3151  z   1137  Chastain Glen  style D  buried 0.46 -> -0.12 m   floor over ground 3.23 -> 3.23 m   lot cut (289 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.2 m)
+ 1695  x    3151  z   1137  Chastain Glen  style D  buried 0.45 -> -0.12 m   floor over ground 3.24 -> 3.24 m   lot cut (289 samples, up to 0.6 m); block foundation, walk-out basement wall at the back (3.2 m)
   367  x    1975  z    785  community 3    style D  buried 0.67 -> -0.12 m   floor over ground 3.22 -> 3.22 m   lot cut (292 samples, up to 0.8 m); block foundation, walk-out basement wall at the back (3.2 m)
- 1459  x    3048  z   1148  Chastain Glen  style D  buried 0.22 ->  0.22 m   floor over ground 3.15 -> 3.15 m   block foundation, walk-out basement wall at the back (3.1 m)
+ 1459  x    3048  z   1148  Chastain Glen  style D  buried 0.23 ->  0.23 m   floor over ground 3.15 -> 3.15 m   block foundation, walk-out basement wall at the back (3.1 m)
   973  x    2681  z    806  community 1    style C  buried 0.41 -> -0.12 m   floor over ground 3.14 -> 3.14 m   lot cut (124 samples, up to 0.7 m); block foundation, walk-out basement wall at the back (3.1 m)
- 1630  x    2686  z   1042  Chastain Glen  style D  buried 0.65 -> -0.12 m   floor over ground 3.12 -> 3.12 m   lot cut (147 samples, up to 0.9 m); block foundation, walk-out basement wall at the back (3.1 m)
+ 1630  x    2686  z   1042  Chastain Glen  style D  buried 0.64 -> -0.12 m   floor over ground 3.13 -> 3.13 m   lot cut (150 samples, up to 0.9 m); block foundation, walk-out basement wall at the back (3.1 m)
  2010  x    3112  z   1125  Chastain Glen  style A  buried 0.42 -> -0.12 m   floor over ground 3.08 -> 3.08 m   lot cut (255 samples, up to 0.5 m); block foundation, walk-out basement wall at the back (1.9 m)
- 2006  x    3095  z   1081  Chastain Glen  style C  buried 0.25 ->  0.25 m   floor over ground 3.03 -> 3.03 m   block foundation, walk-out basement wall at the back (3.0 m)
-  636  x    2684  z    632  community 2    style A  buried 2.68 -> -0.12 m   floor over ground 1.12 -> 1.12 m   lot cut (576 samples, up to 3.0 m); block foundation
- 1099  x    2873  z    639  community 2    style D  buried 1.37 -> -0.12 m   floor over ground 2.53 -> 2.53 m   lot cut (246 samples, up to 1.5 m); block foundation, walk-out basement wall at the back (2.5 m)
+ 2006  x    3095  z   1081  Chastain Glen  style C  buried 0.24 ->  0.24 m   floor over ground 3.03 -> 3.03 m   block foundation, walk-out basement wall at the back (3.0 m)
+  636  x    2684  z    632  community 2    style A  buried 2.67 -> -0.12 m   floor over ground 1.12 -> 1.12 m   lot cut (576 samples, up to 3.0 m); block foundation
+ 1099  x    2873  z    639  community 2    style D  buried 1.37 -> -0.12 m   floor over ground 2.53 -> 2.53 m   lot cut (248 samples, up to 1.5 m); block foundation, walk-out basement wall at the back (2.5 m)
   702  x    3091  z    979  Chastain Glen  style D  buried -0.02 -> -0.02 m   floor over ground 2.46 -> 2.46 m   block foundation
  1535  x    3109  z   1143  Chastain Glen  style A  buried 0.02 ->  0.02 m   floor over ground 2.35 -> 2.35 m   block foundation
  1844  x    3103  z   1162  Chastain Glen  style C  buried -0.01 -> -0.01 m   floor over ground 2.30 -> 2.30 m   block foundation
   938  x    2720  z    592  community 2    style A  buried 0.03 ->  0.03 m   floor over ground 2.28 -> 2.28 m   block foundation
-  415  x    1520  z    641  community 3    style A  buried 0.06 ->  0.06 m   floor over ground 2.25 -> 2.25 m   block foundation, walk-out basement wall at the back (1.7 m)
- 1252  x    2698  z    592  community 2    style C  buried 0.84 -> -0.12 m   floor over ground 2.22 -> 2.22 m   lot cut (374 samples, up to 1.0 m); block foundation
-  820  x    2677  z    589  community 2    style A  buried 0.30 -> -0.12 m   floor over ground 2.05 -> 2.05 m   lot cut (307 samples, up to 0.6 m); block foundation
- 1763  x    3069  z   1050  Chastain Glen  style A  buried 0.03 ->  0.03 m   floor over ground 2.02 -> 2.02 m   block foundation
-  414  x    1522  z    663  community 3    style A  buried 0.46 -> -0.12 m   floor over ground 1.99 -> 1.99 m   lot cut (572 samples, up to 0.6 m); block foundation
+  415  x    1520  z    641  community 3    style A  buried 0.07 ->  0.07 m   floor over ground 2.25 -> 2.25 m   block foundation, walk-out basement wall at the back (1.7 m)
+ 1252  x    2698  z    592  community 2    style C  buried 0.84 -> -0.12 m   floor over ground 2.22 -> 2.22 m   lot cut (375 samples, up to 1.0 m); block foundation
+  820  x    2677  z    589  community 2    style A  buried 0.31 -> -0.12 m   floor over ground 2.05 -> 2.05 m   lot cut (306 samples, up to 0.6 m); block foundation
+ 1763  x    3069  z   1050  Chastain Glen  style A  buried 0.04 ->  0.04 m   floor over ground 2.02 -> 2.02 m   block foundation
+  414  x    1522  z    663  community 3    style A  buried 0.46 -> -0.12 m   floor over ground 1.98 -> 1.98 m   lot cut (572 samples, up to 0.6 m); block foundation
  1822  x    3162  z   1098  Chastain Glen  style A  buried 0.10 ->  0.10 m   floor over ground 1.92 -> 1.92 m   block foundation
-  408  x    1559  z    709  community 3    style A  buried 0.09 ->  0.09 m   floor over ground 1.87 -> 1.87 m   block foundation
+  408  x    1559  z    709  community 3    style A  buried 0.08 ->  0.08 m   floor over ground 1.87 -> 1.87 m   block foundation
  1397  x    3126  z   1053  Chastain Glen  style A  buried 0.13 ->  0.13 m   floor over ground 1.87 -> 1.87 m   block foundation
- 1064  x    2726  z    648  community 2    style C  buried 0.44 -> -0.12 m   floor over ground 1.66 -> 1.66 m   lot cut (205 samples, up to 0.6 m); block foundation
+ 1064  x    2726  z    648  community 2    style C  buried 0.44 -> -0.12 m   floor over ground 1.66 -> 1.66 m   lot cut (204 samples, up to 0.6 m); block foundation
  1413  x    2750  z   1104  Chastain Glen  style A  buried 0.01 ->  0.01 m   floor over ground 1.65 -> 1.65 m   block foundation, walk-out basement wall at the back (1.5 m)
   695  x    3086  z    959  Chastain Glen  style D  buried -0.04 -> -0.04 m   floor over ground 1.63 -> 1.63 m   block foundation
-  391  x    1602  z    708  community 3    style B  buried 0.12 ->  0.12 m   floor over ground 1.53 -> 1.53 m   block foundation
+  391  x    1602  z    708  community 3    style B  buried 0.12 ->  0.12 m   floor over ground 1.52 -> 1.52 m   block foundation
   867  x    2609  z    633  community 2    style A  buried -0.15 -> -0.15 m   floor over ground 1.44 -> 1.44 m   block foundation
   365  x    1983  z    829  community 3    style A  buried 0.00 ->  0.00 m   floor over ground 1.43 -> 1.43 m   block foundation
  1752  x    3095  z   1181  Chastain Glen  style B  buried 0.17 ->  0.17 m   floor over ground 1.42 -> 1.42 m   block foundation
   409  x    1561  z    688  community 3    style A  buried 0.07 ->  0.07 m   floor over ground 1.40 -> 1.40 m   block foundation
   323  x    1892  z    924  community 3    style A  buried 0.03 ->  0.03 m   floor over ground 1.39 -> 1.39 m   block foundation
   927  x    2726  z    681  community 2    style C  buried 0.09 ->  0.09 m   floor over ground 1.38 -> 1.38 m   block foundation
- 1171  x    2726  z    666  community 2    style A  buried 0.65 -> -0.12 m   floor over ground 1.35 -> 1.35 m   lot cut (428 samples, up to 0.8 m); block foundation
-  361  x    2013  z    780  community 3    style A  buried 1.33 -> -0.12 m   floor over ground 0.66 -> 0.66 m   lot cut (861 samples, up to 2.1 m); block foundation
- 1657  x    3141  z   1180  Chastain Glen  style A  buried 0.50 -> -0.12 m   floor over ground 1.30 -> 1.30 m   lot cut (459 samples, up to 0.6 m); block foundation
+ 1171  x    2726  z    666  community 2    style A  buried 0.65 -> -0.12 m   floor over ground 1.34 -> 1.34 m   lot cut (428 samples, up to 0.8 m); block foundation
+  361  x    2013  z    780  community 3    style A  buried 1.34 -> -0.12 m   floor over ground 0.67 -> 0.67 m   lot cut (862 samples, up to 2.1 m); block foundation
+ 1657  x    3141  z   1180  Chastain Glen  style A  buried 0.50 -> -0.12 m   floor over ground 1.30 -> 1.30 m   lot cut (458 samples, up to 0.6 m); block foundation
   407  x    1557  z    730  community 3    style A  buried 0.14 ->  0.14 m   floor over ground 1.28 -> 1.28 m   block foundation
   410  x    1570  z    666  community 3    style A  buried 0.21 ->  0.21 m   floor over ground 1.25 -> 1.25 m   block foundation
- 1081  x    3143  z    973  Chastain Glen  style C  buried 0.46 -> -0.12 m   floor over ground 1.22 -> 1.22 m   lot cut (422 samples, up to 0.7 m); block foundation
- 1102  x    2656  z    590  community 2    style C  buried 0.43 -> -0.12 m   floor over ground 1.22 -> 1.22 m   lot cut (336 samples, up to 0.6 m); block foundation
-  324  x    1871  z    929  community 3    style A  buried 0.25 ->  0.25 m   floor over ground 1.21 -> 1.21 m   block foundation
+ 1081  x    3143  z    973  Chastain Glen  style C  buried 0.47 -> -0.12 m   floor over ground 1.22 -> 1.22 m   lot cut (423 samples, up to 0.7 m); block foundation
+ 1102  x    2656  z    590  community 2    style C  buried 0.43 -> -0.12 m   floor over ground 1.22 -> 1.22 m   lot cut (335 samples, up to 0.5 m); block foundation
   378  x    1889  z    797  community 3    style A  buried 0.20 ->  0.20 m   floor over ground 1.20 -> 1.20 m   block foundation
-  915  x    3070  z    868  Chastain Glen  style C  buried 0.00 ->  0.00 m   floor over ground 1.15 -> 1.15 m   block foundation
+  324  x    1871  z    929  community 3    style A  buried 0.25 ->  0.25 m   floor over ground 1.20 -> 1.20 m   block foundation
   333  x    1692  z    874  community 3    style A  buried -0.01 -> -0.01 m   floor over ground 1.15 -> 1.15 m   block foundation
+  915  x    3070  z    868  Chastain Glen  style C  buried 0.01 ->  0.01 m   floor over ground 1.15 -> 1.15 m   block foundation
  2049  x    2770  z   1114  Chastain Glen  style A  buried -0.06 -> -0.06 m   floor over ground 1.13 -> 1.13 m   block foundation
   360  x    2012  z    753  community 3    style A  buried 0.10 ->  0.10 m   floor over ground 1.11 -> 1.11 m   block foundation
- 1706  x    2973  z   1115  Chastain Glen  style A  buried 0.00 ->  0.00 m   floor over ground 1.10 -> 1.10 m   block foundation
- 1059  x    2807  z    961  Chastain Glen  style A  buried -0.08 -> -0.08 m   floor over ground 1.09 -> 1.09 m   block foundation
-  417  x    1517  z    706  community 3    style B  buried -0.01 -> -0.01 m   floor over ground 1.01 -> 1.01 m   block foundation
-  366  x    1979  z    807  community 3    style B  buried -0.10 -> -0.10 m   floor over ground 0.99 -> 0.99 m   block foundation
+ 1706  x    2973  z   1115  Chastain Glen  style A  buried 0.00 ->  0.00 m   floor over ground 1.11 -> 1.11 m   block foundation
+ 1059  x    2807  z    961  Chastain Glen  style A  buried -0.07 -> -0.07 m   floor over ground 1.10 -> 1.10 m   block foundation
+  417  x    1517  z    706  community 3    style B  buried 0.00 ->  0.00 m   floor over ground 1.01 -> 1.01 m   block foundation
+  366  x    1979  z    807  community 3    style B  buried -0.10 -> -0.10 m   floor over ground 1.00 -> 1.00 m   block foundation
   332  x    1705  z    897  community 3    style A  buried -0.01 -> -0.01 m   floor over ground 0.99 -> 0.99 m   block foundation
- 1159  x    2747  z    961  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 0.97 -> 0.97 m   block foundation
+ 1159  x    2747  z    961  Chastain Glen  style A  buried -0.02 -> -0.02 m   floor over ground 0.97 -> 0.97 m   block foundation
   363  x    2031  z    821  community 3    style A  buried -0.11 -> -0.11 m   floor over ground 0.96 -> 0.96 m   block foundation
  1602  x    3010  z   1195  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 0.96 -> 0.96 m   block foundation
   327  x    1782  z    935  community 3    style A  buried 0.05 ->  0.05 m   floor over ground 0.96 -> 0.96 m   block foundation
-  322  x    1915  z    924  community 3    style B  buried 0.64 -> -0.12 m   floor over ground 0.91 -> 0.91 m   lot cut (649 samples, up to 0.8 m); block foundation
-  328  x    1762  z    940  community 3    style B  buried -0.05 -> -0.05 m   floor over ground 0.91 -> 0.91 m   block foundation
+  322  x    1915  z    924  community 3    style B  buried 0.64 -> -0.12 m   floor over ground 0.91 -> 0.91 m   lot cut (650 samples, up to 0.8 m); block foundation
   411  x    1578  z    641  community 3    style A  buried 0.18 ->  0.18 m   floor over ground 0.90 -> 0.90 m   block foundation
-  406  x    1563  z    758  community 3    style B  buried 0.77 -> -0.12 m   floor over ground 0.86 -> 0.86 m   lot cut (789 samples, up to 1.0 m); block foundation
+  328  x    1762  z    940  community 3    style B  buried -0.05 -> -0.05 m   floor over ground 0.90 -> 0.90 m   block foundation
  1041  x    2726  z    633  community 2    style C  buried -0.15 -> -0.15 m   floor over ground 0.86 -> 0.86 m   block foundation
+  406  x    1563  z    758  community 3    style B  buried 0.78 -> -0.12 m   floor over ground 0.85 -> 0.85 m   lot cut (789 samples, up to 1.0 m); block foundation
  1416  x    2789  z   1122  Chastain Glen  style C  buried -0.14 -> -0.14 m   floor over ground 0.85 -> 0.85 m   block foundation
-  418  x    1516  z    727  community 3    style A  buried 0.43 -> -0.12 m   floor over ground 0.84 -> 0.84 m   lot cut (631 samples, up to 0.7 m); block foundation
+  418  x    1516  z    727  community 3    style A  buried 0.44 -> -0.12 m   floor over ground 0.84 -> 0.84 m   lot cut (632 samples, up to 0.7 m); block foundation
   836  x    2964  z    657  community 2    style A  buried 0.06 ->  0.06 m   floor over ground 0.83 -> 0.83 m   block foundation
-  972  x    2727  z    697  community 2    style C  buried 0.08 ->  0.08 m   floor over ground 0.83 -> 0.83 m   block foundation
   396  x    1731  z    749  community 3    style B  buried 0.04 ->  0.04 m   floor over ground 0.83 -> 0.83 m   block foundation
+  972  x    2727  z    697  community 2    style C  buried 0.08 ->  0.08 m   floor over ground 0.83 -> 0.83 m   block foundation
   917  x    2894  z   1001  Chastain Glen  style A  buried 0.29 ->  0.29 m   floor over ground 0.83 -> 0.83 m   block foundation
   616  x    2972  z    698  community 2    style C  buried -0.05 -> -0.05 m   floor over ground 0.82 -> 0.82 m   block foundation
   373  x    1928  z    778  community 3    style A  buried 0.02 ->  0.02 m   floor over ground 0.81 -> 0.81 m   block foundation
  1037  x    2708  z    943  Chastain Glen  style A  buried -0.12 -> -0.12 m   floor over ground 0.80 -> 0.80 m   block foundation
-  937  x    3181  z    951  Chastain Glen  style C  buried 0.19 ->  0.19 m   floor over ground 0.80 -> 0.80 m   block foundation
+  937  x    3181  z    951  Chastain Glen  style C  buried 0.19 ->  0.19 m   floor over ground 0.79 -> 0.79 m   block foundation
   362  x    2026  z    800  community 3    style A  buried 0.06 ->  0.06 m   floor over ground 0.78 -> 0.78 m   block foundation
- 1233  x    2730  z    946  Chastain Glen  style A  buried -0.07 -> -0.07 m   floor over ground 0.75 -> 0.75 m   block foundation
+ 1233  x    2730  z    946  Chastain Glen  style A  buried -0.07 -> -0.07 m   floor over ground 0.76 -> 0.76 m   block foundation
  2063  x    2956  z   1213  Chastain Glen  style C  buried -0.04 -> -0.04 m   floor over ground 0.75 -> 0.75 m   block foundation
- 1220  x    2689  z    960  Chastain Glen  style D  buried 0.19 ->  0.19 m   floor over ground 0.75 -> 0.75 m   block foundation
-  416  x    1520  z    685  community 3    style D  buried 0.59 -> -0.12 m   floor over ground 0.75 -> 0.75 m   lot cut (714 samples, up to 1.0 m); block foundation
-  338  x    1769  z    883  community 3    style B  buried -0.16 -> -0.16 m   floor over ground 0.74 -> 0.74 m   block foundation
+ 1220  x    2689  z    960  Chastain Glen  style D  buried 0.18 ->  0.18 m   floor over ground 0.75 -> 0.75 m   block foundation
+  416  x    1520  z    685  community 3    style D  buried 0.59 -> -0.12 m   floor over ground 0.75 -> 0.75 m   lot cut (713 samples, up to 1.0 m); block foundation
+  338  x    1769  z    883  community 3    style B  buried -0.16 -> -0.16 m   floor over ground 0.75 -> 0.75 m   block foundation
  1468  x    2827  z   1142  Chastain Glen  style A  buried -0.02 -> -0.02 m   floor over ground 0.74 -> 0.74 m   block foundation
-  862  x    3139  z    955  Chastain Glen  style D  buried 0.31 -> -0.12 m   floor over ground 0.74 -> 0.74 m   lot cut (503 samples, up to 0.5 m); block foundation
+  862  x    3139  z    955  Chastain Glen  style D  buried 0.31 -> -0.12 m   floor over ground 0.73 -> 0.73 m   lot cut (504 samples, up to 0.5 m); block foundation
+  372  x    1919  z    759  community 3    style A  buried 0.49 -> -0.12 m   floor over ground 0.72 -> 0.72 m   lot cut (643 samples, up to 0.8 m); block foundation
   382  x    1836  z    725  community 3    style D  buried -0.12 -> -0.12 m   floor over ground 0.72 -> 0.72 m   block foundation
- 1179  x    3066  z    826  Chastain Glen  style C  buried 0.19 ->  0.19 m   floor over ground 0.72 -> 0.72 m   block foundation
-  372  x    1919  z    759  community 3    style A  buried 0.49 -> -0.12 m   floor over ground 0.72 -> 0.72 m   lot cut (646 samples, up to 0.8 m); block foundation
   971  x    3025  z    958  Chastain Glen  style C  buried 0.07 ->  0.07 m   floor over ground 0.72 -> 0.72 m   block foundation
- 1455  x    2694  z   1066  Chastain Glen  style A  buried 0.19 ->  0.19 m   floor over ground 0.69 -> 0.69 m   block foundation
- 1905  x    3013  z   1243  Chastain Glen  style C  buried -0.04 -> -0.04 m   floor over ground 0.69 -> 0.69 m   block foundation
+ 1179  x    3066  z    826  Chastain Glen  style C  buried 0.19 ->  0.19 m   floor over ground 0.72 -> 0.72 m   block foundation
+ 1455  x    2694  z   1066  Chastain Glen  style A  buried 0.19 ->  0.19 m   floor over ground 0.70 -> 0.70 m   block foundation
   601  x    2831  z    928  Chastain Glen  style C  buried -0.07 -> -0.07 m   floor over ground 0.69 -> 0.69 m   block foundation
+ 1905  x    3013  z   1243  Chastain Glen  style C  buried -0.04 -> -0.04 m   floor over ground 0.69 -> 0.69 m   block foundation
   326  x    1826  z    935  community 3    style A  buried -0.03 -> -0.03 m   floor over ground 0.66 -> 0.66 m   block foundation
-  806  x    3153  z    892  Chastain Glen  style A  buried 0.55 -> -0.12 m   floor over ground 0.66 -> 0.66 m   lot cut (517 samples, up to 0.7 m); block foundation
+  806  x    3153  z    892  Chastain Glen  style A  buried 0.55 -> -0.12 m   floor over ground 0.66 -> 0.66 m   lot cut (518 samples, up to 0.7 m); block foundation
+  955  x    2963  z    876  Chastain Glen  style A  buried 0.14 ->  0.14 m   floor over ground 0.66 -> 0.66 m   block foundation
   744  x    2800  z    702  community 2    style A  buried -0.15 -> -0.15 m   floor over ground 0.65 -> 0.65 m   block foundation
-  955  x    2963  z    876  Chastain Glen  style A  buried 0.14 ->  0.14 m   floor over ground 0.65 -> 0.65 m   block foundation
- 1201  x    2964  z    790  Chastain Glen  style C  buried 0.39 -> -0.12 m   floor over ground 0.65 -> 0.65 m   lot cut (560 samples, up to 0.6 m); block foundation
  1859  x    2900  z   1182  Chastain Glen  style B  buried 0.10 ->  0.10 m   floor over ground 0.65 -> 0.65 m   block foundation
- 1852  x    2993  z   1232  Chastain Glen  style C  buried 0.00 ->  0.00 m   floor over ground 0.64 -> 0.64 m   block foundation
+ 1201  x    2964  z    790  Chastain Glen  style C  buried 0.39 -> -0.12 m   floor over ground 0.65 -> 0.65 m   lot cut (560 samples, up to 0.6 m); block foundation
   321  x    1937  z    924  community 3    style A  buried 0.18 ->  0.18 m   floor over ground 0.64 -> 0.64 m   block foundation
+ 1852  x    2993  z   1232  Chastain Glen  style C  buried -0.01 -> -0.01 m   floor over ground 0.64 -> 0.64 m   block foundation
   936  x    2641  z    633  community 2    style C  buried -0.01 -> -0.01 m   floor over ground 0.63 -> 0.63 m   block foundation
-  329  x    1805  z    934  community 3    style B  buried -0.05 -> -0.05 m   floor over ground 0.62 -> 0.62 m   block foundation
- 1124  x    2977  z    894  Chastain Glen  style C  buried 0.04 ->  0.04 m   floor over ground 0.62 -> 0.62 m   block foundation
   855  x    2534  z    610  community 2    style A  buried 0.21 ->  0.21 m   floor over ground 0.62 -> 0.62 m   block foundation
+ 1124  x    2977  z    894  Chastain Glen  style C  buried 0.05 ->  0.05 m   floor over ground 0.62 -> 0.62 m   block foundation
+  329  x    1805  z    934  community 3    style B  buried -0.05 -> -0.05 m   floor over ground 0.62 -> 0.62 m   block foundation
   334  x    1693  z    830  community 3    style A  buried 0.06 ->  0.06 m   floor over ground 0.62 -> 0.62 m   block foundation
- 1965  x    3056  z   1256  Chastain Glen  style A  buried 0.14 ->  0.14 m   floor over ground 0.62 -> 0.62 m   block foundation
-  966  x    2857  z    639  community 2    style C  buried -0.09 -> -0.09 m   floor over ground 0.61 -> 0.61 m   block foundation
+  966  x    2857  z    639  community 2    style C  buried -0.10 -> -0.10 m   floor over ground 0.61 -> 0.61 m   block foundation
+ 1965  x    3056  z   1256  Chastain Glen  style A  buried 0.14 ->  0.14 m   floor over ground 0.61 -> 0.61 m   block foundation
   653  x    2625  z    632  community 2    style A  buried -0.15 -> -0.15 m   floor over ground 0.61 -> 0.61 m   block foundation
+  370  x    1972  z    738  community 3    style A  buried 0.05 ->  0.05 m   floor over ground 0.61 -> 0.61 m   block foundation
+  643  x    3201  z    991  Chastain Glen  style A  buried 0.31 -> -0.12 m   floor over ground 0.61 -> 0.61 m   lot cut (533 samples, up to 0.6 m); block foundation
   620  x    3050  z    866  Chastain Glen  style A  buried -0.14 -> -0.14 m   floor over ground 0.61 -> 0.61 m   block foundation
-  370  x    1972  z    738  community 3    style A  buried 0.04 ->  0.04 m   floor over ground 0.61 -> 0.61 m   block foundation
-  643  x    3201  z    991  Chastain Glen  style A  buried 0.31 -> -0.12 m   floor over ground 0.61 -> 0.61 m   lot cut (534 samples, up to 0.6 m); block foundation
  1149  x    3029  z    872  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 0.61 -> 0.61 m   block foundation
-  390  x    1633  z    667  community 3    style A  buried 0.13 ->  0.13 m   floor over ground 0.60 -> 0.60 m   block foundation
+  390  x    1633  z    667  community 3    style A  buried 0.13 ->  0.13 m   floor over ground 0.61 -> 0.61 m   block foundation
   380  x    1871  z    755  community 3    style B  buried 0.47 -> -0.12 m   floor over ground 0.60 -> 0.60 m   lot cut (709 samples, up to 0.6 m); block foundation
   383  x    1815  z    717  community 3    style B  buried 0.19 ->  0.19 m   floor over ground 0.60 -> 0.60 m   block foundation
-  379  x    1881  z    776  community 3    style B  buried 0.36 -> -0.12 m   floor over ground 0.60 -> 0.60 m   lot cut (598 samples, up to 0.6 m); block foundation
- 1930  x    3049  z   1212  Chastain Glen  style B  buried 0.24 ->  0.24 m   floor over ground 0.60 -> 0.60 m   block foundation
- 1128  x    2817  z    943  Chastain Glen  style B  buried 0.10 ->  0.10 m   floor over ground 0.59 -> 0.59 m   block foundation
-  422  x    1828  z    846  community 3    style B  buried 0.59 -> -0.12 m   floor over ground 0.40 -> 0.40 m   lot cut (591 samples, up to 0.8 m); block foundation
+  379  x    1881  z    776  community 3    style B  buried 0.37 -> -0.12 m   floor over ground 0.60 -> 0.60 m   lot cut (600 samples, up to 0.6 m); block foundation
+ 1930  x    3049  z   1212  Chastain Glen  style B  buried 0.25 ->  0.25 m   floor over ground 0.59 -> 0.59 m   block foundation
+  422  x    1828  z    846  community 3    style B  buried 0.59 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (592 samples, up to 0.8 m); block foundation
  1960  x    2807  z   1132  Chastain Glen  style C  buried 0.12 ->  0.12 m   floor over ground 0.59 -> 0.59 m   block foundation
-  888  x    2845  z    913  Chastain Glen  style A  buried -0.09 -> -0.09 m   floor over ground 0.59 -> 0.59 m   block foundation
- 2054  x    2906  z   1050  Chastain Glen  style A  buried 0.34 -> -0.12 m   floor over ground 0.58 -> 0.58 m   lot cut (300 samples, up to 0.5 m); block foundation
+ 1128  x    2817  z    943  Chastain Glen  style B  buried 0.11 ->  0.11 m   floor over ground 0.59 -> 0.59 m   block foundation
+  888  x    2845  z    913  Chastain Glen  style A  buried -0.09 -> -0.09 m   floor over ground 0.58 -> 0.58 m   block foundation
+ 2054  x    2906  z   1050  Chastain Glen  style A  buried 0.34 -> -0.12 m   floor over ground 0.58 -> 0.58 m   lot cut (297 samples, up to 0.5 m); block foundation
  1861  x    2843  z   1063  Chastain Glen  style A  buried -0.15 -> -0.15 m   floor over ground 0.57 -> 0.57 m   block foundation
+ 1497  x    2893  z   1066  Chastain Glen  style C  buried 0.24 ->  0.24 m   floor over ground 0.57 -> 0.57 m   block foundation
+  403  x    1632  z    770  community 3    style B  buried 0.49 -> -0.12 m   floor over ground 0.57 -> 0.57 m   lot cut (734 samples, up to 0.7 m); block foundation
   606  x    2918  z    967  Chastain Glen  style A  buried -0.14 -> -0.14 m   floor over ground 0.57 -> 0.57 m   block foundation
-  403  x    1632  z    770  community 3    style B  buried 0.49 -> -0.12 m   floor over ground 0.57 -> 0.57 m   lot cut (735 samples, up to 0.7 m); block foundation
-  325  x    1849  z    932  community 3    style A  buried 0.00 ->  0.00 m   floor over ground 0.57 -> 0.57 m   block foundation
-  377  x    1897  z    833  community 3    style B  buried 0.57 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (817 samples, up to 0.8 m); block foundation
-  830  x    3009  z    864  Chastain Glen  style C  buried -0.10 -> -0.10 m   floor over ground 0.57 -> 0.57 m   block foundation
- 1497  x    2893  z   1066  Chastain Glen  style C  buried 0.24 ->  0.24 m   floor over ground 0.56 -> 0.56 m   block foundation
-  376  x    1918  z    836  community 3    style B  buried 0.28 ->  0.28 m   floor over ground 0.56 -> 0.56 m   block foundation
+  325  x    1849  z    932  community 3    style A  buried 0.01 ->  0.01 m   floor over ground 0.57 -> 0.57 m   block foundation
+  830  x    3009  z    864  Chastain Glen  style C  buried -0.09 -> -0.09 m   floor over ground 0.57 -> 0.57 m   block foundation
   400  x    1699  z    789  community 3    style B  buried 0.40 -> -0.12 m   floor over ground 0.56 -> 0.56 m   lot cut (614 samples, up to 0.6 m); block foundation
-  819  x    2957  z    812  Chastain Glen  style A  buried 0.09 ->  0.09 m   floor over ground 0.56 -> 0.56 m   block foundation
+  377  x    1897  z    833  community 3    style B  buried 0.56 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (817 samples, up to 0.8 m); block foundation
   656  x    3195  z   1012  Chastain Glen  style C  buried 0.03 ->  0.03 m   floor over ground 0.56 -> 0.56 m   block foundation
+  376  x    1918  z    836  community 3    style B  buried 0.28 ->  0.28 m   floor over ground 0.56 -> 0.56 m   block foundation
  1507  x    3016  z   1062  Chastain Glen  style A  buried 0.19 ->  0.19 m   floor over ground 0.56 -> 0.56 m   block foundation
-  905  x    3003  z    844  Chastain Glen  style A  buried 0.21 ->  0.21 m   floor over ground 0.56 -> 0.56 m   block foundation
-  424  x    1807  z    846  community 3    style A  buried 0.30 ->  0.30 m   floor over ground 0.55 -> 0.55 m   block foundation
+  819  x    2957  z    812  Chastain Glen  style A  buried 0.09 ->  0.09 m   floor over ground 0.56 -> 0.56 m   block foundation
+  424  x    1807  z    846  community 3    style A  buried 0.30 -> -0.12 m   floor over ground 0.55 -> 0.55 m   lot cut (592 samples, up to 0.5 m); block foundation
   393  x    1608  z    679  community 3    style B  buried 0.15 ->  0.15 m   floor over ground 0.55 -> 0.55 m   block foundation
+  905  x    3003  z    844  Chastain Glen  style A  buried 0.22 ->  0.22 m   floor over ground 0.55 -> 0.55 m   block foundation
  1052  x    2746  z   1009  Chastain Glen  style A  buried 0.08 ->  0.08 m   floor over ground 0.54 -> 0.54 m   block foundation
+  860  x    2766  z    966  Chastain Glen  style A  buried 0.54 -> -0.12 m   floor over ground 0.45 -> 0.45 m   lot cut (575 samples, up to 0.8 m); block foundation
   916  x    2929  z    902  Chastain Glen  style A  buried 0.09 ->  0.09 m   floor over ground 0.54 -> 0.54 m   block foundation
-  860  x    2766  z    966  Chastain Glen  style A  buried 0.54 -> -0.12 m   floor over ground 0.45 -> 0.45 m   lot cut (576 samples, up to 0.8 m); block foundation
- 1068  x    2869  z    598  community 2    style A  buried 0.20 ->  0.20 m   floor over ground 0.54 -> 0.54 m   block foundation
- 1058  x    3133  z    853  Chastain Glen  style A  buried 0.49 -> -0.12 m   floor over ground 0.53 -> 0.53 m   lot cut (466 samples, up to 0.6 m); block foundation
  1142  x    3192  z    971  Chastain Glen  style C  buried 0.03 ->  0.03 m   floor over ground 0.53 -> 0.53 m   block foundation
+ 1068  x    2869  z    598  community 2    style A  buried 0.20 ->  0.20 m   floor over ground 0.53 -> 0.53 m   block foundation
   909  x    3163  z    914  Chastain Glen  style A  buried 0.06 ->  0.06 m   floor over ground 0.53 -> 0.53 m   block foundation
- 1928  x    2920  z   1034  Chastain Glen  style A  buried 0.05 ->  0.05 m   floor over ground 0.53 -> 0.53 m   block foundation
-  402  x    1654  z    777  community 3    style A  buried 0.45 -> -0.12 m   floor over ground 0.52 -> 0.52 m   lot cut (643 samples, up to 0.6 m); block foundation
-  405  x    1588  z    768  community 3    style A  buried 0.19 ->  0.19 m   floor over ground 0.52 -> 0.52 m   block foundation
+ 1058  x    3133  z    853  Chastain Glen  style A  buried 0.50 -> -0.12 m   floor over ground 0.53 -> 0.53 m   lot cut (472 samples, up to 0.6 m); block foundation
+ 1928  x    2920  z   1034  Chastain Glen  style A  buried 0.05 ->  0.05 m   floor over ground 0.52 -> 0.52 m   block foundation
+  402  x    1654  z    777  community 3    style A  buried 0.45 -> -0.12 m   floor over ground 0.52 -> 0.52 m   lot cut (645 samples, up to 0.6 m); block foundation
   676  x    2537  z    630  community 2    style A  buried -0.04 -> -0.04 m   floor over ground 0.52 -> 0.52 m   block foundation
+  405  x    1588  z    768  community 3    style A  buried 0.19 ->  0.19 m   floor over ground 0.52 -> 0.52 m   block foundation
  1580  x    3119  z   1259  Chastain Glen  style D  buried 0.16 ->  0.16 m   floor over ground 0.51 -> 0.51 m   block foundation
- 1642  x    2975  z   1223  Chastain Glen  style C  buried -0.03 -> -0.03 m   floor over ground 0.51 -> 0.51 m   block foundation
  1961  x    3042  z   1092  Chastain Glen  style C  buried 0.37 -> -0.12 m   floor over ground 0.51 -> 0.51 m   lot cut (588 samples, up to 0.6 m); block foundation
+ 1642  x    2975  z   1223  Chastain Glen  style C  buried -0.03 -> -0.03 m   floor over ground 0.51 -> 0.51 m   block foundation
  1152  x    2853  z   1010  Chastain Glen  style A  buried 0.05 ->  0.05 m   floor over ground 0.50 -> 0.50 m   block foundation
+  404  x    1609  z    768  community 3    style A  buried 0.31 -> -0.12 m   floor over ground 0.50 -> 0.50 m   lot cut (568 samples, up to 0.6 m); block foundation
  1919  x    3029  z   1204  Chastain Glen  style B  buried 0.23 ->  0.23 m   floor over ground 0.50 -> 0.50 m   block foundation
-  404  x    1609  z    768  community 3    style A  buried 0.31 -> -0.12 m   floor over ground 0.50 -> 0.50 m   lot cut (575 samples, up to 0.6 m); block foundation
+ 1491  x    2883  z   1088  Chastain Glen  style B  buried 0.41 -> -0.12 m   floor over ground 0.50 -> 0.50 m   lot cut (529 samples, up to 0.5 m); block foundation
   337  x    1748  z    872  community 3    style A  buried 0.03 ->  0.03 m   floor over ground 0.50 -> 0.50 m   block foundation
- 1491  x    2883  z   1088  Chastain Glen  style B  buried 0.41 -> -0.12 m   floor over ground 0.50 -> 0.50 m   lot cut (532 samples, up to 0.5 m); block foundation
- 1526  x    3132  z   1221  Chastain Glen  style D  buried 0.32 -> -0.12 m   floor over ground 0.49 -> 0.49 m   lot cut (492 samples, up to 0.4 m); block foundation
-  954  x    2850  z    970  Chastain Glen  style A  buried -0.08 -> -0.08 m   floor over ground 0.49 -> 0.49 m   block foundation
  1499  x    2829  z   1098  Chastain Glen  style C  buried -0.08 -> -0.08 m   floor over ground 0.49 -> 0.49 m   block foundation
+ 1526  x    3132  z   1221  Chastain Glen  style D  buried 0.32 -> -0.12 m   floor over ground 0.49 -> 0.49 m   lot cut (491 samples, up to 0.4 m); block foundation
+  954  x    2850  z    970  Chastain Glen  style A  buried -0.08 -> -0.08 m   floor over ground 0.49 -> 0.49 m   block foundation
   962  x    3143  z    997  Chastain Glen  style C  buried -0.08 -> -0.08 m   floor over ground 0.49 -> 0.49 m   block foundation
   811  x    2972  z    674  community 2    style D  buried 0.09 ->  0.09 m   floor over ground 0.49 -> 0.49 m   block foundation
-  704  x    3084  z    913  Chastain Glen  style A  buried -0.02 -> -0.02 m   floor over ground 0.48 -> 0.48 m   block foundation
-  766  x    3145  z    875  Chastain Glen  style D  buried 0.41 -> -0.12 m   floor over ground 0.48 -> 0.48 m   lot cut (358 samples, up to 0.5 m); block foundation
+  766  x    3145  z    875  Chastain Glen  style D  buried 0.41 -> -0.12 m   floor over ground 0.48 -> 0.48 m   lot cut (355 samples, up to 0.5 m); block foundation
   331  x    1718  z    914  community 3    style B  buried 0.17 ->  0.17 m   floor over ground 0.48 -> 0.48 m   block foundation
-  413  x    1536  z    619  community 3    style A  buried 0.20 ->  0.20 m   floor over ground 0.48 -> 0.48 m   block foundation
   625  x    3175  z   1022  Chastain Glen  style C  buried 0.01 ->  0.01 m   floor over ground 0.48 -> 0.48 m   block foundation
+  413  x    1536  z    619  community 3    style A  buried 0.20 ->  0.20 m   floor over ground 0.48 -> 0.48 m   block foundation
+  734  x    3172  z    932  Chastain Glen  style C  buried 0.09 ->  0.09 m   floor over ground 0.48 -> 0.48 m   block foundation
+  704  x    3084  z    913  Chastain Glen  style A  buried -0.01 -> -0.01 m   floor over ground 0.48 -> 0.48 m   block foundation
+  677  x    2945  z   1002  Chastain Glen  style A  buried 0.07 ->  0.07 m   floor over ground 0.48 -> 0.48 m   block foundation
   906  x    2962  z    986  Chastain Glen  style C  buried 0.07 ->  0.07 m   floor over ground 0.48 -> 0.48 m   block foundation
-  728  x    2728  z    713  community 2    style D  buried 0.26 ->  0.26 m   floor over ground 0.47 -> 0.47 m   block foundation
-  677  x    2945  z   1002  Chastain Glen  style A  buried 0.07 ->  0.07 m   floor over ground 0.47 -> 0.47 m   block foundation
-  734  x    3172  z    932  Chastain Glen  style C  buried 0.09 ->  0.09 m   floor over ground 0.47 -> 0.47 m   block foundation
-  421  x    1784  z    843  community 3    style A  buried 0.20 ->  0.20 m   floor over ground 0.47 -> 0.47 m   block foundation
+  728  x    2728  z    713  community 2    style D  buried 0.27 ->  0.27 m   floor over ground 0.47 -> 0.47 m   block foundation
   871  x    2860  z    899  Chastain Glen  style C  buried 0.08 ->  0.08 m   floor over ground 0.47 -> 0.47 m   block foundation
+  421  x    1784  z    843  community 3    style A  buried 0.20 ->  0.20 m   floor over ground 0.47 -> 0.47 m   block foundation
+  997  x    2718  z    845  community 1    style D  buried 0.14 ->  0.14 m   floor over ground 0.47 -> 0.47 m   block foundation
  1823  x    3028  z   1079  Chastain Glen  style A  buried 0.06 ->  0.06 m   floor over ground 0.46 -> 0.46 m   block foundation
-  997  x    2718  z    845  community 1    style D  buried 0.14 ->  0.14 m   floor over ground 0.46 -> 0.46 m   block foundation
  1974  x    3130  z   1240  Chastain Glen  style A  buried 0.09 ->  0.09 m   floor over ground 0.46 -> 0.46 m   block foundation
  1912  x    2863  z   1161  Chastain Glen  style C  buried 0.02 ->  0.02 m   floor over ground 0.46 -> 0.46 m   block foundation
-  741  x    2995  z    907  Chastain Glen  style D  buried 0.02 ->  0.02 m   floor over ground 0.46 -> 0.46 m   block foundation
+  342  x    1878  z    880  community 3    style B  buried 0.46 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (669 samples, up to 0.8 m); block foundation
   389  x    1657  z    676  community 3    style A  buried 0.12 ->  0.12 m   floor over ground 0.46 -> 0.46 m   block foundation
-  342  x    1878  z    880  community 3    style B  buried 0.46 -> -0.12 m   floor over ground 0.42 -> 0.42 m   lot cut (663 samples, up to 0.8 m); block foundation
- 1071  x    2955  z    855  Chastain Glen  style A  buried 0.19 ->  0.19 m   floor over ground 0.45 -> 0.45 m   block foundation
+ 1071  x    2955  z    855  Chastain Glen  style A  buried 0.19 ->  0.19 m   floor over ground 0.46 -> 0.46 m   block foundation
+  741  x    2995  z    907  Chastain Glen  style D  buried 0.02 ->  0.02 m   floor over ground 0.45 -> 0.45 m   block foundation
   401  x    1677  z    783  community 3    style A  buried 0.28 ->  0.28 m   floor over ground 0.45 -> 0.45 m   block foundation
- 1614  x    2958  z   1168  Chastain Glen  style C  buried 0.45 ->  0.44 m   floor over ground 0.30 -> 0.30 m   lot cut (555 samples, up to 0.6 m); block foundation
+ 1614  x    2958  z   1168  Chastain Glen  style C  buried 0.45 ->  0.44 m   floor over ground 0.31 -> 0.31 m   lot cut (555 samples, up to 0.6 m); block foundation
  2027  x    2936  z   1203  Chastain Glen  style A  buried 0.09 ->  0.09 m   floor over ground 0.45 -> 0.45 m   block foundation
-  388  x    1673  z    693  community 3    style A  buried 0.19 ->  0.19 m   floor over ground 0.44 -> 0.44 m   block foundation
- 1019  x    3016  z    916  Chastain Glen  style A  buried 0.23 ->  0.23 m   floor over ground 0.44 -> 0.44 m   block foundation
- 1200  x    2907  z    985  Chastain Glen  style A  buried 0.06 ->  0.06 m   floor over ground 0.44 -> 0.44 m   block foundation
   646  x    2910  z    865  Chastain Glen  style C  buried 0.13 ->  0.13 m   floor over ground 0.44 -> 0.44 m   block foundation
- 1572  x    2772  z   1065  Chastain Glen  style A  buried 0.28 ->  0.28 m   floor over ground 0.44 -> 0.44 m   block foundation
+  388  x    1673  z    693  community 3    style A  buried 0.19 ->  0.19 m   floor over ground 0.44 -> 0.44 m   block foundation
+  423  x    1851  z    844  community 3    style B  buried 0.44 -> -0.12 m   floor over ground 0.15 -> 0.15 m   lot cut (847 samples, up to 0.6 m)
+ 1019  x    3016  z    916  Chastain Glen  style A  buried 0.24 ->  0.24 m   floor over ground 0.44 -> 0.44 m   block foundation
+ 1200  x    2907  z    985  Chastain Glen  style A  buried 0.06 ->  0.06 m   floor over ground 0.44 -> 0.44 m   block foundation
  1742  x    3070  z   1218  Chastain Glen  style C  buried 0.17 ->  0.17 m   floor over ground 0.44 -> 0.44 m   block foundation
-  423  x    1851  z    844  community 3    style B  buried 0.44 -> -0.12 m   floor over ground 0.15 -> 0.15 m   lot cut (845 samples, up to 0.6 m)
-  386  x    1715  z    705  community 3    style A  buried 0.26 ->  0.26 m   floor over ground 0.43 -> 0.43 m   block foundation
+ 1572  x    2772  z   1065  Chastain Glen  style A  buried 0.29 ->  0.29 m   floor over ground 0.44 -> 0.44 m   block foundation
   369  x    1948  z    722  community 3    style A  buried 0.29 ->  0.29 m   floor over ground 0.43 -> 0.43 m   block foundation
- 1509  x    2733  z   1091  Chastain Glen  style C  buried 0.01 ->  0.01 m   floor over ground 0.43 -> 0.43 m   block foundation
-  978  x    2594  z    632  community 2    style A  buried -0.10 -> -0.10 m   floor over ground 0.43 -> 0.43 m   block foundation
-  412  x    1562  z    617  community 3    style A  buried 0.43 -> -0.12 m   floor over ground 0.40 -> 0.40 m   lot cut (753 samples, up to 0.6 m); block foundation
- 1032  x    2965  z    634  community 2    style C  buried -0.02 -> -0.02 m   floor over ground 0.43 -> 0.43 m   block foundation
  1195  x    2770  z    637  community 2    style A  buried -0.15 -> -0.15 m   floor over ground 0.43 -> 0.43 m   block foundation
- 1206  x    3065  z    923  Chastain Glen  style D  buried -0.10 -> -0.10 m   floor over ground 0.42 -> 0.42 m   block foundation
+  412  x    1562  z    617  community 3    style A  buried 0.43 -> -0.12 m   floor over ground 0.40 -> 0.40 m   lot cut (753 samples, up to 0.6 m); block foundation
+  386  x    1715  z    705  community 3    style A  buried 0.26 ->  0.26 m   floor over ground 0.43 -> 0.43 m   block foundation
+ 1032  x    2965  z    634  community 2    style C  buried -0.02 -> -0.02 m   floor over ground 0.43 -> 0.43 m   block foundation
+ 1509  x    2733  z   1091  Chastain Glen  style C  buried 0.00 ->  0.00 m   floor over ground 0.43 -> 0.43 m   block foundation
+  978  x    2594  z    632  community 2    style A  buried -0.09 -> -0.09 m   floor over ground 0.43 -> 0.43 m   block foundation
+ 1539  x    3082  z   1066  Chastain Glen  style C  buried 0.24 ->  0.24 m   floor over ground 0.43 -> 0.43 m   block foundation
+ 1206  x    3065  z    923  Chastain Glen  style D  buried -0.10 -> -0.10 m   floor over ground 0.43 -> 0.43 m   block foundation
+  709  x    2890  z    598  community 2    style A  buried 0.12 ->  0.12 m   floor over ground 0.43 -> 0.43 m   block foundation
  1223  x    3048  z    817  Chastain Glen  style A  buried 0.17 ->  0.17 m   floor over ground 0.42 -> 0.42 m   block foundation
- 1539  x    3082  z   1066  Chastain Glen  style C  buried 0.24 ->  0.24 m   floor over ground 0.42 -> 0.42 m   block foundation
-  709  x    2890  z    598  community 2    style A  buried 0.13 ->  0.13 m   floor over ground 0.42 -> 0.42 m   block foundation
  1173  x    2802  z    638  community 2    style A  buried -0.07 -> -0.07 m   floor over ground 0.42 -> 0.42 m   block foundation
+  807  x    2910  z    603  community 2    style C  buried 0.42 -> -0.12 m   floor over ground 0.35 -> 0.35 m   lot cut (475 samples, up to 0.6 m); block foundation
  1452  x    2730  z   1040  Chastain Glen  style C  buried 0.13 ->  0.13 m   floor over ground 0.42 -> 0.42 m   block foundation
-  807  x    2910  z    603  community 2    style C  buried 0.42 -> -0.12 m   floor over ground 0.35 -> 0.35 m   lot cut (477 samples, up to 0.6 m); block foundation
-  967  x    2786  z    637  community 2    style A  buried -0.13 -> -0.13 m   floor over ground 0.42 -> 0.42 m   block foundation
   344  x    1857  z    883  community 3    style A  buried 0.29 ->  0.29 m   floor over ground 0.42 -> 0.42 m   block foundation
-  672  x    3087  z    830  Chastain Glen  style C  buried 0.11 ->  0.11 m   floor over ground 0.42 -> 0.42 m   block foundation
+  967  x    2786  z    637  community 2    style A  buried -0.13 -> -0.13 m   floor over ground 0.42 -> 0.42 m   block foundation
+  672  x    3087  z    830  Chastain Glen  style C  buried 0.11 ->  0.11 m   floor over ground 0.41 -> 0.41 m   block foundation
   318  x    2007  z    913  community 3    style B  buried 0.12 ->  0.12 m   floor over ground 0.41 -> 0.41 m   block foundation
-  773  x    2952  z    616  community 2    style C  buried 0.34 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (420 samples, up to 0.5 m); block foundation
-  368  x    1924  z    732  community 3    style B  buried 0.34 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (709 samples, up to 0.5 m); block foundation
-  387  x    1694  z    700  community 3    style A  buried 0.41 -> -0.12 m   floor over ground 0.30 -> 0.30 m   lot cut (725 samples, up to 0.6 m)
-  626  x    3037  z    920  Chastain Glen  style D  buried 0.41 -> -0.12 m   floor over ground 0.30 -> 0.30 m   lot cut (501 samples, up to 0.5 m)
+  626  x    3037  z    920  Chastain Glen  style D  buried 0.41 -> -0.12 m   floor over ground 0.29 -> 0.29 m   lot cut (502 samples, up to 0.5 m)
+  773  x    2952  z    616  community 2    style C  buried 0.35 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (420 samples, up to 0.5 m); block foundation
+  387  x    1694  z    700  community 3    style A  buried 0.41 -> -0.12 m   floor over ground 0.30 -> 0.30 m   lot cut (723 samples, up to 0.6 m)
   374  x    1936  z    798  community 3    style A  buried -0.11 -> -0.11 m   floor over ground 0.41 -> 0.41 m   block foundation
+  368  x    1924  z    732  community 3    style B  buried 0.34 -> -0.12 m   floor over ground 0.41 -> 0.41 m   lot cut (709 samples, up to 0.5 m); block foundation
+ 1534  x    3077  z   1258  Chastain Glen  style C  buried 0.17 ->  0.17 m   floor over ground 0.41 -> 0.41 m   block foundation
  2029  x    2992  z   1187  Chastain Glen  style C  buried 0.17 ->  0.17 m   floor over ground 0.41 -> 0.41 m   block foundation
-  822  x    2979  z    975  Chastain Glen  style A  buried 0.40 -> -0.12 m   floor over ground 0.13 -> 0.14 m   lot cut (611 samples, up to 0.6 m)
-  624  x    2865  z    954  Chastain Glen  style B  buried 0.18 ->  0.18 m   floor over ground 0.40 -> 0.40 m   block foundation
+  822  x    2979  z    975  Chastain Glen  style A  buried 0.41 -> -0.12 m   floor over ground 0.13 -> 0.14 m   lot cut (611 samples, up to 0.6 m)
  1772  x    2881  z   1110  Chastain Glen  style C  buried 0.03 ->  0.03 m   floor over ground 0.40 -> 0.40 m   block foundation
- 1534  x    3077  z   1258  Chastain Glen  style C  buried 0.17 ->  0.17 m   floor over ground 0.40 -> 0.40 m   block foundation
+  624  x    2865  z    954  Chastain Glen  style B  buried 0.18 ->  0.18 m   floor over ground 0.40 -> 0.40 m   block foundation
   335  x    1715  z    838  community 3    style B  buried 0.19 ->  0.19 m   floor over ground 0.39 -> 0.39 m   block foundation
  1729  x    2714  z   1081  Chastain Glen  style C  buried 0.11 ->  0.11 m   floor over ground 0.38 -> 0.38 m   block foundation
-  399  x    1721  z    793  community 3    style A  buried 0.38 -> -0.12 m   floor over ground 0.32 -> 0.32 m   lot cut (942 samples, up to 0.5 m); block foundation
- 1127  x    2776  z    836  community 1    style C  buried -0.01 -> -0.01 m   floor over ground 0.37 -> 0.37 m   block foundation
- 1053  x    2835  z    999  Chastain Glen  style C  buried 0.18 ->  0.18 m   floor over ground 0.37 -> 0.37 m   block foundation
- 1641  x    2810  z   1088  Chastain Glen  style A  buried 0.37 ->  0.37 m   floor over ground 0.18 -> 0.18 m   lot cut (41 samples, up to 0.5 m)
+  399  x    1721  z    793  community 3    style A  buried 0.38 -> -0.12 m   floor over ground 0.32 -> 0.32 m   lot cut (947 samples, up to 0.5 m); block foundation
+ 1127  x    2776  z    836  community 1    style C  buried -0.01 -> -0.01 m   floor over ground 0.38 -> 0.38 m   block foundation
+ 1053  x    2835  z    999  Chastain Glen  style C  buried 0.18 ->  0.18 m   floor over ground 0.38 -> 0.38 m   block foundation
   375  x    1939  z    836  community 3    style B  buried 0.37 -> -0.12 m   floor over ground 0.19 -> 0.19 m   lot cut (796 samples, up to 0.6 m)
+ 1641  x    2810  z   1088  Chastain Glen  style A  buried 0.37 ->  0.37 m   floor over ground 0.18 -> 0.18 m   lot cut (41 samples, up to 0.5 m)
  1927  x    3095  z   1200  Chastain Glen  style A  buried 0.06 ->  0.06 m   floor over ground 0.36 -> 0.36 m   block foundation
-  320  x    1957  z    925  community 3    style B  buried 0.23 ->  0.23 m   floor over ground 0.36 -> 0.36 m   block foundation
- 1090  x    3152  z   1018  Chastain Glen  style C  buried 0.25 ->  0.25 m   floor over ground 0.36 -> 0.36 m   block foundation
  1460  x    3136  z   1200  Chastain Glen  style A  buried 0.20 ->  0.20 m   floor over ground 0.36 -> 0.36 m   block foundation
+ 1090  x    3152  z   1018  Chastain Glen  style C  buried 0.25 ->  0.25 m   floor over ground 0.36 -> 0.36 m   block foundation
+  320  x    1957  z    925  community 3    style B  buried 0.23 ->  0.23 m   floor over ground 0.36 -> 0.36 m   block foundation
  1627  x    3055  z   1108  Chastain Glen  style A  buried 0.35 ->  0.27 m   floor over ground 0.26 -> 0.26 m   lot cut (90 samples, up to 0.6 m)
  1783  x    3148  z   1062  Chastain Glen  style D  buried 0.17 ->  0.17 m   floor over ground 0.35 -> 0.35 m   block foundation
  1993  x    3063  z   1131  Chastain Glen  style A  buried 0.07 ->  0.07 m   floor over ground 0.35 -> 0.35 m   block foundation
- 1740  x    3162  z   1076  Chastain Glen  style D  buried 0.35 -> -0.12 m   floor over ground 0.29 -> 0.29 m   lot cut (597 samples, up to 0.6 m)
-  359  x    2031  z    735  community 3    style D  buried 0.35 -> -0.12 m   floor over ground 0.26 -> 0.26 m   lot cut (777 samples, up to 0.5 m)
  1187  x    2798  z    978  Chastain Glen  style B  buried 0.20 ->  0.20 m   floor over ground 0.35 -> 0.35 m   block foundation
-  319  x    1985  z    924  community 3    style B  buried 0.35 -> -0.12 m   floor over ground 0.30 -> 0.30 m   lot cut (798 samples, up to 0.5 m); block foundation
- 1550  x    2846  z   1150  Chastain Glen  style A  buried 0.10 ->  0.10 m   floor over ground 0.34 -> 0.34 m   block foundation
- 1622  x    2789  z   1077  Chastain Glen  style D  buried 0.16 ->  0.16 m   floor over ground 0.34 -> 0.34 m   block foundation
+  359  x    2031  z    735  community 3    style D  buried 0.35 -> -0.12 m   floor over ground 0.27 -> 0.27 m   lot cut (778 samples, up to 0.5 m)
+ 1740  x    3162  z   1076  Chastain Glen  style D  buried 0.35 -> -0.12 m   floor over ground 0.29 -> 0.29 m   lot cut (595 samples, up to 0.6 m)
+ 1550  x    2846  z   1150  Chastain Glen  style A  buried 0.11 ->  0.11 m   floor over ground 0.35 -> 0.35 m   block foundation
   330  x    1732  z    931  community 3    style B  buried 0.22 ->  0.22 m   floor over ground 0.34 -> 0.34 m   block foundation
- 1238  x    2736  z    836  community 1    style D  buried 0.13 ->  0.13 m   floor over ground 0.34 -> 0.34 m   block foundation
   650  x    2848  z    597  community 2    style C  buried 0.18 ->  0.18 m   floor over ground 0.34 -> 0.34 m   block foundation
- 1157  x    2803  z    595  community 2    style D  buried 0.34 -> -0.12 m   floor over ground 0.20 -> 0.20 m   lot cut (508 samples, up to 0.5 m)
- 1663  x    2916  z   1145  Chastain Glen  style A  buried 0.07 ->  0.07 m   floor over ground 0.33 -> 0.33 m   block foundation
- 1968  x    2919  z   1193  Chastain Glen  style A  buried 0.08 ->  0.08 m   floor over ground 0.33 -> 0.33 m   block foundation
+  319  x    1985  z    924  community 3    style B  buried 0.34 -> -0.12 m   floor over ground 0.31 -> 0.31 m   lot cut (795 samples, up to 0.5 m); block foundation
+ 1157  x    2803  z    595  community 2    style D  buried 0.34 -> -0.12 m   floor over ground 0.20 -> 0.20 m   lot cut (509 samples, up to 0.5 m)
+ 1622  x    2789  z   1077  Chastain Glen  style D  buried 0.17 ->  0.17 m   floor over ground 0.34 -> 0.34 m   block foundation
+ 1238  x    2736  z    836  community 1    style D  buried 0.13 ->  0.13 m   floor over ground 0.34 -> 0.34 m   block foundation
+ 1663  x    2916  z   1145  Chastain Glen  style A  buried 0.07 ->  0.07 m   floor over ground 0.34 -> 0.34 m   block foundation
+ 1968  x    2919  z   1193  Chastain Glen  style A  buried 0.08 ->  0.08 m   floor over ground 0.34 -> 0.34 m   block foundation
   664  x    2935  z    954  Chastain Glen  style A  buried -0.04 -> -0.04 m   floor over ground 0.33 -> 0.33 m   block foundation
- 1154  x    2756  z    836  community 1    style A  buried 0.32 -> -0.12 m   floor over ground 0.32 -> 0.32 m   lot cut (454 samples, up to 0.5 m); block foundation
-  384  x    1757  z    711  community 3    style B  buried 0.32 -> -0.12 m   floor over ground 0.23 -> 0.23 m   lot cut (806 samples, up to 0.6 m)
- 1212  x    3106  z    902  Chastain Glen  style C  buried 0.28 ->  0.28 m   floor over ground 0.32 -> 0.32 m   block foundation
+ 1154  x    2756  z    836  community 1    style A  buried 0.32 -> -0.12 m   floor over ground 0.33 -> 0.33 m   lot cut (453 samples, up to 0.5 m); block foundation
  1083  x    2893  z    922  Chastain Glen  style C  buried 0.16 ->  0.16 m   floor over ground 0.32 -> 0.32 m   block foundation
-  690  x    2872  z   1018  Chastain Glen  style A  buried 0.21 ->  0.21 m   floor over ground 0.32 -> 0.32 m   block foundation
+  384  x    1757  z    711  community 3    style B  buried 0.32 -> -0.12 m   floor over ground 0.23 -> 0.23 m   lot cut (806 samples, up to 0.6 m)
+  690  x    2872  z   1018  Chastain Glen  style A  buried 0.20 ->  0.20 m   floor over ground 0.32 -> 0.32 m   block foundation
+ 1212  x    3106  z    902  Chastain Glen  style C  buried 0.28 ->  0.28 m   floor over ground 0.32 -> 0.32 m   block foundation
   680  x    2819  z    709  community 2    style C  buried -0.13 -> -0.13 m   floor over ground 0.32 -> 0.32 m   block foundation
- 1096  x    2850  z    683  community 2    style D  buried 0.10 ->  0.10 m   floor over ground 0.32 -> 0.32 m   block foundation
+ 1096  x    2850  z    683  community 2    style D  buried 0.11 ->  0.11 m   floor over ground 0.31 -> 0.31 m   block foundation
  1237  x    2634  z    589  community 2    style C  buried 0.17 ->  0.17 m   floor over ground 0.31 -> 0.31 m   block foundation
  1225  x    2932  z   1017  Chastain Glen  style D  buried 0.31 -> -0.12 m   floor over ground 0.25 -> 0.25 m   lot cut (459 samples, up to 0.5 m)
   864  x    2955  z    833  Chastain Glen  style C  buried 0.21 ->  0.21 m   floor over ground 0.30 -> 0.30 m   block foundation
