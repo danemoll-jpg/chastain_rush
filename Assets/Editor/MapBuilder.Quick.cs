@@ -113,6 +113,7 @@ namespace ChastainRush
                 S("CoursonSwim", () => BuildCoursonSwim(map, terrain, mats, world, courson)),   // Round 39 (A4)
                 S("ShoppingCenter", () => BuildShoppingCenter(map, terrain, mats, world, shop)),   // Round 17 (Part B): lot, shop fronts, gas station, the bank
                 S("StuntPark", () => { if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop); }),   // Round 36 (Part A2): the stunt park, its stores and roofs
+                S("Mall", () => { if (Mall != null) BuildMall(map, terrain, mats, world, Mall); }, true),   // Round 60 (A): Town Center, outside and in (MapBuilder.Mall.cs, MallInside.cs)
                 S("Shortcuts", () => BuildShortcuts(hood, terrain, mats, world)),   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
                 S("ReportTreesOnLines", () => { if (hood.ShortcutData != null) ReportTreesOnLines(hood, c.trees); }),
                 S("CreekTrack", () => BuildCreekTrack(map, terrain, mats, world, creek)),   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)

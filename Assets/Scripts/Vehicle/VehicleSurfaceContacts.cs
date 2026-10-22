@@ -92,7 +92,7 @@ namespace Racer
                 {
                     if (mesh.gameObject.scene != box.gameObject.scene) continue;
                     if (mesh.attachedRigidbody || !mesh.sharedMesh || !mesh.sharedMesh.isReadable) continue;
-                    bool ramp = IsShortcutSurface(mesh.name) || IsStuntParkSurface(mesh.name);   // Round 37: the stunt park's
+                    bool ramp = IsShortcutSurface(mesh.name) || IsStuntParkSurface(mesh.name) || mesh.name.StartsWith("Mall ramp ", System.StringComparison.Ordinal);   // Round 37: the stunt park's; Round 60: Town Center's escalator banks
                     // Round 54 (E1): a manhole's floor over the hole is the street's ground there (MapBuilder.Network.cs), with its faces' normals as the decks'
                     if (!ramp && mesh.name != "BridgeDecks" && !IsManholeFloor(mesh.name)) continue;   // Round 14: the bridge decks are driving ground too
                     var vertices = mesh.sharedMesh.vertices; var indices = mesh.sharedMesh.triangles;
@@ -129,7 +129,7 @@ namespace Racer
                 if (!ParkContactsOff)
                     foreach (var b in Object.FindObjectsByType<BoxCollider>())
                     {
-                        if (b.gameObject.scene != box.gameObject.scene || b.attachedRigidbody || !(b.name == "Stunt park roof" || b.name == "Stunt park store floor")) continue;
+                        if (b.gameObject.scene != box.gameObject.scene || b.attachedRigidbody || !(b.name == "Stunt park roof" || b.name == "Stunt park store floor" || b.name == "Mall floor")) continue;   // Round 60: Town Center's floors (rows of boxes, MapBuilder.Mall.cs)
                         nextSlabs[b.GetEntityId()] = b.transform.TransformPoint(b.center + Vector3.up * b.size.y * .5f).y; b.hasModifiableContacts = true;
                     }
                 var nextFields = new Dictionary<EntityId, Field>();   // Round 14: the terrain tiles

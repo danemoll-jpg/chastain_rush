@@ -137,6 +137,7 @@ namespace ChastainRush
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
             Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
             if (Park != null) GradeStuntPark(map, terrain, Park);
+            Mall = PlanMall(map, terrain);   // Round 60 (A): Town Center, its doors' aprons graded (MapBuilder.Mall.cs)
             BuildClock.Lap("StuntPark plan");
             c.world = quick ? c.scene.GetRootGameObjects().First(g => g.name == "World").transform : new GameObject("World").transform;
             c.paint = new Chunks();
@@ -167,6 +168,7 @@ namespace ChastainRush
             MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
             BuildClock.Lap("MouthSweep");
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
+            R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
             BuildClock.Lap("SmoothBridgeEnds");
             AddisonNow = Ridge.Load(AddisonTrackFile); AddisonExtra = LoadAddisonExtra();   // Round 52: the Addison Heights race's cleared line (MapBuilder.Round52.cs); Round 53: its shortcuts' pieces (MapBuilder.Round53.cs)
             LakesNow = Ridge.Load(LakesTrackFile); LakesExtra = LoadLakesExtra();   // Round 44: the Chastain Lakes race's world pieces (MapBuilder.LakesRace.cs), read before the amenity area is planned
@@ -758,6 +760,7 @@ namespace ChastainRush
                 if (shop.Owns(i)) continue;          // Round 17: the gas station's canopy and the bank are built with the shopping center
                 if (rest.Owns(i)) continue;          // Round 30: the other neighborhoods' styled houses
                 if (biz.Owns(i)) continue;           // Round 31: the businesses, schools, churches and the rest (MapBuilder.Businesses.cs)
+                if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center (MapBuilder.Mall.cs)
                 if (LakesOwns(i)) continue;          // Round 32 (C2): the Chastain Lakes pool house and bathhouse (MapBuilder.ChastainLakes.cs)
                 if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
                 var ring = ToPoints(b.footprint);

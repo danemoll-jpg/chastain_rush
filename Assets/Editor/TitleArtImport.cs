@@ -13,6 +13,8 @@ namespace ChastainRush
 
         void OnPreprocessTexture()
         {
+            if (assetPath == "Assets/HandMade/Mall/MallSigns.png")   // Round 60: Town Center's sign atlas, 2048 x 8192, kept at its size (its 51 rows stay sharp)
+            { var m = (TextureImporter)assetImporter; m.maxTextureSize = 8192; m.wrapMode = UnityEngine.TextureWrapMode.Clamp; return; }
             if (!assetPath.StartsWith(Folder) && assetPath != Icon) return;
             var t = (TextureImporter)assetImporter;
             t.textureType = TextureImporterType.Default; t.npotScale = TextureImporterNPOTScale.None; t.mipmapEnabled = false;

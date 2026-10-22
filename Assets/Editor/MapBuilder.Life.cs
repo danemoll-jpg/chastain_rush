@@ -186,6 +186,7 @@ namespace ChastainRush
                         Add(p, wu, AmbientLife.Kind.Shop, 2, (shops % 3 == 2) ? AmbientLife.Talking : AmbientLife.Walkers, wu * half); shops++;   // Round 39: talking, not coffee
                     }
                 }
+            if (Mall != null) groups.AddRange(Mall.Shoppers);   // Round 60 (A): Town Center's shoppers (MapBuilder.MallInside.cs; built before the life)
             var life = root.gameObject.AddComponent<AmbientLife>(); life.groups = groups.ToArray();
             string mix = string.Join(", ", groups.GroupBy(g => g.action).OrderBy(g => g.Key).Select(g => $"{ActionName(g.Key)} {g.Count()}"));
             // ---------------- Round 39 (Part B): the neighborhoods' streets for the walkers (AmbientLife.Walkers.cs): each street's centerline, its walking

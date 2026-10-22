@@ -117,6 +117,7 @@ namespace ChastainRush
                 if (hood.OwnsBuilding(i) || shop.Owns(i) || i == shop.Center || rest.Owns(i)) continue;
                 if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
                 if (CoursonOwns(i)) continue;   // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies
+                if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center and its anchors (MapBuilder.Mall.cs)
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;
