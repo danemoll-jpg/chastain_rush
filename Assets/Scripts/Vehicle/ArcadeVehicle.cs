@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -74,6 +75,12 @@ namespace Racer
             if(!GetComponent<WaterFeedback>())gameObject.AddComponent<WaterFeedback>();   // Round 15: Racer's, as in Racer
         }
         void OnDestroy() { var box = GetComponentInChildren<BoxCollider>(); if (box) VehicleSurfaceContacts.Unregister(box); }   // Chastain Rush, Round 10
+        // Chastain Rush, Round 61 (C): every vehicle in the world now (the player, AI racers, traffic out on the roads), kept here as they come and
+        // go, so the world's pieces (pipes, shrub beds, ...) no longer search the whole scene for them every second (a search that grew with the map)
+        static readonly List<ArcadeVehicle> live = new List<ArcadeVehicle>(); static ArcadeVehicle[] liveArray = new ArcadeVehicle[0]; static bool liveDirty;
+        public static ArcadeVehicle[] Live { get { if (liveDirty) { liveArray = live.ToArray(); liveDirty = false; } return liveArray; } }
+        void OnEnable() { if (!live.Contains(this)) { live.Add(this); liveDirty = true; } }
+        void OnDisable() { if (live.Remove(this)) liveDirty = true; }
 
         // 0.84: only the player's own step (input path) holds at rest; AI and traffic call Simulate directly and are unchanged.
         bool playerStep;

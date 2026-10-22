@@ -212,7 +212,7 @@ namespace Racer
             else moon.Show(cam, -10, 0, .5f, 0);
             mist.Set(snowMat, cam, look.Mode == "Menu" || covered ? 0 : p.mist * (1 - Mathf.Max(p.rain, p.snowfall) * .5f), p.fogColor);
             // Vehicle lamps: every vehicle (player, rivals, traffic) gets its lamps once; their level follows the preset.
-            if (Time.unscaledTime >= nextVehicleScan) { nextVehicleScan = Time.unscaledTime + 1; foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) if (!v.GetComponent<VehicleLights>()) v.gameObject.AddComponent<VehicleLights>(); }
+            if (Time.unscaledTime >= nextVehicleScan) { nextVehicleScan = Time.unscaledTime + 1; foreach (var v in ArcadeVehicle.Live) if (v && !v.GetComponent<VehicleLights>()) v.gameObject.AddComponent<VehicleLights>(); }
             lightsLevel = Mathf.MoveTowards(lightsLevel, p.lights, Time.unscaledDeltaTime);
             VehicleLights.Level = lightsLevel;
         }

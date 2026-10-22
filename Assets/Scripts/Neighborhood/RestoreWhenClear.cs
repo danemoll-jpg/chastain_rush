@@ -12,13 +12,13 @@ namespace ChastainRush
         public float clear = 25f, after = 4f;
         FenceChunk[] chunks;
         ArcadeVehicle[] vehicles;
-        float quietSince, nextScan;
+        float quietSince;
 
         void Start() { chunks = GetComponentsInChildren<FenceChunk>(true); quietSince = Time.time; }
 
         void Update()
         {
-            if (vehicles == null || Time.time >= nextScan) { vehicles = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextScan = Time.time + 1f; }
+            vehicles = ArcadeVehicle.Live;   // Round 61 (C): the vehicles' own list
             float c2 = clear * clear; bool near = false;
             foreach (var v in vehicles)
                 if (v && v.isActiveAndEnabled && (v.transform.position - at).sqrMagnitude < c2) { near = true; break; }

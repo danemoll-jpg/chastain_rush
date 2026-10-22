@@ -95,8 +95,7 @@ namespace ChastainRush
         readonly Dictionary<ArcadeVehicle, Ride> rides = new Dictionary<ArcadeVehicle, Ride>();
         // Round 23 follow-ups: one search for the vehicles a second for every pipe (the network has a hundred pieces: each searching on
         // its own, all in the same frame, was a hitch every second)
-        static ArcadeVehicle[] cars = new ArcadeVehicle[0]; static float nextFind;
-        public static ArcadeVehicle[] Vehicles { get { if (Time.time >= nextFind || Time.time < nextFind - 2f) { cars = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None); nextFind = Time.time + 1f; } return cars; } }
+        public static ArcadeVehicle[] Vehicles => ArcadeVehicle.Live;   // Round 61 (C): the vehicles' own list (was a scene search once a second)
 
         // where p is in the barrel: its axis point, the axis direction, how far into the barrel from its nearer end (m)
         bool Barrel(Vector3 p, float pad, out Vector3 axis, out Vector3 along, out float fromEnd, out float station)
@@ -126,9 +125,20 @@ namespace ChastainRush
             return true;
         }
 
+        // Round 61 (C): a piece with no vehicle within SleepPad of it sleeps for SleepFor (a vehicle at 60 m/s comes 15 m nearer in that time)
+        const float SleepPad = 40f, SleepFor = 0.25f;
+        float sleepUntil;
         void FixedUpdate()
         {
             float dt = Time.fixedDeltaTime;
+            if (Time.time < sleepUntil) return;
+            bool any = false;
+            foreach (var car in Vehicles) if (car && car.Body != null && Near(car.Body.position, SleepPad)) { any = true; break; }
+            if (!any)
+            {
+                foreach (var kv in rides) if (kv.Value.stick > 0f) { kv.Value.stick = 0f; if (kv.Key) kv.Key.SurfaceUp = Vector3.up; }
+                sleepUntil = Time.time + SleepFor; return;
+            }
             foreach (var car in Vehicles)
             {
                 if (!car || car.Body == null || car.Body.isKinematic) continue;

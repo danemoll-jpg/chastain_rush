@@ -98,6 +98,26 @@ namespace Racer
             return false;
         }
         float NearestView(Vector3 p) { float d = float.MaxValue; foreach (var v in views) d = Mathf.Min(d, (v - p).sqrMagnitude); return Mathf.Sqrt(d); }
+        // Round 61 (C): the groups by 256 m cell, so a pick looks only at the cells round the views (it looked at every group on the map,
+        // which grew with the map extension)
+        const float GroupCell = 256f;
+        Dictionary<Vector2Int, List<int>> groupCells;
+        readonly List<int> nearGroups = new List<int>();
+        List<int> GroupsNear()
+        {
+            if (groupCells == null)
+            {
+                groupCells = new Dictionary<Vector2Int, List<int>>();
+                for (int g = 0; g < groups.Length; g++) { var k = new Vector2Int(Mathf.FloorToInt(groups[g].at.x / GroupCell), Mathf.FloorToInt(groups[g].at.z / GroupCell)); if (!groupCells.TryGetValue(k, out var l)) groupCells[k] = l = new List<int>(); l.Add(g); }
+            }
+            nearGroups.Clear();
+            var seen = new HashSet<Vector2Int>();
+            foreach (var v in views)
+                for (int cx = Mathf.FloorToInt((v.x - Near) / GroupCell); cx <= Mathf.FloorToInt((v.x + Near) / GroupCell); cx++)
+                    for (int cz = Mathf.FloorToInt((v.z - Near) / GroupCell); cz <= Mathf.FloorToInt((v.z + Near) / GroupCell); cz++)
+                    { var k = new Vector2Int(cx, cz); if (seen.Add(k) && groupCells.TryGetValue(k, out var l)) nearGroups.AddRange(l); }
+            return nearGroups;
+        }
         void Pick()
         {
             Views(); if (views.Count == 0) return;
@@ -119,7 +139,7 @@ namespace Racer
             if (free > 0)
             {
                 var cand = new List<(int g, float d)>();
-                for (int g = 0; g < groups.Length; g++)
+                foreach (int g in GroupsNear())
                 {
                     if (active.ContainsKey(g)) continue; var gr = groups[g];
                     float d = NearestView(gr.at); if (d > Near) continue; near++;

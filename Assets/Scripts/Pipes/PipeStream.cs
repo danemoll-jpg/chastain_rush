@@ -41,11 +41,21 @@ namespace ChastainRush
         void OnEnable() { if (source && !source.isPlaying) source.Play(); }
         void OnDisable() { if (source) source.Stop(); }
 
+        // Round 61 (C): nothing to do with the listener and every vehicle more than WakeRange m from the stream (its sound reaches 22 m)
+        const float WakeRange = 40f;
+        Bounds box; bool boxed;
+        bool Near(Vector3 p)
+        {
+            if (!boxed) { box = new Bounds(line[0], Vector3.zero); foreach (var q in line) box.Encapsulate(q); boxed = true; }
+            return box.SqrDistance(p) < WakeRange * WakeRange;
+        }
+
         void Update()
         {
             if (water) water.SetTextureOffset("_BaseMap", new Vector2(0f, Time.time * FlowSpeed));
             if (line == null || line.Length < 2) return;
             var listener = Camera.main ? Camera.main.transform.position : transform.position;
+            if (!Near(listener)) { bool any = false; foreach (var car in DrainPipe.Vehicles) if (car && car.Body != null && Near(car.Body.position)) { any = true; break; } if (!any) return; }
             source.transform.position = Nearest(listener, out _);
             // splashes
             foreach (var car in DrainPipe.Vehicles)   // Round 23 follow-ups: the shared search

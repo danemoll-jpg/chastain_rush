@@ -21,17 +21,27 @@ namespace ChastainRush
         public const float Fade = 1.5f; // full strength to this far inside a bed's edge
 
         Rect bounds;
-        ArcadeVehicle[] vehicles;
-        float nextScan;
+        // Round 61 (C): the pieces by 32 m cell (the beds are spread over several races' ground: every piece was tested for every vehicle
+        // on every physics step)
+        const float Cell = 32f;
+        readonly System.Collections.Generic.Dictionary<Vector2Int, int[]> cells = new System.Collections.Generic.Dictionary<Vector2Int, int[]>();
+        static readonly int[] None = new int[0];
 
         void Awake()
         {
             float x0 = float.MaxValue, z0 = float.MaxValue, x1 = float.MinValue, z1 = float.MinValue;
+            var lists = new System.Collections.Generic.Dictionary<Vector2Int, System.Collections.Generic.List<int>>();
             for (int i = 0; i < a.Length; i++)
             {
-                x0 = Mathf.Min(x0, Mathf.Min(a[i].x, b[i].x) - half[i]); x1 = Mathf.Max(x1, Mathf.Max(a[i].x, b[i].x) + half[i]);
-                z0 = Mathf.Min(z0, Mathf.Min(a[i].y, b[i].y) - half[i]); z1 = Mathf.Max(z1, Mathf.Max(a[i].y, b[i].y) + half[i]);
+                float px0 = Mathf.Min(a[i].x, b[i].x) - half[i], px1 = Mathf.Max(a[i].x, b[i].x) + half[i], pz0 = Mathf.Min(a[i].y, b[i].y) - half[i], pz1 = Mathf.Max(a[i].y, b[i].y) + half[i];
+                x0 = Mathf.Min(x0, px0); x1 = Mathf.Max(x1, px1); z0 = Mathf.Min(z0, pz0); z1 = Mathf.Max(z1, pz1);
+                for (int cx = Mathf.FloorToInt(px0 / Cell); cx <= Mathf.FloorToInt(px1 / Cell); cx++)
+                    for (int cz = Mathf.FloorToInt(pz0 / Cell); cz <= Mathf.FloorToInt(pz1 / Cell); cz++)
+                    {
+                        var k = new Vector2Int(cx, cz); if (!lists.TryGetValue(k, out var l)) lists[k] = l = new System.Collections.Generic.List<int>(); l.Add(i);
+                    }
             }
+            foreach (var kv in lists) cells[kv.Key] = kv.Value.ToArray();
             bounds = Rect.MinMaxRect(x0, z0, x1, z1);
         }
 
@@ -41,7 +51,8 @@ namespace ChastainRush
             var q = new Vector2(position.x, position.z);
             if (!bounds.Contains(q)) return 0f;
             float best = 0f;
-            for (int i = 0; i < a.Length; i++)
+            if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(q.x / Cell), Mathf.FloorToInt(q.y / Cell)), out var near)) near = None;
+            foreach (int i in near)
             {
                 var ab = b[i] - a[i]; float t = Mathf.Clamp01(Vector2.Dot(q - a[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
                 float d = (a[i] + ab * t - q).magnitude;
@@ -52,12 +63,7 @@ namespace ChastainRush
 
         void FixedUpdate()
         {
-            if (vehicles == null || Time.time >= nextScan)
-            {
-                vehicles = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None);
-                nextScan = Time.time + 1f;
-            }
-            foreach (var car in vehicles)
+            foreach (var car in ArcadeVehicle.Live)   // Round 61 (C): the vehicles' own list
             {
                 if (!car || !car.gameObject.activeInHierarchy || !car.Body || car.Body.isKinematic || car.GroundedWheels < 2) continue;
                 float amount = Coverage(car.Body.position);

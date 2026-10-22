@@ -1,0 +1,29 @@
+Round 61 C: frame rate before / after C, the same map (Round 60's scene), the exe, 1920 x 1080 window (not measured at 3840 x 2160), parked, uncapped, two runs each, back to back, the PC in use (mapgen running)
+== perf_r60_1
+INFO  the world up 15.3 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 1838 MB, allocated 1746 MB
+INFO  old neighborhood (Canton Road by the shops): 142 fps average, slowest 1 % 30 fps
+INFO  Town Center: 187 fps average, slowest 1 % 48 fps
+INFO  KSU: 168 fps average, slowest 1 % 45 fps
+INFO  I-75 and I-575: 175 fps average, slowest 1 % 43 fps
+INFO  the old I-575 edge: 177 fps average, slowest 1 % 43 fps
+== perf_c_1
+INFO  the world up 31.3 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 1838 MB, allocated 1600 MB
+INFO  old neighborhood (Canton Road by the shops): 215 fps average, slowest 1 % 72 fps
+INFO  Town Center: 247 fps average, slowest 1 % 81 fps
+INFO  KSU: 226 fps average, slowest 1 % 73 fps
+INFO  I-75 and I-575: 225 fps average, slowest 1 % 78 fps
+INFO  the old I-575 edge: 259 fps average, slowest 1 % 86 fps
+== perf_r60_2
+INFO  the world up 10.0 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 2094 MB, allocated 1750 MB
+INFO  old neighborhood (Canton Road by the shops): 172 fps average, slowest 1 % 40 fps
+INFO  Town Center: 198 fps average, slowest 1 % 57 fps
+INFO  KSU: 174 fps average, slowest 1 % 47 fps
+INFO  I-75 and I-575: 166 fps average, slowest 1 % 41 fps
+INFO  the old I-575 edge: 177 fps average, slowest 1 % 47 fps
+== perf_c_2
+INFO  the world up 8.9 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 1838 MB, allocated 1599 MB
+INFO  old neighborhood (Canton Road by the shops): 214 fps average, slowest 1 % 73 fps
+INFO  Town Center: 278 fps average, slowest 1 % 126 fps
+INFO  KSU: 226 fps average, slowest 1 % 69 fps
+INFO  I-75 and I-575: 251 fps average, slowest 1 % 109 fps
+INFO  the old I-575 edge: 263 fps average, slowest 1 % 94 fps

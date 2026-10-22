@@ -66,12 +66,18 @@ namespace ChastainRush
         {
             filter = GetComponent<MeshFilter>();
             if (!source || !filter) { Debug.LogWarning($"[FenceChunk] {name} under {(transform.parent ? transform.parent.name : "-")}: no mesh (its asset was overwritten in the map build?): not breakable"); broken = new bool[panels != null ? panels.Length : 0]; enabled = false; return; }   // Round 38
+            broken = new bool[panels.Length];
+        }
+        // Round 61 (C): the chunk's own copy of its mesh is made the first time a panel breaks (it was made for every chunk at load: thousands
+        // of meshes copied, and their vertices read, before the world was up)
+        void Live()
+        {
+            if (live) return;
             live = Instantiate(source);
             live.name = source.name + " (live)";
             filter.sharedMesh = live;
             original = source.vertices; srcNormals = source.normals; srcColors = source.colors; srcTris = source.triangles;
             current = (Vector3[])original.Clone();
-            broken = new bool[panels.Length];
         }
         void OnEnable() { if (!all.Contains(this)) all.Add(this); }
         void OnDisable() { all.Remove(this); }
@@ -82,6 +88,7 @@ namespace ChastainRush
             Vector3 v = car.Body.linearVelocity;
             float speed = new Vector2(v.x, v.z).magnitude;
             if (speed < MinBreakSpeed) return;
+            Live();
             broken[panelIndex] = true;
             BrokenPanels++;
             var panel = panels[panelIndex];
@@ -140,7 +147,7 @@ namespace ChastainRush
             d.age = 0f;
             d.floorY = piece.restY != 0f ? piece.restY : transform.TransformPoint(piece.centre).y - debrisDrop;
             d.go.SetActive(true);
-            moving.Add(d);
+            moving.Add(d); FenceDebris.Ensure();
         }
 
         // Round 16 (D): a sign face flies off like a piece: its quad (scale baked in) with its own material
@@ -161,7 +168,7 @@ namespace ChastainRush
             d.age = 0f;
             d.floorY = restY != 0f ? restY : c.y - debrisDrop;   // on the ground beside its post
             d.go.SetActive(true);
-            moving.Add(d);
+            moving.Add(d); FenceDebris.Ensure();
         }
 
         static Debris MakeDebris()
@@ -181,11 +188,10 @@ namespace ChastainRush
             pool.Push(d);
         }
 
-        void Update()
+        // Round 61 (C): the flying pieces are stepped by one runner (FenceDebris); every chunk on the map had an Update of its own that returned
+        // at once on all but the first
+        public static void StepDebris(float dt)
         {
-            // debris belongs to the static list; only the first chunk alive steps it
-            if (all.Count == 0 || all[0] != this) return;
-            float dt = Time.deltaTime;
             for (int i = moving.Count - 1; i >= 0; i--)
             {
                 var d = moving[i];
@@ -208,7 +214,7 @@ namespace ChastainRush
             if (broken == null) return;
             bool any = false;
             for (int i = 0; i < broken.Length; i++) if (broken[i]) { broken[i] = false; any = true; }
-            if (!any) return;
+            if (!any || !live) return;
             current = (Vector3[])original.Clone();
             live.vertices = current;
             live.RecalculateBounds();
@@ -230,6 +236,7 @@ namespace ChastainRush
         {
             if (!Find(at, panelHint, out var c, out int i)) return false;
             if (c.broken[i]) return true;
+            c.Live();
             c.broken[i] = true; BrokenPanels++;
             var panel = c.panels[i]; float speed = new Vector2(vel.x, vel.z).magnitude; var dir = speed > 0.1f ? new Vector3(vel.x, 0f, vel.z) / speed : c.transform.forward;
             for (int k = 0; k < panel.pieceCount; k++)
@@ -253,12 +260,12 @@ namespace ChastainRush
             chunk = null; panel = -1; float best = 0.3f * 0.3f;
             foreach (var c in all)
             {
-                if (c.panels == null || c.broken == null || c.live == null) continue;
+                if (c.panels == null || c.broken == null || c.source == null) continue;
                 if (hint >= 0 && hint < c.panels.Length && (c.transform.TransformPoint(c.panels[hint].centre) - at).sqrMagnitude < best) { chunk = c; panel = hint; return true; }
             }
             foreach (var c in all)
             {
-                if (c.panels == null || c.broken == null || c.live == null) continue;
+                if (c.panels == null || c.broken == null || c.source == null) continue;
                 for (int i = 0; i < c.panels.Length; i++) { float d = (c.transform.TransformPoint(c.panels[i].centre) - at).sqrMagnitude; if (d < best) { best = d; chunk = c; panel = i; } }
             }
             return chunk != null;

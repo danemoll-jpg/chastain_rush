@@ -61,6 +61,10 @@ namespace ChastainRush
                 // Round 37 B7: the Chastain Ridge race (add -traffic Normal), one player and split screen with an AI player 2
                 new Place { name = "race_ridge", route = "chastain_ridge.json", dir = "forward" },
                 new Place { name = "race_ridge_split", route = "chastain_ridge.json", dir = "forward", split = true },
+                // Round 61 (C): Round 59's frame-rate spots (the old neighborhood, Town Center, KSU) and the stage 2 land's
+                new Place { name = "map_canton_shops", x = 3502.8f, z = 1166.1f, yaw = -13f },
+                new Place { name = "map_town_center", x = 270.5f, z = -1230.4f, yaw = 0f },
+                new Place { name = "map_ksu", x = -1593.2f, z = 1016.2f, yaw = 0f },
             };
             if (!string.IsNullOrEmpty(only)) places = places.Where(p => only.Split(',').Any(o => p.name.Contains(o))).ToList();
             foreach (var p in places)

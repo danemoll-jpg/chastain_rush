@@ -204,6 +204,16 @@ namespace ChastainRush
             Vector3 cv = car.Body.linearVelocity; cv.y = 0f;
             bool replay = ReplayViewer.Active && ReplayViewer.GooseTarget;   // Round 57 (F): a race replay's player scatters them
             if (replay) { cp = ReplayViewer.GooseTarget.position; cv = ReplayViewer.GooseVelocity; cv.y = 0f; }
+            // Round 61 (C): a settled flock far from the player and the camera waits (it was stepped every frame wherever the player was)
+            if (birds.Count > 0 && !replay)
+            {
+                var c0 = birds[0].pos; const float far2 = 350f * 350f; var cam = Camera.main;
+                if ((cp - c0).sqrMagnitude > far2 && (!cam || (cam.transform.position - c0).sqrMagnitude > far2))
+                {
+                    bool flying = false; foreach (var b in birds) if (b.mode == Mode.Fly) { flying = true; break; }
+                    if (!flying) return;
+                }
+            }
             float carSpeed = cv.magnitude;
             float scare = Mathf.Min(ScareMax, ScareBase + ScarePerMps * carSpeed);
             float lossThisFrame = 0f;
