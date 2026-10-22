@@ -415,6 +415,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 58 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the AI with agency (`RoadDriver` AgencyStep:
+down -> put back at once, blocked -> back up and steer round then put back by 4 s, the reversing pedal bug, wrong way -> full lock round; PassLane: either side, shoulder, grass;
+Hard's pace; `-r58AgencyOff` drives as before); the hub's pit railed on every edge the race passes and the span's sides (`make_underground_route.py` R3 to R7, route rails `ys`);
+aquarium weeds / rocks / logs / fish kept out of every tube (`ClearFrame.Others` for every network glass stretch, `AvoidBed` only NetGlassAvoid's; `PipeAquarium.avoid*`);
+Chastain Ridge Drive's valley one vertical curve and its loop-branch junction blurred (the Ridge track's `vertical_curves` / `smooth_spots`, read by `R55SmoothSpots`).
+Check: `ChastainRush.exe -exeRound58 <dir> [-r58Only aitable,airecover,hubpit,plants,ridgebump] [-r58Races glen,creek|reverse,...] [-r58AgencyOff] -traffic Normal -logFile
+<dir>\Player.log` (`Checks/Round20Runner.R58.cs`; aitable measures each race from its replay). Imported from Racer: nothing.
 **Round 57 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the Embry Lane / Suholden Circle
 corner one vertical curve (track `vertical_curves` / `smooth_spots`, `make_addison_route.py`); B COMPLETE RACE has its own input action (the menus' confirm
 action is off while the menus are closed: the UI module disables the actions it enabled); C S2's glass bed kept out of M5c (`MapBuilder.ClearPipe.cs`
@@ -936,7 +943,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-21_21-15-52-689_2c460b` through BUG-005 (Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-22_00-37-30-154_d7ca87` through BUG-003 (Round 58; before it `2026-10-21_21-15-52-689_2c460b` through BUG-005, Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

@@ -1,0 +1,47 @@
+Round 58 check, 2026-10-22 03:18, the exe, 1280 x 720, muted.
+
+=== A1-A5 by hand (after Round 58): the Chastain Glen loop on Hard, 3 AI; each case put on one AI 25 s in
+  down     BLUE (Drifter Twin): going again at over 8 m/s along the lap after 0.9 s; put back on the line (back-ups 0); the wrong way 0.0 s, reversing 0.0 s
+PASS  A down: going again within 1.5 s  -  0.9 s
+  blocked  EMBER (Needle 600): going again at over 8 m/s along the lap after 4.7 s; drove out itself (back-ups 1); the wrong way 0.0 s, reversing 1.0 s
+PASS  A blocked: going again within 6.0 s  -  4.7 s
+  turned   BLUE (Drifter Twin): going again at over 8 m/s along the lap after 2.9 s; drove out itself (back-ups 0); the wrong way 1.0 s, reversing 0.0 s
+PASS  A turned: going again within 5.0 s  -  2.9 s
+  rolling  BLUE (Drifter Twin): going again at over 8 m/s along the lap after 1.3 s; drove out itself (back-ups 0); the wrong way 0.0 s, reversing 0.2 s
+PASS  A rolling: going again within 5.0 s  -  1.3 s
+
+=== B. the hub's pit (Dan's BUG-001 at x 1854.77 z 1132.96): flat out (34 m/s) into every railed edge the race passes, at 90, 45 and 20 degrees
+  held 120 of 120 runs (4 vehicles x 10 places x 3 angles)
+PASS  B: no car through or over a rail into the pit, flat out  -  120 of 120
+
+=== C. every aquarium's weeds, rocks and logs against every pipe (Dan's BUG-002 at x 1640.80 z 943.86 in M5c)
+  35 meshes (35 not readable), 0 points; inside a pipe: 0
+INFO  the meshes are not readable in the player: the build log counts what was left out ("left out at another tube"); the pictures below
+
+=== D. Chastain Ridge Drive (Dan's BUG-003 at x 3082.26 z 708.71, heading 270, 3.4 m right of the line): flat out both ways, on the line and 3.4 m either side
+  forward  offset  0.0 m Drifter Twin     biggest step in vertical speed 0.14 m/s at (3052.1, 696.6) at 24.5 m/s; fastest pitch 8 deg/s; fewest wheels down 4; through
+PASS  D forward offset 0.0 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.14 m/s, wheels 4
+  forward  offset  0.0 m Street Classic   biggest step in vertical speed 0.13 m/s at (3052.1, 697.1) at 22.3 m/s; fastest pitch 9 deg/s; fewest wheels down 4; through
+PASS  D forward offset 0.0 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.13 m/s, wheels 4
+  forward  offset  3.4 m Drifter Twin     biggest step in vertical speed 0.55 m/s at (3103.4, 708.8) at 24.4 m/s; fastest pitch 54 deg/s; fewest wheels down 3; through
+PASS  D forward offset 3.4 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.55 m/s, wheels 3
+  forward  offset  3.4 m Street Classic   biggest step in vertical speed 0.18 m/s at (3044.4, 694.4) at 23.5 m/s; fastest pitch 21 deg/s; fewest wheels down 3; through
+PASS  D forward offset 3.4 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.18 m/s, wheels 3
+  forward  offset -3.4 m Drifter Twin     biggest step in vertical speed 1.02 m/s at (3042.3, 673.4) at 22.7 m/s; fastest pitch 109 deg/s; fewest wheels down 0; through
+FAIL  D forward offset -3.4 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 1.02 m/s, wheels 0
+  forward  offset -3.4 m Street Classic   biggest step in vertical speed 0.18 m/s at (3047.9, 687.6) at 21.4 m/s; fastest pitch 14 deg/s; fewest wheels down 3; through
+PASS  D forward offset -3.4 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.18 m/s, wheels 3
+  reverse  offset  0.0 m Drifter Twin     biggest step in vertical speed 0.16 m/s at (3038.4, 668.6) at 25.7 m/s; fastest pitch 10 deg/s; fewest wheels down 4; through
+PASS  D reverse offset 0.0 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.16 m/s, wheels 4
+  reverse  offset  0.0 m Street Classic   biggest step in vertical speed 0.14 m/s at (3038.2, 668.5) at 23.8 m/s; fastest pitch 12 deg/s; fewest wheels down 4; through
+PASS  D reverse offset 0.0 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.14 m/s, wheels 4
+  reverse  offset  3.4 m Drifter Twin     biggest step in vertical speed 0.47 m/s at (3060.8, 698.2) at 25.4 m/s; fastest pitch 29 deg/s; fewest wheels down 2; through
+PASS  D reverse offset 3.4 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.47 m/s, wheels 2
+  reverse  offset  3.4 m Street Classic   biggest step in vertical speed 0.23 m/s at (3061.3, 698.9) at 22.8 m/s; fastest pitch 17 deg/s; fewest wheels down 2; through
+PASS  D reverse offset 3.4 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.23 m/s, wheels 2
+  reverse  offset -3.4 m Drifter Twin     biggest step in vertical speed 0.92 m/s at (3035.3, 673.2) at 26.0 m/s; fastest pitch 70 deg/s; fewest wheels down 0; through
+FAIL  D reverse offset -3.4 Drifter Twin: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.92 m/s, wheels 0
+  reverse  offset -3.4 m Street Classic   biggest step in vertical speed 0.20 m/s at (3063.3, 707.1) at 23.2 m/s; fastest pitch 20 deg/s; fewest wheels down 3; through
+PASS  D reverse offset -3.4 Street Classic: rides through (wheels down, no jolt over 1 m/s in a step)  -  step 0.20 m/s, wheels 3
+
+15 of 17 checks passed.

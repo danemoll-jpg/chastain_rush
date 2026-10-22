@@ -1,0 +1,34 @@
+course,ai,vehicle,finished,total,best_lap,dan_best,down_s,stuck_s,longest_stuck_s,against_s,longest_against_s,reversing_s,behind_s,behind_spells,recoveries,down_resets,block_resets,wrongway_resets,backups,passes
+Chastain Glen loop|forward,EMBER,Drifter Twin,True,133.32,44.39,38.86,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,3
+Chastain Glen loop|forward,GOLD,Street Classic,True,135.20,44.58,38.86,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,11
+Chastain Glen loop|forward,BLUE,Needle 600,True,121.91,39.59,38.86,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,0
+Chastain Glen loop|reverse,EMBER,Drifter Twin,True,141.34,48.31,36.06,0.00,0.00,0.16,0.00,0.00,0.00,0.00,0,0,0,0,0,0,12
+Chastain Glen loop|reverse,GOLD,Street Classic,True,136.46,42.39,36.06,0.00,3.44,3.44,0.00,0.00,0.00,0.00,0,0,0,0,0,0,8
+Chastain Glen loop|reverse,BLUE,Needle 600,True,126.68,39.31,36.06,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,6
+Noonday Creek|forward,EMBER,Drifter Twin,True,294.71,91.86,79.15,0.00,0.00,0.40,0.00,0.28,0.00,0.00,0,0,0,0,0,0,85
+Noonday Creek|forward,GOLD,Needle 600,True,292.19,98.58,79.15,0.00,0.00,0.24,0.00,0.24,1.96,0.00,0,0,0,0,0,1,30
+Noonday Creek|forward,BLUE,Trail Four,True,300.87,98.67,79.15,0.00,0.00,0.00,0.00,0.28,0.00,0.00,0,0,0,0,0,0,26
+Noonday Creek|reverse,EMBER,Drifter Twin,True,301.09,98.39,69.47,0.00,0.00,0.28,0.00,0.16,0.00,7.36,2,0,0,0,0,0,19
+Noonday Creek|reverse,GOLD,Needle 600,True,286.29,92.41,69.47,0.00,0.00,0.20,0.64,0.64,0.00,0.00,0,0,0,0,0,0,37
+Noonday Creek|reverse,BLUE,Trail Four,True,283.56,93.96,69.47,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,18
+Underground|forward,EMBER,Drifter Twin,True,239.14,74.91,75.53,0.00,11.32,1.44,9.52,2.00,0.00,5.04,2,6,0,2,2,8,28
+Underground|forward,GOLD,Street Classic,True,235.25,72.58,75.53,0.00,1.24,1.24,3.40,2.12,0.00,2.40,1,2,0,1,0,3,9
+Underground|forward,BLUE,Trail Four,True,203.77,65.63,75.53,0.00,1.24,1.24,1.56,1.56,0.00,0.00,0,2,0,1,0,1,7
+Chastain Ridge|forward,EMBER,Drifter Twin,True,190.92,64.85,59.68,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0,0,0,0,0,0,9
+Chastain Ridge|forward,GOLD,Street Classic,True,219.44,68.32,59.68,0.00,0.00,0.08,0.00,0.00,0.00,0.00,0,0,0,0,0,0,16
+Chastain Ridge|forward,BLUE,Needle 600,True,186.58,57.42,59.68,0.64,1.84,1.84,0.00,0.08,0.00,0.00,0,1,1,0,0,1,9
+Chastain Ridge|reverse,EMBER,Drifter Twin,True,245.91,71.79,59.23,0.00,9.08,1.72,1.08,0.56,0.00,7.08,2,3,0,3,0,9,20
+Chastain Ridge|reverse,GOLD,Street Classic,True,254.47,78.10,59.23,0.00,6.40,1.44,4.76,1.80,1.64,0.00,0,2,0,2,0,5,24
+Chastain Ridge|reverse,BLUE,Needle 600,True,226.89,70.75,59.23,0.00,3.64,1.24,0.68,0.68,0.00,0.00,0,2,0,2,0,7,11
+Chastain Lakes|forward,EMBER,Drifter Twin,True,219.41,111.38,72.12,1.12,5.00,1.36,1.48,1.48,0.00,0.00,0,0,0,0,0,5,13
+Chastain Lakes|forward,GOLD,Street Classic,True,255.30,133.20,72.12,0.32,9.12,1.48,4.00,2.04,0.00,0.00,0,2,1,1,0,8,20
+Chastain Lakes|forward,BLUE,Needle 600,True,226.14,112.36,72.12,0.00,7.56,1.36,2.08,2.08,0.00,4.72,1,0,0,0,0,6,14
+Chastain Lakes|reverse,EMBER,Drifter Twin,True,198.60,98.63,77.07,0.00,3.68,1.24,0.00,0.48,0.00,0.00,0,1,0,1,0,3,17
+Chastain Lakes|reverse,GOLD,Street Classic,True,202.61,94.14,77.07,0.00,4.28,1.64,0.00,0.00,0.00,0.00,0,2,0,1,0,3,16
+Chastain Lakes|reverse,BLUE,Needle 600,True,232.78,97.03,77.07,0.00,1.36,1.36,0.00,0.00,0.00,61.39,1,0,0,0,0,1,10
+Addison Heights (Embry Lane line)|forward,EMBER,Drifter Twin,True,238.09,76.19,59.74,0.88,1.24,1.24,0.00,0.12,0.00,0.00,0,0,0,0,0,1,32
+Addison Heights (Embry Lane line)|forward,GOLD,Street Classic,True,250.08,88.11,59.74,0.32,2.68,1.40,0.00,0.44,0.00,3.36,1,1,1,0,0,2,21
+Addison Heights (Embry Lane line)|forward,BLUE,Needle 600,True,259.93,90.44,59.74,0.36,4.32,2.16,1.84,1.84,1.64,0.00,0,3,0,1,0,4,26
+Addison Heights (Embry Lane line)|reverse,EMBER,Drifter Twin,True,280.54,87.56,68.99,0.00,3.76,1.36,0.80,0.80,1.76,32.13,1,3,0,3,0,5,21
+Addison Heights (Embry Lane line)|reverse,GOLD,Street Classic,True,305.83,84.23,68.99,0.32,5.00,1.36,0.00,0.08,0.00,9.48,3,5,1,0,0,6,21
+Addison Heights (Embry Lane line)|reverse,BLUE,Needle 600,True,222.84,69.52,68.99,1.12,0.00,0.20,0.80,0.80,0.00,0.00,0,2,2,0,0,0,15
