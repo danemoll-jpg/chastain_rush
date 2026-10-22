@@ -823,7 +823,7 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)
         // the stretch's frame (Round 25: also for its terrain holes, ClearFrame.ToSL: the nearest point of the pipe's line)
-        static readonly HashSet<string> NetGlassAvoid = new HashSet<string> { "S2" };   // Round 57 (C): the glass stretches kept out of the other tubes (ClearFrame.Others)
+        static readonly HashSet<string> NetGlassAvoid = new HashSet<string> { "S2", "B28" };   // Round 57 (C): the glass stretches kept out of the other tubes (ClearFrame.Others); B28 (M2a) at Dan's yes
         static ClearFrame NetGlassFrame(NetTubeGeo g, NetGlass gl, float[] TS, float surface)
         {
             Vector3 At(float s) { int i = Mathf.Clamp(g.At(s), 1, g.P.Length - 1); float t = Mathf.InverseLerp(g.S[i - 1], g.S[i], s); return Vector3.Lerp(g.P[i - 1], g.P[i], t); }

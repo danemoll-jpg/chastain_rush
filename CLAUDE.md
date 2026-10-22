@@ -418,7 +418,7 @@ left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople,
 **Round 57 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the Embry Lane / Suholden Circle
 corner one vertical curve (track `vertical_curves` / `smooth_spots`, `make_addison_route.py`); B COMPLETE RACE has its own input action (the menus' confirm
 action is off while the menus are closed: the UI module disables the actions it enabled); C S2's glass bed kept out of M5c (`MapBuilder.ClearPipe.cs`
-`ClearFrame.Others`, `MapBuilder.Network.cs` `NetGlassAvoid`; B28's bed in M2a has the same fault, listed for Dan), the AI's recovery goes 20 m+ on when stuck
+`ClearFrame.Others`, `MapBuilder.Network.cs` `NetGlassAvoid`; B28's bed in M2a too, at Dan's yes; free-roam check `-r57Only m2a`), the AI's recovery goes 20 m+ on when stuck
 again where it last stuck (`RoadDriver`), the pipe camera never past a wall (`DrainPipe.View`); D the Underground's rails and switch gates solid to 3 m
 (`RaceBarriers.Underground.cs`). F race replays (new, not in Racer): `Assets/Scripts/Race/Replay/` (`RaceReplay.cs` ReplayData and the files,
 `ReplayRecorder` on the RaceController, `ReplayViewer`), `Menus/GameMenus.Replays.cs` (WATCH / SAVE REPLAY on the finish screen, X / V and Y / K; the

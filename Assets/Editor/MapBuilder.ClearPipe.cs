@@ -207,8 +207,7 @@ namespace ChastainRush
             // Round 57 (C, Dan BUG-003 / BUG-004 in M5c in the Underground race: "somehow I got wedged here", "the tube is completley blocked"): S2's
             // glass under the Enclave pond (Round 46) dives under M5c, and its bowl's bed and end faces rose through M5c's tube (two solid bands
             // across it 10 m apart). Other network tubes near the stretch: the bed is kept under each one (a flat floor 0.4 m under it, 1 m either
-            // side of it) and the end faces stop at it. Only for the stretches listed in NetGlassAvoid (S2; the same fault of B28's bed in M2a is
-            // listed for Dan, not changed)
+            // side of it) and the end faces stop at it. Only for the stretches listed in NetGlassAvoid (S2; B28, the same fault in M2a, at Dan's yes)
             public List<(Vector3 a, Vector3 b, float r)> Others;
             bool NearOther(Vector3 w, float pad, bool flat, out float axisY, out float r)
             {

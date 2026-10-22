@@ -183,6 +183,7 @@ namespace ChastainRush
                 if (Do("complete")) yield return Guard(R57Complete());
                 if (Do("m5c")) yield return Guard(R57M5c());
                 if (Do("m5cai")) yield return Guard(R57M5cAi());
+                if (only != null && parts.Contains("m2a")) yield return Guard(R57M2a());   // follow-up: only when asked
                 if (Do("hub")) yield return Guard(R57Hub());
                 if (Do("cpics57")) yield return Guard(R57Pics());
                 if (only != null && parts.Contains("replaybest")) yield return Guard(R57Best());   // F (Round20Runner.R57F.cs): only when asked

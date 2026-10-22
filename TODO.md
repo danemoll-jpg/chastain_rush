@@ -167,7 +167,7 @@ C DONE. The wedge and the blockage were S2's glass bed (Round 46): S2 dives unde
    placed sideways on the bend out of J15, 56 m from his spot. Underground race, 3 AI on Hard: all finish.
 D DONE. Rails R1 and R2 and the closed gate SG1 are solid from under the ledge up to 3 m, 0.6 m thick, with a low third bar. Four vehicles hit each one at 30 m/s at
    90, 45 and 20 degrees: none got over or under. The grille that hung 2 m up after S1's switch opened it (it looked like a rail you could drive under) now lifts
-   4.6 m clear. B28's glass bed has the same fault as S2's, inside M2a (sealed in this race, open in free roam): listed for Dan, not changed.
+   4.6 m clear. B28's glass bed had the same fault as S2's, inside M2a: fixed at Dan's yes (follow-up below).
 E no change.
 F DONE (code only: no map rebuild, as the round says). Every race is recorded: racers 25 times a second (pose, speed, steering, pedal), traffic 10 times a second,
    and breaks, restores, trees, plumes, switch gates and gestures. Engines play from the replay; the radio plays live. Finish screen: WATCH REPLAY (X / V) and SAVE REPLAY (Y / K).
@@ -177,8 +177,12 @@ F DONE (code only: no map rebuild, as the round says). Every race is recorded: r
    (mailboxes, lamps, the barricade and its restores); every camera, every pad and key control, save, the page, playing from the page: 19 of 19.
    #1s: slow kept, faster replaced, slower left alone (4 of 4). Size: 1.1 to 1.7 MB for a 4 to 5 minute 3-lap race with Normal traffic.
    The Lyndon jump was in an earlier run's replay; in the final run the check's driver got stuck in traffic and was put back past it.
-`Builds/ChastainRush/` 2026-10-21 23:15. Imported from Racer: nothing.
-For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; a replay with each camera, the #1s, save one and find it on REPLAYS.
+Follow-up (Dan's yes, 2026-10-22): B28's glass bed under West Chastain Lake had cut through M2a near x 1295 z 1164 (0.07 m from M2a's axis). It is now kept
+   under M2a like S2's (`NetGlassAvoid` S2, B28). Build log: 8 bed triangles still flagged, but all are 0.10 to 0.32 m OUTSIDE M2a's wall (the check counts anything
+   within 0.35 m); none is inside the tube. Free roam, M2a 70 m either side, flat out, both ways, all 14 vehicles: through, 30 to 38 m/s at the spot, slowest 18.9 m/s;
+   the only touch of B28's bed is a flat floor contact with no speed lost (`round57_check_m2a.txt`; `-exeRound57 <dir> -r57Only m2a`).
+`Builds/ChastainRush/` 2026-10-21 23:39. Imported from Racer: nothing.
+For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; M2a under West Chastain Lake in free roam; a replay with each camera, the #1s, save one and find it on REPLAYS.
 
 ## QUEUED rounds
 Held by Dan, not to start until he says:

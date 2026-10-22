@@ -16,6 +16,8 @@ namespace ChastainRush
     //   m5cai     C: the Underground race, 3 AI, the player parked: every AI finishes; their recoveries in M5c
     //   hub       D: at the hub's mid ledge, into rail R1, the closed gate SG1 and rail R2 flat out (90, 45 and 20 degrees): none gets through or over
     //   cpics57   Dan's spots: the corner, M5c at his spot both ways, the hub's ledge
+    //   m2a       (follow-up) B28's glass bed kept out of M2a: M2a's floor line 70 m either side of (1295.4, 1164.4), free roam, flat out,
+    //             both ways, every vehicle (the express off): through, no stop
     public sealed partial class Round20Runner
     {
         // ------------------------------------------------------------ A: the Embry / Suholden corner
@@ -116,6 +118,44 @@ namespace ChastainRush
                     Check($"C M5c {(back ? "back" : "the race's way")} {Nm(vid)}: through, never stopped", run.reached && run.minSpeed > 3f, $"{run.end}, slowest {run.minSpeed:0.0} m/s");
                 }
             race.EndRace();
+        }
+
+        // ------------------------------------------------------------ follow-up: M2a past B28's glass (free roam)
+        static readonly Vector3 M57M2aSpot = new Vector3(1295.4f, 0f, 1164.4f);
+        IEnumerator R57M2a()
+        {
+            report.AppendLine(); report.AppendLine("=== C follow-up. M2a where B28's glass bed crossed it (x 1295.4 z 1164.4): free roam, M2a's floor line from 70 m before to 70 m past, flat out, both ways, every vehicle, the express off");
+            if (race.State != RaceController.Stage.Free) race.EndRace();
+            var keep = PipeExpress.Setting; PipeExpress.Setting = PipeExpress.Mode.Off;
+            var pieces = FindObjectsByType<DrainPipe>(FindObjectsSortMode.None).Where(p => p.id != null && p.id.StartsWith("M2a@") && p.floor != null && p.floor.Length > 1)
+                .OrderBy(p => int.Parse(p.id.Substring(4))).ToList();
+            var all = new List<Vector3>();
+            foreach (var pc in pieces) foreach (var f in pc.floor) if (all.Count == 0 || (f - all[all.Count - 1]).sqrMagnitude > 0.01f) all.Add(f);
+            if (all.Count < 10) { Check("M2a's pieces are there", false, $"{pieces.Count} pieces"); PipeExpress.Setting = keep; yield break; }
+            var cum = new float[all.Count]; for (int i = 1; i < all.Count; i++) cum[i] = cum[i - 1] + Vector3.Distance(all[i - 1], all[i]);
+            int k = 0; for (int i = 1; i < all.Count; i++) if (Flat(all[i] - M57M2aSpot).sqrMagnitude < Flat(all[k] - M57M2aSpot).sqrMagnitude) k = i;
+            var line = new List<Vector3>(); for (int i = 0; i < all.Count; i++) if (Mathf.Abs(cum[i] - cum[k]) <= 70f) line.Add(all[i]);
+            report.AppendLine($"  {pieces.Count} pieces; nearest floor point ({all[k].x:0.0}, {all[k].y:0.0}, {all[k].z:0.0}), {Flat(all[k] - M57M2aSpot).magnitude:0.0} m from the spot; the line {line.Count} points");
+            var only = System.Environment.GetCommandLineArgs().SkipWhile(x => x != "-r57Vehicles").Skip(1).FirstOrDefault()?.Split(',');
+            foreach (var vid in VehicleProfile.All.Select(v => v.Id).Where(v => only == null || only.Contains(v)))
+                foreach (var back in new[] { false, true })
+                {
+                    var l = back ? Enumerable.Reverse(line).ToList() : line;
+                    yield return Vehicle(vid);
+                    Place(l[0], l[2] - l[0], 15f); yield return new WaitForFixedUpdate();
+                    var run = new Run(); float tt = 0f; Vector3 slowAt = Vector3.zero; float slow = 99f; string touch = "";
+                    var ct = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); ct.Take();
+                    yield return DriveLine(l, 40f, 25f, run, M57M2aSpot, r =>
+                    {
+                        tt += Time.fixedDeltaTime; float v = Flat(car.Body.linearVelocity).magnitude;
+                        if (tt > 0.5f && v < slow) { slow = v; slowAt = car.Body.position; }
+                        var st = ct.Take(); if (st.Length > 0 && touch.Length < 600) touch += $"[{tt:0.00} s {v:0.0} m/s] " + st;
+                        return false;
+                    });
+                    report.AppendLine($"  {Nm(vid),-16} {(back ? "toward the start (back)" : "along M2a")}: {(run.reached ? $"through in {run.time:0.0} s" : "NOT through (" + run.end + $") at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0})")}, at the spot {run.speedAt:0.0} m/s, slowest {run.minSpeed:0.0} m/s at ({slowAt.x:0.0}, {slowAt.y:0.0}, {slowAt.z:0.0}); body contacts: {(touch.Length > 0 ? touch : "none")}");
+                    Check($"C M2a {(back ? "back" : "along")} {Nm(vid)}: through, never stopped", run.reached && run.minSpeed > 3f, $"{run.end}, slowest {run.minSpeed:0.0} m/s");
+                }
+            PipeExpress.Setting = keep;
         }
 
         IEnumerator R57M5cAi()
