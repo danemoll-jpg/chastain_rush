@@ -818,6 +818,9 @@ track = {"note": "Round 33: the Chastain Ridge race's world pieces, from Tools/m
 # one vertical curve from just past the junction (x 3142) to x 3123 (MapBuilder.Round55.cs R55VerticalCurves, the same as Addison Heights'), across the
 # drive. The ground at his spot itself is smooth (within 2 cm of a 4 m blur)
 _v58 = [q for q in resample(lap, 1.0) if 3095.0 < q[0] < 3165.0 and 700.0 < q[1] < 790.0]
+# and the exe check found a second jolt 10 m on from his spot, on the lane's south half at x 3072 where the drive's loop branch joins (the
+# junction's levelling leaves a 5 to 9 cm ridge across the lane: wheels off at 18 m/s): the ground there blurred (R55SmoothSpots)
+track["smooth_spots"] = [{"id": "Round 58 BUG-003 the loop branch's junction on Chastain Ridge Drive", "at": [3071.0, 703.0], "r": 8.0, "fade": 5.0, "sigma": 2.0}]
 track["vertical_curves"] = [{"id": "Round 58 BUG-003 Chastain Ridge Drive's valley", "points": flat(_v58), "at": [3133.5, 725.0], "length": 40.0, "fit": 5.0, "half": 4.5, "blend": 4.0}]
 route = dict(SETTINGS)
 route.update({

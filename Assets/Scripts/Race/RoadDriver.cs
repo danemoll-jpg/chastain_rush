@@ -67,7 +67,9 @@ namespace Racer
         float rejoinStuck, rejoinBestDistance;
         Vector3 rejoinTarget;
         bool trackingRejoin, airborne;
-        static readonly float[] cornerUse={.46f,.76f,.90f}, brakeUse={.55f,.88f,.98f}, speedUse={.91f,1f,1f}, hillTargets={26,32,35};
+        static readonly float[] cornerUse={.46f,.76f,1.0f}, brakeUse={.55f,.88f,1.0f}, speedUse={.91f,1f,1f}, hillTargets={26,32,42};
+        // Chastain Rush, Round 58 (A6, Dan: "this is in hard mode ... Hard must race"): Hard's corner use .90 -> 1.0, brake use .98 -> 1.0, steep-hill
+        // target 35 -> 42 m/s, crest limit 8.2 -> 9.5 m/s2 (a route's own ai_hill_targets / ai_crest_g still win); Easy and Normal as they were
         float pace, stalled, lane, finishRunoff, nextRecovery;
         float departureLane,recoveryDepartureStation,recoveryDepartureUntil;
         readonly RaycastHit[] hits = new RaycastHit[24];
@@ -243,7 +245,7 @@ namespace Racer
                     float hillSpeed = Mathf.Abs(f.y) > .14f ? (rd?.ai_hill_targets != null && rd.ai_hill_targets.Length == 3 ? rd.ai_hill_targets[skill] : hillTargets[skill]) : Car.topSpeed;
                     // Without downforce, a convex crest cannot support v²/r greater than gravity.
                     float crest=Mathf.Max(0,Mathf.Asin(f.y)-Mathf.Asin(next.y))/8;
-                    if (crest>.001f) hillSpeed=Mathf.Min(hillSpeed,Mathf.Sqrt((rd?.ai_crest_g != null && rd.ai_crest_g.Length == 3 ? rd.ai_crest_g[skill] : skill>0?(skill==2?8.2f:7.6f):6.5f)/crest));
+                    if (crest>.001f) hillSpeed=Mathf.Min(hillSpeed,Mathf.Sqrt((rd?.ai_crest_g != null && rd.ai_crest_g.Length == 3 ? rd.ai_crest_g[skill] : skill>0?(skill==2?9.5f:7.6f):6.5f)/crest));
                     TargetSpeed = Mathf.Min(TargetSpeed, Mathf.Sqrt(Mathf.Pow(Mathf.Min(curveSpeed, hillSpeed), 2) + 2 * judgment * Mathf.Max(0, d - 12)));
                 }
 
@@ -305,7 +307,7 @@ namespace Racer
                 stalled += Time.fixedDeltaTime;
             else
                 stalled = 0;
-            if (Agency && !finished && AgencyStep(ref throttle, ref brake, ref steering, s, speed, angle, tangent, lateral, freeTarget, activeBranch))
+            if (Agency && !finished && AgencyStep(ref throttle, ref brake, ref steering, s, speed, angle, tangent, lateral, freeTarget, activeBranch, branchS))
                 return;   // Round 58: put back on the line
             if (!Agency && ((stalled > 5 && stalled < 8) || (routeStuck>8 && routeStuck<11)))
             {
@@ -356,7 +358,7 @@ namespace Racer
         float behindFor; ArcadeVehicle passWho; float passSide;
         static readonly RaycastHit[] probe = new RaycastHit[8];
 
-        bool AgencyStep(ref float throttle, ref float brake, ref float steering, float s, float speed, float angle, Vector3 tangent, float lateral, float freeTarget, AiShortcut activeBranch)
+        bool AgencyStep(ref float throttle, ref float brake, ref float steering, float s, float speed, float angle, Vector3 tangent, float lateral, float freeTarget, AiShortcut activeBranch, float branchS)
         {
             float dt = Time.fixedDeltaTime, now = Time.time, vf = Car.ForwardSpeed;
             var pos = Car.Body.position; var up = Car.transform.up;
@@ -367,11 +369,13 @@ namespace Racer
             downFor = lying ? downFor + dt : 0f;
             if (downFor > .35f && Urgent(s)) { DownResets++; return true; }
 
-            // blocked: progress since it was first blocked clears it
+            // blocked: progress since it was first blocked (along the lap, or along the shortcut's own line on one) clears it; the round-58 check's
+            // first table had a driver back up 185 times in S2's dive pipe when speed alone cleared it there
+            float prog = activeBranch ? branchS : s;
             if (blockStart >= 0f)
             {
-                float moved = Mathf.Repeat(s - blockStation + DriveRoad.Length * .5f, DriveRoad.Length) - DriveRoad.Length * .5f;
-                if (activeBranch ? speed > 4f && now > backupUntil + 1f : moved > 5f) { blockStart = -1f; blockFor = 0f; }
+                float moved = activeBranch ? prog - blockStation : Mathf.Repeat(s - blockStation + DriveRoad.Length * .5f, DriveRoad.Length) - DriveRoad.Length * .5f;
+                if (moved > 5f) { blockStart = -1f; blockFor = 0f; }
                 else if (now - blockStart > 4f && Urgent(s)) { BlockResets++; blockStart = -1f; return true; }
             }
             if (now < backupUntil)
@@ -389,7 +393,7 @@ namespace Racer
             if (blockFor > 1f)
             {
                 blockFor = 0f; BackUps++;
-                if (blockStart < 0f) { blockStart = now; blockStation = s; }
+                if (blockStart < 0f) { blockStart = now; blockStation = prog; }
                 unblockSide = OpenSide(angle, lateral);
                 backupUntil = now + 1.1f; unblockUntil = backupUntil + 1.4f;
                 throttle = 0f; brake = 1f; steering = -unblockSide; return false;

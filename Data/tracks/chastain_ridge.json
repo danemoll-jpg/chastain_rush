@@ -2492,6 +2492,18 @@
    "keep_off_m": 4.0
   }
  ],
+ "smooth_spots": [
+  {
+   "id": "Round 58 BUG-003 the loop branch's junction on Chastain Ridge Drive",
+   "at": [
+    3071.0,
+    703.0
+   ],
+   "r": 8.0,
+   "fade": 5.0,
+   "sigma": 2.0
+  }
+ ],
  "vertical_curves": [
   {
    "id": "Round 58 BUG-003 Chastain Ridge Drive's valley",
