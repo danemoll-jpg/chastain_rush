@@ -1,0 +1,1 @@
+MallCeilings: 3 vertices outside, the farthest 0.35 m at (493.2, 320.2, -1229.9) uv (163.9, -1315.0)

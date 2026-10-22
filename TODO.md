@@ -144,6 +144,28 @@ losing speed; frame rate inside and in the lot (1080p) against Round 59's number
 Pictures: the outside from the main entrance and an anchor (next to a photo if Code has them), each level, a court, the food court.
 For Dan to check: Town Center inside and out; drive it and smash it; the overpass.
 
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round60/` (`round60_check.txt`: 113 of 113).
+Photos: the locationshub gallery refused Code too (403); Dan's 19 in `local/reference_photos/town_center/` set the look (reference only, not committed, never textures).
+A DONE. `MapBuilder.Mall.cs` / `MallInside.cs` / `MallLots.cs` (quick step `Mall`), run-time `World/TownCenterMall.cs`. The real ground has two levels (lower 305.6 m north / west /
+   south-west, upper 313.1 m east / south / north-west), so the doors open at grade on both: main (north, lower: the stepped glass tower), south-west (lower), south, north-west wing
+   (west), east anchor's east doors (upper). Outside: tan split-face block, curved canopies on stone piers with granite panels and black name boards, barrel-vault skylights and the
+   food court's pyramid over the roof, the five anchors' portals (made-up names: Halverson's, Halverson's Home, Belmont, J.C. Carroway; the closed one boarded, "Sterling & Co."
+   with letters gone). OSM maps no lots round the mall, so the ground to the ring road is paved (19.9 ha, stall lines where level, 142 light poles). Inside: 104 shops on two
+   levels (glass fronts, lit name boards, their things), cream ceilings, tile with diamonds and red bands, the checkerboard court, wood-capped glass railings, columns with mahogany
+   capitals, 11 kiosks, benches, planters, the food court (8 counters, 77 tables) upstairs, the play area under it, two escalator banks as 14-degree drivable ramps, the court's
+   glass ends break for the 7.5 m drop, and the east anchor's store to drive through and out. 2140 breakables, none costs speed; 34 shopper groups; echo zones; night lights.
+   Check: all 11 vehicles x 3 ways in and out (main doors -> east escalators -> store -> east doors; south doors -> the court drop -> south-west doors; main doors -> west escalators ->
+   north-west wing -> its doors): 33 of 33 through, never stuck; a sample of every breakable kind at 12 m/s: speed kept (15 of 15); nothing of the inside past the walls (`mall_probe.txt`).
+   Frame rate, 1920 x 1080 window (not measured at 3840 x 2160), two runs, the PC in use: inside 117 to 228 fps average, 27 to 70 slowest 1 %; the lot 189 to 205 / 58 to 61
+   (Round 59 at Town Center: 171 / 51). The inside is not drawn past 140 m.
+B DONE. The decks were straight; the bumps were the ground where both carriageways leave them (rings from overlapping end gradings): both ends blurred and each carriageway laid as
+   one curve from its deck (`MapBuilder.Round60.cs`). Sharpest 1 m step along the carriageways: west 0.21 / 0.20 -> 0.02 / 0.015 m, east 0.23 / 0.28 -> 0.013 / 0.016 m. Every vehicle,
+   both carriageways, both ways, flat out: never off the wheels, the sharpest jolt 0.09 m/s.
+Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as they are"); columns floor to roof only at the escalator holes' corners (the court's and the long sides'
+   upstairs only: cars stopped dead on them); a fast-travel spot moved to the main doors' lot. Two full Build Maps (the first to build the mall on, the round's last as the rule says).
+For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
+`Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.
+
 ## QUEUED rounds
 **Round 61, THE MAP EXTENSION, STAGE 2: THE COBB COUNTY AIRPORT (Dan, 2026-10-22 05:37: "I feel comfortable expanding this out" after
 stage 1). Start after Round 60 when Dan says (he has to drive 60 first).** As Round 59 (in the archive / Previous delivery): extend west to

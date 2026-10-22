@@ -1,0 +1,238 @@
+Round 60 check, 2026-10-22 08:49, the exe, 1280 x 720, muted.
+
+=== Town Center driven through (every vehicle, three ways, up to 22 m/s inside)
+  Street Classic   main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.3 s; slowest 10.7 m/s; longest in the air 0.8 s; 11 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Street Classic: main doors ... through, never stuck  -  16.3 s
+  Street Classic   south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.5 s; slowest 8.0 m/s; longest in the air 1.1 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Street Classic: south doors ... through, never stuck  -  16.5 s
+  Street Classic   main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 18.0 s; slowest 8.2 m/s; longest in the air 0.1 s; 5 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Street Classic: main doors ... through, never stuck  -  18.0 s
+  Longroof GT      main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.4 s; slowest 10.4 m/s; longest in the air 0.8 s; 13 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Longroof GT: main doors ... through, never stuck  -  16.4 s
+  Longroof GT      south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.8 s; slowest 7.8 m/s; longest in the air 1.1 s; 17 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Longroof GT: south doors ... through, never stuck  -  16.8 s
+  Longroof GT      main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 18.3 s; slowest 8.1 m/s; longest in the air 0.2 s; 6 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Longroof GT: main doors ... through, never stuck  -  18.3 s
+  Needle 600       main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.9 s; slowest 11.5 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (273.0, 306.1, -1237.3)
+PASS  mallin Needle 600: main doors ... through, never stuck  -  15.9 s
+  Needle 600       south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.8 s; slowest 9.0 m/s; longest in the air 1.2 s; 11 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (351.0, 313.5, -1294.0)
+PASS  mallin Needle 600: south doors ... through, never stuck  -  15.8 s
+  Needle 600       main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.1 s; slowest 9.5 m/s; longest in the air 0.8 s; 5 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (272.0, 306.1, -1237.5)
+PASS  mallin Needle 600: main doors ... through, never stuck  -  17.1 s
+  Trail Four       main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.8 s; slowest 11.1 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Trail Four: main doors ... through, never stuck  -  15.8 s
+  Trail Four       south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.8 s; slowest 8.7 m/s; longest in the air 1.2 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Trail Four: south doors ... through, never stuck  -  15.8 s
+  Trail Four       main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.2 s; slowest 9.2 m/s; longest in the air 0.4 s; 4 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Trail Four: main doors ... through, never stuck  -  17.2 s
+  Sundown Roadster main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.2 s; slowest 10.9 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Sundown Roadster: main doors ... through, never stuck  -  16.2 s
+  Sundown Roadster south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.4 s; slowest 8.3 m/s; longest in the air 1.2 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Sundown Roadster: south doors ... through, never stuck  -  16.4 s
+  Sundown Roadster main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.9 s; slowest 8.6 m/s; longest in the air 0.2 s; 5 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Sundown Roadster: main doors ... through, never stuck  -  17.9 s
+  Highball Fastback main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.2 s; slowest 10.5 m/s; longest in the air 0.8 s; 13 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Highball Fastback: main doors ... through, never stuck  -  16.2 s
+  Highball Fastback south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.4 s; slowest 7.8 m/s; longest in the air 1.1 s; 17 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Highball Fastback: south doors ... through, never stuck  -  16.4 s
+  Highball Fastback main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.9 s; slowest 8.2 m/s; longest in the air 0.3 s; 6 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Highball Fastback: main doors ... through, never stuck  -  17.9 s
+  Pebble Coupe     main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.2 s; slowest 11.1 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Pebble Coupe: main doors ... through, never stuck  -  16.2 s
+  Pebble Coupe     south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.4 s; slowest 8.5 m/s; longest in the air 1.2 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Pebble Coupe: south doors ... through, never stuck  -  16.4 s
+  Pebble Coupe     main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 18.0 s; slowest 8.8 m/s; longest in the air 0.3 s; 5 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Pebble Coupe: main doors ... through, never stuck  -  18.0 s
+  Skyfin Cruiser   main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.6 s; slowest 10.0 m/s; longest in the air 0.8 s; 13 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Skyfin Cruiser: main doors ... through, never stuck  -  16.6 s
+  Skyfin Cruiser   south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.9 s; slowest 7.8 m/s; longest in the air 1.1 s; 18 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Skyfin Cruiser: south doors ... through, never stuck  -  16.9 s
+  Skyfin Cruiser   main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 18.6 s; slowest 8.1 m/s; longest in the air 0.4 s; 6 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Skyfin Cruiser: main doors ... through, never stuck  -  18.6 s
+  Ridge Scrambler  main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.7 s; slowest 11.6 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Ridge Scrambler: main doors ... through, never stuck  -  15.7 s
+  Ridge Scrambler  south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.0 s; slowest 9.0 m/s; longest in the air 1.2 s; 11 things broken; lowest 0.4 m over the lower floor; the last hard stop: enter:Mall at (351.0, 313.6, -1294.0)
+PASS  mallin Ridge Scrambler: south doors ... through, never stuck  -  16.0 s
+  Ridge Scrambler  main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.1 s; slowest 9.4 m/s; longest in the air 0.5 s; 4 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Ridge Scrambler: main doors ... through, never stuck  -  17.1 s
+  Drifter Twin     main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 16.0 s; slowest 10.9 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Drifter Twin: main doors ... through, never stuck  -  16.0 s
+  Drifter Twin     south doors -> upper concourse -> off the court's edge -> south-west doors: through in 16.1 s; slowest 8.9 m/s; longest in the air 1.2 s; 11 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (351.1, 313.5, -1294.1)
+PASS  mallin Drifter Twin: south doors ... through, never stuck  -  16.1 s
+  Drifter Twin     main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.3 s; slowest 9.2 m/s; longest in the air 0.5 s; 4 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Drifter Twin: main doors ... through, never stuck  -  17.3 s
+  Turf Rocket      main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.6 s; slowest 11.5 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Turf Rocket: main doors ... through, never stuck  -  15.6 s
+  Turf Rocket      south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.8 s; slowest 9.0 m/s; longest in the air 1.2 s; 11 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (351.0, 313.5, -1293.9)
+PASS  mallin Turf Rocket: south doors ... through, never stuck  -  15.8 s
+  Turf Rocket      main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.0 s; slowest 9.5 m/s; longest in the air 0.4 s; 5 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Turf Rocket: main doors ... through, never stuck  -  17.0 s
+  Clay Hopper      main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.8 s; slowest 11.2 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.5 m over the lower floor
+PASS  mallin Clay Hopper: main doors ... through, never stuck  -  15.8 s
+  Clay Hopper      south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.9 s; slowest 8.6 m/s; longest in the air 1.2 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Clay Hopper: south doors ... through, never stuck  -  15.9 s
+  Clay Hopper      main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.2 s; slowest 8.9 m/s; longest in the air 0.3 s; 4 things broken; lowest 0.5 m over the lower floor
+PASS  mallin Clay Hopper: main doors ... through, never stuck  -  17.2 s
+  Skywhip 250      main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.7 s; slowest 11.7 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Skywhip 250: main doors ... through, never stuck  -  15.7 s
+  Skywhip 250      south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.7 s; slowest 8.8 m/s; longest in the air 1.2 s; 11 things broken; lowest 0.3 m over the lower floor; the last hard stop: enter:Mall at (351.0, 313.5, -1294.0)
+PASS  mallin Skywhip 250: south doors ... through, never stuck  -  15.7 s
+  Skywhip 250      main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.0 s; slowest 9.6 m/s; longest in the air 0.4 s; 5 things broken; lowest 0.4 m over the lower floor
+PASS  mallin Skywhip 250: main doors ... through, never stuck  -  17.0 s
+  Clay Hopper Cup  main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors: through in 15.6 s; slowest 11.6 m/s; longest in the air 0.9 s; 11 things broken; lowest 0.5 m over the lower floor
+PASS  mallin Clay Hopper Cup: main doors ... through, never stuck  -  15.6 s
+  Clay Hopper Cup  south doors -> upper concourse -> off the court's edge -> south-west doors: through in 15.7 s; slowest 8.7 m/s; longest in the air 1.2 s; 12 things broken; lowest 0.3 m over the lower floor
+PASS  mallin Clay Hopper Cup: south doors ... through, never stuck  -  15.7 s
+  Clay Hopper Cup  main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors: through in 17.0 s; slowest 9.2 m/s; longest in the air 0.4 s; 4 things broken; lowest 0.5 m over the lower floor
+PASS  mallin Clay Hopper Cup: main doors ... through, never stuck  -  17.0 s
+
+=== Town Center's breakables: a sample of each kind driven into at 12 m/s (Street Classic): broken, the speed kept
+  MallGlass #181 at (108.3, 307.6, -1331.3) from +v: broken; 11.9 m/s before, 12.1 m/s 0.35 s after; met Mall
+PASS  smash MallGlass #181: broken, the speed kept (95 %)  -  11.9 -> 12.1 m/s
+  MallGlass #363 at (321.7, 315.1, -1249.5) from +u: broken; 11.9 m/s before, 12.1 m/s 0.35 s after; met Mall
+PASS  smash MallGlass #363: broken, the speed kept (95 %)  -  11.9 -> 12.1 m/s
+  MallGlass #544 at (407.1, 313.7, -1280.7) from +v: broken; 11.9 m/s before, 11.9 m/s 0.35 s after; met Mall Terrain_4_0
+PASS  smash MallGlass #544: broken, the speed kept (95 %)  -  11.9 -> 11.9 m/s
+  MallWood #0 at (116.4, 307.4, -1331.5) from +u: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall Terrain_4_0 MallAnchors
+PASS  smash MallWood #0: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallWood #408 at (300.8, 306.5, -1197.7) from -u: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallWood #408: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallWood #816 at (187.1, 313.6, -1252.2) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallWood #816: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallMetal #0 at (110.2, 306.5, -1342.5) from -v: broken; 11.9 m/s before, 11.9 m/s 0.35 s after; met Mall
+PASS  smash MallMetal #0: broken, the speed kept (95 %)  -  11.9 -> 11.9 m/s
+  MallMetal #106 at (415.0, 314.0, -1247.6) from +v: broken; 11.9 m/s before, 11.9 m/s 0.35 s after; met Mall
+PASS  smash MallMetal #106: broken, the speed kept (95 %)  -  11.9 -> 11.9 m/s
+  MallMetal #213 at (469.1, 314.0, -1233.4) from +v: broken; 11.9 m/s before, 11.9 m/s 0.35 s after; met Mall
+PASS  smash MallMetal #213: broken, the speed kept (95 %)  -  11.9 -> 11.9 m/s
+  MallSigns #0 at (280.4, 306.8, -1265.3) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallSigns #0: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallSigns #2 at (326.6, 306.8, -1252.1) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallSigns #2: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallSigns #4 at (144.7, 314.3, -1300.0) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallSigns #4: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallSoft #0 at (192.0, 306.4, -1318.4) from -v: broken; 11.9 m/s before, 12.1 m/s 0.35 s after; met Mall
+PASS  smash MallSoft #0: broken, the speed kept (95 %)  -  11.9 -> 12.1 m/s
+  MallSoft #15 at (203.2, 306.1, -1278.4) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallSoft #15: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+  MallSoft #30 at (207.4, 306.1, -1262.8) from -v: broken; 11.9 m/s before, 12.2 m/s 0.35 s after; met Mall
+PASS  smash MallSoft #30: broken, the speed kept (95 %)  -  11.9 -> 12.2 m/s
+
+=== Chastain Road over I-75 (BUG-001, Dan at x -1051.61 z 420.74): both carriageways, both ways, flat out (up to 45 m/s)
+  Street Classic   eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.1, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Street Classic eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Street Classic   eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-903.0, 447.1); longest with no wheel down 0.00 s; through
+PASS  overpass Street Classic eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Street Classic   westbound, westward: the sharpest jolt 0.06 m/s in one step at (-1050.6, 429.9); longest with no wheel down 0.00 s; through
+PASS  overpass Street Classic westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.06 m/s, 0.00 s
+  Street Classic   westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-897.9, 469.3); longest with no wheel down 0.00 s; through
+PASS  overpass Street Classic westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Longroof GT      eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.3, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Longroof GT eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Longroof GT      eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.2, 394.3); longest with no wheel down 0.00 s; through
+PASS  overpass Longroof GT eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Longroof GT      westbound, westward: the sharpest jolt 0.06 m/s in one step at (-1048.7, 430.4); longest with no wheel down 0.00 s; through
+PASS  overpass Longroof GT westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.06 m/s, 0.00 s
+  Longroof GT      westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-898.0, 469.3); longest with no wheel down 0.00 s; through
+PASS  overpass Longroof GT westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Needle 600       eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.2, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Needle 600 eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Needle 600       eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1043.8, 411.0); longest with no wheel down 0.00 s; through
+PASS  overpass Needle 600 eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Needle 600       westbound, westward: the sharpest jolt 0.09 m/s in one step at (-1052.8, 429.3); longest with no wheel down 0.00 s; through
+PASS  overpass Needle 600 westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Needle 600       westbound, eastward: the sharpest jolt 0.09 m/s in one step at (-898.5, 469.2); longest with no wheel down 0.00 s; through
+PASS  overpass Needle 600 westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Trail Four       eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.4, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Trail Four eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Trail Four       eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1051.3, 409.2); longest with no wheel down 0.00 s; through
+PASS  overpass Trail Four eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Trail Four       westbound, westward: the sharpest jolt 0.08 m/s in one step at (-1054.1, 429.0); longest with no wheel down 0.00 s; through
+PASS  overpass Trail Four westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Trail Four       westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-897.9, 469.3); longest with no wheel down 0.00 s; through
+PASS  overpass Trail Four westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Sundown Roadster eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-887.0, 451.4); longest with no wheel down 0.00 s; through
+PASS  overpass Sundown Roadster eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Sundown Roadster eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.6, 394.2); longest with no wheel down 0.00 s; through
+PASS  overpass Sundown Roadster eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Sundown Roadster westbound, westward: the sharpest jolt 0.06 m/s in one step at (-1050.4, 429.9); longest with no wheel down 0.00 s; through
+PASS  overpass Sundown Roadster westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.06 m/s, 0.00 s
+  Sundown Roadster westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-897.6, 469.4); longest with no wheel down 0.00 s; through
+PASS  overpass Sundown Roadster westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Highball Fastback eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.5, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Highball Fastback eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Highball Fastback eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.0, 394.4); longest with no wheel down 0.00 s; through
+PASS  overpass Highball Fastback eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Highball Fastback westbound, westward: the sharpest jolt 0.07 m/s in one step at (-1050.2, 430.0); longest with no wheel down 0.00 s; through
+PASS  overpass Highball Fastback westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Highball Fastback westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-898.3, 469.2); longest with no wheel down 0.00 s; through
+PASS  overpass Highball Fastback westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Pebble Coupe     eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-887.7, 451.2); longest with no wheel down 0.00 s; through
+PASS  overpass Pebble Coupe eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Pebble Coupe     eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.0, 394.4); longest with no wheel down 0.00 s; through
+PASS  overpass Pebble Coupe eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Pebble Coupe     westbound, westward: the sharpest jolt 0.06 m/s in one step at (-1050.3, 430.0); longest with no wheel down 0.00 s; through
+PASS  overpass Pebble Coupe westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.06 m/s, 0.00 s
+  Pebble Coupe     westbound, eastward: the sharpest jolt 0.09 m/s in one step at (-885.3, 472.6); longest with no wheel down 0.00 s; through
+PASS  overpass Pebble Coupe westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Skyfin Cruiser   eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-887.9, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Skyfin Cruiser eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Skyfin Cruiser   eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.1, 394.4); longest with no wheel down 0.00 s; through
+PASS  overpass Skyfin Cruiser eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Skyfin Cruiser   westbound, westward: the sharpest jolt 0.06 m/s in one step at (-1048.6, 430.4); longest with no wheel down 0.00 s; through
+PASS  overpass Skyfin Cruiser westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.06 m/s, 0.00 s
+  Skyfin Cruiser   westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-897.6, 469.4); longest with no wheel down 0.00 s; through
+PASS  overpass Skyfin Cruiser westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Ridge Scrambler  eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.4, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Ridge Scrambler eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Ridge Scrambler  eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1044.0, 411.0); longest with no wheel down 0.00 s; through
+PASS  overpass Ridge Scrambler eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Ridge Scrambler  westbound, westward: the sharpest jolt 0.08 m/s in one step at (-1048.2, 430.5); longest with no wheel down 0.00 s; through
+PASS  overpass Ridge Scrambler westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Ridge Scrambler  westbound, eastward: the sharpest jolt 0.09 m/s in one step at (-898.2, 469.3); longest with no wheel down 0.00 s; through
+PASS  overpass Ridge Scrambler westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Drifter Twin     eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.4, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Drifter Twin eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Drifter Twin     eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1042.7, 411.3); longest with no wheel down 0.00 s; through
+PASS  overpass Drifter Twin eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Drifter Twin     westbound, westward: the sharpest jolt 0.07 m/s in one step at (-1046.1, 431.1); longest with no wheel down 0.00 s; through
+PASS  overpass Drifter Twin westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Drifter Twin     westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-898.7, 469.1); longest with no wheel down 0.00 s; through
+PASS  overpass Drifter Twin westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Turf Rocket      eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.2, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Turf Rocket eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Turf Rocket      eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1048.6, 409.8); longest with no wheel down 0.00 s; through
+PASS  overpass Turf Rocket eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Turf Rocket      westbound, westward: the sharpest jolt 0.09 m/s in one step at (-1052.2, 429.5); longest with no wheel down 0.00 s; through
+PASS  overpass Turf Rocket westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Turf Rocket      westbound, eastward: the sharpest jolt 0.09 m/s in one step at (-898.5, 469.2); longest with no wheel down 0.00 s; through
+PASS  overpass Turf Rocket westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Clay Hopper      eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.0, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Clay Hopper      eastbound, westward: the sharpest jolt 0.05 m/s in one step at (-1107.8, 394.2); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.05 m/s, 0.00 s
+  Clay Hopper      westbound, westward: the sharpest jolt 0.07 m/s in one step at (-1050.8, 429.8); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Clay Hopper      westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-898.7, 469.1); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Skywhip 250      eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.5, 451.0); longest with no wheel down 0.00 s; through
+PASS  overpass Skywhip 250 eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Skywhip 250      eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1050.8, 409.3); longest with no wheel down 0.00 s; through
+PASS  overpass Skywhip 250 eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Skywhip 250      westbound, westward: the sharpest jolt 0.08 m/s in one step at (-1054.9, 428.8); longest with no wheel down 0.00 s; through
+PASS  overpass Skywhip 250 westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Skywhip 250      westbound, eastward: the sharpest jolt 0.09 m/s in one step at (-898.3, 469.2); longest with no wheel down 0.00 s; through
+PASS  overpass Skywhip 250 westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Clay Hopper Cup  eastbound, eastward: the sharpest jolt 0.09 m/s in one step at (-888.0, 451.1); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper Cup eastbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.09 m/s, 0.00 s
+  Clay Hopper Cup  eastbound, westward: the sharpest jolt 0.07 m/s in one step at (-1048.9, 409.8); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper Cup eastbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.07 m/s, 0.00 s
+  Clay Hopper Cup  westbound, westward: the sharpest jolt 0.08 m/s in one step at (-1053.2, 429.2); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper Cup westbound, westward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+  Clay Hopper Cup  westbound, eastward: the sharpest jolt 0.08 m/s in one step at (-898.7, 469.1); longest with no wheel down 0.00 s; through
+PASS  overpass Clay Hopper Cup westbound, eastward: no wheels-off over 0.15 s, no jolt over 1.5 m/s  -  0.08 m/s, 0.00 s
+INFO  the sharpest jolt of all: 0.09 m/s (Turf Rocket eastbound, eastward at (-888, 451))
+
+=== Pictures
+
+113 of 113 checks passed.
