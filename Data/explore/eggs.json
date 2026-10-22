@@ -1485,11 +1485,11 @@
   {
    "id": "town-center",
    "title": "Town Center at Cobb",
-   "x": 262.69,
-   "z": -1207.85,
+   "x": 265.11,
+   "z": -1207.29,
    "y": 0.0,
    "fixed": false,
-   "yaw": 165.4
+   "yaw": 165.25
   },
   {
    "id": "ksu",

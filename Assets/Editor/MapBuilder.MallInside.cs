@@ -104,7 +104,7 @@ namespace ChastainRush
             var lower = MallRaster(m, m.SpineRing, .5f, (u, v) => true);
             foreach (var r in lower) MallSlab(m, floorMb, floorMb, root, r, m.L0, MallPlan.Slab, MTile, MTile, "Mall floor", true);
             var upper = MallRaster(m, m.SpineRing, .5f, (u, v) => !m.InVoid(u, v));
-            foreach (var r in upper) MallSlab(m, floorMb, floorMb, root, r, m.L1, MallPlan.Slab, MTile, MCream, "Mall floor", false);
+            foreach (var r in upper) MallSlab(m, floorMb, m.Ceil, root, r, m.L1, MallPlan.Slab, MTile, MCream, "Mall floor", false);
             var east = MallRasterRing(m, m.Rings[m.East], .5f, (u, v) => true);
             foreach (var r in east) MallSlab(m, floorMb, floorMb, root, r, m.L1, MallPlan.Slab, SC(.84f, .82f, .78f), MCream, "Mall floor", true);
             // the fascias round the holes (cream, 1.3 m deep under the slab's edge), not where a ramp's top meets the floor
@@ -252,30 +252,32 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ the columns: at the holes' corners and along their long sides, floor to roof
-        static void MallColumn(MallPlan m, Transform root, MeshBuilder deco, float u, float v)
+        static void MallColumn(MallPlan m, Transform root, MeshBuilder deco, float u, float v, bool upperOnly = false)
         {
-            var b = m.P(u, v, m.L0 - .02f); float top = m.Roof - MallPlan.Slab; var f = m.D3(1, 0);
+            var b = m.P(u, v, (upperOnly ? m.L1 : m.L0) - .02f); float top = m.Roof - MallPlan.Slab; var f = m.D3(1, 0);
             SBox(deco, b, f, new Vector3(.9f, top - b.y, .9f), MCream);
-            foreach (float y in new[] { m.L0 + .0f, m.L1 + .0f }) SBox(deco, m.P(u, v, y), f, new Vector3(.98f, 1.0f, .98f), y < m.L1 - 1f ? SC(.36f, .40f, .37f) : MCreamDark);   // the bases (green stone below)
-            foreach (float y in new[] { m.L1 - 2.4f, top - 1.9f }) { SBox(deco, m.P(u, v, y), f, new Vector3(1.15f, .7f, 1.15f), MMahogany); SBox(deco, m.P(u, v, y + .7f), f, new Vector3(1.3f, .18f, 1.3f), MMahogany * .85f); }
+            foreach (float y in upperOnly ? new[] { m.L1 } : new[] { m.L0, m.L1 }) SBox(deco, m.P(u, v, y), f, new Vector3(.98f, 1.0f, .98f), y < m.L1 - 1f ? SC(.36f, .40f, .37f) : MCreamDark);   // the bases (green stone below)
+            foreach (float y in upperOnly ? new[] { top - 1.9f } : new[] { m.L1 - 2.4f, top - 1.9f }) { SBox(deco, m.P(u, v, y), f, new Vector3(1.15f, .7f, 1.15f), MMahogany); SBox(deco, m.P(u, v, y + .7f), f, new Vector3(1.3f, .18f, 1.3f), MMahogany * .85f); }
             SBox(deco, m.P(u, v, top - 1.0f), f, new Vector3(.75f, .75f, .75f), MCream);   // the ball (a squared one)
             var g = new GameObject("Mall column"); g.transform.SetParent(root, false);
             g.transform.SetPositionAndRotation((b + m.P(u, v, top)) * .5f, Quaternion.LookRotation(f)); g.AddComponent<BoxCollider>().size = new Vector3(.9f, top - b.y, .9f);
         }
         static void MallColumns(MallPlan m, Transform root, MeshBuilder deco)
         {
-            var at = new List<Vector2>();
+            // floor to roof at the escalator holes' corners only; along their long sides upstairs only (at the railing, as the photos'), so the lower floor's
+            // lanes beside the holes have nothing a car stops dead on (the first check: cars stopped on the court's side columns, the bikes squeezed by)
+            var at = new List<(Vector2 p, bool upper)>();
             foreach (var v in m.Voids)
             {
                 if (v == m.Tower) continue;
                 foreach (float vv in new[] { v.yMin - .45f, v.yMax + .45f })
                 {
                     int k = Mathf.Max(1, Mathf.RoundToInt(v.width / 13f));
-                    for (int i = 0; i <= k; i++) { float u = Mathf.Lerp(v.xMin + .45f, v.xMax - .45f, i / (float)k); at.Add(new Vector2(u, vv)); }
+                    for (int i = 0; i <= k; i++) { float u = Mathf.Lerp(v.xMin + .45f, v.xMax - .45f, i / (float)k); at.Add((new Vector2(u, vv), (i > 0 && i < k) || v == m.Court)); }   // the court's corners too: they stood in the way from the main doors
                 }
             }
-            foreach (var p in at) MallColumn(m, root, deco, p.x, p.y);
-            m.Log.Add($"{at.Count} columns");
+            foreach (var (p, upper) in at) MallColumn(m, root, deco, p.x, p.y, upper);
+            m.Log.Add($"{at.Count} columns ({at.Count(a => !a.upper)} floor to roof at the holes' corners)");
         }
 
         // ------------------------------------------------------------ the shops
@@ -506,7 +508,7 @@ namespace ChastainRush
             float y = m.L1, ceil = m.L1 + 7.6f - MallPlan.Slab; const float aisle0 = -1308.5f, aisle1 = -1298.5f;
             // the aisle's floor (light tile), the departments' carpet
             MQuad(deco, m, u0, aisle0, u1, aisle1, y + .012f, SC(.92f, .90f, .86f));
-            foreach (var (a, b) in new[] { (v0, aisle0), (aisle1, v1) }) MQuad(deco, m, u0, a, u1, b, y + .011f, MCarpet);
+            foreach (var (a, b) in new[] { (v0, aisle0), (aisle1, v1) }) MQuad(deco, m, u0, a, u1, b, y + .011f, SC(.58f, .52f, .50f));
             var rnd = new System.Random(2391); var cloth = new[] { SC(.80f, .20f, .25f), SC(.20f, .35f, .70f), SC(.95f, .85f, .30f), SC(.15f, .15f, .17f), SC(.90f, .90f, .88f), SC(.35f, .60f, .35f), SC(.85f, .55f, .70f) };
             int racks = 0, counters = 0;
             for (float u = u0 + 6f; u < u1 - 4f; u += 8f)

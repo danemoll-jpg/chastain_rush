@@ -416,6 +416,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 60 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A Town Center at Cobb from its six OSM footprints
+(`MapBuilder.Mall.cs` plan, frame (14.75 deg), doors, outside, anchors, skylights, sign atlas `python Tools/handmade/make_mall_signs.py` (made-up names, hand-made, committed);
+`MapBuilder.MallInside.cs` floors, escalator ramps, railings, columns, 104 shops, smashables (all `FenceChunk.free`), food court, play area, the east anchor's store;
+`MapBuilder.MallLots.cs` the lots OSM lacks; quick step `Mall`; run-time `World/TownCenterMall.cs`: the inside drawn within 140 m, breakables back past 220 m, night lights);
+the shoppers via `BuildLife`; "Mall ramp ..." meshes and "Mall floor" boxes in `VehicleSurfaceContacts`; Dan's photos `local/reference_photos/town_center/` (reference only).
+B the I-75 overpass's ends (`MapBuilder.Round60.cs` `R60SmoothOverpass`, after SmoothBridgeEnds). Check: `ChastainRush.exe -exeRound60 <dir> [-r60Only mallin,smash,mallfps,overpass,pics60]
+-logFile <dir>\Player.log` (`Checks/Round20Runner.R60.cs`); `ChastainRush.MallProbe.Run -probeOut <file>` (Editor batch: the inside's vertices outside the walls). Imported from Racer: nothing.
 **Round 59 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the map extension, stage 1 (Town Center at Cobb, KSU):
 the new land at negative x / z appended after the core (`Tools/mapgen/mapgen_extend.py`, config `extension`; the core's data unchanged byte for byte), `terrain_full.r16` for Unity
 (`MapBuilder` TerrainGrid / tiles take its origin; `MapExtent(map)` for the map picture, life grid and bridge ends), the exploration fog renumbered onto the larger grid
@@ -949,7 +956,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-22_00-37-30-154_d7ca87` through BUG-003 (Round 58; before it `2026-10-21_21-15-52-689_2c460b` through BUG-005, Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-22_05-11-54-864_7498e6` through BUG-001 (Round 60; before it `2026-10-22_00-37-30-154_d7ca87` through BUG-003, Round 58; before it `2026-10-21_21-15-52-689_2c460b` through BUG-005, Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

@@ -50,6 +50,9 @@ namespace ChastainRush
             public readonly List<FenceChunk> Breakables = new(); public readonly List<string> Log = new();
             public readonly List<Vector3> Lamps = new();                    // the ceiling lights (the night's point lights go to the nearest)
             public readonly List<AmbientLife.Group> Shoppers = new();
+            public MeshBuilder Ceil;
+            public const float LotCell = 4f; public bool[,] LotOn; public float LotU0, LotV0; public int LotCells;   // the parking round it (MapBuilder.MallLots.cs)
+            public bool InLot(float x, float z) { if (LotOn == null) return false; var q = UV(new Vector2(x, z)); int i = Mathf.FloorToInt((q.x - LotU0) / LotCell), j = Mathf.FloorToInt((q.y - LotV0) / LotCell); return i >= 0 && j >= 0 && i < LotOn.GetLength(0) && j < LotOn.GetLength(1) && LotOn[i, j]; }   // the ceilings (drawn unlit, cream: the photos' bright ceilings)
             public Vector2 W(float u, float v) => U * u + V * v;
             public Vector2 UV(Vector2 p) => new Vector2(Vector2.Dot(p, U), Vector2.Dot(p, V));
             public Vector3 P(float u, float v, float y) { var w = W(u, v); return new Vector3(w.x, y, w.y); }
@@ -63,6 +66,7 @@ namespace ChastainRush
         static MallPlan Mall;
 
         // the layout in the frame (metres; from the footprints as Round 59 placed them, checked against them in PlanMall)
+        const float MallFrameDeg = 14.75f;
         const float MallUW = -239f, MallUE = 53f, MallCS = -1315f, MallCN = -1292f;   // the concourse: the west and east anchors' walls, its two sides
         static readonly Rect MallCourtArea = Rect.MinMaxRect(-141f, -1325f, -70f, -1292f);     // the center court (to the south anchor's front)
         static readonly Rect MallFoodCourt = Rect.MinMaxRect(-141f, -1292f, -68f, -1242.4f);   // over it on the upper level: the food court
@@ -86,9 +90,9 @@ namespace ChastainRush
             var m = new MallPlan();
             foreach (var i in ids) { var r = ToPoints(map.buildings[i].footprint); if (PolyArea(r) < 0f) r.Reverse(); m.Rings[i] = r; }
             m.Spine = ids.OrderByDescending(i => Mathf.Abs(PolyArea(m.Rings[i]))).First(); m.SpineRing = m.Rings[m.Spine];
-            // the frame: the spine's longest edge, pointing east
-            var sr = m.SpineRing; int le = 0; for (int i = 1; i < sr.Count; i++) if ((sr[(i + 1) % sr.Count] - sr[i]).sqrMagnitude > (sr[(le + 1) % sr.Count] - sr[le]).sqrMagnitude) le = i;
-            var U = (sr[(le + 1) % sr.Count] - sr[le]).normalized; if (U.x < 0f) U = -U; m.U = U; m.V = new Vector2(-U.y, U.x);
+            // the frame: 14.75 degrees north of east, the one the layout's numbers below were measured in (the footprints' walls are square to it
+            // within 0.2 m; the single longest wall is 14.67 degrees, which at 1.3 km from the origin moved the layout up to 1.7 m)
+            var sr = m.SpineRing; var U = new Vector2(Mathf.Cos(MallFrameDeg * Mathf.Deg2Rad), Mathf.Sin(MallFrameDeg * Mathf.Deg2Rad)); m.U = U; m.V = new Vector2(-U.y, U.x);
             var uv = sr.Select(m.UV).ToList();
             float u0 = uv.Min(q => q.x), u1 = uv.Max(q => q.x), v0 = uv.Min(q => q.y), v1 = uv.Max(q => q.y);
             if (Mathf.Abs(u0 - MallUW) > 2f || Mathf.Abs(u1 - MallUE) > 2f || Mathf.Abs(v0 + 1340.7f) > 2f || Mathf.Abs(v1 + 1202.6f) > 2f)
@@ -137,6 +141,7 @@ namespace ChastainRush
                 });
                 m.Log.Add($"door {d.name}: {(d.level == 0 ? "lower" : "upper")} floor {d.floor:0.00} m, its apron graded ({n} samples, up to {most:0.00} m)");
             }
+            PlanMallLots(m, map);   // the parking round it (MapBuilder.MallLots.cs)
             m.Log.Insert(0, $"the frame {Mathf.Atan2(U.y, U.x) * Mathf.Rad2Deg:0.00} deg; floors {m.L0:0.00} and {m.L1:0.00} m (the ground: lower lots {lower:0.00}, upper {upper:0.00}), roof {m.Roof:0.00}; anchors: east {m.East}, west {m.West}, south {m.South}, north {m.North}, north-west {m.NorthWest} (closed)");
             return m;
         }
@@ -144,7 +149,7 @@ namespace ChastainRush
         // ------------------------------------------------------------ colours (from the photos)
         static readonly Color MBlock = SC(.79f, .72f, .61f), MBlockPink = SC(.82f, .68f, .58f), MCoping = SC(.29f, .26f, .23f), MBronze = SC(.27f, .24f, .21f),
             MCream = SC(.93f, .90f, .82f), MCreamDark = SC(.85f, .81f, .72f), MMahogany = SC(.47f, .23f, .14f), MTile = SC(.88f, .83f, .72f), MTileRed = SC(.68f, .38f, .27f),
-            MDiamond = SC(.16f, .18f, .19f), MCheckDark = SC(.10f, .19f, .15f), MCheckLight = SC(.92f, .92f, .89f), MGlass = SC(.36f, .46f, .52f), MGranite = SC(.56f, .56f, .57f),
+            MDiamond = SC(.16f, .18f, .19f), MCheckDark = SC(.10f, .19f, .15f), MCheckLight = SC(.92f, .92f, .89f), MGlass = SC(.50f, .60f, .65f), MGranite = SC(.56f, .56f, .57f),
             MStone = SC(.62f, .63f, .64f), MRoof = SC(.46f, .46f, .47f), MCarpet = SC(.30f, .27f, .30f), MSteel = SC(.70f, .71f, .73f), MPlant = SC(.20f, .45f, .22f);
 
         // ------------------------------------------------------------ the step: everything (the outside here, the inside in MapBuilder.MallInside.cs)
@@ -160,15 +165,19 @@ namespace ChastainRush
             var all = m.SpineRing.Concat(east).ToList();
             var bb = Rect.MinMaxRect(all.Min(q => q.x) - 1, all.Min(q => q.y) - 1, all.Max(q => q.x) + 1, all.Max(q => q.y) + 1);
             int holed = SetHoles(t, bb, q => (InPolygon(q, m.SpineRing) && RingDist(q, m.SpineRing) > .35f) || (InPolygon(q, east) && RingDist(q, east) > .35f));
-            var shell = new MeshBuilder(); var shellIn = new MeshBuilder(); var deco = new MeshBuilder(); var glassOut = new MeshBuilder();
-            MallShell(m, t, outside, inside, shell, shellIn, signs);
+            var shell = new MeshBuilder(); var shellIn = new MeshBuilder(); var deco = new MeshBuilder(); var glassOut = new MeshBuilder(); m.Ceil = new MeshBuilder();
+            MallShell(m, t, outside, inside, shell, shellIn, signs, glassOut);
             MallAnchors(m, t, outside, shell, signs, mats);
             MallEntrances(m, t, outside, inside, shell, glassOut, signs);
+            MallLots(m, map, t, mats, outside);
             MallSkylights(m, outside, mats);
             shell.ToObject("MallShell", mats.House, outside, false, true);
             glassOut.ToObject("MallGlassOutside", mats.House, outside, false, false);
             BuildMallInside(map, t, mats, inside, m, signs, shellIn);   // MapBuilder.MallInside.cs
             shellIn.ToObject("MallShellInside", mats.House, inside, false, false);
+            var cm = AssetDatabase.LoadAssetAtPath<Material>(GeneratedDir + "/MallCeiling.mat");
+            if (cm == null || QuickStep != null) { var nm = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "MallCeiling" }; nm.SetColor("_BaseColor", new Color(.90f, .88f, .82f)); cm = GenAsset(nm, GeneratedDir + "/MallCeiling.mat"); }
+            m.Ceil.ToObject("MallCeilings", cm, inside, false, false);
             MallComponent(m, root, inside);
             m.Log.Add($"{holed} ground cells holed under the floors; {m.Breakables.Count} breakable sets; {m.Lamps.Count} ceiling lights; {m.Shoppers.Count} shopper groups");
             Debug.Log("[Round60] Town Center: " + string.Join("; ", m.Log));
@@ -251,7 +260,7 @@ namespace ChastainRush
         static bool OnRing(Vector2 q, List<Vector2> ring, float tol = .6f) => RingDist(q, ring) < tol;
 
         // the concourse building's and the east anchor's walls (both hollow), the roof, the anchor's floor and roof
-        static void MallShell(MallPlan m, TerrainGrid t, Transform outside, Transform inside, MeshBuilder shell, MeshBuilder shellIn, Material signs)
+        static void MallShell(MallPlan m, TerrainGrid t, Transform outside, Transform inside, MeshBuilder shell, MeshBuilder shellIn, Material signs, MeshBuilder roofTop)
         {
             var east = m.Rings[m.East]; var ring = m.SpineRing;
             float baseY = Mathf.Min(m.L0, ring.Concat(east).Min(q => Ground(t, q.x, q.y))) - .8f;
@@ -272,9 +281,9 @@ namespace ChastainRush
             RingWalls(m, east, shell, shellIn, outside, baseY, eTop, cuts, (a, b) => OnRing(a, ring, 1f) && OnRing(b, ring, 1f), (a, b) => (MBlockPink, true), MCream);
             // the roofs: the concourse building's (holes for the skylights), the east anchor's; flat slabs, dark gray on top, cream underneath; colliders
             var roofRects = MallRaster(m, ring, .5f, (u, v) => !MallSkylightArea(u, v));
-            foreach (var r in roofRects) MallSlab(m, shell, shellIn, outside, r, m.Roof, MallPlan.Slab, MRoof, MCream, "Mall roof", false);
+            foreach (var r in roofRects) MallSlab(m, roofTop, m.Ceil, outside, r, m.Roof, MallPlan.Slab, MRoof, MCream, "Mall roof", false);   // its top casts no shadow: the inside lit as a lit mall
             var eRects = MallRasterRing(m, east, 1f, (u, v) => true);
-            foreach (var r in eRects) MallSlab(m, shell, shellIn, outside, r, m.L1 + 7.6f, MallPlan.Slab, MRoof, MCream, "Mall roof", false);
+            foreach (var r in eRects) MallSlab(m, roofTop, m.Ceil, outside, r, m.L1 + 7.6f, MallPlan.Slab, MRoof, MCream, "Mall roof", false);
             // rooftop units on the concourse's roof (the photos' boxes): a few, off the skylights
             var rnd = new System.Random(60);
             for (int k = 0; k < 18; k++)
@@ -411,7 +420,7 @@ namespace ChastainRush
                     {
                         float a0 = s / 8f * Mathf.PI, a1 = (s + 1) / 8f * Mathf.PI; float r = hw + 1.4f;
                         var p0 = f.P(-Mathf.Cos(a0) * r, ch + .5f + Mathf.Sin(a0) * 1.4f, 0f); var p1 = f.P(-Mathf.Cos(a1) * r, ch + .5f + Mathf.Sin(a1) * 1.4f, 0f);
-                        shell.Tint = SC(.93f, .94f, .95f); Face(shell, p0, p1, p1 + f.F * (reach + .6f), p0 + f.F * (reach + .6f), Vector3.up + f.R * (-Mathf.Cos((a0 + a1) * .5f)));
+                        var cn = Vector3.up + f.R * (-Mathf.Cos((a0 + a1) * .5f)); shell.Tint = SC(.93f, .94f, .95f); Face(shell, p0, p1, p1 + f.F * (reach + .6f), p0 + f.F * (reach + .6f), cn); shell.Tint = SC(.82f, .83f, .84f); Face(shell, p0, p1, p1 + f.F * (reach + .6f), p0 + f.F * (reach + .6f), -cn);
                     }
                     foreach (float x in new[] { -hw - 6f, hw + 6f })
                     {

@@ -37,8 +37,8 @@ def near_road(q, parts):
 
 
 # Round 60 (A, Dan: "a fast-travel spot at the main entrance"): Town Center's destination stands in the lot outside the main (north) doors, 32 m
-# out, facing them (the mall's frame: MapBuilder.Mall.cs, u -51, v -1235; u along the concourse, 14.6 degrees north of east)
-FIXED = {"town-center": (262.69, -1207.85, 165.4, "the lot outside Town Center's main doors")}
+# out, facing them (the mall's frame: MapBuilder.Mall.cs, u -51, v -1235; u along the concourse, 14.75 degrees north of east)
+FIXED = {"town-center": (265.11, -1207.29, 165.25, "the lot outside Town Center's main doors")}
 
 data = json.load(open(EGGS, encoding="utf-8"))
 dests = [d for d in data["destinations"] if d["id"] not in {p[0] for p in PLACES}]

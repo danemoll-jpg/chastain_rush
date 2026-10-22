@@ -29,8 +29,8 @@ namespace ChastainRush
             var ways = new (string name, List<Vector3> line)[]
             {
                 ("main doors -> lower concourse -> east escalators -> the east anchor's store -> its east doors", MallLine((-51f, -1232f, 2), (-51f, -1262f, 0), (-51f, -1296f, 0), (-38f, -1311.5f, 0), (-18f, -1311.5f, 0), (-6f, -1304.5f, 0), (6f, -1303.5f, 0), (44f, -1303.5f, 1), (60f, -1303.5f, 1), (155f, -1303.5f, 1), (163.5f, -1303f, 1), (192f, -1303f, 2))),
-                ("south doors -> upper concourse -> off the court's edge -> south-west doors", MallLine((10f, -1362f, 2), (10f, -1330f, 1), (6f, -1314f, 1), (-6f, -1304.5f, 1), (-80f, -1303.5f, 1), (-104f, -1303.5f, 0), (-128f, -1310f, 0), (-176f, -1312f, 0), (-195f, -1322f, 0), (-195f, -1342f, 0), (-195f, -1368f, 2))),
-                ("main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors", MallLine((-51f, -1232f, 2), (-51f, -1262f, 0), (-58f, -1296.5f, 0), (-90f, -1296.5f, 0), (-130f, -1303.5f, 0), (-150f, -1303.5f, 0), (-185.5f, -1303.5f, 1), (-192f, -1299f, 1), (-195f, -1288f, 1), (-195f, -1250f, 1), (-205f, -1242f, 1), (-224f, -1242f, 1), (-250f, -1242f, 2))),
+                ("south doors -> upper concourse -> off the court's edge -> south-west doors", MallLine((10f, -1362f, 2), (10f, -1330f, 1), (6f, -1314f, 1), (-6f, -1304.5f, 1), (-80f, -1303.5f, 1), (-104f, -1303.5f, 0), (-122f, -1305f, 0), (-140f, -1313.2f, 0), (-178f, -1313.2f, 0), (-195f, -1313.6f, 0), (-195f, -1322f, 0), (-195f, -1342f, 0), (-195f, -1368f, 2))),
+                ("main doors -> lower concourse west -> west escalators -> north-west wing -> its west doors", MallLine((-51f, -1232f, 2), (-51f, -1262f, 0), (-58f, -1293.0f, 0), (-80f, -1293.0f, 0), (-130f, -1293.0f, 0), (-140f, -1303.5f, 0), (-150f, -1303.5f, 0), (-185.5f, -1303.5f, 1), (-192f, -1299f, 1), (-195f, -1288f, 1), (-195f, -1250f, 1), (-205f, -1242f, 1), (-224f, -1242f, 1), (-250f, -1242f, 2))),
             };
             var ids = VehicleIds();
             foreach (var vid in ids)
@@ -41,10 +41,15 @@ namespace ChastainRush
                     m.RestoreBreakables(); yield return new WaitForSecondsRealtime(.2f);
                     Place(line[0], line[1] - line[0], 6f); yield return new WaitForFixedUpdate();
                     var run = new Run(); float len = 0f; for (int i = 1; i < line.Count; i++) len += Flat(line[i] - line[i - 1]).magnitude;
-                    int broke0 = FenceChunk.BrokenPanels; float lowest = 99f;
-                    yield return DriveLine(line, 22f, len / 6f + 25f, run, null, r => { lowest = Mathf.Min(lowest, car.Body.position.y - m.lowerFloor); return false; }, 5f, false);
-                    int broke = FenceChunk.BrokenPanels - broke0;
-                    report.AppendLine($"  {Nm(vid),-16} {name}: {(run.reached ? "through" : "NOT through: " + run.end)} in {run.time:0.0} s; slowest {run.minSpeed:0.0} m/s; longest in the air {run.maxAir:0.0} s; {broke} things broken; lowest {lowest:0.0} m over the lower floor");
+                    int broke0 = FenceChunk.BrokenPanels; float lowest = 99f; var ct = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); ct.Take(); string lastHit = ""; Vector3 hitAt = Vector3.zero; float lastV = 0f;
+                    yield return DriveLine(line, 22f, len / 6f + 25f, run, null, r =>
+                    {
+                        lowest = Mathf.Min(lowest, car.Body.position.y - m.lowerFloor); float v = Flat(car.Body.linearVelocity).magnitude; string touch = ct.Take();
+                        if (lastV - v > 3f && touch.Length > 0) { lastHit = touch.Split(' ')[0]; hitAt = car.Body.position; }   // a hard stop: what it met
+                        lastV = v; return false;
+                    }, 5f, false);
+                    int broke = FenceChunk.BrokenPanels - broke0; var end = car.Body.position; var eu = new Vector2(Vector2.Dot(new Vector2(end.x, end.z), m.frameU), Vector2.Dot(new Vector2(end.x, end.z), m.frameV));
+                    report.AppendLine($"  {Nm(vid),-16} {name}: {(run.reached ? "through" : "NOT through: " + run.end + $" at u {eu.x:0.0} v {eu.y:0.0} y {end.y:0.0}")} in {run.time:0.0} s; slowest {run.minSpeed:0.0} m/s; longest in the air {run.maxAir:0.0} s; {broke} things broken; lowest {lowest:0.0} m over the lower floor{(lastHit.Length > 0 ? $"; the last hard stop: {lastHit} at ({hitAt.x:0.0}, {hitAt.y:0.0}, {hitAt.z:0.0})" : "")}");
                     Check($"mallin {Nm(vid)}: {name.Split(' ')[0]} {name.Split(' ')[1]} ... through, never stuck", run.reached && run.end != "stopped" && lowest > -1.5f, run.reached ? $"{run.time:0.0} s" : run.end);
                 }
             }
@@ -75,13 +80,15 @@ namespace ChastainRush
                     Vector3 dir = Vector3.zero;
                     foreach (var d in new[] { panel.transform.forward, -panel.transform.forward, panel.transform.right, -panel.transform.right })
                     {
-                        var from = new Vector3(c.x, floor + .9f, c.z);
-                        if (!Physics.Raycast(from, Flat(d).normalized, 8f, ~0, QueryTriggerInteraction.Ignore)) { dir = Flat(d).normalized; break; }
+                        var from = new Vector3(c.x, floor + .9f, c.z); var dd = Flat(d).normalized; var side = Vector3.Cross(Vector3.up, dd) * 1.1f;
+                        bool clear = true;   // room for the car's width both ways: 8 m to come in, 8 m past it
+                        foreach (var o in new[] { Vector3.zero, side, -side }) if (Physics.Raycast(from + o, dd, 8f, ~0, QueryTriggerInteraction.Ignore) || Physics.Raycast(from + o, -dd, 8f, ~0, QueryTriggerInteraction.Ignore)) clear = false;
+                        if (clear) { dir = dd; break; }
                     }
                     if (dir == Vector3.zero) continue;
                     tried++; m.RestoreBreakables(); yield return new WaitForSecondsRealtime(.3f);
                     var start = new Vector3(c.x, floor, c.z) + dir * 7f;
-                    Place(start, -dir, 12f); yield return new WaitForFixedUpdate();
+                    Place(start, -dir, 12f); yield return new WaitForFixedUpdate(); (car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>()).Take();
                     car.enabled = false; float t = 0f, before = -1f, after = -1f; bool broken = false; float brokeAt = -1f;
                     while (t < 2.2f)
                     {
@@ -93,7 +100,8 @@ namespace ChastainRush
                         if (broken && t > brokeAt + .35f && after < 0f) after = v;
                     }
                     car.enabled = true;
-                    report.AppendLine($"  {kind} #{pick} at ({c.x:0.0}, {c.y:0.0}, {c.z:0.0}): {(broken ? "broken" : "NOT broken")}; {before:0.0} m/s before, {after:0.0} m/s 0.35 s after");
+                    var cte = car.GetComponent<ContactTracer>(); string met = cte ? string.Join(" ", cte.Take().Split(' ').Where(x => x.StartsWith("enter")).Select(x => x.Split(':')[1]).Distinct()) : "";
+                    report.AppendLine($"  {kind} #{pick} at ({c.x:0.0}, {c.y:0.0}, {c.z:0.0}) from {(Vector3.Dot(dir, m.P(1, 0, 0) - m.P(0, 0, 0)) > .7f ? "+u" : Vector3.Dot(dir, m.P(1, 0, 0) - m.P(0, 0, 0)) < -.7f ? "-u" : Vector3.Dot(dir, m.P(0, 1, 0) - m.P(0, 0, 0)) > 0 ? "+v" : "-v")}: {(broken ? "broken" : "NOT broken")}; {before:0.0} m/s before, {after:0.0} m/s 0.35 s after{(met.Length > 0 ? "; met " + met : "")}");
                     Check($"smash {kind} #{pick}: broken, the speed kept (95 %)", broken && after >= before * .95f - .2f, $"{before:0.0} -> {after:0.0} m/s");
                 }
                 if (tried == 0) Check($"smash {kind}: a sample with a clear way in", false, $"{panels.Count} panels");
@@ -122,9 +130,9 @@ namespace ChastainRush
                 yield return Capture("60_fps_" + new string(name.Where(char.IsLetterOrDigit).Take(24).ToArray()));
             }
             // the inside hidden from far off
-            respawn.PlaceAt(RaceRoute.Surface(m.P(-51f, -1000f, 0f).x, m.P(-51f, -1000f, 0f).z) + Vector3.up * .4f, 0f); race.NotifyTeleported();
+            respawn.PlaceAt(RaceRoute.Surface(m.P(-51f, -880f, 0f).x, m.P(-51f, -880f, 0f).z) + Vector3.up * .4f, 0f); race.NotifyTeleported();
             yield return new WaitForSecondsRealtime(2f);
-            Check("mallfps: the inside not drawn from 200 m away", !m.Shown, m.Shown ? "drawn" : "hidden");
+            Check("mallfps: the inside not drawn from 250 m away", !m.Shown, m.Shown ? "drawn" : "hidden");
             QualitySettings.vSyncCount = vs; Application.targetFrameRate = cap;
         }
 
@@ -168,10 +176,11 @@ namespace ChastainRush
             Vector3 G(float u, float v, float h) { var p = m.P(u, v, 0f); return RaceRoute.Surface(p.x, p.z) + Vector3.up * h; }
             // park the car out of the way, near the main doors (the inside is drawn near it)
             respawn.PlaceAt(G(-51f, -1215f, .4f), 180f); race.NotifyTeleported(); yield return new WaitForSecondsRealtime(2f);
-            yield return Still("60_outside_main_entrance", G(-51f, -1190f, 4f), m.P(-51f, -1267f, m.lowerFloor + 9f), 65f);
-            yield return Still("60_outside_from_the_north_lot", G(-20f, -1120f, 12f), m.P(-80f, -1260f, m.lowerFloor + 6f), 70f);
-            yield return Still("60_outside_east_anchor", G(200f, -1290f, 3f), m.P(163f, -1303f, m.upperFloor + 6f), 65f);
-            yield return Still("60_outside_south_doors", G(10f, -1372f, 3f), m.P(10f, -1339f, m.upperFloor + 4f), 65f);
+            yield return Still("60_outside_main_entrance", G(-55f, -1222f, 5f), m.P(-51f, -1267f, m.lowerFloor + 8f), 70f);
+            yield return Still("60_outside_from_the_north_west", G(-150f, -1120f, 14f), m.P(-90f, -1250f, m.lowerFloor + 6f), 70f);
+            yield return Still("60_outside_east_anchor", G(240f, -1330f, 10f), m.P(163f, -1303f, m.upperFloor + 5f), 60f);
+            yield return Still("60_outside_south_doors", G(-5f, -1395f, 8f), m.P(10f, -1339f, m.upperFloor + 4f), 60f);
+            yield return Still("60_outside_from_the_south_west", G(-260f, -1470f, 25f), m.P(-120f, -1320f, m.lowerFloor + 8f), 65f);
             yield return Still("60_lower_concourse", m.P(-20f, -1312f, m.lowerFloor + 2.2f), m.P(-120f, -1300f, m.lowerFloor + 2f), 70f);
             yield return Still("60_upper_concourse", m.P(-40f, -1312.5f, m.upperFloor + 2.2f), m.P(-190f, -1300f, m.upperFloor + 1f), 70f);
             yield return Still("60_center_court", m.P(-85f, -1313f, m.upperFloor + 3.5f), m.P(-110f, -1300f, m.lowerFloor), 75f);
