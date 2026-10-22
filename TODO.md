@@ -148,19 +148,21 @@ A DONE. Round 55's bench and its hedge gap gone. The lip: the bend's crest on El
    between 884 and 1143, round 1143, up onto Hayworth by CP 5, graded at 22 % with worn tracks; it never reaches Joel / Lyndon, so it cannot run on into
    the road-crew shortcut. Crawford's west-leg barrier moved 56 m past the way back (forward only; reverse unchanged). The short jump comes down in
    brush, 18 to 36 m out, at twice the usual drag (`ShrubBeds` strength). Times against the lap's way (`round56_check_final_a_c.txt`): clean, Street Classic
-   saves 6.0 s, Drifter Twin 4.7 s (both about 6.4 s at 24 m/s off the lip). Slower than the lap: short (15 m/s off the lip) +0.2 s, only just; no jump
-   +6.5 s; round the barrier +2.4 s. Turning up Hayworth at the corner after the jump is no quicker than the way back (Drifter Twin 19.9 s against 18.7 s).
+   saves 6.0 s, Drifter Twin 6.0 s. Against the lap: short (15 m/s off the lip) +0.0 s, a tie; no jump +6.5 s; round the barrier +1.4 s.
+   Turning up Hayworth at the corner after the jump: Drifter Twin 17.4 s against 19.1 s round 1143 (a quicker way for a rider who can stop).
    Two layout attempts: the first lip, 2 m north of Elaine's line, turned cars into house 960 (`round56_check_a_try1.txt`, `_try2_probe.txt`).
 B DONE. Three breakable type III barricades across Elaine 17 m in from Suholden (ahead on the right from Dan's spot), tire marks up Elaine behind them.
    Forward race only. 22 m/s through them: 21.7 then 21.8 m/s, no speed lost. Whole again 7 s after the car leaves (`RestoreWhenClear`).
-C DONE, cause not proven. Nothing stands there and the road is level across. Drives up the climb (two vehicles, two lanes, 22 and 28 m/s) show no
-   swing. What the exe did show: the body scraping the road in Elaine's valley (25 % down into 30 % up, a 70 m sag radius). Made one vertical curve from
-   x 3155 to 3078 (131 m radius, the road moved 1.5 m at most), which also smooths the lidar ripples.
+C DONE (Dan watched the check drive it: "half way up the hill to the ramp to the right side of the road"). Traced flat out from Suholden: at 26 m/s, where
+   the climb steepens from 17 to 31 %, the suspension squeezes until the body's right front corner dips 10 cm into the road (x 3091; the Drifter Twin
+   at 3075 and 3098): kicked up 0.3 m, rolled 7 degrees, heading swung right at up to 470 deg/s (`round56_check_c_before.txt`). Fixed there only: on the
+   climb the road does not push on a body the right way up (the wheels carry it; `BodyGlide`, `VehicleSurfaceContacts.Glide`, track `body_glide`).
+   After: no swing on the climb for either vehicle (`round56_check_final_a_c.txt`). Elaine's valley also made one even vertical curve (x 3155 to 3078).
 D DONE. Two flower pots (Round 54's, at the Joel terrace's street corners); no purpose for a racer, removed.
-Races: forward x2 and reverse x1, Hard, traffic Normal, 9 of 9 AI finished; the AI took the Elaine jump 3 times (`round56_check_races.txt`).
-Builds: five full builds and one stopped (two layout tries, the barrier move, the barricade moved, then drawn in the right place).
-`Builds/ChastainRush/` 2026-10-21 19:47. Imported from Racer: nothing.
-For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; is +0.2 s enough?); the barricade and
+Races: forward x2 and reverse x1, Hard, traffic Normal, 9 of 9 AI finished; the AI took the Elaine jump 5 times (`round56_check_races.txt`).
+Builds: seven full builds and one stopped (two layout tries, the barrier move, the barricade moved and drawn in place, the jerk's fix twice).
+`Builds/ChastainRush/` 2026-10-21 20:52. Imported from Racer: nothing.
+For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
 tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.
 
 ## QUEUED rounds

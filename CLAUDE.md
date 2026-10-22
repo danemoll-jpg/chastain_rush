@@ -418,9 +418,10 @@ left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople,
 **Round 56 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights' Elaine jump off a shaped
 lip (the bend's crest raised 1 m on Elaine's own line, track grade "A1 the lip") onto the lower bank, over the Crawford / Hayworth corner and down Crawford's
 west leg (BUG-004), back through the yards round 1143 onto Hayworth (grade and smooth line "A1 the way back"); the bench gone; the upper bank's brush twice as
-strong (`ShrubBeds.strength`, track `shrub_beds[].strength`); Crawford's west-leg barrier past the way back. B the barricade across Elaine
+strong (`ShrubBeds.strength`, track `shrub_beds[].strength`); Crawford's west-leg barrier past the way back. C (BUG-002) a body's corner dipped into Elaine's
+climb at speed: there the road does not push on an upright body (`Vehicle/BodyGlide.cs`, `VehicleSurfaceContacts.Glide`, track `body_glide`). B the barricade across Elaine
 (`MapBuilder.Round56.cs`, track `elaine_mouth`; `FenceChunk.free`: no speed lost; `Neighborhood/RestoreWhenClear.cs`); C Elaine's valley one vertical curve;
-D the Joel terrace's flower pots gone. Check: `ChastainRush.exe -exeRound56 <dir> [-r56Only eprobe56,ejump,ebarricade,ejerk,erace,epics] [-traffic Normal]
+D the Joel terrace's flower pots gone. Check: `ChastainRush.exe -exeRound56 <dir> [-r56Only eprobe56,ejump,ebarricade,ejerk,etrace,erace,epics] [-traffic Normal]
 -logFile <dir>\Player.log` (`Checks/Round20Runner.R56.cs`). A builder's parent object stays at the origin when its meshes are in world coordinates.
 Imported from Racer: nothing.
 **Round 55 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Addison Heights: Round 54's Elaine valley way

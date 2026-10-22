@@ -1,18 +1,18 @@
-Round 56 check, 2026-10-21 19:26, the exe, 1280 x 720, muted.
+Round 56 check, 2026-10-21 20:59, the exe, 1280 x 720, muted.
 
 === E. addison_heights.json forward #1 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
-PASS  addison_heights.json forward #1: EMBER (Sundown Roadster) finishes  -  total 311.2 s, laps 99.8 / 103.9 / 107.5; shortcuts ; passes 21, close behind a car under 10 m/s 46.4 s, resets 3
-PASS  addison_heights.json forward #1: GOLD (Needle 600) finishes  -  total 233.0 s, laps 63.0 / 100.2 / 69.8; shortcuts lap 1 f_lyndon_crew; passes 9, close behind a car under 10 m/s 2.4 s, resets 0
-PASS  addison_heights.json forward #1: BLUE (Skyfin Cruiser) finishes  -  total 310.8 s, laps 83.7 / 113.8 / 113.3; shortcuts lap 1 f_lyndon_crew, lap 2 f_elaine_jump, lap 2 f_lyndon_crew; passes 12, close behind a car under 10 m/s 50.6 s, resets 3
+PASS  addison_heights.json forward #1: EMBER (Skyfin Cruiser) finishes  -  total 252.6 s, laps 81.3 / 88.7 / 82.6; shortcuts lap 3 f_elaine_jump; passes 10, close behind a car under 10 m/s 9.3 s, resets 0
+PASS  addison_heights.json forward #1: GOLD (Longroof GT) finishes  -  total 284.7 s, laps 85.4 / 111.0 / 88.3; shortcuts lap 3 f_elaine_jump; passes 20, close behind a car under 10 m/s 33.2 s, resets 2
+PASS  addison_heights.json forward #1: BLUE (Skyfin Cruiser) finishes  -  total 276.1 s, laps 83.0 / 113.0 / 80.1; shortcuts ; passes 20, close behind a car under 10 m/s 24.4 s, resets 1
 
 === E. addison_heights.json forward #2 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
-PASS  addison_heights.json forward #2: EMBER (Longroof GT) finishes  -  total 300.5 s, laps 88.4 / 100.6 / 111.5; shortcuts lap 1 f_lyndon_crew, lap 3 f_elaine_jump; passes 23, close behind a car under 10 m/s 30.4 s, resets 2
-PASS  addison_heights.json forward #2: GOLD (Highball Fastback) finishes  -  total 284.5 s, laps 81.2 / 107.2 / 96.2; shortcuts lap 1 f_elaine_jump, lap 2 f_lyndon_crew, lap 3 f_lyndon_crew; passes 12, close behind a car under 10 m/s 53.9 s, resets 4
-PASS  addison_heights.json forward #2: BLUE (Drifter Twin) finishes  -  total 277.6 s, laps 80.8 / 100.7 / 96.0; shortcuts ; passes 18, close behind a car under 10 m/s 31.3 s, resets 2
+PASS  addison_heights.json forward #2: EMBER (Pebble Coupe) finishes  -  total 300.6 s, laps 98.1 / 83.0 / 119.5; shortcuts lap 1 f_lyndon_crew, lap 3 f_elaine_jump; passes 16, close behind a car under 10 m/s 48.5 s, resets 0
+PASS  addison_heights.json forward #2: GOLD (Skyfin Cruiser) finishes  -  total 313.1 s, laps 99.8 / 118.1 / 95.2; shortcuts lap 1 f_lyndon_crew, lap 2 f_elaine_jump, lap 2 f_lyndon_crew, lap 3 f_elaine_jump, lap 3 f_lyndon_crew; passes 12, close behind a car under 10 m/s 69.3 s, resets 2
+PASS  addison_heights.json forward #2: BLUE (Ridge Scrambler) finishes  -  total 254.5 s, laps 95.9 / 76.6 / 82.1; shortcuts ; passes 9, close behind a car under 10 m/s 17.2 s, resets 0
 
 === E. addison_heights.json reverse #1 on Hard: 3 laps, 3 AI, traffic Normal, passing Round 55
-PASS  addison_heights.json reverse #1: EMBER (Drifter Twin) finishes  -  total 258.2 s, laps 92.2 / 72.3 / 93.7; shortcuts ; passes 19, close behind a car under 10 m/s 19.4 s, resets 3
-PASS  addison_heights.json reverse #1: GOLD (Needle 600) finishes  -  total 250.0 s, laps 76.4 / 84.0 / 89.6; shortcuts ; passes 15, close behind a car under 10 m/s 19.0 s, resets 1
-PASS  addison_heights.json reverse #1: BLUE (Street Classic) finishes  -  total 280.2 s, laps 97.8 / 97.8 / 84.7; shortcuts lap 1 r_joel_terrace; passes 13, close behind a car under 10 m/s 9.6 s, resets 1
+PASS  addison_heights.json reverse #1: EMBER (Trail Four) finishes  -  total 258.9 s, laps 77.3 / 82.2 / 99.5; shortcuts lap 1 r_bounce_house, lap 3 r_bounce_house; passes 15, close behind a car under 10 m/s 11.1 s, resets 4
+PASS  addison_heights.json reverse #1: GOLD (Highball Fastback) finishes  -  total 244.3 s, laps 83.0 / 75.9 / 85.3; shortcuts lap 1 r_joel_terrace; passes 13, close behind a car under 10 m/s 14.0 s, resets 1
+PASS  addison_heights.json reverse #1: BLUE (Sundown Roadster) finishes  -  total 258.8 s, laps 90.6 / 86.3 / 82.0; shortcuts lap 3 r_bounce_house; passes 11, close behind a car under 10 m/s 7.2 s, resets 2
 
 9 of 9 checks passed.
