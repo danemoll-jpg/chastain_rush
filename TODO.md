@@ -108,6 +108,84 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 58, AI DRIVERS WITH AGENCY (recover, pass, never wrong way), and three fixes (Dan, 2026-10-22 01:20; reports BUG-001 to BUG-003
+of session `2026-10-22_00-37-30-154_d7ca87`, read by Claude, after the Round 57 exe: Underground, Chastain Ridge and replays). THEN
+ROUND 59 (the map extension, stage 1, below in QUEUED): Dan went to bed and asked for both; do 58, commit, then start 59 without
+waiting.** Round 57 is reviewed. Dan is not watching: take the most reasonable reading of anything unclear, write it in the status, go
+on (stop only for something that cannot be undone). Tuning limit. Short results.
+A. THE AI. Dan watched the AI in replays: "I see some reasons why I beat them so badly usually":
+   "1) I have seen them wreck, sideways on the bike lying down. Took them at least 5 seconds to restart themselves. I mean if you are
+   your side, that should be an automatic reset
+   2) Still saw them not putting much effort getting around cars
+   3) Saw one run into a tree. I counted 10-15 seconds before they decided to reset. At the very least they could have tried to back up
+   and get around the tree
+   4) Literally watched one drive in reverse for a good stretch of the lap
+   5) Saw one get in an accident, the drove off in the opposite direction for a bit before turning around
+   Seems they have no agency to beat me. And this is is in hard mode I cant even imagine how bad it is in easy."
+   For every AI racer, every track, every difficulty (difficulty changes pace and skill, never these recoveries):
+   (1) On its side or upside down (a bike or rider down, a car over): reset at once onto the race line facing forward (well under a
+       second once it is clearly down; no 5 s wait).
+   (2) Passing: Round 55 E was "modest". Pass slower cars (traffic, parked, racers) decisively: pick a side early, use the other lane,
+       the shoulder and the grass beside the road; take a gap rather than follow; a racer stuck behind a car more than about 2 s is
+       the fault to remove.
+   (3) Blocked (a tree, a wall, a car, a fence it cannot break): within about 1 s of no progress, back up and steer round it; if that
+       fails within about 3 s more, reset. Never 10 to 15 s against a tree.
+   (4) and (5) Never the wrong way: driving backwards along the lap, or forwards against it after a crash, is caught within about 1 s
+       (heading against the lap's direction while moving, or reversing beyond a short back-up): turn round on the spot / three-point
+       turn, or reset if that is quicker. Reverse only as part of (3)'s back-up.
+   (6) Then Hard must race: measure, from the replays' recordings (Round 57 records every racer), per AI per race: time down / stuck /
+       blocked / wrong way / behind a car, before and after (Hard, traffic Normal, every track both ways where it has both, at least one
+       race each). Hard's lap times against Dan's best laps on each track (the Top 10 records): Hard should be within a few seconds of
+       them; report the table. Easy and Normal keep their pace gaps but recover the same.
+B. BUG-001 (x 1854.77 z 1132.96 h 87, THE HUB's floor, Underground race): "during the race, it still allows you falll down the pit of you
+   are going to fastt, The gate should extend all th way down". Round 57 D's rails and gate still leave a way down: the gate / rails must
+   reach all the way down (no gap under them to the pit) wherever the race passes the pit's edge. Check: flat out at every edge on the
+   race's line and off it, all vehicles, none falls in during a race.
+C. BUG-002 (x 1640.80 z 943.86 h 13, M5c, an aquarium pipe): "plants shouldn't be growing through the grass" (glass: the picture shows
+   water plants standing up INSIDE the tube, through its glass and floor). Keep every aquarium pipe's plants, rocks and fish outside the
+   glass (all aquarium pipes; Round 57 found the beds cutting tubes: same family).
+D. BUG-003 (x 3082.26 z 708.71 h 270, Chastain Ridge Drive, Chastain Ridge race lap 3): "there is a bump somewhere around here that always
+   messes me up". Find it on the race's line (both directions) and smooth it.
+Check: A's table (before / after), and a replay of an AI recovering from each case (pictures or a short note of times); B, C, D as above.
+For Dan to check: watch the AI in replays on Hard (recoveries, passing, no wrong way); race them; the hub's edges; M5c's plants; the Ridge bump.
+
+## QUEUED rounds
+**Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
+stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
+rebuild at the end (plus whatever the new data import needs). Dan is not watching: decide, write it down, go on; stop and report only
+for something that cannot be undone or if the world becomes unplayable.
+What was written up (2026-10-19, Dan's map `local/reference_photos/extension/town_center_ksu_airport.jpg`, Google: reference only, never
+traced): extend the map west and south to take in Town Center at Cobb (the mall and the shopping around it) and Kennesaw State
+University's Kennesaw campus. NOT the Cobb County airport (stage 2, later). Today's bounds: south 34.0294, north 34.0477, west -84.566,
+east -84.5234 (3983 x 1918 m). Claude's estimate for stage 1: about 6.3 x 4.2 km (about 26 km2, 3.5x). The 1 m USGS tile already in use
+covers it (to 33.955 S, -84.619 W). Code sets the exact new bounds from OSM (the mall's ring road and the campus with a margin; the
+north and east edges stay) and says what they are.
+1. KEEP THE EXISTING WORLD WHERE IT IS. Every existing coordinate (hand-placed houses, tracks, routes, shortcuts, pipes, eggs, records,
+   replays, Dan's bug positions, CLAUDE.md notes) must still mean the same place: the new land gets coordinates outside the old range
+   (e.g. negative x / z, or an offset applied everywhere consistently with every data file converted and checked). Code picks and says
+   why; nothing hand-built may move or be lost. Every race still runs as before (lap lengths, checkpoints, records unchanged).
+2. THE NEW LAND, GENERATED AS THE REST WAS (OSM roads, buildings, water, woods; USGS terrain at 1.5x): roads and their junctions,
+   buildings from their footprints (the mall, the stores, the campus buildings and stadium as big generic buildings; no hand polish),
+   parking lots, trees, streams and ponds, bridges where roads cross water. I-75 and I-575 and their interchange through the new area:
+   drivable, overpasses where roads cross them, as well as the generator can do (Dan expects highways to be the weak spot; no heroics).
+   The old west edge (I-575's collapsed overpass, Round 9) is now inside the map: join it up.
+3. EVERYTHING THAT USES THE MAP covers the new land: traffic and police road nets, the map screen and minimap, exploration fog and
+   destinations (new ones: Town Center, KSU), fast travel, free roam spawns unchanged, the quick-rebuild areas, the loading screen's inset.
+   No new races or eggs this round.
+4. MEASURE (Dan wanted this before deciding on stage 2): full Build Map time, exe size, load time, memory, and frame rate at 1080p in
+   the old neighborhood and in the new area (Town Center, KSU, the interchange), before and after; tree and building counts. If frame
+   rate or load time gets much worse, report it with the cause rather than tune for hours (tuning limit).
+Check: every race still runs (one AI race per track); free roam drive from Chastain Glen to Town Center and to KSU without falling
+through the world; pictures of the mall, the campus, the interchange, the old I-575 edge joined.
+For Dan to check: drive to Town Center and KSU; the highways; the numbers (go on to stage 2, the airport, or not).
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+- THE MAP EXTENSION, STAGE 2: the Cobb County airport (after Dan has seen stage 1).
+
+## Previous delivery 1 (newest): Round 57
+**Reviewed: Dan drove the Round 57 build 2026-10-22 00:37 (Underground, Chastain Ridge, replays): "The replays seem to work fine"; A to E no complaint; his notes are Round 58.**
 **Round 57, RACE REPLAYS; fixes on Addison Heights and the Underground; COMPLETE RACE on the pad (Dan, 2026-10-21 21:35; reports BUG-001
 to BUG-005 of session `2026-10-21_21-15-52-689_2c460b`, read by Claude, after the Round 56 exe: Addison Heights and the Underground race
 on the Drifter Twin).** Round 56 is reviewed. Do A to E first (their one full Build Map, commit), then F (code only, no map rebuild).
@@ -184,18 +262,7 @@ Follow-up (Dan's yes, 2026-10-22): B28's glass bed under West Chastain Lake had 
 `Builds/ChastainRush/` 2026-10-21 23:39. Imported from Racer: nothing.
 For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; M2a under West Chastain Lake in free roam; a replay with each camera, the #1s, save one and find it on REPLAYS.
 
-## QUEUED rounds
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-- THE MAP EXTENSION (Dan, 2026-10-19 22:12 and 22:23: "Let's save this for Tuesday after my weekly allowance resets"): west and south
-  to Town Center mall and Kennesaw State University, maybe the Cobb County airport (his map: `local/reference_photos/extension/
-  town_center_ksu_airport.jpg`). Claude's rough sizes: today 4.0 x 1.9 km (7.6 km2); with Town Center and KSU about 6.3 x 4.2 km
-  (about 26 km2, 3.5x); with the airport about 8.2 x 4.9 km (about 40 km2, 5x). The 1 m elevation tile already covers all of it.
-  Claude suggested two stages (Town Center and KSU first, check frame rate and build time, the airport after); Dan has not decided.
-  Claude writes the round when Dan says go.
-
-## Previous delivery 1 (newest): Round 56
+## Previous delivery 2: Round 56
 **Reviewed: Dan drove the Round 56 build 2026-10-21 21:15 (Addison Heights, Underground); no complaint about the Elaine shortcut, the barricade, the jerk or Joel Drive; his notes are Round 57.**
 **Round 56, THE ELAINE SHORTCUT: LAND ON CRAWFORD CIRCLE, A WAY BACK FROM THERE, A BLOCKED ENTRY WITH TIRE MARKS; a jerk on Elaine;
 the things on Joel Drive (Dan, 2026-10-21 17:08; reports BUG-001 to BUG-004 of session `2026-10-21_17-00-50-815_f90718`, read by
@@ -254,7 +321,7 @@ Builds: seven full builds and one stopped (two layout tries, the barrier move, t
 For Dan to check: the Elaine jump flat out (land on Crawford, the way back round 1143) and short (into the brush; a tie with the lap: enough?); the barricade and
 tire marks; Elaine's valley at speed (the jerk); Joel Drive at his spot.
 
-## Previous delivery 2: Round 55
+## Previous delivery 3: Round 55
 **Reviewed: Dan drove the Round 55 build 2026-10-21 17:00 (Addison Heights forward): the Elaine shortcut is "still not quite hitting the mark" (Round 56); B to E no complaint.**
 **Round 55, THE ELAINE JUMP REDONE WHERE DAN MEANT IT, the start line moved off it, the bounce house's sound, two bumps, AI that passes (Dan,
 2026-10-21 12:28; reports BUG-001 to BUG-003 of session `2026-10-21_12-16-40-990_d377b3`, read by Claude, after the Round 54 exe:
@@ -333,105 +400,6 @@ E DONE (modest). The AI pulls out round a slower car once the other lane is clea
    before, 17.1 s after; Chastain Lakes about 2 s before and after. Passes 14 to 18 per driver both ways (`round55_check_e_before.txt`, `_after.txt`).
 Builds: nine full builds (the junction curve took two; option 2 took five: layout, two tunings, the barrier, the landing arc). `Builds/ChastainRush/` 2026-10-21 16:11. Imported from Racer: nothing.
 For Dan to check: the Elaine jump (land, brake hard, right onto the bench; is the corner through the hedge too easy?); the new start / finish both ways; the bounce house's sound; the two bumps; the AI round traffic.
-
-## Previous delivery 3: Round 54
-**Reviewed: Dan drove the Round 54 build 2026-10-21 12:16 (Addison Heights both ways): "The reverse shortcuts are fine" (A2, A3 accepted; the bounce house needs a sound); A1 (the Elaine jump) "is a fail"; the rest no complaint. His notes are Round 55.**
-**Round 54, ADDISON HEIGHTS: THE ELAINE JUMP, TWO REVERSE SHORTCUTS, BUMPS, SIGNS, A HARDER AI; a missed finish line; COMPLETE RACE;
-fixes on three other tracks (Dan, 2026-10-21 04:27; reports BUG-001 to BUG-010 of session `2026-10-21_03-39-54-769_591b8d`, read by Claude, after
-the Round 53 exe: Addison Heights races, a reverse Chastain Glen loop, Chastain Lakes and Free Roam, on the Drifter Twin).** Round 53 is
-reviewed. Standing rules apply (shortcuts: real risk, no free way round, tire tracks as the hint, real physics on ramps, nothing slows a
-car on a ramp; every road off the lap closed). ONE full Build Map at the end (plan every line on paper first, the run without the stunt
-included; quick builds while working). Tuning limit. Short results.
-A. ADDISON HEIGHTS.
-A1. START / FINISH MOVED, AND THE ELAINE JUMP BUILT (Round 53 B, FORWARD). Dan picked Code's option (1): move the start / finish to
-   Crawford Circle's east leg (straight, about 7 %), so the way back from the Elaine landing can rejoin past the line on Crawford Circle
-   / Hayworth Drive and save a few seconds. Then build Round 53 B as briefed there (the natural jump off the crest at Suholden / Elaine,
-   no ramp; from where cars really land, a longer winding way back with its own fun; Elaine's own road below the landing not a free
-   way back). Move the checkpoints, grid, records keys (old Addison records can be dropped: the lap changed) and AI to suit, both ways.
-A2. A REVERSE SHORTCUT JUMP OFF JOEL DRIVE. BUG-003 (x 2921.86 z 410.63 h 141, Joel Drive, reverse race, CP7 next): "can we put a
-   shortcut jump through here? Should be able to catch a lot fo air" (the picture: the ground drops away south of Joel toward the
-   houses below). Code designs it from there toward the lap ahead (Hayworth / Crawford southbound); a real launch that is at its true
-   size and could be there (not another dirt pile: Code picks and says why), big air.
-A3. A CREATIVE REVERSE SHORTCUT ON SUHOLDEN. BUG-004 (x 3146.65 z 162.26 h 56, 10 m off Suholden Circle among the yards, reverse race,
-   just after the start): "lets put a shortcut through here too. something creative." Code designs it (from Suholden northbound
-   through these yards toward Suholden Circle's east end / Embry ahead) using something that belongs in a neighborhood (as the slide
-   and trampoline, the boat, the carport, the road crew), not a dirt ramp; says what and why.
-   (A2, A3: confirm from the lap which direction each faces; Dan's headings say reverse. Each saves a few seconds clean, loses missed.)
-A4. BUG-001 (x 3219.72 z 504.50 h 188, Embry Lane's east corner): "finish this house" (the picture: bare beige walls with no roof or
-   windows, open frame). Finish it.
-A5. BUG-002 (x 3142.71 z 242.77 h 21, Suholden Circle): "there are lot of these bumps throuhout the course in both idrections. Can we
-   flatten these all out". Find the jolts on the Addison Heights lap both ways (bump log / a scripted drive at race speed) and smooth
-   them; list where.
-A6. BUG-005 (x 2717.40 z 515.53 h 269, Embry Lane before its west bend): "lets put some slow down signs here. Warning of a sharp turn".
-   Yellow sharp-curve warning signs with an advisory speed plate, both approaches to the bend (breakable, as all signs).
-A7. THE AI IS TOO EASY. Dan: "On the new track. even on hard I beat the AI really bad." Round 52 found why the AI is slow here
-   (Embry Lane's 30 % hill, traffic queues at the Kelly / Suholden corner). On Hard the AI should race Dan close (his laps 1:12 to
-   1:15 on the Drifter Twin); Normal and Easy scale down as on the other tracks. Report Hard's lap times. Tuning limit.
-A8. FEWER SHRUBS AT THE LYNDON SHORTCUT (Round 53 A). Dan, 04:46: "there are far too many shrubs in the Lyndon shortcut. THese aren't
-   all necesary just enough to make someone not try to cut through but also look natural." Thin the shrub beds to what still makes
-   the yards slower than the jump (keep the cheat check passing), set like real yard plantings (beds along fences, foundations and
-   borders, gaps between them), not a carpet.
-B. A MISSED FINISH LINE MUST STILL COUNT THE LAP. Dan: "on the trail race [Noonday Creek] that missed the finish cp on my second lap,
-   instead of counting it as a missed cp, it didnt advance my lap." Missing the finish / start line is a missed checkpoint like any
-   other: the lap advances (on reaching the next checkpoint) and the missed-checkpoint penalty applies. Fix it in the race code for
-   every track, the last lap's finish included (Code decides how a missed final line ends the race, and says).
-C. COMPLETE RACE, FROM WOODSTOCK RUSH. Dan: "on Woodstock Rush there was the option to simulate the times of the rest of the ai racers
-   when you were done with the race. can we implement this here?" Port Racer's COMPLETE RACE (`RaceMenus.Finish.cs`,
-   `CanSimulateRemaining` in `RaceMenus.cs`): when the player has finished, a button (with its glyph) fills in the unfinished
-   racers' times from their pace and places, straight to the results; records only for real finishes, as Racer.
-D. CHASTAIN GLEN LOOP.
-D1. BUG-006 (x 3064.10 z 953.77, Chastain Glen Lane, a reverse race): "can we stop having cars trying to go through barriers. They
-   should detect the roads are closed and not constantly try to get through them". Traffic must treat a race's closed roads as
-   closed: route round them (or turn back), never push at a barrier. Dan, 04:46: "It is a global issue anytime there are barriers,
-   cars ignore there are barriers and keep trying to drive throuh them": fix it in the traffic code for every barrier in every race
-   (and any other barrier traffic meets), not per track; check at barriers on at least three tracks.
-D2. BUG-007 (x 2997.82 z 1209.19, Chastain Glen Lane, Free Roam): "first time I see the sign didn't load." (the picture: the party
-   sign with the balloons drawn solid magenta: a missing material / shader in the build). Fix it, and check for any other magenta.
-D3. BUG-008 (x 3034.29 z 1185.30 h 98, on the playground slide, R3): "i kept losing momentum on this slide". The slide must not slow
-   you (standing rule): find what drags (friction, joints, the lip) and fix it.
-E. CHASTAIN LAKES.
-E1. BUG-009 (x 684.06 z 1498.46 h 270, North Lakeside Drive just after the start, lap 3): "something right here slows me down". Find
-   and remove it.
-E2. BUG-010 (x 1166.43 z 1343.72 h 343, airborne 12.7 m off North Lakeside Drive, lap 3, 439 m from the finish): "if this is not a
-   natural jump (outside of the shortcut) can we have it land more in line with the track or at least have it jump in that direction".
-   If it is not part of a shortcut, shape the take-off so the car flies along the lap and lands on it.
-Check: Addison Heights both ways (each shortcut clean / short / round it; the AI on Hard x2 each way with Dan-like lap times; all
-finish); B on Noonday Creek (miss the line on lap 2: lap advances, penalty shown; and the final line); C after a finish; D1 traffic at
-the Glen loop's barriers; D3 the slide's exit speed before / after; E1 speed through Dan's spot before / after; E2 the flight line.
-For Dan to check: Addison Heights both ways (new start, the Elaine jump, A2, A3, Lyndon's shrubs, the signs, the bumps, the AI on Hard); miss a finish
-line; COMPLETE RACE; the Glen loop's barriers, the sign and the slide; Chastain Lakes at his two spots.
-
-**Status (Claude, 2026-10-21): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round54/` (check reports, pictures).
-A1 DONE. Line on Crawford Circle's east leg at z 245 (Kelly Drive checkpoint where the line was; old Addison times kept apart, route `records_as`). Elaine jump (forward): off the
-   crest down Elaine (Street Classic 1.6 s in the air), then a graded way down the valley's drainage to Crawford 60 m south of the line: 374 m against 507 m of lap, saves
-   1.3 s (Street Classic). The flat-out check driver overshoots the T onto Crawford (both vehicles); the AI, which brakes for it, took it 8 times in 4 forward races.
-   NOT MET: in the first build rolling down Elaine without flying was as quick as jumping (the jump is the road's own crest); the yard cut toward Crawford is now
-   blocked by beds (stops in them).
-A2 DONE. Joel terrace (reverse): a timber-walled terrace 10 m out over the 40 % bank, turned to 125 degrees (at 140 a car over Joel's crest could not make the turn).
-   Street Classic off at 20 m/s, 1.5 s in the air, saves 0.8 s; Drifter Twin off at 28 m/s lands hard on the slope, 4.4 s slower. Short (12 m/s), and down the bank
-   either side: slower than the lap. NOT MET for the Drifter (two tries: heading, the joins).
-A3 DONE. Bounce house (reverse): an inflatable castle at the bluff's foot behind 1192 / 1047; in at 10.5 m/s or more it throws you over the bluff and the hill (4.0 s)
-   onto Embry's east end: saves 3.5 s (Street Classic), 1.4 s (Drifter Twin); slow (9 m/s) it bounces you back; round it over the hill +9.6 s.
-A4 DONE. House 615's carport: floor, ceiling, side beam (as 1089). A5 DONE. The lap's roads levelled across their width to their own smoothed profile (`R54LevelLap`):
-   measured twists of 0.2 to 1.4 m in 6 m (lots, drives, junction stems cut into the road edges) and creases up to 0.28 m at Joel/Hayworth, Hayworth/Crawford,
-   Suholden/Kelly; ways re-graded onto it. A6 DONE. Turn sign and 15 MPH plate on each approach to Embry's west bend (breakable). A8 DONE. Lyndon's shrub carpet is now
-   hedges along the property lines and beds along the houses (cheat check not re-run on them: for Dan).
-A7 DONE, NOT MET. AI on Hard, flying laps, 4 races with traffic: before best 82.7 s / median 108.6 s (47 resets in 2 races: traffic, trunks, Joel's crest); after
-   best 66.6 s / median 86.4 s. Changes: route `ai_hill_targets` 28/36/44, `ai_crest_g`; the AI passes slower traffic when the other lane is clear; trees beside the lap break.
-   Still slow: queues behind traffic stopped at Suholden/Embry and Kelly/Suholden. Easy 93.6 / Normal 95.2 s median (6 laps each: Easy's best 87.6, Normal's 68.7).
-B DONE. Past the line outside its arch (within 40 m): the lap counts, +5 s; the last lap ends there. A cut far from the line still counts nothing (so it is no shortcut).
-C DONE. Racer's COMPLETE RACE: after you finish, A / Space (glyph shown) or the pause menu row classifies the AI at estimated times. Imported: Racer's button and FinalizeUnfinishedAi.
-D1 DONE. Traffic: closures recomputed at every race start (and from the barriers as built), plans re-made off closed roads, a barrier in its lane: stop short, turn round.
-   Three races x 90 s: no car stood pushing at a barrier; a car put on a closed road drove at it and turned round.
-D2 DONE. The boat's PARTY sign remade the Glen sign's material in the same build: one material per face. Scan of the scene: 1 broken slot before, 0 after.
-D3 DONE. R3's slide: the flared foot's rails look only, the ground fitted to the foot, the solid rail ramps in. On its axis 20 m/s loses 3 %, 28 m/s 6 %; 2.5 m off the
-   middle at 20 m/s it still stalls (a car's width in the 3.6 m chute).
-E1 DONE. MH15's floor collider gave edge contacts (21 m/s to 0): manhole floors now get the true surface normals; 20 and 28 m/s keep 96 %.
-E2 DONE. It is the Lake drain shortcut's way out of MH14: a car is turned along the street as it clears it (Drifter Twin: 1 degree off). The Street Classic did not reach MH14 in this check.
-Builds: four full builds, not one (after the checks: the slide's foot and rail, the terrace's angle, the bounce house's throw and entry speed, the shortcuts' entry planes
-   off the lap). `Builds/ChastainRush/` 2026-10-21 08:49. Tools: `ChastainRush.GroundGrid.Run`, `ChastainRush.MaterialScan.Run` (CLAUDE.md).
-For Dan to check: Addison Heights both ways (the new line, Elaine, the terrace on the Drifter, the bounce house, Lyndon's hedges: try to cheat them, the bumps, the signs,
-   the AI on Hard); miss a line; COMPLETE RACE; the Glen loop's barriers, the PARTY sign, the slide off its middle; Chastain Lakes at MH15 and out of MH14.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
