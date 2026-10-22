@@ -1,0 +1,45 @@
+Requested bounds: {'south': 34.0294, 'north': 34.0477, 'west': -84.566, 'east': -84.5234}
+Crop: UTM (724674, 3768087, 728657, 3770005) = 3983 m east-west x 1918 m north-south; lat/lon corners SW 34.02940,-84.56653  SE 34.02854,-84.52342  NW 34.04668,-84.56603  NE 34.04582,-84.52292
+*** The requested area runs past the elevation tile on the north side: stopped at the tile edge. ***
+OSM: using cache C:\Users\danmo\chastain_rush\raw\osm_box.json
+DEM: cropped 3983 x 1918 m, elevation 273.0-336.5 m -> C:\Users\danmo\chastain_rush\Data\heightmap_1m.tif
+Service roads: 12 cut where they ran through or within 1.5 m of a building; 123 m of service road removed
+OSM: 623 road ways, 2388 buildings, 22 water areas, 40 streams, 13 woods, 107 OSM driveways, 18 motorway ramp pieces (appended), 10 surface parking lots
+Owner house: found (building #1411) -> C:\Users\danmo\chastain_rush\local\owner_marker.json (not committed)
+Bridges: 9 built, 0 crossings left at grade -> C:\Users\danmo\chastain_rush\Data\bridges.txt
+Ramps: where a motorway ramp overlaps another road it takes that road's height (largest change 0.45 m)
+Road profiles: curvature limit 0.06 m over +-3 m (crest radius 75 m), 540 junction nodes (682 road ends levelled to the wider road over 12 m; 2.8% of 81493 stations moved more than 2 cm, 0.70% more than 10 cm, max 1.70 m, mean of those moved 0.10 m
+Junctions: 442 road ends meet a road that runs on through (warped onto it over 8 m)
+Junctions: 5750 stem segments warped onto their through road
+Terrain: 6145 x 3073 samples = 6 x 3 tiles of 1025^2 samples (663.8 x 639.3 m each), 0.648 x 0.624 m/sample, vertical scale 1.5 about 273.01 m; road flattening moved 12.5% of samples, max 4.17 m -> C:\Users\danmo\chastain_rush\Assets\Generated\terrain.r16
+Elevation check: USGS crop 273.007-336.541 m (x1.5 about 273.007 -> 273.007-368.309 m expected); terrain 273.010-368.302 m
+Driveways: 107 from OSM, 2088 generated for 2176 houses (18 already had an OSM driveway nearby, 13 no road within 45 m, 57 blocked by another building or water)
+NAIP: using cache C:\Users\danmo\chastain_rush\raw\naip_4band.tif
+Trees: 56214 placed from NAIP 4-band imagery (NDVI + texture); canopy covers 46% of the crop; 8392 in yards, 47822 in woods -> C:\Users\danmo\chastain_rush\Data\trees.bin
+Extension (stage 1): 4 tiles west and 3 south of the core (663.83 x 639.33 m tiles): the map is now 6638 x 3836 m, x -2655.3 to 3983, z -1918.0 to 1918
+Extension: bounds south 34.01268, west -84.59575, north 34.04582, east -84.52292
+Extension OSM: using cache C:\Users\danmo\chastain_rush\raw\osm_ext1.json
+Service roads: 60 cut where they ran through or within 1.5 m of a building; 377 m of service road removed
+OSM: 2876 road ways, 5535 buildings, 65 water areas, 121 streams, 55 woods, 484 OSM driveways, 75 motorway ramp pieces (appended), 79 surface parking lots
+Extension: OSM outside the core: 2292 road pieces, 3147 buildings, 43 water areas, 87 streams, 42 woods, 389 OSM driveways, 69 parking lots
+Extension DEM: cropped 6639 x 3836 m, elevation 166.7-347.7 m -> C:\Users\danmo\chastain_rush\Data\heightmap_ext_1m.tif
+Extension: bridges 40 built, 0 crossings left at grade
+Extension: bridge 'Phillip Landrum Memorial Highway' joined to the core's at (3198.3, 1918.0), moved +0.18 m there
+Extension: bridge 'Phillip Landrum Memorial Highway' joined to the core's at (3170.2, 1918.0), moved +0.82 m there
+Extension: bridge 'Northwest Corridor Express Lanes' joined to the core's at (3186.2, 1918.0), moved +0.61 m there
+Ramps: where a motorway ramp overlaps another road it takes that road's height (largest change 0.85 m)
+Road profiles: curvature limit 0.06 m over +-3 m (crest radius 75 m), 2028 junction nodes (2658 road ends levelled to the wider road over 12 m; 3.4% of 245420 stations moved more than 2 cm, 1.15% more than 10 cm, max 8.13 m, mean of those moved 0.15 m
+Junctions: 1625 road ends meet a road that runs on through (warped onto it over 8 m)
+Junctions: 20735 stem segments warped onto their through road
+Extension: the seam eased over 40 m (the most a new sample moved to meet the core: 1.64 m)
+Extension: terrain 10241 x 6145 samples = 10 x 6 tiles, origin (-2655.33, -1918.00), heights 113.61-384.98 m (quantum 4.2 mm) -> Assets/Generated/terrain_full.r16
+Driveways: 389 from OSM, 2017 generated for 2310 houses (126 already had an OSM driveway nearby, 48 no road within 45 m, 119 blocked by another building or water)
+Extension NAIP: downloading piece 1_1 (1328 x 1279 px) ...
+Extension NAIP: piece 1_1 attempt 1 failed (HTTP Error 504: Gateway Time-out)
+Extension NAIP: piece 1_1 attempt 2 failed (HTTP Error 504: Gateway Time-out)
+Extension NAIP: downloading piece 1_2 (1328 x 1278 px) ...
+Extension: trees 87614 placed outside the core from NAIP (canopy 35% of the whole map)
+Extension: trees.bin 56214 core trees + 87614 new = 143828
+Extension: appended 2252 roads, 40 bridges, 3147 buildings, 43 water, 87 streams, 42 woods, 2406 driveways, 69 parking; 87614 trees
+Map: 2866 road pieces, 49 bridges, 5535 buildings -> C:\Users\danmo\chastain_rush\Data\map.json
+Done. In Unity: Chastain Rush > Build Map (or run the batch build).

@@ -1,0 +1,12 @@
+Round 59 check, 2026-10-22 03:42, the exe, 1920 x 1080, muted.
+
+=== Load and size
+INFO  the world up 6.5 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 1065 MB, allocated 971 MB
+INFO  terrain: 18 tiles, x 0.0 to 3983.0, z 0.0 to 1918.0 (3983 x 1918 m)
+INFO  trees: 54943
+FAIL  load: the world covers the extension (west of x 0 and south of z 0)  -  (x:0.00, y:0.00, width:3983.00, height:1918.00)
+
+=== Frame rate, uncapped, parked, chase camera, 1920 x 1080 (not measured at 3840 x 2160)
+INFO  old neighborhood (Canton Road by the shops): 182 fps average, slowest 1 % 67 fps
+
+0 of 1 checks passed.

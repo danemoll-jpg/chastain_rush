@@ -1,0 +1,17 @@
+Round 59 check, 2026-10-22 04:23, the exe, 1280 x 720, muted.
+
+=== Load and size
+INFO  the world up 10.8 s after the process started (this check's runner began then); memory: working set 0 MB, Unity reserved 1840 MB, allocated 1694 MB
+INFO  terrain: 60 tiles, x -2655.3 to 3983.0, z -1918.0 to 1918.0 (6638 x 3836 m)
+INFO  trees: 142282
+PASS  load: the world covers the extension (west of x 0 and south of z 0)  -  (x:-2655.33, y:-1918.00, width:6638.33, height:3836.00)
+
+=== Free roam drives along the roads, Street Classic, up to 25 m/s
+  Chastain Glen to Town Center: 4867 m, through in 215 s; lowest the body's middle against the ground under it 0.26 m at (502, -19); under the ground 0.0 s
+PASS  drive Chastain Glen to Town Center: through, never under the ground  -  through, under 0.0 s
+  Chastain Glen to KSU: 5211 m, through in 220 s; lowest the body's middle against the ground under it 0.28 m at (-1192, 761); under the ground 0.0 s
+PASS  drive Chastain Glen to KSU: through, never under the ground  -  through, under 0.0 s
+
+=== Pictures
+
+3 of 3 checks passed.

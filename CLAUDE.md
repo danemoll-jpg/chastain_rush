@@ -19,7 +19,8 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - **Import from Racer selectively.** Bring a system over only when the current
   round needs it, bring only what it depends on, and list what came with it in
   the round report. Don't copy Racer wholesale and don't bring its git history.
-- **World scale is real:** 1 unit = 1 metre. Vertical exaggeration is off (1.0) by
+- **World scale is real:** 1 unit = 1 metre. Since Round 59 the map reaches west and south of the old map's corner (x and z down to -2655.33 / -1918);
+  everything made before keeps its coordinates. Vertical exaggeration is off (1.0) by
   default; `vertical_scale` in `Tools/mapgen/config.json` stretches terrain, roads
   (draped on it) and building heights together, about the crop's lowest point.
   It is set to 1.5, and that is the decided working value (Dan drove it and
@@ -415,6 +416,11 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 59 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the map extension, stage 1 (Town Center at Cobb, KSU):
+the new land at negative x / z appended after the core (`Tools/mapgen/mapgen_extend.py`, config `extension`; the core's data unchanged byte for byte), `terrain_full.r16` for Unity
+(`MapBuilder` TerrainGrid / tiles take its origin; `MapExtent(map)` for the map picture, life grid and bridge ends), the exploration fog renumbered onto the larger grid
+(`Exploration.Data` ox / oz / cols), destinations `add_extension_places.py`. See TODO.md's Technical notes ("The map extension"). The map is 6638 x 3836 m, x -2655.33 to 3983,
+z -1918 to 1918; Build Map about 33 min. Imported from Racer: nothing.
 **Round 58 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the AI with agency (`RoadDriver` AgencyStep:
 down -> put back at once, blocked -> back up and steer round then put back by 4 s, the reversing pedal bug, wrong way -> full lock round; PassLane: either side, shoulder, grass;
 Hard's pace; `-r58AgencyOff` drives as before); the hub's pit railed on every edge the race passes and the span's sides (`make_underground_route.py` R3 to R7, route rails `ys`);
