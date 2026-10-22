@@ -154,8 +154,8 @@ A DONE. `MapBuilder.Mall.cs` / `MallInside.cs` / `MallLots.cs` (quick step `Mall
    levels (glass fronts, lit name boards, their things), cream ceilings, tile with diamonds and red bands, the checkerboard court, wood-capped glass railings, columns with mahogany
    capitals, 11 kiosks, benches, planters, the food court (8 counters, 77 tables) upstairs, the play area under it, two escalator banks as 14-degree drivable ramps, the court's
    glass ends break for the 7.5 m drop, and the east anchor's store to drive through and out. 2140 breakables, none costs speed; 34 shopper groups; echo zones; night lights.
-   Check: all 11 vehicles x 3 ways in and out (main doors -> east escalators -> store -> east doors; south doors -> the court drop -> south-west doors; main doors -> west escalators ->
-   north-west wing -> its doors): 33 of 33 through, never stuck; a sample of every breakable kind at 12 m/s: speed kept (15 of 15); nothing of the inside past the walls (`mall_probe.txt`).
+   Check: every vehicle (the 11 and the stunt park's 3) x 3 ways in and out (main doors -> east escalators -> store -> east doors; south doors -> the court drop -> south-west doors; main doors -> west escalators ->
+   north-west wing -> its doors): 42 of 42 through, never stuck; a sample of every breakable kind at 12 m/s: speed kept (15 of 15); nothing of the inside past the walls (`mall_probe.txt`).
    Frame rate, 1920 x 1080 window (not measured at 3840 x 2160), two runs, the PC in use: inside 117 to 228 fps average, 27 to 70 slowest 1 %; the lot 189 to 205 / 58 to 61
    (Round 59 at Town Center: 171 / 51). The inside is not drawn past 140 m.
 B DONE. The decks were straight; the bumps were the ground where both carriageways leave them (rings from overlapping end gradings): both ends blurred and each carriageway laid as
