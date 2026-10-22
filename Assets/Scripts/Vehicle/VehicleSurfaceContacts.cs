@@ -50,6 +50,10 @@ namespace Racer
         // up off the deck. A vehicle below a deck (driving under a bridge) keeps every terrain contact.
         static volatile Dictionary<long, float> deckCells = new();
         public static long UnderDeckIgnored;
+        // Chastain Rush, Round 56 (C): rectangles (x0, z0, x1, z1) where the terrain does not push on a body riding 25 cm or more over it (BodyGlide: Elaine
+        // Circle's climb, where a car's front corner dipped into the road at speed and was kicked sideways)
+        public static Vector4[] Glide = new Vector4[0];
+        public static long GlideIgnored;
         static long Cell(float x, float z) => ((long)Mathf.FloorToInt(x) << 32) ^ (uint)Mathf.FloorToInt(z);
         static bool initialized;
         static UnityEngine.SceneManagement.Scene registeredScene;
@@ -227,6 +231,13 @@ namespace Racer
                 { pair.IgnoreContact(k); System.Threading.Interlocked.Increment(ref UnderDeckIgnored); continue; }
                 var n = Sample(f, pair.GetPoint(k), out _);
                 if (n.y < .55f) continue;   // a steep bank where PhysX found the contact: its exact response
+                var glide = Glide;
+                if (glide.Length > 0 && n.y > .9f)
+                {
+                    bool inside = false;
+                    foreach (var r in glide) if (cp.x >= r.x && cp.x <= r.z && cp.z >= r.y && cp.z <= r.w) { inside = true; break; }
+                    if (inside) { Sample(f, center, out float under); if (center.y - under >= .25f) { pair.IgnoreContact(k); System.Threading.Interlocked.Increment(ref GlideIgnored); continue; } }
+                }
                 // the body's lowest corner towards that surface, and the terrain's real height and slope right under it
                 var corner = center - ax * (Mathf.Sign(Vector3.Dot(ax, n)) * box.Half.x) - ay * (Mathf.Sign(Vector3.Dot(ay, n)) * box.Half.y) - az * (Mathf.Sign(Vector3.Dot(az, n)) * box.Half.z);
                 n = Sample(f, corner, out float ground);

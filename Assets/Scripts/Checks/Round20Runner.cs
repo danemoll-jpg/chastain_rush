@@ -182,6 +182,7 @@ namespace ChastainRush
                 if (Do("ejump")) yield return Guard(R56Jump());
                 if (Do("ebarricade")) yield return Guard(R56Barricade());
                 if (Do("ejerk")) yield return Guard(R56Jerk());
+                if (Do("etrace")) yield return Guard(R56Trace());
                 if (Do("erace")) yield return Guard(R56Race());
                 if (Do("epics")) yield return Guard(R56Pics());
             }

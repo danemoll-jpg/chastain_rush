@@ -641,6 +641,10 @@ track["vertical_curves"] = [{"id": "BUG-001 Crawford Circle into Hayworth Drive"
 # one even vertical curve from x 3155 to 3078 (a 131 m radius at the tightest; the road moves 1.5 m at most), the ripples with it
 _ve = [q for q in resample(ela, 1.0) if 3070.0 < q[0] < 3165.0]
 track["vertical_curves"].append({"id": "BUG-002 Elaine Circle's valley", "points": flat(_ve), "at": [3116.5, 307.1], "length": 77.0, "fit": 6.0, "half": 4.3, "blend": 4.0})
+# and Dan, after watching the check drive it ("it is about half way up the hill to the ramp to the right side of the road"): traced in the exe, at 26 m/s
+# where the climb steepens a car's front corner still dips into the road (x 3091 Street Classic, 3075 Drifter Twin) and is kicked up and to the right; on
+# the climb the road does not push on a body riding over it on its wheels (Assets/Scripts/Vehicle/BodyGlide.cs)
+track["body_glide"] = [3058.0, 301.0, 3135.0, 313.0]
 track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [round(dL[0], 5), round(dL[1], 5)], "deck": T_DECK, "deck_angle_deg": T_DECK_ANG,
                  "plank": T_PLANK, "plank_angle_deg": T_PLANK_ANG, "width": T_W,
                  "concrete": flat([along(c_mid(CONC_FROM), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, -4.5), along(c_mid(CONC_FROM), nL, -4.5)]),

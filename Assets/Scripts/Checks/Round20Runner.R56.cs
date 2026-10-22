@@ -171,6 +171,46 @@ namespace ChastainRush
             }
         }
 
+        // C again (Dan, after watching the check drive the shortcut: "I saw you we absolutely doing it too"): the whole run-in, from Suholden 60 m before the
+        // turn-off, through the barricade, down Elaine and up to the lip, flat out as the shortcut checks drive it: the sharpest swings of the heading
+        // (deg/s) and of the sideways speed, where, wheels down, and what the body touched
+        IEnumerator R56Trace()
+        {
+            report.AppendLine(); report.AppendLine("=== C. the run-in traced (a forward race, flat out along the shortcut's line, to the lip)");
+            yield return StartRoute("addison_heights.json", "forward", 0);
+            var sc = race.Route.Shortcuts.FirstOrDefault(s => s.Id == "f_elaine_jump");
+            if (sc == null) { race.EndRace(); yield break; }
+            foreach (var vid in new[] { "drifter", "original" })
+                for (int rep = 0; rep < 2; rep++)
+                {
+                    yield return Vehicle(vid);
+                    float sa = AbsStation(sc.Path[0]); var line = LapSlice(sa - 60f, sa).ToList();
+                    line.AddRange(sc.Path.Where(q => q.x > E56Lip.x + 2f));
+                    race.StartRace(); while (race.State == RaceController.Stage.Countdown) yield return null;
+                    Place(line[0], line[2] - line[0], 15f + 5f * rep); yield return new WaitForFixedUpdate();
+                    var ct = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); ct.Take();
+                    var spikes = new List<(float rate, string at)>(); float lastYaw = car.Body.rotation.eulerAngles.y; Vector3 lastV = car.Body.linearVelocity;
+                    var run = new Run(); var steps = new System.Text.StringBuilder();
+                    yield return DriveLine(line, 99f, 30f, run, null, r =>
+                    {
+                        var p = car.Body.position; float yaw = car.Body.rotation.eulerAngles.y, dt = Time.fixedDeltaTime;
+                        if (rep == 0 && p.x < 3210f && p.x > 3068f) steps.Append($" {p.x:0.0}:{p.y - RaceRoute.Surface(p.x, p.z).y:0.00}/{car.Body.linearVelocity.y:0.0}/{car.GroundedWheels}/{car.transform.eulerAngles.x:0}/{car.transform.eulerAngles.z:0}");
+                        float rate = Mathf.DeltaAngle(lastYaw, yaw) / dt; lastYaw = yaw;
+                        var v = car.Body.linearVelocity; float side = Vector3.Dot(v - lastV, car.transform.right) / dt; lastV = v;
+                        string touch = ct.Take();
+                        if (Mathf.Abs(rate) > 25f || Mathf.Abs(side) > 12f)
+                            spikes.Add((Mathf.Abs(rate) + Mathf.Abs(side), $"({p.x:0.0}, {p.z:0.0}) {Flat(v).magnitude:0.0} m/s, heading swing {rate:+0;-0} deg/s, sideways {side:+0.0;-0.0} m/s2, wheels {car.GroundedWheels}{(string.IsNullOrEmpty(touch) ? "" : ", body: " + touch.Trim().Replace("	", " "))}"));
+                        return p.x < E56Lip.x + 4f;
+                    }, 5f, true);
+                    var top = spikes.OrderByDescending(x => x.rate).Take(6).ToList();
+                    report.AppendLine($"  {Nm(vid),-16} run {rep + 1} (entered at {15f + 5f * rep:0} m/s): {spikes.Count} sharp steps; body contacts let glide on the climb so far {VehicleSurfaceContacts.GlideIgnored}; {run.end}");
+                    foreach (var t in top) report.AppendLine("      " + (t.at.Length > 300 ? t.at.Substring(0, 300) : t.at));
+                    if (steps.Length > 0) report.AppendLine("      x: height over the road / vertical speed / wheels down / pitch / roll:" + steps);
+                    Flush();
+                }
+            race.EndRace(); RaceController.DirectionOverride = null;
+        }
+
         IEnumerator R56Race()
         {
             var lines = new List<string>(); var behind = new List<float>(); var passes = new List<int>();

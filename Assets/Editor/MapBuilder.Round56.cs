@@ -13,13 +13,22 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class R56Mouth { public float[] at, dir, marks; public float width; }
-        [Serializable] class R56File { public R56Mouth elaine_mouth; }
+        [Serializable] class R56File { public R56Mouth elaine_mouth; public float[] body_glide; }
 
         static void BuildAddison56(TerrainGrid terrain, Materials mats, Transform root)
         {
             string path = System.IO.Path.Combine(ProjectRoot, AddisonTrackFile);
             if (!System.IO.File.Exists(path)) return;
-            var m = JsonUtility.FromJson<R56File>(System.IO.File.ReadAllText(path))?.elaine_mouth;
+            var file = JsonUtility.FromJson<R56File>(System.IO.File.ReadAllText(path));
+            // C: Elaine's climb, where a car's body dipped into the road at speed (BodyGlide, VehicleSurfaceContacts.Glide)
+            if (file?.body_glide != null && file.body_glide.Length >= 4)
+            {
+                var gg = new GameObject("Elaine climb (bodies glide)"); gg.transform.SetParent(root, false);
+                var rects = new List<Vector4>(); for (int i = 0; i + 3 < file.body_glide.Length; i += 4) rects.Add(new Vector4(file.body_glide[i], file.body_glide[i + 1], file.body_glide[i + 2], file.body_glide[i + 3]));
+                gg.AddComponent<BodyGlide>().rects = rects.ToArray();
+                Debug.Log($"[Round56] C: bodies glide over {rects.Count} rectangle(s) on Elaine's climb");
+            }
+            var m = file?.elaine_mouth;
             if (m?.at == null || m.at.Length < 2) return;
             var go = new GameObject("Elaine barricade (forward race)"); go.transform.SetParent(root, false);
             go.AddComponent<RaceOnly>().showInForwardOf = AddisonRouteName();   // at the origin: its meshes are in world coordinates
