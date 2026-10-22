@@ -1,6 +1,7 @@
 using Racer;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace ChastainRush
 {
@@ -11,6 +12,10 @@ namespace ChastainRush
     public sealed partial class GameMenus
     {
         RectTransform completeRoot; MenuGlyph completeGlyph; UnityEngine.UI.Text completeKey;
+        // Round 57 (B, Dan BUG-002: "a button doesn't complete the race"): its own action. It read the menus' confirm action, which the UI input module
+        // switches off whenever the menus are closed (GameMenus.UpdateShell disables the module, and the module disables the actions it enabled), so
+        // neither A nor Space ever reached it on the finish screen
+        UnityEngine.InputSystem.InputAction completeAction;
 
         void BuildCompleteButton(Transform canvas)
         {
@@ -24,6 +29,8 @@ namespace ChastainRush
             completeKey = Label("Key", icon, 16, 0); Stretch(completeKey.rectTransform, 0, 0, 0, 0); completeKey.alignment = TextAnchor.MiddleCenter;
             var text = Label("Label", completeRoot, 21, 0); Stretch(text.rectTransform, 75, 0, -10, 0); text.alignment = TextAnchor.MiddleCenter; text.text = "COMPLETE RACE";
             completeRoot.gameObject.SetActive(false);
+            completeAction = new UnityEngine.InputSystem.InputAction("Complete race", UnityEngine.InputSystem.InputActionType.Button, "<Gamepad>/buttonSouth");
+            completeAction.AddBinding("<Keyboard>/space"); completeAction.Enable();
         }
 
         // checks only (Round20Runner.R54.cs): the title menu shut, as FREE ROAM does, so the race's own screens show
@@ -40,7 +47,7 @@ namespace ChastainRush
             if (!on) return false;
             string path = MenuInput.Controller ? "<Gamepad>/buttonSouth" : "<Keyboard>/space";
             completeGlyph.SetPath(path); completeKey.text = MenuGlyph.Label(path);
-            if (!submit.WasPressedThisFrame()) return false;
+            if (!completeAction.WasPressedThisFrame()) return false;
             race.CompleteRace(); MenuInput.ConsumeThroughRelease();
             if (EventSystem.current) EventSystem.current.SetSelectedGameObject(null);
             return true;

@@ -645,6 +645,15 @@ track["vertical_curves"].append({"id": "BUG-002 Elaine Circle's valley", "points
 # where the climb steepens a car's front corner still dips into the road (x 3091 Street Classic, 3075 Drifter Twin) and is kicked up and to the right; on
 # the climb the road does not push on a body riding over it on its wheels (Assets/Scripts/Vehicle/BodyGlide.cs)
 track["body_glide"] = [3058.0, 301.0, 3135.0, 313.0]
+# Round 57 (A, Dan BUG-001 at x 3279.17 z 308.15, Embry Lane's foot where it turns onto Suholden Circle: "flatten this corner"): measured on the built
+# ground, Embry climbs south at 10 % to the corner while Suholden west of it was levelled flat at its own height, so the turn crosses a 0.45 m step
+# along a diagonal (where the nearest lap piece changes) with 0.3 to 0.5 m lumps at the corner's edges. The turn's arc (Embry's lane into Suholden's)
+# made one vertical curve, 10 % into level over 40 m, set flat across 5.5 m either side (no crown, no camber), then the ground there blurred
+_A57 = (3278.6, 314.3); _C57 = (3281.0, 302.6); _B57 = (3267.0, 302.7)
+_arc57 = [((1 - t) ** 2 * _A57[0] + 2 * (1 - t) * t * _C57[0] + t * t * _B57[0], (1 - t) ** 2 * _A57[1] + 2 * (1 - t) * t * _C57[1] + t * t * _B57[1]) for t in [i / 24.0 for i in range(25)]]
+_c57 = resample([(3273.3, 337.7), (3276.6, 323.1)] + _arc57 + [(3254.1, 303.2), (3240.0, 303.6)], 1.0)
+track["vertical_curves"].append({"id": "Round 57 BUG-001 Embry Lane onto Suholden Circle", "points": flat(_c57), "at": [3279.4, 305.0], "length": 40.0, "fit": 5.0, "half": 5.5, "blend": 4.0})
+track["smooth_spots"].append({"id": "Round 57 BUG-001 Embry Lane onto Suholden Circle", "at": [3277.0, 305.5], "r": 9.0, "fade": 5.0, "sigma": 2.0})
 track["crew"] = {"foot": [round(T_FOOT[0], 2), round(T_FOOT[1], 2)], "dir": [round(dL[0], 5), round(dL[1], 5)], "deck": T_DECK, "deck_angle_deg": T_DECK_ANG,
                  "plank": T_PLANK, "plank_angle_deg": T_PLANK_ANG, "width": T_W,
                  "concrete": flat([along(c_mid(CONC_FROM), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, 4.5), along(c_mid(CONC_FROM + CONC_LEN), nL, -4.5), along(c_mid(CONC_FROM), nL, -4.5)]),

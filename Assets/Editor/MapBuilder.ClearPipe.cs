@@ -204,7 +204,36 @@ namespace ChastainRush
             public float Rim(float s) => Mathf.Lerp(R + 1.2f, Mathf.Max(R + 1.2f, TAt(s)), E(s));
             public float Bottom(float s) => AYs(s) - R - GlassOut - Mathf.Lerp(0.3f, TrenchBelow, E(s));
             public float Top => Surface - 0.2f;
+            // Round 57 (C, Dan BUG-003 / BUG-004 in M5c in the Underground race: "somehow I got wedged here", "the tube is completley blocked"): S2's
+            // glass under the Enclave pond (Round 46) dives under M5c, and its bowl's bed and end faces rose through M5c's tube (two solid bands
+            // across it 10 m apart). Other network tubes near the stretch: the bed is kept under each one (a flat floor 0.4 m under it, 1 m either
+            // side of it) and the end faces stop at it. Only for the stretches listed in NetGlassAvoid (S2; the same fault of B28's bed in M2a is
+            // listed for Dan, not changed)
+            public List<(Vector3 a, Vector3 b, float r)> Others;
+            bool NearOther(Vector3 w, float pad, bool flat, out float axisY, out float r)
+            {
+                axisY = 0f; r = 0f; if (Others == null) return false;
+                float best = float.MaxValue; var q = new Vector2(w.x, w.z);
+                foreach (var (a, b, rr) in Others)
+                {
+                    var a2 = new Vector2(a.x, a.z); var ab = new Vector2(b.x, b.z) - a2; float t = Mathf.Clamp01(Vector2.Dot(q - a2, ab) / Mathf.Max(1e-6f, ab.sqrMagnitude));
+                    var c = Vector3.Lerp(a, b, t); float d = flat ? (new Vector2(c.x, c.z) - q).magnitude : (c - w).magnitude;
+                    if (d < rr + pad && d < best) { best = d; axisY = c.y; r = rr; }
+                }
+                return best < float.MaxValue;
+            }
+            public bool InOther(Vector3 w) => NearOther(w, GlassOut + 0.3f, false, out _, out _);
             public float BowlY(float s, float lat)
+            {
+                float y0 = BowlY0(s, lat);
+                if (Others != null && NearOther(W(s, lat, 0f), GlassOut + 1.0f, true, out float oy, out float orr))
+                {
+                    float cap = oy - orr - GlassOut - 0.4f;
+                    if (cap > Bottom(s) - 0.5f) y0 = Mathf.Min(y0, cap);   // a tube in the bowl's depth (one deep under the bed is left alone)
+                }
+                return y0;
+            }
+            float BowlY0(float s, float lat)
             {
                 float a = Mathf.Abs(lat), rim = Rim(s), b0 = Mathf.Min(R * 0.8f, rim - 0.6f), bot = Bottom(s), y;
                 if (a <= b0) y = bot;
@@ -227,7 +256,7 @@ namespace ChastainRush
             float surf = p.Surface, bot = axisY - R - TrenchBelow, top = surf - 0.03f, bedY = surf - BedDepth;
             float Gnd(float s, float lat) { var w = W(s, lat, 0f); return Ground(terrain, w.x, w.z); }
             // Round 25 (A5 / A7): the deep water is the bowl under the surface and the ground (ClearFrame.BowlY)
-            bool Inside(float s, float lat, float y) => y >= p.BowlY(s, lat) && y <= Mathf.Min(top, Gnd(s, lat));
+            bool Inside(float s, float lat, float y) => y >= p.BowlY(s, lat) && y <= Mathf.Min(top, Gnd(s, lat)) && !p.InOther(W(s, lat, y));   // Round 57 (C): never across another tube
             float Depth01(float y) => Mathf.InverseLerp(top, bot, y);
             Color Under(Color c, float y) => Color.Lerp(c, new Color(0.10f, 0.26f, 0.28f), 0.25f + 0.55f * Depth01(y));
             var silt = new Color(0.42f, 0.42f, 0.32f); var stone = new Color(0.46f, 0.47f, 0.44f);
@@ -270,6 +299,14 @@ namespace ChastainRush
                 }
             }
             var bedGo = bed.ToObject("Pipe " + p.Id + " clear stretch - the deep water bed", mats.House, root, true, false);   // Round 23 follow-ups: solid (nothing falls out of the world through it)
+            if (p.Others != null)   // Round 57 (C): the bed's points (its triangles' corners and middles) inside another tube, logged (0 expected)
+            {
+                var mf = bedGo ? bedGo.GetComponent<MeshFilter>() : null; int inside = 0;
+                if (mf && mf.sharedMesh) { var v = mf.sharedMesh.vertices; var tri = mf.sharedMesh.triangles; var tr = bedGo.transform;
+                    for (int i = 0; i + 2 < tri.Length; i += 3) { var a0 = tr.TransformPoint(v[tri[i]]); var a1 = tr.TransformPoint(v[tri[i + 1]]); var a2 = tr.TransformPoint(v[tri[i + 2]]);
+                        if (p.InOther(a0) || p.InOther(a1) || p.InOther(a2) || p.InOther((a0 + a1 + a2) / 3f)) inside++; } }
+                Debug.Log($"[Round57] C: pipe {p.Id}: clear of {p.Others.Count} other tube segments nearby; bed triangles touching one of them: {inside}");
+            }
             // rocks on the bowl's bed and slopes (look only), never on the tube's line
             var rocks = new MeshBuilder(); int nRocks = 0;
             int rockN = Mathf.Max(46, Mathf.RoundToInt(len * 1.5f));   // Round 24 Part B: as many per meter on a long stretch

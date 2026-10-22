@@ -263,6 +263,7 @@ namespace ChastainRush
         // Round 24: steadier. The camera follows a SMOOTHED station along the axis (so it always lies on the axis, never cuts a bend
         // through the wall), the direction only flips after the vehicle has gone the other way for half a second, the pipe is kept
         // while the vehicle is still in it, and it looks along the axis, not toward the vehicle (so wall riding does not swing it)
+        static readonly RaycastHit[] camHits = new RaycastHit[16];
         static DrainPipe viewPipe; static float viewSt, viewStVel, viewSign = 1f, flipTime, viewIdle;
         static Vector3 CamUp = Vector3.up;   // Round 26: the camera's up in a pipe (rolls with a vehicle on the wall)
         static bool View(Transform target, out Vector3 desired, out Vector3 lookAt)
@@ -288,6 +289,15 @@ namespace ChastainRush
             CamUp = Vector3.Slerp(CamUp, wantUp, 1f - Mathf.Exp(-10f * Time.deltaTime)).normalized;
             desired = AxisAt(viewSt - viewSign * 12f) + CamUp * 0.4f;   // 12 stations = 6 m
             lookAt = AxisAt(viewSt + viewSign * 14f);
+            // Round 57 (C, Dan BUG-003: the picture all dark green, the camera in a wall): never past something solid between the vehicle and the
+            // camera (vehicles aside): pulled in to 0.3 m short of it
+            var from = target.position + CamUp * 0.6f; var toCam = desired - from; float dist = toCam.magnitude;
+            if (dist > 0.3f)
+            {
+                int n = Physics.SphereCastNonAlloc(from, 0.25f, toCam / dist, camHits, dist, ~0, QueryTriggerInteraction.Ignore); float near = dist;
+                for (int i = 0; i < n; i++) { var h = camHits[i]; if (h.collider.attachedRigidbody || h.distance <= 0f) continue; near = Mathf.Min(near, h.distance); }
+                if (near < dist) desired = from + toCam / dist * Mathf.Max(0.2f, near - 0.3f);
+            }
             ChaseCamera.PipeUp = CamUp;
             return true;
         }

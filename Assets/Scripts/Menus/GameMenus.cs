@@ -168,7 +168,7 @@ namespace ChastainRush
         {
             if (ownedUiActions) { ownedUiActions.Disable(); Destroy(ownedUiActions); }
             if (menuActions) { menuActions.Disable(); Destroy(menuActions); }
-            back?.Dispose(); menuKey?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
+            back?.Dispose(); menuKey?.Dispose(); completeAction?.Dispose(); adjustAction?.Dispose(); rotateAction?.Dispose(); DisposeSettingsInput(); deleteAction?.Dispose(); spaceAction?.Dispose();
             if (textKeyboard != null) textKeyboard.onTextInput -= TypedCharacter;
             StuntEvent.Finished -= ShowStuntResults;
             PoliceSession.Finished -= ShowPoliceResults;

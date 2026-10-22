@@ -71,6 +71,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound50") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round50"; }   // Round 50 (Round20Runner.R50.cs)
                 if (args[i] == "-exeRound49") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round49"; }   // Round 49 (Round20Runner.R49.cs)
                 if (args[i] == "-exeRound48") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round48"; }   // Round 48 (Round20Runner.R48.cs)
+                if (args[i] == "-exeRound57") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round57"; }   // Round 57 (Round20Runner.R57.cs)
                 if (args[i] == "-exeRound56") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round56"; }   // Round 56 (Round20Runner.R56.cs)
                 if (args[i] == "-exeRound55") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round55"; }   // Round 55 (Round20Runner.R55.cs)
                 if (args[i] == "-exeRound54") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round54"; }   // Round 54 (Round20Runner.R54.cs)

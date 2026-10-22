@@ -410,6 +410,7 @@ namespace Racer
         // spot whose box touches nothing but the ground and is not in water (CarRecovery's rule for the player).
         AiShortcut lastRecoverBranch;   // Chastain Rush, Round 28
         int unplaced;                   // Chastain Rush, Round 49: tries in a row that found no clear spot
+        float lastRecoverStation=-999f,lastRecoverTime=-999f;   // Chastain Rush, Round 57: where and when it last needed a recovery
         void TryRecover(float current)
         {
             nextRecovery=Time.time+1;
@@ -428,10 +429,14 @@ namespace Racer
                     var p=progressBranch.At(Mathf.Max(0,branchBest-back),out var f);
                     if(Clear(p,f)){at=p;fwd=f;found=true;break;}
                 }
+            // Chastain Rush, Round 57 (C, Dan BUG-004 in M5c: "the tube is completley blocked", an AI ATV stopped in the pipe): stuck again within
+            // 15 m of where it last stuck (put back in the same trap, between two blockages 10 m apart): this time only further on, 20 m and more
+            bool again=Mathf.Abs(current-lastRecoverStation)<15f&&Time.time-lastRecoverTime<40f;
+            lastRecoverStation=current; lastRecoverTime=Time.time;
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
-                foreach(float ds in new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f,18f,26f,34f,-26f,46f,60f})   // Chastain Rush, Round 28: further on too (a jam there); Round 49: and further still
+                foreach(float ds in again?new[]{20f,26f,34f,46f,60f,80f,100f}:new[]{0f,-4f,4f,-8f,8f,-12f,12f,-18f,18f,26f,34f,-26f,46f,60f})   // Chastain Rush, Round 28: further on too (a jam there); Round 49: and further still
                 {
                     // Chastain Rush, Round 28: never back across the start / finish line (driving over it again counts a lap with every
                     // checkpoint missed; at the underground race's start the AI jam in M5's mouth, right at the line)

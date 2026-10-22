@@ -35,7 +35,7 @@ namespace ChastainRush
         {
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round56" ? "Round 56" : tag == "round55" ? "Round 55" : tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round57" ? "Round 57" : tag == "round56" ? "Round 56" : tag == "round55" ? "Round 55" : tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -43,7 +43,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r56Only" || argv[i] == "-r55Only" || argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r57Only" || argv[i] == "-r56Only" || argv[i] == "-r55Only" || argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -58,6 +58,7 @@ namespace ChastainRush
             if (tag == "round40" && parts == null) parts = new[] { "plume", "plumewhen", "plumepics", "corner", "clues", "crest", "ridgerace", "lines", "median", "cantoncop", "houses" };   // Round 40 (Round20Runner.R40*.cs)
             if (tag == "round43" && parts == null) parts = new[] { "plume", "ghost", "winner", "trailer" };   // Round 43 (Round20Runner.R43*.cs)
             if (tag == "round52" && parts == null) parts = new[] { "ahlap", "ahshut", "ahpics", "ahhouses" };   // Round 52 (Round20Runner.R52.cs); ahrace with -traffic Normal
+            if (tag == "round57" && parts == null) parts = new[] { "corner", "complete", "m5c", "m5cai", "hub", "cpics57" };   // Round 57 (Round20Runner.R57.cs)
             if (tag == "round56" && parts == null) parts = new[] { "ejump", "ebarricade", "ejerk", "epics" };   // Round 56 (Round20Runner.R56.cs); erace with -traffic Normal
             if (tag == "round55" && parts == null) parts = new[] { "elaine", "line", "bounce", "epics" };   // Round 55 (Round20Runner.R55.cs); erace with -traffic Normal
             if (tag == "round54" && parts == null) parts = new[] { "linemiss", "complete", "elaine", "terrace", "bounce", "mh14", "a54pics" };   // Round 54 (Round20Runner.R54.cs); aihard, aiscale, barriers with -traffic Normal
@@ -174,6 +175,16 @@ namespace ChastainRush
                 if (Do("eggwaypoint")) yield return Guard(R48Waypoint());
                 if (Do("eggrace")) yield return Guard(R48Race());
                 if (Do("eggpics")) yield return Guard(R48Pics());
+            }
+            // Round 57 (Round20Runner.R57.cs): the Embry / Suholden corner, COMPLETE RACE pressed, M5c, the hub's rails
+            if (tag == "round57")
+            {
+                if (Do("corner")) yield return Guard(R57Corner());
+                if (Do("complete")) yield return Guard(R57Complete());
+                if (Do("m5c")) yield return Guard(R57M5c());
+                if (Do("m5cai")) yield return Guard(R57M5cAi());
+                if (Do("hub")) yield return Guard(R57Hub());
+                if (Do("cpics57")) yield return Guard(R57Pics());
             }
             // Round 56 (Round20Runner.R56.cs): the Elaine jump onto Crawford's west leg and its way back, the barricade, the jerk on Elaine
             if (tag == "round56")

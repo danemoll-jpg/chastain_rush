@@ -823,6 +823,7 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)
         // the stretch's frame (Round 25: also for its terrain holes, ClearFrame.ToSL: the nearest point of the pipe's line)
+        static readonly HashSet<string> NetGlassAvoid = new HashSet<string> { "S2" };   // Round 57 (C): the glass stretches kept out of the other tubes (ClearFrame.Others)
         static ClearFrame NetGlassFrame(NetTubeGeo g, NetGlass gl, float[] TS, float surface)
         {
             Vector3 At(float s) { int i = Mathf.Clamp(g.At(s), 1, g.P.Length - 1); float t = Mathf.InverseLerp(g.S[i - 1], g.S[i], s); return Vector3.Lerp(g.P[i - 1], g.P[i], t); }
@@ -841,10 +842,26 @@ namespace ChastainRush
                 }
                 return new Vector2(at, lat);
             }
+            // Round 57 (C): the other tubes' axes within reach of the stretch (NetGlassAvoid's stretches only)
+            List<(Vector3, Vector3, float)> others = null;
+            if (Net != null && NetGlassAvoid.Contains(g.J.id))
+            {
+                others = new List<(Vector3, Vector3, float)>(); float reach = TS.Max() + 6f;
+                var mid = new List<Vector2>(); for (float s = gl.s0; s <= gl.s1; s += 2f) { var q = At(s); mid.Add(new Vector2(q.x, q.z)); }
+                foreach (var o in Net.Geo.Values)
+                {
+                    if (o == g || !Net.Built(o.J)) continue;
+                    for (int i = 0; i + 1 < o.P.Length; i++)
+                    {
+                        var m2 = new Vector2(o.P[i].x, o.P[i].z);
+                        if (mid.Any(c => (c - m2).sqrMagnitude < reach * reach)) others.Add((o.Axis(i), o.Axis(i + 1), o.R));
+                    }
+                }
+            }
             return new ClearFrame { Id = g.J.id + " W" + gl.pond, R = g.R, C0 = gl.s0, C1 = gl.s1, Surface = surface, T = TS.Min(), AxisY = axis,
                                     W = (s, lat, y) => { var p = At(s) + Left(s) * lat; return new Vector3(p.x, y, p.z); }, U3 = Along, N3 = Left, AY = s => At(s).y + g.R,
                                     TS = s => TS[Mathf.Clamp(Mathf.RoundToInt(s - gl.s0), 0, TS.Length - 1)], ToSL = ToSL,
-                                    Water = gl.pond >= 0 && gl.pond < Beds.Rings.Count ? Beds.Rings[gl.pond] : null };
+                                    Water = gl.pond >= 0 && gl.pond < Beds.Rings.Count ? Beds.Rings[gl.pond] : null, Others = others };
         }
         static void BuildNetworkGlass(TerrainGrid terrain, Materials mats, Transform parent, NetTubeGeo g, NetGlass gl, float T, float[] TS, NetCells cells)
         {

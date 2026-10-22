@@ -44,13 +44,18 @@ namespace ChastainRush
                 }
         }
 
+        const float WallTop = 3.0f;   // Round 57 (D): how high a rail's or a grille's collider reaches over its foot
+
         // a barred grille: its foot at (x, y, z), across the way (dx, dz), w wide and h high, solid
         GameObject Grille(RouteSealJson s, string name, bool striped)
         {
             var root = new GameObject(name); root.transform.SetParent(transform, false);
             var along = new Vector3(s.dx, 0f, s.dz).normalized; if (along.sqrMagnitude < 0.5f) along = Vector3.forward;
             root.transform.SetPositionAndRotation(new Vector3(s.x, s.y, s.z), Quaternion.LookRotation(along, Vector3.up));
-            var box = root.AddComponent<BoxCollider>(); box.size = new Vector3(s.w, s.h, 0.4f); box.center = new Vector3(0f, s.h * 0.5f, 0f);
+            // Round 57 (D, Dan BUG-005 at the hub: "not enough to prevent you from going over the railing or under it"): solid from 0.3 m under its foot
+            // to 3 m (or its own height) above it and 0.6 m thick, so a car at race speed neither climbs it nor slips under it
+            float top = Mathf.Max(s.h, WallTop);
+            var box = root.AddComponent<BoxCollider>(); box.size = new Vector3(s.w, top + 0.3f, 0.6f); box.center = new Vector3(0f, (top - 0.3f) * 0.5f, 0f);
             void Bar(Vector3 c, Vector3 size, Material m)
             {
                 var b = GameObject.CreatePrimitive(PrimitiveType.Cube); Destroy(b.GetComponent<Collider>());
@@ -79,8 +84,10 @@ namespace ChastainRush
                 var d = b - a; float len = d.magnitude; if (len < 0.05f) continue;
                 var seg = new GameObject("segment"); seg.transform.SetParent(root.transform, false);
                 seg.transform.SetPositionAndRotation((a + b) * 0.5f, Quaternion.LookRotation(d / len, Vector3.up));
-                var box = seg.AddComponent<BoxCollider>(); box.size = new Vector3(0.3f, h + 0.6f, len); box.center = new Vector3(0f, (h + 0.6f) * 0.5f - 0.3f, 0f);
-                foreach (float y in new[] { h, h * 0.5f })
+                // Round 57 (D): solid from 0.3 m under the ledge to 3 m over it (was 1.4 m) and 0.6 m thick; a third rail low down shows the way under is shut
+                float top = Mathf.Max(h + 0.3f, WallTop);
+                var box = seg.AddComponent<BoxCollider>(); box.size = new Vector3(0.6f, top + 0.3f, len + 0.3f); box.center = new Vector3(0f, (top - 0.3f) * 0.5f, 0f);
+                foreach (float y in new[] { h, h * 0.5f, 0.2f })
                 {
                     var rail = GameObject.CreatePrimitive(PrimitiveType.Cube); Destroy(rail.GetComponent<Collider>());
                     rail.transform.SetParent(seg.transform, false); rail.transform.localPosition = new Vector3(0f, y, 0f); rail.transform.localScale = new Vector3(0.1f, 0.1f, len);
@@ -148,7 +155,8 @@ namespace ChastainRush
             {
                 if (!g.Open || !g.Grille) continue;
                 float t = Mathf.Clamp01((Time.time - g.OpenedAt) / 1.2f);
-                g.Grille.position = g.Closed + Vector3.up * (g.Data.gate.h + 0.4f) * Mathf.SmoothStep(0f, 1f, t);
+                // Round 57 (D): lifted well clear (it hung 0.4 m over a car's roof and read as a railing you could drive under)
+                g.Grille.position = g.Closed + Vector3.up * (g.Data.gate.h + 3.0f) * Mathf.SmoothStep(0f, 1f, t);
             }
         }
     }
