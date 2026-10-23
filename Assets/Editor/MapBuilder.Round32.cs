@@ -104,17 +104,25 @@ namespace ChastainRush
             for (int i = 0; i < map.buildings.Length; i++) { var r = ToPoints(map.buildings[i].footprint); if (r.Count < 3) continue; rings.Add((i, r)); if (!cantonIdx.Contains(i)) foreign.Add(r); }
             var service = new List<List<Vector2>>();
             foreach (var r in map.roads) if (r.@class == "service") service.Add(ToPoints(r.points));
+            // build speed (after Round 61): the buildings, the cross streets and the service roads by cell (each test below can only
+            // be true for one whose box meets the polygon's or the line's box), in their order
+            var ringIdx = new CellIndex(32f); foreach (var (_, f) in rings) ringIdx.Add(f, 0.05f);
+            var crossIdx = new CellIndex(32f); foreach (var s in cross) crossIdx.Add(s.a, s.b, 0.05f);
+            var serviceIdx = new CellIndex(64f); foreach (var s in service) if (s.Count > 0) serviceIdx.Add(s, 4.05f); else serviceIdx.Add(0f, 0f, 0f, 0f);
+            var idsR = new List<int>(); var idsC = new List<int>();
             // over a building other than its own ('own': the lot's buildings; a store behind another one gets its walk, no lot)
             bool Bad(List<Vector2> poly, HashSet<int> own)
             {
                 Vector2 lo = new Vector2(poly.Min(p => p.x), poly.Min(p => p.y)), hi = new Vector2(poly.Max(p => p.x), poly.Max(p => p.y));
-                foreach (var (index, f) in rings)
+                foreach (int ri in ringIdx.Near(lo.x - 0.05f, lo.y - 0.05f, hi.x + 0.05f, hi.y + 0.05f, idsR))
                 {
+                    var (index, f) = rings[ri];
                     if (own.Contains(index) || f.All(p => p.x < lo.x || p.x > hi.x || p.y < lo.y || p.y > hi.y)) continue;
                     if (f.Any(p => InPolygon(p, poly)) || InPolygon(Centroid(f), poly)) return true;
                 }
-                foreach (var s in cross)
+                foreach (int ci in crossIdx.Near(lo.x - 0.05f, lo.y - 0.05f, hi.x + 0.05f, hi.y + 0.05f, idsC))
                 {
+                    var s = cross[ci];
                     if (InPolygon(s.a, poly) || InPolygon(s.b, poly)) return true;
                     for (int k = 0; k < poly.Count; k++) if (SegCross(s.a, s.b, poly[k], poly[(k + 1) % poly.Count])) return true;
                 }
@@ -151,7 +159,7 @@ namespace ChastainRush
                     float Clear(Vector2 a0, Vector2 b0)
                     {
                         Vector2 lo = Vector2.Min(a0, b0) - Vector2.one * (LotMaxDepth + 2f), hi = Vector2.Max(a0, b0) + Vector2.one * (LotMaxDepth + 2f);
-                        var near = rings.Where(r => r.index != z.index && r.ring.Any(v => v.x > lo.x && v.y > lo.y && v.x < hi.x && v.y < hi.y)).Select(r => r.ring).ToList();
+                        var near = ringIdx.Near(lo.x, lo.y, hi.x, hi.y, idsR).Select(ri => rings[ri]).Where(r => r.index != z.index && r.ring.Any(v => v.x > lo.x && v.y > lo.y && v.x < hi.x && v.y < hi.y)).Select(r => r.ring).ToList();
                         for (float s2 = 0f; s2 <= LotMaxDepth; s2 += 1f)
                             for (int k = 0; k <= 8; k++) { var q = Vector2.Lerp(a0, b0, k / 8f) + n * s2; if (near.Any(r => InPolygon(q, r) || RingDist(q, r) < 1.5f)) return s2 - 1f; }
                         return float.MaxValue;
@@ -195,11 +203,12 @@ namespace ChastainRush
             {
                 biz.Lots.Add(lot); biz.NewLots.Add(lot);
                 var c = Centroid(lot); var P = NearestOn(canton, c, out _, out float halfP); var Q = Closest(lot, P);
-                bool joined = service.Any(s => s.Any(p => InPolygon(p, lot) || RingDist(p, lot) < 4f) && s.Any(p => { NearestOn(canton, p, out float dd, out float hh); return dd - hh < 4f; }));
+                Vector2 llo = new Vector2(lot.Min(p => p.x), lot.Min(p => p.y)), lhi = new Vector2(lot.Max(p => p.x), lot.Max(p => p.y));
+                bool joined = serviceIdx.Near(llo.x - 0.05f, llo.y - 0.05f, lhi.x + 0.05f, lhi.y + 0.05f, idsC).Select(si => service[si]).Any(s => s.Any(p => InPolygon(p, lot) || RingDist(p, lot) < 4f) && s.Any(p => { NearestOn(canton, p, out float dd, out float hh); return dd - hh < 4f; }));
                 if (joined) { linked++; continue; }
                 var dir = (P - Q).normalized; if (dir.sqrMagnitude < 0.5f) continue;
                 Vector2 from = Q - dir * 1.0f, to = P - dir * (halfP - 0.6f);
-                if (rings.Any(r => InPolygon((from + to) * 0.5f, r.ring) || Enumerable.Range(0, r.ring.Count).Any(k => SegCross(from, to, r.ring[k], r.ring[(k + 1) % r.ring.Count])))) continue;   // never through a building
+                if (ringIdx.Near(Mathf.Min(from.x, to.x) - 0.05f, Mathf.Min(from.y, to.y) - 0.05f, Mathf.Max(from.x, to.x) + 0.05f, Mathf.Max(from.y, to.y) + 0.05f, idsR).Select(ri => rings[ri]).Any(r => InPolygon((from + to) * 0.5f, r.ring) || Enumerable.Range(0, r.ring.Count).Any(k => SegCross(from, to, r.ring[k], r.ring[(k + 1) % r.ring.Count])))) continue;   // never through a building
                 biz.Drives.Add((from, to, 3.5f)); drives++;
             }
             // A6 (BUG-009) and A7 (BUG-016)

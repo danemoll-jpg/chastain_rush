@@ -63,13 +63,30 @@ namespace ChastainRush
             public readonly List<(Vector2 a, Vector2 b, float half)> Drives = new List<(Vector2, Vector2, float)>();
             public (Vector2 a, Vector2 b, Vector2 n)? PizzaLane;
             public bool Owns(int i) => Owned.Contains(i);
-            public bool InNewLot(Vector2 p) { foreach (var lot in NewLots) if (InPolygon(p, lot)) return true; return false; }
+            public bool InNewLot(Vector2 p)
+            {
+                if (newIdx == null || newIdxN != NewLots.Count) { newIdx = new CellIndex(64f); newIdxN = NewLots.Count; foreach (var lot in NewLots) newIdx.Add(lot, 0.05f); }
+                foreach (int i in newIdx.Near(p, 0f, nearNew)) if (InPolygon(p, NewLots[i])) return true; return false;
+            }
+            // build speed (after Round 61): the lots, walks and drives by cell (filed again whenever one is added: the lists only grow), each
+            // padded by its distance, so only those that can answer are asked; called for every tree on the map
+            CellIndex rejIdx, newIdx; int rejL = -1, rejW = -1, rejD = -1, newIdxN = -1; readonly List<int> nearRej = new List<int>(), nearNew = new List<int>();
             public bool RejectTree(float x, float z)
             {
                 var p = new Vector2(x, z);
-                foreach (var lot in Lots) if (InPolygon(p, lot) || RingDist(p, lot) < 1.0f) return true;
-                foreach (var w in Walks) if (InPolygon(p, w) || RingDist(p, w) < 1.0f) return true;
-                foreach (var d in Drives) if (SegDist(p, d.a, d.b) < d.half + 1.5f) return true;
+                if (rejIdx == null || rejL != Lots.Count || rejW != Walks.Count || rejD != Drives.Count)
+                {
+                    rejIdx = new CellIndex(32f); rejL = Lots.Count; rejW = Walks.Count; rejD = Drives.Count;
+                    foreach (var lot in Lots) rejIdx.Add(lot, 1.05f);
+                    foreach (var w in Walks) rejIdx.Add(w, 1.05f);
+                    foreach (var d in Drives) rejIdx.Add(d.a, d.b, d.half + 1.55f);
+                }
+                foreach (int i in rejIdx.Near(p, 0f, nearRej))
+                {
+                    if (i < rejL) { var lot = Lots[i]; if (InPolygon(p, lot) || RingDist(p, lot) < 1.0f) return true; }
+                    else if (i < rejL + rejW) { var w = Walks[i - rejL]; if (InPolygon(p, w) || RingDist(p, w) < 1.0f) return true; }
+                    else { var d = Drives[i - rejL - rejW]; if (SegDist(p, d.a, d.b) < d.half + 1.5f) return true; }
+                }
                 return false;
             }
             public readonly StringBuilder Log = new StringBuilder();
@@ -111,6 +128,10 @@ namespace ChastainRush
                 }
             var kinds = new Dictionary<BizKind, int>();
             var owner = LoadOwner();
+            // build speed: the lots (as they are while the fronts are chosen) and the road segments by cell, in their order
+            var lotIdx = new CellIndex(64f); foreach (var lot in biz.Lots) lotIdx.Add(lot, 0.05f);
+            var segIdx = new CellIndex(64f); foreach (var s in segs) segIdx.Add(s.a, s.b, s.half);
+            var cand = new List<int>();
             for (int i = 0; i < map.buildings.Length; i++)
             {
                 if (owner != null && owner.index == i) continue;   // Dan's house is never touched
@@ -151,8 +172,9 @@ namespace ChastainRush
                     Vector2 m = (a + bb) * 0.5f, d = (bb - a) / len, n = new Vector2(d.y, -d.x);
                     if (InPolygon(m + n * 0.3f, ring)) n = -n;
                     Vector2 target = m + n * 200f; float dist = 200f;
-                    foreach (var lot in biz.Lots) { float dd = RingDist(m, lot); if (InPolygon(m, lot)) dd = 0f; if (dd < dist) { dist = dd; target = Closest(lot, m); } }
-                    foreach (var s in segs) { float dd = SegDist(m, s.a, s.b) - s.half; if (dd < dist - 8f) { dist = dd + 8f; target = ClosestOnSeg(m, s.a, s.b); } }   // a lot counts 8 m nearer than a road
+                    // (a lot 200 m or more away, or a road dist - 8 m or more past its edge, can never be taken: only the nearer ones are asked)
+                    foreach (int li in lotIdx.Near(m, 200f, cand)) { var lot = biz.Lots[li]; float dd = RingDist(m, lot); if (InPolygon(m, lot)) dd = 0f; if (dd < dist) { dist = dd; target = Closest(lot, m); } }
+                    foreach (int si in segIdx.Near(m, Mathf.Max(dist - 8f, 0f) + 1f, cand)) { var s = segs[si]; float dd = SegDist(m, s.a, s.b) - s.half; if (dd < dist - 8f) { dist = dd + 8f; target = ClosestOnSeg(m, s.a, s.b); } }   // a lot counts 8 m nearer than a road
                     var to = target - m; float facing = to.sqrMagnitude > 1e-4f ? Vector2.Dot(n, to.normalized) : 0f;
                     float score = facing * Mathf.Sqrt(Mathf.Min(len, 40f)) / (1f + Mathf.Max(0f, dist) / 60f);
                     if (score > best) { best = score; z.front = e; z.frontN = n; }
@@ -167,12 +189,15 @@ namespace ChastainRush
             // a lot, in or within 3 m of any building
             var all = new List<(Vector2 lo, Vector2 hi, List<Vector2> ring)>();
             foreach (var b in map.buildings) { var r = ToPoints(b.footprint); if (r.Count < 3) continue; all.Add((new Vector2(r.Min(p => p.x), r.Min(p => p.y)), new Vector2(r.Max(p => p.x), r.Max(p => p.y)), r)); }
+            var allIdx = new CellIndex(32f); foreach (var a in all) allIdx.Add(a.lo.x - 3f, a.lo.y - 3f, a.hi.x + 3f, a.hi.y + 3f);   // build speed: by cell
+            var treeIdx = new CellIndex(16f);
             bool Clear(Vector2 p)
             {
                 if (biz.RejectTree(p.x, p.y) || hood.RejectTree(p.x, p.y) || rest.RejectTree(p.x, p.y) || shop.RejectTree(p.x, p.y)) return false;
-                foreach (var s in segs) if (SegDist(p, s.a, s.b) < s.half + 2.5f) return false;
-                foreach (var a in all) { if (p.x < a.lo.x - 3f || p.y < a.lo.y - 3f || p.x > a.hi.x + 3f || p.y > a.hi.y + 3f) continue; if (InPolygon(p, a.ring) || RingDist(p, a.ring) < 3f) return false; }
-                foreach (var q in biz.Trees) if ((q - p).sqrMagnitude < 36f) return false;
+                foreach (int si in segIdx.Near(p, 2.55f, cand)) { var s = segs[si]; if (SegDist(p, s.a, s.b) < s.half + 2.5f) return false; }
+                foreach (int ai in allIdx.Near(p, 0f, cand)) { var a = all[ai]; if (p.x < a.lo.x - 3f || p.y < a.lo.y - 3f || p.x > a.hi.x + 3f || p.y > a.hi.y + 3f) continue; if (InPolygon(p, a.ring) || RingDist(p, a.ring) < 3f) return false; }
+                while (treeIdx.Count < biz.Trees.Count) treeIdx.Add(biz.Trees[treeIdx.Count]);
+                foreach (int ti in treeIdx.Near(p, 6f, cand)) if ((biz.Trees[ti] - p).sqrMagnitude < 36f) return false;
                 return true;
             }
             foreach (var z in biz.Items)
@@ -464,6 +489,17 @@ namespace ChastainRush
             foreach (var r in map.roads) { var p = ToPoints(r.points); for (int i = 0; i + 1 < p.Count; i++) roadSegs.Add((p[i], p[i + 1], r.width * 0.5f)); }
             roadSegs.AddRange(biz.Drives);   // Round 32 (A1): the drives cut the curbs and keep stalls and poles off them
             var bizRings = biz.Items.Select(q => q.ring).ToList();
+            // build speed (after Round 61): the buildings and the lots by cell (padded by the furthest any test below reaches), in their order
+            var ringIdx = new CellIndex(32f); foreach (var r in bizRings) ringIdx.Add(r, 2.05f);
+            var otherIdx = new CellIndex(64f); foreach (var l in biz.Lots) otherIdx.Add(l, 0.05f);
+            var nearR = new List<int>(); var nearO = new List<int>();
+            bool AnyRing(Vector2 q0, Vector2 q1, Vector2 q2, Vector2 q3, System.Func<List<Vector2>, bool> hit)
+            {
+                foreach (int i in ringIdx.Near(Mathf.Min(Mathf.Min(q0.x, q1.x), Mathf.Min(q2.x, q3.x)), Mathf.Min(Mathf.Min(q0.y, q1.y), Mathf.Min(q2.y, q3.y)),
+                                               Mathf.Max(Mathf.Max(q0.x, q1.x), Mathf.Max(q2.x, q3.x)), Mathf.Max(Mathf.Max(q0.y, q1.y), Mathf.Max(q2.y, q3.y)), nearR))
+                    if (hit(bizRings[i])) return true;
+                return false;
+            }
             var roadGrid = new SegGrid(roadSegs, 3f);   // Round 42 (A): every use below compares with less than 3 m
             // Round 32 (A1): the walks in front of the stores (concrete, a little above the lot) and the drives (the lot's asphalt)
             foreach (var w in biz.Walks) { var mb = lotMb.At(Centroid(w)); mb.Tint = new Color(0.70f, 0.69f, 0.66f); DrapePoly(mb, w, 1.5f, 0.075f * vScale, t, 10); }
@@ -482,7 +518,7 @@ namespace ChastainRush
             foreach (var lot in biz.Lots)
             {
                 int self = lotNo++;
-                bool InOther(Vector2 q) { for (int j = 0; j < biz.Lots.Count; j++) if (j != self && InPolygon(q, biz.Lots[j])) return true; return false; }   // Round 32: lots that overlap
+                bool InOther(Vector2 q) { foreach (int j in otherIdx.Near(q, 0f, nearO)) if (j != self && InPolygon(q, biz.Lots[j])) return true; return false; }   // Round 32: lots that overlap
                 Vector2 c = Vector2.zero; foreach (var p in lot) c += p; c /= lot.Count;
                 var mb = lotMb.At(c); mb.Tint = LotAsphalt;
                 DrapePoly(mb, lot, 1.5f, 0.05f * vScale, t, 12, ChurchHollows.Count > 0 ? ChurchHollows.Values.Select(h => Rect.MinMaxRect(h.x0, h.z0, h.x1, h.z1)).ToList() : null);   // Round 42 (B2, BUG-002): never through the hollow church (it stood over its aisle and stair)
@@ -503,7 +539,7 @@ namespace ChastainRush
                         for (float s = 1.5f; s + 2.8f <= len - 1.5f; s += 2.8f)
                         {
                             Vector2 p0 = a + d * s, p1 = p0 + n * 5.2f, p2 = p0 + d * 2.8f, p3 = p2 + n * 5.2f;
-                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && roadGrid.Clearance((p0 + p3) * 0.5f) > 1f && !bizRings.Any(r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
+                            bool ok = InPolygon(p1, lot) && InPolygon(p3, lot) && roadGrid.Clearance((p0 + p3) * 0.5f) > 1f && !AnyRing(p0, p1, p2, p3, r => InPolygon(p1, r) || InPolygon(p3, r) || InPolygon(p0, r) || InPolygon(p2, r)) && !InOther(p0) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             var pm = lotPaint.At(p0); PaintLine(pm, p0 + n * 0.3f, p1, 0.12f, 0.065f * vScale, t); stalls++;
                             if (s + 5.6f > len - 1.5f || !InPolygon(p3 + d * 2.8f, lot)) PaintLine(pm, p2 + n * 0.3f, p3, 0.12f, 0.065f * vScale, t);
@@ -512,7 +548,7 @@ namespace ChastainRush
                     for (float s = 8f; s < len - 4f; s += 32f)
                     {
                         var p = a + d * s + n * 0.7f; float gy = Ground(t, p.x, p.y);
-                        if (roadGrid.Clearance(p) < 1.5f || InOther(p) || bizRings.Any(r => InPolygon(p, r) || RingDist(p, r) < 1.5f)) continue;
+                        if (roadGrid.Clearance(p) < 1.5f || InOther(p) || AnyRing(p, p, p, p, r => InPolygon(p, r) || RingDist(p, r) < 1.5f)) continue;
                         var lb = lamps.Begin(p); var dark = new Color(0.20f, 0.20f, 0.22f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy - 0.1f, p.y), 4.6f, 0.18f, dark), gy + 0.1f);
                         lamps.Piece(() => Post(lb, new Vector3(p.x, gy + 4.5f, p.y), 4.4f, 0.15f, dark), gy + 0.1f);
@@ -540,7 +576,7 @@ namespace ChastainRush
                         {
                             var p1 = p0 + N * (5.2f * side); var p3 = p2 + N * (5.2f * side);
                             bool ok = InPolygon(p0, lot) && InPolygon(p1, lot) && InPolygon(p2, lot) && InPolygon(p3, lot) && roadGrid.Clearance((p0 + p3) * 0.5f) > 1f
-                                      && !bizRings.Any(r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
+                                      && !AnyRing(p0, p1, p2, p3, r => InPolygon(p0, r) || InPolygon(p1, r) || InPolygon(p2, r) || InPolygon(p3, r) || RingDist(p1, r) < 2f || RingDist(p3, r) < 2f) && !InOther(p1) && !InOther(p3) && StallLevel(p0, p1, p2, p3, t, ref stallsSloped);   // Round 34 (A4)
                             if (!ok) continue;
                             PaintLine(lotPaint.At(p0), p0 + N * (0.1f * side), p1, 0.12f, 0.065f * vScale, t); stalls++;
                         }
