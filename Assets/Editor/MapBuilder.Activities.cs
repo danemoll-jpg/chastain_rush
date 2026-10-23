@@ -36,6 +36,13 @@ namespace ChastainRush
             }
             catch (Exception e) { Debug.LogException(e); EditorApplication.Exit(1); }
         }
+        // FindObjectsByType's own order (SortMode.None) changes from build to build, and so did the scene built from it:
+        // this one is the hierarchy's (each level's sibling index, from the scene root down), the same every build
+        static T[] InSceneOrder<T>() where T : Component
+        {
+            static string Key(Transform t) => (t.parent ? Key(t.parent) + "/" : "") + t.GetSiblingIndex().ToString("D6");
+            return UnityEngine.Object.FindObjectsByType<T>(FindObjectsSortMode.None).OrderBy(c => Key(c.transform), StringComparer.Ordinal).ToArray();
+        }
         static void BuildActivities(TerrainGrid t, Materials mats, Material houseMat = null)
         {
             var path = Path.Combine(ProjectRoot, "Data/activities/free_roam.json");
@@ -43,7 +50,7 @@ namespace ChastainRush
             var data = JsonUtility.FromJson<ActivitiesJson>(File.ReadAllText(path));
             var root = new GameObject("Free roam activities (game layer)").transform;
             var jumps = UnityEngine.Object.FindObjectsByType<BigJump>(FindObjectsSortMode.None);
-            var chunks = UnityEngine.Object.FindObjectsByType<FenceChunk>(FindObjectsSortMode.None);
+            var chunks = InSceneOrder<FenceChunk>();
             var posts = new MeshBuilder(); var log = new List<string>();
             foreach (var s in data.sites)
             {
@@ -85,7 +92,8 @@ namespace ChastainRush
                     if (s.count > 0 && cands.Count > s.count)
                     {
                         // the densest row: the panel with the most others within 40 m, then the `count` nearest it
-                        var best = cands.OrderByDescending(a => cands.Count(b => (b.p - a.p).sqrMagnitude < 1600f)).First();
+                        // (a tie goes to the western panel, then the southern: the same row every build; the street lamps' tie is (2960, 896) against (2999, 1072))
+                        var best = cands.OrderByDescending(a => cands.Count(b => (b.p - a.p).sqrMagnitude < 1600f)).ThenBy(a => a.p.x).ThenBy(a => a.p.z).First();
                         cands = cands.OrderBy(b => (b.p - best.p).sqrMagnitude).Take(s.count).ToList();
                     }
                     if (cands.Count < 2) { log.Add($"{s.id}: only {cands.Count} {s.props} props in the area, left out"); UnityEngine.Object.DestroyImmediate(go); continue; }

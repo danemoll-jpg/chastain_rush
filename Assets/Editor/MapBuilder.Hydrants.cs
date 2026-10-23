@@ -57,7 +57,7 @@ namespace ChastainRush
                 return false;
             }
             var placed = new List<Vector2>(); var placedIdx = new CellIndex(32f); var older = new List<(Vector2 p, FenceChunk c, int i)>();
-            foreach (var c in UnityEngine.Object.FindObjectsByType<HydrantChunk>(FindObjectsSortMode.None)) { var fc = c.GetComponent<FenceChunk>(); if (fc) for (int i = 0; i < fc.panels.Length; i++) { var w = fc.transform.TransformPoint(fc.panels[i].centre); placed.Add(new Vector2(w.x, w.z)); placedIdx.Add(new Vector2(w.x, w.z)); older.Add((new Vector2(w.x, w.z), fc, i)); } }
+            foreach (var c in InSceneOrder<HydrantChunk>()) { var fc = c.GetComponent<FenceChunk>(); if (fc) for (int i = 0; i < fc.panels.Length; i++) { var w = fc.transform.TransformPoint(fc.panels[i].centre); placed.Add(new Vector2(w.x, w.z)); placedIdx.Add(new Vector2(w.x, w.z)); older.Add((new Vector2(w.x, w.z), fc, i)); } }
             int glen = placed.Count;
             var why = new Dictionary<string, int>();
             bool Ok(Vector2 p, float spacing = 20f)
@@ -147,7 +147,7 @@ namespace ChastainRush
                 }
             }
             // ---------------- Part D1: a rigged hydrant beside each street manhole
-            var lids = UnityEngine.Object.FindObjectsByType<ManholeLid>(FindObjectsSortMode.None);
+            var lids = InSceneOrder<ManholeLid>();
             var rigAt = new List<(Vector2 p, ManholeLid lid)>(); var rigOld = new List<HydrantLinks.Rig>(); var noRig = new List<string>();
             foreach (var lid in lids)
             {
