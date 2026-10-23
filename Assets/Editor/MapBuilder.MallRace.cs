@@ -77,7 +77,7 @@ namespace ChastainRush
             float uM = MallMattressU, run = MallMattressH / Mathf.Tan(MallMattressSlope * Mathf.Deg2Rad), hw = MallMattressHalfW, vc = (MallCS + MallCN) * .5f;
             float u0 = uM - MallMattressTop * .5f - run, u3 = uM + MallMattressTop * .5f + run;
             float MY(float u) { float d = Mathf.Abs(u - uM) - MallMattressTop * .5f; return m.L1 + (d <= 0f ? MallMattressH : MallMattressH * Mathf.Clamp01(1f - d / run)); }
-            var mcol = new MeshBuilder(); var ticking = SC(.94f, .94f, .92f); var stripe = SC(.62f, .70f, .82f); var piping = SC(.24f, .34f, .58f);
+            var mcol = new MeshBuilder(); var ticking = SC(.62f, .70f, .84f); var stripe = SC(.30f, .40f, .66f); var piping = SC(.16f, .22f, .44f);   // (check: pale ticking read as the floor: blue-gray quilting, darker stripes)
             const int mn = 24;
             for (int i = 0; i < mn; i++)
             {
@@ -95,7 +95,7 @@ namespace ChastainRush
                         float y0 = m.L1 + L * .275f, y1 = y0 + .275f; float ya = Mathf.Min(MY(ua), y1), yb = Mathf.Min(MY(ub), y1);
                         if (ya <= y0 + .01f && yb <= y0 + .01f) continue;
                         var q0 = m.P(ua, v, y0); var q1 = m.P(ub, v, y0); var q2 = m.P(ub, v, Mathf.Max(y0, yb)); var q3 = m.P(ua, v, Mathf.Max(y0, ya));
-                        deco.Tint = SVary(new[] { ticking, SC(.86f, .88f, .92f), SC(.92f, .88f, .80f), SC(.88f, .90f, .94f) }[L], ua, L, .03f); Face(deco, q0, q1, q2, q3, m.D3(0, sgn));
+                        deco.Tint = SVary(new[] { SC(.86f, .84f, .78f), SC(.55f, .64f, .80f), SC(.80f, .74f, .62f), SC(.62f, .70f, .84f) }[L], ua, L, .03f); Face(deco, q0, q1, q2, q3, m.D3(0, sgn));
                         if (ya > y1 - .03f && yb > y1 - .03f) { deco.Tint = piping; Face(deco, m.P(ua, v, y1 - .025f) + m.D3(0, sgn) * .01f, m.P(ub, v, y1 - .025f) + m.D3(0, sgn) * .01f, m.P(ub, v, y1 + .015f) + m.D3(0, sgn) * .01f, m.P(ua, v, y1 + .015f) + m.D3(0, sgn) * .01f, m.D3(0, sgn)); }
                     }
                 }

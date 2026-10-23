@@ -154,9 +154,9 @@ MALL_BLVD_SB = [2033, 2451, 2034, 2452, 2373]                  # Town Center Dri
 EAST_LEAVE_Z = -1385.0             # where the lap leaves Town Center Drive (its z; check 1: a vertex at -1295 made a hairpin of the turn)
 EAST_LOT = [(622.0, -1335.0), (598.0, -1285.0), (575.0, -1248.0)]
 NORTH_LOT = [(233.0, -1150.0), (222.0, -1060.0), (208.0, -990.0), (188.0, -940.0), (168.0, -903.0), (156.0, -878.0)]   # 9 m and more off the north anchor
-NORTH_FROM = (191.0, -948.0)       # the north lot's way down to Town Center Drive starts here (the lot about 5 m over the road, the red bridge 2 m under it)
+NORTH_FROM = (196.5, -960.0)       # the north lot's way down to Town Center Drive starts here (the lot about 5 m over the road, the red bridge 2 m under it)
 BRIDGE_GRADE = 0.07                # the red bridge's south end at most this much under Town Center Drive per meter from the road's edge
-BOARD_PAD = 10.0                   # the boardwalk under I-575 reaches this far past the first and last creek crossing
+BOARD_PAD = (10.0, 20.0)           # the boardwalk under I-575 reaches this far before the first creek crossing and past the last (build 3: 10 m east left the stream's far bank as a wall)
 CHECKPOINTS = [   # (x, z, label), forward order from the gate
     (1712.0, -1200.0, "Bells Ferry Road"),
     (1450.0, -1668.0, "Barrett Parkway"),
@@ -259,6 +259,13 @@ t960 = t960[::-1] if math.dist(t960[0], north_lot[-1]) > math.dist(t960[-1], nor
 t962 = t962[::-1] if math.dist(t962[0], t960[-1]) > math.dist(t962[-1], t960[-1]) else t962
 t751 = t751[::-1] if math.dist(t751[0], UNDERPASS[-1]) > math.dist(t751[-1], UNDERPASS[-1]) else t751
 bridge_red = (t960[0], t960[-1])                                                        # the red truss footbridge (its OSM way, south to north)
+# off the red bridge's north end straight along its axis for 12 m, then easing into OSM's line over the next 16 m (build 3: the trail turned 40 degrees
+# within 20 m of the end and cars arriving from the north clipped the truss's corner)
+_ax = unit((t960[-1][0] - t960[0][0], t960[-1][1] - t960[0][1])); _t2 = resample(t962, 1.0); _c2 = cum(_t2)
+_t2 = [(t960[-1][0] + _ax[0] * _c2[k], t960[-1][1] + _ax[1] * _c2[k]) if _c2[k] <= 12.0 else
+       (lambda w, q, sq: (sq[0] + (q[0] - sq[0]) * w, sq[1] + (q[1] - sq[1]) * w))(min(1.0, (_c2[k] - 12.0) / 16.0), _t2[k], (t960[-1][0] + _ax[0] * _c2[k], t960[-1][1] + _ax[1] * _c2[k]))
+       if _c2[k] <= 28.0 else _t2[k] for k in range(len(_t2))]
+t962 = _t2
 trail = resample([north_lot[-1]] + t960 + t962[1:], 2.0)
 under = resample(chaikin([trail[-1]] + UNDERPASS[1:], 2), 2.0)
 trail = trail + under[1:]
@@ -300,7 +307,7 @@ rb0, rb1 = nearest_s(trail, bridge_red[0])[1], nearest_s(trail, bridge_red[1])[1
 us0, us1 = nearest_s(trail, UNDERPASS[0])[1], nearest_s(trail, UNDERPASS[-1])[1]
 cross = [tc_[k] for k in range(len(trail) - 1) if us0 - 5 <= tc_[k] <= us1 + 5 for st in streams for a, b in zip(st[:-1], st[1:])
          if abs(a[0] - trail[k][0]) < 40 and abs(a[1] - trail[k][1]) < 40 and segx(trail[k], trail[k + 1], a, b)]
-bw0, bw1 = (max(us0 - 4.0, min(cross) - BOARD_PAD), min(us1 + 4.0, max(cross) + BOARD_PAD)) if cross else (None, None)
+bw0, bw1 = (max(us0 - 4.0, min(cross) - BOARD_PAD[0]), min(us1 + 12.0, max(cross) + BOARD_PAD[1])) if cross else (None, None)
 # Town Center Drive where the north lot's line crosses it (its own height: a road is the terrain), the red bridge's south end under it, the north end on the bench
 nl_from = nearest_s(north_lot, NORTH_FROM)[1]; nlc = cum(north_lot)
 nl = [q for k, q in enumerate(north_lot) if nlc[k] >= nl_from]
@@ -328,9 +335,12 @@ def after_tcd(s_after): return herm(y_tcd, 0.0, y_s, deck_g, L2, max(0.0, min(1.
 for k in range(k_t1 + 1, len(nl)): nly[k] = after_tcd(nlcc[k] - s_t1)
 for k in range(len(trail)):
     if tc_[k] <= rb0: gy[k] = after_tcd(nlcc[-1] - s_t1 + tc_[k])
-# the red bridge: straight from y_s to y_n
+# the red bridge: straight from y_s to y_n; the bench beyond its north end eased onto it over 14 m (build 3: a 0.6 m step up off its end)
 for k in range(len(trail)):
     if rb0 < tc_[k] < rb1: gy[k] = y_s + (y_n - y_s) * (tc_[k] - rb0) / (rb1 - rb0)
+for k in range(len(trail)):
+    dd = tc_[k] - rb1
+    if 0 <= dd < 14.0: gy[k] = y_n + (gy[k] - y_n) * (dd / 14.0) ** 2 * (3 - 2 * dd / 14.0)
 # the boardwalk under I-575: 0.9 m over the ground under it at least, smoothed along (a Gaussian of 6 m), held DECK_CLEAR under I-575's decks, meeting the bench
 if bw0 is not None:
     ks = [k for k in range(len(trail)) if bw0 <= tc_[k] <= bw1]
@@ -558,13 +568,13 @@ def zones(lp, s_of, rev):
         Z("to the balcony", W(-4.0, VC), W(MAIN_U, BALCONY_V), 12.0)
         Z("the hall", W(MAIN_U, BALCONY_V), W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), 13.0)
         Z("across Town Center Drive", NORTH_FROM, trail[8], 13.0)
-        Z("the red bridge", trail[8], bridge_red[1], 12.0)
-        Z("under I-575", UNDERPASS[0], UNDERPASS[-1], 14.0)
+        Z("the red bridge", trail[8], point_at(trail, rb1 + 6.0, tc_), 12.0)
+        Z("under I-575", point_at(trail, min(us0, bw0) - 20.0, tc_), point_at(trail, max(us1, bw1) + 6.0, tc_), 14.0)   # (build 3: the boardwalk's ends met at speed)
     else:
         Z("off Bells Ferry Road", (1708.0, -616.0), drive[4], 11.0)
         Z("the trailhead's drive", drive[4], th[0], 11.0)
-        Z("under I-575", UNDERPASS[-1], UNDERPASS[0], 14.0)
-        Z("the red bridge", bridge_red[1], trail[8], 12.0)
+        Z("under I-575", point_at(trail, max(us1, bw1) + 20.0, tc_), point_at(trail, min(us0, bw0) - 6.0, tc_), 14.0)
+        Z("the red bridge", point_at(trail, rb1 + 25.0, tc_), trail[8], 12.0)   # (build 3: onto its north end at 24.7 m/s, into the truss)
         Z("across Town Center Drive", trail[8], NORTH_FROM, 13.0)
         Z("the main doors", W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), W(MAIN_U, -1290.0), 13.0)
         Z("the escalator", W(-10.0, VC), W(ESC_TOP_U + 10.0, VC), 30.0)
@@ -619,6 +629,12 @@ grades = []
 for n_, r in enumerate(split_runs(g_pts, g_y, g_left)):
     grades.append({"id": f"the trail ({n_ + 1})", "points": flat([g_pts[k] for k in r]), "y": [g_y[k] for k in r], "half": BENCH_HALF, "blend": BENCH_BLEND,
                    "halves": [g_left[k] for k in r]})
+# the east lot's way (build 3: a bank between Town Center Drive and the lot stopped the Trail Four): its ground smoothed along (a Gaussian of 8 m), not on a road
+el = east_lot; elc = cum(el); elg = [ground(*q) for q in el]
+ely = [gsm(elg, elc, k, 8.0) for k in range(len(el))]
+el_k = [k for k in range(len(el)) if road_dist(el[k]) > 1.0 and bld_dist(el[k]) > 3.0]
+for n_, r in enumerate(split_runs([el[k] for k in el_k], None, None)):
+    grades.append({"id": f"the east lot's way ({n_ + 1})", "points": flat([el[el_k[k]] for k in r]), "y": [round(ely[el_k[k]], 2) for k in r], "half": 4.0, "blend": 3.0})
 # the north lot's way down to Town Center Drive and on to the red bridge (not on the road itself), 4 m either side
 nl_k = [k for k in range(len(nl)) if not (k_t0 - 1 <= k <= k_t1 + 1) and road_dist(nl[k]) > 1.0]
 for n_, r in enumerate(split_runs([nl[k] for k in nl_k], None, None)):

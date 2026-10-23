@@ -138,8 +138,10 @@ namespace ChastainRush
                     Place(start, along, 16f); yield return new WaitForFixedUpdate();
                     var run = new Run(); var lineB = new List<Vector3> { start, RaceRoute.Surface(c.x + along.x * 30f, c.z + along.z * 30f) };
                     yield return DriveLine(lineB, 16f, 4.5f, run, null, null, 5f, false);
-                    float past = Vector3.Dot(Flat(car.Body.position - c), along);
-                    if (past < 1.5f) held++; else through.Add($"{b.Data.label} ({c.x:0}, {c.z:0}): {past:0.0} m past");
+                    // held: the car's middle never more than 3 m past the barrier's line (its nose may reach over it) and nearly stopped there
+                    float past = Vector3.Dot(Flat(car.Body.position - c), along), v = Flat(car.Body.linearVelocity).magnitude;
+                    if (past < 3f && v < 3f) held++; else through.Add($"{b.Data.label} ({c.x:0}, {c.z:0}): {past:0.0} m past, {v:0.0} m/s");
+                    report.AppendLine($"  {dir} {b.Data.label}: the car's middle {past:+0.0;-0.0} m from the barrier's line, {v:0.0} m/s after 4.5 s");
                 }
                 Check($"tbar {dir}: every barrier holds ({bars.Count})", through.Count == 0 && bars.Count > 0, through.Count == 0 ? $"{held} of {bars.Count}" : string.Join("; ", through));
                 race.EndRace();
@@ -163,7 +165,7 @@ namespace ChastainRush
                 yield return Park(m.P(200f, -1303.5f, 0f).x, m.P(200f, -1303.5f, 0f).z, 255f);
                 yield return Still("62_halversons_east_doors", G(m.P(215f, -1306f, 0f).x, m.P(215f, -1306f, 0f).z, 4f), m.P(163.5f, -1303.5f, m.upperFloor + 2f), 60f);
                 yield return Still("62_mattress_mountain", m.P(132f, -1306f, m.upperFloor + 2.2f), m.P(110.8f, -1303.5f, m.upperFloor + .8f), 60f);
-                yield return Still("62_raffle_stage_forward", m.P(60f, -1305f, m.upperFloor + 2.4f), m.P(40f, -1303.5f, m.upperFloor + 1f), 65f);
+                yield return Still("62_raffle_stage_forward", m.P(52f, -1311.5f, m.upperFloor + 2.6f), m.P(40f, -1303.5f, m.upperFloor + .8f), 70f);
                 yield return Still("62_escalator_well", m.P(52f, -1311f, m.upperFloor + 4f), m.P(10f, -1303.5f, m.lowerFloor), 70f);
                 yield return Still("62_escalator_reverse", m.P(-6f, -1305f, m.lowerFloor + 2.2f), m.P(46f, -1303.5f, m.upperFloor + 1.5f), 65f);
                 yield return Still("62_balcony", m.P(-40f, -1300f, m.upperFloor + 2.2f), m.P(-51f, -1270f, m.lowerFloor + 2f), 70f);

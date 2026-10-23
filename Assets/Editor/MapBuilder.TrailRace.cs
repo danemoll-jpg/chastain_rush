@@ -49,16 +49,18 @@ namespace ChastainRush
             // under each deck: the ground at least 1.2 m under it across its width and 1.5 m either side, not within 1.5 m of its ends (it meets the bench there)
             foreach (var dk in TrailExtra.trail.decks ?? new TrailDeck[0])
             {
-                var p = ToPoints(dk.line); float hw = dk.width * .5f + 1.5f; int n = 0; float most = 0f; float total = 0f; for (int i = 1; i < p.Count; i++) total += Vector2.Distance(p[i - 1], p[i]);
+                // (the boardwalk: only under its own width, to 0.5 m under it: its skirts close it to the ground; build 3's check: a bike got under it)
+                bool walk = dk.style != "truss"; var p = ToPoints(dk.line); float hw = walk ? dk.width * .5f + .2f : dk.width * .5f + 1.5f, depth = walk ? .5f : 1.2f;
+                int n = 0; float most = 0f; float total = 0f; for (int i = 1; i < p.Count; i++) total += Vector2.Distance(p[i - 1], p[i]);
                 var area = Rect.MinMaxRect(p.Min(q => q.x) - hw, p.Min(q => q.y) - hw, p.Max(q => q.x) + hw, p.Max(q => q.y) + hw);
                 EditTerrain(terrain, area, (x, z, y) =>
                 {
                     if (!DeckAt(dk, new Vector2(x, z), hw, out float top, out float s)) return y;
                     if (s < 1.5f || s > total - 1.5f) return y;
-                    float under = top - 1.2f; if (y <= under) return y;
+                    float under = top - depth; if (y <= under) return y;
                     n++; most = Mathf.Max(most, y - under); return under;
                 });
-                Debug.Log($"[Round62] {dk.id}: {total:0} m, its deck {dk.y.Min():0.00} to {dk.y.Max():0.00} m; {n} ground samples under it lowered (by up to {most:0.00} m) to 1.2 m under it");
+                Debug.Log($"[Round62] {dk.id}: {total:0} m, its deck {dk.y.Min():0.00} to {dk.y.Max():0.00} m; {n} ground samples under it lowered (by up to {most:0.00} m) to {depth:0.0} m under it");
             }
             Debug.Log($"[Round62] the trail: {TrailNow.Data.grades?.Length ?? 0} graded stretches");
         }
@@ -124,7 +126,9 @@ namespace ChastainRush
                     for (float s = r.s0; s <= r.s1 + .01f; s += 2f)
                     {
                         var p = PointAtS(line, cum, s); var a = PointAtS(line, cum, s - 1f); var b = PointAtS(line, cum, s + 1f); var t = (b - a).normalized;
-                        var q = p + new Vector2(-t.y, t.x) * r.side * (tr.width * .5f + .6f); pts.Add(new Vector3(q.x, Ground(terrain, q.x, q.y), q.y));
+                        // the ends flared out 1.2 m over their last 4 m (build 3's check: a car met a railing's end head on)
+                        float flare = 1.2f * Smooth01(1f - Mathf.Min(s - r.s0, r.s1 - s) / 4f);
+                        var q = p + new Vector2(-t.y, t.x) * r.side * (tr.width * .5f + .6f + flare); pts.Add(new Vector3(q.x, Ground(terrain, q.x, q.y), q.y));
                     }
                     for (int i = 0; i < pts.Count; i++)
                     {
@@ -254,6 +258,16 @@ namespace ChastainRush
                 foreach (float sg in new[] { -1f, 1f }) { var nn = N(i) * sg; Face(deck, V(i, sg * hw, -.45f), V(i + 1, sg * hw, -.45f), V(i + 1, sg * hw, 0f), V(i, sg * hw, 0f), new Vector3(nn.x, 0, nn.y)); }
             }
             deck.ToObject("BridgeDecks " + dk.id, mats.House, go, true);   // a bridge deck to VehicleSurfaceContacts (its own name: see BuildRedBridge)
+            // its skirts: concrete from its edges down into the ground, solid (nothing gets under it)
+            var skirt = new MeshBuilder();
+            for (int i = 0; i + 1 < p.Count; i++)
+                foreach (float sg in new[] { -1f, 1f })
+                {
+                    var a = V(i, sg * hw, -.45f); var b = V(i + 1, sg * hw, -.45f);
+                    var a0 = new Vector3(a.x, Mathf.Min(a.y, Ground(terrain, a.x, a.z)) - .4f, a.z); var b0 = new Vector3(b.x, Mathf.Min(b.y, Ground(terrain, b.x, b.z)) - .4f, b.z);
+                    skirt.Tint = side; var nn = N(i) * sg; Face(skirt, a0, b0, b, a, new Vector3(nn.x, 0, nn.y));
+                }
+            skirt.ToObject("Boardwalk skirts", mats.House, go, true);
             float acc = 0f, nextPier = 3f;
             for (int i = 0; i + 1 < p.Count; i++)
             {
@@ -270,6 +284,14 @@ namespace ChastainRush
             foreach (float sg in new[] { -1f, 1f })
             {
                 var pts = new List<Vector3>(); for (int i = 0; i < p.Count; i++) pts.Add(V(i, sg * (hw - .08f), 0f));
+                // the ends carried on 4 m onto the ground beyond the deck, flaring out 1.2 m (build 3's check: a car met the railing's end head on)
+                foreach (int e in new[] { 0, p.Count - 1 })
+                {
+                    var outward = (p[e] - p[e == 0 ? 1 : p.Count - 2]).normalized; var nn = N(e) * sg;
+                    var tip = p[e] + outward * 4f + nn * (hw - .08f + 1.2f); var mid = p[e] + outward * 2f + nn * (hw - .08f + .4f);
+                    var add = new[] { new Vector3(mid.x, Ground(terrain, mid.x, mid.y), mid.y), new Vector3(tip.x, Ground(terrain, tip.x, tip.y), tip.y) };
+                    if (e == 0) pts.InsertRange(0, add.Reverse()); else pts.AddRange(add);
+                }
                 for (int i = 0; i < pts.Count; i++)
                 {
                     if (i % 1 == 0) Post(rails, pts[i] - Vector3.up * .05f, 1.12f, .06f, black);

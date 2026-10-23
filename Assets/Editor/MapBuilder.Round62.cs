@@ -109,6 +109,20 @@ namespace ChastainRush
                 report.TryGetValue(name, out var o0); levelled++;
                 report[name] = (Mathf.Max(o0.before, before), Mathf.Max(o0.after, after), o0.b10 + b10, o0.a10 + a10, o0.len + (n - 1));
             }
+            // Dan's BUG-001 ("level all thesse bumps", looking west along Big Shanty Road to the I-575 bridges): the hump under the decks (0.6 m over 15 m, x 515 to
+            // 547: build 3's check still left the ground there at 25 m/s) on both carriageways: each laid straight from x 500 to x 565 (its own heights there)
+            foreach (var r in map.roads)
+            {
+                if (r.name != "Big Shanty Road Northwest" || r.bridge) continue;
+                var q = ToPoints(r.points); if (!q.Any(v => v.x > 515f && v.x < 547f && v.y > -25f && v.y < 5f)) continue;
+                var seg = Resample(q, 1f).Where(v => v.x >= 500f && v.x <= 565f && v.y > -40f && v.y < 20f).ToList(); if (seg.Count < 20) continue;
+                float y0 = terrain.Height(seg[0].x, seg[0].y), y1 = terrain.Height(seg[seg.Count - 1].x, seg[seg.Count - 1].y);
+                var c = new float[seg.Count]; for (int i = 1; i < seg.Count; i++) c[i] = c[i - 1] + (seg[i] - seg[i - 1]).magnitude;
+                var ys = new float[seg.Count]; for (int i = 0; i < seg.Count; i++) ys[i] = Mathf.Lerp(y0, y1, c[i] / c[seg.Count - 1]);
+                float before = SharpestStep(terrain, seg, float.MaxValue);
+                GradeAlong(terrain, new RidgeGrade { id = "Big Shanty Road under I-575", points = seg.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = r.width * .5f + 1f, blend = 4f });
+                Debug.Log($"[Round62] C: BUG-001, Big Shanty Road under I-575 ({r.osm_id}): laid straight from ({seg[0].x:0}, {seg[0].y:0}) {y0:0.00} m to ({seg[seg.Count - 1].x:0}, {seg[seg.Count - 1].y:0}) {y1:0.00} m; sharpest step {before:0.000} -> {SharpestStep(terrain, seg, float.MaxValue):0.000} m");
+            }
             var lines = new List<string> { "Round 62 (C): the main roads levelled across their width (MapBuilder.Round62.cs). Per road name: length levelled, the sharpest 1 m step (second difference) before -> after, steps over 0.10 m before -> after" };
             foreach (var kv in report.OrderByDescending(k => k.Value.before))
                 lines.Add($"{kv.Key}\t{kv.Value.len:0} m\t{kv.Value.before:0.000} -> {kv.Value.after:0.000} m\t{kv.Value.b10} -> {kv.Value.a10}");
