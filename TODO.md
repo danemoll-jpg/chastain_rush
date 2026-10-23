@@ -161,7 +161,40 @@ traffic Normal, all finish; every closure holds; the jolt table. Pictures: the s
 photos, the mall run and each mall jump, Bells Ferry and Barrett Parkway stretches, Dan's two bump spots.
 For Dan to check: race the Noonday Creek Trail both ways (the mall and its jumps; then pick its shortcuts); the bumps on Big Shanty, I-575 and the other main roads.
 
+**Status (Claude, 2026-10-23): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round62/`. Bug reports read: session `2026-10-22_23-37-02-216_30fa55`, BUG-001 and 002.
+A DONE. "Noonday Creek Trail" (`make_trail_route.py`): start on Bells Ferry by the trailhead, south, west on Barrett, Mall Boulevard and Town Center Drive, the east lot, THROUGH the mall (in Halverson's east doors, along the upper concourse, down the balcony to the main doors; Google's green line does cross the building), the north lot over Town Center Drive, the red bridge, the real trail east under I-575 to the trailhead. Forward 5723 m, reverse its own lap 5767 m, 11 checkpoints, 3 laps, no shortcuts. Mall jumps, physics only: forward the car raffle stage off the east escalator's top over the escalator well, and the mattress mountain in Halverson's aisle; reverse the escalator itself as the kicker (through Halverson's front 3.5 m up at 29 m/s), and the mattress mountain. Glass, doors and breakables cost no speed and are whole the next lap. The old track is "Noonday Creek Extension" (records, ghosts and replays kept: `records_as`).
+B DONE. The path 3 m dark asphalt with yellow dashes on a level 11 m graded bench; black pipe railings under I-575; the rust-red truss footbridge; a boardwalk over the creek's three crossings under I-575 (OSM has the trail bridged there); 8 breakable winding-road signs.
+C PARTLY. Every stage 1 and 2 main road and its ramps levelled across its width (870 road lines, 316 km; `MapBuilder.Round62.cs`), I-575's decks at the old core's edge and Bells Ferry's bridge over Noonday Creek laid as one curve with 150 m of road each side. Dan's spots on a 25 m/s drive, before / after: BUG-002 I-575 jolt 3.28 m/s and 0.44 s in the air / 0.01, wheels down; BUG-001 Big Shanty under I-575 0.98 to 1.26 s in the air / 0.04 and 0.30 s (`round62_dan_spots.txt`). The jolt scan (197 drives at 28 m/s, `round62_jolt_table.txt`): drives over 3 m/s 26 -> 19 (Old 41 7.4 -> 2.0, McCollum 6.3 -> 2.5, Big Shanty 6.3 -> 3.2, Frey 6.8 -> 4.2), but over 1.5 m/s 37 -> 50 and with air over 0.15 s 58 -> 94: where two levelled roads meet, the narrower one now steps into the wider one's level (Barrett at (634, -1669), near your Round 61 spot, throws a car 1.6 s; Chastain Road, Stilesboro, Kennesaw Mountain Drive worse). Two tries made (the second: wider road wins, fixed a ramp re-grading Barrett's lane); tuning limit reached.
+Check (build 6, the exe): the loop on all 11 vehicles both ways 22 of 22 round, no wedge (`round62_check_loop_pics.txt`); AI twice each way on Hard, traffic Normal: 4 of 4 races, every AI finishes, laps 220 to 270 s (`round62_check_ai.txt`); every closure holds, 23 forward, 21 reverse (`round62_check_barriers.txt`); pictures `62_*.png`. Left: the reverse escalator jump's landing costs 24 -> 10.5 m/s; flat out (43 m/s) Barrett at x 680 lifts a car.
+Builds: 6 full Build Maps, not one (a mesh-name clash took every road bridge's deck, then fixes from each check). `Builds/ChastainRush/` 2026-10-23 13:57. Imported from Racer: nothing.
+For Dan: the levelling's junction steps: (1) level up to a junction and keep the junction's own ground (one more build), or (2) back to Round 61's five roads plus your two spots and the course's roads. Until you say, build 6's levelling stays.
+
 ## QUEUED rounds
+**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
+thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
+big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). START AFTER ROUND 62 (no wait for
+Dan's review of 62 needed: it touches nothing of 62).** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
+1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
+   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
+   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
+   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
+2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
+   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
+3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
+   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
+   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
+4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
+   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
+   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
+   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
+   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
+5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
+   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
+Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
+a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
+the straight-down camera over Town Center, each helipad.
+For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
+
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
 

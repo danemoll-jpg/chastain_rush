@@ -134,7 +134,11 @@ namespace ChastainRush
                 var bars = race.Barriers.Built.ToList(); int held = 0; var through = new List<string>();
                 foreach (var b in bars)
                 {
-                    var along = Flat(b.Along).normalized; var c = b.Centre; var start = RaceRoute.Surface(c.x - along.x * 25f, c.z - along.z * 25f);
+                    // from 25 m back, or from where the road meets the course if that is nearer (build 5: 25 m back from Rockbridge Road's was up the bank beside
+                    // Bells Ferry Road, 9 m over the road: the car came down it in the air)
+                    var along = Flat(b.Along).normalized; var c = b.Centre; float back = 25f;
+                    if (b.Data.contact != null && b.Data.contact.Length >= 2) back = Mathf.Min(back, Vector2.Dot(new Vector2(c.x - b.Data.contact[0], c.z - b.Data.contact[1]), new Vector2(along.x, along.z)) + 4f);
+                    var start = RaceRoute.Surface(c.x - along.x * back, c.z - along.z * back);
                     Place(start, along, 16f); yield return new WaitForFixedUpdate();
                     var run = new Run(); var lineB = new List<Vector3> { start, RaceRoute.Surface(c.x + along.x * 30f, c.z + along.z * 30f) };
                     yield return DriveLine(lineB, 16f, 4.5f, run, null, null, 5f, false);

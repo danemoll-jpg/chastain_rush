@@ -1,0 +1,51 @@
+Round 62 check, 2026-10-23 15:55, the exe, 1280 x 720, muted.
+
+=== Every race barrier holds: a car driven at each from 25 m on the course's side at 16 m/s along the closed road (Street Classic)
+  forward Rockbridge Road at lap 77 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Cottonwood Drive at lap 190 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Vintage Club Drive at lap 382 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Vintage Club Drive at lap 393 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Fern Valley Road at lap 562 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 845 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Bells Ferry Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Piedmont Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Piedmont Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Prado Lane at lap 1271 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Prado Lane at lap 1271 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 1419 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Chastain Meadows Parkway Northwest at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Chastain Meadows Parkway Northwest at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Barrett Creek Boulevard at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 1482 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed unclassified) at lap 1526 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed unclassified) at lap 1605 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Mall Boulevard Northwest at lap 2082 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Town Center Drive at lap 2210 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Mall Boulevard Northwest at lap 2210 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Town Center Drive at lap 2417 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Bells Ferry Road Northeast at lap 5492 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+PASS  tbar forward: every barrier holds (23)  -  23 of 23
+  reverse Bells Ferry Road Northeast at lap 0 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Town Center Drive at lap 3078 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Mall Boulevard Northwest at lap 3282 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Town Center Drive at lap 3297 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Mall Boulevard Northwest at lap 3297 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Mall Boulevard Northwest at lap 3452 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 4051 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Chastain Meadows Parkway Northwest at lap 4080 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Barrett Creek Boulevard at lap 4080 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 4108 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Prado Lane at lap 4258 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Prado Lane at lap 4258 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Bells Ferry Road at lap 4646 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Piedmont Road at lap 4646 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Piedmont Road at lap 4646 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 4689 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Fern Valley Road at lap 4972 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Vintage Club Drive at lap 5141 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Vintage Club Drive at lap 5152 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Cottonwood Drive at lap 5343 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Rockbridge Road at lap 5456 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+PASS  tbar reverse: every barrier holds (21)  -  21 of 21
+
+2 of 2 checks passed.

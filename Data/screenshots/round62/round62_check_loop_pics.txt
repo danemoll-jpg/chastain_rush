@@ -1,0 +1,83 @@
+Round 62 check, 2026-10-23 15:13, the exe, 1280 x 720, muted.
+
+=== The Noonday Creek Trail, both ways, every race vehicle, driven by script along the race's line (the AI zones' speeds as caps, flat out elsewhere)
+  forward: lap 5723 m, 11 checkpoints, 23 barriers; floors 305.60 / 313.10 m
+  forward  Street Classic   the lap in 224.0 s; slowest 7.3 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.9 m over its floor, 13 m/s
+      air: 0.3 s 8 m +0.6 m up from (1739, -828); 0.5 s 19 m +0.6 m up from (899, -1674); 2.3 s 89 m +9.2 m up from (678, -1670); 1.3 s 32 m +1.5 m up from (437, -1233) (the mall, u 109); 1.8 s 46 m +3.5 m up from (375, -1249) (the mall, u 44); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.5 s 8 m +0.1 m up from (132, -785); 0.4 s 6 m +0.0 m up from (657, -458)
+PASS  tloop forward Street Classic: round the lap, never stuck  -  224.0 s
+  forward  Longroof GT      the lap in 225.4 s; slowest 7.0 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.7 m over its floor, 13 m/s
+      air: 0.4 s 18 m +0.6 m up from (899, -1674); 2.2 s 86 m +8.4 m up from (675, -1670); 1.1 s 28 m +1.0 m up from (437, -1233) (the mall, u 108); 1.7 s 42 m +2.7 m up from (375, -1249) (the mall, u 44); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.4 s 7 m +0.0 m up from (132, -785); 0.4 s 5 m +0.0 m up from (657, -458)
+PASS  tloop forward Longroof GT: round the lap, never stuck  -  225.4 s
+  forward  Needle 600       the lap in 211.1 s; slowest 7.0 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.9 m over its floor, 13 m/s
+      air: 0.8 s 17 m +1.5 m up from (1740, -825); 0.3 s 5 m +0.1 m up from (1712, -1675); 0.7 s 30 m +1.2 m up from (900, -1674); 2.6 s 98 m +10.7 m up from (676, -1670); 0.3 s 4 m +0.0 m up from (514, -1680); 0.6 s 11 m +0.4 m up from (494, -1218) (the mall, u 168); 1.3 s 33 m +1.5 m up from (437, -1233) (the mall, u 109); 1.9 s 50 m +3.7 m up from (376, -1249) (the mall, u 45); 1.1 s 15 m +0.0 m up from (278, -1256) (the mall, u -51); 0.4 s 5 m +0.1 m up from (273, -1237) (the mall, u -51); 0.7 s 11 m +0.3 m up from (132, -786); 0.3 s 5 m +0.0 m up from (134, -769); 1.1 s 8 m +1.0 m up from (141, -764); 0.5 s 8 m +0.1 m up from (656, -458); 0.4 s 3 m +0.1 m up from (1684, -583); 0.3 s 6 m +0.0 m up from (1709, -624)
+PASS  tloop forward Needle 600: round the lap, never stuck  -  211.1 s
+  forward  Trail Four       the lap in 212.6 s; slowest 8.2 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.9 m over its floor, 12 m/s
+      air: 0.6 s 15 m +1.2 m up from (1740, -826); 0.5 s 22 m +0.7 m up from (899, -1674); 2.3 s 89 m +8.6 m up from (675, -1670); 0.3 s 4 m +0.1 m up from (514, -1680); 0.6 s 10 m +0.4 m up from (494, -1218) (the mall, u 168); 1.4 s 34 m +1.6 m up from (437, -1233) (the mall, u 109); 2.0 s 49 m +4.0 m up from (376, -1249) (the mall, u 45); 1.2 s 15 m +0.0 m up from (278, -1256) (the mall, u -51); 0.6 s 10 m +0.3 m up from (132, -786); 0.6 s 8 m +0.1 m up from (656, -459); 0.4 s 3 m +0.1 m up from (1685, -582)
+PASS  tloop forward Trail Four: round the lap, never stuck  -  212.6 s
+  forward  Sundown Roadster the lap in 222.1 s; slowest 7.6 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.9 m over its floor, 13 m/s
+      air: 0.3 s 8 m +0.6 m up from (1739, -829); 0.5 s 19 m +0.6 m up from (899, -1674); 2.2 s 86 m +8.5 m up from (678, -1670); 1.3 s 33 m +1.5 m up from (437, -1233) (the mall, u 109); 1.9 s 47 m +3.5 m up from (375, -1249) (the mall, u 44); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.5 s 8 m +0.1 m up from (132, -785); 0.5 s 7 m +0.0 m up from (656, -458)
+PASS  tloop forward Sundown Roadster: round the lap, never stuck  -  222.1 s
+  forward  Highball Fastback the lap in 222.7 s; slowest 7.1 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.8 m over its floor, 13 m/s
+      air: 0.4 s 19 m +0.6 m up from (898, -1674); 1.0 s 21 m +1.4 m up from (675, -1669); 0.5 s 15 m +0.4 m up from (597, -1675); 1.2 s 30 m +1.2 m up from (437, -1233) (the mall, u 109); 1.8 s 46 m +3.1 m up from (374, -1249) (the mall, u 44); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.5 s 8 m +0.1 m up from (132, -785); 0.4 s 6 m +0.0 m up from (657, -458)
+PASS  tloop forward Highball Fastback: round the lap, never stuck  -  222.7 s
+  forward  Pebble Coupe     the lap in 226.1 s; slowest 8.0 m/s; 1 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 2.1 m over its floor, 13 m/s
+      air: 0.4 s 9 m +0.7 m up from (1739, -828); 0.5 s 19 m +0.6 m up from (899, -1674); 1.4 s 26 m +2.5 m up from (676, -1669); 0.5 s 12 m +0.3 m up from (597, -1675); 1.3 s 33 m +1.6 m up from (437, -1233) (the mall, u 109); 1.8 s 46 m +3.4 m up from (375, -1249) (the mall, u 45); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.5 s 8 m +0.1 m up from (132, -785); 0.5 s 7 m +0.0 m up from (656, -458)
+      stop: 43.2 to 19.4 m/s at (679.8, 312.9, -1670.2), lap 1921 m: hit stay Terrain_14_10 at (678.51, 312.97, -1669.02) normal (0.31, 0.95, -0.03) impulse 263
+PASS  tloop forward Pebble Coupe: round the lap, never stuck  -  226.1 s
+  forward  Skyfin Cruiser   the lap in 230.3 s; slowest 7.0 m/s; 1 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.7 m over its floor, 13 m/s
+      air: 0.4 s 17 m +0.6 m up from (899, -1674); 0.9 s 16 m +1.0 m up from (676, -1669); 0.4 s 13 m +0.3 m up from (597, -1675); 1.1 s 28 m +1.0 m up from (437, -1233) (the mall, u 108); 1.7 s 43 m +2.9 m up from (375, -1249) (the mall, u 44); 1.1 s 14 m +0.0 m up from (278, -1255) (the mall, u -51); 0.4 s 6 m +0.0 m up from (132, -785); 0.4 s 5 m +0.0 m up from (657, -458)
+      stop: 43.7 to 16.5 m/s at (681.0, 312.9, -1670.3), lap 1920 m: hit stay Terrain_14_10 at (678.81, 312.89, -1669.15) normal (0.30, 0.95, -0.04) impulse 42710
+PASS  tloop forward Skyfin Cruiser: round the lap, never stuck  -  230.3 s
+  forward  Ridge Scrambler  the lap in 211.4 s; slowest 8.3 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.9 m over its floor, 13 m/s
+      air: 0.6 s 13 m +1.0 m up from (1739, -826); 0.8 s 34 m +1.5 m up from (900, -1674); 2.4 s 93 m +9.2 m up from (675, -1670); 0.3 s 4 m +0.1 m up from (514, -1680); 0.6 s 11 m +0.5 m up from (495, -1218) (the mall, u 168); 1.3 s 33 m +1.6 m up from (438, -1233) (the mall, u 110); 1.9 s 48 m +3.8 m up from (376, -1249) (the mall, u 45); 1.2 s 15 m +0.0 m up from (278, -1256) (the mall, u -51); 0.6 s 11 m +0.3 m up from (132, -786); 0.6 s 8 m +0.1 m up from (656, -459); 0.4 s 3 m +0.1 m up from (1684, -583)
+PASS  tloop forward Ridge Scrambler: round the lap, never stuck  -  211.4 s
+  forward  Drifter Twin     the lap in 213.9 s; slowest 8.3 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.7 m over its floor, 13 m/s
+      air: 0.6 s 14 m +1.1 m up from (1740, -825); 0.7 s 29 m +1.1 m up from (900, -1674); 2.4 s 93 m +9.6 m up from (675, -1670); 0.5 s 9 m +0.3 m up from (494, -1218) (the mall, u 168); 1.3 s 32 m +1.4 m up from (437, -1233) (the mall, u 109); 1.7 s 38 m +2.7 m up from (376, -1250) (the mall, u 45); 1.1 s 14 m +0.0 m up from (278, -1256) (the mall, u -51); 0.6 s 10 m +0.2 m up from (132, -786); 0.5 s 7 m +0.1 m up from (656, -459)
+PASS  tloop forward Drifter Twin: round the lap, never stuck  -  213.9 s
+  forward  Turf Rocket      the lap in 209.0 s; slowest 8.4 m/s; 0 dead stop(s); the well: cleared (upper floor); the balcony: through the hall at 1.6 m over its floor, 12 m/s
+      air: 0.6 s 14 m +1.0 m up from (1739, -826); 0.8 s 34 m +1.4 m up from (900, -1674); 2.4 s 94 m +9.7 m up from (676, -1670); 0.3 s 4 m +0.1 m up from (514, -1680); 0.6 s 11 m +0.5 m up from (494, -1218) (the mall, u 168); 1.4 s 34 m +1.7 m up from (438, -1233) (the mall, u 109); 1.9 s 49 m +3.7 m up from (376, -1249) (the mall, u 45); 1.2 s 14 m +0.0 m up from (278, -1256) (the mall, u -51); 0.7 s 11 m +0.3 m up from (132, -786); 0.6 s 8 m +0.1 m up from (656, -459); 0.4 s 3 m +0.1 m up from (1685, -582)
+PASS  tloop forward Turf Rocket: round the lap, never stuck  -  209.0 s
+  reverse: lap 5767 m, 11 checkpoints, 21 barriers; floors 305.60 / 313.10 m
+  reverse  Street Classic   the lap in 218.8 s; slowest 8.0 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.6 m over the floor, 29 m/s
+      air: 0.4 s 7 m +0.0 m up from (1681, -584); 0.3 s 5 m +0.0 m up from (652, -460); 1.5 s 44 m +2.2 m up from (378, -1248) (the mall, u 48); 1.2 s 30 m +1.3 m up from (441, -1232) (the mall, u 113); 0.5 s 15 m +0.0 m up from (619, -1688); 0.4 s 18 m +0.0 m up from (912, -1690); 0.5 s 23 m +0.0 m up from (1738, -866)
+PASS  tloop reverse Street Classic: round the lap, never stuck  -  218.8 s
+  reverse  Longroof GT      the lap in 220.1 s; slowest 7.7 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.6 m over the floor, 29 m/s
+      air: 0.3 s 6 m +0.0 m up from (1681, -584); 1.5 s 44 m +2.2 m up from (378, -1248) (the mall, u 48); 1.1 s 27 m +1.0 m up from (442, -1232) (the mall, u 113); 0.4 s 17 m +0.0 m up from (912, -1690); 0.5 s 24 m +0.0 m up from (1738, -867)
+PASS  tloop reverse Longroof GT: round the lap, never stuck  -  220.1 s
+  reverse  Needle 600       the lap in 202.7 s; slowest 8.8 m/s; 1 dead stop(s); the escalator's launch: through Halverson's front 3.4 m over the floor, 29 m/s
+      air: 0.5 s 9 m +0.0 m up from (1681, -584); 0.5 s 7 m +0.1 m up from (653, -460); 0.4 s 5 m +0.2 m up from (155, -876); 1.6 s 45 m +2.4 m up from (378, -1248) (the mall, u 47); 1.3 s 33 m +1.5 m up from (440, -1232) (the mall, u 112); 0.4 s 15 m +0.0 m up from (619, -1688); 0.3 s 13 m +0.0 m up from (665, -1686); 0.4 s 17 m +0.0 m up from (912, -1690); 0.6 s 26 m +0.0 m up from (1737, -869)
+      stop: 23.8 to 10.6 m/s at (455.8, 318.4, -1582.6), lap 3524 m: hit stay Terrain_13_11 at (502.29, 312.58, -1216.02) normal (0.00, 1.00, 0.00) impulse 60
+PASS  tloop reverse Needle 600: round the lap, never stuck  -  202.7 s
+  reverse  Trail Four       the lap in 206.3 s; slowest 8.8 m/s; 1 dead stop(s); the escalator's launch: through Halverson's front 3.4 m over the floor, 29 m/s
+      air: 0.4 s 8 m +0.0 m up from (1681, -584); 0.5 s 6 m +0.0 m up from (653, -460); 1.6 s 45 m +2.4 m up from (378, -1248) (the mall, u 47); 1.4 s 34 m +1.7 m up from (440, -1232) (the mall, u 112); 0.4 s 15 m +0.0 m up from (619, -1688); 0.3 s 13 m +0.0 m up from (665, -1686); 0.4 s 19 m +0.0 m up from (912, -1690); 0.6 s 28 m +0.0 m up from (1737, -868)
+      stop: 23.6 to 10.4 m/s at (455.9, 318.4, -1582.6), lap 3524 m: hit stay Terrain_13_11 at (489.45, 313.39, -1219.35) normal (0.03, 1.00, 0.02) impulse 75
+PASS  tloop reverse Trail Four: round the lap, never stuck  -  206.3 s
+  reverse  Sundown Roadster the lap in 216.8 s; slowest 8.1 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.6 m over the floor, 29 m/s
+      air: 0.4 s 7 m +0.0 m up from (1681, -584); 0.4 s 6 m +0.0 m up from (652, -460); 1.5 s 44 m +2.1 m up from (378, -1248) (the mall, u 48); 1.3 s 32 m +1.5 m up from (441, -1232) (the mall, u 113); 0.5 s 18 m +0.0 m up from (619, -1688); 0.4 s 19 m +0.0 m up from (912, -1690); 0.5 s 23 m +0.0 m up from (1738, -867)
+PASS  tloop reverse Sundown Roadster: round the lap, never stuck  -  216.8 s
+  reverse  Highball Fastback the lap in 216.1 s; slowest 7.8 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.6 m over the floor, 29 m/s
+      air: 0.4 s 7 m +0.0 m up from (1681, -584); 0.3 s 5 m +0.0 m up from (652, -460); 1.5 s 44 m +2.2 m up from (378, -1248) (the mall, u 48); 1.1 s 29 m +1.1 m up from (441, -1232) (the mall, u 113); 0.4 s 14 m +0.0 m up from (620, -1688); 0.4 s 17 m +0.0 m up from (912, -1690); 0.5 s 23 m +0.0 m up from (1738, -867)
+PASS  tloop reverse Highball Fastback: round the lap, never stuck  -  216.1 s
+  reverse  Pebble Coupe     the lap in 217.4 s; slowest 8.4 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.6 m over the floor, 29 m/s
+      air: 0.4 s 7 m +0.0 m up from (1681, -584); 0.4 s 6 m +0.0 m up from (652, -460); 1.6 s 45 m +2.3 m up from (378, -1248) (the mall, u 48); 1.3 s 32 m +1.5 m up from (441, -1232) (the mall, u 113); 0.5 s 17 m +0.0 m up from (618, -1688); 0.4 s 19 m +0.0 m up from (912, -1690); 0.6 s 28 m +0.0 m up from (1738, -867)
+PASS  tloop reverse Pebble Coupe: round the lap, never stuck  -  217.4 s
+  reverse  Skyfin Cruiser   the lap in 222.8 s; slowest 7.7 m/s; 0 dead stop(s); the escalator's launch: through Halverson's front 3.5 m over the floor, 29 m/s
+      air: 0.3 s 6 m +0.0 m up from (1681, -584); 0.3 s 4 m +0.0 m up from (652, -460); 1.5 s 45 m +2.1 m up from (379, -1248) (the mall, u 48); 1.1 s 28 m +1.0 m up from (441, -1232) (the mall, u 113); 0.4 s 17 m +0.0 m up from (913, -1690); 0.5 s 23 m +0.0 m up from (1738, -867)
+PASS  tloop reverse Skyfin Cruiser: round the lap, never stuck  -  222.8 s
+  reverse  Ridge Scrambler  the lap in 205.4 s; slowest 8.8 m/s; 1 dead stop(s); the escalator's launch: through Halverson's front 3.5 m over the floor, 29 m/s
+      air: 0.5 s 9 m +0.0 m up from (1681, -584); 0.5 s 7 m +0.1 m up from (653, -460); 1.6 s 46 m +2.4 m up from (378, -1248) (the mall, u 47); 1.3 s 34 m +1.6 m up from (440, -1232) (the mall, u 112); 0.3 s 12 m +0.0 m up from (620, -1688); 0.4 s 18 m +0.0 m up from (912, -1690); 0.6 s 28 m +0.0 m up from (1737, -869)
+      stop: 23.8 to 10.5 m/s at (455.2, 318.5, -1583.2), lap 3525 m: hit stay Mall floor at (475.79, 313.10, -1223.03) normal (0.00, 1.00, 0.00) impulse 86
+PASS  tloop reverse Ridge Scrambler: round the lap, never stuck  -  205.4 s
+  reverse  Drifter Twin     the lap in 207.3 s; slowest 8.9 m/s; 1 dead stop(s); the escalator's launch: through Halverson's front 3.5 m over the floor, 29 m/s
+      air: 0.4 s 8 m +0.0 m up from (1681, -584); 0.5 s 6 m +0.1 m up from (653, -460); 1.6 s 46 m +2.4 m up from (378, -1248) (the mall, u 48); 1.3 s 32 m +1.4 m up from (441, -1232) (the mall, u 112); 0.4 s 14 m +0.0 m up from (618, -1688); 0.4 s 17 m +0.0 m up from (912, -1690); 0.6 s 25 m +0.0 m up from (1737, -868)
+      stop: 23.7 to 10.5 m/s at (455.8, 318.4, -1582.6), lap 3524 m: hit stay Terrain_13_11 at (502.74, 312.58, -1215.96) normal (0.00, 1.00, 0.00) impulse 57
+PASS  tloop reverse Drifter Twin: round the lap, never stuck  -  207.3 s
+  reverse  Turf Rocket      the lap in 203.1 s; slowest 9.1 m/s; 1 dead stop(s); the escalator's launch: through Halverson's front 3.5 m over the floor, 29 m/s
+      air: 0.5 s 9 m +0.0 m up from (1681, -584); 0.5 s 7 m +0.1 m up from (653, -460); 1.6 s 46 m +2.4 m up from (378, -1248) (the mall, u 48); 1.4 s 34 m +1.7 m up from (441, -1232) (the mall, u 112); 0.4 s 14 m +0.0 m up from (621, -1688); 0.3 s 13 m +0.0 m up from (664, -1686); 0.4 s 18 m +0.0 m up from (912, -1690); 0.6 s 28 m +0.0 m up from (1737, -868)
+      stop: 23.7 to 10.4 m/s at (455.3, 318.4, -1583.1), lap 3525 m: hit stay Terrain_13_11 at (489.45, 313.39, -1219.35) normal (0.03, 1.00, 0.02) impulse 85
+PASS  tloop reverse Turf Rocket: round the lap, never stuck  -  203.1 s
+FAIL  tloop: no dead stop on the ground anywhere (listed above)  -  7 found
+
+=== Pictures
+
+22 of 23 checks passed.

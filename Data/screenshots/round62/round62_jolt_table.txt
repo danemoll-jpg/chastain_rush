@@ -1,0 +1,30 @@
+road	drives	before: sharpest jolt m/s (at), longest air s, slowest m/s	after: the same
+Northwest Corridor Express Lanes	12	8.94 (1864, -4476), 2.54 s, -3.0	7.67 (1865, -4476), 2.30 s, -11.0
+Larry McDonald Memorial Highway	19	8.02 (1497, -4231), 2.04 s, -15.4	6.94 (1497, -4231), 4.84 s, -6.6
+Old 41 Highway Northwest	6	7.42 (543, -5536), 1.60 s, 20.8	2.01 (616, -5539), 0.86 s, 23.0
+Frey Road Northwest	4	6.84 (-1329, 538), 1.20 s, 3.6	4.17 (-1389, 1411), 0.72 s, 0.0
+Big Shanty Road Northwest	10	6.29 (757, -3), 1.54 s, 4.4	3.23 (-125, -212), 1.00 s, 19.2
+McCollum Parkway Northwest	7	6.26 (-3948, -2054), 1.32 s, -6.2	2.45 (-4043, -2077), 0.86 s, 3.5
+Cobb Parkway	17	6.06 (-4193, -1946), 2.22 s, 21.2	4.97 (-4193, -1945), 2.22 s, 21.2
+Phillip Landrum Memorial Highway	12	5.87 (741, -1705), 2.38 s, -13.3	7.47 (741, -1705), 8.04 s, -13.9
+Bells Ferry Road Northeast	2	5.61 (1725, -659), 2.06 s, 19.9	3.86 (1710, -623), 1.34 s, -1.8
+George Busbee Parkway Northwest	11	4.92 (213, -1928), 1.06 s, 14.9	2.58 (-230, -36), 1.04 s, 9.2
+Ernest West Barrett Parkway	11	3.73 (-4376, -7440), 1.48 s, 1.6	5.49 (-4376, -7440), 1.64 s, 0.3
+Cobb Parkway North	13	2.67 (2366, -6127), 0.90 s, -1.4	2.37 (1231, -5490), 1.02 s, 8.4
+Kennesaw Mountain Drive	3	2.10 (-885, -5755), 0.76 s, 4.8	5.32 (-859, -5765), 1.92 s, -18.2
+Barrett Lakes Boulevard	7	1.96 (-871, -2873), 0.62 s, -3.2	1.66 (-488, -2977), 0.46 s, -0.0
+Canton Road Connector	8	1.60 (1646, -6048), 0.46 s, -0.5	4.44 (1635, -6095), 1.78 s, -18.3
+Bells Ferry Road	3	1.25 (1714, -1695), 0.30 s, 26.2	1.70 (1714, -1694), 0.24 s, 26.2
+Barrett Lakes Boulevard Northwest	3	1.18 (-1210, 344), 0.44 s, 21.4	1.75 (-1223, 364), 0.70 s, 21.5
+Chastain Meadows Parkway Northwest	7	1.06 (1161, -1658), 0.32 s, 23.5	1.48 (1161, -1658), 0.32 s, 23.7
+Chastain Road Northwest	3	0.96 (-881, 474), 0.10 s, 26.6	2.75 (-801, 495), 1.12 s, 23.5
+Stilesboro Road	12	0.96 (-2912, -5615), 0.32 s, 22.8	2.42 (-3540, -5484), 0.96 s, 22.8
+Chastain Road	4	0.91 (-888, 451), 0.00 s, 19.3	2.27 (-1362, 245), 0.88 s, 19.3
+Cobb Parkway Northwest	1	0.90 (-4743, -1374), 0.00 s, 26.9	1.32 (-4743, -1374), 0.08 s, 26.9
+North Marietta Parkway	3	0.36 (1505, -8289), 0.00 s, 23.9	1.80 (3780, -7597), 0.60 s, 19.6
+Big Shanty Drive Northwest	2	0.20 (-4171, -830), 0.10 s, 15.3	0.44 (-4316, -771), 0.36 s, 15.2
+Old 41 Highway	3	0.19 (-6456, 133), 0.02 s, 25.7	0.20 (-7839, 907), 0.22 s, 25.7
+Town Center Drive	2	0.17 (449, -1588), 0.00 s, 24.2	0.45 (-84, -983), 0.14 s, 24.2
+Bells Ferry Road Northwest	1	0.16 (865, -5330), 0.00 s, 21.9	0.86 (862, -5536), 0.14 s, 21.9
+Barrett Parkway	11	0.15 (1144, -1687), 0.00 s, 23.8	3.01 (634, -1669), 1.58 s, 23.2
+ALL: 197 drives before, 197 after; drives with a jolt over 1.5 m/s: 37 -> 50; over 3 m/s: 26 -> 19; with air over 0.15 s: 58 -> 94

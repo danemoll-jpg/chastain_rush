@@ -1,0 +1,4 @@
+bug001_against	jolt 0.49 m/s	air 0.30 s	speed 23.6-25.2 m/s
+bug001_with	jolt 0.83 m/s	air 0.04 s	speed 23.8-25.1 m/s
+bug002_with	jolt 0.01 m/s	air 0.00 s	speed 24.7-25.2 m/s
+i575sb_deck	jolt 0.16 m/s	air 0.00 s	speed 27.7-28.2 m/s

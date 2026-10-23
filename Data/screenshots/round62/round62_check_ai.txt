@@ -1,0 +1,22 @@
+Round 62 check, 2026-10-23 15:13, the exe, 1280 x 720, muted.
+
+=== The Noonday Creek Trail raced: twice each way on Hard, 3 AI, traffic Normal (each race's replay, Round 58's analysis)
+  Noonday Creek Trail|forward #1 EMBER Drifter Twin     12:11.302 laps 255.3 / 247.3 / 228.8, missed 0; down 3.4 s, stuck 38.5 s (longest 2.0), wrong way 1.1 s, reversing 0.0 s; resets 15 (down 1, blocked 12, wrong way 1), passes 39
+  Noonday Creek Trail|forward #1 GOLD  Street Classic   13:25.824 laps 267.6 / 264.0 / 274.2, missed 0; down 0.0 s, stuck 45.5 s (longest 1.4), wrong way 0.6 s, reversing 0.0 s; resets 16 (down 0, blocked 14, wrong way 0), passes 64
+  Noonday Creek Trail|forward #1 BLUE  Needle 600       13:10.013 laps 272.0 / 257.2 / 260.9, missed 0; down 2.1 s, stuck 44.4 s (longest 2.1), wrong way 4.2 s, reversing 0.0 s; resets 15 (down 1, blocked 13, wrong way 0), passes 30
+PASS  tai Noonday Creek Trail|forward #1: every AI finishes  -  EMBER 12:11.302, GOLD 13:25.824, BLUE 13:10.013
+  Noonday Creek Trail|forward #2 EMBER Trail Four       12:48.627 laps 268.0 / 250.3 / 250.3, missed 0; down 0.0 s, stuck 45.4 s (longest 2.2), wrong way 2.4 s, reversing 0.0 s; resets 21 (down 0, blocked 18, wrong way 0), passes 33
+  Noonday Creek Trail|forward #2 GOLD  Ridge Scrambler  11:55.933 laps 243.0 / 233.9 / 239.0, missed 0; down 0.0 s, stuck 32.0 s (longest 1.5), wrong way 0.0 s, reversing 0.0 s; resets 10 (down 0, blocked 10, wrong way 0), passes 43
+  Noonday Creek Trail|forward #2 BLUE  Turf Rocket      11:42.189 laps 240.1 / 233.7 / 228.4, missed 0; down 0.7 s, stuck 28.6 s (longest 1.4), wrong way 0.0 s, reversing 0.0 s; resets 15 (down 2, blocked 11, wrong way 0), passes 42
+PASS  tai Noonday Creek Trail|forward #2: every AI finishes  -  EMBER 12:48.627, GOLD 11:55.933, BLUE 11:42.189
+  Noonday Creek Trail|reverse #1 EMBER Drifter Twin     12:17.146 laps 239.5 / 252.0 / 245.6, missed 1; down 0.9 s, stuck 37.5 s (longest 2.4), wrong way 3.2 s, reversing 2.1 s; resets 11 (down 1, blocked 9, wrong way 0), passes 31
+  Noonday Creek Trail|reverse #1 GOLD  Street Classic   12:45.318 laps 251.3 / 268.1 / 246.0, missed 0; down 0.6 s, stuck 35.5 s (longest 1.9), wrong way 0.0 s, reversing 0.0 s; resets 14 (down 0, blocked 10, wrong way 0), passes 33
+  Noonday Creek Trail|reverse #1 BLUE  Needle 600       11:34.956 laps 235.3 / 229.0 / 230.7, missed 0; down 1.0 s, stuck 32.5 s (longest 1.7), wrong way 2.2 s, reversing 0.0 s; resets 13 (down 1, blocked 12, wrong way 0), passes 21
+PASS  tai Noonday Creek Trail|reverse #1: every AI finishes  -  EMBER 12:17.146, GOLD 12:45.318, BLUE 11:34.956
+  Noonday Creek Trail|reverse #2 EMBER Trail Four       12:13.699 laps 249.7 / 238.6 / 245.4, missed 0; down 0.0 s, stuck 33.1 s (longest 1.6), wrong way 0.0 s, reversing 0.0 s; resets 14 (down 0, blocked 12, wrong way 0), passes 32
+  Noonday Creek Trail|reverse #2 GOLD  Ridge Scrambler  11:31.933 laps 224.5 / 246.2 / 221.2, missed 0; down 0.0 s, stuck 31.7 s (longest 1.5), wrong way 1.8 s, reversing 0.0 s; resets 15 (down 0, blocked 11, wrong way 0), passes 33
+  Noonday Creek Trail|reverse #2 BLUE  Turf Rocket      11:38.870 laps 231.9 / 233.8 / 233.2, missed 0; down 0.0 s, stuck 36.9 s (longest 1.5), wrong way 0.0 s, reversing 0.0 s; resets 15 (down 0, blocked 14, wrong way 0), passes 28
+PASS  tai Noonday Creek Trail|reverse #2: every AI finishes  -  EMBER 12:13.699, GOLD 11:31.933, BLUE 11:38.870
+  ALL: 12 AI races; finished 12; down 8.7 s, stuck 441.6 s (longest 2.4), wrong way 15.4 s, resets 174
+
+4 of 4 checks passed.
