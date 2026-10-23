@@ -270,7 +270,14 @@ trail = resample([north_lot[-1]] + t960 + t962[1:], 2.0)
 under = resample(chaikin([trail[-1]] + UNDERPASS[1:], 2), 2.0)
 trail = trail + under[1:]
 t751_s = nearest_s(t751, UNDERPASS[-1])[1]
-trail = trail + resample(cut(t751, t751_s, None), 2.0)[1:]
+# on past the boardwalk's east end straight along the underpass's axis for 12 m, then rounded into OSM's line from 34 m on (build 4's check: the trail
+# turned 60 degrees 4 m past the deck's end and reverse cars arriving from the southeast met its north railing)
+_ax = unit((UNDERPASS[-1][0] - UNDERPASS[-2][0], UNDERPASS[-1][1] - UNDERPASS[-2][1])); _t5 = resample(cut(t751, t751_s, None), 1.0); _c5 = cum(_t5)
+_k34 = next(k for k in range(len(_t5)) if _c5[k] >= 34.0); _p0 = (UNDERPASS[-1][0] + _ax[0] * 12.0, UNDERPASS[-1][1] + _ax[1] * 12.0); _p3 = _t5[_k34]
+_d3 = unit((_t5[_k34 + 1][0] - _p3[0], _t5[_k34 + 1][1] - _p3[1])); _L = math.dist(_p0, _p3)
+def _herm(t): h00, h10, h01, h11 = 2*t**3 - 3*t**2 + 1, t**3 - 2*t**2 + t, -2*t**3 + 3*t**2, t**3 - t**2; return tuple(h00 * _p0[i] + h10 * _L * _ax[i] + h01 * _p3[i] + h11 * _L * _d3[i] for i in (0, 1))
+_t5 = [UNDERPASS[-1], _p0] + [_herm(k / 20.0) for k in range(1, 20)] + _t5[_k34:]
+trail = trail + resample(_t5, 2.0)[1:]
 # off the trail's end into the trailhead's lot and up its drive to Bells Ferry Road
 drive = pts(by_osm[TRAILHEAD_DRIVE]["points"])[::-1]                                    # lot end first
 th = resample(chaikin([trail[-1], (trail[-1][0] + 14.0, trail[-1][1] + 6.0), drive[0], drive[2], drive[5]], 3) + drive[6:], 2.0)
@@ -569,11 +576,13 @@ def zones(lp, s_of, rev):
         Z("the hall", W(MAIN_U, BALCONY_V), W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), 13.0)
         Z("across Town Center Drive", NORTH_FROM, trail[8], 13.0)
         Z("the red bridge", trail[8], point_at(trail, rb1 + 6.0, tc_), 12.0)
-        Z("under I-575", point_at(trail, min(us0, bw0) - 20.0, tc_), point_at(trail, max(us1, bw1) + 6.0, tc_), 14.0)   # (build 3: the boardwalk's ends met at speed)
+        Z("under I-575", point_at(trail, min(us0, bw0) - 20.0, tc_), point_at(trail, max(us1, bw1) + 8.0, tc_), 14.0)   # (build 3: the boardwalk's ends met at speed)
+        Z("the bend past the boardwalk", point_at(trail, max(us1, bw1) + 8.0, tc_), point_at(trail, max(us1, bw1) + 34.0, tc_), 10.0)   # (build 4: cars ran wide of it)
     else:
         Z("off Bells Ferry Road", (1708.0, -616.0), drive[4], 11.0)
         Z("the trailhead's drive", drive[4], th[0], 11.0)
-        Z("under I-575", point_at(trail, max(us1, bw1) + 20.0, tc_), point_at(trail, min(us0, bw0) - 6.0, tc_), 14.0)
+        Z("the bend past the boardwalk", point_at(trail, max(us1, bw1) + 45.0, tc_), point_at(trail, max(us1, bw1) + 8.0, tc_), 10.0)   # (build 4: into the deck's railing)
+        Z("under I-575", point_at(trail, max(us1, bw1) + 8.0, tc_), point_at(trail, min(us0, bw0) - 6.0, tc_), 14.0)
         Z("the red bridge", point_at(trail, rb1 + 25.0, tc_), trail[8], 12.0)   # (build 3: onto its north end at 24.7 m/s, into the truss)
         Z("across Town Center Drive", trail[8], NORTH_FROM, 13.0)
         Z("the main doors", W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), W(MAIN_U, -1290.0), 13.0)

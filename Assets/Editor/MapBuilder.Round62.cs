@@ -92,8 +92,10 @@ namespace ChastainRush
             }
             var spotBefore = spots.Select(s => Worst(s.Item2)).ToArray();
             var report = new Dictionary<string, (float before, float after, int b10, int a10, float len)>();
-            int levelled = 0;
-            foreach (var (name, line0, half, decks) in chains)
+            int levelled = 0; var done = new List<(string name, List<Vector2> p)>();
+            // the narrowest first, so where two overlap the wider road's levelling is the one left (mapgen's "wider wins"; build 4's check: an I-575 ramp
+            // levelled after Barrett Parkway re-graded Barrett's outer lane to its own profile and threw a car at 27 m/s)
+            foreach (var (name, line0, half, decks) in chains.OrderBy(c => c.half))
             {
                 var p = Resample(line0, 1f); int n = p.Count; if (n < 20) continue;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
@@ -105,9 +107,13 @@ namespace ChastainRush
                 // near Dan's two spots (150 m): no crest that lifts a car off the road at 30 m/s (build 2's check: Big Shanty's dip under I-575 still threw it 0.5 s)
                 var cap = new bool[n]; bool any = false; for (int i = 0; i < n; i++) { cap[i] = spots.Any(s => (p[i] - s.Item2).magnitude < 150f); any |= cap[i]; }
                 LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (30f * 30f));
-                float after = SharpestStep(terrain, p, float.MaxValue); int a10 = Steps(terrain, p, .1f);
-                report.TryGetValue(name, out var o0); levelled++;
-                report[name] = (Mathf.Max(o0.before, before), Mathf.Max(o0.after, after), o0.b10 + b10, o0.a10 + a10, o0.len + (n - 1));
+                report.TryGetValue(name, out var o0); levelled++; done.Add((name, p));
+                report[name] = (Mathf.Max(o0.before, before), 0f, o0.b10 + b10, 0, o0.len + (n - 1));
+            }
+            // after: measured once every road is levelled (a later road can change an earlier one's ground)
+            foreach (var (name, p) in done)
+            {
+                var o0 = report[name]; report[name] = (o0.before, Mathf.Max(o0.after, SharpestStep(terrain, p, float.MaxValue)), o0.b10, o0.a10 + Steps(terrain, p, .1f), o0.len);
             }
             // Dan's BUG-001 ("level all thesse bumps", looking west along Big Shanty Road to the I-575 bridges): the hump under the decks (0.6 m over 15 m, x 515 to
             // 547: build 3's check still left the ground there at 25 m/s) on both carriageways: each laid straight from x 500 to x 565 (its own heights there)
