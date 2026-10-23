@@ -69,6 +69,7 @@ namespace ChastainRush
             // the map's own drives (OSM): a house a drive runs up to faces down its drive, its garage at the drive's end
             var driveEnds = new List<(Vector2 near, Vector2 far)>();
             foreach (var dw in map.driveways) { var dp = ToPoints(dw.points); if (dp.Count < 2) continue; driveEnds.Add((dp[0], dp[dp.Count - 1])); driveEnds.Add((dp[dp.Count - 1], dp[0])); }
+            var endIdx = new CellIndex(32f); foreach (var de in driveEnds) endIdx.Add(de.near); var endNear = new List<int>();   // build speed: the drive ends by cell, in their order
             int byDrive = 0;
             for (int n = 0; n < rest.Data.neighborhoods.Length; n++)
             {
@@ -83,6 +84,14 @@ namespace ChastainRush
             int extra0 = rest.Houses.Count;
             var homes = new List<(Vector2 c, int n)>();
             foreach (var hs in rest.Houses) homes.Add((hs.footprintCentre, rest.Of[hs.index]));
+            // build speed (after Round 61): the road segments (no motorways) by cell, each padded by the 60 m a house looks for its road
+            var nearSegs = new List<RoadSeg>(); var nearIdx = new CellIndex(64f); var nearIds = new List<int>();
+            for (int ri = 0; ri < map.roads.Length; ri++)
+            {
+                var r = map.roads[ri]; if (r.@class == "motorway" || r.@class == "motorway_link") continue;
+                var p = ToPoints(r.points);
+                for (int i = 0; i + 1 < p.Count; i++) { nearSegs.Add(new RoadSeg { a = p[i], b = p[i + 1], half = r.width * .5f, road = ri }); nearIdx.Add(p[i], p[i + 1], 60f); }
+            }
             for (int idx = 0; idx < map.buildings.Length; idx++)
             {
                 var b = map.buildings[idx];
@@ -95,12 +104,7 @@ namespace ChastainRush
                 foreach (var hm in homes) { float d = (hm.c - c).sqrMagnitude; if (d < best) { best = d; n = hm.n; } }
                 if (n < 0) continue;
                 var near = new List<RoadSeg>();
-                for (int ri = 0; ri < map.roads.Length; ri++)
-                {
-                    var r = map.roads[ri]; if (r.@class == "motorway" || r.@class == "motorway_link") continue;
-                    var p = ToPoints(r.points);
-                    for (int i = 0; i + 1 < p.Count; i++) if (SegDist(c, p[i], p[i + 1]) < 60f) near.Add(new RoadSeg { a = p[i], b = p[i + 1], half = r.width * .5f, road = ri });
-                }
+                foreach (int si in nearIdx.Near(c, 0f, nearIds)) { var s = nearSegs[si]; if (SegDist(c, s.a, s.b) < 60f) near.Add(s); }   // in road and point order, as before
                 if (near.Count == 0) continue;
                 Dress(idx, n, near);
             }
@@ -126,7 +130,7 @@ namespace ChastainRush
                     foreach (var s in segs) { var ab = s.b - s.a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(c - s.a, ab) / ab.sqrMagnitude); var p = s.a + ab * t; float dd = (p - c).magnitude; if (dd < best) { best = dd; q = p; roadHalf = s.half; tan = ab.normalized; } }
                     Vector2 toRoad = (q - c).normalized, garageAt = q;
                     float dBest = 3.5f; (Vector2 near, Vector2 far)? drive = null;
-                    foreach (var de in driveEnds) { if ((de.near - c).sqrMagnitude > 900f) continue; float dd = InPolygon(de.near, ring) ? 0f : DistToEdgesStatic(de.near, ring); if (dd < dBest && (de.far - c).magnitude > (de.near - c).magnitude) { dBest = dd; drive = de; } }
+                    foreach (int ei in endIdx.Near(c, 30f, endNear)) { var de = driveEnds[ei]; if ((de.near - c).sqrMagnitude > 900f) continue; float dd = InPolygon(de.near, ring) ? 0f : DistToEdgesStatic(de.near, ring); if (dd < dBest && (de.far - c).magnitude > (de.near - c).magnitude) { dBest = dd; drive = de; } }
                     if (drive.HasValue) { toRoad = (drive.Value.far - c).normalized; garageAt = drive.Value.near; byDrive++; }
                     Vector2[] cand = { U, -U, V, -V }; Vector2 F = cand[0]; float bd = -2f;
                     foreach (var cd in cand) { float dd = Vector2.Dot(cd, toRoad); if (dd > bd) { bd = dd; F = cd; } }
@@ -210,14 +214,16 @@ namespace ChastainRush
             var roads = new RoadIndex(map.roads);
             // every building's footprint, grown 1 m, in a grid
             var grid = new Dictionary<Vector2Int, List<List<Vector2>>>();
-            foreach (var b in map.buildings)
+            for (int bi = 0; bi < map.buildings.Length; bi++)   // build speed: by index (was IndexOf for each building)
             {
-                var ring = MovedRing(System.Array.IndexOf(map.buildings, b), ToPoints(b.footprint)); if (ring.Count < 3) continue;
+                var b = map.buildings[bi];
+                var ring = MovedRing(bi, ToPoints(b.footprint)); if (ring.Count < 3) continue;
                 var c = ring.Aggregate(Vector2.zero, (s, p) => s + p) / ring.Count; var k = new Vector2Int(Mathf.FloorToInt(c.x / 40f), Mathf.FloorToInt(c.y / 40f));
                 if (!grid.TryGetValue(k, out var l)) grid[k] = l = new List<List<Vector2>>(); l.Add(ring);
             }
             var drives = new List<(Vector2 a, Vector2 b)>();
             foreach (var dw in map.driveways) { var p = ToPoints(dw.points); for (int i = 0; i + 1 < p.Count; i++) drives.Add((p[i], p[i + 1])); }
+            var driveIdx = new CellIndex(32f); foreach (var (a, b) in drives) driveIdx.Add(a, b, 3.05f); var driveNear = new List<int>();   // build speed: the drives by cell
             bool Free(Vector2 p)
             {
                 if (roads.Covers(p, NoRoad, 1.5f)) return false;
@@ -228,7 +234,7 @@ namespace ChastainRush
                 var k = new Vector2Int(Mathf.FloorToInt(p.x / 40f), Mathf.FloorToInt(p.y / 40f));
                 for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++)
                     if (grid.TryGetValue(k + new Vector2Int(dx, dz), out var l)) foreach (var ring in l) if (InPolygon(p, ring) || DistToEdgesStatic(p, ring) < 1.0f) return false;
-                foreach (var (a, b) in drives) if ((a - p).sqrMagnitude < 900f && SegDistStatic(p, a, b) < 3f) return false;
+                foreach (int di in driveIdx.Near(p, 0f, driveNear)) { var (a, b) = drives[di]; if ((a - p).sqrMagnitude < 900f && SegDistStatic(p, a, b) < 3f) return false; }
                 return true;
             }
             foreach (var h in rest.Houses)
@@ -259,6 +265,7 @@ namespace ChastainRush
             var mailboxes = new Breakables(); var roads = new RoadIndex(map.roads);
             var drives = new List<(Vector2 a, Vector2 b)>();
             foreach (var dw in map.driveways) { var p = ToPoints(dw.points); for (int i = 0; i + 1 < p.Count; i++) drives.Add((p[i], p[i + 1])); }
+            var driveIdx = new CellIndex(32f); foreach (var (a, b) in drives) driveIdx.Add(a, b, 2.25f); var driveNear = new List<int>();   // build speed: the drives by cell
             int mail = 0; var views = new StringBuilder();
             var shown = new HashSet<int>();
             foreach (var h in rest.Houses)
@@ -291,7 +298,7 @@ namespace ChastainRush
                 var q = h.nearestRoadPoint; Vector2 toHouse = (S - q).normalized; if (toHouse.sqrMagnitude < .5f) toHouse = new Vector2(h.frame.F.x, h.frame.F.z) * -1f;
                 Vector2 tan = new Vector2(-toHouse.y, toHouse.x) * (Hash01(h.seed, 130) < 0.5f ? 1f : -1f);
                 Vector2 mp = q + toHouse * (h.roadHalf + 1.2f) + tan * 3.6f;
-                bool onDrive = drives.Any(dd => (dd.a - mp).sqrMagnitude < 900f && SegDistStatic(mp, dd.a, dd.b) < 2.2f);
+                bool onDrive = driveIdx.Near(mp, 0f, driveNear).Any(di => (drives[di].a - mp).sqrMagnitude < 900f && SegDistStatic(mp, drives[di].a, drives[di].b) < 2.2f);
                 if (!onDrive && !roads.Covers(mp, NoRoad, 0.8f))
                 {
                     float gy = terrain.Height(mp.x, mp.y);

@@ -27,6 +27,7 @@ namespace ChastainRush
         static List<Vector2> r52Lap;
         static List<(Vector2 a, Vector2 b, float half)> r52Roads;
         static List<(List<Vector2> ring, Rect box)> r52Buildings;
+        static CellIndex r52RoadIdx, r52BuildingIdx; static readonly List<int> r52Near = new List<int>();   // build speed (after Round 61): the two lists by cell, in their order
         static readonly List<string> R52Log = new List<string>();
         [Serializable] class R52RouteJson { public float[] loop; }
         // the race's cleared line (Data/tracks/addison_heights.json): no tree trunk within 1.5 m of the lap's road edge (Round 52 check: AI drivers coming
@@ -47,6 +48,8 @@ namespace ChastainRush
                 var p = ToPoints(r.points); for (int i = 0; i + 1 < p.Count; i++) r52Roads.Add((p[i], p[i + 1], r.width * 0.5f));
             }
             r52Buildings = map.buildings.Select(b => { var ring = ToPoints(b.footprint); float x0 = ring.Min(q => q.x), x1 = ring.Max(q => q.x), z0 = ring.Min(q => q.y), z1 = ring.Max(q => q.y); return (ring, Rect.MinMaxRect(x0, z0, x1, z1)); }).ToList();
+            r52RoadIdx = new CellIndex(64f); foreach (var (a, b, _) in r52Roads) r52RoadIdx.Add(a, b, 0f);
+            r52BuildingIdx = new CellIndex(32f); foreach (var (_, box) in r52Buildings) r52BuildingIdx.Add(box.xMin, box.yMin, box.xMax, box.yMax);   // ids are the building indices
             R52Log.Clear();
         }
 
@@ -54,8 +57,9 @@ namespace ChastainRush
         static float R52RoadClear(Vector2 p)
         {
             float best = float.MaxValue;
-            foreach (var (a, b, half) in r52Roads)
+            foreach (int ri in r52RoadIdx.Near(p, 30.01f, r52Near))   // (a minimum: the same whatever the order)
             {
+                var (a, b, half) = r52Roads[ri];
                 if (Mathf.Min(a.x, b.x) - 30f > p.x || Mathf.Max(a.x, b.x) + 30f < p.x || Mathf.Min(a.y, b.y) - 30f > p.y || Mathf.Max(a.y, b.y) + 30f < p.y) continue;
                 best = Mathf.Min(best, SegDistStatic(p, a, b) - half);
             }
@@ -64,7 +68,7 @@ namespace ChastainRush
 
         static bool R52NearOtherBuilding(Vector2 p, int self, float margin)
         {
-            for (int j = 0; j < r52Buildings.Count; j++)
+            foreach (int j in r52BuildingIdx.Near(p, margin + 0.01f, r52Near))
             {
                 if (j == self) continue; var (ring, box) = r52Buildings[j];
                 if (p.x < box.xMin - margin || p.x > box.xMax + margin || p.y < box.yMin - margin || p.y > box.yMax + margin || ring.Count < 3) continue;

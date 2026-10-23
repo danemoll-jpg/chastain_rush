@@ -235,10 +235,13 @@ namespace ChastainRush
                 // ground that would come within 0.1 m of the straight deck is cut down under it (hidden; a lift there made a bump)
                 float half = map.bridges[bi].width * 0.5f + 0.4f, cutMost = 0f; int cutN = 0;
                 float x0 = line.Min(q => q.x) - half, x1 = line.Max(q => q.x) + half, z0 = line.Min(q => q.z) - half, z1 = line.Max(q => q.z) + half;
+                // build speed (after Round 61): the deck's segments by cell (a sample further than 'half' from every one is left as it is)
+                var deckIdx = new CellIndex(16f); for (int k = 0; k + 1 < line.Count; k++) deckIdx.Add(new Vector2(line[k].x, line[k].z), new Vector2(line[k + 1].x, line[k + 1].z), half + 0.01f);
+                var deckNear = new List<int>();
                 EditTerrain(terrain, Rect.MinMaxRect(x0, z0, x1, z1), (x, z, yy) =>
                 {
                     var p = new Vector2(x, z); float best = float.MaxValue, deckY = 0f;
-                    for (int k = 0; k + 1 < line.Count; k++)
+                    foreach (int k in deckIdx.Near(p, 0f, deckNear))
                     {
                         Vector2 a = new(line[k].x, line[k].z), c = new(line[k + 1].x, line[k + 1].z); var ab = c - a;
                         float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (a + ab * t - p).sqrMagnitude;
