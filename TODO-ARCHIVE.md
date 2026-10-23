@@ -5945,3 +5945,71 @@ Follow-up (Dan's yes, 2026-10-22): B28's glass bed under West Chastain Lake had 
    the only touch of B28's bed is a flat floor contact with no speed lost (`round57_check_m2a.txt`; `-exeRound57 <dir> -r57Only m2a`).
 `Builds/ChastainRush/` 2026-10-21 23:39. Imported from Racer: nothing.
 For Dan to check: the corner both ways; COMPLETE RACE with A; M5c and the hub's rails; M2a under West Chastain Lake in free roam; a replay with each camera, the #1s, save one and find it on REPLAYS.
+
+## Round 58 (moved from TODO.md on 2026-10-23 when Dan reviewed Round 61; word for word)
+
+## Previous delivery 3: Round 58
+**Reviewed: Dan drove the Round 58 / 59 build 2026-10-22; no complaint about the AI or B to D.**
+**Round 58, AI DRIVERS WITH AGENCY (recover, pass, never wrong way), and three fixes (Dan, 2026-10-22 01:20; reports BUG-001 to BUG-003
+of session `2026-10-22_00-37-30-154_d7ca87`, read by Claude, after the Round 57 exe: Underground, Chastain Ridge and replays). THEN
+ROUND 59 (the map extension, stage 1, below in QUEUED): Dan went to bed and asked for both; do 58, commit, then start 59 without
+waiting.** Round 57 is reviewed. Dan is not watching: take the most reasonable reading of anything unclear, write it in the status, go
+on (stop only for something that cannot be undone). Tuning limit. Short results.
+A. THE AI. Dan watched the AI in replays: "I see some reasons why I beat them so badly usually":
+   "1) I have seen them wreck, sideways on the bike lying down. Took them at least 5 seconds to restart themselves. I mean if you are
+   your side, that should be an automatic reset
+   2) Still saw them not putting much effort getting around cars
+   3) Saw one run into a tree. I counted 10-15 seconds before they decided to reset. At the very least they could have tried to back up
+   and get around the tree
+   4) Literally watched one drive in reverse for a good stretch of the lap
+   5) Saw one get in an accident, the drove off in the opposite direction for a bit before turning around
+   Seems they have no agency to beat me. And this is is in hard mode I cant even imagine how bad it is in easy."
+   For every AI racer, every track, every difficulty (difficulty changes pace and skill, never these recoveries):
+   (1) On its side or upside down (a bike or rider down, a car over): reset at once onto the race line facing forward (well under a
+       second once it is clearly down; no 5 s wait).
+   (2) Passing: Round 55 E was "modest". Pass slower cars (traffic, parked, racers) decisively: pick a side early, use the other lane,
+       the shoulder and the grass beside the road; take a gap rather than follow; a racer stuck behind a car more than about 2 s is
+       the fault to remove.
+   (3) Blocked (a tree, a wall, a car, a fence it cannot break): within about 1 s of no progress, back up and steer round it; if that
+       fails within about 3 s more, reset. Never 10 to 15 s against a tree.
+   (4) and (5) Never the wrong way: driving backwards along the lap, or forwards against it after a crash, is caught within about 1 s
+       (heading against the lap's direction while moving, or reversing beyond a short back-up): turn round on the spot / three-point
+       turn, or reset if that is quicker. Reverse only as part of (3)'s back-up.
+   (6) Then Hard must race: measure, from the replays' recordings (Round 57 records every racer), per AI per race: time down / stuck /
+       blocked / wrong way / behind a car, before and after (Hard, traffic Normal, every track both ways where it has both, at least one
+       race each). Hard's lap times against Dan's best laps on each track (the Top 10 records): Hard should be within a few seconds of
+       them; report the table. Easy and Normal keep their pace gaps but recover the same.
+B. BUG-001 (x 1854.77 z 1132.96 h 87, THE HUB's floor, Underground race): "during the race, it still allows you falll down the pit of you
+   are going to fastt, The gate should extend all th way down". Round 57 D's rails and gate still leave a way down: the gate / rails must
+   reach all the way down (no gap under them to the pit) wherever the race passes the pit's edge. Check: flat out at every edge on the
+   race's line and off it, all vehicles, none falls in during a race.
+C. BUG-002 (x 1640.80 z 943.86 h 13, M5c, an aquarium pipe): "plants shouldn't be growing through the grass" (glass: the picture shows
+   water plants standing up INSIDE the tube, through its glass and floor). Keep every aquarium pipe's plants, rocks and fish outside the
+   glass (all aquarium pipes; Round 57 found the beds cutting tubes: same family).
+D. BUG-003 (x 3082.26 z 708.71 h 270, Chastain Ridge Drive, Chastain Ridge race lap 3): "there is a bump somewhere around here that always
+   messes me up". Find it on the race's line (both directions) and smooth it.
+Check: A's table (before / after), and a replay of an AI recovering from each case (pictures or a short note of times); B, C, D as above.
+For Dan to check: watch the AI in replays on Hard (recoveries, passing, no wrong way); race them; the hub's edges; M5c's plants; the Ridge bump.
+
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round58/`. Bug reports read: session `2026-10-22_00-37-30-154_d7ca87`, BUG-001 to 003.
+A DONE (`RoadDriver` AgencyStep / PassLane; `-r58AgencyOff` gives the old driving). Down: put back on the line after 0.35 s. Blocked (wanting to go, not moving 1 s): backs up 1.1 s
+   steering to the open side, crawls round; no 5 m of progress 4 s on: put back. Reversing: the brake pedal was reverse below 0.6 m/s, so a car rolling back after a knock kept
+   reversing (Dan's "drive in reverse for a good stretch"); now it is on the throttle. Wrong way: past 100 degrees full lock (pure pursuit barely steered with the target behind:
+   Dan's "drove off in the opposite direction"), put back after 3.5 s. Passing: either side, the shoulder and the grass, kept until past; behind a car 1.5 s the oncoming look shortens.
+   By hand (`round58_check_parts.txt`): on its side going again in 0.9 s, turned round 2.9 s, rolling back 1.3 s, a trunk-size block in front 4.7 s (backed up once, round it).
+   Table, Hard, traffic Normal, every course and direction, 33 AI races, from the replays (`r58_ai_before.csv` / `r58_ai_after.csv`): behind a car 342 s (48 spells over 2 s) -> 133 s (14);
+   reversing 44 -> 7 s; stuck 163 -> 86 s (longest 3.4 s); down 9.7 -> 5.1 s; wrong way 26 -> 33 s (turning round after a crash, longest 2.1 s); 33 of 33 finish. The first
+   "after" run found a driver backing up 185 times in S2's dive pipe (on a shortcut speed alone counted as progress): fixed, measured along the shortcut's line.
+   Hard's pace (attempt 1 of the tuning limit; Easy and Normal unchanged): corner use .90 -> 1.0, brake 1.0, steep hills 42 m/s, crests 9.5. AI best flying lap against Dan's best:
+   Glen fwd 39.6 / 38.9, rev 39.3 / 36.1; Ridge fwd 57.4 / 59.7, rev 70.8 / 59.2; Underground 65.6 / 75.5; Addison fwd 76.2 / 59.7, rev 69.5 / 69.0; Creek fwd 91.9 / 79.2,
+   rev 92.4 / 69.5; Lakes fwd 111.4 / 72.1, rev 94.1 / 77.1 (Lakes is 2 laps: one flying lap each, noisy). Not tuned further: Creek and Lakes are held by their jump zones'
+   set speeds and Dan's laps use shortcuts the AI takes only sometimes (the shortcut rule). Dan decides.
+B DONE. Round 28 railed only the west and south-west of the pit; the race runs the whole mid-ledge ring and the span. Rails R3 to R7 (`make_underground_route.py`): the south
+   and east edges to S1's floor ramp (left open: S1's way up), the north edge either side of the span, the span's two sides over the chasm (heights follow it, route `ys`).
+   Four vehicles at 34 m/s into every edge at 90 / 45 / 20 degrees: 120 of 120 held, none in the pit.
+C DONE. S2's aquarium (under the Enclave pond) had 22 weed clumps standing in M5c's tube (Dan's picture). Every glass stretch now knows the other tubes near it: weeds, rocks,
+   logs and turtle spots keep out of them and out of its own tube on a bend; a fish inside another tube is not drawn (build log: 22 left out at S2, 1 to 5 elsewhere). Picture at his spot.
+D DONE. The bump is the valley 50 m before his spot (the drive comes down at -13 %, a 10 m level shelf, then +15 % within 8 m): one vertical curve (as Addison's); the exe
+   check also found a jolt 10 m after it at the loop branch's junction (x 3072): blurred. Flat out both ways, on the line and 3.4 m to his side: no jolt over 0.55 m/s, wheels down.
+   Left: 3.4 m to the inside of the bend at x 3040, off the asphalt, still lifts a Drifter Twin's wheels (for Dan to judge).
+`Builds/ChastainRush/` 2026-10-22 03:17. Imported from Racer: nothing.

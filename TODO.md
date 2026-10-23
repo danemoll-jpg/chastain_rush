@@ -108,6 +108,69 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 62, A NEW TRACK: THE NOONDAY CREEK TRAIL LOOP round Town Center (forward and reverse, no shortcuts yet), and the new land's bumps
+(Dan, 2026-10-23 02:23; reports BUG-001 and BUG-002 of session `2026-10-22_23-37-02-216_30fa55`, read by Claude, after the Round 61 exe;
+his pictures in `local/reference_photos/noonday_trail/`: Google / Tripadvisor / county map: reference only, never traced or measured).**
+Round 61 is reviewed. ONE full Build Map at the end (quick builds while working). Tuning limit. Short results.
+A. THE TRACK. Dan: "I want a track based on the green line. The drawn trail gives you a more detailed shape of noonday creek trail and I
+   have put in pics so you can see what it looks like."
+   THE LINE (`route_green_line.jpg`, Google's green highlight of the trail; `trail_map_cobb.png`, Cobb's trail map, its dark green
+   "Existing" line has the trail's true shape): a loop round Town Center at Cobb. From the trail's access point by Hidden Forest Court
+   (north of the mall, by Big Shanty), east along Noonday Creek, under I-575, past Chastain Meadows Parkway to the Noonday Creek
+   Trailhead by Bells Ferry Road; south along Bells Ferry Road to Barrett Parkway; west along Barrett Parkway (across / under I-575) to the
+   mall's ring; north past the mall's west side (Google's green crosses the mall between its buildings, by the Town Center at Cobb pin) and
+   through the lot to Town Center Drive; round to Hidden Forest Court. Use the trail's REAL geometry from OSM (`raw/osm_ext1.json` /
+   `osm_ext2.json`: 44 ways named "Noonday Creek Trail"; Round 59 did not bring footways / cycleways into map.json) wherever it exists;
+   where it runs beside a road (Bells Ferry, Barrett Parkway) race on that road / its side path, Code's pick. Where the line crosses the
+   mall: if it really passes through the building, the race goes in one entrance and out another through Round 60's drivable mall (that
+   would be a highlight); if it only passes between buildings, follow it. Say which.
+   DAN'S CHANGES (2026-10-23 02:32): "I want the forward track to start at Bells Ferry, cut through the parking lot and then until the
+   Noonday creek trail. Noonday Creek trail does go on further than this but I want to cut through town center mall, lets create at least
+   a jump or two each way in the mall, and be creative with it. And yes since this is the actual trail I do want to call this noonday creek
+   trail, though technically our existing trail is a proposed extension that hasn't been built yet".
+   Claude's reading: FORWARD starts on Bells Ferry Road (start / finish there, by the Noonday Creek Trailhead), south on Bells Ferry, west on
+   Barrett Parkway, then off the road and across the mall's parking lot to the mall, THROUGH the mall building (in one entrance, along the
+   concourse(s), out another: Round 60's drivable mall), across the lot on the other side to the trail by Town Center Drive / Hidden Forest
+   Court, then the real trail east along the creek, under I-575, back to the trailhead at Bells Ferry. The real trail goes on round the
+   mall; the race does not, it cuts through the building. REVERSE: the same loop the other way. If Code finds a reading that fits Dan's
+   words better (e.g. which lot, which entrances), say so.
+   THE MALL: at least one jump, ideally two, EACH WAY (forward and reverse may share a feature if it works both ways, else their own),
+   creative and belonging in a mall, not dirt piles (standing rules: real physics off ramps; nothing slows a car on a ramp). Ideas, Code
+   picks and says why: launch off the upper level's edge over a center court; an escalator as a kicker; a car-raffle display stage with its
+   ramp; a fashion runway; the fountain's rim; a fallen store sign; the play area's slide. Racers smash the mall's breakables as they pass
+   (they must not slow them, Round 60). Doors and glass on the race line break, and are whole again for the next lap (as the barricades).
+   No shortcuts this round: Dan will pick them after driving it. 3 laps by default. NAME: "Noonday Creek Trail" (Dan). RENAME the old
+   made-up woods track to "Noonday Creek Extension" (Dan, 02:34, yes to Claude's suggestion: it is really the proposed extension that has
+   not been built): its name in the menus, records, replays, loading screen, map labels; keep its records and replays (rename, not reset). Built like the other races (route, checkpoints, closures of roads
+   that leave the lap, AI, ghosts, records, replays, the loading screen's inset, menus). Traffic on the roads it uses, as other tracks.
+B. THE TRAIL, AS THE PHOTOS SHOW IT: a dark asphalt multi-use path about 3 m wide with a dashed yellow center line, grass shoulders, pine
+   and hardwood woods close on both sides (`photo3_trail_woods.jpg`); black steel pipe railings where it runs beside drops and under
+   I-575's concrete bridge (piers, green steel beams, `photo1_i575_underpass.jpg`); a rust-red steel truss footbridge over the creek with
+   a concrete abutment and a grey timber-and-steel railed approach, kudzu and brush along the dark creek (`photo2_red_truss_footbridge.jpg`);
+   yellow winding-road warning signs (breakable). The path at its REAL width (standing rule), the race also on the grass beside it: clear
+   and grade the shoulders so four vehicles can race and pass (Dan on the made-up Noonday Creek: it had to be wider so vehicles could
+   weave); the bridges and the underpass stay real chokepoints but never a place a vehicle wedges (railings solid, no snag). Trees off the
+   cleared shoulders solid as elsewhere.
+C. BUMPS IN THE NEW LAND. BUG-001 (x 617.23 z 9.33 h 273, Big Shanty Road NW): "level all thesse bumps". BUG-002 (x 512.91 z 18.66 h 161,
+   I-575 (Phillip Landrum Memorial Highway)): "flatten bumps". Dan keeps finding these on the generated roads (Rounds 60, 61, 62), so run
+   Round 61 D's levelling on ALL the stage 1 and 2 roads of class motorway, trunk, primary, secondary and tertiary (I-75, I-575 and their
+   ramps, Big Shanty, Barrett, Chastain, Chastain Meadows, Bells Ferry, US 41, Town Center Drive, Kennesaw Mountain Drive, the rest) and
+   the new track's roads; then a jolt scan along each at speed; report the worst before / after and Dan's two spots.
+Check: the loop both ways on all vehicles, no stop, no wedge (the bridges, the underpass, the mall if used); AI races x2 each way, Hard,
+traffic Normal, all finish; every closure holds; the jolt table. Pictures: the start on Bells Ferry, the underpass and the red bridge next to Dan's
+photos, the mall run and each mall jump, Bells Ferry and Barrett Parkway stretches, Dan's two bump spots.
+For Dan to check: race the Noonday Creek Trail both ways (the mall and its jumps; then pick its shortcuts); the bumps on Big Shanty, I-575 and the other main roads.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 61
+**Reviewed: Dan drove the Round 61 build 2026-10-22 23:37 (free roam in the new land); his only notes are bumps (Round 62). The Build Map speed-up after it is accepted.**
 **Round 61, THE MAP EXTENSION, STAGE 2: WEST TO SUMMERBROOKE AND SOUTH OVER KENNESAW MOUNTAIN (airport included), with the work that keeps
 it fast; three bumps in the new land (Dan, 2026-10-22 10:04; reports BUG-001 to BUG-003 of session `2026-10-22_09-43-30-831_9bfdff`, read by Claude, after
 the Round 60 exe; his map `local/reference_photos/extension/stage2_kennesaw_mountain.png`, Google: reference only, never traced).** Round 60
@@ -161,15 +224,7 @@ Follow-up, same order every build: the street-lamp smash site's FenceChunks, the
 of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
 For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 60
+## Previous delivery 2: Round 60
 **Reviewed: Dan drove the Round 60 build 2026-10-22 09:43: "Everything looks good in the mall"; his notes are Round 61.**
 **Round 60, TOWN CENTER AT COBB MADE TO LOOK LIKE ITSELF, DRIVABLE INSIDE ON BOTH LEVELS WITH THINGS TO SMASH; the Chastain Road overpass
 over I-75 (Dan, 2026-10-22 05:37; report BUG-001 of session `2026-10-22_05-11-54-864_7498e6`, read by Claude, after the Round 59 exe).**
@@ -229,7 +284,7 @@ Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as the
 For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
 `Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.
 
-## Previous delivery 2: Round 59
+## Previous delivery 3: Round 59
 **Reviewed: Dan drove the Round 59 build 2026-10-22 05:11 (free roam in the new land): "I didn't notice any frame rate issues"; his notes are Round 60.**
 **Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
 stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
@@ -279,72 +334,6 @@ Check: every race still runs (11 courses and directions, one AI race each on Har
    Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
 Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
 `Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.
-
-## Previous delivery 3: Round 58
-**Reviewed: Dan drove the Round 58 / 59 build 2026-10-22; no complaint about the AI or B to D.**
-**Round 58, AI DRIVERS WITH AGENCY (recover, pass, never wrong way), and three fixes (Dan, 2026-10-22 01:20; reports BUG-001 to BUG-003
-of session `2026-10-22_00-37-30-154_d7ca87`, read by Claude, after the Round 57 exe: Underground, Chastain Ridge and replays). THEN
-ROUND 59 (the map extension, stage 1, below in QUEUED): Dan went to bed and asked for both; do 58, commit, then start 59 without
-waiting.** Round 57 is reviewed. Dan is not watching: take the most reasonable reading of anything unclear, write it in the status, go
-on (stop only for something that cannot be undone). Tuning limit. Short results.
-A. THE AI. Dan watched the AI in replays: "I see some reasons why I beat them so badly usually":
-   "1) I have seen them wreck, sideways on the bike lying down. Took them at least 5 seconds to restart themselves. I mean if you are
-   your side, that should be an automatic reset
-   2) Still saw them not putting much effort getting around cars
-   3) Saw one run into a tree. I counted 10-15 seconds before they decided to reset. At the very least they could have tried to back up
-   and get around the tree
-   4) Literally watched one drive in reverse for a good stretch of the lap
-   5) Saw one get in an accident, the drove off in the opposite direction for a bit before turning around
-   Seems they have no agency to beat me. And this is is in hard mode I cant even imagine how bad it is in easy."
-   For every AI racer, every track, every difficulty (difficulty changes pace and skill, never these recoveries):
-   (1) On its side or upside down (a bike or rider down, a car over): reset at once onto the race line facing forward (well under a
-       second once it is clearly down; no 5 s wait).
-   (2) Passing: Round 55 E was "modest". Pass slower cars (traffic, parked, racers) decisively: pick a side early, use the other lane,
-       the shoulder and the grass beside the road; take a gap rather than follow; a racer stuck behind a car more than about 2 s is
-       the fault to remove.
-   (3) Blocked (a tree, a wall, a car, a fence it cannot break): within about 1 s of no progress, back up and steer round it; if that
-       fails within about 3 s more, reset. Never 10 to 15 s against a tree.
-   (4) and (5) Never the wrong way: driving backwards along the lap, or forwards against it after a crash, is caught within about 1 s
-       (heading against the lap's direction while moving, or reversing beyond a short back-up): turn round on the spot / three-point
-       turn, or reset if that is quicker. Reverse only as part of (3)'s back-up.
-   (6) Then Hard must race: measure, from the replays' recordings (Round 57 records every racer), per AI per race: time down / stuck /
-       blocked / wrong way / behind a car, before and after (Hard, traffic Normal, every track both ways where it has both, at least one
-       race each). Hard's lap times against Dan's best laps on each track (the Top 10 records): Hard should be within a few seconds of
-       them; report the table. Easy and Normal keep their pace gaps but recover the same.
-B. BUG-001 (x 1854.77 z 1132.96 h 87, THE HUB's floor, Underground race): "during the race, it still allows you falll down the pit of you
-   are going to fastt, The gate should extend all th way down". Round 57 D's rails and gate still leave a way down: the gate / rails must
-   reach all the way down (no gap under them to the pit) wherever the race passes the pit's edge. Check: flat out at every edge on the
-   race's line and off it, all vehicles, none falls in during a race.
-C. BUG-002 (x 1640.80 z 943.86 h 13, M5c, an aquarium pipe): "plants shouldn't be growing through the grass" (glass: the picture shows
-   water plants standing up INSIDE the tube, through its glass and floor). Keep every aquarium pipe's plants, rocks and fish outside the
-   glass (all aquarium pipes; Round 57 found the beds cutting tubes: same family).
-D. BUG-003 (x 3082.26 z 708.71 h 270, Chastain Ridge Drive, Chastain Ridge race lap 3): "there is a bump somewhere around here that always
-   messes me up". Find it on the race's line (both directions) and smooth it.
-Check: A's table (before / after), and a replay of an AI recovering from each case (pictures or a short note of times); B, C, D as above.
-For Dan to check: watch the AI in replays on Hard (recoveries, passing, no wrong way); race them; the hub's edges; M5c's plants; the Ridge bump.
-
-**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round58/`. Bug reports read: session `2026-10-22_00-37-30-154_d7ca87`, BUG-001 to 003.
-A DONE (`RoadDriver` AgencyStep / PassLane; `-r58AgencyOff` gives the old driving). Down: put back on the line after 0.35 s. Blocked (wanting to go, not moving 1 s): backs up 1.1 s
-   steering to the open side, crawls round; no 5 m of progress 4 s on: put back. Reversing: the brake pedal was reverse below 0.6 m/s, so a car rolling back after a knock kept
-   reversing (Dan's "drive in reverse for a good stretch"); now it is on the throttle. Wrong way: past 100 degrees full lock (pure pursuit barely steered with the target behind:
-   Dan's "drove off in the opposite direction"), put back after 3.5 s. Passing: either side, the shoulder and the grass, kept until past; behind a car 1.5 s the oncoming look shortens.
-   By hand (`round58_check_parts.txt`): on its side going again in 0.9 s, turned round 2.9 s, rolling back 1.3 s, a trunk-size block in front 4.7 s (backed up once, round it).
-   Table, Hard, traffic Normal, every course and direction, 33 AI races, from the replays (`r58_ai_before.csv` / `r58_ai_after.csv`): behind a car 342 s (48 spells over 2 s) -> 133 s (14);
-   reversing 44 -> 7 s; stuck 163 -> 86 s (longest 3.4 s); down 9.7 -> 5.1 s; wrong way 26 -> 33 s (turning round after a crash, longest 2.1 s); 33 of 33 finish. The first
-   "after" run found a driver backing up 185 times in S2's dive pipe (on a shortcut speed alone counted as progress): fixed, measured along the shortcut's line.
-   Hard's pace (attempt 1 of the tuning limit; Easy and Normal unchanged): corner use .90 -> 1.0, brake 1.0, steep hills 42 m/s, crests 9.5. AI best flying lap against Dan's best:
-   Glen fwd 39.6 / 38.9, rev 39.3 / 36.1; Ridge fwd 57.4 / 59.7, rev 70.8 / 59.2; Underground 65.6 / 75.5; Addison fwd 76.2 / 59.7, rev 69.5 / 69.0; Creek fwd 91.9 / 79.2,
-   rev 92.4 / 69.5; Lakes fwd 111.4 / 72.1, rev 94.1 / 77.1 (Lakes is 2 laps: one flying lap each, noisy). Not tuned further: Creek and Lakes are held by their jump zones'
-   set speeds and Dan's laps use shortcuts the AI takes only sometimes (the shortcut rule). Dan decides.
-B DONE. Round 28 railed only the west and south-west of the pit; the race runs the whole mid-ledge ring and the span. Rails R3 to R7 (`make_underground_route.py`): the south
-   and east edges to S1's floor ramp (left open: S1's way up), the north edge either side of the span, the span's two sides over the chasm (heights follow it, route `ys`).
-   Four vehicles at 34 m/s into every edge at 90 / 45 / 20 degrees: 120 of 120 held, none in the pit.
-C DONE. S2's aquarium (under the Enclave pond) had 22 weed clumps standing in M5c's tube (Dan's picture). Every glass stretch now knows the other tubes near it: weeds, rocks,
-   logs and turtle spots keep out of them and out of its own tube on a bend; a fish inside another tube is not drawn (build log: 22 left out at S2, 1 to 5 elsewhere). Picture at his spot.
-D DONE. The bump is the valley 50 m before his spot (the drive comes down at -13 %, a 10 m level shelf, then +15 % within 8 m): one vertical curve (as Addison's); the exe
-   check also found a jolt 10 m after it at the loop branch's junction (x 3072): blurred. Flat out both ways, on the line and 3.4 m to his side: no jolt over 0.55 m/s, wheels down.
-   Left: 3.4 m to the inside of the bend at x 3040, off the asphalt, still lifts a Drifter Twin's wheels (for Dan to judge).
-`Builds/ChastainRush/` 2026-10-22 03:17. Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
