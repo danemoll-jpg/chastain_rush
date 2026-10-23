@@ -134,8 +134,8 @@ namespace ChastainRush
             SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)
             SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
             BuildClock.Lap("SmoothRampSeams");
-            R61LevelMains(map, terrain);         // Round 61 (D): the map extension's main roads levelled across their width, blurred along (MapBuilder.Round61.cs)
-            BuildClock.Lap("R61LevelMains");
+            R62LevelMains(map, terrain);         // Round 62 (C): every main road of the map extension (and the core's near its seams) levelled across its width, blurred along (MapBuilder.Round62.cs; Round 61's five roads among them)
+            BuildClock.Lap("R62LevelMains");
             var shop = c.shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
@@ -143,6 +143,7 @@ namespace ChastainRush
             if (Park != null) GradeStuntPark(map, terrain, Park);
             Mall = PlanMall(map, terrain);   // Round 60 (A): Town Center, its doors' aprons graded (MapBuilder.Mall.cs)
             Airport = PlanAirport(map, terrain);   // Round 61 (B): the airport's runways, taxiways and aprons, Kennesaw Mountain's trails graded (MapBuilder.Airport.cs)
+            PlanTrailRace(terrain);   // Round 62 (A, B): the Noonday Creek Trail race's bench along the real trail, the ground under its red bridge (MapBuilder.TrailRace.cs)
             BuildClock.Lap("StuntPark plan");
             c.world = quick ? c.scene.GetRootGameObjects().First(g => g.name == "World").transform : new GameObject("World").transform;
             c.paint = new Chunks();
@@ -174,6 +175,7 @@ namespace ChastainRush
             BuildClock.Lap("MouthSweep");
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
+            R62SeamOverpasses(map, terrain);         // Round 62 (C, BUG-002): I-575's decks over Big Shanty Road, across the old core's edge, each laid with its roads as one curve (MapBuilder.Round62.cs)
             BuildClock.Lap("SmoothBridgeEnds");
             AddisonNow = Ridge.Load(AddisonTrackFile); AddisonExtra = LoadAddisonExtra();   // Round 52: the Addison Heights race's cleared line (MapBuilder.Round52.cs); Round 53: its shortcuts' pieces (MapBuilder.Round53.cs)
             LakesNow = Ridge.Load(LakesTrackFile); LakesExtra = LoadLakesExtra();   // Round 44: the Chastain Lakes race's world pieces (MapBuilder.LakesRace.cs), read before the amenity area is planned
@@ -471,7 +473,7 @@ namespace ChastainRush
 
         // Round 5: the race controller. The route itself is data (Data/routes/*.json, from Tools/mapgen/make_route.py), laid over
         // the one world; the scene only carries a copy of it (the Editor reads the file afresh) and the marker materials.
-        static void BuildRace(Materials mats)
+        static void BuildRace(Materials mats, MapData map)   // Round 62: the map, for the route's heights on bridge decks (EmbedRouteHeights)
         {
             string path = Path.Combine(ProjectRoot, "Data/routes/chastain_glen_loop.json");
             var go = new GameObject("Race");
@@ -481,7 +483,7 @@ namespace ChastainRush
             // Round 18 (item 5): every route of the one world, the loop first (the race setup menu picks one)
             var files = Directory.GetFiles(Path.Combine(ProjectRoot, "Data/routes"), "*.json").OrderBy(f => Path.GetFileName(f) == race.routeFileName ? 0 : 1).ThenBy(f => f).ToArray();
             race.routeFileNames = files.Select(Path.GetFileName).ToArray();
-            race.embeddedRouteJsons = files.Select(File.ReadAllText).ToArray();
+            race.embeddedRouteJsons = files.Select(f => EmbedRouteHeights(File.ReadAllText(f), Path.GetFileName(f), map)).ToArray();   // Round 62: the mall's floors written in (MapBuilder.TrailRace.cs)
             Debug.Log("[Round18] race routes: " + string.Join(", ", race.routeFileNames));
             race.gateBlack = mats.GateBlack; race.gateWhite = mats.GateWhite;
             race.nextMaterial = mats.RaceNext; race.laterMaterial = mats.RaceLater; race.missedMaterial = mats.RaceMissed;

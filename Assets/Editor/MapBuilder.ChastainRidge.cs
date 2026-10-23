@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left; public float half, blend, keep_off_m, blend_r; }   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves; public float half, blend, keep_off_m, blend_r; }   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -100,23 +100,35 @@ namespace ChastainRush
         {
             var p = ToPoints(gr.points);
             bool sides = gr.blend_left != null && gr.blend_left.Length == p.Count;
+            bool halves = gr.halves != null && gr.halves.Length == p.Count;   // Round 62: a half width per point (the trail's bench narrower by the creek)
             float br = gr.blend_r > 0f ? gr.blend_r : gr.blend;
-            float reach = gr.half + Mathf.Max(gr.blend, Mathf.Max(br, sides ? gr.blend_left.Max() : 0f)), most = 0f; int n = 0;
+            float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, sides ? gr.blend_left.Max() : 0f)), most = 0f; int n = 0;
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
+            // Round 62 (build speed: the Noonday Creek Trail's 2 km grades): the segments by 8 m cell, each sample asks only those near it (the same answer)
+            const float Cell = 8f; var cells = new Dictionary<Vector2Int, List<int>>();
+            for (int i = 0; i + 1 < p.Count; i++)
+            {
+                var lo = Vector2.Min(p[i], p[i + 1]) - Vector2.one * reach; var hi = Vector2.Max(p[i], p[i + 1]) + Vector2.one * reach;
+                for (int cx = Mathf.FloorToInt(lo.x / Cell); cx <= Mathf.FloorToInt(hi.x / Cell); cx++)
+                    for (int cz = Mathf.FloorToInt(lo.y / Cell); cz <= Mathf.FloorToInt(hi.y / Cell); cz++)
+                    { var key = new Vector2Int(cx, cz); if (!cells.TryGetValue(key, out var l)) cells[key] = l = new List<int>(); l.Add(i); }
+            }
             EditTerrain(terrain, area, (x, z, y) =>
             {
-                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend;
-                for (int i = 0; i + 1 < p.Count; i++)
+                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend, half = gr.half;
+                if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x / Cell), Mathf.FloorToInt(z / Cell)), out var near)) return y;
+                foreach (int i in near)
                 {
                     var ab = p[i + 1] - p[i]; float t = Mathf.Clamp01(Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (p[i] + ab * t - q).magnitude;
                     if (d < best)
                     {
                         best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
                         if (sides) { var v = q - p[i]; blend = ab.x * v.y - ab.y * v.x > 0f ? Mathf.Lerp(gr.blend_left[i], gr.blend_left[i + 1], t) : br; }   // > 0: on the left
+                        if (halves) half = Mathf.Lerp(gr.halves[i], gr.halves[i + 1], t);
                     }
                 }
-                if (best >= gr.half + blend) return y;
-                float w = best <= gr.half ? 1f : Smooth01(1f - (best - gr.half) / blend), ny = y + w * (target - y);
+                if (best >= half + blend) return y;
+                float w = best <= half ? 1f : Smooth01(1f - (best - half) / blend), ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;
             });
             Debug.Log($"[Round40] {gr.id}: graded along {p.Count} points, {gr.half * 2f:0} m wide; {n} samples moved, by up to {most:0.00} m");

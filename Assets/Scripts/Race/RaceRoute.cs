@@ -44,6 +44,8 @@ namespace ChastainRush
     [Serializable] public class RouteSwitchGateJson { public string id, shortcut, label; public RouteSealJson gate; public float sx, sy, sz, sr, nx, ny, nz; }   // sx..sz the plate's middle, sr its reach, n its face's normal
     // Round 18: a stretch of the lap where an AI driver holds a set speed (a jump: the crest rule would brake it over every lip)
     [Serializable] public class RouteAiZoneJson { public string id; public float s0, s1, speed; }
+    // Round 62: a stretch of the lap where the AI keeps within a narrower half width (a footbridge, an underpass, a mall's aisle)
+    [Serializable] public class RouteWidthJson { public string id; public float s0, s1, half; }
     [Serializable] public class RouteResetSkipJson { public string id; public float s0, s1, to_s, short_s; public float[] short_area; }   // Round 43: short_area / short_s (CarRecovery)   // Round 33: stations in the route file's own numbering
 
     // A road that leaves the course and is not part of an official shortcut: a barrier stands across it during a race.
@@ -89,6 +91,12 @@ namespace ChastainRush
         // Round 27 (the underground race): loop_y / lead_in_y the heights of loop / lead_in (none: the ground's); underground: heights come
         // from the route, not the terrain over it, while it is raced (RaceRoute.Surface), and its arches are low with no light beams
         public float[] loop_y, lead_in_y;
+        // Round 62 (the Noonday Creek Trail race through Town Center): loop_y may hold CodeGround (the world's ground there) beside real heights (the
+        // mall's floors, which the map build writes in when it embeds the route: MapBuilder.BuildRace); loop_rev_y the same for loop_rev. A route with
+        // real heights of its own is raced on them where it has them (Surface): the grid, the AI, the resets
+        public float[] loop_rev_y;
+        public const float CodeGround = -10000f;
+        public RouteWidthJson[] ai_widths, ai_widths_rev;   // Round 62: the AI's narrower stretches (RaceRoad.HalfWidth), in the lap's own stations
         public bool underground;
         public float gate_arch_m;   // the start / finish arch's height (0: 7.5 m; under the hub's ceiling)
         public RouteSealJson[] seals;
@@ -199,8 +207,16 @@ namespace ChastainRush
             var loop = r.OwnReverse ? j.loop_rev : j.loop;
             int n = loop.Length / 2;
             var pts = new List<Vector3>(n);
-            bool hasY = !r.OwnReverse && j.loop_y != null && j.loop_y.Length == n;   // Round 27: the underground race's own heights
-            for (int i = 0; i < n; i++) pts.Add(hasY ? new Vector3(loop[2 * i], j.loop_y[i], loop[2 * i + 1]) : Ground(loop[2 * i], loop[2 * i + 1]));
+            var ly = r.OwnReverse ? j.loop_rev_y : j.loop_y;   // Round 62: the reverse lap's own heights too
+            bool hasY = ly != null && ly.Length == n;   // Round 27: the underground race's own heights
+            var own = new List<bool>(n);
+            for (int i = 0; i < n; i++)
+            {
+                bool real = hasY && ly[i] > RouteJson.CodeGround + 1f;   // Round 62: a code for the ground there is the ground's
+                pts.Add(real ? new Vector3(loop[2 * i], ly[i], loop[2 * i + 1]) : Ground(loop[2 * i], loop[2 * i + 1])); own.Add(real);
+            }
+            if (r.Reverse && !r.OwnReverse) own.Reverse();
+            r.OwnY = own.Contains(true) && !j.underground ? own.ToArray() : null;
             r.Underground = j.underground; r.Data = j;
             if (r.Reverse && !r.OwnReverse) pts.Reverse();
             r.Path = pts.ToArray();
@@ -370,6 +386,7 @@ namespace ChastainRush
         // route's height under the nearest point of its lap (within 30 m), not the terrain far over it: the grid, the AI's passing lane
         // and its fall-recovery, the resets and the barriers ask Surface. Any other time (and away from the lap) it is the terrain's.
         public bool Underground;
+        public bool[] OwnY;   // Round 62: the lap's points that have a height of their own (a mall's floors); Surface takes it near them
         public RouteJson Data;   // Round 27: the race layer's seals, railings and switch gates (RaceBarriers)
         public static RaceRoute Active;
         // Round 28: nearY (a height near the place asked about) picks the level where the route passes over itself (the span over the mid
@@ -377,6 +394,7 @@ namespace ChastainRush
         public static Vector3 Surface(float x, float z, float nearY = float.NaN)
         {
             var r = Active;
+            if (r != null && !r.Underground && r.OwnY != null) return r.OwnSurface(x, z, nearY);   // Round 62
             if (r == null || !r.Underground) return Ground(x, z);
             var p = new Vector2(x, z); float best = 900f; float y = float.NaN;
             void Scan(Vector3[] path)
@@ -392,6 +410,23 @@ namespace ChastainRush
                 }
             }
             Scan(r.Path); Scan(r.LeadIn);
+            return float.IsNaN(y) ? Ground(x, z) : new Vector3(x, y, z);
+        }
+        // Round 62: within 6 m of a lap segment whose ends both have heights of their own, the lap's height there (the nearest such segment, height
+        // counting when nearY is given); anywhere else the terrain's
+        Vector3 OwnSurface(float x, float z, float nearY)
+        {
+            var p = new Vector2(x, z); float best = 36f; float y = float.NaN;
+            for (int i = 0; i + 1 < Path.Length; i++)
+            {
+                if (!OwnY[i] || !OwnY[i + 1]) continue;
+                Vector2 a = new Vector2(Path[i].x, Path[i].z), b = new Vector2(Path[i + 1].x, Path[i + 1].z), ab = b - a;
+                float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                float d = (a + ab * t - p).sqrMagnitude; if (d > 36f) continue;
+                float yy = Mathf.Lerp(Path[i].y, Path[i + 1].y, t);
+                if (!float.IsNaN(nearY)) d += VerticalWeight * (yy - nearY) * (yy - nearY);
+                if (d < best) { best = d; y = yy; }
+            }
             return float.IsNaN(y) ? Ground(x, z) : new Vector3(x, y, z);
         }
         public const float VerticalWeight = 4f;   // Round 28: a meter up or down counts as 2 m across

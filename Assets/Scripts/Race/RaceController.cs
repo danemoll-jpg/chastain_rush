@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Racer;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -698,6 +699,8 @@ namespace ChastainRush
             AiRoad.points = pts.ToArray();
             if (RouteData.trail && RouteData.ai_half_width_m > 0f) AiRoad.halfWidth = RouteData.ai_half_width_m;   // Round 18: a narrow trail
             AiRoad.Initialize();
+            var widths = Route.OwnReverse ? RouteData.ai_widths_rev : !Route.Reverse ? RouteData.ai_widths : null;   // Round 62: the narrower stretches
+            if (widths != null && widths.Length > 0) AiRoad.halfZones = widths.Select(w => new Vector3(w.s0, w.s1, w.half)).ToArray();
             AiShortcuts.Clear();
             foreach (var sc in Route.Shortcuts)
             {

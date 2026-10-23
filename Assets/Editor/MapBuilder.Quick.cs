@@ -95,7 +95,7 @@ namespace ChastainRush
                     var pave = c.pave = new Pavement(map);
                     biz.Trees.AddRange(MedianTrees(map, ridge));   // Round 40 (B2): trees down New Chastain Road's median
                     var trees = c.trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)) || (AddisonNow != null && AddisonNow.RejectTree(x, z)) || (Mall != null && Mall.InLot(x, z)) || (Airport != null && Airport.RejectTree(x, z)),   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts; Round 52: off Addison Heights' road edges
+                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)) || (AddisonNow != null && AddisonNow.RejectTree(x, z)) || (Mall != null && Mall.InLot(x, z)) || (Airport != null && Airport.RejectTree(x, z)) || (TrailNow != null && TrailNow.RejectTree(x, z)),   // Round 62: off the Noonday Creek Trail's bench and the race's lot lines   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts; Round 52: off Addison Heights' road edges
                         (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
                     if (creek != null || ridge != null || AddisonNow != null)   // Round 54 (A7): Addison Heights' road sides too; Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
                     {
@@ -133,6 +133,7 @@ namespace ChastainRush
                 S("Network", () => BuildNetwork(terrain, mats, world, net, pipes)),   // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
                 S("LakesRace", () => BuildLakesRace(map, terrain, mats, world)),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs)
                 S("Addison", () => BuildAddison(map, terrain, mats, world), true),   // Round 53: Addison Heights' road crew on Lyndon Drive and its shrub beds (MapBuilder.Round53.cs)
+                S("TrailRace", () => BuildTrailRace(terrain, mats, world), true),   // Round 62: the Noonday Creek Trail's path, railings, red bridge and signs (MapBuilder.TrailRace.cs)
                 S("ManholeFloors", () => RefitManholeFloors(terrain, world)),   // Round 54 (E1): after every step that grades the ground round a manhole
                 S("Hydrants", () => BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge)),   // Round 36 (Parts C, D)
                 S("Life", () =>
@@ -148,7 +149,7 @@ namespace ChastainRush
                 S("GameLayer", () =>
                 {
                     new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
-                    BuildRace(mats);
+                    BuildRace(mats, map);
                     BuildActivities(terrain, mats);   // Round 36 (Part B): Racer's Free Roam activities, game layer (MapBuilder.Activities.cs)
                     BuildEggs();                      // Round 48: the goose egg hunt and the map's places, game layer (MapBuilder.Eggs.cs)
                     BuildPolice(map);                 // Round 39 (Part D): the police's roads and radio script, game layer (MapBuilder.Police.cs)
@@ -350,7 +351,7 @@ namespace ChastainRush
                 foreach (var race in go.GetComponentsInChildren<RaceController>(true))
                 {
                     var files = race.routeFileNames ?? new string[0]; var dir = Path.Combine(ProjectRoot, "Data/routes");
-                    race.embeddedRouteJsons = files.Select(f => File.Exists(Path.Combine(dir, f)) ? File.ReadAllText(Path.Combine(dir, f)) : "").ToArray();
+                    race.embeddedRouteJsons = files.Select(f => File.Exists(Path.Combine(dir, f)) ? EmbedRouteHeights(File.ReadAllText(Path.Combine(dir, f)), f, c.map) : "").ToArray();   // Round 62: the mall's floors written in
                     var main = Path.Combine(dir, race.routeFileName ?? ""); if (File.Exists(main)) race.embeddedRouteJson = File.ReadAllText(main);
                     EditorUtility.SetDirty(race);
                     Debug.Log($"[QuickBuild] race routes taken afresh: {string.Join(", ", files)}");

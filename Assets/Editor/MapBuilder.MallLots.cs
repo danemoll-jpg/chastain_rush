@@ -99,6 +99,7 @@ namespace ChastainRush
                 {
                     if (!On(u, v) || !On(u + 3f, v) || !On(u - 3f, v)) continue;
                     var p = m.W(u, v); if (roadGrid.Clearance(p) < 3f) continue; float gy = Ground(t, p.x, p.y); var n = m.V;
+                    if (TrailPoleFree(p)) continue;   // Round 62: none on the Noonday Creek Trail race's line across the lots
                     var lb = lamps.Begin(p);
                     lamps.Piece(() => Post(lb, new Vector3(p.x, gy - .1f, p.y), 5.6f, .2f, dark), gy + .1f);
                     lamps.Piece(() => Post(lb, new Vector3(p.x, gy + 5.5f, p.y), 5.4f, .16f, dark), gy + .1f);

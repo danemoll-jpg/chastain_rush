@@ -82,6 +82,16 @@ namespace ChastainRush
             var pts = p.pts.ToList(); pts[pts.Count - 1] = new Vector2(pts[pts.Count - 1].x, rise); return pts;
         }
 
+        // Round 62: the east bank's profile: rounded off the lower floor, then straight at 14 degrees to its top (the raffle stage's lip)
+        const float MallStageLip = 1.4f;   // Round 62 check 1: 1.07 m at 15 degrees threw too flat (40 m, short of the far floor)
+        static List<Vector2> MallRampProfileLip(float rise)
+        {
+            const float r = 22f, ang = 14f;
+            var p = new SProf(); float arcRise = r * (1f - Mathf.Cos(ang * Mathf.Deg2Rad));
+            p.Arc(r, ang).Line((rise - arcRise) / Mathf.Sin(ang * Mathf.Deg2Rad));
+            var pts = p.pts.ToList(); pts[pts.Count - 1] = new Vector2(pts[pts.Count - 1].x, rise); return pts;
+        }
+
         // ------------------------------------------------------------ the planning: which buildings, the frame, the doors, the ground at the doors
         static MallPlan PlanMall(MapData map, TerrainGrid t)
         {
@@ -114,7 +124,10 @@ namespace ChastainRush
             // (to the east anchor's upper floor)
             var prof = MallRampProfile(m.L1 - m.L0); float run = MallRampRun(prof);
             m.Ramps.Add(new MallRamp { name = "west", uFoot = -150f, dir = -1, v0 = -1307.5f, v1 = -1299.5f, prof = prof, run = run });
-            m.Ramps.Add(new MallRamp { name = "east", uFoot = 8f, dir = 1, v0 = -1307.5f, v1 = -1299.5f, prof = prof, run = run });
+            // Round 62 (the Noonday Creek Trail race): the east bank rises straight on at 14 degrees to the car raffle stage's lip, MallStageLip over the
+            // upper floor (no rounding over at its top: a launch going up it, MapBuilder.MallRace.cs)
+            var eprof = MallRampProfileLip(m.L1 - m.L0 + MallStageLip);
+            m.Ramps.Add(new MallRamp { name = "east", uFoot = 8f, dir = 1, v0 = -1307.5f, v1 = -1299.5f, prof = eprof, run = MallRampRun(eprof) });
             foreach (var r in m.Ramps) m.Voids.Add(Rect.MinMaxRect(r.U0, r.v0, r.U1, r.v1));
             m.Court = Rect.MinMaxRect(-126f, -1311f, -84f, -1296f); m.Voids.Add(m.Court);      // the center court, open to both levels
             m.Tower = Rect.MinMaxRect(-57f, -1286f, -45f, -1267.1f - MallPlan.WallT); m.Voids.Add(m.Tower);   // the main entrance's two-storey hall
@@ -267,7 +280,7 @@ namespace ChastainRush
             var cuts = new List<(Vector2 a, Vector2 b, float y0, float y1)>();
             foreach (var d in m.Doors) cuts.Add((d.a, d.b, d.floor - .02f, d.main ? m.L1 + 4.6f : d.floor + d.height));
             // between the concourse and the east anchor: the upper floor open across the concourse's width (breakable glass: MallInside)
-            cuts.Add((m.W(MallUE, MallCS), m.W(MallUE, MallCN), m.L1 - .02f, m.L1 + 4.2f));
+            cuts.Add((m.W(MallUE, MallCS), m.W(MallUE, MallCN), m.L1 - .02f, m.L1 + MallStoreFrontH));   // Round 62: to 6.2 m (the escalator's launch through it)
             (Color, bool) Look(Vector2 a, Vector2 b)
             {
                 var mid = (a + b) * .5f;
@@ -394,7 +407,8 @@ namespace ChastainRush
                     // the glass tower: a bronze-framed glass front from the doors up past the roof, the stepped block parapet round it, the name
                     float top = m.Roof + 4.2f - d.floor;
                     BoxF(shell, f, -hw - 3f, -hw, -.3f, top, -.05f, 1.6f, MBlock); BoxF(shell, f, hw, hw + 3f, -.3f, top, -.05f, 1.6f, MBlock);   // the piers
-                    for (float y = 3.6f; y < top - .5f; y += 2.6f) { glass.Tint = SVary(MGlass, y, 3f, .05f); Face(glass, f.P(-hw, y, 1.2f), f.P(hw, y, 1.2f), f.P(hw, Mathf.Min(top - .5f, y + 2.6f), 1.2f), f.P(-hw, Mathf.Min(top - .5f, y + 2.6f), 1.2f), f.F); }
+                    // Round 62: the glass up to the tower's opening (m.L1 + 4.6) is breakable panes (MallInside's MallDoorsGlass: the balcony drop flies out through it)
+                    for (float y = 3.6f; y < top - .5f; y += 2.6f) { if (y < m.L1 + 4.6f - d.floor - .01f) continue; glass.Tint = SVary(MGlass, y, 3f, .05f); Face(glass, f.P(-hw, y, 1.2f), f.P(hw, y, 1.2f), f.P(hw, Mathf.Min(top - .5f, y + 2.6f), 1.2f), f.P(-hw, Mathf.Min(top - .5f, y + 2.6f), 1.2f), f.F); }
                     for (float x = -hw; x <= hw + .01f; x += hw / 2.5f) BoxF(shell, f, x - .09f, x + .09f, 3.4f, top - .5f, 1.15f, 1.35f, MBronze);
                     for (float y = 3.4f; y < top; y += 2.6f) BoxF(shell, f, -hw, hw, y, y + .18f, 1.15f, 1.35f, MBronze);
                     BoxF(shell, f, -hw - 3.4f, hw + 3.4f, top - .5f, top + .3f, -.1f, 2.4f, MBronze);   // its cap, overhanging

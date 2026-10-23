@@ -11,7 +11,14 @@ namespace Racer
         public Vector3[] points;
         public bool openHighway;   // Racer: an open path (not closed); here the shortcuts' paths are open
         public float halfWidth = 4f;
-        public float HalfWidth(float s) => halfWidth;
+        // Chastain Rush, Round 62: stretches with a half width of their own (RouteJson.ai_widths: a footbridge, an underpass, a mall's aisle)
+        public Vector3[] halfZones;   // (s0, s1, half) each
+        public float HalfWidth(float s)
+        {
+            if (halfZones != null)
+                foreach (var z in halfZones) if (Mathf.Repeat(s - z.x, Length) <= z.y - z.x) return Mathf.Min(halfWidth, z.z);
+            return halfWidth;
+        }
         float[] distance;
         public float Length { get; private set; }
 

@@ -230,7 +230,8 @@ namespace ChastainRush
                 if (hood.InCorridor(p, 2f) || Beds.Wet(p.x, p.y) || shop.RejectTree(p.x, p.y)) return false;
                 if ((creek != null && creek.RejectTree(p.x, p.y)) || pipes.RejectTree(p.x, p.y) || (net != null && net.RejectTree(p.x, p.y))) return false;   // off the trail and the pipe and network cuts
                 if (RidgeNow != null && RidgeNow.Cleared(p.x, p.y)) return false;   // Round 33: off the Chastain Ridge race's run-ups, landings and the way out of the hollow
-                if (LakesNow != null && LakesNow.Cleared(p.x, p.y)) return false;   // Round 44: off the Chastain Lakes race's trail and its shortcuts' lines
+                if (LakesNow != null && LakesNow.Cleared(p.x, p.y)) return false;
+                if (TrailNow != null && TrailNow.Cleared(p.x, p.y)) return false;   // Round 62: off the Noonday Creek Trail's bench and the race's lot lines   // Round 44: off the Chastain Lakes race's trail and its shortcuts' lines
                 var k = new Vector2Int(Mathf.FloorToInt(p.x / 40f), Mathf.FloorToInt(p.y / 40f));
                 for (int dx = -1; dx <= 1; dx++) for (int dz = -1; dz <= 1; dz++)
                     if (grid.TryGetValue(k + new Vector2Int(dx, dz), out var l)) foreach (var ring in l) if (InPolygon(p, ring) || DistToEdgesStatic(p, ring) < 1.0f) return false;

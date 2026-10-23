@@ -41,6 +41,7 @@ namespace ChastainRush
             MallConcourse(m, root, deco, br, signs);
             BuildMallFoodCourt(m, root, deco, br, signs);
             MallPlayArea(m, root, deco, br, signs);
+            MallRaceFeatures(m, root, deco, br);   // Round 62: the raffle stage at the east escalator's top, the mattress mountain in Halverson's aisle (MapBuilder.MallRace.cs)
             MallCeilingLights(m, lights);
             MallShoppers(m);
             MallReverb(m, root);
@@ -241,14 +242,14 @@ namespace ChastainRush
             {
                 MallRailing(m, root, deco, br, rp.U0, rp.v0 - .1f, rp.U1, rp.v0 - .1f, m.D3(0, 1), false);
                 MallRailing(m, root, deco, br, rp.U0, rp.v1 + .1f, rp.U1, rp.v1 + .1f, m.D3(0, -1), false);
-                float fu = rp.uFoot - rp.dir * .1f; MallRailing(m, root, deco, br, fu, rp.v0, fu, rp.v1, m.D3(rp.dir, 0), false);   // across the foot's end
+                float fu = rp.uFoot - rp.dir * .1f; MallRailing(m, root, deco, br, fu, rp.v0, fu, rp.v1, m.D3(rp.dir, 0), rp.name == "east");   // across the foot's end (Round 62: the east one breaks, the raffle stage's long landings cross it)
             }
             var c = m.Court;
             MallRailing(m, root, deco, br, c.xMin, c.yMin - .1f, c.xMax, c.yMin - .1f, m.D3(0, 1), false);
             MallRailing(m, root, deco, br, c.xMin, c.yMax + .1f, c.xMax, c.yMax + .1f, m.D3(0, -1), false);
             MallRailing(m, root, deco, br, c.xMin - .1f, c.yMin, c.xMin - .1f, c.yMax, m.D3(1, 0), true);
             MallRailing(m, root, deco, br, c.xMax + .1f, c.yMin, c.xMax + .1f, c.yMax, m.D3(-1, 0), true);
-            var tw = m.Tower; MallRailing(m, root, deco, br, tw.xMin, tw.yMin - .1f, tw.xMax, tw.yMin - .1f, m.D3(0, 1), false);
+            var tw = m.Tower; MallRailing(m, root, deco, br, tw.xMin, tw.yMin - .1f, tw.xMax, tw.yMin - .1f, m.D3(0, 1), true);   // Round 62: the balcony's glass breaks (the drop into the entrance hall)
         }
 
         // ------------------------------------------------------------ the columns: at the holes' corners and along their long sides, floor to roof
@@ -498,7 +499,11 @@ namespace ChastainRush
                 MallPanes(br, a, b, d.floor, d.height - .05f, new Vector3(d.nOut.x, 0, d.nOut.y));
             }
             var e0 = m.P(MallUE - WallTM * .5f, MallCS + .2f, 0f); var e1 = m.P(MallUE - WallTM * .5f, MallCN - .2f, 0f);
-            MallPanes(br, e0, e1, m.L1, 4.2f, m.D3(1, 0));
+            MallPanes(br, e0, e1, m.L1, MallStoreFrontH - .1f, m.D3(1, 0));   // Round 62: 6.1 m (was 4.2): the escalator's launch flies through it
+            // Round 62: the main entrance's glass tower over its doors breaks too, up to its opening (the balcony drop flies out through it): rows of panes
+            var md = m.Doors.First(d => d.main); var moff = -md.nOut * (WallTM * .5f);
+            var ma = new Vector3(md.a.x + moff.x, 0, md.a.y + moff.y); var mb2 = new Vector3(md.b.x + moff.x, 0, md.b.y + moff.y);
+            for (float y = md.floor + md.height; y < m.L1 + 4.5f; y += 2.6f) MallPanes(br, ma, mb2, y, Mathf.Min(2.55f, m.L1 + 4.55f - y), new Vector3(md.nOut.x, 0, md.nOut.y), 2.4f);
         }
 
         // ------------------------------------------------------------ the east anchor's upper floor: a department store (Halverson's) to drive through
