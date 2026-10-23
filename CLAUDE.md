@@ -19,7 +19,7 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
 - **Import from Racer selectively.** Bring a system over only when the current
   round needs it, bring only what it depends on, and list what came with it in
   the round report. Don't copy Racer wholesale and don't bring its git history.
-- **World scale is real:** 1 unit = 1 metre. Since Round 59 the map reaches west and south of the old map's corner (x and z down to -2655.33 / -1918);
+- **World scale is real:** 1 unit = 1 metre. Since Round 59 the map reaches west and south of the old map's corner (Round 61: x and z down to -8629.83 / -8311.33);
   everything made before keeps its coordinates. Vertical exaggeration is off (1.0) by
   default; `vertical_scale` in `Tools/mapgen/config.json` stretches terrain, roads
   (draped on it) and building heights together, about the crop's lowest point.
@@ -416,6 +416,12 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 61 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the map extension, stage 2 (config `extension2`:
+west to -84.662 and south to 33.956, Kennesaw Mountain, Cobb County International Airport; 12613 x 10229 m, 19 x 16 tiles, x -8629.83 to 3983, z -8311.33 to 1918; every
+existing list unchanged as a prefix), the airport and the mountain's trails (`MapBuilder.Airport.cs`, map.json `aeroways` / `trails`), fast travel to the summit and the visitor
+center; C the frame rate kept (`World/FarTerrain.cs`, `GroundQuery.TileAt`, `ArcadeVehicle.Live`, cells for shrub beds / water / lamps / people, `RoadNet` largest part counted
+once); D the new land's main roads levelled (`MapBuilder.Round61.cs`). Full Build Map now about 5.3 h (Businesses and Hydrants the most). Check: `-exeRound59 <dir> -r59Only
+load,fps,drive,pics59[,fps61x] -r59Drives local/round61/r61_places.json` (`ext_drives.py --round61`). Imported from Racer: nothing.
 **Round 60 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A Town Center at Cobb from its six OSM footprints
 (`MapBuilder.Mall.cs` plan, frame (14.75 deg), doors, outside, anchors, skylights, sign atlas `python Tools/handmade/make_mall_signs.py` (made-up names, hand-made, committed);
 `MapBuilder.MallInside.cs` floors, escalator ramps, railings, columns, 104 shops, smashables (all `FenceChunk.free`), food court, play area, the east anchor's store;
@@ -956,7 +962,7 @@ its path, so Dan tests from the exe, not from the Editor.
 **Pull Dan's bug reports yourself (Dan, 2026-10-10).** At the start of every round, read every debug session newer than
 the last one handled in `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\DebugReports\` (each `<session>` folder
 beside its zip: `BUG_REPORT.md` and `Screenshots\`). Read only; never move or delete them. Last read: session
-`2026-10-22_05-11-54-864_7498e6` through BUG-001 (Round 60; before it `2026-10-22_00-37-30-154_d7ca87` through BUG-003, Round 58; before it `2026-10-21_21-15-52-689_2c460b` through BUG-005, Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
+`2026-10-22_09-43-30-831_9bfdff` through BUG-003 (Round 61; before it `2026-10-22_05-11-54-864_7498e6` through BUG-001, Round 60; before it `2026-10-22_00-37-30-154_d7ca87` through BUG-003, Round 58; before it `2026-10-21_21-15-52-689_2c460b` through BUG-005, Round 57; before it `2026-10-21_17-00-50-815_f90718` through BUG-004, Round 56; before it `2026-10-21_12-16-40-990_d377b3` through BUG-003, Round 55; before it `2026-10-21_03-39-54-769_591b8d` through BUG-010, Round 54; before it `2026-10-20_01-26-12-613_8b4dc1` through BUG-005, Round 53; before it `2026-10-19_19-45-10-079_0a133b` through BUG-003, Round 52; before it `2026-10-19_13-25-47-596_f0f013` through BUG-004, Round 50; before it `2026-10-19_01-29-19-650_77c31b` through BUG-001, Round 47; none newer at Round 49; before it `2026-10-18_16-02-03-115_cda8a3` through BUG-001, Round 43; before it `2026-10-18_10-15-07-747_d1c371` through BUG-003, Round 42).
 
 **Commit before reading `TODO.md` at the start of a round.** Claude (planning)
 edits `TODO.md` and this file directly in the working folder between rounds,

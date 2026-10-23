@@ -1,0 +1,11 @@
+Round 60 check, 2026-10-22 20:05, the exe, 1920 x 1080, muted.
+
+=== Frame rate in and by Town Center, uncapped, parked, chase camera, 1920 x 1080 (Round 59 at Town Center: 171 fps average, 51 slowest 1 %, 1920 x 1080 window; not measured at 3840 x 2160)
+INFO  lower concourse: 187 fps average, slowest 1 % 61 fps (the inside drawn)
+INFO  upper concourse: 195 fps average, slowest 1 % 97 fps (the inside drawn)
+INFO  the center court: 200 fps average, slowest 1 % 93 fps (the inside drawn)
+INFO  the food court: 207 fps average, slowest 1 % 100 fps (the inside drawn)
+INFO  the lot by the main doors: 85 fps average, slowest 1 % 18 fps (the inside drawn)
+PASS  mallfps: the inside not drawn from 250 m away  -  hidden
+
+1 of 1 checks passed.

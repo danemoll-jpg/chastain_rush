@@ -1,0 +1,9 @@
+Round 61 D: Dan's three spots driven in the exe, Drifter Twin at 25 m/s on Dan's own line, 80 m either side, both ways; before = the Round 60 exe, after = this build.
+jolt = the largest change of vertical speed in one physics step within 40 m of the spot; air = the longest time with no wheel down there; slowest = the lowest speed there.
+BUG-001 (Chastain Meadows Parkway, northbound as Dan drove): before STOPPED dead at (1358.4, -711.7) | after kept going, slowest 23.7 m/s, wheels always down
+BUG-001 (southbound): before jolt 3.08, air 0.52 s, slowest 0.2 m/s | after jolt 0.79, air 0.00 s, slowest 23.8 m/s
+BUG-002 (Barrett Parkway, westbound as Dan): before jolt 0.96, air 0.76 s, slowest 14.5 m/s | after jolt 0.39, air 0.00 s, slowest 24.7 m/s
+BUG-002 (eastbound): before jolt 2.09, air 0.60 s | after jolt 0.41, air 0.00 s, slowest 24.7 m/s
+BUG-003 (Barrett Parkway, westbound as Dan): before jolt 5.89, air 3.88 s (flipped), slowest 6.1 m/s | after jolt 0.04, air 0.00 s, slowest 24.6 m/s
+BUG-003 (eastbound): before jolt 0.66, air 0.28 s | after jolt 0.04, air 0.00 s, slowest 24.7 m/s
+The main roads, sharpest 1 m step along each road's centerline before / after the levelling (build log, round61_build_log.txt).

@@ -1,0 +1,12 @@
+[Round61] D: Barrett Parkway: 7430 m levelled across its width; sharpest 1 m step 0.944 -> 0.115 m; steps over 0.10 m 9 -> 1
+[Round61] D: Chastain Meadows Parkway Northwest: 3617 m levelled across its width; sharpest 1 m step 0.060 -> 0.034 m; steps over 0.10 m 0 -> 0
+[Round61] D: Chastain Road: 2515 m levelled across its width; sharpest 1 m step 0.500 -> 0.500 m; steps over 0.10 m 29 -> 20
+[Round61] D: Chastain Road Northwest: 1979 m levelled across its width; sharpest 1 m step 0.404 -> 0.057 m; steps over 0.10 m 3 -> 0
+[Round61] D: Cobb Parkway: 15163 m levelled across its width; sharpest 1 m step 0.475 -> 0.475 m; steps over 0.10 m 8 -> 8
+[Round61] D: Cobb Parkway North: 12941 m levelled across its width; sharpest 1 m step 0.218 -> 0.046 m; steps over 0.10 m 8 -> 0
+[Round61] D: Cobb Parkway Northwest: 422 m levelled across its width; sharpest 1 m step 0.124 -> 0.021 m; steps over 0.10 m 2 -> 0
+[Round61] D: Kennesaw Mountain Drive: 2821 m levelled across its width; sharpest 1 m step 0.088 -> 0.039 m; steps over 0.10 m 0 -> 0
+[Round61] D: BUG-001 (1359.2, -716.1): the sharpest 1 m step within 25 m now 0.982 m
+[Round61] D: BUG-002 (650.0, -1663.2): the sharpest 1 m step within 25 m now 0.616 m
+[Round61] D: BUG-003 (584.0, -1674.0): the sharpest 1 m step within 25 m now 0.691 m
+[Round61] B: the airport: 2 runways, 21 taxiways levelled across their width, 3 aprons on their planes (moved up to 2.96 m); 45 trails, 19643 m, levelled at their real width
