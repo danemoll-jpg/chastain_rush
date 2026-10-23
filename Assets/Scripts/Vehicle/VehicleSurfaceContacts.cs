@@ -94,7 +94,7 @@ namespace Racer
                     if (mesh.attachedRigidbody || !mesh.sharedMesh || !mesh.sharedMesh.isReadable) continue;
                     bool ramp = IsShortcutSurface(mesh.name) || IsStuntParkSurface(mesh.name) || mesh.name.StartsWith("Mall ramp ", System.StringComparison.Ordinal);   // Round 37: the stunt park's; Round 60: Town Center's escalator banks
                     // Round 54 (E1): a manhole's floor over the hole is the street's ground there (MapBuilder.Network.cs), with its faces' normals as the decks'
-                    if (!ramp && mesh.name != "BridgeDecks" && !IsManholeFloor(mesh.name)) continue;   // Round 14: the bridge decks are driving ground too
+                    if (!ramp && !mesh.name.StartsWith("BridgeDecks", System.StringComparison.Ordinal) && !IsManholeFloor(mesh.name)) continue;   // Round 14: the bridge decks are driving ground too
                     var vertices = mesh.sharedMesh.vertices; var indices = mesh.sharedMesh.triangles;
                     var t = mesh.transform; for (int v = 0; v < vertices.Length; v++) vertices[v] = t.TransformPoint(vertices[v]);
                     var faces = new Face[indices.Length / 3];
@@ -106,7 +106,7 @@ namespace Racer
                         faces[i] = new Face { Normal = Vector3.Cross(b - a, c - a).normalized, Point = a };
                     }
                     next[mesh.GetEntityId()] = faces;
-                    if (mesh.name == "BridgeDecks")   // Round 27: every 1 m cell a deck triangle covers, with the deck's highest point there
+                    if (mesh.name.StartsWith("BridgeDecks", System.StringComparison.Ordinal))   // Round 27: every 1 m cell a deck triangle covers, with the deck's highest point there
                         for (int i = 0; i + 2 < indices.Length; i += 3)
                         {
                             Vector3 a = vertices[indices[i]], b = vertices[indices[i + 1]], c = vertices[indices[i + 2]];

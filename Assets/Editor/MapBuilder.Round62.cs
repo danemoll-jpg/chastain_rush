@@ -102,7 +102,9 @@ namespace ChastainRush
                 for (int i = 0; i < n; i++) w[i] = Mathf.Min(Smooth01((DeckDist(p[i]) - 15f) / 25f), W(p[i]));
                 if (w.All(v => v <= 0f)) continue;
                 float before = SharpestStep(terrain, p, float.MaxValue); int b10 = Steps(terrain, p, .1f);
-                LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend);
+                // near Dan's two spots (150 m): no crest that lifts a car off the road at 30 m/s (build 2's check: Big Shanty's dip under I-575 still threw it 0.5 s)
+                var cap = new bool[n]; bool any = false; for (int i = 0; i < n; i++) { cap[i] = spots.Any(s => (p[i] - s.Item2).magnitude < 150f); any |= cap[i]; }
+                LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (30f * 30f));
                 float after = SharpestStep(terrain, p, float.MaxValue); int a10 = Steps(terrain, p, .1f);
                 report.TryGetValue(name, out var o0); levelled++;
                 report[name] = (Mathf.Max(o0.before, before), Mathf.Max(o0.after, after), o0.b10 + b10, o0.a10 + a10, o0.len + (n - 1));
@@ -165,6 +167,9 @@ namespace ChastainRush
                     return null;
                 }
                 var A = Beyond(at[0].p, (at[0].p - at[1].p).normalized); var Z = Beyond(at[at.Count - 1].p, (at[at.Count - 1].p - at[at.Count - 2].p).normalized);
+                // 150 m of each (a road's first piece can run on for kilometers: build 2 laid 1.5 km of I-575 with it)
+                List<Vector2> Cut150(List<Vector2> l) { if (l == null) return null; var o = new List<Vector2> { l[0] }; float acc = 0f; for (int i = 1; i < l.Count && acc < 150f; i++) { float d = (l[i] - l[i - 1]).magnitude; if (acc + d > 150f) { o.Add(Vector2.Lerp(l[i - 1], l[i], (150f - acc) / d)); acc = 150f; break; } o.Add(l[i]); acc += d; } return o; }
+                A = Cut150(A); Z = Cut150(Z);
                 if (A == null || Z == null) { Debug.LogWarning($"[Round62] the {b0.name} deck over the old core's edge: no road on the ground at {(A == null ? "its start" : "its end")}, left as it was"); continue; }
                 // one line: road A (toward the deck), the deck, road Z, at about 1 m; each point's kind (-1 road A, 0 deck, 1 road Z) and its height now
                 var pts = new List<Vector2>(); var kind = new List<int>(); var deckK = new List<int>();

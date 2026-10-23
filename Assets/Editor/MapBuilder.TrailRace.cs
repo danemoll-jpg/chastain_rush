@@ -184,7 +184,9 @@ namespace ChastainRush
                 deck.Tint = rustDark; Face(deck, P(s0, -hw, -.6f), P(s1, -hw, -.6f), P(s1, hw, -.6f), P(s0, hw, -.6f), Vector3.down);
                 foreach (float sg in new[] { -1f, 1f }) { deck.Tint = rustDark; Face(deck, P(s0, sg * hw, -.6f), P(s1, sg * hw, -.6f), P(s1, sg * hw, 0f), P(s0, sg * hw, 0f), new Vector3(n.x, 0, n.y) * sg); }
             }
-            var dk = deck.ToObject("BridgeDecks", mats.House, go, true);   // the deck's own name: VehicleSurfaceContacts takes it as a bridge deck
+            // its name starts "BridgeDecks" (VehicleSurfaceContacts takes it as a bridge deck) and is its own: a mesh is saved under its object's name, and
+            // two "BridgeDecks" overwrote the map's bridge decks' mesh (Round 62 check: every road bridge without a deck to drive on)
+            var dk = deck.ToObject("BridgeDecks red truss footbridge", mats.House, go, true);
             // the trusses: bottom chords along the deck's edges, top chords 2.1 m over it at the ends rising to 2.6 m, verticals every 3 m, diagonals
             int bays = Mathf.Max(4, Mathf.RoundToInt(L / 3f));
             float Top(float s) => 2.1f + .5f * Mathf.Sin(s / L * Mathf.PI);
@@ -251,7 +253,7 @@ namespace ChastainRush
                 deck.Tint = side; Face(deck, V(i, -hw, -.45f), V(i + 1, -hw, -.45f), V(i + 1, hw, -.45f), V(i, hw, -.45f), Vector3.down);
                 foreach (float sg in new[] { -1f, 1f }) { var nn = N(i) * sg; Face(deck, V(i, sg * hw, -.45f), V(i + 1, sg * hw, -.45f), V(i + 1, sg * hw, 0f), V(i, sg * hw, 0f), new Vector3(nn.x, 0, nn.y)); }
             }
-            deck.ToObject("BridgeDecks", mats.House, go, true);   // a bridge deck to VehicleSurfaceContacts
+            deck.ToObject("BridgeDecks " + dk.id, mats.House, go, true);   // a bridge deck to VehicleSurfaceContacts (its own name: see BuildRedBridge)
             float acc = 0f, nextPier = 3f;
             for (int i = 0; i + 1 < p.Count; i++)
             {

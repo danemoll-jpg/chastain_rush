@@ -95,7 +95,7 @@ namespace ChastainRush
 
         // Round 61: the ground across a line's width ('half' + 'shoulder') set to its centerline's profile 'raw' blurred along it (a Gaussian
         // of 'sigma' m; the line resampled at 1 m), weighted by w (0: as it is, 1: the blurred level), eased back to the ground over 'blend'
-        static void LevelAlong(TerrainGrid terrain, List<Vector2> p, float[] raw, float[] w, float half, float sigma, float shoulder, float blend)
+        static void LevelAlong(TerrainGrid terrain, List<Vector2> p, float[] raw, float[] w, float half, float sigma, float shoulder, float blend, bool[] crestCap = null, float crestK = 0f)
         {
             int n = p.Count;
             int K = Mathf.CeilToInt(sigma * 3f); var target = new float[n];
@@ -105,6 +105,19 @@ namespace ChastainRush
                 for (int j = Mathf.Max(0, i - K); j <= Mathf.Min(n - 1, i + K); j++) { float k = Mathf.Exp(-0.5f * (j - i) * (j - i) / (sigma * sigma)); sw += k; sy += raw[j] * k; }
                 target[i] = raw[i] + w[i] * (sy / sw - raw[i]);
             }
+            // Round 62 (C): where asked, no crest sharper than crestK (a second difference per meter squared: 1 / (v^2 / g) keeps wheels down at v), its top lowered
+            if (crestCap != null && crestK > 0f)
+                for (int it = 0; it < 400; it++)
+                {
+                    bool moved = false;
+                    for (int i = 1; i + 1 < n; i++)
+                    {
+                        if (!crestCap[i] || w[i] <= 0f) continue;
+                        float c = target[i - 1] + target[i + 1] - 2f * target[i];
+                        if (c < -crestK - 1e-4f) { target[i] = (target[i - 1] + target[i + 1] + crestK) * .5f; moved = true; }
+                    }
+                    if (!moved) break;
+                }
             const float Cell = 8f; float reach = half + shoulder + blend, inner = half + shoulder;
             var cells = new Dictionary<Vector2Int, List<int>>();
             for (int i = 0; i + 1 < n; i++)
