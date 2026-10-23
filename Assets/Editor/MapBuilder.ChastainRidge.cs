@@ -44,29 +44,20 @@ namespace ChastainRush
                 return new Ridge { Data = JsonUtility.FromJson<RidgeFile>(File.ReadAllText(path)) };
             }
             // on a cleared line (no tree, no back-yard fence)
+            LineSet clearSet, breakSet;   // build speed: the lines as points once (they are asked about for every tree)
             public bool Cleared(float x, float z)
             {
                 if (Data.clear_lines == null) return false;
-                var q = new Vector2(x, z);
-                foreach (var cl in Data.clear_lines)
-                {
-                    var p = ToPoints(cl.points);
-                    for (int i = 0; i + 1 < p.Count; i++) if (SegDist(q, p[i], p[i + 1]) < cl.half) return true;
-                }
-                return false;
+                clearSet = clearSet ?? new LineSet(Data.clear_lines.Select(cl => (cl.points, cl.half)));
+                return clearSet.OnAny(new Vector2(x, z));
             }
             public bool RejectTree(float x, float z) { if (!Cleared(x, z)) return false; TreesRemoved++; return true; }
             // the woods past the Ridge leap's landing: the trees there snap when hit (TreeTrunks), a vehicle that overshoots is never stopped dead
             public bool Breakable(float x, float z)
             {
                 if (Data.break_lines == null) return false;
-                var q = new Vector2(x, z);
-                foreach (var bl in Data.break_lines)
-                {
-                    var p = ToPoints(bl.points);
-                    for (int i = 0; i + 1 < p.Count; i++) if (SegDist(q, p[i], p[i + 1]) < bl.half) return true;
-                }
-                return false;
+                breakSet = breakSet ?? new LineSet(Data.break_lines.Select(bl => (bl.points, bl.half)));
+                return breakSet.OnAny(new Vector2(x, z));
             }
         }
 

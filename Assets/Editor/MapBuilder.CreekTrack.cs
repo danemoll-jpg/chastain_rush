@@ -131,6 +131,7 @@ namespace ChastainRush
                 }
                 return best < WidePad * WidePad;
             }
+            LineSet clearSet, breakSet;
             public bool Breakable(float x, float z)
             {
                 if (Data.break_half_m <= 0f) return false;
@@ -149,11 +150,10 @@ namespace ChastainRush
                         if (SegDist(q, L - d * b.ramp_m, L + d * (b.land_to + 25f)) < Mathf.Max(8f, Data.break_half_m)) return true;
                     }
                 if (Data.break_lines != null)   // Round 21 follow-ups: round RA's and RC's lines
-                    foreach (var bl in Data.break_lines)
-                    {
-                        var pl = bl.points;
-                        for (int i = 0; i + 3 < pl.Length; i += 2) if (SegDist(q, new Vector2(pl[i], pl[i + 1]), new Vector2(pl[i + 2], pl[i + 3])) < bl.half) return true;
-                    }
+                {
+                    breakSet = breakSet ?? new LineSet(Data.break_lines.Select(bl => (bl.points, bl.half)));   // build speed: as points once
+                    if (breakSet.OnAny(q)) return true;
+                }
                 return false;
             }
 
@@ -163,12 +163,10 @@ namespace ChastainRush
                 bool on = Near(q, out float s, out float lat) && Mathf.Abs(lat) < ClearAt(s);
                 // Round 18 (item 4): the ways in and out of P1 (no tread: shortcuts are found, not signposted)
                 if (!on && Data.clear_lines != null)
-                    foreach (var cl in Data.clear_lines)
-                    {
-                        var p = ToPoints(cl.points);
-                        for (int i = 0; i + 1 < p.Count && !on; i++) on = SegDist(q, p[i], p[i + 1]) < cl.half;
-                        if (on) break;
-                    }
+                {
+                    clearSet = clearSet ?? new LineSet(Data.clear_lines.Select(cl => (cl.points, cl.half)));   // build speed: as points once
+                    on = clearSet.OnAny(q);
+                }
                 if (!on) return false;
                 TreesRemoved++; TreesRemovedAt.Add(q);
                 return true;
