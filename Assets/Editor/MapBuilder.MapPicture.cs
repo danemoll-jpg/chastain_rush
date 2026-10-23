@@ -124,7 +124,7 @@ namespace ChastainRush
             var full = Path.Combine(ProjectRoot, MapPicturePath);
             Directory.CreateDirectory(Path.GetDirectoryName(full));
             File.WriteAllBytes(full, tex.EncodeToPNG()); Object.DestroyImmediate(tex);
-            AssetDatabase.ImportAsset(MapPicturePath, ImportAssetOptions.ForceUpdate);
+            FlushAssets(); AssetDatabase.ImportAsset(MapPicturePath, ImportAssetOptions.ForceUpdate);
             if (AssetImporter.GetAtPath(MapPicturePath) is TextureImporter ti)
             {
                 ti.textureType = TextureImporterType.Default; ti.maxTextureSize = W; ti.mipmapEnabled = true; ti.wrapMode = TextureWrapMode.Clamp;

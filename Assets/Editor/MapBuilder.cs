@@ -81,7 +81,7 @@ namespace ChastainRush
         {
             BuildClock.Start("Build Map");
             var c = new Ctx();
-            Plan(c, false);
+            try { Plan(c, false); } finally { FlushAssets(); }
             var rec = new StepRecorder(c, true);
             foreach (var st in Steps(c)) rec.Run(st);
             EditorSceneManager.SaveScene(c.scene, ScenePath);

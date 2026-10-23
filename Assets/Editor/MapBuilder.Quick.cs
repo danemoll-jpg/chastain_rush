@@ -38,20 +38,28 @@ namespace ChastainRush
         // material) gets the new one's contents and keeps its file and GUID, so the objects of the steps not rebuilt still find it
         static T GenAsset<T>(T obj, string path) where T : UnityEngine.Object
         {
-            if (QuickStep == null) { AssetDatabase.CreateAsset(obj, path); return obj; }
+            if (!(obj is Mesh)) FlushAssets();   // build speed: anything but a mesh is written and imported at once (a step may read it back)
+            if (QuickStep == null) { if (obj is Mesh) BatchAssets(); AssetDatabase.CreateAsset(obj, path); return obj; }
             string meshes = GeneratedDir + "/Meshes/";
             if (path.StartsWith(meshes))
             {
                 string dir = GeneratedDir + "/Meshes/q/" + QuickStep;
-                if (!AssetDatabase.IsValidFolder(GeneratedDir + "/Meshes/q")) AssetDatabase.CreateFolder(GeneratedDir + "/Meshes", "q");
-                if (!AssetDatabase.IsValidFolder(dir)) AssetDatabase.CreateFolder(GeneratedDir + "/Meshes/q", QuickStep);
-                AssetDatabase.CreateAsset(obj, dir + "/" + path.Substring(meshes.Length)); return obj;
+                if (!AssetDatabase.IsValidFolder(GeneratedDir + "/Meshes/q")) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes", "q"); }
+                if (!AssetDatabase.IsValidFolder(dir)) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes/q", QuickStep); }
+                BatchAssets(); AssetDatabase.CreateAsset(obj, dir + "/" + path.Substring(meshes.Length)); return obj;
             }
             var old = AssetDatabase.LoadAssetAtPath<T>(path);
             if (old == null) { AssetDatabase.CreateAsset(obj, path); return obj; }
             string name = old.name; EditorUtility.CopySerialized(obj, old); old.name = name; EditorUtility.SetDirty(old);
             return old;
         }
+        // Build speed (after Round 61): every CreateAsset imported at once made the asset database rescan the project (45,000 assets) each
+        // time, 12,400 s of the 19,000 s full build. Meshes are written in a batch (StartAssetEditing) and imported together when the step ends
+        // (StepRecorder.Run), or sooner when anything else is written or read back through the asset database.
+        static bool assetBatch;
+        static void BatchAssets() { if (!assetBatch) { AssetDatabase.StartAssetEditing(); assetBatch = true; } }
+        static void FlushAssets() { if (assetBatch) { assetBatch = false; AssetDatabase.StopAssetEditing(); } }
+
         static string StepsDir => Path.Combine(ProjectRoot, "BuildCache", "steps");
 
         sealed class Step { public string name; public Action run; public bool quick; public Action prep; }
@@ -195,7 +203,7 @@ namespace ChastainRush
             public StepRec Run(Step st)
             {
                 var before = Roots(c); int all0 = CountAll(c); var t0 = DateTime.Now;
-                st.run();
+                try { st.run(); } finally { FlushAssets(); }
                 BuildClock.Lap(st.name);
                 var made = Roots(c).Where(t => !before.Contains(t)).ToList();
                 int inMade = made.Sum(t => t.GetComponentsInChildren<Transform>(true).Length);
@@ -281,7 +289,7 @@ namespace ChastainRush
             BuildClock.Lap("open the scene");
             var rootsBefore = new HashSet<GameObject>(scene.GetRootGameObjects());
             var c = new Ctx();
-            Plan(c, true);
+            try { Plan(c, true); } finally { FlushAssets(); }
             // anything the planning made in the scene (the memory terrain's root aside) does not belong there
             foreach (var g in scene.GetRootGameObjects()) if (!rootsBefore.Contains(g) && g.name != QuickTerrainRoot) UnityEngine.Object.DestroyImmediate(g);
             var tmpRoot = scene.GetRootGameObjects().First(g => g.name == QuickTerrainRoot);

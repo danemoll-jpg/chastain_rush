@@ -631,7 +631,7 @@ namespace ChastainRush
             if (rampMaterial && AssetDatabase.Contains(rampMaterial)) return rampMaterial;
             string path = GeneratedDir + "/ShortcutRamp.physicMaterial";
             var fresh = new PhysicsMaterial("ShortcutRamp") { dynamicFriction = 0f, staticFriction = 0f, bounciness = 0f, frictionCombine = PhysicsMaterialCombine.Minimum, bounceCombine = PhysicsMaterialCombine.Minimum };
-            var stored = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(path);
+            FlushAssets(); var stored = AssetDatabase.LoadAssetAtPath<PhysicsMaterial>(path);
             if (stored) { EditorUtility.CopySerialized(fresh, stored); stored.name = "ShortcutRamp"; EditorUtility.SetDirty(stored); rampMaterial = stored; }
             else { AssetDatabase.CreateAsset(fresh, path); rampMaterial = fresh; }
             return rampMaterial;

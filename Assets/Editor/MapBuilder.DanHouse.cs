@@ -42,7 +42,7 @@ namespace ChastainRush
             DanBack(mb, h, deckTop);
             var mesh = mb.ToMesh("DanHouse");
             string path = HandMadeDir + "/DanHouse.asset";
-            var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
+            FlushAssets(); var existing = AssetDatabase.LoadAssetAtPath<Mesh>(path);
             if (existing != null) { EditorUtility.CopySerialized(mesh, existing); AssetDatabase.SaveAssets(); return existing; }
             mesh = GenAsset(mesh, path);
             return mesh;
