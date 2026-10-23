@@ -364,6 +364,13 @@ if bw0 is not None:
         for k in range(len(trail)):
             dd = (tc_[k] - e) * sgn
             if 0 < dd < 12.0: gy[k] = ye + (gy[k] - ye) * (dd / 12.0) ** 2 * (3 - 2 * dd / 12.0)
+    # the climb out of the creek's valley (the boardwalk's east part and the bench past it) one even grade from 2 m past the last creek crossing to 30 m
+    # past the deck's end, its corners rounded (build 5's check: up to 51 % on the deck, then level at its end; reverse cars bounced into its railings)
+    c0, c1 = max(cross) + 2.0, bw1 + 30.0
+    k0 = min(range(len(trail)), key=lambda k: abs(tc_[k] - c0)); k1 = min(range(len(trail)), key=lambda k: abs(tc_[k] - c1))
+    lin = list(gy)
+    for k in range(k0, k1 + 1): lin[k] = gy[k0] + (gy[k1] - gy[k0]) * (tc_[k] - tc_[k0]) / (tc_[k1] - tc_[k0])
+    for k in range(k0 - 6, k1 + 7): gy[k] = gsm(lin, tc_, k, 4.0)
 TRAIL_DECKS = [{"id": "the red truss footbridge", "style": "truss", "s0": rb0, "s1": rb1, "width": 3.7}]
 if bw0 is not None: TRAIL_DECKS.append({"id": "the boardwalk under I-575", "style": "boardwalk", "s0": bw0, "s1": bw1, "width": 3.6})
 for d_ in TRAIL_DECKS:
@@ -624,7 +631,7 @@ def bld_dist(q): return min([poly_dist(q, ring) for i, ring in B if near_box(i, 
 def over_deck(st): return any(d_["s0"] + 0.5 < st < d_["s1"] - 0.5 for d_ in TRAIL_DECKS)
 g_pts, g_y, g_left = [], [], []
 for k, q in enumerate(trail):
-    if over_deck(tc_[k]) or road_dist(q) < 1.0 or bld_dist(q) < 3.0: continue
+    if (over_deck(tc_[k]) and gy[k] > tg[k] - 0.2) or road_dist(q) < 1.0 or bld_dist(q) < 3.0: continue   # over a deck only where it cuts (the boardwalk's climb into the bank)
     sd = stream_dist(q); half = max(1.6, min(BENCH_HALF, sd - 2.5))
     g_pts.append(q); g_y.append(round(gy[k], 2)); g_left.append(round(half, 2))
 def split_runs(p, y, hl):

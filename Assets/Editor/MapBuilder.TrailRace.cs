@@ -221,8 +221,7 @@ namespace ChastainRush
             foreach (var (s, dir) in new[] { (0f, -1f), (L, 1f) })
             {
                 var c = P(s, 0f, 0f); var f = MakeFrame(c, d * dir, 1f); float down = c.y - Mathf.Min(Ground(terrain, (a + d * s).x, (a + d * s).y), c.y - .3f) + 1.5f;
-                // past the deck's end its top stays 0.25 m down, under the graded approach (build 4's check: a low nose off the north approach caught its edge)
-                BoxF(conc, f, -hw - .6f, hw + .6f, -down, -.02f, -2.4f, 0f, concrete); BoxF(conc, f, -hw - .6f, hw + .6f, -down, -.25f, 0f, 1.2f, concrete);
+                BoxF(conc, f, -hw - .6f, hw + .6f, -down, -.02f, -2.4f, 1.2f, concrete);
             }
             // the approaches: gray timber-and-steel rails, 4 m along each end, flaring out 1.2 m (nothing square to hit), solid
             var timber = new MeshBuilder(); var gray = new Color(0.62f, 0.62f, 0.60f); var post = new Color(0.55f, 0.56f, 0.57f);
@@ -238,7 +237,7 @@ namespace ChastainRush
                     g.transform.SetPositionAndRotation((p0 + p1) * .5f + Vector3.up * .6f, Quaternion.LookRotation(p1 - p0)); g.AddComponent<BoxCollider>().size = new Vector3(.2f, 1.3f, (p1 - p0).magnitude);
                 }
             steel.ToObject("Red bridge trusses", mats.House, go, false);
-            conc.ToObject("Red bridge abutments", mats.House, go, true);
+            conc.ToObject("Red bridge abutments", mats.House, go, false);   // looks only: the deck and the graded ground carry a vehicle (builds 4 and 5: low noses caught their edges)
             timber.ToObject("Red bridge approach rails", mats.House, go, false);
             Debug.Log($"[Round62] the red truss footbridge: {L:0.0} m from ({a.x:0.0}, {a.y:0.0}) {ya:0.00} m to ({b.x:0.0}, {b.y:0.0}) {yb:0.00} m, {width:0.0} m between its trusses, {bays} bays");
         }
