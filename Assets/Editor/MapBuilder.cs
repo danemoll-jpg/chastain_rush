@@ -305,6 +305,7 @@ namespace ChastainRush
             const float Cell = 32f;
             public RoadIndex(Road[] roads)
             {
+                runsOn.Clear();   // (the pairs of an earlier build's roads)
                 foreach (var r in roads)
                 {
                     var p = ToPoints(r.points);
@@ -328,7 +329,14 @@ namespace ChastainRush
             }
 
             static readonly string[] Directions = { "Northeast", "Northwest", "Southeast", "Southwest", "North", "South", "East", "West", "NE", "NW", "SE", "SW" };
+            static readonly Dictionary<string, string> baseNames = new Dictionary<string, string>();   // build speed: each name's base worked out once
             static string BaseName(string n)
+            {
+                n = n ?? "";
+                if (baseNames.TryGetValue(n, out var known)) return known;
+                return baseNames[n] = BaseNameOf(n);
+            }
+            static string BaseNameOf(string n)
             {
                 var words = (n ?? "").Split(' ');
                 int len = words.Length;
@@ -377,7 +385,13 @@ namespace ChastainRush
 
             public int SplitStops; public readonly HashSet<(long, long)> SplitPairs = new HashSet<(long, long)>();   // Round 40 (B1): paint samples stopped by the split rule, and where
             // b continues a: same width and one-way-ness, an end of one on an end of the other, heading on within 40 degrees
+            static readonly Dictionary<(Road, Road), bool> runsOn = new Dictionary<(Road, Road), bool>();   // build speed: once per pair of roads
             static bool RunsOn(Road a, Road b)
+            {
+                if (runsOn.TryGetValue((a, b), out bool known)) return known;
+                return runsOn[(a, b)] = RunsOnNow(a, b);
+            }
+            static bool RunsOnNow(Road a, Road b)
             {
                 if (Mathf.Abs(a.width - b.width) > 0.01f || a.oneway != b.oneway) return false;
                 var pa = ToPoints(a.points); var pb = ToPoints(b.points);
@@ -435,7 +449,8 @@ namespace ChastainRush
                 // now the Glen's grid (Round 11): a vertex every 1.6 m across and 1.5 m along, each on the highest ground near it.
                 // A service road's cells that lie on another road's pavement are left to that road (two shades of gray at a mouth).
                 int across = Mathf.Clamp(Mathf.CeilToInt(r.width / 1.6f), 2, 10);
-                Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f) || (Park != null && IsCenterRoad(self) && (Park.InFloor(p) || Park.InBuilding(p)))) : (Func<Vector2, bool>)null;   // Round 36: the lot's own service roads are the park's floor
+                bool parkFloor = r.@class == "service" && Park != null && IsCenterRoad(self);   // build speed: worked out once per road, not per cell
+                Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f) || (parkFloor && (Park.InFloor(p) || Park.InBuilding(p)))) : (Func<Vector2, bool>)null;   // Round 36: the lot's own service roads are the park's floor
                 foreach (var run in Runs(pts, 96f))
                 {
                     var dense = Densify(run, 1.5f);
