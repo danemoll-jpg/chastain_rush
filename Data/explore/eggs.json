@@ -1438,6 +1438,15 @@
    "yaw": 352.1
   },
   {
+   "id": "race-noonday_creek_trail",
+   "title": "Noonday Creek Trail start",
+   "x": 1738.28,
+   "z": -731.49,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 170.8
+  },
+  {
    "id": "race-chastain_lakes",
    "title": "Chastain Lakes start",
    "x": 828.44,
@@ -1457,7 +1466,7 @@
   },
   {
    "id": "race-noonday_creek",
-   "title": "Noonday Creek start",
+   "title": "Noonday Creek Extension start",
    "x": 2371.55,
    "z": 934.8,
    "y": 0.0,

@@ -99,7 +99,9 @@ BREAK_HALF = 10.0            # the trees left within this of the line snap when 
 TREAD_HALF = 2.25
 STEP = 1.0
 SETTINGS = {
-    "name": "Noonday Creek", "direction": "forward", "directions": ["forward", "reverse"], "laps": 3,   # Round 21: and reverse
+    # Round 62 (Dan, 2026-10-23 02:34): renamed "Noonday Creek Extension" (it is the trail's proposed extension, not built yet; the real trail round
+    # Town Center is its own race now: make_trail_route.py); its records, ghosts and replays are kept under the old name (records_as)
+    "name": "Noonday Creek Extension", "records_as": "Noonday Creek", "direction": "forward", "directions": ["forward", "reverse"], "laps": 3,   # Round 21: and reverse
     "gate_half_width_m": 5.0, "checkpoint_half_width_m": 5.0, "gate_below_m": 6.0, "gate_above_m": 25.0,
     "reverse_grid_back_m": 45.0,
     # Dan: "perhaps even we restrict it to motorcycles and rtvs"; Claude added the mower (1.15 m wide, it fits)
