@@ -104,6 +104,7 @@ namespace ChastainRush
             bool pad = vInput && vInput.UsingGamepad;
             string hint = Landed && !Crashed ? (pad ? "Left stick up or RT: lift off" : "Space: lift off") : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick climb / turn · right stick fly · RB boost" : "W/S/Q/E fly · A/D turn · Space/C up / down · Shift boost") : "";
             GUI.Label(new Rect(r.x + 14, r.y + 96, 450, 24), hint, small);
+            BoundaryWarning(W);   // Round 66
             GUI.matrix = old;
         }
     }

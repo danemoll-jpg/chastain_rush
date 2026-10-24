@@ -140,6 +140,7 @@ namespace ChastainRush
             var vH = new Vector3(v.x, 0, v.z);
             bool sticks = Mathf.Abs(f) > .02f || Mathf.Abs(s) > .02f;
             var aH = Vector3.ClampMagnitude((want - vH) * (sticks ? 0.9f : 1.4f), accel);
+            Boundary(pos, vH, ref aH);   // Round 66: the headwind past the map's edge (HelicopterFlight.Boundary.cs)
             // vertical: the stick climbs or descends; let go and it holds the height it was at
             float wantVy;
             if (Mathf.Abs(l) > .08f) { wantVy = l > 0 ? l * Climb : l * Descend; holdY = pos.y + v.y * Mathf.Abs(v.y) / (2f * 14f); }   // let go: it holds where it coasts to
@@ -147,6 +148,8 @@ namespace ChastainRush
             if (pos.y > Ceiling && wantVy > 0) { wantVy = 0; holdY = Mathf.Min(holdY, Ceiling); }
             // the soft landing: never coming down faster than it can stop before the ground (about 20 m/s from 25 m, 1.2 m/s at the last)
             if (wantVy < 0) wantVy = Mathf.Max(wantVy, -Mathf.Max(1.2f, Mathf.Sqrt(16f * Mathf.Max(0f, HeightAboveGround - .3f))));
+            // Round 66: past the map's edge there is no ground to land on (the scenery has no colliders): it stays 30 m over the ground it left
+            if (Outside > 0f && pos.y < EdgeFloor + 30f) wantVy = Mathf.Max(wantVy, (EdgeFloor + 30f - pos.y) * .5f);
             float aY = Mathf.Clamp((wantVy - v.y) * 3f, -16f, 16f);
             body.AddForce((new Vector3(aH.x, aY, aH.z)) * Spool - Physics.gravity * Spool, ForceMode.Acceleration);
             // touch down: slow, low, not climbing
@@ -183,7 +186,8 @@ namespace ChastainRush
         {
             var from = body.position + Vector3.up * .2f;
             if (Physics.Raycast(from, Vector3.down, out var hit, 4000f, ~0, QueryTriggerInteraction.Ignore))
-            { HeightAboveGround = hit.distance - .2f - SkidDrop; groundNormal = hit.normal; groundPoint = hit.point; groundCollider = hit.collider; }
+            { HeightAboveGround = hit.distance - .2f - SkidDrop; groundNormal = hit.normal; groundPoint = hit.point; groundCollider = hit.collider; EdgeFloor = Mathf.Lerp(EdgeFloor, hit.point.y, EdgeFloor < -9000f ? 1f : .05f); }
+            else if (Outside > 0f && EdgeFloor > -9000f) { HeightAboveGround = body.position.y - SkidDrop - EdgeFloor; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, EdgeFloor, body.position.z); groundCollider = null; }   // Round 66: past the map's edge (no ground there): over the ground it left
             else { HeightAboveGround = 999f; groundNormal = Vector3.up; groundPoint = body.position - Vector3.up * 999f; groundCollider = null; }
             // water under the skids reads as the ground for the height (and a touch down in it is a ditching: CheckStrikes)
             var skids = body.position + Vector3.down * SkidDrop;
@@ -192,5 +196,6 @@ namespace ChastainRush
             else OverWater = false;
         }
         public bool OverWater { get; private set; }
+        public float EdgeFloor { get; private set; } = -1e4f;   // Round 66: the ground it last flew over (eased), the floor past the map's edge
     }
 }
