@@ -70,6 +70,8 @@ namespace ChastainRush
             Version++;
         }
 
+        // Round 63: a place found another way (the helipads: flown over or driven near, at any height)
+        public void Find(string id) { if (error != null || Discovered(id)) return; data.landmarks.Add(id); dirty = true; Version++; Save(); }
         public bool Visited(Vector3 p)
         {
             int cx = Mathf.FloorToInt((p.x - world.xMin) / Cell), cy = Mathf.FloorToInt((p.z - world.yMin) / Cell);

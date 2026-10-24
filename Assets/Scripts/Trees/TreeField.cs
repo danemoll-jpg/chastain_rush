@@ -28,6 +28,10 @@ namespace ChastainRush
 
         public const float NearCell = 48f, FarCell = 256f;
         public float nearDistance = 55f, farTrunkDistance = 160f, drawDistance = 700f;
+        // Round 63 (the view from the air, World/FarView.cs): when FarDraw is set (the opened view's distance), trees past drawDistance are drawn out to
+        // it as one eight-sided shape each (Far: the far crown's bounds, its average colour), three draws per 256 m group
+        public static float FarDraw;
+        Mesh[] far8;
 
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct Packed
@@ -170,7 +174,7 @@ namespace ChastainRush
             int calls = 0, trees = 0; long tris = 0;
             var eye = cam.transform.position;
             bool all = cam.orthographic; // overhead views draw every tree, simplified
-            float draw = all ? float.MaxValue : Mathf.Min(drawDistance, cam.farClipPlane);
+            float draw = all ? float.MaxValue : Mathf.Min(Mathf.Max(drawDistance, FarDraw), cam.farClipPlane);
             GeometryUtility.CalculateFrustumPlanes(cam, planes);
             var near = new RenderParams(material) { camera = cam, shadowCastingMode = ShadowCastingMode.On, receiveShadows = true, layer = 0 };
             var far = new RenderParams(material) { camera = cam, shadowCastingMode = ShadowCastingMode.Off, receiveShadows = true, layer = 0 };
@@ -180,6 +184,7 @@ namespace ChastainRush
                 if (d > draw || (!all && !GeometryUtility.TestPlanesAABB(planes, g.bounds))) continue;
                 if (all || d >= nearDistance)
                 {
+                    if (!all && d > drawDistance && FarDraw > 0f) { DrawFar8(far, g.crownA, ref calls, ref trees, ref tris); continue; }   // Round 63
                     DrawFar(far, g.crownA, g.trunkA, !all && d < farTrunkDistance, ref calls, ref trees, ref tris);
                     continue;
                 }
@@ -217,6 +222,37 @@ namespace ChastainRush
                 if (withTrunks) { calls += Draw(rp, trunkFar[s], trunks[k]); tris += (long)cr.Length * Tris(trunkFar[s]); }
                 trees += cr.Length;
             }
+        }
+
+        // Round 63: past drawDistance in the opened view: one eight-sided shape per tree
+        void DrawFar8(RenderParams rp, Matrix4x4[][] crowns, ref int calls, ref int trees, ref long tris)
+        {
+            if (far8 == null) { far8 = new Mesh[FarClasses]; for (int k = 0; k < FarClasses; k++) far8[k] = Far(crownFar[FarMeshOf[k]], k); }
+            for (int k = 0; k < FarClasses; k++)
+            {
+                var cr = crowns[k]; if (cr.Length == 0 || !far8[k]) continue;
+                calls += Draw(rp, far8[k], cr); tris += (long)cr.Length * 8; trees += cr.Length;
+            }
+        }
+        static Mesh Far(Mesh crown, int farClass)
+        {
+            if (!crown) return null;
+            var b = crown.bounds; var c = new Color(.28f, .40f, .19f, 0f);
+            try { if (crown.isReadable) { var cols = crown.colors; if (cols.Length > 0) { Color sum = Color.clear; foreach (var x in cols) sum += x; c = sum / cols.Length; c.a = 0f; } } } catch (System.Exception) { }
+            c = new Color(c.r * .9f, c.g * .9f, c.b * .9f, 0f);   // a little darker: the far crowns' own shading is gone
+            var mid = b.center; float wy = farClass == 1 ? .25f : .45f;   // a pine's widest point low, the others' near the middle
+            var top = new Vector3(mid.x, b.max.y, mid.z); var bottom = new Vector3(mid.x, b.min.y, mid.z); float ry = Mathf.Lerp(b.min.y, b.max.y, wy);
+            var ring = new[] { new Vector3(b.max.x, ry, mid.z), new Vector3(mid.x, ry, b.max.z), new Vector3(b.min.x, ry, mid.z), new Vector3(mid.x, ry, b.min.z) };
+            var v = new List<Vector3>(); var t = new List<int>();
+            for (int i = 0; i < 4; i++)
+            {
+                var a = ring[i]; var n = ring[(i + 1) % 4];
+                v.Add(top); v.Add(n); v.Add(a); v.Add(bottom); v.Add(a); v.Add(n);
+                int s0 = v.Count - 6; t.Add(s0); t.Add(s0 + 1); t.Add(s0 + 2); t.Add(s0 + 3); t.Add(s0 + 4); t.Add(s0 + 5);
+            }
+            var m = new Mesh { name = "Far tree " + farClass }; m.SetVertices(v); m.SetTriangles(t, 0);
+            var colors = new Color[v.Count]; for (int i = 0; i < colors.Length; i++) colors[i] = c; m.colors = colors;
+            m.RecalculateNormals(); m.RecalculateBounds(); return m;
         }
 
         static readonly Dictionary<Mesh, int> triCache = new Dictionary<Mesh, int>();
