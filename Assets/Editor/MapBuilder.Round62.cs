@@ -178,7 +178,21 @@ namespace ChastainRush
                     float w = Smooth01(Mathf.Min(cs[i], cs[n - 1] - cs[i]) / Fade); ys[i] = raw[i] + w * (sy / sw - raw[i]);
                 }
                 float before = SharpestStep(terrain, seg, float.MaxValue);
-                GradeAlong(terrain, new RidgeGrade { id = "Barrett Parkway at the I-575 ramps", points = seg.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = wHalf + .5f, blend = 4f });
+                // graded across its width, but not past its two ends (build 5: GradeAlong's round ends held the ground flat 10 m on past them, on a 4 % grade a
+                // 1 m step); there its weight is the fade's, nothing
+                float gh = wHalf + .5f, gb = 4f;
+                var lo = seg.Aggregate(Vector2.positiveInfinity, Vector2.Min) - Vector2.one * (gh + gb); var hi = seg.Aggregate(Vector2.negativeInfinity, Vector2.Max) + Vector2.one * (gh + gb);
+                EditTerrain(terrain, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, y) =>
+                {
+                    var q = new Vector2(x, z); float best = float.MaxValue, tg = y; bool end = false;
+                    for (int i = 0; i + 1 < n; i++)
+                    {
+                        var ab = seg[i + 1] - seg[i]; float tr = Vector2.Dot(q - seg[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(tr); float d = (seg[i] + ab * t - q).magnitude;
+                        if (d < best) { best = d; tg = Mathf.Lerp(ys[i], ys[i + 1], t); end = (i == 0 && tr < 0f) || (i + 2 == n && tr > 1f); }
+                    }
+                    if (end || best > gh + gb) return y;
+                    float w = best <= gh ? 1f : Smooth01(1f - (best - gh) / gb); return y + w * (tg - y);
+                });
                 Debug.Log($"[Round64] H: BUG-001, Barrett Parkway's {(dirSign < 0 ? "westbound" : "eastbound")} carriageway from ({seg[0].x:0}, {seg[0].y:0}) to ({seg[n - 1].x:0}, {seg[n - 1].y:0}) laid as one curve: sharpest step {before:0.000} -> {SharpestStep(terrain, seg, float.MaxValue):0.000} m");
             }
             var lines = new List<string> { "Round 62 (C): the main roads levelled across their width (MapBuilder.Round62.cs). Per road name: length levelled, the sharpest 1 m step (second difference) before -> after, steps over 0.10 m before -> after" };
