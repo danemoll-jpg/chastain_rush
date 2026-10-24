@@ -300,6 +300,11 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   Check: `ChastainRush.exe -exeRound33 <dir> [-r33Only jump,shortcuts,hollow,pics,race] -traffic Normal -logFile <dir>\Player.log`
   (`Checks/Round20Runner.R33.cs`).
 
+- **Build speed and quick builds (Round 65).** Generated meshes are packed 300 to an asset file as sub-assets (`PackMesh` in `MapBuilder.Quick.cs`; never one
+  asset per mesh: about 30 ms a file, `BuildSpeedProbe`). Full Build Map about 15 min, the exe after it about 4 min. Quick builds now take PLANNING changes to the
+  ground (gradings, aprons, levelling): the new planning's ground where it changed; refused with the steps named if a step not rebuilt changed the same samples;
+  other steps' renderers on the moved ground listed in the log. Quick steps: Businesses, ChurchCrypt, Mall, Ridge, Pipes, Addison, TrailRace, Shortcuts, CreekTrack,
+  LakesRace. A quick build is about 10 min (mostly the planning's replay), with its exe about 14. Fix-and-check cycles in a round: quick builds; the round's last build full.
 - **Quick builds (Round 42; use them from now on for a world fix).** Build Map is its planning (about a minute) then named steps
   (`MapBuilder.Quick.cs` `Steps`: Roads, Buildings, ..., Businesses, ChurchCrypt, ..., Ridge, Pipes, ...). A full Build Map records
   what each step made and every terrain sample it changed in `BuildCache/steps/` (git-ignored). A quick build reruns only the
@@ -416,6 +421,9 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 65 (see `TODO.md`, status there) is done (editor tools; the world unchanged):** generated meshes packed as sub-assets (full Build Map 44 -> 15 min, the exe 14 -> 4);
+quick builds take planning changes to the ground; Shortcuts, CreekTrack, LakesRace quick steps; the levelling's terrain edit by cell and in parallel (`EditTerrainCells`).
+Proof a build is unchanged: `SceneDump` before and after, `Tools/scene_diff.py`. Imported from Racer: nothing.
 **Round 64 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday Creek Trail put right: forward and reverse swapped
 (`make_trail_route.py` writes geometry B as "forward"; Dan's saved trail times / Top 10s / ghosts / replays swapped once by `Race/NoondayTrailSwap.cs`, marker file beside the records);
 the course on Ring Road NW and through Halverson Home (the north anchor) and the north wing, the east escalator rounded over again (Round 62's raffle stage lip gone);
