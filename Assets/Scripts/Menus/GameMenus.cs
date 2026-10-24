@@ -431,7 +431,7 @@ namespace ChastainRush
                 Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
                 Row(4, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D)
                 Row(5, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
-                Row(6, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(6, "garage", "GARAGE", () => OpenGarage("roam"));
                 Row(7, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
                 Row(8, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
                 Row(9, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
@@ -451,7 +451,7 @@ namespace ChastainRush
                 Row(fr++, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37
                 fr = ActivityRows(fr);   // Round 36 (Part B)
                 if (EggHunt.Instance) Row(fr++, "eggs", "GOOSE EGGS", () => Navigate("eggs"));   // Round 48 (GameMenus.Eggs.cs)
-                Row(fr++, "garage", "GARAGE", () => OpenGarage("all"));
+                Row(fr++, "garage", "GARAGE", () => OpenGarage("roam"));
                 Row(fr++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
                 Row(fr++, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
                 Row(fr++, "trailer", "TRAILER MODE", () => Navigate("trailer"));   // Round 43 (Part D): Racer's pause menu > Trailer / Photo Mode

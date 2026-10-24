@@ -118,7 +118,8 @@ namespace ChastainRush
         public float finish_park_gap_m, finish_park_speed;   // Round 35: the parked cars' spacing (0: 9 m) and the drive there (0: 9 m/s)
         public float gate_ring_m;   // Round 35: the line is in a pipe of this radius: a checkered hoop round the pipe's wall instead of the arch
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
-        public bool AllowsVehicle(string id) => !Racer.VehicleProfile.Find(id).Stunt && (vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0);   // Round 36: never a stunt vehicle (Racer: Free Roam and the Stunt event only)
+        public bool AllowsVehicle(string id) => !Racer.VehicleProfile.Find(id).Stunt && !Racer.VehicleProfile.Find(id).Flies &&   // Round 63: never the helicopter
+            (vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0);   // Round 36: never a stunt vehicle (Racer: Free Roam and the Stunt event only)
     }
 
     public sealed class RaceGate

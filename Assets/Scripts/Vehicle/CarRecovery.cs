@@ -21,6 +21,9 @@ namespace ChastainRush
         public static bool Find(VehicleRespawn r, out Vector3 pos, out float yaw)
         {
             var at = r.transform.position;
+            // Round 63: the helicopter goes to the nearest open ground under it, upright, rotor spooling up
+            var heli = r.GetComponent<HelicopterFlight>();
+            if (heli && heli.enabled) { bool ok = HelicopterFlight.ResetSpot(at, out pos, out yaw); if (ok) pos.y -= .5f; heli.Recovered(); if (ok) return true; }
             if (TreeTrunks.Instance) TreeTrunks.Instance.Refresh(at);
             var race = RaceController.Instance;
             bool racing = race != null && race.Route != null && (race.State == RaceController.Stage.Racing || race.State == RaceController.Stage.Countdown);

@@ -67,7 +67,13 @@ namespace Racer
             // Hopper Cup, appended (saved choices are ids, so nothing earlier moves)
             StuntBuggy, StuntBike,
             StuntCup(MakeCup(StuntBuggy, "hoppercup", "Clay Hopper Cup", "cup-stunt", new(.86f,.4f,.06f), "chrome", "cream")),
+            // Chastain Rush, Round 63: the helicopter (Tools/Blender/helicopter.py), appended. Free Roam only (Flies: never in a race, a roster, the Stunt
+            // event, split screen or a police mode); flown by ChastainRush.HelicopterFlight, not ArcadeVehicle. Speed is its top speed in the air (m/s).
+            Helicopter,
         };
+        public bool Flies => Class == "Helicopter";   // Round 63
+        public static readonly VehicleProfile Helicopter = new() { Id="heli", Name="Sky Survey", Class="Helicopter", Description="Helicopter / Free Roam only / fly the whole map: climb, hover, land anywhere flat", Speed=72, Acceleration=14, Grip=20, Response=8, Mass=1400, Wheelbase=2.6f, Pitch=1, Size=new(2.1f,2.3f,4.6f), Camera=new(0,5.5f,-17f),
+                Model="Helicopter", Seat=new(.36f,-.32f,.55f), Base="original", SolidContact=true };
         // 0.111 Part D: a championship's prize: an existing vehicle's model and handling with its own livery (the cup's colour, gold trim and a gold
         // cup on each side, VehiclePaint.Livery) and about +5% on the five garage stats (top speed, acceleration, grip, handling, weight / contact).
         static VehicleProfile MakeCup(VehicleProfile b, string id, string name, string cup, Color livery, params string[] gold)

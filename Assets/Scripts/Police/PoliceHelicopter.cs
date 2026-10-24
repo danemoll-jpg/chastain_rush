@@ -70,14 +70,15 @@ namespace Racer
             var mesh = new Mesh { name = "Helicopter beam" }; mesh.SetVertices(v); mesh.SetTriangles(t, 0); mesh.RecalculateBounds(); return mesh;
         }
         static AudioClip whooshClip;
-        static AudioClip Whoosh()
+        // Chastain Rush, Round 63: these two clips are shared with the player's helicopter (HelicopterFlight)
+        internal static AudioClip Whoosh()
         {
             if (whooshClip) return whooshClip; const int rate = 22050; int n = rate; var d = new float[n]; var rng = new System.Random(9); float lp = 0, lp2 = 0;
             for (int i = 0; i < n; i++) { float t = (float)i / rate; float noise = (float)rng.NextDouble() * 2 - 1; lp += (noise - lp) * .12f; lp2 += (lp - lp2) * .2f; d[i] = lp2 * (.55f + .45f * Mathf.Sin(2 * Mathf.PI * 22 * t)) * 1.6f; }
             float edge = n * .01f; for (int i = 0; i < edge; i++) { float k = i / edge; d[i] *= k; d[n - 1 - i] *= k; }
             whooshClip = AudioClip.Create("Helicopter rotor wash", n, 1, rate, false); whooshClip.SetData(d, 0); return whooshClip;
         }
-        static AudioClip Thump()
+        internal static AudioClip Thump()
         {
             if (thumpClip) return thumpClip; const int rate = 22050; int n = rate; var d = new float[n]; var rng = new System.Random(5); float lp = 0;
             for (int i = 0; i < n; i++) { float t = (float)i / rate; float beat = Mathf.Pow(Mathf.Max(0, Mathf.Sin(2 * Mathf.PI * 11 * t)), 6); float noise = (float)rng.NextDouble() * 2 - 1; lp += (noise - lp) * .06f; d[i] = Mathf.Clamp((lp * 2.2f + Mathf.Sin(2 * Mathf.PI * 70 * t) * .4f) * beat * .95f, -1, 1); }

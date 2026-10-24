@@ -133,7 +133,7 @@ namespace ChastainRush
         void FixSplitVehicles()
         {
             bool stunt = SplitScreen.Mode == SplitScreen.Kind.Stunt, raceMode = SplitScreen.Mode == SplitScreen.Kind.Race; var rd = race ? race.RouteData : null;
-            bool Ok(string id) { var p = VehicleProfile.Find(id); return stunt ? p.Stunt : raceMode ? !p.Stunt && (rd == null || rd.AllowsVehicle(id)) : true; }
+            bool Ok(string id) { var p = VehicleProfile.Find(id); return !p.Flies && (stunt ? p.Stunt : raceMode ? !p.Stunt && (rd == null || rd.AllowsVehicle(id)) : true); }   // Round 63: no helicopter in split screen
             string Pick(string fallback) => VehicleProfile.All.Where(p => Ok(p.Id)).Select(p => p.Id).DefaultIfEmpty(fallback).First();
             var cfg = car.GetComponent<VehicleConfiguration>();
             if (!Ok(cfg.profileId) && vehicles) vehicles.Select(stunt ? StuntChoice : Ok("original") ? "original" : Pick("original"));
@@ -190,7 +190,7 @@ namespace ChastainRush
         void RenderGarage2()
         {
             var profile = VehicleProfile.Find(SplitScreen.P2Vehicle);
-            var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt : true).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
+            var all = VehicleProfile.All.Where(v => !v.Flies && (garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt : true)).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
             Clear("PLAYER 2: " + profile.Name + " / " + profile.Class, profile.Description);
             Step(0, "vehicle", $"{profile.Name}   ·   {at + 1} / {all.Length}", d => { SplitScreen.P2Vehicle = all[(at + d + all.Length) % all.Length].Id; VehicleSwitch.SaveFor(2, SplitScreen.P2Vehicle, SplitScreen.P2Colour); Show(); });
             int colour = SplitScreen.P2Colour;

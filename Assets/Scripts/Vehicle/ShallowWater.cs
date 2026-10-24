@@ -43,6 +43,13 @@ namespace Racer
             foreach (var w in Near(p)) if (w && w.Contains(p) && p.y < w.Surface + above && p.y > w.Surface - 3f) return true;
             return false;
         }
+        // Chastain Rush, Round 63: the highest water surface under p (x, z inside an area, its surface below p); the helicopter's height over water
+        public static bool SurfaceBelow(Vector3 p, out float surface)
+        {
+            surface = float.MinValue; bool any = false;
+            foreach (var w in Near(p)) if (w && w.Contains(new Vector3(p.x, w.Surface - .1f, p.z)) && w.Surface < p.y && w.Surface > surface) { surface = w.Surface; any = true; }
+            return any;
+        }
         void OnEnable() { if (!Active.Contains(this)) Active.Add(this); Freeze(Frozen); if (!Outlined) BoxBounds(); cellsDirty = true; }
         // Chastain Rush, Round 37 (B7, split screen's frame rate): a box's world x, z rectangle, so Contains turns away water far from the point
         // with plain arithmetic. Sample runs for every vehicle every physics step over every area (hundreds of stream boxes), and the transform

@@ -14,8 +14,9 @@ namespace Racer
     [DefaultExecutionOrder(50)]
     public sealed partial class CameraViews : MonoBehaviour
     {
-        public enum View { Chase, FarChase, FirstPerson, Front }
-        public static readonly string[] Names = { "Chase", "Far chase", "First person", "Front" };
+        // Round 63: Straight down, the helicopter's survey view (only offered in the helicopter; the helicopter has no Front view)
+        public enum View { Chase, FarChase, FirstPerson, Front, Down }
+        public static readonly string[] Names = { "Chase", "Far chase", "First person", "Front", "Straight down" };
         struct Pose
         {
             public Vector3 position; public Quaternion rotation; public float fov, near;
@@ -56,7 +57,13 @@ namespace Racer
             if (v == Current) return; Current = v;
             if (!Quiet) { PlayerPrefs.SetInt(PrefKey, (int)v); PlayerPrefs.Save(); }
         }
-        public void NextView() => SetView((View)(((int)Current + 1) % Names.Length));
+        public void NextView()
+        {
+            if (!car && chase && chase.target) car = chase.target.GetComponent<ArcadeVehicle>();
+            var v = Current; for (int i = 0; i < Names.Length; i++) { v = (View)(((int)v + 1) % Names.Length); if (Allowed(v)) break; }
+            SetView(v);
+        }
+        bool Allowed(View v) { bool heli = ChastainRush.HelicopterFlight.Flying(car); return v == View.Down ? heli : v == View.Front ? !heli : true; }   // Round 63
         static bool CanDrive => !MenuInput.Blocked && !ChastainRush.GameMenus.Open && !ChastainRush.WorldMap.OwnsInput;
         void Update()
         {
@@ -84,9 +91,10 @@ namespace Racer
                 trailerShot = null;
                 chase.offsetScale = Current == View.FarChase ? new Vector3(1, 1.55f, 1.5f) : Vector3.one;
                 chase.positionSmoothTime = baseSmooth; chase.headingResponse = baseHeading;
-                bool own = Current == View.FirstPerson || Current == View.Front;
-                pose = own ? Pose.Lerp(chasePose, Current == View.FirstPerson ? FirstPerson(car, chasePose) : FrontView(car, chasePose), Mathf.SmoothStep(0, 1, viewWeight)) : chasePose;
-                UpdateFreeLook(car); pose = DriveLook(pose, car, own && viewWeight > .5f);
+                bool down = Current == View.Down && Allowed(View.Down), front = Current == View.Front && Allowed(View.Front);   // Round 63
+                bool own = down || Current == View.FirstPerson || front;
+                pose = down ? DownView(car) : own ? Pose.Lerp(chasePose, Current == View.FirstPerson ? FirstPerson(car, chasePose) : FrontView(car, chasePose), Mathf.SmoothStep(0, 1, viewWeight)) : chasePose;
+                if (!down) { UpdateFreeLook(car); pose = DriveLook(pose, car, own && viewWeight > .5f); }
                 if (!own && blend >= 1 && Current == View.Chase && !Looking) { Hide(null, false); if (touched) Release(); last = chasePose; return; }
             }
             if (blend < 1) { blend = Mathf.Min(1, blend + Time.unscaledDeltaTime / blendLength); pose = Pose.Lerp(blendFrom, pose, Mathf.SmoothStep(0, 1, blend)); }
@@ -108,6 +116,16 @@ namespace Racer
         // first person / front to the chase view while the vehicle was tilted past 70 degrees or wiped out, and every wall ride in a pipe
         // tilts it that far. Standing rule: the view only changes when the player changes it, so the chosen view is always kept
         void Settle(ArcadeVehicle car) { viewWeight = 1; }
+
+        // ---------- Round 63: straight down over the helicopter (45 m above it, its nose at the top of the screen) ----------
+        Quaternion downRot = Quaternion.identity; bool downFresh = true;
+        Pose DownView(ArcadeVehicle car)
+        {
+            var fwd = Vector3.ProjectOnPlane(car.transform.forward, Vector3.up); if (fwd.sqrMagnitude < 1e-4f) fwd = Vector3.forward;
+            var want = Quaternion.LookRotation(Vector3.down, fwd.normalized);
+            downRot = downFresh ? want : Quaternion.Slerp(downRot, want, 1 - Mathf.Exp(-5f * Time.deltaTime)); downFresh = false;
+            return new Pose(car.Body.position + Vector3.up * 45f, downRot, baseFov, 1f);
+        }
 
         // ---------- free look (Racer's CameraViews.FreeLook) ----------
         float lookYaw, lookPitch, lookYawSpeed, lookPitchSpeed, mouseYaw, mousePitch;
@@ -192,7 +210,8 @@ namespace Racer
             // Looking a little down: the bars, grips, hands and front wheel at the bottom of the view (cars: the wheel and dash).
             // The Trail Four's grips sit lower and nearer under the rider's eyes than the Needle 600's.
             bool atv = config.profileId == "atv", small = config.Profile.Small;
-            return Mounted(car, eye, Quaternion.Euler(atv ? 24 : small ? 16 : 5, look, lean), baseFov + (atv ? 15 : small ? 10 : 7));
+            bool heli = config.Profile.Flies;   // Round 63: the pilot looks out over the nose
+            return Mounted(car, eye, Quaternion.Euler(heli ? 9 : atv ? 24 : small ? 16 : 5, look, lean), baseFov + (heli ? 8 : atv ? 15 : small ? 10 : 7));
         }
         // Front: clear of the bodywork - bumper level on the cars, just ahead of the bars on the motorcycle and ATV.
         Pose FrontView(ArcadeVehicle car, Pose fallback)

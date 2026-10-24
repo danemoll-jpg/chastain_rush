@@ -150,6 +150,7 @@ namespace Racer
         {
             if (Time.timeScale == 0 || !PoliceKit.FreeRoam || SplitScreen.Active || ChaseRunning || PoliceSession.Running) return false;
             if (StuntEvent.Current) return false;
+            if (HelicopterFlight.Flying(PoliceKit.Player(1))) return false;   // Round 63: the player's helicopter is never chased
             var acts = PoliceKit.Player(1).GetComponentInParent<ArcadeActivities>(); if (acts && acts.AttemptActive) return false;
             return CheckAllows && CheckRun.Active ? Time.time - lastEnd >= 20 : Time.time - attachedAt >= QuietStart && Time.time - lastEnd >= QuietAfter;
         }

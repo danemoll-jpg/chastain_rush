@@ -77,7 +77,8 @@ namespace ChastainRush
             var config = car.GetComponent<VehicleConfiguration>(); var profile = config.Profile;
             // Round 36 (Racer 0.106 Part C / 0.120 Part E): opened for the Stunt event the garage holds the stunt vehicles only; from race setup
             // only the vehicles that race (no stunt vehicle); in Free Roam all of them
-            var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt : true).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
+            // Round 63: the helicopter only from Free Roam's garage ("roam")
+            var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt && !v.Flies : garageFor == "roam" || !v.Flies).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
             Clear(profile.Name + " / " + profile.Class, profile.Description);
             heading.text = profile.Name + " / " + profile.Class;
             bool racing = race && race.State != RaceController.Stage.Free;
@@ -205,7 +206,8 @@ namespace ChastainRush
         // Racer's StatFraction: across all the vehicles, the lowest shows a short bar and the highest a full one
         public static float StatFraction(int stat, VehicleProfile p)
         {
-            var values = VehicleProfile.All.Select(GarageStats[stat].value).ToArray(); float min = values.Min(), max = values.Max();
+            // Round 63: the helicopter's numbers do not stretch the cars' bars
+            var values = VehicleProfile.All.Where(v => !v.Flies || v == p).Select(GarageStats[stat].value).ToArray(); float min = values.Min(), max = values.Max();
             return max > min ? Mathf.Lerp(.12f, 1, (GarageStats[stat].value(p) - min) / (max - min)) : 1;
         }
         void ShowGarageStats(VehicleProfile profile)

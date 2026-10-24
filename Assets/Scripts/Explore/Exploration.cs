@@ -87,17 +87,18 @@ namespace ChastainRush
             bool continuous = Vector3.Distance(previous, p) <= Mathf.Max(3f, car.Body.linearVelocity.magnitude * Time.fixedDeltaTime * 2f + .3f); previous = p;
             if (!continuous) { nextReveal = Time.time + 1f; return; }
             if (Time.time < nextReveal) return; nextReveal = Time.time + .4f;
-            RevealAt(p);
+            RevealAt(p, Reveal + HelicopterFlight.RevealBonus(car));   // Round 63: wider from the air
             if (dirty && Time.unscaledTime > nextSave) { SaveInBackground(); nextSave = Time.unscaledTime + 3f; }
         }
-        public void RevealAt(Vector3 p)
+        public void RevealAt(Vector3 p) => RevealAt(p, Reveal);
+        public void RevealAt(Vector3 p, float reveal)
         {
             if (error != null) return;
-            int cx = Mathf.FloorToInt((p.x - world.xMin) / Cell), cy = Mathf.FloorToInt((p.z - world.yMin) / Cell); int r = Mathf.CeilToInt(Reveal / Cell);
+            int cx = Mathf.FloorToInt((p.x - world.xMin) / Cell), cy = Mathf.FloorToInt((p.z - world.yMin) / Cell); int r = Mathf.CeilToInt(reveal / Cell);
             bool changed = false;
             for (int y = Mathf.Max(0, cy - r); y <= Mathf.Min(rows - 1, cy + r); y++)
                 for (int x = Mathf.Max(0, cx - r); x <= Mathf.Min(cols - 1, cx + r); x++)
-                    if (Vector2.Distance(new Vector2(world.xMin + (x + .5f) * Cell, world.yMin + (y + .5f) * Cell), new Vector2(p.x, p.z)) <= Reveal) changed |= visited.Add(y * cols + x);
+                    if (Vector2.Distance(new Vector2(world.xMin + (x + .5f) * Cell, world.yMin + (y + .5f) * Cell), new Vector2(p.x, p.z)) <= reveal) changed |= visited.Add(y * cols + x);
             foreach (var d in destinations)
                 if (!Discovered(d.id) && Vector2.Distance(new Vector2(d.position.x, d.position.z), new Vector2(p.x, p.z)) < Discover && Mathf.Abs(d.position.y - p.y) < 15f)
                 { data.landmarks.Add(d.id); changed = true; Debug.Log($"[Round48] destination discovered: {d.title}"); }

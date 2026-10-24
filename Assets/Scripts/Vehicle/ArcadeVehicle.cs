@@ -86,7 +86,9 @@ namespace Racer
         bool playerStep;
         /// <summary>Checks only: apply the player's hold-at-rest to an external Simulate call.</summary>
         [System.NonSerialized] public bool ForceHoldAtRest;
-        void FixedUpdate() { playerStep = true; Simulate(input.Throttle, input.BrakeReverse, input.Steering, Time.fixedDeltaTime); playerStep = false; }
+        // Chastain Rush, Round 63: the helicopter (ChastainRush.HelicopterFlight) flies this body itself: no wheels, no drive
+        [System.NonSerialized] public bool Flown;
+        void FixedUpdate() { if (Flown) return; playerStep = true; Simulate(input.Throttle, input.BrakeReverse, input.Steering, Time.fixedDeltaTime); playerStep = false; }
         // 0.84 (no idle creep): with no throttle, brake or reverse, below HoldSpeed the ground holds the vehicle like an
         // automatic with its foot off: the slope's pull is cancelled and a stopping force brings it fully to rest, both
         // fading in from nothing at HoldSpeed, so coasting at speed and everything on the throttle are as before.

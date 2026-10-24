@@ -92,6 +92,10 @@ namespace Racer
             generated=VehicleVisual.Build(transform,p,wheels,p.IsPolice&&p.Small?RiderLook.Police:riderLook,classicVisual);
             if(p.IsPolice) VehiclePaint.Apply(transform,new Color(.03f,.03f,.035f)); // 0.99: police vehicles are black and white whoever drives them
             if(!GetComponent<RiderGestures>()) gameObject.AddComponent<RiderGestures>();
+            // Chastain Rush, Round 63: the helicopter flies (HelicopterFlight); any other profile drives again
+            var heli=GetComponent<ChastainRush.HelicopterFlight>();
+            if(p.Flies){ if(!heli) heli=gameObject.AddComponent<ChastainRush.HelicopterFlight>(); heli.Begin(generated); }
+            else if(heli) heli.End();
             box.size=profileId=="original"?originalSize:p.Size;
             box.center=profileId=="original"?originalCenter:new Vector3(0,.05f,0);
             motor.Body.mass=profileId=="original"?originalMass:p.Mass;
@@ -138,7 +142,7 @@ namespace Racer
         }
         void FixedUpdate()
         {
-            if(!motor || !Profile.Small || motor.Body.isKinematic) return;
+            if(!motor || !Profile.Small || Profile.Flies || motor.Body.isKinematic) return;   // Round 63: the helicopter has its own crash
             bool needsHelp=transform.up.y<.35f && motor.Body.linearVelocity.magnitude<5;
             overturned=needsHelp?overturned+Time.fixedDeltaTime:0;
             upright=transform.up.y>.7f && motor.GroundedWheels>=2?upright+Time.fixedDeltaTime:0;
