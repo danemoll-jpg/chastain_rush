@@ -157,6 +157,7 @@ namespace Racer
         static readonly WalkKind[] TrailMix = { WalkKind.Jogger, WalkKind.Cyclist, WalkKind.DogWalker, WalkKind.Jogger, WalkKind.Cyclist, WalkKind.Couple, WalkKind.DogWalker, WalkKind.Cyclist };   // Round 64
         bool IsTrail(int line) => streetTrail != null && line < streetTrail.Length && streetTrail[line];
         int TrailOut() => walks.Values.Count(w => IsTrail(w.line));
+        public int TrailWalkers => TrailOut();   // checks
         void PickWalkers(float hour, bool wet, int day, bool underground = false)
         {
             if (Lines == 0) { WalkersInfo = "no streets"; return; }
