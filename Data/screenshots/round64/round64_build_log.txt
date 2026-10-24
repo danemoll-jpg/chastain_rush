@@ -1,0 +1,5 @@
+2079:[Round64] H: BUG-001, Barrett Parkway's westbound carriageway from (799, -1672) to (558, -1683) laid as one curve: sharpest step 0.125 -> 0.027 m
+2110:[Round64] H: BUG-001, Barrett Parkway's eastbound carriageway from (529, -1710) to (798, -1688) laid as one curve: sharpest step 0.067 -> 0.040 m
+2125:[Round62] C: (Round 64: widest first, narrower roads fading out before a levelled wider one) 860 chains of 2185 main road pieces levelled (316.1 km); sharpest step over all 1.770 -> 1.770 m; steps over 0.10 m 953 -> 699; BUG-001 Big Shanty Road (617.23, 9.33): the sharpest 1 m step within 25 m 3.294 -> 1.595 m; BUG-002 I-575 (512.91, 18.66): the sharpest 1 m step within 25 m 2.446 -> 2.456 m; Round 64 BUG-001 Barrett Parkway (687.63, -1668.31): the sharpest 1 m step within 25 m 1.001 -> 0.302 m
+104360:[Round64] worn tracks: the shortcut's tracks to the main doors
+104376:[Round64] worn tracks: the shortcut's tracks to Carroway

@@ -108,11 +108,48 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
+next").** NEXT, straight after Round 64, before any new track or feature (Dan, 2026-10-24 11:09: he meant build tools to come first). Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
+the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
+full Build Map at the end; trim the full Build Map (Roads and Businesses about 27 of its 62 minutes in Round 62).
+Dan, 2026-10-24: "When Round 64 is done and committed, do Round 65 in TODO.md (QUEUED) right away." (Round 64 took 6 full builds of about an hour each.)
+
+## QUEUED rounds
+**Round 66, THE MAP'S EDGES: A WORLD THAT KEEPS GOING, NATURAL STOPS, A HELICOPTER BOUNDARY, ATLANTA ON THE HORIZON (Dan, 2026-10-24
+11:41: "Speaking of edges, how can I handle this on my map especially now I have helicopters"; 11:44 "Yes" to Claude's three-part outline,
+"And I like the idea of Atlanta in the distance"). After Round 65 (uses its faster builds).** ONE full Build Map at the end. Tuning limit.
+1. SCENERY PAST THE EDGE (not playable): a ring of land a few km wide beyond every edge from the same USGS 3DEP elevation (download the
+   extra tiles as for the mountain), low detail, no colliders, roads or traffic: terrain, a carpet of cheap far trees (Round 63's far-view
+   kind), simple building blocks where OSM / NAIP show towns, water. Haze thickening toward its outer edge so its end is never seen. From the
+   summit and from the helicopter at its ceiling the world must look like it keeps going: no cliff, no void.
+2. THE HORIZON: real distant landmarks at their true bearings, distances and heights: the Atlanta skyline (downtown and midtown towers,
+   about 30 km south-east; generic tower shapes, no brand names, lit at night), and the far ridges / mountains around (Lost Mountain, Pine
+   Mountain, Sweat Mountain and the like, from elevation data where it reaches, as silhouettes beyond it). Day / night and weather apply
+   (hidden in fog and rain, clear on a clear day).
+3. CARS STOP NATURALLY AT THE EDGE: roads that leave the map end in "Road Closed" barricades / a detour (road-crew style), highways (I-75,
+   I-575, US 41 and the like) in a jersey-barrier closure where traffic turns round (traffic and police nets end there cleanly); off road,
+   the edge runs through dense woods, creeks or fence lines where they exist, with a soft invisible push-back so nothing gets through or
+   falls off.
+4. THE HELICOPTER'S BOUNDARY: near the edge a "Leaving the survey area" warning; keep going and a strong headwind slows it and swings it
+   back (no crash, no teleport). A height ceiling, so the edges of the scenery are never seen from above.
+Check: from the summit and from the helicopter at its ceiling, looking out each way (pictures, day and night, Atlanta's skyline in them);
+drive every road that leaves the map (each stops at its closure, traffic turns); fly at each edge (turned back); frame rate at the summit
+and at the ceiling against Round 63's numbers.
+For Dan to check: fly to the edges and look out; Atlanta from the summit; drive off the map on a few roads.
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 64
 **Round 64, THE NOONDAY CREEK TRAIL PUT RIGHT: forward and reverse swapped, the route rerouted on the roads, shortcuts through the
 mall, glass doors, the trail's signs, fences and walkers, a mound made a jump; the levelling's junction steps (Dan, 2026-10-23 21:06;
 reports BUG-001 to BUG-008 of session `2026-10-23_20-28-33-291_9085ef`, read by Claude, after the Round 62 exe; his two map shots
 `local/reference_photos/noonday_trail/r64_map_reverse_green_red.jpg` (on the reverse course) and `r64_map_forward_orange_red.jpg` (on the
-forward course)).** Round 63 (the helicopter) is done; Dan moved on to this round 2026-10-24 01:35. ONE full Build Map at the end. Tuning limit. Short results.
+forward course)).** Round 63 (the helicopter) is done; Dan moved on to this round 2026-10-24 01:35. WHEN THIS ROUND IS DONE (status written, committed), START ROUND 65 (QUEUED) AT ONCE, without waiting for Dan (Dan, 2026-10-24 11:10: he is away for a while). ONE full Build Map at the end. Tuning limit. Short results.
 A. FORWARD AND REVERSE SWAPPED. Dan: "I know it's picky but I wanted the reverse track to be the forward track ... I thought I had said
    that when I requested it" (Claude misread his 02:32 note). Today's REVERSE (from the trailhead on Bells Ferry west along the trail, the
    red bridge, into the mall's main doors, ... back by Barrett and Bells Ferry) becomes FORWARD, and today's forward becomes REVERSE: names,
@@ -155,20 +192,20 @@ the reroutes, each shortcut, the doors.
 For Dan to check: race the new forward and reverse; the reroutes; the two mall shortcuts; doors, the turn, the trail's walkers, the mound
 jump; bumps on Barrett and at junctions.
 
-## QUEUED rounds
-**Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
-next").** After Round 64, when Dan says. Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
-the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
-full Build Map at the end; trim the full Build Map (Roads and Businesses about 27 of its 62 minutes in Round 62).
+**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round64/`. Bug reports read: session `2026-10-23_20-28-33-291_9085ef`, BUG-001 to 008.
+A DONE. Forward is the old reverse (start on Bells Ferry, the trail west first), reverse the old forward (`make_trail_route.py`: geometry B written as "forward"). Your saved trail times, Top 10s, ghosts and replays swap direction once, the first time the game starts (`Race/NoondayTrailSwap.cs`; copies kept as *.before-round64).
+B DONE. Orange: Mall Boulevard on up to Ring Road NW, Ring Road to the east lot, across the lot to Halverson's east doors (TCD barred now). Green: through Halverson Home (the north anchor, its lower floor a home store: in its portal, out its front) and the north wing corridor; the turn at the east escalator's foot; the road along Halverson Home's north side to the north lot. The escalator is rounded over at its top again (the raffle stage's ramp and lip gone, its board and balloons kept): reverse comes down it (flat out you fly off its top to the lower floor), forward climbs it.
+C DONE. "Carroway renovation", each way: the main doors, the hall, across the center court, through Carroway (the south anchor, opened) and out its portal over the south lot (graded smooth). In Carroway the floor is torn up right across the store: a flooded pit 14 m long, a plywood kicker on each side on the line (each the other's landing, about 18 m/s clears it), plank ramps out at its two ends. Worn tracks off the course are the hint. The south and south-west doors are shut by grilles in this race. Scripted (Drifter, the AI's capped 12 m/s through the hall and court) against the lap between the same points: forward clean 42.5 s vs 44.0, missed 54.2, round the stunt 47.9; reverse 42.8 vs 43.5, 52.6, 47.2. Flat out it saves more; how much is yours to judge.
+D DONE. Cause: a frame box in front of each doorway with no hole (the east anchor's portal frame; the main entrance's stepped block behind its glass tower): a wall you drove through. Opened; every door the race or shortcut uses is see-through glass in bronze frames, breaks, no speed lost, back next lap (pictures 64_bug002 / 64_bug006).
+E DONE. A grille across the lower concourse just west of the north wing in this race (holds a car at 16 m/s both ways); the north wing's checkpoint arch in the corridor.
+F DONE. The 8 road signs gone. Walkers, joggers, dog walkers and cyclists (new, on bikes) on the trail: up to 9 groups at once, at most 2 in a race (they step aside). The boardwalk's and the under-I-575 railings and the red bridge's approach fences break, cost no speed, come back.
+G DONE. The berm's notch filled as one mound on the line; a real jump both ways (22 m/s: 1.0 s in the air, lands clean).
+H DONE for your spot, PARTLY for the junctions. Option (1) as built: widest roads levelled first through their junctions, a narrower road fades out before a wider one's edge. Your BUG-001: both Barrett carriageways at the I-575 ramps laid as one curve: westbound 0.94 s in the air at 25 m/s -> 0.00, 1.40 s at 43 m/s -> 0.06. The jolt scan (197 drives, `round64_jolt_table.txt`, Round 62's build against this levelling): jolts over 1.5 m/s 50 -> 46, over 3 m/s 19 -> 18, but drives with air over 0.15 s 94 -> 101 (Round 61: 58). Two tries made: tuning limit.
+Check (`-exeRound64`): the lap both ways on all 11 vehicles, through the north wing and Halverson Home, no dead stop (22 of 22); AI twice each way on Hard, traffic Normal: 12 of 12 finish, stuck 207 s in all (Round 62: 442), resets 87 (174); every barrier holds (20 forward, 24 reverse); final exe 23 of 23 (`round64_check_final.txt`). Not measured: where the AI's remaining stuck time is (whether any is at the boardwalk).
+Builds: 6 full Build Maps, not one (check fixes: Carroway's door threshold, the south lot's tiers, the pit's ramps, the door frames, Barrett's curve twice). `Builds/ChastainRush/` 2026-10-24 12:56. Imported from Racer: nothing.
+For Dan to check: race the new forward and reverse; Ring Road and Halverson Home; the Carroway shortcut both ways (worth the risk?); the glass doors; the turn at the north wing; the trail's people; the mound jump; Barrett at your spot; the other junctions (air over 0.15 s went up: your call whether to keep option (1)).
 
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 63
+## Previous delivery 2: Round 63
 **Reviewed: Dan flew the Round 63 build 2026-10-24 (asked only how to climb / descend) and moved on to Round 64; its two open questions (far view vs frame rate; controls and boost) stay as built until he says.**
 **Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
 thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
@@ -204,7 +241,7 @@ Check (`-exeRound63`, `Checks/Round20Runner.R63.cs`): 22 of 22 (`round63_check_1
 Builds: one full Build Map (1 h 6 min), then code-only exes on its scene; `Builds/ChastainRush/` 2026-10-24 00:34. Imported from Racer: nothing (the police helicopter's two sound clips shared).
 For Dan: (a) the far view's cost high over the woods: accept, or trade view distance / far trees for frame rate; (b) the controls' layout, the speeds, and the boost on RB.
 
-## Previous delivery 2: Round 62
+## Previous delivery 3: Round 62
 **Reviewed: Dan drove the Round 62 build 2026-10-23 20:28 (Noonday Creek Trail both ways); his notes are Round 64 (after the helicopter).**
 **Round 62, A NEW TRACK: THE NOONDAY CREEK TRAIL LOOP round Town Center (forward and reverse, no shortcuts yet), and the new land's bumps
 (Dan, 2026-10-23 02:23; reports BUG-001 and BUG-002 of session `2026-10-22_23-37-02-216_30fa55`, read by Claude, after the Round 61 exe;
@@ -266,61 +303,6 @@ C PARTLY. Every stage 1 and 2 main road and its ramps levelled across its width 
 Check (build 6, the exe): the loop on all 11 vehicles both ways 22 of 22 round, no wedge (`round62_check_loop_pics.txt`); AI twice each way on Hard, traffic Normal: 4 of 4 races, every AI finishes, laps 220 to 270 s (`round62_check_ai.txt`); every closure holds, 23 forward, 21 reverse (`round62_check_barriers.txt`); pictures `62_*.png`. Left: the reverse escalator jump's landing costs 24 -> 10.5 m/s; flat out (43 m/s) Barrett at x 680 lifts a car.
 Builds: 6 full Build Maps, not one (a mesh-name clash took every road bridge's deck, then fixes from each check). `Builds/ChastainRush/` 2026-10-23 13:57. Imported from Racer: nothing.
 For Dan: the levelling's junction steps: (1) level up to a junction and keep the junction's own ground (one more build), or (2) back to Round 61's five roads plus your two spots and the course's roads. Until you say, build 6's levelling stays.
-
-## Previous delivery 3: Round 61
-**Reviewed: Dan drove the Round 61 build 2026-10-22 23:37 (free roam in the new land); his only notes are bumps (Round 62). The Build Map speed-up after it is accepted.**
-**Round 61, THE MAP EXTENSION, STAGE 2: WEST TO SUMMERBROOKE AND SOUTH OVER KENNESAW MOUNTAIN (airport included), with the work that keeps
-it fast; three bumps in the new land (Dan, 2026-10-22 10:04; reports BUG-001 to BUG-003 of session `2026-10-22_09-43-30-831_9bfdff`, read by Claude, after
-the Round 60 exe; his map `local/reference_photos/extension/stage2_kennesaw_mountain.png`, Google: reference only, never traced).** Round 60
-is reviewed ("Everything looks good in the mall"). Round 59's rules hold (nothing that exists moves; the new land at more negative x / z;
-everything that uses the map extended; numbers before / after). Tuning limit. Short results.
-A. THE AREA. Dan: "For the further expansion can we include all of this area? This also cover kennesaw mountain which would be super cool
-   to have". His map shows Cobb County International Airport (McCollum Field) and Laura Lake's quarry, Smith-Gilbert Gardens, Summerbrooke,
-   Stilesboro Road, Kennesaw Due West Road, US 41 / Old 41, Barrett Parkway's west end, Kennesaw Mountain National Battlefield Park and
-   the Wellstar Kennestone hospital at the bottom right. Claude's reading of its edges: west about -84.660 (Paul Samuel Road / Summerbrooke),
-   south about 33.960 (past the mountain's south end); north and east stay. Code sets the exact bounds from OSM (all of Kennesaw Mountain
-   and Little Kennesaw / Pigeon Hill, the airport with its runway ends, a margin) and says what they are. Claude's estimate: about 12.7 x
-   9.5 km, about 120 km2: some 4.7 times today's map (25.5 km2), 16 times the original. The USGS 1 m tile in use stops at -84.619 W:
-   fetch the next tile(s) west from the same 3DEP project and join them seamlessly.
-B. KENNESAW MOUNTAIN: the real terrain at the game's 1.5x (the summit is roughly 250 m above the town around it, so about 375 m in game):
-   Kennesaw Mountain Drive up to the summit lot, the park's woods (dense, solid trees), its open fields, the visitor center and its lots as
-   generated buildings, the trails as paths. A fast-travel spot at the summit and at the visitor center. No race this round (Dan will
-   want to see it first). The airport: the runway, taxiways, aprons and hangars as generated, drivable (no planes needed this round).
-C. KEEP IT FAST (do this BEFORE adding the land; Dan noticed no slowdown at 3.3x, but Round 59 measured the old neighborhood falling from
-   182 to 122 fps average, mostly from things spread over the whole map that run every frame whatever the distance: people groups,
-   hydrants, the traffic network, far objects drawn). Make those distance-based (only what is near the player, or near a racer, runs;
-   the rest sleeps / is not drawn; trees and buildings beyond view distance not drawn or as cheap far versions), then measure again,
-   then extend. Target after the extension: the old neighborhood and the mountain at least as fast as Round 59's numbers (1080p window).
-   If that cannot be held, stop with the land added only as far as it holds and report (Dan decides).
-D. BUMPS in stage 1's land: BUG-001 (x 1359.21 z -716.10 h 19, Chastain Meadows Parkway): "fix this bump"; BUG-002 (x 649.95 z -1663.21
-   h 263, Barrett Parkway): "smooth out riht here"; BUG-003 (x 583.95 z -1673.97 h 262, Barrett Parkway): "also right here". Smooth them;
-   the generated roads in the new land likely have more of these: also run Round 54's lap-levelling idea along stage 1 and 2's main roads
-   (Barrett Parkway, Chastain Road, Chastain Meadows, Kennesaw Mountain Drive, US 41) and report the jolts before / after.
-Numbers: Build Map time, exe size, load time, memory, frame rate (old neighborhood, Town Center inside, KSU, the airport, the summit, the
-mountain's woods), tree and building counts: Round 59 / after C / after A and B.
-Check: every race still runs (one AI race each); Town Center inside unchanged; free roam from Chastain Glen to the summit and to the airport
-along roads, never under the ground; pictures: the summit looking back east over the map, the mountain road, the airport, the join at
--84.619.
-For Dan to check: drive up Kennesaw Mountain and down; the airport and Laura Lake; frame rate everywhere; the three bumps.
-
-**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round61/`. Bug reports read: session `2026-10-22_09-43-30-831_9bfdff`, BUG-001 to 003.
-C DONE (before the land, `perf_c.txt`; Round 60's scene, two runs each): one vehicle list instead of scene searches, shrub beds / night lamps / people groups / water areas by cell, pipe pieces and streams asleep with no vehicle near, one fence-debris runner and fence meshes copied on first break, far geese wait, terrain tiles past the far clip not drawn (`World/FarTerrain.cs`). After the land: the ground-height lookup searched all 304 tiles per call (now a grid, `GroundQuery.TileAt`) and the police network's log line recounted its largest part per node (749 s at start-up, now 1.1 s).
-A DONE. Stage 2 appended after stage 1 as stage 1 after the core (`mapgen_extend.py`, config `extension2`: 9 tiles west, 10 south; three more 3DEP tiles x71y377, x72y376, x71y376, joined). Bounds: south 33.95632, west -84.66198 (north, east kept); 12613 x 10229 m (129 km2, 5x Round 59), x -8629.83 to 3983, z -8311.33 to 1918, 19 x 16 tiles. Every existing list and tree unchanged as a prefix (checked); floors moved about 1 cm (the 16-bit terrain step is 8.8 mm now).
-B DONE. Kennesaw Mountain at 1.5x (summit 689.9 m in game), Kennesaw Mountain Drive, the park's woods, the visitor center from OSM; 45 named trails (19.6 km) at their real width on levelled ground (`MapBuilder.Airport.cs`); the airport's 2 runways, 21 taxiways, 3 aprons graded, paved and painted, hangars from OSM; fast travel to the summit and the visitor center. No race.
-D DONE (`MapBuilder.Round61.cs`; `round61_bumps.txt`): the new land's Barrett Parkway, Chastain Road, Chastain Meadows, Kennesaw Mountain Drive and Cobb Parkway (US 41) levelled across their width to their blurred centerline. Dan's spots at 25 m/s, before / after: BUG-001 northbound stopped dead / kept 23.7 m/s; BUG-002 and 003 airborne up to 3.9 s and a crash / wheels always down, 24.6 m/s. Sharpest 1 m step along the roads: Barrett 0.94 -> 0.12 m, Cobb Parkway North 0.22 -> 0.05, Chastain Road NW 0.40 -> 0.06 (`round61_build_log.txt`).
-Numbers, Round 59 / after C / after A and B (1920 x 1080 window, not measured at 3840 x 2160; PC in use): Build Map 1955 s / (not rebuilt) / 19,026 s (5.3 h: Businesses 5,726 s, Hydrants 2,772 s, Roads 2,059 s); exe data 1357 / 1448 / 4284 MB; world up 19.4 / 9-31 / 33.5 s; Unity memory 1838 / 1838 / 5182 MB; tiles 60 / 60 / 304; trees 142,282 / same / 920,484; buildings 5,535 / same / 34,251. Frame rate average / slowest 1 %: old neighborhood 122 / 39 -> 214 / 72 -> 163 / 71; Town Center 171 / 51 -> 247-278 / 81-126 -> 191 / 97; KSU 154 / 53 -> 226 / 69-73 -> 175 / 81; the airport 196 / 83; the summit 180 / 99; the mountain's woods 174 / 68; the mountain road 191 / 96; the join 192 / 92; inside Town Center 187-207 / 61-100 (the Round 60 exe the same evening 207-217 / 46-68).
-Check: free roam Chastain Glen to the summit (12.4 km) and to the airport (7.3 km) along the roads: through, never under the ground (`round61_check_drives.txt`); every race still runs: 11 courses and directions, one AI race each on Hard, traffic Normal, 33 of 33 finish (`round61_check_races.txt`); Town Center inside unchanged, its frame rate above; pictures `61_*.png` (summit, mountain road, mountain woods, airport, the join).
-Left for Dan: two stretches still have a 0.5 m step in the bridge-end fades (Chastain Road and Cobb Parkway, not his spots); the full build now takes 5.3 h (a follow-up could make Businesses and Hydrants scale). The summit picture shows the summit only (the fog is solid at 650 m).
-`Builds/ChastainRush/` 2026-10-22 19:46 (the exe from the round's one full Build Map scene, 16:44; the runtime fixes after it were code only, the scene's data unchanged). Imported from Racer: nothing.
-
-**Build Map speed-up (after Round 61, Dan's go 2026-10-22; editor code only, no round): full Build Map 19,026 s -> 2,576 s (43 min).**
-Cause: every generated mesh's CreateAsset ran an asset refresh over the whole project (48,084 refreshes, 12,389 s); meshes are now imported once per step (`GenAsset` / `FlushAssets`, `MapBuilder.Quick.cs`). The scans over the whole map per item are by cell (`MapBuilder.CellIndex.cs`, candidates in their old order): hydrants, businesses and Canton Road's lots, the per-tree checks, roads' names, the other neighborhoods' houses and fences, Round 52's settling, the chained bridge decks.
-Steps, before -> after (s): Businesses 5,726 -> 488; Hydrants 2,772 -> 167; Roads 2,059 -> 521; Rest 1,795 -> 200; Trees 1,439 -> 30; PlanBusinesses 1,279 -> 54; Neighborhood 650 -> 123; Network 593 -> 73; Driveways 588 -> 83; LoadRest 576 -> 7; SmoothBridgeEnds 365 -> 4; the whole planning 2,614 -> 570.
-Check: `SceneDump` of the Round 61 scene against the new full build, `scene_diff.py`: 493,613 lines each, 0 terrain blocks differ, 6 objects differ, all from Unity's unsorted `FindObjectsByType` order (same hydrant counts and reasons, same geysers; manholes visited in another order): the hydrant links, one hydrant chunk, and two smash sites. The street-lamp smash site lands at (2960, 896) or (2999, 1072) depending on that order: it already flipped between Round 39's `build_a` and `build_a2` (same code); this build has (2999, 1072). The exe was not rebuilt (scene the same); the next round's build carries it.
-Follow-up, same order every build: the street-lamp smash site's FenceChunks, the hydrants' HydrantChunks and ManholeLids are now taken in hierarchy order
-(`MapBuilder.InSceneOrder`, `MapBuilder.Activities.cs`), and a tie for the densest lamp row goes to the western panel. Check: two full Build Maps, `SceneDump`
-of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
-For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
 
 ## Technical notes (standing)
 Technical Notes / Blockers

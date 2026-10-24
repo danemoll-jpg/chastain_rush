@@ -1,0 +1,60 @@
+Round 64 check, 2026-10-24 12:59, the exe, 1280 x 720, muted.
+
+=== The Carroway shortcut each way: clean, missed (into the pit), and round the stunt, against the lap between the same two points (Drifter Twin)
+  forward: the lap 1055 m in 44.0 s; the shortcut clean 779 m in 42.5 s (most air 1.4 s); missed (8 m/s off the kicker, out up the plank ramp) 54.2 s; round the stunt (down onto the plank ramp) 47.9 s
+PASS  xshort forward: clean saves time  -  42.5 s against 44.0 s
+PASS  xshort forward: missed costs more than the lap  -  54.2 s against 44.0 s
+PASS  xshort forward: round the stunt is slower than the lap  -  47.9 s against 44.0 s
+PASS  xshort forward: never stuck (missed and round get out)  -  missed out, round out
+  reverse: the lap 1053 m in 43.5 s; the shortcut clean 791 m in 42.8 s (most air 1.4 s (ended in the pit)); missed (8 m/s off the kicker, out up the plank ramp) 52.6 s; round the stunt (down onto the plank ramp) 47.2 s
+PASS  xshort reverse: clean saves time  -  42.8 s against 43.5 s
+PASS  xshort reverse: missed costs more than the lap  -  52.6 s against 43.5 s
+PASS  xshort reverse: round the stunt is slower than the lap  -  47.2 s against 43.5 s
+PASS  xshort reverse: never stuck (missed and round get out)  -  missed out, round out
+
+=== The doors (Dan, BUG-002 / BUG-006: "these should be glass doors"): driven through at 15 m/s, Street Classic, Free Roam
+  Halverson's east doors (in): 4 panels broken, slowest 14.7 m/s, through
+PASS  xdoors Halverson's east doors (in): through, the glass breaks, no speed lost  -  4 panels, slowest 14.7 m/s
+  the main doors (out): 4 panels broken, slowest 14.9 m/s, through
+PASS  xdoors the main doors (out): through, the glass breaks, no speed lost  -  4 panels, slowest 14.9 m/s
+  Halverson Home's portal (out): 2 panels broken, slowest 14.8 m/s, through
+PASS  xdoors Halverson Home's portal (out): through, the glass breaks, no speed lost  -  2 panels, slowest 14.8 m/s
+  Halverson Home's front (in from the north wing): 4 panels broken, slowest 14.9 m/s, through
+PASS  xdoors Halverson Home's front (in from the north wing): through, the glass breaks, no speed lost  -  4 panels, slowest 14.9 m/s
+  Carroway's front (in from the court): 2 panels broken, slowest 14.9 m/s, through
+PASS  xdoors Carroway's front (in from the court): through, the glass breaks, no speed lost  -  2 panels, slowest 14.9 m/s
+  Carroway's portal (out): 2 panels broken, slowest 14.9 m/s, through
+PASS  xdoors Carroway's portal (out): through, the glass breaks, no speed lost  -  2 panels, slowest 14.9 m/s
+  put back: 2 sets
+
+=== BUG-005 ("there should been something here forcing you to turn"): in a race, a car going west along the lower concourse past the north wing
+  reverse: the car stopped at u -9.8 (the grille at u -12), 0.0 m/s; grilles built 3
+PASS  xturn reverse: the grille west of the north wing holds  -  u -9.8
+  forward: the car stopped at u -9.8 (the grille at u -12), 0.0 m/s; grilles built 3
+PASS  xturn forward: the grille west of the north wing holds  -  u -9.8
+
+=== BUG-003: the mound by Town Center Drive, both ways, at 13 and 22 m/s (Drifter Twin)
+  forward at 13 m/s: most air 0.38 s, landed at (157, -880), upright 1.00, slowest 12.3 m/s, through
+PASS  xmound forward 13 m/s: a jump, landed clean  -  air 0.38 s, slowest 12.3
+  forward at 22 m/s: most air 1.04 s, landed at (161, -890), upright 0.99, slowest 20.9 m/s, through
+PASS  xmound forward 22 m/s: a jump, landed clean  -  air 1.04 s, slowest 20.9
+  reverse at 13 m/s: most air 0.36 s, landed at (169, -905), upright 1.00, slowest 12.2 m/s, through
+PASS  xmound reverse 13 m/s: a jump, landed clean  -  air 0.36 s, slowest 12.2
+  reverse at 22 m/s: most air 1.00 s, landed at (161, -890), upright 1.00, slowest 21.1 m/s, through
+PASS  xmound reverse 22 m/s: a jump, landed clean  -  air 1.00 s, slowest 21.1
+
+=== BUG-004 ("It would be good to have peopel walking or jogging this trail"): people on the trail
+  08:00 at (360, -627): walkers 7 (target 7 near a view): dogs 5, families 0, couples 0, joggers 0, cyclists 2; on the trail 7
+  18:00 at (360, -627): walkers 9 (target 8 near a view): dogs 2, families 0, couples 0, joggers 3, cyclists 4; on the trail 9
+  08:00 at (1000, -560): walkers 8 (target 7 near a view): dogs 2, families 0, couples 1, joggers 1, cyclists 4; on the trail 8
+  18:00 at (1000, -560): walkers 8 (target 8 near a view): dogs 2, families 0, couples 1, joggers 2, cyclists 3; on the trail 8
+  08:00 at (1300, -790): walkers 9 (target 7 near a view): dogs 2, families 0, couples 2, joggers 1, cyclists 4; on the trail 9
+  18:00 at (1300, -790): walkers 8 (target 8 near a view): dogs 1, families 0, couples 3, joggers 1, cyclists 3; on the trail 8
+PASS  xwalk: people out on the trail  -  most at once 9; over the stops dog walkers 14, couples 7, joggers 8, cyclists 20
+PASS  xwalk: cyclists among them  -  20
+  in a race: walkers 2 (target 7 near a view): dogs 0, families 0, couples 1, joggers 0, cyclists 1; on the trail 2
+PASS  xwalk: in a race, two groups at most on the trail  -  2
+
+=== Pictures
+
+23 of 23 checks passed.

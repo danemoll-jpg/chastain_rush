@@ -1,0 +1,136 @@
+Round 64 check, 2026-10-24 06:36, the exe, 1280 x 720, muted.
+
+=== The lap both ways (the new forward first), every race vehicle, driven by script along the race's line (the AI zones' speeds as caps)
+  forward: lap 5738 m, 11 checkpoints (the trailhead, the trail by Chastain Meadows, under I-575, the trail by Hidden Forest Court, the north lot, the north wing, Halverson's, Ring Road, Barrett Parkway under I-575, Barrett Parkway, Bells Ferry Road), 21 barriers, 1 shortcut(s); grid (1737, -871)
+  forward  Street Classic   the lap in 235.7 s; slowest 7.9 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.4 s 5 m +0.0 m up from (652, -460); 0.5 s 14 m +0.6 m up from (217, -1013); 1.2 s 31 m +1.4 m up from (441, -1232) (the mall, u 113); 0.7 s 22 m +1.2 m up from (452, -1582); 0.6 s 19 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (911, -1690); 0.5 s 22 m +0.0 m up from (1738, -866)
+PASS  xloop forward Street Classic: round the lap through the north wing and Halverson Home, never stuck  -  235.7 s
+  forward  Longroof GT      the lap in 236.9 s; slowest 7.7 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.3 s 5 m +0.0 m up from (652, -460); 0.4 s 12 m +0.4 m up from (217, -1012); 1.1 s 28 m +1.0 m up from (442, -1232) (the mall, u 113); 0.7 s 19 m +1.0 m up from (452, -1582); 0.5 s 17 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (911, -1690); 0.4 s 16 m +0.0 m up from (947, -1691); 0.5 s 24 m +0.0 m up from (1738, -868)
+PASS  xloop forward Longroof GT: round the lap through the north wing and Halverson Home, never stuck  -  236.9 s
+  forward  Needle 600       the lap in 220.7 s; slowest 8.8 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.3 s 6 m +0.2 m up from (1711, -619); 0.5 s 7 m +0.1 m up from (653, -460); 0.3 s 4 m +0.2 m up from (155, -876); 0.4 s 6 m +0.1 m up from (172, -909); 1.0 s 31 m +1.9 m up from (216, -1010); 0.4 s 5 m +0.2 m up from (373, -1250) (the mall, u 42); 1.3 s 32 m +1.5 m up from (440, -1232) (the mall, u 112); 1.1 s 37 m +2.5 m up from (451, -1580); 0.6 s 23 m +0.0 m up from (621, -1687); 0.5 s 20 m +0.0 m up from (911, -1690); 0.3 s 14 m +0.0 m up from (945, -1691); 0.6 s 25 m +0.0 m up from (1737, -868)
+PASS  xloop forward Needle 600: round the lap through the north wing and Halverson Home, never stuck  -  220.7 s
+  forward  Trail Four       the lap in 224.3 s; slowest 8.7 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.5 s 7 m +0.0 m up from (653, -460); 0.4 s 5 m +0.1 m up from (172, -909); 0.8 s 24 m +1.2 m up from (216, -1011); 0.4 s 5 m +0.1 m up from (373, -1250) (the mall, u 42); 1.4 s 34 m +1.7 m up from (440, -1232) (the mall, u 112); 1.1 s 34 m +2.2 m up from (451, -1580); 0.6 s 22 m +0.0 m up from (620, -1688); 0.4 s 20 m +0.0 m up from (911, -1690); 0.3 s 15 m +0.0 m up from (946, -1691); 0.6 s 28 m +0.0 m up from (1737, -868)
+PASS  xloop forward Trail Four: round the lap through the north wing and Halverson Home, never stuck  -  224.3 s
+  forward  Sundown Roadster the lap in 233.9 s; slowest 8.1 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.4 s 6 m +0.0 m up from (652, -460); 0.5 s 15 m +0.6 m up from (217, -1012); 1.3 s 33 m +1.6 m up from (441, -1232) (the mall, u 113); 0.7 s 22 m +1.2 m up from (452, -1582); 0.6 s 21 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (911, -1690); 0.5 s 22 m +0.0 m up from (1738, -867)
+PASS  xloop forward Sundown Roadster: round the lap through the north wing and Halverson Home, never stuck  -  233.9 s
+  forward  Highball Fastback the lap in 233.0 s; slowest 7.8 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.3 s 5 m +0.0 m up from (652, -460); 0.4 s 14 m +0.5 m up from (217, -1013); 1.2 s 29 m +1.2 m up from (441, -1232) (the mall, u 113); 0.7 s 22 m +1.2 m up from (452, -1582); 0.6 s 20 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (911, -1690); 0.6 s 25 m +0.0 m up from (1738, -867)
+PASS  xloop forward Highball Fastback: round the lap through the north wing and Halverson Home, never stuck  -  233.0 s
+  forward  Pebble Coupe     the lap in 234.8 s; slowest 8.5 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.4 s 6 m +0.0 m up from (652, -460); 0.5 s 15 m +0.6 m up from (217, -1012); 1.3 s 33 m +1.6 m up from (441, -1232) (the mall, u 113); 0.8 s 23 m +1.3 m up from (452, -1582); 0.6 s 19 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (911, -1690); 0.6 s 28 m +0.0 m up from (1738, -867)
+PASS  xloop forward Pebble Coupe: round the lap through the north wing and Halverson Home, never stuck  -  234.8 s
+  forward  Skyfin Cruiser   the lap in 239.6 s; slowest 7.6 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.4 s 11 m +0.4 m up from (217, -1013); 1.1 s 28 m +1.1 m up from (441, -1232) (the mall, u 113); 0.7 s 19 m +0.9 m up from (452, -1582); 0.5 s 17 m +0.0 m up from (621, -1687); 0.5 s 20 m +0.0 m up from (911, -1690); 0.3 s 14 m +0.0 m up from (947, -1691); 0.5 s 22 m +0.0 m up from (1738, -867)
+PASS  xloop forward Skyfin Cruiser: round the lap through the north wing and Halverson Home, never stuck  -  239.6 s
+  forward  Ridge Scrambler  the lap in 223.0 s; slowest 8.9 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.4 s 7 m +0.2 m up from (1711, -620); 0.5 s 7 m +0.1 m up from (653, -460); 0.4 s 6 m +0.1 m up from (172, -909); 0.9 s 29 m +1.7 m up from (216, -1010); 0.4 s 5 m +0.2 m up from (373, -1250) (the mall, u 42); 1.4 s 34 m +1.7 m up from (440, -1232) (the mall, u 112); 1.0 s 32 m +2.0 m up from (451, -1581); 0.6 s 22 m +0.0 m up from (621, -1688); 0.4 s 20 m +0.0 m up from (911, -1690); 0.3 s 14 m +0.0 m up from (946, -1691); 0.6 s 27 m +0.0 m up from (1737, -868)
+PASS  xloop forward Ridge Scrambler: round the lap through the north wing and Halverson Home, never stuck  -  223.0 s
+  forward  Drifter Twin     the lap in 224.8 s; slowest 8.8 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.8 s 14 m +0.8 m up from (1712, -620); 0.5 s 6 m +0.1 m up from (653, -460); 0.3 s 4 m +0.1 m up from (172, -910); 0.8 s 25 m +1.4 m up from (216, -1010); 0.4 s 5 m +0.1 m up from (373, -1250) (the mall, u 42); 1.3 s 32 m +1.4 m up from (441, -1232) (the mall, u 112); 1.0 s 30 m +1.9 m up from (451, -1581); 0.6 s 21 m +0.0 m up from (621, -1687); 0.5 s 21 m +0.0 m up from (910, -1690); 0.3 s 14 m +0.0 m up from (946, -1691); 0.6 s 26 m +0.0 m up from (1737, -869)
+PASS  xloop forward Drifter Twin: round the lap through the north wing and Halverson Home, never stuck  -  224.8 s
+  forward  Turf Rocket      the lap in 220.8 s; slowest 9.0 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes
+      air: 0.5 s 6 m +0.0 m up from (653, -460); 0.4 s 5 m +0.1 m up from (172, -909); 0.8 s 27 m +1.4 m up from (216, -1011); 0.4 s 5 m +0.1 m up from (373, -1250) (the mall, u 42); 1.4 s 34 m +1.7 m up from (440, -1232) (the mall, u 112); 1.1 s 35 m +2.2 m up from (451, -1581); 0.6 s 23 m +0.0 m up from (621, -1688); 0.5 s 21 m +0.0 m up from (911, -1690); 0.6 s 28 m +0.0 m up from (1737, -868)
+PASS  xloop forward Turf Rocket: round the lap through the north wing and Halverson Home, never stuck  -  220.8 s
+  reverse: lap 5698 m, 11 checkpoints (Bells Ferry Road, Barrett Parkway, Barrett Parkway under I-575, Ring Road, Halverson's, the north wing, the north lot, the trail by Hidden Forest Court, under I-575, the trail by Chastain Meadows, the trailhead), 24 barriers, 1 shortcut(s); grid (1741, -756)
+  reverse  Street Classic   the lap in 229.4 s; slowest 7.7 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.3 s 8 m +0.6 m up from (1739, -828); 0.4 s 6 m +0.2 m up from (1712, -1675); 0.4 s 17 m +0.4 m up from (898, -1674); 1.2 s 50 m +3.8 m up from (673, -1670); 0.6 s 24 m +1.2 m up from (595, -1673); 0.5 s 19 m +0.0 m up from (461, -1569); 1.3 s 32 m +1.5 m up from (437, -1233) (the mall, u 109); 0.5 s 8 m +0.1 m up from (132, -785); 0.4 s 6 m +0.0 m up from (656, -458)
+PASS  xloop reverse Street Classic: round the lap through the north wing and Halverson Home, never stuck  -  229.4 s
+  reverse  Longroof GT      the lap in 230.6 s; slowest 7.5 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.3 s 5 m +0.1 m up from (1712, -1675); 0.4 s 15 m +0.3 m up from (897, -1674); 1.4 s 58 m +4.4 m up from (674, -1670); 0.7 s 27 m +1.5 m up from (596, -1671); 0.5 s 18 m +0.0 m up from (461, -1569); 1.1 s 28 m +1.0 m up from (436, -1233) (the mall, u 108); 0.4 s 7 m +0.1 m up from (132, -785); 0.4 s 5 m +0.0 m up from (657, -458)
+PASS  xloop reverse Longroof GT: round the lap through the north wing and Halverson Home, never stuck  -  230.6 s
+  reverse  Needle 600       the lap in 215.4 s; slowest 8.5 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.4 m over the lower floor, 10 m/s
+      air: 0.8 s 19 m +1.6 m up from (1740, -825); 0.6 s 11 m +0.4 m up from (1712, -1674); 0.4 s 16 m +0.4 m up from (897, -1674); 1.4 s 57 m +4.2 m up from (675, -1670); 0.9 s 34 m +2.0 m up from (597, -1673); 0.4 s 5 m +0.1 m up from (514, -1680); 0.6 s 25 m +0.0 m up from (461, -1569); 0.7 s 12 m +0.5 m up from (495, -1218) (the mall, u 168); 1.3 s 32 m +1.5 m up from (438, -1233) (the mall, u 109); 0.5 s 7 m +0.0 m up from (370, -1251) (the mall, u 39); 0.6 s 10 m +0.3 m up from (305, -1162); 0.4 s 6 m +0.0 m up from (171, -909); 0.7 s 11 m +0.3 m up from (132, -786); 0.5 s 7 m +0.1 m up from (656, -459); 0.4 s 3 m +0.1 m up from (1684, -583); 0.4 s 7 m +0.0 m up from (1709, -625); 0.7 s 20 m +2.7 m up from (1726, -670)
+PASS  xloop reverse Needle 600: round the lap through the north wing and Halverson Home, never stuck  -  215.4 s
+  reverse  Trail Four       the lap in 219.2 s; slowest 8.3 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.4 m over the lower floor, 10 m/s
+      air: 0.6 s 15 m +1.2 m up from (1740, -826); 0.6 s 11 m +0.4 m up from (1712, -1674); 0.4 s 17 m +0.4 m up from (897, -1674); 1.4 s 60 m +4.4 m up from (674, -1670); 1.0 s 38 m +2.3 m up from (597, -1672); 0.4 s 5 m +0.2 m up from (514, -1680); 0.5 s 22 m +0.0 m up from (461, -1569); 0.6 s 11 m +0.4 m up from (494, -1218) (the mall, u 168); 1.3 s 34 m +1.6 m up from (438, -1233) (the mall, u 109); 0.4 s 6 m +0.0 m up from (370, -1251) (the mall, u 39); 0.4 s 6 m +0.0 m up from (171, -909); 0.6 s 11 m +0.3 m up from (132, -786); 0.6 s 8 m +0.1 m up from (656, -459); 0.3 s 3 m +0.1 m up from (1685, -582); 1.2 s 31 m +4.2 m up from (1726, -668)
+PASS  xloop reverse Trail Four: round the lap through the north wing and Halverson Home, never stuck  -  219.2 s
+  reverse  Sundown Roadster the lap in 227.7 s; slowest 7.8 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.3 s 8 m +0.6 m up from (1739, -828); 0.4 s 7 m +0.2 m up from (1712, -1674); 0.4 s 18 m +0.5 m up from (898, -1674); 1.2 s 51 m +3.7 m up from (673, -1670); 0.6 s 23 m +1.1 m up from (595, -1673); 0.3 s 4 m +0.1 m up from (514, -1679); 0.6 s 21 m +0.0 m up from (461, -1570); 1.3 s 33 m +1.5 m up from (437, -1233) (the mall, u 109); 0.5 s 9 m +0.2 m up from (132, -785); 0.5 s 7 m +0.0 m up from (656, -458)
+PASS  xloop reverse Sundown Roadster: round the lap through the north wing and Halverson Home, never stuck  -  227.7 s
+  reverse  Highball Fastback the lap in 226.6 s; slowest 7.5 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.4 s 6 m +0.1 m up from (1712, -1675); 0.4 s 18 m +0.5 m up from (898, -1674); 1.1 s 49 m +3.6 m up from (673, -1670); 0.6 s 24 m +1.3 m up from (596, -1673); 0.5 s 20 m +0.0 m up from (461, -1569); 1.1 s 29 m +1.1 m up from (437, -1233) (the mall, u 108); 0.5 s 8 m +0.1 m up from (132, -785); 0.4 s 6 m +0.0 m up from (656, -458)
+PASS  xloop reverse Highball Fastback: round the lap through the north wing and Halverson Home, never stuck  -  226.6 s
+  reverse  Pebble Coupe     the lap in 228.6 s; slowest 8.0 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.3 s 8 m +0.6 m up from (1739, -828); 0.4 s 7 m +0.2 m up from (1712, -1675); 0.4 s 17 m +0.4 m up from (898, -1674); 1.1 s 44 m +3.1 m up from (673, -1670); 0.5 s 20 m +0.9 m up from (595, -1674); 0.3 s 4 m +0.1 m up from (514, -1679); 0.5 s 20 m +0.0 m up from (461, -1569); 1.3 s 34 m +1.7 m up from (437, -1233) (the mall, u 109); 0.3 s 4 m +0.0 m up from (369, -1251) (the mall, u 39); 0.5 s 8 m +0.2 m up from (132, -786); 0.5 s 7 m +0.0 m up from (656, -458)
+PASS  xloop reverse Pebble Coupe: round the lap through the north wing and Halverson Home, never stuck  -  228.6 s
+  reverse  Skyfin Cruiser   the lap in 233.4 s; slowest 7.3 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.6 m over the lower floor, 10 m/s
+      air: 0.3 s 5 m +0.1 m up from (1712, -1675); 0.4 s 15 m +0.3 m up from (898, -1674); 0.9 s 39 m +2.7 m up from (673, -1670); 0.6 s 22 m +1.1 m up from (596, -1674); 0.5 s 18 m +0.0 m up from (461, -1569); 1.1 s 28 m +1.0 m up from (437, -1233) (the mall, u 108); 0.4 s 7 m +0.1 m up from (132, -785); 0.4 s 5 m +0.0 m up from (657, -458)
+PASS  xloop reverse Skyfin Cruiser: round the lap through the north wing and Halverson Home, never stuck  -  233.4 s
+  reverse  Ridge Scrambler  the lap in 216.8 s; slowest 8.3 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.5 m over the lower floor, 10 m/s
+      air: 0.6 s 13 m +1.0 m up from (1739, -826); 0.6 s 11 m +0.4 m up from (1712, -1674); 0.4 s 18 m +0.4 m up from (898, -1674); 1.3 s 54 m +3.9 m up from (674, -1670); 1.1 s 42 m +2.7 m up from (598, -1673); 0.4 s 6 m +0.2 m up from (514, -1680); 0.6 s 23 m +0.0 m up from (461, -1569); 0.6 s 10 m +0.4 m up from (494, -1218) (the mall, u 168); 1.3 s 34 m +1.7 m up from (438, -1233) (the mall, u 110); 0.4 s 6 m +0.0 m up from (370, -1251) (the mall, u 39); 0.3 s 9 m +0.0 m up from (214, -1005); 0.4 s 5 m +0.0 m up from (171, -909); 0.6 s 11 m +0.3 m up from (132, -786); 0.5 s 8 m +0.1 m up from (656, -458); 0.4 s 3 m +0.1 m up from (1684, -583)
+PASS  xloop reverse Ridge Scrambler: round the lap through the north wing and Halverson Home, never stuck  -  216.8 s
+  reverse  Drifter Twin     the lap in 219.0 s; slowest 8.4 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.4 m over the lower floor, 10 m/s
+      air: 0.6 s 14 m +1.1 m up from (1740, -825); 0.5 s 10 m +0.3 m up from (1712, -1674); 0.4 s 16 m +0.4 m up from (897, -1674); 1.3 s 55 m +4.0 m up from (675, -1670); 0.9 s 37 m +2.2 m up from (597, -1673); 0.3 s 4 m +0.1 m up from (514, -1679); 0.6 s 23 m +0.0 m up from (461, -1569); 0.6 s 11 m +0.4 m up from (494, -1218) (the mall, u 168); 1.3 s 33 m +1.5 m up from (437, -1233) (the mall, u 109); 0.4 s 6 m +0.0 m up from (370, -1251) (the mall, u 39); 0.4 s 5 m +0.0 m up from (171, -909); 0.6 s 10 m +0.3 m up from (132, -786); 0.5 s 7 m +0.0 m up from (656, -458); 0.4 s 11 m +1.4 m up from (1726, -670)
+PASS  xloop reverse Drifter Twin: round the lap through the north wing and Halverson Home, never stuck  -  219.0 s
+  reverse  Turf Rocket      the lap in 214.4 s; slowest 8.4 m/s; 0 dead stop(s); the north wing yes, Halverson Home yes, the escalator's top yes, off the escalator: down at u 6, 0.4 m over the lower floor, 10 m/s
+      air: 0.6 s 14 m +1.0 m up from (1739, -826); 0.6 s 11 m +0.4 m up from (1712, -1674); 0.4 s 18 m +0.4 m up from (897, -1674); 1.4 s 59 m +4.5 m up from (675, -1670); 1.0 s 39 m +2.4 m up from (597, -1672); 0.4 s 6 m +0.2 m up from (514, -1680); 0.6 s 24 m +0.0 m up from (461, -1569); 0.7 s 12 m +0.5 m up from (494, -1218) (the mall, u 168); 1.4 s 34 m +1.7 m up from (438, -1233) (the mall, u 109); 0.4 s 6 m +0.0 m up from (370, -1251) (the mall, u 39); 0.4 s 6 m +0.0 m up from (172, -910); 0.6 s 11 m +0.3 m up from (132, -786); 0.6 s 8 m +0.1 m up from (656, -459); 0.4 s 3 m +0.1 m up from (1685, -582)
+PASS  xloop reverse Turf Rocket: round the lap through the north wing and Halverson Home, never stuck  -  214.4 s
+PASS  xloop: no dead stop on the ground anywhere (listed above)  -  0 found
+
+=== Every race barrier holds: a car driven at each from 25 m on the course's side at 16 m/s along the closed road (Street Classic)
+  forward Bells Ferry Road Northeast at lap 233 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Ring Road Northwest at lap 3161 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Town Center Drive at lap 3502 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Town Center Drive at lap 3502 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Mall Boulevard Northwest at lap 3656 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 4255 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Chastain Meadows Parkway Northwest at lap 4284 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Barrett Creek Boulevard at lap 4284 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 4312 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Prado Lane at lap 4462 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Prado Lane at lap 4462 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Bells Ferry Road at lap 4850 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Piedmont Road at lap 4850 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Piedmont Road at lap 4850 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward (unnamed secondary_link) at lap 4893 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Fern Valley Road at lap 5176 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Vintage Club Drive at lap 5345 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Vintage Club Drive at lap 5356 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Cottonwood Drive at lap 5548 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  forward Rockbridge Road at lap 5661 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+PASS  tbar forward: every barrier holds (20)  -  20 of 20
+  reverse Rockbridge Road at lap 77 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Cottonwood Drive at lap 190 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Vintage Club Drive at lap 382 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Vintage Club Drive at lap 393 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Fern Valley Road at lap 562 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 845 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Bells Ferry Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Piedmont Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Piedmont Road at lap 886 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Prado Lane at lap 1271 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Prado Lane at lap 1271 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 1419 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Chastain Meadows Parkway Northwest at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Chastain Meadows Parkway Northwest at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Barrett Creek Boulevard at lap 1447 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed secondary_link) at lap 1482 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed unclassified) at lap 1526 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse (unnamed unclassified) at lap 1605 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Mall Boulevard Northwest at lap 2082 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Town Center Drive at lap 2211 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Town Center Drive at lap 2211 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Ring Road Northwest at lap 2296 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Ring Road Northwest at lap 2541 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+  reverse Bells Ferry Road Northeast at lap 5468 m: the car's middle -2.3 m from the barrier's line, 0.0 m/s after 4.5 s
+PASS  tbar reverse: every barrier holds (24)  -  24 of 24
+
+=== BUG-004 ("It would be good to have peopel walking or jogging this trail"): people on the trail
+  08:00 at (360, -627): walkers 7 (target 7 near a view): dogs 1, families 0, couples 1, joggers 4, cyclists 1; on the trail 7
+  18:00 at (360, -627): walkers 9 (target 8 near a view): dogs 4, families 0, couples 2, joggers 1, cyclists 2; on the trail 9
+  08:00 at (1000, -560): walkers 7 (target 7 near a view): dogs 1, families 0, couples 1, joggers 3, cyclists 2; on the trail 7
+  18:00 at (1000, -560): walkers 8 (target 8 near a view): dogs 2, families 0, couples 1, joggers 2, cyclists 3; on the trail 8
+  08:00 at (1300, -790): walkers 8 (target 7 near a view): dogs 2, families 0, couples 2, joggers 2, cyclists 2; on the trail 8
+  18:00 at (1300, -790): walkers 9 (target 8 near a view): dogs 4, families 0, couples 3, joggers 0, cyclists 2; on the trail 9
+PASS  xwalk: people out on the trail  -  most at once 9; over the stops dog walkers 14, couples 10, joggers 12, cyclists 12
+PASS  xwalk: cyclists among them  -  12
+  in a race: walkers 2 (target 7 near a view): dogs 0, families 0, couples 0, joggers 1, cyclists 1; on the trail 2
+PASS  xwalk: in a race, two groups at most on the trail  -  2
+
+=== Pictures
+
+28 of 28 checks passed.

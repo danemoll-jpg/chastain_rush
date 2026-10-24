@@ -6128,3 +6128,58 @@ Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as the
    upstairs only: cars stopped dead on them); a fast-travel spot moved to the main doors' lot. Two full Build Maps (the first to build the mall on, the round's last as the rule says).
 For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
 `Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.
+
+## Archived 2026-10-24 (Round 64 delivered): Previous delivery 3: Round 61
+**Reviewed: Dan drove the Round 61 build 2026-10-22 23:37 (free roam in the new land); his only notes are bumps (Round 62). The Build Map speed-up after it is accepted.**
+**Round 61, THE MAP EXTENSION, STAGE 2: WEST TO SUMMERBROOKE AND SOUTH OVER KENNESAW MOUNTAIN (airport included), with the work that keeps
+it fast; three bumps in the new land (Dan, 2026-10-22 10:04; reports BUG-001 to BUG-003 of session `2026-10-22_09-43-30-831_9bfdff`, read by Claude, after
+the Round 60 exe; his map `local/reference_photos/extension/stage2_kennesaw_mountain.png`, Google: reference only, never traced).** Round 60
+is reviewed ("Everything looks good in the mall"). Round 59's rules hold (nothing that exists moves; the new land at more negative x / z;
+everything that uses the map extended; numbers before / after). Tuning limit. Short results.
+A. THE AREA. Dan: "For the further expansion can we include all of this area? This also cover kennesaw mountain which would be super cool
+   to have". His map shows Cobb County International Airport (McCollum Field) and Laura Lake's quarry, Smith-Gilbert Gardens, Summerbrooke,
+   Stilesboro Road, Kennesaw Due West Road, US 41 / Old 41, Barrett Parkway's west end, Kennesaw Mountain National Battlefield Park and
+   the Wellstar Kennestone hospital at the bottom right. Claude's reading of its edges: west about -84.660 (Paul Samuel Road / Summerbrooke),
+   south about 33.960 (past the mountain's south end); north and east stay. Code sets the exact bounds from OSM (all of Kennesaw Mountain
+   and Little Kennesaw / Pigeon Hill, the airport with its runway ends, a margin) and says what they are. Claude's estimate: about 12.7 x
+   9.5 km, about 120 km2: some 4.7 times today's map (25.5 km2), 16 times the original. The USGS 1 m tile in use stops at -84.619 W:
+   fetch the next tile(s) west from the same 3DEP project and join them seamlessly.
+B. KENNESAW MOUNTAIN: the real terrain at the game's 1.5x (the summit is roughly 250 m above the town around it, so about 375 m in game):
+   Kennesaw Mountain Drive up to the summit lot, the park's woods (dense, solid trees), its open fields, the visitor center and its lots as
+   generated buildings, the trails as paths. A fast-travel spot at the summit and at the visitor center. No race this round (Dan will
+   want to see it first). The airport: the runway, taxiways, aprons and hangars as generated, drivable (no planes needed this round).
+C. KEEP IT FAST (do this BEFORE adding the land; Dan noticed no slowdown at 3.3x, but Round 59 measured the old neighborhood falling from
+   182 to 122 fps average, mostly from things spread over the whole map that run every frame whatever the distance: people groups,
+   hydrants, the traffic network, far objects drawn). Make those distance-based (only what is near the player, or near a racer, runs;
+   the rest sleeps / is not drawn; trees and buildings beyond view distance not drawn or as cheap far versions), then measure again,
+   then extend. Target after the extension: the old neighborhood and the mountain at least as fast as Round 59's numbers (1080p window).
+   If that cannot be held, stop with the land added only as far as it holds and report (Dan decides).
+D. BUMPS in stage 1's land: BUG-001 (x 1359.21 z -716.10 h 19, Chastain Meadows Parkway): "fix this bump"; BUG-002 (x 649.95 z -1663.21
+   h 263, Barrett Parkway): "smooth out riht here"; BUG-003 (x 583.95 z -1673.97 h 262, Barrett Parkway): "also right here". Smooth them;
+   the generated roads in the new land likely have more of these: also run Round 54's lap-levelling idea along stage 1 and 2's main roads
+   (Barrett Parkway, Chastain Road, Chastain Meadows, Kennesaw Mountain Drive, US 41) and report the jolts before / after.
+Numbers: Build Map time, exe size, load time, memory, frame rate (old neighborhood, Town Center inside, KSU, the airport, the summit, the
+mountain's woods), tree and building counts: Round 59 / after C / after A and B.
+Check: every race still runs (one AI race each); Town Center inside unchanged; free roam from Chastain Glen to the summit and to the airport
+along roads, never under the ground; pictures: the summit looking back east over the map, the mountain road, the airport, the join at
+-84.619.
+For Dan to check: drive up Kennesaw Mountain and down; the airport and Laura Lake; frame rate everywhere; the three bumps.
+
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round61/`. Bug reports read: session `2026-10-22_09-43-30-831_9bfdff`, BUG-001 to 003.
+C DONE (before the land, `perf_c.txt`; Round 60's scene, two runs each): one vehicle list instead of scene searches, shrub beds / night lamps / people groups / water areas by cell, pipe pieces and streams asleep with no vehicle near, one fence-debris runner and fence meshes copied on first break, far geese wait, terrain tiles past the far clip not drawn (`World/FarTerrain.cs`). After the land: the ground-height lookup searched all 304 tiles per call (now a grid, `GroundQuery.TileAt`) and the police network's log line recounted its largest part per node (749 s at start-up, now 1.1 s).
+A DONE. Stage 2 appended after stage 1 as stage 1 after the core (`mapgen_extend.py`, config `extension2`: 9 tiles west, 10 south; three more 3DEP tiles x71y377, x72y376, x71y376, joined). Bounds: south 33.95632, west -84.66198 (north, east kept); 12613 x 10229 m (129 km2, 5x Round 59), x -8629.83 to 3983, z -8311.33 to 1918, 19 x 16 tiles. Every existing list and tree unchanged as a prefix (checked); floors moved about 1 cm (the 16-bit terrain step is 8.8 mm now).
+B DONE. Kennesaw Mountain at 1.5x (summit 689.9 m in game), Kennesaw Mountain Drive, the park's woods, the visitor center from OSM; 45 named trails (19.6 km) at their real width on levelled ground (`MapBuilder.Airport.cs`); the airport's 2 runways, 21 taxiways, 3 aprons graded, paved and painted, hangars from OSM; fast travel to the summit and the visitor center. No race.
+D DONE (`MapBuilder.Round61.cs`; `round61_bumps.txt`): the new land's Barrett Parkway, Chastain Road, Chastain Meadows, Kennesaw Mountain Drive and Cobb Parkway (US 41) levelled across their width to their blurred centerline. Dan's spots at 25 m/s, before / after: BUG-001 northbound stopped dead / kept 23.7 m/s; BUG-002 and 003 airborne up to 3.9 s and a crash / wheels always down, 24.6 m/s. Sharpest 1 m step along the roads: Barrett 0.94 -> 0.12 m, Cobb Parkway North 0.22 -> 0.05, Chastain Road NW 0.40 -> 0.06 (`round61_build_log.txt`).
+Numbers, Round 59 / after C / after A and B (1920 x 1080 window, not measured at 3840 x 2160; PC in use): Build Map 1955 s / (not rebuilt) / 19,026 s (5.3 h: Businesses 5,726 s, Hydrants 2,772 s, Roads 2,059 s); exe data 1357 / 1448 / 4284 MB; world up 19.4 / 9-31 / 33.5 s; Unity memory 1838 / 1838 / 5182 MB; tiles 60 / 60 / 304; trees 142,282 / same / 920,484; buildings 5,535 / same / 34,251. Frame rate average / slowest 1 %: old neighborhood 122 / 39 -> 214 / 72 -> 163 / 71; Town Center 171 / 51 -> 247-278 / 81-126 -> 191 / 97; KSU 154 / 53 -> 226 / 69-73 -> 175 / 81; the airport 196 / 83; the summit 180 / 99; the mountain's woods 174 / 68; the mountain road 191 / 96; the join 192 / 92; inside Town Center 187-207 / 61-100 (the Round 60 exe the same evening 207-217 / 46-68).
+Check: free roam Chastain Glen to the summit (12.4 km) and to the airport (7.3 km) along the roads: through, never under the ground (`round61_check_drives.txt`); every race still runs: 11 courses and directions, one AI race each on Hard, traffic Normal, 33 of 33 finish (`round61_check_races.txt`); Town Center inside unchanged, its frame rate above; pictures `61_*.png` (summit, mountain road, mountain woods, airport, the join).
+Left for Dan: two stretches still have a 0.5 m step in the bridge-end fades (Chastain Road and Cobb Parkway, not his spots); the full build now takes 5.3 h (a follow-up could make Businesses and Hydrants scale). The summit picture shows the summit only (the fog is solid at 650 m).
+`Builds/ChastainRush/` 2026-10-22 19:46 (the exe from the round's one full Build Map scene, 16:44; the runtime fixes after it were code only, the scene's data unchanged). Imported from Racer: nothing.
+
+**Build Map speed-up (after Round 61, Dan's go 2026-10-22; editor code only, no round): full Build Map 19,026 s -> 2,576 s (43 min).**
+Cause: every generated mesh's CreateAsset ran an asset refresh over the whole project (48,084 refreshes, 12,389 s); meshes are now imported once per step (`GenAsset` / `FlushAssets`, `MapBuilder.Quick.cs`). The scans over the whole map per item are by cell (`MapBuilder.CellIndex.cs`, candidates in their old order): hydrants, businesses and Canton Road's lots, the per-tree checks, roads' names, the other neighborhoods' houses and fences, Round 52's settling, the chained bridge decks.
+Steps, before -> after (s): Businesses 5,726 -> 488; Hydrants 2,772 -> 167; Roads 2,059 -> 521; Rest 1,795 -> 200; Trees 1,439 -> 30; PlanBusinesses 1,279 -> 54; Neighborhood 650 -> 123; Network 593 -> 73; Driveways 588 -> 83; LoadRest 576 -> 7; SmoothBridgeEnds 365 -> 4; the whole planning 2,614 -> 570.
+Check: `SceneDump` of the Round 61 scene against the new full build, `scene_diff.py`: 493,613 lines each, 0 terrain blocks differ, 6 objects differ, all from Unity's unsorted `FindObjectsByType` order (same hydrant counts and reasons, same geysers; manholes visited in another order): the hydrant links, one hydrant chunk, and two smash sites. The street-lamp smash site lands at (2960, 896) or (2999, 1072) depending on that order: it already flipped between Round 39's `build_a` and `build_a2` (same code); this build has (2999, 1072). The exe was not rebuilt (scene the same); the next round's build carries it.
+Follow-up, same order every build: the street-lamp smash site's FenceChunks, the hydrants' HydrantChunks and ManholeLids are now taken in hierarchy order
+(`MapBuilder.InSceneOrder`, `MapBuilder.Activities.cs`), and a tie for the densest lamp row goes to the western panel. Check: two full Build Maps, `SceneDump`
+of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
+For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
