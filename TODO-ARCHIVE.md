@@ -6183,3 +6183,68 @@ Follow-up, same order every build: the street-lamp smash site's FenceChunks, the
 (`MapBuilder.InSceneOrder`, `MapBuilder.Activities.cs`), and a tie for the densest lamp row goes to the western panel. Check: two full Build Maps, `SceneDump`
 of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
 For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
+
+## Round 62 (moved from TODO.md on 2026-10-24 when Dan moved on to Round 66; word for word)
+
+## Previous delivery 3: Round 62
+**Reviewed: Dan drove the Round 62 build 2026-10-23 20:28 (Noonday Creek Trail both ways); his notes are Round 64 (after the helicopter).**
+**Round 62, A NEW TRACK: THE NOONDAY CREEK TRAIL LOOP round Town Center (forward and reverse, no shortcuts yet), and the new land's bumps
+(Dan, 2026-10-23 02:23; reports BUG-001 and BUG-002 of session `2026-10-22_23-37-02-216_30fa55`, read by Claude, after the Round 61 exe;
+his pictures in `local/reference_photos/noonday_trail/`: Google / Tripadvisor / county map: reference only, never traced or measured).**
+Round 61 is reviewed. ONE full Build Map at the end (quick builds while working). Tuning limit. Short results.
+A. THE TRACK. Dan: "I want a track based on the green line. The drawn trail gives you a more detailed shape of noonday creek trail and I
+   have put in pics so you can see what it looks like."
+   THE LINE (`route_green_line.jpg`, Google's green highlight of the trail; `trail_map_cobb.png`, Cobb's trail map, its dark green
+   "Existing" line has the trail's true shape): a loop round Town Center at Cobb. From the trail's access point by Hidden Forest Court
+   (north of the mall, by Big Shanty), east along Noonday Creek, under I-575, past Chastain Meadows Parkway to the Noonday Creek
+   Trailhead by Bells Ferry Road; south along Bells Ferry Road to Barrett Parkway; west along Barrett Parkway (across / under I-575) to the
+   mall's ring; north past the mall's west side (Google's green crosses the mall between its buildings, by the Town Center at Cobb pin) and
+   through the lot to Town Center Drive; round to Hidden Forest Court. Use the trail's REAL geometry from OSM (`raw/osm_ext1.json` /
+   `osm_ext2.json`: 44 ways named "Noonday Creek Trail"; Round 59 did not bring footways / cycleways into map.json) wherever it exists;
+   where it runs beside a road (Bells Ferry, Barrett Parkway) race on that road / its side path, Code's pick. Where the line crosses the
+   mall: if it really passes through the building, the race goes in one entrance and out another through Round 60's drivable mall (that
+   would be a highlight); if it only passes between buildings, follow it. Say which.
+   DAN'S CHANGES (2026-10-23 02:32): "I want the forward track to start at Bells Ferry, cut through the parking lot and then until the
+   Noonday creek trail. Noonday Creek trail does go on further than this but I want to cut through town center mall, lets create at least
+   a jump or two each way in the mall, and be creative with it. And yes since this is the actual trail I do want to call this noonday creek
+   trail, though technically our existing trail is a proposed extension that hasn't been built yet".
+   Claude's reading: FORWARD starts on Bells Ferry Road (start / finish there, by the Noonday Creek Trailhead), south on Bells Ferry, west on
+   Barrett Parkway, then off the road and across the mall's parking lot to the mall, THROUGH the mall building (in one entrance, along the
+   concourse(s), out another: Round 60's drivable mall), across the lot on the other side to the trail by Town Center Drive / Hidden Forest
+   Court, then the real trail east along the creek, under I-575, back to the trailhead at Bells Ferry. The real trail goes on round the
+   mall; the race does not, it cuts through the building. REVERSE: the same loop the other way. If Code finds a reading that fits Dan's
+   words better (e.g. which lot, which entrances), say so.
+   THE MALL: at least one jump, ideally two, EACH WAY (forward and reverse may share a feature if it works both ways, else their own),
+   creative and belonging in a mall, not dirt piles (standing rules: real physics off ramps; nothing slows a car on a ramp). Ideas, Code
+   picks and says why: launch off the upper level's edge over a center court; an escalator as a kicker; a car-raffle display stage with its
+   ramp; a fashion runway; the fountain's rim; a fallen store sign; the play area's slide. Racers smash the mall's breakables as they pass
+   (they must not slow them, Round 60). Doors and glass on the race line break, and are whole again for the next lap (as the barricades).
+   No shortcuts this round: Dan will pick them after driving it. 3 laps by default. NAME: "Noonday Creek Trail" (Dan). RENAME the old
+   made-up woods track to "Noonday Creek Extension" (Dan, 02:34, yes to Claude's suggestion: it is really the proposed extension that has
+   not been built): its name in the menus, records, replays, loading screen, map labels; keep its records and replays (rename, not reset). Built like the other races (route, checkpoints, closures of roads
+   that leave the lap, AI, ghosts, records, replays, the loading screen's inset, menus). Traffic on the roads it uses, as other tracks.
+B. THE TRAIL, AS THE PHOTOS SHOW IT: a dark asphalt multi-use path about 3 m wide with a dashed yellow center line, grass shoulders, pine
+   and hardwood woods close on both sides (`photo3_trail_woods.jpg`); black steel pipe railings where it runs beside drops and under
+   I-575's concrete bridge (piers, green steel beams, `photo1_i575_underpass.jpg`); a rust-red steel truss footbridge over the creek with
+   a concrete abutment and a grey timber-and-steel railed approach, kudzu and brush along the dark creek (`photo2_red_truss_footbridge.jpg`);
+   yellow winding-road warning signs (breakable). The path at its REAL width (standing rule), the race also on the grass beside it: clear
+   and grade the shoulders so four vehicles can race and pass (Dan on the made-up Noonday Creek: it had to be wider so vehicles could
+   weave); the bridges and the underpass stay real chokepoints but never a place a vehicle wedges (railings solid, no snag). Trees off the
+   cleared shoulders solid as elsewhere.
+C. BUMPS IN THE NEW LAND. BUG-001 (x 617.23 z 9.33 h 273, Big Shanty Road NW): "level all thesse bumps". BUG-002 (x 512.91 z 18.66 h 161,
+   I-575 (Phillip Landrum Memorial Highway)): "flatten bumps". Dan keeps finding these on the generated roads (Rounds 60, 61, 62), so run
+   Round 61 D's levelling on ALL the stage 1 and 2 roads of class motorway, trunk, primary, secondary and tertiary (I-75, I-575 and their
+   ramps, Big Shanty, Barrett, Chastain, Chastain Meadows, Bells Ferry, US 41, Town Center Drive, Kennesaw Mountain Drive, the rest) and
+   the new track's roads; then a jolt scan along each at speed; report the worst before / after and Dan's two spots.
+Check: the loop both ways on all vehicles, no stop, no wedge (the bridges, the underpass, the mall if used); AI races x2 each way, Hard,
+traffic Normal, all finish; every closure holds; the jolt table. Pictures: the start on Bells Ferry, the underpass and the red bridge next to Dan's
+photos, the mall run and each mall jump, Bells Ferry and Barrett Parkway stretches, Dan's two bump spots.
+For Dan to check: race the Noonday Creek Trail both ways (the mall and its jumps; then pick its shortcuts); the bumps on Big Shanty, I-575 and the other main roads.
+
+**Status (Claude, 2026-10-23): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round62/`. Bug reports read: session `2026-10-22_23-37-02-216_30fa55`, BUG-001 and 002.
+A DONE. "Noonday Creek Trail" (`make_trail_route.py`): start on Bells Ferry by the trailhead, south, west on Barrett, Mall Boulevard and Town Center Drive, the east lot, THROUGH the mall (in Halverson's east doors, along the upper concourse, down the balcony to the main doors; Google's green line does cross the building), the north lot over Town Center Drive, the red bridge, the real trail east under I-575 to the trailhead. Forward 5723 m, reverse its own lap 5767 m, 11 checkpoints, 3 laps, no shortcuts. Mall jumps, physics only: forward the car raffle stage off the east escalator's top over the escalator well, and the mattress mountain in Halverson's aisle; reverse the escalator itself as the kicker (through Halverson's front 3.5 m up at 29 m/s), and the mattress mountain. Glass, doors and breakables cost no speed and are whole the next lap. The old track is "Noonday Creek Extension" (records, ghosts and replays kept: `records_as`).
+B DONE. The path 3 m dark asphalt with yellow dashes on a level 11 m graded bench; black pipe railings under I-575; the rust-red truss footbridge; a boardwalk over the creek's three crossings under I-575 (OSM has the trail bridged there); 8 breakable winding-road signs.
+C PARTLY. Every stage 1 and 2 main road and its ramps levelled across its width (870 road lines, 316 km; `MapBuilder.Round62.cs`), I-575's decks at the old core's edge and Bells Ferry's bridge over Noonday Creek laid as one curve with 150 m of road each side. Dan's spots on a 25 m/s drive, before / after: BUG-002 I-575 jolt 3.28 m/s and 0.44 s in the air / 0.01, wheels down; BUG-001 Big Shanty under I-575 0.98 to 1.26 s in the air / 0.04 and 0.30 s (`round62_dan_spots.txt`). The jolt scan (197 drives at 28 m/s, `round62_jolt_table.txt`): drives over 3 m/s 26 -> 19 (Old 41 7.4 -> 2.0, McCollum 6.3 -> 2.5, Big Shanty 6.3 -> 3.2, Frey 6.8 -> 4.2), but over 1.5 m/s 37 -> 50 and with air over 0.15 s 58 -> 94: where two levelled roads meet, the narrower one now steps into the wider one's level (Barrett at (634, -1669), near your Round 61 spot, throws a car 1.6 s; Chastain Road, Stilesboro, Kennesaw Mountain Drive worse). Two tries made (the second: wider road wins, fixed a ramp re-grading Barrett's lane); tuning limit reached.
+Check (build 6, the exe): the loop on all 11 vehicles both ways 22 of 22 round, no wedge (`round62_check_loop_pics.txt`); AI twice each way on Hard, traffic Normal: 4 of 4 races, every AI finishes, laps 220 to 270 s (`round62_check_ai.txt`); every closure holds, 23 forward, 21 reverse (`round62_check_barriers.txt`); pictures `62_*.png`. Left: the reverse escalator jump's landing costs 24 -> 10.5 m/s; flat out (43 m/s) Barrett at x 680 lifts a car.
+Builds: 6 full Build Maps, not one (a mesh-name clash took every road bridge's deck, then fixes from each check). `Builds/ChastainRush/` 2026-10-23 13:57. Imported from Racer: nothing.
+For Dan: the levelling's junction steps: (1) level up to a junction and keep the junction's own ground (one more build), or (2) back to Round 61's five roads plus your two spots and the course's roads. Until you say, build 6's levelling stays.
