@@ -127,9 +127,9 @@ namespace ChastainRush
                 float edgeIn = south ? R64PitV0 : R64PitV1, edgeOut = south ? R64PitV1 : R64PitV0, sg = south ? -1f : 1f, rampU = south ? -137.6f : -73.5f;
                 int kIn = path.FindIndex(q => Mathf.Abs(MallV(q) - (edgeIn - sg * 14f)) < 1.2f && InCarroway(q)), kOut = path.FindIndex(q => Mathf.Abs(MallV(q) - (edgeOut + sg * 12f)) < 1.2f && InCarroway(q));
                 if (kIn < 0 || kOut < 0) { Check($"xshort {dir}: the path crosses the pit", false); continue; }
-                var miss = before.Concat(path.Take(kIn + 1)).Concat(new[] { F(R64PitU, edgeIn + sg * 3f, true), F(R64PitU + (rampU - R64PitU) * .4f, (edgeIn + edgeOut) * .5f, true), F(rampU, edgeIn + sg * 1f, true),
+                var miss = before.Concat(path.Take(kIn + 1)).Concat(new[] { F(R64PitU, edgeIn + sg * 3f, true), F(R64PitU + (rampU - R64PitU) * .4f, (edgeIn + edgeOut) * .5f, true), F(rampU + (R64PitU - rampU) * .15f, edgeIn + sg * 2f, true), F(rampU, edgeIn + sg * 3.5f, true),
                     F(rampU, edgeOut + sg * 1.5f), F(rampU, edgeOut + sg * 7f), F(R64PitU, edgeOut + sg * 12f) }).Concat(path.Skip(kOut + 1)).Concat(after).ToList();
-                var round = before.Concat(path.Take(kIn + 1)).Concat(new[] { F(rampU, edgeIn - sg * 4f), F(rampU, edgeIn - sg * 1f), F(rampU, edgeIn + sg * 1f, true),
+                var round = before.Concat(path.Take(kIn + 1)).Concat(new[] { F(rampU, edgeIn - sg * 4f), F(rampU, edgeIn - sg * 1f), F(rampU, edgeIn + sg * 1.5f, true), F(rampU, edgeIn + sg * 4f, true),
                     F(rampU, edgeOut + sg * 1.5f), F(rampU, edgeOut + sg * 7f), F(R64PitU, edgeOut + sg * 12f) }).Concat(path.Skip(kOut + 1)).Concat(after).ToList();
                 float[] slow = Prof(sc.AiProfile)?.ToArray();
                 var lipS = LineLen(before.Concat(path.Take(kIn + 1)).ToList()) + 14f;   // (the kicker's lip)
@@ -141,6 +141,8 @@ namespace ChastainRush
                 yield return TimedDrive(miss, slowProf.ToArray(), 200f, r => { rm = r; tMiss = r.reached ? r.time : -1f; });
                 yield return TimedDrive(round, Prof(sc.AiProfile), 200f, r => { rr = r; tRound = r.reached ? r.time : -1f; });
                 report.AppendLine($"  {dir}: the lap {LineLen(lap):0} m in {Tm(tLap)}; the shortcut clean {LineLen(clean):0} m in {Tm(tClean)} (most air {rc.maxAir:0.0} s{inPit}); missed (8 m/s off the kicker, out up the plank ramp) {Tm(tMiss)}; round the stunt (down onto the plank ramp) {Tm(tRound)}");
+                foreach (var (nm, rr2) in new[] { ("clean", rc), ("missed", rm), ("round", rr) })
+                    if (!rr2.reached && rr2.trail.Count > 0) { var e = rr2.trail[rr2.trail.Count - 1]; report.AppendLine($"      {nm} stopped at ({e.x:0.0}, {e.y:0.0}, {e.z:0.0}): u {MallU(e):0.0} v {MallV(e):0.0} ({rr2.end})"); }
                 Check($"xshort {dir}: clean saves time", tClean > 0f && tLap > 0f && tClean < tLap, $"{Tm(tClean)} against {Tm(tLap)}");
                 Check($"xshort {dir}: missed costs more than the lap", tMiss < 0f || tMiss > tLap, $"{Tm(tMiss)} against {Tm(tLap)}");
                 Check($"xshort {dir}: round the stunt is slower than the lap", tRound < 0f || tRound > tLap, $"{Tm(tRound)} against {Tm(tLap)}");

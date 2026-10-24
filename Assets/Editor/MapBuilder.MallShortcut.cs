@@ -110,10 +110,12 @@ namespace ChastainRush
                 }
             }
             ColliderMeshMall(col, "Mall ramp Carroway kickers", go);
-            // the ways out of the pit: plank ramps at its two ends, each rising the way the race goes on (forward: south, at its west end; reverse: north, at its east end)
+            // the ways out of the pit: plank ramps at its two ends, each rising the way the race goes on (forward: south, at its west end; reverse: north, at its east end),
+            // from 4 m out from the near wall to the far edge
             var exits = new MeshBuilder();
-            foreach (var (u0, u1, lowV, highV) in new[] { (uW, uW + MallExitW, MallPitV0, MallPitV1), (uE - MallExitW, uE, MallPitV1, MallPitV0) })
+            foreach (var (u0, u1, lowV0, highV) in new[] { (uW, uW + MallExitW, MallPitV0, MallPitV1), (uE - MallExitW, uE, MallPitV1, MallPitV0) })
             {
+                float lowV = lowV0 + (highV - lowV0) * (4f / Mathf.Abs(highV - lowV0));   // (check 2: its foot 4 m out from the pit's wall, so a car in the water lines up and drives on)
                 const int n = 8;
                 for (int i = 0; i < n; i++)
                 {

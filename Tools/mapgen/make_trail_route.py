@@ -681,10 +681,11 @@ def forgiven(lp, s_of, cps_, path_):
     return [c["id"] for c in cps_ if 0 < (c["s"] - a_) % L_ < (b_ - a_) % L_]
 def station(path_, q): return round(nearest_s(path_, q)[1], 1)
 def shortcut(id_, name, direction, path_, y_, forg, from_north):
-    # the AI: 14 m/s on the lots, 12 through the hall and the court, 24 at the renovation pit (its kickers need about 18)
-    if from_north: k0, k1, k2 = W(MAIN_U, MAIN_DOOR_V), W(SOUTH_U, SOUTH_FRONT_V - 6.0), W(SOUTH_U, PIT_V1 - 6.0)
-    else: k0, k1, k2 = W(SOUTH_U, SOUTH_PORTAL_V), W(SOUTH_U, PIT_V0 + 6.0), W(SOUTH_U, SOUTH_FRONT_V)
-    prof = [0.0, 14.0, station(path_, k0), 12.0, station(path_, k1) - 1.0, 12.0, station(path_, k1), 24.0, station(path_, k2), 24.0, station(path_, k2) + 1.0, 14.0]
+    # the AI: 14 m/s on the lots, 12 through the entrance hall and the court, 24 from Carroway's door it comes in by to past the renovation pit (its kickers
+    # need about 18) (check 2: the reverse one held 12 through the pit and came down in it)
+    door = station(path_, W(MAIN_U, MAIN_DOOR_V)); lip = station(path_, W(SOUTH_U, PIT_V0 if from_north else PIT_V1))
+    if from_north: prof = [0.0, 14.0, door, 12.0, station(path_, W(SOUTH_U, SOUTH_FRONT_V)), 12.0, station(path_, W(SOUTH_U, SOUTH_FRONT_V - 2.0)), 24.0, lip + 18.0, 24.0, lip + 20.0, 14.0]
+    else: prof = [0.0, 14.0, station(path_, W(SOUTH_U, SOUTH_PORTAL_V)), 14.0, station(path_, W(SOUTH_U, SOUTH_PORTAL_V + 2.0)), 24.0, lip + 18.0, 24.0, lip + 20.0, 12.0, door, 12.0, door + 2.0, 14.0]
     return {"id": id_, "name": name, "direction": direction, "path": flat(path_), "path_y": y_, "half_width_m": 3.5, "entry_inset_m": 14.0, "entry_margin_m": 1.5,
             "forgives": forg, "ai_speed": 26.0, "ai_profile": prof}
 SHORTCUT_NAME = "Carroway renovation"
@@ -736,6 +737,13 @@ ely = [gsm(elg, elc, k, 8.0) for k in range(len(el))]
 el_k = [k for k in range(len(el)) if road_dist(el[k]) > 1.0 and bld_dist(el[k]) > 3.0]
 for n_, r in enumerate(split_runs([el[k] for k in el_k], None, None)):
     grades.append({"id": f"the east lot's way ({n_ + 1})", "points": flat([el[el_k[k]] for k in r]), "y": [round(ely[el_k[k]], 2) for k in r], "half": 4.0, "blend": 3.0})
+# Round 64 (C): the shortcut's lot legs, the same way (check 2: the south lot climbs in tiers, 3 m banks, from Carroway's portal up to Mall Boulevard: at
+# speed a car flew off one and crashed)
+for nm_, ln_ in (("the shortcut's south lot", resample(lot_s_a, 2.0)), ("the shortcut's north lot", resample(north_old, 2.0))):
+    lc_ = cum(ln_); lg_ = [ground(*q) for q in ln_]; ly_ = [gsm(lg_, lc_, k, 8.0) for k in range(len(ln_))]
+    lk_ = [k for k in range(len(ln_)) if road_dist(ln_[k]) > 1.0 and bld_dist(ln_[k]) > 3.0]
+    for n_, r in enumerate(split_runs([ln_[k] for k in lk_], None, None)):
+        grades.append({"id": f"{nm_} ({n_ + 1})", "points": flat([ln_[lk_[k]] for k in r]), "y": [round(ly_[lk_[k]], 2) for k in r], "half": 4.0, "blend": 4.0})
 # the north lot's way down to Town Center Drive and on to the red bridge (not on the road itself), 4 m either side
 nl_k = [k for k in range(len(nl)) if not (k_t0 - 1 <= k <= k_t1 + 1) and road_dist(nl[k]) > 1.0]
 for n_, r in enumerate(split_runs([nl[k] for k in nl_k], None, None)):
