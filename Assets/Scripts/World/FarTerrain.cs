@@ -47,7 +47,7 @@ namespace ChastainRush
                 var cam = cams[k];
                 if (!cam || !cam.isActiveAndEnabled) continue;
                 if (cam.orthographic) { all = true; break; }
-                var p = cam.transform.position; views.Add((new Vector2(p.x, p.z), cam.farClipPlane + Margin));
+                var p = cam.transform.position; views.Add((new Vector2(p.x, p.z), (cam == Camera.main ? Mathf.Min(cam.farClipPlane, FarView.WorldFar) : cam.farClipPlane) + Margin));   // Round 66: the world's far clip (the horizon's is farther)
             }
             if (views.Count == 0) all = true;
             int drawn = 0;

@@ -18,6 +18,13 @@ namespace ChastainRush
         public const float OpenFrom = 30f, OpenBy = 450f, Opens = 10f, MaxView = 6500f, DetailFar = 900f, TreeFar = 5000f;   // past 5 km the fog all but hides a tree
         public static float View { get; private set; } = 650f;   // the fog's end now
         public static float Height { get; private set; }         // the main camera over the ground
+        // Round 66 (the map's edges): the view also opens by the camera's height over the land's low point round it (EdgeScenery.RegionalLow), so it
+        // opens on the summit; while it is open the far clip goes out to EdgeScenery.HorizonFar for the horizon's layer only, every other layer
+        // keeping the world's own far clip (WorldFar; FarTerrain and the edge scenery's trees use it)
+        public static float Lift { get; private set; }
+        public static bool Opened { get; private set; }
+        public static float WorldFar { get; private set; } = 750f;
+        readonly float[] cullDistances = new float[32]; bool culling;
         float baseStart = 100f, baseEnd = 650f, baseFar = 750f; Camera cam; bool haveBase;
         CullingGroup details; Renderer[] renderers; BoundingSphere[] spheres; Camera detailCam;
         public static int DetailCount { get; private set; }
@@ -80,13 +87,28 @@ namespace ChastainRush
             else if (!haveBase) { baseStart = RenderSettings.fogStartDistance; baseEnd = RenderSettings.fogEndDistance; haveBase = true; }
             var at = cam.transform.position;
             Height = GroundQuery.TryHeight(at.x, at.z, out float g) ? at.y - g : 0f;
-            float k = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(OpenFrom, OpenBy, Height));
+            Lift = EdgeScenery.RegionalLow(at.x, at.z, out float low) ? Mathf.Max(Height, at.y - low) : Height;
+            float k = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(OpenFrom, OpenBy, Lift));
             if (SplitScreen.Active || cam.orthographic) k = 0f;
             float end = Mathf.Min(Mathf.Lerp(baseEnd, baseEnd * Opens, k), Mathf.Max(baseEnd, MaxView)), start = Mathf.Lerp(baseStart, end * .45f, k);
             View = end;
             if (!Mathf.Approximately(RenderSettings.fogEndDistance, end)) RenderSettings.fogEndDistance = end;
             if (!Mathf.Approximately(RenderSettings.fogStartDistance, start)) RenderSettings.fogStartDistance = start;
-            if (!SplitScreen.Active) { float far = k > 0f ? Mathf.Max(baseFar, end + 100f) : baseFar; if (ExpClip > 0f) far = Mathf.Min(far, ExpClip); if (!Mathf.Approximately(cam.farClipPlane, far)) cam.farClipPlane = far; }
+            Opened = k > 0f;
+            if (!SplitScreen.Active)
+            {
+                float far = k > 0f ? Mathf.Max(baseFar, end + 100f) : baseFar; if (ExpClip > 0f) far = Mathf.Min(far, ExpClip);
+                WorldFar = far;
+                bool horizon = k > 0f && EdgeScenery.Instance;
+                if (horizon)
+                {
+                    for (int i = 0; i < 32; i++) cullDistances[i] = i == EdgeScenery.HorizonLayer ? 0f : far;
+                    cam.layerCullDistances = cullDistances; cam.layerCullSpherical = true; culling = true; far = EdgeScenery.HorizonFar;
+                }
+                else if (culling) { cam.layerCullDistances = new float[32]; culling = false; }
+                if (!Mathf.Approximately(cam.farClipPlane, far)) cam.farClipPlane = far;
+            }
+            else { WorldFar = cam.farClipPlane; if (culling) { cam.layerCullDistances = new float[32]; culling = false; } }
             TreeField.FarDraw = k > 0f ? Mathf.Min(ExpTrees > 0f ? Mathf.Min(end, ExpTrees) : end, TreeFar) : 0f;
         }
     }

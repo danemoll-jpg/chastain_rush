@@ -24,7 +24,7 @@ namespace ChastainRush
         // (the draw calls, not the triangles, were what the first version spent its frame time on).
         public const int FarClasses = 3;
         static readonly int[] FarClassOf = { 0, 0, 0, 1, 2, 0 };   // species -> far class
-        static readonly int[] FarMeshOf = { 0, 3, 4 };              // far class -> species whose far mesh is used
+        public static readonly int[] FarMeshOf = { 0, 3, 4 };       // far class -> species whose far mesh is used
 
         public const float NearCell = 48f, FarCell = 256f;
         public float nearDistance = 55f, farTrunkDistance = 160f, drawDistance = 700f;
@@ -277,9 +277,11 @@ namespace ChastainRush
             return g.thin[level] = outA;
         }
         // Round 63: past drawDistance in the opened view: one eight-sided shape per tree
+        // Round 66: the eight-sided shapes, for the scenery past the map's edge too (World/EdgeScenery.cs)
+        public Mesh Far8(int k) { if (far8 == null) { far8 = new Mesh[FarClasses]; for (int i = 0; i < FarClasses; i++) far8[i] = Far(crownFar[FarMeshOf[i]], i); } return far8[k]; }
         void DrawFar8(RenderParams rp, Matrix4x4[][] crowns, ref int calls, ref int trees, ref long tris)
         {
-            if (far8 == null) { far8 = new Mesh[FarClasses]; for (int k = 0; k < FarClasses; k++) far8[k] = Far(crownFar[FarMeshOf[k]], k); }
+            Far8(0);
             for (int k = 0; k < FarClasses; k++)
             {
                 var cr = crowns[k]; if (cr.Length == 0 || !far8[k]) continue;
