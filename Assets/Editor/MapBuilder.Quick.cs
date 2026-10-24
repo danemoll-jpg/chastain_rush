@@ -41,20 +41,39 @@ namespace ChastainRush
         static T GenAsset<T>(T obj, string path) where T : UnityEngine.Object
         {
             if (!(obj is Mesh)) FlushAssets();   // build speed: anything but a mesh is written and imported at once (a step may read it back)
-            if (QuickStep == null) { if (obj is Mesh) BatchAssets(); AssetDatabase.CreateAsset(obj, path); return obj; }
             string meshes = GeneratedDir + "/Meshes/";
-            if (path.StartsWith(meshes))
+            if (obj is Mesh mesh && path.StartsWith(meshes))
             {
-                string dir = GeneratedDir + "/Meshes/q/" + QuickStep;
-                if (!AssetDatabase.IsValidFolder(GeneratedDir + "/Meshes/q")) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes", "q"); }
-                if (!AssetDatabase.IsValidFolder(dir)) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes/q", QuickStep); }
-                BatchAssets(); AssetDatabase.CreateAsset(obj, dir + "/" + path.Substring(meshes.Length)); return obj;
+                string dir = GeneratedDir + "/Meshes";
+                if (QuickStep != null)
+                {
+                    dir = GeneratedDir + "/Meshes/q/" + QuickStep;
+                    if (!AssetDatabase.IsValidFolder(GeneratedDir + "/Meshes/q")) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes", "q"); }
+                    if (!AssetDatabase.IsValidFolder(dir)) { FlushAssets(); AssetDatabase.CreateFolder(GeneratedDir + "/Meshes/q", QuickStep); }
+                }
+                PackMesh(mesh, dir); return obj;
             }
+            if (QuickStep == null) { if (obj is Mesh) BatchAssets(); AssetDatabase.CreateAsset(obj, path); return obj; }
             var old = AssetDatabase.LoadAssetAtPath<T>(path);
             if (old == null) { AssetDatabase.CreateAsset(obj, path); return obj; }
             string name = old.name; EditorUtility.CopySerialized(obj, old); old.name = name; EditorUtility.SetDirty(old);
             return old;
         }
+        // Round 65 (build speed): a generated mesh is a sub-asset of a pack file of up to MeshPack meshes (Meshes/pack_NNNNN.asset), not a file of its own:
+        // every asset file costs about 30 ms to write whatever its size (BuildSpeedProbe: 1,000 meshes 25 s as files, 0.4 s as sub-assets of 20), and a
+        // full build wrote some 40,000. Meshes of one name no longer overwrite each other (Round 62's lost bridge decks). A quick build's packs go to
+        // Meshes/q/<step>/ as its meshes did.
+        const int MeshPack = 300;
+        static Mesh packMain; static string packDir; static int packCount, packSeq;
+        static void PackMesh(Mesh m, string dir)
+        {
+            BatchAssets();
+            if (packMain != null && packDir == dir && packCount < MeshPack) {   // (not AssetDatabase.Contains: false until the batch is imported)
+                AssetDatabase.AddObjectToAsset(m, packMain); packCount++; return; }
+            string path; do path = $"{dir}/pack_{packSeq++:D5}.asset"; while (File.Exists(Path.Combine(ProjectRoot, path)));
+            AssetDatabase.CreateAsset(m, path); packMain = m; packDir = dir; packCount = 1;
+        }
+
         // Build speed (after Round 61): every CreateAsset imported at once made the asset database rescan the project (45,000 assets) each
         // time, 12,400 s of the 19,000 s full build. Meshes are written in a batch (StartAssetEditing) and imported together when the step ends
         // (StepRecorder.Run), or sooner when anything else is written or read back through the asset database.
@@ -338,7 +357,7 @@ namespace ChastainRush
                 if (chosen.TryGetValue(r.name, out var st))
                 {
                     rec.Resync(); st.prep?.Invoke();
-                    QuickStep = r.name; AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes/q/" + r.name);   // its meshes from an earlier quick build
+                    QuickStep = r.name; AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes/q/" + r.name); packMain = null;   // its meshes from an earlier quick build
                     StepRec nr; try { nr = rec.Run(st); } finally { QuickStep = null; }
                     nr.quick = r.quick;
                     // back in their places in the hierarchy (a step's objects keep the order they were made in)

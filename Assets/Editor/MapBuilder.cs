@@ -171,7 +171,8 @@ namespace ChastainRush
             RaisePondBanks(terrain, pipes);          // Round 25 (BUG-002) / Round 26: every pond's banks meet its water (MapBuilder.PondBank.cs)
             CoverNetworkTubes(terrain, net, pipes);  // Round 25 (A2): every network pipe under the ground (MapBuilder.NetworkCover.cs)
             PlanNetwork(terrain, net, map);          // Round 23 follow-ups: the manholes' and glass stretches' terrain holes, the street cut round each manhole
-            MouthSweep(terrain, pipes, net);         // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs)
+            BuildClock.Lap("RaisePondBanks, CoverNetworkTubes, PlanNetwork");
+            if (!quick) MouthSweep(terrain, pipes, net);   // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs); Round 65: a report, the full build's only
             BuildClock.Lap("MouthSweep");
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
@@ -1265,7 +1266,7 @@ namespace ChastainRush
 
             public Materials()
             {
-                AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes"); // drop chunks left over from a larger previous map
+                AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes"); packMain = null; // drop chunks left over from a larger previous map (Round 65: and the mesh pack being filled)
                 Directory.CreateDirectory(Path.Combine(ProjectRoot, GeneratedDir, "Meshes"));
                 AssetDatabase.Refresh();
                 // ChastainRush/VertexLit: lit by the sun, shadows and fog, coloured per vertex (roads, houses, paint, trees).

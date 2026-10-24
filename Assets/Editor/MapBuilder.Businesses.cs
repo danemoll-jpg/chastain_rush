@@ -587,11 +587,15 @@ namespace ChastainRush
 
             BuildClock.Lap("Businesses: the lots");
             foreach (var kv in bodies) kv.Value.ToObject($"BusinessBodies_{kv.Key.x}_{kv.Key.y}", mats.House, root, true);
+            BuildClock.Lap("Businesses: the bodies' meshes and colliders");
             foreach (var kv in details) kv.Value.ToObject($"BusinessDetail_{kv.Key.x}_{kv.Key.y}", mats.House, root, false, false);
+            BuildClock.Lap("Businesses: the details' meshes");
             lotMb.ToObjects("BusinessLots", mats.Driveway, root, false);
             lotPaint.ToObjects("BusinessLotPaint", mats.Paint, root, false);
+            BuildClock.Lap("Businesses: the lots' meshes");
             if (lampsN > 0) lamps.ToObjects("BusinessLotLamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             if (signMat != null) signs.ToObjects(root, signMat);
+            BuildClock.Lap("Businesses: lamps and signs");
             biz.Log.Append($"{signsShown} signs, {biz.Lots.Count} lots with {stalls} stalls ({stallsSloped} left unpainted on a slope, Round 34) and {lampsN} light poles");
             Debug.Log(biz.Log.ToString());
             // views for the pictures: one per kind (the largest of each), from 40 m in front of its front

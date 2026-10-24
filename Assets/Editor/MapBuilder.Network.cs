@@ -269,11 +269,19 @@ namespace ChastainRush
         static void CutNetworkHoles(MeshBuilder mb, Material mat = null)
         {
             if (Net == null || Net.Holes.Count == 0 || mb.Count == 0) return;
-            var v = mb.Verts; var t = mb.Tris; var col = mb.Colours; var keep = new List<int>(t.Count);
+            var v = mb.Verts; var t = mb.Tris; var col = mb.Colours;
+            // Round 65 (build speed): only the holes that reach this mesh's bounds (every road and lot mesh tested every triangle against every manhole
+            // on the map); in their order, so the cut is the same
+            float x0 = float.MaxValue, z0 = float.MaxValue, x1 = float.MinValue, z1 = float.MinValue;
+            foreach (var p in v) { if (p.x < x0) x0 = p.x; if (p.x > x1) x1 = p.x; if (p.z < z0) z0 = p.z; if (p.z > z1) z1 = p.z; }
+            var near = new List<int>();
+            for (int h = 0; h < Net.Holes.Count; h++) { var (hc, hr) = Net.Holes[h]; if (hc.x + hr > x0 && hc.x - hr < x1 && hc.y + hr > z0 && hc.y - hr < z1) near.Add(h); }
+            if (near.Count == 0) return;
+            var keep = new List<int>(t.Count);
             for (int i = 0; i + 2 < t.Count; i += 3)
             {
                 var c = (v[t[i]] + v[t[i + 1]] + v[t[i + 2]]) / 3f; var q = new Vector2(c.x, c.z); bool cut = false;
-                for (int h = 0; h < Net.Holes.Count; h++)
+                foreach (int h in near)
                 {
                     var (hc, hr) = Net.Holes[h]; if ((q - hc).sqrMagnitude >= hr * hr) continue;
                     cut = true;
