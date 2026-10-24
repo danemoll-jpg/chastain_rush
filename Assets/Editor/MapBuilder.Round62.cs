@@ -161,7 +161,7 @@ namespace ChastainRush
                     var q = ToPoints(r.points); if (q.Count < 2) continue;
                     if (!q.Any(v => v.x > 560f && v.x < 740f && v.y > -1720f && v.y < -1640f)) continue;
                     if (Mathf.Sign(q[q.Count - 1].x - q[0].x) != dirSign || !r.oneway) continue;
-                    foreach (var v in q) if (v.x > 540f && v.x < 760f && v.y > -1720f && v.y < -1640f) cw.Add(v);
+                    foreach (var v in Resample(q, 2f)) if (v.x > 500f && v.x < 800f && v.y > -1730f && v.y < -1630f) cw.Add(v);   // (build 4: clipped to its pieces' corners in x 540 to 760 it began at x 724 and left a step east of it)
                     wHalf = Mathf.Max(wHalf, r.width * .5f);
                 }
                 if (cw.Count < 4) continue;
@@ -170,7 +170,7 @@ namespace ChastainRush
                 var seg = Resample(dd, 1f); int n = seg.Count; if (n < 40) continue;
                 var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (seg[i] - seg[i - 1]).magnitude;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(seg[i].x, seg[i].y);
-                const float Sig = 14f, Fade = 30f; var ys = new float[n];
+                const float Sig = 14f, Fade = 50f; var ys = new float[n];
                 for (int i = 0; i < n; i++)
                 {
                     float sw = 0f, sy = 0f;
