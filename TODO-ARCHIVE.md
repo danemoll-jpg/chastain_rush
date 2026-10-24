@@ -6066,3 +6066,65 @@ Check: every race still runs (11 courses and directions, one AI race each on Har
    Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
 Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
 `Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.
+
+## Round 60 (moved from TODO.md on 2026-10-24 when Dan reviewed Round 63; word for word)
+
+## Previous delivery 3: Round 60
+**Reviewed: Dan drove the Round 60 build 2026-10-22 09:43: "Everything looks good in the mall"; his notes are Round 61.**
+**Round 60, TOWN CENTER AT COBB MADE TO LOOK LIKE ITSELF, DRIVABLE INSIDE ON BOTH LEVELS WITH THINGS TO SMASH; the Chastain Road overpass
+over I-75 (Dan, 2026-10-22 05:37; report BUG-001 of session `2026-10-22_05-11-54-864_7498e6`, read by Claude, after the Round 59 exe).**
+Rounds 58 and 59 are reviewed ("I didn't notice any frame rate issues"). ONE full Build Map at the end (quick builds while working: the
+mall as its own quick-build area). Tuning limit. Short results.
+A. THE MALL. Dan: "Can we make town center look like town center. I have a link here with a bunch of pics
+   https://rs.locationshub.com/Home/Mosaic?rsLocationId=042-10006196. You can get a good idea what it looks like on the outside and I
+   would have to have it generically decorated on the inside but based on reality. It is a two level mall. I would want to be able to
+   drive through it and have smashable things throughout."
+   PHOTOS: the page is a gallery of about 85 photos (ga.reel-scout.com). Claude could not open them from here (blocked); Code: download
+   them into `local/reference_photos/town_center/` and look at them (exterior entrances, anchors, interior courts, food court, levels).
+   If Code cannot reach them either, say so in the status and work from what is known; Dan can save some there. Reference only (as the
+   Google / NAIP rules): never used as textures, never traced; store and brand names faked (as the Kroger center).
+   What is known (malls.com): an enclosed two-level regional mall, about 1.28 million sq ft, between I-75 and I-575; anchors Macy's (and a
+   Macy's Men's & Furniture Gallery), Belk, JCPenney (in the old Mervyn's), formerly Sears; a north wing added in 1993; a food court
+   (renovated 2008), a children's play area, seating areas. Use the real OSM footprint Round 59 already placed.
+   (1) OUTSIDE as the photos show it: the building's shape and height from its footprint, the materials and colors, the entrances (canopies,
+       glass doors, entry signs), the anchors' own facades (fake names), parking lots and the ring road as they are.
+   (2) INSIDE, generically decorated but based on reality: two levels of concourses along the real wings, center / court atriums open to
+       both levels with railings and skylights, escalators, stairs and elevators, storefronts with glass fronts and fake names, kiosks,
+       benches, planters, a food court with counters, tables and chairs, the play area. Anchors: a way into at least one anchor's store.
+   (3) DRIVE THROUGH IT: in through the entrance doors (breakable glass), along both levels, between levels by ramps a car can take (e.g.
+       the escalators / stairs treated as drivable ramps, or a car ramp where a court allows), out through another entrance or an anchor.
+       Wide enough for every vehicle; nothing a car wedges in. A drop from the upper level into a court is allowed (big air) where it lands
+       cleanly.
+   (4) SMASHABLE THROUGHOUT (the shopping center / stunt park's breakables family): store glass, kiosks, benches, planters, signs, trash
+       cans, mannequins, food court tables and chairs, displays; breaking them must not stop a car (as fences). Shoppers inside, a few,
+       who get out of the way as the game's other people do.
+   (5) Lights inside (day and night), sounds (echo inside if simple). Keep the frame rate: the interior drawn only when near / inside.
+   Free Roam only this round (no race); a fast-travel spot at the main entrance.
+B. BUG-001 (x -1051.61 z 420.74 h 73, Chastain Road on its overpass over I-75): "This needs some smoothing" (Dan: "The overpass over 75 is
+   very bumpy"). Smooth the deck, its ends and approaches both ways (and its pair's other carriageway); check at speed, all vehicles.
+Check: drive in, through both levels, between levels, out, on all 11 vehicles (no wedge); smash a sample of each breakable without
+losing speed; frame rate inside and in the lot (1080p) against Round 59's numbers; the overpass both ways (jolts before / after).
+Pictures: the outside from the main entrance and an anchor (next to a photo if Code has them), each level, a court, the food court.
+For Dan to check: Town Center inside and out; drive it and smash it; the overpass.
+
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round60/` (`round60_check.txt`: 113 of 113).
+Photos: the locationshub gallery refused Code too (403); Dan's 19 in `local/reference_photos/town_center/` set the look (reference only, not committed, never textures).
+A DONE. `MapBuilder.Mall.cs` / `MallInside.cs` / `MallLots.cs` (quick step `Mall`), run-time `World/TownCenterMall.cs`. The real ground has two levels (lower 305.6 m north / west /
+   south-west, upper 313.1 m east / south / north-west), so the doors open at grade on both: main (north, lower: the stepped glass tower), south-west (lower), south, north-west wing
+   (west), east anchor's east doors (upper). Outside: tan split-face block, curved canopies on stone piers with granite panels and black name boards, barrel-vault skylights and the
+   food court's pyramid over the roof, the five anchors' portals (made-up names: Halverson's, Halverson's Home, Belmont, J.C. Carroway; the closed one boarded, "Sterling & Co."
+   with letters gone). OSM maps no lots round the mall, so the ground to the ring road is paved (19.9 ha, stall lines where level, 142 light poles). Inside: 104 shops on two
+   levels (glass fronts, lit name boards, their things), cream ceilings, tile with diamonds and red bands, the checkerboard court, wood-capped glass railings, columns with mahogany
+   capitals, 11 kiosks, benches, planters, the food court (8 counters, 77 tables) upstairs, the play area under it, two escalator banks as 14-degree drivable ramps, the court's
+   glass ends break for the 7.5 m drop, and the east anchor's store to drive through and out. 2140 breakables, none costs speed; 34 shopper groups; echo zones; night lights.
+   Check: every vehicle (the 11 and the stunt park's 3) x 3 ways in and out (main doors -> east escalators -> store -> east doors; south doors -> the court drop -> south-west doors; main doors -> west escalators ->
+   north-west wing -> its doors): 42 of 42 through, never stuck; a sample of every breakable kind at 12 m/s: speed kept (15 of 15); nothing of the inside past the walls (`mall_probe.txt`).
+   Frame rate, 1920 x 1080 window (not measured at 3840 x 2160), two runs, the PC in use: inside 117 to 228 fps average, 27 to 70 slowest 1 %; the lot 189 to 205 / 58 to 61
+   (Round 59 at Town Center: 171 / 51). The inside is not drawn past 140 m.
+B DONE. The decks were straight; the bumps were the ground where both carriageways leave them (rings from overlapping end gradings): both ends blurred and each carriageway laid as
+   one curve from its deck (`MapBuilder.Round60.cs`). Sharpest 1 m step along the carriageways: west 0.21 / 0.20 -> 0.02 / 0.015 m, east 0.23 / 0.28 -> 0.013 / 0.016 m. Every vehicle,
+   both carriageways, both ways, flat out: never off the wheels, the sharpest jolt 0.09 m/s.
+Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as they are"); columns floor to roof only at the escalator holes' corners (the court's and the long sides'
+   upstairs only: cars stopped dead on them); a fast-travel spot moved to the main doors' lot. Two full Build Maps (the first to build the mall on, the round's last as the rule says).
+For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
+`Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.

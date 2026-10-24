@@ -108,46 +108,11 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
-**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
-thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
-big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). Dan, 2026-10-23 21:07: "I want to do the helicopter round next".** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
-1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
-   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
-   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
-   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
-2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
-   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
-3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
-   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
-   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
-4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
-   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
-   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
-   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
-   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
-5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
-   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
-Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
-a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
-the straight-down camera over Town Center, each helipad.
-For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
-
-**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round63/`. No bug reports newer than Round 64's session.
-1 DONE. The "Sky Survey" helicopter (our own Blender model, `Tools/Blender/helicopter.py`; flight `Vehicle/HelicopterFlight*.cs`, the player's own vehicle object so camera, map, minimap and resets work). Pad: left stick up / down climb / descend, left / right turn; right stick flies; RT / LT fine climb / descend; RB (or L3) boost. Keyboard: W / S / Q / E fly, A / D turn, Space / C climb / descend, Shift boost. Let go: it hovers (30 s hands off at 40 m: 0.04 m drift). Top speed 80 m/s (179 mph), boost 140 m/s: the summit from Chastain Glen, 7.8 km, in 85 s. Rotor and wash sound (the police helicopter's), wind, a downwash of dust or spray under 30 m.
-2 DONE. Lands on anything flat (it never comes down faster than it can stop). A crash (the body into something at speed, the rotor into a crown, a wall, a pole or the ground, the tail rotor, or set down in water) spins down and after 2.6 s puts it on the nearest open ground clear of trees; Y / R does the same. Checked: into a tree crown and into Town Center's front, both reset and lift off again.
-3 DONE. Helipads where OSM has them (`MapBuilder.Helipads.cs`, step Helipads): the airport's on the apron, Kennestone's on its roof (way 1076463453, a deck on the roof); a parked helicopter on each; A / H on a pad takes it, landed on a pad A / H gives back the vehicle you came in (`HelipadStands`). Not asked for: both pads are fast-travel places (the roof pad is not reachable by car). "Sky Survey" is in Free Roam's garage only; never in races, rosters, the Stunt event, split screen or police modes; hidden police ignore it.
-4 PARTLY. The view opens with height (`World/FarView.cs`): from 30 m up, 10x the fog by 450 m (6.5 km by day), small detail cells hidden past 900 m, far trees as 8-sided shapes (thinned past 1.8 km, in 1 km blocks past 3.5 km), coarser far terrain. 1080p, fps average / slowest 1 %: Chastain Glen 50 / 200 / 500 m 170/118, 162/111, 164/122; Town Center 140/30, 105/78, 99/75; summit 163/113, 100/74, 88/66 (before tuning: 82 and 51 at 500 m). Two tries made: high over the woods it stays under Round 61's 160 to 190 (tuning limit). The map's edge shows from high up near it.
-5 DONE. X / V cycles Chase, Far chase, First person and Straight down (helicopter only); the readout (height over the ground, mph, heading, climb rate); exploration clears wider with height (up to 300 m round).
-Check (`-exeRound63`, `Checks/Round20Runner.R63.cs`): 22 of 22 (`round63_check_1080p.txt`): hover, three flights landing on their spots, both pads both ways, both crashes; fps table above; pictures `63_*.png`.
-Builds: one full Build Map (1 h 6 min), then code-only exes on its scene; `Builds/ChastainRush/` 2026-10-24 00:34. Imported from Racer: nothing (the police helicopter's two sound clips shared).
-For Dan: (a) the far view's cost high over the woods: accept, or trade view distance / far trees for frame rate; (b) the controls' layout, the speeds, and the boost on RB.
-
-## QUEUED rounds
 **Round 64, THE NOONDAY CREEK TRAIL PUT RIGHT: forward and reverse swapped, the route rerouted on the roads, shortcuts through the
 mall, glass doors, the trail's signs, fences and walkers, a mound made a jump; the levelling's junction steps (Dan, 2026-10-23 21:06;
 reports BUG-001 to BUG-008 of session `2026-10-23_20-28-33-291_9085ef`, read by Claude, after the Round 62 exe; his two map shots
 `local/reference_photos/noonday_trail/r64_map_reverse_green_red.jpg` (on the reverse course) and `r64_map_forward_orange_red.jpg` (on the
-forward course)). START AFTER ROUND 63 (the helicopter).** ONE full Build Map at the end. Tuning limit. Short results.
+forward course)).** Round 63 (the helicopter) is done; Dan moved on to this round 2026-10-24 01:35. ONE full Build Map at the end. Tuning limit. Short results.
 A. FORWARD AND REVERSE SWAPPED. Dan: "I know it's picky but I wanted the reverse track to be the forward track ... I thought I had said
    that when I requested it" (Claude misread his 02:32 note). Today's REVERSE (from the trailhead on Bells Ferry west along the trail, the
    red bridge, into the mall's main doors, ... back by Barrett and Bells Ferry) becomes FORWARD, and today's forward becomes REVERSE: names,
@@ -190,6 +155,7 @@ the reroutes, each shortcut, the doors.
 For Dan to check: race the new forward and reverse; the reroutes; the two mall shortcuts; doors, the turn, the trail's walkers, the mound
 jump; bumps on Barrett and at junctions.
 
+## QUEUED rounds
 **Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
 next").** After Round 64, when Dan says. Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
 the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
@@ -202,7 +168,43 @@ Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
   it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
 
-## Previous delivery 1 (newest): Round 62
+## Previous delivery 1 (newest): Round 63
+**Reviewed: Dan flew the Round 63 build 2026-10-24 (asked only how to climb / descend) and moved on to Round 64; its two open questions (far view vs frame rate; controls and boost) stay as built until he says.**
+**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
+thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
+big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). Dan, 2026-10-23 21:07: "I want to do the helicopter round next".** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
+1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
+   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
+   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
+   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
+2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
+   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
+3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
+   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
+   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
+4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
+   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
+   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
+   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
+   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
+5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
+   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
+Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
+a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
+the straight-down camera over Town Center, each helipad.
+For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
+
+**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round63/`. No bug reports newer than Round 64's session.
+1 DONE. The "Sky Survey" helicopter (our own Blender model, `Tools/Blender/helicopter.py`; flight `Vehicle/HelicopterFlight*.cs`, the player's own vehicle object so camera, map, minimap and resets work). Pad: left stick up / down climb / descend, left / right turn; right stick flies; RT / LT fine climb / descend; RB (or L3) boost. Keyboard: W / S / Q / E fly, A / D turn, Space / C climb / descend, Shift boost. Let go: it hovers (30 s hands off at 40 m: 0.04 m drift). Top speed 80 m/s (179 mph), boost 140 m/s: the summit from Chastain Glen, 7.8 km, in 85 s. Rotor and wash sound (the police helicopter's), wind, a downwash of dust or spray under 30 m.
+2 DONE. Lands on anything flat (it never comes down faster than it can stop). A crash (the body into something at speed, the rotor into a crown, a wall, a pole or the ground, the tail rotor, or set down in water) spins down and after 2.6 s puts it on the nearest open ground clear of trees; Y / R does the same. Checked: into a tree crown and into Town Center's front, both reset and lift off again.
+3 DONE. Helipads where OSM has them (`MapBuilder.Helipads.cs`, step Helipads): the airport's on the apron, Kennestone's on its roof (way 1076463453, a deck on the roof); a parked helicopter on each; A / H on a pad takes it, landed on a pad A / H gives back the vehicle you came in (`HelipadStands`). Not asked for: both pads are fast-travel places (the roof pad is not reachable by car). "Sky Survey" is in Free Roam's garage only; never in races, rosters, the Stunt event, split screen or police modes; hidden police ignore it.
+4 PARTLY. The view opens with height (`World/FarView.cs`): from 30 m up, 10x the fog by 450 m (6.5 km by day), small detail cells hidden past 900 m, far trees as 8-sided shapes (thinned past 1.8 km, in 1 km blocks past 3.5 km), coarser far terrain. 1080p, fps average / slowest 1 %: Chastain Glen 50 / 200 / 500 m 170/118, 162/111, 164/122; Town Center 140/30, 105/78, 99/75; summit 163/113, 100/74, 88/66 (before tuning: 82 and 51 at 500 m). Two tries made: high over the woods it stays under Round 61's 160 to 190 (tuning limit). The map's edge shows from high up near it.
+5 DONE. X / V cycles Chase, Far chase, First person and Straight down (helicopter only); the readout (height over the ground, mph, heading, climb rate); exploration clears wider with height (up to 300 m round).
+Check (`-exeRound63`, `Checks/Round20Runner.R63.cs`): 22 of 22 (`round63_check_1080p.txt`): hover, three flights landing on their spots, both pads both ways, both crashes; fps table above; pictures `63_*.png`.
+Builds: one full Build Map (1 h 6 min), then code-only exes on its scene; `Builds/ChastainRush/` 2026-10-24 00:34. Imported from Racer: nothing (the police helicopter's two sound clips shared).
+For Dan: (a) the far view's cost high over the woods: accept, or trade view distance / far trees for frame rate; (b) the controls' layout, the speeds, and the boost on RB.
+
+## Previous delivery 2: Round 62
 **Reviewed: Dan drove the Round 62 build 2026-10-23 20:28 (Noonday Creek Trail both ways); his notes are Round 64 (after the helicopter).**
 **Round 62, A NEW TRACK: THE NOONDAY CREEK TRAIL LOOP round Town Center (forward and reverse, no shortcuts yet), and the new land's bumps
 (Dan, 2026-10-23 02:23; reports BUG-001 and BUG-002 of session `2026-10-22_23-37-02-216_30fa55`, read by Claude, after the Round 61 exe;
@@ -265,7 +267,7 @@ Check (build 6, the exe): the loop on all 11 vehicles both ways 22 of 22 round, 
 Builds: 6 full Build Maps, not one (a mesh-name clash took every road bridge's deck, then fixes from each check). `Builds/ChastainRush/` 2026-10-23 13:57. Imported from Racer: nothing.
 For Dan: the levelling's junction steps: (1) level up to a junction and keep the junction's own ground (one more build), or (2) back to Round 61's five roads plus your two spots and the course's roads. Until you say, build 6's levelling stays.
 
-## Previous delivery 2: Round 61
+## Previous delivery 3: Round 61
 **Reviewed: Dan drove the Round 61 build 2026-10-22 23:37 (free roam in the new land); his only notes are bumps (Round 62). The Build Map speed-up after it is accepted.**
 **Round 61, THE MAP EXTENSION, STAGE 2: WEST TO SUMMERBROOKE AND SOUTH OVER KENNESAW MOUNTAIN (airport included), with the work that keeps
 it fast; three bumps in the new land (Dan, 2026-10-22 10:04; reports BUG-001 to BUG-003 of session `2026-10-22_09-43-30-831_9bfdff`, read by Claude, after
@@ -319,66 +321,6 @@ Follow-up, same order every build: the street-lamp smash site's FenceChunks, the
 (`MapBuilder.InSceneOrder`, `MapBuilder.Activities.cs`), and a tie for the densest lamp row goes to the western panel. Check: two full Build Maps, `SceneDump`
 of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
 For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
-
-## Previous delivery 3: Round 60
-**Reviewed: Dan drove the Round 60 build 2026-10-22 09:43: "Everything looks good in the mall"; his notes are Round 61.**
-**Round 60, TOWN CENTER AT COBB MADE TO LOOK LIKE ITSELF, DRIVABLE INSIDE ON BOTH LEVELS WITH THINGS TO SMASH; the Chastain Road overpass
-over I-75 (Dan, 2026-10-22 05:37; report BUG-001 of session `2026-10-22_05-11-54-864_7498e6`, read by Claude, after the Round 59 exe).**
-Rounds 58 and 59 are reviewed ("I didn't notice any frame rate issues"). ONE full Build Map at the end (quick builds while working: the
-mall as its own quick-build area). Tuning limit. Short results.
-A. THE MALL. Dan: "Can we make town center look like town center. I have a link here with a bunch of pics
-   https://rs.locationshub.com/Home/Mosaic?rsLocationId=042-10006196. You can get a good idea what it looks like on the outside and I
-   would have to have it generically decorated on the inside but based on reality. It is a two level mall. I would want to be able to
-   drive through it and have smashable things throughout."
-   PHOTOS: the page is a gallery of about 85 photos (ga.reel-scout.com). Claude could not open them from here (blocked); Code: download
-   them into `local/reference_photos/town_center/` and look at them (exterior entrances, anchors, interior courts, food court, levels).
-   If Code cannot reach them either, say so in the status and work from what is known; Dan can save some there. Reference only (as the
-   Google / NAIP rules): never used as textures, never traced; store and brand names faked (as the Kroger center).
-   What is known (malls.com): an enclosed two-level regional mall, about 1.28 million sq ft, between I-75 and I-575; anchors Macy's (and a
-   Macy's Men's & Furniture Gallery), Belk, JCPenney (in the old Mervyn's), formerly Sears; a north wing added in 1993; a food court
-   (renovated 2008), a children's play area, seating areas. Use the real OSM footprint Round 59 already placed.
-   (1) OUTSIDE as the photos show it: the building's shape and height from its footprint, the materials and colors, the entrances (canopies,
-       glass doors, entry signs), the anchors' own facades (fake names), parking lots and the ring road as they are.
-   (2) INSIDE, generically decorated but based on reality: two levels of concourses along the real wings, center / court atriums open to
-       both levels with railings and skylights, escalators, stairs and elevators, storefronts with glass fronts and fake names, kiosks,
-       benches, planters, a food court with counters, tables and chairs, the play area. Anchors: a way into at least one anchor's store.
-   (3) DRIVE THROUGH IT: in through the entrance doors (breakable glass), along both levels, between levels by ramps a car can take (e.g.
-       the escalators / stairs treated as drivable ramps, or a car ramp where a court allows), out through another entrance or an anchor.
-       Wide enough for every vehicle; nothing a car wedges in. A drop from the upper level into a court is allowed (big air) where it lands
-       cleanly.
-   (4) SMASHABLE THROUGHOUT (the shopping center / stunt park's breakables family): store glass, kiosks, benches, planters, signs, trash
-       cans, mannequins, food court tables and chairs, displays; breaking them must not stop a car (as fences). Shoppers inside, a few,
-       who get out of the way as the game's other people do.
-   (5) Lights inside (day and night), sounds (echo inside if simple). Keep the frame rate: the interior drawn only when near / inside.
-   Free Roam only this round (no race); a fast-travel spot at the main entrance.
-B. BUG-001 (x -1051.61 z 420.74 h 73, Chastain Road on its overpass over I-75): "This needs some smoothing" (Dan: "The overpass over 75 is
-   very bumpy"). Smooth the deck, its ends and approaches both ways (and its pair's other carriageway); check at speed, all vehicles.
-Check: drive in, through both levels, between levels, out, on all 11 vehicles (no wedge); smash a sample of each breakable without
-losing speed; frame rate inside and in the lot (1080p) against Round 59's numbers; the overpass both ways (jolts before / after).
-Pictures: the outside from the main entrance and an anchor (next to a photo if Code has them), each level, a court, the food court.
-For Dan to check: Town Center inside and out; drive it and smash it; the overpass.
-
-**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round60/` (`round60_check.txt`: 113 of 113).
-Photos: the locationshub gallery refused Code too (403); Dan's 19 in `local/reference_photos/town_center/` set the look (reference only, not committed, never textures).
-A DONE. `MapBuilder.Mall.cs` / `MallInside.cs` / `MallLots.cs` (quick step `Mall`), run-time `World/TownCenterMall.cs`. The real ground has two levels (lower 305.6 m north / west /
-   south-west, upper 313.1 m east / south / north-west), so the doors open at grade on both: main (north, lower: the stepped glass tower), south-west (lower), south, north-west wing
-   (west), east anchor's east doors (upper). Outside: tan split-face block, curved canopies on stone piers with granite panels and black name boards, barrel-vault skylights and the
-   food court's pyramid over the roof, the five anchors' portals (made-up names: Halverson's, Halverson's Home, Belmont, J.C. Carroway; the closed one boarded, "Sterling & Co."
-   with letters gone). OSM maps no lots round the mall, so the ground to the ring road is paved (19.9 ha, stall lines where level, 142 light poles). Inside: 104 shops on two
-   levels (glass fronts, lit name boards, their things), cream ceilings, tile with diamonds and red bands, the checkerboard court, wood-capped glass railings, columns with mahogany
-   capitals, 11 kiosks, benches, planters, the food court (8 counters, 77 tables) upstairs, the play area under it, two escalator banks as 14-degree drivable ramps, the court's
-   glass ends break for the 7.5 m drop, and the east anchor's store to drive through and out. 2140 breakables, none costs speed; 34 shopper groups; echo zones; night lights.
-   Check: every vehicle (the 11 and the stunt park's 3) x 3 ways in and out (main doors -> east escalators -> store -> east doors; south doors -> the court drop -> south-west doors; main doors -> west escalators ->
-   north-west wing -> its doors): 42 of 42 through, never stuck; a sample of every breakable kind at 12 m/s: speed kept (15 of 15); nothing of the inside past the walls (`mall_probe.txt`).
-   Frame rate, 1920 x 1080 window (not measured at 3840 x 2160), two runs, the PC in use: inside 117 to 228 fps average, 27 to 70 slowest 1 %; the lot 189 to 205 / 58 to 61
-   (Round 59 at Town Center: 171 / 51). The inside is not drawn past 140 m.
-B DONE. The decks were straight; the bumps were the ground where both carriageways leave them (rings from overlapping end gradings): both ends blurred and each carriageway laid as
-   one curve from its deck (`MapBuilder.Round60.cs`). Sharpest 1 m step along the carriageways: west 0.21 / 0.20 -> 0.02 / 0.015 m, east 0.23 / 0.28 -> 0.013 / 0.016 m. Every vehicle,
-   both carriageways, both ways, flat out: never off the wheels, the sharpest jolt 0.09 m/s.
-Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as they are"); columns floor to roof only at the escalator holes' corners (the court's and the long sides'
-   upstairs only: cars stopped dead on them); a fast-travel spot moved to the main doors' lot. Two full Build Maps (the first to build the mall on, the round's last as the rule says).
-For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
-`Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
