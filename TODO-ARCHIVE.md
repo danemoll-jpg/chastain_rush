@@ -6013,3 +6013,56 @@ D DONE. The bump is the valley 50 m before his spot (the drive comes down at -13
    check also found a jolt 10 m after it at the loop branch's junction (x 3072): blurred. Flat out both ways, on the line and 3.4 m to his side: no jolt over 0.55 m/s, wheels down.
    Left: 3.4 m to the inside of the bend at x 3040, off the asphalt, still lifts a Drifter Twin's wheels (for Dan to judge).
 `Builds/ChastainRush/` 2026-10-22 03:17. Imported from Racer: nothing.
+
+## Round 59 (moved from TODO.md on 2026-10-23 when Dan reviewed Round 62; word for word)
+
+## Previous delivery 3: Round 59
+**Reviewed: Dan drove the Round 59 build 2026-10-22 05:11 (free roam in the new land): "I didn't notice any frame rate issues"; his notes are Round 60.**
+**Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
+stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
+rebuild at the end (plus whatever the new data import needs). Dan is not watching: decide, write it down, go on; stop and report only
+for something that cannot be undone or if the world becomes unplayable.
+What was written up (2026-10-19, Dan's map `local/reference_photos/extension/town_center_ksu_airport.jpg`, Google: reference only, never
+traced): extend the map west and south to take in Town Center at Cobb (the mall and the shopping around it) and Kennesaw State
+University's Kennesaw campus. NOT the Cobb County airport (stage 2, later). Today's bounds: south 34.0294, north 34.0477, west -84.566,
+east -84.5234 (3983 x 1918 m). Claude's estimate for stage 1: about 6.3 x 4.2 km (about 26 km2, 3.5x). The 1 m USGS tile already in use
+covers it (to 33.955 S, -84.619 W). Code sets the exact new bounds from OSM (the mall's ring road and the campus with a margin; the
+north and east edges stay) and says what they are.
+1. KEEP THE EXISTING WORLD WHERE IT IS. Every existing coordinate (hand-placed houses, tracks, routes, shortcuts, pipes, eggs, records,
+   replays, Dan's bug positions, CLAUDE.md notes) must still mean the same place: the new land gets coordinates outside the old range
+   (e.g. negative x / z, or an offset applied everywhere consistently with every data file converted and checked). Code picks and says
+   why; nothing hand-built may move or be lost. Every race still runs as before (lap lengths, checkpoints, records unchanged).
+2. THE NEW LAND, GENERATED AS THE REST WAS (OSM roads, buildings, water, woods; USGS terrain at 1.5x): roads and their junctions,
+   buildings from their footprints (the mall, the stores, the campus buildings and stadium as big generic buildings; no hand polish),
+   parking lots, trees, streams and ponds, bridges where roads cross water. I-75 and I-575 and their interchange through the new area:
+   drivable, overpasses where roads cross them, as well as the generator can do (Dan expects highways to be the weak spot; no heroics).
+   The old west edge (I-575's collapsed overpass, Round 9) is now inside the map: join it up.
+3. EVERYTHING THAT USES THE MAP covers the new land: traffic and police road nets, the map screen and minimap, exploration fog and
+   destinations (new ones: Town Center, KSU), fast travel, free roam spawns unchanged, the quick-rebuild areas, the loading screen's inset.
+   No new races or eggs this round.
+4. MEASURE (Dan wanted this before deciding on stage 2): full Build Map time, exe size, load time, memory, and frame rate at 1080p in
+   the old neighborhood and in the new area (Town Center, KSU, the interchange), before and after; tree and building counts. If frame
+   rate or load time gets much worse, report it with the cause rather than tune for hours (tuning limit).
+Check: every race still runs (one AI race per track); free roam drive from Chastain Glen to Town Center and to KSU without falling
+through the world; pictures of the mall, the campus, the interchange, the old I-575 edge joined.
+For Dan to check: drive to Town Center and KSU; the highways; the numbers (go on to stage 2, the airport, or not).
+
+**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round59/`.
+1 DONE. The new land is west and south of the old map, at negative x / z (`Tools/mapgen/mapgen_extend.py`, config `extension`: 4 tiles west, 3 south). Why: nothing that exists has
+   to change. The core is generated first exactly as before (map.json's lists, trees.bin's trees and terrain.r16 checked byte for byte), the new pieces are appended after it (house,
+   road and bridge numbers unchanged), the terrain grid grows by whole core-size tiles (the same samples on the same spots, the core's pasted in, the new eased onto it over 40 m),
+   heights on the core's datum (the 16-bit terrain's step is now 4.2 mm over the wider range: houses' floors moved up to 1 cm, `houses_settled.txt`). Unity reads `terrain_full.r16` (origin -2655.33, -1918); the python scripts keep reading the core's terrain.r16. Bounds (from OSM, KSU's and the mall's
+   outlines with a margin, the north and east edges kept): south 34.01268, west -84.59575, north 34.04582, east -84.52292; 6638 x 3836 m (25.5 km2, 3.3x).
+2 DONE. 2252 road pieces, 40 bridges, 3147 buildings (the mall, stores and campus as Round 31's dressed businesses: 1281 in all now), 43 ponds, 87 streams, 69 parking lots,
+   87,614 trees. I-575 and its Chastain Road overpass cross the old south edge with no seam (bridge decks met within 0.2 to 0.8 m and eased); I-75 / I-575 drivable on the generated
+   ground (a weak spot as Dan expected: plain decks where OSM tags a bridge, no hand work). A real quarry in the far south-west (floor 166.7 m, about 200 m deep at 1.5x).
+3 DONE. Traffic and police nets (1602 traffic nodes, was 507), the map picture (8192 px wide, 0.8 m a pixel), minimap, exploration fog (Dan's saved fog renumbered onto the larger
+   grid: on a copy of his save all 3660 cells and 11 places kept, the same ground), fast-travel destinations Town Center and KSU (`add_extension_places.py`), loading inset. Spawns unchanged.
+4 Numbers, before / after (1920 x 1080 window, not measured at 3840 x 2160): Build Map 845 s / 1955 s; exe data 626 / 1357 MB; world up 6.5 / 19.4 s after start; Unity memory
+   1065 / 1838 MB; terrain tiles 18 / 60; trees in the scene 54,943 / 142,282; buildings 2388 / 5535. Frame rate parked, average / slowest 1 %: old neighborhood (Canton Road) 182 / 67 ->
+   122 / 39; Town Center 171 / 51; KSU 154 / 53; the interchange 158 / 53; the old I-575 edge 169 / 57. Not tuned (the round's rule): the old neighborhood lost a third, most likely
+   the things spread over the whole map that run every frame whatever the distance (people groups 1765 -> 3512, hydrants 536 -> 1915, traffic network 3.8x) and more far objects drawn.
+Check: every race still runs (11 courses and directions, one AI race each on Hard, traffic Normal: 33 of 33 finish, `round59_check_races.txt`); free roam Chastain Glen to Town
+   Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
+Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
+`Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.

@@ -108,6 +108,92 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
+thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
+big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). Dan, 2026-10-23 21:07: "I want to do the helicopter round next".** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
+1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
+   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
+   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
+   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
+2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
+   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
+3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
+   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
+   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
+4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
+   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
+   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
+   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
+   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
+5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
+   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
+Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
+a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
+the straight-down camera over Town Center, each helipad.
+For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
+
+## QUEUED rounds
+**Round 64, THE NOONDAY CREEK TRAIL PUT RIGHT: forward and reverse swapped, the route rerouted on the roads, shortcuts through the
+mall, glass doors, the trail's signs, fences and walkers, a mound made a jump; the levelling's junction steps (Dan, 2026-10-23 21:06;
+reports BUG-001 to BUG-008 of session `2026-10-23_20-28-33-291_9085ef`, read by Claude, after the Round 62 exe; his two map shots
+`local/reference_photos/noonday_trail/r64_map_reverse_green_red.jpg` (on the reverse course) and `r64_map_forward_orange_red.jpg` (on the
+forward course)). START AFTER ROUND 63 (the helicopter).** ONE full Build Map at the end. Tuning limit. Short results.
+A. FORWARD AND REVERSE SWAPPED. Dan: "I know it's picky but I wanted the reverse track to be the forward track ... I thought I had said
+   that when I requested it" (Claude misread his 02:32 note). Today's REVERSE (from the trailhead on Bells Ferry west along the trail, the
+   red bridge, into the mall's main doors, ... back by Barrett and Bells Ferry) becomes FORWARD, and today's forward becomes REVERSE: names,
+   start grids, checkpoints, records / ghosts / replays swapped with them (keep the times, under the right direction), map and menus.
+B. THE ROUTE ON THE ROADS. Dan's key: GREEN (and the orange line on the forward shot, the same meaning) "is where I wanted to reroute the
+   track. Not sure why the track was cutting off road when there was road there". Reroute the course along the lot / mall roads he drew:
+   on the reverse shot the green line leaves the course north of the mall and runs east and down by the mall's north wing to rejoin the
+   course in the concourse; on the forward shot the orange line runs along the east lot's road (inside the course's arc) from the east
+   doors' corner down to the junction by CP4. Follow the existing roads there instead of cutting across grass / lot; checkpoints, closures,
+   AI to suit, both directions. If a drawn line cannot be followed exactly (a wall, a gap), the nearest drivable way, and say.
+C. SHORTCUTS THROUGH THE MALL: RED. Dan: "Red is where i want shortcuts". Reverse shot (the new FORWARD): from the main doors / center
+   court south through the mall's south wing and out across the south lot to the course by CP8 (skipping the east loop). Forward shot (the
+   new REVERSE): from the trail north of the mall straight south through the mall's middle and south wing to the course by CP4. Each is that
+   direction's shortcut (standing rules: a real risk, no free way round, tire tracks / a clear hint at the entry, real physics on any ramp,
+   breakables never slow a car; something creative inside, as the mall jumps). Code reports the time each saves clean and missed.
+D. THE MALL'S DOORS. BUG-002 (x 498.28 z -1216.56 h 268, a mall entrance on the course, CP5 next): "these should be glass doors" (the
+   picture: an open wall with no doors). BUG-006 (x 266.58 z -1217.04 h 164, another entrance on the course): "glass door entrance again".
+   Every entrance the course (or a shortcut) uses gets glass doors that break as you drive through (no speed lost) and are whole next lap.
+E. INSIDE THE MALL: BUG-005 (x 287.86 z -1278.10 h 336, the concourse before CP6): "there should been something here forcing you to turn,
+   it isn't very obvious". Make the turn unmistakable: a barrier of breakable-looking but solid displays / planters / a closed store gate
+   across the wrong way, arrows, the checkpoint arch placed where it reads.
+F. THE TRAIL. BUG-004 (x 199.09 z -720.91 h 48, the trail by Hidden Forest Court): "This is a walking path not a road. It makes no sense
+   to have road signs. Oddly enough, this seems to be the frist time road signs were added when i didn't ask, the one time it makes no sense.
+   It would be good to have peopel walking or jogging this trail". Remove Round 62's 8 winding-road signs from the trail. Add people
+   walking, jogging, cycling and walking dogs along the trail in Free Roam (and a few in races, who get out of the way as the game's other
+   people do). BUG-007 (x 704.75 z -441.54 h 249, the boardwalk under I-575): "make the fences breakable. I saw ai kept getting hung up on
+   these" (the boardwalk's black railings). BUG-008 (x 133.44 z -793.43 h 171, by Hidden Forest Court): "these fences should be breakable
+   too". Make them breakable (as the game's fences: no speed lost); the AI must not hang on the boardwalk (its line through it).
+G. BUG-003 (x 179.83 z -919.54 h 324, beside Town Center Drive, the north lot, CP8 next on the old forward): "dont understand if there is
+   supposed to be hill here or none of it should be a hill. regardless lets fill this in and use as a jump" (the picture: odd grassy mounds
+   with a flat cut between them). Fill the gap so it is one shaped mound and make it a real jump on the course's line (it may stay on the
+   course, not a shortcut), landing clean.
+H. BUMPS AND THE LEVELLING'S JUNCTION STEPS. BUG-001 (x 687.63 z -1668.31 h 272, Barrett Parkway, the course): "fix bump" (Round 62 noted
+   Barrett at x 680 lifts a car flat out). And Round 62 C's open question (Dan, 21:06: "we can put this in the next phase with whatever big
+   clean up code wanted to do"): take option (1), level up to each junction and keep the junction's own ground, so the narrower road no longer
+   steps into the wider one's level; rerun the jolt scan (drives over 1.5 m/s and with air over 0.15 s should fall well below Round 61's).
+Check: both directions (the new forward first) on all vehicles, the reroutes, both shortcuts clean / missed / round them, the doors break
+and return, the turn at BUG-005 reads, the mound jump, the boardwalk with AI x2 each way (no hang), the jolt table. Pictures: Dan's spots,
+the reroutes, each shortcut, the doors.
+For Dan to check: race the new forward and reverse; the reroutes; the two mall shortcuts; doors, the turn, the trail's walkers, the mound
+jump; bumps on Barrett and at junctions.
+
+**Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
+next").** After Round 64, when Dan says. Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
+the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
+full Build Map at the end; trim the full Build Map (Roads and Businesses about 27 of its 62 minutes in Round 62).
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 62
+**Reviewed: Dan drove the Round 62 build 2026-10-23 20:28 (Noonday Creek Trail both ways); his notes are Round 64 (after the helicopter).**
 **Round 62, A NEW TRACK: THE NOONDAY CREEK TRAIL LOOP round Town Center (forward and reverse, no shortcuts yet), and the new land's bumps
 (Dan, 2026-10-23 02:23; reports BUG-001 and BUG-002 of session `2026-10-22_23-37-02-216_30fa55`, read by Claude, after the Round 61 exe;
 his pictures in `local/reference_photos/noonday_trail/`: Google / Tripadvisor / county map: reference only, never traced or measured).**
@@ -169,40 +255,7 @@ Check (build 6, the exe): the loop on all 11 vehicles both ways 22 of 22 round, 
 Builds: 6 full Build Maps, not one (a mesh-name clash took every road bridge's deck, then fixes from each check). `Builds/ChastainRush/` 2026-10-23 13:57. Imported from Racer: nothing.
 For Dan: the levelling's junction steps: (1) level up to a junction and keep the junction's own ground (one more build), or (2) back to Round 61's five roads plus your two spots and the course's roads. Until you say, build 6's levelling stays.
 
-## QUEUED rounds
-**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
-thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
-big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). START AFTER ROUND 62 (no wait for
-Dan's review of 62 needed: it touches nothing of 62).** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
-1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
-   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
-   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
-   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
-2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
-   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
-3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
-   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
-   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
-4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
-   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
-   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
-   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
-   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
-5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
-   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
-Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
-a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
-the straight-down camera over Town Center, each helipad.
-For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 61
+## Previous delivery 2: Round 61
 **Reviewed: Dan drove the Round 61 build 2026-10-22 23:37 (free roam in the new land); his only notes are bumps (Round 62). The Build Map speed-up after it is accepted.**
 **Round 61, THE MAP EXTENSION, STAGE 2: WEST TO SUMMERBROOKE AND SOUTH OVER KENNESAW MOUNTAIN (airport included), with the work that keeps
 it fast; three bumps in the new land (Dan, 2026-10-22 10:04; reports BUG-001 to BUG-003 of session `2026-10-22_09-43-30-831_9bfdff`, read by Claude, after
@@ -257,7 +310,7 @@ Follow-up, same order every build: the street-lamp smash site's FenceChunks, the
 of each, `scene_diff.py`: 0 differences (`local/determinism/`). The lamp site is now always (2960, 896), the one in Dan's Round 61 exe.
 For Dan: keep the lamp smash at (2960, 896), or move it to (2999, 1072)? (One line to change; until you say, it stays at (2960, 896).)
 
-## Previous delivery 2: Round 60
+## Previous delivery 3: Round 60
 **Reviewed: Dan drove the Round 60 build 2026-10-22 09:43: "Everything looks good in the mall"; his notes are Round 61.**
 **Round 60, TOWN CENTER AT COBB MADE TO LOOK LIKE ITSELF, DRIVABLE INSIDE ON BOTH LEVELS WITH THINGS TO SMASH; the Chastain Road overpass
 over I-75 (Dan, 2026-10-22 05:37; report BUG-001 of session `2026-10-22_05-11-54-864_7498e6`, read by Claude, after the Round 59 exe).**
@@ -316,57 +369,6 @@ Decisions: the lots added (OSM lacks them; Dan's photos and "parking lots as the
    upstairs only: cars stopped dead on them); a fast-travel spot moved to the main doors' lot. Two full Build Maps (the first to build the mall on, the round's last as the rule says).
 For Dan to check: Town Center inside and out, day and night (the skylights stay bright at night); the drop into the court; the east anchor's store; the overpass both ways.
 `Builds/ChastainRush/` 2026-10-22 08:48. Imported from Racer: nothing.
-
-## Previous delivery 3: Round 59
-**Reviewed: Dan drove the Round 59 build 2026-10-22 05:11 (free roam in the new land): "I didn't notice any frame rate issues"; his notes are Round 60.**
-**Round 59, THE MAP EXTENSION, STAGE 1: TOWN CENTER AND KENNESAW STATE (Dan, 2026-10-22 01:20: "can we possibly also add on the first
-stage of expanding the map out to what we had written up the other night?"). START RIGHT AFTER ROUND 58 (Dan said go).** One map
-rebuild at the end (plus whatever the new data import needs). Dan is not watching: decide, write it down, go on; stop and report only
-for something that cannot be undone or if the world becomes unplayable.
-What was written up (2026-10-19, Dan's map `local/reference_photos/extension/town_center_ksu_airport.jpg`, Google: reference only, never
-traced): extend the map west and south to take in Town Center at Cobb (the mall and the shopping around it) and Kennesaw State
-University's Kennesaw campus. NOT the Cobb County airport (stage 2, later). Today's bounds: south 34.0294, north 34.0477, west -84.566,
-east -84.5234 (3983 x 1918 m). Claude's estimate for stage 1: about 6.3 x 4.2 km (about 26 km2, 3.5x). The 1 m USGS tile already in use
-covers it (to 33.955 S, -84.619 W). Code sets the exact new bounds from OSM (the mall's ring road and the campus with a margin; the
-north and east edges stay) and says what they are.
-1. KEEP THE EXISTING WORLD WHERE IT IS. Every existing coordinate (hand-placed houses, tracks, routes, shortcuts, pipes, eggs, records,
-   replays, Dan's bug positions, CLAUDE.md notes) must still mean the same place: the new land gets coordinates outside the old range
-   (e.g. negative x / z, or an offset applied everywhere consistently with every data file converted and checked). Code picks and says
-   why; nothing hand-built may move or be lost. Every race still runs as before (lap lengths, checkpoints, records unchanged).
-2. THE NEW LAND, GENERATED AS THE REST WAS (OSM roads, buildings, water, woods; USGS terrain at 1.5x): roads and their junctions,
-   buildings from their footprints (the mall, the stores, the campus buildings and stadium as big generic buildings; no hand polish),
-   parking lots, trees, streams and ponds, bridges where roads cross water. I-75 and I-575 and their interchange through the new area:
-   drivable, overpasses where roads cross them, as well as the generator can do (Dan expects highways to be the weak spot; no heroics).
-   The old west edge (I-575's collapsed overpass, Round 9) is now inside the map: join it up.
-3. EVERYTHING THAT USES THE MAP covers the new land: traffic and police road nets, the map screen and minimap, exploration fog and
-   destinations (new ones: Town Center, KSU), fast travel, free roam spawns unchanged, the quick-rebuild areas, the loading screen's inset.
-   No new races or eggs this round.
-4. MEASURE (Dan wanted this before deciding on stage 2): full Build Map time, exe size, load time, memory, and frame rate at 1080p in
-   the old neighborhood and in the new area (Town Center, KSU, the interchange), before and after; tree and building counts. If frame
-   rate or load time gets much worse, report it with the cause rather than tune for hours (tuning limit).
-Check: every race still runs (one AI race per track); free roam drive from Chastain Glen to Town Center and to KSU without falling
-through the world; pictures of the mall, the campus, the interchange, the old I-575 edge joined.
-For Dan to check: drive to Town Center and KSU; the highways; the numbers (go on to stage 2, the airport, or not).
-
-**Status (Claude, 2026-10-22): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round59/`.
-1 DONE. The new land is west and south of the old map, at negative x / z (`Tools/mapgen/mapgen_extend.py`, config `extension`: 4 tiles west, 3 south). Why: nothing that exists has
-   to change. The core is generated first exactly as before (map.json's lists, trees.bin's trees and terrain.r16 checked byte for byte), the new pieces are appended after it (house,
-   road and bridge numbers unchanged), the terrain grid grows by whole core-size tiles (the same samples on the same spots, the core's pasted in, the new eased onto it over 40 m),
-   heights on the core's datum (the 16-bit terrain's step is now 4.2 mm over the wider range: houses' floors moved up to 1 cm, `houses_settled.txt`). Unity reads `terrain_full.r16` (origin -2655.33, -1918); the python scripts keep reading the core's terrain.r16. Bounds (from OSM, KSU's and the mall's
-   outlines with a margin, the north and east edges kept): south 34.01268, west -84.59575, north 34.04582, east -84.52292; 6638 x 3836 m (25.5 km2, 3.3x).
-2 DONE. 2252 road pieces, 40 bridges, 3147 buildings (the mall, stores and campus as Round 31's dressed businesses: 1281 in all now), 43 ponds, 87 streams, 69 parking lots,
-   87,614 trees. I-575 and its Chastain Road overpass cross the old south edge with no seam (bridge decks met within 0.2 to 0.8 m and eased); I-75 / I-575 drivable on the generated
-   ground (a weak spot as Dan expected: plain decks where OSM tags a bridge, no hand work). A real quarry in the far south-west (floor 166.7 m, about 200 m deep at 1.5x).
-3 DONE. Traffic and police nets (1602 traffic nodes, was 507), the map picture (8192 px wide, 0.8 m a pixel), minimap, exploration fog (Dan's saved fog renumbered onto the larger
-   grid: on a copy of his save all 3660 cells and 11 places kept, the same ground), fast-travel destinations Town Center and KSU (`add_extension_places.py`), loading inset. Spawns unchanged.
-4 Numbers, before / after (1920 x 1080 window, not measured at 3840 x 2160): Build Map 845 s / 1955 s; exe data 626 / 1357 MB; world up 6.5 / 19.4 s after start; Unity memory
-   1065 / 1838 MB; terrain tiles 18 / 60; trees in the scene 54,943 / 142,282; buildings 2388 / 5535. Frame rate parked, average / slowest 1 %: old neighborhood (Canton Road) 182 / 67 ->
-   122 / 39; Town Center 171 / 51; KSU 154 / 53; the interchange 158 / 53; the old I-575 edge 169 / 57. Not tuned (the round's rule): the old neighborhood lost a third, most likely
-   the things spread over the whole map that run every frame whatever the distance (people groups 1765 -> 3512, hydrants 536 -> 1915, traffic network 3.8x) and more far objects drawn.
-Check: every race still runs (11 courses and directions, one AI race each on Hard, traffic Normal: 33 of 33 finish, `round59_check_races.txt`); free roam Chastain Glen to Town
-   Center (4.9 km) and to KSU (5.2 km) along the roads: through, never under the ground (`round59_check_drives.txt`); pictures of the mall, the campus, the motorways, the old edge.
-Not done: the races and eggs were not touched (as the round says); neighborhoods_rest.py and the route scripts were not re-run (they would now see the new roads by name: see Technical notes).
-`Builds/ChastainRush/` 2026-10-22 04:20. Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
