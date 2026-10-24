@@ -417,8 +417,10 @@ namespace ChastainRush
             var service = new Chunks();
             var center = new Chunks { Tint = LotAsphalt };   // Round 18 (2a): the shopping center's service roads, the lot's color
             var others = new RoadIndex(map.roads);
+            var swGrid = new System.Diagnostics.Stopwatch(); var swPaint = new System.Diagnostics.Stopwatch(); var swClass = new System.Diagnostics.Stopwatch();   // Round 65: where the step's time goes
             for (int ri = 0; ri < map.roads.Length; ri++)
             {
+                swClass.Start();
                 var r = map.roads[ri];
                 var pts = Densify(ToPoints(r.points), 2f);
                 float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
@@ -427,12 +429,14 @@ namespace ChastainRush
                 var mb = IsCenterRoad(r) ? center : r.@class == "service" && !hood.IsAreaRoad(ri) ? service : main;
                 bool aisle = r.@class == "service" && ((biz != null && pts.Count(q => biz.InNewLot(q)) * 2 > pts.Count) || pts.Count(q => CoursonLotAt(q)) * 2 > pts.Count);   // Round 39 (A4): and the Courson Street pool's drive
                 if (aisle) mb = center;   // Round 32 (A1): an aisle of a new lot: the lot's asphalt, no edge strips
+                swClass.Stop();
                 var self = r;
                 if (hood.IsStreetRoad(ri))
                 {
                     // Round 11: in Chastain Glen the surface is a grid that stays clear of the lawn (four cells across), the end
                     // caps likewise (a cul-de-sac's end is its bulb), and paint stops on any other road that does not continue this one
                     int road = ri; float hw = r.width * 0.5f;
+                    swGrid.Start();
                     foreach (var run in Runs(pts, 96f))
                     {
                         if (!hood.Bounds.Contains(run[run.Count / 2])) { AddRibbon(mb.At(run[run.Count / 2]), run, r.width, lift, terrain); continue; }
@@ -441,8 +445,10 @@ namespace ChastainRush
                     }
                     foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
                         if (!hood.InBulbZone(e, -0.5f)) DiscGrid(mb.At(e), e, hw, lift - 0.004f, terrain, 20);
+                    swGrid.Stop(); swPaint.Start();
                     AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift,
                              p => hood.OtherRoadCovers(road, p, 0.1f) || hood.InCornerZone(road, p, hw - 0.7f) || hood.InBulbZone(p, 0.45f) || hood.InMedianFill(p) || JoinPaintStops(self.osm_id, p, hw));   // Round 18 (A): road b is one of these
+                    swPaint.Stop();
                     continue;
                 }
                 // Round 32 (B1, "need to remove grass from streets", six more spots): a ribbon with only its two edges on the ground let
@@ -453,6 +459,7 @@ namespace ChastainRush
                 int across = Mathf.Clamp(Mathf.CeilToInt(r.width / 1.6f), 2, 10);
                 bool parkFloor = r.@class == "service" && Park != null && IsCenterRoad(self);   // build speed: worked out once per road, not per cell
                 Func<Vector2, bool> onOther = r.@class == "service" ? (p => others.Covers(p, self, -0.4f) || (parkFloor && (Park.InFloor(p) || Park.InBuilding(p)))) : (Func<Vector2, bool>)null;   // Round 36: the lot's own service roads are the park's floor
+                swGrid.Start();
                 foreach (var run in Runs(pts, 96f))
                 {
                     var dense = Densify(run, 1.5f);
@@ -460,10 +467,15 @@ namespace ChastainRush
                 }
                 foreach (var e in new[] { pts[0], pts[pts.Count - 1] })
                     if (onOther == null || !onOther(e)) DiscGrid(mb.At(e), e, r.width * 0.5f, lift - 0.004f, terrain, 24);
+                swGrid.Stop(); swPaint.Start();
                 if (!aisle) AddPaint(paint, pts, r.@class, r.width, r.oneway, (p, s) => Ground(terrain, p.x, p.y) + lift, p => others.CoversPaint(p, self) || JoinPaintStops(self.osm_id, p, self.width * 0.5f) || (Park != null && (Park.InFloor(p) || Park.InBuilding(p))));   // Round 18 (A); Round 36: no road paint in the stunt park
+                swPaint.Stop();
             }
+            Debug.Log($"[Round65] Roads: the surfaces' grids {swGrid.Elapsed.TotalSeconds:0.0} s, paint {swPaint.Elapsed.TotalSeconds:0.0} s, which surface {swClass.Elapsed.TotalSeconds:0.0} s ({map.roads.Length} roads)");
+            BuildClock.Lap("Roads: the roads' surfaces and paint");
             BuildStreetSurfaces(hood, terrain, main, paint);   // Round 11: curb returns and cul-de-sac bulbs (MapBuilder.Round11.cs)
             FillRoadSeam(map, terrain, main);   // Round 31 (BUG-003): no lawn between New Chastain Road and its turn lane (MapBuilder.Round31.cs)
+            BuildClock.Lap("Roads: the Glen's curb returns and bulbs, the seam");
             main.ToObjects("Roads", mats.Asphalt, parent, false); // flat on the ground: no shadows to cast
             service.ToObjects("ServiceRoads", mats.ServiceAsphalt, parent, false);
             center.ToObjects("ShoppingCenterRoads", mats.Driveway, parent, false);   // the lot's own material and tint

@@ -22,7 +22,9 @@ using UnityEngine;
 // mixing everything there), so rebuilding "everything in a box" means running nearly the whole build. A fix is almost always in one
 // builder (the crypt, a roof ramp on the ridge, a pipe's exit): rebuilding that builder is the fast path. A change to the planning (the
 // ground's grading, the layout of houses or roads) still needs the full build; so does a step not marked quick below (it reads what other
-// steps made). The check that a quick build is right: ChastainRush.SceneDump of it and of a full build, compared (Tools/scene_diff.py).
+// steps made). Round 65: a change to the planning's GROUND no longer does: the quick build compares the planning's ground now with the record's and
+// takes the new one where they differ, refusing (and naming them) if a step not being rebuilt also changed those samples; renderers of other steps
+// that stand on the changed ground (a road's surface, trees) are listed in the log: they keep their old heights until the round's full build. The check that a quick build is right: ChastainRush.SceneDump of it and of a full build, compared (Tools/scene_diff.py).
 //   Batch: Unity.exe -batchmode -nographics -quit -projectPath . -executeMethod ChastainRush.MapBuilder.QuickFromCommandLine -quickParts <steps>
 //          [-dumpOut <file>]       (ChastainRush.MapBuilder.QuickExeFromCommandLine: the same, then the exe, as PlayerBuild with the scene kept)
 //   <steps>: step names (QuickSteps lists them; "church" = Businesses,ChurchCrypt), comma separated.
@@ -80,7 +82,9 @@ namespace ChastainRush
                 S("Roads", () =>
                 {
                     BuildRoads(map, terrain, mats, world, c.paint, hood, biz);
+                    BuildClock.Lap("Roads: the roads' meshes");
                     BuildBridges(map, mats, world, c.paint, terrain);
+                    BuildClock.Lap("Roads: the bridges");
                     c.paint.ToObjects("RoadPaint", mats.Paint, world, false);
                 }),
                 S("RoadData", () => { BuildRoadLookup(map); BuildTrafficNetwork(map); }),   // Round 30 (A1): the road graph the traffic drives on (MapBuilder.Traffic.cs)
@@ -124,15 +128,15 @@ namespace ChastainRush
                 S("Mall", () => { if (Mall != null) BuildMall(map, terrain, mats, world, Mall); }, true),   // Round 60 (A): Town Center, outside and in (MapBuilder.Mall.cs, MallInside.cs)
                 S("Airport", () => BuildAirport(terrain, mats, world, Airport)),   // Round 61 (B): the airport's pavement and paint, the trails' tread (MapBuilder.Airport.cs)
                 S("Helipads", () => BuildHelipads(mats, world)),   // Round 63: the airport's and Kennestone's rooftop helipads and their parked helicopters (MapBuilder.Helipads.cs)
-                S("Shortcuts", () => BuildShortcuts(hood, terrain, mats, world)),   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs)
+                S("Shortcuts", () => BuildShortcuts(hood, terrain, mats, world), true),   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs); Round 65: quick
                 S("ReportTreesOnLines", () => { if (hood.ShortcutData != null) ReportTreesOnLines(hood, c.trees); }),
-                S("CreekTrack", () => BuildCreekTrack(map, terrain, mats, world, creek)),   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material)
+                S("CreekTrack", () => BuildCreekTrack(map, terrain, mats, world, creek), true),   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material); Round 65: quick
                 // Round 33: the Chastain Ridge race's dirt piles and landing zones; Round 41: the roofer's ramp on house 1092 (its roof's mesh made by Rest:
                 // a quick build makes it again from the planning)
                 S("Ridge", () => BuildRidge(terrain, mats, world, ridge), true, () => QuickRoofRampHouse(rest)),
                 S("Pipes", () => BuildPipes(terrain, mats, world, pipes), true),   // Round 18 (4)
                 S("Network", () => BuildNetwork(terrain, mats, world, net, pipes)),   // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
-                S("LakesRace", () => BuildLakesRace(map, terrain, mats, world)),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs)
+                S("LakesRace", () => BuildLakesRace(map, terrain, mats, world), true),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs); Round 65: quick
                 S("Addison", () => BuildAddison(map, terrain, mats, world), true),   // Round 53: Addison Heights' road crew on Lyndon Drive and its shrub beds (MapBuilder.Round53.cs)
                 S("TrailRace", () => BuildTrailRace(terrain, mats, world), true),   // Round 62: the Noonday Creek Trail's path, railings, red bridge and signs (MapBuilder.TrailRace.cs)
                 S("ManholeFloors", () => RefitManholeFloors(terrain, world)),   // Round 54 (E1): after every step that grades the ground round a manhole
@@ -296,9 +300,27 @@ namespace ChastainRush
             foreach (var g in scene.GetRootGameObjects()) if (!rootsBefore.Contains(g) && g.name != QuickTerrainRoot) UnityEngine.Object.DestroyImmediate(g);
             var tmpRoot = scene.GetRootGameObjects().First(g => g.name == QuickTerrainRoot);
             var sceneTiles = SceneTiles(scene, c.terrain);
-            // 2. the ground before the first chosen step: the scene's own, with every later step's samples undone (last first)
+            // Round 65: the planning's ground now (from the current code and data), kept before the memory terrain takes the scene's
+            var planned = new Dictionary<(int, int), (float[,] h, bool[,] o)>();
+            foreach (var (tx, tz) in TileIds(c.terrain)) { var md = c.terrain.Tiles[tx, tz].terrainData; planned[(tx, tz)] = (md.GetHeights(0, 0, md.heightmapResolution, md.heightmapResolution), md.GetHoles(0, 0, md.holesResolution, md.holesResolution)); }
+            // 2. the ground the record's planning made: the scene's own, with every step's samples undone (last first)
             foreach (var (tx, tz) in TileIds(c.terrain)) { var sd = sceneTiles[tx, tz]; var md = c.terrain.Tiles[tx, tz].terrainData; md.SetHeights(0, 0, sd.GetHeights(0, 0, sd.heightmapResolution, sd.heightmapResolution)); md.SetHoles(0, 0, sd.GetHoles(0, 0, sd.holesResolution, sd.holesResolution)); }
-            for (int k = recs.Count - 1; k >= first; k--) ApplySamples(c.terrain, recs[k].name, false);
+            for (int k = recs.Count - 1; k >= 0; k--) ApplySamples(c.terrain, recs[k].name, false);
+            // Round 65 (build tools): the planning's change since the record (a track's grading, a door's apron, a road's levelling): where it changed the
+            // ground, the new planning's ground; a step not rebuilt that changed the same samples must be rebuilt too (or run a full build)
+            var delta = PlanningDelta(c.terrain, planned, out float most);
+            if (delta.Count > 0)
+            {
+                var notRebuilt = recs.Where(r => !want.Contains(r.name)).Select(r => (r.name, n: OverlapCount(r.name, delta))).Where(q => q.n > 0).ToList();
+                if (notRebuilt.Count > 0)
+                    throw new Exception($"quick build: the planning changed {delta.Count} ground samples (up to {most:0.00} m) that these steps also changed and are not being rebuilt: " +
+                                        string.Join(", ", notRebuilt.Select(q => $"{q.name} ({q.n})")) + "; add them to -quickParts if they are quick steps, or run a full Build Map");
+                foreach (var (tx, tz) in TileIds(c.terrain)) { var md = c.terrain.Tiles[tx, tz].terrainData; md.SetHeights(0, 0, planned[(tx, tz)].h); md.SetHoles(0, 0, planned[(tx, tz)].o); }
+                QuickPlanWarnings(scene, recs.Where(r => !want.Contains(r.name)).ToList(), delta, c.terrain);
+            }
+            Debug.Log($"[QuickBuild] the planning's ground: {delta.Count} samples changed since the full build (up to {most:0.00} m)");
+            // the ground before the first chosen step: the planning's, with the steps before it redone
+            for (int k = 0; k < first; k++) ApplySamples(c.terrain, recs[k].name, true);
             BuildClock.Lap("the ground before " + recs[first].name);
             // 3. the chosen steps' objects out; the steps again; the others' samples back
             var chosen = Steps(c).Where(s => want.Contains(s.name)).ToDictionary(s => s.name);
@@ -367,6 +389,57 @@ namespace ChastainRush
             var dump = QuickArg("-dumpOut"); if (dump != null) { EditorSceneManager.OpenScene(ScenePath); SceneDump.Write(dump); BuildClock.Lap("scene dump (the saved scene, read back)"); }
             Debug.Log($"[QuickBuild] {parts}: done in {BuildClock.Total:0} s; {conflicts} conflicts");
             if (!PlayerBuild.KeepScene) BuildClock.Done(Path.Combine(ProjectRoot, GeneratedDir, "quick_times.txt"));
+        }
+
+        // Round 65: where the memory terrain (the record's planning) and the planning now differ: (tile, x, z, hole?) of every sample; the largest height change in m
+        static HashSet<(int tx, int tz, int x, int z, bool hole)> PlanningDelta(TerrainGrid g, Dictionary<(int, int), (float[,] h, bool[,] o)> now, out float most)
+        {
+            var d = new HashSet<(int, int, int, int, bool)>(); most = 0f;
+            foreach (var (tx, tz) in TileIds(g))
+            {
+                var td = g.Tiles[tx, tz].terrainData; int res = td.heightmapResolution, hr = td.holesResolution; float span = td.size.y;
+                var a = td.GetHeights(0, 0, res, res); var b = now[(tx, tz)].h; var ha = td.GetHoles(0, 0, hr, hr); var hb = now[(tx, tz)].o;
+                for (int z = 0; z < res; z++) for (int x = 0; x < res; x++) if (a[z, x] != b[z, x]) { d.Add((tx, tz, x, z, false)); most = Mathf.Max(most, Mathf.Abs(a[z, x] - b[z, x]) * span); }
+                for (int z = 0; z < hr; z++) for (int x = 0; x < hr; x++) if (ha[z, x] != hb[z, x]) d.Add((tx, tz, x, z, true));
+            }
+            return d;
+        }
+        // how many of a step's recorded samples lie in the planning's change
+        static int OverlapCount(string step, HashSet<(int tx, int tz, int x, int z, bool hole)> delta)
+        {
+            int n = 0;
+            foreach (bool holes in new[] { false, true }) foreach (var s in ReadSamples(step, holes)) if (delta.Contains((s.tx, s.tz, s.x, s.z, holes))) n++;
+            return n;
+        }
+        // the objects of steps not rebuilt that stand where the planning moved the ground (a road's surface, a tree): they keep their old heights until a full
+        // build; listed so it is known (the planning's change by 16 m cell, the steps' renderers whose bounds reach one)
+        static void QuickPlanWarnings(UnityEngine.SceneManagement.Scene scene, List<StepRec> others, HashSet<(int tx, int tz, int x, int z, bool hole)> delta, TerrainGrid g)
+        {
+            var cells = new Dictionary<Vector2Int, float>();
+            foreach (var (tx, tz, x, z, hole) in delta)
+            {
+                if (hole) continue; var td = g.Tiles[tx, tz].terrainData; var o = g.Tiles[tx, tz].transform.position; float step = td.size.x / (td.heightmapResolution - 1);
+                var k = new Vector2Int(Mathf.FloorToInt((o.x + x * step) / 16f), Mathf.FloorToInt((o.z + z * step) / 16f)); cells[k] = 1f;
+            }
+            var lines = new List<string>();
+            foreach (var r in others)
+            {
+                int n = 0;
+                foreach (var rt in r.roots ?? new StepRoot[0])
+                {
+                    var go = FindAt(scene, rt); if (go == null) continue;
+                    foreach (var rd in go.GetComponentsInChildren<Renderer>(true))
+                    {
+                        var b = rd.bounds; bool hit = false;
+                        for (int cx = Mathf.FloorToInt(b.min.x / 16f); cx <= Mathf.FloorToInt(b.max.x / 16f) && !hit; cx++)
+                            for (int cz = Mathf.FloorToInt(b.min.z / 16f); cz <= Mathf.FloorToInt(b.max.z / 16f) && !hit; cz++) hit = cells.ContainsKey(new Vector2Int(cx, cz));
+                        if (hit) n++;
+                    }
+                }
+                if (n > 0) lines.Add($"{r.name} {n}");
+            }
+            Debug.LogWarning($"[QuickBuild] the planning moved the ground in {cells.Count} cells of 16 m; renderers of steps not rebuilt reaching them (they keep the ground they were built on until a full build): " +
+                             (lines.Count > 0 ? string.Join(", ", lines) : "none"));
         }
 
         static IEnumerable<(int tx, int tz)> TileIds(TerrainGrid g) { for (int tz = 0; tz < g.Tiles.GetLength(1); tz++) for (int tx = 0; tx < g.Tiles.GetLength(0); tx++) yield return (tx, tz); }

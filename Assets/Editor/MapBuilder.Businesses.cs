@@ -481,6 +481,7 @@ namespace ChastainRush
                 if (!z.pitched && z.area > 150f && z.kind != BizKind.Shed && z.kind != BizKind.Garage) RoofUnits(det, z, wallH);
                 if (z.kind == BizKind.School) Flagpole(det, z, t);
             }
+            BuildClock.Lap("Businesses: the buildings");   // Round 65: the step's parts timed (build_times.txt)
 
             // --- the lots
             var lotMb = new Chunks { Tint = LotAsphalt }; var lotPaint = new Chunks(); var lamps = new Breakables();
@@ -514,6 +515,7 @@ namespace ChastainRush
                 var pm = lotPaint.At(pla); Vector2 pld = (plb - pla).normalized;
                 PaintLine(pm, pla + pln * 4.2f - pld * 6f, plb + pln * 4.2f + pld * 2f, 0.15f, 0.065f * vScale, t);   // the drive-up lane round the side
             }
+            BuildClock.Lap("Businesses: walks and drives");
             int lotNo = 0;
             foreach (var lot in biz.Lots)
             {
@@ -583,6 +585,7 @@ namespace ChastainRush
                     }
             }
 
+            BuildClock.Lap("Businesses: the lots");
             foreach (var kv in bodies) kv.Value.ToObject($"BusinessBodies_{kv.Key.x}_{kv.Key.y}", mats.House, root, true);
             foreach (var kv in details) kv.Value.ToObject($"BusinessDetail_{kv.Key.x}_{kv.Key.y}", mats.House, root, false, false);
             lotMb.ToObjects("BusinessLots", mats.Driveway, root, false);
