@@ -112,24 +112,28 @@ namespace ChastainRush
             int levelled = 0; var done = new List<(string name, List<Vector2> p)>();
             // Round 64: the widest first (Round 62 went narrowest first so the wider road's levelling was the one left where two overlap: that left the
             // narrower road stepping into it); a narrower road now fades out before a wider one's edge (DoneW)
+            var swLevel = new System.Diagnostics.Stopwatch(); var swMeasure = new System.Diagnostics.Stopwatch(); var swW = new System.Diagnostics.Stopwatch();   // Round 65: where its time goes
             foreach (var (name, line0, half, decks) in chains.OrderByDescending(c => c.half))
             {
                 var p = Resample(line0, 1f); int n = p.Count; if (n < 20) continue;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
                 var w = new float[n];
                 float DeckDist(Vector2 q) { float best = float.MaxValue; foreach (var e in decks) best = Mathf.Min(best, (e - q).sqrMagnitude); return Mathf.Sqrt(best); }
+                swW.Start();
                 for (int i = 0; i < n; i++) w[i] = Mathf.Min(Mathf.Min(Smooth01((DeckDist(p[i]) - 15f) / 25f), W(p[i])), DoneW(p[i], half, name));
+                swW.Stop();
                 if (w.All(v => v <= 0f)) continue;
-                float before = SharpestStep(terrain, p, float.MaxValue); int b10 = Steps(terrain, p, .1f);
+                swMeasure.Start(); float before = SharpestStep(terrain, p, float.MaxValue); int b10 = Steps(terrain, p, .1f); swMeasure.Stop();
                 // near Dan's two spots (150 m): no crest that lifts a car off the road at 30 m/s (build 2's check: Big Shanty's dip under I-575 still threw it 0.5 s)
                 var cap = new bool[n]; bool any = false; for (int i = 0; i < n; i++) { cap[i] = spots.Any(s => (p[i] - s.Item2).magnitude < 150f); any |= cap[i]; }
                 // (Round 64: Barrett Parkway at Dan's spot, flat out: no crest that lifts a car at 45 m/s)
                 bool barrett = Enumerable.Range(0, n).Any(i => (p[i] - spots[2].Item2).magnitude < 150f);
-                LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (barrett ? 45f * 45f : 30f * 30f));
+                swLevel.Start(); LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (barrett ? 45f * 45f : 30f * 30f)); swLevel.Stop();
                 for (int i = 0; i + 1 < n; i++) { doneIdx.Add(p[i], p[i + 1], half + 1f + R64JunctionFade + .01f); doneSegs.Add((p[i], p[i + 1], half, name)); }   // (its id: doneSegs' index)
                 report.TryGetValue(name, out var o0); levelled++; done.Add((name, p));
                 report[name] = (Mathf.Max(o0.before, before), 0f, o0.b10 + b10, 0, o0.len + (n - 1));
             }
+            Debug.Log($"[Round65] R62LevelMains: LevelAlong {swLevel.Elapsed.TotalSeconds:0.0} s, the weights {swW.Elapsed.TotalSeconds:0.0} s, the before measure {swMeasure.Elapsed.TotalSeconds:0.0} s");
             // after: measured once every road is levelled (a later road can change an earlier one's ground)
             foreach (var (name, p) in done)
             {

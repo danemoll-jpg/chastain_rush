@@ -491,6 +491,47 @@ namespace ChastainRush
             }
         }
 
+        // Round 65 (build speed): EditTerrain over 'area', visiting only the samples in the given cells of 'cell' m (the samples elsewhere left as they
+        // are, as a height function that returns y there would): the same result, without walking a long road's whole bounding box
+        static void EditTerrainCells(TerrainGrid g, Rect area, float cell, ICollection<Vector2Int> keys, Func<float, float, float, float> height)
+        {
+            foreach (var tile in g.Tiles)
+            {
+                var data = tile.terrainData; int res = data.heightmapResolution; var size = data.size; var pos = tile.transform.position;
+                int x0 = Mathf.Clamp(Mathf.FloorToInt((area.xMin - pos.x) / size.x * (res - 1)), 0, res - 1), x1 = Mathf.Clamp(Mathf.CeilToInt((area.xMax - pos.x) / size.x * (res - 1)), 0, res - 1);
+                int z0 = Mathf.Clamp(Mathf.FloorToInt((area.yMin - pos.z) / size.z * (res - 1)), 0, res - 1), z1 = Mathf.Clamp(Mathf.CeilToInt((area.yMax - pos.z) / size.z * (res - 1)), 0, res - 1);
+                if (x1 <= x0 || z1 <= z0) continue;
+                if (area.xMax < pos.x || area.xMin > pos.x + size.x || area.yMax < pos.z || area.yMin > pos.z + size.z) continue;
+                float sx = size.x / (res - 1), sz = size.z / (res - 1);
+                var mine = new List<(Vector2Int k, int i0, int i1, int j0, int j1)>();
+                foreach (var k in keys)
+                {
+                    float cx0 = k.x * cell, cz0 = k.y * cell; if (cx0 > pos.x + size.x || cx0 + cell < pos.x || cz0 > pos.z + size.z || cz0 + cell < pos.z) continue;
+                    int i0 = Mathf.Max(x0, Mathf.FloorToInt((cx0 - pos.x) / sx) - 1), i1 = Mathf.Min(x1, Mathf.CeilToInt((cx0 + cell - pos.x) / sx) + 1);
+                    int j0 = Mathf.Max(z0, Mathf.FloorToInt((cz0 - pos.z) / sz) - 1), j1 = Mathf.Min(z1, Mathf.CeilToInt((cz0 + cell - pos.z) / sz) + 1);
+                    if (i1 >= i0 && j1 >= j0) mine.Add((k, i0, i1, j0, j1));
+                }
+                if (mine.Count == 0) continue;
+                var hts = data.GetHeights(x0, z0, x1 - x0 + 1, z1 - z0 + 1); int any = 0; float py = pos.y, h = size.y, px = pos.x, pz = pos.z, wxs = size.x, wzs = size.z; int rm = res - 1;
+                // the cells' samples are apart (each sample in its own cell only): the cells in parallel (the height functions given here read only)
+                System.Threading.Tasks.Parallel.For(0, mine.Count, m =>
+                {
+                    var (k, i0, i1, j0, j1) = mine[m];
+                    for (int zi = j0; zi <= j1; zi++)
+                        for (int xi = i0; xi <= i1; xi++)
+                        {
+                            float wx = px + xi / (float)rm * wxs, wz = pz + zi / (float)rm * wzs;
+                            if (Mathf.FloorToInt(wx / cell) != k.x || Mathf.FloorToInt(wz / cell) != k.y) continue;   // (each sample in its own cell only)
+                            float y = py + hts[zi - z0, xi - x0] * h;
+                            float ny = height(wx, wz, y);
+                            if (Mathf.Abs(ny - y) > 1e-4f) { hts[zi - z0, xi - x0] = Mathf.Clamp01((ny - py) / h); any = 1; }
+                        }
+                });
+                bool anyB = any != 0;
+                if (anyB) data.SetHeights(x0, z0, hts);
+            }
+        }
+
         // ------------------------------------------------------------ breakable props (mailboxes), FenceChunk per 128 m cell
 
         sealed class Breakables

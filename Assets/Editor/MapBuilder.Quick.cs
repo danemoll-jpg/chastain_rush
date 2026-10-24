@@ -324,7 +324,9 @@ namespace ChastainRush
             foreach (var (tx, tz) in TileIds(c.terrain)) { var md = c.terrain.Tiles[tx, tz].terrainData; planned[(tx, tz)] = (md.GetHeights(0, 0, md.heightmapResolution, md.heightmapResolution), md.GetHoles(0, 0, md.holesResolution, md.holesResolution)); }
             // 2. the ground the record's planning made: the scene's own, with every step's samples undone (last first)
             foreach (var (tx, tz) in TileIds(c.terrain)) { var sd = sceneTiles[tx, tz]; var md = c.terrain.Tiles[tx, tz].terrainData; md.SetHeights(0, 0, sd.GetHeights(0, 0, sd.heightmapResolution, sd.heightmapResolution)); md.SetHoles(0, 0, sd.GetHoles(0, 0, sd.holesResolution, sd.holesResolution)); }
-            for (int k = recs.Count - 1; k >= 0; k--) ApplySamples(c.terrain, recs[k].name, false);
+            var mem = new GroundMem(c.terrain);   // Round 65 (build speed): the undoing and redoing in memory, each tile written once (was every step's tiles read and written)
+            for (int k = recs.Count - 1; k >= 0; k--) mem.Apply(recs[k].name, false);
+            mem.Store();
             // Round 65 (build tools): the planning's change since the record (a track's grading, a door's apron, a road's levelling): where it changed the
             // ground, the new planning's ground; a step not rebuilt that changed the same samples must be rebuilt too (or run a full build)
             var delta = PlanningDelta(c.terrain, planned, out float most);
@@ -339,7 +341,9 @@ namespace ChastainRush
             }
             Debug.Log($"[QuickBuild] the planning's ground: {delta.Count} samples changed since the full build (up to {most:0.00} m)");
             // the ground before the first chosen step: the planning's, with the steps before it redone
-            for (int k = 0; k < first; k++) ApplySamples(c.terrain, recs[k].name, true);
+            mem = new GroundMem(c.terrain);
+            for (int k = 0; k < first; k++) mem.Apply(recs[k].name, true);
+            mem.Store(); mem = null;
             BuildClock.Lap("the ground before " + recs[first].name);
             // 3. the chosen steps' objects out; the steps again; the others' samples back
             var chosen = Steps(c).Where(s => want.Contains(s.name)).ToDictionary(s => s.name);
@@ -356,6 +360,7 @@ namespace ChastainRush
                 var r = recs[k];
                 if (chosen.TryGetValue(r.name, out var st))
                 {
+                    mem?.Store(); mem = null;
                     rec.Resync(); st.prep?.Invoke();
                     QuickStep = r.name; AssetDatabase.DeleteAsset(GeneratedDir + "/Meshes/q/" + r.name); packMain = null;   // its meshes from an earlier quick build
                     StepRec nr; try { nr = rec.Run(st); } finally { QuickStep = null; }
@@ -368,8 +373,9 @@ namespace ChastainRush
                     recs[k] = nr;
                     Debug.Log($"[QuickBuild] {r.name}: {made.Count} objects (was {r.roots.Length}), {nr.heights} heights and {nr.holes} holes changed (was {r.heights}, {r.holes})");
                 }
-                else conflicts += ApplySamples(c.terrain, r.name, true);
+                else { mem = mem ?? new GroundMem(c.terrain); conflicts += mem.Apply(r.name, true); }
             }
+            mem?.Store(); mem = null;
             int lost = SceneRefs.Relink(scene, held);
             if (lost > 0) Debug.LogWarning($"[QuickBuild] {lost} of {held.Count} references from other objects into the rebuilt ones found nothing in the same place: run a full Build Map");
             else Debug.Log($"[QuickBuild] {held.Count} references from other objects set again to the rebuilt ones");
@@ -467,6 +473,30 @@ namespace ChastainRush
             var root = scene.GetRootGameObjects().First(o => o.name == "Terrain").transform; var t = new TerrainData[g.Tiles.GetLength(0), g.Tiles.GetLength(1)];
             foreach (var (tx, tz) in TileIds(g)) t[tx, tz] = root.Find($"Terrain_{tx}_{tz}").GetComponent<Terrain>().terrainData;
             return t;
+        }
+
+        // Round 65 (build speed): the memory terrain's heights and holes held as arrays while steps' samples are undone and redone, written back once
+        sealed class GroundMem
+        {
+            readonly TerrainGrid g; readonly Dictionary<(int, int), float[,]> h = new Dictionary<(int, int), float[,]>(); readonly Dictionary<(int, int), bool[,]> o = new Dictionary<(int, int), bool[,]>();
+            readonly HashSet<(int, int)> dh = new HashSet<(int, int)>(), dk = new HashSet<(int, int)>();
+            public GroundMem(TerrainGrid g) { this.g = g; }
+            float[,] H(int tx, int tz) { if (!h.TryGetValue((tx, tz), out var a)) { var d = g.Tiles[tx, tz].terrainData; h[(tx, tz)] = a = d.GetHeights(0, 0, d.heightmapResolution, d.heightmapResolution); } return a; }
+            bool[,] O(int tx, int tz) { if (!o.TryGetValue((tx, tz), out var a)) { var d = g.Tiles[tx, tz].terrainData; o[(tx, tz)] = a = d.GetHoles(0, 0, d.holesResolution, d.holesResolution); } return a; }
+            // as ApplySamples: undone (before) or redone (after); redone, a sample not what it was before that step counts as a conflict
+            public int Apply(string step, bool redo)
+            {
+                int conflicts = 0;
+                foreach (var s in ReadSamples(step, false)) { var a = H(s.tx, s.tz); if (redo && a[s.z, s.x] != s.before) conflicts++; a[s.z, s.x] = redo ? s.after : s.before; dh.Add((s.tx, s.tz)); }
+                foreach (var s in ReadSamples(step, true)) { var a = O(s.tx, s.tz); if (redo && a[s.z, s.x] != (s.before > .5f)) conflicts++; a[s.z, s.x] = (redo ? s.after : s.before) > .5f; dk.Add((s.tx, s.tz)); }
+                return conflicts;
+            }
+            public void Store()
+            {
+                foreach (var k in dh) g.Tiles[k.Item1, k.Item2].terrainData.SetHeights(0, 0, h[k]);
+                foreach (var k in dk) g.Tiles[k.Item1, k.Item2].terrainData.SetHoles(0, 0, o[k]);
+                dh.Clear(); dk.Clear();
+            }
         }
 
         // a step's recorded samples applied to the memory terrain: undone (before) or redone (after). Redone, a sample that is not what it was

@@ -128,7 +128,7 @@ namespace ChastainRush
                     { var key = new Vector2Int(cx, cz); if (!cells.TryGetValue(key, out var l)) cells[key] = l = new List<int>(); l.Add(i); }
             }
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
-            EditTerrain(terrain, area, (x, z, y) =>
+            EditTerrainCells(terrain, area, Cell, cells.Keys, (x, z, y) =>   // Round 65 (build speed): only the cells along the line
             {
                 var q = new Vector2(x, z);
                 if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x / Cell), Mathf.FloorToInt(z / Cell)), out var segs)) return y;
