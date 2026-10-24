@@ -39,7 +39,7 @@ namespace ChastainRush
             }
             if (discRenderer)
             {
-                if (!discMaterial) { var glass = Resources.Load<Material>("VehicleGlazing"); discMaterial = glass ? new Material(glass) { name = "Rotor disc" } : null; if (discMaterial) { discMaterial.color = new Color(.12f, .12f, .14f, .16f); if (discMaterial.HasProperty("_BaseColor")) discMaterial.SetColor("_BaseColor", new Color(.12f, .12f, .14f, .16f)); discMaterial.SetFloat("_Smoothness", 0); } }
+                if (!discMaterial) { var glass = Resources.Load<Material>("VehicleGlazing"); discMaterial = glass ? new Material(glass) { name = "Rotor disc" } : null; if (discMaterial) { discMaterial.color = new Color(.12f, .12f, .14f, .09f); if (discMaterial.HasProperty("_BaseColor")) discMaterial.SetColor("_BaseColor", new Color(.12f, .12f, .14f, .09f)); discMaterial.SetFloat("_Smoothness", 0); } }
                 if (discMaterial) discRenderer.sharedMaterial = discMaterial;
                 discRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off; discRenderer.enabled = false;
             }
@@ -94,7 +94,7 @@ namespace ChastainRush
             float W = Screen.width / s, Hh = Screen.height / s;
             var v = car.Body.linearVelocity; float ground = new Vector2(v.x, v.z).magnitude;
             float heading = Mathf.Repeat(transform.eulerAngles.y, 360f); string[] points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
-            var r = new Rect(24, Hh - 150, 360, 126);
+            var r = new Rect(24, Hh - 150, 470, 126);
             var oldColor = GUI.color; GUI.color = new Color(0, 0, 0, .45f); GUI.DrawTexture(r, Texture2D.whiteTexture); GUI.color = oldColor;
             GUI.Label(new Rect(r.x + 14, r.y + 8, 340, 34), $"{DisplayUnits.Feet(Mathf.Max(0, HeightAboveGround)):0} ft   {DisplayUnits.Mph(ground):0} mph", big);
             string climb = Mathf.Abs(v.y) > .5f ? $"   {(v.y > 0 ? "climbing" : "descending")} {DisplayUnits.Feet(Mathf.Abs(v.y)) * 60:0} ft/min" : "";
@@ -102,8 +102,8 @@ namespace ChastainRush
             string state = Crashed ? "CRASHED: " + CrashReason : Spool < .95f ? $"rotor {Spool * 100:0}%" : Landed ? "landed" : Boosting ? "BOOST" : "flying";
             GUI.Label(new Rect(r.x + 14, r.y + 70, 340, 24), state, small);
             bool pad = vInput && vInput.UsingGamepad;
-            string hint = Landed && !Crashed ? (pad ? "Left stick up or RT: lift off" : "Space: lift off") : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick climb / turn · right stick fly · RB boost" : "W/S/Q/E fly · A/D turn · Space/C climb · Shift boost") : "";
-            GUI.Label(new Rect(r.x + 14, r.y + 96, 360, 24), hint, small);
+            string hint = Landed && !Crashed ? (pad ? "Left stick up or RT: lift off" : "Space: lift off") : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick climb / turn · right stick fly · RB boost" : "W/S/Q/E fly · A/D turn · Space/C up / down · Shift boost") : "";
+            GUI.Label(new Rect(r.x + 14, r.y + 96, 450, 24), hint, small);
             GUI.matrix = old;
         }
     }

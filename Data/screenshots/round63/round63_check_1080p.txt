@@ -1,0 +1,59 @@
+Round 63 check, 2026-10-24 00:01, the exe, 1920 x 1080, muted.
+
+=== The helicopter from Free Roam's pick at Chastain Glen: spool up, lift off, 30 s hands off at 40 m
+PASS  hover: the helicopter is flying the player's vehicle
+INFO  spooled up in 1.4 s; landed True
+PASS  hover: lifts off  -  3.1 m after 0.6 s
+PASS  hover: 30 s hands off drifts under 3 m  -  sideways 0.00 m, up / down 0.04 m at 40 m over the ground
+
+=== Flights by autopilot (the sticks, scripted; boost on the long legs), landing at each place, 120 m over the highest ground ahead
+PASS  hfly: to Kennesaw Mountain summit, landed  -  landed, 7.8 km in 85 s (92 m/s average), 0 m from the spot
+PASS  hfly: to Town Center, landed  -  landed, 4.9 km in 63 s (78 m/s average), 0 m from the spot
+PASS  hfly: to Chastain Glen, landed  -  landed, 3.3 km in 51 s (66 m/s average), 0 m from the spot
+
+=== The helipads: onto each in the Street Classic (the roof pad by fast travel), the swap, a lift off to 25 m, back down on the pad, swapped back
+PASS  hpads: the helipads are built  -  2 pads
+PASS  hpads: Airport helipad: on the pad, the swap is offered  -  1.1 m from its middle, +0.4 m
+PASS  hpads: Airport helipad: swapped to the helicopter
+PASS  hpads: Airport helipad: up to 25 m and back down on the pad  -  0.0 m from its middle, landed True
+PASS  hpads: Airport helipad: swapped back to the Street Classic  -  original
+PASS  hpads: Kennestone helipad: fast travel there  -  Arrived at Kennestone helipad.
+PASS  hpads: Kennestone helipad: on the pad, the swap is offered  -  0.0 m from its middle, +0.8 m
+PASS  hpads: Kennestone helipad: swapped to the helicopter
+PASS  hpads: Kennestone helipad: up to 25 m and back down on the pad  -  0.0 m from its middle, landed True
+PASS  hpads: Kennestone helipad: swapped back to the Street Classic  -  original
+
+=== Crashes: into a tree's crown, into a building; then it is put on open ground and lifts off again
+PASS  hcrash: into a tree, it crashes  -  rotor hit a tree
+PASS  hcrash: a tree: put on open ground, upright  -  153 m from the impact, 14.4 m over the ground, up 1.00
+PASS  hcrash: a tree: lifts off again (not stuck)  -  11.6 m
+PASS  hcrash: into a building (Town Center's front), it crashes  -  hard landing on Mall floor
+PASS  hcrash: a building (Town Center's front): put on open ground, upright  -  56 m from the impact, 1.4 m over the ground, up 1.00
+PASS  hcrash: a building (Town Center's front): lifts off again (not stuck)  -  11.6 m
+
+=== Frame rate hovering hands off, chase camera, uncapped, 1920 x 1080 (not measured at 3840 x 2160), 8 s each
+INFO  Chastain Glen, 50 m up: 170 fps average, slowest 1 % 118 fps; fog to 713 m, far clip 813 m, terrain tiles drawn 12, trees drawn 5649
+INFO  Chastain Glen, 200 m up: 162 fps average, slowest 1 % 111 fps; fog to 2864 m, far clip 2964 m, terrain tiles drawn 44, trees drawn 14203
+INFO  Chastain Glen, 500 m up: 164 fps average, slowest 1 % 122 fps; fog to 6500 m, far clip 6600 m, terrain tiles drawn 132, trees drawn 15116
+INFO  Town Center, 50 m up: 140 fps average, slowest 1 % 30 fps; fog to 715 m, far clip 815 m, terrain tiles drawn 14, trees drawn 4456
+INFO  Town Center, 200 m up: 105 fps average, slowest 1 % 78 fps; fog to 2874 m, far clip 2974 m, terrain tiles drawn 90, trees drawn 27898
+INFO  Town Center, 500 m up: 99 fps average, slowest 1 % 75 fps; fog to 6500 m, far clip 6600 m, terrain tiles drawn 232, trees drawn 33258
+INFO  Kennesaw Mountain summit, 50 m up: 163 fps average, slowest 1 % 113 fps; fog to 710 m, far clip 810 m, terrain tiles drawn 14, trees drawn 12417
+INFO  Kennesaw Mountain summit, 200 m up: 100 fps average, slowest 1 % 74 fps; fog to 2853 m, far clip 2953 m, terrain tiles drawn 80, trees drawn 64869
+INFO  Kennesaw Mountain summit, 500 m up: 88 fps average, slowest 1 % 66 fps; fog to 6500 m, far clip 6600 m, terrain tiles drawn 241, trees drawn 65206
+
+=== Pictures
+
+=== What the view from 500 m costs, 1920 x 1080, 6 s each
+INFO  Kennesaw Mountain summit, as built (thinned trees): 74 fps; trees 65206, draws 564, terrain tiles 241, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, trees not thinned: 35 fps; trees 150252, draws 687, terrain tiles 240, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far trees off (700 m): 33 fps; trees 2179, draws 6, terrain tiles 238, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far clip 3000 m: 10 fps; trees 57561, draws 378, terrain tiles 84, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far clip 1500 m: 35 fps; trees 31490, draws 99, terrain tiles 30, details hidden 31188 of 31225
+INFO  Town Center, as built (thinned trees): 106 fps; trees 33258, draws 618, terrain tiles 197, details hidden 30730 of 31225
+INFO  Town Center, trees not thinned: 82 fps; trees 79716, draws 648, terrain tiles 193, details hidden 30730 of 31225
+INFO  Town Center, far trees off (700 m): 142 fps; trees 2485, draws 24, terrain tiles 191, details hidden 30730 of 31225
+INFO  Town Center, far clip 3000 m: 116 fps; trees 27858, draws 435, terrain tiles 92, details hidden 30730 of 31225
+INFO  Town Center, far clip 1500 m: 177 fps; trees 11020, draws 120, terrain tiles 29, details hidden 30730 of 31225
+
+22 of 22 checks passed.

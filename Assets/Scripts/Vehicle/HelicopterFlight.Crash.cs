@@ -75,12 +75,12 @@ namespace ChastainRush
             car.Body.linearVelocity = car.Body.angularVelocity = Vector3.zero;
         }
 
-        // the nearest open ground to p: rings outward to 300 m; the ground under each point (the first thing under it: a roof, a lot, the
+        // the nearest open ground to p: rings outward to 600 m; the ground under each point (the first thing under it: a roof, a lot, the
         // terrain), not water, not steep, the helicopter's box and its rotor's sweep clear of everything but the ground itself
         public static bool ResetSpot(Vector3 p, out Vector3 at, out float yaw)
         {
             yaw = 0; at = p;
-            for (float r = 0; r <= 300f; r += r < 30f ? 6f : 15f)
+            for (float r = 0; r <= 600f; r += r < 30f ? 6f : 15f)
             {
                 int steps = r == 0 ? 1 : Mathf.Max(8, Mathf.CeilToInt(2 * Mathf.PI * r / 12f));
                 for (int i = 0; i < steps; i++)
@@ -92,20 +92,21 @@ namespace ChastainRush
                     bool clear = true;
                     foreach (var c in Physics.OverlapBox(hit.point + Vector3.up * 2.6f, new Vector3(6f, 2.2f, 6f), Quaternion.identity, ~0, QueryTriggerInteraction.Ignore))
                         if (c != ground && !(c is TerrainCollider) && !c.GetComponentInParent<HelicopterFlight>()) { clear = false; break; }
-                    if (!clear || TreeCrowns.Hit(hit.point + Vector3.up * 2.7f, RotorRadius + 1f, hit.point + Vector3.up * 1.2f, out _)) continue;
+                    if (!clear || !TreeCrowns.Clear(hit.point)) continue;   // no tree within the rotor's or the tail's reach, at any height (it climbs out)
                     at = hit.point + Vector3.up * (SkidDrop + .05f); yaw = a * Mathf.Rad2Deg; return true;
                 }
             }
             return false;
         }
-        // the first thing under a point that is not a helicopter
+        // the first lasting ground under a point (the terrain, a roof, a deck, a lot): not a helicopter, a vehicle, or a pooled
+        // tree trunk (TreeTrunks moves its colliders round the vehicles: a spot on one was left in the air once it moved)
         public static bool GroundUnder(Vector3 from, out RaycastHit hit)
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < 8; i++)
             {
                 if (!Physics.Raycast(from, Vector3.down, out hit, 5000f, ~0, QueryTriggerInteraction.Ignore)) return false;
-                if (!hit.collider.GetComponentInParent<HelicopterFlight>()) return true;
-                from = hit.point + Vector3.down * .05f; from.y -= 6f;
+                var c = hit.collider; if (!c.attachedRigidbody && !TreeTrunks.IsTrunk(c) && !c.GetComponentInParent<HelicopterFlight>()) return true;
+                from = hit.point + Vector3.down * .05f; if (c.GetComponentInParent<HelicopterFlight>()) from.y -= 6f;
             }
             hit = default; return false;
         }
@@ -129,6 +130,23 @@ namespace ChastainRush
             for (int c = 0; c < cols * rows; c++) count[c + 1] += count[c];
             start = (int[])count.Clone(); order = new int[field.count]; var fill = (int[])count.Clone();
             for (int i = 0; i < field.count; i++) order[fill[cellOf[i]]++] = i;
+        }
+        // a spot the helicopter can sit on and climb straight up from: no trunk within the tail's reach (7.5 m) and no crown the rotor's disc would
+        // meet on the way up, whatever its height
+        public static bool Clear(Vector3 p)
+        {
+            if (field == null || start == null) { Build(); if (field == null) return true; }
+            float reach = HelicopterFlight.RotorRadius + 14f;
+            int cx0 = Mathf.Max(0, Mathf.FloorToInt((p.x - reach - x0) / Cell)), cx1 = Mathf.Min(cols - 1, Mathf.FloorToInt((p.x + reach - x0) / Cell));
+            int cz0 = Mathf.Max(0, Mathf.FloorToInt((p.z - reach - z0) / Cell)), cz1 = Mathf.Min(rows - 1, Mathf.FloorToInt((p.z + reach - z0) / Cell));
+            for (int cz = cz0; cz <= cz1; cz++)
+                for (int cx = cx0; cx <= cx1; cx++)
+                    for (int k = start[cz * cols + cx]; k < start[cz * cols + cx + 1]; k++)
+                    {
+                        var t = TreeField.Unpack(field.data, order[k]); float d = new Vector2(t.x - p.x, t.z - p.z).magnitude;
+                        if (d < Mathf.Max(7.5f, HelicopterFlight.RotorRadius * .85f + t.radius * .05f * .55f + .8f)) return false;
+                    }
+            return true;
         }
         // a disc (centre hub, radius r, flat) or the body (a point) inside a crown
         public static bool Hit(Vector3 hub, float r, Vector3 bodyAt, out string what)

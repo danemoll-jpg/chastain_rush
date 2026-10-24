@@ -201,6 +201,7 @@ namespace ChastainRush
                 if (Do("hcrash")) yield return Guard(R63Crash());
                 if (Do("hfps")) yield return Guard(R63Fps());
                 if (Do("hpics")) yield return Guard(R63Pics());
+                if (only != null && parts.Contains("hfpsx")) yield return Guard(R63FpsX());   // only when asked
             }
             // Round 62 (Round20Runner.R62.cs): the Noonday Creek Trail race
             if (tag == "round62")

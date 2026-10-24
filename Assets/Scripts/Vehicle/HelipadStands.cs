@@ -56,11 +56,10 @@ namespace ChastainRush
             var cfg = car.GetComponent<VehicleConfiguration>(); var sw = car.GetComponent<VehicleSwitch>();
             bool heli = HelicopterFlight.Flying(car); var hf = heli ? car.GetComponent<HelicopterFlight>() : null;
             if (!heli && cfg) { lastCar = cfg.profileId; if (sw) lastColour = sw.Colour; }
-            near = -1;
+            near = PadAt(car.Body.position);
             for (int i = 0; i < pads.Length; i++)
             {
-                var d = car.Body.position - pads[i].centre; bool on = new Vector2(d.x, d.z).magnitude < pads[i].half + 1f && d.y > -2f && d.y < 5f;
-                if (on) near = i;
+                var d = car.Body.position - pads[i].centre;
                 if (parked != null && parked[i]) { bool show = !(heli && new Vector2(d.x, d.z).magnitude < 14f && d.y < 40f); if (parked[i].gameObject.activeSelf != show) parked[i].gameObject.SetActive(show); }
             }
             canTake = Allowed && near >= 0 && !heli && car.Body.linearVelocity.magnitude < 8f;
@@ -69,9 +68,15 @@ namespace ChastainRush
             if (free && (canTake || canLeave) && take.WasPressedThisFrame()) Swap(car, sw);
         }
 
+        int PadAt(Vector3 at)
+        {
+            for (int i = 0; i < pads.Length; i++) { var d = at - pads[i].centre; if (new Vector2(d.x, d.z).magnitude < pads[i].half + 1f && d.y > -2f && d.y < 5f) return i; }
+            return -1;
+        }
         // the swap itself (the button, or a check)
         public bool Swap(ArcadeVehicle car, VehicleSwitch sw)
         {
+            near = PadAt(car.Body.position);   // where the vehicle is now (a fast travel may have moved it since the last frame)
             if (near < 0 || !sw) return false;
             var p = pads[near]; var respawn = car.GetComponent<VehicleRespawn>();
             if (!HelicopterFlight.Flying(car))

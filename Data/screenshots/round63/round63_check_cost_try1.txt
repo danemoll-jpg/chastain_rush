@@ -1,0 +1,23 @@
+Round 63 check, 2026-10-23 23:38, the exe, 1920 x 1080, muted.
+
+=== Crashes: into a tree's crown, into a building; then it is put on open ground and lifts off again
+PASS  hcrash: into a tree, it crashes  -  rotor hit a tree
+PASS  hcrash: a tree: put on open ground, upright  -  156 m from the impact, 14.0 m over the ground, up 1.00
+PASS  hcrash: a tree: lifts off again (not stuck)  -  11.6 m
+PASS  hcrash: into a building (Town Center's front), it crashes  -  hard landing on Mall floor
+PASS  hcrash: a building (Town Center's front): put on open ground, upright  -  56 m from the impact, 1.9 m over the ground, up 1.00
+PASS  hcrash: a building (Town Center's front): lifts off again (not stuck)  -  11.6 m
+
+=== What the view from 500 m costs, 1920 x 1080, 6 s each
+INFO  Kennesaw Mountain summit, as built (thinned trees): 59 fps; trees 68604, draws 906, terrain tiles 241, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, trees not thinned: 39 fps; trees 195934, draws 906, terrain tiles 241, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far trees off (700 m): 128 fps; trees 2179, draws 6, terrain tiles 241, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far clip 3000 m: 104 fps; trees 57561, draws 378, terrain tiles 84, details hidden 31188 of 31225
+INFO  Kennesaw Mountain summit, far clip 1500 m: 154 fps; trees 31490, draws 99, terrain tiles 30, details hidden 31188 of 31225
+INFO  Town Center, as built (thinned trees): 101 fps; trees 32688, draws 648, terrain tiles 232, details hidden 30730 of 31225
+INFO  Town Center, trees not thinned: 69 fps; trees 79716, draws 648, terrain tiles 232, details hidden 30730 of 31225
+INFO  Town Center, far trees off (700 m): 138 fps; trees 2485, draws 24, terrain tiles 232, details hidden 30730 of 31225
+INFO  Town Center, far clip 3000 m: 117 fps; trees 27858, draws 435, terrain tiles 92, details hidden 30730 of 31225
+INFO  Town Center, far clip 1500 m: 173 fps; trees 11020, draws 120, terrain tiles 29, details hidden 30730 of 31225
+
+6 of 6 checks passed.

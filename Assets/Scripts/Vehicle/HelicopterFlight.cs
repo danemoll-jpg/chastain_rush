@@ -11,7 +11,7 @@ namespace ChastainRush
     //   Pad:      left stick up / down climb / descend, left / right turn; right stick flies (forward / back / sideways); RT / LT fine climb /
     //             descend; RB (or the left stick's click) boost; X view (chase, far chase, first person, straight down); Y reset.
     //   Keyboard: W / S fly forward / back, A / D turn, Q / E sideways, Space / C (or Ctrl) climb / descend, Shift boost, V view, R reset.
-    // Let go of the sticks and it holds a steady hover at its height. Below 3 m it eases its descent (a soft landing); it lands on anything flat
+    // Let go of the sticks and it holds a steady hover at its height. It never comes down faster than it can stop (a soft landing); it lands on anything flat
     // enough. A crash (the body into something at speed, the rotor into a tree crown, a building, a pole or the ground, the tail rotor, or
     // set down in water) spins the rotor down, then after a moment puts it on the nearest open ground (HelicopterFlight.Crash.cs).
     public sealed partial class HelicopterFlight : MonoBehaviour
@@ -45,7 +45,14 @@ namespace ChastainRush
             discRenderer = disc ? disc.GetComponentInChildren<Renderer>() : null;
             bool wasOn = enabled && car.Flown;
             car.Flown = true; car.Body.useGravity = true; car.Body.maxAngularVelocity = 4;
-            if (!wasOn) { Spool = 0; Landed = true; crashedAt = -1; }
+            if (!wasOn)
+            {
+                Spool = 0; Landed = true; crashedAt = -1;
+                // swapped in among trees (the garage, anywhere): it starts on the nearest clear ground instead of striking them as it spools up
+                var at = car.Body.position;
+                if (!TreeCrowns.Clear(at) && ResetSpot(at, out var spot, out float y))
+                { car.Body.position = spot; car.Body.rotation = Quaternion.Euler(0, y, 0); transform.SetPositionAndRotation(spot, car.Body.rotation); car.Body.linearVelocity = car.Body.angularVelocity = Vector3.zero; }
+            }
             holdY = car.Body.position.y; yawDeg = transform.eulerAngles.y;
             if (vInput && vInput.Device == null && GetComponent<VehicleSwitch>() is VehicleSwitch sw && sw.player == 1) PlayerHeli = this;
             enabled = true;
@@ -135,17 +142,18 @@ namespace ChastainRush
             var aH = Vector3.ClampMagnitude((want - vH) * (sticks ? 0.9f : 1.4f), accel);
             // vertical: the stick climbs or descends; let go and it holds the height it was at
             float wantVy;
-            if (Mathf.Abs(l) > .08f) { wantVy = l > 0 ? l * Climb : l * Descend; holdY = pos.y; }
+            if (Mathf.Abs(l) > .08f) { wantVy = l > 0 ? l * Climb : l * Descend; holdY = pos.y + v.y * Mathf.Abs(v.y) / (2f * 14f); }   // let go: it holds where it coasts to
             else wantVy = Mathf.Clamp((holdY - pos.y) * 1.2f, -6f, 6f);
             if (pos.y > Ceiling && wantVy > 0) { wantVy = 0; holdY = Mathf.Min(holdY, Ceiling); }
-            if (HeightAboveGround < 3.5f && wantVy < 0) wantVy = Mathf.Max(wantVy, -1.2f - HeightAboveGround * .9f);   // the soft landing
+            // the soft landing: never coming down faster than it can stop before the ground (about 20 m/s from 25 m, 1.2 m/s at the last)
+            if (wantVy < 0) wantVy = Mathf.Max(wantVy, -Mathf.Max(1.2f, Mathf.Sqrt(16f * Mathf.Max(0f, HeightAboveGround - .3f))));
             float aY = Mathf.Clamp((wantVy - v.y) * 3f, -16f, 16f);
             body.AddForce((new Vector3(aH.x, aY, aH.z)) * Spool - Physics.gravity * Spool, ForceMode.Acceleration);
             // touch down: slow, low, not climbing
             if (HeightAboveGround < .25f && v.y < 1.5f && l <= .08f && vH.magnitude < 6f) { Landed = true; holdY = pos.y; }
             // attitude: nose down to fly forward, banked into a turn and a sideways slide (arcade: the tilt follows the flight)
             var local = Quaternion.Inverse(heading) * (vH + aH * .9f);
-            float pitch = Mathf.Clamp(local.z / TopSpeed * 16f + aH.magnitude * 0f, -22f, 22f) + Mathf.Clamp(Vector3.Dot(aH, fwd) * .9f, -8f, 8f);
+            float pitch = Mathf.Clamp(local.z / TopSpeed * 16f, -22f, 22f) + Mathf.Clamp(Vector3.Dot(aH, fwd) * .9f, -8f, 8f);
             float roll = Mathf.Clamp(-local.x / TopSpeed * 14f - yIn * Mathf.Clamp01(vH.magnitude / 25f) * 14f - Vector3.Dot(aH, right) * .7f, -28f, 28f);
             Steer(body, Quaternion.Euler(pitch, yawDeg, roll), 5f);
         }

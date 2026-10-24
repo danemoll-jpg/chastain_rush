@@ -62,6 +62,9 @@ namespace ChastainRush
                         if (dx * dx + dz * dz < r * r) { on = true; break; }
                     }
                 if (tiles[i].drawHeightmap != on) tiles[i].drawHeightmap = on;
+                // Round 63 (the view from the air): a tile more than 2 km from every camera is drawn coarser (pixel error 8, not the build's 3)
+                if (on && !all) { float nearest = float.MaxValue; foreach (var (at, _) in views) { var c = rects[i]; float dx = Mathf.Max(0f, Mathf.Max(c.xMin - at.x, at.x - c.xMax)), dz = Mathf.Max(0f, Mathf.Max(c.yMin - at.y, at.y - c.yMax)); nearest = Mathf.Min(nearest, dx * dx + dz * dz); }
+                    float err = nearest > 2000f * 2000f ? 8f : 3f; if (tiles[i].heightmapPixelError != err) tiles[i].heightmapPixelError = err; }
                 if (on) drawn++;
             }
             Drawn = drawn;

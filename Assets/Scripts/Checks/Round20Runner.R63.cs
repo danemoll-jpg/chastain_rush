@@ -126,6 +126,7 @@ namespace ChastainRush
                     else Check($"hpads: {p.title}: a place on the map", false, "no destination");
                 }
                 else { Place(p.centre - f * 30f, f, 0f); yield return new WaitForSecondsRealtime(.5f); var run = new Run(); yield return DriveLine(new List<Vector3> { p.centre - f * 30f, p.centre }, 8f, 20f, run); }
+                yield return null; yield return null;   // the pads' own frame after a move
                 float t0 = Time.time; while (!stands.CanTake && Time.time - t0 < 6f) { car.Body.linearVelocity *= .9f; yield return new WaitForFixedUpdate(); }
                 Check($"hpads: {p.title}: on the pad, the swap is offered", stands.CanTake, $"{Flat(car.Body.position - p.centre).magnitude:0.0} m from its middle, {car.Body.position.y - p.centre.y:+0.0;-0.0} m");
                 yield return Capture("63_pad_" + p.id.Replace("helipad-", "") + "_car");
@@ -170,6 +171,7 @@ namespace ChastainRush
                 Check($"hcrash: into {what}, it crashes", h.Crashes > before, $"{h.CrashReason}");
                 Sticks(); yield return new WaitForSecondsRealtime(.6f); yield return Capture("63_crash_" + (what.Contains("tree") ? "tree" : "building"));
                 t0 = Time.time; while (h.Crashed && Time.time - t0 < 10f) yield return null;
+                yield return new WaitForFixedUpdate(); yield return new WaitForFixedUpdate();   // its height measured again where it was put
                 var p2 = car.Body.position;
                 Check($"hcrash: {what}: put on open ground, upright", !h.Crashed && car.transform.up.y > .95f, $"{Flat(p2 - aim).magnitude:0} m from the impact, {h.HeightAboveGround:0.0} m over the ground, up {car.transform.up.y:0.00}");
                 t0 = Time.time; while (h.Spool < .95f && Time.time - t0 < 6f) yield return null;
@@ -192,9 +194,32 @@ namespace ChastainRush
                     var frames = new List<float>(); var ft = new R61Timing(); t0 = Time.realtimeSinceStartup;
                     while (Time.realtimeSinceStartup - t0 < 8f) { yield return null; frames.Add(Time.unscaledDeltaTime); ft.Add(); }
                     var sorted = frames.OrderBy(x => x).ToList(); float p99 = sorted[Mathf.Min(sorted.Count - 1, (int)(sorted.Count * .99f))];
-                    report.AppendLine($"INFO  {name}, {height:0} m up: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps; fog to {RenderSettings.fogEndDistance:0} m, far clip {Camera.main.farClipPlane:0} m, terrain tiles drawn {FarTerrain.Drawn}, trees drawn {(FindAnyObjectByType<TreeField>() is TreeField tfd ? tfd.LastTreesDrawn : -1)}{ft}");
+                    report.AppendLine($"INFO  {name}, {height:0} m up: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps; fog to {FarView.View:0} m, far clip {Camera.main.farClipPlane:0} m, terrain tiles drawn {FarTerrain.Drawn}, trees drawn {(FindAnyObjectByType<TreeField>() is TreeField tfd ? tfd.LastTreesDrawn : -1)}{ft}");
                     yield return Capture($"63_fps_{new string(name.Where(char.IsLetterOrDigit).Take(12).ToArray())}_{height:0}");
                 }
+            }
+            QualitySettings.vSyncCount = vs; Application.targetFrameRate = cap;
+        }
+
+        // what the opened view costs: at the summit and Town Center, 500 m up, as built, then without the far trees, then with the far clip at 3000 and 1500 m
+        IEnumerator R63FpsX()
+        {
+            report.AppendLine(); report.AppendLine($"=== What the view from 500 m costs, {Screen.width} x {Screen.height}, 6 s each");
+            int vs = QualitySettings.vSyncCount, cap = Application.targetFrameRate; QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1;
+            foreach (var (name, at) in new[] { R63Places[2], R63Places[1] })
+            {
+                yield return R63Heli(at, 0f); var h = Heli; if (!h) yield break;
+                float t0 = Time.time; while (h.Spool < .95f && Time.time - t0 < 6f) yield return null;
+                yield return R63ToHeight(500f, 60f); yield return new WaitForSecondsRealtime(1.5f);
+                foreach (var (label, clip, trees, thin) in new[] { ("as built (thinned trees)", 0f, 0f, true), ("trees not thinned", 0f, 0f, false), ("far trees off (700 m)", 0f, 700f, true), ("far clip 3000 m", 3000f, 0f, true), ("far clip 1500 m", 1500f, 0f, true) })
+                {
+                    FarView.ExpClip = clip; FarView.ExpTrees = trees; TreeField.Thin = thin; yield return new WaitForSecondsRealtime(1f);
+                    var frames = new List<float>(); t0 = Time.realtimeSinceStartup;
+                    while (Time.realtimeSinceStartup - t0 < 6f) { yield return null; frames.Add(Time.unscaledDeltaTime); }
+                    var tf = FindAnyObjectByType<TreeField>();
+                    report.AppendLine($"INFO  {name}, {label}: {frames.Count / frames.Sum():0} fps; trees {(tf ? tf.LastTreesDrawn : -1)}, draws {(tf ? tf.LastDrawCalls : -1)}, terrain tiles {FarTerrain.Drawn}, details hidden {FarView.DetailHidden} of {FarView.DetailCount}");
+                }
+                FarView.ExpClip = FarView.ExpTrees = 0f; TreeField.Thin = true;
             }
             QualitySettings.vSyncCount = vs; Application.targetFrameRate = cap;
         }

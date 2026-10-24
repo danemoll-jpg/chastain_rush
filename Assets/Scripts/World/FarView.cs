@@ -15,12 +15,14 @@ namespace ChastainRush
     [DefaultExecutionOrder(1000)]
     public sealed class FarView : MonoBehaviour
     {
-        public const float OpenFrom = 30f, OpenBy = 450f, Opens = 10f, MaxView = 6500f, DetailFar = 900f;
+        public const float OpenFrom = 30f, OpenBy = 450f, Opens = 10f, MaxView = 6500f, DetailFar = 900f, TreeFar = 5000f;   // past 5 km the fog all but hides a tree
         public static float View { get; private set; } = 650f;   // the fog's end now
         public static float Height { get; private set; }         // the main camera over the ground
         float baseStart = 100f, baseEnd = 650f, baseFar = 750f; Camera cam; bool haveBase;
         CullingGroup details; Renderer[] renderers; BoundingSphere[] spheres; Camera detailCam;
         public static int DetailCount { get; private set; }
+        // checks only (Round20Runner.R63 hfpsx): caps on the opened view's far clip and on the far trees' distance (0 = none)
+        public static float ExpClip, ExpTrees;
         public static int DetailHidden { get; private set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -84,8 +86,8 @@ namespace ChastainRush
             View = end;
             if (!Mathf.Approximately(RenderSettings.fogEndDistance, end)) RenderSettings.fogEndDistance = end;
             if (!Mathf.Approximately(RenderSettings.fogStartDistance, start)) RenderSettings.fogStartDistance = start;
-            if (!SplitScreen.Active) { float far = k > 0f ? Mathf.Max(baseFar, end + 100f) : baseFar; if (!Mathf.Approximately(cam.farClipPlane, far)) cam.farClipPlane = far; }
-            TreeField.FarDraw = k > 0f ? end : 0f;
+            if (!SplitScreen.Active) { float far = k > 0f ? Mathf.Max(baseFar, end + 100f) : baseFar; if (ExpClip > 0f) far = Mathf.Min(far, ExpClip); if (!Mathf.Approximately(cam.farClipPlane, far)) cam.farClipPlane = far; }
+            TreeField.FarDraw = k > 0f ? Mathf.Min(ExpTrees > 0f ? Mathf.Min(end, ExpTrees) : end, TreeFar) : 0f;
         }
     }
 }

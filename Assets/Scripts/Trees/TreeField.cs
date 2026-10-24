@@ -78,6 +78,8 @@ namespace ChastainRush
             public readonly List<Cell> sub = new List<Cell>();
             public readonly List<Matrix4x4>[] crown = new List<Matrix4x4>[FarClasses], trunk = new List<Matrix4x4>[FarClasses];
             public Matrix4x4[][] crownA, trunkA;
+            public Matrix4x4[][][] thin;   // Round 63: every 4th / every 12th tree, larger (the far view's thinned levels), made when first needed
+            public int super = -1;         // Round 63: its 1 km block (Supers)
             public FarGroup() { for (int i = 0; i < FarClasses; i++) { crown[i] = new List<Matrix4x4>(); trunk[i] = new List<Matrix4x4>(); } }
         }
 
@@ -178,13 +180,22 @@ namespace ChastainRush
             GeometryUtility.CalculateFrustumPlanes(cam, planes);
             var near = new RenderParams(material) { camera = cam, shadowCastingMode = ShadowCastingMode.On, receiveShadows = true, layer = 0 };
             var far = new RenderParams(material) { camera = cam, shadowCastingMode = ShadowCastingMode.Off, receiveShadows = true, layer = 0 };
+            // Round 63: past ThinMore the far trees go by 1 km blocks (one draw per tree shape per block)
+            bool blocks = !all && FarDraw > 0f && Thin;
+            if (blocks)
+            {
+                if (supers == null) MakeSupers();
+                if (superFar == null || superFar.Length != supers.Count) superFar = new bool[supers.Count];
+                for (int i = 0; i < supers.Count; i++) superFar[i] = supers[i].bounds.SqrDistance(eye) > ThinMore * ThinMore;
+            }
             foreach (var g in groups)
             {
+                if (blocks && g.super >= 0 && superFar[g.super]) continue;
                 float d = Mathf.Sqrt(g.bounds.SqrDistance(eye));
                 if (d > draw || (!all && !GeometryUtility.TestPlanesAABB(planes, g.bounds))) continue;
                 if (all || d >= nearDistance)
                 {
-                    if (!all && d > drawDistance && FarDraw > 0f) { DrawFar8(far, g.crownA, ref calls, ref trees, ref tris); continue; }   // Round 63
+                    if (!all && d > drawDistance && FarDraw > 0f) { var rp8 = far; var gb = g.bounds; gb.Expand(30f); rp8.worldBounds = gb; DrawFar8(rp8, !Thin || d < ThinFrom ? g.crownA : Thinned(g, d < ThinMore ? 0 : 1), ref calls, ref trees, ref tris); continue; }   // Round 63
                     DrawFar(far, g.crownA, g.trunkA, !all && d < farTrunkDistance, ref calls, ref trees, ref tris);
                     continue;
                 }
@@ -196,7 +207,31 @@ namespace ChastainRush
                     else DrawFar(far, c.farCrownA, c.farTrunkA, sd < farTrunkDistance, ref calls, ref trees, ref tris);
                 }
             }
+            if (blocks)
+                for (int i = 0; i < supers.Count; i++)
+                {
+                    if (!superFar[i]) continue; var sp = supers[i];
+                    if (Mathf.Sqrt(sp.bounds.SqrDistance(eye)) > draw || !GeometryUtility.TestPlanesAABB(planes, sp.bounds)) continue;
+                    var rp = far; rp.worldBounds = sp.bounds; DrawFar8(rp, sp.thinA, ref calls, ref trees, ref tris);
+                }
             LastDrawCalls = calls; LastTreesDrawn = trees; LastTriangles = tris;
+        }
+
+        // Round 63: the far groups in 1 km blocks, each block's trees thinned to every 12th (Thinned level 1), made the first time the view opens
+        sealed class Super { public Bounds bounds; public bool any; public Matrix4x4[][] thinA; }
+        List<Super> supers; bool[] superFar;
+        void MakeSupers()
+        {
+            supers = new List<Super>(); var keys = new Dictionary<Vector2Int, int>(); var lists = new List<List<Matrix4x4>[]>();
+            foreach (var g in groups)
+            {
+                var k = new Vector2Int(Mathf.FloorToInt(g.bounds.center.x / 1024f), Mathf.FloorToInt(g.bounds.center.z / 1024f));
+                if (!keys.TryGetValue(k, out int i)) { i = keys[k] = supers.Count; supers.Add(new Super()); var l = new List<Matrix4x4>[FarClasses]; for (int c = 0; c < FarClasses; c++) l[c] = new List<Matrix4x4>(); lists.Add(l); }
+                g.super = i; var sp = supers[i]; var b = g.bounds; b.Expand(30f);
+                if (sp.any) sp.bounds.Encapsulate(b); else { sp.bounds = b; sp.any = true; }
+                var th = Thinned(g, 1); for (int c = 0; c < FarClasses; c++) lists[i][c].AddRange(th[c]);
+            }
+            for (int i = 0; i < supers.Count; i++) { supers[i].thinA = new Matrix4x4[FarClasses][]; for (int c = 0; c < FarClasses; c++) supers[i].thinA[c] = lists[i][c].ToArray(); }
         }
 
         void DrawNear(RenderParams rp, Cell c, ref int calls, ref int trees, ref long tris)
@@ -224,6 +259,23 @@ namespace ChastainRush
             }
         }
 
+        // Round 63: far in the opened view a group's trees are thinned (every 4th past ThinFrom, every 12th past ThinMore), each drawn larger so the
+        // woods stay as dark and as full from the air
+        public const float ThinFrom = 1800f, ThinMore = 3500f; public static bool Thin = true;
+        static Matrix4x4[][] Thinned(FarGroup g, int level)
+        {
+            if (g.thin == null) g.thin = new Matrix4x4[2][][];
+            if (g.thin[level] != null) return g.thin[level];
+            int every = level == 0 ? 4 : 12; var grow = level == 0 ? new Vector3(1.6f, 1.15f, 1.6f) : new Vector3(2.6f, 1.3f, 2.6f); var scale = Matrix4x4.Scale(grow);
+            var outA = new Matrix4x4[FarClasses][];
+            for (int k = 0; k < FarClasses; k++)
+            {
+                var src = g.crownA[k]; var list = new List<Matrix4x4>(src.Length / every + 1);
+                for (int i = 0; i < src.Length; i += every) if (src[i] != Matrix4x4.zero) list.Add(src[i] * scale);
+                outA[k] = list.ToArray();
+            }
+            return g.thin[level] = outA;
+        }
         // Round 63: past drawDistance in the opened view: one eight-sided shape per tree
         void DrawFar8(RenderParams rp, Matrix4x4[][] crowns, ref int calls, ref int trees, ref long tris)
         {

@@ -1,0 +1,16 @@
+Round 63 check, 2026-10-23 23:15, the exe, 1920 x 1080, muted.
+
+=== Frame rate hovering hands off, chase camera, uncapped, 1920 x 1080 (not measured at 3840 x 2160), 8 s each
+INFO  Chastain Glen, 50 m up: 178 fps average, slowest 1 % 91 fps; fog to 650 m, far clip 813 m, terrain tiles drawn 12, trees drawn 5649
+INFO  Chastain Glen, 200 m up: 165 fps average, slowest 1 % 89 fps; fog to 650 m, far clip 2964 m, terrain tiles drawn 44, trees drawn 14203
+INFO  Chastain Glen, 500 m up: 173 fps average, slowest 1 % 105 fps; fog to 650 m, far clip 6600 m, terrain tiles drawn 132, trees drawn 15116
+INFO  Town Center, 50 m up: 215 fps average, slowest 1 % 123 fps; fog to 650 m, far clip 815 m, terrain tiles drawn 14, trees drawn 4456
+INFO  Town Center, 200 m up: 102 fps average, slowest 1 % 57 fps; fog to 650 m, far clip 2974 m, terrain tiles drawn 90, trees drawn 50965
+INFO  Town Center, 500 m up: 82 fps average, slowest 1 % 48 fps; fog to 650 m, far clip 6600 m, terrain tiles drawn 232, trees drawn 79716
+INFO  Kennesaw Mountain summit, 50 m up: 193 fps average, slowest 1 % 105 fps; fog to 650 m, far clip 810 m, terrain tiles drawn 14, trees drawn 12417
+INFO  Kennesaw Mountain summit, 200 m up: 90 fps average, slowest 1 % 48 fps; fog to 650 m, far clip 2953 m, terrain tiles drawn 80, trees drawn 96663
+INFO  Kennesaw Mountain summit, 500 m up: 51 fps average, slowest 1 % 27 fps; fog to 650 m, far clip 6600 m, terrain tiles drawn 241, trees drawn 195934
+
+=== Pictures
+
+0 of 0 checks passed.

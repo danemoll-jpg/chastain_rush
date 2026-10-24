@@ -416,6 +416,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 63 (see `TODO.md`, status there) is built and checked in the exe by script, not yet flown by Dan:** the helicopter, "Sky Survey" (profile `heli`,
+`VehicleProfile.Flies`: Free Roam only; model `Tools/Blender/helicopter.py`, groups Rotor / TailRotor / Disc on pivots in `VehicleVisual`); flown by `Vehicle/HelicopterFlight.cs`
+(+ `.Crash.cs`: crashes, `ResetSpot`, `TreeCrowns` (crowns from TreeField's data); + `.Effects.cs`: rotors, sound, downwash, readout) on the player's own vehicle object
+(`ArcadeVehicle.Flown` stops the drive); helipads `MapBuilder.Helipads.cs` (step Helipads, after Airport) and `Vehicle/HelipadStands.cs` (parked helicopters, A / H swap,
+fast-travel places, `Exploration.Find`); the view from the air `World/FarView.cs` (fog and far clip open with the camera's height, detail cells past 900 m by CullingGroup,
+`TreeField.FarDraw` / thinned far trees / 1 km blocks, `FarTerrain` coarser past 2 km); `CameraViews.View.Down`. Check: `ChastainRush.exe -exeRound63 <dir> [-r63Only
+hover,hfly,hpads,hcrash,hfps,hpics,hfpsx] -logFile <dir>\Player.log` (`Checks/Round20Runner.R63.cs`; `hfpsx`, only when named: what the far view costs). Imported from Racer: nothing.
 **Round 62 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Noonday Creek Trail race on the real trail round Town Center
 (`python Tools/mapgen/make_trail_route.py [--plot [x0,x1,z0,z1]]` writes `Data/routes/noonday_creek_trail.json` and `Data/tracks/noonday_creek_trail.json` from map.json and
 raw/osm_ext1.json's trail ways; re-run after mapgen, then Build Map): Bells Ferry, Barrett, Mall Boulevard, Town Center Drive, the lot, through Town Center (in Halverson's east
