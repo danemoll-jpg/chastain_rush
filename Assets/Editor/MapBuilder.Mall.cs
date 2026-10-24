@@ -34,7 +34,7 @@ namespace ChastainRush
         }
         sealed class MallDoor
         {
-            public string name; public Vector2 a, b, nOut; public float floor, height; public int level; public bool main, anchor;
+            public string name; public Vector2 a, b, nOut; public float floor, height; public int level; public bool main, anchor, portal;   // Round 64: portal, an anchor's own doors (Halverson Home's, Carroway's): its frame is the anchor's
             public Vector2 Mid => (a + b) * .5f; public float Width => Vector2.Distance(a, b);
         }
         sealed class MallPlan
@@ -82,15 +82,8 @@ namespace ChastainRush
             var pts = p.pts.ToList(); pts[pts.Count - 1] = new Vector2(pts[pts.Count - 1].x, rise); return pts;
         }
 
-        // Round 62: the east bank's profile: rounded off the lower floor, then straight at 14 degrees to its top (the raffle stage's lip)
-        const float MallStageLip = 1.4f;   // Round 62 check 1: 1.07 m at 15 degrees threw too flat (40 m, short of the far floor)
-        static List<Vector2> MallRampProfileLip(float rise)
-        {
-            const float r = 22f, ang = 14f;
-            var p = new SProf(); float arcRise = r * (1f - Mathf.Cos(ang * Mathf.Deg2Rad));
-            p.Arc(r, ang).Line((rise - arcRise) / Mathf.Sin(ang * Mathf.Deg2Rad));
-            var pts = p.pts.ToList(); pts[pts.Count - 1] = new Vector2(pts[pts.Count - 1].x, rise); return pts;
-        }
+        const float MallPortalHalf = 4.5f;   // Round 64: an anchor's portal doors, either side of its middle
+        static bool MallHollow(MallPlan m, int id) => id == m.North || id == m.South;   // Round 64: the anchors driven through (their lower floors)
 
         // ------------------------------------------------------------ the planning: which buildings, the frame, the doors, the ground at the doors
         static MallPlan PlanMall(MapData map, TerrainGrid t)
@@ -124,10 +117,9 @@ namespace ChastainRush
             // (to the east anchor's upper floor)
             var prof = MallRampProfile(m.L1 - m.L0); float run = MallRampRun(prof);
             m.Ramps.Add(new MallRamp { name = "west", uFoot = -150f, dir = -1, v0 = -1307.5f, v1 = -1299.5f, prof = prof, run = run });
-            // Round 62 (the Noonday Creek Trail race): the east bank rises straight on at 14 degrees to the car raffle stage's lip, MallStageLip over the
-            // upper floor (no rounding over at its top: a launch going up it, MapBuilder.MallRace.cs)
-            var eprof = MallRampProfileLip(m.L1 - m.L0 + MallStageLip);
-            m.Ramps.Add(new MallRamp { name = "east", uFoot = 8f, dir = 1, v0 = -1307.5f, v1 = -1299.5f, prof = eprof, run = MallRampRun(eprof) });
+            // Round 64: the east bank rounded over at its top again, as the west one (Round 62 ran it straight on to the raffle stage's lip: the Noonday Creek
+            // Trail race now comes down it from Halverson's and turns into the north wing at its foot, and goes up it the other way; MapBuilder.MallRace.cs)
+            m.Ramps.Add(new MallRamp { name = "east", uFoot = 8f, dir = 1, v0 = -1307.5f, v1 = -1299.5f, prof = prof, run = run });
             foreach (var r in m.Ramps) m.Voids.Add(Rect.MinMaxRect(r.U0, r.v0, r.U1, r.v1));
             m.Court = Rect.MinMaxRect(-126f, -1311f, -84f, -1296f); m.Voids.Add(m.Court);      // the center court, open to both levels
             m.Tower = Rect.MinMaxRect(-57f, -1286f, -45f, -1267.1f - MallPlan.WallT); m.Voids.Add(m.Tower);   // the main entrance's two-storey hall
@@ -139,6 +131,12 @@ namespace ChastainRush
             m.Doors.Add(Door("north-west wing (west)", 1, new Vector2(-224f, -1248f), new Vector2(-224f, -1236f), new Vector2(-1, 0), 3.4f));
             m.Doors.Add(Door("south-west", 0, new Vector2(-201f, -1340.6f), new Vector2(-189f, -1340.6f), new Vector2(0, -1), 3.4f));
             m.Doors.Add(Door("east anchor (east)", 1, new Vector2(163.5f, -1309f), new Vector2(163.5f, -1297f), new Vector2(1, 0), 3.4f, anchor: true));
+            // Round 64 (the Noonday Creek Trail race through Halverson Home and Carroway): their own glass doors in their portals, on the lower floor
+            foreach (var (id, fv) in new[] { (m.North, 1f), (m.South, -1f) })
+            {
+                var auv = m.Rings[id].Select(m.UV).ToList(); float cu = (auv.Min(q => q.x) + auv.Max(q => q.x)) * .5f, cv = fv > 0 ? auv.Max(q => q.y) : auv.Min(q => q.y);
+                var pd = Door(id == m.North ? "Halverson Home (north)" : "Carroway (south)", 0, new Vector2(cu - MallPortalHalf, cv), new Vector2(cu + MallPortalHalf, cv), new Vector2(0, fv), 3.4f); pd.portal = true; m.Doors.Add(pd);
+            }
             // the ground at each door: its apron graded to the floor (flat for 6 m out, easing back over 10 m more, 4 m either side)
             foreach (var d in m.Doors)
             {
@@ -174,13 +172,14 @@ namespace ChastainRush
             m.Breakables.Clear(); m.Lamps.Clear(); m.Shoppers.Clear();
             var signs = MallSignMaterial();
             // the ground under the concourse building and the east anchor (their floors are slabs)
-            var east = m.Rings[m.East];
-            var all = m.SpineRing.Concat(east).ToList();
+            var east = m.Rings[m.East]; var north = m.Rings[m.North]; var south = m.Rings[m.South];   // (Round 64: the two anchors driven through too)
+            var all = m.SpineRing.Concat(east).Concat(north).Concat(south).ToList();
             var bb = Rect.MinMaxRect(all.Min(q => q.x) - 1, all.Min(q => q.y) - 1, all.Max(q => q.x) + 1, all.Max(q => q.y) + 1);
-            int holed = SetHoles(t, bb, q => (InPolygon(q, m.SpineRing) && RingDist(q, m.SpineRing) > .35f) || (InPolygon(q, east) && RingDist(q, east) > .35f));
+            int holed = SetHoles(t, bb, q => (InPolygon(q, m.SpineRing) && RingDist(q, m.SpineRing) > .35f) || (InPolygon(q, east) && RingDist(q, east) > .35f)
+                || (InPolygon(q, north) && RingDist(q, north) > .35f) || (InPolygon(q, south) && RingDist(q, south) > .35f));
             var shell = new MeshBuilder(); var shellIn = new MeshBuilder(); var deco = new MeshBuilder(); var glassOut = new MeshBuilder(); m.Ceil = new MeshBuilder();
             MallShell(m, t, outside, inside, shell, shellIn, signs, glassOut);
-            MallAnchors(m, t, outside, shell, signs, mats);
+            MallAnchors(m, t, outside, shell, shellIn, signs, mats);
             MallEntrances(m, t, outside, inside, shell, glassOut, signs);
             MallLots(m, map, t, mats, outside);
             MallSkylights(m, outside, mats);
@@ -272,15 +271,26 @@ namespace ChastainRush
 
         static bool OnRing(Vector2 q, List<Vector2> ring, float tol = .6f) => RingDist(q, ring) < tol;
 
+        // the walls' openings: the doors, the east anchor's upper front; Round 64: the fronts of the anchors driven through, on the lower floor
+        static List<(Vector2 a, Vector2 b, float y0, float y1)> MallCuts(MallPlan m)
+        {
+            var cuts = new List<(Vector2 a, Vector2 b, float y0, float y1)>();
+            foreach (var d in m.Doors) cuts.Add((d.a, d.b, d.floor - .02f, d.main ? m.L1 + 4.6f : d.floor + d.height));
+            // between the concourse and the east anchor: the upper floor open across the concourse's width (breakable glass: MallInside)
+            cuts.Add((m.W(MallUE, MallCS), m.W(MallUE, MallCN), m.L1 - .02f, m.L1 + MallStoreFrontH));   // Round 62: to 6.2 m (the escalator's launch through it)
+            foreach (var (u, v, half) in MallHollowFronts) cuts.Add((m.W(u - half, v), m.W(u + half, v), m.L0 - .02f, m.L0 + MallFrontH));
+            return cuts;
+        }
+        // (the middle of the front on the concourse building's wall, its half width): Halverson Home's on the north wing, Carroway's on the center court
+        static readonly (float u, float v, float half)[] MallHollowFronts = { (3f, -1202.6f, 10f), ((-120f - 91f) * .5f, -1325.2f, 14.5f) };
+        const float MallFrontH = 4.5f;
+
         // the concourse building's and the east anchor's walls (both hollow), the roof, the anchor's floor and roof
         static void MallShell(MallPlan m, TerrainGrid t, Transform outside, Transform inside, MeshBuilder shell, MeshBuilder shellIn, Material signs, MeshBuilder roofTop)
         {
             var east = m.Rings[m.East]; var ring = m.SpineRing;
             float baseY = Mathf.Min(m.L0, ring.Concat(east).Min(q => Ground(t, q.x, q.y))) - .8f;
-            var cuts = new List<(Vector2 a, Vector2 b, float y0, float y1)>();
-            foreach (var d in m.Doors) cuts.Add((d.a, d.b, d.floor - .02f, d.main ? m.L1 + 4.6f : d.floor + d.height));
-            // between the concourse and the east anchor: the upper floor open across the concourse's width (breakable glass: MallInside)
-            cuts.Add((m.W(MallUE, MallCS), m.W(MallUE, MallCN), m.L1 - .02f, m.L1 + MallStoreFrontH));   // Round 62: to 6.2 m (the escalator's launch through it)
+            var cuts = MallCuts(m);
             (Color, bool) Look(Vector2 a, Vector2 b)
             {
                 var mid = (a + b) * .5f;
@@ -346,14 +356,16 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ the anchors (solid; their portals and names), the closed one
-        static void MallAnchors(MallPlan m, TerrainGrid t, Transform outside, MeshBuilder shell, Material signs, Materials mats)
+        static void MallAnchors(MallPlan m, TerrainGrid t, Transform outside, MeshBuilder shell, MeshBuilder shellIn, Material signs, Materials mats)
         {
             var bodies = new MeshBuilder();
             foreach (var (id, row, col, facing, closed) in new[] { (m.West, SignBelmont, MBlock, new Vector2(-1, 0), false), (m.South, SignCarroway, MBlock, new Vector2(0, -1), false),
                 (m.North, SignHalversonHome, MBlockPink, new Vector2(0, 1), false), (m.NorthWest, SignSterling, MBlock, new Vector2(0, 1), true) })
             {
                 var ring = m.Rings[id]; float baseY = ring.Min(q => Ground(t, q.x, q.y)) - .8f, top = closed ? m.AnchorTop - 1.5f : m.AnchorTop;
-                Extrude(bodies, ring, baseY, top, col, MRoof, true);
+                bool hollow = MallHollow(m, id);
+                if (!hollow) Extrude(bodies, ring, baseY, top, col, MRoof, true);
+                else MallHollowShell(m, id, outside, shell, shellIn, Mathf.Min(baseY, m.L0 - 3.2f), top, col);   // Round 64: its walls, lower floor, ceiling and roof
                 // block courses: a darker joint every 1.2 m, 2 cm proud, on the faces that are not the concourse's
                 for (int i = 0; i < ring.Count; i++)
                 {
@@ -371,13 +383,26 @@ namespace ChastainRush
                 var c = m.W(cu, cv); var nOut = (m.U * fu + m.V * fv).normalized; var floor = Ground(t, (c + nOut * 3f).x, (c + nOut * 3f).y);
                 var f = MakeFrame(new Vector3(c.x, floor, c.y), nOut, 1f);
                 float h = top - floor;
-                BoxF(shell, f, -half, half, -.5f, h + 2.2f, -.05f, .9f, closed ? MCreamDark * .92f : MCream);   // the frame
-                BoxF(shell, f, -half + 1.6f, half - 1.6f, -.5f, h - 3.2f, .9f, 1.0f, closed ? SC(.58f, .54f, .48f) : SC(.74f, .66f, .56f));   // the recessed panel
+                if (!hollow)
+                {
+                    BoxF(shell, f, -half, half, -.5f, h + 2.2f, -.05f, .9f, closed ? MCreamDark * .92f : MCream);   // the frame
+                    BoxF(shell, f, -half + 1.6f, half - 1.6f, -.5f, h - 3.2f, .9f, 1.0f, closed ? SC(.58f, .54f, .48f) : SC(.74f, .66f, .56f));   // the recessed panel
+                }
+                else   // Round 64: open at its doors (MallDoorsGlass: their glass breaks)
+                {
+                    float ph = MallPortalHalf, dh = 3.4f;
+                    foreach (var (x0, x1) in new[] { (-half, -ph), (ph, half) }) BoxF(shell, f, x0, x1, -.5f, h + 2.2f, -.05f, .9f, MCream);
+                    BoxF(shell, f, -ph, ph, dh, h + 2.2f, -.05f, .9f, MCream);
+                    foreach (var (x0, x1) in new[] { (-half + 1.6f, -ph - .2f), (ph + .2f, half - 1.6f) }) BoxF(shell, f, x0, x1, -.5f, h - 3.2f, .9f, 1.0f, SC(.74f, .66f, .56f));
+                    BoxF(shell, f, -ph - .2f, ph + .2f, dh + .2f, h - 3.2f, .9f, 1.0f, SC(.74f, .66f, .56f));
+                    foreach (float x in new[] { -ph - .1f, ph + .1f }) BoxF(shell, f, x - .1f, x + .1f, 0f, dh + .1f, -.05f, 1.1f, MBronze);   // the doors' jambs
+                }
                 BoxF(shell, f, -half - .4f, half + .4f, h + 2.2f, h + 2.6f, -.1f, 1.1f, MCoping);
                 for (int s = 0; s < 3; s++) BoxF(shell, f, -half + 1.5f + s * 1.8f, half - 1.5f - s * 1.8f, h + 2.6f + s * .7f, h + 3.3f + s * .7f, .2f, .9f, MCream);   // the stepped head
                 float sw = 13f, shh = sw * .078f;
                 if (signs != null) MallPlate(outside, f.P(0f, h - 5.0f, 1.02f), -f.F, sw, shh, row, signs);
-                if (!closed) { BoxF(shell, f, -4.5f, 4.5f, 0f, 3.4f, 1.0f, 1.08f, MGlass); for (float x = -4.5f; x <= 4.51f; x += 1.5f) BoxF(shell, f, x - .06f, x + .06f, 0f, 3.4f, 1.0f, 1.12f, MBronze); BoxF(shell, f, -6f, 6f, 3.6f, 3.9f, .9f, 4.2f, SC(.90f, .90f, .88f)); }
+                if (!closed && hollow) BoxF(shell, f, -6f, 6f, 3.6f, 3.9f, .9f, 4.2f, SC(.90f, .90f, .88f));   // (the doors: glass that breaks, MallDoorsGlass)
+                else if (!closed) { BoxF(shell, f, -4.5f, 4.5f, 0f, 3.4f, 1.0f, 1.08f, MGlass); for (float x = -4.5f; x <= 4.51f; x += 1.5f) BoxF(shell, f, x - .06f, x + .06f, 0f, 3.4f, 1.0f, 1.12f, MBronze); BoxF(shell, f, -6f, 6f, 3.6f, 3.9f, .9f, 4.2f, SC(.90f, .90f, .88f)); }
                 else
                 {
                     BoxF(shell, f, -4.5f, 4.5f, 0f, 3.4f, 1.0f, 1.08f, SPlyDark);   // boarded
@@ -396,11 +421,29 @@ namespace ChastainRush
             }
         }
 
+        // Round 64: an anchor driven through (Halverson Home, Carroway): its walls with their openings (its portal's doors, its front on the concourse
+        // building), its lower floor (the race's "Mall floor" boxes; Carroway's has the renovation pit, MapBuilder.MallShortcut.cs), the upper floor's
+        // slab as its ceiling (the upper storey is not open), its roof
+        static void MallHollowShell(MallPlan m, int id, Transform outside, MeshBuilder shell, MeshBuilder shellIn, float baseY, float top, Color col)
+        {
+            var ring = m.Rings[id];
+            RingWalls(m, ring, shell, shellIn, outside, baseY, top, MallCuts(m), (a, b) => OnRing(a, m.SpineRing, 1f) && OnRing(b, m.SpineRing, 1f), (a, b) => (col, false), MCream);
+            var floor = MallRasterRing(m, ring, .5f, (u, v) => !MallPitArea(m, id, u, v));
+            foreach (var r in floor) MallSlab(m, shellIn, shellIn, outside, r, m.L0, MallPlan.Slab, id == m.North ? SC(.66f, .58f, .50f) : SC(.82f, .80f, .75f), MCream, "Mall floor", true);
+            foreach (var r in MallRasterRing(m, ring, 1f, (u, v) => true))
+            {
+                MallSlab(m, shellIn, m.Ceil, outside, r, m.L1, MallPlan.Slab, MCream, MCream, "Mall anchor slab", false);
+                MallSlab(m, shell, m.Ceil, outside, r, top, MallPlan.Slab, MRoof, MCream, "Mall roof", false);
+            }
+            m.Log.Add($"Round 64: anchor {id} hollow (its lower floor {floor.Count} slabs)");
+        }
+
         // ------------------------------------------------------------ the entrances (outside): doors' frames, the canopies, the main entrance's tower
         static void MallEntrances(MallPlan m, TerrainGrid t, Transform outside, Transform inside, MeshBuilder shell, MeshBuilder glass, Material signs)
         {
             foreach (var d in m.Doors)
             {
+                if (d.portal) continue;   // Round 64: an anchor's own doors: its portal is MallAnchors'
                 var f = MakeFrame(new Vector3(d.Mid.x, d.floor, d.Mid.y), d.nOut, 1f); float hw = d.Width * .5f;
                 if (d.main)
                 {

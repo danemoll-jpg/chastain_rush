@@ -173,6 +173,7 @@ namespace ChastainRush
 
         void Start()
         {
+            NoondayTrailSwap.Run(Path.GetDirectoryName(RecordsPath()));   // Round 64 (A): once, the Noonday Creek Trail's saved directions swapped
             car = FindAnyObjectByType<ArcadeVehicle>();
             if (!car) { enabled = false; return; }
             input = car.GetComponent<VehicleInput>();

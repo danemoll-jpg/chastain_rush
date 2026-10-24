@@ -26,24 +26,30 @@ namespace Racer
         public bool[] streetRace = new bool[0];        // per point: within 5 m of a race or shortcut line (kept off during a race)
         public int[] linkFirst = new int[0];           // per line end (2 i: its start, 2 i + 1: its end): links[linkFirst[e] .. linkFirst[e + 1] - 1]
         public int[] links = new int[0];               // the ends of other lines that meet it
+        // Round 64 (Dan, BUG-004: "It would be good to have peopel walking or jogging this trail"): per line, a path (the Noonday Creek Trail) rather than a
+        // street: its own mix (joggers, cyclists, dog walkers, couples), walked in races too (it is the race's way: at most TrailInRace groups on it then,
+        // and they step aside as everyone does)
+        public bool[] streetTrail = new bool[0];
+        const int TrailInRace = 2;
 
-        public enum WalkKind { DogWalker, Family, Couple, Jogger }
+        public enum WalkKind { DogWalker, Family, Couple, Jogger, Cyclist }   // Round 64: Cyclist (the trail's)
         sealed class Dog { public Transform root, head, tail, leash; public Transform[] legs; public float size, until, phase; public int mode; public Vector3 at, sniffAt; public int walk = -1; }   // mode 0 beside, 1 sniffing, 2 pulling ahead
         sealed class Stroller { public Transform root; public int walk = -1; }
+        sealed class Bike { public Transform root, crank; public Transform[] wheels; public int walk = -1; }   // Round 64
         sealed class Walk
         {
             public WalkKind kind; public int line, dir, side; public float s, speed, len, dodgeAt = -10f, dodgeSide; public Vector3 pos, dodgeDir; public bool placed;
-            public readonly List<Person> members = new(); public readonly List<Dog> dogs = new(); public Stroller stroller; public int adults;
+            public readonly List<Person> members = new(); public readonly List<Dog> dogs = new(); public Stroller stroller; public Bike bike; public int adults;
         }
-        readonly List<Dog> dogs = new(); readonly List<Stroller> strollers = new(); readonly Dictionary<int, Walk> walks = new(); int nextWalkId;
+        readonly List<Dog> dogs = new(); readonly List<Stroller> strollers = new(); readonly List<Bike> bikes = new(); readonly Dictionary<int, Walk> walks = new(); int nextWalkId;
         Material[] coats; Material leashMat, strollerMat, wheelMat;
         float[][] cumLen; Dictionary<Vector2Int, List<(int line, int i)>> streetGrid;
         public int WalkersOut => walks.Count;                                   // checks
-        public readonly int[] WalkersByKind = new int[4];                      // checks: groups out now, by kind
+        public readonly int[] WalkersByKind = new int[5];                      // checks: groups out now, by kind
         public int WalkerDodges { get; private set; }                          // checks
         public string WalkersInfo { get; private set; } = "";
         public static bool WalkersOff;                                        // checks: the frame rate without them
-        const int DogPool = 10, StrollerPool = 3;
+        const int DogPool = 10, StrollerPool = 3, BikePool = 4;
 
         void CreateWalkerKit()
         {
@@ -51,6 +57,7 @@ namespace Racer
             leashMat = Mat(new(.75f, .12f, .10f)); strollerMat = Mat(new(.16f, .28f, .40f)); wheelMat = Mat(new(.08f, .08f, .08f));
             for (int i = 0; i < DogPool; i++) CreateDog(i);
             for (int i = 0; i < StrollerPool; i++) CreateStroller();
+            for (int i = 0; i < BikePool; i++) CreateBike(i);
         }
         void DestroyWalkerKit() { foreach (var m in (coats ?? new Material[0]).Concat(new[] { leashMat, strollerMat, wheelMat })) if (m) Destroy(m); }
 
@@ -88,6 +95,24 @@ namespace Racer
             foreach (float z in new[] { .25f, -.25f }) foreach (int side in new[] { -1, 1 }) Part(s.root, "Wheel", PrimitiveType.Cylinder, new(side * .23f, .14f, z), new(.26f, .025f, .26f), wheelMat).localRotation = Quaternion.Euler(0, 0, 90);
             var lod = s.root.gameObject.AddComponent<LODGroup>(); lod.SetLODs(new[] { new LOD(.003f, s.root.GetComponentsInChildren<Renderer>()) }); lod.RecalculateBounds();
             s.root.gameObject.SetActive(false); strollers.Add(s);
+        }
+
+        // Round 64: a bicycle of primitives (two wheels, a frame, bars, a saddle), its rider seated over it (StepWalkers)
+        void CreateBike(int n)
+        {
+            var b = new Bike { root = new GameObject("Ambient bike").transform }; b.root.SetParent(transform, false);
+            var frameMat = coats[(n * 2 + 1) % coats.Length];
+            b.wheels = new Transform[2];
+            for (int k = 0; k < 2; k++) { b.wheels[k] = Part(b.root, "Wheel", PrimitiveType.Cylinder, new(0, .34f, k == 0 ? .52f : -.52f), new(.68f, .02f, .68f), wheelMat); b.wheels[k].localRotation = Quaternion.Euler(0, 0, 90); }
+            Part(b.root, "Frame", PrimitiveType.Cube, new(0, .6f, 0), new(.05f, .05f, .9f), frameMat).localRotation = Quaternion.Euler(-12, 0, 0);
+            Part(b.root, "Down tube", PrimitiveType.Cube, new(0, .5f, .12f), new(.05f, .05f, .7f), frameMat).localRotation = Quaternion.Euler(35, 0, 0);
+            Part(b.root, "Seat post", PrimitiveType.Cube, new(0, .68f, -.2f), new(.04f, .5f, .04f), frameMat).localRotation = Quaternion.Euler(-15, 0, 0);
+            Part(b.root, "Saddle", PrimitiveType.Cube, new(0, .93f, -.26f), new(.14f, .05f, .26f), wheelMat);
+            Part(b.root, "Bars", PrimitiveType.Cube, new(0, 1.0f, .42f), new(.56f, .04f, .04f), wheelMat);
+            Part(b.root, "Stem", PrimitiveType.Cube, new(0, .8f, .44f), new(.04f, .42f, .04f), frameMat);
+            b.crank = Part(b.root, "Crank", PrimitiveType.Cube, new(0, .34f, 0), new(.06f, .34f, .04f), wheelMat);
+            var lod = b.root.gameObject.AddComponent<LODGroup>(); lod.SetLODs(new[] { new LOD(.003f, b.root.GetComponentsInChildren<Renderer>()) }); lod.RecalculateBounds();
+            b.root.gameObject.SetActive(false); bikes.Add(b);
         }
 
         // ---------------------------------------------------------------- the streets
@@ -129,6 +154,9 @@ namespace Racer
         static readonly WalkKind[] Midday = { WalkKind.Family, WalkKind.Family, WalkKind.Family, WalkKind.Couple, WalkKind.Couple, WalkKind.DogWalker, WalkKind.DogWalker, WalkKind.Jogger };
         static readonly WalkKind[] Evening = { WalkKind.DogWalker, WalkKind.DogWalker, WalkKind.DogWalker, WalkKind.Family, WalkKind.Family, WalkKind.Couple, WalkKind.Couple, WalkKind.Jogger };
         static WalkKind PickKind(float hour, int n) => hour < 6 || hour >= 21 ? WalkKind.DogWalker : (hour < 9 ? Morning : hour < 17 ? Midday : Evening)[n & 7];
+        static readonly WalkKind[] TrailMix = { WalkKind.Jogger, WalkKind.Cyclist, WalkKind.DogWalker, WalkKind.Jogger, WalkKind.Cyclist, WalkKind.Couple, WalkKind.DogWalker, WalkKind.Cyclist };   // Round 64
+        bool IsTrail(int line) => streetTrail != null && line < streetTrail.Length && streetTrail[line];
+        int TrailOut() => walks.Values.Count(w => IsTrail(w.line));
         void PickWalkers(float hour, bool wet, int day, bool underground = false)
         {
             if (Lines == 0) { WalkersInfo = "no streets"; return; }
@@ -149,8 +177,8 @@ namespace Racer
                 var v = views[UnityEngine.Random.Range(0, views.Count)];
                 if (TrySpawn(PickKind(hour, nextWalkId * 7 + day * 3 + (int)hour), v, 45f, Near - 10f, false, racing) >= 0) near++;
             }
-            Array.Clear(WalkersByKind, 0, 4); foreach (var w in walks.Values) WalkersByKind[(int)w.kind]++;
-            WalkersInfo = $"walkers {walks.Count} (target {target} near a view): dogs {WalkersByKind[0]}, families {WalkersByKind[1]}, couples {WalkersByKind[2]}, joggers {WalkersByKind[3]}";
+            Array.Clear(WalkersByKind, 0, WalkersByKind.Length); foreach (var w in walks.Values) WalkersByKind[(int)w.kind]++;
+            WalkersInfo = $"walkers {walks.Count} (target {target} near a view): dogs {WalkersByKind[0]}, families {WalkersByKind[1]}, couples {WalkersByKind[2]}, joggers {WalkersByKind[3]}, cyclists {WalkersByKind[4]}; on the trail {TrailOut()}";
         }
         void Release(int id)
         {
@@ -158,6 +186,7 @@ namespace Racer
             foreach (var p in w.members) { p.walker = -1; p.root.gameObject.SetActive(false); p.root.localScale = p.adult; p.root.localRotation = Quaternion.identity; }
             foreach (var d in w.dogs) { d.walk = -1; d.root.gameObject.SetActive(false); d.leash.gameObject.SetActive(false); }
             if (w.stroller != null) { w.stroller.walk = -1; w.stroller.root.gameObject.SetActive(false); }
+            if (w.bike != null) { w.bike.walk = -1; w.bike.root.gameObject.SetActive(false); }
             walks.Remove(id);
         }
         // a group of this kind on a street point between rMin and rMax from 'near' (out of sight unless 'anywhere'); its id, or -1
@@ -173,12 +202,14 @@ namespace Racer
                 var (line, i) = cand[(int)((uint)(seed + k * 104729) % (uint)cand.Count)];
                 int a = streetFirst[line]; var p = streetPts[a + i]; float d = Vector2.Distance(p, new Vector2(near.x, near.z));
                 if (d < rMin || d > rMax || (racing && streetRace[a + i])) continue;
-                var w = new Walk { kind = kind, line = line, s = cumLen[line][i], dir = (seed + k) % 2 == 0 ? 1 : -1, side = (seed >> 3) % 2 == 0 ? 1 : -1 };
+                bool trail = IsTrail(line); if (trail && racing && TrailOut() >= TrailInRace) continue;
+                var kk = trail && !anywhere ? TrailMix[(int)((uint)(seed + k * 31) % (uint)TrailMix.Length)] : kind;   // (a check's forced kind stays)
+                var w = new Walk { kind = kk, line = line, s = cumLen[line][i], dir = (seed + k) % 2 == 0 ? 1 : -1, side = (seed >> 3) % 2 == 0 ? 1 : -1 };
                 w.pos = WalkPoint(w, out _); w.pos.y = GroundAt(w.pos);
                 if (!anywhere && InView(w.pos + Vector3.up)) continue;
                 if (!Fill(w, seed + k)) return -1;
                 int id = nextWalkId++; walks[id] = w;
-                foreach (var pp in w.members) pp.walker = id; foreach (var dd in w.dogs) dd.walk = id; if (w.stroller != null) w.stroller.walk = id;
+                foreach (var pp in w.members) pp.walker = id; foreach (var dd in w.dogs) dd.walk = id; if (w.stroller != null) w.stroller.walk = id; if (w.bike != null) w.bike.walk = id;
                 return id;
             }
             return -1;
@@ -187,11 +218,13 @@ namespace Racer
         bool Fill(Walk w, int seed)
         {
             int adults = w.kind == WalkKind.Family || w.kind == WalkKind.Couple ? 2 : 1, kids = w.kind == WalkKind.Family ? 1 + seed % 3 : 0, nDogs = w.kind == WalkKind.DogWalker ? 1 + (seed >> 2) % 2 : 0;
-            bool pram = w.kind == WalkKind.Family && (seed >> 4) % 3 == 0;
+            bool pram = w.kind == WalkKind.Family && (seed >> 4) % 3 == 0, cyc = w.kind == WalkKind.Cyclist;
             var freeP = people.Where(p => p.group < 0 && p.walker < 0).Take(adults + kids).ToList(); var freeD = dogs.Where(d => d.walk < 0).Take(nDogs).ToList(); var freeS = pram ? strollers.FirstOrDefault(x => x.walk < 0) : null;
-            if (freeP.Count < adults + kids || freeD.Count < nDogs || (pram && freeS == null)) return false;
+            var freeB = cyc ? bikes.FirstOrDefault(x => x.walk < 0) : null;
+            if (freeP.Count < adults + kids || freeD.Count < nDogs || (pram && freeS == null) || (cyc && freeB == null)) return false;
             w.adults = adults;
-            w.speed = w.kind == WalkKind.Jogger ? 2.8f : w.kind == WalkKind.Family ? 1.05f : w.kind == WalkKind.DogWalker ? 1.15f : 1.25f;
+            w.speed = w.kind == WalkKind.Cyclist ? 5.5f : w.kind == WalkKind.Jogger ? 2.8f : w.kind == WalkKind.Family ? 1.05f : w.kind == WalkKind.DogWalker ? 1.15f : 1.25f;
+            if (cyc) { w.bike = freeB; freeB.root.position = w.pos; freeB.root.gameObject.SetActive(true); }
             for (int k = 0; k < freeP.Count; k++)
             {
                 var p = freeP[k]; p.root.localScale = k < adults ? p.adult : p.adult * (.55f + .1f * (k % 2)); p.prop.gameObject.SetActive(false); p.rake.gameObject.SetActive(false);
@@ -248,14 +281,21 @@ namespace Racer
                     if (w.kind == WalkKind.Couple || (w.kind == WalkKind.Family && i < 2)) off = right * (i == 0 ? -.38f : .38f) + heading * (i == 0 ? .1f : -.1f);
                     else if (w.kind == WalkKind.Family) { int k = i - 2; off = -heading * (.9f + .55f * k) + right * ((k % 2 == 0 ? .45f : -.45f) + Mathf.Sin(t * 1.3f + k) * .25f); }
                     else off = Vector3.zero;
-                    var at = w.pos + off; at.y = Ground(at + Vector3.up * 2f); p.root.position = at;
+                    var at = w.pos + off; at.y = Ground(at + Vector3.up * 2f) + (w.bike != null ? .55f : 0f); p.root.position = at;   // (a cyclist sits on the saddle)
                     var look = nearCar && nd < 12f && nearCar.Body.linearVelocity.magnitude > 2f && !run ? Vector3.Slerp(heading, (nearCar.Body.position - at).normalized, .35f) : heading; look.y = 0;
                     if (look.sqrMagnitude > 1e-4f) p.root.rotation = Quaternion.LookRotation(look);
                     float ph = t + p.phase, swing = run ? Mathf.Sin(ph * 9f) * 40f : Mathf.Sin(ph * (i >= w.adults ? 7f : 5f)) * 22f;
-                    p.leftLeg.localRotation = Quaternion.Euler(swing, 0, 0); p.rightLeg.localRotation = Quaternion.Euler(-swing, 0, 0);
+                    if (w.bike != null) swing = -55f + Mathf.Sin(ph * 7f) * 28f;   // pedaling, seated
+                    p.leftLeg.localRotation = Quaternion.Euler(w.bike != null ? swing : swing, 0, 0); p.rightLeg.localRotation = Quaternion.Euler(w.bike != null ? -110f - swing : -swing, 0, 0);
                     bool pushing = w.stroller != null && i == 0, leading = w.kind == WalkKind.DogWalker && i == 0;
                     p.arm.localRotation = Quaternion.Euler(pushing ? -62f : leading ? -38f : run ? -swing * 1.2f - 40f : -swing * .6f, 0, 0);
                     p.otherArm.localRotation = Quaternion.Euler(run ? swing * 1.2f - 40f : swing * .5f, 0, 0);
+                }
+                if (w.bike != null)
+                {
+                    var bp = w.pos; bp.y = Ground(bp + Vector3.up * 2f); w.bike.root.position = bp; w.bike.root.rotation = Quaternion.LookRotation(heading);
+                    float spin = Time.time * w.speed / .34f * Mathf.Rad2Deg; foreach (var wh in w.bike.wheels) wh.localRotation = Quaternion.Euler(spin, 0, 90); w.bike.crank.localRotation = Quaternion.Euler(spin * .4f, 0, 0);
+                    foreach (var p in w.members) { p.arm.localRotation = Quaternion.Euler(-70f, 0, 0); p.otherArm.localRotation = Quaternion.Euler(-70f, 0, 0); }
                 }
                 if (w.stroller != null) { var lead = w.members[0].root; w.stroller.root.position = lead.position + heading * .95f; w.stroller.root.rotation = Quaternion.LookRotation(heading); var sp = w.stroller.root.position; sp.y = Ground(sp + Vector3.up * 2f); w.stroller.root.position = sp; }
                 for (int j = 0; j < w.dogs.Count; j++) StepDog(w.dogs[j], w, j, heading, right, dt, dodging);

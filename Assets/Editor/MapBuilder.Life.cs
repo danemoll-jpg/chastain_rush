@@ -206,8 +206,12 @@ namespace ChastainRush
                 bool walk = tries > 0 && hits * 2 >= tries; if (walk) onWalks++;
                 streets.Add((pts, half + (walk ? 2.6f : .7f)));
             }
-            var sp = new List<Vector2>(); var first = new List<int>(); var offs = new List<float>(); var race = new List<bool>();
-            foreach (var (pts, off) in streets) { first.Add(sp.Count); offs.Add(off); foreach (var q in pts) { sp.Add(q); race.Add(NearLine(q, off + 5f)); } }
+            // Round 64 (Dan, BUG-004: "It would be good to have peopel walking or jogging this trail"): the Noonday Creek Trail's path, walked on its right half
+            // (its own mix, AmbientLife.Walkers.cs; never kept off as a race's way: a few walk it in races too and step aside)
+            int streetCount = streets.Count;
+            if (TrailExtra?.trail?.line != null && TrailExtra.trail.line.Length >= 4) streets.Add((Densify(ToPoints(TrailExtra.trail.line), 3f), Mathf.Max(.4f, TrailExtra.trail.width * .5f - .7f)));
+            var sp = new List<Vector2>(); var first = new List<int>(); var offs = new List<float>(); var race = new List<bool>(); var trailLine = new List<bool>();
+            for (int l = 0; l < streets.Count; l++) { var (pts, off) = streets[l]; bool tr = l >= streetCount; first.Add(sp.Count); offs.Add(off); trailLine.Add(tr); foreach (var q in pts) { sp.Add(q); race.Add(!tr && NearLine(q, off + 5f)); } }
             first.Add(sp.Count);
             var linkFirst = new List<int>(); var linkList = new List<int>();
             for (int l = 0; l < streets.Count; l++)
@@ -222,6 +226,7 @@ namespace ChastainRush
                 }
             linkFirst.Add(linkList.Count);
             life.streetPts = sp.ToArray(); life.streetFirst = first.ToArray(); life.streetOff = offs.ToArray(); life.streetRace = race.ToArray(); life.linkFirst = linkFirst.ToArray(); life.links = linkList.ToArray();
+            life.streetTrail = trailLine.ToArray();
             // what Round 38's rule made coffee pairs of the same places: every two-person porch (all of these), every yard group but the football trios,
             // every drive and pool-deck group, a third of the shops' walkers
             int coffeeR38 = groups.Count(g => g.kind == AmbientLife.Kind.Porch || g.kind == AmbientLife.Kind.Drive || g.kind == AmbientLife.Kind.Pool || (g.kind == AmbientLife.Kind.Yard && g.action != AmbientLife.Football) || (g.kind == AmbientLife.Kind.Shop && g.action == AmbientLife.Talking));

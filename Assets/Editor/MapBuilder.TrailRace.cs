@@ -32,7 +32,7 @@ namespace ChastainRush
         [Serializable] class TrailDeck { public string id, style; public float[] line, y; public float width, s0, s1; }   // style "truss" (two points) or "boardwalk" (a height per point)
         [Serializable] class TrailTread { public float[] line, underpass, tread_y; public float width; public TrailDeck[] decks; public TrailRail[] rails; public TrailSign[] signs; }
         [Serializable] class R62Line { public string id; public float[] points; public float half; }
-        [Serializable] class TrailFileJson { public TrailTread trail; public R62Line[] pole_free; }
+        [Serializable] class TrailFileJson { public TrailTread trail; public R62Line[] pole_free; public R55Ruts[] worn_tracks; }   // Round 64: worn_tracks (the shortcuts' hints)
         const string TrailTrackFile = "Data/tracks/noonday_creek_trail.json";
         static Ridge TrailNow;              // its graded bench and cleared lines (the Chastain Ridge race's shape)
         static TrailFileJson TrailExtra;    // the path, its railings, the red bridge, the signs, the lots' lines kept free of light poles
@@ -117,8 +117,9 @@ namespace ChastainRush
             }
             asphalt.ToObjects("Noonday trail asphalt", mats.Asphalt, root, false);
             paint.ToObjects("Noonday trail center line", mats.Paint, root, false);
-            // the railings: black steel pipe (posts every 2 m, a top rail and a mid rail), 0.6 m off the path's edge; solid
-            var rails = new MeshBuilder(); int railM = 0; var black = new Color(0.07f, 0.07f, 0.08f);
+            // the railings: black steel pipe (posts every 2 m, a top rail and a mid rail), 0.6 m off the path's edge. Round 64 (Dan, BUG-007: "make the fences
+            // breakable. I saw ai kept getting hung up on these"): every 2 m piece breaks, costs no speed and is back once nobody is near (RestoreWhenClear)
+            var railBr = new Breakables(); int railM = 0; var black = new Color(0.07f, 0.07f, 0.08f); var railPts = new List<Vector3>();
             if (tr.rails != null)
                 foreach (var r in tr.rails)
                 {
@@ -130,18 +131,9 @@ namespace ChastainRush
                         float flare = 1.2f * Smooth01(1f - Mathf.Min(s - r.s0, r.s1 - s) / 4f);
                         var q = p + new Vector2(-t.y, t.x) * r.side * (tr.width * .5f + .6f + flare); pts.Add(new Vector3(q.x, Ground(terrain, q.x, q.y), q.y));
                     }
-                    for (int i = 0; i < pts.Count; i++)
-                    {
-                        Post(rails, pts[i] - Vector3.up * .2f, 1.27f, .07f, black);
-                        if (i == 0) continue;
-                        var a = pts[i - 1]; var b = pts[i];
-                        Beam(rails, a + Vector3.up * 1.05f, b + Vector3.up * 1.05f, .07f, .07f, black); Beam(rails, a + Vector3.up * .55f, b + Vector3.up * .55f, .05f, .05f, black);
-                        var mid = (a + b) * .5f + Vector3.up * .6f; var g = new GameObject("Trail railing"); g.transform.SetParent(root, false);
-                        g.transform.SetPositionAndRotation(mid, Quaternion.LookRotation(b - a)); g.AddComponent<BoxCollider>().size = new Vector3(.15f, 1.3f, (b - a).magnitude + .05f);
-                        railM += 2;
-                    }
+                    BreakableRail(railBr, pts, .07f, black, -.2f, 1.27f, new[] { (1.05f, .07f), (.55f, .05f) }); railM += 2 * (pts.Count - 1); railPts.AddRange(pts);
                 }
-            rails.ToObject("Noonday trail railings", mats.House, root, false);
+            BreakRailsDone(railBr, "Noonday trail railings", mats, root, railPts);
             foreach (var dk in decks)
             {
                 var dp = ToPoints(dk.line);
@@ -149,6 +141,8 @@ namespace ChastainRush
                 else BuildBoardwalk(terrain, mats, root, dk);
             }
             int signs = BuildWindingSigns(terrain, mats, root, tr.signs);
+            if (TrailExtra.worn_tracks != null)   // Round 64: the mall shortcut's hints (Dan: tire tracks are the hint)
+                foreach (var w in TrailExtra.worn_tracks) if (w.points != null && w.points.Length >= 6) { WornRuts(terrain, mats, root, ToPoints(w.points), w.id); Debug.Log($"[Round64] worn tracks: {w.id}"); }
             Debug.Log($"[Round62] the Noonday Creek Trail: {cum[cum.Length - 1]:0} m of path {tr.width:0.0} m wide, {dashes} yellow dashes, {railM} m of railings, the red bridge " +
                       $"{string.Join(" and ", decks.Select(d => $"{d.id} {d.s1 - d.s0:0} m"))}, {signs} winding-road signs; {TrailNow.TreesRemoved} trees kept off its bench and the lots' lines");
         }
@@ -224,21 +218,21 @@ namespace ChastainRush
                 BoxF(conc, f, -hw - .6f, hw + .6f, -down, -.02f, -2.4f, 1.2f, concrete);
             }
             // the approaches: gray timber-and-steel rails, 4 m along each end, flaring out 1.2 m (nothing square to hit), solid
-            var timber = new MeshBuilder(); var gray = new Color(0.62f, 0.62f, 0.60f); var post = new Color(0.55f, 0.56f, 0.57f);
+            var timber = new Breakables(); var gray = new Color(0.62f, 0.62f, 0.60f); var post = new Color(0.55f, 0.56f, 0.57f); var timberPts = new List<Vector3>();   // Round 64 (Dan, BUG-008: "these fences should be breakable too")
             foreach (var (s, dir) in new[] { (0f, -1f), (L, 1f) })
                 foreach (float sg in new[] { -1f, 1f })
                 {
                     var e0 = a + d * s + n * sg * (hw + .15f); var e1 = a + d * (s + dir * 4f) + n * sg * (hw + 1.35f);
                     var y0 = TrussDeckY(ya, yb, s / L); var y1 = Ground(terrain, e1.x, e1.y);
                     var p0 = new Vector3(e0.x, y0, e0.y); var p1 = new Vector3(e1.x, y1, e1.y);
-                    foreach (var p in new[] { p0, Vector3.Lerp(p0, p1, .5f), p1 }) Post(timber, p - Vector3.up * .3f, 1.35f, .16f, post);
-                    foreach (float h in new[] { .45f, .75f, 1.0f }) Beam(timber, p0 + Vector3.up * h, p1 + Vector3.up * h, .08f, .14f, gray);
-                    var g = new GameObject("Red bridge approach rail"); g.transform.SetParent(go, false);
-                    g.transform.SetPositionAndRotation((p0 + p1) * .5f + Vector3.up * .6f, Quaternion.LookRotation(p1 - p0)); g.AddComponent<BoxCollider>().size = new Vector3(.2f, 1.3f, (p1 - p0).magnitude);
+                    var mbT = timber.Begin(new Vector2(p0.x, p0.z));
+                    foreach (var p in new[] { p0, Vector3.Lerp(p0, p1, .5f), p1 }) { var pp = p; timber.Piece(() => Post(mbT, pp - Vector3.up * .3f, 1.35f, .16f, post), pp.y); }
+                    foreach (float h in new[] { .45f, .75f, 1.0f }) { float hh = h; timber.Piece(() => Beam(mbT, p0 + Vector3.up * hh, p1 + Vector3.up * hh, .08f, .14f, gray), Mathf.Min(p0.y, p1.y)); }
+                    timber.End((p0 + p1) * .5f + Vector3.up * .6f, p1 - p0, 1.2f, 1.4f, (p1 - p0).magnitude); timberPts.Add(p0); timberPts.Add(p1);
                 }
             steel.ToObject("Red bridge trusses", mats.House, go, false);
             conc.ToObject("Red bridge abutments", mats.House, go, false);   // looks only: the deck and the graded ground carry a vehicle (builds 4 and 5: low noses caught their edges)
-            timber.ToObject("Red bridge approach rails", mats.House, go, false);
+            BreakRailsDone(timber, "Red bridge approach rails", mats, go, timberPts);
             Debug.Log($"[Round62] the red truss footbridge: {L:0.0} m from ({a.x:0.0}, {a.y:0.0}) {ya:0.00} m to ({b.x:0.0}, {b.y:0.0}) {yb:0.00} m, {width:0.0} m between its trusses, {bays} bays");
         }
 
@@ -247,7 +241,7 @@ namespace ChastainRush
         static void BuildBoardwalk(TerrainGrid terrain, Materials mats, Transform root, TrailDeck dk)
         {
             var go = new GameObject(dk.id).transform; go.SetParent(root, false);
-            var p = ToPoints(dk.line); float hw = dk.width * .5f; var deck = new MeshBuilder(); var conc = new MeshBuilder(); var rails = new MeshBuilder();
+            var p = ToPoints(dk.line); float hw = dk.width * .5f; var deck = new MeshBuilder(); var conc = new MeshBuilder(); var railBr = new Breakables(); var railPts = new List<Vector3>();
             var top = new Color(0.60f, 0.60f, 0.58f); var side = new Color(0.52f, 0.52f, 0.50f); var black = new Color(0.07f, 0.07f, 0.08f);
             Vector2 N(int i) { var a = p[Mathf.Max(0, i - 1)]; var b = p[Mathf.Min(p.Count - 1, i + 1)]; var t = (b - a).normalized; return new Vector2(-t.y, t.x); }
             Vector3 V(int i, float off, float up) { var q = p[i] + N(i) * off; return new Vector3(q.x, dk.y[i] + up, q.y); }
@@ -292,18 +286,32 @@ namespace ChastainRush
                     var add = new[] { new Vector3(mid.x, Ground(terrain, mid.x, mid.y), mid.y), new Vector3(tip.x, Ground(terrain, tip.x, tip.y), tip.y) };
                     if (e == 0) pts.InsertRange(0, add.Reverse()); else pts.AddRange(add);
                 }
-                for (int i = 0; i < pts.Count; i++)
-                {
-                    if (i % 1 == 0) Post(rails, pts[i] - Vector3.up * .05f, 1.12f, .06f, black);
-                    if (i == 0) continue;
-                    var a = pts[i - 1]; var b = pts[i];
-                    Beam(rails, a + Vector3.up * 1.05f, b + Vector3.up * 1.05f, .07f, .07f, black); Beam(rails, a + Vector3.up * .55f, b + Vector3.up * .55f, .05f, .05f, black);
-                    var g2 = new GameObject("Boardwalk railing"); g2.transform.SetParent(go, false);
-                    g2.transform.SetPositionAndRotation((a + b) * .5f + Vector3.up * .6f, Quaternion.LookRotation(b - a)); g2.AddComponent<BoxCollider>().size = new Vector3(.15f, 1.3f, (b - a).magnitude + .05f);
-                }
+                BreakableRail(railBr, pts, .06f, black, -.05f, 1.12f, new[] { (1.05f, .07f), (.55f, .05f) }); railPts.AddRange(pts);   // Round 64 (BUG-007): breakable
             }
-            rails.ToObject("Boardwalk railings", mats.House, go, false);
+            BreakRailsDone(railBr, "Boardwalk railings", mats, go, railPts);
             Debug.Log($"[Round62] {dk.id}: a boardwalk {dk.width:0.0} m wide along {p.Count} points, {dk.y.Min():0.00} to {dk.y.Max():0.00} m");
+        }
+
+        // Round 64 (Dan, BUG-007 / BUG-008): a railing that breaks, a piece every two points (its post and its rails between them), nothing slows a car
+        static void BreakableRail(Breakables br, List<Vector3> pts, float postW, Color c, float postDown, float postH, (float h, float w)[] bars)
+        {
+            for (int i = 1; i < pts.Count; i++)
+            {
+                var a = pts[i - 1]; var b = pts[i]; if ((b - a).sqrMagnitude < .01f) continue;
+                var mb = br.Begin(new Vector2(a.x, a.z)); bool first = i == 1;
+                br.Piece(() => Post(mb, b + Vector3.up * postDown, postH, postW, c), b.y);
+                if (first) br.Piece(() => Post(mb, a + Vector3.up * postDown, postH, postW, c), a.y);
+                foreach (var (h, w) in bars) { float hh = h, ww = w; br.Piece(() => Beam(mb, a + Vector3.up * hh, b + Vector3.up * hh, ww, ww, c), Mathf.Min(a.y, b.y)); }
+                br.End((a + b) * .5f + Vector3.up * .6f, b - a, 1.2f, 1.4f, (b - a).magnitude + .05f);
+            }
+        }
+        static void BreakRailsDone(Breakables br, string name, Materials mats, Transform parent, List<Vector3> pts)
+        {
+            if (br.Count == 0) return;
+            var t = br.ToObjects(name, mats.House, parent, .4f, BreakSounds.Kind.Iron);
+            foreach (var ch in t.GetComponentsInChildren<FenceChunk>()) ch.free = true;
+            var lo = pts.Aggregate(Vector3.positiveInfinity, Vector3.Min); var hi = pts.Aggregate(Vector3.negativeInfinity, Vector3.Max);
+            var rc = t.gameObject.AddComponent<RestoreWhenClear>(); rc.at = (lo + hi) * .5f; rc.clear = (hi - lo).magnitude * .5f + 30f;   // whole again for the next lap
         }
 
         // the yellow winding-road warning signs (Dan's photos 1 and 2): a diamond on a post, breakable (they snap as the curve signs do)

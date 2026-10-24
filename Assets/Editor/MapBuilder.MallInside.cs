@@ -23,7 +23,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         sealed class MallShop { public Rect r; public char front; public int level, sign, k, n; public float floor, ceil; }
-        sealed class MallBreak { public Breakables glass = new(), wood = new(), iron = new(), sign = new(), foam = new(); }
+        sealed class MallBreak { public Breakables glass = new(), wood = new(), iron = new(), sign = new(), foam = new(), doors = new(); }   // Round 64: doors, the doors' and fronts' panes (see-through glass)
 
         static void BuildMallInside(MapData map, TerrainGrid t, Materials mats, Transform root, MallPlan m, Material signs, MeshBuilder shellIn)
         {
@@ -37,6 +37,7 @@ namespace ChastainRush
             foreach (var s in shops) MallShopBuild(m, root, deco, lights, br, s, signs);
             MallAnchorFronts(m, root, deco, br, signs);
             MallEastStore(m, root, deco, lights, br, signs);
+            MallAnchorStores(m, root, deco, lights, br, signs);   // Round 64: Halverson Home and Carroway, driven through (MapBuilder.MallShortcut.cs)
             MallDoorsGlass(m, br);
             MallConcourse(m, root, deco, br, signs);
             BuildMallFoodCourt(m, root, deco, br, signs);
@@ -52,10 +53,10 @@ namespace ChastainRush
             if (lmat == null || QuickStep != null) { var nm = new Material(Shader.Find("Universal Render Pipeline/Unlit")) { name = "MallLight" }; nm.SetColor("_BaseColor", new Color(1f, .97f, .9f)); lmat = GenAsset(nm, GeneratedDir + "/MallLight.mat"); }
             lights.ToObject("MallLights", lmat, root, false, false);
             foreach (var (b, name, drop, sound) in new[] { (br.glass, "MallGlass", .3f, BreakSounds.Kind.Glass), (br.wood, "MallWood", .35f, BreakSounds.Kind.Wood), (br.iron, "MallMetal", .35f, BreakSounds.Kind.Iron),
-                (br.sign, "MallSigns", .4f, BreakSounds.Kind.Sign), (br.foam, "MallSoft", .3f, BreakSounds.Kind.Wood) })
+                (br.sign, "MallSigns", .4f, BreakSounds.Kind.Sign), (br.foam, "MallSoft", .3f, BreakSounds.Kind.Wood), (br.doors, "MallDoorGlass", .3f, BreakSounds.Kind.Glass) })
             {
                 if (b.Count == 0) continue;
-                var tr = b.ToObjects(name, mats.House, root, drop, sound);
+                var tr = b.ToObjects(name, b == br.doors ? MallSeeThrough("MallDoorGlass", new Color(.62f, .75f, .80f, .28f), .92f) : mats.House, root, drop, sound);   // Round 64 (Dan, BUG-002: "these should be glass doors")
                 foreach (var c in tr.GetComponentsInChildren<FenceChunk>()) { c.free = true; m.Breakables.Add(c); }   // no speed lost (Dan: "breaking them must not stop a car")
             }
             m.Log.Add($"{shops.Count} shops ({shops.Count(s => s.level == 0)} lower, {shops.Count(s => s.level == 1)} upper); breakables: glass {br.glass.Count}, wood {br.wood.Count}, metal {br.iron.Count}, signs {br.sign.Count}, soft {br.foam.Count}");
@@ -465,7 +466,7 @@ namespace ChastainRush
                 for (int level = 0; level < 2; level++)
                 {
                     float y0 = m.Level(level), H = m.Ceiling(level) - y0; var c = m.P(u, v, y0); var f = MakeFrame(c, new Vector2(into.x, into.z), 1f);
-                    bool open = upperOpen && level == 1;
+                    bool open = upperOpen && level == 1 || level == 0 && (row == SignHalversonHome || row == SignCarroway);   // Round 64: their lower fronts open (glass)
                     // the portal: cream piers and head, mahogany band, the name over it
                     BoxF(deco, f, -half - 1.2f, -half, 0f, H, 0f, .5f, MCream); BoxF(deco, f, half, half + 1.2f, 0f, H, 0f, .5f, MCream);
                     BoxF(deco, f, -half - 1.2f, half + 1.2f, 4.6f, H, 0f, .45f, MCream); BoxF(deco, f, -half - 1.3f, half + 1.3f, 4.5f, 4.7f, 0f, .55f, MMahogany);
@@ -480,16 +481,28 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ the glass that breaks: the doors and the east anchor's upper front
+        // Round 64 (Dan, BUG-002 / BUG-006: "these should be glass doors"): the panes see-through (br.doors, MallSeeThrough), each door's bronze frame, its
+        // middle rail and push bar a breakable of its own beside it (br.iron); every pane and frame costs no speed and is back for the next lap
         static void MallPanes(MallBreak br, Vector3 a, Vector3 b, float y0, float h, Vector3 outN, float paneW = 3f)
         {
             float len = Vector3.Distance(new Vector3(a.x, 0, a.z), new Vector3(b.x, 0, b.z)); int n = Mathf.Max(1, Mathf.RoundToInt(len / paneW));
             for (int k = 0; k < n; k++)
             {
                 var p0 = Vector3.Lerp(a, b, k / (float)n); p0.y = y0; var p1 = Vector3.Lerp(a, b, (k + 1) / (float)n); p1.y = y0; var mid = (p0 + p1) * .5f;
-                MItem(br.glass, mid, outN, (p1 - p0).magnitude, h, 1.4f,
-                    mb => { for (int sy = 0; sy < 2; sy++) { mb.Tint = SVary(MGlass, p0.x + sy, p0.z, .05f); var hh = Vector3.up * h / 2f; var q0 = p0 + Vector3.up * (h * sy / 2f); var q1 = p1 + Vector3.up * (h * sy / 2f); Face(mb, q0, q1, q1 + hh, q0 + hh, outN); Face(mb, q0, q1, q1 + hh, q0 + hh, -outN); } },
-                    mb => { SBox(mb, p0, p1 - p0, new Vector3(.08f, h, .12f), MBronze); SBox(mb, (p0 + p1) * .5f + Vector3.up * 1.0f, p1 - p0, new Vector3(.06f, .05f, (p1 - p0).magnitude * .8f), MSteel); });
+                var al = (p1 - p0).normalized;
+                MItem(br.doors, mid, outN, (p1 - p0).magnitude, h, 1.4f,
+                    mb => { var q0 = p0 + al * .06f; var q1 = p1 - al * .06f; var hh = Vector3.up * h; Face(mb, q0, q1, q1 + hh, q0 + hh, outN); Face(mb, q0, q1, q1 + hh, q0 + hh, -outN); });
+                MItem(br.iron, mid, outN, (p1 - p0).magnitude, h, 1.4f,
+                    mb => { SBox(mb, p0, p1 - p0, new Vector3(.08f, h, .12f), MBronze); SBox(mb, p0 + Vector3.up * (h - .08f), p1 - p0, new Vector3((p1 - p0).magnitude, .08f, .12f), MBronze); SBox(mb, p0, p1 - p0, new Vector3((p1 - p0).magnitude, .12f, .12f), MBronze); },
+                    mb => { SBox(mb, mid + Vector3.up * 1.0f + outN * .07f, p1 - p0, new Vector3((p1 - p0).magnitude * .6f, .05f, .05f), MSteel); SBox(mb, mid + Vector3.up * 1.0f - outN * .07f, p1 - p0, new Vector3((p1 - p0).magnitude * .6f, .05f, .05f), MSteel); });
             }
+        }
+        // a see-through material (URP Lit, transparent), made once per build
+        static Material MallSeeThrough(string name, Color c, float smooth)
+        {
+            var mat = new Material(Shader.Find("Universal Render Pipeline/Lit")) { name = name };
+            mat.SetColor("_BaseColor", c); mat.SetFloat("_Smoothness", smooth); mat.SetFloat("_Metallic", 0f); MakeTransparent(mat); mat.SetFloat("_Cull", (float)CullMode.Off);
+            return GenAsset(mat, $"{GeneratedDir}/{name}.mat");
         }
         static void MallDoorsGlass(MallPlan m, MallBreak br)
         {
@@ -500,6 +513,8 @@ namespace ChastainRush
             }
             var e0 = m.P(MallUE - WallTM * .5f, MallCS + .2f, 0f); var e1 = m.P(MallUE - WallTM * .5f, MallCN - .2f, 0f);
             MallPanes(br, e0, e1, m.L1, MallStoreFrontH - .1f, m.D3(1, 0));   // Round 62: 6.1 m (was 4.2): the escalator's launch flies through it
+            // Round 64: the fronts of the anchors driven through (Halverson Home on the north wing, Carroway on the center court), on the lower floor
+            foreach (var (u, v, half) in MallHollowFronts) { var f0 = m.P(u - half, v, 0f); var f1 = m.P(u + half, v, 0f); MallPanes(br, f0, f1, m.L0, MallFrontH - .1f, m.D3(0, v > -1260f ? -1 : 1), 3.3f); }
             // Round 62: the main entrance's glass tower over its doors breaks too, up to its opening (the balcony drop flies out through it): rows of panes
             var md = m.Doors.First(d => d.main); var moff = -md.nOut * (WallTM * .5f);
             var ma = new Vector3(md.a.x + moff.x, 0, md.a.y + moff.y); var mb2 = new Vector3(md.b.x + moff.x, 0, md.b.y + moff.y);

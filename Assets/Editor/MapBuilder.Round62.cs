@@ -78,8 +78,25 @@ namespace ChastainRush
                 }
                 chains.Add((string.IsNullOrEmpty(name) ? "(unnamed " + map.roads[i].@class + ")" : name, line, half, mine));
             }
-            // Dan's two spots before (the sharpest 1 m step within 25 m)
-            var spots = new[] { ("BUG-001 Big Shanty Road", new Vector2(617.23f, 9.33f)), ("BUG-002 I-575", new Vector2(512.91f, 18.66f)) };
+            // Round 64 (H, Dan: Round 62's option (1), "level up to each junction and keep the junction's own ground"): the widest roads are levelled first,
+            // straight through their junctions; every narrower road is levelled up to where it meets a road already levelled and fades out over
+            // R64JunctionFade m before that road's edge (plus 1 m), its own profile taken from the ground as the wider road left it. So the junction keeps the
+            // wider road's ground and no narrower road steps into it, nor re-grades its lanes where the two run side by side (Round 62's checks: Barrett /
+            // Chastain Road / Stilesboro; build 4's I-575 ramp beside Barrett)
+            var doneIdx = new CellIndex(16f); var doneSegs = new List<(Vector2 a, Vector2 b, float half, string name)>(); var nearDone = new List<int>();
+            // (only a road wider than this one, not one of its own name: a divided road's two carriageways both level through)
+            float DoneW(Vector2 q, float myHalf, string myName)
+            {
+                float w = 1f;
+                foreach (int k in doneIdx.Near(q, 0f, nearDone))
+                {
+                    var (a, b, h, nm) = doneSegs[k]; if (h <= myHalf + .25f || nm == myName) continue; var ab = b - a; float t = Mathf.Clamp01(Vector2.Dot(q - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    w = Mathf.Min(w, Smooth01(((a + ab * t - q).magnitude - h - 1f) / R64JunctionFade));
+                }
+                return w;
+            }
+            // Dan's two spots before (the sharpest 1 m step within 25 m); Round 64: his BUG-001 on Barrett Parkway ("fix bump"; Round 62: flat out it lifts a car)
+            var spots = new[] { ("BUG-001 Big Shanty Road", new Vector2(617.23f, 9.33f)), ("BUG-002 I-575", new Vector2(512.91f, 18.66f)), ("Round 64 BUG-001 Barrett Parkway", new Vector2(687.63f, -1668.31f)) };
             float Worst(Vector2 at)
             {
                 float worst = 0f;
@@ -93,20 +110,23 @@ namespace ChastainRush
             var spotBefore = spots.Select(s => Worst(s.Item2)).ToArray();
             var report = new Dictionary<string, (float before, float after, int b10, int a10, float len)>();
             int levelled = 0; var done = new List<(string name, List<Vector2> p)>();
-            // the narrowest first, so where two overlap the wider road's levelling is the one left (mapgen's "wider wins"; build 4's check: an I-575 ramp
-            // levelled after Barrett Parkway re-graded Barrett's outer lane to its own profile and threw a car at 27 m/s)
-            foreach (var (name, line0, half, decks) in chains.OrderBy(c => c.half))
+            // Round 64: the widest first (Round 62 went narrowest first so the wider road's levelling was the one left where two overlap: that left the
+            // narrower road stepping into it); a narrower road now fades out before a wider one's edge (DoneW)
+            foreach (var (name, line0, half, decks) in chains.OrderByDescending(c => c.half))
             {
                 var p = Resample(line0, 1f); int n = p.Count; if (n < 20) continue;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
                 var w = new float[n];
                 float DeckDist(Vector2 q) { float best = float.MaxValue; foreach (var e in decks) best = Mathf.Min(best, (e - q).sqrMagnitude); return Mathf.Sqrt(best); }
-                for (int i = 0; i < n; i++) w[i] = Mathf.Min(Smooth01((DeckDist(p[i]) - 15f) / 25f), W(p[i]));
+                for (int i = 0; i < n; i++) w[i] = Mathf.Min(Mathf.Min(Smooth01((DeckDist(p[i]) - 15f) / 25f), W(p[i])), DoneW(p[i], half, name));
                 if (w.All(v => v <= 0f)) continue;
                 float before = SharpestStep(terrain, p, float.MaxValue); int b10 = Steps(terrain, p, .1f);
                 // near Dan's two spots (150 m): no crest that lifts a car off the road at 30 m/s (build 2's check: Big Shanty's dip under I-575 still threw it 0.5 s)
                 var cap = new bool[n]; bool any = false; for (int i = 0; i < n; i++) { cap[i] = spots.Any(s => (p[i] - s.Item2).magnitude < 150f); any |= cap[i]; }
-                LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (30f * 30f));
+                // (Round 64: Barrett Parkway at Dan's spot, flat out: no crest that lifts a car at 45 m/s)
+                bool barrett = Enumerable.Range(0, n).Any(i => (p[i] - spots[2].Item2).magnitude < 150f);
+                LevelAlong(terrain, p, raw, w, half, R61Sigma, R61Shoulder, R61Blend, any ? cap : null, 9.81f / (barrett ? 45f * 45f : 30f * 30f));
+                for (int i = 0; i + 1 < n; i++) { doneIdx.Add(p[i], p[i + 1], half + 1f + R64JunctionFade + .01f); doneSegs.Add((p[i], p[i + 1], half, name)); }   // (its id: doneSegs' index)
                 report.TryGetValue(name, out var o0); levelled++; done.Add((name, p));
                 report[name] = (Mathf.Max(o0.before, before), 0f, o0.b10 + b10, 0, o0.len + (n - 1));
             }
@@ -133,12 +153,14 @@ namespace ChastainRush
             foreach (var kv in report.OrderByDescending(k => k.Value.before))
                 lines.Add($"{kv.Key}\t{kv.Value.len:0} m\t{kv.Value.before:0.000} -> {kv.Value.after:0.000} m\t{kv.Value.b10} -> {kv.Value.a10}");
             for (int i = 0; i < spots.Length; i++) lines.Add($"{spots[i].Item1} ({spots[i].Item2.x:0.00}, {spots[i].Item2.y:0.00}): the sharpest 1 m step within 25 m {spotBefore[i]:0.000} -> {Worst(spots[i].Item2):0.000} m");
-            Debug.Log($"[Round62] C: {levelled} chains of {pick.Count} main road pieces levelled ({report.Values.Sum(v => v.len) / 1000f:0.0} km); " +
+            Debug.Log($"[Round62] C: (Round 64: widest first, narrower roads fading out before a levelled wider one) {levelled} chains of {pick.Count} main road pieces levelled ({report.Values.Sum(v => v.len) / 1000f:0.0} km); " +
                       $"sharpest step over all {report.Values.Max(v => v.before):0.000} -> {report.Values.Max(v => v.after):0.000} m; steps over 0.10 m {report.Values.Sum(v => v.b10)} -> {report.Values.Sum(v => v.a10)}; " +
                       string.Join("; ", lines.Skip(lines.Count - spots.Length)));
             try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "round62_levelling.txt"), lines); } catch (System.Exception e) { Debug.LogWarning("[Round62] " + e.Message); }
         }
     
+        const float R64JunctionFade = 25f;
+
         // ------------------------------------------------------------ I-575's three carriageways over Big Shanty Road, across the old core's edge
         static void R62SeamOverpasses(MapData map, TerrainGrid terrain)
         {

@@ -110,11 +110,22 @@ def LV(k, off=0.0): return round(-(20000.0 + 1000.0 * k) + off, 3)   # k 0 lower
                                                                      # 4 the deck of the road bridge under the point (Bells Ferry Road's over the creek)
 VC = -1303.5                       # the concourse's middle (and the store's aisle, the east escalator's hole, the east doors)
 EAST_DOOR_U, STORE_FRONT_U = 163.5, 53.0
-ESC_FOOT_U, ESC_TOP_U = 8.0, 46.4  # the east escalator bank: its foot (lower floor) and its top, the raffle stage's lip (MapBuilder.Mall.cs: uFoot 8, run about 38.4 m to 1.4 m over the upper floor)
-STAGE_LIP_H, STAGE_RAMP = 1.4, 4.31   # the raffle stage: its lip over the upper floor at the escalator's top, its ramp's length (18 degrees; check 1: 15 degrees from 1.07 m threw too flat)
-MAIN_U, BALCONY_V, HALL_LAND_V, MAIN_DOOR_V = -51.0, -1286.0, -1274.0, -1267.1
-TURN_R = 11.5                      # the right / left turn between the concourse and the main entrance's hall
+MAIN_U, MAIN_DOOR_V = -51.0, -1267.1
 MATTRESS_U = 110.8                 # the mattress mountain, in the store's aisle (MapBuilder.MallRace.cs MallMattressU)
+# Round 64: the mall's floors as MapBuilder.Mall.cs PlanMall sets them (the ground at its entrances, rounded), for the race's grilles; the east escalator bank
+# rounded over at its top again, the floor's height (MallRampProfile: arcs of 22 m at 14 degrees; Round 62's raffle stage lip gone)
+def _mall_floors():
+    def G(u, v): return ground(*W(u, v))
+    lower = (G(-51.0, -1258.0) + G(-195.0, -1350.0)) / 2.0; upper = (G(10.0, -1350.0) + G(175.0, -1303.0) + G(-233.0, -1242.0)) / 3.0
+    l0 = round(lower * 10.0) / 10.0; return l0, l0 + max(6.5, min(8.5, round((upper - lower) * 10.0) / 10.0))
+L0, L1 = _mall_floors()
+ESC_FOOT_U = 8.0
+ESC_TOP_U = ESC_FOOT_U + 2 * 22.0 * math.sin(math.radians(14)) + (L1 - L0 - 2 * 22.0 * (1 - math.cos(math.radians(14)))) / math.sin(math.radians(14)) * math.cos(math.radians(14))
+CORR_U = -1.0                      # the north wing's corridor (MapBuilder.Mall.cs MallNorthWing u -7 to 13): the line down it, on its west half
+TURN_R = 9.0                       # the turn between the corridor and the east escalator's foot (center (ESC_FOOT_U, VC + TURN_R))
+NORTH_FRONT_V, NORTH_PORTAL_V, NORTH_PORTAL_U = -1202.6, -1135.4, -1.7   # Halverson Home (the north anchor): its front on the north wing, its portal on the north lot
+SOUTH_FRONT_V, SOUTH_PORTAL_V, SOUTH_U = -1325.2, -1439.3, -105.8        # Carroway (the south anchor): its front on the center court, its portal on the south lot
+PIT_V0, PIT_V1, KICK_LEN, KICK_H, KICK_HALF = -1372.0, -1386.0, 4.5, 1.2, 2.6   # Carroway's renovation pit (MapBuilder.MallShortcut.cs): its two edges, the kickers
 
 # ---------------------------------------------------------------- hand choices
 SETTINGS = {
@@ -146,31 +157,34 @@ TRAILHEAD_DRIVE = 392522748        # the trailhead's drive from its lot up to Be
 BELLS_FERRY_S = [2673, 2674, "bridge:320582950", 2113, 2675, 2676, 2121, 2124, 2123, 2492, 2493, 2122]   # map.json road indices (and the bridge), north to south
 BARRETT_TWO_WAY = [1282, 1103, 2735, 2736, 2729, 2728]          # east to west
 BARRETT_WB = [650, 2082, 1422, 1418, 1307, 2367, 2368, 2626, 2369, 2370, 2371, 2372]   # the westbound carriageway, east to west
-MALL_BLVD_NB = [2396, 2397, 2387]
-TCD_EAST = [2716, 2715]            # Town Center Drive up the mall's east side
-BARRETT_EB = [2380, 2386, 2381, 2255, 2379, 822, 2453, 1104, 820, 1420, 1421]   # the eastbound carriageway, west to east (reverse)
-MALL_BLVD_SB = [2033, 2451, 2034, 2452, 2373]                  # Town Center Drive's stub, then Mall Boulevard south to Barrett (reverse)
-# the lots (world points): off Town Center Drive to Halverson's east doors; from the main doors north to the trail
-EAST_LEAVE_Z = -1385.0             # where the lap leaves Town Center Drive (its z; check 1: a vertex at -1295 made a hairpin of the turn)
-EAST_LOT = [(622.0, -1335.0), (598.0, -1285.0), (575.0, -1248.0)]
-NORTH_LOT = [(233.0, -1150.0), (222.0, -1060.0), (208.0, -990.0), (188.0, -940.0), (168.0, -903.0), (156.0, -878.0)]   # 9 m and more off the north anchor
+MALL_BLVD_NB = [2396, 2397, 2387, 1093, 2398]                  # Round 64: on up Mall Boulevard's two last pieces to Ring Road (Dan's orange line)
+RING_ROAD = 793                    # Ring Road Northwest, round the mall
+BARRETT_EB = [2380, 2386, 2381, 2255, 2379, 822, 2453, 1104, 820, 1420, 1421]   # the eastbound carriageway, west to east (geometry B)
+MALL_BLVD_SB = [800, 2451, 2034, 2452, 2373]                   # Round 64: Mall Boulevard from Ring Road south to Barrett (geometry B)
+# the lots (world points). Round 64 (Dan's orange line): off Ring Road across the east lot to Halverson's east doors (was off Town Center Drive, "cutting
+# off road when there was road there"); (his green line) out of Halverson Home's portal and west along its north side to the north lot's old way
+RING_LEAVE = (584.0, -1330.0)      # where the lap leaves Ring Road for the east doors (his orange line meets the road about here)
+EAST_LOT = [(578.0, -1290.0), (562.0, -1255.0), (535.0, -1230.0)]
+NORTH_LOT = [(276.0, -1066.0), (256.0, -1051.0), (230.0, -1036.0), (214.0, -1008.0), (208.0, -990.0), (188.0, -940.0), (168.0, -903.0), (156.0, -878.0)]
+NORTH_LOT_OLD = [(233.0, -1150.0), (222.0, -1060.0), (212.0, -1012.0)]   # Round 62's way from the main doors (now the shortcut's)
 NORTH_FROM = (196.5, -960.0)       # the north lot's way down to Town Center Drive starts here (the lot about 5 m over the road, the red bridge 2 m under it)
+MOUND_AT, MOUND_CREST = (172.5, -910.5), 296.5   # Round 64 G (BUG-003): the berm the way down cut through, filled in as one mound: its crest on the line, its top
 BRIDGE_GRADE = 0.07                # the red bridge's south end at most this much under Town Center Drive per meter from the road's edge
 BOARD_PAD = (10.0, 20.0)           # the boardwalk under I-575 reaches this far before the first creek crossing and past the last (build 3: 10 m east left the stream's far bank as a wall)
 CHECKPOINTS = [   # (x, z, label), forward order from the gate
     (1712.0, -1200.0, "Bells Ferry Road"),
     (1450.0, -1668.0, "Barrett Parkway"),
     (800.0, -1672.0, "Barrett Parkway under I-575"),
-    (575.0, -1513.0, "Town Center Drive"),
+    (528.0, -1450.0, "Ring Road"),
     None,   # Halverson's (the store's aisle): set below from the mall's frame
-    None,   # the main entrance (outside its doors)
+    None,   # the north wing (its corridor, by the escalator's foot)
     (190.0, -938.0, "the north lot"),
     (360.0, -620.0, "the trail by Hidden Forest Court"),
     (655.0, -460.0, "under I-575"),
     (1150.0, -720.0, "the trail by Chastain Meadows"),
     (1560.0, -690.0, "the trailhead"),
 ]
-SIGN_BENDS = [(260.0, -715.0), (520.0, -520.0), (900.0, -540.0), (1340.0, -800.0)]   # yellow winding-road warning signs (breakable), near these bends
+SIGN_BENDS = []   # Round 64 (Dan, BUG-004: "This is a walking path not a road. It makes no sense to have road signs"): Round 62's winding-road signs gone
 
 # ---------------------------------------------------------------- the pieces
 def road_pts(ref):
@@ -231,28 +245,24 @@ osmway = osm_trail()
 bf_s = chain(BELLS_FERRY_S, start=pts(by_osm[TRAILHEAD_DRIVE]["points"])[0])          # from the drive's end on Bells Ferry Road (1689, -580)
 bar_tw = chain(BARRETT_TWO_WAY, start=bf_s[-1][0][-1])
 bar_wb = chain(BARRETT_WB, start=bar_tw[-1][0][-1])
-mb_nb = chain(MALL_BLVD_NB, start=bar_wb[-1][0][-1])
-tcd = chain(TCD_EAST, start=mb_nb[-1][0][-1])
-tcd_line = [q for p, r, two in tcd for q in p]
-_tcd1 = resample(tcd_line, 1.0); s_leave = min(range(len(_tcd1)), key=lambda k: abs(_tcd1[k][1] - EAST_LEAVE_Z)) * cum(_tcd1)[-1] / (len(_tcd1) - 1)
-tcd_cut = cut(tcd_line, 0.0, s_leave)
+mb_nb = chain(MALL_BLVD_NB, start=bar_wb[-1][0][-1])                                    # (to Ring Road at (427, -1503))
+ring = pts(roads[RING_ROAD]["points"]); _r0 = nearest_s(ring, mb_nb[-1][0][-1])[1]; _r1 = nearest_s(ring, RING_LEAVE)[1]
+ring_a = cut(ring, _r0, _r1) if _r1 > _r0 else cut(ring[::-1], cum(ring)[-1] - _r0, cum(ring)[-1] - _r1)   # Ring Road from Mall Boulevard to the east lot
 D_EAST = W(EAST_DOOR_U, VC)                                                             # Halverson's east doors (the middle)
-east_lot = chaikin([tcd_cut[-1]] + EAST_LOT + [(D_EAST[0] + U[0] * 30.0, D_EAST[1] + U[1] * 30.0), (D_EAST[0] + U[0] * 14.0, D_EAST[1] + U[1] * 14.0)], 3)
+east_lot = chaikin([ring_a[-1]] + EAST_LOT + [(D_EAST[0] + U[0] * 30.0, D_EAST[1] + U[1] * 30.0), (D_EAST[0] + U[0] * 14.0, D_EAST[1] + U[1] * 14.0)], 3)
 east_lot = resample(east_lot, 2.0)
-# inside, forward (east doors to main doors): the store, the raffle stage, the well, the upper concourse, the balcony, the hall
+# inside, geometry A (east doors to Halverson Home's portal; Round 64): the store's aisle, its glass front, over the east escalator's rounded top and down it
+# (flat out a car flies off its top and lands on the lower floor), the right turn at its foot into the north wing, up the corridor, through Halverson Home
 f_uv, f_y = [], []
 def add(u, v, y): f_uv.append((u, v)); f_y.append(y)
 add(EAST_DOOR_U + 14.0, VC, CODE_GROUND); add(EAST_DOOR_U + 4.0, VC, CODE_GROUND); add(EAST_DOOR_U, VC, LV(1))
-add(STORE_FRONT_U, VC, LV(1)); add(ESC_TOP_U + STAGE_RAMP, VC, LV(1)); add(ESC_TOP_U, VC, LV(1, STAGE_LIP_H))
-add(ESC_FOOT_U, VC, LV(1, 0.0))                                                         # over the well (the lap's line in the air: reset_skip below)
-tc = (MAIN_U + TURN_R, VC + TURN_R)                                                     # the right turn onto the balcony
-add(tc[0], VC, LV(1))
-for q in arc_uv(tc, TURN_R, 270.0, 180.0, 8)[1:]: add(q[0], q[1], LV(1))
-add(MAIN_U, BALCONY_V, LV(1)); add(MAIN_U, HALL_LAND_V, LV(0)); add(MAIN_U, MAIN_DOOR_V, LV(0))
-add(MAIN_U, MAIN_DOOR_V + 6.0, CODE_GROUND); add(MAIN_U - 2.0, MAIN_DOOR_V + 20.0, CODE_GROUND)
+add(STORE_FRONT_U, VC, LV(1)); add(ESC_TOP_U + 3.0, VC, LV(1)); add(ESC_TOP_U, VC, LV(2)); add(ESC_FOOT_U, VC, LV(2))
+for q in arc_uv((ESC_FOOT_U, VC + TURN_R), TURN_R, 270.0, 180.0, 8)[1:]: add(q[0], q[1], LV(0))   # the right turn into the north wing (at the escalator's foot)
+add(CORR_U, NORTH_FRONT_V + 10.0, LV(0)); add(CORR_U, NORTH_FRONT_V, LV(0))
+add(NORTH_PORTAL_U, NORTH_PORTAL_V + 3.0, LV(0)); add(NORTH_PORTAL_U, NORTH_PORTAL_V, LV(0))
+add(NORTH_PORTAL_U, NORTH_PORTAL_V + 4.0, CODE_GROUND); add(NORTH_PORTAL_U, NORTH_PORTAL_V + 14.0, CODE_GROUND)
 mall_f, mall_fy = mall_line(f_uv, f_y, 2.0)
-D_MAIN = W(MAIN_U, MAIN_DOOR_V)
-north_lot = resample(chaikin([mall_f[-1], W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0)] + NORTH_LOT, 3), 2.0)
+north_lot = resample(chaikin([mall_f[-1]] + NORTH_LOT, 3), 2.0)
 # the trail
 t960, t962, t961, t751 = (osmway(w) for w in TRAIL_WAYS)
 t960 = t960[::-1] if math.dist(t960[0], north_lot[-1]) > math.dist(t960[-1], north_lot[-1]) else t960
@@ -337,6 +347,23 @@ for k in range(len(nl)):
     if k < k_t0: nly[k] = herm(yA, gA, y_tcd, 0.0, LA, nlcc[k] / LA)
     elif k <= k_t1: nly[k] = y_tcd
     else: nly[k] = None
+# Round 64 G (Dan, BUG-003: "dont understand if there is supposed to be hill here or none of it should be a hill. regardless lets fill this in and use as a
+# jump"): the way down cut a 4 m notch through the berm along Town Center Drive. Filled in on the way's line as one mound: from the road's edge up an
+# S-curve face (rounded at its foot and its crest) to MOUND_CREST, 2 m flat, then down the lot side at 6 degrees until it meets the way as it was. A real jump
+# both ways (physics only): off the face from the road (the geometry-B way), off the crest toward the road (A), landing on the face
+k_m = min(range(k_t0), key=lambda k: math.dist(nl[k], MOUND_AT)); s_m, s_e = nlcc[k_m], nlcc[k_t0]
+mound_old = list(nly)
+for k in range(k_t0):
+    s = nlcc[k]
+    if s >= s_m: nly[k] = herm(MOUND_CREST, 0.0, y_tcd, 0.0, s_e - s_m, (s - s_m) / (s_e - s_m))
+    elif s >= s_m - 2.0: nly[k] = MOUND_CREST
+    else: nly[k] = max(mound_old[k], MOUND_CREST - math.tan(math.radians(6.0)) * (s_m - 2.0 - s))
+_ms = [gsm(nly[:k_t0], nlcc[:k_t0], k, 1.5) for k in range(k_t0)]
+for k in range(k_t0):
+    if nlcc[k] < s_m - 2.0: nly[k] = _ms[k]   # (its lot-side foot rounded where the 6 degree slope meets the way)
+mound_k = [k for k in range(k_t0) if nly[k] > mound_old[k] + 0.05]
+print(f"the mound (BUG-003): crest {MOUND_CREST:.2f} m at ({nl[k_m][0]:.0f}, {nl[k_m][1]:.0f}), {s_e - s_m:.1f} m from Town Center Drive's edge ({y_tcd:.2f} m); "
+      f"the way raised by up to {max(nly[k] - mound_old[k] for k in range(k_t0)):.2f} m over {len(mound_k) * 2:.0f} m")
 s_t1 = nlcc[k_t1]; L2 = (nlcc[-1] - s_t1) + rb0
 def after_tcd(s_after): return herm(y_tcd, 0.0, y_s, deck_g, L2, max(0.0, min(1.0, s_after / L2)))
 for k in range(k_t1 + 1, len(nl)): nly[k] = after_tcd(nlcc[k] - s_t1)
@@ -385,7 +412,8 @@ def on_trail_deck(q):
         if any(seg_dist(q, a, b) < d_["width"] / 2.0 + 0.3 for a, b in zip(ln[:-1], ln[1:])): return True
     return False
 # the runs, forward, from Bells Ferry Road's start (the gate is set on it below)
-runs = road_runs(bf_s) + road_runs(bar_tw) + road_runs(bar_wb) + road_runs(mb_nb) + [Run("Town Center Drive", resample(tcd_cut, 3.0), "road", by_osm[1377606893]["width"] / 4.0, osm=1377606893)]
+RING_W = roads[RING_ROAD]["width"]; RING_OSM = roads[RING_ROAD]["osm_id"]
+runs = road_runs(bf_s) + road_runs(bar_tw) + road_runs(bar_wb) + road_runs(mb_nb) + [Run("Ring Road Northwest", resample(ring_a, 3.0), "road", RING_W / 4.0, osm=RING_OSM)]
 runs += [Run("the east lot", east_lot, "lot"), Run("Town Center (the mall)", mall_f, "mall", y=mall_fy), Run("the north lot", north_lot, "lot"),
          Run("Noonday Creek Trail", trail, "trail"), Run("the trailhead", th, "lot")]
 def join(runs):
@@ -431,14 +459,14 @@ print("on decks (forward): the trail's decks %d points, road bridges %d points" 
 C = cum(lap); L_lap = C[-1]
 def S(q): return nearest_s(lap, q)[1]
 print(f"forward lap {L_lap:.0f} m: Bells Ferry {sum(cum(p)[-1] for p, r, t in bf_s):.0f}, Barrett {sum(cum(p)[-1] for p, r, t in bar_tw + bar_wb):.0f}, "
-      f"Mall Boulevard {sum(cum(p)[-1] for p, r, t in mb_nb):.0f}, Town Center Drive {cum(tcd_cut)[-1]:.0f}, east lot {cum(east_lot)[-1]:.0f}, "
+      f"Mall Boulevard {sum(cum(p)[-1] for p, r, t in mb_nb):.0f}, Ring Road {cum(ring_a)[-1]:.0f}, east lot {cum(east_lot)[-1]:.0f}, "
       f"the mall {cum(mall_f)[-1]:.0f}, north lot {cum(north_lot)[-1]:.0f}, the trail {cum(trail)[-1]:.0f}, the trailhead {cum(th)[-1]:.0f}")
 lead = [point_at(lap, L_lap - LEAD_IN_M + k * 2.0, C) for k in range(int(LEAD_IN_M / 2.0))] + [lap[0]]
 def mall_s(lp, u, v):
     return nearest_s(lp, W(u, v))[1]
 cps = []
 CPS = list(CHECKPOINTS)
-CPS[4] = (*W(118.0, VC), "Halverson's"); CPS[5] = (*W(MAIN_U - 2.0, MAIN_DOOR_V + 14.0), "the main entrance")
+CPS[4] = (*W(118.0, VC), "Halverson's"); CPS[5] = (*W(CORR_U, -1262.0), "the north wing")
 for x, z, label in CPS:
     s = round(S((x, z)), 1); p = point_at(lap, s, C); cps.append({"s": s, "pos": [round(p[0], 1), round(p[1], 1)], "label": label})
 cps.sort(key=lambda c: c["s"])
@@ -449,30 +477,26 @@ print("forward checkpoints: " + ", ".join(f"CP{c['id']} {c['s']:.0f} {c['label']
 bf_n = chain(BELLS_FERRY_S[::-1], start=pts(roads[2122]["points"])[0] if math.dist(pts(roads[2122]["points"])[0], (1714.0, -1686.0)) < 2 else pts(roads[2122]["points"])[-1])
 bar_eb = chain(BARRETT_EB, start=pts(roads[2380]["points"])[0])
 bar_tw_e = chain(BARRETT_TWO_WAY[::-1], start=bar_eb[-1][0][-1])
-mb_sb = chain(MALL_BLVD_SB, start=tcd_line[0])                                         # from Town Center Drive at (466, -1579)
-tcd_rev = cut(tcd_line, 0.0, s_leave)[::-1]
+_s0 = pts(roads[MALL_BLVD_SB[0]]["points"])[0]                                          # Mall Boulevard's southbound piece leaves Ring Road at (417, -1508)
+_q0 = nearest_s(ring, _s0)[1]; _q1 = nearest_s(ring, RING_LEAVE)[1]
+ring_b = cut(ring, _q1, _q0) if _q0 > _q1 else cut(ring[::-1], cum(ring)[-1] - _q1, cum(ring)[-1] - _q0)   # Ring Road from the east lot to Mall Boulevard
+mb_sb = chain(MALL_BLVD_SB, start=_s0)
 east_lot_r = east_lot[::-1]
-r_uv, r_y = [], []
-def addr(u, v, y): r_uv.append((u, v)); r_y.append(y)
-addr(MAIN_U - 2.0, MAIN_DOOR_V + 20.0, CODE_GROUND); addr(MAIN_U, MAIN_DOOR_V + 6.0, CODE_GROUND); addr(MAIN_U, MAIN_DOOR_V, LV(0))
-addr(MAIN_U, -1292.0, LV(0))
-rc = (MAIN_U + TURN_R, -1292.0)                                                         # the left turn onto the lower concourse
-for q in arc_uv(rc, TURN_R, 180.0, 270.0, 8)[1:]: addr(q[0], q[1], LV(0))
-addr(ESC_FOOT_U, VC, LV(2)); addr(ESC_TOP_U, VC, LV(2))                                  # up the east escalator (its own surface)
-addr(ESC_TOP_U + 9.0, VC, LV(1)); addr(STORE_FRONT_U, VC, LV(1)); addr(EAST_DOOR_U, VC, LV(1))
-addr(EAST_DOOR_U + 4.0, VC, CODE_GROUND); addr(EAST_DOOR_U + 14.0, VC, CODE_GROUND)
-mall_r, mall_ry = mall_line(r_uv, r_y, 2.0)
+mall_r, mall_ry = mall_f[::-1], mall_fy[::-1]                                           # the mall the other way (the same line: up the escalator, out Halverson's east doors)
 north_lot_r = north_lot[::-1]
 trail_r = trail[::-1]; th_r = th[::-1]
 runs_r = road_runs(bf_n)[:]
 runs_r = [Run("the trailhead", th_r, "lot"), Run("Noonday Creek Trail", trail_r, "trail"), Run("the north lot", north_lot_r, "lot"),
           Run("Town Center (the mall)", mall_r, "mall", y=mall_ry), Run("the east lot", east_lot_r, "lot"),
-          Run("Town Center Drive", resample(tcd_rev, 3.0), "road", by_osm[1377606893]["width"] / 4.0, osm=1377606893)] + road_runs(mb_sb) + road_runs(bar_eb) + road_runs(bar_tw_e) + road_runs(bf_n)
+          Run("Ring Road Northwest", resample(ring_b, 3.0), "road", RING_W / 4.0, osm=RING_OSM)] + road_runs(mb_sb) + road_runs(bar_eb) + road_runs(bar_tw_e) + road_runs(bf_n)
 line_r, offs_r, ys_r, kinds_r, names_r = join(runs_r)
 if math.dist(line_r[0], line_r[-1]) > 3.5: raise SystemExit("the reverse lap does not close: gap %.1f m" % math.dist(line_r[0], line_r[-1]))
 line_r[-1] = line_r[0]
 lap_r = lane(line_r, offs_r)
-print("on decks (reverse): the trail's decks %d points, road bridges %d points" % on_decks(lap_r, ys_r, kinds_r, names_r))
+print("on decks (geometry B): the trail's decks %d points, road bridges %d points" % on_decks(lap_r, ys_r, kinds_r, names_r))
+# Round 64 (A): geometry B is the race's FORWARD lap now (Dan: "I wanted the reverse track to be the forward track"): it starts at the gate too
+_gdr, _gsr = nearest_s(lap_r, GATE_AT); _Cr = cum(lap_r); kr = min(range(len(lap_r)), key=lambda k: abs(_Cr[k] - _gsr))
+lap_r = rotate(lap_r, kr); ys_r = rotate(ys_r, kr); kinds_r = rotate(kinds_r, kr); names_r = rotate(names_r, kr); line_r = rotate(line_r, kr)
 Cr = cum(lap_r); L_rev = Cr[-1]
 def SR(q): return nearest_s(lap_r, q)[1]
 gate_s_rev = round(SR(GATE_AT), 1)
@@ -559,28 +583,31 @@ def closures_for(lap, center, kinds, other_way=()):
     for j in merged: j["roads"] = sorted(set(j["roads"])); j["pos"] = [round(v, 1) for v in point_at(lap, j["s"], cum(lap))]
     return closures, merged
 used = {r.osm for r in runs + runs_r if r.osm}
-used |= {roads[i]["osm_id"] for i in BELLS_FERRY_S + BARRETT_TWO_WAY + BARRETT_WB + MALL_BLVD_NB + TCD_EAST + BARRETT_EB + MALL_BLVD_SB if isinstance(i, int)}
-closures, merged = closures_for(lap, rotate(line, k0), kinds, set(BARRETT_EB + MALL_BLVD_SB[1:]))   # (not Town Center Drive's stub: it leads on west)
+used |= {roads[i]["osm_id"] for i in BELLS_FERRY_S + BARRETT_TWO_WAY + BARRETT_WB + MALL_BLVD_NB + BARRETT_EB + MALL_BLVD_SB + [RING_ROAD] if isinstance(i, int)}
+closures, merged = closures_for(lap, rotate(line, k0), kinds, set(BARRETT_EB + MALL_BLVD_SB))
 closures_rev, merged_rev = closures_for(lap_r, line_r, kinds_r, set(BARRETT_WB + MALL_BLVD_NB))
 for c in closures_rev: c["junction_s"] = round(c["junction_s"], 1)
-print(f"closures (barriers while racing): forward {len(closures)}, reverse {len(closures_rev)}")
+print(f"closures (barriers while racing): geometry A {len(closures)}, B {len(closures_rev)}")
 for c in closures: print(f"  {c['id']:4} {c['label']}  at ({c['x']:.0f}, {c['z']:.0f}), road width {c['width_m']:.0f} m")
 
-# ---------------------------------------------------------------- the AI: held speeds and narrow stretches; resets past the flights
-def zone_s(lp, a, b, s_of): return round(s_of(a), 1), round(s_of(b), 1)
+# ---------------------------------------------------------------- the AI: held speeds and narrow stretches
 def zones(lp, s_of, rev):
     z = []
     def Z(id_, a, b, speed): s0, s1 = round(s_of(a), 1), round(s_of(b), 1); z.append({"id": id_, "s0": min(s0, s1), "s1": max(s0, s1), "speed": speed})
+    lot_mid = east_lot[len(east_lot) // 2]; home_out = W(NORTH_PORTAL_U, NORTH_PORTAL_V + 6.0)
     if not rev:
         Z("the trailhead's drive", th[0], drive[4], 11.0)
         Z("onto Bells Ferry Road", drive[4], (1708.0, -616.0), 12.0)
         Z("onto Mall Boulevard", (540.0, -1686.0), (505.0, -1660.0), 13.0)
-        Z("into the east lot", tcd_cut[-1], east_lot[len(east_lot) // 2], 16.0)
-        Z("to Halverson's doors", east_lot[len(east_lot) // 2], W(EAST_DOOR_U - 6.0, VC), 18.0)
+        Z("onto Ring Road", (440.0, -1528.0), (452.0, -1490.0), 12.0)
+        Z("off Ring Road", ring_a[-1], lot_mid, 16.0)
+        Z("to Halverson's doors", lot_mid, W(EAST_DOOR_U - 6.0, VC), 18.0)
         Z("the mattress mountain", W(MATTRESS_U + 14.0, VC), W(MATTRESS_U - 14.0, VC), 26.0)
-        Z("the raffle stage", W(ESC_TOP_U + 14.0, VC), W(ESC_TOP_U - 4.0, VC), 28.0)   # off the lip at 28: clears the well (24.5 m/s and up), lands about u -3
-        Z("to the balcony", W(-4.0, VC), W(MAIN_U, BALCONY_V), 12.0)
-        Z("the hall", W(MAIN_U, BALCONY_V), W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), 13.0)
+        Z("over the escalator's top", W(STORE_FRONT_U - 2.0, VC), W(ESC_TOP_U - 6.0, VC), 15.0)   # (Round 64: down it, not over the well to its foot)
+        Z("the turn into the north wing", W(ESC_TOP_U - 6.0, VC), W(CORR_U, -1280.0), 10.0)
+        Z("the north wing", W(CORR_U, -1280.0), W(CORR_U, NORTH_FRONT_V), 22.0)
+        Z("through Halverson Home", W(CORR_U, NORTH_FRONT_V), W(NORTH_PORTAL_U, NORTH_PORTAL_V), 18.0)
+        Z("out of Halverson Home", W(NORTH_PORTAL_U, NORTH_PORTAL_V), NORTH_LOT[2], 12.0)
         Z("across Town Center Drive", NORTH_FROM, trail[8], 13.0)
         Z("the red bridge", trail[8], point_at(trail, rb1 + 6.0, tc_), 12.0)
         Z("under I-575", point_at(trail, min(us0, bw0) - 20.0, tc_), point_at(trail, max(us1, bw1) + 8.0, tc_), 14.0)   # (build 3: the boardwalk's ends met at speed)
@@ -592,11 +619,15 @@ def zones(lp, s_of, rev):
         Z("under I-575", point_at(trail, max(us1, bw1) + 8.0, tc_), point_at(trail, min(us0, bw0) - 6.0, tc_), 14.0)
         Z("the red bridge", point_at(trail, rb1 + 25.0, tc_), trail[8], 12.0)   # (build 3: onto its north end at 24.7 m/s, into the truss)
         Z("across Town Center Drive", trail[8], NORTH_FROM, 13.0)
-        Z("the main doors", W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0), W(MAIN_U, -1290.0), 13.0)
-        Z("the escalator", W(-10.0, VC), W(ESC_TOP_U + 10.0, VC), 30.0)
+        Z("into Halverson Home", NORTH_LOT[2], W(NORTH_PORTAL_U, NORTH_PORTAL_V), 12.0)
+        Z("through Halverson Home", W(NORTH_PORTAL_U, NORTH_PORTAL_V), W(CORR_U, NORTH_FRONT_V), 18.0)
+        Z("the north wing", W(CORR_U, NORTH_FRONT_V), W(CORR_U, -1285.0), 22.0)
+        Z("the turn onto the escalator", W(CORR_U, -1285.0), W(ESC_FOOT_U + 4.0, VC), 10.0)
+        Z("up the escalator", W(ESC_FOOT_U + 4.0, VC), W(STORE_FRONT_U + 4.0, VC), 14.0)   # (its rounded top: over 14.7 m/s a car leaves it)
         Z("the mattress mountain", W(MATTRESS_U - 14.0, VC), W(MATTRESS_U + 14.0, VC), 26.0)
-        Z("out of Halverson's", W(EAST_DOOR_U - 6.0, VC), east_lot[len(east_lot) // 2], 16.0)
-        Z("onto Town Center Drive", east_lot[len(east_lot) // 2], tcd_cut[-1], 14.0)
+        Z("out of Halverson's", W(EAST_DOOR_U - 6.0, VC), lot_mid, 16.0)
+        Z("onto Ring Road", lot_mid, ring_b[min(len(ring_b) - 1, 6)], 14.0)
+        Z("onto Mall Boulevard", (445.0, -1495.0), (428.0, -1525.0), 11.0)
         Z("onto Barrett Parkway", (505.0, -1680.0), (540.0, -1705.0), 12.0)
     return [q for q in z if q["s1"] > q["s0"] and q["s1"] - q["s0"] < 400]
 ai_zones = zones(lap, S, False); ai_zones_rev = zones(lap_r, SR, True)
@@ -606,20 +637,74 @@ def widths(s_of, rev):
     Wd("the red bridge", bridge_red[0], bridge_red[1], 1.2)
     Wd("under I-575", UNDERPASS[0], UNDERPASS[-1], 1.4)
     Wd("Halverson's", W(EAST_DOOR_U + 2.0, VC), W(STORE_FRONT_U - 2.0, VC), 2.8)
-    Wd("the escalator and the stage", W(ESC_TOP_U + STAGE_RAMP + 6.0, VC), W(ESC_FOOT_U - 6.0, VC), 1.6)
-    Wd("the balcony and the hall", W(MAIN_U + 4.0, VC), W(MAIN_U, MAIN_DOOR_V + 4.0), 2.4)
-    Wd("the main doors", W(MAIN_U, MAIN_DOOR_V + 4.0), W(MAIN_U - 2.0, MAIN_DOOR_V + 16.0), 2.6)
+    Wd("the escalator", W(ESC_TOP_U + 4.0, VC), W(ESC_FOOT_U, VC), 1.6)
+    Wd("the north wing", W(ESC_FOOT_U, VC), W(CORR_U, NORTH_FRONT_V), 3.0)
+    Wd("Halverson Home", W(CORR_U, NORTH_FRONT_V), W(NORTH_PORTAL_U, NORTH_PORTAL_V + 1.0), 3.0)
+    Wd("Halverson Home's doors", W(NORTH_PORTAL_U, NORTH_PORTAL_V + 1.0), W(NORTH_PORTAL_U, NORTH_PORTAL_V + 8.0), 2.4)
     Wd("the east doors", W(EAST_DOOR_U + 12.0, VC), W(EAST_DOOR_U + 2.0, VC), 2.6)
     return [q for q in w if q["s1"] > q["s0"] and q["s1"] - q["s0"] < 400]
 ai_widths, ai_widths_rev = widths(S, False), widths(SR, True)
-# resets: a reset over the escalator well (forward) puts the vehicle on the upper floor past it; on the balcony's flight, in the hall past the landing;
-# over the raffle stage's flight (reverse), in the store past the front
-def skip(lp, s_of, gate_s, a, b, to, id_):
-    s0, s1, st = s_of(a), s_of(b), s_of(to)
-    return {"id": id_, "s0": round(s0, 1), "s1": round(s1, 1), "to_s": round(st, 1)}
-reset_skip = [skip(lap, S, 0.0, W(ESC_TOP_U + 1.0, VC), W(ESC_FOOT_U - 1.0, VC), W(ESC_FOOT_U - 8.0, VC), "the escalator well"),
-              skip(lap, S, 0.0, W(MAIN_U, BALCONY_V - 0.5), W(MAIN_U, HALL_LAND_V), W(MAIN_U, MAIN_DOOR_V - 2.0), "the balcony's drop")]
-reset_skip_rev = [skip(lap_r, SR, gate_s_rev, W(ESC_TOP_U - 1.0, VC), W(STORE_FRONT_U, VC), W(STORE_FRONT_U + 6.0, VC), "off the escalator's top")]
+reset_skip, reset_skip_rev = [], []   # (Round 64: no flight over the escalator's well or the balcony on the lap any more)
+
+# ---------------------------------------------------------------- Round 64 (C): the shortcuts through the mall (Dan's red lines: "Red is where i want shortcuts").
+# One corridor, each way its own shortcut: between the north lot and Mall Boulevard by Ring Road, in Town Center's main doors, down the entrance hall,
+# across the lower concourse into the center court, through Carroway (the south anchor, MapBuilder.MallShortcut.cs: its lower floor a department store
+# under renovation, the floor torn up right across it: the renovation pit, flooded, with a plywood kicker on each side of it on the line, each the
+# other's landing; short and you are in the water, out by a ramp at the pit's far end) and out its south portal across the south lot. Its heights:
+# the mall's lower floor inside (L0), the ground outside. Hint: worn tire tracks off the course to the doors at each end (Dan: tracks are the hint)
+def mall_pts(uvs):
+    out, ys_ = [], []
+    for u, v, code in uvs: out.append(W(u, v)); ys_.append(code)
+    return out, ys_
+_conn = [q for p_, r_, t_ in mb_nb[-2:] for q in p_]; _cc = cum(_conn)                     # Mall Boulevard's two last pieces up to Ring Road (1093, 2398)
+_sb = pts(roads[MALL_BLVD_SB[0]]["points"]); _sbc = cum(_sb)                             # its southbound piece down from Ring Road (800)
+inside_ab = [(SOUTH_U, SOUTH_PORTAL_V - 14.0, 0), (SOUTH_U, SOUTH_PORTAL_V - 4.0, 0), (SOUTH_U, SOUTH_PORTAL_V, 1), (SOUTH_U, PIT_V1 - 12.0, 1),
+             (SOUTH_U, PIT_V0 + 12.0, 1), (SOUTH_U + 0.2, SOUTH_FRONT_V - 3.0, 1), (-102.0, -1320.0, 1), (-91.0, -1312.5, 1), (-74.0, -1305.5, 1),
+             (-60.0, -1299.0, 1), (-53.0, -1293.5, 1), (MAIN_U, -1287.0, 1), (MAIN_U, MAIN_DOOR_V, 1), (MAIN_U, MAIN_DOOR_V + 4.0, 0), (MAIN_U, MAIN_DOOR_V + 14.0, 0)]
+_in_pts, _in_codes = mall_pts(inside_ab)
+# (off Mall Boulevard northbound 40 m before Ring Road, across the southbound piece and Ring Road 35 m west of the junction: clear of the race's barrier there)
+lot_s_a = chaikin([point_at(_conn, _cc[-1] - 46.0, _cc), point_at(_conn, _cc[-1] - 36.0, _cc), (426.0, -1527.0), (396.0, -1515.0), (362.0, -1488.0), (322.0, -1463.0), (290.0, -1447.0)], 3)
+north_old = chaikin([W(MAIN_U - 6.0, MAIN_DOOR_V + 40.0)] + NORTH_LOT_OLD, 3)
+def sc_path(outside_a, inside, codes, outside_b):
+    """outside_a (ground), inside the mall (codes 1: the lower floor), outside_b (ground): resampled at 2 m with heights"""
+    p_ = resample(outside_a + inside + outside_b, 2.0); y_ = []
+    ins = [inside[i] for i in range(len(inside)) if codes[i] == 1]
+    for q in p_:
+        on_floor = min(seg_dist(q, a, b) for a, b in zip(ins[:-1], ins[1:])) < 0.8
+        y_.append(round(L0 if on_floor else ground(*q), 2))
+    return p_, y_
+path_a, path_a_y = sc_path(lot_s_a, _in_pts, _in_codes, north_old)                       # geometry A: Mall Boulevard -> the north lot
+lot_s_b = chaikin([(290.0, -1447.0), (322.0, -1463.0), (362.0, -1488.0), (396.0, -1515.0), point_at(_sb, 26.0, _sbc), point_at(_sb, 40.0, _sbc)], 3)
+path_b, path_b_y = sc_path(north_old[::-1], _in_pts[::-1], _in_codes[::-1], lot_s_b)        # geometry B: the north lot -> Mall Boulevard
+def forgiven(lp, s_of, cps_, path_):
+    a_, b_ = s_of(path_[0]), s_of(path_[-1]); L_ = cum(lp)[-1]
+    return [c["id"] for c in cps_ if 0 < (c["s"] - a_) % L_ < (b_ - a_) % L_]
+def station(path_, q): return round(nearest_s(path_, q)[1], 1)
+def shortcut(id_, name, direction, path_, y_, forg, from_north):
+    # the AI: 14 m/s on the lots, 12 through the hall and the court, 24 at the renovation pit (its kickers need about 18)
+    if from_north: k0, k1, k2 = W(MAIN_U, MAIN_DOOR_V), W(SOUTH_U, SOUTH_FRONT_V - 6.0), W(SOUTH_U, PIT_V1 - 6.0)
+    else: k0, k1, k2 = W(SOUTH_U, SOUTH_PORTAL_V), W(SOUTH_U, PIT_V0 + 6.0), W(SOUTH_U, SOUTH_FRONT_V)
+    prof = [0.0, 14.0, station(path_, k0), 12.0, station(path_, k1) - 1.0, 12.0, station(path_, k1), 24.0, station(path_, k2), 24.0, station(path_, k2) + 1.0, 14.0]
+    return {"id": id_, "name": name, "direction": direction, "path": flat(path_), "path_y": y_, "half_width_m": 3.5, "entry_inset_m": 14.0, "entry_margin_m": 1.5,
+            "forgives": forg, "ai_speed": 26.0, "ai_profile": prof}
+SHORTCUT_NAME = "Carroway renovation"
+# (the route's "forward" is geometry B from Round 64 on: its shortcut is path_b; the reverse's is path_a)
+sc_fwd = shortcut("t_carroway", SHORTCUT_NAME, "forward", path_b, path_b_y, forgiven(lap_r, SR, cps_rev, path_b), True)
+sc_rev = shortcut("t_carroway_rev", SHORTCUT_NAME, "reverse", path_a, path_a_y, forgiven(lap, S, cps, path_a), False)
+print(f"the shortcuts: forward (geometry B) {cum(path_b)[-1]:.0f} m forgiving CP {sc_fwd['forgives']}; reverse (A) {cum(path_a)[-1]:.0f} m forgiving CP {sc_rev['forgives']}")
+for nm_, lp_, sf_, pa_ in (("B", lap_r, SR, path_b), ("A", lap, S, path_a)):
+    a_, b_ = sf_(pa_[0]), sf_(pa_[-1]); print(f"  geometry {nm_}: the lap from {a_:.0f} to {b_:.0f} m is {(b_ - a_) % cum(lp_)[-1]:.0f} m; the shortcut {cum(pa_)[-1]:.0f} m")
+# the hint at each end: worn tire tracks from the course to the doors
+worn = [{"id": "the shortcut's tracks to the main doors", "points": flat(resample(north_old[::-1][:-1], 2.0))},
+        {"id": "the shortcut's tracks to Carroway", "points": flat(resample(lot_s_a, 2.0))}]
+# the race's grilles (RaceBarriers "seals", both directions): the lower concourse west of the north wing (Dan, BUG-005: "there should been something here
+# forcing you to turn"), Town Center's south doors (upper floor) and its south-west doors (lower), so there is no free way round the renovation pit
+def seal(id_, label, u, v, y, along, w):
+    c_ = W(u, v); d_ = U if along == "u" else V
+    return {"id": id_, "label": label, "x": round(c_[0], 2), "y": round(y, 2), "z": round(c_[1], 2), "dx": round(d_[0], 4), "dz": round(d_[1], 4), "w": w, "h": 3.4}
+seals = [seal("north wing", "the lower concourse west of the north wing (turn into the north wing)", -12.0, VC, L0, "u", 23.6),
+         seal("south doors", "Town Center's south doors", 10.0, -1337.0, L1, "v", 13.0),
+         seal("south-west doors", "Town Center's south-west doors", -195.0, -1338.0, L0, "v", 13.0)]
 
 # ---------------------------------------------------------------- the world pieces (Data/tracks/noonday_creek_trail.json)
 B = [(i, pts(b["footprint"])) for i, b in enumerate(m["buildings"])]
@@ -655,6 +740,8 @@ for n_, r in enumerate(split_runs([el[k] for k in el_k], None, None)):
 nl_k = [k for k in range(len(nl)) if not (k_t0 - 1 <= k <= k_t1 + 1) and road_dist(nl[k]) > 1.0]
 for n_, r in enumerate(split_runs([nl[k] for k in nl_k], None, None)):
     grades.append({"id": f"the north lot's way down ({n_ + 1})", "points": flat([nl[nl_k[k]] for k in r]), "y": [round(nly[nl_k[k]], 2) for k in r], "half": 4.0, "blend": 3.0})
+# Round 64 G: the mound, wider (it fills the berm's notch to its sides)
+if mound_k: grades.append({"id": "the mound by Town Center Drive", "points": flat([nl[k] for k in mound_k]), "y": [round(nly[k], 2) for k in mound_k], "half": 7.0, "blend": 8.0})
 print(f"the trail: {cum(trail)[-1]:.0f} m, {len(grades)} graded stretches; {capped} points held {DECK_CLEAR} m under I-575's decks; "
       f"the bench narrowed by a stream at {sum(1 for h in g_left if h < BENCH_HALF)} points")
 # railings (black steel pipe, photo 1): both sides under I-575, not on the boardwalk (its own: MapBuilder.TrailRace.cs)
@@ -692,17 +779,20 @@ pole_free = [{"id": "the east lot", "points": flat(east_lot[::2] + [east_lot[-1]
 tread = {"line": flat(trail), "width": TRAIL_W, "decks": TRAIL_DECKS, "underpass": flat([UNDERPASS[0], UNDERPASS[-1]]),
          "rails": rails, "signs": signs, "tread_y": [round(v, 2) for v in gy]}
 track = {"note": "Round 62: the Noonday Creek Trail race's world pieces, from Tools/mapgen/make_trail_route.py (MapBuilder.TrailRace.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [], "landing_zones": [], "clear_lines": clear, "break_lines": [], "grades": grades, "trail": tread, "pole_free": pole_free,
+         "big_jumps": [], "landing_zones": [], "clear_lines": clear, "break_lines": [], "grades": grades, "trail": tread, "pole_free": pole_free, "worn_tracks": worn,
          "route_name": SETTINGS["name"]}
 route = dict(SETTINGS)
+# Round 64 (A): FORWARD is geometry B (from the trailhead west along the trail, through the mall the old reverse way, back by Barrett Parkway), REVERSE geometry A
+lead = [point_at(lap_r, L_rev - LEAD_IN_M + k * 2.0, Cr) for k in range(int(LEAD_IN_M / 2.0))] + [lap_r[0]]
 route.update({
     "source": "Tools/mapgen/make_trail_route.py from Data/map.json and raw/osm_ext1.json (OSM's Noonday Creek Trail). Coordinates are map meters (= Unity x, z); heights come from the world, "
               "the mall's floors from the map build (loop_y codes).",
-    "lap_length_m": round(L_lap, 1), "loop": flat(lap), "loop_y": [round(v, 3) for v in ys], "gate_s": 0.0, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
-    "checkpoints": cps, "junctions": merged, "loop_pieces": [{"osm_id": r.osm, "name": r.name, "reverse": False, "length_m": round(cum(r.p)[-1], 1)} for r in runs],
-    "official_shortcuts": [], "closures": closures, "closure_stubs_not_barred": [], "ai_zones": ai_zones, "ai_widths": ai_widths, "reset_skip": reset_skip,
-    "lap_length_rev_m": round(L_rev, 1), "loop_rev": flat(lap_r), "loop_rev_y": [round(v, 3) for v in ys_r], "gate_s_rev": gate_s_rev, "checkpoints_rev": cps_rev,
-    "junctions_rev": merged_rev, "closures_rev": closures_rev, "ai_zones_reverse": ai_zones_rev, "ai_widths_rev": ai_widths_rev, "reset_skip_rev": reset_skip_rev,
+    "lap_length_m": round(L_rev, 1), "loop": flat(lap_r), "loop_y": [round(v, 3) for v in ys_r], "gate_s": 0.0, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
+    "checkpoints": cps_rev, "junctions": merged_rev, "loop_pieces": [{"osm_id": r.osm, "name": r.name, "reverse": False, "length_m": round(cum(r.p)[-1], 1)} for r in runs_r],
+    "official_shortcuts": [sc_fwd, sc_rev], "closures": closures_rev, "closure_stubs_not_barred": [], "ai_zones": ai_zones_rev, "ai_widths": ai_widths_rev, "reset_skip": reset_skip_rev,
+    "lap_length_rev_m": round(L_lap, 1), "loop_rev": flat(lap), "loop_rev_y": [round(v, 3) for v in ys], "gate_s_rev": 0.0, "checkpoints_rev": cps,
+    "junctions_rev": merged, "closures_rev": closures, "ai_zones_reverse": ai_zones, "ai_widths_rev": ai_widths, "reset_skip_rev": reset_skip,
+    "seals": seals,
 })
 json.dump(route, open(OUT_ROUTE, "w", encoding="utf-8"), indent=1)
 json.dump(track, open(OUT_TRACK, "w", encoding="utf-8"), indent=1)
@@ -727,7 +817,9 @@ if "--plot" in sys.argv:
     for sg in signs: ax.plot(*sg["at"], "y^")
     ax.plot(*lap[0], "ks"); ax.text(lap[0][0] + 5, lap[0][1], "gate", clip_on=True)
     ax.plot(*zip(*bridge_red), "r-", lw=3)
+    ax.plot(*zip(*path_a), "r-", lw=1.2); ax.plot(*zip(*path_b), "m:", lw=1.2)
+    for sl in seals: ax.plot(sl["x"], sl["z"], "ks", ms=8)
     ax.set_xlim(x0, x1); ax.set_ylim(z0, z1); ax.set_aspect("equal"); ax.grid(True, alpha=.3)
-    os.makedirs(os.path.join(ROOT, "local/round62"), exist_ok=True)
-    out = os.path.join(ROOT, "local/round62/layout.png" if not view else "local/round62/layout_zoom.png")
+    os.makedirs(os.path.join(ROOT, "local/round64"), exist_ok=True)
+    out = os.path.join(ROOT, "local/round64/layout.png" if not view else "local/round64/layout_zoom.png")
     plt.savefig(out, dpi=72, bbox_inches="tight"); print("picture:", os.path.relpath(out, ROOT))
