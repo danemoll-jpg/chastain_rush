@@ -413,12 +413,19 @@ namespace ChastainRush
             // the east anchor's portal over its east door (its walls and floors: MallShell, its inside: MallInside)
             {
                 var d = m.Doors.First(x => x.anchor); var f = MakeFrame(new Vector3(d.Mid.x, d.floor, d.Mid.y), d.nOut, 1f); float h = m.AnchorTop - d.floor;
-                BoxF(shell, f, -10f, 10f, -.3f, h + 2.4f, -.05f, .9f, MCream);
+                BoxFHole(shell, f, -10f, 10f, -.3f, h + 2.4f, -.05f, .9f, -d.Width * .5f, d.Width * .5f, d.height + .1f, MCream);   // Round 64 (Dan, BUG-002 "these should be glass doors"): open at the doors
                 BoxF(shell, f, -10.4f, 10.4f, h + 2.4f, h + 2.8f, -.1f, 1.1f, MCoping);
                 for (int s = 0; s < 3; s++) BoxF(shell, f, -8.5f + s * 1.8f, 8.5f - s * 1.8f, h + 2.8f + s * .7f, h + 3.5f + s * .7f, .2f, .9f, MCream);
                 if (signs != null) MallPlate(outside, f.P(0f, h - 3.4f, 1.02f), -f.F, 15f, 15f * .078f, SignHalverson, signs);
                 // the same name on the west anchor's other faces would be too much; one more on the east anchor's south face (seen from the south lot)
             }
+        }
+
+        // Round 64: a frame's box with an opening from its foot up to 'top' between hx0 and hx1 (the doors behind it)
+        static void BoxFHole(MeshBuilder mb, Frame f, float x0, float x1, float y0, float y1, float z0, float z1, float hx0, float hx1, float top, Color c)
+        {
+            BoxF(mb, f, x0, hx0, y0, y1, z0, z1, c); BoxF(mb, f, hx1, x1, y0, y1, z0, z1, c);
+            if (top < y1) BoxF(mb, f, hx0, hx1, top, y1, z0, z1, c);
         }
 
         // Round 64: an anchor driven through (Halverson Home, Carroway): its walls with their openings (its portal's doors, its front on the concourse
@@ -455,8 +462,11 @@ namespace ChastainRush
                     for (float x = -hw; x <= hw + .01f; x += hw / 2.5f) BoxF(shell, f, x - .09f, x + .09f, 3.4f, top - .5f, 1.15f, 1.35f, MBronze);
                     for (float y = 3.4f; y < top; y += 2.6f) BoxF(shell, f, -hw, hw, y, y + .18f, 1.15f, 1.35f, MBronze);
                     BoxF(shell, f, -hw - 3.4f, hw + 3.4f, top - .5f, top + .3f, -.1f, 2.4f, MBronze);   // its cap, overhanging
-                    BoxF(shell, f, -hw - 6f, hw + 6f, -.3f, m.Roof + 2.2f - d.floor, -.05f, .5f, MBlock);   // the stepped parapet behind it
-                    BoxF(shell, f, -hw - 9f, hw + 9f, -.3f, m.Roof + 1.6f - d.floor, -.05f, .35f, MBlock);
+                    // the stepped parapet behind it (Round 64, Dan BUG-006 "glass door entrance again": open behind the doors and the tower's glass; it stood
+                    // in front of the doorway, a wall with no collider)
+                    float open = m.L1 + 4.6f - d.floor;
+                    BoxFHole(shell, f, -hw - 6f, hw + 6f, -.3f, m.Roof + 2.2f - d.floor, -.05f, .5f, -hw, hw, open, MBlock);
+                    BoxFHole(shell, f, -hw - 9f, hw + 9f, -.3f, m.Roof + 1.6f - d.floor, -.05f, .35f, -hw, hw, open, MBlock);
                     BoxF(shell, f, -hw - 1f, hw + 1f, 3.4f, 3.7f, 1.2f, 4.0f, MBronze);   // the door canopy
                     if (signs != null) MallPlate(outside, f.P(0f, m.Roof + 2.2f - d.floor - 1.4f, .52f), -f.F, 11f, 11f * .078f, SignTownCenter, signs);
                     // planters by the doors, two lamp posts

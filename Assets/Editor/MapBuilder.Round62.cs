@@ -149,6 +149,38 @@ namespace ChastainRush
                 GradeAlong(terrain, new RidgeGrade { id = "Big Shanty Road under I-575", points = seg.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = r.width * .5f + 1f, blend = 4f });
                 Debug.Log($"[Round62] C: BUG-001, Big Shanty Road under I-575 ({r.osm_id}): laid straight from ({seg[0].x:0}, {seg[0].y:0}) {y0:0.00} m to ({seg[seg.Count - 1].x:0}, {seg[seg.Count - 1].y:0}) {y1:0.00} m; sharpest step {before:0.000} -> {SharpestStep(terrain, seg, float.MaxValue):0.000} m");
             }
+            // Round 64 (H, Dan BUG-001 x 687.63 z -1668.31 Barrett Parkway: "fix bump"): both carriageways between x 560 and 740 (the I-575 ramps' merges: the
+            // check after the levelling still found 1 m steps at x 603, 650 and 680, a car 0.9 s in the air at 25 m/s) each laid as one smooth profile: its ground
+            // blurred along (a Gaussian of 14 m), fading back to the road as it was over the outer 30 m, graded across its width (easing back over 4 m)
+            foreach (int dirSign in new[] { -1, 1 })
+            {
+                var cw = new List<Vector2>(); float wHalf = 0f;
+                foreach (var r in map.roads)
+                {
+                    if (r.name != "Barrett Parkway" || r.bridge || r.points == null) continue;
+                    var q = ToPoints(r.points); if (q.Count < 2) continue;
+                    if (!q.Any(v => v.x > 560f && v.x < 740f && v.y > -1720f && v.y < -1640f)) continue;
+                    if (Mathf.Sign(q[q.Count - 1].x - q[0].x) != dirSign || !r.oneway) continue;
+                    foreach (var v in q) if (v.x > 540f && v.x < 760f && v.y > -1720f && v.y < -1640f) cw.Add(v);
+                    wHalf = Mathf.Max(wHalf, r.width * .5f);
+                }
+                if (cw.Count < 4) continue;
+                cw = cw.OrderBy(v => v.x * dirSign).ToList();
+                var dd = new List<Vector2> { cw[0] }; foreach (var v in cw.Skip(1)) if ((v - dd[dd.Count - 1]).magnitude > .5f) dd.Add(v);
+                var seg = Resample(dd, 1f); int n = seg.Count; if (n < 40) continue;
+                var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (seg[i] - seg[i - 1]).magnitude;
+                var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(seg[i].x, seg[i].y);
+                const float Sig = 14f, Fade = 30f; var ys = new float[n];
+                for (int i = 0; i < n; i++)
+                {
+                    float sw = 0f, sy = 0f;
+                    for (int j = 0; j < n; j++) { float d = cs[j] - cs[i]; if (Mathf.Abs(d) > 3f * Sig) continue; float k = Mathf.Exp(-.5f * d * d / (Sig * Sig)); sw += k; sy += k * raw[j]; }
+                    float w = Smooth01(Mathf.Min(cs[i], cs[n - 1] - cs[i]) / Fade); ys[i] = raw[i] + w * (sy / sw - raw[i]);
+                }
+                float before = SharpestStep(terrain, seg, float.MaxValue);
+                GradeAlong(terrain, new RidgeGrade { id = "Barrett Parkway at the I-575 ramps", points = seg.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = wHalf + .5f, blend = 4f });
+                Debug.Log($"[Round64] H: BUG-001, Barrett Parkway's {(dirSign < 0 ? "westbound" : "eastbound")} carriageway from ({seg[0].x:0}, {seg[0].y:0}) to ({seg[n - 1].x:0}, {seg[n - 1].y:0}) laid as one curve: sharpest step {before:0.000} -> {SharpestStep(terrain, seg, float.MaxValue):0.000} m");
+            }
             var lines = new List<string> { "Round 62 (C): the main roads levelled across their width (MapBuilder.Round62.cs). Per road name: length levelled, the sharpest 1 m step (second difference) before -> after, steps over 0.10 m before -> after" };
             foreach (var kv in report.OrderByDescending(k => k.Value.before))
                 lines.Add($"{kv.Key}\t{kv.Value.len:0} m\t{kv.Value.before:0.000} -> {kv.Value.after:0.000} m\t{kv.Value.b10} -> {kv.Value.a10}");
