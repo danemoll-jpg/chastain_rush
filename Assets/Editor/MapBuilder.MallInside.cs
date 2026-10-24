@@ -56,7 +56,7 @@ namespace ChastainRush
                 (br.sign, "MallSigns", .4f, BreakSounds.Kind.Sign), (br.foam, "MallSoft", .3f, BreakSounds.Kind.Wood), (br.doors, "MallDoorGlass", .3f, BreakSounds.Kind.Glass) })
             {
                 if (b.Count == 0) continue;
-                var tr = b.ToObjects(name, b == br.doors ? MallSeeThrough("MallDoorGlass", new Color(.62f, .75f, .80f, .28f), .92f) : mats.House, root, drop, sound);   // Round 64 (Dan, BUG-002: "these should be glass doors")
+                var tr = b.ToObjects(name, b == br.doors ? MallSeeThrough("MallDoorGlass", new Color(.50f, .68f, .76f, .45f), .95f) : mats.House, root, drop, sound);   // Round 64 (Dan, BUG-002: "these should be glass doors")
                 foreach (var c in tr.GetComponentsInChildren<FenceChunk>()) { c.free = true; m.Breakables.Add(c); }   // no speed lost (Dan: "breaking them must not stop a car")
             }
             m.Log.Add($"{shops.Count} shops ({shops.Count(s => s.level == 0)} lower, {shops.Count(s => s.level == 1)} upper); breakables: glass {br.glass.Count}, wood {br.wood.Count}, metal {br.iron.Count}, signs {br.sign.Count}, soft {br.foam.Count}");
@@ -493,7 +493,7 @@ namespace ChastainRush
                 MItem(br.doors, mid, outN, (p1 - p0).magnitude, h, 1.4f,
                     mb => { var q0 = p0 + al * .06f; var q1 = p1 - al * .06f; var hh = Vector3.up * h; Face(mb, q0, q1, q1 + hh, q0 + hh, outN); Face(mb, q0, q1, q1 + hh, q0 + hh, -outN); });
                 MItem(br.iron, mid, outN, (p1 - p0).magnitude, h, 1.4f,
-                    mb => { SBox(mb, p0, p1 - p0, new Vector3(.08f, h, .12f), MBronze); SBox(mb, p0 + Vector3.up * (h - .08f), p1 - p0, new Vector3((p1 - p0).magnitude, .08f, .12f), MBronze); SBox(mb, p0, p1 - p0, new Vector3((p1 - p0).magnitude, .12f, .12f), MBronze); },
+                    mb => { SBox(mb, p0, p1 - p0, new Vector3(.08f, h, .12f), MBronze); SBox(mb, p0 + Vector3.up * (h - .08f), p1 - p0, new Vector3((p1 - p0).magnitude, .08f, .12f), MBronze); SBox(mb, p0, p1 - p0, new Vector3((p1 - p0).magnitude, .12f, .12f), MBronze); SBox(mb, mid, p1 - p0, new Vector3(.1f, h, .12f), MBronze); },   // (Round 64: two leaves a pane)
                     mb => { SBox(mb, mid + Vector3.up * 1.0f + outN * .07f, p1 - p0, new Vector3((p1 - p0).magnitude * .6f, .05f, .05f), MSteel); SBox(mb, mid + Vector3.up * 1.0f - outN * .07f, p1 - p0, new Vector3((p1 - p0).magnitude * .6f, .05f, .05f), MSteel); });
             }
         }

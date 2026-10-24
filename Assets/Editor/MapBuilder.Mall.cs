@@ -145,7 +145,7 @@ namespace ChastainRush
                 EditTerrain(t, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, y) =>
                 {
                     var q = new Vector2(x, z) - c; float out_ = Vector2.Dot(q, d.nOut), side = Mathf.Abs(Vector2.Dot(q, along));
-                    if (out_ < .2f || out_ > 16f || side > half + 4f) return y;
+                    if (out_ < -1.5f || out_ > 16f || side > half + 4f) return y;   // Round 64: from 1.5 m inside the wall's line (the threshold: Carroway's portal kept a 1.9 m ridge of ground under its doors)
                     float w = Smooth01(1f - (out_ - 6f) / 10f) * Smooth01(1f - (side - half) / 4f);
                     float ny = y + w * (d.floor - .02f - y); if (Mathf.Abs(ny - y) > 1e-3f) { n++; most = Mathf.Max(most, Mathf.Abs(ny - y)); }
                     return ny;
