@@ -6286,3 +6286,67 @@ For Dan to check: fly it (controls, hover, landing, crashing); how far you can s
 Check (`-exeRound63`, `Checks/Round20Runner.R63.cs`): 22 of 22 (`round63_check_1080p.txt`): hover, three flights landing on their spots, both pads both ways, both crashes; fps table above; pictures `63_*.png`.
 Builds: one full Build Map (1 h 6 min), then code-only exes on its scene; `Builds/ChastainRush/` 2026-10-24 00:34. Imported from Racer: nothing (the police helicopter's two sound clips shared).
 For Dan: (a) the far view's cost high over the woods: accept, or trade view distance / far trees for frame rate; (b) the controls' layout, the speeds, and the boost on RB.
+
+## Round 64 (moved from TODO.md on 2026-10-25 when Dan reviewed Round 67; word for word)
+
+## Previous delivery 3: Round 64
+**Reviewed: Dan raced it 2026-10-25 02:23; his notes are Round 67 B.**
+**Round 64, THE NOONDAY CREEK TRAIL PUT RIGHT: forward and reverse swapped, the route rerouted on the roads, shortcuts through the
+mall, glass doors, the trail's signs, fences and walkers, a mound made a jump; the levelling's junction steps (Dan, 2026-10-23 21:06;
+reports BUG-001 to BUG-008 of session `2026-10-23_20-28-33-291_9085ef`, read by Claude, after the Round 62 exe; his two map shots
+`local/reference_photos/noonday_trail/r64_map_reverse_green_red.jpg` (on the reverse course) and `r64_map_forward_orange_red.jpg` (on the
+forward course)).** Round 63 (the helicopter) is done; Dan moved on to this round 2026-10-24 01:35. WHEN THIS ROUND IS DONE (status written, committed), START ROUND 65 (QUEUED) AT ONCE, without waiting for Dan (Dan, 2026-10-24 11:10: he is away for a while). ONE full Build Map at the end. Tuning limit. Short results.
+A. FORWARD AND REVERSE SWAPPED. Dan: "I know it's picky but I wanted the reverse track to be the forward track ... I thought I had said
+   that when I requested it" (Claude misread his 02:32 note). Today's REVERSE (from the trailhead on Bells Ferry west along the trail, the
+   red bridge, into the mall's main doors, ... back by Barrett and Bells Ferry) becomes FORWARD, and today's forward becomes REVERSE: names,
+   start grids, checkpoints, records / ghosts / replays swapped with them (keep the times, under the right direction), map and menus.
+B. THE ROUTE ON THE ROADS. Dan's key: GREEN (and the orange line on the forward shot, the same meaning) "is where I wanted to reroute the
+   track. Not sure why the track was cutting off road when there was road there". Reroute the course along the lot / mall roads he drew:
+   on the reverse shot the green line leaves the course north of the mall and runs east and down by the mall's north wing to rejoin the
+   course in the concourse; on the forward shot the orange line runs along the east lot's road (inside the course's arc) from the east
+   doors' corner down to the junction by CP4. Follow the existing roads there instead of cutting across grass / lot; checkpoints, closures,
+   AI to suit, both directions. If a drawn line cannot be followed exactly (a wall, a gap), the nearest drivable way, and say.
+C. SHORTCUTS THROUGH THE MALL: RED. Dan: "Red is where i want shortcuts". Reverse shot (the new FORWARD): from the main doors / center
+   court south through the mall's south wing and out across the south lot to the course by CP8 (skipping the east loop). Forward shot (the
+   new REVERSE): from the trail north of the mall straight south through the mall's middle and south wing to the course by CP4. Each is that
+   direction's shortcut (standing rules: a real risk, no free way round, tire tracks / a clear hint at the entry, real physics on any ramp,
+   breakables never slow a car; something creative inside, as the mall jumps). Code reports the time each saves clean and missed.
+D. THE MALL'S DOORS. BUG-002 (x 498.28 z -1216.56 h 268, a mall entrance on the course, CP5 next): "these should be glass doors" (the
+   picture: an open wall with no doors). BUG-006 (x 266.58 z -1217.04 h 164, another entrance on the course): "glass door entrance again".
+   Every entrance the course (or a shortcut) uses gets glass doors that break as you drive through (no speed lost) and are whole next lap.
+E. INSIDE THE MALL: BUG-005 (x 287.86 z -1278.10 h 336, the concourse before CP6): "there should been something here forcing you to turn,
+   it isn't very obvious". Make the turn unmistakable: a barrier of breakable-looking but solid displays / planters / a closed store gate
+   across the wrong way, arrows, the checkpoint arch placed where it reads.
+F. THE TRAIL. BUG-004 (x 199.09 z -720.91 h 48, the trail by Hidden Forest Court): "This is a walking path not a road. It makes no sense
+   to have road signs. Oddly enough, this seems to be the frist time road signs were added when i didn't ask, the one time it makes no sense.
+   It would be good to have peopel walking or jogging this trail". Remove Round 62's 8 winding-road signs from the trail. Add people
+   walking, jogging, cycling and walking dogs along the trail in Free Roam (and a few in races, who get out of the way as the game's other
+   people do). BUG-007 (x 704.75 z -441.54 h 249, the boardwalk under I-575): "make the fences breakable. I saw ai kept getting hung up on
+   these" (the boardwalk's black railings). BUG-008 (x 133.44 z -793.43 h 171, by Hidden Forest Court): "these fences should be breakable
+   too". Make them breakable (as the game's fences: no speed lost); the AI must not hang on the boardwalk (its line through it).
+G. BUG-003 (x 179.83 z -919.54 h 324, beside Town Center Drive, the north lot, CP8 next on the old forward): "dont understand if there is
+   supposed to be hill here or none of it should be a hill. regardless lets fill this in and use as a jump" (the picture: odd grassy mounds
+   with a flat cut between them). Fill the gap so it is one shaped mound and make it a real jump on the course's line (it may stay on the
+   course, not a shortcut), landing clean.
+H. BUMPS AND THE LEVELLING'S JUNCTION STEPS. BUG-001 (x 687.63 z -1668.31 h 272, Barrett Parkway, the course): "fix bump" (Round 62 noted
+   Barrett at x 680 lifts a car flat out). And Round 62 C's open question (Dan, 21:06: "we can put this in the next phase with whatever big
+   clean up code wanted to do"): take option (1), level up to each junction and keep the junction's own ground, so the narrower road no longer
+   steps into the wider one's level; rerun the jolt scan (drives over 1.5 m/s and with air over 0.15 s should fall well below Round 61's).
+Check: both directions (the new forward first) on all vehicles, the reroutes, both shortcuts clean / missed / round them, the doors break
+and return, the turn at BUG-005 reads, the mound jump, the boardwalk with AI x2 each way (no hang), the jolt table. Pictures: Dan's spots,
+the reroutes, each shortcut, the doors.
+For Dan to check: race the new forward and reverse; the reroutes; the two mall shortcuts; doors, the turn, the trail's walkers, the mound
+jump; bumps on Barrett and at junctions.
+
+**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round64/`. Bug reports read: session `2026-10-23_20-28-33-291_9085ef`, BUG-001 to 008.
+A DONE. Forward is the old reverse (start on Bells Ferry, the trail west first), reverse the old forward (`make_trail_route.py`: geometry B written as "forward"). Your saved trail times, Top 10s, ghosts and replays swap direction once, the first time the game starts (`Race/NoondayTrailSwap.cs`; copies kept as *.before-round64).
+B DONE. Orange: Mall Boulevard on up to Ring Road NW, Ring Road to the east lot, across the lot to Halverson's east doors (TCD barred now). Green: through Halverson Home (the north anchor, its lower floor a home store: in its portal, out its front) and the north wing corridor; the turn at the east escalator's foot; the road along Halverson Home's north side to the north lot. The escalator is rounded over at its top again (the raffle stage's ramp and lip gone, its board and balloons kept): reverse comes down it (flat out you fly off its top to the lower floor), forward climbs it.
+C DONE. "Carroway renovation", each way: the main doors, the hall, across the center court, through Carroway (the south anchor, opened) and out its portal over the south lot (graded smooth). In Carroway the floor is torn up right across the store: a flooded pit 14 m long, a plywood kicker on each side on the line (each the other's landing, about 18 m/s clears it), plank ramps out at its two ends. Worn tracks off the course are the hint. The south and south-west doors are shut by grilles in this race. Scripted (Drifter, the AI's capped 12 m/s through the hall and court) against the lap between the same points: forward clean 42.5 s vs 44.0, missed 54.2, round the stunt 47.9; reverse 42.8 vs 43.5, 52.6, 47.2. Flat out it saves more; how much is yours to judge.
+D DONE. Cause: a frame box in front of each doorway with no hole (the east anchor's portal frame; the main entrance's stepped block behind its glass tower): a wall you drove through. Opened; every door the race or shortcut uses is see-through glass in bronze frames, breaks, no speed lost, back next lap (pictures 64_bug002 / 64_bug006).
+E DONE. A grille across the lower concourse just west of the north wing in this race (holds a car at 16 m/s both ways); the north wing's checkpoint arch in the corridor.
+F DONE. The 8 road signs gone. Walkers, joggers, dog walkers and cyclists (new, on bikes) on the trail: up to 9 groups at once, at most 2 in a race (they step aside). The boardwalk's and the under-I-575 railings and the red bridge's approach fences break, cost no speed, come back.
+G DONE. The berm's notch filled as one mound on the line; a real jump both ways (22 m/s: 1.0 s in the air, lands clean).
+H DONE for your spot, PARTLY for the junctions. Option (1) as built: widest roads levelled first through their junctions, a narrower road fades out before a wider one's edge. Your BUG-001: both Barrett carriageways at the I-575 ramps laid as one curve: westbound 0.94 s in the air at 25 m/s -> 0.00, 1.40 s at 43 m/s -> 0.06. The jolt scan (197 drives, `round64_jolt_table.txt`, Round 62's build against this levelling): jolts over 1.5 m/s 50 -> 46, over 3 m/s 19 -> 18, but drives with air over 0.15 s 94 -> 101 (Round 61: 58). Two tries made: tuning limit.
+Check (`-exeRound64`): the lap both ways on all 11 vehicles, through the north wing and Halverson Home, no dead stop (22 of 22); AI twice each way on Hard, traffic Normal: 12 of 12 finish, stuck 207 s in all (Round 62: 442), resets 87 (174); every barrier holds (20 forward, 24 reverse); final exe 23 of 23 (`round64_check_final.txt`). Not measured: where the AI's remaining stuck time is (whether any is at the boardwalk).
+Builds: 6 full Build Maps, not one (check fixes: Carroway's door threshold, the south lot's tiers, the pit's ramps, the door frames, Barrett's curve twice). `Builds/ChastainRush/` 2026-10-24 12:56. Imported from Racer: nothing.
+For Dan to check: race the new forward and reverse; Ring Road and Halverson Home; the Carroway shortcut both ways (worth the risk?); the glass doors; the turn at the north wing; the trail's people; the mound jump; Barrett at your spot; the other junctions (air over 0.15 s went up: your call whether to keep option (1)).
