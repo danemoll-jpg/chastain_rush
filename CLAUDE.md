@@ -421,6 +421,13 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 68 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Kennesaw Mountain rebuilt for really big air
+(`make_mountain_route.py` rewritten: the climb unchanged, then three straight lines cut down the mountain, each built round one jump designed from its flight (a
+speed / flight / catch-slope designer in the script; `local/round68/design.json`): J1 the summit flight, J2 the west face, J3 the earthworks, 4 to 6 s). Kicker
+curves are limited by the suspension (over about 6 m/s2 at lip speed the body meets the ramp); 75 degree lip edges. Grade fields `blends` (per point), `ground_first` /
+`ground_last` (the drive's built height), `open_ends`. Catch slopes (`LandingZone.catchSlope`): `RampHold` turns a vehicle to the slope on touching down,
+`VehicleSurfaceContacts.CatchRects` keeps the slope's normal there. Check: `ChastainRush.exe -exeRound68 <dir> [-r68Only jprof,j3test,jfly,jloop,jai,jhood]
+[-r68Quick] -logFile <dir>\Player.log` (`Checks/Round20Runner.R68.cs`; `68_trace_*.tsv` per vehicle, `68_built_profile.tsv`). Imported from Racer: nothing.
 **Round 67 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the Kennesaw Mountain race (`python Tools/mapgen/make_mountain_route.py
 [--plot]` writes `Data/routes/kennesaw_mountain.json` and `Data/tracks/kennesaw_mountain.json`; re-run after mapgen, then Build Map; up Kennesaw Mountain Drive, down the Kennesaw Mountain
 Trail on a graded bench with six jumps shaped into its profile; `MapBuilder.Mountain.cs`, quick step MountainRace; trees cleared / breakable in the Trees step: a full build; park visitors:
