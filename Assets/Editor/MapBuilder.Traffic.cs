@@ -16,8 +16,14 @@ namespace ChastainRush
         static void BuildTrafficNetwork(MapData map)
         {
             var lines = new List<(List<Vector2> pts, string cls, bool oneway, float half, bool bridge, string name)>();
-            foreach (var r in map.roads) if (System.Array.IndexOf(TrafficClasses, r.@class) >= 0 && r.points != null && r.points.Length >= 4)
-                    foreach (var piece in R53Pieces(r.osm_id, ToPoints(r.points))) lines.Add((piece, r.@class, r.oneway, r.width * .5f, r.bridge, r.name ?? ""));   // Round 53: Lyndon Drive's crew site left out
+            for (int ri = 0; ri < map.roads.Length; ri++)
+            {
+                var r = map.roads[ri];
+                if (System.Array.IndexOf(TrafficClasses, r.@class) < 0 || r.points == null || r.points.Length < 4) continue;
+                var rp = EdgeTrimmed(map, ri, ToPoints(r.points)); if (rp == null || rp.Count < 2) continue;   // Round 66: ended short of the closures at the map's edge (MapBuilder.Edges.cs)
+                foreach (var piece in R53Pieces(r.osm_id, rp)) lines.Add((piece, r.@class, r.oneway, r.width * .5f, r.bridge, r.name ?? ""));   // Round 53: Lyndon Drive's crew site left out
+            }
+            foreach (var t in edgeTurnLines) lines.Add((new List<Vector2>(t.pts), t.cls, true, t.half, false, t.name));   // Round 66: the divided highways' turnarounds at the closures
             foreach (var b in map.bridges) if (System.Array.IndexOf(TrafficClasses, b.@class) >= 0 && b.points != null && b.points.Length >= 4) lines.Add((ToPoints(b.points), b.@class, b.oneway, b.width * .5f, true, b.name ?? ""));
 
             Vector2Int Key(Vector2 p) => new(Mathf.RoundToInt(p.x * 10), Mathf.RoundToInt(p.y * 10));
@@ -59,8 +65,13 @@ namespace ChastainRush
                 }
             }
             net.Fill(nodes.ToArray(), from.ToArray(), toNode.ToArray(), cls.ToArray(), oneway.ToArray(), half.ToArray(), bridge.ToArray(), start.ToArray(), count.ToArray(), points.ToArray(), names.ToArray(), TrafficClasses);
+            // Round 66: a two-way road's end at a closure is a turn-round node (Traffic turns round there whatever the road's size); the turnarounds' edges
+            int NearNode(Vector2 p) { int best = -1; float bd = 1.5f * 1.5f; for (int i = 0; i < nodes.Count; i++) { float d = (nodes[i] - p).sqrMagnitude; if (d < bd) { bd = d; best = i; } } return best; }
+            var turnNodes = edgeClosures.Where(c => !c.oneway).Select(c => NearNode(c.cut)).Where(i => i >= 0).Distinct().ToArray();
+            var turnEdges = new List<int>(); for (int e = 0; e < from.Count; e++) foreach (var t in edgeTurnLines) if (oneway[e] && (points[start[e]] - t.pts[0]).sqrMagnitude < 9f && (points[start[e] + count[e] - 1] - t.pts[t.pts.Count - 1]).sqrMagnitude < 9f) turnEdges.Add(e);
+            net.SetEdgeEnds(turnNodes, turnEdges.ToArray());
             int deadEnds = 0; var degree = new int[nodes.Count]; for (int e = 0; e < from.Count; e++) { degree[from[e]]++; degree[toNode[e]]++; } foreach (int d in degree) if (d == 1) deadEnds++;
-            Debug.Log($"[Round30] traffic network: {lines.Count} roads and bridges of the traffic classes, {from.Count} edges, {nodes.Count} nodes ({deadEnds} dead ends), {joined} ends joined to a nearby road, {points.Count} points");
+            Debug.Log($"[Round66] traffic network: {turnNodes.Length} turn-round ends and {turnEdges.Count} turnarounds at the map's edge"); Debug.Log($"[Round30] traffic network: {lines.Count} roads and bridges of the traffic classes, {from.Count} edges, {nodes.Count} nodes ({deadEnds} dead ends), {joined} ends joined to a nearby road, {points.Count} points");
         }
     }
 }

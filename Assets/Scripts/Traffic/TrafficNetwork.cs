@@ -16,6 +16,9 @@ namespace ChastainRush
         [SerializeField] float[] edgeHalf = new float[0];
         [SerializeField] Vector2[] points = new Vector2[0];
         [SerializeField] string[] edgeName = new string[0], classNames = new string[0];
+        // Round 66: the closures at the map's edge (MapBuilder.Edges.cs): two-way roads' ends there (traffic turns round) and the divided highways' turnarounds
+        [SerializeField] int[] turnNodes = new int[0], turnEdges = new int[0];
+        HashSet<int> turnNodeSet, turnEdgeSet;
 
         public int EdgeCount => edgeFrom.Length;
         public int NodeCount => nodes.Length;
@@ -28,9 +31,16 @@ namespace ChastainRush
             edgeStart = start; edgeCount = count; points = pts; edgeName = names; classNames = classes;
         }
 
+        public void SetEdgeEnds(int[] nodesTurn, int[] edgesTurn) { turnNodes = nodesTurn; turnEdges = edgesTurn; }
+        public bool TurnRound(int node) => turnNodeSet != null && turnNodeSet.Contains(node);
+        public bool IsTurnaround(int e) => turnEdgeSet != null && turnEdgeSet.Contains(e);
+        public int TurnNodeCount => turnNodes.Length;
+        public int TurnEdgeCount => turnEdges.Length;
+
         void Awake()
         {
             Instance = this;
+            turnNodeSet = new HashSet<int>(turnNodes ?? new int[0]); turnEdgeSet = new HashSet<int>(turnEdges ?? new int[0]);
             adjacent = new List<int>[nodes.Length]; for (int i = 0; i < nodes.Length; i++) adjacent[i] = new List<int>();
             Length = new float[edgeFrom.Length];
             for (int e = 0; e < edgeFrom.Length; e++)

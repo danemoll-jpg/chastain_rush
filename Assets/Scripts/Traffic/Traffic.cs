@@ -25,6 +25,7 @@ namespace ChastainRush
         public static int Horns;              // checks
         public static int KnotsUntied;        // Round 32 (B2): checks
         public static int TurnedAtBarriers;   // Round 54 (D1): checks
+        public static int EdgeTurns, EdgeStops;   // Round 66: checks (cars turned round at the map's edge; cars that came to a dead end with nowhere to turn)
         public static AudioClip HornClip { get; private set; }
         public readonly List<TrafficDriver> Cars = new();
         public Rigidbody PlayerBody => player ? player.Body : null;
@@ -203,11 +204,11 @@ namespace ChastainRush
                 float r = UnityEngine.Random.value * total;
                 for (int k = 0; k < w.Length; k++) { r -= w[k]; if (w[k] > 0 && r <= 0) { pick = options[k]; break; } }
                 if (pick < 0) for (int k = w.Length - 1; k >= 0; k--) if (w[k] > 0) { pick = options[k]; break; }
-                dir = net.From(pick) == node ? 1 : -1; return pick;
+                dir = net.From(pick) == node ? 1 : -1; if (net.IsTurnaround(pick)) EdgeTurns++; return pick;
             }
-            // nowhere to go on: turn round on a small two-way road, else stop here
-            if (!net.Oneway(e) && rank <= 3 && !forbidden[e]) { dir = net.From(e) == node ? 1 : -1; return e; }
-            exit = true; return -1;
+            // nowhere to go on: turn round on a small two-way road (Round 66: or any two-way road at a closure at the map's edge), else stop here
+            if (!net.Oneway(e) && (rank <= 3 || net.TurnRound(node)) && !forbidden[e]) { if (net.TurnRound(node)) EdgeTurns++; dir = net.From(e) == node ? 1 : -1; return e; }
+            exit = true; if (net.TurnRound(node) || net.Oneway(e)) EdgeStops++; return -1;
         }
         Vector2 InDirection(int e, int node) { int n = net.PointCount(e); return net.To(e) == node ? (net.Point(e, n - 1) - net.Point(e, n - 2)).normalized : (net.Point(e, 0) - net.Point(e, 1)).normalized; }
         Vector2 OutDirection(int e, int node) { int n = net.PointCount(e); return net.From(e) == node ? (net.Point(e, 1) - net.Point(e, 0)).normalized : (net.Point(e, n - 2) - net.Point(e, n - 1)).normalized; }

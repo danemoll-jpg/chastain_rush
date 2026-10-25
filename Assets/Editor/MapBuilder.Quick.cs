@@ -146,7 +146,8 @@ namespace ChastainRush
                 S("StuntPark", () => { if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop); }),   // Round 36 (Part A2): the stunt park, its stores and roofs
                 S("Mall", () => { if (Mall != null) BuildMall(map, terrain, mats, world, Mall); }, true),   // Round 60 (A): Town Center, outside and in (MapBuilder.Mall.cs, MallInside.cs)
                 S("Airport", () => BuildAirport(terrain, mats, world, Airport)),   // Round 61 (B): the airport's pavement and paint, the trails' tread (MapBuilder.Airport.cs)
-                S("Helipads", () => BuildHelipads(mats, world)),   // Round 63: the airport's and Kennestone's rooftop helipads and their parked helicopters (MapBuilder.Helipads.cs)
+                S("Helipads", () => BuildHelipads(mats, world)),
+                S("Edges", () => BuildEdges(map, terrain, mats, world), true),   // Round 66: the road closures at the map's edge (MapBuilder.Edges.cs); quick   // Round 63: the airport's and Kennestone's rooftop helipads and their parked helicopters (MapBuilder.Helipads.cs)
                 S("Shortcuts", () => BuildShortcuts(hood, terrain, mats, world), true),   // Round 8: the official shortcuts' ramps, decks and trail (MapBuilder.Shortcuts.cs); Round 65: quick
                 S("ReportTreesOnLines", () => { if (hood.ShortcutData != null) ReportTreesOnLines(hood, c.trees); }),
                 S("CreekTrack", () => BuildCreekTrack(map, terrain, mats, world, creek), true),   // Round 18 (3): tread, J4's kicker, logs, landing zones (after the shortcuts: their ramp material); Round 65: quick

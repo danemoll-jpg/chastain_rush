@@ -103,7 +103,7 @@ namespace ChastainRush
                 if (horizon)
                 {
                     for (int i = 0; i < 32; i++) cullDistances[i] = i == EdgeScenery.HorizonLayer ? 0f : far;
-                    cam.layerCullDistances = cullDistances; cam.layerCullSpherical = true; culling = true; far = EdgeScenery.HorizonFar;
+                    cam.layerCullDistances = cullDistances; culling = true; far = EdgeScenery.HorizonFar;
                 }
                 else if (culling) { cam.layerCullDistances = new float[32]; culling = false; }
                 if (!Mathf.Approximately(cam.farClipPlane, far)) cam.farClipPlane = far;
