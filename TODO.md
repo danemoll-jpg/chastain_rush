@@ -140,6 +140,32 @@ Tuning limit as usual for fine adjustment, but the targets above are the job: if
 For Dan to check: race Kennesaw Mountain flat out; the signature flight off the summit.
 
 ## QUEUED rounds
+**Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
+RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
+far view) and Round 66's edges (warning, headwind, ceiling). Quick builds while working; ONE full Build Map at the end (the airport's
+parked planes). Tuning limit. Short results. Dan is not watching: decide, write it down, go on.
+1. THE PLANE: a small single-engine high-wing plane of our own (Blender, as the helicopter; no real maker's name or livery), "Sky Hopper"
+   or Code's name. Arcade flight, not a simulator: it must be easy and fun. Throttle up / down; pitch, roll (banking turns the plane
+   by itself), a little rudder; it holds level flight hands-off at its speed; no punishing stalls (too slow and the nose eases down until
+   it has speed again). Cruise fast enough to cross the map in two or three minutes, a top speed above that; engine and wind sound with
+   speed; flaps not needed. Pad and keyboard layouts that match the helicopter's where they can (Code picks, says them in the status).
+2. TAKE-OFF AND LANDING: it rolls on its wheels, steers on the ground, takes off from Cobb County International's runways (and any long
+   straight road or field, Free Roam being Free Roam), lands on them: a soft landing rolls out, a hard one or a wing into the ground is a
+   forgiving crash (as the helicopter: a moment, then reset onto open ground nearby, never stuck). Hitting trees, buildings or wires:
+   the same.
+3. WHERE: two or three planes parked on the airport's apron (drive up and swap, as the helicopter pads: A / H); "plane" in Free Roam's
+   vehicle choice (starting lined up on a runway). Free Roam only, never in races. A little airport life if cheap: one plane that now and
+   then taxis, takes off, circles and lands (no collisions to worry the player).
+4. THE WORLD FROM A PLANE: Round 63's far view and Round 66's scenery ring and horizon (Atlanta) at plane heights and speeds; the edge
+   warning and headwind turn the plane back too (a wide gentle turn), and a ceiling. Frame rate at 300 m and 600 m up crossing the map
+   against Round 63's numbers. Cameras: chase, far chase, cockpit, and a free look; the readout (height, speed, heading, climb).
+5. FUN: low passes over the quarry lake (Viking Quarry, next to the airport) and down the I-75 / I-575 corridor should feel fast; nothing
+   blocks flying under the highway bridges if there is room.
+Check: take off from each runway, fly to Kennesaw Mountain, Town Center and Chastain Glen and back, land on the runway; crash into a tree,
+a building and the ground (reset, not stuck); hands-off level flight 30 s; the edge turn-back; the fps table. Pictures: take-off, over the
+quarry, over Town Center, Atlanta on the horizon from 600 m, the apron.
+For Dan to check: fly the plane (controls, take-off, landing, speed); the view from up high.
+
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
 this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
