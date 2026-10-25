@@ -108,6 +108,60 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 67, A NEW TRACK: THE KENNESAW MOUNTAIN TRAILS, ALL ABOUT AIR; two Noonday Creek Trail shortcuts and a lip (Dan, 2026-10-25 03:01;
+reports BUG-001 to BUG-003 of session `2026-10-25_02-23-36-193_bcac2f`, read by Claude, after the Round 66 exe: the Noonday Creek Trail race both ways).**
+Round 66 is reviewed. Use Round 65's quick builds while working; ONE full Build Map at the end. Standing rules apply (shortcuts: real risk,
+no free way round, tire tracks / skid marks as the hint; ramps a real physics jump; nothing slows a car on a ramp; not every jump a dirt
+pile). Tuning limit. Short results.
+A. THE KENNESAW MOUNTAIN TRAILS RACE. Dan: "I want one with a lot of air so I am wondering if we could do the trails of Kennesaw mountain.
+   I want huge jumps on this".
+   (1) THE ROUTE (Code designs it and says why): a loop on Kennesaw Mountain National Battlefield Park's real trails (OSM, Round 61 built 45
+       named trails, 19.6 km, at their real width on levelled ground) and Kennesaw Mountain Drive: e.g. up the mountain road to the summit
+       lot, then down the ridge and summit trails (Kennesaw Mountain, Little Kennesaw / Pigeon Hill side) with the big drops the game's 1.5x
+       height gives, back round by the visitor center. A lap of a few km; 2 or 3 laps, Code's pick. Start / finish at the visitor center lot
+       (or the summit lot), Code says.
+   (2) HUGE JUMPS, MANY, VARIED: the trail's own crests and ledges shaped to launch (natural lips, no ramp), plus built launches that
+       belong on a wooded mountain: rock slabs and boulder ledges, fallen-tree log ramps, a washed-out trail bridge, the old earthworks'
+       berms, the summit overlook's rock face, a switchback cut that sends you off the hillside onto the next leg. Several of them big
+       enough for long, high flights (seconds in the air) that land clean on the trail downhill, heading the race's way. Report each jump's
+       air time and distance on the Drifter Twin and the Street Classic.
+   (3) THE TRAILS RACEABLE: the path at its real width (standing rule) with the woods cleared back enough to race and pass (Dan wanted the
+       made-up woods track wider so vehicles could weave); trees solid off the cleared line; breakable where a racer would clip them often
+       (as Noonday Creek Extension). All vehicles unless a stretch is too steep for cars: say so (the old woods track's "bikes and ATVs" idea is
+       Dan's to decide).
+   (4) DIRECTION: FORWARD = the downhill-on-trails way (that is where the air is). REVERSE only if it still plays well (climbing the trails is
+       little air): Code says; if not, forward only and Dan decides. No shortcuts this round (Dan picks them after driving it).
+   (5) Built like the other races (route, checkpoints, closures, AI that takes the jumps, ghosts, records, replays, menus, loading inset,
+       fast travel). Park visitors on the trails in Free Roam (a few in races, who get out of the way).
+B. THE NOONDAY CREEK TRAIL (Round 64's track).
+B1. A FORWARD SHORTCUT OVER THE CREEK. BUG-002 (x 1726.59 z -671.00 h 271, Bells Ferry Road NE by the trailhead, forward, CP1 next):
+   "shortcut entrance (skid mark here...you go down the hill hit a ramp before the river that carries you forward a succesful landing puts
+   you heading straight on the track. A poorly angled one will cost you to crash". Skid marks at the turn-off; down the bank; a ramp (that
+   belongs by a creek: Code picks, not a dirt pile) just before Noonday Creek that carries you over it; a good landing lands you on the trail
+   heading straight down it; a badly angled one crashes you (trees / the bank / the water). Saves time clean, costs it missed.
+B2. A REVERSE SHORTCUT OVER CHASTAIN MEADOWS PARKWAY. BUG-003 (x 1328.10 z -755.84 h 123, 19 m off Chastain Meadows Parkway, reverse, CP11
+   next): "can we make a shortcut here where it leads to another big jump jumping over the street and clear to the other side". A shortcut
+   from here to a big jump clean over Chastain Meadows Parkway, landing on the far side and back on the course. (Directions from Dan's
+   headings; confirm against the lap.)
+B3. BUG-001 (x 167.16 z -899.63 h 144, Town Center Drive by the mound jump, forward, CP5 next): "it wasn't flush and caused me to lose
+   momentum". Make the road's edge / the course's step onto the ground there flush, so nothing catches a car.
+Check: the mountain loop on all vehicles (no stop; each jump's air and landing); AI races x2 (each way it has), Hard, all finish; B1 and B2
+clean / missed / round them; B3 speed through before / after. Pictures: the start, three biggest jumps mid-air, the summit leg, B1 and B2.
+For Dan to check: race the Kennesaw Mountain trails (the jumps!); the creek and the parkway shortcuts; the lip by Town Center Drive.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 66
+**Reviewed: Dan played the Round 66 build 2026-10-25 02:23 (the Noonday Creek Trail race, forward and reverse): "Not much there"; his notes (Round 64's trail) are Round 67 B.**
 **Round 66, THE MAP'S EDGES: A WORLD THAT KEEPS GOING, NATURAL STOPS, A HELICOPTER BOUNDARY, ATLANTA ON THE HORIZON (Dan, 2026-10-24
 11:41: "Speaking of edges, how can I handle this on my map especially now I have helicopters"; 11:44 "Yes" to Claude's three-part outline,
 "And I like the idea of Atlanta in the distance"). Dan, 2026-10-24 17:55: "Lets go ahead" (Rounds 64 and 65 done, not yet seen by him). Use Round 65's quick builds while working.** ONE full Build Map at the end. Tuning limit.
@@ -140,15 +194,7 @@ Frame rate (1280 x 720, a fixed camera; not measured at 3840 x 2160): at the cei
 Builds: three full Build Maps, not one (the closures needed two fixes found by the drives: wider rows, then taller colliders; each about 30 min with the exe), code-only exes before them. `Builds/ChastainRush/` 2026-10-24 20:49. Imported from Racer: nothing.
 For Dan: (a) the ring and the skyline's look; (b) the summit's frame rate with the view open; (c) the three Canton Road closures (a car can end up on the barriers; R / Y resets).
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 65
+## Previous delivery 2: Round 65
 **Not yet reviewed: editor tools only; Dan moved on to Round 66 on 2026-10-24 17:55 without checking 64 or 65 ("I won't have a chance to check it").**
 **Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
 next").** NEXT, straight after Round 64, before any new track or feature (Dan, 2026-10-24 11:09: he meant build tools to come first). Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
@@ -163,7 +209,8 @@ Dan, 2026-10-24: "When Round 64 is done and committed, do Round 65 in TODO.md (Q
 Times on Dan's PC (in use): a quick build of the Mall 10 min, of the four track steps 11 min, quick with its exe about 14 min; the full build about 20 min. The quick build's own cost is now mostly the planning's replay (about 7 min).
 `Builds/ChastainRush/` 2026-10-24 17:33 (the same world as Round 64's; Round 64's checks on it: doors, the north wing's grille, the mound, 12 of 12). Imported from Racer: nothing.
 
-## Previous delivery 2: Round 64
+## Previous delivery 3: Round 64
+**Reviewed: Dan raced it 2026-10-25 02:23; his notes are Round 67 B.**
 **Round 64, THE NOONDAY CREEK TRAIL PUT RIGHT: forward and reverse swapped, the route rerouted on the roads, shortcuts through the
 mall, glass doors, the trail's signs, fences and walkers, a mound made a jump; the levelling's junction steps (Dan, 2026-10-23 21:06;
 reports BUG-001 to BUG-008 of session `2026-10-23_20-28-33-291_9085ef`, read by Claude, after the Round 62 exe; his two map shots
@@ -223,42 +270,6 @@ H DONE for your spot, PARTLY for the junctions. Option (1) as built: widest road
 Check (`-exeRound64`): the lap both ways on all 11 vehicles, through the north wing and Halverson Home, no dead stop (22 of 22); AI twice each way on Hard, traffic Normal: 12 of 12 finish, stuck 207 s in all (Round 62: 442), resets 87 (174); every barrier holds (20 forward, 24 reverse); final exe 23 of 23 (`round64_check_final.txt`). Not measured: where the AI's remaining stuck time is (whether any is at the boardwalk).
 Builds: 6 full Build Maps, not one (check fixes: Carroway's door threshold, the south lot's tiers, the pit's ramps, the door frames, Barrett's curve twice). `Builds/ChastainRush/` 2026-10-24 12:56. Imported from Racer: nothing.
 For Dan to check: race the new forward and reverse; Ring Road and Halverson Home; the Carroway shortcut both ways (worth the risk?); the glass doors; the turn at the north wing; the trail's people; the mound jump; Barrett at your spot; the other junctions (air over 0.15 s went up: your call whether to keep option (1)).
-
-## Previous delivery 3: Round 63
-**Reviewed: Dan flew the Round 63 build 2026-10-24 (asked only how to climb / descend) and moved on to Round 64; its two open questions (far view vs frame rate; controls and boost) stay as built until he says.**
-**Round 63, A HELICOPTER TO FLY (Dan, 2026-10-23 17:49: "when I was driving around the new area, I came across the airport and was
-thinking, why have an airport if we don't have flying vehicles? So how much would it be to add a helicopter as a start? With the area this
-big, it would be a good way for me to survey the map more quickly"; 17:51 "yes" to Claude's outline). Dan, 2026-10-23 21:07: "I want to do the helicopter round next".** ONE full Build Map at the end (the helipads). Tuning limit. Short results.
-1. FLYING IT: start from the police helicopter (`Police/PoliceHelicopter.cs`: model, rotor, sound). Arcade controls, not a simulator:
-   left stick climb / descend and turn (yaw), right stick tilt forward / back / sideways to fly (or the pattern Code finds best on a pad;
-   say it), triggers for fine climb / descend if useful; keyboard too. Lets go of the sticks = holds a steady hover at its height. Quick
-   enough to cross the map in a minute or two; a boost if needed. Rotor sound, wind, a downwash on the ground (dust / water / grass) near it.
-2. LANDING / CRASHING: lands on anything flat enough (ground, lots, roofs, the mall's roof, the summit); rotor or body hitting trees,
-   buildings, poles: a crash that is forgiving (spin down and reset after a moment, onto the nearest open spot), never stuck.
-3. WHERE: a helipad at Cobb County International Airport and one on Wellstar Kennestone's roof (it has a real one), each with a parked
-   helicopter to take (walk-up not needed: drive onto the pad, press a button to swap, as the game's vehicle swap does); and "Helicopter"
-   in Free Roam's vehicle choice. Free Roam only, never in races. Police: the chase helicopter is unaffected; the player's is not chased.
-4. SEEING FAR (the real work): from the air much of the 129 km2 is in view at once. The fog now closes at about 650 m (Round 61's summit
-   picture was solid fog): in the helicopter (and at height in general) the fog pulls back to show the map out to several km. Distant
-   trees and buildings as cheap far versions (impostors / merged meshes / lower detail by distance), terrain far detail as needed, so the
-   frame rate at 1080p stays in Round 61's range flying low over the old neighborhood and high over the whole map. Report fps at 50 m,
-   200 m and 500 m up over Chastain Glen, Town Center and the mountain.
-5. SURVEY: a camera option looking straight down (and the chase camera), a height and speed readout, the minimap / map following it,
-   exploration fog clearing under the helicopter as it flies (as driving does: Dan wants to survey the map).
-Check: take off from each helipad and from Free Roam's pick; fly to the summit, Town Center and Chastain Glen and land on each; crash into
-a tree and a building (resets, not stuck); hover hands-off 30 s (drift under a few m); the fps table. Pictures: from 500 m over the map,
-the straight-down camera over Town Center, each helipad.
-For Dan to check: fly it (controls, hover, landing, crashing); how far you can see and how smooth it is up high.
-
-**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round63/`. No bug reports newer than Round 64's session.
-1 DONE. The "Sky Survey" helicopter (our own Blender model, `Tools/Blender/helicopter.py`; flight `Vehicle/HelicopterFlight*.cs`, the player's own vehicle object so camera, map, minimap and resets work). Pad: left stick up / down climb / descend, left / right turn; right stick flies; RT / LT fine climb / descend; RB (or L3) boost. Keyboard: W / S / Q / E fly, A / D turn, Space / C climb / descend, Shift boost. Let go: it hovers (30 s hands off at 40 m: 0.04 m drift). Top speed 80 m/s (179 mph), boost 140 m/s: the summit from Chastain Glen, 7.8 km, in 85 s. Rotor and wash sound (the police helicopter's), wind, a downwash of dust or spray under 30 m.
-2 DONE. Lands on anything flat (it never comes down faster than it can stop). A crash (the body into something at speed, the rotor into a crown, a wall, a pole or the ground, the tail rotor, or set down in water) spins down and after 2.6 s puts it on the nearest open ground clear of trees; Y / R does the same. Checked: into a tree crown and into Town Center's front, both reset and lift off again.
-3 DONE. Helipads where OSM has them (`MapBuilder.Helipads.cs`, step Helipads): the airport's on the apron, Kennestone's on its roof (way 1076463453, a deck on the roof); a parked helicopter on each; A / H on a pad takes it, landed on a pad A / H gives back the vehicle you came in (`HelipadStands`). Not asked for: both pads are fast-travel places (the roof pad is not reachable by car). "Sky Survey" is in Free Roam's garage only; never in races, rosters, the Stunt event, split screen or police modes; hidden police ignore it.
-4 PARTLY. The view opens with height (`World/FarView.cs`): from 30 m up, 10x the fog by 450 m (6.5 km by day), small detail cells hidden past 900 m, far trees as 8-sided shapes (thinned past 1.8 km, in 1 km blocks past 3.5 km), coarser far terrain. 1080p, fps average / slowest 1 %: Chastain Glen 50 / 200 / 500 m 170/118, 162/111, 164/122; Town Center 140/30, 105/78, 99/75; summit 163/113, 100/74, 88/66 (before tuning: 82 and 51 at 500 m). Two tries made: high over the woods it stays under Round 61's 160 to 190 (tuning limit). The map's edge shows from high up near it.
-5 DONE. X / V cycles Chase, Far chase, First person and Straight down (helicopter only); the readout (height over the ground, mph, heading, climb rate); exploration clears wider with height (up to 300 m round).
-Check (`-exeRound63`, `Checks/Round20Runner.R63.cs`): 22 of 22 (`round63_check_1080p.txt`): hover, three flights landing on their spots, both pads both ways, both crashes; fps table above; pictures `63_*.png`.
-Builds: one full Build Map (1 h 6 min), then code-only exes on its scene; `Builds/ChastainRush/` 2026-10-24 00:34. Imported from Racer: nothing (the police helicopter's two sound clips shared).
-For Dan: (a) the far view's cost high over the woods: accept, or trade view distance / far trees for frame rate; (b) the controls' layout, the speeds, and the boost on RB.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
