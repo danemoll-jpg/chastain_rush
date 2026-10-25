@@ -120,8 +120,8 @@ H1_R, H2_R, JOIN_R = 17.0, 17.0, 45.0
 BENCH_HALF, BENCH_BLEND = 7.0, 4.0  # the lines' bench: 14 m level across (room to race and pass), blending back to the ground over at least 4 m
 SIDE_SLOPE = 1.25                   # and over 1.25 m for every meter the bench stands above or below the ground (cut and fill banks)
 HAIRPIN_HALF = 11.0                 # the bench this wide (half) through the hairpins
-LAND_HALF = 13.0                    # and over the catch slopes (a flight a little off the line still lands on the graded slope)
-CLEAR_HALF = 13.0                   # no tree within this of the line; within this of a flight's corridor too
+LAND_HALF = 16.0                    # and over the catch slopes (a flight a little off the line still lands on the graded slope)
+CLEAR_HALF = 16.0                   # no tree within this of the line; within this of a flight's corridor too
 BREAK_HALF = 32.0                   # trees within this of the line snap when hit
 CATCH_REL_DEG = 16.0                # the catch slope: steepened (where the ground is flatter) so the middle flight touches down this much shallower than it
 # (the kickers' radius: the run-up's speed squared over it is what the suspension must add to gravity; past about 6 m/s2 a car's body meets the ramp and
@@ -132,8 +132,8 @@ CATCH_REL_DEG = 16.0                # the catch slope: steepened (where the grou
 # landing berm standing on the ground))
 JUMPS = [
     ("J1", "overlook", "the summit flight", 1, 190.0, 17.0, 300.0, (38.0, 46.0, 52.0), 260.0, 12.0, 0.0),
-    ("J2", "ledge", "the west face", 2, 128.0, 14.0, 280.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
-    ("J3", "berm", "the earthworks", 3, 150.0, 20.0, 230.0, (30.0, 36.0, 44.0), 120.0, 10.0, 1.0),
+    ("J2", "ledge", "the west face", 2, 128.0, 14.0, 340.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
+    ("J3", "berm", "the earthworks", 3, 160.0, 18.0, 320.0, (30.0, 36.0, 44.0), 120.0, 10.0, 1.0),
 ]
 VEHICLES = {"street": ("Street Classic", 49.0, 14.5, 25.0), "drifter": ("Drifter Twin", 58.0, 16.0, 30.0), "needle": ("Needle 600", 61.0, 18.0, 32.0)}
 AI_LIP = {"J1": 46.0, "J2": 38.0, "J3": 40.0}   # the AI's held speed up each run-up (at the lip): the catch's middle
@@ -224,7 +224,7 @@ for i, k in enumerate(seg):
     if kind[k] == "cut": prof[k] = base[i]
 # the hairpins: a level pad over the arc and PAD_M either side (the two legs' benches overlap near a hairpin: one height there, no step between
 # them), eased back into the legs' ground over EASE_M
-PAD_M, EASE_M = 22.0, 35.0
+PAD_M, EASE_M = 22.0, 70.0
 arcs = []
 for k in ck:
     if legno[k] == 0 and legno[k - 1] != 0:

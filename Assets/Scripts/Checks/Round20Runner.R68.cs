@@ -139,6 +139,30 @@ namespace ChastainRush
             report.AppendLine("  the built ground along the line: 68_built_profile.tsv"); yield return null;
         }
 
+        // J3's run-up alone, flat out with no speed profile, every physics step logged (what slows the Drifter Twin and the Trail Four on its kicker)
+        IEnumerator R68J3Test()
+        {
+            report.AppendLine(); report.AppendLine("=== J3's run-up alone (flat out, no profile), every step past lap 3290 m");
+            UseRoute(R67File, "forward"); var zs = race.AiZones; var z3 = zs.First(z => z.id.StartsWith("J3")); float sL = z3.s1 - 1f;
+            foreach (var vid in new[] { "atv", "drifter", "original" })
+            {
+                yield return Vehicle(vid); var line = LapPart(sL - 150f, sL + 60f); Place(line[0], line[2] - line[0], 15f); yield return new WaitForFixedUpdate();
+                var run = new Run(); var touch = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); touch.seen.Clear(); touch.on = true;
+                var drive = StartCoroutine(DriveLine(line, 80f, 20f, run, null, null, 5f, false, null)); var sb = new System.Text.StringBuilder(); float last = 0f;
+                while (!run.reached && run.end == "" && run.time < 19f)
+                {
+                    yield return new WaitForFixedUpdate(); var p = car.Body.position; float s = race.Route.LapStationOf(p);
+                    if (s < sL - 40f || s > sL + 6f) continue;
+                    var trig = Physics.OverlapSphere(p, 2.5f, ~0, QueryTriggerInteraction.Collide).Where(c => c.isTrigger && c.attachedRigidbody != car.Body).Select(c => c.name).Distinct();
+                    float v = car.Body.linearVelocity.magnitude;
+                    sb.AppendLine($"    {s:0.0} v {v:0.0} fwd {car.ForwardSpeed:0.0} wheels {car.GroundedWheels} water {car.WaterImmersion:0.00} up {car.transform.up.y:0.00} lift {car.SuspensionLift:0.0} {(last - v > 1f ? "LOSS " + (last - v).ToString("0.0") : "")} triggers [{string.Join(",", trig)}] touch {(touch.seen.Count > 0 ? touch.seen[touch.seen.Count - 1] : "-")}");
+                    last = v; touch.seen.Clear();
+                }
+                StopCoroutine(drive); car.enabled = true; touch.on = false;
+                report.AppendLine($"  {Nm(vid)}:"); report.Append(sb.ToString());
+            }
+        }
+
         IEnumerator R68Pic(string name, R68Flight f)
         {
             var p = car.Body.position; var d = Flat(car.Body.linearVelocity).normalized; var side = Vector3.Cross(Vector3.up, d).normalized;

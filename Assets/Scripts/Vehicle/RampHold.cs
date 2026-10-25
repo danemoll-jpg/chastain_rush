@@ -72,6 +72,14 @@ namespace ChastainRush
                     {
                         var along = v0 - hit.normal * into;
                         if (along.sqrMagnitude > 1f) { car.Body.linearVelocity = along.normalized * v0.magnitude * LandingKeep; Landings++; }
+                        // Round 68: on a catch slope it is also turned to the slope and its pitching stopped (the fourth exe run: landed on its rear
+                        // wheels, it went on pitching nose down past the slope, 34 degrees, and slammed onto its front: 48.7 to 25 m/s)
+                        if (LandingZone.Catches(hit.point))
+                        {
+                            var fwd = Vector3.ProjectOnPlane(transform.forward, hit.normal);
+                            if (fwd.sqrMagnitude > 1e-4f) car.Body.rotation = Quaternion.LookRotation(fwd.normalized, hit.normal);
+                            car.Body.angularVelocity = Vector3.Project(car.Body.angularVelocity, hit.normal);
+                        }
                     }
                 }
                 airTime = 0f;

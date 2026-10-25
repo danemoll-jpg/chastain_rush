@@ -226,6 +226,7 @@ namespace ChastainRush
             if (tag == "round68")
             {
                 if (Do("jprof")) yield return Guard(R68Prof());
+                if (Do("j3test")) yield return Guard(R68J3Test());
                 if (Do("jfly")) yield return Guard(R68Fly());
                 if (Do("jloop")) yield return Guard(R67Loop());
                 if (Do("jai")) yield return Guard(R67Ai());
