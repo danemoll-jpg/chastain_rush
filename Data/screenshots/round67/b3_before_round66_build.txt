@@ -1,0 +1,13 @@
+Round 64 check, 2026-10-25 03:40, the exe, 1280 x 720, muted.
+
+=== BUG-003: the mound by Town Center Drive, both ways, at 13 and 22 m/s (Drifter Twin)
+  forward at 13 m/s: most air 0.38 s, landed at (157, -880), upright 1.00, slowest 12.3 m/s, through
+PASS  xmound forward 13 m/s: a jump, landed clean  -  air 0.38 s, slowest 12.3
+  forward at 22 m/s: most air 1.06 s, landed at (161, -891), upright 0.96, slowest 20.6 m/s, through
+PASS  xmound forward 22 m/s: a jump, landed clean  -  air 1.06 s, slowest 20.6
+  reverse at 13 m/s: most air 0.36 s, landed at (169, -905), upright 1.00, slowest 12.2 m/s, through
+PASS  xmound reverse 13 m/s: a jump, landed clean  -  air 0.36 s, slowest 12.2
+  reverse at 22 m/s: most air 1.00 s, landed at (161, -890), upright 1.00, slowest 21.1 m/s, through
+PASS  xmound reverse 22 m/s: a jump, landed clean  -  air 1.00 s, slowest 21.1
+
+4 of 4 checks passed.

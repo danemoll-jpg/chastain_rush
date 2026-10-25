@@ -1,0 +1,200 @@
+Round 67 check, 2026-10-25 05:37, the exe, 1280 x 720, muted.
+
+=== A. The Kennesaw Mountain lap on every vehicle, driven by script along the race's line (the AI zones' speeds as caps, up to 45 m/s between)
+  lap 3550 m, 10 checkpoints (Kennesaw Mountain Drive, the east flank, the south flank, the saddle road, the summit lot, the ridge, the east leg, the flat, the long drop, the visitor center), 1 barrier(s), 2 laps
+  Street Classic   the lap in 140.5 s; slowest 6.1 m/s; 1 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 32 m (+2.8 m), landed at 36 m/s, up 1.00; - 0.6 s 20 m (+1.9 m), landed at 36 m/s, up 1.00; - 0.6 s 18 m (+1.4 m), landed at 30 m/s, up 1.00; - 0.5 s 17 m (+1.5 m), landed at 34 m/s, up 1.00; - 0.6 s 18 m (+1.5 m), landed at 29 m/s, up 1.00; - 0.8 s 24 m (+1.7 m), landed at 29 m/s, up 1.00; - 1.1 s 42 m (+2.3 m), landed at 37 m/s, up 1.00; - 0.4 s 6 m (+0.0 m), landed at 14 m/s, up 0.96; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.94; J1 1.1 s 23 m (+0.0 m), landed at 20 m/s, up 0.98; J2 2.0 s 48 m (+0.2 m), landed at 23 m/s, up 1.00; J3 1.3 s 28 m (+0.0 m), landed at 22 m/s, up 0.97; - 0.4 s 9 m (+0.0 m), landed at 22 m/s, up 0.49; - 1.0 s 17 m (+0.0 m), landed at 17 m/s, up 0.95; J4 1.8 s 37 m (+0.1 m), landed at 20 m/s, up 0.99; J5 1.6 s 36 m (+0.0 m), landed at 23 m/s, up 0.95; J6 1.8 s 42 m (+0.1 m), landed at 23 m/s, up 0.99; - 0.5 s 14 m (+0.0 m), landed at 26 m/s, up 0.91; - 0.8 s 13 m (+0.5 m), landed at 16 m/s, up 0.99
+      stop: 18.4 to 8.2 m/s at (-501.1, 506.5, -5526.2), lap 2809 m: hit stay Terrain_12_4 at (-501.12, 505.90, -5524.24) normal (0.30, 0.95, 0.09) impulse 13575
+PASS  mloop Street Classic: round the lap, never stuck  -  140.5 s
+  Longroof GT      the lap in 142.4 s; slowest 9.0 m/s; 0 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.8 s 30 m (+2.7 m), landed at 37 m/s, up 1.00; - 0.6 s 21 m (+2.0 m), landed at 37 m/s, up 1.00; - 0.4 s 13 m (+1.2 m), landed at 34 m/s, up 1.00; - 0.6 s 16 m (+1.3 m), landed at 29 m/s, up 1.00; - 0.7 s 22 m (+1.5 m), landed at 29 m/s, up 1.00; - 1.0 s 39 m (+2.0 m), landed at 37 m/s, up 1.00; - 0.4 s 5 m (+0.0 m), landed at 14 m/s, up 0.96; - 0.6 s 9 m (+0.0 m), landed at 14 m/s, up 0.96; J1 1.0 s 20 m (+0.0 m), landed at 20 m/s, up 0.99; J2 1.8 s 42 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.4 s 10 m (+0.0 m), landed at 26 m/s, up 0.93; J3 1.1 s 25 m (+0.0 m), landed at 22 m/s, up 0.99; - 1.1 s 24 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.7 s 12 m (+0.0 m), landed at 16 m/s, up 0.97; - 0.4 s 6 m (+0.0 m), landed at 12 m/s, up 0.97; J4 1.6 s 34 m (+0.0 m), landed at 21 m/s, up 1.00; J5 1.5 s 34 m (+0.0 m), landed at 23 m/s, up 1.00; J6 1.6 s 38 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.6 s 16 m (+0.0 m), landed at 25 m/s, up 0.96; - 0.6 s 10 m (+0.3 m), landed at 16 m/s, up 0.99
+PASS  mloop Longroof GT: round the lap, never stuck  -  142.4 s
+  Needle 600       the lap in 128.5 s; slowest 6.7 m/s; 1 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 38 m (+3.3 m), landed at 43 m/s, up 1.00; - 0.3 s 15 m (+1.8 m), landed at 43 m/s, up 0.99; - 0.5 s 21 m (+2.0 m), landed at 42 m/s, up 1.00; - 0.5 s 20 m (+1.7 m), landed at 40 m/s, up 1.00; - 0.3 s 10 m (+0.5 m), landed at 29 m/s, up 1.00; - 0.5 s 15 m (+0.5 m), landed at 32 m/s, up 1.00; - 0.7 s 22 m (+1.8 m), landed at 32 m/s, up 1.00; - 0.9 s 31 m (+2.4 m), landed at 34 m/s, up 1.00; - 0.3 s 12 m (+0.2 m), landed at 36 m/s, up 1.00; - 1.2 s 48 m (+2.4 m), landed at 41 m/s, up 1.00; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.98; - 0.6 s 8 m (+0.0 m), landed at 14 m/s, up 0.98; J1 1.1 s 23 m (+0.0 m), landed at 20 m/s, up 0.98; J2 2.2 s 50 m (+0.4 m), landed at 23 m/s, up 0.99; J3 1.9 s 41 m (+0.1 m), landed at 21 m/s, up 0.98; - 1.2 s 18 m (+0.1 m), landed at 15 m/s, up 0.95; J4 1.9 s 39 m (+0.1 m), landed at 20 m/s, up 0.99; J5 1.9 s 42 m (+0.2 m), landed at 22 m/s, up 0.98; J6 1.8 s 43 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.8 s 19 m (+0.0 m), landed at 22 m/s, up 0.97; - 0.7 s 13 m (+0.4 m), landed at 19 m/s, up 0.86
+      stop: 22.3 to 10.0 m/s at (-895.0, 398.4, -5254.3), lap 3358 m: hit stay Terrain_11_4 at (-893.07, 398.03, -5253.67) normal (-0.06, 0.97, 0.22) impulse 75
+PASS  mloop Needle 600: round the lap, never stuck  -  128.5 s
+  Trail Four       the lap in 131.5 s; slowest 7.4 m/s; 1 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 36 m (+3.1 m), landed at 40 m/s, up 1.00; - 0.4 s 15 m (+1.8 m), landed at 40 m/s, up 1.00; - 0.6 s 22 m (+2.2 m), landed at 40 m/s, up 1.00; - 0.3 s 11 m (+0.8 m), landed at 31 m/s, up 1.00; - 0.5 s 18 m (+1.6 m), landed at 38 m/s, up 1.00; - 0.4 s 12 m (+0.4 m), landed at 31 m/s, up 1.00; - 0.7 s 21 m (+1.8 m), landed at 32 m/s, up 1.00; - 0.3 s 8 m (+0.8 m), landed at 24 m/s, up 1.00; - 0.9 s 29 m (+2.3 m), landed at 32 m/s, up 1.00; - 1.2 s 49 m (+2.5 m), landed at 40 m/s, up 1.00; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.98; - 0.4 s 5 m (+0.0 m), landed at 14 m/s, up 0.97; J1 1.2 s 24 m (+0.0 m), landed at 20 m/s, up 1.00; J2 2.0 s 48 m (+0.3 m), landed at 23 m/s, up 1.00; J3 1.3 s 29 m (+0.1 m), landed at 21 m/s, up 1.00; - 0.9 s 21 m (+0.0 m), landed at 22 m/s, up 0.99; - 1.1 s 15 m (+0.2 m), landed at 13 m/s, up 0.97; J4 1.9 s 39 m (+0.1 m), landed at 20 m/s, up 1.00; J5 1.8 s 40 m (+0.1 m), landed at 22 m/s, up 1.00; J6 1.9 s 43 m (+0.2 m), landed at 23 m/s, up 1.00; - 0.5 s 13 m (+0.0 m), landed at 24 m/s, up 0.94; - 1.0 s 18 m (+1.9 m), landed at 18 m/s, up 0.98
+      stop: 17.7 to 7.9 m/s at (-942.2, 402.3, -5272.0), lap 3400 m: hit stay Terrain_11_4 at (-940.04, 401.48, -5271.64) normal (0.08, 0.98, 0.17) impulse 90
+PASS  mloop Trail Four: round the lap, never stuck  -  131.5 s
+  Sundown Roadster the lap in 138.9 s; slowest 7.5 m/s; 2 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 33 m (+2.9 m), landed at 37 m/s, up 1.00; - 0.6 s 21 m (+2.0 m), landed at 37 m/s, up 1.00; - 0.5 s 15 m (+1.0 m), landed at 29 m/s, up 1.00; - 0.5 s 19 m (+1.7 m), landed at 35 m/s, up 1.00; - 0.6 s 19 m (+1.6 m), landed at 30 m/s, up 1.00; - 0.8 s 25 m (+1.9 m), landed at 30 m/s, up 1.00; - 1.2 s 44 m (+2.4 m), landed at 37 m/s, up 1.00; - 0.5 s 6 m (+0.0 m), landed at 14 m/s, up 0.97; - 0.4 s 6 m (+0.0 m), landed at 14 m/s, up 0.95; J1 1.1 s 23 m (+0.0 m), landed at 20 m/s, up 1.00; J2 2.0 s 47 m (+0.2 m), landed at 23 m/s, up 1.00; J3 1.4 s 30 m (+0.1 m), landed at 21 m/s, up 1.00; - 0.8 s 9 m (+0.1 m), landed at 10 m/s, up 0.97; J4 1.8 s 37 m (+0.1 m), landed at 20 m/s, up 1.00; J5 1.6 s 37 m (+0.0 m), landed at 23 m/s, up 1.00; J6 1.8 s 42 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.7 s 7 m (+0.5 m), landed at 9 m/s, up 0.99
+      stop: 19.2 to 8.6 m/s at (-531.8, 515.7, -5511.4), lap 2779 m: hit stay Terrain_12_4 at (-536.12, 515.66, -5508.82) normal (0.00, 1.00, 0.00) impulse 3091
+      stop: 25.7 to 9.1 m/s at (-917.5, 399.3, -5265.3), lap 3385 m: hit stay Terrain_11_4 at (-916.66, 398.40, -5265.14) normal (0.00, 0.99, 0.11) impulse 10958
+PASS  mloop Sundown Roadster: round the lap, never stuck  -  138.9 s
+  Highball Fastback the lap in 140.4 s; slowest 7.9 m/s; 2 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.5 s 19 m (+1.7 m), landed at 35 m/s, up 1.00; - 0.5 s 18 m (+1.6 m), landed at 36 m/s, up 1.00; - 0.6 s 17 m (+1.4 m), landed at 29 m/s, up 1.00; - 0.7 s 19 m (+1.3 m), landed at 28 m/s, up 1.00; - 1.1 s 41 m (+2.2 m), landed at 37 m/s, up 1.00; - 0.4 s 6 m (+0.0 m), landed at 14 m/s, up 0.96; - 0.6 s 8 m (+0.0 m), landed at 14 m/s, up 0.95; J1 1.0 s 20 m (+0.0 m), landed at 20 m/s, up 1.00; J2 1.8 s 43 m (+0.1 m), landed at 24 m/s, up 1.00; J3 1.2 s 26 m (+0.0 m), landed at 22 m/s, up 0.99; - 1.1 s 25 m (+0.0 m), landed at 23 m/s, up 0.99; - 0.7 s 8 m (+0.0 m), landed at 12 m/s, up 0.97; J4 1.7 s 35 m (+0.0 m), landed at 20 m/s, up 1.00; J5 1.5 s 34 m (+0.0 m), landed at 23 m/s, up 1.00; J6 1.6 s 39 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.7 s 17 m (+0.0 m), landed at 26 m/s, up 0.96; - 0.8 s 15 m (+0.5 m), landed at 18 m/s, up 0.98
+      stop: 39.0 to 15.8 m/s at (-500.1, 438.8, -5321.1), lap 387 m: hit stay Terrain_12_4 at (-501.03, 437.96, -5318.57) normal (-0.14, 0.98, 0.15) impulse 32788
+      stop: 17.7 to 8.0 m/s at (-513.9, 509.1, -5509.4), lap 2797 m: hit stay Terrain_12_4 at (-516.73, 508.55, -5506.39) normal (0.00, 1.00, 0.00) impulse 11014
+PASS  mloop Highball Fastback: round the lap, never stuck  -  140.4 s
+  Pebble Coupe     the lap in 139.0 s; slowest 4.3 m/s; 2 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 31 m (+2.8 m), landed at 36 m/s, up 1.00; - 0.6 s 21 m (+2.0 m), landed at 36 m/s, up 1.00; - 0.5 s 16 m (+1.2 m), landed at 30 m/s, up 1.00; - 0.5 s 17 m (+1.5 m), landed at 34 m/s, up 1.00; - 0.6 s 20 m (+1.7 m), landed at 30 m/s, up 1.00; - 0.8 s 25 m (+1.9 m), landed at 30 m/s, up 1.00; - 1.2 s 44 m (+2.4 m), landed at 37 m/s, up 1.00; - 0.5 s 6 m (+0.0 m), landed at 14 m/s, up 0.97; - 0.4 s 5 m (+0.0 m), landed at 14 m/s, up 0.95; J1 1.2 s 24 m (+0.0 m), landed at 20 m/s, up 0.99; J2 2.0 s 47 m (+0.3 m), landed at 23 m/s, up 1.00; J3 1.4 s 30 m (+0.1 m), landed at 22 m/s, up 1.00; - 0.3 s 7 m (+0.0 m), landed at 21 m/s, up 0.74; - 0.8 s 8 m (+0.1 m), landed at 10 m/s, up 0.98; J4 1.8 s 37 m (+0.1 m), landed at 20 m/s, up 1.00; J5 1.6 s 36 m (+0.0 m), landed at 22 m/s, up 1.00; J6 1.8 s 43 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.4 s 10 m (+0.0 m), landed at 25 m/s, up 0.88
+      stop: 13.1 to 5.8 m/s at (-532.2, 515.3, -5510.4), lap 2779 m: hit stay Terrain_12_4 at (-532.94, 514.22, -5508.55) normal (0.00, 1.00, 0.00) impulse 5153
+      stop: 20.0 to 5.5 m/s at (-916.6, 399.5, -5265.9), lap 3383 m: hit stay Terrain_11_4 at (-915.36, 398.43, -5265.76) normal (0.00, 1.00, 0.00) impulse 10972
+PASS  mloop Pebble Coupe: round the lap, never stuck  -  139.0 s
+  Skyfin Cruiser   the lap in 146.7 s; slowest 6.5 m/s; 2 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.5 s 16 m (+1.3 m), landed at 32 m/s, up 1.00; - 0.4 s 13 m (+1.1 m), landed at 34 m/s, up 1.00; - 0.5 s 15 m (+1.2 m), landed at 28 m/s, up 1.00; - 1.0 s 37 m (+1.9 m), landed at 36 m/s, up 1.00; - 0.4 s 6 m (+0.0 m), landed at 14 m/s, up 0.97; - 0.6 s 9 m (+0.0 m), landed at 14 m/s, up 0.95; J1 1.0 s 20 m (+0.0 m), landed at 20 m/s, up 0.99; J2 1.7 s 41 m (+0.0 m), landed at 23 m/s, up 1.00; J3 1.2 s 25 m (+0.0 m), landed at 22 m/s, up 0.99; - 1.0 s 23 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.6 s 6 m (+0.0 m), landed at 11 m/s, up 0.96; J4 1.7 s 35 m (+0.0 m), landed at 21 m/s, up 1.00; J5 1.4 s 32 m (+0.0 m), landed at 22 m/s, up 1.00; J6 1.6 s 37 m (+0.0 m), landed at 23 m/s, up 1.00; - 0.6 s 15 m (+0.0 m), landed at 25 m/s, up 0.96; - 0.6 s 9 m (+0.3 m), landed at 15 m/s, up 0.99
+      stop: 36.5 to 8.8 m/s at (-500.7, 438.7, -5320.5), lap 386 m: hit stay Terrain_12_4 at (-501.53, 437.80, -5317.87) normal (-0.12, 0.98, 0.14) impulse 29825
+      stop: 17.3 to 7.7 m/s at (-514.5, 509.0, -5508.5), lap 2796 m: hit stay Terrain_12_4 at (-515.22, 507.78, -5505.94) normal (0.00, 1.00, 0.00) impulse 947
+PASS  mloop Skyfin Cruiser: round the lap, never stuck  -  146.7 s
+  Ridge Scrambler  the lap in 130.0 s; slowest 9.8 m/s; 0 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 35 m (+3.1 m), landed at 40 m/s, up 1.00; - 0.3 s 14 m (+1.7 m), landed at 41 m/s, up 1.00; - 0.5 s 20 m (+1.9 m), landed at 40 m/s, up 1.00; - 0.3 s 10 m (+0.8 m), landed at 32 m/s, up 1.00; - 0.5 s 18 m (+1.5 m), landed at 38 m/s, up 1.00; - 0.3 s 9 m (+0.5 m), landed at 28 m/s, up 1.00; - 0.4 s 14 m (+0.5 m), landed at 31 m/s, up 1.00; - 0.7 s 21 m (+1.8 m), landed at 32 m/s, up 1.00; - 0.5 s 11 m (+1.1 m), landed at 24 m/s, up 1.00; - 0.9 s 30 m (+2.3 m), landed at 33 m/s, up 1.00; - 1.2 s 49 m (+2.5 m), landed at 40 m/s, up 1.00; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.98; - 0.6 s 8 m (+0.0 m), landed at 14 m/s, up 0.99; J1 1.2 s 23 m (+0.0 m), landed at 19 m/s, up 1.00; - 0.4 s 9 m (+0.0 m), landed at 22 m/s, up 0.96; J2 2.2 s 50 m (+0.5 m), landed at 23 m/s, up 1.00; J3 1.9 s 41 m (+0.1 m), landed at 21 m/s, up 0.79; - 1.2 s 22 m (+0.0 m), landed at 19 m/s, up 0.97; J4 1.9 s 39 m (+0.2 m), landed at 20 m/s, up 1.00; J5 1.8 s 40 m (+0.1 m), landed at 22 m/s, up 1.00; J6 1.8 s 43 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.8 s 18 m (+0.0 m), landed at 23 m/s, up 0.99; - 1.0 s 18 m (+1.1 m), landed at 17 m/s, up 0.98
+PASS  mloop Ridge Scrambler: round the lap, never stuck  -  130.0 s
+  Drifter Twin     the lap in 133.7 s; slowest 5.6 m/s; 1 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 36 m (+3.1 m), landed at 40 m/s, up 1.00; - 0.3 s 14 m (+1.7 m), landed at 40 m/s, up 0.99; - 0.5 s 20 m (+1.8 m), landed at 40 m/s, up 1.00; - 0.4 s 17 m (+1.4 m), landed at 38 m/s, up 1.00; - 0.4 s 12 m (+0.4 m), landed at 30 m/s, up 1.00; - 0.6 s 20 m (+1.7 m), landed at 31 m/s, up 1.00; - 0.9 s 28 m (+2.2 m), landed at 32 m/s, up 1.00; - 1.2 s 49 m (+2.5 m), landed at 40 m/s, up 1.00; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.98; - 0.7 s 9 m (+0.0 m), landed at 14 m/s, up 0.98; J1 1.1 s 23 m (+0.0 m), landed at 20 m/s, up 0.99; J2 2.0 s 46 m (+0.2 m), landed at 23 m/s, up 1.00; J3 1.4 s 30 m (+0.1 m), landed at 21 m/s, up 1.00; - 0.6 s 13 m (+0.0 m), landed at 21 m/s, up 0.77; - 1.4 s 28 m (+0.0 m), landed at 20 m/s, up 0.97; - 1.5 s 11 m (+2.1 m), landed at 7 m/s, up 0.95; J4 1.9 s 38 m (+0.1 m), landed at 20 m/s, up 1.00; J5 1.8 s 40 m (+0.1 m), landed at 22 m/s, up 1.00; J6 1.9 s 44 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.6 s 15 m (+0.0 m), landed at 26 m/s, up 0.92; - 0.8 s 14 m (+0.6 m), landed at 17 m/s, up 1.00
+      stop: 14.3 to 6.1 m/s at (-475.0, 496.5, -5510.2), lap 2831 m: hit stay Terrain_12_4 at (-475.67, 496.66, -5509.10) normal (0.84, 0.53, -0.08) impulse 260
+PASS  mloop Drifter Twin: round the lap, never stuck  -  133.7 s
+  Turf Rocket      the lap in 130.2 s; slowest 7.3 m/s; 0 dead stop(s); jumps flown J1 J2 J3 J4 J5 J6
+      air: - 0.9 s 39 m (+3.6 m), landed at 43 m/s, up 1.00; - 0.5 s 22 m (+2.1 m), landed at 41 m/s, up 1.00; - 0.5 s 20 m (+1.7 m), landed at 40 m/s, up 1.00; - 0.3 s 9 m (+0.5 m), landed at 29 m/s, up 1.00; - 0.5 s 15 m (+0.5 m), landed at 32 m/s, up 1.00; - 0.7 s 22 m (+2.0 m), landed at 32 m/s, up 1.00; - 1.0 s 19 m (+1.9 m), landed at 20 m/s, up 0.97; - 0.4 s 10 m (+0.9 m), landed at 24 m/s, up 1.00; - 1.0 s 33 m (+2.7 m), landed at 34 m/s, up 1.00; - 0.3 s 12 m (+0.2 m), landed at 36 m/s, up 1.00; - 1.3 s 53 m (+2.7 m), landed at 41 m/s, up 1.00; - 0.5 s 7 m (+0.0 m), landed at 14 m/s, up 0.98; - 0.4 s 6 m (+0.0 m), landed at 14 m/s, up 0.98; J1 1.1 s 23 m (+0.0 m), landed at 20 m/s, up 1.00; J2 2.3 s 52 m (+0.7 m), landed at 23 m/s, up 1.00; J3 1.5 s 32 m (+0.1 m), landed at 21 m/s, up 1.00; - 0.4 s 8 m (+0.0 m), landed at 21 m/s, up 0.88; - 1.1 s 11 m (+0.4 m), landed at 10 m/s, up 0.96; J4 1.9 s 39 m (+0.1 m), landed at 20 m/s, up 1.00; J5 1.8 s 39 m (+0.1 m), landed at 22 m/s, up 1.00; J6 1.8 s 43 m (+0.1 m), landed at 23 m/s, up 1.00; - 0.6 s 15 m (+0.0 m), landed at 25 m/s, up 0.96; - 0.8 s 14 m (+0.6 m), landed at 18 m/s, up 0.98
+PASS  mloop Turf Rocket: round the lap, never stuck  -  130.2 s
+FAIL  mloop: no dead stop on the ground anywhere (listed above)  -  12 found
+
+=== A2. Each jump on the Drifter Twin and the Street Classic: run at the lip at the AI's speed, 26 and 32 m/s along the race's line
+  Drifter Twin   J1 the summit overlook  at 20 m/s (off the lip at 20.2): 1.06 s in the air, 21 m, +0.6 m over the lip, landed at 19.8 m/s upright 0.99, slowest in the next second 18.8 m/s at (-840, -5665), lap +22 m from the lip
+PASS  mjumps Drifter Twin J1 at 20 m/s: flies and lands clean  -  1.1 s, 21 m
+  Drifter Twin   J1 the summit overlook  at 26 m/s (off the lip at 25.9): 1.74 s in the air, 43 m, +0.7 m over the lip, landed at 22.6 m/s upright 1.00, slowest in the next second 0.4 m/s at (-819, -5653), lap +38 m from the lip; last touched stay Terrain_11_4 at (-817.06, 612.99, -5652.46) normal (0.00, 1.00, 0.00) impulse 1236
+FAIL  mjumps Drifter Twin J1 at 26 m/s: flies and lands clean  -  1.7 s, 43 m
+  Drifter Twin   J1 the summit overlook  at 32 m/s (off the lip at 27.7): 1.94 s in the air, 49 m, +0.3 m over the lip, landed at 2.7 m/s upright 1.00, slowest in the next second 0.2 m/s at (-802, -5669), lap +26 m from the lip; last touched stay trunk at (-801.88, 605.80, -5668.80) normal (-0.88, 0.00, 0.48) impulse 0
+FAIL  mjumps Drifter Twin J1 at 32 m/s: flies and lands clean  -  1.9 s, 49 m
+  Drifter Twin   J2 the ridge drop       at 24 m/s (off the lip at 23.8): 2.08 s in the air, 48 m, +1.0 m over the lip, landed at 22.8 m/s upright 1.00, slowest in the next second 22.9 m/s at (-764, -5581), lap +50 m from the lip
+PASS  mjumps Drifter Twin J2 at 24 m/s: flies and lands clean  -  2.1 s, 48 m
+  Drifter Twin   J2 the ridge drop       at 26 m/s (off the lip at 26.0): 2.20 s in the air, 56 m, +0.9 m over the lip, landed at 24.8 m/s upright 1.00, slowest in the next second 24.6 m/s at (-758, -5577), lap +58 m from the lip
+PASS  mjumps Drifter Twin J2 at 26 m/s: flies and lands clean  -  2.2 s, 56 m
+  Drifter Twin   J2 the ridge drop       at 32 m/s (off the lip at 30.8): NO FLIGHT off its lip (airborne before it)
+FAIL  mjumps Drifter Twin J2 at 32 m/s: flies and lands clean  -  no flight
+  Drifter Twin   J3 the earthworks berm  at 22 m/s (off the lip at 21.8): 1.44 s in the air, 31 m, +0.7 m over the lip, landed at 21.2 m/s upright 0.99, slowest in the next second 20.5 m/s at (-556, -5512), lap +32 m from the lip
+PASS  mjumps Drifter Twin J3 at 22 m/s: flies and lands clean  -  1.4 s, 31 m
+  Drifter Twin   J3 the earthworks berm  at 26 m/s (off the lip at 21.0): 0.38 s in the air, 8 m, +5.4 m over the lip, landed at 20.9 m/s upright 0.94, slowest in the next second 19.8 m/s at (-599, -5514), lap -11 m from the lip
+PASS  mjumps Drifter Twin J3 at 26 m/s: flies and lands clean  -  0.4 s, 8 m
+  Drifter Twin   J3 the earthworks berm  at 32 m/s (off the lip at 22.8): 0.42 s in the air, 10 m, +5.2 m over the lip, landed at 22.6 m/s upright 0.94, slowest in the next second 18.6 m/s at (-589, -5513), lap -1 m from the lip
+PASS  mjumps Drifter Twin J3 at 32 m/s: flies and lands clean  -  0.4 s, 10 m
+  Drifter Twin   J4 the switchback cut   at 21 m/s (off the lip at 20.9): 1.84 s in the air, 38 m, +0.6 m over the lip, landed at 20.1 m/s upright 0.99, slowest in the next second 19.9 m/s at (-667, -5343), lap +39 m from the lip
+PASS  mjumps Drifter Twin J4 at 21 m/s: flies and lands clean  -  1.8 s, 38 m
+  Drifter Twin   J4 the switchback cut   at 26 m/s (off the lip at 25.9): 2.30 s in the air, 58 m, +0.7 m over the lip, landed at 24.7 m/s upright 0.99, slowest in the next second 15.9 m/s at (-675, -5324), lap +60 m from the lip
+PASS  mjumps Drifter Twin J4 at 26 m/s: flies and lands clean  -  2.3 s, 58 m
+  Drifter Twin   J4 the switchback cut   at 32 m/s (off the lip at 28.5): 2.64 s in the air, 73 m, +0.9 m over the lip, landed at 27.0 m/s upright 0.99, slowest in the next second 21.8 m/s at (-680, -5310), lap +75 m from the lip
+PASS  mjumps Drifter Twin J4 at 32 m/s: flies and lands clean  -  2.6 s, 73 m
+  Drifter Twin   J5 the washout          at 23 m/s (off the lip at 22.8): 1.76 s in the air, 39 m, +0.6 m over the lip, landed at 22.0 m/s upright 1.00, slowest in the next second 22.2 m/s at (-759, -5281), lap +41 m from the lip
+PASS  mjumps Drifter Twin J5 at 23 m/s: flies and lands clean  -  1.8 s, 39 m
+  Drifter Twin   J5 the washout          at 26 m/s (off the lip at 28.0): NO FLIGHT off its lip (airborne before it)
+FAIL  mjumps Drifter Twin J5 at 26 m/s: flies and lands clean  -  no flight
+  Drifter Twin   J5 the washout          at 32 m/s (off the lip at 20.5): NO FLIGHT off its lip (airborne before it)
+FAIL  mjumps Drifter Twin J5 at 32 m/s: flies and lands clean  -  no flight
+  Drifter Twin   J6 the last ledge       at 24 m/s (off the lip at 24.1): 1.78 s in the air, 42 m, +0.6 m over the lip, landed at 23.2 m/s upright 1.00, slowest in the next second 23.0 m/s at (-861, -5274), lap +44 m from the lip
+PASS  mjumps Drifter Twin J6 at 24 m/s: flies and lands clean  -  1.8 s, 42 m
+  Drifter Twin   J6 the last ledge       at 26 m/s (off the lip at 26.1): 1.98 s in the air, 51 m, +0.7 m over the lip, landed at 25.1 m/s upright 1.00, slowest in the next second 24.1 m/s at (-870, -5273), lap +52 m from the lip
+PASS  mjumps Drifter Twin J6 at 26 m/s: flies and lands clean  -  2.0 s, 51 m
+  Drifter Twin   J6 the last ledge       at 32 m/s (off the lip at 26.4): 0.04 s in the air, 1 m, +2.0 m over the lip, landed at 26.3 m/s upright 0.98, slowest in the next second 26.5 m/s at (-807, -5280), lap -11 m from the lip
+PASS  mjumps Drifter Twin J6 at 32 m/s: flies and lands clean  -  0.0 s, 1 m
+  Street Classic J1 the summit overlook  at 20 m/s (off the lip at 20.0): 1.14 s in the air, 23 m, +0.8 m over the lip, landed at 19.6 m/s upright 0.98, slowest in the next second 18.9 m/s at (-839, -5664), lap +24 m from the lip
+PASS  mjumps Street Classic J1 at 20 m/s: flies and lands clean  -  1.1 s, 23 m
+  Street Classic J1 the summit overlook  at 26 m/s (off the lip at 26.2): 1.58 s in the air, 38 m, +0.3 m over the lip, landed at 21.7 m/s upright 0.98, slowest in the next second 0.5 m/s at (-814, -5669), lap +26 m from the lip; last touched stay trunk at (-810.69, 610.76, -5668.23) normal (-0.06, 0.00, 1.00) impulse 0
+FAIL  mjumps Street Classic J1 at 26 m/s: flies and lands clean  -  1.6 s, 38 m
+  Street Classic J1 the summit overlook  at 32 m/s (off the lip at 27.7): 1.74 s in the air, 47 m, -0.7 m over the lip, landed at 24.3 m/s upright 0.97, slowest in the next second 5.1 m/s at (-803, -5669), lap +26 m from the lip; last touched stay trunk at (-801.80, 605.88, -5668.72) normal (-0.45, 0.00, 0.90) impulse 0
+FAIL  mjumps Street Classic J1 at 32 m/s: flies and lands clean  -  1.7 s, 47 m
+  Street Classic J2 the ridge drop       at 24 m/s (off the lip at 24.0): 2.04 s in the air, 48 m, +0.9 m over the lip, landed at 23.1 m/s upright 1.00, slowest in the next second 22.4 m/s at (-765, -5581), lap +50 m from the lip
+PASS  mjumps Street Classic J2 at 24 m/s: flies and lands clean  -  2.0 s, 48 m
+  Street Classic J2 the ridge drop       at 26 m/s (off the lip at 26.0): 2.12 s in the air, 54 m, +0.9 m over the lip, landed at 24.9 m/s upright 1.00, slowest in the next second 24.7 m/s at (-758, -5579), lap +56 m from the lip
+PASS  mjumps Street Classic J2 at 26 m/s: flies and lands clean  -  2.1 s, 54 m
+  Street Classic J2 the ridge drop       at 32 m/s (off the lip at 11.1): 1.06 s in the air, 12 m, -3.6 m over the lip, landed at 10.9 m/s upright 0.96, slowest in the next second 12.2 m/s at (-789, -5600), lap +20 m from the lip
+PASS  mjumps Street Classic J2 at 32 m/s: flies and lands clean  -  1.1 s, 12 m
+  Street Classic J3 the earthworks berm  at 22 m/s (off the lip at 22.0): 1.32 s in the air, 29 m, +0.6 m over the lip, landed at 21.5 m/s upright 0.97, slowest in the next second 20.4 m/s at (-558, -5512), lap +30 m from the lip
+PASS  mjumps Street Classic J3 at 22 m/s: flies and lands clean  -  1.3 s, 29 m
+  Street Classic J3 the earthworks berm  at 26 m/s (off the lip at 21.6): 1.28 s in the air, 26 m, +0.6 m over the lip, landed at 20.0 m/s upright 0.97, slowest in the next second 12.1 m/s at (-580, -5483), lap +7 m from the lip
+PASS  mjumps Street Classic J3 at 26 m/s: flies and lands clean  -  1.3 s, 26 m
+  Street Classic J3 the earthworks berm  at 32 m/s (off the lip at 22.3): 0.44 s in the air, 10 m, +5.3 m over the lip, landed at 22.1 m/s upright 0.94, slowest in the next second 19.0 m/s at (-589, -5513), lap -1 m from the lip
+PASS  mjumps Street Classic J3 at 32 m/s: flies and lands clean  -  0.4 s, 10 m
+  Street Classic J4 the switchback cut   at 21 m/s (off the lip at 21.0): 1.78 s in the air, 37 m, +0.6 m over the lip, landed at 20.2 m/s upright 0.99, slowest in the next second 19.5 m/s at (-666, -5343), lap +39 m from the lip
+PASS  mjumps Street Classic J4 at 21 m/s: flies and lands clean  -  1.8 s, 37 m
+  Street Classic J4 the switchback cut   at 26 m/s (off the lip at 25.8): 2.26 s in the air, 57 m, +0.7 m over the lip, landed at 24.7 m/s upright 1.00, slowest in the next second 20.4 m/s at (-673, -5324), lap +59 m from the lip
+PASS  mjumps Street Classic J4 at 26 m/s: flies and lands clean  -  2.3 s, 57 m
+  Street Classic J4 the switchback cut   at 32 m/s (off the lip at 26.9): 2.30 s in the air, 60 m, +0.6 m over the lip, landed at 25.7 m/s upright 1.00, slowest in the next second 21.9 m/s at (-675, -5321), lap +63 m from the lip
+PASS  mjumps Street Classic J4 at 32 m/s: flies and lands clean  -  2.3 s, 60 m
+  Street Classic J5 the washout          at 23 m/s (off the lip at 23.0): 1.60 s in the air, 36 m, +0.4 m over the lip, landed at 22.2 m/s upright 0.96, slowest in the next second 22.4 m/s at (-757, -5281), lap +38 m from the lip
+PASS  mjumps Street Classic J5 at 23 m/s: flies and lands clean  -  1.6 s, 36 m
+  Street Classic J5 the washout          at 26 m/s (off the lip at 25.1): NO FLIGHT off its lip (airborne before it)
+FAIL  mjumps Street Classic J5 at 26 m/s: flies and lands clean  -  no flight
+  Street Classic J5 the washout          at 32 m/s (off the lip at 27.5): NO FLIGHT off its lip (airborne before it)
+FAIL  mjumps Street Classic J5 at 32 m/s: flies and lands clean  -  no flight
+  Street Classic J6 the last ledge       at 24 m/s (off the lip at 24.1): 1.78 s in the air, 42 m, +0.5 m over the lip, landed at 23.2 m/s upright 0.99, slowest in the next second 23.1 m/s at (-862, -5274), lap +44 m from the lip
+PASS  mjumps Street Classic J6 at 24 m/s: flies and lands clean  -  1.8 s, 42 m
+  Street Classic J6 the last ledge       at 26 m/s (off the lip at 26.0): 1.82 s in the air, 46 m, +0.5 m over the lip, landed at 25.0 m/s upright 0.99, slowest in the next second 25.2 m/s at (-866, -5273), lap +49 m from the lip
+PASS  mjumps Street Classic J6 at 26 m/s: flies and lands clean  -  1.8 s, 46 m
+  Street Classic J6 the last ledge       at 32 m/s (off the lip at 25.3): 0.02 s in the air, 1 m, +1.7 m over the lip, landed at 25.3 m/s upright 0.83, slowest in the next second 25.3 m/s at (-808, -5275), lap -11 m from the lip
+PASS  mjumps Street Classic J6 at 32 m/s: flies and lands clean  -  0.0 s, 1 m
+
+=== A3. The Kennesaw Mountain race twice on Hard, 3 AI (each race's replay, Round 58's analysis)
+  Kennesaw Mountain #1   EMBER Drifter Twin     5:14.432 laps 160.0 / 154.4, missed 2; down 0.0 s, stuck 3.9 s (longest 1.3), wrong way 0.5 s; resets 0 (down 0, blocked 0, wrong way 0), passes 47
+  Kennesaw Mountain #1   GOLD  Street Classic   5:08.609 laps 150.4 / 158.2, missed 2; down 0.0 s, stuck 6.6 s (longest 1.5), wrong way 0.0 s; resets 0 (down 0, blocked 0, wrong way 0), passes 38
+  Kennesaw Mountain #1   BLUE  Needle 600       5:09.406 laps 158.5 / 150.9, missed 2; down 0.0 s, stuck 5.2 s (longest 1.4), wrong way 1.1 s; resets 5 (down 0, blocked 2, wrong way 0), passes 27
+PASS  mai Kennesaw Mountain #1: every AI finishes  -  EMBER 5:14.432, GOLD 5:08.609, BLUE 5:09.406
+  Kennesaw Mountain #2   EMBER Trail Four       5:14.512 laps 156.8 / 157.7, missed 2; down 0.5 s, stuck 5.9 s (longest 1.3), wrong way 1.0 s; resets 3 (down 0, blocked 3, wrong way 0), passes 34
+  Kennesaw Mountain #2   GOLD  Ridge Scrambler  5:17.529 laps 165.0 / 152.5, missed 2; down 0.0 s, stuck 7.2 s (longest 2.2), wrong way 0.6 s; resets 1 (down 0, blocked 1, wrong way 0), passes 25
+  Kennesaw Mountain #2   BLUE  Turf Rocket      4:52.215 laps 145.5 / 146.7, missed 2; down 0.0 s, stuck 8.6 s (longest 6.1), wrong way 2.2 s; resets 0 (down 0, blocked 0, wrong way 0), passes 32
+PASS  mai Kennesaw Mountain #2: every AI finishes  -  EMBER 5:14.512, GOLD 5:17.529, BLUE 4:52.215
+  ALL: 6 AI races; finished 6; down 0.5 s, stuck 37.4 s (longest 6.1), resets 9
+
+=== A5. Park visitors on Kennesaw Mountain's trails
+  09:00 at (-700, -5553): walkers 8 (target 7 near a view): dogs 2, families 0, couples 0, joggers 4, cyclists 2; on the trail 8
+  17:00 at (-700, -5553): walkers 8 (target 8 near a view): dogs 1, families 0, couples 1, joggers 4, cyclists 2; on the trail 8
+  09:00 at (-760, -5281): walkers 8 (target 7 near a view): dogs 2, families 0, couples 1, joggers 1, cyclists 4; on the trail 8
+  17:00 at (-760, -5281): walkers 8 (target 8 near a view): dogs 3, families 0, couples 0, joggers 3, cyclists 2; on the trail 8
+  09:00 at (-1110, -5300): walkers 8 (target 7 near a view): dogs 2, families 0, couples 1, joggers 1, cyclists 4; on the trail 8
+  17:00 at (-1110, -5300): walkers 9 (target 8 near a view): dogs 5, families 0, couples 1, joggers 0, cyclists 3; on the trail 9
+PASS  mwalk: visitors out on the mountain's trails  -  most at once 9
+  in a race: walkers 2 (target 7 near a view): dogs 0, families 0, couples 1, joggers 0, cyclists 1; on the trail 2
+PASS  mwalk: in a race, two groups at most on the trails  -  2
+
+=== A pictures
+  67_midair_J2: taken
+  67_midair_J5: taken
+  67_midair_J1: taken
+  67_midair_J3: taken
+
+=== B1 the creek leap (forward): clean, missed (14 m/s off the lip), round the stunt, against the lap between the same two points (Drifter Twin)
+  the lap 432 m in 18.8 s; the shortcut clean 315 m in 13.2 s (most air 2.6 s, landed at (1661, -658) upright 1.00); missed 16.0 s (most air 2.4 s, landed at (1686, -664)); round the stunt 307 m in 16.2 s
+PASS  t_creek: clean saves time  -  13.2 s against 18.8 s
+FAIL  t_creek: missed costs more than the lap  -  16.0 s against 18.8 s
+FAIL  t_creek: round the stunt is slower than the lap  -  16.2 s against 18.8 s
+PASS  t_creek: never stuck (missed and round get out)  -  missed out, round out
+
+=== B2 the parkway leap (reverse): clean, missed (15 m/s off the lip), round the stunt, against the lap between the same two points (Drifter Twin)
+  the lap 334 m in 13.1 s; the shortcut clean 272 m in 12.1 s (most air 2.5 s, landed at (1329, -754) upright 0.99); missed 15.6 s (most air 1.3 s, landed at (1324, -753)); round the stunt 272 m in 15.4 s
+PASS  t_parkway_rev: clean saves time  -  12.1 s against 13.1 s
+PASS  t_parkway_rev: missed costs more than the lap  -  15.6 s against 13.1 s
+PASS  t_parkway_rev: round the stunt is slower than the lap  -  15.4 s against 13.1 s
+PASS  t_parkway_rev: never stuck (missed and round get out)  -  missed out, round out
+
+=== BUG-003: the mound by Town Center Drive, both ways, at 13 and 22 m/s (Drifter Twin)
+  forward at 13 m/s: most air 0.54 s, landed at (158, -882), upright 0.99, slowest 12.5 m/s, through
+PASS  xmound forward 13 m/s: a jump, landed clean  -  air 0.54 s, slowest 12.5
+  forward at 22 m/s: most air 1.00 s, landed at (163, -895), upright 0.97, slowest 20.4 m/s, through
+PASS  xmound forward 22 m/s: a jump, landed clean  -  air 1.00 s, slowest 20.4
+  reverse at 13 m/s: most air 0.44 s, landed at (170, -907), upright 0.99, slowest 12.5 m/s, through
+PASS  xmound reverse 13 m/s: a jump, landed clean  -  air 0.44 s, slowest 12.5
+  reverse at 22 m/s: most air 0.92 s, landed at (164, -894), upright 1.00, slowest 21.1 m/s, through
+PASS  xmound reverse 22 m/s: a jump, landed clean  -  air 0.92 s, slowest 21.1
+
+=== B3 (BUG-001: "it wasn't flush and caused me to lose momentum"): over the mound at 26 and 30 m/s, the speed kept (Drifter Twin, Street Classic)
+  Drifter Twin   forward  at 26 m/s: 24.5 m/s 30 m out, slowest within 22 m of the face's foot 23.3 m/s (5 % lost), most air 1.20 s, through
+PASS  tmound Drifter Twin forward 26 m/s: no more than 15 % of the speed lost at the mound  -  24.5 -> 23.3 m/s
+  Drifter Twin   forward  at 30 m/s: 23.9 m/s 30 m out, slowest within 22 m of the face's foot 20.7 m/s (13 % lost), most air 1.02 s, through
+PASS  tmound Drifter Twin forward 30 m/s: no more than 15 % of the speed lost at the mound  -  23.9 -> 20.7 m/s
+  Drifter Twin   reverse  at 26 m/s: 26.0 m/s 30 m out, slowest within 22 m of the face's foot 25.1 m/s (4 % lost), most air 1.00 s, through
+PASS  tmound Drifter Twin reverse 26 m/s: no more than 15 % of the speed lost at the mound  -  26.0 -> 25.1 m/s
+  Drifter Twin   reverse  at 30 m/s: 30.0 m/s 30 m out, slowest within 22 m of the face's foot 29.2 m/s (3 % lost), most air 1.08 s, through
+PASS  tmound Drifter Twin reverse 30 m/s: no more than 15 % of the speed lost at the mound  -  30.0 -> 29.2 m/s
+  Street Classic forward  at 26 m/s: 24.9 m/s 30 m out, slowest within 22 m of the face's foot 16.4 m/s (34 % lost), most air 1.00 s, through
+FAIL  tmound Street Classic forward 26 m/s: no more than 15 % of the speed lost at the mound  -  24.9 -> 16.4 m/s
+  Street Classic forward  at 30 m/s: 28.7 m/s 30 m out, slowest within 22 m of the face's foot 25.2 m/s (12 % lost), most air 1.24 s, through
+PASS  tmound Street Classic forward 30 m/s: no more than 15 % of the speed lost at the mound  -  28.7 -> 25.2 m/s
+  Street Classic reverse  at 26 m/s: 25.8 m/s 30 m out, slowest within 22 m of the face's foot 25.2 m/s (2 % lost), most air 1.00 s, through
+PASS  tmound Street Classic reverse 26 m/s: no more than 15 % of the speed lost at the mound  -  25.8 -> 25.2 m/s
+  Street Classic reverse  at 30 m/s: 29.8 m/s 30 m out, slowest within 22 m of the face's foot 28.9 m/s (3 % lost), most air 1.10 s, through
+PASS  tmound Street Classic reverse 30 m/s: no more than 15 % of the speed lost at the mound  -  29.8 -> 28.9 m/s
+
+=== B pictures
+  67_midair_creek_leap: taken
+  67_midair_parkway_leap: taken
+
+59 of 72 checks passed.
