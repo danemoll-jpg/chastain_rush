@@ -144,6 +144,7 @@ namespace ChastainRush
             Mall = PlanMall(map, terrain);   // Round 60 (A): Town Center, its doors' aprons graded (MapBuilder.Mall.cs)
             Airport = PlanAirport(map, terrain);   // Round 61 (B): the airport's runways, taxiways and aprons, Kennesaw Mountain's trails graded (MapBuilder.Airport.cs)
             PlanTrailRace(terrain);   // Round 62 (A, B): the Noonday Creek Trail race's bench along the real trail, the ground under its red bridge (MapBuilder.TrailRace.cs)
+            PlanMountainRace(terrain);   // Round 67 (A): the Kennesaw Mountain race's bench down the Kennesaw Mountain Trail, its jumps shaped into it (MapBuilder.Mountain.cs)
             BuildClock.Lap("StuntPark plan");
             c.world = quick ? c.scene.GetRootGameObjects().First(g => g.name == "World").transform : new GameObject("World").transform;
             c.paint = new Chunks();

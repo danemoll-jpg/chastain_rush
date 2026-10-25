@@ -1526,6 +1526,15 @@
    "y": 0.0,
    "fixed": false,
    "yaw": 87.1
+  },
+  {
+   "id": "race-kennesaw_mountain",
+   "title": "Kennesaw Mountain start",
+   "x": -892.34,
+   "z": -5220.95,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 69.5
   }
  ]
 }

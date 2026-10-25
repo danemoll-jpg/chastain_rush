@@ -56,6 +56,14 @@ for did, title, lat, lon, parts in PLACES:
     if rp is None: print(f"{title}: no road near ({q[0]:.0f}, {q[1]:.0f})"); continue
     dests.append({"id": did, "title": title, "x": round(rp[1][0], 2), "z": round(rp[1][1], 2), "y": 0.0, "fixed": False, "yaw": round(rp[2], 1)})
     print(f"{title}: on {rp[3] or 'an unnamed road'} at ({rp[1][0]:.1f}, {rp[1][1]:.1f}), {rp[0]:.0f} m from its middle")
+# Round 67 (A5): the Kennesaw Mountain race's start as a destination, as make_eggs.py writes a race's (the lead-in's first point, facing along it)
+for f in [os.path.join(ROOT, "Data", "routes", "kennesaw_mountain.json")]:
+    did = "race-" + os.path.basename(f)[:-5]
+    if any(d["id"] == did for d in dests): continue
+    r = json.load(open(f, encoding="utf-8")); li = r["lead_in"]
+    dests.append({"id": did, "title": r["name"] + " start", "x": round(li[0], 2), "z": round(li[1], 2), "y": 0.0, "fixed": False,
+                  "yaw": round(math.degrees(math.atan2(li[2] - li[0], li[3] - li[1])) % 360, 1)})
+    print(f"{r['name']} start: ({li[0]:.1f}, {li[1]:.1f})")
 data["destinations"] = dests
 json.dump(data, open(EGGS, "w", encoding="utf-8"), indent=1)
 print(f"{len(dests)} destinations -> {EGGS}")
