@@ -29,7 +29,7 @@ namespace ChastainRush
             yield return Vehicle("plane"); var pl = Plane;
             if (!pl || !pl.enabled) { Check("the plane is on", false); yield break; }
             pl.Scripted = true; pl.sPitch = pl.sBank = pl.sRudder = pl.sBrake = pl.sSteer = 0f; pl.sThrottle = 0f;
-            pl.LineUp(west); yield return new WaitForSecondsRealtime(1.5f);
+            pl.Recovered(); pl.LineUp(west); yield return new WaitForSecondsRealtime(1.5f);
         }
         void Hands(PlaneFlight pl) { pl.sPitch = pl.sBank = pl.sRudder = pl.sSteer = 0f; }
 
@@ -72,12 +72,13 @@ namespace ChastainRush
         }
         static float Bearing(Vector3 from, Vector3 to) => Mathf.Atan2(to.x - from.x, to.z - from.z) * Mathf.Rad2Deg;
 
-        IEnumerator FlyTo(string label, Vector2 to, float height, float throttle, float timeout, List<string> log)
+        IEnumerator FlyTo(string label, Vector2 to, float height, float throttle, float timeout, List<string> log, List<float> fps = null)
         {
-            var pl = Plane; float t = 0f; pl.sThrottle = throttle; Time.timeScale = 2f; Time.maximumDeltaTime = .5f; float top = 0f, minClear = 999f;
+            var pl = Plane; float t = 0f; pl.sThrottle = throttle; Time.timeScale = fps != null ? 1f : 2f; Time.maximumDeltaTime = .5f; float top = 0f, minClear = 999f;
             while (t < timeout)
             {
-                yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
+                if (fps != null) { yield return null; t += Time.deltaTime; if (Time.unscaledDeltaTime > 0f && Flat(car.Body.position - new Vector3(to.x, 0, to.y)).magnitude < 1500f) fps.Add(1f / Time.unscaledDeltaTime); }
+                else { yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; }
                 if (pl.Crashed) break;
                 var p = car.Body.position; float alt = (GroundQuery.TryHeight(p.x, p.z, out float gy) ? gy : 0f) + height;
                 // over high ground ahead, the height kept over the highest of the next 1.5 km
@@ -252,29 +253,20 @@ namespace ChastainRush
 
         IEnumerator R69Fps()
         {
-            report.AppendLine(); report.AppendLine("=== Frame rate crossing the map (1280 x 720, not measured at 3840 x 2160), at 300 m and 600 m over the ground");
+            report.AppendLine(); report.AppendLine("=== Frame rate crossing the map (1280 x 720, not measured at 3840 x 2160), at 300 m and 600 m over the ground (real time, the frames over the last 1.5 km to each place)");
+            QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1;   // (a check run's settings may cap it at 60, PerfCheckRunner's way)
+            yield return BoardPlane(true); yield return TakeOff("09", 120f);
+            var legs = new (string name, Vector2 at)[] { ("Kennesaw Mountain", new Vector2(-1123f, -5870f)), ("Town Center", new Vector2(265f, -1207f)), ("Chastain Glen", new Vector2(2938f, 799f)) };
             foreach (float h in new[] { 300f, 600f })
             {
-                yield return BoardPlane(true); yield return TakeOff("09", 120f);
-                var pl = Plane; var log = new List<string>(); yield return FlyTo("up", new Vector2(-3400f, -1000f), h, .8f, 120f, log);
-                var legs = new (string name, Vector2 at)[] { ("Kennesaw Mountain", new Vector2(-1123f, -5870f)), ("Town Center", new Vector2(265f, -1207f)), ("Chastain Glen", new Vector2(2938f, 799f)) };
-                var line = new List<string>();
-                foreach (var (name, at) in legs)
+                var log = new List<string>(); var line = new List<string>();
+                foreach (var (name, at) in (h > 400f ? legs.Reverse() : legs))
                 {
-                    // fly to it at real time, the frame rate over the last 1.5 km
-                    pl.sThrottle = .8f; Time.timeScale = 1f; var fr = new List<float>(); float t = 0f;
-                    while (t < 200f)
-                    {
-                        yield return null; t += Time.deltaTime;
-                        var p = car.Body.position; float alt = (GroundQuery.TryHeight(p.x, p.z, out float gy) ? gy : 0f) + h;
-                        Steer(pl, Bearing(p, new Vector3(at.x, 0, at.y)), alt);
-                        float d = Flat(p - new Vector3(at.x, 0, at.y)).magnitude;
-                        if (d < 1500f && Time.unscaledDeltaTime > 0f) fr.Add(1f / Time.unscaledDeltaTime);
-                        if (d < 150f || pl.Crashed) break;
-                    }
+                    var fr = new List<float>(); yield return FlyTo(name, at, h, .8f, 300f, log, fr);
                     fr.Sort(); line.Add(fr.Count > 0 ? $"{name} {fr.Average():0} fps (1 % low {fr[Mathf.Max(0, fr.Count / 100)]:0})" : $"{name} -");
                 }
                 report.AppendLine($"  at {h:0} m: {string.Join("; ", line)}");
+                foreach (var l in log) report.AppendLine("      " + l);
             }
         }
 

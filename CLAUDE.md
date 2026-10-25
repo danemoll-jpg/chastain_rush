@@ -421,6 +421,11 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 69 (see `TODO.md`, status there) is built and checked in the exe by script, not yet flown by Dan:** the plane, "Sky Hopper" (`Tools/Blender/plane.py`, profile
+`VehicleProfile.Plane`, Class "Plane": Flies covers it); `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): `ArcadeVehicle.Flown` always on, on its wheels it calls
+`ArcadeVehicle.Simulate` with its own controls, in the air arcade flight (`Sink` below 36 m/s); crashes reset onto a take-off strip (`PlaneFlight.StripSpot`, also R / Y);
+`ArcadeVehicle.OwnSound` mutes VehicleAudio. Parked planes `Vehicle/PlaneStands.cs` and `Vehicle/AirportCircuit.cs`, both made at run time. Check: `ChastainRush.exe -exeRound69 <dir>
+[-r69Only pstand,ptake,plevel,pcrash,pedge,pfly,pfps,ppics] -logFile <dir>\Player.log` (`Checks/Round20Runner.R69.cs`; a scripted pilot, `PlaneFlight.Scripted`). Imported from Racer: nothing.
 **Round 68 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** Kennesaw Mountain rebuilt for really big air
 (`make_mountain_route.py` rewritten: the climb unchanged, then three straight lines cut down the mountain, each built round one jump designed from its flight (a
 speed / flight / catch-slope designer in the script; `local/round68/design.json`): J1 the summit flight, J2 the west face, J3 the earthworks, 4 to 6 s). Kicker

@@ -1,0 +1,191 @@
+Round 69 check, 2026-10-25 18:08, the exe, 1280 x 720, muted.
+
+=== The apron: take a parked plane, leave it for the car
+  3 planes parked
+PASS  pstand: took the parked plane where it stood  -  0.1 m from the stand
+PASS  pstand: left it for the Street Classic
+
+=== Take-off from runway 09 (east) and 27 (west)
+  09 (from the west end): lifted off after 157 m of runway at 32.0 m/s, 150 m up in 17 s
+PASS  ptake 09: off the runway and up to 150 m  -  157 m of runway
+  27 (from the east end): lifted off after 168 m of runway at 32.0 m/s, 150 m up in 18 s
+PASS  ptake 27: off the runway and up to 150 m  -  168 m of runway
+
+=== Hands off for 30 s at 300 m, throttle 75 %
+  09: lifted off after 157 m of runway at 32.0 m/s, 120 m up in 16 s
+  up to 300 m north of the airport: reached in 34 s (as high as 598 m, as low as 9 m over the ground, 88 m/s)
+  30 s hands off: height +0.0 to +0.1 m, heading changed 2.2 deg, the most bank 37.4 deg, 92 m/s
+PASS  plevel: holds its height (within 15 m) and heading (within 5 deg) hands off  -  0.1 m, 2.2 deg
+
+=== Crashes: into a tree, into a building, into the ground; then reset onto open ground (not stuck: on its wheels, still, and a take-off from there)
+  a tree (low over the woods west of the mountain): crashed (a wing hit a tree), reset at (-1959, -5518), up 1.00
+PASS  pcrash a tree (low over the woods west of the mountain): crashed and reset, not stuck  -  a wing hit a tree
+PASS  pcrash a tree (low over the woods west of the mountain): rolls away from the reset spot  -  30 m in 3 s
+  a building (Town Center's front, 9 m up: Round 63's target): crashed (the left wing hit Mall wall), reset at (267, -1216), up 1.00
+PASS  pcrash a building (Town Center's front, 9 m up: Round 63's target): crashed and reset, not stuck  -  the left wing hit Mall wall
+PASS  pcrash a building (Town Center's front, 9 m up: Round 63's target): rolls away from the reset spot  -  30 m in 3 s
+  the ground (a dive): crashed (hit Terrain_8_8), reset at (-2708, -3029), up 1.00
+PASS  pcrash the ground (a dive): crashed and reset, not stuck  -  hit Terrain_8_8
+PASS  pcrash the ground (a dive): rolls away from the reset spot  -  30 m in 3 s
+
+=== West at 400 m past the map's edge, the sticks held straight on (heading 270)
+  09: lifted off after 157 m of runway at 32.0 m/s, 120 m up in 16 s
+  out west: reached in 91 s (as high as 755 m, as low as 11 m over the ground, 115 m/s)
+  the warning shown; at most 805 m past the edge; turned back toward the map after 27 s; back over the map
+PASS  pedge: warned, turned back, never far out  -  805 m out at most
+
+=== From 09 to Kennesaw Mountain, Town Center and Chastain Glen at 450 m and back, then the landing on 09 (the scripted pilot, cruise throttle 75 %)
+  09: lifted off after 157 m of runway at 32.0 m/s, 120 m up in 16 s
+PASS  pfly: landed on 09 and stopped  -  32 m/s at touch-down, 1.7 m/s down
+  Kennesaw Mountain's summit: reached in 52 s (as high as 883 m, as low as 13 m over the ground, 90 m/s)
+  Town Center at Cobb: reached in 81 s (as high as 936 m, as low as 10 m over the ground, 93 m/s)
+  Chastain Glen: reached in 40 s (as high as 786 m, as low as 13 m over the ground, 92 m/s)
+  back to the airport: reached in 104 s (as high as 763 m, as low as 9 m over the ground, 93 m/s)
+  to the final approach fix (4 km out, 280 m up): reached in 51 s (as high as 692 m, as low as 11 m over the ground, 88 m/s)
+      final: -3942 m from the touch-down point, +19.7 m off the line, 270.6 m up (the slope 275.6), 84 m/s, pitch -2.8, coming down 4.1 m/s, throttle 0.45
+      final: -4021 m from the touch-down point, +1.3 m off the line, 268.6 m up (the slope 281.2), 80 m/s, pitch -0.7, coming down 0.9 m/s, throttle 0.45
+      final: -4096 m from the touch-down point, -20.5 m off the line, 283.3 m up (the slope 286.4), 76 m/s, pitch -2.8, coming down 3.7 m/s, throttle 0.45
+      final: -4166 m from the touch-down point, -45.5 m off the line, 274.4 m up (the slope 291.3), 74 m/s, pitch 0.0, coming down 0.0 m/s, throttle 0.45
+      final: -4233 m from the touch-down point, -73.6 m off the line, 284.8 m up (the slope 296.0), 72 m/s, pitch -0.8, coming down 1.0 m/s, throttle 0.45
+      final: -4297 m from the touch-down point, -104.9 m off the line, 289.3 m up (the slope 300.5), 70 m/s, pitch -1.0, coming down 1.2 m/s, throttle 0.45
+      final: -4357 m from the touch-down point, -139.3 m off the line, 294.1 m up (the slope 304.7), 69 m/s, pitch -1.1, coming down 1.4 m/s, throttle 0.45
+      final: -4414 m from the touch-down point, -176.8 m off the line, 288.1 m up (the slope 308.7), 68 m/s, pitch 0.6, coming down -0.7 m/s, throttle 0.45
+      final: -4467 m from the touch-down point, -216.2 m off the line, 273.2 m up (the slope 312.4), 67 m/s, pitch 1.3, coming down -1.6 m/s, throttle 0.45
+      final: -4517 m from the touch-down point, -259.2 m off the line, 275.0 m up (the slope 315.9), 66 m/s, pitch 1.2, coming down -1.4 m/s, throttle 0.45
+      final: -4564 m from the touch-down point, -304.8 m off the line, 283.5 m up (the slope 319.1), 65 m/s, pitch 1.5, coming down -1.7 m/s, throttle 0.45
+      final: -4607 m from the touch-down point, -352.9 m off the line, 281.4 m up (the slope 322.2), 64 m/s, pitch 1.4, coming down -1.6 m/s, throttle 0.45
+      final: -4647 m from the touch-down point, -403.4 m off the line, 284.3 m up (the slope 324.9), 64 m/s, pitch 1.3, coming down -1.5 m/s, throttle 0.45
+      final: -4683 m from the touch-down point, -456.1 m off the line, 289.1 m up (the slope 327.4), 64 m/s, pitch 1.6, coming down -1.7 m/s, throttle 0.45
+      final: -4715 m from the touch-down point, -510.8 m off the line, 301.4 m up (the slope 329.7), 63 m/s, pitch 1.5, coming down -1.6 m/s, throttle 0.45
+      final: -4743 m from the touch-down point, -567.3 m off the line, 297.0 m up (the slope 331.7), 63 m/s, pitch 1.4, coming down -1.5 m/s, throttle 0.45
+      final: -4767 m from the touch-down point, -625.4 m off the line, 308.0 m up (the slope 333.3), 63 m/s, pitch 1.6, coming down -1.8 m/s, throttle 0.45
+      final: -4787 m from the touch-down point, -684.8 m off the line, 298.7 m up (the slope 334.7), 63 m/s, pitch 1.5, coming down -1.7 m/s, throttle 0.45
+      final: -4803 m from the touch-down point, -745.3 m off the line, 318.0 m up (the slope 335.9), 63 m/s, pitch 0.5, coming down -0.5 m/s, throttle 0.45
+      final: -4815 m from the touch-down point, -806.8 m off the line, 311.8 m up (the slope 336.7), 63 m/s, pitch 1.5, coming down -1.6 m/s, throttle 0.45
+      final: -4822 m from the touch-down point, -868.8 m off the line, 304.0 m up (the slope 337.2), 62 m/s, pitch 1.4, coming down -1.5 m/s, throttle 0.45
+      final: -4825 m from the touch-down point, -931.1 m off the line, 294.9 m up (the slope 337.4), 62 m/s, pitch 1.6, coming down -1.8 m/s, throttle 0.45
+      final: -4824 m from the touch-down point, -993.4 m off the line, 308.3 m up (the slope 337.3), 62 m/s, pitch 1.6, coming down -1.7 m/s, throttle 0.45
+      final: -4819 m from the touch-down point, -1055.4 m off the line, 302.8 m up (the slope 337.0), 62 m/s, pitch 1.5, coming down -1.6 m/s, throttle 0.45
+      final: -4809 m from the touch-down point, -1116.9 m off the line, 299.6 m up (the slope 336.3), 62 m/s, pitch 1.5, coming down -1.6 m/s, throttle 0.45
+      final: -4795 m from the touch-down point, -1177.5 m off the line, 294.7 m up (the slope 335.3), 62 m/s, pitch 1.4, coming down -1.5 m/s, throttle 0.45
+      final: -4777 m from the touch-down point, -1236.9 m off the line, 295.2 m up (the slope 334.1), 62 m/s, pitch 1.3, coming down -1.4 m/s, throttle 0.45
+      final: -4755 m from the touch-down point, -1295.0 m off the line, 302.1 m up (the slope 332.5), 62 m/s, pitch 1.6, coming down -1.7 m/s, throttle 0.45
+      final: -4729 m from the touch-down point, -1351.4 m off the line, 302.2 m up (the slope 330.7), 62 m/s, pitch 1.5, coming down -1.7 m/s, throttle 0.45
+      final: -4699 m from the touch-down point, -1405.8 m off the line, 301.0 m up (the slope 328.6), 62 m/s, pitch 1.5, coming down -1.6 m/s, throttle 0.45
+      final: -4666 m from the touch-down point, -1458.0 m off the line, 299.0 m up (the slope 326.3), 62 m/s, pitch 1.4, coming down -1.5 m/s, throttle 0.45
+      final: -4629 m from the touch-down point, -1507.8 m off the line, 294.0 m up (the slope 323.7), 62 m/s, pitch 1.3, coming down -1.4 m/s, throttle 0.45
+      final: -4589 m from the touch-down point, -1554.9 m off the line, 289.1 m up (the slope 320.9), 62 m/s, pitch 1.6, coming down -1.7 m/s, throttle 0.45
+      final: -4545 m from the touch-down point, -1599.1 m off the line, 289.7 m up (the slope 317.8), 62 m/s, pitch 1.6, coming down -1.7 m/s, throttle 0.45
+      final: -4499 m from the touch-down point, -1640.1 m off the line, 300.3 m up (the slope 314.6), 62 m/s, pitch 0.0, coming down 0.0 m/s, throttle 0.45
+      final: -4449 m from the touch-down point, -1678.0 m off the line, 302.1 m up (the slope 311.1), 62 m/s, pitch -1.0, coming down 1.1 m/s, throttle 0.45
+      final: -4397 m from the touch-down point, -1712.4 m off the line, 306.6 m up (the slope 307.5), 63 m/s, pitch -3.4, coming down 3.7 m/s, throttle 0.45
+      final: -4343 m from the touch-down point, -1743.4 m off the line, 300.9 m up (the slope 303.7), 63 m/s, pitch -2.6, coming down 2.9 m/s, throttle 0.45
+      final: -4286 m from the touch-down point, -1770.8 m off the line, 285.2 m up (the slope 299.7), 63 m/s, pitch 0.0, coming down 0.0 m/s, throttle 0.45
+      final: -4227 m from the touch-down point, -1794.2 m off the line, 288.0 m up (the slope 295.6), 63 m/s, pitch 0.8, coming down -0.8 m/s, throttle 0.45
+      final: -4167 m from the touch-down point, -1813.6 m off the line, 287.1 m up (the slope 291.4), 63 m/s, pitch -2.6, coming down 2.8 m/s, throttle 0.45
+      final: -4106 m from the touch-down point, -1828.9 m off the line, 278.9 m up (the slope 287.1), 63 m/s, pitch -1.5, coming down 1.6 m/s, throttle 0.45
+      final: -4043 m from the touch-down point, -1840.0 m off the line, 275.9 m up (the slope 282.7), 63 m/s, pitch -1.8, coming down 2.0 m/s, throttle 0.45
+      final: -3980 m from the touch-down point, -1846.9 m off the line, 269.8 m up (the slope 278.3), 64 m/s, pitch -1.4, coming down 1.6 m/s, throttle 0.45
+      final: -3917 m from the touch-down point, -1849.6 m off the line, 261.6 m up (the slope 273.9), 64 m/s, pitch -0.3, coming down 0.3 m/s, throttle 0.45
+      final: -3854 m from the touch-down point, -1847.9 m off the line, 253.2 m up (the slope 269.5), 63 m/s, pitch 0.1, coming down -0.1 m/s, throttle 0.45
+      final: -3791 m from the touch-down point, -1841.9 m off the line, 239.6 m up (the slope 265.1), 63 m/s, pitch 1.5, coming down -1.7 m/s, throttle 0.45
+      final: -3728 m from the touch-down point, -1831.8 m off the line, 233.8 m up (the slope 260.7), 63 m/s, pitch 1.4, coming down -1.6 m/s, throttle 0.45
+      final: -3667 m from the touch-down point, -1817.4 m off the line, 239.8 m up (the slope 256.4), 63 m/s, pitch 0.3, coming down -0.3 m/s, throttle 0.45
+      final: -3607 m from the touch-down point, -1798.9 m off the line, 237.0 m up (the slope 252.2), 63 m/s, pitch 0.0, coming down 0.0 m/s, throttle 0.45
+      final: -3548 m from the touch-down point, -1776.3 m off the line, 242.7 m up (the slope 248.1), 63 m/s, pitch -1.7, coming down 1.9 m/s, throttle 0.45
+      final: -3491 m from the touch-down point, -1749.8 m off the line, 254.5 m up (the slope 244.1), 63 m/s, pitch -6.4, coming down 7.1 m/s, throttle 0.45
+      final: -3436 m from the touch-down point, -1719.3 m off the line, 262.5 m up (the slope 240.3), 64 m/s, pitch -7.2, coming down 8.0 m/s, throttle 0.45
+      final: -3382 m from the touch-down point, -1684.8 m off the line, 255.5 m up (the slope 236.5), 65 m/s, pitch -7.7, coming down 8.6 m/s, throttle 0.45
+      final: -3330 m from the touch-down point, -1646.5 m off the line, 249.5 m up (the slope 232.9), 65 m/s, pitch -7.6, coming down 8.6 m/s, throttle 0.45
+      final: -3281 m from the touch-down point, -1604.6 m off the line, 236.8 m up (the slope 229.4), 66 m/s, pitch -5.8, coming down 6.6 m/s, throttle 0.45
+      final: -3234 m from the touch-down point, -1559.2 m off the line, 218.6 m up (the slope 226.1), 65 m/s, pitch -1.6, coming down 1.8 m/s, throttle 0.45
+      final: -3190 m from the touch-down point, -1510.9 m off the line, 211.2 m up (the slope 223.1), 65 m/s, pitch -0.5, coming down 0.6 m/s, throttle 0.45
+      final: -3150 m from the touch-down point, -1460.1 m off the line, 208.1 m up (the slope 220.2), 65 m/s, pitch -0.5, coming down 0.5 m/s, throttle 0.45
+      final: -3113 m from the touch-down point, -1407.1 m off the line, 204.7 m up (the slope 217.7), 64 m/s, pitch -0.2, coming down 0.2 m/s, throttle 0.45
+      final: -3080 m from the touch-down point, -1352.1 m off the line, 205.7 m up (the slope 215.4), 64 m/s, pitch -1.2, coming down 1.3 m/s, throttle 0.45
+      final: -3049 m from the touch-down point, -1295.7 m off the line, 204.7 m up (the slope 213.2), 64 m/s, pitch -1.5, coming down 1.6 m/s, throttle 0.45
+      final: -3021 m from the touch-down point, -1238.2 m off the line, 207.6 m up (the slope 211.2), 64 m/s, pitch -2.6, coming down 2.9 m/s, throttle 0.45
+      final: -2993 m from the touch-down point, -1179.8 m off the line, 207.6 m up (the slope 209.3), 65 m/s, pitch -3.1, coming down 3.4 m/s, throttle 0.45
+      final: -2967 m from the touch-down point, -1120.6 m off the line, 206.6 m up (the slope 207.5), 65 m/s, pitch -3.3, coming down 3.8 m/s, throttle 0.45
+      final: -2941 m from the touch-down point, -1060.9 m off the line, 204.7 m up (the slope 205.7), 65 m/s, pitch -3.3, coming down 3.8 m/s, throttle 0.45
+      final: -2916 m from the touch-down point, -1000.7 m off the line, 198.3 m up (the slope 203.9), 66 m/s, pitch -2.2, coming down 2.6 m/s, throttle 0.45
+      final: -2890 m from the touch-down point, -940.2 m off the line, 189.5 m up (the slope 202.1), 66 m/s, pitch -0.4, coming down 0.5 m/s, throttle 0.45
+      final: -2865 m from the touch-down point, -879.8 m off the line, 188.1 m up (the slope 200.3), 66 m/s, pitch -0.5, coming down 0.6 m/s, throttle 0.45
+      final: -2839 m from the touch-down point, -819.6 m off the line, 189.4 m up (the slope 198.5), 65 m/s, pitch -1.1, coming down 1.2 m/s, throttle 0.45
+      final: -2813 m from the touch-down point, -759.6 m off the line, 200.3 m up (the slope 196.7), 66 m/s, pitch -4.6, coming down 5.3 m/s, throttle 0.45
+      final: -2786 m from the touch-down point, -698.6 m off the line, 201.1 m up (the slope 194.8), 66 m/s, pitch -5.5, coming down 6.3 m/s, throttle 0.45
+      final: -2758 m from the touch-down point, -638.9 m off the line, 198.8 m up (the slope 192.9), 66 m/s, pitch -5.2, coming down 6.0 m/s, throttle 0.45
+      final: -2729 m from the touch-down point, -579.6 m off the line, 199.0 m up (the slope 190.8), 67 m/s, pitch -5.6, coming down 6.4 m/s, throttle 0.45
+      final: -2698 m from the touch-down point, -520.9 m off the line, 189.3 m up (the slope 188.7), 67 m/s, pitch -4.0, coming down 4.7 m/s, throttle 0.45
+      final: -2666 m from the touch-down point, -462.9 m off the line, 185.9 m up (the slope 186.4), 67 m/s, pitch -3.6, coming down 4.2 m/s, throttle 0.45
+      final: -2631 m from the touch-down point, -406.3 m off the line, 184.2 m up (the slope 184.0), 66 m/s, pitch -3.8, coming down 4.4 m/s, throttle 0.45
+      final: -2594 m from the touch-down point, -351.3 m off the line, 183.5 m up (the slope 181.4), 66 m/s, pitch -4.2, coming down 4.8 m/s, throttle 0.45
+      final: -2555 m from the touch-down point, -298.2 m off the line, 178.2 m up (the slope 178.7), 66 m/s, pitch -3.4, coming down 3.9 m/s, throttle 0.45
+      final: -2513 m from the touch-down point, -247.4 m off the line, 180.9 m up (the slope 175.7), 66 m/s, pitch -4.9, coming down 5.7 m/s, throttle 0.45
+      final: -2468 m from the touch-down point, -199.5 m off the line, 185.9 m up (the slope 172.6), 66 m/s, pitch -7.0, coming down 8.0 m/s, throttle 0.45
+      final: -2420 m from the touch-down point, -154.5 m off the line, 177.5 m up (the slope 169.2), 66 m/s, pitch -5.6, coming down 6.5 m/s, throttle 0.45
+      final: -2369 m from the touch-down point, -112.6 m off the line, 171.7 m up (the slope 165.7), 66 m/s, pitch -5.2, coming down 6.0 m/s, throttle 0.45
+      final: -2316 m from the touch-down point, -74.1 m off the line, 166.5 m up (the slope 161.9), 66 m/s, pitch -3.0, coming down 3.4 m/s, throttle 0.45
+      final: -2260 m from the touch-down point, -39.2 m off the line, 162.9 m up (the slope 158.0), 66 m/s, pitch -4.9, coming down 5.7 m/s, throttle 0.45
+      final: -2202 m from the touch-down point, -8.1 m off the line, 170.0 m up (the slope 154.0), 66 m/s, pitch -7.3, coming down 8.4 m/s, throttle 0.45
+      final: -2143 m from the touch-down point, +19.2 m off the line, 163.0 m up (the slope 149.8), 66 m/s, pitch -6.7, coming down 7.7 m/s, throttle 0.45
+      final: -2081 m from the touch-down point, +42.6 m off the line, 149.9 m up (the slope 145.5), 66 m/s, pitch -4.5, coming down 5.2 m/s, throttle 0.45
+      final: -2018 m from the touch-down point, +62.1 m off the line, 137.5 m up (the slope 141.1), 66 m/s, pitch -2.7, coming down 3.1 m/s, throttle 0.45
+      final: -1954 m from the touch-down point, +77.4 m off the line, 130.5 m up (the slope 136.6), 66 m/s, pitch -2.0, coming down 2.3 m/s, throttle 0.45
+      final: -1889 m from the touch-down point, +88.3 m off the line, 132.4 m up (the slope 132.1), 65 m/s, pitch -3.7, coming down 4.2 m/s, throttle 0.45
+      final: -1824 m from the touch-down point, +95.0 m off the line, 112.9 m up (the slope 127.6), 65 m/s, pitch -0.9, coming down 1.0 m/s, throttle 0.45
+      final: -1759 m from the touch-down point, +97.7 m off the line, 107.7 m up (the slope 123.0), 65 m/s, pitch -0.9, coming down 1.0 m/s, throttle 0.45
+      final: -1695 m from the touch-down point, +96.9 m off the line, 111.4 m up (the slope 118.5), 65 m/s, pitch -0.8, coming down 1.0 m/s, throttle 0.45
+      final: -1630 m from the touch-down point, +93.5 m off the line, 102.6 m up (the slope 114.0), 65 m/s, pitch -1.2, coming down 1.4 m/s, throttle 0.45
+      final: -1566 m from the touch-down point, +88.1 m off the line, 99.1 m up (the slope 109.5), 65 m/s, pitch -2.0, coming down 2.2 m/s, throttle 0.45
+      final: -1501 m from the touch-down point, +81.3 m off the line, 102.7 m up (the slope 105.0), 65 m/s, pitch -3.0, coming down 3.3 m/s, throttle 0.45
+      final: -1438 m from the touch-down point, +73.6 m off the line, 101.7 m up (the slope 100.6), 63 m/s, pitch -4.1, coming down 4.5 m/s, throttle 0.32
+      final: -1376 m from the touch-down point, +65.6 m off the line, 88.8 m up (the slope 96.2), 61 m/s, pitch -1.6, coming down 1.7 m/s, throttle 0.32
+      final: -1316 m from the touch-down point, +57.5 m off the line, 81.4 m up (the slope 92.0), 60 m/s, pitch -0.4, coming down 0.5 m/s, throttle 0.32
+      final: -1257 m from the touch-down point, +49.7 m off the line, 74.3 m up (the slope 87.9), 59 m/s, pitch 0.0, coming down 0.0 m/s, throttle 0.32
+      final: -1200 m from the touch-down point, +42.0 m off the line, 67.8 m up (the slope 83.9), 58 m/s, pitch 0.4, coming down -0.4 m/s, throttle 0.32
+      final: -1143 m from the touch-down point, +34.6 m off the line, 71.1 m up (the slope 79.9), 57 m/s, pitch -0.9, coming down 0.8 m/s, throttle 0.32
+      final: -1087 m from the touch-down point, +27.6 m off the line, 74.1 m up (the slope 76.0), 56 m/s, pitch -3.1, coming down 3.0 m/s, throttle 0.32
+      final: -1032 m from the touch-down point, +21.1 m off the line, 71.5 m up (the slope 72.2), 56 m/s, pitch -3.4, coming down 3.4 m/s, throttle 0.32
+      final: -976 m from the touch-down point, +15.3 m off the line, 68.6 m up (the slope 68.3), 56 m/s, pitch -3.8, coming down 3.7 m/s, throttle 0.32
+      final: -921 m from the touch-down point, +10.0 m off the line, 66.2 m up (the slope 64.4), 56 m/s, pitch -4.2, coming down 4.0 m/s, throttle 0.32
+      final: -866 m from the touch-down point, +5.5 m off the line, 63.5 m up (the slope 60.5), 56 m/s, pitch -4.4, coming down 4.2 m/s, throttle 0.32
+      final: -811 m from the touch-down point, +1.5 m off the line, 68.9 m up (the slope 56.7), 56 m/s, pitch -7.5, coming down 7.3 m/s, throttle 0.32
+      final: -755 m from the touch-down point, -1.8 m off the line, 56.8 m up (the slope 52.8), 56 m/s, pitch -4.8, coming down 4.7 m/s, throttle 0.32
+      final: -699 m from the touch-down point, -4.6 m off the line, 66.9 m up (the slope 48.9), 56 m/s, pitch -8.8, coming down 8.6 m/s, throttle 0.32
+      final: -644 m from the touch-down point, -6.8 m off the line, 56.7 m up (the slope 45.0), 56 m/s, pitch -7.0, coming down 6.9 m/s, throttle 0.32
+      final: -588 m from the touch-down point, -8.5 m off the line, 52.8 m up (the slope 41.1), 57 m/s, pitch -7.1, coming down 7.0 m/s, throttle 0.32
+      final: -532 m from the touch-down point, -9.8 m off the line, 55.6 m up (the slope 37.2), 57 m/s, pitch -8.8, coming down 8.7 m/s, throttle 0.32
+      final: -475 m from the touch-down point, -10.7 m off the line, 40.6 m up (the slope 33.2), 57 m/s, pitch -5.9, coming down 5.8 m/s, throttle 0.32
+      final: -418 m from the touch-down point, -11.3 m off the line, 36.1 m up (the slope 29.3), 57 m/s, pitch -5.9, coming down 5.8 m/s, throttle 0.32
+      final: -362 m from the touch-down point, -11.6 m off the line, 28.0 m up (the slope 25.3), 57 m/s, pitch -4.5, coming down 4.5 m/s, throttle 0.32
+      final: -306 m from the touch-down point, -11.7 m off the line, 27.7 m up (the slope 21.4), 57 m/s, pitch -5.6, coming down 5.6 m/s, throttle 0.32
+      final: -249 m from the touch-down point, -11.6 m off the line, 23.6 m up (the slope 17.4), 57 m/s, pitch -5.6, coming down 5.6 m/s, throttle 0.32
+      final: -193 m from the touch-down point, -11.4 m off the line, 19.3 m up (the slope 13.5), 57 m/s, pitch -5.3, coming down 5.2 m/s, throttle 0.32
+      final: -137 m from the touch-down point, -11.1 m off the line, 15.1 m up (the slope 9.6), 57 m/s, pitch -5.3, coming down 5.2 m/s, throttle 0.32
+      final: -80 m from the touch-down point, -10.7 m off the line, 10.8 m up (the slope 5.6), 57 m/s, pitch -5.3, coming down 5.2 m/s, throttle 0.32
+      final: -24 m from the touch-down point, -10.2 m off the line, 6.5 m up (the slope 1.7), 55 m/s, pitch -5.0, coming down 4.8 m/s, throttle 0.00
+      final: 28 m from the touch-down point, -9.8 m off the line, 5.0 m up (the slope 0.0), 49 m/s, pitch -1.3, coming down 1.1 m/s, throttle 0.00
+      final: 74 m from the touch-down point, -9.3 m off the line, 4.3 m up (the slope 0.0), 45 m/s, pitch -1.7, coming down 1.3 m/s, throttle 0.00
+      final: 117 m from the touch-down point, -8.9 m off the line, 3.4 m up (the slope 0.0), 41 m/s, pitch -1.6, coming down 1.1 m/s, throttle 0.00
+      final: 156 m from the touch-down point, -8.5 m off the line, 2.6 m up (the slope 0.0), 38 m/s, pitch -1.9, coming down 1.2 m/s, throttle 0.00
+      final: 192 m from the touch-down point, -8.2 m off the line, 1.8 m up (the slope 0.0), 35 m/s, pitch -1.5, coming down 1.3 m/s, throttle 0.00
+      final: 226 m from the touch-down point, -7.9 m off the line, 0.9 m up (the slope 0.0), 33 m/s, pitch 0.0, coming down 1.4 m/s, throttle 0.00
+  landed on 09 +241 m from the touch-down point, 32.3 m/s, coming down 1.7 m/s; rolled 25 m to a stop, 7.6 m off the centreline
+PASS  pfly: the whole flight without a crash  -  0 crash(es)
+
+=== Frame rate crossing the map (1280 x 720, not measured at 3840 x 2160), at 300 m and 600 m over the ground
+  09: lifted off after 157 m of runway at 32.0 m/s, 120 m up in 16 s
+  at 300 m: Kennesaw Mountain 59 fps (1 % low 30); Town Center -; Chastain Glen -
+  09: CRASHED: a wing hit a tree
+  at 600 m: Kennesaw Mountain -; Town Center -; Chastain Glen -
+
+=== Pictures
+  69_takeoff: at (-3483, 344, -1900), 9 m over the ground
+  69_over_quarry: at (-2600, 390, -1610), 208 m over the ground
+  69_over_town_center: at (3, 509, -1123), 201 m over the ground
+  the quarry: reached in 12 s (as high as 390 m, as low as 9 m over the ground, 91 m/s)
+  Town Center: reached in 29 s (as high as 509 m, as low as 109 m over the ground, 95 m/s)
+  600 m up south-east: reached in 32 s (as high as 809 m, as low as 10 m over the ground, 92 m/s)
+
+14 of 14 checks passed.

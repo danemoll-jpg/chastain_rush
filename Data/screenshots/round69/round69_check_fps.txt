@@ -1,0 +1,14 @@
+Round 69 check, 2026-10-25 18:28, the exe, 1280 x 720, muted.
+
+=== Frame rate crossing the map (1280 x 720, not measured at 3840 x 2160), at 300 m and 600 m over the ground (real time, the frames over the last 1.5 km to each place)
+  09: lifted off after 157 m of runway at 32.1 m/s, 120 m up in 16 s
+  at 300 m: Kennesaw Mountain 54 fps (1 % low 13); Town Center 43 fps (1 % low 9); Chastain Glen 82 fps (1 % low 24)
+      Kennesaw Mountain: reached in 50 s (as high as 765 m, as low as 14 m over the ground, 94 m/s)
+      Town Center: reached in 82 s (as high as 810 m, as low as 11 m over the ground, 97 m/s)
+      Chastain Glen: reached in 39 s (as high as 634 m, as low as 283 m over the ground, 96 m/s)
+  at 600 m: Chastain Glen 94 fps (1 % low 94); Town Center 56 fps (1 % low 13); Kennesaw Mountain 61 fps (1 % low 11)
+      Chastain Glen: reached in 0 s (as high as 598 m, as low as 305 m over the ground, 96 m/s)
+      Town Center: reached in 66 s (as high as 899 m, as low as 12 m over the ground, 96 m/s)
+      Kennesaw Mountain: reached in 55 s (as high as 1001 m, as low as 10 m over the ground, 95 m/s)
+
+0 of 0 checks passed.
