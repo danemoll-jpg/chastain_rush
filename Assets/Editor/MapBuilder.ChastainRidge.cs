@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves; public float half, blend, keep_off_m, blend_r; }   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -101,8 +101,9 @@ namespace ChastainRush
             var p = ToPoints(gr.points);
             bool sides = gr.blend_left != null && gr.blend_left.Length == p.Count;
             bool halves = gr.halves != null && gr.halves.Length == p.Count;   // Round 62: a half width per point (the trail's bench narrower by the creek)
+            bool blends = gr.blends != null && gr.blends.Length == p.Count;   // Round 68: a blend per point (both sides)
             float br = gr.blend_r > 0f ? gr.blend_r : gr.blend;
-            float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, sides ? gr.blend_left.Max() : 0f)), most = 0f; int n = 0;
+            float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, Mathf.Max(sides ? gr.blend_left.Max() : 0f, blends ? gr.blends.Max() : 0f))), most = 0f; int n = 0;
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
             // Round 62 (build speed: the Noonday Creek Trail's 2 km grades): the segments by 8 m cell, each sample asks only those near it (the same answer)
             const float Cell = 8f; var cells = new Dictionary<Vector2Int, List<int>>();
@@ -125,6 +126,7 @@ namespace ChastainRush
                         best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
                         if (sides) { var v = q - p[i]; blend = ab.x * v.y - ab.y * v.x > 0f ? Mathf.Lerp(gr.blend_left[i], gr.blend_left[i + 1], t) : br; }   // > 0: on the left
                         if (halves) half = Mathf.Lerp(gr.halves[i], gr.halves[i + 1], t);
+                        if (blends) blend = Mathf.Lerp(gr.blends[i], gr.blends[i + 1], t);
                     }
                 }
                 if (best >= half + blend) return y;
