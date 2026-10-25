@@ -218,7 +218,7 @@ namespace ChastainRush
                 if (Do("mpics")) yield return Guard(R67Pics());
                 if (Do("tcreek")) yield return Guard(R67Creek());
                 if (Do("tpark")) yield return Guard(R67Parkway());
-                if (Do("tmound")) yield return Guard(R64Mound());
+                if (Do("tmound")) { yield return Guard(R64Mound()); yield return Guard(R67Mound()); }
                 if (Do("tpics")) yield return Guard(R67Pics2());
             }
             // Round 66 (Round20Runner.R66.cs): the map's edges

@@ -7376,13 +7376,31 @@
  "lead_in_length_m": 70.0,
  "checkpoints": [
   {
+   "s": 274.5,
+   "pos": [
+    1670.0,
+    -612.0
+   ],
+   "label": "the trailhead's drive",
+   "id": 1
+  },
+  {
    "s": 430.4,
    "pos": [
     1556.9,
     -683.0
    ],
    "label": "the trailhead",
-   "id": 1
+   "id": 2
+  },
+  {
+   "s": 669.4,
+   "pos": [
+    1352.0,
+    -798.3
+   ],
+   "label": "under Chastain Meadows Parkway",
+   "id": 3
   },
   {
    "s": 925.7,
@@ -7391,7 +7409,7 @@
     -705.0
    ],
    "label": "the trail by Chastain Meadows",
-   "id": 2
+   "id": 4
   },
   {
    "s": 1637.7,
@@ -7400,7 +7418,7 @@
     -459.1
    ],
    "label": "under I-575",
-   "id": 3
+   "id": 5
   },
   {
    "s": 1982.4,
@@ -7409,7 +7427,7 @@
     -627.0
    ],
    "label": "the trail by Hidden Forest Court",
-   "id": 4
+   "id": 6
   },
   {
    "s": 2440.2,
@@ -7418,7 +7436,7 @@
     -939.4
    ],
    "label": "the north lot",
-   "id": 5
+   "id": 7
   },
   {
    "s": 2783.1,
@@ -7427,7 +7445,7 @@
     -1220.7
    ],
    "label": "the north wing",
-   "id": 6
+   "id": 8
   },
   {
    "s": 2939.6,
@@ -7436,7 +7454,7 @@
     -1230.5
    ],
    "label": "Halverson's",
-   "id": 7
+   "id": 9
   },
   {
    "s": 3288.8,
@@ -7445,7 +7463,7 @@
     -1451.1
    ],
    "label": "Ring Road",
-   "id": 8
+   "id": 10
   },
   {
    "s": 3929.7,
@@ -7454,7 +7472,7 @@
     -1688.3
    ],
    "label": "Barrett Parkway under I-575",
-   "id": 9
+   "id": 11
   },
   {
    "s": 4582.1,
@@ -7463,7 +7481,7 @@
     -1672.0
    ],
    "label": "Barrett Parkway",
-   "id": 10
+   "id": 12
   },
   {
    "s": 5336.2,
@@ -7472,7 +7490,7 @@
     -1200.4
    ],
    "label": "Bells Ferry Road",
-   "id": 11
+   "id": 13
   }
  ],
  "junctions": [
@@ -8881,9 +8899,9 @@
    "entry_inset_m": 14.0,
    "entry_margin_m": 1.5,
    "forgives": [
-    6,
-    7,
-    8
+    8,
+    9,
+    10
    ],
    "ai_speed": 26.0,
    "ai_profile": [
@@ -10248,7 +10266,9 @@
    "half_width_m": 3.5,
    "entry_inset_m": 10.0,
    "entry_margin_m": 1.5,
-   "forgives": [],
+   "forgives": [
+    1
+   ],
    "ai_speed": 30.0,
    "ai_profile": [
     0.0,
@@ -10503,7 +10523,9 @@
    "half_width_m": 3.5,
    "entry_inset_m": 10.0,
    "entry_margin_m": 1.5,
-   "forgives": [],
+   "forgives": [
+    11
+   ],
    "ai_speed": 30.0,
    "ai_profile": [
     0.0,
@@ -18393,13 +18415,31 @@
    "id": 10
   },
   {
+   "s": 5033.1,
+   "pos": [
+    1351.9,
+    -798.3
+   ],
+   "label": "under Chastain Meadows Parkway",
+   "id": 11
+  },
+  {
    "s": 5272.2,
    "pos": [
     1556.9,
     -683.0
    ],
    "label": "the trailhead",
-   "id": 11
+   "id": 12
+  },
+  {
+   "s": 5428.0,
+   "pos": [
+    1670.0,
+    -612.0
+   ],
+   "label": "the trailhead's drive",
+   "id": 13
   }
  ],
  "junctions_rev": [

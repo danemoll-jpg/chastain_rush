@@ -24,8 +24,8 @@ namespace ChastainRush
         // the jumps' lips and headings (Data/tracks/kennesaw_mountain.json, Tools/mapgen/make_mountain_route.py)
         static readonly (string id, string name, float x, float z, float dx, float dz)[] R67Jumps =
         {
-            ("J1", "the summit overlook", -856.89f, -5692.75f, 0.5688f, 0.8225f), ("J2", "the ridge drop", -807.4f, -5606.05f, 0.8659f, 0.5001f),
-            ("J3", "the earthworks berm", -588.45f, -5510.23f, 0.9951f, 0.0985f), ("J4", "the switchback cut", -648.26f, -5388.89f, -0.4335f, 0.9011f),
+            ("J1", "the summit overlook", -851.53f, -5684.32f, 0.5185f, 0.8551f), ("J2", "the ridge drop", -807.4f, -5606.05f, 0.8659f, 0.5001f),
+            ("J3", "the earthworks berm", -588.45f, -5510.23f, 0.9951f, 0.0985f), ("J4", "the switchback cut", -652.23f, -5379.72f, -0.3625f, 0.932f),
             ("J5", "the washout", -719.3f, -5289.51f, -0.9704f, 0.2414f), ("J6", "the last ledge", -817.99f, -5281.06f, -0.9863f, 0.1647f),
         };
         string R67JumpAt(Vector3 p) { foreach (var j in R67Jumps) if (Flat(p - new Vector3(j.x, 0f, j.z)).magnitude < 14f) return j.id; return null; }
@@ -92,6 +92,7 @@ namespace ChastainRush
                     {
                         var line = LapPart(sL - 70f, sL + 160f); Place(line[0], line[2] - line[0], v * .8f); yield return new WaitForFixedUpdate();
                         var run = new Run(); float air = 0f, best = 0f, bestD = 0f, top = 0f, landV = 0f, upL = 1f, vLip = 0f; Vector3 from = Vector3.zero; bool left = false, done = false;
+                        var touch = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); touch.seen.Clear(); touch.on = true; Vector3 landAt = Vector3.zero;
                         Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
                         var drive = StartCoroutine(DriveLine(line, v, 30f, run, null, null, 5f, false, new[] { 0f, v, 400f, v }));
                         while (!run.reached && run.end == "" && run.time < 29f && !done)
@@ -101,15 +102,16 @@ namespace ChastainRush
                             if (car.GroundedWheels == 0) { if (air == 0f) { from = p; top = p.y; vLip = Flat(car.Body.linearVelocity).magnitude; } air += Time.fixedDeltaTime; top = Mathf.Max(top, p.y); }
                             else if (air > 0f)
                             {
-                                if (air > best && Flat(from - lip).magnitude < 16f) { best = air; bestD = Flat(p - from).magnitude; landV = Flat(car.Body.linearVelocity).magnitude; upL = car.transform.up.y; left = true; }
+                                if (air > best && Flat(from - lip).magnitude < 16f) { best = air; bestD = Flat(p - from).magnitude; landV = Flat(car.Body.linearVelocity).magnitude; upL = car.transform.up.y; left = true; landAt = p; }
                                 air = 0f; if (left) done = true;
                             }
                         }
                         // a second's run-out after the landing: kept going?
                         float after = 99f; for (float w = 0f; w < 1f && left; w += Time.fixedDeltaTime) { yield return new WaitForFixedUpdate(); after = Mathf.Min(after, Flat(car.Body.linearVelocity).magnitude); }
-                        StopCoroutine(drive); car.enabled = true; Time.timeScale = 1f;
+                        StopCoroutine(drive); car.enabled = true; Time.timeScale = 1f; touch.on = false;
                         bool clean = left && upL > .7f && after > Mathf.Min(landV, v) * .5f;
-                        report.AppendLine($"  {Nm(vid),-14} {j.id} {j.name,-20} at {v:0} m/s (off the lip at {vLip:0.0}): {(left ? $"{best:0.00} s in the air, {bestD:0} m, {top - lip.y:+0.0;-0.0} m over the lip, landed at {landV:0.0} m/s upright {upL:0.00}, slowest in the next second {after:0.0} m/s" : "NO FLIGHT off its lip")}");
+                        string hit = touch.seen.Count > 0 ? touch.seen[touch.seen.Count - 1] : "nothing";
+                        report.AppendLine($"  {Nm(vid),-14} {j.id} {j.name,-20} at {v:0} m/s (off the lip at {vLip:0.0}): {(left ? $"{best:0.00} s in the air, {bestD:0} m, {top - lip.y:+0.0;-0.0} m over the lip, landed at {landV:0.0} m/s upright {upL:0.00}, slowest in the next second {after:0.0} m/s at ({landAt.x:0}, {landAt.z:0}), lap {race.Route.LapStationOf(landAt) - sL:+0;-0} m from the lip{(clean ? "" : "; last touched " + hit)}" : "NO FLIGHT off its lip (airborne before it)")}");
                         Check($"mjumps {Nm(vid)} {j.id} at {v:0} m/s: flies and lands clean", clean, left ? $"{best:0.0} s, {bestD:0} m" : "no flight");
                     }
                 }
@@ -219,7 +221,7 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ B1, B2: the creek leap and the parkway leap against the lap
-        IEnumerator R67Shortcut(string dir, string scId, string label, float missSpeed, Vector2[] round)
+        IEnumerator R67Shortcut(string dir, string scId, string label, float missSpeed, Vector2[] round, Vector2 lipAt)
         {
             report.AppendLine(); report.AppendLine($"=== {label}: clean, missed ({missSpeed:0} m/s off the lip), round the stunt, against the lap between the same two points (Drifter Twin)");
             yield return Vehicle("drifter"); UseRoute(R62File, dir);
@@ -229,8 +231,8 @@ namespace ChastainRush
             float off = LineLen(before);
             float[] Prof(float[] p) { if (p == null) return null; var o = new float[p.Length]; for (int i = 0; i < p.Length; i += 2) { o[i] = p[i] + off; o[i + 1] = p[i + 1]; } return o; }
             var clean = before.Concat(path).Concat(after).ToList();
-            // the lip: the path's highest point over the ground's (the kicker's end)
-            int kLip = 0; float most = -1f; for (int i = 1; i + 1 < path.Count; i++) { var q = path[i]; float up = q.y - RaceRoute.Surface(q.x, q.z).y; if (i > 4 && path[i].y - path[i - 4].y > most) { most = path[i].y - path[i - 4].y; kLip = i; } }
+            // the lip: the path's point nearest the jump's lip
+            int kLip = 0; float bestD = 1e9f; for (int i = 0; i < path.Count; i++) { float dd = (new Vector2(path[i].x, path[i].z) - lipAt).sqrMagnitude; if (dd < bestD) { bestD = dd; kLip = i; } }
             float lipS = LineLen(before.Concat(path.Take(kLip + 1)).ToList());
             var slow = new List<float>(Prof(sc.AiProfile) ?? new float[0]); slow.AddRange(new[] { lipS - 30f, missSpeed, lipS + 4f, missSpeed });
             var rl = round.Select(q => RaceRoute.Surface(q.x, q.y)).ToList();
@@ -250,10 +252,42 @@ namespace ChastainRush
             Check($"{scId}: never stuck (missed and round get out)", rm.reached && rr.reached, $"missed {(rm.reached ? "out" : rm.end)}, round {(rr.reached ? "out" : rr.end)}");
         }
 
+        // B3 flat out: the speed kept over the mound (forward: from the red bridge over Town Center Drive and up the face; reverse the other way)
+        IEnumerator R67Mound()
+        {
+            report.AppendLine(); report.AppendLine("=== B3 (BUG-001: \"it wasn't flush and caused me to lose momentum\"): over the mound at 26 and 30 m/s, the speed kept (Drifter Twin, Street Classic)");
+            foreach (var vid in new[] { "drifter", "original" })
+            {
+                yield return Vehicle(vid);
+                foreach (var dir in new[] { "forward", "reverse" })
+                {
+                    UseRoute(R62File, dir); float s = race.Route.LapStationOf(RaceRoute.Surface(172.5f, -910.5f));
+                    foreach (float v in new[] { 26f, 30f })
+                    {
+                        var line = LapPart(s - 60f, s + 50f); Place(line[0], line[2] - line[0], v); yield return new WaitForFixedUpdate();
+                        var run = new Run(); float vIn = -1f, vMin = 99f, air = 0f, most = 0f; float t = 0f;
+                        Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
+                        var drive = StartCoroutine(DriveLine(line, v, 14f, run, null, null, 5f, false, new[] { 0f, v, 400f, v }));
+                        while (!run.reached && run.end == "" && run.time < 13.5f)
+                        {
+                            yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; var p = car.Body.position; float sp = Flat(car.Body.linearVelocity).magnitude;
+                            float d = Flat(p - new Vector3(167f, 0f, -899.6f)).magnitude;   // Dan's spot, the face's foot
+                            if (vIn < 0f && d < 30f) vIn = sp;
+                            if (d < 22f) vMin = Mathf.Min(vMin, sp);
+                            if (car.GroundedWheels == 0) { air += Time.fixedDeltaTime; most = Mathf.Max(most, air); } else air = 0f;
+                        }
+                        yield return drive; Time.timeScale = 1f;
+                        report.AppendLine($"  {Nm(vid),-14} {dir,-8} at {v:0} m/s: {vIn:0.0} m/s 30 m out, slowest within 22 m of the face's foot {vMin:0.0} m/s ({(vIn > 0f ? (1f - vMin / vIn) * 100f : 0f):0} % lost), most air {most:0.00} s, {(run.reached ? "through" : "NOT THROUGH " + run.end)}");
+                        Check($"tmound {Nm(vid)} {dir} {v:0} m/s: no more than 15 % of the speed lost at the mound", run.reached && vIn > 0f && vMin > vIn * .85f, $"{vIn:0.0} -> {vMin:0.0} m/s");
+                    }
+                }
+            }
+        }
+
         IEnumerator R67Creek() => R67Shortcut("forward", "t_creek", "B1 the creek leap (forward)", 14f,
-            new[] { new Vector2(1739f, -695f), new Vector2(1724f, -686f), new Vector2(1710f, -681f), new Vector2(1694f, -673f), new Vector2(1678f, -667f), new Vector2(1660f, -660f), new Vector2(1640f, -653f), new Vector2(1626f, -657.5f), new Vector2(1613f, -664f) });
+            new[] { new Vector2(1739f, -695f), new Vector2(1724f, -686f), new Vector2(1710f, -681f), new Vector2(1694f, -673f), new Vector2(1678f, -667f), new Vector2(1660f, -660f), new Vector2(1640f, -653f), new Vector2(1626f, -657.5f), new Vector2(1613f, -664f) }, new Vector2(1717f, -671.5f));
         IEnumerator R67Parkway() => R67Shortcut("reverse", "t_parkway_rev", "B2 the parkway leap (reverse)", 15f,
-            new[] { new Vector2(1300f, -746.5f), new Vector2(1318f, -748f), new Vector2(1334f, -751f), new Vector2(1346f, -754f), new Vector2(1362f, -759f), new Vector2(1374f, -766f), new Vector2(1388f, -775f), new Vector2(1402f, -779f) });
+            new[] { new Vector2(1300f, -746.5f), new Vector2(1318f, -748f), new Vector2(1334f, -751f), new Vector2(1346f, -754f), new Vector2(1362f, -759f), new Vector2(1374f, -766f), new Vector2(1388f, -775f), new Vector2(1402f, -779f) }, new Vector2(1341f, -759.5f));
 
         IEnumerator R67Pics2()
         {

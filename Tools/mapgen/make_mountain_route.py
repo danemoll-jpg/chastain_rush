@@ -118,18 +118,21 @@ TRAIL_DROP = {36, 37, 38, 39, 40, 41, 42, 43,   # J4: the zig-zag below the flat
 TRAIL_END = 71                     # the trail's point where the lap turns right onto the drive (it crosses the drive at 74)
 LOT = [(-925.0, -5724.0), (-903.0, -5716.0), (-882.0, -5707.0), (-866.0, -5699.0)]   # across the summit lot from the drive's end to the trail
 BENCH_HALF, BENCH_BLEND = 6.0, 4.0  # the trail's bench: 12 m level across (Dan: room to race and pass), blending back over 4 m
-CLEAR_HALF = 8.0                    # no tree within this of the line on the trail (the woods solid past BREAK_HALF)
-BREAK_HALF = 15.0                   # trees within this of the line snap when hit
+CLEAR_HALF = 10.0                   # no tree within this of the line on the trail (the woods solid past BREAK_HALF)
+BREAK_HALF = 25.0                   # trees within this of the line snap when hit (the second build's check: long flights run on past the bends)
+HAIRPIN_HALF = 9.0                  # the bench this wide (half) through the hairpins (the second build's check: cars running wide met the cut bank)
 # the jumps: (id, look, name, the lip at the line's nearest point to (x, z) (moved 'along' m on), the lip's angle over the horizontal, its height over the
 # smoothed ground, the kicker's length, how far the ground is dug down past the lip (a gap: depth, length), the landing window (m past the lip))
 JUMPS = [
-    ("J1", "overlook", "the summit overlook", (-858.0, -5695.0), 2.0, 7.0, 1.4, 9.0, (0.0, 0.0), (12.0, 60.0)),
-    ("J2", "oak", "the ridge drop", (-809.1, -5603.0), 0.0, 8.0, 1.8, 13.0, (0.0, 0.0), (14.0, 70.0)),
-    ("J3", "berm", "the earthworks berm", (-589.6, -5509.2), 2.0, 9.0, 1.8, 12.0, (0.0, 0.0), (12.0, 55.0)),
-    ("J4", "ledge", "the switchback cut", (-650.0, -5394.0), 14.0, 6.0, 1.6, 10.0, (0.0, 0.0), (12.0, 70.0)),
-    ("J5", "washout", "the washout", (-719.5, -5289.1), 0.0, 9.0, 1.6, 12.0, (2.6, 9.0), (14.0, 70.0)),
-    ("J6", "ledge2", "the last ledge", (-818.3, -5281.1), 0.0, 8.0, 1.5, 11.0, (0.0, 0.0), (12.0, 65.0)),
+    ("J1", "overlook", "the summit overlook", (-858.0, -5695.0), 12.0, 10.0, 1.8, 11.0, (0.0, 0.0), (12.0, 60.0)),
+    ("J2", "oak", "the ridge drop", (-809.1, -5603.0), 0.0, 12.0, 2.2, 14.0, (0.0, 0.0), (14.0, 75.0)),
+    ("J3", "berm", "the earthworks berm", (-589.6, -5509.2), 2.0, 12.0, 2.2, 14.0, (0.0, 0.0), (12.0, 60.0)),
+    ("J4", "ledge", "the switchback cut", (-650.0, -5394.0), 14.0, 10.0, 2.0, 12.0, (0.0, 0.0), (12.0, 70.0)),
+    ("J5", "washout", "the washout", (-719.5, -5289.1), 0.0, 12.0, 2.0, 13.0, (2.6, 9.0), (14.0, 70.0)),
+    ("J6", "ledge2", "the last ledge", (-818.3, -5281.1), 0.0, 12.0, 2.0, 12.0, (0.0, 0.0), (12.0, 65.0)),
 ]
+APPROACH_M, APPROACH_SIGMA = 45.0, 12.0   # the 45 m before each kicker's foot smoothed harder (a Gaussian of 12 m): no crest there throws a car before the lip
+AI_JUMP_SPEED = {"J1": 20.0, "J2": 24.0, "J3": 22.0, "J4": 21.0, "J5": 23.0, "J6": 24.0}   # the AI's speed up to each lip
 CHECKPOINTS = [   # (x, z, label) in lap order from the gate
     (-470.0, -5333.0, "Kennesaw Mountain Drive"),
     (-556.0, -5640.0, "the east flank"),
@@ -181,6 +184,13 @@ for k in ks: prof[k] = sm[k]
 def prof_at(s):
     s = max(0.0, min(L_lap, s)); i = max(0, min(len(C) - 2, int(np.searchsorted(C, s)) - 1))
     t = (s - C[i]) / max(C[i + 1] - C[i], 1e-9); return prof[i] + t * (prof[i + 1] - prof[i])
+# the approach to each kicker smoothed harder (the first build's check: at 26 m/s and more the slope's own crests threw cars before the lips)
+for (jid, look, name, at, along, ang, hlip, Lk, dig, land) in JUMPS:
+    sL = S(at) + along; a0, a1 = sL - Lk - APPROACH_M, sL - Lk
+    kk = [k for k in ks if a0 - 10 <= C[k] <= a1]
+    hard = {k: gsm(tg, C, k, APPROACH_SIGMA, 60) for k in kk}
+    for k in kk:
+        w = min(1.0, max(0.0, (C[k] - (a0 - 10)) / 10.0)); prof[k] = prof[k] + w * (hard[k] - prof[k])
 base = list(prof)
 def base_at(s):
     s = max(0.0, min(L_lap, s)); i = max(0, min(len(C) - 2, int(np.searchsorted(C, s)) - 1))
@@ -207,6 +217,15 @@ for (jid, look, name, at, along, ang, hlip, Lk, dig, land) in JUMPS:
                 else: floor -= dd * (1 - (s - dl) / 6.0) ** 2
             prof[k] = max(min(prof[k], floor), y) if y > floor else floor
     jumps.append(dict(id=jid, look=look, name=name, sL=sL, yL=yL, ang=ang, hlip=hlip, Lk=Lk, dig=dig, land=land))
+# and no crest on the 70 m before a kicker's foot or on the kicker itself sharper than APPROACH_CREST_R (cut down, never filled: a car stays on the ground there below 30 m/s)
+APPROACH_CREST_R = 92.0
+for (jid, look, name, at, along, ang, hlip, Lk, dig, land) in JUMPS:
+    sL = S(at) + along; kk = [k for k in ks if sL - Lk - 70 <= C[k] <= sL - 2.5]
+    for _ in range(3000):
+        for k in kk[1:-1]:
+            h1, h2 = C[k] - C[k - 1], C[k + 1] - C[k]
+            avg = (prof[k - 1] * h2 + prof[k + 1] * h1) / (h1 + h2)
+            prof[k] = min(prof[k], avg + h1 * h2 / (2 * APPROACH_CREST_R))
 # a little rounding of every corner of the profile (the back faces' feet, the wash): a Gaussian of 1 m, never over the lips
 p2 = list(prof)
 for k in ks:
@@ -233,6 +252,13 @@ for j in jumps:
     print(f"  {j['id']} {j['name']:22} lap {j['sL']:.0f} m at ({j['lip'][0]:.0f}, {j['lip'][1]:.0f}) {j['yL']:.1f} m, {j['ang']:.0f} deg, {j['hlip']:.1f} m over the ground, ground grade there "
           f"{grade_at(j['sL']) * 100:.0f} %")
     print("      " + "; ".join(f"{v}: {t:.1f} s {x if x is None else round(x)} m +{top:.1f} {'' if rel is None else round(rel)}" for v, t, x, top, rel in fl))
+    # the sharpest crest on the 70 m before the kicker (a radius under v^2 / g throws a car at v)
+    cr = []
+    for k in ks:
+        if j["sL"] - j["Lk"] - 70 <= C[k] <= j["sL"] - j["Lk"] and 0 < k < len(lap) - 1:
+            g1 = (prof[k] - prof[k - 1]) / max(C[k] - C[k - 1], 1e-6); g2 = (prof[k + 1] - prof[k]) / max(C[k + 1] - C[k], 1e-6); cu = (g2 - g1) / max(C[k + 1] - C[k - 1], 1e-6) * 2
+            if cu < 0: cr.append((-1 / cu, C[k] - j["sL"]))
+    if cr: rmin = min(cr); print(f"      the approach's sharpest crest: radius {rmin[0]:.0f} m at {rmin[1]:.0f} m (throws a car over {math.sqrt(9.81 * rmin[0]):.0f} m/s)")
     # how straight the line runs past the lip (for a flight's landing)
     bs = [bearing(point_at(lap, j["sL"] + d - 2, C), point_at(lap, j["sL"] + d + 2, C)) for d in range(0, int(j["land"][1]) + 1, 5)]
     b0 = bs[0]; dev = max(abs((b - b0 + 180) % 360 - 180) for b in bs)
@@ -260,7 +286,7 @@ def Z(id_, s0, s1, speed): zones.append({"id": id_, "s0": round(min(s0, s1), 1),
 s_lot0 = S(LOT[0])
 Z("the summit lot", s_lot0 - 10, s_trail0 + 4, 14.0)
 for j in jumps:
-    Z(f"{j['id']} {j['name']}", j["sL"] - j["Lk"] - 18.0, j["sL"] + 1.0, {"J1": 18.0, "J2": 21.0, "J3": 20.0, "J4": 18.0, "J5": 21.0, "J6": 22.0}[j["id"]])
+    Z(f"{j['id']} {j['name']}", j["sL"] - j["Lk"] - 18.0, j["sL"] + 1.0, AI_JUMP_SPEED[j["id"]])
 # the hairpins and the tight bends (from the line's own curvature: a bend of more than 50 degrees over 20 m)
 for k in t_k[5:-5]:
     s = C[k]
@@ -276,10 +302,25 @@ widths = [{"id": "the trail", "s0": round(s_trail0, 1), "s1": round(s_trail1, 1)
 
 # ---------------------------------------------------------------- the world pieces
 tr_pts = [lap[k] for k in t_k]; tr_y = [prof[k] for k in t_k]
-grades = [{"id": "the Kennesaw Mountain Trail's bench", "points": flat(tr_pts), "y": [round(v, 3) for v in tr_y], "half": BENCH_HALF, "blend": BENCH_BLEND}]
+tr_c = cum(tr_pts); turn_ = []
+for k in range(len(tr_pts)):
+    sk = tr_c[k]; a_ = point_at(tr_pts, sk - 10, tr_c); b_ = point_at(tr_pts, sk, tr_c); c_ = point_at(tr_pts, sk + 10, tr_c)
+    turn_.append(abs((bearing(b_, c_) - bearing(a_, b_) + 180) % 360 - 180) if math.dist(a_, b_) > 1 and math.dist(b_, c_) > 1 else 0.0)
+halves = []
+for k in range(len(tr_pts)):
+    near = max([turn_[q] for q in range(len(tr_pts)) if abs(tr_c[q] - tr_c[k]) < 15.0] + [0.0])
+    halves.append(round(BENCH_HALF + (HAIRPIN_HALF - BENCH_HALF) * min(1.0, max(0.0, (near - 40.0) / 30.0)), 2))
+print(f"the bench: {BENCH_HALF:.0f} m half, {HAIRPIN_HALF:.0f} m through the hairpins ({sum(1 for h in halves if h > BENCH_HALF + 0.5)} of {len(halves)} points wider)")
+grades = [{"id": "the Kennesaw Mountain Trail's bench", "points": flat(tr_pts), "y": [round(v, 3) for v in tr_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves}]
 clear = [{"id": "the trail", "points": flat(tr_pts[::2] + [tr_pts[-1]]), "half": CLEAR_HALF},
          {"id": "the summit lot", "points": flat(lot_run[::2] + [lot_run[-1]]), "half": 6.0}]
 breaks = [{"id": "the trail", "points": flat(tr_pts[::2] + [tr_pts[-1]]), "half": BREAK_HALF}]
+# each jump's flight straight on from its lip (the line bends under a long flight): no tree within 8 m of it for 60 m, breakable within 22 m for 140 m
+# (the second build's check: at 26 m/s J1 and J3 flew straight on over a bend into solid trunks 17 to 29 m off the line)
+for j in jumps:
+    L0 = j["lip"]; dd = j["dir"]
+    clear.append({"id": f"{j['id']}'s flight", "points": flat([L0, (L0[0] + dd[0] * 60.0, L0[1] + dd[1] * 60.0)]), "half": 8.0})
+    breaks.append({"id": f"{j['id']}'s flight", "points": flat([L0, (L0[0] + dd[0] * 140.0, L0[1] + dd[1] * 140.0)]), "half": 22.0})
 zones_land = []
 for j in jumps:
     a, b = j["land"]; poly_l, poly_r = [], []

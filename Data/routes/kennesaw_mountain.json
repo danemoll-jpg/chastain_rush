@@ -3034,15 +3034,15 @@
   },
   {
    "id": "J1 the summit overlook",
-   "s0": 2311.7,
-   "s1": 2339.7,
-   "speed": 18.0
+   "s0": 2319.7,
+   "s1": 2349.7,
+   "speed": 20.0
   },
   {
    "id": "J2 the ridge drop",
-   "s0": 2412.1,
+   "s0": 2411.1,
    "s1": 2444.1,
-   "speed": 21.0
+   "speed": 24.0
   },
   {
    "id": "bend at lap 2635 m",
@@ -3052,27 +3052,27 @@
   },
   {
    "id": "J3 the earthworks berm",
-   "s0": 2691.6,
+   "s0": 2689.6,
    "s1": 2722.6,
-   "speed": 20.0
+   "speed": 22.0
   },
   {
    "id": "J4 the switchback cut",
-   "s0": 3017.4,
-   "s1": 3047.4,
-   "speed": 18.0
-  },
-  {
-   "id": "J5 the washout",
-   "s0": 3150.3,
-   "s1": 3181.3,
+   "s0": 3026.4,
+   "s1": 3057.4,
    "speed": 21.0
   },
   {
+   "id": "J5 the washout",
+   "s0": 3149.3,
+   "s1": 3181.3,
+   "speed": 23.0
+  },
+  {
    "id": "J6 the last ledge",
-   "s0": 3251.2,
+   "s0": 3250.2,
    "s1": 3281.2,
-   "speed": 22.0
+   "speed": 24.0
   },
   {
    "id": "onto the drive",

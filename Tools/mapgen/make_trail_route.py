@@ -185,6 +185,8 @@ CHECKPOINTS = [   # (x, z, label), forward order from the gate
     (655.0, -460.0, "under I-575"),
     (1150.0, -720.0, "the trail by Chastain Meadows"),
     (1560.0, -690.0, "the trailhead"),
+    (1670.0, -612.0, "the trailhead's drive"),            # Round 67 (B1): the stretch the creek leap skips (a shortcut that forgives no checkpoint is no shortcut: RaceRoute)
+    (1352.0, -798.0, "under Chastain Meadows Parkway"),   # Round 67 (B2): the loop under the parkway's bridges the parkway leap skips
 ]
 SIGN_BENDS = []   # Round 64 (Dan, BUG-004: "This is a walking path not a road. It makes no sense to have road signs"): Round 62's winding-road signs gone
 
@@ -378,7 +380,15 @@ print(f"the mound (BUG-003, Round 67's B3 face): crest {MOUND_CREST:.2f} m at ({
       f"a {MOUND_FOOT_R:.0f} m arc over {_x1:.1f} m, {MOUND_FACE_GRADE * 100:.0f} % over {_x2:.1f} m, its top over {_x3:.1f} m; "
       f"the way raised by up to {max(nly[k] - mound_old[k] for k in range(k_t0)):.2f} m over {len(mound_k) * 2:.0f} m")
 s_t1 = nlcc[k_t1]; L2 = (nlcc[-1] - s_t1) + rb0
-def after_tcd(s_after): return herm(y_tcd, 0.0, y_s, deck_g, L2, max(0.0, min(1.0, s_after / L2)))
+# Round 67 (B3): the climb from the red bridge to Town Center Drive's far edge was one Hermite (an 81 m crest at the road: above about 28 m/s a car flew
+# off it across the road into the mound's face and lost up to 60 % of its speed); now a crest of TCD_CREST_R from the road's built level, eased onto the
+# bridge's grade over the rest (a gentle sag there)
+TCD_CREST_R = 150.0
+_L1 = min(L2 - 6.0, math.sqrt(2.0 * TCD_CREST_R * max(0.05, (_yf - y_s) * 0.7)))
+def after_tcd(s_after):
+    x = max(0.0, min(L2, s_after))
+    if x <= _L1: return _yf - x * x / (2.0 * TCD_CREST_R)
+    return herm(_yf - _L1 * _L1 / (2.0 * TCD_CREST_R), -_L1 / TCD_CREST_R, y_s, deck_g, L2 - _L1, (x - _L1) / (L2 - _L1))
 for k in range(k_t1 + 1, len(nl)): nly[k] = after_tcd(nlcc[k] - s_t1)
 for k in range(len(trail)):
     if tc_[k] <= rb0: gy[k] = after_tcd(nlcc[-1] - s_t1 + tc_[k])
@@ -781,8 +791,8 @@ clear_r67 = [{"id": "the creek leap", "points": flat([B1_FOOT, B1_LIP] + b1_flig
 grades_r67 = [{"id": "the parkway leap's kicker", "points": flat(b2_k), "y": b2_ky, "half": 3.5, "blend": 3.0}]
 worn_r67 = [{"id": "the parkway leap's tracks", "points": flat(resample(chaikin(B2_APPROACH + [B2_FOOT], 2), 2.0))}]
 # the brush (ShrubBeds) across every free way: B1 the creek's south-east bank under the bank's foot and its north bank, B2 the parkway's far shoulder and slope
-shrubs_r67 = [{"id": "the creek leap: the south-east bank", "points": flat([(1712.0, -694.0), (1705.0, -680.0), (1700.0, -668.0), (1703.0, -655.0)]), "half": 4.5, "strength": 1.0},
-              {"id": "the creek leap: the north bank", "points": flat([(1655.0, -682.0), (1668.0, -672.0), (1676.0, -662.0), (1686.0, -652.0), (1694.0, -644.0)]), "half": 3.5, "strength": 1.0},
+shrubs_r67 = [{"id": "the creek leap: the south-east bank", "points": flat([(1714.0, -700.0), (1706.0, -682.0), (1702.0, -668.0), (1705.0, -652.0)]), "half": 6.5, "strength": 3.0},
+              {"id": "the creek leap: the north bank", "points": flat([(1652.0, -685.0), (1666.0, -674.0), (1675.0, -663.0), (1685.0, -652.0), (1694.0, -643.0)]), "half": 5.0, "strength": 3.0},
               {"id": "the parkway leap: the far shoulder", "points": flat([(1371.0, -742.0), (1372.0, -760.0), (1373.0, -776.0), (1377.0, -790.0)]), "half": 4.0, "strength": 1.5}]
 
 # the race's grilles (RaceBarriers "seals", both directions): the lower concourse west of the north wing (Dan, BUG-005: "there should been something here
