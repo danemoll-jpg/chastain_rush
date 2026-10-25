@@ -1,0 +1,15 @@
+Round 66 check, 2026-10-24 18:59, the exe, 1280 x 720, muted.
+
+=== The helicopter flown flat out (boost) straight at each edge from 1.5 km inside, 150 m over the ground, 70 s, sticks held forward
+PASS  hedge: north: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 314 m, flying back from 256 m out, after 70 s 239 m out, nose 22 deg from straight back, 999 m up, crashes 0; trace 0s:-1500m/0m/s/yaw0 10s:-585m/137m/s/yaw0 20s:240m/42m/s/yaw59 30s:49m/136m/s/yaw82 40s:109m/136m/s/yaw82 50s:128m/136m/s/yaw82 60s:135m/136m/s/yaw82 70s:239m/127m/s/yaw202
+PASS  hedge: east: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 256 m, flying back from 256 m out, after 70 s 148 m out, nose 98 deg from straight back, 999 m up, crashes 0; trace 0s:-1500m/0m/s/yaw90 10s:-585m/137m/s/yaw90 20s:240m/42m/s/yaw149 30s:49m/136m/s/yaw172 40s:109m/136m/s/yaw172 50s:128m/136m/s/yaw172 60s:135m/136m/s/yaw172 70s:148m/113m/s/yaw172
+PASS  hedge: south: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 314 m, flying back from 256 m out, after 70 s 290 m out, nose 1 deg from straight back, 999 m up, crashes 0; trace 0s:-1500m/0m/s/yaw180 10s:-585m/137m/s/yaw180 20s:240m/42m/s/yaw239 30s:49m/136m/s/yaw262 40s:109m/136m/s/yaw262 50s:128m/136m/s/yaw262 60s:135m/136m/s/yaw262 70s:290m/98m/s/yaw1
+PASS  hedge: west: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 313 m, flying back from 256 m out, after 70 s -96 m out, nose 33 deg from straight back, 207 m up, crashes 0; trace 0s:-1500m/0m/s/yaw270 10s:-585m/137m/s/yaw270 20s:240m/42m/s/yaw329 30s:49m/136m/s/yaw352 40s:109m/136m/s/yaw352 50s:128m/136m/s/yaw352 60s:177m/105m/s/yaw353 70s:-96m/138m/s/yaw123
+
+=== A car (the Street Classic) driven off road straight at each edge at 30 m/s from 120 m inside
+PASS  eoff: north: a car off road stops short of the edge, never past it  -  closest 5.9 m inside, put back 0; [-7116,1798: closest 78.8 m, ended 79.0 m at 0.2 m/s] [-6389,1798: closest 77.3 m, ended 77.3 m at 0.1 m/s] [-5661,1798: closest 47.5 m, ended 47.7 m at 0.0 m/s] [-4933,1798: closest 5.9 m, ended 5.9 m at 0.1 m/s]
+PASS  eoff: east: a car off road stops short of the edge, never past it  -  closest 1.8 m inside, put back 0; [3863,-7084: closest 49.4 m, ended 52.7 m at 0.0 m/s] [3863,-6494: closest 1.8 m, ended 1.9 m at 0.0 m/s]
+PASS  eoff: south: a car off road stops short of the edge, never past it  -  closest 1.4 m inside, put back 0; [-7116,-8191: closest 80.4 m, ended 80.4 m at 0.0 m/s] [-6389,-8191: closest 94.0 m, ended 94.0 m at 0.0 m/s] [-5661,-8191: closest 1.4 m, ended 1.8 m at 0.0 m/s]
+PASS  eoff: west: a car off road stops short of the edge, never past it  -  closest 1.9 m inside, put back 0; [-8510,-7084: closest 1.9 m, ended 1.9 m at 0.0 m/s]
+
+8 of 8 checks passed.

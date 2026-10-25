@@ -1,0 +1,11 @@
+Round 66 check, 2026-10-24 18:57, the exe, 1280 x 720, muted.
+
+=== Frame rate, 1280 x 720 (not measured at 3840 x 2160), a fixed camera, uncapped, 8 s each; scenery on
+INFO  summit, looking south-east (Atlanta): 83 fps average, slowest 1 % 32 fps; lift 394 m, fog to 6217 m, world far 6317 m, far clip 90000 m, horizon on, terrain tiles 227, map trees 46875, edge trees 4884
+INFO  summit, looking north (the map): 65 fps average, slowest 1 % 27 fps; lift 394 m, fog to 6217 m, world far 6317 m, far clip 90000 m, horizon on, terrain tiles 227, map trees 58722, edge trees 0
+INFO  ceiling over Chastain Glen, looking west: 100 fps average, slowest 1 % 45 fps; lift 1411 m, fog to 6500 m, world far 6600 m, far clip 90000 m, horizon on, terrain tiles 132, map trees 16398, edge trees 4671
+INFO  ceiling over Town Center, looking south-east: 95 fps average, slowest 1 % 46 fps; lift 1401 m, fog to 6500 m, world far 6600 m, far clip 90000 m, horizon on, terrain tiles 233, map trees 27149, edge trees 2124
+INFO  ceiling over the mountain, looking west: 96 fps average, slowest 1 % 39 fps; lift 1353 m, fog to 6500 m, world far 6600 m, far clip 90000 m, horizon on, terrain tiles 241, map trees 29622, edge trees 1900
+INFO  ceiling near the north-east corner, looking out: 193 fps average, slowest 1 % 87 fps; lift 1411 m, fog to 6500 m, world far 6600 m, far clip 90000 m, horizon on, terrain tiles 108, map trees 0, edge trees 17607
+
+0 of 0 checks passed.

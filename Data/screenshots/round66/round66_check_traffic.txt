@@ -1,0 +1,18 @@
+Round 66 check, 2026-10-24 19:44, the exe, 1280 x 720, muted.
+
+=== Traffic at the closures (traffic level Heavy): 75 s by each highway closure and four two-way roads' closures
+INFO  the network: 133 turn-round ends, 16 divided-highway turnarounds
+INFO  Canton Road Northeast (highway) at (3378, 1901): 8 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Phillip Landrum Memorial Highway (highway) at (247, 1850): 30 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Larry McDonald Memorial Highway (highway) at (-1604, 1866): 4 turned round at the edge, 5 came to a dead end with nowhere to turn
+INFO  Ernest West Barrett Parkway (highway) at (-5005, -8242): 25 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Larry McDonald Memorial Highway (highway) at (3938, -6736): 16 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  North Marietta Parkway (highway) at (1505, -8280): 3 turned round at the edge, 20 came to a dead end with nowhere to turn
+INFO  Cobb Parkway North (highway) at (3935, -7771): 19 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  North Marietta Parkway (highway) at (3915, -7568): 11 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Cobb Parkway (highway) at (-8561, 1): 2 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Blackwell Road Northeast (secondary) at (3949, 534): 13 turned round at the edge, 0 came to a dead end with nowhere to turn
+INFO  Bells Ferry Road Northwest (secondary) at (1002, 1879): 13 turned round at the edge, 0 came to a dead end with nowhere to turn
+PASS  etraffic: traffic turns round at the closures  -  144 turned round, 25 dead ends with nowhere to turn (they wait and are moved off unseen, as before)
+
+1 of 1 checks passed.

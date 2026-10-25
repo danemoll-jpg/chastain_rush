@@ -1,0 +1,21 @@
+Round 66 check, 2026-10-24 19:29, the exe, 1280 x 720, muted.
+
+=== Pictures: the summit and the ceiling, looking out each way (day, night; rain toward Atlanta)
+INFO  summit, day: lift 394 m, fog to 6217 m, world far 6317 m, far clip 90000 m, horizon on; Free Roam Day 12 12:07 (Day) / Clear
+INFO  ceiling over the middle (-2300, -3200, y 1690), day: lift 1386 m, fog to 6500 m, world far 6600 m, far clip 90000 m, horizon on
+INFO  summit, night: lift 394 m, fog to 3691 m, world far 3791 m, far clip 90000 m, horizon on; Free Roam Day 12 23:37 (Night) / Clear
+INFO  ceiling over the middle (-2300, -3200, y 1690), night: lift 1386 m, fog to 3859 m, world far 3959 m, far clip 90000 m, horizon on
+INFO  summit in rain: lift 394 m, fog to 2176 m, world far 2276 m, far clip 90000 m, horizon on
+PASS  spics: the edge scenery is loaded  -  383737 trees, 48146 buildings, 169 towers
+
+=== The helicopter flown flat out (boost) straight at each edge from 1.5 km inside, 150 m over the ground, 70 s, sticks held forward
+PASS  hedge: north: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 215 m, flying back from 215 m out, after 70 s -3465 m out, nose 0 deg from straight back, 110 m up, crashes 0; trace 0s:-1500m/0m/s/yaw0 10s:-585m/137m/s/yaw0 20s:43m/109m/s/yaw180 30s:-1286m/137m/s/yaw180 40s:-2656m/137m/s/yaw180 50s:-4025m/137m/s/yaw180 60s:-4835m/137m/s/yaw180 70s:-3465m/137m/s/yaw180
+PASS  hedge: east: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 215 m, flying back from 215 m out, after 70 s -4157 m out, nose 0 deg from straight back, 154 m up, crashes 0; trace 0s:-1500m/0m/s/yaw90 10s:-585m/137m/s/yaw90 20s:43m/109m/s/yaw270 30s:-1286m/137m/s/yaw270 40s:-2656m/137m/s/yaw270 50s:-4025m/137m/s/yaw270 60s:-4157m/137m/s/yaw270 70s:-4157m/137m/s/yaw270
+PASS  hedge: south: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 215 m, flying back from 215 m out, after 70 s -3465 m out, nose 0 deg from straight back, 160 m up, crashes 0; trace 0s:-1500m/0m/s/yaw180 10s:-585m/137m/s/yaw180 20s:43m/109m/s/yaw0 30s:-1286m/137m/s/yaw0 40s:-2656m/137m/s/yaw0 50s:-4025m/137m/s/yaw0 60s:-4835m/137m/s/yaw0 70s:-3465m/137m/s/yaw0
+PASS  hedge: west: warned, turned back past the edge, no crash  -  warning from -298 m (negative = inside), furthest out 215 m, flying back from 215 m out, after 70 s -4679 m out, nose 0 deg from straight back, 170 m up, crashes 0; trace 0s:-1500m/0m/s/yaw270 10s:-585m/137m/s/yaw270 20s:43m/109m/s/yaw90 30s:-1286m/137m/s/yaw90 40s:-2656m/137m/s/yaw90 50s:-4025m/137m/s/yaw90 60s:-4679m/137m/s/yaw90 70s:-4679m/137m/s/yaw90
+
+=== Every road that leaves the map: the Street Classic driven along it at 22 m/s (highways 30) from ~110 m before its closure, straight on into it (time x 4)
+PASS  edrive: the closures are built  -  262 closures, 19 with jersey barriers
+FAIL  edrive: every road leaving the map stops at its closure  -  248 of 262 stopped at their closure; furthest past a closure's middle 5545.8 m; Canton Road Northeast at (3378, 1901): 7.3 m past the closure; service at (3429, 1893): 4.3 m past the closure; New South Drive at (3983, -888): 1734.0 m past the closure; service at (3982, -873): 1681.2 m past the closure; Fort Street Northeast at (2634, -8311): 93.7 m past the closure; Canton Road Northeast at (3965, -3003): 75.5 m past the closure; North Marietta Parkway at (3953, -7573): 28.5 m past the closure; Fender Walk Northeast at (3861, -8285): 2.9 m past the closure; Jiles Road at (-5343, 1884): 28.2 m past the closure; service at (-3497, 1911): 4.9 m past the closure; service at (-3451, 1916): 1086.7 m past the closure; service at (3949, -3700): 8.3 m past the closure
+
+6 of 7 checks passed.
