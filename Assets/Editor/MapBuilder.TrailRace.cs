@@ -32,7 +32,7 @@ namespace ChastainRush
         [Serializable] class TrailDeck { public string id, style; public float[] line, y; public float width, s0, s1; }   // style "truss" (two points) or "boardwalk" (a height per point)
         [Serializable] class TrailTread { public float[] line, underpass, tread_y; public float width; public TrailDeck[] decks; public TrailRail[] rails; public TrailSign[] signs; }
         [Serializable] class R62Line { public string id; public float[] points; public float half; }
-        [Serializable] class TrailFileJson { public TrailTread trail; public R62Line[] pole_free; public R55Ruts[] worn_tracks; }   // Round 64: worn_tracks (the shortcuts' hints)
+        [Serializable] class TrailFileJson { public TrailTread trail; public R62Line[] pole_free; public R55Ruts[] worn_tracks; public CtBigJump[] big_jumps; public CtZone[] landing_zones; public LakesShrubBed[] shrub_beds; public R55Ruts[] skid_marks; }   // Round 64: worn_tracks (the shortcuts' hints); Round 67: the creek leap's riprap, the landings, the brush, skid marks
         const string TrailTrackFile = "Data/tracks/noonday_creek_trail.json";
         static Ridge TrailNow;              // its graded bench and cleared lines (the Chastain Ridge race's shape)
         static TrailFileJson TrailExtra;    // the path, its railings, the red bridge, the signs, the lots' lines kept free of light poles
@@ -89,7 +89,7 @@ namespace ChastainRush
         }
 
         // ------------------------------------------------------------ the step
-        static void BuildTrailRace(TerrainGrid terrain, Materials mats, Transform world)
+        static void BuildTrailRace(TerrainGrid terrain, Materials mats, Transform world, MapData map = null)
         {
             if (TrailNow == null || TrailExtra?.trail == null) return;
             var tr = TrailExtra.trail; var root = new GameObject("Noonday Creek Trail (Round 62)").transform; root.SetParent(world, false);
@@ -143,8 +143,35 @@ namespace ChastainRush
             int signs = BuildWindingSigns(terrain, mats, root, tr.signs);
             if (TrailExtra.worn_tracks != null)   // Round 64: the mall shortcut's hints (Dan: tire tracks are the hint)
                 foreach (var w in TrailExtra.worn_tracks) if (w.points != null && w.points.Length >= 6) { WornRuts(terrain, mats, root, ToPoints(w.points), w.id); Debug.Log($"[Round64] worn tracks: {w.id}"); }
+            // Round 67 (B1, B2): the creek leap's riprap heap (a real jump), the landings past both leaps (RampHold), the brush across their free ways, B1's skid marks
+            if (TrailExtra.landing_zones != null)
+                foreach (var z in TrailExtra.landing_zones) { var lz = new GameObject("Landing zone " + z.id); lz.transform.SetParent(root, false); lz.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray(); }
+            BuildBigJumps(terrain, mats, root, TrailExtra.big_jumps, "Trail race jumps");
+            if (map != null) BuildShrubBeds(terrain, mats, root, TrailExtra.shrub_beds, map, new Vector2[0]);
+            if (TrailExtra.skid_marks != null) foreach (var w in TrailExtra.skid_marks) if (w.points != null && w.points.Length >= 6) SkidMarks(terrain, mats, root, ToPoints(w.points), w.id);
             Debug.Log($"[Round62] the Noonday Creek Trail: {cum[cum.Length - 1]:0} m of path {tr.width:0.0} m wide, {dashes} yellow dashes, {railM} m of railings, the red bridge " +
                       $"{string.Join(" and ", decks.Select(d => $"{d.id} {d.s1 - d.s0:0} m"))}, {signs} winding-road signs; {TrailNow.TreesRemoved} trees kept off its bench and the lots' lines");
+        }
+
+        // Round 67 (B1, Dan: "skid mark here"): black rubber skid marks, two curving stripes along 'path', over the road's surface and the shoulder past it
+        static void SkidMarks(TerrainGrid terrain, Materials mats, Transform parent, List<Vector2> path, string name)
+        {
+            var mb = new MeshBuilder(); var rubber = new Color(0.07f, 0.07f, 0.075f); var line = Densify(path, 0.5f);
+            foreach (float side in new[] { -0.78f, 0.78f })
+            {
+                Vector3? pa = null, pb = null;
+                for (int k = 0; k < line.Count; k++)
+                {
+                    var t = (line[Mathf.Min(k + 1, line.Count - 1)] - line[Mathf.Max(k - 1, 0)]).normalized; var n = new Vector2(-t.y, t.x);
+                    float w = 0.13f + 0.03f * Mathf.Sin(k * 0.7f + side * 3f), fade = Mathf.Clamp01(k / 8f) * Mathf.Clamp01((line.Count - 1 - k) / 4f);
+                    var c = line[k] + n * side; var a = c + n * w; var b = c - n * w;
+                    var A = new Vector3(a.x, GroundMax(terrain, a.x, a.y, .6f) + .16f, a.y); var B = new Vector3(b.x, GroundMax(terrain, b.x, b.y, .6f) + .16f, b.y);
+                    if (pa.HasValue) { mb.Tint = Color.Lerp(new Color(0.24f, 0.24f, 0.25f), rubber, fade); Face(mb, pa.Value, A, B, pb.Value, Vector3.up); }
+                    pa = A; pb = B;
+                }
+            }
+            mb.ToObject(name, mats.Paint, parent, false, false);
+            Debug.Log($"[Round67] skid marks: {name}, {line.Count} points");
         }
 
         static float NearestS(List<Vector2> line, float[] cum, Vector2 q)

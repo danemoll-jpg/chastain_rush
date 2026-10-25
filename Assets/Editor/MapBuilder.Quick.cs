@@ -118,20 +118,21 @@ namespace ChastainRush
                     var pave = c.pave = new Pavement(map);
                     biz.Trees.AddRange(MedianTrees(map, ridge));   // Round 40 (B2): trees down New Chastain Road's median
                     var trees = c.trees = TreeBuilder.Build(Path.Combine(ProjectRoot, "Data/trees.bin"), (x, z) => terrain.Height(x, z), vScale, GeneratedDir, mats.Foliage, world,
-                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)) || (AddisonNow != null && AddisonNow.RejectTree(x, z)) || (Mall != null && Mall.InLot(x, z)) || (Airport != null && Airport.RejectTree(x, z)) || (TrailNow != null && TrailNow.RejectTree(x, z)),   // Round 62: off the Noonday Creek Trail's bench and the race's lot lines   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts; Round 52: off Addison Heights' road edges
+                        (x, z) => hood.RejectTree(x, z) || pave.On(new Vector2(x, z), 0.6f) || Beds.Wet(x, z) || shop.RejectTree(x, z) || (creek != null && creek.RejectTree(x, z)) || pipes.RejectTree(x, z) || (net != null && net.RejectTree(x, z)) || rest.RejectTree(x, z) || biz.RejectTree(x, z) || lakes.RejectTree(x, z) || (courson != null && courson.RejectTree(x, z)) || (ridge != null && ridge.RejectTree(x, z)) || (LakesNow != null && LakesNow.RejectTree(x, z)) || (AddisonNow != null && AddisonNow.RejectTree(x, z)) || (Mall != null && Mall.InLot(x, z)) || (Airport != null && Airport.RejectTree(x, z)) || (TrailNow != null && TrailNow.RejectTree(x, z)) || (MountainNow != null && MountainNow.RejectTree(x, z)),   // Round 67: off the Kennesaw Mountain race's bench   // Round 62: off the Noonday Creek Trail's bench and the race's lot lines   // Round 15: none in the water; Round 17: none on the parking lot; Round 18: off the trail's tread and out of the pipe cuts; Round 52: off Addison Heights' road edges
                         (x, z) => pave.MoveOff(hood.MoveTree(x, z)), biz.Trees);   // Round 31: and a few round the businesses
-                    if (creek != null || ridge != null || AddisonNow != null)   // Round 54 (A7): Addison Heights' road sides too; Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
+                    if (creek != null || ridge != null || AddisonNow != null || MountainNow != null)   // Round 54 (A7): Addison Heights' road sides too; Round 19 (1): the trees left within break_half_m of the Noonday Creek trail snap when hit (TreeTrunks); Round 33: and those past the Ridge leap's landing
                     {
-                        var f = trees.Field; var br = new List<int>(); int nr = 0, na = 0;
+                        var f = trees.Field; var br = new List<int>(); int nr = 0, na = 0, nm = 0;
                         for (int i = 0; i < f.count; i++)
                         {
                             var t = TreeField.Unpack(f.data, i);
                             if (creek != null && creek.Breakable(t.x, t.z)) br.Add(i);
                             else if (ridge != null && ridge.Breakable(t.x, t.z)) { br.Add(i); nr++; }
                             else if (AddisonNow != null && AddisonNow.Breakable(t.x, t.z)) { br.Add(i); na++; }
+                            else if (MountainNow != null && MountainNow.Breakable(t.x, t.z)) { br.Add(i); nm++; }   // Round 67: beside the Kennesaw Mountain race's bench
                         }
                         f.breakable = br.ToArray();
-                        Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr - na} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing; [Round54] {na} beside the Addison Heights lap");
+                        Debug.Log($"[Round19] Noonday Creek trail: {br.Count - nr - na - nm} trees within {creek?.Data.break_half_m ?? 0f:0.0} m of its line are breakable; [Round33] {nr} past the Ridge leap's landing; [Round54] {na} beside the Addison Heights lap; [Round67] {nm} beside the Kennesaw Mountain trail");
                     }
                     trees.Field.gameObject.AddComponent<TreeTrunks>();
                     Debug.Log($"[Round10] solid trees: {pave.Moved} trunks moved off a road or drive, {pave.Dropped} on pavement with no room beside dropped; trunk colliders: a pool of 160 round the car (TreeTrunks)");
@@ -158,7 +159,8 @@ namespace ChastainRush
                 S("Network", () => BuildNetwork(terrain, mats, world, net, pipes)),   // Round 23 follow-ups: the network's pipes, chambers, the hub, manholes (MapBuilder.Network.cs)
                 S("LakesRace", () => BuildLakesRace(map, terrain, mats, world), true),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs); Round 65: quick
                 S("Addison", () => BuildAddison(map, terrain, mats, world), true),   // Round 53: Addison Heights' road crew on Lyndon Drive and its shrub beds (MapBuilder.Round53.cs)
-                S("TrailRace", () => BuildTrailRace(terrain, mats, world), true),   // Round 62: the Noonday Creek Trail's path, railings, red bridge and signs (MapBuilder.TrailRace.cs)
+                S("TrailRace", () => BuildTrailRace(terrain, mats, world, map), true),   // Round 62: the Noonday Creek Trail's path, railings, red bridge and signs (MapBuilder.TrailRace.cs)
+                S("MountainRace", () => BuildMountainRace(terrain, mats, world), true),   // Round 67: the Kennesaw Mountain race's landing zones and the jumps' looks (MapBuilder.Mountain.cs)
                 S("ManholeFloors", () => RefitManholeFloors(terrain, world)),   // Round 54 (E1): after every step that grades the ground round a manhole
                 S("Hydrants", () => BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge)),   // Round 36 (Parts C, D)
                 S("Life", () =>

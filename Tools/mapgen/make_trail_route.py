@@ -169,6 +169,8 @@ NORTH_LOT = [(276.0, -1066.0), (256.0, -1051.0), (230.0, -1036.0), (214.0, -1008
 NORTH_LOT_OLD = [(233.0, -1150.0), (222.0, -1060.0), (212.0, -1012.0)]   # Round 62's way from the main doors (now the shortcut's)
 NORTH_FROM = (196.5, -960.0)       # the north lot's way down to Town Center Drive starts here (the lot about 5 m over the road, the red bridge 2 m under it)
 MOUND_AT, MOUND_CREST = (172.5, -910.5), 296.5   # Round 64 G (BUG-003): the berm the way down cut through, filled in as one mound: its crest on the line, its top
+MOUND_FOOT_R, MOUND_FACE_GRADE, MOUND_TOP_R = 45.0, 0.22, 14.0   # Round 67 (B3): the face from the road, a 45 m arc at its foot up to 22 %, its top rounded over 14 m
+TCD_BUILT_Y = 293.57               # Round 67 (B3): Town Center Drive's surface there as the map build levels it (GroundGrid of the Round 66 build): the face starts at it
 BRIDGE_GRADE = 0.07                # the red bridge's south end at most this much under Town Center Drive per meter from the road's edge
 BOARD_PAD = (10.0, 20.0)           # the boardwalk under I-575 reaches this far before the first creek crossing and past the last (build 3: 10 m east left the stream's far bank as a wall)
 CHECKPOINTS = [   # (x, z, label), forward order from the gate
@@ -351,18 +353,29 @@ for k in range(len(nl)):
 # jump"): the way down cut a 4 m notch through the berm along Town Center Drive. Filled in on the way's line as one mound: from the road's edge up an
 # S-curve face (rounded at its foot and its crest) to MOUND_CREST, 2 m flat, then down the lot side at 6 degrees until it meets the way as it was. A real jump
 # both ways (physics only): off the face from the road (the geometry-B way), off the crest toward the road (A), landing on the face
-k_m = min(range(k_t0), key=lambda k: math.dist(nl[k], MOUND_AT)); s_m, s_e = nlcc[k_m], nlcc[k_t0]
+# Round 67 (B3, Dan, BUG-001 of 2026-10-25 at (167.16, -899.63): "it wasn't flush and caused me to lose momentum"): Round 64's face rose from the road's
+# edge on a Hermite of 15.9 m with no slope at its foot: a bend of 14 m radius right at the road's edge (3.5 g at 22 m/s, the car bottomed out and lost
+# its speed). The face now: an arc of MOUND_FOOT_R from the road's level up to MOUND_FACE_GRADE, straight, a short rounded crest; its crest moved back
+# onto the lot to make room (the crest's height kept)
+_x1 = MOUND_FACE_GRADE * MOUND_FOOT_R; _y1 = _x1 * _x1 / (2 * MOUND_FOOT_R); _x3 = MOUND_FACE_GRADE * MOUND_TOP_R; _y3 = _x3 * MOUND_FACE_GRADE / 2
+_yf = TCD_BUILT_Y if abs(TCD_BUILT_Y - y_tcd) < 0.5 else y_tcd; _H = MOUND_CREST - _yf; _x2 = (_H - _y1 - _y3) / MOUND_FACE_GRADE; FACE_LEN = _x1 + _x2 + _x3
+def mound_face(x):   # x: meters from the road's edge toward the crest
+    if x <= _x1: return _yf + x * x / (2 * MOUND_FOOT_R)
+    if x <= _x1 + _x2: return _yf + _y1 + (x - _x1) * MOUND_FACE_GRADE
+    u = min(_x3, x - _x1 - _x2); return _yf + _y1 + _x2 * MOUND_FACE_GRADE + MOUND_FACE_GRADE * u - u * u / (2 * MOUND_TOP_R)
+s_e = nlcc[k_t0]; s_m = s_e - FACE_LEN; k_m = min(range(k_t0), key=lambda k: abs(nlcc[k] - s_m))
 mound_old = list(nly)
 for k in range(k_t0):
     s = nlcc[k]
-    if s >= s_m: nly[k] = herm(MOUND_CREST, 0.0, y_tcd, 0.0, s_e - s_m, (s - s_m) / (s_e - s_m))
+    if s >= s_m: nly[k] = mound_face(s_e - s)
     elif s >= s_m - 2.0: nly[k] = MOUND_CREST
     else: nly[k] = max(mound_old[k], MOUND_CREST - math.tan(math.radians(6.0)) * (s_m - 2.0 - s))
 _ms = [gsm(nly[:k_t0], nlcc[:k_t0], k, 1.5) for k in range(k_t0)]
 for k in range(k_t0):
     if nlcc[k] < s_m - 2.0: nly[k] = _ms[k]   # (its lot-side foot rounded where the 6 degree slope meets the way)
 mound_k = [k for k in range(k_t0) if nly[k] > mound_old[k] + 0.05]
-print(f"the mound (BUG-003): crest {MOUND_CREST:.2f} m at ({nl[k_m][0]:.0f}, {nl[k_m][1]:.0f}), {s_e - s_m:.1f} m from Town Center Drive's edge ({y_tcd:.2f} m); "
+print(f"the mound (BUG-003, Round 67's B3 face): crest {MOUND_CREST:.2f} m at ({nl[k_m][0]:.0f}, {nl[k_m][1]:.0f}), {s_e - s_m:.1f} m from Town Center Drive's edge ({y_tcd:.2f} m): "
+      f"a {MOUND_FOOT_R:.0f} m arc over {_x1:.1f} m, {MOUND_FACE_GRADE * 100:.0f} % over {_x2:.1f} m, its top over {_x3:.1f} m; "
       f"the way raised by up to {max(nly[k] - mound_old[k] for k in range(k_t0)):.2f} m over {len(mound_k) * 2:.0f} m")
 s_t1 = nlcc[k_t1]; L2 = (nlcc[-1] - s_t1) + rb0
 def after_tcd(s_after): return herm(y_tcd, 0.0, y_s, deck_g, L2, max(0.0, min(1.0, s_after / L2)))
@@ -698,6 +711,80 @@ for nm_, lp_, sf_, pa_ in (("B", lap_r, SR, path_b), ("A", lap, S, path_a)):
 # the hint at each end: worn tire tracks from the course to the doors
 worn = [{"id": "the shortcut's tracks to the main doors", "points": flat(resample(north_old[::-1][:-1], 2.0))},
         {"id": "the shortcut's tracks to Carroway", "points": flat(resample(lot_s_a, 2.0))}]
+# ---------------------------------------------------------------- Round 67 (B1, B2): two more shortcuts off the trail, both real jumps
+# B1 FORWARD (Dan, BUG-002 at (1726.59, -671.00) heading 271, Bells Ferry Road by the trailhead: "skid mark here...you go down the hill hit a ramp before the
+#    river that carries you forward a succesful landing puts you heading straight on the track. A poorly angled one will cost you to crash"): skid marks off
+#    the northbound lane south of the bridge; a heap of riprap (the creek rock and broken concrete the bridge crew dumped on the bank's top: a real jump, no
+#    aimed flight) on the road's west shoulder heading 283 degrees; off it down over the bank and Noonday Creek onto the flats of its north bank, landing
+#    on the trail's line a little left of straight ahead. Short: the bank, the creek (water) and the brush along both banks; wide: the woods (solid past
+#    the corridor). It skips the lap's loop north over the bridge, round the trailhead's drive and lot.
+# B2 REVERSE (Dan, BUG-003 at (1328.10, -755.84) heading 123, 19 m off Chastain Meadows Parkway: "can we make a shortcut here where it leads to another big
+#    jump jumping over the street and clear to the other side"): off the trail before its loop under the parkway's bridges, down the hollow at Dan's spot
+#    and up the parkway's embankment, shaped into a kicker (the ground itself) to the road's edge, over both carriageways and down the far side onto the
+#    lap past the bridges. Short: onto the far carriageway and its shoulder, into the hedge along the far slope; no free way over the road (the hedge).
+B1_LIP, B1_HEADING, B1_RAMP, B1_RISE, B1_ANGLE, B1_WIDTH = (1717.0, -671.5), 283.0, 10.0, 1.8, 20.0, 7.0
+B1_APPROACH = [(1740.4, -712.0), (1741.0, -700.0), (1740.0, -690.0), (1737.0, -681.0)]   # the northbound lane (lap B) out to its right edge, then across
+B1_MERGE = [(1640.0, -653.0), (1626.0, -657.5), (1613.0, -664.0)]                      # down the flats onto the trail before its jog
+B2_FOOT, B2_LIP, B2_LIP_ANGLE, B2_LIP_UP = (1322.0, -752.2), (1341.0, -759.5), 20.0, 0.3   # the kicker up the embankment: the hollow's floor to the road's edge
+B2_APPROACH = [(1285.0, -743.6), (1300.0, -746.5)]                                       # off the trail (lap A) before its loop
+B2_LAND = [(1392.0, -777.0), (1402.0, -779.0)]                                           # the far slope, onto the lap past the bridges
+def _lap_y(p_): return round(ground(*p_), 2)
+_d1 = (math.sin(math.radians(B1_HEADING)), math.cos(math.radians(B1_HEADING)))
+B1_FOOT = (B1_LIP[0] - _d1[0] * B1_RAMP, B1_LIP[1] - _d1[1] * B1_RAMP)
+b1_lip_y = round(ground(*B1_FOOT) + B1_RISE, 2)
+b1_flight = [(B1_LIP[0] + _d1[0] * t, B1_LIP[1] + _d1[1] * t) for t in (20.0, 45.0, 70.0)]
+b1_in = [point_at(lap_r, SR(B1_APPROACH[0]) - 20.0, Cr)] + B1_APPROACH + [(B1_FOOT[0] - _d1[0] * 6.0, B1_FOOT[1] - _d1[1] * 6.0), B1_FOOT, B1_LIP]
+b1_out = b1_flight + B1_MERGE + [point_at(lap_r, SR(B1_MERGE[-1]) + 14.0, Cr)]
+path_b1 = resample(chaikin(b1_in, 2)[:-1] + [B1_LIP] + chaikin(b1_out, 2), 2.0)
+path_b1_y = [_lap_y(q) for q in path_b1]
+_b2d = unit((B2_LIP[0] - B2_FOOT[0], B2_LIP[1] - B2_FOOT[1])); B2_HEADING = bearing(B2_FOOT, B2_LIP); _b2L = math.dist(B2_FOOT, B2_LIP)
+b2_y0, b2_y1 = ground(*B2_FOOT), ground(B2_LIP[0] + _b2d[0] * 1.5, B2_LIP[1] + _b2d[1] * 1.5) + B2_LIP_UP   # (the road's edge just past the lip)
+b2_k = [(B2_FOOT[0] + _b2d[0] * _b2L * t / 20.0, B2_FOOT[1] + _b2d[1] * _b2L * t / 20.0) for t in range(21)]
+b2_ky = [round(herm(b2_y0, 0.0, b2_y1, math.tan(math.radians(B2_LIP_ANGLE)), _b2L, t / 20.0), 3) for t in range(21)]
+b2_flight = [(B2_LIP[0] + _b2d[0] * t, B2_LIP[1] + _b2d[1] * t) for t in (15.0, 30.0)]
+path_b2 = resample(chaikin([point_at(lap, S(B2_APPROACH[0]) - 16.0, C)] + B2_APPROACH, 2)[:-1] + b2_k + chaikin(b2_flight + B2_LAND + [point_at(lap, S(B2_LAND[-1]) + 14.0, C)], 2), 2.0)
+def _b2y(q):
+    d_, s_ = nearest_s(b2_k, q)
+    return round(b2_ky[min(20, max(0, int(round(s_ / _b2L * 20))))], 2) if d_ < 0.6 else _lap_y(q)
+path_b2_y = [_b2y(q) for q in path_b2]
+def jump_profile(path_, lip, speed_in, speed_lip, after):
+    """the AI on a jump shortcut: speed_in to 30 m before the lip, speed_lip from there, held 'after' m past it, then the lap's pace"""
+    sl = station(path_, lip); return [0.0, speed_in, max(1.0, sl - 30.0), speed_lip, sl + after, speed_lip, sl + after + 8.0, 16.0]
+sc_b1 = {"id": "t_creek", "name": "Creek leap", "direction": "forward", "path": flat(path_b1), "path_y": path_b1_y, "half_width_m": 3.5, "entry_inset_m": 10.0,
+         "entry_margin_m": 1.5, "forgives": forgiven(lap_r, SR, cps_rev, path_b1), "ai_speed": 30.0, "ai_profile": jump_profile(path_b1, B1_LIP, 22.0, 27.0, 60.0)}
+sc_b2 = {"id": "t_parkway_rev", "name": "Parkway leap", "direction": "reverse", "path": flat(path_b2), "path_y": path_b2_y, "half_width_m": 3.5, "entry_inset_m": 10.0,
+         "entry_margin_m": 1.5, "forgives": forgiven(lap, S, cps, path_b2), "ai_speed": 30.0, "ai_profile": jump_profile(path_b2, B2_LIP, 26.0, 27.0, 40.0)}
+for nm_, lp_, sf_, pa_ in (("B1 (forward)", lap_r, SR, path_b1), ("B2 (reverse)", lap, S, path_b2)):
+    a_, b_ = sf_(pa_[0]), sf_(pa_[-1]); print(f"  {nm_}: the lap from {a_:.0f} to {b_:.0f} m is {(b_ - a_) % cum(lp_)[-1]:.0f} m; the shortcut {cum(pa_)[-1]:.0f} m")
+print(f"B1 the creek leap: riprap heap {B1_RAMP:.0f} m from ({B1_FOOT[0]:.1f}, {B1_FOOT[1]:.1f}) to the lip ({B1_LIP[0]:.1f}, {B1_LIP[1]:.1f}) {b1_lip_y:.2f} m, {B1_ANGLE:.0f} deg, heading {B1_HEADING:.0f}; "
+      f"forgives {sc_b1['forgives']}. B2 the parkway leap: the embankment shaped {_b2L:.1f} m from {b2_y0:.2f} to the lip {b2_y1:.2f} m at {B2_LIP_ANGLE:.0f} deg, heading {B2_HEADING:.0f}; forgives {sc_b2['forgives']}")
+B1_JUMP = {"id": "CL", "look": "rockheap", "s_lip": 0.0, "height": B1_RISE, "lip_y": b1_lip_y, "angle_deg": B1_ANGLE, "ramp_m": B1_RAMP, "width": B1_WIDTH, "land_from": 0.0, "land_to": 0.0,
+           "vmax": 0.0, "design": 0.0, "vmin": 0.0, "lip": [B1_LIP[0], B1_LIP[1]], "dir": [round(_d1[0], 4), round(_d1[1], 4)], "physics": True}
+skids_r67 = [{"id": "the creek leap's skid marks", "points": flat(resample(chaikin(B1_APPROACH[1:] + [(B1_FOOT[0] - _d1[0] * 6.0, B1_FOOT[1] - _d1[1] * 6.0), B1_FOOT], 2), 2.0))}]
+def _zone(a, b, half):
+    d_ = unit((b[0] - a[0], b[1] - a[1])); n_ = (-d_[1], d_[0])
+    return flat([(a[0] + n_[0] * half, a[1] + n_[1] * half), (b[0] + n_[0] * half, b[1] + n_[1] * half), (b[0] - n_[0] * half, b[1] - n_[1] * half), (a[0] - n_[0] * half, a[1] - n_[1] * half)])
+# B3 (with the face's new foot): a car flying off Town Center Drive's far edge (the climb from the red bridge meets the road's level: 1.06 s in the air at 22 m/s
+# in Round 66's build) comes down on the mound's face: a landing zone there (RampHold), its speed kept along the face
+_mf = [nl[k] for k in range(k_t0) if nlcc[k] >= s_m - 2.0]
+def _band(ln, half):
+    l_, r_ = [], []
+    for i_ in range(len(ln)):
+        a_, b_ = ln[max(0, i_ - 1)], ln[min(len(ln) - 1, i_ + 1)]; d_ = unit((b_[0] - a_[0], b_[1] - a_[1])); n_ = (-d_[1], d_[0])
+        l_.append((ln[i_][0] + n_[0] * half, ln[i_][1] + n_[1] * half)); r_.append((ln[i_][0] - n_[0] * half, ln[i_][1] - n_[1] * half))
+    return flat(l_ + r_[::-1])
+landing_mound = [{"id": "the mound's face", "poly": _band(_mf, 7.0)}] if len(_mf) >= 2 else []
+landing_r67 = [{"id": "CL the creek leap's flats", "poly": _zone((B1_LIP[0] + _d1[0] * 36.0, B1_LIP[1] + _d1[1] * 36.0), (B1_LIP[0] + _d1[0] * 112.0, B1_LIP[1] + _d1[1] * 112.0), 10.0)},
+               {"id": "PL the parkway leap's far slope", "poly": _zone((B2_LIP[0] + _b2d[0] * 26.0, B2_LIP[1] + _b2d[1] * 26.0), (B2_LIP[0] + _b2d[0] * 80.0, B2_LIP[1] + _b2d[1] * 80.0), 10.0)}]
+clear_r67 = [{"id": "the creek leap", "points": flat([B1_FOOT, B1_LIP] + b1_flight + B1_MERGE), "half": 7.0},
+             {"id": "the parkway leap", "points": flat(B2_APPROACH + [B2_FOOT, B2_LIP] + b2_flight + B2_LAND), "half": 6.0}]
+grades_r67 = [{"id": "the parkway leap's kicker", "points": flat(b2_k), "y": b2_ky, "half": 3.5, "blend": 3.0}]
+worn_r67 = [{"id": "the parkway leap's tracks", "points": flat(resample(chaikin(B2_APPROACH + [B2_FOOT], 2), 2.0))}]
+# the brush (ShrubBeds) across every free way: B1 the creek's south-east bank under the bank's foot and its north bank, B2 the parkway's far shoulder and slope
+shrubs_r67 = [{"id": "the creek leap: the south-east bank", "points": flat([(1712.0, -694.0), (1705.0, -680.0), (1700.0, -668.0), (1703.0, -655.0)]), "half": 4.5, "strength": 1.0},
+              {"id": "the creek leap: the north bank", "points": flat([(1655.0, -682.0), (1668.0, -672.0), (1676.0, -662.0), (1686.0, -652.0), (1694.0, -644.0)]), "half": 3.5, "strength": 1.0},
+              {"id": "the parkway leap: the far shoulder", "points": flat([(1371.0, -742.0), (1372.0, -760.0), (1373.0, -776.0), (1377.0, -790.0)]), "half": 4.0, "strength": 1.5}]
+
 # the race's grilles (RaceBarriers "seals", both directions): the lower concourse west of the north wing (Dan, BUG-005: "there should been something here
 # forcing you to turn"), Town Center's south doors (upper floor) and its south-west doors (lower), so there is no free way round the renovation pit
 def seal(id_, label, u, v, y, along, w):
@@ -787,8 +874,8 @@ pole_free = [{"id": "the east lot", "points": flat(east_lot[::2] + [east_lot[-1]
 tread = {"line": flat(trail), "width": TRAIL_W, "decks": TRAIL_DECKS, "underpass": flat([UNDERPASS[0], UNDERPASS[-1]]),
          "rails": rails, "signs": signs, "tread_y": [round(v, 2) for v in gy]}
 track = {"note": "Round 62: the Noonday Creek Trail race's world pieces, from Tools/mapgen/make_trail_route.py (MapBuilder.TrailRace.cs). Coordinates are map meters (= Unity x, z).",
-         "big_jumps": [], "landing_zones": [], "clear_lines": clear, "break_lines": [], "grades": grades, "trail": tread, "pole_free": pole_free, "worn_tracks": worn,
-         "route_name": SETTINGS["name"]}
+         "big_jumps": [B1_JUMP], "landing_zones": landing_r67 + landing_mound, "clear_lines": clear + clear_r67, "break_lines": [], "grades": grades + grades_r67, "trail": tread, "pole_free": pole_free,
+         "worn_tracks": worn + worn_r67, "shrub_beds": shrubs_r67, "skid_marks": skids_r67, "route_name": SETTINGS["name"]}
 route = dict(SETTINGS)
 # Round 64 (A): FORWARD is geometry B (from the trailhead west along the trail, through the mall the old reverse way, back by Barrett Parkway), REVERSE geometry A
 lead = [point_at(lap_r, L_rev - LEAD_IN_M + k * 2.0, Cr) for k in range(int(LEAD_IN_M / 2.0))] + [lap_r[0]]
@@ -797,7 +884,7 @@ route.update({
               "the mall's floors from the map build (loop_y codes).",
     "lap_length_m": round(L_rev, 1), "loop": flat(lap_r), "loop_y": [round(v, 3) for v in ys_r], "gate_s": 0.0, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
     "checkpoints": cps_rev, "junctions": merged_rev, "loop_pieces": [{"osm_id": r.osm, "name": r.name, "reverse": False, "length_m": round(cum(r.p)[-1], 1)} for r in runs_r],
-    "official_shortcuts": [sc_fwd, sc_rev], "closures": closures_rev, "closure_stubs_not_barred": [], "ai_zones": ai_zones_rev, "ai_widths": ai_widths_rev, "reset_skip": reset_skip_rev,
+    "official_shortcuts": [sc_fwd, sc_rev, sc_b1, sc_b2], "closures": closures_rev, "closure_stubs_not_barred": [], "ai_zones": ai_zones_rev, "ai_widths": ai_widths_rev, "reset_skip": reset_skip_rev,
     "lap_length_rev_m": round(L_lap, 1), "loop_rev": flat(lap), "loop_rev_y": [round(v, 3) for v in ys], "gate_s_rev": 0.0, "checkpoints_rev": cps,
     "junctions_rev": merged, "closures_rev": closures, "ai_zones_reverse": ai_zones, "ai_widths_rev": ai_widths, "reset_skip_rev": reset_skip,
     "seals": seals,
@@ -825,7 +912,8 @@ if "--plot" in sys.argv:
     for sg in signs: ax.plot(*sg["at"], "y^")
     ax.plot(*lap[0], "ks"); ax.text(lap[0][0] + 5, lap[0][1], "gate", clip_on=True)
     ax.plot(*zip(*bridge_red), "r-", lw=3)
-    ax.plot(*zip(*path_a), "r-", lw=1.2); ax.plot(*zip(*path_b), "m:", lw=1.2)
+    ax.plot(*zip(*path_a), "r-", lw=1.2); ax.plot(*zip(*path_b), "m:", lw=1.2); ax.plot(*zip(*path_b1), "y-", lw=1.5); ax.plot(*zip(*path_b2), "y-", lw=1.5)
+    for sb in shrubs_r67: ax.plot(*zip(*pts(sb["points"])), "g-", lw=6, alpha=.4)
     for sl in seals: ax.plot(sl["x"], sl["z"], "ks", ms=8)
     ax.set_xlim(x0, x1); ax.set_ylim(z0, z1); ax.set_aspect("equal"); ax.grid(True, alpha=.3)
     os.makedirs(os.path.join(ROOT, "local/round64"), exist_ok=True)
