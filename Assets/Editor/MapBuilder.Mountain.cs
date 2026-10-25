@@ -36,6 +36,52 @@ namespace ChastainRush
             string path = Path.Combine(ProjectRoot, MountainTrackFile);
             if (MountainNow == null || !File.Exists(path)) { Debug.Log("[Round67] no " + MountainTrackFile + ": no Kennesaw Mountain race pieces"); return; }
             MountainExtra = JsonUtility.FromJson<MountainFile>(File.ReadAllText(path));
+            // Round 68: where the lines run on or beside the drive (the departure below the summit, the join by the visitor center) the drive's own
+            // levelled surface is kept: those points take the ground as built so far (the drive is levelled before this), eased into the line's profile
+            foreach (var gr in MountainNow.Data.grades ?? new RidgeGrade[0])
+            {
+                if (gr.y == null || gr.y.Length * 2 != gr.points.Length || (gr.ground_first <= 0 && gr.ground_last <= 0)) continue;
+                var p = ToPoints(gr.points); int n = p.Count; float ease = gr.ground_ease_m > 0f ? gr.ground_ease_m : 40f;
+                var built = p.Select(q => Ground(terrain, q.x, q.y)).ToArray(); var y0 = (float[])gr.y.Clone();
+                float along = 0f;
+                for (int i = 0; i < n; i++)
+                {
+                    if (i > 0) along += (p[i] - p[i - 1]).magnitude;
+                    if (i < gr.ground_first) gr.y[i] = built[i];
+                    else if (gr.ground_first > 0)
+                    {
+                        float d = along - Enumerable.Range(1, gr.ground_first - 1).Sum(k => (p[k] - p[k - 1]).magnitude), w = Smooth01(Mathf.Clamp01(d / ease));
+                        if (d < ease) gr.y[i] = Mathf.Lerp(built[i], y0[i], w);
+                    }
+                }
+                along = 0f;
+                for (int i = n - 1; i >= 0; i--)
+                {
+                    if (i < n - 1) along += (p[i] - p[i + 1]).magnitude;
+                    int last = n - gr.ground_last;
+                    if (gr.ground_last <= 0) break;
+                    if (i >= last) gr.y[i] = built[i];
+                    else
+                    {
+                        float d = along - Enumerable.Range(last, n - 1 - last).Sum(k => (p[k + 1] - p[k]).magnitude), w = Smooth01(Mathf.Clamp01(d / ease));
+                        if (d < ease) gr.y[i] = Mathf.Lerp(built[i], gr.y[i], w);
+                    }
+                }
+                // and those ends smoothed along the line (a Gaussian of 6 m): the drive's height and the line's met in a crest (the first exe run: 0.55 m
+                // over 24 m, a car at 33 m/s and more left the ground there)
+                int reach = Mathf.Min(n, gr.ground_first + 60), from = Mathf.Max(0, n - gr.ground_last - 60);
+                var cum = new float[n]; for (int i = 1; i < n; i++) cum[i] = cum[i - 1] + (p[i] - p[i - 1]).magnitude;
+                var ys = (float[])gr.y.Clone();
+                for (int i = 0; i < n; i++)
+                {
+                    if (!(i < reach && gr.ground_first > 0) && !(i >= from && gr.ground_last > 0)) continue;
+                    float sw = 0f, sy = 0f;
+                    for (int k = i; k >= 0 && cum[i] - cum[k] < 18f; k--) { float w = Mathf.Exp(-Mathf.Pow((cum[i] - cum[k]) / 6f, 2f) / 2f); sw += w; sy += w * ys[k]; }
+                    for (int k = i + 1; k < n && cum[k] - cum[i] < 18f; k++) { float w = Mathf.Exp(-Mathf.Pow((cum[k] - cum[i]) / 6f, 2f) / 2f); sw += w; sy += w * ys[k]; }
+                    gr.y[i] = sy / sw;
+                }
+                Debug.Log($"[Round68] {gr.id}: its first {gr.ground_first} and last {gr.ground_last} points take the drive's built height, eased over {ease:0} m");
+            }
             GradeRidge(terrain, MountainNow);
             Debug.Log($"[Round67] Kennesaw Mountain: {MountainNow.Data.grades?.Length ?? 0} graded stretches, {MountainExtra?.jumps?.Length ?? 0} jumps shaped into the bench");
         }
@@ -49,7 +95,7 @@ namespace ChastainRush
                 foreach (var z in MountainNow.Data.landing_zones)
                 {
                     var go = new GameObject("Landing zone " + z.id); go.transform.SetParent(root, false);
-                    go.AddComponent<LandingZone>().outline = ToPoints(z.poly).ToArray();
+                    var lz = go.AddComponent<LandingZone>(); lz.outline = ToPoints(z.poly).ToArray(); lz.catchSlope = true;   // Round 68: catch slopes
                 }
             int n = 0;
             foreach (var j in MountainExtra?.jumps ?? new MountainJump[0]) { MountainJumpLook(terrain, mats, root, j); n++; }

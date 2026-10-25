@@ -124,14 +124,16 @@ LAND_HALF = 13.0                    # and over the catch slopes (a flight a litt
 CLEAR_HALF = 13.0                   # no tree within this of the line; within this of a flight's corridor too
 BREAK_HALF = 32.0                   # trees within this of the line snap when hit
 CATCH_REL_DEG = 16.0                # the catch slope: steepened (where the ground is flatter) so the middle flight touches down this much shallower than it
+# (the kickers' radius: the run-up's speed squared over it is what the suspension must add to gravity; past about 6 m/s2 a car's body meets the ramp and
+# loses half its speed, Round 68's first exe run: R 75 m at 38 m/s took the Drifter Twin from 37.7 to 18.6 m/s)
 # the jumps: (id, look, name, the leg, the lip's station on its leg (m from the leg's start), the lip's angle over the horizontal, the kicker's radius (m),
 # the design speeds at the lip (m/s: the slowest car flat out less a margin, the middle, the fastest bike), the outrun's radius (m), the most cut or fill
 # the catch may take (m), where the catch meets the ground (0: at the middle flight's touch-down, cut below and fill above it; 1: at its far end, a
 # landing berm standing on the ground))
 JUMPS = [
-    ("J1", "overlook", "the summit flight", 1, 190.0, 17.0, 150.0, (38.0, 46.0, 52.0), 260.0, 12.0, 0.0),
-    ("J2", "ledge", "the west face", 2, 128.0, 14.0, 120.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
-    ("J3", "berm", "the earthworks", 3, 85.0, 28.0, 110.0, (30.0, 36.0, 42.0), 120.0, 10.0, 1.0),
+    ("J1", "overlook", "the summit flight", 1, 190.0, 17.0, 300.0, (38.0, 46.0, 52.0), 260.0, 12.0, 0.0),
+    ("J2", "ledge", "the west face", 2, 128.0, 14.0, 280.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
+    ("J3", "berm", "the earthworks", 3, 150.0, 20.0, 230.0, (30.0, 36.0, 44.0), 120.0, 10.0, 1.0),
 ]
 VEHICLES = {"street": ("Street Classic", 49.0, 14.5, 25.0), "drifter": ("Drifter Twin", 58.0, 16.0, 30.0), "needle": ("Needle 600", 61.0, 18.0, 32.0)}
 AI_LIP = {"J1": 46.0, "J2": 38.0, "J3": 40.0}   # the AI's held speed up each run-up (at the lip): the catch's middle
@@ -220,11 +222,22 @@ seg = list(range(max(0, k_lo - 30), min(len(lap), k_hi + 30)))
 base = gsm_list([tg[k] for k in seg], 6.0)
 for i, k in enumerate(seg):
     if kind[k] == "cut": prof[k] = base[i]
-# the hairpins and the bends: the arcs' ground smoothed harder (a level turn)
+# the hairpins: a level pad over the arc and PAD_M either side (the two legs' benches overlap near a hairpin: one height there, no step between
+# them), eased back into the legs' ground over EASE_M
+PAD_M, EASE_M = 22.0, 35.0
+arcs = []
 for k in ck:
-    if legno[k] == 0:
-        w = [math.exp(-((C[j] - C[k]) / 14.0) ** 2 / 2) for j in range(max(0, k - 45), min(len(lap), k + 46))]
-        prof[k] = sum(tg[j] * wj for j, wj in zip(range(max(0, k - 45), min(len(lap), k + 46)), w)) / sum(w)
+    if legno[k] == 0 and legno[k - 1] != 0:
+        e = k
+        while e + 1 < len(lap) and legno[e + 1] == 0: e += 1
+        if C[e] - C[k] > 25.0: arcs.append((C[k], C[e]))
+for a0, a1 in arcs:
+    pad = [k for k in ck if a0 - PAD_M <= C[k] <= a1 + PAD_M]
+    yp = sum(prof[k] for k in pad) / len(pad)
+    for k in ck:
+        if a0 - PAD_M <= C[k] <= a1 + PAD_M: prof[k] = yp
+        elif a0 - PAD_M - EASE_M < C[k] < a0 - PAD_M: t = (a0 - PAD_M - C[k]) / EASE_M; w = t * t * (3 - 2 * t); prof[k] = yp + w * (prof[k] - yp)
+        elif a1 + PAD_M < C[k] < a1 + PAD_M + EASE_M: t = (C[k] - a1 - PAD_M) / EASE_M; w = t * t * (3 - 2 * t); prof[k] = yp + w * (prof[k] - yp)
 # the departure from the drive: the drive's own surface for the first 30 m, blending into the line's ground
 k_d = ck[0]
 for k in ck[:40]:
@@ -258,7 +271,7 @@ for (jid, look, name, leg, s_on_leg, ang, Rk, (v_lo, v_mid, v_hi), R_out, most, 
     cap_crests(a_leg + 10, sL - 5, v_hi * v_hi / 9.81 * 1.25)
     # the kicker: a circular arc from the run-up's grade at its foot to the lip's angle, back from the lip
     th_l = math.radians(ang); Lk = None
-    for back in np.arange(1.0, 120.0, 0.5):
+    for back in np.arange(1.0, 200.0, 0.5):
         if math.tan(th_l - back / Rk) <= slope_at(prof, sL - back, 3.0): Lk = back; break
     if Lk is None: raise SystemExit(f"{jid}: no foot for its kicker")
     s_foot = sL - Lk; y = at(prof, s_foot)
@@ -325,11 +338,14 @@ for j in jumps:
         k = idx(sL + x)
         if kind[k] != "cut": continue
         worst = max(worst, abs(y - base_full[k])); prof[k] = y
-    # the kicker's back: a 40 degree face down from the lip to the ground (the kicker stands over it)
+    # the kicker's back: 75 degrees for its first 3 m (steeper than a wheel counts as ground: a front wheel past the lip never touches it while the rear
+    # is still on the kicker; the third exe run lost 17 m/s there at 65 degrees), then 40 degrees down to the ground (the kicker stands over it)
     for k in range(idx(sL) + 1, idx(sL + 30.0) + 1):
         xx = C[k] - sL
-        if kind[k] == "cut" and str(round(xx, 1)) not in path: prof[k] = max(prof[k], yL - math.tan(math.radians(40.0)) * xx)
+        if kind[k] == "cut" and str(round(xx, 1)) not in path: prof[k] = max(prof[k], yL - (math.tan(math.radians(75.0)) * xx if xx < 3.0 else math.tan(math.radians(75.0)) * 3.0 + math.tan(math.radians(40.0)) * (xx - 3.0)))
     j.update(xa=x_lo, xm=x_mid, xb=x_hi, worst=worst, sigma=sigma, n_mid=n_mid, shaped=shaped, want=want, x_end=x_end, limit=limit)
+for j in jumps:
+    cap_crests(j["sL"] + max(20.0, j["xa"] - 30.0), leg_s[j["leg"]][1] - 5.0, 330.0)
 # a little rounding of every corner of the profile (never over the lips and kickers)
 p2 = list(prof)
 for k in range(k_lo, k_hi + 1):
@@ -350,7 +366,7 @@ def drive(top, acc, grip, v0, s0, s1, lip_cap=None):
     n = int(s1 - s0) + 1; ss = [s0 + i for i in range(n)]
     vmax = []
     for s in ss:
-        k = idx(s); r = turn_r(k); vmax.append(min(top * 1.5, math.sqrt(grip * 0.85 * r), 1.55 * r))
+        k = idx(s); r = turn_r(k); vmax.append(min(top * 1.5, math.sqrt(grip * 0.85 * r), 1.55 * r, 14.0 if legno[k] == 0 and r < 40 else 999.0))
     for i in range(n - 2, -1, -1):
         g = slope_at(prof, ss[i]); vmax[i] = min(vmax[i], math.sqrt(vmax[i + 1] ** 2 + 2 * (18.0 + 9.81 * g) * 1.0))
     v = v0; out = []; flights = {}; i = 0
@@ -430,6 +446,8 @@ widths = [{"id": "the descent", "s0": round(s_cut0, 1), "s1": round(s_cut1, 1), 
 
 # ---------------------------------------------------------------- the world pieces
 gk = [k for k in range(len(lap)) if kind[k] == "cut"]
+# (the grade starts 40 m back on the drive and runs 40 m on along it past the join: its ends' flat discs lie on the drive, at the drive's height)
+gk = [k for k in range(len(lap)) if kind[k] == "road" and C[gk[0]] - 40.0 <= C[k] < C[gk[0]]] + gk + [k for k in range(len(lap)) if kind[k] == "road" and C[gk[-1]] < C[k] <= C[gk[-1]] + 40.0]
 g_pts = [lap[k] for k in gk]; g_y = [prof[k] for k in gk]
 halves, blends = [], []
 for k in gk:
@@ -439,7 +457,16 @@ for k in gk:
     halves.append(h); blends.append(round(max(BENCH_BLEND, SIDE_SLOPE * abs(prof[k] - tg[k])), 2))
 # a per-point half width eased along the line (no step in the bench's edge)
 halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends = [round(b, 2) for b in gsm_list(blends, 4.0)]
-grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends}]
+# where the line runs on or beside the drive (the departure, the join) the drive's own levelled surface is kept: those points take the built ground's
+# height in the map build (the drive is levelled before this grade), eased into the line's profile over the next 40 m
+on_road = [nearest_s(road, q)[0] < 9.0 for q in g_pts]
+g_first = next((i for i, o in enumerate(on_road) if not o), 0); g_last = next((i for i, o in enumerate(reversed(on_road)) if not o), 0)
+# (never into a kicker: the drive's height only up to 45 m before the first kicker's foot, from 45 m after the last jump's catch)
+g_first = min(g_first, max(0, min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[0]["sL"] - jumps[0]["Lk"] - 45.0)))))
+g_last = g_last if not jumps[-1]["shaped"] else min(g_last, max(0, len(gk) - 1 - min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[-1]["sL"] + jumps[-1]["x_end"] + 45.0)))))
+grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
+           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True}]
+print(f"the grade: its first {g_first} and last {g_last} points on the drive take the built drive's height")
 clear = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": CLEAR_HALF}]
 breaks = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": BREAK_HALF}]
 zones_land = []

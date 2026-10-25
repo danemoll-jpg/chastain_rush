@@ -219,6 +219,9 @@ namespace Racer
         }
 
         // Round 14: the same correction against the terrain, with the heightfield's surface normal under the contact point
+        // Round 68: the catch slopes' bounds (LandingZone.catchSlope; x0, z0, x1, z1), read on the physics thread
+        public static Vector4[] CatchRects = new Vector4[0];
+        static bool InCatch(Vector3 p) { var r = CatchRects; for (int i = 0; i < r.Length; i++) if (p.x >= r[i].x && p.x <= r[i].z && p.z >= r[i].y && p.z <= r[i].w) return true; return false; }
         static void CorrectTerrain(ref ModifiableContactPair pair, Field f, bool first, Vector3 center, Quaternion rotation, Box box)
         {
             Vector3 ax = rotation * Vector3.right, ay = rotation * Vector3.up, az = rotation * Vector3.forward;
@@ -249,7 +252,10 @@ namespace Racer
                 // at 28 m/s along that slope at 56 m/s and kicked it up off the deck (vertical speed +5 m/s, 4 m/s lost; New Chastain
                 // Road, x 2421 and 2441: Dan's "drop" at the bridge). Falling onto the ground still meets it with its vertical speed.
                 float gap = corner.y - ground;
-                if (gap >= .15f) n = Vector3.up;
+                // Round 68: not on a catch slope (the Kennesaw Mountain race's 20 to 35 degree landings): there a vehicle landed at 40 m/s falls
+                // 0.3 m a physics step, and the level plane of the straight-down prediction held its body up, gliding 0.7 m over the slope with
+                // no wheel down (the third exe run); there the prediction keeps the slope's own normal
+                if (gap >= .15f && !InCatch(corner)) n = Vector3.up;
                 var normal = first ? n : -n;
                 if (Vector3.Dot(pair.GetNormal(k), normal) <= .98f) pair.SetNormal(k, normal);
                 // the gap is measured straight down to the terrain under the corner, not to the plane of a face further on:

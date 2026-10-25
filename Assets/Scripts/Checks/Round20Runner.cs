@@ -225,6 +225,7 @@ namespace ChastainRush
             // Round 68 (Round20Runner.R68.cs): the Kennesaw Mountain race's huge jumps
             if (tag == "round68")
             {
+                if (Do("jprof")) yield return Guard(R68Prof());
                 if (Do("jfly")) yield return Guard(R68Fly());
                 if (Do("jloop")) yield return Guard(R67Loop());
                 if (Do("jai")) yield return Guard(R67Ai());

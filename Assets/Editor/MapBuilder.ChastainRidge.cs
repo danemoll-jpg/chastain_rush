@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r, ground_ease_m; public int ground_first, ground_last; public bool open_ends; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -116,20 +116,21 @@ namespace ChastainRush
             }
             EditTerrain(terrain, area, (x, z, y) =>
             {
-                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend, half = gr.half;
+                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend, half = gr.half; bool beyond = false;
                 if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x / Cell), Mathf.FloorToInt(z / Cell)), out var near)) return y;
                 foreach (int i in near)
                 {
-                    var ab = p[i + 1] - p[i]; float t = Mathf.Clamp01(Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (p[i] + ab * t - q).magnitude;
+                    var ab = p[i + 1] - p[i]; float tr = Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(tr); float d = (p[i] + ab * t - q).magnitude;
                     if (d < best)
                     {
                         best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
+                        beyond = gr.open_ends && (i == 0 && tr < 0f || i == p.Count - 2 && tr > 1f);   // Round 68: open ends (no flat disc behind the first point or past the last)
                         if (sides) { var v = q - p[i]; blend = ab.x * v.y - ab.y * v.x > 0f ? Mathf.Lerp(gr.blend_left[i], gr.blend_left[i + 1], t) : br; }   // > 0: on the left
                         if (halves) half = Mathf.Lerp(gr.halves[i], gr.halves[i + 1], t);
                         if (blends) blend = Mathf.Lerp(gr.blends[i], gr.blends[i + 1], t);
                     }
                 }
-                if (best >= half + blend) return y;
+                if (best >= half + blend || beyond) return y;
                 float w = best <= half ? 1f : Smooth01(1f - (best - half) / blend), ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;
             });

@@ -16,7 +16,7 @@ namespace ChastainRush
     // the kicker at 21 m/s or more flies 57 m and comes down at about 40 degrees on to a 7 degree deck: it lost 40 to 47%.
     public sealed class RampHold : MonoBehaviour
     {
-        public static int HeldSteps, Landings;   // checks: how many physics steps it held, how many landings it carried
+        public static int HeldSteps, Landings, CatchLandings;   // checks: how many physics steps it held, how many landings it carried (Round 68: how many set on their wheels on a catch slope)
         const float LandingKeep = 0.97f;
         float airTime;
         ArcadeVehicle car;
@@ -40,7 +40,29 @@ namespace ChastainRush
             ShortcutSurface surface = null; RaycastHit hit = default;
             if (car.GroundedWheels >= 1 && Physics.Raycast(transform.position + up * 0.2f, -up, out hit, 1.6f, ~0, QueryTriggerInteraction.Ignore)
                 && !cache.TryGetValue(hit.collider, out surface)) cache[hit.collider] = surface = hit.collider.GetComponent<ShortcutSurface>();
-            if (car.GroundedWheels == 0) airTime += Time.fixedDeltaTime;
+            if (car.GroundedWheels == 0)
+            {
+                airTime += Time.fixedDeltaTime;
+                // Round 68 (the Kennesaw Mountain race's catch slopes, 4 to 6 s flights down onto 20 to 45 degree slopes): in the air a vehicle keeps
+                // itself level, so it came down tail first on the steep slope and skated on its body, no wheel touching (the first exe run: 200 m at
+                // 43 m/s, steering and throttle gone; the Street Classic rolled and stuck). On a catch slope, once its body is about to meet the
+                // slope, it is set on its wheels along it: turned to the slope (its heading kept), its speed turned along the slope (less 3 %)
+                if (airTime > 0.25f && LandingZone.Catches(car.Body.position)
+                    && Physics.Raycast(car.Body.position + Vector3.up * 0.5f, Vector3.down, out var below, 1.7f, ~0, QueryTriggerInteraction.Ignore) && below.collider is TerrainCollider)
+                {
+                    var v0 = car.Body.linearVelocity; float into = Vector3.Dot(v0, below.normal);
+                    if (into < 0f)
+                    {
+                        var fwd = Vector3.ProjectOnPlane(transform.forward, below.normal); if (fwd.sqrMagnitude < 1e-4f) fwd = Vector3.ProjectOnPlane(v0, below.normal);
+                        car.Body.rotation = Quaternion.LookRotation(fwd.normalized, below.normal);
+                        car.Body.position = below.point + below.normal * (car.suspensionLength * 0.75f);   // on its wheels (the second exe run: turned along the slope but left 0.8 m over it, it skimmed on with no wheel down)
+                        car.Body.angularVelocity = Vector3.zero;
+                        var along = v0 - below.normal * into;
+                        if (along.sqrMagnitude > 1f) car.Body.linearVelocity = along.normalized * v0.magnitude * LandingKeep;
+                        Landings++; CatchLandings++; airTime = 0f;
+                    }
+                }
+            }
             else
             {
                 if (airTime > 0.25f && ((surface != null && surface.landing) || (hit.collider is TerrainCollider && LandingZone.Contains(hit.point))))   // Round 11: or the ground of a landing zone
