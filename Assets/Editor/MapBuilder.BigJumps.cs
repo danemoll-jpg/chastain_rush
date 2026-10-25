@@ -277,11 +277,11 @@ namespace ChastainRush
                     }
                     Debug.Log($"[Round20+] {b.id} washout: an earth and rock kicker {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
                 }
-                else if (b.look == "rockheap")
+                else if (b.look == "rockheap" || b.look == "riprap")   // Round 67 (B1): "riprap", the bridge crew's heap of creek rock and broken concrete: gray rock, not the dirt look
                 {
                     // Round 21 follow-ups, RA: creek rock heaped on the small pond's east shore (rubble from the outfall's building, left by the
                     // crew); a smooth driven top (the prism), its sides and its end over the water sloped, boulders round it and in the shallows
-                    var rp = Prism("kicker", KickerProfile(), b.ramp_m, hw, new Color(0.47f, 0.46f, 0.42f), new[] { 1, 2, 3 }); rp.landing = true;   // P1J's flights come down on it
+                    var rp = Prism(b.look == "riprap" ? "rock" : "kicker", KickerProfile(), b.ramp_m, hw, new Color(0.47f, 0.46f, 0.42f), new[] { 1, 2, 3 }); rp.landing = true;   // P1J's flights come down on it
                     BuildPrism(rp, terrain, mats, jr);
                     float DeckTop(float s) => Profile(KickerProfile(), s);
                     for (int i = 0; i < 18; i++)

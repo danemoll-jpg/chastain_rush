@@ -190,7 +190,7 @@ namespace ChastainRush
                 {
                     Time.timeScale = 0f; var p = car.Body.position; var d = new Vector3(j.dx, 0f, j.dz); var side = Vector3.Cross(Vector3.up, d).normalized;
                     var cam = Camera.main; var chase = cam.GetComponent<ChaseCamera>(); bool was = chase && chase.enabled; if (chase) chase.enabled = false;
-                    float f0 = cam.fieldOfView; cam.fieldOfView = 60f; cam.transform.position = p - d * 14f + side * 16f + Vector3.up * 3f; cam.transform.LookAt(p - d * 2f);
+                    float f0 = cam.fieldOfView; cam.fieldOfView = 60f; cam.transform.position = p - d * 16f + side * 4f + Vector3.up * 6f; cam.transform.LookAt(p + d * 6f - Vector3.up * 2f);
                     yield return null; yield return Capture(name); cam.fieldOfView = f0; if (chase) { chase.enabled = was; chase.Snap(); }
                     Time.timeScale = 1f; shot = true;
                 }
@@ -238,10 +238,12 @@ namespace ChastainRush
             var rl = round.Select(q => RaceRoute.Surface(q.x, q.y)).ToList();
             var roundLine = before.Concat(rl).Concat(after).ToList();
             float tLap = -1f, tClean = -1f, tMiss = -1f, tRound = -1f; Run rc = null, rm = null, rr = null;
+            bedsOn = true; var beds = StartCoroutine(R67BedDrag());   // (the scripted car is a disabled ArcadeVehicle: the brush, which acts on ArcadeVehicle.Live, never sees it)
             yield return TimedDrive(lap, R62Profile() is float[] zp ? ZonesOn(zp, sIn - 60f) : null, 200f, r => { tLap = r.reached ? r.time : -1f; });
             yield return TimedDrive(clean, Prof(sc.AiProfile), 200f, r => { rc = r; tClean = r.reached ? r.time : -1f; });
             yield return TimedDrive(clean, slow.ToArray(), 200f, r => { rm = r; tMiss = r.reached ? r.time : -1f; });
             yield return TimedDrive(roundLine, new[] { 0f, 22f, 999f, 22f }, 200f, r => { rr = r; tRound = r.reached ? r.time : -1f; });
+            bedsOn = false; StopCoroutine(beds);
             report.AppendLine($"  the lap {LineLen(lap):0} m in {Tm(tLap)}; the shortcut clean {LineLen(clean):0} m in {Tm(tClean)} (most air {rc.maxAir:0.0} s, landed {(float.IsNaN(rc.firstLanding.x) ? "-" : $"at ({rc.firstLanding.x:0}, {rc.firstLanding.z:0}) upright {rc.upAtLanding:0.00}")}); " +
                               $"missed {Tm(tMiss)} (most air {rm.maxAir:0.0} s, landed {(float.IsNaN(rm.firstLanding.x) ? "-" : $"at ({rm.firstLanding.x:0}, {rm.firstLanding.z:0})")}); round the stunt {LineLen(roundLine):0} m in {Tm(tRound)}");
             foreach (var (nm, r2) in new[] { ("clean", rc), ("missed", rm), ("round", rr) })
@@ -281,6 +283,22 @@ namespace ChastainRush
                         Check($"tmound {Nm(vid)} {dir} {v:0} m/s: no more than 15 % of the speed lost at the mound", run.reached && vIn > 0f && vMin > vIn * .85f, $"{vIn:0.0} -> {vMin:0.0} m/s");
                     }
                 }
+            }
+        }
+
+        // ShrubBeds' drag (ShrubBeds.FixedUpdate) on the scripted car while it drives with its ArcadeVehicle disabled
+        bool bedsOn;
+        IEnumerator R67BedDrag()
+        {
+            var all = FindObjectsByType<ShrubBeds>(FindObjectsSortMode.None);
+            while (bedsOn)
+            {
+                yield return new WaitForFixedUpdate();
+                if (car.enabled || car.GroundedWheels < 2 || car.Body.isKinematic) continue;
+                float amount = 0f; foreach (var b in all) amount = Mathf.Max(amount, b.Coverage(car.Body.position));
+                if (amount <= 0f || !Physics.Raycast(car.Body.position, Vector3.down, out var hit, car.suspensionLength + 0.5f, 1, QueryTriggerInteraction.Ignore) || !(hit.collider is TerrainCollider)) continue;
+                var horizontal = Vector3.ProjectOnPlane(car.Body.linearVelocity, Vector3.up);
+                car.Body.AddForce(-horizontal * Mathf.Min(ShrubBeds.Drag * amount, 0.8f / Time.fixedDeltaTime), ForceMode.Acceleration);
             }
         }
 

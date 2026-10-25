@@ -768,7 +768,7 @@ for nm_, lp_, sf_, pa_ in (("B1 (forward)", lap_r, SR, path_b1), ("B2 (reverse)"
     a_, b_ = sf_(pa_[0]), sf_(pa_[-1]); print(f"  {nm_}: the lap from {a_:.0f} to {b_:.0f} m is {(b_ - a_) % cum(lp_)[-1]:.0f} m; the shortcut {cum(pa_)[-1]:.0f} m")
 print(f"B1 the creek leap: riprap heap {B1_RAMP:.0f} m from ({B1_FOOT[0]:.1f}, {B1_FOOT[1]:.1f}) to the lip ({B1_LIP[0]:.1f}, {B1_LIP[1]:.1f}) {b1_lip_y:.2f} m, {B1_ANGLE:.0f} deg, heading {B1_HEADING:.0f}; "
       f"forgives {sc_b1['forgives']}. B2 the parkway leap: the embankment shaped {_b2L:.1f} m from {b2_y0:.2f} to the lip {b2_y1:.2f} m at {B2_LIP_ANGLE:.0f} deg, heading {B2_HEADING:.0f}; forgives {sc_b2['forgives']}")
-B1_JUMP = {"id": "CL", "look": "rockheap", "s_lip": 0.0, "height": B1_RISE, "lip_y": b1_lip_y, "angle_deg": B1_ANGLE, "ramp_m": B1_RAMP, "width": B1_WIDTH, "land_from": 0.0, "land_to": 0.0,
+B1_JUMP = {"id": "CL", "look": "riprap", "s_lip": 0.0, "height": B1_RISE, "lip_y": b1_lip_y, "angle_deg": B1_ANGLE, "ramp_m": B1_RAMP, "width": B1_WIDTH, "land_from": 0.0, "land_to": 0.0,
            "vmax": 0.0, "design": 0.0, "vmin": 0.0, "lip": [B1_LIP[0], B1_LIP[1]], "dir": [round(_d1[0], 4), round(_d1[1], 4)], "physics": True}
 skids_r67 = [{"id": "the creek leap's skid marks", "points": flat(resample(chaikin(B1_APPROACH[1:] + [(B1_FOOT[0] - _d1[0] * 6.0, B1_FOOT[1] - _d1[1] * 6.0), B1_FOOT], 2), 2.0))}]
 def _zone(a, b, half):

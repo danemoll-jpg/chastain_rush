@@ -122,14 +122,15 @@ CLEAR_HALF = 10.0                   # no tree within this of the line on the tra
 BREAK_HALF = 25.0                   # trees within this of the line snap when hit (the second build's check: long flights run on past the bends)
 HAIRPIN_HALF = 9.0                  # the bench this wide (half) through the hairpins (the second build's check: cars running wide met the cut bank)
 # the jumps: (id, look, name, the lip at the line's nearest point to (x, z) (moved 'along' m on), the lip's angle over the horizontal, its height over the
-# smoothed ground, the kicker's length, how far the ground is dug down past the lip (a gap: depth, length), the landing window (m past the lip))
+# smoothed ground, the kicker's length, how far the ground is dug down past the lip (a gap: depth, length), the landing window (m past the lip: to 110 m,
+# the final build's check: flights at 26 m/s and more came down past 60 m and lost half their speed))
 JUMPS = [
-    ("J1", "overlook", "the summit overlook", (-858.0, -5695.0), 12.0, 10.0, 1.8, 11.0, (0.0, 0.0), (12.0, 60.0)),
-    ("J2", "oak", "the ridge drop", (-809.1, -5603.0), 0.0, 12.0, 2.2, 14.0, (0.0, 0.0), (14.0, 75.0)),
-    ("J3", "berm", "the earthworks berm", (-589.6, -5509.2), 2.0, 12.0, 2.2, 14.0, (0.0, 0.0), (12.0, 60.0)),
-    ("J4", "ledge", "the switchback cut", (-650.0, -5394.0), 14.0, 10.0, 2.0, 12.0, (0.0, 0.0), (12.0, 70.0)),
-    ("J5", "washout", "the washout", (-719.5, -5289.1), 0.0, 12.0, 2.0, 13.0, (2.6, 9.0), (14.0, 70.0)),
-    ("J6", "ledge2", "the last ledge", (-818.3, -5281.1), 0.0, 12.0, 2.0, 12.0, (0.0, 0.0), (12.0, 65.0)),
+    ("J1", "overlook", "the summit overlook", (-858.0, -5695.0), 12.0, 10.0, 1.8, 11.0, (0.0, 0.0), (12.0, 110.0)),
+    ("J2", "oak", "the ridge drop", (-809.1, -5603.0), 0.0, 12.0, 2.2, 14.0, (0.0, 0.0), (14.0, 110.0)),
+    ("J3", "berm", "the earthworks berm", (-589.6, -5509.2), 2.0, 12.0, 2.2, 14.0, (0.0, 0.0), (12.0, 110.0)),
+    ("J4", "ledge", "the switchback cut", (-650.0, -5394.0), 14.0, 10.0, 2.0, 12.0, (0.0, 0.0), (12.0, 110.0)),
+    ("J5", "washout", "the washout", (-719.5, -5289.1), 0.0, 12.0, 2.0, 13.0, (2.6, 9.0), (14.0, 110.0)),
+    ("J6", "ledge2", "the last ledge", (-818.3, -5281.1), 0.0, 12.0, 2.0, 12.0, (0.0, 0.0), (12.0, 110.0)),
 ]
 APPROACH_M, APPROACH_SIGMA = 45.0, 12.0   # the 45 m before each kicker's foot smoothed harder (a Gaussian of 12 m): no crest there throws a car before the lip
 AI_JUMP_SPEED = {"J1": 20.0, "J2": 24.0, "J3": 22.0, "J4": 21.0, "J5": 23.0, "J6": 24.0}   # the AI's speed up to each lip
