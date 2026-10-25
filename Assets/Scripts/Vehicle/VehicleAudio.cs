@@ -45,7 +45,7 @@ namespace Racer
         void Update()
         {
             if (!car || !car.Body) return;
-            if (car.Flown) { foreach (var v in voices) if (v) v.volume = 0; return; }   // Chastain Rush, Round 63: the helicopter makes its own sound
+            if (car.Flown || car.OwnSound) { foreach (var v in voices) if (v) v.volume = 0; return; }   // Chastain Rush, Round 63: the helicopter makes its own sound
             float dt = Mathf.Min(Time.unscaledDeltaTime, .05f);
             float volume = Volume;   // Chastain Rush: Racer's Settings.vehicle (Round 27)
             float speed = Racing ? Mathf.Abs(car.ForwardSpeed) : 0;

@@ -94,8 +94,12 @@ namespace Racer
             if(!GetComponent<RiderGestures>()) gameObject.AddComponent<RiderGestures>();
             // Chastain Rush, Round 63: the helicopter flies (HelicopterFlight); any other profile drives again
             var heli=GetComponent<ChastainRush.HelicopterFlight>();
-            if(p.Flies){ if(!heli) heli=gameObject.AddComponent<ChastainRush.HelicopterFlight>(); heli.Begin(generated); }
+            if(p.Class=="Helicopter"){ if(!heli) heli=gameObject.AddComponent<ChastainRush.HelicopterFlight>(); heli.Begin(generated); }
             else if(heli) heli.End();
+            // Chastain Rush, Round 69: the plane flies itself (PlaneFlight; on its wheels it calls this vehicle's own drive)
+            var plane=GetComponent<ChastainRush.PlaneFlight>();
+            if(p.Class=="Plane"){ if(!plane) plane=gameObject.AddComponent<ChastainRush.PlaneFlight>(); plane.Begin(generated); }
+            else if(plane) plane.End();
             box.size=profileId=="original"?originalSize:p.Size;
             box.center=profileId=="original"?originalCenter:new Vector3(0,.05f,0);
             motor.Body.mass=profileId=="original"?originalMass:p.Mass;

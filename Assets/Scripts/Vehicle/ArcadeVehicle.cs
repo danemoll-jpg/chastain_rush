@@ -88,6 +88,7 @@ namespace Racer
         [System.NonSerialized] public bool ForceHoldAtRest;
         // Chastain Rush, Round 63: the helicopter (ChastainRush.HelicopterFlight) flies this body itself: no wheels, no drive
         [System.NonSerialized] public bool Flown;
+        [System.NonSerialized] public bool OwnSound;   // Chastain Rush, Round 69: the plane makes its own sound, on the ground too
         void FixedUpdate() { if (Flown) return; playerStep = true; Simulate(input.Throttle, input.BrakeReverse, input.Steering, Time.fixedDeltaTime); playerStep = false; }
         // 0.84 (no idle creep): with no throttle, brake or reverse, below HoldSpeed the ground holds the vehicle like an
         // automatic with its foot off: the slope's pull is cancelled and a stopping force brings it fully to rest, both

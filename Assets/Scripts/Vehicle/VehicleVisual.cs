@@ -148,10 +148,10 @@ namespace Racer
                     var pivot=new GameObject("Steering wheel").transform;pivot.SetParent(root,false);pivot.position=t.position;
                     var turn=pivot.gameObject.AddComponent<MotorcycleFrontEnd>();turn.axis=CarColumn;turn.gain=-40;t.SetParent(pivot,true);
                 }
-                else if(group=="Rotor"||group=="TailRotor"||group=="Disc")
+                else if(group=="Rotor"||group=="TailRotor"||group=="Disc"||group=="Prop")
                 {
                     // Chastain Rush, Round 63: the helicopter's turning parts, each on a pivot at its hub, square to the vehicle (HelicopterFlight turns them)
-                    string pivotName=group=="Rotor"?"Main rotor":group=="TailRotor"?"Tail rotor":"Rotor disc";var pivot=root.Find(pivotName);
+                    string pivotName=group=="Rotor"?"Main rotor":group=="TailRotor"?"Tail rotor":group=="Prop"?"Propeller":"Rotor disc";/* Round 69: the plane's propeller */var pivot=root.Find(pivotName);
                     if(!pivot){pivot=new GameObject(pivotName).transform;pivot.SetParent(root,false);pivot.position=t.position;pivot.localRotation=Quaternion.identity;}
                     t.SetParent(pivot,true);
                 }

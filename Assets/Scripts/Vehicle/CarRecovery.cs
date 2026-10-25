@@ -24,6 +24,14 @@ namespace ChastainRush
             // Round 63: the helicopter goes to the nearest open ground under it, upright, rotor spooling up
             var heli = r.GetComponent<HelicopterFlight>();
             if (heli && heli.enabled) { bool ok = HelicopterFlight.ResetSpot(at, out pos, out yaw); if (ok) pos.y -= .5f; heli.Recovered(); if (ok) return true; }
+            // Round 69: the plane the same way, on its wheels, the throttle closed
+            var plane = r.GetComponent<PlaneFlight>();
+            if (plane && plane.enabled)
+            {
+                plane.Recovered();
+                if (PlaneFlight.StripSpot(at, out pos, out yaw)) return true;
+                plane.LineUp(true); pos = plane.transform.position; yaw = plane.transform.eulerAngles.y; return true;
+            }
             if (TreeTrunks.Instance) TreeTrunks.Instance.Refresh(at);
             var race = RaceController.Instance;
             bool racing = race != null && race.Route != null && (race.State == RaceController.Stage.Racing || race.State == RaceController.Stage.Countdown);

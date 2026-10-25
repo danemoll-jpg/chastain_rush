@@ -89,7 +89,7 @@ namespace ChastainRush
             bool continuous = Vector3.Distance(previous, p) <= Mathf.Max(3f, car.Body.linearVelocity.magnitude * Time.fixedDeltaTime * 2f + .3f); previous = p;
             if (!continuous) { nextReveal = Time.time + 1f; return; }
             if (Time.time < nextReveal) return; nextReveal = Time.time + .4f;
-            RevealAt(p, Reveal + HelicopterFlight.RevealBonus(car));   // Round 63: wider from the air
+            RevealAt(p, Reveal + HelicopterFlight.RevealBonus(car) + PlaneFlight.RevealBonus(car));   // Round 69: the plane too   // Round 63: wider from the air
             if (dirty && Time.unscaledTime > nextSave) { SaveInBackground(); nextSave = Time.unscaledTime + 3f; }
         }
         public void RevealAt(Vector3 p) => RevealAt(p, Reveal);
