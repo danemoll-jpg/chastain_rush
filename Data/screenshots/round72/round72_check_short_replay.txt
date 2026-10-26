@@ -1,0 +1,21 @@
+Round 72 check, 2026-10-26 10:13, the exe, 1280 x 720, muted.
+
+=== Short: the Street Classic 6 m/s under The Corner's window: into the lake, back at the gantry
+      run-up (station:speed): 4:0.2 44:26.1 84:30.5 124:30.4 165:30.4 205:30.6 245:30.5 286:30.3 326:30.4 367:30.3; last touched stay Terrain_10_10 at (-1690.05, 221.30, -1444.98) normal (-0.44, 0.64, -0.63) impulse 474; stay Terrain_10_10 at (-1690.82, 220.39, -1445.37) normal (-0.24, 0.97, -0.06) impulse 2559; enter Terrain_10_10 at (-1748.55, 113.26, -1457.32) normal (0.00, 1.00, 0.00) impulse 56894
+  J1 short                         lip 30.3 m/s (68 mph; window 82-88): SPLASH 140 m, 9.4 s, +7.9 m over the lip
+PASS  qshort: short into the lake, put back at the gantry  -  SPLASH, 1 m from the gantry afterwards
+
+=== The jump's replay
+      run-up (station:speed): ; last touched stay Terrain_9_10 at (-1999.93, 198.08, -1412.93) normal (0.12, 0.31, -0.94) impulse 138; stay Terrain_9_10 at (-1999.93, 198.08, -1412.93) normal (0.12, 0.31, -0.94) impulse 138; stay Terrain_9_10 at (-1999.93, 198.08, -1412.93) normal (0.12, 0.31, -0.94) impulse 138
+  J2 for the replay                lip 30.3 m/s (68 mph; window 93-100): SPLASH 140 m, 9.4 s, +7.9 m over the lip
+FAIL  qreplay: the jump's replay opens on its TV cameras  -  could False, open False, 0 TV cameras, on #-1
+
+1 of 2 checks passed.
+Round 72 check, 2026-10-26 10:15, the exe, 1280 x 720, muted.
+
+=== The jump's replay
+      run-up (station:speed): 4:0.2 44:27.6 84:35.4 125:39.9 165:41.9 205:42.7 246:43.0 286:42.7 326:43.0 366:42.9; last touched stay sc quarry J2 kicker deck at (-2000.40, 310.29, -1679.28) normal (0.00, 1.00, -0.01) impulse 307; stay sc quarry J2 landing deck at (-2000.34, 219.29, -1445.93) normal (0.00, 0.83, 0.56) impulse 1139; stay sc quarry J2 landing deck at (-2000.34, 218.71, -1445.08) normal (0.00, 0.83, 0.56) impulse 329
+  J2 for the replay                lip 43.0 m/s (96 mph; window 93-100): CLEAN  203 m, 5.0 s, +2.0 m over the lip, Top 10 #1
+PASS  qreplay: the jump's replay opens on its TV cameras  -  could True, open True, 5 TV cameras, on #-1
+
+1 of 1 checks passed.

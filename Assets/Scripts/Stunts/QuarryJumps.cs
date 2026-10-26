@@ -65,6 +65,8 @@ namespace ChastainRush
             var p = car.Body.position; var v = car.Body.linearVelocity; float dt = Time.fixedDeltaTime;
             if (State == Phase.Idle || State == Phase.Result)
             {
+                // the put-back after a short or a crash: not if the vehicle has gone elsewhere meanwhile (a reset, fast travel, another jump)
+                if (putBackAt > 0f && Current != null && Mathf.Abs(Across(Current, p)) > 60f) putBackAt = -1f;
                 if (putBackAt > 0f && Time.time >= putBackAt) { putBackAt = -1f; PutAtStart(Current); }
                 // into a gantry's box, facing the kicker, still: hold, then the countdown
                 Current = State == Phase.Result ? Current : null;
@@ -73,7 +75,7 @@ namespace ChastainRush
                     var sp = StartPoint(j); var d = p - sp; d.y = 0f;
                     if (d.magnitude > 9f || Vector3.Dot(car.transform.forward, Forward(j)) < .85f || v.magnitude > 1.5f || car.GroundedWheels == 0) continue;
                     if (State == Phase.Result && Time.time < resultUntil - 6f) break;   // the result stands a moment first
-                    Current = j; State = Phase.Hold; holdFor = 0f; break;
+                    Current = j; State = Phase.Hold; holdFor = 0f; putBackAt = -1f; break;
                 }
                 return;
             }
@@ -110,7 +112,7 @@ namespace ChastainRush
                 float air = Time.time - airAt;
                 bool inWater = car.WaterImmersion > .05f || p.y < J.water_y + .8f;
                 bool down = air > .4f && (car.GroundedWheels > 0 || BodyDown(p));
-                if (inWater || down || air > 20f) Land(J, p, air, inWater);
+                if (inWater || down || air > 12f) Land(J, p, air, inWater);
             }
         }
 

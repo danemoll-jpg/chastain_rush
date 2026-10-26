@@ -1,0 +1,9 @@
+  Longroof GT      the lap in 120.6 s; slowest 13.9 m/s; 0 dead stop(s); jumps flown - - - - - -
+PASS  mloop Longroof GT: round the lap, never stuck  -  120.6 s
+  Highball Fastback the lap in 117.3 s; slowest 13.9 m/s; 0 dead stop(s); jumps flown - - - - - -
+PASS  mloop Highball Fastback: round the lap, never stuck  -  117.3 s
+  Skyfin Cruiser   the lap in 123.0 s; slowest 13.9 m/s; 0 dead stop(s); jumps flown - - - - - -
+PASS  mloop Skyfin Cruiser: round the lap, never stuck  -  123.0 s
+  Street Classic   the lap in 119.6 s; slowest 13.9 m/s; 0 dead stop(s); jumps flown - - - - - -
+PASS  mloop Street Classic: round the lap, never stuck  -  119.6 s
+PASS  mloop: no dead stop on the ground anywhere (listed above)  -  0 found

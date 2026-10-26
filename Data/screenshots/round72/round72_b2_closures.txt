@@ -1,0 +1,7 @@
+Round 66 check, 2026-10-26 09:21, the exe, 1280 x 720, muted.
+
+=== Every road that leaves the map: the Street Classic driven along it at 22 m/s (highways 30) from ~110 m before its closure, straight on into it (time x 4)
+PASS  edrive: the closures are built  -  224 closures, 19 with jersey barriers
+FAIL  edrive: every road leaving the map stops at its closure  -  222 of 224 stopped at their closure; furthest past a closure's middle 50.3 m; Canton Road Northeast at (3378, 1901): 13.0 m past the closure; Canton Road Northeast at (3965, -3003): 50.3 m past the closure
+
+1 of 2 checks passed.

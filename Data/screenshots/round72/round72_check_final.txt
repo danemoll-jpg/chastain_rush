@@ -1,0 +1,55 @@
+Round 72 check, 2026-10-26 09:55, the exe, 1280 x 720, muted.
+
+=== The Viking Quarry jumps: each flown from its gantry (the countdown), the run-up held at the speed window's middle (flat out where the vehicle cannot reach it)
+  J1 The Corner: lip 325 m, the landing deck 155 to 241 m out
+      run-up (station:speed): 4:0.2 44:26.1 85:32.9 125:36.8 166:38.1 207:38.1 247:37.8 287:37.9 328:38.0 368:38.1; last touched stay sc quarry J1 kicker deck at (-1771.04, 308.08, -1667.69) normal (-0.01, 1.00, -0.02) impulse 98; stay sc quarry J1 kicker deck at (-1765.03, 308.73, -1656.59) normal (-0.03, 1.00, -0.08) impulse 53; stay sc quarry J1 kicker deck at (-1764.00, 309.01, -1653.76) normal (-0.03, 1.00, -0.09) impulse 52
+  J1 Street Classic at 38.0 m/s    lip 37.8 m/s (84 mph; window 82-88): CLEAN  167 m, 5.1 s, +12.1 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:28.3 85:36.1 125:37.7 165:37.8 206:38.0 247:37.8 288:37.8a 328:37.8 368:37.8; last touched stay sc quarry J1 kicker deck at (-1770.23, 308.09, -1667.40) normal (-0.01, 1.00, -0.03) impulse 52; stay sc quarry J1 landing deck at (-1688.19, 277.92, -1441.38) normal (0.20, 0.81, 0.55) impulse 786; stay sc quarry J1 landing deck at (-1687.96, 277.43, -1440.74) normal (0.20, 0.81, 0.55) impulse 194
+  J1 Drifter Twin at 38.0 m/s      lip 38.1 m/s (85 mph; window 82-88): CLEAN  166 m, 5.0 s, +11.9 m over the lip, Top 10 #2
+      run-up (station:speed): 4:0.2 44:30.0 85:37.9 125:38.0 165:37.8 205:37.9 246:37.8 286:37.8a 327:37.7 367:37.9; last touched stay sc quarry J1 kicker deck at (-1770.66, 308.06, -1668.52) normal (-0.01, 1.00, -0.02) impulse 74; stay sc quarry J1 landing deck at (-1686.92, 275.62, -1438.41) normal (0.20, 0.81, 0.55) impulse 116; stay sc quarry J1 landing deck at (-1686.67, 275.10, -1437.73) normal (0.20, 0.81, 0.55) impulse 586
+  J1 Needle 600 at 38.0 m/s        lip 37.7 m/s (84 mph; window 82-88): CLEAN  169 m, 5.1 s, +12.1 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:29.2 85:36.9 125:38.0 165:37.7 206:37.9 247:37.9 287:37.8 327:37.8 368:38.0; last touched stay sc quarry J1 kicker deck at (-1771.87, 308.03, -1671.64) normal (0.00, 1.00, -0.01) impulse 168; stay sc quarry J1 landing deck at (-1685.49, 272.57, -1434.40) normal (0.20, 0.81, 0.55) impulse 417; stay sc quarry J1 landing deck at (-1685.55, 272.70, -1434.56) normal (0.20, 0.81, 0.55) impulse 274
+  J1 Skywhip 250 at 38.0 m/s       lip 38.0 m/s (85 mph; window 82-88): CLEAN  172 m, 5.2 s, +12.1 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:28.3 85:36.1 125:40.8 165:44.1 205:46.6 246:48.0 287:49.0 327:49.4 367:50.5; last touched stay sc quarry J1 kicker deck at (-1770.92, 308.05, -1669.25) normal (-0.01, 1.00, -0.02) impulse 81; enter Terrain_10_10 at (-1659.70, 286.91, -1365.50) normal (-0.21, 0.79, -0.57) impulse 2660; stay Terrain_10_10 at (-1659.60, 287.14, -1365.20) normal (-0.21, 0.81, -0.55) impulse 5503
+  J1 Drifter Twin flat out         lip 50.8 m/s (114 mph; window 82-88): ROUGH  244 m, 5.6 s, +20.9 m over the lip, Top 10 #1
+PASS  qjump J1 The Corner: every vehicle that reaches the window lands clean  -  4 of 4
+  J2 The Long One: lip 312 m, the landing deck 194 to 270 m out
+      run-up (station:speed): 4:0.2 44:25.4 84:32.2 124:35.7 165:38.2 205:40.2 245:42.2 285:42.6 326:42.7 366:42.7; last touched stay sc quarry J2 kicker deck at (-2000.93, 310.30, -1677.64) normal (0.00, 1.00, -0.02) impulse 265; stay sc quarry J2 kicker deck at (-2000.93, 310.31, -1676.78) normal (0.00, 1.00, -0.02) impulse 64; enter sc quarry J2 landing deck at (-2000.93, 217.98, -1444.00) normal (0.00, 0.83, 0.56) impulse 3948
+  J2 Street Classic at 43.0 m/s    lip 42.7 m/s (95 mph; window 93-100): CLEAN  205 m, 5.1 s, +2.0 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:27.6 84:35.4 125:39.9 165:41.9 205:42.7 246:43.0 286:42.7 326:43.0 366:42.9; last touched stay sc quarry J2 kicker deck at (-2000.40, 310.29, -1679.28) normal (0.00, 1.00, -0.01) impulse 308; stay sc quarry J2 landing deck at (-2000.34, 219.30, -1445.95) normal (0.00, 0.83, 0.56) impulse 1015; stay sc quarry J2 landing deck at (-2000.34, 218.72, -1445.09) normal (0.00, 0.83, 0.56) impulse 412
+  J2 Drifter Twin at 43.0 m/s      lip 43.0 m/s (96 mph; window 93-100): CLEAN  203 m, 5.0 s, +2.0 m over the lip, Top 10 #2
+      run-up (station:speed): 4:0.2 44:29.3 85:37.7 125:42.3 166:42.8 206:43.0 246:42.9 286:43.0 327:42.7 367:42.6; last touched stay sc quarry J2 kicker deck at (-2000.33, 310.29, -1679.36) normal (0.00, 1.00, -0.01) impulse 130; stay sc quarry J2 landing deck at (-2000.33, 214.58, -1439.00) normal (0.00, 0.83, 0.56) impulse 832; stay sc quarry J2 landing deck at (-2000.31, 214.66, -1439.11) normal (0.00, 0.83, 0.56) impulse 319
+  J2 Needle 600 at 43.0 m/s        lip 43.0 m/s (96 mph; window 93-100): CLEAN  209 m, 5.1 s, +2.0 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:28.7 85:36.4 126:40.5 166:42.1 207:42.7 247:42.8 287:42.9 327:43.0 367:42.8; last touched stay sc quarry J2 kicker deck at (-2000.35, 310.29, -1678.74) normal (0.00, 1.00, -0.01) impulse 100; stay sc quarry J2 landing deck at (-2000.38, 217.98, -1444.00) normal (0.00, 0.83, 0.56) impulse 452; stay sc quarry J2 landing deck at (-2000.37, 217.68, -1443.56) normal (0.00, 0.83, 0.56) impulse 448
+  J2 Skywhip 250 at 43.0 m/s       lip 42.8 m/s (96 mph; window 93-100): CLEAN  205 m, 5.1 s, +2.0 m over the lip, Top 10 #3
+      run-up (station:speed): 4:0.2 44:27.6 84:35.4 125:39.9 165:41.9 206:44.8 247:46.0 287:47.9 328:49.6 368:50.5; last touched stay sc quarry J2 kicker deck at (-2000.40, 310.30, -1678.06) normal (0.00, 1.00, -0.01) impulse 68; enter Terrain_9_10 at (-1999.93, 218.42, -1400.42) normal (0.27, 0.57, -0.78) impulse 4300; stay Terrain_9_10 at (-1999.70, 217.87, -1399.79) normal (0.18, 0.95, 0.27) impulse 2159
+  J2 Drifter Twin flat out         lip 50.7 m/s (113 mph; window 93-100): CLEAN  247 m, 5.2 s, +2.6 m over the lip, Top 10 #1
+PASS  qjump J2 The Long One: every vehicle that reaches the window lands clean  -  4 of 4
+  J3 The Big One: lip 334 m, the landing deck 246 to 341 m out
+      run-up (station:speed): 4:0.2 44:26.1 85:32.9 126:36.8 166:39.4 206:41.2 247:42.5 287:42.9; last touched stay sc quarry J3 kicker deck at (-2508.32, 321.70, -1740.82) normal (-0.01, 1.00, -0.05) impulse 145; stay sc quarry J3 kicker deck at (-2508.10, 321.73, -1739.99) normal (-0.01, 1.00, -0.05) impulse 115; enter sc quarry J3 landing deck at (-2427.26, 217.60, -1438.51) normal (0.17, 0.76, 0.63) impulse 6428
+  J3 Street Classic at 43.0 m/s    lip 42.7 m/s (96 mph; window 93-100): CLEAN  246 m, 6.4 s, +8.9 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:28.2 84:36.0 124:40.7 165:42.7 205:43.0 246:43.0 286:42.7; last touched stay sc quarry J3 kicker deck at (-2509.69, 321.52, -1747.95) normal (0.00, 1.00, -0.02) impulse 83; stay sc quarry J3 kicker deck at (-2509.46, 321.53, -1747.12) normal (-0.01, 1.00, -0.02) impulse 71; stay sc quarry J3 landing deck at (-2426.79, 217.45, -1438.46) normal (0.17, 0.76, 0.63) impulse 2374
+  J3 Drifter Twin at 43.0 m/s      lip 42.7 m/s (96 mph; window 93-100): CLEAN  246 m, 6.4 s, +9.0 m over the lip, Top 10 #1
+      run-up (station:speed): 4:0.2 44:30.0 85:38.3 126:42.9 166:42.7 206:43.0 247:42.9 287:42.6; last touched stay sc quarry J3 kicker deck at (-2509.53, 321.53, -1747.65) normal (0.00, 1.00, -0.02) impulse 60; stay sc quarry J3 landing deck at (-2426.74, 217.60, -1438.65) normal (0.17, 0.76, 0.63) impulse 2103
+  J3 Needle 600 at 43.0 m/s        lip 42.7 m/s (96 mph; window 93-100): CLEAN  245 m, 6.4 s, +8.9 m over the lip, Top 10 #3
+      run-up (station:speed): 4:0.2 44:29.1 85:36.9 125:41.0 166:42.8 206:42.9 247:42.7 287:42.9; last touched stay sc quarry J3 kicker deck at (-2509.13, 321.55, -1746.07) normal (-0.01, 1.00, -0.02) impulse 55; stay sc quarry J3 landing deck at (-2426.70, 217.60, -1438.66) normal (0.17, 0.76, 0.63) impulse 1628
+  J3 Skywhip 250 at 43.0 m/s       lip 42.8 m/s (96 mph; window 93-100): CLEAN  246 m, 6.4 s, +8.9 m over the lip, Top 10 #3
+      run-up (station:speed): 4:0.2 44:28.2 84:36.0 124:40.7 165:44.0 206:46.4 247:48.2 287:49.4; last touched stay sc quarry J3 landing deck at (-2404.48, 139.36, -1349.24) normal (0.17, 0.76, 0.63) impulse 71; stay Terrain_9_10 at (-2403.27, 141.80, -1348.44) normal (-0.12, 0.05, -0.99) impulse 46; stay sc quarry J3 landing deck at (-2404.48, 139.36, -1349.24) normal (0.17, 0.76, 0.63) impulse 71
+  J3 Drifter Twin flat out         lip 50.3 m/s (112 mph; window 93-100): CRASH  338 m, 20.0 s, +12.1 m over the lip
+PASS  qjump J3 The Big One: every vehicle that reaches the window lands clean  -  4 of 4
+PASS  qjump: the jumps go on their Top 10s  -  J1: 5, J2: 5, J3: 4
+
+=== Short: the Street Classic 6 m/s under The Corner's window: into the lake, back at the gantry
+      run-up (station:speed): ; last touched stay trunk at (-2224.64, 301.80, -2021.37) normal (-0.99, 0.00, 0.17) impulse 347; stay trunk at (-2224.64, 301.80, -2021.37) normal (-0.99, 0.00, 0.17) impulse 351; stay trunk at (-2224.64, 301.80, -2021.37) normal (-0.99, 0.00, 0.17) impulse 350
+  J1 short                         lip 50.3 m/s (112 mph; window 82-88): CRASH  338 m, 20.0 s, +12.1 m over the lip
+FAIL  qshort: short into the lake, put back at the gantry  -  CRASH, 362 m from the gantry afterwards
+
+=== The jump's replay
+      run-up (station:speed): 4:0.2 44:27.6 84:35.4 125:39.9 165:41.9 205:42.7 246:43.0 286:42.7 326:43.0 366:42.9; last touched stay sc quarry J2 kicker deck at (-2000.40, 310.29, -1679.28) normal (0.00, 1.00, -0.01) impulse 307; stay sc quarry J2 landing deck at (-2000.34, 219.30, -1445.95) normal (0.00, 0.83, 0.56) impulse 1008; stay sc quarry J2 landing deck at (-2000.34, 218.72, -1445.09) normal (0.00, 0.83, 0.56) impulse 417
+  J2 for the replay                lip 43.0 m/s (96 mph; window 93-100): CLEAN  203 m, 5.0 s, +2.0 m over the lip, Top 10 #6
+PASS  qreplay: the jump's replay opens on its TV cameras  -  could True, open True, 5 TV cameras, on #-1
+
+=== Pictures
+  72_midair_over_the_lake: at (-2476, 343, -1624)
+
+5 of 6 checks passed.
