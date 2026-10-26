@@ -111,7 +111,9 @@ namespace ChastainRush
                 yield return Vehicle(vid); yield return new WaitForSecondsRealtime(.3f);
                 var flights = new List<R68Flight>(); var run = new Run();
                 Func<R68Flight, float, IEnumerator> pic = vid == "drifter" ? (fl, t) => R68Pic("70_ramp_midair", fl) : (Func<R68Flight, float, IEnumerator>)null;
+                bedsOn = true; var beds = StartCoroutine(R67BedDrag());   // (the arrester acts on ArcadeVehicle.Live: the scripted car is a disabled one)
                 yield return FlyLine(line, 99f, null, flights, run, p => "the summit ramp", pic, 1.0f, 70f, $"70_ramp_trace_{vid}", 0f);
+                bedsOn = false;
                 var f = flights.OrderByDescending(q => q.air).FirstOrDefault(); var end = car.Body.position;
                 float along = Vector3.Dot(Flat(end - o), d);
                 report.AppendLine($"  {Nm(vid),-15} {(f != null ? FlightTxt(f) : "NO FLIGHT")}; stopped {along:0} m past the hairpin at ({end.x:0}, {end.z:0}), {car.Body.linearVelocity.magnitude:0.0} m/s, upright {car.transform.up.y:0.00}; catch-slope landings {RampHold.CatchLandings}");
@@ -140,8 +142,8 @@ namespace ChastainRush
             m.OpenPauseForCheck(); yield return new WaitForSecondsRealtime(.6f);
             string into = m.FocusedForCheck == "setup" ? "setup" : "race";
             yield return R70Focus(m, "setup", keys); if (m.FocusedForCheck != "setup") yield return R70Focus(m, "race", keys);
-            yield return keys ? R70Key(Key.Enter) : R70Tap(GamepadButton.South); yield return new WaitForSecondsRealtime(.5f);
-            yield return R70Focus(m, "garage", keys); yield return keys ? R70Key(Key.Enter) : R70Tap(GamepadButton.South); yield return new WaitForSecondsRealtime(.5f);
+            yield return keys ? R70Key(Key.Space) : R70Tap(GamepadButton.South); yield return new WaitForSecondsRealtime(.5f);
+            yield return R70Focus(m, "garage", keys); yield return keys ? R70Key(Key.Space) : R70Tap(GamepadButton.South); yield return new WaitForSecondsRealtime(.5f);
             string page = m.PageForCheck; var cfg = car.GetComponent<VehicleConfiguration>(); string first = cfg.profileId;
             yield return R70Focus(m, "vehicle", keys);
             var seen = new List<string> { first }; int changed = 0;
