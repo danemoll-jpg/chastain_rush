@@ -136,7 +136,7 @@ namespace ChastainRush
             bool Ok(string id) { var p = VehicleProfile.Find(id); return !p.Flies && (stunt ? p.Stunt : raceMode ? !p.Stunt && (rd == null || rd.AllowsVehicle(id)) : true); }   // Round 63: no helicopter in split screen
             string Pick(string fallback) => VehicleProfile.All.Where(p => Ok(p.Id)).Select(p => p.Id).DefaultIfEmpty(fallback).First();
             var cfg = car.GetComponent<VehicleConfiguration>();
-            if (!Ok(cfg.profileId) && vehicles) vehicles.Select(stunt ? StuntChoice : Ok("original") ? "original" : Pick("original"));
+            if (!Ok(cfg.profileId) && vehicles) vehicles.Select(stunt ? StuntChoice : Ok(vehicles.RaceVehicle) ? vehicles.RaceVehicle : Ok("original") ? "original" : Pick("original"), VehicleSwitch.Pick.Forced);
             if (!Ok(SplitScreen.P2Vehicle)) { SplitScreen.P2Vehicle = stunt ? "stuntbike" : Ok("atv") ? "atv" : Pick("atv"); VehicleSwitch.SaveFor(2, SplitScreen.P2Vehicle, SplitScreen.P2Colour); }
         }
 

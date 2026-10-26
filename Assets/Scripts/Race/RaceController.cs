@@ -313,7 +313,8 @@ namespace ChastainRush
             if (PlayerVehicleAllowed) return;
             // Round 36: a stunt vehicle in a race goes back to the Street Classic (Racer's EligibleVehicle), or the trail's first vehicle
             var sw = car.GetComponent<VehicleSwitch>(); string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[0] : "original";
-            if (sw) sw.Select(id); else car.GetComponent<VehicleConfiguration>()?.Apply(id);
+            if (sw && RouteData.AllowsVehicle(sw.RaceVehicle)) id = sw.RaceVehicle;   // Round 70 (D): the last ground vehicle chosen for races
+            if (sw) sw.Select(id, VehicleSwitch.Pick.Forced); else car.GetComponent<VehicleConfiguration>()?.Apply(id);
             Log($"vehicle not allowed on {RouteData.name}: switched to {id}");
         }
 
@@ -989,7 +990,7 @@ namespace ChastainRush
             var p2 = s.P2; s.StopCruise();
             // a vehicle the route allows (Noonday Creek: the trail's), as for player 1
             var cfg = p2.GetComponent<VehicleConfiguration>(); var sw = p2.GetComponent<VehicleSwitch>();
-            if (cfg && RouteData != null && !RouteData.AllowsVehicle(cfg.profileId)) { string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[Mathf.Min(1, RouteData.vehicles.Length - 1)] : "original"; if (sw) sw.Select(id); else cfg.Apply(id); }
+            if (cfg && RouteData != null && !RouteData.AllowsVehicle(cfg.profileId)) { string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[Mathf.Min(1, RouteData.vehicles.Length - 1)] : "original"; if (sw) sw.Select(id, VehicleSwitch.Pick.Forced); else cfg.Apply(id); }
             var slot = GridSlots(AiCount + 1)[AiCount];   // behind the rivals' slots: the player's own row
             var rot = Quaternion.LookRotation(slot.fwd, Vector3.up);
             var e = new RaceEntrant { Name = SplitScreen.NameOf(2), Car = p2, Box = p2.GetComponentInChildren<BoxCollider>(), Seat = 2 };

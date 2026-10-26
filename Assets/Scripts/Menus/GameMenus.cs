@@ -555,6 +555,13 @@ namespace ChastainRush
             bool smallOnly = rd != null && rd.vehicles != null && rd.vehicles.Length > 0, oneWay = rd != null && !rd.Allows("reverse");
             Clear("RACE SETUP", (r != null ? $"{r.Name}, {r.LapLength:0} m a lap." : "") + (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found.");
             void Changed() { SaveSettings(); ApplySettings(); Show(); }
+            // Round 70 (D): outside a race, race setup puts on the last ground vehicle chosen for races (the game starts in Free Roam's)
+            var held = car ? car.GetComponent<VehicleConfiguration>() : null;
+            if (vehicles && held && race && (race.State == RaceController.Stage.Free || race.State == RaceController.Stage.Finished) && !SplitScreen.Active && held.profileId != vehicles.RaceVehicle)
+            {
+                if (rd == null || rd.AllowsVehicle(vehicles.RaceVehicle)) vehicles.Select(vehicles.RaceVehicle, VehicleSwitch.Pick.Forced);
+                else EnsureRouteVehicle();
+            }
             // Round 18 (item 5): the route, left / right through Data/routes (the Chastain Glen loop first)
             var routes = race ? race.Routes() : new List<(string file, string name)>();
             int at = race ? Mathf.Max(0, routes.FindIndex(x => x.file == (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route))) : 0;
@@ -579,7 +586,7 @@ namespace ChastainRush
                 // the trail's vehicles only (cars are not offered): left / right picks one, as the garage would
                 var cfg = car.GetComponent<VehicleConfiguration>(); var ids = rd.vehicles;
                 int vi = Mathf.Max(0, Array.IndexOf(ids, cfg ? cfg.profileId : ids[0]));
-                Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length]); Show(); });
+                Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length], VehicleSwitch.Pick.Race); Show(); });
             }
             else Row(8, "garage", "Garage…", () => OpenGarage("race"));
             // Round 43 (B1): Racer's Ghost row (RaceMenus.Core: on / off, saved); its details say what the current route has
@@ -597,7 +604,7 @@ namespace ChastainRush
         {
             var rd = race ? race.RouteData : null; var cfg = car ? car.GetComponent<VehicleConfiguration>() : null;
             if (rd == null || cfg == null || rd.AllowsVehicle(cfg.profileId) || !vehicles) return;
-            vehicles.Select(rd.vehicles[0]);
+            vehicles.Select(rd.AllowsVehicle(vehicles.RaceVehicle) ? vehicles.RaceVehicle : rd.vehicles[0], VehicleSwitch.Pick.Forced);
         }
 
         // Racer's Opponents page: each slot random or a vehicle (saved in ai_drivers.json, as before the menus)

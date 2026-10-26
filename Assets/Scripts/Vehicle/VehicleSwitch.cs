@@ -12,7 +12,26 @@ namespace ChastainRush
     // saved choice; they drive the Street Classic, or the vehicle named by -vehicle <id>.
     public sealed class VehicleSwitch : MonoBehaviour
     {
-        [Serializable] class Saved { public string vehicle; public int colour = -1; }
+        // Round 70 (D, Dan: "why does my vehicle keep getting changed every time I start the game?"): two choices are kept, the last Free
+        // Roam vehicle ("roam", any, a flying one too) and the last ground vehicle for races ("race": the last vehicle chosen that races, in
+        // Free Roam's garage or race setup's); the game starts in the Free Roam one, race setup puts on the race one (RaceVehicle). A vehicle
+        // the game puts on by itself (a route's own vehicles, the police's, the stunt event's) is never remembered (Pick.Forced).
+        // "color" in American English: the old file's "vehicle" / "colour" are read once (Old) and written over in the new shape.
+        [Serializable] class Saved { public string roam, race; public int color = -99; }
+        [Serializable] class Old { public string vehicle; public int colour = -99; }
+        public enum Pick { Roam, Race, Forced }
+        string roamId, raceId;
+        static void Read(string text, out string roam, out string race, out int color)
+        {
+            var s = JsonUtility.FromJson<Saved>(text); var o = JsonUtility.FromJson<Old>(text);
+            roam = !string.IsNullOrEmpty(s?.roam) ? s.roam : o?.vehicle;
+            race = !string.IsNullOrEmpty(s?.race) ? s.race : o?.vehicle;
+            color = s != null && s.color != -99 ? s.color : o != null && o.colour != -99 ? o.colour : -1;
+            if (!string.IsNullOrEmpty(race) && (VehicleProfile.IndexOf(race) < 0 || !Races(race))) race = null;
+        }
+        public static bool Races(string id) { var p = VehicleProfile.Find(id); return p != null && !p.Flies && !p.Stunt; }
+        // the vehicle race setup puts on: the last ground vehicle chosen for races (the Street Classic if none)
+        public string RaceVehicle => !string.IsNullOrEmpty(raceId) && VehicleProfile.IndexOf(raceId) >= 0 && Races(raceId) ? raceId : "original";
         VehicleConfiguration config;
         bool checkRun;
         public int Colour { get; private set; } = -1;   // Round 16: -1 = the vehicle's standard paint, else VehiclePaint's colour
@@ -34,13 +53,13 @@ namespace ChastainRush
         {
             vehicle = player == 2 ? SplitScreen.P2Vehicle : "original"; colour = player == 2 ? SplitScreen.P2Colour : -1;
             if (CheckRunArgs) return;
-            try { if (File.Exists(SavePath(player))) { var saved = JsonUtility.FromJson<Saved>(File.ReadAllText(SavePath(player))); vehicle = saved?.vehicle ?? vehicle; colour = saved?.colour ?? colour; } }
+            try { if (File.Exists(SavePath(player))) { Read(File.ReadAllText(SavePath(player)), out var roam, out _, out int c); vehicle = roam ?? vehicle; colour = c; } }
             catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
         }
         public static void SaveFor(int player, string vehicle, int colour)
         {
             if (CheckRunArgs) return;
-            try { string path = SavePath(player); Directory.CreateDirectory(Path.GetDirectoryName(path)); File.WriteAllText(path, JsonUtility.ToJson(new Saved { vehicle = vehicle, colour = colour })); }
+            try { string path = SavePath(player); Directory.CreateDirectory(Path.GetDirectoryName(path)); File.WriteAllText(path, JsonUtility.ToJson(new Saved { roam = vehicle, race = Races(vehicle) ? vehicle : null, color = colour })); }
             catch (Exception e) { Debug.LogWarning("[Vehicle] could not save the choice: " + e.Message); }
         }
 
@@ -60,7 +79,7 @@ namespace ChastainRush
             if (player == 2) { id = SplitScreen.P2Vehicle; colour = SplitScreen.P2Colour; }   // Round 37: player 2 (split screen)
             else if (forced != null) id = forced;
             else if (!checkRun)
-                try { if (File.Exists(SavePath())) { var saved = JsonUtility.FromJson<Saved>(File.ReadAllText(SavePath())); id = saved?.vehicle ?? id; colour = saved?.colour ?? -1; } }
+                try { if (File.Exists(SavePath())) { Read(File.ReadAllText(SavePath()), out roamId, out raceId, out colour); id = roamId ?? id; } }
                 catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
             if (VehicleProfile.IndexOf(id) < 0) id = "original";
             config.Apply(id);
@@ -75,7 +94,8 @@ namespace ChastainRush
             Select(VehicleProfile.All[(i + d + n) % n].Id);
         }
 
-        public void Select(string id)
+        public void Select(string id) => Select(id, Pick.Roam);
+        public void Select(string id, Pick pick)
         {
             if (!config) config = GetComponent<VehicleConfiguration>();   // Round 37: player 2's, chosen before its first frame
             var car = GetComponent<ArcadeVehicle>();
@@ -87,7 +107,9 @@ namespace ChastainRush
             config.Apply(id);
             if (Colour >= 0) config.SetBodyColor(Colour);
             if (RaceController.Instance && player == 1) RaceController.Instance.ReloadRecords();
-            Save();
+            if (pick == Pick.Roam) roamId = id;
+            if (pick != Pick.Forced && Races(id)) raceId = id;
+            if (pick != Pick.Forced || player == 2) Save();
             if (player == 2) SplitScreen.Session?.Refit();
             Debug.Log($"[Vehicle] {(player == 2 ? "player 2 " : "")}switched to {config.Profile.Name} ({config.profileId})");
         }
@@ -116,7 +138,7 @@ namespace ChastainRush
             try
             {
                 string path = SavePath(); Directory.CreateDirectory(Path.GetDirectoryName(path));
-                File.WriteAllText(path, JsonUtility.ToJson(new Saved { vehicle = config.profileId, colour = Colour }));
+                File.WriteAllText(path, JsonUtility.ToJson(new Saved { roam = roamId ?? config.profileId, race = raceId, color = Colour }));
             }
             catch (Exception e) { Debug.LogWarning("[Vehicle] could not save the choice: " + e.Message); }
         }

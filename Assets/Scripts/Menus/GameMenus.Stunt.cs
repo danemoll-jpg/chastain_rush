@@ -32,12 +32,12 @@ namespace ChastainRush
             var medals = LaterGroup("Stunt medals", content, false, 40); medals.SetSiblingIndex(details.transform.GetSiblingIndex() + 1);
             MedalUi.TargetsRow(medals, details.font, StuntTargetStrings, 22, 30, 0, Color.white, "MEDALS");
             string Vehicle(string id) { var p = VehicleProfile.Find(id); return $"{p.Name} (stunt {p.Class.ToLowerInvariant()})"; }
-            Step(0, "stunt-vehicle", "Vehicle:   " + Vehicle(StuntChoice), d => { var list = StuntVehicles; int i = System.Array.FindIndex(list, v => v.Id == StuntChoice); StuntChoice = list[((i < 0 ? 0 : i) + d + list.Length) % list.Length].Id; if (vehicles) vehicles.Select(StuntChoice); Show(); });
+            Step(0, "stunt-vehicle", "Vehicle:   " + Vehicle(StuntChoice), d => { var list = StuntVehicles; int i = System.Array.FindIndex(list, v => v.Id == StuntChoice); StuntChoice = list[((i < 0 ? 0 : i) + d + list.Length) % list.Length].Id; if (vehicles) vehicles.Select(StuntChoice, VehicleSwitch.Pick.Forced); Show(); });
             // Round 38 (Part D): AI stunt rivals, None to 3, and their difficulty (saved in settings.json)
             var gs = GameSettings.Settings; string[] diff = { "Easy", "Normal", "Hard" };
             Step(1, "stunt-rivals", "Rivals:   " + (gs.stuntRivals <= 0 ? "None" : gs.stuntRivals.ToString()), d => { gs.stuntRivals = (gs.stuntRivals + d + 4) % 4; if (!CheckRun.Active) GameSettings.SaveSettings(); Show(); });
             Step(2, "stunt-difficulty", "Rivals' difficulty:   " + diff[Mathf.Clamp(gs.stuntDifficulty, 0, 2)], d => { gs.stuntDifficulty = (gs.stuntDifficulty + d + 3) % 3; if (!CheckRun.Active) GameSettings.SaveSettings(); Show(); });
-            Row(3, "stunt-garage", "Garage…", () => { if (vehicles && car.GetComponent<VehicleConfiguration>().profileId != StuntChoice) vehicles.Select(StuntChoice); OpenGarage("stunt"); });
+            Row(3, "stunt-garage", "Garage…", () => { if (vehicles && car.GetComponent<VehicleConfiguration>().profileId != StuntChoice) vehicles.Select(StuntChoice, VehicleSwitch.Pick.Forced); OpenGarage("stunt"); });
             Row(4, "stunt-start", "START STUNT EVENT", StartStunt);
             var colors = buttons[4].colors; colors.normalColor = new(.1f, .38f, .35f); buttons[4].colors = colors; buttons[4].GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 54;
             Row(5, "stunt-back", "Back", BackPage);
@@ -45,7 +45,7 @@ namespace ChastainRush
         void StartStunt()
         {
             // the garage may have put on another stunt vehicle: that is the choice
-            var cfg = car.GetComponent<VehicleConfiguration>(); if (cfg.Profile.Stunt) StuntChoice = cfg.profileId; else if (vehicles) vehicles.Select(StuntChoice);
+            var cfg = car.GetComponent<VehicleConfiguration>(); if (cfg.Profile.Stunt) StuntChoice = cfg.profileId; else if (vehicles) vehicles.Select(StuntChoice, VehicleSwitch.Pick.Forced);
             title = false; CloseMenu();
             StuntEvent.RivalCount = GameSettings.Settings.stuntRivals; StuntEvent.RivalDifficulty = GameSettings.Settings.stuntDifficulty;   // Round 38
             StuntEvent.Begin(car);

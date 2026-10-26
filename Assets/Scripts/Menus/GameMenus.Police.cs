@@ -64,7 +64,7 @@ namespace ChastainRush
         void StartPolice()
         {
             if (!PoliceReady) return;
-            if (car && vehicles && (HelicopterFlight.Flying(car) || PlaneFlight.On(car))) vehicles.Select("original");   // Round 63: the helicopter is Free Roam only
+            if (car && vehicles && (HelicopterFlight.Flying(car) || PlaneFlight.On(car))) vehicles.Select(vehicles.RaceVehicle, VehicleSwitch.Pick.Forced);   // Round 63: the helicopter is Free Roam only
             StuntEvent.End();
             if (race && race.State != RaceController.Stage.Free) race.EndRace();
             if (SplitScreen.Active && !PoliceSession.OwnsSplit) SplitScreen.End();
