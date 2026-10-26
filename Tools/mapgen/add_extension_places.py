@@ -64,12 +64,14 @@ for f in [os.path.join(ROOT, "Data", "routes", "kennesaw_mountain.json")]:
     dests.append({"id": did, "title": r["name"] + " start", "x": round(li[0], 2), "z": round(li[1], 2), "y": 0.0, "fixed": False,
                   "yaw": round(math.degrees(math.atan2(li[2] - li[0], li[3] - li[1])) % 360, 1)})
     print(f"{r['name']} start: ({li[0]:.1f}, {li[1]:.1f})")
-# Round 70 (A): the summit ramp's run-up start (Tools/mapgen/make_summit_ramp.py), on the drive facing along it
-sr = os.path.join(ROOT, "Data", "tracks", "kennesaw_summit_ramp.json")
+# Round 70 (A): the summit ramp's run-up start; Round 73 (A3): the summit leap's (Tools/mapgen/make_summit_leap.py), at the summit lot facing up the ridge
+# (the old id kept: a place already found stays found)
+sr = os.path.join(ROOT, "Data", "tracks", "kennesaw_summit_leap.json")
+dests = [d for d in dests if d["id"] != "kennesaw-summit-ramp"]
 if os.path.isfile(sr):
-    rp = json.load(open(sr, encoding="utf-8"))["ramp"]; dests = [d for d in dests if d["id"] != "kennesaw-summit-ramp"]
-    dests.append({"id": "kennesaw-summit-ramp", "title": "Kennesaw Mountain: the big ramp", "x": rp["start"][0], "z": rp["start"][1], "y": 0.0, "fixed": False, "yaw": rp["start_yaw"]})
-    print(f"the big ramp's run-up: ({rp['start'][0]:.1f}, {rp['start'][1]:.1f}) facing {rp['start_yaw']:.0f}")
+    rp = json.load(open(sr, encoding="utf-8"))["leap"]
+    dests.append({"id": "kennesaw-summit-ramp", "title": "Kennesaw Mountain: the summit leap", "x": rp["start"][0], "z": rp["start"][1], "y": 0.0, "fixed": False, "yaw": rp["start_yaw"]})
+    print(f"the summit leap's run-up: ({rp['start'][0]:.1f}, {rp['start'][1]:.1f}) facing {rp['start_yaw']:.0f}")
 # Round 72 (A): the Viking Quarry jumps' start gantries (Tools/mapgen/make_quarry_jumps.py), facing the kicker (stop there: the countdown)
 qj = os.path.join(ROOT, "Data", "tracks", "quarry_jumps.json")
 if os.path.isfile(qj):

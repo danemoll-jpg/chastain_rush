@@ -1538,12 +1538,12 @@
   },
   {
    "id": "kennesaw-summit-ramp",
-   "title": "Kennesaw Mountain: the big ramp",
-   "x": -988.19,
-   "z": -6126.22,
+   "title": "Kennesaw Mountain: the summit leap",
+   "x": -948.55,
+   "z": -5733.56,
    "y": 0.0,
    "fixed": false,
-   "yaw": 272.3
+   "yaw": 206.8
   },
   {
    "id": "quarry-jump-j1",
