@@ -65,6 +65,10 @@ namespace ChastainRush
                 return false;
             }
             var mountainBox = new Rect(-1700f, -6600f, 1300f, 1700f); int mountainNo = 0;   // Kennesaw Mountain Drive and the park (the before / after count)
+            // and none on the park's own roads (Kennesaw Mountain Drive, its service road), not even by the summit's building or the visitor center
+            var parkSegs = new List<(Vector2 a, Vector2 b)>();
+            foreach (var r in map.roads) if ((r.name ?? "").StartsWith("Kennesaw Mountain")) { var q = ToPoints(r.points); for (int i = 0; i + 1 < q.Count; i++) parkSegs.Add((q[i], q[i + 1])); }
+            bool OnParkRoad(Vector2 p) { foreach (var s in parkSegs) if (SegDist(p, s.a, s.b) < 15f) return true; return false; }
             var placed = new List<Vector2>(); var placedIdx = new CellIndex(32f); var older = new List<(Vector2 p, FenceChunk c, int i)>();
             foreach (var c in InSceneOrder<HydrantChunk>()) { var fc = c.GetComponent<FenceChunk>(); if (fc) for (int i = 0; i < fc.panels.Length; i++) { var w = fc.transform.TransformPoint(fc.panels[i].centre); placed.Add(new Vector2(w.x, w.z)); placedIdx.Add(new Vector2(w.x, w.z)); older.Add((new Vector2(w.x, w.z), fc, i)); } }
             int glen = placed.Count;
@@ -85,6 +89,7 @@ namespace ChastainRush
                 else if (Beds.Wet(p.x, p.y)) no = "water";
                 else if (Net != null && Net.RejectTree(p.x, p.y)) no = "a pipe's cut";
                 else if (placedIdx.Near(p, spacing, cand).Any(i => (placed[i] - p).sqrMagnitude < spacing * spacing)) no = "spacing";
+                else if (mountainBox.Contains(p) && OnParkRoad(p)) { no = "the park's road"; mountainNo++; }
                 else if (!NearBuilding(p, 60f)) { no = "no building within 60 m"; if (mountainBox.Contains(p)) mountainNo++; }
                 if (no != null) { why[no] = why.TryGetValue(no, out int n) ? n + 1 : 1; return false; }
                 return true;
@@ -247,7 +252,7 @@ namespace ChastainRush
             grates.ToObject("GeyserGrates", mats.House, root, false, false);
             Debug.Log($"[Round36] hydrants: {order.Count} more ({streets} along the streets, {corners} at corners, {fronts} in front of schools, churches and businesses, {rigs} rigged beside manholes, {geysersAt.Count} by geysers); the Glen's {glen} kept; {lids.Length} manholes, {rigList.Count} rigged{(noRig.Count > 0 ? " (none at " + string.Join(", ", noRig) + ")" : "")}; {spoutList.Count} geysers: " +
                       string.Join(", ", geysersAt.Select(g => $"({g.grate.x:0}, {g.grate.y:0})")) + "; left out: " + string.Join(", ", why.Select(kv => $"{kv.Value} {kv.Key}")) +
-                      $"; Kennesaw Mountain (x -1700 to -400, z -6600 to -4900): {order.Count(q => mountainBox.Contains(q))} placed, {mountainNo} left out for no building near (Round 70)");
+                      $"; Kennesaw Mountain (x -1700 to -400, z -6600 to -4900): {order.Count(q => mountainBox.Contains(q))} placed, {mountainNo} tries left out for no building near or the park's road (Round 70)");
         }
         [Serializable] class HoodsFile { public HoodJson[] neighborhoods; }
         [Serializable] class HoodJson { public string name; public int[] roads; }

@@ -65,7 +65,7 @@ namespace ChastainRush
             if (tag == "round64" && parts == null) parts = new[] { "xloop", "xshort", "xdoors", "xturn", "xmound", "xwalk", "xbar", "xpics" };   // Round 64 (Round20Runner.R64.cs); xai with -traffic Normal
             if (tag == "round66" && parts == null) parts = new[] { "spics", "sfps", "hedge", "eoff", "edrive" };   // Round 66 (Round20Runner.R66.cs); etraffic with -traffic Heavy
             if (tag == "round67" && parts == null) parts = new[] { "mloop", "mjumps", "mwalk", "mpics", "tcreek", "tpark", "tmound", "tpics" };   // Round 67 (Round20Runner.R67.cs); mai as well when named
-            if (tag == "round70" && parts == null) parts = new[] { "hyd", "roll", "garage", "ramp", "park", "gantry" };   // aitrace, vsave1 to 3 when named   // Round 70 (Round20Runner.R70.cs)
+            if (tag == "round70" && parts == null) parts = new[] { "hyd", "roll", "garage", "sramp", "park", "gantry" };   // aitrace, vsave1 to 3 when named   // Round 70 (Round20Runner.R70.cs)
             if (tag == "round69" && parts == null) parts = new[] { "ptake", "pfly", "pcrash", "plevel", "pedge", "pstand", "pfps", "ppics" };   // Round 69 (Round20Runner.R69.cs)
             if (tag == "round68" && parts == null) parts = new[] { "jfly", "jloop", "jhood" };   // Round 68 (Round20Runner.R68.cs); jai as well when named
             if (tag == "round63" && parts == null) parts = new[] { "hover", "hfly", "hpads", "hcrash", "hfps", "hpics" };   // Round 63 (Round20Runner.R63.cs)
@@ -233,7 +233,7 @@ namespace ChastainRush
                 if (Do("vsave2")) yield return Guard(R70VSave(2));
                 if (Do("vsave3")) yield return Guard(R70VSave(3));
                 if (Do("garage")) yield return Guard(R70Garage());
-                if (Do("ramp")) yield return Guard(R70Ramp());
+                if (Do("sramp")) yield return Guard(R70Ramp());
                 if (Do("park")) yield return Guard(R70Park());
                 if (Do("gantry")) yield return Guard(R70Gantries());
                 if (Do("aitrace")) yield return Guard(R70AiTrace());

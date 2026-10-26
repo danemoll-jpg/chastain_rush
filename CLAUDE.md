@@ -429,7 +429,7 @@ barriers stand; `-r70LineOff` drives as before): the lane and the open shoulder 
 Easy / Normal by pace; `RoadDriver.Why` (what set its target speed). Tools: `python Tools/race/replay_ai_table.py <replays>` (the AI against the player from race replays),
 `ai_trace_why.py <r70_trace_*.tsv>`, `zone_speeds.py <replay> <route>`. C race setup's garage after a finished race; D `vehicle.json` keeps "roam" and "race" (and "color"), race setup puts on
 `VehicleSwitch.RaceVehicle`; checks use `-vehicleSave <file>`. E park visitors (`AmbientLife.InPark`, ParkOut / ParkInRace, the park's lots walked). F1 hydrants only with a building within 60 m;
-F2 J1's bench as wide as the drive beside it; F3 the gantry's posts on their own ground. Check: `ChastainRush.exe -exeRound70 <dir> [-r70Only hyd,roll,garage,ramp,park,gantry | aitrace
+F2 J1's bench as wide as the drive beside it; F3 the gantry's posts on their own ground. Check: `ChastainRush.exe -exeRound70 <dir> [-r70Only hyd,roll,garage,sramp,park,gantry | aitrace
 [-r70Races kennesaw,trail,glen,lakes] [-r70Diff 2] [-r70Laps 2] | vsave1|vsave2|vsave3 -vehicleSave <file>] -logFile <dir>\Player.log` (`Checks/Round20Runner.R70.cs`). Imported from Racer: nothing.
 **Round 69 (see `TODO.md`, status there) is built and checked in the exe by script, not yet flown by Dan:** the plane, "Sky Hopper" (`Tools/Blender/plane.py`, profile
 `VehicleProfile.Plane`, Class "Plane": Flies covers it); `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): `ArcadeVehicle.Flown` always on, on its wheels it calls

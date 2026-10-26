@@ -15,7 +15,7 @@ namespace ChastainRush
     //   aitrace  B: a race per course (3 AI, the vehicles of Dan's own race replays, the player riding along 40 m over one AI after another): each AI's
     //            station, speed, target speed and what set it (RoadDriver.Why: bend, hill, crest, zone, obstacle, angle ...), pedals, every 0.1 s
     //            (r70_trace_<course>.tsv), the race's replay (r70_<course>.crreplay, for Tools/race/replay_ai_table.py) and the laps against Dan's best
-    //   ramp     A: the summit ramp from the fast-travel spot, from rest, flat out (Drifter Twin, Street Classic, Needle 600): air, distance, height,
+    //   sramp    A: the summit ramp from the fast-travel spot, from rest, flat out (Drifter Twin, Street Classic, Needle 600): air, distance, height,
     //            the landing, where it stopped (the arrester, Old Mountain Road); pictures mid-air, of the ramp from the summit lot and the drive
     //   garage   C: a race started straight away, finished, then race setup's garage from the race-over menu (the pad, then the keys): every vehicle
     //            stepped through; then the same after Free Roam in the helicopter and in the plane
