@@ -102,16 +102,6 @@ namespace ChastainRush
                 }
             int n = 0;
             foreach (var j in MountainExtra?.jumps ?? new MountainJump[0]) { MountainJumpLook(terrain, mats, root, j); n++; }
-            // Round 72 (B4, found by Round 68's check: the Drifter Twin flat out lost 12 m/s on J2's kicker, its body pressed into the kicker's top, impulse
-            // about 3900): over J2's kicker the ground does not push on an upright body (BodyGlide, as Elaine's climb, Round 56); the wheels carry it
-            foreach (var j in MountainExtra?.jumps ?? new MountainJump[0])
-            {
-                if (j.id != "J2") continue;
-                var lp = new Vector2(j.lip[0], j.lip[1]); var dd = new Vector2(j.dir[0], j.dir[1]).normalized; var nn = new Vector2(-dd.y, dd.x);
-                var corners = new[] { lp + dd * 2f + nn * 10f, lp + dd * 2f - nn * 10f, lp - dd * (j.kicker_m + 10f) + nn * 10f, lp - dd * (j.kicker_m + 10f) - nn * 10f };
-                var gg = new GameObject("J2 kicker body glide (Round 72)"); gg.transform.SetParent(root, false);
-                gg.AddComponent<BodyGlide>().rects = new[] { new Vector4(corners.Min(c => c.x), corners.Min(c => c.y), corners.Max(c => c.x), corners.Max(c => c.y)) };
-            }
             BuildSummitRamp(terrain, mats, root);   // Round 70 (A)
             BuildQuarryJumps(terrain, mats, root);   // Round 72 (A): the Viking Quarry jumps
             Debug.Log($"[Round67] Kennesaw Mountain: {n} jumps dressed, {MountainNow.Data.landing_zones?.Length ?? 0} landing zones; {MountainNow.TreesRemoved} trees kept off the bench and the summit lot");

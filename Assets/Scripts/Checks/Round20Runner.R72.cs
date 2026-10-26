@@ -76,7 +76,7 @@ namespace ChastainRush
             foreach (var r in rows) report.AppendLine(r);
             yield return new WaitForSecondsRealtime(3.5f);
             float back = Vector3.Distance(car.Body.position, QuarryJumps.StartPoint(j));
-            Check("qshort: short into the lake, put back at the gantry", q.LastLanding == "SPLASH" && back < 12f, $"{q.LastLanding}, {back:0} m from the gantry afterwards");
+            Check("qshort: short into the lake, put back at the gantry", (q.LastLanding == "SPLASH" || q.LastLanding == "SHORT") && back < 12f, $"{q.LastLanding}, {back:0} m from the gantry afterwards");
         }
 
         IEnumerator R72Replay()

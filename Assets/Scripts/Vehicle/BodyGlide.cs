@@ -11,10 +11,7 @@ namespace ChastainRush
     public sealed class BodyGlide : MonoBehaviour
     {
         public Vector4[] rects;
-        // Round 72 (B4): more than one in the scene (Elaine's climb, the Kennesaw Mountain race's J2 kicker): their rectangles together
-        static readonly System.Collections.Generic.List<BodyGlide> all = new System.Collections.Generic.List<BodyGlide>();
-        void OnEnable() { all.Add(this); Publish(); }
-        void OnDisable() { all.Remove(this); Publish(); }
-        static void Publish() { var r = new System.Collections.Generic.List<Vector4>(); foreach (var g in all) if (g.rects != null) r.AddRange(g.rects); VehicleSurfaceContacts.Glide = r.ToArray(); }
+        void OnEnable() => VehicleSurfaceContacts.Glide = rects ?? new Vector4[0];
+        void OnDisable() => VehicleSurfaceContacts.Glide = new Vector4[0];
     }
 }

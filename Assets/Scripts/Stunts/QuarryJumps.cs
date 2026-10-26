@@ -15,9 +15,9 @@ namespace ChastainRush
     //   too fast and you overshoot the landing deck) and your speed against it, green inside it.
     //   The jump (a real one: the kicker is a held steel deck, nothing aims the flight): measured from the lip to where it comes down: the distance,
     //   the height over the lip, the air time, and the landing: CLEAN (on the landing deck, on its wheels, upright), ROUGH (down off the deck, or
-    //   bounced, or not upright), CRASH (wiped out) or SPLASH (in the lake). Clean and rough jumps go on the jump's Top 10 by distance
+    //   bounced, or not upright), CRASH (wiped out), SHORT (down in the pit short of the deck) or SPLASH (in the lake). Clean and rough jumps go on the jump's Top 10 by distance
     //   (quarry-jumps-v1.json beside the race records; a check's own folder in a check). The crowd roars on a landing.
-    //   After a splash or a crash the vehicle is put back at the gantry after 3 s. L3 / K in the next 12 s after a jump watches its replay (Round 57's
+    //   After a splash, a short or a crash the vehicle is put back at the gantry after 3 s. L3 / K in the next 12 s after a jump watches its replay (Round 57's
     //   viewer: TV cameras on the rims, the kicker and the landing deck).
     public sealed class QuarryJumps : MonoBehaviour
     {
@@ -129,7 +129,9 @@ namespace ChastainRush
             float s = Along(J, p), lat = Mathf.Abs(Across(J, p));
             bool onDeck = J.land_s != null && J.land_s.Length > 1 && s >= J.land_s[0] - 1f && s <= J.land_s[J.land_s.Length - 1] + 1f && lat <= J.land_half + .5f;
             LastDistance = Vector3.ProjectOnPlane(p - lipPoint, Vector3.up).magnitude; LastHeight = apex - J.lip_y; LastAir = air;
-            string landing = water ? "SPLASH" : cfg && cfg.WipedOut ? "CRASH" : onDeck && car.transform.up.y > .75f ? "CLEAN" : "ROUGH";
+            // short of the deck, down in the pit (the far wall, the shore): a short jump, as into the lake
+            bool shortOf = !onDeck && J.land_s != null && J.land_s.Length > 1 && s < J.land_s[0] && p.y < J.land_y[J.land_y.Length - 1] - 2f;
+            string landing = water ? "SPLASH" : shortOf ? "SHORT" : cfg && cfg.WipedOut ? "CRASH" : onDeck && car.transform.up.y > .75f ? "CLEAN" : "ROUGH";
             // a rough landing that wipes out in the next moment is a crash: looked at again shortly
             LastLanding = landing; State = Phase.Result; resultUntil = Time.time + 9f; replayUntil = Time.time + 12f; LastRank = 0;
             if (landing == "CLEAN" || landing == "ROUGH") StartCoroutine(Settle(J));
@@ -147,7 +149,7 @@ namespace ChastainRush
         {
             if (LastLanding == "CLEAN" || LastLanding == "ROUGH") LastRank = Add(J, car, LastDistance, LastHeight, LastAir, LastLanding);
             Result = $"{J.name.ToUpper()}   {LastLanding}\n{DisplayUnits.Jump(LastDistance)}   +{DisplayUnits.Feet(Mathf.Max(0f, LastHeight)):0} ft over the lip   {LastAir:0.0} s in the air   off the lip at {DisplayUnits.Mph(LastLipSpeed):0} mph" +
-                     (LastRank > 0 ? $"\nTOP 10  #{LastRank}" : LastLanding == "SPLASH" ? "\nShort: into the lake. Back to the gantry." : LastLanding == "CRASH" ? "\nCrashed. Back to the gantry." : "");
+                     (LastRank > 0 ? $"\nTOP 10  #{LastRank}" : LastLanding == "SPLASH" ? "\nShort: into the lake. Back to the gantry." : LastLanding == "SHORT" ? "\nShort of the landing deck. Back to the gantry." : LastLanding == "CRASH" ? "\nCrashed. Back to the gantry." : "");
             Light(J, 0);
         }
         void Abandon(string why) { Debug.Log($"[Round72] {(Current != null ? Current.name : "")}: {why}"); if (Current != null) Light(Current, 0); State = Phase.Idle; Current = null; }
