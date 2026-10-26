@@ -307,11 +307,28 @@ namespace ChastainRush
         // ---------------------------------------------------------------- cameras
         // TV cameras: along the focused racer's own way (the player's at first), every 70 m, 9 m off to one side (the other if blocked) and 3.5 m up,
         // where they can see the way; where nothing outside can (under a roof, in the pipes) one on the way itself, 14 m back along it
+        float tvReach = 75f;   // Round 71: how far a TV camera follows its racer (a plane's farther)
         void BuildTv()
         {
             tv.Clear();
             var path = Data.racers[Mathf.Clamp(Data.focus, 0, Data.racers.Count - 1)].track.frames.Select(f => f.p).ToList();
             if (path.Count < 2) return;
+            // Round 71 (the air race): for a plane, cameras in the air beside its way (every 160 m, 30 m off to a side, 6 m up, ahead of it), not on the ground
+            var veh = VehicleProfile.Find(Data.racers[Mathf.Clamp(Data.focus, 0, Data.racers.Count - 1)].vehicle); tvReach = veh != null && veh.Flies ? 190f : 75f;
+            if (veh != null && veh.Flies)
+            {
+                var cumA = new float[path.Count]; for (int i = 1; i < path.Count; i++) cumA[i] = cumA[i - 1] + (path[i] - path[i - 1]).magnitude;
+                int sideA = 1; float nextA = 40f;
+                for (int i = 1; i < path.Count; i++)
+                {
+                    if (cumA[i] < nextA) continue; nextA = cumA[i] + 160f;
+                    var fw = path[Mathf.Min(path.Count - 1, i + 3)] - path[Mathf.Max(0, i - 3)]; fw.y = 0f; if (fw.sqrMagnitude < 1e-3f) continue; fw.Normalize();
+                    var at = path[i] + Vector3.Cross(Vector3.up, fw) * (30f * sideA) + Vector3.up * 6f + fw * 60f;
+                    float gy = GroundQuery.Height(at.x, at.z); if (!float.IsNaN(gy) && at.y < gy + 2f) at.y = gy + 2f;
+                    tv.Add(new Tv { at = at, s = cumA[i] }); sideA = -sideA;
+                }
+                return;
+            }
             var cum = new float[path.Count]; for (int i = 1; i < path.Count; i++) cum[i] = cum[i - 1] + (path[i] - path[i - 1]).magnitude;
             int side = 1; float next = 20f;
             for (int i = 1; i < path.Count; i++)
@@ -360,13 +377,13 @@ namespace ChastainRush
             }
             // TV: keep the camera while it sees the racer within 75 m and the racer has not gone 25 m past it; then the next one ahead that sees it
             float sNow = NearestS(target.transform.position);
-            bool keep = TvIndex >= 0 && TvIndex < tv.Count && (tv[TvIndex].at - tp).magnitude < 75f && Sees(tv[TvIndex].at, tp) && sNow - tv[TvIndex].s < 25f;
+            bool keep = TvIndex >= 0 && TvIndex < tv.Count && (tv[TvIndex].at - tp).magnitude < tvReach && Sees(tv[TvIndex].at, tp) && sNow - tv[TvIndex].s < 25f;
             if (!keep && Time.unscaledTime - tvSince > 1.2f || TvIndex < 0)
             {
                 int best = -1; float bestKey = float.MaxValue;
                 for (int i = 0; i < tv.Count; i++)
                 {
-                    float dist = (tv[i].at - tp).magnitude; if (dist > 75f) continue;
+                    float dist = (tv[i].at - tp).magnitude; if (dist > tvReach) continue;
                     float ahead = tv[i].s - sNow; float k = ahead >= -5f ? ahead : 200f - ahead;   // the next one ahead first
                     if (k < bestKey && Sees(tv[i].at, tp)) { bestKey = k; best = i; }
                 }

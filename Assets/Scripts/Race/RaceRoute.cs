@@ -14,7 +14,7 @@ namespace ChastainRush
     //
     // Round 6: gates are wide and forgiving; official shortcuts (shaped after Racer's WoodlandRoute: a path, an entry plane,
     // the gates it bypasses) and road closures (barriers across roads that leave the course) are part of the route data.
-    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; }   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
+    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; public float y, ring_m, ring_w, ring_h; }   // Round 71 (the air race): y the ring's middle, ring_m a ring's radius, ring_w / ring_h a frame's half width and half height   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
 
     // Round 6: an OFFICIAL shortcut. A path from entry to exit, an entry plane across it a little way in (crossing that plane
     // in the direction of the path is "taking the shortcut") and the checkpoints it forgives. Heights come from the world.
@@ -117,8 +117,14 @@ namespace ChastainRush
         public float[] finish_park, finish_park_y;   // Round 28: where finished AI cars drive and park, off the lap (x, z ... and heights; RoadDriver)
         public float finish_park_gap_m, finish_park_speed;   // Round 35: the parked cars' spacing (0: 9 m) and the drive there (0: 9 m/s)
         public float gate_ring_m;   // Round 35: the line is in a pipe of this radius: a checkered hoop round the pipe's wall instead of the arch
+        // Round 71 (the Quarry Air Race, Tools/mapgen/make_air_route.py): an AIR route: flown by the plane (vehicles), its lap a line in the sky (loop +
+        // loop_y, every point its own height), its checkpoints rings in the sky (RouteCheckpointJson y, ring_m or ring_w / ring_h), its line a ring too
+        // (gate_y, gate_ring_air_m); lead_in the take-off run from the grid on the runway
+        public bool air;
+        public float gate_y, gate_ring_air_m;
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
-        public bool AllowsVehicle(string id) => !Racer.VehicleProfile.Find(id).Stunt && !Racer.VehicleProfile.Find(id).Flies &&   // Round 63: never the helicopter
+        public bool AllowsVehicle(string id) => air ? vehicles != null && Array.IndexOf(vehicles, id) >= 0 :   // Round 71: an air route's own (the plane) only
+            !Racer.VehicleProfile.Find(id).Stunt && !Racer.VehicleProfile.Find(id).Flies &&   // Round 63: never the helicopter
             (vehicles == null || vehicles.Length == 0 || Array.IndexOf(vehicles, id) >= 0);   // Round 36: never a stunt vehicle (Racer: Free Roam and the Stunt event only)
     }
 
@@ -133,6 +139,10 @@ namespace ChastainRush
         public float HalfWidth, S;   // S: distance along the lap in travel order from the lap's own start
         public float Below = 6f, Above = 25f;   // metres under / over Position.y that still count (a jump over the gate counts)
         public float Arch;                      // Round 27: the arch's height (0: the usual 7.5 m)
+        // Round 71 (the air race): a ring in the sky (Ring its radius) or a frame (RingW / RingH its half width and half height) round Position, upright
+        // across Forward: the plane's middle passes inside it (reach does not count: the rings are sized for the plane)
+        public float Ring, RingW, RingH;
+        public bool IsRing => Ring > 0f || RingW > 0f;
 
         // True when the step from -> to passes through the gate's opening in the travel direction, at any angle; fraction is
         // how far along the step it happened (so lap times are not rounded to physics steps). reach is the car's own half
@@ -145,6 +155,11 @@ namespace ChastainRush
             if (!(za < 0f && zb >= 0f)) return false;
             fraction = -za / (zb - za);
             Vector3 hit = Vector3.Lerp(a, b, fraction);
+            if (IsRing)
+            {
+                float across = Vector3.Dot(hit, Right), up = hit.y;
+                return Ring > 0f ? across * across + up * up <= Ring * Ring : Mathf.Abs(across) <= RingW && Mathf.Abs(up) <= RingH;
+            }
             return Mathf.Abs(Vector3.Dot(hit, Right)) <= HalfWidth + reach && hit.y >= -Below && hit.y <= Above;
         }
     }
@@ -217,8 +232,8 @@ namespace ChastainRush
                 pts.Add(real ? new Vector3(loop[2 * i], ly[i], loop[2 * i + 1]) : Ground(loop[2 * i], loop[2 * i + 1])); own.Add(real);
             }
             if (r.Reverse && !r.OwnReverse) own.Reverse();
-            r.OwnY = own.Contains(true) && !j.underground ? own.ToArray() : null;
-            r.Underground = j.underground; r.Data = j;
+            r.OwnY = own.Contains(true) && !j.underground && !j.air ? own.ToArray() : null;
+            r.Underground = j.underground; r.Air = j.air; r.Data = j;
             if (r.Reverse && !r.OwnReverse) pts.Reverse();
             r.Path = pts.ToArray();
             r.cum = new float[n];
@@ -231,6 +246,7 @@ namespace ChastainRush
             r.Gate = r.MakeGate(0, "Start / finish", gateS, j.gate_half_width_m);
             if (j.gate_below_m > 0f) r.Gate.Below = j.gate_below_m;
             if (j.gate_above_m > 0f) r.Gate.Above = j.gate_above_m;
+            if (j.air) { r.Gate.Ring = j.gate_ring_air_m; r.Gate.Position.y = j.gate_y; }   // Round 71
             var order = new List<(float s, RouteCheckpointJson c)>();
             foreach (var c in r.OwnReverse ? j.checkpoints_rev : j.checkpoints) order.Add((r.OwnReverse ? c.s : r.Reverse ? L - c.s : c.s, c));
             order.Sort((x, y) => Mathf.Repeat(x.s - gateS, L).CompareTo(Mathf.Repeat(y.s - gateS, L)));
@@ -240,6 +256,7 @@ namespace ChastainRush
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
                 g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m;
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
+                if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; }   // Round 71
                 r.Checkpoints.Add(g);
             }
             foreach (var jn in (r.OwnReverse ? j.junctions_rev : j.junctions) ?? new RouteJunctionJson[0]) r.Junctions.Add($"{Mathf.Repeat((r.OwnReverse ? jn.s : r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");
@@ -375,7 +392,7 @@ namespace ChastainRush
                 Vector3 a = Flat(Path[i]), b = Flat(Path[i + 1]), ab = b - a, q = Flat(p);
                 float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - a, ab) / ab.sqrMagnitude);
                 float d = (a + ab * t - q).sqrMagnitude;
-                if (Underground) { float dy = Mathf.Lerp(Path[i].y, Path[i + 1].y, t) - p.y; d += VerticalWeight * dy * dy; }
+                if (Underground || Air) { float dy = Mathf.Lerp(Path[i].y, Path[i + 1].y, t) - p.y; d += VerticalWeight * dy * dy; }
                 if (d < best) { best = d; bs = cum[i] + t * (cum[i + 1] - cum[i]); }
             }
             return Mathf.Repeat(bs - GateS, LapLength);
@@ -387,6 +404,7 @@ namespace ChastainRush
         // route's height under the nearest point of its lap (within 30 m), not the terrain far over it: the grid, the AI's passing lane
         // and its fall-recovery, the resets and the barriers ask Surface. Any other time (and away from the lap) it is the terrain's.
         public bool Underground;
+        public bool Air;   // Round 71: an air route (RouteJson.air): its line in the sky, its gates rings
         public bool[] OwnY;   // Round 62: the lap's points that have a height of their own (a mall's floors); Surface takes it near them
         public RouteJson Data;   // Round 27: the race layer's seals, railings and switch gates (RaceBarriers)
         public static RaceRoute Active;

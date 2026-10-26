@@ -101,7 +101,8 @@ namespace ChastainRush
             Row(n++, "split-garage2", $"Player 2 garage…   {VehicleProfile.Find(SplitScreen.P2Vehicle).Name}", () => { splitGarage = true; garagePlayer = 2; OpenGarage(SplitGarageFor); });
             if (raceMode)
             {
-                var routes = race ? race.Routes() : new System.Collections.Generic.List<(string file, string name)>();
+                var routes = race ? race.Routes().Where(x => !race.IsAir(x.file)).ToList() : new System.Collections.Generic.List<(string file, string name)>();   // Round 71: the air race is not raced in split screen
+                if (race && routes.Count > 0 && race.IsAir(string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route)) { Current.route = routes[0].file; SaveSettings(); ApplySettings(); race.Reload(); FixSplitVehicles(); }
                 int at = race ? Mathf.Max(0, routes.FindIndex(x => x.file == (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route))) : 0;
                 var rd = race ? race.RouteData : null; bool oneWay = rd != null && !rd.Allows("reverse");
                 Step(n++, "split-route", $"Route:   {(routes.Count > 0 ? routes[at].name : "-")}", d => { if (routes.Count < 2) return; Current.route = routes[(at + d + routes.Count) % routes.Count].file; SaveSettings(); ApplySettings(); race.Reload(); FixSplitVehicles(); Show(); });

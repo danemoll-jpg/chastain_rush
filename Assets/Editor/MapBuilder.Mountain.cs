@@ -37,6 +37,7 @@ namespace ChastainRush
             if (MountainNow == null || !File.Exists(path)) { Debug.Log("[Round67] no " + MountainTrackFile + ": no Kennesaw Mountain race pieces"); return; }
             MountainExtra = JsonUtility.FromJson<MountainFile>(File.ReadAllText(path));
             MergeSummitRamp(MountainNow);   // Round 70 (A): the summit ramp's grades, lines and catch zone with the mountain's (MapBuilder.SummitRamp.cs)
+            MergeAirLanes(MountainNow);   // Round 71: the air race's low flight lanes cleared of trees (MapBuilder.SummitRamp.cs)
             // Round 68: where the lines run on or beside the drive (the departure below the summit, the join by the visitor center) the drive's own
             // levelled surface is kept: those points take the ground as built so far (the drive is levelled before this), eased into the line's profile
             foreach (var gr in MountainNow.Data.grades ?? new RidgeGrade[0])

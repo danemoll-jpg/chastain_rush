@@ -34,6 +34,19 @@ namespace ChastainRush
             Debug.Log($"[Round70] the summit ramp: {f.grades?.Length ?? 0} grades, {f.clear_lines?.Length ?? 0} cleared lines, {f.landing_zones?.Length ?? 0} catch zone merged into the mountain's");
         }
 
+        // Round 71 (the Quarry Air Race, Tools/mapgen/make_air_route.py): its low flight lanes (under I-75 at Noonday Creek, over Daniell Lake) cleared of
+        // trees with the mountain's lines (the Trees step reads them); nothing else of the air race is world
+        [Serializable] class AirLanesFile { public RidgeClear[] clear_lines; }
+        const string AirLanesFile_ = "Data/tracks/quarry_air_race.json";
+        static void MergeAirLanes(Ridge mountain)
+        {
+            string path = Path.Combine(ProjectRoot, AirLanesFile_);
+            if (mountain == null || !File.Exists(path)) { Debug.Log("[Round71] no " + AirLanesFile_ + " (or no mountain pieces): no air race lanes cleared"); return; }
+            var f = JsonUtility.FromJson<AirLanesFile>(File.ReadAllText(path)); var d = mountain.Data;
+            d.clear_lines = (d.clear_lines ?? new RidgeClear[0]).Concat(f.clear_lines ?? new RidgeClear[0]).ToArray();
+            Debug.Log($"[Round71] the air race: {f.clear_lines?.Length ?? 0} flight lanes cleared of trees");
+        }
+
         static readonly Color RampSteel = new Color(0.36f, 0.38f, 0.40f), RampDeck = new Color(0.30f, 0.31f, 0.32f), RampRed = new Color(0.62f, 0.14f, 0.10f), Gravel = new Color(0.56f, 0.52f, 0.46f);
 
         static void BuildSummitRamp(TerrainGrid terrain, Materials mats, Transform root)

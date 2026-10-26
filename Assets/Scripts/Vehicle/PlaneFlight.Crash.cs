@@ -17,15 +17,18 @@ namespace ChastainRush
         // the strike points (Tools/Blender/plane.py): the wing tips, the tail's top and the stabilizer's tips, the nose
         static readonly Vector3[] Strikes = { new(5.5f, 1.2f, .15f), new(-5.5f, 1.2f, .15f), new(2.8f, 1.15f, .15f), new(-2.8f, 1.15f, .15f), new(0, 1.7f, -4.3f), new(1.7f, .33f, -3.9f), new(-1.7f, .33f, -3.9f), new(0, .1f, 3.7f) };
         static readonly Collider[] overlap = new Collider[8];
+        // checks only (Round 71): -planeNoTrees, the trees' crowns not met (a check flown before the map build has cleared a lane)
+        static readonly bool NoTreesCheck = CheckRun.Active && System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-planeNoTrees") >= 0;
 
         void OnCollisionEnter(Collision c)
         {
             if (!enabled || Crashed || !car) return;
+            if (NoTreesCheck && c.collider.name == "trunk") return;
             float hit = c.relativeVelocity.magnitude; Vector3 n = c.contactCount > 0 ? c.GetContact(0).normal : Vector3.up;
             if (Airborne) { if (hit > 6f) Crash("hit " + c.collider.name); }
             else if (hit > 22f && n.y < .6f) Crash("hit " + c.collider.name);   // on the ground: only a big hit from the side (it is a car there)
         }
-        bool Solid(Collider col) => col && col.attachedRigidbody != car.Body && !col.isTrigger;
+        bool Solid(Collider col) => col && col.attachedRigidbody != car.Body && !col.isTrigger && !(col.attachedRigidbody && col.attachedRigidbody.GetComponent<PlaneFlight>()) && !(NoTreesCheck && col.name == "trunk");   // Round 71: race planes pass through each other
         void CheckStrikes(Rigidbody body)
         {
             if (OverWater && HeightAboveGround < .15f) { Crash("touched down in water"); return; }
@@ -37,7 +40,7 @@ namespace ChastainRush
             }
             // the trees' crowns (no colliders): the wing's span at the wing's height, the body
             var wing = transform.TransformPoint(new Vector3(0f, 1.1f, .15f));
-            if (TreeCrowns.Hit(wing, 5.2f, body.position, out string tree)) Crash(tree.Replace("rotor", "a wing"));
+            if (!NoTreesCheck && TreeCrowns.Hit(wing, 5.2f, body.position, out string tree)) Crash(tree.Replace("rotor", "a wing"));
         }
 
         public void Crash(string why)
@@ -53,6 +56,7 @@ namespace ChastainRush
         {
             var body = car.Body; body.useGravity = true; body.AddForce(-body.linearVelocity * .5f, ForceMode.Acceleration);
             if (Time.time - crashedAt < CrashFor) return;
+            if (RaceController.Instance && RaceController.Instance.AirReset(this)) return;   // Round 71: in the air race, back in the air before the last ring
             PutOnStrip();
             Recovered();
         }

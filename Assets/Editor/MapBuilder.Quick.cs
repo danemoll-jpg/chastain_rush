@@ -401,7 +401,10 @@ namespace ChastainRush
             foreach (var go in scene.GetRootGameObjects())
                 foreach (var race in go.GetComponentsInChildren<RaceController>(true))
                 {
-                    var files = race.routeFileNames ?? new string[0]; var dir = Path.Combine(ProjectRoot, "Data/routes");
+                    var dir = Path.Combine(ProjectRoot, "Data/routes");
+                    // Round 71: every route file there now (a new route, the air race, is taken in too), the loop first, as BuildRace orders them
+                    var files = Directory.GetFiles(dir, "*.json").Select(Path.GetFileName).OrderBy(f => f == race.routeFileName ? 0 : 1).ThenBy(f => f).ToArray();
+                    race.routeFileNames = files;
                     race.embeddedRouteJsons = files.Select(f => File.Exists(Path.Combine(dir, f)) ? EmbedRouteHeights(File.ReadAllText(Path.Combine(dir, f)), f, c.map) : "").ToArray();   // Round 62: the mall's floors written in
                     var main = Path.Combine(dir, race.routeFileName ?? ""); if (File.Exists(main)) race.embeddedRouteJson = File.ReadAllText(main);
                     EditorUtility.SetDirty(race);

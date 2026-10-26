@@ -49,7 +49,9 @@ namespace ChastainRush
             shownAt = Time.unscaledTime;
             if (!engine)
             {
-                AudioSource Src(AudioClip clip) { var a = gameObject.AddComponent<AudioSource>(); a.clip = clip; a.loop = true; a.spatialBlend = 0; a.dopplerLevel = 0; a.volume = 0; a.priority = 90; a.Play(); return a; }
+                // Round 71: another plane (a race's AI pilot, a replay's) is heard where it is, not in the player's ears
+                bool mine = Player == this;
+                AudioSource Src(AudioClip clip) { var a = gameObject.AddComponent<AudioSource>(); a.clip = clip; a.loop = true; a.spatialBlend = mine ? 0 : 1; a.dopplerLevel = mine ? 0 : .6f; a.minDistance = 25f; a.maxDistance = 700f; a.rolloffMode = AudioRolloffMode.Linear; a.volume = 0; a.priority = mine ? 90 : 140; a.Play(); return a; }
                 engine = Src(EngineClip()); wind = Src(PoliceHelicopter.Whoosh()); wind.pitch = 1.9f;
             }
             if (discRenderer)

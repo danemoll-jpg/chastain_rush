@@ -461,7 +461,7 @@ namespace ChastainRush
                 return;
             }
             bool finished = stage == RaceController.Stage.Finished;
-            Clear(finished ? "RACE OVER" : "PAUSED", race.Route.Name + ", " + race.Route.Laps + " laps, " + race.Route.Direction + (RaceController.AiCount > 0 ? ", 3 AI drivers" : ", solo"));
+            Clear(finished ? "RACE OVER" : "PAUSED", race.Route.Name + ", " + race.Route.Laps + " laps, " + race.Route.Direction + (RaceController.AiCount > 0 ? (race.Route.Air ? ", 3 AI pilots" : ", 3 AI drivers") : race.Route.Air ? ", time trial" : ", solo"));
             int n = 0;
             if (!finished) Row(n++, "resume", "RESUME", CloseMenu);
             if (race.CanSimulateRemaining) Row(n++, "complete", "COMPLETE RACE", () => { race.CompleteRace(); CloseMenu(); });   // Round 54 (C)
@@ -553,7 +553,8 @@ namespace ChastainRush
         {
             var r = race ? race.Route : null; var rd = race ? race.RouteData : null;
             bool smallOnly = rd != null && rd.vehicles != null && rd.vehicles.Length > 0, oneWay = rd != null && !rd.Allows("reverse");
-            Clear("RACE SETUP", (r != null ? $"{r.Name}, {r.LapLength:0} m a lap." : "") + (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found.");
+            bool air = rd != null && rd.air;   // Round 71: the air race
+            Clear("RACE SETUP", (r != null ? (air ? $"{r.Name}, {r.LapLength / 1000f:0.0} km a lap." : $"{r.Name}, {r.LapLength:0} m a lap.") : "") + (air ? "\nFly through the rings in the Sky Hopper; a ring missed costs 5 s. Solo is a time trial." : (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found."));
             void Changed() { SaveSettings(); ApplySettings(); Show(); }
             // Round 70 (D): outside a race, race setup puts on the last ground vehicle chosen for races (the game starts in Free Roam's)
             var held = car ? car.GetComponent<VehicleConfiguration>() : null;
@@ -573,7 +574,7 @@ namespace ChastainRush
             });
             Step(1, "laps", $"Laps:   {Current.laps}", d => { Current.laps = Mathf.Clamp(Current.laps + d, 1, 9); Changed(); });
             Step(2, "direction", oneWay ? "Direction:   Forward (one way only)" : $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { if (oneWay) return; Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
-            Step(3, "mode", $"Opponents:   {(Current.opponents ? "3 AI drivers" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
+            Step(3, "mode", $"Opponents:   {(Current.opponents ? (air ? "3 AI pilots" : "3 AI drivers") : air ? "Solo (time trial)" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
             Step(4, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
             // Round 35 (Part C): Racer's Time of Day and Weather rows (left / right; Racer's menu order Dawn, Day, Dusk, Night)
             var order = Racer.LookPresets.MenuOrder; int ti = Mathf.Max(0, Array.IndexOf(order, (Racer.TimeOfDay)Mathf.Clamp(Current.timeOfDay, 0, 3)));
@@ -641,7 +642,7 @@ namespace ChastainRush
         {
             race.Reload();
             var r = race.Route;
-            LoadingScreen.Cover("RACE", r != null ? $"{r.Name}\n{r.Laps} laps, {r.Direction}\n{(RaceController.AiCount > 0 ? "3 AI drivers" : "solo")}" : "", r);
+            LoadingScreen.Cover("RACE", r != null ? $"{r.Name}\n{r.Laps} laps, {r.Direction}\n{(r.Air ? (RaceController.AiCount > 0 ? "3 AI pilots" : "time trial") : RaceController.AiCount > 0 ? "3 AI drivers" : "solo")}" : "", r);
             yield return null; yield return null;   // the screen is drawn before the work
             race.StartRace();
             LoadingScreen.Started();

@@ -32,6 +32,13 @@ namespace ChastainRush
             race = r;
             for (int i = transform.childCount - 1; i >= 0; i--) Destroy(transform.GetChild(i).gameObject);
             arches.Clear(); shortcutMarks.Clear();
+            if (r.Route.Air)
+            {
+                // Round 71 (the air race): rings in the sky, the line a checkered one
+                finish = MakeRing(r.Route.Gate, "Start-finish ring", true);
+                foreach (var g in r.Route.Checkpoints) arches.Add(MakeRing(g, "Ring " + g.Id, false));
+                return;
+            }
             finish = MakeFinish(r.Route.Gate);
             foreach (var g in r.Route.Checkpoints) arches.Add(MakeCheckpoint(g));
             if (MarkShortcuts) foreach (var sc in r.Route.Shortcuts) shortcutMarks.Add((MakeShortcutEntry(sc), MakeTurnSign(r.Route, sc), sc));
@@ -118,6 +125,70 @@ namespace ChastainRush
         }
 
         static Vector3 Flat(Vector3 v) { v.y = 0f; return v; }
+
+        // ------------------------------------------------------------ Round 71: the air race's rings
+        // TODO.md Round 71 B: "big readable hoops (a bright color, a beacon / arrow to the next one, a chime and a flash going through), sized to the
+        // spot". A ring: 40 segments round its radius, 1.4 m thick; a frame (under a bridge): four bars round its opening. The next one is lit green
+        // with a beacon (a tall beam standing on it, none under a bridge's deck), later ones amber, missed ones red, passed ones gone; the start /
+        // finish ring is checkered. Through one: the ring flashes outward and a chime plays (RingPassed).
+        Arch MakeRing(RaceGate g, string name, bool checkered)
+        {
+            var root = Frame(g, name); var paint = new List<Renderer>();
+            if (g.RingW > 0f)
+            {
+                float w = g.RingW + .5f, h = g.RingH + .5f, t = .8f;
+                foreach (var (at, size) in new[] { (new Vector3(-w, 0, 0), new Vector3(t, 2 * h + t, t)), (new Vector3(w, 0, 0), new Vector3(t, 2 * h + t, t)), (new Vector3(0, h, 0), new Vector3(2 * w + t, t, t)), (new Vector3(0, -h, 0), new Vector3(2 * w + t, t, t)) })
+                    paint.Add(Box(root.transform, at, size));
+                var none = new GameObject("none"); none.transform.SetParent(root.transform, false);
+                return new Arch { root = root, paint = paint.ToArray(), beams = none, gate = g };
+            }
+            float r = g.Ring + .7f; const int n = 40; float seg = 2f * Mathf.PI * r / n + .15f;
+            for (int k = 0; k < n; k++)
+            {
+                float a = (k + .5f) * 2f * Mathf.PI / n;
+                var c = Box(root.transform, new Vector3(Mathf.Sin(a) * r, Mathf.Cos(a) * r, 0f), new Vector3(seg, 1.4f, 1.4f), checkered ? (k % 2 == 0 ? Black : White) : null);
+                c.transform.localRotation = Quaternion.Euler(0f, 0f, -a * Mathf.Rad2Deg);
+                if (!checkered) paint.Add(c);
+            }
+            var beams = new GameObject("Beams"); beams.transform.SetParent(root.transform, false);
+            if (!checkered) paint.Add(Box(beams.transform, new Vector3(0f, r + 160f, 0f), new Vector3(1.6f, 320f, 1.6f)));
+            return new Arch { root = root, paint = paint.ToArray(), beams = beams, gate = g };
+        }
+
+        public void RingPassed(RaceGate g)
+        {
+            var a = g.Id == 0 ? finish : arches.Find(x => x.gate == g); if (a == null) return;
+            var flash = Instantiate(a.root, transform); flash.name = "Ring flash"; flash.SetActive(true);
+            foreach (var rd in flash.GetComponentsInChildren<Renderer>()) rd.sharedMaterial = White;
+            var beams = flash.transform.Find("Beams"); if (beams) Destroy(beams.gameObject);
+            StartCoroutine(Flash(flash.transform));
+            Chime();
+        }
+        System.Collections.IEnumerator Flash(Transform t)
+        {
+            var s0 = t.localScale;
+            for (float k = 0f; k < .45f; k += Time.deltaTime) { if (!t) yield break; t.localScale = s0 * (1f + 1.2f * k / .45f); yield return null; }
+            if (t) Destroy(t.gameObject);
+        }
+        AudioSource chime; static AudioClip chimeClip;
+        void Chime()
+        {
+            if (!chimeClip)
+            {
+                // two bright bell tones a fifth apart, each a quick strike that rings off
+                int rate = 22050, n = (int)(rate * .6f); var d = new float[n];
+                for (int i = 0; i < n; i++)
+                {
+                    float t = i / (float)rate, t2 = t - .09f;
+                    float a = Mathf.Sin(2f * Mathf.PI * 1318.5f * t) * Mathf.Exp(-t * 7f) + .35f * Mathf.Sin(2f * Mathf.PI * 2637f * t) * Mathf.Exp(-t * 11f);
+                    float b = t2 > 0f ? Mathf.Sin(2f * Mathf.PI * 1975.5f * t2) * Mathf.Exp(-t2 * 6f) + .3f * Mathf.Sin(2f * Mathf.PI * 3951f * t2) * Mathf.Exp(-t2 * 10f) : 0f;
+                    d[i] = (a + b) * .32f * Mathf.Clamp01(t * 400f);
+                }
+                chimeClip = AudioClip.Create("Ring chime", n, 1, rate, false); chimeClip.SetData(d, 0);
+            }
+            if (!chime) { chime = gameObject.AddComponent<AudioSource>(); chime.spatialBlend = 0f; chime.playOnAwake = false; chime.priority = 40; }
+            chime.PlayOneShot(chimeClip, Racer.SoundMix.Gain(Racer.SoundMix.Kind.Effects));
+        }
 
         Arch MakeCheckpoint(RaceGate g)
         {

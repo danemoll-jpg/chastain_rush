@@ -51,11 +51,11 @@ namespace ChastainRush
             if (!wasOn)
             {
                 Airborne = false; Throttle = 0f; crashedAt = -1f;
-                if (!PlacedByStand) LineUp(true);
+                if (!PlacedByStand && !(vInput && !vInput.enabled)) LineUp(true);   // Round 71: not a race's AI plane or a replay's (their input is off): they are placed by who made them
                 PlacedByStand = false;
             }
             yawDeg = transform.eulerAngles.y;
-            if (vInput && vInput.Device == null && GetComponent<VehicleSwitch>() is VehicleSwitch sw && sw.player == 1) Player = this;
+            if (vInput && vInput.Device == null && GetComponent<VehicleSwitch>() is VehicleSwitch sw && sw.enabled && sw.player == 1) Player = this;   // Round 71: sw.enabled (a race's AI plane is a copy of the player's, its switch off)
             enabled = true;
             MakeInput(); StartEffects();
         }
@@ -118,6 +118,7 @@ namespace ChastainRush
         void FixedUpdate()
         {
             if (!car || car.Body.isKinematic) return;
+            if (pendingAir.HasValue) { var q = pendingAir.Value; pendingAir = null; AirStart(q.at, q.yaw, q.pitch, q.v); }   // Round 71: the reset button's air start (after VehicleRespawn placed it)
             var body = car.Body; float dt = Time.fixedDeltaTime;
             Read(out float pIn, out float bIn, out float up, out float down, out float rud);
             Probe(body);
@@ -187,6 +188,16 @@ namespace ChastainRush
         }
         // checks: put it in the air where it is, level, at 'v' m/s
         public void LiftOffAt(float v) { LiftOff(car.Body, v); pitchDeg = 0f; Airspeed = v; }
+        [System.NonSerialized] public (Vector3 at, float yaw, float pitch, float v)? pendingAir;
+        // Round 71 (the air race's reset, RaceController.AirReset): put it in the air at 'at', flying 'yaw' / 'pitch' at 'v' m/s, the throttle well open
+        public void AirStart(Vector3 at, float yaw, float pitch, float v)
+        {
+            var body = car.Body; crashedAt = -1f;
+            var rot = Quaternion.Euler(-pitch, yaw, 0f);
+            body.position = at; body.rotation = rot; transform.SetPositionAndRotation(at, rot);
+            Airborne = true; liftedAt = Time.time; Airspeed = v; pitchDeg = pitch; rollDeg = 0f; yawDeg = yaw; Throttle = Mathf.Max(Throttle, .85f);
+            body.useGravity = false; body.linearVelocity = rot * Vector3.forward * v; body.angularVelocity = Vector3.zero;
+        }
         void TouchDown(Rigidbody body)
         {
             Airborne = false; body.useGravity = true; Landings++;

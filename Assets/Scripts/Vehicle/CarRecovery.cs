@@ -29,6 +29,7 @@ namespace ChastainRush
             if (plane && plane.enabled)
             {
                 plane.Recovered();
+                if (RaceController.Instance && RaceController.Instance.AirReset(plane, out pos, out yaw)) return true;   // Round 71: in the air race, in the air before the last ring
                 if (PlaneFlight.StripSpot(at, out pos, out yaw)) return true;
                 plane.LineUp(true); pos = plane.transform.position; yaw = plane.transform.eulerAngles.y; return true;
             }

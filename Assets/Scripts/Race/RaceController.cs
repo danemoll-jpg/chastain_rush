@@ -33,7 +33,7 @@ namespace ChastainRush
     // an AI driver is still racing 60 s after the player has finished, its finish is estimated from its pace (Racer's
     // AiFinishEstimate) and marked as such.
     [DefaultExecutionOrder(50)]
-    public sealed class RaceController : MonoBehaviour
+    public sealed partial class RaceController : MonoBehaviour
     {
         public enum Stage { Free, Countdown, Racing, Finished }
 
@@ -190,8 +190,23 @@ namespace ChastainRush
                 if (args[i] == "-aiCount") AiCount = Mathf.Clamp(int.Parse(args[i + 1]), 0, 3);
                 if (args[i] == "-aiVehicles") AiVehiclesOverride = args[i + 1].Split(',');
                 if (args[i] == "-route") RouteOverride = args[i + 1].EndsWith(".json") ? args[i + 1] : args[i + 1] + ".json";   // Round 18
+                if (args[i] == "-routeDir" && CheckRun.Active) UseRouteDir(args[i + 1]);   // Round 71 (checks): route files read from a folder, over the embedded copies
             }
             LoadRoute();
+        }
+
+        // Round 71 (checks only): every *.json in dir replaces the embedded copy of that name, or is added (a route not yet built into the scene)
+        void UseRouteDir(string dir)
+        {
+            if (!Directory.Exists(dir)) return;
+            var names = new List<string>(routeFileNames ?? new string[0]); var jsons = new List<string>(embeddedRouteJsons ?? new string[0]);
+            foreach (var f in Directory.GetFiles(dir, "*.json"))
+            {
+                string n = Path.GetFileName(f); int k = names.IndexOf(n);
+                if (k >= 0) jsons[k] = File.ReadAllText(f); else { names.Add(n); jsons.Add(File.ReadAllText(f)); }
+                Debug.Log("[Race] route file from " + f);
+            }
+            routeFileNames = names.ToArray(); embeddedRouteJsons = jsons.ToArray();
         }
 
         // In the Editor the route file is read from Data/routes each time (so changing "direction" there needs no rebuild);
@@ -322,6 +337,8 @@ namespace ChastainRush
         void PlaceOnGrid()
         {
             Vector3 g = Route.GridPosition;
+            var plane = car.GetComponent<PlaneFlight>();
+            if (plane && plane.enabled) { plane.Recovered(); g += Vector3.up * (PlaneFlight.WheelDrop - .2f); }   // Round 71: the plane stands on its wheels on the runway
             if (respawn) respawn.PlaceAt(g + Vector3.up * 0.3f, Route.GridYaw);
             else { car.Body.position = g + Vector3.up * 0.8f; car.Body.rotation = Quaternion.Euler(0, Route.GridYaw, 0); car.Body.linearVelocity = Vector3.zero; }
             P.PrevPos = car.transform.position;
@@ -444,6 +461,7 @@ namespace ChastainRush
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < index; k++) { Miss(e, k, at); skipped.Add(k + 1); }
             e.NextCheckpoint = index + 1;
+            if (Route.Air && e.IsPlayer) markers.RingPassed(Route.Checkpoints[index]);   // Round 71: the ring's flash and chime
             Log(e, $"CHECKPOINT {index + 1} at {at:0.000}" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
             MissMessage(e, skipped);
             if (e.IsPlayer) markers.Refresh(this);
@@ -530,6 +548,7 @@ namespace ChastainRush
         Vector3 crossing;
         void OnGate(RaceEntrant e, float at)
         {
+            if (Route.Air && e.IsPlayer) markers.RingPassed(Route.Gate);   // Round 71
             if (!e.ClockStarted)
             {
                 if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, false, false, true);   // Round 43 (B1): the ghost's recording starts
@@ -727,7 +746,7 @@ namespace ChastainRush
         public static bool AiLineOff = Array.IndexOf(Environment.GetCommandLineArgs(), "-r70LineOff") >= 0;   // checks: the AI as before Round 70
         void BuildAiLine()
         {
-            if (AiRoad == null || RouteData == null || RouteData.trail || Route.Underground || AiLineOff) return;
+            if (AiRoad == null || RouteData == null || RouteData.trail || Route.Underground || Route.Air || AiLineOff) return;
             RaceOnly.RefreshAll(); Physics.SyncTransforms();
             var trunks = TreeTrunks.Instance; var hits = new Collider[16]; const float CarHalf = 1.3f;
             var zones = AiZones;
@@ -836,6 +855,7 @@ namespace ChastainRush
         void SpawnAi()
         {
             if (AiCount <= 0) { aiActive = false; return; }
+            if (Route.Air) { SpawnPilots(); return; }   // Round 71: the air race's AI pilots (RaceController.Air.cs)
             BuildAiRoad();
             var rng = new System.Random(Environment.TickCount);
             DriverVariation.Seed = rng.Next();
@@ -927,7 +947,7 @@ namespace ChastainRush
                 if (estimate)
                 {
                     var cfg = e.Car.GetComponent<VehicleConfiguration>();
-                    float more = (float)e.Estimate.Duration(RaceClock, remaining, cfg ? cfg.Profile : VehicleProfile.All[0], false, RoadDriver.Difficulty);
+                    float more = Route.Air ? remaining / AirPace(e) : (float)e.Estimate.Duration(RaceClock, remaining, cfg ? cfg.Profile : VehicleProfile.All[0], false, RoadDriver.Difficulty);   // Round 71: a plane's own pace
                     if (!e.ClockStarted) { e.ClockStarted = true; e.StartAt = RaceClock; }
                     e.Finished = e.Estimated = true;
                     e.FinalTotal = RaceClock + more - e.StartAt + e.PenaltyTotal; e.FinishedAt = RaceClock + more + e.PenaltyTotal;
@@ -1181,6 +1201,7 @@ namespace ChastainRush
             GUI.color = Color.white;
             GUI.matrix = save;
             string name = t.Id == 0 ? (ClockStarted ? "FINISH LINE" : "START LINE") : $"CHECKPOINT {t.Id} / {Route.Checkpoints.Count}";
+            if (Route.Air) name = (t.Id == 0 ? (ClockStarted ? "FINISH RING" : "START RING") : $"RING {t.Id} / {Route.Checkpoints.Count}") + AirHint(t);   // Round 71: the ring's name and how far up or down
             Shadowed(new Rect(0, 94, w, 30), $"<b>{name}</b>   {to.magnitude:0} m", new GUIStyle(small) { alignment = TextAnchor.MiddleCenter, fontSize = 20, richText = true, normal = { textColor = Color.white } });
         }
 

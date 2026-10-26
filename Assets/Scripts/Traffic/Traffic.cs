@@ -273,6 +273,13 @@ namespace ChastainRush
                     void Line(float[] pts) { if (pts == null) return; for (int i = 0; i + 1 < pts.Length; i += 2) marks.Add((new Vector2(pts[i], pts[i + 1]), 14f)); }
                     if (race.Route != null && race.Route.OwnReverse) Line(rd.loop_rev); else { Line(rd.loop); Line(rd.lead_in); }   // Round 39: the reverse lap of its own
                 }
+                // Round 71 (the air race): the roads under the line's low stretches (the plane at a few meters over a road or under a bridge) are kept clear
+                if (rd.air && rd.loop_y != null)
+                    for (int i = 0; i + 1 < rd.loop.Length && i / 2 < rd.loop_y.Length; i += 8)
+                    {
+                        float gy = GroundQuery.Height(rd.loop[i], rd.loop[i + 1]);
+                        if (!float.IsNaN(gy) && rd.loop_y[i / 2] - gy < 20f) marks.Add((new Vector2(rd.loop[i], rd.loop[i + 1]), 30f));
+                    }
                 foreach (var c in RaceClosures(race, rd)) marks.Add((new Vector2(c.x, c.z), 10f));
                 foreach (var b in Barriers(race)) marks.Add((b, 10f));   // Round 54 (D1): every barrier as built
                 for (int e = 0; e < net.EdgeCount; e++)
