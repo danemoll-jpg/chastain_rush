@@ -108,6 +108,110 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 70, A RAMP OFF THE MOUNTAIN; AI THAT RACES; the garage and the saved vehicle; park visitors; the mountain road (Dan, 2026-10-25
+23:20; reports BUG-001 to BUG-004 of session `2026-10-25_22-20-32-569_189622`, read by Claude, after the Round 68 / 69 build: Kennesaw Mountain on the Trail
+Four).** Rounds 68 and 69 are reviewed. Quick builds while working; ONE full Build Map at the end. Tuning limit. Short results.
+A. A RAMP THAT CLEARS THE MOUNTAIN (Free Roam; later maybe a point-to-point race). Dan: "I am not sure about a reverse of the kennesaw
+   mountain track. But I want a big ramp on the edge that drops all the way off the mountain. This maybe an eventual Point to point race,
+   but at the moment just give me a big ramp that will clear the mountain". Woodstock Rush's summit flight in spirit (Racer's CR101-104:
+   a 215 m straight run-up from rest, 36 to 43 m/s at the lip, a flight that cleared the whole mountain to a catch slope). Build one big
+   ramp at the summit's edge (a built ramp is fine here: steel or timber, a real thing a stunt crew would put up), with a long straight run-up
+   on the summit (the lot / the drive's top / a cleared line), aimed where the fall is longest and the landing open (Code picks the side and
+   says why), so a car flat out flies off the mountain and comes down far below at its foot on a long smooth catch slope (cleared, graded,
+   landing clean and keeping speed), with a way back to the roads. Target: the biggest flight in the game by far: 8 s or more in the air and
+   several hundred meters (report air, distance, height for the Drifter Twin, the Street Classic, a bike). A fast-travel spot at the run-up's
+   start; visible from the summit lot (no "JUMP" signs needed: the ramp is obvious). Not in the race's lap (Round 68's course unchanged).
+B. THE AI IS TOO SLOW. Dan: "The AI is really slow. I watched the replay and they dont seem to be getting hung up. I think their issues
+   maybe either they aren't going full throttle or possibly just follow the courses too exactly. For example there are times when you make
+   a path for the next checkpoint that doesn't follow the exact roads, I think the ai should be not so slavish to the actual roads".
+   (1) Measure first, from the replays' recordings (Round 57): per AI on Hard, throttle use (time at full throttle on straights), speed
+       against the player's on the same stretch (Dan's best laps / ghosts where saved), and where the time goes (corners, braking early,
+       following the road's curves where the course allows a straighter line).
+   (2) Racing lines: the AI drives a racing line between checkpoints (cut corners on grass, lots and open ground where the course allows
+       it, use the whole road, apexes), not the road's center line; full throttle wherever it can; braking as late as the vehicle allows.
+   (3) Hard races Dan close on every track (within a few seconds of his best laps); Normal and Easy scale down by pace, not by dumb driving.
+       Report a table per track: Dan's best lap, Hard's best and average, before / after.
+C. THE GARAGE IN RACE SETUP. Dan: "In race setup, I am not able to select a car in the garage some times". Find when it fails (which
+   vehicles, after what, pad or keys) and fix it. Dan, 23:27: "I started a race as soon as the game started, it ended and that was when I
+   tried to select a vehicle. I hadn't touched the plane at that point": so reproduce exactly that first: launch the game, start a race
+   straight from the title (no Free Roam first), finish it, go to race setup's garage from the finish screen / menu and try to change the
+   vehicle (pad and keys). Dan, 23:28: "I had to go into free roam to change vehicles so I know that worked. I couldn't do it in race
+   setup": Free Roam's vehicle change works; the fault is in race setup's garage (after a finished race). Then also after Free Roam; check every
+   vehicle selectable in race setup by pad and keys, after Free Roam in the helicopter and in the plane.
+D. THE SAVED VEHICLE. Dan: "why does my vehicle keep getting changed every time I start the game?" (`vehicle.json` holds "plane", Free
+   Roam's last pick; the log shows the game starting on the Trail Four). Remember Dan's choice: the last ground vehicle for races and the
+   last Free Roam vehicle separately, and start each with what he last chose (never a random or substitute one; a flying vehicle only where
+   it is allowed). Also: `vehicle.json`'s key "colour" -> "color" (American English rule), reading the old key once.
+E. PARK VISITORS. Dan: "I thought there were supposed to be joggers and walkers on the kennesaw mnt trail". Round 67 added up to 9 groups in
+   Free Roam and 2 in a race; Round 68 moved the race onto new lines. Make them clearly there: walkers, joggers, hikers with dogs on the
+   park's trails and at the summit and visitor center lots in Free Roam (plenty), and a few beside the race's lines in races (they get
+   out of the way). Check by pictures from the summit and the trails.
+F. THE MOUNTAIN ROAD.
+F1. BUG-002 (x -1097.14 z -6077.09, Kennesaw Mountain Drive): "why so many fire hydrants? You wouldn't have them on a mountian path at alll";
+   BUG-003 (x -1072.23 z -5825.67, the drive): "again". No hydrants on the mountain drive, the park's roads and trails, or any road through
+   woods / parkland with no buildings near: hydrants only where there are buildings along the street (all the map, by rule, not just here).
+F2. BUG-004 (x -949.83 z -5725.88 h 52, the drive near the summit, a jump on the course): "the road shouldn't be doing this. It should be
+   flat while still keeping this jump" (the picture: the road rolls steeply sideways over the crest). Keep the jump's lift but make the
+   road flat across its width there (no camber / roll); check the jump's flight is unchanged.
+F3. BUG-001 (x -872.73 z -5208.19 h 32, the start line on the drive): "why is this on the ground?" (the picture: the start line's checkered
+   banner / gantry sits low, its left end down in the ground on the slope). Stand the start gantry up properly over the road (posts on the
+   ground both sides, banner level and clear over the road); check every course's start / finish gantry the same way.
+Check: A's flight table; B's tables (before / after) and an AI race on Hard on three tracks; C every vehicle in race setup; D restart the
+game twice after Free Roam in the plane and after a race (the right vehicle each time); E pictures; F1 hydrant counts on the drive before /
+after; F2 the road's roll before / after; F3 pictures of each start gantry.
+For Dan to check: fly off the mountain; race the AI on Hard; the garage; restart the game; the park's visitors; the mountain road.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 69
+**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
+**Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
+RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
+far view) and Round 66's edges (warning, headwind, ceiling). Quick builds while working; ONE full Build Map at the end (the airport's
+parked planes). Tuning limit. Short results. Dan is not watching: decide, write it down, go on.
+1. THE PLANE: a small single-engine high-wing plane of our own (Blender, as the helicopter; no real maker's name or livery), "Sky Hopper"
+   or Code's name. Arcade flight, not a simulator: it must be easy and fun. Throttle up / down; pitch, roll (banking turns the plane
+   by itself), a little rudder; it holds level flight hands-off at its speed; no punishing stalls (too slow and the nose eases down until
+   it has speed again). Cruise fast enough to cross the map in two or three minutes, a top speed above that; engine and wind sound with
+   speed; flaps not needed. Pad and keyboard layouts that match the helicopter's where they can (Code picks, says them in the status).
+2. TAKE-OFF AND LANDING: it rolls on its wheels, steers on the ground, takes off from Cobb County International's runways (and any long
+   straight road or field, Free Roam being Free Roam), lands on them: a soft landing rolls out, a hard one or a wing into the ground is a
+   forgiving crash (as the helicopter: a moment, then reset onto open ground nearby, never stuck). Hitting trees, buildings or wires:
+   the same.
+3. WHERE: two or three planes parked on the airport's apron (drive up and swap, as the helicopter pads: A / H); "plane" in Free Roam's
+   vehicle choice (starting lined up on a runway). Free Roam only, never in races. A little airport life if cheap: one plane that now and
+   then taxis, takes off, circles and lands (no collisions to worry the player).
+4. THE WORLD FROM A PLANE: Round 63's far view and Round 66's scenery ring and horizon (Atlanta) at plane heights and speeds; the edge
+   warning and headwind turn the plane back too (a wide gentle turn), and a ceiling. Frame rate at 300 m and 600 m up crossing the map
+   against Round 63's numbers. Cameras: chase, far chase, cockpit, and a free look; the readout (height, speed, heading, climb).
+5. FUN: low passes over the quarry lake (Viking Quarry, next to the airport) and down the I-75 / I-575 corridor should feel fast; nothing
+   blocks flying under the highway bridges if there is room.
+Check: take off from each runway, fly to Kennesaw Mountain, Town Center and Chastain Glen and back, land on the runway; crash into a tree,
+a building and the ground (reset, not stuck); hands-off level flight 30 s; the edge turn-back; the fps table. Pictures: take-off, over the
+quarry, over Town Center, Atlanta on the horizon from 600 m, the apron.
+For Dan to check: fly the plane (controls, take-off, landing, speed); the view from up high.
+
+**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round69/` (`round69_check_final.txt`, `round69_check_fps.txt`, pictures `69_*.png`).
+1 DONE. "Sky Hopper" (`Tools/Blender/plane.py`, our own high-wing single-engine plane, 11 m wings, tricycle gear; `VehicleProfile.Plane`, Flies: Free Roam only). Flown by `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): on its wheels the vehicle's own drive; in the air arcade flight: the throttle sets the speed (top 115 m/s, cruise about 85 at 75 %: the map in about 2.5 minutes), climbing costs speed and diving gains it, the bank turns it, hands-off it levels its wings and holds its height (30 s: height within 0.1 m, heading 2.2 degrees), slow (under 36 m/s) it sinks and the nose eases down (no stall, no spin). Engine buzz made in code, pitched by the throttle; wind with speed; readout (height, speed, heading, climb, throttle).
+   Pad: left stick pitch (pull back: nose up) and bank; RT / LT throttle up / down (LT brakes on the ground); LB / RB rudder; X view; right stick looks round; Y reset; A take / leave a parked plane. Keyboard: W / S throttle (S brakes on the ground); arrows: up / down nose down / up, left / right bank; A / D rudder (and steer on the ground); V view; R reset; H take / leave.
+2 DONE. Take-off from runway 09/27 (the airport's one runway, both ways): full throttle, past 30 m/s pull back: off after 157 m (09) / 168 m (27). Any long straight road or field works the same. Landing: touching down under 5 m/s, wings within 18 degrees, it rolls out on its wheels (the check: 32 m/s, 1.7 m/s down, stopped in 25 m). Harder, a wing, the nose or the body into anything, a tree's crown or water: a crash, then after 2.6 s put on the nearest open strip it can take off from again (130 m clear and flat, within 1.5 km; else lined up on the runway). Into a tree, Town Center's front and the ground: crashed, reset, rolled away again (6 of 6).
+3 DONE. Three planes parked on the south apron (`Vehicle/PlaneStands.cs`, built at run time: no Build Map step): A / H takes one and leaves it (2 of 2); "Sky Hopper" in Free Roam's garage starts lined up on runway 09. Never in races. Airport life (`Vehicle/AirportCircuit.cs`): one red Sky Hopper taxis out every few minutes, takes off, flies a circuit at 300 m and lands (visual only).
+4 PARTLY. The far view and Round 66's ring and horizon work from the plane (Atlanta from 600 m, `69_atlanta_from_600m.png`). The edge: LEAVING THE SURVEY AREA, then a headwind and a wide bank back by itself (the stick's bank overruled): at most 805 m out at full throttle, turned back in 27 s. Ceiling 1700 m as the helicopter. Cameras: chase, far chase, cockpit, the right stick's free look. Frame rate (1280 x 720, not measured at 3840 x 2160; real time, the last 1.5 km to each place): at 300 m Kennesaw Mountain 54 / Town Center 43 / Chastain Glen 82 fps; at 600 m 61 / 56 / 94; 1 % lows 9 to 24 (hitches as the far detail loads in at 95 m/s). Lower than Round 63's helicopter numbers (88 to 164 at 500 m from a still camera): not profiled this round.
+5 Low passes over Viking Quarry Lake and the highway corridors: nothing blocks flying under the bridges where the plane fits (its wing tips and nose test what they meet).
+Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
+For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
+
+## Previous delivery 2: Round 68
+**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
 **Round 68, KENNESAW MOUNTAIN: REALLY BIG JUMPS (Dan, 2026-10-25 08:35, after driving Round 67).** Dan: "I specifically wanted to do a
 mountain trail so I have really big jumps but these are just little bunny hops. I know if you can see it in Woodstock Rush how big the
 jumps I had on the Mountain trail, this is what I want just really large jumps. As far as this I had bigger jumps in my own neighborhood
@@ -150,54 +254,8 @@ Found, not changed (not this round's ground): three heavy cars (Longroof GT, Hig
 Builds: 4 full Build Maps (the first did not compile), 7 quick builds, 4 code-only exes. `Builds/ChastainRush/` 2026-10-25 15:44. Imported from Racer: nothing.
 For Dan: (a) race it flat out; the summit flight; (b) J3's kicker stands about 30 m over the ground at its lip (a long gentle curve so cars do not bottom out): its look; (c) the AI's resets.
 
-## QUEUED rounds
-**Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
-RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
-far view) and Round 66's edges (warning, headwind, ceiling). Quick builds while working; ONE full Build Map at the end (the airport's
-parked planes). Tuning limit. Short results. Dan is not watching: decide, write it down, go on.
-1. THE PLANE: a small single-engine high-wing plane of our own (Blender, as the helicopter; no real maker's name or livery), "Sky Hopper"
-   or Code's name. Arcade flight, not a simulator: it must be easy and fun. Throttle up / down; pitch, roll (banking turns the plane
-   by itself), a little rudder; it holds level flight hands-off at its speed; no punishing stalls (too slow and the nose eases down until
-   it has speed again). Cruise fast enough to cross the map in two or three minutes, a top speed above that; engine and wind sound with
-   speed; flaps not needed. Pad and keyboard layouts that match the helicopter's where they can (Code picks, says them in the status).
-2. TAKE-OFF AND LANDING: it rolls on its wheels, steers on the ground, takes off from Cobb County International's runways (and any long
-   straight road or field, Free Roam being Free Roam), lands on them: a soft landing rolls out, a hard one or a wing into the ground is a
-   forgiving crash (as the helicopter: a moment, then reset onto open ground nearby, never stuck). Hitting trees, buildings or wires:
-   the same.
-3. WHERE: two or three planes parked on the airport's apron (drive up and swap, as the helicopter pads: A / H); "plane" in Free Roam's
-   vehicle choice (starting lined up on a runway). Free Roam only, never in races. A little airport life if cheap: one plane that now and
-   then taxis, takes off, circles and lands (no collisions to worry the player).
-4. THE WORLD FROM A PLANE: Round 63's far view and Round 66's scenery ring and horizon (Atlanta) at plane heights and speeds; the edge
-   warning and headwind turn the plane back too (a wide gentle turn), and a ceiling. Frame rate at 300 m and 600 m up crossing the map
-   against Round 63's numbers. Cameras: chase, far chase, cockpit, and a free look; the readout (height, speed, heading, climb).
-5. FUN: low passes over the quarry lake (Viking Quarry, next to the airport) and down the I-75 / I-575 corridor should feel fast; nothing
-   blocks flying under the highway bridges if there is room.
-Check: take off from each runway, fly to Kennesaw Mountain, Town Center and Chastain Glen and back, land on the runway; crash into a tree,
-a building and the ground (reset, not stuck); hands-off level flight 30 s; the edge turn-back; the fps table. Pictures: take-off, over the
-quarry, over Town Center, Atlanta on the horizon from 600 m, the apron.
-For Dan to check: fly the plane (controls, take-off, landing, speed); the view from up high.
-
-**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round69/` (`round69_check_final.txt`, `round69_check_fps.txt`, pictures `69_*.png`).
-1 DONE. "Sky Hopper" (`Tools/Blender/plane.py`, our own high-wing single-engine plane, 11 m wings, tricycle gear; `VehicleProfile.Plane`, Flies: Free Roam only). Flown by `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): on its wheels the vehicle's own drive; in the air arcade flight: the throttle sets the speed (top 115 m/s, cruise about 85 at 75 %: the map in about 2.5 minutes), climbing costs speed and diving gains it, the bank turns it, hands-off it levels its wings and holds its height (30 s: height within 0.1 m, heading 2.2 degrees), slow (under 36 m/s) it sinks and the nose eases down (no stall, no spin). Engine buzz made in code, pitched by the throttle; wind with speed; readout (height, speed, heading, climb, throttle).
-   Pad: left stick pitch (pull back: nose up) and bank; RT / LT throttle up / down (LT brakes on the ground); LB / RB rudder; X view; right stick looks round; Y reset; A take / leave a parked plane. Keyboard: W / S throttle (S brakes on the ground); arrows: up / down nose down / up, left / right bank; A / D rudder (and steer on the ground); V view; R reset; H take / leave.
-2 DONE. Take-off from runway 09/27 (the airport's one runway, both ways): full throttle, past 30 m/s pull back: off after 157 m (09) / 168 m (27). Any long straight road or field works the same. Landing: touching down under 5 m/s, wings within 18 degrees, it rolls out on its wheels (the check: 32 m/s, 1.7 m/s down, stopped in 25 m). Harder, a wing, the nose or the body into anything, a tree's crown or water: a crash, then after 2.6 s put on the nearest open strip it can take off from again (130 m clear and flat, within 1.5 km; else lined up on the runway). Into a tree, Town Center's front and the ground: crashed, reset, rolled away again (6 of 6).
-3 DONE. Three planes parked on the south apron (`Vehicle/PlaneStands.cs`, built at run time: no Build Map step): A / H takes one and leaves it (2 of 2); "Sky Hopper" in Free Roam's garage starts lined up on runway 09. Never in races. Airport life (`Vehicle/AirportCircuit.cs`): one red Sky Hopper taxis out every few minutes, takes off, flies a circuit at 300 m and lands (visual only).
-4 PARTLY. The far view and Round 66's ring and horizon work from the plane (Atlanta from 600 m, `69_atlanta_from_600m.png`). The edge: LEAVING THE SURVEY AREA, then a headwind and a wide bank back by itself (the stick's bank overruled): at most 805 m out at full throttle, turned back in 27 s. Ceiling 1700 m as the helicopter. Cameras: chase, far chase, cockpit, the right stick's free look. Frame rate (1280 x 720, not measured at 3840 x 2160; real time, the last 1.5 km to each place): at 300 m Kennesaw Mountain 54 / Town Center 43 / Chastain Glen 82 fps; at 600 m 61 / 56 / 94; 1 % lows 9 to 24 (hitches as the far detail loads in at 95 m/s). Lower than Round 63's helicopter numbers (88 to 164 at 500 m from a still camera): not profiled this round.
-5 Low passes over Viking Quarry Lake and the highway corridors: nothing blocks flying under the bridges where the plane fits (its wing tips and nose test what they meet).
-Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
-For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 67
+## Previous delivery 3: Round 67
+**Dan 2026-10-25 23:20: "The chastain Trail races are fine" (B1 to B3 accepted); Kennesaw reverse: "I am not sure" (not now).**
 **Reviewed: Dan raced the Kennesaw Mountain trails 2026-10-25: the jumps are far too small ("just little bunny hops"): Round 68. B1 to B3 and the open questions (a) to (e): no answer yet.**
 **Round 67, A NEW TRACK: THE KENNESAW MOUNTAIN TRAILS, ALL ABOUT AIR; two Noonday Creek Trail shortcuts and a lip (Dan, 2026-10-25 03:01;
 reports BUG-001 to BUG-003 of session `2026-10-25_02-23-36-193_bcac2f`, read by Claude, after the Round 66 exe: the Noonday Creek Trail race both ways).**
@@ -250,55 +308,6 @@ B2 DONE. "Parkway leap" (reverse): off the trail before its loop under the bridg
 B3 PARTLY. Cause: the face rose from the road's edge on a 14 m bend, and a car thrown off the road's far edge (the climb from the red bridge) came down into it. Now a 45 m arc at the face's foot from the road's own level, the climb to the road a 150 m crest, a landing zone on the face. Street Classic flat out (30 m/s) forward: 60 % of its speed lost at the mound before, 12 % now; at 26 m/s still 34 % (Drifter 5 %). Two attempts: tuning limit.
 Builds: 3 full Build Maps (the first did not compile; the third for the wider clearing) and 3 quick builds. `Builds/ChastainRush/` 2026-10-25 06:42. Imported from Racer: nothing.
 For Dan: (a) the mountain's jumps flat out (J1, J3); (b) reverse on the mountain, yes or no; (c) the creek leap's landing angle; (d) the parkway leap saves 1 s: enough?; (e) the mound flat out in the Street Classic.
-
-## Previous delivery 2: Round 66
-**Reviewed: Dan played the Round 66 build 2026-10-25 02:23 (the Noonday Creek Trail race, forward and reverse): "Not much there"; his notes (Round 64's trail) are Round 67 B.**
-**Round 66, THE MAP'S EDGES: A WORLD THAT KEEPS GOING, NATURAL STOPS, A HELICOPTER BOUNDARY, ATLANTA ON THE HORIZON (Dan, 2026-10-24
-11:41: "Speaking of edges, how can I handle this on my map especially now I have helicopters"; 11:44 "Yes" to Claude's three-part outline,
-"And I like the idea of Atlanta in the distance"). Dan, 2026-10-24 17:55: "Lets go ahead" (Rounds 64 and 65 done, not yet seen by him). Use Round 65's quick builds while working.** ONE full Build Map at the end. Tuning limit.
-1. SCENERY PAST THE EDGE (not playable): a ring of land a few km wide beyond every edge from the same USGS 3DEP elevation (download the
-   extra tiles as for the mountain), low detail, no colliders, roads or traffic: terrain, a carpet of cheap far trees (Round 63's far-view
-   kind), simple building blocks where OSM / NAIP show towns, water. Haze thickening toward its outer edge so its end is never seen. From the
-   summit and from the helicopter at its ceiling the world must look like it keeps going: no cliff, no void.
-2. THE HORIZON: real distant landmarks at their true bearings, distances and heights: the Atlanta skyline (downtown and midtown towers,
-   about 30 km south-east; generic tower shapes, no brand names, lit at night), and the far ridges / mountains around (Lost Mountain, Pine
-   Mountain, Sweat Mountain and the like, from elevation data where it reaches, as silhouettes beyond it). Day / night and weather apply
-   (hidden in fog and rain, clear on a clear day).
-3. CARS STOP NATURALLY AT THE EDGE: roads that leave the map end in "Road Closed" barricades / a detour (road-crew style), highways (I-75,
-   I-575, US 41 and the like) in a jersey-barrier closure where traffic turns round (traffic and police nets end there cleanly); off road,
-   the edge runs through dense woods, creeks or fence lines where they exist, with a soft invisible push-back so nothing gets through or
-   falls off.
-4. THE HELICOPTER'S BOUNDARY: near the edge a "Leaving the survey area" warning; keep going and a strong headwind slows it and swings it
-   back (no crash, no teleport). A height ceiling, so the edges of the scenery are never seen from above.
-Check: from the summit and from the helicopter at its ceiling, looking out each way (pictures, day and night, Atlanta's skyline in them);
-drive every road that leaves the map (each stops at its closure, traffic turns); fly at each edge (turned back); frame rate at the summit
-and at the ceiling against Round 63's numbers.
-For Dan to check: fly to the edges and look out; Atlanta from the summit; drive off the map on a few roads.
-
-**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet seen by Dan.** Evidence `Data/screenshots/round66/` (pictures `66_*.png`, check texts). No bug reports newer than Round 64's session.
-1 DONE. A ring 9 km wide past every edge (`python Tools/mapgen/make_scenery.py`: USGS 3DEP 30 m heights, NLCD 2021 land cover for "towns": the US land-cover map made from the same imagery as NAIP; drawn at run time by `World/EdgeScenery.cs`, no Build Map step): ground by cover, 384,000 trees in the map's far tree shapes, 48,000 house and building blocks, lakes; no colliders. Its inner edge takes the map's own edge heights. The fog closes long before its outer edge, and the land beyond it to 70 km is the haze's color (`66_edge_*`, `66_ceiling_*`).
-2 DONE. Atlanta (Downtown, Midtown), Buckhead, Cumberland and Perimeter Center: 169 generic towers at their real places and heights (heights x1.5 like every building and hill here), lit windows and blinking red tops at night, gone in rain (`66_summit_atlanta_*`, `66_ceiling_atlanta_*`). The far ridges come from the elevation data (only land 110 m or more above its surroundings shows as a blue-gray silhouette: Sweat Mountain, Lost Mountain, the Blue Ridge foothills to the north). The view now opens on the summit too (height over the land's low point, not only over the ground).
-3 DONE (see the numbers). Every drivable road end on the edge (262): highways (I-75, I-575, US 41, Barrett, North Marietta Parkway, Canton Road; 19 carriageways) get jersey barriers, cones and ROAD CLOSED; the rest get type III barricades, ROAD CLOSED and a DETOUR sign (`make_closure_signs.py`); 38 roads that run along the edge itself get none (the push-back covers them). Closures are solid to 2.6 m (lower ones let a fast car vault them). Traffic and police networks end before them; traffic turns round there (16 turnarounds across divided highways). Off road: pushed back within 36 m, a wall on the edge, anything past it put back.
-   Checks: every closure driven into (22 m/s, highways 30): 221 of 224 stop at it; 3 do not (Canton Road at the north edge and the service road beside it, Canton Road at the east edge: on a bend the car gets onto or round the barriers' end, then the edge's push-back stops it short of the edge; third try, tuning limit: left for Dan, `66_closure_016_*`, `66_closure_139_*`); traffic (Heavy, 11 spots): 144 cars turned round, 25 waited at one-way ramps with no turn (moved off unseen, as before); off road at each edge: stopped 1.4 to 6 m short, never past.
-4 DONE. LEAVING THE SURVEY AREA from 300 m inside the edge; past it a headwind that holds it within about 215 m out flat out with boost, the nose swung back to the map, no crash (4 of 4 edges, `66_heli_*`). The ceiling stays Round 63's (1,700 m): from there the ring's outer edge is past the fog. Past the edge there is no ground: it stays 30 m over the ground it left.
-Frame rate (1280 x 720, a fixed camera; not measured at 3840 x 2160): at the ceiling over Chastain Glen / Town Center / the mountain 100 / 95 / 96 fps with the scenery, 104 / 94 / 93 without (Round 63 at 1080p, 500 m: 164 / 99 / 88). On the summit 65 to 83 fps: its view now opens to 6 km (180 to 196 with the fog closed, as before).
-Builds: three full Build Maps, not one (the closures needed two fixes found by the drives: wider rows, then taller colliders; each about 30 min with the exe), code-only exes before them. `Builds/ChastainRush/` 2026-10-24 20:49. Imported from Racer: nothing.
-For Dan: (a) the ring and the skyline's look; (b) the summit's frame rate with the view open; (c) the three Canton Road closures (a car can end up on the barriers; R / Y resets).
-
-## Previous delivery 3: Round 65
-**Not yet reviewed: editor tools only; Dan moved on to Round 66 on 2026-10-24 17:55 without checking 64 or 65 ("I won't have a chance to check it").**
-**Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
-next").** NEXT, straight after Round 64, before any new track or feature (Dan, 2026-10-24 11:09: he meant build tools to come first). Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
-the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
-full Build Map at the end; trim the full Build Map (Roads and Businesses about 27 of its 62 minutes in Round 62).
-Dan, 2026-10-24: "When Round 64 is done and committed, do Round 65 in TODO.md (QUEUED) right away." (Round 64 took 6 full builds of about an hour each.)
-
-**Status (Claude, 2026-10-24): built and measured; editor tools only, the world unchanged (every build's scene the same as before by SceneDump). Nothing for Dan to drive.** Detail: `local/round65/` (times, scene dumps; git-ignored).
-1. The full build: Build Map 2,616 -> 912 s (44 -> 15 min); the exe after it 822 -> 234 s; a full build with its exe about 60 -> 20 min. Cause: every generated mesh was an asset file of its own, and an asset file costs about 30 ms to write whatever its size (`Assets/Editor/BuildSpeedProbe.cs`: 1,000 meshes 25 s as files, 0.4 s packed); some 40,000 of them. Now packed 300 to a file as sub-assets (`MapBuilder.Quick.cs` PackMesh): Businesses 485 -> 26 s, Roads 480 -> about 25 s, Rest, Neighborhood, Hydrants, Driveways and Network the same way. Also: the manholes' street cut tests only the holes near each mesh; the road levelling's terrain edit runs only over the cells along each road, in parallel (R62LevelMains 165 -> 60 s, the same ground).
-2. Quick builds take planning changes now (a track's grading, a door's apron, a road's levelling): the quick build compares the planning's ground with the record's and uses the new one where it changed; it refuses, naming them, if a step not being rebuilt also changed those samples, and it lists other steps' renderers standing on the moved ground (they keep their old heights until the round's full build). Test: the mound by Town Center Drive raised 0.3 m in its data, quick-built (6,337 samples moved), lowered again, quick-built: the scene identical to the full build's. Round 64's six one-hour rebuilds (aprons, the south lot's grading, the pit's ramps, the door frames) would each have been a quick build.
-3. More quick steps: Shortcuts, CreekTrack, LakesRace (with TrailRace and Mall already): a quick build of all four is the full build's scene exactly.
-Times on Dan's PC (in use): a quick build of the Mall 10 min, of the four track steps 11 min, quick with its exe about 14 min; the full build about 20 min. The quick build's own cost is now mostly the planning's replay (about 7 min).
-`Builds/ChastainRush/` 2026-10-24 17:33 (the same world as Round 64's; Round 64's checks on it: doors, the north wing's grille, the mound, 12 of 12). Imported from Racer: nothing.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

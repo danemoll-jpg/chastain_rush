@@ -6350,3 +6350,56 @@ H DONE for your spot, PARTLY for the junctions. Option (1) as built: widest road
 Check (`-exeRound64`): the lap both ways on all 11 vehicles, through the north wing and Halverson Home, no dead stop (22 of 22); AI twice each way on Hard, traffic Normal: 12 of 12 finish, stuck 207 s in all (Round 62: 442), resets 87 (174); every barrier holds (20 forward, 24 reverse); final exe 23 of 23 (`round64_check_final.txt`). Not measured: where the AI's remaining stuck time is (whether any is at the boardwalk).
 Builds: 6 full Build Maps, not one (check fixes: Carroway's door threshold, the south lot's tiers, the pit's ramps, the door frames, Barrett's curve twice). `Builds/ChastainRush/` 2026-10-24 12:56. Imported from Racer: nothing.
 For Dan to check: race the new forward and reverse; Ring Road and Halverson Home; the Carroway shortcut both ways (worth the risk?); the glass doors; the turn at the north wing; the trail's people; the mound jump; Barrett at your spot; the other junctions (air over 0.15 s went up: your call whether to keep option (1)).
+
+## Round 65 (moved from TODO.md on 2026-10-25 when Dan reviewed Rounds 68 and 69; word for word)
+
+## Previous delivery 3: Round 65
+**Not yet reviewed: editor tools only; Dan moved on to Round 66 on 2026-10-24 17:55 without checking 64 or 65 ("I won't have a chance to check it").**
+**Round 65, BUILD TOOLS (Claude's suggestion 2026-10-23 17:40; Dan: "you had wanted a round too. but I want to do the helicopter round
+next").** NEXT, straight after Round 64, before any new track or feature (Dan, 2026-10-24 11:09: he meant build tools to come first). Make track and shortcut work rebuild only its own area (Round 42's quick builds extended to what
+the new tracks build: trail decks, boardwalks, bridges, the mall's race pieces) so a round's fix-and-check cycles take minutes, keeping one
+full Build Map at the end; trim the full Build Map (Roads and Businesses about 27 of its 62 minutes in Round 62).
+Dan, 2026-10-24: "When Round 64 is done and committed, do Round 65 in TODO.md (QUEUED) right away." (Round 64 took 6 full builds of about an hour each.)
+
+**Status (Claude, 2026-10-24): built and measured; editor tools only, the world unchanged (every build's scene the same as before by SceneDump). Nothing for Dan to drive.** Detail: `local/round65/` (times, scene dumps; git-ignored).
+1. The full build: Build Map 2,616 -> 912 s (44 -> 15 min); the exe after it 822 -> 234 s; a full build with its exe about 60 -> 20 min. Cause: every generated mesh was an asset file of its own, and an asset file costs about 30 ms to write whatever its size (`Assets/Editor/BuildSpeedProbe.cs`: 1,000 meshes 25 s as files, 0.4 s packed); some 40,000 of them. Now packed 300 to a file as sub-assets (`MapBuilder.Quick.cs` PackMesh): Businesses 485 -> 26 s, Roads 480 -> about 25 s, Rest, Neighborhood, Hydrants, Driveways and Network the same way. Also: the manholes' street cut tests only the holes near each mesh; the road levelling's terrain edit runs only over the cells along each road, in parallel (R62LevelMains 165 -> 60 s, the same ground).
+2. Quick builds take planning changes now (a track's grading, a door's apron, a road's levelling): the quick build compares the planning's ground with the record's and uses the new one where it changed; it refuses, naming them, if a step not being rebuilt also changed those samples, and it lists other steps' renderers standing on the moved ground (they keep their old heights until the round's full build). Test: the mound by Town Center Drive raised 0.3 m in its data, quick-built (6,337 samples moved), lowered again, quick-built: the scene identical to the full build's. Round 64's six one-hour rebuilds (aprons, the south lot's grading, the pit's ramps, the door frames) would each have been a quick build.
+3. More quick steps: Shortcuts, CreekTrack, LakesRace (with TrailRace and Mall already): a quick build of all four is the full build's scene exactly.
+Times on Dan's PC (in use): a quick build of the Mall 10 min, of the four track steps 11 min, quick with its exe about 14 min; the full build about 20 min. The quick build's own cost is now mostly the planning's replay (about 7 min).
+`Builds/ChastainRush/` 2026-10-24 17:33 (the same world as Round 64's; Round 64's checks on it: doors, the north wing's grille, the mound, 12 of 12). Imported from Racer: nothing.
+
+## Round 66 (moved from TODO.md on 2026-10-25 when Dan reviewed Rounds 68 and 69; word for word)
+
+## Previous delivery 2: Round 66
+**Reviewed: Dan played the Round 66 build 2026-10-25 02:23 (the Noonday Creek Trail race, forward and reverse): "Not much there"; his notes (Round 64's trail) are Round 67 B.**
+**Round 66, THE MAP'S EDGES: A WORLD THAT KEEPS GOING, NATURAL STOPS, A HELICOPTER BOUNDARY, ATLANTA ON THE HORIZON (Dan, 2026-10-24
+11:41: "Speaking of edges, how can I handle this on my map especially now I have helicopters"; 11:44 "Yes" to Claude's three-part outline,
+"And I like the idea of Atlanta in the distance"). Dan, 2026-10-24 17:55: "Lets go ahead" (Rounds 64 and 65 done, not yet seen by him). Use Round 65's quick builds while working.** ONE full Build Map at the end. Tuning limit.
+1. SCENERY PAST THE EDGE (not playable): a ring of land a few km wide beyond every edge from the same USGS 3DEP elevation (download the
+   extra tiles as for the mountain), low detail, no colliders, roads or traffic: terrain, a carpet of cheap far trees (Round 63's far-view
+   kind), simple building blocks where OSM / NAIP show towns, water. Haze thickening toward its outer edge so its end is never seen. From the
+   summit and from the helicopter at its ceiling the world must look like it keeps going: no cliff, no void.
+2. THE HORIZON: real distant landmarks at their true bearings, distances and heights: the Atlanta skyline (downtown and midtown towers,
+   about 30 km south-east; generic tower shapes, no brand names, lit at night), and the far ridges / mountains around (Lost Mountain, Pine
+   Mountain, Sweat Mountain and the like, from elevation data where it reaches, as silhouettes beyond it). Day / night and weather apply
+   (hidden in fog and rain, clear on a clear day).
+3. CARS STOP NATURALLY AT THE EDGE: roads that leave the map end in "Road Closed" barricades / a detour (road-crew style), highways (I-75,
+   I-575, US 41 and the like) in a jersey-barrier closure where traffic turns round (traffic and police nets end there cleanly); off road,
+   the edge runs through dense woods, creeks or fence lines where they exist, with a soft invisible push-back so nothing gets through or
+   falls off.
+4. THE HELICOPTER'S BOUNDARY: near the edge a "Leaving the survey area" warning; keep going and a strong headwind slows it and swings it
+   back (no crash, no teleport). A height ceiling, so the edges of the scenery are never seen from above.
+Check: from the summit and from the helicopter at its ceiling, looking out each way (pictures, day and night, Atlanta's skyline in them);
+drive every road that leaves the map (each stops at its closure, traffic turns); fly at each edge (turned back); frame rate at the summit
+and at the ceiling against Round 63's numbers.
+For Dan to check: fly to the edges and look out; Atlanta from the summit; drive off the map on a few roads.
+
+**Status (Claude, 2026-10-24): built and checked in the exe by script, not yet seen by Dan.** Evidence `Data/screenshots/round66/` (pictures `66_*.png`, check texts). No bug reports newer than Round 64's session.
+1 DONE. A ring 9 km wide past every edge (`python Tools/mapgen/make_scenery.py`: USGS 3DEP 30 m heights, NLCD 2021 land cover for "towns": the US land-cover map made from the same imagery as NAIP; drawn at run time by `World/EdgeScenery.cs`, no Build Map step): ground by cover, 384,000 trees in the map's far tree shapes, 48,000 house and building blocks, lakes; no colliders. Its inner edge takes the map's own edge heights. The fog closes long before its outer edge, and the land beyond it to 70 km is the haze's color (`66_edge_*`, `66_ceiling_*`).
+2 DONE. Atlanta (Downtown, Midtown), Buckhead, Cumberland and Perimeter Center: 169 generic towers at their real places and heights (heights x1.5 like every building and hill here), lit windows and blinking red tops at night, gone in rain (`66_summit_atlanta_*`, `66_ceiling_atlanta_*`). The far ridges come from the elevation data (only land 110 m or more above its surroundings shows as a blue-gray silhouette: Sweat Mountain, Lost Mountain, the Blue Ridge foothills to the north). The view now opens on the summit too (height over the land's low point, not only over the ground).
+3 DONE (see the numbers). Every drivable road end on the edge (262): highways (I-75, I-575, US 41, Barrett, North Marietta Parkway, Canton Road; 19 carriageways) get jersey barriers, cones and ROAD CLOSED; the rest get type III barricades, ROAD CLOSED and a DETOUR sign (`make_closure_signs.py`); 38 roads that run along the edge itself get none (the push-back covers them). Closures are solid to 2.6 m (lower ones let a fast car vault them). Traffic and police networks end before them; traffic turns round there (16 turnarounds across divided highways). Off road: pushed back within 36 m, a wall on the edge, anything past it put back.
+   Checks: every closure driven into (22 m/s, highways 30): 221 of 224 stop at it; 3 do not (Canton Road at the north edge and the service road beside it, Canton Road at the east edge: on a bend the car gets onto or round the barriers' end, then the edge's push-back stops it short of the edge; third try, tuning limit: left for Dan, `66_closure_016_*`, `66_closure_139_*`); traffic (Heavy, 11 spots): 144 cars turned round, 25 waited at one-way ramps with no turn (moved off unseen, as before); off road at each edge: stopped 1.4 to 6 m short, never past.
+4 DONE. LEAVING THE SURVEY AREA from 300 m inside the edge; past it a headwind that holds it within about 215 m out flat out with boost, the nose swung back to the map, no crash (4 of 4 edges, `66_heli_*`). The ceiling stays Round 63's (1,700 m): from there the ring's outer edge is past the fog. Past the edge there is no ground: it stays 30 m over the ground it left.
+Frame rate (1280 x 720, a fixed camera; not measured at 3840 x 2160): at the ceiling over Chastain Glen / Town Center / the mountain 100 / 95 / 96 fps with the scenery, 104 / 94 / 93 without (Round 63 at 1080p, 500 m: 164 / 99 / 88). On the summit 65 to 83 fps: its view now opens to 6 km (180 to 196 with the fog closed, as before).
+Builds: three full Build Maps, not one (the closures needed two fixes found by the drives: wider rows, then taller colliders; each about 30 min with the exe), code-only exes before them. `Builds/ChastainRush/` 2026-10-24 20:49. Imported from Racer: nothing.
+For Dan: (a) the ring and the skyline's look; (b) the summit's frame rate with the view open; (c) the three Canton Road closures (a car can end up on the barriers; R / Y resets).

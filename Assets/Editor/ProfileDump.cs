@@ -55,15 +55,15 @@ namespace ChastainRush
             foreach (var kv in self.OrderByDescending(x => x.Value).Take(40)) sb.AppendLine($"{kv.Value / frames,9:0.00}  {kv.Key}");
             sb.AppendLine("-- total time by path, top 80 (calls per frame)");
             foreach (var kv in total.OrderByDescending(x => x.Value).Take(80)) sb.AppendLine($"{kv.Value / frames,9:0.00}  ({calls[kv.Key] / frames:0.#})  {kv.Key}");
-            sb.AppendLine("-- the five slowest frames: their top self times");
-            foreach (var (f, ms) in frameMs.OrderByDescending(x => x.ms).Take(5))
+            sb.AppendLine("-- the twelve slowest frames: their top self times");
+            foreach (var (f, ms) in frameMs.OrderByDescending(x => x.ms).Take(12))
             {
                 sb.AppendLine($"frame {f}: {ms:0.0} ms");
                 using (var v = ProfilerDriver.GetHierarchyFrameDataView(f, 0, HierarchyFrameDataView.ViewModes.MergeSamplesWithTheSameName, HierarchyFrameDataView.columnSelfTime, false))
                 {
                     var one = new Dictionary<string, double>(); var st = new Stack<int>(); var kids = new List<int>(); st.Push(v.GetRootItemID());
                     while (st.Count > 0) { v.GetItemChildren(st.Pop(), kids); foreach (int k in kids) { Add(one, v.GetItemName(k), v.GetItemColumnDataAsSingle(k, HierarchyFrameDataView.columnSelfTime)); st.Push(k); } }
-                    foreach (var kv in one.OrderByDescending(x => x.Value).Take(6)) sb.AppendLine($"   {kv.Value,8:0.00}  {kv.Key}");
+                    foreach (var kv in one.OrderByDescending(x => x.Value).Take(8)) sb.AppendLine($"   {kv.Value,8:0.00}  {kv.Key}");
                 }
             }
             File.WriteAllText(Path.ChangeExtension(raw, ".txt"), sb.ToString());

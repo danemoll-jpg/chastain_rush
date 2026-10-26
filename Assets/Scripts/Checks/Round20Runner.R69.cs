@@ -77,7 +77,11 @@ namespace ChastainRush
             var pl = Plane; float t = 0f; pl.sThrottle = throttle; Time.timeScale = fps != null ? 1f : 2f; Time.maximumDeltaTime = .5f; float top = 0f, minClear = 999f;
             while (t < timeout)
             {
-                if (fps != null) { yield return null; t += Time.deltaTime; if (Time.unscaledDeltaTime > 0f && Flat(car.Body.position - new Vector3(to.x, 0, to.y)).magnitude < 1500f) fps.Add(1f / Time.unscaledDeltaTime); }
+                if (fps != null)
+                {
+                    yield return null; t += Time.deltaTime;
+                    if (Time.unscaledDeltaTime > 0f && Flat(car.Body.position - new Vector3(to.x, 0, to.y)).magnitude < 1500f) { fps.Add(1f / Time.unscaledDeltaTime); R69Timing(label, true); }
+                }
                 else { yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; }
                 if (pl.Crashed) break;
                 var p = car.Body.position; float alt = (GroundQuery.TryHeight(p.x, p.z, out float gy) ? gy : 0f) + height;
@@ -87,7 +91,7 @@ namespace ChastainRush
                 top = Mathf.Max(top, p.y); minClear = Mathf.Min(minClear, pl.HeightAboveGround);
                 if (Flat(p - new Vector3(to.x, 0, to.y)).magnitude < 150f) break;
             }
-            Time.timeScale = 1f;
+            Time.timeScale = 1f; if (fps != null) R69Timing(label, false);
             log.Add($"{label}: {(pl.Crashed ? "CRASHED: " + pl.CrashReason : t >= timeout ? "NOT REACHED" : $"reached in {t:0} s")} (as high as {top:0} m, as low as {minClear:0} m over the ground, {pl.Airspeed:0} m/s)");
         }
 
@@ -251,10 +255,107 @@ namespace ChastainRush
             Check("pstand: left it for the Street Classic", left && !PlaneFlight.On(car) && car.GetComponent<VehicleConfiguration>().profileId == "original");
         }
 
+        // the frame-rate legs' CPU / GPU split (FrameTimingManager) and, with -r69Raw, a profiler capture of each leg's measured stretch
+        // (<dir>/r69_<leg>.raw, a development build's markers; read it with ChastainRush.ProfileDump.Run -profileRaw <file>)
+        double r69Main, r69Render, r69Gpu; int r69Ft; bool r69Rec; readonly FrameTiming[] r69T = new FrameTiming[1];
+        public string R69Split => r69Ft > 0 ? $"main {r69Main / r69Ft:0.0} ms, render thread {r69Render / r69Ft:0.0} ms, GPU {r69Gpu / r69Ft:0.0} ms" : "no frame timings";
+        void R69Timing(string label, bool on)
+        {
+            bool raw = Environment.GetCommandLineArgs().Contains("-r69Raw");
+            if (on && !r69Rec)
+            {
+                r69Rec = true; r69Main = r69Render = r69Gpu = 0; r69Ft = 0;
+                if (Environment.GetCommandLineArgs().Contains("-r69Markers")) R69Markers(true);
+                if (raw) { UnityEngine.Profiling.Profiler.logFile = System.IO.Path.Combine(outputDir, "r69_" + new string(label.Where(char.IsLetterOrDigit).ToArray()) + "_" + Mathf.RoundToInt(car.Body.position.y) + ".raw"); UnityEngine.Profiling.Profiler.enableBinaryLog = true; UnityEngine.Profiling.Profiler.enabled = true; }
+            }
+            if (on && r69Recs != null) foreach (var (_, r, st) in r69Recs) { long v = r.LastValue; st[0] += v; if (v > st[1]) st[1] = v; if (v > 8000000) st[2]++; }
+            if (on) { FrameTimingManager.CaptureFrameTimings(); if (FrameTimingManager.GetLatestTimings(1, r69T) > 0) { r69Main += r69T[0].cpuMainThreadFrameTime; r69Render += r69T[0].cpuRenderThreadFrameTime; r69Gpu += r69T[0].gpuFrameTime; r69Ft++; } }
+            if (!on && r69Rec) { r69Rec = false; R69Markers(false); if (raw) { UnityEngine.Profiling.Profiler.enabled = false; UnityEngine.Profiling.Profiler.enableBinaryLog = false; UnityEngine.Profiling.Profiler.logFile = ""; } }
+        }
+
+        // -r69Markers (a development build): every profiler marker's time per frame over the leg: the average, the worst frame, and in how many frames it took over 8 ms
+        List<(string name, Unity.Profiling.ProfilerRecorder r, long[] st)> r69Recs; public readonly List<string> R69MarkerLines = new List<string>();
+        static readonly HashSet<string> R69Noise = new HashSet<string> { "BeginJob", "EndJob", "ScheduleJob", "WaitForCompleted", "ScheduleAllocJob", "KickJobs", "Component.SetGameObject", "Object.SetName", "Idle", "Main Thread", "Semaphore.WaitForSignal", "EngineJob", "PlayerLoop", "Gfx.WaitForGfxCommandsFromMainThread" };
+        static readonly (Unity.Profiling.ProfilerCategory cat, string name)[] R69Counters =
+        {
+            (Unity.Profiling.ProfilerCategory.Render, "Batches Count"), (Unity.Profiling.ProfilerCategory.Render, "SetPass Calls Count"), (Unity.Profiling.ProfilerCategory.Render, "Draw Calls Count"),
+            (Unity.Profiling.ProfilerCategory.Render, "Triangles Count"), (Unity.Profiling.ProfilerCategory.Render, "Vertices Count"), (Unity.Profiling.ProfilerCategory.Render, "Shadow Casters Count"),
+            (Unity.Profiling.ProfilerCategory.Memory, "Gfx Used Memory"), (Unity.Profiling.ProfilerCategory.Memory, "Texture Memory"), (Unity.Profiling.ProfilerCategory.Memory, "Mesh Memory"), (Unity.Profiling.ProfilerCategory.Memory, "GC Allocated In Frame"),
+        };
+        void R69Markers(bool on)
+        {
+            if (on)
+            {
+                var hs = new List<Unity.Profiling.LowLevel.Unsafe.ProfilerRecorderHandle>(); Unity.Profiling.LowLevel.Unsafe.ProfilerRecorderHandle.GetAvailable(hs);
+                r69Recs = new List<(string, Unity.Profiling.ProfilerRecorder, long[])>();
+                foreach (var h in hs)
+                {
+                    var d = Unity.Profiling.LowLevel.Unsafe.ProfilerRecorderHandle.GetDescription(h);
+                    if (d.UnitType != Unity.Profiling.ProfilerMarkerDataUnit.TimeNanoseconds || (d.Flags & Unity.Profiling.LowLevel.MarkerFlags.Counter) != 0) continue;
+                    if (R69Noise.Contains(d.Name)) continue;
+                    r69Recs.Add((d.Name, Unity.Profiling.ProfilerRecorder.StartNew(d.Category, d.Name, 1), new long[3]));
+                }
+                foreach (var c in R69Counters) r69Recs.Add(("#" + c.name, Unity.Profiling.ProfilerRecorder.StartNew(c.cat, c.name, 1), new long[3]));
+                return;
+            }
+            if (r69Recs == null) return;
+            int n = Mathf.Max(1, r69Ft);
+            R69MarkerLines.Add("        counters (average / most): " + string.Join("; ", r69Recs.Where(x => x.name[0] == '#').Select(x => $"{x.name.Substring(1)} {x.st[0] / n:N0} / {x.st[1]:N0}")));
+            r69Recs.RemoveAll(x => { if (x.name[0] != '#') return false; x.r.Dispose(); return true; });
+            var rows = r69Recs.Where(x => x.st[1] < 10_000_000_000L).Select(x => (x.name, avg: x.st[0] / (double)n / 1e6, max: x.st[1] / 1e6, over: x.st[2])).ToList();
+            foreach (var x in r69Recs) x.r.Dispose(); r69Recs = null;
+            R69MarkerLines.Add("        physics: " + string.Join("; ", rows.Where(x => x.name == "FixedUpdate.PhysicsFixedUpdate" || x.name == "Physics.Simulate" || x.name == "Physics.SyncTransforms" || x.name == "FixedBehaviourUpdate" || x.name == "Physics.SwapPhysXBuffersJob").Select(x => $"{x.name} {x.avg:0.00} ms avg, worst {x.max:0} ms, {x.over} frames over 8 ms")));
+            R69MarkerLines.Add("        by average: " + string.Join("; ", rows.OrderByDescending(x => x.avg).Take(30).Select(x => $"{x.name} {x.avg:0.00}")));
+            R69MarkerLines.Add("        by worst frame: " + string.Join("; ", rows.OrderByDescending(x => x.max).Take(30).Select(x => $"{x.name} {x.max:0} ms ({x.over} over 8 ms)")));
+        }
+
+        // -r69Meshes: what the loaded meshes cost (Profiler.GetRuntimeMemorySizeLong: the CPU copy of a readable mesh and its GPU buffers), grouped by
+        // name (digits dropped), with how many are readable and whether a renderer draws them or only a collider uses them
+        static string R69Group(string n) { var t = new string((n ?? "").Where(c => !char.IsDigit(c)).ToArray()).Trim(' ', '_', '-', '(', ')', '.'); return t.Length == 0 ? "(no name)" : t; }
+        void R69MeshCensus()
+        {
+            var drawn = new HashSet<Mesh>(); var collided = new HashSet<Mesh>();
+            foreach (var f in FindObjectsByType<MeshFilter>(FindObjectsInactive.Include, FindObjectsSortMode.None)) if (f.sharedMesh && f.GetComponent<MeshRenderer>()) drawn.Add(f.sharedMesh);
+            foreach (var c in FindObjectsByType<MeshCollider>(FindObjectsInactive.Include, FindObjectsSortMode.None)) if (c.sharedMesh) collided.Add(c.sharedMesh);
+            var all = Resources.FindObjectsOfTypeAll<Mesh>();
+            long total = 0, readable = 0, colliderOnly = 0, unused = 0;
+            var groups = new Dictionary<string, (long bytes, int n, int readable, int drawnN, int colOnly, long verts)>();
+            foreach (var m in all)
+            {
+                long b = UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(m); total += b; if (m.isReadable) readable += b;
+                bool d = drawn.Contains(m), c = collided.Contains(m); if (c && !d) colliderOnly += b; if (!c && !d) unused += b;
+                var k = R69Group(m.name); groups.TryGetValue(k, out var g);
+                groups[k] = (g.bytes + b, g.n + 1, g.readable + (m.isReadable ? 1 : 0), g.drawnN + (d ? 1 : 0), g.colOnly + (c && !d ? 1 : 0), g.verts + m.vertexCount);
+            }
+            report.AppendLine($"  meshes loaded: {all.Length}, {total / 1048576} MB (readable ones {readable / 1048576} MB; used only by a collider {colliderOnly / 1048576} MB; neither drawn nor a collider {unused / 1048576} MB)");
+            report.AppendLine($"  textures: {Resources.FindObjectsOfTypeAll<Texture>().Sum(t => UnityEngine.Profiling.Profiler.GetRuntimeMemorySizeLong(t)) / 1048576} MB; the graphics driver's estimate {UnityEngine.Profiling.Profiler.GetAllocatedMemoryForGraphicsDriver() / 1048576} MB; {SystemInfo.graphicsDeviceName} {SystemInfo.graphicsMemorySize} MB");
+            foreach (var kv in groups.OrderByDescending(x => x.Value.bytes).Take(45))
+                report.AppendLine($"    {kv.Value.bytes / 1048576,6} MB  {kv.Value.n,6} meshes ({kv.Value.readable} readable, {kv.Value.drawnN} drawn, {kv.Value.colOnly} collider only), {kv.Value.verts / 1000} k vertices  {kv.Key}");
+            Flush();
+        }
+        // -r69Meshes: at each leg's end, the triangles of the renderers in view (isVisible) by name group, and the trees' own draw
+        void R69VisibleCensus(string label)
+        {
+            var groups = new Dictionary<string, (long tris, int n)>();
+            foreach (var r in FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+            {
+                if (!r.isVisible || !r.enabled || r.forceRenderingOff) continue; var f = r.GetComponent<MeshFilter>(); if (!f || !f.sharedMesh) continue;
+                var m = f.sharedMesh; long t = 0; for (int i = 0; i < m.subMeshCount; i++) t += m.GetIndexCount(i) / 3;
+                var k = R69Group(r.gameObject.name); groups.TryGetValue(k, out var g); groups[k] = (g.tris + t, g.n + 1);
+            }
+            foreach (var tr in FindObjectsByType<Terrain>(FindObjectsSortMode.None)) if (tr.drawHeightmap) { groups.TryGetValue("(terrain tiles drawn)", out var g); groups["(terrain tiles drawn)"] = (g.tris, g.n + 1); }
+            var mall = TownCenterMall.Current; if (mall) report.AppendLine($"      {label}: Town Center's inside {(mall.Shown ? "DRAWN" : "not drawn")} ({mall.Distance(car.Body.position):0} m from the building across, {car.Body.position.y - mall.roof:0} m over its roof)");
+            report.AppendLine($"      {label}, in view at {car.Body.position.y:0} m: " + string.Join("; ", groups.OrderByDescending(x => x.Value.tris).Take(25).Select(x => $"{x.Key} {x.Value.tris / 1000} k tris ({x.Value.n})")));
+            Flush();
+        }
+
         IEnumerator R69Fps()
         {
             report.AppendLine(); report.AppendLine("=== Frame rate crossing the map (1280 x 720, not measured at 3840 x 2160), at 300 m and 600 m over the ground (real time, the frames over the last 1.5 km to each place)");
             QualitySettings.vSyncCount = 0; Application.targetFrameRate = -1;   // (a check run's settings may cap it at 60, PerfCheckRunner's way)
+            if (Environment.GetCommandLineArgs().Contains("-r69MallAsBefore")) { TownCenterMall.HeightCounts = false; report.AppendLine("  (BEFORE: -r69MallAsBefore, Town Center's inside drawn from any height over it)"); }
+            if (Environment.GetCommandLineArgs().Contains("-r69TrunksAsBefore")) { TreeTrunks.HighSkip = false; report.AppendLine("  (BEFORE: -r69TrunksAsBefore, the trunk colliders follow the plane at any height)"); }
+            bool census = Environment.GetCommandLineArgs().Contains("-r69Meshes"); if (census) R69MeshCensus();
             yield return BoardPlane(true); yield return TakeOff("09", 120f);
             var legs = new (string name, Vector2 at)[] { ("Kennesaw Mountain", new Vector2(-1123f, -5870f)), ("Town Center", new Vector2(265f, -1207f)), ("Chastain Glen", new Vector2(2938f, 799f)) };
             foreach (float h in new[] { 300f, 600f })
@@ -262,8 +363,9 @@ namespace ChastainRush
                 var log = new List<string>(); var line = new List<string>();
                 foreach (var (name, at) in (h > 400f ? legs.Reverse() : legs))
                 {
-                    var fr = new List<float>(); yield return FlyTo(name, at, h, .8f, 300f, log, fr);
-                    fr.Sort(); line.Add(fr.Count > 0 ? $"{name} {fr.Average():0} fps (1 % low {fr[Mathf.Max(0, fr.Count / 100)]:0})" : $"{name} -");
+                    var fr = new List<float>(); yield return FlyTo(name, at, h, .8f, 300f, log, fr); if (census) R69VisibleCensus(name);
+                    foreach (var ml in R69MarkerLines) log.Add(name + ml); R69MarkerLines.Clear();
+                    fr.Sort(); line.Add(fr.Count > 0 ? $"{name} {fr.Average():0} fps (1 % low {fr[Mathf.Max(0, fr.Count / 100)]:0}; {fr.Count(f => f < 20f)} frames over 50 ms; {R69Split})" : $"{name} -");
                 }
                 report.AppendLine($"  at {h:0} m: {string.Join("; ", line)}");
                 foreach (var l in log) report.AppendLine("      " + l);

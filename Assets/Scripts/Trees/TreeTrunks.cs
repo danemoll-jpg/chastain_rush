@@ -140,9 +140,18 @@ namespace ChastainRush
             }
             if (car == null) { var v = FindAnyObjectByType<ArcadeVehicle>(); if (v == null) return; car = v.transform; }
             var p = car.position;
+            // Round 69 follow-up (the plane's frame rate): high over the ground (the plane, the helicopter) no trunk is in reach, so the pool is put
+            // away once and not moved; moving its static capsules every few metres at 95 m/s cost PhysX most of its time. Back down, it refills at once.
+            if (HighSkip && GroundQuery.TryHeight(p.x, p.z, out float gy) && p.y - gy > HighAbove)
+            {
+                if (!high) { high = true; Fill(new Vector3(1e7f, 0f, 1e7f), radius, caps, out _); Active = 0; }
+                lastAt = new Vector3(1e9f, 0f, 1e9f); return;
+            }
+            high = false;
             if ((p - lastAt).sqrMagnitude < 9f && Time.time < nextAt) return;
             Refresh(p);
         }
+        public static bool HighSkip = true; const float HighAbove = 80f; bool high;   // HighSkip off: as before (a check's "before")
 
         // also called by a reset, so the trees round the new spot are solid before the car is placed there
         public void Refresh(Vector3 p)

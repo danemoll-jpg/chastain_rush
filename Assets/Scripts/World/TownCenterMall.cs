@@ -47,6 +47,15 @@ namespace ChastainRush
             float dx = Mathf.Max(0f, Mathf.Max(x0 - p.x, p.x - x1)), dz = Mathf.Max(0f, Mathf.Max(z0 - p.z, p.z - z1));
             return Mathf.Sqrt(dx * dx + dz * dz);
         }
+        // Round 69 follow-up (the plane's frame rate): the inside's reach counts the height over the roof too; it was drawn under the roof from
+        // any height while the camera was over the building (the plane and the helicopter). HeightCounts off: as before (a check's "before")
+        public static bool HeightCounts = true;
+        float Reach(Vector3 p)
+        {
+            float d = Distance(p); if (!HeightCounts) return d;
+            float dy = Mathf.Max(0f, Mathf.Max(p.y - roof, lowerFloor - p.y));
+            return Mathf.Sqrt(d * d + dy * dy);
+        }
         public bool Inside(Vector3 p)
         {
             if (outline == null || outline.Length < 3) return false; var q = new Vector2(p.x, p.z); bool inside = false;
@@ -62,8 +71,8 @@ namespace ChastainRush
             {
                 nextLook = Time.time + .25f;
                 bool near = false;
-                if (cam) near |= Distance(cam.transform.position) < NearDraw;
-                if (player) near |= Distance(player.Body.position) < NearDraw;
+                if (cam) near |= Reach(cam.transform.position) < NearDraw;
+                if (player) near |= Reach(player.Body.position) < NearDraw;
                 if (near != shown) Show(near);
                 if (player)
                 {
