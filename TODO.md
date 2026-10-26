@@ -138,6 +138,30 @@ bridge, a high ring, the whole circuit on the map.
 For Dan to check: race the planes and fly the time trial (rings, the quarry, under the bridges, the AI).
 
 ## QUEUED rounds
+**Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
+while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
+AFTER ROUND 71 IS DONE AND COMMITTED, without waiting for Dan; he is away all day: decide, write it down, go on.** Quick builds while
+working; ONE full Build Map at the end. Standing rules (real physics off every ramp; nothing slows a car on a ramp; landings clean).
+Tuning limit. Short results.
+A. THE QUARRY JUMPS (Free Roam events, the stunt park's family). Big steel stunt ramps on the quarry's rim, Evel Knievel style: a long
+   straight run-up lane, a tall ramp with a starting gantry (stars and stripes bunting fine, no real names / brands), a landing ramp on the
+   far side across the quarry lake, a crowd in bleachers, a PA voice-free fanfare. Three jumps of rising size (Code designs them from the
+   flight, as Round 68): a short one across a corner of the lake, a long one across the middle, and THE BIG ONE across the widest part (the
+   longest jump in the game after the mountain ramp, Round 70 A). Miss the landing ramp and you're in the lake (the game's water: reset).
+   Scored events: distance, height, landing (clean / rough / crash), with Top 10 records per jump; a run-up countdown start; a replay of
+   the jump (Round 57's replays: the TV cameras placed for the flight). Rewards / unlocks: none yet (the campaign is held). Fast travel to
+   the quarry's start gantry. Reachable by any ground vehicle, including bikes and stunt vehicles; flying vehicles not in the events.
+B. KNOWN FIXES (found by Code in earlier rounds, not yet asked for by Dan; small):
+   B1. Three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on Kennesaw Mountain Drive at
+       (-500, -5320) (Rounds 67, 68): find and fix.
+   B2. Canton Road's three map-edge closures (Round 66): a car can end up on top of the barriers; make them impossible to climb.
+   B3. Round 64 C's junction levelling: drives with air over 0.15 s went up; find the worst junctions in the jolt table and smooth them.
+   B4. Round 68's J2 kicker: the Drifter Twin flat out loses 12 m/s on its top; ease it without shrinking the jump (no more than two tries).
+Check: each jump flown flat out on the Drifter Twin, the Street Classic, a bike and a stunt vehicle (distance, air, landing), short (into
+the lake, reset), and the scoring and records; B1 to B4 before / after. Pictures: the three ramps from the run-up, mid-air over the lake,
+the crowd, the landing.
+For Dan to check: jump the quarry (all three); the four fixes.
+
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
 this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
