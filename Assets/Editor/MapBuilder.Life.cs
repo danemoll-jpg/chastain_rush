@@ -217,6 +217,16 @@ namespace ChastainRush
                 var tp = ToPoints(tl.points); if (tp.Count < 2 || !tp.Any(q => q.x > -2400f && q.x < 0f && q.y > -7600f && q.y < -4900f)) continue;
                 streets.Add((Densify(tp, 3f), Mathf.Max(.4f, tl.width * .5f - .7f))); parkTrails++;
             }
+            // Round 70 (E, Dan: "I thought there were supposed to be joggers and walkers on the kennesaw mnt trail"): the park's lots walked too (the
+            // summit lot, the visitor center's): round each lot 2 m in from its edge, as a path
+            int parkLots = 0;
+            foreach (var a in map.parking ?? new Area[0])
+            {
+                var ring = ToPoints(a.outline); if (ring.Count < 3 || !ring.All(q => q.x > -2400f && q.x < 0f && q.y > -7600f && q.y < -4900f)) continue;
+                Vector2 c = Vector2.zero; foreach (var q in ring) c += q; c /= ring.Count;
+                var loop = ring.Select(q => q + (c - q).normalized * Mathf.Min(2f, (c - q).magnitude * .3f)).ToList(); if ((loop[0] - loop[loop.Count - 1]).sqrMagnitude > .01f) loop.Add(loop[0]);
+                streets.Add((Densify(loop, 3f), .4f)); parkLots++;
+            }
             var sp = new List<Vector2>(); var first = new List<int>(); var offs = new List<float>(); var race = new List<bool>(); var trailLine = new List<bool>();
             for (int l = 0; l < streets.Count; l++) { var (pts, off) = streets[l]; bool tr = l >= streetCount; first.Add(sp.Count); offs.Add(off); trailLine.Add(tr); foreach (var q in pts) { sp.Add(q); race.Add(!tr && NearLine(q, off + 5f)); } }
             first.Add(sp.Count);
@@ -238,7 +248,7 @@ namespace ChastainRush
             // every drive and pool-deck group, a third of the shops' walkers
             int coffeeR38 = groups.Count(g => g.kind == AmbientLife.Kind.Porch || g.kind == AmbientLife.Kind.Drive || g.kind == AmbientLife.Kind.Pool || (g.kind == AmbientLife.Kind.Yard && g.action != AmbientLife.Football) || (g.kind == AmbientLife.Kind.Shop && g.action == AmbientLife.Talking));
             Debug.Log($"[Round39] life: the mix {mix}; coffee pairs {coffees} of {groups.Count} groups (1 in {(coffees > 0 ? groups.Count / coffees : 0)}; Round 38's rule on these places: {coffeeR38}); walkers' streets {streets.Count} ({onWalks} on a sidewalk, the rest at the street's edge), " +
-                      $"{sp.Count} points ({race.Count(x => x)} within 5 m of a race line), {linkList.Count} links between street ends; [Round67] {parkTrails} of Kennesaw Mountain's trails walked");
+                      $"{sp.Count} points ({race.Count(x => x)} within 5 m of a race line), {linkList.Count} links between street ends; [Round67] {parkTrails} of Kennesaw Mountain's trails walked, [Round70] and {parkLots} of its lots");
 
             // ---------------- the animals' habitats
             var habitats = new List<Wildlife.Habitat>(); var animalAt = new Dictionary<Wildlife.Species, List<Vector2>>();

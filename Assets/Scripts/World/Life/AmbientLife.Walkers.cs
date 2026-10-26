@@ -157,6 +157,13 @@ namespace Racer
         static readonly WalkKind[] TrailMix = { WalkKind.Jogger, WalkKind.Cyclist, WalkKind.DogWalker, WalkKind.Jogger, WalkKind.Cyclist, WalkKind.Couple, WalkKind.DogWalker, WalkKind.Cyclist };   // Round 64
         bool IsTrail(int line) => streetTrail != null && line < streetTrail.Length && streetTrail[line];
         int TrailOut() => walks.Values.Count(w => IsTrail(w.line));
+        // Round 70 (E, Dan: "I thought there were supposed to be joggers and walkers on the kennesaw mnt trail"): Kennesaw Mountain's park (its trails and
+        // lots, MapBuilder.Life.cs): plenty out in the park's hours (ParkOut near a view in the park, against the streets' 2 to 8), up to ParkInRace in a
+        // race (beside its lines: they get out of the way), hikers with dogs, joggers, couples and families (no bikes on the mountain's trails)
+        public static bool InPark(Vector3 p) => p.x > -2400f && p.x < 0f && p.z > -7600f && p.z < -4900f;
+        const int ParkOut = 12, ParkInRace = 5;
+        static readonly WalkKind[] ParkMix = { WalkKind.DogWalker, WalkKind.Jogger, WalkKind.Couple, WalkKind.DogWalker, WalkKind.Family, WalkKind.Jogger, WalkKind.Couple, WalkKind.DogWalker };
+        int ParkWalkers() => walks.Values.Count(w => IsTrail(w.line) && InPark(w.pos));
         public int TrailWalkers => TrailOut();   // checks
         void PickWalkers(float hour, bool wet, int day, bool underground = false)
         {
@@ -172,8 +179,10 @@ namespace Racer
                 Release(id);
             }
             int target = underground || wet || WalkersOff ? 0 : LifeSchedule.Walkers(hour);
+            bool park = views.Any(InPark);   // Round 70
+            if (park && target > 0 && hour >= 6.5f && hour < 21f) target = Mathf.Max(target, racing ? ParkInRace : ParkOut);
             int near = walks.Values.Count(w => NearestView(w.pos) < Near);
-            for (int tries = 0; tries < 6 && near < target; tries++)
+            for (int tries = 0; tries < (park ? 12 : 6) && near < target; tries++)
             {
                 var v = views[UnityEngine.Random.Range(0, views.Count)];
                 if (TrySpawn(PickKind(hour, nextWalkId * 7 + day * 3 + (int)hour), v, 45f, Near - 10f, false, racing) >= 0) near++;
@@ -203,8 +212,9 @@ namespace Racer
                 var (line, i) = cand[(int)((uint)(seed + k * 104729) % (uint)cand.Count)];
                 int a = streetFirst[line]; var p = streetPts[a + i]; float d = Vector2.Distance(p, new Vector2(near.x, near.z));
                 if (d < rMin || d > rMax || (racing && streetRace[a + i])) continue;
-                bool trail = IsTrail(line); if (trail && racing && TrailOut() >= TrailInRace) continue;
-                var kk = trail && !anywhere ? TrailMix[(int)((uint)(seed + k * 31) % (uint)TrailMix.Length)] : kind;   // (a check's forced kind stays)
+                bool trail = IsTrail(line), inPark = trail && InPark(new Vector3(p.x, 0, p.y));
+                if (trail && racing && (inPark ? ParkWalkers() >= ParkInRace : TrailOut() - ParkWalkers() >= TrailInRace)) continue;
+                var kk = trail && !anywhere ? (inPark ? ParkMix : TrailMix)[(int)((uint)(seed + k * 31) % (uint)TrailMix.Length)] : kind;   // (a check's forced kind stays)
                 var w = new Walk { kind = kk, line = line, s = cumLen[line][i], dir = (seed + k) % 2 == 0 ? 1 : -1, side = (seed >> 3) % 2 == 0 ? 1 : -1 };
                 w.pos = WalkPoint(w, out _); w.pos.y = GroundAt(w.pos);
                 if (!anywhere && InView(w.pos + Vector3.up)) continue;
