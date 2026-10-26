@@ -64,6 +64,12 @@ for f in [os.path.join(ROOT, "Data", "routes", "kennesaw_mountain.json")]:
     dests.append({"id": did, "title": r["name"] + " start", "x": round(li[0], 2), "z": round(li[1], 2), "y": 0.0, "fixed": False,
                   "yaw": round(math.degrees(math.atan2(li[2] - li[0], li[3] - li[1])) % 360, 1)})
     print(f"{r['name']} start: ({li[0]:.1f}, {li[1]:.1f})")
+# Round 70 (A): the summit ramp's run-up start (Tools/mapgen/make_summit_ramp.py), on the drive facing along it
+sr = os.path.join(ROOT, "Data", "tracks", "kennesaw_summit_ramp.json")
+if os.path.isfile(sr):
+    rp = json.load(open(sr, encoding="utf-8"))["ramp"]; dests = [d for d in dests if d["id"] != "kennesaw-summit-ramp"]
+    dests.append({"id": "kennesaw-summit-ramp", "title": "Kennesaw Mountain: the big ramp", "x": rp["start"][0], "z": rp["start"][1], "y": 0.0, "fixed": False, "yaw": rp["start_yaw"]})
+    print(f"the big ramp's run-up: ({rp['start'][0]:.1f}, {rp['start'][1]:.1f}) facing {rp['start_yaw']:.0f}")
 data["destinations"] = dests
 json.dump(data, open(EGGS, "w", encoding="utf-8"), indent=1)
 print(f"{len(dests)} destinations -> {EGGS}")
