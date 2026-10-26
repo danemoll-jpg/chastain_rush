@@ -34,6 +34,9 @@ namespace ChastainRush
             return race != null && race.State != RaceController.Stage.Free && race.Route != null && !race.Route.Reverse && race.Route.Name == route;
         }
 
+        // Round 70 (B): every one set for the race state now (a race's start: the AI's racing line is probed against what stands, before their Update)
+        public static void RefreshAll() { foreach (var r in FindObjectsByType<RaceOnly>(FindObjectsSortMode.None)) r.Update(); }
+
         void Update()
         {
             var race = RaceController.Instance;

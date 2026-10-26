@@ -163,6 +163,20 @@ namespace ChastainRush
             LastRefreshMs = (float)watch.Elapsed.TotalMilliseconds;
         }
 
+        // Round 70 (B): any standing trunk within 'rad' of p (the AI's racing line keeps off the trees beside a road; they have colliders only near a vehicle)
+        public bool AnyTrunk(Vector3 p, float rad)
+        {
+            if (grid == null) return false;
+            int r = Mathf.CeilToInt(rad / Cell), cx = Mathf.FloorToInt(p.x / Cell), cz = Mathf.FloorToInt(p.z / Cell);
+            for (int x = cx - r; x <= cx + r; x++)
+                for (int z = cz - r; z <= cz + r; z++)
+                {
+                    if (!grid.TryGetValue(new Vector2Int(x, z), out var list)) continue;
+                    foreach (int i in list) { if (broken[i]) continue; float dx = tx[i] - p.x, dz = tz[i] - p.z, rr = rad + tr[i]; if (dx * dx + dz * dz < rr * rr) return true; }
+                }
+            return false;
+        }
+
         // the nearest trees within 'rad' of p get the colliders of 'set' (Round 15: shared by the player's pool and the AI pools)
         void Fill(Vector3 p, float rad, CapsuleCollider[] set, out int used)
         {

@@ -104,7 +104,7 @@ SETTINGS = {
     "gate_below_m": 6.0,
     "gate_above_m": 90.0,              # (a car flying a jump over a checkpoint still crosses it: the apexes are 30 to 60 m over the ground)
     "reverse_grid_back_m": 45.0,
-    "ai_hill_targets": [24.0, 30.0, 36.0],   # the AI on the lines' grades outside the jumps' zones (RoadDriver: over 14 %)
+    "ai_hill_targets": [56.0, 56.0, 56.0],   # the AI on the lines' grades outside the jumps' zones (RoadDriver: over 14 %; Round 70: Hard's at the difficulty's pace, no cap left but the crests)
     "ai_crest_g": [30.0, 40.0, 50.0],         # the jumps are taken, not driven round (RoadDriver's crest rule would brake for every lip)
 }
 ROAD = 4729                        # Kennesaw Mountain Drive, the visitor center (s 0) to the summit lot (its end)

@@ -12,9 +12,9 @@
  "gate_above_m": 90.0,
  "reverse_grid_back_m": 45.0,
  "ai_hill_targets": [
-  24.0,
-  30.0,
-  36.0
+  56.0,
+  56.0,
+  56.0
  ],
  "ai_crest_g": [
   30.0,

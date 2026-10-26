@@ -10955,7 +10955,7 @@
    "id": "across Town Center Drive",
    "s0": 2355.5,
    "s1": 2462.9,
-   "speed": 13.0
+   "speed": 20.0
   },
   {
    "id": "into Halverson Home",
@@ -10997,25 +10997,25 @@
    "id": "out of Halverson's",
    "s0": 2979.1,
    "s1": 3076.3,
-   "speed": 16.0
+   "speed": 20.0
   },
   {
    "id": "onto Ring Road",
    "s0": 3076.3,
    "s1": 3238.6,
-   "speed": 14.0
+   "speed": 26.0
   },
   {
    "id": "onto Mall Boulevard",
    "s0": 3383.8,
    "s1": 3435.8,
-   "speed": 11.0
+   "speed": 24.0
   },
   {
    "id": "onto Barrett Parkway",
    "s0": 3609.2,
    "s1": 3668.0,
-   "speed": 12.0
+   "speed": 22.0
   }
  ],
  "ai_widths": [
@@ -19071,31 +19071,31 @@
    "id": "onto Bells Ferry Road",
    "s0": 5401.3,
    "s1": 5508.6,
-   "speed": 12.0
+   "speed": 20.0
   },
   {
    "id": "onto Mall Boulevard",
    "s0": 2062.3,
    "s1": 2120.8,
-   "speed": 13.0
+   "speed": 24.0
   },
   {
    "id": "onto Ring Road",
    "s0": 2268.3,
    "s1": 2322.6,
-   "speed": 12.0
+   "speed": 26.0
   },
   {
    "id": "off Ring Road",
    "s0": 2549.0,
    "s1": 2626.3,
-   "speed": 16.0
+   "speed": 22.0
   },
   {
    "id": "to Halverson's doors",
    "s0": 2626.3,
    "s1": 2723.5,
-   "speed": 18.0
+   "speed": 22.0
   },
   {
    "id": "the mattress mountain",
@@ -19137,7 +19137,7 @@
    "id": "across Town Center Drive",
    "s0": 3239.7,
    "s1": 3347.1,
-   "speed": 13.0
+   "speed": 20.0
   },
   {
    "id": "the red bridge",

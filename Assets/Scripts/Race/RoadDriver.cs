@@ -27,6 +27,10 @@ namespace Racer
         [System.NonSerialized] public RaceEntrant Racer;
         public int Direction => 1;
         public float TargetSpeed { get; private set; }
+        public string Why { get; private set; } = "";   // Round 70 (B, checks): what set TargetSpeed this step (bend, hill, crest, zone, obstacle, angle ...)
+        public int WhyAt { get; private set; }          // the bend's / crest's distance ahead; -1
+        public object WhyOf { get; private set; }       // the zone (RouteAiZoneJson) or the collider in the way
+        bool Cap(float v, string why, int at = -1, object of = null) { if (v < TargetSpeed) { TargetSpeed = v; Why = why; WhyAt = at; WhyOf = of; return true; } return false; }
         public DriverVariation Variation { get; } = new();
         public ShortcutStrategy Shortcuts { get; } = new();
         public AiShortcut ForcedShortcut;   // checks only: always take this one when it comes
@@ -67,7 +71,10 @@ namespace Racer
         float rejoinStuck, rejoinBestDistance;
         Vector3 rejoinTarget;
         bool trackingRejoin, airborne;
-        static readonly float[] cornerUse={.46f,.76f,1.0f}, brakeUse={.55f,.88f,1.0f}, speedUse={.91f,1f,1f}, hillTargets={26,32,42};
+        static readonly float[] cornerUse={.82f,.91f,1.0f}, brakeUse={.82f,.92f,1.0f}, speedUse={.88f,.95f,1f}, hillTargets={42,42,42};
+        // Chastain Rush, Round 70 (B, Dan: "Normal and Easy scale down by pace, not by dumb driving"): Easy and Normal drive Hard's lines and limits at
+        // 88 % and 95 % of its pace (was: corner use .46 / .76, brake use .55 / .88, the hill targets 26 / 32); Hard unchanged. Their mistakes and early
+        // lifts (DriverVariation, the consistency term below) stay as they were
         // Chastain Rush, Round 58 (A6, Dan: "this is in hard mode ... Hard must race"): Hard's corner use .90 -> 1.0, brake use .98 -> 1.0, steep-hill
         // target 35 -> 42 m/s, crest limit 8.2 -> 9.5 m/s2 (a route's own ai_hill_targets / ai_crest_g still win); Easy and Normal as they were
         float pace, stalled, lane, finishRunoff, nextRecovery;
@@ -81,13 +88,17 @@ namespace Racer
         // obstacle sensor counts only vehicles (the trunks beside the line are not in the way), and over each jump it holds the
         // route's set speed (ai_zones)
         bool trail; float laneSide = 1.7f, passLane = 2.3f, laneGap = 2.5f; AiShortcut trailLine;
+        // Chastain Rush, Round 70 (B): on a route with a racing line (RaceRoad.BuildLine) its own lane is the line plus a small lean of its own (a
+        // quarter of its old lane: the three do not all sit in one track); without one (a trail route, underground) its fixed lane as before
+        float bias;
+        float Home(float s) => DriveRoad.HasLine ? DriveRoad.LineOffset(s) + bias : lane;
         public void Initialize(RaceController race, ArcadeVehicle car, RaceEntrant racer, float variation, int index)
         {
             Race = race; Car = car; Racer = racer;
             pace = variation;
             var rd = race.RouteData; trail = rd != null && rd.trail;
             if (trail) { laneSide = rd.ai_lane_m > 0 ? rd.ai_lane_m : .55f; passLane = rd.ai_pass_lane_m > 0 ? rd.ai_pass_lane_m : .85f; laneGap = 1f; trailLine = new AiShortcut { Id = "trail", Name = "trail", Line = race.AiRoad, halfWidth = race.AiRoad.halfWidth }; }
-            lane = index % 2 == 0 ? laneSide : -laneSide;
+            lane = index % 2 == 0 ? laneSide : -laneSide; bias = lane * .25f;
             Variation.Initialize(DriverVariation.Seed, index+Mathf.RoundToInt(variation*1000));
             Shortcuts.Initialize(System.Guid.NewGuid().GetHashCode());
             jumpZone = null; jumpRolled = null; jumpLap = -1; SlipsTaken = 0;   // Chastain Rush, Round 21
@@ -128,9 +139,9 @@ namespace Racer
             float speed = Mathf.Abs(Car.ForwardSpeed);
             DriveRoad.At(s, out var tangent);
             float look = trail ? Mathf.Clamp(4 + speed * .22f, 5, 11) : Mathf.Clamp(7 + speed * .48f, 8, 25);
-            float desiredLane = lane;
+            float desiredLane = Home(s + look);
             if(finished) { finishRunoff += speed*Time.fixedDeltaTime; desiredLane=Mathf.Min(4.7f,driveHalfWidth); }
-            if (!finished && Agency && !trail) desiredLane = PassLane(s, tangent, speed, driveHalfWidth);
+            if (!finished && Agency && !trail) desiredLane = PassLane(s, tangent, speed, driveHalfWidth, desiredLane);
             else if (!finished)
             {
                 bool slowerAhead = false; float slowerLane = 0f, nearest = float.MaxValue;
@@ -224,32 +235,37 @@ namespace Racer
             float cornerGrip = Car.maxGripAcceleration*cornerUse[skill];
             float judgment = Car.braking*brakeUse[skill];
             judgment*=Variation.Judgment;
-            TargetSpeed = Car.topSpeed * speedUse[skill] * pace;
-            if(departing)TargetSpeed=Mathf.Min(TargetSpeed,26);
-            if(finished) TargetSpeed=12;
+            TargetSpeed = Car.topSpeed * speedUse[skill] * pace; Why = "top"; WhyAt = -1; WhyOf = null;
+            if(departing)Cap(26,"departing");
+            if(finished) { TargetSpeed=12; Why="finished"; }
             // Consistency costs time through early lifting, never extra vehicle capability.
             if (skill < 2 && !activeBranch) TargetSpeed *= 1 - (skill==0?.07f:.012f)*(.5f+.5f*Mathf.Sin(Time.time*.19f+pace*31));
-            if(activeBranch) TargetSpeed=Mathf.Min(TargetSpeed,activeBranch.SpeedAt(Car,branchS,cornerGrip,Sloppy));
+            if(activeBranch) Cap(activeBranch.SpeedAt(Car,branchS,cornerGrip,Sloppy),"shortcut");
             else if(plannedBranch&&plannedBranch.entrySpeed>0)
             {
                 float toEntry=Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length);
-                TargetSpeed=Mathf.Min(TargetSpeed,Mathf.Sqrt(plannedBranch.entrySpeed*plannedBranch.entrySpeed+2*judgment*Mathf.Max(0,toEntry-12)));
+                Cap(Mathf.Sqrt(plannedBranch.entrySpeed*plannedBranch.entrySpeed+2*judgment*Mathf.Max(0,toEntry-12)),"shortcut entry");
             }
+            float bendCap = float.MaxValue;   // Round 70: the bends' own limit (held zones keep to it)
             if(!activeBranch)
                 for (float d = 0; d <= 100; d += 8)
                 {
                     DriveRoad.At(s + Direction * d, out var f);DriveRoad.At(s + Direction * (d + 8), out var next);
                     float curvature = Vector3.Angle(Vector3.ProjectOnPlane(f,Vector3.up),Vector3.ProjectOnPlane(next,Vector3.up)) * Mathf.Deg2Rad / 8;
+                    // Round 70 (B): on a racing line, its own curvature (the centerline's polyline corners were bends the line does not have)
+                    if (DriveRoad.HasLine) curvature = Mathf.Max(DriveRoad.LineCurvature(s + d), Mathf.Max(DriveRoad.LineCurvature(s + d + 4), DriveRoad.LineCurvature(s + d + 8)));
                     float curveSpeed = Mathf.Sqrt(cornerGrip / Mathf.Max(.00015f, curvature));
                     var rd = Race ? Race.RouteData : null;   // Chastain Rush, Round 54 (A7): a hilly course's own limits (RouteJson.ai_hill_targets, ai_crest_g)
-                    float hillSpeed = Mathf.Abs(f.y) > .14f ? (rd?.ai_hill_targets != null && rd.ai_hill_targets.Length == 3 ? rd.ai_hill_targets[skill] : hillTargets[skill]) : Car.topSpeed;
+                    float hillSpeed = Mathf.Abs(f.y) > .14f ? (rd?.ai_hill_targets != null && rd.ai_hill_targets.Length == 3 ? rd.ai_hill_targets[2] : hillTargets[2]) * speedUse[skill] : Car.topSpeed;   // Round 70: Hard's, at the difficulty's pace
                     // Without downforce, a convex crest cannot support v²/r greater than gravity.
                     float crest=Mathf.Max(0,Mathf.Asin(f.y)-Mathf.Asin(next.y))/8;
-                    if (crest>.001f) hillSpeed=Mathf.Min(hillSpeed,Mathf.Sqrt((rd?.ai_crest_g != null && rd.ai_crest_g.Length == 3 ? rd.ai_crest_g[skill] : skill>0?(skill==2?9.5f:7.6f):6.5f)/crest));
-                    TargetSpeed = Mathf.Min(TargetSpeed, Mathf.Sqrt(Mathf.Pow(Mathf.Min(curveSpeed, hillSpeed), 2) + 2 * judgment * Mathf.Max(0, d - 12)));
+                    string hw = hillSpeed < Car.topSpeed ? "hill" : "top";   // (constant strings: no garbage per step)
+                    if (crest>.001f) { float cs = Mathf.Sqrt((rd?.ai_crest_g != null && rd.ai_crest_g.Length == 3 ? rd.ai_crest_g[2] : 9.5f)*cornerUse[skill]/crest); if (cs < hillSpeed) { hillSpeed = cs; hw = "crest"; } }
+                    if (DriveRoad.HasLine) bendCap = Mathf.Min(bendCap, Mathf.Sqrt(curveSpeed * curveSpeed + 2 * judgment * Mathf.Max(0, d - 12)));
+                    Cap(Mathf.Sqrt(Mathf.Pow(Mathf.Min(curveSpeed, hillSpeed), 2) + 2 * judgment * Mathf.Max(0, d - 12)), curveSpeed < hillSpeed ? "bend" : hw, (int)d);
                 }
 
-            if(RunIn) TargetSpeed=Mathf.Min(TargetSpeed,RunIn.SpeedAt(Car,runS,cornerGrip));
+            if(RunIn) Cap(RunIn.SpeedAt(Car,runS,cornerGrip),"run-in");
             bool held=false;
             var zones=Race.AiZones;   // Chastain Rush, Round 21: the direction's own (reverse Noonday Creek)
             if(zones!=null&&!activeBranch&&!finished)
@@ -257,15 +273,16 @@ namespace Racer
                 {
                     float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);
                     float zs=z==jumpZone&&jumpKind==4?z.speed*.8f:z.speed;   // Chastain Rush, Round 21: a short jump, a slow run-up
-                    if(into<=z.s1-z.s0){TargetSpeed=zs;held=true;}   // the jump's set speed, whatever the crest rule says
-                    else if(toStart<90)TargetSpeed=Mathf.Min(TargetSpeed,Mathf.Sqrt(zs*zs+2*judgment*Mathf.Max(0,toStart-6)));
+                    if(into<=z.s1-z.s0){TargetSpeed=Mathf.Min(zs,bendCap);held=true;Why=bendCap<zs?"bend":"zone";WhyAt=-1;WhyOf=z;}   // Round 70: within the bends' limit (a run-up straight off a hairpin)   // the jump's set speed, whatever the crest rule says
+                    else if(toStart<90)Cap(Mathf.Sqrt(zs*zs+2*judgment*Mathf.Max(0,toStart-6)),"zone ahead",(int)toStart,z);
                 }
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
-                TargetSpeed = Mathf.Min(TargetSpeed, 10);
+                Cap(10, "angle");
             float freeTarget = TargetSpeed;   // Round 58: what it wants before anything in front holds it (A3: wanting to go and not moving is being blocked)
             bool unblocking = Agency && Time.time < unblockUntil;
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.
             float range = 6 + speed * 1.5f;
+            bool onLine = DriveRoad.HasLine && Mathf.Abs(Vector3.Dot(Car.Body.position - DriveRoad.At(s, out _), Vector3.Cross(Vector3.up, tangent).normalized) - DriveRoad.LineOffset(s)) < 3f;
             float radius=Mathf.Min(.7f,Car.GetComponent<BoxCollider>().size.x*.5f+.12f);
             int count = Physics.SphereCastNonAlloc(Car.Body.position + Vector3.up * .35f, radius, transform.forward, hits, range, ~0, QueryTriggerInteraction.Ignore);
             LastObstacle=""; obstacleVehicle=false;
@@ -279,6 +296,13 @@ namespace Racer
                 // ignores static ground inside a committed run-up").
                 if((activeBranch||trail||(plannedBranch&&Mathf.Repeat(plannedBranch.entryRoad-s,DriveRoad.Length)<40))&&!hit.rigidbody) continue;   // Round 18: on the trail too
                 if(unblocking&&!hit.rigidbody) continue;   // Round 58 (A3): steering round what it backed away from, at a crawl
+                // Round 70 (B): a standing thing well off its racing line is not in its way (it slowed for barriers across the side roads where the lap
+                // turns off a road, for walls and mailboxes beside a bend that its nose points at): only while it is on its line itself
+                if(!hit.rigidbody&&DriveRoad.HasLine&&onLine)
+                {
+                    float hs=DriveRoad.Project(hit.point,out _); var hc=DriveRoad.At(hs,out var ht); float hl=Vector3.Dot(hit.point-hc,Vector3.Cross(Vector3.up,ht).normalized);
+                    if(Mathf.Abs(hl-DriveRoad.LineOffset(hs))>radius+1.6f) continue;
+                }
                 float aheadSpeed=hit.rigidbody?Mathf.Max(0,Vector3.Dot(hit.rigidbody.linearVelocity,transform.forward)):0;
                 // Chastain Rush, Round 55 (E): a car it is pulling out round (the pass lane chosen and clear) does not stop it: it goes on past at
                 // 4 m/s more than that car, never stopping on its bumper; a car it cannot pass yet it follows a car length back (8 m to the hit, Racer's 4 m: room to pull out)
@@ -291,7 +315,7 @@ namespace Racer
                 }
                 float allowed = Mathf.Max(floor, Mathf.Sqrt(Mathf.Max(0,aheadSpeed*aheadSpeed+2*judgment*(hit.distance-keep))));
                 if(allowed<TargetSpeed){LastObstacle=hit.collider.name+"@"+hit.distance.ToString("F1");obstacleVehicle=hit.rigidbody!=null;}
-                TargetSpeed = Mathf.Min(TargetSpeed, allowed);
+                Cap(allowed, hit.rigidbody ? "vehicle" : "obstacle", (int)hit.distance, hit.collider);
             }
 
             float throttle = speed < TargetSpeed ? Mathf.Clamp01((TargetSpeed - speed) * (skill>0?.8f:.5f)) : 0;
@@ -448,7 +472,7 @@ namespace Racer
         }
 
         // the lane to drive in: its own, or past the slower car ahead on the clear side
-        float PassLane(float s, Vector3 tangent, float speed, float halfWidth)
+        float PassLane(float s, Vector3 tangent, float speed, float halfWidth, float home)
         {
             var right = Vector3.Cross(Vector3.up, tangent).normalized; var center = DriveRoad.At(s, out _);
             float reach = Mathf.Max(50f, speed * 2.5f), currentLane = Vector3.Dot(Car.Body.position - center, right);
@@ -470,9 +494,9 @@ namespace Racer
             behindFor = obstacleVehicle && speed < 12f ? behindFor + Time.fixedDeltaTime : 0f;
             if (!slow)
             {
-                if (passing && Mathf.Abs(currentLane - lane) < 1f) { passing = false; Passes++; }
+                if (passing && Mathf.Abs(currentLane - Home(s)) < 1f) { passing = false; Passes++; }
                 passLaneNow = float.NaN; passWho = null;
-                return lane;
+                return home;
             }
             float slowLane = Vector3.Dot(slow.Body.position - center, right), edge = halfWidth + 2.2f, gap = 2.9f;
             float Option(float side) => Mathf.Clamp(slowLane + side * gap, -edge, edge);

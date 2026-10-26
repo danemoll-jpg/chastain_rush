@@ -125,6 +125,73 @@ namespace Racer
         }
 
         public float Relative(float s, float origin) => Mathf.Repeat(s - origin, Length);
+
+        // ---------------------------------------------------------------- Chastain Rush, Round 70 (B, Dan: "I think the ai should be not so slavish
+        // to the actual roads"): the racing line. A lateral offset from the centerline every LineStep m, within the room on either side (room():
+        // the lane's half width less the car's, and the open shoulder, lot or grass found beside it), relaxed toward the straightest line through the
+        // corridor (each point pulled to the middle of its neighbors, coarse to fine): it uses the whole road, cuts across the inside of a bend to
+        // its apex and runs out wide after it. Its curvature is what the AI plans its speed from (the centerline's polyline corners were
+        // phantom bends). Closed lines only.
+        public const float LineStep = 2f;
+        float[] lineOff, lineCurv; float lineStep;
+        public bool HasLine => lineOff != null;
+        public float LineOffset(float s) => Sample(lineOff, s);
+        public float LineCurvature(float s) => Sample(lineCurv, s);
+        float Sample(float[] a, float s)
+        {
+            if (a == null) return 0f; int n = a.Length; float f = Mathf.Repeat(s, Length) / lineStep; int i = Mathf.FloorToInt(f); float t = f - i;
+            return Mathf.Lerp(a[((i % n) + n) % n], a[(i + 1) % n], t);
+        }
+        public string LineInfo { get; private set; } = "";
+        public void BuildLine(System.Func<Vector3, Vector3, float, int, float> room)
+        {
+            Initialize(); if (openHighway || Length < 50f) return;
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            int n = Mathf.Max(16, Mathf.RoundToInt(Length / LineStep)); lineStep = Length / n;
+            var c = new Vector3[n]; var r = new Vector3[n]; var lo = new float[n]; var hi = new float[n];
+            for (int i = 0; i < n; i++)
+            {
+                c[i] = At(i * lineStep, out var f); var fl = new Vector3(f.x, 0f, f.z); if (fl.sqrMagnitude < 1e-6f) fl = Vector3.forward;
+                r[i] = Vector3.Cross(Vector3.up, fl.normalized).normalized;
+                lo[i] = -room(c[i], r[i], i * lineStep, -1); hi[i] = room(c[i], r[i], i * lineStep, 1);
+            }
+            // the room eased along the line (each point's room the least within 6 m either side: no line darting into a one-sample gap)
+            float[] Erode(float[] a, bool max) { var o = new float[n]; for (int i = 0; i < n; i++) { float v = a[i]; for (int k = -3; k <= 3; k++) { float w = a[((i + k) % n + n) % n]; v = max ? Mathf.Max(v, w) : Mathf.Min(v, w); } o[i] = v; } return o; }
+            lo = Erode(lo, true); hi = Erode(hi, false);
+            var off = new float[n];
+            // coarse to fine: the relaxation on every 8th, 4th, 2nd, then every point
+            foreach (int stride in new[] { 8, 4, 2, 1 })
+            {
+                int m = n / stride; if (m < 8) continue;
+                for (int it = 0; it < (stride == 1 ? 300 : 500); it++)
+                    for (int k = 0; k < m; k++)
+                    {
+                        int i = k * stride, ip = ((k - 1 + m) % m) * stride, inx = ((k + 1) % m) * stride;
+                        var a = c[ip] + r[ip] * off[ip]; var b = c[inx] + r[inx] * off[inx]; var mid = (a + b) * .5f;
+                        float want = Vector3.Dot(new Vector3(mid.x - c[i].x, 0f, mid.z - c[i].z), r[i]);
+                        off[i] = Mathf.Clamp(off[i] + .7f * (want - off[i]), lo[i], hi[i]);
+                    }
+                if (stride > 1)   // the next level's points from this one's
+                    for (int k = 0; k < m; k++)
+                    {
+                        int i0 = k * stride, i1 = ((k + 1) % m) * stride;
+                        for (int j = 1; j < stride && i0 + j < n; j++) off[i0 + j] = Mathf.Clamp(Mathf.Lerp(off[i0], off[i1], j / (float)stride), lo[i0 + j], hi[i0 + j]);
+                    }
+            }
+            // the curvature of the line (a circle through the points 6 m either side), averaged over 5 points
+            var p = new Vector3[n]; for (int i = 0; i < n; i++) { p[i] = c[i] + r[i] * off[i]; p[i].y = 0f; }
+            var kap = new float[n]; int kk = Mathf.Max(1, Mathf.RoundToInt(6f / lineStep));
+            for (int i = 0; i < n; i++)
+            {
+                Vector3 A = p[((i - kk) % n + n) % n], B = p[i], C = p[(i + kk) % n];
+                float ab = (B - A).magnitude, bc = (C - B).magnitude, ca = (A - C).magnitude, area2 = Mathf.Abs((B.x - A.x) * (C.z - A.z) - (B.z - A.z) * (C.x - A.x));
+                kap[i] = ab * bc * ca > 1e-4f ? 2f * area2 / (ab * bc * ca) : 0f;
+            }
+            lineCurv = new float[n]; for (int i = 0; i < n; i++) { float sum = 0f; for (int k = -2; k <= 2; k++) sum += kap[((i + k) % n + n) % n]; lineCurv[i] = sum / 5f; }
+            lineOff = off;
+            float wide = 0f; int over = 0; for (int i = 0; i < n; i++) { wide = Mathf.Max(wide, Mathf.Max(hi[i], -lo[i])); if (Mathf.Abs(off[i]) > halfWidth) over++; }
+            LineInfo = $"racing line: {n} points, room up to {wide:0.0} m, {over * lineStep:0} m of it past the lane's half width, {watch.ElapsedMilliseconds} ms";
+        }
         public float ProjectNear(Vector3 p,float previous,float window,out float lateral)
         {
             // 0.82 Part C: the same grid search as Project (only segments whose projected station is within the window of

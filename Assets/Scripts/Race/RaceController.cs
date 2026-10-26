@@ -282,6 +282,7 @@ namespace ChastainRush
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
             barriers.Build(Route);   // closed roads appear with the race ...
             FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
+            BuildAiLine();   // Round 70 (B): the AI's racing line, once the barriers stand
             Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts"
                 + (barriers.Seals + barriers.Rails + barriers.Gates.Count > 0 ? $", {barriers.Seals} seals, {barriers.Rails} railings, {barriers.Gates.Count} switch gates" : ""));
             markers.Refresh(this);
@@ -718,6 +719,52 @@ namespace ChastainRush
         }
         AiShortcut runIn;
 
+        // Round 70 (B, Dan: "possibly just follow the courses too exactly ... I think the ai should be not so slavish to the actual roads"): the AI's
+        // racing line (RaceRoad.BuildLine) through the room either side of the lap's line: the lane less the car's half width, and past the lane's
+        // edge, a meter at a time out to 7 m, the shoulder, grass or lot beside it while it is open: nearly level with the road (no bank, ditch or
+        // curb drop), nothing standing there (a collider, a breakable, a trunk) and no water. Where the lap has a narrower width of its own (a bridge,
+        // the mall) or runs off the terrain (a deck, a floor, a pipe) only its own width. Not on a trail route (its narrow trail mode) or underground.
+        public static bool AiLineOff = Array.IndexOf(Environment.GetCommandLineArgs(), "-r70LineOff") >= 0;   // checks: the AI as before Round 70
+        void BuildAiLine()
+        {
+            if (AiRoad == null || RouteData == null || RouteData.trail || Route.Underground || AiLineOff) return;
+            RaceOnly.RefreshAll(); Physics.SyncTransforms();
+            var trunks = TreeTrunks.Instance; var hits = new Collider[16]; const float CarHalf = 1.3f;
+            var zones = AiZones;
+            bool Open(Vector3 qp)
+            {
+                int k = Physics.OverlapCapsuleNonAlloc(qp + Vector3.up * .5f, qp + Vector3.up * 2.2f, 1.1f, hits, ~0, QueryTriggerInteraction.Collide);
+                for (int i = 0; i < k; i++) { var h = hits[i]; if (h is TerrainCollider || h.attachedRigidbody) continue; return false; }
+                return !(trunks && trunks.AnyTrunk(qp, 1.2f)) && !ShallowWater.InWater(qp + Vector3.up * .2f);
+            }
+            AiRoad.BuildLine((c, r, s, side) =>
+            {
+                // through a held zone (a jump's run-up, a narrow place) and 40 m before it: the lap's own line (a jump is taken square, in the middle)
+                if (zones != null) foreach (var z in zones) if (Mathf.Repeat(s - (z.s0 - 40f), AiRoad.Length) <= z.s1 - z.s0 + 45f) return .3f;
+                float half = AiRoad.HalfWidth(s), room = .3f;
+                bool onGround = !float.IsNaN(GroundQuery.Height(c.x, c.z)) && Mathf.Abs(GroundQuery.Height(c.x, c.z) - c.y) <= 1.5f;
+                // within the lane: as far as nothing stands in it (a closure's barrier where the lap turns off a road)
+                for (float d = 1f; d <= half; d += 1f)
+                {
+                    var q = c + r * side * d; var qp = new Vector3(q.x, onGround ? GroundQuery.Height(q.x, q.z) : c.y, q.z);
+                    if (!Open(qp)) return Mathf.Max(.3f, d - 1f - CarHalf);
+                    room = Mathf.Max(.3f, d - CarHalf);
+                }
+                room = Mathf.Max(.3f, half - CarHalf);
+                if (half < AiRoad.halfWidth - .01f || !onGround) return room;
+                float y0 = GroundQuery.Height(c.x, c.z), prevY = y0;
+                for (float d = half + .5f; d <= half + 7f; d += 1f)
+                {
+                    var q = c + r * side * d; float gy = GroundQuery.Height(q.x, q.z); if (float.IsNaN(gy)) break;
+                    if (Mathf.Abs(gy - y0) > .8f + .12f * (d - half) || Mathf.Abs(gy - prevY) > .45f) break;
+                    prevY = gy; if (!Open(new Vector3(q.x, gy, q.z))) break;
+                    room = d - CarHalf;
+                }
+                return room;
+            });
+            Log("AI " + AiRoad.LineInfo);
+        }
+
         // The speed an AI driver arrives with and holds through each shortcut (Racer's aiEntrySpeed), from the shortcut checks:
         // #2 is clean at 20 m/s in every vehicle (26 m/s and up a car hits a house: Rounds 12 to 14), #6 clears 1641 from 20 m/s.
         public static float AiShortcutSpeed(string id) => id.Contains("over_house") ? 22f : 20f;
@@ -823,7 +870,7 @@ namespace ChastainRush
                 var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>() };
                 var driver = clone.AddComponent<RoadDriver>();
                 e.Driver = driver;
-                driver.Initialize(this, ai, e, .94f + n * .025f, n);   // Racer's pace spread for rivals
+                driver.Initialize(this, ai, e, RoadDriver.Difficulty == 2 ? .97f + n * .015f : .94f + n * .025f, n);   // Racer's pace spread for rivals (Round 70: on Hard .97 to 1.0, the leader at full pace)
                 driver.RunIn = runIn;
                 e.Reset();
                 Entrants.Add(e);
