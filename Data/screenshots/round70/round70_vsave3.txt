@@ -1,0 +1,8 @@
+Round 70 check, 2026-10-26 00:54, the exe, 1280 x 720, muted.
+
+=== D. The saved vehicle, launch 3: started in Sky Hopper (plane); the file: {"roam":"plane","race":"drifter","color":0}
+PASS  vsave3: the game starts in Free Roam's last pick (the plane)  -  plane
+PASS  vsave3: race setup puts on the last race vehicle (the Drifter Twin)  -  drifter on page race
+PASS  vsave3: the file still says the plane for Free Roam  -  {"roam":"plane","race":"drifter","color":0}
+
+3 of 3 checks passed.

@@ -1,0 +1,84 @@
+Round 70 check, 2026-10-26 01:26, the exe, 1280 x 720, muted.
+
+=== 1. BUG-002: out of P1 up the outfall apron and over the pond, each vehicle flat out along the shortcut's line
+  Street Classic     NEVER LEFT THE LIP, on to the trail
+  Longroof GT        NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2523.7, 1341.0)
+  Needle 600         NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2327.8, 1304.5)
+  Trail Four         NEVER LEFT THE LIP, on to the trail
+  Sundown Roadster   NEVER LEFT THE LIP, DID NOT GET BACK  at (2368.1, 1307.5)
+  Highball Fastback  NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2517.4, 1337.4)
+  Pebble Coupe       NEVER LEFT THE LIP, on to the trail
+  Skyfin Cruiser     NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2509.9, 1337.6)
+  Ridge Scrambler    NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2375.6, 1309.3)
+  Drifter Twin       NEVER LEFT THE LIP, on to the trail
+  Turf Rocket        NEVER LEFT THE LIP, on to the trail
+  Clay Hopper        NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2349.0, 1304.6)
+  Skywhip 250        NEVER LEFT THE LIP, on to the trail
+  Clay Hopper Cup    NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2350.0, 1304.9)
+  Sky Survey         NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2307.1, 1287.5)
+  Sky Hopper         NEVER LEFT THE LIP, DID NOT GET BACK stopped at (2317.8, 1370.9)
+FAIL  BUG-002: every vehicle out of P1 clears the pond on dry ground, on its wheels, and drives on to the trail  -  not: Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket, Clay Hopper, Skywhip 250, Clay Hopper Cup, Sky Survey, Sky Hopper; 
+PASS  BUG-002 slow (the Trail Four held at 8 m/s): rolls off the lip into the shallow edge and drives out on to the trail, no reset  -  no launch, out and on in 19 s
+  AI Trail Four      FAIL never left the lip, shortcut given yes, recoveries 0, back on the lap
+  AI Needle 600      FAIL never left the lip, shortcut given yes, recoveries 0, back on the lap
+  AI Ridge Scrambler FAIL never left the lip, shortcut given yes, recoveries 0, back on the lap
+  AI Drifter Twin    FAIL never left the lip, shortcut given yes, recoveries 0, back on the lap
+  AI Turf Rocket     FAIL never left the lip, shortcut given yes, recoveries 0, back on the lap
+FAIL  BUG-002: the AI takes it (each trail vehicle once, as an AI driver): over the pond, the shortcut given, no recovery, back on the lap  -  not: Trail Four, Needle 600, Ridge Scrambler, Drifter Twin, Turf Rocket
+
+=== F1. Hydrants on Kennesaw Mountain (x -1700 to -400, z -6600 to -4900): 10: (-684, -4999) (-952, -5223) (-993, -5220) (-640, -5016) (-515, -5038) (-404, -5126) (-950, -5733) (-679, -4944) (-495, -5049) (-427, -5084)
+FAIL  hyd: none on the mountain drive or in the park  -  10
+
+=== F2. The drive's roll across its width at Dan's BUG-004 (-949.83, -5725.88): rays onto the built ground every 4 m along the drive, 3.5 m either side of its middle
+  (-1027, -5790) 0.0 deg; (-1024, -5787) 0.0 deg; (-1021, -5785) 0.2 deg; (-1018, -5782) 0.1 deg; (-1015, -5779) 0.2 deg; (-1012, -5777) 0.0 deg; (-1009, -5774) 0.2 deg; (-1006, -5771) 0.1 deg; (-1003, -5769) 0.2 deg; (-1000, -5766) 0.0 deg; (-997, -5763) 0.0 deg; (-996, -5762) 0.2 deg; (-993, -5759) 0.1 deg; (-990, -5757) 0.1 deg; (-987, -5754) 0.1 deg; (-984, -5751) 0.2 deg; (-981, -5749) 0.1 deg; (-979, -5747) 1.1 deg; (-976, -5745) 1.2 deg; (-972, -5743) 1.3 deg; (-969, -5740) 1.3 deg; (-966, -5738) 1.5 deg; (-962, -5736) 1.6 deg; (-959, -5734) 1.8 deg; (-956, -5731) 1.7 deg; (-954, -5730) 3.3 deg; (-950, -5728) 3.6 deg; (-947, -5726) 3.5 deg; 
+  the most roll: 3.6 degrees
+PASS  roll: the drive level across its width there (under 4 degrees)  -  3.6 degrees
+
+=== C. Race setup's garage: a race started at once and finished, then race setup > Garage from the race-over menu; then after Free Roam in the helicopter and the plane
+PASS  garage: the race is over (pad)  -  Finished
+  after a finished race (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after a finished race (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+PASS  garage: the race is over (keys)  -  Finished
+  after a finished race (keys): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after a finished race (keys): every racing vehicle chosen in race setup's garage  -  11 of 11
+  after Free Roam in the Sky Survey (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after Free Roam in the Sky Survey (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+  after Free Roam in the Sky Hopper (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after Free Roam in the Sky Hopper (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+
+=== A. The summit ramp: from the fast-travel spot, from rest, flat out along the drive and straight on past the hairpin
+  70_ramp_midair: taken 67 m out, 111 m over the ground
+  Drifter Twin    off at 45.4 m/s, 8.64 s in the air, 341 m, up to 174 m over the ground below, landed at 72.8 m/s upright 1.00, slowest in the next 45 m 66.9 m/s; stopped 759 m past the hairpin at (-1907, -5703), 12.5 m/s, upright 1.00; catch-slope landings 0
+PASS  ramp Drifter Twin: 8 s or more in the air, several hundred meters, lands upright  -  8.6 s, 341 m, up 1.00
+PASS  ramp Drifter Twin: stopped short of the houses (by Old Mountain Road)  -  759 m
+  Street Classic  off at 40.9 m/s, 8.40 s in the air, 296 m, up to 154 m over the ground below, landed at 44.7 m/s upright 1.00, slowest in the next 45 m 43.3 m/s; stopped 759 m past the hairpin at (-1908, -5703), 11.1 m/s, upright 1.00; catch-slope landings 0
+PASS  ramp Street Classic: 8 s or more in the air, several hundred meters, lands upright  -  8.4 s, 296 m, up 1.00
+PASS  ramp Street Classic: stopped short of the houses (by Old Mountain Road)  -  759 m
+  Needle 600      off at 46.9 m/s, 8.92 s in the air, 358 m, up to 180 m over the ground below, landed at 62.9 m/s upright 0.98, slowest in the next 45 m 58.8 m/s; stopped 759 m past the hairpin at (-1908, -5703), 13.8 m/s, upright 1.00; catch-slope landings 0
+PASS  ramp Needle 600: 8 s or more in the air, several hundred meters, lands upright  -  8.9 s, 358 m, up 0.98
+PASS  ramp Needle 600: stopped short of the houses (by Old Mountain Road)  -  759 m
+
+=== E. Kennesaw Mountain's visitors (Free Roam, 10:00 and 17:00; then a race)
+  10:00 the summit lot: walkers 12 (target 12 near a view): dogs 4, families 2, couples 3, joggers 3, cyclists 0; on the trail 12
+  10:00 the visitor center: walkers 12 (target 12 near a view): dogs 5, families 2, couples 2, joggers 3, cyclists 0; on the trail 12
+  10:00 the mountain trail: walkers 12 (target 12 near a view): dogs 4, families 2, couples 2, joggers 4, cyclists 0; on the trail 12
+  10:00 the west trail: walkers 14 (target 12 near a view): dogs 5, families 4, couples 2, joggers 3, cyclists 0; on the trail 14
+  17:00 the summit lot: walkers 12 (target 12 near a view): dogs 6, families 2, couples 1, joggers 3, cyclists 0; on the trail 12
+  17:00 the visitor center: walkers 13 (target 12 near a view): dogs 5, families 3, couples 2, joggers 3, cyclists 0; on the trail 13
+  17:00 the mountain trail: walkers 12 (target 12 near a view): dogs 6, families 2, couples 2, joggers 2, cyclists 0; on the trail 12
+  17:00 the west trail: walkers 15 (target 12 near a view): dogs 6, families 3, couples 3, joggers 3, cyclists 0; on the trail 15
+PASS  park: plenty out on the mountain in Free Roam (6 groups or more at once)  -  most at once 15
+  in a race: walkers 5 (target 5 near a view): dogs 0, families 3, couples 2, joggers 0, cyclists 0; on the trail 5
+PASS  park: a few in a race (1 to 5 groups)  -  5
+
+=== F3. Every course's start / finish gantry: a picture of each from 30 m back on the lap
+  Chastain Glen loop: 56 blocks, its top 8.6 m over the line
+  Addison Heights: 48 blocks, its top 9.1 m over the line
+  Chastain Lakes: 48 blocks, its top 10.0 m over the line
+  Chastain Ridge: 46 blocks, its top 7.8 m over the line
+  Kennesaw Mountain: 83 blocks, its top 10.3 m over the line
+  Noonday Creek Extension: 28 blocks, its top 7.9 m over the line
+  Noonday Creek Trail: 48 blocks, its top 10.2 m over the line
+  Underground: 48 blocks, its top 5.0 m over the line
+
+16 of 19 checks passed.

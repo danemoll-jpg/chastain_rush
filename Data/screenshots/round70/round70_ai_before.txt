@@ -1,0 +1,25 @@
+Round 70 check, 2026-10-25 23:55, the exe, 1280 x 720, muted.
+
+=== B. the AI on Hard, 2 laps, 3 AI, no traffic: laps against Dan's best (his Top 10, read only), traces r70_trace_<course>.tsv
+  Kennesaw Mountain|forward      EMBER Street Classic   total 313.3 s, laps 150.5 / 162.8, resets 7, missed 0
+  Kennesaw Mountain|forward      GOLD  Longroof GT      total 317.2 s, laps 160.0 / 157.2, resets 4, missed 0
+  Kennesaw Mountain|forward      BLUE  Drifter Twin     total 351.7 s, laps 172.6 / 179.1, resets 10, missed 0
+  Kennesaw Mountain|forward: Hard's best flying lap 157.2 s, average 166.4 s; Dan's best 113.2 s (atv)
+PASS  B Kennesaw Mountain|forward: every AI finishes  -  EMBER 313.3, GOLD 317.2, BLUE 351.7
+  Noonday Creek Trail|forward    EMBER Street Classic   total 520.1 s, laps 277.2 / 243.0, resets 6, missed 1
+  Noonday Creek Trail|forward    GOLD  Turf Rocket      total 465.8 s, laps 234.6 / 231.2, resets 4, missed 1
+  Noonday Creek Trail|forward    BLUE  Street Classic   total 485.1 s, laps 255.2 / 230.0, resets 2, missed 0
+  Noonday Creek Trail|forward: Hard's best flying lap 230.0 s, average 234.7 s; Dan's best 169.2 s (drifter)
+PASS  B Noonday Creek Trail|forward: every AI finishes  -  EMBER 520.1, GOLD 465.8, BLUE 485.1
+  Chastain Glen loop|forward     EMBER Turf Rocket      total 83.4 s, laps 43.8 / 39.6, resets 0, missed 0
+  Chastain Glen loop|forward     GOLD  Skyfin Cruiser   total 94.1 s, laps 45.1 / 49.0, resets 0, missed 0
+  Chastain Glen loop|forward     BLUE  Pebble Coupe     total 90.0 s, laps 45.3 / 44.7, resets 0, missed 0
+  Chastain Glen loop|forward: Hard's best flying lap 39.6 s, average 44.4 s; Dan's best 38.9 s (drifter)
+PASS  B Chastain Glen loop|forward: every AI finishes  -  EMBER 83.4, GOLD 94.1, BLUE 90.0
+  Chastain Lakes|forward         EMBER Needle 600       total 220.3 s, laps 105.5 / 114.8, resets 5, missed 0
+  Chastain Lakes|forward         GOLD  Drifter Twin     total 176.9 s, laps 88.1 / 88.8, resets 0, missed 0
+  Chastain Lakes|forward         BLUE  Needle 600       total 212.8 s, laps 104.5 / 108.3, resets 2, missed 0
+  Chastain Lakes|forward: Hard's best flying lap 88.8 s, average 104.0 s; Dan's best 72.1 s (drifter)
+PASS  B Chastain Lakes|forward: every AI finishes  -  EMBER 220.3, GOLD 176.9, BLUE 212.8
+
+4 of 4 checks passed.

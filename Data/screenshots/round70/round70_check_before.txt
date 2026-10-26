@@ -1,0 +1,23 @@
+Round 70 check, 2026-10-26 00:48, the exe, 1280 x 720, muted.
+
+=== F1. Hydrants on Kennesaw Mountain (x -1700 to -400, z -6600 to -4900): 47: (-1114, -6075) (-441, -5378) (-952, -5223) (-993, -5220) (-505, -5602) (-495, -5049) (-427, -5084) (-950, -5733) (-404, -5126) (-892, -4985) (-1242, -6013) (-1160, -5897) (-684, -4999) (-691, -5047) (-730, -5035) (-763, -5024) (-713, -5050) (-979, -6122) (-814, -5901) (-739, -5780) (-549, -5273) (-1253, -5146) (-1393, -5199) (-1040, -5204) (-1104, -5130) (-973, -4979) (-934, -4990) (-952, -4971) (-872, -6029) (-668, -5192) (-796, -5028) (-806, -5009) (-835, -5019) (-939, -5045) (-976, -5061) (-918, -5025) (-1534, -5249) (-679, -4944) (-1038, -5808) (-640, -5016)
+FAIL  hyd: none on the mountain drive or in the park  -  47
+
+=== F2. The drive's roll across its width at Dan's BUG-004 (-949.83, -5725.88): rays onto the built ground every 4 m along the drive, 3.5 m either side of its middle
+  (-1027, -5790) 0.0 deg; (-1024, -5787) 0.0 deg; (-1021, -5785) 0.2 deg; (-1018, -5782) 0.1 deg; (-1015, -5779) 0.2 deg; (-1012, -5777) 0.0 deg; (-1009, -5774) 0.2 deg; (-1006, -5771) 0.1 deg; (-1003, -5769) 0.2 deg; (-1000, -5766) 0.0 deg; (-997, -5763) 0.0 deg; (-996, -5762) 0.2 deg; (-993, -5759) 0.1 deg; (-990, -5757) 0.1 deg; (-987, -5754) 0.1 deg; (-984, -5751) 0.2 deg; (-981, -5749) 0.1 deg; (-979, -5747) 1.1 deg; (-976, -5745) 1.5 deg; (-972, -5743) 3.3 deg; (-969, -5740) 6.5 deg; (-966, -5738) 11.6 deg; (-962, -5736) 17.8 deg; (-959, -5734) 23.4 deg; (-956, -5731) 27.5 deg; (-954, -5730) 30.0 deg; (-950, -5728) 34.4 deg; (-947, -5726) 37.6 deg; 
+  the most roll: 37.6 degrees
+FAIL  roll: the drive level across its width there (under 4 degrees)  -  37.6 degrees
+
+=== C. Race setup's garage: a race started at once and finished, then race setup > Garage from the race-over menu; then after Free Roam in the helicopter and the plane
+PASS  garage: the race is over (pad)  -  Finished
+  after a finished race (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after a finished race (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+PASS  garage: the race is over (keys)  -  Finished
+  after a finished race (keys): page root, the vehicle row stepped 0 times through 1 vehicles (Street Classic)
+FAIL  garage after a finished race (keys): every racing vehicle chosen in race setup's garage  -  1 of 11
+  after Free Roam in the Sky Survey (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after Free Roam in the Sky Survey (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+  after Free Roam in the Sky Hopper (pad): page garage, the vehicle row stepped 11 times through 11 vehicles (Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin, Turf Rocket)
+PASS  garage after Free Roam in the Sky Hopper (pad): every racing vehicle chosen in race setup's garage  -  11 of 11
+
+5 of 8 checks passed.
