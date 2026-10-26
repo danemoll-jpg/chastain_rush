@@ -79,6 +79,21 @@ namespace ChastainRush
             return best <= 40f;
         }
 
+        // Round 73 (C3, Dan's BUG-006: "stuck here. reset button does nothing"): the nearest road point within maxDist (every segment searched:
+        // a reset far from the roads, the quarry's pit, the mountain's flanks), its direction there
+        public bool NearestPointWithin(Vector3 p, float maxDist, out Vector2 point, out Vector2 tangent)
+        {
+            point = default; tangent = Vector2.up; var q = new Vector2(p.x, p.z); float best = maxDist;
+            for (int i = 0; i < segmentA.Length; i++)
+            {
+                var a = segmentA[i]; var ab = segmentB[i] - a; if (ab.sqrMagnitude < 1e-6f) continue;
+                if (Mathf.Abs(a.x - q.x) > maxDist + 200f || Mathf.Abs(a.y - q.y) > maxDist + 200f) continue;
+                float t = Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude); var c = a + ab * t; float d = (c - q).magnitude;
+                if (d < best) { best = d; point = c; tangent = ab.normalized; }
+            }
+            return best < maxDist;
+        }
+
         // True when p is on a road's pavement (within its half width plus 1.5 m).
         public bool OnRoad(Vector3 p, out string name, out float distance)
         {

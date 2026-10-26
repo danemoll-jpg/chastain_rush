@@ -17,6 +17,17 @@ namespace Racer
         public static RecoverFn Recover;
         public Vector3 SafePosition => safePosition;
         public float SafeYaw => safeRotation.eulerAngles.y;
+        // Chastain Rush, Round 73 (C3, Dan's BUG-006: "stuck here. reset button does nothing"): the stable poses of the last minute, newest first,
+        // so a reset can go back to one away from where the car is wedged (a car stuck upright keeps recording its stuck spot as stable)
+        public System.Collections.Generic.IEnumerable<(Vector3 pos, float yaw)> SafeHistory
+        {
+            get { for (int i = 0; i < historyCount; i++) { var h = history[(historyHead - 1 - i + History) % History]; yield return h; } }
+        }
+        public Vector3 StartPosition => startPosition;
+        public float StartYaw => startRotation.eulerAngles.y;
+        const int History = 120;
+        readonly (Vector3 pos, float yaw)[] history = new (Vector3, float)[History];
+        int historyHead, historyCount;
 
         const float SampleInterval = 0.5f, StableFor = 1f;
         ArcadeVehicle vehicle;
@@ -41,7 +52,9 @@ namespace Racer
             if (input.ConsumeReset())
             {
                 if (Recover != null && Recover(this, out var rp, out var ry)) Place(rp, Quaternion.Euler(0, ry, 0));
-                else Place(safePosition, safeRotation);
+                // Round 73 (C3): never back onto the very spot the car is stuck at; the start (the map's spawn) then
+                else if ((safePosition - vehicle.Body.position).magnitude > 4f) Place(safePosition, safeRotation);
+                else Place(startPosition, startRotation);
                 return;
             }
             RecordSafePose();
@@ -58,6 +71,11 @@ namespace Racer
             nextSample = Time.time + SampleInterval;
             safePosition = vehicle.Body.position;
             safeRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
+            // Round 73 (C3): kept only when it is 5 m or more from the last one kept (a car sitting still does not fill the minute with one spot)
+            if (historyCount == 0 || (history[(historyHead - 1 + History) % History].pos - safePosition).magnitude >= 5f)
+            {
+                history[historyHead] = (safePosition, safeRotation.eulerAngles.y); historyHead = (historyHead + 1) % History; historyCount = Mathf.Min(historyCount + 1, History);
+            }
         }
 
         // Chastain Rush, Round 5: the race puts the car on its grid with this. It also makes that pose the one R returns to,

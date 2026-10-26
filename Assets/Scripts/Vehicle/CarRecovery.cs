@@ -14,6 +14,7 @@ namespace ChastainRush
     public static class CarRecovery
     {
         static readonly Collider[] hits = new Collider[16];
+        const float AwayM = 8f;   // Round 73 (C3): a reset of a car that is not flipped goes at least this far
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install() => VehicleRespawn.Recover = Find;
@@ -107,9 +108,17 @@ namespace ChastainRush
             }
             else
             {
-                if (Clear(r, r.SafePosition, r.SafeYaw, true)) { pos = r.SafePosition; yaw = r.SafeYaw; return true; }
+                // Round 73 (C3, Dan's BUG-006 in the quarry's pit under a ramp: "stuck here. reset button does nothing"): a car stuck upright (not
+                // flipped) keeps recording its stuck spot as its last stable pose, and the reset put it straight back there. Now, unless the car is
+                // on its side or roof, a reset goes somewhere at least AwayM from where it is: the newest stable pose of the last minute that far
+                // away, then the nearest road (any distance), then the map's spawn; never the spot it is in
+                bool flipped = r.transform.up.y < 0.6f;
+                bool Away(Vector3 q) => flipped || (q - at).magnitude >= AwayM;
+                if (Away(r.SafePosition) && Clear(r, r.SafePosition, r.SafeYaw, true)) { pos = r.SafePosition; yaw = r.SafeYaw; return true; }
+                foreach (var (hp, hy) in r.SafeHistory)
+                    if (Away(hp) && Clear(r, hp, hy, true)) { pos = hp; yaw = hy; return true; }
                 var road = RoadLookup.Instance;
-                if (road != null && road.NearestPoint(at, out var c, out var t))
+                if (road != null && (road.NearestPoint(at, out var c, out var t) || road.NearestPointWithin(at, 3000f, out c, out t)))
                 {
                     var fwd = Quaternion.Euler(0f, r.transform.eulerAngles.y, 0f) * Vector3.forward;
                     var dir = new Vector3(t.x, 0f, t.y); if (Vector3.Dot(dir, fwd) < 0f) dir = -dir;
@@ -119,9 +128,10 @@ namespace ChastainRush
                         foreach (float off in new[] { 0f, -2f, 2f })
                         {
                             var q = RaceRoute.Surface(c.x + dir.x * ds + right.x * off, c.y + dir.z * ds + right.z * off);
-                            if (Clear(r, q, y, true)) { pos = q; yaw = y; return true; }
+                            if (Away(q) && Clear(r, q, y, true)) { pos = q; yaw = y; return true; }
                         }
                 }
+                if (Clear(r, r.StartPosition, r.StartYaw, false)) { pos = r.StartPosition; yaw = r.StartYaw; return true; }
             }
             pos = default; yaw = 0f;
             return false;   // VehicleRespawn falls back to the last stable spot

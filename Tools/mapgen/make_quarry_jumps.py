@@ -1,20 +1,25 @@
 """Round 72 (Dan, 2026-10-26 07:17: "Quarry stunt jumps"; 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel
 style"): THE VIKING QUARRY JUMPS, three Evel Knievel stunt jumps across Viking Quarry Lake (Free Roam events; world pieces built by the map build).
 
-Each jump: a straight run-up from the airport's south apron north across the runway and the grass to a tall steel kicker on the quarry's south rim,
-a flight across the lake, a steel landing ramp on the far side sloped to the flight's descent (a catch slope: RampHold sets a vehicle on its wheels),
-its foot run out onto graded ground. Designed from the flights (as Round 68 / 70): the kicker's angle and height and the landing ramp's place and length
-from each vehicle's speed at the lip (the slowest car to the fastest bike, from rest down the run-up):
-  J1 "The Corner"   across the lake's east end, rim to rim
-  J2 "The Long One" across the middle onto the north bench
-  J3 "The Big One"  across the widest part, south-west rim to the north-east bench (the longest jump after the summit ramp, Round 70 A)
-Miss the landing ramp and you are in the lake (the game's water: reset). Why the south rim: the airport's flat ground gives every jump a long
-straight run-up with nothing in the way; the far side is open ground (the north bench, the east rim) to run out on.
+Round 73 (C4, Dan: "nothing lined up and the ramp was buried in the hillside"): rebuilt. Round 72's landing decks ran INTO the north bank (a straight
+deck through a concave bank: its lower half under the hill, the flights hitting the bank above it), the kickers stood between the rim's mounds and
+the run-up lanes were graded into a dip through the runway. Now each jump is one straight line a player sees whole from the start box:
+  the run-up     on the airport's own ground (smoothed only where it is not paved; never cut: the runway and taxiways keep their surface)
+  the kicker     a steel ramp standing on a pad cleared flat round it (nothing of the rim over or in front of it), its lip at the rim's edge
+  the landing    a steel deck standing ON TOP of the far bench at its edge, sloping down onto the bench, in plain view across the water; a solid
+                 front face down to the bank under its top (short: into the face and the lake), its sides skirted solid to the ground (nothing to
+                 drive in under); past its foot the bench graded smooth (a catch zone: an overshoot lands rough, not in a hole)
+  the crowd      bleachers on graded pads on the bench beside the landing and on the plateau beside the kicker
+The lines (from a scan of the far side's benches, local/round73/qscan.py):
+  J1 "The Corner"   across the east corner, 345 degrees, about 220 m to the north-east bench (74 m below the lip); its run-up east of the runway
+  J2 "The Long One" across the middle, due north, about 250 m to the north bench
+  J3 "The Big One"  15 degrees across the lake's widest water, about 270 m to the north-east bench
+The speed window (Evel Knievel's speed check, the HUD shows it): the lip speeds whose flights come down on the landing deck. Short of it: the face and
+the lake; past it: the catch beyond (rough).
 
-What it writes: Data/tracks/quarry_jumps.json (per jump: the line, the run-up, the kicker's deck, the landing deck, the run-out grade, the flights, the
-start gantry, bleachers; and the RidgeFile shape's grades / clear_lines / landing_zones, merged into the mountain's pieces by MapBuilder.QuarryJumps.cs
-like the summit ramp's). Re-run after mapgen, then Build Map (a full build: the trees cleared, the ground graded). Then python
-Tools/mapgen/add_extension_places.py (the fast-travel spot at the gantries).
+What it writes: Data/tracks/quarry_jumps.json (per jump: the line, the run-up, the kicker's deck, the landing deck, the flights, the start box, the
+bleachers; and the RidgeFile shape's grades / clear_lines / landing_zones, merged into the mountain's planning pieces by MapBuilder.QuarryJumps.cs).
+Re-run after mapgen, then Tools/mapgen/add_extension_places.py (the fast-travel spots), then a full Build Map (the trees cleared, the ground graded).
 Usage: python Tools/mapgen/make_quarry_jumps.py [--plot]"""
 import json, math, os, sys
 import numpy as np
@@ -25,6 +30,7 @@ meta = json.load(open(os.path.join(ROOT, "Assets/Generated/terrain_full.json")))
 H = np.memmap(os.path.join(ROOT, "Assets/Generated/terrain_full.r16"), dtype="<u2", mode="r", shape=(meta["grid_z"], meta["grid_x"]))
 SX, SZ, OX, OZ = meta["step_x_m"], meta["step_z_m"], meta["origin_x_m"], meta["origin_z_m"]
 HLO, HHI = meta["min_height"], meta["max_height"]
+M = json.load(open(os.path.join(ROOT, "Data/map.json"), encoding="utf-8"))
 WATER = 113.6   # the lake's surface (the DEM's flat water)
 
 
@@ -33,150 +39,202 @@ def ground(x, z):
     h = H[j:j + 2, i:i + 2].astype(np.float64) / 65535.0 * (HHI - HLO) + HLO
     return float(h[0, 0] * (1 - a) * (1 - b) + h[0, 1] * a * (1 - b) + h[1, 0] * (1 - a) * b + h[1, 1] * a * b)
 def flat(p): return [round(v, 2) for q in p for v in q]
+def pts(f): return [(f[i], f[i + 1]) for i in range(0, len(f), 2)]
 
 
-# (name, label, start x, z, heading, lip station, lip angle, kicker radius, how high the lip stands over the ground there, landing slope's extra)
-# the lines (from a rim scan of the planning's ground): the kicker's lip just short of the south rim's edge, its heading, the run-up's length back
-# from the lip, the far side's edge and where the window's middle speed should come down (meters from the lip), the speed window at the lip
 JUMPS = [
-    dict(id="J1", name="The Corner", lip=(-1743.6, -1595.0), heading=20.0, run=380.0, edge=179.0, land=198.0, window=(36.5, 39.5)),
-    dict(id="J2", name="The Long One", lip=(-2000.0, -1647.0), heading=0.0, run=380.0, edge=190.0, land=232.0, window=(41.5, 44.5)),
-    dict(id="J3", name="The Big One", lip=(-2489.7, -1674.9), heading=15.0, run=320.0, edge=270.0, land=292.0, window=(41.5, 44.5)),
+    dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin"),
+    dict(id="J2", name="The Long One", lip=(-2000.0, -1649.0), heading=0.0, run=360.0, bench_min=200.0, design="Drifter Twin"),
+    dict(id="J3", name="The Big One", lip=(-2200.0, -1716.0), heading=15.0, run=340.0, bench_min=185.0, design="Needle 600"),
 ]
-# (top m/s, push m/s2) as Round 68 / 70: the slowest car, the default, a fast car, the bikes, the stunt vehicles
+# (top m/s, push m/s2) as Round 68 / 70; CORR: Round 70's ramp flew 8 to 16 % shorter in the exe than this model said (its lip speeds lower)
 VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0),
             "Stunt Buggy": (50.0, 17.5), "Stunt Bike": (55.0, 18.0)}
-DECK_HALF = 4.5; LAND_HALF = 9.0; RUNOUT = 120.0; CORR = 0.93
+CORR = 0.93
+DECK_HALF = 4.5            # the kicker's deck: 9 m wide
+LAND_HALF = 10.0           # the landing deck: 20 m wide
+LAND_L = 44.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a cut in the bench
+LAND_REL = 18.0            # the landing deck lies this much shallower than the design flight comes down
+R_KICK = 180.0             # the kicker's radius: Evel Knievel's short steep ramp (a held steel deck: RampHold keeps a vehicle on it; 11 m/s2 at 45 m/s)
+RISE_BACK = 0.08           # past the landing deck's foot the cut's floor climbs back to the bench at this grade (the run-out)
+RUNOUT = 110.0             # the catch past the landing deck's foot, graded smooth along the line
+PAD_HALF = 15.0            # the pad round the kicker: flat at its foot's height this far either side of the line
+PAVED = [a for a in M["aeroways"] if a.get("kind") in ("runway", "taxiway")]
 
 
-def design(J, angle=None, solve=True):
-    if solve:
-        # the lip's angle: the window's middle speed comes down MID_UP m over the ground at the jump's land_s (bisection on the angle)
-        lo, hi = 6.0, 24.0
-        for _ in range(30):
-            mid = (lo + hi) / 2; e = design(J, mid, False)
-            if e > 0: hi = mid
-            else: lo = mid
-        return design(J, (lo + hi) / 2, False) if False else design_final(J, (lo + hi) / 2)
-    return design_body(J, angle, True)
-def design_final(J, angle): return design_body(J, angle, False)
-def design_body(J, angle, probe):
+def design(J):
     d = (math.sin(math.radians(J["heading"])), math.cos(math.radians(J["heading"]))); nl = (-d[1], d[0])
-    o = (J["lip"][0] - d[0] * J["run"], J["lip"][1] - d[1] * J["run"]); J["lip_s"] = J["run"]; J["edge_s"] = J["run"] + J["edge"]; J["land_s"] = J["run"] + J["land"]
+    o = (J["lip"][0] - d[0] * J["run"], J["lip"][1] - d[1] * J["run"])
     def P(s, lat=0.0): return (o[0] + d[0] * s + nl[0] * lat, o[1] + d[1] * s + nl[1] * lat)
-    # the run-up: straight on the ground, up to the kicker's foot
-    # the kicker's radius: the window's top speed pressing 8 m/s2 on the suspension (a held steel deck: Round 70 took 6.8; Round 68: about 6 on a ground kicker)
-    th1 = math.radians(angle); R = J["window"][1] ** 2 / 8.0; Lk = R * th1
-    foot = J["lip_s"] - Lk
-    run_s = list(np.arange(0.0, foot + 0.1, 5.0)); run_y = [ground(*P(s)) for s in run_s]
-    # graded smooth (an 80 m running mean of the ground: the first check's cars took off over the airport's humps at 40 m/s); the runway and
-    # taxiways it crosses are laid on the graded ground by the map build after it
-    k = 16; run_y = [float(np.mean(run_y[max(0, i - k):i + k + 1])) for i in range(len(run_y))]
+    raw = lambda s: ground(*P(s))
+    # ---- the far bench's edge: past the water, the first station where the ground has climbed to within 4 m of the bench's height (the bench: the
+    # ground's median over the 60 m after the climb)
+    s_lipg = J["run"]
+    climb = next(s for s in np.arange(s_lipg + 60, s_lipg + 450, 1.0) if raw(s) >= J["bench_min"])
+    bench = float(np.median([raw(climb + k) for k in range(5, 50, 3)]))
+    edge = next(s for s in np.arange(climb - 40, climb + 40, 0.5) if raw(s) >= bench - 3.0)
+    # ---- the run-up: the ground smoothed (a 30 m running mean) where it is not paved; on the runway and taxiways the pavement's own height
+    run_s = list(np.arange(0.0, J["run"] - 100.0 + 0.1, 5.0))
+    g = [raw(s) for s in run_s]; k = 3; sm = [float(np.mean(g[max(0, i - k):i + k + 1])) for i in range(len(g))]
+    def on_paved(q):
+        for a in PAVED:
+            pp = pts(a["points"]); w = a.get("width", 15.0) / 2 + 2.0
+            for u, v in zip(pp, pp[1:]):
+                ab = (v[0] - u[0], v[1] - u[1]); L2 = ab[0] ** 2 + ab[1] ** 2
+                t = 0 if L2 < 1e-9 else max(0, min(1, ((q[0] - u[0]) * ab[0] + (q[1] - u[1]) * ab[1]) / L2))
+                if math.dist(q, (u[0] + ab[0] * t, u[1] + ab[1] * t)) < w: return True
+        return False
+    paved = [on_paved(P(s)) for s in run_s]
+    run_y = [gg if pv else max(gg - 0.5, ss) for gg, ss, pv in zip(g, sm, paved)]
+    # ---- the kicker: from the run-up's last point (its foot on a flat pad) curving up to the lip's angle at the rim's edge; the angle chosen so the
+    # window's middle flight comes down on the landing deck's middle (bisection on the angle)
     y_foot = run_y[-1]
-    deck_s, deck_y = [], []; y = y_foot; s = foot
-    for i in range(int(Lk) + 1):
-        deck_s.append(round(s, 2)); deck_y.append(round(y, 3)); th = min(1.0, (i + .5) / Lk) * th1; y += math.tan(th); s += 1.0
-    s_lip, y_lip = deck_s[-1], deck_y[-1]
-    tall = max(yy - ground(*P(ss)) for ss, yy in zip(deck_s, deck_y))
-
-    def lip_speed(top, acc):
+    def kicker(ang):
+        th1 = math.radians(ang); R = R_KICK; Lk = R * th1
+        foot = J["run"] - Lk; ds, dy = [], []; y = y_foot; s = foot
+        for i in range(int(Lk) + 1):
+            ds.append(round(s, 2)); dy.append(round(y, 3)); th = min(1.0, (i + .5) / Lk) * th1; y += math.tan(th); s += 1.0
+        return ds, dy, R
+    def lip_speed(top, acc, ds, dy):
         v = 1.0
         for i in range(len(run_s) - 1):
-            L = run_s[i + 1] - run_s[i]; g = (run_y[i + 1] - run_y[i]) / L
-            for _ in range(int(L)): a = acc * max(0, 1 - v / top) - 9.81 * g - 0.02 * v; v = math.sqrt(max(1, v * v + 2 * a))
-        # up the kicker (a held ramp: nothing lost but the climb); then CORR: Round 70's summit ramp flew 8 to 16 % shorter in the exe than this
-        # model said (its lip speeds lower than modelled), so the speeds here are taken 7 % lower
-        return CORR * math.sqrt(max(1.0, v * v - 2 * 9.81 * (y_lip - y_foot)))
+            L = run_s[i + 1] - run_s[i]; gr = (run_y[i + 1] - run_y[i]) / L
+            for _ in range(int(L)): a = acc * max(0, 1 - v / top) - 9.81 * gr - 0.02 * v; v = math.sqrt(max(1, v * v + 2 * a))
+        for _ in range(int(ds[0] - run_s[-1])): a = acc * max(0, 1 - v / top) - 0.02 * v; v = math.sqrt(max(1, v * v + 2 * a))   # (the pad: level)
+        return CORR * math.sqrt(max(1.0, v * v - 2 * 9.81 * (dy[-1] - dy[0])))
+    def traj(y0, ang, v, x): th = math.radians(ang); return y0 + math.tan(th) * x - 9.81 * x * x / (2 * v * v * math.cos(th) ** 2)
+    def fall(ang, v, x): th = math.radians(ang); vx = v * math.cos(th); return math.atan2(9.81 * x / vx - v * math.sin(th), vx)
+    # the landing deck: its top DECK_UP over the bench at the edge (+2 m, its front face's thickness), sloping down at the window's middle flight's
+    # descent less LAND_REL to the bench
+    def deck(ang, v_mid, ds, dy):
+        x_mid = edge + 0.4 * LAND_L - ds[-1]
+        alpha = max(math.radians(12.0), fall(ang, v_mid, x_mid) - math.radians(LAND_REL))
+        ls = list(np.arange(edge - 1.0, edge + LAND_L + 0.01, 1.0)); ly = [bench - math.tan(alpha) * (s - edge) for s in ls]
+        return ls, ly, alpha
+    def comes_down(y0, ang, v, s0, surf):
+        x = 5.0
+        while x < 700:
+            if traj(y0, ang, v, x) <= surf(s0 + x): return x
+            x += 0.25
+        return None
+    # pick the angle: the jump's design vehicle flat out comes down 35 % along the deck
+    def score(ang):
+        ds, dy, R = kicker(ang); v = lip_speed(*VEHICLES[J["design"]], ds, dy)
+        ls, ly, al = deck(ang, v, ds, dy)
+        surf = lambda s: float(np.interp(s, ls, ly)) if ls[0] <= s <= ls[-1] else (max(WATER, raw(s)) if s < ls[0] else raw(s))
+        x = comes_down(dy[-1], ang, v, ds[-1], surf) or 999
+        return (ds[-1] + x) - (ls[0] + 0.35 * (ls[-1] - ls[0]))
+    lo, hi = 4.0, 24.0
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        if score(mid) > 0: hi = mid
+        else: lo = mid
+    ang = (lo + hi) / 2
+    deck_s, deck_y, R = kicker(ang); s_lip, y_lip = deck_s[-1], deck_y[-1]
+    v_mid = lip_speed(*VEHICLES[J["design"]], deck_s, deck_y)
+    land_s, land_y, alpha = deck(ang, v_mid, deck_s, deck_y)
+    surf = lambda s: float(np.interp(s, land_s, land_y)) if land_s[0] <= s <= land_s[-1] else (max(WATER, raw(s)) if s < land_s[0] else raw(s))
+    # the window: the lip speeds that come down on the deck (its first 3 m to its last 3 m)
+    def land_at(v): x = comes_down(y_lip, ang, v, s_lip, surf); return None if x is None else s_lip + x
+    def speed_for(target):
+        a, b = 15.0, 80.0
+        for _ in range(40):
+            m_ = (a + b) / 2; la = land_at(m_)
+            if la is None or la > target: b = m_
+            else: a = m_
+        return (a + b) / 2
+    v_lo, v_hi = speed_for(land_s[0] + 3.0), speed_for(land_s[-1] - 3.0)
     flights = {}
     for name, (top, acc) in VEHICLES.items():
-        v = lip_speed(top, acc); flights[name] = dict(lip_speed=round(v, 1), vx=v * math.cos(th1), vy=v * math.sin(th1))
-    # the speed window at the lip (Evel Knievel's speed check: a lit sign at the run-up and the HUD show it), 3 m/s wide: The Corner's within every
-    # vehicle's reach flat out, The Long One's and The Big One's only the faster ones' (the bikes, the ATV, the fast cars). Slower: short, into the
-    # lake. Faster: past the landing deck's end.
-    vmin, vmax = J["window"]
-    def traj(v, x): return y_lip + math.tan(th1) * x - 9.81 * x * x / (2 * v * v * math.cos(th1) ** 2)
-    # the landing ramp: a straight slope through the slowest and fastest flights' points where they come down past the far side's ground + 12 m
-    # (it stands on trestles there), its angle the mean of their descent angles, then curving (R 90) out onto the ground
-    far = [(s, ground(*P(s))) for s in np.arange(s_lip + 40, s_lip + 520, 2.0)]
-    def come_down(v, top_y, x0=40.0):
-        # where the flight comes down onto the surface: the last time it goes from over it to under it (a deck line stands over the lip behind)
-        x = x0; above = traj(v, x) > top_y(s_lip + x); last = None
-        while x < 620:
-            now = traj(v, x) > top_y(s_lip + x)
-            if above and not now: return x
-            above = now; x += 0.5
-        return last
-    # the landing deck: straight, MISMATCH degrees shallower than the window's middle speed comes down (a clean landing; the catch slope sets a
-    # vehicle on its wheels), placed so that speed comes down MID_UP m over the far side's ground; 15 m of deck before the window's slowest touch-down
-    # and 15 m past its fastest, then on down at its slope to the ground. A flatter deck than the flights keeps the window's landings close together.
-    MID_UP, MISMATCH = 8.0, 14.0
-    def slope_at(v, x): vx = v * math.cos(th1); return math.atan2(9.81 * x / vx - v * math.sin(th1), vx)
-    def gnd(s): return max(WATER, ground(*P(s)))
-    vmid = (vmin + vmax) / 2
-    x_mid = J["land_s"] - s_lip
-    if probe: return traj(vmid, x_mid) - (gnd(J["land_s"]) + MID_UP)   # (the angle's bisection: over (+) or under (-) the mark)
-    y_mid = traj(vmid, x_mid); alpha = slope_at(vmid, x_mid) - math.radians(MISMATCH)
-    def deck_line(s): return y_mid - math.tan(alpha) * (s - (s_lip + x_mid))
-    x_lo = come_down(vmin, deck_line, 30.0); x_hi = come_down(vmax, deck_line, 30.0)
-    s_a = s_lip + x_lo - 15.0
-    land_s, land_y = [], []
-    s = s_a
-    while True:
-        y = deck_line(s)
-        gy = ground(*P(s))
-        if s > s_lip + x_hi + 15.0 and y <= gy + 1.0: break
-        land_s.append(round(s, 2)); land_y.append(round(y, 3)); s += 1.0
-        if s > s_a + 260: break
-    # past the fastest landing + 15 m, ease the slope out (R 90) toward the ground's grade
-    s_end = land_s[-1]
-    rows = []
-    for name, f in flights.items():
-        v = f["lip_speed"]; x = come_down(v, deck_line, s_a - s_lip) or 0.0; t = x / f["vx"]; apex = max([traj(v, xx) for xx in np.arange(0, x, 1.0)] + [y_lip]) - y_lip
-        f.update(dict(air_s=round(t, 2), dist_m=round(x, 1), over_lip_m=round(apex, 1), lands_at=round(s_lip + x, 1), on_deck=bool(land_s[0] <= s_lip + x <= land_s[-1]),
-                      land_speed=round(math.hypot(f["vx"], f["vy"] - 9.81 * t), 1), descent_deg=round(math.degrees(slope_at(v, x)), 1)))
-        del f["vx"], f["vy"]
-    # the run-out: the ground from the landing deck's foot graded smooth along the line for RUNOUT m, level across
-    ro_s = list(np.arange(s_end - 2.0, s_end + RUNOUT, 2.0)); ro_y = [ground(*P(s)) for s in ro_s]
-    ro_y[0] = land_y[-1]
-    for _ in range(3): ro_y = [ro_y[0]] + [float(np.mean(ro_y[max(0, i - 6):i + 7])) for i in range(1, len(ro_y))]
-    # the run-up lane and the ground under the kicker graded: the lane to the smoothed run-up, under the deck 0.6 m below it (the rim's ground stood
-    # over the deck: the first check's cars hit it); then the run-out
-    lane_s = run_s + [s_ for s_ in deck_s[1:]]; lane_y = run_y + [y_ - 0.6 for y_ in deck_y[1:]]
-    grades = [
-        {"id": f"quarry jump {J['id']} run-up and kicker", "points": flat([P(s_) for s_ in lane_s]), "y": [round(v, 3) for v in lane_y], "half": DECK_HALF + 2.0, "blend": 8.0},
-        {"id": f"quarry jump {J['id']} run-out", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 3.0, "blend": 10.0},
-    ]
-    clear = [{"id": f"quarry jump {J['id']}", "points": flat([P(0.0), P(s_end + RUNOUT)]), "half": 16.0}]
-    zone_l = [P(s, LAND_HALF + 2) for s in (land_s[0] - 4, s_end + 40)]; zone_r = [P(s, -LAND_HALF - 2) for s in (land_s[0] - 4, s_end + 40)]
+        v = lip_speed(top, acc, deck_s, deck_y); la = land_at(v) or 0.0; x = la - s_lip; t = x / (v * math.cos(math.radians(ang)))
+        apex = max(traj(y_lip, ang, v, xx) for xx in np.arange(0, x + 0.1, 1.0)) - y_lip
+        flights[name] = dict(lip_speed=round(v, 1), air_s=round(t, 2), dist_m=round(x, 1), over_lip_m=round(apex, 1), lands_at=round(la, 1),
+                             on_deck=bool(land_s[0] <= la <= land_s[-1]), descent_deg=round(math.degrees(fall(ang, v, x)), 1))
+    tall = max(yy - raw(ss) for ss, yy in zip(deck_s, deck_y))
+    # ---- the grades: the run-up lane (kept off the runway and taxiways), the pad round the kicker (flat at its foot's height, the rim's mounds cut off;
+    # never past the lip), the catch past the landing deck's foot, and the bleachers' pads
+    # the lane in pieces between the runway and taxiways (open ends: nothing graded past a piece's ends, so the paving keeps its own surface)
+    lanes, cur = [], []
+    for s_, y_, pv in zip(run_s, run_y, paved):
+        if pv:
+            if len(cur) >= 2: lanes.append(cur)
+            cur = []
+        else: cur.append((s_, y_))
+    if len(cur) >= 2: lanes.append(cur)
+    lane_grades = [{"id": f"quarry jump {J['id']} run-up {k}", "points": flat([P(s_) for s_, _ in ln]), "y": [round(y_, 3) for _, y_ in ln], "half": DECK_HALF + 3.0, "blend": 8.0,
+                    "open_ends": True} for k, ln in enumerate(lanes)]
+    pad_s = list(np.arange(run_s[-1], s_lip - 1.0, 2.0))
+    pad = {"id": f"quarry jump {J['id']} kicker pad", "points": flat([P(s) for s in pad_s]), "y": [round(y_foot - 0.6, 3)] * len(pad_s), "half": PAD_HALF, "blend": 10.0, "open_ends": True}
+    # under the landing deck: the bench cut down to the deck (it lies on its ground: nothing under it), then the cut's floor climbing back to the bench
+    depth = bench - land_y[-1]; back_L = depth / RISE_BACK
+    ro_s = list(np.arange(land_s[0], land_s[-1] + back_L + RUNOUT, 2.0))
+    def ro_at(s):
+        if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.25
+        y = land_y[-1] - 0.25 + RISE_BACK * (s - land_s[-1]); return min(y, max(bench, raw(s))) if s > land_s[-1] + back_L else y
+    ro_y = [ro_at(s) for s in ro_s]
+    runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 1.5, "blend": 12.0, "open_ends": True}
+    under = None
+    stands, pads = [], []
+    for at, face_yaw in [(P(land_s[-1] + 20.0, LAND_HALF + 34.0), (J["heading"] + 90.0) % 360), (P(land_s[-1] + 20.0, -LAND_HALF - 34.0), (J["heading"] - 90.0) % 360),
+                         (P(s_lip - 60.0, 32.0), (J["heading"] + 90.0) % 360)]:
+        gy = float(np.median([ground(at[0] + dx, at[1] + dz) for dx in (-12, 0, 12) for dz in (-6, 0, 6)]))
+        stands.append(dict(at=[round(at[0], 2), round(at[1], 2)], yaw=round(face_yaw, 1), y=round(gy, 3)))
+        pads.append({"id": f"quarry jump {J['id']} bleachers' pad {len(pads)}", "points": flat([at, (at[0] + 0.01, at[1])]), "y": [round(gy, 3)] * 2, "half": 16.0, "blend": 8.0})
+    clear = [{"id": f"quarry jump {J['id']}", "points": flat([P(0.0), P(ro_s[-1])]), "half": 18.0}]
+    for st in stands: clear.append({"id": f"quarry jump {J['id']} bleachers", "points": flat([st["at"], (st["at"][0] + 0.01, st["at"][1])]), "half": 18.0})
+    zone_l = [P(s, LAND_HALF + 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]; zone_r = [P(s, -LAND_HALF - 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]
     zones = [{"id": f"quarry jump {J['id']} landing", "poly": flat(zone_l + zone_r[::-1]), "catch": True}]
-    # the start gantry at the run-up's start; bleachers either side of the landing (20 m off the deck's edge) and one by the kicker
-    gantry = dict(at=flat([P(6.0)]), yaw=J["heading"])
-    stands = [dict(at=flat([P(s_end + 12.0, side * (LAND_HALF + 20.0))]), yaw=(J["heading"] - side * 90.0) % 360) for side in (-1, 1)]
-    stands.append(dict(at=flat([P(s_lip - 70.0, 26.0)]), yaw=(J["heading"] - 90.0) % 360))
-    clear_edge = traj(vmin, J["edge_s"] - s_lip) - gnd(J["edge_s"])
-    window = dict(reach=[n for n, f in flights.items() if f["lip_speed"] >= vmin], lo=round(vmin, 1), hi=round(vmax, 1), lands=[round(x_lo, 1), round(x_hi, 1)], slowest_over_edge_m=round(clear_edge, 1))
-    J["angle"] = round(angle, 2)
-    jump = dict(window=window, id=J["id"], name=J["name"], origin=[round(o[0], 2), round(o[1], 2)], dir=[round(d[0], 5), round(d[1], 5)],
-                run_s=[round(v, 2) for v in run_s], run_y=[round(v, 3) for v in run_y],
-                deck_s=deck_s, deck_y=deck_y, half=DECK_HALF, angle_deg=J["angle"], radius_m=R, lip_s=s_lip, lip_y=round(y_lip, 3), tallest_m=round(tall, 1),
-                land_s=land_s, land_y=land_y, land_half=LAND_HALF, land_angle_deg=round(math.degrees(alpha), 1), runout_to=round(s_end + RUNOUT, 1),
-                water_y=WATER, start=flat([P(4.0)]), start_yaw=J["heading"], gantry=gantry, stands=stands, flights=flights)
+    grades = lane_grades + [pad, runout] + pads
+    jump = dict(window=dict(lo=round(v_lo, 1), hi=round(v_hi, 1), lands=[round(land_s[0] + 3 - s_lip, 1), round(land_s[-1] - 3 - s_lip, 1)]), id=J["id"], name=J["name"],
+                origin=[round(o[0], 2), round(o[1], 2)], dir=[round(d[0], 5), round(d[1], 5)], run_s=[round(v, 2) for v in run_s], run_y=[round(v, 3) for v in run_y],
+                deck_s=deck_s, deck_y=deck_y, half=DECK_HALF, angle_deg=round(ang, 2), radius_m=round(R, 1), lip_s=s_lip, lip_y=round(y_lip, 3), tallest_m=round(tall, 1),
+                land_s=[round(v, 2) for v in land_s], land_y=[round(v, 3) for v in land_y], land_half=LAND_HALF, land_angle_deg=round(math.degrees(alpha), 1),
+                bench_y=round(bench, 2), edge_s=round(edge, 1), runout_to=round(ro_s[-1], 1), water_y=WATER, design=J["design"],
+                start=flat([P(6.0)]), start_yaw=J["heading"], gantry=dict(at=flat([P(10.0)]), yaw=J["heading"]), stands=stands, flights=flights)
     return jump, grades, clear, zones
 
 
-out = {"note": "Round 72: the Viking Quarry jumps (Free Roam events), from Tools/mapgen/make_quarry_jumps.py; merged into the mountain's planning "
+out = {"note": "Round 72 / 73: the Viking Quarry jumps (Free Roam events), from Tools/mapgen/make_quarry_jumps.py; merged into the mountain's planning "
                "pieces and built by MapBuilder.QuarryJumps.cs; run by Stunts/QuarryJumps.cs. Coordinates are map meters (= Unity x, z).",
        "grades": [], "clear_lines": [], "landing_zones": [], "jumps": []}
 for J in JUMPS:
     jump, grades, clear, zones = design(J)
     out["jumps"].append(jump); out["grades"] += grades; out["clear_lines"] += clear; out["landing_zones"] += zones
-    w = jump["window"]; print(f"{jump['id']} {jump['name']}: the speed window {w['lo']} to {w['hi']} m/s at the lip ({w['lo'] * 2.237:.0f} to {w['hi'] * 2.237:.0f} mph): lands {w['lands'][0]} to {w['lands'][1]} m out, the slowest {w['slowest_over_edge_m']} m over the far edge; lip {J['angle']} deg; in reach of: {', '.join(w['reach'])}")
-    print(f"   run-up {jump['deck_s'][0]:.0f} m, kicker {len(jump['deck_s'])} m to {jump['angle_deg']} deg (R {jump['radius_m']:.0f}), lip {jump['lip_y']:.1f} m "
-          f"({jump['tallest_m']} m over the ground); landing deck {jump['land_s'][0] - jump['lip_s']:.0f} to {jump['land_s'][-1] - jump['lip_s']:.0f} m out, "
-          f"{len(jump['land_s'])} m long at {jump['land_angle_deg']} deg, its top {jump['land_y'][0]:.0f} m")
+    w = jump["window"]
+    print(f"{jump['id']} {jump['name']}: lip {jump['angle_deg']} deg (R {jump['radius_m']:.0f}), {jump['lip_y']:.1f} m ({jump['tallest_m']} m over the ground), the far bench "
+          f"{jump['bench_y']:.0f} m from {jump['edge_s'] - jump['lip_s']:.0f} m out; landing deck {jump['land_s'][0] - jump['lip_s']:.0f} to {jump['land_s'][-1] - jump['lip_s']:.0f} m out at "
+          f"{jump['land_angle_deg']} deg; window {w['lo']} to {w['hi']} m/s ({w['lo'] * 2.237:.0f} to {w['hi'] * 2.237:.0f} mph)")
     for n, f in jump["flights"].items():
-        print(f"   {n:17} lip {f['lip_speed']:5.1f} m/s: {f['air_s']:4.1f} s, {f['dist_m']:5.0f} m, +{f['over_lip_m']:4.1f} m over the lip, lands {'ON THE DECK' if f['on_deck'] else 'OFF'} "
-              f"at {f['land_speed']:.0f} m/s, {f['descent_deg']:.0f} deg down")
+        print(f"   {n:17} lip {f['lip_speed']:5.1f} m/s: {f['air_s']:4.1f} s, {f['dist_m']:5.0f} m, +{f['over_lip_m']:4.1f} m, lands {'ON THE DECK' if f['on_deck'] else 'past it (catch)' if f['lands_at'] > jump['land_s'][-1] else 'SHORT'}, {f['descent_deg']:.0f} deg down")
+# ---------------------------------------------------------------- Round 73 (C3, Dan: "Truly don't even understand how to get to the ramps in general"):
+# the quarry jumps drive, a gravel track from the airport's service road by The Big One's start, behind each start box, to the service road east of
+# The Corner's (both turn-offs signed QUARRY JUMPS), so a player on the roads finds every start; each box has its jump's board
+def chaikin(p, it=3):
+    for _ in range(it):
+        q = [p[0]]
+        for a, b in zip(p[:-1], p[1:]): q += [(0.75 * a[0] + 0.25 * b[0], 0.75 * a[1] + 0.25 * b[1]), (0.25 * a[0] + 0.75 * b[0], 0.25 * a[1] + 0.75 * b[1])]
+        p = q + [p[-1]]
+    return p
+def behind(j, m): o, d = j["origin"], j["dir"]; return (j["start"][0] - d[0] * m, j["start"][1] - d[1] * m)
+J1_, J2_, J3_ = out["jumps"]
+WEST_END, EAST_END = (-2296.0, -2060.0), (-1472.0, -1923.0)   # on the service roads (OSM 7091, 8910)
+ctrl = [WEST_END, behind(J3_, 12.0), (-2150.0, -2036.0), behind(J2_, 12.0), (-1820.0, -1972.0), behind(J1_, 12.0), (-1560.0, -1912.0), EAST_END]
+drive = chaikin(ctrl, 3)
+dense = []
+for a, b in zip(drive, drive[1:]):
+    n = max(1, int(math.dist(a, b) / 2.0)); dense += [(a[0] + (b[0] - a[0]) * k / n, a[1] + (b[1] - a[1]) * k / n) for k in range(n)]
+dense.append(drive[-1])
+dy = [ground(*q) for q in dense]
+for _ in range(3): dy = [float(np.mean(dy[max(0, i - 5):i + 6])) for i in range(len(dy))]
+out["grades"].append({"id": "the quarry jumps drive", "points": flat(dense), "y": [round(v, 3) for v in dy], "half": 3.5, "blend": 5.0, "open_ends": True})
+out["clear_lines"].append({"id": "the quarry jumps drive", "points": flat(dense[::4] + [dense[-1]]), "half": 7.0})
+def yaw_of(a, b): return round(math.degrees(math.atan2(b[0] - a[0], b[1] - a[1])) % 360, 1)
+out["access"] = {"drive": flat(dense), "half": 3.5,
+                 # the turn-off boards: beside each end, facing a driver on the service road (toward the drive's first meters), the arrow along the drive
+                 "signs": [dict(at=flat([(dense[6][0] + 5.0, dense[6][1] + 5.0)]), facing=yaw_of(dense[8], dense[0]), text="QUARRY JUMPS"),
+                           dict(at=flat([(dense[-7][0] + 5.0, dense[-7][1] - 5.0)]), facing=yaw_of(dense[-9], dense[-1]), text="QUARRY JUMPS")],
+                 "boards": [dict(jump=j["id"], at=flat([(j["start"][0] - j["dir"][1] * 9.0 - j["dir"][0] * 2.0, j["start"][1] + j["dir"][0] * 9.0 - j["dir"][1] * 2.0)]), facing=(j["start_yaw"] + 180.0) % 360) for j in out["jumps"]]}
+print(f"the quarry jumps drive: {sum(math.dist(a, b) for a, b in zip(dense, dense[1:])):.0f} m, from ({WEST_END[0]:.0f}, {WEST_END[1]:.0f}) behind the three start boxes to ({EAST_END[0]:.0f}, {EAST_END[1]:.0f})")
 json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)
 print("wrote", os.path.relpath(OUT, ROOT))
 
@@ -186,9 +244,9 @@ if "--plot" in sys.argv:
     for ax, j in zip(axs, out["jumps"]):
         o, d = j["origin"], j["dir"]; P = lambda s: (o[0] + d[0] * s, o[1] + d[1] * s)
         xs = np.arange(0, j["runout_to"], 2.0); ax.plot(xs, [max(WATER, ground(*P(s))) for s in xs], color="#999")
-        ax.plot(j["run_s"], j["run_y"], "g"); ax.plot(j["deck_s"], j["deck_y"], "k", lw=2); ax.plot(j["land_s"], j["land_y"], "k", lw=2)
+        ax.plot(j["run_s"], j["run_y"], "g"); ax.plot(j["deck_s"], j["deck_y"], "k", lw=2); ax.plot(j["land_s"], j["land_y"], "k", lw=3)
         th = math.radians(j["angle_deg"])
         for n, f in j["flights"].items():
             v = f["lip_speed"]; xx = np.linspace(0, f["dist_m"], 100); ax.plot(j["lip_s"] + xx, [j["lip_y"] + math.tan(th) * x - 9.81 * x * x / (2 * v * v * math.cos(th) ** 2) for x in xx], "--", label=f"{n} {v} m/s")
         ax.axhline(WATER, color="c"); ax.set_aspect("equal"); ax.grid(alpha=.3); ax.legend(fontsize=7); ax.set_title(j["id"] + " " + j["name"])
-    os.makedirs(os.path.join(ROOT, "local/round72"), exist_ok=True); plt.savefig(os.path.join(ROOT, "local/round72/quarry_jumps.png"), dpi=60, bbox_inches="tight")
+    os.makedirs(os.path.join(ROOT, "local/round73"), exist_ok=True); plt.savefig(os.path.join(ROOT, "local/round73/quarry_jumps.png"), dpi=60, bbox_inches="tight")
