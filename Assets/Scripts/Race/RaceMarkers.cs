@@ -152,17 +152,42 @@ namespace ChastainRush
                     }
                 return new Arch { root = root, paint = new Renderer[0], beams = new GameObject("none"), gate = g };
             }
-            foreach (float side in new[] { -1f, 1f })
+            // Round 70 (F3, Dan's BUG-001 on Kennesaw Mountain Drive: the banner's end down in the hillside): the gantry stands upright, each post
+            // on the ground where it stands (closer in where the ground beside the road climbs more than 2.5 m over the line), the banner level
+            // and h clear over the higher of the line and the posts' ground. Off the terrain (a bridge, the mall, a pipe) as before.
+            float[] px = { -g.HalfWidth, g.HalfWidth }, py = { 0f, 0f };
+            float gc = GroundQuery.Height(g.Position.x, g.Position.z);
+            if (!float.IsNaN(gc) && Mathf.Abs(gc - g.Position.y) < 1f && !(RaceRoute.Active != null && RaceRoute.Active.Underground))
             {
-                // chequered pylons: alternating black and white blocks
-                for (int k = 0; k < 6; k++)
-                    Box(root.transform, new Vector3(side * g.HalfWidth, 0.6f + k * 1.2f, 0), new Vector3(1.0f, 1.2f, 1.0f), (k % 2 == 0) == (side > 0) ? Black : White);
+                var flat = Flat(g.Forward); if (flat.sqrMagnitude < 1e-4f) flat = Vector3.forward;
+                root.transform.rotation = Quaternion.LookRotation(flat.normalized, Vector3.up);
+                var right = root.transform.right;
+                for (int s = 0; s < 2; s++)
+                {
+                    float sd = s == 0 ? -1f : 1f, d = 2f, y = 0f;
+                    for (float dd = 2f; dd <= g.HalfWidth + 1e-3f; dd += .5f)
+                    {
+                        var q = g.Position + right * sd * dd; float qy = GroundQuery.Height(q.x, q.z); if (float.IsNaN(qy)) break;
+                        if (qy - g.Position.y > 2.5f) break;
+                        d = dd; y = qy - g.Position.y;
+                    }
+                    px[s] = sd * d; py[s] = y;
+                }
             }
-            int cells = Mathf.RoundToInt(g.HalfWidth * 2f / 1.5f);
-            float cw = g.HalfWidth * 2f / cells;
+            float top = Mathf.Max(0f, Mathf.Max(py[0], py[1])) + h;   // the banner's top
+            for (int s = 0; s < 2; s++)
+            {
+                // chequered pylons: alternating black and white blocks, from 0.3 m into the ground up to the banner
+                float b = py[s] - .3f; int n = Mathf.Max(1, Mathf.CeilToInt((top - .3f - b) / 1.2f));
+                for (int k = 0; k < n; k++)
+                    Box(root.transform, new Vector3(px[s], top - .3f - 0.6f - k * 1.2f, 0), new Vector3(1.0f, 1.2f, 1.0f), ((n - 1 - k) % 2 == 0) == (s == 1) ? Black : White);
+            }
+            float span = px[1] - px[0];
+            int cells = Mathf.Max(2, Mathf.RoundToInt(span / 1.5f));
+            float cw = span / cells;
             for (int c = 0; c < cells; c++)
                 for (int row = 0; row < 2; row++)
-                    Box(root.transform, new Vector3(-g.HalfWidth + cw * (c + 0.5f), h - 0.6f - row * 0.9f + 0.45f, 0), new Vector3(cw, 0.9f, 0.5f), ((c + row) % 2 == 0) ? Black : White);
+                    Box(root.transform, new Vector3(px[0] + cw * (c + 0.5f), top - 0.6f - row * 0.9f + 0.45f, 0), new Vector3(cw, 0.9f, 0.5f), ((c + row) % 2 == 0) ? Black : White);
             return new Arch { root = root, paint = new Renderer[0], beams = new GameObject("none"), gate = g };
         }
 
