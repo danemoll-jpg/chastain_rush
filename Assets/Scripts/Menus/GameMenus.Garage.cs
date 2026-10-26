@@ -81,11 +81,13 @@ namespace ChastainRush
             var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt && !v.Flies : garageFor == "roam" || !v.Flies).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
             Clear(profile.Name + " / " + profile.Class, profile.Description);
             heading.text = profile.Name + " / " + profile.Class;
-            bool racing = race && race.State != RaceController.Stage.Free;
+            // Round 70 (C, Dan: "In race setup, I am not able to select a car in the garage some times"): a finished race counted as racing,
+            // so race setup's garage after a race had its vehicle row shut; only a race under way (the countdown, the race) holds the vehicle
+            bool racing = race && (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Racing);
             Step(0, "vehicle", $"{profile.Name}   ·   {at + 1} / {all.Length}", d =>
             {
                 if (racing) return;   // the vehicle is chosen before a race, not during one
-                vehicles.Select(all[(at + d + all.Length) % all.Length].Id); Show();
+                vehicles.Select(all[(at + d + all.Length) % all.Length].Id, garageFor == "race" ? VehicleSwitch.Pick.Race : garageFor == "stunt" ? VehicleSwitch.Pick.Forced : VehicleSwitch.Pick.Roam); Show();
             });
             int colour = vehicles.Colour;
             Step(1, "colour", "Color:    " + (colour < 0 ? "Standard" : VehiclePaint.Name(colour)), d =>
