@@ -81,8 +81,8 @@ namespace ChastainRush
                 {
                     decidedFor = id; missSide = 0f;
                     bool safe = ring.Ring > 0f && ring.Position.y - Ground(ring.Position) > 40f;
-                    if (safe && rng.NextDouble() < MissChance[Mathf.Clamp(RoadDriver.Difficulty, 0, 2)] && !entrant.Finished && !entrant.IsPlayer) missSide = (rng.NextDouble() < .5 ? -1f : 1f) * (ring.Ring + 7f);
-                    if (entrant.IsPlayer && ForceMiss == ring.Id) missSide = Mathf.Max(ring.Ring, ring.RingW) + 9f;
+                    if (safe && rng.NextDouble() < MissChance[Mathf.Clamp(RoadDriver.Difficulty, 0, 2)] && !entrant.Finished && !entrant.IsPlayer) missSide = (rng.NextDouble() < .5 ? -1f : 1f) * (ring.Ring + 22f);
+                    if (entrant.IsPlayer && ForceMiss == ring.Id) missSide = Mathf.Max(ring.Ring, ring.RingW) + 30f;
                 }
                 if (missSide != 0f && toRing < 400f && decidedFor == id) target += ring.Right * missSide;
             }
@@ -109,6 +109,16 @@ namespace ChastainRush
                 float rud = PlaneFlight.RudderRate * Mathf.Deg2Rad * .8f, g = 9.81f * Mathf.Tan(62f * Mathf.Deg2Rad);
                 float u = (rud + Mathf.Sqrt(rud * rud + 4f * k * g)) / (2f * k);
                 vmax = Mathf.Min(vmax, u + d * .12f);   // farther off, it has time to slow
+            }
+            // and where the line ahead, low, bends up or down more sharply than the plane can pitch at this speed (the dip under I-75): the pitch rate is
+            // PlaneFlight's (45 deg/s slow, 55 % of it at top speed)
+            for (float d = 30f; d <= 420f; d += 15f)
+            {
+                var a = At(s + d - 15f); var b = At(s + d); var c = At(s + d + 15f);
+                float k = Mathf.Abs(Mathf.DeltaAngle(Mathf.Atan2(b.y - a.y, 15f) * Mathf.Rad2Deg, Mathf.Atan2(c.y - b.y, 15f) * Mathf.Rad2Deg)) * Mathf.Deg2Rad / 15f;
+                if (k < 1e-4f || b.y - Ground(b) > 25f) continue;   // only near the ground: higher up a late pull-up costs nothing
+                for (float u = PlaneFlight.TopSpeed; u > 45f; u -= 5f)
+                    if (k * u <= .75f * PlaneFlight.PitchRate * Mathf.Lerp(1f, .55f, u / PlaneFlight.TopSpeed) * Mathf.Deg2Rad) { vmax = Mathf.Min(vmax, u + d * .1f); break; }
             }
             float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, PlaneFlight.TopSpeed, Pace);
             float wantV = Mathf.Min(paceV, vmax);

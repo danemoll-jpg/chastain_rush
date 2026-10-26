@@ -1,0 +1,86 @@
+Round 71 check, 2026-10-26 07:09, the exe, 1280 x 720, muted.
+
+=== The rings' line against the built world (no flying): the plane's strike points every 2.5 m
+  Quarry Air Race: lap 16160 m, 12 rings + the line, 2 laps
+  lowest over the ground: 4.1 m at 3188 m from the line
+  under the decks:
+      3190 m (-472, 296.7, -815): 3.9 m up to BridgeStructure, 3.5 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3195 m (-468, 296.0, -817): 4.6 m up to BridgeStructure, 3.1 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3200 m (-463, 295.0, -820): 5.4 m up to BridgeStructure, 3.0 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3205 m (-459, 294.9, -823): 5.5 m up to BridgeStructure, 3.7 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3210 m (-455, 295.5, -826): 4.9 m up to BridgeStructure, 5.6 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3215 m (-451, 296.0, -828): 4.3 m up to BridgeStructure, 4.6 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3220 m (-447, 296.6, -831): 3.7 m up to BridgeStructure, 5.0 m down (body 1.25 m under the middle, tail 1.7 m over it)
+  S/F     Start / finish                 (-3041, 343, -1879) ring 32 m across; ground 14.0 m under it (ray 14.0 m to Terrain_8_10)
+  ring 1  Quarry drop                    (-2330, 216, -1563) ring 28 m across; ground 103.0 m under it (ray 103.0 m to Terrain_9_10)
+  ring 2  Quarry lake                    (-2121, 149, -1540) ring 24 m across; ground 35.5 m under it (ray 35.5 m to Terrain_9_10)
+  ring 3  Quarry rim                     (-1588, 343, -1479) ring 32 m across; ground 40.6 m under it (ray 40.6 m to Terrain_10_10)
+  ring 4  Under I-75 southbound          (-459, 295, -823) frame 20 x 6.8 m; ground 5.6 m under it (ray 5.6 m to Terrain_12_11), BridgeStructure 5.5 m over it
+  ring 5  Over I-75 northbound           (-337, 319, -901) ring 20 m across; ground 29.2 m under it (ray 29.2 m to Terrain_12_11)
+  ring 6  High over Town Center          (329, 578, -1498) ring 36 m across; ground 270.5 m under it (ray 270.5 m to Terrain_13_10)
+  ring 7  Barrett interchange            (1, 478, -2698) ring 32 m across; ground 111.3 m under it (ray 111.3 m to Terrain_13_8)
+  ring 8  Over the treetops              (-620, 421, -4450) ring 32 m across; ground 66.1 m under it (ray 66.1 m to Terrain_12_6)
+  ring 9  Kennesaw Mountain summit       (-1028, 738, -5879) ring 36 m across; ground 60.8 m under it (ray 60.8 m to Terrain_11_3)
+  ring 10 Over the woods                 (-2601, 411, -4649) ring 32 m across; ground 65.1 m under it (ray 65.1 m to Terrain_9_5)
+  ring 11 Daniell Lake                   (-4170, 337, -3560) ring 28 m across; ground 16.0 m under it (ray 16.0 m to Terrain_6_7)
+  ring 12 Over Cobb Parkway              (-4240, 399, -1889) ring 32 m across; ground 45.0 m under it (ray 45.0 m to Terrain_6_10)
+PASS  aprobe: nothing solid and no tree's crown on the rings' line  -  0 stretch(es) listed above
+
+=== A lap flown cleanly by script (the AI pilot's code on the player's plane, Hard's pace)
+     15.9  START LINE crossed: clock started
+     25.1  CHECKPOINT 1 at 25.076
+     27.1  CHECKPOINT 2 at 27.053
+     32.4  CHECKPOINT 3 at 32.344
+     50.0  CHECKPOINT 4 at 49.960
+     52.3  CHECKPOINT 5 at 52.303
+     62.6  CHECKPOINT 6 at 62.633
+     74.0  CHECKPOINT 7 at 73.969
+     90.0  CHECKPOINT 8 at 90.019
+    104.1  CHECKPOINT 9 at 104.053
+    122.3  CHECKPOINT 10 at 122.244
+    138.9  CHECKPOINT 11 at 138.859
+    155.5  CHECKPOINT 12 at 155.465
+    169.2  LAP 1 COUNTED 153.319 (clock 153.319 + penalty 0.0)
+    169.2  FINISH total 153.319 (clock 153.319 + penalties 0.0); laps 153.319; place 1
+PASS  aline: the lap finished  -  lap 2:33.319
+PASS  aline: every ring passed (none missed)  -  0 missed
+PASS  aline: no crash
+
+=== A lap with ring 3 missed on purpose
+     50.3  PENALTY +5 s: missed CP3 on lap 1 at 50.340 (race penalty now 5 s)
+    169.6  LAP 1 COUNTED 158.682 (clock 153.682 + penalty 5.0); missed CP3
+    169.6  FINISH total 158.682 (clock 153.682 + penalties 5.0); laps 158.682; place 1
+PASS  amiss: ring 3 missed, 5 s penalty, the lap counted  -  laps 1, missed 1, penalty 5 s, lap 2:38.682
+
+=== A crash after ring 2: the reset
+     32.5  CRASH RESET: back in the air at (-2271, 189, -1553) before ring 2
+    177.8  LAP 1 COUNTED 161.931 (clock 161.931 + penalty 0.0)
+    177.8  FINISH total 161.931 (clock 161.931 + penalties 0.0); laps 161.931; place 1
+  after the reset: in the air, 115 m before ring 2, 61 m over the ground, 76 m/s
+PASS  acrash: put back in the air before ring 2, flying on  -  in the air, 115 m before ring 2, 61 m over the ground, 76 m/s
+PASS  acrash: the lap finished after it  -  laps 1, missed 0
+
+=== 2 AI pilots on Hard, 2 laps (the player flown by script at Normal's pace)
+    103.8  EMBER: PENALTY +5 s: missed CP8 on lap 1 at 103.752 (race penalty now 5 s)
+    322.1  EMBER: FINISH total 311.666 (clock 306.666 + penalties 5.0); laps 158.412 153.254; place 1
+    322.2  GOLD: FINISH total 306.765 (clock 306.765 + penalties 0.0); laps 153.427 153.338; place 1
+    322.5  FINISH total 306.664 (clock 306.664 + penalties 0.0); laps 153.319 153.346; place 2
+  YOU   5:06.664  laps 2:33.319 / 2:33.346, missed 0
+  EMBER 5:11.666  laps 2:38.412 / 2:33.254, missed 1
+  GOLD  5:06.765  laps 2:33.427 / 2:33.338, missed 0
+PASS  aai: both AI pilots finish (flown, not estimated)  -  EMBER 5:11.666, GOLD 5:06.765
+
+=== The time trial: solo, 2 laps; the ghost
+  laps 2:33.319 / 2:33.346, total 5:06.664, missed 0; best lap 2:33.319, Top 10 race #2
+PASS  atrial: the time trial finished with a best lap and a Top 10 place  -  rank 2
+  ghost: Clean-lap ghost rejected: reset or teleport. Next lap can qualify.; saved: Quarry Air Race_forward_plane_clean-lap-v1_chastain-rush-v1.json
+PASS  atrial: the best lap's ghost saved
+PASS  atrial: the best lap's ghost flies on the next run  -  Clean-lap ghost rejected: reset or teleport. Next lap can qualify.
+
+=== Pictures
+  71_quarry_dive: at (-2434, 287, -1598), 171 m over the ground
+  71_under_i75: at (-552, 313, -765), 6 m over the ground
+  71_high_ring: at (279, 554, -1403), 229 m over the ground
+  71_summit_ring: at (-947, 722, -5807), 58 m over the ground
+
+11 of 11 checks passed.

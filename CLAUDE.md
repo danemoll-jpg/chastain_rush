@@ -421,6 +421,14 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 71 (see `TODO.md`, status there) is built and checked in the exe by script, not yet flown by Dan:** the Quarry Air Race (`python Tools/mapgen/make_air_route.py
+[--plot] [--room <check dir>/71_line_room.tsv]` writes `Data/routes/quarry_air_race.json` (route `air`: the 3D line `loop` + `loop_y`, checkpoints are rings: `y`, `ring_m` or
+`ring_w` / `ring_h`; `gate_y`, `gate_ring_air_m`; `vehicles` ["plane"]) and `Data/tracks/quarry_air_race.json` (its low lanes' `clear_lines`, merged into the mountain's by
+`MapBuilder.SummitRamp.cs` MergeAirLanes: a full build). Rings and their flash / chime `RaceMarkers.MakeRing` / `RingPassed`; the race's air parts `Race/RaceController.Air.cs`
+(runway grid, AI pilots, `AirReset`: back in the air 150 m before the last ring); AI pilots `Race/PlanePilot.cs` (the plane's own controls); `RaceGate.Ring/RingW/RingH`;
+race planes pass through each other; `PlaneFlight.AirStart`. A quick build now takes in new route files too. Check: `ChastainRush.exe -exeRound71 <dir> [-r71Only
+aprobe,aline,amiss,acrash,aai,atrial,apics] [-routeDir <dir>] [-planeNoTrees] -logFile <dir>\Player.log` (`Checks/Round20Runner.R71.cs`; `-routeDir`: route files from a folder
+over the embedded ones; aprobe writes `71_line_room.tsv`). Imported from Racer: nothing.
 **Round 70 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** A the summit ramp (Free Roam world piece: `python Tools/mapgen/make_summit_ramp.py
 [--plot]` writes `Data/tracks/kennesaw_summit_ramp.json`, re-run after mapgen, then `add_extension_places.py`, then Build Map; merged into the mountain's pieces by `MapBuilder.Mountain.cs`, built by
 `MapBuilder.SummitRamp.cs` in the MountainRace step: the drive's south-flank straight as the run-up, a steel deck "sc summit ramp deck" (held, ShortcutSurface) off the hairpin's outside at

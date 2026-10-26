@@ -6,21 +6,26 @@ Quarry Lake and out from it. Clockwise, about 16 km, a lap about 2.5 minutes fla
   S/F    the start / finish ring, 14 m over the runway (the grid is at the runway's west end: a standing take-off at GO)
   Q1-Q3  Viking Quarry: in over its south-west rim and down the 200 m deep pit (Q1 halfway down), Q2 10 m over the lake, then up the east wall
          (Q3 over the rim)
-  C1-C2  Noonday Creek under I-75, just south of Big Shanty Road: under the southbound deck (12 m clear) and the northbound / express decks
-         (13 m) in one line, frames sized to the openings
-  H1     a high ring 280 m over Town Center (climb for it, dive from it)
+  C1-C2  Noonday Creek, just south of Big Shanty Road: under I-75's southbound deck (a frame sized to the opening, the lane through the creek's
+         trees cleared) and straight up over the northbound and express decks (their opening under them is too low for the wings)
+  H1     a high ring 270 m over Town Center (climb for it, dive from it)
+  M1     over the Barrett Parkway interchange
   W1     low over the woods' tops north of Kennesaw Mountain
   H2     over Kennesaw Mountain's summit
+  M2     over the woods west of the mountain
   L1     low over Daniell Lake
-  B1     under Cobb Parkway's bridge over the railroad (12 m clear), then a right turn onto the runway's line for the finish
-Why here: the quarry is the deepest, steepest drop on the map and sits beside the runway; the creek and the railroad are the two places where
-highway bridges stand high enough (11 to 13 m) for a plane with 11 m wings, with no street lamps, signs or traffic in the way; the mountain is the
-landmark to climb for. Bridges along roads were left out: lamps, sign gantries and traffic under them.
+  B1     over Cobb Parkway's bridge (the railroad's cut under it is too narrow for the wings), then a right turn onto the runway's line for the finish
+Why here: the quarry is the deepest, steepest drop on the map and sits beside the runway; I-75's southbound deck over Noonday Creek is the one
+highway bridge near it with room under it for a plane with 11 m wings (9 m from the bank to the deck as built) and no street lamps, signs or traffic
+under it; the mountain is the landmark to climb for. Bridges along roads were left out: lamps, sign gantries and traffic under them.
 
 What it writes: Data/routes/quarry_air_race.json (an "air" route: the 3D line through the rings (loop + loop_y), the rings as checkpoints with
 their centers and sizes (y, ring_m, or ring_w / ring_h for a frame), the grid and the take-off run on the runway (lead_in)). No world change: the
 rings are the race layer (RaceMarkers), so no Build Map step builds anything; the scene embeds the route file (a quick or full Build Map).
-Usage: python Tools/mapgen/make_air_route.py [--plot]"""
+Heights: the floor is the planning's ground, the trees' tops (TreeBuilder's tallest for the spot) and the buildings' roofs, and with --room <file> the
+BUILT world as the exe's probe found it over and under the line (Round20Runner.R71.cs aprobe writes 71_line_room.tsv: the map build's banks and
+abutments by the bridges stand higher than the planning's ground); crests and dips rounded for the plane's pitch rate.
+Usage: python Tools/mapgen/make_air_route.py [--plot] [--room local/round71/<check>/71_line_room.tsv]"""
 import json, math, os, struct, sys
 import numpy as np
 
@@ -99,7 +104,7 @@ CTRL = [
     ((-3440, -1893), None),
 ]
 CLEARED = {"C1": (260, 300), "L1": (160, 160)}   # the low stretches in woods: their lanes cleared, meters before and after the ring
-LOW = {"SF": (420, 420), "Q2": (150, 150), "C1": (260, 45), "L1": (160, 160)}   # meters before and after the ring
+LOW = {"SF": (420, 420), "Q2": (150, 150), "C1": (260, 105), "L1": (160, 160)}   # meters before and after the ring
 LOW_CLEAR = {"SF": 10.0, "Q2": 4.0, "L1": 7.0, "C1": 7.0}   # over the ground there (under a bridge: as low as its deck allows)
 
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
@@ -221,9 +226,17 @@ for r in rings:
     if r["name"] in LOW_CLEAR:
         k0, k1 = int(LOW[r["name"]][0] / STEP), int(LOW[r["name"]][1] / STEP)
         for d in range(-k0, k1 + 1): lowc[(r["i"] + d) % N] = LOW_CLEAR[r["name"]]
-floor = np.where(low, np.maximum(np.maximum(G + np.maximum(2.8, lowc), G2 + 1.2), TOPS + 4.0), np.maximum(G2 + 22.0, TOPS + 8.0))
+f_low = np.maximum(np.maximum(G + np.maximum(2.8, lowc), G2 + 1.2), TOPS + 4.0); f_open = np.maximum(G2 + 22.0, TOPS + 8.0)
+f_low = np.maximum(f_low, np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 2.2, -1e4)); f_open = np.maximum(f_open, np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 8.0, -1e4))
+# into a low stretch the floor comes down over 75 m from its edge (no step: the plane's pull-up out of it is rounded too)
+edge = np.full(N, 99)
+for i in np.where(~low)[0]: edge[i] = 0
+for k in range(2 * N): i = k % N; edge[i] = min(edge[i], edge[i - 1] + 1)
+for k in range(2 * N, 0, -1): i = k % N; edge[i] = min(edge[i], edge[(i + 1) % N] + 1)
+w = np.clip(edge / 15.0, 0, 1)
+floor = np.where(low, w * f_low + (1 - w) * np.maximum(f_low, f_open), f_open)
 CEIL = np.minimum(CEIL, np.where(low & (BUILT_HI < 1e4), BUILT_HI - 1.7 - 1.2, 1e4))   # the built world's own underside, where the probe saw one
-floor = np.maximum(floor, np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + np.where(low, 2.2, 8.0), -1e4))   # and its own ground: the wheels 2.2 m over it, low
+   # and its own ground: the wheels 2.2 m over it, low
 pinned = low & (CEIL < 1e4)
 floor = np.where(pinned, np.maximum(np.maximum(G + 4.3, G2 + 1.2), np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 1.6, -1e4)), floor)   # under a deck: the body 4.3 m up (the wheels 3 m)
 

@@ -193,7 +193,9 @@ namespace ChastainRush
             report.AppendLine($"  laps {string.Join(" / ", p.LapTimes.Select(x => RaceController.Fmt(x)))}, total {RaceController.Fmt(p.FinalTotal)}, missed {p.MissedTotal}; best lap {RaceController.Fmt(race.BestLap)}, Top 10 race #{race.RaceRank}");
             Check("atrial: the time trial finished with a best lap and a Top 10 place", p.Finished && race.BestLap > 0f && race.RaceRank > 0, $"rank {race.RaceRank}");
             R71Done(pilot); race.EndRace();
-            ghost?.Refresh(); report.AppendLine("  ghost: " + ghost?.Status);
+            ghost?.Refresh(); var gfile = ghost ? Directory.GetFiles(ghost.Root, "Quarry Air Race*.json") : new string[0];
+            report.AppendLine($"  ghost: {ghost?.Status}; saved: {string.Join(", ", gfile.Select(Path.GetFileName))}");
+            Check("atrial: the best lap's ghost saved", gfile.Length > 0);
             // the next run: the ghost flies with it
             pilot = R71Fly(1, 0, 2); bool seen = false;
             yield return R71Run("atrial2", 40f, events, null, null, () => { if (ghost && ghost.Showing) seen = true; });
