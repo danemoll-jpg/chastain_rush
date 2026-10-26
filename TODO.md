@@ -108,6 +108,131 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 73, PUT RIGHT WHAT DAN FOUND, AND CHECK IT THE WAY HE PLAYS (Dan, 2026-10-26 19:04; reports BUG-001 to BUG-006 of session `2026-10-26_18-37-35-665_130b58`,
+read by Claude, after the Round 70 to 72 build).** Dan: "that's a lot of work for a bunch of junk. Really not happy with anything I tested.
+The closest thing to being good is the big ramp off of kennesaw ... It was all like the code was like I did something, here you go and didn't
+even verify that any of it worked. Which is really frustrating because I wasn't even home and it had plenty of time to work things out."
+Quick builds while working; ONE full Build Map at the end. Short results. No new features this round.
+0. A NEW STANDING RULE (copy into CLAUDE.md "Process", in these words): CHECK IT AS DAN PLAYS IT. Scripted perfect lines are not enough.
+   (1) Every report of Dan's: a picture from his exact position and heading, before and after, that Code LOOKS AT and describes in the
+       status; a report is closed only when the after picture shows the thing gone. Re-read every earlier report on the same ground too.
+   (2) Every feature: play it from where a player starts (the title, race setup, Free Roam's spawn or fast travel, a road nearby), with the
+       normal controls through the game's input (a human-like driver / pilot: reaction lag, imperfect lines, a missed gate, a crash and a
+       reset), and pictures from the player's camera along the way that Code looks at: can a first-time player see where to go? does it
+       look right (no blocks, nothing buried, nothing floating, nothing across the road)? List what a first-time player sees and where it
+       went wrong.
+   (3) The status says, per item, what was looked at and what it showed. "Checked by script" alone is not done.
+A. KENNESAW MOUNTAIN.
+A1. BARRIERS ACROSS THE COURSE. BUG-001 (x -866.04 z -5208.17 h 56, before the start line): "This was reported. Why is it still here?";
+   BUG-002 (x -1084.27 z -5837.29 h 49, the drive, CP5 next): "this too! How was this missed? There were two literal barriers in the middle
+   of the track. They were reported as bugs but ignored and not fixed". Both pictures: a red-and-white race barrier straight across the
+   road the race drives on. (Claude's fault in part: in Round 70 Claude misread Dan's 2026-10-25 BUG-001 as the start gantry and BUG-003
+   "again" as hydrants; both were these barriers.) Remove every barrier standing on the course's own line, here and on EVERY course in both
+   directions (check each course's line for any closure, barricade or solid object across it; a picture at each).
+A2. THE DRIVE AT THE SUMMIT. BUG-003 (x -933.27 z -5721.73 h 141, Kennesaw Mountain Drive by the summit lot, J1's lip): "this road also
+   looks like it wasn't fixed. I mean its changed but the road will be inoperable in free roam. It needs to be fixed" (the picture: the drive
+   cut into the jump's hump at the lot's edge, the road broken). The drive must be a whole, normal, drivable road in Free Roam (traffic, a
+   car driving up to the summit at normal speed, both ways); the race's jump keeps its flight but must not wreck the road: e.g. the jump on
+   its own line beside / off the drive, joining it smoothly. Pictures driving the drive both ways in Free Roam at Dan's spot.
+A3. THE BIG RAMP AT THE TOP. Dan: "The closest thing to being good is the big ramp off of kennesaw, but why is it not even at the highest
+   point of the mountain." Move it to the summit itself (the mountain's highest ground), with a run-up across the top (cut / graded as
+   needed), launching off the mountain where the fall is longest. Dan, 19:11: "for the ramp on the top of the mountain I would prefer it to
+   be more realistic. It doesn't have to be some huge structure just a jump off of something that could naturally be there that jumps and
+   clears the mountain will be fine": NO steel trestle; the launch is something that belongs on the summit (a rock ledge / outcrop, the edge
+   of the overlook, a cut bank at the end of the summit path), the ground itself shaped; a flight longer than Round 70's; a way back to the roads below; fast
+   travel to the run-up. Verified as rule 0 (from fast travel, flat out, a short one, a reset).
+B. THE QUARRY AIR RACE: REDESIGN THE COURSE AND ITS GUIDANCE. Dan: "the plane race, is just not laid out well at all. The first ring is down in
+   the quarry nearly right beside the take off point. It is impossible to get there without lining up the plane but the plane should have
+   already been going in the right direction to set that up. And if you missed a checkpoint, it is impossible to tell which is next, also I
+   circled back to a cp that I missed (because it is too unforgiving) and you only get credit if you are going in the direction of the game.
+   Also, after I got through the first 3 or 4, I had no idea where the next gate even was there was an arrow but it was only pointing up or
+   down, turning the plane around I couldn't find it at all. I just quit the race. Really poorly designed".
+   (1) FLOW: after take-off the first ring lies well ahead on the runway's heading, high enough to climb to; every ring is placed so that
+       flying through it already points you at the next (heading change between rings small for their spacing; a hard turn only with room
+       to make it); the quarry dive comes once you are set up for it, not straight after take-off.
+   (2) FINDING THE NEXT RING, always: a 3D arrow / chevron pointing at the next ring in full direction (left, right, up, down, behind), a
+       tall beacon on it seen from anywhere, the ring after it shown dimmer, its distance; the minimap shows the next rings. After a miss:
+       a clear "RING MISSED" and the arrow at once on the next one.
+   (3) FORGIVING: rings bigger (tight ones only where the place demands it, e.g. under a bridge, and still makeable); a ring counts flown
+       through either way; a missed ring may be gone back for (then no penalty), or skipped (the usual penalty when you take the next).
+   (4) Verified as rule 0 with a human-like pilot: take-off, every ring in order, a missed ring found again, getting lost and finding the
+       way by the arrow; cockpit pictures at each ring showing the next one visible or the arrow pointing at it.
+C. THE QUARRY JUMPS.
+C1. BUG-004 (x -2024.24 z -1350.35, the bleachers): "whats going on here? Are these supposed to be people? Why are they just blocks?" Use the
+   game's real people (the models the neighborhood's people use), seated, varied; no blocks.
+C2. BUG-005 (x -2423.25 z -1323.20, the far bleachers / the rim): "why even put people in here if you can't make it even make it remotely
+   correct? People are literally buried". Every spectator on their seat or standing on the ground, none in it.
+C3. BUG-006 (x -2398.76 z -1359.36, down in the pit under a ramp's steel trestle): "stuck here. reset button does nothing. But it looks like
+   this is buried in the ground anyway. Truly don't even understand how to get to the ramps in general". (1) No way to drive in under a
+   trestle or get wedged anywhere round the ramps (solid skirts, the ground right). (2) RESET MUST ALWAYS WORK, anywhere in Free Roam
+   (here it did nothing): find why and fix it for the whole map. (3) GETTING THERE: a clear way from the roads to each run-up (a drive /
+   track from the airport's roads, signs saying QUARRY JUMPS at the turn-offs, the start marked: drive into a lit start box to begin),
+   and fast travel to each start. Verified as rule 0: from fast travel and from Free Roam's roads, a first-time player finds each start.
+C4. THE RAMPS THEMSELVES. Dan, 19:11: "honestly you said code could jump those ramps, I have no idea how they did as nothing lined up and the
+   ramp was buried in the hillside". Rebuild each jump so run-up, kicker and landing deck lie on one straight line that a player can see
+   from the start box; the kicker stands clear of the hillside (nothing of the slope over or in front of it); the landing deck in plain view
+   across the water. Verified as rule 0: pictures from the start box (the whole line visible), from the run-up at speed, from the lip, and
+   of the landing; flown flat out by the human-like driver, not the script that already knew the line.
+C5. A QUARRY TRACK. Dan, 19:11: "I think for the quarry, it has to be some sort of track. We can have those ramps in free roam but having a
+   track will make it easier to at least discover the first time. Problem is its too big of an area to search for them." Make a race course
+   (in race setup, forward; a reverse only if it plays well) round Viking Quarry that takes in the jumps (at least The Corner and The Long One,
+   The Big One if the line allows), the rim and the haul roads down to the water's edge: checkpoints lead you to each ramp's run-up in
+   line with it, so racing it shows a first-time player where every jump is. Built like the other courses (AI that takes the jumps, records,
+   ghosts, replays, loading inset, map). The ramps stay in Free Roam as well (the scored events), now easy to find from the track and the
+   signs.
+Check: rule 0 for every item; the pictures listed above; one AI race per car course (all finish, no barrier on any line).
+For Dan to check: Kennesaw Mountain race (no barriers), the drive in Free Roam, the summit jump; the Quarry Air Race; the quarry track and
+jumps (the crowd, the ramps' lines, getting there, getting stuck, reset).
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 72
+**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
+**Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
+while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
+AFTER ROUND 71 IS DONE AND COMMITTED, without waiting for Dan; he is away all day: decide, write it down, go on.** Quick builds while
+working; ONE full Build Map at the end. Standing rules (real physics off every ramp; nothing slows a car on a ramp; landings clean).
+Tuning limit. Short results.
+A. THE QUARRY JUMPS (Free Roam events, the stunt park's family). Big steel stunt ramps on the quarry's rim, Evel Knievel style: a long
+   straight run-up lane, a tall ramp with a starting gantry (stars and stripes bunting fine, no real names / brands), a landing ramp on the
+   far side across the quarry lake, a crowd in bleachers, a PA voice-free fanfare. Three jumps of rising size (Code designs them from the
+   flight, as Round 68): a short one across a corner of the lake, a long one across the middle, and THE BIG ONE across the widest part (the
+   longest jump in the game after the mountain ramp, Round 70 A). Miss the landing ramp and you're in the lake (the game's water: reset).
+   Scored events: distance, height, landing (clean / rough / crash), with Top 10 records per jump; a run-up countdown start; a replay of
+   the jump (Round 57's replays: the TV cameras placed for the flight). Rewards / unlocks: none yet (the campaign is held). Fast travel to
+   the quarry's start gantry. Reachable by any ground vehicle, including bikes and stunt vehicles; flying vehicles not in the events.
+B. KNOWN FIXES (found by Code in earlier rounds, not yet asked for by Dan; small):
+   B1. Three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on Kennesaw Mountain Drive at
+       (-500, -5320) (Rounds 67, 68): find and fix.
+   B2. Canton Road's three map-edge closures (Round 66): a car can end up on top of the barriers; make them impossible to climb.
+   B3. Round 64 C's junction levelling: drives with air over 0.15 s went up; find the worst junctions in the jolt table and smooth them.
+   B4. Round 68's J2 kicker: the Drifter Twin flat out loses 12 m/s on its top; ease it without shrinking the jump (no more than two tries).
+Check: each jump flown flat out on the Drifter Twin, the Street Classic, a bike and a stunt vehicle (distance, air, landing), short (into
+the lake, reset), and the scoring and records; B1 to B4 before / after. Pictures: the three ramps from the run-up, mid-air over the lake,
+the crowd, the landing.
+For Dan to check: jump the quarry (all three); the four fixes.
+
+**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round72/` (`round72_check_final.txt`, `round72_check_short_replay.txt`, `round72_b*.txt`, `72_*.png`, `72_flights_profile.png`).
+A DONE. Three steel kickers on Viking Quarry's south rim, run-ups from the airport's ground (graded smooth, 240 to 380 m), landing decks across the lake sloped a little shallower than the flights (catch zones), run-outs graded, bleachers with 747 people, start gantries with stars-and-stripes bunting and countdown lamps (`Tools/mapgen/make_quarry_jumps.py`, `MapBuilder.QuarryJumps.cs`, event `Stunts/QuarryJumps.cs`). The vehicles' speeds at a lip differ too much (47 to 57 m/s flat out) for one landing deck to catch them all, so each jump has Evel Knievel's speed check: a lip speed window on the HUD (The Corner 82-88 mph, The Long One and The Big One 93-100 mph), green inside it; too slow is short (lake or pit), too fast overshoots. Stop in the gantry's box facing the ramp: fanfare, 3-2-1-GO on the lamps. Scored: distance, height over the lip, air time, landing CLEAN / ROUGH / CRASH / SHORT / SPLASH; Top 10 per jump by distance (`quarry-jumps-v1.json` beside the records); short or crashed: back at the gantry after 3 s; L3 / K watches the jump's replay (TV cameras on the rims, the kicker, the landing deck). Fast travel "Viking Quarry: <jump>" to each gantry. Flying vehicles not in the events.
+   Flights at the window's middle (Street Classic, Drifter Twin, Needle 600, Skywhip 250 all CLEAN): The Corner 166-172 m, 5.1 s; The Long One 203-209 m, 5.1 s; The Big One 245-246 m, 6.4 s (the longest after the summit ramp). Flat out (Drifter Twin, outside the window): 244 m rough, 247 m clean, 338 m crash. Short (68 mph at The Corner): into the lake, back at the gantry. Replay opens (5 TV cameras). The air race's line re-probed with the ramps up: clear, a clean lap.
+B1 NOT REPRODUCED. Longroof GT, Highball Fastback, Skyfin Cruiser and the Street Classic driven round the Kennesaw lap: no hard stop anywhere (Round 70's widened J1 bench at that spot is the likely cure); nothing changed.
+B2 PARTLY. Canton Road's edge closures (and the service road beside one) get 7 m more barrier past each shoulder, solid to 4 m: 221 -> 222 of 224 closures now stop the car (the service road fixed); the check still reads the car 13 m and 50 m past the middle at Canton Road's north and east closures, though the picture shows it stopped at the barricades (`66_closure_*.png`). One try (tuning limit not used up; left for Dan to look at).
+B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred after the levelling (`Data/tracks/round72_junctions.json`): air at 28 m/s Barrett at the I-575 ramp 0.96 -> 0.72 s, Frey Road 0.74 -> 0.56 s (jolt 3.9 -> 1.8), Busbee at Townpark 1.12 -> 0.24 s, McCollum at Cobb Parkway 0.54 -> 0.42 s, North Marietta 0.48 -> 0.26 s; unchanged: Chastain Road at Busbee 0.78 s, Cobb Parkway North 1.20 s.
+B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
+Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
+For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
+
+## Previous delivery 2: Round 71
+**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
 **Round 71, A PLANE RACE THROUGH RINGS (Dan, 2026-10-26 03:09: "I am thinking that we could do a plane race. I think just the typical fly
 through the rings course. We could utilize the quary right next to the airport and just expand it. Since it is the sky we are pretty open.
 I would like to have low spots and maybe have to fly under bridges if possible. It could be a circuit. It could be a race with others or
@@ -146,52 +271,7 @@ E DONE. Records / Top 10 per vehicle (time trial: Top 10 #2), clean-lap ghost sa
 Builds: one full Build Map (06:03), then a quick build for the route's line after C1 and a code-only exe for the AI's dips; `Builds/ChastainRush/` 2026-10-26 07:08. Imported from Racer: nothing.
 For Dan: (a) C1 under I-75 is tight on purpose (about 1.5 m to spare at the deck); say if it should be easier; (b) the AI's pace against yours; (c) the lap's length (2:33).
 
-## QUEUED rounds
-**Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
-while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
-AFTER ROUND 71 IS DONE AND COMMITTED, without waiting for Dan; he is away all day: decide, write it down, go on.** Quick builds while
-working; ONE full Build Map at the end. Standing rules (real physics off every ramp; nothing slows a car on a ramp; landings clean).
-Tuning limit. Short results.
-A. THE QUARRY JUMPS (Free Roam events, the stunt park's family). Big steel stunt ramps on the quarry's rim, Evel Knievel style: a long
-   straight run-up lane, a tall ramp with a starting gantry (stars and stripes bunting fine, no real names / brands), a landing ramp on the
-   far side across the quarry lake, a crowd in bleachers, a PA voice-free fanfare. Three jumps of rising size (Code designs them from the
-   flight, as Round 68): a short one across a corner of the lake, a long one across the middle, and THE BIG ONE across the widest part (the
-   longest jump in the game after the mountain ramp, Round 70 A). Miss the landing ramp and you're in the lake (the game's water: reset).
-   Scored events: distance, height, landing (clean / rough / crash), with Top 10 records per jump; a run-up countdown start; a replay of
-   the jump (Round 57's replays: the TV cameras placed for the flight). Rewards / unlocks: none yet (the campaign is held). Fast travel to
-   the quarry's start gantry. Reachable by any ground vehicle, including bikes and stunt vehicles; flying vehicles not in the events.
-B. KNOWN FIXES (found by Code in earlier rounds, not yet asked for by Dan; small):
-   B1. Three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on Kennesaw Mountain Drive at
-       (-500, -5320) (Rounds 67, 68): find and fix.
-   B2. Canton Road's three map-edge closures (Round 66): a car can end up on top of the barriers; make them impossible to climb.
-   B3. Round 64 C's junction levelling: drives with air over 0.15 s went up; find the worst junctions in the jolt table and smooth them.
-   B4. Round 68's J2 kicker: the Drifter Twin flat out loses 12 m/s on its top; ease it without shrinking the jump (no more than two tries).
-Check: each jump flown flat out on the Drifter Twin, the Street Classic, a bike and a stunt vehicle (distance, air, landing), short (into
-the lake, reset), and the scoring and records; B1 to B4 before / after. Pictures: the three ramps from the run-up, mid-air over the lake,
-the crowd, the landing.
-For Dan to check: jump the quarry (all three); the four fixes.
-
-**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round72/` (`round72_check_final.txt`, `round72_check_short_replay.txt`, `round72_b*.txt`, `72_*.png`, `72_flights_profile.png`).
-A DONE. Three steel kickers on Viking Quarry's south rim, run-ups from the airport's ground (graded smooth, 240 to 380 m), landing decks across the lake sloped a little shallower than the flights (catch zones), run-outs graded, bleachers with 747 people, start gantries with stars-and-stripes bunting and countdown lamps (`Tools/mapgen/make_quarry_jumps.py`, `MapBuilder.QuarryJumps.cs`, event `Stunts/QuarryJumps.cs`). The vehicles' speeds at a lip differ too much (47 to 57 m/s flat out) for one landing deck to catch them all, so each jump has Evel Knievel's speed check: a lip speed window on the HUD (The Corner 82-88 mph, The Long One and The Big One 93-100 mph), green inside it; too slow is short (lake or pit), too fast overshoots. Stop in the gantry's box facing the ramp: fanfare, 3-2-1-GO on the lamps. Scored: distance, height over the lip, air time, landing CLEAN / ROUGH / CRASH / SHORT / SPLASH; Top 10 per jump by distance (`quarry-jumps-v1.json` beside the records); short or crashed: back at the gantry after 3 s; L3 / K watches the jump's replay (TV cameras on the rims, the kicker, the landing deck). Fast travel "Viking Quarry: <jump>" to each gantry. Flying vehicles not in the events.
-   Flights at the window's middle (Street Classic, Drifter Twin, Needle 600, Skywhip 250 all CLEAN): The Corner 166-172 m, 5.1 s; The Long One 203-209 m, 5.1 s; The Big One 245-246 m, 6.4 s (the longest after the summit ramp). Flat out (Drifter Twin, outside the window): 244 m rough, 247 m clean, 338 m crash. Short (68 mph at The Corner): into the lake, back at the gantry. Replay opens (5 TV cameras). The air race's line re-probed with the ramps up: clear, a clean lap.
-B1 NOT REPRODUCED. Longroof GT, Highball Fastback, Skyfin Cruiser and the Street Classic driven round the Kennesaw lap: no hard stop anywhere (Round 70's widened J1 bench at that spot is the likely cure); nothing changed.
-B2 PARTLY. Canton Road's edge closures (and the service road beside one) get 7 m more barrier past each shoulder, solid to 4 m: 221 -> 222 of 224 closures now stop the car (the service road fixed); the check still reads the car 13 m and 50 m past the middle at Canton Road's north and east closures, though the picture shows it stopped at the barricades (`66_closure_*.png`). One try (tuning limit not used up; left for Dan to look at).
-B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred after the levelling (`Data/tracks/round72_junctions.json`): air at 28 m/s Barrett at the I-575 ramp 0.96 -> 0.72 s, Frey Road 0.74 -> 0.56 s (jolt 3.9 -> 1.8), Busbee at Townpark 1.12 -> 0.24 s, McCollum at Cobb Parkway 0.54 -> 0.42 s, North Marietta 0.48 -> 0.26 s; unchanged: Chastain Road at Busbee 0.78 s, Cobb Parkway North 1.20 s.
-B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
-Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
-For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 70
+## Previous delivery 3: Round 70
 **Not yet driven by Dan: he moved on to Round 71 on 2026-10-26 03:09 ("Don't have a chance to test").**
 **Round 70, A RAMP OFF THE MOUNTAIN; AI THAT RACES; the garage and the saved vehicle; park visitors; the mountain road (Dan, 2026-10-25
 23:20; reports BUG-001 to BUG-004 of session `2026-10-25_22-20-32-569_189622`, read by Claude, after the Round 68 / 69 build: Kennesaw Mountain on the Trail
@@ -258,88 +338,6 @@ F3 DONE. The start / finish gantry upright, each post on its own ground (in clos
 Found, not changed: the Round 20 P1 check (`Round20Runner.Ramp.cs`) no longer matches P1 as rebuilt since (no vehicle leaves its lip in that script); nothing there was touched this round.
 Builds: 2 full Build Maps (the second for F1's park roads), 3 code-only exes. `Builds/ChastainRush/` 2026-10-26 02:20. Imported from Racer: nothing.
 For Dan: (a) the ramp: the run-up along the drive and off the hairpin; (b) the AI on Hard; (c) the ramp's look (57 m of steel trestle).
-
-## Previous delivery 2: Round 69
-**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
-**Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
-RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
-far view) and Round 66's edges (warning, headwind, ceiling). Quick builds while working; ONE full Build Map at the end (the airport's
-parked planes). Tuning limit. Short results. Dan is not watching: decide, write it down, go on.
-1. THE PLANE: a small single-engine high-wing plane of our own (Blender, as the helicopter; no real maker's name or livery), "Sky Hopper"
-   or Code's name. Arcade flight, not a simulator: it must be easy and fun. Throttle up / down; pitch, roll (banking turns the plane
-   by itself), a little rudder; it holds level flight hands-off at its speed; no punishing stalls (too slow and the nose eases down until
-   it has speed again). Cruise fast enough to cross the map in two or three minutes, a top speed above that; engine and wind sound with
-   speed; flaps not needed. Pad and keyboard layouts that match the helicopter's where they can (Code picks, says them in the status).
-2. TAKE-OFF AND LANDING: it rolls on its wheels, steers on the ground, takes off from Cobb County International's runways (and any long
-   straight road or field, Free Roam being Free Roam), lands on them: a soft landing rolls out, a hard one or a wing into the ground is a
-   forgiving crash (as the helicopter: a moment, then reset onto open ground nearby, never stuck). Hitting trees, buildings or wires:
-   the same.
-3. WHERE: two or three planes parked on the airport's apron (drive up and swap, as the helicopter pads: A / H); "plane" in Free Roam's
-   vehicle choice (starting lined up on a runway). Free Roam only, never in races. A little airport life if cheap: one plane that now and
-   then taxis, takes off, circles and lands (no collisions to worry the player).
-4. THE WORLD FROM A PLANE: Round 63's far view and Round 66's scenery ring and horizon (Atlanta) at plane heights and speeds; the edge
-   warning and headwind turn the plane back too (a wide gentle turn), and a ceiling. Frame rate at 300 m and 600 m up crossing the map
-   against Round 63's numbers. Cameras: chase, far chase, cockpit, and a free look; the readout (height, speed, heading, climb).
-5. FUN: low passes over the quarry lake (Viking Quarry, next to the airport) and down the I-75 / I-575 corridor should feel fast; nothing
-   blocks flying under the highway bridges if there is room.
-Check: take off from each runway, fly to Kennesaw Mountain, Town Center and Chastain Glen and back, land on the runway; crash into a tree,
-a building and the ground (reset, not stuck); hands-off level flight 30 s; the edge turn-back; the fps table. Pictures: take-off, over the
-quarry, over Town Center, Atlanta on the horizon from 600 m, the apron.
-For Dan to check: fly the plane (controls, take-off, landing, speed); the view from up high.
-
-**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round69/` (`round69_check_final.txt`, `round69_check_fps.txt`, pictures `69_*.png`).
-1 DONE. "Sky Hopper" (`Tools/Blender/plane.py`, our own high-wing single-engine plane, 11 m wings, tricycle gear; `VehicleProfile.Plane`, Flies: Free Roam only). Flown by `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): on its wheels the vehicle's own drive; in the air arcade flight: the throttle sets the speed (top 115 m/s, cruise about 85 at 75 %: the map in about 2.5 minutes), climbing costs speed and diving gains it, the bank turns it, hands-off it levels its wings and holds its height (30 s: height within 0.1 m, heading 2.2 degrees), slow (under 36 m/s) it sinks and the nose eases down (no stall, no spin). Engine buzz made in code, pitched by the throttle; wind with speed; readout (height, speed, heading, climb, throttle).
-   Pad: left stick pitch (pull back: nose up) and bank; RT / LT throttle up / down (LT brakes on the ground); LB / RB rudder; X view; right stick looks round; Y reset; A take / leave a parked plane. Keyboard: W / S throttle (S brakes on the ground); arrows: up / down nose down / up, left / right bank; A / D rudder (and steer on the ground); V view; R reset; H take / leave.
-2 DONE. Take-off from runway 09/27 (the airport's one runway, both ways): full throttle, past 30 m/s pull back: off after 157 m (09) / 168 m (27). Any long straight road or field works the same. Landing: touching down under 5 m/s, wings within 18 degrees, it rolls out on its wheels (the check: 32 m/s, 1.7 m/s down, stopped in 25 m). Harder, a wing, the nose or the body into anything, a tree's crown or water: a crash, then after 2.6 s put on the nearest open strip it can take off from again (130 m clear and flat, within 1.5 km; else lined up on the runway). Into a tree, Town Center's front and the ground: crashed, reset, rolled away again (6 of 6).
-3 DONE. Three planes parked on the south apron (`Vehicle/PlaneStands.cs`, built at run time: no Build Map step): A / H takes one and leaves it (2 of 2); "Sky Hopper" in Free Roam's garage starts lined up on runway 09. Never in races. Airport life (`Vehicle/AirportCircuit.cs`): one red Sky Hopper taxis out every few minutes, takes off, flies a circuit at 300 m and lands (visual only).
-4 PARTLY. The far view and Round 66's ring and horizon work from the plane (Atlanta from 600 m, `69_atlanta_from_600m.png`). The edge: LEAVING THE SURVEY AREA, then a headwind and a wide bank back by itself (the stick's bank overruled): at most 805 m out at full throttle, turned back in 27 s. Ceiling 1700 m as the helicopter. Cameras: chase, far chase, cockpit, the right stick's free look. Frame rate (1280 x 720, not measured at 3840 x 2160; real time, the last 1.5 km to each place): at 300 m Kennesaw Mountain 54 / Town Center 43 / Chastain Glen 82 fps; at 600 m 61 / 56 / 94; 1 % lows 9 to 24 (hitches as the far detail loads in at 95 m/s). Lower than Round 63's helicopter numbers (88 to 164 at 500 m from a still camera): not profiled this round.
-5 Low passes over Viking Quarry Lake and the highway corridors: nothing blocks flying under the bridges where the plane fits (its wing tips and nose test what they meet).
-Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
-For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
-
-## Previous delivery 3: Round 68
-**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
-**Round 68, KENNESAW MOUNTAIN: REALLY BIG JUMPS (Dan, 2026-10-25 08:35, after driving Round 67).** Dan: "I specifically wanted to do a
-mountain trail so I have really big jumps but these are just little bunny hops. I know if you can see it in Woodstock Rush how big the
-jumps I had on the Mountain trail, this is what I want just really large jumps. As far as this I had bigger jumps in my own neighborhood
-than I got in the mountains...cmon". Claude's brief for Round 67 said "huge" with no numbers; Round 67 built six jumps of 1.1 to 2.3 s and
-21 to 59 m. This round gives numbers. Use Round 65's quick builds (the mountain's step) while working; ONE full Build Map at the end.
-Standing rules apply (real physics off every lip; nothing slows a car on the approach or the lip; clean landings).
-1. THE MEASURE: Woodstock Rush's mountain (`Racer/`: its mountain trail jumps and the summit "homeward" flight, PROJECT_TODO_ARCHIVE.md line
-   ~1989: 215 m straight run-up, 36 to 43 m/s at the lip, a flight that cleared the whole mountain to a catch slope). Read how Racer built
-   them (run-up, lip angle, landing slope) and, if its build can be run minimized, measure its mountain jumps' air time and distance. Also
-   measure this game's biggest neighborhood jumps (the Ridge leap, the boat jump, the kicker / carport, the mall drop). Put both in the
-   status. Every mountain jump must beat every neighborhood jump.
-2. THE TARGETS (design them in from the start: compute each flight's path from run-up speed and lip angle and shape the landing to it;
-   do not tune small jumps up):
-   - at least THREE HUGE jumps on the lap: 4 to 7 s in the air, 120 to 250 m long, the car 20 m or more above the ground below at the apex;
-   - the rest BIG: 2.5 to 4 s, 60 to 120 m; nothing on the course under 2.5 s counts as one of the mountain's jumps (smaller bumps may stay
-     but are not counted);
-   - ONE SIGNATURE FLIGHT: off the summit (the overlook / the top of the trail) out over the mountainside, Woodstock Rush's summit flight in
-     spirit: the longest air in the game, landing far down the mountain on a long smooth catch slope.
-   How: use the mountain's height (about 240 m of drop on the trail; the game's 1.5x relief), long straight run-ups down the fall line so cars
-   reach 35 to 45 m/s (cut straight lines through the woods where the trail zig-zags; clear and grade them), steep lips (25 to 35 degrees,
-   still real-world things: rock ledges, cut faces, log ramps), and catch slopes that fall away under the flight and meet it at a shallow
-   angle (long, smooth, wide, cleared), so the car lands clean and keeps its speed. Air comes from the ground falling away, not just the lip.
-3. AT RACE SPEED, ALL VEHICLES: the targets hold for the Drifter Twin and the Street Classic at the speed a player reaches flat out, and the
-   AI reaches the lips fast enough to fly big too (no braking before a lip; AI speed zones as needed). Bikes and ATVs land clean as well.
-4. Keep Round 67's route, start, checkpoints and closures unless a run-up needs a change (then move checkpoints / AI to suit). Trees: no
-   trunk anywhere near a flight's corridor or landing (breakable or gone).
-Report: a table per jump: lip speed, air time, distance, apex height above the ground below, landing speed, for the Drifter Twin, the Street
-Classic, a bike and the AI; next to Racer's and the neighborhood's numbers. Pictures mid-air on each huge jump and the signature flight.
-Tuning limit as usual for fine adjustment, but the targets above are the job: if a target cannot be met somewhere, say where and why.
-For Dan to check: race Kennesaw Mountain flat out; the signature flight off the summit.
-
-**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round68/` (`round68_check_final.txt`, pictures `68_midair_J*.png`, the design `68_design_profiles.png`, `68_layout.png`). No bug reports newer than Round 67's session.
-1 THE MEASURE. Racer's mountain (its validation notes, `Racer/Docs/CR112-118/VALIDATION.md`, CR101-104; not re-run): gully flight 42 to 46 m/s, 5.9 to 6.4 s, 190 to 227 m; summit flight 40 to 43 m/s, 6.7 to 7.6 s, 191 to 228 m; its catch slopes a 0.75 grade. This game's neighborhood jumps flown the same way here (Drifter Twin / Street Classic, flat out): Rooftop leap 3.1 / 2.9 s, 59 / 52 m (the biggest); Elaine jump 2.4 s, 70 m; Parkway leap 2.7 / 1.3 s, 74 / 29 m; Creek leap 2.6 / 2.4 s, 56 / 50 m; Boat jump 1.9 s, 31 m; Carroway 1.8 / 1.6 s; the Ridge leap and the Lakes kicker gave no proper flight in the scripted drive (an aimed launch, a path issue): not measured. Every mountain jump beats all of these.
-2 THE NEW DESCENT (`make_mountain_route.py` rewritten, `MapBuilder.Mountain.cs`): the climb up the drive unchanged; from the drive's last straight below the summit the race runs on three straight lines cut through the woods (14 m bench, 32 m wide over the catch slopes), each built round one jump designed from its flight (run-up speed from the vehicles' acceleration, lip angle, kicker radius, catch slope). J1 THE SUMMIT FLIGHT (the signature: the drive's straight is its run-up, a granite ledge at the top of the north-east face, 17 degrees), hairpin; J2 THE WEST FACE (a boulder ledge at the shoulder's brink, 14 degrees), hairpin; J3 THE EARTHWORKS (a timber-faced berm, 18 degrees, landing across the drive by the visitor center onto the finish straight). Lap 3526 m (was 3550), 10 checkpoints (CP5 to CP10 moved onto the new lines), closures unchanged. The old trail's bench and six small jumps are gone (the trail itself as Round 61 built it).
-   Flat out, the real vehicle (air s / distance m / most height over the ground below m), all landing upright: Drifter Twin J1 5.5 / 223 / 44, J2 3.7 / 100 / 32, J3 4.5 / 171 / 44; Street Classic 4.8 / 174 / 38, 4.2 / 141 / 39, 4.2 / 144 / 40; Needle 600 5.8 / 243 / 45, 4.8 / 189 / 45, 4.5 / 183 / 46; Ridge Scrambler 5.5 / 226, 4.6 / 174, 4.5 / 174; Trail Four 5.6 / 227, 4.6 / 171, 4.5 / 172. Lip speeds 36 to 47 m/s, landing 40 to 57 m/s. At the AI's held speeds (Drifter Twin) 5.6 / 224, 4.4 / 155, 4.4 / 159. The signature is the longest air for every vehicle (it is shorter than Racer's summit flight: 4.8 to 5.8 s against 6.7 to 7.6).
-   Not met: the Drifter Twin flat out loses 12 m/s on J2's kicker top (3.7 s; at the AI's speed 4.4 s). Two attempts (kicker radius 280 then 340 m): tuning limit.
-3 LANDINGS (new code): the kickers' curve kept within what the suspension carries (radius 300 to 340 m: tighter ones put the body on the ramp and halved the speed); a 75 degree first 3 m behind each lip; on the mountain's catch slopes only, a vehicle touching down is turned to the slope with its pitch stopped (`RampHold`), and the body-contact prediction keeps the slope's own normal (`VehicleSurfaceContacts`: it held bodies 0.7 m over a 30 degree slope with no wheel down); the line's ends take the drive's own levelled height (a 0.7 m step was throwing cars at the departure).
-4 AI: two races on Hard, 3 AI each, all 6 finish (5:06 to 6:01, stuck 64 s in all, 49 resets, most "blocked" ones). The lap on all 11 vehicles at the AI's speeds: round, no stop on the new lines. Trees: none within 16 m of the lines, breakable to 32 m and 38 m along each flight.
-Found, not changed (not this round's ground): three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on the drive at (-500, -5320) (also in Round 67's check); the Turf Rocket hits a trunk beside the drive at (-1046, -6164).
-Builds: 4 full Build Maps (the first did not compile), 7 quick builds, 4 code-only exes. `Builds/ChastainRush/` 2026-10-25 15:44. Imported from Racer: nothing.
-For Dan: (a) race it flat out; the summit flight; (b) J3's kicker stands about 30 m over the ground at its lip (a long gentle curve so cars do not bottom out): its look; (c) the AI's resets.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

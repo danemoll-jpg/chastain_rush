@@ -6460,3 +6460,89 @@ B2 DONE. "Parkway leap" (reverse): off the trail before its loop under the bridg
 B3 PARTLY. Cause: the face rose from the road's edge on a 14 m bend, and a car thrown off the road's far edge (the climb from the red bridge) came down into it. Now a 45 m arc at the face's foot from the road's own level, the climb to the road a 150 m crest, a landing zone on the face. Street Classic flat out (30 m/s) forward: 60 % of its speed lost at the mound before, 12 % now; at 26 m/s still 34 % (Drifter 5 %). Two attempts: tuning limit.
 Builds: 3 full Build Maps (the first did not compile; the third for the wider clearing) and 3 quick builds. `Builds/ChastainRush/` 2026-10-25 06:42. Imported from Racer: nothing.
 For Dan: (a) the mountain's jumps flat out (J1, J3); (b) reverse on the mountain, yes or no; (c) the creek leap's landing angle; (d) the parkway leap saves 1 s: enough?; (e) the mound flat out in the Street Classic.
+
+## Round 68 (moved from TODO.md on 2026-10-26 when Dan reviewed Rounds 70 to 72; word for word)
+
+## Previous delivery 3: Round 68
+**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
+**Round 68, KENNESAW MOUNTAIN: REALLY BIG JUMPS (Dan, 2026-10-25 08:35, after driving Round 67).** Dan: "I specifically wanted to do a
+mountain trail so I have really big jumps but these are just little bunny hops. I know if you can see it in Woodstock Rush how big the
+jumps I had on the Mountain trail, this is what I want just really large jumps. As far as this I had bigger jumps in my own neighborhood
+than I got in the mountains...cmon". Claude's brief for Round 67 said "huge" with no numbers; Round 67 built six jumps of 1.1 to 2.3 s and
+21 to 59 m. This round gives numbers. Use Round 65's quick builds (the mountain's step) while working; ONE full Build Map at the end.
+Standing rules apply (real physics off every lip; nothing slows a car on the approach or the lip; clean landings).
+1. THE MEASURE: Woodstock Rush's mountain (`Racer/`: its mountain trail jumps and the summit "homeward" flight, PROJECT_TODO_ARCHIVE.md line
+   ~1989: 215 m straight run-up, 36 to 43 m/s at the lip, a flight that cleared the whole mountain to a catch slope). Read how Racer built
+   them (run-up, lip angle, landing slope) and, if its build can be run minimized, measure its mountain jumps' air time and distance. Also
+   measure this game's biggest neighborhood jumps (the Ridge leap, the boat jump, the kicker / carport, the mall drop). Put both in the
+   status. Every mountain jump must beat every neighborhood jump.
+2. THE TARGETS (design them in from the start: compute each flight's path from run-up speed and lip angle and shape the landing to it;
+   do not tune small jumps up):
+   - at least THREE HUGE jumps on the lap: 4 to 7 s in the air, 120 to 250 m long, the car 20 m or more above the ground below at the apex;
+   - the rest BIG: 2.5 to 4 s, 60 to 120 m; nothing on the course under 2.5 s counts as one of the mountain's jumps (smaller bumps may stay
+     but are not counted);
+   - ONE SIGNATURE FLIGHT: off the summit (the overlook / the top of the trail) out over the mountainside, Woodstock Rush's summit flight in
+     spirit: the longest air in the game, landing far down the mountain on a long smooth catch slope.
+   How: use the mountain's height (about 240 m of drop on the trail; the game's 1.5x relief), long straight run-ups down the fall line so cars
+   reach 35 to 45 m/s (cut straight lines through the woods where the trail zig-zags; clear and grade them), steep lips (25 to 35 degrees,
+   still real-world things: rock ledges, cut faces, log ramps), and catch slopes that fall away under the flight and meet it at a shallow
+   angle (long, smooth, wide, cleared), so the car lands clean and keeps its speed. Air comes from the ground falling away, not just the lip.
+3. AT RACE SPEED, ALL VEHICLES: the targets hold for the Drifter Twin and the Street Classic at the speed a player reaches flat out, and the
+   AI reaches the lips fast enough to fly big too (no braking before a lip; AI speed zones as needed). Bikes and ATVs land clean as well.
+4. Keep Round 67's route, start, checkpoints and closures unless a run-up needs a change (then move checkpoints / AI to suit). Trees: no
+   trunk anywhere near a flight's corridor or landing (breakable or gone).
+Report: a table per jump: lip speed, air time, distance, apex height above the ground below, landing speed, for the Drifter Twin, the Street
+Classic, a bike and the AI; next to Racer's and the neighborhood's numbers. Pictures mid-air on each huge jump and the signature flight.
+Tuning limit as usual for fine adjustment, but the targets above are the job: if a target cannot be met somewhere, say where and why.
+For Dan to check: race Kennesaw Mountain flat out; the signature flight off the summit.
+
+**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round68/` (`round68_check_final.txt`, pictures `68_midair_J*.png`, the design `68_design_profiles.png`, `68_layout.png`). No bug reports newer than Round 67's session.
+1 THE MEASURE. Racer's mountain (its validation notes, `Racer/Docs/CR112-118/VALIDATION.md`, CR101-104; not re-run): gully flight 42 to 46 m/s, 5.9 to 6.4 s, 190 to 227 m; summit flight 40 to 43 m/s, 6.7 to 7.6 s, 191 to 228 m; its catch slopes a 0.75 grade. This game's neighborhood jumps flown the same way here (Drifter Twin / Street Classic, flat out): Rooftop leap 3.1 / 2.9 s, 59 / 52 m (the biggest); Elaine jump 2.4 s, 70 m; Parkway leap 2.7 / 1.3 s, 74 / 29 m; Creek leap 2.6 / 2.4 s, 56 / 50 m; Boat jump 1.9 s, 31 m; Carroway 1.8 / 1.6 s; the Ridge leap and the Lakes kicker gave no proper flight in the scripted drive (an aimed launch, a path issue): not measured. Every mountain jump beats all of these.
+2 THE NEW DESCENT (`make_mountain_route.py` rewritten, `MapBuilder.Mountain.cs`): the climb up the drive unchanged; from the drive's last straight below the summit the race runs on three straight lines cut through the woods (14 m bench, 32 m wide over the catch slopes), each built round one jump designed from its flight (run-up speed from the vehicles' acceleration, lip angle, kicker radius, catch slope). J1 THE SUMMIT FLIGHT (the signature: the drive's straight is its run-up, a granite ledge at the top of the north-east face, 17 degrees), hairpin; J2 THE WEST FACE (a boulder ledge at the shoulder's brink, 14 degrees), hairpin; J3 THE EARTHWORKS (a timber-faced berm, 18 degrees, landing across the drive by the visitor center onto the finish straight). Lap 3526 m (was 3550), 10 checkpoints (CP5 to CP10 moved onto the new lines), closures unchanged. The old trail's bench and six small jumps are gone (the trail itself as Round 61 built it).
+   Flat out, the real vehicle (air s / distance m / most height over the ground below m), all landing upright: Drifter Twin J1 5.5 / 223 / 44, J2 3.7 / 100 / 32, J3 4.5 / 171 / 44; Street Classic 4.8 / 174 / 38, 4.2 / 141 / 39, 4.2 / 144 / 40; Needle 600 5.8 / 243 / 45, 4.8 / 189 / 45, 4.5 / 183 / 46; Ridge Scrambler 5.5 / 226, 4.6 / 174, 4.5 / 174; Trail Four 5.6 / 227, 4.6 / 171, 4.5 / 172. Lip speeds 36 to 47 m/s, landing 40 to 57 m/s. At the AI's held speeds (Drifter Twin) 5.6 / 224, 4.4 / 155, 4.4 / 159. The signature is the longest air for every vehicle (it is shorter than Racer's summit flight: 4.8 to 5.8 s against 6.7 to 7.6).
+   Not met: the Drifter Twin flat out loses 12 m/s on J2's kicker top (3.7 s; at the AI's speed 4.4 s). Two attempts (kicker radius 280 then 340 m): tuning limit.
+3 LANDINGS (new code): the kickers' curve kept within what the suspension carries (radius 300 to 340 m: tighter ones put the body on the ramp and halved the speed); a 75 degree first 3 m behind each lip; on the mountain's catch slopes only, a vehicle touching down is turned to the slope with its pitch stopped (`RampHold`), and the body-contact prediction keeps the slope's own normal (`VehicleSurfaceContacts`: it held bodies 0.7 m over a 30 degree slope with no wheel down); the line's ends take the drive's own levelled height (a 0.7 m step was throwing cars at the departure).
+4 AI: two races on Hard, 3 AI each, all 6 finish (5:06 to 6:01, stuck 64 s in all, 49 resets, most "blocked" ones). The lap on all 11 vehicles at the AI's speeds: round, no stop on the new lines. Trees: none within 16 m of the lines, breakable to 32 m and 38 m along each flight.
+Found, not changed (not this round's ground): three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on the drive at (-500, -5320) (also in Round 67's check); the Turf Rocket hits a trunk beside the drive at (-1046, -6164).
+Builds: 4 full Build Maps (the first did not compile), 7 quick builds, 4 code-only exes. `Builds/ChastainRush/` 2026-10-25 15:44. Imported from Racer: nothing.
+For Dan: (a) race it flat out; the summit flight; (b) J3's kicker stands about 30 m over the ground at its lip (a long gentle curve so cars do not bottom out): its look; (c) the AI's resets.
+
+## Round 69 (moved from TODO.md on 2026-10-26 when Dan reviewed Rounds 70 to 72; word for word)
+
+## Previous delivery 2: Round 69
+**Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
+**Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
+RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
+far view) and Round 66's edges (warning, headwind, ceiling). Quick builds while working; ONE full Build Map at the end (the airport's
+parked planes). Tuning limit. Short results. Dan is not watching: decide, write it down, go on.
+1. THE PLANE: a small single-engine high-wing plane of our own (Blender, as the helicopter; no real maker's name or livery), "Sky Hopper"
+   or Code's name. Arcade flight, not a simulator: it must be easy and fun. Throttle up / down; pitch, roll (banking turns the plane
+   by itself), a little rudder; it holds level flight hands-off at its speed; no punishing stalls (too slow and the nose eases down until
+   it has speed again). Cruise fast enough to cross the map in two or three minutes, a top speed above that; engine and wind sound with
+   speed; flaps not needed. Pad and keyboard layouts that match the helicopter's where they can (Code picks, says them in the status).
+2. TAKE-OFF AND LANDING: it rolls on its wheels, steers on the ground, takes off from Cobb County International's runways (and any long
+   straight road or field, Free Roam being Free Roam), lands on them: a soft landing rolls out, a hard one or a wing into the ground is a
+   forgiving crash (as the helicopter: a moment, then reset onto open ground nearby, never stuck). Hitting trees, buildings or wires:
+   the same.
+3. WHERE: two or three planes parked on the airport's apron (drive up and swap, as the helicopter pads: A / H); "plane" in Free Roam's
+   vehicle choice (starting lined up on a runway). Free Roam only, never in races. A little airport life if cheap: one plane that now and
+   then taxis, takes off, circles and lands (no collisions to worry the player).
+4. THE WORLD FROM A PLANE: Round 63's far view and Round 66's scenery ring and horizon (Atlanta) at plane heights and speeds; the edge
+   warning and headwind turn the plane back too (a wide gentle turn), and a ceiling. Frame rate at 300 m and 600 m up crossing the map
+   against Round 63's numbers. Cameras: chase, far chase, cockpit, and a free look; the readout (height, speed, heading, climb).
+5. FUN: low passes over the quarry lake (Viking Quarry, next to the airport) and down the I-75 / I-575 corridor should feel fast; nothing
+   blocks flying under the highway bridges if there is room.
+Check: take off from each runway, fly to Kennesaw Mountain, Town Center and Chastain Glen and back, land on the runway; crash into a tree,
+a building and the ground (reset, not stuck); hands-off level flight 30 s; the edge turn-back; the fps table. Pictures: take-off, over the
+quarry, over Town Center, Atlanta on the horizon from 600 m, the apron.
+For Dan to check: fly the plane (controls, take-off, landing, speed); the view from up high.
+
+**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round69/` (`round69_check_final.txt`, `round69_check_fps.txt`, pictures `69_*.png`).
+1 DONE. "Sky Hopper" (`Tools/Blender/plane.py`, our own high-wing single-engine plane, 11 m wings, tricycle gear; `VehicleProfile.Plane`, Flies: Free Roam only). Flown by `Vehicle/PlaneFlight.cs` (+ `.Crash.cs`, `.Effects.cs`): on its wheels the vehicle's own drive; in the air arcade flight: the throttle sets the speed (top 115 m/s, cruise about 85 at 75 %: the map in about 2.5 minutes), climbing costs speed and diving gains it, the bank turns it, hands-off it levels its wings and holds its height (30 s: height within 0.1 m, heading 2.2 degrees), slow (under 36 m/s) it sinks and the nose eases down (no stall, no spin). Engine buzz made in code, pitched by the throttle; wind with speed; readout (height, speed, heading, climb, throttle).
+   Pad: left stick pitch (pull back: nose up) and bank; RT / LT throttle up / down (LT brakes on the ground); LB / RB rudder; X view; right stick looks round; Y reset; A take / leave a parked plane. Keyboard: W / S throttle (S brakes on the ground); arrows: up / down nose down / up, left / right bank; A / D rudder (and steer on the ground); V view; R reset; H take / leave.
+2 DONE. Take-off from runway 09/27 (the airport's one runway, both ways): full throttle, past 30 m/s pull back: off after 157 m (09) / 168 m (27). Any long straight road or field works the same. Landing: touching down under 5 m/s, wings within 18 degrees, it rolls out on its wheels (the check: 32 m/s, 1.7 m/s down, stopped in 25 m). Harder, a wing, the nose or the body into anything, a tree's crown or water: a crash, then after 2.6 s put on the nearest open strip it can take off from again (130 m clear and flat, within 1.5 km; else lined up on the runway). Into a tree, Town Center's front and the ground: crashed, reset, rolled away again (6 of 6).
+3 DONE. Three planes parked on the south apron (`Vehicle/PlaneStands.cs`, built at run time: no Build Map step): A / H takes one and leaves it (2 of 2); "Sky Hopper" in Free Roam's garage starts lined up on runway 09. Never in races. Airport life (`Vehicle/AirportCircuit.cs`): one red Sky Hopper taxis out every few minutes, takes off, flies a circuit at 300 m and lands (visual only).
+4 PARTLY. The far view and Round 66's ring and horizon work from the plane (Atlanta from 600 m, `69_atlanta_from_600m.png`). The edge: LEAVING THE SURVEY AREA, then a headwind and a wide bank back by itself (the stick's bank overruled): at most 805 m out at full throttle, turned back in 27 s. Ceiling 1700 m as the helicopter. Cameras: chase, far chase, cockpit, the right stick's free look. Frame rate (1280 x 720, not measured at 3840 x 2160; real time, the last 1.5 km to each place): at 300 m Kennesaw Mountain 54 / Town Center 43 / Chastain Glen 82 fps; at 600 m 61 / 56 / 94; 1 % lows 9 to 24 (hitches as the far detail loads in at 95 m/s). Lower than Round 63's helicopter numbers (88 to 164 at 500 m from a still camera): not profiled this round.
+5 Low passes over Viking Quarry Lake and the highway corridors: nothing blocks flying under the bridges where the plane fits (its wing tips and nose test what they meet).
+Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
+For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
