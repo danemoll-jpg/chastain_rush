@@ -210,6 +210,15 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   limit: if a number the round asks for (time saved, air time, height, speed) is not met after two attempts, stop tuning it,
   report the numbers in the status and move on; Dan decides. Optional ideas in Dan's notes ("could", "maybe") are built as
   the simple version, not as requirements to tune.
+- **CHECK IT AS DAN PLAYS IT (Dan, 2026-10-26, Round 73).** Scripted perfect lines are not enough.
+  (1) Every report of Dan's: a picture from his exact position and heading, before and after, that Code LOOKS AT and describes in the
+      status; a report is closed only when the after picture shows the thing gone. Re-read every earlier report on the same ground too.
+  (2) Every feature: play it from where a player starts (the title, race setup, Free Roam's spawn or fast travel, a road nearby), with the
+      normal controls through the game's input (a human-like driver / pilot: reaction lag, imperfect lines, a missed gate, a crash and a
+      reset), and pictures from the player's camera along the way that Code looks at: can a first-time player see where to go? does it
+      look right (no blocks, nothing buried, nothing floating, nothing across the road)? List what a first-time player sees and where it
+      went wrong.
+  (3) The status says, per item, what was looked at and what it showed. "Checked by script" alone is not done.
 - Dan starts a fresh planning chat every few rounds: `TODO.md` carries the state, so it must always say where things are.
 
 ## Commands

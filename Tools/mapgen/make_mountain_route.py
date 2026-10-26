@@ -117,6 +117,14 @@ LEG1_BRG, LEG1_LEN = 47.0, 640.0   # the summit flight's leg: on past the summit
 H2_AT = (-1146.0, -5440.0)         # the second hairpin, on the flats at the foot of the west face
 JOIN_AT = (-878.0, -5215.0)        # where the last line meets the drive, eastbound to the gate (no braking: the jump's landing runs on to the finish)
 H1_R, H2_R, JOIN_R = 17.0, 17.0, 45.0
+# Round 73 A2 (Dan's BUG-003 at (-933, -5722): "the road will be inoperable in free roam. It needs to be fixed"): Round 68's summit flight leg ran on
+# the drive's own line for its last 170 m (the leg's bearing within 3 degrees of the drive's), so its bench and J1's 15 m kicker were graded over the
+# drive. Now the line leaves the drive at DEPART with a gentle left bend onto a bench of its own OFF_M north-west of the drive (down the sidehill),
+# bends back parallel to it at K and runs on to the same first hairpin: J1's kicker stands on that bench, abeam the summit lot, and the drive keeps
+# its own height all the way to the lot. PRE_M of the drive before DEPART are part of the bend's approach.
+OFF_M, K_ALONG_M, OFF_R, PRE_M = 28.0, 45.0, 70.0, 40.0
+J1_ON_LEG = 130.0                 # J1's lip on its leg (from K's bend): the kicker (90 m) on the straight
+J1_LEG = 3
 BENCH_HALF, BENCH_BLEND = 7.0, 4.0  # the lines' bench: 14 m level across (room to race and pass), blending back to the ground over at least 4 m
 SIDE_SLOPE = 1.25                   # and over 1.25 m for every meter the bench stands above or below the ground (cut and fill banks)
 HAIRPIN_HALF = 11.0                 # the bench this wide (half) through the hairpins
@@ -131,9 +139,9 @@ CATCH_REL_DEG = 16.0                # the catch slope: steepened (where the grou
 # the catch may take (m), where the catch meets the ground (0: at the middle flight's touch-down, cut below and fill above it; 1: at its far end, a
 # landing berm standing on the ground))
 JUMPS = [
-    ("J1", "overlook", "the summit flight", 1, 190.0, 17.0, 300.0, (38.0, 46.0, 52.0), 260.0, 12.0, 0.0),
-    ("J2", "ledge", "the west face", 2, 128.0, 14.0, 340.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
-    ("J3", "berm", "the earthworks", 3, 160.0, 18.0, 320.0, (30.0, 36.0, 44.0), 120.0, 10.0, 1.0),
+    ("J1", "overlook", "the summit flight", 3, J1_ON_LEG, 17.0, 300.0, (38.0, 46.0, 52.0), 260.0, 12.0, 0.0),
+    ("J2", "ledge", "the west face", 4, 128.0, 14.0, 340.0, (32.0, 38.0, 46.0), 220.0, 12.0, 0.6),
+    ("J3", "berm", "the earthworks", 5, 160.0, 18.0, 320.0, (30.0, 36.0, 44.0), 120.0, 10.0, 1.0),
 ]
 VEHICLES = {"street": ("Street Classic", 49.0, 14.5, 25.0), "drifter": ("Drifter Twin", 58.0, 16.0, 30.0), "needle": ("Needle 600", 61.0, 18.0, 32.0)}
 AI_LIP = {"J1": 46.0, "J2": 38.0, "J3": 40.0}   # the AI's held speed up each run-up (at the lip): the catch's middle
@@ -154,11 +162,13 @@ CHECKPOINTS = [   # (x, z, label) in lap order from the gate; CP1 to CP4 Round 6
 road = pts(roads[ROAD]["points"]); rc = cum(road)
 dep_s = nearest_s(road, DEPART)[1]
 join_s = nearest_s(road, JOIN_AT)[1]; JOIN_S = join_s + 40.0
-road_run = resample(cut(road, JOIN_S, dep_s), 3.0)
-P0 = road_run[-1]
+road_run = resample(cut(road, JOIN_S, dep_s - PRE_M), 3.0)
+P0 = point_at(road, dep_s, rc)
 H1c = (P0[0] + dirb(LEG1_BRG)[0] * LEG1_LEN, P0[1] + dirb(LEG1_BRG)[1] * LEG1_LEN)
-corners = [P0, H1c, H2_AT, point_at(road, join_s, rc), road_run[0]]
-radii = [None, H1_R, H2_R, JOIN_R, None]
+_k0 = point_at(road, dep_s + K_ALONG_M, rc); _k1 = point_at(road, dep_s + K_ALONG_M + 2.0, rc); _ku = unit((_k1[0] - _k0[0], _k1[1] - _k0[1]))
+K = (_k0[0] - _ku[1] * OFF_M, _k0[1] + _ku[0] * OFF_M)   # left of the drive's direction (north-west)
+corners = [road_run[-1], P0, K, H1c, H2_AT, point_at(road, join_s, rc), road_run[0]]
+radii = [None, OFF_R, OFF_R, H1_R, H2_R, JOIN_R, None]
 def fillet(cs, rs, step=1.0):
     """the corners' polyline rounded: straight legs and circular arcs; returns points at ~step and, per point, its leg (1, 2, ...) or 0 on an arc"""
     tang = []
@@ -222,6 +232,18 @@ seg = list(range(max(0, k_lo - 30), min(len(lap), k_hi + 30)))
 base = gsm_list([tg[k] for k in seg], 6.0)
 for i, k in enumerate(seg):
     if kind[k] == "cut": prof[k] = base[i]
+# Round 73 A2: the departure leaves the drive like a side road: the line keeps the drive's height (at its nearest point) until the bench's edge is past
+# the drive's edge (SEP_M off its center), then falls at most DEP_GRADE (a fill bench over the sidehill where its ground is lower) until it meets
+# its own ground
+DEP_GRADE, SEP_M = 0.12, 12.0
+k_dep = min(ck, key=lambda k: math.dist(lap[k], P0)); y_sep = None; s_sep = None
+for k in ck:
+    if C[k] > C[k_dep] + 300.0: break
+    d_, s_ = nearest_s(road, lap[k])
+    if y_sep is None:
+        if C[k] < C[k_dep] or d_ < SEP_M: prof[k] = ground(*point_at(road, s_, rc)); continue
+        y_sep, s_sep = prof[k - 1], C[k - 1]
+    prof[k] = max(prof[k], y_sep - DEP_GRADE * (C[k] - s_sep))
 # the hairpins: a level pad over the arc and PAD_M either side (the two legs' benches overlap near a hairpin: one height there, no step between
 # them), eased back into the legs' ground over EASE_M
 PAD_M, EASE_M = 22.0, 70.0
@@ -230,7 +252,10 @@ for k in ck:
     if legno[k] == 0 and legno[k - 1] != 0:
         e = k
         while e + 1 < len(lap) and legno[e + 1] == 0: e += 1
-        if C[e] - C[k] > 25.0: arcs.append((C[k], C[e]))
+        # (Round 73 A2: only the hairpins, not the departure's gentle bends: an arc's radius from its length and its turn)
+        h0 = math.atan2(lap[k + 1][0] - lap[k - 1][0], lap[k + 1][1] - lap[k - 1][1]); h1 = math.atan2(lap[e + 1][0] - lap[e - 1][0], lap[e + 1][1] - lap[e - 1][1])
+        turn = abs((h1 - h0 + math.pi) % (2 * math.pi) - math.pi)
+        if C[e] - C[k] > 25.0 and (C[e] - C[k]) / max(turn, 1e-6) < 60.0: arcs.append((C[k], C[e]))
 for a0, a1 in arcs:
     pad = [k for k in ck if a0 - PAD_M <= C[k] <= a1 + PAD_M]
     yp = sum(prof[k] for k in pad) / len(pad)
@@ -418,15 +443,28 @@ for i, c in enumerate(cps, 1): c["id"] = i
 print("checkpoints: " + ", ".join(f"CP{c['id']} {c['s']:.0f} {c['label']}" for c in cps))
 
 # ---------------------------------------------------------------- closures: the drive west of the join (Round 67's), and the drive past the departure (the summit lot's end)
-closures = []
-p0 = point_at(road, JOIN_S - 22.0, rc); p1 = point_at(road, JOIN_S - 20.0, rc); t_ = unit((p0[0] - p1[0], p0[1] - p1[1]))
-closures.append({"road": "Kennesaw Mountain Drive", "osm_id": roads[ROAD]["osm_id"], "x": round(p0[0], 2), "z": round(p0[1], 2), "dx": round(t_[0], 4), "dz": round(t_[1], 4),
-                 "width_m": roads[ROAD]["width"], "junction_s": round(S(point_at(road, JOIN_S, rc)), 1), "contact": [round(p1[0], 1), round(p1[1], 1)], "arc_m": 20.0,
-                 "barrier_on": "Kennesaw Mountain Drive", "id": "B1", "label": "Kennesaw Mountain Drive to the visitor center"})
-p0 = point_at(road, dep_s + 26.0, rc); p1 = point_at(road, dep_s + 24.0, rc); t_ = unit((p0[0] - p1[0], p0[1] - p1[1]))
-closures.append({"road": "Kennesaw Mountain Drive", "osm_id": roads[ROAD]["osm_id"], "x": round(p0[0], 2), "z": round(p0[1], 2), "dx": round(t_[0], 4), "dz": round(t_[1], 4),
-                 "width_m": roads[ROAD]["width"], "junction_s": round(S(point_at(road, dep_s, rc)), 1), "contact": [round(p1[0], 1), round(p1[1], 1)], "arc_m": 20.0,
-                 "barrier_on": "Kennesaw Mountain Drive", "id": "B2", "label": "Kennesaw Mountain Drive round the summit's knob to the summit lot"})
+# Round 73 A1 (Dan's BUG-001 / BUG-002: both barriers stood across the race's own road): the lap runs ON the drive for a way either side of
+# where it joins / leaves it (the cut lines meet the drive at a slant), so each barrier is walked on along the drive, away from the lap, to the
+# first place where the whole barrier (the road's width plus 3 m each side, as RaceBarriers builds it) is CLOSURE_CLEAR m or more off the lap.
+CLOSURE_CLEAR = 8.0
+lap_dense = resample(lap, 1.0)
+def lap_gap(p0, t_):
+    ac = (-t_[1], t_[0]); h = roads[ROAD]["width"] / 2 + 3.0
+    return min(min(math.dist((p0[0] + ac[0] * h * k / 4, p0[1] + ac[1] * h * k / 4), q) for q in lap_dense) for k in range(-4, 5))
+def closure(s_from, step, cid, label):
+    s_ = s_from
+    while 0 < s_ < rc[-1]:
+        p0 = point_at(road, s_, rc); p1 = point_at(road, s_ - step * 2.0, rc); t_ = unit((p0[0] - p1[0], p0[1] - p1[1]))
+        if lap_gap(p0, t_) >= CLOSURE_CLEAR: break
+        s_ += step
+    j_s = s_from - step * 20.0
+    print(f"closure {cid}: {abs(s_ - j_s):.0f} m along the drive from the lap's join, {lap_gap(p0, t_):.1f} m clear of the lap")
+    return {"road": "Kennesaw Mountain Drive", "osm_id": roads[ROAD]["osm_id"], "x": round(p0[0], 2), "z": round(p0[1], 2), "dx": round(t_[0], 4), "dz": round(t_[1], 4),
+            "width_m": roads[ROAD]["width"], "junction_s": round(S(point_at(road, j_s, rc)), 1), "contact": [round(p1[0], 1), round(p1[1], 1)], "arc_m": round(abs(s_ - j_s), 1),
+            "barrier_on": "Kennesaw Mountain Drive", "id": cid, "label": label}
+# (Round 67's B2 across the drive past the departure is gone: since Round 68 the lap runs up the drive to its very end at the summit lot, so B2 stood on
+# the lap (BUG-002); past it is only the summit lot's loop, a dead end, so nothing needs closing there)
+closures = [closure(JOIN_S - 20.0, -1.0, "B1", "Kennesaw Mountain Drive to the visitor center")]
 junctions = [{"s": c["junction_s"], "roads": [c["road"]], "pos": c["contact"]} for c in closures]
 
 # ---------------------------------------------------------------- the AI: held speeds (lap stations)
@@ -457,9 +495,7 @@ for k in gk:
     # Round 70 (F2, Dan's BUG-004 at (-950, -5726): "the road shouldn't be doing this. It should be flat while still keeping this jump"): J1's run-up
     # and kicker run beside the drive's last stretch to the summit lot, the drive's center 2 to 11 m off the line, so the drive lay half on the
     # bench and half down its bank and rolled; the bench there is as wide as the drive's far edge and 2 m more (the line's profile unchanged)
-    if kind[k] == "cut" and legno[k] == 1 and C[k] <= jumps[0]["sL"] + 2.0:
-        dd = nearest_s(road, lap[k])[0]
-        if dd < 20.0: h = max(h, dd + 4.0 + 2.0)
+    # (Round 73 A2: no longer needed, the line now leaves the drive on its own bench; the widening had spread the bench over the drive)
     halves.append(h); blends.append(round(max(BENCH_BLEND, SIDE_SLOPE * abs(prof[k] - tg[k])), 2))
 # a per-point half width eased along the line (no step in the bench's edge)
 halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends = [round(b, 2) for b in gsm_list(blends, 4.0)]
@@ -470,8 +506,11 @@ g_first = next((i for i, o in enumerate(on_road) if not o), 0); g_last = next((i
 # (never into a kicker: the drive's height only up to 45 m before the first kicker's foot, from 45 m after the last jump's catch)
 g_first = min(g_first, max(0, min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[0]["sL"] - jumps[0]["Lk"] - 45.0)))))
 g_last = g_last if not jumps[-1]["shaped"] else min(g_last, max(0, len(gk) - 1 - min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[-1]["sL"] + jumps[-1]["x_end"] + 45.0)))))
+# Round 73 A2: the drive from where the line has left it (SEP_M off) to the summit lot is kept off (its own surface, its width and 1.5 m more)
+_ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= SEP_M)])[1]
+keep_off = flat(resample(cut(road, _ks - 4.0, None), 4.0))
 grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
-           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True}]
+           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.5}]
 print(f"the grade: its first {g_first} and last {g_last} points on the drive take the built drive's height")
 clear = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": CLEAR_HALF}]
 breaks = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": BREAK_HALF}]

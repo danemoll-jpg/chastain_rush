@@ -14,6 +14,7 @@ namespace ChastainRush
     {
         public const float Height = 1.5f, Depth = 0.9f, Block = 1.5f, Verge = 3f, ShortcutClearM = 3f;   // a shortcut's line this close to a barrier: the barrier is left out
         public int Count => built.Count;
+        public int Trimmed { get; private set; }   // Round 73 A1: blocks left out for being on the race's road
         public IReadOnlyList<Barrier> Built => built;
         readonly List<Barrier> built = new List<Barrier>();
         Material red, white;
@@ -50,7 +51,10 @@ namespace ChastainRush
                         for (int k = 0; k <= n && !blocks; k++) if (DistToSegment(Vector2.Lerp(p0, p1, k / (float)n), a, b) < ShortcutClearM) blocks = true;
                     }
                 if (blocks) { Open.Add($"{c.id} {c.label}"); continue; }
-                built.Add(MakeBarrier(c));
+                // Round 73 A1 (Dan's BUG-001 / BUG-002 on Kennesaw Mountain: barriers straight across the race's own road): a closure the race's line
+                // (the lap or the lead-in) passes through is never built; one whose end reaches the line's road loses the blocks within LineClearM of it
+                if (OnLine(route, a, b, c.x, c.z) < 1.5f) { OnCourse.Add($"{c.id} {c.label}"); Debug.LogWarning($"[RaceBarriers] closure {c.id} '{c.label}' is on the race's line: not built"); continue; }
+                built.Add(MakeBarrier(c, route));
             }
             // Round 24 A2 (A3): every pipe mouth this race does not go through is closed too (PipeMouths, from the map build)
             MouthsClosed.Clear();
@@ -65,6 +69,29 @@ namespace ChastainRush
         }
 
         public readonly List<string> MouthsClosed = new List<string>();   // Round 24 A2: for the checks and the log
+        public readonly List<string> OnCourse = new List<string>();       // Round 73 A1: closures left out because the race drives through them
+        public const float LineClearM = 6f;                                // Round 73 A1: no block within this of the race's line
+
+        // Round 73 A1: the nearest the race's own line (the lap, the lead-in) comes to the segment a-b, lines more than 8 m above or below the
+        // ground at (x, z) not counting (a bridge over the closed road, a pipe under it)
+        static float OnLine(RaceRoute route, Vector2 a, Vector2 b, float x, float z)
+        {
+            float gy = RaceRoute.Surface(x, z).y, best = float.MaxValue;
+            void Scan(Vector3[] path)
+            {
+                if (path == null) return;
+                for (int i = 0; i + 1 < path.Length; i++)
+                {
+                    Vector2 p0 = new Vector2(path[i].x, path[i].z), p1 = new Vector2(path[i + 1].x, path[i + 1].z);
+                    if (Mathf.Abs(path[i].y - gy) > 8f && Mathf.Abs(path[i + 1].y - gy) > 8f) continue;
+                    if (Vector2.Distance(p0, a) > 60f && Vector2.Distance(p0, b) > 60f) continue;
+                    int n = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(p0, p1) / 0.5f));
+                    for (int k = 0; k <= n; k++) best = Mathf.Min(best, DistToSegment(Vector2.Lerp(p0, p1, k / (float)n), a, b));
+                }
+            }
+            Scan(route.Path); Scan(route.LeadIn);
+            return best;
+        }
 
         // a row of blocks across a pipe's mouth, on its floor, 0.6 m in (no posts: the cut's walls frame it)
         void MakeMouthBarrier(PipeMouths pm, int m)
@@ -92,7 +119,7 @@ namespace ChastainRush
         public void Clear()
         {
             for (int i = transform.childCount - 1; i >= 0; i--) Destroy(transform.GetChild(i).gameObject);
-            built.Clear(); Gates.Clear(); Seals = Rails = 0;
+            built.Clear(); Gates.Clear(); Seals = Rails = 0; OnCourse.Clear(); Trimmed = 0;
         }
 
         static float DistToSegment(Vector2 p, Vector2 a, Vector2 b)
@@ -101,7 +128,7 @@ namespace ChastainRush
             return (a + ab * t - p).magnitude;
         }
 
-        Barrier MakeBarrier(RouteClosureJson c)
+        Barrier MakeBarrier(RouteClosureJson c, RaceRoute route)
         {
             var along = new Vector3(c.dx, 0f, c.dz).normalized;
             var lateral = Vector3.Cross(Vector3.up, along);          // across the closed road
@@ -113,6 +140,8 @@ namespace ChastainRush
             {
                 float off = -half + bw * (i + 0.5f);
                 Vector3 p = new Vector3(c.x, 0f, c.z) + lateral * off;
+                var pl = new Vector2(p.x, p.z);
+                if (OnLine(route, pl - new Vector2(lateral.x, lateral.z) * bw * 0.5f, pl + new Vector2(lateral.x, lateral.z) * bw * 0.5f, p.x, p.z) < LineClearM) { Trimmed++; continue; }   // Round 73 A1
                 float gy = RaceRoute.Surface(p.x, p.z).y;
                 // each block stands on the ground under it and reaches 1 m below it, so a slope leaves no gap
                 var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -127,6 +156,7 @@ namespace ChastainRush
             foreach (float side in new[] { -1f, 1f })
             {
                 Vector3 p = new Vector3(c.x, 0f, c.z) + lateral * (side * half);
+                if (OnLine(route, new Vector2(p.x, p.z), new Vector2(p.x, p.z), p.x, p.z) < LineClearM) continue;   // Round 73 A1
                 float gy = RaceRoute.Surface(p.x, p.z).y;
                 var post = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 post.transform.SetParent(root.transform, false);

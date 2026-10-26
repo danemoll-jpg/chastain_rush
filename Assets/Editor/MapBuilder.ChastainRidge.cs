@@ -105,6 +105,8 @@ namespace ChastainRush
             float br = gr.blend_r > 0f ? gr.blend_r : gr.blend;
             float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, Mathf.Max(sides ? gr.blend_left.Max() : 0f, blends ? gr.blends.Max() : 0f))), most = 0f; int n = 0;
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
+            // Round 73 A2: never within keep_off_m of the keep_off line (Kennesaw Mountain Drive beside J1's bench: the drive keeps its own surface)
+            var keep = gr.keep_off != null && gr.keep_off.Length >= 4 ? ToPoints(gr.keep_off) : null;
             // Round 62 (build speed: the Noonday Creek Trail's 2 km grades): the segments by 8 m cell, each sample asks only those near it (the same answer)
             const float Cell = 8f; var cells = new Dictionary<Vector2Int, List<int>>();
             for (int i = 0; i + 1 < p.Count; i++)
@@ -131,7 +133,13 @@ namespace ChastainRush
                     }
                 }
                 if (best >= half + blend || beyond) return y;
-                float w = best <= half ? 1f : Smooth01(1f - (best - half) / blend), ny = y + w * (target - y);
+                float w = best <= half ? 1f : Smooth01(1f - (best - half) / blend);
+                if (keep != null)
+                {
+                    float dk = float.MaxValue; for (int i = 0; i + 1 < keep.Count; i++) dk = Mathf.Min(dk, SegDist(q, keep[i], keep[i + 1]));
+                    w *= Smooth01((dk - gr.keep_off_m) / 1.5f); if (w <= 1e-3f) return y;
+                }
+                float ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;
             });
             Debug.Log($"[Round40] {gr.id}: graded along {p.Count} points, {gr.half * 2f:0} m wide; {n} samples moved, by up to {most:0.00} m");
