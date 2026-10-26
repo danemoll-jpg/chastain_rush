@@ -38,8 +38,12 @@ namespace ChastainRush
         // Round 37 (split screen): whose vehicle this is; player 2's choice is kept apart, in vehicle2.json (SplitScreen.P2Vehicle / P2Colour)
         public int player = 1;
 
+        // Round 70 (D, checks): -vehicleSave <file>: a check run reads and writes this file as the game reads and writes vehicle.json (restarts tested
+        // without touching Dan's own choice)
+        static string TestSave { get { var a = Environment.GetCommandLineArgs(); for (int i = 0; i + 1 < a.Length; i++) if (a[i] == "-vehicleSave") return a[i + 1]; return null; } }
         public static string SavePath(int player = 1)
         {
+            if (player == 1 && TestSave != null) return TestSave;
             string file = player == 2 ? "vehicle2.json" : "vehicle.json";
 #if UNITY_EDITOR
             return Path.GetFullPath(Path.Combine(Application.dataPath, "..", "local", file)); // git-ignored
@@ -78,7 +82,7 @@ namespace ChastainRush
             }
             if (player == 2) { id = SplitScreen.P2Vehicle; colour = SplitScreen.P2Colour; }   // Round 37: player 2 (split screen)
             else if (forced != null) id = forced;
-            else if (!checkRun)
+            else if (!checkRun || TestSave != null)
                 try { if (File.Exists(SavePath())) { Read(File.ReadAllText(SavePath()), out roamId, out raceId, out colour); id = roamId ?? id; } }
                 catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
             if (VehicleProfile.IndexOf(id) < 0) id = "original";
@@ -134,7 +138,7 @@ namespace ChastainRush
         void Save()
         {
             if (player == 2) { SplitScreen.P2Vehicle = config.profileId; SplitScreen.P2Colour = Colour; SaveFor(2, config.profileId, Colour); return; }   // Round 37
-            if (checkRun) return;
+            if (checkRun && TestSave == null) return;
             try
             {
                 string path = SavePath(); Directory.CreateDirectory(Path.GetDirectoryName(path));

@@ -37,7 +37,7 @@ namespace ChastainRush
             R20Started = (float)(DateTime.Now - System.Diagnostics.Process.GetCurrentProcess().StartTime).TotalSeconds;
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
-            report.AppendLine($"{(tag == "round69" ? "Round 69" : tag == "round68" ? "Round 68" : tag == "round67" ? "Round 67" : tag == "round66" ? "Round 66" : tag == "round64" ? "Round 64" : tag == "round63" ? "Round 63" : tag == "round62" ? "Round 62" : tag == "round60" ? "Round 60" : tag == "round59" ? "Round 59" : tag == "round58" ? "Round 58" : tag == "round57" ? "Round 57" : tag == "round56" ? "Round 56" : tag == "round55" ? "Round 55" : tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
+            report.AppendLine($"{(tag == "round70" ? "Round 70" : tag == "round69" ? "Round 69" : tag == "round68" ? "Round 68" : tag == "round67" ? "Round 67" : tag == "round66" ? "Round 66" : tag == "round64" ? "Round 64" : tag == "round63" ? "Round 63" : tag == "round62" ? "Round 62" : tag == "round60" ? "Round 60" : tag == "round59" ? "Round 59" : tag == "round58" ? "Round 58" : tag == "round57" ? "Round 57" : tag == "round56" ? "Round 56" : tag == "round55" ? "Round 55" : tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
             foreach (var v in FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None)) { var vi = v.GetComponent<VehicleInput>(); if (vi && vi.enabled) car = v; }   // Round 33: the player, not a traffic car (-traffic)
@@ -45,7 +45,7 @@ namespace ChastainRush
             var hud = DeveloperHud.Instance; if (hud) hud.Visible = false;
             string only = null; string[] ids = VehicleProfile.All.Select(p => p.Id).ToArray();
             var argv = Environment.GetCommandLineArgs();
-            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r69Only" || argv[i] == "-r68Only" || argv[i] == "-r67Only" || argv[i] == "-r66Only" || argv[i] == "-r64Only" || argv[i] == "-r63Only" || argv[i] == "-r62Only" || argv[i] == "-r60Only" || argv[i] == "-r59Only" || argv[i] == "-r58Only" || argv[i] == "-r57Only" || argv[i] == "-r56Only" || argv[i] == "-r55Only" || argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
+            for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r70Only" || argv[i] == "-r69Only" || argv[i] == "-r68Only" || argv[i] == "-r67Only" || argv[i] == "-r66Only" || argv[i] == "-r64Only" || argv[i] == "-r63Only" || argv[i] == "-r62Only" || argv[i] == "-r60Only" || argv[i] == "-r59Only" || argv[i] == "-r58Only" || argv[i] == "-r57Only" || argv[i] == "-r56Only" || argv[i] == "-r55Only" || argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
             StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
@@ -65,6 +65,7 @@ namespace ChastainRush
             if (tag == "round64" && parts == null) parts = new[] { "xloop", "xshort", "xdoors", "xturn", "xmound", "xwalk", "xbar", "xpics" };   // Round 64 (Round20Runner.R64.cs); xai with -traffic Normal
             if (tag == "round66" && parts == null) parts = new[] { "spics", "sfps", "hedge", "eoff", "edrive" };   // Round 66 (Round20Runner.R66.cs); etraffic with -traffic Heavy
             if (tag == "round67" && parts == null) parts = new[] { "mloop", "mjumps", "mwalk", "mpics", "tcreek", "tpark", "tmound", "tpics" };   // Round 67 (Round20Runner.R67.cs); mai as well when named
+            if (tag == "round70" && parts == null) parts = new[] { "hyd", "roll", "garage", "ramp", "park", "gantry" };   // aitrace, vsave1 to 3 when named   // Round 70 (Round20Runner.R70.cs)
             if (tag == "round69" && parts == null) parts = new[] { "ptake", "pfly", "pcrash", "plevel", "pedge", "pstand", "pfps", "ppics" };   // Round 69 (Round20Runner.R69.cs)
             if (tag == "round68" && parts == null) parts = new[] { "jfly", "jloop", "jhood" };   // Round 68 (Round20Runner.R68.cs); jai as well when named
             if (tag == "round63" && parts == null) parts = new[] { "hover", "hfly", "hpads", "hcrash", "hfps", "hpics" };   // Round 63 (Round20Runner.R63.cs)
@@ -222,6 +223,20 @@ namespace ChastainRush
                 if (Do("tpark")) yield return Guard(R67Parkway());
                 if (Do("tmound")) { yield return Guard(R64Mound()); yield return Guard(R67Mound()); }
                 if (Do("tpics")) yield return Guard(R67Pics2());
+            }
+            // Round 70 (Round20Runner.R70.cs)
+            if (tag == "round70")
+            {
+                if (Do("hyd")) yield return Guard(R70Hydrants());
+                if (Do("roll")) yield return Guard(R70Roll());
+                if (Do("vsave1")) yield return Guard(R70VSave(1));
+                if (Do("vsave2")) yield return Guard(R70VSave(2));
+                if (Do("vsave3")) yield return Guard(R70VSave(3));
+                if (Do("garage")) yield return Guard(R70Garage());
+                if (Do("ramp")) yield return Guard(R70Ramp());
+                if (Do("park")) yield return Guard(R70Park());
+                if (Do("gantry")) yield return Guard(R70Gantries());
+                if (Do("aitrace")) yield return Guard(R70AiTrace());
             }
             // Round 69 (Round20Runner.R69.cs): the plane
             if (tag == "round69")

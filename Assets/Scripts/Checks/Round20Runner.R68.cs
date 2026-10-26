@@ -42,9 +42,9 @@ namespace ChastainRush
         public sealed class R68Flight { public string at; public float lip, air, dist, over, land, up, after; public Vector3 from, to; }
 
         // flies a line and logs every spell in the air over 'minAir' (where it left, how long, how far, the most height over the ground, the landing)
-        IEnumerator FlyLine(List<Vector3> line, float cap, float[] prof, List<R68Flight> flights, Run run, Func<Vector3, string> at, Func<R68Flight, float, IEnumerator> midAir = null, float minAir = .5f, float timeout = 200f, string trace = null)
+        IEnumerator FlyLine(List<Vector3> line, float cap, float[] prof, List<R68Flight> flights, Run run, Func<Vector3, string> at, Func<R68Flight, float, IEnumerator> midAir = null, float minAir = .5f, float timeout = 200f, string trace = null, float startSpeed = 30f)
         {
-            Place(line[0], line[2] - line[0], 30f); yield return new WaitForFixedUpdate();
+            Place(line[0], line[2] - line[0], startSpeed);   // Round 70: from rest for the summit ramp yield return new WaitForFixedUpdate();
             var touch = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); touch.seen.Clear(); touch.on = true;
             Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
             var drive = StartCoroutine(DriveLine(line, cap, timeout, run, null, null, 5f, false, prof));
