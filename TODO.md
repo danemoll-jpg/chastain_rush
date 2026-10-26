@@ -108,6 +108,48 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 71, A PLANE RACE THROUGH RINGS (Dan, 2026-10-26 03:09: "I am thinking that we could do a plane race. I think just the typical fly
+through the rings course. We could utilize the quary right next to the airport and just expand it. Since it is the sky we are pretty open.
+I would like to have low spots and maybe have to fly under bridges if possible. It could be a circuit. It could be a race with others or
+solo speed run"). Dan is asleep and has not tested Round 70: decide, write it down, go on.** Builds on Round 69's Sky Hopper. Quick builds
+while working; ONE full Build Map at the end if anything in the world changes (rings are game objects; likely code / data only).
+Tuning limit. Short results.
+A. THE COURSE: a circuit of rings in the sky starting and finishing at Cobb County International Airport, built round Viking Quarry Lake next
+   door and expanding out from it (Code designs it and says why). Low spots: down into the quarry, low over its lake, skimming fields and
+   the woods' tops; under bridges where the plane fits (the I-75 / I-575 overpasses and their ramps near Big Shanty / Chastain Road / Barrett
+   Parkway: check the clearance with the plane's wingspan and height, Round 69's wing-tip test); a few high rings to climb for and dive
+   from; banked turns between them. A lap of about 2 to 3 minutes at race pace; 2 or 3 laps, Code's pick. Name it (e.g. "Quarry Air Race"),
+   Dan may rename.
+B. THE RINGS: big readable hoops (a bright color, a beacon / arrow to the next one, a chime and a flash going through), sized to the spot
+   (larger in the open, tighter under bridges and in the quarry); a ring missed counts as a missed checkpoint (the game's usual penalty, the
+   lap still counts: Round 54 B's rule). Crashing resets the plane in the air just before the last ring passed, heading through it, at
+   speed (never on the ground, never stuck).
+C. THE START: from the runway, lined up (a standing take-off start: throttle up at GO), or an air start if the runway start plays badly with
+   several planes (Code picks, says why).
+D. TWO WAYS TO PLAY, both in the race menu (and Free Roam's race list): RACE against AI pilots (3 by default, as the car races; the AI flies
+   the ring line with skill by difficulty, Hard close to a good player, no cheating through walls, recovers from crashes as the cars' AI)
+   and TIME TRIAL / SPEED RUN solo (best lap and best total, ghost of the best lap, Top 10 records, replays: as every course). The plane only
+   (the Sky Hopper; the helicopter is not in this race).
+E. Built like the other courses where it applies: records, ghosts, replays (the replay cameras follow planes), the map and minimap showing
+   the rings, the loading screen's inset, the finish screen and COMPLETE RACE.
+Check: a lap by script flown cleanly through every ring (no ring unreachable, no bridge clipped); a lap with a missed ring (penalty, lap
+counts); a crash and its reset; the AI x2 on Hard, all finish; a time trial with its ghost. Pictures: the start, the quarry dive, under a
+bridge, a high ring, the whole circuit on the map.
+For Dan to check: race the planes and fly the time trial (rings, the quarry, under the bridges, the AI).
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 70
+**Not yet driven by Dan: he moved on to Round 71 on 2026-10-26 03:09 ("Don't have a chance to test").**
 **Round 70, A RAMP OFF THE MOUNTAIN; AI THAT RACES; the garage and the saved vehicle; park visitors; the mountain road (Dan, 2026-10-25
 23:20; reports BUG-001 to BUG-004 of session `2026-10-25_22-20-32-569_189622`, read by Claude, after the Round 68 / 69 build: Kennesaw Mountain on the Trail
 Four).** Rounds 68 and 69 are reviewed. Quick builds while working; ONE full Build Map at the end. Tuning limit. Short results.
@@ -174,18 +216,7 @@ Found, not changed: the Round 20 P1 check (`Round20Runner.Ramp.cs`) no longer ma
 Builds: 2 full Build Maps (the second for F1's park roads), 3 code-only exes. `Builds/ChastainRush/` 2026-10-26 02:20. Imported from Racer: nothing.
 For Dan: (a) the ramp: the run-up along the drive and off the hairpin; (b) the AI on Hard; (c) the ramp's look (57 m of steel trestle).
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 69
+## Previous delivery 2: Round 69
 **Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
 **Round 69, A PLANE TO FLY (Dan, 2026-10-25 12:39: chose "planes" for the next round; he is away and has not tested Round 68). START
 RIGHT AFTER ROUND 68 IS DONE AND COMMITTED, without waiting for Dan.** Builds on Round 63's helicopter (flight code, camera, map, resets,
@@ -223,7 +254,7 @@ For Dan to check: fly the plane (controls, take-off, landing, speed); the view f
 Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
 For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
 
-## Previous delivery 2: Round 68
+## Previous delivery 3: Round 68
 **Reviewed: Dan drove the Round 68 / 69 build 2026-10-25 22:20 (Kennesaw Mountain); his notes are Round 70.**
 **Round 68, KENNESAW MOUNTAIN: REALLY BIG JUMPS (Dan, 2026-10-25 08:35, after driving Round 67).** Dan: "I specifically wanted to do a
 mountain trail so I have really big jumps but these are just little bunny hops. I know if you can see it in Woodstock Rush how big the
@@ -266,61 +297,6 @@ For Dan to check: race Kennesaw Mountain flat out; the signature flight off the 
 Found, not changed (not this round's ground): three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on the drive at (-500, -5320) (also in Round 67's check); the Turf Rocket hits a trunk beside the drive at (-1046, -6164).
 Builds: 4 full Build Maps (the first did not compile), 7 quick builds, 4 code-only exes. `Builds/ChastainRush/` 2026-10-25 15:44. Imported from Racer: nothing.
 For Dan: (a) race it flat out; the summit flight; (b) J3's kicker stands about 30 m over the ground at its lip (a long gentle curve so cars do not bottom out): its look; (c) the AI's resets.
-
-## Previous delivery 3: Round 67
-**Dan 2026-10-25 23:20: "The chastain Trail races are fine" (B1 to B3 accepted); Kennesaw reverse: "I am not sure" (not now).**
-**Reviewed: Dan raced the Kennesaw Mountain trails 2026-10-25: the jumps are far too small ("just little bunny hops"): Round 68. B1 to B3 and the open questions (a) to (e): no answer yet.**
-**Round 67, A NEW TRACK: THE KENNESAW MOUNTAIN TRAILS, ALL ABOUT AIR; two Noonday Creek Trail shortcuts and a lip (Dan, 2026-10-25 03:01;
-reports BUG-001 to BUG-003 of session `2026-10-25_02-23-36-193_bcac2f`, read by Claude, after the Round 66 exe: the Noonday Creek Trail race both ways).**
-Round 66 is reviewed. Use Round 65's quick builds while working; ONE full Build Map at the end. Standing rules apply (shortcuts: real risk,
-no free way round, tire tracks / skid marks as the hint; ramps a real physics jump; nothing slows a car on a ramp; not every jump a dirt
-pile). Tuning limit. Short results.
-A. THE KENNESAW MOUNTAIN TRAILS RACE. Dan: "I want one with a lot of air so I am wondering if we could do the trails of Kennesaw mountain.
-   I want huge jumps on this".
-   (1) THE ROUTE (Code designs it and says why): a loop on Kennesaw Mountain National Battlefield Park's real trails (OSM, Round 61 built 45
-       named trails, 19.6 km, at their real width on levelled ground) and Kennesaw Mountain Drive: e.g. up the mountain road to the summit
-       lot, then down the ridge and summit trails (Kennesaw Mountain, Little Kennesaw / Pigeon Hill side) with the big drops the game's 1.5x
-       height gives, back round by the visitor center. A lap of a few km; 2 or 3 laps, Code's pick. Start / finish at the visitor center lot
-       (or the summit lot), Code says.
-   (2) HUGE JUMPS, MANY, VARIED: the trail's own crests and ledges shaped to launch (natural lips, no ramp), plus built launches that
-       belong on a wooded mountain: rock slabs and boulder ledges, fallen-tree log ramps, a washed-out trail bridge, the old earthworks'
-       berms, the summit overlook's rock face, a switchback cut that sends you off the hillside onto the next leg. Several of them big
-       enough for long, high flights (seconds in the air) that land clean on the trail downhill, heading the race's way. Report each jump's
-       air time and distance on the Drifter Twin and the Street Classic.
-   (3) THE TRAILS RACEABLE: the path at its real width (standing rule) with the woods cleared back enough to race and pass (Dan wanted the
-       made-up woods track wider so vehicles could weave); trees solid off the cleared line; breakable where a racer would clip them often
-       (as Noonday Creek Extension). All vehicles unless a stretch is too steep for cars: say so (the old woods track's "bikes and ATVs" idea is
-       Dan's to decide).
-   (4) DIRECTION: FORWARD = the downhill-on-trails way (that is where the air is). REVERSE only if it still plays well (climbing the trails is
-       little air): Code says; if not, forward only and Dan decides. No shortcuts this round (Dan picks them after driving it).
-   (5) Built like the other races (route, checkpoints, closures, AI that takes the jumps, ghosts, records, replays, menus, loading inset,
-       fast travel). Park visitors on the trails in Free Roam (a few in races, who get out of the way).
-B. THE NOONDAY CREEK TRAIL (Round 64's track).
-B1. A FORWARD SHORTCUT OVER THE CREEK. BUG-002 (x 1726.59 z -671.00 h 271, Bells Ferry Road NE by the trailhead, forward, CP1 next):
-   "shortcut entrance (skid mark here...you go down the hill hit a ramp before the river that carries you forward a succesful landing puts
-   you heading straight on the track. A poorly angled one will cost you to crash". Skid marks at the turn-off; down the bank; a ramp (that
-   belongs by a creek: Code picks, not a dirt pile) just before Noonday Creek that carries you over it; a good landing lands you on the trail
-   heading straight down it; a badly angled one crashes you (trees / the bank / the water). Saves time clean, costs it missed.
-B2. A REVERSE SHORTCUT OVER CHASTAIN MEADOWS PARKWAY. BUG-003 (x 1328.10 z -755.84 h 123, 19 m off Chastain Meadows Parkway, reverse, CP11
-   next): "can we make a shortcut here where it leads to another big jump jumping over the street and clear to the other side". A shortcut
-   from here to a big jump clean over Chastain Meadows Parkway, landing on the far side and back on the course. (Directions from Dan's
-   headings; confirm against the lap.)
-B3. BUG-001 (x 167.16 z -899.63 h 144, Town Center Drive by the mound jump, forward, CP5 next): "it wasn't flush and caused me to lose
-   momentum". Make the road's edge / the course's step onto the ground there flush, so nothing catches a car.
-Check: the mountain loop on all vehicles (no stop; each jump's air and landing); AI races x2 (each way it has), Hard, all finish; B1 and B2
-clean / missed / round them; B3 speed through before / after. Pictures: the start, three biggest jumps mid-air, the summit leg, B1 and B2.
-For Dan to check: race the Kennesaw Mountain trails (the jumps!); the creek and the parkway shortcuts; the lip by Town Center Drive.
-
-**Status (Claude, 2026-10-25): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round67/` (pictures `67_*.png`; `round67_check_full.txt`: every vehicle, the AI; `round67_check_last.txt`: the final exe). Bug reports read: session `2026-10-25_02-23-36-193_bcac2f`, BUG-001 to 003.
-A DONE. "Kennesaw Mountain" (`make_mountain_route.py`, `MapBuilder.Mountain.cs`): start on Kennesaw Mountain Drive east of the visitor center, UP the drive (2.3 km, about 10 %) round the saddle to the summit lot, across the lot to the overlook, DOWN the Kennesaw Mountain Trail (1.2 km, 240 m down) to the visitor center. Lap 3.55 km, 2 laps, 10 checkpoints. Why: the trail is the downhill (the air) and the drive the climb; going over the summit to Little Kennesaw needs a 27 % climb on a trail, or the drive raced both ways. Forward only: up the trail is a 20 to 30 % climb with nothing to fly off (reverse is yours to decide). All 11 vehicles round the lap by script: nothing too steep for cars.
-   The trail: a bench 12 m across (18 m through the hairpins), its 1.5 m path kept; no tree within 10 m, breakable to 25 m and 140 m along each flight.
-   Six real jumps, the ground itself shaped: J1 the summit overlook (granite), J2 the ridge drop (a fallen oak; the first switchback cut straight down the ridge), J3 the earthworks berm (revetment logs), J4 the switchback cut (a boulder ledge; the zig-zag cut straight down), J5 the washout (the old trail bridge's abutment over a dug wash), J6 the last ledge. Air, Drifter Twin at the AI's speed / at 26 m/s (Street Classic within 0.1 s): J1 1.1 s 21 m / 1.7 s 43 m; J2 2.0 s 47 m / 2.1 s 54 m; J3 1.3 s 28 m; J4 1.8 s 38 m / 2.3 s 59 m; J5 1.7 s 37 m; J6 1.8 s 42 m / 2.0 s 51 m. All land clean at the AI's speed. Faster: J1 (and the Street Classic's J3) fly on past the next bend and stop in the woods at 26 m/s and more; J3 and J5 are flown off the slope before their lips. Two attempts: tuning limit.
-   AI: twice on Hard, 6 of 6 finish (4:52 to 5:18), stuck 37 s in all. Park visitors on the trails in Free Roam (up to 9 groups: joggers, dog walkers, cyclists, couples), 2 at most in a race. Records, ghosts, replays, menus, loading inset as every route; fast travel "Kennesaw Mountain start".
-B1 DONE. "Creek leap" (forward): skid marks off Bells Ferry's northbound lane south of the bridge, a heap of gray riprap on the shoulder heading west, over the bank and Noonday Creek onto the flats, landing on the trail's line about 20 degrees off it (the creek and the trail run side by side: no take-off gives a dead-straight landing). Brush along both banks. Drifter: clean 13.2 s against the lap's 18.8 (2.6 s in the air), missed (14 m/s) 19.0 s, round it through the creek 19.7 s. New checkpoint "the trailhead's drive" (a shortcut must skip one).
-B2 DONE. "Parkway leap" (reverse): off the trail before its loop under the bridges, down the hollow at your spot, up the parkway's embankment shaped as a kicker, over both carriageways (2.5 s in the air) onto the lap past the bridges; a hedge along the far shoulder. Clean 12.1 s against 13.1 (saves 1 s), missed 15.6, round it over the road 15.8. New checkpoint "under Chastain Meadows Parkway".
-B3 PARTLY. Cause: the face rose from the road's edge on a 14 m bend, and a car thrown off the road's far edge (the climb from the red bridge) came down into it. Now a 45 m arc at the face's foot from the road's own level, the climb to the road a 150 m crest, a landing zone on the face. Street Classic flat out (30 m/s) forward: 60 % of its speed lost at the mound before, 12 % now; at 26 m/s still 34 % (Drifter 5 %). Two attempts: tuning limit.
-Builds: 3 full Build Maps (the first did not compile; the third for the wider clearing) and 3 quick builds. `Builds/ChastainRush/` 2026-10-25 06:42. Imported from Racer: nothing.
-For Dan: (a) the mountain's jumps flat out (J1, J3); (b) reverse on the mountain, yes or no; (c) the creek leap's landing angle; (d) the parkway leap saves 1 s: enough?; (e) the mound flat out in the Street Classic.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
