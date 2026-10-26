@@ -69,7 +69,9 @@ def design_body(J, angle, probe):
     th1 = math.radians(angle); R = J["window"][1] ** 2 / 8.0; Lk = R * th1
     foot = J["lip_s"] - Lk
     run_s = list(np.arange(0.0, foot + 0.1, 5.0)); run_y = [ground(*P(s)) for s in run_s]
-    # (the run-up is the airport's own flat ground, not graded: its runway and taxiways lie on it; the kicker's foot meets the ground there)
+    # graded smooth (an 80 m running mean of the ground: the first check's cars took off over the airport's humps at 40 m/s); the runway and
+    # taxiways it crosses are laid on the graded ground by the map build after it
+    k = 16; run_y = [float(np.mean(run_y[max(0, i - k):i + k + 1])) for i in range(len(run_y))]
     y_foot = run_y[-1]
     deck_s, deck_y = [], []; y = y_foot; s = foot
     for i in range(int(Lk) + 1):
@@ -137,7 +139,11 @@ def design_body(J, angle, probe):
     ro_s = list(np.arange(s_end - 2.0, s_end + RUNOUT, 2.0)); ro_y = [ground(*P(s)) for s in ro_s]
     ro_y[0] = land_y[-1]
     for _ in range(3): ro_y = [ro_y[0]] + [float(np.mean(ro_y[max(0, i - 6):i + 7])) for i in range(1, len(ro_y))]
+    # the run-up lane and the ground under the kicker graded: the lane to the smoothed run-up, under the deck 0.6 m below it (the rim's ground stood
+    # over the deck: the first check's cars hit it); then the run-out
+    lane_s = run_s + [s_ for s_ in deck_s[1:]]; lane_y = run_y + [y_ - 0.6 for y_ in deck_y[1:]]
     grades = [
+        {"id": f"quarry jump {J['id']} run-up and kicker", "points": flat([P(s_) for s_ in lane_s]), "y": [round(v, 3) for v in lane_y], "half": DECK_HALF + 2.0, "blend": 8.0},
         {"id": f"quarry jump {J['id']} run-out", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 3.0, "blend": 10.0},
     ]
     clear = [{"id": f"quarry jump {J['id']}", "points": flat([P(0.0), P(s_end + RUNOUT)]), "half": 16.0}]

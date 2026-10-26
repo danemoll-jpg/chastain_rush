@@ -28,15 +28,19 @@ namespace ChastainRush
             float wait = 0f; while (q.State != QuarryJumps.Phase.Run && wait < 8f) { yield return new WaitForFixedUpdate(); wait += Time.fixedDeltaTime; }
             if (q.State != QuarryJumps.Phase.Run) { rows.Add($"  {label}: NO START (the event: {q.State})"); yield break; }
             var line = new List<Vector3>(); for (float s = 3f; s <= j.runout_to; s += 3f) { var p = QuarryJumps.At(j, s); p.y = GroundQuery.Height(p.x, p.z); line.Add(p); }
-            var run = new Run(); bool pic = false;
+            var run = new Run(); bool pic = false; var trace = new List<string>(); float nextS = 0f;
+            var tch = car.gameObject.GetComponent<Touches>() ?? car.gameObject.AddComponent<Touches>(); tch.seen.Clear(); tch.on = true;
             var drive = StartCoroutine(DriveLine(line, cap, 60f, run, null, r => q.State == QuarryJumps.Phase.Result, 6f, false));
             while (q.State == QuarryJumps.Phase.Run || q.State == QuarryJumps.Phase.Air)
             {
                 yield return new WaitForFixedUpdate();
+                { var pp = car.Body.position; float ss = Vector3.Dot(new Vector3(pp.x - j.origin[0], 0f, pp.z - j.origin[1]), QuarryJumps.Forward(j));
+                  if (ss >= nextS && q.State == QuarryJumps.Phase.Run) { nextS = ss + 40f; trace.Add($"{ss:0}:{car.Body.linearVelocity.magnitude:0.0}{(car.WaterImmersion > .01f ? "w" : "")}{(car.GroundedWheels == 0 ? "a" : "")}"); } }
                 if (midAir != null && !pic && q.State == QuarryJumps.Phase.Air && Time.time > 0f && car.Body.linearVelocity.y < 0f) { pic = true; yield return midAir(); }
                 if (run.time > 59f) break;
             }
             yield return drive;
+            tch.on = false; rows.Add($"      run-up (station:speed): {string.Join(" ", trace)}; last touched {(tch.seen.Count > 0 ? string.Join("; ", tch.seen.Skip(Math.Max(0, tch.seen.Count - 3))) : "nothing")}");
             yield return new WaitForSecondsRealtime(1.5f);   // the landing settles (a rough one may still wipe out)
             rows.Add($"  {label,-32} lip {q.LastLipSpeed:0.0} m/s ({DisplayUnits.Mph(q.LastLipSpeed):0} mph; window {DisplayUnits.Mph(j.window.lo):0}-{DisplayUnits.Mph(j.window.hi):0}): {q.LastLanding,-6} {q.LastDistance:0} m, {q.LastAir:0.0} s, +{q.LastHeight:0.0} m over the lip{(q.LastRank > 0 ? $", Top 10 #{q.LastRank}" : "")}");
         }

@@ -114,7 +114,14 @@ namespace ChastainRush
             }
         }
 
-        bool BodyDown(Vector3 p) => Physics.Raycast(p + Vector3.up * .5f, Vector3.down, 1.6f, ~0, QueryTriggerInteraction.Ignore);
+        // the body down on something (not the vehicle's own colliders): a landing on its side or roof, which turns no wheel
+        static readonly RaycastHit[] downHits = new RaycastHit[8];
+        bool BodyDown(Vector3 p)
+        {
+            int n = Physics.RaycastNonAlloc(p + Vector3.up * .5f, Vector3.down, downHits, 1.6f, ~0, QueryTriggerInteraction.Ignore);
+            for (int i = 0; i < n; i++) if (downHits[i].rigidbody != car.Body) return true;
+            return false;
+        }
 
         void Land(Jump J, Vector3 p, float air, bool water)
         {
