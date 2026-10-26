@@ -70,6 +70,13 @@ if os.path.isfile(sr):
     rp = json.load(open(sr, encoding="utf-8"))["ramp"]; dests = [d for d in dests if d["id"] != "kennesaw-summit-ramp"]
     dests.append({"id": "kennesaw-summit-ramp", "title": "Kennesaw Mountain: the big ramp", "x": rp["start"][0], "z": rp["start"][1], "y": 0.0, "fixed": False, "yaw": rp["start_yaw"]})
     print(f"the big ramp's run-up: ({rp['start'][0]:.1f}, {rp['start'][1]:.1f}) facing {rp['start_yaw']:.0f}")
+# Round 72 (A): the Viking Quarry jumps' start gantries (Tools/mapgen/make_quarry_jumps.py), facing the kicker (stop there: the countdown)
+qj = os.path.join(ROOT, "Data", "tracks", "quarry_jumps.json")
+if os.path.isfile(qj):
+    for j in json.load(open(qj, encoding="utf-8"))["jumps"]:
+        did = "quarry-jump-" + j["id"].lower(); dests = [d for d in dests if d["id"] != did]
+        dests.append({"id": did, "title": "Viking Quarry: " + j["name"], "x": j["start"][0], "z": j["start"][1], "y": 0.0, "fixed": False, "yaw": round(j["start_yaw"] % 360, 1)})
+        print(f"quarry jump {j['id']} start: ({j['start'][0]:.1f}, {j['start'][1]:.1f}) facing {j['start_yaw'] % 360:.0f}")
 data["destinations"] = dests
 json.dump(data, open(EGGS, "w", encoding="utf-8"), indent=1)
 print(f"{len(dests)} destinations -> {EGGS}")

@@ -1544,6 +1544,33 @@
    "y": 0.0,
    "fixed": false,
    "yaw": 272.3
+  },
+  {
+   "id": "quarry-jump-j1",
+   "title": "Viking Quarry: The Corner",
+   "x": -1872.2,
+   "z": -1948.32,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 20.0
+  },
+  {
+   "id": "quarry-jump-j2",
+   "title": "Viking Quarry: The Long One",
+   "x": -2000.0,
+   "z": -2023.0,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 0.0
+  },
+  {
+   "id": "quarry-jump-j3",
+   "title": "Viking Quarry: The Big One",
+   "x": -2571.49,
+   "z": -1980.13,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 15.0
   }
  ]
 }

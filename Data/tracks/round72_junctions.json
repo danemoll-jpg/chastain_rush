@@ -1,0 +1,11 @@
+{
+ "note": "Round 72 (B3): the junctions Round 64's jolt table (Data/screenshots/round64/round64_jolt_table.txt, 'after') still throws a car at 28 m/s (air over 0.15 s): the ground blurred there after the levelling (MapBuilder.Round72.cs, Round 55's blur). Map meters.",
+ "smooth_spots": [
+  {"id": "McCollum Parkway at Cobb Parkway", "at": [-4039.0, -2078.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "Barrett Parkway at the I-575 ramp", "at": [574.0, -1678.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "Cobb Parkway North at North Marietta Parkway", "at": [3752.0, -7600.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "George Busbee Parkway at Townpark Drive", "at": [-746.0, 1390.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "Chastain Road at Busbee Drive", "at": [-766.0, 511.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "Frey Road at its link", "at": [-1389.0, 1411.0], "r": 16.0, "fade": 8.0, "sigma": 3.0}
+ ]
+}

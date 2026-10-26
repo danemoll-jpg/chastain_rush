@@ -135,6 +135,7 @@ namespace ChastainRush
             SmoothRampSeams(map, terrain);       // Round 31 (BUG-004): where the northbound ramps meet Chastain Road (MapBuilder.Round31.cs)
             BuildClock.Lap("SmoothRampSeams");
             R62LevelMains(map, terrain);         // Round 62 (C): every main road of the map extension (and the core's near its seams) levelled across its width, blurred along (MapBuilder.Round62.cs; Round 61's five roads among them)
+            R72SmoothJunctions(terrain);         // Round 72 (B3): the junctions the levelling left throwing a car, blurred (MapBuilder.Round72.cs)
             BuildClock.Lap("R62LevelMains");
             var shop = c.shop = ShoppingCenter.Find(map);   // Round 17 (Part B): the shopping center (MapBuilder.ShoppingCenter.cs)
             GradeLot(map, terrain, shop);          // its parking lot graded before anything samples the ground

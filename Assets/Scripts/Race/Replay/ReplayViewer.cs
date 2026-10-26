@@ -308,11 +308,18 @@ namespace ChastainRush
         // TV cameras: along the focused racer's own way (the player's at first), every 70 m, 9 m off to one side (the other if blocked) and 3.5 m up,
         // where they can see the way; where nothing outside can (under a roof, in the pipes) one on the way itself, 14 m back along it
         float tvReach = 75f;   // Round 71: how far a TV camera follows its racer (a plane's farther)
+        public static List<Vector3> ExtraTv;   // Round 72: a quarry jump's own TV cameras (on the rims, by the kicker, at the landing deck)
         void BuildTv()
         {
             tv.Clear();
             var path = Data.racers[Mathf.Clamp(Data.focus, 0, Data.racers.Count - 1)].track.frames.Select(f => f.p).ToList();
             if (path.Count < 2) return;
+            if (ExtraTv != null && ExtraTv.Count > 0)
+            {
+                tvReach = 400f; var cumJ = new float[path.Count]; for (int i = 1; i < path.Count; i++) cumJ[i] = cumJ[i - 1] + (path[i] - path[i - 1]).magnitude;
+                foreach (var at in ExtraTv) { int best = 0; float bd = float.MaxValue; for (int i = 0; i < path.Count; i++) { float dd = (path[i] - at).sqrMagnitude; if (dd < bd) { bd = dd; best = i; } } tv.Add(new Tv { at = at, s = cumJ[best] }); }
+                return;
+            }
             // Round 71 (the air race): for a plane, cameras in the air beside its way (every 160 m, 30 m off to a side, 6 m up, ahead of it), not on the ground
             var veh = VehicleProfile.Find(Data.racers[Mathf.Clamp(Data.focus, 0, Data.racers.Count - 1)].vehicle); tvReach = veh != null && veh.Flies ? 190f : 75f;
             if (veh != null && veh.Flies)

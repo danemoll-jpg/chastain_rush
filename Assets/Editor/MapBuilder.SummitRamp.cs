@@ -47,24 +47,23 @@ namespace ChastainRush
             Debug.Log($"[Round71] the air race: {f.clear_lines?.Length ?? 0} flight lanes cleared of trees");
         }
 
-        static readonly Color RampSteel = new Color(0.36f, 0.38f, 0.40f), RampDeck = new Color(0.30f, 0.31f, 0.32f), RampRed = new Color(0.62f, 0.14f, 0.10f), Gravel = new Color(0.56f, 0.52f, 0.46f);
-
-        static void BuildSummitRamp(TerrainGrid terrain, Materials mats, Transform root)
+        // Round 72: the summit ramp's steel deck as a builder of its own (the quarry jumps' kickers and landing decks too): the deck's driven top on its
+        // own collider (an "sc" surface; held: RampHold keeps a vehicle on it), its red edges, underside, kerb rails, two box girders and the
+        // trestle bents every 8 m down to the ground, along the line o + d * s, the deck at deck_y over deck_s. Returns the bents.
+        static int SteelRamp(TerrainGrid terrain, Materials mats, Transform go, string deckName, string steelName, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool held)
         {
-            var r = SummitRamp; if (r == null || r.deck_s == null || r.deck_s.Length < 2) return;
-            var go = new GameObject("The summit ramp (Round 70)").transform; go.SetParent(root, false);
-            var o = new Vector2(r.origin[0], r.origin[1]); var d = new Vector2(r.dir[0], r.dir[1]).normalized; var n = new Vector2(-d.y, d.x);
+            var n = new Vector2(-d.y, d.x);
             Vector3 W(float s, float lat, float y) { var q = o + d * s + n * lat; return new Vector3(q.x, y, q.y); }
             float Gnd(float s, float lat) { var q = o + d * s + n * lat; return Ground(terrain, q.x, q.y); }
-            int m = r.deck_s.Length; float h = r.half, thick = 0.5f;
+            int m = deck_s.Length; float h = half, thick = 0.5f;
             // ---- the deck: its driven top a collider of its own (a held ramp: RampHold keeps a vehicle on it and its speed up it; registered with
             // VehicleSurfaceContacts as an "sc" surface, so no seam turns a contact against the travel)
             var top = new MeshBuilder(); top.Tint = RampDeck;
-            for (int i = 0; i < m; i++) { top.Vertex(W(r.deck_s[i], -h, r.deck_y[i])); top.Vertex(W(r.deck_s[i], h, r.deck_y[i])); }
+            for (int i = 0; i < m; i++) { top.Vertex(W(deck_s[i], -h, deck_y[i])); top.Vertex(W(deck_s[i], h, deck_y[i])); }
             for (int i = 0; i + 1 < m; i++) { int a = 2 * i; top.Tri(a, a + 1, a + 2); top.Tri(a + 1, a + 3, a + 2); }   // facing up
-            var deck = top.ToObject("sc summit ramp deck", mats.House, go, false);
+            var deck = top.ToObject(deckName, mats.House, go, false);
             var mc = deck.AddComponent<MeshCollider>(); mc.sharedMesh = deck.GetComponent<MeshFilter>().sharedMesh; mc.sharedMaterial = RampMaterial();
-            deck.AddComponent<ShortcutSurface>().held = true;
+            deck.AddComponent<ShortcutSurface>().held = held;
             // ---- the steel: the deck's edges and underside, the lip's end plate, low edge rails (look only), the trestle bents every 8 m down to the ground
             var mb = new MeshBuilder();
             for (int i = 0; i + 1 < m; i++)
@@ -72,26 +71,26 @@ namespace ChastainRush
                 foreach (float side in new[] { -1f, 1f })
                 {
                     // the deck's edge face (red stripe) and its underside
-                    var a0 = W(r.deck_s[i], side * h, r.deck_y[i]); var a1 = W(r.deck_s[i + 1], side * h, r.deck_y[i + 1]);
+                    var a0 = W(deck_s[i], side * h, deck_y[i]); var a1 = W(deck_s[i + 1], side * h, deck_y[i + 1]);
                     mb.Tint = RampRed; int v0 = mb.Vertex(a0), v1 = mb.Vertex(a1), v2 = mb.Vertex(a1 - Vector3.up * thick), v3 = mb.Vertex(a0 - Vector3.up * thick);
                     mb.Tri(v0, v1, v2); mb.Tri(v0, v2, v3); mb.Tri(v0, v2, v1); mb.Tri(v0, v3, v2);   // both ways
                     // the rail: a low steel kerb on posts (look only: nothing to catch a wheel at speed)
                     if (i % 3 == 0) Beam(mb, a0, a0 + Vector3.up * 0.55f, 0.12f, 0.12f, RampSteel);
                     Beam(mb, a0 + Vector3.up * 0.5f, a1 + Vector3.up * 0.5f, 0.1f, 0.14f, RampSteel);
                 }
-                mb.Tint = RampSteel; var u0 = W(r.deck_s[i], -h, r.deck_y[i] - thick); var u1 = W(r.deck_s[i + 1], -h, r.deck_y[i + 1] - thick);
-                var u2 = W(r.deck_s[i + 1], h, r.deck_y[i + 1] - thick); var u3 = W(r.deck_s[i], h, r.deck_y[i] - thick);
+                mb.Tint = RampSteel; var u0 = W(deck_s[i], -h, deck_y[i] - thick); var u1 = W(deck_s[i + 1], -h, deck_y[i + 1] - thick);
+                var u2 = W(deck_s[i + 1], h, deck_y[i + 1] - thick); var u3 = W(deck_s[i], h, deck_y[i] - thick);
                 int b0 = mb.Vertex(u0), b1 = mb.Vertex(u1), b2 = mb.Vertex(u2), b3 = mb.Vertex(u3); mb.Tri(b0, b1, b2); mb.Tri(b0, b2, b3);   // facing down
             }
-            { int e = m - 1; var a = W(r.deck_s[e], -h, r.deck_y[e]); var b = W(r.deck_s[e], h, r.deck_y[e]); mb.Tint = RampRed;
+            { int e = m - 1; var a = W(deck_s[e], -h, deck_y[e]); var b = W(deck_s[e], h, deck_y[e]); mb.Tint = RampRed;
               int p0 = mb.Vertex(a), p1 = mb.Vertex(b), p2 = mb.Vertex(b - Vector3.up * 1.2f), p3 = mb.Vertex(a - Vector3.up * 1.2f); mb.Tri(p0, p1, p2); mb.Tri(p0, p2, p3); mb.Tri(p0, p2, p1); mb.Tri(p0, p3, p2); }
             // two box girders under the deck, the length of it
-            for (int i = 0; i + 1 < m; i++) foreach (float lat in new[] { -h + 0.9f, h - 0.9f }) Beam(mb, W(r.deck_s[i], lat, r.deck_y[i] - thick - 0.4f), W(r.deck_s[i + 1], lat, r.deck_y[i + 1] - thick - 0.4f), 0.5f, 0.8f, RampSteel);
+            for (int i = 0; i + 1 < m; i++) foreach (float lat in new[] { -h + 0.9f, h - 0.9f }) Beam(mb, W(deck_s[i], lat, deck_y[i] - thick - 0.4f), W(deck_s[i + 1], lat, deck_y[i + 1] - thick - 0.4f), 0.5f, 0.8f, RampSteel);
             int bents = 0;
             float prevTop = float.NaN;
-            for (float s = r.deck_s[0] + 6f; s <= r.deck_s[m - 1] - 0.5f; s += 8f)
+            for (float s = deck_s[0] + 6f; s <= deck_s[m - 1] - 0.5f; s += 8f)
             {
-                int k = Mathf.Clamp(Mathf.RoundToInt(s - r.deck_s[0]), 0, m - 1); float ty = r.deck_y[k] - thick - 0.8f;
+                int k = Mathf.Clamp(Mathf.RoundToInt(s - deck_s[0]), 0, m - 1); float ty = deck_y[k] - thick - 0.8f;
                 float gl = Gnd(s, -h + 0.9f), gr = Gnd(s, h - 0.9f); if (ty - Mathf.Max(gl, gr) < 1.0f) continue;
                 foreach (float lat in new[] { -h + 0.9f, h - 0.9f })
                 {
@@ -109,7 +108,21 @@ namespace ChastainRush
                 if (!float.IsNaN(prevTop)) foreach (float lat in new[] { -h + 0.9f, h - 0.9f }) Beam(mb, W(s - 8f, lat, prevTop), W(s, lat, Mathf.Max(lat < 0 ? gl : gr, ty - 12f)), 0.22f, 0.22f, RampSteel);
                 prevTop = ty; bents++;
             }
-            var steel = mb.ToObject("Summit ramp steel", mats.House, go, false); steel.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            var steel = mb.ToObject(steelName, mats.House, go, false); steel.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            return bents;
+        }
+
+        static readonly Color RampSteel = new Color(0.36f, 0.38f, 0.40f), RampDeck = new Color(0.30f, 0.31f, 0.32f), RampRed = new Color(0.62f, 0.14f, 0.10f), Gravel = new Color(0.56f, 0.52f, 0.46f);
+
+        static void BuildSummitRamp(TerrainGrid terrain, Materials mats, Transform root)
+        {
+            var r = SummitRamp; if (r == null || r.deck_s == null || r.deck_s.Length < 2) return;
+            var go = new GameObject("The summit ramp (Round 70)").transform; go.SetParent(root, false);
+            var o = new Vector2(r.origin[0], r.origin[1]); var d = new Vector2(r.dir[0], r.dir[1]).normalized; var n = new Vector2(-d.y, d.x);
+            Vector3 W(float s, float lat, float y) { var q = o + d * s + n * lat; return new Vector3(q.x, y, q.y); }
+            float Gnd(float s, float lat) { var q = o + d * s + n * lat; return Ground(terrain, q.x, q.y); }
+            int bents = SteelRamp(terrain, mats, go, "sc summit ramp deck", "Summit ramp steel", o, d, r.deck_s, r.deck_y, r.half, true);
+            int m = r.deck_s.Length;
             // ---- the gravel arrester bed (a draped gravel ribbon, its drag: ShrubBeds) and the race-time barriers across the pad's mouth
             var arr = r.arrester != null ? ToPoints(r.arrester) : new List<Vector2>();
             if (arr.Count >= 2)

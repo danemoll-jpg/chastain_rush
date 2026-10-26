@@ -148,7 +148,12 @@ namespace ChastainRush
                 // a road that runs along the edge (its closure would stand on the edge line): none; the edge's push-back stops a car there (MapEdge)
                 if (Mathf.Min(Mathf.Min(c.at.x - ext.xMin, ext.xMax - c.at.x), Mathf.Min(c.at.y - ext.yMin, ext.yMax - c.at.y)) < 12f) { hugging++; continue; }
                 var d3 = new Vector3(c.dir.x, 0f, c.dir.y); var across = new Vector3(c.dir.y, 0f, -c.dir.x);   // across: to the right looking out
-                float half = c.half + (c.highway ? 4.5f : 3.5f); var mid = new Vector3(c.at.x, Ground(terrain, c.at.x, c.at.y), c.at.y);   // past the shoulders: no way round the ends
+                float half = c.half + (c.highway ? 4.5f : 3.5f);
+                // Round 72 (B2): Canton Road's closures on the edge's bends (and the service road beside it): a car on the bend got onto or round the
+                // barriers' end (Round 66's check). There: 7 m more barrier past each shoulder and solid to 4 m, nothing to climb or go round
+                bool canton = (c.name ?? "").Contains("Canton Road") || edgeClosures.Any(o => o != c && (o.name ?? "").Contains("Canton Road") && (o.at - c.at).magnitude < 45f);
+                if (canton) half += 7f;
+                float solidH = canton ? 4f : 2.6f; var mid = new Vector3(c.at.x, Ground(terrain, c.at.x, c.at.y), c.at.y);   // past the shoulders: no way round the ends
                 if (c.highway)
                 {
                     // jersey barriers, 3 m each, end to end across the carriageway and its shoulders
@@ -159,7 +164,7 @@ namespace ChastainRush
                         a2.y = Ground(terrain, a2.x, a2.z); b2.y = Ground(terrain, b2.x, b2.z);
                         Beam(mb, a2 + Vector3.up * .16f, b2 + Vector3.up * .16f, .6f, .36f, JerseyGrey);   // the flared foot
                         Beam(mb, a2 + Vector3.up * .55f, b2 + Vector3.up * .55f, .26f, .52f, JerseyGrey);   // the upright
-                        Solid(colliders, (a2 + b2) * .5f + Vector3.up * 1.2f, b2 - a2, 3f, 2.6f, .62f);
+                        Solid(colliders, (a2 + b2) * .5f + Vector3.up * (solidH * .5f - .1f), b2 - a2, 3f, solidH, .62f);
                     }
                     // cones before them, a row across
                     for (float t = -half + .8f; t <= half - .8f; t += 2.2f) Cone(mb, terrain, mid - d3 * 6f + across * t);
@@ -182,7 +187,7 @@ namespace ChastainRush
                             var top = cpos + across * s + Vector3.up * 1.12f;
                             Beam(mb, cpos + across * s - d3 * .35f, top, .05f, .05f, BarrierWhite, across); Beam(mb, cpos + across * s + d3 * .35f, top, .05f, .05f, BarrierWhite, across);
                         }
-                        Solid(colliders, cpos + Vector3.up * 1.2f, across, 2.45f, 2.6f, .8f);
+                        Solid(colliders, cpos + Vector3.up * (solidH * .5f - .1f), across, 2.45f, solidH, .8f);
                     }
                     Board(mb, signs, terrain, mid + d3 * .2f, d3, 1.2f, .75f, 1.25f, closed);   // on the middle barricade
                     // DETOUR on a post at the right, 12 m before
