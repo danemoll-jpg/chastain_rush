@@ -454,6 +454,12 @@ for k in gk:
     h = BENCH_HALF
     if legno[k] == 0 and kind[k] == "cut": h = HAIRPIN_HALF
     if any(j["sL"] + j["xa"] - 30 <= C[k] <= j["sL"] + j["x_end"] for j in jumps): h = LAND_HALF
+    # Round 70 (F2, Dan's BUG-004 at (-950, -5726): "the road shouldn't be doing this. It should be flat while still keeping this jump"): J1's run-up
+    # and kicker run beside the drive's last stretch to the summit lot, the drive's center 2 to 11 m off the line, so the drive lay half on the
+    # bench and half down its bank and rolled; the bench there is as wide as the drive's far edge and 2 m more (the line's profile unchanged)
+    if kind[k] == "cut" and legno[k] == 1 and C[k] <= jumps[0]["sL"] + 2.0:
+        dd = nearest_s(road, lap[k])[0]
+        if dd < 20.0: h = max(h, dd + 4.0 + 2.0)
     halves.append(h); blends.append(round(max(BENCH_BLEND, SIDE_SLOPE * abs(prof[k] - tg[k])), 2))
 # a per-point half width eased along the line (no step in the bench's edge)
 halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends = [round(b, 2) for b in gsm_list(blends, 4.0)]
