@@ -59,14 +59,14 @@ namespace ChastainRush
         static float[] Cum(List<Vector3> l) { var c = new float[l.Count]; for (int i = 1; i < l.Count; i++) c[i] = c[i - 1] + Flat(l[i] - l[i - 1]).magnitude; return c; }
 
         // ---------------------------------------------------------------- the human-like driver
-        public sealed class HumanRun { public float time, maxAir, airNow, topSpeed; public int resets, stuck; public bool reachedEnd; public string note = ""; public List<string> pics = new List<string>(); public float sEnd; }
+        public sealed class HumanRun { public float time, maxAir, airNow, topSpeed; public int resets, stuck; public bool reachedEnd; public string note = ""; public List<string> pics = new List<string>(); public float sEnd; public StringBuilder trace = new StringBuilder(); }
         // drives 'line' from where the vehicle is to its end (or until 'stop'), at up to 'cap' m/s (a human: a little late on the stick, a wandering
         // line, late on the brakes); 'speedAt' (optional) the speed it holds at a station (by eye: the HUD's speed, a lag of 0.35 s); 'pics' stations
         // where it takes a picture (name, station); 'airPic' a picture 1.5 s into each spell in the air
         IEnumerator HumanDrive(List<Vector3> line, float cap, float timeout, HumanRun run, Func<bool> stop = null, Func<float, float> speedAt = null,
                                List<(string name, float s)> pics = null, string airPic = null, bool pressYWhenStuck = true)
         {
-            R73Pad(); var cum = Cum(line); float s = 0f, steerCmd = 0f, t = 0f, slowFor = 0f, liftUntil = -1f, airFor = 0f; int pic = 0; bool airShot = false;
+            R73Pad(); var cum = Cum(line); float s = 0f, steerCmd = 0f, t = 0f, slowFor = 0f, liftUntil = -1f, airFor = 0f, nextTrace = 0f; int pic = 0; bool airShot = false;
             float wobbleSeed = (float)r73rng.NextDouble() * 100f; var lagged = new Queue<(float t, float steer)>();
             float near = 0f; { var p0 = car.Body.position; ProjectNear(line, cum, p0, 0f, out _); near = ProjectNear(line, cum, p0, 0f, out _); s = near; }
             while (t < timeout)
@@ -74,6 +74,7 @@ namespace ChastainRush
                 yield return new WaitForFixedUpdate(); float dt = Time.fixedDeltaTime; t += dt;
                 var p = car.Body.position; s = ProjectNear(line, cum, p, s, out float dev);
                 float v = car.Body.linearVelocity.magnitude; run.topSpeed = Mathf.Max(run.topSpeed, v);
+                if (s >= nextTrace) { nextTrace = s + 25f; run.trace.Append($" {s:0}:{v:0.0}{(car.GroundedWheels == 0 ? "a" : "")}{(Mathf.Abs(dev) > 3f ? $"d{dev:0}" : "")}"); }
                 if (s >= cum[cum.Length - 1] - 3f) { run.reachedEnd = true; break; }
                 if (stop != null && stop()) break;
                 // in the air: hands steady, throttle held
@@ -249,6 +250,7 @@ namespace ChastainRush
                 StopCoroutine(mon);
                 if (first) { yield return Capture("73_leap_after_landing"); }
                 var end = car.Body.position;
+                report.AppendLine($"      run-up (station:speed):{run.trace}");
                 report.AppendLine($"  {Nm(vid),-15} {tag}: off the lip at {lipV:0.0} m/s, {airT:0.0} s in the air, came down {landS:0} m past the lip at ({landAt.x:0}, {landAt.z:0}) upright {upAtLand:0.00}; stopped at ({end.x:0}, {end.z:0}) upright {car.transform.up.y:0.00}; resets {run.resets}{run.note}");
                 if (thr > .9f) Check($"leap {Nm(vid)} flat out: a long flight (7 s or more), lands upright", crossed && airT >= 7f && upAtLand > .6f && car.transform.up.y > .6f, $"{airT:0.0} s, {landS:0} m");
                 // a reset after the landing (Y): goes somewhere clear, upright
@@ -316,6 +318,7 @@ namespace ChastainRush
                 var pics = pic ? new List<(string, float)> { ("73_qJ2_runup_at_speed", lipS * .6f), ("73_qJ2_at_the_lip", lipS - 12f) } : null;
                 yield return HumanDrive(line, 99f, 60f, run, () => q.State == QuarryJumps.Phase.Result, hold, pics, pic ? "73_qJ2_midair" : null);
                 yield return new WaitForSecondsRealtime(2f); if (pic) yield return Capture("73_qJ2_landing");
+                report.AppendLine($"      run-up (station:speed, a = in the air, d = off the line):{run.trace}");
                 report.AppendLine($"  {j.id} {j.name}, {Nm(vid)} {(how == "window" ? $"held by eye at {DisplayUnits.Mph(mid):0} mph" : "flat out")}: lip {q.LastLipSpeed:0.0} m/s ({DisplayUnits.Mph(q.LastLipSpeed):0} mph, window {DisplayUnits.Mph(j.window.lo):0}-{DisplayUnits.Mph(j.window.hi):0}): {q.LastLanding} {q.LastDistance:0} m, {q.LastAir:0.0} s{run.note}");
                 if (how == "window") Check($"qjump {j.id} {Nm(vid)} at the window: lands clean", q.LastLanding == "CLEAN", q.LastLanding);
                 yield return new WaitForSecondsRealtime(4f);
