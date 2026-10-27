@@ -173,7 +173,7 @@ face scan compared offset lines by index (they drift apart round bends). Now the
 heights (`legs`); the bench, its heights and the jumps are unchanged (route file unchanged, the grade's `y` unchanged). Pictures `76_C_face*_before/after`: the
 descent's banks are wider and rounder. A grid scan of the built ground (`bank_faces.py`) still finds faces where a bank is held off Kennesaw Mountain Drive, the worst
 13 m beside the summit leap's way back (`76_C_left_cut_by_the_drive.png`): fixing those means regrading the drive's shoulder: Dan to decide.
-D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use DISK.
+D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use (these folders) about 41 GB -> 27.9 GB: Builds 10.8 -> 5.7 (ChastainRushDev gone), local 6.1 -> 0.4, Library 10.8 -> 8.4 (BuildHistory), the rest kept (Assets/Generated 9.2, raw 2.3, .git 1.4).
 For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square"); Glover Park, the storefronts, the theater, the depot; the frame rate there; the
 Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
 that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
