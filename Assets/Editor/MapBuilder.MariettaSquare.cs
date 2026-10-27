@@ -134,8 +134,13 @@ namespace ChastainRush
                 // the steps up on the side toward the park's middle
                 var sd = (c - gc).normalized; var sf = MakeFrame(new Vector3(gc.x + sd.x * r, lo, gc.y + sd.y * r), sd, 1f);
                 for (int s = 0; s < 4; s++) BoxF(props, sf, -1.2f, 1.2f, lo - lo - 0.3f, (floor - lo) * (4 - s) / 4f, s * 0.35f - 0.1f, s * 0.35f + 0.35f, MariettaStone);
-                var floorCol = new GameObject("Bandstand floor"); floorCol.transform.SetParent(root, false); floorCol.transform.position = new Vector3(gc.x, (lo + floor) / 2f - 0.15f, gc.y);
-                floorCol.AddComponent<CapsuleCollider>().radius = r * 0.92f; floorCol.GetComponent<CapsuleCollider>().height = floor - lo + 0.3f;
+                // its floor: two flat boxes crossed at 45 degrees (an octagon); a capsule as wide as it is tall is a ball that threw cars off
+                for (int q = 0; q < 2; q++)
+                {
+                    var floorCol = new GameObject("Bandstand floor"); floorCol.transform.SetParent(root, false);
+                    floorCol.transform.SetPositionAndRotation(new Vector3(gc.x, (lo - 0.3f + floor) / 2f, gc.y), Quaternion.Euler(0f, q * 45f + 22.5f, 0f));
+                    floorCol.AddComponent<BoxCollider>().size = new Vector3(r * 1.84f * Mathf.Cos(Mathf.PI / 8f), floor - lo + 0.3f, r * 1.84f * Mathf.Cos(Mathf.PI / 8f));
+                }
                 log.Append($"bandstand {r * 2f:0.0} m across; ");
             }
 
@@ -361,7 +366,6 @@ namespace ChastainRush
                 var qa = f.P(-half, colH + 1.3f, -0.1f); var qb = f.P(half, colH + 1.3f, -0.1f); var qt = f.P(0f, colH + 1.3f + half * 0.28f, -0.1f);
                 bodies.Tint = new Color(0.40f, 0.40f, 0.42f); Face(bodies, pa, qa, qt, pt, Vector3.Cross(pt - pa, qa - pa).normalized); Face(bodies, pb, pt, qt, qb, Vector3.Cross(qb - pb, pt - pb).normalized);
                 FrontQuad(bodies, f, -1.3f, 1.3f, 0.6f, 3.6f, 0.05f, new Color(0.25f, 0.18f, 0.12f));
-                SignOn(f, 0f, colH + 0.65f, Mathf.Min(half * 1.2f, 8f), SignMuseum, depth + 0.45f);
                 log.Append($"museum {cols} columns; ");
             }
             // the depot: one story of brick under a wide hip roof on brackets, its name on the trackside, a platform along the tracks
@@ -401,7 +405,7 @@ namespace ChastainRush
             benches.ToObjects("Marietta benches", mats.House, root, 0.4f, BreakSounds.Kind.Wood);
             lamps.ToObjects("Marietta lamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             tables.ToObjects("Marietta cafe tables", mats.House, root, 0.4f, BreakSounds.Kind.Iron);
-            if (signMat != null) signs.ToObjects(root, signMat);
+            if (signMat != null) signs.ToObjects(root, signMat, "MariettaSigns");
             Debug.Log($"[Round76] Marietta Square: {log}{nb} benches, {np} planters, {nl} lamp posts, {nw} brick walks, {nt} café tables, {ncw} crosswalks, {npk} parking marks, " +
                       $"railroad {railLen:0} m ({nties} ties), {signs.Count} signs");
         }

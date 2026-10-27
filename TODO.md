@@ -150,6 +150,34 @@ Check: item 0; numbers before / after (build time, memory, frame rate in the old
 Chastain Glen to the square along the roads; pictures of the square from the park, each side of the square, the depot and the market.
 For Dan to check: drive and fly to Marietta Square; Glover Park and the storefronts; frame rate; the Kennesaw slopes; the disk space freed.
 
+**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 19:38), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round76/`.
+0 DONE: every item below was looked at in the exe's pictures from the player's camera.
+A DONE. Only one piece: tile columns 15 to 18, two rows below the old south edge (x 1327.7 to 3983, z -9590 to -8311.3; 33.9427 to 33.9537 N, -84.5546 to
+-84.5256 W): 8 tiles, 3.4 km2, 1092 road pieces, 1740 buildings, 8467 trees (`mapgen_piece.py`; its ground is its own file, nothing that existed changed: map.json's lists
+are the old ones as a prefix, checked). The map is no longer a rectangle: the edge's walls and push-back, the road closures (262 -> 283), the helicopter / plane boundary,
+the scenery ring and the map picture follow the land's outline (`MapLand`). Drives at the edge in the exe: stopped 1.3 m inside the piece's west edge and 45 m inside its
+south edge; across the old edge into the piece it kept going (`76_A_edge_drives.txt`). Nothing traded away (no woods trimmed, the scenery kept). Numbers (1920 x 1080
+window, not measured at 3840 x 2160; `round76_numbers.txt`): Build Map 1088 s (Round 75: 1236 s); world up 28.6 s; Unity reserved 5704 MB (Round 61: 5182); 312 tiles, 927,728
+trees; fps average / slowest 1 %: old neighborhood 150 / 64 (Round 61: 163 / 71), Chastain Glen 160 / 114, Town Center 191 / 135 (191 / 97), Marietta Square 175 / 124.
+The old exe was not measured this round (it was replaced by the first build), so Round 61's numbers are the before.
+B DONE. Glover Park (brick walks, the fountain, the bandstand on OSM's gazebo in the park; its two other OSM structures left out for an open lawn), 16 benches, 16 lamp
+posts, 4 planters and 25 café tables that break, 42 old storefronts as two- and three-story brick shops with awnings, upper windows, a cornice and made-up names, the
+theater's marquee (THE PEACHTREE PALACE), the food hall, the museum's columned portico, the depot and its platform, 2.5 km of railroad on ties, crosswalks and parking
+marks, brick sidewalks; downtown's county buildings as offices (they had the fire-station look); the piece's houses as three craftsman neighborhoods; fast travel
+"Marietta Square". Pictures `76_B_*` (from the park, each side, the fountain, the depot, the market, the museum): brick storefronts with awnings and names, the
+bandstand and fountain in the park, benches, lamps, people. Drive Chastain Glen -> the square along the roads: 10,918 m, through in 451 s, never under the ground.
+Open: two dark boards in front of the museum seen from Anderson Street (1795, -8592, heading 167; `76_B_museum.png`), not from Marietta's code (they stayed when its
+sign was taken out): for Dan to check. Kennesaw lap times not measured (the route file and the bench's heights are unchanged).
+C PARTLY (tuning limit, two tries). Round 75's scan was wrong twice over: its "other leg" test counted the same leg 41 m on (every bank stopped about 20 m out), and its
+face scan compared offset lines by index (they drift apart round bends). Now the banks reach their full width and, between two real legs, the ground takes both legs'
+heights (`legs`); the bench, its heights and the jumps are unchanged (route file unchanged, the grade's `y` unchanged). Pictures `76_C_face*_before/after`: the
+descent's banks are wider and rounder. A grid scan of the built ground (`bank_faces.py`) still finds faces where a bank is held off Kennesaw Mountain Drive, the worst
+13 m beside the summit leap's way back (`76_C_left_cut_by_the_drive.png`): fixing those means regrading the drive's shoulder: Dan to decide.
+D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use DISK.
+For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square"); Glover Park, the storefronts, the theater, the depot; the frame rate there; the
+Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
+that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes

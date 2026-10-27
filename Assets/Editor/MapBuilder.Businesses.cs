@@ -310,11 +310,11 @@ namespace ChastainRush
                 cell.tri.AddRange(new[] { i0, i0 + 3, i0 + 2, i0, i0 + 2, i0 + 1 });
                 Count++;
             }
-            public void ToObjects(Transform parent, Material mat)
+            public void ToObjects(Transform parent, Material mat, string name = "BusinessSigns")   // Round 76: a name of its own per batch (its meshes are saved by name)
             {
                 foreach (var kv in cells)
                 {
-                    var go = new GameObject($"BusinessSigns_{kv.Key.x}_{kv.Key.y}"); go.transform.SetParent(parent, false);
+                    var go = new GameObject($"{name}_{kv.Key.x}_{kv.Key.y}"); go.transform.SetParent(parent, false);
                     GameObjectUtility.SetStaticEditorFlags(go, (StaticEditorFlags)int.MaxValue & ~StaticEditorFlags.ContributeGI);
                     var mesh = new Mesh { name = go.name };
                     mesh.SetVertices(kv.Value.v); mesh.SetUVs(0, kv.Value.uv); mesh.SetTriangles(kv.Value.tri, 0);
