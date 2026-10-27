@@ -6546,3 +6546,73 @@ For Dan to check: fly the plane (controls, take-off, landing, speed); the view f
 5 Low passes over Viking Quarry Lake and the highway corridors: nothing blocks flying under the bridges where the plane fits (its wing tips and nose test what they meet).
 Builds: one full Build Map (18:07, nothing in the world changed), then a code-only exe for the frame-rate check's fix (check code only) `Builds/ChastainRush/` 2026-10-25 18:27. Imported from Racer: nothing.
 For Dan: (a) the controls and how it flies (speed, turning, the landing); (b) the frame rate at speed over Town Center and the mountain; (c) the plane's look (`69_model.png`, `69_apron.png`).
+
+## Round 70 (moved from TODO.md on 2026-10-27 when Dan reviewed Round 73; word for word)
+
+## Previous delivery 3: Round 70
+**Not yet driven by Dan: he moved on to Round 71 on 2026-10-26 03:09 ("Don't have a chance to test").**
+**Round 70, A RAMP OFF THE MOUNTAIN; AI THAT RACES; the garage and the saved vehicle; park visitors; the mountain road (Dan, 2026-10-25
+23:20; reports BUG-001 to BUG-004 of session `2026-10-25_22-20-32-569_189622`, read by Claude, after the Round 68 / 69 build: Kennesaw Mountain on the Trail
+Four).** Rounds 68 and 69 are reviewed. Quick builds while working; ONE full Build Map at the end. Tuning limit. Short results.
+A. A RAMP THAT CLEARS THE MOUNTAIN (Free Roam; later maybe a point-to-point race). Dan: "I am not sure about a reverse of the kennesaw
+   mountain track. But I want a big ramp on the edge that drops all the way off the mountain. This maybe an eventual Point to point race,
+   but at the moment just give me a big ramp that will clear the mountain". Woodstock Rush's summit flight in spirit (Racer's CR101-104:
+   a 215 m straight run-up from rest, 36 to 43 m/s at the lip, a flight that cleared the whole mountain to a catch slope). Build one big
+   ramp at the summit's edge (a built ramp is fine here: steel or timber, a real thing a stunt crew would put up), with a long straight run-up
+   on the summit (the lot / the drive's top / a cleared line), aimed where the fall is longest and the landing open (Code picks the side and
+   says why), so a car flat out flies off the mountain and comes down far below at its foot on a long smooth catch slope (cleared, graded,
+   landing clean and keeping speed), with a way back to the roads. Target: the biggest flight in the game by far: 8 s or more in the air and
+   several hundred meters (report air, distance, height for the Drifter Twin, the Street Classic, a bike). A fast-travel spot at the run-up's
+   start; visible from the summit lot (no "JUMP" signs needed: the ramp is obvious). Not in the race's lap (Round 68's course unchanged).
+B. THE AI IS TOO SLOW. Dan: "The AI is really slow. I watched the replay and they dont seem to be getting hung up. I think their issues
+   maybe either they aren't going full throttle or possibly just follow the courses too exactly. For example there are times when you make
+   a path for the next checkpoint that doesn't follow the exact roads, I think the ai should be not so slavish to the actual roads".
+   (1) Measure first, from the replays' recordings (Round 57): per AI on Hard, throttle use (time at full throttle on straights), speed
+       against the player's on the same stretch (Dan's best laps / ghosts where saved), and where the time goes (corners, braking early,
+       following the road's curves where the course allows a straighter line).
+   (2) Racing lines: the AI drives a racing line between checkpoints (cut corners on grass, lots and open ground where the course allows
+       it, use the whole road, apexes), not the road's center line; full throttle wherever it can; braking as late as the vehicle allows.
+   (3) Hard races Dan close on every track (within a few seconds of his best laps); Normal and Easy scale down by pace, not by dumb driving.
+       Report a table per track: Dan's best lap, Hard's best and average, before / after.
+C. THE GARAGE IN RACE SETUP. Dan: "In race setup, I am not able to select a car in the garage some times". Find when it fails (which
+   vehicles, after what, pad or keys) and fix it. Dan, 23:27: "I started a race as soon as the game started, it ended and that was when I
+   tried to select a vehicle. I hadn't touched the plane at that point": so reproduce exactly that first: launch the game, start a race
+   straight from the title (no Free Roam first), finish it, go to race setup's garage from the finish screen / menu and try to change the
+   vehicle (pad and keys). Dan, 23:28: "I had to go into free roam to change vehicles so I know that worked. I couldn't do it in race
+   setup": Free Roam's vehicle change works; the fault is in race setup's garage (after a finished race). Then also after Free Roam; check every
+   vehicle selectable in race setup by pad and keys, after Free Roam in the helicopter and in the plane.
+D. THE SAVED VEHICLE. Dan: "why does my vehicle keep getting changed every time I start the game?" (`vehicle.json` holds "plane", Free
+   Roam's last pick; the log shows the game starting on the Trail Four). Remember Dan's choice: the last ground vehicle for races and the
+   last Free Roam vehicle separately, and start each with what he last chose (never a random or substitute one; a flying vehicle only where
+   it is allowed). Also: `vehicle.json`'s key "colour" -> "color" (American English rule), reading the old key once.
+E. PARK VISITORS. Dan: "I thought there were supposed to be joggers and walkers on the kennesaw mnt trail". Round 67 added up to 9 groups in
+   Free Roam and 2 in a race; Round 68 moved the race onto new lines. Make them clearly there: walkers, joggers, hikers with dogs on the
+   park's trails and at the summit and visitor center lots in Free Roam (plenty), and a few beside the race's lines in races (they get
+   out of the way). Check by pictures from the summit and the trails.
+F. THE MOUNTAIN ROAD.
+F1. BUG-002 (x -1097.14 z -6077.09, Kennesaw Mountain Drive): "why so many fire hydrants? You wouldn't have them on a mountian path at alll";
+   BUG-003 (x -1072.23 z -5825.67, the drive): "again". No hydrants on the mountain drive, the park's roads and trails, or any road through
+   woods / parkland with no buildings near: hydrants only where there are buildings along the street (all the map, by rule, not just here).
+F2. BUG-004 (x -949.83 z -5725.88 h 52, the drive near the summit, a jump on the course): "the road shouldn't be doing this. It should be
+   flat while still keeping this jump" (the picture: the road rolls steeply sideways over the crest). Keep the jump's lift but make the
+   road flat across its width there (no camber / roll); check the jump's flight is unchanged.
+F3. BUG-001 (x -872.73 z -5208.19 h 32, the start line on the drive): "why is this on the ground?" (the picture: the start line's checkered
+   banner / gantry sits low, its left end down in the ground on the slope). Stand the start gantry up properly over the road (posts on the
+   ground both sides, banner level and clear over the road); check every course's start / finish gantry the same way.
+Check: A's flight table; B's tables (before / after) and an AI race on Hard on three tracks; C every vehicle in race setup; D restart the
+game twice after Free Roam in the plane and after a race (the right vehicle each time); E pictures; F1 hydrant counts on the drive before /
+after; F2 the road's roll before / after; F3 pictures of each start gantry.
+For Dan to check: fly off the mountain; race the AI on Hard; the garage; restart the game; the park's visitors; the mountain road.
+
+**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round70/` (`round70_check_before.txt`, `_after.txt`, `_final.txt`, `round70_ai_*.txt`, `round70_vsave1-3.txt`, pictures `70_*.png`). Bug reports read: session `2026-10-25_22-20-32-569_189622`, BUG-001 to 004.
+A DONE. The summit ramp (`make_summit_ramp.py`, `MapBuilder.SummitRamp.cs`): the drive ring round the knob leaves no 200 m straight on top and the north-east run is J1, so the run-up is the drive's south-flank straight (258 m, about +9 %, fast travel "Kennesaw Mountain: the big ramp" at its start): straight on past the hairpin round the knob's west end, a steel ramp on trestles (79 m, 21 degrees, its lip 57 m over the falling face) out over the north-west face at 296 degrees, the line threading Greymont Circle's houses (none within 35 m of it for 960 m). Catch on the graded foot, a gravel arrester, a track on to Old Mountain Road NW. Flat out from rest (`70_ramp_*.png`): Drifter Twin 8.6 s / 341 m / 174 m up; Street Classic 8.4 s / 296 m / 154 m; Needle 600 8.9 s / 358 m / 180 m; all land upright and roll to a stop at Old Mountain Road (11 to 14 m/s). In races concrete barriers close its mouth. Visible from the drive and the run-up; from the summit lot itself the knob hides most of it (`70_ramp_from_summit_lot.png`).
+B PARTLY (tuning limit, two attempts). Measured first from Dan's replays (`Tools/race/replay_ai_table.py`) and a trace of what set the AI's speed (`ai_trace_why.py`): throttle use was like Dan's; the time went to phantom bends from the road's raw centerline, held slow zones (the trail's turns 11 to 14 m/s where Dan does 23 to 41), Kennesaw's 36 m/s hill cap, barriers and roadside things seen as obstacles, held jump zones that ignored bends. Now: a racing line through the lane and the open shoulder (whole road, apexes, grass and lots where clear), bends from it, zones within its bend limit, off-line things ignored, trail zones raised, Hard's pace .97 to 1.0, Easy / Normal by pace (88 / 95 %). Hard, flying laps, best / average (Dan's best): Kennesaw 157.2 / 166.4 -> 141.8 / 144.5 (113.2); Noonday Creek Trail 230.0 / 234.7 -> 200.9 / 212.9 (169.2); Chastain Glen 39.6 / 44.4 -> 39.1 / 43.9 (38.9); Chastain Lakes 88.8 / 104.0 -> 91.7 / 94.3 (72.1). Not within a few seconds except the Glen; part of the gap is the AI's vehicles (Street Classic, Longroof GT against Dan's Trail Four / Drifter Twin).
+C DONE. A finished race counted as "racing", so race setup's garage shut its vehicle row. After a race started at once and finished: all 11 racing vehicles chosen by pad and by keys; also after Free Roam in the helicopter and the plane.
+D DONE. `vehicle.json` keeps "roam" (Free Roam's last pick, the plane too) and "race" (the last ground vehicle chosen), "color" (the old "colour" / "vehicle" read once); forced swaps (a route's vehicles, police, stunts) are never saved. Three restarts from Dan's old file: the game starts in the plane, race setup puts on the Drifter Twin each time.
+E DONE. Kennesaw's park: up to 12 groups near a view in the park's hours (was the streets' 2 to 8), the summit and visitor center lots walked too, hikers with dogs, joggers, couples, families (no bikes); 5 at most in a race. Measured 12 to 15 groups at the summit lot, visitor center and trails, 5 in a race (`70_park_*.png`).
+F1 DONE. Hydrants only where a building stands within 60 m, and none on the park's own roads: Kennesaw Mountain's drive and park 47 -> 0 (7 left in the measuring box are on the neighborhood streets north-east of the visitor center).
+F2 DONE. J1's bench widened to the drive's far edge (the drive lay half on it): roll at BUG-004 37.6 -> 3.6 degrees; J1's line and flight unchanged (same profile).
+F3 DONE. The start / finish gantry upright, each post on its own ground (in closer where the bank climbs), the banner level over the higher side; every course pictured (`70_gantry_*.png`).
+Found, not changed: the Round 20 P1 check (`Round20Runner.Ramp.cs`) no longer matches P1 as rebuilt since (no vehicle leaves its lip in that script); nothing there was touched this round.
+Builds: 2 full Build Maps (the second for F1's park roads), 3 code-only exes. `Builds/ChastainRush/` 2026-10-26 02:20. Imported from Racer: nothing.
+For Dan: (a) the ramp: the run-up along the drive and off the hairpin; (b) the AI on Hard; (c) the ramp's look (57 m of steel trestle).
