@@ -61,6 +61,7 @@ RISE_BACK = 0.15           # past the landing deck's foot the cut's floor climbs
 RUNOUT = 110.0             # the catch past the landing deck's foot, graded smooth along the line
 PAD_HALF = 15.0            # the pad round the kicker: flat at its foot's height this far either side of the line
 PAVED = [a for a in M["aeroways"] if a.get("kind") in ("runway", "taxiway")]
+ROADS_NEAR = [pts(r["points"]) for r in M["roads"] if any(-3000 < x < -1300 and -2300 < z < -1000 for x, z in pts(r["points"]))] + [pts(a["points"]) for a in PAVED]
 
 
 def design(J):
@@ -176,8 +177,22 @@ def design(J):
     runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 1.5, "blend": 12.0, "open_ends": True}
     under = None
     stands, pads = [], []
-    for at, face_yaw in [(P(land_s[-1] + 20.0, LAND_HALF + 34.0), (J["heading"] + 90.0) % 360), (P(land_s[-1] + 20.0, -LAND_HALF - 34.0), (J["heading"] - 90.0) % 360),
-                         (P(s_lip - 60.0, 32.0), (J["heading"] + 90.0) % 360)]:
+    # Round 73 (C2): each stand at the first of its candidate spots clear of every road (24 m from a road's middle) and the jump's own corridor
+    def road_clear(q):
+        for rd in ROADS_NEAR:
+            for u, v in zip(rd, rd[1:]):
+                ab = (v[0] - u[0], v[1] - u[1]); L2 = ab[0] ** 2 + ab[1] ** 2
+                t = 0 if L2 < 1e-9 else max(0, min(1, ((q[0] - u[0]) * ab[0] + (q[1] - u[1]) * ab[1]) / L2))
+                if math.dist(q, (u[0] + ab[0] * t, u[1] + ab[1] * t)) < 24.0: return False
+        return True
+    spots = []
+    for side, sgn in ((1, 1.0), (2, -1.0)):
+        cands = [P(land_s[-1] + a, sgn * (LAND_HALF + l)) for a in (20.0, 0.0, -20.0, 45.0) for l in (34.0, 48.0, 62.0)]
+        spots.append((next((c for c in cands if road_clear(c)), None), (J["heading"] + 90.0 * sgn) % 360))
+    kc = [P(s_lip - a, l) for a in (60.0, 90.0, 120.0) for l in (32.0, -32.0, 45.0, -45.0)]
+    k = next((c for c in kc if road_clear(c)), None)
+    spots.append((k, (J["heading"] + 90.0 * (1 if k is None or ((k[0] - P(s_lip - 60.0)[0]) * nl[0] + (k[1] - P(s_lip - 60.0)[1]) * nl[1]) > 0 else -1)) % 360))
+    for at, face_yaw in [sp for sp in spots if sp[0] is not None]:
         gy = float(np.median([ground(at[0] + dx, at[1] + dz) for dx in (-12, 0, 12) for dz in (-6, 0, 6)]))
         stands.append(dict(at=[round(at[0], 2), round(at[1], 2)], yaw=round(face_yaw, 1), y=round(gy, 3)))
         pads.append({"id": f"quarry jump {J['id']} bleachers' pad {len(pads)}", "points": flat([at, (at[0] + 0.01, at[1])]), "y": [round(gy, 3)] * 2, "half": 16.0, "blend": 8.0})

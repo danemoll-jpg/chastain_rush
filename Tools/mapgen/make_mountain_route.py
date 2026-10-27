@@ -235,7 +235,7 @@ for i, k in enumerate(seg):
 # Round 73 A2: the departure leaves the drive like a side road: the line keeps the drive's height (at its nearest point) until the bench's edge is past
 # the drive's edge (SEP_M off its center), then falls at most DEP_GRADE (a fill bench over the sidehill where its ground is lower) until it meets
 # its own ground
-DEP_GRADE, SEP_M = 0.12, 12.0
+DEP_GRADE, SEP_M = 0.12, 20.0   # (Round 73: 12 m left a drop-off at the drive's edge (the check's Drifter Twin went over it): from 20 m off the bank is a gentle one)
 k_dep = min(ck, key=lambda k: math.dist(lap[k], P0)); y_sep = None; s_sep = None
 for k in ck:
     if C[k] > C[k_dep] + 300.0: break
@@ -503,6 +503,10 @@ halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends =
 # height in the map build (the drive is levelled before this grade), eased into the line's profile over the next 40 m
 on_road = [nearest_s(road, q)[0] < 9.0 for q in g_pts]
 g_first = next((i for i, o in enumerate(on_road) if not o), 0); g_last = next((i for i, o in enumerate(reversed(on_road)) if not o), 0)
+# Round 73 (A2, the check's Street Classic: 25 degrees of roll where the line leaves the drive): at the departure only the points on the drive itself
+# (2.5 m of its middle) take the built ground's height; past them the line's own profile (the drive's height at its nearest point) holds the bench
+# level with the drive (the built ground a few meters off it is the sidehill, which pulled the drive's edge down)
+g_first = next((i for i, q in enumerate(g_pts) if nearest_s(road, q)[0] >= 2.5), 0)
 # (never into a kicker: the drive's height only up to 45 m before the first kicker's foot, from 45 m after the last jump's catch)
 g_first = min(g_first, max(0, min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[0]["sL"] - jumps[0]["Lk"] - 45.0)))))
 g_last = g_last if not jumps[-1]["shaped"] else min(g_last, max(0, len(gk) - 1 - min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[-1]["sL"] + jumps[-1]["x_end"] + 45.0)))))
