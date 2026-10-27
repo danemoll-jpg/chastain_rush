@@ -301,8 +301,7 @@ namespace ChastainRush
             if (race.State != RaceController.Stage.Free) race.EndRace();
             yield return Clock(13f);
             var tries = new List<(QuarryJumps.Jump j, string vid, string how)>();
-            foreach (var j in q.Jumps) tries.Add((j, "drifter", "window"));
-            tries.Add((q.Jumps[0], "drifter", "flat"));
+            foreach (var j in q.Jumps) { tries.Add((j, "original", "window")); tries.Add((j, "drifter", "window")); }
             tries.Add((q.Jumps[1], "moto", "window"));
             tries.Add((q.Jumps[0], "original", "flat"));
             foreach (var (j, vid, how) in tries)
