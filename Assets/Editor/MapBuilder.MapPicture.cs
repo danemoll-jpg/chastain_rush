@@ -102,6 +102,8 @@ namespace ChastainRush
             var woods = JsonUtility.FromJson<WoodsFile>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
             if (woods.woods != null) foreach (var w in woods.woods) r.Fill(ToPoints(w.outline), Wood, 0.45f);
             if (trees != null) for (int i = 0; i < trees.count; i++) { var t = TreeField.Unpack(trees.data, i); r.Disc(new Vector2(t.x, t.z), 1.6f, Canopy, 0.55f); }
+            // Round 75 (B): what the build placed, from the scene itself (lots, pools, courts, plazas, paths, boardwalks, the shortcuts' built ground)
+            DrawBuilt(r, hgt, hw, hh, light);
             // water: ponds and lakes, streams
             Color32 Water = new Color(0.27f, 0.52f, 0.78f), Shore = new Color(0.18f, 0.36f, 0.58f);
             foreach (var w in map.water) { var o = ToPoints(w.outline); r.Fill(o, Water); var closed = o.ToList(); closed.Add(o[0]); r.Line(closed, 1.2f, Shore); }
@@ -152,7 +154,143 @@ namespace ChastainRush
                 ti.textureCompression = TextureImporterCompression.CompressedHQ; ti.npotScale = TextureImporterNPOTScale.None; ti.SaveAndReimport();
             }
             Debug.Log($"[Round20] the map's picture: {W} x {H} ({ext.width / W:0.00} m a pixel), {MapPicturePath}");
+            BakeMapStreets(map);   // Round 75 (B): the street names for the map screen
         }
         [System.Serializable] class WoodsFile { public Area[] woods; }
+
+        // Round 75 (B, Dan: "why didn't it fix the mall parking lot?" and "I would like that stuff fixed in general ... community swimming pools should
+        // show up as well"): the picture drew only map.json's lists, so what a step builds by itself (Town Center's lots, the stunt park, the quarry's
+        // pads and lanes, the helipads, every pool and court, plazas, the trails' boardwalks, a shortcut's ramps) never showed. Now every visible mesh
+        // in the built scene (MapPicture runs after every world step) is drawn from above: its upward-facing triangles that stand on or over the
+        // ground (none underground: the pipes, the crypt), the highest one at each pixel, in its own colors (vertex color x material color), lit as
+        // the ground is, water surfaces in the map's water blue. Glass and other see-through materials are left out. Nothing needs adding by hand:
+        // a new built thing is on the map at the next build. The map's own drawing (water, roads, lots, buildings) goes on top as before.
+        static void DrawBuilt(Raster r, float[] hgt, int hw, int hh, Vector3 light)
+        {
+            var top = new float[r.W * r.H]; for (int i = 0; i < top.Length; i++) top[i] = float.NegativeInfinity;
+            Color WaterC = new Color(0.27f, 0.52f, 0.78f);
+            int rends = 0; long tris = 0, pix = 0;
+            float Ground(int x, int y) => hgt[Mathf.Clamp(y / 2, 0, hh - 1) * hw + Mathf.Clamp(x / 2, 0, hw - 1)];
+            foreach (var mr in Object.FindObjectsByType<MeshRenderer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+            {
+                if (!mr.enabled || mr.gameObject.layer == 8) continue;   // (8: the Horizon layer)
+                var mf = mr.GetComponent<MeshFilter>(); var mesh = mf ? mf.sharedMesh : null; if (!mesh) continue;
+                var bb = mr.bounds; if (bb.max.x < r.X0 || bb.max.z < r.Z0 || bb.min.x > r.X0 + r.W / r.Sx || bb.min.z > r.Z0 + r.H / r.Sz) continue;
+                var mats = mr.sharedMaterials; if (mats == null || mats.Length == 0) continue;
+                Vector3[] v; Color32[] vc; try { v = mesh.vertices; vc = mesh.colors32; } catch { continue; }
+                if (v.Length == 0) continue;
+                var m = mr.localToWorldMatrix; var w = new Vector3[v.Length]; for (int i = 0; i < v.Length; i++) w[i] = m.MultiplyPoint3x4(v[i]);
+                bool flip = m.determinant < 0f, any = false, hasCol = vc != null && vc.Length == v.Length;
+                for (int sub = 0; sub < mesh.subMeshCount; sub++)
+                {
+                    if (mesh.GetTopology(sub) != MeshTopology.Triangles) continue;
+                    var mat = mats[Mathf.Min(sub, mats.Length - 1)]; if (!mat || !mat.shader) continue;
+                    string sn = mat.shader.name;
+                    if (mat.renderQueue >= 2450 || sn.Contains("Sky") || sn.Contains("Cloud") || sn.Contains("Glass") || sn.Contains("Horizon") || mat.name.Contains("Glass")) continue;   // see-through, the sky
+                    bool water = mat.name.Contains("Water");
+                    Color mc = mat.HasProperty("_BaseColor") ? mat.GetColor("_BaseColor") : mat.HasProperty("_Color") ? mat.GetColor("_Color") : Color.white;
+                    var idx = mesh.GetTriangles(sub);
+                    for (int k = 0; k + 2 < idx.Length; k += 3)
+                    {
+                        int ia = idx[k], ib = flip ? idx[k + 2] : idx[k + 1], ic = flip ? idx[k + 1] : idx[k + 2];
+                        Vector3 a = w[ia], b = w[ib], c = w[ic]; var n = Vector3.Cross(b - a, c - a); float nl = n.magnitude;
+                        if (nl < 1e-8f) continue; n /= nl; if (n.y < 0.35f) continue;
+                        tris++; any = true;
+                        Color col;
+                        if (water) col = WaterC;
+                        else
+                        {
+                            Color ca = hasCol ? (Color)vc[ia] : Color.white, cb = hasCol ? (Color)vc[ib] : Color.white, cc = hasCol ? (Color)vc[ic] : Color.white;
+                            col = (ca + cb + cc) / 3f * mc; col *= Mathf.Clamp(0.78f + 0.4f * Vector3.Dot(n, light), 0.6f, 1.1f);
+                        }
+                        var c32 = (Color32)new Color(col.r, col.g, col.b, 1f);
+                        // the triangle in pixels; each pixel center inside it, at the triangle's height there
+                        Vector2 pa = new Vector2((a.x - r.X0) * r.Sx, (a.z - r.Z0) * r.Sz), pb = new Vector2((b.x - r.X0) * r.Sx, (b.z - r.Z0) * r.Sz), pc = new Vector2((c.x - r.X0) * r.Sx, (c.z - r.Z0) * r.Sz);
+                        float area = (pb.x - pa.x) * (pc.y - pa.y) - (pb.y - pa.y) * (pc.x - pa.x);
+                        int x0 = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(pa.x, Mathf.Min(pb.x, pc.x)))), x1 = Mathf.Min(r.W - 1, Mathf.CeilToInt(Mathf.Max(pa.x, Mathf.Max(pb.x, pc.x))));
+                        int y0 = Mathf.Max(0, Mathf.FloorToInt(Mathf.Min(pa.y, Mathf.Min(pb.y, pc.y)))), y1 = Mathf.Min(r.H - 1, Mathf.CeilToInt(Mathf.Max(pa.y, Mathf.Max(pb.y, pc.y))));
+                        if (x0 > x1 || y0 > y1) continue;
+                        bool hit = false;
+                        if (Mathf.Abs(area) > 1e-6f)
+                            for (int y = y0; y <= y1; y++)
+                                for (int x = x0; x <= x1; x++)
+                                {
+                                    float qx = x + .5f, qy = y + .5f;
+                                    float l0 = ((pb.x - qx) * (pc.y - qy) - (pb.y - qy) * (pc.x - qx)) / area, l1 = ((pc.x - qx) * (pa.y - qy) - (pc.y - qy) * (pa.x - qx)) / area, l2 = 1f - l0 - l1;
+                                    if (l0 < -1e-4f || l1 < -1e-4f || l2 < -1e-4f) continue;
+                                    hit = true; Put(x, y, l0 * a.y + l1 * b.y + l2 * c.y, c32);
+                                }
+                        if (!hit) { var ct = (pa + pb + pc) / 3f; int x = (int)ct.x, y = (int)ct.y; if (x >= 0 && y >= 0 && x < r.W && y < r.H) Put(x, y, (a.y + b.y + c.y) / 3f, c32); }   // smaller than a pixel
+                    }
+                }
+                if (any) rends++;
+            }
+            void Put(int x, int y, float h, Color32 c32)
+            {
+                int i = y * r.W + x; if (h <= top[i]) return;
+                float g = Ground(x, y); if (h < g - 0.4f || h > g + 60f) return;   // on or over the ground, not high in the air (the overpasses' decks are under 60 m)
+                top[i] = h; r.Px[i] = c32; pix++;
+            }
+            Debug.Log($"[Round75] the map's picture: the built scene drawn from above: {rends} renderers, {tris} upward triangles, {pix} pixels written");
+        }
+
+        // Round 75 (B, Dan: "when zoomed in, it would be great to get street names as well"): the streets' names for the map screen's labels, written beside
+        // the picture (Assets/Generated/Resources/MapStreets.json, read by Map/WorldMap.Streets.cs): one entry per named road of map.json (service roads and
+        // links left out), its line simplified, its rank (0 interstates, 1 main roads, 2 tertiary, 3 side streets), its short name ("Chastain Rd NW") and
+        // its route shield ("I-75", "US 41") from Data/road_refs.json (Tools/mapgen/road_refs.py)
+        [System.Serializable] class StreetOut { public string n, s; public int k; public float[] p; }
+        [System.Serializable] class StreetsOut { public StreetOut[] streets; }
+        [System.Serializable] class RefsFile { public RefPair[] refs; } [System.Serializable] class RefPair { public long id; public string r; }
+        const string MapStreetsPath = GeneratedDir + "/Resources/MapStreets.json";
+        static void BakeMapStreets(MapData map)
+        {
+            var refs = new Dictionary<long, string>();
+            var refFile = Path.Combine(ProjectRoot, "Data/road_refs.json");
+            if (File.Exists(refFile)) foreach (var q in JsonUtility.FromJson<RefsFile>(File.ReadAllText(refFile)).refs ?? new RefPair[0]) refs[q.id] = q.r;
+            var outList = new List<StreetOut>();
+            foreach (var rd in map.roads)
+            {
+                string cls = rd.@class ?? ""; if (cls == "service" || cls.EndsWith("_link")) continue;
+                int k = cls == "motorway" ? 0 : cls == "trunk" || cls == "primary" || cls == "secondary" ? 1 : cls == "tertiary" ? 2 : 3;
+                refs.TryGetValue(rd.osm_id, out string rf); string shield = Shield(rf);
+                string name = k == 0 ? "" : RoadLookup.Short(rd.name);
+                if (string.IsNullOrEmpty(name) && string.IsNullOrEmpty(shield)) continue;
+                var pts = Simplify(ToPoints(rd.points), 3f); if (pts.Count < 2) continue;
+                outList.Add(new StreetOut { n = name, s = shield, k = k, p = pts.SelectMany(q => new[] { Mathf.Round(q.x * 10f) / 10f, Mathf.Round(q.y * 10f) / 10f }).ToArray() });
+            }
+            var full = Path.Combine(ProjectRoot, MapStreetsPath); Directory.CreateDirectory(Path.GetDirectoryName(full));
+            File.WriteAllText(full, JsonUtility.ToJson(new StreetsOut { streets = outList.ToArray() }));
+            AssetDatabase.ImportAsset(MapStreetsPath, ImportAssetOptions.ForceUpdate);
+            Debug.Log($"[Round75] the map's street names: {outList.Count} named roads, {outList.Count(q => !string.IsNullOrEmpty(q.s))} with a route shield, {MapStreetsPath}");
+        }
+        // "I 75" -> "I-75", "I 575;GA 5" -> "I-575", "US 41;GA 3" -> "US 41" (Georgia's own numbers left out: Dan named the interstates and US 41)
+        static string Shield(string rf)
+        {
+            if (string.IsNullOrEmpty(rf)) return "";
+            foreach (var part in rf.Split(';'))
+            {
+                var t = part.Trim();
+                if (t.StartsWith("I ")) return "I-" + t.Substring(2).Split(' ')[0];
+                if (t.StartsWith("US ")) return "US " + t.Substring(3).Split(' ')[0];
+            }
+            return "";
+        }
+        // Douglas-Peucker: a line's points within 'tol' meters of it dropped
+        static List<Vector2> Simplify(List<Vector2> p, float tol)
+        {
+            if (p.Count < 3) return p;
+            var keep = new bool[p.Count]; keep[0] = keep[p.Count - 1] = true; var st = new Stack<(int, int)>(); st.Push((0, p.Count - 1));
+            while (st.Count > 0)
+            {
+                var (a, b) = st.Pop(); float best = -1f; int at = -1; var ab = p[b] - p[a]; float L = ab.magnitude;
+                for (int i = a + 1; i < b; i++)
+                {
+                    float d = L < 1e-4f ? (p[i] - p[a]).magnitude : Mathf.Abs(ab.x * (p[i].y - p[a].y) - ab.y * (p[i].x - p[a].x)) / L;
+                    if (d > best) { best = d; at = i; }
+                }
+                if (at >= 0 && best > tol) { keep[at] = true; st.Push((a, at)); st.Push((at, b)); }
+            }
+            var o = new List<Vector2>(); for (int i = 0; i < p.Count; i++) if (keep[i]) o.Add(p[i]); return o;
+        }
     }
 }

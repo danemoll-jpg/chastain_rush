@@ -171,8 +171,8 @@ namespace ChastainRush
                 S("MapPicture", () =>
                 {
                     if (pipes.TreesRemoved > 0) Debug.Log($"[Round18] {pipes.TreesRemoved} trees kept out of the pipe cuts");
-                    BakeMapPicture(map, terrain, shop, creek, c.trees.Field);   // Round 20 (2): the picture under the in-game map (MapBuilder.MapPicture.cs)
-                }),
+                    BakeMapPicture(map, terrain, shop, creek, c.trees?.Field ?? UnityEngine.Object.FindAnyObjectByType<TreeField>());   // (Round 75: a quick build has no Trees step: the scene's own) Round 20 (2): the picture under the in-game map (MapBuilder.MapPicture.cs)
+                }, true),   // Round 75 (B): quick, and run by every quick build (the picture is drawn from the built scene: a rebuilt step shows on the map)
                 S("GameLayer", () =>
                 {
                     new GameObject("MapCredits").AddComponent<MapCredits>().text = "© OpenStreetMap contributors";
@@ -305,11 +305,13 @@ namespace ChastainRush
             foreach (var p in parts.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(q => q.Trim()))
                 if (QuickAliases.TryGetValue(p, out var al)) foreach (var a in al) want.Add(a); else want.Add(p);
             var recs = man.steps.ToList();
+            // Round 75 (B): the map's picture is drawn from the built scene, so every quick build draws it again
+            if (recs.Any(q => q.name == "MapPicture")) want.Add("MapPicture");
             foreach (var w in want)
             {
                 var r = recs.FirstOrDefault(q => string.Equals(q.name, w, StringComparison.OrdinalIgnoreCase));
                 if (r == null) throw new Exception($"quick build: no step '{w}' (steps: {string.Join(", ", recs.Select(q => q.name))})");
-                if (!r.quick || r.touchesOthers) throw new Exception($"quick build: step '{r.name}' cannot be rebuilt alone (it reads what other steps made{(r.touchesOthers ? ", or changes their objects" : "")}); run a full Build Map");
+                if ((!r.quick && r.name != "MapPicture") || r.touchesOthers) throw new Exception($"quick build: step '{r.name}' cannot be rebuilt alone (it reads what other steps made{(r.touchesOthers ? ", or changes their objects" : "")}); run a full Build Map");
             }
             int first = recs.FindIndex(q => want.Contains(q.name));
 

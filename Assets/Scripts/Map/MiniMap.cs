@@ -36,8 +36,9 @@ namespace ChastainRush
         public int player = 1;
         public bool Shown { get; private set; }
         ArcadeVehicle car; RaceRoute route; RaceController race;
-        RawImage picture; Text north, key; RectTransform panel; Image panelImage;
-        public string KeyText => key ? key.text : "";   // Round 74 (B): the check reads it
+        RawImage picture; Text north, key, street; RectTransform panel; Image panelImage; float nextStreet;   // Round 75 (B): street, the name of the street you are on
+        public string KeyText => key ? key.text : "";
+        public string StreetText => street && street.enabled ? street.text : "";   // Round 75 (B): the check reads it   // Round 74 (B): the check reads it
         Rect world; InputAction toggle; bool hidden, checkRun, under;
         Vector3 origin, forward, right; Vector2 northDir = Vector2.up; float nextUpdate;
         readonly List<(Vector3 a, Vector3 b, Color c, float w)> raceLines = new List<(Vector3, Vector3, Color, float)>();
@@ -90,7 +91,12 @@ namespace ChastainRush
             n.transform.SetParent(cr, false); n.font = font; n.fontSize = 16; n.fontStyle = FontStyle.Bold; n.alignment = TextAnchor.MiddleCenter;
             n.color = Color.white; n.raycastTarget = false; n.text = "N"; n.rectTransform.sizeDelta = new Vector2(22, 22);
             var edge = n.gameObject.AddComponent<Outline>(); edge.effectColor = new Color(0, 0, 0, .9f); edge.effectDistance = new Vector2(1.2f, -1.2f);
-            map.picture = pic; map.north = n; map.key = label; map.panel = rect; map.panelImage = img; map.player = player;
+            // Round 75 (B, Dan: street names; "The minimap may show the current street's name"): at the top of the window
+            var st = new GameObject("Street", typeof(RectTransform)).AddComponent<Text>();
+            st.transform.SetParent(rect, false); st.font = font; st.fontSize = 13; st.fontStyle = FontStyle.Bold; st.alignment = TextAnchor.MiddleCenter;
+            st.color = new Color(1f, .97f, .86f); st.raycastTarget = false; st.rectTransform.sizeDelta = new Vector2(220, 20); st.rectTransform.anchoredPosition = new Vector2(0, 90);
+            var stEdge = st.gameObject.AddComponent<Outline>(); stEdge.effectColor = new Color(0, 0, 0, .9f); stEdge.effectDistance = new Vector2(1.2f, -1.2f);
+            map.picture = pic; map.north = n; map.key = label; map.street = st; map.panel = rect; map.panelImage = img; map.player = player;
             return map;
         }
 
@@ -166,7 +172,7 @@ namespace ChastainRush
             bool visible = car && !GameMenus.Open && !WorldMap.IsOpen && !TrailerMode.HudHidden && (!roam || !hiddenNow) && !(SplitScreen.OneView && player == 2);
             Shown = visible;
             canvasRenderer.SetAlpha(visible ? 1 : 0);
-            panelImage.enabled = visible; key.enabled = visible; north.enabled = visible; if (picture) picture.enabled = visible;
+            panelImage.enabled = visible; key.enabled = visible; north.enabled = visible; if (picture) picture.enabled = visible; if (street) street.enabled = visible;
             if (SplitScreen.Active && !SplitScreen.OneView)
             {
                 // Round 37: the top right of this player's half, a little smaller (Racer's .78)
@@ -183,6 +189,7 @@ namespace ChastainRush
             under = DrainPipe.InsideAny(origin) || origin.y < RaceRoute.Ground(origin.x, origin.z).y - 2.5f;
             if (under && !pipesCached) CachePipes();
             key.text = !roam ? RaceKey : under ? UnderKey : RoamKey;
+            if (street && Time.unscaledTime >= nextStreet) { nextStreet = Time.unscaledTime + .3f; street.text = under || !RoadLookup.Instance ? "" : RoadLookup.Instance.StreetAt(origin); }
             forward = Vector3.ProjectOnPlane(car.transform.forward, Vector3.up).normalized;
             if (forward.sqrMagnitude < .5f) forward = Vector3.forward;
             right = Vector3.Cross(Vector3.up, forward);

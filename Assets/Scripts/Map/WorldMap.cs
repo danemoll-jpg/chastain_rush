@@ -344,6 +344,7 @@ namespace ChastainRush
             for (int i = pi; i < proposalLabels.Count; i++) proposalLabels[i].gameObject.SetActive(false);
             DrawExplore(lines, race == null || race.State == RaceController.Stage.Free);   // Round 48 (WorldMap.Explore.cs)
             overlay.SetView(world, center, zoom, lines, bars);
+            DrawStreets();   // Round 75 (B): street names (WorldMap.Streets.cs)
             // the other racers (a race only), then the player on top
             int ri = 0;
             if (race != null && race.State != RaceController.Stage.Free)

@@ -63,6 +63,27 @@ namespace ChastainRush
             return true;
         }
 
+        // Round 75 (B): the name of the street a point is on (within its half width and 3 m more), short ("Chastain Rd NW"); "" off a named road
+        public string StreetAt(Vector3 p)
+        {
+            if (!Nearest(p, out var name, out float d, out float half) || d > half + 3f || name.StartsWith("unnamed ")) return "";
+            return Short(name);
+        }
+        // Round 75 (B): a street's short name for the maps (the map screen's labels, the minimap): the type and direction words after the first shortened
+        static readonly System.Collections.Generic.Dictionary<string, string> Abbrev = new System.Collections.Generic.Dictionary<string, string>
+        {
+            { "Northwest", "NW" }, { "Northeast", "NE" }, { "Southwest", "SW" }, { "Southeast", "SE" }, { "Road", "Rd" }, { "Drive", "Dr" }, { "Street", "St" },
+            { "Lane", "Ln" }, { "Court", "Ct" }, { "Circle", "Cir" }, { "Parkway", "Pkwy" }, { "Boulevard", "Blvd" }, { "Avenue", "Ave" }, { "Place", "Pl" },
+            { "Trail", "Trl" }, { "Highway", "Hwy" }, { "Terrace", "Ter" }, { "Connector", "Conn" }, { "Memorial", "Mem" },
+        };
+        public static string Short(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return "";
+            var w = name.Split(' ');
+            for (int i = 1; i < w.Length; i++) if (Abbrev.TryGetValue(w[i], out var a)) w[i] = a;   // (the first word kept: "North Marietta Pkwy", "Court Ln")
+            return string.Join(" ", w);
+        }
+
         // Round 10 (CarRecovery): the nearest point on a road's centreline within 40 m and the road's direction there
         public bool NearestPoint(Vector3 p, out Vector2 point, out Vector2 tangent)
         {
