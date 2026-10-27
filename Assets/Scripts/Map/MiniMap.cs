@@ -233,6 +233,13 @@ namespace ChastainRush
                 // the checkpoints across the course (blue), the start / finish (white)
                 foreach (var g in route.Checkpoints) Bar(vh, g.Position, g.Right, Gate);
                 Bar(vh, route.Gate.Position, route.Gate.Right, Color.white);
+                // Round 73 (B2): in the air race the ring the guide points at (green, a marker on it) and the one after it (amber)
+                if (route.Air)
+                {
+                    var aim = race.Target; var after = race.AirAfter(race.P);
+                    if (after != null) Bar(vh, after.Position, after.Right, Optional);
+                    if (aim != null) { Bar(vh, aim.Position, aim.Right, new Color(.35f, 1f, .25f)); var ap = Project(aim.Position); if (bounds.Contains(ap)) { Diamond(vh, ap, 8, new Color(.03f, .06f, .08f)); Diamond(vh, ap, 6, new Color(.35f, 1f, .25f)); } }
+                }
                 foreach (var e in race.Entrants)
                 {
                     if (e.Car == car || !e.Car || e.Seat == 2 && SplitScreen.Active) continue;   // Round 37: the other player is drawn below

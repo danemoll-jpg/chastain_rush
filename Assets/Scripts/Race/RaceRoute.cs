@@ -143,6 +143,7 @@ namespace ChastainRush
         // across Forward: the plane's middle passes inside it (reach does not count: the rings are sized for the plane)
         public float Ring, RingW, RingH;
         public bool IsRing => Ring > 0f || RingW > 0f;
+        public bool EitherWay;   // Round 73 (B3): an air race's checkpoint ring counts flown through either way (the start / finish ring one way only)
 
         // True when the step from -> to passes through the gate's opening in the travel direction, at any angle; fraction is
         // how far along the step it happened (so lap times are not rounded to physics steps). reach is the car's own half
@@ -152,7 +153,9 @@ namespace ChastainRush
             fraction = 0f;
             Vector3 a = from - Position, b = to - Position;
             float za = Vector3.Dot(a, Forward), zb = Vector3.Dot(b, Forward);
-            if (!(za < 0f && zb >= 0f)) return false;
+            // Round 73 (B3, Dan: "I circled back to a cp that I missed ... you only get credit if you are going in the direction of the game"): an air
+            // race's ring counts flown through either way
+            if (!(za < 0f && zb >= 0f) && !(EitherWay && za > 0f && zb <= 0f)) return false;
             fraction = -za / (zb - za);
             Vector3 hit = Vector3.Lerp(a, b, fraction);
             if (IsRing)
@@ -256,7 +259,7 @@ namespace ChastainRush
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
                 g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m;
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
-                if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; }   // Round 71
+                if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; g.EitherWay = true; }   // Round 71; Round 73 (B3)
                 r.Checkpoints.Add(g);
             }
             foreach (var jn in (r.OwnReverse ? j.junctions_rev : j.junctions) ?? new RouteJunctionJson[0]) r.Junctions.Add($"{Mathf.Repeat((r.OwnReverse ? jn.s : r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");

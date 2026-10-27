@@ -70,6 +70,25 @@ namespace ChastainRush
             return t > 20f && done > 1000f ? Mathf.Clamp(done / t, 50f, 140f) : 95f;
         }
 
+        // Round 73 (B2 / B3, Dan: "if you missed a checkpoint, it is impossible to tell which is next"): the ring a human is to fly through next, its
+        // plane passed the race's way outside it (within AirMissNear of it): RING MISSED, the guide on to the next one at once; the missed ring can still
+        // be gone back for (flown through either way: no penalty) until the next one is taken (then the usual 5 s, OnCheckpoint)
+        public const float AirMissNear = 400f;
+        void AirRingPassedBy(RaceEntrant e, Vector3 from, Vector3 to)
+        {
+            if (!e.ClockStarted || e.NextCheckpoint >= Route.Checkpoints.Count || e.RingSkipped == e.NextCheckpoint) return;
+            var g = Route.Checkpoints[e.NextCheckpoint];
+            Vector3 a = from - g.Position, b = to - g.Position; float za = Vector3.Dot(a, g.Forward), zb = Vector3.Dot(b, g.Forward);
+            if (!(za < 0f && zb >= 0f)) return;
+            var hit = Vector3.Lerp(a, b, -za / (zb - za)); float across = Vector3.Dot(hit, g.Right), up = hit.y;
+            bool inside = g.Ring > 0f ? across * across + up * up <= g.Ring * g.Ring : Mathf.Abs(across) <= g.RingW && Mathf.Abs(up) <= g.RingH;
+            if (inside || across * across + up * up > AirMissNear * AirMissNear) return;
+            e.RingSkipped = e.NextCheckpoint;
+            SayTo(e, $"RING {e.NextCheckpoint + 1} MISSED   fly on to ring {(e.NextCheckpoint + 2 <= Route.Checkpoints.Count ? (e.NextCheckpoint + 2).ToString() : "the finish")} (+{MissPenaltySeconds:0} s) or turn back for it", 4f);
+            Log(e, $"RING {e.NextCheckpoint + 1} flown past outside it ({Mathf.Sqrt(across * across + up * up) - Mathf.Max(g.Ring, g.RingW):0} m out): the guide on to the next");
+            if (e.IsPlayer) markers.Refresh(this);
+        }
+
         // the guide's line: how far the next ring is above or below
         string AirHint(RaceGate t)
         {

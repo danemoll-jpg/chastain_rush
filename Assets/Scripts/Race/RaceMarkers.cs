@@ -48,6 +48,7 @@ namespace ChastainRush
         {
             bool racing = r.State != RaceController.Stage.Free;
             if (finish != null) finish.root.SetActive(racing);   // Round 12 (BUG-006)
+            if (r.Route != null && r.Route.Air) { RefreshRings(r, racing); return; }   // Round 73 (B2)
             for (int i = 0; i < arches.Count; i++)
             {
                 var a = arches[i];
@@ -151,8 +152,34 @@ namespace ChastainRush
                 if (!checkered) paint.Add(c);
             }
             var beams = new GameObject("Beams"); beams.transform.SetParent(root.transform, false);
-            if (!checkered) paint.Add(Box(beams.transform, new Vector3(0f, r + 160f, 0f), new Vector3(1.6f, 320f, 1.6f)));
+            // Round 73 (B2): the beacon: a pillar 5 m thick from the ring's top 600 m up into the sky and from its bottom down into the ground, seen from
+            // anywhere (never across the ring's opening)
+            if (!checkered)
+            {
+                paint.Add(Box(beams.transform, new Vector3(0f, r + 1f + 300f, 0f), new Vector3(5f, 600f, 5f)));
+                paint.Add(Box(beams.transform, new Vector3(0f, -r - 1f - 200f, 0f), new Vector3(5f, 400f, 5f)));
+            }
             return new Arch { root = root, paint = paint.ToArray(), beams = beams, gate = g };
+        }
+
+        // Round 73 (B2, Dan: "after I got through the first 3 or 4, I had no idea where the next gate even was"): the air race shows the ring the guide
+        // points at (green, its beacon standing from the ground far into the sky, seen from anywhere), the one after it (amber, dimmer: no beacon) and a
+        // ring flown past that can still be gone back for (red); the others are hidden until they come up. The finish ring shows when it is one of those.
+        void RefreshRings(RaceController r, bool racing)
+        {
+            bool finished = r.State == RaceController.Stage.Finished;
+            var aim = r.Target; var after = r.AirAfter(r.P); int skipped = r.P != null && r.P.RingSkipped >= 0 && r.P.RingSkipped == r.NextCheckpoint ? r.P.RingSkipped : -1;
+            for (int i = 0; i < arches.Count; i++)
+            {
+                var a = arches[i];
+                bool isAim = a.gate == aim, isAfter = a.gate == after, isSkipped = i == skipped;
+                bool visible = racing && !finished && (isAim || isAfter || isSkipped);
+                a.root.SetActive(visible); if (!visible) continue;
+                var mat = isSkipped ? Missed : isAim ? Next : Later;
+                foreach (var rd in a.paint) rd.sharedMaterial = mat;
+                a.beams.SetActive(isAim);
+            }
+            if (finish != null) finish.root.SetActive(racing && !finished && (aim == finish.gate || after == finish.gate || !r.ClockStarted));
         }
 
         public void RingPassed(RaceGate g)

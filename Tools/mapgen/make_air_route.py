@@ -59,53 +59,51 @@ def on_runway(d): return tuple(RW_W + RW_D * d)
 # ---------------------------------------------------------------- the line's control points (x, z), clockwise, from the loop's start on the runway
 # a ring at a control point: (name, label, kind, size, height rule); kind "ring": size = radius; "frame": size = (half width, half height);
 # height: ("agl", m) over the ground there, or ("abs", y)
+# Round 73 (B, Dan: "The first ring is down in the quarry nearly right beside the take off point ... the plane should have already been going in the
+# right direction to set that up ... after I got through the first 3 or 4, I had no idea where the next gate even was"): the course redrawn so every
+# ring lines you up for the next: the start ring straight ahead of the take-off, R1 straight on past the runway's end (a climb), Town Center high,
+# a wide left sweep to I-75 (over the northbound deck, under the southbound), a wide loop north and round to the quarry's east rim, the dive west down
+# the lake and the climb out of its west end, a wide U-turn south of the airport to Cobb Parkway, and back east onto the runway for the line.
+# Rings bigger (radius 20 to 28 m in the open; the quarry's 18 to 22; the frame under I-75 as tight as the bridge allows).
 CTRL = [
     (on_runway(390), None),                                        # the loop's start, over the runway (after the take-off run)
     (on_runway(500), None),
-    (on_runway(650), ("SF", "Start / finish", "ring", 16, ("agl", 14))),
-    ((-2830, -1855), None),
-    ((-2680, -1775), None),
-    ((-2590, -1690), None),
-    ((-2480, -1615), None),
-    ((-2330, -1563), ("Q1", "Quarry drop", "ring", 14, ("abs", 215))),
-    ((-2120, -1540), ("Q2", "Quarry lake", "ring", 12, ("abs", 124))),
-    ((-1850, -1522), None),
-    ((-1590, -1480), ("Q3", "Quarry rim", "ring", 16, ("abs", 345))),
-    ((-1340, -1170), None),
-    ((-1150, -830), None),
-    ((-990, -620), None),
-    ((-790, -610), None),
-    ((-600, -733), None),
+    (on_runway(650), ("SF", "Start / finish", "ring", 22, ("agl", 16))),
+    (on_runway(1300), None),
+    ((-1300, -1790), ("R1", "Past the runway", "ring", 26, ("agl", 55))),
+    ((-382, -1726), None),                                         # the sweep onto I-75's line: a 400 m left turn (141 degrees)
+    ((-222, -1680), None),
+    ((-94, -1573), None),
+    ((-21, -1424), ("H1", "High ring", "ring", 28, ("agl", 200))),
+    ((-16, -1257), None),
+    ((-78, -1103), None),
+    ((-198, -988), None),
+    ((-336, -901), ("C2", "Over I-75 northbound", "ring", 16, ("agl", 21))),
     ((-459, -823), ("C1", "Under I-75 southbound", "frame", (10, 3.4), ("agl", 5.6))),
-    ((-336, -901), ("C2", "Over I-75 northbound", "ring", 10, ("agl", 21))),
-    ((-150, -1020), None),
-    ((150, -1250), None),
-    ((330, -1500), ("H1", "High over Town Center", "ring", 18, ("agl", 280))),
-    ((300, -1900), None),
-    ((0, -2700), ("M1", "Barrett interchange", "ring", 16, ("agl", 110))),
-    ((-380, -3700), None),
-    ((-620, -4450), ("W1", "Over the treetops", "ring", 16, ("agl", 60))),
-    ((-760, -5250), None),
-    ((-870, -5700), None),
-    ((-1030, -5880), ("H2", "Kennesaw Mountain summit", "ring", 18, ("agl", 70))),
-    ((-1330, -5900), None),
-    ((-1750, -5550), None),
-    ((-2600, -4650), ("M2", "Over the woods", "ring", 16, ("agl", 58))),
-    ((-3500, -3900), None),
-    ((-4170, -3560), ("L1", "Daniell Lake", "ring", 14, ("agl", 12))),
-    ((-4520, -3100), None),
-    ((-4470, -2550), None),
-    ((-4330, -2120), None),
-    ((-4241, -1890), ("B1", "Over Cobb Parkway", "ring", 16, ("agl", 30))),
-    ((-4150, -1720), None),
-    ((-3980, -1640), None),
-    ((-3790, -1700), None),
-    ((-3610, -1840), None),
-    ((-3440, -1893), None),
+    ((-600, -733), None),
+    ((-790, -610), None),
+    ((-990, -620), None),
+    ((-1150, -830), None),
+    ((-1340, -1170), None),
+    ((-1590, -1480), ("Q1", "Quarry rim", "ring", 22, ("abs", 345))),
+    ((-1850, -1522), None),
+    ((-2150, -1545), ("Q2", "Quarry lake", "ring", 20, ("abs", 128))),
+    ((-2450, -1570), ("Q3", "Quarry climb", "ring", 20, ("abs", 215))),
+    ((-2640, -1660), None),
+    ((-2760, -1900), None),
+    ((-2950, -2200), ("S1", "South of the airport", "ring", 26, ("agl", 70))),
+    ((-3300, -2450), None),
+    ((-3700, -2510), None),
+    ((-3941, -2500), None),                                        # the U-turn: a 300 m right turn onto the runway's line
+    ((-4153, -2412), None),
+    ((-4241, -2200), ("B1", "The turn", "ring", 26, ("agl", 45))),
+    ((-4153, -1988), None),
+    ((-3941, -1900), None),
+    ((-3800, -1905), None),
 ]
-CLEARED = {"C1": (260, 300), "L1": (160, 160)}   # the low stretches in woods: their lanes cleared, meters before and after the ring
-LOW = {"SF": (420, 420), "Q2": (150, 150), "C1": (260, 105), "L1": (160, 160)}   # meters before and after the ring
-LOW_CLEAR = {"SF": 10.0, "Q2": 4.0, "L1": 7.0, "C1": 7.0}   # over the ground there (under a bridge: as low as its deck allows)
+CLEARED = {"C1": (105, 260)}   # the low stretch in woods: its lane cleared, meters before and after the ring
+LOW = {"SF": (420, 420), "Q2": (150, 150), "C1": (105, 260)}   # meters before and after the ring
+LOW_CLEAR = {"SF": 10.0, "Q2": 4.0, "C1": 7.0}   # over the ground there (under a bridge: as low as its deck allows)
 
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
 P = np.array([c[0] for c in CTRL], dtype=float); n = len(P)

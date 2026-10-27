@@ -109,7 +109,7 @@ namespace ChastainRush
         VehicleRespawn respawn;
         bool wasInputEnabled, aiActive;
         float messageUntil, goFlashUntil, nextEstimateSample;
-        readonly RaceEntrant P = new RaceEntrant { Name = "YOU", Seat = 1 };
+        internal readonly RaceEntrant P = new RaceEntrant { Name = "YOU", Seat = 1 };   // (Round 73: internal, for the air race's markers and minimap)
         RaceMarkers markers;
         RaceBarriers barriers;
         BoxCollider carBox;
@@ -267,6 +267,7 @@ namespace ChastainRush
             if (LapsOverride > 0) Route.Laps = LapsOverride;
             LoadRecords();
             if (markers == null) markers = new GameObject("RaceMarkers").AddComponent<RaceMarkers>();
+            if (!markers.GetComponent<AirGuideArrow>()) markers.gameObject.AddComponent<AirGuideArrow>();   // Round 73 (B2): the air race's 3D arrow
             markers.Build(this);
             markers.Refresh(this);
         }
@@ -405,6 +406,7 @@ namespace ChastainRush
             else if (e.ClockStarted && e.NextCheckpoint >= Route.Checkpoints.Count && LineMissedWide(e, prevPos, pos, out float fw)) hits.Add((fw, 4000));   // Round 54 (B)
             for (int i = 0; i < Route.Checkpoints.Count; i++)
                 if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(e, Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
+            if (Route.Air && e.IsHuman) AirRingPassedBy(e, prevPos, pos);   // Round 73 (B2 / B3): RING MISSED
             for (int i = 0; i < Route.Shortcuts.Count; i++)
             {
                 var sc = Route.Shortcuts[i];
@@ -460,7 +462,7 @@ namespace ChastainRush
             if (index < e.NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < index; k++) { Miss(e, k, at); skipped.Add(k + 1); }
-            e.NextCheckpoint = index + 1;
+            e.NextCheckpoint = index + 1; e.RingSkipped = -1;
             if (Route.Air && e.IsPlayer) markers.RingPassed(Route.Checkpoints[index]);   // Round 71: the ring's flash and chime
             Log(e, $"CHECKPOINT {index + 1} at {at:0.000}" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
             MissMessage(e, skipped);
@@ -595,7 +597,7 @@ namespace ChastainRush
             if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, true, e.CompletedLaps >= Route.Laps, e.Missed.Count == 0 && !NoRecords);   // Round 43 (B1)
             GetComponent<ReplayRecorder>()?.Lap(e, lapNo, at - raw, at, e.IsPlayer && lapRanks.Count > 0 ? lapRanks[lapRanks.Count - 1] : 0);   // Round 57 (F): a new #1 lap keeps its replay
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
-            e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false;
+            e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false; e.RingSkipped = -1;
             if (e.IsPlayer) markers.Refresh(this);
         }
 
@@ -1036,7 +1038,21 @@ namespace ChastainRush
 
         // The next gate the driver should aim for, and how far it is; used by the HUD arrow.
         public RaceGate Target => State == Stage.Free || Route == null ? null
-            : !ClockStarted ? Route.Gate : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
+            : !ClockStarted ? Route.Gate : AirAim(P) is RaceGate g ? g : NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[NextCheckpoint] : Route.Gate;
+        // Round 73 (B2): in the air race, once a ring has been flown past outside it the guide points at the one after it (the missed one can still be
+        // gone back for); null otherwise
+        public RaceGate AirAim(RaceEntrant e)
+        {
+            if (Route == null || !Route.Air || e == null || e.RingSkipped < 0 || e.RingSkipped != e.NextCheckpoint) return null;
+            return e.RingSkipped + 1 < Route.Checkpoints.Count ? Route.Checkpoints[e.RingSkipped + 1] : Route.Gate;
+        }
+        // the ring after the one the guide points at (shown dimmer), or null
+        public RaceGate AirAfter(RaceEntrant e)
+        {
+            if (Route == null || !Route.Air || e == null || !e.ClockStarted) return Route != null && Route.Air && Route.Checkpoints.Count > 0 ? Route.Checkpoints[0] : null;
+            int k = (e.RingSkipped >= 0 && e.RingSkipped == e.NextCheckpoint ? e.RingSkipped + 1 : e.NextCheckpoint) + 1;
+            return k < Route.Checkpoints.Count ? Route.Checkpoints[k] : k == Route.Checkpoints.Count ? Route.Gate : null;
+        }
 
         // ---------------------------------------------------------------- Round 37: split screen's player 2 (Racer's SplitRace.PlayerTwo)
         // Player 2 races in the race as a racer of its own, under the same rules: a human on their own device, or (Player 2: AI driver) Racer's AI
@@ -1190,9 +1206,19 @@ namespace ChastainRush
         {
             var t = Target;
             if (t == null || State == Stage.Finished) return;
-            Vector3 to = t.Position - car.transform.position; to.y = 0f;
+            Vector3 to = t.Position - car.transform.position; float dist3 = to.magnitude; to.y = 0f;
             Vector3 fwd = car.transform.forward; fwd.y = 0f;
             float angle = Vector3.SignedAngle(fwd, to, Vector3.up);
+            if (Route.Air)
+            {
+                // Round 73 (B2): the air race's guide is the 3D arrow ahead of the plane (AirGuide); here the ring's name, its distance through the air,
+                // and while a missed ring can still be gone back for, a line saying so
+                string nm = (t.Id == 0 ? (ClockStarted ? "FINISH RING" : "START RING") : $"RING {t.Id} / {Route.Checkpoints.Count}") + AirHint(t);
+                Shadowed(new Rect(0, 60, w, 34), $"<b>{nm}</b>   {dist3:0} m", new GUIStyle(small) { alignment = TextAnchor.MiddleCenter, fontSize = 24, richText = true, normal = { textColor = Color.white } });
+                if (P.RingSkipped >= 0 && P.RingSkipped == P.NextCheckpoint)
+                    Shadowed(new Rect(0, 94, w, 30), $"<color=#ff6050><b>RING {P.RingSkipped + 1} MISSED</b></color>   fly on (+{MissPenaltySeconds:0} s) or turn back for it", new GUIStyle(small) { alignment = TextAnchor.MiddleCenter, fontSize = 20, richText = true, normal = { textColor = Color.white } });
+                return;
+            }
             var c = new Vector2(w / 2f, 62f);
             var save = GUI.matrix;
             GUIUtility.RotateAroundPivot(angle, c);

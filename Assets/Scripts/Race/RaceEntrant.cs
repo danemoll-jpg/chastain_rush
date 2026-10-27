@@ -36,12 +36,15 @@ namespace ChastainRush
         public float FinalTotal;           // its own time: from its start-line crossing, with every penalty
         public float FinishedAt;           // race clock when it crossed the line, with every penalty (the finishing order)
         public readonly AiFinishEstimate Estimate = new AiFinishEstimate();
+        // Round 73 (B2 / B3, the air race): a ring flown past outside it: still to be gone back for (no penalty) until the next one is taken (then the
+        // usual 5 s); meanwhile the guide points at the next one. -1: none
+        public int RingSkipped = -1;
         public string VehicleName => Car && Car.GetComponent<VehicleConfiguration>() ? Car.GetComponent<VehicleConfiguration>().Profile.Name : "";
 
         public void Reset()
         {
             ClockStarted = LapAway = false; NextAwayCheck = 0f; StartAt = LapStart = 0f; CompletedLaps = NextCheckpoint = MissedTotal = 0;
-            PenaltyTotal = LapPenalty = 0f; ActiveShortcut = null; Finished = Estimated = false; FinalTotal = FinishedAt = 0f;
+            PenaltyTotal = LapPenalty = 0f; ActiveShortcut = null; Finished = Estimated = false; FinalTotal = FinishedAt = 0f; RingSkipped = -1;
             LapTimes.Clear(); Missed.Clear(); Forgiven.Clear(); PenaltyLog.Clear(); LapLog.Clear(); ShortcutsTaken.Clear();
             if (Car) PrevPos = Car.transform.position;
         }
