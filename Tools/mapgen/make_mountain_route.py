@@ -510,8 +510,10 @@ g_first = next((i for i, q in enumerate(g_pts) if nearest_s(road, q)[0] >= 2.5),
 # (never into a kicker: the drive's height only up to 45 m before the first kicker's foot, from 45 m after the last jump's catch)
 g_first = min(g_first, max(0, min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[0]["sL"] - jumps[0]["Lk"] - 45.0)))))
 g_last = g_last if not jumps[-1]["shaped"] else min(g_last, max(0, len(gk) - 1 - min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[-1]["sL"] + jumps[-1]["x_end"] + 45.0)))))
-# Round 73 A2: the drive from where the line has left it (SEP_M off) to the summit lot is kept off (its own surface, its width and 1.5 m more)
-_ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= SEP_M)])[1]
+# Round 73 A2: the drive from where the line has left it (KEEP_FROM_M off; the check's second drive: tied to SEP_M it left 20 m of the drive's edge
+# graded to the drive's raw ground, not its built surface: 41 degrees of roll) to the summit lot is kept off
+KEEP_FROM_M = 8.0 (its own surface, its width and 1.5 m more)
+_ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= KEEP_FROM_M)])[1]
 keep_off = flat(resample(cut(road, _ks - 4.0, None), 4.0))
 grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
            "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.5}]
