@@ -54,8 +54,9 @@ def poly_d(q, p): return min(seg_d(q, a, b) for a, b in zip(p, p[1:]))
 DRIVE, LOT = 4729, 4887             # Kennesaw Mountain Drive (its end is the summit lot's entrance) and the lot's loop
 START_IN = 8.0                      # the run-up starts this far from the drive's end, toward the summit (off the drive and the loop's mouth)
 SUMMIT = None                       # found: the highest ground within 120 m of the ridge's top
+LIP_UNDER = 0.0                     # (Round 73 try 2) the lip this much under the summit's height: a gentler climb
 LIP_PAST = 50.0                     # the lip this far past the summit, on the line: the top's far edge, where the face begins to fall away
-ANG = 21.0                          # the lip's angle over the horizontal
+ANG = 21.0                          # the lip's angle over the horizontal (Round 73 try 2 (14 deg, the lip lower): no longer flight, so 21 kept)
 R_KICK = 340.0                      # the kicker's radius (Round 68: past about 6.5 m/s2 at the lip's speed a car's body meets a ground kicker)
 TRACK_HALF, INRUN_HALF = 5.0, 6.5   # the run-up track's half width (10 m: a gravel track up the ridge), the in-run and kicker's
 SIDE_SLOPE = 1.25                   # cut and fill banks: 1.25 m out for every meter of cut or fill
@@ -80,7 +81,7 @@ s_top = math.dist(E, SUMMIT)
 
 # ---------------------------------------------------------------- the profile: a steady climb up the ridge from the start, curving up (the kicker) to
 # the lip at the summit's height LIP_PAST beyond it (the climb cuts a little through the peak; the lip's ledge stands over the face's first fall)
-y0 = ground(*P(START_IN)); s_lip = s_top + LIP_PAST; y_lip = y_summit
+y0 = ground(*P(START_IN)); s_lip = s_top + LIP_PAST; y_lip = y_summit - LIP_UNDER
 th1 = math.radians(ANG); g0 = math.atan((y_lip - y0) / (s_lip - START_IN))
 for _ in range(60):
     Lk = max(0.0, R_KICK * (th1 - g0)); rise = sum(math.tan(g0 + (k + 0.5) / R_KICK) for k in range(int(Lk)))
@@ -111,7 +112,10 @@ def flight(v, gfun):
     vyl = vy - 9.81 * t; fall = math.degrees(math.atan2(-vyl, vx))
     return dict(lip_speed=round(v, 1), air_s=round(t, 2), dist_m=round(x, 1), apex_over_ground_m=round(apex, 1), land_s=round(s_lip + x, 1), land_speed=round(math.hypot(vx, vyl), 1), fall_deg=round(fall, 1))
 raw = lambda s: ground(*P(s))
-speeds = {n: lip_speed(*tv) for n, tv in VEHICLES.items()}
+# Round 73: the exe's lip speeds on this climb were 0.74 of this model's (the check: the Drifter Twin 32.2 m/s against 44.0, the Street Classic 27.9 against
+# 37.8, both flat out from the fast-travel spot): the flights are designed with the measured speeds
+CORR = float(os.environ.get("LEAP_CORR", "0.74"))
+speeds = {n: CORR * lip_speed(*tv) for n, tv in VEHICLES.items()}
 first = {n: flight(v, raw) for n, v in speeds.items()}
 land_lo = min(f["land_s"] for f in first.values()) - 60.0; land_hi = max(f["land_s"] for f in first.values()) + 60.0
 
