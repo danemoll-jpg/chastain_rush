@@ -43,7 +43,7 @@ def pts(f): return [(f[i], f[i + 1]) for i in range(0, len(f), 2)]
 
 
 import os as _os
-OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "40,45,70").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
+OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "30,30,55").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
 # (each deck runs on at least 25 m past the bench's edge onto its cut: LAND_L per jump = its overhang + 25 or more)
 JUMPS = [
     dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin", overhang=OVH1, land_l=OVH1 + 26.0),
@@ -53,7 +53,7 @@ JUMPS = [
 # (top m/s, push m/s2) as Round 68 / 70; CORR: Round 70's ramp flew 8 to 16 % shorter in the exe than this model said (its lip speeds lower)
 VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0),
             "Stunt Buggy": (50.0, 17.5), "Stunt Bike": (55.0, 18.0)}
-CORR = 0.716  # Round 73: the exe through the game's own input (the check's human-like rider, two runs): the Drifter Twin levels off at 31 to 34 m/s on the run-up (34.1 at The Corner's lip; this model 37.6 at 0.79),
+CORR = 0.79   # Round 73: the exe through the game's own input (the check's human-like rider): the Street Classic flat out off The Corner's lip at 43.7 m/s, CLEAN at 250 m (the bikes slower on the rough first run-ups: 31 to 34 m/s),
               # this model's 49.8 (Round 72's 0.93 came from a scripted check that drove the vehicle with its physics off)
 DECK_HALF = 4.5            # the kicker's deck: 9 m wide
 LAND_HALF = 10.0           # the landing deck: 20 m wide
@@ -91,7 +91,15 @@ def design(J):
                 if math.dist(q, (u[0] + ab[0] * t, u[1] + ab[1] * t)) < w: return True
         return False
     paved = [on_paved(P(s)) for s in run_s]
-    run_y = [gg if pv else max(gg - 0.5, ss) for gg, ss, pv in zip(g, sm, paved)]
+    # (Round 73: the check's rider found the run-ups rough (thrown into the air, 16 m/s lost at the airfield's edge): one smooth lane now, the ground
+    # smoothed along it (a Gaussian of 25 m, twice), across the paving too: the runway and taxiways are laid on the graded ground after it)
+    def gsm(vals, sig):
+        out = []
+        for i in range(len(vals)):
+            lo_, hi_ = max(0, i - int(3 * sig)), min(len(vals), i + int(3 * sig) + 1); w = [math.exp(-((k - i) / sig) ** 2 / 2) for k in range(lo_, hi_)]
+            out.append(sum(vals[k] * wk for k, wk in zip(range(lo_, hi_), w)) / sum(w))
+        return out
+    run_y = gsm(gsm(g, 5.0), 5.0)
     # ---- the kicker: from the run-up's last point (its foot on a flat pad) curving up to the lip's angle at the rim's edge; the angle chosen so the
     # window's middle flight comes down on the landing deck's middle (bisection on the angle)
     y_foot = run_y[-1]
@@ -161,13 +169,7 @@ def design(J):
     # ---- the grades: the run-up lane (kept off the runway and taxiways), the pad round the kicker (flat at its foot's height, the rim's mounds cut off;
     # never past the lip), the catch past the landing deck's foot, and the bleachers' pads
     # the lane in pieces between the runway and taxiways (open ends: nothing graded past a piece's ends, so the paving keeps its own surface)
-    lanes, cur = [], []
-    for s_, y_, pv in zip(run_s, run_y, paved):
-        if pv:
-            if len(cur) >= 2: lanes.append(cur)
-            cur = []
-        else: cur.append((s_, y_))
-    if len(cur) >= 2: lanes.append(cur)
+    lanes = [list(zip(run_s, run_y))]
     lane_grades = [{"id": f"quarry jump {J['id']} run-up {k}", "points": flat([P(s_) for s_, _ in ln]), "y": [round(y_, 3) for _, y_ in ln], "half": DECK_HALF + 3.0, "blend": 8.0,
                     "open_ends": True} for k, ln in enumerate(lanes)]
     # (Round 73: the pad level with the deck's foot: 0.6 m under it left a step the check's bike stuck at five times)
@@ -207,6 +209,9 @@ def design(J):
     zone_l = [P(s, LAND_HALF + 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]; zone_r = [P(s, -LAND_HALF - 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]
     zones = [{"id": f"quarry jump {J['id']} landing", "poly": flat(zone_l + zone_r[::-1]), "catch": True}]
     grades = lane_grades + [pad, runout] + pads
+    # (the speed window shown on the HUD: the exe's flights carry a little less far than this ballistic model: the Street Classic off The Corner at
+    # 43.7 m/s came down at 250 m, where the model puts 41.3 m/s: the window's speeds raised by that much)
+    FLIGHT_CORR = 43.7 / 41.3; v_lo, v_hi = v_lo * FLIGHT_CORR, v_hi * FLIGHT_CORR
     jump = dict(window=dict(lo=round(v_lo, 1), hi=round(v_hi, 1), lands=[round(land_s[0] + 3 - s_lip, 1), round(land_s[-1] - 3 - s_lip, 1)]), id=J["id"], name=J["name"],
                 origin=[round(o[0], 2), round(o[1], 2)], dir=[round(d[0], 5), round(d[1], 5)], run_s=[round(v, 2) for v in run_s], run_y=[round(v, 3) for v in run_y],
                 deck_s=deck_s, deck_y=deck_y, half=DECK_HALF, angle_deg=round(ang, 2), radius_m=round(R, 1), lip_s=s_lip, lip_y=round(y_lip, 3), tallest_m=round(tall, 1),
