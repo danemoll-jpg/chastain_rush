@@ -512,7 +512,7 @@ g_first = min(g_first, max(0, min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (
 g_last = g_last if not jumps[-1]["shaped"] else min(g_last, max(0, len(gk) - 1 - min(range(len(gk)), key=lambda i: abs(C[gk[i]] - (jumps[-1]["sL"] + jumps[-1]["x_end"] + 45.0)))))
 # Round 73 A2: the drive from where the line has left it (KEEP_FROM_M off; the check's second drive: tied to SEP_M it left 20 m of the drive's edge
 # graded to the drive's raw ground, not its built surface: 41 degrees of roll) to the summit lot is kept off
-KEEP_FROM_M = 8.0 (its own surface, its width and 1.5 m more)
+KEEP_FROM_M = 8.0   # (the drive keeps its own surface, its width and a meter more)
 _ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= KEEP_FROM_M)])[1]
 keep_off = flat(resample(cut(road, _ks - 4.0, None), 4.0))
 grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
