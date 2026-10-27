@@ -107,7 +107,7 @@ CTRL = [
     ((-3800, -1905), None),
 ]
 CLEARED = {}   # (the low stretches are over the interstates' own open lanes: nothing to clear)
-LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (180, 180), "U3": (220, 220), "L1": (300, 300)}   # meters before and after the ring
+LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (400, 220), "U3": (400, 250), "L1": (300, 300)}   # (U1 / U3 low and level 400 m before: the restart 150 m before is on it)   # meters before and after the ring
 LOW_CLEAR = {"SF": 10.0, "T1": 12.0, "U1": 5.0, "U3": 5.0, "L1": 12.0}   # over the ground there (under a bridge: as low as its deck allows)
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
 P = np.array([c[0] for c in CTRL], dtype=float); n = len(P)
@@ -226,7 +226,7 @@ if "--room" in sys.argv:
     planned = np.where(CEIL < 1e4)[0]
     for i in planned:
         near_ = [BUILT_HI[(i + k) % N] for k in range(-8, 9) if BUILT_HI[(i + k) % N] < 1e4]
-        CEIL[i] = (min(near_) - 1.7 - 1.2) if near_ else 1e4
+        CEIL[i] = (min(near_) - 1.7 - 2.4) if near_ else 1e4   # (Round 74's check: 1.2 m over the tail was too tight: the AI pilots hit Chastain Road's deck; 2.4)
 # the highest ground under the wings (6.5 m either side, across the line) and under the body
 def across(i):
     d = XZ[(i + 2) % N] - XZ[(i - 2) % N]; d = d / max(np.linalg.norm(d), 1e-6); r = np.array([d[1], -d[0]])
@@ -251,7 +251,7 @@ floor = np.where(low, w * f_low + (1 - w) * np.maximum(f_low, f_open), f_open)
 CEIL = np.minimum(CEIL, np.where(low & (BUILT_HI < 1e4), BUILT_HI - 1.7 - 1.2, 1e4))   # the built world's own underside, where the probe saw one
    # and its own ground: the wheels 2.2 m over it, low
 pinned = low & (CEIL < 1e4)
-floor = np.where(pinned, np.maximum(np.maximum(G + 4.3, G2 + 1.2), np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 1.6, -1e4)), floor)   # under a deck: the body 4.3 m up (the wheels 3 m)
+floor = np.where(pinned, np.maximum(np.maximum(G + 3.8, G2 + 1.2), np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 1.6, -1e4)), floor)   # under a deck: the body 3.8 m up (the wheels 2.5 m; Round 74, was 4.3)
 
 # heights: between rings straight, then never under the floor, then the climb / dive limits (raising only), then smoothed
 Y = np.zeros(N); order = sorted(rings, key=lambda r: r["i"])
