@@ -330,7 +330,7 @@ namespace ChastainRush
             if (PlayerVehicleAllowed) return;
             // Round 36: a stunt vehicle in a race goes back to the Street Classic (Racer's EligibleVehicle), or the trail's first vehicle
             var sw = car.GetComponent<VehicleSwitch>(); string id = RouteData.vehicles != null && RouteData.vehicles.Length > 0 ? RouteData.vehicles[0] : "original";
-            if (sw && RouteData.AllowsVehicle(sw.RaceVehicle)) id = sw.RaceVehicle;   // Round 70 (D): the last ground vehicle chosen for races
+            if (sw) id = sw.RaceVehicleFor(RouteData);   // Round 70 (D): the last ground vehicle chosen for races (Round 75 A: the last plane for an air race)
             if (sw) sw.Select(id, VehicleSwitch.Pick.Forced); else car.GetComponent<VehicleConfiguration>()?.Apply(id);
             Log($"vehicle not allowed on {RouteData.name}: switched to {id}");
         }

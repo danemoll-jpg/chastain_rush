@@ -31,7 +31,7 @@ namespace ChastainRush
         public static bool Open => Instance && Instance.open;
 
         // ---------------------------------------------------------------- settings (race setup), saved beside the records
-        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; public string route = ""; public int timeOfDay = 0, weather = 0; }   // Round 35 (Part C): the race's time of day (0 Day, 1 Dusk, 2 Night, 3 Dawn) and weather (0 Clear, 1 Rain, 2 Snow), Racer's race setup   // Round 18: route (a file name; "" = the Chastain Glen loop)
+        [Serializable] public sealed class Settings { public int laps = 3; public string direction = "forward"; public bool opponents = true; public int difficulty = 1; public string route = ""; public int timeOfDay = 0, weather = 0; public string routeStreet = "", routeAir = ""; }   // Round 75 (A): the last street and air course (the RACE TYPE row goes back to them)   // Round 35 (Part C): the race's time of day (0 Day, 1 Dusk, 2 Night, 3 Dawn) and weather (0 Clear, 1 Rain, 2 Snow), Racer's race setup   // Round 18: route (a file name; "" = the Chastain Glen loop)
         public static Settings Current = new Settings();
         static string SettingsPath()
         {
@@ -554,45 +554,52 @@ namespace ChastainRush
             var r = race ? race.Route : null; var rd = race ? race.RouteData : null;
             bool smallOnly = rd != null && rd.vehicles != null && rd.vehicles.Length > 0, oneWay = rd != null && !rd.Allows("reverse");
             bool air = rd != null && rd.air;   // Round 71: the air race
-            Clear("RACE SETUP", (r != null ? (air ? $"{r.Name}, {r.LapLength / 1000f:0.0} km a lap." : $"{r.Name}, {r.LapLength:0} m a lap.") : "") + (air ? "\nFly through the rings in the Sky Hopper; a ring missed costs 5 s. Solo is a time trial." : (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found."));
+            Clear("RACE SETUP", (r != null ? (air ? $"{r.Name}, {r.LapLength / 1000f:0.0} km a lap." : $"{r.Name}, {r.LapLength:0} m a lap.") : "") + (air ? "\nFly through the rings; a ring missed costs 5 s. Solo is a time trial." : (smallOnly ? "\nA woods trail: motorcycles, the ATV and the mower only." : "") + "\nShortcuts are there to be found."));
             void Changed() { SaveSettings(); ApplySettings(); Show(); }
             // Round 70 (D): outside a race, race setup puts on the last ground vehicle chosen for races (the game starts in Free Roam's)
             var held = car ? car.GetComponent<VehicleConfiguration>() : null;
-            if (vehicles && held && race && (race.State == RaceController.Stage.Free || race.State == RaceController.Stage.Finished) && !SplitScreen.Active && held.profileId != vehicles.RaceVehicle)
+            // Round 75 (A): an air route puts on the last plane chosen for air races, a street route the last ground vehicle (VehicleSwitch.RaceVehicleFor)
+            if (vehicles && held && race && (race.State == RaceController.Stage.Free || race.State == RaceController.Stage.Finished) && !SplitScreen.Active && held.profileId != vehicles.RaceVehicleFor(rd))
+                vehicles.Select(vehicles.RaceVehicleFor(rd), VehicleSwitch.Pick.Forced);
+            // Round 75 (A, Dan: "there needs to be another line in the menu to choose between street and air races. And depending on this, your garage
+            // becomes available"): RACE TYPE, Street / Air, first; the Route row holds that type's courses; each type goes back to its last course
+            string curFile = race ? (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route) : "";
+            var all = race ? race.Routes() : new List<(string file, string name)>();
+            var routes = all.Where(x => race.IsAir(x.file) == air).ToList();
+            if (air) Current.routeAir = curFile; else Current.routeStreet = curFile;
+            int at = Mathf.Max(0, routes.FindIndex(x => x.file == curFile));
+            Step(0, "racetype", $"Race type:   {(air ? "Air" : "Street")}", d =>
             {
-                if (rd == null || rd.AllowsVehicle(vehicles.RaceVehicle)) vehicles.Select(vehicles.RaceVehicle, VehicleSwitch.Pick.Forced);
-                else EnsureRouteVehicle();
-            }
-            // Round 18 (item 5): the route, left / right through Data/routes (the Chastain Glen loop first)
-            var routes = race ? race.Routes() : new List<(string file, string name)>();
-            int at = race ? Mathf.Max(0, routes.FindIndex(x => x.file == (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route))) : 0;
-            Step(0, "route", $"Route:   {(routes.Count > 0 ? routes[at].name : "-")}", d =>
+                var other = all.Where(x => race.IsAir(x.file) != air).ToList(); if (other.Count == 0) return;
+                string back = air ? Current.routeStreet : Current.routeAir;
+                ChooseRoute(other.Exists(x => x.file == back) ? back : other[0].file);
+            });
+            Step(1, "route", $"Route:   {(routes.Count > 0 ? routes[at].name : "-")}", d =>
             {
                 if (routes.Count < 2) return;
-                Current.route = routes[(at + d + routes.Count) % routes.Count].file; SaveSettings(); ApplySettings();
-                race.Reload(); EnsureRouteVehicle(); Show();
+                ChooseRoute(routes[(at + d + routes.Count) % routes.Count].file);
             });
-            Step(1, "laps", $"Laps:   {Current.laps}", d => { Current.laps = Mathf.Clamp(Current.laps + d, 1, 9); Changed(); });
-            Step(2, "direction", oneWay ? "Direction:   Forward (one way only)" : $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { if (oneWay) return; Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
-            Step(3, "mode", $"Opponents:   {(Current.opponents ? (air ? "3 AI pilots" : "3 AI drivers") : air ? "Solo (time trial)" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
-            Step(4, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
+            Step(2, "laps", $"Laps:   {Current.laps}", d => { Current.laps = Mathf.Clamp(Current.laps + d, 1, 9); Changed(); });
+            Step(3, "direction", oneWay ? "Direction:   Forward (one way only)" : $"Direction:   {(Current.direction == "reverse" ? "Reverse" : "Forward")}", d => { if (oneWay) return; Current.direction = Current.direction == "reverse" ? "forward" : "reverse"; Changed(); });
+            Step(4, "mode", $"Opponents:   {(Current.opponents ? (air ? "3 AI pilots" : "3 AI drivers") : air ? "Solo (time trial)" : "Solo")}", d => { Current.opponents = !Current.opponents; Changed(); });
+            Step(5, "difficulty", $"Difficulty:   {DifficultyNames[Current.difficulty]}", d => { Current.difficulty = Mathf.Clamp(Current.difficulty + d, 0, 2); Changed(); });
             // Round 35 (Part C): Racer's Time of Day and Weather rows (left / right; Racer's menu order Dawn, Day, Dusk, Night)
             var order = Racer.LookPresets.MenuOrder; int ti = Mathf.Max(0, Array.IndexOf(order, (Racer.TimeOfDay)Mathf.Clamp(Current.timeOfDay, 0, 3)));
-            Step(5, "timeofday", "Time of Day:   " + order[ti], d => { Current.timeOfDay = (int)order[(ti + d + order.Length) % order.Length]; Changed(); });
-            Step(6, "weather", "Weather:   " + (Racer.Weather)Mathf.Clamp(Current.weather, 0, 2), d => { Current.weather = (Mathf.Clamp(Current.weather, 0, 2) + d + 3) % 3; Changed(); });
-            Row(7, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
-            buttons[7].interactable = Current.opponents;
+            Step(6, "timeofday", "Time of Day:   " + order[ti], d => { Current.timeOfDay = (int)order[(ti + d + order.Length) % order.Length]; Changed(); });
+            Step(7, "weather", "Weather:   " + (Racer.Weather)Mathf.Clamp(Current.weather, 0, 2), d => { Current.weather = (Mathf.Clamp(Current.weather, 0, 2) + d + 3) % 3; Changed(); });
+            Row(8, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
+            buttons[8].interactable = Current.opponents;
             // Round 74 (A2, Dan: "There is no garage option"): a route with its own vehicle list (the air races' planes, the trails' bikes) opens the
             // garage too, holding only the route's vehicles: the turning model and the colors, as for the cars
-            if (smallOnly) Row(8, "garage", $"Garage…   {VehicleProfile.Find(car.GetComponent<VehicleConfiguration>()?.profileId ?? rd.vehicles[0]).Name}", () => OpenGarage("route"));
-            else Row(8, "garage", "Garage…", () => OpenGarage("race"));
+            if (smallOnly) Row(9, "garage", $"Garage…   {VehicleProfile.Find(car.GetComponent<VehicleConfiguration>()?.profileId ?? rd.vehicles[0]).Name}", () => OpenGarage("route"));
+            else Row(9, "garage", "Garage…", () => OpenGarage("race"));
             // Round 43 (B1): Racer's Ghost row (RaceMenus.Core: on / off, saved); its details say what the current route has
             var ghost = race ? race.Ghost : null;
-            if (ghost) { ghost.Refresh(); Toggle(9, "ghost", "Ghost", ghost.Enabled, () => { ghost.Toggle(); Show(); }); } else Row(9, "ghost", "Ghost:   -", () => { });
+            if (ghost) { ghost.Refresh(); Toggle(10, "ghost", "Ghost", ghost.Enabled, () => { ghost.Toggle(); Show(); }); } else Row(10, "ghost", "Ghost:   -", () => { });
             if (ghost && !SplitScreen.Active) details.text += "\nGhost: " + ghost.Status + " No resets, teleports or missed checkpoints; shortcuts count.";
             if (ghost) details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = Mathf.Min(200, 28 * (details.text.Count(c => c == '\n') + 1) + 6);
-            Row(10, "start", "START RACE", StartRace);
-            Row(11, "back", "Back", BackPage);
+            Row(11, "start", "START RACE", StartRace);
+            Row(12, "back", "Back", BackPage);
         }
 
         // Round 18: a route with a vehicle list (Noonday Creek): a player in anything else is put in its first vehicle when the
@@ -600,8 +607,20 @@ namespace ChastainRush
         void EnsureRouteVehicle()
         {
             var rd = race ? race.RouteData : null; var cfg = car ? car.GetComponent<VehicleConfiguration>() : null;
-            if (rd == null || cfg == null || rd.AllowsVehicle(cfg.profileId) || !vehicles) return;
-            vehicles.Select(rd.AllowsVehicle(vehicles.RaceVehicle) ? vehicles.RaceVehicle : rd.vehicles[0], VehicleSwitch.Pick.Forced);
+            if (rd == null || cfg == null || !vehicles) return;
+            string want = vehicles.RaceVehicleFor(rd);   // Round 75 (A): the route's type's last choice (a plane for an air course)
+            if (cfg.profileId != want) vehicles.Select(want, VehicleSwitch.Pick.Forced);
+        }
+        // Round 75 (A): a course chosen in race setup (the Route or RACE TYPE row). A race finished (or paused) is left first: its course stayed loaded
+        // (RaceController.Reload only in Free), so the garage held the old course's vehicles (Dan, after a street race: "my only garage choices were
+        // street vehicles")
+        void ChooseRoute(string file)
+        {
+            Current.route = file;
+            if (race.IsAir(file)) Current.routeAir = file; else Current.routeStreet = file;
+            SaveSettings(); ApplySettings();
+            if (race.State != RaceController.Stage.Free && !SplitScreen.Active) race.EndRace();
+            race.Reload(); EnsureRouteVehicle(); Show();
         }
 
         // Racer's Opponents page: each slot random or a vehicle (saved in ai_drivers.json, as before the menus)
@@ -609,7 +628,7 @@ namespace ChastainRush
         {
             var choices = RaceController.SavedAiChoices();
             var rd = race ? race.RouteData : null;   // Round 18: only the route's vehicles
-            Clear("OPPONENT VEHICLES", "Random picks a new vehicle every race." + (rd != null && rd.vehicles != null && rd.vehicles.Length > 0 ? "\n" + rd.name + ": motorcycles, the ATV and the mower only." : ""));
+            Clear("OPPONENT VEHICLES", "Random picks a new vehicle every race." + (rd != null && !rd.air && rd.vehicles != null && rd.vehicles.Length > 0 ? "\n" + rd.name + ": motorcycles, the ATV and the mower only." : ""));
             var list = new List<string> { "random" }; list.AddRange(VehicleProfile.All.Where(p => rd == null || rd.AllowsVehicle(p.Id)).Select(p => p.Id));
             for (int i = 0; i < choices.Length; i++)
             {

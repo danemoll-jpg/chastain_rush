@@ -17,13 +17,15 @@ namespace ChastainRush
         // Free Roam's garage or race setup's); the game starts in the Free Roam one, race setup puts on the race one (RaceVehicle). A vehicle
         // the game puts on by itself (a route's own vehicles, the police's, the stunt event's) is never remembered (Pick.Forced).
         // "color" in American English: the old file's "vehicle" / "colour" are read once (Old) and written over in the new shape.
-        [Serializable] class Saved { public string roam, race; public int color = -99; }
+        [Serializable] class Saved { public string roam, race, plane; public int color = -99; }   // Round 75 (A): "plane", the last plane chosen for air races
         [Serializable] class Old { public string vehicle; public int colour = -99; }
         public enum Pick { Roam, Race, Forced }
-        string roamId, raceId;
-        static void Read(string text, out string roam, out string race, out int color)
+        string roamId, raceId, planeId;
+        static void Read(string text, out string roam, out string race, out int color) => Read(text, out roam, out race, out _, out color);
+        static void Read(string text, out string roam, out string race, out string plane, out int color)
         {
             var s = JsonUtility.FromJson<Saved>(text); var o = JsonUtility.FromJson<Old>(text);
+            plane = s?.plane; if (VehicleProfile.Find(plane)?.IsPlane != true) plane = null;
             roam = !string.IsNullOrEmpty(s?.roam) ? s.roam : o?.vehicle;
             race = !string.IsNullOrEmpty(s?.race) ? s.race : o?.vehicle;
             color = s != null && s.color != -99 ? s.color : o != null && o.colour != -99 ? o.colour : -1;
@@ -32,6 +34,15 @@ namespace ChastainRush
         public static bool Races(string id) { var p = VehicleProfile.Find(id); return p != null && !p.Flies && !p.Stunt; }
         // the vehicle race setup puts on: the last ground vehicle chosen for races (the Street Classic if none)
         public string RaceVehicle => !string.IsNullOrEmpty(raceId) && VehicleProfile.IndexOf(raceId) >= 0 && Races(raceId) ? raceId : "original";
+        // Round 75 (A, Dan: "your garage becomes available ... I did a street race and then selected the new air course, and my only garage choices were
+        // street vehicles"): street and air races each keep their own vehicle: the last plane chosen for air races (the Sky Hopper if none)
+        public string PlaneVehicle => VehicleProfile.Find(planeId)?.IsPlane == true ? planeId : "plane";
+        // the vehicle race setup and the race's start put on for a route: its type's last choice if the route takes it, else the route's first vehicle
+        public string RaceVehicleFor(RouteJson rd)
+        {
+            string id = rd != null && rd.air ? PlaneVehicle : RaceVehicle;
+            return rd == null || rd.AllowsVehicle(id) ? id : rd.vehicles != null && rd.vehicles.Length > 0 ? rd.vehicles[0] : "original";
+        }
         VehicleConfiguration config;
         bool checkRun;
         public int Colour { get; private set; } = -1;   // Round 16: -1 = the vehicle's standard paint, else VehiclePaint's colour
@@ -83,7 +94,7 @@ namespace ChastainRush
             if (player == 2) { id = SplitScreen.P2Vehicle; colour = SplitScreen.P2Colour; }   // Round 37: player 2 (split screen)
             else if (forced != null) id = forced;
             else if (!checkRun || TestSave != null)
-                try { if (File.Exists(SavePath())) { Read(File.ReadAllText(SavePath()), out roamId, out raceId, out colour); id = roamId ?? id; } }
+                try { if (File.Exists(SavePath())) { Read(File.ReadAllText(SavePath()), out roamId, out raceId, out planeId, out colour); id = roamId ?? id; } }
                 catch (Exception e) { Debug.LogWarning("[Vehicle] saved choice unreadable: " + e.Message); }
             if (VehicleProfile.IndexOf(id) < 0) id = "original";
             config.Apply(id);
@@ -113,6 +124,7 @@ namespace ChastainRush
             if (RaceController.Instance && player == 1) RaceController.Instance.ReloadRecords();
             if (pick == Pick.Roam) roamId = id;
             if (pick != Pick.Forced && Races(id)) raceId = id;
+            if (pick != Pick.Forced && VehicleProfile.Find(id)?.IsPlane == true) planeId = id;   // Round 75 (A)
             if (pick != Pick.Forced || player == 2) Save();
             if (player == 2) SplitScreen.Session?.Refit();
             Debug.Log($"[Vehicle] {(player == 2 ? "player 2 " : "")}switched to {config.Profile.Name} ({config.profileId})");
@@ -142,7 +154,7 @@ namespace ChastainRush
             try
             {
                 string path = SavePath(); Directory.CreateDirectory(Path.GetDirectoryName(path));
-                File.WriteAllText(path, JsonUtility.ToJson(new Saved { roam = roamId ?? config.profileId, race = raceId, color = Colour }));
+                File.WriteAllText(path, JsonUtility.ToJson(new Saved { roam = roamId ?? config.profileId, race = raceId, plane = planeId, color = Colour }));
             }
             catch (Exception e) { Debug.LogWarning("[Vehicle] could not save the choice: " + e.Message); }
         }
