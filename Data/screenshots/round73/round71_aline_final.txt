@@ -1,0 +1,20 @@
+Round 71 check, 2026-10-27 01:04, the exe, 1280 x 720, muted.
+
+=== A lap flown cleanly by script (the AI pilot's code on the player's plane, Hard's pace)
+     15.3  START LINE crossed: clock started
+     31.2  CHECKPOINT 1 at 31.222
+     43.7  CHECKPOINT 2 at 43.735
+     49.6  CHECKPOINT 3 at 49.605
+     51.1  CHECKPOINT 4 at 51.120
+     69.1  CHECKPOINT 5 at 69.072
+     74.4  CHECKPOINT 6 at 74.421
+     77.3  CHECKPOINT 7 at 77.273
+     85.6  CHECKPOINT 8 at 85.579
+     99.7  CHECKPOINT 9 at 99.641
+    112.8  LAP 1 COUNTED 97.453 (clock 97.453 + penalty 0.0)
+    112.8  FINISH total 97.453 (clock 97.453 + penalties 0.0); laps 97.453; place 1
+PASS  aline: the lap finished  -  lap 1:37.453
+PASS  aline: every ring passed (none missed)  -  0 missed
+PASS  aline: no crash
+
+3 of 3 checks passed.

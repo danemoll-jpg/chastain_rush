@@ -1,0 +1,161 @@
+Round 73 check, 2026-10-27 00:44, the exe, 1280 x 720, muted.
+
+=== Dan's six reports, from his exact position and heading (the chase camera, as he saw it)
+  BUG-001 (Kennesaw Mountain race, before the start line: the barrier across the road): at (-866.0, 393.8, -5208.2) heading 56; standing in the 60 m ahead: nothing; picture 73_BUG-001_after.png
+  BUG-002 (Kennesaw Mountain race, the drive with CP5 next: the barrier across the road): at (-1084.3, 627.0, -5837.3) heading 49; standing in the 60 m ahead: nothing; picture 73_BUG-002_after.png
+  BUG-003 (Kennesaw Mountain Drive by the summit lot: the road cut by J1's kicker): at (-933.3, 639.3, -5721.7) heading 141; standing in the 60 m ahead: BusinessBodies_-8_-45; picture 73_BUG-003_after.png
+  BUG-004 (the quarry bleachers: blocks for people): at (-2024.2, 216.9, -1350.4) heading 216; standing in the 60 m ahead: nothing; picture 73_BUG-004_after.png
+  BUG-005 (the far bleachers: people buried): at (-2423.3, 198.1, -1323.2) heading 115; standing in the 60 m ahead: nothing; picture 73_BUG-005_after.png
+  BUG-006 (down in the pit under a ramp's trestle: stuck, reset did nothing): at (-2398.8, 182.8, -1359.4) heading 308; standing in the 60 m ahead: nothing; picture 73_BUG-006_after.png
+
+=== Every car course, each direction: the race started (its barriers up), its line and lead-in swept 0.4 to 2 m over the line, 2.5 m either side
+  Chastain Glen loop forward: 9 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER
+PASS  bars Chastain Glen loop forward: no barrier on the race's line
+  Chastain Glen loop reverse: 9 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER
+PASS  bars Chastain Glen loop reverse: no barrier on the race's line
+  Noonday Creek Extension forward: 0 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): Noonday Creek trail/sc J4 road jump kicker x30, Noonday Creek trail/sc RJ4 reverse road jump kicker x22, sc RJ4 reverse road jump kicker/sc RJ4 reverse road jump kicker heap x22, sc J4 road jump kicker/sc J4 road jump kicker heap x17, BJ1 footbridge/sc BJ1 footbridge deck x9, BJ3 fallen_tree/sc BJ3 fallen_tree ramp x9
+PASS  bars Noonday Creek Extension forward: no barrier on the race's line
+  Noonday Creek Extension reverse: 0 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): Noonday Creek trail/sc J4 road jump kicker x30, sc RJ4 reverse road jump kicker/sc RJ4 reverse road jump kicker heap x22, Noonday Creek trail/sc RJ4 reverse road jump kicker x22, sc J4 road jump kicker/sc J4 road jump kicker heap x17, BJ3 fallen_tree/sc BJ3 fallen_tree ramp x9, BJ1 footbridge/sc BJ1 footbridge deck x9
+PASS  bars Noonday Creek Extension reverse: no barrier on the race's line
+  Underground forward: 0 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: RaceBarriers/Switch gate SG1; other things the sweep met (for review): cell 121-181 m/sc Net M5c barrel x58, cell 0-60 m/sc Net M1a barrel x54, cell 0-60 m/sc Net M5a barrel x51, cell 0-60 m/sc Net M5c barrel x50, cell 60-121 m/sc Net M5a barrel x50, cell 122-182 m/sc Net M5b barrel x49
+FAIL  bars Underground forward: no barrier on the race's line  -  RaceBarriers/Switch gate SG1
+  Chastain Ridge forward: 23 barriers built, 0 left out as on the line, 1 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): HouseColliders/House 706 x8, RL dirtpile/sc RL dirtpile kicker x7, RL dirtpile/sc RL back x4, sc RL dirtpile kicker/sc RL dirtpile kicker heap x2
+PASS  bars Chastain Ridge forward: no barrier on the race's line
+  Chastain Ridge reverse: 20 barriers built, 0 left out as on the line, 1 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): HouseColliders/House 706 x6, RL dirtpile/sc RL dirtpile kicker x6, RL dirtpile/sc RL back x5, sc RL dirtpile kicker/sc RL dirtpile kicker heap x3
+PASS  bars Chastain Ridge reverse: no barrier on the race's line
+  Chastain Lakes forward: 18 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): ChastainLakes/Footbridge deck x5
+PASS  bars Chastain Lakes forward: no barrier on the race's line
+  Chastain Lakes reverse: 17 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): ChastainLakes/Footbridge deck x5
+PASS  bars Chastain Lakes reverse: no barrier on the race's line
+  Addison Heights forward: 12 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER
+PASS  bars Addison Heights forward: no barrier on the race's line
+  Addison Heights reverse: 14 barriers built, 0 left out as on the line, 1 blocks trimmed off the line; on the line: NO BARRIER
+PASS  bars Addison Heights reverse: no barrier on the race's line
+  Noonday Creek Trail forward: 20 barriers built, 0 left out as on the line, 3 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): Red truss footbridge/Red bridge truss x101, Bridges/BridgeStructure x35, Mall race pieces (Round 62)/Mall ramp mattress mountain x4
+PASS  bars Noonday Creek Trail forward: no barrier on the race's line
+  Noonday Creek Trail reverse: 24 barriers built, 0 left out as on the line, 1 blocks trimmed off the line; on the line: NO BARRIER; other things the sweep met (for review): Red truss footbridge/Red bridge truss x99, Bridges/BridgeStructure x36, CL riprap/sc CL riprap rock x6, Mall race pieces (Round 62)/Mall ramp mattress mountain x4
+PASS  bars Noonday Creek Trail reverse: no barrier on the race's line
+  Kennesaw Mountain forward: 1 barriers built, 0 left out as on the line, 0 blocks trimmed off the line; on the line: NO BARRIER
+PASS  bars Kennesaw Mountain forward: no barrier on the race's line
+  barriers on any line: 1
+
+=== Kennesaw Mountain Drive in Free Roam: up past BUG-002 to the summit lot (BUG-003), then back down (the Street Classic, then the Drifter Twin)
+  Street Classic  up: reached the end in 38.4 s, top 22 m/s, longest in the air 0.00 s, most roll on the ground 12.5 deg at (-1244, -6019), resets 0
+FAIL  kdrive Street Classic up: a normal road (to the end, no air over 0.3 s, roll under 8 degrees, no reset)  -  air 0.00 s, roll 12.5, resets 0
+  Street Classic  down: reached the end in 37.3 s, top 22 m/s, longest in the air 0.00 s, most roll on the ground 12.5 deg at (-1185, -5937), resets 0
+FAIL  kdrive Street Classic down: a normal road (to the end, no air over 0.3 s, roll under 8 degrees, no reset)  -  air 0.00 s, roll 12.5, resets 0
+  Drifter Twin    up: reached the end in 38.5 s, top 22 m/s, longest in the air 0.00 s, most roll on the ground 13.3 deg at (-1244, -6019), resets 0
+FAIL  kdrive Drifter Twin up: a normal road (to the end, no air over 0.3 s, roll under 8 degrees, no reset)  -  air 0.00 s, roll 13.3, resets 0
+  Drifter Twin    down: reached the end in 37.3 s, top 23 m/s, longest in the air 0.00 s, most roll on the ground 12.5 deg at (-1184, -5937), resets 0
+FAIL  kdrive Drifter Twin down: a normal road (to the end, no air over 0.3 s, roll under 8 degrees, no reset)  -  air 0.00 s, roll 12.5, resets 0
+
+=== The summit leap: fast travel to its run-up, flat out (by the human-like driver), the flight, the landing; a short one; a reset after the landing
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-951, -5729)
+      run-up (station:speed): 0:3.6d5 25:6.7ad5 50:22.1 76:28.7 101:32.5 126:33.6 152:33.7 177:33.8 203:33.7 228:33.6 254:32.8 279:31.8a 304:29.6ad6 330:30.0ad13 355:32.8ad20 380:37.4ad26 406:43.3ad33 431:50.0ad39 456:57.3ad46 481:15.5d38 507:28.7d20 532:34.5 557:35.8 583:33.1 608:24.8a 633:25.5a 659:29.5a
+  Drifter Twin    flat out: off the lip at 32.0 m/s, 6.9 s in the air, came down 188 m past the lip at (-1198, -6125) upright 0.88; stopped at (-1249, -6327) upright 0.94; resets 0
+FAIL  leap Drifter Twin flat out: a long flight (7 s or more), lands upright  -  6.9 s, 188 m
+    reset after it: from (-1249, -6327) to (-1222, -6267), 66 m, upright 1.00
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-948, -5732)
+      run-up (station:speed): 1:0.5 26:6.6d9 51:20.2d4 76:22.8 101:25.4 127:26.8 152:27.2d4 177:27.1 203:28.5 228:28.7 253:27.9 279:27.4a 304:25.6ad8 329:27.7ad15 355:32.9ad22 380:39.9ad30 405:48.0ad37 430:26.9ad33 455:25.0d16 480:26.0d20 506:33.8d9 531:36.4d4 556:36.6d4 581:33.7d4 607:23.5a 632:24.2a 657:19.2d6 682:12.6 708:14.7a 733:21.3 758:16.7 783:20.5
+  Street Classic  flat out: off the lip at 27.6 m/s, 6.1 s in the air, came down 145 m past the lip at (-1174, -6089) upright 1.00; stopped at (-1294, -6447) upright 0.94; resets 0
+FAIL  leap Street Classic flat out: a long flight (7 s or more), lands upright  -  6.1 s, 145 m
+    reset after it: from (-1294, -6447) to (-1294, -6421), 27 m, upright 0.92
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-949, -5733)
+      run-up (station:speed): 1:0.0 27:21.2d10 52:25.1d3 77:29.4 103:30.9 128:31.4d6 153:28.1 179:31.9 204:33.2 229:34.8d4 254:34.2 280:33.1a 305:31.0ad5 331:30.9ad8 356:32.9ad12 381:36.7ad15 406:41.7ad18 432:47.7ad21 457:54.1ad25 482:61.0ad28 507:52.0d31 533:37.2ad34 559:36.4d35 584:34.0ad24 609:18.3ad5 634:15.6d15
+  Needle 600      flat out: off the lip at 33.5 m/s, 7.9 s in the air, came down 228 m past the lip at (-1148, -6195) upright 0.87; stopped at (-1244, -6314) upright 0.95; resets 0
+PASS  leap Needle 600 flat out: a long flight (7 s or more), lands upright  -  7.9 s, 228 m
+    reset after it: from (-1244, -6314) to (-1245, -6285), 28 m, upright 0.99
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-951, -5729)
+      run-up (station:speed): 0:3.6d5 25:20.8 50:21.6 76:21.4 101:21.6 126:21.7 151:21.5 177:21.4 202:21.6 227:21.7 252:21.4 277:21.2a 302:20.8ad9 328:27.7ad19 353:38.0ad28 378:19.4d39 403:25.2ad60
+  Drifter Twin    short (half throttle): off the lip at 21.4 m/s, 5.4 s in the air, came down 99 m past the lip at (-1085, -6082) upright 1.00; stopped at (-1071, -6148) upright 0.60; resets 0
+    reset after it: from (-1071, -6148) to (-1071, -5974), 174 m, upright 0.94
+
+=== From the QUARRY JUMPS sign on the airport's service road (by The Big One's start) along the quarry jumps drive past each start box
+  the drive: driven end to end in 58 s, resets 0
+PASS  qroad: the quarry jumps drive drivable end to end
+
+=== The quarry jumps from fast travel: into the box, the countdown, the run-up held by eye at the window's middle, the jump
+  fast travel to Viking Quarry: The Corner: arrived at (-1639, -1893)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:21.9 51:28.2 76:32.1 102:34.6 127:32.6 152:35.4 178:37.5 203:39.2 229:40.5 254:41.0a 279:41.0 305:41.5 330:40.0a 356:38.1a 381:37.3a 406:37.7a 432:39.3a 457:41.9a 483:45.3a 508:49.4a 533:54.0a
+  J1 The Corner, Street Classic held by eye at 91 mph: lip 41.7 m/s (93 mph, window 85-98): CLEAN 234 m, 6.4 s
+PASS  qjump J1 Street Classic at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Corner: arrived at (-1639, -1893)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:23.5 50:30.6 76:35.2 101:38.5 126:41.1 152:41.7 177:41.8 202:41.6 227:41.8 252:41.8 278:41.3 303:41.9 329:40.5a 354:38.6a 379:37.7a 405:37.9a 430:39.3a 455:41.7a 480:44.9a 506:48.9a 531:53.3a
+  J1 The Corner, Drifter Twin held by eye at 91 mph: lip 42.1 m/s (94 mph, window 85-98): CLEAN 238 m, 6.5 s
+PASS  qjump J1 Drifter Twin at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Long One: arrived at (-2000, -2003)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:21.4 51:27.3 76:30.9 101:33.6 127:35.8 152:37.6 177:39.1 203:40.4 228:41.5 253:42.3 279:42.9 304:43.4 329:43.8 355:44.2a 380:42.4a 406:41.3a 432:41.1a 457:41.8a 482:43.4a 508:45.7a 533:48.7a 559:52.2a 584:56.1a
+  J2 The Long One, Street Classic held by eye at 100 mph: lip 44.3 m/s (99 mph, window 94-107): CLEAN 247 m, 6.2 s
+PASS  qjump J2 Street Classic at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Long One: arrived at (-2000, -2003)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:23.0 51:29.8 76:34.1 102:37.3 127:40.0 153:42.2 178:44.1 203:45.1 228:45.4 254:45.7 279:46.0 305:45.7 331:45.8 356:45.6a 382:43.8a 407:42.8a 432:42.5a 458:43.1a 483:44.4a 509:46.4a 534:49.0a 559:52.2a 585:55.8a 610:59.8a
+  J2 The Long One, Drifter Twin held by eye at 100 mph: lip 45.8 m/s (103 mph, window 94-107): CLEAN 259 m, 6.3 s
+PASS  qjump J2 Drifter Twin at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Big One: arrived at (-2286, -2039)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:22.3 51:28.8 76:32.5 101:34.9 127:36.6 152:38.2 178:39.4 204:40.5 229:41.4 254:42.2 280:42.8 305:43.4 330:43.8 356:42.7a 381:42.0a 406:42.0a 431:42.9a 457:44.6a 482:47.0a 508:49.9a 533:53.4a 558:57.3a 583:61.4a
+  J3 The Big One, Street Classic held by eye at 102 mph: lip 43.9 m/s (98 mph, window 92-112): CLEAN 249 m, 6.2 s
+PASS  qjump J3 Street Classic at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Big One: arrived at (-2286, -2039)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:23.9 50:31.2 76:35.7 101:38.6 126:40.8 151:42.7 177:44.3 202:45.7 228:45.8 253:46.0 279:46.2 304:46.4 330:46.5 355:45.6a 381:44.7a 406:44.6a 432:45.1a 457:46.3a 483:48.2a 508:50.6a 533:53.5a 559:56.8a 584:60.4a
+  J3 The Big One, Drifter Twin held by eye at 102 mph: lip 46.7 m/s (104 mph, window 92-112): ROUGH 268 m, 6.3 s
+FAIL  qjump J3 Drifter Twin at the window: lands clean  -  ROUGH
+  fast travel to Viking Quarry: The Long One: arrived at (-2000, -2003)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:24.5 50:31.7 75:36.2 101:39.7 127:42.5 152:44.8 177:45.4 203:45.9 229:46.0 254:45.6 280:45.6 305:45.7 331:45.6 357:46.1a 382:44.3a 408:43.2a 433:42.9a 459:43.4a 484:44.6a 510:46.6a 535:49.1a 560:52.2a 586:55.7a 611:59.5a
+  J2 The Long One, Needle 600 held by eye at 100 mph: lip 46.3 m/s (104 mph, window 94-107): CLEAN 264 m, 6.4 s
+PASS  qjump J2 Needle 600 at the window: lands clean  -  CLEAN
+  fast travel to Viking Quarry: The Corner: arrived at (-1639, -1893)
+      run-up (station:speed, a = in the air, d = off the line): 0:0.1 25:21.8 50:28.1 76:32.1 101:34.9 126:37.1 151:38.7 177:40.1 202:41.2 228:42.0 253:42.6a 279:43.1 304:43.8 329:42.4a 355:40.4a 380:39.4ad5 406:39.3ad6 431:40.3ad8 456:42.2ad10 482:45.0ad12 507:48.4ad14 532:52.4ad15 558:56.8ad17
+  J1 The Corner, Street Classic flat out: lip 44.0 m/s (98 mph, window 85-98): ROUGH 248 m, 6.5 s
+
+=== The bleachers: each stand from the front, close
+  J1 stand 0: at (-1833, -1340); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J1 stand 1: at (-1748, -1317); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J1 stand 2: at (-1735, -1657); the ground across it +0.0 / +0.0 / -0.2 m (level pad)
+  J2 stand 0: at (-2058, -1328); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J2 stand 1: at (-1956, -1353); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J2 stand 2: at (-2032, -1710); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J3 stand 0: at (-2160, -1396); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J3 stand 1: at (-2075, -1419); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+  J3 stand 2: at (-2254, -1795); the ground across it +0.0 / +0.0 / +0.0 m (level pad)
+
+=== The reset (Y) where Dan was stuck, and wedged against a kicker's side
+  BUG-006's spot: from (-2399, 183, -1360) to (-1804, 222, -1297), 598 m, upright 0.99
+PASS  qreset BUG-006's spot: the reset moves the vehicle somewhere else, upright  -  598 m
+  against The Corner's kicker: from (-1719, 309, -1617) to (-1804, 222, -1297), 331 m, upright 0.99
+PASS  qreset against The Corner's kicker: the reset moves the vehicle somewhere else, upright  -  331 m
+  against The Long One's kicker: from (-2006, 319, -1675) to (-1804, 222, -1297), 429 m, upright 0.99
+PASS  qreset against The Long One's kicker: the reset moves the vehicle somewhere else, upright  -  429 m
+  against The Big One's kicker: from (-2212, 321, -1739) to (-1804, 222, -1297), 602 m, upright 0.99
+PASS  qreset against The Big One's kicker: the reset moves the vehicle somewhere else, upright  -  602 m
+
+=== The rings' line against the built world (no flying): the plane's strike points every 2.5 m
+  Quarry Air Race: lap 10255 m, 9 rings + the line, 2 laps
+  lowest over the ground: 4.2 m at 3988 m from the line
+  under the decks:
+      3960 m (-445, 296.3, -832): 3.9 m up to BridgeStructure, 4.4 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3965 m (-449, 295.7, -830): 4.5 m up to BridgeStructure, 4.2 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3970 m (-453, 295.1, -827): 5.2 m up to BridgeStructure, 4.4 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3975 m (-457, 294.6, -824): 5.8 m up to BridgeStructure, 4.5 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3980 m (-461, 294.7, -821): 5.7 m up to BridgeStructure, 2.8 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3985 m (-466, 295.5, -819): 5.0 m up to BridgeStructure, 3.0 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      3990 m (-470, 296.4, -816): 4.2 m up to BridgeStructure, 3.2 m down (body 1.25 m under the middle, tail 1.7 m over it)
+  S/F     Start / finish                 (-3041, 345, -1879) ring 44 m across; ground 16.0 m under it (ray 16.0 m to Terrain_8_10)
+  ring 1  Past the runway                (-1298, 360, -1790) ring 52 m across; ground 56.3 m under it (ray 56.3 m to Terrain_11_10)
+  ring 2  High ring                      (-21, 440, -1425) ring 56 m across; ground 133.6 m under it (ray 133.6 m to Terrain_12_10)
+  ring 3  Over I-75 northbound           (-335, 330, -902) ring 32 m across; ground 39.6 m under it (ray 39.6 m to Terrain_12_11)
+  ring 4  Under I-75 southbound          (-457, 295, -824) frame 20 x 6.8 m; ground 5.6 m under it (ray 5.6 m to Terrain_12_11), BridgeStructure 5.8 m over it
+  ring 5  Quarry rim                     (-1590, 343, -1480) ring 44 m across; ground 40.5 m under it (ray 40.5 m to Terrain_10_10)
+  ring 6  Quarry lake                    (-2149, 144, -1545) ring 40 m across; ground 30.4 m under it (ray 30.4 m to Terrain_9_10)
+  ring 7  Quarry climb                   (-2452, 261, -1571) ring 40 m across; ground 147.3 m under it (ray 147.3 m to Terrain_9_10)
+  ring 8  South of the airport           (-2949, 385, -2199) ring 52 m across; ground 64.8 m under it (ray 64.8 m to Terrain_8_9)
+  ring 9  The turn                       (-4241, 381, -2200) ring 52 m across; ground 45.0 m under it (ray 45.0 m to Terrain_6_9)
+PASS  aprobe: nothing solid and no tree's crown on the rings' line  -  0 stretch(es) listed above
+
+=== The Quarry Air Race flown by the human-like pilot, by the arrow alone (race.Target, what the arrow points at): ring 3 missed on purpose, then gone back for
+     30.8  CHECKPOINT 1 at 30.747
+     43.1  RING 2 flown past outside it (26 m out): the guide on to the next
+  DID NOT finish in 600 s of game time; missed 0, penalty 0 s; crashes 0; ring 3 missed shown: False, gone back for: False
+FAIL  airpilot: the lap flown by the arrow alone, finished  -  next ring 2
+FAIL  airpilot: ring 3 flown past outside it: RING MISSED, then gone back for and taken (no penalty)  -  penalty 0 s
+
+26 of 36 checks passed.

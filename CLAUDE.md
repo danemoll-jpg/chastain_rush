@@ -439,8 +439,8 @@ the grade: `RidgeGrade.keep_off` / `keep_off_fade` now in `GradeAlong`); A3 the 
 `Race/AirGuideArrow.cs`, beacons, the minimap's next rings. C the quarry jumps rebuilt (`make_quarry_jumps.py`: lines, smooth run-up lanes, landing decks over the bank face
 on skirted trestles, windows from the exe's measured speeds; signs `python Tools/handmade/make_quarry_signs.py`, hand-made, committed), seated people in the bleachers
 (`SeatedPerson`), the quarry jumps drive, a Free Roam reset never back onto a stuck spot (`VehicleRespawn.SafeHistory`, `CarRecovery`, `RoadLookup.NearestPointWithin`),
-the Quarry Track (`python Tools/mapgen/make_quarry_track.py [--plot]` writes `Data/routes/quarry_track.json` and `Data/tracks/quarry_track.json`; re-run after
-make_quarry_jumps.py; the race-time divider `QuarryTrackDivider`), the AI's recovery takes a route's `reset_skip`. Check: `ChastainRush.exe -exeRound73 <dir> [-r73Only
+the Quarry Track NOT built (`make_quarry_track.py` kept, its output moved to `local/round73/quarry_track_unbuilt/`: its lane crossing let racers skip The
+Corner and got cars stuck; the divider code is inert without the file), the AI's recovery takes a route's `reset_skip`. Check: `ChastainRush.exe -exeRound73 <dir> [-r73Only
 dan,bars,kdrive,leap,qroad,qjump,qcrowd,qreset,qtrack,airprobe,airpilot,allraces] -logFile <dir>\Player.log` (`Checks/Round20Runner.R73.cs`: a human-like driver and pilot
 on a virtual controller, pictures from the player's camera). Imported from Racer: nothing.
 **Round 72 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Viking Quarry jumps (Free Roam events; `python Tools/mapgen/make_quarry_jumps.py
