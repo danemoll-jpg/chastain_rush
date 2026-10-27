@@ -404,7 +404,7 @@ namespace ChastainRush
         {
             report.AppendLine(); report.AppendLine("=== The Quarry Air Race flown by the human-like pilot, by the arrow alone (race.Target, what the arrow points at): ring 3 missed on purpose, then gone back for");
             yield return Clock(13f);
-            RaceController.RouteOverride = "quarry_air_race.json"; RaceController.DirectionOverride = "forward"; RaceController.LapsOverride = 1; RaceController.AiCount = 0;
+            RaceController.RouteOverride = R71File; RaceController.DirectionOverride = "forward"; RaceController.LapsOverride = 1; RaceController.AiCount = 0;   // Round 74: -r71Route (the Highway Air Race)
             if (race.State != RaceController.Stage.Free) race.EndRace();
             race.Reload(); race.StartRace(); R73Pad();
             var pl = car.GetComponent<PlaneFlight>(); if (!pl) { Check("airpilot: the plane", false); yield break; }
@@ -456,8 +456,10 @@ namespace ChastainRush
         {
             report.AppendLine(); report.AppendLine("=== One race per car course: 3 AI, 1 lap, Normal; the player driven by the human-like driver; every racer finishes");
             yield return Clock(13f);
+            var only73 = R70Arg("-r73Courses", "");   // Round 74: -r73Courses kennesaw_mountain.json,... (some courses only)
             foreach (var (file, dirs) in R73CarCourses)
             {
+                if (only73 != "" && !only73.Split(',').Contains(file)) continue;
                 string dir = dirs[0];
                 UseRoute(file, dir); var r = race.Route; if (r == null) { report.AppendLine($"  {file}: NOT LOADED"); continue; }
                 string vid = r.Data != null && r.Data.vehicles != null && r.Data.vehicles.Length > 0 ? r.Data.vehicles[0] : "drifter";
