@@ -48,6 +48,10 @@ Shader "Racer/StylizedClouds"
                 lit*=lerp(1-_Shade,1,saturate(v.h));
                 lit+=_Flash*half3(.85,.88,1)*(.55+.45*saturate(v.h));
                 float d=distance(v.w,GetCameraPositionWS());
+                // Chastain Rush, Round 75: near the camera a cloud breaks up (dithered: none within 25 m, whole past 260 m), so a camera at the
+                // layer's height (Kennesaw's summit, a plane) flies through broken cloud instead of meeting a solid white face
+                float ign=frac(52.9829189*frac(dot(v.p.xy,float2(.06711056,.00583715))));
+                clip(saturate((d-25.)/235.)-ign);
                 lit=lerp(lit,_Haze.rgb,_HazeAmount*saturate(d/_HazeDistance));
                 return half4(lit,1);
             }

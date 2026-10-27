@@ -101,7 +101,7 @@ namespace ChastainRush
             foreach (var (name, at, yaw) in new[] { ("summit lip", new Vector3(-1068.06f, 0f, -5968.78f), 209.2f), ("Chastain Glen", new Vector3(2900f, 0f, 1000f), 0f) })
             {
                 yield return R74Place(at, yaw, 3f);
-                float raise = clouds ? clouds.Raise : -1f; var cam = Camera.main.transform.position;
+                float raise = 0f; var cam = Camera.main.transform.position;   // (Round 75: the layer no longer rises)
                 float lowest = float.MaxValue; if (clouds) foreach (Transform t in clouds.transform) if (t.gameObject.activeSelf && t.name == "Cloud") lowest = Mathf.Min(lowest, t.position.y - t.localScale.y * .15f);
                 report.AppendLine($"  {name}: the camera at {cam.y:0} m; the layer raised {raise:0} m; the lowest cloud's base about {lowest:0} m ({lowest - cam.y:+0;-0} m from the camera)");
                 if (name == "summit lip") { yield return Capture("74_clouds_summit"); Check("clouds: over the summit, the lowest cloud stays over the camera", lowest > cam.y + 60f, $"{lowest - cam.y:0} m"); }
