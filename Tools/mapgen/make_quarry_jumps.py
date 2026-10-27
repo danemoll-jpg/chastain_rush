@@ -53,10 +53,11 @@ VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "
 CORR = 0.93
 DECK_HALF = 4.5            # the kicker's deck: 9 m wide
 LAND_HALF = 10.0           # the landing deck: 20 m wide
-LAND_L = 44.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a cut in the bench
-LAND_REL = 18.0            # the landing deck lies this much shallower than the design flight comes down
+LAND_L = 38.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a shallow cut in the bench
+LAND_REL = 38.0            # the landing deck lies this much shallower than the design flight comes down (about 10 degrees: a cut of 6 to 7 m that
+                           # climbs back within 80 m, clear of the haul road beyond The Long One; the catch zone sets a vehicle on its wheels)
 R_KICK = 180.0             # the kicker's radius: Evel Knievel's short steep ramp (a held steel deck: RampHold keeps a vehicle on it; 11 m/s2 at 45 m/s)
-RISE_BACK = 0.08           # past the landing deck's foot the cut's floor climbs back to the bench at this grade (the run-out)
+RISE_BACK = 0.15           # past the landing deck's foot the cut's floor climbs back to the bench at this grade (the run-out)
 RUNOUT = 110.0             # the catch past the landing deck's foot, graded smooth along the line
 PAD_HALF = 15.0            # the pad round the kicker: flat at its foot's height this far either side of the line
 PAVED = [a for a in M["aeroways"] if a.get("kind") in ("runway", "taxiway")]
@@ -108,7 +109,7 @@ def design(J):
     # descent less LAND_REL to the bench
     def deck(ang, v_mid, ds, dy):
         x_mid = edge + 0.4 * LAND_L - ds[-1]
-        alpha = max(math.radians(12.0), fall(ang, v_mid, x_mid) - math.radians(LAND_REL))
+        alpha = max(math.radians(10.0), fall(ang, v_mid, x_mid) - math.radians(LAND_REL))
         ls = list(np.arange(edge - 1.0, edge + LAND_L + 0.01, 1.0)); ly = [bench - math.tan(alpha) * (s - edge) for s in ls]
         return ls, ly, alpha
     def comes_down(y0, ang, v, s0, surf):
@@ -167,7 +168,7 @@ def design(J):
     pad = {"id": f"quarry jump {J['id']} kicker pad", "points": flat([P(s) for s in pad_s]), "y": [round(y_foot - 0.6, 3)] * len(pad_s), "half": PAD_HALF, "blend": 10.0, "open_ends": True}
     # under the landing deck: the bench cut down to the deck (it lies on its ground: nothing under it), then the cut's floor climbing back to the bench
     depth = bench - land_y[-1]; back_L = depth / RISE_BACK
-    ro_s = list(np.arange(land_s[0], land_s[-1] + back_L + RUNOUT, 2.0))
+    ro_s = list(np.arange(land_s[0], land_s[-1] + back_L + 30.0, 2.0))
     def ro_at(s):
         if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.25
         y = land_y[-1] - 0.25 + RISE_BACK * (s - land_s[-1]); return min(y, max(bench, raw(s))) if s > land_s[-1] + back_L else y

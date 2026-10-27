@@ -22,6 +22,9 @@ namespace ChastainRush
         [Serializable] class QjAccess { public float[] drive; public float half; public QjSign[] signs, boards; }
         [Serializable] class QjFile { public RidgeGrade[] grades; public RidgeClear[] clear_lines; public CtZone[] landing_zones; public QjJump[] jumps; public QjAccess access; }
         const string QuarryJumpsFile = "Data/tracks/quarry_jumps.json";
+        [Serializable] class QtFile { public RidgeGrade[] grades; public RidgeClear[] clear_lines; public float[] divider; public string route_name; }
+        const string QuarryTrackFile = "Data/tracks/quarry_track.json";
+        static QtFile QuarryTrackNow;
         static QjFile QuarryJumpsNow; static string QuarryJumpsJson;
 
         static void MergeQuarryJumps(Ridge mountain)
@@ -32,6 +35,14 @@ namespace ChastainRush
             QuarryJumpsJson = File.ReadAllText(path); var f = QuarryJumpsNow = JsonUtility.FromJson<QjFile>(QuarryJumpsJson); var d = mountain.Data;
             T[] Cat<T>(T[] a, T[] b) => (a ?? new T[0]).Concat(b ?? new T[0]).ToArray();
             d.grades = Cat(d.grades, f.grades); d.clear_lines = Cat(d.clear_lines, f.clear_lines); d.landing_zones = Cat(d.landing_zones, f.landing_zones);
+            // Round 73 (C5): the Quarry Track's benches (the two-lane haul road, its hairpins and connectors) and cleared line (Tools/mapgen/make_quarry_track.py)
+            QuarryTrackNow = null; string tp = Path.Combine(ProjectRoot, QuarryTrackFile);
+            if (File.Exists(tp))
+            {
+                QuarryTrackNow = JsonUtility.FromJson<QtFile>(File.ReadAllText(tp));
+                d.grades = Cat(d.grades, QuarryTrackNow.grades); d.clear_lines = Cat(d.clear_lines, QuarryTrackNow.clear_lines);
+                Debug.Log($"[Round73] the Quarry Track: {QuarryTrackNow.grades?.Length ?? 0} benches and its cleared line merged into the mountain's");
+            }
             Debug.Log($"[Round72] the quarry jumps: {f.jumps?.Length ?? 0} jumps, {f.grades?.Length ?? 0} grades, {f.clear_lines?.Length ?? 0} cleared lines, {f.landing_zones?.Length ?? 0} catch zones merged into the mountain's");
         }
 
@@ -123,6 +134,7 @@ namespace ChastainRush
                 Debug.Log($"[Round72] quarry jump {j.id} {j.name}: kicker {j.deck_s[j.deck_s.Length - 1] - j.deck_s[0]:0} m to its lip at {j.lip_y:0.0} m ({bk} bents), landing deck {j.land_s[j.land_s.Length - 1] - j.land_s[0]:0} m ({bl} bents), {sn} bleachers");
             }
             QuarryAccess(terrain, mats, go, f.access);
+            QuarryTrackDivider(terrain, mats, go);
             // the event (game layer): the jumps' data and the countdown lamps
             var ev = new GameObject("Quarry jumps event").AddComponent<QuarryJumps>(); ev.transform.SetParent(go, false);
             ev.json = QuarryJumpsJson; ev.lights = lamps.ToArray();
@@ -273,6 +285,27 @@ namespace ChastainRush
             }
             mb.ToObject("Quarry jumps sign posts", mats.House, t, false);
             Debug.Log($"[Round73] the quarry jumps drive: {pts.Count} points, {a.signs?.Length ?? 0} turn-off boards, {a.boards?.Length ?? 0} start boards");
+        }
+
+        // Round 73 (C5): the Quarry Track's divider: a row of concrete barriers down the middle of the two-lane haul road and the plateau track, standing
+        // only while the Quarry Track is raced (RaceOnly showInForwardOf): each climb keeps to its own lane
+        static void QuarryTrackDivider(TerrainGrid terrain, Materials mats, Transform parent)
+        {
+            var t = QuarryTrackNow; if (t == null || t.divider == null || t.divider.Length < 4) return;
+            var ro = new GameObject("Quarry Track divider").transform; ro.SetParent(parent, false);
+            var only = ro.gameObject.AddComponent<RaceOnly>(); only.reverse = false; only.showInForwardOf = string.IsNullOrEmpty(t.route_name) ? "Quarry Track" : t.route_name;
+            var p = ToPoints(t.divider); var bm = new MeshBuilder(); int n = 0;
+            var holder = new GameObject("Concrete barriers").transform; holder.SetParent(ro, false);
+            for (int i = 0; i + 1 < p.Count; i++)
+            {
+                var a = p[i]; var b = p[i + 1]; var c = (a + b) * .5f; var dir = (b - a).normalized; float L = (b - a).magnitude; float gy = Ground(terrain, c.x, c.y);
+                BoxF(bm, MakeFrame(new Vector3(c.x, gy, c.y), new Vector2(-dir.y, dir.x), 1f), -L * .5f, L * .5f, -.3f, .95f, -.35f, .35f, i % 2 == 0 ? new Color(.85f, .85f, .82f) : new Color(.75f, .12f, .1f));
+                var bc = new GameObject("barrier").AddComponent<BoxCollider>(); bc.transform.SetParent(holder, false);
+                bc.transform.SetPositionAndRotation(new Vector3(c.x, gy + .3f, c.y), Quaternion.LookRotation(new Vector3(-dir.y, 0f, dir.x))); bc.size = new Vector3(L, 1.4f, .7f);
+                n++;
+            }
+            bm.ToObject("Quarry Track divider look", mats.House, holder, false);
+            Debug.Log($"[Round73] the Quarry Track's divider: {n} barriers (race time only)");
         }
     }
 }
