@@ -1208,7 +1208,16 @@ namespace ChastainRush
             if (t == null || State == Stage.Finished) return;
             Vector3 to = t.Position - car.transform.position; float dist3 = to.magnitude; to.y = 0f;
             Vector3 fwd = car.transform.forward; fwd.y = 0f;
-            float angle = Vector3.SignedAngle(fwd, to, Vector3.up);
+            // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy"): the arrow turns with damping (about 0.2 s), so the body's wobble over bumps,
+            // a slide or a twitch of the steering does not shake it; it still settles on the checkpoint's true bearing
+            float raw = Vector3.SignedAngle(fwd, to, Vector3.up);
+            if (Event.current.type == EventType.Repaint)
+            {
+                if (guideTarget != t.Id || Time.unscaledTime - guideAt > .5f) { guideAngle = raw; guideVel = 0f; }
+                else guideAngle = Mathf.SmoothDampAngle(guideAngle, raw, ref guideVel, .2f, Mathf.Infinity, Mathf.Max(1e-4f, Time.unscaledTime - guideAt));
+                guideTarget = t.Id; guideAt = Time.unscaledTime;
+            }
+            float angle = guideAngle;
             if (Route.Air)
             {
                 // Round 73 (B2): the air race's guide is the 3D arrow ahead of the plane (AirGuide); here the ring's name, its distance through the air,
@@ -1230,6 +1239,8 @@ namespace ChastainRush
             if (Route.Air) name = (t.Id == 0 ? (ClockStarted ? "FINISH RING" : "START RING") : $"RING {t.Id} / {Route.Checkpoints.Count}") + AirHint(t);   // Round 71: the ring's name and how far up or down
             Shadowed(new Rect(0, 94, w, 30), $"<b>{name}</b>   {to.magnitude:0} m", new GUIStyle(small) { alignment = TextAnchor.MiddleCenter, fontSize = 20, richText = true, normal = { textColor = Color.white } });
         }
+
+        float guideAngle, guideVel, guideAt = -10f; int guideTarget = -1;   // Round 74 (C): the HUD arrow's damped angle
 
         void DrawCountdown(float w, float h)
         {

@@ -21,7 +21,8 @@ namespace ChastainRush
     //   apics   the start, the quarry dive, under I-75, a high ring, the circuit on the map
     public sealed partial class Round20Runner
     {
-        const string R71File = "quarry_air_race.json";
+        // Round 74 (I): -r71Route <file> runs these parts on another air route (the Highway Air Race: highway_air_race.json)
+        static string R71File { get { var a = Environment.GetCommandLineArgs(); int i = Array.IndexOf(a, "-r71Route"); return i >= 0 && i + 1 < a.Length ? a[i + 1] : "quarry_air_race.json"; } }
         static readonly Vector3[] R71Strikes = { new(5.5f, 1.2f, .15f), new(-5.5f, 1.2f, .15f), new(2.8f, 1.15f, .15f), new(-2.8f, 1.15f, .15f), new(0, 1.7f, -4.3f), new(1.7f, .33f, -3.9f), new(-1.7f, .33f, -3.9f), new(0, .1f, 3.7f), new(0, -1.25f, 0f) };
 
         IEnumerator R71Probe()

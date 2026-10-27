@@ -15,7 +15,7 @@ quick enough: the cars come up short), the AI holding each run-up at its speed w
 
 What it writes: Data/routes/quarry_track.json (the race) and Data/tracks/quarry_track.json (its world pieces: the benches, the cleared lines, the
 divider; merged into the mountain's planning by MapBuilder.QuarryJumps.cs). Re-run after make_quarry_jumps.py, then a full Build Map.
-NOT BUILT (Round 73's check): the human-like rider stuck on the haul road after The Long One, the AI riders took the haul road's other lane at the
+Round 74: ONE lane (see LANE). Round 73's check, NOT BUILT then: the human-like rider stuck on the haul road after The Long One, the AI riders took the haul road's other lane at the
 crossing and skipped The Corner's whole loop for 20 s of penalties, and two of three AI did not finish. Its output is not in Data/ (the race is not in the
 game, its benches and divider not in the world) until a lap without that crossing is chosen (TODO.md Round 73 C5: the options).
 Usage: python Tools/mapgen/make_quarry_track.py [--plot]  (writes the two files; move them out of Data/ again if the lap is not fixed)"""
@@ -103,7 +103,11 @@ J1, J2 = J["J1"], J["J2"]
 haul = list(reversed(pts(M["roads"][2525]["points"])))   # the haul road from its pit end (west) up to the east plateau
 r821 = pts(M["roads"][821]["points"])                      # (-1367, -1329) ... (-1562, -1535), (-1609, -1457), (-1649, -1129) ...
 drive = pts(Q["access"]["drive"])                          # the quarry jumps drive, west to east
-LANE = 7.0                                                 # the two lanes' middles this far either side of the haul road's
+# Round 74 (E, C5's first option, Dan asked for a track): ONE lane. Round 73's two lanes crossed where the second climb joined the haul road, and
+# the racers (the AI's line too) took the other lane there and skipped The Corner. Now both climbs run the same lane, the same way (no crossing,
+# no divider); a skip of The Corner's loop is paid for: its checkpoints (one every SKIP_CP_M along it and the second climb) cost more than it saves
+LANE = 0.0                                                 # (Round 73: 7 m, the two lanes' middles either side of the haul road's)
+SKIP_CP_M = 110.0
 
 # ---------------------------------------------------------------- the shared two-lane stretch: up the haul road from where the second climb joins it
 # (J1's run-out line meets it) to its top on road 821, 821 south, and a track south across the east plateau
@@ -161,12 +165,29 @@ def S(q): d_, i_, t_ = nearest(lap, q); return C[i_] + t_ * (C[i_ + 1] - C[i_])
 GATE_S = 30.0
 # ---------------------------------------------------------------- checkpoints (half widths small where the two lanes run side by side)
 CPS = [(jp(J2, 200.0), "The Long One's run-up", 12.0), (jp(J2, J2["land_s"][-1] + 40.0), "the north bench", 16.0),
-       (first[len(first) // 2], "the haul road", 9.0), (right[len(right) // 3], "the haul road's top", 5.0), (right[int(len(right) * .8)], "the plateau", 5.0),
-       (jp(J1, 180.0), "The Corner's run-up", 12.0), (jp(J1, J1["land_s"][-1] + 40.0), "the north-east bench", 16.0),
-       (left[len(left) // 3], "the haul road again", 5.0), (left[int(len(left) * .8)], "the plateau again", 5.0), (drive[(k_d1 + k_d2) // 2], "the quarry jumps drive", 9.0)]
+       (first[len(first) // 2], "the haul road", 9.0), (right[len(right) // 3], "the haul road's top", 9.0), (right[int(len(right) * .8)], "the plateau", 9.0),
+       (drive[(k_d1 + k_d2) // 2], "the quarry jumps drive", 9.0)]
+# (Round 74) The Corner's loop and the second climb: a checkpoint every SKIP_CP_M from the hairpin off the plateau to the bottom of the second
+# climb's plateau stretch (skipping it all misses them all: their 5 s each is more than the loop saves); none within 40 m of the first climb's
+def S_after(q, s_min):   # (one lane: the second climb's points are the first's too; this finds the later pass)
+    best_ = (1e18, 0.0)
+    for k_ in range(len(lap) - 1):
+        if C[k_] < s_min: continue
+        d_ = math.dist(lap[k_], q)
+        if d_ < best_[0]: best_ = (d_, C[k_])
+    return best_[1]
+s_lip1 = S(jp(J1, J1["lip_s"]))
+s_loop0, s_loop1 = S(right[-1]) + 30.0, S_after(left[-1], s_lip1) - 30.0
+first_cps = [S(q) for q, _, _ in CPS]
+s_ = s_loop0
+while s_ < s_loop1:
+    if all(abs(s_ - f) > 40.0 for f in first_cps):
+        i_ = min(len(lap) - 2, max(0, int(np.searchsorted(C, s_)) - 1)); t_ = (s_ - C[i_]) / max(C[i_ + 1] - C[i_], 1e-9)
+        CPS.append(((lap[i_][0] + t_ * (lap[i_ + 1][0] - lap[i_][0]), lap[i_][1] + t_ * (lap[i_ + 1][1] - lap[i_][1])), "The Corner's loop", 12.0, s_))
+    s_ += SKIP_CP_M
 cps = []
-for q, label, half in CPS:
-    s = S(q); i_ = min(len(lap) - 2, max(0, int(np.searchsorted(C, s)) - 1)); t_ = (s - C[i_]) / max(C[i_ + 1] - C[i_], 1e-9)
+for cp_ in CPS:
+    q, label, half = cp_[:3]; s = cp_[3] if len(cp_) > 3 else S(q); i_ = min(len(lap) - 2, max(0, int(np.searchsorted(C, s)) - 1)); t_ = (s - C[i_]) / max(C[i_ + 1] - C[i_], 1e-9)
     p = (lap[i_][0] + t_ * (lap[i_ + 1][0] - lap[i_][0]), lap[i_][1] + t_ * (lap[i_ + 1][1] - lap[i_][1]))
     cps.append({"s": round(s, 1), "pos": [round(p[0], 1), round(p[1], 1)], "label": label, "half_m": half})
 cps.sort(key=lambda c: c["s"])
@@ -209,13 +230,13 @@ def bench(id_, line, half, step=2.0, sig=4):
     line = resample(line, step); y = [ground(*q) for q in line]
     for _ in range(3): y = [float(np.mean(y[max(0, i - sig):i + sig + 1])) for i in range(len(y))]
     return {"id": id_, "points": flat(line), "y": [round(v, 3) for v in y], "half": half, "blend": 6.0, "open_ends": True}
-grades = [bench("the quarry track's two-lane haul road", shared, LANE + 6.0),
+grades = [bench("the quarry track's haul road", shared, 7.0),
           bench("the quarry track's way onto the haul road", [j2_out] + lower[1:4], 7.0),
           bench("the quarry track's hairpin onto The Corner", fillet(hair1 + [j1_merge], 18.0, 2.0), 7.5),
           bench("the quarry track's hairpin onto the haul road", fillet([j1_run_end] + hair2[1:], 16.0, 2.0), 7.5),
           bench("the quarry track's way down to the drive", [left[-1], (left[-1][0], left[-1][1] - 60.0), drive[k_d1]], 6.0)]
 clear = [{"id": "the quarry track", "points": flat(lap[::3] + [lap[-1]]), "half": 14.0}]
-divider = flat(resample(shared, 3.0)[3:-3])
+divider = []   # (Round 74: one lane, no divider)
 
 route = {
     "name": "Quarry Track", "direction": "forward", "directions": ["forward"], "laps": 2, "traffic": False,
@@ -228,8 +249,7 @@ route = {
     "checkpoints": cps, "junctions": [{"s": c["junction_s"], "roads": [c["road"]], "pos": c["contact"]} for c in closures],
     "loop_pieces": [{"osm_id": 0, "name": "the quarry track", "reverse": False, "length_m": round(L, 1)}],
     "official_shortcuts": [], "closures": closures, "closure_stubs_not_barred": [], "ai_zones": zones,
-    "ai_widths": [{"id": "the haul road's lanes", "s0": round(S(right[0]), 1), "s1": round(S(right[-1]), 1), "half": 3.0},
-                  {"id": "the haul road's lanes again", "s0": round(S(left[0]), 1), "s1": round(S(left[-1]), 1), "half": 3.0}],
+
     # a reset anywhere from a jump's lip to past its landing deck's catch: on the run-out past it (never on the bank face under the flight)
     "reset_skip": [{"id": f"{j['id']} {j['name']}", "s0": round(S(jp(j, j["lip_s"])) - 2.0, 1), "s1": round(S(jp(j, j["land_s"][-1] + 30.0)), 1),
                     "to_s": round(S(jp(j, j["land_s"][-1] + 45.0)), 1)} for j in (J2, J1)],
@@ -260,4 +280,4 @@ if "--plot" in sys.argv:
     for c in closures: ax.plot(c["x"], c["z"], "rs")
     ax.plot([q[0] for q in shared], [q[1] for q in shared], "k:", lw=1)
     ax.set_aspect("equal"); ax.grid(alpha=.3)
-    plt.savefig(os.path.join(ROOT, "local/round73/quarry_track.png"), dpi=60, bbox_inches="tight")
+    os.makedirs(os.path.join(ROOT, "local/round74"), exist_ok=True); plt.savefig(os.path.join(ROOT, "local/round74/quarry_track.png"), dpi=60, bbox_inches="tight")

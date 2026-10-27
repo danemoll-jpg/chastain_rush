@@ -110,6 +110,27 @@ namespace ChastainRush
             // the shopping center's lot, drives, roads (by width), bridges over them with a dark edge
             Color32 Asphalt = new Color(0.30f, 0.30f, 0.31f), Edge = new Color(0.12f, 0.12f, 0.13f), Drive = new Color(0.62f, 0.61f, 0.58f), Deck = new Color(0.55f, 0.53f, 0.50f);
             if (shop?.Lot != null && shop.Lot.Count >= 3) r.Fill(shop.Lot, Asphalt);
+            // Round 74 (J, Dan: "show the airport with concrete runways on the map instead of grass"): the parking lots as asphalt, and the airport's
+            // aprons, taxiways and runways as concrete (a lighter gray, a dark edge), the runways' center lines dashed white and their ends marked
+            Color32 Concrete = new Color(0.66f, 0.66f, 0.63f), ConcreteEdge = new Color(0.40f, 0.40f, 0.39f), Paint = new Color(0.97f, 0.97f, 0.95f);
+            if (map.parking != null) foreach (var pk in map.parking) { var o = ToPoints(pk.outline); if (o.Count >= 3) r.Fill(o, Asphalt); }
+            if (map.aeroways != null)
+            {
+                foreach (var a in map.aeroways) if (a.kind == "apron" && a.outline != null) { var o = ToPoints(a.outline); if (o.Count < 3) continue; r.Fill(o, Concrete); var c = o.ToList(); c.Add(o[0]); r.Line(c, 1.2f, ConcreteEdge); }
+                foreach (var a in map.aeroways) if ((a.kind == "taxiway" || a.kind == "runway") && a.points != null) r.Line(ToPoints(a.points), Mathf.Max(a.width, 8f) + 2f, ConcreteEdge);
+                foreach (var a in map.aeroways) if ((a.kind == "taxiway" || a.kind == "runway") && a.points != null) r.Line(ToPoints(a.points), Mathf.Max(a.width, 8f), Concrete);
+                foreach (var a in map.aeroways)
+                {
+                    if (a.kind != "runway" || a.points == null) continue;
+                    var p = Resample(ToPoints(a.points), 1f); if (p.Count < 40) continue;
+                    for (int i = 30; i + 30 < p.Count; i += 60) r.Line(p.GetRange(i, Mathf.Min(30, p.Count - 30 - i)), 1.2f, Paint);   // the center line: 30 m dashes
+                    foreach (int e in new[] { 0, p.Count - 1 })
+                    {
+                        var at = p[e]; var dir = (p[e == 0 ? 20 : p.Count - 21] - at).normalized; var side = new Vector2(-dir.y, dir.x); float half = a.width * .5f - 3f;
+                        for (float l = -half; l <= half + .01f; l += 3f) r.Line(new List<Vector2> { at + dir * 6f + side * l, at + dir * 36f + side * l }, 1.5f, Paint);   // the threshold stripes
+                    }
+                }
+            }
             if (map.driveways != null) foreach (var d in map.driveways) r.Line(ToPoints(d.points), Mathf.Max(d.width, 3f), Drive);
             foreach (var rd in map.roads) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f) + 1.5f, Edge);
             foreach (var rd in map.roads) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f), Asphalt);

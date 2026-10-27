@@ -13,6 +13,7 @@ namespace ChastainRush
         public const float Ahead = 14f, Up = -4.2f;  // where it floats: this far ahead of the camera, this far below the middle of the view (seen from a little
                                                      // above, so it reads as an arrow even when the ring is straight ahead: the check's first picture showed its back)
         Transform arrow; Material mat;
+        Vector3 steadyFwd, steadyUp; Quaternion steadyRot; bool steadyOn, steadyRotOn;   // Round 74 (C)
 
         void Build()
         {
@@ -39,12 +40,20 @@ namespace ChastainRush
             var race = RaceController.Instance; var cam = Camera.main;
             bool on = race != null && race.Route != null && race.Route.Air && cam != null && race.State != RaceController.Stage.Free && race.State != RaceController.Stage.Finished
                       && !TrailerMode.HudHidden && !ReplayViewer.Active && race.Target != null;
-            if (!on) { if (arrow) arrow.gameObject.SetActive(false); return; }
+            if (!on) { if (arrow) arrow.gameObject.SetActive(false); steadyOn = steadyRotOn = false; return; }
             if (!arrow) Build();
             arrow.gameObject.SetActive(true);
-            var at = cam.transform.position + cam.transform.forward * Ahead + cam.transform.up * Up;
+            // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy. Can we make them more stable"): placed from a steadied view (the camera's
+            // forward and up eased over about a quarter second, so the camera's shake and bounce do not move it) and turned toward the ring with damping;
+            // still pointing where the ring is
+            float dt = Time.unscaledDeltaTime, k = 1f - Mathf.Exp(-dt / .25f);
+            if (!steadyOn) { steadyFwd = cam.transform.forward; steadyUp = cam.transform.up; steadyOn = true; }
+            steadyFwd = Vector3.Slerp(steadyFwd, cam.transform.forward, k).normalized; steadyUp = Vector3.Slerp(steadyUp, cam.transform.up, k).normalized;
+            var at = cam.transform.position + steadyFwd * Ahead + steadyUp * Up;
             var to = race.Target.Position - at;
-            arrow.SetPositionAndRotation(at, Quaternion.LookRotation(to.sqrMagnitude > 1f ? to.normalized : cam.transform.forward, cam.transform.up));
+            var want = Quaternion.LookRotation(to.sqrMagnitude > 1f ? to.normalized : steadyFwd, Vector3.Slerp(steadyUp, Vector3.up, .5f));
+            steadyRot = arrow.gameObject.activeSelf && steadyRotOn ? Quaternion.Slerp(steadyRot, want, 1f - Mathf.Exp(-dt / .15f)) : want; steadyRotOn = true;
+            arrow.SetPositionAndRotation(at, steadyRot);
         }
 
         void OnDestroy() { if (mat) Destroy(mat); }
