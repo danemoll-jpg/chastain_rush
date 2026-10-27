@@ -6616,3 +6616,45 @@ F3 DONE. The start / finish gantry upright, each post on its own ground (in clos
 Found, not changed: the Round 20 P1 check (`Round20Runner.Ramp.cs`) no longer matches P1 as rebuilt since (no vehicle leaves its lip in that script); nothing there was touched this round.
 Builds: 2 full Build Maps (the second for F1's park roads), 3 code-only exes. `Builds/ChastainRush/` 2026-10-26 02:20. Imported from Racer: nothing.
 For Dan: (a) the ramp: the run-up along the drive and off the hairpin; (b) the AI on Hard; (c) the ramp's look (57 m of steel trestle).
+
+## Round 71 (moved from TODO.md on 2026-10-27 when Dan reviewed Round 74; word for word)
+
+## Previous delivery 3: Round 71
+**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
+**Round 71, A PLANE RACE THROUGH RINGS (Dan, 2026-10-26 03:09: "I am thinking that we could do a plane race. I think just the typical fly
+through the rings course. We could utilize the quary right next to the airport and just expand it. Since it is the sky we are pretty open.
+I would like to have low spots and maybe have to fly under bridges if possible. It could be a circuit. It could be a race with others or
+solo speed run"). Dan is asleep and has not tested Round 70: decide, write it down, go on.** Builds on Round 69's Sky Hopper. Quick builds
+while working; ONE full Build Map at the end if anything in the world changes (rings are game objects; likely code / data only).
+Tuning limit. Short results.
+A. THE COURSE: a circuit of rings in the sky starting and finishing at Cobb County International Airport, built round Viking Quarry Lake next
+   door and expanding out from it (Code designs it and says why). Low spots: down into the quarry, low over its lake, skimming fields and
+   the woods' tops; under bridges where the plane fits (the I-75 / I-575 overpasses and their ramps near Big Shanty / Chastain Road / Barrett
+   Parkway: check the clearance with the plane's wingspan and height, Round 69's wing-tip test); a few high rings to climb for and dive
+   from; banked turns between them. A lap of about 2 to 3 minutes at race pace; 2 or 3 laps, Code's pick. Name it (e.g. "Quarry Air Race"),
+   Dan may rename.
+B. THE RINGS: big readable hoops (a bright color, a beacon / arrow to the next one, a chime and a flash going through), sized to the spot
+   (larger in the open, tighter under bridges and in the quarry); a ring missed counts as a missed checkpoint (the game's usual penalty, the
+   lap still counts: Round 54 B's rule). Crashing resets the plane in the air just before the last ring passed, heading through it, at
+   speed (never on the ground, never stuck).
+C. THE START: from the runway, lined up (a standing take-off start: throttle up at GO), or an air start if the runway start plays badly with
+   several planes (Code picks, says why).
+D. TWO WAYS TO PLAY, both in the race menu (and Free Roam's race list): RACE against AI pilots (3 by default, as the car races; the AI flies
+   the ring line with skill by difficulty, Hard close to a good player, no cheating through walls, recovers from crashes as the cars' AI)
+   and TIME TRIAL / SPEED RUN solo (best lap and best total, ghost of the best lap, Top 10 records, replays: as every course). The plane only
+   (the Sky Hopper; the helicopter is not in this race).
+E. Built like the other courses where it applies: records, ghosts, replays (the replay cameras follow planes), the map and minimap showing
+   the rings, the loading screen's inset, the finish screen and COMPLETE RACE.
+Check: a lap by script flown cleanly through every ring (no ring unreachable, no bridge clipped); a lap with a missed ring (penalty, lap
+counts); a crash and its reset; the AI x2 on Hard, all finish; a time trial with its ghost. Pictures: the start, the quarry dive, under a
+bridge, a high ring, the whole circuit on the map.
+For Dan to check: race the planes and fly the time trial (rings, the quarry, under the bridges, the AI).
+
+**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round71/` (`round71_check_final.txt`, `71_*.png`, `71_line_trace.tsv`). No bug reports newer than Round 70's session.
+A DONE. "Quarry Air Race" (`Tools/mapgen/make_air_route.py`), clockwise, 16.2 km, 2 laps (a lap 2:33 flown by script at full throttle): the start ring 14 m over the runway; Viking Quarry: in over the south-west rim, Q1 halfway down the 200 m pit, Q2 over the lake (35 m up: the dive and the climb out are rounded to the plane's pitch rate, it cannot get lower), Q3 over the east rim; C1 UNDER I-75 southbound where it crosses Noonday Creek (a frame, 9 m from the bank to the deck as built), then C2 straight up OVER I-75 northbound; H1 270 m over Town Center; Barrett interchange; the treetops; H2 over Kennesaw Mountain's summit; the woods; L1 16 m over Daniell Lake; over Cobb Parkway; the runway's line to the finish. Under bridges only where the plane fits: I-75 northbound / express (3 m from bank to deck) and Cobb Parkway's railroad cut (V-shaped, narrower than the wings) were measured and left as rings over them; bridges along roads left out (lamps, gantries, traffic). The two low lanes (I-75 approach, Daniell Lake) are cleared of trees by the map build (`Data/tracks/quarry_air_race.json`); traffic is kept off the roads under the line's low stretches.
+B DONE. Rings 24 to 36 m across, frames sized to the opening; the next one green with a beacon, later amber, missed red; through one: a flash and a chime; the HUD arrow says how far up or down. A missed ring is 5 s, the lap counts (check: ring 3 missed, +5 s, lap counted). A crash: 2.6 s, then back in the air 150 m before the last ring, on the line, heading through it, 70 m/s (check: in the air 115 m out, flying on, lap finished); R / Y the same.
+C DONE. Standing take-off on runway 09 (the player at the back on the centerline, AI ahead in two lanes). Race planes pass through each other (a mid-air touch would end two runs), so a runway start cannot pile up.
+D DONE. Race setup: Route "Quarry Air Race" puts on the Sky Hopper; Opponents "3 AI pilots" or "Solo (time trial)". AI pilots (`Race/PlanePilot.cs`) fly the plane's own controls by difficulty (Hard full throttle, Normal 94 %, Easy 88 %), slow for turns and dips they cannot follow, sometimes line a ring up wide and miss it (more on Easy). 2 AI on Hard, 2 laps: both finished flown (5:11.7 with one ring missed, 5:06.8) against the scripted player's 5:06.7 (same flying code: a human who cuts the rings' corners will be faster). Not in split screen.
+E DONE. Records / Top 10 per vehicle (time trial: Top 10 #2), clean-lap ghost saved and flown on the next run, replays (TV cameras placed in the air for a plane), the map and minimap show the rings, the loading screen's inset, finish screen, COMPLETE RACE (generic).
+Builds: one full Build Map (06:03), then a quick build for the route's line after C1 and a code-only exe for the AI's dips; `Builds/ChastainRush/` 2026-10-26 07:08. Imported from Racer: nothing.
+For Dan: (a) C1 under I-75 is tight on purpose (about 1.5 m to spare at the deck); say if it should be easier; (b) the AI's pace against yours; (c) the lap's length (2:33).

@@ -108,6 +108,56 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 75, STREET AND AIR RACES IN RACE SETUP (THE GARAGE THAT FOLLOWS), THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS BACK, a drop-off
+(Dan, 2026-10-27 12:04; report BUG-001 of session `2026-10-27_11-27-43-992_53ef4c`, read by Claude, after the Round 74 build).** Round 74 is reviewed. Item 0
+(CHECK IT AS DAN PLAYS IT) applies to every item. Quick builds; ONE full Build Map at the end. Short results.
+A. STREET OR AIR, AND THE GARAGE THAT FOLLOWS. Dan: "the garage is still kind of broken. I think there needs to be another line in the menu
+   to choose between street and air races. And depending on this, your garage becomes available. For example, I did a street race and then
+   selected the new air course, and my only garage choices were street vehicles. I assume I will have the same issue if I try to select a
+   road race after doing a flying race. So this also means I didn't actually get to test the new plane since I didn't have enough time to do
+   2 races". In race setup: a new first row RACE TYPE: Street / Air. It filters the Route row (street courses or air courses) and the
+   Garage (ground vehicles or planes), at once, in either order, without needing a race in between; each type remembers its own last
+   course and vehicle (Round 70 D's saves, plus the last plane). Opponents etc. as each type allows. Check by item 0 from the title, by pad
+   and keys: street race -> finish -> switch to Air -> pick the Sky Dart -> race; and air -> street the same; and straight from the title to
+   Air.
+B. THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS (the queued small fixes, Dan 2026-10-27 11:16 to 11:24, word for word below):
+- The map picture's lots (Dan, 2026-10-27 11:16: "why didn't it fix the mall parking lot?" after Round 74 J). Cause (Claude): MapBuilder.MapPicture
+  fills only OSM's parking outlines (map.parking); Town Center's lots come from MapBuilder.MallLots (Round 60: OSM maps none round the mall),
+  so the map never sees them. Dan, 11:18: "I would like that stuff fixed in general. For example, I feel like community swimming pools
+  should show up as well". So the general fix: the map picture and minimap must show what the BUILT world has, not only OSM's lists:
+  every lot and paved area the build makes (the mall's lots, the stunt park, the quarry pads and lanes, the helipads), pools (community and
+  backyard), tennis courts, plazas and paths, the trails' boardwalks and bridges, the shortcuts' built pieces where they are ground, water
+  as built. Code picks how (e.g. draw from the build's own records of what it placed, or a top-down orthographic render of the built scene
+  per tile, styled to the map's look) and says why; whichever it is, a new built thing must show on the map without anyone remembering to
+  add it. Pictures of the map at Town Center, a neighborhood pool (Chastain Lakes' and Enclave's), the stunt park and the quarry.
+- Clouds back down at the summit (Dan, 2026-10-27 11:24, on Round 74 F raising the cloud layer over high ground: "I thought it was cool
+  that you could potentially jump over clouds"). Undo that change: the cloud layer at its old height so the summit and the leap's flight
+  are up among / above the clouds again; keep it from looking like a solid white wall at the lip (soft, broken cloud the car flies over
+  and through). Picture from the summit leap's run-up and mid-flight.
+- Street names on the map (Dan, 2026-10-27 11:19: "when zoomed in, it would be great to get street names as well"). On the map screen, past
+  a zoom level, label the streets with their names (along the road, readable, not upside down, not crowding: main roads first, side
+  streets at closer zoom, each name once per stretch on screen); highways by their shields / numbers (I-75, I-575, US 41). The minimap may
+  show the current street's name (it already knows it). Pictures at three zoom levels over Chastain Glen and Town Center.
+C. BUG-001 (x -1268.09 z -6341.39 h 100, a gravel track off Kennesaw Mountain, near the summit leap's way back): "Lets fix this so there isn't a
+   drop off for the road but a smooth slope" (the picture: the track runs along the foot of a cut bank, a sheer step of ground beside it).
+   Grade the bank into a smooth slope; and check the summit leap's way back and the mountain's new tracks for any other such cut faces.
+Check: item 0 for every item; A's three paths; B's pictures; C before / after from Dan's spot.
+For Dan to check: race setup Street / Air and the garage both ways; the Sky Dart in an air race; the map (built things, pools, street names);
+the clouds at the summit leap; the slope at his spot.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 74
+**Reviewed: Dan checked everything but the quarry 2026-10-27 11:27 to 12:04: "The only thing is that the garage is still kind of broken" (Round 75 A); the fork barriers no complaint. The quarry not yet seen.**
 **Round 74, THE PLANE'S GARAGE AND LOOKS, CONTROLS SHOWN FOR THE DEVICE IN USE, STEADY ARROWS; the quarry jumps' lanes, a turn-off on
 Kennesaw, the summit leap's lip (Dan, 2026-10-27 03:06; reports BUG-002 to BUG-005 of session `2026-10-27_02-23-23-098_3e251a` (BUG-001 was sent by mistake),
 read by Claude, after the Round 73 build).** Round 73 is reviewed. Item 0 (CHECK IT AS DAN PLAYS IT, CLAUDE.md "Process") applies to every
@@ -190,18 +240,7 @@ I DONE / PARTLY. The Highway Air Race (`make_highway_air_route.py`, 19 km, 16 ri
 J DONE. The airport's runways, taxiways and aprons as concrete with runway markings, parking lots as asphalt (`74_map_airport`); the Mall's own lots (built by the map build) still grass on the map.
 For Dan to check: the planes (both, the garage, the pilot through the glass, a replay); the highway air race; the summit leap on the Drifter Twin; the quarry from the boxes and the LANDING boards; the AI on Hard on Kennesaw and Lakes; the map with the pad and the keys.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 73
+## Previous delivery 2: Round 73
 **Reviewed: Dan played the Round 73 build 2026-10-27 02:23 to 03:06; his notes are Round 74.**
 **Round 73, PUT RIGHT WHAT DAN FOUND, AND CHECK IT THE WAY HE PLAYS (Dan, 2026-10-26 19:04; reports BUG-001 to BUG-006 of session `2026-10-26_18-37-35-665_130b58`,
 read by Claude, after the Round 70 to 72 build).** Dan: "that's a lot of work for a bunch of junk. Really not happy with anything I tested.
@@ -293,7 +332,7 @@ C5 NOT DONE. Built and tried, then taken out: the haul road crosses the lane so 
 Not run: the AI race on every car course (only the barrier sweep). Imported from Racer: nothing.
 For Dan to check: Kennesaw race start and CP5 drive; the drive in Free Roam both ways; the summit leap (is shorter OK?); the Air Race with the arrow; the quarry jumps by fast travel and from the sign; J3 on a bike; the crowd; reset anywhere.
 
-## Previous delivery 2: Round 72
+## Previous delivery 3: Round 72
 **Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
 **Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
 while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
@@ -328,46 +367,6 @@ B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred
 B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
 Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
 For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
-
-## Previous delivery 3: Round 71
-**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
-**Round 71, A PLANE RACE THROUGH RINGS (Dan, 2026-10-26 03:09: "I am thinking that we could do a plane race. I think just the typical fly
-through the rings course. We could utilize the quary right next to the airport and just expand it. Since it is the sky we are pretty open.
-I would like to have low spots and maybe have to fly under bridges if possible. It could be a circuit. It could be a race with others or
-solo speed run"). Dan is asleep and has not tested Round 70: decide, write it down, go on.** Builds on Round 69's Sky Hopper. Quick builds
-while working; ONE full Build Map at the end if anything in the world changes (rings are game objects; likely code / data only).
-Tuning limit. Short results.
-A. THE COURSE: a circuit of rings in the sky starting and finishing at Cobb County International Airport, built round Viking Quarry Lake next
-   door and expanding out from it (Code designs it and says why). Low spots: down into the quarry, low over its lake, skimming fields and
-   the woods' tops; under bridges where the plane fits (the I-75 / I-575 overpasses and their ramps near Big Shanty / Chastain Road / Barrett
-   Parkway: check the clearance with the plane's wingspan and height, Round 69's wing-tip test); a few high rings to climb for and dive
-   from; banked turns between them. A lap of about 2 to 3 minutes at race pace; 2 or 3 laps, Code's pick. Name it (e.g. "Quarry Air Race"),
-   Dan may rename.
-B. THE RINGS: big readable hoops (a bright color, a beacon / arrow to the next one, a chime and a flash going through), sized to the spot
-   (larger in the open, tighter under bridges and in the quarry); a ring missed counts as a missed checkpoint (the game's usual penalty, the
-   lap still counts: Round 54 B's rule). Crashing resets the plane in the air just before the last ring passed, heading through it, at
-   speed (never on the ground, never stuck).
-C. THE START: from the runway, lined up (a standing take-off start: throttle up at GO), or an air start if the runway start plays badly with
-   several planes (Code picks, says why).
-D. TWO WAYS TO PLAY, both in the race menu (and Free Roam's race list): RACE against AI pilots (3 by default, as the car races; the AI flies
-   the ring line with skill by difficulty, Hard close to a good player, no cheating through walls, recovers from crashes as the cars' AI)
-   and TIME TRIAL / SPEED RUN solo (best lap and best total, ghost of the best lap, Top 10 records, replays: as every course). The plane only
-   (the Sky Hopper; the helicopter is not in this race).
-E. Built like the other courses where it applies: records, ghosts, replays (the replay cameras follow planes), the map and minimap showing
-   the rings, the loading screen's inset, the finish screen and COMPLETE RACE.
-Check: a lap by script flown cleanly through every ring (no ring unreachable, no bridge clipped); a lap with a missed ring (penalty, lap
-counts); a crash and its reset; the AI x2 on Hard, all finish; a time trial with its ghost. Pictures: the start, the quarry dive, under a
-bridge, a high ring, the whole circuit on the map.
-For Dan to check: race the planes and fly the time trial (rings, the quarry, under the bridges, the AI).
-
-**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet flown by Dan.** Evidence `Data/screenshots/round71/` (`round71_check_final.txt`, `71_*.png`, `71_line_trace.tsv`). No bug reports newer than Round 70's session.
-A DONE. "Quarry Air Race" (`Tools/mapgen/make_air_route.py`), clockwise, 16.2 km, 2 laps (a lap 2:33 flown by script at full throttle): the start ring 14 m over the runway; Viking Quarry: in over the south-west rim, Q1 halfway down the 200 m pit, Q2 over the lake (35 m up: the dive and the climb out are rounded to the plane's pitch rate, it cannot get lower), Q3 over the east rim; C1 UNDER I-75 southbound where it crosses Noonday Creek (a frame, 9 m from the bank to the deck as built), then C2 straight up OVER I-75 northbound; H1 270 m over Town Center; Barrett interchange; the treetops; H2 over Kennesaw Mountain's summit; the woods; L1 16 m over Daniell Lake; over Cobb Parkway; the runway's line to the finish. Under bridges only where the plane fits: I-75 northbound / express (3 m from bank to deck) and Cobb Parkway's railroad cut (V-shaped, narrower than the wings) were measured and left as rings over them; bridges along roads left out (lamps, gantries, traffic). The two low lanes (I-75 approach, Daniell Lake) are cleared of trees by the map build (`Data/tracks/quarry_air_race.json`); traffic is kept off the roads under the line's low stretches.
-B DONE. Rings 24 to 36 m across, frames sized to the opening; the next one green with a beacon, later amber, missed red; through one: a flash and a chime; the HUD arrow says how far up or down. A missed ring is 5 s, the lap counts (check: ring 3 missed, +5 s, lap counted). A crash: 2.6 s, then back in the air 150 m before the last ring, on the line, heading through it, 70 m/s (check: in the air 115 m out, flying on, lap finished); R / Y the same.
-C DONE. Standing take-off on runway 09 (the player at the back on the centerline, AI ahead in two lanes). Race planes pass through each other (a mid-air touch would end two runs), so a runway start cannot pile up.
-D DONE. Race setup: Route "Quarry Air Race" puts on the Sky Hopper; Opponents "3 AI pilots" or "Solo (time trial)". AI pilots (`Race/PlanePilot.cs`) fly the plane's own controls by difficulty (Hard full throttle, Normal 94 %, Easy 88 %), slow for turns and dips they cannot follow, sometimes line a ring up wide and miss it (more on Easy). 2 AI on Hard, 2 laps: both finished flown (5:11.7 with one ring missed, 5:06.8) against the scripted player's 5:06.7 (same flying code: a human who cuts the rings' corners will be faster). Not in split screen.
-E DONE. Records / Top 10 per vehicle (time trial: Top 10 #2), clean-lap ghost saved and flown on the next run, replays (TV cameras placed in the air for a plane), the map and minimap show the rings, the loading screen's inset, finish screen, COMPLETE RACE (generic).
-Builds: one full Build Map (06:03), then a quick build for the route's line after C1 and a code-only exe for the AI's dips; `Builds/ChastainRush/` 2026-10-26 07:08. Imported from Racer: nothing.
-For Dan: (a) C1 under I-75 is tight on purpose (about 1.5 m to spare at the deck); say if it should be easier; (b) the AI's pace against yours; (c) the lap's length (2:33).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
