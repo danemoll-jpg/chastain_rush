@@ -384,7 +384,10 @@ namespace ChastainRush
                 return 99f;
             };
             Time.timeScale = 1.5f;
+            var startTrace = new StringBuilder(); float t0q = Time.time;
+            var tr = StartCoroutine(R73Watch(() => { if (Time.time - t0q < 40f && Mathf.Repeat(Time.time - t0q, 2f) < Time.fixedDeltaTime * 1.5f) { var pp = car.Body.position; startTrace.Append($" ({pp.x:0},{pp.z:0} {car.Body.linearVelocity.magnitude:0}{(race.Player.ClockStarted ? " clock" : "")})"); } }, () => true));
             yield return HumanDrive(line, 40f, 600f, run, () => race.Player.Finished, hold, pics, "73_qtrack_midair");
+            StopCoroutine(tr); report.AppendLine($"  the player's first 40 s (x,z speed): {startTrace}; the grid at ({r.GridPosition.x:0}, {r.GridPosition.z:0}), the line at ({r.Gate.Position.x:0}, {r.Gate.Position.z:0}) facing ({r.Gate.Forward.x:0.00}, {r.Gate.Forward.z:0.00})");
             Time.timeScale = 1f;
             float wait = 0f; while (race.Entrants.Any(e => !e.Finished) && wait < 240f) { yield return new WaitForSecondsRealtime(1f); wait += 1f; }
             race.Logged -= OnLog;
@@ -425,6 +428,14 @@ namespace ChastainRush
                 // the pilot: banks toward the aim (late, a little wobble), pitches toward its height, throttle full
                 var to = aimAt - car.Body.position; var fw = car.transform.forward;
                 float yawErr = Vector3.SignedAngle(Flat(fw), Flat(to), Vector3.up) + (Mathf.PerlinNoise(seed, t * .3f) - .5f) * 6f;
+                // a person flies over the woods to a ring far off, and comes down to it once near: the height it holds is at least 55 m over the
+                // highest ground in the next 600 m toward the aim (the trees stand up to 45 m), until 600 m from the ring
+                if (Flat(to).magnitude > 600f)
+                {
+                    float hiGround = float.MinValue; var dirF = Flat(to).normalized;
+                    for (float k = 0f; k <= 600f; k += 50f) { var w = car.Body.position + dirF * k; float gh = GroundQuery.Height(w.x, w.z); if (!float.IsNaN(gh)) hiGround = Mathf.Max(hiGround, gh); }
+                    float floorY = hiGround + 55f; if (aimAt.y < floorY) { aimAt.y = floorY; to = aimAt - car.Body.position; }
+                }
                 float climb = Mathf.Atan2(to.y, Flat(to).magnitude) * Mathf.Rad2Deg, pitchNow = pl.PitchDeg;   // (+ nose up)
                 float bankWant = Mathf.Clamp(yawErr * 2.0f, -65f, 65f), roll = pl.RollDeg;                        // (+ banked right)
                 bankCmd += (Mathf.Clamp((bankWant - roll) / 18f, -1f, 1f) - bankCmd) * Mathf.Clamp01(dt / .2f);
