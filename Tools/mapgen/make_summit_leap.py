@@ -50,8 +50,11 @@ def seg_d(q, a, b):
 def poly_d(q, p): return min(seg_d(q, a, b) for a, b in zip(p, p[1:]))
 # Round 75 (C, Dan's BUG-001: "there isn't a drop off for the road but a smooth slope"): a bank's width from the ground at the bank's own outer edge
 # on each side (on a sidehill the uphill edge's cut is far deeper than the cut under the line's center, which left near-vertical faces): 'slope'
-# meters out for every meter of cut or fill there, found by a few steps out from the old width; never narrower than 'base', at most 'cap'
+# meters out for every meter of cut or fill there, found by a few steps out from the old width; never narrower than 'base', at most 'cap', and
+# never onto a road or a trail beside it (bank_room.py: a wider bank stops 2 m short of their edges; Kennesaw Mountain Drive, the park's trails)
+from bank_room import ways_room
 def edge_blends(points, ys, halves, base, slope, cap=45.0):
+    room = ways_room(M, points)
     out = []
     for i, (q, y, h, b0) in enumerate(zip(points, ys, halves, base)):
         a = points[max(0, i - 1)]; c = points[min(len(points) - 1, i + 1)]
@@ -60,8 +63,9 @@ def edge_blends(points, ys, halves, base, slope, cap=45.0):
         for _ in range(4):
             dh = max(abs(y - ground(q[0] + nx * sd * (h + b), q[1] + nz * sd * (h + b))) for sd in (-1, 1))
             b = min(cap, max(b0, slope * dh))
-        out.append(b)
-    return [round(v, 2) for v in gsm(out, 3.0)]
+        out.append(max(b0, min(b, room(q) - h)))
+    sm = gsm(out, 3.0)
+    return [round(max(b0, min(v, max(b0, room(q) - h))), 2) for v, b0, q, h in zip(sm, base, points, halves)]   # (smoothed, then held off the ways again)
 def smooth01(t): t = max(0.0, min(1.0, t)); return t * t * (3 - 2 * t)
 
 
