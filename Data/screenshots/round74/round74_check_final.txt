@@ -1,0 +1,81 @@
+Round 74 check, 2026-10-27 07:40, the exe, 1280 x 720, muted.
+
+=== 2. The map with a virtual gamepad: View opens it (the game pauses), triggers zoom, the left stick pans, A shows the shortcuts and pipes, the right stick's click centers, B closes; free roam, then a race
+PASS  the map in free roam: View opens it and the game pauses; RT / LT zoom; the left stick pans; A shows the shortcuts and pipes; the right stick's click centers on the player; no bug capture; B closes and the game goes on  -  open True, paused True, zoom 2.5 -> 14.1 -> 7.5, center moved 580 m, layers True, centered True, no capture True, closed True, running again True
+PASS  the map in free roam: View opens and closes it
+PASS  the map in a race: View opens it and the game pauses (the race clock stops); RT / LT zoom; the left stick pans; A shows the shortcuts and pipes; the right stick's click centers on the player; no bug capture; B closes and the game goes on  -  open True, paused True, race clock held True, zoom 7.5 -> 16.0 -> 8.2, center moved 527 m, layers True, centered True, no capture True, closed True, running again True, race clock running True
+PASS  the map in a race: View opens and closes it
+
+=== Dan's four reports, from his exact position and heading (the chase camera, as he saw it)
+  BUG-002 (Kennesaw Mountain race, the drive before CP5: the road on the right needs a barrier): at (-1102.8, 626.1, -5849.2) heading 69; standing in the 60 m ahead: Cube; picture 74_BUG-002_after.png
+  BUG-003 (The Long One's landing deck: the hill through it): at (-1996.3, 216.6, -1390.1) heading 226; standing in the 60 m ahead: sc quarry J2 landing deck, Quarry J2 landing skirt; picture 74_BUG-003_after.png
+    J2 The Long One's landing deck: the ground at most -0.20 m against the deck's top (s 637 lat -10)
+PASS  dan BUG-003: no ground through The Long One's landing deck  -  -0.20 m at s 637 lat -10
+  BUG-004 (The Big One's landing deck: blocked, where does it lead): at (-2128.4, 191.3, -1443.3) heading 190; standing in the 60 m ahead: sc quarry J3 landing deck; picture 74_BUG-004_after.png
+    J3 The Big One's landing deck: the ground at most -0.05 m against the deck's top (s 640 lat 2)
+PASS  dan BUG-004: no ground through The Big One's landing deck  -  -0.05 m at s 640 lat 2
+  BUG-005 (the summit leap's lip: makes you turn; the white shape): at (-1068.1, 685.0, -5968.8) heading 209; standing in the 60 m ahead: nothing; picture 74_BUG-005_after.png
+
+=== The clouds over the summit (Dan's BUG-005: the white shape was the cloud layer at the summit's height)
+  summit lip: the camera at 688 m; the layer raised 212 m; the lowest cloud's base about 849 m (+160 m from the camera)
+PASS  clouds: over the summit, the lowest cloud stays over the camera  -  160 m
+  Chastain Glen: the camera at 301 m; the layer raised 0 m; the lowest cloud's base about 640 m (+339 m from the camera)
+
+=== The planes: the stands, each plane with its pilot seen from the chase camera, the garage (Free Roam's, race setup's for the air race), colors
+  plane stands: 3; on them: Sky Hopper, Sky Dart, Sky Hopper
+PASS  plane: the Sky Dart stands on the apron with the Sky Hopper
+  Sky Hopper: top speed 115 m/s, roll 95 deg/s, pitch 45 deg/s; the rider aboard, 1 glass parts; picture 74_plane_plane_chase.png
+PASS  plane Sky Hopper: the pilot aboard behind glass
+  Sky Dart: top speed 138 m/s, roll 165 deg/s, pitch 62 deg/s; the rider aboard, 1 glass parts; picture 74_plane_dart_chase.png
+PASS  plane Sky Dart: the pilot aboard behind glass
+  Sky Survey: ; the rider aboard, 1 glass parts; picture 74_plane_heli_chase.png
+PASS  plane Sky Survey: the pilot aboard behind glass
+  Free Roam: pause > GARAGE: page garage, the vehicle Sky Hopper
+  Free Roam's garage stepped through: Sky Hopper, Sky Dart
+PASS  plane: Free Roam's garage has the Sky Dart and colors
+  race setup (Quarry Air Race) > Garage: page garage; its vehicles: Sky Dart, Sky Hopper
+PASS  plane: race setup's Garage for the air race holds the planes only  -  dart,plane
+
+=== A race replay of the Quarry Air Race: the propeller turns (Dan: "airplane - replay, the propeller doesn't move")
+  the replay: Quarry Air Race forward, 2 racers: YOU plane, EMBER dart
+  2 puppets; Replay EMBER: 99 -> 229 deg in 0.13 s; Replay YOU: 229 -> 256 deg in 0.13 s
+PASS  preplay: every plane's propeller turns in the replay  -  2 of 2
+
+=== Controls shown for the device in use (the map, the race HUD, the minimap, the loading tips), the pad then the keys
+  pad: the game sees the pad
+PASS  controls (pad): the device in use follows the last input
+    race hint: "Start: menu"; minimap: "B: minimap on / off"
+PASS  controls (pad): the race hint names only the pad's button  -  Start: menu
+  keys: the game sees the keyboard
+PASS  controls (keys): the device in use follows the last input
+    race hint: "Esc: menu"; minimap: "J: minimap on / off"
+PASS  controls (keys): the race hint names only the key  -  Esc: menu
+
+=== The race's HUD arrow, steadied: a lap of the Chastain Glen loop by the human-like driver; the arrow's turn frame to frame against the raw bearing's
+  3790 frames: the raw bearing's wobble 0.625 deg a step on average, the arrow's 0.268 (a step's turn against the step before's)
+FAIL  arrow: the HUD arrow wobbles far less than the raw bearing (steadied)  -  1017 against 2368
+
+=== The map at the airport: the runways, taxiways and aprons as pavement
+  the map's picture 8192 x 6644
+
+=== The quarry jumps' countdown from the box: the preview camera over the line (the lake and the landing in view)
+  fast travel to Viking Quarry: The Corner: arrived at (-1639, -1893)
+  J1 The Corner: held, the countdown pictured, now Run
+PASS  qpreview J1: the countdown ran from the box
+  fast travel to Viking Quarry: The Long One: arrived at (-2000, -2003)
+  J2 The Long One: (the hold passed during the travel), the countdown pictured, now Run
+PASS  qpreview J2: the countdown ran from the box
+  fast travel to Viking Quarry: The Big One: arrived at (-2286, -2039)
+  J3 The Big One: (the hold passed during the travel), the countdown pictured, now Run
+PASS  qpreview J3: the countdown ran from the box
+
+=== Fork barriers: Kennesaw's CP5 fork in the race, and some of the new barriers on other courses (from the line, looking at them)
+  Kennesaw Mountain B2 (Kennesaw Mountain Drive on to the summit lot): at (-1063, -5824); standing; picture from 45 m back on the line
+  Noonday Creek Trail F1 (Ring Road Northwest: a fork off the line (Round 74)): at (207, -962); standing; picture from 45 m back on the line
+  Noonday Creek Trail F16 (Town Center Drive: a fork off the line (Round 74)): at (172, -890); standing; picture from 45 m back on the line
+  Noonday Creek Trail F19 ((unnamed motorway_link): a fork off the line (Round 74)): at (625, -1700); standing; picture from 45 m back on the line
+  Chastain Ridge F1 (Blackwell Circle: a fork off the line (Round 74)): at (3554, 838); standing; picture from 45 m back on the line
+  Chastain Ridge F2 (New Chastain Road: a fork off the line (Round 74)): at (3248, 618); standing; picture from 45 m back on the line
+  Noonday Creek Extension F1 (New Chastain Road: a fork off the line (Round 74)): at (2503, 765); standing; picture from 45 m back on the line
+
+21 of 22 checks passed.

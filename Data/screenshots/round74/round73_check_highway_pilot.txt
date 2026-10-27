@@ -1,0 +1,33 @@
+Round 73 check, 2026-10-27 08:40, the exe, 1280 x 720, muted.
+
+=== The Quarry Air Race flown by the human-like pilot, by the arrow alone (race.Target, what the arrow points at): ring 3 missed on purpose, then gone back for
+     30.8  CHECKPOINT 1 at 30.758
+     41.1  RING 2 flown past outside it (53 m out): the guide on to the next
+     63.6  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+     88.4  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    115.2  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    132.8  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    157.7  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    184.4  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    202.1  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    228.8  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    255.5  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    273.1  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    299.8  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    324.6  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    342.2  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    368.9  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    393.7  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    411.3  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    434.5  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    461.2  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    478.9  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    505.6  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    532.4  CRASH RESET: back in the air at (-298, 364, -1319) before ring 1
+    550.0  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+    576.8  CRASH RESET: back in the air at (-1448, 353, -1797) before ring 1
+  DID NOT finish in 600 s of game time; missed 0, penalty 0 s; crashes 24; ring 3 missed shown: False, gone back for: False
+FAIL  airpilot: the lap flown by the arrow alone, finished  -  next ring 2
+FAIL  airpilot: ring 3 flown past outside it: RING MISSED, then gone back for and taken (no penalty)  -  penalty 0 s
+
+0 of 2 checks passed.

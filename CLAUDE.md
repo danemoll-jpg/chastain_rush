@@ -439,10 +439,10 @@ for the device in use only (`Menus/KeyHints.cs` over `MenuInput.Controller`; the
 HUD arrow and the air arrow damped. D Kennesaw's B2 past the race's departure below the summit; a race barrier on every fork off every course's line
 (`python Tools/race/fork_closures.py`: closures `"fork": true`, ids F1 ...; re-run after any route script; report `Tools/race/fork_audit.py`). E the quarry decks'
 cut from where the ground first reaches them, LANDING boards (`make_quarry_signs.py`), a preview camera over the line during the countdown
-(`QuarryJumps.Preview`), the Quarry Track on ONE lane with The Corner's loop checkpointed (`make_quarry_track.py` LANE 0, SKIP_CP_M). F the summit leap's lip
-flush at 27 degrees, a gentler run-up cut up to 22 m through the summit (`make_summit_leap.py` ANG, R_KICK, MAX_CUT, LIP_PROUD); the clouds rise over high
+(`QuarryJumps.Preview`); the Quarry Track tried on ONE lane and NOT built again (`make_quarry_track.py`; output in `local/round74/quarry_track_unbuilt/`). F the summit leap's lip
+flush at 27 degrees, then Round 73's climb and lip height pitched to 24 degrees, the kicker 450 m round and 18 m wide, `BodyGlide` over it (now merging every set of rectangles) (`make_summit_leap.py` ANG, R_KICK); the clouds rise over high
 ground (`SkyClouds.Raise`: the white shape at the lip was the cloud layer). I the Highway Air Race (`python Tools/mapgen/make_highway_air_route.py [--plot]
-[--room <dir>/71_line_room.tsv]`: make_air_route.py with its own course; the probe and flights `-exeRound71 -r71Route highway_air_race.json`). J the airport and
+[--room <dir>/71_line_room.tsv]`: make_air_route.py with its own course; the probe and flights `-exeRound71 -r71Route highway_air_race.json`; the third crash before one ring puts a plane past it, `RaceController.AirSpot`). J the airport and
 parking lots as pavement on the map (`MapBuilder.MapPicture.cs`). G the AI's pace (see TODO.md). Check: `ChastainRush.exe -exeRound74 <dir> [-r74Only
 dan,clouds,plane,preplay,controls,arrow,map,qpreview,forks] -logFile <dir>\Player.log` (`Checks/Round20Runner.R74.cs`); Round 73's parts on the new data with
 `-r73Lines local/round74/r74_lines.json`; Round 70's `aitrace` now takes every course (`-r70Races`). Imported from Racer: nothing.

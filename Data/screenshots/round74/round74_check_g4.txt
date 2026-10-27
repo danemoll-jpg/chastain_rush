@@ -1,0 +1,32 @@
+Round 74 check, 2026-10-27 08:46, the exe, 1280 x 720, muted.
+
+=== Dan's four reports, from his exact position and heading (the chase camera, as he saw it)
+  BUG-002 (Kennesaw Mountain race, the drive before CP5: the road on the right needs a barrier): at (-1102.8, 626.1, -5849.2) heading 69; standing in the 60 m ahead: Cube; picture 74_BUG-002_after.png
+  BUG-003 (The Long One's landing deck: the hill through it): at (-1996.3, 216.6, -1390.1) heading 226; standing in the 60 m ahead: sc quarry J2 landing deck, Quarry J2 landing skirt; picture 74_BUG-003_after.png
+    J2 The Long One's landing deck: the ground at most -0.20 m against the deck's top (s 637 lat -10)
+PASS  dan BUG-003: no ground through The Long One's landing deck  -  -0.20 m at s 637 lat -10
+  BUG-004 (The Big One's landing deck: blocked, where does it lead): at (-2128.4, 191.3, -1443.3) heading 190; standing in the 60 m ahead: sc quarry J3 landing deck; picture 74_BUG-004_after.png
+    J3 The Big One's landing deck: the ground at most -0.05 m against the deck's top (s 640 lat 2)
+PASS  dan BUG-004: no ground through The Big One's landing deck  -  -0.05 m at s 640 lat 2
+  BUG-005 (the summit leap's lip: makes you turn; the white shape): at (-1068.1, 685.0, -5968.8) heading 209; standing in the 60 m ahead: nothing; picture 74_BUG-005_after.png
+
+=== The planes: the stands, each plane with its pilot seen from the chase camera, the garage (Free Roam's, race setup's for the air race), colors
+  plane stands: 3; on them: Sky Hopper, Sky Dart, Sky Hopper
+PASS  plane: the Sky Dart stands on the apron with the Sky Hopper
+  Sky Hopper: top speed 115 m/s, roll 95 deg/s, pitch 45 deg/s; the rider aboard, 1 glass parts; picture 74_plane_plane_chase.png
+PASS  plane Sky Hopper: the pilot aboard behind glass
+  Sky Dart: top speed 138 m/s, roll 165 deg/s, pitch 62 deg/s; the rider aboard, 1 glass parts; picture 74_plane_dart_chase.png
+PASS  plane Sky Dart: the pilot aboard behind glass
+  Sky Survey: ; the rider aboard, 1 glass parts; picture 74_plane_heli_chase.png
+PASS  plane Sky Survey: the pilot aboard behind glass
+  Free Roam: pause > GARAGE: page garage, the vehicle Sky Hopper
+  Free Roam's garage stepped through: Sky Hopper, Sky Dart
+PASS  plane: Free Roam's garage has the Sky Dart and colors
+  race setup (Quarry Air Race) > Garage: page garage; its vehicles: Sky Dart, Sky Hopper
+PASS  plane: race setup's Garage for the air race holds the planes only  -  dart,plane
+
+=== The race's HUD arrow, steadied: a lap of the Chastain Glen loop by the human-like driver; the arrow's turn frame to frame against the raw bearing's
+  3848 frames: the raw bearing's wobble 0.557 deg a step on average, the arrow's 0.249 (a step's turn against the step before's)
+FAIL  arrow: the HUD arrow wobbles far less than the raw bearing (steadied)  -  958 against 2145
+
+8 of 9 checks passed.

@@ -1,0 +1,77 @@
+Round 71 check, 2026-10-27 08:34, the exe, 1280 x 720, muted.
+
+=== The rings' line against the built world (no flying): the plane's strike points every 2.5 m
+  Highway Air Race: lap 18945 m, 16 rings + the line, 2 laps
+  lowest over the ground: 4.0 m at 4930 m from the line
+  under the decks:
+      4890 m (-970, 335.9, 423): 4.3 m up to BridgeStructure, 4.4 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      4895 m (-971, 335.9, 427): 4.3 m up to BridgeStructure, 4.3 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      4900 m (-972, 335.9, 432): 4.3 m up to BridgeStructure, 4.3 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      4905 m (-973, 335.9, 437): 4.3 m up to BridgeStructure, 4.2 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      4915 m (-975, 335.9, 447): 4.1 m up to BridgeStructure, 4.2 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      4920 m (-976, 335.9, 452): 4.1 m up to BridgeStructure, 4.1 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      8295 m (342, 324.3, 951): 5.7 m up to BridgeStructure, 5.7 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      8300 m (343, 324.3, 946): 5.4 m up to BridgeStructure, 5.8 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      8305 m (344, 324.1, 941): 5.6 m up to BridgeStructure, 5.6 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      8315 m (346, 324.0, 931): 4.5 m up to BridgeStructure, 5.7 m down (body 1.25 m under the middle, tail 1.7 m over it)
+      8320 m (347, 324.1, 927): 4.3 m up to BridgeStructure, 5.9 m down (body 1.25 m under the middle, tail 1.7 m over it)
+  S/F     Start / finish                 (-3041, 345, -1879) ring 44 m across; ground 16.0 m under it (ray 16.0 m to Terrain_8_10)
+  ring 1  Past the runway                (-1298, 353, -1790) ring 52 m across; ground 49.4 m under it (ray 49.4 m to Terrain_11_10)
+  ring 2  I-75 at Town Center            (-300, 371, -1379) ring 44 m across; ground 54.9 m under it (ray 54.9 m to Terrain_12_10)
+  ring 3  Up I-75                        (-470, 338, -721) ring 48 m across; ground 31.3 m under it (ray 31.3 m to Terrain_12_11)
+  ring 4  I-75 at Chastain Road          (-820, 346, -111) ring 48 m across; ground 23.1 m under it (ray 23.1 m to Terrain_11_12)
+  ring 5  Low over I-75                  (-935, 341, 261) ring 44 m across; ground 10.0 m under it (ray 10.0 m to Terrain_11_13)
+  ring 6  Under Chastain Road            (-972, 336, 432) frame 20 x 6.8 m; ground 4.3 m under it (ray 4.3 m to Terrain_11_13), BridgeStructure 4.6 m over it
+  ring 7  Over the Skip Spann Connector  (-1055, 360, 777) ring 44 m across; ground 22.1 m under it (ray 20.8 m to BridgeDecks)
+  ring 8  North sweep                    (-502, 413, 1760) ring 56 m across; ground 77.5 m under it (ray 77.5 m to Terrain_12_15)
+  ring 9  Down I-575                     (290, 339, 1252) ring 48 m across; ground 18.0 m under it (ray 18.0 m to Terrain_13_14)
+  ring 10 Under Chastain Road Northwest  (345, 324, 936) frame 20 x 6.8 m; ground 5.6 m under it (ray 5.6 m to Terrain_13_14)
+  ring 11 I-575 south                    (440, 336, 502) ring 48 m across; ground 22.0 m under it (ray 22.0 m to Terrain_13_13)
+  ring 12 I-575 by Barrett Parkway       (752, 326, -1399) ring 44 m across; ground 16.0 m under it (ray 16.0 m to Terrain_14_10)
+  ring 13 I-575 to the interchange       (700, 387, -2252) ring 48 m across; ground 46.6 m under it (ray 46.6 m to Terrain_14_9)
+  ring 14 The interchange                (469, 420, -3081) ring 52 m across; ground 59.7 m under it (ray 59.7 m to Terrain_13_8)
+  ring 15 South of the airport           (-2952, 392, -2200) ring 52 m across; ground 70.0 m under it (ray 70.0 m to Terrain_8_9)
+  ring 16 The turn                       (-4241, 381, -2200) ring 52 m across; ground 45.0 m under it (ray 45.0 m to Terrain_6_9)
+PASS  aprobe: nothing solid and no tree's crown on the rings' line  -  0 stretch(es) listed above
+
+=== A lap flown cleanly by script (the AI pilot's code on the player's plane, Hard's pace)
+     15.3  START LINE crossed: clock started
+     31.2  CHECKPOINT 1 at 31.212
+     41.7  CHECKPOINT 2 at 41.675
+     47.7  CHECKPOINT 3 at 47.682
+     53.8  CHECKPOINT 4 at 53.819
+     57.6  CHECKPOINT 5 at 57.561
+     59.8  CHECKPOINT 6 at 59.800
+     64.4  CHECKPOINT 7 at 64.356
+     80.8  CHECKPOINT 8 at 80.799
+     90.9  CHECKPOINT 9 at 90.894
+     93.8  CHECKPOINT 10 at 93.828
+     98.0  CHECKPOINT 11 at 97.991
+    115.1  CHECKPOINT 12 at 115.056
+    122.6  CHECKPOINT 13 at 122.576
+    130.2  CHECKPOINT 14 at 130.221
+    162.3  CHECKPOINT 15 at 162.240
+    176.2  CHECKPOINT 16 at 176.160
+    189.3  LAP 1 COUNTED 173.968 (clock 173.968 + penalty 0.0)
+    189.3  FINISH total 173.968 (clock 173.968 + penalties 0.0); laps 173.968; place 1
+PASS  aline: the lap finished  -  lap 2:53.968
+PASS  aline: every ring passed (none missed)  -  0 missed
+PASS  aline: no crash
+
+=== 2 AI pilots on Hard, 2 laps (the player flown by script at Normal's pace)
+    189.6  EMBER: PENALTY +5 s: missed CP16 on lap 1 at 189.642 (race penalty now 5 s)
+    264.9  EMBER: PENALTY +5 s: missed CP8 on lap 2 at 264.884 (race penalty now 10 s)
+    326.4  GOLD: FINISH total 314.083 (clock 314.083 + penalties 0.0); laps 157.384 156.699; place 1
+    362.5  FINISH total 347.168 (clock 347.168 + penalties 0.0); laps 173.968 173.199; place 2
+  YOU   5:47.168  laps 2:53.968 / 2:53.199, missed 0
+  EMBER 5:58.379  laps 2:59.830 / 2:58.549, missed 2
+  GOLD  5:14.083  laps 2:37.384 / 2:36.699, missed 0
+PASS  aai: both AI pilots finish (flown, not estimated)  -  EMBER 5:58.379, GOLD 5:14.083
+
+=== Pictures
+  71_quarry_dive: at (-1407, 353, -1795), 51 m over the ground
+  71_under_i75: at (-764, 343, -204), 26 m over the ground
+  71_high_ring: at (-950, 339, 326), 7 m over the ground
+  71_summit_ring: at (284, 355, 1360), 32 m over the ground
+
+5 of 5 checks passed.
