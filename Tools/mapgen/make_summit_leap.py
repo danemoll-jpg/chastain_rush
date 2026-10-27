@@ -164,7 +164,9 @@ grades = [
      "ground_first": 2, "ground_last": 0, "ground_ease_m": 20.0, "open_ends": True,
      "keep_off": flat(drive[-30:]), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 1.5},
     {"id": "the summit leap's catch and run-out", "points": flat([P(x) for x in cs if x <= ARREST_TO + 10]), "y": [round(cat(x), 3) for x in cs if x <= ARREST_TO + 10],
-     "half": CATCH_HALF, "blend": 10.0, "halves": [CATCH_HALF] * len([x for x in cs if x <= ARREST_TO + 10]), "blends": [10.0] * len([x for x in cs if x <= ARREST_TO + 10]), "open_ends": True},
+     "half": CATCH_HALF, "blend": 10.0, "halves": [CATCH_HALF] * len([x for x in cs if x <= ARREST_TO + 10]), "blends": [10.0] * len([x for x in cs if x <= ARREST_TO + 10]), "open_ends": True,
+     # (the flight crosses the drive's south leg, the Kennesaw Mountain race's lap, just before the catch: the drive is kept off)
+     "keep_off": flat(drive), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 2.0},
     {"id": "the summit leap's track to North Saint Marys Lane", "points": flat(track), "y": [round(v, 3) for v in track_y], "half": 3.5, "blend": 4.0, "open_ends": True},
 ]
 # the lot's loop and the drive are never under the in-run's fill: report the nearest
