@@ -563,7 +563,7 @@ namespace ChastainRush
                 vehicles.Select(vehicles.RaceVehicleFor(rd), VehicleSwitch.Pick.Forced);
             // Round 75 (A, Dan: "there needs to be another line in the menu to choose between street and air races. And depending on this, your garage
             // becomes available"): RACE TYPE, Street / Air, first; the Route row holds that type's courses; each type goes back to its last course
-            string curFile = race ? (string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route) : "";
+            string curFile = !race ? "" : !string.IsNullOrEmpty(race.CurrentFile) ? race.CurrentFile : string.IsNullOrEmpty(Current.route) ? race.routeFileName : Current.route;   // (the course loaded)
             var all = race ? race.Routes() : new List<(string file, string name)>();
             var routes = all.Where(x => race.IsAir(x.file) == air).ToList();
             if (air) Current.routeAir = curFile; else Current.routeStreet = curFile;
