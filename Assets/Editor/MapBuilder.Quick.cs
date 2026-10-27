@@ -146,6 +146,7 @@ namespace ChastainRush
                 S("ShoppingCenter", () => BuildShoppingCenter(map, terrain, mats, world, shop)),   // Round 17 (Part B): lot, shop fronts, gas station, the bank
                 S("StuntPark", () => { if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop); }),   // Round 36 (Part A2): the stunt park, its stores and roofs
                 S("Mall", () => { if (Mall != null) BuildMall(map, terrain, mats, world, Mall); }, true),   // Round 60 (A): Town Center, outside and in (MapBuilder.Mall.cs, MallInside.cs)
+                S("Marietta", () => BuildMarietta(map, terrain, mats, world), true),   // Round 76 (B): Marietta Square's park, landmarks, walks, paint, the railroad (MapBuilder.MariettaSquare.cs)
                 S("Airport", () => BuildAirport(terrain, mats, world, Airport)),   // Round 61 (B): the airport's pavement and paint, the trails' tread (MapBuilder.Airport.cs)
                 S("Helipads", () => BuildHelipads(mats, world)),
                 S("Edges", () => BuildEdges(map, terrain, mats, world), true),   // Round 66: the road closures at the map's edge (MapBuilder.Edges.cs); quick   // Round 63: the airport's and Kennestone's rooftop helipads and their parked helicopters (MapBuilder.Helipads.cs)
@@ -211,7 +212,7 @@ namespace ChastainRush
 
             IEnumerable<(int tx, int tz, TerrainData d)> Tiles()
             {
-                for (int tz = 0; tz < c.terrain.Tiles.GetLength(1); tz++) for (int tx = 0; tx < c.terrain.Tiles.GetLength(0); tx++) yield return (tx, tz, c.terrain.Tiles[tx, tz].terrainData);
+                for (int tz = 0; tz < c.terrain.Tiles.GetLength(1); tz++) for (int tx = 0; tx < c.terrain.Tiles.GetLength(0); tx++) if (c.terrain.Tiles[tx, tz] != null) yield return (tx, tz, c.terrain.Tiles[tx, tz].terrainData);
             }
             int Index(int tx, int tz) => tz * c.terrain.Tiles.GetLength(0) + tx;
             public void Resync()
@@ -475,7 +476,7 @@ namespace ChastainRush
                              (lines.Count > 0 ? string.Join(", ", lines) : "none"));
         }
 
-        static IEnumerable<(int tx, int tz)> TileIds(TerrainGrid g) { for (int tz = 0; tz < g.Tiles.GetLength(1); tz++) for (int tx = 0; tx < g.Tiles.GetLength(0); tx++) yield return (tx, tz); }
+        static IEnumerable<(int tx, int tz)> TileIds(TerrainGrid g) { for (int tz = 0; tz < g.Tiles.GetLength(1); tz++) for (int tx = 0; tx < g.Tiles.GetLength(0); tx++) if (g.Tiles[tx, tz] != null) yield return (tx, tz); }
         static TerrainData[,] SceneTiles(UnityEngine.SceneManagement.Scene scene, TerrainGrid g)
         {
             var root = scene.GetRootGameObjects().First(o => o.name == "Terrain").transform; var t = new TerrainData[g.Tiles.GetLength(0), g.Tiles.GetLength(1)];

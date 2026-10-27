@@ -243,7 +243,7 @@ namespace ChastainRush
         static int SetHoles(TerrainGrid g, Rect area, Func<Vector2, bool> hole)
         {
             int cells = 0;
-            foreach (var tile in g.Tiles)
+            foreach (var tile in g.All())
             {
                 var data = tile.terrainData; int hr = data.holesResolution; var size = data.size; var pos = tile.transform.position;
                 if (area.xMax < pos.x || area.xMin > pos.x + size.x || area.yMax < pos.z || area.yMin > pos.z + size.z) continue;

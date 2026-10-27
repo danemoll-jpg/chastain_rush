@@ -392,6 +392,7 @@ def append_trees(t):
         f.write(data[8:])
         f.write(rec.tobytes())
     log(f"Extension: trees.bin {n} core trees + {len(rec)} new = {n + len(rec)}")
+    return n   # Round 76: where the new trees start (mapgen_piece.py)
 
 
 def aeroways_and_trails(cfg, osm, rect, W, H, in_core):

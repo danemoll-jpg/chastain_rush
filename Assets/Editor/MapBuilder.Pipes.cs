@@ -482,7 +482,7 @@ namespace ChastainRush
         static void CutPipeHoles(TerrainGrid g, PipePlan p)
         {
             int cells = 0;
-            foreach (var tile in g.Tiles)
+            foreach (var tile in g.All())
             {
                 var data = tile.terrainData; int hr = data.holesResolution; var size = data.size; var pos = tile.transform.position;
                 float cx = size.x / hr, cz = size.z / hr;

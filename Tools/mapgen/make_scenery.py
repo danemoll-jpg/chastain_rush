@@ -120,16 +120,21 @@ def bilinear(a, fx, fz):
 
 
 def outside(x, z, R):
+    """Metres outside the land. Round 76: R is the map's rectangle or a list of rectangles (extent_m and Marietta Square's piece): the nearest."""
+    if R and isinstance(R[0], (tuple, list)):
+        return np.minimum.reduce([outside(x, z, r) for r in R])
     x0, z0, x1, z1 = R
     dx = np.maximum(0, np.maximum(x0 - x, x - x1)); dz = np.maximum(0, np.maximum(z0 - z, z - z1))
     return np.hypot(dx, dz)
 
 
-def axis_ring(a0, a1, near, far):
-    """Grid lines: 'far' spacing out to 2 km from the edge, 'near' within it, ~60 m across the map (only its edge rows are used)."""
+def axis_ring(a0, a1, near, far, band=None):
+    """Grid lines: 'far' spacing out to 2 km from the edge, 'near' within it, ~60 m across the map (only its edge rows are used).
+    Round 76: 'band' (b0, b1) inside a0..a1 at the 'near' spacing too (the strip beside Marietta Square's piece, off the map)."""
     def seg(a, b, step):
         n = max(1, int(math.ceil(abs(b - a) / step))); return list(np.linspace(a, b, n + 1))
-    xs = seg(a0 - RING_W, a0 - 2000, far)[:-1] + seg(a0 - 2000, a0, near)[:-1] + seg(a0, a1, 60.0)[:-1] + seg(a1, a1 + 2000, near)[:-1] + seg(a1 + 2000, a1 + RING_W, far)
+    mid = seg(a0, a1, 60.0)[:-1] if band is None else seg(a0, band[0], 60.0)[:-1] + seg(band[0], band[1], near)[:-1] + seg(band[1], a1, 60.0)[:-1]
+    xs = seg(a0 - RING_W, a0 - 2000, far)[:-1] + seg(a0 - 2000, a0, near)[:-1] + mid + seg(a1, a1 + 2000, near)[:-1] + seg(a1 + 2000, a1 + RING_W, far)
     return np.array(xs, dtype=np.float64)
 
 
@@ -144,7 +149,10 @@ def main():
     refresh = "--refresh" in sys.argv
     mp = json.load(open(os.path.join(ROOT, "Data", "map.json")))
     tj = json.load(open(os.path.join(ROOT, "Assets", "Generated", "terrain_full.json")))
-    oE, oN = mp["origin_utm"]; R = tuple(mp["extent_m"]); x0, z0, x1, z1 = R
+    oE, oN = mp["origin_utm"]; R0 = tuple(mp["extent_m"])
+    # Round 76 (A): the land is extent_m and map.json's pieces (Marietta Square below the old south edge): R the list of rectangles, x0..z1 round them all
+    pc = mp.get("pieces") or []; LAND = [R0] + [tuple(pc[i:i + 4]) for i in range(0, len(pc), 4)]; R = LAND
+    x0, z0 = min(r[0] for r in LAND), min(r[1] for r in LAND); x1, z1 = max(r[2] for r in LAND), max(r[3] for r in LAND)
     vs, datum, epsg = tj["vertical_scale"], tj["vertical_datum_m"], 26916
     scale = lambda e: datum + (e - datum) * vs
     log(f"map extent x {x0:.1f}..{x1:.1f}, z {z0:.1f}..{z1:.1f}; vertical scale {vs} about {datum:.2f} m")
@@ -153,21 +161,34 @@ def main():
     gx, gz = tj["grid_x"], tj["grid_z"]; lo, hi = tj["min_height"], tj["max_height"]
     r16 = np.memmap(os.path.join(ROOT, "Assets", "Generated", "terrain_full.r16"), dtype="<u2", mode="r", shape=(gz, gx))
     sx, sz = tj["step_x_m"], tj["step_z_m"]; tox, toz = tj["origin_x_m"], tj["origin_z_m"]
-    edge_s, edge_n = r16[0, :].astype(np.float32), r16[gz - 1, :].astype(np.float32)
-    edge_w, edge_e = r16[:, 0].astype(np.float32), r16[:, gx - 1].astype(np.float32)
     toh = lambda v: lo + v / 65535.0 * (hi - lo)
-    edge_s, edge_n, edge_w, edge_e = map(toh, (edge_s, edge_n, edge_w, edge_e))
+    # Round 76 (A): the ground of the land at any point on it (the full grid, or Marietta Square's piece below it: terrain_piece3)
+    grids = [(r16, tox, toz, gx, gz)]
+    pj = os.path.join(ROOT, "Assets", "Generated", "terrain_piece3.json")
+    if os.path.exists(pj):
+        pm = json.load(open(pj))
+        grids.append((np.memmap(os.path.join(ROOT, "Assets", "Generated", "terrain_piece3.r16"), dtype="<u2", mode="r", shape=(pm["grid_z"], pm["grid_x"])),
+                      pm["origin_x_m"], pm["origin_z_m"], pm["grid_x"], pm["grid_z"]))
+
+    def land_height(x, z):
+        out = np.zeros(np.shape(x), dtype=np.float64)
+        for k, (g, ox, oz, nx_, nz_) in enumerate(grids):
+            fi = (x - ox) / sx; fk = (z - oz) / sz
+            m = (fi >= -1e-3) & (fi <= nx_ - 1 + 1e-3) & (fk >= -1e-3) & (fk <= nz_ - 1 + 1e-3)
+            if k == 0: m = m | True   # the full grid answers anywhere else (clamped)
+            fi = np.clip(fi[m], 0, nx_ - 1.001); fk = np.clip(fk[m], 0, nz_ - 1.001); j, i = fi.astype(int), fk.astype(int); tx, tz = fi - j, fk - i
+            a = g[i, j] * (1 - tx) * (1 - tz) + g[i, j + 1] * tx * (1 - tz) + g[i + 1, j] * (1 - tx) * tz + g[i + 1, j + 1] * tx * tz
+            out[m] = toh(a.astype(np.float64))
+        return out
 
     def edge_height(x, z):
-        """The map's terrain height at the nearest point of its edge."""
-        cx = np.clip(x, x0, x1); cz = np.clip(z, z0, z1)
-        dW, dE, dS, dN = cx - x0, x1 - cx, cz - z0, z1 - cz
-        # inside: the nearest side; outside: the clamped point lies on a side already
-        side = np.argmin(np.stack([dW, dE, dS, dN]), axis=0)
-        fi = (cx - tox) / sx; fk = (cz - toz) / sz
-        hs = np.interp(fi, np.arange(gx), edge_s); hn = np.interp(fi, np.arange(gx), edge_n)
-        hw = np.interp(fk, np.arange(gz), edge_w); he = np.interp(fk, np.arange(gz), edge_e)
-        return np.choose(side, [hw, he, hs, hn])
+        """The map's terrain height at the nearest point of its edge (inside the land: the point itself; Round 76: of the nearest rectangle)."""
+        best = None; cxb = czb = None
+        for (a0, b0, a1, b1) in LAND:
+            cx = np.clip(x, a0, a1); cz = np.clip(z, b0, b1); d = np.hypot(cx - x, cz - z)
+            if best is None: best, cxb, czb = d, cx, cz
+            else: m = d < best; best = np.where(m, d, best); cxb = np.where(m, cx, cxb); czb = np.where(m, cz, czb)
+        return land_height(cxb, czb)
 
     # ---- downloads
     rbox = (oE + x0 - RING_W - 300, oN + z0 - RING_W - 300, oE + x1 + RING_W + 300, oN + z1 + RING_W + 300)
@@ -186,14 +207,16 @@ def main():
     rng = np.random.default_rng(66)
 
     # ---- the ring grid
-    xs, zs = axis_ring(x0, x1, RING_CELL, 75.0), axis_ring(z0, z1, RING_CELL, 75.0)
+    zband = (z0, R0[1]) if z0 < R0[1] - 1 else None   # Round 76: the strip beside Marietta Square's piece, off the map
+    xs, zs = axis_ring(x0, x1, RING_CELL, 75.0), axis_ring(z0, z1, RING_CELL, 75.0, zband)
     X, Z = np.meshgrid(xs, zs)
     out_d = outside(X, Z, R)
     h = ring_h(X, Z)
     w = np.clip(out_d / 300.0, 0, 1); w = w * w * (3 - 2 * w)
     eh = edge_height(X, Z)
     h = eh * (1 - w) + h * w - curve(out_d)
-    inside = (X > x0 + .5) & (X < x1 - .5) & (Z > z0 + .5) & (Z < z1 - .5)
+    # (inside the land by 0.5 m every way: a point on the line where two rectangles meet is inside)
+    inside = (outside(X + .5, Z, R) == 0) & (outside(X - .5, Z, R) == 0) & (outside(X, Z + .5, R) == 0) & (outside(X, Z - .5, R) == 0)
     h[inside] = eh[inside] - 4.0          # the row under the map: lowered out of sight
     ci = np.clip(((X - rw0) / RING_CELL).astype(int), 0, ring_cov.shape[1] - 1); ck = np.clip(((Z - rs0) / RING_CELL).astype(int), 0, ring_cov.shape[0] - 1)
     cov = ring_cov[ck, ci]
@@ -277,8 +300,9 @@ def main():
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     i16 = lambda a: np.clip(np.round(a), -32768, 32767).astype("<i2")
     with open(OUT, "wb") as f:
-        f.write(b"CRSC"); f.write(struct.pack("<i", 1))
+        f.write(b"CRSC"); f.write(struct.pack("<i", 2))   # Round 76: version 2, the land's rectangles after the header
         f.write(struct.pack("<5f", x0, z0, x1, z1, vs))
+        f.write(struct.pack("<i", len(LAND))); [f.write(struct.pack("<4f", *r)) for r in LAND]
         f.write(struct.pack("<ii", len(xs), len(zs))); f.write(xs.astype("<f4").tobytes()); f.write(zs.astype("<f4").tobytes())
         f.write(i16(h * 10).tobytes()); f.write(cov.astype(np.uint8).tobytes())
         f.write(struct.pack("<ii", len(fxs), len(fzs))); f.write(fxs.astype("<f4").tobytes()); f.write(fzs.astype("<f4").tobytes())

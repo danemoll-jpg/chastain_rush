@@ -30,14 +30,14 @@ namespace ChastainRush
         static MapData edgePlanFor; static List<EdgeClosure> edgeClosures; static Dictionary<int, List<Vector2>> edgeTrim;
         static List<(List<Vector2> pts, string cls, float half, string name)> edgeTurnLines;
 
-        static bool OnMapEdge(Rect m, Vector2 p) => Mathf.Min(Mathf.Min(p.x - m.xMin, m.xMax - p.x), Mathf.Min(p.y - m.yMin, m.yMax - p.y)) < 3f;
+        static bool OnMapEdge(MapLand m, Vector2 p) => m.Distance(p.x, p.y) < 3f;   // Round 76: the land's outline (Marietta Square's piece), not its rectangle
 
         // the plan, made once per map
         static void PlanEdges(MapData map)
         {
             if (edgePlanFor == map && edgeClosures != null) return;
             edgePlanFor = map; edgeClosures = new List<EdgeClosure>(); edgeTrim = new Dictionary<int, List<Vector2>>(); edgeTurnLines = new List<(List<Vector2>, string, float, string)>();
-            var ext = MapExtent(map);
+            var ext = MapLandOf(map);
             var roads = map.roads; var pts = new List<Vector2>[roads.Length];
             for (int i = 0; i < roads.Length; i++)
                 if (roads[i].points != null && roads[i].points.Length >= 4 && !roads[i].tunnel && System.Array.IndexOf(EdgeClasses, roads[i].@class) >= 0) pts[i] = ToPoints(roads[i].points);
@@ -142,11 +142,11 @@ namespace ChastainRush
             var closed = RoadSignMaterial("RoadClosed"); var detour = RoadSignMaterial("Detour");
             var mb = new MeshBuilder(); var colliders = new GameObject("Road closure colliders").transform; colliders.SetParent(root.transform, false);
             var signs = new GameObject("Road closure signs").transform; signs.SetParent(root.transform, false);
-            int n = 0, hugging = 0; var ext = MapExtent(map);
+            int n = 0, hugging = 0; var ext = MapLandOf(map);
             foreach (var c in edgeClosures)
             {
                 // a road that runs along the edge (its closure would stand on the edge line): none; the edge's push-back stops a car there (MapEdge)
-                if (Mathf.Min(Mathf.Min(c.at.x - ext.xMin, ext.xMax - c.at.x), Mathf.Min(c.at.y - ext.yMin, ext.yMax - c.at.y)) < 12f) { hugging++; continue; }
+                if (ext.Distance(c.at.x, c.at.y) < 12f) { hugging++; continue; }
                 var d3 = new Vector3(c.dir.x, 0f, c.dir.y); var across = new Vector3(c.dir.y, 0f, -c.dir.x);   // across: to the right looking out
                 float half = c.half + (c.highway ? 4.5f : 3.5f);
                 // Round 72 (B2): Canton Road's closures on the edge's bends (and the service road beside it): a car on the bend got onto or round the

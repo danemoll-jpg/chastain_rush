@@ -92,6 +92,20 @@ KINDS = [
         ("COLD SPOON CREAMERY", (250, 236, 240), (200, 70, 120), "georgiab.ttf"),
         ("DRIVE-UP WINDOW", (180, 30, 25), (255, 255, 255), "arialbd.ttf"),
     ]),
+    # Round 76 (B, Marietta Square; every name made up): the theater's marquee, the food hall, the museum, the depot, then the old storefronts
+    # round the square. Rows 54 to 63 (MapBuilder.MariettaSquare.cs Sign*).
+    ("marietta", [
+        ("THE PEACHTREE PALACE", (150, 20, 30), (255, 220, 120), "impact.ttf"),
+        ("STATION STREET MARKET", (30, 50, 40), (240, 220, 160), "georgiab.ttf"),
+        ("COBB HALL OF ART", (245, 242, 232), (40, 40, 50), "georgiab.ttf"),
+        ("MARIETTA DEPOT", (60, 40, 30), (240, 225, 190), "georgiab.ttf"),
+        ("PARKSIDE DINER", (190, 30, 30), (255, 255, 255), "impact.ttf"),
+        ("OLD TOWN ANTIQUES", (40, 60, 50), (235, 215, 160), "georgiab.ttf"),
+        ("BRICKHOUSE COFFEE", (70, 40, 25), (245, 225, 190), "georgiab.ttf"),
+        ("SQUARE BOOKS & CO.", (30, 40, 80), (240, 230, 200), "georgiab.ttf"),
+        ("THE CORNER TAVERN", (20, 20, 22), (230, 180, 60), "georgiab.ttf"),
+        ("MAGNOLIA GIFTS", (245, 236, 240), (120, 50, 90), "georgiab.ttf"),
+    ]),
 ]
 
 

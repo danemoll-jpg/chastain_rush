@@ -139,6 +139,7 @@ namespace ChastainRush
                 if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
                 if (CoursonOwns(i)) continue;   // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies
                 if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center and its anchors (MapBuilder.Mall.cs)
+                if (MariettaOwns(i)) continue;   // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs)
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;
@@ -162,7 +163,10 @@ namespace ChastainRush
                 }
                 if ((k == BizKind.Apartments || k == BizKind.Garage) && area < 40f) k = BizKind.Shed;
                 if (i == IceCreamShop) k = BizKind.Shop;   // Round 32 (A4): Dan, "I am pretty sure this is an ice cream shop"
+                if (MariettaHistoric(i)) k = BizKind.Shop; else if (MariettaChurch(i)) k = BizKind.Church;
+                else if (k == BizKind.Civic && MariettaNear(c)) k = BizKind.Office;   // Round 76: downtown's courthouses and county buildings are offices, not fire stations   // Round 76 (B): the square's old storefronts, its churches
                 var z = new Biz { index = i, seed = b.seed, kind = k, type = b.type, ring = ring, c = c, area = area, height = b.height, pitched = b.roof == "gable", pitch = b.pitch_deg };
+                if (MariettaHistoric(i)) { z.pitched = false; z.height = Mathf.Max(b.height, (Hash01(b.seed, 761) < 0.45f ? 3 : 2) * 3.7f + 0.9f); }   // two or three stories
                 // the front: the face that looks most toward the nearest lot or road (Round 32: on Canton Road, toward Canton Road)
                 float best = float.MinValue;
                 if (!PickCantonFront(z, cantonHalf, cross))
@@ -366,7 +370,7 @@ namespace ChastainRush
                 Color wall, roofC = PickColour(FlatRoofPalette, z.seed, 2);
                 switch (z.kind)
                 {
-                    case BizKind.Shop: wall = PickOf(ShopWalls, z.seed, 11); break;
+                    case BizKind.Shop: wall = MariettaHistoric(z.index) ? PickOf(MariettaBrick, z.seed, 11) : PickOf(ShopWalls, z.seed, 11); break;
                     case BizKind.Office: wall = PickOf(OfficeWalls, z.seed, 12); break;
                     case BizKind.Industrial: wall = PickOf(MetalWalls, z.seed, 13); break;
                     case BizKind.Church: wall = Hash01(z.seed, 14) < 0.5f ? ChurchWhite : ChurchBrick; roofC = new Color(0.22f, 0.22f, 0.24f); break;
@@ -431,6 +435,7 @@ namespace ChastainRush
                                     ShopFronts(det, f, half, eave, z, Sign, Next, row, cornerU > 0f);
                                 }
                                 else if (z.index == IceCreamShop) { ShopFronts(det, f, half * 0.55f, eave, z, Sign, Next, k => SignIceCream, false); WalkUpWindow(det, f, half * 0.72f); }
+                                else if (MariettaHistoric(z.index)) { ShopFronts(det, f, half, eave, z, Sign, Next, k => MariettaShopRow(z.seed, k), false); }   // Round 76 (B): the square's made-up names
                                 else ShopFronts(det, f, half, eave, z, Sign, Next, null, false);
                                 pizzaDone |= z.index == PizzaStrip && row != null;
                             }
@@ -442,6 +447,7 @@ namespace ChastainRush
                             }
                             else FrontQuad(det, f, -half + 0.05f, half - 0.05f, -0.3f, 0.7f, 0.03f, Shade(wall, 0.78f));
                             if (!front && len > 12f && Vector2.Dot(n, z.frontN) < -0.9f) ServiceDoor(det, f, half * 0.4f);
+                            if (MariettaHistoric(z.index)) HistoricUpper(det, f, half, eave, wall, front);   // Round 76 (B): tall upper windows and a cornice
                             break;
                         case BizKind.Office:
                             WindowBands(det, f, half, eave, front ? 3.4f : 0f);

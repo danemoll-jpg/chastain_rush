@@ -27,6 +27,8 @@ namespace ChastainRush
         void Start()
         {
             Map = GroundQuery.Extent(); var m = Map;
+            // Round 76 (A): the land is the tiles there are (Marietta Square's piece below the old south edge): walls along its outline, not the rectangle round it
+            Land = MapLand.Live;
             // in 200 m pieces, each from under the ground there to 40 m over its highest point (a helicopter's ray down never meets one far above the ground)
             var list = new System.Collections.Generic.List<BoxCollider>();
             void Side(Vector2 a, Vector2 b, Vector2 outward)
@@ -43,10 +45,9 @@ namespace ChastainRush
                     list.Add(Make(new Vector3(c.x, (lo - 60f + hi + 40f) * .5f, c.y), size));
                 }
             }
-            Side(new Vector2(m.xMin, m.yMin), new Vector2(m.xMin, m.yMax), Vector2.left); Side(new Vector2(m.xMax, m.yMin), new Vector2(m.xMax, m.yMax), Vector2.right);
-            Side(new Vector2(m.xMin, m.yMin), new Vector2(m.xMax, m.yMin), Vector2.down); Side(new Vector2(m.xMin, m.yMax), new Vector2(m.xMax, m.yMax), Vector2.up);
+            if (Land != null) foreach (var e in Land.Edge) Side(e.a, e.b, -e.inward);
             walls = list.ToArray();
-            Debug.Log($"[Round66] map edge: x {m.xMin:0.0}..{m.xMax:0.0}, z {m.yMin:0.0}..{m.yMax:0.0}; pushed back within {Zone:0} m, {walls.Length} wall pieces on the edge");
+            Debug.Log($"[Round66] map edge: x {m.xMin:0.0}..{m.xMax:0.0}, z {m.yMin:0.0}..{m.yMax:0.0}; {Land?.Edge.Length ?? 0} sides; pushed back within {Zone:0} m, {walls.Length} wall pieces on the edge");
         }
         BoxCollider Make(Vector3 c, Vector3 size)
         {
@@ -54,23 +55,20 @@ namespace ChastainRush
             var b = go.AddComponent<BoxCollider>(); b.size = size; return b;
         }
 
-        // how far inside the edge (negative past it) and the way back in
+        // how far inside the edge (negative past it) and the way back in (Round 76: the land's outline, MapLand)
+        public static MapLand Land { get; private set; }
         public static float Inside(Vector3 p, out Vector3 inward)
         {
-            var m = Map; float w = p.x - m.xMin, e = m.xMax - p.x, s = p.z - m.yMin, n = m.yMax - p.z;
-            float d = Mathf.Min(Mathf.Min(w, e), Mathf.Min(s, n));
-            inward = Vector3.zero;
-            if (w < Zone) inward.x += 1f - Mathf.Max(0f, w) / Zone; if (e < Zone) inward.x -= 1f - Mathf.Max(0f, e) / Zone;
-            if (s < Zone) inward.z += 1f - Mathf.Max(0f, s) / Zone; if (n < Zone) inward.z -= 1f - Mathf.Max(0f, n) / Zone;
-            if (inward.sqrMagnitude < 1e-6f) inward = d == w ? Vector3.right : d == e ? Vector3.left : d == s ? Vector3.forward : Vector3.back;
-            inward.Normalize();
+            if (Land == null) { inward = Vector3.forward; return float.MaxValue; }
+            float d = Land.Distance(p.x, p.z); var n = Land.Inward(p.x, p.z, Zone);
+            inward = new Vector3(n.x, 0f, n.y);
             return d;
         }
 
         float wallCheck; readonly System.Collections.Generic.Dictionary<ArcadeVehicle, bool> flying = new System.Collections.Generic.Dictionary<ArcadeVehicle, bool>();
         void FixedUpdate()
         {
-            if (Map.width <= 0f) return;
+            if (Land == null) return;
             foreach (var v in ArcadeVehicle.Live)
             {
                 if (!v || !v.Body || v.Body.isKinematic) continue;

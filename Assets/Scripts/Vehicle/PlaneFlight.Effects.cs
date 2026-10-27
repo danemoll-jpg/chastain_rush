@@ -17,11 +17,11 @@ namespace ChastainRush
         // past the edge: bank toward the map (35 to 45 degrees, the way that turns it back soonest), the stick's bank overruled
         void Boundary(Vector3 pos, ref float roll)
         {
-            var m = MapEdge.Map; if (m.width <= 0f) { Outside = -1e9f; return; }
-            float o = Mathf.Max(Mathf.Max(m.xMin - pos.x, pos.x - m.xMax), Mathf.Max(m.yMin - pos.z, pos.z - m.yMax));
+            var land = MapEdge.Land; if (land == null) { Outside = -1e9f; return; }   // Round 76: the land's outline (MapLand)
+            float o = -land.Distance(pos.x, pos.z);
             Outside = o; MaxOutside = Mathf.Max(MaxOutside, o);
             if (o <= 0f) return;
-            var c = m.center; float want = Mathf.Atan2(c.x - pos.x, c.y - pos.z) * Mathf.Rad2Deg;
+            var c = MapEdge.Map.center; float want = Mathf.Atan2(c.x - pos.x, c.y - pos.z) * Mathf.Rad2Deg;
             float off = Mathf.DeltaAngle(yawDeg, want);
             if (Mathf.Abs(off) < 8f) { roll = Mathf.MoveTowards(roll, 0f, 40f * Time.fixedDeltaTime); return; }
             float bank = Mathf.Sign(off) * Mathf.Lerp(35f, 45f, Mathf.Clamp01(o / 400f));

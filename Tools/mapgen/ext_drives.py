@@ -96,6 +96,18 @@ for name, q, onm in (("Town Center", tc, False), ("KSU", ksu, False), ("I-75 and
     at = min(mway, key=lambda p: math.dist(p, q)) if onm else nodes[nearest(q)]
     place(name, at, 0.0, 160.0, 260.0)
 import sys
+if "--round76" in sys.argv:
+    # Round 76 (stage 3, Marietta Square): the drive from Chastain Glen's spawn to the square along the roads, and the frame rate at the old
+    # neighborhood (the spawn), Town Center and the square (pictures from 60 m up, 110 m back)
+    OUT = os.path.join(ROOT, "local", "round76", "r76_places.json"); os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    sq = ll(33.952755, -84.549610)
+    line, L = path(spawn, sq)
+    drives = [{"name": "Chastain Glen to Marietta Square", "points": [round(v, 2) for p in line for v in p]}] if line else []
+    print(f"Chastain Glen to Marietta Square: {L:.0f} m, {len(line or [])} points")
+    places = []
+    place("Chastain Glen", spawn, 0.0, 60.0, 110.0); place("Town Center", nodes[nearest(tc)], 0.0, 60.0, 110.0); place("Marietta Square", nodes[nearest(sq)], 0.0, 60.0, 110.0)
+    json.dump({"places": places, "drives": drives}, open(OUT, "w", encoding="utf-8"), indent=1)
+    print(f"{len(places)} places, {len(drives)} drives -> {OUT}"); sys.exit(0)
 if "--round61" not in sys.argv:
     json.dump({"places": places, "drives": drives}, open(OUT, "w", encoding="utf-8"), indent=1)
     print(f"{len(places)} places, {len(drives)} drives -> {OUT}")

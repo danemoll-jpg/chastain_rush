@@ -211,7 +211,7 @@ def vscale(cfg):
     return k
 
 
-def process_osm(cfg, osm, rect, owner_marker=True):   # Round 59: owner_marker False for the map extension (the core run writes it)
+def process_osm(cfg, osm, rect, owner_marker=True, spawn=True):   # Round 76: spawn False for the Marietta piece (Chastain Glen is not in it)   # Round 59: owner_marker False for the map extension (the core run writes it)
     w0, s0, e0, n0 = rect
     tr = Transformer.from_crs(4326, cfg["utm_epsg"], always_xy=True)
     nodes = {}
@@ -312,7 +312,7 @@ def process_osm(cfg, osm, rect, owner_marker=True):   # Round 59: owner_marker F
     roads = trim_service_roads(cfg, roads, buildings)
     ramps.sort(key=lambda r: (r["osm_id"], r["points"][0]))   # a stable order, whatever order OSM lists them in
     roads += ramps
-    spawn = find_spawn(cfg, roads)
+    spawn = find_spawn(cfg, roads) if spawn else None
     for r in roads:
         r.pop("node_ids")
     out = {
@@ -1419,7 +1419,10 @@ def main():
         ext2 = cfg.get("extension2")   # Round 61: stage 2 appended after stage 1 as stage 1 was after the core
         h1, meta1, rect1 = mapgen_extend.extend(cfg, rect, mapdata, core_h, core_meta, args.refresh_osm, last=not ext2)
         if ext2:
-            mapgen_extend.extend(cfg, rect1, mapdata, h1, meta1, args.refresh_osm, ext=ext2, prev_box=tuple(mapdata["extent_m"]), last=True)
+            h1, meta1, _ = mapgen_extend.extend(cfg, rect1, mapdata, h1, meta1, args.refresh_osm, ext=ext2, prev_box=tuple(mapdata["extent_m"]), last=True)
+        if cfg.get("extension3"):   # Round 76: stage 3, one piece below the south edge (Marietta Square; Tools/mapgen/mapgen_piece.py)
+            import mapgen_piece
+            mapgen_piece.extend_piece(cfg, rect, mapdata, h1, meta1, args.refresh_osm)
     write_map(mapdata)
     log("Done. In Unity: Chastain Rush > Build Map (or run the batch build).")
 

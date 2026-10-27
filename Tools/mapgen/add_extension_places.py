@@ -21,7 +21,9 @@ PLACES = [("town-center", "Town Center at Cobb", (34.0148368 + 34.020945) / 2, (
           # Round 61 (B, stage 2, Dan's map: "A fast-travel spot at the summit and at the visitor center"): the summit's lot is the top of Kennesaw
           # Mountain Drive nearest OSM's peak (33.97621, -84.57966); the visitor center on the drive nearest its OSM outline's middle
           ("kennesaw-summit", "Kennesaw Mountain summit", 33.9762125, -84.5796556, ("Kennesaw Mountain Drive",)),
-          ("kennesaw-visitor-center", "Kennesaw Mountain visitor center", 33.9830351, -84.5779436, ("Kennesaw Mountain Drive", ""))]
+          ("kennesaw-visitor-center", "Kennesaw Mountain visitor center", 33.9830351, -84.5779436, ("Kennesaw Mountain Drive", "")),
+          # Round 76 (B, stage 3): Marietta Square, on the street round Glover Park (OSM's park outline's middle)
+          ("marietta-square", "Marietta Square", 33.952755, -84.549610, ("Park Square", ""))]
 SERVICE_OK = {"kennesaw-summit", "kennesaw-visitor-center"}   # the drive's top is OSM highway=service
 
 

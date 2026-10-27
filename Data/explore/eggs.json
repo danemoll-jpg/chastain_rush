@@ -1537,6 +1537,15 @@
    "yaw": 87.1
   },
   {
+   "id": "marietta-square",
+   "title": "Marietta Square",
+   "x": 1765.26,
+   "z": -8416.87,
+   "y": 0.0,
+   "fixed": false,
+   "yaw": 89.6
+  },
+  {
    "id": "kennesaw-summit-ramp",
    "title": "Kennesaw Mountain: the summit leap",
    "x": -958.48,

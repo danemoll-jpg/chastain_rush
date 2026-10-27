@@ -142,6 +142,12 @@ namespace ChastainRush
             // buildings: roofs
             Color32 Roof = new Color(0.66f, 0.55f, 0.45f), RoofEdge = new Color(0.30f, 0.24f, 0.20f);
             foreach (var b in map.buildings) { var f = ToPoints(b.footprint); r.Fill(f, Roof); var closed = f.ToList(); closed.Add(f[0]); r.Line(closed, 0.8f, RoofEdge); }
+            // Round 76 (A): past the land's edge inside the picture's rectangle (beside Marietta Square's piece): off the map, a dark slate
+            var land = MapLandOf(map); Color32 Off = new Color(0.16f, 0.18f, 0.20f);
+            if (land.Rects.Length > 1)
+                for (int y = 0; y < H; y++)
+                    for (int x = 0; x < W; x++)
+                        if (!land.Contains(ext.xMin + (x + .5f) * ext.width / W, ext.yMin + (y + .5f) * ext.height / H)) r.Px[y * W + x] = Off;
 
             var tex = new Texture2D(W, H, TextureFormat.RGBA32, false); tex.SetPixels32(r.Px); tex.Apply();
             var full = Path.Combine(ProjectRoot, MapPicturePath);

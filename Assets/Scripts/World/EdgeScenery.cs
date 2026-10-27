@@ -24,6 +24,7 @@ namespace ChastainRush
         public static EdgeScenery Instance { get; private set; }
         public static bool HorizonOn { get; private set; }   // drawn this frame
         public static Rect Map { get; private set; }
+        public static Rect[] Land { get; private set; }   // Round 76: the land's rectangles (Map is the rectangle round them)
         public int Trees { get; private set; }
         public int Buildings { get; private set; }
         public int Towers { get; private set; }
@@ -54,9 +55,15 @@ namespace ChastainRush
             kit = FindAnyObjectByType<TreeField>();
             using (var r = new BinaryReader(new MemoryStream(asset.bytes)))
             {
-                if (new string(r.ReadChars(4)) != "CRSC" || r.ReadInt32() != 1) { Debug.LogWarning("[Round66] edge scenery: unknown data"); enabled = false; return; }
+                int ver = new string(r.ReadChars(4)) == "CRSC" ? r.ReadInt32() : 0;
+                if (ver != 1 && ver != 2) { Debug.LogWarning("[Round66] edge scenery: unknown data"); enabled = false; return; }
                 float x0 = r.ReadSingle(), z0 = r.ReadSingle(), x1 = r.ReadSingle(), z1 = r.ReadSingle(); vs = r.ReadSingle();
                 Map = Rect.MinMaxRect(x0, z0, x1, z1);
+                // Round 76 (A): version 2 lists the land's rectangles (the map and Marietta Square's piece); the ring is left out only under them
+                var land = new List<Rect>();
+                if (ver >= 2) { int n = r.ReadInt32(); for (int i = 0; i < n; i++) { float a = r.ReadSingle(), b = r.ReadSingle(), c = r.ReadSingle(), d = r.ReadSingle(); land.Add(Rect.MinMaxRect(a, b, c, d)); } }
+                else land.Add(Map);
+                Land = land.ToArray();
                 ReadRing(r); ReadHorizon(r); ReadTrees(r); ReadBuildings(r); ReadTowers(r);
             }
             Shader.SetGlobalFloat("_HorizonNear", 1e9f);
@@ -80,7 +87,8 @@ namespace ChastainRush
             int nx = r.ReadInt32(), nz = r.ReadInt32();
             var xs = Floats(r, nx); var zs = Floats(r, nz);
             var h = Shorts(r, nx * nz); var cov = r.ReadBytes(nx * nz);
-            var m = Map; bool Inside(float x, float z) => x > m.xMin + .5f && x < m.xMax - .5f && z > m.yMin + .5f && z < m.yMax - .5f;
+            bool On(float x, float z) { foreach (var m in Land) if (x >= m.xMin && x <= m.xMax && z >= m.yMin && z <= m.yMax) return true; return false; }
+            bool Inside(float x, float z) => On(x + .5f, z) && On(x - .5f, z) && On(x, z + .5f) && On(x, z - .5f);   // (a point where two rectangles meet is inside)
             const int C = 64;
             for (int ck = 0; ck < nz - 1; ck += C)
                 for (int ci = 0; ci < nx - 1; ci += C)

@@ -470,7 +470,7 @@ namespace ChastainRush
         // stay joined). 'height' gets the world x, z and the current height and returns the new one.
         static void EditTerrain(TerrainGrid g, Rect area, Func<float, float, float, float> height)
         {
-            foreach (var tile in g.Tiles)
+            foreach (var tile in g.All())
             {
                 var data = tile.terrainData; int res = data.heightmapResolution; var size = data.size; var pos = tile.transform.position;
                 int x0 = Mathf.Clamp(Mathf.FloorToInt((area.xMin - pos.x) / size.x * (res - 1)), 0, res - 1), x1 = Mathf.Clamp(Mathf.CeilToInt((area.xMax - pos.x) / size.x * (res - 1)), 0, res - 1);
@@ -495,7 +495,7 @@ namespace ChastainRush
         // are, as a height function that returns y there would): the same result, without walking a long road's whole bounding box
         static void EditTerrainCells(TerrainGrid g, Rect area, float cell, ICollection<Vector2Int> keys, Func<float, float, float, float> height)
         {
-            foreach (var tile in g.Tiles)
+            foreach (var tile in g.All())
             {
                 var data = tile.terrainData; int res = data.heightmapResolution; var size = data.size; var pos = tile.transform.position;
                 int x0 = Mathf.Clamp(Mathf.FloorToInt((area.xMin - pos.x) / size.x * (res - 1)), 0, res - 1), x1 = Mathf.Clamp(Mathf.CeilToInt((area.xMax - pos.x) / size.x * (res - 1)), 0, res - 1);

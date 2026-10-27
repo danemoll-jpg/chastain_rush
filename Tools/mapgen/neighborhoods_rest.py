@@ -17,14 +17,18 @@ Its era, from the footprints (Dan has no styles for these; Code picks believable
 Writes Data/neighborhood/neighborhoods.json (read by the map builder, MapBuilder.Neighborhoods.cs) and prints the list.
 Re-run after every mapgen run (indices change).
 
-Usage: python Tools/mapgen/neighborhoods_rest.py
+Usage: python Tools/mapgen/neighborhoods_rest.py [--piece]
+Round 76 (A / B, Marietta Square): --piece dresses only the Marietta piece's streets and houses (map.json extension3's lists) and appends its
+neighborhoods after the ones in the file (an earlier --piece run's taken out first): the existing neighborhoods are not touched.
 """
-import json, math, os, collections, statistics
+import json, math, os, collections, statistics, sys
 from pyproj import Transformer
 
 ROOT = os.path.join(os.path.dirname(__file__), '..', '..')
 m = json.load(open(os.path.join(ROOT, 'Data/map.json')))
 R, B = m['roads'], m['buildings']
+PIECE = '--piece' in sys.argv
+r0, b0 = (m['extension3']['first']['roads'], m['extension3']['first']['buildings']) if PIECE else (0, 0)
 glen = json.load(open(os.path.join(ROOT, 'Data/neighborhood/chastain_glen_area.json')))
 comm = json.load(open(os.path.join(ROOT, 'Data/neighborhood/communities.json')))
 STREETS = ('residential', 'living_street', 'unclassified')
@@ -57,7 +61,7 @@ def rect_aspect(q):
 
 taken_roads = set(glen['roads']) | {i for c in comm['communities'] for i in c['roads']}
 taken_houses = set(glen['buildings']) | {i for c in comm['communities'] for i in c['houses']}
-streets = [i for i, r in enumerate(R) if r['class'] in STREETS and i not in taken_roads]
+streets = [i for i, r in enumerate(R) if r['class'] in STREETS and i not in taken_roads and i >= r0]
 node_roads = collections.defaultdict(set)
 for i in streets:
     for p in pts(R[i]['points']): node_roads[key(p)].add(i)
@@ -83,7 +87,7 @@ for i in allstreets:
     for x, z in road_pts[i]: grid[(int(x // 60), int(z // 60))].append(i)
 houses_of = collections.defaultdict(list)
 for k, b in enumerate(B):
-    if k in taken_houses or b['roof'] != 'gable': continue
+    if k in taken_houses or b['roof'] != 'gable' or k < b0: continue
     q = pts(b['footprint'])
     if area(q) < 55: continue
     c = cent(q); cx, cz = int(c[0] // 60), int(c[1] // 60)
@@ -95,7 +99,7 @@ for k, b in enumerate(B):
 
 # the few subdivision names OSM has (residential areas)
 ox, oy = m['origin_utm']; tr = Transformer.from_crs(4326, m['utm_epsg'], always_xy=True)
-els = json.load(open(os.path.join(ROOT, 'raw/osm_box.json')))['elements']
+els = json.load(open(os.path.join(ROOT, 'raw/osm_ext3.json' if PIECE else 'raw/osm_box.json')))['elements']
 nodes = {e['id']: e for e in els if e['type'] == 'node'}
 def loc(n): x, y = tr.transform(n['lon'], n['lat']); return (x - ox, y - oy)
 named = []
@@ -114,6 +118,9 @@ ERA = {
 # Round 32 (C1): names OSM does not have, by the name the main street gave. Lakeside Drive is the Chastain Lakes subdivision.
 NAME_OVERRIDE = {'Lakeside Drive': 'Chastain Lakes'}
 out = dict(note='Round 30 (Tools/mapgen/neighborhoods_rest.py). Read by MapBuilder.Neighborhoods.cs.', neighborhoods=[])
+if PIECE:   # Round 76: the file's neighborhoods kept as they are, the piece's appended
+    out = json.load(open(os.path.join(ROOT, 'Data/neighborhood/neighborhoods.json')))
+    out['neighborhoods'] = [n for n in out['neighborhoods'] if not n.get('piece')]
 rows = []
 for gi, g in enumerate(groups):
     hs = houses_of.get(gi, [])
@@ -124,7 +131,9 @@ for gi, g in enumerate(groups):
     spacing = [min(math.dist(c, o) for j, o in enumerate(cs) if j != i) for i, c in enumerate(cs)]
     med_a, med_s = statistics.median(areas), statistics.median(spacing)
     rowish = sum(1 for (asp, L), a in zip(aspects, areas) if (asp >= 2.4 and L >= 24 and a >= 180)) / len(hs)
-    if rowish >= .4 or med_s < 18: era = 'townhomes'
+    # Round 76: in-town Marietta's detached houses on narrow lots (12 to 16 m apart, few long rows) are its old bungalows: craftsman
+    if PIECE: era = 'townhomes' if rowish >= .4 else 'craftsman'
+    elif rowish >= .4 or med_s < 18: era = 'townhomes'
     elif med_s >= 32 and med_a < 245: era = 'ranch'
     elif med_s < 26 and med_a >= 200: era = 'craftsman'
     else: era = 'traditional'
@@ -139,6 +148,7 @@ for gi, g in enumerate(groups):
     nb = dict(key=f"n{len(out['neighborhoods'])}", name=name or (main.replace(' Northeast', '').replace(' Northwest', '')),
               osm_name=bool(name), era=era, roads=sorted(g), houses=sorted(hs), streets=names,
               median_area=round(med_a), median_spacing=round(med_s), rows=round(rowish, 2), x=round(allc[0]), z=round(allc[1]), why=why)
+    if PIECE: nb['piece'] = 3
     nb['name'] = NAME_OVERRIDE.get(nb['name'], nb['name'])
     out['neighborhoods'].append(nb)
     rows.append(nb)

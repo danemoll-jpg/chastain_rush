@@ -434,6 +434,19 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 76 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan:** A the map extension, stage 3: ONE piece of 4 x 2 tiles
+below the old south edge for Marietta Square (config `extension3`: `tile_cols`, `tiles_south`; `python Tools/mapgen/mapgen_piece.py` appends it to map.json, trees.bin
+(map.json `extension3`, `pieces` [x0, z0, x1, z1 ...]) and writes its own ground `Assets/Generated/terrain_piece3.r16` / `.json` (terrain_full is untouched; mapgen.py runs it
+after stage 2); the map is no longer a rectangle: `World/MapLand.cs` (the land's outline from the tiles at run time, from extent_m + pieces in the build: `MapLandOf`)
+for MapEdge's walls and push-back, the helicopter's and plane's boundary, the edge closures (`MapBuilder.Edges.cs`), BridgeEnds; `TerrainGrid` has holes (`Has`, `All`,
+`At` falls back to the nearest tile); `make_scenery.py` writes version 2 (the land's rectangles); the map picture marks off-map ground. B Marietta Square
+(`python Tools/mapgen/make_marietta.py` writes `Data/tracks/marietta_square.json` from raw/osm_ext3.json; re-run after mapgen; built by `MapBuilder.MariettaSquare.cs`, quick
+step Marietta: Glover Park, the fountain, the bandstand, breakable benches / lamps / planters / café tables, brick walks, crosswalks and parking marks, the railroad,
+the theater, market, museum and depot; the old storefronts round the square are `MariettaHistoric` shops in `MapBuilder.Businesses.cs`; signs rows 54 to 63 of
+`make_business_signs.py`); the piece's houses: `python Tools/mapgen/neighborhoods_rest.py --piece` (appended neighborhoods, `piece` 3); fast travel
+`add_extension_places.py` "marietta-square"; check places `python Tools/mapgen/ext_drives.py --round76`. C the Kennesaw banks: the grade's `legs` (GradeAlong takes both
+legs' heights between two legs of a line); `python Tools/mapgen/bank_faces.py <grid csv>` (report only). D `python Tools/cleanup_round.py` at the end of every round.
+Imported from Racer: nothing.
 **Round 75 (see `TODO.md`, status there) is built and checked in the exe through the game's own input, not yet driven by Dan:** A race setup's RACE TYPE row
 (Street / Air) filters the Route row and the garage (`GameMenus.RenderRaceSetup`, `ChooseRoute`: a course chosen after a race leaves it first); each type keeps its
 last course (race_settings.json `routeStreet` / `routeAir`) and vehicle (vehicle.json "plane"; `VehicleSwitch.PlaneVehicle`, `RaceVehicleFor(route)`). B the map's

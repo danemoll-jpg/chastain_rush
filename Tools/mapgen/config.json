@@ -19,6 +19,13 @@
     "tiles_south": 10,
     "seam_m": 40.0
   },
+  "extension3": {
+    "stage": 3,
+    "name": "Marietta Square (Round 76): one piece below the south edge, under the tile columns that take in downtown Marietta",
+    "tile_cols": [15, 18],
+    "tiles_south": 2,
+    "seam_m": 40.0
+  },
   "utm_epsg": 26916,
   "elevation_tiles": [
     "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/1m/Projects/GA_Statewide_2018_B18_DRRA/TIFF/USGS_1M_16_x72y377_GA_Statewide_2018_B18_DRRA.tif",

@@ -16,12 +16,12 @@ namespace ChastainRush
 
         void Boundary(Vector3 pos, Vector3 vH, ref Vector3 aH)
         {
-            var m = MapEdge.Map; if (m.width <= 0f) { Outside = -1e9f; return; }
-            float o = Mathf.Max(Mathf.Max(m.xMin - pos.x, pos.x - m.xMax), Mathf.Max(m.yMin - pos.z, pos.z - m.yMax));
+            var land = MapEdge.Land; if (land == null) { Outside = -1e9f; return; }   // Round 76: the land's outline (MapLand), not the rectangle round it
+            float o = -land.Distance(pos.x, pos.z);
             Outside = o; MaxOutside = Mathf.Max(MaxOutside, o);
             if (o <= 0f) return;
-            var inside = new Vector3(Mathf.Clamp(pos.x, m.xMin + 50f, m.xMax - 50f), pos.y, Mathf.Clamp(pos.z, m.yMin + 50f, m.yMax - 50f));
-            var n = inside - pos; n.y = 0f; if (n.sqrMagnitude < 1e-4f) return; n.Normalize();
+            var q = land.Nearest(pos.x, pos.z, 50f);
+            var n = new Vector3(q.x, pos.y, q.y) - pos; n.y = 0f; if (n.sqrMagnitude < 1e-4f) return; n.Normalize();
             float vOut = Mathf.Max(0f, -Vector3.Dot(vH, n));
             float wind = Mathf.Lerp(0f, 60f, o / 500f) + vOut * Mathf.Clamp01(o / 250f) * .9f;
             aH += n * wind;

@@ -35,16 +35,37 @@ namespace ChastainRush
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
         [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
-        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; public MapExt extension; public Aeroway[] aeroways; public TrailLine[] trails; }   // Round 61: aeroways, trails (MapBuilder.Airport.cs)
+        [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; public MapExt extension; public Aeroway[] aeroways; public TrailLine[] trails; public float[] pieces; }   // Round 76: pieces, land outside extent_m (x0, z0, x1, z1 each: Marietta Square)   // Round 61: aeroways, trails (MapBuilder.Airport.cs)
         // Round 61: map.json's "extension" (stage 1): where each list's new entries start (first.roads: the first road of the map extension)
         [Serializable] class MapExt { public MapExtFirst first; } [Serializable] class MapExtFirst { public int roads, bridges, buildings; }
         // Round 59: the whole map's rectangle (x0, z0, x1, z1): map.json's extent_m (the extension reaches to negative x / z), else 0..size
-        static Rect MapExtent(MapData m) => m.extent_m != null && m.extent_m.Length == 4 ? Rect.MinMaxRect(m.extent_m[0], m.extent_m[1], m.extent_m[2], m.extent_m[3]) : new Rect(0f, 0f, m.size_x_m, m.size_z_m);
-        [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; public float origin_x_m, origin_z_m; }
+        // Round 76 (A): with map.json's pieces (Marietta Square below the old south edge) the rectangle round all the land; the land itself is MapLandOf
+        static Rect MapExtent(MapData m) => MapLandOf(m).Bounds;
+        static MapLand MapLandOf(MapData m)
+        {
+            var rects = new List<Rect> { m.extent_m != null && m.extent_m.Length == 4 ? Rect.MinMaxRect(m.extent_m[0], m.extent_m[1], m.extent_m[2], m.extent_m[3]) : new Rect(0f, 0f, m.size_x_m, m.size_z_m) };
+            if (m.pieces != null) for (int i = 0; i + 3 < m.pieces.Length; i += 4) rects.Add(Rect.MinMaxRect(m.pieces[i], m.pieces[i + 1], m.pieces[i + 2], m.pieces[i + 3]));
+            return new MapLand(rects);
+        }
+        [Serializable] class TerrainMeta { public int grid_x; public int grid_z; public int tiles_x; public int tiles_z; public int tile_resolution; public float tile_w_m; public float tile_d_m; public float min_height; public float max_height; public float origin_x_m, origin_z_m;
+            // Round 76 (A): Marietta Square's piece (terrain_piece3.json / .r16, mapgen_piece.py): its tiles continue columns full_col0.. of the grid below
+            // its south edge; LoadTerrainMeta folds it in (the grid's origin moves down by its rows, full_tz0; the rest of those rows are holes)
+            [NonSerialized] public int full_tz0; [NonSerialized] public TerrainMeta piece; public int full_col0; }
         // Round 59 (the map extension): the whole grid is terrain_full.json / .r16 when mapgen made one (its origin west and south of the core's,
         // at negative x / z); terrain.json / .r16 stay the core's (the python scripts that sample the ground read those)
         static string TerrainFile(string ext) => File.Exists(Path.Combine(ProjectRoot, GeneratedDir, "terrain_full.json")) ? "terrain_full" + ext : "terrain" + ext;
-        static TerrainMeta LoadTerrainMeta() => JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, TerrainFile(".json"))));
+        static TerrainMeta LoadTerrainMeta()
+        {
+            var meta = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(Path.Combine(ProjectRoot, GeneratedDir, TerrainFile(".json"))));
+            var pp = Path.Combine(ProjectRoot, GeneratedDir, "terrain_piece3.json");
+            if (File.Exists(pp))
+            {
+                var pc = JsonUtility.FromJson<TerrainMeta>(File.ReadAllText(pp));
+                if (Mathf.Abs(pc.min_height - meta.min_height) > 1e-3f || Mathf.Abs(pc.max_height - meta.max_height) > 1e-3f) throw new Exception("terrain_piece3.json's height range is not terrain_full.json's: run Tools/mapgen/mapgen_piece.py again");
+                meta.piece = pc; meta.full_tz0 = pc.tiles_z; meta.tiles_z += pc.tiles_z; meta.origin_z_m = pc.origin_z_m;
+            }
+            return meta;
+        }
 
         // The terrain is a grid of tiles that share their edge samples; this finds the tile under a point.
         sealed class TerrainGrid
@@ -55,8 +76,32 @@ namespace ChastainRush
             {
                 int i = Mathf.Clamp(Mathf.FloorToInt((x - OriginX) / TileW), 0, Tiles.GetLength(0) - 1);
                 int j = Mathf.Clamp(Mathf.FloorToInt((z - OriginZ) / TileD), 0, Tiles.GetLength(1) - 1);
-                return Tiles[i, j];
+                if (!ReferenceEquals(Tiles[i, j], null)) return Tiles[i, j];
+                // Round 76 (A): a hole in the grid (beside Marietta Square's piece): the nearest tile there is (its edge height, clamped)
+                if (near == null)
+                {
+                    int nx = Tiles.GetLength(0), nz = Tiles.GetLength(1); near = new Terrain[nx, nz];
+                    for (int u = 0; u < nx; u++)
+                        for (int v = 0; v < nz; v++)
+                        {
+                            float bd = float.MaxValue;
+                            for (int a = 0; a < nx; a++)
+                                for (int b = 0; b < nz; b++)
+                                {
+                                    if (ReferenceEquals(Tiles[a, b], null)) continue; float d = (a - u) * (a - u) + (b - v) * (b - v);
+                                    if (d < bd) { bd = d; near[u, v] = Tiles[a, b]; }
+                                }
+                        }
+                }
+                return near[i, j];
             }
+            Terrain[,] near;
+            public bool Has(float x, float z)   // Round 76: a tile under (x, z) (false in a hole and past the grid)
+            {
+                int i = Mathf.FloorToInt((x - OriginX) / TileW), j = Mathf.FloorToInt((z - OriginZ) / TileD);
+                return i >= 0 && j >= 0 && i < Tiles.GetLength(0) && j < Tiles.GetLength(1) && Tiles[i, j] != null;
+            }
+            public IEnumerable<Terrain> All() { foreach (var t in Tiles) if (t != null) yield return t; }   // Round 76: the tiles there are
             public float Height(float x, float z) => At(x, z).SampleHeight(new Vector3(x, 0f, z)) + BaseY;
         }
         [Serializable] class OwnerMarker { public int index; public float x; public float z; }
@@ -142,6 +187,7 @@ namespace ChastainRush
             JoinServiceRoads(map, terrain, shop);  // Round 18 (A): BUG-001, the service roads run into the lot and round the back
             Park = LoadStuntPark(map); Terrain0 = terrain;   // Round 36 (Part A2): the stunt park on the lot (MapBuilder.StuntPark.cs)
             if (Park != null) GradeStuntPark(map, terrain, Park);
+            PlanMarietta(map, terrain);   // Round 76 (B): Marietta Square (MapBuilder.MariettaSquare.cs), before the businesses (its storefronts)
             Mall = PlanMall(map, terrain);   // Round 60 (A): Town Center, its doors' aprons graded (MapBuilder.Mall.cs)
             Airport = PlanAirport(map, terrain);   // Round 61 (B): the airport's runways, taxiways and aprons, Kennesaw Mountain's trails graded (MapBuilder.Airport.cs)
             PlanTrailRace(terrain);   // Round 62 (A, B): the Noonday Creek Trail race's bench along the real trail, the ground under its red bridge (MapBuilder.TrailRace.cs)
@@ -209,6 +255,12 @@ namespace ChastainRush
             int res = meta.tile_resolution, cells = res - 1;
             var bytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, TerrainFile(".r16")));
             if (bytes.Length != (long)meta.grid_x * meta.grid_z * 2) throw new Exception($"{TerrainFile(".r16")} is {bytes.Length} bytes, expected {(long)meta.grid_x * meta.grid_z * 2}");
+            byte[] pbytes = null; var pm = meta.piece;   // Round 76 (A): Marietta Square's piece, its own file
+            if (pm != null)
+            {
+                pbytes = File.ReadAllBytes(Path.Combine(ProjectRoot, GeneratedDir, "terrain_piece3.r16"));
+                if (pbytes.Length != (long)pm.grid_x * pm.grid_z * 2) throw new Exception($"terrain_piece3.r16 is {pbytes.Length} bytes, expected {(long)pm.grid_x * pm.grid_z * 2}");
+            }
             if (!quick) foreach (var guid in AssetDatabase.FindAssets("TerrainData t:TerrainData", new[] { GeneratedDir })) AssetDatabase.DeleteAsset(AssetDatabase.GUIDToAssetPath(guid));
             var grid = new TerrainGrid { Tiles = new Terrain[meta.tiles_x, meta.tiles_z], TileW = meta.tile_w_m, TileD = meta.tile_d_m, BaseY = meta.min_height, OriginX = meta.origin_x_m, OriginZ = meta.origin_z_m };
             var root = new GameObject(quick ? QuickTerrainRoot : "Terrain").transform;
@@ -216,11 +268,15 @@ namespace ChastainRush
             for (int tz = 0; tz < meta.tiles_z; tz++)
                 for (int tx = 0; tx < meta.tiles_x; tx++)
                 {
+                    // Round 76: below the full grid only the piece's columns have tiles (the rest of those rows: holes)
+                    bool inPiece = tz < meta.full_tz0;
+                    if (inPiece && (tx < pm.full_col0 || tx >= pm.full_col0 + pm.tiles_x)) continue;
                     // tiles share their edge row/column of samples, so neighbours meet at exactly the same height
                     for (int z = 0; z < res; z++)
                         for (int x = 0; x < res; x++)
                         {
-                            int i = ((tz * cells + z) * meta.grid_x + tx * cells + x) * 2;
+                            if (inPiece) { int k = ((tz * cells + z) * pm.grid_x + (tx - pm.full_col0) * cells + x) * 2; heights[z, x] = (pbytes[k] | (pbytes[k + 1] << 8)) / 65535f; continue; }
+                            int i = (((tz - meta.full_tz0) * cells + z) * meta.grid_x + tx * cells + x) * 2;
                             heights[z, x] = (bytes[i] | (bytes[i + 1] << 8)) / 65535f;
                         }
                     var data = new TerrainData { heightmapResolution = res };
@@ -244,7 +300,7 @@ namespace ChastainRush
                 }
             for (int tz = 0; tz < meta.tiles_z; tz++)
                 for (int tx = 0; tx < meta.tiles_x; tx++)
-                    grid.Tiles[tx, tz].SetNeighbors(
+                    if (grid.Tiles[tx, tz] != null) grid.Tiles[tx, tz].SetNeighbors(
                         tx > 0 ? grid.Tiles[tx - 1, tz] : null, tz < meta.tiles_z - 1 ? grid.Tiles[tx, tz + 1] : null,
                         tx < meta.tiles_x - 1 ? grid.Tiles[tx + 1, tz] : null, tz > 0 ? grid.Tiles[tx, tz - 1] : null);
             return grid;
@@ -800,6 +856,7 @@ namespace ChastainRush
                 if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center (MapBuilder.Mall.cs)
                 if (LakesOwns(i)) continue;          // Round 32 (C2): the Chastain Lakes pool house and bathhouse (MapBuilder.ChastainLakes.cs)
                 if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
+                if (MariettaOwns(i)) continue;       // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, hi = float.MinValue, sum = 0f;
