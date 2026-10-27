@@ -33,6 +33,18 @@ namespace ChastainRush
             ("noonday_creek_trail.json", "forward", "Noonday Creek Trail|forward", "trail", new[] { "original", "mower", "original" }),
             ("chastain_glen_loop.json", "forward", "Chastain Glen loop|forward", "glen", new[] { "mower", "skyfin", "pebble" }),
             ("chastain_lakes.json", "forward", "Chastain Lakes|forward", "lakes", new[] { "moto", "drifter", "moto" }),
+            // Round 74 (G, "on every course"): the other courses and directions (their Top 10 keys as RecordBoards files them)
+            ("chastain_glen_loop.json", "reverse", "Chastain Glen loop|reverse", "glenrev", new[] { "mower", "original", "pebble" }),
+            ("chastain_lakes.json", "reverse", "Chastain Lakes|reverse", "lakesrev", new[] { "moto", "drifter", "original" }),
+            ("chastain_ridge.json", "forward", "Chastain Ridge|forward", "ridge", new[] { "original", "drifter", "fastback" }),
+            ("chastain_ridge.json", "reverse", "Chastain Ridge|reverse", "ridgerev", new[] { "original", "drifter", "fastback" }),
+            ("addison_heights.json", "forward", "Addison Heights (Embry Lane line)|forward", "addison", new[] { "original", "drifter", "fastback" }),
+            ("addison_heights.json", "reverse", "Addison Heights (Embry Lane line)|reverse", "addisonrev", new[] { "original", "drifter", "fastback" }),
+            ("noonday_creek_trail.json", "reverse", "Noonday Creek Trail|reverse", "trailrev", new[] { "original", "pebble", "moto" }),
+            ("noonday_creek.json", "forward", "Noonday Creek|forward", "creek", new[] { "moto", "atv", "scrambler" }),
+            ("noonday_creek.json", "reverse", "Noonday Creek|reverse", "creekrev", new[] { "moto", "atv", "scrambler" }),
+            ("underground.json", "forward", "Underground|forward", "underground", new[] { "atv", "mower", "moto" }),
+            ("quarry_track.json", "forward", "Quarry Track|forward", "quarrytrack", new[] { "drifter", "moto", "atv" }),
         };
         static string R70Arg(string name, string def) { var a = Environment.GetCommandLineArgs(); for (int i = 0; i + 1 < a.Length; i++) if (a[i] == name) return a[i + 1]; return def; }
 

@@ -54,7 +54,7 @@ namespace ChastainRush
             InputSystem.QueueStateEvent(r73pad, st);
         }
         IEnumerator R73Reset() { R73Set(0, 0, 0, 0, true); yield return new WaitForFixedUpdate(); yield return new WaitForFixedUpdate(); yield return null; R73Set(0, 0, 0); yield return new WaitForSecondsRealtime(.8f); }
-        R73Lines Lines() { if (r73lines == null) { var p = Path.Combine(Environment.CurrentDirectory, "local/round73/r73_lines.json"); if (File.Exists(p)) r73lines = JsonUtility.FromJson<R73Lines>(File.ReadAllText(p)); } return r73lines; }
+        R73Lines Lines() { if (r73lines == null) { var a = Environment.GetCommandLineArgs(); int ai = Array.IndexOf(a, "-r73Lines"); var p = Path.Combine(Environment.CurrentDirectory, ai >= 0 && ai + 1 < a.Length ? a[ai + 1] : "local/round73/r73_lines.json"); if (File.Exists(p)) r73lines = JsonUtility.FromJson<R73Lines>(File.ReadAllText(p)); } return r73lines; }   // Round 74: -r73Lines <file>
         static List<Vector3> R73Line(float[] flat) { var l = new List<Vector3>(); if (flat == null) return l; for (int i = 0; i + 1 < flat.Length; i += 2) l.Add(RaceRoute.Ground(flat[i], flat[i + 1])); return l; }
         static float[] Cum(List<Vector3> l) { var c = new float[l.Count]; for (int i = 1; i < l.Count; i++) c[i] = c[i - 1] + Flat(l[i] - l[i - 1]).magnitude; return c; }
 

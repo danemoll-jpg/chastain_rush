@@ -1241,6 +1241,7 @@ namespace ChastainRush
         }
 
         float guideAngle, guideVel, guideAt = -10f; int guideTarget = -1;   // Round 74 (C): the HUD arrow's damped angle
+        public float GuideAngleForCheck => guideAngle;
 
         void DrawCountdown(float w, float h)
         {

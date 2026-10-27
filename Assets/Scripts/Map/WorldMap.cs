@@ -174,6 +174,7 @@ namespace ChastainRush
             zoom = Mathf.Max(zoom, 2.5f); CenterOnPlayer(); pointer = Vector2.zero; pressing = false;
             panel.SetActive(true); EventSystem.current?.SetSelectedGameObject(null); Draw();
         }
+        public void ZoomForCheck(float z) { zoom = Mathf.Clamp(z, 1f, MaxZoom); CenterOnPlayer(); ClampView(); Draw(); }   // Round 74 (J): the check's pictures
         public void Close()
         {
             MenuInput.ConsumeThroughRelease(); closedFrame = Time.frameCount; CancelTravel();

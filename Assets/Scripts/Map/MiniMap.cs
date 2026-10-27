@@ -37,6 +37,7 @@ namespace ChastainRush
         public bool Shown { get; private set; }
         ArcadeVehicle car; RaceRoute route; RaceController race;
         RawImage picture; Text north, key; RectTransform panel; Image panelImage;
+        public string KeyText => key ? key.text : "";   // Round 74 (B): the check reads it
         Rect world; InputAction toggle; bool hidden, checkRun, under;
         Vector3 origin, forward, right; Vector2 northDir = Vector2.up; float nextUpdate;
         readonly List<(Vector3 a, Vector3 b, Color c, float w)> raceLines = new List<(Vector3, Vector3, Color, float)>();
