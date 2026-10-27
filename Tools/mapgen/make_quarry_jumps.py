@@ -42,21 +42,25 @@ def flat(p): return [round(v, 2) for q in p for v in q]
 def pts(f): return [(f[i], f[i + 1]) for i in range(0, len(f), 2)]
 
 
+import os as _os
+OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "30,30,55").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
+# (each deck runs on at least 25 m past the bench's edge onto its cut: LAND_L per jump = its overhang + 25 or more)
 JUMPS = [
-    dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin"),
-    dict(id="J2", name="The Long One", lip=(-2000.0, -1649.0), heading=0.0, run=360.0, bench_min=200.0, design="Drifter Twin"),
-    dict(id="J3", name="The Big One", lip=(-2200.0, -1716.0), heading=15.0, run=340.0, bench_min=185.0, design="Needle 600"),
+    dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin", overhang=OVH1, land_l=OVH1 + 26.0),
+    dict(id="J2", name="The Long One", lip=(-2000.0, -1649.0), heading=0.0, run=360.0, bench_min=200.0, design="Needle 600", overhang=OVH2, land_l=OVH2 + 26.0),
+    dict(id="J3", name="The Big One", lip=(-2200.0, -1716.0), heading=15.0, run=340.0, bench_min=185.0, design="Needle 600", overhang=OVH3, land_l=OVH3 + 26.0),
 ]
 # (top m/s, push m/s2) as Round 68 / 70; CORR: Round 70's ramp flew 8 to 16 % shorter in the exe than this model said (its lip speeds lower)
 VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0),
             "Stunt Buggy": (50.0, 17.5), "Stunt Bike": (55.0, 18.0)}
-CORR = 0.93
+CORR = 0.79   # Round 73: the exe through the game's own input (the check's human-like rider): the Drifter Twin's speed at The Corner's kicker foot 39.4 m/s,
+              # this model's 49.8 (Round 72's 0.93 came from a scripted check that drove the vehicle with its physics off)
 DECK_HALF = 4.5            # the kicker's deck: 9 m wide
 LAND_HALF = 10.0           # the landing deck: 20 m wide
 LAND_L = 38.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a shallow cut in the bench
 LAND_REL = 38.0            # the landing deck lies this much shallower than the design flight comes down (about 10 degrees: a cut of 6 to 7 m that
                            # climbs back within 80 m, clear of the haul road beyond The Long One; the catch zone sets a vehicle on its wheels)
-R_KICK = 180.0             # the kicker's radius: Evel Knievel's short steep ramp (a held steel deck: RampHold keeps a vehicle on it; 11 m/s2 at 45 m/s)
+R_KICK = 110.0             # the kicker's radius: Evel Knievel's short steep ramp (a held steel deck: RampHold keeps a vehicle on it; 15 m/s2 at 40 m/s)
 RISE_BACK = 0.15           # past the landing deck's foot the cut's floor climbs back to the bench at this grade (the run-out)
 RUNOUT = 110.0             # the catch past the landing deck's foot, graded smooth along the line
 PAD_HALF = 15.0            # the pad round the kicker: flat at its foot's height this far either side of the line
@@ -109,9 +113,10 @@ def design(J):
     # the landing deck: its top DECK_UP over the bench at the edge (+2 m, its front face's thickness), sloping down at the window's middle flight's
     # descent less LAND_REL to the bench
     def deck(ang, v_mid, ds, dy):
-        x_mid = edge + 0.4 * LAND_L - ds[-1]
-        alpha = max(math.radians(10.0), fall(ang, v_mid, x_mid) - math.radians(LAND_REL))
-        ls = list(np.arange(edge - 1.0, edge + LAND_L + 0.01, 1.0)); ly = [bench - math.tan(alpha) * (s - edge) for s in ls]
+        front = edge - J["overhang"]
+        x_mid = front + 0.4 * J["land_l"] - ds[-1]
+        alpha = min(math.radians(14.0), max(math.radians(6.0), fall(ang, v_mid, x_mid) - math.radians(LAND_REL)))
+        ls = list(np.arange(front, front + J["land_l"] + 0.01, 1.0)); ly = [bench - math.tan(alpha) * (s - front) for s in ls]
         return ls, ly, alpha
     def comes_down(y0, ang, v, s0, surf):
         x = 5.0
@@ -125,8 +130,8 @@ def design(J):
         ls, ly, al = deck(ang, v, ds, dy)
         surf = lambda s: float(np.interp(s, ls, ly)) if ls[0] <= s <= ls[-1] else (max(WATER, raw(s)) if s < ls[0] else raw(s))
         x = comes_down(dy[-1], ang, v, ds[-1], surf) or 999
-        return (ds[-1] + x) - (ls[0] + 0.35 * (ls[-1] - ls[0]))
-    lo, hi = 4.0, 24.0
+        return (ds[-1] + x) - (ls[0] + 0.3 * (ls[-1] - ls[0]))
+    lo, hi = 4.0, 32.0
     for _ in range(40):
         mid = (lo + hi) / 2
         if score(mid) > 0: hi = mid
@@ -165,11 +170,12 @@ def design(J):
     if len(cur) >= 2: lanes.append(cur)
     lane_grades = [{"id": f"quarry jump {J['id']} run-up {k}", "points": flat([P(s_) for s_, _ in ln]), "y": [round(y_, 3) for _, y_ in ln], "half": DECK_HALF + 3.0, "blend": 8.0,
                     "open_ends": True} for k, ln in enumerate(lanes)]
+    # (Round 73: the pad level with the deck's foot: 0.6 m under it left a step the check's bike stuck at five times)
     pad_s = list(np.arange(run_s[-1], s_lip - 1.0, 2.0))
-    pad = {"id": f"quarry jump {J['id']} kicker pad", "points": flat([P(s) for s in pad_s]), "y": [round(y_foot - 0.6, 3)] * len(pad_s), "half": PAD_HALF, "blend": 10.0, "open_ends": True}
+    pad = {"id": f"quarry jump {J['id']} kicker pad", "points": flat([P(s) for s in pad_s]), "y": [round(y_foot, 3)] * len(pad_s), "half": PAD_HALF, "blend": 10.0, "open_ends": True}
     # under the landing deck: the bench cut down to the deck (it lies on its ground: nothing under it), then the cut's floor climbing back to the bench
     depth = bench - land_y[-1]; back_L = depth / RISE_BACK
-    ro_s = list(np.arange(land_s[0], land_s[-1] + back_L + 30.0, 2.0))
+    ro_s = list(np.arange(max(land_s[0], edge), land_s[-1] + back_L + 30.0, 2.0))   # (from the bench's edge: over the face the deck stands on its trestle)
     def ro_at(s):
         if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.25
         y = land_y[-1] - 0.25 + RISE_BACK * (s - land_s[-1]); return min(y, max(bench, raw(s))) if s > land_s[-1] + back_L else y

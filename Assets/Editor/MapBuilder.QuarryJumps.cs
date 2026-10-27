@@ -62,6 +62,9 @@ namespace ChastainRush
                 Skirt(terrain, mats, jt, $"Quarry {j.id} kicker skirt", o, d, j.deck_s, j.deck_y, j.half);
                 // Round 73 (C4): the landing deck lies on its graded cut in the far bench (its top at the bench's edge): nothing under it
                 int bl = SteelRamp(terrain, mats, jt, $"sc quarry {j.id} landing deck", $"Quarry {j.id} landing steel", o, d, j.land_s, j.land_y, j.land_half, false);
+                // Round 73: its front stands out over the bank face on its trestle: skirted to the ground, its front a solid face (short: into it, into the lake)
+                Skirt(terrain, mats, jt, $"Quarry {j.id} landing skirt", o, d, j.land_s, j.land_y, j.land_half, true);
+                RunUpLane(terrain, mats, jt, j, o, d);
                 LandingBanner(terrain, mats, jt, j, o, d, nl);
                 StartBox(terrain, mats, jt, j, lamps);
                 // ---- the start gantry: two steel towers either side of the run-up, a beam with the bunting over it, the countdown lamps on the right tower
@@ -85,7 +88,8 @@ namespace ChastainRush
                     {
                         float u0 = -gw + 2f * gw * k / nP, u1 = -gw + 2f * gw * (k + 1) / nP, sag = .9f * Mathf.Sin(Mathf.PI * (k + .5f) / nP);
                         var a = G(u0, y0 - sag); var b = G(u1, y0 - sag); var c = (a + b) * .5f - Vector3.up * 1.1f;
-                        mb.Tint = Bunting[(k + row) % 3]; int v0 = mb.Vertex(a), v1 = mb.Vertex(b), v2 = mb.Vertex(c); mb.Tri(v0, v1, v2); mb.Tri(v0, v2, v1);
+                        // (Round 73: each face its own vertices: shared ones got no normal and drew black)
+                        mb.Tint = Bunting[(k + row) % 3]; TriFace(mb, a, b, c, -new Vector3(d.x, 0f, d.y)); TriFace(mb, a, c, b, new Vector3(d.x, 0f, d.y));
                     }
                 }
                 // a star-spangled panel on each tower's face (stars on blue, stripes under)
@@ -191,7 +195,7 @@ namespace ChastainRush
 
         // Round 73 (C3 (1)): solid steel skirts from a ramp deck's edges down into the ground, and its lip end down to the ground under it, with their
         // collider: nothing can be driven in under a ramp or wedged in its trestle
-        static void Skirt(TerrainGrid terrain, Materials mats, Transform parent, string name, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half)
+        static void Skirt(TerrainGrid terrain, Materials mats, Transform parent, string name, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool frontPlate = false)
         {
             var n = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); mb.Tint = Shade(RampSteel, .9f);
             Vector3 W(float s, float lat, float y) { var q = o + d * s + n * lat; return new Vector3(q.x, y, q.y); }
@@ -207,7 +211,7 @@ namespace ChastainRush
                     Face(mb, a0, b0, b, a, n3 * side); Face(mb, a, b, b0, a0, -n3 * side);
                 }
             {
-                int e = m - 1; var a = W(deck_s[e], -half, deck_y[e] - 1.2f); var b = W(deck_s[e], half, deck_y[e] - 1.2f);
+                int e = frontPlate ? 0 : m - 1; var a = W(deck_s[e], -half, deck_y[e] - (frontPlate ? .4f : 1.2f)); var b = W(deck_s[e], half, deck_y[e] - (frontPlate ? .4f : 1.2f));
                 var a0 = W(deck_s[e], -half, G(deck_s[e], -half)); var b0 = W(deck_s[e], half, G(deck_s[e], half));
                 Face(mb, a0, b0, b, a, d3); Face(mb, a, b, b0, a0, -d3);
             }
@@ -219,7 +223,9 @@ namespace ChastainRush
         // stripes banner between them over the deck, its face toward the kicker
         static void LandingBanner(TerrainGrid terrain, Materials mats, Transform parent, QjJump j, Vector2 o, Vector2 d, Vector2 nl)
         {
-            var mb = new MeshBuilder(); float s0 = j.land_s[0] + 1f, w = j.land_half + 1.5f, top = j.land_y[0] + 11f;
+            // (Round 73: the posts reach over the far rim's sight line, so the banner is seen from the start box beyond the kicker: the landing is 90 m
+            // below the airport's ground)
+            var mb = new MeshBuilder(); float s0 = j.land_s[0] + 1f, w = j.land_half + 1.5f, top = Mathf.Max(j.land_y[0] + 11f, j.lip_y + 22f);
             var col = new GameObject("Landing banner posts").transform; col.SetParent(parent, false);
             foreach (float side in new[] { -1f, 1f })
             {
@@ -229,9 +235,12 @@ namespace ChastainRush
                 bc.transform.SetPositionAndRotation(new Vector3(q.x, (gy + top) * .5f, q.y), Quaternion.LookRotation(new Vector3(d.x, 0f, d.y))); bc.size = new Vector3(1f, top - gy + 1f, 1f);
             }
             var c = o + d * s0; var fr = MakeFrame(new Vector3(c.x, top - 3.2f, c.y), -d, 1f);   // its face toward the kicker
-            BoxF(mb, fr, -w, w, 1.6f, 3.2f, 0f, .2f, Bunting[2]);
-            for (int st = 0; st < 4; st++) BoxF(mb, fr, -w, w, st * .4f, st * .4f + .4f, 0f, .2f, st % 2 == 0 ? Bunting[0] : Bunting[1]);
-            for (int k = 0; k < 9; k++) { float uc = -w + 1.2f + k * (2f * w - 2.4f) / 8f; BoxF(mb, fr, uc - .25f, uc + .25f, 2.15f, 2.65f, .2f, .26f, Bunting[1]); }
+            BoxF(mb, fr, -w, w, 3.2f, 6.4f, 0f, .3f, Bunting[2]);
+            for (int st = 0; st < 4; st++) BoxF(mb, fr, -w, w, st * .8f, st * .8f + .8f, 0f, .3f, st % 2 == 0 ? Bunting[0] : Bunting[1]);
+            for (int k = 0; k < 9; k++) { float uc = -w + 1.2f + k * (2f * w - 2.4f) / 8f; BoxF(mb, fr, uc - .5f, uc + .5f, 4.3f, 5.3f, .3f, .38f, Bunting[1]); }
+            // the posts striped red and white every 6 m (a landing mark seen from far off), a crossbar at the deck's front over it
+            foreach (float side in new[] { -1f, 1f }) { var q = o + d * s0 + nl * side * w; float gy = Ground(terrain, q.x, q.y); for (float y = gy; y < top; y += 12f) BoxF(mb, MakeFrame(new Vector3(q.x, y + 6f, q.y), d, 1f), -.55f, .55f, 0f, Mathf.Min(6f, top - y - 6f), -.55f, .55f, Bunting[1]); }
+            { var cq = o + d * s0; var cf = MakeFrame(new Vector3(cq.x, j.land_y[0] + 9f, cq.y), -d, 1f); BoxF(mb, cf, -w, w, 0f, .8f, 0f, .4f, RampRed); }
             var g = mb.ToObject($"Quarry {j.id} landing banner", mats.House, parent, false); g.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
         }
 
@@ -306,6 +315,27 @@ namespace ChastainRush
             }
             bm.ToObject("Quarry Track divider look", mats.House, holder, false);
             Debug.Log($"[Round73] the Quarry Track's divider: {n} barriers (race time only)");
+        }
+
+        // Round 73 (C4: "the whole line visible from the start box"): the run-up painted on the ground from the start box to the kicker's foot: a dark
+        // lane as wide as the kicker, white edge lines, a dashed middle line (look only: the ground under it is the run-up's own)
+        static void RunUpLane(TerrainGrid terrain, Materials mats, Transform parent, QjJump j, Vector2 o, Vector2 d)
+        {
+            float s0 = 8f, s1 = j.deck_s[0] + 1f; var nl = new Vector2(-d.y, d.x); var mb = new MeshBuilder();
+            var pts = new List<Vector2>(); for (float s = s0; s <= s1; s += 3f) pts.Add(o + d * s);
+            if (pts.Count < 2) return;
+            mb.Tint = new Color(.2f, .21f, .22f); RibbonGrid(mb, pts, Enumerable.Repeat(j.half * 2f, pts.Count).ToArray(), .07f, terrain, 3);
+            foreach (float side in new[] { -1f, 1f })
+            {
+                var e = pts.Select(q => q + nl * side * (j.half - .3f)).ToList();
+                mb.Tint = new Color(.95f, .95f, .92f); RibbonGrid(mb, e, Enumerable.Repeat(.35f, e.Count).ToArray(), .1f, terrain, 1);
+            }
+            for (float s = s0; s + 4f <= s1; s += 12f)
+            {
+                var dash = new List<Vector2> { o + d * s, o + d * (s + 2f), o + d * (s + 4f) };
+                mb.Tint = new Color(.95f, .85f, .2f); RibbonGrid(mb, dash, Enumerable.Repeat(.3f, 3).ToArray(), .1f, terrain, 1);
+            }
+            mb.ToObject($"Quarry {j.id} run-up lane", mats.Driveway, parent, false, false);
         }
     }
 }
