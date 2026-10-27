@@ -359,7 +359,7 @@ namespace ChastainRush
             cursor.rectTransform.anchoredPosition = pointer; cursor.gameObject.SetActive(true); cursor.transform.SetAsLastSibling();   // Round 49: the pointer
             var at = PointerWorld;
             legend.text = (route != null ? $"<color=#4DFFE0>━</color> {route.Name}{(route.Reverse ? " (reverse)" : "")}   <color=#FFFFFF>▬</color> start / finish   <color=#8CC7FF>1 2 3</color> checkpoints in order\n" : "")
-                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   D-pad ▶ / Space: shortcuts" : "D-pad ▶ / Space: show the shortcuts and pipes")
+                        + (ShowLayers ? "<color=#FFB833>━</color> shortcuts   <color=#D1D1DB>┅</color> pipes (underground)" : under ? "<color=#D1D1DB>┅</color> you are underground: the pipes (the mains in their colors)   " + KeyHints.Of("D-pad ▶", "Space") + ": shortcuts" : KeyHints.Of("D-pad ▶", "Space") + ": show the shortcuts and pipes")
                         + (Proposals.Count > 0 ? "\n" + ProposalLegend : "") + "\n" + ExploreStatus();
             status.text = $"Pointer  x {at.x:0}  z {at.z:0}{UnderPointerText()}          You  x {pp.x:0}  z {pp.z:0}  heading {(car ? car.transform.eulerAngles.y : 0f):0}°          Zoom {zoom:0.0}x          {(race != null && race.State != RaceController.Stage.Free ? "Race paused" : "Paused")}";
         }

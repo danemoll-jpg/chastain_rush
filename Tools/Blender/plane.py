@@ -29,17 +29,20 @@ WING_TIP = (SPAN, WING_Y + .2, .15)
 def body():
     G = 'Body'
     # ---- the fuselage: rings from the spinner back to the tail cone (the cabin deepest under the wing)
-    keys = [(3.45, .30, .30, .12), (3.15, .52, .50, .10), (2.55, .60, .62, .08), (1.80, .64, .80, .10), (.90, .66, .88, .14), (-.20, .64, .86, .14),
-            (-1.20, .52, .66, .18), (-2.40, .36, .44, .26), (-3.50, .22, .28, .34), (-4.30, .12, .18, .38)]
+    # (Round 74, A3: the cabin's keys lowered to a tub (its top at the window sills, about 0.2 m): the glass above it is the cabin, so the pilot is seen;
+    # before, the fuselage was a closed shell over the rider and the windows lay on it)
+    keys = [(3.45, .30, .30, .12), (3.15, .52, .50, .10), (2.55, .60, .62, .08), (1.85, .64, .58, -.20), (.90, .66, .52, -.32), (-.20, .64, .52, -.32),
+            (-1.20, .52, .52, -.02), (-2.40, .36, .44, .26), (-3.50, .22, .28, .34), (-4.30, .12, .18, .38)]
     secs = [ring((0, cy, z), rx, ry, 18, 'z') for z, rx, ry, cy in keys]
     loft('Fuselage', secs, G, 'paint', cap=True)
     loft('Cheat line', [ring((0, cy - .02, z), rx * 1.012, .06, 18, 'z') for z, rx, ry, cy in keys[1:-1]], G, 'white', cap=True)
-    # ---- the cabin's glass: the windshield sloping up to the wing, side windows, the rear windows
-    hull('Windshield', [(-.58, .45, 1.95), (.58, .45, 1.95), (.56, .45, 1.80), (-.56, .45, 1.80), (-.52, .98, 1.05), (.52, .98, 1.05), (.50, .98, .95), (-.50, .98, .95)], G, 'glass', .02, 1)
-    for s in (-1, 1):
-        hull('Side window', [(s * .64, .05, 1.55), (s * .70, .05, 1.55), (s * .70, .05, -.15), (s * .64, .05, -.15), (s * .60, .80, 1.10), (s * .66, .80, 1.10), (s * .64, .80, -.10), (s * .58, .80, -.10)], G, 'glass', .01, 1)
-        hull('Rear window', [(s * .55, .12, -.45), (s * .61, .12, -.45), (s * .52, .12, -1.10), (s * .46, .12, -1.10), (s * .50, .70, -.45), (s * .56, .70, -.45), (s * .40, .55, -1.05), (s * .34, .55, -1.05)], G, 'glass', .01, 1)
-        box('Door line', (s * .665, .25, .20), (.015, .80, .02), G, 'engine', .002)
+    # ---- the cabin's glass (Round 74, A3): one glazed cabin from the panel's top to behind the rear seats, over the tub, up to the wing (the skylight
+    # in it over the seats); posts at the windshield's corners and the doors' rear edges
+    hull('Cabin glass', [(-.60, .16, 1.95), (.60, .16, 1.95), (-.52, .98, 1.10), (.52, .98, 1.10), (-.50, .98, -.95), (.50, .98, -.95), (-.56, .16, -1.25), (.56, .16, -1.25),
+                         (-.66, .20, 1.30), (.66, .20, 1.30), (-.66, .20, -.40), (.66, .20, -.40), (-.62, .85, 1.00), (.62, .85, 1.00), (-.60, .85, -.60), (.60, .85, -.60)], G, 'glass', .02, 1)
+    for sx in (-1, 1):
+        tube('Windshield post', [(sx * .59, .18, 1.93), (sx * .53, .99, 1.08)], .03, G, 'paint', 6)
+        tube('Door post', [(sx * .65, .20, -.42), (sx * .60, .97, -.58)], .03, G, 'paint', 6)
     # ---- the engine cowl, its air inlets, exhaust and the spinner
     blob('Cowl', (0, .10, 2.95), (.58, .56, .78), G, 'paint', 20, 12)
     for s in (-1, 1): box('Inlet', (s * .22, .06, 3.58), (.18, .14, .06), G, 'engine', .02)

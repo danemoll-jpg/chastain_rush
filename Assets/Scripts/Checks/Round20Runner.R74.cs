@@ -166,8 +166,10 @@ namespace ChastainRush
             yield return Vehicle("plane");
             var pilot = R71Fly(1, 1, 1); var ev = new List<string>();
             yield return R71Run("preplay", 70f, ev);   // a minute of the race is enough for a replay
-            R71Done(pilot); race.CompleteRace(); yield return new WaitForSecondsRealtime(2f);
-            var rec = race.GetComponent<ReplayRecorder>(); var data = rec ? rec.Last : null;
+            R71Done(pilot);
+            var rec = ReplayRecorder.Instance; if (rec && rec.Recording) rec.Stop("the check"); yield return new WaitForSecondsRealtime(1f);
+            var data = rec ? rec.Last : null;
+            report.AppendLine($"  the replay: {(data != null ? data.Title + ", " + data.racers.Count + " racers: " + string.Join(", ", data.racers.Select(x => x.name + " " + x.vehicle)) : "none")}");
             if (data == null) { Check("preplay: a replay recorded", false); race.EndRace(); yield break; }
             var viewer = ReplayViewer.Open(data); yield return new WaitForSecondsRealtime(3f);
             var puppets = FindObjectsByType<ArcadeVehicle>(FindObjectsSortMode.None).Where(c => c.Puppet).ToList();
@@ -215,21 +217,22 @@ namespace ChastainRush
             RaceController.LapsOverride = 1; RaceController.AiCount = 0; race.StartRace();
             while (race.State == RaceController.Stage.Countdown) yield return null;
             var r = race.Route; var line = new List<Vector3>(r.LeadIn ?? new Vector3[0]); for (float s = 0f; s <= r.LapLength; s += 3f) line.Add(r.PointAt(r.GateS + s, out _));
-            float rawSum = 0f, shownSum = 0f; int n = 0; float lastRaw = float.NaN, lastShown = float.NaN; bool picture = false;
+            float rawSum = 0f, shownSum = 0f; int n = 0; float lastRaw = float.NaN, lastShown = float.NaN, lastDr = 0f, lastDs = 0f;
             var mon = StartCoroutine(R73Watch(() =>
             {
                 var t = race.Target; if (t == null) return;
                 var to = t.Position - car.transform.position; to.y = 0f; var fw = car.transform.forward; fw.y = 0f;
                 float raw = Vector3.SignedAngle(fw, to, Vector3.up), shown = race.GuideAngleForCheck;
-                if (!float.IsNaN(lastRaw)) { rawSum += Mathf.Abs(Mathf.DeltaAngle(lastRaw, raw)); shownSum += Mathf.Abs(Mathf.DeltaAngle(lastShown, shown)); n++; }
+                // the wobble: how much each step's turn differs from the step before's (a steady turn through a bend is no wobble)
+                if (!float.IsNaN(lastRaw)) { float dr = Mathf.DeltaAngle(lastRaw, raw), ds = Mathf.DeltaAngle(lastShown, shown); rawSum += Mathf.Abs(dr - lastDr); shownSum += Mathf.Abs(ds - lastDs); lastDr = dr; lastDs = ds; n++; }
                 lastRaw = raw; lastShown = shown;
             }, () => true));
             var run = new HumanRun();
             var pics = new List<(string, float)> { ("74_arrow_lap", r.LapLength * .4f) };
             yield return HumanDrive(line, 30f, 150f, run, () => race.Player.Finished, null, pics);
             StopCoroutine(mon);
-            report.AppendLine($"  {n} physics steps: the raw bearing moved {rawSum / Mathf.Max(1, n):0.00} deg a step on average, the arrow {shownSum / Mathf.Max(1, n):0.00}");
-            Check("arrow: the HUD arrow moves less than the raw bearing (steadied)", n > 100 && shownSum < rawSum * .6f, $"{shownSum:0} against {rawSum:0} deg");
+            report.AppendLine($"  {n} physics steps: the raw bearing's wobble {rawSum / Mathf.Max(1, n):0.000} deg a step on average, the arrow's {shownSum / Mathf.Max(1, n):0.000}");
+            Check("arrow: the HUD arrow wobbles far less than the raw bearing (steadied)", n > 100 && shownSum < rawSum * .4f, $"{shownSum:0} against {rawSum:0}");
             race.EndRace();
         }
 
@@ -265,11 +268,11 @@ namespace ChastainRush
                 {
                     R73Set(0, 0, .3f); yield return new WaitForFixedUpdate(); wait += Time.fixedDeltaTime;
                     if (!shotHold && q.State == QuarryJumps.Phase.Hold) { shotHold = true; yield return Capture($"74_q{j.id}_preview_hold"); }
-                    if (!shotCount && q.State == QuarryJumps.Phase.Countdown && wait > 2.6f) { shotCount = true; yield return Capture($"74_q{j.id}_preview_countdown"); }
+                    if (!shotCount && q.State == QuarryJumps.Phase.Countdown && q.CountdownForCheck > 1.6f) { shotCount = true; yield return Capture($"74_q{j.id}_preview_countdown"); }
                 }
                 yield return new WaitForSecondsRealtime(.4f); yield return Capture($"74_q{j.id}_go");
-                report.AppendLine($"  {j.id} {j.name}: {(shotHold ? "held" : "NO hold")}, {(shotCount ? "the countdown pictured" : "no countdown")}, now {q.State}");
-                Check($"qpreview {j.id}: the countdown ran from the box", shotHold && q.State == QuarryJumps.Phase.Run);
+                report.AppendLine($"  {j.id} {j.name}: {(shotHold ? "held" : "(the hold passed during the travel)")}, {(shotCount ? "the countdown pictured" : "no countdown")}, now {q.State}");
+                Check($"qpreview {j.id}: the countdown ran from the box", shotCount && q.State == QuarryJumps.Phase.Run);
                 R73Set(0, 0, 1f); yield return new WaitForSecondsRealtime(1.5f); R73Set(0, 0, 0);
             }
         }

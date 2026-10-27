@@ -271,6 +271,7 @@ namespace ChastainRush
         // the countdown, a camera sweeps from high over the box out over the kicker, looking at the landing deck across the lake: the whole line, then
         // back to the chase view for GO (at 2.6 s of the countdown)
         Camera preview;
+        public float CountdownForCheck => State == Phase.Countdown ? Time.time - t0 : 0f;
         void Preview()
         {
             var J = Current; var main = Camera.main;
@@ -290,9 +291,11 @@ namespace ChastainRush
             var lip = At(J, J.lip_s); lip.y = J.lip_y;
             var land = At(J, J.land_s[J.land_s.Length / 2]); land.y = J.land_y[J.land_y.Length / 2];
             float u = State == Phase.Hold ? 0f : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((Time.time - t0) / 2.6f));
-            var a = box - f * 18f + Vector3.up * 34f; var b = lip - f * 40f + Vector3.up * 26f;
+            // (Round 74's check: from 34 m over the box the airfield's crest and the trees hid the lake: now from high over the box out past the lip, over the
+            // water, looking down at the landing deck)
+            var a = box - f * 15f + Vector3.up * 70f; var b = lip + f * 45f + Vector3.up * 55f;
             var at = Vector3.Lerp(a, b, u);
-            preview.transform.SetPositionAndRotation(at, Quaternion.LookRotation(Vector3.Lerp(lip, land, .65f) - at));
+            preview.transform.SetPositionAndRotation(at, Quaternion.LookRotation(Vector3.Lerp(Vector3.Lerp(lip, land, .5f), land, u) - at));
         }
         static bool WatchPressed()
         {

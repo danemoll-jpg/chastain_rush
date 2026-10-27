@@ -27,10 +27,13 @@ WING_TIP = (SPAN, WING_Y + .15, .0)
 
 def body():
     G = 'Body'
-    keys = [(3.40, .26, .26, .02), (3.05, .42, .42, .02), (2.30, .50, .52, .04), (1.20, .52, .58, .06), (.30, .52, .60, .08), (-.80, .48, .56, .12),
-            (-1.80, .38, .44, .18), (-2.80, .26, .32, .24), (-3.60, .14, .20, .28), (-4.10, .08, .12, .30)]
+    # (the cockpit's keys lowered to a tub under the canopy, its top about 0.25 m: the pilot is seen through the canopy, not hidden in the fuselage)
+    keys = [(3.40, .26, .26, .02), (3.05, .42, .42, .02), (2.30, .50, .52, .04), (1.20, .52, .58, .06), (.70, .52, .50, -.04), (.30, .52, .42, -.17), (-.40, .52, .42, -.17),
+            (-1.05, .46, .44, -.04), (-1.80, .38, .44, .18), (-2.80, .26, .32, .24), (-3.60, .14, .20, .28), (-4.10, .08, .12, .30)]
     loft('Fuselage', [ring((0, cy, z), rx, ry, 18, 'z') for z, rx, ry, cy in keys], G, 'paint', cap=True)
-    loft('Racing stripe', [ring((0, cy + ry * .95, z), .12, .04, 10, 'z') for z, rx, ry, cy in keys[1:-1]], G, 'white', cap=True)
+    # the racing stripe along the top, in front of the canopy and behind it (not through the cockpit)
+    loft('Racing stripe', [ring((0, cy + ry * .95, z), .12, .04, 10, 'z') for z, rx, ry, cy in keys[1:4]], G, 'white', cap=True)
+    loft('Racing stripe', [ring((0, cy + ry * .95, z), .10, .04, 10, 'z') for z, rx, ry, cy in keys[8:-1]], G, 'white', cap=True)
     # ---- the bubble canopy over the seat and the turtle deck behind it
     blob('Canopy', (0, .52, -.25), (.44, .46, 1.05), G, 'glass', 20, 12)
     hull('Turtle deck', [(-.30, .45, -1.15), (.30, .45, -1.15), (-.10, .32, -3.4), (.10, .32, -3.4), (-.22, .70, -1.15), (.22, .70, -1.15), (-.06, .42, -3.4), (.06, .42, -3.4)], G, 'paint', .03, 2)

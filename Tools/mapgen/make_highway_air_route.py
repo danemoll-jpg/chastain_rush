@@ -5,8 +5,8 @@ place makes them tight; the 3D arrow, beacons, the ring after next and the minim
   SF     the start / finish ring, 16 m over the runway (a standing take-off at GO)
   R1     past the runway's east end, climbing
   T1     low over I-75 at Town Center (a left sweep onto the interstate, heading north-west)
-  U1, U2 under Chastain Road's and the Skip Spann Connector's bridges over I-75 (frames sized to the openings as built; "over" where the wings
-         do not fit: the --room probe decides)
+  U1     under Chastain Road's bridge over I-75 (a frame sized to the opening as built: 8.8 m from the road to the deck, the probe)
+  U2     over the Skip Spann Connector (its deck sits on the ground as built: no room under it)
   N1     the north sweep: a high ring over the woods between the interstates (a right turn of about 150 degrees)
   U3     under Chastain Road Northwest's bridges over I-575
   L1     low over I-575 by Barrett Parkway
@@ -73,7 +73,7 @@ CTRL = [
     ((-935, 260), None),
     ((-972, 432), ("U1", "Under Chastain Road", "frame", (10, 3.4), ("agl", 5.6))),
     ((-1010, 600), None),
-    ((-1055, 776), ("U2", "Under the Skip Spann Connector", "frame", (10, 3.4), ("agl", 5.6))),
+    ((-1055, 776), ("U2", "Over the Skip Spann Connector", "ring", 22, ("agl", 20))),   # (the probe: its deck sits on the ground as built: no room under it)
     ((-1130, 1000), None),
     ((-1240, 1300), None),
     ((-1250, 1560), None),                                         # the north sweep (right, about 150 degrees)
@@ -107,8 +107,8 @@ CTRL = [
     ((-3800, -1905), None),
 ]
 CLEARED = {}   # (the low stretches are over the interstates' own open lanes: nothing to clear)
-LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (180, 180), "U2": (180, 180), "U3": (220, 220), "L1": (300, 300)}   # meters before and after the ring
-LOW_CLEAR = {"SF": 10.0, "T1": 12.0, "U1": 5.0, "U2": 5.0, "U3": 5.0, "L1": 12.0}   # over the ground there (under a bridge: as low as its deck allows)
+LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (180, 180), "U3": (220, 220), "L1": (300, 300)}   # meters before and after the ring
+LOW_CLEAR = {"SF": 10.0, "T1": 12.0, "U1": 5.0, "U3": 5.0, "L1": 12.0}   # over the ground there (under a bridge: as low as its deck allows)
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
 P = np.array([c[0] for c in CTRL], dtype=float); n = len(P)
 def catmull(p0, p1, p2, p3, k=24):
@@ -221,6 +221,12 @@ if "--room" in sys.argv:
         if rows[j][3] != "nan": BUILT_LO[i] = float(rows[j][3])
         if rows[j][4] != "nan": BUILT_HI[i] = float(rows[j][4])
     print(f"built room read: {np.sum(BUILT_LO > -1e4)} points with ground, {np.sum(BUILT_HI < 1e4)} with something over them")
+    # (Round 74: the map build lifts bridge decks (map.json's deck_y is the planning's: Chastain Road's over I-75 stands 10 m higher as built): with the
+    # probe, a planned deck over the line takes the built one's underside found within 40 m along the line; none found: no deck over it as built)
+    planned = np.where(CEIL < 1e4)[0]
+    for i in planned:
+        near_ = [BUILT_HI[(i + k) % N] for k in range(-8, 9) if BUILT_HI[(i + k) % N] < 1e4]
+        CEIL[i] = (min(near_) - 1.7 - 1.2) if near_ else 1e4
 # the highest ground under the wings (6.5 m either side, across the line) and under the body
 def across(i):
     d = XZ[(i + 2) % N] - XZ[(i - 2) % N]; d = d / max(np.linalg.norm(d), 1e-6); r = np.array([d[1], -d[0]])
