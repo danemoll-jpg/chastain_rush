@@ -148,7 +148,7 @@ namespace ChastainRush
         {
             ("chastain_glen_loop.json", new[] { "forward", "reverse" }), ("noonday_creek.json", new[] { "forward", "reverse" }), ("underground.json", new[] { "forward" }),
             ("chastain_ridge.json", new[] { "forward", "reverse" }), ("chastain_lakes.json", new[] { "forward", "reverse" }), ("addison_heights.json", new[] { "forward", "reverse" }),
-            ("noonday_creek_trail.json", new[] { "forward", "reverse" }), ("kennesaw_mountain.json", new[] { "forward" }), ("quarry_track.json", new[] { "forward" }),
+            ("noonday_creek_trail.json", new[] { "forward", "reverse" }), ("kennesaw_mountain.json", new[] { "forward" }),
         };
         IEnumerator R73Bars()
         {

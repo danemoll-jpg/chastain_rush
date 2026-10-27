@@ -15,7 +15,10 @@ quick enough: the cars come up short), the AI holding each run-up at its speed w
 
 What it writes: Data/routes/quarry_track.json (the race) and Data/tracks/quarry_track.json (its world pieces: the benches, the cleared lines, the
 divider; merged into the mountain's planning by MapBuilder.QuarryJumps.cs). Re-run after make_quarry_jumps.py, then a full Build Map.
-Usage: python Tools/mapgen/make_quarry_track.py [--plot]"""
+NOT BUILT (Round 73's check): the human-like rider stuck on the haul road after The Long One, the AI riders took the haul road's other lane at the
+crossing and skipped The Corner's whole loop for 20 s of penalties, and two of three AI did not finish. Its output is not in Data/ (the race is not in the
+game, its benches and divider not in the world) until a lap without that crossing is chosen (TODO.md Round 73 C5: the options).
+Usage: python Tools/mapgen/make_quarry_track.py [--plot]  (writes the two files; move them out of Data/ again if the lap is not fixed)"""
 import json, math, os, sys
 import numpy as np
 
