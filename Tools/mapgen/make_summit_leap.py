@@ -199,7 +199,10 @@ back_y = [y_lip - (math.tan(math.radians(60)) * (x - s_lip) if x - s_lip < 3 els
 keep = [(b, y) for b, y in zip(back, back_y) if y > raw(b)]
 # Round 75 (C): the catch with the run-out's tail, its banks (and the track's) from the ground at their edges (the run-up's left: the summit lot beside it)
 c_s = [x for x in cs if x <= s_end] + tail; c_pts = [P(x) for x in c_s]; c_y = [cat(x) for x in cs if x <= s_end] + tail_y
-c_bl = edge_blends(c_pts, c_y, [CATCH_HALF] * len(c_pts), [10.0] * len(c_pts), SIDE_SLOPE)
+# (the tail narrows from the catch's width to the track's as it comes down to the ground: a shelf 56 m wide ending on a sidehill left a step at its
+# open end's corners)
+c_half = [CATCH_HALF] * len([x for x in cs if x <= s_end]) + [CATCH_HALF + (3.5 - CATCH_HALF) * smooth01((t - s_end) / TAIL_M) for t in tail]
+c_bl = edge_blends(c_pts, c_y, c_half, [10.0] * len(c_pts), SIDE_SLOPE)
 track_bl = edge_blends(track, track_y, [3.5] * len(track), [4.0] * len(track), SIDE_SLOPE)
 grades = [
     {"id": "the summit leap's run-up, top and in-run", "points": flat([P(s) for s in on] + [P(b) for b, _ in keep]), "y": [round(v, 3) for v in on_y + [y for _, y in keep]],
@@ -207,7 +210,7 @@ grades = [
      "ground_first": 2, "ground_last": 0, "ground_ease_m": 20.0, "open_ends": True,
      "keep_off": flat(drive[-30:]), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 1.5},
     {"id": "the summit leap's catch and run-out", "points": flat(c_pts), "y": [round(v, 3) for v in c_y],
-     "half": CATCH_HALF, "blend": 10.0, "halves": [CATCH_HALF] * len(c_pts), "blends": c_bl, "open_ends": True,
+     "half": CATCH_HALF, "blend": 10.0, "halves": [round(h, 2) for h in c_half], "blends": c_bl, "open_ends": True,
      # (the flight crosses the drive's south leg, the Kennesaw Mountain race's lap, just before the catch: the drive is kept off)
      "keep_off": flat(drive), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 2.0},
     {"id": "the summit leap's track to North Saint Marys Lane", "points": flat(track), "y": [round(v, 3) for v in track_y], "half": 3.5, "blend": 4.0, "blends": track_bl, "open_ends": True},

@@ -511,7 +511,16 @@ halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends =
 EDGE_SLOPE = SIDE_SLOPE   # (the lines' own 1.25: only where it is measured changes)
 # (never onto a road or a trail beside the line: bank_room.py; Kennesaw Mountain Drive is the race's climb, the park's trails lie on their ground)
 from bank_room import ways_room
-_room = ways_room(m, g_pts)
+_room_ways = ways_room(m, g_pts)
+# (and never past the middle between two legs of the lines: GradeAlong takes the nearest leg's height, so two legs' banks overlapping left a step where
+# the nearest leg changes, up to 12 m between legs 40 m apart at different heights)
+_G = np.array(g_pts); _idx = np.arange(len(g_pts))
+def _room(q, i=None):
+    r = _room_ways(q)
+    if i is not None:
+        d = np.hypot(_G[:, 0] - q[0], _G[:, 1] - q[1]); d[np.abs(_idx - i) <= 40] = 1e9
+        r = min(r, float(d.min()) / 2.0)
+    return r
 def edge_blend(i):
     q = g_pts[i]; a = g_pts[max(0, i - 1)]; c = g_pts[min(len(g_pts) - 1, i + 1)]
     dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1.0; nx, nz = -dz / L, dx / L
@@ -519,9 +528,9 @@ def edge_blend(i):
     for _ in range(4):
         dh = max(abs(g_y[i] - ground(q[0] + nx * sd * (halves[i] + b), q[1] + nz * sd * (halves[i] + b))) for sd in (-1, 1))
         b = min(30.0, max(blends[i], EDGE_SLOPE * dh))
-    return max(blends[i], min(b, _room(q) - halves[i]))
+    return max(blends[i], min(b, _room(q, i) - halves[i]))
 _eb = [edge_blend(i) for i in range(len(g_pts))]
-blends = [round(max(b0, min(b1, max(b0, _room(g_pts[i]) - halves[i]))), 2) for i, (b0, b1) in enumerate(zip(blends, gsm_list(_eb, 3.0)))]   # (smoothed, then held off the ways again)
+blends = [round(max(b0, min(b1, max(b0, _room(g_pts[i], i) - halves[i]))), 2) for i, (b0, b1) in enumerate(zip(blends, gsm_list(_eb, 3.0)))]   # (smoothed, then held off the ways again)
 # where the line runs on or beside the drive (the departure, the join) the drive's own levelled surface is kept: those points take the built ground's
 # height in the map build (the drive is levelled before this grade), eased into the line's profile over the next 40 m
 on_road = [nearest_s(road, q)[0] < 9.0 for q in g_pts]
