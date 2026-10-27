@@ -101,10 +101,20 @@ namespace ChastainRush
         }
 
         // where a crashed (or reset) plane goes back into the air: on the line AirResetBack before the last ring it passed, heading through it
-        bool AirSpot(RaceEntrant e, out Vector3 at, out float yaw, out float pitch)
+        // Round 74 (I, the check: an AI pilot crashed into the same tree top before a ring 20 times running, put back before the ring it had passed each
+        // time): the third crash before the same ring puts the plane back just past that ring (missed: the usual 5 s), never round the same loop again
+        readonly Dictionary<RaceEntrant, (int ring, int n)> airCrashes = new Dictionary<RaceEntrant, (int, int)>();
+        bool AirSpot(RaceEntrant e, out Vector3 at, out float yaw, out float pitch, bool crash = false)
         {
             float ringS = !e.ClockStarted || e.NextCheckpoint == 0 ? 0f : Route.Checkpoints[Mathf.Min(e.NextCheckpoint, Route.Checkpoints.Count) - 1].S;
             float s = Route.GateS + ringS - AirResetBack;
+            if (crash)
+            {
+                int ring = e.NextCheckpoint + 1000 * e.CompletedLaps;
+                var c = airCrashes.TryGetValue(e, out var was) && was.ring == ring ? (ring, was.n + 1) : (ring, 1);
+                airCrashes[e] = c;
+                if (c.Item2 >= 3 && e.ClockStarted && e.NextCheckpoint < Route.Checkpoints.Count) { s = Route.GateS + Route.Checkpoints[e.NextCheckpoint].S + 60f; Log(e, $"third crash before ring {e.NextCheckpoint + 1}: back in the air past it"); airCrashes.Remove(e); }
+            }
             at = Route.PointAt(s, out var f);
             var a = Route.PointAt(s - 10f, out _); var b = Route.PointAt(s + 10f, out _);
             yaw = Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg;
@@ -117,7 +127,7 @@ namespace ChastainRush
         public bool AirReset(PlaneFlight plane)
         {
             if (!AirRace || (State != Stage.Racing && State != Stage.Finished) || !plane) return false;
-            var e = EntrantOf(plane); if (e == null || !AirSpot(e, out var at, out float yaw, out float pitch)) return false;
+            var e = EntrantOf(plane); if (e == null || !AirSpot(e, out var at, out float yaw, out float pitch, true)) return false;
             plane.AirStart(at, yaw, pitch, AirResetSpeed);
             Teleported(e);
             Log(e, $"CRASH RESET: back in the air at ({at.x:0}, {at.y:0}, {at.z:0}) before {(e.ClockStarted && e.NextCheckpoint > 0 ? "ring " + Mathf.Min(e.NextCheckpoint, Route.Checkpoints.Count) : "the start ring")}");

@@ -239,7 +239,7 @@ for r in rings:
     if r["name"] in LOW_CLEAR:
         k0, k1 = int(LOW[r["name"]][0] / STEP), int(LOW[r["name"]][1] / STEP)
         for d in range(-k0, k1 + 1): lowc[(r["i"] + d) % N] = LOW_CLEAR[r["name"]]
-f_low = np.maximum(np.maximum(G + np.maximum(2.8, lowc), G2 + 1.2), TOPS + 4.0); f_open = np.maximum(G2 + 22.0, TOPS + 8.0)
+f_low = np.maximum(np.maximum(G + np.maximum(2.8, lowc), G2 + 1.2), TOPS + 4.0); f_open = np.maximum(G2 + 22.0, TOPS + 12.0)   # (Round 74's check: the AI pilots clipped tree tops at 111 m/s with 8 m: 12)
 f_low = np.maximum(f_low, np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 2.2, -1e4)); f_open = np.maximum(f_open, np.where(BUILT_LO > -1e4, BUILT_LO + 1.25 + 8.0, -1e4))
 # into a low stretch the floor comes down over 75 m from its edge (no step: the plane's pull-up out of it is rounded too)
 edge = np.full(N, 99)
