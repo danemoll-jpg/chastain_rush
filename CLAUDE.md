@@ -430,6 +430,19 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
+**Round 73 (see `TODO.md`, status there) is built and checked in the exe through the game's own input, not yet driven by Dan:** Dan's six reports of session
+`2026-10-26_18-37-35-665_130b58`. A1 no race barrier on any course's line (`RaceBarriers`: a closure the line passes through is not built, blocks within 6 m of it
+trimmed; `python Tools/race/closure_audit.py`, report only); A2 J1 on its own bench off Kennesaw Mountain Drive (`make_mountain_route.py` OFF_M / K, the drive kept off by
+the grade: `RidgeGrade.keep_off` / `keep_off_fade` now in `GradeAlong`); A3 the summit leap (`python Tools/mapgen/make_summit_leap.py [--plot]` writes
+`Data/tracks/kennesaw_summit_leap.json`, replaces Round 70's steel ramp; built by `MapBuilder.SummitRamp.cs`; then `add_extension_places.py`). B the Quarry Air Race redrawn
+(`make_air_route.py` CTRL), rings either way (`RaceGate.EitherWay`), RING MISSED and the guide on (`RaceEntrant.RingSkipped`, `RaceController.AirAim / AirAfter`), the 3D arrow
+`Race/AirGuideArrow.cs`, beacons, the minimap's next rings. C the quarry jumps rebuilt (`make_quarry_jumps.py`: lines, smooth run-up lanes, landing decks over the bank face
+on skirted trestles, windows from the exe's measured speeds; signs `python Tools/handmade/make_quarry_signs.py`, hand-made, committed), seated people in the bleachers
+(`SeatedPerson`), the quarry jumps drive, a Free Roam reset never back onto a stuck spot (`VehicleRespawn.SafeHistory`, `CarRecovery`, `RoadLookup.NearestPointWithin`),
+the Quarry Track (`python Tools/mapgen/make_quarry_track.py [--plot]` writes `Data/routes/quarry_track.json` and `Data/tracks/quarry_track.json`; re-run after
+make_quarry_jumps.py; the race-time divider `QuarryTrackDivider`), the AI's recovery takes a route's `reset_skip`. Check: `ChastainRush.exe -exeRound73 <dir> [-r73Only
+dan,bars,kdrive,leap,qroad,qjump,qcrowd,qreset,qtrack,airprobe,airpilot,allraces] -logFile <dir>\Player.log` (`Checks/Round20Runner.R73.cs`: a human-like driver and pilot
+on a virtual controller, pictures from the player's camera). Imported from Racer: nothing.
 **Round 72 (see `TODO.md`, status there) is built and checked in the exe by script, not yet driven by Dan:** the Viking Quarry jumps (Free Roam events; `python Tools/mapgen/make_quarry_jumps.py
 [--plot]` writes `Data/tracks/quarry_jumps.json` (three jumps designed from the flights: kicker, landing deck, speed window, gantry, bleachers; grades / clear lines / catch zones merged into the
 mountain's planning by `MapBuilder.QuarryJumps.cs`, built in the MountainRace step; re-run after mapgen, then `add_extension_places.py`, then a full Build Map); `SteelRamp` in
