@@ -42,8 +42,20 @@ def board(path, name, lo, hi):
     centred(d, f"HIT THE LIP AT {lo:.0f} TO {hi:.0f} MPH", 60, W / 2, 570, RED)
     img.save(path); print("wrote", os.path.relpath(path, ROOT))
 
+def landing(path, name):
+    # Round 74 (E, Dan's BUG-004): the board beside each landing deck: it is where the jump comes down, the run-up is across the quarry
+    W, H = 1024, 640; img = Image.new("RGB", (W, H), CREAM); d = ImageDraw.Draw(img)
+    d.rectangle([0, 0, W, 190], fill=RED)
+    d.rounded_rectangle([10, 10, W - 10, H - 10], radius=24, outline=BROWN, width=12)
+    centred(d, "LANDING", 150, W / 2, 98, CREAM)
+    centred(d, name.upper(), 96, W / 2, 300, BLUE)
+    centred(d, "THE RUN-UP IS ACROSS", 70, W / 2, 440, BROWN)
+    centred(d, "THE QUARRY", 70, W / 2, 530, BROWN)
+    img.save(path); print("wrote", os.path.relpath(path, ROOT))
+
 os.makedirs(OUT, exist_ok=True)
 turnoff(os.path.join(OUT, "QuarryJumps.png"))
 q = json.load(open(os.path.join(ROOT, "Data/tracks/quarry_jumps.json"), encoding="utf-8"))
 for j in q["jumps"]:
     board(os.path.join(OUT, f"QuarryBoard_{j['id']}.png"), j["name"], j["window"]["lo"] * 2.23694, j["window"]["hi"] * 2.23694)
+    landing(os.path.join(OUT, f"QuarryLanding_{j['id']}.png"), j["name"])

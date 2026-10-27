@@ -72,7 +72,7 @@ def design(J):
     d = (math.sin(math.radians(J["heading"])), math.cos(math.radians(J["heading"]))); nl = (-d[1], d[0])
     o = (J["lip"][0] - d[0] * J["run"], J["lip"][1] - d[1] * J["run"])
     def P(s, lat=0.0): return (o[0] + d[0] * s + nl[0] * lat, o[1] + d[1] * s + nl[1] * lat)
-    raw = lambda s: ground(*P(s))
+    raw = lambda s, lat=0.0: ground(*P(s, lat))
     # ---- the far bench's edge: past the water, the first station where the ground has climbed to within 4 m of the bench's height (the bench: the
     # ground's median over the 60 m after the climb)
     s_lipg = J["run"]
@@ -177,12 +177,17 @@ def design(J):
     pad = {"id": f"quarry jump {J['id']} kicker pad", "points": flat([P(s) for s in pad_s]), "y": [round(y_foot, 3)] * len(pad_s), "half": PAD_HALF, "blend": 10.0, "open_ends": True}
     # under the landing deck: the bench cut down to the deck (it lies on its ground: nothing under it), then the cut's floor climbing back to the bench
     depth = bench - land_y[-1]; back_L = depth / RISE_BACK
-    ro_s = list(np.arange(max(land_s[0], edge), land_s[-1] + back_L + 30.0, 2.0))   # (from the bench's edge: over the face the deck stands on its trestle)
+    # (Round 74, Dan's BUG-003 / BUG-004 of 2026-10-27: the ground stood up to 11 m through J2's and J3's decks a few meters before the bench's edge (the
+    # face's top is not square across the deck): the cut now starts where the ground anywhere across the deck first comes within 2 m of it, 4 m sooner)
+    def proud(s):
+        dy = float(np.interp(s, land_s, land_y)); return max(raw(s, lat) - dy for lat in np.arange(-(LAND_HALF + 4.0), LAND_HALF + 4.01, 2.0))
+    cut_from = next((float(s) for s in np.arange(land_s[0], edge + 0.1, 1.0) if proud(s) > -2.0), edge) - 4.0
+    ro_s = list(np.arange(max(land_s[0], min(edge, cut_from)), land_s[-1] + back_L + 30.0, 2.0))   # (from there: over the face the deck stands on its trestle)
     def ro_at(s):
         if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.25
         y = land_y[-1] - 0.25 + RISE_BACK * (s - land_s[-1]); return min(y, max(bench, raw(s))) if s > land_s[-1] + back_L else y
     ro_y = [ro_at(s) for s in ro_s]
-    runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 1.5, "blend": 12.0, "open_ends": True}
+    runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 3.0, "blend": 16.0, "open_ends": True}   # (Round 74: 3 m clear each side, gentler banks; were 1.5, 12)
     under = None
     stands, pads = [], []
     # Round 73 (C2): each stand at the first of its candidate spots clear of every road (24 m from a road's middle) and the jump's own corridor
@@ -260,7 +265,13 @@ out["access"] = {"drive": flat(dense), "half": 3.5,
                  # the turn-off boards: beside each end, facing a driver on the service road (toward the drive's first meters), the arrow along the drive
                  "signs": [dict(at=flat([(dense[6][0] + 5.0, dense[6][1] + 5.0)]), facing=yaw_of(dense[8], dense[0]), text="QUARRY JUMPS"),
                            dict(at=flat([(dense[-7][0] + 5.0, dense[-7][1] - 5.0)]), facing=yaw_of(dense[-9], dense[-1]), text="QUARRY JUMPS")],
-                 "boards": [dict(jump=j["id"], at=flat([(j["start"][0] - j["dir"][1] * 9.0 - j["dir"][0] * 2.0, j["start"][1] + j["dir"][0] * 9.0 - j["dir"][1] * 2.0)]), facing=(j["start_yaw"] + 180.0) % 360) for j in out["jumps"]]}
+                 "boards": [dict(jump=j["id"], at=flat([(j["start"][0] - j["dir"][1] * 9.0 - j["dir"][0] * 2.0, j["start"][1] + j["dir"][0] * 9.0 - j["dir"][1] * 2.0)]), facing=(j["start_yaw"] + 180.0) % 360) for j in out["jumps"]],
+                 # Round 74 (E, Dan's BUG-004: on The Big One's landing deck from the north, "ramp is blocked. I don't understand where these ramps lead
+                 # to"): a LANDING board beside each landing deck's run-out, facing anyone arriving from the bench's side (the north): the deck is a landing,
+                 # its run-up is across the quarry
+                 "landings": [dict(jump=j["id"], at=flat([(j["origin"][0] + j["dir"][0] * (j["land_s"][-1] + 12.0) - j["dir"][1] * (LAND_HALF + 7.0),
+                                                           j["origin"][1] + j["dir"][1] * (j["land_s"][-1] + 12.0) + j["dir"][0] * (LAND_HALF + 7.0))]),
+                                   facing=math.degrees(math.atan2(j["dir"][0], j["dir"][1])) % 360) for j in out["jumps"]]}
 print(f"the quarry jumps drive: {sum(math.dist(a, b) for a, b in zip(dense, dense[1:])):.0f} m, from ({WEST_END[0]:.0f}, {WEST_END[1]:.0f}) behind the three start boxes to ({EAST_END[0]:.0f}, {EAST_END[1]:.0f})")
 json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)
 print("wrote", os.path.relpath(OUT, ROOT))

@@ -19,7 +19,7 @@ namespace ChastainRush
         [Serializable] class QjSpot { public float[] at; public float yaw, y; }
         [Serializable] class QjJump { public string id, name; public float[] origin, dir, deck_s, deck_y, land_s, land_y, start; public float half, lip_s, lip_y, land_half, runout_to, start_yaw; public QjSpot gantry; public QjSpot[] stands; }
         [Serializable] class QjSign { public float[] at; public float facing; public string text, jump; }
-        [Serializable] class QjAccess { public float[] drive; public float half; public QjSign[] signs, boards; }
+        [Serializable] class QjAccess { public float[] drive; public float half; public QjSign[] signs, boards, landings; }   // landings: Round 74
         [Serializable] class QjFile { public RidgeGrade[] grades; public RidgeClear[] clear_lines; public CtZone[] landing_zones; public QjJump[] jumps; public QjAccess access; }
         const string QuarryJumpsFile = "Data/tracks/quarry_jumps.json";
         [Serializable] class QtFile { public RidgeGrade[] grades; public RidgeClear[] clear_lines; public float[] divider; public string route_name; }
@@ -291,6 +291,12 @@ namespace ChastainRush
             {
                 var f = new Vector3(Mathf.Sin(b.facing * Mathf.Deg2Rad), 0f, Mathf.Cos(b.facing * Mathf.Deg2Rad));
                 Board(mb, t, terrain, new Vector3(b.at[0], 0f, b.at[1]), f, 2.4f, 1.5f, 1.0f, RoadSignMaterial("QuarryBoard_" + b.jump));
+            }
+            // Round 74 (E, Dan's BUG-004): a LANDING board beside each landing deck's run-out, facing the bench (the deck is where the jump lands)
+            foreach (var b in a.landings ?? new QjSign[0])
+            {
+                var f = new Vector3(Mathf.Sin(b.facing * Mathf.Deg2Rad), 0f, Mathf.Cos(b.facing * Mathf.Deg2Rad));
+                Board(mb, t, terrain, new Vector3(b.at[0], 0f, b.at[1]), f, 3.2f, 2.0f, 1.2f, RoadSignMaterial("QuarryLanding_" + b.jump));
             }
             mb.ToObject("Quarry jumps sign posts", mats.House, t, false);
             Debug.Log($"[Round73] the quarry jumps drive: {pts.Count} points, {a.signs?.Length ?? 0} turn-off boards, {a.boards?.Length ?? 0} start boards");

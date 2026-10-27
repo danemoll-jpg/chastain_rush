@@ -187,6 +187,7 @@ namespace ChastainRush
         {
             // a few seconds of the landing go on the recording too
             if (State == Phase.Result && Time.time < resultUntil - 6f) Record();
+            Preview();   // Round 74 (E)
         }
         public bool CanWatch => State == Phase.Result && Time.time < replayUntil && frames.Count > 10 && !ReplayViewer.Active;
         public void Watch()
@@ -264,6 +265,35 @@ namespace ChastainRush
         {
             if (CanWatch && WatchPressed()) Watch();
         }
+
+        // Round 74 (E, Dan: "I don't understand where these ramps lead to"; TODO: "the lake and the landing in view from the start box"): the landing is
+        // 90 m below the lip and 200 m past it, so from the box (and the lane) the lip hides it. While the player holds still in the box and through
+        // the countdown, a camera sweeps from high over the box out over the kicker, looking at the landing deck across the lake: the whole line, then
+        // back to the chase view for GO (at 2.6 s of the countdown)
+        Camera preview;
+        void Preview()
+        {
+            var J = Current; var main = Camera.main;
+            bool show = J != null && car && (State == Phase.Hold || (State == Phase.Countdown && Time.time - t0 < 2.6f)) && main && main != preview && !TrailerMode.Active && !ReplayViewer.Active;
+            if (!show) { if (preview && preview.enabled) preview.enabled = false; return; }
+            if (!preview)
+            {
+                preview = new GameObject("Quarry jump preview camera").AddComponent<Camera>(); preview.transform.SetParent(transform, false);
+                preview.enabled = false;
+            }
+            if (!preview.enabled)
+            {
+                preview.CopyFrom(main); preview.targetTexture = null; preview.depth = main.depth + 1f; preview.enabled = true;
+            }
+            preview.farClipPlane = Mathf.Max(main.farClipPlane, 1500f);
+            var f = Forward(J); var box = StartPoint(J);
+            var lip = At(J, J.lip_s); lip.y = J.lip_y;
+            var land = At(J, J.land_s[J.land_s.Length / 2]); land.y = J.land_y[J.land_y.Length / 2];
+            float u = State == Phase.Hold ? 0f : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((Time.time - t0) / 2.6f));
+            var a = box - f * 18f + Vector3.up * 34f; var b = lip - f * 40f + Vector3.up * 26f;
+            var at = Vector3.Lerp(a, b, u);
+            preview.transform.SetPositionAndRotation(at, Quaternion.LookRotation(Vector3.Lerp(lip, land, .65f) - at));
+        }
         static bool WatchPressed()
         {
             var k = UnityEngine.InputSystem.Keyboard.current; var g = UnityEngine.InputSystem.Gamepad.current;
@@ -317,7 +347,7 @@ namespace ChastainRush
                 for (int i = 1; i < lines.Length; i++) GUI.Label(new Rect(r.x, r.y + 18 + 26 * i, r.width, 26), lines[i], small);
                 float y = r.y + 30 + 26 * lines.Length;
                 for (int i = 0; i < Mathf.Min(5, top.Count); i++) { var e = top[i]; GUI.Label(new Rect(r.x, y, r.width, 22), $"{i + 1}. {e.name}  {VehicleProfile.Find(e.vehicle).Name}  {DisplayUnits.Jump(e.distance)}  {e.landing.ToLower()}", new GUIStyle(small) { fontSize = 16 }); y += 22; }
-                if (CanWatch) GUI.Label(new Rect(r.x, r.yMax - 4, r.width, 26), "L3 / K: watch the jump again", new GUIStyle(small) { fontSize = 16 });
+                if (CanWatch) GUI.Label(new Rect(r.x, r.yMax - 4, r.width, 26), KeyHints.Of("L3", "K") + ": watch the jump again", new GUIStyle(small) { fontSize = 16 });
             }
             GUI.matrix = old;
         }
