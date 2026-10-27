@@ -67,10 +67,10 @@ CTRL = [
     ((-420, -1640), None),
     ((-300, -1380), ("T1", "I-75 at Town Center", "ring", 22, ("agl", 16))),
     ((-370, -1000), None),
-    ((-470, -720), None),
+    ((-470, -720), ("I1", "Up I-75", "ring", 24, ("agl", 25))),   # (Round 74's check: the arrow led straight across the hills to U1: rings along the interstates)
     ((-620, -420), None),
-    ((-820, -110), None),
-    ((-935, 260), None),
+    ((-820, -110), ("I2", "I-75 at Chastain Road", "ring", 24, ("agl", 22))),
+    ((-935, 260), ("I3", "Low over I-75", "ring", 22, ("agl", 10))),   # (lined up for the bridge, 180 m before it)
     ((-972, 432), ("U1", "Under Chastain Road", "frame", (10, 3.4), ("agl", 5.6))),
     ((-1010, 600), None),
     ((-1055, 776), ("U2", "Over the Skip Spann Connector", "ring", 22, ("agl", 20))),   # (the probe: its deck sits on the ground as built: no room under it)
@@ -81,15 +81,15 @@ CTRL = [
     ((-500, 1760), ("N1", "North sweep", "ring", 28, ("agl", 80))),
     ((0, 1720), None),
     ((240, 1550), None),
-    ((290, 1250), None),
+    ((290, 1250), ("I4", "Down I-575", "ring", 24, ("agl", 18))),
     ((345, 935), ("U3", "Under Chastain Road Northwest", "frame", (10, 3.4), ("agl", 5.6))),
-    ((440, 500), None),
+    ((440, 500), ("I5", "I-575 south", "ring", 24, ("agl", 22))),
     ((530, 100), None),
     ((620, -380), None),
     ((715, -880), None),
     ((752, -1400), ("L1", "I-575 by Barrett Parkway", "ring", 22, ("agl", 16))),
     ((745, -1800), None),
-    ((700, -2250), None),
+    ((700, -2250), ("I6", "I-575 to the interchange", "ring", 24, ("agl", 25))),
     ((600, -2700), None),
     ((470, -3080), ("X1", "The interchange", "ring", 26, ("agl", 30))),
     ((250, -3200), None),                                          # the right sweep west off the interstates
@@ -107,8 +107,8 @@ CTRL = [
     ((-3800, -1905), None),
 ]
 CLEARED = {}   # (the low stretches are over the interstates' own open lanes: nothing to clear)
-LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (400, 220), "U3": (400, 250), "L1": (300, 300)}   # (U1 / U3 low and level 400 m before: the restart 150 m before is on it)   # meters before and after the ring
-LOW_CLEAR = {"SF": 10.0, "T1": 12.0, "U1": 5.0, "U3": 5.0, "L1": 12.0}   # over the ground there (under a bridge: as low as its deck allows)
+LOW = {"SF": (420, 420), "T1": (250, 250), "U1": (400, 220), "U3": (400, 250), "L1": (300, 300), "I3": (150, 150)}   # (U1 / U3 low and level 400 m before: the restart 150 m before is on it)   # meters before and after the ring
+LOW_CLEAR = {"SF": 10.0, "T1": 12.0, "U1": 5.0, "U3": 5.0, "L1": 12.0, "I3": 8.0}   # over the ground there (under a bridge: as low as its deck allows)
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
 P = np.array([c[0] for c in CTRL], dtype=float); n = len(P)
 def catmull(p0, p1, p2, p3, k=24):
