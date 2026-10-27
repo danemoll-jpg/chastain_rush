@@ -23,6 +23,11 @@ namespace Racer
         readonly Transform[] clusters = new Transform[Count]; readonly Vector3[] home = new Vector3[Count]; readonly float[] size = new float[Count];
         readonly List<Mesh> meshes = new(); Material material;
         public int Visible { get; private set; }
+        // Chastain Rush, Round 74 (Dan's BUG-005 at Kennesaw's summit, 689 m: a big white shape past the summit leap's lip was a cloud: the layer,
+        // 630-760 m, and the overcast deck, 685 m, stand at the mountain's own height). The layer now rises over high ground: never under the
+        // highest ground within 700 m of the camera plus 160 m (eased, so it climbs with the player and settles back down off the mountain).
+        public float Raise { get; private set; }
+        float raiseWant, raiseAt = -1f; Vector3 raiseFrom; bool raiseSnap = true;
         // Overcast only: one flat cloud deck above the clusters, out to the haze, so no band of open sky shows near the horizon.
         // A ring in the haze colour from below the horizon up to the deck edge closes the last strip of open sky (the camera
         // sees 1.8 km at most, so the deck cannot reach the horizon itself); distant terrain is fogged to the same colour.
@@ -117,12 +122,25 @@ namespace Racer
             material.SetFloat("_Flash", Flash);
             int visible = Mathf.RoundToInt(Mathf.Lerp(22, Count, overcast)); float grow = Mathf.Lerp(1, 3.6f, overcast); Visible = 0;
             var c = cam.transform.position; var drift = Wind * Time.time;
+            if ((c - raiseFrom).sqrMagnitude > 150f * 150f) { raiseSnap = true; raiseAt = -1f; }   // a teleport (fast travel, a reset): no easing
+            raiseFrom = c;
+            if (Time.unscaledTime >= raiseAt)
+            {
+                raiseAt = Time.unscaledTime + .5f; float top = float.MinValue;
+                for (int k = 0; k <= 16; k++)
+                {
+                    float r = k == 0 ? 0f : k <= 8 ? 350f : 700f, a = k * Mathf.PI / 4f;
+                    if (ChastainRush.GroundQuery.TryHeight(c.x + Mathf.Cos(a) * r, c.z + Mathf.Sin(a) * r, out float g)) top = Mathf.Max(top, g);
+                }
+                raiseWant = top == float.MinValue ? 0f : Mathf.Max(0f, top + 160f - Base);
+            }
+            Raise = raiseSnap ? raiseWant : Mathf.MoveTowards(Raise, raiseWant, 25f * Time.unscaledDeltaTime); raiseSnap = false;
             bool deckOn = overcast > .3f; if (deck.gameObject.activeSelf != deckOn) deck.gameObject.SetActive(deckOn);
-            if (deckOn) { deck.position = new Vector3(c.x, DeckHeight, c.z); deck.localScale = new Vector3(DeckRadius, 1, DeckRadius); }
+            if (deckOn) { deck.position = new Vector3(c.x, DeckHeight + Raise, c.z); deck.localScale = new Vector3(DeckRadius, 1, DeckRadius); }
             if (skirt.gameObject.activeSelf != deckOn) skirt.gameObject.SetActive(deckOn);
             if (deckOn)
             {
-                float bottom = c.y - 250; skirt.position = new Vector3(c.x, bottom, c.z); skirt.localScale = new Vector3(DeckRadius, DeckHeight - bottom, DeckRadius);
+                float bottom = c.y - 250; skirt.position = new Vector3(c.x, bottom, c.z); skirt.localScale = new Vector3(DeckRadius, DeckHeight + Raise - bottom, DeckRadius);
                 skirtMaterial.SetColor("_Haze", RenderSettings.fogColor); skirtMaterial.SetFloat("_Flash", Flash);
                 material.SetFloat("_HazeDistance", 660); material.SetFloat("_HazeAmount", Mathf.Lerp(.42f, .8f, overcast));   // Chastain Rush: 660 (1650 in Racer)
             }
@@ -137,7 +155,7 @@ namespace Racer
                 if (!t.gameObject.activeSelf) t.gameObject.SetActive(true);
                 // Overcast lowers and flattens the layer and swells the clusters (about 3.5x) so they close up into an even ceiling.
                 float y = Mathf.Lerp(home[i].y, Base + 10 + (home[i].y - Base) * .3f, overcast);
-                t.position = new Vector3(c.x + x, y, c.z + z);
+                t.position = new Vector3(c.x + x, y + Raise, c.z + z);
                 float s = size[i] * grow * fade; t.localScale = new Vector3(s, s * Mathf.Lerp(1, .45f, overcast), s);
                 t.rotation = Quaternion.Euler(0, i * 47.3f, 0);
                 Visible++;

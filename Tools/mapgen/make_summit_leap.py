@@ -54,12 +54,13 @@ def poly_d(q, p): return min(seg_d(q, a, b) for a, b in zip(p, p[1:]))
 DRIVE, LOT = 4729, 4887             # Kennesaw Mountain Drive (its end is the summit lot's entrance) and the lot's loop
 START_IN = 8.0                      # the run-up starts this far from the drive's end, toward the summit (off the drive and the loop's mouth)
 SUMMIT = None                       # found: the highest ground within 120 m of the ridge's top
-LIP_UNDER = 0.0                     # (Round 73 try 2) the lip this much under the summit's height: a gentler climb
-LIP_PAST = 50.0                     # the lip this far past the summit, on the line: the top's far edge, where the face begins to fall away
-ANG = 21.0                          # the lip's angle over the horizontal (Round 73 try 2 (14 deg, the lip lower): no longer flight, so 21 kept)
-R_KICK = 340.0                      # the kicker's radius (Round 68: past about 6.5 m/s2 at the lip's speed a car's body meets a ground kicker)
-TRACK_HALF, INRUN_HALF = 5.0, 6.5   # the run-up track's half width (10 m: a gravel track up the ridge), the in-run and kicker's
-SIDE_SLOPE = 1.25                   # cut and fill banks: 1.25 m out for every meter of cut or fill
+RUN_RAISE = float(os.environ.get("LEAP_RAISE", "0"))   # Round 74: the level run-up this much over the ground at the start
+LIP_PROUD = float(os.environ.get("LEAP_PROUD", "1.5"))  # Round 74: the lip this much over the face's ground just past it (a rock ledge, not a hump)
+ANG = float(os.environ.get("LEAP_ANG", "27"))           # the lip's angle over the horizontal (Round 73: 21; Round 74, Dan: "pitch the ramp a little higher")
+R_KICK = float(os.environ.get("LEAP_R", "260"))         # the kicker's radius (Round 68: past about 6.5 m/s2 at the lip's speed a car's body meets a ground kicker)
+TRACK_HALF, INRUN_HALF = 7.0, 9.0   # the run-up's half width (Round 74: 14 m, was 10), the in-run and kicker's (18 m, was 13)
+MAX_CUT = float(os.environ.get("LEAP_CUT", "22"))      # Round 74: the deepest cut through the summit (its banks clear of the drive)
+SIDE_SLOPE = 2.0                    # cut and fill banks: 2 m out for every meter of cut (Round 74: a broad saddle through the summit, was 1.25)
 CATCH_HALF = 28.0                   # the landing ground's half width
 CATCH_REL = 16.0                    # the catch steepened (where the ground is flatter) so a middle flight touches down this much shallower than it
 VEHICLES = {"Street Classic": (49.0, 14.5), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0)}   # (top m/s, push m/s2): Round 68's model
@@ -78,24 +79,42 @@ brg = math.atan2(SUMMIT[0] - E[0], SUMMIT[1] - E[1]); d = (math.sin(brg), math.c
 BRG = math.degrees(brg) % 360
 def P(s, lat=0.0): return (E[0] + d[0] * s + nl[0] * lat, E[1] + d[1] * s + nl[1] * lat)
 s_top = math.dist(E, SUMMIT)
+raw = raw_g = lambda s: ground(*P(s))
 
-# ---------------------------------------------------------------- the profile: a steady climb up the ridge from the start, curving up (the kicker) to
-# the lip at the summit's height LIP_PAST beyond it (the climb cuts a little through the peak; the lip's ledge stands over the face's first fall)
-y0 = ground(*P(START_IN)); s_lip = s_top + LIP_PAST; y_lip = y_summit - LIP_UNDER
-th1 = math.radians(ANG); g0 = math.atan((y_lip - y0) / (s_lip - START_IN))
-for _ in range(60):
-    Lk = max(0.0, R_KICK * (th1 - g0)); rise = sum(math.tan(g0 + (k + 0.5) / R_KICK) for k in range(int(Lk)))
-    s_kick_foot = s_lip - Lk; g0 = math.atan((y_lip - rise - y0) / (s_kick_foot - START_IN))
-S_, Y_, T_ = [], [], []
-for k in range(int(s_lip - START_IN) + 1):
-    s_ = START_IN + k
-    if s_ <= s_kick_foot: th = g0; y_ = y0 + math.tan(g0) * (s_ - START_IN)
-    else:
-        th = g0 + (s_ - s_kick_foot) / R_KICK
-        y_ = y0 + math.tan(g0) * (s_kick_foot - START_IN) + sum(math.tan(g0 + (q + 0.5) / R_KICK) for q in range(int(s_ - s_kick_foot)))
-    S_.append(s_); Y_.append(y_); T_.append(th)
+# ---------------------------------------------------------------- the profile
+# Round 74 (F, Dan, 2026-10-27, BUG-005 at the lip: "the end of the ramp makes you turn and lose momentum"; 03:13: "if we can get a larger run up that
+# would be good ... fun takes precedence over reality. The top of the mountain doesn't have to be exactly like the real thing. Also can't we pitch the
+# ramp a little higher?"): Round 73's run-up climbed 50 m (15 %) to a lip 18 m proud of the ground on fill (a hump with a 75 degree back face the
+# terrain drew jagged, and its sides blended into the slope unevenly: the turn at the lip). Now the run-up is LEVEL from the start (the climb was
+# what cost the speed: 32 m/s at the lip), cut through the summit's top as a broad saddle (gentle banks, SIDE_SLOPE), the kicker a steady curve up to
+# ANG, and the lip set where the face beyond the summit has fallen to it: flush with the ground (no fill, no back face), the face falling away
+# straight ahead. The in-run and kicker are level across their whole width (no side slope at the lip).
+y0 = ground(*P(START_IN)) + RUN_RAISE
+th1 = math.radians(ANG); Lk = R_KICK * th1; rise = R_KICK * (1 - math.cos(th1))
+# a level run-up through the summit would cut 43 m deep, its banks out over the drive (the race's lap, 50 to 90 m off): the run-up climbs instead at
+# the gentlest steady grade that keeps the cut through the summit within MAX_CUT (its banks clear of the drive; the drive kept off as before)
+def profile(g):
+    # the lip where the face past the summit has fallen to LIP_PROUD under it (solved with the kicker's foot on the climb)
+    s_lip_ = s_top + 20.0
+    for _ in range(40):
+        t0 = math.atan(g); Lk_ = R_KICK * (th1 - t0); y_lip_ = y0 + g * (s_lip_ - Lk_ - START_IN) + R_KICK * (math.cos(t0) - math.cos(th1))
+        s_new = next((float(x) for x in np.arange(s_top, s_top + 200, 0.5) if raw_g(x) <= y_lip_ - LIP_PROUD), s_top + 200)
+        if abs(s_new - s_lip_) < 0.3: break
+        s_lip_ = s_new
+    foot = s_lip_ - R_KICK * (th1 - math.atan(g)); S, Y, T = [], [], []
+    for k in range(int(s_lip_ - START_IN) + 1):
+        x = START_IN + k
+        if x <= foot: th = math.atan(g); y = y0 + g * (x - START_IN)
+        else:
+            u = (x - foot) / R_KICK; th = math.atan(g) + u; y = y0 + g * (foot - START_IN) + R_KICK * (math.cos(math.atan(g)) - math.cos(th))
+        S.append(x); Y.append(y); T.append(th)
+    return S, Y, T, foot, max(raw_g(x) - y for x, y in zip(S, Y))
+for gp in np.arange(0.0, 0.16, 0.0025):
+    S_, Y_, T_, s_kick_foot, worst = profile(gp)
+    if worst <= MAX_CUT: break
+g0 = math.atan(gp)
 s_lip, y_lip = S_[-1], Y_[-1]
-LEN_CLIMB = s_kick_foot - START_IN; CLIMB = math.tan(g0)
+LEN_CLIMB = s_kick_foot - START_IN; CLIMB = gp
 k_top = min(range(len(S_)), key=lambda i: abs(S_[i] - s_top)); s_crest, y_crest = s_top, Y_[k_top]
 
 # ---------------------------------------------------------------- speeds and flights
@@ -111,13 +130,12 @@ def flight(v, gfun):
         if x > 3 and yy <= gg + 0.3: break
     vyl = vy - 9.81 * t; fall = math.degrees(math.atan2(-vyl, vx))
     return dict(lip_speed=round(v, 1), air_s=round(t, 2), dist_m=round(x, 1), apex_over_ground_m=round(apex, 1), land_s=round(s_lip + x, 1), land_speed=round(math.hypot(vx, vyl), 1), fall_deg=round(fall, 1))
-raw = lambda s: ground(*P(s))
 # Round 73: the exe's lip speeds on this climb were 0.74 of this model's (the check: the Drifter Twin 32.2 m/s against 44.0, the Street Classic 27.9 against
 # 37.8, both flat out from the fast-travel spot): the flights are designed with the measured speeds
-CORR = float(os.environ.get("LEAP_CORR", "0.74"))
+CORR = float(os.environ.get("LEAP_CORR", "0.80"))   # Round 74: a level run-up (the quarry's: 0.79)
 speeds = {n: CORR * lip_speed(*tv) for n, tv in VEHICLES.items()}
 first = {n: flight(v, raw) for n, v in speeds.items()}
-land_lo = min(f["land_s"] for f in first.values()) - 60.0; land_hi = max(f["land_s"] for f in first.values()) + 60.0
+land_lo = min(f["land_s"] for f in first.values()) - 60.0; land_hi = max(f["land_s"] for f in first.values()) + 120.0   # Round 74: +120 (the model's speeds are low)
 
 # ---------------------------------------------------------------- the catch: the ground along the line smoothed, steepened where a flight would
 # touch down more than CATCH_REL degrees steeper than it (cut below the middle flight's touch-down, never filled more than 6 m), then smoothed again
@@ -134,7 +152,7 @@ cy2 = list(cy)
 for i in range(1, len(cs)):
     if not (land_lo - 40 <= cs[i] <= land_hi): continue
     lim = cy2[i - 1] - math.tan(math.radians(want[i])) * (cs[i] - cs[i - 1])
-    cy2[i] = max(min(cy2[i], lim), cy[i] - 10.0)
+    cy2[i] = max(min(cy2[i], lim), cy[i] - 16.0)   # Round 74: up to 16 m (was 10): a steeper catch for the steeper lip
 cy = gsm(cy2, 4.0)
 cat = lambda s: float(np.interp(s, cs, cy)) if CATCH_FROM - 40 <= s <= CATCH_TO else raw(s)
 flights = {n: flight(v, cat) for n, v in speeds.items()}
@@ -185,7 +203,7 @@ poly_l = [P(x, CATCH_HALF) for x in np.arange(CATCH_FROM, ARREST_FROM + 0.1, 10.
 zones = [{"id": "the summit leap's catch", "poly": flat(poly_l + poly_r[::-1])}]
 lip = P(s_lip)
 jump = {"id": "SL", "look": "overlook", "name": "the summit leap", "lip": [round(lip[0], 2), round(lip[1], 2)], "dir": [round(d[0], 5), round(d[1], 5)], "dig": [0.0, 0.0],
-        "lip_y": round(y_lip, 3), "angle_deg": ANG, "height": round(y_lip - raw(s_lip), 2), "kicker_m": round(s_lip - s_kick_foot, 1), "s_lip": round(s_lip, 1)}
+        "lip_y": round(y_lip, 3), "angle_deg": ANG, "height": round(y_lip - raw(s_lip), 2), "kicker_m": round(s_lip - s_kick_foot, 1), "s_lip": round(s_lip, 1), "bench": INRUN_HALF + 1.0}
 st = P(START_IN + 2.0)
 leap = {"id": "the summit leap", "arrester": flat([P(ARREST_FROM + (ARREST_TO - ARREST_FROM) * k / 3.0) for k in range(4)]), "arrester_half": CATCH_HALF - 4.0,
         "arrester_strength": ARREST_STRENGTH, "start": [round(st[0], 2), round(st[1], 2)], "start_yaw": round(BRG, 1), "track": flat(track),

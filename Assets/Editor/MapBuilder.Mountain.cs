@@ -23,7 +23,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class MountainJump { public string id, look, name; public float[] lip, dir, dig; public float lip_y, angle_deg, height, kicker_m, s_lip; }
+        [Serializable] class MountainJump { public string id, look, name; public float[] lip, dir, dig; public float lip_y, angle_deg, height, kicker_m, s_lip, bench; }   // bench (Round 74): the kicker's half width (0: 7 m)
         [Serializable] class MountainFile { public MountainJump[] jumps; }
         const string MountainTrackFile = "Data/tracks/kennesaw_mountain.json";
         static Ridge MountainNow;            // its graded lines, cleared and breakable lines, landing zones (the Chastain Ridge race's shape)
@@ -118,7 +118,7 @@ namespace ChastainRush
             {
                 var c = W(s, lat, show - r * 0.8f); mb.Tint = Shade(Granite, 0.62f + 0.3f * Hash01(seed + k, 4011)); Rock(mb, c, r, seed + k);
             }
-            const float Bench = 7f;
+            float Bench = j.bench > 0f ? j.bench : 7f;   // Round 74: the summit leap's kicker is 9 m each side (its boulders outside it)
             // the back face: from the lip down at 40 degrees to the ground (MakeMountain's profile), 'face' m long
             float face = Mathf.Max(1f, j.height / Mathf.Tan(40f * Mathf.Deg2Rad));
             float FaceY(float sx) => j.lip_y - Mathf.Tan(40f * Mathf.Deg2Rad) * sx;
