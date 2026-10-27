@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r, ground_ease_m, keep_off_fade; public int ground_first, ground_last; public bool open_ends; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r, ground_ease_m, keep_off_fade; public int ground_first, ground_last; public bool open_ends, legs; }   // Round 76: legs (GradeAlong: between two legs of the line, both legs' heights)   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -103,10 +103,15 @@ namespace ChastainRush
             bool halves = gr.halves != null && gr.halves.Length == p.Count;   // Round 62: a half width per point (the trail's bench narrower by the creek)
             bool blends = gr.blends != null && gr.blends.Length == p.Count;   // Round 68: a blend per point (both sides)
             float br = gr.blend_r > 0f ? gr.blend_r : gr.blend;
-            float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, Mathf.Max(sides ? gr.blend_left.Max() : 0f, blends ? gr.blends.Max() : 0f))), most = 0f; int n = 0;
+            float reach = (halves ? Mathf.Max(gr.half, gr.halves.Max()) : gr.half) + Mathf.Max(gr.blend, Mathf.Max(br, Mathf.Max(sides ? gr.blend_left.Max() : 0f, blends ? gr.blends.Max() : 0f))), most = 0f; int n = 0, legsN = 0;
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
             // Round 73 A2: never within keep_off_m of the keep_off line (Kennesaw Mountain Drive beside J1's bench: the drive keeps its own surface)
             var keep = gr.keep_off != null && gr.keep_off.Length >= 4 ? ToPoints(gr.keep_off) : null;
+            // Round 76 (C, Dan: no cliffs beside the Kennesaw race's lines): with 'legs', where the line comes back past itself (a switchback: another part
+            // of it much further along the line than across to it) a sample within both legs' banks takes both legs' heights, each by how near its bench
+            // (a bench keeps its own height exactly); the nearest leg alone left a step where the nearer leg changed, 5 to 11 m between legs 60 m apart
+            float[] S = null;
+            if (gr.legs) { S = new float[p.Count]; for (int i = 1; i < p.Count; i++) S[i] = S[i - 1] + (p[i] - p[i - 1]).magnitude; }
             // Round 62 (build speed: the Noonday Creek Trail's 2 km grades): the segments by 8 m cell, each sample asks only those near it (the same answer)
             const float Cell = 8f; var cells = new Dictionary<Vector2Int, List<int>>();
             for (int i = 0; i + 1 < p.Count; i++)
@@ -118,18 +123,47 @@ namespace ChastainRush
             }
             EditTerrain(terrain, area, (x, z, y) =>
             {
-                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend, half = gr.half; bool beyond = false;
+                var q = new Vector2(x, z); float best = float.MaxValue, target = y, blend = gr.blend, half = gr.half; bool beyond = false; int bi = -1; float bt = 0f;
                 if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(x / Cell), Mathf.FloorToInt(z / Cell)), out var near)) return y;
                 foreach (int i in near)
                 {
                     var ab = p[i + 1] - p[i]; float tr = Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(tr); float d = (p[i] + ab * t - q).magnitude;
                     if (d < best)
                     {
-                        best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
+                        best = d; target = Mathf.Lerp(gr.y[i], gr.y[i + 1], t); bi = i; bt = t;
                         beyond = gr.open_ends && (i == 0 && tr < 0f || i == p.Count - 2 && tr > 1f);   // Round 68: open ends (no flat disc behind the first point or past the last)
                         if (sides) { var v = q - p[i]; blend = ab.x * v.y - ab.y * v.x > 0f ? Mathf.Lerp(gr.blend_left[i], gr.blend_left[i + 1], t) : br; }   // > 0: on the left
                         if (halves) half = Mathf.Lerp(gr.halves[i], gr.halves[i + 1], t);
                         if (blends) blend = Mathf.Lerp(gr.blends[i], gr.blends[i + 1], t);
+                    }
+                }
+                // Round 76 (C): the other leg (legs only): its nearest point among the segments well along the line from the nearest one
+                float best2 = float.MaxValue, target2 = 0f, half2 = gr.half, blend2 = gr.blend;
+                if (S != null && bi >= 0)
+                {
+                    float s1 = Mathf.Lerp(S[bi], S[bi + 1], bt);
+                    foreach (int i in near)
+                    {
+                        var ab = p[i + 1] - p[i]; float t = Mathf.Clamp01(Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (p[i] + ab * t - q).magnitude;
+                        if (d >= best2 || Mathf.Abs(Mathf.Lerp(S[i], S[i + 1], t) - s1) <= Mathf.Max(60f, 3f * d)) continue;
+                        best2 = d; target2 = Mathf.Lerp(gr.y[i], gr.y[i + 1], t);
+                        half2 = halves ? Mathf.Lerp(gr.halves[i], gr.halves[i + 1], t) : gr.half; blend2 = blends ? Mathf.Lerp(gr.blends[i], gr.blends[i + 1], t) : gr.blend;
+                    }
+                }
+                if (best2 < half2 + blend2 && !beyond)
+                {
+                    float w1 = best <= half ? 1f : best >= half + blend ? 0f : Smooth01(1f - (best - half) / blend), w2 = best2 <= half2 ? 1f : Smooth01(1f - (best2 - half2) / blend2);
+                    float e1 = Mathf.Max(0f, best - half), e2 = Mathf.Max(0f, best2 - half2);
+                    float a1 = w1 / (e1 + 1e-3f), a2 = w2 / (e2 + 1e-3f);
+                    if (a1 + a2 > 1e-6f)
+                    {
+                        float wm = 1f - (1f - w1) * (1f - w2), tm = (a1 * target + a2 * target2) / (a1 + a2);
+                        if (keep != null)
+                        {
+                            float dk = float.MaxValue; for (int i = 0; i + 1 < keep.Count; i++) dk = Mathf.Min(dk, SegDist(q, keep[i], keep[i + 1]));
+                            wm *= Smooth01((dk - gr.keep_off_m) / (gr.keep_off_fade > 0f ? gr.keep_off_fade : 1.5f)); if (wm <= 1e-3f) return y;
+                        }
+                        float ny2 = y + wm * (tm - y); most = Mathf.Max(most, Mathf.Abs(ny2 - y)); n++; legsN++; return ny2;
                     }
                 }
                 if (best >= half + blend || beyond) return y;
@@ -143,7 +177,7 @@ namespace ChastainRush
                 float ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;
             });
-            Debug.Log($"[Round40] {gr.id}: graded along {p.Count} points, {gr.half * 2f:0} m wide; {n} samples moved, by up to {most:0.00} m");
+            Debug.Log($"[Round40] {gr.id}: graded along {p.Count} points, {gr.half * 2f:0} m wide; {n} samples moved, by up to {most:0.00} m" + (gr.legs ? $"; {legsN} between two legs (Round 76)" : ""));
         }
 
         static void BuildRidge(TerrainGrid terrain, Materials mats, Transform world, Ridge ridge)

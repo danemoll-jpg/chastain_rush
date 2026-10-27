@@ -512,15 +512,10 @@ EDGE_SLOPE = SIDE_SLOPE   # (the lines' own 1.25: only where it is measured chan
 # (never onto a road or a trail beside the line: bank_room.py; Kennesaw Mountain Drive is the race's climb, the park's trails lie on their ground)
 from bank_room import ways_room
 _room_ways = ways_room(m, g_pts)
-# (and never past the middle between two legs of the lines: GradeAlong takes the nearest leg's height, so two legs' banks overlapping left a step where
-# the nearest leg changes, up to 12 m between legs 40 m apart at different heights)
-_G = np.array(g_pts); _idx = np.arange(len(g_pts))
+# Round 76 (C): no longer stopped at the middle between two legs (Round 75): the map build now takes both legs' heights between two legs of the
+# line (the grade's "legs", GradeAlong), so each bank reaches its full width over the middle and the two meet in one slope
 def _room(q, i=None):
-    r = _room_ways(q)
-    if i is not None:
-        d = np.hypot(_G[:, 0] - q[0], _G[:, 1] - q[1]); d[np.abs(_idx - i) <= 40] = 1e9
-        r = min(r, float(d.min()) / 2.0)
-    return r
+    return _room_ways(q)
 def edge_blend(i):
     q = g_pts[i]; a = g_pts[max(0, i - 1)]; c = g_pts[min(len(g_pts) - 1, i + 1)]
     dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1.0; nx, nz = -dz / L, dx / L
@@ -548,7 +543,7 @@ KEEP_FROM_M = 8.0   # (the drive keeps its own surface, its width and a meter mo
 _ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= KEEP_FROM_M)])[1]
 keep_off = flat(resample(cut(road, _ks - 4.0, None), 4.0))
 grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
-           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.0, "keep_off_fade": 10.0}]
+           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "legs": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.0, "keep_off_fade": 10.0}]
 print(f"the grade: its first {g_first} and last {g_last} points on the drive take the built drive's height")
 clear = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": CLEAR_HALF}]
 breaks = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": BREAK_HALF}]
