@@ -129,7 +129,8 @@ namespace ChastainRush
             var gm = new MeshBuilder(); gm.Tint = Gravel;
             var run = f.grades != null && f.grades.Length > 0 ? ToPoints(f.grades[0].points) : new List<Vector2>();
             var lip = new Vector2(f.jump.lip[0], f.jump.lip[1]);
-            var onTrack = run.Where(q => (q - lip).magnitude > f.jump.kicker_m + 4f && Vector2.Dot(q - lip, new Vector2(f.jump.dir[0], f.jump.dir[1])) < 0f).ToList();
+            // (from 12 m up the track: its first meters run over the bank beside the drive, which the grade leaves as it was to keep the drive whole)
+            var onTrack = run.Where(q => (q - lip).magnitude > f.jump.kicker_m + 4f && Vector2.Dot(q - lip, new Vector2(f.jump.dir[0], f.jump.dir[1])) < 0f).Skip(6).ToList();
             if (onTrack.Count >= 2) RibbonGrid(gm, onTrack, Enumerable.Repeat(7f, onTrack.Count).ToArray(), 0.06f, terrain, 4);
             var back = f.leap.track != null ? ToPoints(f.leap.track) : new List<Vector2>();
             if (back.Count >= 2) RibbonGrid(gm, back, Enumerable.Repeat(5f, back.Count).ToArray(), 0.06f, terrain, 3);
