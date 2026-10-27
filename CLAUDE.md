@@ -219,6 +219,10 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
       look right (no blocks, nothing buried, nothing floating, nothing across the road)? List what a first-time player sees and where it
       went wrong.
   (3) The status says, per item, what was looked at and what it showed. "Checked by script" alone is not done.
+- **CLEAN UP THE DISK AT THE END OF EVERY ROUND (Dan, 2026-10-27, Round 76: "every round we would have some clean up so it didn't take
+  up so much space on the computer").** After the round's final build: `python Tools/cleanup_round.py` (only the player build kept, the
+  ChastainRushDev profiling build deleted, local/ trimmed to the last three rounds' check output plus what a rule or script names and what
+  Dan put there, Temp/ and Library/BuildHistory gone, git gc). The status gives the disk use before / after in one line.
 - Dan starts a fresh planning chat every few rounds: `TODO.md` carries the state, so it must always say where things are.
 
 ## Commands
