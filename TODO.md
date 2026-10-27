@@ -108,6 +108,61 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 76, MARIETTA SQUARE: ONE MORE SMALL PIECE OF MAP; the Kennesaw cut faces; disk clean-up (Dan, 2026-10-27 16:09, with a Google map of downtown
+Marietta: `local/reference_photos/extension/marietta_square_area.png`, reference only, never traced).** Round 75 is reviewed. Item 0 (CHECK IT AS
+DAN PLAYS IT) applies. Quick builds while working; ONE full Build Map at the end. Short results.
+A. THE AREA. Dan: "there is just a little more area that I want to add. We got so close to it, and I think it would be a great little area to
+   have. If it comes down to it, I'd rather have this than some of the expansive wooded areas we have but prefer if we could just add this one
+   little section." His map: Marietta Square and the blocks round it: Glover Park in the square, the Marietta Cobb Museum of Art, Marietta
+   Square Market, Church / Cherokee / Lemon / Fort / Lawrence / Washington / Roswell Streets, Lawrence Street Park, Fairground Street, the
+   120A loop (North / South Marietta Parkway) round the west side, out to about Cobb Parkway / Barnes Mill Road on the east; south to about
+   Chester / Waterman Streets. The square sits roughly 33.953 N, -84.550 W, just south of the map's south edge (33.95632). So:
+   (1) ONLY THIS SECTION: add the tiles that take in downtown Marietta (Round 59 / 61's way: new land beyond the edge, nothing that exists
+       moves, the 3DEP tile(s) south fetched and joined), not a strip along the whole south edge. Code sets the bounds from OSM (the square,
+       the blocks round it, the loop, with a margin) and says them; the map's edge goes round the new piece (Round 66's scenery ring,
+       closures, the helicopter / plane boundary all follow the new edge).
+   (2) If memory or frame rate really needs it, trim the far scenery or an outlying wooded corner of the playable map instead (Dan prefers
+       this over some expansive woods), but try first to just add it; say what was traded, if anything.
+B. MARIETTA SQUARE MADE TO LOOK LIKE ITSELF (as Town Center, Round 60): Glover Park in the middle (lawn, big trees, paths, the gazebo /
+   bandstand, the fountain, benches, lamp posts, a few people); the square's historic two- and three-story brick storefronts all round, with
+   awnings, shop windows and signs (names faked), the old theater's marquee on the square (fake name), the railroad along the square's west
+   side with its old depot; Marietta Square Market (a food hall), the museum (a classic columned building), churches nearby; on-street
+   parking, crosswalks, brick sidewalks; the neighborhoods round it as generated, with the game's houses. Breakables as elsewhere (benches,
+   planters, signs, lamp posts, café tables). A fast-travel spot "Marietta Square". Traffic, police, people, the map / minimap / street names,
+   the exploration fog, all extended. No race this round (a downtown race could come later).
+C. THE KENNESAW CUT FACES (Round 75 C's open item; Dan flagged the same kind of drop-off as wrong, Claude recommends doing it): the 66 faces of
+   5 to 11 m beside the Kennesaw race's lines (`bank_scan_after.txt`) where two legs at different heights pass about 40 m apart or a bank is
+   held off the drive: blend the ground between the two lines' heights into smooth slopes (no cliffs), the drive and the trails untouched,
+   the race's lines and jumps unchanged (lap times before / after). Pictures of the worst five before / after.
+D. DISK SPACE: A CLEAN-UP AT THE END OF EVERY ROUND (Dan, 16:13: "I noticed that this is taking about 40 gbs of space. I know with Woodstock
+   Rush, every round we would have some clean up so it didn't take up so much space on the computer. Is this possible here as well?").
+   Claude measured (2026-10-27): Builds 10.2 GB (the player build 5.1 GB AND the ChastainRushDev profiling build 5.1 GB), Assets/Generated
+   8.1 GB, local/ 5.7 GB (old rounds' check output: local/round17 to round75, r69perf 0.7 GB, determinism ...), raw/ 2.2 GB, .git 1.4 GB,
+   Data/screenshots 0.45 GB, Library / Temp too big to measure quickly.
+   (1) This round: clean up now and report the space before / after per folder. Delete: Builds/ChastainRushDev (rebuilt only when a round
+       needs profiling, then deleted again); local/'s old round folders and scratch (keep the last three rounds' and everything Dan put
+       there or a rule names: reference_photos, owner_*.json, debug_reports, race_records, bump_log); Temp/; stale Unity caches in Library
+       that Unity safely regenerates (say which; never the import cache unless a rebuild is planned anyway); git's own housekeeping (git gc).
+       Keep: raw/ (the map's source data), Assets/Generated (the built world), Data/ (committed), the player build.
+   (2) A STANDING RULE (copy into CLAUDE.md "Process"): every round ends with that clean-up after its final build (only the player build
+       kept, local/ trimmed to the last three rounds, temp files gone) and its status gives the disk use before / after in one line.
+Check: item 0; numbers before / after (build time, memory, frame rate in the old neighborhood, Town Center and the square); drive from
+Chastain Glen to the square along the roads; pictures of the square from the park, each side of the square, the depot and the market.
+For Dan to check: drive and fly to Marietta Square; Glover Park and the storefronts; frame rate; the Kennesaw slopes; the disk space freed.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 75
+**Reviewed: Dan tested it 2026-10-27 ("I don't have much feedback on the things I tested"); the quarry jumps not yet seen.**
 **Round 75, STREET AND AIR RACES IN RACE SETUP (THE GARAGE THAT FOLLOWS), THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS BACK, a drop-off
 (Dan, 2026-10-27 12:04; report BUG-001 of session `2026-10-27_11-27-43-992_53ef4c`, read by Claude, after the Round 74 build).** Round 74 is reviewed. Item 0
 (CHECK IT AS DAN PLAYS IT) applies to every item. Quick builds; ONE full Build Map at the end. Short results.
@@ -154,18 +209,7 @@ B clouds DONE. Round 74's rise is undone; within 260 m of the camera a cloud bre
 C DONE at Dan's spot, PARTLY elsewhere (tuning limit). Cause: the summit leap's run-out ended in a 56 m-wide shelf 3.8 m above the start of its track (the grade's open end). Now the run-out eases 46 m down and narrows to the track's width, and the track starts at the run-out's height (`75_BUG-001_after`, `_from_the_track`: a smooth slope; steepest within 40 m 1.25 m in 1 m, at (-1239, -6372)). The banks are sized from the ground at their own edge, held 2 m off every road and trail, and stop at the middle between two legs of the race line. The catch's side faces went from 9 m to 3 to 6 m. Still there: faces of 5 to 11 m beside the Kennesaw race's lines, where two legs at different heights pass about 40 m apart and where the banks are held off the drive (`bank_scan_after.txt`: 66 spots; before: 67). Fixing those means the build blending between two lines' heights (GradeAlong takes the nearest line's), which touches every graded line: Dan to decide.
 For Dan to check: race setup Street / Air and the garage both ways, the Sky Dart in an air race; the map at Town Center, the pools and the stunt park, street names zoomed in, the minimap's street; the clouds at the summit leap; the slope at his spot; whether to take on the faces beside the Kennesaw race's lines.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 74
+## Previous delivery 2: Round 74
 **Reviewed: Dan checked everything but the quarry 2026-10-27 11:27 to 12:04: "The only thing is that the garage is still kind of broken" (Round 75 A); the fork barriers no complaint. The quarry not yet seen.**
 **Round 74, THE PLANE'S GARAGE AND LOOKS, CONTROLS SHOWN FOR THE DEVICE IN USE, STEADY ARROWS; the quarry jumps' lanes, a turn-off on
 Kennesaw, the summit leap's lip (Dan, 2026-10-27 03:06; reports BUG-002 to BUG-005 of session `2026-10-27_02-23-23-098_3e251a` (BUG-001 was sent by mistake),
@@ -249,7 +293,7 @@ I DONE / PARTLY. The Highway Air Race (`make_highway_air_route.py`, 19 km, 16 ri
 J DONE. The airport's runways, taxiways and aprons as concrete with runway markings, parking lots as asphalt (`74_map_airport`); the Mall's own lots (built by the map build) still grass on the map.
 For Dan to check: the planes (both, the garage, the pilot through the glass, a replay); the highway air race; the summit leap on the Drifter Twin; the quarry from the boxes and the LANDING boards; the AI on Hard on Kennesaw and Lakes; the map with the pad and the keys.
 
-## Previous delivery 2: Round 73
+## Previous delivery 3: Round 73
 **Reviewed: Dan played the Round 73 build 2026-10-27 02:23 to 03:06; his notes are Round 74.**
 **Round 73, PUT RIGHT WHAT DAN FOUND, AND CHECK IT THE WAY HE PLAYS (Dan, 2026-10-26 19:04; reports BUG-001 to BUG-006 of session `2026-10-26_18-37-35-665_130b58`,
 read by Claude, after the Round 70 to 72 build).** Dan: "that's a lot of work for a bunch of junk. Really not happy with anything I tested.
@@ -340,42 +384,6 @@ C4 PARTLY. One straight line per jump: smooth run-up lane, kicker clear of the s
 C5 NOT DONE. Built and tried, then taken out: the haul road crosses the lane so a racer skipped The Corner's loop, and the AI and the human-like driver got stuck there (56 resets). `make_quarry_track.py` kept, not built (output in `local/round73/quarry_track_unbuilt/`). Options for Dan: a course on the jumps drive and haul roads with the crossing closed, or checkpoints at the three start boxes only.
 Not run: the AI race on every car course (only the barrier sweep). Imported from Racer: nothing.
 For Dan to check: Kennesaw race start and CP5 drive; the drive in Free Roam both ways; the summit leap (is shorter OK?); the Air Race with the arrow; the quarry jumps by fast travel and from the sign; J3 on a bike; the crowd; reset anywhere.
-
-## Previous delivery 3: Round 72
-**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
-**Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
-while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
-AFTER ROUND 71 IS DONE AND COMMITTED, without waiting for Dan; he is away all day: decide, write it down, go on.** Quick builds while
-working; ONE full Build Map at the end. Standing rules (real physics off every ramp; nothing slows a car on a ramp; landings clean).
-Tuning limit. Short results.
-A. THE QUARRY JUMPS (Free Roam events, the stunt park's family). Big steel stunt ramps on the quarry's rim, Evel Knievel style: a long
-   straight run-up lane, a tall ramp with a starting gantry (stars and stripes bunting fine, no real names / brands), a landing ramp on the
-   far side across the quarry lake, a crowd in bleachers, a PA voice-free fanfare. Three jumps of rising size (Code designs them from the
-   flight, as Round 68): a short one across a corner of the lake, a long one across the middle, and THE BIG ONE across the widest part (the
-   longest jump in the game after the mountain ramp, Round 70 A). Miss the landing ramp and you're in the lake (the game's water: reset).
-   Scored events: distance, height, landing (clean / rough / crash), with Top 10 records per jump; a run-up countdown start; a replay of
-   the jump (Round 57's replays: the TV cameras placed for the flight). Rewards / unlocks: none yet (the campaign is held). Fast travel to
-   the quarry's start gantry. Reachable by any ground vehicle, including bikes and stunt vehicles; flying vehicles not in the events.
-B. KNOWN FIXES (found by Code in earlier rounds, not yet asked for by Dan; small):
-   B1. Three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on Kennesaw Mountain Drive at
-       (-500, -5320) (Rounds 67, 68): find and fix.
-   B2. Canton Road's three map-edge closures (Round 66): a car can end up on top of the barriers; make them impossible to climb.
-   B3. Round 64 C's junction levelling: drives with air over 0.15 s went up; find the worst junctions in the jolt table and smooth them.
-   B4. Round 68's J2 kicker: the Drifter Twin flat out loses 12 m/s on its top; ease it without shrinking the jump (no more than two tries).
-Check: each jump flown flat out on the Drifter Twin, the Street Classic, a bike and a stunt vehicle (distance, air, landing), short (into
-the lake, reset), and the scoring and records; B1 to B4 before / after. Pictures: the three ramps from the run-up, mid-air over the lake,
-the crowd, the landing.
-For Dan to check: jump the quarry (all three); the four fixes.
-
-**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round72/` (`round72_check_final.txt`, `round72_check_short_replay.txt`, `round72_b*.txt`, `72_*.png`, `72_flights_profile.png`).
-A DONE. Three steel kickers on Viking Quarry's south rim, run-ups from the airport's ground (graded smooth, 240 to 380 m), landing decks across the lake sloped a little shallower than the flights (catch zones), run-outs graded, bleachers with 747 people, start gantries with stars-and-stripes bunting and countdown lamps (`Tools/mapgen/make_quarry_jumps.py`, `MapBuilder.QuarryJumps.cs`, event `Stunts/QuarryJumps.cs`). The vehicles' speeds at a lip differ too much (47 to 57 m/s flat out) for one landing deck to catch them all, so each jump has Evel Knievel's speed check: a lip speed window on the HUD (The Corner 82-88 mph, The Long One and The Big One 93-100 mph), green inside it; too slow is short (lake or pit), too fast overshoots. Stop in the gantry's box facing the ramp: fanfare, 3-2-1-GO on the lamps. Scored: distance, height over the lip, air time, landing CLEAN / ROUGH / CRASH / SHORT / SPLASH; Top 10 per jump by distance (`quarry-jumps-v1.json` beside the records); short or crashed: back at the gantry after 3 s; L3 / K watches the jump's replay (TV cameras on the rims, the kicker, the landing deck). Fast travel "Viking Quarry: <jump>" to each gantry. Flying vehicles not in the events.
-   Flights at the window's middle (Street Classic, Drifter Twin, Needle 600, Skywhip 250 all CLEAN): The Corner 166-172 m, 5.1 s; The Long One 203-209 m, 5.1 s; The Big One 245-246 m, 6.4 s (the longest after the summit ramp). Flat out (Drifter Twin, outside the window): 244 m rough, 247 m clean, 338 m crash. Short (68 mph at The Corner): into the lake, back at the gantry. Replay opens (5 TV cameras). The air race's line re-probed with the ramps up: clear, a clean lap.
-B1 NOT REPRODUCED. Longroof GT, Highball Fastback, Skyfin Cruiser and the Street Classic driven round the Kennesaw lap: no hard stop anywhere (Round 70's widened J1 bench at that spot is the likely cure); nothing changed.
-B2 PARTLY. Canton Road's edge closures (and the service road beside one) get 7 m more barrier past each shoulder, solid to 4 m: 221 -> 222 of 224 closures now stop the car (the service road fixed); the check still reads the car 13 m and 50 m past the middle at Canton Road's north and east closures, though the picture shows it stopped at the barricades (`66_closure_*.png`). One try (tuning limit not used up; left for Dan to look at).
-B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred after the levelling (`Data/tracks/round72_junctions.json`): air at 28 m/s Barrett at the I-575 ramp 0.96 -> 0.72 s, Frey Road 0.74 -> 0.56 s (jolt 3.9 -> 1.8), Busbee at Townpark 1.12 -> 0.24 s, McCollum at Cobb Parkway 0.54 -> 0.42 s, North Marietta 0.48 -> 0.26 s; unchanged: Chastain Road at Busbee 0.78 s, Cobb Parkway North 1.20 s.
-B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
-Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
-For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

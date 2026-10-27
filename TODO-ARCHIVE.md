@@ -6658,3 +6658,41 @@ D DONE. Race setup: Route "Quarry Air Race" puts on the Sky Hopper; Opponents "3
 E DONE. Records / Top 10 per vehicle (time trial: Top 10 #2), clean-lap ghost saved and flown on the next run, replays (TV cameras placed in the air for a plane), the map and minimap show the rings, the loading screen's inset, finish screen, COMPLETE RACE (generic).
 Builds: one full Build Map (06:03), then a quick build for the route's line after C1 and a code-only exe for the AI's dips; `Builds/ChastainRush/` 2026-10-26 07:08. Imported from Racer: nothing.
 For Dan: (a) C1 under I-75 is tight on purpose (about 1.5 m to spare at the deck); say if it should be easier; (b) the AI's pace against yours; (c) the lap's length (2:33).
+
+## Round 72 (moved from TODO.md on 2026-10-27 when Dan reviewed Round 75; word for word)
+
+## Previous delivery 3: Round 72
+**Reviewed: Dan tested the Round 70 to 72 build 2026-10-26 18:37: "that's a lot of work for a bunch of junk. Really not happy with anything I tested." His notes are Round 73.**
+**Round 72, EVEL KNIEVEL JUMPS AT VIKING QUARRY LAKE, and four known fixes (Dan, 2026-10-26 07:17: picked "Quarry stunt jumps" to run
+while he is at jury duty; his idea 2026-10-25 02:11: "stunt races that have large ramps to jump you over evel knievel style"). START RIGHT
+AFTER ROUND 71 IS DONE AND COMMITTED, without waiting for Dan; he is away all day: decide, write it down, go on.** Quick builds while
+working; ONE full Build Map at the end. Standing rules (real physics off every ramp; nothing slows a car on a ramp; landings clean).
+Tuning limit. Short results.
+A. THE QUARRY JUMPS (Free Roam events, the stunt park's family). Big steel stunt ramps on the quarry's rim, Evel Knievel style: a long
+   straight run-up lane, a tall ramp with a starting gantry (stars and stripes bunting fine, no real names / brands), a landing ramp on the
+   far side across the quarry lake, a crowd in bleachers, a PA voice-free fanfare. Three jumps of rising size (Code designs them from the
+   flight, as Round 68): a short one across a corner of the lake, a long one across the middle, and THE BIG ONE across the widest part (the
+   longest jump in the game after the mountain ramp, Round 70 A). Miss the landing ramp and you're in the lake (the game's water: reset).
+   Scored events: distance, height, landing (clean / rough / crash), with Top 10 records per jump; a run-up countdown start; a replay of
+   the jump (Round 57's replays: the TV cameras placed for the flight). Rewards / unlocks: none yet (the campaign is held). Fast travel to
+   the quarry's start gantry. Reachable by any ground vehicle, including bikes and stunt vehicles; flying vehicles not in the events.
+B. KNOWN FIXES (found by Code in earlier rounds, not yet asked for by Dan; small):
+   B1. Three heavy cars (Longroof GT, Highball Fastback, Skyfin Cruiser) stop hard at 36 to 39 m/s on Kennesaw Mountain Drive at
+       (-500, -5320) (Rounds 67, 68): find and fix.
+   B2. Canton Road's three map-edge closures (Round 66): a car can end up on top of the barriers; make them impossible to climb.
+   B3. Round 64 C's junction levelling: drives with air over 0.15 s went up; find the worst junctions in the jolt table and smooth them.
+   B4. Round 68's J2 kicker: the Drifter Twin flat out loses 12 m/s on its top; ease it without shrinking the jump (no more than two tries).
+Check: each jump flown flat out on the Drifter Twin, the Street Classic, a bike and a stunt vehicle (distance, air, landing), short (into
+the lake, reset), and the scoring and records; B1 to B4 before / after. Pictures: the three ramps from the run-up, mid-air over the lake,
+the crowd, the landing.
+For Dan to check: jump the quarry (all three); the four fixes.
+
+**Status (Claude, 2026-10-26): built and checked in the exe by script, not yet driven by Dan.** Evidence `Data/screenshots/round72/` (`round72_check_final.txt`, `round72_check_short_replay.txt`, `round72_b*.txt`, `72_*.png`, `72_flights_profile.png`).
+A DONE. Three steel kickers on Viking Quarry's south rim, run-ups from the airport's ground (graded smooth, 240 to 380 m), landing decks across the lake sloped a little shallower than the flights (catch zones), run-outs graded, bleachers with 747 people, start gantries with stars-and-stripes bunting and countdown lamps (`Tools/mapgen/make_quarry_jumps.py`, `MapBuilder.QuarryJumps.cs`, event `Stunts/QuarryJumps.cs`). The vehicles' speeds at a lip differ too much (47 to 57 m/s flat out) for one landing deck to catch them all, so each jump has Evel Knievel's speed check: a lip speed window on the HUD (The Corner 82-88 mph, The Long One and The Big One 93-100 mph), green inside it; too slow is short (lake or pit), too fast overshoots. Stop in the gantry's box facing the ramp: fanfare, 3-2-1-GO on the lamps. Scored: distance, height over the lip, air time, landing CLEAN / ROUGH / CRASH / SHORT / SPLASH; Top 10 per jump by distance (`quarry-jumps-v1.json` beside the records); short or crashed: back at the gantry after 3 s; L3 / K watches the jump's replay (TV cameras on the rims, the kicker, the landing deck). Fast travel "Viking Quarry: <jump>" to each gantry. Flying vehicles not in the events.
+   Flights at the window's middle (Street Classic, Drifter Twin, Needle 600, Skywhip 250 all CLEAN): The Corner 166-172 m, 5.1 s; The Long One 203-209 m, 5.1 s; The Big One 245-246 m, 6.4 s (the longest after the summit ramp). Flat out (Drifter Twin, outside the window): 244 m rough, 247 m clean, 338 m crash. Short (68 mph at The Corner): into the lake, back at the gantry. Replay opens (5 TV cameras). The air race's line re-probed with the ramps up: clear, a clean lap.
+B1 NOT REPRODUCED. Longroof GT, Highball Fastback, Skyfin Cruiser and the Street Classic driven round the Kennesaw lap: no hard stop anywhere (Round 70's widened J1 bench at that spot is the likely cure); nothing changed.
+B2 PARTLY. Canton Road's edge closures (and the service road beside one) get 7 m more barrier past each shoulder, solid to 4 m: 221 -> 222 of 224 closures now stop the car (the service road fixed); the check still reads the car 13 m and 50 m past the middle at Canton Road's north and east closures, though the picture shows it stopped at the barricades (`66_closure_*.png`). One try (tuning limit not used up; left for Dan to look at).
+B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred after the levelling (`Data/tracks/round72_junctions.json`): air at 28 m/s Barrett at the I-575 ramp 0.96 -> 0.72 s, Frey Road 0.74 -> 0.56 s (jolt 3.9 -> 1.8), Busbee at Townpark 1.12 -> 0.24 s, McCollum at Cobb Parkway 0.54 -> 0.42 s, North Marietta 0.48 -> 0.26 s; unchanged: Chastain Road at Busbee 0.78 s, Cobb Parkway North 1.20 s.
+B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
+Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
+For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
