@@ -153,6 +153,9 @@ if math.dist(lap[0], lap[-1]) > 0.5: lap.append(lap[0])
 C = cum(lap); L = C[-1]
 def S(q): d_, i_, t_ = nearest(lap, q); return C[i_] + t_ * (C[i_ + 1] - C[i_])
 
+# the start / finish line 30 m up The Long One's run-up (Round 73, the check: at the box itself the grid stood on the line's own plane and the
+# player turned up the run-up outside it: the clock never started)
+GATE_S = 30.0
 # ---------------------------------------------------------------- checkpoints (half widths small where the two lanes run side by side)
 CPS = [(jp(J2, 200.0), "The Long One's run-up", 12.0), (jp(J2, J2["land_s"][-1] + 40.0), "the north bench", 16.0),
        (first[len(first) // 2], "the haul road", 9.0), (right[len(right) // 3], "the haul road's top", 5.0), (right[int(len(right) * .8)], "the plateau", 5.0),
@@ -217,14 +220,16 @@ route = {
     "gate_half_width_m": 14.0, "checkpoint_half_width_m": 12.0, "gate_below_m": 6.0, "gate_above_m": 90.0, "reverse_grid_back_m": 45.0,
     "ai_hill_targets": [50.0, 50.0, 50.0], "ai_crest_g": [30.0, 40.0, 50.0],
     "source": "Tools/mapgen/make_quarry_track.py (Round 73 C5): The Long One and The Corner (Data/tracks/quarry_jumps.json), the pit's haul road (OSM 2525) as two lanes, road 821, the quarry jumps drive. Coordinates are map meters (= Unity x, z); heights come from the world.",
-    "lap_length_m": round(L, 1), "loop": flat(lap), "gate_s": 0.0,
-    "lead_in": flat(resample([lap[k] for k in range(len(lap)) if C[k] >= L - 72.0], 2.0)), "lead_in_length_m": 70.0,
+    "lap_length_m": round(L, 1), "loop": flat(lap), "gate_s": GATE_S,
+    "lead_in": flat(resample([lap[k] for k in range(len(lap)) if C[k] >= L - 72.0], 2.0)), "lead_in_length_m": 70.0,   # (ends at the loop's start, the box: the line is 30 m on)
     "checkpoints": cps, "junctions": [{"s": c["junction_s"], "roads": [c["road"]], "pos": c["contact"]} for c in closures],
     "loop_pieces": [{"osm_id": 0, "name": "the quarry track", "reverse": False, "length_m": round(L, 1)}],
     "official_shortcuts": [], "closures": closures, "closure_stubs_not_barred": [], "ai_zones": zones,
     "ai_widths": [{"id": "the haul road's lanes", "s0": round(S(right[0]), 1), "s1": round(S(right[-1]), 1), "half": 3.0},
                   {"id": "the haul road's lanes again", "s0": round(S(left[0]), 1), "s1": round(S(left[-1]), 1), "half": 3.0}],
-    "reset_skip": [],
+    # a reset anywhere from a jump's lip to past its landing deck's catch: on the run-out past it (never on the bank face under the flight)
+    "reset_skip": [{"id": f"{j['id']} {j['name']}", "s0": round(S(jp(j, j["lip_s"])) - 2.0, 1), "s1": round(S(jp(j, j["land_s"][-1] + 30.0)), 1),
+                    "to_s": round(S(jp(j, j["land_s"][-1] + 45.0)), 1)} for j in (J2, J1)],
 }
 track = {"note": "Round 73 (C5): the Quarry Track's world pieces, from Tools/mapgen/make_quarry_track.py; merged into the mountain's planning by "
                  "MapBuilder.QuarryJumps.cs. Coordinates are map meters (= Unity x, z).",

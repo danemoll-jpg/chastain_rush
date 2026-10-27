@@ -625,6 +625,10 @@ namespace Racer
             // 15 m of where it last stuck (put back in the same trap, between two blockages 10 m apart): this time only further on, 20 m and more
             bool again=Mathf.Abs(current-lastRecoverStation)<15f&&Time.time-lastRecoverTime<40f;
             lastRecoverStation=current; lastRecoverTime=Time.time;
+            // Chastain Rush, Round 73 (the Quarry Track's check: three AI riders short at The Long One, put back again and again on the bank face under the
+            // flight): the route's reset-skip stretches (a jump from its lip to past its landing) put the AI past them, as CarRecovery does the player
+            var rr=RaceRoute.Active; var skips=rr==null||rr.Data==null?null:rr.OwnReverse?rr.Data.reset_skip_rev:!rr.Reverse?rr.Data.reset_skip:null;
+            if(skips!=null) foreach(var k in skips) if(current>=k.s0&&current<=k.s1){current=k.to_s;again=false;break;}
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
