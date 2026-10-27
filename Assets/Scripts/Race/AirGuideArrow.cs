@@ -10,7 +10,8 @@ namespace ChastainRush
     // Only in an air race while it runs (RaceController.Target: past a missed ring, the next one).
     public sealed class AirGuideArrow : MonoBehaviour
     {
-        public const float Ahead = 15f, Up = 3.6f;   // where it floats: this far ahead of the camera, this far up the screen
+        public const float Ahead = 14f, Up = -4.2f;  // where it floats: this far ahead of the camera, this far below the middle of the view (seen from a little
+                                                     // above, so it reads as an arrow even when the ring is straight ahead: the check's first picture showed its back)
         Transform arrow; Material mat;
 
         void Build()
@@ -21,18 +22,13 @@ namespace ChastainRush
             mat.renderQueue = 4000;
             arrow = new GameObject("Air guide arrow").transform; arrow.SetParent(transform, false);
             var mesh = new Mesh { name = "Air guide arrow" };
-            // along +z: a square shaft 0.5 x 0.5 from z -1.8 to 0.4, a four-sided head 1.7 wide from z 0.4 to 2.2
+            // along +z, lying flat (its top up): a broad chevron 3.6 m wide and 4.4 m long, 0.35 m thick, its notch at the back
             var v = new System.Collections.Generic.List<Vector3>(); var t = new System.Collections.Generic.List<int>();
-            void Quad(Vector3 a, Vector3 b, Vector3 c, Vector3 d) { int i = v.Count; v.Add(a); v.Add(b); v.Add(c); v.Add(d); t.AddRange(new[] { i, i + 1, i + 2, i, i + 2, i + 3, i, i + 2, i + 1, i, i + 3, i + 2 }); }
+            var outline = new[] { new Vector3(0f, 0f, 2.4f), new Vector3(1.8f, 0f, -1.4f), new Vector3(0f, 0f, -.4f), new Vector3(-1.8f, 0f, -1.4f) };
+            const float th = .35f;
             void Tri(Vector3 a, Vector3 b, Vector3 c) { int i = v.Count; v.Add(a); v.Add(b); v.Add(c); t.AddRange(new[] { i, i + 1, i + 2, i, i + 2, i + 1 }); }
-            float w = .25f, z0 = -1.8f, z1 = .4f, hw = .85f, z2 = 2.2f;
-            Quad(new Vector3(-w, -w, z0), new Vector3(w, -w, z0), new Vector3(w, -w, z1), new Vector3(-w, -w, z1));
-            Quad(new Vector3(-w, w, z0), new Vector3(w, w, z0), new Vector3(w, w, z1), new Vector3(-w, w, z1));
-            Quad(new Vector3(-w, -w, z0), new Vector3(-w, w, z0), new Vector3(-w, w, z1), new Vector3(-w, -w, z1));
-            Quad(new Vector3(w, -w, z0), new Vector3(w, w, z0), new Vector3(w, w, z1), new Vector3(w, -w, z1));
-            Quad(new Vector3(-w, -w, z0), new Vector3(w, -w, z0), new Vector3(w, w, z0), new Vector3(-w, w, z0));
-            var tip = new Vector3(0, 0, z2); var c0 = new Vector3(-hw, -hw, z1); var c1 = new Vector3(hw, -hw, z1); var c2 = new Vector3(hw, hw, z1); var c3 = new Vector3(-hw, hw, z1);
-            Tri(c0, c1, tip); Tri(c1, c2, tip); Tri(c2, c3, tip); Tri(c3, c0, tip); Quad(c0, c1, c2, c3);
+            foreach (float y in new[] { 0f, -th }) { var up = Vector3.up * y; Tri(outline[0] + up, outline[1] + up, outline[2] + up); Tri(outline[0] + up, outline[2] + up, outline[3] + up); }
+            for (int k = 0; k < 4; k++) { var a = outline[k]; var b2 = outline[(k + 1) % 4]; Tri(a, b2, b2 - Vector3.up * th); Tri(a, b2 - Vector3.up * th, a - Vector3.up * th); }
             mesh.SetVertices(v); mesh.SetTriangles(t, 0); mesh.RecalculateNormals(); mesh.RecalculateBounds();
             arrow.gameObject.AddComponent<MeshFilter>().sharedMesh = mesh;
             var r = arrow.gameObject.AddComponent<MeshRenderer>(); r.sharedMaterial = mat; r.shadowCastingMode = ShadowCastingMode.Off; r.receiveShadows = false;
