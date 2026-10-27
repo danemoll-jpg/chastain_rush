@@ -1,0 +1,24 @@
+Round 73 check, 2026-10-27 13:17, the exe, 1280 x 720, muted.
+
+=== The summit leap: fast travel to its run-up, flat out (by the human-like driver), the flight, the landing; a short one; a reset after the landing
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-958, -5753)
+      run-up (station:speed): 0:0.0 25:23.1 50:29.9 75:34.3 101:37.5 126:39.9 152:41.5 177:42.5 203:43.0 228:43.2 253:43.0 278:40.4a 304:38.6a 329:38.0a 355:38.5a 380:40.1a 406:42.6a 431:45.9a 457:50.0a 482:54.4a 508:59.3a 533:64.5a 558:69.9a 584:75.4a 609:23.7 634:8.9
+  Drifter Twin    flat out: off the lip at 43.0 m/s, 9.3 s in the air, came down 336 m past the lip at (-1224, -6278) upright 0.95; stopped at (-1258, -6347) upright 1.00; resets 0
+PASS  leap Drifter Twin flat out: a long flight (7 s or more), lands upright  -  9.3 s, 336 m
+    reset after it: from (-1258, -6347) to (-1253, -6333), 14 m, upright 0.99
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-958, -5753)
+      run-up (station:speed): 0:0.0 25:21.3 51:27.5 76:31.2 101:33.8 127:35.7 152:36.8 177:37.3 202:37.4 228:35.2 253:31.9 278:29.1a 303:28.8a 329:30.9a 354:35.2a 380:40.9a 405:47.4a 430:54.5a 455:62.0a 480:55.9 506:57.6 532:58.9 558:54.1d3 583:43.5 608:29.0 633:12.9a
+  Street Classic  flat out: off the lip at 31.9 m/s, 7.9 s in the air, came down 216 m past the lip at (-1169, -6171) upright 1.00; stopped at (-1259, -6345) upright 1.00; resets 0
+PASS  leap Street Classic flat out: a long flight (7 s or more), lands upright  -  7.9 s, 216 m
+    reset after it: from (-1259, -6345) to (-1253, -6339), 9 m, upright 1.00
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-958, -5753)
+      run-up (station:speed): 0:0.0 25:24.5 51:31.9 76:36.6 101:39.9 127:42.5 153:44.2 178:45.4 203:46.0 229:46.3 254:30.7a 279:27.9a 304:27.9ad5 330:30.7ad8 355:35.6ad10 380:42.0ad12 406:49.2ad15 431:56.9ad17 456:60.1ad19 482:45.8d19 507:25.8d12
+  Needle 600      flat out: off the lip at 30.9 m/s, 7.7 s in the air, came down 202 m past the lip at (-1146, -6167) upright 0.71; stopped at (-1184, -6219) upright 0.91; resets 0
+PASS  leap Needle 600 flat out: a long flight (7 s or more), lands upright  -  7.7 s, 202 m
+    reset after it: from (-1184, -6219) to (-1069, -5973), 272 m, upright 0.92
+  fast travel to Kennesaw Mountain: the summit leap: arrived at (-958, -5753)
+      run-up (station:speed): 0:0.0 25:21.9 50:22.3 76:22.1 101:22.3 126:22.2 151:22.2 176:22.1 202:22.2 227:22.2 252:22.0 277:20.1a 302:25.0a 327:33.9a 352:44.5a 378:23.2a 403:28.6ad5 428:36.7ad8 454:41.9ad11 479:24.1d7 504:22.2 529:22.4 555:21.4 580:20.3 605:17.5 630:10.3 655:12.3
+  Drifter Twin    short (half throttle): off the lip at 22.0 m/s, 5.6 s in the air, came down 108 m past the lip at (-1121, -6074) upright 1.00; stopped at (-1256, -6346) upright 1.00; resets 0
+    reset after it: from (-1256, -6346) to (-1253, -6334), 13 m, upright 0.99
+
+3 of 3 checks passed.

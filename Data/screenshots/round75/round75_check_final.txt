@@ -1,0 +1,48 @@
+Round 75 check, 2026-10-27 13:48, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (a gravel track off Kennesaw Mountain, by the summit leap's way back): "there isn't a drop off for the road but a smooth slope"
+  at (-1268.1, 434.2, -6341.4) heading 100; picture 75_BUG-001_after.png
+  the ground within 40 m: steepest 51 degrees (1.25 m in 1 m) at (-1239, -6372)
+FAIL  dan BUG-001: no face within 40 m (nothing steeper than 45 degrees)  -  51 deg
+
+=== A. Race setup's RACE TYPE (Street / Air) and the garage that follows, through the menus (Dan: "I did a street race and then selected the new air course, and my only garage choices were street vehicles")
+PASS  types 1: the street race is over  -  Finished
+PASS  types street_then_air: race setup opens with RACE TYPE (pad)  -  page race, focus racetype
+  street_then_air (pad): RACE TYPE Air, course highway_air_race.json, race Free, vehicle put on Sky Hopper
+PASS  types street_then_air: the type switched, its course loaded (pad)  -  highway_air_race.json, Free
+    the garage (garage) stepped through: Sky Hopper, Sky Dart
+PASS  types street_then_air: the garage holds only planes and Sky Dart (pad)  -  plane,dart
+PASS  types street_then_air: START RACE starts an air race in the Sky Dart (pad)  -  Countdown, Highway Air Race, Sky Dart
+    the race: Highway Air Race in the Sky Dart, Racing
+  the air race flown in the Sky Dart: finished
+PASS  types 2: the air race is over  -  Finished
+PASS  types air_then_street: race setup opens with RACE TYPE (keys)  -  page race, focus racetype
+  air_then_street (keys): RACE TYPE Street, course chastain_glen_loop.json, race Free, vehicle put on Street Classic
+PASS  types air_then_street: the type switched, its course loaded (keys)  -  chastain_glen_loop.json, Free
+    the garage (garage) stepped through: Street Classic, Longroof GT, Needle 600, Trail Four, Sundown Roadster, Highball Fastback, Pebble Coupe, Skyfin Cruiser, Ridge Scrambler, Drifter Twin
+PASS  types air_then_street: the garage holds only ground vehicles and Drifter Twin (keys)  -  original,tourer,moto,atv,roadster,fastback,pebble,skyfin,scrambler,drifter
+PASS  types air_then_street: START RACE starts a street race in the Drifter Twin (keys)  -  Countdown, Chastain Glen loop, Drifter Twin
+    the race: Chastain Glen loop in the Drifter Twin, Racing
+  3 (pad): the title > RACE: street course chastain_glen_loop.json in the Drifter Twin; RACE TYPE Air: quarry_air_race.json in the Sky Dart
+PASS  types 3: from the title, Air brings back the last air course and the Sky Dart  -  quarry_air_race.json, Sky Dart
+PASS  types 3: the street side kept its course and the Drifter Twin  -  chastain_glen_loop.json, Drifter Twin
+PASS  types 3: START RACE from the title's race setup starts the air race in the Sky Dart  -  Countdown, Sky Dart
+
+=== B. The map: what the build placed (lots, pools, courts, the stunt park, the quarry), street names, the minimap's street
+  town_center zoom 7: 5 street names and shields on screen; picture 75_map_town_center_z7.png
+  town_center zoom 14: 6 street names and shields on screen; picture 75_map_town_center_z14.png
+  lakes_pool zoom 16: 7 street names and shields on screen; picture 75_map_lakes_pool_z16.png
+  enclave_pool zoom 16: 11 street names and shields on screen; picture 75_map_enclave_pool_z16.png
+  stunt_park zoom 12: 18 street names and shields on screen; picture 75_map_stunt_park_z12.png
+  quarry zoom 9: 2 street names and shields on screen; picture 75_map_quarry_z9.png
+  chastain_glen zoom 2.5: 3 street names and shields on screen; picture 75_map_chastain_glen_z2.5.png
+  chastain_glen zoom 6: 2 street names and shields on screen; picture 75_map_chastain_glen_z6.png
+  chastain_glen zoom 14: 11 street names and shields on screen; picture 75_map_chastain_glen_z14.png
+PASS  map: street names close in over Chastain Glen  -  11
+  town_center_names zoom 2.5: 3 street names and shields on screen; picture 75_map_town_center_names_z2.5.png
+  town_center_names zoom 5: 5 street names and shields on screen; picture 75_map_town_center_names_z5.png
+  town_center_names zoom 10: 7 street names and shields on screen; picture 75_map_town_center_names_z10.png
+  the minimap at Chastain Glen's fast-travel spot: "Chastain Glen Ln"
+PASS  map: the minimap names the street you are on  -  Chastain Glen Ln
+
+15 of 16 checks passed.
