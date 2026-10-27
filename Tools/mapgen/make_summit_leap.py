@@ -48,6 +48,21 @@ def seg_d(q, a, b):
     t = 0 if L2 < 1e-9 else max(0, min(1, ((q[0] - a[0]) * ab[0] + (q[1] - a[1]) * ab[1]) / L2))
     return math.dist(q, (a[0] + ab[0] * t, a[1] + ab[1] * t))
 def poly_d(q, p): return min(seg_d(q, a, b) for a, b in zip(p, p[1:]))
+# Round 75 (C, Dan's BUG-001: "there isn't a drop off for the road but a smooth slope"): a bank's width from the ground at the bank's own outer edge
+# on each side (on a sidehill the uphill edge's cut is far deeper than the cut under the line's center, which left near-vertical faces): 'slope'
+# meters out for every meter of cut or fill there, found by a few steps out from the old width; never narrower than 'base', at most 'cap'
+def edge_blends(points, ys, halves, base, slope, cap=45.0):
+    out = []
+    for i, (q, y, h, b0) in enumerate(zip(points, ys, halves, base)):
+        a = points[max(0, i - 1)]; c = points[min(len(points) - 1, i + 1)]
+        dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1.0; nx, nz = -dz / L, dx / L
+        b = b0
+        for _ in range(4):
+            dh = max(abs(y - ground(q[0] + nx * sd * (h + b), q[1] + nz * sd * (h + b))) for sd in (-1, 1))
+            b = min(cap, max(b0, slope * dh))
+        out.append(b)
+    return [round(v, 2) for v in gsm(out, 3.0)]
+def smooth01(t): t = max(0.0, min(1.0, t)); return t * t * (3 - 2 * t)
 
 
 # ---------------------------------------------------------------- hand choices
@@ -158,6 +173,16 @@ track = [P(ARREST_TO + 10.0)]
 for k in range(1, 41):
     t = k / 40; q = ((1 - t) ** 2 * track[0][0] + 2 * (1 - t) * t * c1[0] + t * t * L_[0], (1 - t) ** 2 * track[0][1] + 2 * (1 - t) * t * c1[1] + t * t * L_[1]); track.append(q)
 track_y = gsm([ground(*q) for q in track], 3.0)
+# Round 75 (C, BUG-001): the run-out's end and the track no longer meet at a step (the run-out's shelf ended 3.8 m over the track's start, a sheer
+# face, the grade's open end): the run-out runs on TAIL_M past its end along the line, easing down to the ground, and the track starts at the
+# run-out's height, easing into its own profile over the same length
+TAIL_M = 46.0
+s_end = ARREST_TO + 10.0; y_end = cat(s_end)
+tail = [s_end + x for x in np.arange(2.0, TAIL_M + 0.1, 2.0)]
+tail_y = [y_end + (raw(t) - y_end) * smooth01((t - s_end) / TAIL_M) for t in tail]
+ts = [0.0]
+for a, b in zip(track, track[1:]): ts.append(ts[-1] + math.dist(a, b))
+track_y = [y_end + (ty - y_end) * smooth01(t / TAIL_M) for t, ty in zip(ts, track_y)]
 
 # ---------------------------------------------------------------- the grades
 on = list(np.arange(START_IN, s_lip + 0.01, 2.0))
@@ -168,16 +193,20 @@ on_blend = gsm([max(4.0, SIDE_SLOPE * abs(y - raw(s))) for s, y in zip(on, on_y)
 back = [s_lip + x for x in np.arange(1.0, 50.0, 1.0)]
 back_y = [y_lip - (math.tan(math.radians(60)) * (x - s_lip) if x - s_lip < 3 else math.tan(math.radians(60)) * 3 + math.tan(math.radians(35)) * (x - s_lip - 3)) for x in back]
 keep = [(b, y) for b, y in zip(back, back_y) if y > raw(b)]
+# Round 75 (C): the catch with the run-out's tail, its banks (and the track's) from the ground at their edges (the run-up's left: the summit lot beside it)
+c_s = [x for x in cs if x <= s_end] + tail; c_pts = [P(x) for x in c_s]; c_y = [cat(x) for x in cs if x <= s_end] + tail_y
+c_bl = edge_blends(c_pts, c_y, [CATCH_HALF] * len(c_pts), [10.0] * len(c_pts), SIDE_SLOPE)
+track_bl = edge_blends(track, track_y, [3.5] * len(track), [4.0] * len(track), SIDE_SLOPE)
 grades = [
     {"id": "the summit leap's run-up, top and in-run", "points": flat([P(s) for s in on] + [P(b) for b, _ in keep]), "y": [round(v, 3) for v in on_y + [y for _, y in keep]],
      "half": TRACK_HALF, "blend": 4.0, "halves": [round(h, 2) for h in on_half] + [INRUN_HALF] * len(keep), "blends": [round(b, 2) for b in on_blend] + [4.0] * len(keep),
      "ground_first": 2, "ground_last": 0, "ground_ease_m": 20.0, "open_ends": True,
      "keep_off": flat(drive[-30:]), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 1.5},
-    {"id": "the summit leap's catch and run-out", "points": flat([P(x) for x in cs if x <= ARREST_TO + 10]), "y": [round(cat(x), 3) for x in cs if x <= ARREST_TO + 10],
-     "half": CATCH_HALF, "blend": 10.0, "halves": [CATCH_HALF] * len([x for x in cs if x <= ARREST_TO + 10]), "blends": [10.0] * len([x for x in cs if x <= ARREST_TO + 10]), "open_ends": True,
+    {"id": "the summit leap's catch and run-out", "points": flat(c_pts), "y": [round(v, 3) for v in c_y],
+     "half": CATCH_HALF, "blend": 10.0, "halves": [CATCH_HALF] * len(c_pts), "blends": c_bl, "open_ends": True,
      # (the flight crosses the drive's south leg, the Kennesaw Mountain race's lap, just before the catch: the drive is kept off)
      "keep_off": flat(drive), "keep_off_m": M["roads"][DRIVE]["width"] / 2 + 2.0},
-    {"id": "the summit leap's track to North Saint Marys Lane", "points": flat(track), "y": [round(v, 3) for v in track_y], "half": 3.5, "blend": 4.0, "open_ends": True},
+    {"id": "the summit leap's track to North Saint Marys Lane", "points": flat(track), "y": [round(v, 3) for v in track_y], "half": 3.5, "blend": 4.0, "blends": track_bl, "open_ends": True},
 ]
 # the lot's loop and the drive are never under the in-run's fill: report the nearest
 near_drive = min(poly_d(P(s), drive) for s in on if s > 30); near_lot = min(poly_d(P(s), lot) for s in on if s > 20)

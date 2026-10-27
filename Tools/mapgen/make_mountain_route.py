@@ -503,6 +503,21 @@ for k in gk:
     halves.append(h); blends.append(round(max(BENCH_BLEND, SIDE_SLOPE * abs(prof[k] - tg[k])), 2))
 # a per-point half width eased along the line (no step in the bench's edge)
 halves = gsm_list(halves, 6.0); halves = [round(h, 2) for h in halves]; blends = [round(b, 2) for b in gsm_list(blends, 4.0)]
+# Round 75 (C, Dan's BUG-001 by the summit leap: "there isn't a drop off for the road but a smooth slope"; his "check the mountain's new tracks"):
+# the banks were sized from the cut under the line's center, so where a line crosses the mountain's side the uphill bank stood 5 to 13 m nearly
+# upright (a scan of the built ground). Each side's bank now also from the ground at its own outer edge: EDGE_SLOPE out per meter of cut or fill
+# there (the lines' own SIDE_SLOPE), a few steps out from the old width, at most 30 m.
+# The bench, its height and the jumps are unchanged.
+EDGE_SLOPE = SIDE_SLOPE   # (the lines' own 1.25: only where it is measured changes)
+def edge_blend(i):
+    q = g_pts[i]; a = g_pts[max(0, i - 1)]; c = g_pts[min(len(g_pts) - 1, i + 1)]
+    dx, dz = c[0] - a[0], c[1] - a[1]; L = math.hypot(dx, dz) or 1.0; nx, nz = -dz / L, dx / L
+    b = blends[i]
+    for _ in range(4):
+        dh = max(abs(g_y[i] - ground(q[0] + nx * sd * (halves[i] + b), q[1] + nz * sd * (halves[i] + b))) for sd in (-1, 1))
+        b = min(30.0, max(blends[i], EDGE_SLOPE * dh))
+    return b
+blends = [round(max(b0, b1), 2) for b0, b1 in zip(blends, gsm_list([edge_blend(i) for i in range(len(g_pts))], 3.0))]
 # where the line runs on or beside the drive (the departure, the join) the drive's own levelled surface is kept: those points take the built ground's
 # height in the map build (the drive is levelled before this grade), eased into the line's profile over the next 40 m
 on_road = [nearest_s(road, q)[0] < 9.0 for q in g_pts]
