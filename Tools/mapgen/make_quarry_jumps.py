@@ -43,7 +43,7 @@ def pts(f): return [(f[i], f[i + 1]) for i in range(0, len(f), 2)]
 
 
 import os as _os
-OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "30,30,55").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
+OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "40,45,70").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
 # (each deck runs on at least 25 m past the bench's edge onto its cut: LAND_L per jump = its overhang + 25 or more)
 JUMPS = [
     dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin", overhang=OVH1, land_l=OVH1 + 26.0),
@@ -53,7 +53,7 @@ JUMPS = [
 # (top m/s, push m/s2) as Round 68 / 70; CORR: Round 70's ramp flew 8 to 16 % shorter in the exe than this model said (its lip speeds lower)
 VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0),
             "Stunt Buggy": (50.0, 17.5), "Stunt Bike": (55.0, 18.0)}
-CORR = 0.79   # Round 73: the exe through the game's own input (the check's human-like rider): the Drifter Twin's speed at The Corner's kicker foot 39.4 m/s,
+CORR = 0.716  # Round 73: the exe through the game's own input (the check's human-like rider, two runs): the Drifter Twin levels off at 31 to 34 m/s on the run-up (34.1 at The Corner's lip; this model 37.6 at 0.79),
               # this model's 49.8 (Round 72's 0.93 came from a scripted check that drove the vehicle with its physics off)
 DECK_HALF = 4.5            # the kicker's deck: 9 m wide
 LAND_HALF = 10.0           # the landing deck: 20 m wide
