@@ -464,7 +464,11 @@ def closure(s_from, step, cid, label):
             "barrier_on": "Kennesaw Mountain Drive", "id": cid, "label": label}
 # (Round 67's B2 across the drive past the departure is gone: since Round 68 the lap runs up the drive to its very end at the summit lot, so B2 stood on
 # the lap (BUG-002); past it is only the summit lot's loop, a dead end, so nothing needs closing there)
-closures = [closure(JOIN_S - 20.0, -1.0, "B1", "Kennesaw Mountain Drive to the visitor center")]
+# Round 74 (D, Dan's BUG-002 of 2026-10-27 at x -1102.78 z -5849.19: "there needs to be a barrier for the right road. It is not obvious you don't go
+# that way"): since Round 73 A2 the lap leaves the drive below the summit for its own bench, and the drive carries on to the right toward the lot;
+# B2 closes it there, walked on along the drive from the departure to the first place clear of the lap (as B1)
+closures = [closure(JOIN_S - 20.0, -1.0, "B1", "Kennesaw Mountain Drive to the visitor center"),
+            closure(dep_s - PRE_M + 20.0, 1.0, "B2", "Kennesaw Mountain Drive on to the summit lot")]
 junctions = [{"s": c["junction_s"], "roads": [c["road"]], "pos": c["contact"]} for c in closures]
 
 # ---------------------------------------------------------------- the AI: held speeds (lap stations)

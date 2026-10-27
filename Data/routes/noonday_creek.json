@@ -5884,7 +5884,76 @@
    ]
   }
  ],
- "closures": [],
+ "closures": [
+  {
+   "road": "New Chastain Road",
+   "osm_id": 290281670,
+   "x": 2503.0,
+   "z": 765.29,
+   "dx": -0.9996,
+   "dz": 0.0277,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    2499.0,
+    765.4
+   ],
+   "id": "F1",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "New Chastain Road",
+   "osm_id": 290281670,
+   "x": 2483.97,
+   "z": 765.82,
+   "dx": -0.9996,
+   "dz": 0.0277,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    2488.0,
+    765.7
+   ],
+   "id": "F2",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "New Chastain Road",
+   "osm_id": 1360406912,
+   "x": 2483.14,
+   "z": 752.18,
+   "dx": 0.9997,
+   "dz": -0.0237,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    2486.1,
+    752.1
+   ],
+   "id": "F3",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "New Chastain Road",
+   "osm_id": 1360406912,
+   "x": 2501.14,
+   "z": 751.75,
+   "dx": 0.9997,
+   "dz": -0.0237,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    2497.1,
+    751.8
+   ],
+   "id": "F4",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  }
+ ],
  "ai_zones": [
   {
    "id": "J1",

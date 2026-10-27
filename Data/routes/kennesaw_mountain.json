@@ -4537,6 +4537,16 @@
     -913.0,
     -5226.5
    ]
+  },
+  {
+   "s": 2023.8,
+   "roads": [
+    "Kennesaw Mountain Drive"
+   ],
+   "pos": [
+    -1064.6,
+    -5825.6
+   ]
   }
  ],
  "loop_pieces": [
@@ -4572,6 +4582,24 @@
    "barrier_on": "Kennesaw Mountain Drive",
    "id": "B1",
    "label": "Kennesaw Mountain Drive to the visitor center"
+  },
+  {
+   "road": "Kennesaw Mountain Drive",
+   "osm_id": 296197601,
+   "x": -1062.98,
+   "z": -5824.35,
+   "dx": 0.8016,
+   "dz": 0.5979,
+   "width_m": 8.0,
+   "junction_s": 2023.8,
+   "contact": [
+    -1064.6,
+    -5825.6
+   ],
+   "arc_m": 64.0,
+   "barrier_on": "Kennesaw Mountain Drive",
+   "id": "B2",
+   "label": "Kennesaw Mountain Drive on to the summit lot"
   }
  ],
  "closure_stubs_not_barred": [],

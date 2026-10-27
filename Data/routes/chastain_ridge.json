@@ -3698,6 +3698,142 @@
    "barrier_on": "Canton Road",
    "id": "B23",
    "label": "Canton Road at lap 2057 m"
+  },
+  {
+   "road": "Blackwell Circle",
+   "osm_id": 9122516,
+   "x": 3553.69,
+   "z": 837.76,
+   "dx": 1.0,
+   "dz": 0.0066,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    3557.7,
+    837.8
+   ],
+   "id": "F1",
+   "label": "Blackwell Circle: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "New Chastain Road",
+   "osm_id": 9151940,
+   "x": 3247.81,
+   "z": 618.38,
+   "dx": 0.4702,
+   "dz": -0.8826,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    3251.6,
+    611.3
+   ],
+   "id": "F2",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 334446910,
+   "x": 3573.9,
+   "z": 823.01,
+   "dx": 0.996,
+   "dz": 0.089,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3570.8,
+    822.7
+   ],
+   "id": "F3",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 564652348,
+   "x": 3583.62,
+   "z": 748.27,
+   "dx": -0.982,
+   "dz": -0.1888,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3579.6,
+    747.5
+   ],
+   "id": "F4",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 625374331,
+   "x": 3584.96,
+   "z": 679.54,
+   "dx": 0.9999,
+   "dz": -0.0162,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3581.9,
+    679.6
+   ],
+   "id": "F5",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 814479828,
+   "x": 3521.38,
+   "z": 986.2,
+   "dx": -0.9828,
+   "dz": -0.1849,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3524.4,
+    986.8
+   ],
+   "id": "F6",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 814479829,
+   "x": 3564.07,
+   "z": 767.43,
+   "dx": -0.9793,
+   "dz": -0.2026,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3567.0,
+    768.0
+   ],
+   "id": "F7",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 1341324768,
+   "x": 3555.12,
+   "z": 914.45,
+   "dx": 0.9794,
+   "dz": 0.2018,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3552.1,
+    913.8
+   ],
+   "id": "F8",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
   }
  ],
  "closure_stubs_not_barred": [
@@ -5691,6 +5827,125 @@
    "barrier_on": "Canton Road Northeast",
    "id": "B21",
    "label": "Canton Road Northeast at lap 2042 m"
+  },
+  {
+   "road": "Blackwell Circle",
+   "osm_id": 9122516,
+   "x": 3533.56,
+   "z": 837.63,
+   "dx": 1.0,
+   "dz": 0.0066,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    3537.6,
+    837.7
+   ],
+   "id": "F1",
+   "label": "Blackwell Circle: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "New Chastain Road",
+   "osm_id": 9151940,
+   "x": 3236.02,
+   "z": 640.51,
+   "dx": 0.4702,
+   "dz": -0.8826,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    3238.9,
+    635.2
+   ],
+   "id": "F2",
+   "label": "New Chastain Road: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 334446910,
+   "x": 3566.68,
+   "z": 822.36,
+   "dx": 0.996,
+   "dz": 0.089,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3563.6,
+    822.1
+   ],
+   "id": "F3",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 564652348,
+   "x": 3575.6,
+   "z": 746.73,
+   "dx": -0.982,
+   "dz": -0.1888,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3572.6,
+    746.2
+   ],
+   "id": "F4",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 625374331,
+   "x": 3584.96,
+   "z": 679.54,
+   "dx": 0.9999,
+   "dz": -0.0162,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3581.9,
+    679.6
+   ],
+   "id": "F5",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 814479828,
+   "x": 3511.26,
+   "z": 984.29,
+   "dx": -0.9828,
+   "dz": -0.1849,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3514.3,
+    984.9
+   ],
+   "id": "F6",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 1341324768,
+   "x": 3548.14,
+   "z": 913.02,
+   "dx": 0.9794,
+   "dz": 0.2018,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    3545.2,
+    912.4
+   ],
+   "id": "F7",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
   }
  ],
  "ai_zones_reverse": [

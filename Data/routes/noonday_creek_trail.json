@@ -10917,6 +10917,363 @@
    "barrier_on": "Rockbridge Road",
    "id": "B21",
    "label": "Rockbridge Road at lap 5661 m"
+  },
+  {
+   "road": "Ring Road Northwest",
+   "osm_id": 9149027,
+   "x": 207.01,
+   "z": -961.69,
+   "dx": -0.9605,
+   "dz": -0.2783,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    203.1,
+    -962.8
+   ],
+   "id": "F1",
+   "label": "Ring Road Northwest: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Ring Road Northwest",
+   "osm_id": 9149027,
+   "x": 188.38,
+   "z": -967.11,
+   "dx": -0.9602,
+   "dz": -0.2793,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    192.3,
+    -966.0
+   ],
+   "id": "F2",
+   "label": "Ring Road Northwest: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196256253,
+   "x": 445.78,
+   "z": -1506.83,
+   "dx": 0.5113,
+   "dz": 0.8594,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    460.6,
+    -1492.6
+   ],
+   "id": "F3",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196256255,
+   "x": 576.9,
+   "z": -1265.25,
+   "dx": -0.9721,
+   "dz": -0.2346,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    572.9,
+    -1266.2
+   ],
+   "id": "F4",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196256255,
+   "x": 558.01,
+   "z": -1270.07,
+   "dx": -0.9629,
+   "dz": -0.2699,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    561.9,
+    -1269.0
+   ],
+   "id": "F5",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196825831,
+   "x": 293.65,
+   "z": -1089.63,
+   "dx": -0.9673,
+   "dz": -0.2536,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    290.6,
+    -1090.4
+   ],
+   "id": "F6",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196825831,
+   "x": 277.46,
+   "z": -1093.87,
+   "dx": -0.9674,
+   "dz": -0.2533,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    280.5,
+    -1093.1
+   ],
+   "id": "F7",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 252815743,
+   "x": 505.04,
+   "z": -1223.76,
+   "dx": -0.2507,
+   "dz": 0.9681,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    504.2,
+    -1220.7
+   ],
+   "id": "F8",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 252815743,
+   "x": 500.85,
+   "z": -1207.6,
+   "dx": -0.2513,
+   "dz": 0.9679,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    501.6,
+    -1210.6
+   ],
+   "id": "F9",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 290478081,
+   "x": 1328.79,
+   "z": -1687.61,
+   "dx": -0.0063,
+   "dz": 1.0,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1328.8,
+    -1683.4
+   ],
+   "id": "F10",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 367182893,
+   "x": 533.1,
+   "z": -1717.76,
+   "dx": -0.422,
+   "dz": 0.9066,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    531.7,
+    -1714.8
+   ],
+   "id": "F11",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421617,
+   "x": 1702.03,
+   "z": -1495.46,
+   "dx": -0.6365,
+   "dz": -0.7713,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1708.5,
+    -1475.9
+   ],
+   "id": "F12",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421618,
+   "x": 1702.06,
+   "z": -1514.85,
+   "dx": 0.6013,
+   "dz": -0.7991,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1708.8,
+    -1529.8
+   ],
+   "id": "F13",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421626,
+   "x": 1465.29,
+   "z": -1664.79,
+   "dx": 0.0064,
+   "dz": 1.0,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1465.3,
+    -1667.8
+   ],
+   "id": "F14",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 564193978,
+   "x": 497.49,
+   "z": -1479.63,
+   "dx": -0.5071,
+   "dz": 0.8619,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    495.9,
+    -1476.9
+   ],
+   "id": "F15",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Town Center Drive",
+   "osm_id": 580729918,
+   "x": 172.41,
+   "z": -890.16,
+   "dx": -0.9617,
+   "dz": -0.2741,
+   "width_m": 9.0,
+   "junction_s": 0.0,
+   "contact": [
+    168.6,
+    -891.3
+   ],
+   "id": "F16",
+   "label": "Town Center Drive: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Barrett Parkway",
+   "osm_id": 958897234,
+   "x": 504.69,
+   "z": -1702.69,
+   "dx": -0.905,
+   "dz": -0.4254,
+   "width_m": 11.5,
+   "junction_s": 0.0,
+   "contact": [
+    507.6,
+    -1701.3
+   ],
+   "id": "F17",
+   "label": "Barrett Parkway: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Town Center Drive",
+   "osm_id": 1377606891,
+   "x": 153.91,
+   "z": -895.43,
+   "dx": -0.9617,
+   "dz": -0.2741,
+   "width_m": 9.0,
+   "junction_s": 0.0,
+   "contact": [
+    157.9,
+    -894.3
+   ],
+   "id": "F18",
+   "label": "Town Center Drive: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 196256227,
+   "x": 625.43,
+   "z": -1699.84,
+   "dx": 0.8166,
+   "dz": -0.5772,
+   "width_m": 6.0,
+   "junction_s": 0.0,
+   "contact": [
+    616.4,
+    -1693.7
+   ],
+   "id": "F19",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 196256230,
+   "x": 902.96,
+   "z": -1702.82,
+   "dx": 0.7593,
+   "dz": 0.6508,
+   "width_m": 6.0,
+   "junction_s": 0.0,
+   "contact": [
+    913.4,
+    -1696.1
+   ],
+   "id": "F20",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 367182645,
+   "x": 641.11,
+   "z": -1674.44,
+   "dx": 0.5862,
+   "dz": -0.8102,
+   "width_m": 6.5,
+   "junction_s": 0.0,
+   "contact": [
+    647.5,
+    -1680.5
+   ],
+   "id": "F21",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
   }
  ],
  "closure_stubs_not_barred": [],
@@ -19058,6 +19415,414 @@
    "barrier_on": "Bells Ferry Road Northeast",
    "id": "B24",
    "label": "Bells Ferry Road Northeast at lap 5468 m"
+  },
+  {
+   "road": "Ring Road Northwest",
+   "osm_id": 9149027,
+   "x": 207.01,
+   "z": -961.69,
+   "dx": -0.9605,
+   "dz": -0.2783,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    203.1,
+    -962.8
+   ],
+   "id": "F1",
+   "label": "Ring Road Northwest: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Ring Road Northwest",
+   "osm_id": 9149027,
+   "x": 188.38,
+   "z": -967.11,
+   "dx": -0.9602,
+   "dz": -0.2793,
+   "width_m": 8.0,
+   "junction_s": 0.0,
+   "contact": [
+    192.3,
+    -966.0
+   ],
+   "id": "F2",
+   "label": "Ring Road Northwest: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196256255,
+   "x": 576.9,
+   "z": -1265.25,
+   "dx": -0.9721,
+   "dz": -0.2346,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    572.9,
+    -1266.2
+   ],
+   "id": "F3",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196256255,
+   "x": 558.01,
+   "z": -1270.07,
+   "dx": -0.9629,
+   "dz": -0.2699,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    561.9,
+    -1269.0
+   ],
+   "id": "F4",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196825831,
+   "x": 293.65,
+   "z": -1089.63,
+   "dx": -0.9673,
+   "dz": -0.2536,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    290.6,
+    -1090.4
+   ],
+   "id": "F5",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 196825831,
+   "x": 277.46,
+   "z": -1093.87,
+   "dx": -0.9674,
+   "dz": -0.2533,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    280.5,
+    -1093.1
+   ],
+   "id": "F6",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 252815743,
+   "x": 505.04,
+   "z": -1223.76,
+   "dx": -0.2507,
+   "dz": 0.9681,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    504.2,
+    -1220.7
+   ],
+   "id": "F7",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 252815743,
+   "x": 500.85,
+   "z": -1207.6,
+   "dx": -0.2513,
+   "dz": 0.9679,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    501.6,
+    -1210.6
+   ],
+   "id": "F8",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 290478081,
+   "x": 1328.74,
+   "z": -1676.98,
+   "dx": -0.0047,
+   "dz": 1.0,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1328.7,
+    -1673.8
+   ],
+   "id": "F9",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 528227554,
+   "x": 1382.26,
+   "z": -1676.78,
+   "dx": 0.754,
+   "dz": -0.6569,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1373.2,
+    -1670.2
+   ],
+   "id": "F10",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 528227556,
+   "x": 1403.24,
+   "z": -1677.02,
+   "dx": 0.8646,
+   "dz": 0.5025,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1418.9,
+    -1670.1
+   ],
+   "id": "F11",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421617,
+   "x": 1698.14,
+   "z": -1499.16,
+   "dx": -0.7858,
+   "dz": -0.6185,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1704.5,
+    -1489.6
+   ],
+   "id": "F12",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421618,
+   "x": 1698.87,
+   "z": -1512.06,
+   "dx": 0.8684,
+   "dz": -0.4959,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1704.6,
+    -1518.2
+   ],
+   "id": "F13",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 561421626,
+   "x": 1465.33,
+   "z": -1658.71,
+   "dx": 0.0064,
+   "dz": 1.0,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1465.3,
+    -1662.8
+   ],
+   "id": "F14",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 563621808,
+   "x": 1551.14,
+   "z": -1689.38,
+   "dx": -0.3944,
+   "dz": -0.9189,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1553.1,
+    -1684.7
+   ],
+   "id": "F15",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 563621840,
+   "x": 1718.43,
+   "z": -1445.35,
+   "dx": -0.9999,
+   "dz": -0.0137,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    1715.4,
+    -1445.4
+   ],
+   "id": "F16",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed service)",
+   "osm_id": 564193978,
+   "x": 499.6,
+   "z": -1483.23,
+   "dx": -0.5071,
+   "dz": 0.8619,
+   "width_m": 5.0,
+   "junction_s": 0.0,
+   "contact": [
+    498.0,
+    -1480.5
+   ],
+   "id": "F17",
+   "label": "(unnamed service): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Town Center Drive",
+   "osm_id": 580729918,
+   "x": 172.41,
+   "z": -890.16,
+   "dx": -0.9617,
+   "dz": -0.2741,
+   "width_m": 9.0,
+   "junction_s": 0.0,
+   "contact": [
+    168.6,
+    -891.3
+   ],
+   "id": "F18",
+   "label": "Town Center Drive: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "Town Center Drive",
+   "osm_id": 1377606891,
+   "x": 153.91,
+   "z": -895.43,
+   "dx": -0.9617,
+   "dz": -0.2741,
+   "width_m": 9.0,
+   "junction_s": 0.0,
+   "contact": [
+    157.9,
+    -894.3
+   ],
+   "id": "F19",
+   "label": "Town Center Drive: a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 196256228,
+   "x": 909.32,
+   "z": -1661.01,
+   "dx": -0.7927,
+   "dz": 0.6096,
+   "width_m": 6.0,
+   "junction_s": 0.0,
+   "contact": [
+    921.0,
+    -1668.4
+   ],
+   "id": "F20",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 196256247,
+   "x": 617.43,
+   "z": -1658.92,
+   "dx": -0.7337,
+   "dz": -0.6795,
+   "width_m": 6.0,
+   "junction_s": 0.0,
+   "contact": [
+    604.7,
+    -1667.8
+   ],
+   "id": "F21",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 367182643,
+   "x": 525.4,
+   "z": -1673.54,
+   "dx": -0.9369,
+   "dz": 0.3496,
+   "width_m": 6.0,
+   "junction_s": 0.0,
+   "contact": [
+    513.8,
+    -1665.4
+   ],
+   "id": "F22",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 367182645,
+   "x": 636.52,
+   "z": -1661.59,
+   "dx": 0.1179,
+   "dz": -0.993,
+   "width_m": 6.5,
+   "junction_s": 0.0,
+   "contact": [
+    637.0,
+    -1664.7
+   ],
+   "id": "F23",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
+  },
+  {
+   "road": "(unnamed motorway_link)",
+   "osm_id": 540661932,
+   "x": 895.52,
+   "z": -1665.35,
+   "dx": 0.0642,
+   "dz": 0.9979,
+   "width_m": 6.5,
+   "junction_s": 0.0,
+   "contact": [
+    894.9,
+    -1668.9
+   ],
+   "id": "F24",
+   "label": "(unnamed motorway_link): a fork off the line (Round 74)",
+   "fork": true
   }
  ],
  "ai_zones_reverse": [
