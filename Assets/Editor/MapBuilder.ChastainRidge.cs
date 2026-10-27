@@ -21,7 +21,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class RidgeClear { public string id; public float[] points; public float half; }
-        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r, ground_ease_m; public int ground_first, ground_last; public bool open_ends; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
+        [Serializable] class RidgeGrade { public string id; public float[] points, y, keep_off, blend_left, halves, blends; public float half, blend, keep_off_m, blend_r, ground_ease_m, keep_off_fade; public int ground_first, ground_last; public bool open_ends; }   // Round 68: blends (per point, both sides: the Kennesaw Mountain lines' cut and fill banks)   // Round 62: halves (per point), the half width there   // Round 50: blend_left (per point) / blend_r, GradeAlong's sides
         // Round 40 (A): the manhole plume (ManholePlume), the church leap (Round 41: the crypt, MapBuilder.ChurchCrypt.cs), the crest cut's boulder wall
         // (x, z, radius each) and its worn tracks
         [Serializable] class RidgePlume { public string id, group; public float[] at, dir, target, target_dir; public float y, right_m, left_m, half_len_m, angle_deg, trigger_m; }
@@ -137,7 +137,8 @@ namespace ChastainRush
                 if (keep != null)
                 {
                     float dk = float.MaxValue; for (int i = 0; i + 1 < keep.Count; i++) dk = Mathf.Min(dk, SegDist(q, keep[i], keep[i + 1]));
-                    w *= Smooth01((dk - gr.keep_off_m) / 1.5f); if (w <= 1e-3f) return y;
+                    // (Round 73: keep_off_fade, the width the grade comes back over past the kept line (1.5 m before: a step at the drive's edge))
+                    w *= Smooth01((dk - gr.keep_off_m) / (gr.keep_off_fade > 0f ? gr.keep_off_fade : 1.5f)); if (w <= 1e-3f) return y;
                 }
                 float ny = y + w * (target - y);
                 most = Mathf.Max(most, Mathf.Abs(ny - y)); n++; return ny;

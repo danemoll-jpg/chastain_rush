@@ -516,7 +516,7 @@ KEEP_FROM_M = 8.0 (its own surface, its width and 1.5 m more)
 _ks = nearest_s(road, lap[next(k for k in ck if C[k] > C[k_dep] and nearest_s(road, lap[k])[0] >= KEEP_FROM_M)])[1]
 keep_off = flat(resample(cut(road, _ks - 4.0, None), 4.0))
 grades = [{"id": "the Kennesaw Mountain race's lines", "points": flat(g_pts), "y": [round(v, 3) for v in g_y], "half": BENCH_HALF, "blend": BENCH_BLEND, "halves": halves, "blends": blends,
-           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.5}]
+           "ground_first": g_first, "ground_last": g_last, "ground_ease_m": 40.0, "open_ends": True, "keep_off": keep_off, "keep_off_m": roads[ROAD]["width"] / 2 + 1.0, "keep_off_fade": 10.0}]
 print(f"the grade: its first {g_first} and last {g_last} points on the drive take the built drive's height")
 clear = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": CLEAR_HALF}]
 breaks = [{"id": "the descent", "points": flat(g_pts[::2] + [g_pts[-1]]), "half": BREAK_HALF}]
