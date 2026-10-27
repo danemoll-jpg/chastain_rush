@@ -218,7 +218,8 @@ namespace ChastainRush
             while (race.State == RaceController.Stage.Countdown) yield return null;
             var r = race.Route; var line = new List<Vector3>(r.LeadIn ?? new Vector3[0]); for (float s = 0f; s <= r.LapLength; s += 3f) line.Add(r.PointAt(r.GateS + s, out _));
             float rawSum = 0f, shownSum = 0f; int n = 0; float lastRaw = float.NaN, lastShown = float.NaN, lastDr = 0f, lastDs = 0f;
-            var mon = StartCoroutine(R73Watch(() =>
+            IEnumerator EveryFrame(Action each) { while (true) { yield return null; each(); } }   // (per frame: the arrow is drawn once a frame)
+            var mon = StartCoroutine(EveryFrame(() =>
             {
                 var t = race.Target; if (t == null) return;
                 var to = t.Position - car.transform.position; to.y = 0f; var fw = car.transform.forward; fw.y = 0f;
@@ -226,12 +227,12 @@ namespace ChastainRush
                 // the wobble: how much each step's turn differs from the step before's (a steady turn through a bend is no wobble)
                 if (!float.IsNaN(lastRaw)) { float dr = Mathf.DeltaAngle(lastRaw, raw), ds = Mathf.DeltaAngle(lastShown, shown); rawSum += Mathf.Abs(dr - lastDr); shownSum += Mathf.Abs(ds - lastDs); lastDr = dr; lastDs = ds; n++; }
                 lastRaw = raw; lastShown = shown;
-            }, () => true));
+            }));
             var run = new HumanRun();
             var pics = new List<(string, float)> { ("74_arrow_lap", r.LapLength * .4f) };
             yield return HumanDrive(line, 30f, 150f, run, () => race.Player.Finished, null, pics);
             StopCoroutine(mon);
-            report.AppendLine($"  {n} physics steps: the raw bearing's wobble {rawSum / Mathf.Max(1, n):0.000} deg a step on average, the arrow's {shownSum / Mathf.Max(1, n):0.000}");
+            report.AppendLine($"  {n} frames: the raw bearing's wobble {rawSum / Mathf.Max(1, n):0.000} deg a step on average, the arrow's {shownSum / Mathf.Max(1, n):0.000} (a step's turn against the step before's)");
             Check("arrow: the HUD arrow wobbles far less than the raw bearing (steadied)", n > 100 && shownSum < rawSum * .4f, $"{shownSum:0} against {rawSum:0}");
             race.EndRace();
         }

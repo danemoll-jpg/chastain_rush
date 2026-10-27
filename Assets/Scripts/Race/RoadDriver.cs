@@ -74,7 +74,9 @@ namespace Racer
         float rejoinStuck, rejoinBestDistance;
         Vector3 rejoinTarget;
         bool trackingRejoin, airborne;
-        static readonly float[] cornerUse={.82f,.91f,1.0f}, brakeUse={.82f,.92f,1.0f}, speedUse={.88f,.95f,1f}, hillTargets={42,42,42};
+        // Chastain Rush, Round 74 (G, try 2): Hard corners and brakes a little harder than the grip it is given (1.12, 1.08; were 1.0): the bends set
+        // its speed most of a lap, and Dan's laps are about 20 % quicker (the arcade cars hold more than maxGripAcceleration says)
+        static readonly float[] cornerUse={.82f,.91f,1.12f}, brakeUse={.82f,.92f,1.08f}, speedUse={.88f,.95f,1f}, hillTargets={42,42,42};
         // Chastain Rush, Round 70 (B, Dan: "Normal and Easy scale down by pace, not by dumb driving"): Easy and Normal drive Hard's lines and limits at
         // 88 % and 95 % of its pace (was: corner use .46 / .76, brake use .55 / .88, the hill targets 26 / 32); Hard unchanged. Their mistakes and early
         // lifts (DriverVariation, the consistency term below) stay as they were
@@ -285,7 +287,7 @@ namespace Racer
             // Chastain Rush, Round 74 (G): off its aim by more than 34 degrees, the speed of the circle through its aim point (the corner it must
             // make now, at its cornering grip), never under the old 10 m/s (it was a flat 10 m/s: 18 to 28 s a race on Kennesaw)
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
-                Cap(Mathf.Max(10f, Mathf.Sqrt(cornerGrip * look / (2f * Mathf.Max(.2f, Mathf.Sin(Mathf.Min(Mathf.Abs(angle), 1.5f)))))), "angle");
+                Cap(Mathf.Max(skill == 2 ? 14f : 10f, Mathf.Sqrt(cornerGrip * look / (2f * Mathf.Max(.2f, Mathf.Sin(Mathf.Min(Mathf.Abs(angle), 1.5f)))))), "angle");   // (try 2: Hard's floor 14)
             float freeTarget = TargetSpeed;   // Round 58: what it wants before anything in front holds it (A3: wanting to go and not moving is being blocked)
             bool unblocking = Agency && Time.time < unblockUntil;
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.

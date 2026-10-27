@@ -1208,15 +1208,7 @@ namespace ChastainRush
             if (t == null || State == Stage.Finished) return;
             Vector3 to = t.Position - car.transform.position; float dist3 = to.magnitude; to.y = 0f;
             Vector3 fwd = car.transform.forward; fwd.y = 0f;
-            // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy"): the arrow turns with damping (about 0.3 s), so the body's wobble over bumps,
-            // a slide or a twitch of the steering does not shake it; it still settles on the checkpoint's true bearing
-            float raw = Vector3.SignedAngle(fwd, to, Vector3.up);
-            if (Event.current.type == EventType.Repaint)
-            {
-                if (guideTarget != t.Id || Time.unscaledTime - guideAt > .5f) { guideAngle = raw; guideVel = 0f; }
-                else guideAngle = Mathf.SmoothDampAngle(guideAngle, raw, ref guideVel, .3f, Mathf.Infinity, Mathf.Max(1e-4f, Time.unscaledTime - guideAt));
-                guideTarget = t.Id; guideAt = Time.unscaledTime;
-            }
+            // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy"): the arrow's angle is damped every frame (LateUpdate, SteadyGuide)
             float angle = guideAngle;
             if (Route.Air)
             {
@@ -1242,6 +1234,18 @@ namespace ChastainRush
 
         float guideAngle, guideVel, guideAt = -10f; int guideTarget = -1;   // Round 74 (C): the HUD arrow's damped angle
         public float GuideAngleForCheck => guideAngle;
+        // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy. Can we make them more stable"): the HUD arrow turns with damping (about 0.3 s)
+        // every frame, so the body's wobble over bumps, a slide or a twitch of the steering does not shake it; it still settles on the checkpoint's
+        // true bearing (a new checkpoint, or the arrow away for over half a second: straight onto its bearing)
+        void LateUpdate()
+        {
+            var t = State == Stage.Free || State == Stage.Finished ? null : Target; if (t == null || !car) return;
+            Vector3 to = t.Position - car.transform.position; to.y = 0f; Vector3 fwd = car.transform.forward; fwd.y = 0f;
+            float raw = Vector3.SignedAngle(fwd, to, Vector3.up);
+            if (guideTarget != t.Id || Time.unscaledTime - guideAt > .5f) { guideAngle = raw; guideVel = 0f; }
+            else guideAngle = Mathf.SmoothDampAngle(guideAngle, raw, ref guideVel, .3f, Mathf.Infinity, Mathf.Max(1e-4f, Time.unscaledTime - guideAt));
+            guideTarget = t.Id; guideAt = Time.unscaledTime;
+        }
 
         void DrawCountdown(float w, float h)
         {
