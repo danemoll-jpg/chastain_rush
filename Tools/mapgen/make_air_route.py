@@ -74,7 +74,7 @@ CTRL = [
     ((-382, -1726), None),                                         # the sweep onto I-75's line: a 400 m left turn (141 degrees)
     ((-222, -1680), None),
     ((-94, -1573), None),
-    ((-21, -1424), ("H1", "High ring", "ring", 28, ("agl", 200))),
+    ((-21, -1424), ("H1", "High ring", "ring", 28, ("agl", 140))),   # (Round 73: 200 was a hard climb out of the sweep: the check's pilot passed under it twice)
     ((-16, -1257), None),
     ((-78, -1103), None),
     ((-198, -988), None),
