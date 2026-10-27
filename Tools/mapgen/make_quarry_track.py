@@ -15,7 +15,11 @@ quick enough: the cars come up short), the AI holding each run-up at its speed w
 
 What it writes: Data/routes/quarry_track.json (the race) and Data/tracks/quarry_track.json (its world pieces: the benches, the cleared lines, the
 divider; merged into the mountain's planning by MapBuilder.QuarryJumps.cs). Re-run after make_quarry_jumps.py, then a full Build Map.
-Round 74: ONE lane (see LANE). Round 73's check, NOT BUILT then: the human-like rider stuck on the haul road after The Long One, the AI riders took the haul road's other lane at the
+NOT BUILT (Round 74's check, the second try: one lane): the race's forgiving checkpoint rule credits ANY later checkpoint, so on the shared haul
+road the AI crossed the second climb's checkpoint on its first climb and skipped The Corner's whole loop for 50 s of penalties; the human-like rider
+stuck where the lap leaves The Long One's run-out for the haul road (-2000, -1322: a grass rise), 133 resets back onto the same spot; the start line
+was not taken. Its output moved to local/round74/quarry_track_unbuilt/. What it needs (options for Dan): a per-route window on which later checkpoint
+counts (only the next 3), and a graded way off the run-out onto the haul road. Round 73's check, NOT BUILT then: the human-like rider stuck on the haul road after The Long One, the AI riders took the haul road's other lane at the
 crossing and skipped The Corner's whole loop for 20 s of penalties, and two of three AI did not finish. Its output is not in Data/ (the race is not in the
 game, its benches and divider not in the world) until a lap without that crossing is chosen (TODO.md Round 73 C5: the options).
 Usage: python Tools/mapgen/make_quarry_track.py [--plot]  (writes the two files; move them out of Data/ again if the lap is not fixed)"""
