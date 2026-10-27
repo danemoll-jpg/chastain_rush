@@ -101,6 +101,7 @@ namespace ChastainRush
             if (mapActions == null || MenuInput.Blocked) return;
             if (mapToggle.WasPressedThisFrame()) { MenuInput.ConsumeThroughRelease(mapToggle); if (Opened) Close(); else if (CanOpen()) Open(); return; }
             if (!Opened) return;
+            if (controlsLine && controlsPad != KeyHints.Pad) ControlsText();   // Round 74 (B)
             if (UpdateExplore()) { ClampView(); Draw(); return; }   // Round 48: places, travel, the waypoint, the egg areas
             if (backAction.WasPressedThisFrame()) { MenuInput.ConsumeThroughRelease(backAction); Close(); return; }
             float dt = Time.unscaledDeltaTime;
@@ -230,9 +231,21 @@ namespace ChastainRush
             legend = Label("Legend", r, new Vector2(-w / 2 + 8, h / 2 - 10), new Vector2(560, 120), 14, TextAnchor.UpperLeft); legend.rectTransform.pivot = new Vector2(0, 1); legend.supportRichText = true;
             status = Label("Map status", panel.transform, new Vector2(0, -297), new Vector2(1240, 24), 17);
             // Round 49: two lines (one did not fit a 1280-wide screen)
-            var controls = Label("Controls", panel.transform, new Vector2(0, -333), new Vector2(1240, 40), 14); controls.lineSpacing = 1.05f;
-            controls.text = "Left stick / WASD: pan  ·  right stick / mouse: pointer  ·  A / click: choose what is under the pointer  ·  RT / LT, = / -: zoom  ·  D-pad ◀ / Home: center on you\n" +
-                            "D-pad ▶ / Space: shortcuts and pipes  ·  LB / RB: places  ·  X / T: travel  ·  Y / F: waypoint  ·  D-pad ▲ ▼: egg areas  ·  B / Esc: close";
+            controlsLine = Label("Controls", panel.transform, new Vector2(0, -333), new Vector2(1240, 40), 14); controlsLine.lineSpacing = 1.05f;
+            ControlsText();
+        }
+
+        // Round 74 (B, Dan: "on the map screen ... just show controls for the device being played with"): the controls of the device in use only
+        // (KeyHints), set again whenever the player switches (Update)
+        Text controlsLine; bool controlsPad;
+        void ControlsText()
+        {
+            if (!controlsLine) return; controlsPad = KeyHints.Pad;
+            controlsLine.text = controlsPad
+                ? "Left stick: pan  ·  right stick: pointer  ·  A: choose what is under the pointer  ·  RT / LT: zoom  ·  D-pad ◀: center on you\n" +
+                  "D-pad ▶: shortcuts and pipes  ·  LB / RB: places  ·  X: travel  ·  Y: waypoint  ·  D-pad ▲ ▼: egg areas  ·  B: close"
+                : "WASD / arrows: pan  ·  mouse: pointer  ·  click / Enter: choose what is under the pointer  ·  = / -: zoom  ·  Home: center on you\n" +
+                  "Space: shortcuts and pipes  ·  Q / E: places  ·  T: travel  ·  F: waypoint  ·  PgUp / PgDn: egg areas  ·  Esc: close";
         }
 
         Vector2 ScreenPoint(Vector3 p) { var uv = Normalized(p); return Vector2.Scale((uv - center) * zoom, picture.rectTransform.rect.size); }

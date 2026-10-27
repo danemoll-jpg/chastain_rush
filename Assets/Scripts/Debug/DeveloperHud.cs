@@ -78,7 +78,7 @@ namespace ChastainRush
             }
         }
 
-        string SessionText => Session == null ? "Session: NEW / Reports 0 - next F4 starts BUG-001"
+        string SessionText => Session == null ? "Session: NEW / Reports 0 - next " + KeyHints.Of("R3", "F4") + " starts BUG-001"
             : "Session: " + session.Id + " " + (session.Closed ? "CLOSED" : "OPEN") + " / Reports " + session.Count;
 
         // Round 13: "Street Classic (original)", the name and Racer's profile id
@@ -236,7 +236,7 @@ namespace ChastainRush
 
         void Export()
         {
-            if (Session == null || session.Closed || session.Count == 0) { Status = "Nothing to export yet - capture a bug with F4 first."; return; }
+            if (Session == null || session.Closed || session.Count == 0) { Status = "Nothing to export yet - capture a bug with " + KeyHints.Of("R3", "F4") + " first."; return; }
             try { LastExport = session.Export(); Status = "Session CLOSED. ZIP: " + LastExport; }
             catch (Exception e) { Status = "Export failed: " + e.Message; }
         }
@@ -255,7 +255,7 @@ namespace ChastainRush
 
         void NewSession()
         {
-            try { Session?.Close(); session = null; resumeChecked = true; Status = "Session closed; history kept. The next F4 starts a new session at BUG-001."; }
+            try { Session?.Close(); session = null; resumeChecked = true; Status = "Session closed; history kept. The next " + KeyHints.Of("R3", "F4") + " starts a new session at BUG-001."; }
             catch (Exception e) { Status = e.Message; }
         }
 
@@ -303,7 +303,8 @@ namespace ChastainRush
                           $"{SessionText}\n" +
                           (bumps != null ? $"Bump log: {bumps.Events} events" + (bumps.Events > 0 ? "\nLast: " + Trim(bumps.LastLine, 110) : "") + "\n" : "") +
                           (string.IsNullOrEmpty(Status) ? "" : Status + "\n") +
-                          "F3 or [ hide / F4, ] or R3 capture bug / F6, \\ or Start: debug menu / F2 or P fps / M or View: map";
+                          // Round 74 (B): the device in use; the F-keys and the debug keys are the keyboard's only
+                          KeyHints.Of("R3: capture bug / View: map", "F3 or [ hide / F4 or ] capture bug / F6 or \\ debug menu / F2 or P fps / M map");
             float height = label.CalcHeight(new GUIContent(text), 430f) + 14f;
             var r = new Rect(w - 450f - 12f, h - height - 12f, 450f, height);
             GUI.Box(r, GUIContent.none, box);
@@ -320,12 +321,12 @@ namespace ChastainRush
             GUILayout.Label("DEBUG / INSPECTION", title);
             GUILayout.Label(SessionText, label);
             GUILayout.Space(6);
-            if (GUILayout.Button("Resume   (F6 / \\ / Esc)", button, GUILayout.Height(36))) CloseMenu();
-            if (GUILayout.Button("Capture Bug   (F4 / ])", button, GUILayout.Height(36))) { CloseMenuForCapture(); }
+            if (GUILayout.Button(KeyHints.Of("Resume   (B)", "Resume   (F6 / \\ / Esc)"), button, GUILayout.Height(36))) CloseMenu();
+            if (GUILayout.Button(KeyHints.Of("Capture Bug   (R3)", "Capture Bug   (F4 / ])"), button, GUILayout.Height(36))) { CloseMenuForCapture(); }
             if (GUILayout.Button("Export Bug Report ZIP", button, GUILayout.Height(36))) Export();
             if (GUILayout.Button("Open Debug Report Folder", button, GUILayout.Height(36))) OpenFolder();
             if (GUILayout.Button("START NEW DEBUG SESSION", button, GUILayout.Height(36))) NewSession();
-            if (GUILayout.Button("Hide Debug HUD   (F3 / [)", button, GUILayout.Height(36))) { Visible = false; CloseMenu(); }
+            if (GUILayout.Button(KeyHints.Of("Hide Debug HUD", "Hide Debug HUD   (F3 / [)"), button, GUILayout.Height(36))) { Visible = false; CloseMenu(); }
             GUILayout.Space(6);
             GUILayout.Label("Reports: " + ReportRoot() + "\nBump log: " + Path.GetFullPath(BumpLogger.LogPath), label);
             if (!string.IsNullOrEmpty(Status)) GUILayout.Label(Status, label);
@@ -352,7 +353,7 @@ namespace ChastainRush
             if (Event.current.type == EventType.Repaint && GUI.GetNameOfFocusedControl() != "comment") GUI.FocusControl("comment");
             GUILayout.Space(6);
             if (GUILayout.Button("Save   Enter", button, GUILayout.Height(36))) SaveComment();
-            if (GUILayout.Button("Cancel   Esc / B", button, GUILayout.Height(36))) CancelComment();
+            if (GUILayout.Button(KeyHints.Of("Cancel   B", "Cancel   Esc"), button, GUILayout.Height(36))) CancelComment();
             GUILayout.Label("Shift+Enter: new line. The screenshot is already saved.", label);
             if (!string.IsNullOrEmpty(Status)) GUILayout.Label(Status, label);
             GUILayout.EndArea();

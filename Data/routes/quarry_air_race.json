@@ -8,7 +8,8 @@
  "traffic": false,
  "air": true,
  "vehicles": [
-  "plane"
+  "plane",
+  "dart"
  ],
  "source": "Tools/mapgen/make_air_route.py (Round 71): the rings' line round Viking Quarry, under I-75 at Noonday Creek, over Kennesaw Mountain and under Cobb Parkway. Map meters (= Unity x, z), heights in the world's meters.",
  "lap_length_m": 10258.73,

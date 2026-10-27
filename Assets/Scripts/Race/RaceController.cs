@@ -101,7 +101,7 @@ namespace ChastainRush
         public bool NewBestLap { get; private set; }
         public bool NewBestTotal { get; private set; }
         public int LapsInRace => Route != null ? Route.Laps : 3;
-        public string Hint => "Start / Esc: menu";   // Round 16: the race keys are the menus now
+        public string Hint => KeyHints.Of("Start: menu", "Esc: menu");   // Round 74 (B): the device in use   // Round 16: the race keys are the menus now
         public event Action<string> Logged; // every race event, for the scripted check
 
         ArcadeVehicle car;
@@ -1159,7 +1159,7 @@ namespace ChastainRush
         void DrawFree(float w, float h)
         {
             string best = BestLap > 0f ? $"   best lap {Fmt(BestLap)}   best total {Fmt(BestTotal)}" : "";
-            Shadowed(new Rect(14, 10, 900, 28), $"<b>Start / Esc</b> menu: race {Route.Name}, {Route.Laps} laps, {Route.Direction}{best}", small);
+            Shadowed(new Rect(14, 10, 900, 28), $"<b>{KeyHints.Of("Start", "Esc")}</b> menu: race {Route.Name}, {Route.Laps} laps, {Route.Direction}{best}", small);
         }
 
         void DrawTimers(float w, float h)
@@ -1271,7 +1271,7 @@ namespace ChastainRush
             }
             var p2 = HumanEntrant(2);
             if (SplitScreen.Active && p2 != null) Shadowed(new Rect(r.x + 20, r.yMax - 60, r.width, 26), $"{SplitScreen.NameOf(2)}   Total time   <b>{Fmt(p2.FinalTotal)}</b>" + (p2.Estimated ? " (estimated)" : "") + (p2.RaceRank > 0 ? $"   <color=#4CF2CF>Top 10 #{p2.RaceRank}</color>" : ""), small);
-            Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), "Start / Esc  menu: race again or free roam", small);
+            Shadowed(new Rect(r.x + 20, r.yMax - 34, r.width, 26), KeyHints.Of("Start", "Esc") + "  menu: race again or free roam", small);
         }
     }
 }

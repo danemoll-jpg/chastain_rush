@@ -582,13 +582,9 @@ namespace ChastainRush
             Step(6, "weather", "Weather:   " + (Racer.Weather)Mathf.Clamp(Current.weather, 0, 2), d => { Current.weather = (Mathf.Clamp(Current.weather, 0, 2) + d + 3) % 3; Changed(); });
             Row(7, "opponents", "Opponent vehicles…", () => Navigate("opponents"));
             buttons[7].interactable = Current.opponents;
-            if (smallOnly)
-            {
-                // the trail's vehicles only (cars are not offered): left / right picks one, as the garage would
-                var cfg = car.GetComponent<VehicleConfiguration>(); var ids = rd.vehicles;
-                int vi = Mathf.Max(0, Array.IndexOf(ids, cfg ? cfg.profileId : ids[0]));
-                Step(8, "vehicle", $"Vehicle:   {VehicleProfile.Find(ids[vi]).Name}", d => { if (vehicles) vehicles.Select(ids[(vi + d + ids.Length) % ids.Length], VehicleSwitch.Pick.Race); Show(); });
-            }
+            // Round 74 (A2, Dan: "There is no garage option"): a route with its own vehicle list (the air races' planes, the trails' bikes) opens the
+            // garage too, holding only the route's vehicles: the turning model and the colors, as for the cars
+            if (smallOnly) Row(8, "garage", $"Garage…   {VehicleProfile.Find(car.GetComponent<VehicleConfiguration>()?.profileId ?? rd.vehicles[0]).Name}", () => OpenGarage("route"));
             else Row(8, "garage", "Garage…", () => OpenGarage("race"));
             // Round 43 (B1): Racer's Ghost row (RaceMenus.Core: on / off, saved); its details say what the current route has
             var ghost = race ? race.Ghost : null;

@@ -21,7 +21,11 @@ namespace ChastainRush
     {
         public const float TopSpeed = 115f, Cruise = 85f, TakeOffSpeed = 30f, StallSpeed = 27f, Ceiling = 1700f, SpeedGain = .22f;
         public const float PitchRate = 45f, RollRate = 95f, MaxBank = 70f, MaxPitch = 35f, RudderRate = 16f, LandSink = 5f;
-        public const float WheelDrop = 1.25f;   // the wheels' bottom below the body's middle (Tools/Blender/plane.py GROUND)
+        public const float WheelDrop = 1.25f;
+        // Round 74 (H, Dan: "a faster, more agile plane"): the numbers above are the Sky Hopper's; each plane's profile may set its own (VehicleProfile
+        // PlaneTop, PlaneRoll, PlanePitch, PlaneBank, PlaneGain; 0 = the Sky Hopper's), taken on Begin
+        public float Top { get; private set; } = TopSpeed; public float Roll { get; private set; } = RollRate; public float PitchR { get; private set; } = PitchRate;
+        public float Bank { get; private set; } = MaxBank; public float Gain { get; private set; } = SpeedGain;   // the wheels' bottom below the body's middle (Tools/Blender/plane.py GROUND)
         ArcadeVehicle car; VehicleConfiguration config; VehicleInput vInput;
         Transform visual, prop, disc; Renderer discRenderer;
         InputAction stick, throttleUp, throttleDown, rudder, keysThrottle, keysPitch, keysBank;
@@ -44,6 +48,8 @@ namespace ChastainRush
         public void Begin(Transform newVisual)
         {
             car = GetComponent<ArcadeVehicle>(); config = GetComponent<VehicleConfiguration>(); vInput = GetComponent<VehicleInput>();
+            { var pr = config ? config.Profile : null; float P(float v, float d) => v > 0f ? v : d;
+              Top = P(pr?.PlaneTop ?? 0f, TopSpeed); Roll = P(pr?.PlaneRoll ?? 0f, RollRate); PitchR = P(pr?.PlanePitch ?? 0f, PitchRate); Bank = P(pr?.PlaneBank ?? 0f, MaxBank); Gain = P(pr?.PlaneGain ?? 0f, SpeedGain); }
             visual = newVisual; prop = visual ? visual.Find("Propeller") : null; disc = visual ? visual.Find("Rotor disc") : null;
             discRenderer = disc ? disc.GetComponentInChildren<Renderer>() : null;
             bool wasOn = enabled;
@@ -130,21 +136,21 @@ namespace ChastainRush
             Throttle = Mathf.Clamp01(Throttle + (up - down) * .6f * dt);
             if (Scripted && sThrottle >= 0f) Throttle = Mathf.MoveTowards(Throttle, sThrottle, .6f * dt);
             // the speed: toward the throttle's speed, less for a climb and more for a dive (gravity along the nose), a little drag in a steep bank
-            float targetV = Mathf.Lerp(StallSpeed * .9f, TopSpeed, Throttle);
-            Airspeed += ((targetV - Airspeed) * SpeedGain - 9.81f * Mathf.Sin(pitchDeg * Mathf.Deg2Rad) * .75f - Mathf.Abs(Mathf.Sin(rollDeg * Mathf.Deg2Rad)) * 1.2f) * dt;
-            Airspeed = Mathf.Clamp(Airspeed, 10f, TopSpeed * 1.35f);
+            float targetV = Mathf.Lerp(StallSpeed * .9f, Top, Throttle);
+            Airspeed += ((targetV - Airspeed) * Gain - 9.81f * Mathf.Sin(pitchDeg * Mathf.Deg2Rad) * .75f - Mathf.Abs(Mathf.Sin(rollDeg * Mathf.Deg2Rad)) * 1.2f) * dt;
+            Airspeed = Mathf.Clamp(Airspeed, 10f, Top * 1.35f);
             // pitch: the stick sets the rate; let go and it eases back to level; slow, the nose eases down until it has speed again; never past the ceiling
             float slow = Mathf.Clamp01((StallSpeed + 6f - Airspeed) / 10f);
-            if (Mathf.Abs(pIn) > .05f) pitchDeg += pIn * PitchRate * Mathf.Lerp(1f, .55f, Mathf.Clamp01(Airspeed / TopSpeed)) * dt;
+            if (Mathf.Abs(pIn) > .05f) pitchDeg += pIn * PitchR * Mathf.Lerp(1f, .55f, Mathf.Clamp01(Airspeed / Top)) * dt;
             else pitchDeg = Mathf.MoveTowards(pitchDeg, 0f, 14f * dt);
             if (slow > 0f) pitchDeg = Mathf.MoveTowards(pitchDeg, -12f, 30f * slow * dt);
             if (body.position.y > Ceiling) pitchDeg = Mathf.Min(pitchDeg, Mathf.Lerp(0f, -8f, (body.position.y - Ceiling) / 60f));
             pitchDeg = Mathf.Clamp(pitchDeg, -MaxPitch - 10f, MaxPitch * (1f - slow * .8f));
             // bank: the stick rolls it; let go and the wings come level; the bank turns it (a coordinated turn), the rudder a little more
-            if (Mathf.Abs(bIn) > .05f && Outside <= 0f) rollDeg += bIn * RollRate * dt;   // (past the map's edge the turn back has the bank)
+            if (Mathf.Abs(bIn) > .05f && Outside <= 0f) rollDeg += bIn * Roll * dt;   // (past the map's edge the turn back has the bank)
             else if (Outside <= 0f) rollDeg = Mathf.MoveTowards(rollDeg, 0f, 40f * dt);
             Boundary(body.position, ref rollDeg);   // past the map's edge: a wide turn back (PlaneFlight.Effects.cs)
-            rollDeg = Mathf.Clamp(rollDeg, -MaxBank, MaxBank);
+            rollDeg = Mathf.Clamp(rollDeg, -Bank, Bank);
             float turn = Mathf.Rad2Deg * 9.81f * Mathf.Tan(rollDeg * Mathf.Deg2Rad) / Mathf.Max(Airspeed, 15f);
             yawDeg += (turn + rud * RudderRate) * dt;
             if (Outside > 0f) Airspeed = Mathf.MoveTowards(Airspeed, Mathf.Max(StallSpeed + 10f, Airspeed * .97f), 6f * dt);   // the headwind

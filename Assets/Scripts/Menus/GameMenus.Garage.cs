@@ -78,7 +78,11 @@ namespace ChastainRush
             // Round 36 (Racer 0.106 Part C / 0.120 Part E): opened for the Stunt event the garage holds the stunt vehicles only; from race setup
             // only the vehicles that race (no stunt vehicle); in Free Roam all of them
             // Round 63: the helicopter only from Free Roam's garage ("roam")
-            var all = VehicleProfile.All.Where(v => garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt && !v.Flies : garageFor == "roam" || !v.Flies).ToArray(); int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
+            // Round 74 (A2): "route" (race setup of a route with its own vehicle list: the air races' planes, the trails' bikes): that list only
+            var rdG = race ? race.RouteData : null;
+            var all = VehicleProfile.All.Where(v => garageFor == "route" ? rdG != null && rdG.AllowsVehicle(v.Id) : garageFor == "stunt" ? v.Stunt : garageFor == "race" ? !v.Stunt && !v.Flies : garageFor == "roam" || !v.Flies).ToArray();
+            if (all.Length == 0) all = new[] { profile };
+            int at = Mathf.Max(0, Array.FindIndex(all, v => v.Id == profile.Id));
             Clear(profile.Name + " / " + profile.Class, profile.Description);
             heading.text = profile.Name + " / " + profile.Class;
             // Round 70 (C, Dan: "In race setup, I am not able to select a car in the garage some times"): a finished race counted as racing,
@@ -87,7 +91,7 @@ namespace ChastainRush
             Step(0, "vehicle", $"{profile.Name}   ·   {at + 1} / {all.Length}", d =>
             {
                 if (racing) return;   // the vehicle is chosen before a race, not during one
-                vehicles.Select(all[(at + d + all.Length) % all.Length].Id, garageFor == "race" ? VehicleSwitch.Pick.Race : garageFor == "stunt" ? VehicleSwitch.Pick.Forced : VehicleSwitch.Pick.Roam); Show();
+                vehicles.Select(all[(at + d + all.Length) % all.Length].Id, garageFor == "race" || garageFor == "route" ? VehicleSwitch.Pick.Race : garageFor == "stunt" ? VehicleSwitch.Pick.Forced : VehicleSwitch.Pick.Roam); Show();
             });
             int colour = vehicles.Colour;
             Step(1, "colour", "Color:    " + (colour < 0 ? "Standard" : VehiclePaint.Name(colour)), d =>

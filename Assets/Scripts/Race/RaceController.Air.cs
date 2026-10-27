@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Racer;
 using UnityEngine;
@@ -39,7 +40,10 @@ namespace ChastainRush
                 var ai = clone.GetComponent<ArcadeVehicle>(); var cfg = clone.GetComponent<VehicleConfiguration>();
                 var oldPlane = clone.GetComponent<PlaneFlight>(); if (oldPlane) oldPlane.End();   // started afresh by Apply (its own engine, 3D)
                 cfg.riderLook = riders[n % riders.Length];
-                cfg.Apply(VehicleProfile.Plane.Id);
+                // Round 74 (H): AI pilots fly either plane (the route's planes; the opponents page's choice for the slot if it is one of them, else random)
+                var planeIds = (RouteData?.vehicles ?? new string[0]).Where(v => VehicleProfile.Find(v).IsPlane).ToArray(); if (planeIds.Length == 0) planeIds = new[] { VehicleProfile.Plane.Id };
+                var savedAi = SavedAiChoices(); string pid = n < savedAi.Length && planeIds.Contains(savedAi[n]) ? savedAi[n] : planeIds[UnityEngine.Random.Range(0, planeIds.Length)];
+                cfg.Apply(pid);
                 cfg.SetPaint(AiPaints[n % AiPaints.Length]);
                 float d = 45f + 45f * (n / 2), side = n % 2 == 0 ? 9f : -9f; if (n == 2) side = 0f;
                 var p = Route.GridPosition + fwd * d + right * side;

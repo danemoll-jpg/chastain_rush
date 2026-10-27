@@ -32,15 +32,17 @@ namespace ChastainRush
         void CheckStrikes(Rigidbody body)
         {
             if (OverWater && HeightAboveGround < .15f) { Crash("touched down in water"); return; }
-            foreach (var local in Strikes)
+            float span = config && config.Profile != null && config.Profile.PlaneSpan > 0f ? config.Profile.PlaneSpan / 5.5f : 1f;   // Round 74: the Sky Dart's shorter wing
+            foreach (var l0 in Strikes)
             {
+                var local = Mathf.Abs(l0.x) > 2f ? new Vector3(l0.x * span, l0.y, l0.z) : l0;
                 var p = transform.TransformPoint(local);
                 int n = Physics.OverlapSphereNonAlloc(p, .4f, overlap, ~0, QueryTriggerInteraction.Ignore);
                 for (int k = 0; k < n; k++) if (Solid(overlap[k])) { Crash((local.x > 1f ? "the right wing" : local.x < -1f ? "the left wing" : local.z > 0f ? "the nose" : "the tail") + " hit " + overlap[k].name); return; }
             }
             // the trees' crowns (no colliders): the wing's span at the wing's height, the body
             var wing = transform.TransformPoint(new Vector3(0f, 1.1f, .15f));
-            if (!NoTreesCheck && TreeCrowns.Hit(wing, 5.2f, body.position, out string tree)) Crash(tree.Replace("rotor", "a wing"));
+            if (!NoTreesCheck && TreeCrowns.Hit(wing, 5.2f * span, body.position, out string tree)) Crash(tree.Replace("rotor", "a wing"));
         }
 
         public void Crash(string why)

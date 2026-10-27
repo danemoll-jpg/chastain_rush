@@ -85,7 +85,7 @@ namespace Racer
                     if (sp.State == SpeedPatrol.Phase.Starting) centre = "GET READY";
                     float left = Mathf.Max(0, sp.Limit - sp.Clock);
                     var lines = new List<string> { $"<b>SPEED PATROL</b>   {PoliceKit.Mss(left)} left{(sp.State == SpeedPatrol.Phase.Overtime ? "  (finish your chase)" : "")}", $"POINTS  <b>{c.points}</b>   ·   caught {c.catches}", c.limit > 0 ? $"LIMIT  <b>{c.limit}</b> mph" : "LIMIT  —   (off the road)",
-                        c.radar >= 0 ? $"RADAR  {(c.radarOver ? "<color=#FF5A4A>" : "<color=#9CFFB0>")}{c.radar:0} mph</color> in a {c.radarLimit}" : "RADAR  —", "LIGHTS  " + (c.siren ? "<color=#FF5A4A>ON</color>" : "off") + "   (RB / H)" };
+                        c.radar >= 0 ? $"RADAR  {(c.radarOver ? "<color=#FF5A4A>" : "<color=#9CFFB0>")}{c.radar:0} mph</color> in a {c.radarLimit}" : "RADAR  —", "LIGHTS  " + (c.siren ? "<color=#FF5A4A>ON</color>" : "off") + "   (" + KeyHints.Of("RB", "H") + ")" };
                     float m = sp.MeterFor(player); if (m > 0) { int b = Mathf.RoundToInt(m * 10); lines.Add("PULL OVER  <color=#7FB2FF>" + new string('■', b) + "</color><color=#5A6066>" + new string('■', 10 - b) + "</color>"); }
                     Panel(new Rect(v.x + 14, v.y + (half ? 40 : 150), 360, 22 + 25 * lines.Count), lines);
                     if (Time.unscaledTime < c.lineUntil) Label(new Rect(v.x + 20, top, v.width - 40, 60), "<color=#7FB2FF>RADIO</color>  " + c.line, line);
@@ -98,7 +98,7 @@ namespace Racer
                 if (pc.State == PoliceChase.Phase.Caught) centre = "<color=#FF5A4A>CAUGHT</color>"; if (pc.State == PoliceChase.Phase.Away) centre = "<color=#7FFFB0>GOT AWAY</color>";
                 int b = Mathf.RoundToInt(pc.Meter * 10);
                 var lines = new List<string> { $"<b>{(role == "COP" ? "COP" : "RUNNER")}</b>   round {pc.Round + 1} of {pc.Rounds}", $"TIME  {PoliceKit.Mss(pc.Clock)} / {PoliceSetup.Minutes}:00", "BUST  <color=#FF5A4A>" + new string('■', b) + "</color><color=#5A6066>" + new string('■', 10 - b) + "</color>" };
-                if (role == "COP") lines.Add("LIGHTS  " + (pc.Siren ? "<color=#FF5A4A>ON</color>" : "off") + "   (RB / H)   ·   get within 10 m, make them stop");
+                if (role == "COP") lines.Add("LIGHTS  " + (pc.Siren ? "<color=#FF5A4A>ON</color>" : "off") + "   (" + KeyHints.Of("RB", "H") + ")   ·   get within 10 m, make them stop");
                 Panel(new Rect(v.x + 14, v.y + (half ? 40 : 150), 380, 22 + 25 * lines.Count), lines);
             }
             if (centre != "") Label(new Rect(v.x, v.y + v.height * .3f, v.width, 70), centre, new GUIStyle(big) { fontSize = half ? 40 : 54, normal = { textColor = Color.white } });

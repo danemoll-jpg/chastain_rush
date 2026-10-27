@@ -76,7 +76,7 @@ namespace ChastainRush
                 {
                     var e = who[i]; var x = d.racers[i]; if (!e.Car) continue;
                     if (float.IsNaN(x.track.start)) { x.track.start = t; x.track.dt = racerEvery * Time.fixedDeltaTime; }
-                    float throttle = e.Driver ? e.Driver.LastThrottle : PedalOf(e.Car);
+                    float throttle = e.Car.TryGetComponent<PlaneFlight>(out var pf) && pf.enabled ? pf.Throttle : e.Driver ? e.Driver.LastThrottle : PedalOf(e.Car);   // Round 74 (A1): a plane's own throttle (its propeller in the replay)
                     var c = e.Car; x.track.frames.Add(new ReplayData.Frame { t = t, p = c.Body.position, q = c.Body.rotation, speed = c.ForwardSpeed, steer = c.VisualSteering, throttle = throttle, wheels = (byte)c.GroundedWheels });
                     var g = c.GetComponent<RiderGestures>();
                     if (g && g.Current != gestureWas[i]) { if (g.Current != RiderGestures.Kind.None) d.events.Add(new ReplayData.Event { t = t, kind = ReplayData.Kind.Gesture, a = i, b = (int)g.Current }); gestureWas[i] = g.Current; }

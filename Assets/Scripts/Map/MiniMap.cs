@@ -26,8 +26,9 @@ namespace ChastainRush
         public static readonly Vector2 PlayerPoint = new Vector2(0, -48);
         static readonly Color Main = new Color(.2f, .86f, .86f), Optional = new Color(1, .69f, .17f), Gate = new Color(.3f, .6f, 1f), Pipe = new Color(.82f, .82f, .86f);
         const string RaceKey = "<color=#33DBDB>COURSE</color>   <color=#FFB02B>SHORTCUT</color>   • RIVALS";
-        const string RoamKey = "J / B: minimap on / off";
-        const string UnderKey = "<color=#D1D1DB>PIPES</color>   J / B: on / off";
+        // Round 74 (B): the minimap's key for the device in use (KeyHints)
+        static string RoamKey => KeyHints.Of("B: minimap on / off", "J: minimap on / off");
+        static string UnderKey => "<color=#D1D1DB>PIPES</color>   " + KeyHints.Of("B", "J") + ": on / off";
         const float RimInset = 11;
 
         public static MiniMap Instance { get; private set; }

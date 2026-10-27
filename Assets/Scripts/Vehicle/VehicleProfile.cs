@@ -73,10 +73,20 @@ namespace Racer
             // Chastain Rush, Round 69: the plane (Tools/Blender/plane.py), appended. Free Roam only as the helicopter; on its wheels ArcadeVehicle's
             // drive with these numbers (Speed its top speed on the ground), in the air ChastainRush.PlaneFlight. Suspension: the wheels' reach
             Plane,
+            // Chastain Rush, Round 74 (H): a second plane, the Sky Dart (Tools/Blender/plane_dart.py): a low-wing racing single-seater, faster and quicker
+            // to roll than the Sky Hopper; the same ground numbers and box, its own flight numbers (PlaneFlight takes them on Begin)
+            PlaneDart,
         };
         public bool Flies => Class == "Helicopter" || Class == "Plane";   // Round 63; Round 69: the plane
         public static readonly VehicleProfile Plane = new() { Id="plane", Name="Sky Hopper", Class="Plane", Description="Plane / Free Roam only / take off from the airport's runway and fly the whole map", Speed=46, Acceleration=7.5f, Grip=16, Response=6, Mass=1100, Wheelbase=2.56f, Pitch=1, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.6f,-17f),
                 Model="Plane", Seat=new(-.30f,-.30f,.55f), Base="original", Suspension=1.42f, SolidContact=true };
+        public static readonly VehicleProfile PlaneDart = new() { Id="dart", Name="Sky Dart", Class="Plane", Description="Racing plane / quicker and more agile than the Sky Hopper / take off from the airport's runway", Speed=50, Acceleration=8.5f, Grip=16, Response=6, Mass=900, Wheelbase=2.4f, Pitch=1.15f, Size=new(1.3f,1.5f,7.6f), Camera=new(0,4.2f,-15.5f),
+                Model="PlaneDart", Seat=new(0f,-.22f,-.35f), Base="original", Suspension=1.42f, SolidContact=true, PlaneTop=138f, PlaneRoll=165f, PlanePitch=62f, PlaneBank=85f, PlaneGain=.3f, PlaneSpan=3.9f };
+        // Round 74 (H): a plane's own flight numbers (0 = the Sky Hopper's, PlaneFlight's constants): top speed (m/s), roll and pitch rates (deg/s), the
+        // bank limit (deg), how fast the airspeed follows the throttle; its half span (m) for the wing-tip strike points
+        public float PlaneTop, PlaneRoll, PlanePitch, PlaneBank, PlaneGain, PlaneSpan;
+        public bool IsPlane => Class == "Plane";
+        public static VehicleProfile[] Planes => System.Array.FindAll(All, p => p.Class == "Plane");
         public static readonly VehicleProfile Helicopter = new() { Id="heli", Name="Sky Survey", Class="Helicopter", Description="Helicopter / Free Roam only / fly the whole map: climb, hover, land anywhere flat", Speed=72, Acceleration=14, Grip=20, Response=8, Mass=1400, Wheelbase=2.6f, Pitch=1, Size=new(2.1f,2.3f,4.6f), Camera=new(0,5.5f,-17f),
                 Model="Helicopter", Seat=new(.36f,-.32f,.55f), Base="original", SolidContact=true };
         // 0.111 Part D: a championship's prize: an existing vehicle's model and handling with its own livery (the cup's colour, gold trim and a gold

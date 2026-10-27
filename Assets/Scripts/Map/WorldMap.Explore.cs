@@ -139,9 +139,9 @@ namespace ChastainRush
         public void RequestTravel(int index)
         {
             var ex = Exploration.Instance; if (!ex) return;
-            if (index < 0 || index >= ex.destinations.Length) { ex.Message = "Point at a discovered place first (or LB / RB)."; return; }
+            if (index < 0 || index >= ex.destinations.Length) { ex.Message = KeyHints.Of("Point at a discovered place first (or LB / RB).", "Point at a discovered place first (or Q / E)."); return; }
             if (!Exploration.CanTravel) { ex.Message = "Travel is in Free Roam only."; return; }
-            pendingTravel = index; confirmText.text = $"Travel to {ex.destinations[index].title}?\n\n<size=22>A / Enter: travel      B / Esc: cancel</size>"; confirmText.supportRichText = true;
+            pendingTravel = index; confirmText.text = $"Travel to {ex.destinations[index].title}?\n\n<size=22>{KeyHints.Of("A: travel      B: cancel", "Enter: travel      Esc: cancel")}</size>"; confirmText.supportRichText = true;
             confirm.SetActive(true); confirm.transform.SetAsLastSibling(); MenuInput.ConsumeThroughRelease();
         }
         public bool ConfirmTravel()
@@ -173,7 +173,7 @@ namespace ChastainRush
             int ai = 0; var all = EggAreas.Of(hunt); var list = new System.Text.StringBuilder();
             if (hunt && free)
             {
-                list.Append($"<b>GOOSE EGGS  {hunt.Found} / {hunt.Total}</b>   D-pad ↑ ↓\n");
+                list.Append($"<b>GOOSE EGGS  {hunt.Found} / {hunt.Total}</b>   {KeyHints.Of("D-pad ↑ ↓", "PgUp / PgDn")}\n");
                 for (int i = 0; i < all.Length; i++)
                 {
                     var a = all[i]; bool done = a.Done(hunt); var tint = done ? new Color(.75f, .77f, .75f, .8f) : a.tint;
@@ -210,7 +210,7 @@ namespace ChastainRush
         {
             var ex = Exploration.Instance; if (!ex) return "";
             string wp = ex.Waypoint.HasValue ? $"Waypoint {DisplayUnits.Distance(Vector3.ProjectOnPlane(ex.Waypoint.Value - (car ? car.Body.position : Vector3.zero), Vector3.up).magnitude)}" : "";
-            string place = selectedPlace >= 0 ? ex.destinations[selectedPlace].title + (Exploration.CanTravel ? "  (X: travel)" : "  (travel in Free Roam)") : $"{KnownPlaces().Length} places found";
+            string place = selectedPlace >= 0 ? ex.destinations[selectedPlace].title + (Exploration.CanTravel ? KeyHints.Of("  (X: travel)", "  (T: travel)") : "  (travel in Free Roam)") : $"{KnownPlaces().Length} places found";
             return $"{place}{(wp.Length > 0 ? "   ·   " + wp : "")}{(ex.Message.Length > 0 ? "   ·   " + ex.Message : "")}";
         }
     }

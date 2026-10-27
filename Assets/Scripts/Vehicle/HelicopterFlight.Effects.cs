@@ -54,7 +54,8 @@ namespace ChastainRush
         void Effects(float dt)
         {
             if (!car) return;
-            float speed = car.Body.linearVelocity.magnitude;
+            if (car.Puppet) Spool = Mathf.MoveTowards(Spool, 1f, dt / 2.2f);   // Round 74 (A1): a replay's helicopter: its rotors at speed
+            float speed = car.Puppet ? car.PuppetSpeed : car.Body.linearVelocity.magnitude;
             // rotors: at full spool about 6.5 turns a second (the blades blur into the disc), the tail rotor faster
             float rps = Spool * 6.5f;
             rotorAngle = (rotorAngle + rps * 360f * dt) % 360f; tailAngle = (tailAngle + rps * 5f * 360f * dt) % 360f;
@@ -101,7 +102,7 @@ namespace ChastainRush
             GUI.Label(new Rect(r.x + 14, r.y + 44, 340, 24), $"over the ground · heading {heading:000}° {points[Mathf.RoundToInt(heading / 45f) % 8]}{climb}", small);
             string state = Crashed ? "CRASHED: " + CrashReason : Spool < .95f ? $"rotor {Spool * 100:0}%" : Landed ? "landed" : Boosting ? "BOOST" : "flying";
             GUI.Label(new Rect(r.x + 14, r.y + 70, 340, 24), state, small);
-            bool pad = vInput && vInput.UsingGamepad;
+            bool pad = KeyHints.Pad;   // Round 74 (B)
             string hint = Landed && !Crashed ? (pad ? "Left stick up or RT: lift off" : "Space: lift off") : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick climb / turn · right stick fly · RB boost" : "W/S/Q/E fly · A/D turn · Space/C up / down · Shift boost") : "";
             GUI.Label(new Rect(r.x + 14, r.y + 96, 450, 24), hint, small);
             BoundaryWarning(W);   // Round 66

@@ -37,25 +37,29 @@ namespace ChastainRush
         const float Fade = .35f;
         // Part C: this game's controls and features (each binding checked in VehicleInput, CameraViews, WorldMap, MiniMap,
         // DeveloperHud, TrailerMode, LocalRadio and the menus, Round 51). American English.
-        static readonly string[] Tips =
+        // Round 74 (B, Dan: "just show controls for the device being played with"): each tip as the pad has it and as the keys have it (one text when
+        // it names no control; a keyboard-only one (F8, F4) the keyboard's only, the pad's way of doing it on the pad); KeyHints picks by the device in use
+        static readonly (string pad, string keys)[] TipPairs =
         {
-            "Stuck or upside down? R (Y on a controller) puts you back on the road.",
-            "V (X on a controller) changes the camera view. Hold the right mouse button or push the right stick to look around.",
-            "M (View on a controller) opens the map: F (Y) sets a waypoint to drive to, T (X) travels to a place.",
-            "J (B on a controller) shows or hides the minimap.",
-            "Worn tire tracks leaving the road mark a shortcut. Pull it off and you save time; fumble it and you lose more.",
-            "An official shortcut forgives the checkpoints it skips. A missed checkpoint anywhere else costs 5 seconds.",
-            "In the air, W / S (left stick) tips the nose and Q / E (LB / RB) spins you.",
-            "100 goose eggs are hidden around the map. GOOSE EGGS on the pause menu shows your count; the map shows the egg areas.",
-            "POLICE on the menus: outrun the cops in a Getaway, or catch speeders on Speed Patrol.",
-            "The Chastain Corner Stunt Park fills the old Kroger lot: ramps, a loop and the abandoned bank. STUNT EVENT scores your tricks.",
-            "Fences, mailboxes, signs, hydrants and small trees break when you hit them. Keep your foot down.",
-            "F (LB on a controller) shakes a fist out of the window.",
-            "F8 turns on Trailer Mode for filming and screenshots (TRAILER MODE on the pause menu too).",
-            "Found a bug? F4 (or click the right stick) captures it with a picture for the report.",
-            "The radio: N (D-pad down) changes the station, . (D-pad right) skips the song.",
-            "Race setup has Time of Day and Weather; Free Roam has its own weather on the menu.",
+            ("Stuck or upside down? Y puts you back on the road.", "Stuck or upside down? R puts you back on the road."),
+            ("X changes the camera view. Push the right stick to look around.", "V changes the camera view. Hold the right mouse button to look around."),
+            ("View opens the map: Y sets a waypoint to drive to, X travels to a place.", "M opens the map: F sets a waypoint to drive to, T travels to a place."),
+            ("B shows or hides the minimap.", "J shows or hides the minimap."),
+            ("Worn tire tracks leaving the road mark a shortcut. Pull it off and you save time; fumble it and you lose more.", null),
+            ("An official shortcut forgives the checkpoints it skips. A missed checkpoint anywhere else costs 5 seconds.", null),
+            ("In the air, the left stick tips the nose and LB / RB spin you.", "In the air, W / S tips the nose and Q / E spin you."),
+            ("100 goose eggs are hidden around the map. GOOSE EGGS on the pause menu shows your count; the map shows the egg areas.", null),
+            ("POLICE on the menus: outrun the cops in a Getaway, or catch speeders on Speed Patrol.", null),
+            ("The Chastain Corner Stunt Park fills the old Kroger lot: ramps, a loop and the abandoned bank. STUNT EVENT scores your tricks.", null),
+            ("Fences, mailboxes, signs, hydrants and small trees break when you hit them. Keep your foot down.", null),
+            ("LB shakes a fist out of the window.", "F shakes a fist out of the window."),
+            ("TRAILER MODE on the pause menu is for filming and screenshots.", "F8 turns on Trailer Mode for filming and screenshots."),
+            ("Found a bug? Click the right stick to capture it with a picture for the report.", "Found a bug? F4 captures it with a picture for the report."),
+            ("The radio: D-pad down changes the station, D-pad right skips the song.", "The radio: N changes the station, . skips the song."),
+            ("Race setup has Time of Day and Weather; Free Roam has its own weather on the menu.", null),
         };
+        static int TipCount => TipPairs.Length;
+        static string Tip(int i) { var t = TipPairs[i]; return t.keys == null ? t.pad : ChastainRush.KeyHints.Of(t.pad, t.keys); }
         static int tipIndex = -1;
 
         GameObject canvas; CanvasGroup group; RectTransform fill; Text title, detail, step, tip;
@@ -83,7 +87,7 @@ namespace ChastainRush
             if (!instance) { instance = new GameObject("Loading screen (Round 51)").AddComponent<LoadingScreen>(); DontDestroyOnLoad(instance.gameObject); instance.Build(); }
             var s = instance; s.StopAllCoroutines(); s.canvas.SetActive(true); s.group.alpha = 1; s.holding = true; s.started = false;
             s.shown = Time.realtimeSinceStartup; s.target = 0; s.bar = 0; s.title.text = what; s.detail.text = (detail ?? "").Replace("\n", "   ·   "); s.step.text = "Loading";
-            s.SetRoute(route); tipIndex = (tipIndex + 1 + UnityEngine.Random.Range(0, Tips.Length - 1)) % Tips.Length; s.tip.text = Tips[tipIndex]; s.tipAt = Time.realtimeSinceStartup;
+            s.SetRoute(route); tipIndex = (tipIndex + 1 + UnityEngine.Random.Range(0, TipCount - 1)) % TipCount; s.tip.text = Tip(tipIndex); s.tipAt = Time.realtimeSinceStartup;
             Shown++; LastTitle = what; s.StartCoroutine(s.Watch());
         }
 
@@ -110,7 +114,7 @@ namespace ChastainRush
             if (!holding) return;
             bar = Mathf.MoveTowards(bar, target, Time.unscaledDeltaTime * 1.6f);
             fill.anchorMax = new Vector2(Mathf.Clamp01(bar), 1);
-            if (Time.realtimeSinceStartup - tipAt > 5) { tipIndex = (tipIndex + 1) % Tips.Length; tip.text = Tips[tipIndex]; tipAt = Time.realtimeSinceStartup; TipChanges++; }
+            if (Time.realtimeSinceStartup - tipAt > 5) { tipIndex = (tipIndex + 1) % TipCount; tip.text = Tip(tipIndex); tipAt = Time.realtimeSinceStartup; TipChanges++; }
         }
 
         // the race's route on the map's picture (WorldMap's), a small inset in the bottom-right corner

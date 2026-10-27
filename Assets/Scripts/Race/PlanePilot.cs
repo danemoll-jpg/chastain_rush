@@ -117,12 +117,12 @@ namespace ChastainRush
                 var a = At(s + d - 15f); var b = At(s + d); var c = At(s + d + 15f);
                 float k = Mathf.Abs(Mathf.DeltaAngle(Mathf.Atan2(b.y - a.y, 15f) * Mathf.Rad2Deg, Mathf.Atan2(c.y - b.y, 15f) * Mathf.Rad2Deg)) * Mathf.Deg2Rad / 15f;
                 if (k < 1e-4f || b.y - Ground(b) > 25f) continue;   // only near the ground: higher up a late pull-up costs nothing
-                for (float u = PlaneFlight.TopSpeed; u > 45f; u -= 5f)
-                    if (k * u <= .75f * PlaneFlight.PitchRate * Mathf.Lerp(1f, .55f, u / PlaneFlight.TopSpeed) * Mathf.Deg2Rad) { vmax = Mathf.Min(vmax, u + d * .1f); break; }
+                for (float u = plane.Top; u > 45f; u -= 5f)
+                    if (k * u <= .75f * plane.PitchR * Mathf.Lerp(1f, .55f, u / plane.Top) * Mathf.Deg2Rad) { vmax = Mathf.Min(vmax, u + d * .1f); break; }
             }
-            float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, PlaneFlight.TopSpeed, Pace);
+            float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, plane.Top, Pace);
             float wantV = Mathf.Min(paceV, vmax);
-            plane.sThrottle = entrant.Finished ? .7f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, PlaneFlight.TopSpeed, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
+            plane.sThrottle = entrant.Finished ? .7f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, plane.Top, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
             Why = vmax < paceV ? $"slowing for the turn ({vmax:0} m/s)" : missSide != 0f ? "lining up wide" : "pace";
         }
 

@@ -102,7 +102,7 @@ namespace ChastainRush
         void OnGUI()
         {
             if (Event.current.type != EventType.Repaint || !(canTake || canLeave) || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
-            var car = PoliceKit.Player(1); var input = car ? car.GetComponent<VehicleInput>() : null; bool pad = input && input.UsingGamepad;
+            var car = PoliceKit.Player(1); bool pad = KeyHints.Pad;   // Round 74 (B)
             if (style == null) { style = new GUIStyle(GUI.skin.label) { fontSize = 24, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter }; style.normal.textColor = Color.white; }
             float s = Mathf.Max(1f, Screen.height / 800f); var old = GUI.matrix; GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float W = Screen.width / s, H = Screen.height / s; var r = new Rect(W / 2 - 260, H * .70f, 520, 44);

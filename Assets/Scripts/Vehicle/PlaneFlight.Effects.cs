@@ -66,12 +66,13 @@ namespace ChastainRush
         void Effects(float dt)
         {
             if (!car) return;
-            float speed = car.Body.linearVelocity.magnitude, run = Crashed ? 0f : Mathf.Max(.18f, Throttle);
+            if (car.Puppet) Throttle = Mathf.MoveTowards(Throttle, ReplayViewer.ThrottleOf(car), 2f * dt);   // Round 74 (A1): a replay's plane, from its recorded throttle
+            float speed = car.Puppet ? car.PuppetSpeed : car.Body.linearVelocity.magnitude, run = Crashed ? 0f : Mathf.Max(.18f, Throttle);
             float rps = run * 38f; propAngle = (propAngle + rps * 360f * dt) % 360f;
             if (prop) prop.localRotation = Quaternion.Euler(0, 0, propAngle);
             if (discRenderer) discRenderer.enabled = rps > 14f;
             float vol = VehicleAudio.Volume;
-            if (engine) { engine.pitch = Crashed ? .3f : .62f + .75f * Throttle + .15f * Mathf.Clamp01(speed / TopSpeed); engine.volume = vol * (Crashed ? 0f : .45f + .35f * Throttle); }
+            if (engine) { engine.pitch = Crashed ? .3f : .62f + .75f * Throttle + .15f * Mathf.Clamp01(speed / Top); engine.volume = vol * (Crashed ? 0f : .45f + .35f * Throttle); }
             if (wind) wind.volume = vol * Mathf.Clamp01((speed - 20f) / 90f) * .55f;
         }
 
@@ -96,7 +97,7 @@ namespace ChastainRush
             GUI.Label(new Rect(r.x + 14, r.y + 44, 470, 24), $"over the ground · heading {heading:000}° {points[Mathf.RoundToInt(heading / 45f) % 8]}{climb}", small);
             string state = Crashed ? "CRASHED: " + CrashReason : !Airborne ? (Airspeed > TakeOffSpeed ? "TAKE-OFF SPEED: pull back" : "on the ground") : Airspeed < StallSpeed + 4f ? "SLOW: nose down for speed" : "flying";
             GUI.Label(new Rect(r.x + 14, r.y + 70, 470, 24), state, small);
-            bool pad = vInput && vInput.UsingGamepad;
+            bool pad = KeyHints.Pad;   // Round 74 (B): the device in use (switches at once)
             string hint = !Airborne && !Crashed ? (pad ? "RT throttle · LT brake · left stick steer; past take-off speed pull back" : "W throttle · S brake · A/D steer; past take-off speed press Down")
                         : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick pitch / bank · RT / LT throttle · LB / RB rudder" : "Arrows pitch / bank · W/S throttle · A/D rudder") : "";
             GUI.Label(new Rect(r.x + 14, r.y + 96, 480, 24), hint, small);

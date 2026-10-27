@@ -46,8 +46,15 @@ def body():
     cyl('Exhaust', (.30, -.40, 2.45), (.30, -.48, 2.10), .05, G, 'engine', 8)
     blob('Spinner', HUB, (.17, .17, .26), G, 'white', 14, 8)
     # ---- the wing: a thick-ish slab across the cabin's top, rounded tips, a flap line; the struts from the lower fuselage
-    hull('Wing', [(-SPAN, WING_Y, .95), (SPAN, WING_Y, .95), (SPAN, WING_Y, -.60), (-SPAN, WING_Y, -.60),
-                  (-SPAN, WING_Y + .20, .85), (SPAN, WING_Y + .20, .85), (SPAN, WING_Y + .14, -.55), (-SPAN, WING_Y + .14, -.55)], G, 'paint', .05, 2)
+    # (Round 74, A3, Dan: "planes should have windows so that we can see the avatar": the wing over the cabin is a glass skylight, as on many high-
+    # wing planes, so the pilot is seen from the chase camera above and behind; the wing either side of it as before)
+    for s in (-1, 1):
+        hull('Wing', [(s * .62, WING_Y, .95), (s * SPAN, WING_Y, .95), (s * SPAN, WING_Y, -.60), (s * .62, WING_Y, -.60),
+                      (s * .62, WING_Y + .20, .85), (s * SPAN, WING_Y + .20, .85), (s * SPAN, WING_Y + .14, -.55), (s * .62, WING_Y + .14, -.55)], G, 'paint', .05, 2)
+        box('Skylight frame', (s * .60, WING_Y + .10, .15), (.06, .20, 1.55), G, 'paint', .01)
+    hull('Skylight', [(-.60, WING_Y + .04, .92), (.60, WING_Y + .04, .92), (.60, WING_Y + .04, -.58), (-.60, WING_Y + .04, -.58),
+                      (-.60, WING_Y + .18, .84), (.60, WING_Y + .18, .84), (.60, WING_Y + .13, -.54), (-.60, WING_Y + .13, -.54)], G, 'glass', .01, 1)
+    box('Skylight spar', (0, WING_Y + .16, .55), (1.20, .05, .10), G, 'paint', .005)
     for s in (-1, 1):
         blob('Wing tip', (s * SPAN, WING_Y + .10, .18), (.12, .11, .76), G, 'white', 12, 6)
         box('Flap line', (s * (SPAN * .45), WING_Y - .005, -.32), (SPAN * .7, .01, .02), G, 'engine', .002)

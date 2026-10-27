@@ -283,7 +283,7 @@ sf = next(r for r in rings if r["name"] == "SF"); cps = [r for r in rings if r["
 lead = [on_runway(d) for d in np.arange(0, 391, 10)]
 def r2(v): return round(float(v), 2)
 route = {
-    "name": "Quarry Air Race", "direction": "forward", "directions": ["forward"], "laps": 2, "traffic": False, "air": True, "vehicles": ["plane"],
+    "name": "Quarry Air Race", "direction": "forward", "directions": ["forward"], "laps": 2, "traffic": False, "air": True, "vehicles": ["plane", "dart"],
     "source": "Tools/mapgen/make_air_route.py (Round 71): the rings' line round Viking Quarry, under I-75 at Noonday Creek, over Kennesaw Mountain and under Cobb Parkway. Map meters (= Unity x, z), heights in the world's meters.",
     "lap_length_m": r2(L), "gate_s": r2(sf["s"]), "gate_half_width_m": sf["size"], "checkpoint_half_width_m": 14.0, "gate_y": r2(sf["y"]), "gate_ring_air_m": sf["size"],
     "gate_below_m": 40.0, "gate_above_m": 40.0, "reverse_grid_back_m": 0.0,

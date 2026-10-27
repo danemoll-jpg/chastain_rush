@@ -126,6 +126,10 @@ namespace ChastainRush
             foreach (var mb in clone.GetComponents<MonoBehaviour>())
             {
                 if (mb is ArcadeVehicle || mb is VehicleConfiguration || mb is RiderGestures || mb is VehicleLights) continue;
+                // Round 74 (A1, Dan: "airplane - replay, the propeller doesn't move"): a plane's or helicopter's own flight part is kept for the puppet (the
+                // Apply below would otherwise Begin the one about to be destroyed, Destroy being deferred: no propeller, no rotors); on a puppet it only
+                // turns its propeller / rotors and sounds, from the replay's throttle (PlaneFlight / HelicopterFlight Effects)
+                if (mb is PlaneFlight || mb is HelicopterFlight) continue;
                 mb.enabled = false; Destroy(mb);
             }
             foreach (var src in clone.GetComponentsInChildren<AudioSource>()) Destroy(src);

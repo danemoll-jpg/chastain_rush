@@ -19,6 +19,8 @@ namespace ChastainRush
             ("Apron, west", new Vector2(-3486f, -2074f), 0f), ("Apron, middle", new Vector2(-3446f, -2072f), 0f), ("Apron, east", new Vector2(-3406f, -2070f), 0f),
         };
         readonly List<(Vector3 at, float yaw, Transform shown)> stands = new();
+        // Round 74 (H): which plane stands on each stand: the Sky Hopper on the west and east stands, the Sky Dart in the middle
+        public static string PlaneOn(int stand) => stand == 1 ? VehicleProfile.PlaneDart.Id : VehicleProfile.Plane.Id;
         InputAction take; string lastCar = "original"; int lastColour = -1;
         int near = -1; bool canTake, canLeave;
         public static PlaneStands Instance { get; private set; }
@@ -36,7 +38,7 @@ namespace ChastainRush
             {
                 if (!HelicopterFlight.GroundUnder(new Vector3(at.x, 2500f, at.y), out var hit)) continue;
                 var go = new GameObject("Parked plane " + title); go.transform.SetPositionAndRotation(hit.point + Vector3.up * PlaneFlight.WheelDrop, Quaternion.Euler(0, yaw, 0));
-                var v = VehicleVisual.Build(go.transform, VehicleProfile.Plane, null, RiderLook.Player);
+                var v = VehicleVisual.Build(go.transform, VehicleProfile.Find(PlaneOn(stands.Count)), null, RiderLook.Player);
                 foreach (var t in v.GetComponentsInChildren<Transform>(true).Where(t => t.name == "Rider" || t.name == "Rotor disc").ToArray()) if (t) Destroy(t.gameObject);
                 var p = v.Find("Propeller"); if (p) p.localRotation = Quaternion.Euler(0, 0, 30f + 50f * stands.Count);
                 stands.Add((hit.point, yaw, go.transform));
@@ -78,7 +80,7 @@ namespace ChastainRush
             var s = stands[near]; var respawn = car.GetComponent<VehicleRespawn>();
             if (!PlaneFlight.On(car))
             {
-                PlaneFlight.PlacedByStand = true; sw.Select(VehicleProfile.Plane.Id);
+                PlaneFlight.PlacedByStand = true; sw.Select(PlaneOn(near));
                 if (respawn) respawn.PlaceAt(s.at + Vector3.up * (PlaneFlight.WheelDrop + .1f), s.yaw);
                 Debug.Log($"[Round69] took the plane at the stand {near} (came in the {VehicleProfile.Find(lastCar).Name})");
             }
@@ -98,12 +100,12 @@ namespace ChastainRush
         void OnGUI()
         {
             if (Event.current.type != EventType.Repaint || !(canTake || canLeave) || GameMenus.Open || WorldMap.IsOpen || TrailerMode.HudHidden) return;
-            var car = PoliceKit.Player(1); var input = car ? car.GetComponent<VehicleInput>() : null; bool pad = input && input.UsingGamepad;
+            var car = PoliceKit.Player(1); bool pad = KeyHints.Pad;   // Round 74 (B)
             if (style == null) { style = new GUIStyle(GUI.skin.label) { fontSize = 24, fontStyle = FontStyle.Bold, alignment = TextAnchor.MiddleCenter }; style.normal.textColor = Color.white; }
             float s = Mathf.Max(1f, Screen.height / 800f); var old = GUI.matrix; GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float W = Screen.width / s, H = Screen.height / s; var r = new Rect(W / 2 - 260, H * .70f, 520, 44);
             var c = GUI.color; GUI.color = new Color(0, 0, 0, .5f); GUI.DrawTexture(r, Texture2D.whiteTexture); GUI.color = c;
-            GUI.Label(r, (pad ? "A" : "H") + (canTake ? ":  take the plane" : ":  leave the plane"), style);
+            GUI.Label(r, (pad ? "A" : "H") + (canTake ? $":  take the {(near >= 0 ? VehicleProfile.Find(PlaneOn(near)).Name : "plane")}" : ":  leave the plane"), style);
             GUI.matrix = old;
         }
     }
