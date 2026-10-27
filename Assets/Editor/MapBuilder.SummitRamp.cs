@@ -125,6 +125,13 @@ namespace ChastainRush
             var go = new GameObject("The summit leap (Round 73)").transform; go.SetParent(root, false);
             // the lip: the mountain's own granite (Round 68's overlook look: slabs on its back face, boulders along the kicker's banks)
             MountainJumpLook(terrain, mats, go, f.jump);
+            // Round 74 (F): over the kicker the ground does not push on an upright body (BodyGlide, Round 56's): the Drifter Twin, a low cruiser, bottomed
+            // out in it at 43 m/s and lost 21 m/s before the lip (the wheels, raycasts, carry it); rectangles every 8 m along the kicker, 22 m across
+            {
+                var gl = new Vector2(f.jump.lip[0], f.jump.lip[1]); var gd = new Vector2(f.jump.dir[0], f.jump.dir[1]).normalized; var rects = new List<Vector4>();
+                for (float k = -2f; k <= f.jump.kicker_m + 30f; k += 8f) { var c = gl - gd * k; rects.Add(new Vector4(c.x - 11f, c.y - 11f, c.x + 11f, c.y + 11f)); }
+                var gg = new GameObject("Summit leap kicker body glide"); gg.transform.SetParent(go, false); gg.AddComponent<BodyGlide>().rects = rects.ToArray();
+            }
             // gravel on the run-up track (from the lot up the ridge to the kicker's foot) and on the track down to the lane
             var gm = new MeshBuilder(); gm.Tint = Gravel;
             var run = f.grades != null && f.grades.Length > 0 ? ToPoints(f.grades[0].points) : new List<Vector2>();

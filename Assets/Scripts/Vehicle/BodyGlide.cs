@@ -11,7 +11,10 @@ namespace ChastainRush
     public sealed class BodyGlide : MonoBehaviour
     {
         public Vector4[] rects;
-        void OnEnable() => VehicleSurfaceContacts.Glide = rects ?? new Vector4[0];
-        void OnDisable() => VehicleSurfaceContacts.Glide = new Vector4[0];
+        // Round 74 (F): more than one (Elaine's climb, the summit leap's kicker): VehicleSurfaceContacts reads them all together
+        static readonly System.Collections.Generic.List<BodyGlide> all = new System.Collections.Generic.List<BodyGlide>();
+        static void Merge() { var l = new System.Collections.Generic.List<Vector4>(); foreach (var g in all) if (g && g.rects != null) l.AddRange(g.rects); VehicleSurfaceContacts.Glide = l.ToArray(); }
+        void OnEnable() { if (!all.Contains(this)) all.Add(this); Merge(); }
+        void OnDisable() { all.Remove(this); Merge(); }
     }
 }
