@@ -30,6 +30,9 @@ namespace Racer
         public string Why { get; private set; } = "";   // Round 70 (B, checks): what set TargetSpeed this step (bend, hill, crest, zone, obstacle, angle ...)
         public int WhyAt { get; private set; }          // the bend's / crest's distance ahead; -1
         public object WhyOf { get; private set; }       // the zone (RouteAiZoneJson) or the collider in the way
+        // Round 74 (G): a route's held zone for a jump (its run-up's speed window, the landing, the catch) against one for a bend, a lot or a doorway
+        static readonly System.Text.RegularExpressions.Regex JumpZone = new System.Text.RegularExpressions.Regex(@"run-up|jump|leap|landing|catch|plume|mattress|^R?B?J\d|^RJ\d", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        static bool IsJumpZone(RouteAiZoneJson z) => z != null && !string.IsNullOrEmpty(z.id) && JumpZone.IsMatch(z.id);
         bool Cap(float v, string why, int at = -1, object of = null) { if (v < TargetSpeed) { TargetSpeed = v; Why = why; WhyAt = at; WhyOf = of; return true; } return false; }
         public DriverVariation Variation { get; } = new();
         public ShortcutStrategy Shortcuts { get; } = new();
@@ -273,11 +276,16 @@ namespace Racer
                 {
                     float into=Mathf.Repeat(s-z.s0,DriveRoad.Length), toStart=Mathf.Repeat(z.s0-s,DriveRoad.Length);
                     float zs=z==jumpZone&&jumpKind==4?z.speed*.8f:z.speed;   // Chastain Rush, Round 21: a short jump, a slow run-up
+                    // Chastain Rush, Round 74 (G, Dan: the AI "really slow", "too slavish"): on Hard a held zone that is not a jump's (a bend, a hairpin, a
+                    // lot, a doorway) takes the racing line's own cornering limit there, up to 1.6 times its fixed number (a jump's speed window stays)
+                    if(skill==2&&!IsJumpZone(z)&&bendCap<float.MaxValue) zs=Mathf.Max(zs,Mathf.Min(bendCap,zs*1.6f));
                     if(into<=z.s1-z.s0){TargetSpeed=Mathf.Min(zs,bendCap);held=true;Why=bendCap<zs?"bend":"zone";WhyAt=-1;WhyOf=z;}   // Round 70: within the bends' limit (a run-up straight off a hairpin)   // the jump's set speed, whatever the crest rule says
                     else if(toStart<90)Cap(Mathf.Sqrt(zs*zs+2*judgment*Mathf.Max(0,toStart-6)),"zone ahead",(int)toStart,z);
                 }
+            // Chastain Rush, Round 74 (G): off its aim by more than 34 degrees, the speed of the circle through its aim point (the corner it must
+            // make now, at its cornering grip), never under the old 10 m/s (it was a flat 10 m/s: 18 to 28 s a race on Kennesaw)
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
-                Cap(10, "angle");
+                Cap(Mathf.Max(10f, Mathf.Sqrt(cornerGrip * look / (2f * Mathf.Max(.2f, Mathf.Sin(Mathf.Min(Mathf.Abs(angle), 1.5f)))))), "angle");
             float freeTarget = TargetSpeed;   // Round 58: what it wants before anything in front holds it (A3: wanting to go and not moving is being blocked)
             bool unblocking = Agency && Time.time < unblockUntil;
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.
