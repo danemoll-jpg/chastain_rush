@@ -17,7 +17,9 @@ namespace ChastainRush
 
         void Build()
         {
-            mat = new Material(Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color")) { name = "Air guide arrow" };
+            // Round 79 (C): drawn over everything (Resources/Shaders/OverlayUnlit): URP's Unlit has no depth-test setting, so in the cockpit view the plane's own
+            // nose and body hid it (the _ZTest below never took)
+            mat = new Material(Shader.Find("ChastainRush/OverlayUnlit") ?? Shader.Find("Universal Render Pipeline/Unlit") ?? Shader.Find("Unlit/Color")) { name = "Air guide arrow" };
             var col = new Color(.35f, 1f, .25f); mat.SetColor("_BaseColor", col); mat.color = col;
             if (mat.HasProperty("_ZTest")) mat.SetFloat("_ZTest", (float)CompareFunction.Always);   // never hidden behind the plane or the ground
             mat.renderQueue = 4000;
