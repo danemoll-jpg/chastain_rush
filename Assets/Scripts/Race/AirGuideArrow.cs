@@ -35,14 +35,33 @@ namespace ChastainRush
             var r = arrow.gameObject.AddComponent<MeshRenderer>(); r.sharedMaterial = mat; r.shadowCastingMode = ShadowCastingMode.Off; r.receiveShadows = false;
         }
 
+        // Round 79 (C, Dan: "the arrow is too jittery"): measured in the exe, the arrow placed in LateUpdate from the camera moved against the view at
+        // 120 m/s (the chase camera may move after it in the frame) and rolled with the camera. Now it is placed as the camera renders (its final
+        // pose that frame): always at the same spot on the screen; it points along a filtered direction to the ring (eased over 0.3 s, so a ring
+        // passed swings it round smoothly) with the world's up (not the camera's or the plane's roll), its turn damped again over 0.12 s.
+        // Old: Round 74's way (checks: -r79ArrowOld, the "before" numbers).
+        static bool? old; public static bool Old => old ??= CheckRun.Active && System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r79ArrowOld") >= 0;
+        public static Quaternion ShownOnScreen { get; private set; } = Quaternion.identity;   // checks: its turn as seen in the view
+        public static Vector3 ShownAt { get; private set; }                                      // checks: where it is on the screen (pixels)
+        public static bool Shown { get; private set; }
+        Vector3 dirF; Quaternion rotF; bool fOn; float lastAt = -1f;
+
+        void OnEnable() { RenderPipelineManager.beginCameraRendering += OnCam; }
+        void OnDisable() { RenderPipelineManager.beginCameraRendering -= OnCam; Shown = false; }
+
+        bool On(out RaceController race, out Camera cam)
+        {
+            race = RaceController.Instance; cam = Camera.main;
+            return race != null && race.Route != null && race.Route.Air && cam != null && race.State != RaceController.Stage.Free && race.State != RaceController.Stage.Finished
+                   && !TrailerMode.HudHidden && !ReplayViewer.Active && race.Target != null;
+        }
+
         void LateUpdate()
         {
-            var race = RaceController.Instance; var cam = Camera.main;
-            bool on = race != null && race.Route != null && race.Route.Air && cam != null && race.State != RaceController.Stage.Free && race.State != RaceController.Stage.Finished
-                      && !TrailerMode.HudHidden && !ReplayViewer.Active && race.Target != null;
-            if (!on) { if (arrow) arrow.gameObject.SetActive(false); steadyOn = steadyRotOn = false; return; }
+            if (!On(out var race, out var cam)) { if (arrow) arrow.gameObject.SetActive(false); steadyOn = steadyRotOn = fOn = false; Shown = false; return; }
             if (!arrow) Build();
             arrow.gameObject.SetActive(true);
+            if (!Old) return;   // placed as the camera renders (OnCam)
             // Round 74 (C, Dan: "Arrows during vehicle races are too bouncy. Can we make them more stable"): placed from a steadied view (the camera's
             // forward and up eased over about a quarter second, so the camera's shake and bounce do not move it) and turned toward the ring with damping;
             // still pointing where the ring is
@@ -54,7 +73,26 @@ namespace ChastainRush
             var want = Quaternion.LookRotation(to.sqrMagnitude > 1f ? to.normalized : steadyFwd, Vector3.Slerp(steadyUp, Vector3.up, .5f));
             steadyRot = arrow.gameObject.activeSelf && steadyRotOn ? Quaternion.Slerp(steadyRot, want, 1f - Mathf.Exp(-dt / .15f)) : want; steadyRotOn = true;
             arrow.SetPositionAndRotation(at, steadyRot);
+            Measure(cam);
         }
+
+        void OnCam(ScriptableRenderContext ctx, Camera cam)
+        {
+            if (Old || !arrow || !arrow.gameObject.activeSelf || cam != Camera.main) return;
+            if (!On(out var race, out _)) return;
+            var ct = cam.transform; var at = ct.position + ct.forward * Ahead + ct.up * Up;
+            float now = Time.unscaledTime, dt = lastAt < 0f ? 0f : Mathf.Clamp(now - lastAt, 0f, .1f);
+            if (dt <= 0f && fOn) { arrow.SetPositionAndRotation(at, rotF); return; }   // (a second camera pass in the same frame)
+            lastAt = now;
+            var raw = race.Target.Position - ct.position; raw = raw.sqrMagnitude > 1f ? raw.normalized : ct.forward;
+            if (!fOn) { dirF = raw; rotF = Look(dirF, ct.forward); fOn = true; }
+            dirF = Vector3.Slerp(dirF, raw, 1f - Mathf.Exp(-dt / .3f)).normalized;
+            rotF = Quaternion.Slerp(rotF, Look(dirF, ct.forward), 1f - Mathf.Exp(-dt / .12f));
+            arrow.SetPositionAndRotation(at, rotF);
+            Measure(cam);
+        }
+        static Quaternion Look(Vector3 d, Vector3 fallbackUp) => Mathf.Abs(Vector3.Dot(d, Vector3.up)) < .995f ? Quaternion.LookRotation(d, Vector3.up) : Quaternion.LookRotation(d, fallbackUp);
+        void Measure(Camera cam) { ShownOnScreen = Quaternion.Inverse(cam.transform.rotation) * arrow.rotation; ShownAt = cam.WorldToScreenPoint(arrow.position); Shown = true; }
 
         void OnDestroy() { if (mat) Destroy(mat); }
     }
