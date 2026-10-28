@@ -256,7 +256,7 @@ namespace ChastainRush
                     cutN++; cutMost = Mathf.Max(cutMost, yy - (deckY - 0.1f)); return deckY - 0.1f;
                 });
                 float lifted = cutMost;
-                Debug.Log($"[Round27] bridges {string.Join(" + ", chain.Select(c => (c.b + 1).ToString()))} ({map.bridges[bi].name}, {s[at.Count - 1]:0} m): one straight deck between its outer ends ({y0:0.0} to {y1:0.0}); the deck raised by up to {deepest:0.0} m where the pieces met; the ground cut under it by up to {lifted:0.00} m ({cutN} samples)");
+                Debug.Log($"[Round27] bridges {string.Join(" + ", chain.Select(c => (c.b + 1).ToString()))} ({map.bridges[bi].name}, {s[at.Count - 1]:0} m): {(kept ? "its own shape kept (Round 80), its outer ends onto the road" : "one straight deck between its outer ends")} ({y0:0.0} to {y1:0.0}); the deck raised by up to {deepest:0.0} m where the pieces met; the ground cut under it by up to {lifted:0.00} m ({cutN} samples)");
             }
         }
         // a bridge one of whose ends is the map's edge (the I-575 ramps at the south edge: decks of 45 to 92 % where the crop cuts them)
