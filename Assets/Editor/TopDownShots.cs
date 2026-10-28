@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -21,6 +22,30 @@ namespace ChastainRush
             int px = int.Parse(Arg("-topDownPx") ?? "2000", CultureInfo.InvariantCulture);
             Directory.CreateDirectory(outDir);
             EditorSceneManager.OpenScene(MapBuilder.ScenePath, OpenSceneMode.Single);
+            if (Arg("-r77Probe") != null) MapBuilder.R77ProbeOnScene();   // Round 77: the embankment pass on the scene's ground in memory, before the pictures
+            if (Arg("-listAt") != null)   // Round 77: "x,z,r": every renderer whose bounds reach within r m of (x, z) and less than 60 m across (what a small thing is)
+            {
+                var v = Array.ConvertAll(Arg("-listAt").Split(','), F); var c = new Vector3(v[0], 0f, v[1]);
+                foreach (var r in UnityEngine.Object.FindObjectsByType<Renderer>(FindObjectsSortMode.None))
+                {
+                    var b = r.bounds; var q = b.ClosestPoint(new Vector3(c.x, b.center.y, c.z)); if (new Vector2(q.x - c.x, q.z - c.z).magnitude > v[2]) continue;
+                    Debug.Log($"[ListAt] {r.name} (parent {(r.transform.parent ? r.transform.parent.name : "-")}) bounds {b.center} size {b.size} material {(r.sharedMaterial ? r.sharedMaterial.name : "-")}");
+                }
+            }
+            if (Arg("-pickRay") != null)   // Round 77: "x,y,z,tx,ty,tz": which drawn mesh a ray from (x, y, z) toward (tx, ty, tz) meets first (temporary mesh colliders)
+            {
+                var v = Array.ConvertAll(Arg("-pickRay").Split(','), F); var ray = new Ray(new Vector3(v[0], v[1], v[2]), (new Vector3(v[3], v[4], v[5]) - new Vector3(v[0], v[1], v[2])).normalized);
+                var temp = new System.Collections.Generic.List<Component>();
+                foreach (var mr in UnityEngine.Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
+                {
+                    if (!mr.bounds.IntersectRay(ray, out float dist) || dist > 300f) continue; var mf = mr.GetComponent<MeshFilter>(); if (mf == null || mf.sharedMesh == null) continue;
+                    var go2 = new GameObject("pick " + mr.name); go2.transform.SetPositionAndRotation(mr.transform.position, mr.transform.rotation); go2.transform.localScale = mr.transform.lossyScale;
+                    var mc = go2.AddComponent<MeshCollider>(); mc.sharedMesh = mf.sharedMesh; temp.Add(mc); go2.layer = 31;
+                }
+                Physics.SyncTransforms();
+                foreach (var h in Physics.RaycastAll(ray, 300f, 1 << 31).OrderBy(h => h.distance).Take(5)) Debug.Log($"[PickRay] {h.collider.name} at {h.point} ({h.distance:0.0} m)");
+            }
+            if (Arg("-hideTerrain") != null) foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None)) t.drawHeightmap = false;   // Round 77: what is not ground
             RenderSettings.fog = false;   // the camera is hundreds of metres up
             var go = new GameObject("TopDownCamera");
             var cam = go.AddComponent<Camera>();
