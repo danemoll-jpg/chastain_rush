@@ -28,7 +28,7 @@ namespace ChastainRush
         // Round 80 (A)
         public bool Advise; public float aPitch, aBank, aRudder, aThrottle = -1f, aSteer;
         int lapSeen = -1; float lapPace; bool careful, lateTurn; float lateUntil = -1f; Vector3 lateDir;
-        int backFor = -1; int backPhase; float backSince; RaceGate backRing;
+        int backFor = -1; int backPhase; float backSince; RaceGate backRing; Vector3 lastPos; float quietUntil;
         public int Wide, Late, Careful, Backs, BacksDone, OffLaps;   // what it did, for the checks
         public static readonly float[] OffLapChance = { .45f, .3f, .18f }, OffLapSize = { .07f, .05f, .035f };
         public static readonly float[] LateChance = { .12f, .08f, .05f }, CarefulChance = { .6f, .4f, .25f }, GoBackChance = { .75f, .65f, .55f };
@@ -52,7 +52,7 @@ namespace ChastainRush
             if (plane && !Advise) { plane.Scripted = true; plane.sThrottle = 0f; plane.sPitch = plane.sBank = plane.sRudder = plane.sSteer = plane.sBrake = 0f; }
         }
 
-        bool Mistakes => !Advise && !entrant.IsPlayer && !entrant.Finished;
+        bool Mistakes => !Advise && !entrant.IsPlayer && !entrant.Finished && Time.time >= quietUntil;
         static int Skill => Mathf.Clamp(RoadDriver.Difficulty, 0, 2);
         // the controls: the plane's own (flying it) or the advice (a check's human-like pilot)
         void Set(float pitch, float bank, float rudder, float throttle, float steer = 0f, float brake = 0f)
@@ -67,6 +67,9 @@ namespace ChastainRush
             if (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Free) { if (!Advise) plane.sThrottle = 0f; else aThrottle = 0f; return; }
             if (!Advise && car.Body.isKinematic) { car.Body.isKinematic = false; car.Body.linearVelocity = Vector3.zero; }   // GO
             if (plane.Crashed) { backRing = null; lateUntil = -1f; return; }
+            // Round 80 (A): put back by a reset (a jump in place): no turning back for a ring behind it for a while
+            if ((car.Body.position - lastPos).sqrMagnitude > 60f * 60f) { quietUntil = Time.time + 8f; backRing = null; lateUntil = -1f; missSide = 0f; }
+            lastPos = car.Body.position;
             // Round 80 (A): a lap's pace, drawn as each lap starts (now and then one off the pace)
             if (entrant.CompletedLaps != lapSeen)
             {
