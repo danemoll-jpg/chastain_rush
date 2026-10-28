@@ -93,9 +93,9 @@ SETTINGS = {
 # the corners, in order (each leg on the streets named, found on the road graph); the deck leg is laid by hand
 LEGS = [
     ((1760.0, -8516.0), (1904.0, -8519.0), {"South Park Square Northeast", "South Park Square Southeast", "Roswell Street Southeast", "Whitlock Avenue Southwest"}),
-    ((1904.0, -8519.0), (1904.0, -8352.0), {"Waddell Street Northeast", "Waddell Street Southeast"}),
-    None,   # the deck
-    ((1997.0, -8352.0), (1998.0, -8405.0), {"Haynes Street Northeast"}),
+    ((1904.0, -8519.0), (1904.0, -8385.0), {"Waddell Street Northeast", "Waddell Street Southeast"}),   # Round 80 (B): it ended at z -8352, 13 m past the deck's lane:
+    None,   # the deck                                                                                   the line came back south to it (a hairpin the AI circled in)
+    ((1998.0, -8380.0), (1998.0, -8405.0), {"Haynes Street Northeast"}),   # Round 80 (B): started at z -8352, north of the deck's exit (the line went north, then back south)
     ((1998.0, -8405.0), (1715.0, -8417.0), {"Lawrence Street Northeast", "North Park Square Northeast", "North Park Square Northwest", "Cherokee Street Northeast", "East Park Square Northeast"}),
     ((1715.0, -8417.0), (1546.0, -8411.0), {"Mill Street Northwest", "North Park Square Northwest", "West Park Square Northwest"}),
     ((1546.0, -8411.0), (1539.0, -8523.0), {"North Marietta Parkway"}),
@@ -195,7 +195,20 @@ lap = []
 for i in range(N):
     a, b = line[max(0, i - 1)], line[min(N - 1, i + 1)]; t = unit((b[0] - a[0], b[1] - a[1]))
     lap.append((line[i][0] + t[1] * of[i], line[i][1] - t[0] * of[i]))
-lap = resample(chaikin(lap, 2), 3.0); lap[-1] = lap[0]
+# Round 80 (B): no point where the line folds back on itself (a corner's node overshot by the lane offset, a jog between a leg and the deck's end:
+# the AI's nearest point jumped across the fold and it turned round): a point there turning more than 50 degrees is dropped, until none is left
+def dekink(q):
+    while True:
+        out, drop = [q[0]], False
+        for i in range(1, len(q) - 1):
+            a, b, c = out[-1], q[i], q[i + 1]
+            h1, h2 = math.atan2(b[0] - a[0], b[1] - a[1]), math.atan2(c[0] - b[0], c[1] - b[1])
+            if not drop and 1890 < b[0] < 2010 and -8410 < b[1] < -8340 and abs(math.degrees((h2 - h1 + math.pi) % (2 * math.pi) - math.pi)) > 50: drop = True; continue   # the deck's corners only (elsewhere it cut corners across buildings)
+            out.append(b)
+        out.append(q[-1])
+        if not drop: return out
+        q = out
+lap = resample(chaikin(dekink(lap), 2), 3.0); lap[-1] = lap[0]
 C = cum(lap); L_lap = C[-1]
 print(f"lap {L_lap:.0f} m: " + ", ".join(legs_txt))
 gate_s = round(nearest_s(lap, GATE_AT)[1], 1)
@@ -317,6 +330,44 @@ jumps = [
 ]
 landing_zone = {"id": "MJ landing", "poly": flat([(L_TOP_X + 1, K_Z - L_W / 2 - 1), (L_TOP_X + 1, K_Z + L_W / 2 + 1), (L_TOP_X - L_LEN - 6, K_Z + L_W / 2 + 1), (L_TOP_X - L_LEN - 6, K_Z - L_W / 2 - 1)])}
 
+# ---------------------------------------------------------------- Round 80 (C): the jump over the tracks at Whitlock Avenue (forward, eastbound)
+# Dan's BUG-001 (x 1608.55 z -8524.74, stopped at the gate with the train passing): "why no jumps on this side?". Something else that belongs by a
+# railroad, not another pile: the rail crew's stack of old ties beside the road west of the tracks (between Whitlock's south curb and the service road's
+# barrier), its lip 12 m before the west track; the old freight house's loading dock east of the tracks, its truck ramp falling east the landing.
+# The tracks lean about 4 degrees off north-south: at z -8530 the west track (line 6) is at x 1623.7, the east one (line 0) at x 1628.3.
+W_Z = -8530.0
+W_LIP_X, W_LEN, W_ANG, W_H, W_W = 1611.7, 15.0, 26.0, 4.0, 4.2
+D_TOP_X, D_LEN, D_H, D_W = 1636.3, 40.0, 4.4, 6.0   # its foot short of building 34287 (x 1690)
+w_rails = (1623.7, 1628.3)
+w_lip_y = ground(W_LIP_X, W_Z) + W_H; d_top_y = ground(D_TOP_X, W_Z) + D_H
+w_train_top = max(ground(x, W_Z) for x in w_rails) + 0.46 + 4.65
+D_ANG = math.degrees(math.atan(2 * D_H / D_LEN))
+def dock_y(x):
+    sf = D_LEN - (x - D_TOP_X)
+    if sf < 0 or sf > D_LEN: return ground(x, W_Z)
+    y0 = ground(D_TOP_X + D_LEN, W_Z); k = math.tan(math.radians(D_ANG)); Lk = min(D_LEN, 2 * (d_top_y - y0) / k); u = max(0.0, sf - (D_LEN - Lk))
+    return y0 + k * u * u / (2 * Lk)
+def w_flight(v):
+    a = math.radians(W_ANG); vx, vy = v * math.cos(a), v * math.sin(a); t = 0.0; low = 1e9
+    while t < 6:
+        t += 0.01; x = W_LIP_X + vx * t; y = w_lip_y + vy * t - 4.905 * t * t
+        if w_rails[0] - 1.6 < x < w_rails[1] + 1.6: low = min(low, y - 0.9 - w_train_top)
+        if t > 0.2 and y - 0.4 <= max(dock_y(x), ground(x, W_Z)): return {"t": round(t, 2), "x": round(x, 1), "clear": round(low, 2), "slope_at": round(x - D_TOP_X, 1)}
+    return None
+print(f"Whitlock jump: tie stack lip ({W_LIP_X}, {W_Z}) {w_lip_y:.2f} m, loading dock top ({D_TOP_X}, {W_Z}) {d_top_y:.2f} m, a train's roof {w_train_top:.2f} m")
+w_vmin = None
+for v in (16, 18, 19, 20, 21, 22, 24, 26, 28):
+    f = w_flight(v)
+    if f and f["clear"] > 0 and w_vmin is None: w_vmin = v
+    print(f"    off the tie stack at {v} m/s: {f}")
+jumps += [
+    {"id": "WJ kicker", "look": "tiestack", "physics": True, "lip": [W_LIP_X, W_Z], "dir": [1.0, 0.0], "ramp_m": W_LEN, "height": W_H, "lip_y": round(w_lip_y, 2), "angle_deg": W_ANG,
+     "width": W_W, "vmin": float(w_vmin or 21), "vmax": 30.0},
+    {"id": "WJ landing", "look": "loadingdock", "physics": True, "lip": [D_TOP_X, W_Z], "dir": [-1.0, 0.0], "ramp_m": D_LEN, "height": D_H, "lip_y": round(d_top_y, 2),
+     "angle_deg": round(D_ANG, 1), "width": D_W, "vmin": 0.0, "vmax": 0.0},
+]
+w_landing_zone = {"id": "WJ landing", "poly": flat([(D_TOP_X - 1, W_Z - D_W / 2 - 1), (D_TOP_X - 1, W_Z + D_W / 2 + 1), (D_TOP_X + D_LEN + 6, W_Z + D_W / 2 + 1), (D_TOP_X + D_LEN + 6, W_Z - D_W / 2 - 1)])}
+
 # ---------------------------------------------------------------- out
 ai_zones = [{"id": "into the deck", "s0": round(s_deck0 - 18, 1), "s1": round(s_deck0 + 6, 1), "speed": 9.0},
             {"id": "out of the deck onto Haynes", "s0": round(s_deck1 - 4, 1), "s1": round(s_deck1 + 16, 1), "speed": 9.0}]
@@ -329,8 +380,8 @@ out.update({
     "ai_zones": ai_zones, "ai_widths": ai_widths, "train_meet": list(TRAIN_MEET), "train_meet_s": TRAIN_MEET_S,
 })
 json.dump(out, open(OUT_ROUTE, "w", encoding="utf-8"), indent=0)
-json.dump({"note": "Round 78 (B): the Marietta Square race's jump over the tracks beside the Mill Street crossing (Tools/mapgen/make_marietta_route.py; built by MapBuilder.MariettaRace.cs). Map meters.",
-           "big_jumps": jumps, "landing_zones": [landing_zone]}, open(OUT_TRACK, "w", encoding="utf-8"), indent=1)
+json.dump({"note": "Round 78 (B): the Marietta Square race's jumps over the tracks beside the Mill Street crossing and (Round 80 C) the Whitlock Avenue crossing (Tools/mapgen/make_marietta_route.py; built by MapBuilder.MariettaRace.cs). Map meters.",
+           "big_jumps": jumps, "landing_zones": [landing_zone, w_landing_zone]}, open(OUT_TRACK, "w", encoding="utf-8"), indent=1)
 print(f"wrote {OUT_ROUTE} and {OUT_TRACK}")
 
 if "--plot" in sys.argv:

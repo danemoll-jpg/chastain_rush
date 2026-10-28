@@ -320,6 +320,63 @@ namespace ChastainRush
                         }
                     Debug.Log($"[Round20+] {b.id} log ramp: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide; off the lip at {b.vmin:0} to {b.vmax:0} m/s");
                 }
+                else if (b.look == "tiestack")
+                {
+                    // Round 80 (C, Dan's BUG-001 at Whitlock Avenue: "why no jumps on this side?"): the rail crew's stack of old ties beside the
+                    // tracks, heaped into a ramp: the driven surface the prism (smooth), creosoted ties laid across it (crowns 3 cm over it, inside its
+                    // width), loose ties stacked crosswise along its sides
+                    var pr = KickerProfile(); var creo = new Color(0.24f, 0.19f, 0.14f);
+                    BuildPrism(Prism("ties", pr, b.ramp_m, hw, creo, new[] { 1, 2, 3 }), terrain, mats, jr);
+                    float TopAt(float s, float lat) => Profile(pr, s) + Profile(footBank, s) * lat;
+                    var along = new Vector3(d.x, 0f, d.y);
+                    for (float s = 0.25f; s <= b.ramp_m - 0.15f; s += 0.3f)
+                    {
+                        float split = (Hash01((int)(s * 10f), 1811) - 0.5f) * 1.2f;   // two ties end to end across the width, the seam wandering
+                        look.Tint = Shade(creo, 0.75f + 0.4f * Hash01((int)(s * 10f), 1813));
+                        foreach (var (l0, l1) in new[] { (-hw + 0.05f, split - 0.03f), (split + 0.03f, hw - 0.05f) })
+                        {
+                            float lm = (l0 + l1) * 0.5f, yt = TopAt(s, lm);
+                            var c = W(s, lm, yt - 0.06f); BoxAt(look, c, new Vector3(nl.x, 0f, nl.y), l1 - l0, 0.18f, 0.23f);
+                        }
+                    }
+                    foreach (float side in new[] { 1f, -1f })
+                        for (float s = 0.6f; s < b.ramp_m; s += 2.7f)
+                        {
+                            float top = TopAt(s, side * hw), g = Ground(terrain, W(s, side * (hw + 1.4f), 0f).x, W(s, side * (hw + 1.4f), 0f).z);
+                            int layers = Mathf.Clamp(Mathf.FloorToInt((top - g) / 0.2f), 0, 18);
+                            for (int k = 0; k < layers; k++)
+                            {
+                                look.Tint = Shade(creo, 0.7f + 0.4f * Hash01(k * 31 + (int)(s * 10f), 1817));
+                                float y = g + 0.1f + k * 0.2f; bool cross = k % 2 == 0;
+                                if (cross) for (int t = 0; t < 4; t++) BoxAt(look, W(s - 0.9f + t * 0.6f, side * (hw + 1.35f), y), new Vector3(nl.x, 0f, nl.y), 2.6f, 0.18f, 0.23f);
+                                else for (int t = 0; t < 4; t++) BoxAt(look, W(s, side * (hw + 0.4f + t * 0.62f), y), along, 2.6f, 0.18f, 0.23f);
+                            }
+                        }
+                    Debug.Log($"[Round80] {b.id} tie stack: {b.ramp_m:0.0} m from {y0:0.00} m to the lip at {y1:0.00} m ({b.angle_deg:0} degrees), {b.width:0.0} m wide");
+                }
+                else if (b.look == "loadingdock")
+                {
+                    // Round 80 (C): the old freight house's loading dock beside the tracks, its truck ramp the landing (the driven prism, concrete), the dock's
+                    // face toward the tracks with black rubber bumpers, a yellow edge, two pallets on its top
+                    var pr = KickerProfile(); var conc = new Color(0.62f, 0.6f, 0.56f);
+                    var rp = Prism("dock", pr, b.ramp_m, hw, conc, new[] { 1, 2, 3 }); rp.landing = true;
+                    BuildPrism(rp, terrain, mats, jr);
+                    var across = new Vector3(nl.x, 0f, nl.y);
+                    float gLip = Ground(terrain, L.x, L.y);
+                    look.Tint = new Color(0.86f, 0.7f, 0.12f);
+                    BoxAt(look, W(b.ramp_m - 0.06f, 0f, y1 + 0.005f), across, b.width - 0.1f, 0.02f, 0.12f);
+                    look.Tint = new Color(0.08f, 0.08f, 0.08f);
+                    for (float lat = -hw + 0.5f; lat <= hw - 0.4f; lat += 1.2f)
+                        BoxAt(look, W(b.ramp_m + 0.08f, lat, Mathf.Max(gLip + 0.3f, y1 - 0.45f)), across, 0.25f, 0.5f, 0.16f);
+                    look.Tint = new Color(0.55f, 0.42f, 0.27f);
+                    foreach (float lat in new[] { -hw - 0.9f, hw + 0.9f })
+                    {
+                        var q = W(b.ramp_m - 3f, lat, 0f); float g = Ground(terrain, q.x, q.z);
+                        BoxAt(look, new Vector3(q.x, g + 0.08f, q.z), across, 1.2f, 0.15f, 1.0f);
+                        BoxAt(look, new Vector3(q.x, g + 0.23f, q.z), across, 1.2f, 0.15f, 1.0f);
+                    }
+                    Debug.Log($"[Round80] {b.id} loading dock: {b.ramp_m:0.0} m from {y0:0.00} m to its top at {y1:0.00} m, {b.width:0.0} m wide");
+                }
                 // Round 20 follow-ups: the hint at a turn-off (N2: a road-closed barricade knocked over on its side) and worn tire tracks
                 // Round 40 (A4, BUG-004): S1's and S2's clues are hidden in a reverse race of their route (they mark no shortcut that way)
                 var clueMb = look; var clueAt = jr;

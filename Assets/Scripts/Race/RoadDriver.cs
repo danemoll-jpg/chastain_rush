@@ -139,7 +139,18 @@ namespace Racer
                 return;
             }
 
-            float s = DriveRoad.Project(Car.Body.position, out float lateral);
+            // Chastain Rush, Round 80 (B, the square race's deck: "driving in circles"): the station is looked for near the last one (40 m) while the car
+            // moves on normally; the whole lap only after a jump in place (a reset, a teleport) or when nothing near is close. Where the lap's line runs
+            // back beside itself the nearest point anywhere flipped between the two ways and the car turned round to follow it.
+            float s; float lateral;
+            var bodyNow = Car.Body.position;
+            if (lastS >= 0f && Time.time - lastSAt < .25f && (bodyNow - lastSPos).sqrMagnitude < 100f)
+            {
+                s = DriveRoad.ProjectNear(bodyNow, lastS, 40f, out lateral);
+                if (Mathf.Abs(lateral) > 25f) s = DriveRoad.Project(bodyNow, out lateral);
+            }
+            else s = DriveRoad.Project(bodyNow, out lateral);
+            lastS = s; lastSAt = Time.time; lastSPos = bodyNow;
             if(forceRecoverAt>0f&&Time.time>=forceRecoverAt){forceRecoverAt=-1f;TryRecover(s);return;}   // Chastain Rush, Round 78 (A): hit by a train
             float driveHalfWidth=DriveRoad.HalfWidth(s);
             float speed = Mathf.Abs(Car.ForwardSpeed);
@@ -402,6 +413,7 @@ namespace Racer
         public int UTurns { get; private set; }
         float downFor, blockFor, wrongFor, backupUntil = -1f, unblockUntil = -1f, blockStart = -1f, blockStation, unblockSide, lastUrgent = -99f, wrongStart = -1f;
         float behindFor; ArcadeVehicle passWho; float passSide;
+        float lastS = -1f, lastSAt; Vector3 lastSPos;   // Round 80 (B)
         static readonly RaycastHit[] probe = new RaycastHit[8];
 
         bool AgencyStep(ref float throttle, ref float brake, ref float steering, float s, float speed, float angle, Vector3 tangent, float lateral, float freeTarget, AiShortcut activeBranch, float branchS)

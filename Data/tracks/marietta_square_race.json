@@ -1,5 +1,5 @@
 {
- "note": "Round 78 (B): the Marietta Square race's jump over the tracks beside the Mill Street crossing (Tools/mapgen/make_marietta_route.py; built by MapBuilder.MariettaRace.cs). Map meters.",
+ "note": "Round 78 (B): the Marietta Square race's jumps over the tracks beside the Mill Street crossing and (Round 80 C) the Whitlock Avenue crossing (Tools/mapgen/make_marietta_route.py; built by MapBuilder.MariettaRace.cs). Map meters.",
  "big_jumps": [
   {
    "id": "MJ kicker",
@@ -40,6 +40,46 @@
    "width": 6.0,
    "vmin": 0.0,
    "vmax": 0.0
+  },
+  {
+   "id": "WJ kicker",
+   "look": "tiestack",
+   "physics": true,
+   "lip": [
+    1611.7,
+    -8530.0
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "ramp_m": 15.0,
+   "height": 4.0,
+   "lip_y": 379.37,
+   "angle_deg": 26.0,
+   "width": 4.2,
+   "vmin": 18.0,
+   "vmax": 30.0
+  },
+  {
+   "id": "WJ landing",
+   "look": "loadingdock",
+   "physics": true,
+   "lip": [
+    1636.3,
+    -8530.0
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "ramp_m": 40.0,
+   "height": 4.4,
+   "lip_y": 379.88,
+   "angle_deg": 12.4,
+   "width": 6.0,
+   "vmin": 0.0,
+   "vmax": 0.0
   }
  ],
  "landing_zones": [
@@ -54,6 +94,19 @@
     -8399.6,
     1575.0,
     -8407.6
+   ]
+  },
+  {
+   "id": "WJ landing",
+   "poly": [
+    1635.3,
+    -8534.0,
+    1635.3,
+    -8526.0,
+    1682.3,
+    -8526.0,
+    1682.3,
+    -8534.0
    ]
   }
  ]
