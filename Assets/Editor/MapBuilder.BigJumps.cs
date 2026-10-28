@@ -324,7 +324,7 @@ namespace ChastainRush
                 {
                     // Round 80 (C, Dan's BUG-001 at Whitlock Avenue: "why no jumps on this side?"): the rail crew's stack of old ties beside the
                     // tracks, heaped into a ramp: the driven surface the prism (smooth), creosoted ties laid across it (crowns 3 cm over it, inside its
-                    // width), loose ties stacked crosswise along its sides
+                    // width), loose ties stacked crosswise along its right side
                     var pr = KickerProfile(); var creo = new Color(0.24f, 0.19f, 0.14f);
                     BuildPrism(Prism("ties", pr, b.ramp_m, hw, creo, new[] { 1, 2, 3 }), terrain, mats, jr);
                     float TopAt(float s, float lat) => Profile(pr, s) + Profile(footBank, s) * lat;
@@ -339,7 +339,7 @@ namespace ChastainRush
                             var c = W(s, lm, yt - 0.06f); BoxAt(look, c, new Vector3(nl.x, 0f, nl.y), l1 - l0, 0.18f, 0.23f);
                         }
                     }
-                    foreach (float side in new[] { 1f, -1f })
+                    foreach (float side in new[] { -1f })   // loose ties on its right only: its left is open to the road it is driven onto from
                         for (float s = 0.6f; s < b.ramp_m; s += 2.7f)
                         {
                             float top = TopAt(s, side * hw), g = Ground(terrain, W(s, side * (hw + 1.4f), 0f).x, W(s, side * (hw + 1.4f), 0f).z);
