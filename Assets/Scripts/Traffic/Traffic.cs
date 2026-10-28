@@ -20,7 +20,17 @@ namespace ChastainRush
     {
         public static Traffic Instance { get; private set; }
         public static readonly string[] LevelNames = { "Off", "Light", "Normal", "Heavy" };
-        public static readonly int[] LevelCars = { 0, 7, 14, 22 };
+        public static readonly int[] LevelCars = { 0, 10, 22, 34 }, OldLevelCars = { 0, 7, 14, 22 };   // Round 80 (F): more everywhere (Round 79's in OldLevelCars)
+        // Round 80 (F, Dan: "can we have more traffic so it is more realistic. Specifically the highways get busy"): new cars go mostly onto the big roads
+        // in reach (a road's length times its class's weight: motorway 6, trunk 4, primary 2, secondary 1.5, the rest 1), and on a road of several lanes
+        // each car keeps a lane of its own (TrafficDriver.Lane), so every lane fills. Checks: -r80TrafficOld gives Round 79's numbers and mix.
+        public static bool OldMix;
+        public static int CarsFor(int level) => (OldMix ? OldLevelCars : LevelCars)[Mathf.Clamp(level, 0, 3)];
+        float ClassWeight(int e)
+        {
+            if (OldMix) return 1f;
+            switch (net.ClassName(e)) { case "motorway": return 6f; case "trunk": return 4f; case "primary": return 2f; case "secondary": return 1.5f; default: return 1f; }
+        }
         public static int ForcedLevel = -1;   // checks: -traffic <name>
         public static int Horns;              // checks
         public static int KnotsUntied;        // Round 32 (B2): checks
@@ -44,6 +54,7 @@ namespace ChastainRush
         {
             var args = Environment.GetCommandLineArgs(); ForcedLevel = -1; Horns = 0;
             for (int i = 0; i + 1 < args.Length; i++) if (args[i] == "-traffic") ForcedLevel = Mathf.Max(0, Array.IndexOf(LevelNames, args[i + 1]));
+            OldMix = Array.IndexOf(args, "-r80TrafficOld") >= 0;
             if (Instance || !TrafficNetwork.Instance || !FindAnyObjectByType<ArcadeVehicle>()) return;
             Instance = new GameObject("Traffic").AddComponent<Traffic>();
         }
@@ -99,7 +110,7 @@ namespace ChastainRush
             if (!started) return;
             // the pool is made one car a frame, also while a menu is up (the title menu at start): making a car takes a few
             // milliseconds, so none is made while driving unless the setting goes up
-            if (Cars.Count < LevelCars[Level]) Make();
+            if (Cars.Count < CarsFor(Level)) Make();
             if (Time.timeScale == 0) return;
             var race = RaceController.Instance; var stage = race ? race.State : RaceController.Stage.Free;
             // Round 54 (D1): also at every race (re)start (the grid's countdown), when the closures may have changed (another route, the other way)
@@ -112,7 +123,7 @@ namespace ChastainRush
 
         void Manage()
         {
-            int want = LevelCars[Level];
+            int want = CarsFor(Level);
             var at = player.Body.position; var at2 = new Vector2(at.x, at.z);
             // too many (the setting went down): the ones out of sight go first
             for (int i = Cars.Count - 1; i >= 0 && Cars.Count > want; i--)
@@ -137,7 +148,7 @@ namespace ChastainRush
             {
                 if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12 || net.SpawnOff(e)) continue;   // Round 80 (E): not on the Express Lanes while they are closed
                 var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue;
-                candidates.Add(e); total += net.Length[e]; weights.Add(total);
+                candidates.Add(e); total += net.Length[e] * ClassWeight(e); weights.Add(total);
             }
             if (candidates.Count == 0) return false;
             float min = near ? 60f : 140f;

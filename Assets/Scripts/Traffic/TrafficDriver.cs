@@ -20,6 +20,7 @@ namespace ChastainRush
         public int Edge => route.Count > 0 ? route[0].edge : -1;
         public bool WantsRecycle { get; private set; }     // stuck, off the road or at the map's edge: Traffic moves it when nobody sees
         public float Pace { get; private set; } = 1;
+        int laneSlot;   // Round 80 (F): which lane of a road of several
         public string State { get; private set; } = "";   // checks
         public float Jammed { get; private set; }          // Round 32 (B2): how long it has stood blocked by a car across its way
 
@@ -47,7 +48,7 @@ namespace ChastainRush
         public void Place(int e, int dir, float s, Vector3 position, float speed)
         {
             route.Clear(); route.Add((e, dir)); stopNode = passedNode = -1; WantsRecycle = false; stalled = blockedFor = stopHeld = upsideDown = 0; knockedUntil = swerveUntil = 0;
-            Pace = Random.Range(.9f, 1.06f);
+            Pace = Random.Range(.9f, 1.06f); laneSlot = Random.Range(0, 64);   // Round 80 (F)
             Extend(); Rebuild();
             projIndex = 0; float at = Project(new Vector2(position.x, position.z));
             var ahead = PathAt(at + 6) - PathAt(at); var fwd = new Vector3(ahead.x, 0, ahead.y).normalized; if (fwd.sqrMagnitude < .5f) fwd = Vector3.forward;
@@ -98,6 +99,8 @@ namespace ChastainRush
         float Lane(int e)
         {
             float half = net.Half(e);
+            // Round 80 (F): a one-way road of several lanes (3.4 m each): its own lane, kept from road to road (Round 79: the right lane, a few in the left)
+            if (net.Oneway(e) && half >= 4.5f && !Traffic.OldMix) { int n = Mathf.Max(2, Mathf.FloorToInt(2f * half / 3.4f)); float w = 2f * half / n; return half - (laneSlot % n + .5f) * w; }
             if (net.Oneway(e)) return half >= 4.5f ? (Pace > .99f ? half * .2f : half * .45f) : 0f;   // a wide one-way road: the right lane, a few in the left
             return Mathf.Clamp(half * .5f, 1.3f, 2.6f);
         }
