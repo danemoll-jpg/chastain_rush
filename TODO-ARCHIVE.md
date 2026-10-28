@@ -6790,3 +6790,89 @@ C4 PARTLY. One straight line per jump: smooth run-up lane, kicker clear of the s
 C5 NOT DONE. Built and tried, then taken out: the haul road crosses the lane so a racer skipped The Corner's loop, and the AI and the human-like driver got stuck there (56 resets). `make_quarry_track.py` kept, not built (output in `local/round73/quarry_track_unbuilt/`). Options for Dan: a course on the jumps drive and haul roads with the crossing closed, or checkpoints at the three start boxes only.
 Not run: the AI race on every car course (only the barrier sweep). Imported from Racer: nothing.
 For Dan to check: Kennesaw race start and CP5 drive; the drive in Free Roam both ways; the summit leap (is shorter OK?); the Air Race with the arrow; the quarry jumps by fast travel and from the sign; J3 on a bike; the crowd; reset anywhere.
+
+## Round 74 (moved from TODO.md on 2026-10-28 when Dan reviewed Round 77; word for word)
+
+## Previous delivery 3: Round 74
+**Reviewed: Dan checked everything but the quarry 2026-10-27 11:27 to 12:04: "The only thing is that the garage is still kind of broken" (Round 75 A); the fork barriers no complaint. The quarry not yet seen.**
+**Round 74, THE PLANE'S GARAGE AND LOOKS, CONTROLS SHOWN FOR THE DEVICE IN USE, STEADY ARROWS; the quarry jumps' lanes, a turn-off on
+Kennesaw, the summit leap's lip (Dan, 2026-10-27 03:06; reports BUG-002 to BUG-005 of session `2026-10-27_02-23-23-098_3e251a` (BUG-001 was sent by mistake),
+read by Claude, after the Round 73 build).** Round 73 is reviewed. Item 0 (CHECK IT AS DAN PLAYS IT, CLAUDE.md "Process") applies to every
+item: Dan's spots pictured before / after from his position and heading and LOOKED AT; features played from where a player starts. Round
+73's quarry jumps passed its checks yet Dan found a hill through a run-up and a run-up ending at a wall: the pictures must be from where a
+player actually drives (the sign, the start box, the lane at speed), not chosen to look good. Quick builds; ONE full Build Map. Short results.
+A. THE PLANE. Dan: "airplane - replay, the propeller doesn't move. There is no garage option. Ideally there will be other planes to select
+   eventually and at the very least allow to change colors. Additionally planes should have windows so that we can see the avatar".
+   A1. The propeller turns in replays (recorded throttle / engine speed drives it, as live); check the helicopter's rotors in replays too.
+   A2. A garage for flying vehicles: the plane (and the helicopter) in the garage page in Free Roam (and in race setup for the Quarry Air
+       Race), with the turning model and colors to choose, saved like the cars' color. Build it so more planes can be added later (a list,
+       not one hard-wired plane).
+   A3. Windows: the plane's cabin glazed (the game's vehicle glass), the pilot (Dan's rider / avatar) sitting inside, visible from the
+       chase camera; the same for the helicopter if it lacks them.
+B. CONTROLS SHOWN FOR THE DEVICE IN USE. Dan: "on the map screen (and in general) can we just show controls for the device being played
+   with and not also include keyboard buttons unless these buttons are only on the keyboard". Everywhere the game lists controls (the map
+   screen's help line, menus' hints, the loading screen's tips, the debug window's line, race / vehicle hints, the plane and helicopter
+   help): show only the active device's (the pad's glyphs when the last input was a pad, the keys when it was keyboard / mouse), switching
+   at once when the player switches; keyboard-only functions (F-keys, debug) shown only with the keyboard. Pictures of each screen both ways.
+C. STEADY ARROWS. Dan: "Arrows during vehicle races are too bouncy. Can we make them more stable." The next-checkpoint arrow (and the
+   on-screen direction arrow): smooth it (no bob with the suspension / camera shake, damped turning, held level), still pointing right.
+D. KENNESAW MOUNTAIN. BUG-002 (x -1102.78 z -5849.19 h 69, the drive before CP5): "there needs to be a barrier for the right road. It is not
+   obvious you don't go that way" (the picture: the course bears left onto its bench while the drive carries on to the right). Close the
+   road the race does not take there with the race's barrier (off the race line: Round 73 A1's rule), and check every fork of every
+   course for the same (a road that looks like the way but is not: closed).
+E. THE QUARRY JUMPS (Round 73 C4 again). BUG-003 (x -1996.33 z -1390.14 h 226, a run-up lane): "maybe want to remove the mountain so it isn't
+   sticking through the ramp" (the picture: a grassy hill rising through the paved lane in front of the kicker). BUG-004 (x -2128.42 z
+   -1443.31 h 190, the end of a lane): "ramp is blocked. I don't understand where these ramps lead to" (the picture: the lane runs into a
+   wall of hillside: no kicker, no lake, nothing ahead). For every jump: the lane, the kicker and the landing in one clear line, nothing of
+   the ground over or through any of it, the lake and the landing in view from the start box and the lane. If the real quarry's shape fights
+   it, cut it back (the ground is ours to shape). Then Round 73 C5's question, taking Code's own first option as Dan asked for a track: a
+   quarry course on the jumps drive and the haul roads with the crossing closed, its checkpoints leading to each run-up.
+F. THE SUMMIT LEAP. BUG-005 (x -1068.06 z -5968.78 h 209, at the lip): "the end of the ramp makes you turn and lose momentum" (the picture:
+   a grass hump with a jagged rock edge and a white shape beyond it). Make the lip straight and true to the run-up (no twist, no side
+   slope, nothing to catch), so the car leaves it flat out straight ahead; say what the white shape is and fix it if it is wrong. Report the
+   flight (Round 73: Drifter 6.9 s / 188 m; Round 70's steel ramp was 8.6 s / 341 m). Dan, 03:13: "if we can get a larger run up that would be good (in addition to fixing the actual jump). The philosophy of this
+   game should be fun takes precedence over reality. The top of the mountain doesn't have to be exactly like the real thing. Also can't we
+   pitch the ramp a little higher? All this is to say I don't know how it will feel to actually jump it since the edge of the ramp needs to
+   be fixed". So: reshape the summit as needed for a LONGER straight run-up (level / extend the top, cut through, raise a run-up across it:
+   fun over reality), pitch the lip steeper (still a natural-looking rock / earth lip, still landing clean), and aim for a flight at least
+   as long as Round 70's steel ramp (8.6 s / 341 m on the Drifter Twin). Tuning limit as usual; report the run-up length, lip speed and angle. Dan, 03:15: "make sure that this change doesn't mess up the race track and the top of the mountain is reasonable looking
+   (ie no 90 degree angle roads)": the Kennesaw Mountain race (its course, jumps, checkpoints, the drive) must be unchanged and still raced
+   clean (one AI race and the human-like driver, before / after lap times); the reshaped summit must look natural (smooth slopes and
+   banks, roads and the run-up meeting in gentle curves, no sharp corners, cliffs or right-angle joins); pictures of the summit from the
+   lot, from the run-up and from the air.
+G. FINISH THE AI'S PACE (added 2026-10-27 04:37: Dan asked for one more item before bed, no preference; Claude picked this). Round 70 B
+   was PARTLY done (tuning limit): Dan found the AI "really slow" and "too slavish to the actual roads"; Round 70 found phantom bends from
+   the roads' raw centerlines and held slow zones (the trails' turns 11 to 14 m/s where Dan does 23 to 41). Finish it: smoothed racing lines
+   on every course (no phantom bends), slow zones only where the vehicle really must slow (measured cornering limits, not fixed numbers),
+   corners cut over grass and lots where the course allows. Target: Hard's best lap within a few seconds of Dan's best on every course
+   (his Top 10 records), Normal and Easy by pace. Report the table per course (Dan's best, Hard best / average before and after) and watch a
+   replay of each from the chase camera (item 0): no weaving, no odd braking, passing as Round 58.
+H. A SECOND PLANE (Dan, 04:40). In A2's garage list: a faster, more agile plane next to the Sky Hopper (e.g. a low-wing aerobatic /
+   racing single-seater: quicker rolls, higher top speed, our own model, no real maker's name), its own colors, windows and the rider
+   visible (A3), propeller turning in replays (A1). Both planes selectable for the air races and Free Roam; AI pilots use either.
+I. A SECOND PLANE RACE: THE HIGHWAYS (Dan, 04:40: "a second plane race utilizing the highways so we can fly under bypasses"). A ring course
+   down the I-75 / I-575 corridors (and their interchange), low over the lanes, under the overpasses where the plane fits (Round 69's wing-tip
+   test; the frames sized to the openings, makeable), with banked sweeps between them; start / finish at the airport or in the air near it,
+   Code's pick. Built to Round 73 B's rules from the start: flowing ring order (each ring points you at the next), the 3D arrow, beacons,
+   the ring after next shown, rings that count either way, a missed one can be gone back for. Race against AI pilots or time trial; records,
+   ghosts, replays. Verified as item 0 with the human-like pilot (cockpit pictures at each ring, under each bridge).
+J. THE AIRPORT ON THE MAP (Dan, 04:40: "show the airport with concrete runways on the map instead of grass"). The map screen and minimap draw
+   the airport's runways, taxiways and aprons as pavement (concrete gray, with runway markings if cheap), not grass; check other big paved
+   areas (lots, the stunt park) read as pavement on the map too. Pictures of the map at the airport.
+Check: item 0 for every item; pictures listed; the plane in the garage (two colors) and a replay with the propeller turning.
+For Dan to check: race the AI on Hard on a few courses; the second plane; the highway air race; the airport on the map; the plane's garage, colors, windows, replay; the controls shown on the map and menus with the pad and with the keys; the
+race arrows; Kennesaw's CP5 fork; each quarry jump from its sign and start box, and the quarry course; the summit leap.
+
+**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 08:30), checked in the exe through the game's own input, not yet driven by Dan.** Evidence `Data/screenshots/round74/` (`round74_check_final.txt`, `ai_table.txt`, `74_*.png`). Dan's "before" pictures are his own (the bug session).
+0 DONE: every item below was looked at in the exe's pictures from the player's camera.
+A1 DONE. Replays keep the plane's / helicopter's flight part on the puppet: both planes' propellers turn in the Quarry Air Race's replay (`74_replay_propeller`). A2 DONE. Race setup > Garage for an air race holds its planes, with the turning model and colors (`74_garage_air_race`, `_plane_color1/2`); Free Roam's garage had them. A3 DONE. Both planes' cabins were a closed painted shell (the windows lay on it): now a low tub under glass, the pilot seen from the chase camera (`74_plane_plane_pilot`, `_dart_pilot`); the helicopter already had its bubble.
+H DONE. The Sky Dart (`plane_dart.py`): 138 m/s, roll 165 deg/s (Sky Hopper 115, 95), on the middle apron stand, in both garages and air races; AI pilots fly either (EMBER flew it).
+B DONE. Hints follow the device in use (`KeyHints`): the map's two lines and legend, the minimap, race HUD, debug line, loading tips, plane / helicopter help; keyboard-only keys (F-keys) only with the keys (`74_controls_pad_map`, `_keys_map`).
+C DONE. The race HUD arrow and the air race's 3D arrow damped (0.3 s); the arrow's frame-to-frame wobble down 57 % on a Glen lap (0.625 to 0.268 deg).
+D DONE. `74_BUG-002_after`: a barrier across the drive straight ahead, the course bending left before it. Every course's forks off its line closed (`Tools/race/fork_closures.py`: 64 barriers on 4 courses; 3 stubs under 30 m left open); the barrier sweep on every course both ways: none on a line (the Underground's switch gate, by design).
+E PARTLY. BUG-003 / BUG-004: the ground stood up to 11 m through J2's and J3's landing decks before the bench's edge (a probe): the cut now starts there, the ground at most 0.2 m under the decks; Dan's "wall" was the deck running up to that ground. LANDING boards at the decks; the countdown's camera sweeps from over the box out over the lake to the landing (`74_qJ2_preview_countdown`). The jumps from fast travel: all CLEAN (J1-J3, Street Classic and Drifter, J2 Needle). The Quarry Track NOT built (second try, one lane): the forgiving checkpoint rule let the AI skip The Corner off the shared haul road, the player's driver stuck off The Long One's run-out (`local/round74/quarry_track_unbuilt/`). Options for Dan: only the next 3 checkpoints count on that course, and a graded way from the run-out to the haul road.
+F PARTLY (tuning limit). BUG-005: the white shape was the cloud layer at the summit's height: the clouds now rise over high ground (160 m over the camera at the summit). Round 73's climb kept, the lip pitched 21 to 24 deg, the kicker 18 m wide with gentle banks, a softer back face, 450 m round with body glide (the bikes bottomed out at 340 m). Flat out from its fast-travel start (`round73_check_leap_final.txt`): Drifter Twin 43.0 m/s at the lip, 9.3 s / 336 m (Round 73: 6.9 / 188; Round 70's steel ramp 8.6 / 341), Street Classic 7.9 s / 217 m (6.1 / 145), Needle 600 7.7 s / 202 m (7.9 / 228), all upright; without the glide the Needle flew 9.6 s / 368 m and the Street Classic 8.6 / 267 but the Drifter only 5.7 / 104 (no one kicker suits both): kept for Dan's Drifter. The lip's edge still draws saw-toothed from the run-up (the terrain's 1 m grid across a diagonal edge). The run-up is 276 m as before (a longer straight does not fit: the race's bench behind it, the face beyond). Kennesaw race: the course unchanged (B2 only); one race, Normal: all finished; the human-like driver 3:41.7 with 3 stuck spots (-858, -5979), (-1027, -5743), (-880, -5565) (Round 73 ran no race to compare).
+G PARTLY (tuning limit). `ai_table.txt`: Hard's best lap against Dan's: within 4 s on the Trail forward, Glen both ways, Ridge forward, Lakes reverse, Underground; 9 to 26 s off on Kennesaw (128.3 / 108.5), Lakes forward, Ridge reverse, Addison, Creek. Try 1: the angle cap from the circle through its aim, bend zones from the racing line on Hard; try 2: Hard corners at 1.12. Not watched as replays (no time); the traces are in local/round74.
+I DONE / PARTLY. The Highway Air Race (`make_highway_air_route.py`, 19 km, 16 rings): up I-75 under Chastain Road's bridge (8.8 m to its deck as built), over the Skip Spann Connector (its deck on the ground), down I-575 under Chastain Road NW's, the interchange, home. In the exe (`round71_check_highway_final.txt`): nothing solid on the line, a clean lap by script 2:54 (every ring, no crash), both AI pilots on Hard finish (2:37 and 2:59 laps), no crash. Rings along the interstates added after the human-like pilot, flying by the arrow, cut across the hills into the bridge's bank; a third crash before one ring now puts the plane past it. The human-like pilot check itself still does not finish (it aims 90 m beside ring 3 by design: here into the trees by I-75), not proof of a finish by hand.
+J DONE. The airport's runways, taxiways and aprons as concrete with runway markings, parking lots as asphalt (`74_map_airport`); the Mall's own lots (built by the map build) still grass on the map.
+For Dan to check: the planes (both, the garage, the pilot through the glass, a replay); the highway air race; the summit leap on the Drifter Twin; the quarry from the boxes and the LANDING boards; the AI on Hard on Kennesaw and Lakes; the map with the pad and the keys.
