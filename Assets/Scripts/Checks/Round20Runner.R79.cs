@@ -139,7 +139,7 @@ namespace ChastainRush
             {
                 R79Start(file, 0); var r = race.Route; if (r == null) continue;
                 while (race.State == RaceController.Stage.Countdown) { R73Set(0, 0, 0); yield return null; }
-                float angSum = 0f, pixSum = 0f, angMax = 0f; int n = 0; Vector3 f1 = Vector3.zero, f2 = Vector3.zero, s1 = Vector3.zero, s2 = Vector3.zero; int have = 0, lastId = -1; float switchedAt = -9f;
+                float angSum = 0f, pixSum = 0f, angMax = 0f; int n = 0; Vector3 f1 = Vector3.zero, f2 = Vector3.zero, s1 = Vector3.zero, s2 = Vector3.zero; int have = 0, lastId = -1; float switchedAt = -9f, jumpedAt = -9f; var lastPos = car.Body.position;
                 bool sampling = true;
                 IEnumerator Sample()
                 {
@@ -148,7 +148,10 @@ namespace ChastainRush
                         yield return new WaitForEndOfFrame();
                         if (!AirGuideArrow.Shown || race.Target == null) { have = 0; continue; }
                         if (race.Target.Id != lastId) { lastId = race.Target.Id; switchedAt = Time.unscaledTime; have = 0; }
-                        var pl = car.GetComponent<PlaneFlight>(); if (pl.Crashed || !pl.Airborne || Time.unscaledTime - switchedAt < 1.2f) { have = 0; continue; }
+                        var pl = car.GetComponent<PlaneFlight>(); var at = car.Body.position;
+                        if ((at - lastPos).magnitude > 40f) jumpedAt = Time.unscaledTime;   // a reset put it back in the air: the arrow swings round, not a wobble
+                        lastPos = at;
+                        if (pl.Crashed || !pl.Airborne || Time.unscaledTime - switchedAt < 1.2f || Time.unscaledTime - jumpedAt < 2f) { have = 0; continue; }
                         var f = AirGuideArrow.ShownOnScreen * Vector3.forward; var sp = AirGuideArrow.ShownAt;
                         if (have >= 2)
                         {
