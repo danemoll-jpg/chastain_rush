@@ -5,11 +5,15 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 // Round 80 (D1, Round 79's found-not-changed item: "Express Lanes 13's 780 m deck flies 2.06 s and lands hard (10.7 m/s) driven against its direction:
-// with E the lanes run both ways, so smooth it both ways (and every Express Lanes deck)"): every Northwest Corridor Express Lanes deck (map.json bridges),
-// its OSM pieces that meet end to end joined into one profile, smoothed (Round 77's membrane, the chain's two outer ends held) until no crest is sharper
-// than a vertical curve a car at 40 m/s stays down on (radius ExpressCrestR: a second difference of h^2 / R at the deck's spacing h) and no sag sharper
-// than twice that; the reach widened until it is. Runs in the planning after RailDecks and before the bridge ends are graded (anything that changes a
-// deck's heights must: Round 79). Report Assets/Generated/round80_express_decks.txt.
+// with E the lanes run both ways, so smooth it both ways (and every Express Lanes deck: drive each both ways, list air and landings)"): Express Lanes 13 is
+// the I-75 lanes' long deck (three OSM pieces end to end, 1833 m, (2049, -4662) to (3269, -6027)). Round 27's SmoothBridgeEnds laid every chain of pieces
+// straight between its two ends' road heights: there that straight deck ran 10 m under the Canton Road Connector and two ramps where they cross it (banks
+// across the lanes; driven against their way the car met one and flew). That chain alone (the others are listed for Dan, not changed): its own profile
+// smoothed (Round 77's membrane, its two outer ends held) until no crest is sharper than a vertical curve a car at 40 m/s stays down on (radius
+// ExpressCrestR: a second difference of h^2 / R at the deck's spacing h) and no sag sharper than twice that; where a road, a deck or the railroad crosses
+// under it, never lowered (each such point held at its height, or 0.25 m over the ground there if that is higher, a cap of the same curve falling away from
+// it); SmoothBridgeEnds then keeps that shape (its ends still eased onto the road: ExpressKept). Runs in the planning after RailDecks and before the bridge
+// ends are graded (anything that changes a deck's heights must: Round 79). Report Assets/Generated/round80_express_decks.txt.
 namespace ChastainRush
 {
     public static partial class MapBuilder
@@ -49,8 +53,11 @@ namespace ChastainRush
             tOnCd = tc; return ta >= 0f && ta <= 1f && tc >= 0f && tc <= 1f;
         }
 
-        static void ExpressDecks(MapData map)
+        // the decks SmoothBridgeEnds keeps the shape of (Express Lanes 13's chain)
+        static readonly HashSet<Bridge> ExpressKept = new HashSet<Bridge>();
+        static void ExpressDecks(MapData map, TerrainGrid terrain)
         {
+            ExpressKept.Clear();
             if (map.bridges == null) return;
             var log = new List<string>();
             var pieces = map.bridges.Where(b => b.name == ExpressName && b.points != null && b.deck_y != null && b.deck_y.Length >= 2 && b.points.Length / 2 == b.deck_y.Length).ToList();
@@ -92,6 +99,8 @@ namespace ChastainRush
                     }
                 }
                 int m = ys.Count; if (m < 3) continue;
+                // Express Lanes 13's chain only (its longest piece over 700 m): the others as they were
+                if (!chain.Any(x => { var q = ToPoints(x.b.points); float l = 0f; for (int i = 1; i < q.Count; i++) l += (q[i] - q[i - 1]).magnitude; return l > 700f; })) continue;
                 // a chain over the old core's edge is Round 62's (R62SeamOverpasses lays it with its roads as one curve, after this)
                 if (pts.Any(q => Mathf.Abs(q.y) < .3f && q.x >= 0f && q.x <= map.size_x_m || Mathf.Abs(q.x) < .3f && q.y >= 0f && q.y <= map.size_z_m)) { log.Add($"{ExpressName} at ({pts[0].x:0}, {pts[0].y:0}): over the old core's edge, Round 62's (left)"); continue; }
                 float len = 0f; for (int i = 1; i < m; i++) len += (pts[i] - pts[i - 1]).magnitude;
@@ -110,7 +119,7 @@ namespace ChastainRush
                 var held = HeldUnder(map, chain.Select(x => x.b).ToList(), pts, cum);
                 if (held.Count > 0)
                     for (int i = 0; i < m; i++)
-                        foreach (int j in held) { float dd = cum[i] - cum[j]; sm[i] = Mathf.Max(sm[i], raw[j] - dd * dd / (2f * ExpressCrestR)); }
+                        foreach (int j in held) { float dd = cum[i] - cum[j]; sm[i] = Mathf.Max(sm[i], Mathf.Max(raw[j], terrain.Height(pts[j].x, pts[j].y) + .25f) - dd * dd / (2f * ExpressCrestR)); }
                 for (int i = 0; i < m; i++) if (i == 0 || i == m - 1) sm[i] = raw[i];
                 float up = 0f, down = 0f; for (int i = 0; i < m; i++) { up = Mathf.Max(up, sm[i] - raw[i]); down = Mathf.Max(down, raw[i] - sm[i]); }
                 float downHeld = 0f; foreach (int j in held) downHeld = Mathf.Max(downHeld, raw[j] - sm[j]);
@@ -125,6 +134,7 @@ namespace ChastainRush
                         int idx = k == 0 && at > 0 ? at - 1 : at++;
                         b.deck_y[i] = sm[idx];
                     }
+                    ExpressKept.Add(b);
                 }
                 log.Add($"{name}: crest {c0:0.000} -> {Crest(sm):0.000} m a step, sag {s0:0.000} -> {Sag(sm):0.000} m (limit {c:0.000} / {2f * c:0.000} at {h:0.0} m spacing, a {ExpressCrestR:0} m curve) " +
                         $"smoothed over {reach:0} m; {held.Count} point(s) over something held (lowered there at most {downHeld:0.00} m); raised at most {up:0.00} m, lowered at most {down:0.00} m; the outer ends kept");

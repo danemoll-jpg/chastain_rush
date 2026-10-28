@@ -48,7 +48,7 @@ namespace ChastainRush
             while (race.State == RaceController.Stage.Countdown) yield return null;
             yield return R74Place(R80Dan, R80DanYaw);
             var cross = R80Crossing(R80Whitlock); RailTrains.Instance.Align(cross.center, 2f, true);
-            float t = 0f; while (t < 9f) { R73Set(0, 0, .3f); yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; }
+            float t = 0f; while (t < 9f) { R73Set(0, 0, 0); yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; }   // (the brake held on a stopped car reverses it)
             yield return Capture("80_BUG-001_after");
             report.AppendLine($"  at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0}) heading {car.transform.eulerAngles.y:0}: the crossing {(cross.Closed ? "closed (the train passing)" : "open")}, its arms at {cross.ArmAngle:0} degrees; picture 80_BUG-001_after.png (the tie stack to the right of the road before the tracks, the loading dock past them)");
             Check("dan: the train passing Whitlock Avenue as in Dan's picture", cross.Closed);
@@ -83,13 +83,15 @@ namespace ChastainRush
                 var line = new List<Vector3>(r.LeadIn ?? new Vector3[0]); for (float s = 0f; s <= r.LapLength; s += 3f) line.Add(r.PointAt(r.GateS + s, out _));
                 if (mode == "jump") line = R80JumpLine(line);
                 var rt = RailTrains.Instance; var cross = R80Crossing(R80Whitlock);
-                bool aligned = false; float tIn = -1f, tOut = -1f, overTrain = float.NaN, waitedFor = 0f; bool trainUnder = false, closedWhenOver = false;
+                bool aligned = false; float alignedAt = -1f, tIn = -1f, tOut = -1f, overTrain = float.NaN, waitedFor = 0f; bool trainUnder = false, closedWhenOver = false;
                 Func<float, float> speedAt = s =>
                 {
                     var p = car.Body.position; float d = Flat(p - cross.center).magnitude;
-                    if (!aligned && p.x < cross.center.x && p.z < -8445f && d < 200f) { aligned = true; float eta = d / Mathf.Max(8f, car.Body.linearVelocity.magnitude); rt.Align(cross.center, mode == "jump" ? eta - 1.5f : eta - 3f, true); }
-                    if (tIn < 0f && p.x > 1560f && p.z < -8505f) tIn = Time.time;
-                    if (tIn > 0f && tOut < 0f && p.x > 1700f) tOut = Time.time;
+                    // on Whitlock past the corner: the train's front over the crossing 2.5 s before the car gets there (jump: its cars under the flight), or 4 s after
+                    // (wait: the gates down, the train coming)
+                    if (!aligned && p.x > 1545f && p.x < 1590f && p.z < -8512f) { aligned = true; alignedAt = Time.time; float eta = (cross.center.x - p.x) / Mathf.Max(8f, car.Body.linearVelocity.magnitude); rt.Align(cross.center, mode == "jump" ? Mathf.Max(.5f, eta - 2.5f) : eta + 4f, true); }
+                    if (tIn < 0f && p.x > 1545f && p.x < 1575f && p.z < -8512f) tIn = Time.time;
+                    if (tIn > 0f && tOut < 0f && p.x > 1700f && p.z < -8512f) tOut = Time.time;
                     if (p.x > 1619f && p.x < 1631f && car.GroundedWheels == 0)
                     {
                         closedWhenOver |= cross.Closed;
@@ -105,7 +107,7 @@ namespace ChastainRush
                 Time.timeScale = 1f;
                 float secs = tIn > 0f && tOut > 0f ? tOut - tIn : float.NaN; through[mode] = secs;
                 report.AppendLine($"  {mode}: {(race.Player.Finished ? "finished " + RaceController.Fmt(race.Player.FinalTotal) : "NOT finished")}; resets {run.resets}; longest in the air {run.maxAir:0.00} s; " +
-                                  $"Whitlock from North Marietta Parkway to past the dock {secs:0.0} s (game time); waited at the gates {waitedFor:0.0} s; " +
+                                  $"the train lined up {(aligned ? "yes" : "NO")}; Whitlock from North Marietta Parkway to past the dock {secs:0.0} s (game time); waited at the gates {waitedFor:0.0} s; " +
                                   (mode == "jump" ? $"over the tracks: the crossing {(closedWhenOver ? "closed" : "open")}, a train car under the car {(trainUnder ? $"yes ({overTrain:0.0} m under the car's middle)" : "no")}" : "") + run.note);
                 if (mode == "jump") Check("whitlock: over the tracks off the tie stack (over 1.2 s in the air), a train under it, no reset", run.maxAir > 1.2f && trainUnder && run.resets == 0, $"air {run.maxAir:0.00} s, train under {trainUnder}, resets {run.resets}");
                 if (mode == "wait") Check("whitlock: on the road the train stops you (no free way round)", waitedFor > 3f, $"waited {waitedFor:0.0} s");
@@ -181,11 +183,18 @@ namespace ChastainRush
                 {
                     var line = R73Line(d.line); if (back) line.Reverse();
                     var f0 = Flat(line[2] - line[0]).normalized; yield return R74Place(RaceRoute.Surface(line[0].x, line[0].z), Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg); R73Pad();
-                    var run = new HumanRun(); float jolt = 0f, lastVy = 0f;
-                    var watch = StartCoroutine(R73Watch(() => { float vy = car.Body.linearVelocity.y; if (car.GroundedWheels > 0) jolt = Mathf.Max(jolt, Mathf.Abs(vy - lastVy)); lastVy = vy; }, () => true));
-                    yield return HumanDrive(line, 33f, 90f, run); StopCoroutine(watch);
+                    var run = new HumanRun(); float jolt = 0f, lastVy = 0f, air = 0f, airBest = 0f; Vector3 airFrom = Vector3.zero, airAt = Vector3.zero, joltAt = Vector3.zero;
+                    var watch = StartCoroutine(R73Watch(() =>
+                    {
+                        var p = car.Body.position; float vy = car.Body.linearVelocity.y;
+                        if (car.GroundedWheels > 0) { if (Mathf.Abs(vy - lastVy) > jolt) { jolt = Mathf.Abs(vy - lastVy); joltAt = p; } air = 0f; }
+                        else { if (air == 0f) airFrom = p; air += Time.fixedDeltaTime; if (air > airBest) { airBest = air; airAt = airFrom; } }
+                        lastVy = vy;
+                    }, () => true));
+                    yield return HumanDrive(line, 33f, 120f, run); StopCoroutine(watch);
                     bool ok = run.reachedEnd && run.maxAir < .5f && jolt < 6f && run.resets == 0; if (!ok) bad++;
-                    report.AppendLine($"  {d.name} {(back ? "the other way" : "its own way")}: {(run.reachedEnd ? "through" : "NOT through")} in {run.time:0.0} s, top {run.topSpeed:0} m/s, longest in the air {run.maxAir:0.00} s, hardest landing {jolt:0.0} m/s in a step, resets {run.resets}{(ok ? "" : "  <- LOOK")}");
+                    report.AppendLine($"  {d.name} {(back ? "the other way" : "its own way")}: {(run.reachedEnd ? "through" : "NOT through")} in {run.time:0.0} s, top {run.topSpeed:0} m/s, longest in the air {run.maxAir:0.00} s " +
+                                      $"(off at ({airAt.x:0}, {airAt.z:0})), hardest landing {jolt:0.0} m/s in a step (at ({joltAt.x:0}, {joltAt.z:0})), resets {run.resets}{run.note}{(ok ? "" : "  <- LOOK")}");
                 }
             Check("ddecks: every Express Lanes deck both ways through, under 0.5 s in the air, no landing over 6 m/s", bad == 0, $"{bad} not");
         }
@@ -238,7 +247,7 @@ namespace ChastainRush
                 pl.AirStart(new Vector3(-2300f, 520f, -5200f), 30f, 0f, 70f); R73Pad();
                 if (views) views.SetView(CameraViews.View.FirstPerson);
                 float t = 0f; while (t < 2.5f) { R73Set(0, .7f, 0); yield return null; t += Time.deltaTime; }
-                var cam = Camera.main; var rider = car.GetComponentsInChildren<Transform>(true).FirstOrDefault(x => x.name == "Rider");
+                var cam = Camera.main; var rider = car.GetComponentsInChildren<Transform>(true).FirstOrDefault(x => x.name == "Rider" && x.parent && x.parent.name == "Steering pose");   // the rider's holder (VehicleVisual.Rider)
                 var local = rider && cam ? car.transform.InverseTransformPoint(cam.transform.position) - car.transform.InverseTransformPoint(rider.position) : Vector3.zero;
                 yield return Capture($"80_D3_cockpit_{id}");
                 report.AppendLine($"  {id}: the camera {local.x:0.00} / {local.y:0.00} / {local.z:0.00} m (right / up / forward) from the pilot's seat; picture 80_D3_cockpit_{id}.png");

@@ -226,9 +226,12 @@ namespace ChastainRush
                 float y0 = terrain.Height(at[0].p.x, at[0].p.y), y1 = terrain.Height(at[at.Count - 1].p.x, at[at.Count - 1].p.y);
                 float deepest = 0f;
                 var line = new List<Vector3>();
+                // Round 80 (D1): Express Lanes 13's chain keeps its own (smoothed) shape, its ends moved onto the road's heights (ExpressDecks)
+                bool kept = ExpressKept.Contains(map.bridges[at[0].b]);
+                float k0 = kept ? y0 - map.bridges[at[0].b].deck_y[at[0].i] : 0f, k1 = kept ? y1 - map.bridges[at[at.Count - 1].b].deck_y[at[at.Count - 1].i] : 0f;
                 for (int k = 0; k < at.Count; k++)
                 {
-                    float y = Mathf.Lerp(y0, y1, s[k] / Mathf.Max(s[at.Count - 1], 1e-3f));
+                    float y = kept ? map.bridges[at[k].b].deck_y[at[k].i] + Mathf.Lerp(k0, k1, s[k] / Mathf.Max(s[at.Count - 1], 1e-3f)) : Mathf.Lerp(y0, y1, s[k] / Mathf.Max(s[at.Count - 1], 1e-3f));
                     var dy = map.bridges[at[k].b].deck_y; deepest = Mathf.Max(deepest, y - dy[at[k].i]); dy[at[k].i] = y;
                     line.Add(new Vector3(at[k].p.x, y, at[k].p.y));
                 }
