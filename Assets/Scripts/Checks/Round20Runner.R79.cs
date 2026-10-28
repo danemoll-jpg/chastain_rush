@@ -75,7 +75,7 @@ namespace ChastainRush
             yield return Clock(13f);
             R79Start("air_tour.json", 0); var r = race.Route; if (r == null) { Check("dan: the route", false); yield break; }
             while (race.State == RaceController.Stage.Countdown) { R73Set(0, 0, 0); yield return null; }
-            var pl = car.GetComponent<PlaneFlight>(); race.Player.NextCheckpoint = 20; pl.MaxOutside = -1e9f;
+            var pl = car.GetComponent<PlaneFlight>(); race.Player.ClockStarted = true; race.Player.NextCheckpoint = 20; pl.MaxOutside = -1e9f;
             pl.AirStart(new Vector3(1069.84f, 540.74f, -8181.96f), 204.04f, 0f, 124.3f);
             float t = 0f; bool warned = false; while (t < 1.5f) { R73Set(0, .9f, 0); yield return null; t += Time.deltaTime; warned |= pl.Leaving; }
             yield return Capture("79_BUG-001_after");
@@ -87,6 +87,7 @@ namespace ChastainRush
             yield return R79Fly(r, 40f, 1f, () => race.Player.NextCheckpoint != next0, () => warned |= pl.Leaving, note);
             report.AppendLine($"  then on: ring {(race.Player.NextCheckpoint != next0 ? "21 passed" : "21 NOT reached")} in the flight;{note} warning on the way {warned}");
             Check("dan: ring 21 reached from there with no warning", race.Player.NextCheckpoint != next0 && !warned);
+            Check("dan: the race pointed at ring 21 (the setup)", race.Player.ClockStarted && next0 == 20, $"next {next0}");
             race.EndRace();
         }
 
@@ -121,7 +122,7 @@ namespace ChastainRush
             while (race.State == RaceController.Stage.Countdown) { R73Set(0, 0, 0); yield return null; }
             float best = float.MaxValue, sBest = 0f; for (float s = 0f; s < rt.LapLength; s += 10f) { var q = rt.PointAt(rt.GateS + s, out _); float d = Flat(q - new Vector3(1069.84f, 0f, -8181.96f)).magnitude; if (d < best) { best = d; sBest = s; } }
             var at = rt.PointAt(rt.GateS + sBest - 300f, out _); var nx = rt.PointAt(rt.GateS + sBest - 290f, out _); var f0 = Flat(nx - at).normalized;
-            race.Player.NextCheckpoint = 20; var pf = car.GetComponent<PlaneFlight>(); pf.AirStart(at, Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg, 0f, 110f);
+            race.Player.ClockStarted = true; race.Player.NextCheckpoint = 20; var pf = car.GetComponent<PlaneFlight>(); pf.AirStart(at, Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg, 0f, 110f);
             var nn = new StringBuilder(); yield return R79Fly(rt, 3.2f, 1f, null, null, nn);
             yield return Capture("79_air_tour_past_dan_spot");
             report.AppendLine($"  the tour's line passes {best:0} m from Dan's spot; a picture flying it there (ring 21 next): 79_air_tour_past_dan_spot.png ({(pf.Leaving ? "WARNING shown" : "no warning")})");
