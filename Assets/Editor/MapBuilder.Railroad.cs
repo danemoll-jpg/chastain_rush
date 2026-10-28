@@ -58,36 +58,7 @@ namespace ChastainRush
             var cross = (d.crossings ?? new RailCrossJ[0]).Where(c => !RailOverClasses.Contains(c.@class)).ToList();
             var over = (d.overpasses ?? new RailCrossJ[0]).Concat((d.crossings ?? new RailCrossJ[0]).Where(c => RailOverClasses.Contains(c.@class))).ToList();
             RailPlans = new List<RailPlan>(); var log = new List<string>();
-            // Round 78 (D, Dan's BUG-002 x 646.70 z -5541.05: "fix the overpass": Old 41's deck stepped 1.3 m in 4 m at one end and humped 0.5 m at the other,
-            // mapgen lifting it where the bare earth's banks poked through): that bridge gets an even deck, straight between its two ends' heights (the ends
-            // stay where Round 27's easing met the approaches)
-            if (map.bridges != null)
-                foreach (var b in map.bridges)
-                {
-                    if (b.points == null || b.deck_y == null || b.deck_y.Length < 3) continue; var bp = ToPoints(b.points); if (bp.Count != b.deck_y.Length) continue;
-                    float blen = 0f; for (int i = 1; i < bp.Count; i++) blen += (bp[i] - bp[i - 1]).magnitude; if (blen > 120f) continue;
-                    bool overRail = d.lines.Any(l => RailRoadOver(map, ToPoints(l.points)).Any(o => o.name == (b.name ?? b.@class)));
-                    if (!overRail) continue;
-                    // Round 79 (D, the decks Round 78 listed: the Express Lanes', the Canton Road Connector's (its southbound end 1 m under its road: a
-                    // wall, the deck's last points stepping 0.9 m) and Cobb Parkway's): every other deck over the line with a step keeps its two ends
-                    // (where the approaches meet it) and its shape, the steps smoothed out (a membrane over about 6 m, wider until no step of 0.2 m is left)
-                    if (bp.Min(q => (q - new Vector2(646.7f, -5541.05f)).magnitude) > 60f)
-                    {
-                        float W(float[] a) { float m = 0f; for (int i = 1; i + 1 < a.Length; i++) m = Mathf.Max(m, Mathf.Abs(a[i + 1] - 2f * a[i] + a[i - 1])); return m; }
-                        float w0 = W(b.deck_y); if (w0 < .2f) continue;
-                        float h = blen / (bp.Count - 1); var wt = new float[bp.Count]; for (int i = 0; i < wt.Length; i++) wt[i] = i == 0 || i == wt.Length - 1 ? 1e6f : 1f;
-                        float[] sm = b.deck_y; float reach = 6f;
-                        for (int tries = 0; tries < 4; tries++) { sm = R77Smooth1D(b.deck_y, wt, (reach / h) * (reach / h)); if (W(sm) < .2f) break; reach *= 1.6f; }
-                        float moved = 0f; for (int i = 0; i < sm.Length; i++) moved = Mathf.Max(moved, Mathf.Abs(sm[i] - b.deck_y[i]));
-                        log.Add($"{b.name} over the railroad ({bp[0].x:0}, {bp[0].y:0} to {bp[bp.Count - 1].x:0}, {bp[bp.Count - 1].y:0}): its {w0:0.00} m step smoothed to {W(sm):0.00} m over {reach:0} m (moved at most {moved:0.00} m, the ends kept)");
-                        System.Array.Copy(sm, b.deck_y, sm.Length); continue;
-                    }
-                    float worst = 0f; for (int i = 1; i + 1 < b.deck_y.Length; i++) worst = Mathf.Max(worst, Mathf.Abs(b.deck_y[i + 1] - 2f * b.deck_y[i] + b.deck_y[i - 1]));
-                    if (worst < .2f) continue;
-                    float acc = 0f, y0 = b.deck_y[0], y1 = b.deck_y[b.deck_y.Length - 1];
-                    for (int i = 1; i < bp.Count - 1; i++) { acc += (bp[i] - bp[i - 1]).magnitude; b.deck_y[i] = Mathf.Lerp(y0, y1, acc / blen); }
-                    log.Add($"{b.name} over the railroad: an even deck ({blen:0} m, {y0:0.0} to {y1:0.0} m; its worst step was {worst:0.00} m)");
-                }
+            if (deckLog.Length > 0) log.Add(deckLog);   // (the decks over the line: RailDecks, before the bridge ends were graded)
             var dips = new List<(int road, Vector2 at, float dip)>();
             var steepList = new List<(Vector2 at, float g)>();   // Round 79: every stretch steeper than 5 % (the log)
             float steepest = 0f; int graded = 0; Vector2 steepAt = Vector2.zero; int nCross = 0, nGradeSep = 0, nForced = 0, nUnder = 0;
@@ -211,6 +182,47 @@ namespace ChastainRush
             Debug.Log($"[Round77] C: railroad planned: {RailPlans.Count} lines, {km:0.0} km, {graded * 2f / 1000f:0.0} km of bed graded, the steepest grade {steepest * 100f:0.0} % at ({steepAt.x:0}, {steepAt.y:0}); " +
                       $"{nCross} level crossings ({nForced} with the road over 2.5 m above the line's own profile: the line held to it), {nGradeSep} crossings with the road well below made bridges; {nUnder} places lowered under a road bridge; " +
                       $"{RailCrossings.Count} level crossings, {over.Count} bridges over roads ({string.Join(", ", over.Select(o => o.name).Distinct())}); {railDrop.Count} buildings give way ({string.Join(", ", railDrop)}); steeper than 5 %: {(steepList.Count == 0 ? "none" : string.Join(", ", steepList.Select(q => $"{q.g * 100f:0} % at ({q.at.x:0}, {q.at.y:0})")))}; {string.Join("; ", log)}");
+        }
+
+        // Round 79 (D): the decks of the roads over the railroad, before the bridge ends and the embankments are graded to them (MapBuilder.cs: before
+        // SmoothBridgeEnds). Round 78 changed them in PlanRailroad, after the ground had been shaped to the old decks: the old ground stood through the new
+        // deck (the Canton Road Connector's southbound end, a 1.07 m wall in Round 79's first build; Round 78's build 3's "1 m under its road").
+        static string deckLog = "";
+        static void RailDecks(MapData map)
+        {
+            deckLog = ""; var path = Path.Combine(ProjectRoot, "Data/tracks/railroad.json"); if (!File.Exists(path) || map.bridges == null) return;
+            var d = JsonUtility.FromJson<RailJ>(File.ReadAllText(path)); if (d?.lines == null) return;
+            var log = new List<string>();
+            // Round 78 (D, Dan's BUG-002 x 646.70 z -5541.05: "fix the overpass": Old 41's deck stepped 1.3 m in 4 m at one end and humped 0.5 m at the other,
+            // mapgen lifting it where the bare earth's banks poked through): that bridge gets an even deck, straight between its two ends' heights (the ends
+            // stay where Round 27's easing met the approaches)
+            foreach (var b in map.bridges)
+            {
+                if (b.points == null || b.deck_y == null || b.deck_y.Length < 3) continue; var bp = ToPoints(b.points); if (bp.Count != b.deck_y.Length) continue;
+                float blen = 0f; for (int i = 1; i < bp.Count; i++) blen += (bp[i] - bp[i - 1]).magnitude; if (blen > 120f) continue;
+                bool overRail = d.lines.Any(l => RailRoadOver(map, ToPoints(l.points)).Any(o => o.name == (b.name ?? b.@class)));
+                if (!overRail) continue;
+                // Round 79 (D, the decks Round 78 listed: the Express Lanes', the Canton Road Connector's (its southbound end 1 m under its road: a
+                // wall, the deck's last points stepping 0.9 m) and Cobb Parkway's): every other deck over the line with a step keeps its two ends
+                // (where the approaches meet it) and its shape, the steps smoothed out (a membrane over about 6 m, wider until no step of 0.2 m is left)
+                if (bp.Min(q => (q - new Vector2(646.7f, -5541.05f)).magnitude) > 60f)
+                {
+                    float W(float[] a) { float m = 0f; for (int i = 1; i + 1 < a.Length; i++) m = Mathf.Max(m, Mathf.Abs(a[i + 1] - 2f * a[i] + a[i - 1])); return m; }
+                    float w0 = W(b.deck_y); if (w0 < .2f) continue;
+                    float h = blen / (bp.Count - 1); var wt = new float[bp.Count]; for (int i = 0; i < wt.Length; i++) wt[i] = i == 0 || i == wt.Length - 1 ? 1e6f : 1f;
+                    float[] sm = b.deck_y; float reach = 6f;
+                    for (int tries = 0; tries < 4; tries++) { sm = R77Smooth1D(b.deck_y, wt, (reach / h) * (reach / h)); if (W(sm) < .2f) break; reach *= 1.6f; }
+                    float moved = 0f; for (int i = 0; i < sm.Length; i++) moved = Mathf.Max(moved, Mathf.Abs(sm[i] - b.deck_y[i]));
+                    log.Add($"{b.name} over the railroad ({bp[0].x:0}, {bp[0].y:0} to {bp[bp.Count - 1].x:0}, {bp[bp.Count - 1].y:0}): its {w0:0.00} m step smoothed to {W(sm):0.00} m over {reach:0} m (moved at most {moved:0.00} m, the ends kept)");
+                    System.Array.Copy(sm, b.deck_y, sm.Length); continue;
+                }
+                float worst = 0f; for (int i = 1; i + 1 < b.deck_y.Length; i++) worst = Mathf.Max(worst, Mathf.Abs(b.deck_y[i + 1] - 2f * b.deck_y[i] + b.deck_y[i - 1]));
+                if (worst < .2f) continue;
+                float acc = 0f, y0 = b.deck_y[0], y1 = b.deck_y[b.deck_y.Length - 1];
+                for (int i = 1; i < bp.Count - 1; i++) { acc += (bp[i] - bp[i - 1]).magnitude; b.deck_y[i] = Mathf.Lerp(y0, y1, acc / blen); }
+                log.Add($"{b.name} over the railroad: an even deck ({blen:0} m, {y0:0.0} to {y1:0.0} m; its worst step was {worst:0.00} m)");
+            }
+            deckLog = string.Join("; ", log);
         }
 
         // Round 78 (D): where a road bridge (map.json bridges) passes over this line: the line's point under it and the most the line may stand there
