@@ -280,6 +280,14 @@ namespace ChastainRush
             return which != null;
         }
 
+        // a closed crossing within r m of p (the resets: never back onto the tracks with a train coming)
+        public static bool NearClosed(Vector3 p, float r)
+        {
+            var I = Instance; if (!I) return false;
+            foreach (var c in I.crossings) { if (!c || !c.Closed) continue; var d = c.center - p; d.y = 0f; if (d.magnitude < r + c.spread) return true; }
+            return false;
+        }
+
         // ---- races: the clock moved on so the next train reaches a crossing (nearest the given point) in 'seconds' -------------------------------------
         public float Align(Vector3 near, float seconds, bool southbound = false)
         {

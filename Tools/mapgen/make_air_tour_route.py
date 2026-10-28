@@ -7,9 +7,9 @@ you up for the next; the 3D arrow, beacons, the ring after next, rings either wa
   TC   Town Center at Cobb, over the mall
   I1-3 north up I-575; U1 under Chastain Road Northwest's bridges over I-575 (the Highway Air Race's U3 the other way)
   GL   low over Chastain Glen (Dan's neighborhood)
-  KH   Kennestone hospital; U2 down Church Street UNDER the glass skybridge (lifted to 9.5 m by the map build for this: at 5.6 m, its arch springing from
+  KH   Kennestone hospital; U2 down Church Street UNDER the glass skybridge (lifted to 10.5 m, its span widened, by the map build for this: at 5.6 m, its arch springing from
        3 m at the towers, neither plane's wings cleared it)
-  MS   low over Marietta Square; U3 west along South Marietta Parkway UNDER the railroad's bridge (9 m clear: MapBuilder.Railroad.cs RailAirAt)
+  MS   low over Marietta Square; U3 west along South Marietta Parkway UNDER the railroad's bridge (11 m clear: MapBuilder.Railroad.cs RailAirAt)
   KM   over Kennesaw Mountain's summit; B1 the turn west of the airport onto the runway's line for the finish
 Heights, floors, ceilings and the rounding are make_highway_air_route.py's (this script is that one with its own course); --room takes the exe's probe of
 the BUILT world along this line (-exeRound71 -r71Only aprobe -r71Route air_tour.json writes 71_line_room.tsv).
@@ -59,7 +59,7 @@ CTRL = [
     ((-2850, -1835), None),                                        # off the runway's line, a gentle left to the quarry's west end
     ((-2650, -1680), None),
     ((-2450, -1570), ("Q1", "Into the quarry", "ring", 22, ("abs", 255))),
-    ((-2150, -1545), ("Q2", "Quarry lake", "ring", 20, ("abs", 128))),
+    ((-2150, -1545), ("Q2", "Quarry lake", "ring", 22, ("abs", 150))),   # (Round 78's check: at 128 m the dive from Q1 was 23 degrees and the pilot met the pit's floor)
     ((-1870, -1510), None),
     ((-1590, -1480), ("Q3", "Out over the rim", "ring", 24, ("abs", 345))),
     ((-1100, -1420), None),
@@ -87,7 +87,7 @@ CTRL = [
     ((1800, -6050), ("KH", "Kennestone", "ring", 26, ("agl", 55))),
     ((1690, -6450), None),
     ((1664, -6640), ("C1", "Down Church Street", "ring", 20, ("agl", 18))),
-    ((1671.4, -6745.2), ("U2", "Under the hospital's skybridge", "frame", (7, 2.8), ("agl", 5.0))),
+    ((1671.4, -6745.2), ("U2", "Under the hospital's skybridge", "frame", (9, 3.0), ("agl", 5.2))),
     ((1683, -6850), None),
     ((1700, -7300), ("C2", "Church Street south", "ring", 24, ("agl", 35))),
     ((1735, -7900), None),
@@ -100,7 +100,7 @@ CTRL = [
     ((2131, -8967), None),
 
     ((1957.5, -9013.4), ("P1", "Onto the parkway", "ring", 22, ("agl", 14))),
-    ((1841.6, -9044.5), ("U3", "Under the railroad", "frame", (9, 2.8), ("agl", 5.2))),
+    ((1841.6, -9044.5), ("U3", "Under the railroad", "frame", (10, 3.0), ("agl", 5.4))),
     ((1680, -9080), None),
     ((1400, -8900), None),
     ((900, -8300), ("W1", "North-west", "ring", 28, ("agl", 70))),
@@ -233,9 +233,9 @@ for b in M["bridges"]:
         bd = p[min(j + 1, len(p) - 1)] - p[max(j - 1, 0)]; ld = XZ[(i + 2) % N] - XZ[(i - 2) % N]
         if abs(np.dot(bd, ld)) / max(np.linalg.norm(bd) * np.linalg.norm(ld), 1e-6) > .6: continue
         CEIL[i] = min(CEIL[i], dy[j] - 1.7 - 2.2)
-# Round 78: the skybridge over Church Street (its underside 9.5 m over the road as built) and the railroad's bridge over South Marietta Parkway (9 m clear:
-# its deck's underside about 9.2 m over the road): ceilings, the tail 1.7 m and 2.2 m to spare
-for (cx, cz), under, reach in (((1671.4, -6745.2), 9.5, 7.0), ((1841.6, -9044.5), 9.2, 7.0)):
+# Round 78: the skybridge over Church Street (its underside 10.5 m over the road as built) and the railroad's bridge over South Marietta Parkway (11 m clear:
+# its deck's underside about 10.6 m over the road): ceilings, the tail 1.7 m and 2.2 m to spare
+for (cx, cz), under, reach in (((1671.4, -6745.2), 10.5, 7.0), ((1841.6, -9044.5), 10.6, 7.0)):
     for i, q in enumerate(XZ):
         if np.hypot(q[0] - cx, q[1] - cz) < reach: CEIL[i] = min(CEIL[i], ground(cx, cz) + under - 1.7 - 2.2)
 near_tree = TOPS > G + 1.0

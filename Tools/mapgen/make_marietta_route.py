@@ -101,13 +101,14 @@ LEGS = [
     ((1546.0, -8411.0), (1539.0, -8523.0), {"North Marietta Parkway"}),
     ((1539.0, -8523.0), (1760.0, -8516.0), {"Whitlock Avenue Southwest", "South Park Square Northwest", "South Park Square Southwest", "South Park Square Northeast", "South Park Square Southeast"}),
 ]
-# the deck (map.json building 34256, Round 77's deck): its ground floor's north lane (between the columns at v = hw - 7.4 and hw - 0.4)
+# the deck (map.json building 34256, Round 77's deck): through the middle of its ground floor (the columns stand only along the lanes' edges, v = +-(hw - 7.4)
+# and +-(hw - 0.4): the middle is 45 m of open floor under the first level; the north lane between its column rows is 6.4 m, too tight at speed)
 DECK = 34256
 GATE_AT = (1795.0, -8516.0)   # the line on South Park Square, the square's south side, eastbound
 LEAD_IN_M = 60.0
 CHECKPOINTS = [
     (1904.0, -8440.0, "Waddell Street"),
-    (1950.0, -8338.0, "the parking deck"),
+    (1950.0, -8364.0, "the parking deck"),
     (1998.0, -8385.0, "Haynes Street"),
     (1860.0, -8408.0, "Lawrence Street"),
     (1660.0, -8410.0, "Mill Street"),
@@ -166,7 +167,7 @@ def route(a, b, names):
 dk = next(d for d in json.load(open(os.path.join(ROOT, "Data/tracks/kennestone.json")))["decks"] if d["index"] == DECK)
 dc, du = dk["centre"], unit(dk["u"]); dv = (-du[1], du[0])
 def deck_at(u, v): return (dc[0] + du[0] * u + dv[0] * v, dc[1] + du[1] * u + dv[1] * v)
-LANE_V = dk["hw"] - 3.9   # the north lane's middle (columns at hw - 7.4 and hw - 0.4)
+LANE_V = 0.0
 deck_in, deck_out = deck_at(-dk["hl"] - 1.0, LANE_V), deck_at(dk["hl"] + 1.0, LANE_V)
 
 line, offs, legs_txt = [], [], []
@@ -283,7 +284,7 @@ mill = [q for q in lap if 1590 < q[0] < 1700 and -8420 < q[1] < -8400]
 mill_z = sum(q[1] for q in mill) / len(mill)   # the lap's line along Mill Street (the westbound lane)
 K_Z = -8403.6                                  # the kicker's middle line (between the curb and the shops)
 K_LIP_X, K_LEN, K_ANG, K_H, K_W = 1637.5, 15.0, 26.0, 4.0, 4.2
-L_TOP_X, L_LEN, L_H, L_W = 1612.0, 36.0, 4.6, 6.0
+L_TOP_X, L_LEN, L_H, L_W = 1612.0, 31.0, 4.4, 6.0   # (its foot clear of building 34315's corner at x 1578: Round 78's check landed a car against it)
 rails_x = (1620.0, 1624.9)
 k_lip = (K_LIP_X, K_Z); k_lip_y = ground(*k_lip) + K_H
 l_top = (L_TOP_X, K_Z); l_top_y = ground(*l_top) + L_H
@@ -319,7 +320,7 @@ landing_zone = {"id": "MJ landing", "poly": flat([(L_TOP_X + 1, K_Z - L_W / 2 - 
 # ---------------------------------------------------------------- out
 ai_zones = [{"id": "into the deck", "s0": round(s_deck0 - 18, 1), "s1": round(s_deck0 + 6, 1), "speed": 9.0},
             {"id": "out of the deck onto Haynes", "s0": round(s_deck1 - 4, 1), "s1": round(s_deck1 + 16, 1), "speed": 9.0}]
-ai_widths = [{"id": "the deck's lane", "s0": round(s_deck0 - 2, 1), "s1": round(s_deck1 + 2, 1), "half": 2.2}]
+ai_widths = [{"id": "the deck's middle", "s0": round(s_deck0 - 2, 1), "s1": round(s_deck1 + 2, 1), "half": 6.0}]
 out = dict(SETTINGS)
 out.update({
     "source": "Tools/mapgen/make_marietta_route.py (Round 78 B): the square, the Lawrence Street deck's ground floor, Mill Street over the railroad, Whitlock back",

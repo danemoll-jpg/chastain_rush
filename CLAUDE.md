@@ -443,7 +443,7 @@ stops (`TrafficDriver`), race AI waits or beats it (`RoadDriver` "train"), the m
 own profile; the line kept `RailUnder` (7.7 m) under every road bridge (`MapBuilder.Railroad.cs`). B the Marietta Square race (`python Tools/mapgen/make_marietta_route.py
 [--plot]` writes `Data/routes/marietta_square.json` and `Data/tracks/marietta_square_race.json`; the ballast-pile jump over the tracks, `MapBuilder.MariettaRace.cs`, quick
 step MariettaRace; re-run after mapgen, then `Tools/race/fork_closures.py`). C the Air Tour (`python Tools/mapgen/make_air_tour_route.py [--plot] [--room <dir>/71_line_room.tsv]`
-writes `Data/routes/air_tour.json` and `Data/tracks/air_tour.json`; the skybridge over Church Street lifted to 9.5 m, the South Marietta Parkway rail bridge 9 m clear:
+writes `Data/routes/air_tour.json` and `Data/tracks/air_tour.json`; the skybridge over Church Street lifted to 10.5 m and widened, the South Marietta Parkway rail bridge 11 m clear:
 `RailAirAt`). E parked cars are the traffic models at run time (`World/ParkedCars.cs`; builders record spots with `ParkedCar`), the square's bays outside the
 carriageways, signals with backplates and phased lamps (`World/TrafficSignals.cs`). F every stage-3 house settled as Round 52's (`R52Target`). G hut 6854 left out
 (`R78Gone`), deck 6376 clear of building 7690, stage 3's serious bumps blurred (`python Tools/mapgen/bump_spots.py` writes `Data/tracks/round78_bumps.json`, read by

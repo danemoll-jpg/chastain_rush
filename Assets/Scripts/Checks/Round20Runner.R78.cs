@@ -21,7 +21,7 @@ namespace ChastainRush
     //   air     the Air Tour flown by the human-like pilot by the arrow; a cockpit picture under the hospital's skybridge
     public sealed partial class Round20Runner
     {
-        [Serializable] class R78Poi { public string name, kind; public float x, z, heading, len; }
+        [Serializable] class R78Poi { public string name, kind; public float x, z, heading, len; public float[] line; }
         [Serializable] class R78Lines { public R78Poi[] rail; }
         R78Lines r78;
         R78Lines R78L() { if (r78 == null) { var p = Path.Combine(Environment.CurrentDirectory, R70Arg("-r78Lines", "local/round78/r78_lines.json")); if (File.Exists(p)) r78 = JsonUtility.FromJson<R78Lines>(File.ReadAllText(p)); } return r78; }
@@ -49,6 +49,18 @@ namespace ChastainRush
         }
         (float air, float jolt, bool stopped, float dist) lastDrive;
 
+        // the human-like driver along a road's own lane (x, z pairs), from its start (or its end, 'back'), up to 25 m/s
+        IEnumerator R78Human(float[] flat, bool back, Action<string> say)
+        {
+            var line = R73Line(flat); if (back) line.Reverse();
+            var f = Flat(line[2] - line[0]).normalized; respawn.PlaceAt(RaceRoute.Surface(line[0].x, line[0].z) + Vector3.up * .3f, Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg); race.NotifyTeleported(); yield return new WaitForSecondsRealtime(1.2f);
+            var run = new HumanRun(); float jolt = 0f, lastVy = 0f;
+            var watch = StartCoroutine(R73Watch(() => { float vy = car.Body.linearVelocity.y; if (car.GroundedWheels > 0) jolt = Mathf.Max(jolt, Mathf.Abs(vy - lastVy)); lastVy = vy; }, () => true));
+            yield return HumanDrive(line, 25f, 40f, run); StopCoroutine(watch);
+            lastDrive = (run.maxAir, jolt, !run.reachedEnd || run.resets > 0, Cum(line)[line.Count - 1]);
+            say($"{(run.reachedEnd ? "through" : "NOT through")} ({Cum(line)[line.Count - 1]:0} m) in {run.time:0.0} s, top {run.topSpeed:0} m/s, longest in the air {run.maxAir:0.00} s, biggest jolt {jolt:0.0} m/s in a step, resets {run.resets}{run.note}");
+        }
+
         // ---------------------------------------------------------------- dan
         IEnumerator R78Dan()
         {
@@ -67,13 +79,19 @@ namespace ChastainRush
                 yield return R74Place(s.at, s.yaw); yield return Capture($"78_{s.id}_after");
                 report.AppendLine($"  {s.id} ({s.what}): at ({car.Body.position.x:0.0}, {car.Body.position.y:0.0}, {car.Body.position.z:0.0}) heading {s.yaw:0}; ahead: {R74Ahead(car.Body.position, s.yaw)}; picture 78_{s.id}_after.png");
             }
-            // BUG-001: Tower Road driven under the railroad, both ways; BUG-002: Old 41 driven over it, both ways
-            foreach (var (nm, from, yaw) in new[] { ("Tower Road westbound", new Vector3(1010f, 0f, -6522f), 271f), ("Tower Road eastbound", new Vector3(835f, 0f, -6525f), 91f),
-                                                    ("Old 41 eastbound", new Vector3(560f, 0f, -5536f), 87f), ("Old 41 westbound", new Vector3(760f, 0f, -5556f), 255f) })
+            // BUG-001: Tower Road driven under the railroad, both ways; BUG-002: Old 41 driven over it, both ways (the human-like driver on the road's own
+            // right-hand lane, flat out up to 25 m/s)
+            var L = R78L();
+            foreach (var key in new[] { "Tower_Road_Northwest", "Old_41_Highway_Northwest" })
             {
-                string res = ""; yield return R78DriveThrough(from, yaw, 9f, .75f, x => res = x);
-                report.AppendLine($"  {nm}: {res}");
-                Check($"dan: {nm} drives through (no stop, no spell in the air over 0.4 s)", !lastDrive.stopped && lastDrive.air < .4f && lastDrive.dist > 80f, res);
+                var poi = L?.rail?.Where(q => q.name.StartsWith(key) && q.line != null).OrderBy(q => Flat(new Vector3(q.x, 0f, q.z) - spots[key.StartsWith("Tower") ? 0 : 1].at).magnitude).FirstOrDefault();
+                if (poi == null) { Check($"dan: the line for {key}", false); continue; }
+                foreach (bool back in new[] { false, true })
+                {
+                    string res = ""; yield return R78Human(poi.line, back, x => res = x);
+                    report.AppendLine($"  {key.Replace('_', ' ')} {(back ? "the other way" : "")}: {res}");
+                    Check($"dan: {key.Replace('_', ' ')}{(back ? " the other way" : "")} drives through (no reset, no spell in the air over 0.4 s)", lastDrive.dist > 0f && !lastDrive.stopped && lastDrive.air < .4f, res);
+                }
             }
             yield return R74Place(new Vector3(960f, 0f, -6524f), 271f); yield return Capture("78_BUG-001_after_road");
             yield return R74Place(new Vector3(600f, 0f, -5538f), 80f); yield return Capture("78_BUG-002_after_road");
@@ -91,7 +109,10 @@ namespace ChastainRush
             {
                 var at = new Vector3(p.x, 0f, p.z);
                 yield return R74Place(at, p.heading); yield return Capture("78_D_" + p.name);
-                string res = ""; yield return R78DriveThrough(at, p.heading, Mathf.Clamp(p.len / 14f, 6f, 11f), .65f, x => res = x); n++;
+                string res = "";
+                if (p.line != null && p.line.Length >= 8) yield return R78Human(p.line, false, x => res = x);
+                else yield return R78DriveThrough(at, p.heading, Mathf.Clamp(p.len / 14f, 6f, 11f), .65f, x => res = x);
+                n++;
                 bool ok = !lastDrive.stopped && lastDrive.air < .4f; if (!ok) bad++;
                 report.AppendLine($"  {p.name} ({p.kind}): from ({p.x:0}, {p.z:0}) heading {p.heading:0}: {res}{(ok ? "" : "  <- LOOK")}");
             }
@@ -224,7 +245,7 @@ namespace ChastainRush
                     }
                     if (mode == "jump") { float lipX = 1637.5f; if (p.x > lipX && p.x < lipX + 110f && Mathf.Abs(p.z + 8406f) < 12f) return 26f; return 99f; }
                     if (mode == "wait" && RailTrains.ClosedAhead(p, car.transform.forward, 120f, out float stop, out float tin, out _))
-                    { if (car.Body.linearVelocity.magnitude < .8f) { waited = true; waitedFor += Time.fixedDeltaTime; } return stop < 1f ? 0f : Mathf.Sqrt(2f * 5f * Mathf.Max(0f, stop - 1f)); }
+                    { if (car.Body.linearVelocity.magnitude < .8f) { waited = true; waitedFor += Time.fixedDeltaTime; } return stop < 60f ? 0f : 14f; }   // (a person brakes for the gates: hard from 60 m)
                     if (cross.Closed && d < 6f) crossedClosed = true;
                     return 99f;
                 };
@@ -262,8 +283,8 @@ namespace ChastainRush
             if (i0 < 0 || i1 < 0) return line;
             var mid = new List<Vector3>();
             for (float x = line[i0].x - 4f; x > footX + 6f; x -= 3f) { float u = Mathf.InverseLerp(line[i0].x, footX + 6f, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(line[i0].z, kz, Mathf.SmoothStep(0f, 1f, u)))); }
-            for (float x = footX + 6f; x > 1572f; x -= 3f) mid.Add(new Vector3(x, 0f, kz));
-            for (float x = 1572f; x > line[i1].x + 2f; x -= 3f) { float u = Mathf.InverseLerp(1572f, line[i1].x, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(kz, line[i1].z, Mathf.SmoothStep(0f, 1f, u)))); }
+            for (float x = footX + 6f; x > 1582f; x -= 3f) mid.Add(new Vector3(x, 0f, kz));
+            for (float x = 1582f; x > line[i1].x + 2f; x -= 3f) { float u = Mathf.InverseLerp(1582f, line[i1].x, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(kz, line[i1].z, Mathf.SmoothStep(0f, 1f, u)))); }
             var outL = line.Take(i0 + 1).ToList(); outL.AddRange(mid); outL.AddRange(line.Skip(i1)); return outL;
         }
 
@@ -299,7 +320,8 @@ namespace ChastainRush
                     float floorY = hiGround + 55f; if (aimAt.y < floorY) { aimAt.y = floorY; to = aimAt - car.Body.position; }
                 }
                 // near a ring, aim along the route's own line through it (the line's height), as a pilot lines up on the ring's frame
-                if (dist < 600f) { float sR = r.LapStationOf(car.Body.position); var ahead = r.PointAt(r.GateS + sR + Mathf.Clamp(car.Body.linearVelocity.magnitude * 1.6f, 40f, 140f), out _); if ((ahead - car.Body.position).magnitude < dist) { aimAt = ahead; to = aimAt - car.Body.position; } }
+                // within 700 m of the ring, along the race's own line toward it (the arrow and the beacons lead a pilot down into the quarry, under a deck)
+                if (dist < 700f) { float L = r.LapLength, sR = r.LapStationOf(car.Body.position), sT = Mathf.Repeat(tgt.S - r.GateS, L); float ahead_ = Mathf.Repeat(sT - sR, L); if (ahead_ < 900f) { var ahead = r.PointAt(r.GateS + sR + Mathf.Min(ahead_, Mathf.Clamp(car.Body.linearVelocity.magnitude * 1.6f, 50f, 140f)), out _); aimAt = ahead; to = aimAt - car.Body.position; } }
                 float climb = Mathf.Atan2(to.y, Flat(to).magnitude) * Mathf.Rad2Deg, pitchNow = pl.PitchDeg;
                 float bankWant = Mathf.Clamp(yawErr * 2.0f, -65f, 65f), roll = pl.RollDeg;
                 bankCmd += (Mathf.Clamp((bankWant - roll) / 18f, -1f, 1f) - bankCmd) * Mathf.Clamp01(dt / .2f);

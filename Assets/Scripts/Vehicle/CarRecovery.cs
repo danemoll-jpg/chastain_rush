@@ -181,6 +181,7 @@ namespace ChastainRush
         static bool ClearNarrow(VehicleRespawn r, Vector3 q, float yawDeg)
         {
             if (ShallowWater.InWater(q + Vector3.up * 0.1f)) return false;
+            if (RailTrains.NearClosed(q, 14f)) return false;   // Round 78 (A): never back onto a closed level crossing (a train coming)
             var own = r.GetComponent<Rigidbody>();
             int n = Physics.OverlapBoxNonAlloc(q + Vector3.up * 1.2f, new Vector3(0.9f, 0.6f, 2.2f), hits, Quaternion.Euler(0f, yawDeg, 0f), ~0, QueryTriggerInteraction.Ignore);
             for (int i = 0; i < n; i++) { var h = hits[i]; if (h is TerrainCollider || h.attachedRigidbody == own) continue; return false; }
@@ -191,6 +192,7 @@ namespace ChastainRush
         static bool Clear(VehicleRespawn r, Vector3 q, float yawDeg, bool ahead)
         {
             if (ShallowWater.InWater(q + Vector3.up * 0.1f)) return false;   // Round 15: never back into the water
+            if (RailTrains.NearClosed(q, 14f)) return false;   // Round 78 (A): never back onto a closed level crossing (a train coming)
             var rot = Quaternion.Euler(0f, yawDeg, 0f);
             var own = r.GetComponent<Rigidbody>();
             int n = Physics.OverlapBoxNonAlloc(q + Vector3.up * 1.0f, new Vector3(1.3f, 0.7f, 2.4f), hits, rot, ~0, QueryTriggerInteraction.Ignore);

@@ -294,7 +294,9 @@ namespace Racer
             // driver's own lean), else stop at its line; a car that went for it stops after all if the train is already on the road and it is not yet there.
             if(!activeBranch&&!finished&&ChastainRush.RailTrains.ClosedAhead(Car.Body.position,transform.forward,170f,out float railStop,out float trainIn,out var railAt))
             {
-                if(railAt!=railDecided){railDecided=railAt;float eta=(railStop+railAt.spread*2f+16f)/Mathf.Max(speed,9f);railGo=trainIn-eta>(skill==2?1.5f:skill==1?3f:5f)+((name.GetHashCode()&7)-3.5f)*.3f;}
+                // (decided again every step while it can still stop short of the line: a car that slowed in a bend, or a train sooner than it looked, is seen in time)
+                float stopDist=speed*speed/(2f*Mathf.Max(judgment,1f))+6f;
+                if(railAt!=railDecided||railStop>stopDist){railDecided=railAt;float eta=(railStop+railAt.spread*2f+16f)/Mathf.Max(speed,9f);railGo=trainIn-eta>(skill==2?1.5f:skill==1?3f:5f)+((name.GetHashCode()&7)-3.5f)*.3f;}
                 if(!railGo||trainIn<=0f&&railStop>2f) Cap(Mathf.Sqrt(2*judgment*Mathf.Max(0,railStop)),"train",(int)railStop);
             }
             else railDecided=null;
@@ -729,6 +731,7 @@ namespace Racer
         {
             if(ShallowWater.InWater(q+Vector3.up*.1f)) return false;
             if(Covered(q)) return false;
+            if(ChastainRush.RailTrains.NearClosed(q,14f)) return false;   // Chastain Rush, Round 78 (A): never onto a closed level crossing (a train coming)
             var rot=Quaternion.LookRotation(Vector3.ProjectOnPlane(f,Vector3.up).normalized,Vector3.up);
             var box=Car.GetComponent<BoxCollider>(); var half=box?box.size*.5f+new Vector3(.3f,0,.4f):new Vector3(1.3f,.7f,2.4f);
             int n=Physics.OverlapBoxNonAlloc(q+Vector3.up*(half.y+.35f),half,overlap,rot,~0,QueryTriggerInteraction.Ignore);

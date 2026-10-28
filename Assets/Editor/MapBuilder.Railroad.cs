@@ -34,11 +34,11 @@ namespace ChastainRush
         // that slope out by the cut's depth. Under a road bridge (map.json bridges) the line runs at least RailUnder below the deck, its profile capped
         // there and eased back at RailCapGrade so the cut is gentle and the road's approaches stay as they were.
         const float RailBankRun = 2.2f, RailShoulder = 2.5f, RailUnder = 7.7f, RailCapGrade = .03f;
-        // Round 78 (C, the air tour: "under a rail bridge"): the South Marietta Parkway bridge (BUG-006's) is the planes' underpass: 9 m clear, its bed lifted up
-        // to 5 m (the rest the road's dip)
+        // Round 78 (C, the air tour: "under a rail bridge"): the South Marietta Parkway bridge (BUG-006's) is the planes' underpass: 11 m clear, its bed lifted up
+        // to 6.5 m (the rest the road's dip)
         static readonly Vector2 RailAirAt = new Vector2(1841.6f, -9044.5f);
-        static float RailClearAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 9f : RailClear;
-        static float RailLiftAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 5f : RailLift;
+        static float RailClearAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 11f : RailClear;   // (Round 78's check: at 9 m the AI pilots' tails met the deck)
+        static float RailLiftAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 6.5f : RailLift;
         static float RailUnderSpan(float width, float sin) => Mathf.Min(48f, (width * .5f + RailShoulder + RailBankRun * (RailClear + RailDeck)) / sin);
         static readonly HashSet<string> RailOverClasses = new HashSet<string> { "motorway", "motorway_link", "trunk", "trunk_link" };
         static bool RailOwns(int i) => railDrop.Contains(i);
@@ -58,6 +58,22 @@ namespace ChastainRush
             var cross = (d.crossings ?? new RailCrossJ[0]).Where(c => !RailOverClasses.Contains(c.@class)).ToList();
             var over = (d.overpasses ?? new RailCrossJ[0]).Concat((d.crossings ?? new RailCrossJ[0]).Where(c => RailOverClasses.Contains(c.@class))).ToList();
             RailPlans = new List<RailPlan>(); var log = new List<string>();
+            // Round 78 (D, Dan's BUG-002 x 646.70 z -5541.05: "fix the overpass": Old 41's deck stepped 1.3 m in 4 m at one end and humped 0.5 m at the other,
+            // mapgen lifting it where the bare earth's banks poked through): a road bridge under 120 m over the railroad with a step in its deck gets an even
+            // deck, straight between its two ends' heights (the ends stay where Round 27's easing met the approaches)
+            if (map.bridges != null)
+                foreach (var b in map.bridges)
+                {
+                    if (b.points == null || b.deck_y == null || b.deck_y.Length < 3) continue; var bp = ToPoints(b.points); if (bp.Count != b.deck_y.Length) continue;
+                    float blen = 0f; for (int i = 1; i < bp.Count; i++) blen += (bp[i] - bp[i - 1]).magnitude; if (blen > 120f) continue;
+                    bool overRail = d.lines.Any(l => RailRoadOver(map, ToPoints(l.points)).Any(o => o.name == (b.name ?? b.@class)));
+                    if (!overRail) continue;
+                    float worst = 0f; for (int i = 1; i + 1 < b.deck_y.Length; i++) worst = Mathf.Max(worst, Mathf.Abs(b.deck_y[i + 1] - 2f * b.deck_y[i] + b.deck_y[i - 1]));
+                    if (worst < .2f) continue;
+                    float acc = 0f, y0 = b.deck_y[0], y1 = b.deck_y[b.deck_y.Length - 1];
+                    for (int i = 1; i < bp.Count - 1; i++) { acc += (bp[i] - bp[i - 1]).magnitude; b.deck_y[i] = Mathf.Lerp(y0, y1, acc / blen); }
+                    log.Add($"{b.name} over the railroad: an even deck ({blen:0} m, {y0:0.0} to {y1:0.0} m; its worst step was {worst:0.00} m)");
+                }
             var dips = new List<(int road, Vector2 at, float dip)>();
             float steepest = 0f; int graded = 0; Vector2 steepAt = Vector2.zero; int nCross = 0, nGradeSep = 0, nForced = 0, nUnder = 0;
             var bedGrades = new List<RidgeGrade>();   // Round 78 (D): every line planned on the untouched ground first, then graded

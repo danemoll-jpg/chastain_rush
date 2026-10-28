@@ -300,8 +300,11 @@ namespace ChastainRush
                 if (ua > ub) { ua = -hl * .4f; ub = hl * .4f; roadY = Ground(t, c.x, c.y); }
                 ua -= 1f; ub += 1f;
                 // Round 78 (C, Dan: "underpass cps including under the glass bridge of the hospital"): the span over Church Street (building 7876, BUG-005's)
-                // lifted to 9.5 m so the planes' ring fits under it (at 5.6 m, its arch springing from 3 m at the towers, neither wing cleared it)
-                float bottom = roadY + (rb.index == 7876 ? 9.5f : 5.6f), top = bottom + Mathf.Max(1, rb.levels - rb.min_level) * KsFloor;
+                // lifted to 10.5 m, its glass span 4 m longer each side and its arch flatter, so the planes' ring fits under it (at 5.6 m, its arch springing from 3 m
+                // at the towers, neither wing cleared it)
+                bool air = rb.index == 7876;   // (Round 78's check: the AI pilots' wings met the arch springing from the towers: wider and flatter there)
+                if (air) { ua -= 4f; ub += 4f; }
+                float bottom = roadY + (air ? 10.5f : 5.6f), top = bottom + Mathf.Max(1, rb.levels - rb.min_level) * KsFloor;
                 var f = new Frame { O = new Vector3(c.x, 0f, c.y), R = new Vector3(U.x, 0f, U.y), F = new Vector3(V.x, 0f, V.y), M = 1f };
                 // tan ends and stair towers down to the ground each side of the road, the glass span between
                 foreach (var (u0, u1) in new[] { (-hl, ua), (ub, hl) })
@@ -329,7 +332,8 @@ namespace ChastainRush
                         bodies.Tint = new Color(.20f, .25f, .50f); TriFace(bodies, f.P(um, yc, vv), P(a1, 1.2f), P(a0, 1.2f), f.F * side);
                     }
                     // the white arch under the span, springing from the towers
-                    var arch = new List<Vector3>(); for (int k = 0; k <= 12; k++) { float s = k / 12f; float u = Mathf.Lerp(ua, ub, s); arch.Add(f.P(u, bottom - 2.6f + 2.4f * Mathf.Sin(s * Mathf.PI), side * (hw - .3f))); }
+                    float drop = air ? 1.2f : 2.6f;
+                    var arch = new List<Vector3>(); for (int k = 0; k <= 12; k++) { float s = k / 12f; float u = Mathf.Lerp(ua, ub, s); arch.Add(f.P(u, bottom - drop + (drop - .2f) * Mathf.Sin(s * Mathf.PI), side * (hw - .3f))); }
                     for (int k = 0; k + 1 < arch.Count; k++) Beam(bodies, arch[k], arch[k + 1], .35f, .45f, KsWhite);
                 }
                 var mc = c + U * ((ua + ub) / 2f);
