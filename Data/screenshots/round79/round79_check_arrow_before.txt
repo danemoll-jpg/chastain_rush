@@ -1,0 +1,11 @@
+Round 79 check, 2026-10-28 15:23, the exe, 1280 x 720, muted.
+
+=== C. The air arrow (BEFORE: Round 74's way, -r79ArrowOld): 70 s of each course at normal speed by the human-like pilot; its wobble a frame against the frame before
+  Quarry Air Race: 3401 frames; the arrow's turn in the view 0.015 deg a frame against the frame before on average (worst 8.78), its place on the screen 5.03 px; crashes 0, the AI's code took 0 ring(s);
+PASS  arrow Quarry Air Race: measured over 1000 frames or more  -  3401
+  Highway Air Race: 3034 frames; the arrow's turn in the view 0.015 deg a frame against the frame before on average (worst 3.58), its place on the screen 5.13 px; crashes 1, the AI's code took 0 ring(s);
+PASS  arrow Highway Air Race: measured over 1000 frames or more  -  3034
+  Air Tour: 1923 frames; the arrow's turn in the view 0.011 deg a frame against the frame before on average (worst 1.23), its place on the screen 6.82 px; crashes 6, the AI's code took 2 ring(s); the AI pilot's code took ring 1 after 3 crashes; the AI pilot's code took ring 4 after 3 crashes;
+PASS  arrow Air Tour: measured over 1000 frames or more  -  1923
+
+3 of 3 checks passed.

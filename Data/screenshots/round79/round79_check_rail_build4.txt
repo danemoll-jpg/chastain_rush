@@ -1,0 +1,25 @@
+Round 79 check, 2026-10-28 15:14, the exe, 1280 x 720, muted.
+
+=== D. The Canton Road Connector over the railroad, Cobb Parkway under its rail bridge, the other listed decks: driven through
+  connector southbound: through (345 m) in 14.9 s, top 26 m/s, longest in the air 0.82 s, biggest jolt 0.5 m/s in a step, resets 0
+FAIL  rail: the connector southbound drives through (no reset, no air over 0.4 s)  -  through (345 m) in 14.9 s, top 26 m/s, longest in the air 0.82 s, biggest jolt 0.5 m/s in a step, resets 0
+  connector northbound: through (341 m) in 17.1 s, top 25 m/s, longest in the air 0.78 s, biggest jolt 0.6 m/s in a step, resets 0
+FAIL  rail: the connector northbound drives through (no reset, no air over 0.4 s)  -  through (341 m) in 17.1 s, top 25 m/s, longest in the air 0.78 s, biggest jolt 0.6 m/s in a step, resets 0
+  Cobb_Parkway_North_6 (under the railroad): through (286 m) in 12.3 s, top 25 m/s, longest in the air 0.12 s, biggest jolt 0.2 m/s in a step, resets 0
+PASS  rail: Cobb Parkway North 6 drives through  -  through (286 m) in 12.3 s, top 25 m/s, longest in the air 0.12 s, biggest jolt 0.2 m/s in a step, resets 0
+  Cobb_Parkway_North_6 (under the railroad) the other way: through (286 m) in 12.3 s, top 25 m/s, longest in the air 0.08 s, biggest jolt 0.2 m/s in a step, resets 0
+PASS  rail: Cobb Parkway North 6 the other way drives through  -  through (286 m) in 12.3 s, top 25 m/s, longest in the air 0.08 s, biggest jolt 0.2 m/s in a step, resets 0
+  Canton_Road_Connector_8 (over the railroad): through (256 m) in 11.2 s, top 25 m/s, longest in the air 0.84 s, biggest jolt 0.5 m/s in a step, resets 0  <- LOOK
+FAIL  rail: Canton Road Connector 8 drives through  -  through (256 m) in 11.2 s, top 25 m/s, longest in the air 0.84 s, biggest jolt 0.5 m/s in a step, resets 0
+  Canton_Road_Connector_8 (over the railroad) the other way: through (256 m) in 11.4 s, top 26 m/s, longest in the air 0.76 s, biggest jolt 1.5 m/s in a step, resets 0  <- LOOK
+FAIL  rail: Canton Road Connector 8 the other way drives through  -  through (256 m) in 11.4 s, top 26 m/s, longest in the air 0.76 s, biggest jolt 1.5 m/s in a step, resets 0
+  Cobb_Parkway_11 (over the railroad): through (257 m) in 11.3 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.0 m/s in a step, resets 0
+PASS  rail: Cobb Parkway 11 drives through  -  through (257 m) in 11.3 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.0 m/s in a step, resets 0
+  Cobb_Parkway_11 (over the railroad) the other way: through (257 m) in 11.2 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step, resets 0
+PASS  rail: Cobb Parkway 11 the other way drives through  -  through (257 m) in 11.2 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step, resets 0
+  Northwest_Corridor_Express_Lanes_13 (over the railroad): through (184 m) in 8.4 s, top 25 m/s, longest in the air 0.36 s, biggest jolt 0.3 m/s in a step, resets 0
+PASS  rail: Northwest Corridor Express Lanes 13 drives through  -  through (184 m) in 8.4 s, top 25 m/s, longest in the air 0.36 s, biggest jolt 0.3 m/s in a step, resets 0
+  Northwest_Corridor_Express_Lanes_13 (over the railroad) the other way: through (184 m) in 9.8 s, top 25 m/s, longest in the air 2.06 s, biggest jolt 10.7 m/s in a step, resets 0  <- LOOK
+FAIL  rail: Northwest Corridor Express Lanes 13 the other way drives through  -  through (184 m) in 9.8 s, top 25 m/s, longest in the air 2.06 s, biggest jolt 10.7 m/s in a step, resets 0
+
+5 of 10 checks passed.

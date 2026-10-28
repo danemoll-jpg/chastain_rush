@@ -135,6 +135,29 @@ Check: item 0 for every item.
 For Dan to check: a Marietta Square replay with the train; the Air Tour round Marietta (no edge warning); the arrow in each air race; the
 connector's south end and the rail bridges.
 
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 15:57), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round79/`
+(`BUG-001_before`, `79_BUG-001_after`; reports `round79_check_build3.txt` (dan, replay, air, arrow), `_rail_build4.txt`, `_arrow_before.txt`, `_final.txt`; air traces).
+Five full builds: 2 found Build Map graded the ground to the decks before the railroad step changed them; 3 and 4 found Round 77's embankments carrying the road's end height flat under the deck.
+A DONE. Replays keep the world's and the trains' clocks (`ReplayData.Kind.Clock`, every second and when a race moves the trains on); the viewer puts the trains, the crossings'
+gates / lamps / bell, the traffic signals and the airport's circuit plane as they were (`WorldClock`, `RailTrains.ReplayAt`). Square race, beat the train, then its replay: 2380
+train cars over 122 moments, worst 0.01 m from where they were; gates and lamps right at every moment; TV picture: the car on the crossing, gate down, the train beside it (`79_A_*`).
+Recorded already: traffic, switch gates, plumes, breakables, gestures. Not in races: police, geysers / rigged hydrants. Not recorded: the flagger's step back, walkers and geese.
+B DONE. The flight boundary (plane and helicopter) is the land's outer rectangle and 650 m (`MapEdge.Flight`): it fills the notch beside Marietta's piece; the ground there is the
+edge scenery's (`EdgeScenery.RingGround`). No ring moved. Every course's line 808 m or more inside (Sky Hopper's turn at top speed 490 m + the 300 m warning). Flown with 3 AI
+pilots: no plane warned (nearest 2759 / 807 / 985 m inside). The human-like check pilot finished all three but crash-looped (16 / 24 / 26 crashes); the AI's code took 4 / 7 / 8 rings.
+At Dan's place, ring 21 next: no warning (`79_BUG-001_after`). Cars keep the old edge walls.
+C DONE. The arrow is placed as the camera renders, along a filtered direction with the world's up, drawn over everything (`OverlayUnlit`: the plane's own body hid it in the
+cockpit view, before too). Its place on screen frame to frame: 5.0 / 5.1 / 6.8 px before, 0.01 to 0.02 px now; its turn 0.009 to 0.021 deg a frame both ways (`79_arrow_*`).
+D DONE. The listed decks smoothed (steps 0.29 to 1.18 m down to 0.11 m or less, ends kept) BEFORE their ends are graded (`RailDecks`). Round 77's embankments no longer carry the
+road's end height under a deck (the connector's southbound wall, 1.07 m). The rail bed's banks tight under a road bridge (a 2 m hole before the connector's deck). Cobb Parkway's
+27 % grade: its second carriageway had been a level crossing beside the bridge over its first; now one bridge over both. Steepest rail grade 9.4 % (the planes' underpass on South
+Marietta Parkway), next 7 %. Driven: connector both ways through (stuck both ways before), an even 0.8 s hop off the deck's crest (jolt 0.5); Cobb Parkway 0.1 s; Cobb Parkway's other deck 0.
+Found, not changed: Express Lanes 13 (a 780 m deck, not on Round 78's list) driven against its direction flies 2.06 s and lands hard (10.7 m/s); the replay's chase camera can sit
+inside the ballast pile by Mill Street; the plane's cockpit view sits behind the pilot.
+For Dan to check: a Marietta Square replay (beat the train); the Air Tour round Marietta; the arrow in each air race (chase and cockpit); the connector's south end both ways;
+Cobb Parkway under the railroad.
+Disk: 28.9 GB -> 28.5 GB (`cleanup_round.py`: local/round68 to 76 and Library/BuildHistory cleared; the player build kept), after deleting the 4.6 GB exe copy this round made for a parallel check.
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes

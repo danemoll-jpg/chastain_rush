@@ -1,0 +1,18 @@
+Round 79 check, 2026-10-28 15:58, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (session 2026-10-28_11-32-04-219_308d8c): the Air Tour, ring 21 next, from his place, heading and speed
+  at (995, 541, -8350) heading 204: no warning; 1892 m inside the flight boundary; -38 m from the land's edge (negative: over the scenery past it); next ring 21 (Kennesaw Mountain) 3267 m; picture 79_BUG-001_after.png
+PASS  dan: no edge warning at Dan's place on the way to ring 21
+  then on: ring 21 NOT reached in the flight; crashes 0, the AI's code took 0 ring(s); warning on the way False
+FAIL  dan: ring 21 reached from there with no warning
+PASS  dan: the race pointed at ring 21 (the setup)  -  next 20
+
+=== C. The air arrow (Round 79's): 70 s of each course at normal speed by the human-like pilot; its wobble a frame against the frame before
+  Quarry Air Race: 3448 frames; the arrow's turn in the view 0.019 deg a frame against the frame before on average (worst 15.51), its place on the screen 0.01 px; crashes 0, the AI's code took 0 ring(s);
+PASS  arrow Quarry Air Race: measured over 1000 frames or more  -  3448
+  Highway Air Race: 3080 frames; the arrow's turn in the view 0.021 deg a frame against the frame before on average (worst 5.77), its place on the screen 0.01 px; crashes 1, the AI's code took 0 ring(s);
+PASS  arrow Highway Air Race: measured over 1000 frames or more  -  3080
+  Air Tour: 1928 frames; the arrow's turn in the view 0.014 deg a frame against the frame before on average (worst 2.45), its place on the screen 0.02 px; crashes 6, the AI's code took 2 ring(s); the AI pilot's code took ring 1 after 3 crashes; the AI pilot's code took ring 4 after 3 crashes;
+PASS  arrow Air Tour: measured over 1000 frames or more  -  1928
+
+5 of 6 checks passed.

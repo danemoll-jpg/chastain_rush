@@ -1,0 +1,7 @@
+Chastain Rush exe shots, 2026-10-28 12:31:41, screen 1280x720, built exe
+deck_Canton_Road_Connector_1633_-6050: drive at 20.0 m/s for 6.0 s from (1641.6, -6010.8) heading -167: broke 0 panel(s); lowest speed after the start -0.4 m/s (102% below), most tilt 32 deg, STOPPED, longest with no wheel down 0.32 s; frame rate 21 fps average, slowest 1% of frames 3 fps (1280 x 720); lowest at (1632.8, 411.9, -6048.9); ended at (1623.0, 417.3, -6091.9) above ground
+deck_Canton_Road_Connector_1636_-6091: drive at 20.0 m/s for 6.0 s from (1627.1, -6130.5) heading 13: broke 0 panel(s); lowest speed after the start 13.2 m/s (34% below), most tilt 19 deg, kept going, longest with no wheel down 0.10 s; frame rate 21 fps average, slowest 1% of frames 10 fps (1280 x 720); lowest at (1636.6, 414.1, -6089.3); ended at (1653.3, 420.9, -6017.4) above ground
+deck_Cobb_Parkway_-4255_-1885: drive at 20.0 m/s for 6.0 s from (-4283.2, -1856.4) heading 135: broke 0 panel(s); lowest speed after the start 19.7 m/s (2% below), most tilt 8 deg, kept going, longest with no wheel down 0.10 s; frame rate 20 fps average, slowest 1% of frames 12 fps (1280 x 720); lowest at (-4197.8, 361.8, -1941.3); ended at (-4197.8, 361.8, -1941.3) above ground
+cobb_pkwy_rail: car at (1870.0, 392.8, -5810.0) heading 135
+conn_sb_end: car at (1628.0, 406.8, -6075.0) heading 193
+conn_nb_start: car at (1620.0, 416.0, -6130.0) heading 13

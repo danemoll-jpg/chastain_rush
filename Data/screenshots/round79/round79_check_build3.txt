@@ -1,0 +1,45 @@
+Round 79 check, 2026-10-28 14:12, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (session 2026-10-28_11-32-04-219_308d8c): the Air Tour, ring 21 next, from his place, heading and speed
+  at (994, 541, -8352) heading 204: no warning; 1890 m inside the flight boundary; -41 m from the land's edge (negative: over the scenery past it); next ring 21 (Kennesaw Mountain) 3269 m; picture 79_BUG-001_after.png
+PASS  dan: no edge warning at Dan's place on the way to ring 21
+  then on: ring 21 NOT reached in the flight; crashes 0, the AI's code took 0 ring(s); warning on the way False
+FAIL  dan: ring 21 reached from there with no warning
+PASS  dan: the race pointed at ring 21 (the setup)  -  next 20
+
+=== A. The train in the replay: the Marietta Square race (1 lap, 3 AI, Normal), the human-like driver beats the train at Mill Street; then its replay
+  the race: finished 1:51.749; resets 2; crossed Mill Street while closed at 50.2 s (race clock); stopped (every racer finished) at 118.2 s; 12128 racer frames, 0 traffic frames, 131 events; #1 race kept C:\Users\danmo\chastain_rush\local\round79\check_c\Replays\best\Marietta Square_forward_laps1.race.crreplay; #1 lap kept C:\Users\danmo\chastain_rush\local\round79\check_c\Replays\best\Marietta Square_forward.lap.crreplay
+PASS  replay: the player beat the train across the closed crossing  -  at 50.2 s
+  the replay: 121 s, 131 events of which 121 clocks
+  127 moments compared: the train's cars in the replay 0.00 m from where they were in the race on average (worst 0.00 m, 1908 cars, 0 missing); the Mill Street gates off by more than 4 degrees or lamps different at 0 moments
+PASS  replay: the train in the replay where it was in the race (under 1.5 m on average, none missing)  -  0.00 m
+PASS  replay: the crossing's gates and lamps as they were  -  0 of 127
+
+=== B. Each air course flown by the human-like pilot with 3 AI pilots (Hard): the flight boundary (the land's outer rectangle and 650 m); warnings
+  Quarry Air Race: finished 11:09.925, missed 3; crashes 16, the AI's code took 4 ring(s); the AI pilot's code took ring 3 after 3 crashes; the AI pilot's code took ring 5 after 3 crashes; the AI pilot's code took ring 8 after 3 crashes; the AI pilot's code took ring 0 after 3 crashes; YOU: nearest the flight boundary 2759 m inside; EMBER: nearest the flight boundary 3170 m inside; GOLD: nearest the flight boundary 3170 m inside; BLUE: nearest the flight boundary 3170 m inside
+PASS  air Quarry Air Race: no edge warning for any plane on the course  -  2759, 3170, 3170, 3170
+PASS  air Quarry Air Race: the human-like pilot finished
+  Highway Air Race: finished 7:52.677, missed 7; crashes 24, the AI's code took 7 ring(s); the AI pilot's code took ring 3 after 3 crashes; the AI pilot's code took ring 5 after 3 crashes; the AI pilot's code took ring 7 after 3 crashes; the AI pilot's code took ring 11 after 3 crashes; the AI pilot's code took ring 14 after 3 crashes; the AI pilot's code took ring 15 after 3 crashes; the AI pilot's code took ring 0 after 3 crashes; YOU: nearest the flight boundary 807 m inside; EMBER: nearest the flight boundary 807 m inside; GOLD: nearest the flight boundary 807 m inside; BLUE: nearest the flight boundary 807 m inside
+PASS  air Highway Air Race: no edge warning for any plane on the course  -  807, 807, 807, 807
+PASS  air Highway Air Race: the human-like pilot finished
+  Air Tour: finished 16:24.766, missed 8; crashes 26, the AI's code took 8 ring(s); the AI pilot's code took ring 1 after 3 crashes; the AI pilot's code took ring 6 after 3 crashes; the AI pilot's code took ring 9 after 3 crashes; the AI pilot's code took ring 11 after 3 crashes; the AI pilot's code took ring 15 after 3 crashes; the AI pilot's code took ring 18 after 3 crashes; the AI pilot's code took ring 21 after 3 crashes; the AI pilot's code took ring 0 after 3 crashes; YOU: nearest the flight boundary 1159 m inside; EMBER: nearest the flight boundary 985 m inside; GOLD: nearest the flight boundary 985 m inside; BLUE: nearest the flight boundary 985 m inside; the player passed 206 m from Dan's BUG-001 spot
+PASS  air Air Tour: no edge warning for any plane on the course  -  1159, 985, 985, 985
+PASS  air Air Tour: the human-like pilot finished
+  the tour's line passes 206 m from Dan's spot; a picture flying it there (ring 21 next): 79_air_tour_past_dan_spot.png (no warning)
+
+=== C. The air arrow (Round 79's): 70 s of each course at normal speed by the human-like pilot; its wobble a frame against the frame before
+  Quarry Air Race: 3488 frames; the arrow's turn in the view 0.012 deg a frame against the frame before on average (worst 5.02), its place on the screen 0.01 px; crashes 0, the AI's code took 0 ring(s);
+PASS  arrow Quarry Air Race: measured over 1000 frames or more  -  3488
+  Highway Air Race: 3213 frames; the arrow's turn in the view 0.015 deg a frame against the frame before on average (worst 4.83), its place on the screen 0.01 px; crashes 1, the AI's code took 0 ring(s);
+PASS  arrow Highway Air Race: measured over 1000 frames or more  -  3213
+  Air Tour: 2580 frames; the arrow's turn in the view 0.009 deg a frame against the frame before on average (worst 1.92), its place on the screen 0.01 px; crashes 3, the AI's code took 1 ring(s); the AI pilot's code took ring 1 after 3 crashes;
+PASS  arrow Air Tour: measured over 1000 frames or more  -  2580
+
+=== D. The Canton Road Connector over the railroad, Cobb Parkway under its rail bridge, the other listed decks: driven through
+  connector southbound: 115 m in 9 s, top 29 m/s, longest in the air 0.84 s, biggest jolt 18.3 m/s in a step, STOPPED
+FAIL  rail: the connector southbound drives through (no stop, no air over 0.4 s)  -  115 m in 9 s, top 29 m/s, longest in the air 0.84 s, biggest jolt 18.3 m/s in a step, STOPPED
+  connector northbound: 126 m in 9 s, top 30 m/s, longest in the air 1.62 s, biggest jolt 4.6 m/s in a step, STOPPED
+FAIL  rail: the connector northbound drives through (no stop, no air over 0.4 s)  -  126 m in 9 s, top 30 m/s, longest in the air 1.62 s, biggest jolt 4.6 m/s in a step, STOPPED
+FAIL  rail: Round 78's lines file (local/round78/r78_lines.json)
+
+14 of 18 checks passed.
