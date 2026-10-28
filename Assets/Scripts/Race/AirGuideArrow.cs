@@ -73,12 +73,12 @@ namespace ChastainRush
             var want = Quaternion.LookRotation(to.sqrMagnitude > 1f ? to.normalized : steadyFwd, Vector3.Slerp(steadyUp, Vector3.up, .5f));
             steadyRot = arrow.gameObject.activeSelf && steadyRotOn ? Quaternion.Slerp(steadyRot, want, 1f - Mathf.Exp(-dt / .15f)) : want; steadyRotOn = true;
             arrow.SetPositionAndRotation(at, steadyRot);
-            Measure(cam);
         }
 
         void OnCam(ScriptableRenderContext ctx, Camera cam)
         {
-            if (Old || !arrow || !arrow.gameObject.activeSelf || cam != Camera.main) return;
+            if (!arrow || !arrow.gameObject.activeSelf || cam != Camera.main) return;
+            if (Old) { Measure(cam); return; }   // (measured as it is drawn, as the new way is)
             if (!On(out var race, out _)) return;
             var ct = cam.transform; var at = ct.position + ct.forward * Ahead + ct.up * Up;
             float now = Time.unscaledTime, dt = lastAt < 0f ? 0f : Mathf.Clamp(now - lastAt, 0f, .1f);
