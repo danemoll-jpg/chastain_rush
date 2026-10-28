@@ -6876,3 +6876,53 @@ G PARTLY (tuning limit). `ai_table.txt`: Hard's best lap against Dan's: within 4
 I DONE / PARTLY. The Highway Air Race (`make_highway_air_route.py`, 19 km, 16 rings): up I-75 under Chastain Road's bridge (8.8 m to its deck as built), over the Skip Spann Connector (its deck on the ground), down I-575 under Chastain Road NW's, the interchange, home. In the exe (`round71_check_highway_final.txt`): nothing solid on the line, a clean lap by script 2:54 (every ring, no crash), both AI pilots on Hard finish (2:37 and 2:59 laps), no crash. Rings along the interstates added after the human-like pilot, flying by the arrow, cut across the hills into the bridge's bank; a third crash before one ring now puts the plane past it. The human-like pilot check itself still does not finish (it aims 90 m beside ring 3 by design: here into the trees by I-75), not proof of a finish by hand.
 J DONE. The airport's runways, taxiways and aprons as concrete with runway markings, parking lots as asphalt (`74_map_airport`); the Mall's own lots (built by the map build) still grass on the map.
 For Dan to check: the planes (both, the garage, the pilot through the glass, a replay); the highway air race; the summit leap on the Drifter Twin; the quarry from the boxes and the LANDING boards; the AI on Hard on Kennesaw and Lakes; the map with the pad and the keys.
+
+## Round 75 (moved from TODO.md on 2026-10-28 when Dan reviewed Round 78; word for word)
+
+## Previous delivery 3: Round 75
+**Reviewed: Dan tested it 2026-10-27 ("I don't have much feedback on the things I tested"); the quarry jumps not yet seen.**
+**Round 75, STREET AND AIR RACES IN RACE SETUP (THE GARAGE THAT FOLLOWS), THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS BACK, a drop-off
+(Dan, 2026-10-27 12:04; report BUG-001 of session `2026-10-27_11-27-43-992_53ef4c`, read by Claude, after the Round 74 build).** Round 74 is reviewed. Item 0
+(CHECK IT AS DAN PLAYS IT) applies to every item. Quick builds; ONE full Build Map at the end. Short results.
+A. STREET OR AIR, AND THE GARAGE THAT FOLLOWS. Dan: "the garage is still kind of broken. I think there needs to be another line in the menu
+   to choose between street and air races. And depending on this, your garage becomes available. For example, I did a street race and then
+   selected the new air course, and my only garage choices were street vehicles. I assume I will have the same issue if I try to select a
+   road race after doing a flying race. So this also means I didn't actually get to test the new plane since I didn't have enough time to do
+   2 races". In race setup: a new first row RACE TYPE: Street / Air. It filters the Route row (street courses or air courses) and the
+   Garage (ground vehicles or planes), at once, in either order, without needing a race in between; each type remembers its own last
+   course and vehicle (Round 70 D's saves, plus the last plane). Opponents etc. as each type allows. Check by item 0 from the title, by pad
+   and keys: street race -> finish -> switch to Air -> pick the Sky Dart -> race; and air -> street the same; and straight from the title to
+   Air.
+B. THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS (the queued small fixes, Dan 2026-10-27 11:16 to 11:24, word for word below):
+- The map picture's lots (Dan, 2026-10-27 11:16: "why didn't it fix the mall parking lot?" after Round 74 J). Cause (Claude): MapBuilder.MapPicture
+  fills only OSM's parking outlines (map.parking); Town Center's lots come from MapBuilder.MallLots (Round 60: OSM maps none round the mall),
+  so the map never sees them. Dan, 11:18: "I would like that stuff fixed in general. For example, I feel like community swimming pools
+  should show up as well". So the general fix: the map picture and minimap must show what the BUILT world has, not only OSM's lists:
+  every lot and paved area the build makes (the mall's lots, the stunt park, the quarry pads and lanes, the helipads), pools (community and
+  backyard), tennis courts, plazas and paths, the trails' boardwalks and bridges, the shortcuts' built pieces where they are ground, water
+  as built. Code picks how (e.g. draw from the build's own records of what it placed, or a top-down orthographic render of the built scene
+  per tile, styled to the map's look) and says why; whichever it is, a new built thing must show on the map without anyone remembering to
+  add it. Pictures of the map at Town Center, a neighborhood pool (Chastain Lakes' and Enclave's), the stunt park and the quarry.
+- Clouds back down at the summit (Dan, 2026-10-27 11:24, on Round 74 F raising the cloud layer over high ground: "I thought it was cool
+  that you could potentially jump over clouds"). Undo that change: the cloud layer at its old height so the summit and the leap's flight
+  are up among / above the clouds again; keep it from looking like a solid white wall at the lip (soft, broken cloud the car flies over
+  and through). Picture from the summit leap's run-up and mid-flight.
+- Street names on the map (Dan, 2026-10-27 11:19: "when zoomed in, it would be great to get street names as well"). On the map screen, past
+  a zoom level, label the streets with their names (along the road, readable, not upside down, not crowding: main roads first, side
+  streets at closer zoom, each name once per stretch on screen); highways by their shields / numbers (I-75, I-575, US 41). The minimap may
+  show the current street's name (it already knows it). Pictures at three zoom levels over Chastain Glen and Town Center.
+C. BUG-001 (x -1268.09 z -6341.39 h 100, a gravel track off Kennesaw Mountain, near the summit leap's way back): "Lets fix this so there isn't a
+   drop off for the road but a smooth slope" (the picture: the track runs along the foot of a cut bank, a sheer step of ground beside it).
+   Grade the bank into a smooth slope; and check the summit leap's way back and the mountain's new tracks for any other such cut faces.
+Check: item 0 for every item; A's three paths; B's pictures; C before / after from Dan's spot.
+For Dan to check: race setup Street / Air and the garage both ways; the Sky Dart in an air race; the map (built things, pools, street names);
+the clouds at the summit leap; the slope at his spot.
+
+**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 13:45), checked in the exe through the game's own input, not yet driven by Dan.** Evidence `Data/screenshots/round75/` (`round75_check_final.txt`: 15 of 16, `round73_check_leap.txt`, `75_*.png`, `bank_scan_*.txt`).
+0 DONE: each item below was looked at in the exe's pictures from the player's camera.
+A DONE. Cause: after a race, race setup's Route row changed the name but not the course (`RaceController.Reload` only in Free), so the garage kept the old course's vehicles. Now RACE TYPE (Street / Air) is the first row and filters the Route row; a course chosen there leaves a finished race first; each type keeps its last course and vehicle (vehicle.json "plane"). The three paths through the menus (`75_street_then_air_*` pad, `75_air_then_street_*` keys, `75_title_air_*`): the garage held only planes / only ground vehicles, the Sky Dart and the Drifter Twin raced, and from the title Air brought back the Quarry Air Race and the Sky Dart by themselves.
+B map DONE. The map's picture now also draws the built scene from above: every visible mesh's upward faces on or over the ground. That covers Town Center's lots, the pools, the courts, the stunt park and the quarry's lanes (`75_map_town_center_z14`, `_lakes_pool_z16`, `_enclave_pool_z16`, `_stunt_park_z12`, `_quarry_z9`). Anything built later shows up by itself: every quick build redraws the picture too. One limit: the picture is 1.5 m a pixel, so a pool is a few pixels.
+B street names DONE. Names lie along their roads, never upside down: main roads from zoom 2.6, side streets from 6.5, I-75 / I-575 / US 41 as shields (`Data/road_refs.json`, `Tools/mapgen/road_refs.py`). Pictures: `75_map_town_center_names_z2.5/5/10`; the Chastain Glen ones are in `local/round75/glen_pics/` (not committed: Dan's street). The minimap shows the street you are on ("Chastain Glen Ln"). A name can sit under a place's label or the egg list.
+B clouds DONE. Round 74's rise is undone; within 260 m of the camera a cloud breaks up (dithered) instead of standing as a white wall. In the leap run (`73_leap_lip`, `_midair`): a cloud at the summit's height off to the side; none came within 260 m, so the break-up was not seen in a picture. The leap is unchanged: Drifter Twin 9.3 s / 336 m, Street Classic 7.9 s, Needle 600 7.7 s.
+C DONE at Dan's spot, PARTLY elsewhere (tuning limit). Cause: the summit leap's run-out ended in a 56 m-wide shelf 3.8 m above the start of its track (the grade's open end). Now the run-out eases 46 m down and narrows to the track's width, and the track starts at the run-out's height (`75_BUG-001_after`, `_from_the_track`: a smooth slope; steepest within 40 m 1.25 m in 1 m, at (-1239, -6372)). The banks are sized from the ground at their own edge, held 2 m off every road and trail, and stop at the middle between two legs of the race line. The catch's side faces went from 9 m to 3 to 6 m. Still there: faces of 5 to 11 m beside the Kennesaw race's lines, where two legs at different heights pass about 40 m apart and where the banks are held off the drive (`bank_scan_after.txt`: 66 spots; before: 67). Fixing those means the build blending between two lines' heights (GradeAlong takes the nearest line's), which touches every graded line: Dan to decide.
+For Dan to check: race setup Street / Air and the garage both ways, the Sky Dart in an air race; the map at Town Center, the pools and the stunt park, street names zoomed in, the minimap's street; the clouds at the summit leap; the slope at his spot; whether to take on the faces beside the Kennesaw race's lines.

@@ -108,6 +108,46 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 79, THE TRAIN IN REPLAYS, AIR RINGS INSIDE THE MAP, A STEADY AIR ARROW, the rail bridges' loose ends (Dan, 2026-10-28 11:36; report
+BUG-001 of session `2026-10-28_11-32-04-219_308d8c`, read by Claude, after the Round 78 build).** Round 78 is reviewed: "I liked the Marietta Sq race", "The air
+track was good". Item 0 and the end-of-round clean-up apply. Quick builds; ONE full Build Map only if the world changes. Short results.
+A. THE TRAIN IN REPLAYS. Dan: "not sure I understand why the train wont be in the replays. It is a feature of that track." Record the train(s)
+   (position along the line, speed, the cars) and the crossings' gates, lights and bells into every replay (as traffic is, Round 57), and
+   play them back in step: a replay of the Marietta Square race shows the train arriving, the gates, and the racers beating it, waiting or
+   jumping it, exactly as it happened. Check every other moving thing a race meets is recorded too (the airport's circuit plane, police,
+   switch gates, plumes): list what is and is not, and add what is missing. Check: race the square, beat the train, watch the replay (TV and
+   chase cameras) and compare.
+B. AIR RINGS INSIDE THE MAP. BUG-001 (x 1069.84 z -8181.96 h 204, 172 m up over Polk Street NW, the Air Tour, ring 21 next after ring 20 missed):
+   "this ring seems to be impossible to hit because it is out of the survey area" (the picture: LEAVING THE SURVEY AREA while heading for
+   the ring). Round 76 bent the map's edge round the Marietta piece, so the flight boundary there is close. For EVERY air course (Quarry Air
+   Race, Highway Air Race, Air Tour): every ring, and the turn from it to the next at race speed, must lie well inside the flight boundary
+   (a margin of at least the plane's turning radius at top speed plus the warning distance); move rings or ease the boundary round the
+   Marietta piece (e.g. let the flight boundary follow the outer rectangle of the scenery ring there), whichever keeps the course's intent;
+   say which. The edge warning and headwind never fire on a course's line. Check: each air course flown by the human-like pilot, no warning.
+C. A STEADY AIR ARROW. Dan: "the arrow is too jittery. One of the other air races also had this problem but I don't remember which". The air
+   races' 3D arrow (Round 73 B) still jitters: smooth it properly (its own damped orientation, not tied to the plane's shake or the camera's
+   bob; a steady position on screen; aimed at the ring through a filtered target), on all three air courses, in every camera. Measure its
+   frame-to-frame wobble on each air course before / after (as Round 74 C did for the car arrow) and look at it in a recorded flight.
+D. ROUND 78's FOUND-NOT-CHANGED ITEMS: the Canton Road Connector's bridge over the railroad ends 1 m under its road southbound (a wall): fix it
+   (both ways smooth); the 27 % rail grade at Cobb Parkway's rail bridge (rails rarely exceed 2 to 3 %: ease it); the 9 road bridges near the
+   rails with 0.3 to 1.2 m steps in their decks (build log): smooth each. Pictures before / after.
+Check: item 0 for every item.
+For Dan to check: a Marietta Square replay with the train; the Air Tour round Marietta (no edge warning); the arrow in each air race; the
+connector's south end and the rail bridges.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 78
+**Reviewed: Dan raced it 2026-10-28 11:32 ("I liked the Marietta Sq race"; "The air track was good"); his notes are Round 79.**
 **Round 78, A RUNNING TRAIN; TWO NEW RACES (MARIETTA SQUARE, AND AN AIR TOUR OF THE MAP'S PLACES); the square's streets, the rail crossings,
 a buried house (Dan, 2026-10-28 04:21; reports BUG-001 to BUG-005 of session `2026-10-28_04-03-25-890_8dd649` (BUG-004 empty), read by Claude, after the
 Round 77 build).** Round 77 is reviewed. Item 0 (CHECK IT AS DAN PLAYS IT) and the end-of-round clean-up apply. Quick builds while working;
@@ -183,18 +223,7 @@ For Dan to check: the train at a crossing; the square race (beat / wait / jump);
 connector's south end (should its deck end be raised?).
 Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 77
+## Previous delivery 2: Round 77
 **Reviewed: Dan drove round 2026-10-28 04:03 ("did a quick drive around"); his notes are Round 78.**
 **Round 77, THE RAILROAD, KENNESTONE HOSPITAL AND ITS PARKING DECK, THE CANTON ROAD CONNECTOR (Dan, 2026-10-27 21:19; reports BUG-001 to
 BUG-007 of session `2026-10-27_21-09-31-163_2b90af`, read by Claude, after the Round 76 build). Dan may add photos of the hospital and Marietta Square to
@@ -269,7 +298,7 @@ D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each pho
 Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
 For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.
 
-## Previous delivery 2: Round 76
+## Previous delivery 3: Round 76
 **Reviewed: Dan drove the new land 2026-10-27 21:09; his notes are Round 77.**
 **Round 76, MARIETTA SQUARE: ONE MORE SMALL PIECE OF MAP; the Kennesaw cut faces; disk clean-up (Dan, 2026-10-27 16:09, with a Google map of downtown
 Marietta: `local/reference_photos/extension/marietta_square_area.png`, reference only, never traced).** Round 75 is reviewed. Item 0 (CHECK IT AS
@@ -340,54 +369,6 @@ D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use (t
 For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square"); Glover Park, the storefronts, the theater, the depot; the frame rate there; the
 Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
 that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
-
-## Previous delivery 3: Round 75
-**Reviewed: Dan tested it 2026-10-27 ("I don't have much feedback on the things I tested"); the quarry jumps not yet seen.**
-**Round 75, STREET AND AIR RACES IN RACE SETUP (THE GARAGE THAT FOLLOWS), THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS BACK, a drop-off
-(Dan, 2026-10-27 12:04; report BUG-001 of session `2026-10-27_11-27-43-992_53ef4c`, read by Claude, after the Round 74 build).** Round 74 is reviewed. Item 0
-(CHECK IT AS DAN PLAYS IT) applies to every item. Quick builds; ONE full Build Map at the end. Short results.
-A. STREET OR AIR, AND THE GARAGE THAT FOLLOWS. Dan: "the garage is still kind of broken. I think there needs to be another line in the menu
-   to choose between street and air races. And depending on this, your garage becomes available. For example, I did a street race and then
-   selected the new air course, and my only garage choices were street vehicles. I assume I will have the same issue if I try to select a
-   road race after doing a flying race. So this also means I didn't actually get to test the new plane since I didn't have enough time to do
-   2 races". In race setup: a new first row RACE TYPE: Street / Air. It filters the Route row (street courses or air courses) and the
-   Garage (ground vehicles or planes), at once, in either order, without needing a race in between; each type remembers its own last
-   course and vehicle (Round 70 D's saves, plus the last plane). Opponents etc. as each type allows. Check by item 0 from the title, by pad
-   and keys: street race -> finish -> switch to Air -> pick the Sky Dart -> race; and air -> street the same; and straight from the title to
-   Air.
-B. THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS (the queued small fixes, Dan 2026-10-27 11:16 to 11:24, word for word below):
-- The map picture's lots (Dan, 2026-10-27 11:16: "why didn't it fix the mall parking lot?" after Round 74 J). Cause (Claude): MapBuilder.MapPicture
-  fills only OSM's parking outlines (map.parking); Town Center's lots come from MapBuilder.MallLots (Round 60: OSM maps none round the mall),
-  so the map never sees them. Dan, 11:18: "I would like that stuff fixed in general. For example, I feel like community swimming pools
-  should show up as well". So the general fix: the map picture and minimap must show what the BUILT world has, not only OSM's lists:
-  every lot and paved area the build makes (the mall's lots, the stunt park, the quarry pads and lanes, the helipads), pools (community and
-  backyard), tennis courts, plazas and paths, the trails' boardwalks and bridges, the shortcuts' built pieces where they are ground, water
-  as built. Code picks how (e.g. draw from the build's own records of what it placed, or a top-down orthographic render of the built scene
-  per tile, styled to the map's look) and says why; whichever it is, a new built thing must show on the map without anyone remembering to
-  add it. Pictures of the map at Town Center, a neighborhood pool (Chastain Lakes' and Enclave's), the stunt park and the quarry.
-- Clouds back down at the summit (Dan, 2026-10-27 11:24, on Round 74 F raising the cloud layer over high ground: "I thought it was cool
-  that you could potentially jump over clouds"). Undo that change: the cloud layer at its old height so the summit and the leap's flight
-  are up among / above the clouds again; keep it from looking like a solid white wall at the lip (soft, broken cloud the car flies over
-  and through). Picture from the summit leap's run-up and mid-flight.
-- Street names on the map (Dan, 2026-10-27 11:19: "when zoomed in, it would be great to get street names as well"). On the map screen, past
-  a zoom level, label the streets with their names (along the road, readable, not upside down, not crowding: main roads first, side
-  streets at closer zoom, each name once per stretch on screen); highways by their shields / numbers (I-75, I-575, US 41). The minimap may
-  show the current street's name (it already knows it). Pictures at three zoom levels over Chastain Glen and Town Center.
-C. BUG-001 (x -1268.09 z -6341.39 h 100, a gravel track off Kennesaw Mountain, near the summit leap's way back): "Lets fix this so there isn't a
-   drop off for the road but a smooth slope" (the picture: the track runs along the foot of a cut bank, a sheer step of ground beside it).
-   Grade the bank into a smooth slope; and check the summit leap's way back and the mountain's new tracks for any other such cut faces.
-Check: item 0 for every item; A's three paths; B's pictures; C before / after from Dan's spot.
-For Dan to check: race setup Street / Air and the garage both ways; the Sky Dart in an air race; the map (built things, pools, street names);
-the clouds at the summit leap; the slope at his spot.
-
-**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 13:45), checked in the exe through the game's own input, not yet driven by Dan.** Evidence `Data/screenshots/round75/` (`round75_check_final.txt`: 15 of 16, `round73_check_leap.txt`, `75_*.png`, `bank_scan_*.txt`).
-0 DONE: each item below was looked at in the exe's pictures from the player's camera.
-A DONE. Cause: after a race, race setup's Route row changed the name but not the course (`RaceController.Reload` only in Free), so the garage kept the old course's vehicles. Now RACE TYPE (Street / Air) is the first row and filters the Route row; a course chosen there leaves a finished race first; each type keeps its last course and vehicle (vehicle.json "plane"). The three paths through the menus (`75_street_then_air_*` pad, `75_air_then_street_*` keys, `75_title_air_*`): the garage held only planes / only ground vehicles, the Sky Dart and the Drifter Twin raced, and from the title Air brought back the Quarry Air Race and the Sky Dart by themselves.
-B map DONE. The map's picture now also draws the built scene from above: every visible mesh's upward faces on or over the ground. That covers Town Center's lots, the pools, the courts, the stunt park and the quarry's lanes (`75_map_town_center_z14`, `_lakes_pool_z16`, `_enclave_pool_z16`, `_stunt_park_z12`, `_quarry_z9`). Anything built later shows up by itself: every quick build redraws the picture too. One limit: the picture is 1.5 m a pixel, so a pool is a few pixels.
-B street names DONE. Names lie along their roads, never upside down: main roads from zoom 2.6, side streets from 6.5, I-75 / I-575 / US 41 as shields (`Data/road_refs.json`, `Tools/mapgen/road_refs.py`). Pictures: `75_map_town_center_names_z2.5/5/10`; the Chastain Glen ones are in `local/round75/glen_pics/` (not committed: Dan's street). The minimap shows the street you are on ("Chastain Glen Ln"). A name can sit under a place's label or the egg list.
-B clouds DONE. Round 74's rise is undone; within 260 m of the camera a cloud breaks up (dithered) instead of standing as a white wall. In the leap run (`73_leap_lip`, `_midair`): a cloud at the summit's height off to the side; none came within 260 m, so the break-up was not seen in a picture. The leap is unchanged: Drifter Twin 9.3 s / 336 m, Street Classic 7.9 s, Needle 600 7.7 s.
-C DONE at Dan's spot, PARTLY elsewhere (tuning limit). Cause: the summit leap's run-out ended in a 56 m-wide shelf 3.8 m above the start of its track (the grade's open end). Now the run-out eases 46 m down and narrows to the track's width, and the track starts at the run-out's height (`75_BUG-001_after`, `_from_the_track`: a smooth slope; steepest within 40 m 1.25 m in 1 m, at (-1239, -6372)). The banks are sized from the ground at their own edge, held 2 m off every road and trail, and stop at the middle between two legs of the race line. The catch's side faces went from 9 m to 3 to 6 m. Still there: faces of 5 to 11 m beside the Kennesaw race's lines, where two legs at different heights pass about 40 m apart and where the banks are held off the drive (`bank_scan_after.txt`: 66 spots; before: 67). Fixing those means the build blending between two lines' heights (GradeAlong takes the nearest line's), which touches every graded line: Dan to decide.
-For Dan to check: race setup Street / Air and the garage both ways, the Sky Dart in an air race; the map at Town Center, the pools and the stunt park, street names zoomed in, the minimap's street; the clouds at the summit leap; the slope at his spot; whether to take on the faces beside the Kennesaw race's lines.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
