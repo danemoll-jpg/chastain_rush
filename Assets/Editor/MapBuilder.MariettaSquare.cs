@@ -16,12 +16,20 @@ using Racer;
 //   landmarks     the theater (its marquee and name board), the food hall (Station Street Market), the museum (a columned portico, a pediment,
 //                 steps), the old depot by the tracks (a hip roof on brackets, a platform); every name made up (make_business_signs.py rows 54 to 63)
 //   the railroad  rails on ties on a gravel bed along OSM's lines near the square (no collider: the car drives on the ground under them)
+// Round 77 (D, Dan's photos 2026-10-27 21:55, local/reference_photos/marietta_square/, reference only): Glover Park's brick paths in a cross and
+// diagonals meeting at a tall tiered cast-iron fountain in a low round brick basin (09), big shade trees, the small green-roofed gazebo, the cream
+// pavilion on its brick base with steps (04), a Liberty Bell on a granite plinth with benches round it (05), the children's W&A RR locomotive and
+// tender behind a low brick wall (07); angled parking both sides round the square and one-way arrows (02), traffic lights on mast arms at its corners
+// and the theater a white art-deco front with a red and green marquee, THE GRAND (06); the clock-tower county building and the court's clock tower
+// and spire (03); the depot with stepped gables, a slate roof and WELCOME CENTER, the iron fence across the tracks, the hotel's MUSEUM OF HISTORY (08).
+// The fountain, bell, locomotive, tender and pavilion are solid; benches, lamps, café tables, the play area's wall, the signals and the fence break.
+// The railroad itself is the whole map's now (MapBuilder.Railroad.cs).
 // Quick-buildable alone: step "Marietta".
 namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class MariettaMarks { public int theater = -1, market = -1, museum = -1, depot = -1; }
+        [Serializable] class MariettaMarks { public int theater = -1, market = -1, museum = -1, depot = -1, hotel = -1, courthouse = -1, clock = -1, pavilion = -1; }   // Round 77: hotel .. pavilion
         [Serializable] class MariettaRail { public float[] points; }
         [Serializable] class MariettaPlace { public string name; public float x, z, heading; }
         [Serializable] class MariettaData { public float[] park, park_center; public int gazebo = -1; public int[] historic, churches, park_drop; public MariettaMarks landmarks; public MariettaRail[] rail; public MariettaPlace place; }
@@ -34,14 +42,18 @@ namespace ChastainRush
         static bool MariettaChurch(int i) => mariettaChurch.Contains(i);
         static Vector2? mariettaCenter;
         static bool MariettaNear(Vector2 p) => mariettaCenter.HasValue && (p - mariettaCenter.Value).sqrMagnitude < 700f * 700f;   // downtown (its civic blocks are offices)
-        static readonly Color[] MariettaBrick = { new Color(0.55f, 0.25f, 0.18f), new Color(0.62f, 0.31f, 0.22f), new Color(0.48f, 0.23f, 0.17f), new Color(0.66f, 0.40f, 0.28f), new Color(0.58f, 0.36f, 0.30f) };
+        // (Round 77, photo 06: some fronts painted white, cream or mint green among the brick)
+        static readonly Color[] MariettaBrick = { new Color(0.55f, 0.25f, 0.18f), new Color(0.62f, 0.31f, 0.22f), new Color(0.48f, 0.23f, 0.17f), new Color(0.66f, 0.40f, 0.28f), new Color(0.58f, 0.36f, 0.30f),
+            new Color(0.92f, 0.91f, 0.87f), new Color(0.64f, 0.83f, 0.72f), new Color(0.90f, 0.86f, 0.74f) };
+        static readonly List<Vector2> MariettaTrees = new List<Vector2>();   // Round 77: Glover Park's big shade trees (the Trees step)
         static readonly Color MariettaTrim = new Color(0.88f, 0.86f, 0.80f), MariettaStone = new Color(0.86f, 0.84f, 0.78f), BrickWalk = new Color(0.60f, 0.33f, 0.25f);
         const int SignTheater = 54, SignFoodHall = 55, SignMuseum = 56, SignDepot = 57, SignSquareFirst = 58, SignSquareCount = 6;
+        const int SignGrand = 68, SignWelcome = 69, SignHistory = 70;   // Round 77 (make_business_signs.py's round77 rows)
         static int MariettaShopRow(int seed, int k) => SignSquareFirst + (int)((Mix(seed, 77) + (uint)k) % SignSquareCount);
 
         static void PlanMarietta(MapData map, TerrainGrid t)
         {
-            MariettaNow = null; mariettaCenter = null; mariettaOwned.Clear(); mariettaHistoric.Clear(); mariettaChurch.Clear(); MariettaPeople.Clear();
+            MariettaNow = null; mariettaCenter = null; mariettaOwned.Clear(); mariettaHistoric.Clear(); mariettaChurch.Clear(); MariettaPeople.Clear(); MariettaTrees.Clear();
             var path = Path.Combine(ProjectRoot, "Data/tracks/marietta_square.json"); if (!File.Exists(path)) return;
             var d = JsonUtility.FromJson<MariettaData>(File.ReadAllText(path)); if (d?.park == null || d.park.Length < 6) return;
             bool Ok(int i) => i >= 0 && i < map.buildings.Length;
@@ -49,7 +61,7 @@ namespace ChastainRush
             if (Ok(d.gazebo)) mariettaOwned.Add(d.gazebo);
             if (d.park_drop != null) foreach (var i in d.park_drop) if (Ok(i)) mariettaOwned.Add(i);   // the park's other buildings: not built (an open lawn)
             mariettaCenter = new Vector2(d.park_center[0], d.park_center[1]);
-            foreach (var i in new[] { d.landmarks.theater, d.landmarks.market, d.landmarks.museum, d.landmarks.depot }) if (Ok(i)) mariettaOwned.Add(i);
+            foreach (var i in new[] { d.landmarks.theater, d.landmarks.market, d.landmarks.museum, d.landmarks.depot, d.landmarks.hotel, d.landmarks.courthouse, d.landmarks.clock, d.landmarks.pavilion }) if (Ok(i)) mariettaOwned.Add(i);
             if (d.historic != null) foreach (var i in d.historic) if (Ok(i) && !mariettaOwned.Contains(i)) mariettaHistoric.Add(i);
             if (d.churches != null) foreach (var i in d.churches) if (Ok(i) && !mariettaOwned.Contains(i)) mariettaChurch.Add(i);
             // the people (AmbientLife, added by BuildLife): walkers along the park's walks, two talking by the fountain and on the corners
@@ -66,6 +78,13 @@ namespace ChastainRush
                 Add(Vector2.Lerp(a, c, .25f), inward * .5f, AmbientLife.Talking, 2);
             }
             Add(c + new Vector2(6.5f, 0f), Vector2.left, AmbientLife.Talking, 2); Add(c + new Vector2(-6.5f, 2f), Vector2.right, AmbientLife.Kids, 3);
+            // Round 77 (photo 02): big shade trees in the lawns, two in each quarter between the cross path and the diagonals; kids at the train
+            for (int i = 0; i < park.Count; i++)
+            {
+                Vector2 a = park[i], b = park[(i + 1) % park.Count], m = (a + b) * .5f;
+                foreach (var corner in new[] { a, b }) { var dir = ((m - c).normalized + (corner - c).normalized).normalized; float R = Mathf.Min((m - c).magnitude, (corner - c).magnitude); MariettaTrees.Add(c + dir * R * .62f); }
+            }
+            Add(MariettaTrainAt(park, c), Vector2.right, AmbientLife.Kids, 4);
             Debug.Log($"[Round76] Marietta Square planned: {mariettaOwned.Count} landmarks built by its step, {mariettaHistoric.Count} old storefronts, {mariettaChurch.Count} churches, {MariettaPeople.Count} groups of people");
         }
 
@@ -80,11 +99,11 @@ namespace ChastainRush
             var park = ToPoints(d.park); var c = new Vector2(d.park_center[0], d.park_center[1]);
             var log = new System.Text.StringBuilder();
             // road segments (the paint, and keeping things off the carriageways)
-            var segs = new List<(Vector2 a, Vector2 b, float half, string name)>();
+            var segs = new List<(Vector2 a, Vector2 b, float half, string name, bool oneway)>();
             foreach (var r in map.roads)
             {
                 if (r.tunnel || r.points == null) continue; var p = ToPoints(r.points);
-                for (int i = 0; i + 1 < p.Count; i++) if (SegDist(c, p[i], p[i + 1]) < 700f) segs.Add((p[i], p[i + 1], r.width * .5f, r.name ?? ""));
+                for (int i = 0; i + 1 < p.Count; i++) if (SegDist(c, p[i], p[i + 1]) < 700f) segs.Add((p[i], p[i + 1], r.width * .5f, r.name ?? "", r.oneway));
             }
             float RoadGap(Vector2 q) { float g = float.MaxValue; foreach (var s in segs) g = Mathf.Min(g, SegDist(q, s.a, s.b) - s.half); return g; }
 
@@ -93,31 +112,41 @@ namespace ChastainRush
             var ringWalk = new List<Vector2>(); foreach (var p in park) ringWalk.Add(p + (c - p).normalized * 3.0f); ringWalk.Add(ringWalk[0]);
             AddRibbon(walks, Resample(ringWalk, 2f), 3.0f, 0.05f, t);
             foreach (var p in park) AddRibbon(walks, Resample(new List<Vector2> { p + (c - p).normalized * 3.0f, c + (p - c).normalized * 7.5f }, 2f), 2.6f, 0.05f, t);
+            for (int i = 0; i < park.Count; i++) { var m = (park[i] + park[(i + 1) % park.Count]) * .5f; AddRibbon(walks, Resample(new List<Vector2> { m + (c - m).normalized * 3.0f, c + (m - c).normalized * 7.5f }, 2f), 3.0f, 0.05f, t); }   // Round 77: the cross
             // the plaza round the fountain
             var plaza = new List<Vector2>(); for (int k = 0; k < 24; k++) { float a = k * Mathf.PI * 2f / 24f; plaza.Add(c + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 8.5f); }
             DrapePoly(walks, plaza, 1.5f, 0.06f, t);
 
-            // ---------------- the fountain (no collider: it is driven through, the spray over the car)
-            float gy = Ground(t, c.x, c.y); var stone = MariettaStone;
-            for (int k = 0; k < 16; k++)
+            // ---------------- the fountain (Round 77, photo 09): a tall tiered cast-iron fountain in a low round brick basin; solid (its rim and column)
+            float gy = Ground(t, c.x, c.y); var stone = MariettaStone; var basinBrick = new Color(.62f, .30f, .22f); var castIron = new Color(.11f, .15f, .13f);
+            for (int k = 0; k < 20; k++)
             {
-                float a0 = k * Mathf.PI * 2f / 16f, a1 = (k + 1) * Mathf.PI * 2f / 16f;
+                float a0 = k * Mathf.PI * 2f / 20f, a1 = (k + 1) * Mathf.PI * 2f / 20f;
                 Vector3 P(float a, float r, float y) => new Vector3(c.x + Mathf.Cos(a) * r, gy + y, c.y + Mathf.Sin(a) * r);
-                props.Tint = stone; Face(props, P(a0, 4.3f, 0f), P(a1, 4.3f, 0f), P(a1, 4.3f, 0.6f), P(a0, 4.3f, 0.6f), new Vector3(Mathf.Cos(a0), 0f, Mathf.Sin(a0)));
-                Face(props, P(a0, 4.3f, 0.6f), P(a1, 4.3f, 0.6f), P(a1, 3.8f, 0.6f), P(a0, 3.8f, 0.6f), Vector3.up);
-                props.Tint = new Color(0.25f, 0.45f, 0.62f); TriFace(props, P(0f, 0f, 0.45f), P(a1, 3.8f, 0.45f), P(a0, 3.8f, 0.45f), Vector3.up);
+                props.Tint = basinBrick; Face(props, P(a0, 4.3f, -0.1f), P(a1, 4.3f, -0.1f), P(a1, 4.3f, 0.75f), P(a0, 4.3f, 0.75f), new Vector3(Mathf.Cos(a0), 0f, Mathf.Sin(a0)));
+                props.Tint = Shade(basinBrick, 1.15f); Face(props, P(a0, 4.3f, 0.75f), P(a1, 4.3f, 0.75f), P(a1, 3.8f, 0.75f), P(a0, 3.8f, 0.75f), Vector3.up);
+                props.Tint = basinBrick; Face(props, P(a1, 3.8f, 0.75f), P(a0, 3.8f, 0.75f), P(a0, 3.8f, 0.45f), P(a1, 3.8f, 0.45f), -new Vector3(Mathf.Cos(a0), 0f, Mathf.Sin(a0)));
+                props.Tint = new Color(0.30f, 0.62f, 0.78f); TriFace(props, P(0f, 0f, 0.45f), P(a1, 3.8f, 0.45f), P(a0, 3.8f, 0.45f), Vector3.up);
+                // the rim solid: a box along each of its 20 sides
+                var rimGo = new GameObject("Marietta fountain rim"); rimGo.transform.SetParent(root, false);
+                var mid = (P(a0, 4.05f, .35f) + P(a1, 4.05f, .35f)) * .5f; rimGo.transform.SetPositionAndRotation(mid, Quaternion.LookRotation(P(a1, 4.05f, .35f) - P(a0, 4.05f, .35f), Vector3.up));
+                rimGo.AddComponent<BoxCollider>().size = new Vector3(.5f, 1.0f, (P(a1, 4.05f, 0f) - P(a0, 4.05f, 0f)).magnitude + .05f);
             }
-            Cyl(props, new Vector3(c.x, gy + 0.4f, c.y), 1.3f, 0.45f, 0.35f, stone, 10);
-            Cyl(props, new Vector3(c.x, gy + 1.7f, c.y), 0.25f, 1.4f, 1.6f, stone, 12);
-            Cyl(props, new Vector3(c.x, gy + 1.95f, c.y), 0.9f, 0.18f, 0.12f, stone, 8);
-            var fgo = new GameObject("Marietta fountain"); fgo.transform.SetParent(root, false); fgo.transform.position = new Vector3(c.x, gy + 2.6f, c.y);
-            var spray = fgo.AddComponent<FountainSpray>(); spray.material = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial(); spray.waterY = gy + 2.6f; spray.height = 2.4f; spray.spread = 2.2f;
+            Cyl(props, new Vector3(c.x, gy + 0.3f, c.y), 0.5f, 1.0f, 0.8f, castIron, 12);
+            Cyl(props, new Vector3(c.x, gy + 0.8f, c.y), 1.4f, 0.38f, 0.26f, castIron, 12);
+            Cyl(props, new Vector3(c.x, gy + 2.2f, c.y), 0.4f, 0.3f, 2.1f, castIron, 20); Cyl(props, new Vector3(c.x, gy + 2.6f, c.y), 0.1f, 2.1f, 2.0f, castIron, 20);
+            Cyl(props, new Vector3(c.x, gy + 2.7f, c.y), 1.0f, 0.2f, 0.15f, castIron, 10);
+            Cyl(props, new Vector3(c.x, gy + 3.7f, c.y), 0.3f, 0.18f, 1.1f, castIron, 16); Cyl(props, new Vector3(c.x, gy + 4.0f, c.y), 0.08f, 1.1f, 1.05f, castIron, 16);
+            Cyl(props, new Vector3(c.x, gy + 4.08f, c.y), 0.55f, 0.1f, 0.06f, castIron, 8); Cyl(props, new Vector3(c.x, gy + 4.63f, c.y), 0.35f, 0.22f, 0.0f, new Color(.55f, .45f, .20f), 8);
+            { var colGo = new GameObject("Marietta fountain column"); colGo.transform.SetParent(root, false); colGo.transform.position = new Vector3(c.x, gy + 2.2f, c.y); colGo.AddComponent<BoxCollider>().size = new Vector3(1.4f, 4.4f, 1.4f); }
+            var fgo = new GameObject("Marietta fountain"); fgo.transform.SetParent(root, false); fgo.transform.position = new Vector3(c.x, gy + 4.9f, c.y);
+            var spray = fgo.AddComponent<FountainSpray>(); spray.material = SpraySoftMaterial != null ? SpraySoftMaterial : MakeSprayMaterial(); spray.waterY = gy + 0.45f; spray.height = 1.2f; spray.spread = 2.4f;
 
             // ---------------- the bandstand (OSM's gazebo): an octagon on a brick base, white posts and rail, a roof to a finial
             if (d.gazebo >= 0 && d.gazebo < map.buildings.Length)
             {
                 var g = ToPoints(map.buildings[d.gazebo].footprint); var gc = Vector2.zero; foreach (var p in g) gc += p; gc /= g.Count;
-                float r = Mathf.Clamp(g.Max(p => (p - gc).magnitude), 3f, 7f), lo = g.Min(p => Ground(t, p.x, p.y)), hi = g.Max(p => Ground(t, p.x, p.y)), floor = hi + 0.8f;
+                float r = Mathf.Clamp(g.Max(p => (p - gc).magnitude), 2.6f, 4.5f), lo = g.Min(p => Ground(t, p.x, p.y)), hi = g.Max(p => Ground(t, p.x, p.y)), floor = hi + 0.45f;   // Round 77: the small gazebo of photo 02
                 Vector3 O(float a, float rr, float y) => new Vector3(gc.x + Mathf.Cos(a) * rr, y, gc.y + Mathf.Sin(a) * rr);
                 for (int k = 0; k < 8; k++)
                 {
@@ -126,7 +155,7 @@ namespace ChastainRush
                     props.Tint = new Color(0.62f, 0.55f, 0.45f); TriFace(props, new Vector3(gc.x, floor, gc.y), O(a1, r, floor), O(a0, r, floor), Vector3.up);
                     Post(props, O(a0, r - 0.25f, floor), 3.1f, 0.22f, MariettaTrim);
                     if (k != 2) { Beam(props, O(a0, r - 0.25f, floor + 0.95f), O(a1, r - 0.25f, floor + 0.95f), 0.08f, 0.08f, MariettaTrim); Beam(props, O(a0, r - 0.25f, floor + 0.15f), O(a1, r - 0.25f, floor + 0.15f), 0.06f, 0.06f, MariettaTrim); }
-                    props.Tint = new Color(0.30f, 0.32f, 0.34f); TriFace(props, new Vector3(gc.x, floor + 5.1f, gc.y), O(a0, r + 0.6f, floor + 3.0f), O(a1, r + 0.6f, floor + 3.0f), n + Vector3.up);
+                    props.Tint = new Color(0.24f, 0.44f, 0.34f); TriFace(props, new Vector3(gc.x, floor + 5.1f, gc.y), O(a0, r + 0.6f, floor + 3.0f), O(a1, r + 0.6f, floor + 3.0f), n + Vector3.up);   // Round 77: green
                     props.Tint = MariettaTrim; TriFace(props, new Vector3(gc.x, floor + 5.0f, gc.y), O(a1, r + 0.6f, floor + 2.95f), O(a0, r + 0.6f, floor + 2.95f), Vector3.down);
                     var col = new GameObject("Bandstand post"); col.transform.SetParent(root, false); col.transform.position = O(a0, r - 0.25f, floor + 1.5f);
                     col.AddComponent<BoxCollider>().size = new Vector3(0.25f, 3f, 0.25f);
@@ -144,9 +173,93 @@ namespace ChastainRush
                 log.Append($"bandstand {r * 2f:0.0} m across; ");
             }
 
+            var sharedIron = new Color(0.08f, 0.09f, 0.08f);
+            // ---------------- Round 77 (photo 04): the pavilion: a cream two-story pavilion on a brick base, columns round its open floor, the upper story
+            // with windows under a green hip roof, steps up on the side toward the park's middle; solid
+            if (d.landmarks.pavilion >= 0 && d.landmarks.pavilion < map.buildings.Length && BestRectangle(ToPoints(map.buildings[d.landmarks.pavilion].footprint), out var pc, out var pU, out var pV, out float phl, out float phw))
+            {
+                phl = Mathf.Max(phl, 7f); phw = Mathf.Max(phw, 4.5f); if (Vector2.Dot(c - pc, pV) < 0f) pV = -pV;   // its front (pV) toward the park's middle
+                float lo = float.MaxValue, hi = float.MinValue; foreach (var q in new[] { pc + pU * phl + pV * phw, pc - pU * phl + pV * phw, pc + pU * phl - pV * phw, pc - pU * phl - pV * phw }) { float g = Ground(t, q.x, q.y); lo = Mathf.Min(lo, g); hi = Mathf.Max(hi, g); }
+                float floor = hi + 1.1f; var cream = new Color(0.93f, 0.90f, 0.80f);
+                var f = new Frame { O = new Vector3(pc.x, floor, pc.y), R = new Vector3(pU.x, 0f, pU.y), F = new Vector3(pV.x, 0f, pV.y), M = 1f };
+                BoxF(bodies, f, -phl, phl, lo - floor - 0.3f, 0f, -phw, phw, new Color(0.55f, 0.27f, 0.20f));
+                for (int st = 1; st <= 4; st++) BoxF(bodies, f, -2.2f, 2.2f, lo - floor - 0.3f, -(floor - lo) * st / 4.5f + 0.0f, phw, phw + st * 0.4f, Shade(new Color(0.55f, 0.27f, 0.20f), .95f));
+                for (float u = -phl + 0.4f; u <= phl - 0.39f; u += (2f * phl - 0.8f) / Mathf.Max(2, Mathf.RoundToInt(phl / 1.7f)))
+                    foreach (float v in new[] { -phw + 0.4f, phw - 0.4f }) Cyl(bodies, f.P(u, 0f, v), 4.0f, 0.22f, 0.2f, cream, 10);
+                foreach (float u in new[] { -phl + 0.4f, phl - 0.4f }) for (float v = -phw + 2.2f; v < phw - 1f; v += 2.2f) Cyl(bodies, f.P(u, 0f, v), 4.0f, 0.22f, 0.2f, cream, 10);
+                BoxF(bodies, f, -phl - 0.2f, phl + 0.2f, 4.0f, 4.5f, -phw - 0.2f, phw + 0.2f, cream);
+                BoxF(bodies, f, -phl + 0.8f, phl - 0.8f, 4.5f, 6.4f, -phw + 0.8f, phw - 0.8f, cream);
+                foreach (float side in new[] { -1f, 1f }) for (float u = -phl + 2f; u <= phl - 2f; u += 2.2f) { var wf = side > 0 ? f : new Frame { O = f.O, R = -f.R, F = -f.F, M = 1f }; FrontQuad(bodies, wf, u - 0.6f, u + 0.6f, 4.9f, 6.0f, phw - 0.78f, BizGlass); }
+                float rise = 1.8f, oh = 0.6f; Vector3 A = f.P(-phl - oh, 6.4f, -phw - oh), B = f.P(phl + oh, 6.4f, -phw - oh), C = f.P(phl + oh, 6.4f, phw + oh), D = f.P(-phl - oh, 6.4f, phw + oh);
+                Vector3 R0 = f.P(-phl + phw, 6.4f + rise, 0f), R1 = f.P(phl - phw, 6.4f + rise, 0f); var greenRoof = new Color(0.30f, 0.48f, 0.38f);
+                bodies.Tint = greenRoof; Face(bodies, A, B, R1, R0, Vector3.up); Face(bodies, C, D, R0, R1, Vector3.up); TriFace(bodies, B, C, R1, Vector3.up); TriFace(bodies, D, A, R0, Vector3.up);
+                foreach (float v in new[] { -phw + 0.4f, phw - 0.4f }) { Beam(bodies, f.P(-phl + 0.4f, 0.95f, v), f.P(v > 0 ? -2.4f : phl - 0.4f, 0.95f, v), 0.08f, 0.08f, cream); if (v > 0) Beam(bodies, f.P(2.4f, 0.95f, v), f.P(phl - 0.4f, 0.95f, v), 0.08f, 0.08f, cream); }
+                var pg = new GameObject("Marietta pavilion"); pg.transform.SetParent(root, false); pg.transform.SetPositionAndRotation(new Vector3(pc.x, (lo - 0.3f + floor) / 2f, pc.y), Quaternion.LookRotation(f.F, Vector3.up));
+                pg.AddComponent<BoxCollider>().size = new Vector3(2f * phl, floor - lo + 0.3f, 2f * phw);
+                var pu = new GameObject("Marietta pavilion upper"); pu.transform.SetParent(root, false); pu.transform.SetPositionAndRotation(new Vector3(pc.x, floor + 5.6f, pc.y), Quaternion.LookRotation(f.F, Vector3.up));
+                pu.AddComponent<BoxCollider>().size = new Vector3(2f * phl + 0.4f, 3.2f, 2f * phw + 0.4f);
+                log.Append($"pavilion {2f * phl:0} x {2f * phw:0} m; ");
+            }
+            // ---------------- Round 77 (photo 05): the Liberty Bell on a granite plinth with a bronze plaque, black benches round it, brick paving; solid
+            {
+                var m1 = (park[1 % park.Count] + park[2 % park.Count]) * .5f; var dirM = (m1 - c).normalized; var bp = c + dirM * (m1 - c).magnitude * .55f + new Vector2(-dirM.y, dirM.x) * 5.5f;
+                float by = Ground(t, bp.x, bp.y); var bf = MakeFrame(new Vector3(bp.x, by, bp.y), -dirM, 1f);
+                var ring = new List<Vector2>(); for (int k = 0; k < 16; k++) { float a = k * Mathf.PI / 8f; ring.Add(bp + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 3.6f); }
+                walks.Tint = BrickWalk; DrapePoly(walks, ring, 1.2f, 0.07f, t);
+                BoxF(props, bf, -0.75f, 0.75f, -0.2f, 1.3f, -0.75f, 0.75f, new Color(0.58f, 0.57f, 0.55f));
+                FrontQuad(props, bf, -0.4f, 0.4f, 0.5f, 1.0f, 0.76f, new Color(0.45f, 0.32f, 0.16f));
+                var bronze = new Color(0.36f, 0.27f, 0.17f);
+                Cyl(props, new Vector3(bp.x, by + 1.6f, bp.y), 0.9f, 0.72f, 0.42f, bronze, 16); Cyl(props, new Vector3(bp.x, by + 2.5f, bp.y), 0.25f, 0.42f, 0.25f, bronze, 12);
+                foreach (float u in new[] { -0.7f, 0.7f }) Beam(props, bf.P(u, 1.3f, 0f), bf.P(u, 3.0f, 0f), 0.14f, 0.14f, sharedIron);
+                Beam(props, bf.P(-0.85f, 3.0f, 0f), bf.P(0.85f, 3.0f, 0f), 0.22f, 0.22f, new Color(0.25f, 0.18f, 0.12f));
+                var bellGo = new GameObject("Marietta liberty bell"); bellGo.transform.SetParent(root, false); bellGo.transform.position = new Vector3(bp.x, by + 1.5f, bp.y); bellGo.AddComponent<BoxCollider>().size = new Vector3(1.6f, 3.0f, 1.6f);
+                for (int k = 0; k < 4; k++)
+                {
+                    float a = k * Mathf.PI / 2f + Mathf.PI / 4f; var q = bp + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * 2.9f; float y = Ground(t, q.x, q.y);
+                    var f = MakeFrame(new Vector3(q.x, y, q.y), (bp - q).normalized, 1f); var mb = benches.Begin(q); benches.Piece(() => Bench(mb, f), y + 0.1f);
+                    benches.End(new Vector3(q.x, y + 0.5f, q.y), new Vector3(-(bp - q).normalized.y, 0f, (bp - q).normalized.x), 1.9f, 1.0f, 0.6f);
+                }
+                log.Append("the bell; ");
+            }
+            // ---------------- Round 77 (photo 07): the children's play area: a soft green floor, a low brick wall round it (it breaks), the W&A RR locomotive
+            // and its tender to climb on (solid)
+            {
+                var tp = MariettaTrainAt(park, c); var td = (c - tp).normalized; var ts = new Vector2(td.y, -td.x);   // its long side across the way to the middle
+                float ty = Ground(t, tp.x, tp.y); var tf = MakeFrame(new Vector3(tp.x, ty, tp.y), ts, 1f);   // v along the train
+                var pad = new List<Vector2> { tp + ts * 9f + td * 6f, tp - ts * 9f + td * 6f, tp - ts * 9f - td * 6f, tp + ts * 9f - td * 6f };
+                props.Tint = new Color(0.20f, 0.42f, 0.30f); DrapePoly(props, pad, 1.5f, 0.06f, t);
+                for (int e = 0; e < 4; e++)
+                {
+                    Vector2 a = pad[e], b = pad[(e + 1) % 4]; float L = (b - a).magnitude; var dd = (b - a) / L;
+                    for (float u = 0f; u < L - 0.1f; u += 3f)
+                    {
+                        float u1 = Mathf.Min(L, u + 3f); var mpos = a + dd * ((u + u1) / 2f); if (e == 0 && Mathf.Abs((u + u1) / 2f - L / 2f) < 2.5f) continue;   // the way in, toward the park's middle
+                        float wy = Ground(t, mpos.x, mpos.y); var wf = MakeFrame(new Vector3(mpos.x, wy, mpos.y), new Vector2(-dd.y, dd.x), 1f);
+                        var mb = tables.Begin(mpos); float hl = (u1 - u) / 2f;
+                        tables.Piece(() => BoxF(mb, wf, -hl, hl, -0.3f, 0.75f, -0.2f, 0.2f, new Color(0.58f, 0.28f, 0.21f)), wy + 0.1f);
+                        tables.End(new Vector3(mpos.x, wy + 0.4f, mpos.y), new Vector3(dd.x, 0f, dd.y), 2f * hl, 0.8f, 0.5f);
+                    }
+                }
+                var black = new Color(0.10f, 0.10f, 0.11f); var red = new Color(0.70f, 0.12f, 0.10f); var gold = new Color(0.78f, 0.62f, 0.22f);
+                // the locomotive: a black boiler, the red cab behind, a funnel stack, a lamp, big red wheels; the tender behind it
+                BoxF(props, tf, -0.75f, 0.75f, 0.9f, 2.2f, -1.0f, 3.2f, black); BoxF(props, tf, -0.8f, 0.8f, 2.15f, 2.25f, -1.0f, 3.2f, gold);
+                Cyl(props, tf.P(0f, 2.2f, 2.6f), 1.1f, 0.25f, 0.55f, black, 10); Cyl(props, tf.P(0f, 2.2f, 1.2f), 0.45f, 0.3f, 0.3f, gold, 8);
+                BoxF(props, tf, -0.6f, 0.6f, 2.2f, 2.6f, 3.0f, 3.4f, gold);
+                BoxF(props, tf, -1.05f, 1.05f, 0.9f, 3.3f, -3.0f, -1.0f, red); BoxF(props, tf, -1.25f, 1.25f, 3.3f, 3.5f, -3.2f, -0.8f, black);
+                BoxF(props, tf, -0.8f, 0.8f, 0.0f, 0.9f, -3.0f, 3.4f, black);
+                foreach (float u in new[] { -0.85f, 0.85f })
+                    foreach (var (v, r) in new[] { (-2.0f, 0.75f), (0.2f, 0.75f), (2.4f, 0.45f) })
+                        WheelDisc(props, tf.P(u * 1.05f, r, v), tf.R * Mathf.Sign(u), tf.F, r, red);
+                BoxF(props, tf, -1.0f, 1.0f, 0.45f, 2.0f, -6.6f, -3.4f, black); BoxF(props, tf, -1.02f, 1.02f, 1.55f, 1.75f, -6.6f, -3.4f, gold);
+                foreach (float u in new[] { -0.85f, 0.85f }) foreach (float v in new[] { -6.0f, -4.0f }) WheelDisc(props, tf.P(u * 1.05f, 0.45f, v), tf.R * Mathf.Sign(u), tf.F, 0.45f, red);
+                var tg = new GameObject("Marietta play train"); tg.transform.SetParent(root, false); tg.transform.SetPositionAndRotation(tf.P(0f, 1.7f, -1.6f), Quaternion.LookRotation(tf.F, Vector3.up));
+                tg.AddComponent<BoxCollider>().size = new Vector3(2.4f, 3.4f, 10.2f);
+                log.Append("the play train; ");
+            }
+
             // ---------------- benches along the edge walk (facing the walk, on the park side) and lamp posts on its outer side; planters at the corners
             int nb = 0, nl = 0, np = 0;
-            var iron = new Color(0.08f, 0.09f, 0.08f); var glass = new Color(0.98f, 0.92f, 0.70f);
+            var iron = sharedIron; var glass = new Color(0.98f, 0.92f, 0.70f);
             for (int i = 0; i < park.Count; i++)
             {
                 Vector2 a = ringWalk[i], b = ringWalk[i + 1]; float len = (b - a).magnitude; var along = (b - a) / len; var inward = (c - (a + b) * .5f).normalized;
@@ -232,18 +345,64 @@ namespace ChastainRush
                     ncw++;
                 }
             }
+            // Round 77 (photo 02): angled parking both sides round the square (where the street has room; one side where it is narrower), parked cars in
+            // some of the bays, one-way arrows down the lanes
+            int nang = 0, ncars = 0, narrows = 0;
             foreach (var s in square)
             {
                 float len = (s.b - s.a).magnitude; if (len < 14f) continue; var sd = (s.b - s.a) / len; var across = new Vector2(-sd.y, sd.x);
-                foreach (float side in new[] { -1f, 1f })
+                var sides = s.half >= 7f ? new[] { -1f, 1f } : s.half >= 4.5f ? new[] { s.oneway ? 1f : -1f } : new float[0];
+                foreach (float side in sides)
                 {
-                    var edge = across * side * (s.half - 2.3f);
-                    for (float u = 10f; u < len - 10f; u += 6.5f)
+                    for (float u = 10f; u < len - 10f; u += 3.0f)
                     {
-                        var p = s.a + sd * u + edge; if (InPolygon(p, park)) continue;
-                        Mark(p - across * side * 1.1f, p + across * side * 1.1f, 0.12f); npk++;
+                        var curb = s.a + sd * u + across * side * (s.half - 0.15f); if (InPolygon(curb, park)) continue;
+                        var inner = curb - across * side * 4.8f + sd * 2.6f;   // 60 degrees to the curb, leaning the way the traffic goes
+                        Mark(curb, inner, 0.12f); nang++;
+                        var bay = (curb + inner) * .5f + sd * 1.5f;
+                        if (Hash01((int)(bay.x * 7f) ^ (int)(bay.y * 13f), 778) < 0.5f)
+                        {
+                            float by = Ground(t, bay.x, bay.y); var cf = MakeFrame(new Vector3(bay.x, by + 0.02f, bay.y), (curb - inner).normalized, 1f);
+                            ParkedCar(bodies, cf, (int)(bay.x * 31f) ^ (int)(bay.y * 17f)); ncars++;
+                        }
                     }
                 }
+                if (s.oneway)
+                    for (float u = 12f; u < len - 12f; u += 26f)
+                    {
+                        var at = s.a + sd * u; paint.Tint = white;
+                        DrapePoly(paint, new List<Vector2> { at - across * 0.12f, at + sd * 2.4f - across * 0.12f, at + sd * 2.4f + across * 0.12f, at + across * 0.12f }, 1.0f, 0.14f, t);
+                        DrapePoly(paint, new List<Vector2> { at + sd * 2.4f - across * 0.55f, at + sd * 3.6f, at + sd * 2.4f + across * 0.55f }, 1.0f, 0.14f, t);
+                        narrows++;
+                    }
+            }
+            // Round 77 (photo 06): traffic lights on mast arms at the square's corners: a pole on the park's corner, an arm out over each street beside it
+            // with a signal facing the traffic each way along it (they break, as the lamps do)
+            var signals = new Breakables(); int nsig = 0;
+            for (int i = 0; i < park.Count; i++)
+            {
+                var corner = park[i]; var pole = corner + (corner - c).normalized * 1.2f; float py = Ground(t, pole.x, pole.y);
+                var mb = signals.Begin(pole);
+                signals.Piece(() =>
+                {
+                    Post(mb, new Vector3(pole.x, py - 0.1f, pole.y), 7.2f, 0.28f, new Color(0.13f, 0.14f, 0.15f));
+                    foreach (var nb in new[] { park[(i + 1) % park.Count], park[(i + park.Count - 1) % park.Count] })
+                    {
+                        var along = (nb - corner).normalized; var outward = new Vector2(along.y, -along.x); if (Vector2.Dot(outward, corner - c) < 0f) outward = -outward;   // across the street beside that edge
+                        var end = pole + outward * 8f; Beam(mb, new Vector3(pole.x, py + 6.6f, pole.y), new Vector3(end.x, py + 6.4f, end.y), 0.16f, 0.16f, new Color(0.13f, 0.14f, 0.15f));
+                        foreach (float k in new[] { 4.2f, 7.4f })
+                        {
+                            var hp = pole + outward * k; var hf = MakeFrame(new Vector3(hp.x, py + 5.0f, hp.y), along, 1f);
+                            BoxF(mb, hf, -0.18f, 0.18f, 0f, 1.1f, -0.16f, 0.16f, new Color(0.10f, 0.10f, 0.11f));
+                            foreach (float fs in new[] { 1f, -1f })
+                            {
+                                var ff = fs > 0 ? hf : new Frame { O = hf.O, R = -hf.R, F = -hf.F, M = 1f };
+                                FrontQuad(mb, ff, -0.11f, 0.11f, 0.78f, 1.0f, 0.17f, new Color(0.75f, 0.10f, 0.08f)); FrontQuad(mb, ff, -0.11f, 0.11f, 0.44f, 0.66f, 0.17f, new Color(0.45f, 0.38f, 0.08f)); FrontQuad(mb, ff, -0.11f, 0.11f, 0.10f, 0.32f, 0.17f, new Color(0.10f, 0.55f, 0.25f));
+                            }
+                        }
+                    }
+                }, py + 0.2f);
+                signals.End(new Vector3(pole.x, py + 1.5f, pole.y), new Vector3(1f, 0f, 0f), 0.7f, 3f); nsig++;
             }
 
             // ---------------- the railroad: a gravel bed, ties, two rails (off the roads' carriageways: a level crossing shows the rails only)
@@ -311,19 +470,20 @@ namespace ChastainRush
             // the theater: four stories of brick, the marquee over the doors (its name on the front, a lit edge), a name board up the front
             if (d.landmarks.theater >= 0)
             {
-                var wall = new Color(0.56f, 0.27f, 0.20f); float H = Mathf.Max(map.buildings[d.landmarks.theater].height, 14f);
+                var wall = new Color(0.91f, 0.90f, 0.86f); float H = Mathf.Max(map.buildings[d.landmarks.theater].height, 14f);   // Round 77 (photo 06): white art deco
                 Body(d.landmarks.theater, H, wall, new Color(0.30f, 0.30f, 0.31f), out var ring, out float floor);
                 var (a, b, n) = FaceToward(ring, c); var m = (a + b) * .5f; float half = (b - a).magnitude / 2f;
                 var f = MakeFrame(new Vector3(m.x, floor, m.y), n, 1f);
                 FrontQuad(bodies, f, -half * 0.55f, half * 0.55f, 0f, 3.2f, 0.05f, BizGlass);
                 for (float u = -half * 0.55f + 1.4f; u < half * 0.55f; u += 1.4f) FrontQuad(bodies, f, u - 0.04f, u + 0.04f, 0f, 3.2f, 0.07f, BizFrame);
                 float mw = Mathf.Min(half * 1.6f, 13f);
-                BoxF(bodies, f, -mw / 2f, mw / 2f, 3.9f, 5.3f, 0.0f, 3.2f, new Color(0.18f, 0.16f, 0.15f));
+                BoxF(bodies, f, -mw / 2f, mw / 2f, 3.9f, 5.3f, 0.0f, 3.2f, new Color(0.72f, 0.12f, 0.12f));
+                BoxF(bodies, f, -mw / 2f + 0.3f, mw / 2f - 0.3f, 4.0f, 4.55f, 3.2f, 3.26f, new Color(0.10f, 0.42f, 0.24f));   // the green reader board
                 BoxF(bodies, f, -mw / 2f - 0.05f, mw / 2f + 0.05f, 5.3f, 5.42f, 0.0f, 3.25f, new Color(1f, 0.85f, 0.45f));
                 BoxF(bodies, f, -mw / 2f - 0.05f, mw / 2f + 0.05f, 3.78f, 3.9f, 0.0f, 3.25f, new Color(1f, 0.85f, 0.45f));
                 var mf = MakeFrame(f.P(0f, 0f, 3.2f), n, 1f); mf.O = new Vector3(mf.O.x, floor, mf.O.z);
-                SignOn(mf, 0f, 4.6f, Mathf.Min(mw - 0.6f, 9.6f), SignTheater, 0.02f);
-                SignOn(f, 0f, Mathf.Min(H - 2f, 10f), Mathf.Min(half * 1.5f, 10f), SignTheater);
+                SignOn(mf, 0f, 5.9f, Mathf.Min(mw - 2f, 6.4f), SignGrand, 0.02f);   // Round 77: THE GRAND on top of the marquee (photo 06)
+                SignOn(f, 0f, Mathf.Min(H - 2f, 10f), Mathf.Min(half * 1.5f, 10f), SignGrand);
                 UpperWindows(f, half, 6.4f, H - 1.0f, wall);
                 log.Append($"theater {half * 2f:0} m front, {H:0} m tall; ");
             }
@@ -386,14 +546,85 @@ namespace ChastainRush
                     float oh = 1.8f, rise = Mathf.Min(hw, hl) * 0.6f;
                     Vector3 A = f.P(-hl - oh, H, -hw - oh), B = f.P(hl + oh, H, -hw - oh), C = f.P(hl + oh, H, hw + oh), D = f.P(-hl - oh, H, hw + oh);
                     float ru = Mathf.Max(0.3f, hl - hw); Vector3 R0 = f.P(-ru, H + rise, 0f), R1 = f.P(ru, H + rise, 0f);
-                    bodies.Tint = new Color(0.28f, 0.24f, 0.22f); Face(bodies, A, B, R1, R0, Vector3.up); Face(bodies, C, D, R0, R1, Vector3.up); TriFace(bodies, B, C, R1, Vector3.up); TriFace(bodies, D, A, R0, Vector3.up);
+                    bodies.Tint = new Color(0.33f, 0.35f, 0.39f); Face(bodies, A, B, R1, R0, Vector3.up);   // Round 77 (photo 08): slate Face(bodies, C, D, R0, R1, Vector3.up); TriFace(bodies, B, C, R1, Vector3.up); TriFace(bodies, D, A, R0, Vector3.up);
                     bodies.Tint = MariettaTrim; Face(bodies, A, R0, R1, B, Vector3.down); Face(bodies, C, R1, R0, D, Vector3.down); TriFace(bodies, B, R1, C, Vector3.down); TriFace(bodies, D, R0, A, Vector3.down);
                     for (float u = -hl + 1.5f; u <= hl - 1.4f; u += 3f) { FrontQuad(bodies, f, u - 0.55f, u + 0.55f, 0.9f, 2.9f, hw + 0.02f, BizGlass); var bk = f; Beam(bodies, f.P(u, H - 1.0f, hw), f.P(u, H - 0.05f, hw + oh * 0.8f), 0.12f, 0.12f, MariettaTrim); }
                     BoxF(bodies, f, -hl - 4f, hl + 4f, lo - floor - 0.3f, 0.05f, hw, hw + Mathf.Clamp(bestD - hw - 2.2f, 2f, 5f), new Color(0.62f, 0.60f, 0.56f));
                     var sf = new Frame { O = f.O, R = f.R, F = f.F, M = 1f };
-                    SignOn(sf, 0f, H - 0.6f, Mathf.Min(hl * 1.2f, 6.5f), SignDepot, hw + 0.25f);
+                    SignOn(sf, 0f, H - 1.0f, Mathf.Min(hl * 1.2f, 6.5f), SignWelcome, hw + 0.25f);   // Round 77: WELCOME CENTER, green (photo 08)
+                    // the stepped Dutch gables on the trackside (three), chimneys between them
+                    foreach (float gu in new[] { -hl * 0.62f, 0f, hl * 0.62f })
+                        for (int st = 0; st < 5; st++) { float w = 2.4f - st * 0.48f; BoxF(bodies, f, gu - w, gu + w, H - 0.2f + st * 0.62f, H + 0.42f + st * 0.62f, hw - 0.5f, hw + 0.25f, wall); }
+                    foreach (float gu in new[] { -hl * 0.31f, hl * 0.31f }) BoxF(bodies, f, gu - 0.45f, gu + 0.45f, H, H + rise + 1.2f, -0.45f, 0.45f, Shade(wall, 0.9f));
+                    // the black iron fence on the far side of the tracks, along them for 60 m each way (it breaks, as the café tables do)
+                    {
+                        float far = 0f; int nrp = 0;
+                        if (RailPlans != null) foreach (var rp in RailPlans) foreach (var q in rp.p) if ((q - dc).magnitude < 80f) { far = Mathf.Max(far, Vector2.Dot(q - dc, V)); nrp++; }
+                        if (nrp > 0)
+                        {
+                            float off = far + 4.0f;
+                            for (float u = -60f; u < 60f; u += 2.5f)
+                            {
+                                var fp = dc + U * (u + 1.25f) + V * off; float fy = Ground(t, fp.x, fp.y); var ff = MakeFrame(new Vector3(fp.x, fy, fp.y), V, 1f);
+                                if (RailRejectTree(fp.x, fp.y) && (RailTreeNear(fp) < 2.5f)) continue;
+                                var mb = tables.Begin(fp);
+                                tables.Piece(() =>
+                                {
+                                    BoxF(mb, ff, -1.25f, -1.13f, -0.2f, 1.6f, -0.06f, 0.06f, new Color(0.06f, 0.06f, 0.07f));
+                                    BoxF(mb, ff, -1.25f, 1.25f, 1.35f, 1.42f, -0.03f, 0.03f, new Color(0.06f, 0.06f, 0.07f)); BoxF(mb, ff, -1.25f, 1.25f, 0.15f, 0.22f, -0.03f, 0.03f, new Color(0.06f, 0.06f, 0.07f));
+                                    for (float k = -1.0f; k < 1.2f; k += 0.18f) BoxF(mb, ff, k - 0.015f, k + 0.015f, 0.1f, 1.5f, -0.015f, 0.015f, new Color(0.06f, 0.06f, 0.07f));
+                                }, fy + 0.05f);
+                                tables.End(new Vector3(fp.x, fy + 0.8f, fp.y), new Vector3(U.x, 0f, U.y), 2.5f, 1.6f, 0.3f);
+                            }
+                            log.Append($"the iron fence {off:0} m off the depot across the tracks; ");
+                        }
+                    }
                     log.Append($"depot {hl * 2f:0} x {hw * 2f:0} m, its platform toward the tracks; ");
                 }
+            }
+
+            // ---------------- Round 77 (photo 08): the hotel beside the depot: four stories of red brick, a white cornice, MUSEUM OF HISTORY on its trackside
+            if (d.landmarks.hotel >= 0)
+            {
+                var wall = new Color(0.56f, 0.26f, 0.19f); float H = 16f;
+                Body(d.landmarks.hotel, H, wall, new Color(0.34f, 0.34f, 0.35f), out var ring, out float floor);
+                Vector2 toward = d.landmarks.depot >= 0 ? ToPoints(map.buildings[d.landmarks.depot].footprint).Aggregate(Vector2.zero, (q, p) => q + p) / map.buildings[d.landmarks.depot].footprint.Length * 2f : c;
+                foreach (var side in new[] { FaceToward(ring, toward), FaceToward(ring, c) })
+                {
+                    var (a, b, n) = side; var m = (a + b) * .5f; float half = (b - a).magnitude / 2f; var f = MakeFrame(new Vector3(m.x, floor, m.y), n, 1f);
+                    UpperWindows(f, half, 1.0f, H - 1.2f, wall); BoxF(bodies, f, -half - 0.1f, half + 0.1f, H - 0.7f, H, 0f, 0.35f, MariettaTrim);
+                }
+                { var (a, b, n) = FaceToward(ring, toward); var m = (a + b) * .5f; var f = MakeFrame(new Vector3(m.x, floor, m.y), n, 1f); SignOn(f, 0f, H - 2.0f, Mathf.Min((b - a).magnitude * 0.7f, 10f), SignHistory, 0.05f); }
+                log.Append("the hotel; ");
+            }
+            // ---------------- Round 77 (photo 03): the county building with the tall stone clock tower on its corner toward the square, a big round clock
+            if (d.landmarks.clock >= 0)
+            {
+                var wall = new Color(0.52f, 0.25f, 0.20f); float H = 17f; var stoneT = new Color(0.80f, 0.76f, 0.66f);
+                Body(d.landmarks.clock, H, wall, new Color(0.36f, 0.36f, 0.37f), out var ring, out float floor);
+                var (a, b, n) = FaceToward(ring, c); var m = (a + b) * .5f; float half = (b - a).magnitude / 2f; var f = MakeFrame(new Vector3(m.x, floor, m.y), n, 1f);
+                UpperWindows(f, half, 1.0f, H - 1.0f, wall);
+                float tu = Mathf.Max(-half + 4f, Mathf.Min(half - 4f, Vector2.Dot(c - m, new Vector2(f.R.x, f.R.z))));
+                BoxF(bodies, f, tu - 3.5f, tu + 3.5f, -0.5f, H + 7f, -1.0f, 2.5f, stoneT); BoxF(bodies, f, tu - 3.8f, tu + 3.8f, H + 7f, H + 7.8f, -1.3f, 2.8f, Shade(stoneT, 0.9f));
+                FrontQuad(bodies, f, tu - 1.4f, tu + 1.4f, 1.0f, H - 1.5f, 2.55f, BizGlass);
+                ClockFace(bodies, f.P(tu, H + 2.5f, 2.56f), f.F, f.R, 2.6f, new Color(0.15f, 0.16f, 0.17f), new Color(0.82f, 0.68f, 0.30f));
+                var cg = new GameObject("Marietta clock tower"); cg.transform.SetParent(root, false); cg.transform.SetPositionAndRotation(f.P(tu, (H + 7f) / 2f - 0.25f, 0.75f), Quaternion.LookRotation(f.F, Vector3.up)); cg.AddComponent<BoxCollider>().size = new Vector3(7f, H + 7.5f, 3.5f);
+                log.Append("the clock tower; ");
+            }
+            // ---------------- Round 77 (photo 03, behind): the court: red brick, its own brick clock tower with a clock each side and a pointed pale spire
+            if (d.landmarks.courthouse >= 0)
+            {
+                var wall = new Color(0.58f, 0.29f, 0.21f); float H = 16f;
+                Body(d.landmarks.courthouse, H, wall, new Color(0.36f, 0.36f, 0.37f), out var ring, out float floor);
+                var (a, b, n) = FaceToward(ring, c); var m = (a + b) * .5f; float half = (b - a).magnitude / 2f; var f = MakeFrame(new Vector3(m.x, floor, m.y), n, 1f);
+                UpperWindows(f, half, 1.0f, H - 1.0f, wall);
+                var tc = f.P(0f, 0f, -3.5f); var tf = MakeFrame(new Vector3(tc.x, floor, tc.z), new Vector2(f.F.x, f.F.z), 1f);
+                BoxF(bodies, tf, -3f, 3f, H - 0.5f, H + 9f, -3f, 3f, wall); BoxF(bodies, tf, -3.3f, 3.3f, H + 9f, H + 9.6f, -3.3f, 3.3f, MariettaTrim);
+                foreach (var (fr, rr) in new[] { (tf.F, tf.R), (-tf.F, -tf.R), (tf.R, -tf.F), (-tf.R, tf.F) }) ClockFace(bodies, tc + Vector3.up * (H + 6f) + fr * 3.02f, fr, rr, 1.6f, new Color(0.95f, 0.94f, 0.90f), new Color(0.10f, 0.10f, 0.10f));
+                var top = tc + Vector3.up * (H + 9.6f); Vector3 Cn(float u, float v) => top + tf.R * u + tf.F * v;
+                bodies.Tint = new Color(0.86f, 0.82f, 0.72f); var apex = top + Vector3.up * 8f;
+                TriFace(bodies, Cn(-3f, 3f), Cn(3f, 3f), apex, tf.F); TriFace(bodies, Cn(3f, -3f), Cn(-3f, -3f), apex, -tf.F); TriFace(bodies, Cn(3f, 3f), Cn(3f, -3f), apex, tf.R); TriFace(bodies, Cn(-3f, -3f), Cn(-3f, 3f), apex, -tf.R);
+                log.Append("the court's tower; ");
             }
 
             // ---------------- out to the scene
@@ -405,9 +636,27 @@ namespace ChastainRush
             benches.ToObjects("Marietta benches", mats.House, root, 0.4f, BreakSounds.Kind.Wood);
             lamps.ToObjects("Marietta lamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             tables.ToObjects("Marietta cafe tables", mats.House, root, 0.4f, BreakSounds.Kind.Iron);
+            signals.ToObjects("Marietta signals", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             if (signMat != null) signs.ToObjects(root, signMat, "MariettaSigns");
-            Debug.Log($"[Round76] Marietta Square: {log}{nb} benches, {np} planters, {nl} lamp posts, {nw} brick walks, {nt} café tables, {ncw} crosswalks, {npk} parking marks, " +
+            Debug.Log($"[Round76] Marietta Square: {log}{nb} benches, {np} planters, {nl} lamp posts, {nw} brick walks, {nt} café tables, {ncw} crosswalks, {nang} angled parking bays ({ncars} cars parked), {narrows} one-way arrows, {nsig} signal poles, " +
                       $"railroad {railLen:0} m ({nties} ties), {signs.Count} signs");
+        }
+
+        // Round 77 (D): where the children's train stands: in the park's quarter toward its third corner, 60 % of the way out
+        static Vector2 MariettaTrainAt(List<Vector2> park, Vector2 c) => c + (park[2 % park.Count] - c) * .55f;
+        static float RailTreeNear(Vector2 p) { float best = float.MaxValue; if (railTreePts != null) foreach (var q in railTreePts) best = Mathf.Min(best, (q - p).sqrMagnitude); return Mathf.Sqrt(best); }
+        // a disc standing up (a wheel, a clock): its centre, the way it faces, its right, its radius
+        static void WheelDisc(MeshBuilder mb, Vector3 centre, Vector3 facing, Vector3 right, float r, Color col)
+        {
+            var up = Vector3.Cross(facing, right).normalized; if (up.y < 0f) up = -up; var rr = Vector3.Cross(up, facing).normalized;
+            mb.Tint = col; for (int k = 0; k < 16; k++) { float a0 = k * Mathf.PI / 8f, a1 = (k + 1) * Mathf.PI / 8f; TriFace(mb, centre, centre + (rr * Mathf.Cos(a1) + up * Mathf.Sin(a1)) * r, centre + (rr * Mathf.Cos(a0) + up * Mathf.Sin(a0)) * r, facing); }
+        }
+        static void ClockFace(MeshBuilder mb, Vector3 centre, Vector3 facing, Vector3 right, float r, Color face, Color hands)
+        {
+            WheelDisc(mb, centre, facing, right, r * 1.12f, new Color(0.80f, 0.76f, 0.66f)); WheelDisc(mb, centre + facing * 0.02f, facing, right, r, face);
+            var up = Vector3.up; var c2 = centre + facing * 0.04f;
+            Beam(mb, c2, c2 + (up * 0.55f + right * 0.3f).normalized * r * 0.55f, 0.12f, 0.03f, hands, facing); Beam(mb, c2, c2 + (up * 0.9f - right * 0.1f).normalized * r * 0.85f, 0.08f, 0.03f, hands, facing);
+            for (int k = 0; k < 12; k++) { float a = k * Mathf.PI / 6f; var q = c2 + (right * Mathf.Cos(a) + up * Mathf.Sin(a)) * r * 0.85f; Beam(mb, q, q + (right * Mathf.Cos(a) + up * Mathf.Sin(a)) * r * 0.1f, 0.06f, 0.02f, hands, facing); }
         }
 
         // Round 76 (B): an old storefront's upper stories (MapBuilder.Businesses.cs, MariettaHistoric): tall windows with pale surrounds every 2.6 m on the

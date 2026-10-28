@@ -4,7 +4,7 @@ OSM download (raw/osm_ext3.json, mapgen_piece.py) and Data/map.json. Writes Data
   gazebo      the bandstand's footprint (map.json building index and outline)
   historic    the buildings round the square (within HISTORIC_M of the park, not the big civic blocks, decks or apartments): the old two- and
               three-story brick storefronts (MapBuilder.Businesses.cs takes them as shops with a brick front, upper windows and a cornice)
-  landmarks   theater, market, museum, depot: map.json building index each (their own fronts and signs, MapBuilder.MariettaSquare.cs)
+  landmarks   theater, market, museum, depot; Round 77: hotel, courthouse, clock, pavilion: map.json building index each (built by MapBuilder.MariettaSquare.cs)
   churches    places of worship within CHURCH_M of the square (dressed as churches)
   rail        the railroad's lines within RAIL_M of the square (rails on ties, MapBuilder.MariettaSquare.cs)
   place       the fast-travel spot "Marietta Square" (on the street at the park's east side, facing the park)
@@ -20,7 +20,10 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 OUT = os.path.join(ROOT, "Data", "tracks", "marietta_square.json")
 HISTORIC_M, CHURCH_M, RAIL_M = 75.0, 700.0, 650.0
 GLOVER_PARK, GAZEBO = 245388613, 284555404
-LANDMARKS = {"theater": 245388644, "market": 245388640, "museum": 245388643, "depot": 321673366}
+LANDMARKS = {"theater": 245388644, "market": 245388640, "museum": 245388643, "depot": 321673366,
+             # Round 77 (D, Dan's photos): the hotel by the depot (MUSEUM OF HISTORY), the court with its clock tower and spire, the county building with
+             # the tall stone clock tower, Glover Park's pavilion (OSM's small public building in the park)
+             "hotel": 245388703, "courthouse": 243506194, "clock": 243506197, "pavilion": 503662095}
 NOT_HISTORIC = {"public", "civic", "parking", "apartments", "church", "school", "industrial", "roof", "garage", "house", "detached"}
 
 
@@ -68,7 +71,7 @@ def main():
         return ins
     inside = [k for k, c in bc if in_park(c)]
     gz = next((k for k in inside if B[k]["type"] == "gazebo"), index_of(GAZEBO))
-    park_drop = [k for k in inside if k != gz]
+    park_drop = [k for k in inside if k != gz and k != marks.get("pavilion")]
     taken = set(v for v in marks.values() if v is not None) | {gz} | set(park_drop)
     historic = []
     for k, c in bc:
