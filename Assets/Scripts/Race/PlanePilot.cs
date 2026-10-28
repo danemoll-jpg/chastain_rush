@@ -13,17 +13,30 @@ namespace ChastainRush
     //   Mistakes (TODO.md's standing rule "The AI is not perfect"): now and then it lines up a ring a few meters off and misses it (5 s), more often on
     //   Easy; never at a low ring (under a bridge, over the lake) where a miss would put it into the ground.
     //   A crash (a wing into a tree, the ground): the plane's own crash, then the race puts it back in the air before its last ring (RaceController.AirReset).
+    // Round 80 (A, Dan: "the ai planes never make a mistake so if you make a mistake you can't make up for it"): human mistakes by difficulty (Easy
+    //   most, Hard fewest but some), decided once a ring: a ring lined up wide and missed, then (mostly) gone back for (run out, turn, fly back through
+    //   it: rings count either way, then turn again onto the line); a late turn after a ring (it holds its heading a moment and runs wide, which can
+    //   miss the next one); a low ring (under a bridge, in the quarry) taken slow and careful; and now and then a whole lap off its pace. The car AI
+    //   has no catch-up (only its shortcut choice leans on being behind), so neither has this.
+    //   Advise (checks): the pilot works out its controls but does not fly; the check's human-like pilot puts them through the pad with a lag.
     [DefaultExecutionOrder(40)]
     public sealed class PlanePilot : MonoBehaviour
     {
         RaceController race; ArcadeVehicle car; RaceEntrant entrant; PlaneFlight plane;
         int index; float lane; Vector3[] path; float[] cum; float L; int near = -1;
         System.Random rng; int decidedFor = -1; float missSide;
+        // Round 80 (A)
+        public bool Advise; public float aPitch, aBank, aRudder, aThrottle = -1f, aSteer;
+        int lapSeen = -1; float lapPace; bool careful, lateTurn; float lateUntil = -1f; Vector3 lateDir;
+        int backFor = -1; int backPhase; float backSince; RaceGate backRing;
+        public int Wide, Late, Careful, Backs, BacksDone, OffLaps;   // what it did, for the checks
+        public static readonly float[] OffLapChance = { .45f, .3f, .18f }, OffLapSize = { .07f, .05f, .035f };
+        public static readonly float[] LateChance = { .12f, .08f, .05f }, CarefulChance = { .6f, .4f, .25f }, GoBackChance = { .75f, .65f, .55f };
         public float Pace { get; private set; }
         public float LastThrottle => plane ? plane.Throttle : 0f;
         public string Why { get; private set; } = "";
         public static readonly float[] Paces = { .88f, .94f, 1f };
-        public static readonly float[] MissChance = { .10f, .06f, .035f };
+        public static readonly float[] MissChance = { .12f, .08f, .05f };
         public static int ForceMiss = -1;   // checks: the player's pilot misses this ring (its Id) on purpose
 
         public void Initialize(RaceController r, ArcadeVehicle c, RaceEntrant e, int n, float laneOffset)
@@ -35,15 +48,31 @@ namespace ChastainRush
             for (int i = 1; i < path.Length; i++) { var d = path[i] - path[i - 1]; d.y = 0f; cum[i] = cum[i - 1] + d.magnitude; }
             L = cum[cum.Length - 1];
             rng = new System.Random(unchecked(DriverVariation.Seed + n * 7919));
-            if (plane) { plane.Scripted = true; plane.sThrottle = 0f; plane.sPitch = plane.sBank = plane.sRudder = plane.sSteer = plane.sBrake = 0f; }
+            lapPace = Pace;
+            if (plane && !Advise) { plane.Scripted = true; plane.sThrottle = 0f; plane.sPitch = plane.sBank = plane.sRudder = plane.sSteer = plane.sBrake = 0f; }
+        }
+
+        bool Mistakes => !Advise && !entrant.IsPlayer && !entrant.Finished;
+        static int Skill => Mathf.Clamp(RoadDriver.Difficulty, 0, 2);
+        // the controls: the plane's own (flying it) or the advice (a check's human-like pilot)
+        void Set(float pitch, float bank, float rudder, float throttle, float steer = 0f, float brake = 0f)
+        {
+            if (Advise) { aPitch = pitch; aBank = bank; aRudder = rudder; aThrottle = throttle; aSteer = steer; return; }
+            plane.sPitch = pitch; plane.sBank = bank; plane.sRudder = rudder; plane.sThrottle = throttle; plane.sSteer = steer; plane.sBrake = brake;
         }
 
         void FixedUpdate()
         {
             if (!race || !plane || !plane.enabled || race.Route == null) return;
-            if (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Free) { plane.sThrottle = 0f; return; }
-            if (car.Body.isKinematic) { car.Body.isKinematic = false; car.Body.linearVelocity = Vector3.zero; }   // GO
-            if (plane.Crashed) return;
+            if (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Free) { if (!Advise) plane.sThrottle = 0f; else aThrottle = 0f; return; }
+            if (!Advise && car.Body.isKinematic) { car.Body.isKinematic = false; car.Body.linearVelocity = Vector3.zero; }   // GO
+            if (plane.Crashed) { backRing = null; lateUntil = -1f; return; }
+            // Round 80 (A): a lap's pace, drawn as each lap starts (now and then one off the pace)
+            if (entrant.CompletedLaps != lapSeen)
+            {
+                lapSeen = entrant.CompletedLaps; lapPace = Pace;
+                if (Mistakes && rng.NextDouble() < OffLapChance[Skill]) { lapPace = Pace - OffLapSize[Skill] * Mathf.Lerp(.6f, 1f, (float)rng.NextDouble()); OffLaps++; }
+            }
             var pos = car.Body.position;
             if (!plane.Airborne) { Roll(); return; }
             Fly(pos);
@@ -55,16 +84,14 @@ namespace ChastainRush
             var fwd = Quaternion.Euler(0, race.Route.GridYaw, 0) * Vector3.forward; var right = Vector3.Cross(Vector3.up, fwd);
             float off = Vector3.Dot(car.Body.position - race.Route.GridPosition, right) - lane;
             float err = Mathf.DeltaAngle(car.transform.eulerAngles.y, race.Route.GridYaw);
-            plane.sSteer = Mathf.Clamp(err * .08f - off * .03f, -1f, 1f); plane.sBank = plane.sRudder = 0f;
-            plane.sThrottle = 1f; plane.sBrake = 0f;
-            plane.sPitch = plane.Airspeed > PlaneFlight.TakeOffSpeed + 3f ? .9f : 0f;
+            Set(plane.Airspeed > PlaneFlight.TakeOffSpeed + 3f ? .9f : 0f, 0f, 0f, 1f, Mathf.Clamp(err * .08f - off * .03f, -1f, 1f));
             Why = "take-off run";
         }
 
         void Fly(Vector3 pos)
         {
-            plane.sSteer = 0f;
             float v = Mathf.Max(plane.Airspeed, 40f);
+            if (backRing != null && GoBack(pos)) return;
             int i = Nearest(pos); float s = cum[i] + Along(i, pos);
             // how low the line is ahead: under a bridge, over the lake, a shorter look ahead (it holds the line closer)
             float lowAhead = 999f;
@@ -79,24 +106,42 @@ namespace ChastainRush
                 int id = ring.Id + 1000 * entrant.CompletedLaps;
                 if (toRing < 400f && decidedFor != id)
                 {
-                    decidedFor = id; missSide = 0f;
+                    decidedFor = id; missSide = 0f; careful = lateTurn = false; backFor = -1;
                     bool safe = ring.Ring > 0f && ring.Position.y - Ground(ring.Position) > 40f;
-                    if (safe && rng.NextDouble() < MissChance[Mathf.Clamp(RoadDriver.Difficulty, 0, 2)] && !entrant.Finished && !entrant.IsPlayer) missSide = (rng.NextDouble() < .5 ? -1f : 1f) * (ring.Ring + 22f);
+                    bool low = ring.Position.y - Ground(ring.Position) < 25f || lowAhead < 18f;
+                    if (Mistakes)
+                    {
+                        double r = rng.NextDouble();
+                        if (safe && r < MissChance[Skill]) { missSide = (rng.NextDouble() < .5 ? -1f : 1f) * (Mathf.Max(ring.Ring, ring.RingW) + 22f); Wide++; }
+                        else if (safe && r < MissChance[Skill] + LateChance[Skill] && TurnAfter(ring) > 30f) { lateTurn = true; Late++; }
+                        else if (low && rng.NextDouble() < CarefulChance[Skill]) { careful = true; Careful++; }
+                    }
                     if (entrant.IsPlayer && ForceMiss == ring.Id) missSide = Mathf.Max(ring.Ring, ring.RingW) + 30f;
                 }
                 if (missSide != 0f && toRing < 400f && decidedFor == id) target += ring.Right * missSide;
+                // a ring flown past outside it (a wide line-up, a late turn): mostly gone back for, else on (5 s)
+                float past = Vector3.Dot(pos - ring.Position, ring.Forward);
+                if (Mistakes && ring != race.Route.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
+                {
+                    backFor = id;   // decided once
+                    if (rng.NextDouble() < GoBackChance[Skill] && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
+                }
+                // the late turn: past the ring it holds its heading a moment (it runs wide)
+                if (lateTurn && decidedFor == id && past > 0f) { lateUntil = Time.time + (Skill == 0 ? 1.8f : Skill == 1 ? 1.4f : 1.0f) * Mathf.Lerp(.8f, 1.2f, (float)rng.NextDouble()); lateDir = Flat(car.Body.linearVelocity).normalized; lateTurn = false; }
+            }
+            if (lateUntil > 0f)
+            {
+                if (Time.time < lateUntil && lowAhead > 30f) target = new Vector3(pos.x, target.y, pos.z) + lateDir * look;
+                else lateUntil = -1f;
             }
             var d3 = target - pos; var flat = Flat(d3);
             float wantYaw = Mathf.Atan2(flat.x, flat.z) * Mathf.Rad2Deg, yawErr = Mathf.DeltaAngle(plane.YawDeg, wantYaw);
             float bankWant = Mathf.Clamp(yawErr * 2.4f, -68f, 68f);
-            plane.sBank = Mathf.Clamp((bankWant - plane.RollDeg) / 14f, -1f, 1f);
-            plane.sRudder = Mathf.Clamp(yawErr / 9f, -1f, 1f);
             // the pitch: the line's own slope just ahead, and back onto its height (the far point's height would cut over a rim into a dive)
             // toward the line's point half a second ahead (0.35 s low) (the line's crests and dips are rounded for the plane's pitch rate: make_air_route.py); low (under a bridge, over the lake) the point half a second ahead (it comes down to the opening in time)
             float A(float t) { var q = At(s + v * t); return Mathf.Atan2(q.y - pos.y, v * t) * Mathf.Rad2Deg; }
             float pitchWant = Mathf.Clamp(lowAhead < 18f ? A(.35f) : A(.5f), -34f, 33f);
             if (plane.HeightAboveGround < 3f && lowAhead > 10f) pitchWant = Mathf.Max(pitchWant, 12f);   // too near the ground off the low places: up
-            plane.sPitch = Mathf.Clamp((pitchWant - plane.PitchDeg) / 3f, -1f, 1f);
             // the throttle: its pace, eased where the line ahead turns tighter than it can follow at this speed
             float vmax = 999f;
             for (float d = 40f; d <= 420f; d += 40f)
@@ -120,10 +165,59 @@ namespace ChastainRush
                 for (float u = plane.Top; u > 45f; u -= 5f)
                     if (k * u <= .75f * plane.PitchR * Mathf.Lerp(1f, .55f, u / plane.Top) * Mathf.Deg2Rad) { vmax = Mathf.Min(vmax, u + d * .1f); break; }
             }
-            float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, plane.Top, Pace);
+            float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, plane.Top, lapPace);
+            if (careful && ring != null && Flat(ring.Position - pos).magnitude < 450f) paceV = Mathf.Min(paceV, Mathf.Lerp(PlaneFlight.StallSpeed, plane.Top, .55f));   // a low ring, slow and careful
             float wantV = Mathf.Min(paceV, vmax);
-            plane.sThrottle = entrant.Finished ? .7f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, plane.Top, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
-            Why = vmax < paceV ? $"slowing for the turn ({vmax:0} m/s)" : missSide != 0f ? "lining up wide" : "pace";
+            float thr = entrant.Finished ? .7f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, plane.Top, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
+            Set(Mathf.Clamp((pitchWant - plane.PitchDeg) / 3f, -1f, 1f), Mathf.Clamp((bankWant - plane.RollDeg) / 14f, -1f, 1f), Mathf.Clamp(yawErr / 9f, -1f, 1f), thr);
+            Why = vmax < paceV ? $"slowing for the turn ({vmax:0} m/s)" : missSide != 0f ? "lining up wide" : lateUntil > 0f ? "late turn" : careful ? "careful at a low ring" : lapPace < Pace ? "off the pace this lap" : "pace";
+        }
+
+        // how far the line turns over the 300 m after a ring (a late turn there runs wide)
+        float TurnAfter(RaceGate ring)
+        {
+            int keep = near; int i = Nearest(ring.Position); near = keep; float s0 = cum[i] + Along(i, ring.Position);
+            var a = At(s0 + 20f) - At(s0); var b = At(s0 + 300f) - At(s0 + 280f);
+            return Vector3.Angle(Flat(a), Flat(b));
+        }
+        // room to turn round: the ground for 900 m about the ring well under the plane's way
+        static bool HighAround(RaceGate ring, Vector3 pos)
+        {
+            float top = Mathf.Min(ring.Position.y, pos.y);
+            for (float a = 0f; a < 360f; a += 30f)
+                for (float d = 0f; d <= 900f; d += 150f)
+                {
+                    var q = ring.Position + Quaternion.Euler(0f, a, 0f) * Vector3.forward * d;
+                    if (top - Ground(q) < 45f) return false;
+                }
+            return true;
+        }
+        // going back for a missed ring: run out (slowing) to 650 m from it, then turn and fly back through it (either way counts); then on (the
+        // line's own law turns it round again); given up after 45 s
+        bool GoBack(Vector3 pos)
+        {
+            var ring = backRing;
+            if (entrant.Finished || Time.time - backSince > 45f || NextRing() != ring)
+            {
+                if (NextRing() != ring && Time.time - backSince <= 45f) BacksDone++;
+                backRing = null; near = -1; return false;
+            }
+            Vector3 target; float thr;
+            if (backPhase == 0)
+            {
+                target = pos + Flat(car.Body.linearVelocity).normalized * 200f; target.y = Mathf.Max(ring.Position.y, Ground(target) + 60f);
+                thr = .25f; Why = "missed a ring: running out to turn back";
+                if (Flat(ring.Position - pos).magnitude > 650f) backPhase = 1;
+            }
+            else { target = ring.Position; thr = .55f; Why = "going back for the ring"; }
+            var flat = Flat(target - pos);
+            float wantYaw = Mathf.Atan2(flat.x, flat.z) * Mathf.Rad2Deg, yawErr = Mathf.DeltaAngle(plane.YawDeg, wantYaw);
+            float bankWant = Mathf.Clamp(yawErr * 2.4f, -68f, 68f);
+            float pitchWant = Mathf.Clamp(Mathf.Atan2(target.y - pos.y, Mathf.Max(flat.magnitude, 60f)) * Mathf.Rad2Deg, -25f, 25f);
+            if (plane.HeightAboveGround < 25f) pitchWant = Mathf.Max(pitchWant, 12f);
+            if (plane.Airspeed < PlaneFlight.StallSpeed + 8f) thr = 1f;
+            Set(Mathf.Clamp((pitchWant - plane.PitchDeg) / 3f, -1f, 1f), Mathf.Clamp((bankWant - plane.RollDeg) / 14f, -1f, 1f), Mathf.Clamp(yawErr / 9f, -1f, 1f), thr);
+            return true;
         }
 
         RaceGate NextRing()
