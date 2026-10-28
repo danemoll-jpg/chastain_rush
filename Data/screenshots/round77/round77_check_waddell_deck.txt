@@ -1,0 +1,10 @@
+Round 77 check, 2026-10-28 01:38, the exe, 1280 x 720, muted.
+
+=== B. The Green deck (Kennestone, seven levels): from the street up every ramp to the roof and off its far side (the human-like driver, the Street Classic)
+  the deck's ground 368.7 m, its roof about 392.7 m; the car's highest 395.9 m; stopped at 608 of 717 m in 240 s, resets 25 stuck at (1885, -8285) s 563; stuck at (1885, -8287) s 559; stuck at (1885, -8286) s 563; stuck at (1842, -8276) s 606; stuck at (1841, -8281) s 606; stuck at (1842, -8276) s 606; stuck at (1842, -8276) s 607; stuck at (1844, -8276) s 608; stuck at (1847, -8276) s 611; stuck at (1843, -8276) s 607; stuck at (1844, -8276) s 608; stuck at (1844, -8276) s 608; stuck at (1847, -8276) s 611; stuck at (1843, -8276) s 607; stuck at (1844, -8276) s 608; stuck at (1847, -8276) s 611; stuck at (1843, -8276) s 607; stuck at (1844, -8276) s 608; stuck at (1847, -8276) s 611; stuck at (1843, -8276) s 607; stuck at (1844, -8276) s 608; stuck at (1844, -8276) s 608; stuck at (1847, -8276) s 611; stuck at (1843, -8276) s 607; stuck at (1844, -8276) s 608;
+  off the roof's gap: 0.00 s in the air; landed at (1844, 395.4, -8276), upright True
+  trace: 0:0.0 25:7.7 50:7.9 75:7.9 100:7.9 125:7.8 150:7.8 175:6.5 201:7.8 227:7.7 252:7.7 279:7.7 304:7.9 330:7.7 355:7.8 380:7.8 405:7.8 430:7.8 455:7.8 480:7.8 505:7.8 530:7.9 555:7.7 580:7.8 631:7.9
+PASS  deck: driven to the roof (within 1.5 m of its height)  -  27.2 of 24.0 m
+FAIL  deck: off the roof's far side, a real jump (over 1.5 s in the air)  -  0.00 s
+
+1 of 2 checks passed.

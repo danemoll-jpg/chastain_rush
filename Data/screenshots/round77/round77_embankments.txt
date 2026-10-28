@@ -1,0 +1,6 @@
+Round 77 (A): the ground round the Canton Road Connector and its ramps graded as embankments (MapBuilder.Round77.cs)
+195 road pieces (98 chains, 31325 m), 1866 held profile points; the profile moved at most 2.50 m from the ground; 62 windows; 3794443 terrain samples changed (cut up to 18.8 m, filled up to 10.0 m); the membrane: up to 1500 sweeps, last change 0.6 mm
+cells steeper than 45 degrees within 45 m of a carriageway: 15998 -> 2217
+BUG-001 (2292.44, -5006.93): the steepest ground within 30 m 85 -> 83 degrees
+BUG-002 (1694.78, -5783.19): the steepest ground within 30 m 76 -> 71 degrees
+BUG-003 (1618.42, -6110.74): the steepest ground within 30 m 83 -> 82 degrees

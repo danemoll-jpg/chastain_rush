@@ -162,6 +162,25 @@ Check: item 0; A before / after at Dan's three spots and the scan's list; B pict
 deck driven to the roof; C the line followed end to end on the map and in pictures (each bridge, each crossing, the square).
 For Dan to check: the connector; Kennestone (skybridge, entrance, ER, helipad) and its deck; Marietta Square to the photos; the railroad.
 
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 01:26), checked in the exe from the player's camera, not yet driven by Dan.** Evidence `Data/screenshots/round77/`.
+Photos used for B and D (reference only). Two full builds: build 1's checks found the faults fixed in build 2.
+A DONE (one item open). Cause: lidar spikes and a jagged trench where the Express Lanes deck runs through the connector's embankment (BUG-001), a lidar mound between the
+carriageways with steep raw banks (BUG-002 / 003). `R77Embankments`: each carriageway's profile smoothed, the ground within 45 m relaxed as a membrane between the roads and the
+natural ground. Cells over 45 degrees within reach: 15,998 -> 2,217. Pictures `77_BUG-00[123]_after`: no spikes, the median and banks smooth, the road even. The connector driven
+flat out by the human-like driver: 1,314 m at 30 m/s, no reset, one 0.56 s hop near BUG-003's deck end. Stage 3 scan (`road_faces.py`): 114 face spots -> 45 after adding its
+roads to the pass (`stage3_faces_before/after.txt`); left: unnamed service drives and the new rail bridge's abutments. Bumps listed, not fixed (`stage3_bumps.txt`: 23 steps
+>= 10 cm, 53 humps >= 30 cm outside the highways). OPEN: BUG-003's "stray white block" on the left is still there; I could not identify the object.
+B DONE except the deck jump. BUG-005's building is OSM's skybridge over Church Street (three floors starting one up), not a parking deck: built as the skybridge of photo 02
+(`77_BUG-005_after`). Kennestone from OSM's building parts (47 tower blocks up to 38 m), the portico at the drop-off loop, the ER with its canopy and EMERGENCY, ambulances,
+the terraced wall, the red roof helipad. Every OSM parking deck (19, all were dressed as stores) is now a deck with ramps. Driven: the Waddell Street deck to its roof (27 m up,
+no reset). Not shown: the roof jump (the scripted driver ended against the roof wall; two attempts, tuning limit). The Green deck's far end runs into the physicians' building.
+C DONE. `make_railroad.py`: 10 running lines, 36.8 km edge to edge, 23 level crossings with gates and lights, 13 rail bridges over roads; BUG-006's South Marietta Parkway
+crossing is a rail bridge (`77_C_underpass_South_Marietta_Parkway_*`). BUG-007's building gives way (`77_BUG-007_after`). Steepest rail grade 11.7 %, a short rise at the I-75 bridge.
+No freight train.
+D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each photo's place. Fountain, bell, train and pavilion solid; signals, fence and play wall break.
+Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
+For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes

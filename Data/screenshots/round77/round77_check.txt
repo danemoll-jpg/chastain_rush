@@ -1,0 +1,116 @@
+Round 77 check, 2026-10-28 01:27, the exe, 1280 x 720, muted.
+
+=== Dan's seven reports, from his exact position and heading (the chase camera, as he saw it)
+  BUG-001 (beside the connector where it meets the highway: torn spikes of ground both sides): at (2292.4, 384.5, -5006.9) heading 66; ahead: BridgeStructure; picture 77_BUG-001_after.png
+    the ground within 40 m: 317 one-meter steps steeper than 45 degrees; the steepest 83 degrees at (2329, -5017)
+  BUG-002 (on the connector: steep banks and mounds crowding the ramps): at (1694.8, 405.6, -5783.2) heading 352; ahead: nothing; picture 77_BUG-002_after.png
+    the ground within 40 m: 48 one-meter steps steeper than 45 degrees; the steepest 74 degrees at (1709, -5765)
+  BUG-003 (on the connector: a split with a mound between, the road dipping, a stray white block): at (1618.4, 418.3, -6110.7) heading 29; ahead: BridgeStructure; picture 77_BUG-003_after.png
+    the ground within 40 m: 197 one-meter steps steeper than 45 degrees; the steepest 82 degrees at (1611, -6100)
+  BUG-004 (by the hospital: plain tan boxes): at (1608.8, 413.4, -6601.4) heading 279; ahead: trunk, Kennestone buildings; picture 77_BUG-004_after.png
+  BUG-005 (Church Street NW: a building dressed as stores over the street): at (1665.1, 399.7, -6716.6) heading 151; ahead: Kennestone buildings, Kennestone skybridge tower; picture 77_BUG-005_after.png
+  BUG-006 (the tracks laid flat across South Marietta Parkway): at (1853.6, 374.9, -9077.3) heading 347; ahead: Railroad bridge_7_-36; picture 77_BUG-006_after.png
+  BUG-007 (two tracks ending in a building's wall): at (1620.1, 375.4, -8260.0) heading 357; ahead: nothing; picture 77_BUG-007_after.png
+
+=== A. The Canton Road Connector driven from BUG-003 to BUG-001 by the human-like driver (Drifter Twin, flat out up to 30 m/s)
+  1314 m: reached the end in 46.8 s, top 30 m/s, longest in the air 0.56 s, most roll on the ground 12.9 deg at (1624, -6089), resets 0
+  trace (station:speed, a = in the air): 0:0.0 25:23.5 50:28.2a 76:29.5 101:30.3 126:30.1 151:30.3 177:30.2 202:30.1 227:30.1 253:30.2 278:29.8 303:28.9 328:29.8 353:29.1 379:29.1 404:29.0 429:29.1 454:29.9 480:28.9 505:28.0 530:28.9 555:29.0 580:28.9 606:28.7 631:27.2 656:28.6 682:29.5 707:29.2 733:29.4 758:29.8 784:29.3 809:29.0 834:29.1 859:29.3 884:29.7 910:29.2 935:29.1 960:29.6 986:29.3 1012:29.1d3 1037:29.1 1062:29.4 1087:29.3 1113:29.3 1138:29.6 1163:29.2 1188:29.0 1214:29.6 1239:29.3 1265:29.3 1290:29.6
+FAIL  conn: the connector drives as a road (to the end, no reset, no spell in the air over 0.5 s)  -  air 0.56 s, resets 0
+
+=== B. Kennestone hospital from the street (the chase camera)
+  77_B_photo03_entrance: at (1662, -6664) heading 262; ahead: Kennestone buildings
+  77_B_photo02_skybridge: at (1685, -6815) heading 350; ahead: nothing
+  77_B_ER_bay: at (1662, -6712) heading 80; ahead: Kennestone buildings
+  77_B_side_north: at (1560, -6470) heading 180; ahead: nothing
+  77_B_side_east: at (1700, -6640) heading 250; ahead: trunk
+  77_B_side_south: at (1540, -6975) heading 10; ahead: Kennestone buildings, House 10986
+  77_B_side_west: at (1385, -6700) heading 90; ahead: Kennestone buildings, trunk
+  77_B_photo05_er_helipad: at (1800, -6800) heading 300; ahead: nothing
+  skybridges: 2, the lowest underside 5.4 m over the road under it
+PASS  hosp: the skybridges stand (solid) with at least 4.5 m under them  -  2, 5.4 m
+  driven up Church Street under the skybridge: 244 m in 9 s
+PASS  hosp: Church Street drives under the skybridge  -  244 m
+
+=== B. The Green deck (Kennestone, seven levels): from the street up every ramp to the roof and off its far side (the human-like driver, the Street Classic)
+  the deck's ground 392.9 m, its roof about 416.9 m; the car's highest 404.3 m; stopped at 121 of 763 m in 240 s, resets 39 stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1596, -6874) s 127; stuck at (1595, -6874) s 127; stuck at (1595, -6874) s 127;
+  off the roof's gap: 0.00 s in the air; landed at (1595, 403.8, -6874), upright True
+  trace: 0:0.0 25:5.8a 50:7.7 75:7.8 103:7.8
+FAIL  deck: driven to the roof (within 1.5 m of its height)  -  11.4 of 24.0 m
+FAIL  deck: off the roof's far side, a real jump (over 1.5 s in the air)  -  0.00 s
+
+=== C. The railroad: each bridge from its approach, each end, level crossings, the underpasses
+  rail_bridge_l0_338 (66 m): at (1851, -9060) heading 334; ahead: Railroad bridge_7_-36
+  rail_bridge_l0_925 (68 m): at (1614, -7975) heading 332; ahead: BridgeStructure, Railroad bridge_6_-31
+  rail_bridge_l0_1806 (34 m): at (910, -6552) heading 25; ahead: Railroad bridge_3_-26
+  rail_start_l0: at (2152, -9590) heading 340; ahead: nothing
+  rail_end_l0: at (1001, -6138) heading 180; ahead: nothing
+  rail_start_l1: at (3983, -2146) heading 231; ahead: Map edge wall
+  rail_end_l1: at (3983, -2755) heading 345; ahead: Map edge wall
+  rail_bridge_l2_1050 (22 m): at (2798, -5191) heading 239; ahead: nothing
+  rail_bridge_l2_1575 (14 m): at (1955, -5775) heading 224; ahead: Railroad bridge_7_-23
+  rail_start_l2: at (3982, -3591) heading 206; ahead: Closure, Map edge wall
+  rail_end_l2: at (1021, -6170) heading 2; ahead: nothing
+  rail_bridge_l3_2906 (234 m): at (-3588, -5227) heading 322; ahead: Railroad bridge_-15_-21
+  rail_start_l3: at (1001, -6138) heading 0; ahead: nothing
+  rail_end_l3: at (-4403, 1917) heading 157; ahead: trunk
+  rail_start_l4: at (3367, -4489) heading 21; ahead: nothing
+  rail_end_l4: at (3789, -3842) heading 226; ahead: nothing
+  rail_start_l5: at (3384, -4457) heading 35; ahead: nothing
+  rail_end_l5: at (3540, -4165) heading 200; ahead: nothing
+  rail_bridge_l6_334 (62 m): at (1847, -9062) heading 334; ahead: Railroad bridge_7_-36
+  rail_bridge_l6_920 (52 m): at (1607, -7969) heading 333; ahead: BridgeStructure
+  rail_bridge_l6_1791 (62 m): at (905, -6552) heading 24; ahead: Railroad bridge_3_-26
+  rail_start_l6: at (2147, -9589) heading 340; ahead: Closure
+  rail_end_l6: at (1001, -6138) heading 184; ahead: nothing
+  rail_bridge_l7_457 (30 m): at (915, -6552) heading 25; ahead: Railroad bridge_3_-26
+  rail_start_l7: at (1072, -7314) heading 318; ahead: nothing
+  rail_end_l7: at (673, -5564) heading 141; ahead: nothing
+  rail_start_l8: at (-4097, -1349) heading 346; ahead: nothing
+  rail_end_l8: at (-4113, -1287) heading 166; ahead: nothing
+  rail_start_l9: at (-3997, -4703) heading 322; ahead: nothing
+  rail_end_l9: at (-4398, 1917) heading 158; ahead: nothing
+  crossing_South_Marietta_Parkway_Southwes: at (1823, -9050) heading 75; ahead: nothing
+  crossing_Waverly_Way_Southeast: at (1684, -8763) heading 71; ahead: BusinessBodies_13_-69
+  crossing_Powder_Springs_Street_Southwest: at (1717, -8734) heading 222; ahead: trunk
+  crossing_Whitlock_Avenue_Southwest: at (1605, -8522) heading 89; ahead: nothing
+  crossing_Mill_Street_Northwest: at (1603, -8410) heading 89; ahead: nothing
+  crossing_Polk_Street_Northwest: at (1645, -8179) heading 274; ahead: nothing
+  crossing_Kennesaw_Avenue_Northwest: at (1629, -7947) heading 254; ahead: BridgeStructure
+  crossing_Tower_Road_Northwest: at (945, -6525) heading 271; ahead: nothing
+  underpass_South_Marietta_Parkway_Southwe: at (1800, -9055) heading 75; ahead: nothing
+  underpass_: at (2729, -5283) heading 323; ahead: Railroad bridge_10_-21
+  underpass_Larry_McDonald_Memorial_Highwa: at (2712, -5291) heading 319; ahead: nothing
+  underpass_Ernest_West_Barrett_Parkway: at (-3628, -5249) heading 52; ahead: nothing
+  underpass_North_Marietta_Parkway: at (1625, -7885) heading 221; ahead: Railroad bridge_6_-31
+  the scene: 114 track pieces, 8 bridge pieces
+PASS  rail: the railroad is in the scene with its bridges  -  114, 8
+
+=== C. The map screen over the line
+  map whole zoom 1: picture 77_C_map_whole.png
+  map marietta zoom 6: picture 77_C_map_marietta.png
+  map north zoom 3: picture 77_C_map_north.png
+
+=== D. Marietta Square from the place of each of Dan's photos (the chase camera)
+  77_D_photo04_pavilion: at (1766, -8462) heading 359; ahead: Marietta landmarks
+  77_D_photo05_bell: at (1774, -8462) heading 73; ahead: Marietta liberty bell, trunk
+  77_D_photo07_train: at (1774, -8472) heading 133; ahead: Marietta play train, trunk
+  77_D_photo09_fountain: at (1766, -8481) heading 0; ahead: Marietta fountain column, Marietta landmarks
+  77_D_photo06_theater: at (1786, -8423) heading 26; ahead: trunk, BusinessBodies_13_-66, Marietta landmarks
+  77_D_photo03_clock_tower: at (1833, -8403) heading 48; ahead: Marietta clock tower, Marietta landmarks
+  77_D_photo08_depot: at (1590, -8444) heading 90; ahead: BusinessBodies_12_-66, Marietta landmarks
+  77_D_hotel: at (1608, -8485) heading 90; ahead: Marietta landmarks
+  77_D_courthouse: at (1804, -8458) heading 80; ahead: Marietta landmarks
+  77_D_square_side0: at (1765, -8417) heading 359; ahead: BusinessBodies_13_-66
+  77_D_square_side1: at (1814, -8464) heading 89; ahead: Marietta landmarks
+  77_D_square_side2: at (1766, -8512) heading 179; ahead: BusinessBodies_13_-67, BusinessBodies_13_-68
+  77_D_square_side3: at (1717, -8465) heading 269; ahead: Marietta landmarks, BusinessBodies_13_-67
+  Marietta fountain rim: 20 colliders
+PASS  square: Marietta fountain rim is solid  -  20
+  Marietta liberty bell: 1 colliders
+PASS  square: Marietta liberty bell is solid  -  1
+  Marietta play train: 1 colliders
+PASS  square: Marietta play train is solid  -  1
+  Marietta pavilion: 1 colliders
+PASS  square: Marietta pavilion is solid  -  1
+
+7 of 10 checks passed.
