@@ -6696,3 +6696,97 @@ B3 PARTLY. The six junctions Round 64's jolt table still threw a car at, blurred
 B4 NOT FIXED. The Drifter Twin flat out drops 39.5 -> 28.2 m/s in 0.3 s right at J2's lip, its body pressed into the kicker's top (impulse about 3900). Try 1 (the ground not pushing on an upright body over the kicker, as Elaine's climb): no change, taken out. Stopped at one try; the cause needs a closer trace.
 Builds: two full Build Maps (the jumps' first build showed the ground over the kickers; the second after a quick build fixed it, as the round's last) and code-only exes for the event; `Builds/ChastainRush/` 2026-10-26 10:12. Imported from Racer: nothing.
 For Dan: (a) the speed check: is a 7 mph window fun or too fiddly (it can be widened, the landing decks lengthened); (b) the bleachers and gantries' look; (c) B2's two Canton Road closures and B4.
+
+## Round 73 (moved from TODO.md on 2026-10-27 when Dan reviewed Round 76; word for word)
+
+## Previous delivery 3: Round 73
+**Reviewed: Dan played the Round 73 build 2026-10-27 02:23 to 03:06; his notes are Round 74.**
+**Round 73, PUT RIGHT WHAT DAN FOUND, AND CHECK IT THE WAY HE PLAYS (Dan, 2026-10-26 19:04; reports BUG-001 to BUG-006 of session `2026-10-26_18-37-35-665_130b58`,
+read by Claude, after the Round 70 to 72 build).** Dan: "that's a lot of work for a bunch of junk. Really not happy with anything I tested.
+The closest thing to being good is the big ramp off of kennesaw ... It was all like the code was like I did something, here you go and didn't
+even verify that any of it worked. Which is really frustrating because I wasn't even home and it had plenty of time to work things out."
+Quick builds while working; ONE full Build Map at the end. Short results. No new features this round.
+0. A NEW STANDING RULE (copy into CLAUDE.md "Process", in these words): CHECK IT AS DAN PLAYS IT. Scripted perfect lines are not enough.
+   (1) Every report of Dan's: a picture from his exact position and heading, before and after, that Code LOOKS AT and describes in the
+       status; a report is closed only when the after picture shows the thing gone. Re-read every earlier report on the same ground too.
+   (2) Every feature: play it from where a player starts (the title, race setup, Free Roam's spawn or fast travel, a road nearby), with the
+       normal controls through the game's input (a human-like driver / pilot: reaction lag, imperfect lines, a missed gate, a crash and a
+       reset), and pictures from the player's camera along the way that Code looks at: can a first-time player see where to go? does it
+       look right (no blocks, nothing buried, nothing floating, nothing across the road)? List what a first-time player sees and where it
+       went wrong.
+   (3) The status says, per item, what was looked at and what it showed. "Checked by script" alone is not done.
+A. KENNESAW MOUNTAIN.
+A1. BARRIERS ACROSS THE COURSE. BUG-001 (x -866.04 z -5208.17 h 56, before the start line): "This was reported. Why is it still here?";
+   BUG-002 (x -1084.27 z -5837.29 h 49, the drive, CP5 next): "this too! How was this missed? There were two literal barriers in the middle
+   of the track. They were reported as bugs but ignored and not fixed". Both pictures: a red-and-white race barrier straight across the
+   road the race drives on. (Claude's fault in part: in Round 70 Claude misread Dan's 2026-10-25 BUG-001 as the start gantry and BUG-003
+   "again" as hydrants; both were these barriers.) Remove every barrier standing on the course's own line, here and on EVERY course in both
+   directions (check each course's line for any closure, barricade or solid object across it; a picture at each).
+A2. THE DRIVE AT THE SUMMIT. BUG-003 (x -933.27 z -5721.73 h 141, Kennesaw Mountain Drive by the summit lot, J1's lip): "this road also
+   looks like it wasn't fixed. I mean its changed but the road will be inoperable in free roam. It needs to be fixed" (the picture: the drive
+   cut into the jump's hump at the lot's edge, the road broken). The drive must be a whole, normal, drivable road in Free Roam (traffic, a
+   car driving up to the summit at normal speed, both ways); the race's jump keeps its flight but must not wreck the road: e.g. the jump on
+   its own line beside / off the drive, joining it smoothly. Pictures driving the drive both ways in Free Roam at Dan's spot.
+A3. THE BIG RAMP AT THE TOP. Dan: "The closest thing to being good is the big ramp off of kennesaw, but why is it not even at the highest
+   point of the mountain." Move it to the summit itself (the mountain's highest ground), with a run-up across the top (cut / graded as
+   needed), launching off the mountain where the fall is longest. Dan, 19:11: "for the ramp on the top of the mountain I would prefer it to
+   be more realistic. It doesn't have to be some huge structure just a jump off of something that could naturally be there that jumps and
+   clears the mountain will be fine": NO steel trestle; the launch is something that belongs on the summit (a rock ledge / outcrop, the edge
+   of the overlook, a cut bank at the end of the summit path), the ground itself shaped; a flight longer than Round 70's; a way back to the roads below; fast
+   travel to the run-up. Verified as rule 0 (from fast travel, flat out, a short one, a reset).
+B. THE QUARRY AIR RACE: REDESIGN THE COURSE AND ITS GUIDANCE. Dan: "the plane race, is just not laid out well at all. The first ring is down in
+   the quarry nearly right beside the take off point. It is impossible to get there without lining up the plane but the plane should have
+   already been going in the right direction to set that up. And if you missed a checkpoint, it is impossible to tell which is next, also I
+   circled back to a cp that I missed (because it is too unforgiving) and you only get credit if you are going in the direction of the game.
+   Also, after I got through the first 3 or 4, I had no idea where the next gate even was there was an arrow but it was only pointing up or
+   down, turning the plane around I couldn't find it at all. I just quit the race. Really poorly designed".
+   (1) FLOW: after take-off the first ring lies well ahead on the runway's heading, high enough to climb to; every ring is placed so that
+       flying through it already points you at the next (heading change between rings small for their spacing; a hard turn only with room
+       to make it); the quarry dive comes once you are set up for it, not straight after take-off.
+   (2) FINDING THE NEXT RING, always: a 3D arrow / chevron pointing at the next ring in full direction (left, right, up, down, behind), a
+       tall beacon on it seen from anywhere, the ring after it shown dimmer, its distance; the minimap shows the next rings. After a miss:
+       a clear "RING MISSED" and the arrow at once on the next one.
+   (3) FORGIVING: rings bigger (tight ones only where the place demands it, e.g. under a bridge, and still makeable); a ring counts flown
+       through either way; a missed ring may be gone back for (then no penalty), or skipped (the usual penalty when you take the next).
+   (4) Verified as rule 0 with a human-like pilot: take-off, every ring in order, a missed ring found again, getting lost and finding the
+       way by the arrow; cockpit pictures at each ring showing the next one visible or the arrow pointing at it.
+C. THE QUARRY JUMPS.
+C1. BUG-004 (x -2024.24 z -1350.35, the bleachers): "whats going on here? Are these supposed to be people? Why are they just blocks?" Use the
+   game's real people (the models the neighborhood's people use), seated, varied; no blocks.
+C2. BUG-005 (x -2423.25 z -1323.20, the far bleachers / the rim): "why even put people in here if you can't make it even make it remotely
+   correct? People are literally buried". Every spectator on their seat or standing on the ground, none in it.
+C3. BUG-006 (x -2398.76 z -1359.36, down in the pit under a ramp's steel trestle): "stuck here. reset button does nothing. But it looks like
+   this is buried in the ground anyway. Truly don't even understand how to get to the ramps in general". (1) No way to drive in under a
+   trestle or get wedged anywhere round the ramps (solid skirts, the ground right). (2) RESET MUST ALWAYS WORK, anywhere in Free Roam
+   (here it did nothing): find why and fix it for the whole map. (3) GETTING THERE: a clear way from the roads to each run-up (a drive /
+   track from the airport's roads, signs saying QUARRY JUMPS at the turn-offs, the start marked: drive into a lit start box to begin),
+   and fast travel to each start. Verified as rule 0: from fast travel and from Free Roam's roads, a first-time player finds each start.
+C4. THE RAMPS THEMSELVES. Dan, 19:11: "honestly you said code could jump those ramps, I have no idea how they did as nothing lined up and the
+   ramp was buried in the hillside". Rebuild each jump so run-up, kicker and landing deck lie on one straight line that a player can see
+   from the start box; the kicker stands clear of the hillside (nothing of the slope over or in front of it); the landing deck in plain view
+   across the water. Verified as rule 0: pictures from the start box (the whole line visible), from the run-up at speed, from the lip, and
+   of the landing; flown flat out by the human-like driver, not the script that already knew the line.
+C5. A QUARRY TRACK. Dan, 19:11: "I think for the quarry, it has to be some sort of track. We can have those ramps in free roam but having a
+   track will make it easier to at least discover the first time. Problem is its too big of an area to search for them." Make a race course
+   (in race setup, forward; a reverse only if it plays well) round Viking Quarry that takes in the jumps (at least The Corner and The Long One,
+   The Big One if the line allows), the rim and the haul roads down to the water's edge: checkpoints lead you to each ramp's run-up in
+   line with it, so racing it shows a first-time player where every jump is. Built like the other courses (AI that takes the jumps, records,
+   ghosts, replays, loading inset, map). The ramps stay in Free Roam as well (the scored events), now easy to find from the track and the
+   signs.
+Check: rule 0 for every item; the pictures listed above; one AI race per car course (all finish, no barrier on any line).
+For Dan to check: Kennesaw Mountain race (no barriers), the drive in Free Roam, the summit jump; the Quarry Air Race; the quarry track and
+jumps (the crowd, the ramps' lines, getting there, getting stuck, reset).
+
+**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 00:42), checked in the exe through the game's own input (a human-like driver / pilot on a virtual controller), not yet driven by Dan.** Evidence `Data/screenshots/round73/` (`round73_check_final.txt` 26 of 36, `round71_aline_final.txt`, `round73_check_qtrack.txt`, `73_*.png`). Dan's "before" pictures are his own (the bug session).
+0 DONE. The rule is in CLAUDE.md "Process"; every item below was looked at in pictures from the player's camera.
+A1 DONE. `73_BUG-001_after` / `_002_after`: Dan's spots, the road clear (BUG-001 shows the start gantry 41 m ahead, BUG-002 an empty drive). Every car course both ways swept on its line with the race's barriers up: none on any line; the Underground's switch gate SG1 stands on its line by design (it opens for the race). `RaceBarriers` now never builds a closure on the line.
+A2 DONE. J1 leaves on its own bench 28 m off the drive. `73_BUG-003_after`: the drive whole, its lines unbroken. Free Roam, Street Classic and Drifter Twin, up and down: no air, no reset, about 37 s each way (`73_kdrive_*`). The check's 8 degree roll limit tripped at the lower hairpin (-1185, -5937), 12.5 degrees: the road's own camber, not touched (for Dan).
+A3 PARTLY (tuning limit). The summit leap: run-up graded across the true summit, the overlook's rock edge as the lip (no steel), a track back to North Saint Marys Lane, fast travel to the run-up, reset after landing works (`73_leap_*`). The flight is SHORTER than Round 70's, not longer: Drifter 6.9 s / 188 m (R70 8.6 / 341), Street Classic 6.1 / 145 (8.4 / 296), Needle 7.9 / 228 (8.9 / 358); the summit has no long straight, so lip speed is 28 to 34 m/s. Options: keep it; or put the lip at the summit and bring Round 70's longer run-up line onto it.
+B PARTLY. Course redrawn (`make_air_route.py`): first ring 1.7 km on the runway's heading at 55 m, then the high ring, the I-75 pair, quarry rim / lake / climb, south, "The turn", home; rings 32 to 56 m (the under-I-75 frame 20 x 6.8 m), counted either way; RING MISSED and the guide on at once; a 3D chevron arrow, beacon pillars, the next-after ring amber, distance and up / down on the HUD, the minimap's next rings (`73_air_ring_*`). The scripted line flies a clean lap (3 of 3). The human-like pilot flying by the arrow alone did NOT finish (two attempts, stopped): it passed the high ring 26 m wide, then would not dive under its own 55 m safety floor to the I-75 rings, so going back for a missed ring is not proven by a pilot.
+C1 DONE. Seated people of the neighborhood's kind, varied, some waving (`73_crowd_*`, `73_BUG-004_after`).
+C2 DONE. All nine stands on level pads (ground across each +0.0 m), no one in the ground; the stand at BUG-005 is off the rim (`73_BUG-005_after`).
+C3 DONE. Reset (Y) in Free Roam works anywhere: never back onto a stuck spot (safe history, nearest road, start). At BUG-006: moved 598 m, upright; wedged at each kicker: moved, upright. Decks skirted to the ground. The quarry jumps drive from the QUARRY JUMPS sign past each lit start box, driven end to end (58 s); fast travel to each start (`73_qroad_*`).
+C4 PARTLY. One straight line per jump: smooth run-up lane, kicker clear of the slope, landing deck over the bank face. Held by eye in the speed window: 6 of 7 clean (J1 / J2 / J3 Street Classic, J1 / J2 Drifter, J2 Needle); J3 Drifter at 104 mph (in its window) ROUGH; J1 flat out (98 mph, the window's top) ROUGH. From the start boxes the landings are partly hidden by the airfield's crest (`73_qJ*_from_the_box`).
+C5 NOT DONE. Built and tried, then taken out: the haul road crosses the lane so a racer skipped The Corner's loop, and the AI and the human-like driver got stuck there (56 resets). `make_quarry_track.py` kept, not built (output in `local/round73/quarry_track_unbuilt/`). Options for Dan: a course on the jumps drive and haul roads with the crossing closed, or checkpoints at the three start boxes only.
+Not run: the AI race on every car course (only the barrier sweep). Imported from Racer: nothing.
+For Dan to check: Kennesaw race start and CP5 drive; the drive in Free Roam both ways; the summit leap (is shorter OK?); the Air Race with the arrow; the quarry jumps by fast travel and from the sign; J3 on a bike; the crowd; reset anywhere.

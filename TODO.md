@@ -108,6 +108,73 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 77, THE RAILROAD, KENNESTONE HOSPITAL AND ITS PARKING DECK, THE CANTON ROAD CONNECTOR (Dan, 2026-10-27 21:19; reports BUG-001 to
+BUG-007 of session `2026-10-27_21-09-31-163_2b90af`, read by Claude, after the Round 76 build). Dan may add photos of the hospital and Marietta Square to
+`local/reference_photos/kennestone/` and `local/reference_photos/marietta_square/`: use them if they are there when you reach B (reference
+only, never textures, never traced); if not, work from OSM's footprints and heights and what is known, and say so.** Round 76 is reviewed.
+Item 0 (CHECK IT AS DAN PLAYS IT) and the end-of-round clean-up apply. Quick builds; ONE full Build Map at the end. Short results.
+A. THE CANTON ROAD CONNECTOR. BUG-001 (x 2292.44 z -5006.93 h 66, beside the connector where it meets the highway): "fix" (the picture:
+   torn, jagged spikes of ground and rock standing up both sides of the roads, black faces). BUG-002 (x 1694.78 z -5783.19 h 352, on the
+   connector): "fix this too" (steep green banks and odd mounds crowding the ramps). BUG-003 (x 1618.42 z -6110.74 h 29, on the connector):
+   "need to fix here as well" (a split with a mound between, the road dipping, a stray white block on the left). Smooth the ground round
+   the connector and its ramps into proper graded embankments (no spikes, no black faces, no stray objects), the roads even. Then scan the
+   whole of stage 3's new roads and interchanges for the same (jolt and face scans as Rounds 61 / 75) and fix what it finds; list it.
+B. KENNESTONE HOSPITAL. BUG-004 (x 1608.76 z -6601.44 h 279, by the hospital): "lets make the hospital resemble the hospital. Do I need to
+   provide pics?" (the picture: plain tan boxes). Wellstar Kennestone Regional Medical Center as itself (as Town Center, Round 60): its
+   towers at their real heights from OSM, the main entrance with its canopy and drop-off, the emergency department's entrance and ambulance
+   bay, glass and brick as the photos show, the rooftop helipad kept (Round 63), signs (generic: HOSPITAL, EMERGENCY; no brand logo),
+   ambulances parked, people. BUG-005 (x 1665.13 z -6716.61 h 151, Church Street NW by the hospital): "pretty sure that maybe this is the
+   parking deck. So not businesses" (the picture: a building dressed as stores with business signs, three dark openings at street level).
+   Make it a parking deck: open levels with low walls and columns, ramps between levels, cars parked, entrances / exits at the street.
+   Drivable inside to the roof (fun: a roof to jump off, the game's rules); check OSM for other parking garages (parking=multi-storey)
+   dressed as businesses anywhere on the map and make them decks too.
+C. THE RAILROAD. BUG-006 (x 1853.58 z -9077.33 h 347, Atlanta Street SE): "this should be a rail bridge" (the picture: the tracks laid flat
+   across the road). BUG-007 (x 1620.14 z -8259.97 h 357, downtown Marietta): "rail line shouldn't run into the building. The rail should be
+   quite significant I know it runs by canton road (but maybe off this may not sure) still shouldn't stop right here" (the picture: two
+   tracks ending in a building's wall). The CSX main line through Marietta (OSM railway=rail): one continuous line (or the real double
+   track) through the whole map from edge to edge as OSM has it, on its own graded bed (ballast, ties, rails), never through a building
+   (if OSM's building footprint sits on the line, the building gives way), with bridges where it crosses over roads (OSM's bridge=yes /
+   layer) and level crossings with gates and lights where it really crosses at grade; the old depot by the square (Round 76) beside it.
+   The line ends only at the map's edge (Round 66's scenery carries it on). Optional if cheap: a freight train now and then.
+B+. DAN'S HOSPITAL PHOTOS (2026-10-27 21:55, `local/reference_photos/kennestone/`, reference only): 01 an aerial of the campus with the glass
+   SKYBRIDGE arching over the road (white steel X-truss on an arch, a round emblem in the middle: use a plain round emblem) between
+   tan-brick buildings; 02 the skybridge from the road; 03 the main tower's entrance at dusk: a tall white portico with columns and a glass
+   canopy over a curved brick-paved drop-off, red-brick and white towers of 6 to 8 stories behind with bands of windows, an older tall
+   brown-brick tower beside; 04 and 05 the EMERGENCY building: tan / beige with darker brick piers, a white canopy with angled struts over the
+   ambulance drive, the word EMERGENCY over it, a red-and-white HELIPAD on its roof (the helicopter pad of Round 63 goes there if it is
+   not already), a curving drive on a terraced retaining wall with shrubs, the older white tower behind. Build these: the skybridge over
+   the street (drivable under it, solid), the portico entrance, the ER with its canopy and roof pad, the terraced drive. The sign on the
+   main entrance may read KENNESTONE HOSPITAL (the place's own name, as the game names streets); no company logo.
+D. MARIETTA SQUARE TO DAN'S PHOTOS (Round 76 B was built without them; 2026-10-27 21:55, `local/reference_photos/marietta_square/`, reference
+   only): 02 the top-down shows the layout: Glover Park a square block with brick paths in a cross and diagonals meeting at a round FOUNTAIN
+   (09: a tall tiered cast-iron fountain in a low round brick basin), big shade trees, grass panels, a small green-roofed GAZEBO, and the
+   streets round it with ANGLED PARKING on both sides and one-way arrows; 01 an aerial of the park full of people on the lawns; 04 the
+   park's PAVILION / bandstand (a cream two-story pavilion with columns on a brick base, steps); 05 a LIBERTY BELL replica on a granite
+   plinth with a bronze plaque, black benches round it, brick paving; 07 the children's play area with a W&A RR toy steam locomotive and
+   tender kids climb on, behind a low brick wall; 06 the square's storefronts: two- and three-story fronts, an art-deco white THEATER with a
+   red / green marquee (fake name, e.g. "THE GRAND"), colored shopfronts with awnings, traffic lights on mast arms; 03 a red-brick office
+   building with a tall stone CLOCK TOWER (big round clock) and, behind, the brick courthouse tower with a clock and a pointed spire;
+   08 the DEPOT (a one-story brick station with stepped Dutch gables and a slate roof, "WELCOME CENTER" on a green sign) beside the double
+   track behind a black iron fence, and the four-story brick hotel next to it ("MUSEUM OF HISTORY" lettering: keep generic). Rebuild the
+   square and its edges to these; walkable lawns and paths drivable (breakables: benches, lamp posts, café tables; the fountain, bell,
+   locomotive and pavilion solid). Pictures next to each photo from the same view.
+Check: item 0; A before / after at Dan's three spots and the scan's list; B pictures of the hospital's sides, the entrance, the ER, the
+deck driven to the roof; C the line followed end to end on the map and in pictures (each bridge, each crossing, the square).
+For Dan to check: the connector; Kennestone (skybridge, entrance, ER, helipad) and its deck; Marietta Square to the photos; the railroad.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 76
+**Reviewed: Dan drove the new land 2026-10-27 21:09; his notes are Round 77.**
 **Round 76, MARIETTA SQUARE: ONE MORE SMALL PIECE OF MAP; the Kennesaw cut faces; disk clean-up (Dan, 2026-10-27 16:09, with a Google map of downtown
 Marietta: `local/reference_photos/extension/marietta_square_area.png`, reference only, never traced).** Round 75 is reviewed. Item 0 (CHECK IT AS
 DAN PLAYS IT) applies. Quick builds while working; ONE full Build Map at the end. Short results.
@@ -178,18 +245,7 @@ For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square
 Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
 that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 75
+## Previous delivery 2: Round 75
 **Reviewed: Dan tested it 2026-10-27 ("I don't have much feedback on the things I tested"); the quarry jumps not yet seen.**
 **Round 75, STREET AND AIR RACES IN RACE SETUP (THE GARAGE THAT FOLLOWS), THE MAP SHOWS WHAT IS BUILT, STREET NAMES, CLOUDS BACK, a drop-off
 (Dan, 2026-10-27 12:04; report BUG-001 of session `2026-10-27_11-27-43-992_53ef4c`, read by Claude, after the Round 74 build).** Round 74 is reviewed. Item 0
@@ -237,7 +293,7 @@ B clouds DONE. Round 74's rise is undone; within 260 m of the camera a cloud bre
 C DONE at Dan's spot, PARTLY elsewhere (tuning limit). Cause: the summit leap's run-out ended in a 56 m-wide shelf 3.8 m above the start of its track (the grade's open end). Now the run-out eases 46 m down and narrows to the track's width, and the track starts at the run-out's height (`75_BUG-001_after`, `_from_the_track`: a smooth slope; steepest within 40 m 1.25 m in 1 m, at (-1239, -6372)). The banks are sized from the ground at their own edge, held 2 m off every road and trail, and stop at the middle between two legs of the race line. The catch's side faces went from 9 m to 3 to 6 m. Still there: faces of 5 to 11 m beside the Kennesaw race's lines, where two legs at different heights pass about 40 m apart and where the banks are held off the drive (`bank_scan_after.txt`: 66 spots; before: 67). Fixing those means the build blending between two lines' heights (GradeAlong takes the nearest line's), which touches every graded line: Dan to decide.
 For Dan to check: race setup Street / Air and the garage both ways, the Sky Dart in an air race; the map at Town Center, the pools and the stunt park, street names zoomed in, the minimap's street; the clouds at the summit leap; the slope at his spot; whether to take on the faces beside the Kennesaw race's lines.
 
-## Previous delivery 2: Round 74
+## Previous delivery 3: Round 74
 **Reviewed: Dan checked everything but the quarry 2026-10-27 11:27 to 12:04: "The only thing is that the garage is still kind of broken" (Round 75 A); the fork barriers no complaint. The quarry not yet seen.**
 **Round 74, THE PLANE'S GARAGE AND LOOKS, CONTROLS SHOWN FOR THE DEVICE IN USE, STEADY ARROWS; the quarry jumps' lanes, a turn-off on
 Kennesaw, the summit leap's lip (Dan, 2026-10-27 03:06; reports BUG-002 to BUG-005 of session `2026-10-27_02-23-23-098_3e251a` (BUG-001 was sent by mistake),
@@ -320,98 +376,6 @@ G PARTLY (tuning limit). `ai_table.txt`: Hard's best lap against Dan's: within 4
 I DONE / PARTLY. The Highway Air Race (`make_highway_air_route.py`, 19 km, 16 rings): up I-75 under Chastain Road's bridge (8.8 m to its deck as built), over the Skip Spann Connector (its deck on the ground), down I-575 under Chastain Road NW's, the interchange, home. In the exe (`round71_check_highway_final.txt`): nothing solid on the line, a clean lap by script 2:54 (every ring, no crash), both AI pilots on Hard finish (2:37 and 2:59 laps), no crash. Rings along the interstates added after the human-like pilot, flying by the arrow, cut across the hills into the bridge's bank; a third crash before one ring now puts the plane past it. The human-like pilot check itself still does not finish (it aims 90 m beside ring 3 by design: here into the trees by I-75), not proof of a finish by hand.
 J DONE. The airport's runways, taxiways and aprons as concrete with runway markings, parking lots as asphalt (`74_map_airport`); the Mall's own lots (built by the map build) still grass on the map.
 For Dan to check: the planes (both, the garage, the pilot through the glass, a replay); the highway air race; the summit leap on the Drifter Twin; the quarry from the boxes and the LANDING boards; the AI on Hard on Kennesaw and Lakes; the map with the pad and the keys.
-
-## Previous delivery 3: Round 73
-**Reviewed: Dan played the Round 73 build 2026-10-27 02:23 to 03:06; his notes are Round 74.**
-**Round 73, PUT RIGHT WHAT DAN FOUND, AND CHECK IT THE WAY HE PLAYS (Dan, 2026-10-26 19:04; reports BUG-001 to BUG-006 of session `2026-10-26_18-37-35-665_130b58`,
-read by Claude, after the Round 70 to 72 build).** Dan: "that's a lot of work for a bunch of junk. Really not happy with anything I tested.
-The closest thing to being good is the big ramp off of kennesaw ... It was all like the code was like I did something, here you go and didn't
-even verify that any of it worked. Which is really frustrating because I wasn't even home and it had plenty of time to work things out."
-Quick builds while working; ONE full Build Map at the end. Short results. No new features this round.
-0. A NEW STANDING RULE (copy into CLAUDE.md "Process", in these words): CHECK IT AS DAN PLAYS IT. Scripted perfect lines are not enough.
-   (1) Every report of Dan's: a picture from his exact position and heading, before and after, that Code LOOKS AT and describes in the
-       status; a report is closed only when the after picture shows the thing gone. Re-read every earlier report on the same ground too.
-   (2) Every feature: play it from where a player starts (the title, race setup, Free Roam's spawn or fast travel, a road nearby), with the
-       normal controls through the game's input (a human-like driver / pilot: reaction lag, imperfect lines, a missed gate, a crash and a
-       reset), and pictures from the player's camera along the way that Code looks at: can a first-time player see where to go? does it
-       look right (no blocks, nothing buried, nothing floating, nothing across the road)? List what a first-time player sees and where it
-       went wrong.
-   (3) The status says, per item, what was looked at and what it showed. "Checked by script" alone is not done.
-A. KENNESAW MOUNTAIN.
-A1. BARRIERS ACROSS THE COURSE. BUG-001 (x -866.04 z -5208.17 h 56, before the start line): "This was reported. Why is it still here?";
-   BUG-002 (x -1084.27 z -5837.29 h 49, the drive, CP5 next): "this too! How was this missed? There were two literal barriers in the middle
-   of the track. They were reported as bugs but ignored and not fixed". Both pictures: a red-and-white race barrier straight across the
-   road the race drives on. (Claude's fault in part: in Round 70 Claude misread Dan's 2026-10-25 BUG-001 as the start gantry and BUG-003
-   "again" as hydrants; both were these barriers.) Remove every barrier standing on the course's own line, here and on EVERY course in both
-   directions (check each course's line for any closure, barricade or solid object across it; a picture at each).
-A2. THE DRIVE AT THE SUMMIT. BUG-003 (x -933.27 z -5721.73 h 141, Kennesaw Mountain Drive by the summit lot, J1's lip): "this road also
-   looks like it wasn't fixed. I mean its changed but the road will be inoperable in free roam. It needs to be fixed" (the picture: the drive
-   cut into the jump's hump at the lot's edge, the road broken). The drive must be a whole, normal, drivable road in Free Roam (traffic, a
-   car driving up to the summit at normal speed, both ways); the race's jump keeps its flight but must not wreck the road: e.g. the jump on
-   its own line beside / off the drive, joining it smoothly. Pictures driving the drive both ways in Free Roam at Dan's spot.
-A3. THE BIG RAMP AT THE TOP. Dan: "The closest thing to being good is the big ramp off of kennesaw, but why is it not even at the highest
-   point of the mountain." Move it to the summit itself (the mountain's highest ground), with a run-up across the top (cut / graded as
-   needed), launching off the mountain where the fall is longest. Dan, 19:11: "for the ramp on the top of the mountain I would prefer it to
-   be more realistic. It doesn't have to be some huge structure just a jump off of something that could naturally be there that jumps and
-   clears the mountain will be fine": NO steel trestle; the launch is something that belongs on the summit (a rock ledge / outcrop, the edge
-   of the overlook, a cut bank at the end of the summit path), the ground itself shaped; a flight longer than Round 70's; a way back to the roads below; fast
-   travel to the run-up. Verified as rule 0 (from fast travel, flat out, a short one, a reset).
-B. THE QUARRY AIR RACE: REDESIGN THE COURSE AND ITS GUIDANCE. Dan: "the plane race, is just not laid out well at all. The first ring is down in
-   the quarry nearly right beside the take off point. It is impossible to get there without lining up the plane but the plane should have
-   already been going in the right direction to set that up. And if you missed a checkpoint, it is impossible to tell which is next, also I
-   circled back to a cp that I missed (because it is too unforgiving) and you only get credit if you are going in the direction of the game.
-   Also, after I got through the first 3 or 4, I had no idea where the next gate even was there was an arrow but it was only pointing up or
-   down, turning the plane around I couldn't find it at all. I just quit the race. Really poorly designed".
-   (1) FLOW: after take-off the first ring lies well ahead on the runway's heading, high enough to climb to; every ring is placed so that
-       flying through it already points you at the next (heading change between rings small for their spacing; a hard turn only with room
-       to make it); the quarry dive comes once you are set up for it, not straight after take-off.
-   (2) FINDING THE NEXT RING, always: a 3D arrow / chevron pointing at the next ring in full direction (left, right, up, down, behind), a
-       tall beacon on it seen from anywhere, the ring after it shown dimmer, its distance; the minimap shows the next rings. After a miss:
-       a clear "RING MISSED" and the arrow at once on the next one.
-   (3) FORGIVING: rings bigger (tight ones only where the place demands it, e.g. under a bridge, and still makeable); a ring counts flown
-       through either way; a missed ring may be gone back for (then no penalty), or skipped (the usual penalty when you take the next).
-   (4) Verified as rule 0 with a human-like pilot: take-off, every ring in order, a missed ring found again, getting lost and finding the
-       way by the arrow; cockpit pictures at each ring showing the next one visible or the arrow pointing at it.
-C. THE QUARRY JUMPS.
-C1. BUG-004 (x -2024.24 z -1350.35, the bleachers): "whats going on here? Are these supposed to be people? Why are they just blocks?" Use the
-   game's real people (the models the neighborhood's people use), seated, varied; no blocks.
-C2. BUG-005 (x -2423.25 z -1323.20, the far bleachers / the rim): "why even put people in here if you can't make it even make it remotely
-   correct? People are literally buried". Every spectator on their seat or standing on the ground, none in it.
-C3. BUG-006 (x -2398.76 z -1359.36, down in the pit under a ramp's steel trestle): "stuck here. reset button does nothing. But it looks like
-   this is buried in the ground anyway. Truly don't even understand how to get to the ramps in general". (1) No way to drive in under a
-   trestle or get wedged anywhere round the ramps (solid skirts, the ground right). (2) RESET MUST ALWAYS WORK, anywhere in Free Roam
-   (here it did nothing): find why and fix it for the whole map. (3) GETTING THERE: a clear way from the roads to each run-up (a drive /
-   track from the airport's roads, signs saying QUARRY JUMPS at the turn-offs, the start marked: drive into a lit start box to begin),
-   and fast travel to each start. Verified as rule 0: from fast travel and from Free Roam's roads, a first-time player finds each start.
-C4. THE RAMPS THEMSELVES. Dan, 19:11: "honestly you said code could jump those ramps, I have no idea how they did as nothing lined up and the
-   ramp was buried in the hillside". Rebuild each jump so run-up, kicker and landing deck lie on one straight line that a player can see
-   from the start box; the kicker stands clear of the hillside (nothing of the slope over or in front of it); the landing deck in plain view
-   across the water. Verified as rule 0: pictures from the start box (the whole line visible), from the run-up at speed, from the lip, and
-   of the landing; flown flat out by the human-like driver, not the script that already knew the line.
-C5. A QUARRY TRACK. Dan, 19:11: "I think for the quarry, it has to be some sort of track. We can have those ramps in free roam but having a
-   track will make it easier to at least discover the first time. Problem is its too big of an area to search for them." Make a race course
-   (in race setup, forward; a reverse only if it plays well) round Viking Quarry that takes in the jumps (at least The Corner and The Long One,
-   The Big One if the line allows), the rim and the haul roads down to the water's edge: checkpoints lead you to each ramp's run-up in
-   line with it, so racing it shows a first-time player where every jump is. Built like the other courses (AI that takes the jumps, records,
-   ghosts, replays, loading inset, map). The ramps stay in Free Roam as well (the scored events), now easy to find from the track and the
-   signs.
-Check: rule 0 for every item; the pictures listed above; one AI race per car course (all finish, no barrier on any line).
-For Dan to check: Kennesaw Mountain race (no barriers), the drive in Free Roam, the summit jump; the Quarry Air Race; the quarry track and
-jumps (the crowd, the ramps' lines, getting there, getting stuck, reset).
-
-**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 00:42), checked in the exe through the game's own input (a human-like driver / pilot on a virtual controller), not yet driven by Dan.** Evidence `Data/screenshots/round73/` (`round73_check_final.txt` 26 of 36, `round71_aline_final.txt`, `round73_check_qtrack.txt`, `73_*.png`). Dan's "before" pictures are his own (the bug session).
-0 DONE. The rule is in CLAUDE.md "Process"; every item below was looked at in pictures from the player's camera.
-A1 DONE. `73_BUG-001_after` / `_002_after`: Dan's spots, the road clear (BUG-001 shows the start gantry 41 m ahead, BUG-002 an empty drive). Every car course both ways swept on its line with the race's barriers up: none on any line; the Underground's switch gate SG1 stands on its line by design (it opens for the race). `RaceBarriers` now never builds a closure on the line.
-A2 DONE. J1 leaves on its own bench 28 m off the drive. `73_BUG-003_after`: the drive whole, its lines unbroken. Free Roam, Street Classic and Drifter Twin, up and down: no air, no reset, about 37 s each way (`73_kdrive_*`). The check's 8 degree roll limit tripped at the lower hairpin (-1185, -5937), 12.5 degrees: the road's own camber, not touched (for Dan).
-A3 PARTLY (tuning limit). The summit leap: run-up graded across the true summit, the overlook's rock edge as the lip (no steel), a track back to North Saint Marys Lane, fast travel to the run-up, reset after landing works (`73_leap_*`). The flight is SHORTER than Round 70's, not longer: Drifter 6.9 s / 188 m (R70 8.6 / 341), Street Classic 6.1 / 145 (8.4 / 296), Needle 7.9 / 228 (8.9 / 358); the summit has no long straight, so lip speed is 28 to 34 m/s. Options: keep it; or put the lip at the summit and bring Round 70's longer run-up line onto it.
-B PARTLY. Course redrawn (`make_air_route.py`): first ring 1.7 km on the runway's heading at 55 m, then the high ring, the I-75 pair, quarry rim / lake / climb, south, "The turn", home; rings 32 to 56 m (the under-I-75 frame 20 x 6.8 m), counted either way; RING MISSED and the guide on at once; a 3D chevron arrow, beacon pillars, the next-after ring amber, distance and up / down on the HUD, the minimap's next rings (`73_air_ring_*`). The scripted line flies a clean lap (3 of 3). The human-like pilot flying by the arrow alone did NOT finish (two attempts, stopped): it passed the high ring 26 m wide, then would not dive under its own 55 m safety floor to the I-75 rings, so going back for a missed ring is not proven by a pilot.
-C1 DONE. Seated people of the neighborhood's kind, varied, some waving (`73_crowd_*`, `73_BUG-004_after`).
-C2 DONE. All nine stands on level pads (ground across each +0.0 m), no one in the ground; the stand at BUG-005 is off the rim (`73_BUG-005_after`).
-C3 DONE. Reset (Y) in Free Roam works anywhere: never back onto a stuck spot (safe history, nearest road, start). At BUG-006: moved 598 m, upright; wedged at each kicker: moved, upright. Decks skirted to the ground. The quarry jumps drive from the QUARRY JUMPS sign past each lit start box, driven end to end (58 s); fast travel to each start (`73_qroad_*`).
-C4 PARTLY. One straight line per jump: smooth run-up lane, kicker clear of the slope, landing deck over the bank face. Held by eye in the speed window: 6 of 7 clean (J1 / J2 / J3 Street Classic, J1 / J2 Drifter, J2 Needle); J3 Drifter at 104 mph (in its window) ROUGH; J1 flat out (98 mph, the window's top) ROUGH. From the start boxes the landings are partly hidden by the airfield's crest (`73_qJ*_from_the_box`).
-C5 NOT DONE. Built and tried, then taken out: the haul road crosses the lane so a racer skipped The Corner's loop, and the AI and the human-like driver got stuck there (56 resets). `make_quarry_track.py` kept, not built (output in `local/round73/quarry_track_unbuilt/`). Options for Dan: a course on the jumps drive and haul roads with the crossing closed, or checkpoints at the three start boxes only.
-Not run: the AI race on every car course (only the barrier sweep). Imported from Racer: nothing.
-For Dan to check: Kennesaw race start and CP5 drive; the drive in Free Roam both ways; the summit leap (is shorter OK?); the Air Race with the arrow; the quarry jumps by fast travel and from the sign; J3 on a bike; the crowd; reset anywhere.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
