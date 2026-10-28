@@ -22,11 +22,24 @@ namespace ChastainRush
         [Serializable] class RailLineJ { public float[] points; public int[] bridge; }
         [Serializable] class RailCrossJ { public int line, i, road; public float x, z, road_heading, width; public string name; public string @class; }
         [Serializable] class RailJ { public RailLineJ[] lines; public RailCrossJ[] crossings, overpasses; public int[] drop; }
-        sealed class RailPlan { public List<Vector2> p; public float[] y; public bool[] deck, roadDeck, cross; }
+        sealed class RailPlan { public List<Vector2> p; public float[] y; public bool[] deck, roadDeck, cross; public int src; }   // Round 78: src, its index in railroad.json
         static List<RailPlan> RailPlans; static readonly HashSet<int> railDrop = new HashSet<int>();
-        static List<(Vector2 at, Vector2 road, float half, float y)> RailCrossings;
+        static List<(Vector2 at, Vector2 road, float half, float y, int line)> RailCrossings;   // Round 78: line, the line it is on
         static CellIndex railTreeIdx; static List<Vector2> railTreePts;
         const float RailSmooth = 50f, RailLift = 2.5f, RailClear = 5.2f, RailDeck = 1.5f, RailTreeKeep = 5f;
+        // Round 78 (D, Dan's BUG-001 x 918.88 z -6512.37 Tower Road NW: "fix the underpass": the road dropped into a narrow trench with sheer walls;
+        // BUG-002 x 646.70 z -5541.05 Old 41 Highway NW: "fix the overpass": the road waved up to a deck that barely cleared the rail bed).
+        // Under a rail bridge the span reaches past the road and its shoulders far enough for the banks to slope up to the deck's ends (RailBankRun
+        // across per metre up), the road dipped on its own untouched profile (the bed's banks no longer counted in it) and its cut graded with banks
+        // that slope out by the cut's depth. Under a road bridge (map.json bridges) the line runs at least RailUnder below the deck, its profile capped
+        // there and eased back at RailCapGrade so the cut is gentle and the road's approaches stay as they were.
+        const float RailBankRun = 2.2f, RailShoulder = 2.5f, RailUnder = 7.7f, RailCapGrade = .03f;
+        // Round 78 (C, the air tour: "under a rail bridge"): the South Marietta Parkway bridge (BUG-006's) is the planes' underpass: 9 m clear, its bed lifted up
+        // to 5 m (the rest the road's dip)
+        static readonly Vector2 RailAirAt = new Vector2(1841.6f, -9044.5f);
+        static float RailClearAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 9f : RailClear;
+        static float RailLiftAt(Vector2 p) => (p - RailAirAt).magnitude < 20f ? 5f : RailLift;
+        static float RailUnderSpan(float width, float sin) => Mathf.Min(48f, (width * .5f + RailShoulder + RailBankRun * (RailClear + RailDeck)) / sin);
         static readonly HashSet<string> RailOverClasses = new HashSet<string> { "motorway", "motorway_link", "trunk", "trunk_link" };
         static bool RailOwns(int i) => railDrop.Contains(i);
         static bool RailRejectTree(float x, float z)
@@ -38,7 +51,7 @@ namespace ChastainRush
 
         static void PlanRailroad(MapData map, TerrainGrid t)
         {
-            RailPlans = null; railDrop.Clear(); RailCrossings = new List<(Vector2, Vector2, float, float)>(); railTreeIdx = null;
+            RailPlans = null; railDrop.Clear(); RailCrossings = new List<(Vector2, Vector2, float, float, int)>(); railTreeIdx = null;
             var path = Path.Combine(ProjectRoot, "Data/tracks/railroad.json"); if (!File.Exists(path)) return;
             var d = JsonUtility.FromJson<RailJ>(File.ReadAllText(path)); if (d?.lines == null) return;
             if (d.drop != null) foreach (int i in d.drop) if (i >= 0 && i < map.buildings.Length && !MariettaOwns(i)) railDrop.Add(i);
@@ -46,7 +59,8 @@ namespace ChastainRush
             var over = (d.overpasses ?? new RailCrossJ[0]).Concat((d.crossings ?? new RailCrossJ[0]).Where(c => RailOverClasses.Contains(c.@class))).ToList();
             RailPlans = new List<RailPlan>(); var log = new List<string>();
             var dips = new List<(int road, Vector2 at, float dip)>();
-            float steepest = 0f; int graded = 0; Vector2 steepAt = Vector2.zero; int nCross = 0, nGradeSep = 0, nForced = 0;
+            float steepest = 0f; int graded = 0; Vector2 steepAt = Vector2.zero; int nCross = 0, nGradeSep = 0, nForced = 0, nUnder = 0;
+            var bedGrades = new List<RidgeGrade>();   // Round 78 (D): every line planned on the untouched ground first, then graded
             // (Round 77 build 1: a second track beside the first got its own profile and sat lower on the first one's bank: a line within 7 m of one
             // already planned takes that one's heights there)
             var doneIdx = new CellIndex(16f); var donePts = new List<(Vector2 p, float y)>(); var nearTmp = new List<int>();
@@ -61,12 +75,12 @@ namespace ChastainRush
                 {
                     var rd = new Vector2(Mathf.Sin(o.road_heading * Mathf.Deg2Rad), Mathf.Cos(o.road_heading * Mathf.Deg2Rad));
                     var ld = (p[Mathf.Min(o.i + 1, n - 1)] - p[o.i]).normalized; float sin = Mathf.Max(.35f, Mathf.Abs(ld.x * rd.y - ld.y * rd.x));
-                    float span = Mathf.Min(40f, (o.width * .5f + 3f) / sin), s0 = cum[o.i] + (new Vector2(o.x, o.z) - p[o.i]).magnitude;
+                    float span = RailUnderSpan(o.width, sin), s0 = cum[o.i] + (new Vector2(o.x, o.z) - p[o.i]).magnitude;
                     for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - s0) <= span) { deck[i] = true; roadDeck[i] = true; }
                 }
                 // the profile: the ground smoothed along (decks barely count), held at each level crossing at the road's own height
-                var raw = new float[n]; var w = new float[n];
-                for (int i = 0; i < n; i++) { raw[i] = t.Height(p[i].x, p[i].y); w[i] = deck[i] ? .01f : 1f; }
+                var raw = new float[n]; var w = new float[n]; var ground = new float[n];
+                for (int i = 0; i < n; i++) { raw[i] = ground[i] = t.Height(p[i].x, p[i].y); w[i] = deck[i] ? .01f : 1f; }
                 for (int i = 0; i < n; i++)
                 {
                     float bd = 49f; float by = 0f; bool got = false;
@@ -75,24 +89,33 @@ namespace ChastainRush
                 }
                 float mu = (RailSmooth / 2f) * (RailSmooth / 2f);   // (points 2 m apart)
                 var free = R77Smooth1D(raw, w, mu);   // the profile without the crossings: a crossing whose road is far off it is not at grade
+                // Round 78 (D): under each road bridge the line at least RailUnder below its deck, eased back along at RailCapGrade
+                foreach (var (k, capY, bname) in RailRoadOver(map, p))
+                {
+                    if (free[k] <= capY) continue;
+                    if (free[k] >= capY + RailUnder - 1f) continue;   // the line at or over the deck's level: it crosses over that road (the Express Lanes' long deck by I-575)
+                    for (int i = 0; i < n; i++) { float c = capY + RailCapGrade * Mathf.Abs(cum[i] - cum[k]); if (raw[i] > c) { raw[i] = c; w[i] = Mathf.Max(w[i], i == k ? 1e6f : 30f); } }
+                    nUnder++; log.Add($"lowered {free[k] - capY:0.0} m under {bname} at ({p[k].x:0}, {p[k].y:0})");
+                }
+                free = R77Smooth1D(raw, w, mu);
                 foreach (var c in cross.Where(c => c.line == li))
                 {
                     int k = Mathf.Clamp(c.i + ((new Vector2(c.x, c.z) - p[c.i]).magnitude > 1f ? 1 : 0), 0, n - 1);
-                    float roadY = t.Height(c.x, c.z), off = roadY - free[k];
+                    float roadY = t.Height(c.x, c.z), off = roadY - free[k];   // (the ground untouched: Round 78 grades after planning)
                     if (off < -2.5f && !deck[k])
                     {
                         // the road well below the line: a bridge over it (as OSM's bridges)
                         over.Add(c); nGradeSep++;
                         var rd0 = new Vector2(Mathf.Sin(c.road_heading * Mathf.Deg2Rad), Mathf.Cos(c.road_heading * Mathf.Deg2Rad));
                         var ld0 = (p[Mathf.Min(c.i + 1, n - 1)] - p[c.i]).normalized; float sin0 = Mathf.Max(.35f, Mathf.Abs(ld0.x * rd0.y - ld0.y * rd0.x));
-                        float span0 = Mathf.Min(40f, (c.width * .5f + 3f) / sin0);
+                        float span0 = RailUnderSpan(c.width, sin0);
                         for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - cum[k]) <= span0) { deck[i] = true; roadDeck[i] = true; w[i] = .01f; }
                         continue;
                     }
                     if (off > 2.5f) nForced++;
                     raw[k] = roadY; w[k] = 1e6f; isCross[k] = true; nCross++;
                     var rd = new Vector2(Mathf.Sin(c.road_heading * Mathf.Deg2Rad), Mathf.Cos(c.road_heading * Mathf.Deg2Rad));
-                    RailCrossings.Add((new Vector2(c.x, c.z), rd, c.width * .5f, raw[k]));
+                    RailCrossings.Add((new Vector2(c.x, c.z), rd, c.width * .5f, raw[k], RailPlans.Count));
                     for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - cum[k]) < c.width * .5f + 1.5f) isCross[i] = true;
                 }
                 var y = R77Smooth1D(raw, w, mu);
@@ -100,9 +123,9 @@ namespace ChastainRush
                 bool again = false;
                 foreach (var o in over.Where(o => o.line == li))
                 {
-                    int k = Mathf.Clamp(o.i, 0, n - 1); float roadY = t.Height(o.x, o.z), need = roadY + RailClear + RailDeck;
+                    int k = Mathf.Clamp(o.i, 0, n - 1); var op = new Vector2(o.x, o.z); float roadY = t.Height(o.x, o.z), need = roadY + RailClearAt(op) + RailDeck;
                     if (y[k] >= need) continue;
-                    float lifted = Mathf.Min(need, y[k] + RailLift); raw[k] = lifted; w[k] = 1e6f; again = true;
+                    float lifted = Mathf.Min(need, y[k] + RailLiftAt(op)); raw[k] = lifted; w[k] = 1e6f; again = true;
                     if (need - lifted > .05f) dips.Add((o.road, new Vector2(o.x, o.z), need - lifted));
                 }
                 if (again) y = R77Smooth1D(raw, w, mu);
@@ -119,14 +142,14 @@ namespace ChastainRush
                         int end = on ? i : i - 1; if (end - start >= 1)
                         {
                             var pts = new List<float>(); var ys = new List<float>(); var bl = new List<float>();
-                            for (int k = start; k <= end; k++) { pts.Add(p[k].x); pts.Add(p[k].y); ys.Add(y[k]); bl.Add(Mathf.Clamp(Mathf.Abs(y[k] - raw[k]) * 2f + 3f, 4f, 16f)); }
-                            GradeAlong(t, new RidgeGrade { id = $"railroad {li} {start}", points = pts.ToArray(), y = ys.ToArray(), half = 2.4f, blend = 6f, blends = bl.ToArray(), open_ends = true });   // (open ends: build 1's round ends spilled the bank past a bridge's end onto the road under it)
+                            for (int k = start; k <= end; k++) { pts.Add(p[k].x); pts.Add(p[k].y); ys.Add(y[k]); bl.Add(Mathf.Clamp(Mathf.Abs(y[k] - ground[k]) * 2f + 3f, 4f, 22f)); }
+                            bedGrades.Add(new RidgeGrade { id = $"railroad {li} {start}", points = pts.ToArray(), y = ys.ToArray(), half = 2.4f, blend = 6f, blends = bl.ToArray(), open_ends = true });   // (open ends: build 1's round ends spilled the bank past a bridge's end onto the road under it)
                             graded += end - start;
                         }
                         start = on ? i : -1;
                     }
                 }
-                RailPlans.Add(new RailPlan { p = p, y = y, deck = deck, roadDeck = roadDeck, cross = isCross });
+                RailPlans.Add(new RailPlan { p = p, y = y, deck = deck, roadDeck = roadDeck, cross = isCross, src = li });
             }
             // the roads dipped under their new bridges: every piece of that road within reach, its ground lowered by the dip at the crossing, easing out
             // along it over max(45 m, 20 x the dip) (both carriageways of a divided road: all targets taken before any is graded)
@@ -138,18 +161,42 @@ namespace ChastainRush
                 {
                     var r = map.roads[ri]; if (r.bridge || r.tunnel || r.points == null || (ri != road && (string.IsNullOrEmpty(name) || r.name != name))) continue;
                     var q = Resample(ToPoints(r.points), 1f).Where(v => (v - at).magnitude < reach).ToList(); if (q.Count < 2) continue;
-                    var ys = q.Select(v => t.Height(v.x, v.y) - dip * Smooth01(1f - (v - at).magnitude / reach)).ToArray();
-                    grades.Add(new RidgeGrade { id = $"railroad underpass {name}", points = q.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = r.width * .5f + 1.5f, blend = 7f });
+                    // (Round 78: the road's own ground, before the bed's banks; the cut's banks slope out by its depth)
+                    var dl = q.Select(v => dip * Smooth01(1f - (v - at).magnitude / reach)).ToArray();
+                    var ys = q.Select((v, k) => t.Height(v.x, v.y) - dl[k]).ToArray();
+                    var bls = dl.Select(dd => Mathf.Clamp(6f + RailBankRun * dd, 7f, 24f)).ToArray();
+                    grades.Add(new RidgeGrade { id = $"railroad underpass {name}", points = q.SelectMany(v => new[] { v.x, v.y }).ToArray(), y = ys, half = r.width * .5f + RailShoulder, blend = 7f, blends = bls });
                 }
                 log.Add($"{name} dipped {dip:0.0} m under the railroad at ({at.x:0}, {at.y:0}) over {reach:0} m each way");
             }
+            foreach (var g in bedGrades) GradeAlong(t, g);
             foreach (var g in grades) GradeAlong(t, g);
             railTreePts = new List<Vector2>(); railTreeIdx = new CellIndex(16f);
             foreach (var rp in RailPlans) foreach (var q in rp.p) { railTreePts.Add(q); railTreeIdx.Add(q); }
             float km = RailPlans.Sum(rp => { float s = 0f; for (int i = 1; i < rp.p.Count; i++) s += (rp.p[i] - rp.p[i - 1]).magnitude; return s; }) / 1000f;
             Debug.Log($"[Round77] C: railroad planned: {RailPlans.Count} lines, {km:0.0} km, {graded * 2f / 1000f:0.0} km of bed graded, the steepest grade {steepest * 100f:0.0} % at ({steepAt.x:0}, {steepAt.y:0}); " +
-                      $"{nCross} level crossings ({nForced} with the road over 2.5 m above the line's own profile: the line held to it), {nGradeSep} crossings with the road well below made bridges; " +
+                      $"{nCross} level crossings ({nForced} with the road over 2.5 m above the line's own profile: the line held to it), {nGradeSep} crossings with the road well below made bridges; {nUnder} places lowered under a road bridge; " +
                       $"{RailCrossings.Count} level crossings, {over.Count} bridges over roads ({string.Join(", ", over.Select(o => o.name).Distinct())}); {railDrop.Count} buildings give way ({string.Join(", ", railDrop)}); {string.Join("; ", log)}");
+        }
+
+        // Round 78 (D): where a road bridge (map.json bridges) passes over this line: the line's point under it and the most the line may stand there
+        static List<(int k, float capY, string name)> RailRoadOver(MapData map, List<Vector2> p)
+        {
+            var res = new List<(int, float, string)>(); if (map.bridges == null) return res;
+            foreach (var b in map.bridges)
+            {
+                if (b.points == null || b.deck_y == null) continue; var bp = ToPoints(b.points); if (bp.Count < 2) continue;
+                float x0 = bp.Min(v => v.x) - 4f, x1 = bp.Max(v => v.x) + 4f, z0 = bp.Min(v => v.y) - 4f, z1 = bp.Max(v => v.y) + 4f;
+                int bestK = -1, bestJ = -1; float bestD = 3f;
+                for (int k = 0; k < p.Count; k++)
+                {
+                    var q = p[k]; if (q.x < x0 || q.x > x1 || q.y < z0 || q.y > z1) continue;
+                    for (int j = 0; j < bp.Count; j++) { float dd = (bp[j] - q).magnitude; if (dd < bestD) { bestD = dd; bestK = k; bestJ = j; } }
+                }
+                if (bestK < 0) continue;
+                res.Add((bestK, b.deck_y[Mathf.Min(bestJ, b.deck_y.Length - 1)] - RailUnder, b.name ?? b.@class));
+            }
+            return res;
         }
 
         static void BuildRailroad(TerrainGrid t, Materials mats, Transform world)
@@ -222,44 +269,10 @@ namespace ChastainRush
             }
             foreach (var kv in track) kv.Value.ToObject($"Railroad track_{kv.Key.x}_{kv.Key.y}", mats.House, root, false, true);
             foreach (var kv in decks) kv.Value.ToObject($"Railroad bridge_{kv.Key.x}_{kv.Key.y}", mats.House, root, true, true);
-            // the level crossings: on each side of the road, on the right of the traffic arriving, a crossbuck on a post with the two red lights, the gate's
-            // mechanism and its arm raised (striped red and white); they break when hit (BreakSounds Lamp)
-            var gear = new Breakables(); var white = new Color(.93f, .93f, .90f); var red = new Color(.78f, .10f, .08f); var dark = new Color(.10f, .10f, .11f); var lamp = new Color(.45f, .05f, .04f);
-            foreach (var (at, road, half, gy0) in RailCrossings)
-                foreach (float s in new[] { -1f, 1f })
-                {
-                    var come = road * s;                                     // the way the traffic arriving on this side drives
-                    var right = new Vector2(come.y, -come.x);
-                    var p = at - come * 4.2f + right * (half + .9f); float gy = t.Height(p.x, p.y);
-                    var f = MakeFrame(new Vector3(p.x, gy, p.y), -come, 1f);   // facing the traffic
-                    var mb = gear.Begin(p);
-                    gear.Piece(() =>
-                    {
-                        Post(mb, new Vector3(p.x, gy - .1f, p.y), 4.3f, .16f, white);
-                        // the crossbuck: two white boards crossed at 45 degrees
-                        var c0 = f.P(0f, 3.75f, .12f);
-                        foreach (float ang in new[] { 45f, -45f })
-                        {
-                            var dir = Quaternion.AngleAxis(ang, f.F) * f.R;
-                            Beam(mb, c0 - dir * 1.1f, c0 + dir * 1.1f, .26f, .03f, white, f.F);
-                        }
-                    }, gy + .1f);
-                    gear.Piece(() =>
-                    {
-                        // the lights: a black bar, two round red lamps in black hoods
-                        BoxF(mb, f, -.75f, .75f, 2.55f, 2.68f, .05f, .14f, dark);
-                        foreach (float u in new[] { -.55f, .55f }) { Cyl(mb, f.P(u, 2.35f, .18f), .02f, .25f, .25f, dark, 10); BoxF(mb, f, u - .19f, u + .19f, 2.17f, 2.53f, .19f, .21f, lamp); BoxF(mb, f, u - .24f, u + .24f, 2.55f, 2.62f, .1f, .45f, dark); }
-                    }, gy + .1f);
-                    gear.Piece(() =>
-                    {
-                        // the gate: its mechanism box beside the post (toward the road) and the arm standing up, red and white bands
-                        var g = f.P(-.55f, 0f, 0f); BoxF(mb, MakeFrame(g, new Vector2(f.F.x, f.F.z), 1f), -.25f, .25f, .9f, 1.6f, -.2f, .2f, dark);
-                        for (int k = 0; k < 6; k++) Beam(mb, g + Vector3.up * (1.6f + k * .9f), g + Vector3.up * (2.5f + k * .9f), .09f, .09f, k % 2 == 0 ? red : white);
-                    }, gy + .1f);
-                    gear.End(new Vector3(p.x, gy + 1.5f, p.y), new Vector3(come.x, 0f, come.y), 1.2f, 3f, .8f);
-                }
-            gear.ToObjects("Railroad crossing gear", mats.House, root, 1f, BreakSounds.Kind.Lamp);
-            Debug.Log($"[Round77] C: railroad built: {nties} ties, {nspans} deck segments, {npiers} piers, {RailCrossings.Count} level crossings ({gear.Count} crossing posts)");
+            // the level crossings (Round 78 A: grouped per road, the gate arms on hinges and the lamps apart for the running train, MapBuilder.Train.cs)
+            int nGear = BuildRailCrossings(t, mats, root);
+            WriteRailData(); BuildTrainKit(mats, root);
+            Debug.Log($"[Round77] C: railroad built: {nties} ties, {nspans} deck segments, {npiers} piers, {RailCrossings.Count} level crossings ({nGear} crossing posts)");
         }
     }
 }

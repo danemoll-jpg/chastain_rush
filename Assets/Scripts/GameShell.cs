@@ -36,7 +36,8 @@ namespace ChastainRush
             if (!carGo.GetComponent<RampHold>()) carGo.AddComponent<RampHold>();   // Round 10: held shortcut ramp tops
             WorldMap.Boot(go);
             Exploration.Boot(go);   // Round 48: the map's fog, places, travel and waypoint (Explore/Exploration.cs)   // Round 20 (item 2): the map, on View / Select and M (Map/WorldMap.cs)
-            MiniMap.Boot(go);    // Round 24 A2 (A5): Racer's minimap (Map/MiniMap.cs)
+            MiniMap.Boot(go);
+            RailTrains.Boot(go);   // Round 78 (A): the running freight trains (World/Rail/RailTrains.cs)    // Round 24 A2 (A5): Racer's minimap (Map/MiniMap.cs)
             var args = Environment.GetCommandLineArgs();
             for (int i = 0; i < args.Length - 1; i++)
             {
@@ -75,6 +76,7 @@ namespace ChastainRush
                 if (args[i] == "-exeRound66") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round66"; }   // Round 66 (Round20Runner.R66.cs)
                 if (args[i] == "-exeRound67") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round67"; }   // Round 67 (Round20Runner.R67.cs)
                 if (args[i] == "-exeRound75") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round75"; }   // Round 75 (Round20Runner.R75.cs)
+                if (args[i] == "-exeRound78") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round78"; }   // Round 78 (Round20Runner.R78.cs)
                 if (args[i] == "-exeRound77") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round77"; }   // Round 77 (Round20Runner.R77.cs)
                 if (args[i] == "-exeRound74") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round74"; }   // Round 74 (Round20Runner.R74.cs)
                 if (args[i] == "-exeRound73") { var r = go.AddComponent<Round20Runner>(); r.outputDir = args[i + 1]; r.tag = "round73"; }   // Round 73 (Round20Runner.R73.cs)

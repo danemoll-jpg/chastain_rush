@@ -139,7 +139,7 @@ namespace ChastainRush
                 if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
                 if (CoursonOwns(i)) continue;   // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies
                 if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center and its anchors (MapBuilder.Mall.cs)
-                if (MariettaOwns(i) || RailOwns(i) || KennestoneOwns(i)) continue;   // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs); Round 77 (C): a building the railroad runs through gives way
+                if (MariettaOwns(i) || RailOwns(i) || KennestoneOwns(i) || R78Gone(i)) continue;   // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs); Round 77 (C): a building the railroad runs through gives way
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;

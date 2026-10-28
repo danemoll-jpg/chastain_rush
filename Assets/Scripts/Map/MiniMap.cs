@@ -229,6 +229,8 @@ namespace ChastainRush
             if (under)
                 foreach (var s in pipeLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) { Line(vh, a, b, 6, new Color(.02f, .04f, .05f)); Line(vh, a, b, 4, s.c); } }
             foreach (var s in raceLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) Line(vh, a, b, s.w, s.c); }
+            // Round 78 (A): the running trains' cars (dark outline, rust red)
+            RailTrains.ForEachCar((ra, rb) => { var a = Project(ra); var b = Project(rb); if (In(a, b)) { Line(vh, a, b, 7, new Color(.03f, .04f, .05f)); Line(vh, a, b, 4.5f, new Color(.86f, .36f, .18f)); } });
             // Round 36: Racer's stunt park and activity sites on the minimap (Free Roam): the park's outline, a diamond at each place
             if (!race || race.State == RaceController.Stage.Free)
                 foreach (var pl in WorldMap.Places)

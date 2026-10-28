@@ -40,6 +40,9 @@ namespace ChastainRush
             horn.rolloffMode = AudioRolloffMode.Logarithmic; horn.dopplerLevel = 0; horn.priority = 120; horn.clip = Traffic.HornClip;
         }
 
+        // Round 78 (A): hit by a train: moved away when nobody sees it
+        public void Recycle() => WantsRecycle = true;
+
         // put on edge e at distance s from its start (dir +1: from -> to), facing the way it drives
         public void Place(int e, int dir, float s, Vector3 position, float speed)
         {
@@ -211,6 +214,9 @@ namespace ChastainRush
                 float closing = -Vector3.Dot(hit.rigidbody.linearVelocity, transform.forward);
                 if (player && closing > 6 && hit.distance < 30) { swerveUntil = Time.time + 1.5f; Horn(); }
             }
+            // Round 78 (A): a closed level crossing ahead (a train coming): stop at its line until the gates go up
+            if (RailTrains.ClosedAhead(body.position, transform.forward, range + 40f, out float railStop, out _, out _))
+            { target = Mathf.Min(target, Mathf.Sqrt(2 * Judgment * Mathf.Max(0, railStop))); State = "train"; blockedFor = 0; }
             if (barrierAt < float.MaxValue)
             {
                 target = Mathf.Min(target, Mathf.Sqrt(2 * Judgment * Mathf.Max(0, barrierAt - 6f))); State = "closed";

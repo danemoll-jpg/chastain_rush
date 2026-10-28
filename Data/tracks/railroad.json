@@ -57183,6 +57183,127 @@
 "name": "South Marietta Parkway Southwest",
 "class": "trunk",
 "width": 18.5
+},
+{
+"line": 6,
+"i": 481,
+"x": 1700.42,
+"z": -8757.38,
+"road": 11845,
+"road_heading": 70.5,
+"name": "Waverly Way Southeast",
+"class": "tertiary",
+"width": 4.5
+},
+{
+"line": 6,
+"i": 483,
+"x": 1699.01,
+"z": -8754.29,
+"road": 12174,
+"road_heading": 223.4,
+"name": "Powder Springs Street Southwest",
+"class": "tertiary",
+"width": 4.5
+},
+{
+"line": 6,
+"i": 613,
+"x": 1622.35,
+"z": -8521.35,
+"road": 11505,
+"road_heading": 89.2,
+"name": "Whitlock Avenue Southwest",
+"class": "secondary",
+"width": 8.0
+},
+{
+"line": 6,
+"i": 669,
+"x": 1620.66,
+"z": -8409.97,
+"road": 12204,
+"road_heading": 88.5,
+"name": "Mill Street Northwest",
+"class": "tertiary",
+"width": 8.0
+},
+{
+"line": 6,
+"i": 788,
+"x": 1618.82,
+"z": -8176.71,
+"road": 2964,
+"road_heading": 272.4,
+"name": "Polk Street Northwest",
+"class": "tertiary",
+"width": 8.0
+},
+{
+"line": 6,
+"i": 903,
+"x": 1603.42,
+"z": -7954.97,
+"road": 4571,
+"road_heading": 256.0,
+"name": "Kennesaw Avenue Northwest",
+"class": "tertiary",
+"width": 8.0
+},
+{
+"line": 6,
+"i": 1781,
+"x": 918.16,
+"z": -6524.28,
+"road": 11190,
+"road_heading": 271.1,
+"name": "Tower Road Northwest",
+"class": "tertiary",
+"width": 9.0
+},
+{
+"line": 7,
+"i": 447,
+"x": 928.11,
+"z": -6524.46,
+"road": 11190,
+"road_heading": 273.0,
+"name": "Tower Road Northwest",
+"class": "tertiary",
+"width": 9.0
+},
+{
+"line": 7,
+"i": 833,
+"x": 893.37,
+"z": -5828.39,
+"road": 3445,
+"road_heading": 61.0,
+"name": "Loudermilk Drive Northwest",
+"class": "unclassified",
+"width": 8.0
+},
+{
+"line": 9,
+"i": 59,
+"x": -4068.46,
+"z": -4611.59,
+"road": 10402,
+"road_heading": 67.5,
+"name": "Stanley Road Northwest",
+"class": "tertiary",
+"width": 8.0
+},
+{
+"line": 9,
+"i": 2251,
+"x": -4444.69,
+"z": -763.36,
+"road": 5591,
+"road_heading": 91.5,
+"name": "Cherokee Street Northwest",
+"class": "secondary",
+"width": 11.5
 }
 ],
 "overpasses": [
@@ -57191,6 +57312,17 @@
 "i": 930,
 "x": 1595.99,
 "z": -7919.15,
+"road": 4106,
+"road_heading": 220.9,
+"name": "North Marietta Parkway",
+"class": "trunk",
+"width": 18.5
+},
+{
+"line": 6,
+"i": 920,
+"x": 1592.11,
+"z": -7923.63,
 "road": 4106,
 "road_heading": 220.9,
 "name": "North Marietta Parkway",

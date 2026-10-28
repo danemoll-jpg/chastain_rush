@@ -140,6 +140,7 @@ namespace Racer
             }
 
             float s = DriveRoad.Project(Car.Body.position, out float lateral);
+            if(forceRecoverAt>0f&&Time.time>=forceRecoverAt){forceRecoverAt=-1f;TryRecover(s);return;}   // Chastain Rush, Round 78 (A): hit by a train
             float driveHalfWidth=DriveRoad.HalfWidth(s);
             float speed = Mathf.Abs(Car.ForwardSpeed);
             DriveRoad.At(s, out var tangent);
@@ -288,6 +289,15 @@ namespace Racer
             // make now, at its cornering grip), never under the old 10 m/s (it was a flat 10 m/s: 18 to 28 s a race on Kennesaw)
             if (Mathf.Abs(angle) > .6f && !activeBranch && !held)
                 Cap(Mathf.Max(skill == 2 ? 14f : 10f, Mathf.Sqrt(cornerGrip * look / (2f * Mathf.Max(.2f, Mathf.Sin(Mathf.Min(Mathf.Abs(angle), 1.5f)))))), "angle");   // (try 2: Hard's floor 14)
+            // Chastain Rush, Round 78 (A, B: "beat it across, wait at the gates"): a closed level crossing ahead. Decided once per crossing when it first
+            // closes ahead: go if the car clears the tracks the difficulty's margin before the train gets there (Hard 1.5 s, Normal 3 s, Easy 5 s, and the
+            // driver's own lean), else stop at its line; a car that went for it stops after all if the train is already on the road and it is not yet there.
+            if(!activeBranch&&!finished&&ChastainRush.RailTrains.ClosedAhead(Car.Body.position,transform.forward,170f,out float railStop,out float trainIn,out var railAt))
+            {
+                if(railAt!=railDecided){railDecided=railAt;float eta=(railStop+railAt.spread*2f+16f)/Mathf.Max(speed,9f);railGo=trainIn-eta>(skill==2?1.5f:skill==1?3f:5f)+((name.GetHashCode()&7)-3.5f)*.3f;}
+                if(!railGo||trainIn<=0f&&railStop>2f) Cap(Mathf.Sqrt(2*judgment*Mathf.Max(0,railStop)),"train",(int)railStop);
+            }
+            else railDecided=null;
             float freeTarget = TargetSpeed;   // Round 58: what it wants before anything in front holds it (A3: wanting to go and not moving is being blocked)
             bool unblocking = Agency && Time.time < unblockUntil;
             // Bounded non-alloc obstacle query; includes other cars and solid roadside objects, excludes own body.
@@ -613,6 +623,9 @@ namespace Racer
         AiShortcut lastRecoverBranch;   // Chastain Rush, Round 28
         int unplaced;                   // Chastain Rush, Round 49: tries in a row that found no clear spot
         float lastRecoverStation=-999f,lastRecoverTime=-999f;   // Chastain Rush, Round 57: where and when it last needed a recovery
+        // Chastain Rush, Round 78 (A): hit by a running train: recovered after a moment
+        float forceRecoverAt=-1f; ChastainRush.RailCrossing railDecided; bool railGo;
+        public void ForceRecoverSoon(float delay){ if(forceRecoverAt<0f) forceRecoverAt=Time.time+delay; }
         void TryRecover(float current)
         {
             nextRecovery=Time.time+1;

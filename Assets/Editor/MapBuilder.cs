@@ -860,7 +860,7 @@ namespace ChastainRush
                 if (LakesOwns(i)) continue;          // Round 32 (C2): the Chastain Lakes pool house and bathhouse (MapBuilder.ChastainLakes.cs)
                 if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
                 if (MariettaOwns(i)) continue;       // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs)
-                if (RailOwns(i)) continue;           // Round 77 (C): a building the railroad runs through gives way (MapBuilder.Railroad.cs)
+                if (RailOwns(i) || R78Gone(i)) continue;           // Round 78 (G): Round 77's stray white block   // Round 77 (C): a building the railroad runs through gives way (MapBuilder.Railroad.cs)
                 if (KennestoneOwns(i)) continue;     // Round 77 (B): Kennestone hospital's buildings and every parking deck (MapBuilder.Kennestone.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;

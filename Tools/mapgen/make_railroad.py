@@ -116,7 +116,8 @@ def main():
     def dedupe(lst):
         out = []
         for c in lst:
-            if any(o["road"] == c["road"] and math.dist((o["x"], o["z"]), (c["x"], c["z"])) < 6 for o in out): continue
+            # (Round 78: per line; Round 77 dropped the second Marietta track's crossings 4.5 m from the first's, leaving its rails proud of the road)
+            if any(o["road"] == c["road"] and o["line"] == c["line"] and math.dist((o["x"], o["z"]), (c["x"], c["z"])) < 6 for o in out): continue
             out.append(c)
         return out
     crossings, overpasses = dedupe(crossings), dedupe(overpasses)

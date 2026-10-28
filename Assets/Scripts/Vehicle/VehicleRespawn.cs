@@ -35,6 +35,7 @@ namespace Racer
         Vector3 startPosition, safePosition;
         Quaternion startRotation, safeRotation;
         float stableSince = -1, nextSample;
+        float resetAt = -1f;   // Chastain Rush, Round 78 (A): a reset asked for by a crash (a running train), as R
 
         void Awake()
         {
@@ -49,7 +50,8 @@ namespace Racer
             if (vehicle.Body.position.y < fallResetHeight) { Place(startPosition, startRotation); return; }
             // Chastain Rush, Round 10: a reset asks Recover first (CarRecovery: back on the race route facing the right way, or
             // off a spot a tree now blocks), as Racer's VehicleRespawn.RecoverNearest does; the last stable spot otherwise
-            if (input.ConsumeReset())
+            bool crashed = resetAt > 0f && Time.time >= resetAt; if (crashed) resetAt = -1f;
+            if (input.ConsumeReset() || crashed)
             {
                 if (Recover != null && Recover(this, out var rp, out var ry)) Place(rp, Quaternion.Euler(0, ry, 0));
                 // Round 73 (C3): never back onto the very spot the car is stuck at; the start (the map's spawn) then
@@ -77,6 +79,9 @@ namespace Racer
                 history[historyHead] = (safePosition, safeRotation.eulerAngles.y); historyHead = (historyHead + 1) % History; historyCount = Mathf.Min(historyCount + 1, History);
             }
         }
+
+        // Chastain Rush, Round 78 (A): hit by a train: put back as R does, after a moment (the crash is seen)
+        public void ResetSoon(float delay) { if (resetAt < 0f) resetAt = Time.time + delay; }
 
         // Chastain Rush, Round 5: the race puts the car on its grid with this. It also makes that pose the one R returns to,
         // so a reset right after a restart cannot send the car back to wherever it last stood before the race.
