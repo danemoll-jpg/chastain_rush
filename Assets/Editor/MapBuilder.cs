@@ -223,6 +223,7 @@ namespace ChastainRush
             if (!quick) MouthSweep(terrain, pipes, net);   // Round 25 (A2): no terrain left inside any pipe's opening (MapBuilder.MouthSweep.cs); Round 65: a report, the full build's only
             BuildClock.Lap("MouthSweep");
             RailDecks(map);                          // Round 79 (D): the decks over the railroad evened / smoothed before their ends are graded (MapBuilder.Railroad.cs)
+            ExpressDecks(map);                       // Round 80 (D1): every Express Lanes deck smoothed for both ways (MapBuilder.Round80.cs)
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
             R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
             R62SeamOverpasses(map, terrain);         // Round 62 (C, BUG-002): I-575's decks over Big Shanty Road, across the old core's edge, each laid with its roads as one curve (MapBuilder.Round62.cs)
