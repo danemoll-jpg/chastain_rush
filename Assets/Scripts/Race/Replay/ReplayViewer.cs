@@ -11,7 +11,8 @@ namespace ChastainRush
     // puppet, a copy of the player's car made like an AI car (RaceController.SpawnAi) but driven by the recording: kinematic, no contacts, its
     // wheels, steering, lean and rider from the recorded speed and steering (ArcadeVehicle.Puppet), its engine through OtherEngines. Traffic: the
     // live traffic cars by their index. The world's events play at their moments (FenceChunk.Replay, TreeTrunks.ReplaySnap, ManholePlume.Erupt,
-    // the switch gates); going back in time puts the world as it was then (everything restored, the events up to then applied quietly).
+    // the switch gates); going back in time puts the world as it was then (everything restored, the events up to then applied quietly). Round 79:
+    // the trains, the level crossings, the traffic signals and the airport's circuit plane run on the recorded clock (WorldClock, RailTrains.ReplayAt).
     // Cameras: TV (roadside cameras along the focused racer's way, cut as it passes), Chase (ChaseCamera on a racer), Free (fly anywhere).
     // Controls (pad / keyboard): A / Space play-pause; RT / Right hold fast forward; LT / Left hold rewind; X / S slow motion; Y / C camera;
     // LB RB / Q E racer (in the free camera: down, up); D-pad left right / , . previous / next lap; D-pad up / Home restart; D-pad down / H HUD;
@@ -148,6 +149,7 @@ namespace ChastainRush
         {
             if (Current != this) return;
             Current = null; EngineCars.Clear(); GooseTarget = null;
+            WorldClock.Replay = float.NaN; if (RailTrains.Instance) RailTrains.Instance.ReplayEnd();   // Round 79: the world's clocks live again
             foreach (var p in puppets) if (p) Destroy(p.gameObject);
             if (ownBarriers) { ownBarriers.Clear(); Destroy(ownBarriers.gameObject); }
             var race = RaceController.Instance; if (race && race.Barriers != null) race.Barriers.ResetGatesForReplay(false);
@@ -288,6 +290,7 @@ namespace ChastainRush
             }
         }
 
+        List<ReplayData.Event> clocks;
         void ApplyPoses()
         {
             for (int i = 0; i < puppets.Count; i++)
@@ -297,6 +300,14 @@ namespace ChastainRush
                 c.Body.position = f.p; c.Body.rotation = f.q; c.transform.SetPositionAndRotation(f.p, f.q);
                 c.PuppetSpeed = f.speed; c.PuppetSteer = f.steer; pedals[i] = f.throttle;
                 if (i == Data.focus) { GooseTarget = c.transform; var f2 = ReplayData.At(tr, T + 0.1f); GooseVelocity = (f2.p - f.p) / 0.1f; }
+            }
+            // Round 79 (A): the world's clock as it was (the trains, the crossings, the signals, the circuit plane); a replay recorded before keeps the live clock
+            if (clocks == null) { clocks = new List<ReplayData.Event>(); foreach (var e in Data.events) if (e.kind == ReplayData.Kind.Clock) clocks.Add(e); }
+            if (clocks.Count > 0)
+            {
+                int k = 0; while (k + 1 < clocks.Count && clocks[k + 1].t <= T) k++;
+                var c0 = clocks[k]; WorldClock.Replay = c0.f + (T - c0.t);
+                if (RailTrains.Instance) RailTrains.Instance.ReplayAt(WorldClock.Replay + c0.v.x);
             }
             var tf = Traffic.Instance;
             if (tf) for (int i = 0; i < Data.traffic.Count && i < tf.Cars.Count; i++)

@@ -13,7 +13,8 @@ namespace ChastainRush
     // (cheap when far): a train is made of cars from the train kit only while some of it is within SpawnRadius of the camera. Each car is a kinematic
     // body moved along the rails by its two trucks: solid; a vehicle that hits it is put back (TrainCar). The crossings (RailCrossing) close from 26 s
     // before a train reaches them until its last car is past. Traffic stops at a closed crossing (TrafficDriver), the race AI waits or beats the train
-    // (RoadDriver); the minimap draws the cars. World, not game layer; races only shift the clock (Align).
+    // (RoadDriver); the minimap draws the cars. World, not game layer; races only shift the clock (Align). Round 79: a replay shows them as they were
+    // (ReplayRecorder keeps the clock, ReplayViewer calls ReplayAt).
     public sealed class RailTrains : MonoBehaviour
     {
         public const float Speed = 17.9f, SpawnRadius = 1400f, CloseAhead = 26f, Gap = 1.1f;
@@ -136,8 +137,11 @@ namespace ChastainRush
         // ---- running -------------------------------------------------------------------------------------------------------------------------------
         void FixedUpdate()
         {
-            if (routes.Count == 0) return;
-            float clock = Time.fixedTime + Offset;
+            if (routes.Count == 0 || Replaying) return;
+            Run(Time.fixedTime + Offset, false);
+        }
+        void Run(float clock, bool jump)
+        {
             var cam = Camera.main; var eye = cam ? cam.transform.position : Vector3.zero;
             scratchKeys.Clear(); foreach (var key in live.Keys) scratchKeys.Add(key);
             keep.Clear();
@@ -149,7 +153,7 @@ namespace ChastainRush
                     float len = tr != null ? tr.length : 650f;
                     if (!Near(routes[r], head - len, head, eye)) continue;
                     if (tr == null) { tr = Plan(r, k); Spawn(tr); live[key] = tr; }
-                    keep.Add(key); Place(tr, head);
+                    keep.Add(key); Place(tr, head, jump);
                 }
             foreach (var key in scratchKeys) if (!keep.Contains(key)) { Despawn(live[key]); live.Remove(key); }
         }
@@ -205,7 +209,7 @@ namespace ChastainRush
             tr.cars = null;
         }
 
-        void Place(Train tr, float head)
+        void Place(Train tr, float head, bool jump = false)
         {
             var r = routes[tr.route];
             for (int i = 0; i < tr.cars.Count; i++)
@@ -217,7 +221,8 @@ namespace ChastainRush
                 var a = At(r, s + truck); var b = At(r, s - truck); var fwd = a - b; if (fwd.sqrMagnitude < 1e-4f) continue;
                 var pos = (a + b) * .5f; var rot = Quaternion.LookRotation(fwd.normalized, Vector3.up);
                 var rb = go.GetComponent<Rigidbody>();
-                if ((rb.position - pos).sqrMagnitude > 25f) { rb.position = pos; rb.rotation = rot; go.transform.SetPositionAndRotation(pos, rot); }
+                if (jump) { if (rb.interpolation != RigidbodyInterpolation.None) rb.interpolation = RigidbodyInterpolation.None; rb.position = pos; rb.rotation = rot; go.transform.SetPositionAndRotation(pos, rot); }
+                else if ((rb.position - pos).sqrMagnitude > 25f) { if (rb.interpolation == RigidbodyInterpolation.None) rb.interpolation = RigidbodyInterpolation.Interpolate; rb.position = pos; rb.rotation = rot; go.transform.SetPositionAndRotation(pos, rot); }
                 else { rb.MovePosition(pos); rb.MoveRotation(rot); }
             }
             // the horn: long, long, short, long, from about 18 s before each crossing
@@ -231,7 +236,7 @@ namespace ChastainRush
         // ---- the crossings -------------------------------------------------------------------------------------------------------------------------
         void Update()
         {
-            if (routes.Count == 0) return;
+            if (routes.Count == 0 || Replaying) return;
             float clock = Clock;
             foreach (var c in crossings) if (c) { c.Closed = false; arrive[c] = float.MaxValue; occupied[c] = false; }
             for (int r = 0; r < routes.Count; r++)
@@ -286,6 +291,55 @@ namespace ChastainRush
             var I = Instance; if (!I) return false;
             foreach (var c in I.crossings) { if (!c || !c.Closed) continue; var d = c.center - p; d.y = 0f; if (d.magnitude < r + c.spread) return true; }
             return false;
+        }
+
+        // ---- replays (Round 79, A): the trains and the crossings as they were at a recorded clock (ReplayViewer, each frame, paused or not) -------------
+        // The cars are put straight where the timetable has them; each crossing's lamps and gates are worked out from the timetable's closings round
+        // that moment (RailCrossing.ShowAt), so a jump back or forward in the replay shows them right at once.
+        public bool Replaying { get; private set; }
+        public void ReplayAt(float clock)
+        {
+            if (routes.Count == 0) return;
+            Replaying = true; Run(clock, true);
+            foreach (var c in crossings) if (c) { spans[c] = spans.TryGetValue(c, out var l) ? l : new List<Vector2>(); spans[c].Clear(); }
+            for (int r = 0; r < routes.Count; r++)
+            {
+                float per = Period(r), d0 = Depart(r, 0);
+                foreach (var (c, s) in routes[r].crossings)
+                {
+                    long k0 = (long)Math.Floor((clock - 200f - d0 - s / Speed) / per) - 1, k1 = (long)Math.Floor((clock + CloseAhead + 1f - d0 - s / Speed) / per) + 1;
+                    for (long k = k0; k <= k1; k++)
+                    {
+                        float dep = Depart(r, k), a0 = Mathf.Max(dep + s / Speed - CloseAhead, dep), a1 = dep + (s + TrainLength(r, k) + 6f) / Speed;
+                        if (a0 <= clock + .001f && a1 >= clock - 120f) spans[c].Add(new Vector2(a0, a1));
+                    }
+                }
+            }
+            foreach (var c in crossings)
+            {
+                if (!c) continue; var l = spans[c]; l.Sort((a, b) => a.x.CompareTo(b.x));
+                bool closed = false; float closedFor = 0f, since = 1e6f, closedLen = 0f; Vector2 cur = new Vector2(float.NaN, 0f);
+                foreach (var iv in l)
+                {
+                    if (!float.IsNaN(cur.x) && iv.x <= cur.y) { cur.y = Mathf.Max(cur.y, iv.y); continue; }
+                    if (!float.IsNaN(cur.x)) Close(cur);
+                    cur = iv;
+                }
+                if (!float.IsNaN(cur.x)) Close(cur);
+                void Close(Vector2 iv)
+                {
+                    if (clock >= iv.x && clock <= iv.y) { closed = true; closedFor = clock - iv.x; }
+                    else if (clock > iv.y && !closed) { since = clock - iv.y; closedLen = iv.y - iv.x; }
+                }
+                c.Closed = closed; c.ShowAt(closed, closedFor, since, closedLen);
+            }
+        }
+        readonly Dictionary<RailCrossing, List<Vector2>> spans = new();
+        public void ReplayEnd()
+        {
+            if (!Replaying) return; Replaying = false;
+            foreach (var c in crossings) if (c) c.Live();
+            foreach (var tr in live.Values) if (tr.cars != null) foreach (var go in tr.cars) if (go) go.GetComponent<Rigidbody>().interpolation = RigidbodyInterpolation.Interpolate;
         }
 
         // ---- races: the clock moved on so the next train reaches a crossing (nearest the given point) in 'seconds' -------------------------------------

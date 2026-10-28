@@ -11,7 +11,8 @@ namespace ChastainRush
     // any race you want"; 2026-10-20: "be able to watch your race you just ran and move the camera around differently"). New here (Racer has none).
     // A replay is what ReplayRecorder sampled during one race: every racer's pose, speed, steering and pedal 25 times a second, the traffic's poses
     // 10 times a second, and the world events the race caused (a panel of a fence / mailbox / hydrant / sign / pump / barricade broken, a tree
-    // snapped, a manhole plume, a switch gate opened, a rider's wave or celebration, laps and finishes). ReplayViewer plays it back.
+    // snapped, a manhole plume, a switch gate opened, a rider's wave or celebration, laps and finishes; Round 79: the world's and the trains' clocks).
+    // ReplayViewer plays it back.
     // Files: <the records' folder>/Replays/ (beside race_records.json): best/<track key>.lap.crreplay and .race.crreplay (the #1 Top 10 lap and race
     // per track, direction and laps, as the boards key them; a new #1 replaces it) and saved/<track> <direction> <date time>.crreplay (kept by the
     // player). A gzip'd binary: a header (enough for the REPLAYS page), then the samples.
@@ -37,7 +38,9 @@ namespace ChastainRush
             public readonly List<(int lap, float start, float end)> laps = new List<(int, float, float)>();
             public float finishedAt = -1f, total = -1f;
         }
-        public enum Kind : byte { Panel = 1, Tree = 2, Plume = 3, Gate = 4, Gesture = 5, Restore = 6 }   // Restore: a chunk put back on its own (the Elaine barricade once clear)
+        public enum Kind : byte { Panel = 1, Tree = 2, Plume = 3, Gate = 4, Gesture = 5, Restore = 6, Clock = 7 }   // Restore: a chunk put back on its own (the Elaine barricade once clear)
+        // Round 79 (A): Clock: the world's clock (WorldClock: f = Time.time then) and the trains' (v.x = RailTrains.Offset), every second and whenever the
+        // trains' clock is moved on (a race's train_meet: RailTrains.Align); the viewer puts the trains, the crossings, the signals and the circuit plane as they were
         public struct Event { public float t; public Kind kind; public int a, b; public Vector3 p, v; public float f; }
 
         public float Duration => t1 - t0;

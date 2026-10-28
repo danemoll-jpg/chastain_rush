@@ -7,9 +7,11 @@ namespace ChastainRush
 {
     // Round 69: the airport's life: one Sky Hopper that waits on the apron, taxis to runway 09's end, takes off east, flies a left-hand circuit at
     // 300 m round the airport, lands on 09 and taxis back; then waits again (a cycle of about seven minutes). Visual only: no collider, no physics.
+    // Round 79 (A): where it is comes from the world's clock (WorldClock) through a table of times along its path, so a replay shows it as it was.
     public sealed class AirportCircuit : MonoBehaviour
     {
-        readonly List<(Vector3 p, float v)> path = new(); float[] cum; Transform plane, prop; float s, wait = 40f, propAngle;
+        readonly List<(Vector3 p, float v)> path = new(); float[] cum; Transform plane, prop; float propAngle; readonly List<float> tS = new(), tT = new(); float travel;
+        const float Wait = 240f, FirstWait = 40f;
         void Start()
         {
             var go = new GameObject("Circuit plane"); go.transform.SetParent(transform, false);
@@ -27,16 +29,22 @@ namespace ChastainRush
             P(-4400f, -1900f, 48f, 160f); P(-4100f, -1915f, 40f, 70f); P(-3800f, -1912f, 35f, 18f); P(-3660f, -1908f, 30f, 1f); P(-3500f, -1901f, 26f); P(-3200f, -1888f, 12f);
             P(-3160f, -1886f, 6f); P(-3155f, -1930f, 6f); P(-3153f, -1976f, 6f); P(-3200f, -2010f, 6f); P(-3366f, -2040f, 5f); P(-3366f, -2068f, 0f);
             cum = new float[path.Count]; for (int i = 1; i < path.Count; i++) cum[i] = cum[i - 1] + (path[i].p - path[i - 1].p).magnitude;
+            // the time at each point along the path (its speed from the points', at least 3 m/s, in 2 m steps)
+            float tt = 0f; tS.Add(0f); tT.Add(0f);
+            for (float a = 0f; a < cum[cum.Length - 1]; a += 2f) { float step = Mathf.Min(2f, cum[cum.Length - 1] - a); tt += step / Speed(a + step * .5f); tS.Add(a + step); tT.Add(tt); }
+            travel = tt;
             Place(0f);
         }
+        float Speed(float at) { int i = Seg(at); float t = Mathf.InverseLerp(cum[i], cum[i + 1], at); return Mathf.Max(3f, Mathf.Lerp(path[i].v, path[i + 1].v, t)); }
         void Update()
         {
             if (cum == null) return;
-            float dt = Time.deltaTime;
-            if (wait > 0f) { wait -= dt; propAngle += 300f * dt; if (prop) prop.localRotation = Quaternion.Euler(0, 0, propAngle); return; }
-            int i = Seg(s); float t = Mathf.InverseLerp(cum[i], cum[i + 1], s); float v = Mathf.Max(3f, Mathf.Lerp(path[i].v, path[i + 1].v, t));
-            s += v * dt; propAngle += (v > 20f ? 3000f : 1200f) * dt; if (prop) prop.localRotation = Quaternion.Euler(0, 0, propAngle);
-            if (s >= cum[cum.Length - 1]) { s = 0f; wait = 240f; }
+            // the cycle: waiting on the apron (Wait s), then round the path; at the clock's start FirstWait s of the wait are left
+            float c = Mathf.Repeat(WorldClock.Now + (Wait - FirstWait), Wait + travel), dt = Time.deltaTime;
+            if (c < Wait) { propAngle += 300f * dt; if (prop) prop.localRotation = Quaternion.Euler(0, 0, propAngle); Place(0f); return; }
+            float tm = c - Wait; int lo = 0, hi = tT.Count - 1; while (hi - lo > 1) { int m = (lo + hi) >> 1; if (tT[m] <= tm) lo = m; else hi = m; }
+            float s = Mathf.Lerp(tS[lo], tS[hi], Mathf.InverseLerp(tT[lo], tT[hi], tm)), v = Speed(s);
+            propAngle += (v > 20f ? 3000f : 1200f) * dt; if (prop) prop.localRotation = Quaternion.Euler(0, 0, propAngle);
             Place(s);
         }
         int Seg(float at) { int i = 0; while (i + 2 < cum.Length && cum[i + 1] < at) i++; return i; }

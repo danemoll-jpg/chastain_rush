@@ -30,15 +30,31 @@ namespace ChastainRush
             foreach (var l in lamps) if (l) l.sharedMaterial = off;
         }
 
+        // Round 79 (A): in a replay the lamps and gates as they were (RailTrains.ReplayAt): closed for closedFor s, or open again 'since' s after a
+        // closing of closedLen s; Live hands them back to the running game
+        bool replayed; float shownFlash;
+        public void ShowAt(bool closed, float closedFor, float since, float closedLen)
+        {
+            replayed = true;
+            float ArmAfter(float c) => c <= 4f ? 90f : Mathf.Max(0f, 90f - (c - 4f) * 11.25f);
+            ArmAngle = closed ? ArmAfter(closedFor) : Mathf.Min(90f, ArmAfter(closedLen) + since * 15f);
+            ClosedFor = closed ? closedFor : 0f;
+            shownFlash = closed ? closedFor : closedLen + since;
+        }
+        public void Live() { replayed = false; }
+
         void Update()
         {
-            ClosedFor = Closed ? ClosedFor + Time.deltaTime : 0f;
-            // the arms: down 4 s after the lamps start (8 s to come down), up at 15 degrees a second once the train has gone
-            float want = Closed && ClosedFor > 4f ? 0f : 90f;
-            ArmAngle = Mathf.MoveTowards(ArmAngle, want, (want < ArmAngle ? 11.25f : 15f) * Time.deltaTime);
+            if (!replayed)
+            {
+                ClosedFor = Closed ? ClosedFor + Time.deltaTime : 0f;
+                // the arms: down 4 s after the lamps start (8 s to come down), up at 15 degrees a second once the train has gone
+                float want = Closed && ClosedFor > 4f ? 0f : 90f;
+                ArmAngle = Mathf.MoveTowards(ArmAngle, want, (want < ArmAngle ? 11.25f : 15f) * Time.deltaTime);
+            }
             foreach (var a in arms) if (a) a.localRotation = Quaternion.Euler(0f, 0f, ArmAngle);
             bool lit = Closed || ArmAngle < 89.5f;
-            if (lit) flash += Time.deltaTime; else flash = 0f;
+            if (replayed) flash = shownFlash; else if (lit) flash += Time.deltaTime; else flash = 0f;
             bool phase = Mathf.Repeat(flash, 1.1f) < .55f;
             for (int i = 0; i < lamps.Length; i++) if (lamps[i]) lamps[i].sharedMaterial = lit && ((i % 2 == 0) == phase) ? on : off;
             // the bell, only near the camera

@@ -20,7 +20,7 @@ namespace ChastainRush
         public bool Recording => Current != null;
         readonly List<RaceEntrant> who = new List<RaceEntrant>();
         readonly List<RiderGestures.Kind> gestureWas = new List<RiderGestures.Kind>();
-        int step; float lastT = float.NegativeInfinity;
+        int step; float lastT = float.NegativeInfinity, clockT = float.NegativeInfinity, clockOff, clockWorld;
         (float a, float b)? bestLap; bool bestRace, saveAsked;
         public string LastSaved { get; private set; } = "";
         public static string Note = "";   // checks: what the last stop kept
@@ -62,7 +62,7 @@ namespace ChastainRush
             }
             var tf = Traffic.Instance;
             if (tf) for (int i = 0; i < tf.Cars.Count; i++) d.traffic.Add(new ReplayData.Track { index = i, dt = 1f / TrafficHz, start = float.NaN });
-            Current = d; step = 0; lastT = float.NegativeInfinity; bestLap = null; bestRace = false; saveAsked = false; LastSaved = "";
+            Current = d; step = 0; lastT = clockT = float.NegativeInfinity; bestLap = null; bestRace = false; saveAsked = false; LastSaved = "";
         }
 
         void FixedUpdate()
@@ -90,6 +90,10 @@ namespace ChastainRush
                     // a recycled car jumps (Traffic moves it where nobody sees): the frames in between are its last pose, then the new one
                     tr.frames.Add(new ReplayData.Frame { t = t, p = car.Body.position, q = car.Body.rotation, speed = car.ForwardSpeed });
                 }
+            // Round 79 (A): the world's and the trains' clocks, every second and when the trains' clock jumps
+            float off = RailTrains.Instance ? RailTrains.Instance.Offset : 0f, world = Time.time;
+            if (t - clockT >= 1f || Mathf.Abs(off - clockOff) > .01f || Mathf.Abs(world - clockWorld - (t - clockT)) > .25f)
+            { d.events.Add(new ReplayData.Event { t = t, kind = ReplayData.Kind.Clock, f = world, v = new Vector3(off, 0f, 0f) }); clockT = t; clockOff = off; clockWorld = world; }
             step++;
             d.t1 = t;
             // when to stop: everyone has finished (or been classified), 75 s after the player, 30 minutes

@@ -29,7 +29,7 @@ namespace ChastainRush
 
         void Update()
         {
-            float cyc = 2f * (Green + Yellow + AllRed), t = Mathf.Repeat(Time.time + 7f, cyc);
+            float cyc = 2f * (Green + Yellow + AllRed), t = Mathf.Repeat(WorldClock.Now + 7f, cyc);   // Round 79: the world's clock (a replay's as it was)
             int phase = t < Green ? 0 : t < Green + Yellow ? 1 : t < Green + Yellow + AllRed ? 2 : t < 2f * Green + Yellow + AllRed ? 3 : t < 2f * (Green + Yellow) + AllRed ? 4 : 5;
             if (phase == shown) return; shown = phase;
             for (int i = 0; i < lamps.Length; i++)
