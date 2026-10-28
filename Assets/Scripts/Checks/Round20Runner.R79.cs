@@ -104,11 +104,19 @@ namespace ChastainRush
                 foreach (var x in planes) x.f.MaxOutside = -1e9f;
                 float warnSecs = 0f, nearDan = float.MaxValue; var dan = new Vector3(1069.84f, 0f, -8181.96f);
                 var note = new StringBuilder(); var me = car.GetComponent<PlaneFlight>();
+                var trace = new StringBuilder("t	x	y	z	inside_flight_m	inside_land_m	next	target	airborne	crashed	crashes
+"); float nextTrace = 0f, tr0 = Time.time;
                 yield return R79Fly(r, 1300f, 2f, null, () =>
                 {
+                    if (Time.time - tr0 >= nextTrace)
+                    {
+                        nextTrace = Time.time - tr0 + .5f; var q = car.Body.position;
+                        trace.AppendLine($"{Time.time - tr0:0.0}	{q.x:0}	{q.y:0}	{q.z:0}	{-me.Outside:0}	{MapEdge.Land?.Distance(q.x, q.z) ?? 0f:0}	{race.Player.NextCheckpoint}	{race.Target?.Id}	{(me.Airborne ? 1 : 0)}	{(me.Crashed ? 1 : 0)}	{me.Crashes}");
+                    }
                     foreach (var x in planes) if (x.f.Leaving) warnSecs += Time.fixedDeltaTime / Mathf.Max(1, planes.Count);
                     if (file == "air_tour.json") { float d = Flat(car.Body.position - dan).magnitude; if (d < nearDan) nearDan = d; }
                 }, note);
+                File.WriteAllText(Path.Combine(outputDir, $"79_air_{Path.GetFileNameWithoutExtension(file)}_trace.tsv"), trace.ToString());
                 float w = 0f; while (race.Entrants.Any(e => !e.Finished) && w < 200f) { yield return new WaitForSecondsRealtime(.5f); w += .5f; }
                 report.AppendLine($"  {r.Name}: {(race.Player.Finished ? "finished " + RaceController.Fmt(race.Player.FinalTotal) : "NOT finished")}, missed {race.Player.MissedTotal};{note} " +
                                   string.Join("; ", planes.Select(x => $"{x.e.Name}: nearest the flight boundary {-x.f.MaxOutside:0} m inside{(x.e.Finished ? "" : " (not finished)")}")) +
