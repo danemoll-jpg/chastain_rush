@@ -20,8 +20,8 @@ using Racer;
 //   towers each side, the glass span between with a white X truss, a round emblem, a white arch under it; solid, driven under;
 //   people at the entrance and the ER.
 // And every parking deck on the map (OSM building=parking, mapgen's type parking; they were dressed as stores): open levels on columns with low walls,
-// two ramp lanes along one long side (each level's ramp in the other lane, a landing at alternate ends), cars parked, open at the street; driven to
-// the roof, whose far side has a gap in its wall to jump from (a real jump: the game's ramp rule). The ground under each is levelled (planning).
+// a ramp lane along each long side (the even levels' ramps on one side, the odd on the other; full-width landings at alternate ends), cars parked, open
+// at the street; driven to the roof, whose far end wall is open in its middle third to jump from (a real jump: the game's ramp rule). The ground under each is levelled (planning).
 namespace ChastainRush
 {
     public static partial class MapBuilder
@@ -35,7 +35,7 @@ namespace ChastainRush
         [Serializable] class KsData { public int[] owned; public KsPart[] parts; public int podium = -1; public KsRaised[] raised; public KsEr er; public KsPortico portico; public KsDeck[] decks; }
         static KsData KennestoneNow; static readonly HashSet<int> ksOwned = new HashSet<int>(); static readonly Dictionary<int, float> deckBase = new Dictionary<int, float>();
         static bool KennestoneOwns(int i) => ksOwned.Contains(i);
-        const float KsFloor = 4.2f, DeckFloor = 4.0f, DeckLane = 7f, DeckLanding = 9f;
+        const float KsFloor = 4.2f, DeckFloor = 4.0f, DeckLane = 7f, DeckLanding = 12f;
         const int SignKennestone = 64, SignEmergency = 65, SignHospital = 66, SignParking = 67;
         static readonly Color KsBrick = new Color(.58f, .30f, .23f), KsTan = new Color(.80f, .66f, .48f), KsTanDark = new Color(.62f, .44f, .30f), KsCream = new Color(.90f, .88f, .82f),
             KsWhite = new Color(.95f, .95f, .93f), KsGlass = new Color(.20f, .32f, .36f), KsRoof = new Color(.62f, .62f, .60f), DeckConcrete = new Color(.66f, .65f, .62f);
@@ -177,8 +177,9 @@ namespace ChastainRush
                 for (int e = 0; e < podium.Count; e++)
                 {
                     Vector2 a = podium[e], b = podium[(e + 1) % podium.Count]; if ((b - a).magnitude < 12f) continue; var cp = ClosestOnSeg(lp, a, b); float dd = (cp - lp).magnitude;
-                    if (dd < bd) { bd = dd; q = cp; var dir = (b - a).normalized; n = new Vector2(dir.y, -dir.x); if (InPolygon(cp + n * .5f, podium)) n = -n; }
+                    if (dd < bd) { bd = dd; q = cp; }
                 }
+                n = (lp - q).normalized;   // (build 1 took the nearest edge's own normal: on the podium's ragged outline it faced north, away from the loop)
                 float gy = Ground(t, q.x, q.y) + .05f; var f = MakeFrame(new Vector3(q.x, gy, q.y), n, 1f); var fd = new Vector2(f.F.x, f.F.z);
                 // the white frame: two piers, the band across with the name, a row of lit windows above
                 BoxF(bodies, f, -6.2f, -4.6f, 0f, 13f, -.2f, 2.2f, KsWhite); BoxF(bodies, f, 4.6f, 6.2f, 0f, 13f, -.2f, 2.2f, KsWhite);
@@ -336,7 +337,7 @@ namespace ChastainRush
                 if (!deckBase.TryGetValue(dk.index, out float y0)) continue;
                 var c = new Vector2(dk.centre[0], dk.centre[1]); var U = new Vector2(dk.u[0], dk.u[1]); var V = new Vector2(-U.y, U.x);
                 float hl = dk.hl, hw = dk.hw; int N = Mathf.Clamp(dk.levels, 2, 9);
-                bool twoLanes = 2f * hw >= 2f * DeckLane + 6f && 2f * hl >= 2f * DeckLanding + 16f;
+                bool twoLanes = 2f * hw >= 2f * DeckLane + 6f && 2f * hl >= 2f * DeckLanding + 24f;
                 if (!twoLanes) N = 2;   // narrow or short: one ramp to the roof
                 var go = new GameObject($"Parking deck {dk.index}"); go.transform.SetParent(root, false);
                 var mb = new MeshBuilder(); var cols = new List<(Vector3 c, Vector3 size, Quaternion rot)>();
@@ -347,66 +348,67 @@ namespace ChastainRush
                     BoxF(mb, f, u0, u1, yb, yt, v0, v1, col);
                     if (solid) cols.Add((f.P((u0 + u1) / 2f, (yb + yt) / 2f, (v0 + v1) / 2f), new Vector3(u1 - u0, yt - yb, v1 - v0), rot));
                 }
-                float lane0 = -hw, lane1 = -hw + DeckLane, lane2 = twoLanes ? -hw + 2f * DeckLane : -hw + DeckLane;   // the ramp lanes along the v = -hw side
-                float H = DeckFloor, slab = .35f;
+                // the ramp lanes: lane A along the v = -hw side (the even ramps, from end A), lane B along v = +hw (the odd ramps, from end B); the parking
+                // floor between them; each floor's landing across the whole width at its end, so from one ramp to the next is two easy quarter turns
+                // across the deck's end (build 1's lanes side by side needed a 3.5 m U-turn no car makes)
+                float aIn = -hw + DeckLane, bIn = twoLanes ? hw - DeckLane : hw;   // the lanes' inner edges (no lane B: the floor runs to the far side)
+                float H = DeckFloor, slab = .35f; var wallC = Shade(DeckConcrete, .95f); var curbC = new Color(.95f, .80f, .15f);
                 // the ground floor: a concrete slab just over the levelled ground (the wheels on it, flush at the edges)
                 BoxF(mb, f, -hl, hl, -.3f, .04f, -hw, hw, Shade(DeckConcrete, .9f));
+                int gapEnd = (N - 1) % 2 == 0 ? 1 : -1;   // the roof's jump: through the end wall away from where the last ramp arrives
                 for (int k = 1; k < N; k++)
                 {
-                    float y = k * H; bool endA = k % 2 == 0;   // floor k's landing: at end A (u = -hl) for even k, B for odd
-                    // the parking floor (beside the lanes) and the landing across the lanes at its end
-                    Box(-hl, hl, y - slab, y, lane2, hw, DeckConcrete);
-                    if (twoLanes) Box(endA ? -hl : hl - DeckLanding, endA ? -hl + DeckLanding : hl, y - slab, y, lane0, lane2, DeckConcrete);
-                    else Box(hl - DeckLanding, hl, y - slab, y, lane0, lane2, DeckConcrete);
-                    // low walls round the outside (a gap on the roof's far side to jump from), and along the lanes' edge outside the landing
-                    bool roof = k == N - 1;
-                    if (!roof) Box(-hl, hl, y, y + 1.0f, hw - .25f, hw, Shade(DeckConcrete, .95f));
-                    else { Box(-hl, -hl / 3f, y, y + 1.0f, hw - .25f, hw, Shade(DeckConcrete, .95f)); Box(hl / 3f, hl, y, y + 1.0f, hw - .25f, hw, Shade(DeckConcrete, .95f)); }
-                    Box(-hl, -hl + .25f, y, y + 1.0f, lane0, hw, Shade(DeckConcrete, .95f)); Box(hl - .25f, hl, y, y + 1.0f, lane0, hw, Shade(DeckConcrete, .95f));
-                    Box(-hl, hl, y, y + 1.0f, lane0, lane0 + .25f, Shade(DeckConcrete, .95f));
-                    float lu0 = twoLanes ? (endA ? -hl + DeckLanding : -hl) : -hl, lu1 = twoLanes ? (endA ? hl : hl - DeckLanding) : hl - DeckLanding;
-                    Box(lu0, lu1, y, y + .9f, lane2 - .2f, lane2, new Color(.95f, .80f, .15f));   // the curb wall along the lanes (yellow)
-                    // columns along the outside and the lanes' edge
-                    for (float u = -hl + 4f; u <= hl - 3f; u += 8.5f) foreach (float v in new[] { hw - .4f, lane2 + .2f })
+                    float y = k * H; bool endA = k % 2 == 0; bool roof = k == N - 1;
+                    float l0 = endA ? -hl : hl - DeckLanding, l1 = endA ? -hl + DeckLanding : hl;   // this floor's landing (u)
+                    Box(-hl, hl, y - slab, y, aIn, bIn, DeckConcrete);                     // the parking floor
+                    Box(l0, l1, y - slab, y, -hw, aIn, DeckConcrete);                      // the landing over lane A
+                    if (twoLanes) Box(l0, l1, y - slab, y, bIn, hw, DeckConcrete);         // and over lane B
+                    // low walls: both long sides, both ends (on the roof, the far end's middle third left open), the lanes' inner edges outside the landing
+                    Box(-hl, hl, y, y + 1.0f, -hw, -hw + .25f, wallC); Box(-hl, hl, y, y + 1.0f, hw - .25f, hw, wallC);
+                    foreach (int e in new[] { -1, 1 })
+                    {
+                        float u0 = e < 0 ? -hl : hl - .25f, u1 = e < 0 ? -hl + .25f : hl;
+                        if (roof && e == gapEnd) { Box(u0, u1, y, y + 1.0f, -hw, -hw / 3f, wallC); Box(u0, u1, y, y + 1.0f, hw / 3f, hw, wallC); BoxF(mb, f, e < 0 ? -hl + .6f : hl - 1.0f, e < 0 ? -hl + 1.0f : hl - .6f, y - .02f, y + .02f, -hw / 3f, hw / 3f, curbC); }
+                        else Box(u0, u1, y, y + 1.0f, -hw, hw, wallC);
+                    }
+                    float cu0 = endA ? -hl + DeckLanding : -hl, cu1 = endA ? hl : hl - DeckLanding;
+                    Box(cu0, cu1, y, y + .9f, aIn, aIn + .2f, curbC);
+                    if (twoLanes) Box(cu0, cu1, y, y + .9f, bIn - .2f, bIn, curbC);
+                    // columns along the long sides and the lanes' inner edges
+                    for (float u = -hl + 4f; u <= hl - 3f; u += 8.5f) foreach (float v in twoLanes ? new[] { -hw + .4f, aIn + .4f, bIn - .4f, hw - .4f } : new[] { -hw + .4f, aIn + .4f, hw - .4f })
                         Box(u - .3f, u + .3f, y - H + .04f, y - slab, v - .3f, v + .3f, Shade(DeckConcrete, .85f));
-                    // the parked cars on this floor (one row by the outer wall, one by the lanes), every 2.9 m, every other space
-                    if (!roof || k > 1)
-                        for (float u = -hl + 3f; u <= hl - 3f; u += 2.9f)
-                            foreach (float v in new[] { hw - 3.0f, lane2 + 2.9f })
+                    // parked cars: a row along each lane's inner edge, nose in (every 2.9 m, about half the spaces), not on the landings' turning room
+                    if (!roof)
+                        for (float u = -hl + DeckLanding + 2f; u <= hl - DeckLanding - 2f; u += 2.9f)
+                            foreach (float v in twoLanes ? new[] { aIn + 2.9f, bIn - 2.9f } : new[] { aIn + 2.9f })
                             {
                                 if (Hash01(dk.index * 131 + k * 17 + Mathf.RoundToInt(u * 3f + v), 77) > .55f) continue;
-                                var p = f.P(u, y, v); ParkedCar(mb, MakeFrame(new Vector3(p.x, y0 + y, p.z), V, 1f), dk.index * 97 + k * 31 + (int)(u * 7f) + (int)v); cars++;
+                                var p = f.P(u, y, v); ParkedCar(mb, MakeFrame(new Vector3(p.x, y0 + y, p.z), V * Mathf.Sign(-v), 1f), dk.index * 97 + k * 31 + (int)(u * 7f) + (int)v); cars++;
                             }
                 }
-                // the roof's jump: the outer wall's middle third on the far long side is not built (driven off, a real jump); a slab edge strip in yellow
-                {
-                    float y = (N - 1) * H; mb.Tint = new Color(.95f, .80f, .15f);
-                    BoxF(mb, f, -hl / 3f, hl / 3f, y - .02f, y + .02f, hw - 1.0f, hw - .6f, new Color(.95f, .80f, .15f));
-                }
-                // the ramps: ramp k from floor k to k + 1 in lane k % 2, from floor k's landing end to the other end
+                // the ramps: ramp k from floor k to k + 1, in lane A from end A (even k) or lane B from end B (odd k)
                 for (int k = 0; k + 1 < N; k++)
                 {
-                    bool fromA = k % 2 == 0; float v0 = twoLanes ? (k % 2 == 0 ? lane0 : lane1) : lane0, v1 = v0 + DeckLane;
-                    float ua = twoLanes ? -hl + DeckLanding : -hl + 4f, ub = twoLanes ? hl - DeckLanding : hl - DeckLanding;
+                    bool fromA = k % 2 == 0 || !twoLanes; float v0 = fromA ? -hw : bIn, v1 = fromA ? aIn : hw;
+                    float ua = -hl + DeckLanding, ub = hl - DeckLanding;
                     float ys = k * H, ye = (k + 1) * H;
-                    float uStart = fromA || !twoLanes ? ua : ub, uEnd = fromA || !twoLanes ? ub : ua;
-                    // the slab: a tilted box from (uStart, ys) to (uEnd, ye)
+                    float uStart = fromA ? ua : ub, uEnd = fromA ? ub : ua;
+                    if (!twoLanes) { uStart = -hl + 4f; uEnd = hl - DeckLanding; }
                     var pa = f.P(uStart, ys, (v0 + v1) / 2f); var pb = f.P(uEnd, ye, (v0 + v1) / 2f); var along = pb - pa; float len = along.magnitude;
                     var fwd = along.normalized; var r = Quaternion.LookRotation(fwd, (Vector3.up - fwd * fwd.y).normalized);
                     var mid = (pa + pb) / 2f - (r * Vector3.up) * (slab / 2f);
                     cols.Add((mid, new Vector3(DeckLane - .3f, slab, len + .6f), r));
-                    // drawn as a quad strip with a thickness (a box along the slope)
                     var side = r * Vector3.right * ((DeckLane - .3f) / 2f); var nrm = r * Vector3.up; var ext = along.normalized * .3f;
                     Vector3 A0 = pa - ext - side, A1 = pa - ext + side, B0 = pb + ext - side, B1 = pb + ext + side;
                     mb.Tint = DeckConcrete; Face(mb, A0, B0, B1, A1, nrm); Face(mb, A0 - nrm * slab, A1 - nrm * slab, B1 - nrm * slab, B0 - nrm * slab, -nrm);
                     Face(mb, A0, A0 - nrm * slab, B0 - nrm * slab, B0, -(r * Vector3.right)); Face(mb, A1, B1, B1 - nrm * slab, A1 - nrm * slab, r * Vector3.right);
-                    // a low wall each side of the ramp
-                    foreach (float s in new[] { -1f, 1f }) { var o = r * Vector3.right * s * ((DeckLane - .3f) / 2f); Beam(mb, pa + o + Vector3.up * .45f, pb + o + Vector3.up * .45f, .2f, .9f, Shade(DeckConcrete, .95f)); cols.Add(((pa + pb) / 2f + o + nrm * .45f, new Vector3(.2f, .9f, len), r)); }
+                    // a low wall each side of the ramp (the deck's own long walls are at the floors' heights only)
+                    foreach (float sd in new[] { -1f, 1f }) { var o = r * Vector3.right * sd * ((DeckLane - .3f) / 2f); Beam(mb, pa + o + Vector3.up * .45f, pb + o + Vector3.up * .45f, .2f, .9f, wallC); cols.Add(((pa + pb) / 2f + o + nrm * .45f, new Vector3(.2f, .9f, len), r)); }
                     ramps++;
                 }
                 // PARKING over the way in (the lanes' end A at the ground), on the outer face
                 float sh = Mathf.Min(H * .85f, 3.2f);
-                if (signMat != null) signs.Add(f.P(-hl - .05f, sh, (lane0 + lane2) / 2f), new Vector2(-U.x, -U.y), 4.8f, .6f, SignParking);
+                if (signMat != null) signs.Add(f.P(-hl - .05f, sh, (-hw + aIn) / 2f), new Vector2(-U.x, -U.y), 4.8f, .6f, SignParking);
                 // the solid parts
                 mb.ToObject($"Parking deck {dk.index} structure", mats.House, go.transform, false, true);
                 foreach (var (cc, size, rr) in cols) { var o = new GameObject("deck part"); o.transform.SetParent(go.transform, false); o.transform.SetPositionAndRotation(cc, rr); o.AddComponent<BoxCollider>().size = size; }

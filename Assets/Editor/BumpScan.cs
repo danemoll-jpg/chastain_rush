@@ -146,6 +146,13 @@ namespace ChastainRush
             var all = new List<(string name, float[] pts, float[] deck, float width)>();
             foreach (var r in map.roads) all.Add((r.name ?? "(unnamed)", r.points, null, r.width));
             foreach (var b in map.bridges) all.Add((b.name ?? "(unnamed)", b.points, b.deck_y, b.width));
+            // Round 77: -bumpRect x0,z0,x1,z1 (only the roads with a point inside; Round 77's scan of stage 3's piece)
+            var ra = Environment.GetCommandLineArgs(); int ri = Array.IndexOf(ra, "-bumpRect");
+            if (ri >= 0 && ri + 1 < ra.Length)
+            {
+                var v = Array.ConvertAll(ra[ri + 1].Split(','), q => float.Parse(q, System.Globalization.CultureInfo.InvariantCulture));
+                all = all.Where(it => { for (int i = 0; i + 1 < it.pts.Length; i += 2) if (it.pts[i] >= v[0] && it.pts[i] <= v[2] && it.pts[i + 1] >= v[1] && it.pts[i + 1] <= v[3]) return true; return false; }).ToList();
+            }
 
             foreach (var item in all)
             {

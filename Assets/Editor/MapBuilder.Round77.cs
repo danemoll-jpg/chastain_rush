@@ -21,14 +21,27 @@ namespace ChastainRush
     {
         const float R77Reach = 45f, R77Step = 1f, R77Smooth = 15f, R77Win = 384f;
         static readonly string[] R77Corridors = { "Canton Road Connector" };
+        // Round 77 (A, "scan the whole of stage 3's new roads ... and fix what it finds"): the stage 3 piece's roads the face scan found faces beside
+        // (python Tools/mapgen/road_faces.py, over 3 m in 2 m: local/round77/scan/stage3_faces.txt), their pieces inside the piece only; the main roads
+        // with the connector's reach, the residential streets with R77StreetReach (a house lot stays its own shape past it)
+        static readonly string[] R77PieceMains = { "South Marietta Parkway Southwest", "South Marietta Parkway Southeast", "Atlanta Street Southeast", "Powder Springs Street Southwest", "West Atlanta Street Southeast" };
+        static readonly string[] R77PieceStreets = { "Griggs Street Southwest", "Marietta Walk Court Southwest", "Shy Lane Northeast", "Frasier Street Southeast", "Old Clay Street", "South Avenue Southeast",
+            "Lawrence Street Northeast", "Pomeroy Street", "Henry Drive Southwest", "Manget Street Southeast", "Lakewood Drive Southeast" };
+        const float R77StreetReach = 20f;
         static readonly (string name, Vector2 at)[] R77Spots = { ("BUG-001", new Vector2(2292.44f, -5006.93f)), ("BUG-002", new Vector2(1694.78f, -5783.19f)), ("BUG-003", new Vector2(1618.42f, -6110.74f)) };
 
         static void R77Embankments(MapData map, TerrainGrid terrain)
         {
             var log = new List<string> { "Round 77 (A): the ground round the Canton Road Connector and its ramps graded as embankments (MapBuilder.Round77.cs)" };
             // ---- the corridor: the connector's pieces on the ground, and the ramps (links) that run off them, three links deep
-            var corr = new HashSet<int>();
-            for (int i = 0; i < map.roads.Length; i++) { var r = map.roads[i]; if (!r.bridge && !r.tunnel && R77Corridors.Contains(r.name) && r.points != null && r.points.Length >= 4) corr.Add(i); }
+            var corr = new HashSet<int>(); var reachOf = new Dictionary<int, float>();
+            bool InPiece(float[] q) { var pc = map.pieces; if (pc == null || pc.Length < 4) return false; for (int k = 0; k + 1 < q.Length; k += 2) if (q[k] >= pc[0] && q[k] <= pc[2] && q[k + 1] >= pc[1] && q[k + 1] <= pc[3]) return true; return false; }
+            for (int i = 0; i < map.roads.Length; i++)
+            {
+                var r = map.roads[i]; if (r.bridge || r.tunnel || r.points == null || r.points.Length < 4) continue;
+                if (R77Corridors.Contains(r.name) || (R77PieceMains.Contains(r.name) && InPiece(r.points))) { corr.Add(i); reachOf[i] = R77Reach; }
+                else if (R77PieceStreets.Contains(r.name) && InPiece(r.points)) { corr.Add(i); reachOf[i] = R77StreetReach; }
+            }
             var ends = new List<Vector2>();
             void EndsOf(float[] p) { int n = p.Length / 2; ends.Add(new Vector2(p[0], p[1])); ends.Add(new Vector2(p[2 * n - 2], p[2 * n - 1])); }
             foreach (int i in corr) EndsOf(map.roads[i].points);
@@ -42,7 +55,7 @@ namespace ChastainRush
                     int n = r.points.Length / 2; var a = new Vector2(r.points[0], r.points[1]); var z = new Vector2(r.points[2 * n - 2], r.points[2 * n - 1]);
                     if (ends.Any(e => (e - a).sqrMagnitude < 16f || (e - z).sqrMagnitude < 16f)) add.Add(i);
                 }
-                foreach (int i in add) { corr.Add(i); EndsOf(map.roads[i].points); }
+                foreach (int i in add) { corr.Add(i); reachOf[i] = R77Reach; EndsOf(map.roads[i].points); }
                 foreach (var b in map.bridges) if (b.@class != null && b.@class.EndsWith("_link") && b.points != null && b.points.Length >= 4)
                     { int n = b.points.Length / 2; var a = new Vector2(b.points[0], b.points[1]); var z = new Vector2(b.points[2 * n - 2], b.points[2 * n - 1]); if (ends.Any(e => (e - a).sqrMagnitude < 16f || (e - z).sqrMagnitude < 16f)) EndsOf(b.points); }
             }
@@ -51,11 +64,11 @@ namespace ChastainRush
             Vector2Int Key(Vector2 p) => new Vector2Int(Mathf.RoundToInt(p.x * 2f), Mathf.RoundToInt(p.y * 2f));
             var at = new Dictionary<Vector2Int, List<(int piece, bool start)>>();
             foreach (int i in corr) { var q = ToPoints(map.roads[i].points); foreach (var (p, s) in new[] { (q[0], true), (q[q.Count - 1], false) }) { var k = Key(p); if (!at.TryGetValue(k, out var l)) at[k] = l = new List<(int, bool)>(); l.Add((i, s)); } }
-            var used = new HashSet<int>(); var chains = new List<(List<Vector2> pts, float half)>();
+            var used = new HashSet<int>(); var chains = new List<(List<Vector2> pts, float half, float reach)>();
             foreach (int i0 in corr.OrderBy(i => i))
             {
                 if (used.Contains(i0)) continue; used.Add(i0);
-                var line = ToPoints(map.roads[i0].points); float half = map.roads[i0].width * .5f;
+                var line = ToPoints(map.roads[i0].points); float half = map.roads[i0].width * .5f; float reach = reachOf[i0];
                 for (int dir = 0; dir < 2; dir++)
                 {
                     for (int guard = 0; guard < 500; guard++)
@@ -63,18 +76,18 @@ namespace ChastainRush
                         if (!at.TryGetValue(Key(line[line.Count - 1]), out var l) || l.Count != 2) break;
                         int k = l.FindIndex(e => !used.Contains(e.piece)); if (k < 0) break;
                         var o = l[k]; used.Add(o.piece); var q = ToPoints(map.roads[o.piece].points); if (!o.start) q.Reverse();
-                        line.AddRange(q.Skip(1)); half = Mathf.Max(half, map.roads[o.piece].width * .5f);
+                        line.AddRange(q.Skip(1)); half = Mathf.Max(half, map.roads[o.piece].width * .5f); reach = Mathf.Max(reach, reachOf[o.piece]);
                     }
                     line.Reverse();
                 }
-                chains.Add((line, half));
+                chains.Add((line, half, reach));
             }
             // ---- each chain's profile: its ground smoothed along (a first-difference smoother of length R77Smooth), held at its ends, at every deck end
             // and where another road or another chain meets it
             var deckEnds = new List<Vector2>(); foreach (var b in map.bridges) { var q = ToPoints(b.points); if (q.Count > 1) { deckEnds.Add(q[0]); deckEnds.Add(q[q.Count - 1]); } }
             var roadEnds = new List<Vector2>(); foreach (var r in map.roads) { if (r.points == null || r.points.Length < 4) continue; int n = r.points.Length / 2; roadEnds.Add(new Vector2(r.points[0], r.points[1])); roadEnds.Add(new Vector2(r.points[2 * n - 2], r.points[2 * n - 1])); }
             var pinIdx = new CellIndex(16f); var pins = deckEnds.Concat(roadEnds).ToList(); foreach (var p in pins) pinIdx.Add(p);
-            var segs = new List<(Vector2 a, Vector2 b, float ya, float yb, float half, int chain)>();
+            var segs = new List<(Vector2 a, Vector2 b, float ya, float yb, float half, int chain, float reach)>();
             float worstDip = 0f; int nPins = 0;
             var pinNear = new List<int>();
             for (int c = 0; c < chains.Count; c++)
@@ -90,7 +103,7 @@ namespace ChastainRush
                 }
                 var t = R77Smooth1D(raw, w, R77Smooth * R77Smooth);
                 for (int i = 0; i < n; i++) worstDip = Mathf.Max(worstDip, Mathf.Abs(t[i] - raw[i]));
-                for (int i = 0; i + 1 < n; i++) segs.Add((p[i], p[i + 1], t[i], t[i + 1], chains[c].half, c));
+                for (int i = 0; i + 1 < n; i++) segs.Add((p[i], p[i + 1], t[i], t[i + 1], chains[c].half, c, chains[c].reach));
             }
             var segIdx = new CellIndex(16f); foreach (var s in segs) segIdx.Add(s.a, s.b, s.half + R77Reach + 1f);
             // ---- what is held: other roads and drives on the ground, buildings (+2 m), water; a deck's footprint held where the deck stands clear of the
@@ -126,13 +139,14 @@ namespace ChastainRush
                             int id = j * nx + i; float x = outer.xMin + i * R77Step, z = outer.yMin + j * R77Step; var p = new Vector2(x, z);
                             float h0 = H0[id] = Y[id] = terrain.Has(x, z) ? terrain.Height(x, z) : float.NaN; dc[id] = float.MaxValue; fix[id] = true;
                             if (float.IsNaN(h0) || i == 0 || j == 0 || i == nx - 1 || j == nz - 1) continue;
-                            float d1 = float.MaxValue, t1 = 0f, h1 = 0f;
+                            float d1 = float.MaxValue, t1 = 0f, h1 = 0f, rc = R77Reach, scaled = float.MaxValue;
                             foreach (int k in segIdx.Near(p, 0f, near))
                             {
                                 var s = segs[k]; var ab = s.b - s.a; float tt = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (s.a + ab * tt - p).magnitude;
-                                if (d < d1) { d1 = d; t1 = Mathf.Lerp(s.ya, s.yb, tt); h1 = s.half; }
+                                if (d < d1) { d1 = d; t1 = Mathf.Lerp(s.ya, s.yb, tt); h1 = s.half; rc = s.reach; }
+                                scaled = Mathf.Min(scaled, d * R77Reach / s.reach);   // (a street's reach scaled to the connector's)
                             }
-                            dc[id] = d1; if (d1 > R77Reach) continue; any = true;
+                            dc[id] = scaled; if (scaled > R77Reach) continue; any = true;
                             if (d1 <= h1 + 1f) { Y[id] = t1; continue; }   // the carriageway at its profile
                             // a deck over it: held where it stands clear, a clean floor under it where it does not
                             float dd = float.MaxValue, dy = 0f;
@@ -173,17 +187,24 @@ namespace ChastainRush
                             if (gb > 1f) faceB++; if (ga > 1f) faceA++;
                             float dlt = Y[k] - H0[k]; maxCut = Mathf.Max(maxCut, -dlt); maxFill = Mathf.Max(maxFill, dlt);
                         }
-                    // onto the terrain over the inner window (bilinear in the grid's changes)
-                    float D(float x, float z)
+                    // onto the terrain over the inner window: within the reach the grid's surface itself (bilinear), so a spike between two of its points
+                    // goes too (build 1 added the grid's change to each terrain sample: a sample's own spike, finer than the 1 m grid, stayed); easing to
+                    // the change alone over the reach's last 3 m, nothing past it
+                    float Bi(float[] a, float x, float z)
                     {
                         float fx = (x - outer.xMin) / R77Step, fz = (z - outer.yMin) / R77Step; int i = Mathf.Clamp((int)fx, 0, nx - 2), j = Mathf.Clamp((int)fz, 0, nz - 2); float u = fx - i, v = fz - j;
-                        float S(int ii, int jj) { int k = jj * nx + ii; return float.IsNaN(Y[k]) || float.IsNaN(H0[k]) ? 0f : Y[k] - H0[k]; }
-                        return Mathf.Lerp(Mathf.Lerp(S(i, j), S(i + 1, j), u), Mathf.Lerp(S(i, j + 1), S(i + 1, j + 1), u), v);
+                        float S(int ii, int jj) { float q = a[jj * nx + ii]; return float.IsNaN(q) || q > 1e8f ? float.NaN : q; }
+                        float s00 = S(i, j), s10 = S(i + 1, j), s01 = S(i, j + 1), s11 = S(i + 1, j + 1); if (float.IsNaN(s00 + s10 + s01 + s11)) return float.NaN;
+                        return Mathf.Lerp(Mathf.Lerp(s00, s10, u), Mathf.Lerp(s01, s11, u), v);
                     }
+                    var Dlt = new float[N]; for (int k = 0; k < N; k++) Dlt[k] = float.IsNaN(Y[k]) || float.IsNaN(H0[k]) ? 0f : Y[k] - H0[k];
                     EditTerrain(terrain, inner, (x, z, y) =>
                     {
                         if (x < inner.xMin || x >= inner.xMax || z < inner.yMin || z >= inner.yMax) return y;
-                        float d = D(x, z); if (Mathf.Abs(d) < 1e-3f) return y; changed++; return y + d;
+                        float d = Bi(dc, x, z); if (float.IsNaN(d) || d > R77Reach) return y;
+                        float delta = Bi(Dlt, x, z), abs = Bi(Y, x, z); if (float.IsNaN(delta)) return y;
+                        float ny = float.IsNaN(abs) ? y + delta : Mathf.Lerp(y + delta, abs, Smooth01((R77Reach - d) / 3f));
+                        if (Mathf.Abs(ny - y) < 1e-3f) return y; changed++; return ny;
                     });
                 }
             var spotAfter = R77Spots.Select(s => R77Steepest(terrain, s.at, 30f)).ToArray();

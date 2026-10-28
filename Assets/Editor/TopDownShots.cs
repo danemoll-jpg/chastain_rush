@@ -34,16 +34,25 @@ namespace ChastainRush
             }
             if (Arg("-pickRay") != null)   // Round 77: "x,y,z,tx,ty,tz": which drawn mesh a ray from (x, y, z) toward (tx, ty, tz) meets first (temporary mesh colliders)
             {
-                var v = Array.ConvertAll(Arg("-pickRay").Split(','), F); var ray = new Ray(new Vector3(v[0], v[1], v[2]), (new Vector3(v[3], v[4], v[5]) - new Vector3(v[0], v[1], v[2])).normalized);
+                var rays = Arg("-pickRay").Split(';').Select(q => Array.ConvertAll(q.Split(','), F)).Select(v => new Ray(new Vector3(v[0], v[1], v[2]), (new Vector3(v[3], v[4], v[5]) - new Vector3(v[0], v[1], v[2])).normalized)).ToList();
                 var temp = new System.Collections.Generic.List<Component>();
                 foreach (var mr in UnityEngine.Object.FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None))
                 {
-                    if (!mr.bounds.IntersectRay(ray, out float dist) || dist > 300f) continue; var mf = mr.GetComponent<MeshFilter>(); if (mf == null || mf.sharedMesh == null) continue;
+                    if (!rays.Any(ry => mr.bounds.IntersectRay(ry, out float dd) && dd < 300f)) continue; var mf = mr.GetComponent<MeshFilter>(); if (mf == null || mf.sharedMesh == null) continue;
                     var go2 = new GameObject("pick " + mr.name); go2.transform.SetPositionAndRotation(mr.transform.position, mr.transform.rotation); go2.transform.localScale = mr.transform.lossyScale;
                     var mc = go2.AddComponent<MeshCollider>(); mc.sharedMesh = mf.sharedMesh; temp.Add(mc); go2.layer = 31;
                 }
                 Physics.SyncTransforms();
-                foreach (var h in Physics.RaycastAll(ray, 300f, 1 << 31).OrderBy(h => h.distance).Take(5)) Debug.Log($"[PickRay] {h.collider.name} at {h.point} ({h.distance:0.0} m)");
+                foreach (var ray in rays) foreach (var h in Physics.RaycastAll(ray, 300f, 1 << 31).OrderBy(h => h.distance).Take(1)) Debug.Log($"[PickRay] {ray.direction} {h.collider.name} at {h.point} ({h.distance:0.0} m)");
+            }
+            if (Arg("-meshAt") != null)   // Round 77: "name,x,z,r": a mesh's vertices within r m of (x, z) (x, y, z and the terrain under it), to the log
+            {
+                var q = Arg("-meshAt").Split(','); float mx = F(q[1]), mz = F(q[2]), mr = F(q[3]);
+                foreach (var mf in UnityEngine.Object.FindObjectsByType<MeshFilter>(FindObjectsSortMode.None).Where(m => m.name == q[0]))
+                {
+                    var vs = mf.sharedMesh.vertices; var tr = mf.transform; int n = 0;
+                    foreach (var v0 in vs) { var v = tr.TransformPoint(v0); if (new Vector2(v.x - mx, v.z - mz).magnitude > mr) continue; float g = Terrain.activeTerrains.Select(tt => tt.SampleHeight(v) + tt.transform.position.y).DefaultIfEmpty(float.NaN).Max(); if (++n % 3 == 0) Debug.Log($"[MeshAt] {v.x:0.0} {v.y:0.00} {v.z:0.0} ground {g:0.00}"); }
+                }
             }
             if (Arg("-hideTerrain") != null) foreach (var t in UnityEngine.Object.FindObjectsByType<Terrain>(FindObjectsSortMode.None)) t.drawHeightmap = false;   // Round 77: what is not ground
             RenderSettings.fog = false;   // the camera is hundreds of metres up

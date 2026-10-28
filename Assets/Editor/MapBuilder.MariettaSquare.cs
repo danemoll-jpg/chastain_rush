@@ -566,7 +566,7 @@ namespace ChastainRush
                             for (float u = -60f; u < 60f; u += 2.5f)
                             {
                                 var fp = dc + U * (u + 1.25f) + V * off; float fy = Ground(t, fp.x, fp.y); var ff = MakeFrame(new Vector3(fp.x, fy, fp.y), V, 1f);
-                                if (RailRejectTree(fp.x, fp.y) && (RailTreeNear(fp) < 2.5f)) continue;
+                                if ((RailRejectTree(fp.x, fp.y) && RailTreeNear(fp) < 2.5f) || RoadGap(fp) < 1.5f) continue;   // (not across a street: build 1's ran across Mill Street)
                                 var mb = tables.Begin(fp);
                                 tables.Piece(() =>
                                 {

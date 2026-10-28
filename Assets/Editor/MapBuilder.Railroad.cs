@@ -46,7 +46,10 @@ namespace ChastainRush
             var over = (d.overpasses ?? new RailCrossJ[0]).Concat((d.crossings ?? new RailCrossJ[0]).Where(c => RailOverClasses.Contains(c.@class))).ToList();
             RailPlans = new List<RailPlan>(); var log = new List<string>();
             var dips = new List<(int road, Vector2 at, float dip)>();
-            float steepest = 0f; int graded = 0;
+            float steepest = 0f; int graded = 0; Vector2 steepAt = Vector2.zero; int nCross = 0, nGradeSep = 0, nForced = 0;
+            // (Round 77 build 1: a second track beside the first got its own profile and sat lower on the first one's bank: a line within 7 m of one
+            // already planned takes that one's heights there)
+            var doneIdx = new CellIndex(16f); var donePts = new List<(Vector2 p, float y)>(); var nearTmp = new List<int>();
             for (int li = 0; li < d.lines.Length; li++)
             {
                 var p = ToPoints(d.lines[li].points); int n = p.Count; if (n < 2) continue;
@@ -64,15 +67,34 @@ namespace ChastainRush
                 // the profile: the ground smoothed along (decks barely count), held at each level crossing at the road's own height
                 var raw = new float[n]; var w = new float[n];
                 for (int i = 0; i < n; i++) { raw[i] = t.Height(p[i].x, p[i].y); w[i] = deck[i] ? .01f : 1f; }
+                for (int i = 0; i < n; i++)
+                {
+                    float bd = 49f; float by = 0f; bool got = false;
+                    foreach (int k in doneIdx.Near(p[i], 7f, nearTmp)) { float d2 = (donePts[k].p - p[i]).sqrMagnitude; if (d2 < bd) { bd = d2; by = donePts[k].y; got = true; } }
+                    if (got) { raw[i] = by; w[i] = 50f; }
+                }
+                float mu = (RailSmooth / 2f) * (RailSmooth / 2f);   // (points 2 m apart)
+                var free = R77Smooth1D(raw, w, mu);   // the profile without the crossings: a crossing whose road is far off it is not at grade
                 foreach (var c in cross.Where(c => c.line == li))
                 {
                     int k = Mathf.Clamp(c.i + ((new Vector2(c.x, c.z) - p[c.i]).magnitude > 1f ? 1 : 0), 0, n - 1);
-                    raw[k] = t.Height(c.x, c.z); w[k] = 1e6f; isCross[k] = true;
+                    float roadY = t.Height(c.x, c.z), off = roadY - free[k];
+                    if (off < -2.5f && !deck[k])
+                    {
+                        // the road well below the line: a bridge over it (as OSM's bridges)
+                        over.Add(c); nGradeSep++;
+                        var rd0 = new Vector2(Mathf.Sin(c.road_heading * Mathf.Deg2Rad), Mathf.Cos(c.road_heading * Mathf.Deg2Rad));
+                        var ld0 = (p[Mathf.Min(c.i + 1, n - 1)] - p[c.i]).normalized; float sin0 = Mathf.Max(.35f, Mathf.Abs(ld0.x * rd0.y - ld0.y * rd0.x));
+                        float span0 = Mathf.Min(40f, (c.width * .5f + 3f) / sin0);
+                        for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - cum[k]) <= span0) { deck[i] = true; roadDeck[i] = true; w[i] = .01f; }
+                        continue;
+                    }
+                    if (off > 2.5f) nForced++;
+                    raw[k] = roadY; w[k] = 1e6f; isCross[k] = true; nCross++;
                     var rd = new Vector2(Mathf.Sin(c.road_heading * Mathf.Deg2Rad), Mathf.Cos(c.road_heading * Mathf.Deg2Rad));
                     RailCrossings.Add((new Vector2(c.x, c.z), rd, c.width * .5f, raw[k]));
                     for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - cum[k]) < c.width * .5f + 1.5f) isCross[i] = true;
                 }
-                float mu = (RailSmooth / 2f) * (RailSmooth / 2f);   // (points 2 m apart)
                 var y = R77Smooth1D(raw, w, mu);
                 // over a road: the bed lifted (up to RailLift) and the road dipped for the rest, until the deck clears it
                 bool again = false;
@@ -84,7 +106,8 @@ namespace ChastainRush
                     if (need - lifted > .05f) dips.Add((o.road, new Vector2(o.x, o.z), need - lifted));
                 }
                 if (again) y = R77Smooth1D(raw, w, mu);
-                for (int i = 1; i < n; i++) steepest = Mathf.Max(steepest, Mathf.Abs(y[i] - y[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], .1f));
+                for (int i = 1; i < n; i++) { float gr = Mathf.Abs(y[i] - y[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], .1f); if (gr > steepest) { steepest = gr; steepAt = p[i]; } }
+                for (int i = 0; i < n; i++) { donePts.Add((p[i], y[i])); doneIdx.Add(p[i]); }
                 // the bed graded (not under a deck), in pieces of 200 m; the banks ease out over more ground the further the bed stands off it
                 int start = -1;
                 for (int i = 0; i <= n; i++)
@@ -97,7 +120,7 @@ namespace ChastainRush
                         {
                             var pts = new List<float>(); var ys = new List<float>(); var bl = new List<float>();
                             for (int k = start; k <= end; k++) { pts.Add(p[k].x); pts.Add(p[k].y); ys.Add(y[k]); bl.Add(Mathf.Clamp(Mathf.Abs(y[k] - raw[k]) * 2f + 3f, 4f, 16f)); }
-                            GradeAlong(t, new RidgeGrade { id = $"railroad {li} {start}", points = pts.ToArray(), y = ys.ToArray(), half = 2.4f, blend = 6f, blends = bl.ToArray() });
+                            GradeAlong(t, new RidgeGrade { id = $"railroad {li} {start}", points = pts.ToArray(), y = ys.ToArray(), half = 2.4f, blend = 6f, blends = bl.ToArray(), open_ends = true });   // (open ends: build 1's round ends spilled the bank past a bridge's end onto the road under it)
                             graded += end - start;
                         }
                         start = on ? i : -1;
@@ -124,7 +147,8 @@ namespace ChastainRush
             railTreePts = new List<Vector2>(); railTreeIdx = new CellIndex(16f);
             foreach (var rp in RailPlans) foreach (var q in rp.p) { railTreePts.Add(q); railTreeIdx.Add(q); }
             float km = RailPlans.Sum(rp => { float s = 0f; for (int i = 1; i < rp.p.Count; i++) s += (rp.p[i] - rp.p[i - 1]).magnitude; return s; }) / 1000f;
-            Debug.Log($"[Round77] C: railroad planned: {RailPlans.Count} lines, {km:0.0} km, {graded * 2f / 1000f:0.0} km of bed graded, the steepest grade {steepest * 100f:0.0} %; " +
+            Debug.Log($"[Round77] C: railroad planned: {RailPlans.Count} lines, {km:0.0} km, {graded * 2f / 1000f:0.0} km of bed graded, the steepest grade {steepest * 100f:0.0} % at ({steepAt.x:0}, {steepAt.y:0}); " +
+                      $"{nCross} level crossings ({nForced} with the road over 2.5 m above the line's own profile: the line held to it), {nGradeSep} crossings with the road well below made bridges; " +
                       $"{RailCrossings.Count} level crossings, {over.Count} bridges over roads ({string.Join(", ", over.Select(o => o.name).Distinct())}); {railDrop.Count} buildings give way ({string.Join(", ", railDrop)}); {string.Join("; ", log)}");
         }
 
