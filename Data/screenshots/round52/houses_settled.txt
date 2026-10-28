@@ -1,7 +1,7 @@
 Round 52 (B): Dan's three spots and the houses facing the Addison Heights lap (MapBuilder.Round52.cs). Each: floor before -> after,
 its drive from the street's edge to the garage doors (grade, + = up to the house; at most 20 % in the game). Lot cut round each,
 a stoop and steps at each front door; style E's upstairs back windows only over its two-story block.
-72 houses.
+603 houses.
 
   598  x    3045  z     80  style C  floor 301.59 -> 301.59  drive 21.0 m, -9 % (was -9 %)
   608  x    3110  z    133  style E  floor 311.52 -> 311.52  drive 17.0 m, +1 % (was +1 %)
@@ -71,7 +71,538 @@ a stoop and steps at each front door; style E's upstairs back windows only over 
  2095  x    3286  z    415  style C  floor 326.85 -> 326.85  drive 15.0 m, -5 % (was -5 %)
  2096  x    3302  z    346  style C  floor 328.29 -> 328.63  drive 14.3 m, -20 % (was -22 %)
  2225  x    3275  z    458  style E  floor 321.09 -> 321.09  drive 14.8 m, -15 % (was -15 %)
+34542  x    1349  z  -9264  style F  floor 368.53 -> 368.53  drive 10.2 m, -1 % (was -1 %)
+34543  x    1350  z  -9313  style A  floor 369.46 -> 369.46  drive 9.0 m, -7 % (was -7 %)
+34673  x    1489  z  -8894  style F  floor 365.26 -> 365.26  drive 24.7 m, -4 % (was -4 %)
+34674  x    1477  z  -8880  style F  floor 365.46 -> 365.46  drive 17.0 m, -8 % (was -8 %), new
+34693  x    1377  z  -9386  style F  floor 375.26 -> 375.26  drive 10.3 m, +14 % (was +14 %)
+34694  x    1390  z  -9387  style F  floor 377.20 -> 377.20  drive 9.0 m, +14 % (was +14 %)
+34695  x    1406  z  -9391  style F  floor 379.28 -> 379.28  drive 11.2 m, +12 % (was +12 %)
+34696  x    1436  z  -9389  style F  floor 381.87 -> 381.87  drive 7.3 m, +9 % (was +9 %)
+34697  x    1422  z  -9391  style F  floor 380.39 -> 380.39  drive 7.8 m, +9 % (was +9 %)
+34698  x    1516  z  -9358  style F  floor 387.42 -> 379.03  drive 15.5 m, +20 % (was +74 %)
+34699  x    1530  z  -9363  style F  floor 392.77 -> 392.77  drive 3.5 m, +3 % (was +3 %)
+34701  x    1501  z  -9361  style A  floor 388.98 -> 388.98  drive 4.8 m, -7 % (was -7 %)
+34769  x    1632  z  -9288  style F  floor 382.00 -> 382.00  drive 5.5 m, +16 % (was +16 %)
+34770  x    1623  z  -9319  style A  floor 384.19 -> 384.19  drive 5.7 m, +13 % (was +13 %)
+34771  x    1517  z  -9224  style A  floor 371.06 -> 371.06  drive 4.3 m, +7 % (was +7 %)
+34772  x    1526  z  -9224  style A  floor 372.08 -> 372.08  drive 2.8 m, +2 % (was +2 %), new
+34773  x    1533  z  -9223  style A  floor 372.34 -> 372.34  drive 3.0 m, +1 % (was +1 %)
+34774  x    1540  z  -9223  style A  floor 372.68 -> 372.68  drive 2.8 m, +3 % (was +3 %)
+34775  x    1548  z  -9223  style F  floor 372.96 -> 372.96  drive 2.8 m, +2 % (was +2 %)
+34776  x    1557  z  -9223  style A  floor 372.74 -> 372.74  drive 4.5 m, +11 % (was +11 %), 1 more dropped
+34777  x    1521  z  -9185  style F  floor 371.43 -> 371.43  drive 6.3 m, +9 % (was +9 %)
+34778  x    1551  z  -9185  style A  floor 372.79 -> 372.79  drive 6.0 m, +14 % (was +14 %)
+34780  x    1461  z  -9282  style F  floor 373.48 -> 373.48  drive 3.5 m, +0 % (was +0 %)
+34781  x    1469  z  -9283  style F  floor 373.90 -> 373.90  drive 4.0 m, +4 % (was +4 %)
+34782  x    1477  z  -9284  style F  floor 374.04 -> 374.04  drive 4.2 m, +2 % (was +2 %), 2 more dropped
+34783  x    1485  z  -9285  style F  floor 374.25 -> 374.25  drive 4.2 m, +3 % (was +3 %)
+34784  x    1493  z  -9286  style A  floor 374.03 -> 374.03  drive 4.0 m, +8 % (was +8 %)
+34785  x    1427  z  -9276  style F  floor 371.68 -> 371.68  drive 2.0 m, +2 % (was +2 %)
+34786  x    1597  z  -9286  style F  floor 382.13 -> 382.13  drive 5.8 m, +8 % (was +8 %)
+34913  x    1599  z  -9008  style F  floor 372.76 -> 372.76  drive 4.5 m, +12 % (was +12 %)
+34914  x    1418  z  -9016  style A  floor 374.56 -> 374.56  drive 13.3 m, -1 % (was -1 %), new
+34918  x    1385  z  -9012  style A  floor 374.61 -> 374.61  drive 8.8 m, -4 % (was -4 %)
+34919  x    1399  z  -9016  style F  floor 374.49 -> 374.49  drive 13.0 m, -4 % (was -4 %), new
+35074  x    1346  z  -8754  style F  floor 362.26 -> 362.26  drive 3.2 m, +15 % (was +15 %)
+35270  x    1597  z  -9157  style A  floor 376.57 -> 376.57  no street in front of the garage within 45 m: drive left as it was
+35271  x    1596  z  -9166  style F  floor 376.03 -> 376.03  drive 10.0 m, +12 % (was +12 %)
+35272  x    1595  z  -9175  style F  floor 375.93 -> 375.93  drive 6.3 m, +18 % (was +18 %)
+35273  x    1595  z  -9185  style F  floor 375.49 -> 375.49  drive 6.2 m, +16 % (was +16 %)
+35274  x    1594  z  -9194  style F  floor 374.91 -> 374.91  drive 6.7 m, +13 % (was +13 %), 1 more dropped
+34275  x    2126  z  -8497  style F  floor 362.07 -> 362.07  drive 7.5 m, +4 % (was +4 %), new
+34293  x    2209  z  -8492  style A  floor 364.31 -> 364.31  drive 2.7 m, -2 % (was -2 %), new
+34302  x    2148  z  -8499  style F  floor 362.59 -> 362.59  drive 3.5 m, +9 % (was +9 %), new
+34307  x    2171  z  -8537  style F  floor 366.07 -> 364.31  drive 9.0 m, +20 % (was +40 %), new
+34308  x    2315  z  -8466  style F  floor 370.75 -> 370.75  drive 3.0 m, +2 % (was +2 %), new
+34422  x    1907  z  -8914  style F  floor 377.08 -> 377.08  drive 0.5 m, +0 % (was +0 %), new
+34464  x    3847  z  -9185  style A  floor 345.54 -> 345.54  drive 7.3 m, -1 % (was -1 %), new
+34465  x    2500  z  -8491  style A  floor 388.29 -> 388.29  drive 1.8 m, +1 % (was +1 %)
+34482  x    3161  z  -8551  style F  floor 368.92 -> 368.78  drive 4.2 m, +20 % (was +23 %), new
+34490  x    2845  z  -8605  style F  floor 399.59 -> 399.59  drive 15.3 m, +13 % (was +13 %), new
+34591  x    2754  z  -9250  style A  floor 375.62 -> 375.62  drive 3.0 m, +2 % (was +2 %)
+34592  x    2748  z  -9235  style F  floor 375.32 -> 375.32  drive 3.5 m, +10 % (was +10 %)
+34593  x    2714  z  -9221  style F  floor 376.05 -> 376.05  drive 0.8 m, -1 % (was -1 %)
+34594  x    3340  z  -8370  style A  floor 370.00 -> 370.00  drive 5.0 m, +11 % (was +11 %), new
+34599  x    2883  z  -9002  style A  floor 384.58 -> 384.58  drive 9.0 m, +13 % (was +13 %)
+34600  x    2917  z  -8998  style F  floor 387.12 -> 387.12  drive 3.8 m, +8 % (was +8 %)
+34601  x    2884  z  -9036  style F  floor 386.45 -> 386.45  drive 10.7 m, -5 % (was -5 %)
+34602  x    2884  z  -9051  style F  floor 385.95 -> 385.95  drive 10.3 m, -3 % (was -3 %)
+34603  x    2884  z  -9067  style F  floor 385.60 -> 385.60  drive 9.2 m, +3 % (was +3 %)
+34604  x    2884  z  -9086  style A  floor 384.84 -> 384.84  drive 8.5 m, +8 % (was +8 %)
+34605  x    2926  z  -9130  style A  floor 380.61 -> 380.61  drive 7.7 m, -14 % (was -14 %)
+34606  x    2930  z  -9150  style F  floor 380.25 -> 380.25  drive 14.3 m, -10 % (was -10 %)
+34607  x    2925  z  -9169  style F  floor 379.45 -> 379.45  drive 14.0 m, -12 % (was -12 %)
+34608  x    2929  z  -9190  style A  floor 379.57 -> 379.57  drive 13.7 m, -11 % (was -11 %)
+34609  x    2931  z  -9330  style F  floor 376.66 -> 376.66  drive 11.5 m, +12 % (was +12 %)
+34614  x    2990  z  -8487  style A  floor 383.52 -> 382.64  drive 5.5 m, +20 % (was +36 %)
+34615  x    2049  z  -8815  style A  floor 372.92 -> 372.92  drive 6.5 m, -5 % (was -5 %)
+34618  x    2070  z  -8800  style A  floor 372.00 -> 372.00  drive 1.2 m, +0 % (was +0 %), new
+34629  x    2497  z  -8878  style F  floor 406.26 -> 406.26  drive 4.8 m, +10 % (was +10 %)
+34630  x    2498  z  -8871  style F  floor 409.63 -> 409.63  drive 3.2 m, +16 % (was +16 %), new
+34634  x    2498  z  -8846  style A  floor 401.54 -> 401.54  drive 5.7 m, -17 % (was -17 %)
+34635  x    2462  z  -8940  style F  floor 406.66 -> 406.22  drive 5.0 m, +20 % (was +29 %)
+34643  x    2466  z  -8849  style F  floor 403.06 -> 403.06  drive 2.8 m, +0 % (was +0 %)
+34647  x    2467  z  -8873  style F  floor 405.17 -> 405.17  drive 4.2 m, +7 % (was +7 %)
+34650  x    2506  z  -8922  style F  floor 406.13 -> 406.13  drive 5.5 m, +7 % (was +7 %)
+34651  x    2405  z  -8970  style F  floor 405.24 -> 405.24  drive 7.5 m, +8 % (was +8 %)
+34652  x    2426  z  -8967  style F  floor 407.77 -> 407.41  drive 6.3 m, +20 % (was +26 %)
+34653  x    2315  z  -8974  style F  floor 392.51 -> 392.51  drive 7.5 m, -19 % (was -19 %)
+34655  x    2326  z  -8955  style F  floor 390.50 -> 390.50  drive 26.5 m, -15 % (was -15 %), new
+34657  x    2423  z  -8921  style A  floor 404.42 -> 404.42  drive 8.2 m, +6 % (was +6 %)
+34658  x    2422  z  -8905  style F  floor 399.68 -> 399.80  drive 10.0 m, -20 % (was -21 %)
+34659  x    2501  z  -8892  style A  floor 406.47 -> 406.47  drive 5.0 m, +12 % (was +12 %)
+34662  x    2503  z  -8910  style A  floor 407.72 -> 407.72  drive 3.5 m, +8 % (was +8 %)
+34663  x    2464  z  -8893  style F  floor 404.26 -> 404.26  drive 0.8 m, +0 % (was +0 %), new
+34669  x    2464  z  -8928  style F  floor 406.26 -> 406.26  drive 0.5 m, +0 % (was +0 %)
+34670  x    2364  z  -8920  style A  floor 393.99 -> 393.99  drive 23.7 m, +5 % (was +5 %)
+34671  x    2386  z  -8921  style F  floor 394.63 -> 394.63  drive 23.7 m, +5 % (was +5 %)
+34672  x    2343  z  -8921  style F  floor 393.75 -> 393.75  drive 25.5 m, +2 % (was +2 %)
+34678  x    2307  z  -8498  style F  floor 374.18 -> 374.18  drive 3.5 m, -3 % (was -3 %)
+34679  x    2269  z  -8536  style F  floor 370.54 -> 370.54  drive 7.8 m, +8 % (was +8 %), new
+34680  x    2283  z  -8492  style F  floor 371.83 -> 371.83  drive 5.3 m, +3 % (was +3 %)
+34681  x    2239  z  -8538  style F  floor 364.04 -> 364.04  drive 3.5 m, +2 % (was +2 %), new
+34726  x    3160  z  -8447  style A  floor 362.83 -> 362.83  drive 6.8 m, -1 % (was -1 %), new
+34743  x    1979  z  -8887  style F  floor 374.88 -> 374.88  drive 4.8 m, +7 % (was +7 %), 1 more dropped
+34749  x    1978  z  -8837  style A  floor 373.37 -> 373.37  drive 4.0 m, +2 % (was +2 %), 1 more dropped
+34751  x    2002  z  -8835  style F  floor 373.06 -> 373.06  drive 3.0 m, +1 % (was +1 %)
+34752  x    2015  z  -8832  style F  floor 372.91 -> 372.91  drive 0.5 m, +0 % (was +0 %)
+34753  x    2027  z  -8829  style F  floor 372.70 -> 372.70  drive 3.2 m, +1 % (was +1 %)
+34761  x    2824  z  -8470  style F  floor 376.00 -> 376.00  drive 26.0 m, -5 % (was -5 %)
+34762  x    2768  z  -8480  style F  floor 377.53 -> 377.53  drive 17.2 m, +1 % (was +1 %)
+34763  x    2735  z  -8493  style F  floor 378.65 -> 378.65  drive 2.0 m, +0 % (was +0 %)
+34764  x    2734  z  -8469  style F  floor 379.29 -> 379.29  drive 25.8 m, +2 % (was +2 %), new
+34765  x    2750  z  -8480  style F  floor 378.20 -> 378.20  drive 15.7 m, +1 % (was +1 %)
+34766  x    2698  z  -8495  style F  floor 384.56 -> 384.56  drive 3.2 m, +13 % (was +13 %)
+34791  x    2754  z  -9219  style A  floor 377.24 -> 377.24  drive 4.7 m, +8 % (was +8 %)
+34792  x    2777  z  -9198  style F  floor 378.58 -> 378.58  drive 4.8 m, +9 % (was +9 %)
+34793  x    2764  z  -9208  style A  floor 377.97 -> 377.97  drive 4.3 m, +6 % (was +6 %)
+34794  x    2791  z  -9189  style F  floor 379.49 -> 379.49  drive 10.3 m, +4 % (was +4 %)
+34795  x    2817  z  -9189  style F  floor 382.10 -> 382.10  drive 4.0 m, +14 % (was +14 %)
+34796  x    2832  z  -9187  style F  floor 383.99 -> 383.99  drive 12.5 m, +2 % (was +2 %)
+34797  x    2837  z  -9197  style F  floor 381.45 -> 381.45  drive 4.5 m, +16 % (was +16 %)
+34798  x    2846  z  -9207  style F  floor 380.79 -> 380.73  drive 4.5 m, +20 % (was +21 %)
+34799  x    2854  z  -9220  style F  floor 380.48 -> 380.25  drive 4.7 m, +20 % (was +25 %), 1 more dropped
+34800  x    2859  z  -9232  style F  floor 379.57 -> 379.36  drive 5.0 m, +20 % (was +24 %), new
+34801  x    2860  z  -9249  style A  floor 380.91 -> 380.91  drive 3.5 m, +2 % (was +2 %)
+34802  x    2792  z  -9166  style F  floor 379.36 -> 379.36  drive 1.8 m, +1 % (was +1 %), 1 more dropped
+34803  x    2791  z  -9155  style F  floor 379.54 -> 379.54  drive 0.7 m, +0 % (was +0 %)
+34804  x    2791  z  -9144  style F  floor 379.53 -> 379.53  drive 0.5 m, +0 % (was +0 %), new
+34805  x    2792  z  -9130  style F  floor 381.00 -> 381.00  drive 5.3 m, +10 % (was +10 %)
+34807  x    2890  z  -9251  style F  floor 381.78 -> 381.78  drive 2.7 m, +0 % (was +0 %)
+34808  x    2889  z  -9238  style F  floor 381.56 -> 381.56  drive 3.3 m, +1 % (was +1 %)
+34809  x    2888  z  -9227  style F  floor 381.34 -> 381.34  drive 3.3 m, +1 % (was +1 %)
+34810  x    2885  z  -9216  style A  floor 381.69 -> 381.69  drive 3.5 m, +1 % (was +1 %)
+34811  x    2880  z  -9205  style F  floor 382.15 -> 382.15  drive 4.0 m, +3 % (was +3 %)
+34812  x    2881  z  -9193  style F  floor 382.50 -> 382.50  drive 8.3 m, +18 % (was +18 %)
+34813  x    2878  z  -9182  style F  floor 382.05 -> 382.05  drive 7.0 m, +15 % (was +15 %)
+34814  x    2892  z  -9156  style F  floor 381.57 -> 381.57  drive 3.2 m, +6 % (was +6 %)
+34815  x    2885  z  -9158  style F  floor 381.90 -> 381.90  drive 0.5 m, +0 % (was +0 %), new
+34819  x    2859  z  -9160  style F  floor 383.25 -> 383.25  drive 0.5 m, +0 % (was +0 %), 1 more dropped
+34820  x    2849  z  -9156  style F  floor 383.89 -> 383.89  drive 4.0 m, +9 % (was +9 %), new
+34821  x    2865  z  -9141  style F  floor 384.58 -> 384.58  drive 14.5 m, +3 % (was +3 %), new
+34822  x    2865  z  -9134  style F  floor 384.36 -> 384.36  drive 11.5 m, +0 % (was +0 %)
+34823  x    2866  z  -9127  style F  floor 384.71 -> 384.71  drive 4.0 m, +9 % (was +9 %), 1 more dropped
+34827  x    2733  z  -9135  style F  floor 375.01 -> 375.01  drive 1.5 m, +0 % (was +0 %)
+34828  x    2744  z  -9136  style F  floor 375.81 -> 375.81  drive 1.5 m, +0 % (was +0 %), 1 more dropped
+34829  x    2756  z  -9136  style F  floor 375.68 -> 375.68  drive 4.2 m, +5 % (was +5 %), new
+34830  x    2769  z  -9135  style A  floor 378.65 -> 378.65  drive 1.7 m, +1 % (was +1 %)
+34831  x    2760  z  -9167  style F  floor 378.86 -> 378.86  drive 12.0 m, +7 % (was +7 %), 1 more dropped
+34832  x    2767  z  -9167  style F  floor 378.70 -> 378.70  drive 5.3 m, +6 % (was +6 %)
+34833  x    2753  z  -9167  style A  floor 378.58 -> 378.58  drive 15.0 m, +5 % (was +5 %), new
+34835  x    2740  z  -9167  style F  floor 375.72 -> 375.72  drive 1.0 m, +0 % (was +0 %), new
+34836  x    2732  z  -9167  style F  floor 377.07 -> 377.07  drive 37.7 m, +2 % (was +2 %)
+34837  x    2709  z  -9141  style A  floor 373.02 -> 371.88  drive 7.5 m, +20 % (was +35 %)
+34838  x    2710  z  -9152  style F  floor 374.10 -> 374.10  drive 1.0 m, +0 % (was +0 %), 1 more dropped
+34839  x    2710  z  -9164  style A  floor 374.34 -> 374.34  drive 0.5 m, +0 % (was +0 %), new
+34840  x    2711  z  -9176  style A  floor 374.75 -> 374.75  no street in front of the garage within 45 m: drive left as it was
+34841  x    2718  z  -9206  style F  floor 377.00 -> 377.00  drive 9.0 m, +3 % (was +3 %), 1 more dropped
+34842  x    2720  z  -9194  style F  floor 376.93 -> 376.93  drive 18.2 m, -3 % (was -3 %), new
+34843  x    2713  z  -9234  style F  floor 374.82 -> 374.82  drive 7.0 m, -2 % (was -2 %), 1 more dropped
+34844  x    2713  z  -9247  style A  floor 374.43 -> 374.43  drive 6.5 m, +1 % (was +1 %), new
+34857  x    1968  z  -8789  style A  floor 370.08 -> 370.08  drive 3.0 m, +4 % (was +4 %)
+34863  x    1980  z  -8790  style A  floor 369.97 -> 369.97  drive 3.8 m, +3 % (was +3 %)
+34864  x    1993  z  -8789  style A  floor 369.88 -> 369.88  drive 2.3 m, +0 % (was +0 %), 1 more dropped
+34866  x    2024  z  -8794  style F  floor 370.06 -> 370.06  drive 6.0 m, +4 % (was +4 %)
+34871  x    1934  z  -8747  style F  floor 370.51 -> 370.51  drive 2.3 m, +1 % (was +1 %)
+34875  x    1935  z  -8794  style F  floor 370.46 -> 370.46  drive 4.0 m, +7 % (was +7 %)
+34876  x    2092  z  -8785  style F  floor 370.07 -> 370.07  drive 3.0 m, +5 % (was +5 %)
+34877  x    2104  z  -8785  style F  floor 370.19 -> 370.19  drive 3.3 m, +4 % (was +4 %)
+34878  x    2131  z  -8778  style F  floor 371.61 -> 371.61  no street in front of the garage within 45 m: drive left as it was
+34879  x    2131  z  -8785  style A  floor 371.67 -> 371.67  drive 9.0 m, +14 % (was +14 %)
+34880  x    2132  z  -8792  style F  floor 371.51 -> 371.51  drive 2.5 m, +2 % (was +2 %), new
+34881  x    2132  z  -8800  style F  floor 372.17 -> 372.17  drive 2.5 m, +3 % (was +3 %), new
+34882  x    2132  z  -8807  style A  floor 372.90 -> 372.90  drive 2.5 m, +3 % (was +3 %), new
+34883  x    2132  z  -8815  style F  floor 373.97 -> 373.97  drive 2.5 m, +2 % (was +2 %), 1 more dropped
+34884  x    2132  z  -8825  style A  floor 374.94 -> 374.94  drive 2.5 m, +3 % (was +3 %), new
+34885  x    2132  z  -8833  style F  floor 375.93 -> 375.93  drive 2.5 m, +3 % (was +3 %), new
+34886  x    2132  z  -8840  style F  floor 376.53 -> 376.53  drive 2.5 m, +3 % (was +3 %)
+34887  x    2132  z  -8847  style F  floor 377.09 -> 377.09  drive 2.5 m, +2 % (was +2 %)
+34888  x    2132  z  -8855  style A  floor 377.65 -> 377.65  drive 2.5 m, +1 % (was +1 %), 1 more dropped
+34970  x    3722  z  -8429  style F  floor 358.94 -> 358.94  drive 8.8 m, +3 % (was +3 %)
+34971  x    3709  z  -8413  style A  floor 355.99 -> 355.99  drive 9.5 m, +8 % (was +8 %)
+34972  x    3697  z  -8398  style F  floor 354.56 -> 354.56  drive 8.5 m, +11 % (was +11 %)
+34973  x    3729  z  -8377  style F  floor 353.86 -> 353.86  drive 14.5 m, -17 % (was -17 %)
+34974  x    3714  z  -8359  style F  floor 352.25 -> 352.25  drive 9.7 m, +0 % (was +0 %)
+34975  x    3700  z  -8344  style A  floor 351.02 -> 351.02  drive 9.7 m, +8 % (was +8 %)
+34976  x    3672  z  -8368  style A  floor 351.80 -> 351.80  drive 7.5 m, +12 % (was +12 %)
+34977  x    3684  z  -8383  style A  floor 353.14 -> 353.14  drive 8.7 m, +13 % (was +13 %)
+34978  x    3730  z  -8321  style A  floor 349.69 -> 349.69  drive 10.0 m, -7 % (was -7 %)
+34979  x    3674  z  -8314  style F  floor 347.33 -> 347.33  drive 6.5 m, -3 % (was -3 %)
+34980  x    3645  z  -8338  style A  floor 347.57 -> 347.57  drive 8.7 m, +3 % (was +3 %)
+34981  x    3658  z  -8353  style F  floor 349.34 -> 349.34  drive 8.5 m, +11 % (was +11 %)
+34982  x    3686  z  -8328  style F  floor 349.42 -> 349.42  drive 9.8 m, +4 % (was +4 %)
+34997  x    3329  z  -8539  style F  floor 363.48 -> 363.48  drive 7.2 m, +19 % (was +19 %), new
+34999  x    3374  z  -8558  style F  floor 361.81 -> 361.49  drive 9.8 m, +20 % (was +23 %)
+35001  x    3327  z  -8561  style F  floor 366.89 -> 366.89  drive 5.5 m, +4 % (was +4 %), new
+35005  x    3283  z  -8463  style F  floor 366.47 -> 366.47  drive 8.7 m, +18 % (was +18 %), new
+35008  x    3287  z  -8433  style F  floor 368.12 -> 368.12  drive 5.0 m, +18 % (was +18 %), new
+35009  x    3291  z  -8400  style F  floor 369.58 -> 369.58  drive 5.0 m, +11 % (was +11 %)
+35015  x    3440  z  -8361  style F  floor 360.75 -> 360.75  drive 10.8 m, -12 % (was -12 %), new
+35016  x    3417  z  -8363  style F  floor 365.37 -> 365.37  drive 6.5 m, -16 % (was -16 %), new
+35020  x    3422  z  -8339  style F  floor 363.08 -> 363.08  drive 14.8 m, -13 % (was -13 %), new
+35021  x    3291  z  -8322  style F  floor 371.16 -> 371.16  drive 3.2 m, +2 % (was +2 %)
+35022  x    3294  z  -8341  style A  floor 371.01 -> 371.01  drive 4.5 m, +2 % (was +2 %)
+35023  x    3223  z  -8497  style A  floor 369.58 -> 369.58  drive 4.3 m, +0 % (was +0 %)
+35024  x    2969  z  -8323  style F  floor 375.71 -> 375.44  drive 4.5 m, +20 % (was +26 %)
+35025  x    2988  z  -8376  style F  floor 369.69 -> 369.69  drive 2.3 m, +0 % (was +0 %)
+35026  x    3050  z  -8375  style F  floor 371.40 -> 371.40  drive 8.0 m, +16 % (was +16 %)
+35027  x    3072  z  -8411  style F  floor 370.24 -> 369.09  drive 5.5 m, +20 % (was +41 %)
+35028  x    3098  z  -8376  style A  floor 364.34 -> 364.26  drive 5.3 m, +20 % (was +21 %)
+35029  x    3073  z  -8435  style F  floor 369.74 -> 369.74  drive 7.5 m, +1 % (was +1 %)
+35031  x    3223  z  -8468  style A  floor 366.58 -> 366.58  drive 10.0 m, +11 % (was +11 %), new
+35032  x    3230  z  -8444  style F  floor 366.74 -> 366.74  drive 16.2 m, +13 % (was +13 %)
+35033  x    3230  z  -8423  style F  floor 365.78 -> 365.78  drive 16.5 m, +13 % (was +13 %)
+35034  x    3198  z  -8361  style F  floor 362.34 -> 362.34  drive 13.5 m, -1 % (was -1 %), new
+35035  x    3209  z  -8364  style A  floor 363.47 -> 363.47  drive 13.2 m, +2 % (was +2 %)
+35037  x    3239  z  -8362  style F  floor 365.45 -> 365.45  drive 15.0 m, +1 % (was +1 %)
+35038  x    3262  z  -8364  style F  floor 367.52 -> 367.52  drive 13.2 m, +2 % (was +2 %)
+35039  x    3289  z  -8367  style F  floor 370.55 -> 370.55  drive 8.5 m, +0 % (was +0 %)
+35123  x    2106  z  -8854  style F  floor 378.22 -> 378.22  drive 5.0 m, -1 % (was -1 %), 1 more dropped
+35124  x    2093  z  -8824  style F  floor 373.88 -> 373.88  drive 3.7 m, +6 % (was +6 %)
+35129  x    2159  z  -8904  style F  floor 387.68 -> 387.68  drive 8.2 m, +1 % (was +1 %)
+35136  x    2015  z  -8857  style F  floor 373.00 -> 373.00  drive 4.0 m, +2 % (was +2 %)
+35139  x    2106  z  -8808  style F  floor 373.39 -> 373.39  drive 1.0 m, +0 % (was +0 %)
+35147  x    2000  z  -8859  style F  floor 373.03 -> 373.03  drive 2.8 m, +2 % (was +2 %)
+35148  x    2189  z  -8812  style F  floor 376.22 -> 376.22  drive 11.3 m, -3 % (was -3 %), new
+35157  x    1977  z  -8916  style F  floor 375.83 -> 375.83  drive 1.2 m, -1 % (was -1 %), new
+35174  x    2008  z  -8916  style A  floor 379.77 -> 379.77  drive 3.0 m, +1 % (was +1 %)
+35175  x    2208  z  -8537  style F  floor 363.89 -> 363.89  drive 3.5 m, +1 % (was +1 %), new
+35207  x    2176  z  -8903  style F  floor 388.37 -> 388.37  drive 8.5 m, +5 % (was +5 %)
+35211  x    2195  z  -8900  style A  floor 389.17 -> 388.85  drive 7.5 m, +20 % (was +24 %)
+35228  x    2051  z  -8886  style F  floor 377.07 -> 377.07  drive 2.3 m, +1 % (was +1 %), 1 more dropped
+35229  x    1930  z  -8839  style F  floor 372.33 -> 372.33  drive 0.8 m, +0 % (was +0 %), 1 more dropped
+35235  x    2129  z  -8907  style F  floor 387.38 -> 387.38  drive 6.7 m, +14 % (was +14 %)
+35276  x    3762  z  -8493  style F  floor 370.13 -> 370.13  drive 4.3 m, +11 % (was +11 %)
+35280  x    2093  z  -8839  style A  floor 375.79 -> 375.79  drive 3.7 m, +7 % (was +7 %)
+35703  x    2076  z  -8735  style F  floor 369.50 -> 369.50  drive 3.3 m, +1 % (was +1 %)
+35705  x    2211  z  -8595  style F  floor 369.66 -> 369.66  drive 3.5 m, +8 % (was +8 %)
+35707  x    2385  z  -8492  style A  floor 379.82 -> 379.82  drive 7.3 m, -4 % (was -4 %), new
+35708  x    2348  z  -8491  style F  floor 372.84 -> 372.84  drive 5.5 m, +2 % (was +2 %)
+35709  x    2346  z  -8455  style F  floor 370.18 -> 370.18  drive 8.2 m, +13 % (was +13 %), new
+35711  x    2429  z  -8428  style F  floor 374.81 -> 373.17  drive 7.5 m, +20 % (was +42 %)
+35712  x    2408  z  -8428  style F  floor 373.48 -> 372.58  drive 7.8 m, +20 % (was +32 %)
+35713  x    2388  z  -8435  style F  floor 373.43 -> 372.85  drive 14.3 m, +20 % (was +24 %)
+35714  x    2370  z  -8436  style F  floor 372.59 -> 371.57  drive 14.7 m, +20 % (was +27 %)
+35715  x    2346  z  -8422  style F  floor 365.86 -> 365.86  drive 5.0 m, +9 % (was +9 %)
+35721  x    2465  z  -8386  style F  floor 369.68 -> 369.68  drive 9.5 m, -9 % (was -9 %)
+35722  x    2496  z  -8392  style A  floor 369.26 -> 369.26  drive 4.5 m, -9 % (was -9 %)
+35723  x    2503  z  -8375  style F  floor 368.62 -> 368.62  drive 1.5 m, +0 % (was +0 %)
+35724  x    2504  z  -8364  style A  floor 367.83 -> 367.83  drive 0.8 m, +0 % (was +0 %)
+35725  x    2504  z  -8353  style A  floor 366.91 -> 366.91  drive 2.0 m, -1 % (was -1 %)
+35727  x    2535  z  -8355  style A  floor 369.41 -> 368.72  drive 9.8 m, +20 % (was +27 %)
+35728  x    2534  z  -8375  style A  floor 370.55 -> 370.01  drive 8.0 m, +20 % (was +27 %)
+35729  x    2551  z  -8420  style F  floor 373.93 -> 373.93  drive 6.8 m, +5 % (was +5 %)
+35730  x    2575  z  -8422  style A  floor 379.98 -> 379.79  drive 6.2 m, +20 % (was +23 %)
+35731  x    2590  z  -8436  style F  floor 384.59 -> 384.59  drive 24.2 m, +16 % (was +16 %)
+35732  x    2615  z  -8432  style A  floor 390.99 -> 386.91  drive 17.8 m, +20 % (was +43 %)
+35733  x    2602  z  -8488  style A  floor 388.25 -> 388.25  no street in front of the garage within 45 m: drive left as it was
+35734  x    2618  z  -8468  style F  floor 391.97 -> 391.97  drive 32.3 m, -2 % (was -2 %)
+35735  x    2640  z  -8483  style F  floor 395.08 -> 395.08  drive 15.2 m, +18 % (was +18 %)
+35736  x    2639  z  -8423  style A  floor 393.70 -> 389.26  drive 14.2 m, +20 % (was +51 %)
+35737  x    2669  z  -8382  style A  floor 387.63 -> 387.63  drive 5.3 m, +14 % (was +14 %)
+35738  x    2666  z  -8347  style F  floor 388.04 -> 387.79  drive 6.2 m, +20 % (was +24 %)
+35739  x    2679  z  -8319  style A  floor 391.15 -> 391.15  drive 20.5 m, +19 % (was +19 %)
+35740  x    2705  z  -8321  style F  floor 396.70 -> 396.70  drive 6.3 m, -2 % (was -2 %)
+35741  x    2708  z  -8347  style F  floor 394.53 -> 394.53  drive 1.3 m, +0 % (was +0 %)
+35742  x    2710  z  -8375  style A  floor 392.24 -> 392.24  no street in front of the garage within 45 m: drive left as it was
+35743  x    2692  z  -8382  style A  floor 392.22 -> 391.98  drive 5.5 m, +20 % (was +25 %)
+35744  x    2736  z  -8372  style A  floor 392.19 -> 392.19  drive 3.0 m, -2 % (was -2 %)
+35746  x    2740  z  -8326  style F  floor 397.85 -> 397.50  drive 6.5 m, +20 % (was +25 %)
+35747  x    2637  z  -8367  style F  floor 385.64 -> 385.64  drive 5.3 m, -5 % (was -5 %)
+35748  x    2576  z  -8324  style F  floor 369.79 -> 369.79  drive 3.8 m, +15 % (was +15 %), 1 more dropped
+35749  x    2576  z  -8341  style F  floor 372.17 -> 372.17  drive 20.8 m, +12 % (was +12 %), new
+35751  x    2536  z  -8329  style F  floor 365.43 -> 365.43  drive 3.8 m, +16 % (was +16 %)
+35752  x    2604  z  -8339  style F  floor 375.95 -> 374.95  drive 6.5 m, +20 % (was +35 %)
+35753  x    2600  z  -8360  style F  floor 376.55 -> 376.55  drive 3.0 m, +9 % (was +9 %)
+35754  x    2600  z  -8371  style F  floor 380.31 -> 379.56  drive 4.8 m, +20 % (was +36 %), new
+35755  x    2599  z  -8388  style F  floor 380.22 -> 380.22  drive 3.0 m, +15 % (was +15 %)
+35756  x    2636  z  -8333  style F  floor 384.86 -> 385.52  drive 5.0 m, -20 % (was -33 %)
+35757  x    2669  z  -8419  style F  floor 392.84 -> 391.81  drive 7.5 m, +20 % (was +34 %)
+35758  x    2667  z  -8445  style A  floor 393.64 -> 393.64  drive 3.3 m, +19 % (was +19 %)
+35759  x    2694  z  -8447  style F  floor 393.52 -> 393.52  drive 3.3 m, +3 % (was +3 %)
+35760  x    2695  z  -8463  style F  floor 391.25 -> 391.25  drive 5.0 m, -5 % (was -5 %)
+35761  x    2694  z  -8479  style F  floor 389.33 -> 389.33  drive 5.3 m, -1 % (was -1 %)
+35762  x    2694  z  -8420  style F  floor 394.68 -> 392.47  drive 7.5 m, +20 % (was +49 %)
+35763  x    2711  z  -8420  style F  floor 391.48 -> 391.48  drive 9.8 m, +17 % (was +17 %)
+35764  x    2731  z  -8415  style F  floor 388.28 -> 388.28  drive 4.5 m, +4 % (was +4 %)
+35765  x    2750  z  -8419  style A  floor 385.82 -> 385.82  drive 11.7 m, -3 % (was -3 %)
+35766  x    2769  z  -8419  style A  floor 383.54 -> 383.54  no street in front of the garage within 45 m: drive left as it was
+35767  x    2831  z  -8419  style A  floor 381.61 -> 381.61  drive 10.2 m, +5 % (was +5 %)
+35768  x    2852  z  -8417  style A  floor 379.77 -> 379.77  drive 10.3 m, -1 % (was -1 %)
+35770  x    2671  z  -8491  style F  floor 390.52 -> 389.78  drive 6.5 m, +20 % (was +31 %)
+35772  x    2943  z  -8369  style A  floor 371.84 -> 371.84  drive 13.0 m, +13 % (was +13 %)
+35773  x    2925  z  -8376  style F  floor 373.80 -> 373.56  drive 9.2 m, +20 % (was +23 %)
+35774  x    2905  z  -8373  style F  floor 376.37 -> 376.29  drive 12.3 m, +20 % (was +21 %)
+35775  x    2887  z  -8367  style A  floor 381.10 -> 381.10  drive 19.3 m, -10 % (was -10 %)
+35776  x    2872  z  -8378  style F  floor 381.58 -> 381.58  drive 4.8 m, -6 % (was -6 %)
+35777  x    2871  z  -8417  style A  floor 377.37 -> 377.37  drive 10.0 m, +0 % (was +0 %)
+35778  x    2954  z  -8491  style F  floor 385.63 -> 385.63  drive 3.7 m, +3 % (was +3 %)
+35779  x    2964  z  -8519  style A  floor 385.20 -> 385.20  drive 3.3 m, +3 % (was +3 %)
+35780  x    2941  z  -8527  style A  floor 387.48 -> 387.15  drive 4.0 m, +20 % (was +28 %)
+35785  x    2883  z  -8322  style F  floor 390.73 -> 390.73  drive 1.0 m, +0 % (was +0 %)
+35786  x    2851  z  -8321  style A  floor 390.34 -> 390.34  drive 5.5 m, +10 % (was +10 %)
+35787  x    2850  z  -8337  style F  floor 386.29 -> 386.29  drive 7.0 m, +15 % (was +15 %)
+35791  x    3964  z  -8346  style F  floor 360.22 -> 360.22  drive 7.3 m, -13 % (was -13 %)
+35792  x    3952  z  -8341  style F  floor 359.37 -> 359.37  drive 4.0 m, -13 % (was -13 %), 1 more dropped
+35793  x    3940  z  -8337  style F  floor 358.82 -> 358.82  drive 5.3 m, -8 % (was -8 %), new
+35794  x    3926  z  -8334  style A  floor 358.18 -> 358.18  drive 4.2 m, -4 % (was -4 %)
+35795  x    3913  z  -8332  style F  floor 358.23 -> 358.23  drive 4.3 m, -1 % (was -1 %)
+35796  x    3897  z  -8335  style A  floor 358.13 -> 358.13  drive 3.3 m, -6 % (was -6 %)
+35797  x    3915  z  -8365  style F  floor 358.85 -> 358.85  drive 5.3 m, +10 % (was +10 %)
+35798  x    3892  z  -8399  style F  floor 364.67 -> 364.67  drive 4.0 m, +0 % (was +0 %), 1 more dropped
+35799  x    3879  z  -8400  style F  floor 364.62 -> 364.62  drive 4.0 m, -1 % (was -1 %), new
+35800  x    3882  z  -8377  style F  floor 359.98 -> 359.98  drive 7.8 m, +16 % (was +16 %)
+35801  x    3869  z  -8350  style F  floor 358.65 -> 358.65  drive 3.2 m, -16 % (was -16 %)
+35802  x    3859  z  -8358  style A  floor 359.40 -> 359.40  drive 2.0 m, -19 % (was -19 %)
+35803  x    3851  z  -8371  style F  floor 360.29 -> 360.29  drive 2.3 m, -13 % (was -13 %)
+35804  x    3849  z  -8386  style F  floor 361.53 -> 361.53  drive 2.0 m, -4 % (was -4 %)
+35805  x    3849  z  -8400  style F  floor 363.52 -> 363.52  drive 5.3 m, +3 % (was +3 %)
+35806  x    3809  z  -8401  style F  floor 361.83 -> 361.83  drive 3.8 m, +0 % (was +0 %)
+35807  x    3806  z  -8386  style F  floor 358.36 -> 358.36  drive 5.5 m, +7 % (was +7 %)
+35808  x    3808  z  -8370  style A  floor 356.27 -> 356.27  drive 6.0 m, +6 % (was +6 %)
+35809  x    3814  z  -8357  style F  floor 357.99 -> 357.99  drive 4.7 m, +2 % (was +2 %)
+35810  x    3821  z  -8344  style F  floor 356.94 -> 356.94  drive 4.7 m, +2 % (was +2 %)
+35811  x    3828  z  -8333  style F  floor 355.59 -> 355.59  drive 5.5 m, +0 % (was +0 %)
+35812  x    3806  z  -8314  style A  floor 350.44 -> 350.44  drive 3.8 m, +4 % (was +4 %)
+35813  x    3773  z  -8405  style A  floor 360.27 -> 360.27  drive 3.0 m, +1 % (was +1 %)
+35814  x    3773  z  -8390  style A  floor 358.46 -> 358.46  drive 2.0 m, +0 % (was +0 %)
+35815  x    3774  z  -8375  style F  floor 357.23 -> 357.23  drive 2.0 m, +0 % (was +0 %)
+35816  x    3964  z  -8494  style F  floor 385.64 -> 385.64  drive 8.5 m, +2 % (was +2 %)
+35818  x    3897  z  -8469  style F  floor 382.58 -> 382.58  no street in front of the garage within 45 m: drive left as it was
+35819  x    3884  z  -8432  style F  floor 369.65 -> 369.65  drive 6.5 m, +11 % (was +11 %)
+35820  x    3896  z  -8436  style F  floor 366.71 -> 366.40  drive 9.3 m, +20 % (was +23 %)
+35821  x    3909  z  -8436  style F  floor 371.29 -> 371.29  drive 3.0 m, +17 % (was +17 %), 1 more dropped
+35822  x    3921  z  -8436  style A  floor 371.44 -> 371.44  drive 2.5 m, +17 % (was +17 %), new
+35823  x    3933  z  -8436  style F  floor 371.48 -> 371.48  drive 3.0 m, +8 % (was +8 %)
+35830  x    3949  z  -8375  style F  floor 361.55 -> 361.64  drive 3.3 m, -20 % (was -23 %)
+35831  x    3953  z  -8393  style F  floor 365.40 -> 365.40  drive 1.8 m, +4 % (was +4 %)
+35855  x    3764  z  -8443  style F  floor 362.86 -> 362.86  drive 6.5 m, +13 % (was +13 %)
+35856  x    3777  z  -8443  style F  floor 367.96 -> 367.96  drive 11.5 m, -8 % (was -8 %), 1 more dropped
+35857  x    3789  z  -8441  style A  floor 363.92 -> 362.93  drive 11.2 m, +20 % (was +29 %), new
+35858  x    3729  z  -8448  style F  floor 362.30 -> 362.30  drive 11.0 m, -5 % (was -5 %)
+35859  x    3773  z  -8493  style F  floor 372.27 -> 372.27  drive 9.7 m, -8 % (was -8 %)
+35860  x    3785  z  -8492  style F  floor 373.55 -> 373.55  drive 9.7 m, -2 % (was -2 %)
+35867  x    3067  z  -8370  style F  floor 371.97 -> 370.74  drive 9.8 m, +20 % (was +33 %), 1 more dropped
+35868  x    3083  z  -8370  style F  floor 370.01 -> 368.23  drive 9.0 m, +20 % (was +40 %), new
+35869  x    3928  z  -8370  style F  floor 359.13 -> 359.13  drive 5.0 m, +6 % (was +6 %)
+35870  x    3935  z  -8372  style F  floor 359.55 -> 359.55  drive 4.7 m, +3 % (was +3 %), new
+35871  x    3942  z  -8373  style F  floor 360.14 -> 360.14  drive 4.0 m, -1 % (was -1 %)
+35873  x    3951  z  -8408  style A  floor 367.96 -> 367.96  drive 1.8 m, +15 % (was +15 %), new
+35874  x    3951  z  -8415  style F  floor 369.18 -> 369.15  drive 1.8 m, +20 % (was +22 %)
+35875  x    3953  z  -8425  style F  floor 370.93 -> 370.93  drive 2.0 m, +12 % (was +12 %), 1 more dropped
+35879  x    3964  z  -8487  style A  floor 385.31 -> 385.31  drive 11.3 m, +3 % (was +3 %), new
+35880  x    3929  z  -8495  style F  floor 385.57 -> 385.57  drive 3.2 m, +2 % (was +2 %)
+35884  x    3897  z  -8495  style F  floor 385.69 -> 385.69  drive 36.0 m, +0 % (was +0 %)
+35885  x    3897  z  -8488  style F  floor 385.75 -> 385.75  drive 10.7 m, -4 % (was -4 %), new
+35888  x    3771  z  -8347  style F  floor 355.43 -> 355.43  drive 4.5 m, -7 % (was -7 %), 1 more dropped
+35889  x    3783  z  -8351  style F  floor 355.88 -> 355.88  drive 4.5 m, +4 % (was +4 %), new
+35890  x    2567  z  -8361  style F  floor 377.20 -> 377.20  drive 7.5 m, -3 % (was -3 %)
+35892  x    2343  z  -8331  style F  floor 361.96 -> 361.08  drive 7.3 m, +20 % (was +32 %)
+35897  x    2499  z  -8329  style F  floor 365.14 -> 365.14  drive 2.5 m, -1 % (was -1 %)
+35923  x    2093  z  -8808  style F  floor 372.59 -> 372.59  drive 4.2 m, +10 % (was +10 %)
+35924  x    2106  z  -8824  style F  floor 375.21 -> 375.21  drive 1.3 m, +0 % (was +0 %)
+35925  x    2106  z  -8839  style F  floor 376.61 -> 376.61  drive 1.0 m, +0 % (was +0 %), new
+35926  x    2093  z  -8854  style F  floor 376.86 -> 376.86  drive 3.8 m, +5 % (was +5 %), 1 more dropped
+35931  x    2051  z  -8913  style F  floor 377.04 -> 377.04  drive 3.5 m, +4 % (was +4 %)
+35934  x    2111  z  -8755  style A  floor 369.35 -> 369.35  drive 6.3 m, +6 % (was +6 %)
+35951  x    2028  z  -8915  style F  floor 377.13 -> 377.13  drive 5.2 m, +18 % (was +18 %)
+35952  x    2021  z  -8915  style A  floor 380.41 -> 380.41  drive 3.0 m, +0 % (was +0 %), new
+35953  x    2015  z  -8916  style F  floor 380.12 -> 380.12  drive 3.0 m, +1 % (was +1 %), new
+35967  x    3291  z  -8414  style F  floor 369.96 -> 369.96  drive 6.8 m, +11 % (was +11 %)
+35968  x    3257  z  -8425  style F  floor 368.57 -> 368.57  drive 29.5 m, +6 % (was +6 %), new
+35972  x    3244  z  -8490  style F  floor 369.16 -> 369.16  drive 14.0 m, +6 % (was +6 %)
+35982  x    3413  z  -8443  style F  floor 361.29 -> 361.29  drive 4.8 m, +0 % (was +0 %), new
+35986  x    3263  z  -8401  style F  floor 368.15 -> 368.15  drive 5.7 m, +14 % (was +14 %), new
+35987  x    3238  z  -8403  style F  floor 365.77 -> 365.77  drive 6.3 m, +1 % (was +1 %), new
+35075  x    1655  z  -9530  style F  floor 390.66 -> 390.66  drive 3.2 m, -4 % (was -4 %)
+35081  x    1794  z  -9530  style A  floor 375.87 -> 375.87  drive 3.8 m, +3 % (was +3 %)
+35082  x    1808  z  -9530  style F  floor 375.96 -> 375.96  drive 3.5 m, +3 % (was +3 %)
+35087  x    1693  z  -9530  style A  floor 383.57 -> 383.57  drive 3.5 m, +10 % (was +10 %), 1 more dropped
+35090  x    1681  z  -9530  style F  floor 385.32 -> 385.32  drive 3.5 m, +6 % (was +6 %), 1 more dropped
+35099  x    1668  z  -9530  style F  floor 386.79 -> 386.79  drive 3.8 m, +12 % (was +12 %), new
+35242  x    1705  z  -9530  style A  floor 381.50 -> 381.50  drive 3.8 m, +7 % (was +7 %)
+35243  x    1717  z  -9530  style F  floor 379.81 -> 379.81  drive 4.0 m, +7 % (was +7 %)
+35244  x    1729  z  -9530  style F  floor 378.15 -> 378.15  drive 3.8 m, +6 % (was +6 %)
+35245  x    1741  z  -9531  style F  floor 377.06 -> 377.06  drive 4.3 m, +7 % (was +7 %)
+35246  x    1754  z  -9531  style A  floor 376.12 -> 376.12  drive 5.0 m, +6 % (was +6 %), new
+35247  x    1656  z  -9568  style F  floor 389.12 -> 389.12  drive 4.8 m, +11 % (was +11 %)
+35255  x    1755  z  -9568  style F  floor 375.85 -> 375.71  drive 5.0 m, +20 % (was +23 %), 1 more dropped
+35256  x    1650  z  -9496  style F  floor 389.55 -> 389.55  drive 4.5 m, +4 % (was +4 %), 1 more dropped
+35257  x    1663  z  -9496  style F  floor 388.11 -> 388.11  drive 4.5 m, +7 % (was +7 %), new
+35258  x    1675  z  -9496  style A  floor 385.58 -> 385.58  drive 4.8 m, +6 % (was +6 %)
+35259  x    1687  z  -9496  style F  floor 383.85 -> 383.85  drive 4.8 m, +8 % (was +8 %)
+35260  x    1700  z  -9496  style F  floor 381.98 -> 381.98  drive 4.5 m, +11 % (was +11 %)
+35261  x    1712  z  -9496  style A  floor 380.17 -> 380.17  drive 4.3 m, +10 % (was +10 %)
+35262  x    1723  z  -9496  style F  floor 378.65 -> 378.65  drive 4.5 m, +11 % (was +11 %)
+35263  x    1735  z  -9496  style A  floor 377.17 -> 377.17  drive 4.0 m, +7 % (was +7 %)
+35264  x    1748  z  -9497  style F  floor 376.06 -> 376.06  drive 3.5 m, +5 % (was +5 %)
+35265  x    1759  z  -9497  style F  floor 375.65 -> 375.65  drive 3.5 m, +4 % (was +4 %)
+35266  x    1778  z  -9495  style F  floor 375.98 -> 375.98  drive 4.8 m, +10 % (was +10 %)
+35267  x    1801  z  -9496  style F  floor 376.07 -> 376.07  drive 4.5 m, +6 % (was +6 %)
   719  x    3087  z    557  style E  floor 341.24 -> 341.24  drive 17.0 m, +13 % (was +13 %)
   918  x    3082  z    503  style C  floor 343.44 -> 343.44  drive 17.0 m, +16 % (was +16 %)
   935  x    3112  z    501  style E  floor 337.66 -> 337.66  drive 18.8 m, +17 % (was +17 %)
  1216  x    3119  z    557  style H  floor 335.70 -> 335.70  drive 17.0 m, +9 % (was +9 %)
+34258  x    2147  z  -8438  style A  floor 357.62 -> 357.62  drive 11.0 m, +1 % (was +1 %), new
+34270  x    2172  z  -8432  style F  floor 359.74 -> 359.74  drive 7.5 m, +9 % (was +9 %), new
+34282  x    2188  z  -8491  style A  floor 359.45 -> 359.45  no street in front of the garage within 45 m: drive left as it was
+34288  x    2173  z  -8495  style F  floor 359.84 -> 359.84  drive 0.5 m, +0 % (was +0 %), new
+34309  x    2258  z  -8490  style A  floor 368.87 -> 368.87  drive 25.3 m, +18 % (was +18 %), new
+34310  x    2105  z  -8539  style F  floor 363.82 -> 363.82  drive 4.8 m, -3 % (was -3 %), new
+34312  x    2310  z  -8427  style F  floor 366.60 -> 366.60  no street in front of the garage within 45 m: drive left as it was
+34313  x    2138  z  -8547  style F  floor 365.62 -> 365.62  drive 4.3 m, +11 % (was +11 %)
+34316  x    2203  z  -8560  style A  floor 364.19 -> 364.19  drive 4.5 m, -8 % (was -8 %)
+34355  x    2031  z  -9151  style F  floor 390.51 -> 390.51  drive 10.7 m, -13 % (was -13 %)
+34409  x    2312  z  -8660  style F  floor 375.54 -> 375.54  drive 6.2 m, -11 % (was -11 %)
+34411  x    2792  z  -8364  style F  floor 387.69 -> 387.69  drive 0.5 m, +0 % (was +0 %), new
+34421  x    1864  z  -8885  style F  floor 381.73 -> 381.59  drive 19.0 m, +20 % (was +21 %), new
+34423  x    1854  z  -8861  style F  floor 379.50 -> 379.50  drive 6.5 m, +14 % (was +14 %), new
+34574  x    1690  z  -8655  style A  floor 376.14 -> 376.14  drive 0.5 m, +0 % (was +0 %)
+34578  x    1840  z  -8554  style F  floor 377.37 -> 377.37  drive 6.0 m, -3 % (was -3 %), new
+34616  x    2056  z  -8810  style F  floor 372.93 -> 372.93  drive 3.5 m, +2 % (was +2 %)
+34617  x    2063  z  -8805  style A  floor 372.85 -> 372.85  drive 0.8 m, -1 % (was -1 %)
+34619  x    2069  z  -8823  style F  floor 373.47 -> 373.47  drive 2.0 m, +2 % (was +2 %), new
+34620  x    2070  z  -8830  style F  floor 373.97 -> 373.97  drive 2.0 m, +1 % (was +1 %), new
+34621  x    2070  z  -8838  style F  floor 375.94 -> 375.94  drive 0.5 m, +0 % (was +0 %), new
+34624  x    2052  z  -8839  style A  floor 375.09 -> 375.09  drive 0.5 m, -1 % (was -1 %), new
+34636  x    2462  z  -8948  style F  floor 407.36 -> 407.36  drive 3.3 m, +1 % (was +1 %)
+34637  x    2462  z  -8970  style F  floor 405.09 -> 403.90  drive 6.3 m, +20 % (was +39 %)
+34639  x    2476  z  -8970  style F  floor 406.82 -> 406.82  drive 3.5 m, +2 % (was +2 %)
+34640  x    2502  z  -8956  style F  floor 406.02 -> 406.02  drive 2.0 m, -1 % (was -1 %)
+34642  x    2494  z  -8965  style F  floor 406.37 -> 406.37  drive 8.2 m, +1 % (was +1 %)
+34648  x    2507  z  -8936  style A  floor 405.87 -> 405.87  drive 4.7 m, +8 % (was +8 %)
+34675  x    1465  z  -8869  style F  floor 365.24 -> 365.24  drive 9.0 m, -4 % (was -4 %)
+34676  x    1450  z  -8858  style A  floor 363.63 -> 363.63  drive 17.2 m, -12 % (was -12 %), new
+34677  x    2301  z  -8547  style F  floor 372.67 -> 372.67  drive 9.0 m, -6 % (was -6 %)
+34732  x    1827  z  -9383  style F  floor 390.27 -> 390.27  drive 23.5 m, -15 % (was -15 %)
+34744  x    1991  z  -8888  style F  floor 375.11 -> 375.11  drive 0.5 m, +0 % (was +0 %), new
+34745  x    2003  z  -8887  style F  floor 375.45 -> 375.45  drive 5.0 m, +5 % (was +5 %)
+34746  x    2015  z  -8887  style A  floor 375.77 -> 375.77  drive 4.8 m, +4 % (was +4 %)
+34747  x    2027  z  -8886  style A  floor 376.27 -> 376.27  drive 3.5 m, +0 % (was +0 %)
+34748  x    1981  z  -8859  style F  floor 373.46 -> 373.46  drive 1.5 m, +1 % (was +1 %), new
+34750  x    1990  z  -8837  style A  floor 373.52 -> 373.52  drive 1.3 m, +0 % (was +0 %), new
+34788  x    1548  z  -9461  style F  floor 406.03 -> 406.03  drive 4.8 m, +8 % (was +8 %)
+34856  x    1956  z  -8791  style A  floor 370.90 -> 370.90  drive 13.0 m, +6 % (was +6 %)
+34865  x    2004  z  -8789  style F  floor 369.85 -> 369.85  drive 2.8 m, +0 % (was +0 %), new
+34867  x    2023  z  -8782  style A  floor 369.96 -> 369.96  drive 0.5 m, +0 % (was +0 %)
+34868  x    2024  z  -8770  style F  floor 369.82 -> 369.82  drive 4.0 m, +2 % (was +2 %), 1 more dropped
+34869  x    2022  z  -8758  style F  floor 369.79 -> 369.79  drive 1.0 m, +0 % (was +0 %)
+34870  x    2021  z  -8747  style F  floor 369.39 -> 369.39  drive 0.5 m, +0 % (was +0 %), new
+34872  x    1935  z  -8758  style A  floor 370.31 -> 370.31  drive 0.5 m, +0 % (was +0 %), 1 more dropped
+34873  x    1934  z  -8771  style A  floor 370.28 -> 370.28  drive 4.0 m, +3 % (was +3 %)
+34874  x    1933  z  -8783  style F  floor 370.54 -> 370.54  drive 3.3 m, +3 % (was +3 %), new
+34890  x    2071  z  -9150  style F  floor 393.00 -> 393.00  drive 7.3 m, +15 % (was +15 %)
+34910  x    1566  z  -9009  style F  floor 374.51 -> 374.51  drive 1.5 m, +0 % (was +0 %)
+34912  x    1583  z  -9011  style F  floor 374.52 -> 374.52  no street in front of the garage within 45 m: drive left as it was
+34916  x    1441  z  -9024  style F  floor 373.47 -> 373.47  drive 0.5 m, -1 % (was -1 %), new
+35004  x    3263  z  -8492  style F  floor 366.13 -> 366.13  drive 10.2 m, +14 % (was +14 %)
+35126  x    2000  z  -8753  style F  floor 369.80 -> 369.80  drive 2.5 m, +2 % (was +2 %), new
+35133  x    1956  z  -8916  style F  floor 374.67 -> 374.67  drive 1.0 m, +0 % (was +0 %), 1 more dropped
+35137  x    2184  z  -8830  style A  floor 377.25 -> 377.25  drive 0.5 m, +1 % (was +1 %)
+35142  x    1954  z  -8866  style A  floor 372.93 -> 372.93  drive 4.3 m, +7 % (was +7 %)
+35146  x    2052  z  -8553  style A  floor 360.07 -> 360.07  drive 13.7 m, -13 % (was -13 %), new
+35156  x    2064  z  -8886  style F  floor 377.56 -> 377.56  drive 2.0 m, +1 % (was +1 %), new
+35159  x    1942  z  -8839  style F  floor 372.59 -> 372.59  drive 0.8 m, +0 % (was +0 %)
+35172  x    2089  z  -8886  style F  floor 378.04 -> 378.04  drive 3.0 m, +4 % (was +4 %), 1 more dropped
+35178  x    2076  z  -8888  style F  floor 378.37 -> 378.37  drive 0.5 m, +0 % (was +0 %), new
+35179  x    1955  z  -8839  style A  floor 372.54 -> 372.54  drive 0.5 m, +0 % (was +0 %), new
+35193  x    2075  z  -8539  style F  floor 361.99 -> 361.99  drive 35.0 m, -4 % (was -4 %)
+35197  x    1934  z  -8872  style F  floor 373.27 -> 373.27  drive 0.8 m, +0 % (was +0 %), 2 more dropped
+35198  x    2072  z  -8912  style F  floor 378.19 -> 378.19  drive 3.5 m, +4 % (was +4 %)
+35202  x    2028  z  -8853  style F  floor 375.76 -> 375.76  drive 4.3 m, -3 % (was -3 %)
+35205  x    1933  z  -8859  style F  floor 372.80 -> 372.80  drive 1.3 m, +0 % (was +0 %), new
+35210  x    1954  z  -8889  style F  floor 374.64 -> 374.64  drive 3.3 m, -2 % (was -2 %)
+35216  x    1932  z  -8916  style A  floor 376.57 -> 376.57  drive 4.3 m, +0 % (was +0 %)
+35218  x    2125  z  -8734  style F  floor 369.65 -> 369.65  drive 1.0 m, +0 % (was +0 %), new
+35224  x    1933  z  -8884  style A  floor 373.57 -> 373.57  drive 1.2 m, +0 % (was +0 %)
+35225  x    1933  z  -8896  style F  floor 374.07 -> 374.07  drive 1.5 m, +0 % (was +0 %), new
+35232  x    2054  z  -8713  style A  floor 366.76 -> 366.76  drive 1.3 m, +2 % (was +2 %), new
+35237  x    2101  z  -8886  style F  floor 378.34 -> 378.34  drive 3.3 m, +3 % (was +3 %)
+35238  x    1944  z  -8917  style F  floor 374.40 -> 374.40  drive 2.0 m, +1 % (was +1 %), new
+35248  x    1669  z  -9568  style F  floor 387.77 -> 387.77  drive 4.8 m, +13 % (was +13 %)
+35249  x    1682  z  -9567  style F  floor 385.86 -> 385.86  drive 4.8 m, +11 % (was +11 %)
+35250  x    1694  z  -9567  style A  floor 383.90 -> 383.90  drive 4.5 m, +15 % (was +15 %)
+35251  x    1706  z  -9568  style F  floor 381.74 -> 381.74  drive 4.3 m, +15 % (was +15 %)
+35252  x    1718  z  -9568  style F  floor 379.79 -> 379.79  drive 3.8 m, +13 % (was +13 %)
+35253  x    1730  z  -9568  style F  floor 378.20 -> 378.20  drive 4.0 m, +8 % (was +8 %)
+35254  x    1742  z  -9568  style F  floor 376.94 -> 376.94  drive 3.3 m, +7 % (was +7 %), new
+35275  x    1593  z  -9204  style F  floor 374.72 -> 374.72  drive 5.3 m, +17 % (was +17 %), 1 more dropped
+35279  x    2139  z  -8755  style F  floor 369.82 -> 369.82  drive 0.5 m, +0 % (was +0 %), new
+35701  x    2112  z  -8911  style A  floor 385.72 -> 385.72  drive 3.8 m, +0 % (was +0 %), 1 more dropped
+35706  x    2442  z  -8485  style A  floor 384.45 -> 384.41  drive 11.0 m, +20 % (was +20 %)
+35710  x    2464  z  -8429  style A  floor 373.52 -> 373.52  drive 2.5 m, -2 % (was -2 %)
+35716  x    2370  z  -8390  style F  floor 367.58 -> 367.58  drive 1.5 m, +0 % (was +0 %), new
+35717  x    2353  z  -8367  style F  floor 363.85 -> 363.85  drive 15.8 m, +8 % (was +8 %), new
+35718  x    2398  z  -8391  style F  floor 370.86 -> 370.86  drive 3.2 m, -1 % (was -1 %)
+35719  x    2425  z  -8389  style F  floor 371.64 -> 371.64  drive 3.0 m, +3 % (was +3 %), new
+35720  x    2446  z  -8390  style F  floor 371.37 -> 371.37  drive 5.5 m, +1 % (was +1 %)
+35745  x    2750  z  -8379  style A  floor 388.35 -> 387.74  drive 7.0 m, +20 % (was +29 %)
+35750  x    2560  z  -8329  style A  floor 369.32 -> 368.92  drive 7.8 m, +20 % (was +25 %)
+35781  x    2940  z  -8562  style F  floor 383.47 -> 383.47  drive 0.5 m, +0 % (was +0 %), new
+35788  x    3849  z  -8315  style F  floor 354.12 -> 354.12  drive 6.2 m, -2 % (was -2 %)
+35789  x    3836  z  -8321  style A  floor 350.82 -> 350.82  drive 3.7 m, +5 % (was +5 %)
+35790  x    3963  z  -8311  style F  floor 355.73 -> 355.73  no street in front of the garage within 45 m: drive left as it was
+35817  x    3929  z  -8468  style A  floor 383.11 -> 383.11  drive 3.0 m, +1 % (was +1 %)
+35861  x    3796  z  -8490  style F  floor 374.89 -> 374.89  drive 9.3 m, +1 % (was +1 %)
+35876  x    3964  z  -8467  style A  floor 383.59 -> 383.59  drive 8.5 m, +6 % (was +6 %)
+35877  x    3964  z  -8474  style F  floor 384.40 -> 384.40  drive 8.2 m, +7 % (was +7 %)
+35878  x    3964  z  -8480  style F  floor 384.94 -> 384.94  drive 8.3 m, +3 % (was +3 %), new
+35881  x    3929  z  -8488  style F  floor 385.26 -> 385.26  drive 3.2 m, +1 % (was +1 %), new
+35882  x    3929  z  -8481  style F  floor 384.73 -> 384.73  drive 3.2 m, +1 % (was +1 %)
+35883  x    3929  z  -8475  style F  floor 383.90 -> 383.90  drive 3.0 m, +2 % (was +2 %), 1 more dropped
+35886  x    3897  z  -8482  style F  floor 384.60 -> 384.60  drive 8.3 m, +3 % (was +3 %), new
+35887  x    3897  z  -8475  style F  floor 383.99 -> 383.99  drive 8.5 m, +4 % (was +4 %), new
+35891  x    2368  z  -8331  style F  floor 361.52 -> 359.80  drive 7.2 m, +20 % (was +44 %)
+35893  x    2356  z  -8330  style A  floor 361.08 -> 359.53  drive 7.0 m, +20 % (was +42 %)
+35894  x    2445  z  -8328  style F  floor 361.02 -> 360.87  drive 7.2 m, +20 % (was +22 %)
+35895  x    2472  z  -8329  style F  floor 361.48 -> 361.48  drive 9.8 m, +5 % (was +5 %)
+35896  x    2505  z  -8318  style F  floor 362.91 -> 362.91  no street in front of the garage within 45 m: drive left as it was
+35922  x    2078  z  -8707  style F  floor 367.61 -> 367.61  drive 18.5 m, -3 % (was -3 %)
+35927  x    2084  z  -8912  style F  floor 378.70 -> 378.70  drive 3.5 m, +3 % (was +3 %)
+35928  x    2091  z  -8912  style F  floor 379.21 -> 379.21  drive 3.5 m, +5 % (was +5 %), new
+35929  x    2098  z  -8912  style A  floor 379.58 -> 379.58  drive 3.2 m, +6 % (was +6 %)
+35930  x    2105  z  -8911  style A  floor 379.98 -> 379.98  drive 3.2 m, +7 % (was +7 %)
+35932  x    2058  z  -8913  style F  floor 377.50 -> 377.50  drive 3.5 m, +4 % (was +4 %), new
+35933  x    2065  z  -8912  style A  floor 377.92 -> 377.92  drive 3.5 m, +6 % (was +6 %)
+35935  x    2118  z  -8755  style F  floor 369.42 -> 369.42  drive 3.3 m, +2 % (was +2 %), new
+35936  x    2125  z  -8755  style F  floor 369.60 -> 369.60  drive 2.5 m, +0 % (was +0 %)
+35937  x    2132  z  -8755  style F  floor 369.65 -> 369.65  drive 2.5 m, +1 % (was +1 %)
+35938  x    2129  z  -8707  style F  floor 368.92 -> 368.92  drive 4.3 m, +3 % (was +3 %)
+35939  x    2128  z  -8714  style F  floor 368.90 -> 368.90  drive 4.3 m, +3 % (was +3 %)
+35940  x    2127  z  -8721  style F  floor 369.20 -> 369.20  drive 4.3 m, +3 % (was +3 %), new
+35941  x    2126  z  -8728  style F  floor 369.80 -> 369.80  drive 7.8 m, +2 % (was +2 %), new
+35943  x    2077  z  -8721  style F  floor 368.87 -> 368.87  drive 15.0 m, +2 % (was +2 %)
+35944  x    2077  z  -8728  style A  floor 369.09 -> 369.09  drive 13.2 m, +4 % (was +4 %)
+35945  x    2053  z  -8734  style A  floor 369.47 -> 369.47  drive 4.5 m, +2 % (was +2 %)
+35946  x    2053  z  -8727  style F  floor 368.61 -> 368.61  drive 0.5 m, +0 % (was +0 %), new
+35947  x    2053  z  -8720  style F  floor 368.21 -> 368.21  drive 0.5 m, +0 % (was +0 %), new
+35948  x    1998  z  -8914  style F  floor 375.49 -> 375.49  drive 3.5 m, +3 % (was +3 %)
+35949  x    1991  z  -8915  style F  floor 375.41 -> 375.41  drive 4.0 m, +6 % (was +6 %), new
+35950  x    1984  z  -8915  style A  floor 375.40 -> 375.40  drive 4.3 m, +10 % (was +10 %), new
+35954  x    1958  z  -8753  style F  floor 370.41 -> 370.41  drive 4.5 m, +2 % (was +2 %)
+35955  x    1965  z  -8753  style F  floor 370.23 -> 370.23  drive 2.3 m, +0 % (was +0 %), new
+35956  x    1972  z  -8753  style F  floor 370.29 -> 370.29  drive 2.3 m, +1 % (was +1 %), new
+35957  x    1979  z  -8753  style A  floor 370.18 -> 370.18  drive 2.3 m, +1 % (was +1 %), new
+35958  x    1986  z  -8753  style F  floor 370.02 -> 370.02  drive 2.3 m, +0 % (was +0 %), new
+35959  x    1993  z  -8753  style F  floor 369.86 -> 369.86  drive 2.3 m, +0 % (was +0 %), new

@@ -158,6 +158,31 @@ the skybridge; D, E, F before / after at Dan's spots.
 For Dan to check: the train; the Marietta Square race; the air tour (under the skybridge); the underpass and overpass; the square's parking
 and lights; the house.
 
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 09:24), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round78/`
+(Dan's pictures `BUG-00x_before`, `78_BUG-00x_after`; reports `round78_check_build3.txt` / `_build4.txt`, `air_tour_ai_pilots.txt`). Four full builds: build 1 stopped
+(the rail pulled 22 m under the Express Lanes deck), 3 found Old 41's deck rule had evened ten decks by name (the connector's ended 1 m under its road).
+A DONE. Freight trains (World/Rail) on two routes through Marietta's double track (Kennesaw 17.4 km, Canton 8.2 km), a train past the square about every 5 min;
+seen from Mill Street: lamps 8 s, gates down 19 s, the train 33 s, gates up 62 s; horn blown; 5 traffic cars held; a car on the tracks hit and put back (`78_A_*`).
+Round 77 had dropped the second Marietta track's crossings (its rails stood proud of the roads): kept now.
+B DONE. Marietta Square race, 1292 m: the square, Waddell, through the Lawrence Street deck's ground floor, Haynes, Lawrence, Mill Street over the tracks,
+North Marietta Parkway, Whitlock back over them. Jump: a ballast pile by Mill Street's curb, clears a train from 19 m/s. Raced 3 times (1 lap, 3 AI): beat it
+(crossed closed, no reset), waited at the gates, jumped (2.44 s in the air) but one reset after landing beside building 34315; every racer finished.
+C BUILT; the AI pilots fly it, my check pilot does not. Air Tour 30.7 km, 23 rings (quarry, Town Center, under Chastain Road NW over I-575, Chastain Glen,
+under Kennestone's skybridge, Marietta Square, under the parkway rail bridge, Kennesaw Mountain). Neither plane fitted under the skybridge (5.6 m): lifted to
+10.5 m, span 8 m wider, flatter arch; the parkway rail bridge 11 m clear. 2 AI pilots on Hard: 8:20 and 8:35 for 2 laps, no crashes. Laps 4:07 to 4:47.
+The human-like check pilot crash-looped at the quarry's first ring (two tries: tuning limit); no cockpit picture from it (a cockpit-height still instead).
+D DONE at Dan's spots. BUG-001: a wide span, sloped banks (`78_BUG-001_after`); Tower Road still lifts 0.6 s at 25 m/s on its dip (an even crest).
+BUG-002: Old 41's deck even, the rail 5.5 m lower under it: 0.0 / 0.1 s air both ways. 14 rail crossings driven: 11 clean.
+E DONE. 61 parked cars round the square, all off the lanes, real models (1342 pieces); decks too. 32 signal heads, backplates, phased (`78_E_*`). No other blocks.
+F DONE. Every stage 3 house settled as Round 52's; BUG-005's house on its ground (`78_BUG-005_after`).
+G. The stray block: hut 6854 (1.9 x 3.9 m, built 11 m tall) left out. Green deck 20 m shorter, clear of the physicians' building (5 other overlaps listed in the
+build log). 48 of stage 3's serious bumps blurred. Not done: the Waddell deck's roof jump.
+Found, not changed: the connector's bridge over the railroad ends 1 m under its road southbound (a wall; northbound Round 77's hop); a 27 % rail grade at Cobb
+Parkway's rail bridge; 9 other road bridges near the rails with 0.3 to 1.2 m steps in their decks (build log). Trains are not in replays.
+For Dan to check: the train at a crossing; the square race (beat / wait / jump); the air tour; Tower Road and Old 41; the square's cars and lights; the house; the
+connector's south end (should its deck end be raised?).
+Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes

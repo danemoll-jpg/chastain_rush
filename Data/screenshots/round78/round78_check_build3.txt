@@ -1,0 +1,200 @@
+Round 78 check, 2026-10-28 08:27, the exe, 1280 x 720, muted.
+
+=== Dan's reports, from his exact position and heading (the chase camera, as he saw it)
+  BUG-001 (Tower Road NW where it dips under the railroad: a narrow trench with sheer walls): at (918.4, 374.2, -6516.2) heading 190; ahead: nothing; picture 78_BUG-001_after.png
+  BUG-002 (Old 41 Highway NW over the railroad: the road waving up to a boxy hump): at (656.6, 386.2, -5536.0) heading 74; ahead: nothing; picture 78_BUG-002_after.png
+  BUG-003 (West Park Square NW: blocky signals, parked cars in the travel lanes): at (1720.4, 377.2, -8428.3) heading 71; ahead: Parked TrafficWagon, Parked TrafficSedan, trunk; picture 78_BUG-003_after.png
+  BUG-005 (a house south-east of the square sunk to its eaves): at (1850.2, 380.8, -8843.9) heading 146; ahead: House 34423, House 34421, trunk; picture 78_BUG-005_after.png
+  Tower Road Northwest : through (301 m) in 13.7 s, top 25 m/s, longest in the air 0.64 s, biggest jolt 1.1 m/s in a step, resets 0
+FAIL  dan: Tower Road Northwest drives through (no reset, no spell in the air over 0.4 s)  -  through (301 m) in 13.7 s, top 25 m/s, longest in the air 0.64 s, biggest jolt 1.1 m/s in a step, resets 0
+  Tower Road Northwest the other way: through (301 m) in 16.5 s, top 25 m/s, longest in the air 0.58 s, biggest jolt 4.4 m/s in a step, resets 0
+FAIL  dan: Tower Road Northwest the other way drives through (no reset, no spell in the air over 0.4 s)  -  through (301 m) in 16.5 s, top 25 m/s, longest in the air 0.58 s, biggest jolt 4.4 m/s in a step, resets 0
+  Old 41 Highway Northwest : through (269 m) in 11.8 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.5 m/s in a step, resets 0
+PASS  dan: Old 41 Highway Northwest drives through (no reset, no spell in the air over 0.4 s)  -  through (269 m) in 11.8 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.5 m/s in a step, resets 0
+  Old 41 Highway Northwest the other way: through (269 m) in 11.8 s, top 25 m/s, longest in the air 0.30 s, biggest jolt 0.5 m/s in a step, resets 0
+PASS  dan: Old 41 Highway Northwest the other way drives through (no reset, no spell in the air over 0.4 s)  -  through (269 m) in 11.8 s, top 25 m/s, longest in the air 0.30 s, biggest jolt 0.5 m/s in a step, resets 0
+
+=== D. Every road under a rail bridge and over the railroad, from its approach (chase camera), then driven through
+  North_Marietta_Parkway_0 (under the railroad): from (1705, -7821) heading 242: through (301 m) in 13.4 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step, resets 0
+  South_Marietta_Parkway_Southwest_1 (under the railroad): from (1706, -9055) heading 176: through (315 m) in 15.2 s, top 25 m/s, longest in the air 0.30 s, biggest jolt 0.3 m/s in a step, resets 0
+  Tower_Road_Northwest_2 (under the railroad): from (1078, -6545) heading 272: through (301 m) in 13.2 s, top 25 m/s, longest in the air 0.70 s, biggest jolt 0.7 m/s in a step, resets 0  <- LOOK
+  under_the_railroad_3 (under the railroad): from (2738, -5295) heading 323: 199 m in 9 s, top 36 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step
+  Larry_McDonald_Memorial_Highway_4 (under the railroad): from (2559, -5172) heading 139: through (278 m) in 12.0 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.0 m/s in a step, resets 0
+  under_the_railroad_5 (under the railroad): from (2580, -5251) heading 130: 195 m in 9 s, top 36 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step
+  Cobb_Parkway_North_6 (under the railroad): from (2027, -5893) heading 297: through (286 m) in 12.3 s, top 25 m/s, longest in the air 0.42 s, biggest jolt 0.8 m/s in a step, resets 0  <- LOOK
+  Ernest_West_Barrett_Parkway_7 (under the railroad): from (-3703, -5309) heading 53: through (285 m) in 12.5 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.0 m/s in a step, resets 0
+  Canton_Road_Connector_8 (over the railroad): from (1653, -5953) heading 193: through (256 m) in 38.3 s, top 25 m/s, longest in the air 0.88 s, biggest jolt 3.0 m/s in a step, resets 3 stuck at (1616, -6091) s 143; stuck at (1623, -6083) s 133; stuck at (1621, -6087) s 138;  <- LOOK
+  Old_41_Highway_Northwest_9 (over the railroad): from (-1235, -4900) heading 286: through (254 m) in 11.1 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.1 m/s in a step, resets 0
+  Old_41_Highway_Northwest_10 (over the railroad): from (787, -5562) heading 287: through (269 m) in 12.0 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.2 m/s in a step, resets 0
+  Cobb_Parkway_11 (over the railroad): from (-4138, -1972) heading 315: through (257 m) in 11.3 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.0 m/s in a step, resets 0
+  South_Main_Street_12 (over the railroad): from (-4115, -1080) heading 284: through (257 m) in 11.6 s, top 25 m/s, longest in the air 0.00 s, biggest jolt 0.7 m/s in a step, resets 0
+  Northwest_Corridor_Express_Lanes_13 (over the railroad): from (2348, -5036) heading 140: through (184 m) in 8.7 s, top 25 m/s, longest in the air 0.40 s, biggest jolt 0.4 m/s in a step, resets 0
+FAIL  rail: every under / overpass drives through (no stop, no air over 0.4 s)  -  3 of 14
+
+=== A. The running train, from the Mill Street crossing by the depot
+  24 level crossings; the nearest to Mill Street: Railroad crossing 3 at (1623, -8410), 2 arms, 4 lamps; routes Kennesaw north 17.4 km (11 crossings), Kennesaw south 17.4 km (11 crossings), Canton north 8.2 km (17 crossings), Canton south 8.2 km (17 crossings); headway 520 s
+  lamps on at 8.0 s, gates down at 18.5 s, the train at the road at 32.6 s, gates up at 62.4 s; horns blown 5; trains made near the camera 1; traffic cars held at a crossing 5
+PASS  train: the lamps flash and the gates come down before the train, go up after it  -  8 / 18 / 33 / 62
+PASS  train: the horn is blown on the way to the crossing  -  5
+  a car on the tracks: train hits 3; put back yes at (1660, -8408)
+PASS  train: a car on the tracks is hit and put back  -  3 hits
+
+=== E. Marietta Square's streets: the parked cars off the travel lanes, the lights
+  parked cars round the square: 61 spots, 0 with their middle on a carriageway; 1342 model pieces drawn near the camera
+PASS  square: no parked car stands in a travel lane  -  0 of 61
+PASS  square: the parked cars are the traffic models  -  1342
+  signals: 96 lamps on 32 heads, phased (two pictures 26 s apart)
+  a lap of the race's line in Free Roam: round in 86 s, resets 1 stuck at (2010, -8359) s 395;
+FAIL  square: a lap of the race's line drives clear (no reset)  -  resets 1
+
+=== F. BUG-005's house and the houses round it
+  78_F_street_1: ahead BusinessBodies_14_-69
+  78_F_street_2: ahead nothing
+  78_F_street_3: ahead BusinessBodies_19_-72
+
+=== G. Round 77's open items
+  Round 77's BUG-003 spot: picture 78_G_r77_BUG-003_block_gone.png (the 1.9 x 3.9 m hut 6854 left out)
+  the Green deck's west end and the physicians' building: picture 78_G_green_deck_end.png
+
+=== B. The Marietta Square race: 1 lap, 3 AI, Normal, the human-like driver (Street Classic); a train told to meet it at Mill Street
+  beat: finished 1:15.457; resets 0; longest in the air 0.78 s; waited at the gates 0.0 s; crossed while closed True; train hits so far 25; AI waited 0, AI beat it 2; YOU 1:15.457; EMBER 1:20.865; GOLD 1:14.615; BLUE 1:36.696
+    trace: 0:0.0d60 25:27.8 50:29.9 76:22.6 101:10.4 126:18.6 151:25.2 176:27.5 201:28.8 226:28.4 252:26.1d4 305:11.4d6 331:22.0d3 356:13.3 381:12.9 406:10.2d16 431:10.3 456:19.8 482:24.9 507:26.9 532:27.9 558:27.7 583:25.2 608:24.5 633:26.0 659:29.2 684:24.3 709:27.1 735:25.8a 760:29.9 785:29.6 810:12.7ad6 835:12.2 861:22.6 886:10.4 911:13.1 936:22.5 962:28.1 987:24.1 1012:10.3 1037:18.6 1062:26.6 1088:29.5 1113:9.7 1138:21.7 1163:26.0 1188:29.1 1213:26.3 1238:28.0 1263:29.2
+PASS  msq beat: across the closed crossing ahead of the train, finished, no reset  -  crossed closed True, resets 0
+PASS  msq beat: every racer finishes
+  wait: finished 1:15.544; resets 0; longest in the air 1.50 s; waited at the gates 0.1 s; crossed while closed False; train hits so far 31; AI waited 0, AI beat it 2; YOU 1:15.544; EMBER 1:12.959; GOLD 1:08.291; BLUE 1:09.021
+    trace: 0:0.0d60 25:28.0 51:29.8 76:21.8 101:10.4 126:18.7 152:25.2 177:27.4 202:28.7 228:28.5 253:15.2 299:10.7 325:19.5d3 350:15.9 375:10.4 400:9.8d18 425:10.3 450:18.2 475:23.6 500:26.6 526:28.3 551:28.5 576:25.4 601:25.8 626:25.3 652:28.8 677:25.5 702:23.6 727:16.2 752:3.1 778:21.9 803:25.7a 828:25.5ad8 853:14.7d11 878:11.9 903:10.4 928:20.3 954:27.1 979:28.5 1004:10.4 1029:14.8 1055:24.7 1080:29.5 1105:29.4 1131:29.5 1156:26.0 1182:28.2 1207:26.2 1232:28.0 1257:29.3
+PASS  msq wait: stopped at the gates for the train, then on, finished  -  waited 0.1 s
+PASS  msq wait: every racer finishes
+  jump: finished 1:12.481; resets 1 stuck at (1568, -8394) s 860;; longest in the air 2.44 s; waited at the gates 0.0 s; crossed while closed False; train hits so far 34; AI waited 1, AI beat it 1; YOU 1:12.481; EMBER 1:05.209; GOLD 1:08.853; BLUE 1:10.638
+    trace: 0:0.0d60 25:28.0 51:29.8 76:21.8 101:10.4 126:18.7 152:24.6 177:27.4 203:28.6 228:28.3 253:23.5d6 307:14.2d8 332:21.8d5 357:12.2 382:12.7 407:10.3d12 432:11.2 458:20.5 483:26.8 509:26.9d3 534:26.9ad5 559:26.4d3 584:26.0 609:25.6 635:14.0 660:22.6 685:24.4 710:25.5 736:25.6a 761:25.2 786:25.4 811:22.8a 837:23.1ad3 866:0.0 891:10.2 916:14.6 942:24.0 967:29.1 992:20.5 1017:10.4 1042:19.9 1068:26.8 1093:29.1 1118:28.7 1144:29.2 1169:25.2 1195:26.3 1220:26.6 1245:29.2 1270:29.2
+FAIL  msq jump: over the tracks off the ballast pile (over 1.2 s in the air), finished, no reset  -  air 2.44 s, resets 1
+PASS  msq jump: every racer finishes
+
+=== C. The Air Tour flown by the human-like pilot by the arrow alone (race.Target); a cockpit picture under the skybridge
+  Air Tour: 30.7 km, 23 rings
+     22.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     32.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     42.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+     49.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     59.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     69.7  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+     76.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     86.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+     96.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    103.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    113.3  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    123.3  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    130.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    140.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    150.1  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    157.0  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    166.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    176.9  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    183.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    193.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    203.7  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    210.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    220.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    230.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    237.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    247.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    257.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    263.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    273.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    283.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    290.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    300.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    310.7  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    317.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    327.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    337.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    344.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    354.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    364.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    371.0  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    380.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    390.9  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    397.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    407.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    417.7  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    424.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    434.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    444.4  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    451.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    461.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    471.1  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    477.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    487.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    497.7  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    504.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    514.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    524.6  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    531.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    541.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    551.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    558.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    568.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    578.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    585.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    595.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    605.0  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    611.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    621.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    631.9  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    638.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    648.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    658.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    665.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    675.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    685.6  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    692.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    702.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    712.4  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    719.3  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    729.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    739.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    746.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    756.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    766.1  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    772.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    782.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    792.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    799.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    809.5  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    819.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    826.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    836.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    846.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    853.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    863.0  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    873.0  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    879.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    889.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    899.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    906.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    916.6  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    926.5  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    933.2  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    943.3  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    953.2  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    960.0  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    969.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    979.9  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+    986.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+    996.8  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1006.8  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+   1013.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1023.7  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1033.6  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+   1040.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1050.4  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1060.4  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+   1067.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1077.1  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+   1087.1  CRASH RESET: back in the air at (-2391, 235, -1558) before the start ring
+   1093.9  CRASH RESET: back in the air at (-3191, 349, -1886) before the start ring
+  DID NOT finish (1100 s of game time); missed 0, penalty 0 s; crashes 121 (last: hit Terrain_9_12); cockpit picture under the skybridge: False
+FAIL  air: the tour flown by the arrow alone, finished  -  next ring 1
+FAIL  air: the cockpit picture under the skybridge
+
+12 of 19 checks passed.

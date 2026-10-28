@@ -1,0 +1,19 @@
+Round 71 check, 2026-10-28 09:37, the exe, 1280 x 720, muted.
+
+=== 2 AI pilots on Hard, 2 laps (the player flown by script at Normal's pace)
+     25.2  GOLD: PENALTY +5 s: missed CP1 on lap 1 at 25.175 (race penalty now 5 s)
+     25.2  GOLD: PENALTY +5 s: missed CP2 on lap 1 at 25.175 (race penalty now 10 s)
+    143.9  EMBER: PENALTY +5 s: missed CP13 on lap 1 at 143.835 (race penalty now 5 s)
+    210.7  GOLD: PENALTY +5 s: missed CP20 on lap 1 at 210.692 (race penalty now 15 s)
+    262.3  PENALTY +5 s: missed CP21 on lap 1 at 262.286 (race penalty now 5 s)
+    406.8  GOLD: PENALTY +5 s: missed CP16 on lap 2 at 406.829 (race penalty now 20 s)
+    507.8  GOLD: FINISH total 515.264 (clock 495.264 + penalties 20.0); laps 262.736 252.527; place 1
+    507.9  EMBER: FINISH total 500.405 (clock 495.405 + penalties 5.0); laps 253.002 247.403; place 1
+    544.1  PENALTY +5 s: missed CP21 on lap 2 at 544.098 (race penalty now 10 s)
+    579.9  FINISH total 574.247 (clock 564.247 + penalties 10.0); laps 287.387 286.860; place 3
+  YOU   9:34.247  laps 4:47.387 / 4:46.860, missed 2
+  EMBER 8:20.405  laps 4:13.002 / 4:07.403, missed 1
+  GOLD  8:35.264  laps 4:22.736 / 4:12.527, missed 4
+PASS  aai: both AI pilots finish (flown, not estimated)  -  EMBER 8:20.405, GOLD 8:35.264
+
+1 of 1 checks passed.

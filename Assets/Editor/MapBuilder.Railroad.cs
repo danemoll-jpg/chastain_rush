@@ -59,8 +59,8 @@ namespace ChastainRush
             var over = (d.overpasses ?? new RailCrossJ[0]).Concat((d.crossings ?? new RailCrossJ[0]).Where(c => RailOverClasses.Contains(c.@class))).ToList();
             RailPlans = new List<RailPlan>(); var log = new List<string>();
             // Round 78 (D, Dan's BUG-002 x 646.70 z -5541.05: "fix the overpass": Old 41's deck stepped 1.3 m in 4 m at one end and humped 0.5 m at the other,
-            // mapgen lifting it where the bare earth's banks poked through): a road bridge under 120 m over the railroad with a step in its deck gets an even
-            // deck, straight between its two ends' heights (the ends stay where Round 27's easing met the approaches)
+            // mapgen lifting it where the bare earth's banks poked through): that bridge gets an even deck, straight between its two ends' heights (the ends
+            // stay where Round 27's easing met the approaches)
             if (map.bridges != null)
                 foreach (var b in map.bridges)
                 {
@@ -68,6 +68,9 @@ namespace ChastainRush
                     float blen = 0f; for (int i = 1; i < bp.Count; i++) blen += (bp[i] - bp[i - 1]).magnitude; if (blen > 120f) continue;
                     bool overRail = d.lines.Any(l => RailRoadOver(map, ToPoints(l.points)).Any(o => o.name == (b.name ?? b.@class)));
                     if (!overRail) continue;
+                    // only the bridge Dan pointed at (Round 78's build 3 evened ten decks by name: the Canton Road Connector's ended 1 m under its road, a wall);
+                    // the others with a step are listed for Dan
+                    if (bp.Min(q => (q - new Vector2(646.7f, -5541.05f)).magnitude) > 60f) { float w0 = 0f; for (int i = 1; i + 1 < b.deck_y.Length; i++) w0 = Mathf.Max(w0, Mathf.Abs(b.deck_y[i + 1] - 2f * b.deck_y[i] + b.deck_y[i - 1])); if (w0 >= .2f) log.Add($"{b.name}: a {w0:0.00} m step in its deck (listed, not changed)"); continue; }
                     float worst = 0f; for (int i = 1; i + 1 < b.deck_y.Length; i++) worst = Mathf.Max(worst, Mathf.Abs(b.deck_y[i + 1] - 2f * b.deck_y[i] + b.deck_y[i - 1]));
                     if (worst < .2f) continue;
                     float acc = 0f, y0 = b.deck_y[0], y1 = b.deck_y[b.deck_y.Length - 1];
