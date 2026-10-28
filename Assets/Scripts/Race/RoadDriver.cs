@@ -144,7 +144,7 @@ namespace Racer
             // back beside itself the nearest point anywhere flipped between the two ways and the car turned round to follow it.
             float s; float lateral;
             var bodyNow = Car.Body.position;
-            if (lastS >= 0f && Time.time - lastSAt < .25f && (bodyNow - lastSPos).sqrMagnitude < 100f)
+            if (!ProjectAnywhere && lastS >= 0f && Time.time - lastSAt < .25f && (bodyNow - lastSPos).sqrMagnitude < 100f)
             {
                 s = DriveRoad.ProjectNear(bodyNow, lastS, 40f, out lateral);
                 if (Mathf.Abs(lateral) > 25f) s = DriveRoad.Project(bodyNow, out lateral);
@@ -414,6 +414,7 @@ namespace Racer
         float downFor, blockFor, wrongFor, backupUntil = -1f, unblockUntil = -1f, blockStart = -1f, blockStation, unblockSide, lastUrgent = -99f, wrongStart = -1f;
         float behindFor; ArcadeVehicle passWho; float passSide;
         float lastS = -1f, lastSAt; Vector3 lastSPos;   // Round 80 (B)
+        public static bool ProjectAnywhere;   // Round 80 (B): checks (-r80ProjectOld): the nearest point anywhere, as before
         static readonly RaycastHit[] probe = new RaycastHit[8];
 
         bool AgencyStep(ref float throttle, ref float brake, ref float steering, float s, float speed, float angle, Vector3 tangent, float lateral, float freeTarget, AiShortcut activeBranch, float branchS)

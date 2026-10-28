@@ -121,10 +121,11 @@ namespace ChastainRush
                 if (missSide != 0f && toRing < 400f && decidedFor == id) target += ring.Right * missSide;
                 // a ring flown past outside it (a wide line-up, a late turn): mostly gone back for, else on (5 s)
                 float past = Vector3.Dot(pos - ring.Position, ring.Forward);
-                if (Mistakes && ring != race.Route.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
+                bool forced = Advise && entrant.IsPlayer && ForceMiss == ring.Id;   // a check's human-like pilot that missed it on purpose goes back for it
+                if ((Mistakes || forced) && ring != race.Route.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
                 {
                     backFor = id;   // decided once
-                    if (rng.NextDouble() < GoBackChance[Skill] && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
+                    if ((forced || rng.NextDouble() < GoBackChance[Skill]) && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
                 }
                 // the late turn: past the ring it holds its heading a moment (it runs wide)
                 if (lateTurn && decidedFor == id && past > 0f) { lateUntil = Time.time + (Skill == 0 ? 1.8f : Skill == 1 ? 1.4f : 1.0f) * Mathf.Lerp(.8f, 1.2f, (float)rng.NextDouble()); lateDir = Flat(car.Body.linearVelocity).normalized; lateTurn = false; }
@@ -197,7 +198,7 @@ namespace ChastainRush
         bool GoBack(Vector3 pos)
         {
             var ring = backRing;
-            if (entrant.Finished || Time.time - backSince > 45f || NextRing() != ring)
+            if (entrant.Finished || Time.time - backSince > 45f || NextRing() != ring && entrant.RingSkipped != ring.Id - 1)
             {
                 if (NextRing() != ring && Time.time - backSince <= 45f) BacksDone++;
                 backRing = null; near = -1; return false;
