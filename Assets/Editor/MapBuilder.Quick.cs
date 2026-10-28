@@ -146,8 +146,9 @@ namespace ChastainRush
                 S("ShoppingCenter", () => BuildShoppingCenter(map, terrain, mats, world, shop)),   // Round 17 (Part B): lot, shop fronts, gas station, the bank
                 S("StuntPark", () => { if (Park != null) BuildStuntPark(map, terrain, mats, world, Park, shop); }),   // Round 36 (Part A2): the stunt park, its stores and roofs
                 S("Mall", () => { if (Mall != null) BuildMall(map, terrain, mats, world, Mall); }, true),   // Round 60 (A): Town Center, outside and in (MapBuilder.Mall.cs, MallInside.cs)
-                S("Marietta", () => BuildMarietta(map, terrain, mats, world), true),
-                S("Railroad", () => BuildRailroad(terrain, mats, world), true),   // Round 77 (C): the railroad edge to edge, its bridges and level crossings (MapBuilder.Railroad.cs)   // Round 76 (B): Marietta Square's park, landmarks, walks, paint, the railroad (MapBuilder.MariettaSquare.cs)
+                S("Marietta", () => BuildMarietta(map, terrain, mats, world), true),   // Round 76 (B): Marietta Square's park, landmarks, walks, paint, the railroad (MapBuilder.MariettaSquare.cs)
+                S("Kennestone", () => BuildKennestone(map, terrain, mats, world), true),   // Round 77 (B): Kennestone hospital, its skybridges, the map's parking decks (MapBuilder.Kennestone.cs; before Helipads: the ER's roof)
+                S("Railroad", () => BuildRailroad(terrain, mats, world), true),   // Round 77 (C): the railroad edge to edge, its bridges and level crossings (MapBuilder.Railroad.cs)
                 S("Airport", () => BuildAirport(terrain, mats, world, Airport)),   // Round 61 (B): the airport's pavement and paint, the trails' tread (MapBuilder.Airport.cs)
                 S("Helipads", () => BuildHelipads(mats, world)),
                 S("Edges", () => BuildEdges(map, terrain, mats, world), true),   // Round 66: the road closures at the map's edge (MapBuilder.Edges.cs); quick   // Round 63: the airport's and Kennestone's rooftop helipads and their parked helicopters (MapBuilder.Helipads.cs)

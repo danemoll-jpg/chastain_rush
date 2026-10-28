@@ -227,6 +227,7 @@ namespace ChastainRush
             R62SeamOverpasses(map, terrain);         // Round 62 (C, BUG-002): I-575's decks over Big Shanty Road, across the old core's edge, each laid with its roads as one curve (MapBuilder.Round62.cs)
             R77Embankments(map, terrain);            // Round 77 (A): the Canton Road Connector and its ramps on graded embankments (MapBuilder.Round77.cs)
             PlanRailroad(map, terrain);              // Round 77 (C): the railroad edge to edge, its bed graded, roads dipped under its bridges (MapBuilder.Railroad.cs)
+            PlanKennestone(map, terrain);            // Round 77 (B): Kennestone hospital and the map's parking decks (their ground levelled) (MapBuilder.Kennestone.cs)
             BuildClock.Lap("SmoothBridgeEnds");
             AddisonNow = Ridge.Load(AddisonTrackFile); AddisonExtra = LoadAddisonExtra();   // Round 52: the Addison Heights race's cleared line (MapBuilder.Round52.cs); Round 53: its shortcuts' pieces (MapBuilder.Round53.cs)
             LakesNow = Ridge.Load(LakesTrackFile); LakesExtra = LoadLakesExtra();   // Round 44: the Chastain Lakes race's world pieces (MapBuilder.LakesRace.cs), read before the amenity area is planned
@@ -860,6 +861,7 @@ namespace ChastainRush
                 if (CoursonOwns(i)) continue;        // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies (MapBuilder.CoursonSwim.cs)
                 if (MariettaOwns(i)) continue;       // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs)
                 if (RailOwns(i)) continue;           // Round 77 (C): a building the railroad runs through gives way (MapBuilder.Railroad.cs)
+                if (KennestoneOwns(i)) continue;     // Round 77 (B): Kennestone hospital's buildings and every parking deck (MapBuilder.Kennestone.cs)
                 var ring = ToPoints(b.footprint);
                 if (ring.Count < 3) continue;
                 float lo = float.MaxValue, hi = float.MinValue, sum = 0f;

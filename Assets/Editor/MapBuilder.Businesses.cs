@@ -139,7 +139,7 @@ namespace ChastainRush
                 if (LakesOwns(i)) continue;   // Round 32 (C2): the Chastain Lakes pool house and bathhouse
                 if (CoursonOwns(i)) continue;   // Round 39 (A4): the Courson Street pool's clubhouse, pool house and canopies
                 if (Mall != null && Mall.Owns(i)) continue;   // Round 60: Town Center and its anchors (MapBuilder.Mall.cs)
-                if (MariettaOwns(i) || RailOwns(i)) continue;   // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs); Round 77 (C): a building the railroad runs through gives way
+                if (MariettaOwns(i) || RailOwns(i) || KennestoneOwns(i)) continue;   // Round 76 (B): Marietta Square's bandstand, theater, market, museum and depot (MapBuilder.MariettaSquare.cs); Round 77 (C): a building the railroad runs through gives way
                 var b = map.buildings[i]; var ring = ToPoints(b.footprint); if (ring.Count < 3) continue;
                 if (PolyArea(ring) < 0f) ring.Reverse();
                 Vector2 c = Vector2.zero; foreach (var p in ring) c += p; c /= ring.Count;
@@ -305,7 +305,8 @@ namespace ChastainRush
                 int i0 = cell.v.Count;
                 cell.v.Add(bl); cell.v.Add(br); cell.v.Add(br + Vector3.up * h); cell.v.Add(bl + Vector3.up * h);
                 int col = row / 32, r = row % 32;
-                float u0 = col * 0.5f + 0.002f, u1 = col * 0.5f + 0.498f, v1 = 1f - r / 32f - 0.0008f, v0 = 1f - (r + 1) / 32f + 0.0008f;
+                float u0 = col * 0.25f + 0.001f, u1 = col * 0.25f + 0.249f,   // Round 77: four columns (BusinessSigns.png 4096 wide)
+                     v1 = 1f - r / 32f - 0.0008f, v0 = 1f - (r + 1) / 32f + 0.0008f;
                 cell.uv.Add(new Vector2(u0, v0)); cell.uv.Add(new Vector2(u1, v0)); cell.uv.Add(new Vector2(u1, v1)); cell.uv.Add(new Vector2(u0, v1));
                 cell.tri.AddRange(new[] { i0, i0 + 3, i0 + 2, i0, i0 + 2, i0 + 1 });
                 Count++;

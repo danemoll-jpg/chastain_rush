@@ -51,6 +51,8 @@ namespace ChastainRush
                 float y = roof ? .02f : .05f * vScale + .03f;   // the apron's pavement is 0.05 m (scaled) over the ground (MapBuilder.Airport.cs), its lines 0.015 m more
                 if (!roof) Flat(paint, f, -half, half, -half, half, y - .01f, new Color(.30f, .31f, .32f));
                 float e = .35f; var white = new Color(.93f, .93f, .90f); var yellow = new Color(.95f, .78f, .12f);
+                // Round 77 (B, Dan's photo 05 of Kennestone's ER roof): that pad red with its circle and H in white
+                if (roof) { Flat(paint, f, -half, half, -half, half, y - .01f, new Color(.78f, .12f, .10f)); yellow = white; }
                 Flat(paint, f, -half, half, half - e, half, y, white); Flat(paint, f, -half, half, -half, -half + e, y, white);
                 Flat(paint, f, -half, -half + e, -half, half, y, white); Flat(paint, f, half - e, half, -half, half, y, white);
                 float r1 = half * .78f, r0 = r1 - .5f; paint.Tint = yellow;

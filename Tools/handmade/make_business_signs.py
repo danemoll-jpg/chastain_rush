@@ -3,7 +3,7 @@ would be businesses or schools"; 2026-10-10: "Store names can be faked"): the fa
 up (no real store, brand, school or church). Hand-made content: writes Assets/HandMade/Businesses/BusinessSigns.png, which
 the map builder (MapBuilder.Businesses.cs) only reads. The kinds and their row ranges there (SignKinds) must match KINDS here.
 
-The atlas is 2048 x 4096: two columns of 1024 x 128 pixel rows (8 : 1), 32 rows a column, 64 signs. Row r sits in column
+The atlas is 4096 x 4096 (Round 77: four columns, was two): columns of 1024 x 128 pixel rows (8 : 1), 32 rows a column, 128 signs. Row r sits in column
 r // 32, row r % 32 from the top. A board is w x w / 8 metres (6 m wide: 0.75 m tall, capitals about 0.45 m: readable at 20 to
 30 m).
 
@@ -106,6 +106,17 @@ KINDS = [
         ("THE CORNER TAVERN", (20, 20, 22), (230, 180, 60), "georgiab.ttf"),
         ("MAGNOLIA GIFTS", (245, 236, 240), (120, 50, 90), "georgiab.ttf"),
     ]),
+    # Round 77 (B, Kennestone hospital: the place's own name, as the game names streets, no company logo; D, Marietta Square to Dan's photos): rows 64
+    # to 70 (MapBuilder.Kennestone.cs and MapBuilder.MariettaSquare.cs Sign*)
+    ("round77", [
+        ("KENNESTONE HOSPITAL", (246, 245, 240), (50, 52, 58), "georgiab.ttf"),
+        ("EMERGENCY", (246, 245, 240), (60, 62, 68), "arialbd.ttf"),
+        ("HOSPITAL", (30, 70, 160), (255, 255, 255), "arialbd.ttf"),
+        ("PARKING", (30, 70, 160), (255, 255, 255), "arialbd.ttf"),
+        ("THE GRAND", (170, 25, 30), (250, 225, 120), "impact.ttf"),
+        ("WELCOME CENTER", (25, 85, 50), (255, 255, 255), "arialbd.ttf"),
+        ("MUSEUM OF HISTORY", (238, 230, 210), (70, 45, 30), "georgiab.ttf"),
+    ]),
 ]
 
 
@@ -132,14 +143,14 @@ def row(text, bg, fg, fname):
     return img.resize((RW, RH), Image.LANCZOS)
 
 
-full = Image.new("RGB", (RW * 2, RH * PER_COL), (128, 128, 128))
+full = Image.new("RGB", (RW * 4, RH * PER_COL), (128, 128, 128))
 r = 0
 for kind, signs in KINDS:
     print(f"{kind}: rows {r} to {r + len(signs) - 1}")
     for t, bg, fg, fn in signs:
         full.paste(row(t, bg, fg, fn), ((r // PER_COL) * RW, (r % PER_COL) * RH))
         r += 1
-assert r <= 2 * PER_COL
+assert r <= 4 * PER_COL
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
 full.save(OUT)
 print("wrote", OUT, r, "signs")
