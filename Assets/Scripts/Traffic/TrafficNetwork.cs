@@ -54,7 +54,18 @@ namespace ChastainRush
         public Vector2 NodePos(int n) => nodes[n];
         public int From(int e) => edgeFrom[e];
         public int To(int e) => edgeTo[e];
-        public bool Oneway(int e) => edgeOneway[e];
+        public bool Oneway(int e) => edgeOneway[e] || dirSet != null && dirSet[e] != 0;
+        public bool BaseOneway(int e) => edgeOneway[e];
+        // Round 80 (E): a way set at run time (the Express Lanes' schedule, ExpressLanes): 0 the road's own, 1 from -> to only, -1 to -> from only,
+        // 2 closed; and whether new cars may be put on it
+        sbyte[] dirSet; bool[] spawnOff;
+        public void SetDirection(int e, sbyte d, bool spawn)
+        {
+            if (dirSet == null) { dirSet = new sbyte[edgeFrom.Length]; spawnOff = new bool[edgeFrom.Length]; }
+            dirSet[e] = d; spawnOff[e] = !spawn || d == 2;
+        }
+        public sbyte Direction(int e) => dirSet == null ? (sbyte)0 : dirSet[e];
+        public bool SpawnOff(int e) => spawnOff != null && spawnOff[e];
         public bool Bridge(int e) => edgeBridge[e];
         public float Half(int e) => edgeHalf[e];
         public string Name(int e) => edgeName[e];
@@ -63,7 +74,11 @@ namespace ChastainRush
         public int Degree(int node) => adjacent[node].Count;
         // the node at the far end when entering edge e at node `at` (dir +1: from -> to)
         public int Other(int e, int at) => edgeFrom[e] == at ? edgeTo[e] : edgeFrom[e];
-        public bool CanEnter(int e, int at) => !edgeOneway[e] || edgeFrom[e] == at;
+        public bool CanEnter(int e, int at)
+        {
+            int d = dirSet == null ? 0 : dirSet[e];
+            return d == 2 ? false : d == 1 ? edgeFrom[e] == at : d == -1 ? edgeTo[e] == at : !edgeOneway[e] || edgeFrom[e] == at;
+        }
 
         // A road's rank: the bigger road has the right of way at a junction (motorway 6 ... residential 1).
         public int Rank(int e)

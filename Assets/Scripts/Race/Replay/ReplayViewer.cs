@@ -150,6 +150,7 @@ namespace ChastainRush
             if (Current != this) return;
             Current = null; EngineCars.Clear(); GooseTarget = null;
             WorldClock.Replay = float.NaN; if (RailTrains.Instance) RailTrains.Instance.ReplayEnd();   // Round 79: the world's clocks live again
+            ExpressLanes.ReplayHour = float.NaN; ExpressLanes.RestoreAll();   // Round 80 (E)
             foreach (var p in puppets) if (p) Destroy(p.gameObject);
             if (ownBarriers) { ownBarriers.Clear(); Destroy(ownBarriers.gameObject); }
             var race = RaceController.Instance; if (race && race.Barriers != null) race.Barriers.ResetGatesForReplay(false);
@@ -265,7 +266,7 @@ namespace ChastainRush
         public void Seek(float t)
         {
             T = Mathf.Clamp(t, Data.t0, Data.t1);
-            FenceChunk.RestoreAll(); ManholePlume.ShutAll();
+            FenceChunk.RestoreAll(); ManholePlume.ShutAll(); ExpressLanes.RestoreAll();   // Round 80 (E): the Express Lanes' gates too
             var race = RaceController.Instance; var bars = ownBarriers ? ownBarriers : race ? race.Barriers : null; if (bars) bars.ResetGatesForReplay(true);
             nextEvent = 0; PlayEvents(false);
             ApplyPoses();
@@ -284,6 +285,7 @@ namespace ChastainRush
                 case ReplayData.Kind.Tree: if (TreeTrunks.Instance) TreeTrunks.Instance.ReplaySnap(e.a, e.v, show); break;
                 case ReplayData.Kind.Plume: if (show || e.f > 1e5f) ManholePlume.ReplayErupt(e.p, e.f); break;
                 case ReplayData.Kind.Gate: { var race = RaceController.Instance; var bars = ownBarriers ? ownBarriers : race ? race.Barriers : null; if (bars) bars.OpenGateForReplay(e.a); break; }
+                case ReplayData.Kind.ExpressGate: ExpressLanes.ReplayBreak(e.a, show); break;   // Round 80 (E)
                 case ReplayData.Kind.Gesture:
                     if (show) { var p = PuppetOf(e.a); var g = p ? p.GetComponent<RiderGestures>() : null; if (g) { if (e.b == (int)RiderGestures.Kind.Celebrate) g.Celebrate(); else g.Wave(); } }
                     break;
@@ -307,6 +309,7 @@ namespace ChastainRush
             {
                 int k = 0; while (k + 1 < clocks.Count && clocks[k + 1].t <= T) k++;
                 var c0 = clocks[k]; WorldClock.Replay = c0.f + (T - c0.t);
+                ExpressLanes.ReplayHour = c0.v.y > 50f ? c0.v.y - 100f : float.NaN;   // Round 80 (E): the lanes' hour as it was
                 if (RailTrains.Instance) RailTrains.Instance.ReplayAt(WorldClock.Replay + c0.v.x);
             }
             var tf = Traffic.Instance;

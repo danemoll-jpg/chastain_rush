@@ -109,7 +109,7 @@ namespace Racer
             }
             if (best < 0 || bd > 80f * 80f) return null;
             var heading = new Vector2(car.transform.forward.x, car.transform.forward.z);
-            int dir = net.Oneway(best) || Vector2.Dot(bt, heading) >= 0f ? 1 : -1;
+            int dir = net.Oneway(best) ? (net.Direction(best) == -1 ? -1 : 1) : Vector2.Dot(bt, heading) >= 0f ? 1 : -1;   // Round 80 (E): a way set at run time (the Express Lanes)
             var tan = bt * dir; var right = new Vector2(tan.y, -tan.x);
             float lane = net.Oneway(best) ? (net.Half(best) >= 4.5f ? net.Half(best) * .45f : 0f) : Mathf.Clamp(net.Half(best) * .5f, 1.3f, 2.6f);
             var at = bq + right * lane; var pos = RaceRoute.Surface(at.x, at.y) + Vector3.up * .7f;

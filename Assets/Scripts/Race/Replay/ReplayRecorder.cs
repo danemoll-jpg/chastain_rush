@@ -28,11 +28,11 @@ namespace ChastainRush
         void Awake() { Instance = this; race = GetComponent<RaceController>(); }
         void OnEnable()
         {
-            FenceChunk.PanelBrokenBy += OnPanel; FenceChunk.Restored += OnRestored; TreeTrunks.SnappedTree += OnTree; ManholePlume.Erupted += OnPlume; RaceBarriers.GateOpened += OnGate;
+            FenceChunk.PanelBrokenBy += OnPanel; FenceChunk.Restored += OnRestored; TreeTrunks.SnappedTree += OnTree; ManholePlume.Erupted += OnPlume; RaceBarriers.GateOpened += OnGate; ExpressLanes.GateBroken += OnExpressGate;
         }
         void OnDisable()
         {
-            FenceChunk.PanelBrokenBy -= OnPanel; FenceChunk.Restored -= OnRestored; TreeTrunks.SnappedTree -= OnTree; ManholePlume.Erupted -= OnPlume; RaceBarriers.GateOpened -= OnGate;
+            FenceChunk.PanelBrokenBy -= OnPanel; FenceChunk.Restored -= OnRestored; TreeTrunks.SnappedTree -= OnTree; ManholePlume.Erupted -= OnPlume; RaceBarriers.GateOpened -= OnGate; ExpressLanes.GateBroken -= OnExpressGate;
         }
         void OnDestroy() { if (Instance == this) Instance = null; }
         void OnApplicationQuit() { if (Recording) Stop("the game closed"); }
@@ -93,7 +93,7 @@ namespace ChastainRush
             // Round 79 (A): the world's and the trains' clocks, every second and when the trains' clock jumps
             float off = RailTrains.Instance ? RailTrains.Instance.Offset : 0f, world = Time.time;
             if (t - clockT >= 1f || Mathf.Abs(off - clockOff) > .01f || Mathf.Abs(world - clockWorld - (t - clockT)) > .25f)
-            { d.events.Add(new ReplayData.Event { t = t, kind = ReplayData.Kind.Clock, f = world, v = new Vector3(off, 0f, 0f) }); clockT = t; clockOff = off; clockWorld = world; }
+            { d.events.Add(new ReplayData.Event { t = t, kind = ReplayData.Kind.Clock, f = world, v = new Vector3(off, ExpressLanes.Hour + 100f, 0f) }); clockT = t; clockOff = off; clockWorld = world; }   // Round 80 (E): v.y the hour (+100: 0 is a replay from before)
             step++;
             d.t1 = t;
             // when to stop: everyone has finished (or been classified), 75 s after the player, 30 minutes
@@ -125,6 +125,7 @@ namespace ChastainRush
         void OnTree(int tree, Vector3 dir) => Add(new ReplayData.Event { kind = ReplayData.Kind.Tree, a = tree, v = dir });
         void OnPlume(ManholePlume m, float seconds) => Add(new ReplayData.Event { kind = ReplayData.Kind.Plume, p = m.transform.position, f = seconds });
         void OnGate(int gate) => Add(new ReplayData.Event { kind = ReplayData.Kind.Gate, a = gate });
+        void OnExpressGate(int gate) => Add(new ReplayData.Event { kind = ReplayData.Kind.ExpressGate, a = gate });   // Round 80 (E)
 
         // the finish screen's SAVE REPLAY (and the viewer's): now if the recording has stopped, else when it does
         public string Save(ReplayData d = null)

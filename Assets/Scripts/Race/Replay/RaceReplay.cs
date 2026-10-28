@@ -38,7 +38,7 @@ namespace ChastainRush
             public readonly List<(int lap, float start, float end)> laps = new List<(int, float, float)>();
             public float finishedAt = -1f, total = -1f;
         }
-        public enum Kind : byte { Panel = 1, Tree = 2, Plume = 3, Gate = 4, Gesture = 5, Restore = 6, Clock = 7 }   // Restore: a chunk put back on its own (the Elaine barricade once clear)
+        public enum Kind : byte { Panel = 1, Tree = 2, Plume = 3, Gate = 4, Gesture = 5, Restore = 6, Clock = 7, ExpressGate = 8 }   // Round 80 (E): ExpressGate, an Express Lanes gate's arm broken (a: its index); a Clock's v.y the hour + 100   // Restore: a chunk put back on its own (the Elaine barricade once clear)
         // Round 79 (A): Clock: the world's clock (WorldClock: f = Time.time then) and the trains' (v.x = RailTrains.Offset), every second and whenever the
         // trains' clock is moved on (a race's train_meet: RailTrains.Align); the viewer puts the trains, the crossings, the signals and the circuit plane as they were
         public struct Event { public float t; public Kind kind; public int a, b; public Vector3 p, v; public float f; }

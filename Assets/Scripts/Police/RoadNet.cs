@@ -25,6 +25,8 @@ namespace Racer
         static long Key(int x, int z) => ((long)x << 32) ^ (uint)z;
         static RoadNet cached;
         public static RoadNet Shared => cached ??= Build(PoliceRoads.Instance);
+        // Chastain Rush, Round 80 (E): a step the paths may not take now (the Express Lanes against the way they run, or onto them while closed: ExpressLanes)
+        public static System.Func<RoadNet, int, int, bool> Blocked;
 
         public static RoadNet Build(PoliceRoads roads)
         {
@@ -125,7 +127,7 @@ namespace Racer
                 if (cur == to) break;
                 foreach (var e in Adj[cur])
                 {
-                    if (state[e.to] == 2) continue; float ng = g[cur] + e.cost; if (ng >= g[e.to] || ng > maxCost) continue;
+                    if (state[e.to] == 2 || Blocked != null && Blocked(this, cur, e.to)) continue; float ng = g[cur] + e.cost; if (ng >= g[e.to] || ng > maxCost) continue;
                     g[e.to] = ng; came[e.to] = cur; heap.Add((ng + Vector3.Distance(P[e.to], goal), e.to));
                 }
             }

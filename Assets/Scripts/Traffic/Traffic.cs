@@ -135,7 +135,7 @@ namespace ChastainRush
             candidates.Clear(); weights.Clear(); float total = 0;
             for (int e = 0; e < net.EdgeCount; e++)
             {
-                if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12) continue;
+                if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12 || net.SpawnOff(e)) continue;   // Round 80 (E): not on the Express Lanes while they are closed
                 var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue;
                 candidates.Add(e); total += net.Length[e]; weights.Add(total);
             }
@@ -147,7 +147,7 @@ namespace ChastainRush
                 int n = net.PointCount(e); int i = UnityEngine.Random.Range(1, n); float t = UnityEngine.Random.value;
                 var a = net.Point(e, i - 1); var b = net.Point(e, i); var q = Vector2.Lerp(a, b, t);
                 float dist = Near(q, at2); if (dist < min || dist > 400f) continue;
-                int dir = net.Oneway(e) ? 1 : (UnityEngine.Random.value < .5f ? 1 : -1);
+                int dir = net.Oneway(e) ? (net.Direction(e) == -1 ? -1 : 1) : (UnityEngine.Random.value < .5f ? 1 : -1);   // Round 80 (E): the way set at run time
                 var tan = (b - a).normalized * dir; var right = new Vector2(tan.y, -tan.x);
                 float lane = net.Oneway(e) ? (net.Half(e) >= 4.5f ? net.Half(e) * .45f : 0f) : Mathf.Clamp(net.Half(e) * .5f, 1.3f, 2.6f);
                 q += right * lane;
