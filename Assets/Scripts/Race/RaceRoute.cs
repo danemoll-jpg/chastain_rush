@@ -121,6 +121,9 @@ namespace ChastainRush
         // loop_y, every point its own height), its checkpoints rings in the sky (RouteCheckpointJson y, ring_m or ring_w / ring_h), its line a ring too
         // (gate_y, gate_ring_air_m); lead_in the take-off run from the grid on the runway
         public bool air;
+        // Round 78 (B, the Marietta Square race): where a train should meet the race (a level crossing near this point) and how long after the start
+        // (RailTrains.Align at GO: the trains' clock moved on so a southbound train reaches it then)
+        public float[] train_meet; public float train_meet_s;
         public float gate_y, gate_ring_air_m;
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
         public bool AllowsVehicle(string id) => air ? vehicles != null && Array.IndexOf(vehicles, id) >= 0 :   // Round 71: an air route's own (the plane) only

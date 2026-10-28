@@ -372,6 +372,8 @@ namespace ChastainRush
                 if (CountdownRemaining <= 0f)
                 {
                     State = Stage.Racing; input.enabled = true; goFlashUntil = Time.time + 1.0f; RaceClock = 0f;
+                    // Round 78 (B): a route that crosses the railroad asks for a train to meet it (the Marietta Square race: Mill Street, lap 1)
+                    var rdT = Route?.Data; if (rdT?.train_meet != null && rdT.train_meet.Length == 2 && RailTrains.Instance) RailTrains.Instance.Align(new Vector3(rdT.train_meet[0], 0f, rdT.train_meet[1]), rdT.train_meet_s, true);
                     Say("Cross the start line to start the clock", 6f);
                     Log("GO");
                     markers.Refresh(this);

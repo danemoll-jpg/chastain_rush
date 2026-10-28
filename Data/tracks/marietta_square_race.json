@@ -1,0 +1,60 @@
+{
+ "note": "Round 78 (B): the Marietta Square race's jump over the tracks beside the Mill Street crossing (Tools/mapgen/make_marietta_route.py; built by MapBuilder.MariettaRace.cs). Map meters.",
+ "big_jumps": [
+  {
+   "id": "MJ kicker",
+   "look": "rockheap",
+   "physics": true,
+   "lip": [
+    1637.5,
+    -8403.6
+   ],
+   "dir": [
+    -1.0,
+    0.0
+   ],
+   "ramp_m": 15.0,
+   "height": 4.0,
+   "lip_y": 378.46,
+   "angle_deg": 26.0,
+   "width": 4.2,
+   "vmin": 19.0,
+   "vmax": 30.0
+  },
+  {
+   "id": "MJ landing",
+   "look": "rockheap",
+   "physics": true,
+   "lip": [
+    1612.0,
+    -8403.6
+   ],
+   "dir": [
+    1.0,
+    0.0
+   ],
+   "ramp_m": 36.0,
+   "height": 4.6,
+   "lip_y": 379.15,
+   "angle_deg": 14.3,
+   "width": 6.0,
+   "vmin": 0.0,
+   "vmax": 0.0
+  }
+ ],
+ "landing_zones": [
+  {
+   "id": "MJ landing",
+   "poly": [
+    1613.0,
+    -8407.6,
+    1613.0,
+    -8399.6,
+    1570.0,
+    -8399.6,
+    1570.0,
+    -8407.6
+   ]
+  }
+ ]
+}

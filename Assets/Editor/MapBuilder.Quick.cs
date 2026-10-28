@@ -163,7 +163,8 @@ namespace ChastainRush
                 S("LakesRace", () => BuildLakesRace(map, terrain, mats, world), true),   // Round 44: the Chastain Lakes race's trail, lake drain, spoil pile (MapBuilder.LakesRace.cs); Round 65: quick
                 S("Addison", () => BuildAddison(map, terrain, mats, world), true),   // Round 53: Addison Heights' road crew on Lyndon Drive and its shrub beds (MapBuilder.Round53.cs)
                 S("TrailRace", () => BuildTrailRace(terrain, mats, world, map), true),   // Round 62: the Noonday Creek Trail's path, railings, red bridge and signs (MapBuilder.TrailRace.cs)
-                S("MountainRace", () => BuildMountainRace(terrain, mats, world), true),   // Round 67: the Kennesaw Mountain race's landing zones and the jumps' looks (MapBuilder.Mountain.cs)
+                S("MountainRace", () => BuildMountainRace(terrain, mats, world), true),
+                S("MariettaRace", () => BuildMariettaRace(terrain, mats, world), true),   // Round 78 (B): the Marietta Square race's jump over the tracks (MapBuilder.MariettaRace.cs)   // Round 67: the Kennesaw Mountain race's landing zones and the jumps' looks (MapBuilder.Mountain.cs)
                 S("ManholeFloors", () => RefitManholeFloors(terrain, world)),   // Round 54 (E1): after every step that grades the ground round a manhole
                 S("Hydrants", () => BuildMoreHydrants(map, terrain, mats, world, hood, rest, biz, creek, ridge)),   // Round 36 (Parts C, D)
                 S("Life", () =>
