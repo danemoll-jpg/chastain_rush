@@ -12,6 +12,9 @@ namespace ChastainRush
             string path = System.IO.Path.Combine(ProjectRoot, Round72JunctionsFile);
             if (!System.IO.File.Exists(path)) return;
             R55Blur(terrain, JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(path)));
+            // Round 78 (G): stage 3's serious bumps from Round 77's scan (Tools/mapgen/bump_spots.py)
+            string p78 = System.IO.Path.Combine(ProjectRoot, "Data/tracks/round78_bumps.json");
+            if (System.IO.File.Exists(p78)) R55Blur(terrain, JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(p78)));
         }
     }
 }

@@ -82,6 +82,9 @@ namespace ChastainRush
         {
             R52Load(map);
             if (R52DanHouses.Contains(idx)) return true;
+            // Round 78 (F, Dan's BUG-005 x 1850.19 z -8843.93, a house south-east of Marietta Square: "unbury this house"): every house in stage 3's land
+            // (the map's pieces outside extent_m) is settled the same way
+            if (map.pieces != null) for (int k = 0; k + 3 < map.pieces.Length; k += 4) if (centre.x >= map.pieces[k] && centre.y >= map.pieces[k + 1] && centre.x <= map.pieces[k + 2] && centre.y <= map.pieces[k + 3]) return true;
             if (r52Lap.Count < 2) return false;
             float dStreet = float.MaxValue, dHouse = float.MaxValue;
             for (int i = 0; i + 1 < r52Lap.Count; i++) { dStreet = Mathf.Min(dStreet, SegDistStatic(streetPoint, r52Lap[i], r52Lap[i + 1])); dHouse = Mathf.Min(dHouse, SegDistStatic(centre, r52Lap[i], r52Lap[i + 1])); }
