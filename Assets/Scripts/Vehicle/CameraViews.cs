@@ -168,6 +168,8 @@ namespace Racer
         // ---------- first person ----------
         Transform visual; Transform eyeHost; Vector3 eyeLocal; bool classicEyes;
         readonly List<(Transform part, Vector3 centre)> eyeParts = new();
+        Transform planeSeat;   // Round 80 (D3)
+        static Transform FindDeep(Transform t, string name) { if (t.name == name) return t; foreach (Transform c in t) { var f = FindDeep(c, name); if (f) return f; } return null; }
         Quaternion fpRotation; float fpY; bool fpFresh = true; Transform fpFor;
         // The rider's eyes: the Blender rider's "__eyes" part; the classic models' head (merged into their body meshes) is
         // left behind the camera, which sits just in front of the face.
@@ -192,6 +194,14 @@ namespace Racer
             }
             eye = forward = default;
             forward = car.transform.forward;
+            // Round 80 (D3, Round 79: "the plane's cockpit view sits behind the pilot"): in a plane the pilot's eyes from the pilot's own seat (the rider's
+            // holder, VehicleVisual.Rider): the Blender rider's seated eyes 0.77 m over the hip and 5 cm ahead, the camera 4.5 cm ahead of them
+            // (the eye parts were not found there: the view fell back to a point over the plane's middle, behind the pilot)
+            if (car.GetComponent<VehicleConfiguration>() is VehicleConfiguration vc && vc.Profile.IsPlane && root)
+            {
+                if (!planeSeat || planeSeat.root != car.transform.root) planeSeat = FindDeep(root, "Rider");
+                if (planeSeat) { classicEyes = false; eye = planeSeat.position + car.transform.up * .77f + forward * .095f; return true; }
+            }
             if (classicEyes) { if (!eyeHost) return false; eye = eyeHost.TransformPoint(eyeLocal); return true; }
             if (eyeParts.Count == 0 || !eyeParts[0].part) return false;
             foreach (var (part, centre) in eyeParts) eye += part.TransformPoint(centre);
@@ -251,7 +261,7 @@ namespace Racer
             }
             if (hidden.Count > 0 && hidden[0].renderer) return;
             hidden.Clear();
-            if (!Eyes(car, out _, out _) || classicEyes) return;
+            if (!Eyes(car, out _, out _) || classicEyes || !visual) return;
             foreach (var r in visual.GetComponentsInChildren<Renderer>(true))
             {
                 var n = r.name; int cut = n.IndexOf("__"); if (cut < 0) continue;
