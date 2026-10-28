@@ -47,6 +47,34 @@ namespace ChastainRush
             var d = JsonUtility.FromJson<KsData>(File.ReadAllText(path)); if (d == null) return;
             KennestoneNow = d; bool Ok(int i) => i >= 0 && i < map.buildings.Length;
             if (d.owned != null) foreach (int i in d.owned) if (Ok(i)) ksOwned.Add(i);
+            // Round 78 (G, Round 77's open item): a deck whose rectangle runs into a building not its own (the Green deck, 6376, into the Kennestone Physicians
+            // Center, 7690) has that end pulled in to stand 1.5 m clear of it; the others found are listed, not changed
+            if (d.decks != null)
+                foreach (var dk in d.decks)
+                {
+                    if (!Ok(dk.index)) continue;
+                    var c0 = new Vector2(dk.centre[0], dk.centre[1]); var U0 = new Vector2(dk.u[0], dk.u[1]); var V0 = new Vector2(-U0.y, U0.x);
+                    float lo = -dk.hl, hi = dk.hl; var hits = new List<int>();
+                    for (int bi = 0; bi < map.buildings.Length; bi++)
+                    {
+                        if (bi == dk.index || Array.Exists(d.decks, o => o.index == bi) || MariettaOwns(bi)) continue; var fp = map.buildings[bi].footprint; if (fp == null || fp.Length < 6) continue;
+                        if ((new Vector2(fp[0], fp[1]) - c0).magnitude > dk.hl + dk.hw + 80f) continue;
+                        var ring = ToPoints(fp); float vmin = ring.Min(q => Vector2.Dot(q - c0, V0)), vmax = ring.Max(q => Vector2.Dot(q - c0, V0));
+                        if (vmax < -dk.hw || vmin > dk.hw) continue;
+                        float umin = ring.Min(q => Vector2.Dot(q - c0, U0)), umax = ring.Max(q => Vector2.Dot(q - c0, U0));
+                        if (umax < -dk.hl || umin > dk.hl) continue;
+                        hits.Add(bi);
+                        if (dk.index != 6376) continue;
+                        if (umin > 0f) hi = Mathf.Min(hi, umin - 1.5f); else if (umax < 0f) lo = Mathf.Max(lo, umax + 1.5f);
+                    }
+                    if (hits.Count == 0) continue;
+                    if (hi - lo < 2f * dk.hl - .01f)
+                    {
+                        float mid = (lo + hi) / 2f; dk.centre = new[] { c0.x + U0.x * mid, c0.y + U0.y * mid }; float was = dk.hl; dk.hl = (hi - lo) / 2f;
+                        Debug.Log($"[Round78] G: deck {dk.index} ran into building(s) {string.Join(", ", hits)}: {2f * (was - dk.hl):0.0} m shorter, clear of them");
+                    }
+                    else Debug.Log($"[Round78] G: deck {dk.index} overlaps building(s) {string.Join(", ", hits)} (listed, not changed)");
+                }
             // the decks' ground levelled at its middle's height (6 m of easing round it)
             int nd = 0;
             if (d.decks != null)
@@ -271,7 +299,9 @@ namespace ChastainRush
                 for (float u = -hl; u <= hl; u += .5f) { var q = c + U * u; if (RoadGap(q) < .8f) { ua = Mathf.Min(ua, u); ub = Mathf.Max(ub, u); roadY = Mathf.Max(roadY, Ground(t, q.x, q.y)); } }
                 if (ua > ub) { ua = -hl * .4f; ub = hl * .4f; roadY = Ground(t, c.x, c.y); }
                 ua -= 1f; ub += 1f;
-                float bottom = roadY + 5.6f, top = bottom + Mathf.Max(1, rb.levels - rb.min_level) * KsFloor;
+                // Round 78 (C, Dan: "underpass cps including under the glass bridge of the hospital"): the span over Church Street (building 7876, BUG-005's)
+                // lifted to 9.5 m so the planes' ring fits under it (at 5.6 m, its arch springing from 3 m at the towers, neither wing cleared it)
+                float bottom = roadY + (rb.index == 7876 ? 9.5f : 5.6f), top = bottom + Mathf.Max(1, rb.levels - rb.min_level) * KsFloor;
                 var f = new Frame { O = new Vector3(c.x, 0f, c.y), R = new Vector3(U.x, 0f, U.y), F = new Vector3(V.x, 0f, V.y), M = 1f };
                 // tan ends and stair towers down to the ground each side of the road, the glass span between
                 foreach (var (u0, u1) in new[] { (-hl, ua), (ub, hl) })
@@ -411,6 +441,7 @@ namespace ChastainRush
                 if (signMat != null) signs.Add(f.P(-hl - .05f, sh, (-hw + aIn) / 2f), new Vector2(-U.x, -U.y), 4.8f, .6f, SignParking);
                 // the solid parts
                 mb.ToObject($"Parking deck {dk.index} structure", mats.House, go.transform, false, true);
+                FlushParkedCars($"Parking deck {dk.index} cars", go.transform, false);   // Round 78 (E)
                 foreach (var (cc, size, rr) in cols) { var o = new GameObject("deck part"); o.transform.SetParent(go.transform, false); o.transform.SetPositionAndRotation(cc, rr); o.AddComponent<BoxCollider>().size = size; }
                 built++;
             }
@@ -418,13 +449,17 @@ namespace ChastainRush
             Debug.Log($"[Round77] B: {built} parking decks built ({ramps} ramps, {cars} parked cars)");
         }
 
-        static void ParkedCar(MeshBuilder mb, Frame f, int seed)
+        // Round 78 (E, Dan's BUG-003: "can we make the stoplights and cars not so blocky"): a parked car is no longer boxes in the mesh but a spot (where,
+        // which way its nose points, a seed for its body and paint) for World/ParkedCars, which puts the traffic cars' own models there near the camera
+        static readonly List<(Vector3 p, float yaw, int seed)> parkedSpots = new List<(Vector3, float, int)>();
+        static void ParkedCar(MeshBuilder mb, Frame f, int seed) => parkedSpots.Add((f.O, Mathf.Atan2(f.F.x, f.F.z) * Mathf.Rad2Deg, seed));
+        static void FlushParkedCars(string name, Transform parent, bool solid)
         {
-            var paints = new[] { new Color(.85f, .85f, .86f), new Color(.12f, .12f, .14f), new Color(.55f, .10f, .10f), new Color(.20f, .30f, .55f), new Color(.55f, .56f, .58f), new Color(.75f, .72f, .62f) };
-            var col = paints[(int)(Hash01(seed, 5) * paints.Length) % paints.Length];
-            BoxF(mb, f, -.9f, .9f, .3f, 1.0f, -2.2f, 2.2f, col);
-            BoxF(mb, f, -.8f, .8f, 1.0f, 1.5f, -1.2f, .9f, Shade(col, .9f));
-            FrontQuad(mb, f, -.75f, .75f, 1.02f, 1.45f, .91f, KsGlass);
+            if (parkedSpots.Count == 0) return;
+            var go = new GameObject(name); go.transform.SetParent(parent, false); var pc = go.AddComponent<ParkedCars>();
+            pc.at = parkedSpots.Select(q => q.p).ToArray(); pc.yaw = parkedSpots.Select(q => q.yaw).ToArray(); pc.seed = parkedSpots.Select(q => q.seed).ToArray(); pc.solid = solid;
+            Debug.Log($"[Round78] E: {name}: {parkedSpots.Count} parked cars (traffic models at run time)");
+            parkedSpots.Clear();
         }
     }
 }

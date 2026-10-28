@@ -345,25 +345,46 @@ namespace ChastainRush
                     ncw++;
                 }
             }
-            // Round 77 (photo 02): angled parking both sides round the square (where the street has room; one side where it is narrower), parked cars in
-            // some of the bays, one-way arrows down the lanes
-            int nang = 0, ncars = 0, narrows = 0;
+            // Round 77 (photo 02): angled parking round the square, one-way arrows down the lanes. Round 78 (E, Dan's BUG-003 x 1720.39 z -8428.27: "the parked
+            // cars are blocking the roads. Can we push the parking lots out of the streets so cars can pass by?"): the bays lie OUTSIDE the carriageway, a paved
+            // strip from the road's edge out 5 m on the park's side (between the street and the park), and on the far side only where the strip clears every
+            // building by 1.5 m; the travel lanes stay whole. Parked cars are the traffic cars' own models (World/ParkedCars), in about half the bays.
+            int nang = 0, ncars = 0, narrows = 0; parkedSpots.Clear();
+            var nearB = new List<List<Vector2>>();
+            foreach (var bd in map.buildings) { if (bd.footprint == null || bd.footprint.Length < 6) continue; var fp = ToPoints(bd.footprint); if ((fp[0] - c).magnitude < 200f) nearB.Add(fp); }
+            bool ClearOfBuildings(Vector2 q) { foreach (var fp in nearB) { if (InPolygon(q, fp)) return false; for (int i = 0; i < fp.Count; i++) if ((ClosestOnSeg(q, fp[i], fp[(i + 1) % fp.Count]) - q).magnitude < 1.5f) return false; } return true; }
+            var stripC = new Color(0.20f, 0.20f, 0.21f);
             foreach (var s in square)
             {
                 float len = (s.b - s.a).magnitude; if (len < 14f) continue; var sd = (s.b - s.a) / len; var across = new Vector2(-sd.y, sd.x);
-                var sides = s.half >= 7f ? new[] { -1f, 1f } : s.half >= 4.5f ? new[] { s.oneway ? 1f : -1f } : new float[0];
-                foreach (float side in sides)
+                foreach (float side in new[] { -1f, 1f })
                 {
-                    for (float u = 10f; u < len - 10f; u += 3.0f)
+                    bool parkSide = Vector2.Dot(c - (s.a + s.b) * .5f, across * side) > 0f;
+                    float lean = s.oneway ? 1f : side;   // the bays lean the way the traffic beside them goes
+                    float runStart = -1f;
+                    for (float u = 8f; u <= len - 8f; u += 3.0f)
                     {
-                        var curb = s.a + sd * u + across * side * (s.half - 0.15f); if (InPolygon(curb, park)) continue;
-                        var inner = curb - across * side * 4.8f + sd * 2.6f;   // 60 degrees to the curb, leaning the way the traffic goes
-                        Mark(curb, inner, 0.12f); nang++;
-                        var bay = (curb + inner) * .5f + sd * 1.5f;
-                        if (Hash01((int)(bay.x * 7f) ^ (int)(bay.y * 13f), 778) < 0.5f)
+                        var edge = s.a + sd * u + across * side * s.half; var outer = edge + across * side * 5.0f;
+                        bool ok = !InPolygon(outer, park) && !InPolygon(edge, park) && ClearOfBuildings(outer) && ClearOfBuildings(outer + sd * 1.5f) && ClearOfBuildings(outer - sd * 1.5f);
+                        if (ok && !parkSide) ok = ClearOfBuildings(outer + across * side * 1.5f);
+                        if (ok)
                         {
-                            float by = Ground(t, bay.x, bay.y); var cf = MakeFrame(new Vector3(bay.x, by + 0.02f, bay.y), (curb - inner).normalized, 1f);
-                            ParkedCar(bodies, cf, (int)(bay.x * 31f) ^ (int)(bay.y * 17f)); ncars++;
+                            if (runStart < 0f) runStart = u;
+                            var inner = edge + across * side * 4.8f + sd * 2.6f * lean;   // 60 degrees to the curb
+                            Mark(edge + across * side * .2f, inner, 0.12f); nang++;
+                            var bay = (edge + inner) * .5f + sd * 1.5f * lean;
+                            if (Hash01((int)(bay.x * 7f) ^ (int)(bay.y * 13f), 778) < 0.5f)
+                            {
+                                float by = Ground(t, bay.x, bay.y); var cf = MakeFrame(new Vector3(bay.x, by + 0.08f, bay.y), (inner - edge).normalized, 1f);   // nose in, to the curb
+                                ParkedCar(bodies, cf, (int)(bay.x * 31f) ^ (int)(bay.y * 17f)); ncars++;
+                            }
+                        }
+                        if ((!ok || u + 3f > len - 8f) && runStart >= 0f)
+                        {
+                            float u1 = ok ? u + 1.5f : u - 1.5f, u0 = runStart - 1.5f;
+                            var q = new List<Vector2> { s.a + sd * u0 + across * side * (s.half - .1f), s.a + sd * u1 + across * side * (s.half - .1f), s.a + sd * u1 + across * side * (s.half + 5.0f), s.a + sd * u0 + across * side * (s.half + 5.0f) };
+                            walks.Tint = stripC; DrapePoly(walks, q, 1.0f, 0.08f, t);
+                            runStart = -1f;
                         }
                     }
                 }
@@ -376,34 +397,65 @@ namespace ChastainRush
                         narrows++;
                     }
             }
-            // Round 77 (photo 06): traffic lights on mast arms at the square's corners: a pole on the park's corner, an arm out over each street beside it
-            // with a signal facing the traffic each way along it (they break, as the lamps do)
-            var signals = new Breakables(); int nsig = 0;
+            // Round 77 (photo 06): traffic lights on mast arms at the square's corners. Round 78 (E: "not so blocky"): a round tapered pole on a base, the arm
+            // with a brace, each signal a housing with a hood over every lamp on a black backplate with a yellow edge; the lamps are their own pieces (faces of
+            // the breakable: hidden when it breaks), lit by phase (World/TrafficSignals: the two ways round the square take turns, 22 s green, 3 s yellow)
+            var signals = new Breakables(); int nsig = 0; var sigLamps = new List<Renderer>(); var sigGroup = new List<int>(); var sigColor = new List<int>();
+            var poleC = new Color(0.13f, 0.14f, 0.15f); var houseC = new Color(0.16f, 0.15f, 0.06f); var plateC = new Color(0.04f, 0.04f, 0.045f); var edgeC = new Color(0.85f, 0.70f, 0.10f);
+            var axis0 = (park[1] - park[0]).normalized;
+            var lampRoot = new GameObject("Marietta signal lamps").transform; lampRoot.SetParent(root, false);
             for (int i = 0; i < park.Count; i++)
             {
                 var corner = park[i]; var pole = corner + (corner - c).normalized * 1.2f; float py = Ground(t, pole.x, pole.y);
                 var mb = signals.Begin(pole);
+                var heads = new List<(Frame f, int group)>();
                 signals.Piece(() =>
                 {
-                    Post(mb, new Vector3(pole.x, py - 0.1f, pole.y), 7.2f, 0.28f, new Color(0.13f, 0.14f, 0.15f));
+                    Cyl(mb, new Vector3(pole.x, py - 0.1f, pole.y), 0.6f, 0.32f, 0.3f, poleC, 12);           // the base
+                    Cyl(mb, new Vector3(pole.x, py + 0.5f, pole.y), 6.7f, 0.17f, 0.11f, poleC, 12);          // the tapered pole
                     foreach (var nb in new[] { park[(i + 1) % park.Count], park[(i + park.Count - 1) % park.Count] })
                     {
-                        var along = (nb - corner).normalized; var outward = new Vector2(along.y, -along.x); if (Vector2.Dot(outward, corner - c) < 0f) outward = -outward;   // across the street beside that edge
-                        var end = pole + outward * 8f; Beam(mb, new Vector3(pole.x, py + 6.6f, pole.y), new Vector3(end.x, py + 6.4f, end.y), 0.16f, 0.16f, new Color(0.13f, 0.14f, 0.15f));
-                        foreach (float k in new[] { 4.2f, 7.4f })
+                        var along = (nb - corner).normalized; var outward = new Vector2(along.y, -along.x); if (Vector2.Dot(outward, corner - c) < 0f) outward = -outward;
+                        var end = pole + outward * 8.2f;
+                        Beam(mb, new Vector3(pole.x, py + 6.6f, pole.y), new Vector3(end.x, py + 6.35f, end.y), 0.13f, 0.13f, poleC);
+                        var br = pole + outward * 2.6f; Beam(mb, new Vector3(pole.x, py + 5.4f, pole.y), new Vector3(br.x, py + 6.5f, br.y), 0.07f, 0.07f, poleC);   // the brace
+                        int grp = Mathf.Abs(Vector2.Dot(along, axis0)) > .7f ? 0 : 1;   // traffic along this edge: its own way round
+                        foreach (float k in new[] { 4.4f, 7.6f })
                         {
-                            var hp = pole + outward * k; var hf = MakeFrame(new Vector3(hp.x, py + 5.0f, hp.y), along, 1f);
-                            BoxF(mb, hf, -0.18f, 0.18f, 0f, 1.1f, -0.16f, 0.16f, new Color(0.10f, 0.10f, 0.11f));
+                            var hp = pole + outward * k; var hf0 = MakeFrame(new Vector3(hp.x, py + 5.0f, hp.y), along, 1f);
+                            Beam(mb, new Vector3(hp.x, py + 6.4f, hp.y), new Vector3(hp.x, py + 6.1f, hp.y), 0.05f, 0.05f, poleC);   // the hanger
                             foreach (float fs in new[] { 1f, -1f })
                             {
-                                var ff = fs > 0 ? hf : new Frame { O = hf.O, R = -hf.R, F = -hf.F, M = 1f };
-                                FrontQuad(mb, ff, -0.11f, 0.11f, 0.78f, 1.0f, 0.17f, new Color(0.75f, 0.10f, 0.08f)); FrontQuad(mb, ff, -0.11f, 0.11f, 0.44f, 0.66f, 0.17f, new Color(0.45f, 0.38f, 0.08f)); FrontQuad(mb, ff, -0.11f, 0.11f, 0.10f, 0.32f, 0.17f, new Color(0.10f, 0.55f, 0.25f));
+                                var ff = fs > 0 ? hf0 : new Frame { O = hf0.O, R = -hf0.R, F = -hf0.F, M = 1f };
+                                BoxF(mb, ff, -0.2f, 0.2f, 0f, 1.12f, 0f, 0.26f, houseC);                                  // the housing (its half facing this way)
+                                BoxF(mb, ff, -0.36f, 0.36f, -0.12f, 1.24f, 0.27f, 0.29f, plateC);                         // the backplate
+                                foreach (var (u0, u1, y0, y1) in new[] { (-0.36f, 0.36f, 1.20f, 1.24f), (-0.36f, 0.36f, -0.12f, -0.08f), (-0.36f, -0.32f, -0.12f, 1.24f), (0.32f, 0.36f, -0.12f, 1.24f) })
+                                    FrontQuad(mb, ff, u0, u1, y0, y1, 0.295f, edgeC);                                    // its yellow edge
+                                foreach (float ly in new[] { 0.94f, 0.58f, 0.22f })
+                                {
+                                    // the hood over the lamp: a top and two sides standing out 0.2 m
+                                    BoxF(mb, ff, -0.15f, 0.15f, ly + 0.14f, ly + 0.16f, 0.30f, 0.50f, plateC);
+                                    BoxF(mb, ff, -0.16f, -0.14f, ly - 0.08f, ly + 0.16f, 0.30f, 0.46f, plateC); BoxF(mb, ff, 0.14f, 0.16f, ly - 0.08f, ly + 0.16f, 0.30f, 0.46f, plateC);
+                                }
+                                heads.Add((ff, grp));
                             }
                         }
                     }
                 }, py + 0.2f);
+                // the lamps: red, yellow, green per head, faces of this pole's panel
+                foreach (var (ff, grp) in heads)
+                    for (int col = 0; col < 3; col++)
+                    {
+                        float ly = col == 0 ? 0.94f : col == 1 ? 0.58f : 0.22f;
+                        var lm = new MeshBuilder(); var lf = new Frame { O = Vector3.zero, R = ff.R, F = ff.F, M = 1f };
+                        FrontQuad(lm, lf, -0.12f, 0.12f, -0.12f, 0.12f, 0f, Color.gray); FrontQuad(lm, lf, -0.085f, 0.085f, -0.17f, 0.17f, 0f, Color.gray); FrontQuad(lm, lf, -0.17f, 0.17f, -0.085f, 0.085f, 0f, Color.gray);
+                        var lo = lm.ToObject($"Marietta signal {nsig} lamp {sigLamps.Count}", mats.House, lampRoot, false, false);
+                        lo.transform.position = ff.P(0f, ly, 0.305f); UnityEditor.GameObjectUtility.SetStaticEditorFlags(lo, 0);
+                        var rr = lo.GetComponent<Renderer>(); signals.Face(lo); sigLamps.Add(rr); sigGroup.Add(grp); sigColor.Add(col);
+                    }
                 signals.End(new Vector3(pole.x, py + 1.5f, pole.y), new Vector3(1f, 0f, 0f), 0.7f, 3f); nsig++;
             }
+            { var ts = lampRoot.gameObject.AddComponent<TrafficSignals>(); ts.lamps = sigLamps.ToArray(); ts.group = sigGroup.ToArray(); ts.color = sigColor.ToArray(); }
 
             // ---------------- the railroad: a gravel bed, ties, two rails (off the roads' carriageways: a level crossing shows the rails only)
             int nties = 0; float railLen = 0f; var ballast = new Color(0.42f, 0.40f, 0.37f); var tie = new Color(0.30f, 0.22f, 0.16f); var steel = new Color(0.36f, 0.33f, 0.31f);
@@ -637,6 +689,7 @@ namespace ChastainRush
             lamps.ToObjects("Marietta lamps", mats.House, root, 1f, BreakSounds.Kind.Lamp);
             tables.ToObjects("Marietta cafe tables", mats.House, root, 0.4f, BreakSounds.Kind.Iron);
             signals.ToObjects("Marietta signals", mats.House, root, 1f, BreakSounds.Kind.Lamp);
+            FlushParkedCars("Marietta parked cars", root, true);   // Round 78 (E)
             if (signMat != null) signs.ToObjects(root, signMat, "MariettaSigns");
             Debug.Log($"[Round76] Marietta Square: {log}{nb} benches, {np} planters, {nl} lamp posts, {nw} brick walks, {nt} café tables, {ncw} crosswalks, {nang} angled parking bays ({ncars} cars parked), {narrows} one-way arrows, {nsig} signal poles, " +
                       $"railroad {railLen:0} m ({nties} ties), {signs.Count} signs");
