@@ -414,6 +414,8 @@ namespace ChastainRush
             if (TvIndex < 0)
             {   // no TV camera sees it: a chase view from behind and above, by hand
                 var back = target.transform.position - Vector3.ProjectOnPlane(target.transform.forward, Vector3.up).normalized * 8f + Vector3.up * 3.5f;
+                // Round 80 (D2): never inside a solid thing (the ballast pile by Mill Street): drawn in toward the car where something is in the way
+                var bd = back - tp; if (Physics.SphereCast(tp, .3f, bd.normalized, out RaycastHit bh, bd.magnitude, 1, QueryTriggerInteraction.Ignore)) back = tp + bd.normalized * Mathf.Max(0f, bh.distance - .1f);
                 cam.transform.position = Vector3.Lerp(cam.transform.position, back, 1f - Mathf.Exp(-6f * dt)); cam.transform.LookAt(tp); cam.fieldOfView = fov; return;
             }
             var at = tv[TvIndex].at; float distance = (tp - at).magnitude;

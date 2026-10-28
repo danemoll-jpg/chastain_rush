@@ -46,6 +46,11 @@ namespace Racer
             if (!target) return;
             heading = Quaternion.Euler(0, target.eulerAngles.y, 0); velocity = Vector3.zero;
             position = target.position + heading * Offset;
+            // Chastain Rush, Round 80 (D2, Round 79: the replay's chase camera could sit inside the ballast pile by Mill Street): a snap is kept out of
+            // solid things as every frame is (the replay snaps it at each change of view; it had no check)
+            var pivot = target.position + Vector3.up; var dir = position - pivot;
+            if (dir.sqrMagnitude > 1e-4f && Physics.SphereCast(pivot, collisionRadius, dir.normalized, out RaycastHit hit, dir.magnitude, obstructionMask, QueryTriggerInteraction.Ignore))
+                position = pivot + dir.normalized * Mathf.Max(0, hit.distance - 0.1f);
             Aim(); transform.SetPositionAndRotation(position, rotation);
         }
         void LateUpdate()
