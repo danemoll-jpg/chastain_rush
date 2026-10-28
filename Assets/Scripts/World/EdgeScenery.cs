@@ -32,6 +32,7 @@ namespace ChastainRush
         float vs = 1.5f;
         // the horizon grid (heights, the land's low point within 3 km)
         float[] fxs, fzs; short[] flow; int fnx, fnz;
+        float[] rxs, rzs; short[] rh; int rnx;   // Round 79: the ring's heights kept (RingGround)
         readonly List<Renderer> horizon = new List<Renderer>();
         Material ringMat, horizonMat;
         TreeField kit;
@@ -87,6 +88,7 @@ namespace ChastainRush
             int nx = r.ReadInt32(), nz = r.ReadInt32();
             var xs = Floats(r, nx); var zs = Floats(r, nz);
             var h = Shorts(r, nx * nz); var cov = r.ReadBytes(nx * nz);
+            rxs = xs; rzs = zs; rh = h; rnx = nx;
             bool On(float x, float z) { foreach (var m in Land) if (x >= m.xMin && x <= m.xMax && z >= m.yMin && z <= m.yMax) return true; return false; }
             bool Inside(float x, float z) => On(x + .5f, z) && On(x - .5f, z) && On(x, z + .5f) && On(x, z - .5f);   // (a point where two rectangles meet is inside)
             const int C = 64;
@@ -156,6 +158,16 @@ namespace ChastainRush
                         }
                     Part("Horizon land", v, n, col, null, null, tris, horizonMat, HorizonLayer);
                 }
+        }
+
+        // Round 79 (B): the ring's ground under a point past the land (a plane or helicopter flying over the scenery has a ground there; false off the ring)
+        public static bool RingGround(float x, float z, out float y)
+        {
+            y = 0f; var s = Instance; if (!s || s.rh == null) return false;
+            int i = Lower(s.rxs, x), k = Lower(s.rzs, z); if (i < 0 || k < 0) return false;
+            float tx = Mathf.InverseLerp(s.rxs[i], s.rxs[i + 1], x), tz = Mathf.InverseLerp(s.rzs[k], s.rzs[k + 1], z);
+            int n = s.rnx; float a = s.rh[k * n + i], b = s.rh[k * n + i + 1], c = s.rh[(k + 1) * n + i], d = s.rh[(k + 1) * n + i + 1];
+            y = Mathf.Lerp(Mathf.Lerp(a, b, tx), Mathf.Lerp(c, d, tx), tz) * .1f; return true;
         }
 
         // the land's lowest point within about 3 km (null outside the horizon grid)

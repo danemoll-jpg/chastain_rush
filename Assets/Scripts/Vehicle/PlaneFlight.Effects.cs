@@ -17,7 +17,7 @@ namespace ChastainRush
         // past the edge: bank toward the map (35 to 45 degrees, the way that turns it back soonest), the stick's bank overruled
         void Boundary(Vector3 pos, ref float roll)
         {
-            var land = MapEdge.Land; if (land == null) { Outside = -1e9f; return; }   // Round 76: the land's outline (MapLand)
+            var land = MapEdge.Flight; if (land == null) { Outside = -1e9f; return; }   // Round 79: the flight boundary (MapEdge.Flight: the land's outer rectangle and 650 m)
             float o = -land.Distance(pos.x, pos.z);
             Outside = o; MaxOutside = Mathf.Max(MaxOutside, o);
             if (o <= 0f) return;

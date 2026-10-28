@@ -223,6 +223,7 @@ namespace ChastainRush
             var from = body.position + Vector3.up * .2f;
             if (HelicopterFlight.GroundUnder(from, out var hit))
             { HeightAboveGround = hit.distance - .2f - WheelDrop; groundNormal = hit.normal; groundPoint = hit.point; groundCollider = hit.collider; EdgeFloor = Mathf.Lerp(EdgeFloor, hit.point.y, EdgeFloor < -9000f ? 1f : .05f); }
+            else if (EdgeScenery.RingGround(body.position.x, body.position.z, out float ring)) { HeightAboveGround = body.position.y - WheelDrop - ring; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, ring, body.position.z); groundCollider = null; }   // Round 79: over the scenery ring, its ground
             else if (EdgeFloor > -9000f) { HeightAboveGround = body.position.y - WheelDrop - EdgeFloor; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, EdgeFloor, body.position.z); groundCollider = null; }
             else { HeightAboveGround = 999f; groundNormal = Vector3.up; groundCollider = null; }
             var wheels = body.position + Vector3.down * WheelDrop;

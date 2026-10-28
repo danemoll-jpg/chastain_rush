@@ -29,6 +29,7 @@ namespace ChastainRush
             Map = GroundQuery.Extent(); var m = Map;
             // Round 76 (A): the land is the tiles there are (Marietta Square's piece below the old south edge): walls along its outline, not the rectangle round it
             Land = MapLand.Live;
+            if (Land != null) { var b = Land.Bounds; Flight = new MapLand(new[] { Rect.MinMaxRect(b.xMin - FlightRoom, b.yMin - FlightRoom, b.xMax + FlightRoom, b.yMax + FlightRoom) }); }
             // in 200 m pieces, each from under the ground there to 40 m over its highest point (a helicopter's ray down never meets one far above the ground)
             var list = new System.Collections.Generic.List<BoxCollider>();
             void Side(Vector2 a, Vector2 b, Vector2 outward)
@@ -57,6 +58,12 @@ namespace ChastainRush
 
         // how far inside the edge (negative past it) and the way back in (Round 76: the land's outline, MapLand)
         public static MapLand Land { get; private set; }
+        // Round 79 (B, Dan's BUG-001: an Air Tour ring by Marietta "impossible to hit because it is out of the survey area"): the flight boundary
+        // (HelicopterFlight.Boundary.cs, PlaneFlight.Effects.cs) is the land's outer rectangle, FlightRoom past it on every side, over the scenery
+        // ring (its ground: EdgeScenery.RingGround). It fills the notch beside Marietta Square's piece and leaves every air course's line at least
+        // the Sky Hopper's turn at top speed (about 490 m) plus the 300 m warning inside it. Cars keep Land's walls and push-back.
+        public const float FlightRoom = 650f;
+        public static MapLand Flight { get; private set; }
         public static float Inside(Vector3 p, out Vector3 inward)
         {
             if (Land == null) { inward = Vector3.forward; return float.MaxValue; }

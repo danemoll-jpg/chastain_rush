@@ -187,7 +187,8 @@ namespace ChastainRush
             var from = body.position + Vector3.up * .2f;
             if (Physics.Raycast(from, Vector3.down, out var hit, 4000f, ~0, QueryTriggerInteraction.Ignore))
             { HeightAboveGround = hit.distance - .2f - SkidDrop; groundNormal = hit.normal; groundPoint = hit.point; groundCollider = hit.collider; EdgeFloor = Mathf.Lerp(EdgeFloor, hit.point.y, EdgeFloor < -9000f ? 1f : .05f); }
-            else if (Outside > 0f && EdgeFloor > -9000f) { HeightAboveGround = body.position.y - SkidDrop - EdgeFloor; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, EdgeFloor, body.position.z); groundCollider = null; }   // Round 66: past the map's edge (no ground there): over the ground it left
+            else if (EdgeScenery.RingGround(body.position.x, body.position.z, out float ring)) { HeightAboveGround = body.position.y - SkidDrop - ring; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, ring, body.position.z); groundCollider = null; }   // Round 79: over the scenery ring, its ground
+            else if (EdgeFloor > -9000f) { HeightAboveGround = body.position.y - SkidDrop - EdgeFloor; groundNormal = Vector3.up; groundPoint = new Vector3(body.position.x, EdgeFloor, body.position.z); groundCollider = null; }   // Round 66: past the map's edge (no ground there): over the ground it left
             else { HeightAboveGround = 999f; groundNormal = Vector3.up; groundPoint = body.position - Vector3.up * 999f; groundCollider = null; }
             // water under the skids reads as the ground for the height (and a touch down in it is a ditching: CheckStrikes)
             var skids = body.position + Vector3.down * SkidDrop;

@@ -16,7 +16,7 @@ namespace ChastainRush
 
         void Boundary(Vector3 pos, Vector3 vH, ref Vector3 aH)
         {
-            var land = MapEdge.Land; if (land == null) { Outside = -1e9f; return; }   // Round 76: the land's outline (MapLand), not the rectangle round it
+            var land = MapEdge.Flight; if (land == null) { Outside = -1e9f; return; }   // Round 79: the flight boundary (MapEdge.Flight: the land's outer rectangle and 650 m)
             float o = -land.Distance(pos.x, pos.z);
             Outside = o; MaxOutside = Mathf.Max(MaxOutside, o);
             if (o <= 0f) return;
