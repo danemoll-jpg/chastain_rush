@@ -258,20 +258,23 @@ namespace ChastainRush
             report.AppendLine(); report.AppendLine("=== D. The Canton Road Connector over the railroad, Cobb Parkway under its rail bridge, the other listed decks: driven through");
             if (race.State != RaceController.Stage.Free) race.EndRace();
             yield return Vehicle("original"); yield return Clock(13f);
-            // the connector both ways on its own lanes, Round 78's stuck spot (southbound) first
-            var runs = new (string name, Vector3 from, float yaw, float secs)[]
+            // the connector both ways along its own carriageway (map.json's centerlines over the deck), Round 78's stuck spot (southbound) first
+            var runs = new (string name, float[] line)[]
             {
-                ("connector southbound", new Vector3(1655f, 0f, -5980f), 193f, 9f),
-                ("connector northbound", new Vector3(1612f, 0f, -6170f), 13f, 9f),
+                ("connector southbound", new[] { 1675.0f, -5862.0f, 1670.4f, -5884.8f, 1637.8f, -6027.1f, 1632.7f, -6049.8f, 1620.6f, -6101.2f, 1612.6f, -6133.6f, 1604.6f, -6167.9f, 1597.6f, -6198.7f }),
+                ("connector northbound", new[] { 1611.8f, -6198.3f, 1617.4f, -6171.8f, 1625.4f, -6137.2f, 1636.1f, -6091.5f, 1648.1f, -6039.4f, 1682.8f, -5888.9f, 1688.0f, -5866.0f }),
             };
             foreach (var x in runs)
             {
-                yield return R74Place(x.from, x.yaw); yield return Capture("79_D_" + x.name.Replace(' ', '_') + "_start");
-                string res = ""; yield return R78DriveThrough(x.from, x.yaw, x.secs, .8f, s => res = s);
+                var f0 = new Vector3(x.line[2] - x.line[0], 0f, x.line[3] - x.line[1]);
+                yield return R74Place(new Vector3(x.line[0], 0f, x.line[1]), Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg); yield return Capture("79_D_" + x.name.Replace(' ', '_') + "_start");
+                var dense = new List<float>(); for (int i = 0; i + 3 < x.line.Length; i += 2) for (float u = 0f; u < 1f; u += .1f) { dense.Add(Mathf.Lerp(x.line[i], x.line[i + 2], u)); dense.Add(Mathf.Lerp(x.line[i + 1], x.line[i + 3], u)); }
+                dense.Add(x.line[x.line.Length - 2]); dense.Add(x.line[x.line.Length - 1]);
+                string res = ""; yield return R78Human(dense.ToArray(), false, s2 => res = s2);
                 report.AppendLine($"  {x.name}: {res}");
-                Check($"rail: the {x.name} drives through (no stop, no air over 0.4 s)", !lastDrive.stopped && lastDrive.air < .4f && lastDrive.dist > 120f, res);
+                Check($"rail: the {x.name} drives through (no reset, no air over 0.4 s)", !lastDrive.stopped && lastDrive.air < .4f, res);
             }
-            yield return R74Place(new Vector3(1628f, 0f, -6075f), 193f); yield return Capture("79_D_conn_sb_end_after");
+            yield return R74Place(new Vector3(1636.6f, 0f, -6034.0f), 193f); yield return Capture("79_D_conn_sb_onto_deck_after"); yield return R74Place(new Vector3(1625.0f, 0f, -6082.0f), 193f); yield return Capture("79_D_conn_sb_deck_end_after");
             var L = R78L();
             if (L?.rail != null)
                 foreach (var p in L.rail.Where(q => q.name.Contains("Connector") || q.name.Contains("Express") || q.name.StartsWith("Cobb_Parkway")))

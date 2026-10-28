@@ -139,18 +139,20 @@ namespace ChastainRush
                             int id = j * nx + i; float x = outer.xMin + i * R77Step, z = outer.yMin + j * R77Step; var p = new Vector2(x, z);
                             float h0 = H0[id] = Y[id] = terrain.Has(x, z) ? terrain.Height(x, z) : float.NaN; dc[id] = float.MaxValue; fix[id] = true;
                             if (float.IsNaN(h0) || i == 0 || j == 0 || i == nx - 1 || j == nz - 1) continue;
-                            float d1 = float.MaxValue, t1 = 0f, h1 = 0f, rc = R77Reach, scaled = float.MaxValue;
+                            float d1 = float.MaxValue, t1 = 0f, h1 = 0f, rc = R77Reach, scaled = float.MaxValue; bool past = false;
                             foreach (int k in segIdx.Near(p, 0f, near))
                             {
-                                var s = segs[k]; var ab = s.b - s.a; float tt = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (s.a + ab * tt - p).magnitude;
-                                if (d < d1) { d1 = d; t1 = Mathf.Lerp(s.ya, s.yb, tt); h1 = s.half; rc = s.reach; }
+                                var s = segs[k]; var ab = s.b - s.a; float tr = Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), tt = Mathf.Clamp01(tr); float d = (s.a + ab * tt - p).magnitude;
+                                if (d < d1) { d1 = d; t1 = Mathf.Lerp(s.ya, s.yb, tt); h1 = s.half; rc = s.reach; past = tr < -.01f || tr > 1.01f; }
                                 scaled = Mathf.Min(scaled, d * R77Reach / s.reach);   // (a street's reach scaled to the connector's)
                             }
                             dc[id] = scaled; if (scaled > R77Reach) continue; any = true;
-                            if (d1 <= h1 + 1f) { Y[id] = t1; continue; }   // the carriageway at its profile
                             // a deck over it: held where it stands clear, a clean floor under it where it does not
                             float dd = float.MaxValue, dy = 0f;
                             foreach (int k in deckIdx.Near(p, 0f, near2)) { var d = decks[k]; var ab = d.b - d.a; float tt = Mathf.Clamp01(Vector2.Dot(p - d.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float e = (d.a + ab * tt - p).magnitude; if (e <= d.half && e < dd) { dd = e; dy = Mathf.Lerp(d.ya, d.yb, tt); } }
+                            // the carriageway at its profile; Round 79 (D): not under a deck past the road's end (the road's end height carried flat under a
+                            // deck climbing 13 % off it stood 1.1 m through the Canton Road Connector's southbound deck: a wall)
+                            if (d1 <= h1 + 1f && !(past && dd < float.MaxValue)) { Y[id] = t1; continue; }
                             if (dd < float.MaxValue) { if (dy - .1f < h0 + 1.5f) Y[id] = Mathf.Min(h0, dy - .1f); continue; }
                             bool hold = false;
                             foreach (int k in heldIdx.Near(p, 0f, near2)) { var h = held[k]; var ab = h.b - h.a; float tt = Mathf.Clamp01(Vector2.Dot(p - h.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((h.a + ab * tt - p).sqrMagnitude <= h.half * h.half) { hold = true; break; } }

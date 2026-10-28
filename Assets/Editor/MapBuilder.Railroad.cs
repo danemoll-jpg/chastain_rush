@@ -136,6 +136,10 @@ namespace ChastainRush
                 if (again) y = R77Smooth1D(raw, w, mu);
                 for (int i = 1; i < n; i++) { float gr = Mathf.Abs(y[i] - y[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], .1f); if (gr > steepest) { steepest = gr; steepAt = p[i]; } if (gr > .05f && (steepList.Count == 0 || (steepList[steepList.Count - 1].at - p[i]).magnitude > 60f)) steepList.Add((p[i], gr)); }
                 for (int i = 0; i < n; i++) { donePts.Add((p[i], y[i])); doneIdx.Add(p[i]); }
+                // Round 79 (D): under a road bridge the bed's banks stay within 4 m (an abutment's room): a cut spread 10 m and more along the line took
+                // the Canton Road Connector's southbound approach 2 m down in front of its deck (a hole)
+                var tight = new bool[n];
+                foreach (var (k, _, _) in RailRoadOver(map, p)) for (int i = 0; i < n; i++) if (Mathf.Abs(cum[i] - cum[k]) < 30f) tight[i] = true;
                 // the bed graded (not under a deck), in pieces of 200 m; the banks ease out over more ground the further the bed stands off it
                 int start = -1;
                 for (int i = 0; i <= n; i++)
@@ -147,7 +151,7 @@ namespace ChastainRush
                         int end = on ? i : i - 1; if (end - start >= 1)
                         {
                             var pts = new List<float>(); var ys = new List<float>(); var bl = new List<float>();
-                            for (int k = start; k <= end; k++) { pts.Add(p[k].x); pts.Add(p[k].y); ys.Add(y[k]); bl.Add(Mathf.Clamp(Mathf.Abs(y[k] - ground[k]) * 2f + 3f, 4f, 22f)); }
+                            for (int k = start; k <= end; k++) { pts.Add(p[k].x); pts.Add(p[k].y); ys.Add(y[k]); bl.Add(tight[k] ? 4f : Mathf.Clamp(Mathf.Abs(y[k] - ground[k]) * 2f + 3f, 4f, 22f)); }
                             bedGrades.Add(new RidgeGrade { id = $"railroad {li} {start}", points = pts.ToArray(), y = ys.ToArray(), half = 2.4f, blend = 6f, blends = bl.ToArray(), open_ends = true });   // (open ends: build 1's round ends spilled the bank past a bridge's end onto the road under it)
                             graded += end - start;
                         }
