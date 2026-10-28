@@ -344,10 +344,10 @@ namespace ChastainRush
                         {
                             float top = TopAt(s, side * hw), g = Ground(terrain, W(s, side * (hw + 1.4f), 0f).x, W(s, side * (hw + 1.4f), 0f).z);
                             int layers = Mathf.Clamp(Mathf.FloorToInt((top - g) / 0.2f), 0, 18);
-                            for (int k = 0; k < layers; k++)
+                            for (int ly = 0; ly < layers; ly++)
                             {
-                                look.Tint = Shade(creo, 0.7f + 0.4f * Hash01(k * 31 + (int)(s * 10f), 1817));
-                                float y = g + 0.1f + k * 0.2f; bool cross = k % 2 == 0;
+                                look.Tint = Shade(creo, 0.7f + 0.4f * Hash01(ly * 31 + (int)(s * 10f), 1817));
+                                float y = g + 0.1f + ly * 0.2f; bool cross = ly % 2 == 0;
                                 if (cross) for (int t = 0; t < 4; t++) BoxAt(look, W(s - 0.9f + t * 0.6f, side * (hw + 1.35f), y), new Vector3(nl.x, 0f, nl.y), 2.6f, 0.18f, 0.23f);
                                 else for (int t = 0; t < 4; t++) BoxAt(look, W(s, side * (hw + 0.4f + t * 0.62f), y), along, 2.6f, 0.18f, 0.23f);
                             }
