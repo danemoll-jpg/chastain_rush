@@ -248,7 +248,7 @@ namespace ChastainRush
 
             // ---------------- the railroad: a gravel bed, ties, two rails (off the roads' carriageways: a level crossing shows the rails only)
             int nties = 0; float railLen = 0f; var ballast = new Color(0.42f, 0.40f, 0.37f); var tie = new Color(0.30f, 0.22f, 0.16f); var steel = new Color(0.36f, 0.33f, 0.31f);
-            if (d.rail != null)
+            if (d.rail != null && (RailPlans == null || RailPlans.Count == 0))   // Round 77 (C): the whole map's railroad replaces it (MapBuilder.Railroad.cs)
                 foreach (var rl in d.rail)
                 {
                     var pts = Resample(ToPoints(rl.points), 1.2f); if (pts.Count < 2) continue;
