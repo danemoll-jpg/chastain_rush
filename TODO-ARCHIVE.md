@@ -6926,3 +6926,78 @@ B street names DONE. Names lie along their roads, never upside down: main roads 
 B clouds DONE. Round 74's rise is undone; within 260 m of the camera a cloud breaks up (dithered) instead of standing as a white wall. In the leap run (`73_leap_lip`, `_midair`): a cloud at the summit's height off to the side; none came within 260 m, so the break-up was not seen in a picture. The leap is unchanged: Drifter Twin 9.3 s / 336 m, Street Classic 7.9 s, Needle 600 7.7 s.
 C DONE at Dan's spot, PARTLY elsewhere (tuning limit). Cause: the summit leap's run-out ended in a 56 m-wide shelf 3.8 m above the start of its track (the grade's open end). Now the run-out eases 46 m down and narrows to the track's width, and the track starts at the run-out's height (`75_BUG-001_after`, `_from_the_track`: a smooth slope; steepest within 40 m 1.25 m in 1 m, at (-1239, -6372)). The banks are sized from the ground at their own edge, held 2 m off every road and trail, and stop at the middle between two legs of the race line. The catch's side faces went from 9 m to 3 to 6 m. Still there: faces of 5 to 11 m beside the Kennesaw race's lines, where two legs at different heights pass about 40 m apart and where the banks are held off the drive (`bank_scan_after.txt`: 66 spots; before: 67). Fixing those means the build blending between two lines' heights (GradeAlong takes the nearest line's), which touches every graded line: Dan to decide.
 For Dan to check: race setup Street / Air and the garage both ways, the Sky Dart in an air race; the map at Town Center, the pools and the stunt park, street names zoomed in, the minimap's street; the clouds at the summit leap; the slope at his spot; whether to take on the faces beside the Kennesaw race's lines.
+
+## Round 76 (moved from TODO.md on 2026-10-28 when Dan reviewed Round 79; word for word)
+
+## Previous delivery 3: Round 76
+**Reviewed: Dan drove the new land 2026-10-27 21:09; his notes are Round 77.**
+**Round 76, MARIETTA SQUARE: ONE MORE SMALL PIECE OF MAP; the Kennesaw cut faces; disk clean-up (Dan, 2026-10-27 16:09, with a Google map of downtown
+Marietta: `local/reference_photos/extension/marietta_square_area.png`, reference only, never traced).** Round 75 is reviewed. Item 0 (CHECK IT AS
+DAN PLAYS IT) applies. Quick builds while working; ONE full Build Map at the end. Short results.
+A. THE AREA. Dan: "there is just a little more area that I want to add. We got so close to it, and I think it would be a great little area to
+   have. If it comes down to it, I'd rather have this than some of the expansive wooded areas we have but prefer if we could just add this one
+   little section." His map: Marietta Square and the blocks round it: Glover Park in the square, the Marietta Cobb Museum of Art, Marietta
+   Square Market, Church / Cherokee / Lemon / Fort / Lawrence / Washington / Roswell Streets, Lawrence Street Park, Fairground Street, the
+   120A loop (North / South Marietta Parkway) round the west side, out to about Cobb Parkway / Barnes Mill Road on the east; south to about
+   Chester / Waterman Streets. The square sits roughly 33.953 N, -84.550 W, just south of the map's south edge (33.95632). So:
+   (1) ONLY THIS SECTION: add the tiles that take in downtown Marietta (Round 59 / 61's way: new land beyond the edge, nothing that exists
+       moves, the 3DEP tile(s) south fetched and joined), not a strip along the whole south edge. Code sets the bounds from OSM (the square,
+       the blocks round it, the loop, with a margin) and says them; the map's edge goes round the new piece (Round 66's scenery ring,
+       closures, the helicopter / plane boundary all follow the new edge).
+   (2) If memory or frame rate really needs it, trim the far scenery or an outlying wooded corner of the playable map instead (Dan prefers
+       this over some expansive woods), but try first to just add it; say what was traded, if anything.
+B. MARIETTA SQUARE MADE TO LOOK LIKE ITSELF (as Town Center, Round 60): Glover Park in the middle (lawn, big trees, paths, the gazebo /
+   bandstand, the fountain, benches, lamp posts, a few people); the square's historic two- and three-story brick storefronts all round, with
+   awnings, shop windows and signs (names faked), the old theater's marquee on the square (fake name), the railroad along the square's west
+   side with its old depot; Marietta Square Market (a food hall), the museum (a classic columned building), churches nearby; on-street
+   parking, crosswalks, brick sidewalks; the neighborhoods round it as generated, with the game's houses. Breakables as elsewhere (benches,
+   planters, signs, lamp posts, café tables). A fast-travel spot "Marietta Square". Traffic, police, people, the map / minimap / street names,
+   the exploration fog, all extended. No race this round (a downtown race could come later).
+C. THE KENNESAW CUT FACES (Round 75 C's open item; Dan flagged the same kind of drop-off as wrong, Claude recommends doing it): the 66 faces of
+   5 to 11 m beside the Kennesaw race's lines (`bank_scan_after.txt`) where two legs at different heights pass about 40 m apart or a bank is
+   held off the drive: blend the ground between the two lines' heights into smooth slopes (no cliffs), the drive and the trails untouched,
+   the race's lines and jumps unchanged (lap times before / after). Pictures of the worst five before / after.
+D. DISK SPACE: A CLEAN-UP AT THE END OF EVERY ROUND (Dan, 16:13: "I noticed that this is taking about 40 gbs of space. I know with Woodstock
+   Rush, every round we would have some clean up so it didn't take up so much space on the computer. Is this possible here as well?").
+   Claude measured (2026-10-27): Builds 10.2 GB (the player build 5.1 GB AND the ChastainRushDev profiling build 5.1 GB), Assets/Generated
+   8.1 GB, local/ 5.7 GB (old rounds' check output: local/round17 to round75, r69perf 0.7 GB, determinism ...), raw/ 2.2 GB, .git 1.4 GB,
+   Data/screenshots 0.45 GB, Library / Temp too big to measure quickly.
+   (1) This round: clean up now and report the space before / after per folder. Delete: Builds/ChastainRushDev (rebuilt only when a round
+       needs profiling, then deleted again); local/'s old round folders and scratch (keep the last three rounds' and everything Dan put
+       there or a rule names: reference_photos, owner_*.json, debug_reports, race_records, bump_log); Temp/; stale Unity caches in Library
+       that Unity safely regenerates (say which; never the import cache unless a rebuild is planned anyway); git's own housekeeping (git gc).
+       Keep: raw/ (the map's source data), Assets/Generated (the built world), Data/ (committed), the player build.
+   (2) A STANDING RULE (copy into CLAUDE.md "Process"): every round ends with that clean-up after its final build (only the player build
+       kept, local/ trimmed to the last three rounds, temp files gone) and its status gives the disk use before / after in one line.
+Check: item 0; numbers before / after (build time, memory, frame rate in the old neighborhood, Town Center and the square); drive from
+Chastain Glen to the square along the roads; pictures of the square from the park, each side of the square, the depot and the market.
+For Dan to check: drive and fly to Marietta Square; Glover Park and the storefronts; frame rate; the Kennesaw slopes; the disk space freed.
+
+**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 19:38), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round76/`.
+0 DONE: every item below was looked at in the exe's pictures from the player's camera.
+A DONE. Only one piece: tile columns 15 to 18, two rows below the old south edge (x 1327.7 to 3983, z -9590 to -8311.3; 33.9427 to 33.9537 N, -84.5546 to
+-84.5256 W): 8 tiles, 3.4 km2, 1092 road pieces, 1740 buildings, 8467 trees (`mapgen_piece.py`; its ground is its own file, nothing that existed changed: map.json's lists
+are the old ones as a prefix, checked). The map is no longer a rectangle: the edge's walls and push-back, the road closures (262 -> 283), the helicopter / plane boundary,
+the scenery ring and the map picture follow the land's outline (`MapLand`). Drives at the edge in the exe: stopped 1.3 m inside the piece's west edge and 45 m inside its
+south edge; across the old edge into the piece it kept going (`76_A_edge_drives.txt`). Nothing traded away (no woods trimmed, the scenery kept). Numbers (1920 x 1080
+window, not measured at 3840 x 2160; `round76_numbers.txt`): Build Map 1088 s (Round 75: 1236 s); world up 28.6 s; Unity reserved 5704 MB (Round 61: 5182); 312 tiles, 927,728
+trees; fps average / slowest 1 %: old neighborhood 150 / 64 (Round 61: 163 / 71), Chastain Glen 160 / 114, Town Center 191 / 135 (191 / 97), Marietta Square 175 / 124.
+The old exe was not measured this round (it was replaced by the first build), so Round 61's numbers are the before.
+B DONE. Glover Park (brick walks, the fountain, the bandstand on OSM's gazebo in the park; its two other OSM structures left out for an open lawn), 16 benches, 16 lamp
+posts, 4 planters and 25 café tables that break, 42 old storefronts as two- and three-story brick shops with awnings, upper windows, a cornice and made-up names, the
+theater's marquee (THE PEACHTREE PALACE), the food hall, the museum's columned portico, the depot and its platform, 2.5 km of railroad on ties, crosswalks and parking
+marks, brick sidewalks; downtown's county buildings as offices (they had the fire-station look); the piece's houses as three craftsman neighborhoods; fast travel
+"Marietta Square". Pictures `76_B_*` (from the park, each side, the fountain, the depot, the market, the museum): brick storefronts with awnings and names, the
+bandstand and fountain in the park, benches, lamps, people. Drive Chastain Glen -> the square along the roads: 10,918 m, through in 451 s, never under the ground.
+Open: two dark boards in front of the museum seen from Anderson Street (1795, -8592, heading 167; `76_B_museum.png`), not from Marietta's code (they stayed when its
+sign was taken out): for Dan to check. Kennesaw lap times not measured (the route file and the bench's heights are unchanged).
+C PARTLY (tuning limit, two tries). Round 75's scan was wrong twice over: its "other leg" test counted the same leg 41 m on (every bank stopped about 20 m out), and its
+face scan compared offset lines by index (they drift apart round bends). Now the banks reach their full width and, between two real legs, the ground takes both legs'
+heights (`legs`); the bench, its heights and the jumps are unchanged (route file unchanged, the grade's `y` unchanged). Pictures `76_C_face*_before/after`: the
+descent's banks are wider and rounder. A grid scan of the built ground (`bank_faces.py`) still finds faces where a bank is held off Kennesaw Mountain Drive, the worst
+13 m beside the summit leap's way back (`76_C_left_cut_by_the_drive.png`): fixing those means regrading the drive's shoulder: Dan to decide.
+D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use (these folders) about 41 GB -> 27.9 GB: Builds 10.8 -> 5.7 (ChastainRushDev gone), local 6.1 -> 0.4, Library 10.8 -> 8.4 (BuildHistory), the rest kept (Assets/Generated 9.2, raw 2.3, .git 1.4).
+For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square"); Glover Park, the storefronts, the theater, the depot; the frame rate there; the
+Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
+that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
+

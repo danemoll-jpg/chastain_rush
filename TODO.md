@@ -108,6 +108,58 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 80, AIR AI THAT MAKES MISTAKES, THE SQUARE AI AT THE DECK, A JUMP AT WHITLOCK, THE EXPRESS LANES' SCHEDULE AND GATES, BUSIER HIGHWAYS,
+Round 79's found-not-changed items (Dan, 2026-10-28 17:45; report BUG-001 of session `2026-10-28_17-26-14-935_f93341`, read by Claude, after the Round 79
+build; gate photo `local/reference_photos/express_lanes/express_lane_gate.png`).** Round 79 is reviewed. Item 0 and the end-of-round clean-up apply. ONE full
+Build Map at the end (world changes: C, D, E). Tuning limit applies. Short results.
+A. AIR RACE AI THAT CAN BE CAUGHT. Dan: "On the air race it seems the ai planes never make a mistake so if you make a mistake you can't make up for it".
+   AI pilots (`Race/PlanePilot.cs`) fly a perfect line every lap. Give them human mistakes, scaled by difficulty (Easy most, Hard fewest but some): a
+   late turn that runs wide, a ring missed and gone back for, a low or underpass ring taken slow and careful, a lap off the pace. Use the same
+   catch-up the car AI uses, if it has one. Check: on every air course (Quarry, Highway, Air Tour) and each difficulty, 3 AI x 2 races: their missed
+   rings and lap spread; and a human-like pilot that misses one ring and goes back for it can still win on Medium and finish in the pack on Hard
+   (fix the check pilot's crash-looping, Round 79, so it can fly the courses). Report the numbers.
+B. THE SQUARE AI AT THE PARKING DECK. Dan: "On the marietta square race seems the AI is confused about the parking deck turn. Some times I noticed
+   them driving in circles before continuing". Find why (the Lawrence Street deck's turn in or out: a target they overshoot, the wrong level, a
+   checkpoint they circle for) and fix it. Check: 5 square races x 3 AI, both a clean race and one with traffic and the train: no AI turns a full
+   circle anywhere (trace heading; a loop = more than 300 degrees turned within 60 m), times through the deck before / after.
+C. A JUMP AT WHITLOCK. BUG-001 (x 1608.55 z -8524.74 h 102, the square race's Whitlock Avenue crossing, stopped at the gate with the train passing):
+   "why no jumps on this side?" Only Mill Street's crossing has a jump (the ballast pile). Give the Whitlock crossing its own way over the train,
+   something different that belongs by a railroad (not another pile: e.g. a loading dock, a flatbed on a siding, a stack of ties), real physics,
+   clears a train at the speed the course allows, clean landing, no free way round. Check: jumped over a passing train (picture), and driven round it.
+D. ROUND 79's FOUND-NOT-CHANGED ITEMS. (1) Express Lanes 13's 780 m deck flies 2.06 s and lands hard (10.7 m/s) driven against its direction: with E
+   the lanes run both ways, so smooth it both ways (and every Express Lanes deck: drive each both ways, list air and landings). (2) The replay's
+   chase camera can sit inside the ballast pile by Mill Street: keep replay cameras out of solid things. (3) The plane's cockpit view sits behind
+   the pilot: put it at the pilot's eyes (both planes). Pictures before / after for each.
+E. THE EXPRESS LANES' SCHEDULE AND GATES. Dan: "they are always moving in just one direction. Please use these directions":
+   Southbound (toward Atlanta) open 1:00 AM to 11:00 AM; reversal 11:00 AM to 1:30 PM; Northbound (away from Atlanta) open 1:30 PM to 11:00 PM;
+   reversal 11:00 PM to 1:00 AM. Run it on the game's clock (`WorldClock`). Every Express Lanes entrance and exit gets a gate like Dan's photo: a
+   red and white striped swing arm with red lamps along its top, a red DO NOT ENTER banner hung under it, the green EXPRESS LANE sign and the
+   keep-left / keep-right sign by it. Closed entrances (and all of them during a reversal) have the arm down; open ones up. Traffic and police
+   use the lanes only in the open direction, none during a reversal (cars already in finish their trip). The gates and the lanes' direction go into
+   replays (Round 79's clock). The arms BREAK when hit (Dan, 18:02: "i want them to break, but you would be driving against traffic"): smash a
+   closed gate and you are in the lanes the wrong way, with that direction's traffic coming at you. Check: the lanes at 6 AM, noon, 5 PM and midnight: gates
+   (pictures, the photo's look), traffic counted each way.
+F. BUSIER HIGHWAYS. Dan: "can we have more traffic so it is more realistic. Specifically the highways get busy". More traffic everywhere, the
+   highways (I-75, I-575, Barrett Parkway, the Express Lanes when open) much busier: steady traffic in every lane, the AI and the player weaving
+   through it. Frame rate at the busiest highway spot, the square and Town Center before / after (4K full screen for that one check, and a Steam
+   Deck-sized window); if the cost is noticeable, report and Dan decides. Check: traffic counted on I-75 and I-575 before / after, pictures.
+Check: item 0 for every item.
+For Dan to check: an air race where you miss a ring; the square race's deck turn; the Whitlock jump; the Express Lanes at different times (gates,
+direction); the highways' traffic; the cockpit view; smashing a closed gate.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 79
+**Reviewed: Dan raced it 2026-10-28 17:26 ("Only tested the races"); his notes are Round 80.**
 **Round 79, THE TRAIN IN REPLAYS, AIR RINGS INSIDE THE MAP, A STEADY AIR ARROW, the rail bridges' loose ends (Dan, 2026-10-28 11:36; report
 BUG-001 of session `2026-10-28_11-32-04-219_308d8c`, read by Claude, after the Round 78 build).** Round 78 is reviewed: "I liked the Marietta Sq race", "The air
 track was good". Item 0 and the end-of-round clean-up apply. Quick builds; ONE full Build Map only if the world changes. Short results.
@@ -158,18 +210,7 @@ For Dan to check: a Marietta Square replay (beat the train); the Air Tour round 
 Cobb Parkway under the railroad.
 Disk: 28.9 GB -> 28.5 GB (`cleanup_round.py`: local/round68 to 76 and Library/BuildHistory cleared; the player build kept), after deleting the 4.6 GB exe copy this round made for a parallel check.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 78
+## Previous delivery 2: Round 78
 **Reviewed: Dan raced it 2026-10-28 11:32 ("I liked the Marietta Sq race"; "The air track was good"); his notes are Round 79.**
 **Round 78, A RUNNING TRAIN; TWO NEW RACES (MARIETTA SQUARE, AND AN AIR TOUR OF THE MAP'S PLACES); the square's streets, the rail crossings,
 a buried house (Dan, 2026-10-28 04:21; reports BUG-001 to BUG-005 of session `2026-10-28_04-03-25-890_8dd649` (BUG-004 empty), read by Claude, after the
@@ -246,7 +287,7 @@ For Dan to check: the train at a crossing; the square race (beat / wait / jump);
 connector's south end (should its deck end be raised?).
 Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
 
-## Previous delivery 2: Round 77
+## Previous delivery 3: Round 77
 **Reviewed: Dan drove round 2026-10-28 04:03 ("did a quick drive around"); his notes are Round 78.**
 **Round 77, THE RAILROAD, KENNESTONE HOSPITAL AND ITS PARKING DECK, THE CANTON ROAD CONNECTOR (Dan, 2026-10-27 21:19; reports BUG-001 to
 BUG-007 of session `2026-10-27_21-09-31-163_2b90af`, read by Claude, after the Round 76 build). Dan may add photos of the hospital and Marietta Square to
@@ -320,78 +361,6 @@ No freight train.
 D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each photo's place. Fountain, bell, train and pavilion solid; signals, fence and play wall break.
 Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
 For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.
-
-## Previous delivery 3: Round 76
-**Reviewed: Dan drove the new land 2026-10-27 21:09; his notes are Round 77.**
-**Round 76, MARIETTA SQUARE: ONE MORE SMALL PIECE OF MAP; the Kennesaw cut faces; disk clean-up (Dan, 2026-10-27 16:09, with a Google map of downtown
-Marietta: `local/reference_photos/extension/marietta_square_area.png`, reference only, never traced).** Round 75 is reviewed. Item 0 (CHECK IT AS
-DAN PLAYS IT) applies. Quick builds while working; ONE full Build Map at the end. Short results.
-A. THE AREA. Dan: "there is just a little more area that I want to add. We got so close to it, and I think it would be a great little area to
-   have. If it comes down to it, I'd rather have this than some of the expansive wooded areas we have but prefer if we could just add this one
-   little section." His map: Marietta Square and the blocks round it: Glover Park in the square, the Marietta Cobb Museum of Art, Marietta
-   Square Market, Church / Cherokee / Lemon / Fort / Lawrence / Washington / Roswell Streets, Lawrence Street Park, Fairground Street, the
-   120A loop (North / South Marietta Parkway) round the west side, out to about Cobb Parkway / Barnes Mill Road on the east; south to about
-   Chester / Waterman Streets. The square sits roughly 33.953 N, -84.550 W, just south of the map's south edge (33.95632). So:
-   (1) ONLY THIS SECTION: add the tiles that take in downtown Marietta (Round 59 / 61's way: new land beyond the edge, nothing that exists
-       moves, the 3DEP tile(s) south fetched and joined), not a strip along the whole south edge. Code sets the bounds from OSM (the square,
-       the blocks round it, the loop, with a margin) and says them; the map's edge goes round the new piece (Round 66's scenery ring,
-       closures, the helicopter / plane boundary all follow the new edge).
-   (2) If memory or frame rate really needs it, trim the far scenery or an outlying wooded corner of the playable map instead (Dan prefers
-       this over some expansive woods), but try first to just add it; say what was traded, if anything.
-B. MARIETTA SQUARE MADE TO LOOK LIKE ITSELF (as Town Center, Round 60): Glover Park in the middle (lawn, big trees, paths, the gazebo /
-   bandstand, the fountain, benches, lamp posts, a few people); the square's historic two- and three-story brick storefronts all round, with
-   awnings, shop windows and signs (names faked), the old theater's marquee on the square (fake name), the railroad along the square's west
-   side with its old depot; Marietta Square Market (a food hall), the museum (a classic columned building), churches nearby; on-street
-   parking, crosswalks, brick sidewalks; the neighborhoods round it as generated, with the game's houses. Breakables as elsewhere (benches,
-   planters, signs, lamp posts, café tables). A fast-travel spot "Marietta Square". Traffic, police, people, the map / minimap / street names,
-   the exploration fog, all extended. No race this round (a downtown race could come later).
-C. THE KENNESAW CUT FACES (Round 75 C's open item; Dan flagged the same kind of drop-off as wrong, Claude recommends doing it): the 66 faces of
-   5 to 11 m beside the Kennesaw race's lines (`bank_scan_after.txt`) where two legs at different heights pass about 40 m apart or a bank is
-   held off the drive: blend the ground between the two lines' heights into smooth slopes (no cliffs), the drive and the trails untouched,
-   the race's lines and jumps unchanged (lap times before / after). Pictures of the worst five before / after.
-D. DISK SPACE: A CLEAN-UP AT THE END OF EVERY ROUND (Dan, 16:13: "I noticed that this is taking about 40 gbs of space. I know with Woodstock
-   Rush, every round we would have some clean up so it didn't take up so much space on the computer. Is this possible here as well?").
-   Claude measured (2026-10-27): Builds 10.2 GB (the player build 5.1 GB AND the ChastainRushDev profiling build 5.1 GB), Assets/Generated
-   8.1 GB, local/ 5.7 GB (old rounds' check output: local/round17 to round75, r69perf 0.7 GB, determinism ...), raw/ 2.2 GB, .git 1.4 GB,
-   Data/screenshots 0.45 GB, Library / Temp too big to measure quickly.
-   (1) This round: clean up now and report the space before / after per folder. Delete: Builds/ChastainRushDev (rebuilt only when a round
-       needs profiling, then deleted again); local/'s old round folders and scratch (keep the last three rounds' and everything Dan put
-       there or a rule names: reference_photos, owner_*.json, debug_reports, race_records, bump_log); Temp/; stale Unity caches in Library
-       that Unity safely regenerates (say which; never the import cache unless a rebuild is planned anyway); git's own housekeeping (git gc).
-       Keep: raw/ (the map's source data), Assets/Generated (the built world), Data/ (committed), the player build.
-   (2) A STANDING RULE (copy into CLAUDE.md "Process"): every round ends with that clean-up after its final build (only the player build
-       kept, local/ trimmed to the last three rounds, temp files gone) and its status gives the disk use before / after in one line.
-Check: item 0; numbers before / after (build time, memory, frame rate in the old neighborhood, Town Center and the square); drive from
-Chastain Glen to the square along the roads; pictures of the square from the park, each side of the square, the depot and the market.
-For Dan to check: drive and fly to Marietta Square; Glover Park and the storefronts; frame rate; the Kennesaw slopes; the disk space freed.
-
-**Status (Claude, 2026-10-27): built (full Build Map + exe 2026-10-27 19:38), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round76/`.
-0 DONE: every item below was looked at in the exe's pictures from the player's camera.
-A DONE. Only one piece: tile columns 15 to 18, two rows below the old south edge (x 1327.7 to 3983, z -9590 to -8311.3; 33.9427 to 33.9537 N, -84.5546 to
--84.5256 W): 8 tiles, 3.4 km2, 1092 road pieces, 1740 buildings, 8467 trees (`mapgen_piece.py`; its ground is its own file, nothing that existed changed: map.json's lists
-are the old ones as a prefix, checked). The map is no longer a rectangle: the edge's walls and push-back, the road closures (262 -> 283), the helicopter / plane boundary,
-the scenery ring and the map picture follow the land's outline (`MapLand`). Drives at the edge in the exe: stopped 1.3 m inside the piece's west edge and 45 m inside its
-south edge; across the old edge into the piece it kept going (`76_A_edge_drives.txt`). Nothing traded away (no woods trimmed, the scenery kept). Numbers (1920 x 1080
-window, not measured at 3840 x 2160; `round76_numbers.txt`): Build Map 1088 s (Round 75: 1236 s); world up 28.6 s; Unity reserved 5704 MB (Round 61: 5182); 312 tiles, 927,728
-trees; fps average / slowest 1 %: old neighborhood 150 / 64 (Round 61: 163 / 71), Chastain Glen 160 / 114, Town Center 191 / 135 (191 / 97), Marietta Square 175 / 124.
-The old exe was not measured this round (it was replaced by the first build), so Round 61's numbers are the before.
-B DONE. Glover Park (brick walks, the fountain, the bandstand on OSM's gazebo in the park; its two other OSM structures left out for an open lawn), 16 benches, 16 lamp
-posts, 4 planters and 25 café tables that break, 42 old storefronts as two- and three-story brick shops with awnings, upper windows, a cornice and made-up names, the
-theater's marquee (THE PEACHTREE PALACE), the food hall, the museum's columned portico, the depot and its platform, 2.5 km of railroad on ties, crosswalks and parking
-marks, brick sidewalks; downtown's county buildings as offices (they had the fire-station look); the piece's houses as three craftsman neighborhoods; fast travel
-"Marietta Square". Pictures `76_B_*` (from the park, each side, the fountain, the depot, the market, the museum): brick storefronts with awnings and names, the
-bandstand and fountain in the park, benches, lamps, people. Drive Chastain Glen -> the square along the roads: 10,918 m, through in 451 s, never under the ground.
-Open: two dark boards in front of the museum seen from Anderson Street (1795, -8592, heading 167; `76_B_museum.png`), not from Marietta's code (they stayed when its
-sign was taken out): for Dan to check. Kennesaw lap times not measured (the route file and the bench's heights are unchanged).
-C PARTLY (tuning limit, two tries). Round 75's scan was wrong twice over: its "other leg" test counted the same leg 41 m on (every bank stopped about 20 m out), and its
-face scan compared offset lines by index (they drift apart round bends). Now the banks reach their full width and, between two real legs, the ground takes both legs'
-heights (`legs`); the bench, its heights and the jumps are unchanged (route file unchanged, the grade's `y` unchanged). Pictures `76_C_face*_before/after`: the
-descent's banks are wider and rounder. A grid scan of the built ground (`bank_faces.py`) still finds faces where a bank is held off Kennesaw Mountain Drive, the worst
-13 m beside the summit leap's way back (`76_C_left_cut_by_the_drive.png`): fixing those means regrading the drive's shoulder: Dan to decide.
-D DONE. `Tools/cleanup_round.py` and the standing rule in CLAUDE.md. Disk use (these folders) about 41 GB -> 27.9 GB: Builds 10.8 -> 5.7 (ChastainRushDev gone), local 6.1 -> 0.4, Library 10.8 -> 8.4 (BuildHistory), the rest kept (Assets/Generated 9.2, raw 2.3, .git 1.4).
-For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square"); Glover Park, the storefronts, the theater, the depot; the frame rate there; the
-Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
-that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
