@@ -42,7 +42,7 @@ namespace ChastainRush
         // Old: Round 74's way (checks: -r79ArrowOld, the "before" numbers).
         static bool? old; public static bool Old => old ??= CheckRun.Active && System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r79ArrowOld") >= 0;
         public static Quaternion ShownOnScreen { get; private set; } = Quaternion.identity;   // checks: its turn as seen in the view
-        public static Vector3 ShownAt { get; private set; }                                      // checks: where it is on the screen (pixels)
+        public static Vector3 ShownAt { get; private set; }                                      // checks: where it is on the screen (pixels of a 1280 x 720 view)
         public static bool Shown { get; private set; }
         Vector3 dirF; Quaternion rotF; bool fOn; float lastAt = -1f;
 
@@ -92,7 +92,7 @@ namespace ChastainRush
             Measure(cam);
         }
         static Quaternion Look(Vector3 d, Vector3 fallbackUp) => Mathf.Abs(Vector3.Dot(d, Vector3.up)) < .995f ? Quaternion.LookRotation(d, Vector3.up) : Quaternion.LookRotation(d, fallbackUp);
-        void Measure(Camera cam) { ShownOnScreen = Quaternion.Inverse(cam.transform.rotation) * arrow.rotation; ShownAt = cam.WorldToScreenPoint(arrow.position); Shown = true; }
+        void Measure(Camera cam) { ShownOnScreen = Quaternion.Inverse(cam.transform.rotation) * arrow.rotation; var vp = cam.WorldToViewportPoint(arrow.position); ShownAt = new Vector3(vp.x * 1280f, vp.y * 720f, vp.z); Shown = true; }
 
         void OnDestroy() { if (mat) Destroy(mat); }
     }

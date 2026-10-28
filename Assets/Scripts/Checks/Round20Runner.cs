@@ -37,6 +37,8 @@ namespace ChastainRush
             R20Started = (float)(DateTime.Now - System.Diagnostics.Process.GetCurrentProcess().StartTime).TotalSeconds;
             Directory.CreateDirectory(outputDir);
             Application.runInBackground = true;
+            // Round 79: a check window that started minimized can report a screen of a few pixels (432 x 1): ask for its 1280 x 720 again
+            if (Screen.height < 300) { Screen.SetResolution(1280, 720, FullScreenMode.Windowed); yield return null; yield return null; }
             report.AppendLine($"{(tag == "round79" ? "Round 79" : tag == "round78" ? "Round 78" : tag == "round77" ? "Round 77" : tag == "round75" ? "Round 75" : tag == "round74" ? "Round 74" : tag == "round73" ? "Round 73" : tag == "round72" ? "Round 72" : tag == "round71" ? "Round 71" : tag == "round70" ? "Round 70" : tag == "round69" ? "Round 69" : tag == "round68" ? "Round 68" : tag == "round67" ? "Round 67" : tag == "round66" ? "Round 66" : tag == "round64" ? "Round 64" : tag == "round63" ? "Round 63" : tag == "round62" ? "Round 62" : tag == "round60" ? "Round 60" : tag == "round59" ? "Round 59" : tag == "round58" ? "Round 58" : tag == "round57" ? "Round 57" : tag == "round56" ? "Round 56" : tag == "round55" ? "Round 55" : tag == "round54" ? "Round 54" : tag == "round53" ? "Round 53" : tag == "round52" ? "Round 52" : tag == "round50" ? "Round 50" : tag == "round49" ? "Round 49" : tag == "round48" ? "Round 48" : tag == "round47" ? "Round 47" : tag == "round46" ? "Round 46" : tag == "round45" ? "Round 45" : tag == "round44" ? "Round 44" : tag == "round43" ? "Round 43" : tag == "round42" ? "Round 42" : tag == "round41" ? "Round 41" : tag == "round40" ? "Round 40" : tag == "round39" ? "Round 39" : tag == "round38" ? "Round 38" : tag == "round37" ? "Round 37" : tag == "round36" ? "Round 36" : tag == "round35" ? "Round 35" : tag == "round34" ? "Round 34" : tag == "round33" ? "Round 33" : tag == "round26" ? "Round 26" : tag == "round21" ? "Round 21" : "Round 20")} check, {DateTime.Now:yyyy-MM-dd HH:mm}, the exe, {Screen.width} x {Screen.height}, muted.");
             yield return new WaitForSecondsRealtime(4f);
             car = FindAnyObjectByType<ArcadeVehicle>();
@@ -740,9 +742,22 @@ namespace ChastainRush
             race.NotifyTeleported();
         }
 
+        bool cameraOnlyNoted;
         IEnumerator Capture(string name)
         {
             yield return new WaitForEndOfFrame();
+            if (Screen.height < 300 && Camera.main)
+            {
+                // Round 79: the window still a few pixels high: the camera alone into a 1280 x 720 picture (no HUD)
+                var cam = Camera.main; var rt = RenderTexture.GetTemporary(1280, 720, 24); var was = cam.targetTexture; float aspect = cam.aspect;
+                cam.targetTexture = rt; cam.aspect = 1280f / 720f; cam.Render(); cam.targetTexture = was; cam.ResetAspect();
+                var prev = RenderTexture.active; RenderTexture.active = rt;
+                var t2 = new Texture2D(1280, 720, TextureFormat.RGB24, false); t2.ReadPixels(new Rect(0, 0, 1280, 720), 0, 0); t2.Apply();
+                RenderTexture.active = prev; RenderTexture.ReleaseTemporary(rt);
+                File.WriteAllBytes(Path.Combine(outputDir, name + ".png"), t2.EncodeToPNG()); Destroy(t2);
+                if (!cameraOnlyNoted) { cameraOnlyNoted = true; report.AppendLine($"  (pictures: the window was {Screen.width} x {Screen.height}: the camera alone at 1280 x 720, no HUD)"); }
+                yield break;
+            }
             var tex = new Texture2D(Screen.width, Screen.height, TextureFormat.RGB24, false);
             tex.ReadPixels(new Rect(0, 0, Screen.width, Screen.height), 0, 0); tex.Apply();
             File.WriteAllBytes(Path.Combine(outputDir, name + ".png"), tex.EncodeToPNG());
