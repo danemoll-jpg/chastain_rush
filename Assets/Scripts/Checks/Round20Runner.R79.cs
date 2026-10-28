@@ -104,14 +104,13 @@ namespace ChastainRush
                 foreach (var x in planes) x.f.MaxOutside = -1e9f;
                 float warnSecs = 0f, nearDan = float.MaxValue; var dan = new Vector3(1069.84f, 0f, -8181.96f);
                 var note = new StringBuilder(); var me = car.GetComponent<PlaneFlight>();
-                var trace = new StringBuilder("t	x	y	z	inside_flight_m	inside_land_m	next	target	airborne	crashed	crashes
-"); float nextTrace = 0f, tr0 = Time.time;
+                var trace = new StringBuilder("t\tx\ty\tz\tinside_flight_m\tinside_land_m\tnext\ttarget\tairborne\tcrashed\tcrashes\n"); float nextTrace = 0f, tr0 = Time.time;
                 yield return R79Fly(r, 1300f, 2f, null, () =>
                 {
                     if (Time.time - tr0 >= nextTrace)
                     {
                         nextTrace = Time.time - tr0 + .5f; var q = car.Body.position;
-                        trace.AppendLine($"{Time.time - tr0:0.0}	{q.x:0}	{q.y:0}	{q.z:0}	{-me.Outside:0}	{MapEdge.Land?.Distance(q.x, q.z) ?? 0f:0}	{race.Player.NextCheckpoint}	{race.Target?.Id}	{(me.Airborne ? 1 : 0)}	{(me.Crashed ? 1 : 0)}	{me.Crashes}");
+                        trace.AppendLine($"{Time.time - tr0:0.0}\t{q.x:0}\t{q.y:0}\t{q.z:0}\t{-me.Outside:0}\t{MapEdge.Land?.Distance(q.x, q.z) ?? 0f:0}\t{race.Player.NextCheckpoint}\t{race.Target?.Id}\t{(me.Airborne ? 1 : 0)}\t{(me.Crashed ? 1 : 0)}\t{me.Crashes}");
                     }
                     foreach (var x in planes) if (x.f.Leaving) warnSecs += Time.fixedDeltaTime / Mathf.Max(1, planes.Count);
                     if (file == "air_tour.json") { float d = Flat(car.Body.position - dan).magnitude; if (d < nearDan) nearDan = d; }
