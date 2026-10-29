@@ -251,6 +251,73 @@ namespace ChastainRush
             try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "round81_flyovers.txt"), log); } catch (System.Exception e) { Debug.LogWarning("[Round81] " + e.Message); }
         }
 
+        // ------------------------------------------------------------ H: the Express Lanes walled off
+        // Round 81 (H, Dan, 01:38: "they generally have walls as they are seperated from the main roads"): a concrete barrier wall along both sides of
+        // every Express Lanes road on the ground (the decks have their parapets), 0.6 m outside its pavement, solid; none where another road's pavement
+        // reaches the wall's line (the ramps on and off, so their gated ramps are the only way in or out, and a road crossing at grade), none under or on a
+        // deck at the road's own height. Game-independent world piece (built in the Edges step with the gates).
+        static void BuildExpressWalls(MapData map, TerrainGrid terrain, Materials mats, Transform world)
+        {
+            var segs = new List<(Vector2 a, Vector2 b, float half, bool express, float[] deck, int i, bool link)>();
+            foreach (var r in map.roads) { var q = ToPoints(r.points); for (int i = 0; i + 1 < q.Count; i++) segs.Add((q[i], q[i + 1], r.width * .5f, r.name == ExpressName, null, i, (r.@class ?? "").EndsWith("_link"))); }
+            if (map.bridges != null) foreach (var b in map.bridges) { var q = ToPoints(b.points); for (int i = 0; i + 1 < q.Count; i++) segs.Add((q[i], q[i + 1], b.width * .5f, b.name == ExpressName, b.deck_y, i, false)); }
+            var idx = new CellIndex(24f); foreach (var s in segs) idx.Add(s.a, s.b, s.half + 1f);
+            var near = new List<int>();
+            // a wall's point blocked: on another road's pavement (+0.4 m), or on a deck at about the road's height (its parapet is the wall there)
+            bool Blocked(Vector2 p, float roadY, Vector2 along)
+            {
+                foreach (int si in idx.Near(p, 0f, near))
+                {
+                    var s = segs[si]; var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    float d = (s.a + ab * t - p).magnitude;
+                    if (s.deck != null) { if (d < s.half + 1.2f && s.i + 1 < s.deck.Length && Mathf.Abs(Mathf.Lerp(s.deck[s.i], s.deck[s.i + 1], t) - roadY) < 3f) return true; continue; }
+                    // (a road running alongside, the general lanes: the wall stands between them, not left out; a ramp or a road at grade: left out)
+                    if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
+                }
+                return false;
+            }
+            var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
+            var grey = new Color(.74f, .73f, .70f);
+            var mb = new MeshBuilder(); int chunk = 0; float built = 0f, skipped = 0f;
+            void Flush() { if (mb.Count == 0) return; mb.ToObject($"Express Lanes wall {chunk++}", mats.House, root.transform, true); mb = new MeshBuilder(); }
+            foreach (var r in map.roads)
+            {
+                if (r.name != ExpressName || r.bridge) continue;
+                var line = Resample(ToPoints(r.points), 3f); if (line.Count < 2) continue;
+                float off = r.width * .5f + .6f;
+                foreach (float side in new[] { -1f, 1f })
+                {
+                    Vector3? prev = null; Vector3 prevFoot = default;
+                    for (int i = 0; i < line.Count; i++)
+                    {
+                        var dir = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var right = new Vector2(dir.y, -dir.x);
+                        var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
+                        if (Blocked(p, roadY, dir)) { prev = null; skipped += 3f; continue; }
+                        float footY = Ground(terrain, p.x, p.y);
+                        var top = new Vector3(p.x, Mathf.Max(roadY, footY) + .04f, p.y);
+                        if (prev.HasValue)
+                        {
+                            var a = prev.Value; var b = top; var across = new Vector3(right.x, 0f, right.y) * side;   // toward the outside
+                            // the jersey section: a flared foot and an upright, its foot run down to the ground (a skirt where the bank falls away)
+                            Beam(mb, a + Vector3.up * .16f, b + Vector3.up * .16f, .6f, .36f, grey);
+                            Beam(mb, a + Vector3.up * .55f, b + Vector3.up * .55f, .26f, .52f, grey);
+                            float lowA = Mathf.Min(prevFoot.y, a.y) - .25f, lowB = Mathf.Min(footY, b.y) - .25f;
+                            if (a.y - lowA > .3f || b.y - lowB > .3f)
+                            {
+                                mb.Tint = grey;
+                                Face(mb, new Vector3(a.x, lowA, a.z) + across * .3f, new Vector3(b.x, lowB, b.z) + across * .3f, b + across * .3f, a + across * .3f, across);
+                            }
+                            built += (b - a).magnitude;
+                        }
+                        prev = top; prevFoot = new Vector3(p.x, footY, p.y);
+                    }
+                    if (mb.Count > 60000) Flush();
+                }
+            }
+            Flush();
+            Debug.Log($"[Round81] H: the Express Lanes walled off: {built / 1000f:0.0} km of wall in {chunk} pieces, {skipped / 1000f:0.0} km left open (ramps, roads at grade, decks with their parapets)");
+        }
+
         // two segments crossing: the parameters along each
         static bool SegX(Vector2 a, Vector2 b, Vector2 c, Vector2 d, out float ta, out float tb)
         {
