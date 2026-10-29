@@ -81,15 +81,15 @@ namespace ChastainRush
                     var cum = Cum(line); float total = cum[cum.Length - 1];
                     var f0 = Flat(line[2] - line[0]).normalized; yield return R74Place(line[0], Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg); R73Pad();
                     var tracer = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); tracer.Take();
-                    float jolt = 0f, lastVy = 0f, slow = 0f, tt = 0f; Vector3 joltAt = Vector3.zero; int wallHits = 0; var notes = new List<string>(); bool wasAir = false; float airT = 0f;
+                    float jolt = 0f, lastVy = 0f, slow = 0f, tt = 0f; Vector3 joltAt = Vector3.zero; int wallHits = 0; var notes = new List<string>(); bool wasAir = false; float airT = 0f; Vector3 takeoff = Vector3.zero;
                     var watch = StartCoroutine(R73Watch(() =>
                     {
                         tt += Time.fixedDeltaTime; var p = car.Body.position; var v = car.Body.linearVelocity; string c = tracer.Take();
                         if (car.GroundedWheels > 0 && Mathf.Abs(v.y - lastVy) > jolt) { jolt = Mathf.Abs(v.y - lastVy); joltAt = p; }
                         lastVy = v.y;
                         if (c.Contains("Express Lanes wall")) { wallHits++; if (notes.Count < 8) notes.Add($"wall hit at ({p.x:0}, {p.z:0})"); }
-                        bool air = car.GroundedWheels == 0; if (air && !wasAir) airT = 0f; if (air) airT += Time.fixedDeltaTime;
-                        if (!air && wasAir && airT > .3f && notes.Count < 8) notes.Add($"{airT:0.00} s in the air, landed at ({p.x:0}, {p.z:0})");
+                        bool air = car.GroundedWheels == 0; if (air && !wasAir) { airT = 0f; takeoff = p; } if (air) airT += Time.fixedDeltaTime;
+                        if (!air && wasAir && airT > .3f && notes.Count < 8) notes.Add($"{airT:0.00} s in the air, from ({takeoff.x:0}, {takeoff.z:0}) to ({p.x:0}, {p.z:0})");
                         wasAir = air;
                         if (v.magnitude < 2f && tt > 4f) slow += Time.fixedDeltaTime; else slow = 0f;
                         if (slow > 1.5f && slow < 1.5f + Time.fixedDeltaTime * 1.5f && notes.Count < 8) notes.Add($"stopped at ({p.x:0.0}, {p.y:0.0}, {p.z:0.0}): {(c.Length > 0 ? c.Substring(0, Mathf.Min(200, c.Length)) : "no body contact")}");

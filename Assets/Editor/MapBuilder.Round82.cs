@@ -42,7 +42,7 @@ namespace ChastainRush
 
         static void R82DeckIndex(MapData map)
         {
-            r82Map = map; r82RoadIdx = null; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
+            r82Map = map; r82RoadIdx = null; r83ExIdx = null; r83RoadIdx = null; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
             if (map.bridges == null) return;
             for (int bi = 0; bi < map.bridges.Length; bi++)
             {
@@ -59,7 +59,9 @@ namespace ChastainRush
             {
                 var (bi, i) = r82DeckSegs[k]; if (exclude != null && exclude.Contains(bi)) continue;
                 var b = r82Map.bridges[bi]; var a = new Vector2(b.points[2 * i], b.points[2 * i + 1]); var c = new Vector2(b.points[2 * i + 2], b.points[2 * i + 3]);
-                var ab = c - a; float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                var ab = c - a; float t0 = Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(t0);
+                // Round 83 (the dry run: Canton Road's ground cut 1.2 m just before its deck over the Express Lanes): past a deck's two ends is not under it
+                if ((i == 0 && t0 < 0f) || (i + 2 >= b.points.Length / 2 && t0 > 1f)) continue;
                 if ((a + ab * t - p).magnitude > b.width * .5f + 1.5f || b.deck_y == null || i + 1 >= b.deck_y.Length) continue;
                 slabBottom = Mathf.Min(slabBottom, Mathf.Lerp(b.deck_y[i], b.deck_y[i + 1], t) - R82Slab);   // (deck_y: the top less the road's lift; the slab under its top)
             }
@@ -97,6 +99,58 @@ namespace ChastainRush
             }
             return -1f;
         }
+
+        // Round 83: the top of a deck (not one of 'exclude') under a point, within its half width + 1 m; the nearest to 'near' if several
+        static bool R83DeckTopAt(MapData map, Vector2 p, Vector2 dir, HashSet<int> exclude, float near, out float top)
+        {
+            top = float.NaN; float best = float.MaxValue; if (r82DeckIdx == null) return false;
+            foreach (int k in r82DeckIdx.Near(p, 0f, r82Near))
+            {
+                var (bi, i) = r82DeckSegs[k]; if (exclude != null && exclude.Contains(bi)) continue;
+                var b = map.bridges[bi]; if (b.deck_y == null || i + 1 >= b.deck_y.Length) continue;
+                var a = new Vector2(b.points[2 * i], b.points[2 * i + 1]); var c = new Vector2(b.points[2 * i + 2], b.points[2 * i + 3]); var ab = c - a;
+                float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                if ((a + ab * t - p).magnitude > b.width * .5f + 1f) continue;
+                float y = Mathf.Lerp(b.deck_y[i], b.deck_y[i + 1], t) + R82Lift(b.@class);
+                if (Mathf.Abs(y - near) < best) { best = Mathf.Abs(y - near); top = y; }
+            }
+            return !float.IsNaN(top);
+        }
+
+        // Round 83: a point on an Express Lanes road's pavement (on the ground; within its half width + 0.5 m)
+        static CellIndex r83ExIdx; static List<(Vector2 a, Vector2 b, float half)> r83ExSegs; static readonly List<int> r83ExNear = new List<int>();
+        static bool R83OnExpress(Vector2 p)
+        {
+            if (r83ExIdx == null)
+            {
+                r83ExIdx = new CellIndex(16f); r83ExSegs = new List<(Vector2, Vector2, float)>();
+                foreach (var r in r82Map.roads) { if (r.name != ExpressName || r.bridge) continue; var q = ToPoints(r.points); for (int i = 0; i + 1 < q.Count; i++) { r83ExSegs.Add((q[i], q[i + 1], r.width * .5f)); r83ExIdx.Add(q[i], q[i + 1], r.width * .5f + .5f); } }
+            }
+            foreach (int k in r83ExIdx.Near(p, 0f, r83ExNear))
+            {
+                var s = r83ExSegs[k]; var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                if ((s.a + ab * t - p).magnitude < s.half + .5f) return true;
+            }
+            return false;
+        }
+
+        // Round 83: a point on the pavement of a road on the ground (within its half width + 0.3 m) not in 'exclude'
+        static bool R83OnOtherRoad(Vector2 p, HashSet<int> exclude)
+        {
+            if (r83RoadIdx == null)
+            {
+                r83RoadIdx = new CellIndex(16f); r83RoadSegs = new List<(Vector2, Vector2, float, int)>();
+                for (int ri = 0; ri < r82Map.roads.Length; ri++) { var r = r82Map.roads[ri]; if (r.bridge || r.tunnel) continue; var q = ToPoints(r.points); for (int i = 0; i + 1 < q.Count; i++) { r83RoadSegs.Add((q[i], q[i + 1], r.width * .5f, ri)); r83RoadIdx.Add(q[i], q[i + 1], r.width * .5f + .3f); } }
+            }
+            foreach (int k in r83RoadIdx.Near(p, 0f, r83RoadNear))
+            {
+                var s = r83RoadSegs[k]; if (exclude != null && exclude.Contains(s.road)) continue;
+                var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                if ((s.a + ab * t - p).magnitude < s.half + .3f) return true;
+            }
+            return false;
+        }
+        static CellIndex r83RoadIdx; static List<(Vector2 a, Vector2 b, float half, int road)> r83RoadSegs; static readonly List<int> r83RoadNear = new List<int>();
 
         static R82CrossFile R82LoadCrossings()
         {
@@ -189,6 +243,7 @@ namespace ChastainRush
             var lineSetB = new HashSet<int>(lineBridges);
             foreach (var L in lines) foreach (var v in L) { if (v.bridge >= 0) continue; for (int dx = -1; dx <= 1 && !v.skip; dx++) for (int dz = -1; dz <= 1 && !v.skip; dz++) if (UnderOtherDeck(v.p + new Vector2(dx, dz) * 12f, lineSetB, out float sb) && sb > terrain.Height(v.p.x, v.p.y) - 2f) v.skip = true; }
             R82Lay(map, terrain, lines, lineBridges, lineRoads, liftL, halfL, R82Grade, log, graded, "line");
+            BuildClock.Lap("R82ExpressLines: the lines");
             // ---- C: every road joined to a line (it ends on it): laid to the line beside it, then eased to its own height
             R82Joins(map, terrain, graded, lineRoads, lineBridges, halfL, liftL, log);
             Debug.Log("[Round82] B / C: the Express Lanes end to end\n" + string.Join("\n", log));
@@ -207,6 +262,15 @@ namespace ChastainRush
             {
                 int N = L.Count; var cum = new float[N]; for (int i = 1; i < N; i++) cum[i] = cum[i - 1] + (L[i].p - L[i - 1].p).magnitude;
                 for (int i = 0; i < N; i++) L[i].raw = L[i].bridge >= 0 ? map.bridges[L[i].bridge].deck_y[L[i].bi] + liftL : terrain.Height(L[i].p.x, L[i].p.y);
+                // Round 83 (C: ramp 437897716 ends merging onto the Canton Road Connector's bridge beside it, held to its own height 10 m under that deck: 34 %):
+                // an end lying on another deck (a merge) is held to that deck's top
+                foreach (int e in new[] { 0, N - 1 })
+                {
+                    var dirE = (e == 0 ? L[1].p - L[0].p : L[N - 1].p - L[N - 2].p).normalized;
+                    if (!R83DeckTopAt(map, L[e].p, dirE, lineBridges, L[e].raw, out float top)) continue;
+                    log.Add($"  {tag}: its end at ({L[e].p.x:0}, {L[e].p.y:0}) merges onto a deck: held to its top {top:0.0} (was {L[e].raw:0.0})");
+                    L[e].raw = top;
+                }
                 var lineIdx = new CellIndex(16f); for (int i = 0; i + 1 < N; i++) lineIdx.Add(L[i].p, L[i + 1].p, .01f);
                 var lnear = new List<int>();
                 float LineDist(Vector2 p, float reach, out int seg, out float t)
@@ -328,16 +392,21 @@ namespace ChastainRush
                 // the ground graded to it, a piece of about 300 m of line at a time (each sample by its nearest point of the line in that piece)
                 var lineSet = new HashSet<int>(lineBridges); int changed = 0, cut = 0;
                 const float bankMax = 14f;
+                bool shoulder = tag == "line";   // Round 83 (A): the Express Lanes (walled) get a flat shoulder to their wall
                 for (int c0 = 0; c0 < N - 1; c0 += 150)
                 {
                     int c1 = Mathf.Min(N - 1, c0 + 150);
                     var lo = new Vector2(float.MaxValue, float.MaxValue); var hi = new Vector2(float.MinValue, float.MinValue);
                     for (int j = c0; j <= c1; j++) { lo = Vector2.Min(lo, L[j].p); hi = Vector2.Max(hi, L[j].p); }
-                    lo -= Vector2.one * (halfL + bankMax); hi += Vector2.one * (halfL + bankMax);
+                    float reachL = halfL + bankMax + (shoulder ? 3.8f : 0f);   // Round 83 (A): the shoulder widens the grading
+                    lo -= Vector2.one * reachL; hi += Vector2.one * reachL;
                     EditTerrain(terrain, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, yy) =>
                     {
-                        var p = new Vector2(x, z); float dd = LineDist(p, halfL + bankMax, out int i, out float t);
-                        if (dd > halfL + bankMax || i < c0 || i >= c1) return yy;
+                        var p = new Vector2(x, z); float dd = LineDist(p, reachL, out int i, out float t);
+                        if (dd > reachL || i < c0 || i >= c1) return yy;
+                        // Round 83 (the dry run: Dickson Road's line, laid after the Express Lanes, cut their road 0.4 to 1.1 m at both ends of their deck over it):
+                        // the Express Lanes' pavement on the ground is theirs alone
+                        if (!shoulder && dd > halfL + .5f && R83OnExpress(p)) return yy;
                         // (build 5: a sample just past a deck's end, nearest its last segment, was cut 1 m) a deck only where the sample lies along it
                         bool deck = L[i].bridge >= 0 && L[i + 1].bridge >= 0 && !((i + 2 >= N || L[i + 2].bridge < 0) && t > .98f) && !((i == 0 || L[i - 1].bridge < 0) && t < .02f);
                         float tg = (float)(y[i] + (y[i + 1] - y[i]) * t) - liftL;
@@ -367,14 +436,19 @@ namespace ChastainRush
                             }
                             if (oBest < 14f)
                             {
-                                float a0 = dd - halfL - .5f, f = a0 / Mathf.Max(a0 + oBest, .1f);
+                                // Round 83 (A: a car drifting off the I-75 Express Lanes by the I-575 flyover climbed the slope up to the flyover's road, which began
+                                // at the lane's edge, and was thrown over the lanes): beside the Express Lanes a flat shoulder out past their wall (3.8 m, or half
+                                // the gap where the other road is nearer) before the slope
+                                float gap = dd - halfL - .5f + oBest, sh = shoulder ? Mathf.Min(3.8f, gap * .5f) : 0f;
+                                float a0 = Mathf.Max(0f, dd - halfL - .5f - sh), f = a0 / Mathf.Max(gap - sh, .1f);
                                 float oy = terrain.Height(oAt.x, oAt.y), my = Mathf.Lerp(tg, oy, f);
                                 if (under) my = Mathf.Min(my, slabB - .3f);
                                 if (Mathf.Abs(my - yy) > 1e-3f) changed++; return my;
                             }
                         }
-                        if (dd > halfL + .5f + bank) return yy;
-                        float w = dd <= halfL + .5f ? 1f : Smooth01(1f - (dd - halfL - .5f) / bank); float ny = yy + w * (tg - yy);
+                        float sh2 = shoulder ? 3.8f : 0f;   // Round 83 (A): the Express Lanes' shoulder out past their wall, flat
+                        if (dd > halfL + .5f + sh2 + bank) return yy;
+                        float w = dd <= halfL + .5f + sh2 ? 1f : Smooth01(1f - (dd - halfL - .5f - sh2) / bank); float ny = yy + w * (tg - yy);
                         if (under) ny = Mathf.Min(ny, slabB - .3f);
                         if (Mathf.Abs(ny - yy) > 1e-3f) changed++; return ny;
                     });
@@ -416,12 +490,20 @@ namespace ChastainRush
             for (int k = 0; k < pcs.Count; k++) { endIdx.Add(pcs[k].q[0]); endOf.Add((k, true)); endIdx.Add(pcs[k].q[pcs[k].q.Count - 1]); endOf.Add((k, false)); }
             var enear = new List<int>();
             var doneDeck = new HashSet<int>(); var touchedDecks = new HashSet<int>();
+            bool expressLine = lineRoads.Any(i => map.roads[i].name == ExpressName) || lineBridges.Any(i => map.bridges[i].name == ExpressName);
             for (int k = 0; k < pcs.Count; k++)
                 {
                     var pc = pcs[k]; if (pc.q.Count < 2) continue;
                     bool atStart = Near(pc.q[0], 2f, out _) < 1.5f, atEnd = Near(pc.q[pc.q.Count - 1], 2f, out _) < 1.5f;
                     if (!atStart && !atEnd) continue;
                     if (atStart && atEnd) continue;   // a piece lying along the line both ends (none expected)
+                    // Round 83 (the dry run: Chastain Road's deck, its end lying over I-575's general lanes in plan, was "joined" to them and pulled down 12 m
+                    // onto the Express Lanes): an end more than 3 m above or below the line there is a deck crossing it, not a road joining it
+                    {
+                        var E = atStart ? pc.q[0] : pc.q[pc.q.Count - 1]; Near(E, 2f, out float lhE);
+                        float endY = pc.deck ? map.bridges[pc.idx].deck_y[atStart ? 0 : map.bridges[pc.idx].deck_y.Length - 1] + R82Lift(pc.cls) : terrain.Height(E.x, E.y) + R82Lift(pc.cls);
+                        if (Mathf.Abs(endY - (lhE - liftL + R82Lift(pc.cls))) > 3f) { log.Add($"  not joined: {pc.cls} {(pc.deck ? map.bridges[pc.idx].osm_id : map.roads[pc.idx].osm_id)} at ({E.x:0}, {E.y:0}), {endY - lhE + liftL - R82Lift(pc.cls):+0.0;-0.0} m off the line (crossing it)"); continue; }
+                    }
                     // the path away from the line: this piece, then the pieces that run on from its far end (roads or decks), up to 500 m
                     var path = new List<(Vector2 p, int pc, int i)>();
                     int cur = k; bool fwd = atStart; float len = 0f;
@@ -470,6 +552,7 @@ namespace ChastainRush
                     var pIdx = new CellIndex(16f); for (int j = 0; j + 1 < M; j++) pIdx.Add(rp[j].p, rp[j + 1].p, .01f);
                     var pn = new List<int>(); int changed = 0;
                     float reach = pc.half + 10f;
+                    var pathRoads = new HashSet<int>(lineRoads); foreach (var e in rp) if (e.pc >= 0 && !pcs[e.pc].deck) pathRoads.Add(pcs[e.pc].idx);
                     for (int c0 = 0; c0 < M - 1; c0 += 200)
                     {
                         int c1 = Mathf.Min(M - 1, c0 + 200);
@@ -482,10 +565,16 @@ namespace ChastainRush
                             foreach (int s in pIdx.Near(p, reach, pn)) { var ab = rp[s + 1].p - rp[s].p; float t = Mathf.Clamp01(Vector2.Dot(p - rp[s].p, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (rp[s].p + ab * t - p).magnitude; if (d < best) { best = d; bi = s; bt = t; } }
                             if (best > reach || bi < c0 || bi >= c1) return yy;
                             float tg = Mathf.Lerp(tgt[bi], tgt[bi + 1], bt) - R82Lift(pc.cls);
-                            bool onDeck = rp[bi].pc >= 0 && rp[bi + 1].pc >= 0 && pcs[rp[bi].pc].deck && pcs[rp[bi + 1].pc].deck && !((bi + 2 >= M || rp[bi + 2].pc < 0 || !pcs[rp[bi + 2].pc].deck) && bt > .98f) && !((bi == 0 || rp[bi - 1].pc < 0 || !pcs[rp[bi - 1].pc].deck) && bt < .02f);
+                            bool onDeck = rp[bi].pc >= 0 && rp[bi + 1].pc >= 0 && pcs[rp[bi].pc].deck && pcs[rp[bi + 1].pc].deck && !((bi + 2 >= M || rp[bi + 2].pc < 0 || !pcs[rp[bi + 2].pc].deck) && bt > .98f) && !((bi == 0 || rp[bi - 1].pc < 0 || !pcs[rp[bi - 1].pc].deck) && bt < .02f)
+                                          ;
                             float dl = Near(p, 30f, out float lhh);
                             bool between = bi <= jp && dl < halfL + 8f && best < pc.half + 8f && best + dl < sep + 6f;
+                            onDeck &= best <= pc.half + 1f || between;   // Round 83 (the dry run: the I-75 deck over Frey Road cut a 4 m hole in the Express Lanes' road 8 m beside it): only under its own width, or the gap to the line beside it
                             if (dl < halfL + .5f) return yy;   // the line's own road (graded with it; build 4: the merging ramp's deck cut a 1.7 m hole in it)
+                            if (!expressLine && R83OnExpress(p)) return yy;   // Round 83: the Express Lanes' pavement is their own line's (R82ExpressLines), never another road's grading
+                            // Round 83 (the dry run: the I-75 deck over Frey Road joined to the general lanes filled the medians between the decks back up to deck
+                            // height across Frey Road, laid just before): another road's pavement is never raised by a join (only cut under a deck)
+                            bool otherPave = R83OnOtherRoad(p, pathRoads);
                             bool under = UnderOtherDeck(p, null, out float slabB) && (slabB > tg + 1f || best > pc.half + .5f);
                             if (onDeck || under)
                             {
@@ -494,6 +583,7 @@ namespace ChastainRush
                                 return yy > cap ? cap : yy;
                             }
                             if (dl < halfL + .5f) return yy;   // the line's own road (graded with it)
+                            if (otherPave) return yy;
                             if (between)
                             {
                                 float lineG = lhh - liftL; float f = Mathf.Clamp01((dl - halfL) / Mathf.Max(best - pc.half + dl - halfL, .1f));
@@ -682,6 +772,7 @@ namespace ChastainRush
                 foreach (var (c, cl) in R82Clearances(map, terrain)) if (cl < R82MinClear && c.over.kind == "bridge" && map.bridges[c.over.index].name != ExpressName) fix.Add(c.over.index);
                 Close();
             }
+            BuildClock.Lap("R82Crossings: the raised roads");
             var ulog = new List<string> { "Round 82 (A): the roads under decks laid at their own level (MapBuilder.Round82.cs R82UnderLines)" };
             R82UnderLines(map, terrain, laidRoads, ulog);
             try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "round82_under_lines.txt"), ulog); } catch (System.Exception e) { Debug.LogWarning("[Round82] " + e.Message); }

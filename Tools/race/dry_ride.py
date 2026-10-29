@@ -58,7 +58,8 @@ def ride(P, v):
         S[k] = pick
         prev = pick
     # the car spans about 2.5 m (its wheels average the ground) and its springs take a few centimetres: the surface it rides, averaged over 2.5 m
-    raw = S
+    # (wheels roll over a dip shorter than about 1.5 m: the 1 m ground cell under a deck's last metre is cut below its slab)
+    raw = [max(S[max(0, k - 2):k + 3]) for k in range(n)]
     S = [sum(raw[max(0, k - 2):k + 3]) / len(raw[max(0, k - 2):k + 3]) for k in range(n)]
     dt = 0.5 / v
     y, vy, up, air = S[0], 0.0, False, 0.0

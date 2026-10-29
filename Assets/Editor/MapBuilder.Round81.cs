@@ -330,7 +330,7 @@ namespace ChastainRush
                     for (int i = 0; i < line.Count; i++)
                     {
                         var dir = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var right = new Vector2(dir.y, -dir.x);
-                        float off = half + .5f; for (float o = half + 2.5f; o >= half + .5f; o -= .3f)   /* Round 82: 2.5 m out (was 1.8) */ if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
+                        float off = half + .5f; for (float o = half + 3.5f; o >= half + .5f; o -= .3f)   /* Round 82: 2.5 m out (was 1.8); Round 83 (D: 37 scrapes on I-575's at (754, -1385), the car 4 m off the lane's middle): 3.5 m */ if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
                         // Round 82 (B, the drive: cars caught the parapets' ends at the decks' starts): over the 25 m before an Express deck's end the wall closes in
                         // to the parapet's line, leading onto the deck
                         float dEnd = deckEnds.Count > 0 ? deckEnds.Min(e => (e - line[i]).magnitude) : 999f;
