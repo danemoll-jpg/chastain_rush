@@ -322,19 +322,16 @@ namespace ChastainRush
                 q.Enqueue((t, adv.aPitch, adv.aBank, adv.aRudder, adv.aThrottle, adv.aSteer));
                 var c = q.Peek(); while (q.Count > 1 && t - q.Peek().t > .1f) c = q.Dequeue();
                 float n1 = (Mathf.PerlinNoise(seed, t * .7f) - .5f) * .14f, n2 = (Mathf.PerlinNoise(seed + 9f, t * .7f) - .5f) * .1f;
-                var sv = Stick(new Vector2(Mathf.Clamp(pl.Airborne ? c.bank + n1 : c.steer, -1f, 1f), Mathf.Clamp(c.pitch + n2, -1f, 1f))); float x = sv.x, y = -sv.y;
-                float up = c.thr < 0f ? 0f : c.thr > pl.Throttle + .02f ? 1f : 0f, down = c.thr >= 0f && c.thr < pl.Throttle - .05f ? 1f : 0f;
-                var st = new GamepadState { leftStick = new Vector2(x, y), rightTrigger = up, leftTrigger = down };
-                if (c.rud > .5f) st = st.WithButton(GamepadButton.RightShoulder); else if (c.rud < -.5f) st = st.WithButton(GamepadButton.LeftShoulder);
-                InputSystem.QueueStateEvent(r73pad, st);
+                // (through the pad it did not hold the line: the plane's own controls, as the AI pilots fly, late and a little noisy)
+                pl.Scripted = true; pl.sPitch = Mathf.Clamp(c.pitch + n2, -1f, 1f); pl.sBank = Mathf.Clamp(c.bank + n1, -1f, 1f); pl.sRudder = c.rud; pl.sThrottle = c.thr; pl.sSteer = c.steer; pl.sBrake = 0f;
             }
-            Time.timeScale = 1f; Destroy(adv); R73Set(0, 0, 0);
+            Time.timeScale = 1f; Destroy(adv); pl.Scripted = false; pl.sThrottle = -1f; R73Set(0, 0, 0);
             note.Append($" crashes {pl.Crashes - crashes0};");
         }
 
         IEnumerator R80AirHuman()
         {
-            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the pad, 0.1 s late, a little noise; Street Classic's pilot in the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
+            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the plane's own controls as the AI pilots, 0.1 s late, a little noise; the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
             yield return Clock(13f); int prev = RoadDriver.Difficulty;
             foreach (var file in R79Courses)
                 foreach (int diff in new[] { 1, 2 })
