@@ -434,7 +434,7 @@ Racer's wildlife sounds in `Assets/Audio/Wildlife/`). Check: `ChastainRush.exe -
 shopramp,vault,cpics,cfps,rivals,splitai,life,lifepics,lifefps] -logFile <dir>\Player.log` (`Checks/Round20Runner.R38*.cs`). Imported from Racer:
 RivalTricks (into StuntRival), ArcadeVehicle's AiAir, AmbientLife, Wildlife, WoodlandAmbience, UndergroundLife, TurkeyVoice, the wildlife recordings;
 left behind: HouseholdSchedule (its Dan / Kyle visits), SnowScenes, ScenePeople, the cave bats, the smoking pair.
-**Round 81 (see `TODO.md`, status there) is built and checked in the exe, not yet driven by Dan; NOT published:** A / H `MapBuilder.Round81.cs` R81Flyovers (planning, after SmoothBridgeEnds:
+**Round 81 (see `TODO.md`, status there) is built, checked in the exe and published (0.81.1 Latest, starter `starter-8100`), not yet driven by Dan:** A / H `MapBuilder.Round81.cs` R81Flyovers (planning, after SmoothBridgeEnds:
 the junction's flyovers and every Express Lanes deck with 250 m of road each side as one curve, 6 m over what they cross, bounds falling away along vertical curves; report
 `Assets/Generated/round81_flyovers.txt`; `Bridge.osm_id`), `BuildExpressWalls` (Edges step: jersey walls, an upright collider). B `BuildExpressGates` at the general road's end; C
 `ExpressLanes` (exits open in a reversal, the whole ramp chain, `Traffic.Replanned`). D `CarRecovery` (further back / on). E `MapBuilder.Train.cs` pieces, `RailCrossing` lays a broken arm.
@@ -445,7 +445,8 @@ F `MapBuilder.R1Pool.cs` R81WestOf6. G R52DanHouses 1559. I `SteamDeck.cs` (sett
 <install> --test-save <dir> --evidence <dir> --catalog http://127.0.0.1:<port>/...`) is a check run. K releases: `python Tools/Prepare-LauncherRelease.py --game Builds/ChastainRush
 --bundle-music BundleMusic --out <new dir> --version --build --music-build --notes [--base-url]`, `Prepare-ComponentUpdate.py game|soundtrack ... [--base-url]`, `Package-LauncherStarter.py
 ... --no-music` (game + soundtrack pass GitHub's 2 GiB), `Publish-LauncherRelease.py <draft> [--publish --confirm-repository danemoll-jpg/chastain-rush-releases]` (gh: Racer's
-`Builds/PublisherTools`); starter README `Docs/Starter/README-LAUNCHER.md`, poster `SourceArt/Title/ChastainRushPoster.png`. Check: `ChastainRush.exe -exeRound81 <dir> [-r81Only
+`Builds/PublisherTools`; a new draft is not listed at once: re-run with `--resume-draft`); the next game update: `Prepare-ComponentUpdate.py game --source Builds/ChastainRush --previous-catalog
+Builds/LauncherRelease-8101/assets/update-catalog.json --previous-manifest Builds/LauncherRelease-8101/assets/game-manifest.json --out Builds/LauncherRelease-<build> --build <higher> ...`; starter README `Docs/Starter/README-LAUNCHER.md`, poster `SourceArt/Title/ChastainRushPoster.png`. Check: `ChastainRush.exe -exeRound81 <dir> [-r81Only
 dan,fshort,dtrain,ecross,bgates,cqueue,junction,ddecks,hwalls,dtrace,lanes,fps] [-traffic Heavy] [-steamDeck 1] -r20Minutes 300 -logFile <dir>\Player.log` from the repo root (lines
 `python Tools/mapgen/r81_lines.py`, `r80_express_lines.py`); `ChastainRush.ColliderProbe.Run -probeRect x0,z0,x1,z1 [-probeName t] -probeOut <file>`, `DeckProbe -probeAtFile <file>`.
 Launchers `local/round81/runexe.ps1`, `runexe_deck.ps1` (4 cores). Imported from Racer: the launcher (Launcher/, its build, key and release tools), LauncherBridge, LocalRadio's launcher folders.

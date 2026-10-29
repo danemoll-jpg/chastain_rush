@@ -1,0 +1,9 @@
+19819281 Soundtrack activated independently of game
+19819921 Game child started; launcher remains alive
+19853109 PASS nonce startup handshake; parent still alive
+19858156 Child exit 0
+20076109 Saved pre-update backup; never automatically restored: 37356-19999109
+20076140 Game activated 0.81.1
+20076937 Game child started; launcher remains alive
+20104453 PASS nonce startup handshake; parent still alive
+20109812 Child exit 0
