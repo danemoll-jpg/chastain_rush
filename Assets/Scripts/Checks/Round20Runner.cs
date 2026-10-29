@@ -69,7 +69,7 @@ namespace ChastainRush
             if (tag == "round67" && parts == null) parts = new[] { "mloop", "mjumps", "mwalk", "mpics", "tcreek", "tpark", "tmound", "tpics" };   // Round 67 (Round20Runner.R67.cs); mai as well when named
             if (tag == "round72" && parts == null) parts = new[] { "qjump", "qshort", "qreplay", "qpics" };   // Round 72 (Round20Runner.R72.cs)
             if (tag == "round75" && parts == null) parts = new[] { "dan", "types", "mapb" };   // Round 75 (Round20Runner.R75.cs)
-            if (tag == "round81" && parts == null) parts = new[] { "dan", "fshort", "dtrain", "ecross", "bgates", "junction", "ddecks", "walls" };   // Round 81 (Round20Runner.R81.cs); cqueue with -traffic Heavy, fps on its own runs
+            if (tag == "round81" && parts == null) parts = new[] { "dan", "fshort", "dtrain", "ecross", "bgates", "junction", "ddecks", "hwalls" };   // Round 81 (Round20Runner.R81.cs); cqueue with -traffic Heavy, fps on its own runs
             if (tag == "round80" && parts == null) parts = new[] { "dan", "whitlock", "deck", "ddecks", "dreplay", "cockpit", "air", "airhuman" };   // Round 80 (Round20Runner.R80.cs); lanes with -traffic Heavy, traffic on its own runs
             if (tag == "round79" && parts == null) parts = new[] { "dan", "replay", "air", "arrow", "rail" };   // Round 79 (Round20Runner.R79.cs)
             if (tag == "round78" && parts == null) parts = new[] { "dan", "rail", "train", "square", "house", "open", "msq", "air" };   // Round 78 (Round20Runner.R78.cs)
@@ -247,7 +247,8 @@ namespace ChastainRush
                 if (parts != null && parts.Contains("cqueue")) yield return Guard(R81CQueue());
                 if (Do("junction")) yield return Guard(R81Junction());
                 if (Do("ddecks")) yield return Guard(R80DDecks());
-                if (Do("walls")) yield return Guard(R81Walls());
+                if (Do("hwalls")) yield return Guard(R81Walls());
+                if (parts != null && parts.Contains("dtrace")) yield return Guard(R81DTrace());
                 if (parts != null && parts.Contains("lanes")) yield return Guard(R80Express());
                 if (parts != null && parts.Contains("fps")) yield return Guard(R81Fps());
             }

@@ -18,7 +18,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         static readonly long[] R81JunctionIds = { 451950526, 163463460, 536793083 };
-        const float R81Clear = 6f, R81V = 35f, R81Reach = 250f, R81Slab = .7f;
+        const float R81Clear = 6f, R81V = 35f, R81Reach = 250f, R81Slab = .7f, R81BoundR = 250f;
 
         static void R81Flyovers(MapData map, TerrainGrid terrain)
         {
@@ -134,16 +134,20 @@ namespace ChastainRush
                             continue;
                         }
                         float spread = s.half + 3f;
-                        if (other < here - 1f)
+                        // Round 81 (second try, the check: the hard edges of these bounds left 1 m steps in the decks, EL13 threw a car off at one): each bound
+                        // falls away from its crossing along a vertical curve (a parabola of radius R81BoundR), so following it is itself a smooth curve.
+                        // A road on the ground crossing the deck, above it or below (EL13 ran into the Canton Road Connector's embankment): the deck flies over
+                        // it (Dan: "the express lanes are usually bridges when they cross"); under another road's deck it keeps its clearance below
+                        if (s.bridge < 0 || other < here - 1f)
                         {
                             float need = other + R81Clear + R81Slab + lift; crossings.Add((sx, other, false, s.bridge > 0 ? map.bridges[s.bi].name : "a road"));
                             lo0 = Mathf.Min(lo0, here - lift - R81Slab - other);
-                            for (int j = 0; j < N; j++) if (Mathf.Abs(cum[j] - sx) <= spread) lb[j] = Mathf.Max(lb[j], need);
+                            for (int j = 0; j < N; j++) { float d = Mathf.Max(0f, Mathf.Abs(cum[j] - sx) - spread); lb[j] = Mathf.Max(lb[j], need - d * d / (2f * R81BoundR)); }
                         }
-                        else if (s.bridge > 0 && other > here + 1f)
+                        else if (other > here + 1f)
                         {
                             float cap = other - lift - R81Slab - R81Clear; crossings.Add((sx, other, true, map.bridges[s.bi].name));
-                            for (int j = 0; j < N; j++) if (Mathf.Abs(cum[j] - sx) <= spread) ub[j] = Mathf.Min(ub[j], cap);
+                            for (int j = 0; j < N; j++) { float d = Mathf.Max(0f, Mathf.Abs(cum[j] - sx) - spread); ub[j] = Mathf.Min(ub[j], cap + d * d / (2f * R81BoundR)); }
                         }
                     }
                 }
@@ -278,19 +282,37 @@ namespace ChastainRush
             }
             var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
             var grey = new Color(.74f, .73f, .70f);
-            var mb = new MeshBuilder(); int chunk = 0; float built = 0f, skipped = 0f;
-            void Flush() { if (mb.Count == 0) return; mb.ToObject($"Express Lanes wall {chunk++}", mats.House, root.transform, true); mb = new MeshBuilder(); }
+            // (second try, the check: a car that touched the wall's flared foot rode up it and over; the wall stood 0.6 m off a 4.5 m lane): the wall
+            // 1.8 m out (a shoulder; less where a road alongside leaves no room), and solid as a plain upright slab 1.5 m high (no foot to climb)
+            var mb = new MeshBuilder(); var cmb = new MeshBuilder(); int chunk = 0; float built = 0f, skipped = 0f;
+            void Flush()
+            {
+                if (mb.Count == 0) return;
+                mb.ToObject($"Express Lanes wall {chunk}", mats.House, root.transform, false);
+                var col = cmb.ToObject($"Express Lanes wall collider {chunk}", mats.House, root.transform, true); var r = col.GetComponent<MeshRenderer>(); if (r) r.enabled = false;
+                chunk++; mb = new MeshBuilder(); cmb = new MeshBuilder();
+            }
+            bool Alongside(Vector2 p, Vector2 along)
+            {
+                foreach (int si in idx.Near(p, 0f, near))
+                {
+                    var s = segs[si]; if (s.express || s.deck != null) continue; var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    if ((s.a + ab * t - p).magnitude < s.half + .2f) return true;
+                }
+                return false;
+            }
             foreach (var r in map.roads)
             {
                 if (r.name != ExpressName || r.bridge) continue;
                 var line = Resample(ToPoints(r.points), 3f); if (line.Count < 2) continue;
-                float off = r.width * .5f + .6f;
+                float half = r.width * .5f;
                 foreach (float side in new[] { -1f, 1f })
                 {
                     Vector3? prev = null; Vector3 prevFoot = default;
                     for (int i = 0; i < line.Count; i++)
                     {
                         var dir = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var right = new Vector2(dir.y, -dir.x);
+                        float off = half + .5f; for (float o = half + 1.8f; o >= half + .5f; o -= .3f) if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
                         if (Blocked(p, roadY, dir)) { prev = null; skipped += 3f; continue; }
                         float footY = Ground(terrain, p.x, p.y);
@@ -301,6 +323,7 @@ namespace ChastainRush
                             // the jersey section: a flared foot and an upright, its foot run down to the ground (a skirt where the bank falls away)
                             Beam(mb, a + Vector3.up * .16f, b + Vector3.up * .16f, .6f, .36f, grey);
                             Beam(mb, a + Vector3.up * .55f, b + Vector3.up * .55f, .26f, .52f, grey);
+                            Beam(cmb, a + Vector3.up * .45f, b + Vector3.up * .45f, .3f, 1.5f, grey, across);   // the solid slab
                             float lowA = Mathf.Min(prevFoot.y, a.y) - .25f, lowB = Mathf.Min(footY, b.y) - .25f;
                             if (a.y - lowA > .3f || b.y - lowB > .3f)
                             {

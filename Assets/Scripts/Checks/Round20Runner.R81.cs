@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace ChastainRush
 {
-    // Round 81 in the exe (-exeRound81 <dir> [-r81Only dan,fshort,dtrain,ecross,bgates,cqueue,junction,ddecks,walls,fps] [-traffic Heavy] -r20Minutes 300
+    // Round 81 in the exe (-exeRound81 <dir> [-r81Only dan,fshort,dtrain,ecross,bgates,cqueue,junction,ddecks,hwalls,dtrace,fps] [-traffic Heavy] -r20Minutes 300
     // -logFile <dir>\Player.log), started from the repo root (it reads local/round81/r81_lines.json: python Tools/mapgen/r81_lines.py, and
     // local/round80/r80_express.json: python Tools/mapgen/r80_express_lines.py): CHECK IT AS DAN PLAYS IT (TODO.md item 0).
     //   dan       Dan's ten reports of session 2026-10-29_01-57-15-107_610675 from his exact place and heading (BUG-001 in the square race at Whitlock)
@@ -21,7 +21,7 @@ namespace ChastainRush
     //   cqueue    C: Dan's BUG-006 place at 5 PM and 8 AM (needs -traffic Heavy): cars standing on the lanes within 400 m
     //   junction  A: every road through the I-75 / I-575 junction (the Express lanes both ways) by the human-like driver at up to 35 m/s: air, landings, resets
     //   ddecks    H: Round 80's every-Express-deck drive (both ways, up to 33 m/s)
-    //   walls     H: the walls and flyovers seen from the lanes and from the road below
+    //   hwalls    H: the walls and flyovers seen from the lanes and from the road below
     //   fps       I: the frame rate (10 s, uncapped) at Marietta Square in a race, I-75 with traffic, Town Center and the Kennesaw summit, at the window's size
     public sealed partial class Round20Runner
     {
@@ -241,6 +241,41 @@ namespace ChastainRush
                 }
             Check("junction: every road through it at highway speed, under 0.3 s in the air, no landing over 6 m/s, no reset", bad == 0, $"{bad} not");
             ExpressLanes.ForceHour = float.NaN;
+        }
+
+        // ---------------------------------------------------------------- dtrace: the Express decks that stuck, traced (what the body touched, a picture when it stops)
+        IEnumerator R81DTrace()
+        {
+            report.AppendLine(); report.AppendLine("=== H. The Express decks that stopped a car, driven the other way at up to 33 m/s, every step traced");
+            var path = Path.Combine(Environment.CurrentDirectory, "local/round80/r80_express.json"); if (!File.Exists(path)) yield break;
+            var f = JsonUtility.FromJson<R80File>(File.ReadAllText(path));
+            if (race.State != RaceController.Stage.Free) race.EndRace();
+            yield return Vehicle("original"); yield return Clock(13f);
+            var lines = R81Lines();
+            var runs = f.decks.Where(d => d.name.Contains("(620, -455)") || d.name.Contains("(-1414, 1617)") || d.name.Contains("(-355, -856)") || d.name.Contains("(-54, -2128)") || d.name.Contains("(2049, -4662)"))
+                .Select(d => (d.name + " the other way", R73Line(d.line).AsEnumerable().Reverse().ToList())).ToList();
+            if (lines != null) runs.AddRange(lines.lines.Where(x => x.name.StartsWith("I-75 Express")).Select(x => (x.name, R73Line(x.line))));
+            foreach (var (name, line) in runs)
+            {
+                var f0 = Flat(line[2] - line[0]).normalized; yield return R74Place(line[0], Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg); R73Pad();
+                var tracer = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); tracer.Take();
+                var trace = new StringBuilder("t\tx\ty\tz\tspeed\tvy\twheels\tcontacts\n"); float tt = 0f, slow = 0f; int shots = 0; var notes = new List<string>(); bool shotDue = false;
+                var watch = StartCoroutine(R73Watch(() =>
+                {
+                    tt += Time.fixedDeltaTime; var p = car.Body.position; var v = car.Body.linearVelocity; string c = tracer.Take();
+                    trace.AppendLine($"{tt:0.00}\t{p.x:0.00}\t{p.y:0.00}\t{p.z:0.00}\t{v.magnitude:0.0}\t{v.y:0.00}\t{car.GroundedWheels}\t{c}");
+                    if (v.magnitude < 2f && tt > 3f) slow += Time.fixedDeltaTime; else slow = 0f;
+                    if (slow > 1f && shots < 2 && !shotDue) { shotDue = true; notes.Add($"stopped at ({p.x:0.0}, {p.y:0.0}, {p.z:0.0}): {(c.Length > 0 ? c.Substring(0, Mathf.Min(220, c.Length)) : "no body contact")}"); }
+                }, () => true));
+                var run = new HumanRun(); string tag = $"81_T_{new string(name.Where(char.IsLetterOrDigit).Take(24).ToArray())}";
+                var co = StartCoroutine(HumanDrive(line, 33f, 40f, run, null, null, null, tag + "_air"));
+                float t0 = Time.time; while (Time.time - t0 < 42f && !run.reachedEnd && run.time == 0f) { if (shotDue && shots < 2) { yield return Capture($"{tag}_stop{shots}"); shots++; shotDue = false; } yield return null; }
+                StopCoroutine(co); StopCoroutine(watch); R73Set(0, 0, 0);
+                File.WriteAllText(Path.Combine(outputDir, tag + "_trace.tsv"), trace.ToString());
+                report.AppendLine($"  {name}: {(run.reachedEnd ? "through" : "NOT through")}, longest in the air {run.maxAir:0.00} s, resets {run.resets}{run.note}");
+                foreach (var n in notes) report.AppendLine("    " + n);
+                Flush();
+            }
         }
 
         // ---------------------------------------------------------------- walls (H)
