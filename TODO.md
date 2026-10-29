@@ -124,7 +124,7 @@ A. THE JUNCTION AS THE PHOTOS SHOW IT. The I-575 Express flyover (OSM 624557373,
    lifted to stand clear over every road they cross (at least 6 m under the deck, as Round 78's rail bridges), each a long smooth climb and descent (one vertical
    curve each way that a car at 35 m/s stays down on), their ends met by the roads they continue without a step; the ground under and beside them cut or built up so
    nothing pokes through and nothing is buried; the junction drivable every way at highway speed (the general lanes and the Express lanes, both directions of the
-   Express lanes). World changes only here (the box above); similar spots elsewhere listed for Dan. Check: each road through the junction both ways by the human-like
+   Express lanes). World changes here (the box above) and at H's Express Lanes crossings; other similar spots listed for Dan. Check: each road through the junction both ways by the human-like
    driver (air, landings, resets), pictures from Dan's spots BUG-009 / BUG-010 before and after, a top-down picture against Dan's photos.
 B. THE EXPRESS LANES' GATES ON THE RAMPS FROM THE GENERAL LANES, NEVER ON THE EXPRESS LANES. BUG-005 (x 741 z -1138): "The express lane is two ways. But the gates
    are on exits from the highway so the road going to the express lane is blocked and never the express lane itself otherwise cars wouldn't be able to travel it";
@@ -148,12 +148,7 @@ F. BUG-003 (x 2854 z 1132, Chastain Glen Lane, heading 249, the forward lap's sh
    wants, but not across its own line). Check: from Dan's place and heading, the human-like driver lines it up and takes it, no launch, no stop.
 G. BUG-004 (x 1198 z 1670, beside Bells Ferry Road Northwest, heading 349): "buried house" (the picture: a one-storey house sunk to its window sills in the slope).
    Settle it as Round 52's (floor at its ground, the lot cut). Check: picture from Dan's place.
-Check: item 0 for every item.
-For Dan to check: the junction driven every way (general lanes and Express lanes); the gates on the ramps; I-575 by Chastain Road; a train hit in the square race;
-the Whitlock crossing broken; the Chastain Glen shortcut from his spot; the house on Bells Ferry Road.
-
-## QUEUED rounds
-**EXPRESS LANES AS FLYOVERS (Dan, 2026-10-29 01:36; fold into the next round, with Dan's Round 80 notes).** Round 80 D1's options for EL13: Dan: "the express
+H. THE EXPRESS LANES AS FLYOVERS, WALLED OFF (queued 2026-10-29 01:36, folded in here as it said). Round 80 D1's options for EL13: Dan: "the express
 lanes are usually bridges when they cross 75/575. So they should be that way". Where the Express Lanes cross I-75 / I-575, their ramps or the Canton Road
 Connector, the lanes go OVER as a bridge (a flyover: a smooth, gradual climb and descent at highway grades, piers, the crossing road left underneath at
 its own level), not humps. EL13 first (the connector and the two ramps), then every other Express Lanes crossing the same way, including the 463 m deck
@@ -161,23 +156,30 @@ at I-75 / Barrett (1.9 s air one way, a wall at its south end the other) and the
 Express Lanes deck driven both ways at top speed: no air over 0.3 s, no step in the road surface, traffic through it; pictures of each flyover from the road below.
 Dan, 01:38: "they generally have walls as they are seperated from the main roads": the Express Lanes are walled off from the main lanes along their length (concrete
 barrier walls both sides, on the flyovers as bridge parapets), so you get in and out only at their gated ramps (a smashed gate still lets you in, Round 80 E).
-
-**INSTALLER AND UPDATES, AND THE STEAM DECK (Dan, 2026-10-29 00:43; next round after Round 80 is reviewed; this round says PUBLISH).** Dan: "I would also need
-an installation file like I have for Woodstock Rush. Which I would want to use the same update system so I only have to install it once". And: will his
-Steam Deck handle the bigger map?
-A. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
+   A covers the I-75 / I-575 junction's flyovers; H is every other Express Lanes crossing and the walls along their whole length, done to the same rules.
+I. THE STEAM DECK (Dan, 2026-10-29 03:34: "I also want the steam deck stuff done in this round"; was the installer round's C). Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
+   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
+   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
+   Also bring over whatever Woodstock Rush does for the Deck (Racer is read only: search its CLAUDE.md / CODEX_RULES.md / archive for "Steam Deck" and
+   full screen). Measure after this round's traffic and world changes. Report each spot's frame rate before / after, Deck setting off / on.
+   J and K: the installer round, moved in (Dan, 2026-10-29 03:36: "yes include it"; queued 00:43: "I would also need an installation file like I have for
+   Woodstock Rush. Which I would want to use the same update system so I only have to install it once"). THIS ROUND SAYS PUBLISH. Do J and K last, from
+   the round's final build, so the first release Dan installs carries everything above; the starter also installs on the Steam Deck (I).
+J. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
    `Tools/Publish-LauncherRelease.py`, `Tools/Package-LauncherStarter.py`; read only, as `Docs/FROM-WOODSTOCK-RUSH.md` items 1 to 6 say): Chastain Rush's own
    release repo, its own signing identity made once (never reuse, print or expose Woodstock Rush's key), the launcher titled CHASTAIN RUSH with its
    cover art and icon. Same behavior: on opening it checks, installs a newer game and soundtrack by itself, then starts the game; B / Esc plays now;
    rollback to the previous version; saves and personal music kept.
-B. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
+K. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
    installs it once; after that every published round reaches him through the launcher. Publish the first release and prove it end to end: a
    clean install from the starter, then a second small release picked up and installed by that launcher.
-C. THE STEAM DECK. Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
-   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
-   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
-For Dan to check: install from the starter on the PC and the Deck; the launcher updating itself to the second release; the Deck's frame rate.
+Check: item 0 for every item.
+For Dan to check: the junction driven every way (general lanes and Express lanes); the gates on the ramps; I-575 by Chastain Road; a train hit in the square race;
+the Whitlock crossing broken; the Chastain Glen shortcut from his spot; the house on Bells Ferry Road; every Express Lanes flyover and its walls;
+the game on the Steam Deck (full screen, frame rate in the square, on I-75, at Town Center, at the summit).
+Install from the starter on the PC and the Deck; the launcher updating itself to the second release.
 
+## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
 this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
