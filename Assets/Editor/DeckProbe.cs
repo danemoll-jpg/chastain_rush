@@ -8,7 +8,7 @@ using UnityEngine;
 namespace ChastainRush
 {
     // Round 62 (check: vehicles fell through bridge decks): every "BridgeDecks" object in the built scene: its collider, its mesh (vertices, bounds,
-    // vertices that are not finite), and a ray down at given points. Editor batch: ChastainRush.DeckProbe.Run -probeOut <file> [-probeAt "x,z;x,z"]
+    // vertices that are not finite), and a ray down at given points. Editor batch: ChastainRush.DeckProbe.Run -probeOut <file> [-probeAt "x,z;x,z" | -probeAtFile <file>]
     public static class DeckProbe
     {
         public static void Run()
@@ -22,7 +22,7 @@ namespace ChastainRush
                 lines.Add($"{GetPath(go.transform)}: active {go.activeInHierarchy}; mesh {(m ? $"{m.name}, {m.vertexCount} vertices, {m.triangles.Length / 3} triangles, bounds {m.bounds}, not finite {bad}, index format {m.indexFormat}" : "none")}; " +
                           $"collider {(mc ? $"{mc.enabled}, mesh {(mc.sharedMesh ? mc.sharedMesh.name + " " + mc.sharedMesh.vertexCount : "none")}, convex {mc.convex}" : "none")}");
             }
-            foreach (var item in (Arg("-probeAt") ?? "").Split(';'))
+            foreach (var item in (Arg("-probeAtFile") is string pf ? File.ReadAllText(pf) : Arg("-probeAt") ?? "").Split(';'))   // Round 81: -probeAtFile, the points from a file (a long list)
             {
                 if (string.IsNullOrWhiteSpace(item)) continue; var v = item.Split(',').Select(s => float.Parse(s, System.Globalization.CultureInfo.InvariantCulture)).ToArray();
                 var hits = Physics.RaycastAll(new Vector3(v[0], 400f, v[1]), Vector3.down, 400f, ~0, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance);

@@ -34,7 +34,7 @@ namespace ChastainRush
         [Serializable] class Area { public string name; public float[] outline; }
         [Serializable] class Line { public string name; public string kind; public float[] points; }
         [Serializable] class Spawn { public float x; public float z; public float heading_deg; public string street; }
-        [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; }
+        [Serializable] class Bridge { public string name; public string @class; public float width; public bool oneway; public float[] points; public float[] deck_y; public long osm_id; }   // Round 81: osm_id (the junction's flyovers by their ways)
         [Serializable] class MapData { public string attribution; public float size_x_m; public float size_z_m; public float vertical_scale = 1f; public Road[] roads; public Bridge[] bridges; public Building[] buildings; public Area[] water; public Line[] streams; public Driveway[] driveways; public Spawn spawn; public Area[] parking; public float[] extent_m; public MapExt extension; public Aeroway[] aeroways; public TrailLine[] trails; public float[] pieces; }   // Round 76: pieces, land outside extent_m (x0, z0, x1, z1 each: Marietta Square)   // Round 61: aeroways, trails (MapBuilder.Airport.cs)
         // Round 61: map.json's "extension" (stage 1): where each list's new entries start (first.roads: the first road of the map extension)
         [Serializable] class MapExt { public MapExtFirst first; } [Serializable] class MapExtFirst { public int roads, bridges, buildings; }
@@ -225,6 +225,7 @@ namespace ChastainRush
             RailDecks(map);                          // Round 79 (D): the decks over the railroad evened / smoothed before their ends are graded (MapBuilder.Railroad.cs)
             ExpressDecks(map, terrain);              // Round 80 (D1): Express Lanes 13's deck smoothed for both ways, kept over what crosses under it (MapBuilder.Round80.cs)
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
+            R81Flyovers(map, terrain);               // Round 81 (A, H): the I-75 / I-575 junction's flyovers and every Express Lanes deck, each with its roads as one curve, 6 m over what it crosses (MapBuilder.Round81.cs)
             R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
             R62SeamOverpasses(map, terrain);         // Round 62 (C, BUG-002): I-575's decks over Big Shanty Road, across the old core's edge, each laid with its roads as one curve (MapBuilder.Round62.cs)
             R77Embankments(map, terrain);            // Round 77 (A): the Canton Road Connector and its ramps on graded embankments (MapBuilder.Round77.cs)
