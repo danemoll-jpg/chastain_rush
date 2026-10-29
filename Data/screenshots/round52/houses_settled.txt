@@ -1,7 +1,7 @@
 Round 52 (B): Dan's three spots and the houses facing the Addison Heights lap (MapBuilder.Round52.cs). Each: floor before -> after,
 its drive from the street's edge to the garage doors (grade, + = up to the house; at most 20 % in the game). Lot cut round each,
 a stoop and steps at each front door; style E's upstairs back windows only over its two-story block.
-603 houses.
+604 houses.
 
   598  x    3045  z     80  style C  floor 301.59 -> 301.59  drive 21.0 m, -9 % (was -9 %)
   608  x    3110  z    133  style E  floor 311.52 -> 311.52  drive 17.0 m, +1 % (was +1 %)
@@ -71,6 +71,7 @@ a stoop and steps at each front door; style E's upstairs back windows only over 
  2095  x    3286  z    415  style C  floor 326.85 -> 326.85  drive 15.0 m, -5 % (was -5 %)
  2096  x    3302  z    346  style C  floor 328.29 -> 328.63  drive 14.3 m, -20 % (was -22 %)
  2225  x    3275  z    458  style E  floor 321.09 -> 321.09  drive 14.8 m, -15 % (was -15 %)
+ 1559  x    1207  z   1698  style H  (Dan's)  floor 317.43 -> 317.43  drive 18.8 m, -14 % (was -14 %)
 34542  x    1349  z  -9264  style F  floor 368.53 -> 368.53  drive 10.2 m, -1 % (was -1 %)
 34543  x    1350  z  -9313  style A  floor 369.46 -> 369.46  drive 9.0 m, -7 % (was -7 %)
 34673  x    1489  z  -8894  style F  floor 365.26 -> 365.26  drive 24.7 m, -4 % (was -4 %)

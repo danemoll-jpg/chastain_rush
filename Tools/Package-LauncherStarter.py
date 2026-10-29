@@ -29,6 +29,7 @@ def main():
     p.add_argument('--readme',type=pathlib.Path,default=ROOT/'Docs/Starter/README-LAUNCHER.md')
     p.add_argument('--out',type=pathlib.Path,required=True,help='new draft folder')
     p.add_argument('--zip-name',required=True);p.add_argument('--tag',required=True);p.add_argument('--title',required=True);p.add_argument('--notes',required=True)
+    p.add_argument('--no-music',action='store_true',help='Round 81 (Chastain Rush): no soundtrack in the ZIP (the game and the soundtrack together pass the 2 GiB limit); the launcher installs it on its first start')
     p.add_argument('--not-latest',action='store_true',help='publish without moving the Latest release (the update catalog stays where it is)')
     a=p.parse_args()
     if a.out.exists():raise ValueError('Output must be a new immutable draft folder')
@@ -37,14 +38,16 @@ def main():
     gm=verify(a.checks,work,a.game_manifest);mm=verify(a.checks,work,a.music_manifest)
     if gm['type']!='game' or mm['type']!='soundtrack':raise ValueError('Wrong manifest types')
     g=f"versions/{gm['build']}";m=f"shared/soundtracks/{mm['build']}"
-    copy_exact(a.game,starter/g,gm['files']);copy_exact(a.music,starter/m,mm['files'])
+    copy_exact(a.game,starter/g,gm['files'])
+    if not a.no_music:copy_exact(a.music,starter/m,mm['files'])
     shutil.copy2(a.launcher,starter/'ChastainRushLauncher.exe');shutil.copy2(a.cover,starter/'ChastainRush-Cover.png')
     shutil.copy2(a.icon,starter/'ChastainRush-Icon.png');shutil.copy2(a.poster,starter/'ChastainRush-Poster.png')
     shutil.copy2(a.readme,starter/'README-LAUNCHER.md')   # (Round 81: Woodstock Rush's Install-Launcher.ps1, a migration from its old Racer.exe, is not needed: a fresh install)
     shutil.copy2(a.game_manifest,starter/'game-manifest.json');shutil.copy2(a.music_manifest,starter/'soundtrack-manifest.json')
     licenses=starter/'Launcher-Licenses';licenses.mkdir()
     for name in ('JSON-LICENSE.txt','MINIZ-LICENSE.txt'):shutil.copy2(ROOT/'Launcher/vendor'/name,licenses/name)
-    r.write(starter/'state.json',dict(schema=1,game=dict(directory=g,manifest=gm),music=dict(directory=m,manifest=mm),highestGameBuild=gm['build'],highestMusicBuild=mm['build']))
+    if a.no_music:r.write(starter/'state.json',dict(schema=1,game=dict(directory=g,manifest=gm),highestGameBuild=gm['build']));(starter/'shared/PersonalMusic').mkdir(parents=True,exist_ok=True)
+    else:r.write(starter/'state.json',dict(schema=1,game=dict(directory=g,manifest=gm),music=dict(directory=m,manifest=mm),highestGameBuild=gm['build'],highestMusicBuild=mm['build']))
     files=r.inventory(starter);archive=assets/a.zip_name
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=5) as z:
         for f in files:z.write(starter/f['path'],'ChastainRush/'+f['path'])

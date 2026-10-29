@@ -1,0 +1,21 @@
+Round 81 check, 2026-10-29 05:41, the exe, 1280 x 720, muted.
+
+=== H. The Express decks that stopped a car, driven the other way at up to 33 m/s, every step traced
+  deck at (620, -455), 52 m the other way: through, longest in the air 0.62 s, resets 1 stuck at (622, -459) s 44;
+    stopped at (621.7, 297.2, -459.3): stay:BridgeStructure:n(0.00,-1.00,0.02):p(620.5,298.19,-457.9):J243.5 
+    stopped at (621.7, 297.2, -459.3): stay:BridgeStructure:n(0.00,-1.00,0.02):p(620.5,298.19,-457.9):J240.6 
+  deck at (-355, -856), 97 m the other way: NOT through, longest in the air 2.56 s, resets 4 stuck at (-407, -803) s 164; stuck at (-358, -863) s 88; stuck at (-357, -864) s 87; stuck at (-359, -861) s 90;
+    stopped at (-406.7, 298.3, -802.8): stay:trunk:n(1.00,0.00,0.02):p(-408.6,298.56,-803.0):J300.2 
+    stopped at (-406.7, 298.3, -802.8): stay:trunk:n(1.00,0.00,0.03):p(-408.6,298.55,-803.0):J300.9 
+  deck at (-1414, 1617), 115 m the other way: NOT through, longest in the air 1.32 s, resets 4 stuck at (-1363, 1543) s 22; stuck at (-360, -860) s 0; stuck at (-359, -860) s 0; stuck at (-357, -864) s 0;
+    stopped at (-1362.7, 357.2, 1542.5): stay:BridgeStructure:n(-0.02,-1.00,0.03):p(-1361.0,357.73,1541.4):J7753.1 stay:Terrain_10_17:n(-0.11,0.99,-0.06):p(-1361.6,357.21,1542.6):J7489.0 
+    stopped at (-1362.7, 357.2, 1542.5): stay:BridgeStructure:n(-0.02,-1.00,0.03):p(-1361.0,357.73,1541.4):J7753.6 stay:Terrain_10_17:n(-0.11,0.99,-0.06):p(-1361.6,357.21,1542.6):J7490.0 
+  deck at (-54, -2128), 463 m the other way: through, longest in the air 0.36 s, resets 0
+  deck at (2049, -4662), 1833 m the other way: NOT through, longest in the air 2.36 s, resets 0
+    stopped at (2495.0, 375.7, -5189.4): stay:BridgeStructure:n(0.00,-1.00,0.00):p(2494.4,376.49,-5187.6):J3454.3 stay:Terrain_16_6:n(0.10,0.95,-0.28):p(2494.5,375.81,-5187.7):J3367.9 
+    stopped at (2495.0, 375.7, -5189.5): stay:BridgeStructure:n(0.00,-1.00,0.00):p(2494.4,376.49,-5187.6):J3470.4 stay:Terrain_16_6:n(0.10,0.95,-0.28):p(2494.5,375.81,-5187.7):J3136.0 
+  I-75 Express lanes: NOT through, longest in the air 2.40 s, resets 1 stuck at (479, -3310) s 234;
+    stopped at (479.7, 343.3, -3310.4): stay:Terrain_13_9:n(0.07,0.99,-0.13):p(479.7,341.80,-3309.0):J128.5 stay:Express Lanes wall 4:n(0.21,0.75,0.63):p(479.6,344.35,-3312.0):J54.5 
+    stopped at (479.7, 343.3, -3310.4): stay:Terrain_13_9:n(0.06,0.99,-0.12):p(479.7,341.80,-3309.0):J174.0 stay:Express Lanes wall 4:n(0.18,0.75,0.63):p(479.6,344.36,-3312.0):J79.8 
+
+0 of 0 checks passed.

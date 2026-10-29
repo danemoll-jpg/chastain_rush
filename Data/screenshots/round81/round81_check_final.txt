@@ -1,0 +1,138 @@
+Round 81 check, 2026-10-29 06:14, the exe, 1280 x 720, muted.
+
+=== Dan's reports (session 2026-10-29_01-57-15-107_610675), from his exact place and heading (the chase camera, as he saw it)
+  BUG-002 (Whitlock Avenue's crossing (lap 3 of the square race): the crossing's gear broken): at (1632.2, 376.0, -8518.5) heading 141; picture 81_BUG-002_after.png
+  BUG-003 (Chastain Glen Lane, the Rooftop leap's turn-off): at (2853.7, 291.0, 1131.8) heading 249; picture 81_BUG-003_after.png
+  BUG-004 (beside Bells Ferry Road: the buried house): at (1197.7, 319.0, 1669.7) heading 349; picture 81_BUG-004_after.png
+  BUG-005 (the I-575 Express lane's north ramp: a gate): at (740.6, 305.3, -1137.7) heading 168; picture 81_BUG-005_after.png
+  BUG-006 (I-575 by Chastain Road: cars standing on the lane, lumps in the median): at (744.7, 317.7, -1721.0) heading 4; picture 81_BUG-006_after.png
+  BUG-007 (the I-575 Express lane: a gate that should not be there): at (643.8, 349.3, -2445.9) heading 169; picture 81_BUG-007_after.png
+  BUG-008 (where the ramp leaves I-575's general lanes: the gate should be here): at (721.8, 330.2, -1987.5) heading 196; picture 81_BUG-008_after.png
+  BUG-009 (the I-575 Express flyover's north end: a step): at (508.0, 354.3, -3175.6) heading 10; picture 81_BUG-009_after.png
+  BUG-010 (I-575 southbound's bridge over I-75, its north end): at (497.0, 358.9, -3143.0) heading 190; picture 81_BUG-010_after.png
+
+=== F. The Rooftop leap from Dan's BUG-003 place (the Chastain Glen race forward, no AI, the human-like driver, Drifter Twin): every launch and stop traced
+  Rooftop leap from Dan's place into its path at 0.0 m: through in 16.4 s, top 26 m/s, longest in the air 3.22 s, resets 0, fences broken 6
+    kicked up 2.7 m/s at (2821.9, 1108.3) over PrototypeCar; body contacts: stay:sc6 kicker over house 1641:n(-0.01,0.96,0.28):p(2821.9,289.47,1107.4):J780.2 
+    in the air 3.22 s, landed at (2769.6, 1047.9)
+    kicked up 13.6 m/s at (2769.6, 1047.9) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.04,1.00,0.00):p(2770.4,287.76,1049.5):J4106.0 
+    kicked up 3.0 m/s at (2769.4, 1047.7) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.04,1.00,0.00):p(2770.1,287.74,1049.2):J731.1 
+PASS  fshort Rooftop leap from Dan's place into its path at 0.0 m: through, no reset
+  Rooftop leap from Dan's place into its path at 8.0 m: through in 16.2 s, top 26 m/s, longest in the air 3.22 s, resets 0, fences broken 9
+    kicked up 2.7 m/s at (2818.5, 1103.0) over PrototypeCar; body contacts: stay:sc6 kicker over house 1641:n(-0.05,0.92,0.38):p(2820.1,290.60,1103.8):J1024.7 
+    in the air 3.22 s, landed at (2768.5, 1049.5)
+    kicked up 7.6 m/s at (2768.5, 1049.5) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.03,1.00,0.00):p(2769.5,287.75,1051.0):J2204.5 
+    kicked up 7.8 m/s at (2768.3, 1049.3) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.03,1.00,0.00):p(2769.2,287.73,1050.7):J2268.8 
+PASS  fshort Rooftop leap from Dan's place into its path at 8.0 m: through, no reset
+  Rooftop leap from Dan's place into its path at 16.0 m: through in 17.3 s, top 25 m/s, longest in the air 3.22 s, resets 0, fences broken 6
+    kicked up 2.7 m/s at (2817.8, 1103.6) over PrototypeCar; body contacts: stay:sc6 kicker over house 1641:n(-0.04,0.93,0.37):p(2819.4,290.34,1104.3):J955.1 
+    in the air 3.22 s, landed at (2779.8, 1044.3)
+    kicked up 11.6 m/s at (2779.8, 1044.3) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.08,1.00,0.03):p(2780.2,288.28,1045.9):J3494.7 
+    kicked up 4.3 m/s at (2779.7, 1044.1) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.07,1.00,0.03):p(2780.0,288.28,1045.7):J1126.7 
+PASS  fshort Rooftop leap from Dan's place into its path at 16.0 m: through, no reset
+  Rooftop leap lined up on the kicker's axis 25.0 m out: NOT through in 60.0 s, top 26 m/s, longest in the air 3.08 s, resets 6, fences broken 5 stuck at (2790, 1063) s 130; stuck at (2776, 1076) s 124; stuck at (2779, 1078) s 121; stuck at (2779, 1078) s 121; stuck at (2789, 1064) s 129; stuck at (2789, 1064) s 129;
+    kicked up 2.0 m/s at (2821.1, 1108.5) over PrototypeCar; body contacts: stay:sc6 kicker over house 1641:n(-0.06,0.99,0.15):p(2822.6,289.09,1109.6):J612.6 
+    in the air 3.08 s, landed at (2808.4, 1052.5)
+    kicked up 6.9 m/s at (2808.4, 1052.5) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.11,0.99,-0.01):p(2809.4,290.35,1053.3):J2123.6 
+    kicked up 5.8 m/s at (2808.5, 1052.5) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.10,0.99,-0.02):p(2809.4,290.35,1053.4):J1664.2 
+    kicked up 2.6 m/s at (2808.5, 1052.5) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.10,0.99,-0.01):p(2809.5,290.36,1053.4):J634.3 
+    in the air 0.60 s, landed at (2775.7, 1075.9)
+    in the air 1.72 s, landed at (2774.4, 1076.0)
+    in the air 2.48 s, landed at (2777.8, 1077.2)
+    in the air 1.64 s, landed at (2776.0, 1076.8)
+    in the air 1.86 s, landed at (2778.7, 1076.0)
+FAIL  fshort Rooftop leap lined up on the kicker's axis 25.0 m out: through, no reset  -   stuck at (2790, 1063) s 130; stuck at (2776, 1076) s 124; stuck at (2779, 1078) s 121; stuck at (2779, 1078) s 121; stuck at (2789, 1064) s 129; stuck at (2789, 1064) s 129;
+  Rooftop leap lined up on the kicker's axis 15.0 m out: NOT through in 60.0 s, top 25 m/s, longest in the air 34.04 s, resets 2, fences broken 6 stuck at (2766, 1057) s 150; stuck at (2769, 1039) s 161;
+    in the air 2.78 s, landed at (2771.7, 1058.9)
+    kicked up 9.5 m/s at (2771.7, 1058.9) over PrototypeCar; body contacts: stay:House 1572:n(0.00,1.00,0.00):p(2773.3,293.88,1059.5):J2801.8 
+    kicked up 3.2 m/s at (2771.4, 1058.7) over PrototypeCar; body contacts: stay:House 1572:n(0.00,1.00,0.00):p(2773.0,293.88,1059.2):J797.0 
+    in the air 0.98 s, landed at (2764.2, 1055.9)
+    kicked up 2.5 m/s at (2764.2, 1056.0) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.01,1.00,0.00):p(2764.9,287.64,1057.2):J613.2 
+    kicked up 2.0 m/s at (2764.2, 1056.1) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.01,1.00,0.00):p(2764.9,287.64,1057.2):J471.7 
+    in the air 1.56 s, landed at (2756.5, 1065.0)
+FAIL  fshort Rooftop leap lined up on the kicker's axis 15.0 m out: through, no reset  -   stuck at (2766, 1057) s 150; stuck at (2769, 1039) s 161;
+  Rooftop leap straight on from Dan's heading: through in 16.4 s, top 26 m/s, longest in the air 3.18 s, resets 0, fences broken 7
+    kicked up 2.3 m/s at (2818.1, 1103.4) over PrototypeCar; body contacts: stay:sc6 kicker over house 1641:n(-0.05,0.92,0.39):p(2819.7,290.44,1104.1):J818.5 
+    in the air 3.18 s, landed at (2769.0, 1050.4)
+    kicked up 4.1 m/s at (2769.0, 1050.4) over PrototypeCar; body contacts: enter:Terrain_17_16:n(-0.03,1.00,-0.02):p(2769.8,287.79,1052.0):J1227.9 
+    kicked up 9.9 m/s at (2768.8, 1050.1) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.03,1.00,-0.02):p(2769.5,287.77,1051.7):J2952.7 
+    kicked up 2.3 m/s at (2768.5, 1049.9) over PrototypeCar; body contacts: stay:Terrain_17_16:n(-0.03,1.00,-0.01):p(2769.3,287.76,1051.4):J519.2 
+PASS  fshort Rooftop leap straight on from Dan's heading: through, no reset
+  solid things within 4 m of the Rooftop leap's line (0.3 to 1.7 m up): Shortcut sc6_over_house (Rooftop leap)/sc6 kicker over house 1641 at (2821, 1112); sc6 kicker over house 1641/sc6 kicker over house 1641 heap at (2821, 1112); Neighborhood/Jumped house 1641 roof collider at (2814, 1096); HouseColliders/House 713 at (2768, 1017); HouseColliders/House 1052 at (2753, 1011)
+
+=== D. Hit by a train: the car parked on the crossing as a train comes (the square race, no AI; then Free Roam): where it is put back
+  Whitlock, the square race: put back at (1606, -8523), 19 m from the crossing, 9417 m from the map's spawn, 2.0 m off the race's line
+PASS  dtrain Whitlock, the square race: put back near the crossing, never at the map's spawn  -  19 m from the crossing
+  Mill Street, the square race: put back at (1638, -8404), 16 m from the crossing, 9295 m from the map's spawn, 3.5 m off the race's line
+PASS  dtrain Mill Street, the square race: put back near the crossing, never at the map's spawn  -  16 m from the crossing
+  Whitlock, Free Roam: put back at (1735, -8517), 110 m from the crossing, 9394 m from the map's spawn
+PASS  dtrain Whitlock, Free Roam: put back near the crossing, never at the map's spawn  -  110 m from the crossing
+
+=== E. The Whitlock crossing's post driven through at about 20 m/s (Free Roam, the Street Classic): what is left, the arm
+  2 panel(s) broken; the arm: its length along the ground, its hinge 0.08 m over the ground; pictures 81_E_after_0..2
+PASS  ecross: the post breaks and its arm lies on the verge (not standing)
+
+=== B. The Express Lanes' gates at 3 PM (northbound): Dan's three places, then every gate from a driver's place 25 m out on its ramp
+  BUG-005 (the I-575 Express lane's north ramp: a gate): the nearest gate 258 m away; picture 81_B_BUG-005_after.png
+  BUG-007 (the I-575 Express lane: a gate that should not be there): the nearest gate 499 m away; picture 81_B_BUG-007_after.png
+  BUG-008 (where the ramp leaves I-575's general lanes: the gate should be here): the nearest gate 35 m away; picture 81_B_BUG-008_after.png
+  gate 1 at (-645, -393): used both ways, open now
+  gate 2 at (-652, -396): used both ways, open now
+  gate 3 at (708, -882): used northbound, open now
+  gate 4 at (719, -1953): used southbound, shut now
+  gate 5 at (-621, -463): used both ways, open now
+  gate 6 at (-612, -460): used both ways, open now
+
+=== A. Every road through the I-75 / I-575 junction, the human-like driver at up to 35 m/s (Street Classic, no traffic); the Express lanes both ways
+  I-575 Express flyover southbound: through in 35.8 s, top 35 m/s, longest in the air 0.08 s, hardest landing 0.5 m/s (at (503, -3384)), resets 0; picture 81_A_I575Expressflyoverso.png
+  I-575 Express flyover southbound (the other way): through in 35.6 s, top 35 m/s, longest in the air 0.32 s, hardest landing 0.4 m/s (at (496, -3337)), resets 0  <- LOOK; picture 81_A_I575Expressflyoverso_back.png
+  I-575 southbound general lanes: through in 34.0 s, top 35 m/s, longest in the air 0.00 s, hardest landing 1.0 m/s (at (493, -3160)), resets 0; picture 81_A_I575southboundgenera.png
+  I-575 northbound general lanes: through in 30.9 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (772, -3649)), resets 0; picture 81_A_I575northboundgenera.png
+  I-75 southbound: through in 33.2 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (375, -3043)), resets 0; picture 81_A_I75southbound.png
+  I-75 northbound: through in 31.8 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (987, -3854)), resets 0; picture 81_A_I75northbound.png
+  I-75 Express lanes: through in 45.3 s, top 35 m/s, longest in the air 1.28 s, hardest landing 2.3 m/s (at (803, -3793)), resets 1 stuck at (803, -3792) s 823;  <- LOOK; picture 81_A_I75Expresslanes.png
+  I-75 Express lanes (the other way): through in 33.3 s, top 36 m/s, longest in the air 1.36 s, hardest landing 3.4 m/s (at (455, -3255)), resets 0  <- LOOK; picture 81_A_I75Expresslanes_back.png
+FAIL  junction: every road through it at highway speed, under 0.3 s in the air, no landing over 6 m/s, no reset  -  3 not
+
+=== D1. Every Express Lanes deck both ways, the human-like driver up to 33 m/s (Street Classic, no traffic): air and landings
+  deck at (529, 12), 48 m its own way: through in 4.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (531, 0)), resets 0
+  deck at (529, 12), 48 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (528, 13)), resets 0
+  deck at (758, -1649), 62 m its own way: through in 6.8 s, top 33 m/s, longest in the air 0.02 s (off at (757, -1714)), hardest landing 0.2 m/s in a step (at (758, -1651)), resets 0
+  deck at (758, -1649), 62 m the other way: through in 6.7 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (756, -1709)), resets 0
+  deck at (620, -455), 52 m its own way: through in 5.4 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (620, -458)), resets 0
+  deck at (620, -455), 52 m the other way: NOT through in 120.0 s, top 18 m/s, longest in the air 0.62 s (off at (627, -499)), hardest landing 8.7 m/s in a step (at (622, -461)), resets 3 stuck at (621, -459) s 44; stuck at (628, -514) s 0; stuck at (628, -514) s 0;  <- LOOK
+  deck at (-355, -856), 97 m its own way: through in 6.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (-354, -858)), resets 0
+  deck at (-355, -856), 97 m the other way: NOT through in 120.0 s, top 31 m/s, longest in the air 2.56 s (off at (-356, -865)), hardest landing 14.8 m/s in a step (at (-394, -831)), resets 16 stuck at (-391, -788) s 171; stuck at (-361, -859) s 93; stuck at (-357, -864) s 87; stuck at (-359, -861) s 91; stuck at (-361, -859) s 93; stuck at (-357, -864) s 87; stuck at (-357, -864) s 87; stuck at (-357, -864) s 87; stuck at (-358, -863) s 88; stuck at (-357, -863) s 88; stuck at (-357, -864) s 87; stuck at (-361, -859) s 93; stuck at (-357, -864) s 87; stuck at (-358, -863) s 88; stuck at (-357, -863) s 87; stuck at (-361, -859) s 93;  <- LOOK
+  deck at (-624, -381), 79 m its own way: through in 6.5 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (-619, -389)), resets 0
+  deck at (-624, -381), 79 m the other way: through in 6.6 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (-581, -446)), resets 0
+  deck at (-1414, 1617), 115 m its own way: through in 8.1 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (-1412, 1615)), resets 0
+  deck at (-1414, 1617), 115 m the other way: NOT through in 120.0 s, top 25 m/s, longest in the air 1.48 s (off at (-1411, 1614)), hardest landing 4.2 m/s in a step (at (-1362, 1542)), resets 14 stuck at (-1413, 1612) s 108; stuck at (-1410, 1614) s 108; stuck at (-1410, 1615) s 108; stuck at (-1412, 1613) s 108; stuck at (-1412, 1613) s 108; stuck at (-1413, 1612) s 108; stuck at (-1412, 1613) s 108; stuck at (-1412, 1613) s 108; stuck at (-1409, 1615) s 108; stuck at (-1412, 1613) s 108; stuck at (-1411, 1613) s 108; stuck at (-1411, 1614) s 108; stuck at (-1410, 1614) s 108; stuck at (-1412, 1613) s 108;  <- LOOK
+  deck at (-54, -2128), 463 m its own way: through in 16.8 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (-2, -2343)), resets 0
+  deck at (-54, -2128), 463 m the other way: through in 16.8 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (83, -2567)), resets 0
+  deck at (2049, -4662), 1833 m its own way: through in 72.4 s, top 33 m/s, longest in the air 2.10 s (off at (2544, -5236)), hardest landing 6.0 m/s in a step (at (2579, -5270)), resets 1 stuck at (2580, -5270) s 895;  <- LOOK
+  deck at (2049, -4662), 1833 m the other way: NOT through in 120.0 s, top 33 m/s, longest in the air 1.62 s (off at (2335, -5014)), hardest landing 15.9 m/s in a step (at (2584, -5272)), resets 9 stuck at (2161, -4805) s 1652; stuck at (2163, -4804) s 1652; stuck at (2162, -4804) s 1652; stuck at (2162, -4804) s 1652; stuck at (2162, -4804) s 1652; stuck at (2163, -4803) s 1652; stuck at (2162, -4804) s 1652; stuck at (2162, -4804) s 1652; stuck at (2162, -4804) s 1652;  <- LOOK
+  deck at (1481, -4251), 47 m its own way: through in 4.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (1483, -4252)), resets 0
+  deck at (1481, -4251), 47 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (1479, -4250)), resets 0
+  deck at (1828, -4449), 52 m its own way: through in 7.1 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (1831, -4449)), resets 0
+  deck at (1828, -4449), 52 m the other way: through in 7.1 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (1869, -4479)), resets 0
+FAIL  ddecks: every Express Lanes deck both ways through, under 0.5 s in the air, no landing over 6 m/s  -  5 not
+
+=== H. The Express Lanes' walls and flyovers: pictures from the lanes and from the roads below
+  7 wall pieces in the scene; pictures 81_H_I575_lanes_walls, 81_H_I75_lanes_walls, 81_H_junction_from_I75, 81_H_junction_from_north, 81_H_barrett_deck, 81_H_EL13_connector
+PASS  walls: the Express Lanes' walls are in the scene
+
+=== H. The Express decks that stopped a car, driven the other way at up to 33 m/s, every step traced
+  deck at (620, -455), 52 m the other way: NOT through, longest in the air 0.62 s, resets 5 stuck at (621, -459) s 44; stuck at (1733, -4384) s 0; stuck at (1732, -4383) s 0; stuck at (1732, -4383) s 0; stuck at (1732, -4383) s 0;
+    stopped at (621.4, 297.2, -459.4): stay:BridgeStructure:n(0.00,-1.00,0.02):p(620.2,298.19,-458.0):J228.9 
+    stopped at (621.4, 297.2, -459.4): stay:BridgeStructure:n(0.00,-1.00,0.02):p(620.2,298.19,-458.0):J231.2 
+  deck at (-355, -856), 97 m the other way: through, longest in the air 2.56 s, resets 0
+  deck at (-1414, 1617), 115 m the other way: NOT through, longest in the air 1.16 s, resets 4 stuck at (-1417, 1612) s 110; stuck at (-1412, 1613) s 108; stuck at (-1409, 1615) s 108; stuck at (-1410, 1614) s 108;
+    stopped at (-1417.5, 358.3, 1611.5): stay:Terrain_10_17:n(0.42,0.03,-0.90):p(-1419.1,358.36,1612.8):J358.5 
+    stopped at (-1417.5, 358.3, 1611.5): stay:Terrain_10_17:n(0.42,0.03,-0.90):p(-1419.1,358.36,1612.8):J355.1 
+  deck at (-54, -2128), 463 m the other way: through, longest in the air 0.00 s, resets 0
+  deck at (2049, -4662), 1833 m the other way: NOT through, longest in the air 1.38 s, resets 0
+  I-75 Express lanes: NOT through, longest in the air 1.12 s, resets 1 stuck at (509, -3351) s 284;
+    stopped at (508.7, 340.3, -3349.4): stay:Express Lanes wall collider 4:n(0.92,-0.21,-0.32):p(507.2,340.41,-3350.8):J316.3 
+    stopped at (508.7, 340.3, -3349.4): stay:Express Lanes wall collider 4:n(0.92,-0.21,-0.33):p(507.2,340.41,-3350.8):J341.3 
+
+9 of 13 checks passed.

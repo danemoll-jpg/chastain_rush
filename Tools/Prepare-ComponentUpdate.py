@@ -13,11 +13,11 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('component',choices=['game','soundtrack']);p.add_argument('--source',type=pathlib.Path,required=True,help='Explicit runtime or designated BundleMusic root')
     p.add_argument('--previous-catalog',type=pathlib.Path,required=True);p.add_argument('--previous-manifest',type=pathlib.Path,required=True)
     p.add_argument('--out',type=pathlib.Path,required=True);p.add_argument('--build',type=int,required=True);p.add_argument('--version',required=True);p.add_argument('--notes',required=True)
-    p.add_argument('--key',type=pathlib.Path,default=ROOT/'Builds/PublisherPrivate/launcher-signing.pem');a=p.parse_args()
+    p.add_argument('--key',type=pathlib.Path,default=ROOT/'Builds/PublisherPrivate/launcher-signing.pem');p.add_argument('--base-url',help='Round 81: where the assets will be (a local check: http://127.0.0.1:port/...)');a=p.parse_args()
     key=serialization.load_pem_private_key(a.key.read_bytes(),None);catalog=verified(a.previous_catalog,key);previous=verified(a.previous_manifest,key)
     if catalog['type']!='catalog' or previous['type']!=a.component or a.build<=previous['build']:raise ValueError('Correct current component manifest and increasing build required')
     if a.out.exists():raise ValueError('Use a fresh immutable output directory')
-    assets=a.out/'assets';assets.mkdir(parents=True);tag=f'{a.component}-{a.build}';base=f'https://github.com/danemoll-jpg/chastain-rush-releases/releases/download/{tag}'
+    assets=a.out/'assets';assets.mkdir(parents=True);tag=f'{a.component}-{a.build}';base=a.base_url or f'https://github.com/danemoll-jpg/chastain-rush-releases/releases/download/{tag}'
     manifest=dict(schema=1,type=a.component,platform='windows-x64',minLauncher=1,build=a.build,version=a.version,notes=a.notes)
     if a.component=='game':
         files=[f for f in r.inventory(a.source) if f['path'].split('/')[0] not in {'Music','ChastainRush_BurstDebugInformation_DoNotShip','ChastainRush_BackUpThisFolder_ButDontShipItWithYourGame'}]
