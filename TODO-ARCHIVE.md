@@ -7001,3 +7001,79 @@ For Dan to check: drive and fly to Marietta Square (fast travel "Marietta Square
 Kennesaw banks on the descent; whether to regrade beside Kennesaw Mountain Drive; the disk space freed. Lost in the first clean-up: old check inputs in local/round17 to 72
 that scripts regenerate (r59 / r61 places, jolt_shots, round68 design.json) and local/round32/shots.json.
 
+## Round 77 (moved from TODO.md on 2026-10-29 when Dan reviewed Round 80; word for word)
+
+## Previous delivery 3: Round 77
+**Reviewed: Dan drove round 2026-10-28 04:03 ("did a quick drive around"); his notes are Round 78.**
+**Round 77, THE RAILROAD, KENNESTONE HOSPITAL AND ITS PARKING DECK, THE CANTON ROAD CONNECTOR (Dan, 2026-10-27 21:19; reports BUG-001 to
+BUG-007 of session `2026-10-27_21-09-31-163_2b90af`, read by Claude, after the Round 76 build). Dan may add photos of the hospital and Marietta Square to
+`local/reference_photos/kennestone/` and `local/reference_photos/marietta_square/`: use them if they are there when you reach B (reference
+only, never textures, never traced); if not, work from OSM's footprints and heights and what is known, and say so.** Round 76 is reviewed.
+Item 0 (CHECK IT AS DAN PLAYS IT) and the end-of-round clean-up apply. Quick builds; ONE full Build Map at the end. Short results.
+A. THE CANTON ROAD CONNECTOR. BUG-001 (x 2292.44 z -5006.93 h 66, beside the connector where it meets the highway): "fix" (the picture:
+   torn, jagged spikes of ground and rock standing up both sides of the roads, black faces). BUG-002 (x 1694.78 z -5783.19 h 352, on the
+   connector): "fix this too" (steep green banks and odd mounds crowding the ramps). BUG-003 (x 1618.42 z -6110.74 h 29, on the connector):
+   "need to fix here as well" (a split with a mound between, the road dipping, a stray white block on the left). Smooth the ground round
+   the connector and its ramps into proper graded embankments (no spikes, no black faces, no stray objects), the roads even. Then scan the
+   whole of stage 3's new roads and interchanges for the same (jolt and face scans as Rounds 61 / 75) and fix what it finds; list it.
+B. KENNESTONE HOSPITAL. BUG-004 (x 1608.76 z -6601.44 h 279, by the hospital): "lets make the hospital resemble the hospital. Do I need to
+   provide pics?" (the picture: plain tan boxes). Wellstar Kennestone Regional Medical Center as itself (as Town Center, Round 60): its
+   towers at their real heights from OSM, the main entrance with its canopy and drop-off, the emergency department's entrance and ambulance
+   bay, glass and brick as the photos show, the rooftop helipad kept (Round 63), signs (generic: HOSPITAL, EMERGENCY; no brand logo),
+   ambulances parked, people. BUG-005 (x 1665.13 z -6716.61 h 151, Church Street NW by the hospital): "pretty sure that maybe this is the
+   parking deck. So not businesses" (the picture: a building dressed as stores with business signs, three dark openings at street level).
+   Make it a parking deck: open levels with low walls and columns, ramps between levels, cars parked, entrances / exits at the street.
+   Drivable inside to the roof (fun: a roof to jump off, the game's rules); check OSM for other parking garages (parking=multi-storey)
+   dressed as businesses anywhere on the map and make them decks too.
+C. THE RAILROAD. BUG-006 (x 1853.58 z -9077.33 h 347, Atlanta Street SE): "this should be a rail bridge" (the picture: the tracks laid flat
+   across the road). BUG-007 (x 1620.14 z -8259.97 h 357, downtown Marietta): "rail line shouldn't run into the building. The rail should be
+   quite significant I know it runs by canton road (but maybe off this may not sure) still shouldn't stop right here" (the picture: two
+   tracks ending in a building's wall). The CSX main line through Marietta (OSM railway=rail): one continuous line (or the real double
+   track) through the whole map from edge to edge as OSM has it, on its own graded bed (ballast, ties, rails), never through a building
+   (if OSM's building footprint sits on the line, the building gives way), with bridges where it crosses over roads (OSM's bridge=yes /
+   layer) and level crossings with gates and lights where it really crosses at grade; the old depot by the square (Round 76) beside it.
+   The line ends only at the map's edge (Round 66's scenery carries it on). Optional if cheap: a freight train now and then.
+B+. DAN'S HOSPITAL PHOTOS (2026-10-27 21:55, `local/reference_photos/kennestone/`, reference only): 01 an aerial of the campus with the glass
+   SKYBRIDGE arching over the road (white steel X-truss on an arch, a round emblem in the middle: use a plain round emblem) between
+   tan-brick buildings; 02 the skybridge from the road; 03 the main tower's entrance at dusk: a tall white portico with columns and a glass
+   canopy over a curved brick-paved drop-off, red-brick and white towers of 6 to 8 stories behind with bands of windows, an older tall
+   brown-brick tower beside; 04 and 05 the EMERGENCY building: tan / beige with darker brick piers, a white canopy with angled struts over the
+   ambulance drive, the word EMERGENCY over it, a red-and-white HELIPAD on its roof (the helicopter pad of Round 63 goes there if it is
+   not already), a curving drive on a terraced retaining wall with shrubs, the older white tower behind. Build these: the skybridge over
+   the street (drivable under it, solid), the portico entrance, the ER with its canopy and roof pad, the terraced drive. The sign on the
+   main entrance may read KENNESTONE HOSPITAL (the place's own name, as the game names streets); no company logo.
+D. MARIETTA SQUARE TO DAN'S PHOTOS (Round 76 B was built without them; 2026-10-27 21:55, `local/reference_photos/marietta_square/`, reference
+   only): 02 the top-down shows the layout: Glover Park a square block with brick paths in a cross and diagonals meeting at a round FOUNTAIN
+   (09: a tall tiered cast-iron fountain in a low round brick basin), big shade trees, grass panels, a small green-roofed GAZEBO, and the
+   streets round it with ANGLED PARKING on both sides and one-way arrows; 01 an aerial of the park full of people on the lawns; 04 the
+   park's PAVILION / bandstand (a cream two-story pavilion with columns on a brick base, steps); 05 a LIBERTY BELL replica on a granite
+   plinth with a bronze plaque, black benches round it, brick paving; 07 the children's play area with a W&A RR toy steam locomotive and
+   tender kids climb on, behind a low brick wall; 06 the square's storefronts: two- and three-story fronts, an art-deco white THEATER with a
+   red / green marquee (fake name, e.g. "THE GRAND"), colored shopfronts with awnings, traffic lights on mast arms; 03 a red-brick office
+   building with a tall stone CLOCK TOWER (big round clock) and, behind, the brick courthouse tower with a clock and a pointed spire;
+   08 the DEPOT (a one-story brick station with stepped Dutch gables and a slate roof, "WELCOME CENTER" on a green sign) beside the double
+   track behind a black iron fence, and the four-story brick hotel next to it ("MUSEUM OF HISTORY" lettering: keep generic). Rebuild the
+   square and its edges to these; walkable lawns and paths drivable (breakables: benches, lamp posts, café tables; the fountain, bell,
+   locomotive and pavilion solid). Pictures next to each photo from the same view.
+Check: item 0; A before / after at Dan's three spots and the scan's list; B pictures of the hospital's sides, the entrance, the ER, the
+deck driven to the roof; C the line followed end to end on the map and in pictures (each bridge, each crossing, the square).
+For Dan to check: the connector; Kennestone (skybridge, entrance, ER, helipad) and its deck; Marietta Square to the photos; the railroad.
+
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 01:26), checked in the exe from the player's camera, not yet driven by Dan.** Evidence `Data/screenshots/round77/`.
+Photos used for B and D (reference only). Two full builds: build 1's checks found the faults fixed in build 2.
+A DONE (one item open). Cause: lidar spikes and a jagged trench where the Express Lanes deck runs through the connector's embankment (BUG-001), a lidar mound between the
+carriageways with steep raw banks (BUG-002 / 003). `R77Embankments`: each carriageway's profile smoothed, the ground within 45 m relaxed as a membrane between the roads and the
+natural ground. Cells over 45 degrees within reach: 15,998 -> 2,217. Pictures `77_BUG-00[123]_after`: no spikes, the median and banks smooth, the road even. The connector driven
+flat out by the human-like driver: 1,314 m at 30 m/s, no reset, one 0.56 s hop near BUG-003's deck end. Stage 3 scan (`road_faces.py`): 114 face spots -> 45 after adding its
+roads to the pass (`stage3_faces_before/after.txt`); left: unnamed service drives and the new rail bridge's abutments. Bumps listed, not fixed (`stage3_bumps.txt`: 23 steps
+>= 10 cm, 53 humps >= 30 cm outside the highways). OPEN: BUG-003's "stray white block" on the left is still there; I could not identify the object.
+B DONE except the deck jump. BUG-005's building is OSM's skybridge over Church Street (three floors starting one up), not a parking deck: built as the skybridge of photo 02
+(`77_BUG-005_after`). Kennestone from OSM's building parts (47 tower blocks up to 38 m), the portico at the drop-off loop, the ER with its canopy and EMERGENCY, ambulances,
+the terraced wall, the red roof helipad. Every OSM parking deck (19, all were dressed as stores) is now a deck with ramps. Driven: the Waddell Street deck to its roof (27 m up,
+no reset). Not shown: the roof jump (the scripted driver ended against the roof wall; two attempts, tuning limit). The Green deck's far end runs into the physicians' building.
+C DONE. `make_railroad.py`: 10 running lines, 36.8 km edge to edge, 23 level crossings with gates and lights, 13 rail bridges over roads; BUG-006's South Marietta Parkway
+crossing is a rail bridge (`77_C_underpass_South_Marietta_Parkway_*`). BUG-007's building gives way (`77_BUG-007_after`). Steepest rail grade 11.7 %, a short rise at the I-75 bridge.
+No freight train.
+D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each photo's place. Fountain, bell, train and pavilion solid; signals, fence and play wall break.
+Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
+For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.

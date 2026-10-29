@@ -108,6 +108,88 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 81, THE I-75 / I-575 JUNCTION AND ITS EXPRESS LANES AS THE REAL ONE, THE GATES ON THE RAMPS, and Dan's other reports (Dan, 2026-10-29 02:39; reports
+BUG-001 to BUG-010 of session `2026-10-29_01-57-15-107_610675`, read by Claude, after the Round 80 build; Dan's three aerial photos of the junction (Google Maps,
+reference only: never committed, never traced) in this chat: "where 75/575 and their express lanes merge because it is a big mess in the game").** Round 80 is
+reviewed. Item 0 and the end-of-round clean-up apply. ONE full Build Map at the end. Tuning limit applies. Short results.
+What the real junction is (Dan's photos, north to south): I-575 comes down from the north with its one reversible Express lane in its middle; I-75 comes from the
+north-west with its Express lanes on its west side. Where they meet (x about 380 to 1000, z about -2900 to -3900 in the game) the I-575 Express lane leaves I-575's
+middle, climbs and crosses OVER I-75 on its own long curved flyover and comes down on I-75's west side to join the I-75 Express lanes; I-575 southbound's general
+lanes cross over I-75 northbound on their own bridge beside it and merge into I-75 southbound; south of the junction I-75 is one wide highway with the joined
+Express lanes (two) on its south-west side behind a barrier. In the game (top-down pictures `local/round81/topdown/merge.png`, `bug9.png`): the flyover and I-575's
+bridge stand at about the height of the roads under them (OSM's deck heights from bare-earth ground), so where they cross I-75 the decks and roads meet in trenches and
+humps; the ramps up to them are short and stepped (BUG-009 at x 508 z -3173: "this needs to be smoothed. The bridge obvs should be higher"; BUG-010 at x 497
+z -3143: "needs to be smoothed").
+A. THE JUNCTION AS THE PHOTOS SHOW IT. The I-575 Express flyover (OSM 624557373, deck 451950526, 451950527) and I-575 southbound's bridges (163463460, 536793083)
+   lifted to stand clear over every road they cross (at least 6 m under the deck, as Round 78's rail bridges), each a long smooth climb and descent (one vertical
+   curve each way that a car at 35 m/s stays down on), their ends met by the roads they continue without a step; the ground under and beside them cut or built up so
+   nothing pokes through and nothing is buried; the junction drivable every way at highway speed (the general lanes and the Express lanes, both directions of the
+   Express lanes). World changes only here (the box above); similar spots elsewhere listed for Dan. Check: each road through the junction both ways by the human-like
+   driver (air, landings, resets), pictures from Dan's spots BUG-009 / BUG-010 before and after, a top-down picture against Dan's photos.
+B. THE EXPRESS LANES' GATES ON THE RAMPS FROM THE GENERAL LANES, NEVER ON THE EXPRESS LANES. BUG-005 (x 741 z -1138): "The express lane is two ways. But the gates
+   are on exits from the highway so the road going to the express lane is blocked and never the express lane itself otherwise cars wouldn't be able to travel it";
+   BUG-007 (x 644 z -2446): "another example. shouldn't be here"; BUG-008 (x 722 z -1988): "express lane gates should be here instead" (where the ramp leaves
+   I-575's general lanes). Each gate at the general road's end of its ramp (where it leaves or joins the general lanes or the local road), none where the ramp meets
+   the Express lanes. Check: pictures from Dan's three spots; traffic through each open ramp; a closed one blocks entry from the general lanes only.
+C. BUG-006 (x 745 z -1721, I-575 just south of Chastain Road): "whats with this?" A line of cars standing nose to tail on the road beside I-575 (the Express lane: a
+   traffic queue that never moves) and lumps of ground in the median. Find why the cars stand (a gate, a closed edge, a dead end at the reversal) and fix it; the median
+   ground smooth. Check: the spot at 5 PM and 8 AM with Heavy traffic, cars moving; picture.
+D. BUG-001 (the Marietta Square race): "Got hit by the train on the marietta square race and it sent me all the way to the opening point of the game" (his report
+   was taken at Chastain Glen, x 2947 z 795, where it sent him). A train's hit puts the player back on the race's line short of the crossing, facing the race's way,
+   never at the game's start. Check: hit by the train at Mill Street and Whitlock in a race (and in Free Roam: put back on the road there).
+E. BUG-002 (x 1632 z -8518, Whitlock Avenue's crossing, lap 3): "what is this?" (the picture: the crossing's gate arm standing straight up in the road beside the
+   car, a black box and big grey triangles hanging over the road: the crossing's post, lamp bar and crossbuck broken into shapes that do not look like anything).
+   Broken crossing gear falls as pieces that look like what they were (as the fences' and signs' do), or the post and gear are not breakable; the arm never stands in
+   the lane. Check: drive through the crossing's post; pictures.
+F. BUG-003 (x 2854 z 1132, Chastain Glen Lane, heading 249, the forward lap's shortcut whose line the minimap draws from here into the yards): "the approach to this
+   shortcut needs to be fixed. it is nearly impossible to hit it. For one thing if you try to line it up from this angle something sends you flying and you cant line it
+   up because of this. Then after you cut through the yard not all the fences are breakable which leads to you getting stuck". Find what throws a car lining up from
+   his place (a curb, a lip, a drive's edge) and smooth it; every fence across the shortcut's line breakable (those that stop free ways stay as the shortcut rule
+   wants, but not across its own line). Check: from Dan's place and heading, the human-like driver lines it up and takes it, no launch, no stop.
+G. BUG-004 (x 1198 z 1670, beside Bells Ferry Road Northwest, heading 349): "buried house" (the picture: a one-storey house sunk to its window sills in the slope).
+   Settle it as Round 52's (floor at its ground, the lot cut). Check: picture from Dan's place.
+Check: item 0 for every item.
+For Dan to check: the junction driven every way (general lanes and Express lanes); the gates on the ramps; I-575 by Chastain Road; a train hit in the square race;
+the Whitlock crossing broken; the Chastain Glen shortcut from his spot; the house on Bells Ferry Road.
+
+## QUEUED rounds
+**EXPRESS LANES AS FLYOVERS (Dan, 2026-10-29 01:36; fold into the next round, with Dan's Round 80 notes).** Round 80 D1's options for EL13: Dan: "the express
+lanes are usually bridges when they cross 75/575. So they should be that way". Where the Express Lanes cross I-75 / I-575, their ramps or the Canton Road
+Connector, the lanes go OVER as a bridge (a flyover: a smooth, gradual climb and descent at highway grades, piers, the crossing road left underneath at
+its own level), not humps. EL13 first (the connector and the two ramps), then every other Express Lanes crossing the same way, including the 463 m deck
+at I-75 / Barrett (1.9 s air one way, a wall at its south end the other) and the three short decks' hops (`round80_check_ddecks.txt`). Check: every
+Express Lanes deck driven both ways at top speed: no air over 0.3 s, no step in the road surface, traffic through it; pictures of each flyover from the road below.
+Dan, 01:38: "they generally have walls as they are seperated from the main roads": the Express Lanes are walled off from the main lanes along their length (concrete
+barrier walls both sides, on the flyovers as bridge parapets), so you get in and out only at their gated ramps (a smashed gate still lets you in, Round 80 E).
+
+**INSTALLER AND UPDATES, AND THE STEAM DECK (Dan, 2026-10-29 00:43; next round after Round 80 is reviewed; this round says PUBLISH).** Dan: "I would also need
+an installation file like I have for Woodstock Rush. Which I would want to use the same update system so I only have to install it once". And: will his
+Steam Deck handle the bigger map?
+A. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
+   `Tools/Publish-LauncherRelease.py`, `Tools/Package-LauncherStarter.py`; read only, as `Docs/FROM-WOODSTOCK-RUSH.md` items 1 to 6 say): Chastain Rush's own
+   release repo, its own signing identity made once (never reuse, print or expose Woodstock Rush's key), the launcher titled CHASTAIN RUSH with its
+   cover art and icon. Same behavior: on opening it checks, installs a newer game and soundtrack by itself, then starts the game; B / Esc plays now;
+   rollback to the previous version; saves and personal music kept.
+B. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
+   installs it once; after that every published round reaches him through the launcher. Publish the first release and prove it end to end: a
+   clean install from the starter, then a second small release picked up and installed by that launcher.
+C. THE STEAM DECK. Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
+   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
+   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
+For Dan to check: install from the starter on the PC and the Deck; the launcher updating itself to the second release; the Deck's frame rate.
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 80
+**Reviewed: Dan drove it 2026-10-29 01:57 to 02:39 (Free Roam and the square and Glen races); his notes are Round 81.**
 **Round 80, AIR AI THAT MAKES MISTAKES, THE SQUARE AI AT THE DECK, A JUMP AT WHITLOCK, THE EXPRESS LANES' SCHEDULE AND GATES, BUSIER HIGHWAYS,
 Round 79's found-not-changed items (Dan, 2026-10-28 17:45; report BUG-001 of session `2026-10-28_17-26-14-935_f93341`, read by Claude, after the Round 79
 build; gate photo `local/reference_photos/express_lanes/express_lane_gate.png`).** Round 79 is reviewed. Item 0 and the end-of-round clean-up apply. ONE full
@@ -177,34 +259,7 @@ highways', the Express Lanes') could only take a new car when its middle was nea
 For Dan to check (added): EL13's options; whether the AI's go-back should be quicker; whether the 4K cost of the busier traffic is acceptable.
 Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55. Disk: 28.7 GB -> 28.1 GB (`cleanup_round.py`: local/round68, 73, 74, 77 and Library/BuildHistory cleared).
 
-## QUEUED rounds
-**INSTALLER AND UPDATES, AND THE STEAM DECK (Dan, 2026-10-29 00:43; next round after Round 80 is reviewed; this round says PUBLISH).** Dan: "I would also need
-an installation file like I have for Woodstock Rush. Which I would want to use the same update system so I only have to install it once". And: will his
-Steam Deck handle the bigger map?
-A. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
-   `Tools/Publish-LauncherRelease.py`, `Tools/Package-LauncherStarter.py`; read only, as `Docs/FROM-WOODSTOCK-RUSH.md` items 1 to 6 say): Chastain Rush's own
-   release repo, its own signing identity made once (never reuse, print or expose Woodstock Rush's key), the launcher titled CHASTAIN RUSH with its
-   cover art and icon. Same behavior: on opening it checks, installs a newer game and soundtrack by itself, then starts the game; B / Esc plays now;
-   rollback to the previous version; saves and personal music kept.
-B. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
-   installs it once; after that every published round reaches him through the launcher. Publish the first release and prove it end to end: a
-   clean install from the starter, then a second small release picked up and installed by that launcher.
-C. THE STEAM DECK. Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
-   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
-   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
-For Dan to check: install from the starter on the PC and the Deck; the launcher updating itself to the second release; the Deck's frame rate.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 79
+## Previous delivery 2: Round 79
 **Reviewed: Dan raced it 2026-10-28 17:26 ("Only tested the races"); his notes are Round 80.**
 **Round 79, THE TRAIN IN REPLAYS, AIR RINGS INSIDE THE MAP, A STEADY AIR ARROW, the rail bridges' loose ends (Dan, 2026-10-28 11:36; report
 BUG-001 of session `2026-10-28_11-32-04-219_308d8c`, read by Claude, after the Round 78 build).** Round 78 is reviewed: "I liked the Marietta Sq race", "The air
@@ -256,7 +311,7 @@ For Dan to check: a Marietta Square replay (beat the train); the Air Tour round 
 Cobb Parkway under the railroad.
 Disk: 28.9 GB -> 28.5 GB (`cleanup_round.py`: local/round68 to 76 and Library/BuildHistory cleared; the player build kept), after deleting the 4.6 GB exe copy this round made for a parallel check.
 
-## Previous delivery 2: Round 78
+## Previous delivery 3: Round 78
 **Reviewed: Dan raced it 2026-10-28 11:32 ("I liked the Marietta Sq race"; "The air track was good"); his notes are Round 79.**
 **Round 78, A RUNNING TRAIN; TWO NEW RACES (MARIETTA SQUARE, AND AN AIR TOUR OF THE MAP'S PLACES); the square's streets, the rail crossings,
 a buried house (Dan, 2026-10-28 04:21; reports BUG-001 to BUG-005 of session `2026-10-28_04-03-25-890_8dd649` (BUG-004 empty), read by Claude, after the
@@ -332,81 +387,6 @@ Parkway's rail bridge; 9 other road bridges near the rails with 0.3 to 1.2 m ste
 For Dan to check: the train at a crossing; the square race (beat / wait / jump); the air tour; Tower Road and Old 41; the square's cars and lights; the house; the
 connector's south end (should its deck end be raised?).
 Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
-
-## Previous delivery 3: Round 77
-**Reviewed: Dan drove round 2026-10-28 04:03 ("did a quick drive around"); his notes are Round 78.**
-**Round 77, THE RAILROAD, KENNESTONE HOSPITAL AND ITS PARKING DECK, THE CANTON ROAD CONNECTOR (Dan, 2026-10-27 21:19; reports BUG-001 to
-BUG-007 of session `2026-10-27_21-09-31-163_2b90af`, read by Claude, after the Round 76 build). Dan may add photos of the hospital and Marietta Square to
-`local/reference_photos/kennestone/` and `local/reference_photos/marietta_square/`: use them if they are there when you reach B (reference
-only, never textures, never traced); if not, work from OSM's footprints and heights and what is known, and say so.** Round 76 is reviewed.
-Item 0 (CHECK IT AS DAN PLAYS IT) and the end-of-round clean-up apply. Quick builds; ONE full Build Map at the end. Short results.
-A. THE CANTON ROAD CONNECTOR. BUG-001 (x 2292.44 z -5006.93 h 66, beside the connector where it meets the highway): "fix" (the picture:
-   torn, jagged spikes of ground and rock standing up both sides of the roads, black faces). BUG-002 (x 1694.78 z -5783.19 h 352, on the
-   connector): "fix this too" (steep green banks and odd mounds crowding the ramps). BUG-003 (x 1618.42 z -6110.74 h 29, on the connector):
-   "need to fix here as well" (a split with a mound between, the road dipping, a stray white block on the left). Smooth the ground round
-   the connector and its ramps into proper graded embankments (no spikes, no black faces, no stray objects), the roads even. Then scan the
-   whole of stage 3's new roads and interchanges for the same (jolt and face scans as Rounds 61 / 75) and fix what it finds; list it.
-B. KENNESTONE HOSPITAL. BUG-004 (x 1608.76 z -6601.44 h 279, by the hospital): "lets make the hospital resemble the hospital. Do I need to
-   provide pics?" (the picture: plain tan boxes). Wellstar Kennestone Regional Medical Center as itself (as Town Center, Round 60): its
-   towers at their real heights from OSM, the main entrance with its canopy and drop-off, the emergency department's entrance and ambulance
-   bay, glass and brick as the photos show, the rooftop helipad kept (Round 63), signs (generic: HOSPITAL, EMERGENCY; no brand logo),
-   ambulances parked, people. BUG-005 (x 1665.13 z -6716.61 h 151, Church Street NW by the hospital): "pretty sure that maybe this is the
-   parking deck. So not businesses" (the picture: a building dressed as stores with business signs, three dark openings at street level).
-   Make it a parking deck: open levels with low walls and columns, ramps between levels, cars parked, entrances / exits at the street.
-   Drivable inside to the roof (fun: a roof to jump off, the game's rules); check OSM for other parking garages (parking=multi-storey)
-   dressed as businesses anywhere on the map and make them decks too.
-C. THE RAILROAD. BUG-006 (x 1853.58 z -9077.33 h 347, Atlanta Street SE): "this should be a rail bridge" (the picture: the tracks laid flat
-   across the road). BUG-007 (x 1620.14 z -8259.97 h 357, downtown Marietta): "rail line shouldn't run into the building. The rail should be
-   quite significant I know it runs by canton road (but maybe off this may not sure) still shouldn't stop right here" (the picture: two
-   tracks ending in a building's wall). The CSX main line through Marietta (OSM railway=rail): one continuous line (or the real double
-   track) through the whole map from edge to edge as OSM has it, on its own graded bed (ballast, ties, rails), never through a building
-   (if OSM's building footprint sits on the line, the building gives way), with bridges where it crosses over roads (OSM's bridge=yes /
-   layer) and level crossings with gates and lights where it really crosses at grade; the old depot by the square (Round 76) beside it.
-   The line ends only at the map's edge (Round 66's scenery carries it on). Optional if cheap: a freight train now and then.
-B+. DAN'S HOSPITAL PHOTOS (2026-10-27 21:55, `local/reference_photos/kennestone/`, reference only): 01 an aerial of the campus with the glass
-   SKYBRIDGE arching over the road (white steel X-truss on an arch, a round emblem in the middle: use a plain round emblem) between
-   tan-brick buildings; 02 the skybridge from the road; 03 the main tower's entrance at dusk: a tall white portico with columns and a glass
-   canopy over a curved brick-paved drop-off, red-brick and white towers of 6 to 8 stories behind with bands of windows, an older tall
-   brown-brick tower beside; 04 and 05 the EMERGENCY building: tan / beige with darker brick piers, a white canopy with angled struts over the
-   ambulance drive, the word EMERGENCY over it, a red-and-white HELIPAD on its roof (the helicopter pad of Round 63 goes there if it is
-   not already), a curving drive on a terraced retaining wall with shrubs, the older white tower behind. Build these: the skybridge over
-   the street (drivable under it, solid), the portico entrance, the ER with its canopy and roof pad, the terraced drive. The sign on the
-   main entrance may read KENNESTONE HOSPITAL (the place's own name, as the game names streets); no company logo.
-D. MARIETTA SQUARE TO DAN'S PHOTOS (Round 76 B was built without them; 2026-10-27 21:55, `local/reference_photos/marietta_square/`, reference
-   only): 02 the top-down shows the layout: Glover Park a square block with brick paths in a cross and diagonals meeting at a round FOUNTAIN
-   (09: a tall tiered cast-iron fountain in a low round brick basin), big shade trees, grass panels, a small green-roofed GAZEBO, and the
-   streets round it with ANGLED PARKING on both sides and one-way arrows; 01 an aerial of the park full of people on the lawns; 04 the
-   park's PAVILION / bandstand (a cream two-story pavilion with columns on a brick base, steps); 05 a LIBERTY BELL replica on a granite
-   plinth with a bronze plaque, black benches round it, brick paving; 07 the children's play area with a W&A RR toy steam locomotive and
-   tender kids climb on, behind a low brick wall; 06 the square's storefronts: two- and three-story fronts, an art-deco white THEATER with a
-   red / green marquee (fake name, e.g. "THE GRAND"), colored shopfronts with awnings, traffic lights on mast arms; 03 a red-brick office
-   building with a tall stone CLOCK TOWER (big round clock) and, behind, the brick courthouse tower with a clock and a pointed spire;
-   08 the DEPOT (a one-story brick station with stepped Dutch gables and a slate roof, "WELCOME CENTER" on a green sign) beside the double
-   track behind a black iron fence, and the four-story brick hotel next to it ("MUSEUM OF HISTORY" lettering: keep generic). Rebuild the
-   square and its edges to these; walkable lawns and paths drivable (breakables: benches, lamp posts, café tables; the fountain, bell,
-   locomotive and pavilion solid). Pictures next to each photo from the same view.
-Check: item 0; A before / after at Dan's three spots and the scan's list; B pictures of the hospital's sides, the entrance, the ER, the
-deck driven to the roof; C the line followed end to end on the map and in pictures (each bridge, each crossing, the square).
-For Dan to check: the connector; Kennestone (skybridge, entrance, ER, helipad) and its deck; Marietta Square to the photos; the railroad.
-
-**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 01:26), checked in the exe from the player's camera, not yet driven by Dan.** Evidence `Data/screenshots/round77/`.
-Photos used for B and D (reference only). Two full builds: build 1's checks found the faults fixed in build 2.
-A DONE (one item open). Cause: lidar spikes and a jagged trench where the Express Lanes deck runs through the connector's embankment (BUG-001), a lidar mound between the
-carriageways with steep raw banks (BUG-002 / 003). `R77Embankments`: each carriageway's profile smoothed, the ground within 45 m relaxed as a membrane between the roads and the
-natural ground. Cells over 45 degrees within reach: 15,998 -> 2,217. Pictures `77_BUG-00[123]_after`: no spikes, the median and banks smooth, the road even. The connector driven
-flat out by the human-like driver: 1,314 m at 30 m/s, no reset, one 0.56 s hop near BUG-003's deck end. Stage 3 scan (`road_faces.py`): 114 face spots -> 45 after adding its
-roads to the pass (`stage3_faces_before/after.txt`); left: unnamed service drives and the new rail bridge's abutments. Bumps listed, not fixed (`stage3_bumps.txt`: 23 steps
->= 10 cm, 53 humps >= 30 cm outside the highways). OPEN: BUG-003's "stray white block" on the left is still there; I could not identify the object.
-B DONE except the deck jump. BUG-005's building is OSM's skybridge over Church Street (three floors starting one up), not a parking deck: built as the skybridge of photo 02
-(`77_BUG-005_after`). Kennestone from OSM's building parts (47 tower blocks up to 38 m), the portico at the drop-off loop, the ER with its canopy and EMERGENCY, ambulances,
-the terraced wall, the red roof helipad. Every OSM parking deck (19, all were dressed as stores) is now a deck with ramps. Driven: the Waddell Street deck to its roof (27 m up,
-no reset). Not shown: the roof jump (the scripted driver ended against the roof wall; two attempts, tuning limit). The Green deck's far end runs into the physicians' building.
-C DONE. `make_railroad.py`: 10 running lines, 36.8 km edge to edge, 23 level crossings with gates and lights, 13 rail bridges over roads; BUG-006's South Marietta Parkway
-crossing is a rail bridge (`77_C_underpass_South_Marietta_Parkway_*`). BUG-007's building gives way (`77_BUG-007_after`). Steepest rail grade 11.7 %, a short rise at the I-75 bridge.
-No freight train.
-D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each photo's place. Fountain, bell, train and pavilion solid; signals, fence and play wall break.
-Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
-For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
