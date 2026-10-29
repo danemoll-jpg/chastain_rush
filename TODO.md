@@ -114,6 +114,39 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 83, ROUND 82's KNOWN-BROKEN ITEMS (Dan, 2026-10-29 17:05: "lets go ahead and have it take care of these. I will review everythng a little later").** Round 82 is
+not yet driven by Dan (he reviews 82 and 83 together). Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round
+clean-up apply. Round 82's note on the tuning limit stands: these are bugs (stuck, walls, humps, roads too low), not numbers to tune. Short results.
+Start from the code committed after build 5 (roads under decks at their own level, raised roads carried through junctions, medians one slope): it is not in 0.82.0.
+A. THE I-75 EXPRESS LANES AT THE I-575 JUNCTION. Southbound STUCK at the merge (527, -3383) after 2.3 s in the air (Round 81's merge, never fixed); northbound 0.96 s in
+   the air at (845, -3832) and 0.76 s at (513, -3332). Where I-575's Express flyover comes down and joins the I-75 Express Lanes, the two meet level, side by side, as C
+   did at Big Shanty (no parapet between, the gap paved, one height into the join). Check: the I-75 Express Lanes end to end both ways at top speed, and the I-575 flyover
+   into them: no air over 0.3 s, never stuck; pictures at the three spots.
+B. SKIP SPANN CONNECTOR (humps, 2 s in the air, one fall) and FREY ROAD (0.9 s, the lidar's fill under the decks: a 3.4 m hump): the roads under the decks at their own
+   level, smooth. Check: each driven both ways, no air over 0.3 s.
+C. THE TWO SHORT CROSSINGS: ramp 437897716 over I-75 at (2398, -4931) 2.9 m and (2401, -4928) 1.9 m: at least 5 m clear, smooth climbs. Check: driven over and under.
+D. THE REST OF ROUND 82 A's LIST. Only 32 of the 256 crossing drives ran: run all of them on the final build (one at a time) and fix any crossing that is stuck, steps or
+   flies over 0.3 s. The jagged ridge in the median beside Greers Chapel's bridge (`82_BUG-005_after.png`) smoothed. I-575's Express Lanes: the stop at the seam deck
+   (536, -37) and the 37 wall scrapes one way (the walls out of the lane's line).
+E. DISK: remove the 0.81 release folders from Builds (`LauncherRelease-8100`, `-8101`, `LauncherStarter-8100`; the published copies stay on GitHub), keeping 0.82.0's.
+Then PUBLISH the build through the launcher (as Round 82: Dan updates on the PC and the Steam Deck, installed on its SD card).
+Check: item 0 for every item.
+For Dan to check (with Round 82's list): the I-75 Express Lanes through the I-575 junction both ways; Skip Spann Connector; Frey Road; the crossing ramp over I-75 by
+Canton Road; Greers Chapel's median.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 82
+**Not yet driven by Dan: he asked for its known-broken items to be done first (Round 83) and reviews both together.**
 **Round 82, THE EXPRESS LANES DONE PROPERLY (bridges over roads, no dips, no walls across them), roads under highways, the rail bridge's end, the Glen fence
 (Dan, 2026-10-29 09:40; reports BUG-001 to BUG-008 of session `2026-10-29_09-12-54-968_3aae2d` (BUG-004 repeats BUG-003), read by Claude, after the Round 81 build).**
 Round 81 is reviewed. Item 0 and the end-of-round clean-up apply. Short results.
@@ -177,18 +210,7 @@ New rule copied into CLAUDE.md (one heavy job at a time, Below Normal, 3 Build M
 Published: `game-8200` (0.82.0, Latest) on `danemoll-jpg/chastain-rush-releases`, from build 5; the installed launcher picks it up. Disk 33.1 -> 32.8 GB (Builds 17.9 GB: the 0.81 release folders are still there).
 For Dan to check: Greers Chapel (BUG-005), the Big Shanty ramp, the rail at BUG-008, the Glen fence, I-575's Express Lanes. Known broken: the I-75 Express Lanes at the I-575 junction merge, Skip Spann Connector, Frey Road, the 2 short crossings.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 81
+## Previous delivery 2: Round 81
 **Reviewed: Dan drove it 2026-10-29 09:12 (free roam and the Glen loop); his notes are Round 82.**
 **Round 81, THE I-75 / I-575 JUNCTION AND ITS EXPRESS LANES AS THE REAL ONE, THE GATES ON THE RAMPS, and Dan's other reports (Dan, 2026-10-29 02:39; reports
 BUG-001 to BUG-010 of session `2026-10-29_01-57-15-107_610675`, read by Claude, after the Round 80 build; Dan's three aerial photos of the junction (Google Maps,
@@ -285,7 +307,7 @@ K DONE, PUBLISHED to `danemoll-jpg/chastain-rush-releases` (Dan made the repo): 
 installed 0.81.0, its first start fetched the soundtrack and started the game (handshake PASS); after 0.81.1 was published the same launcher updated itself (saves backed up, 0.81.0 kept).
 For Dan to check: install from starter-8100 on the PC and the Deck (README inside); the junction and the Express Lanes (EL13, Big Shanty, the merge wall); the Glen shortcut; BUG-006's median; the Deck.
 
-## Previous delivery 2: Round 80
+## Previous delivery 3: Round 80
 **Reviewed: Dan drove it 2026-10-29 01:57 to 02:39 (Free Roam and the square and Glen races); his notes are Round 81.**
 **Round 80, AIR AI THAT MAKES MISTAKES, THE SQUARE AI AT THE DECK, A JUMP AT WHITLOCK, THE EXPRESS LANES' SCHEDULE AND GATES, BUSIER HIGHWAYS,
 Round 79's found-not-changed items (Dan, 2026-10-28 17:45; report BUG-001 of session `2026-10-28_17-26-14-935_f93341`, read by Claude, after the Round 79
@@ -355,58 +377,6 @@ highways', the Express Lanes') could only take a new car when its middle was nea
 96 -> 59; the square at 4K 58 -> 32 / 57 -> 53, Town Center 79 -> 60 / 84 -> 69 (`round80_check_f2_*`; runs vary 10 to 30 %). The I-575 spot showed no motorway cars before or after (a poor spot).
 For Dan to check (added): EL13's options; whether the AI's go-back should be quicker; whether the 4K cost of the busier traffic is acceptable.
 Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55. Disk: 28.7 GB -> 28.1 GB (`cleanup_round.py`: local/round68, 73, 74, 77 and Library/BuildHistory cleared).
-
-## Previous delivery 3: Round 79
-**Reviewed: Dan raced it 2026-10-28 17:26 ("Only tested the races"); his notes are Round 80.**
-**Round 79, THE TRAIN IN REPLAYS, AIR RINGS INSIDE THE MAP, A STEADY AIR ARROW, the rail bridges' loose ends (Dan, 2026-10-28 11:36; report
-BUG-001 of session `2026-10-28_11-32-04-219_308d8c`, read by Claude, after the Round 78 build).** Round 78 is reviewed: "I liked the Marietta Sq race", "The air
-track was good". Item 0 and the end-of-round clean-up apply. Quick builds; ONE full Build Map only if the world changes. Short results.
-A. THE TRAIN IN REPLAYS. Dan: "not sure I understand why the train wont be in the replays. It is a feature of that track." Record the train(s)
-   (position along the line, speed, the cars) and the crossings' gates, lights and bells into every replay (as traffic is, Round 57), and
-   play them back in step: a replay of the Marietta Square race shows the train arriving, the gates, and the racers beating it, waiting or
-   jumping it, exactly as it happened. Check every other moving thing a race meets is recorded too (the airport's circuit plane, police,
-   switch gates, plumes): list what is and is not, and add what is missing. Check: race the square, beat the train, watch the replay (TV and
-   chase cameras) and compare.
-B. AIR RINGS INSIDE THE MAP. BUG-001 (x 1069.84 z -8181.96 h 204, 172 m up over Polk Street NW, the Air Tour, ring 21 next after ring 20 missed):
-   "this ring seems to be impossible to hit because it is out of the survey area" (the picture: LEAVING THE SURVEY AREA while heading for
-   the ring). Round 76 bent the map's edge round the Marietta piece, so the flight boundary there is close. For EVERY air course (Quarry Air
-   Race, Highway Air Race, Air Tour): every ring, and the turn from it to the next at race speed, must lie well inside the flight boundary
-   (a margin of at least the plane's turning radius at top speed plus the warning distance); move rings or ease the boundary round the
-   Marietta piece (e.g. let the flight boundary follow the outer rectangle of the scenery ring there), whichever keeps the course's intent;
-   say which. The edge warning and headwind never fire on a course's line. Check: each air course flown by the human-like pilot, no warning.
-C. A STEADY AIR ARROW. Dan: "the arrow is too jittery. One of the other air races also had this problem but I don't remember which". The air
-   races' 3D arrow (Round 73 B) still jitters: smooth it properly (its own damped orientation, not tied to the plane's shake or the camera's
-   bob; a steady position on screen; aimed at the ring through a filtered target), on all three air courses, in every camera. Measure its
-   frame-to-frame wobble on each air course before / after (as Round 74 C did for the car arrow) and look at it in a recorded flight.
-D. ROUND 78's FOUND-NOT-CHANGED ITEMS: the Canton Road Connector's bridge over the railroad ends 1 m under its road southbound (a wall): fix it
-   (both ways smooth); the 27 % rail grade at Cobb Parkway's rail bridge (rails rarely exceed 2 to 3 %: ease it); the 9 road bridges near the
-   rails with 0.3 to 1.2 m steps in their decks (build log): smooth each. Pictures before / after.
-Check: item 0 for every item.
-For Dan to check: a Marietta Square replay with the train; the Air Tour round Marietta (no edge warning); the arrow in each air race; the
-connector's south end and the rail bridges.
-
-**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 15:57), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round79/`
-(`BUG-001_before`, `79_BUG-001_after`; reports `round79_check_build3.txt` (dan, replay, air, arrow), `_rail_build4.txt`, `_arrow_before.txt`, `_final.txt`; air traces).
-Five full builds: 2 found Build Map graded the ground to the decks before the railroad step changed them; 3 and 4 found Round 77's embankments carrying the road's end height flat under the deck.
-A DONE. Replays keep the world's and the trains' clocks (`ReplayData.Kind.Clock`, every second and when a race moves the trains on); the viewer puts the trains, the crossings'
-gates / lamps / bell, the traffic signals and the airport's circuit plane as they were (`WorldClock`, `RailTrains.ReplayAt`). Square race, beat the train, then its replay: 2380
-train cars over 122 moments, worst 0.01 m from where they were; gates and lamps right at every moment; TV picture: the car on the crossing, gate down, the train beside it (`79_A_*`).
-Recorded already: traffic, switch gates, plumes, breakables, gestures. Not in races: police, geysers / rigged hydrants. Not recorded: the flagger's step back, walkers and geese.
-B DONE. The flight boundary (plane and helicopter) is the land's outer rectangle and 650 m (`MapEdge.Flight`): it fills the notch beside Marietta's piece; the ground there is the
-edge scenery's (`EdgeScenery.RingGround`). No ring moved. Every course's line 808 m or more inside (Sky Hopper's turn at top speed 490 m + the 300 m warning). Flown with 3 AI
-pilots: no plane warned (nearest 2759 / 807 / 985 m inside). The human-like check pilot finished all three but crash-looped (16 / 24 / 26 crashes); the AI's code took 4 / 7 / 8 rings.
-At Dan's place, ring 21 next: no warning (`79_BUG-001_after`). Cars keep the old edge walls.
-C DONE. The arrow is placed as the camera renders, along a filtered direction with the world's up, drawn over everything (`OverlayUnlit`: the plane's own body hid it in the
-cockpit view, before too). Its place on screen frame to frame: 5.0 / 5.1 / 6.8 px before, 0.01 to 0.02 px now; its turn 0.009 to 0.021 deg a frame both ways (`79_arrow_*`).
-D DONE. The listed decks smoothed (steps 0.29 to 1.18 m down to 0.11 m or less, ends kept) BEFORE their ends are graded (`RailDecks`). Round 77's embankments no longer carry the
-road's end height under a deck (the connector's southbound wall, 1.07 m). The rail bed's banks tight under a road bridge (a 2 m hole before the connector's deck). Cobb Parkway's
-27 % grade: its second carriageway had been a level crossing beside the bridge over its first; now one bridge over both. Steepest rail grade 9.4 % (the planes' underpass on South
-Marietta Parkway), next 7 %. Driven: connector both ways through (stuck both ways before), an even 0.8 s hop off the deck's crest (jolt 0.5); Cobb Parkway 0.1 s; Cobb Parkway's other deck 0.
-Found, not changed: Express Lanes 13 (a 780 m deck, not on Round 78's list) driven against its direction flies 2.06 s and lands hard (10.7 m/s); the replay's chase camera can sit
-inside the ballast pile by Mill Street; the plane's cockpit view sits behind the pilot.
-For Dan to check: a Marietta Square replay (beat the train); the Air Tour round Marietta; the arrow in each air race (chase and cockpit); the connector's south end both ways;
-Cobb Parkway under the railroad.
-Disk: 28.9 GB -> 28.5 GB (`cleanup_round.py`: local/round68 to 76 and Library/BuildHistory cleared; the player build kept), after deleting the 4.6 GB exe copy this round made for a parallel check.
 
 ## Technical notes (standing)
 Technical Notes / Blockers

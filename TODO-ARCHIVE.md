@@ -7157,3 +7157,58 @@ For Dan to check: the train at a crossing; the square race (beat / wait / jump);
 connector's south end (should its deck end be raised?).
 Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
 
+
+## Round 79 (moved from TODO.md on 2026-10-29 when Round 83 started; word for word)
+
+## Previous delivery 3: Round 79
+**Reviewed: Dan raced it 2026-10-28 17:26 ("Only tested the races"); his notes are Round 80.**
+**Round 79, THE TRAIN IN REPLAYS, AIR RINGS INSIDE THE MAP, A STEADY AIR ARROW, the rail bridges' loose ends (Dan, 2026-10-28 11:36; report
+BUG-001 of session `2026-10-28_11-32-04-219_308d8c`, read by Claude, after the Round 78 build).** Round 78 is reviewed: "I liked the Marietta Sq race", "The air
+track was good". Item 0 and the end-of-round clean-up apply. Quick builds; ONE full Build Map only if the world changes. Short results.
+A. THE TRAIN IN REPLAYS. Dan: "not sure I understand why the train wont be in the replays. It is a feature of that track." Record the train(s)
+   (position along the line, speed, the cars) and the crossings' gates, lights and bells into every replay (as traffic is, Round 57), and
+   play them back in step: a replay of the Marietta Square race shows the train arriving, the gates, and the racers beating it, waiting or
+   jumping it, exactly as it happened. Check every other moving thing a race meets is recorded too (the airport's circuit plane, police,
+   switch gates, plumes): list what is and is not, and add what is missing. Check: race the square, beat the train, watch the replay (TV and
+   chase cameras) and compare.
+B. AIR RINGS INSIDE THE MAP. BUG-001 (x 1069.84 z -8181.96 h 204, 172 m up over Polk Street NW, the Air Tour, ring 21 next after ring 20 missed):
+   "this ring seems to be impossible to hit because it is out of the survey area" (the picture: LEAVING THE SURVEY AREA while heading for
+   the ring). Round 76 bent the map's edge round the Marietta piece, so the flight boundary there is close. For EVERY air course (Quarry Air
+   Race, Highway Air Race, Air Tour): every ring, and the turn from it to the next at race speed, must lie well inside the flight boundary
+   (a margin of at least the plane's turning radius at top speed plus the warning distance); move rings or ease the boundary round the
+   Marietta piece (e.g. let the flight boundary follow the outer rectangle of the scenery ring there), whichever keeps the course's intent;
+   say which. The edge warning and headwind never fire on a course's line. Check: each air course flown by the human-like pilot, no warning.
+C. A STEADY AIR ARROW. Dan: "the arrow is too jittery. One of the other air races also had this problem but I don't remember which". The air
+   races' 3D arrow (Round 73 B) still jitters: smooth it properly (its own damped orientation, not tied to the plane's shake or the camera's
+   bob; a steady position on screen; aimed at the ring through a filtered target), on all three air courses, in every camera. Measure its
+   frame-to-frame wobble on each air course before / after (as Round 74 C did for the car arrow) and look at it in a recorded flight.
+D. ROUND 78's FOUND-NOT-CHANGED ITEMS: the Canton Road Connector's bridge over the railroad ends 1 m under its road southbound (a wall): fix it
+   (both ways smooth); the 27 % rail grade at Cobb Parkway's rail bridge (rails rarely exceed 2 to 3 %: ease it); the 9 road bridges near the
+   rails with 0.3 to 1.2 m steps in their decks (build log): smooth each. Pictures before / after.
+Check: item 0 for every item.
+For Dan to check: a Marietta Square replay with the train; the Air Tour round Marietta (no edge warning); the arrow in each air race; the
+connector's south end and the rail bridges.
+
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 15:57), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round79/`
+(`BUG-001_before`, `79_BUG-001_after`; reports `round79_check_build3.txt` (dan, replay, air, arrow), `_rail_build4.txt`, `_arrow_before.txt`, `_final.txt`; air traces).
+Five full builds: 2 found Build Map graded the ground to the decks before the railroad step changed them; 3 and 4 found Round 77's embankments carrying the road's end height flat under the deck.
+A DONE. Replays keep the world's and the trains' clocks (`ReplayData.Kind.Clock`, every second and when a race moves the trains on); the viewer puts the trains, the crossings'
+gates / lamps / bell, the traffic signals and the airport's circuit plane as they were (`WorldClock`, `RailTrains.ReplayAt`). Square race, beat the train, then its replay: 2380
+train cars over 122 moments, worst 0.01 m from where they were; gates and lamps right at every moment; TV picture: the car on the crossing, gate down, the train beside it (`79_A_*`).
+Recorded already: traffic, switch gates, plumes, breakables, gestures. Not in races: police, geysers / rigged hydrants. Not recorded: the flagger's step back, walkers and geese.
+B DONE. The flight boundary (plane and helicopter) is the land's outer rectangle and 650 m (`MapEdge.Flight`): it fills the notch beside Marietta's piece; the ground there is the
+edge scenery's (`EdgeScenery.RingGround`). No ring moved. Every course's line 808 m or more inside (Sky Hopper's turn at top speed 490 m + the 300 m warning). Flown with 3 AI
+pilots: no plane warned (nearest 2759 / 807 / 985 m inside). The human-like check pilot finished all three but crash-looped (16 / 24 / 26 crashes); the AI's code took 4 / 7 / 8 rings.
+At Dan's place, ring 21 next: no warning (`79_BUG-001_after`). Cars keep the old edge walls.
+C DONE. The arrow is placed as the camera renders, along a filtered direction with the world's up, drawn over everything (`OverlayUnlit`: the plane's own body hid it in the
+cockpit view, before too). Its place on screen frame to frame: 5.0 / 5.1 / 6.8 px before, 0.01 to 0.02 px now; its turn 0.009 to 0.021 deg a frame both ways (`79_arrow_*`).
+D DONE. The listed decks smoothed (steps 0.29 to 1.18 m down to 0.11 m or less, ends kept) BEFORE their ends are graded (`RailDecks`). Round 77's embankments no longer carry the
+road's end height under a deck (the connector's southbound wall, 1.07 m). The rail bed's banks tight under a road bridge (a 2 m hole before the connector's deck). Cobb Parkway's
+27 % grade: its second carriageway had been a level crossing beside the bridge over its first; now one bridge over both. Steepest rail grade 9.4 % (the planes' underpass on South
+Marietta Parkway), next 7 %. Driven: connector both ways through (stuck both ways before), an even 0.8 s hop off the deck's crest (jolt 0.5); Cobb Parkway 0.1 s; Cobb Parkway's other deck 0.
+Found, not changed: Express Lanes 13 (a 780 m deck, not on Round 78's list) driven against its direction flies 2.06 s and lands hard (10.7 m/s); the replay's chase camera can sit
+inside the ballast pile by Mill Street; the plane's cockpit view sits behind the pilot.
+For Dan to check: a Marietta Square replay (beat the train); the Air Tour round Marietta; the arrow in each air race (chase and cockpit); the connector's south end both ways;
+Cobb Parkway under the railroad.
+Disk: 28.9 GB -> 28.5 GB (`cleanup_round.py`: local/round68 to 76 and Library/BuildHistory cleared; the player build kept), after deleting the 4.6 GB exe copy this round made for a parallel check.
+
