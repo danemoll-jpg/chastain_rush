@@ -148,25 +148,39 @@ namespace ChastainRush
             if (d.Highway && SpawnOn(d, near, true)) return true;
             return SpawnOn(d, near, false);
         }
-        bool SpawnOn(TrafficDriver d, bool near, bool highway)
+        // the roads a new car may go on, worked out once a frame (a pass of Manage places many cars; the class of every edge looked up once)
+        float[] edgeWeight; bool[] edgeHighway; int candFrame = -1; float totalAll, totalHw;
+        readonly List<int> candHw = new(); readonly List<float> weightsHw = new();
+        void Candidates(Vector2 at2)
         {
-            var at = player.Body.position; var at2 = new Vector2(at.x, at.z);
-            candidates.Clear(); weights.Clear(); float total = 0;
+            if (candFrame == Time.frameCount) return; candFrame = Time.frameCount;
+            if (edgeWeight == null)
+            {
+                edgeWeight = new float[net.EdgeCount]; edgeHighway = new bool[net.EdgeCount];
+                for (int e = 0; e < net.EdgeCount; e++) { var c = net.ClassName(e); edgeHighway[e] = c == "motorway" || c == "trunk"; edgeWeight[e] = (OldMix ? net.Length[e] : Mathf.Min(net.Length[e], 800f)) * ClassWeight(e); }
+            }
+            candidates.Clear(); weights.Clear(); candHw.Clear(); weightsHw.Clear(); totalAll = totalHw = 0f;
             for (int e = 0; e < net.EdgeCount; e++)
             {
-                if (highway) { var c = net.ClassName(e); if (c != "motorway" && c != "trunk") continue; }
                 if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12 || net.SpawnOff(e)) continue;   // Round 80 (E): not on the Express Lanes while they are closed
                 if (OldMix) { var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue; }
                 // Round 80 (F): an edge in reach anywhere along it (by its middle, a long one between far junctions, a highway's or the Express Lanes',
                 // was never in reach of a player beside it), its weight its length up to 800 m
                 else if (NearBox(e, at2) > 400f) continue;
-                candidates.Add(e); total += (OldMix ? net.Length[e] : Mathf.Min(net.Length[e], 800f)) * ClassWeight(e); weights.Add(total);
+                candidates.Add(e); totalAll += edgeWeight[e]; weights.Add(totalAll);
+                if (edgeHighway[e]) { candHw.Add(e); totalHw += edgeWeight[e]; weightsHw.Add(totalHw); }
             }
-            if (candidates.Count == 0) return false;
+        }
+        bool SpawnOn(TrafficDriver d, bool near, bool highway)
+        {
+            var at = player.Body.position; var at2 = new Vector2(at.x, at.z);
+            Candidates(at2);
+            var cands = highway ? candHw : candidates; var ws = highway ? weightsHw : weights; float total = highway ? totalHw : totalAll;
+            if (cands.Count == 0) return false;
             float min = near ? 60f : 140f;
             for (int attempt = 0; attempt < 40; attempt++)
             {
-                float r = UnityEngine.Random.value * total; int k = weights.BinarySearch(r); if (k < 0) k = ~k; int e = candidates[Mathf.Min(k, candidates.Count - 1)];
+                float r = UnityEngine.Random.value * total; int k = ws.BinarySearch(r); if (k < 0) k = ~k; int e = cands[Mathf.Min(k, cands.Count - 1)];
                 int n = net.PointCount(e); int i = UnityEngine.Random.Range(1, n); float t = UnityEngine.Random.value;
                 var a = net.Point(e, i - 1); var b = net.Point(e, i); var q = Vector2.Lerp(a, b, t);
                 float dist = Near(q, at2); if (dist < min || dist > 400f) continue;
