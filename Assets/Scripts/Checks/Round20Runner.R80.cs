@@ -301,7 +301,7 @@ namespace ChastainRush
         }
 
         // ---------------------------------------------------------------- airhuman
-        // the human-like pilot: the AI pilot's law worked out (PlanePilot.Advise), put through the pad 0.22 s late with a little noise (the stick's dead
+        // the human-like pilot: the AI pilot's law worked out (PlanePilot.Advise), put through the pad 0.1 s late with a little noise (the stick's dead
         // zone allowed for, the throttle by the triggers, the rudder by the shoulders), as a good player flies; it misses ring 'miss' on purpose and goes back
         GamepadState r80State;
         IEnumerator R80HumanFly(float limit, float scale, StringBuilder note)
@@ -309,15 +309,16 @@ namespace ChastainRush
             var pl = car.GetComponent<PlaneFlight>(); var p = race.Player;
             var adv = car.gameObject.AddComponent<PlanePilot>(); adv.Advise = true; adv.Initialize(race, car, p, 0, 0f); R73Pad();
             var q = new Queue<(float t, float pitch, float bank, float rud, float thr, float steer)>(); float t = 0f, seed = (float)r73rng.NextDouble() * 50f; int crashes0 = pl.Crashes;
-            float Stick(float c) => Mathf.Abs(c) < .01f ? 0f : Mathf.Sign(c) * Mathf.Min(1f, .12f + Mathf.Abs(c) * .83f);
+            // the stick's dead zone is radial (min 0.12, max 0.95): the wanted (bank, pitch) put through it the other way round, as a player's thumb does
+            Vector2 Stick(Vector2 c) { float m = c.magnitude; if (m < .01f) return Vector2.zero; m = Mathf.Min(m, 1f); return c / c.magnitude * Mathf.Min(1f, .12f + m * .83f); }
             Time.timeScale = scale; Time.maximumDeltaTime = .5f;
             while (t < limit && !p.Finished)
             {
                 yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
                 q.Enqueue((t, adv.aPitch, adv.aBank, adv.aRudder, adv.aThrottle, adv.aSteer));
-                var c = q.Peek(); while (q.Count > 1 && t - q.Peek().t > .22f) c = q.Dequeue();
+                var c = q.Peek(); while (q.Count > 1 && t - q.Peek().t > .1f) c = q.Dequeue();
                 float n1 = (Mathf.PerlinNoise(seed, t * .7f) - .5f) * .14f, n2 = (Mathf.PerlinNoise(seed + 9f, t * .7f) - .5f) * .1f;
-                float x = pl.Airborne ? Stick(c.bank + n1) : Stick(c.steer), y = -Stick(c.pitch + n2);
+                var sv = Stick(new Vector2(Mathf.Clamp(pl.Airborne ? c.bank + n1 : c.steer, -1f, 1f), Mathf.Clamp(c.pitch + n2, -1f, 1f))); float x = sv.x, y = -sv.y;
                 float up = c.thr < 0f ? 0f : c.thr > pl.Throttle + .02f ? 1f : 0f, down = c.thr >= 0f && c.thr < pl.Throttle - .05f ? 1f : 0f;
                 var st = new GamepadState { leftStick = new Vector2(x, y), rightTrigger = up, leftTrigger = down };
                 if (c.rud > .5f) st = st.WithButton(GamepadButton.RightShoulder); else if (c.rud < -.5f) st = st.WithButton(GamepadButton.LeftShoulder);
@@ -329,7 +330,7 @@ namespace ChastainRush
 
         IEnumerator R80AirHuman()
         {
-            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the pad, 0.22 s late, a little noise; Street Classic's pilot in the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
+            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the pad, 0.1 s late, a little noise; Street Classic's pilot in the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
             yield return Clock(13f); int prev = RoadDriver.Difficulty;
             foreach (var file in R79Courses)
                 foreach (int diff in new[] { 1, 2 })
