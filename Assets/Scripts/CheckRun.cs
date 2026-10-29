@@ -28,6 +28,7 @@ namespace ChastainRush
                 if (exe || a == "-batchmode" || a == "-executeMethod") Active = true;
                 if (Dir != null || i + 1 >= args.Length) continue;
                 if (a == "-exeShots" && i + 2 < args.Length) Dir = args[i + 2];
+                else if (a == "-racerTestSave") Dir = args[i + 1];   // Round 81 (J): the launcher's own start-up check (its isolated save folder)
                 else if (exe || (a.EndsWith("Out", StringComparison.Ordinal) && a.StartsWith("-", StringComparison.Ordinal))) Dir = args[i + 1];
             }
             if (!Active) return;

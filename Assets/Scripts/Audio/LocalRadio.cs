@@ -68,7 +68,7 @@ namespace Racer
         public string Song=>ChannelName=="Off"?"Radio Off":song;
         public string Toast=>Time.unscaledTime<stationUntil?stationToast:Time.unscaledTime<toastUntil?Song:null;
         void SongToast(float seconds=5) { toastUntil=Mathf.Max(Time.unscaledTime,stationUntil)+seconds; }
-        public static string BundledFolder=>Path.GetFullPath(Path.Combine(Application.dataPath,"..","Music"));   // Chastain Rush: no launcher; Music beside the exe (in the Editor, beside Assets)
+        public static string BundledFolder=>LocalFolder(ChastainRush.LauncherBridge.ManagedMusic)?ChastainRush.LauncherBridge.ManagedMusic:Path.GetFullPath(Path.Combine(Application.dataPath,"..","Music"));   // Chastain Rush: Music beside the exe (in the Editor, beside Assets); Round 81 (J): the launcher's soundtrack when it starts the game
         public bool Bundled=>Settings.musicSource=="bundled";
         public bool IncludeSubfolders=>Settings.musicRecursive;
         public string Folder=>Bundled?BundledFolder:Settings.musicFolder;
@@ -114,6 +114,7 @@ namespace Racer
         {
             try
             {
+                if(Bundled&&LocalFolder(ChastainRush.LauncherBridge.ManagedMusic))return;   // Round 81 (J): the launcher's soundtrack is never written to
                 if(!Bundled&&Folder!=Path.Combine(Application.persistentDataPath,"Music"))return;
                 Directory.CreateDirectory(Folder);
                 var readme=Path.Combine(Folder,"README.txt");   // Chastain Rush: README.txt
@@ -137,7 +138,8 @@ namespace Racer
             Status="Scanning…";
             activeScanRevision=scanRevision;scanCancellation=new CancellationTokenSource();
             scanProgress=new MusicCollection.Progress();var token=scanCancellation.Token;var progress=scanProgress;bool recursive=true;
-            scan=Task.Run(()=>MusicCollection.Scan(folder,recursive,token,progress));   // Chastain Rush: no launcher's personal folder
+            var personal=Bundled&&LocalFolder(ChastainRush.LauncherBridge.PersonalMusic)?ChastainRush.LauncherBridge.PersonalMusic:null;   // Round 81 (J): with the launcher, its personal folder (songs kept from earlier soundtracks) too
+            scan=Task.Run(()=>personal==null?MusicCollection.Scan(folder,recursive,token,progress):MusicCollection.ScanShared(folder,personal,token,progress));
         }
         public void CancelScan(){scanRevision++;rescanPending=false;scanCancellation?.Cancel();scanSummary="Scan canceled; previous collection retained";}
         public void SetRecursive(bool recursive){Settings.musicRecursive=recursive;GameSettings.SaveSettings();Rescan();}
