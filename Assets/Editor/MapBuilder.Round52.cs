@@ -22,7 +22,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        static readonly HashSet<int> R52DanHouses = new HashSet<int> { 910, 996, 615, 1135 };   // BUG-001 (left 910, right 996), BUG-002, BUG-003
+        static readonly HashSet<int> R52DanHouses = new HashSet<int> { 910, 996, 615, 1135, 1559 };   // BUG-001 (left 910, right 996), BUG-002, BUG-003; Round 81 G (BUG-004 x 1198 z 1670, Bells Ferry Road: "buried house") 1559
         const float R52DriveGrade = 0.20f;    // game grade (vertical_scale 1.5: about 13 % in the real world)
         static List<Vector2> r52Lap;
         static List<(Vector2 a, Vector2 b, float half)> r52Roads;
