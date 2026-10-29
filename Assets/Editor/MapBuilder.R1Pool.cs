@@ -139,6 +139,7 @@ namespace ChastainRush
 
         // solid privacy fences, the neighborhood's look (BuildFencePanel), a BoxCollider per panel; a gate: an opening between two
         // round solid posts, its two leaves swung back flat against the fence (look only)
+        static readonly HashSet<string> R81WestOf6 = new HashSet<string> { "1572/2065", "2065/1452", "1452/1052", "1572/1622 (the side gate)" };   // Round 81 (F)
         static void BuildSolidFences(ScShortcut sc, TerrainGrid terrain, Materials mats, Transform parent)
         {
             if (sc.fences == null || sc.fences.Length == 0) return;
@@ -151,12 +152,20 @@ namespace ChastainRush
             var free = new GameObject(sc.id + " fences (breakable in free roam)").transform; free.SetParent(parent, false);
             free.gameObject.AddComponent<RaceOnly>().freeRoam = true;
             var fmb = new MeshBuilder(); var fpieces = new List<FenceChunk.Piece>(); var fpanels = new List<FenceChunk.Panel>(); var frecs = new List<FencePanelRec>();
+            // Round 81 (F, Dan's BUG-003: "after you cut through the yard not all the fences are breakable which leads to you getting stuck"): the
+            // fences west of the Rooftop leap's landing (between it and the lap behind) stand solid only in a reverse race of the loop (R1's); in a
+            // forward race and in free roam a breakable copy stands. The ones east of it (the way round #6's kicker) stay solid in any race
+            var revOnly = new GameObject(sc.id + " fences (solid in a reverse race of the loop only)").transform; revOnly.SetParent(parent, false);
+            revOnly.gameObject.AddComponent<RaceOnly>().showInReverseOf = "Chastain Glen loop";
+            var fwd = new GameObject(sc.id + " fences (breakable except in a reverse race of the loop)").transform; fwd.SetParent(parent, false);
+            fwd.gameObject.AddComponent<RaceOnly>().hideInReverseOf = "Chastain Glen loop";
+            var wmb = new MeshBuilder(); var wpieces = new List<FenceChunk.Piece>(); var wpanels = new List<FenceChunk.Panel>(); var wrecs = new List<FencePanelRec>();
             int panels = 0, n = 0;
             foreach (var fe in sc.fences)
             {
                 if (fe.a == null || fe.b == null) continue;
-                bool raceOnly = fe.kind == "reverse_only";
-                var holder = new GameObject("Fence " + fe.label.Replace('/', '-')).transform; holder.SetParent(raceOnly ? race : inRace, false);
+                bool raceOnly = fe.kind == "reverse_only", westOf6 = sc.id == "r1_pool_jump" && R81WestOf6.Contains(fe.label);
+                var holder = new GameObject("Fence " + fe.label.Replace('/', '-')).transform; holder.SetParent(raceOnly ? race : westOf6 ? revOnly : inRace, false);
                 var always = new GameObject("Fence " + fe.label.Replace('/', '-') + " gate").transform; always.SetParent(solid, false);
                 var gmb = new MeshBuilder();
                 var mb = new MeshBuilder(); var dummy = new List<FenceChunk.Piece>();
@@ -179,7 +188,12 @@ namespace ChastainRush
                         var p = Vector2.Lerp(a, b, i / (float)cnt); var q = Vector2.Lerp(a, b, (i + 1) / (float)cnt);
                         float gp = Ground(terrain, p.x, p.y), gq = Ground(terrain, q.x, q.y);
                         BuildFencePanel(mb, dummy, FenceKind.Privacy, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), wood, 4000 + n * 50 + i);
-                        if (!raceOnly)
+                        if (westOf6)
+                        {
+                            var rec = BuildFencePanel(wmb, wpieces, FenceKind.Privacy, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), wood, 4000 + n * 50 + i);
+                            wpanels.Add(new FenceChunk.Panel { firstPiece = rec.first, pieceCount = rec.count, centre = rec.centre }); wrecs.Add(rec);
+                        }
+                        else if (!raceOnly)
                         {
                             var rec = BuildFencePanel(fmb, fpieces, FenceKind.Privacy, new Vector3(p.x, gp, p.y), new Vector3(q.x, gq, q.y), wood, 4000 + n * 50 + i);
                             fpanels.Add(new FenceChunk.Panel { firstPiece = rec.first, pieceCount = rec.count, centre = rec.centre }); frecs.Add(rec);
@@ -219,20 +233,23 @@ namespace ChastainRush
                 if (gmb.Count > 0) gmb.ToObject($"{sc.id} fence {n} gate", mats.House, always, false, true);
                 n++;
             }
-            if (fpanels.Count > 0)
+            void Chunk(MeshBuilder cmb, List<FenceChunk.Piece> cpieces, List<FenceChunk.Panel> cpanels, List<FencePanelRec> crecs, Transform into, string name)
             {
-                var go = fmb.ToObject($"{sc.id} fences breakable", mats.House, free, false, true);
+                if (cpanels.Count == 0) return;
+                var go = cmb.ToObject(name, mats.House, into, false, true);
                 GameObjectUtility.SetStaticEditorFlags(go, 0);
                 var chunk = go.AddComponent<FenceChunk>(); chunk.source = go.GetComponent<MeshFilter>().sharedMesh; chunk.material = mats.House;
-                chunk.pieces = fpieces.ToArray(); chunk.panels = fpanels.ToArray(); chunk.sound = BreakSounds.Kind.Wood;
-                for (int i = 0; i < frecs.Count; i++)
+                chunk.pieces = cpieces.ToArray(); chunk.panels = cpanels.ToArray(); chunk.sound = BreakSounds.Kind.Wood;
+                for (int i = 0; i < crecs.Count; i++)
                 {
-                    var rec = frecs[i]; var pg = new GameObject("p"); pg.transform.SetParent(go.transform, false);
+                    var rec = crecs[i]; var pg = new GameObject("p"); pg.transform.SetParent(go.transform, false);
                     pg.transform.SetPositionAndRotation(rec.centre, Quaternion.LookRotation(rec.along, Vector3.up));
                     var bc = pg.AddComponent<BoxCollider>(); bc.isTrigger = true; bc.size = new Vector3(0.9f, rec.height, rec.length);
                     var fp = pg.AddComponent<FencePanel>(); fp.chunk = chunk; fp.index = i;
                 }
             }
+            Chunk(fmb, fpieces, fpanels, frecs, free, $"{sc.id} fences breakable");
+            Chunk(wmb, wpieces, wpanels, wrecs, fwd, $"{sc.id} fences breakable west of 6");   // Round 81 (F)
             Debug.Log($"[Round25] {sc.id}: the always-standing fences solid in races only, {fpanels.Count} breakable panels in free roam (BUG-001)");
             Debug.Log($"[Round20+] {sc.id}: {n} solid fences ({sc.fences.Count(x => x.kind == "reverse_only")} of them in reverse races only), {panels} panels");
         }
