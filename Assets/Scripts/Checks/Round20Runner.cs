@@ -237,6 +237,12 @@ namespace ChastainRush
                 if (Do("tmound")) { yield return Guard(R64Mound()); yield return Guard(R67Mound()); }
                 if (Do("tpics")) yield return Guard(R67Pics2());
             }
+            // Round 83 (Round20Runner.R83.cs)
+            if (tag == "round83")
+            {
+                if (Do("spots")) yield return Guard(R83SpotsPart());
+                if (Do("lines")) yield return Guard(R82LinesPart());
+            }
             // Round 82 (Round20Runner.R82.cs)
             if (tag == "round82")
             {

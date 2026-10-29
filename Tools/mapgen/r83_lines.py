@@ -1,4 +1,4 @@
-"""Round 83: the lines the exe check drives (after the build; reads Assets/Generated/round82_crossings.txt through r82_lines.py).
+﻿"""Round 83: the lines the exe check drives (after the build; reads Assets/Generated/round82_crossings.txt through r82_lines.py).
 
   local/round83/r83_lines_a.json  the Express Lanes end to end (I-75's, I-575's) at 35 m/s, pictures at the three places of A, Round 82's places; the I-575
                                   Express flyover into the I-75 Express Lanes (A); the Big Shanty ramp
@@ -24,7 +24,9 @@ def main():
     B = {b["osm_id"]: b for b in m["bridges"]}
     a, b = [], []
     for l in lines:
-        if "end to end" in l["name"]:
+        if " over at " in l["name"] or " under at " in l["name"]:
+            b.append(l)
+        elif "end to end" in l["name"]:
             q = r82_lines.pts(l["line"])
             for nm, p in (("A_south", (527.0, -3383.0)), ("A_north", (513.0, -3332.0)), ("A_join", (845.0, -3832.0))):
                 s, d = r82_lines.station(q, p)
@@ -34,8 +36,6 @@ def main():
             a.append(l)
         elif "Big Shanty" in l["name"]:
             a.append(l)
-        elif " over at " in l["name"] or " under at " in l["name"]:
-            b.append(l)
     # A: the I-575 Express flyover into the I-75 Express Lanes (the I-575 Express road's last 300 m, its link, the flyover, the link down to the join,
     # 200 m of the lanes past it)
     q = r82_lines.pts(R[367181844]["points"])[-4:] + r82_lines.pts(R[624557373]["points"])[1:] + r82_lines.pts(B[451950526]["points"])[1:] \

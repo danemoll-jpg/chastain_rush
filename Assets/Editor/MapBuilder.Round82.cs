@@ -42,7 +42,7 @@ namespace ChastainRush
 
         static void R82DeckIndex(MapData map)
         {
-            r82Map = map; r82RoadIdx = null; r83ExIdx = null; r83RoadIdx = null; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
+            r82Map = map; r83ExpressJoined.Clear(); r82RoadIdx = null; r83ExIdx = null; r83RoadIdx = null; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
             if (map.bridges == null) return;
             for (int bi = 0; bi < map.bridges.Length; bi++)
             {
@@ -151,6 +151,8 @@ namespace ChastainRush
             return false;
         }
         static CellIndex r83RoadIdx; static List<(Vector2 a, Vector2 b, float half, int road)> r83RoadSegs; static readonly List<int> r83RoadNear = new List<int>();
+
+        static readonly HashSet<int> r83ExpressJoined = new HashSet<int>();   // Round 83: roads the Express Lanes' joins laid (R82Joins)
 
         static R82CrossFile R82LoadCrossings()
         {
@@ -264,12 +266,13 @@ namespace ChastainRush
                 for (int i = 0; i < N; i++) L[i].raw = L[i].bridge >= 0 ? map.bridges[L[i].bridge].deck_y[L[i].bi] + liftL : terrain.Height(L[i].p.x, L[i].p.y);
                 // Round 83 (C: ramp 437897716 ends merging onto the Canton Road Connector's bridge beside it, held to its own height 10 m under that deck: 34 %):
                 // an end lying on another deck (a merge) is held to that deck's top
+                bool pinS = false, pinE = false;
                 foreach (int e in new[] { 0, N - 1 })
                 {
                     var dirE = (e == 0 ? L[1].p - L[0].p : L[N - 1].p - L[N - 2].p).normalized;
                     if (!R83DeckTopAt(map, L[e].p, dirE, lineBridges, L[e].raw, out float top)) continue;
                     log.Add($"  {tag}: its end at ({L[e].p.x:0}, {L[e].p.y:0}) merges onto a deck: held to its top {top:0.0} (was {L[e].raw:0.0})");
-                    L[e].raw = top;
+                    L[e].raw = top; if (e == 0) pinS = true; else pinE = true;
                 }
                 var lineIdx = new CellIndex(16f); for (int i = 0; i + 1 < N; i++) lineIdx.Add(L[i].p, L[i + 1].p, .01f);
                 var lnear = new List<int>();
@@ -371,8 +374,8 @@ namespace ChastainRush
                 }
                 y = Gauss(y, 5f);
                 // the outer ends eased back onto the road as it is
-                for (int j = 0; j < N; j++) { double w = Smooth01(Mathf.Min(cum[j], cum[N - 1] - cum[j]) / 15f); y[j] = raw[j] + (y[j] - raw[j]) * w; }   // (the last 15 m onto the road as it is)
-                // how it holds: the sharpest crest's speed, the steepest grade over 10 m, the bounds met
+                // the outer ends eased back onto the road as it is (Round 83: not an end held to the deck it merges onto: the last 15 m went back to the old height, a 10 m spike)
+                for (int j = 0; j < N; j++) { double w = Smooth01(Mathf.Min(pinS ? 1e6f : cum[j], pinE ? 1e6f : cum[N - 1] - cum[j]) / 15f); y[j] = raw[j] + (y[j] - raw[j]) * w; }   // (the last 15 m onto the road as it is)
                 float kMax = 0f, gMax = 0f, moved = 0f; Vector2 gAt = Vector2.zero, kAt = Vector2.zero;
                 for (int i = 0; i < N; i++)
                 {
@@ -553,6 +556,7 @@ namespace ChastainRush
                     var pn = new List<int>(); int changed = 0;
                     float reach = pc.half + 10f;
                     var pathRoads = new HashSet<int>(lineRoads); foreach (var e in rp) if (e.pc >= 0 && !pcs[e.pc].deck) pathRoads.Add(pcs[e.pc].idx);
+                    if (expressLine) foreach (var e in rp) if (e.pc >= 0 && !pcs[e.pc].deck) r83ExpressJoined.Add(pcs[e.pc].idx);   // Round 83 (A): kept as joined (R82UnderLines leaves them)
                     for (int c0 = 0; c0 < M - 1; c0 += 200)
                     {
                         int c1 = Mathf.Min(M - 1, c0 + 200);
@@ -565,8 +569,8 @@ namespace ChastainRush
                             foreach (int s in pIdx.Near(p, reach, pn)) { var ab = rp[s + 1].p - rp[s].p; float t = Mathf.Clamp01(Vector2.Dot(p - rp[s].p, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); float d = (rp[s].p + ab * t - p).magnitude; if (d < best) { best = d; bi = s; bt = t; } }
                             if (best > reach || bi < c0 || bi >= c1) return yy;
                             float tg = Mathf.Lerp(tgt[bi], tgt[bi + 1], bt) - R82Lift(pc.cls);
-                            bool onDeck = rp[bi].pc >= 0 && rp[bi + 1].pc >= 0 && pcs[rp[bi].pc].deck && pcs[rp[bi + 1].pc].deck && !((bi + 2 >= M || rp[bi + 2].pc < 0 || !pcs[rp[bi + 2].pc].deck) && bt > .98f) && !((bi == 0 || rp[bi - 1].pc < 0 || !pcs[rp[bi - 1].pc].deck) && bt < .02f)
-                                          ;
+                            bool deckSeg = rp[bi].pc >= 0 && rp[bi + 1].pc >= 0 && pcs[rp[bi].pc].deck && pcs[rp[bi + 1].pc].deck;
+                            bool onDeck = deckSeg && !((bi + 2 >= M || rp[bi + 2].pc < 0 || !pcs[rp[bi + 2].pc].deck) && bt > .98f) && !((bi == 0 || rp[bi - 1].pc < 0 || !pcs[rp[bi - 1].pc].deck) && bt < .02f);
                             float dl = Near(p, 30f, out float lhh);
                             bool between = bi <= jp && dl < halfL + 8f && best < pc.half + 8f && best + dl < sep + 6f;
                             onDeck &= best <= pc.half + 1f || between;   // Round 83 (the dry run: the I-75 deck over Frey Road cut a 4 m hole in the Express Lanes' road 8 m beside it): only under its own width, or the gap to the line beside it
@@ -584,6 +588,9 @@ namespace ChastainRush
                             }
                             if (dl < halfL + .5f) return yy;   // the line's own road (graded with it)
                             if (otherPave) return yy;
+                            // Round 83 (build 1: the I-575 flyover's join built banks beside its span over the I-75 Express Lanes: spikes 5 m up at the lane's
+                            // shoulder, a northbound car stopped against one): beside a deck (not under it, not the gap to the line) the ground is left
+                            if (deckSeg && !between) return yy;
                             if (between)
                             {
                                 float lineG = lhh - liftL; float f = Mathf.Clamp01((dl - halfL) / Mathf.Max(best - pc.half + dl - halfL, .1f));
@@ -763,7 +770,7 @@ namespace ChastainRush
                 }
             }
             Close();
-            var fixAll = new HashSet<int>(); int passes = 0; var laidRoads = new HashSet<int>();
+            var fixAll = new HashSet<int>(); int passes = 0; var laidRoads = new HashSet<int>(r83ExpressJoined);   // Round 83 (A, build 1: the I-575 flyover's road, joined level to the I-75 Express Lanes, was laid again under the general lanes' deck, 5.9 m off: a car stuck beside the join)
             for (; passes < 3 && fix.Count > 0; passes++)
             {
                 R82RoadLines(map, terrain, fix, passes == 0 ? "round82_crossing_fixes.txt" : $"round82_crossing_fixes_{passes + 1}.txt", laidRoads);

@@ -285,9 +285,14 @@ namespace ChastainRush
                 {
                     var s = segs[si]; var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
                     float d = (s.a + ab * t - p).magnitude;
-                    if (s.deck != null) { if (d < s.half + 1.2f && s.i + 1 < s.deck.Length && Mathf.Abs(Mathf.Lerp(s.deck[s.i], s.deck[s.i + 1], t) - roadY) < 3f) return true; continue; }
+                    // (Round 83, build 1 by Frey Road: I-75's northbound deck 1.4 m above the Express Lanes beside them took their wall away; a car kicked off its
+                    // edge flew across the lanes): an Express deck's parapet is the wall; another deck only at the road's own height (a merge)
+                    if (s.deck != null) { if (d < s.half + 1.2f && s.i + 1 < s.deck.Length && Mathf.Abs(Mathf.Lerp(s.deck[s.i], s.deck[s.i + 1], t) - roadY) < (s.express ? 3f : .6f)) return true; continue; }
                     // (a road running alongside, the general lanes: the wall stands between them, not left out; a ramp or a road at grade: left out)
                     if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
+                    // Round 83 (A, build 1: 49 hits on a wall standing in the narrowing gap where the I-575 flyover's road meets the I-75 Express Lanes): no
+                    // wall within 5 m of a ramp's pavement at about the road's height (the merge stays open)
+                    if (!s.express && s.link && d < s.half + 5f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 2f) return true; }
                 }
                 return false;
             }
