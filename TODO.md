@@ -147,8 +147,8 @@ Check: item 0 for every item.
 For Dan to check: an air race where you miss a ring; the square race's deck turn; the Whitlock jump; the Express Lanes at different times (gates,
 direction); the highways' traffic; the cockpit view; smashing a closed gate.
 
-**Status (Claude, 2026-10-29): built (full Build Map + exe, BUILD_INFO below), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round80/`. Three full Build Maps:
-2 found Express Lanes 13's deck laid straight under three banks, 3 found the Whitlock dock 1 to 2 m into two buildings. Disk and build time at the end.
+**Status (Claude, 2026-10-29): built (full Build Map + exe, 2026-10-28 23:55), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round80/`. Three full Build Maps:
+the 2nd for Express Lanes 13's deck (found laid straight under three banks), the 3rd for the Whitlock dock (found 1 to 2 m into two buildings).
 A PARTLY. AI pilots now err by difficulty (`PlanePilot`: a ring lined up wide, then mostly gone back for; a late turn; slow and careful at a low ring; a lap off the pace). 54 races
 (3 courses x 3 levels x 2, 2 laps, `80_A_air_ai.csv`), every AI finished: rings missed per AI a race Easy / Normal / Hard: Quarry 2.2 / 1.2 / 0.8, Highway 0.7 / 0.3 / 0.7, Air Tour
 4.5 / 3.7 / 2.7; one AI's two laps 4 to 48 s apart on average. The car AI has no catch-up, so neither has this. Found and fixed: a plane put past a ring after its third crash
@@ -170,9 +170,12 @@ D3 DONE. Both planes' cockpit view at the pilot's eyes: their hands on the stick
 E DONE. `World/ExpressLanes.cs` (schedule on Free Roam's clock; races: Dawn 6:30, Day 3 PM, Dusk 7:30 PM, Night 2 AM; replays: the hour in the Clock events), `ExpressGate`
 (4 gates, one per ramp; `make_express_signs.py`), `TrafficNetwork.SetDirection`, police paths `RoadNet.Blocked`. At 6 AM / noon / 5 PM / midnight every gate as scheduled
 (`80_E_*_gate2`); at 5 PM 6 cars northbound, none southbound; none in a reversal. A shut gate smashed at 5 PM breaks (replays: `Kind.ExpressGate`); no oncoming car met in 116 m there.
-F (numbers below). 10 / 22 / 34 cars (Light / Normal / Heavy, were 7 / 14 / 22); two in five kept for the highways; every lane of a multi-lane road used. Found: a long edge
-(the highways', the Express Lanes') could only take a new car when its middle was near the player.
-For Dan to check (added): EL13's options; whether the AI's go-back should be quicker.
+F DONE, the cost for Dan. 10 / 22 / 34 cars (Light / Normal / Heavy, were 7 / 14 / 22); two in five kept for the highways; every lane of a multi-lane road used; a long edge (the
+highways', the Express Lanes') could only take a new car when its middle was near. Cars on the motorways within 400 m of I-75 at Barrett, Normal / Heavy: before 0.2 / 0.5, after 2.3 / 3.5
+(`80_F_*`). Frame rate, before -> after (Normal / Heavy), I-75 at Barrett: 1280 x 720 125 -> 132 / 145 -> 72; Steam Deck 1280 x 800 107 -> 126 / 115 -> 99; 3840 x 2160 full screen 89 -> 50 /
+96 -> 59; the square at 4K 58 -> 32 / 57 -> 53, Town Center 79 -> 60 / 84 -> 69 (`round80_check_f2_*`; runs vary 10 to 30 %). The I-575 spot showed no motorway cars before or after (a poor spot).
+For Dan to check (added): EL13's options; whether the AI's go-back should be quicker; whether the 4K cost of the busier traffic is acceptable.
+Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55.
 
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool

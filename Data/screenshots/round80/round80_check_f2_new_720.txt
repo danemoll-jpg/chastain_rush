@@ -1,0 +1,13 @@
+Round 80 check, 2026-10-28 23:56, the exe, 1280 x 720, muted.
+
+=== F. Traffic, after, 1280 x 720 windowed: cars counted on I-75 and I-575 within 400 m, the frame rate parked (10 s, uncapped)
+  Normal I-75 at Barrett Parkway   : cars on the motorways within 400 m 2.3 (up to 4), cars out in all 22; 132 fps average, slowest 1 % 66 fps
+  Normal I-575 (Phillip Landrum)   : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 22; 102 fps average, slowest 1 % 36 fps
+  Normal Marietta Square           : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 22; 65 fps average, slowest 1 % 29 fps
+  Normal Town Center at Cobb       : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 22; 104 fps average, slowest 1 % 47 fps
+  Heavy  I-75 at Barrett Parkway   : cars on the motorways within 400 m 3.5 (up to 7), cars out in all 34; 72 fps average, slowest 1 % 28 fps
+  Heavy  I-575 (Phillip Landrum)   : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 34; 89 fps average, slowest 1 % 35 fps
+  Heavy  Marietta Square           : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 34; 60 fps average, slowest 1 % 24 fps
+  Heavy  Town Center at Cobb       : cars on the motorways within 400 m 0.0 (up to 0), cars out in all 34; 83 fps average, slowest 1 % 29 fps
+
+0 of 0 checks passed.
