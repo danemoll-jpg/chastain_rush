@@ -161,7 +161,7 @@ Check: item 0 for every item.
 For Dan to check: BUG-005's interchange and any crossing from A's list; the Express Lanes end to end both ways (BUG-006, BUG-007, EL13, Big Shanty, the merge); the Big Shanty
 Express ramp at Noonday Creek (BUG-002 / 003); the rail bridge at BUG-008; the Glen fence in a forward race.
 
-**Status (Claude, 2026-10-29): built (full Build Map + exe 2026-10-29 12:31, build 5), checked in the exe, not yet driven by Dan; published as an update (see K below).** Evidence `Data/screenshots/round82/`.
+**Status (Claude, 2026-10-29): built (full Build Map + exe 2026-10-29 12:31, build 5), checked in the exe, not yet driven by Dan; published as an update.** Evidence `Data/screenshots/round82/`.
 Full Build Maps: 6 (1, 4, 5 complete; 2, 3, 6 stopped at their planning reports): over Dan's cap of 3; stopped as he asked. The code after build 5 (committed) is NOT in the build.
 A PARTLY. `Tools/mapgen/crossings.py` -> `Data/tracks/crossings.json`: 123 crossings (OSM layer / bridge decides who is over, the Express Lanes over when untagged; merges are joins). At OSM's heights 39 had under 5 m, many lying on the road below
 (Greers Chapel, Skip Spann Connector, Dickson Road, Cobb Parkway). Build 5: 121 with 5 m or more, 2 short (ramp 437897716 over I-75 at (2398, -4931) 2.9 m and (2401, -4928) 1.9 m) (`round82_crossings.txt`).
@@ -174,6 +174,7 @@ C DONE. The ramp and the Express deck side by side at one height into the merge,
 D DONE. Rail decks over nothing are bed (8 of 10; `round82_rail_decks.txt`); the bed meets level crossings level then 4 %. BUG-008 after: ballast and ties run on; driven both ways, 0 s in the air.
 E DONE. Fence 713/1987 breakable except in a reverse race (`R81WestOf6`). From Dan's place: forward race it breaks (27 m through), reverse race it holds (5.7 m).
 New rule copied into CLAUDE.md (one heavy job at a time, Below Normal, 3 Build Maps).
+Published: `game-8200` (0.82.0, Latest) on `danemoll-jpg/chastain-rush-releases`, from build 5; the installed launcher picks it up. Disk 33.1 -> 32.8 GB (Builds 17.9 GB: the 0.81 release folders are still there).
 For Dan to check: Greers Chapel (BUG-005), the Big Shanty ramp, the rail at BUG-008, the Glen fence, I-575's Express Lanes. Known broken: the I-75 Express Lanes at the I-575 junction merge, Skip Spann Connector, Frey Road, the 2 short crossings.
 
 ## QUEUED rounds
