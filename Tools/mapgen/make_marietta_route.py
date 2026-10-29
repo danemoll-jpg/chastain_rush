@@ -333,11 +333,12 @@ landing_zone = {"id": "MJ landing", "poly": flat([(L_TOP_X + 1, K_Z - L_W / 2 - 
 # ---------------------------------------------------------------- Round 80 (C): the jump over the tracks at Whitlock Avenue (forward, eastbound)
 # Dan's BUG-001 (x 1608.55 z -8524.74, stopped at the gate with the train passing): "why no jumps on this side?". Something else that belongs by a
 # railroad, not another pile: the rail crew's stack of old ties beside the road west of the tracks (between Whitlock's south curb and the service road's
-# barrier), its lip 12 m before the west track; the old freight house's loading dock east of the tracks, its truck ramp falling east the landing.
+# barrier), its lip 12 m before the west track; the old freight house's loading dock east of the tracks against the north walls of the buildings
+# there (34554, 34287), its truck ramp falling east the landing.
 # The tracks lean about 4 degrees off north-south: at z -8530 the west track (line 6) is at x 1623.7, the east one (line 0) at x 1628.3.
-W_Z = -8530.0
+W_Z = -8528.3   # between Whitlock's south curb (z -8525.3) and the buildings' north walls east of the tracks (34554, 34287: z -8531 to -8532; the dock stood 1 to 2 m into them)
 W_LIP_X, W_LEN, W_ANG, W_H, W_W = 1611.7, 15.0, 26.0, 4.0, 4.2
-D_TOP_X, D_LEN, D_H, D_W = 1636.3, 40.0, 4.4, 6.0   # its foot short of building 34287 (x 1690)
+D_TOP_X, D_LEN, D_H, D_W = 1636.3, 40.0, 4.4, 5.0   # its foot short of building 34287 (x 1690)
 w_rails = (1623.7, 1628.3)
 w_lip_y = ground(W_LIP_X, W_Z) + W_H; d_top_y = ground(D_TOP_X, W_Z) + D_H
 w_train_top = max(ground(x, W_Z) for x in w_rails) + 0.46 + 4.65

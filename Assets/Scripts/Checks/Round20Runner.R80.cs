@@ -60,7 +60,7 @@ namespace ChastainRush
         static List<Vector3> R80JumpLine(List<Vector3> line)
         {
             // (lined up on the stack from just past the corner, straight on its line 15 m before its foot: a person lines a jump up early)
-            const float kz = -8530f, footX = 1596.7f, dockFoot = 1676.3f, lined = footX - 15f;
+            const float kz = -8528.3f, footX = 1596.7f, dockFoot = 1676.3f, lined = footX - 15f;
             int i0 = line.FindIndex(p => p.x > 1546f && p.x < 1560f && Mathf.Abs(p.z + 8524f) < 6f); int i1 = line.FindIndex(p => p.x > 1695f && Mathf.Abs(p.z + 8523f) < 6f);
             if (i0 < 0 || i1 < 0) return line;
             var mid = new List<Vector3>();
@@ -132,8 +132,8 @@ namespace ChastainRush
             var cross = R80Crossing(R80Whitlock); var rt = RailTrains.Instance;
             foreach (float v0 in new[] { 21f, 24f })
             {
-                var line = new List<Vector3>(); for (float x = 1561f; x <= 1700f; x += 3f) line.Add(RaceRoute.Ground(x, -8530f));
-                yield return R74Place(RaceRoute.Surface(1561f, -8530f), 90f); R73Pad();
+                var line = new List<Vector3>(); for (float x = 1561f; x <= 1700f; x += 3f) line.Add(RaceRoute.Ground(x, -8528.3f));
+                yield return R74Place(RaceRoute.Surface(1561f, -8528.3f), 90f); R73Pad();
                 Place(car.Body.position, Vector3.right, v0);
                 rt.Align(cross.center, Mathf.Max(.5f, (cross.center.x - 1561f) / v0 - 2.5f), true);
                 bool under = false, closed = false; float over = float.NaN, air = 0f, airBest = 0f, land = 0f, lastVy = 0f; Vector3 landAt = Vector3.zero;

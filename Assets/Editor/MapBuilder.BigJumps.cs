@@ -357,7 +357,7 @@ namespace ChastainRush
                 else if (b.look == "loadingdock")
                 {
                     // Round 80 (C): the old freight house's loading dock beside the tracks, its truck ramp the landing (the driven prism, concrete), the dock's
-                    // face toward the tracks with black rubber bumpers, a yellow edge, two pallets on its top
+                    // face toward the tracks with black rubber bumpers, a yellow edge (against the freight house's wall: nothing beside it)
                     var pr = KickerProfile(); var conc = new Color(0.62f, 0.6f, 0.56f);
                     var rp = Prism("dock", pr, b.ramp_m, hw, conc, new[] { 1, 2, 3 }); rp.landing = true;
                     BuildPrism(rp, terrain, mats, jr);
@@ -368,13 +368,6 @@ namespace ChastainRush
                     look.Tint = new Color(0.08f, 0.08f, 0.08f);
                     for (float lat = -hw + 0.5f; lat <= hw - 0.4f; lat += 1.2f)
                         BoxAt(look, W(b.ramp_m + 0.08f, lat, Mathf.Max(gLip + 0.3f, y1 - 0.45f)), across, 0.25f, 0.5f, 0.16f);
-                    look.Tint = new Color(0.55f, 0.42f, 0.27f);
-                    foreach (float lat in new[] { -hw - 0.9f, hw + 0.9f })
-                    {
-                        var q = W(b.ramp_m - 3f, lat, 0f); float g = Ground(terrain, q.x, q.z);
-                        BoxAt(look, new Vector3(q.x, g + 0.08f, q.z), across, 1.2f, 0.15f, 1.0f);
-                        BoxAt(look, new Vector3(q.x, g + 0.23f, q.z), across, 1.2f, 0.15f, 1.0f);
-                    }
                     Debug.Log($"[Round80] {b.id} loading dock: {b.ramp_m:0.0} m from {y0:0.00} m to its top at {y1:0.00} m, {b.width:0.0} m wide");
                 }
                 // Round 20 follow-ups: the hint at a turn-off (N2: a road-closed barricade knocked over on its side) and worn tire tracks
