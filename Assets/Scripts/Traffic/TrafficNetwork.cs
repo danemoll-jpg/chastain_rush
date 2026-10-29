@@ -23,6 +23,9 @@ namespace ChastainRush
         public int EdgeCount => edgeFrom.Length;
         public int NodeCount => nodes.Length;
         public float[] Length { get; private set; }
+        Vector2[] boxLo, boxHi;   // Round 80 (F): each edge's bounds
+        // Round 80 (F): how far p is from an edge's bounds (0 inside)
+        public float BoxDistance(int e, Vector2 p) { var c = Vector2.Max(boxLo[e], Vector2.Min(p, boxHi[e])); return (p - c).magnitude; }
         List<int>[] adjacent;   // node -> edges touching it
 
         public void Fill(Vector2[] n, int[] from, int[] to, int[] cls, bool[] oneway, float[] half, bool[] bridge, int[] start, int[] count, Vector2[] pts, string[] names, string[] classes)
@@ -42,11 +45,13 @@ namespace ChastainRush
             Instance = this;
             turnNodeSet = new HashSet<int>(turnNodes ?? new int[0]); turnEdgeSet = new HashSet<int>(turnEdges ?? new int[0]);
             adjacent = new List<int>[nodes.Length]; for (int i = 0; i < nodes.Length; i++) adjacent[i] = new List<int>();
-            Length = new float[edgeFrom.Length];
+            Length = new float[edgeFrom.Length]; boxLo = new Vector2[edgeFrom.Length]; boxHi = new Vector2[edgeFrom.Length];
             for (int e = 0; e < edgeFrom.Length; e++)
             {
                 adjacent[edgeFrom[e]].Add(e); if (edgeTo[e] != edgeFrom[e]) adjacent[edgeTo[e]].Add(e);
                 float L = 0; for (int i = 1; i < edgeCount[e]; i++) L += (points[edgeStart[e] + i] - points[edgeStart[e] + i - 1]).magnitude; Length[e] = L;
+                var lo = points[edgeStart[e]]; var hi = lo; for (int i = 1; i < edgeCount[e]; i++) { lo = Vector2.Min(lo, points[edgeStart[e] + i]); hi = Vector2.Max(hi, points[edgeStart[e] + i]); }
+                boxLo[e] = lo; boxHi[e] = hi;
             }
         }
         void OnDestroy() { if (Instance == this) Instance = null; }

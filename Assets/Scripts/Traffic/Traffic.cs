@@ -147,8 +147,11 @@ namespace ChastainRush
             for (int e = 0; e < net.EdgeCount; e++)
             {
                 if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12 || net.SpawnOff(e)) continue;   // Round 80 (E): not on the Express Lanes while they are closed
-                var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue;
-                candidates.Add(e); total += net.Length[e] * ClassWeight(e); weights.Add(total);
+                if (OldMix) { var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue; }
+                // Round 80 (F): an edge in reach anywhere along it (by its middle, a long one between far junctions, a highway's or the Express Lanes',
+                // was never in reach of a player beside it), its weight its length up to 800 m
+                else if (NearBox(e, at2) > 400f) continue;
+                candidates.Add(e); total += (OldMix ? net.Length[e] : Mathf.Min(net.Length[e], 800f)) * ClassWeight(e); weights.Add(total);
             }
             if (candidates.Count == 0) return false;
             float min = near ? 60f : 140f;
@@ -175,6 +178,7 @@ namespace ChastainRush
             }
             return false;
         }
+        float NearBox(int e, Vector2 p1) { float d = net.BoxDistance(e, p1); var p2 = SplitScreen.P2Car; if (p2) d = Mathf.Min(d, net.BoxDistance(e, new Vector2(p2.Body.position.x, p2.Body.position.z))); return d; }
         // Round 37: the distance from a road point to the nearer player (split screen: both; else the one)
         static float Near(Vector2 q, Vector2 p1)
         {
