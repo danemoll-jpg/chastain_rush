@@ -83,13 +83,15 @@ namespace ChastainRush
                 var line = new List<Vector3>(r.LeadIn ?? new Vector3[0]); for (float s = 0f; s <= r.LapLength; s += 3f) line.Add(r.PointAt(r.GateS + s, out _));
                 if (mode == "jump") line = R80JumpLine(line);
                 var rt = RailTrains.Instance; var cross = R80Crossing(R80Whitlock);
-                bool aligned = false; float alignedAt = -1f, tIn = -1f, tOut = -1f, overTrain = float.NaN, waitedFor = 0f; bool trainUnder = false, closedWhenOver = false;
+                var wtrace = new StringBuilder("t\tx\ty\tz\tspeed\twheels\theading\tclosed\n"); float nextW = 0f; bool aligned = false; float alignedAt = -1f, tIn = -1f, tOut = -1f, overTrain = float.NaN, waitedFor = 0f; bool trainUnder = false, closedWhenOver = false;
                 Func<float, float> speedAt = s =>
                 {
                     var p = car.Body.position; float d = Flat(p - cross.center).magnitude;
                     // on Whitlock past the corner: the train's front over the crossing 2.5 s before the car gets there (jump: its cars under the flight), or 4 s after
                     // (wait: the gates down, the train coming)
+                    if (!aligned && p.x > 1545f && p.x < 1590f && p.z < -8512f && cross.Closed) { aligned = true; alignedAt = -2f; }   // the race's own train is there already: left as it is
                     if (!aligned && p.x > 1545f && p.x < 1590f && p.z < -8512f) { aligned = true; alignedAt = Time.time; float eta = (cross.center.x - p.x) / Mathf.Max(8f, car.Body.linearVelocity.magnitude); rt.Align(cross.center, mode == "jump" ? Mathf.Max(.5f, eta - 2.5f) : eta + 4f, true); }
+                    if (p.x > 1540f && p.x < 1700f && p.z < -8500f && p.z > -8560f && Time.time >= nextW) { nextW = Time.time + .1f; var v = car.Body.linearVelocity; wtrace.AppendLine($"{Time.time:0.0}\t{p.x:0.0}\t{p.y:0.0}\t{p.z:0.0}\t{v.magnitude:0.0}\t{car.GroundedWheels}\t{car.transform.eulerAngles.y:0}\t{(cross.Closed ? 1 : 0)}"); }
                     if (tIn < 0f && p.x > 1545f && p.x < 1575f && p.z < -8512f) tIn = Time.time;
                     if (tIn > 0f && tOut < 0f && p.x > 1700f && p.z < -8512f) tOut = Time.time;
                     if (p.x > 1619f && p.x < 1631f && car.GroundedWheels == 0)
@@ -104,10 +106,10 @@ namespace ChastainRush
                 var run = new HumanRun(); Time.timeScale = 1.5f; Time.maximumDeltaTime = .5f;
                 var pics = new List<(string, float)> { ($"80_C_{mode}_approach", 1080f + 60f) };
                 yield return HumanDrive(line, 30f, 300f, run, () => race.Player.Finished, speedAt, pics, $"80_C_{mode}_in_the_air");
-                Time.timeScale = 1f;
+                Time.timeScale = 1f; File.WriteAllText(Path.Combine(outputDir, $"80_C_{mode}_trace.tsv"), wtrace.ToString());
                 float secs = tIn > 0f && tOut > 0f ? tOut - tIn : float.NaN; through[mode] = secs;
                 report.AppendLine($"  {mode}: {(race.Player.Finished ? "finished " + RaceController.Fmt(race.Player.FinalTotal) : "NOT finished")}; resets {run.resets}; longest in the air {run.maxAir:0.00} s; " +
-                                  $"the train lined up {(aligned ? "yes" : "NO")}; Whitlock from North Marietta Parkway to past the dock {secs:0.0} s (game time); waited at the gates {waitedFor:0.0} s; " +
+                                  $"the train {(alignedAt == -2f ? "already there (the race's own)" : aligned ? "lined up" : "NOT lined up")}; Whitlock from North Marietta Parkway to past the dock {secs:0.0} s (game time); waited at the gates {waitedFor:0.0} s; " +
                                   (mode == "jump" ? $"over the tracks: the crossing {(closedWhenOver ? "closed" : "open")}, a train car under the car {(trainUnder ? $"yes ({overTrain:0.0} m under the car's middle)" : "no")}" : "") + run.note);
                 if (mode == "jump") Check("whitlock: over the tracks off the tie stack (over 1.2 s in the air), a train under it, no reset", run.maxAir > 1.2f && trainUnder && run.resets == 0, $"air {run.maxAir:0.00} s, train under {trainUnder}, resets {run.resets}");
                 if (mode == "wait") Check("whitlock: on the road the train stops you (no free way round)", waitedFor > 3f, $"waited {waitedFor:0.0} s");
