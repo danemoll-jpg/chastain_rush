@@ -24,6 +24,7 @@ namespace ChastainRush
         [Serializable] class RailJ { public RailLineJ[] lines; public RailCrossJ[] crossings, overpasses; public int[] drop; }
         sealed class RailPlan { public List<Vector2> p; public float[] y; public bool[] deck, roadDeck, cross; public int src; }   // Round 78: src, its index in railroad.json
         static List<RailPlan> RailPlans; static readonly HashSet<int> railDrop = new HashSet<int>();
+        static readonly List<string> railDeckLog = new List<string>();   // Round 82 (D): Assets/Generated/round82_rail_decks.txt
         static List<(Vector2 at, Vector2 road, float half, float y, int line)> RailCrossings;   // Round 78: line, the line it is on
         static CellIndex railTreeIdx; static List<Vector2> railTreePts;
         const float RailSmooth = 50f, RailLift = 2.5f, RailClear = 5.2f, RailDeck = 1.5f, RailTreeKeep = 5f;
@@ -51,7 +52,7 @@ namespace ChastainRush
 
         static void PlanRailroad(MapData map, TerrainGrid t)
         {
-            RailPlans = null; railDrop.Clear(); RailCrossings = new List<(Vector2, Vector2, float, float, int)>(); railTreeIdx = null;
+            RailPlans = null; railDrop.Clear(); railDeckLog.Clear(); RailCrossings = new List<(Vector2, Vector2, float, float, int)>(); railTreeIdx = null;
             var path = Path.Combine(ProjectRoot, "Data/tracks/railroad.json"); if (!File.Exists(path)) return;
             var d = JsonUtility.FromJson<RailJ>(File.ReadAllText(path)); if (d?.lines == null) return;
             if (d.drop != null) foreach (int i in d.drop) if (i >= 0 && i < map.buildings.Length && !MariettaOwns(i)) railDrop.Add(i);
@@ -136,6 +137,24 @@ namespace ChastainRush
                 if (again) y = R77Smooth1D(raw, w, mu);
                 for (int i = 1; i < n; i++) { float gr = Mathf.Abs(y[i] - y[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], .1f); if (gr > steepest) { steepest = gr; steepAt = p[i]; } if (gr > .05f && (steepList.Count == 0 || (steepList[steepList.Count - 1].at - p[i]).magnitude > 60f)) steepList.Add((p[i], gr)); }
                 for (int i = 0; i < n; i++) { donePts.Add((p[i], y[i])); doneIdx.Add(p[i]); }
+                // Round 82 (D, Dan's BUG-008 x 2730.04 z -5231.56 h 58, by Atlanta Industrial Drive: "not evven cant drive forward"): OSM marks short
+                // bridges where the line in this map crosses nothing (no road under it, no water, the ground within a slab's depth of the bed): a deck
+                // there stood on raw ground the bed's grading skips (ground up through it, ties half buried, a step at its ends). Such a deck is bed.
+                for (int i = 0; i < n;)
+                {
+                    if (!deck[i] || roadDeck[i]) { i++; continue; }
+                    int j = i; while (j + 1 < n && deck[j + 1] && !roadDeck[j + 1]) j++;
+                    float most = float.MinValue; bool wet = false;
+                    for (int k = i; k <= j; k++)
+                    {
+                        most = Mathf.Max(most, y[k] - 1.2f - ground[k]);
+                        if (Beds != null && (Beds.Wet(p[k].x, p[k].y) || (Beds.NearStream(p[k], out float sd, out _) && sd < StreamHalf + 3f))) wet = true;
+                    }
+                    bool bed = !wet && most < 1.5f;
+                    railDeckLog.Add($"line {li} deck ({p[i].x:0}, {p[i].y:0}) to ({p[j].x:0}, {p[j].y:0}), {(cum[j] - cum[i]):0} m: {(wet ? "over water" : "dry")}, most {most:0.0} m under its slab: {(bed ? "made bed (nothing under it)" : "kept")}");
+                    if (bed) for (int k = i; k <= j; k++) deck[k] = false;
+                    i = j + 1;
+                }
                 // Round 79 (D): under a road bridge the bed's banks stay within 4 m (an abutment's room): a cut spread 10 m and more along the line took
                 // the Canton Road Connector's southbound approach 2 m down in front of its deck (a hole)
                 var tight = new bool[n];
@@ -180,6 +199,16 @@ namespace ChastainRush
             }
             foreach (var g in bedGrades) GradeAlong(t, g);
             foreach (var g in grades) GradeAlong(t, g);
+            // Round 82 (D): every rail deck's ends after the grading: the bed's top beside each end against the deck's (the step a vehicle meets)
+            foreach (var rp in RailPlans)
+                for (int i = 0; i < rp.p.Count; i++)
+                {
+                    bool a = rp.deck[i] && i > 0 && !rp.deck[i - 1], b = rp.deck[i] && i + 1 < rp.p.Count && !rp.deck[i + 1]; if (!a && !b) continue;
+                    int o = a ? i - 1 : i + 1; float step = t.Height(rp.p[o].x, rp.p[o].y) - rp.y[o];
+                    railDeckLog.Add($"line {rp.src} deck end ({rp.p[i].x:0}, {rp.p[i].y:0}){(rp.roadDeck[i] ? " (over a road)" : "")}: the ground beside it {step:+0.00;-0.00} m off the bed, the deck {rp.y[i] - rp.y[o]:+0.00;-0.00} m off the bed beside it");
+                }
+            try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "round82_rail_decks.txt"), railDeckLog); } catch (System.Exception e) { Debug.LogWarning("[Round82] " + e.Message); }
+            railDeckLog.Clear();
             railTreePts = new List<Vector2>(); railTreeIdx = new CellIndex(16f);
             foreach (var rp in RailPlans) foreach (var q in rp.p) { railTreePts.Add(q); railTreeIdx.Add(q); }
             float km = RailPlans.Sum(rp => { float s = 0f; for (int i = 1; i < rp.p.Count; i++) s += (rp.p[i] - rp.p[i - 1]).magnitude; return s; }) / 1000f;

@@ -139,7 +139,9 @@ namespace ChastainRush
 
         // solid privacy fences, the neighborhood's look (BuildFencePanel), a BoxCollider per panel; a gate: an opening between two
         // round solid posts, its two leaves swung back flat against the fence (look only)
-        static readonly HashSet<string> R81WestOf6 = new HashSet<string> { "1572/2065", "2065/1452", "1452/1052", "1572/1622 (the side gate)" };   // Round 81 (F)
+        // Round 82 (E, Dan's BUG-001 x 2778.72 z 1028.78 h 149, a forward race: "you said these would be breakable. Make it breakable going this direction"):
+        // 713/1987, the board fence across the forward shortcut's line between the two houses, was left solid in any race; now as the four west of the landing
+        static readonly HashSet<string> R81WestOf6 = new HashSet<string> { "1572/2065", "2065/1452", "1452/1052", "1572/1622 (the side gate)", "713/1987" };   // Round 81 (F), Round 82 (E)
         static void BuildSolidFences(ScShortcut sc, TerrainGrid terrain, Materials mats, Transform parent)
         {
             if (sc.fences == null || sc.fences.Length == 0) return;

@@ -1,0 +1,2857 @@
+{
+ "note": "Round 82 A: roads crossing without a shared node (Tools/mapgen/crossings.py)",
+ "crossings": [
+  {
+   "x": -1379.54,
+   "z": 1586.04,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 12,
+    "osm_id": 163463866,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 25,
+    "t": 0.1202
+   },
+   "under": {
+    "kind": "road",
+    "index": 2089,
+    "osm_id": 631653335,
+    "name": "Frey Road Northwest",
+    "class": "secondary",
+    "seg": 2,
+    "t": 0.5202
+   }
+  },
+  {
+   "x": -1379.4,
+   "z": 1568.88,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 44,
+    "osm_id": 623138519,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 29,
+    "t": 0.525
+   },
+   "under": {
+    "kind": "road",
+    "index": 2089,
+    "osm_id": 631653335,
+    "name": "Frey Road Northwest",
+    "class": "secondary",
+    "seg": 2,
+    "t": 0.6432
+   }
+  },
+  {
+   "x": -1379.09,
+   "z": 1531.69,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 14,
+    "osm_id": 163463873,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 32,
+    "t": 0.1148
+   },
+   "under": {
+    "kind": "road",
+    "index": 2089,
+    "osm_id": 631653335,
+    "name": "Frey Road Northwest",
+    "class": "secondary",
+    "seg": 2,
+    "t": 0.91
+   }
+  },
+  {
+   "x": -1109.42,
+   "z": 774.09,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 42,
+    "osm_id": 564146483,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 30,
+    "t": 0.6166
+   },
+   "under": {
+    "kind": "road",
+    "index": 2814,
+    "osm_id": 9118504,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 2,
+    "t": 0.7941
+   }
+  },
+  {
+   "x": -1108.63,
+   "z": 762.46,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 40,
+    "osm_id": 564146481,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 11,
+    "t": 0.0552
+   },
+   "under": {
+    "kind": "road",
+    "index": 2814,
+    "osm_id": 9118504,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 3,
+    "t": 0.2925
+   }
+  },
+  {
+   "x": -1087.38,
+   "z": 777.36,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 42,
+    "osm_id": 564146483,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 19,
+    "t": 0.4738
+   },
+   "under": {
+    "kind": "road",
+    "index": 1246,
+    "osm_id": 437901768,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.3708
+   }
+  },
+  {
+   "x": -1084.44,
+   "z": 766.03,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 40,
+    "osm_id": 564146481,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 23,
+    "t": 0.2798
+   },
+   "under": {
+    "kind": "road",
+    "index": 1246,
+    "osm_id": 437901768,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.3904
+   }
+  },
+  {
+   "x": -1070.01,
+   "z": 779.93,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 42,
+    "osm_id": 564146483,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 10,
+    "t": 0.6979
+   },
+   "under": {
+    "kind": "road",
+    "index": 2047,
+    "osm_id": 623138520,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 8,
+    "t": 0.6145
+   }
+  },
+  {
+   "x": -1067.09,
+   "z": 768.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 40,
+    "osm_id": 564146481,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 32,
+    "t": 0.0516
+   },
+   "under": {
+    "kind": "road",
+    "index": 2047,
+    "osm_id": 623138520,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 8,
+    "t": 0.7568
+   }
+  },
+  {
+   "x": -1056.88,
+   "z": 781.87,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 42,
+    "osm_id": 564146483,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 4,
+    "t": 0.0593
+   },
+   "under": {
+    "kind": "road",
+    "index": 852,
+    "osm_id": 175898801,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 7,
+    "t": 0.8234
+   }
+  },
+  {
+   "x": -1053.96,
+   "z": 770.53,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 40,
+    "osm_id": 564146481,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 38,
+    "t": 0.6873
+   },
+   "under": {
+    "kind": "road",
+    "index": 852,
+    "osm_id": 175898801,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 7,
+    "t": 0.7945
+   }
+  },
+  {
+   "x": -1047.1,
+   "z": 783.31,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 39,
+    "osm_id": 564146480,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 20,
+    "t": 0.6128
+   },
+   "under": {
+    "kind": "road",
+    "index": 2842,
+    "osm_id": 437902738,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 2,
+    "t": 0.2449
+   }
+  },
+  {
+   "x": -1043.07,
+   "z": 772.13,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 40,
+    "osm_id": 564146481,
+    "name": "Skip Spann Connector",
+    "class": "tertiary",
+    "seg": 44,
+    "t": 0.1879
+   },
+   "under": {
+    "kind": "road",
+    "index": 2842,
+    "osm_id": 437902738,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 1,
+    "t": 0.7795
+   }
+  },
+  {
+   "x": -1000.47,
+   "z": 442.78,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 11,
+    "osm_id": 163463411,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 30,
+    "t": 0.3145
+   },
+   "under": {
+    "kind": "road",
+    "index": 1246,
+    "osm_id": 437901768,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.9515
+   }
+  },
+  {
+   "x": -995.46,
+   "z": 423.47,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 10,
+    "osm_id": 163463407,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 17,
+    "t": 0.8108
+   },
+   "under": {
+    "kind": "road",
+    "index": 1246,
+    "osm_id": 437901768,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.985
+   }
+  },
+  {
+   "x": -982.27,
+   "z": 447.53,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 11,
+    "osm_id": 163463411,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 20,
+    "t": 0.9087
+   },
+   "under": {
+    "kind": "road",
+    "index": 2047,
+    "osm_id": 623138520,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 9,
+    "t": 0.7449
+   }
+  },
+  {
+   "x": -977.15,
+   "z": 428.16,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 34,
+    "osm_id": 437905319,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 6,
+    "t": 0.0369
+   },
+   "under": {
+    "kind": "road",
+    "index": 2047,
+    "osm_id": 623138520,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 9,
+    "t": 0.7927
+   }
+  },
+  {
+   "x": -971.45,
+   "z": 450.36,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 11,
+    "osm_id": 163463411,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 15,
+    "t": 0.3157
+   },
+   "under": {
+    "kind": "road",
+    "index": 852,
+    "osm_id": 175898801,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 6,
+    "t": 0.9494
+   }
+  },
+  {
+   "x": -966.32,
+   "z": 430.92,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 34,
+    "osm_id": 437905319,
+    "name": "Chastain Road",
+    "class": "primary",
+    "seg": 11,
+    "t": 0.6244
+   },
+   "under": {
+    "kind": "road",
+    "index": 852,
+    "osm_id": 175898801,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 6,
+    "t": 0.826
+   }
+  },
+  {
+   "x": -679.69,
+   "z": -438.31,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 16,
+    "osm_id": 175898799,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 16,
+    "t": 0.7939
+   },
+   "under": {
+    "kind": "road",
+    "index": 2064,
+    "osm_id": 630809649,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 1,
+    "t": 0.0966
+   }
+  },
+  {
+   "x": -672.05,
+   "z": -449.93,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 16,
+    "osm_id": 175898799,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 23,
+    "t": 0.7487
+   },
+   "under": {
+    "kind": "road",
+    "index": 2063,
+    "osm_id": 630809648,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 3,
+    "t": 0.7189
+   }
+  },
+  {
+   "x": -604.69,
+   "z": -410.14,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 37,
+    "osm_id": 536789464,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 17,
+    "t": 0.6639
+   },
+   "under": {
+    "kind": "road",
+    "index": 2504,
+    "osm_id": 1127469048,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 1,
+    "t": 0.4909
+   }
+  },
+  {
+   "x": -597.02,
+   "z": -421.67,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 37,
+    "osm_id": 536789464,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 24,
+    "t": 0.5884
+   },
+   "under": {
+    "kind": "road",
+    "index": 1182,
+    "osm_id": 392540230,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 0,
+    "t": 0.174
+   }
+  },
+  {
+   "x": -587.93,
+   "z": -403.89,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 17,
+    "osm_id": 175898800,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 18,
+    "t": 0.2937
+   },
+   "under": {
+    "kind": "road",
+    "index": 2504,
+    "osm_id": 1127469048,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 1,
+    "t": 0.1787
+   }
+  },
+  {
+   "x": -580.38,
+   "z": -415.36,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 17,
+    "osm_id": 175898800,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.4303
+   },
+   "under": {
+    "kind": "road",
+    "index": 1182,
+    "osm_id": 392540230,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 0,
+    "t": 0.2799
+   }
+  },
+  {
+   "x": -90.5,
+   "z": -2182.3,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 61,
+    "osm_id": 163463865,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.5395
+   },
+   "under": {
+    "kind": "road",
+    "index": 5497,
+    "osm_id": 437900760,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 1,
+    "t": 0.8165
+   }
+  },
+  {
+   "x": -80.31,
+   "z": -2202.63,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 61,
+    "osm_id": 163463865,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 22,
+    "t": 0.9166
+   },
+   "under": {
+    "kind": "road",
+    "index": 9255,
+    "osm_id": 977990397,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 1,
+    "t": 0.9446
+   }
+  },
+  {
+   "x": -48.66,
+   "z": -2152.27,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 78,
+    "osm_id": 536789455,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 12,
+    "t": 0.5509
+   },
+   "under": {
+    "kind": "road",
+    "index": 5497,
+    "osm_id": 437900760,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.6431
+   }
+  },
+  {
+   "x": -42.88,
+   "z": -2177.29,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 78,
+    "osm_id": 536789455,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 25,
+    "t": 0.3888
+   },
+   "under": {
+    "kind": "road",
+    "index": 9256,
+    "osm_id": 977991560,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.7059
+   }
+  },
+  {
+   "x": -35.62,
+   "z": -2143.13,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 62,
+    "osm_id": 163463875,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 23,
+    "t": 0.8154
+   },
+   "under": {
+    "kind": "road",
+    "index": 5498,
+    "osm_id": 437900761,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 3,
+    "t": 0.9571
+   }
+  },
+  {
+   "x": -29.3,
+   "z": -2168.1,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 62,
+    "osm_id": 163463875,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 10,
+    "t": 0.9325
+   },
+   "under": {
+    "kind": "road",
+    "index": 9256,
+    "osm_id": 977991560,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.9863
+   }
+  },
+  {
+   "x": 1.94,
+   "z": -2352.71,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 78,
+    "osm_id": 536789455,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 115,
+    "t": 0.9469
+   },
+   "under": {
+    "kind": "road",
+    "index": 4103,
+    "osm_id": 163463881,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.2554
+   }
+  },
+  {
+   "x": 64.72,
+   "z": -2523.8,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 78,
+    "osm_id": 536789455,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 207,
+    "t": 0.1144
+   },
+   "under": {
+    "kind": "road",
+    "index": 11375,
+    "osm_id": 879570834,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.7199
+   }
+  },
+  {
+   "x": 121.72,
+   "z": -2642.37,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 93,
+    "osm_id": 1169449564,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 49,
+    "t": 0.5353
+   },
+   "under": {
+    "kind": "road",
+    "index": 7554,
+    "osm_id": 564149145,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.7345
+   }
+  },
+  {
+   "x": 127.11,
+   "z": -2652.4,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 96,
+    "osm_id": 1554737789,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 18,
+    "t": 0.0757
+   },
+   "under": {
+    "kind": "road",
+    "index": 7554,
+    "osm_id": 564149145,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.9033
+   }
+  },
+  {
+   "x": 139.98,
+   "z": -2633.38,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 93,
+    "osm_id": 1169449564,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 39,
+    "t": 0.3602
+   },
+   "under": {
+    "kind": "road",
+    "index": 11375,
+    "osm_id": 879570834,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 5,
+    "t": 0.161
+   }
+  },
+  {
+   "x": 145.79,
+   "z": -2643.37,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 96,
+    "osm_id": 1554737789,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 28,
+    "t": 0.451
+   },
+   "under": {
+    "kind": "road",
+    "index": 11375,
+    "osm_id": 879570834,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 5,
+    "t": 0.2382
+   }
+  },
+  {
+   "x": 153.26,
+   "z": -2626.83,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 93,
+    "osm_id": 1169449564,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 31,
+    "t": 0.9581
+   },
+   "under": {
+    "kind": "road",
+    "index": 4103,
+    "osm_id": 163463881,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.7972
+   }
+  },
+  {
+   "x": 158.88,
+   "z": -2637.03,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 96,
+    "osm_id": 1554737789,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 35,
+    "t": 0.7244
+   },
+   "under": {
+    "kind": "road",
+    "index": 4103,
+    "osm_id": 163463881,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.8173
+   }
+  },
+  {
+   "x": 178.87,
+   "z": -2614.21,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 93,
+    "osm_id": 1169449564,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 17,
+    "t": 0.6808
+   },
+   "under": {
+    "kind": "road",
+    "index": 4090,
+    "osm_id": 119686455,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.2212
+   }
+  },
+  {
+   "x": 184.54,
+   "z": -2624.62,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 96,
+    "osm_id": 1554737789,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 49,
+    "t": 0.9802
+   },
+   "under": {
+    "kind": "road",
+    "index": 4090,
+    "osm_id": 119686455,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.1821
+   }
+  },
+  {
+   "x": 192.22,
+   "z": -2607.63,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 93,
+    "osm_id": 1169449564,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 10,
+    "t": 0.2393
+   },
+   "under": {
+    "kind": "road",
+    "index": 11348,
+    "osm_id": 437899454,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 1,
+    "t": 0.279
+   }
+  },
+  {
+   "x": 197.1,
+   "z": -2618.54,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 96,
+    "osm_id": 1554737789,
+    "name": "Greers Chapel Drive Northwest",
+    "class": "tertiary",
+    "seg": 56,
+    "t": 0.9561
+   },
+   "under": {
+    "kind": "road",
+    "index": 11348,
+    "osm_id": 437899454,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 1,
+    "t": 0.106
+   }
+  },
+  {
+   "x": 331.44,
+   "z": 945.74,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 8,
+    "osm_id": 1031943927,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 0,
+    "t": 0.6973
+   },
+   "under": {
+    "kind": "road",
+    "index": 194,
+    "osm_id": 367181843,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 3,
+    "t": 0.4518
+   }
+  },
+  {
+   "x": 334.71,
+   "z": 928.83,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 0,
+    "osm_id": 182380643,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 21,
+    "t": 0.1486
+   },
+   "under": {
+    "kind": "road",
+    "index": 194,
+    "osm_id": 367181843,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 3,
+    "t": 0.4687
+   }
+  },
+  {
+   "x": 349.24,
+   "z": 946.02,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 1,
+    "osm_id": 182380646,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 24,
+    "t": 0.7674
+   },
+   "under": {
+    "kind": "road",
+    "index": 285,
+    "osm_id": 564154401,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.1416
+   }
+  },
+  {
+   "x": 352.48,
+   "z": 929.04,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 0,
+    "osm_id": 182380643,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 30,
+    "t": 0.0405
+   },
+   "under": {
+    "kind": "road",
+    "index": 285,
+    "osm_id": 564154401,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.4176
+   }
+  },
+  {
+   "x": 358.67,
+   "z": 945.78,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 1,
+    "osm_id": 182380646,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 20,
+    "t": 0.0517
+   },
+   "under": {
+    "kind": "road",
+    "index": 241,
+    "osm_id": 442149008,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.5538
+   }
+  },
+  {
+   "x": 361.94,
+   "z": 928.99,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 0,
+    "osm_id": 182380643,
+    "name": "Chastain Road Northwest",
+    "class": "primary",
+    "seg": 34,
+    "t": 0.7698
+   },
+   "under": {
+    "kind": "road",
+    "index": 241,
+    "osm_id": 442149008,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.5373
+   }
+  },
+  {
+   "x": 471.83,
+   "z": -3289.53,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 60,
+    "osm_id": 163463460,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 72,
+    "t": 0.1498
+   },
+   "under": {
+    "kind": "road",
+    "index": 5642,
+    "osm_id": 536789456,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 8,
+    "t": 0.7368
+   }
+  },
+  {
+   "x": 476.9,
+   "z": -3246.37,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 60,
+    "osm_id": 163463460,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 50,
+    "t": 0.4137
+   },
+   "under": {
+    "kind": "road",
+    "index": 4089,
+    "osm_id": 119686448,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.4793
+   }
+  },
+  {
+   "x": 484.8,
+   "z": -3203.62,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 60,
+    "osm_id": 163463460,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 28,
+    "t": 0.6731
+   },
+   "under": {
+    "kind": "road",
+    "index": 7882,
+    "osm_id": 570368037,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 13,
+    "t": 0.5075
+   }
+  },
+  {
+   "x": 496.08,
+   "z": -3284.36,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 103,
+    "osm_id": 451950526,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 58,
+    "t": 0.9344
+   },
+   "under": {
+    "kind": "road",
+    "index": 4089,
+    "osm_id": 119686448,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.6123
+   }
+  },
+  {
+   "x": 498.46,
+   "z": -3342.73,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 103,
+    "osm_id": 451950526,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 88,
+    "t": 0.1701
+   },
+   "under": {
+    "kind": "road",
+    "index": 5642,
+    "osm_id": 536789456,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 10,
+    "t": 0.3721
+   }
+  },
+  {
+   "x": 499.83,
+   "z": -3233.43,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 103,
+    "osm_id": 451950526,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 33,
+    "t": 0.3809
+   },
+   "under": {
+    "kind": "road",
+    "index": 7882,
+    "osm_id": 570368037,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 13,
+    "t": 0.4362
+   }
+  },
+  {
+   "x": 517.34,
+   "z": -12.64,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 23,
+    "osm_id": 196231576,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 6,
+    "t": 0.4393
+   },
+   "under": {
+    "kind": "road",
+    "index": 1192,
+    "osm_id": 392541110,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 1,
+    "t": 0.3068
+   }
+  },
+  {
+   "x": 519.26,
+   "z": -22.53,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 23,
+    "osm_id": 196231576,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.4747
+   },
+   "under": {
+    "kind": "road",
+    "index": 1185,
+    "osm_id": 392540235,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 28,
+    "t": 0.5668
+   }
+  },
+  {
+   "x": 532.2,
+   "z": -7.03,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 43,
+    "osm_id": 564154403,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 3,
+    "t": 0.58
+   },
+   "under": {
+    "kind": "road",
+    "index": 1192,
+    "osm_id": 392541110,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 1,
+    "t": 0.0308
+   }
+  },
+  {
+   "x": 534.06,
+   "z": -16.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 43,
+    "osm_id": 564154403,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 8,
+    "t": 0.4506
+   },
+   "under": {
+    "kind": "road",
+    "index": 1185,
+    "osm_id": 392540235,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 28,
+    "t": 0.8919
+   }
+  },
+  {
+   "x": 543.53,
+   "z": -2.88,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 22,
+    "osm_id": 196231565,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 15,
+    "t": 0.0087
+   },
+   "under": {
+    "kind": "road",
+    "index": 1192,
+    "osm_id": 392541110,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 0,
+    "t": 0.4504
+   }
+  },
+  {
+   "x": 545.38,
+   "z": -12.4,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 22,
+    "osm_id": 196231565,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 10,
+    "t": 0.1646
+   },
+   "under": {
+    "kind": "road",
+    "index": 1185,
+    "osm_id": 392540235,
+    "name": "Big Shanty Road Northwest",
+    "class": "tertiary",
+    "seg": 29,
+    "t": 0.3626
+   }
+  },
+  {
+   "x": 642.88,
+   "z": -3663.82,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 79,
+    "osm_id": 536793083,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 45,
+    "t": 0.541
+   },
+   "under": {
+    "kind": "road",
+    "index": 11361,
+    "osm_id": 451950527,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 10,
+    "t": 0.4478
+   }
+  },
+  {
+   "x": 707.62,
+   "z": -3710.03,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 79,
+    "osm_id": 536793083,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 85,
+    "t": 0.3158
+   },
+   "under": {
+    "kind": "road",
+    "index": 5642,
+    "osm_id": 536789456,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 18,
+    "t": 0.3826
+   }
+  },
+  {
+   "x": 741.41,
+   "z": -1687.28,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 18,
+    "osm_id": 182380658,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.4279
+   },
+   "under": {
+    "kind": "road",
+    "index": 2255,
+    "osm_id": 838363565,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 5,
+    "t": 0.5259
+   }
+  },
+  {
+   "x": 742.01,
+   "z": -1671.29,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 18,
+    "osm_id": 182380658,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.43
+   },
+   "under": {
+    "kind": "road",
+    "index": 1307,
+    "osm_id": 540661934,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.8936
+   }
+  },
+  {
+   "x": 756.64,
+   "z": -1687.56,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 28,
+    "osm_id": 367181845,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.213
+   },
+   "under": {
+    "kind": "road",
+    "index": 2255,
+    "osm_id": 838363565,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 5,
+    "t": 0.6362
+   }
+  },
+  {
+   "x": 757.39,
+   "z": -1671.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 28,
+    "osm_id": 367181845,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.2209
+   },
+   "under": {
+    "kind": "road",
+    "index": 1307,
+    "osm_id": 540661934,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.8026
+   }
+  },
+  {
+   "x": 769.03,
+   "z": -1687.78,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 19,
+    "osm_id": 182380660,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 13,
+    "t": 0.3331
+   },
+   "under": {
+    "kind": "road",
+    "index": 2255,
+    "osm_id": 838363565,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 5,
+    "t": 0.7259
+   }
+  },
+  {
+   "x": 769.73,
+   "z": -1671.83,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 19,
+    "osm_id": 182380660,
+    "name": "Phillip Landrum Memorial Highway",
+    "class": "motorway",
+    "seg": 21,
+    "t": 0.315
+   },
+   "under": {
+    "kind": "road",
+    "index": 1307,
+    "osm_id": 540661934,
+    "name": "Barrett Parkway",
+    "class": "trunk",
+    "seg": 0,
+    "t": 0.7295
+   }
+  },
+  {
+   "x": 1503.25,
+   "z": -4262.37,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 81,
+    "osm_id": 564149146,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 12,
+    "t": 0.3785
+   },
+   "under": {
+    "kind": "road",
+    "index": 5216,
+    "osm_id": 343482776,
+    "name": "Bells Ferry Road Northeast",
+    "class": "secondary",
+    "seg": 2,
+    "t": 0.051
+   }
+  },
+  {
+   "x": 1515.16,
+   "z": -4240.61,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 56,
+    "osm_id": 100762237,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 12,
+    "t": 0.6576
+   },
+   "under": {
+    "kind": "road",
+    "index": 5216,
+    "osm_id": 343482776,
+    "name": "Bells Ferry Road Northeast",
+    "class": "secondary",
+    "seg": 3,
+    "t": 0.1546
+   }
+  },
+  {
+   "x": 1528.37,
+   "z": -4214.5,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 59,
+    "osm_id": 119686452,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 11,
+    "t": 0.7012
+   },
+   "under": {
+    "kind": "road",
+    "index": 5216,
+    "osm_id": 343482776,
+    "name": "Bells Ferry Road Northeast",
+    "class": "secondary",
+    "seg": 4,
+    "t": 0.4125
+   }
+  },
+  {
+   "x": 1568.81,
+   "z": -7953.46,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 69,
+    "osm_id": 245388621,
+    "name": "Kennesaw Avenue Northwest",
+    "class": "tertiary",
+    "seg": 16,
+    "t": 0.0799
+   },
+   "under": {
+    "kind": "road",
+    "index": 4106,
+    "osm_id": 169122153,
+    "name": "North Marietta Parkway",
+    "class": "trunk",
+    "seg": 6,
+    "t": 0.406
+   }
+  },
+  {
+   "x": 1623.77,
+   "z": -6087.81,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 64,
+    "osm_id": 175900804,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.5319
+   },
+   "under": {
+    "kind": "road",
+    "index": 10814,
+    "osm_id": 1448505400,
+    "name": "Elizabeth Street Northeast",
+    "class": "tertiary",
+    "seg": 0,
+    "t": 0.3527
+   }
+  },
+  {
+   "x": 1638.96,
+   "z": -6078.9,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 65,
+    "osm_id": 175900808,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 6,
+    "t": 0.4632
+   },
+   "under": {
+    "kind": "road",
+    "index": 10814,
+    "osm_id": 1448505400,
+    "name": "Elizabeth Street Northeast",
+    "class": "tertiary",
+    "seg": 0,
+    "t": 0.7878
+   }
+  },
+  {
+   "x": 1704.24,
+   "z": -5749.01,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 63,
+    "osm_id": 175900801,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 16,
+    "t": 0.2276
+   },
+   "under": {
+    "kind": "road",
+    "index": 4069,
+    "osm_id": 88426482,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 0,
+    "t": 0.9328
+   }
+  },
+  {
+   "x": 1708.56,
+   "z": -5734.47,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 63,
+    "osm_id": 175900801,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 8,
+    "t": 0.6423
+   },
+   "under": {
+    "kind": "road",
+    "index": 4068,
+    "osm_id": 88426473,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 1,
+    "t": 0.4819
+   }
+  },
+  {
+   "x": 1715.61,
+   "z": -5754.74,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 66,
+    "osm_id": 175900811,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 9,
+    "t": 0.2497
+   },
+   "under": {
+    "kind": "road",
+    "index": 4690,
+    "osm_id": 288140743,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 0,
+    "t": 0.2269
+   }
+  },
+  {
+   "x": 1720.08,
+   "z": -5740.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 66,
+    "osm_id": 175900811,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 16,
+    "t": 0.6718
+   },
+   "under": {
+    "kind": "road",
+    "index": 4068,
+    "osm_id": 88426473,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 1,
+    "t": 0.3912
+   }
+  },
+  {
+   "x": 1853.24,
+   "z": -4467.57,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 82,
+    "osm_id": 624557375,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 15,
+    "t": 0.5246
+   },
+   "under": {
+    "kind": "road",
+    "index": 3540,
+    "osm_id": 9141860,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 13,
+    "t": 0.0395
+   }
+  },
+  {
+   "x": 1879.58,
+   "z": -4458.95,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 58,
+    "osm_id": 100762650,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 17,
+    "t": 0.033
+   },
+   "under": {
+    "kind": "road",
+    "index": 3540,
+    "osm_id": 9141860,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 13,
+    "t": 0.3701
+   }
+  },
+  {
+   "x": 1912.86,
+   "z": -5854.6,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 50,
+    "osm_id": 63222662,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 8,
+    "t": 0.3093
+   },
+   "under": {
+    "kind": "road",
+    "index": 4688,
+    "osm_id": 288140740,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 5,
+    "t": 0.3073
+   }
+  },
+  {
+   "x": 1918.03,
+   "z": -4446.37,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 57,
+    "osm_id": 100762636,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 13,
+    "t": 0.2274
+   },
+   "under": {
+    "kind": "road",
+    "index": 3540,
+    "osm_id": 9141860,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 13,
+    "t": 0.8524
+   }
+  },
+  {
+   "x": 1919.19,
+   "z": -5842.66,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 50,
+    "osm_id": 63222662,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 15,
+    "t": 0.0661
+   },
+   "under": {
+    "kind": "road",
+    "index": 4682,
+    "osm_id": 287142785,
+    "name": "Cobb Parkway North",
+    "class": "primary",
+    "seg": 0,
+    "t": 0.5231
+   }
+  },
+  {
+   "x": 1930.71,
+   "z": -4442.3,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 101,
+    "osm_id": 437892229,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 15,
+    "t": 0.996
+   },
+   "under": {
+    "kind": "road",
+    "index": 3107,
+    "osm_id": 9129439,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 0,
+    "t": 0.0384
+   }
+  },
+  {
+   "x": 2096.61,
+   "z": -4721.35,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 80,
+    "osm_id": 561642029,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 38,
+    "t": 0.0074
+   },
+   "under": {
+    "kind": "road",
+    "index": 11311,
+    "osm_id": 9119542,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 10,
+    "t": 0.906
+   }
+  },
+  {
+   "x": 2198.9,
+   "z": -4848.27,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 29,
+    "t": 0.8844
+   },
+   "under": {
+    "kind": "road",
+    "index": 11306,
+    "osm_id": 9117188,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 25,
+    "t": 0.8019
+   }
+  },
+  {
+   "x": 2306.02,
+   "z": -4981.01,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 115,
+    "t": 0.1672
+   },
+   "under": {
+    "kind": "road",
+    "index": 4080,
+    "osm_id": 100762131,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.1891
+   }
+  },
+  {
+   "x": 2323.79,
+   "z": -5003.2,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 129,
+    "t": 0.3858
+   },
+   "under": {
+    "kind": "road",
+    "index": 4673,
+    "osm_id": 286831634,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 3,
+    "t": 0.9066
+   }
+  },
+  {
+   "x": 2329.92,
+   "z": -5010.86,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 134,
+    "t": 0.2914
+   },
+   "under": {
+    "kind": "road",
+    "index": 11330,
+    "osm_id": 274716914,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 45,
+    "t": 0.8085
+   }
+  },
+  {
+   "x": 2336.7,
+   "z": -4948.67,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 52,
+    "osm_id": 100762130,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 48,
+    "t": 0.4804
+   },
+   "under": {
+    "kind": "road",
+    "index": 11329,
+    "osm_id": 274716913,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.3514
+   }
+  },
+  {
+   "x": 2352.91,
+   "z": -4931.52,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 52,
+    "osm_id": 100762130,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 36,
+    "t": 0.68
+   },
+   "under": {
+    "kind": "road",
+    "index": 5486,
+    "osm_id": 437892231,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.9885
+   }
+  },
+  {
+   "x": 2355.49,
+   "z": -4970.48,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 53,
+    "osm_id": 100762134,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.357
+   },
+   "under": {
+    "kind": "road",
+    "index": 11329,
+    "osm_id": 274716913,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.5423
+   }
+  },
+  {
+   "x": 2360.75,
+   "z": -4976.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 102,
+    "osm_id": 437897716,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 19,
+    "t": 0.6799
+   },
+   "under": {
+    "kind": "road",
+    "index": 11329,
+    "osm_id": 274716913,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.5958
+   }
+  },
+  {
+   "x": 2372.15,
+   "z": -4953.29,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 53,
+    "osm_id": 100762134,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 31,
+    "t": 0.3259
+   },
+   "under": {
+    "kind": "road",
+    "index": 5486,
+    "osm_id": 437892231,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.0946
+   }
+  },
+  {
+   "x": 2376.48,
+   "z": -4906.58,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 52,
+    "osm_id": 100762130,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 19,
+    "t": 0.5242
+   },
+   "under": {
+    "kind": "road",
+    "index": 4618,
+    "osm_id": 274716911,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.332
+   }
+  },
+  {
+   "x": 2376.73,
+   "z": -4958.46,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 102,
+    "osm_id": 437897716,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 31,
+    "t": 0.7654
+   },
+   "under": {
+    "kind": "road",
+    "index": 5486,
+    "osm_id": 437892231,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.1198
+   }
+  },
+  {
+   "x": 2381.23,
+   "z": -4901.55,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 52,
+    "osm_id": 100762130,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 16,
+    "t": 0.0621
+   },
+   "under": {
+    "kind": "road",
+    "index": 11309,
+    "osm_id": 9117194,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.7446
+   }
+  },
+  {
+   "x": 2396.13,
+   "z": -4928.56,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 53,
+    "osm_id": 100762134,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 48,
+    "t": 0.5506
+   },
+   "under": {
+    "kind": "road",
+    "index": 4618,
+    "osm_id": 274716911,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.2003
+   }
+  },
+  {
+   "x": 2398.31,
+   "z": -4931.0,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 102,
+    "osm_id": 437897716,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 49,
+    "t": 0.235
+   },
+   "under": {
+    "kind": "road",
+    "index": 4618,
+    "osm_id": 274716911,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.1857
+   }
+  },
+  {
+   "x": 2399.03,
+   "z": -4925.56,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 53,
+    "osm_id": 100762134,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 50,
+    "t": 0.6343
+   },
+   "under": {
+    "kind": "road",
+    "index": 11309,
+    "osm_id": 9117194,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.4488
+   }
+  },
+  {
+   "x": 2400.64,
+   "z": -4927.73,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 102,
+    "osm_id": 437897716,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 51,
+    "t": 0.2394
+   },
+   "under": {
+    "kind": "road",
+    "index": 11309,
+    "osm_id": 9117194,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.4221
+   }
+  },
+  {
+   "x": 2410.9,
+   "z": -4913.32,
+   "why": "untagged: the higher class",
+   "over": {
+    "kind": "bridge",
+    "index": 53,
+    "osm_id": 100762134,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 59,
+    "t": 0.1617
+   },
+   "under": {
+    "kind": "bridge",
+    "index": 102,
+    "osm_id": 437897716,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 60,
+    "t": 0.9521
+   }
+  },
+  {
+   "x": 2425.43,
+   "z": -5121.26,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 207,
+    "t": 0.293
+   },
+   "under": {
+    "kind": "road",
+    "index": 11330,
+    "osm_id": 274716914,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 10,
+    "t": 0.4969
+   }
+  },
+  {
+   "x": 2480.85,
+   "z": -5175.92,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 246,
+    "t": 0.2306
+   },
+   "under": {
+    "kind": "road",
+    "index": 11335,
+    "osm_id": 286831637,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 4,
+    "t": 0.444
+   }
+  },
+  {
+   "x": 2515.82,
+   "z": -5152.71,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 98,
+    "osm_id": 100762129,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 17,
+    "t": 0.0897
+   },
+   "under": {
+    "kind": "road",
+    "index": 11308,
+    "osm_id": 9117190,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 0,
+    "t": 0.9687
+   }
+  },
+  {
+   "x": 2533.61,
+   "z": -5135.59,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 98,
+    "osm_id": 100762129,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 29,
+    "t": 0.4517
+   },
+   "under": {
+    "kind": "road",
+    "index": 5486,
+    "osm_id": 437892231,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.9841
+   }
+  },
+  {
+   "x": 2546.76,
+   "z": -4730.38,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 97,
+    "osm_id": 100762127,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 35,
+    "t": 0.1192
+   },
+   "under": {
+    "kind": "road",
+    "index": 4082,
+    "osm_id": 100762213,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 5,
+    "t": 0.632
+   }
+  },
+  {
+   "x": 2548.0,
+   "z": -5239.5,
+   "why": "OSM layer 0 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 292,
+    "t": 0.4834
+   },
+   "under": {
+    "kind": "road",
+    "index": 11310,
+    "osm_id": 9118747,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 4,
+    "t": 0.9497
+   }
+  },
+  {
+   "x": 2552.79,
+   "z": -5111.19,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 98,
+    "osm_id": 100762129,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 44,
+    "t": 0.9935
+   },
+   "under": {
+    "kind": "road",
+    "index": 4619,
+    "osm_id": 274716912,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 2,
+    "t": 0.0265
+   }
+  },
+  {
+   "x": 2561.27,
+   "z": -4754.18,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 97,
+    "osm_id": 100762127,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 21,
+    "t": 0.1691
+   },
+   "under": {
+    "kind": "road",
+    "index": 4081,
+    "osm_id": 100762132,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 2,
+    "t": 0.3931
+   }
+  },
+  {
+   "x": 2580.09,
+   "z": -5267.26,
+   "why": "OSM layer 1 / 2",
+   "over": {
+    "kind": "bridge",
+    "index": 84,
+    "osm_id": 685000423,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 313,
+    "t": 0.6959
+   },
+   "under": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 13,
+    "t": 0.2149
+   }
+  },
+  {
+   "x": 2587.35,
+   "z": -5260.42,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 18,
+    "t": 0.1971
+   },
+   "under": {
+    "kind": "road",
+    "index": 11310,
+    "osm_id": 9118747,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 6,
+    "t": 0.1855
+   }
+  },
+  {
+   "x": 2601.21,
+   "z": -5247.31,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 27,
+    "t": 0.736
+   },
+   "under": {
+    "kind": "road",
+    "index": 11308,
+    "osm_id": 9117190,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 1,
+    "t": 0.97
+   }
+  },
+  {
+   "x": 2617.79,
+   "z": -5231.66,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 39,
+    "t": 0.1369
+   },
+   "under": {
+    "kind": "road",
+    "index": 5486,
+    "osm_id": 437892231,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 2,
+    "t": 0.9232
+   }
+  },
+  {
+   "x": 2641.12,
+   "z": -5209.63,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 55,
+    "t": 0.1809
+   },
+   "under": {
+    "kind": "road",
+    "index": 4619,
+    "osm_id": 274716912,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.0178
+   }
+  },
+  {
+   "x": 2647.95,
+   "z": -4550.11,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 99,
+    "osm_id": 100762209,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 13,
+    "t": 0.0726
+   },
+   "under": {
+    "kind": "road",
+    "index": 3107,
+    "osm_id": 9129439,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 23,
+    "t": 0.1867
+   }
+  },
+  {
+   "x": 2664.86,
+   "z": -5187.22,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 49,
+    "osm_id": 63222660,
+    "name": "Canton Road Northeast",
+    "class": "tertiary",
+    "seg": 71,
+    "t": 0.5053
+   },
+   "under": {
+    "kind": "road",
+    "index": 11314,
+    "osm_id": 9121350,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 8,
+    "t": 0.4779
+   }
+  },
+  {
+   "x": 2672.0,
+   "z": -4557.32,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 54,
+    "osm_id": 100762211,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 13,
+    "t": 0.2743
+   },
+   "under": {
+    "kind": "road",
+    "index": 3107,
+    "osm_id": 9129439,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 25,
+    "t": 0.3714
+   }
+  },
+  {
+   "x": 2696.47,
+   "z": -4568.53,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 55,
+    "osm_id": 100762215,
+    "name": "Canton Road Connector",
+    "class": "motorway",
+    "seg": 14,
+    "t": 0.6766
+   },
+   "under": {
+    "kind": "road",
+    "index": 3107,
+    "osm_id": 9129439,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 28,
+    "t": 0.3905
+   }
+  },
+  {
+   "x": 2715.3,
+   "z": -4580.41,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 100,
+    "osm_id": 100762212,
+    "name": "",
+    "class": "motorway_link",
+    "seg": 14,
+    "t": 0.5014
+   },
+   "under": {
+    "kind": "road",
+    "index": 3107,
+    "osm_id": 9129439,
+    "name": "Dickson Road Northeast",
+    "class": "residential",
+    "seg": 30,
+    "t": 0.4906
+   }
+  },
+  {
+   "x": 3435.54,
+   "z": -6214.9,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 51,
+    "osm_id": 100762098,
+    "name": "Allgood Road Northeast",
+    "class": "secondary",
+    "seg": 4,
+    "t": 0.8305
+   },
+   "under": {
+    "kind": "road",
+    "index": 6092,
+    "osm_id": 561642032,
+    "name": "Northwest Corridor Express Lanes",
+    "class": "motorway",
+    "seg": 2,
+    "t": 0.1676
+   }
+  },
+  {
+   "x": 3457.72,
+   "z": -6204.74,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 51,
+    "osm_id": 100762098,
+    "name": "Allgood Road Northeast",
+    "class": "secondary",
+    "seg": 17,
+    "t": 0.025
+   },
+   "under": {
+    "kind": "road",
+    "index": 5523,
+    "osm_id": 472814564,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 0,
+    "t": 0.9889
+   }
+  },
+  {
+   "x": 3479.34,
+   "z": -6194.83,
+   "why": "OSM layer 0 / 1",
+   "over": {
+    "kind": "bridge",
+    "index": 51,
+    "osm_id": 100762098,
+    "name": "Allgood Road Northeast",
+    "class": "secondary",
+    "seg": 28,
+    "t": 0.9171
+   },
+   "under": {
+    "kind": "road",
+    "index": 4180,
+    "osm_id": 198292214,
+    "name": "Larry McDonald Memorial Highway",
+    "class": "motorway",
+    "seg": 1,
+    "t": 0.0185
+   }
+  }
+ ]
+}

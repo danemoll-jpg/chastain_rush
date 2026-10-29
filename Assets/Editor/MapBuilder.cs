@@ -225,10 +225,12 @@ namespace ChastainRush
             RailDecks(map);                          // Round 79 (D): the decks over the railroad evened / smoothed before their ends are graded (MapBuilder.Railroad.cs)
             ExpressDecks(map, terrain);              // Round 80 (D1): Express Lanes 13's deck smoothed for both ways, kept over what crosses under it (MapBuilder.Round80.cs)
             SmoothBridgeEnds(map, terrain);          // Round 27 (A2): every bridge's ends run smoothly onto the ground (MapBuilder.BridgeEnds.cs)
+            R82ExpressLines(map, terrain);           // Round 82 (B, C): each Express Lanes carriageway as one profile end to end, the ramps joined level (MapBuilder.Round82.cs)
             R81Flyovers(map, terrain);               // Round 81 (A, H): the I-75 / I-575 junction's flyovers and every Express Lanes deck, each with its roads as one curve, 6 m over what it crosses (MapBuilder.Round81.cs)
             R60SmoothOverpass(map, terrain);         // Round 60 (B, BUG-001): Chastain Road over I-75, both ends (MapBuilder.Round60.cs)
             R62SeamOverpasses(map, terrain);         // Round 62 (C, BUG-002): I-575's decks over Big Shanty Road, across the old core's edge, each laid with its roads as one curve (MapBuilder.Round62.cs)
             R77Embankments(map, terrain);            // Round 77 (A): the Canton Road Connector and its ramps on graded embankments (MapBuilder.Round77.cs)
+            R82Crossings(map, terrain);              // Round 82 (A): every crossing 5 m clear under its upper deck, listed (MapBuilder.Round82.cs)
             PlanRailroad(map, terrain);              // Round 77 (C): the railroad edge to edge, its bed graded, roads dipped under its bridges (MapBuilder.Railroad.cs)
             PlanKennestone(map, terrain);            // Round 77 (B): Kennestone hospital and the map's parking decks (their ground levelled) (MapBuilder.Kennestone.cs)
             BuildClock.Lap("SmoothBridgeEnds");

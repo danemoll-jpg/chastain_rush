@@ -20,7 +20,8 @@ namespace ChastainRush
         static readonly long[] R81JunctionIds = { 451950526, 163463460, 536793083 };
         const float R81Clear = 6f, R81V = 35f, R81Reach = 250f, R81Slab = .7f, R81BoundR = 250f;
 
-        static void R81Flyovers(MapData map, TerrainGrid terrain)
+        // Round 82: 'pick' chooses the decks (default: the junction's flyovers; the Express Lanes are R82ExpressLines' now), 'report' the report's file
+        static void R81Flyovers(MapData map, TerrainGrid terrain, System.Func<int, Bridge, bool> pick = null, string report = "round81_flyovers.txt")
         {
             if (map.bridges == null) return;
             var log = new List<string> { "Round 81 (A, H): flyovers laid with their roads as one curve (MapBuilder.Round81.cs). Per deck chain: its length, the road before / after, " +
@@ -29,7 +30,7 @@ namespace ChastainRush
             for (int i = 0; i < map.bridges.Length; i++)
             {
                 var b = map.bridges[i]; if (b.points == null || b.points.Length < 4 || b.deck_y == null) continue;
-                if (b.name == ExpressName || R81JunctionIds.Contains(b.osm_id)) want.Add(i);
+                if (pick != null ? pick(i, b) : R81JunctionIds.Contains(b.osm_id)) want.Add(i);
             }
             bool OnSeam(Vector2 e) => (Mathf.Abs(e.y) < .6f && e.x >= 0f && e.x <= map.size_x_m) || (Mathf.Abs(e.x) < .6f && e.y >= 0f && e.y <= map.size_z_m);
             // the chains: pieces of the set whose ends meet (within 1.5 m), in order
@@ -127,6 +128,14 @@ namespace ChastainRush
                         bool onDeck = kind[i] == 0 && kind[i + 1] == 0;
                         float other = s.bridge > 0 ? Mathf.Lerp(map.bridges[s.bi].deck_y[s.seg], map.bridges[s.bi].deck_y[s.seg + 1], tb) + lift : terrain.Height(X.x, X.y);
                         float here = Mathf.Lerp(raw[i], raw[i + 1], ta);
+                        // Round 82 (A, BUG-005: the Express Lanes' road past its deck was raised into Greers Chapel Drive's decks over it): a deck over the
+                        // road part of the line caps it there too
+                        if (!onDeck && s.bridge > 0 && other > here + 1f)
+                        {
+                            float cap = other - lift - R81Slab - R81Clear; crossings.Add((sx, other, true, map.bridges[s.bi].name));
+                            for (int j = 0; j < N; j++) { float d = Mathf.Max(0f, Mathf.Abs(cum[j] - sx) - (s.half + 3f)); ub[j] = Mathf.Min(ub[j], cap + d * d / (2f * R81BoundR)); }
+                            continue;
+                        }
                         if (!onDeck)
                         {
                             // a road meeting the line on the ground (a junction, a merge): the line held to the road as it is there
@@ -218,6 +227,7 @@ namespace ChastainRush
                     }
                     return false;
                 }
+                var ownSet = new HashSet<int>(chain.Select(c => c.b));
                 EditTerrain(terrain, Rect.MinMaxRect(lo.x, lo.y, hi.x, hi.y), (x, z, y) =>
                 {
                     var p = new Vector2(x, z); float dd = LineDist(p, out int i, out float t);
@@ -233,6 +243,7 @@ namespace ChastainRush
                     float rise = Mathf.Abs(tg - y), bank = Mathf.Clamp(2f * rise, 4f, bankMax);
                     if (dd > half + .5f + bank) return y;
                     if (dd > half + .5f && OnOtherRoad(p)) return y;
+                    if (UnderOtherDeck(p, ownSet, out float slabB)) return Mathf.Min(y, slabB - .3f);   // Round 82: never up under another deck
                     float w = dd <= half + .5f ? 1f : Smooth01(1f - (dd - half - .5f) / bank); float ny = y + w * (tg - y);
                     if (Mathf.Abs(ny - y) > 1e-3f) changed++; return ny;
                 });
@@ -252,7 +263,7 @@ namespace ChastainRush
                         $"moved up to {moved:0.0} m; {changed} road samples graded, {cut} cut under the deck");
             }
             Debug.Log($"[Round81] A / H: {done} of {chains.Count} deck chains laid with their roads as one curve; report Assets/Generated/round81_flyovers.txt\n" + string.Join("\n", log));
-            try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, "round81_flyovers.txt"), log); } catch (System.Exception e) { Debug.LogWarning("[Round81] " + e.Message); }
+            try { File.WriteAllLines(Path.Combine(ProjectRoot, GeneratedDir, report), log); } catch (System.Exception e) { Debug.LogWarning("[Round81] " + e.Message); }
         }
 
         // ------------------------------------------------------------ H: the Express Lanes walled off

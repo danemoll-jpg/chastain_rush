@@ -220,6 +220,7 @@ namespace ChastainRush
             for (int bi = 0; bi < firstB; bi++)
             {
                 if (done.Contains(bi)) continue; var b0 = map.bridges[bi]; var p0 = ToPoints(b0.points); if (p0.Count < 2) continue;
+                if (b0.name == ExpressName) continue;   // Round 82 (B): the Express Lanes are laid end to end as one profile (R82ExpressLines, MapBuilder.Round82.cs)
                 // the piece across the seam: an end of this core piece on the edge, an extension piece of the same road starting there
                 int ci = Seam(p0[0]) ? 0 : Seam(p0[p0.Count - 1]) ? p0.Count - 1 : -1; if (ci < 0) continue;
                 int bj = -1; bool bjStart = true;
