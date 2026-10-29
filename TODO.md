@@ -175,9 +175,25 @@ highways', the Express Lanes') could only take a new car when its middle was nea
 (`80_F_*`). Frame rate, before -> after (Normal / Heavy), I-75 at Barrett: 1280 x 720 125 -> 132 / 145 -> 72; Steam Deck 1280 x 800 107 -> 126 / 115 -> 99; 3840 x 2160 full screen 89 -> 50 /
 96 -> 59; the square at 4K 58 -> 32 / 57 -> 53, Town Center 79 -> 60 / 84 -> 69 (`round80_check_f2_*`; runs vary 10 to 30 %). The I-575 spot showed no motorway cars before or after (a poor spot).
 For Dan to check (added): EL13's options; whether the AI's go-back should be quicker; whether the 4K cost of the busier traffic is acceptable.
-Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55.
+Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55. Disk: 28.7 GB -> 28.1 GB (`cleanup_round.py`: local/round68, 73, 74, 77 and Library/BuildHistory cleared).
 
 ## QUEUED rounds
+**INSTALLER AND UPDATES, AND THE STEAM DECK (Dan, 2026-10-29 00:43; next round after Round 80 is reviewed; this round says PUBLISH).** Dan: "I would also need
+an installation file like I have for Woodstock Rush. Which I would want to use the same update system so I only have to install it once". And: will his
+Steam Deck handle the bigger map?
+A. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
+   `Tools/Publish-LauncherRelease.py`, `Tools/Package-LauncherStarter.py`; read only, as `Docs/FROM-WOODSTOCK-RUSH.md` items 1 to 6 say): Chastain Rush's own
+   release repo, its own signing identity made once (never reuse, print or expose Woodstock Rush's key), the launcher titled CHASTAIN RUSH with its
+   cover art and icon. Same behavior: on opening it checks, installs a newer game and soundtrack by itself, then starts the game; B / Esc plays now;
+   rollback to the previous version; saves and personal music kept.
+B. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
+   installs it once; after that every published round reaches him through the launcher. Publish the first release and prove it end to end: a
+   clean install from the starter, then a second small release picked up and installed by that launcher.
+C. THE STEAM DECK. Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
+   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
+   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
+For Dan to check: install from the starter on the PC and the Deck; the launcher updating itself to the second release; the Deck's frame rate.
+
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
 this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
