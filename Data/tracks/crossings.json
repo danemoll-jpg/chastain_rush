@@ -2348,29 +2348,6 @@
    }
   },
   {
-   "x": 2410.9,
-   "z": -4913.32,
-   "why": "untagged: the higher class",
-   "over": {
-    "kind": "bridge",
-    "index": 53,
-    "osm_id": 100762134,
-    "name": "Canton Road Connector",
-    "class": "motorway",
-    "seg": 59,
-    "t": 0.1617
-   },
-   "under": {
-    "kind": "bridge",
-    "index": 102,
-    "osm_id": 437897716,
-    "name": "",
-    "class": "motorway_link",
-    "seg": 60,
-    "t": 0.9521
-   }
-  },
-  {
    "x": 2425.43,
    "z": -5121.26,
    "why": "OSM layer 0 / 2",

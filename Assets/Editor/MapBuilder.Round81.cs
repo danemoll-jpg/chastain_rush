@@ -291,6 +291,11 @@ namespace ChastainRush
                 }
                 return false;
             }
+            // Round 82 (C, the Big Shanty ramp's check: 251 wall hits where it merges): every point where another road or deck ends on an Express Lanes road
+            var merges = new List<Vector2>();
+            foreach (var s in segs.Where(x => !x.express))
+                foreach (var e in new[] { s.a, s.b })
+                    foreach (int si in idx.Near(e, 2f, near).ToList()) { var x = segs[si]; if (!x.express) continue; var ab = x.b - x.a; float t = Mathf.Clamp01(Vector2.Dot(e - x.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((x.a + ab * t - e).magnitude < 2f) { merges.Add(e); break; } }
             var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
             var grey = new Color(.74f, .73f, .70f);
             // (second try, the check: a car that touched the wall's flared foot rode up it and over; the wall stood 0.6 m off a 4.5 m lane): the wall
@@ -325,9 +330,9 @@ namespace ChastainRush
                         var dir = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var right = new Vector2(dir.y, -dir.x);
                         float off = half + .5f; for (float o = half + 1.8f; o >= half + .5f; o -= .3f) if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
-                        if (Blocked(p, roadY, dir)) { prev = null; skipped += 3f; continue; }
+                        if (Blocked(p, roadY, dir) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
                         float footY = Ground(terrain, p.x, p.y);
-                        var top = new Vector3(p.x, Mathf.Max(roadY, footY) + .04f, p.y);
+                        var top = new Vector3(p.x, roadY + .04f, p.y);   // Round 82 (BUG-005: walls climbing over the banks): at the road's height, its foot buried where the bank stands higher
                         if (prev.HasValue)
                         {
                             var a = prev.Value; var b = top; var across = new Vector3(right.x, 0f, right.y) * side;   // toward the outside

@@ -36,7 +36,7 @@ namespace ChastainRush
 
         static void R82DeckIndex(MapData map)
         {
-            r82Map = map; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
+            r82Map = map; r82RoadIdx = null; r82DeckIdx = new CellIndex(16f); r82DeckSegs = new List<(int, int)>();
             if (map.bridges == null) return;
             for (int bi = 0; bi < map.bridges.Length; bi++)
             {
@@ -58,6 +58,38 @@ namespace ChastainRush
                 slabBottom = Mathf.Min(slabBottom, Mathf.Lerp(b.deck_y[i], b.deck_y[i + 1], t) - R82Slab);   // (deck_y: the top less the road's lift; the slab under its top)
             }
             return slabBottom < float.MaxValue;
+        }
+
+        // Round 82 (C): beside a deck's edge (outward), within 4 m: another deck's or a road's pavement at its height (within 0.6 m): how far out it starts
+        // (-1: none, the parapet stands)
+        static CellIndex r82RoadIdx; static List<(Vector2 a, Vector2 b, float half, string cls)> r82RoadSegs; static readonly List<int> r82RoadNear = new List<int>();
+        static float R82SideOpen(int self, Vector2 mid, Vector2 outward, float hw, float topY, TerrainGrid terrain)
+        {
+            if (r82DeckIdx == null || r82Map == null) return -1f;
+            if (r82RoadIdx == null)
+            {
+                r82RoadIdx = new CellIndex(16f); r82RoadSegs = new List<(Vector2, Vector2, float, string)>();
+                foreach (var r in r82Map.roads) { if (r.bridge || r.tunnel) continue; var q = ToPoints(r.points); for (int i = 0; i + 1 < q.Count; i++) { r82RoadSegs.Add((q[i], q[i + 1], r.width * .5f, r.@class)); r82RoadIdx.Add(q[i], q[i + 1], r.width * .5f + .5f); } }
+            }
+            for (float o = .1f; o <= 4f; o += .3f)
+            {
+                var p = mid + outward * (hw + o);
+                foreach (int k in r82DeckIdx.Near(p, 0f, r82Near))
+                {
+                    var (bi, i) = r82DeckSegs[k]; if (bi == self) continue; var b = r82Map.bridges[bi];
+                    var a = new Vector2(b.points[2 * i], b.points[2 * i + 1]); var c = new Vector2(b.points[2 * i + 2], b.points[2 * i + 3]); var ab = c - a;
+                    float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    if ((a + ab * t - p).magnitude > b.width * .5f) continue;
+                    if (Mathf.Abs(Mathf.Lerp(b.deck_y[i], b.deck_y[i + 1], t) + R82Lift(b.@class) - topY) < .6f) return o - .1f;
+                }
+                foreach (int k in r82RoadIdx.Near(p, 0f, r82RoadNear))
+                {
+                    var s = r82RoadSegs[k]; var ab = s.b - s.a; float t = Mathf.Clamp01(Vector2.Dot(p - s.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
+                    if ((s.a + ab * t - p).magnitude > s.half) continue;
+                    if (Mathf.Abs(terrain.Height(p.x, p.y) + R82Lift(s.cls) - topY) < .6f) return o - .1f;
+                }
+            }
+            return -1f;
         }
 
         static R82CrossFile R82LoadCrossings()
@@ -199,6 +231,14 @@ namespace ChastainRush
                 }
                 // each bound as a vertical curve, then a straight grade: the envelope under / over it
                 float Fall(float s, float s0, float spread) { float d = Mathf.Max(0f, Mathf.Abs(s - s0) - spread), d1 = R82Grade * R82R; return d <= d1 ? d * d / (2f * R82R) : d1 * d1 / (2f * R82R) + R82Grade * (d - d1); }
+                // (build 1: under Greers Chapel Drive, 130 m past its deck over the Barrett ramps, the line fell 10 %): a deck over the line never holds it lower
+                // than the line can come down from a road it goes over (at the same curves and grade); that deck is raised over it instead (A)
+                for (int u = 0; u < ubs.Count; u++)
+                {
+                    var b = ubs[u]; float cap = b.cap;
+                    foreach (var l in lbs) cap = Mathf.Max(cap, l.need - Fall(b.s, l.s, l.spread + b.spread));
+                    ubs[u] = (b.s, cap, b.spread, b.what);
+                }
                 var y = new double[N];
                 const double C = 3.0;
                 for (int j = 0; j < N; j++)
@@ -311,8 +351,7 @@ namespace ChastainRush
             for (int k = 0; k < pcs.Count; k++) { endIdx.Add(pcs[k].q[0]); endOf.Add((k, true)); endIdx.Add(pcs[k].q[pcs[k].q.Count - 1]); endOf.Add((k, false)); }
             var enear = new List<int>();
             var doneDeck = new HashSet<int>(); var touchedDecks = new HashSet<int>();
-            foreach (var (pl, py) in lines)
-                for (int k = 0; k < pcs.Count; k++)
+            for (int k = 0; k < pcs.Count; k++)
                 {
                     var pc = pcs[k]; if (pc.q.Count < 2) continue;
                     bool atStart = Near(pc.q[0], 2f, out _) < 1.5f, atEnd = Near(pc.q[pc.q.Count - 1], 2f, out _) < 1.5f;
@@ -417,20 +456,32 @@ namespace ChastainRush
             // the short ones: their upper deck chains (every deck piece touching end to end), laid again with their roads (not the Express Lanes': their line)
             var fix = new HashSet<int>();
             foreach (var (c, cl) in mid) if (cl < R82MinClear && c.over.kind == "bridge" && map.bridges[c.over.index].name != ExpressName) fix.Add(c.over.index);
-            for (bool grew = true; grew;)
+            void Close()
             {
-                grew = false;
-                for (int bi = 0; bi < map.bridges.Length; bi++)
+                for (bool grew = true; grew;)
                 {
-                    if (fix.Contains(bi) || map.bridges[bi].name == ExpressName) continue; var (a, z) = Ends(map.bridges[bi], false);
-                    foreach (int f in fix.ToList()) { var (fa, fz) = Ends(map.bridges[f], false); if (Mathf.Min((a - fa).magnitude, (a - fz).magnitude, (z - fa).magnitude, (z - fz).magnitude) < 1.5f) { fix.Add(bi); grew = true; break; } }
+                    grew = false;
+                    for (int bi = 0; bi < map.bridges.Length; bi++)
+                    {
+                        if (fix.Contains(bi) || map.bridges[bi].name == ExpressName) continue; var (a, z) = Ends(map.bridges[bi], false);
+                        foreach (int f in fix.ToList()) { var (fa, fz) = Ends(map.bridges[f], false); if (Mathf.Min((a - fa).magnitude, (a - fz).magnitude, (z - fa).magnitude, (z - fz).magnitude) < 1.5f) { fix.Add(bi); grew = true; break; } }
+                    }
                 }
             }
-            if (fix.Count > 0) R81Flyovers(map, terrain, (i, b) => fix.Contains(i), "round82_crossing_fixes.txt");
+            Close();
+            var fixAll = new HashSet<int>(); int passes = 0;
+            for (; passes < 3 && fix.Count > 0; passes++)
+            {
+                R81Flyovers(map, terrain, (i, b) => fix.Contains(i), passes == 0 ? "round82_crossing_fixes.txt" : $"round82_crossing_fixes_{passes + 1}.txt");
+                fixAll.UnionWith(fix); fix.Clear();
+                // (a deck raised for the roads under it can come up under a deck over it: that one in the next pass)
+                foreach (var (c, cl) in R82Clearances(map, terrain)) if (cl < R82MinClear && c.over.kind == "bridge" && map.bridges[c.over.index].name != ExpressName) fix.Add(c.over.index);
+                Close();
+            }
             var after = R82Clearances(map, terrain);
             var log = new List<string> { $"Round 82 (A): every road crossing another without a shared node (Data/tracks/crossings.json, python Tools/mapgen/crossings.py): {after.Count}. " +
                                          $"Per crossing: where, the road over (why it is over), the road under, the clearance under the upper slab at OSM's heights -> after the Express Lanes' lines -> as built; " +
-                                         $"{fix.Count} deck pieces laid again for clearance (round82_crossing_fixes.txt)" };
+                                         $"{fixAll.Count} deck pieces laid again for clearance in {passes} pass(es) (round82_crossing_fixes*.txt)" };
             int shortN = 0;
             for (int k = 0; k < after.Count; k++)
             {

@@ -49,6 +49,16 @@ def seg_x(a, b, c, d):
     return None
 
 
+def near_line(p, q):
+    best = 1e18
+    for i in range(len(q) - 1):
+        a, b = q[i], q[i + 1]
+        dx, dz = b[0] - a[0], b[1] - a[1]
+        t = max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dz) / max(dx * dx + dz * dz, 1e-9)))
+        best = min(best, math.hypot(a[0] + dx * t - p[0], a[1] + dz * t - p[1]))
+    return best
+
+
 def main():
     with open(os.path.join(ROOT, "Data", "map.json"), encoding="utf-8") as fh:
         m = json.load(fh)
@@ -108,6 +118,14 @@ def main():
                 X = (A[6][ka][0] + (A[6][ka + 1][0] - A[6][ka][0]) * ta, A[6][ka][1] + (A[6][ka + 1][1] - A[6][ka][1]) * ta)
                 shared = nodes_of[A[2]] & nodes_of[B[2]]
                 if any(math.hypot(n[0] - X[0], n[1] - X[1]) < JOIN_M for n in shared):
+                    continue
+                # a piece that ends ON the other (a ramp merging into a bridge mid-span: the bridge's points are resampled, so the node is not
+                # among them): joining, not crossing
+                # (and nearly parallel there: a road split right under a bridge crosses it)
+                da = (A[6][ka + 1][0] - A[6][ka][0], A[6][ka + 1][1] - A[6][ka][1])
+                db = (B[6][kb + 1][0] - B[6][kb][0], B[6][kb + 1][1] - B[6][kb][1])
+                sin = abs(da[0] * db[1] - da[1] * db[0]) / max(math.hypot(*da) * math.hypot(*db), 1e-9)
+                if sin < 0.5 and any(math.hypot(e[0] - X[0], e[1] - X[1]) < 6.0 and near_line(e, other[6]) < 1.5 for e, other in ((A[6][0], B), (A[6][-1], B), (B[6][0], A), (B[6][-1], A))):
                     continue
                 out.append((A, ka, ta, B, kb, tb, X))
     # merge duplicates (same two osm ways within 15 m)

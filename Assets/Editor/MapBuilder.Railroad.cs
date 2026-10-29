@@ -135,6 +135,14 @@ namespace ChastainRush
                     if (need - lifted > .05f) dips.Add((o.road, new Vector2(o.x, o.z), need - lifted));
                 }
                 if (again) y = R77Smooth1D(raw, w, mu);
+                // Round 82 (D, BUG-008's drive: the bed fell 3.7 m in 14 m off Atlanta Industrial Drive's crossing, a car flew 1.2 s): the bed meets every level
+                // crossing level over the road's width + 3 m each side, then at most 4 % away from it (an embankment or a cut where the road stands off the ground)
+                foreach (var cr in RailCrossings.Where(c => c.line == RailPlans.Count))
+                {
+                    int k = 0; float bd = float.MaxValue; for (int i = 0; i < n; i++) { float dd = (p[i] - cr.at).sqrMagnitude; if (dd < bd) { bd = dd; k = i; } }
+                    float flat = cr.half + 3f;
+                    for (int i = 0; i < n; i++) { float dg = Mathf.Max(0f, Mathf.Abs(cum[i] - cum[k]) - flat) * .04f; y[i] = Mathf.Clamp(y[i], cr.y - dg, cr.y + dg); }
+                }
                 for (int i = 1; i < n; i++) { float gr = Mathf.Abs(y[i] - y[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], .1f); if (gr > steepest) { steepest = gr; steepAt = p[i]; } if (gr > .05f && (steepList.Count == 0 || (steepList[steepList.Count - 1].at - p[i]).magnitude > 60f)) steepList.Add((p[i], gr)); }
                 for (int i = 0; i < n; i++) { donePts.Add((p[i], y[i])); doneIdx.Add(p[i]); }
                 // Round 82 (D, Dan's BUG-008 x 2730.04 z -5231.56 h 58, by Atlanta Industrial Drive: "not evven cant drive forward"): OSM marks short

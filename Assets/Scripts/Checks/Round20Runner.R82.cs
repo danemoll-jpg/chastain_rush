@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Racer;
 using UnityEngine;
 
 namespace ChastainRush
@@ -22,13 +23,13 @@ namespace ChastainRush
 
         static readonly (string id, Vector3 at, float yaw, string what)[] R82Spots =
         {
-            ("BUG-001", new Vector3(2778.72f, 0f, 1028.78f), 149.2f, "a forward Chastain Glen race: the board fence between two houses ahead"),
-            ("BUG-002", new Vector3(-374.14f, 0f, -843.31f), 122.2f, "the Big Shanty Express ramp at its creek bridge's north end: spikes of ground"),
-            ("BUG-003", new Vector3(-333.65f, 0f, -943.01f), 117.5f, "the ramp's merge into the Express Lanes: a slot under a slab"),
-            ("BUG-005", new Vector3(114.42f, 0f, -2636.04f), 90.3f, "the Express Lanes under Greers Chapel Drive: bridges lying across the road"),
-            ("BUG-006", new Vector3(1499.89f, 0f, -4269.27f), 53.9f, "the Express Lanes at Bells Ferry Road: a wall across, torn ground"),
-            ("BUG-007", new Vector3(2589.00f, 0f, -5263.69f), 288.6f, "from Canton Road's bridge: the dip in the Express Lanes"),
-            ("BUG-008", new Vector3(2730.04f, 0f, -5231.56f), 57.7f, "the railroad by Atlanta Industrial Drive: a step at the deck's end"),
+            ("BUG-001", new Vector3(2778.72f, 289.88f, 1028.78f), 149.2f, "a forward Chastain Glen race: the board fence between two houses ahead"),
+            ("BUG-002", new Vector3(-374.14f, 299.55f, -843.31f), 122.2f, "the Big Shanty Express ramp at its creek bridge's north end: spikes of ground"),
+            ("BUG-003", new Vector3(-333.65f, 301.07f, -943.01f), 117.5f, "the ramp's merge into the Express Lanes: a slot under a slab"),
+            ("BUG-005", new Vector3(114.42f, 358.76f, -2636.04f), 90.3f, "the Express Lanes under Greers Chapel Drive: bridges lying across the road"),
+            ("BUG-006", new Vector3(1499.89f, 371.04f, -4269.27f), 53.9f, "the Express Lanes at Bells Ferry Road: a wall across, torn ground"),
+            ("BUG-007", new Vector3(2589.00f, 381.55f, -5263.69f), 288.6f, "from Canton Road's bridge: the dip in the Express Lanes"),
+            ("BUG-008", new Vector3(2730.04f, 386.31f, -5231.56f), 57.7f, "the railroad by Atlanta Industrial Drive: a step at the deck's end"),
         };
 
         // ---------------------------------------------------------------- dan
@@ -41,13 +42,24 @@ namespace ChastainRush
                 if (sp.id == "BUG-001") { UseRoute("chastain_glen_loop.json", "forward"); RaceController.LapsOverride = 3; RaceController.AiCount = 0; race.StartRace(); R73Pad(); while (race.State == RaceController.Stage.Countdown) yield return null; }
                 else if (race.State != RaceController.Stage.Free) race.EndRace();
                 yield return Clock(sp.id == "BUG-001" ? 18f : 13f);
-                yield return R74Place(sp.at, sp.yaw);
+                yield return R82Place(sp.at, sp.yaw);
                 yield return Capture($"82_{sp.id}_after");
                 var p = car.Body.position;
                 report.AppendLine($"  {sp.id} ({sp.what}): at ({p.x:0.0}, {p.y:0.0}, {p.z:0.0}) heading {sp.yaw:0}; picture 82_{sp.id}_after.png");
                 Flush();
             }
             if (race.State != RaceController.Stage.Free) race.EndRace();
+        }
+
+        // on the surface nearest the height Dan's vehicle was at (a deck over a road: the one he was on), heading 'yaw'
+        IEnumerator R82Place(Vector3 at, float yaw)
+        {
+            var hits = Physics.RaycastAll(new Vector3(at.x, at.y + 40f, at.z), Vector3.down, 120f, ~0, QueryTriggerInteraction.Ignore).Where(h => h.rigidbody == null).ToList();
+            if (hits.Count == 0) { yield return R74Place(at, yaw); yield break; }
+            var p = hits.OrderBy(h => Mathf.Abs(h.point.y - at.y)).First().point;
+            respawn.PlaceAt(p + Vector3.up * .3f, yaw); car.Body.linearVelocity = Vector3.zero; race.NotifyTeleported();
+            var cam = Camera.main ? Camera.main.GetComponent<ChaseCamera>() : null; if (cam) cam.Snap();
+            yield return new WaitForSecondsRealtime(2.5f);
         }
 
         // ---------------------------------------------------------------- lines
@@ -85,6 +97,7 @@ namespace ChastainRush
                     string tag = $"82_L_{new string(d.name.Where(char.IsLetterOrDigit).Take(26).ToArray())}{(back ? "_back" : "")}";
                     var pics = new List<(string, float)>();
                     if (d.pics != null) for (int k = 0; k < d.pics.Length; k++) { float s = back ? total - d.pics[k] : d.pics[k]; string nm = d.picNames != null && k < d.picNames.Length ? d.picNames[k] : $"{k}"; pics.Add(($"{tag}_{nm}", s)); }
+                    pics = pics.OrderBy(x => x.Item2).ToList();
                     float cap = d.cap > 0f ? d.cap : 35f;
                     var run = new HumanRun(); yield return HumanDrive(line, cap, Mathf.Max(60f, total / (cap * .5f) + 30f), run, null, null, pics, tag + "_air"); StopCoroutine(watch);
                     bool ok = run.reachedEnd && run.maxAir < .3f && jolt < 6f && run.resets == 0 && wallHits == 0; if (!ok) bad++; runs++;
@@ -111,7 +124,7 @@ namespace ChastainRush
                 while (race.State == RaceController.Stage.Countdown) yield return null;
                 var fwd = Quaternion.Euler(0f, sp.yaw, 0f) * Vector3.forward;
                 var line = new List<Vector3>(); for (float s = 0f; s <= 30f; s += 2f) line.Add(RaceRoute.Ground(sp.at.x + fwd.x * s, sp.at.z + fwd.z * s));
-                yield return R74Place(sp.at, sp.yaw); R73Pad();
+                yield return R82Place(sp.at, sp.yaw); R73Pad();
                 int b0 = FenceChunk.TotalBroken(); var start = car.Body.position;
                 var run = new HumanRun(); yield return HumanDrive(line, 10f, 12f, run, null, null, new List<(string, float)> { ($"82_E_{dir}_at_fence", 12f), ($"82_E_{dir}_past", 24f) }, null, false);
                 float went = Vector3.Dot(Flat(car.Body.position - start), fwd); int broke = FenceChunk.TotalBroken() - b0;

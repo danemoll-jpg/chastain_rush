@@ -757,12 +757,21 @@ namespace ChastainRush
                 }
                 Vector3 P(int i, float off, float dy) => new Vector3(pts[i].x + nrm[i].x * off, b.deck_y[i] + lift + dy, pts[i].y + nrm[i].y * off);
                 Vector3 N(int i, float sgn) => new Vector3(nrm[i].x * sgn, 0f, nrm[i].y * sgn);
+                int bIndex = Array.IndexOf(map.bridges, b);
                 for (int i = 0; i + 1 < n; i++)
                 {
                     int j = i + 1;
                     Face(top, P(i, -hw, 0f), P(j, -hw, 0f), P(j, hw, 0f), P(i, hw, 0f), Vector3.up);
                     foreach (float sgn in new[] { -1f, 1f })
                     {
+                        // Round 82 (C, BUG-003): where another deck or a road runs right beside this one at its height (a ramp merging into the Express Lanes'
+                        // bridge), no parapet between them: the gap paved across instead
+                        float gap = R82SideOpen(bIndex, (pts[i] + pts[j]) * .5f, (nrm[i] + nrm[j]).normalized * sgn, hw, (b.deck_y[i] + b.deck_y[j]) * .5f + lift, terrain);
+                        if (gap >= 0f)
+                        {
+                            if (gap > .05f) { if (sgn > 0f) Face(top, P(i, hw, 0f), P(j, hw, 0f), P(j, hw + gap + .3f, 0f), P(i, hw + gap + .3f, 0f), Vector3.up); else Face(top, P(i, -hw - gap - .3f, 0f), P(j, -hw - gap - .3f, 0f), P(j, -hw, 0f), P(i, -hw, 0f), Vector3.up); }
+                            continue;
+                        }
                         float inner = sgn * hw, outer = sgn * (hw + parapetW);
                         Face(body, P(i, inner, 0f), P(j, inner, 0f), P(j, inner, parapetH), P(i, inner, parapetH), -N(i, sgn));
                         Face(body, P(i, inner, parapetH), P(j, inner, parapetH), P(j, outer, parapetH), P(i, outer, parapetH), Vector3.up);
