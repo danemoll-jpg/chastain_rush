@@ -241,6 +241,7 @@ namespace ChastainRush
                 RoadDriver.ProjectAnywhere = argv.Contains("-r80ProjectOld");
                 if (Do("dan")) yield return Guard(R80DanPart());
                 if (Do("whitlock")) yield return Guard(R80WhitlockPart());
+                if (parts != null && parts.Contains("wjump")) yield return Guard(R80WJump());
                 if (Do("deck")) yield return Guard(R80DeckPart());
                 if (Do("ddecks")) yield return Guard(R80DDecks());
                 if (Do("dreplay")) yield return Guard(R80DReplay());

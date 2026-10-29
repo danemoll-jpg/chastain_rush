@@ -122,6 +122,43 @@ namespace ChastainRush
             report.AppendLine($"  the jump against waiting: {(through.TryGetValue("jump", out var tj) ? tj : float.NaN):0.0} s against {(through.TryGetValue("wait", out var tw) ? tw : float.NaN):0.0} s through the stretch");
         }
 
+        // C, the jump alone: Free Roam, the car put on Whitlock past the corner on the stack's line at 21 and 24 m/s, the human-like driver straight on over
+        // it while a southbound train crosses (its cars under the flight), a picture in the air
+        IEnumerator R80WJump()
+        {
+            report.AppendLine(); report.AppendLine("=== C. The Whitlock jump alone (Free Roam, Street Classic): put on Whitlock 35 m before the tie stack's foot on its line, straight on over it, a train crossing under the flight");
+            if (race.State != RaceController.Stage.Free) race.EndRace();
+            yield return Vehicle("original"); yield return Clock(13f);
+            var cross = R80Crossing(R80Whitlock); var rt = RailTrains.Instance;
+            foreach (float v0 in new[] { 21f, 24f })
+            {
+                var line = new List<Vector3>(); for (float x = 1561f; x <= 1700f; x += 3f) line.Add(RaceRoute.Ground(x, -8530f));
+                yield return R74Place(RaceRoute.Surface(1561f, -8530f), 90f); R73Pad();
+                Place(car.Body.position, Vector3.right, v0);
+                rt.Align(cross.center, Mathf.Max(.5f, (cross.center.x - 1561f) / v0 - 2.5f), true);
+                bool under = false, closed = false; float over = float.NaN, air = 0f, airBest = 0f, land = 0f, lastVy = 0f; Vector3 landAt = Vector3.zero;
+                var watch = StartCoroutine(R73Watch(() =>
+                {
+                    var p = car.Body.position; float vy = car.Body.linearVelocity.y;
+                    if (car.GroundedWheels == 0) { air += Time.fixedDeltaTime; airBest = Mathf.Max(airBest, air); }
+                    else { if (air > .3f && Mathf.Abs(vy - lastVy) > land) { land = Mathf.Abs(vy - lastVy); landAt = p; } air = 0f; }
+                    lastVy = vy;
+                    if (p.x > 1619f && p.x < 1631f && car.GroundedWheels == 0)
+                    {
+                        closed |= cross.Closed;
+                        if (Physics.Raycast(p, Vector3.down, out var hit, 20f, ~0, QueryTriggerInteraction.Ignore) && hit.collider.GetComponentInParent<TrainCar>()) { under = true; over = float.IsNaN(over) ? hit.distance : Mathf.Min(over, hit.distance); }
+                    }
+                }, () => true));
+                var run = new HumanRun(); yield return HumanDrive(line, v0 + 1f, 30f, run, null, null, null, $"80_C_wjump_{v0:0}_in_the_air");
+                StopCoroutine(watch);
+                var end = car.Body.position;
+                report.AppendLine($"  at {v0:0} m/s: longest in the air {airBest:0.00} s; over the tracks the crossing {(closed ? "closed" : "open")}, a train car under the car {(under ? $"yes ({over:0.0} m under the car's middle)" : "no")}; " +
+                                  $"landing {land:0.0} m/s in a step at ({landAt.x:0}, {landAt.z:0}) (the dock from x 1636 to 1676); ended at ({end.x:0}, {end.z:0}), resets {run.resets}{run.note}; picture 80_C_wjump_{v0:0}_in_the_air.png");
+                Check($"wjump {v0:0} m/s: over the tracks with a train under it, down on the dock, no reset", under && over > 1.2f && landAt.x > 1630f && landAt.x < 1690f && run.resets == 0, $"under {under} ({over:0.0} m), landed x {landAt.x:0}, resets {run.resets}");
+                yield return new WaitForSecondsRealtime(1f);
+            }
+        }
+
         // ---------------------------------------------------------------- deck
         IEnumerator R80DeckPart()
         {
