@@ -120,6 +120,14 @@ def main():
         used.add(k)
         path = run_on(list(free_end), used, 1e9, same_name=True)
         path = resample(path, 6.0)
+        # (the road's end at the map's edge is closed (Round 66): start and end 120 m inside it)
+        ext = m["extent_m"]
+        def at_edge(p):
+            return min(abs(p[0] - ext[0]), abs(p[0] - ext[2]), abs(p[1] - ext[1]), abs(p[1] - ext[3])) < 5
+        while len(path) > 2 and at_edge(path[0]):
+            path = path[20:]
+        while len(path) > 2 and at_edge(path[-1]):
+            path = path[:-20]
         L = length(path)
         if L < 1000:
             continue

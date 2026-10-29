@@ -174,6 +174,7 @@ namespace ChastainRush
             // vertical_scale (config.json) is already baked into the terrain heights and building heights by mapgen;
             // the builder only applies it to the small offsets it adds itself, so everything stays one pure y-scale.
             vScale = map.vertical_scale > 0f ? map.vertical_scale : 1f;
+            R82WidenExpress(map);                // Round 82 (B): the Express Lanes 6 m wide (OSM's one lane, 4.5 m, walled both sides: cars scraped the walls at speed) (MapBuilder.Round82.cs)
             var terrain = c.terrain = BuildTerrain(meta, c.mats, quick);
             BuildClock.Lap("BuildTerrain");
             SmoothJunctionSeams(map, terrain);   // Round 17 (5): BUG-001 / BUG-002, the two junction seams Dan pointed at (MapBuilder.Round17.cs)

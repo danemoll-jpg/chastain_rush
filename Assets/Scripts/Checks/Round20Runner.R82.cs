@@ -23,13 +23,13 @@ namespace ChastainRush
 
         static readonly (string id, Vector3 at, float yaw, string what)[] R82Spots =
         {
-            ("BUG-001", new Vector3(2778.72f, 289.88f, 1028.78f), 149.2f, "a forward Chastain Glen race: the board fence between two houses ahead"),
-            ("BUG-002", new Vector3(-374.14f, 299.55f, -843.31f), 122.2f, "the Big Shanty Express ramp at its creek bridge's north end: spikes of ground"),
-            ("BUG-003", new Vector3(-333.65f, 301.07f, -943.01f), 117.5f, "the ramp's merge into the Express Lanes: a slot under a slab"),
-            ("BUG-005", new Vector3(114.42f, 358.76f, -2636.04f), 90.3f, "the Express Lanes under Greers Chapel Drive: bridges lying across the road"),
-            ("BUG-006", new Vector3(1499.89f, 371.04f, -4269.27f), 53.9f, "the Express Lanes at Bells Ferry Road: a wall across, torn ground"),
-            ("BUG-007", new Vector3(2589.00f, 381.55f, -5263.69f), 288.6f, "from Canton Road's bridge: the dip in the Express Lanes"),
-            ("BUG-008", new Vector3(2730.04f, 386.31f, -5231.56f), 57.7f, "the railroad by Atlanta Industrial Drive: a step at the deck's end"),
+            ("BUG-001", new Vector3(2781.91f, 289.88f, 1023.43f), 149.2f, "a forward Chastain Glen race: the board fence between two houses ahead"),
+            ("BUG-002", new Vector3(-368.22f, 299.55f, -847.05f), 122.2f, "the Big Shanty Express ramp at its creek bridge's north end: spikes of ground"),
+            ("BUG-003", new Vector3(-327.44f, 301.07f, -946.25f), 117.5f, "the ramp's merge into the Express Lanes: a slot under a slab"),
+            ("BUG-005", new Vector3(121.42f, 358.76f, -2636.08f), 90.3f, "the Express Lanes under Greers Chapel Drive: bridges lying across the road"),
+            ("BUG-006", new Vector3(1505.54f, 371.04f, -4265.14f), 53.9f, "the Express Lanes at Bells Ferry Road: a wall across, torn ground"),
+            ("BUG-007", new Vector3(2582.37f, 381.55f, -5261.45f), 288.6f, "from Canton Road's bridge: the dip in the Express Lanes"),
+            ("BUG-008", new Vector3(2735.95f, 386.31f, -5227.83f), 57.7f, "the railroad by Atlanta Industrial Drive: a step at the deck's end"),
         };
 
         // ---------------------------------------------------------------- dan
@@ -51,7 +51,7 @@ namespace ChastainRush
             if (race.State != RaceController.Stage.Free) race.EndRace();
         }
 
-        // on the surface nearest the height Dan's vehicle was at (a deck over a road: the one he was on), heading 'yaw'
+        // Dan's vehicle position (his report's "Vehicle position"), on the surface nearest the height it was at (a deck over a road: the one he was on), heading 'yaw'
         IEnumerator R82Place(Vector3 at, float yaw)
         {
             var hits = Physics.RaycastAll(new Vector3(at.x, at.y + 40f, at.z), Vector3.down, 120f, ~0, QueryTriggerInteraction.Ignore).Where(h => h.rigidbody == null).ToList();
@@ -129,9 +129,9 @@ namespace ChastainRush
                 var run = new HumanRun(); yield return HumanDrive(line, 10f, 12f, run, null, null, new List<(string, float)> { ($"82_E_{dir}_at_fence", 12f), ($"82_E_{dir}_past", 24f) }, null, false);
                 float went = Vector3.Dot(Flat(car.Body.position - start), fwd); int broke = FenceChunk.TotalBroken() - b0;
                 yield return Capture($"82_E_{dir}_end");
-                report.AppendLine($"  {dir} race: {broke} fence piece(s) broken, the car went {went:0.0} m along Dan's heading (the fence is about 10 m ahead); pictures 82_E_{dir}_at_fence, _past, _end");
-                if (dir == "forward") Check("fence forward race: it breaks and the car goes through", broke > 0 && went > 16f, $"{broke} broken, {went:0.0} m");
-                else Check("fence reverse race: it holds (no unintended shortcut)", went < 13f, $"{broke} broken, {went:0.0} m");
+                report.AppendLine($"  {dir} race: {broke} fence piece(s) broken, the car went {went:0.0} m along Dan's heading (the fence is about 7 m ahead); pictures 82_E_{dir}_at_fence, _past, _end");
+                if (dir == "forward") Check("fence forward race: it breaks and the car goes through", broke > 0 && went > 14f, $"{broke} broken, {went:0.0} m");
+                else Check("fence reverse race: it holds (no unintended shortcut)", went < 9.5f, $"{broke} broken, {went:0.0} m");
                 race.EndRace(); yield return new WaitForSecondsRealtime(.5f); Flush();
             }
         }

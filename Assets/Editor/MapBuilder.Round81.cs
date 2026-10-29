@@ -243,7 +243,7 @@ namespace ChastainRush
                     float rise = Mathf.Abs(tg - y), bank = Mathf.Clamp(2f * rise, 4f, bankMax);
                     if (dd > half + .5f + bank) return y;
                     if (dd > half + .5f && OnOtherRoad(p)) return y;
-                    if (UnderOtherDeck(p, ownSet, out float slabB)) return Mathf.Min(y, slabB - .3f);   // Round 82: never up under another deck
+                    if (UnderOtherDeck(p, ownSet, out float slabB) && slabB > tg + 1f) return Mathf.Min(y, slabB - .3f);   // Round 82: never up under another deck
                     float w = dd <= half + .5f ? 1f : Smooth01(1f - (dd - half - .5f) / bank); float ny = y + w * (tg - y);
                     if (Mathf.Abs(ny - y) > 1e-3f) changed++; return ny;
                 });
@@ -296,6 +296,8 @@ namespace ChastainRush
             foreach (var s in segs.Where(x => !x.express))
                 foreach (var e in new[] { s.a, s.b })
                     foreach (int si in idx.Near(e, 2f, near).ToList()) { var x = segs[si]; if (!x.express) continue; var ab = x.b - x.a; float t = Mathf.Clamp01(Vector2.Dot(e - x.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((x.a + ab * t - e).magnitude < 2f) { merges.Add(e); break; } }
+            var deckEnds = new List<Vector2>();
+            if (map.bridges != null) foreach (var bb in map.bridges) if (bb.name == ExpressName) { var (ea, ez) = Ends(bb, false); deckEnds.Add(ea); deckEnds.Add(ez); }
             var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
             var grey = new Color(.74f, .73f, .70f);
             // (second try, the check: a car that touched the wall's flared foot rode up it and over; the wall stood 0.6 m off a 4.5 m lane): the wall
@@ -328,7 +330,11 @@ namespace ChastainRush
                     for (int i = 0; i < line.Count; i++)
                     {
                         var dir = (line[Mathf.Min(i + 1, line.Count - 1)] - line[Mathf.Max(i - 1, 0)]).normalized; var right = new Vector2(dir.y, -dir.x);
-                        float off = half + .5f; for (float o = half + 1.8f; o >= half + .5f; o -= .3f) if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
+                        float off = half + .5f; for (float o = half + 2.5f; o >= half + .5f; o -= .3f)   /* Round 82: 2.5 m out (was 1.8) */ if (!Alongside(line[i] + right * (side * o), dir)) { off = o; break; }
+                        // Round 82 (B, the drive: cars caught the parapets' ends at the decks' starts): over the 25 m before an Express deck's end the wall closes in
+                        // to the parapet's line, leading onto the deck
+                        float dEnd = deckEnds.Count > 0 ? deckEnds.Min(e => (e - line[i]).magnitude) : 999f;
+                        off = Mathf.Lerp(half + .35f, off, Mathf.Clamp01((dEnd - 2f) / 25f));
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
                         if (Blocked(p, roadY, dir) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
                         float footY = Ground(terrain, p.x, p.y);
