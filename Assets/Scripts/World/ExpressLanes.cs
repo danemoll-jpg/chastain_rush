@@ -56,19 +56,20 @@ namespace ChastainRush
         void Start()
         {
             var net = TrafficNetwork.Instance;
-            if (net)
+            if (net) try
             {
                 var main = new HashSet<int>();
-                for (int e = 0; e < net.EdgeCount; e++) if (net.Name(e) == Name) { main.Add(e); mainEdges.Add(e); }
+                for (int e = 0; e < net.EdgeCount; e++) if (net.SafeName(e) == Name) { main.Add(e); mainEdges.Add(e); }
                 // the ramps: unnamed links that touch the lanes (their first edge)
                 for (int e = 0; e < net.EdgeCount; e++)
                 {
-                    if (main.Contains(e) || net.Name(e).Length > 0 || !net.ClassName(e).EndsWith("_link")) continue;
+                    if (main.Contains(e) || net.SafeName(e).Length > 0 || !net.ClassName(e).EndsWith("_link")) continue;
                     bool touches = false;
                     foreach (int n in new[] { net.From(e), net.To(e) }) foreach (int o in net.Adjacent(n)) if (main.Contains(o)) touches = true;
                     if (touches) linkEdges.Add(e);
                 }
             }
+            catch (Exception ex) { Debug.LogWarning($"[Round80] Express Lanes: the traffic graph ({net.EdgeCount} edges, {net.NodeCount} nodes): {ex.GetType().Name} {ex.Message} {ex.StackTrace}"); }
             RoadNet.Blocked = PoliceBlocked;
             Debug.Log($"[Round80] Express Lanes: {mainEdges.Count} lane edges, {linkEdges.Count} ramp edges, {gates.Length} gates");
         }

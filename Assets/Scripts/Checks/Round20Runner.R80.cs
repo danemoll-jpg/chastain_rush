@@ -11,7 +11,7 @@ using UnityEngine.InputSystem.LowLevel;
 
 namespace ChastainRush
 {
-    // Round 80 in the exe (-exeRound80 <dir> [-r80Only dan,whitlock,deck,ddecks,dreplay,cockpit,air,airhuman,express,traffic] -r20Minutes 300 -logFile <dir>\Player.log),
+    // Round 80 in the exe (-exeRound80 <dir> [-r80Only dan,whitlock,deck,ddecks,dreplay,cockpit,air,airhuman,lanes,traffic] -r20Minutes 300 -logFile <dir>\Player.log),
     // started from the repo root (it reads local/round80/r80_express.json): CHECK IT AS DAN PLAYS IT (TODO.md item 0).
     //   dan       BUG-001 from Dan's exact place and heading (Whitlock Avenue, the square race, the train passing): what he sees now
     //   whitlock  C: the square race (1 lap, 3 AI), the human-like driver over the tie stack while a train passes (a picture in the air over it), and
@@ -25,7 +25,7 @@ namespace ChastainRush
     //   air       A: each air course x Easy / Normal / Hard x 2 races, 3 AI pilots, 2 laps, the player parked: their missed rings, mistakes, lap spread
     //   airhuman  A: each air course on Normal and Hard, 1 lap, 3 AI: the human-like pilot (the pad, a lag, a little noise) misses one ring on purpose
     //             and goes back for it: where it finishes
-    //   express   E: the lanes at 6 AM, noon, 5 PM and midnight (Heavy traffic): the gates (pictures from a driver's place), traffic counted each way;
+    //   lanes     E: the lanes at 6 AM, noon, 5 PM and midnight (Heavy traffic): the gates (pictures from a driver's place), traffic counted each way;
     //             then a closed gate smashed at 5 PM and the lanes driven the wrong way (oncoming traffic counted)
     //   traffic   F: traffic counted on I-75 and I-575 and the frame rate at I-75 / Barrett Parkway, I-575, the square and Town Center (Normal and Heavy);
     //             -r80TrafficOld gives Round 79's numbers (before)

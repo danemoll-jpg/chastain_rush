@@ -69,7 +69,8 @@ namespace ChastainRush
         public bool Bridge(int e) => edgeBridge[e];
         public float Half(int e) => edgeHalf[e];
         public string Name(int e) => edgeName[e];
-        public string ClassName(int e) => classNames[edgeClass[e]];
+        public string ClassName(int e) => edgeClass[e] >= 0 && edgeClass[e] < classNames.Length ? classNames[edgeClass[e]] : "";   // Round 80: an edge without a class (none in the list) gives ""
+        public string SafeName(int e) => e >= 0 && e < edgeName.Length ? edgeName[e] : "";   // Round 80
         public List<int> Adjacent(int node) => adjacent[node];
         public int Degree(int node) => adjacent[node].Count;
         // the node at the far end when entering edge e at node `at` (dir +1: from -> to)

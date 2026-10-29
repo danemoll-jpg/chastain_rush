@@ -69,7 +69,7 @@ namespace ChastainRush
             if (tag == "round67" && parts == null) parts = new[] { "mloop", "mjumps", "mwalk", "mpics", "tcreek", "tpark", "tmound", "tpics" };   // Round 67 (Round20Runner.R67.cs); mai as well when named
             if (tag == "round72" && parts == null) parts = new[] { "qjump", "qshort", "qreplay", "qpics" };   // Round 72 (Round20Runner.R72.cs)
             if (tag == "round75" && parts == null) parts = new[] { "dan", "types", "mapb" };   // Round 75 (Round20Runner.R75.cs)
-            if (tag == "round80" && parts == null) parts = new[] { "dan", "whitlock", "deck", "ddecks", "dreplay", "cockpit", "air", "airhuman" };   // Round 80 (Round20Runner.R80.cs); express with -traffic Heavy, traffic on its own runs
+            if (tag == "round80" && parts == null) parts = new[] { "dan", "whitlock", "deck", "ddecks", "dreplay", "cockpit", "air", "airhuman" };   // Round 80 (Round20Runner.R80.cs); lanes with -traffic Heavy, traffic on its own runs
             if (tag == "round79" && parts == null) parts = new[] { "dan", "replay", "air", "arrow", "rail" };   // Round 79 (Round20Runner.R79.cs)
             if (tag == "round78" && parts == null) parts = new[] { "dan", "rail", "train", "square", "house", "open", "msq", "air" };   // Round 78 (Round20Runner.R78.cs)
             if (tag == "round77" && parts == null) parts = new[] { "dan", "conn", "hosp", "deck", "rail", "railmap", "square" };   // Round 77 (Round20Runner.R77.cs)
@@ -247,7 +247,7 @@ namespace ChastainRush
                 if (Do("cockpit")) yield return Guard(R80Cockpit());
                 if (Do("air")) yield return Guard(R80Air());
                 if (Do("airhuman")) yield return Guard(R80AirHuman());
-                if (parts != null && parts.Contains("express")) yield return Guard(R80Express());
+                if (parts != null && parts.Contains("lanes")) yield return Guard(R80Express());   // ("express" is Round 26's pipe express)
                 if (parts != null && parts.Contains("traffic")) yield return Guard(R80Traffic());
             }
             // Round 79 (Round20Runner.R79.cs)
