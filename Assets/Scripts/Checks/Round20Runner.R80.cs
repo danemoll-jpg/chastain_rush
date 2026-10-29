@@ -358,7 +358,7 @@ namespace ChastainRush
                 yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
                 q.Enqueue((t, adv.aPitch, adv.aBank, adv.aRudder, adv.aThrottle, adv.aSteer));
                 var c = q.Peek(); while (q.Count > 1 && t - q.Peek().t > .1f) c = q.Dequeue();
-                float n1 = (Mathf.PerlinNoise(seed, t * .7f) - .5f) * .14f, n2 = (Mathf.PerlinNoise(seed + 9f, t * .7f) - .5f) * .1f;
+                float n1 = (Mathf.PerlinNoise(seed, t * .7f) - .5f) * .07f, n2 = (Mathf.PerlinNoise(seed + 9f, t * .7f) - .5f) * .05f;
                 // (through the pad it did not hold the line: the plane's own controls, as the AI pilots fly, late and a little noisy)
                 pl.Scripted = true; pl.sPitch = Mathf.Clamp(c.pitch + n2, -1f, 1f); pl.sBank = Mathf.Clamp(c.bank + n1, -1f, 1f); pl.sRudder = c.rud; pl.sThrottle = c.thr; pl.sSteer = c.steer; pl.sBrake = 0f;
             }
@@ -368,7 +368,7 @@ namespace ChastainRush
 
         IEnumerator R80AirHuman()
         {
-            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the plane's own controls as the AI pilots, 0.1 s late, a little noise; the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
+            report.AppendLine(); report.AppendLine("=== A. The human-like pilot (the plane's own controls as the AI pilots, flat out, 0.1 s late, a little noise; the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for");
             yield return Clock(13f); int prev = RoadDriver.Difficulty;
             foreach (var file in R79Courses)
                 foreach (int diff in new[] { 1, 2 })

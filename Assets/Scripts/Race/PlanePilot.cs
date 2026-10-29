@@ -48,6 +48,7 @@ namespace ChastainRush
             for (int i = 1; i < path.Length; i++) { var d = path[i] - path[i - 1]; d.y = 0f; cum[i] = cum[i - 1] + d.magnitude; }
             L = cum[cum.Length - 1];
             rng = new System.Random(unchecked(DriverVariation.Seed + n * 7919));
+            if (Advise) Pace = 1f;   // Round 80 (A): a check's human-like pilot flies flat out, as a good player does
             lapPace = Pace;
             if (plane && !Advise) { plane.Scripted = true; plane.sThrottle = 0f; plane.sPitch = plane.sBank = plane.sRudder = plane.sSteer = plane.sBrake = 0f; }
         }
@@ -128,7 +129,7 @@ namespace ChastainRush
                 if ((Mistakes || forced) && ring != race.Route.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
                 {
                     backFor = id;   // decided once
-                    if ((forced || rng.NextDouble() < GoBackChance[Skill]) && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
+                    if (forced || rng.NextDouble() < GoBackChance[Skill] && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
                 }
                 // the late turn: past the ring it holds its heading a moment (it runs wide)
                 if (lateTurn && decidedFor == id && past > 0f) { lateUntil = Time.time + (Skill == 0 ? 1.8f : Skill == 1 ? 1.4f : 1.0f) * Mathf.Lerp(.8f, 1.2f, (float)rng.NextDouble()); lateDir = Flat(car.Body.linearVelocity).normalized; lateTurn = false; }
