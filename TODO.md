@@ -101,6 +101,12 @@ limit: if a number the round asks for (time saved, air time, height, speed) is n
 report the numbers in the status and move on; Dan decides. Optional ideas in Dan's notes ("could", "maybe") are built as
 the simple version, not as requirements to tune. Copy both rules into CLAUDE.md's "Process" in the same words.
 
+**One heavy job at a time, at low priority — STANDING RULE (Dan, 2026-10-29 13:07).** Dan: "CODE Seems to keep locking up my computer with whatever it is doing"
+(Round 82 ran its 6th full Build Map with two exe checks (check5a, check5b) at the same moment). From now on: never run a Build Map, a player build and an exe check
+(or two exe checks) at the same time; one at a time. Start Unity batch runs and check exes at Below Normal priority (PowerShell `Start-Process ... -PassThru` then
+`.PriorityClass = 'BelowNormal'`, or `start /belownormal`) and give Unity's batch runs fewer worker threads (`-job-worker-count` about half the cores), so Dan's
+computer stays usable. At most 3 full Build Maps in a round; past that, stop and report. Copy this rule into CLAUDE.md's "Process" in the same words.
+
 ## Process (Dan, 2026-10-15; full rules in CLAUDE.md "Process")
 This file holds only: the standing rules above, the CURRENT round, QUEUED rounds, the last three "Previous delivery"
 sections, and the technical notes at the end. Everything older is in `TODO-ARCHIVE.md`, word for word: search it when
@@ -114,7 +120,8 @@ Round 81 is reviewed. Item 0 and the end-of-round clean-up apply. Short results.
 Dan is frustrated: "you said these would be breakable"; "Why is this even a thing? These are obviously bridges. Why are they lying across the road? You need to fix these
 everywhere. SHouldn't need to point out obvious flaws like this". Two rounds (80, 81) ended the Express Lanes PARTLY at the tuning limit; he then found more. This round:
 (1) the tuning limit is for numbers (air time, speed), NOT for a road lying across a road, a wall across a lane, a step you cannot drive up or a dip: those are bugs and
-are fixed, never reported as "partly"; (2) one full Build Map at the end as usual, but if its check finds one of those bugs, fix it and build again (say how many builds);
+are fixed, never reported as "partly"; (2) one full Build Map at the end as usual; if its check finds one of those bugs, fix it and build again, but AT MOST 3 full Build Maps in the round (Dan,
+2026-10-29 13:07, after build 6 started with two checks beside it and locked up his computer: stop there and report what is left);
 (3) the check looks at every place it changed the way Dan would (drive it both ways, and a picture from the driver's seat), not only the traces.
 A. EVERY ROAD CROSSING A GRADE-SEPARATED ONE, MAP-WIDE (Dan asked for "everywhere"). BUG-005 (x 114.42 z -2636.04 h 90, on the Northwest Corridor Express Lanes, the
    picture: the Express Lanes flat on the ground, crossing the interchange's roads at their level, barrier walls lying across them). Rule for the whole map: two roads
