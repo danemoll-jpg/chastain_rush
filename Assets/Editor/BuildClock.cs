@@ -19,8 +19,12 @@ namespace ChastainRush
             title = what; laps.Clear(); total.Restart(); step.Restart();
         }
 
+        // Round 83: called with each lap's name (the planning dry run watches the ground at given points between the passes)
+        public static System.Action<string> OnLap;
+
         public static void Lap(string name)
         {
+            OnLap?.Invoke(name);
             double s = step.Elapsed.TotalSeconds; step.Restart();
             laps.Add((name, s));
             Debug.Log($"[BuildTime] {name} {s:0.0} s (total {total.Elapsed.TotalSeconds:0.0} s)");
