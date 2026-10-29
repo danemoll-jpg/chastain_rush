@@ -264,6 +264,22 @@ namespace ChastainRush
                     v = .5 * (v + E + System.Math.Sqrt((v - E) * (v - E) + C * C));   // a smooth maximum (over a road under it): this wins
                     y[j] = v;
                 }
+                // (build 3: the ground along the road had been graded into a 10 % ramp off the old deck's end before this pass, and the profile followed it):
+                // no stretch steeper than R82Grade: each too steep step relaxed from both its ends, never below a road's clearance under it
+                var Ehard = new double[N];
+                for (int j = 0; j < N; j++) { double E = double.MinValue; foreach (var lb in lbs) E = System.Math.Max(E, lb.need - Fall(cum[j], lb.s, lb.spread)); Ehard[j] = E; }
+                for (int it = 0; it < 400; it++)
+                {
+                    bool any = false;
+                    for (int j = 0; j + 1 < N; j++)
+                    {
+                        double ds = System.Math.Max(cum[j + 1] - cum[j], .1f), lim = R82Grade * ds, dy = y[j + 1] - y[j];
+                        if (System.Math.Abs(dy) <= lim + 1e-4) continue;
+                        double ex = (System.Math.Abs(dy) - lim) * .5 * System.Math.Sign(dy); any = true;
+                        y[j] = System.Math.Max(y[j] + ex, Ehard[j]); y[j + 1] = System.Math.Max(y[j + 1] - ex, Ehard[j + 1]);
+                    }
+                    if (!any) break;
+                }
                 y = Gauss(y, 5f);
                 // the outer ends eased back onto the road as it is
                 for (int j = 0; j < N; j++) { double w = Smooth01(Mathf.Min(cum[j], cum[N - 1] - cum[j]) / R82EndEase); y[j] = raw[j] + (y[j] - raw[j]) * w; }
