@@ -89,7 +89,10 @@ namespace ChastainRush
                         if (Mathf.Repeat(s - a, route.LapLength) <= Mathf.Repeat(b - a, route.LapLength) && (!shortArea || flying || !Inside(k.short_area, at.x, at.z)))
                         { s = Mathf.Repeat(k.to_s - gs, route.LapLength); break; }
                     }
-                foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f, -15f })
+                // Round 81 (D, Dan's BUG-001: "Got hit by the train on the marietta square race and it sent me all the way to the opening point of the
+                // game"): a car hit at a crossing found every spot within 15 m shut (the crossing closed, the train's cars) and fell back to the map's
+                // spawn; now on back along the lap, short of the crossing, up to 90 m
+                foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f, -15f, -20f, -25f, -30f, -35f, -40f, -50f, -60f, -75f, -90f })
                     foreach (float off in new[] { 0f, -2f, 2f, -3.5f, 3.5f })
                     {
                         var p = route.PointAt(route.GateS + s + ds, out var f);
@@ -124,7 +127,8 @@ namespace ChastainRush
                     var dir = new Vector3(t.x, 0f, t.y); if (Vector3.Dot(dir, fwd) < 0f) dir = -dir;
                     var right = Vector3.Cross(Vector3.up, dir);
                     float y = Mathf.Atan2(dir.x, dir.z) * Mathf.Rad2Deg;
-                    foreach (float ds in new[] { 0f, 4f, -4f, 8f, -8f })
+                    // Round 81 (D): and on along the road (a train at a crossing shuts every spot within about 20 m of it): never the map's spawn for that
+                    foreach (float ds in new[] { 0f, 4f, -4f, 8f, -8f, -15f, 15f, -25f, 25f, -40f, 40f, -60f, 60f })
                         foreach (float off in new[] { 0f, -2f, 2f })
                         {
                             var q = RaceRoute.Surface(c.x + dir.x * ds + right.x * off, c.y + dir.z * ds + right.z * off);
