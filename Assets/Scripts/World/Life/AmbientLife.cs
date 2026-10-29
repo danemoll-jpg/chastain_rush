@@ -29,7 +29,8 @@ namespace Racer
         [Serializable] public struct Group { public Vector3 at; public float yaw; public Kind kind; public byte count; public byte action; public Vector3 walk; }   // action 0 football, 1 coffee, 3 walkers, 4 gesturing, Round 39: 5 two talking, 6 gardening, 7 to the mailbox and back, 8 kids playing tag; walk: the walkers' way (direction x half length)
         public const byte Football = 0, Coffee = 1, Walkers = 3, Gesture = 4, Talking = 5, Gardening = 6, Mail = 7, Kids = 8;
         public Group[] groups = new Group[0];
-        public const int PoolSize = 52, WalkerReserve = 16; public const float Near = 150f, Far = 200f;   // Round 39: 16 more for the street walkers (the standing groups leave them free)
+        public const int PoolSize = 52, WalkerReserve = 16; const float NearM = 150f, FarM = 200f;
+        public static float Near => SteamDeck.On ? NearM * SteamDeck.PeopleScale : NearM; public static float Far => SteamDeck.On ? FarM * SteamDeck.PeopleScale : FarM;   // Round 81 (I): nearer on the Steam Deck   // Round 39: 16 more for the street walkers (the standing groups leave them free)
         public static AmbientLife Current { get; private set; }
         public int Out { get; private set; }          // checks: groups out now (with figures)
         public int Dodges { get; private set; }       // checks: times a resident stepped out of a vehicle's way

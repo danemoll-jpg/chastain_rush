@@ -91,6 +91,7 @@ namespace ChastainRush
             float k = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(OpenFrom, OpenBy, Lift));
             if (SplitScreen.Active || cam.orthographic) k = 0f;
             float end = Mathf.Min(Mathf.Lerp(baseEnd, baseEnd * Opens, k), Mathf.Max(baseEnd, MaxView)), start = Mathf.Lerp(baseStart, end * .45f, k);
+            if (SteamDeck.On) { end *= SteamDeck.ViewScale; start *= SteamDeck.ViewScale; }   // Round 81 (I): the Steam Deck sees less far
             View = end;
             if (!Mathf.Approximately(RenderSettings.fogEndDistance, end)) RenderSettings.fogEndDistance = end;
             if (!Mathf.Approximately(RenderSettings.fogStartDistance, start)) RenderSettings.fogStartDistance = start;
@@ -98,6 +99,7 @@ namespace ChastainRush
             if (!SplitScreen.Active)
             {
                 float far = k > 0f ? Mathf.Max(baseFar, end + 100f) : baseFar; if (ExpClip > 0f) far = Mathf.Min(far, ExpClip);
+                if (SteamDeck.On) far = Mathf.Min(far, Mathf.Max(end + 60f, baseFar * SteamDeck.ViewScale));   // Round 81 (I)
                 WorldFar = far;
                 bool horizon = k > 0f && EdgeScenery.Instance;
                 if (horizon)

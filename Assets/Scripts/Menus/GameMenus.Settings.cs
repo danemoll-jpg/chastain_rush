@@ -102,6 +102,7 @@ namespace ChastainRush
                 Step(n++, "resolution", "Resolution:   " + ScreenSetting.ResolutionLabel, d => { ScreenSetting.StepResolution(d); Show(); });
                 Toggle(n++, "vsync", "VSync", s.vsync, () => Adjust(() => s.vsync = !s.vsync));
                 Step(n++, "fps", "Frame cap: " + s.frameLimit + " FPS", d => Adjust(() => { int[] caps = { 30, 60, 120 }; s.frameLimit = caps[Mathf.Clamp(Array.IndexOf(caps, s.frameLimit) + d, 0, 2)]; }));
+                Step(n++, "steamdeck", "Steam Deck: " + SteamDeck.Label, d => Adjust(() => s.steamDeck = (s.steamDeck + (d > 0 ? 1 : 2)) % 3));   // Round 81 (I): Auto / On / Off (lower view, traffic, people)
                 Toggle(n++, "lightning", "Lightning flashes", s.lightningFlashes, () => Adjust(() => s.lightningFlashes = !s.lightningFlashes));   // Round 35 (Part C): Racer's Display row (Off: the thunder stays, no flash)
             }
             if (page == "settings-gameplay")   // Round 30 (A3)

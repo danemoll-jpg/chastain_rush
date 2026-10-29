@@ -290,9 +290,9 @@ namespace ChastainRush
                 var frames = new List<float>(); float t0 = Time.realtimeSinceStartup;
                 while (Time.realtimeSinceStartup - t0 < 10f) { yield return null; frames.Add(Time.unscaledDeltaTime); }
                 var sorted = frames.OrderBy(x => x).ToList(); float p99 = sorted[Mathf.Min(sorted.Count - 1, (int)(sorted.Count * .99f))];
-                string tag = $"81_I_{Screen.width}_{new string(sp.name.Where(char.IsLetterOrDigit).Take(14).ToArray())}";
+                string tag = $"81_I_{Screen.width}{(SteamDeck.On ? "_deck" : "")}_{new string(sp.name.Where(char.IsLetterOrDigit).Take(14).ToArray())}";
                 yield return Capture(tag);
-                report.AppendLine($"  {sp.name,-34}: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps; picture {tag}.png");
+                report.AppendLine($"  {sp.name,-34}: {frames.Count / frames.Sum():0} fps average, slowest 1 % {1f / p99:0} fps (Steam Deck setting {(SteamDeck.On ? "on" : "off")}); picture {tag}.png");
                 if (sp.square) race.EndRace();
                 Flush();
             }

@@ -25,7 +25,7 @@ namespace ChastainRush
         // in reach (a road's length times its class's weight: motorway 6, trunk 4, primary 2, secondary 1.5, the rest 1), and on a road of several lanes
         // each car keeps a lane of its own (TrafficDriver.Lane), so every lane fills. Checks: -r80TrafficOld gives Round 79's numbers and mix.
         public static bool OldMix;
-        public static int CarsFor(int level) => (OldMix ? OldLevelCars : LevelCars)[Mathf.Clamp(level, 0, 3)];
+        public static int CarsFor(int level) { int n = (OldMix ? OldLevelCars : LevelCars)[Mathf.Clamp(level, 0, 3)]; return SteamDeck.On ? Mathf.RoundToInt(n * SteamDeck.CarScale) : n; }   // Round 81 (I): fewer on the Steam Deck
         float ClassWeight(int e)
         {
             if (OldMix) return 1f;
