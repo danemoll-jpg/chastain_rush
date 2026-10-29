@@ -7077,3 +7077,83 @@ No freight train.
 D DONE. Square rebuilt to photos 02 to 09: pictures `77_D_photo0*` from each photo's place. Fountain, bell, train and pavilion solid; signals, fence and play wall break.
 Disk: 28.3 GB -> 28.0 GB (`cleanup_round.py`: local/round68, 73, 74 and Library/BuildHistory cleared; the player build kept).
 For Dan to check: the connector at his three spots; BUG-003's white block; Kennestone (entrance, ER, skybridge, helipad); a deck's roof gap; the line end to end; the square.
+
+## Round 78 (moved from TODO.md on 2026-10-29 when Dan reviewed Round 81; word for word)
+
+## Previous delivery 3: Round 78
+**Reviewed: Dan raced it 2026-10-28 11:32 ("I liked the Marietta Sq race"; "The air track was good"); his notes are Round 79.**
+**Round 78, A RUNNING TRAIN; TWO NEW RACES (MARIETTA SQUARE, AND AN AIR TOUR OF THE MAP'S PLACES); the square's streets, the rail crossings,
+a buried house (Dan, 2026-10-28 04:21; reports BUG-001 to BUG-005 of session `2026-10-28_04-03-25-890_8dd649` (BUG-004 empty), read by Claude, after the
+Round 77 build).** Round 77 is reviewed. Item 0 (CHECK IT AS DAN PLAYS IT) and the end-of-round clean-up apply. Quick builds while working;
+ONE full Build Map at the end. Do A (the train) before B (the square race uses it). Short results.
+A. A RUNNING TRAIN. Dan: "would it be possible to build a running train?" A freight train (a locomotive or two and a string of cars:
+   boxcars, tankers, hoppers; our own models, no railroad's name or logo) running the main line (Round 77 C's CSX line through Marietta and
+   past Canton Road) edge to edge and back, every few minutes, at a believable speed (about 40 mph through town). Horn at crossings, bells and
+   the crossings' gates and lights working with it (down before it arrives, up after), traffic and the AI stopping for them; solid: hitting it
+   is a crash (reset), but a car can jump OVER the tracks where something gives a jump. In Free Roam and in races that cross the line. Show
+   it on the minimap. Cheap when far: only simulated nearby, the rest by its timetable.
+B. A MARIETTA SQUARE RACE (car). Dan: "A car race through Marietta Square taking advantage of the roads and parking decks (I assume there is one
+   I can drive through) and also crossing the train tracks which can lead to having to beat the train, jump over or get stuck waiting for it".
+   A circuit round the square and its streets (the square's four sides, Church / Cherokee / Roswell / Atlanta / Whitlock / Washington, Code
+   designs it), THROUGH a parking deck (in at one level, along it, out another way or down its ramps; Round 77 made 19 decks drivable: pick
+   one by the square, e.g. the Waddell Street deck), and ACROSS the railroad at a level crossing near the depot, where the train (A) comes
+   through on a schedule that often meets the race: beat it across, wait at the gates, or take a JUMP over the tracks (something that belongs
+   by a railroad: a loading dock / ramp, a flatbed, a ballast pile's slope) beside the crossing (real physics, landing clean, no free way
+   round per the standing rules). Forward; reverse only if it plays well. No other shortcuts this round (Dan picks after driving it). Built
+   like the other courses (closures off the line, AI that waits for or beats the train, records, ghosts, replays, map, loading inset).
+C. AN AIR TOUR RACE (plane). Dan: "An air flight race visiting the POIs that we have. My neighborhood, the mall, the hospital, marietta square,
+   kennesaw mnt and maybe the quarry again. I would like some underpass cps including under the glass bridge of the hospital." A ring course
+   from the airport visiting, in a flowing order, Chastain Glen (low over Dan's neighborhood), Town Center at Cobb, Kennestone hospital, Marietta
+   Square, Kennesaw Mountain (round / over the summit), Viking Quarry, and back. UNDERPASS RINGS: under Kennestone's glass skybridge over
+   Church Street (check the clearance and the street's width against both planes' wingspans and heights as built: if a plane cannot fit,
+   say so and make that ring fit, e.g. lift the skybridge's span or pick the widest gap, rather than drop it), under highway bridges, under a
+   rail bridge. Built to Round 73 B's rules (rings that point you at the next, the 3D arrow, beacons, rings count either way, a missed ring can
+   be gone back for), AI pilots and time trial, records, ghosts, replays. One lap (it is long); Code says the length and time.
+D. THE RAIL CROSSINGS' ROADS. BUG-001 (x 918.88 z -6512.37 h 190, Tower Road NW where it dips under the railroad): "fix the underpass" (the
+   picture: the road drops into a narrow trench beside the track with sheer dark walls, the bike stuck on a wall). BUG-002 (x 646.70 z -5541.05 h
+   74, Old 41 Highway NW climbing over the railroad): "fix the overpass" (the road waves up to a boxy concrete hump). Make every road under a
+   rail bridge a proper underpass (a real bridge span with abutments, the road graded down and back up smoothly, room for a truck) and every road
+   over the railroad a proper overpass (an even deck and smooth approaches), all of Round 77's 13 rail bridges and any road-over-rail
+   crossings; pictures of each.
+E. MARIETTA SQUARE'S STREETS. BUG-003 (x 1720.39 z -8428.27 h 71, West Park Square NW): "can we make the stoplights and cars not so blocky. Also
+   the parked cars are blocking the roads. Can we push the parking lots out of the streets so cars can pass by?" (the picture: parked cars as
+   gray blocks standing in the travel lanes, plain box traffic lights). The angled parking spaces along the curbs only (the travel lanes
+   clear for traffic and racers, two-way / one-way as real); parked cars as the game's real car models (the traffic cars' kinds), not
+   blocks; traffic lights with proper housings, backplates and mast arms (as the photo 06 shows), lit by phase. Check the rest of the map's
+   generated parked cars and lights for the same blocks.
+F. BUG-005 (x 1850.19 z -8843.93 h 146, a house south-east of the square): "unbury this house" (the picture: a two-story house sunk to its
+   eaves). Settle it, and every house in stage 3's land, as Round 52 did (floor at the drive's grade, the lot graded, steps at the door).
+G. ROUND 77's OPEN ITEMS: BUG-003's stray white block at the connector (find it in the scene by its position and remove it); the Green deck's far
+   end running into the physicians' building; the deck roof jump (the Waddell Street deck's roof: a jump off it, if the race / Free Roam
+   wants one); and stage 3's listed bumps (`stage3_bumps.txt`: 23 steps of 10 cm or more, 53 humps of 30 cm or more) smoothed.
+Check: item 0 for every item; the train seen from a crossing (gates, lights, horn, traffic waiting); the square race raced by the human-like
+driver three times (beating the train once, waiting once, jumping once); the air tour flown by the human-like pilot, a cockpit picture under
+the skybridge; D, E, F before / after at Dan's spots.
+For Dan to check: the train; the Marietta Square race; the air tour (under the skybridge); the underpass and overpass; the square's parking
+and lights; the house.
+
+**Status (Claude, 2026-10-28): built (full Build Map + exe 2026-10-28 09:24), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round78/`
+(Dan's pictures `BUG-00x_before`, `78_BUG-00x_after`; reports `round78_check_build3.txt` / `_build4.txt`, `air_tour_ai_pilots.txt`). Four full builds: build 1 stopped
+(the rail pulled 22 m under the Express Lanes deck), 3 found Old 41's deck rule had evened ten decks by name (the connector's ended 1 m under its road).
+A DONE. Freight trains (World/Rail) on two routes through Marietta's double track (Kennesaw 17.4 km, Canton 8.2 km), a train past the square about every 5 min;
+seen from Mill Street: lamps 8 s, gates down 19 s, the train 33 s, gates up 62 s; horn blown; 5 traffic cars held; a car on the tracks hit and put back (`78_A_*`).
+Round 77 had dropped the second Marietta track's crossings (its rails stood proud of the roads): kept now.
+B DONE. Marietta Square race, 1292 m: the square, Waddell, through the Lawrence Street deck's ground floor, Haynes, Lawrence, Mill Street over the tracks,
+North Marietta Parkway, Whitlock back over them. Jump: a ballast pile by Mill Street's curb, clears a train from 19 m/s. Raced 3 times (1 lap, 3 AI): beat it
+(crossed closed, no reset), waited at the gates, jumped (2.44 s in the air) but one reset after landing beside building 34315; every racer finished.
+C BUILT; the AI pilots fly it, my check pilot does not. Air Tour 30.7 km, 23 rings (quarry, Town Center, under Chastain Road NW over I-575, Chastain Glen,
+under Kennestone's skybridge, Marietta Square, under the parkway rail bridge, Kennesaw Mountain). Neither plane fitted under the skybridge (5.6 m): lifted to
+10.5 m, span 8 m wider, flatter arch; the parkway rail bridge 11 m clear. 2 AI pilots on Hard: 8:20 and 8:35 for 2 laps, no crashes. Laps 4:07 to 4:47.
+The human-like check pilot crash-looped at the quarry's first ring (two tries: tuning limit); no cockpit picture from it (a cockpit-height still instead).
+D DONE at Dan's spots. BUG-001: a wide span, sloped banks (`78_BUG-001_after`); Tower Road still lifts 0.6 s at 25 m/s on its dip (an even crest).
+BUG-002: Old 41's deck even, the rail 5.5 m lower under it: 0.0 / 0.1 s air both ways. 14 rail crossings driven: 11 clean.
+E DONE. 61 parked cars round the square, all off the lanes, real models (1342 pieces); decks too. 32 signal heads, backplates, phased (`78_E_*`). No other blocks.
+F DONE. Every stage 3 house settled as Round 52's; BUG-005's house on its ground (`78_BUG-005_after`).
+G. The stray block: hut 6854 (1.9 x 3.9 m, built 11 m tall) left out. Green deck 20 m shorter, clear of the physicians' building (5 other overlaps listed in the
+build log). 48 of stage 3's serious bumps blurred. Not done: the Waddell deck's roof jump.
+Found, not changed: the connector's bridge over the railroad ends 1 m under its road southbound (a wall; northbound Round 77's hop); a 27 % rail grade at Cobb
+Parkway's rail bridge; 9 other road bridges near the rails with 0.3 to 1.2 m steps in their decks (build log). Trains are not in replays.
+For Dan to check: the train at a crossing; the square race (beat / wait / jump); the air tour; Tower Road and Old 41; the square's cars and lights; the house; the
+connector's south end (should its deck end be raised?).
+Disk: 28.5 GB -> 28.4 GB (`cleanup_round.py`: local/round68, 73, 74, 75 and Library/BuildHistory cleared; the player build kept).
+
