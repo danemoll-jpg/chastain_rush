@@ -19,6 +19,34 @@ namespace ChastainRush
         public float ArmAngle { get; private set; } = 90f;   // checks
         static Material on, off; AudioSource bell; float flash;
 
+        // Round 81 (E, Dan's BUG-002: the arm left standing straight up in the road when its post was broken): when the gear beside an arm's hinge
+        // breaks, the arm comes off and lies on the verge along the road, away from the tracks (never in the lane); it goes back with the gear
+        bool[] fallen; Vector3[] hingePos, brokeAt; Quaternion[] hingeRot;
+        void OnEnable() { FenceChunk.PanelBroken += Broke; FenceChunk.AllRestored += Mend; FenceChunk.Restored += MendChunk; }
+        void OnDisable() { FenceChunk.PanelBroken -= Broke; FenceChunk.AllRestored -= Mend; FenceChunk.Restored -= MendChunk; }
+        void Remember()
+        {
+            if (fallen != null) return;
+            fallen = new bool[arms.Length]; hingePos = new Vector3[arms.Length]; brokeAt = new Vector3[arms.Length]; hingeRot = new Quaternion[arms.Length];
+            for (int k = 0; k < arms.Length; k++) if (arms[k]) { hingePos[k] = arms[k].parent.position; hingeRot[k] = arms[k].parent.rotation; }
+        }
+        void Broke(FenceChunk c, int panel, Vector3 at)
+        {
+            if ((at - center).sqrMagnitude > 60f * 60f) return; Remember();
+            for (int k = 0; k < arms.Length; k++)
+            {
+                if (!arms[k] || fallen[k]) continue; var h = hingePos[k];
+                if (new Vector2(h.x - at.x, h.z - at.z).magnitude > 3.5f) continue;
+                fallen[k] = true; brokeAt[k] = at;
+                var away = new Vector3(h.x - center.x, 0f, h.z - center.z); away = Vector3.Project(away, roadDir); if (away.sqrMagnitude < 1e-4f) away = roadDir; away.Normalize();
+                float gy = Physics.Raycast(h + Vector3.up * 2f, Vector3.down, out var hit, 8f, ~0, QueryTriggerInteraction.Ignore) ? hit.point.y : h.y - 1.25f;
+                arms[k].parent.SetPositionAndRotation(new Vector3(h.x, gy + .08f, h.z), Quaternion.LookRotation(Vector3.Cross(away, Vector3.up), Vector3.up));
+                arms[k].localRotation = Quaternion.identity;
+            }
+        }
+        void Mend() { if (fallen == null) return; for (int k = 0; k < arms.Length; k++) if (fallen[k] && arms[k]) { fallen[k] = false; arms[k].parent.SetPositionAndRotation(hingePos[k], hingeRot[k]); } }
+        void MendChunk(FenceChunk c) { if (fallen == null) return; for (int k = 0; k < arms.Length; k++) if (fallen[k] && !FenceChunk.BrokenAt(brokeAt[k])) { fallen[k] = false; arms[k].parent.SetPositionAndRotation(hingePos[k], hingeRot[k]); } }
+
         void Start()
         {
             if (on == null)
@@ -52,7 +80,7 @@ namespace ChastainRush
                 float want = Closed && ClosedFor > 4f ? 0f : 90f;
                 ArmAngle = Mathf.MoveTowards(ArmAngle, want, (want < ArmAngle ? 11.25f : 15f) * Time.deltaTime);
             }
-            foreach (var a in arms) if (a) a.localRotation = Quaternion.Euler(0f, 0f, ArmAngle);
+            for (int k = 0; k < arms.Length; k++) if (arms[k] && (fallen == null || !fallen[k])) arms[k].localRotation = Quaternion.Euler(0f, 0f, ArmAngle);
             bool lit = Closed || ArmAngle < 89.5f;
             if (replayed) flash = shownFlash; else if (lit) flash += Time.deltaTime; else flash = 0f;
             bool phase = Mathf.Repeat(flash, 1.1f) < .55f;

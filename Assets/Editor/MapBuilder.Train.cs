@@ -61,20 +61,24 @@ namespace ChastainRush
                     var p = at - come * (4.2f + spread) + right * (half + .9f); float gy = t.Height(p.x, p.y);
                     var f = MakeFrame(new Vector3(p.x, gy, p.y), -come, 1f);
                     var mb = gear.Begin(p);
+                    // Round 81 (E, Dan's BUG-002 at Whitlock: "what is this?"): the gear breaks into pieces that look like what they were: the post in two
+                    // lengths, the crossbuck, the lamp bar with its hoods, the mechanism box (one piece each, each coming to rest at its own height); the
+                    // crossbuck's boards face the traffic (they were laid edge-on: thin slivers standing, slabs flying)
+                    gear.Piece(() => Post(mb, new Vector3(p.x, gy - .1f, p.y), 2.2f, .16f, white), gy + .1f);
+                    gear.Piece(() => Post(mb, new Vector3(p.x, gy + 2.1f, p.y), 2.1f, .16f, white), gy + .1f);
                     gear.Piece(() =>
                     {
-                        Post(mb, new Vector3(p.x, gy - .1f, p.y), 4.3f, .16f, white);
                         var c0 = f.P(0f, 3.75f, .12f);
-                        foreach (float ang in new[] { 45f, -45f }) { var dir = Quaternion.AngleAxis(ang, f.F) * f.R; Beam(mb, c0 - dir * 1.1f, c0 + dir * 1.1f, .26f, .03f, white, f.F); }
-                    }, gy + .1f);
+                        foreach (float ang in new[] { 45f, -45f }) { var dir = Quaternion.AngleAxis(ang, f.F) * f.R; Beam(mb, c0 - dir * 1.1f, c0 + dir * 1.1f, .26f, .03f, white, Vector3.Cross(f.F, dir)); }
+                    }, gy + .05f);
                     gear.Piece(() =>
                     {
                         // the lamp bar and hoods (the lamps themselves are the run-time pieces below)
                         BoxF(mb, f, -.75f, .75f, 2.55f, 2.68f, .05f, .14f, dark);
                         foreach (float u in new[] { -.55f, .55f }) { Cyl(mb, f.P(u, 2.35f, .18f), .02f, .25f, .25f, dark, 10); BoxF(mb, f, u - .24f, u + .24f, 2.55f, 2.62f, .1f, .45f, dark); }
-                        // the gate's mechanism box beside the post, toward the road
-                        var gm = f.P(-.55f, 0f, 0f); BoxF(mb, MakeFrame(gm, new Vector2(f.F.x, f.F.z), 1f), -.25f, .25f, .9f, 1.6f, -.2f, .2f, dark);
                     }, gy + .1f);
+                    // the gate's mechanism box beside the post, toward the road
+                    gear.Piece(() => { var gm = f.P(-.55f, 0f, 0f); BoxF(mb, MakeFrame(gm, new Vector2(f.F.x, f.F.z), 1f), -.25f, .25f, .9f, 1.6f, -.2f, .2f, dark); }, gy + .2f);
                     // the two lamps, each its own object (RailCrossing flashes them)
                     foreach (float u in new[] { -.55f, .55f })
                     {
