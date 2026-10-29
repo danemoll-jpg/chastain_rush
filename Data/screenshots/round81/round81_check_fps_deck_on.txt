@@ -1,0 +1,9 @@
+Round 81 check, 2026-10-29 06:57, the exe, 1280 x 800, muted.
+
+=== I. The frame rate at 1280 x 800 windowed, traffic Normal, cores 8, NVIDIA GeForce GTX 1660 Ti: 10 s uncapped at each place
+  Marietta Square in a race (3 AI)  : 119 fps average, slowest 1 % 79 fps (Steam Deck setting on); picture 81_I_1280_deck_MariettaSquare.png
+  I-75 at Barrett Parkway           : 175 fps average, slowest 1 % 111 fps (Steam Deck setting on); picture 81_I_1280_deck_I75atBarrettPa.png
+  Town Center at Cobb               : 192 fps average, slowest 1 % 121 fps (Steam Deck setting on); picture 81_I_1280_deck_TownCenteratCo.png
+  the Kennesaw summit               : 100 fps average, slowest 1 % 68 fps (Steam Deck setting on); picture 81_I_1280_deck_theKennesawsum.png
+
+0 of 0 checks passed.

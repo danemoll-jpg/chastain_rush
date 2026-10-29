@@ -1,0 +1,9 @@
+Round 81 check, 2026-10-29 04:33, the exe, 1280 x 800, muted.
+
+=== I. The frame rate at 1280 x 800 windowed, traffic Normal, cores 8, NVIDIA GeForce GTX 1660 Ti: 10 s uncapped at each place
+  Marietta Square in a race (3 AI)  : 99 fps average, slowest 1 % 64 fps; picture 81_I_1280_MariettaSquare.png
+  I-75 at Barrett Parkway           : 157 fps average, slowest 1 % 94 fps; picture 81_I_1280_I75atBarrettPa.png
+  Town Center at Cobb               : 164 fps average, slowest 1 % 101 fps; picture 81_I_1280_TownCenteratCo.png
+  the Kennesaw summit               : 76 fps average, slowest 1 % 53 fps; picture 81_I_1280_theKennesawsum.png
+
+0 of 0 checks passed.

@@ -1,0 +1,31 @@
+Round 81 check, 2026-10-29 06:46, the exe, 1280 x 720, muted.
+=== C. Dan's BUG-006 place (I-575 by Chastain Road), traffic Heavy: the lanes' cars within 400 m over 2 minutes (game time)
+  17.0 h (northbound): 12 cars on the lanes within 400 m, 0 standing over 30 s at the end; picture 81_C_17h.png
+PASS  cqueue 17.0 h: no car standing on the lanes over 30 s  -  0 standing
+  8.0 h (southbound (toward Atlanta)): 3 cars on the lanes within 400 m, 0 standing over 30 s at the end; picture 81_C_08h.png
+PASS  cqueue 8.0 h: no car standing on the lanes over 30 s  -  0 standing
+  12.5 h (reversal (closed; was southbound)): 0 cars on the lanes within 400 m, 0 standing over 30 s at the end; picture 81_C_13h.png
+PASS  cqueue 12.5 h: no car standing on the lanes over 30 s  -  0 standing
+
+=== E. The Express Lanes at four times of day, traffic Heavy (needs -traffic Heavy)
+  6 gates
+  6 AM: the lanes southbound (toward Atlanta); gates 1 open, 2 open, 3 SHUT, 4 open, 5 open, 6 open
+    traffic on the lanes in 60 s: 4 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 19; the way the nearest lane edge runs: 1)
+PASS  express 6 AM: traffic on the lanes only the way they run  -  4 south, 0 north
+PASS  express 6 AM: every gate as the schedule says
+  noon: the lanes reversal (closed; was southbound); gates 1 SHUT, 2 SHUT, 3 SHUT, 4 SHUT, 5 SHUT, 6 SHUT
+    traffic on the lanes in 60 s: 0 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 22; the way the nearest lane edge runs: 1)
+PASS  express noon: traffic on the lanes only the way they run  -  0 south, 0 north
+PASS  express noon: every gate as the schedule says
+  5 PM: the lanes northbound; gates 1 open, 2 open, 3 open, 4 SHUT, 5 open, 6 open
+    traffic on the lanes in 60 s: 0 cars southbound, 7 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 25; the way the nearest lane edge runs: -1)
+PASS  express 5 PM: traffic on the lanes only the way they run  -  0 south, 7 north
+PASS  express 5 PM: every gate as the schedule says
+  midnight: the lanes reversal (closed; was northbound); gates 1 SHUT, 2 SHUT, 3 SHUT, 4 SHUT, 5 SHUT, 6 SHUT
+    traffic on the lanes in 60 s: 0 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 25; the way the nearest lane edge runs: -1)
+PASS  express midnight: traffic on the lanes only the way they run  -  0 south, 0 north
+PASS  express midnight: every gate as the schedule says
+  5 PM: gate 4 (shut) driven through: BROKEN; then 638 m on the lanes against their way: 0 cars came at the player within 15 m; pictures 80_E_smash_before / _after / 80_E_wrong_way
+PASS  express: a shut gate breaks when driven through
+
+12 of 12 checks passed.

@@ -179,6 +179,29 @@ the Whitlock crossing broken; the Chastain Glen shortcut from his spot; the hous
 the game on the Steam Deck (full screen, frame rate in the square, on I-75, at Town Center, at the summit).
 Install from the starter on the PC and the Deck; the launcher updating itself to the second release.
 
+**Status (Claude, 2026-10-29): built (full Build Map + exe 2026-10-29 06:13), checked in the exe, not yet driven by Dan; J / K NOT PUBLISHED (see K).** Evidence `Data/screenshots/round81/`.
+Two full Build Maps: the 2nd for A / H's second try after the first's check (decks stepped, walls climbed). Tuning limit reached on A / H.
+A PARTLY. `MapBuilder.Round81.cs` R81Flyovers (after SmoothBridgeEnds): each junction flyover and Express Lanes deck laid with 250 m of road either side as one curve, 6 m under the slab
+over every road crossed (report `round81_flyovers.txt`). The junction (`round81_check_final.txt` A): the I-575 Express flyover 0.08 / 0.32 s in the air (was a step), I-575 southbound
+and northbound and I-75 both ways no air; BUG-010 after: a smooth climb (`81_BUG-010_after`); BUG-009's spot is now under the raised flyover (the drive over it: `81_A_I575Expressflyoverso`).
+NOT met: the I-75 Express lanes through the junction 1.3 s in the air and a wall where I-575's connector merges (507, -3350).
+B DONE. Gates at the general road's end of each ramp, one per branch (6, `round80_express_decks.txt`); the whole ramp shut with its gate. Dan's BUG-008 spot: gate 4 35 m on; BUG-005 / 007: none.
+C DONE. The queue: in a reversal every ramp was shut, exits too (a dead end). Exits now stay open; drivers re-plan when the lanes turn. BUG-006 at 5 PM / 8 AM / 12:30 Heavy: 0 cars standing
+(`round81_check_c_lanes.txt`); the lanes at four hours as scheduled. The median at BUG-006 is still lumpy (the lane's approach raised up to 4.3 m by A's pass): `81_BUG-006_after`.
+D DONE. Train hit at Whitlock / Mill Street in the square race: put back 19 / 16 m short of the crossing on the line; Free Roam 110 m on along the road (`CarRecovery`).
+E DONE. The gear breaks into post, crossbuck, lamp bar, box; the arm lies on the verge (`81_E_after_*`).
+F PARTLY. The fences west of the landing (1572/2065, 2065/1452, 1452/1052, the side gate) breakable in forward races. "Sends you flying" NOT reproduced (6 run-ins from Dan's place, traced:
+no launch before the kicker); the nearest solid thing on a wide line-up is race barrier B5 21 m from his place.
+G DONE. House 1559 settled (Round 52's); picture `81_BUG-004_after`.
+H PARTLY. Every Express deck both ways (`D1`): I-75 / Barrett 463 m now 0 s air both ways (was 1.9 s / a wall); EL13 a flyover over the connector and ramps (up to 15.7 m higher) but still
+2.1 s air and stuck; the Big Shanty deck 2.6 s against its way; the (-1414, 1617) deck a terrain face at its end against its way. Walls along the lanes, 24.8 km, 1.8 m out, open at ramps.
+I DONE (estimate). Settings > Display > Steam Deck (Auto / On / Off; Auto at 1280 x 800 or the Deck's GPU): view, traffic, people 60 %. PC held to 4 cores at 1280 x 800, Normal traffic,
+off -> on: square 104 -> 119 fps, I-75 167 -> 175, Town Center 171 -> 192, summit 77 -> 100. Not measured on a Deck (the minimized window does not load the GPU).
+J DONE locally. `Launcher/` (Woodstock Rush's, CHASTAIN RUSH, its own key `Builds/PublisherPrivate/`), `Tools/Build-Launcher.ps1`, `LauncherBridge`, the release tools.
+K NOT PUBLISHED. Creating `danemoll-jpg/chastain-rush-releases` was refused by Claude Code's permission check. Proven locally (`launcher/`): the starter (1.37 GB, no soundtrack:
+game + soundtrack pass 2 GiB) installed 0.81.0, the launcher took 0.81.1 from a localhost catalog, installed the soundtrack, started the game (handshake PASS). Release staged: `Builds/LauncherRelease-8100`.
+For Dan to check: allow the release repo (then publish); the junction and the Express Lanes (EL13, Big Shanty, the merge wall); the Glen shortcut; BUG-006's median; the Deck.
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
