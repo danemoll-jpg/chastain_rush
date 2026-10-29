@@ -1,0 +1,125 @@
+Round 82 (A): every road crossing another without a shared node (Data/tracks/crossings.json, python Tools/mapgen/crossings.py): 123. Per crossing: where, the road over (why it is over), the road under, the clearance under the upper slab at OSM's heights -> after the Express Lanes' lines -> as built; 19 deck pieces laid again for clearance in 3 pass(es) (round82_crossing_fixes*.txt)
+121 with 5 m or more under the upper slab, 2 short
+ok    (-1380, 1586) bridge Larry McDonald Memorial Highway (163463866) [OSM layer 0 / 1] over road Frey Road Northwest (631653335): 6.0 -> 6.0 -> 6.0 m
+ok    (-1379, 1569) bridge Northwest Corridor Express Lanes (623138519) [OSM layer 0 / 1] over road Frey Road Northwest (631653335): 4.3 -> 6.8 -> 6.8 m
+ok    (-1379, 1532) bridge Larry McDonald Memorial Highway (163463873) [OSM layer 0 / 1] over road Frey Road Northwest (631653335): 2.6 -> 2.6 -> 6.7 m
+ok    (-1109, 774) bridge Skip Spann Connector (564146483) [OSM layer 0 / 1] over road motorway_link 9118504: 3.2 -> 3.2 -> 6.5 m
+ok    (-1109, 762) bridge Skip Spann Connector (564146481) [OSM layer 0 / 1] over road motorway_link 9118504: 1.7 -> 1.7 -> 6.3 m
+ok    (-1087, 777) bridge Skip Spann Connector (564146483) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437901768): 2.1 -> 2.1 -> 6.3 m
+ok    (-1084, 766) bridge Skip Spann Connector (564146481) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437901768): 0.8 -> 0.8 -> 6.2 m
+ok    (-1070, 780) bridge Skip Spann Connector (564146483) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (623138520): 1.3 -> 3.3 -> 8.5 m
+ok    (-1067, 769) bridge Skip Spann Connector (564146481) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (623138520): 0.0 -> 2.1 -> 8.3 m
+ok    (-1057, 782) bridge Skip Spann Connector (564146483) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (175898801): 0.3 -> 0.3 -> 6.2 m
+ok    (-1054, 771) bridge Skip Spann Connector (564146481) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (175898801): -0.7 -> -0.7 -> 6.1 m
+ok    (-1047, 783) bridge Skip Spann Connector (564146480) [OSM layer 0 / 1] over road motorway_link 437902738: 0.0 -> 0.0 -> 6.4 m
+ok    (-1043, 772) bridge Skip Spann Connector (564146481) [OSM layer 0 / 1] over road motorway_link 437902738: -0.7 -> -0.7 -> 6.7 m
+ok    (-1000, 443) bridge Chastain Road (163463411) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437901768): 9.2 -> 9.2 -> 9.2 m
+ok    (-995, 423) bridge Chastain Road (163463407) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437901768): 9.4 -> 9.4 -> 9.4 m
+ok    (-982, 448) bridge Chastain Road (163463411) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (623138520): 8.7 -> 9.3 -> 9.3 m
+ok    (-977, 428) bridge Chastain Road (437905319) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (623138520): 9.0 -> 9.6 -> 9.6 m
+ok    (-971, 450) bridge Chastain Road (163463411) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (175898801): 8.1 -> 8.1 -> 8.1 m
+ok    (-966, 431) bridge Chastain Road (437905319) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (175898801): 8.4 -> 8.4 -> 8.4 m
+ok    (-680, -438) bridge Larry McDonald Memorial Highway (175898799) [OSM layer 0 / 1] over road Big Shanty Road Northwest (630809649): 11.1 -> 11.1 -> 11.1 m
+ok    (-672, -450) bridge Larry McDonald Memorial Highway (175898799) [OSM layer 0 / 1] over road Big Shanty Road Northwest (630809648): 10.5 -> 10.5 -> 10.5 m
+ok    (-605, -410) bridge Northwest Corridor Express Lanes (536789464) [OSM layer 0 / 1] over road Big Shanty Road Northwest (1127469048): 10.8 -> 11.2 -> 11.2 m
+ok    (-597, -422) bridge Northwest Corridor Express Lanes (536789464) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392540230): 10.4 -> 10.8 -> 10.8 m
+ok    (-588, -404) bridge Larry McDonald Memorial Highway (175898800) [OSM layer 0 / 1] over road Big Shanty Road Northwest (1127469048): 8.1 -> 8.1 -> 8.1 m
+ok    (-580, -415) bridge Larry McDonald Memorial Highway (175898800) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392540230): 7.3 -> 7.3 -> 7.3 m
+ok    (-91, -2182) bridge Larry McDonald Memorial Highway (163463865) [OSM layer 0 / 1] over road Barrett Parkway (437900760): 9.7 -> 9.7 -> 9.7 m
+ok    (-80, -2203) bridge Larry McDonald Memorial Highway (163463865) [OSM layer 0 / 1] over road Barrett Parkway (977990397): 9.8 -> 9.8 -> 9.8 m
+ok    (-49, -2152) bridge Northwest Corridor Express Lanes (536789455) [OSM layer 0 / 1] over road Barrett Parkway (437900760): 14.5 -> 15.3 -> 15.3 m
+ok    (-43, -2177) bridge Northwest Corridor Express Lanes (536789455) [OSM layer 0 / 1] over road Barrett Parkway (977991560): 15.0 -> 16.1 -> 16.1 m
+ok    (-36, -2143) bridge Larry McDonald Memorial Highway (163463875) [OSM layer 0 / 1] over road Barrett Parkway (437900761): 8.5 -> 8.5 -> 8.5 m
+ok    (-29, -2168) bridge Larry McDonald Memorial Highway (163463875) [OSM layer 0 / 1] over road Barrett Parkway (977991560): 8.6 -> 8.6 -> 8.6 m
+ok    (2, -2353) bridge Northwest Corridor Express Lanes (536789455) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (163463881): 2.0 -> 6.3 -> 6.3 m
+ok    (65, -2524) bridge Northwest Corridor Express Lanes (536789455) [OSM layer 0 / 1] over road motorway_link 879570834: 2.2 -> 6.4 -> 6.4 m
+ok    (122, -2642) bridge Greers Chapel Drive Northwest (1169449564) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (564149145): -0.8 -> 2.6 -> 6.4 m
+ok    (127, -2652) bridge Greers Chapel Drive Northwest (1554737789) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (564149145): -1.0 -> 2.0 -> 6.4 m
+ok    (140, -2633) bridge Greers Chapel Drive Northwest (1169449564) [OSM layer 0 / 1] over road motorway_link 879570834: -0.8 -> -0.8 -> 9.9 m
+ok    (146, -2643) bridge Greers Chapel Drive Northwest (1554737789) [OSM layer 0 / 1] over road motorway_link 879570834: -0.8 -> -0.8 -> 10.0 m
+ok    (153, -2627) bridge Greers Chapel Drive Northwest (1169449564) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (163463881): -0.8 -> -0.8 -> 8.8 m
+ok    (159, -2637) bridge Greers Chapel Drive Northwest (1554737789) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (163463881): -0.9 -> -0.9 -> 8.9 m
+ok    (179, -2614) bridge Greers Chapel Drive Northwest (1169449564) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (119686455): -0.8 -> -0.8 -> 6.8 m
+ok    (185, -2625) bridge Greers Chapel Drive Northwest (1554737789) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (119686455): -0.6 -> -0.6 -> 6.9 m
+ok    (192, -2608) bridge Greers Chapel Drive Northwest (1169449564) [OSM layer 0 / 1] over road motorway_link 437899454: -0.7 -> -0.7 -> 5.3 m
+ok    (197, -2619) bridge Greers Chapel Drive Northwest (1554737789) [OSM layer 0 / 1] over road motorway_link 437899454: -0.1 -> -0.1 -> 5.6 m
+ok    (331, 946) bridge Chastain Road Northwest (1031943927) [OSM layer 0 / 1] over road Phillip Landrum Memorial Highway (367181843): 11.3 -> 11.3 -> 11.3 m
+ok    (335, 929) bridge Chastain Road Northwest (182380643) [OSM layer 0 / 1] over road Phillip Landrum Memorial Highway (367181843): 10.2 -> 10.2 -> 10.2 m
+ok    (349, 946) bridge Chastain Road Northwest (182380646) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (564154401): 11.0 -> 11.6 -> 11.6 m
+ok    (352, 929) bridge Chastain Road Northwest (182380643) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (564154401): 9.9 -> 10.4 -> 10.4 m
+ok    (359, 946) bridge Chastain Road Northwest (182380646) [OSM layer 0 / 1] over road Phillip Landrum Memorial Highway (442149008): 10.7 -> 10.7 -> 10.7 m
+ok    (362, 929) bridge Chastain Road Northwest (182380643) [OSM layer 0 / 1] over road Phillip Landrum Memorial Highway (442149008): 9.7 -> 9.7 -> 9.7 m
+ok    (472, -3290) bridge Phillip Landrum Memorial Highway (163463460) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (536789456): 8.4 -> 11.2 -> 11.2 m
+ok    (477, -3246) bridge Phillip Landrum Memorial Highway (163463460) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (119686448): 9.6 -> 9.3 -> 9.3 m
+ok    (485, -3204) bridge Phillip Landrum Memorial Highway (163463460) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (570368037): 9.5 -> 9.7 -> 9.7 m
+ok    (496, -3284) bridge motorway_link 451950526 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (119686448): 6.0 -> 7.3 -> 7.3 m
+ok    (498, -3343) bridge motorway_link 451950526 [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (536789456): 4.5 -> 7.2 -> 7.2 m
+ok    (500, -3233) bridge motorway_link 451950526 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (570368037): 7.6 -> 9.0 -> 9.0 m
+ok    (517, -13) bridge Phillip Landrum Memorial Highway (196231576) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392541110): 8.9 -> 8.9 -> 8.9 m
+ok    (519, -23) bridge Phillip Landrum Memorial Highway (196231576) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392540235): 8.7 -> 8.7 -> 8.7 m
+ok    (532, -7) bridge Northwest Corridor Express Lanes (564154403) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392541110): 9.0 -> 9.5 -> 9.5 m
+ok    (534, -17) bridge Northwest Corridor Express Lanes (564154403) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392540235): 8.6 -> 9.2 -> 9.2 m
+ok    (544, -3) bridge Phillip Landrum Memorial Highway (196231565) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392541110): 8.7 -> 8.8 -> 8.8 m
+ok    (545, -12) bridge Phillip Landrum Memorial Highway (196231565) [OSM layer 0 / 1] over road Big Shanty Road Northwest (392540235): 8.5 -> 8.5 -> 8.5 m
+ok    (643, -3664) bridge Phillip Landrum Memorial Highway (536793083) [OSM layer 0 / 1] over road motorway_link 451950527: 11.1 -> 14.8 -> 14.8 m
+ok    (708, -3710) bridge Phillip Landrum Memorial Highway (536793083) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (536789456): 12.3 -> 15.5 -> 15.5 m
+ok    (741, -1687) bridge Phillip Landrum Memorial Highway (182380658) [OSM layer 0 / 1] over road Barrett Parkway (838363565): 7.5 -> 7.5 -> 7.5 m
+ok    (742, -1671) bridge Phillip Landrum Memorial Highway (182380658) [OSM layer 0 / 1] over road Barrett Parkway (540661934): 7.3 -> 7.3 -> 7.3 m
+ok    (757, -1688) bridge Northwest Corridor Express Lanes (367181845) [OSM layer 0 / 1] over road Barrett Parkway (838363565): 7.5 -> 8.8 -> 8.8 m
+ok    (757, -1672) bridge Northwest Corridor Express Lanes (367181845) [OSM layer 0 / 1] over road Barrett Parkway (540661934): 7.7 -> 8.7 -> 8.7 m
+ok    (769, -1688) bridge Phillip Landrum Memorial Highway (182380660) [OSM layer 0 / 1] over road Barrett Parkway (838363565): 9.9 -> 9.9 -> 9.9 m
+ok    (770, -1672) bridge Phillip Landrum Memorial Highway (182380660) [OSM layer 0 / 1] over road Barrett Parkway (540661934): 9.3 -> 9.3 -> 9.3 m
+ok    (1503, -4262) bridge Northwest Corridor Express Lanes (564149146) [OSM layer 0 / 1] over road Bells Ferry Road Northeast (343482776): 5.8 -> 7.5 -> 7.5 m
+ok    (1515, -4241) bridge Larry McDonald Memorial Highway (100762237) [OSM layer 0 / 1] over road Bells Ferry Road Northeast (343482776): 5.6 -> 5.6 -> 5.6 m
+ok    (1528, -4215) bridge Larry McDonald Memorial Highway (119686452) [OSM layer 0 / 1] over road Bells Ferry Road Northeast (343482776): 8.5 -> 8.5 -> 8.5 m
+ok    (1569, -7953) bridge Kennesaw Avenue Northwest (245388621) [OSM layer 0 / 1] over road North Marietta Parkway (169122153): 12.3 -> 12.3 -> 12.3 m
+ok    (1624, -6088) bridge Canton Road Connector (175900804) [OSM layer 0 / 1] over road Elizabeth Street Northeast (1448505400): 5.7 -> 5.7 -> 7.0 m
+ok    (1639, -6079) bridge Canton Road Connector (175900808) [OSM layer 0 / 1] over road Elizabeth Street Northeast (1448505400): 5.7 -> 5.7 -> 8.0 m
+ok    (1704, -5749) bridge Canton Road Connector (175900801) [OSM layer 0 / 1] over road Cobb Parkway North (88426482): 3.1 -> 3.1 -> 7.3 m
+ok    (1709, -5734) bridge Canton Road Connector (175900801) [OSM layer 0 / 1] over road Cobb Parkway North (88426473): 2.9 -> 2.9 -> 6.6 m
+ok    (1716, -5755) bridge Canton Road Connector (175900811) [OSM layer 0 / 1] over road Cobb Parkway North (288140743): 4.6 -> 4.6 -> 7.8 m
+ok    (1720, -5741) bridge Canton Road Connector (175900811) [OSM layer 0 / 1] over road Cobb Parkway North (88426473): 3.4 -> 3.4 -> 7.0 m
+ok    (1853, -4468) bridge Northwest Corridor Express Lanes (624557375) [OSM layer 0 / 1] over road Dickson Road Northeast (9141860): 5.4 -> 9.3 -> 9.3 m
+ok    (1880, -4459) bridge Larry McDonald Memorial Highway (100762650) [OSM layer 0 / 1] over road Dickson Road Northeast (9141860): -0.7 -> -0.7 -> 6.1 m
+ok    (1913, -5855) bridge Canton Road Northeast (63222662) [OSM layer 0 / 1] over road Cobb Parkway North (288140740): 4.4 -> 4.4 -> 7.2 m
+ok    (1918, -4446) bridge Larry McDonald Memorial Highway (100762636) [OSM layer 0 / 1] over road Dickson Road Northeast (9141860): -0.5 -> -0.5 -> 6.1 m
+ok    (1919, -5843) bridge Canton Road Northeast (63222662) [OSM layer 0 / 1] over road Cobb Parkway North (287142785): 3.1 -> 3.1 -> 6.9 m
+ok    (1931, -4442) bridge motorway_link 437892229 [OSM layer 0 / 1] over road Dickson Road Northeast (9129439): -0.9 -> -0.7 -> 12.2 m
+ok    (2097, -4721) bridge Northwest Corridor Express Lanes (561642029) [OSM layer 0 / 1] over road motorway_link 9119542: 4.4 -> 7.8 -> 7.8 m
+ok    (2199, -4848) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road motorway_link 9117188: -0.7 -> 8.4 -> 8.4 m
+ok    (2306, -4981) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road Canton Road Connector (100762131): -1.5 -> 6.1 -> 6.1 m
+ok    (2324, -5003) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road Canton Road Connector (286831634): -1.4 -> 6.2 -> 6.2 m
+ok    (2330, -5011) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road motorway_link 274716914: -1.8 -> 6.2 -> 9.2 m
+ok    (2337, -4949) bridge Canton Road Connector (100762130) [OSM layer 0 / 1] over road motorway_link 274716913: 9.2 -> 9.2 -> 9.2 m
+ok    (2353, -4932) bridge Canton Road Connector (100762130) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437892231): 8.4 -> 8.4 -> 8.4 m
+ok    (2355, -4970) bridge Canton Road Connector (100762134) [OSM layer 0 / 1] over road motorway_link 274716913: 11.0 -> 11.0 -> 11.0 m
+ok    (2361, -4977) bridge motorway_link 437897716 [OSM layer 0 / 1] over road motorway_link 274716913: 7.1 -> 7.1 -> 7.2 m
+ok    (2372, -4953) bridge Canton Road Connector (100762134) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437892231): 10.7 -> 10.7 -> 10.7 m
+ok    (2376, -4907) bridge Canton Road Connector (100762130) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (274716911): 7.2 -> 7.2 -> 7.2 m
+ok    (2377, -4958) bridge motorway_link 437897716 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437892231): 4.2 -> 4.2 -> 6.6 m
+ok    (2381, -4902) bridge Canton Road Connector (100762130) [OSM layer 0 / 1] over road motorway_link 9117194: 7.0 -> 7.1 -> 7.1 m
+ok    (2396, -4929) bridge Canton Road Connector (100762134) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (274716911): 10.3 -> 10.3 -> 10.3 m
+SHORT (2398, -4931) bridge motorway_link 437897716 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (274716911): 0.2 -> 0.2 -> 2.9 m
+ok    (2399, -4926) bridge Canton Road Connector (100762134) [OSM layer 0 / 1] over road motorway_link 9117194: 10.3 -> 10.3 -> 10.3 m
+SHORT (2401, -4928) bridge motorway_link 437897716 [OSM layer 0 / 1] over road motorway_link 9117194: -0.2 -> -0.2 -> 1.9 m
+ok    (2425, -5121) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road motorway_link 274716914: 0.2 -> 13.1 -> 12.8 m
+ok    (2481, -5176) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road motorway_link 286831637: -1.8 -> 6.1 -> 6.1 m
+ok    (2516, -5153) bridge motorway_link 100762129 [OSM layer 0 / 1] over road motorway_link 9117190: 9.9 -> 9.8 -> 9.8 m
+ok    (2534, -5136) bridge motorway_link 100762129 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437892231): 10.3 -> 10.3 -> 10.3 m
+ok    (2547, -4730) bridge motorway_link 100762127 [OSM layer 0 / 1] over road Canton Road Connector (100762213): 8.6 -> 8.5 -> 8.5 m
+ok    (2548, -5240) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 0 / 2] over road motorway_link 9118747: 0.3 -> 14.6 -> 14.6 m
+ok    (2553, -5111) bridge motorway_link 100762129 [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (274716912): 10.9 -> 10.9 -> 10.9 m
+ok    (2561, -4754) bridge motorway_link 100762127 [OSM layer 0 / 1] over road Canton Road Connector (100762132): 9.0 -> 9.1 -> 9.1 m
+ok    (2580, -5267) bridge Northwest Corridor Express Lanes (685000423) [OSM layer 1 / 2] over bridge Canton Road Northeast (63222660): -9.9 -> 5.9 -> 5.9 m
+ok    (2587, -5260) bridge Canton Road Northeast (63222660) [OSM layer 0 / 1] over road motorway_link 9118747: 10.5 -> 10.4 -> 10.4 m
+ok    (2601, -5247) bridge Canton Road Northeast (63222660) [OSM layer 0 / 1] over road motorway_link 9117190: 10.9 -> 10.9 -> 10.9 m
+ok    (2618, -5232) bridge Canton Road Northeast (63222660) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (437892231): 10.4 -> 10.4 -> 10.4 m
+ok    (2641, -5210) bridge Canton Road Northeast (63222660) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (274716912): 11.8 -> 11.8 -> 11.8 m
+ok    (2648, -4550) bridge motorway_link 100762209 [OSM layer 0 / 1] over road Dickson Road Northeast (9129439): 9.6 -> 9.6 -> 9.6 m
+ok    (2665, -5187) bridge Canton Road Northeast (63222660) [OSM layer 0 / 1] over road motorway_link 9121350: 11.8 -> 11.7 -> 11.7 m
+ok    (2672, -4557) bridge Canton Road Connector (100762211) [OSM layer 0 / 1] over road Dickson Road Northeast (9129439): 9.6 -> 9.6 -> 9.6 m
+ok    (2696, -4569) bridge Canton Road Connector (100762215) [OSM layer 0 / 1] over road Dickson Road Northeast (9129439): 9.7 -> 9.7 -> 9.7 m
+ok    (2715, -4580) bridge motorway_link 100762212 [OSM layer 0 / 1] over road Dickson Road Northeast (9129439): 9.2 -> 9.2 -> 9.2 m
+ok    (3436, -6215) bridge Allgood Road Northeast (100762098) [OSM layer 0 / 1] over road Northwest Corridor Express Lanes (561642032): 7.4 -> 9.2 -> 9.2 m
+ok    (3458, -6205) bridge Allgood Road Northeast (100762098) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (472814564): 7.9 -> 7.9 -> 7.9 m
+ok    (3479, -6195) bridge Allgood Road Northeast (100762098) [OSM layer 0 / 1] over road Larry McDonald Memorial Highway (198292214): 5.8 -> 5.8 -> 5.8 m

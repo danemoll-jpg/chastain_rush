@@ -1,0 +1,33 @@
+Round 82 check, 2026-10-29 13:18, the exe, 1280 x 720, muted.
+
+=== The lines of local/round82/r82_lines_a2.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-75 Express Lanes end to end, 10530 m: NOT through in 631.7 s, top 35 m/s, longest in the air 2.34 s, hardest landing 12.3 m/s (at (507, -3365)), resets 83, wall hits 17807 stuck at (526, -3382) s 5684; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5685; stuck at (527, -3384) s 5687; stuck at (527, -3383) s 5685; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686; stuck at (527, -3383) s 5686;  <- LOOK
+    2.34 s in the air, landed at (534, -3389)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+    wall hit at (527, -3383)
+  I-75 Express Lanes end to end (the other way), 10530 m: through in 317.8 s, top 35 m/s, longest in the air 0.96 s, hardest landing 7.8 m/s (at (848, -3837)), resets 0, wall hits 2  <- LOOK
+    wall hit at (1886, -4497)
+    wall hit at (1885, -4497)
+    0.46 s in the air, landed at (1886, -4497)
+    0.44 s in the air, landed at (851, -3837)
+    0.96 s in the air, landed at (845, -3832)
+    0.36 s in the air, landed at (514, -3366)
+    0.76 s in the air, landed at (513, -3332)
+  Big Shanty Express ramp onto the lanes, 1256 m: through in 43.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-323, -949)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes (the other way), 1256 m: through in 43.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-326, -946)), resets 0, wall hits 0
+  the railroad through BUG-008's deck, 294 m: through in 24.3 s, top 12 m/s, longest in the air 0.00 s, hardest landing 1.6 m/s (at (2719, -5238)), resets 0, wall hits 0
+  the railroad through BUG-008's deck (the other way), 294 m: through in 24.3 s, top 12 m/s, longest in the air 0.00 s, hardest landing 1.6 m/s (at (2609, -5299)), resets 0, wall hits 0
+FAIL  lines: 6 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  2 not
+
+=== E. From Dan's BUG-001 place and heading into the 713/1987 fence at about 10 m/s (Drifter Twin): a forward race, then a reverse race
+  forward race: 2 fence piece(s) broken, the car went 27.1 m along Dan's heading (the fence is about 7 m ahead); pictures 82_E_forward_at_fence, _past, _end
+PASS  fence forward race: it breaks and the car goes through  -  2 broken, 27.1 m
+  reverse race: 0 fence piece(s) broken, the car went 5.7 m along Dan's heading (the fence is about 7 m ahead); pictures 82_E_reverse_at_fence, _past, _end
+PASS  fence reverse race: it holds (no unintended shortcut)  -  0 broken, 5.7 m
+
+2 of 3 checks passed.

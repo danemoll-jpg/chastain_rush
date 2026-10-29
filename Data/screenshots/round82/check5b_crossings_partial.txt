@@ -1,0 +1,91 @@
+Round 82 check, 2026-10-29 12:32, the exe, 1280 x 720, muted.
+
+=== The lines of local/round82/r82_lines_b.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  Northwest Corridor Express Lanes (623138519) over at (-1379, 1569), 4.3 -> 6.8 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-1412, 1615)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138519) over at (-1379, 1569), 4.3 -> 6.8 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1418, 1624)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1379, 1569), 4.3 -> 6.8 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.90 s, hardest landing 2.3 m/s (at (-1379, 1509)), resets 0, wall hits 0  <- LOOK
+    0.70 s in the air, landed at (-1380, 1555)
+    0.90 s in the air, landed at (-1379, 1512)
+  Frey Road Northwest (631653335) under at (-1379, 1569), 4.3 -> 6.8 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.96 s, hardest landing 1.9 m/s (at (-1379, 1609)), resets 0, wall hits 0  <- LOOK
+    0.70 s in the air, landed at (-1382, 1559)
+    0.96 s in the air, landed at (-1379, 1604)
+  Larry McDonald Memorial Highway (163463873) over at (-1379, 1532), 2.6 -> 6.7 m clear, 297 m: through in 11.4 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1413, 1584)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463873) over at (-1379, 1532), 2.6 -> 6.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1354, 1495)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1379, 1532), 2.6 -> 6.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.90 s, hardest landing 1.9 m/s (at (-1379, 1509)), resets 0, wall hits 0  <- LOOK
+    0.70 s in the air, landed at (-1379, 1555)
+    0.90 s in the air, landed at (-1379, 1513)
+  Frey Road Northwest (631653335) under at (-1379, 1532), 2.6 -> 6.7 m clear (the other way), 297 m: through in 11.2 s, top 31 m/s, longest in the air 0.96 s, hardest landing 2.7 m/s (at (-1381, 1608)), resets 0, wall hits 0  <- LOOK
+    0.70 s in the air, landed at (-1379, 1559)
+    0.96 s in the air, landed at (-1381, 1605)
+  Skip Spann Connector (564146483) over at (-1109, 774), 3.2 -> 6.5 m clear, 297 m: NOT through in 60.0 s, top 28 m/s, longest in the air 2.02 s, hardest landing 12.5 m/s (at (-1072, 781)), resets 3, wall hits 0 stuck at (-1151, 779) s 189; stuck at (-1152, 783) s 189; stuck at (-1147, 768) s 187;  <- LOOK
+    0.86 s in the air, landed at (-1021, 787)
+    0.36 s in the air, landed at (-1038, 784)
+    0.40 s in the air, landed at (-1075, 779)
+    2.02 s in the air, landed at (-1108, 777)
+    0.58 s in the air, landed at (-1129, 774)
+    0.96 s in the air, landed at (-1147, 772)
+    stopped at (-1151.0, 340.1, 779.2): stay:Terrain_11_16:n(0.55,-0.43,0.72):p(-1152.1,340.64,777.8):J247.0 
+    0.76 s in the air, landed at (-1015, 787)
+  Skip Spann Connector (564146483) over at (-1109, 774), 3.2 -> 6.5 m clear (the other way), 297 m: through in 13.3 s, top 30 m/s, longest in the air 2.00 s, hardest landing 9.6 m/s (at (-1194, 761)), resets 0, wall hits 0  <- LOOK
+    2.00 s in the air, landed at (-1165, 767)
+  motorway_link (9118504) under at (-1109, 774), 3.2 -> 6.5 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1109, 779)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 774), 3.2 -> 6.5 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1110, 790)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1109, 762), 1.7 -> 6.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1147, 755)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1109, 762), 1.7 -> 6.3 m clear (the other way), 297 m: through in 36.7 s, top 27 m/s, longest in the air 2.00 s, hardest landing 15.0 m/s (at (-1072, 768)), resets 1, wall hits 0 stuck at (-1146, 760) s 187;  <- LOOK
+    1.10 s in the air, landed at (-1023, 775)
+    0.44 s in the air, landed at (-1072, 768)
+    2.00 s in the air, landed at (-1106, 765)
+    0.46 s in the air, landed at (-1126, 761)
+    stopped at (-1145.8, 342.9, 759.5): stay:BridgeStructure:n(0.99,0.00,0.14):p(-1147.8,342.71,760.2):J330.7 
+    1.12 s in the air, landed at (-1021, 773)
+    0.46 s in the air, landed at (-1073, 767)
+    1.50 s in the air, landed at (-1108, 766)
+  motorway_link (9118504) under at (-1109, 762), 1.7 -> 6.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1109, 779)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 762), 1.7 -> 6.3 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1111, 790)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1087, 777), 2.1 -> 6.3 m clear, 297 m: NOT through in 60.0 s, top 28 m/s, longest in the air 53.42 s, hardest landing 11.6 m/s (at (-1025, 787)), resets 0, wall hits 0  <- LOOK
+    0.90 s in the air, landed at (-1025, 787)
+    0.86 s in the air, landed at (-1048, 783)
+    0.38 s in the air, landed at (-1075, 779)
+    stopped at (-1140.1, 337.3, 784.7): stay:Terrain_11_16:n(0.15,0.98,0.09):p(-1138.3,336.68,783.8):J96.9 
+    stopped at (-1130.5, 334.4, 793.3): stay:Terrain_11_16:n(0.12,0.99,0.08):p(-1131.8,333.91,794.8):J236.9 
+  Skip Spann Connector (564146483) over at (-1087, 777), 2.1 -> 6.3 m clear (the other way), 297 m: through in 12.7 s, top 30 m/s, longest in the air 2.18 s, hardest landing 11.8 m/s (at (-1195, 761)), resets 0, wall hits 0  <- LOOK
+    2.18 s in the air, landed at (-1154, 769)
+  Larry McDonald Memorial Highway (437901768) under at (-1087, 777), 2.1 -> 6.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1082, 757)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1087, 777), 2.1 -> 6.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1085, 766)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1084, 766), 0.8 -> 6.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1013, 779)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1084, 766), 0.8 -> 6.2 m clear (the other way), 297 m: NOT through in 60.0 s, top 27 m/s, longest in the air 1.84 s, hardest landing 12.6 m/s (at (-1126, 760)), resets 3, wall hits 0 stuck at (-1146, 759) s 211; stuck at (-1145, 754) s 211; stuck at (-1146, 758) s 211;  <- LOOK
+    1.12 s in the air, landed at (-1026, 774)
+    0.88 s in the air, landed at (-1049, 771)
+    0.46 s in the air, landed at (-1072, 767)
+    1.84 s in the air, landed at (-1103, 763)
+    0.40 s in the air, landed at (-1126, 760)
+    stopped at (-1145.7, 342.9, 758.8): stay:BridgeStructure:n(0.99,0.00,0.14):p(-1147.7,342.69,759.5):J336.2 
+    1.12 s in the air, landed at (-1020, 773)
+    0.70 s in the air, landed at (-1044, 774)
+  Larry McDonald Memorial Highway (437901768) under at (-1084, 766), 0.8 -> 6.2 m clear, 297 m: through in 11.1 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1082, 757)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1084, 766), 0.8 -> 6.2 m clear (the other way), 297 m: through in 11.2 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1084, 766)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1070, 780), 1.3 -> 8.5 m clear, 297 m: through in 34.4 s, top 30 m/s, longest in the air 1.80 s, hardest landing 5.3 m/s (at (-1132, 777)), resets 1, wall hits 0 stuck at (-1147, 765) s 226;  <- LOOK
+    0.32 s in the air, landed at (-965, 795)
+    0.92 s in the air, landed at (-1026, 786)
+    1.80 s in the air, landed at (-1089, 778)
+    0.44 s in the air, landed at (-1131, 771)
+    0.36 s in the air, landed at (-1141, 768)
+    0.56 s in the air, landed at (-1147, 765)
+    stopped at (-1146.6, 342.1, 765.0): stay:BridgeStructure:n(0.99,0.00,0.14):p(-1148.5,342.54,765.6):J272.3 
+    0.80 s in the air, landed at (-1023, 789)
+  Skip Spann Connector (564146483) over at (-1070, 780), 1.3 -> 8.5 m clear (the other way), 297 m: through in 12.9 s, top 31 m/s, longest in the air 1.90 s, hardest landing 10.1 m/s (at (-1194, 761)), resets 0, wall hits 0  <- LOOK
+    1.92 s in the air, landed at (-1168, 767)
+  Northwest Corridor Express Lanes (623138520) under at (-1070, 780), 1.3 -> 8.5 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1076, 793)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1070, 780), 1.3 -> 8.5 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1076, 803)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1067, 769), 0.0 -> 8.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1043, 775)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1067, 769), 0.0 -> 8.3 m clear (the other way), 297 m: NOT through in 60.0 s, top 29 m/s, longest in the air 1.76 s, hardest landing 14.1 m/s (at (-1070, 764)), resets 4, wall hits 0 stuck at (-1146, 763) s 229; stuck at (-1145, 754) s 229; stuck at (-1147, 751) s 231; stuck at (-1146, 751) s 230;  <- LOOK
+    1.16 s in the air, landed at (-1030, 773)
+    1.34 s in the air, landed at (-1070, 768)
+    1.32 s in the air, landed at (-1093, 766)
+    0.56 s in the air, landed at (-1115, 762)
+    0.46 s in the air, landed at (-1141, 756)
+    stopped at (-1146.2, 342.4, 762.0): stay:BridgeStructure:n(0.95,0.00,-0.33):p(-1148.0,342.26,762.3):J322.8 stay:Terrain_11_16:n(0.06,0.48,0.88):p(-1145.5,342.09,761.7):J283.1 
+    1.10 s in the air, landed at (-1024, 776)
+    0.56 s in the air, landed at (-1040, 774)
+  Northwest Corridor Express Lanes (623138520) under at (-1067, 769), 0.0 -> 8.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1073, 793)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1067, 769), 0.0 -> 8.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1076, 803)), resets 0, wall hits 0

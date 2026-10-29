@@ -1,0 +1,22 @@
+Round 82 check, 2026-10-29 12:32, the exe, 1280 x 720, muted.
+
+=== Dan's reports (session 2026-10-29_09-12-54-968_3aae2d), from his exact place and heading (the chase camera, as he saw it)
+  BUG-001 (a forward Chastain Glen race: the board fence between two houses ahead): at (2781.9, 289.9, 1023.4) heading 149; picture 82_BUG-001_after.png
+  BUG-002 (the Big Shanty Express ramp at its creek bridge's north end: spikes of ground): at (-368.2, 302.4, -847.0) heading 122; picture 82_BUG-002_after.png
+  BUG-003 (the ramp's merge into the Express Lanes: a slot under a slab): at (-327.4, 302.3, -946.2) heading 118; picture 82_BUG-003_after.png
+  BUG-005 (the Express Lanes under Greers Chapel Drive: bridges lying across the road): at (121.4, 355.5, -2636.1) heading 90; picture 82_BUG-005_after.png
+  BUG-006 (the Express Lanes at Bells Ferry Road: a wall across, torn ground): at (1505.5, 372.0, -4265.1) heading 54; picture 82_BUG-006_after.png
+  BUG-007 (from Canton Road's bridge: the dip in the Express Lanes): at (2582.4, 381.5, -5261.5) heading 289; picture 82_BUG-007_after.png
+  BUG-008 (the railroad by Atlanta Industrial Drive: a step at the deck's end): at (2735.9, 387.1, -5227.8) heading 58; picture 82_BUG-008_after.png
+
+=== The lines of local/round82/r82_lines_a.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-575 Express Lanes end to end, 4793 m: through in 139.9 s, top 35 m/s, longest in the air 0.16 s, hardest landing 0.2 m/s (at (622, -458)), resets 0, wall hits 0
+  I-575 Express Lanes end to end (the other way), 4793 m: through in 150.9 s, top 36 m/s, longest in the air 0.00 s, hardest landing 2.1 m/s (at (535, -38)), resets 1, wall hits 37 stuck at (536, -37) s 2924;  <- LOOK
+    wall hit at (753, -1715)
+    wall hit at (754, -1385)
+    wall hit at (754, -1385)
+    wall hit at (754, -1384)
+    wall hit at (754, -1383)
+    wall hit at (754, -1383)
+    wall hit at (754, -1382)
+    wall hit at (753, -1381)

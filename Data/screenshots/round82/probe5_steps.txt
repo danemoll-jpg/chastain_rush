@@ -1,0 +1,26 @@
+I-575 Express Lanes end to end: 1 steps over 0.25 m
+  s   3501 (758.4, -1650.0) +0.28 m onto BridgeDecks
+I-75 Express Lanes end to end: 11 steps over 0.25 m
+  s   3084 (-325.5, -948.0) -0.98 m onto Terrain_12_13
+  s   3085 (-325.2, -948.9) +0.91 m onto Terrain_12_13
+  s   6041 (694.4, -3695.3) +17.79 m onto BridgeStructure
+  s   6043 (695.7, -3696.8) -0.70 m onto BridgeDecks
+  s   6080 (720.6, -3724.2) +0.70 m onto BridgeStructure
+  s   6082 (722.0, -3725.6) -16.61 m onto Terrain_14_9
+  s   7411 (1831.9, -4451.7) +1.40 m onto Terrain_15_8
+  s   7412 (1832.7, -4452.3) +0.39 m onto Terrain_15_8
+  s   7418 (1837.5, -4455.9) -0.39 m onto Terrain_15_8
+  s   7419 (1838.3, -4456.4) -0.43 m onto Terrain_15_8
+  s   7715 (2048.9, -4662.6) +0.27 m onto BridgeDecks
+Big Shanty Express ramp onto the lanes: 4 steps over 0.25 m
+  s    356 (-361.5, -854.6) -0.47 m onto Terrain_12_13
+  s    357 (-361.1, -855.5) +0.55 m onto BridgeDecks
+  s    456 (-325.5, -947.9) -1.10 m onto Terrain_12_13
+  s    457 (-325.2, -948.9) +1.01 m onto Terrain_12_13
+the railroad through BUG-008's deck: 6 steps over 0.25 m
+  s    158 (2721.5, -5235.9) -7.04 m onto Terrain_17_6
+  s    159 (2720.6, -5236.3) -0.92 m onto Terrain_17_6
+  s    160 (2719.8, -5236.8) +7.91 m onto Railroad bridge_10_-21
+  s    289 (2607.7, -5299.6) -6.64 m onto Terrain_16_6
+  s    290 (2606.8, -5300.1) +5.35 m onto Terrain_16_6
+  s    291 (2606.0, -5300.6) +1.11 m onto Terrain_16_6

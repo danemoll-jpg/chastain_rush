@@ -1,0 +1,26 @@
+[Round82] B / C: the Express Lanes end to end
+Round 82 (B, C): the Express Lanes laid end to end as one profile per carriageway (MapBuilder.Round82.cs). Per line: its length, the speed its sharpest crest is held at, the steepest grade, the crossings over and under it, how far it moved; then each road joined to it
+line 0: from (282, 1918) to (556, -2924), 4913 m, 84 deck points; held to 33 m/s (the sharpest crest at (559, -2906)), steepest 5.0 % at (751, -1767); moved up to 1.6 m; 161605 road samples graded, 415 cut under its decks
+  over: Big Shanty Road Northwest (392541110) 9.5 m clear; Big Shanty Road Northwest (392540235) 9.2 m clear; Barrett Parkway (838363565) 8.8 m clear; Barrett Parkway (540661934) 8.7 m clear
+  under: Chastain Road Northwest (182380646) 11.6 m clear (at most 1 m into its ground); Chastain Road Northwest (182380643) 10.4 m clear (at most 1 m into its ground)
+line 1: from (-1667, 1918) to (3983, -6865), 10769 m, 1353 deck points; held to 36 m/s (the sharpest crest at (3983, -6865)), steepest 7.2 % at (1954, -4553); moved up to 15.9 m; 358132 road samples graded, 1304 cut under its decks
+  over: Frey Road Northwest (631653335) 6.8 m clear; Big Shanty Road Northwest (1127469048) 11.2 m clear; Big Shanty Road Northwest (392540230) 10.8 m clear; Barrett Parkway (437900760) 15.3 m clear; Barrett Parkway (977991560) 16.1 m clear; Larry McDonald Memorial Highway (163463881) 6.3 m clear; motorway_link 879570834 6.4 m clear; Bells Ferry Road Northeast (343482776) 7.5 m clear; Dickson Road Northeast (9141860) 9.3 m clear; motorway_link 9119542 8.0 m clear; motorway_link 9117188 8.4 m clear; Canton Road Connector (100762131) 6.1 m clear; Canton Road Connector (286831634) 6.2 m clear; motorway_link 274716914 6.0 m clear; motorway_link 274716914 13.3 m clear; motorway_link 286831637 6.0 m clear; motorway_link 9118747 14.9 m clear; Canton Road Northeast (63222660) 5.9 m clear
+  under: Skip Spann Connector (564146483) 6.5 m clear (at most 1 m into its ground); Skip Spann Connector (564146481) 6.4 m clear (at most 1 m into its ground); Chastain Road (163463411) 9.3 m clear (at most 1 m into its ground); Chastain Road (437905319) 9.6 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1169449564) 6.7 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1554737789) 6.7 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (163463460) 12.0 m clear (at most 1 m into its ground); motorway_link 451950526 6.5 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (536793083) 11.6 m clear (at most 1 m into its ground); Allgood Road Northeast (100762098) 9.2 m clear (at most 1 m into its ground)
+join motorway_link 564149150 at (-913, 171): beside the line 122 m, then -0.6 m eased back over 40 m; 21277 samples
+join motorway_link 564149747 at (744, -1187): beside the line 260 m, then -0.5 m eased back over 40 m; 10124 samples
+join motorway_link 451950527 at (864, -3840): beside the line 162 m, then +0.4 m eased back over 40 m; 21389 samples
+join motorway_link 564154406 at (642, -2480): beside the line 519 m, then +0.2 m eased back over 40 m; 15547 samples
+join motorway_link 624557373 at (556, -2924): beside the line 10 m, then -0.2 m eased back over 40 m; 29259 samples
+join motorway_link 536789457 at (-326, -948): beside the line 178 m, then +0.7 m eased back over 40 m; 13894 samples
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+ChastainRush.MapBuilder:R82ExpressLines (ChastainRush.MapBuilder/MapData,ChastainRush.MapBuilder/TerrainGrid) (at Assets/Editor/MapBuilder.Round82.cs:191)
+ChastainRush.MapBuilder:Plan (ChastainRush.MapBuilder/Ctx,bool) (at Assets/Editor/MapBuilder.cs:229)
+ChastainRush.MapBuilder:Build () (at Assets/Editor/MapBuilder.cs:129)
+ChastainRush.PlayerBuild:Build () (at Assets/Editor/PlayerBuild.cs:38)
+ChastainRush.PlayerBuild:BuildFromCommandLine () (at Assets/Editor/PlayerBuild.cs:29)
+

@@ -1,0 +1,34 @@
+line 0 deck (1830, -9015) to (1802, -8957), 65 m: dry, most 7.6 m under its slab: kept
+line 0 deck (1582, -7891) to (1572, -7873), 21 m: dry, most -1.0 m under its slab: made bed (nothing under it)
+line 0 deck (934, -6501) to (944, -6478), 25 m: dry, most -1.1 m under its slab: made bed (nothing under it)
+line 2 deck (2756, -5215) to (2739, -5226), 20 m: dry, most 0.5 m under its slab: made bed (nothing under it)
+line 2 deck (1922, -5810) to (1919, -5813), 4 m: dry, most -2.5 m under its slab: made bed (nothing under it)
+line 3 deck (-3619, -5187) to (-3763, -5004), 233 m: dry, most 0.9 m under its slab: made bed (nothing under it)
+line 6 deck (1826, -9017) to (1800, -8962), 61 m: dry, most 7.7 m under its slab: kept
+line 6 deck (1579, -7896) to (1570, -7879), 20 m: dry, most -1.4 m under its slab: made bed (nothing under it)
+line 6 deck (929, -6502) to (951, -6451), 56 m: dry, most -0.8 m under its slab: made bed (nothing under it)
+line 7 deck (938, -6502) to (948, -6482), 23 m: dry, most -0.9 m under its slab: made bed (nothing under it)
+line 0 deck end (1855, -9067) (over a road): the ground beside it -3.80 m off the bed, the deck +0.18 m off the bed beside it
+line 0 deck end (1833, -9021) (over a road): the ground beside it -5.40 m off the bed, the deck +0.06 m off the bed beside it
+line 0 deck end (1830, -9015): the ground beside it -5.52 m off the bed, the deck -0.03 m off the bed beside it
+line 0 deck end (1802, -8957): the ground beside it -0.02 m off the bed, the deck +0.02 m off the bed beside it
+line 0 deck end (1606, -7946) (over a road): the ground beside it +0.08 m off the bed, the deck +0.03 m off the bed beside it
+line 0 deck end (1583, -7893) (over a road): the ground beside it -0.04 m off the bed, the deck -0.01 m off the bed beside it
+line 0 deck end (914, -6544) (over a road): the ground beside it -0.59 m off the bed, the deck +0.00 m off the bed beside it
+line 0 deck end (933, -6502) (over a road): the ground beside it +0.05 m off the bed, the deck -0.01 m off the bed beside it
+line 2 deck end (2720, -5237) (over a road): the ground beside it -7.00 m off the bed, the deck -0.08 m off the bed beside it
+line 2 deck end (2609, -5299) (over a road): the ground beside it -1.15 m off the bed, the deck +0.08 m off the bed beside it
+line 2 deck end (1918, -5814) (over a road): the ground beside it +0.78 m off the bed, the deck +0.05 m off the bed beside it
+line 2 deck end (1883, -5850) (over a road): the ground beside it -3.99 m off the bed, the deck -0.06 m off the bed beside it
+line 3 deck end (-3578, -5239) (over a road): the ground beside it -1.80 m off the bed, the deck -0.02 m off the bed beside it
+line 3 deck end (-3615, -5192) (over a road): the ground beside it -1.01 m off the bed, the deck +0.02 m off the bed beside it
+line 6 deck end (1851, -9069) (over a road): the ground beside it -0.20 m off the bed, the deck +0.16 m off the bed beside it
+line 6 deck end (1828, -9021) (over a road): the ground beside it -2.97 m off the bed, the deck +0.04 m off the bed beside it
+line 6 deck end (1826, -9017): the ground beside it -2.97 m off the bed, the deck -0.04 m off the bed beside it
+line 6 deck end (1800, -8962): the ground beside it -0.02 m off the bed, the deck +0.02 m off the bed beside it
+line 6 deck end (1602, -7950) (over a road): the ground beside it -0.01 m off the bed, the deck +0.00 m off the bed beside it
+line 6 deck end (1580, -7898) (over a road): the ground beside it +0.07 m off the bed, the deck -0.01 m off the bed beside it
+line 6 deck end (909, -6544) (over a road): the ground beside it -0.34 m off the bed, the deck +0.00 m off the bed beside it
+line 6 deck end (928, -6504) (over a road): the ground beside it +0.07 m off the bed, the deck +0.00 m off the bed beside it
+line 7 deck end (919, -6544) (over a road): the ground beside it -1.48 m off the bed, the deck +0.00 m off the bed beside it
+line 7 deck end (938, -6504) (over a road): the ground beside it -0.17 m off the bed, the deck +0.00 m off the bed beside it

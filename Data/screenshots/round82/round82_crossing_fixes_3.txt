@@ -1,0 +1,4 @@
+Round 82 (A): the roads whose decks were too low over another road, each laid with 350 m of road either side as one profile (MapBuilder.Round82.cs)
+motorway_link (437897716) 0: from (2430, -5091) to (2411, -4913), 472 m, 61 deck points; held to 8 m/s (the sharpest crest at (2410, -4915)), steepest 29.7 % at (2411, -4913); moved up to 0.8 m; 12930 road samples graded, 277 cut under its decks
+  over: motorway_link 274716913 7.2 m clear; Larry McDonald Memorial Highway (437892231) 6.6 m clear; Larry McDonald Memorial Highway (274716911) 2.9 m clear; motorway_link 9117194 1.9 m clear
+  under: Northwest Corridor Express Lanes (685000423) 9.2 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (685000423) 12.8 m clear (at most 1 m into its ground)

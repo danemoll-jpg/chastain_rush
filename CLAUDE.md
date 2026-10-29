@@ -203,6 +203,7 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (this restates "World changes only where Dan pointed" above; it binds the planner writing `TODO.md` too).
 - **Targeted testing only:** one check per fix, where it changed. Dan drives the full courses himself.
 - **Batch small fixes into one round** rather than several, since the build and cleanup happen once per round.
+- **One heavy job at a time, at low priority — STANDING RULE (Dan, 2026-10-29 13:07).** Dan: "CODE Seems to keep locking up my computer with whatever it is doing" (Round 82 ran its 6th full Build Map with two exe checks (check5a, check5b) at the same moment). From now on: never run a Build Map, a player build and an exe check (or two exe checks) at the same time; one at a time. Start Unity batch runs and check exes at Below Normal priority (PowerShell `Start-Process ... -PassThru` then `.PriorityClass = 'BelowNormal'`, or `start /belownormal`) and give Unity's batch runs fewer worker threads (`-job-worker-count` about half the cores), so Dan's computer stays usable. At most 3 full Build Maps in a round; past that, stop and report.
 - **One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
   7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
   world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
