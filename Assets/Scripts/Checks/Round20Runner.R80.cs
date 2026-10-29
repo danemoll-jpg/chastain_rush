@@ -374,7 +374,8 @@ namespace ChastainRush
             yield return Vehicle("original");
             report.AppendLine($"  {lanes.gates.Length} gates");
             // where to watch from: beside the I-575 lanes, north of the I-75 interchange
-            var watchAt = new Vector3(392f, 0f, 418f);
+            var watchAt = new Vector3(392f, 0f, 418f); int lanesNear = -1; float lnd = 1e9f;
+            for (int e = 0; e < net.EdgeCount; e++) if (net.SafeName(e) == ExpressLanes.Name) for (int i = 0; i < net.PointCount(e); i++) { float dd = (net.Point(e, i) - new Vector2(watchAt.x, watchAt.z)).sqrMagnitude; if (dd < lnd) { lnd = dd; lanesNear = e; } }
             foreach (var (hour, label) in new[] { (6f, "6 AM"), (12f, "noon"), (17f, "5 PM"), (0f, "midnight") })
             {
                 ExpressLanes.ForceHour = hour; ExpressLanes.ApplyNow(); yield return Clock(hour);
@@ -400,7 +401,15 @@ namespace ChastainRush
                     }
                 }
                 Time.timeScale = 1f;
-                report.AppendLine($"    traffic on the lanes in 60 s: {south.Count} cars southbound, {north.Count} northbound");
+                // what the traffic had to work with: the lanes' edges new cars may be put on within 520 m, and the cars out and where
+                int spawnable = 0, onMotorway = 0, out_ = 0; var me = car.Body.position;
+                for (int e = 0; e < net.EdgeCount; e++)
+                {
+                    if (net.SafeName(e) != ExpressLanes.Name || net.Bridge(e) || net.Length[e] < 12f || net.SpawnOff(e)) continue;
+                    var mid = net.Point(e, net.PointCount(e) / 2); if ((mid - new Vector2(me.x, me.z)).magnitude < 520f) spawnable++;
+                }
+                if (Traffic.Instance) foreach (var d in Traffic.Instance.Cars) { if (!d || !d.gameObject.activeSelf) continue; out_++; if (d.Edge >= 0 && net.ClassName(d.Edge) == "motorway") onMotorway++; }
+                report.AppendLine($"    traffic on the lanes in 60 s: {south.Count} cars southbound, {north.Count} northbound (lane edges new cars may be put on within 520 m: {spawnable}; cars out {out_}, on motorways {onMotorway}; the way the nearest lane edge runs: {net.Direction(lanesNear)})");
                 bool ok = lanes.Now == ExpressLanes.State.Southbound ? north.Count == 0 : lanes.Now == ExpressLanes.State.Northbound ? south.Count == 0 : true;
                 Check($"express {label}: traffic on the lanes only the way they run", ok, $"{south.Count} south, {north.Count} north");
                 Check($"express {label}: every gate as the schedule says", lanes.gates.All(g => g.IsOpen == lanes.GateOpen(g)));
@@ -431,9 +440,10 @@ namespace ChastainRush
                     if (!Traffic.Instance) return; var p = car.Body.position; var fw = car.transform.forward;
                     foreach (var d in Traffic.Instance.Cars) if (d && d.gameObject.activeSelf && !seen.Contains(d) && (d.Car.Body.position - p).sqrMagnitude < 15f * 15f && Vector3.Dot(d.Car.Body.linearVelocity, fw) < -3f) { seen.Add(d); oncoming++; }
                 }, () => true));
-                var run = new HumanRun(); yield return HumanDrive(line, 22f, 60f, run, null, null, pics); StopCoroutine(watch);
-                report.AppendLine($"  5 PM: gate {Array.IndexOf(lanes.gates, shut) + 1} (shut) driven through: {(shut.Broken ? "BROKEN" : "not broken")}; then {Cum(line)[line.Count - 1]:0} m on the lanes against their way: {oncoming} cars came at the player within 15 m; pictures 80_E_smash_before / _after / 80_E_wrong_way");
-                Check("express: a shut gate breaks when driven through", shut.Broken);
+                bool broke = false; int shutIdx = Array.IndexOf(lanes.gates, shut); Action<int> onBroke = i => { if (i == shutIdx) broke = true; }; ExpressLanes.GateBroken += onBroke;
+                var run = new HumanRun(); yield return HumanDrive(line, 22f, 60f, run, null, null, pics); StopCoroutine(watch); ExpressLanes.GateBroken -= onBroke;
+                report.AppendLine($"  5 PM: gate {Array.IndexOf(lanes.gates, shut) + 1} (shut) driven through: {(broke ? "BROKEN" : "not broken")}; then {Cum(line)[line.Count - 1]:0} m on the lanes against their way: {oncoming} cars came at the player within 15 m; pictures 80_E_smash_before / _after / 80_E_wrong_way");
+                Check("express: a shut gate breaks when driven through", broke);
             }
             ExpressLanes.ForceHour = float.NaN;
         }
