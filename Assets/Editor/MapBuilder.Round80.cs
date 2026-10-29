@@ -185,6 +185,15 @@ namespace ChastainRush
             var lanes = root.AddComponent<ExpressLanes>(); var gates = new List<ExpressGate>(); var log = new List<string>();
             var lane = RoadSignMaterial("ExpressLane"); var keep = RoadSignMaterial("ExpressKeepRight"); var banner = RoadSignMaterial("ExpressDoNotEnter");
             var south2 = ExpressLanes.South;
+            // Round 81 (B, Dan's BUG-005 / 007 / 008: "the gates are on exits from the highway so the road going to the express lane is blocked and never
+            // the express lane itself", "express lane gates should be here instead"): each ramp followed from the lanes along its unnamed links to where
+            // it meets the general lanes or a local road (a split: each branch), the gate 30 m short of that end, on the ramp (never where it meets the
+            // Express lanes)
+            // the lanes run on from a point: southward / northward (within 150 m)
+            bool LanesOn(Vector2 J, float sign) => exPts.Any(e => (e - J).sqrMagnitude < 150f * 150f && Vector2.Dot(e - J, south2) * sign > 40f);
+            int Touch(Vector2 q, int not) { for (int k = 0; k < links.Count; k++) if (k != not && links[k].p.Count >= 2 && ((links[k].p[0] - q).sqrMagnitude < 4f || (links[k].p[links[k].p.Count - 1] - q).sqrMagnitude < 4f)) return k; return -1; }
+            var placed = new List<(int li, List<Vector2> q, bool towardLanes, bool oneway, float width, float[] deck, long id, bool usableSouth, bool usableNorth, Vector2 J)>();
+            var used = new HashSet<int>();
             for (int li = 0; li < links.Count; li++)
             {
                 var (p, oneway, width, deck, id) = links[li];
@@ -193,18 +202,46 @@ namespace ChastainRush
                 if (atStart == atEnd) continue;   // not a ramp on or off them
                 var J = atStart ? p[0] : p[p.Count - 1];
                 if (BackOnLanes(li, J)) { log.Add($"link {id} at ({J.x:0}, {J.y:0}): from the lanes back onto them (no gate)"); continue; }
-                // along the link from the lanes: the point 30 m on (its middle when shorter) and the way out there
-                var q = atStart ? p : Enumerable.Reverse(p).ToList(); float len = 0f; for (int i = 1; i < q.Count; i++) len += (q[i] - q[i - 1]).magnitude;
-                float at = Mathf.Min(30f, len * .5f), acc = 0f; Vector2 G = q[0], f = (q[1] - q[0]).normalized; int seg = 0;
-                for (int i = 1; i < q.Count; i++) { float l = (q[i] - q[i - 1]).magnitude; if (acc + l >= at) { G = Vector2.Lerp(q[i - 1], q[i], (at - acc) / Mathf.Max(l, 1e-4f)); f = (q[i] - q[i - 1]).normalized; seg = i; break; } acc += l; }
+                // at the lanes: which way it is used (a one-way ramp the way its traffic heads there; a two-way one by where the lanes run on from it)
+                var q0 = atStart ? p : Enumerable.Reverse(p).ToList(); var outward0 = (q0[1] - q0[0]).normalized;
+                bool on0 = !atStart; bool s0 = Vector2.Dot(on0 ? -outward0 : outward0, south2) > 0f;
+                bool runS = LanesOn(J, 1f), runN = LanesOn(J, -1f);
+                // out along the links: every branch to its end on a general road
+                var stack = new List<(int k, Vector2 from, int depth)> { (li, J, 0) };
+                while (stack.Count > 0)
+                {
+                    var (k, from, depth) = stack[stack.Count - 1]; stack.RemoveAt(stack.Count - 1); used.Add(k);
+                    var lk = links[k]; bool fwd = (lk.p[0] - from).sqrMagnitude < 4f; var qk = fwd ? lk.p : Enumerable.Reverse(lk.p).ToList();
+                    var far = qk[qk.Count - 1];
+                    var nexts = new List<int>();
+                    if (depth < 8 && !OnLanes(far))
+                        for (int m = 0; m < links.Count; m++)
+                        {
+                            if (m == k || used.Contains(m) || links[m].p.Count < 2) continue;
+                            if ((links[m].p[0] - far).sqrMagnitude < 4f || (links[m].p[links[m].p.Count - 1] - far).sqrMagnitude < 4f) nexts.Add(m);
+                        }
+                    if (nexts.Count > 0) { foreach (int m in nexts) stack.Add((m, far, depth + 1)); continue; }
+                    // the end on a general road: this branch's gate. Its traffic: a one-way branch toward the lanes if its points run toward them
+                    bool towardLanes = lk.oneway ? !fwd : on0;
+                    bool uS, uN;
+                    if (oneway) { uS = s0; uN = !s0; }   // the ramp at the lanes is one-way: the way it heads there
+                    else if (lk.oneway) { uS = towardLanes ? runS : runN; uN = towardLanes ? runN : runS; }   // a branch of a two-way stub: on or off, by where the lanes run on
+                    else { uS = runS || runN; uN = uS; }
+                    if (lk.oneway && !oneway && !uS && !uN) { uS = uN = true; }
+                    placed.Add((k, Enumerable.Reverse(qk).ToList(), towardLanes, lk.oneway || oneway, lk.width, lk.deck != null && lk.deck.Length == lk.p.Count ? (fwd ? Enumerable.Reverse(lk.deck).ToArray() : lk.deck) : null, lk.id, uS, uN, J));
+                }
+            }
+            foreach (var pl in placed)
+            {
+                // q runs from the general road's end toward the lanes: the gate 30 m in from that end (its middle when shorter); f points toward the general end
+                // (local +Z of the gate: the signs face a driver coming from the general road toward the lanes)
+                var q = pl.q; var deck = pl.deck; var oneway = pl.oneway; var width = pl.width; var id = pl.id; bool towardLanes = pl.towardLanes;
+                float len = 0f; for (int i = 1; i < q.Count; i++) len += (q[i] - q[i - 1]).magnitude;
+                float at = Mathf.Min(30f, len * .5f), acc = 0f; Vector2 G = q[0], f = -(q[1] - q[0]).normalized; int seg = 1;
+                for (int i = 1; i < q.Count; i++) { float l = (q[i] - q[i - 1]).magnitude; if (acc + l >= at) { G = Vector2.Lerp(q[i - 1], q[i], (at - acc) / Mathf.Max(l, 1e-4f)); f = -(q[i] - q[i - 1]).normalized; seg = i; break; } acc += l; }
                 float y = Ground(terrain, G.x, G.y);
-                if (deck != null && deck.Length == p.Count) { int di = atStart ? seg : p.Count - 1 - seg; y = deck[Mathf.Clamp(di, 0, deck.Length - 1)]; }
-                // which way it is used: a two-way link both ways; a one-way link the way its traffic heads at the lanes
-                var outward = (q[1] - q[0]).normalized;
-                bool towardLanes = !atStart;   // its points run toward the lanes: traffic on it goes onto them
-                var heading = towardLanes ? -outward : outward;
-                bool south = Vector2.Dot(heading, south2) > 0f;
-                bool usableSouth = !oneway || south, usableNorth = !oneway || !south;
+                if (deck != null && deck.Length == q.Count) y = Mathf.Lerp(deck[seg - 1], deck[seg], .5f);
+                bool usableSouth = pl.usableSouth, usableNorth = pl.usableNorth;
                 // the gate's frame at its post: local +Z out along the ramp (away from the lanes), local +X across it
                 var f3 = new Vector3(f.x, 0f, f.y); var across = Vector3.Cross(Vector3.up, f3).normalized;
                 float W = Mathf.Max(4.5f, width) + 1.2f;

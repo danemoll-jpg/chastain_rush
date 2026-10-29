@@ -28,6 +28,8 @@ namespace ChastainRush
         public State Now { get; private set; } = (State)(-1);
         float next;
         readonly List<int> mainEdges = new(), linkEdges = new();
+        readonly Dictionary<int, (int near, List<int> roots)> chain = new();   // Round 81 (B)
+        readonly Dictionary<int, int> rootLane = new();
 
         public static float Hour
         {
@@ -68,10 +70,31 @@ namespace ChastainRush
                     foreach (int n in new[] { net.From(e), net.To(e) }) foreach (int o in net.Adjacent(n)) if (main.Contains(o)) touches = true;
                     if (touches) linkEdges.Add(e);
                 }
+                // Round 81 (B): the rest of each ramp out to the general road (its gate now stands at that end): the unnamed links beyond the first edge,
+                // each with the node nearer the lanes and the first edges it leads to
+                var first = new HashSet<int>(linkEdges);
+                foreach (int e0 in linkEdges)
+                {
+                    int lane = -1; foreach (int n in new[] { net.From(e0), net.To(e0) }) foreach (int o in net.Adjacent(n)) if (main.Contains(o)) lane = n;
+                    var q = new Queue<(int e, int near)>(); q.Enqueue((e0, lane)); var seen = new HashSet<int> { e0 };
+                    while (q.Count > 0)
+                    {
+                        var (e, near) = q.Dequeue(); int far = net.Other(e, near);
+                        foreach (int o in net.Adjacent(far))
+                        {
+                            if (seen.Contains(o) || main.Contains(o) || first.Contains(o) || net.SafeName(o).Length > 0 || !net.ClassName(o).EndsWith("_link")) continue;
+                            seen.Add(o); q.Enqueue((o, far));
+                            if (!chain.TryGetValue(o, out var c)) chain[o] = c = (far, new List<int>());
+                            if (!c.roots.Contains(e0)) c.roots.Add(e0);
+                        }
+                    }
+                    rootLane[e0] = lane;
+                }
             }
             catch (Exception ex) { Debug.LogWarning($"[Round80] Express Lanes: the traffic graph ({net.EdgeCount} edges, {net.NodeCount} nodes): {ex.GetType().Name} {ex.Message} {ex.StackTrace}"); }
             RoadNet.Blocked = PoliceBlocked;
-            Debug.Log($"[Round80] Express Lanes: {mainEdges.Count} lane edges, {linkEdges.Count} ramp edges, {gates.Length} gates");
+            Debug.Log($"[Round80] Express Lanes: {mainEdges.Count} lane edges, {linkEdges.Count} ramp edges (+{chain.Count} on out to the general roads), {gates.Length} gates");
+            Now = StateAt(Hour); Apply();   // Round 81 (C): the lanes' way set before any car is put on them
         }
 
         void Update()
@@ -89,11 +112,48 @@ namespace ChastainRush
             var net = TrafficNetwork.Instance; if (!net) return;
             bool south = SouthNow(Now), open = Open(Now);
             foreach (int e in mainEdges) net.SetDirection(e, (sbyte)(Southward(net, e) == south ? 1 : -1), open);
+            var lanes = new HashSet<int>(mainEdges);
             foreach (int e in linkEdges)
             {
                 sbyte d = (sbyte)(Southward(net, e) == south ? 1 : -1);
-                if (!open || net.BaseOneway(e) && d == -1) d = 2;
+                // Round 81 (C, Dan's BUG-006 by Chastain Road: a line of cars standing on the lane): in a reversal only the ramps ON were shut; the ramps
+                // off were shut too, so the cars still in the lanes met a dead end and stood (and every car behind them). Now the ramps off stay open
+                // the way the lanes ran, so the lanes empty
+                bool off = false; int start = d > 0 ? net.From(e) : net.To(e);
+                foreach (int o in net.Adjacent(start)) if (lanes.Contains(o)) off = true;
+                if (!open && !off || net.BaseOneway(e) && d == -1) d = 2;
                 net.SetDirection(e, d, open);
+            }
+            // Round 81 (B): the rest of each ramp: open toward the lanes if a first edge it leads to takes cars onto them, away from them if one takes
+            // cars off (so no car drives up a ramp to a shut end: shut ramps are shut from the general road, where the gate is)
+            bool Allows(int e0, bool onto)
+            {
+                int lane = rootLane.TryGetValue(e0, out var l) ? l : -1; sbyte d = net.Direction(e0); if (lane < 0 || d == 2) return false;
+                int from = onto ? net.Other(e0, lane) : lane;   // onto the lanes: entering e0 at its far node
+                return net.CanEnter(e0, from);
+            }
+            foreach (var kv in chain)
+            {
+                int e = kv.Key, near = kv.Value.near; bool onto = false, off = false;
+                foreach (int r in kv.Value.roots) { onto |= Allows(r, true); off |= Allows(r, false); }
+                bool toNear = net.To(e) == near;   // from -> to runs toward the lanes
+                sbyte d = onto && off ? (sbyte)0 : onto ? (sbyte)(toNear ? 1 : -1) : off ? (sbyte)(toNear ? -1 : 1) : (sbyte)2;
+                if (d != 0 && d != 2 && net.BaseOneway(e) && d == -1) d = 2;
+                net.SetDirection(e, d, open);
+            }
+            // Round 81 (C): every car re-plans (one already on its way onto a ramp now shut, or along the lanes the old way, stops short of it), and a
+            // car on the lanes the old way is moved off when nobody sees it
+            var traffic = Traffic.Instance;
+            if (traffic)
+            {
+                traffic.Replanned();
+                var all = new HashSet<int>(mainEdges); all.UnionWith(linkEdges); all.UnionWith(chain.Keys);
+                foreach (var c in traffic.Cars)
+                {
+                    if (!c || !c.gameObject.activeSelf || !all.Contains(c.Edge)) continue;
+                    sbyte d = net.Direction(c.Edge);
+                    if (d == 2 || d == 1 && c.Dir < 0 || d == -1 && c.Dir > 0) c.Recycle();
+                }
             }
             Debug.Log($"[Round80] Express Lanes at {Hour:0.00} h: {Describe(Now)}");
         }

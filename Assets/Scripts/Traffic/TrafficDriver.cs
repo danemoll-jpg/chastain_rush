@@ -18,6 +18,7 @@ namespace ChastainRush
         public float SpeedOverride = -1;   // Round 39 (Part D): m/s, Speed Patrol's speeders (Racer's RoadDriver.SpeedOverride); -1 the road's own
         public float LastThrottle { get; private set; }   // OtherEngines
         public int Edge => route.Count > 0 ? route[0].edge : -1;
+        public int Dir => route.Count > 0 ? route[0].dir : 0;   // Round 81 (C): +1 from -> to
         public bool WantsRecycle { get; private set; }     // stuck, off the road or at the map's edge: Traffic moves it when nobody sees
         public float Pace { get; private set; } = 1;
         int laneSlot;   // Round 80 (F): which lane of a road of several
@@ -252,7 +253,12 @@ namespace ChastainRush
         // goes on from there (Traffic.PickNext never picks one)
         void Replan()
         {
-            for (int k = 1; k < route.Count; k++) if (owner.Forbidden(route[k].edge)) { route.RemoveRange(k, route.Count - k); break; }
+            for (int k = 1; k < route.Count; k++)
+            {
+                // Round 81 (C): and an edge it may no longer enter (the Express Lanes turned round or shut while it was on its way)
+                var (pe, pd) = route[k - 1]; int at = pd > 0 ? net.To(pe) : net.From(pe);
+                if (owner.Forbidden(route[k].edge) || !net.CanEnter(route[k].edge, at)) { route.RemoveRange(k, route.Count - k); break; }
+            }
             Extend(); Rebuild();
         }
         // a barrier across its road: back the way it came on a two-way road (a one-way one is moved off when nobody sees it)

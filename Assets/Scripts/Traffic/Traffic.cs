@@ -295,6 +295,7 @@ namespace ChastainRush
 
         public bool Forbidden(int e) => forbidden != null && e >= 0 && forbidden[e];
         public int ClosureVersion { get; private set; }   // Round 54 (D1): each driver re-plans when it changes
+        public void Replanned() => ClosureVersion++;     // Round 81 (C): a road's run-time way changed (ExpressLanes): every driver re-plans
         public int ClosedRoads { get; private set; }
         // the race's barriers in the direction raced (Round 39: the reverse Chastain Ridge has its own)
         static IEnumerable<RouteClosureJson> RaceClosures(RaceController race, RouteJson rd) => race && race.Route != null ? (IEnumerable<RouteClosureJson>)race.Route.Closures : rd?.closures ?? new RouteClosureJson[0];
