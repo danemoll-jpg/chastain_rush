@@ -59,12 +59,13 @@ namespace ChastainRush
         // the race's line with the Whitlock jump: off Whitlock's eastbound lane onto the tie stack, over the tracks, down the loading dock's ramp, back onto Whitlock
         static List<Vector3> R80JumpLine(List<Vector3> line)
         {
-            const float kz = -8530f, footX = 1596.7f, dockFoot = 1676.3f;
-            int i0 = line.FindIndex(p => p.x > 1555f && p.x < 1575f && Mathf.Abs(p.z + 8524f) < 6f); int i1 = line.FindIndex(p => p.x > 1695f && Mathf.Abs(p.z + 8523f) < 6f);
+            // (lined up on the stack from just past the corner, straight on its line 15 m before its foot: a person lines a jump up early)
+            const float kz = -8530f, footX = 1596.7f, dockFoot = 1676.3f, lined = footX - 15f;
+            int i0 = line.FindIndex(p => p.x > 1546f && p.x < 1560f && Mathf.Abs(p.z + 8524f) < 6f); int i1 = line.FindIndex(p => p.x > 1695f && Mathf.Abs(p.z + 8523f) < 6f);
             if (i0 < 0 || i1 < 0) return line;
             var mid = new List<Vector3>();
-            for (float x = line[i0].x + 3f; x < footX - 3f; x += 3f) { float u = Mathf.InverseLerp(line[i0].x, footX - 3f, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(line[i0].z, kz, Mathf.SmoothStep(0f, 1f, u)))); }
-            for (float x = footX - 3f; x < dockFoot + 4f; x += 3f) mid.Add(new Vector3(x, 0f, kz));
+            for (float x = line[i0].x + 3f; x < lined; x += 3f) { float u = Mathf.InverseLerp(line[i0].x, lined, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(line[i0].z, kz, Mathf.SmoothStep(0f, 1f, u)))); }
+            for (float x = lined; x < dockFoot + 4f; x += 3f) mid.Add(new Vector3(x, 0f, kz));
             for (float x = dockFoot + 4f; x < line[i1].x - 2f; x += 3f) { float u = Mathf.InverseLerp(dockFoot + 4f, line[i1].x, x); mid.Add(RaceRoute.Ground(x, Mathf.Lerp(kz, line[i1].z, Mathf.SmoothStep(0f, 1f, u)))); }
             var outL = line.Take(i0 + 1).ToList(); outL.AddRange(mid); outL.AddRange(line.Skip(i1)); return outL;
         }
@@ -94,18 +95,21 @@ namespace ChastainRush
                     if (p.x > 1540f && p.x < 1700f && p.z < -8500f && p.z > -8560f && Time.time >= nextW) { nextW = Time.time + .1f; var v = car.Body.linearVelocity; wtrace.AppendLine($"{Time.time:0.0}\t{p.x:0.0}\t{p.y:0.0}\t{p.z:0.0}\t{v.magnitude:0.0}\t{car.GroundedWheels}\t{car.transform.eulerAngles.y:0}\t{(cross.Closed ? 1 : 0)}"); }
                     if (tIn < 0f && p.x > 1545f && p.x < 1575f && p.z < -8512f) tIn = Time.time;
                     if (tIn > 0f && tOut < 0f && p.x > 1700f && p.z < -8512f) tOut = Time.time;
-                    if (p.x > 1619f && p.x < 1631f && car.GroundedWheels == 0)
-                    {
-                        closedWhenOver |= cross.Closed;
-                        if (Physics.Raycast(p, Vector3.down, out var hit, 20f, ~0, QueryTriggerInteraction.Ignore) && hit.collider.GetComponentInParent<TrainCar>()) { trainUnder = true; overTrain = float.IsNaN(overTrain) ? hit.distance : Mathf.Min(overTrain, hit.distance); }
-                    }
                     if (mode == "jump") { if (p.x > 1560f && p.x < 1615f && Mathf.Abs(p.z + 8528f) < 8f) return 25f; return 99f; }
                     if (RailTrains.ClosedAhead(p, car.transform.forward, 120f, out float stop, out _, out _)) { if (car.Body.linearVelocity.magnitude < .8f) waitedFor += Time.fixedDeltaTime; return stop < 50f ? 0f : 12f; }
                     return 99f;
                 };
                 var run = new HumanRun(); Time.timeScale = 1.5f; Time.maximumDeltaTime = .5f;
                 var pics = new List<(string, float)> { ($"80_C_{mode}_approach", 1080f + 60f) };
+                // over the tracks, every step (the driver's own step does not run in the air): the crossing, and a train car under the car
+                var overWatch = StartCoroutine(R73Watch(() =>
+                {
+                    var p = car.Body.position; if (p.x <= 1619f || p.x >= 1631f || p.z > -8505f || p.z < -8545f || car.GroundedWheels > 0) return;
+                    closedWhenOver |= cross.Closed;
+                    if (Physics.Raycast(p, Vector3.down, out var hit, 20f, ~0, QueryTriggerInteraction.Ignore) && hit.collider.GetComponentInParent<TrainCar>()) { trainUnder = true; overTrain = float.IsNaN(overTrain) ? hit.distance : Mathf.Min(overTrain, hit.distance); }
+                }, () => true));
                 yield return HumanDrive(line, 30f, 300f, run, () => race.Player.Finished, speedAt, pics, $"80_C_{mode}_in_the_air");
+                StopCoroutine(overWatch);
                 Time.timeScale = 1f; File.WriteAllText(Path.Combine(outputDir, $"80_C_{mode}_trace.tsv"), wtrace.ToString());
                 float secs = tIn > 0f && tOut > 0f ? tOut - tIn : float.NaN; through[mode] = secs;
                 report.AppendLine($"  {mode}: {(race.Player.Finished ? "finished " + RaceController.Fmt(race.Player.FinalTotal) : "NOT finished")}; resets {run.resets}; longest in the air {run.maxAir:0.00} s; " +
