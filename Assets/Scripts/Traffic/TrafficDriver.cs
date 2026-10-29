@@ -21,6 +21,7 @@ namespace ChastainRush
         public bool WantsRecycle { get; private set; }     // stuck, off the road or at the map's edge: Traffic moves it when nobody sees
         public float Pace { get; private set; } = 1;
         int laneSlot;   // Round 80 (F): which lane of a road of several
+        public bool Highway;   // Round 80 (F): put back on a highway in reach (Traffic.Spawn)
         public string State { get; private set; } = "";   // checks
         public float Jammed { get; private set; }          // Round 32 (B2): how long it has stood blocked by a car across its way
 

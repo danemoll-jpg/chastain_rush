@@ -101,6 +101,7 @@ namespace ChastainRush
             clone.AddComponent<AmbientVehicle>().Initialize();
             var driver = clone.AddComponent<TrafficDriver>(); driver.Initialize(this, car);
             clone.SetActive(false);   // in the pool until it is put on a road
+            driver.Highway = !OldMix && Cars.Count % 5 < 2;   // Round 80 (F): two cars in five kept for the highways
             Cars.Add(driver);
             return driver;
         }
@@ -140,12 +141,20 @@ namespace ChastainRush
         }
 
         // a place out of sight 140 to 400 m away (near: from 60 m), on a road open to traffic, with room
+        // Round 80 (F): a highway car (TrafficDriver.Highway) on a motorway or trunk road in reach if there is one (fast cars soon leave the player's
+        // reach and come back somewhere else, slow ones in the streets stay: without this the pool drifted off the highways)
         bool Spawn(TrafficDriver d, bool near)
+        {
+            if (d.Highway && SpawnOn(d, near, true)) return true;
+            return SpawnOn(d, near, false);
+        }
+        bool SpawnOn(TrafficDriver d, bool near, bool highway)
         {
             var at = player.Body.position; var at2 = new Vector2(at.x, at.z);
             candidates.Clear(); weights.Clear(); float total = 0;
             for (int e = 0; e < net.EdgeCount; e++)
             {
+                if (highway) { var c = net.ClassName(e); if (c != "motorway" && c != "trunk") continue; }
                 if (forbidden[e] || net.Bridge(e) || net.Length[e] < 12 || net.SpawnOff(e)) continue;   // Round 80 (E): not on the Express Lanes while they are closed
                 if (OldMix) { var mid = net.Point(e, net.PointCount(e) / 2); if (Near(mid, at2) > 520f) continue; }
                 // Round 80 (F): an edge in reach anywhere along it (by its middle, a long one between far junctions, a highway's or the Express Lanes',
