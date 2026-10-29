@@ -1,0 +1,34 @@
+Round 80 check, 2026-10-28 23:26, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (session 2026-10-28_17-26-14-935_f93341): Whitlock Avenue, the square race, the train passing, from his place and heading
+  at (1607.7, -8523.8) heading 76: the crossing closed (the train passing), its arms at 34 degrees; picture 80_BUG-001_after.png (the tie stack to the right of the road before the tracks, the loading dock past them)
+PASS  dan: the train passing Whitlock Avenue as in Dan's picture
+
+=== C. The Whitlock jump alone (Free Roam, Street Classic): put on Whitlock 35 m before the tie stack's foot on its line, straight on over it, a train crossing under the flight
+  at 21 m/s: longest in the air 1.92 s; over the tracks the crossing closed, a train car under the car yes (2.1 m under the car's middle); landing 8.1 m/s in a step at (1652, -8528) (the dock from x 1636 to 1676); ended at (1696, -8528), resets 0; picture 80_C_wjump_21_in_the_air.png
+PASS  wjump 21 m/s: over the tracks with a train under it, down on the dock, no reset  -  under True (2.1 m), landed x 1652, resets 0
+  at 24 m/s: longest in the air 2.22 s; over the tracks the crossing closed, a train car under the car yes (2.3 m under the car's middle); landing 11.7 m/s in a step at (1664, -8528) (the dock from x 1636 to 1676); ended at (1696, -8528), resets 0; picture 80_C_wjump_24_in_the_air.png
+PASS  wjump 24 m/s: over the tracks with a train under it, down on the dock, no reset  -  under True (2.3 m), landed x 1664, resets 0
+
+=== E. The Express Lanes at four times of day, traffic Heavy (needs -traffic Heavy)
+  4 gates
+  6 AM: the lanes southbound (toward Atlanta); gates 1 open, 2 SHUT, 3 open, 4 open
+    traffic on the lanes in 60 s: 0 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 0; the way the nearest lane edge runs: 1)
+PASS  express 6 AM: traffic on the lanes only the way they run  -  0 south, 0 north
+PASS  express 6 AM: every gate as the schedule says
+  noon: the lanes reversal (closed; was southbound); gates 1 SHUT, 2 SHUT, 3 SHUT, 4 SHUT
+    traffic on the lanes in 60 s: 0 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 19; the way the nearest lane edge runs: 1)
+PASS  express noon: traffic on the lanes only the way they run  -  0 south, 0 north
+PASS  express noon: every gate as the schedule says
+  5 PM: the lanes northbound; gates 1 open, 2 open, 3 SHUT, 4 open
+    traffic on the lanes in 60 s: 0 cars southbound, 6 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 25; the way the nearest lane edge runs: -1)
+PASS  express 5 PM: traffic on the lanes only the way they run  -  0 south, 6 north
+PASS  express 5 PM: every gate as the schedule says
+  midnight: the lanes reversal (closed; was northbound); gates 1 SHUT, 2 SHUT, 3 SHUT, 4 SHUT
+    traffic on the lanes in 60 s: 0 cars southbound, 0 northbound (lane edges new cars may be put on within 520 m: 0; cars out 34, on motorways 26; the way the nearest lane edge runs: -1)
+PASS  express midnight: traffic on the lanes only the way they run  -  0 south, 0 north
+PASS  express midnight: every gate as the schedule says
+  5 PM: gate 3 (shut) driven through: BROKEN; then 116 m on the lanes against their way: 0 cars came at the player within 15 m; pictures 80_E_smash_before / _after / 80_E_wrong_way
+PASS  express: a shut gate breaks when driven through
+
+12 of 12 checks passed.

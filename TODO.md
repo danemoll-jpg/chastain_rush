@@ -147,6 +147,33 @@ Check: item 0 for every item.
 For Dan to check: an air race where you miss a ring; the square race's deck turn; the Whitlock jump; the Express Lanes at different times (gates,
 direction); the highways' traffic; the cockpit view; smashing a closed gate.
 
+**Status (Claude, 2026-10-29): built (full Build Map + exe, BUILD_INFO below), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round80/`. Three full Build Maps:
+2 found Express Lanes 13's deck laid straight under three banks, 3 found the Whitlock dock 1 to 2 m into two buildings. Disk and build time at the end.
+A PARTLY. AI pilots now err by difficulty (`PlanePilot`: a ring lined up wide, then mostly gone back for; a late turn; slow and careful at a low ring; a lap off the pace). 54 races
+(3 courses x 3 levels x 2, 2 laps, `80_A_air_ai.csv`), every AI finished: rings missed per AI a race Easy / Normal / Hard: Quarry 2.2 / 1.2 / 0.8, Highway 0.7 / 0.3 / 0.7, Air Tour
+4.5 / 3.7 / 2.7; one AI's two laps 4 to 48 s apart on average. The car AI has no catch-up, so neither has this. Found and fixed: a plane put past a ring after its third crash
+was sent back before it again, round and round (Easy, Highway). NOT met (stopped at the tuning limit): the check's human-like pilot (the AI's own law flat out, 0.1 s late, noise,
+one ring missed and gone back for) came last on every course, 1.5 to 2 min behind (e.g. Highway Normal 4:41 vs 2:47 to 3:04); most of that is the go-back itself (it runs out
+650 m slowly before turning, about a minute) and 1 to 2 crashes from its lag. Through the pad it did not hold the line at all. A quicker go-back (for the AI too) is the next step if Dan wants it.
+B DONE. The cause: the lap's line folded back on itself at both ends of the deck (Waddell's leg ran 13 m past the deck's lane, Haynes' started north of its exit), and the AI took
+the nearest point anywhere: `make_marietta_route.py` legs and a de-kink at the deck; `RoadDriver` looks near its last station. 5 races x 3 AI, clean / Normal traffic, the train
+as always: before 11 / 9 loops (all at the deck's entry, 1910, -8367), Waddell to Haynes 18.0 / 15.1 s; after 0 / 0 loops, 11.5 / 11.3 s (`80_B_route_before_after.png`).
+C DONE. A stack of old ties west of the tracks (`tiestack`), the freight house's loading dock east of them the landing (`loadingdock`), `make_marietta_route.py`. Dan's place:
+the stack beside the road, the train behind the gate (`80_BUG-001_after`). Off it at 21 / 24 m/s while a train crosses: 1.9 / 2.2 s, 2.1 / 2.3 m over the train car, down on the
+dock (8 / 12 m/s), no reset (`80_C_wjump_*`). Too slow (under 18 m/s) meets the train. On the road the train stops you (27 to 67 s waited).
+D1 PARTLY (tuning limit). EL13 is the I-75 lanes' 1833 m deck: Round 27 laid every chain of deck pieces straight, and there that ran 10 m under the Canton Road Connector and two
+ramps (banks across the lanes: driven, stuck both ways). It now keeps its own shape (held over what crosses it, smoothed): through both ways, but 2.6 / 2.7 s in the air and 11 to
+12 m/s landings at the connector and a ramp. Options for Dan: lift the lanes over the connector and the ramps as flyovers, or put those roads on decks over the lanes.
+Found, not changed: the 463 m deck at I-75 / Barrett (-54, -2128) flies 1.9 s one way and walls at its south end (82, -2565) the other; small hops (0.4 to 0.8 s) on three short decks (`round80_check_ddecks.txt`).
+D2 DONE. The chase camera's snap and the replay's own chase kept out of solid things: 0 of 16 moments at the Mill Street pile inside or behind it (`80_D2_*`).
+D3 DONE. Both planes' cockpit view at the pilot's eyes: their hands on the stick and the dash ahead (`80_D3_cockpit_*`).
+E DONE. `World/ExpressLanes.cs` (schedule on Free Roam's clock; races: Dawn 6:30, Day 3 PM, Dusk 7:30 PM, Night 2 AM; replays: the hour in the Clock events), `ExpressGate`
+(4 gates, one per ramp; `make_express_signs.py`), `TrafficNetwork.SetDirection`, police paths `RoadNet.Blocked`. At 6 AM / noon / 5 PM / midnight every gate as scheduled
+(`80_E_*_gate2`); at 5 PM 6 cars northbound, none southbound; none in a reversal. A shut gate smashed at 5 PM breaks (replays: `Kind.ExpressGate`); no oncoming car met in 116 m there.
+F (numbers below). 10 / 22 / 34 cars (Light / Normal / Heavy, were 7 / 14 / 22); two in five kept for the highways; every lane of a multi-lane road used. Found: a long edge
+(the highways', the Express Lanes') could only take a new car when its middle was near the player.
+For Dan to check (added): EL13's options; whether the AI's go-back should be quicker.
+
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
 area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes

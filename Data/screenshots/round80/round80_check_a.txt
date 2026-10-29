@@ -1,0 +1,47 @@
+Round 80 check, 2026-10-28 19:12, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (session 2026-10-28_17-26-14-935_f93341): Whitlock Avenue, the square race, the train passing, from his place and heading
+  at (1566.3, -8528.0) heading 85: the crossing closed (the train passing), its arms at 33 degrees; picture 80_BUG-001_after.png (the tie stack to the right of the road before the tracks, the loading dock past them)
+PASS  dan: the train passing Whitlock Avenue as in Dan's picture
+
+=== C. The Whitlock Avenue jump: the square race (1 lap, 3 AI, Normal), the human-like driver (Street Classic); a southbound train told to reach Whitlock as it comes
+  jump: finished 1:07.325; resets 0; longest in the air 2.08 s; Whitlock from North Marietta Parkway to past the dock 0.0 s (game time); waited at the gates 0.0 s; over the tracks: the crossing open, a train car under the car no
+FAIL  whitlock: over the tracks off the tie stack (over 1.2 s in the air), a train under it, no reset  -  air 2.08 s, train under False, resets 0
+  wait: NOT finished; resets 1; longest in the air 2.04 s; Whitlock from North Marietta Parkway to past the dock 0.0 s (game time); waited at the gates 47.8 s;  stuck at (1962, -8393) s 418;
+PASS  whitlock: on the road the train stops you (no free way round)  -  waited 47.8 s
+  the jump against waiting: 0.0 s against 0.0 s through the stretch
+
+=== D1. Every Express Lanes deck both ways, the human-like driver up to 33 m/s (Street Classic, no traffic): air and landings
+  deck at (529, 12), 48 m its own way: through in 4.9 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s in a step, resets 0
+  deck at (529, 12), 48 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s in a step, resets 0
+  deck at (758, -1649), 62 m its own way: through in 6.8 s, top 33 m/s, longest in the air 0.24 s, hardest landing 1.2 m/s in a step, resets 0
+  deck at (758, -1649), 62 m the other way: through in 6.9 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s in a step, resets 0
+  deck at (620, -455), 52 m its own way: through in 5.4 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s in a step, resets 0
+  deck at (620, -455), 52 m the other way: through in 5.5 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s in a step, resets 0
+  deck at (-355, -856), 97 m its own way: through in 10.6 s, top 31 m/s, longest in the air 0.54 s, hardest landing 1.3 m/s in a step, resets 0  <- LOOK
+  deck at (-355, -856), 97 m the other way: through in 7.1 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s in a step, resets 0
+  deck at (-624, -381), 79 m its own way: through in 6.4 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s in a step, resets 0
+  deck at (-624, -381), 79 m the other way: through in 6.6 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s in a step, resets 0
+  deck at (-1414, 1617), 115 m its own way: through in 8.1 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.9 m/s in a step, resets 0
+  deck at (-1414, 1617), 115 m the other way: through in 9.2 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.9 m/s in a step, resets 0
+  deck at (-54, -2128), 463 m its own way: through in 22.7 s, top 33 m/s, longest in the air 2.28 s, hardest landing 14.4 m/s in a step, resets 0  <- LOOK
+  deck at (-54, -2128), 463 m the other way: NOT through in 90.0 s, top 27 m/s, longest in the air 0.00 s, hardest landing 1.8 m/s in a step, resets 16  <- LOOK
+  deck at (2049, -4662), 1833 m its own way: NOT through in 90.0 s, top 33 m/s, longest in the air 0.06 s, hardest landing 1.9 m/s in a step, resets 13  <- LOOK
+  deck at (2049, -4662), 1833 m the other way: NOT through in 90.0 s, top 34 m/s, longest in the air 0.56 s, hardest landing 3.1 m/s in a step, resets 1  <- LOOK
+  deck at (1481, -4251), 47 m its own way: through in 5.0 s, top 33 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s in a step, resets 0
+  deck at (1481, -4251), 47 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.02 s, hardest landing 0.2 m/s in a step, resets 0
+  deck at (1828, -4449), 52 m its own way: through in 7.2 s, top 33 m/s, longest in the air 0.40 s, hardest landing 0.9 m/s in a step, resets 0
+  deck at (1828, -4449), 52 m the other way: through in 7.1 s, top 33 m/s, longest in the air 0.46 s, hardest landing 0.4 m/s in a step, resets 0
+FAIL  ddecks: every Express Lanes deck both ways through, under 0.5 s in the air, no landing over 6 m/s  -  5 not
+
+=== D2. The replay's chase camera at the Mill Street pile: the square race over it (1 lap, no AI), then every quarter second near the pile in the replay
+  16 moments near the pile, the chase camera behind something or inside it at 0; pictures 80_D2_replay_chase_at_the_pile.png
+PASS  dreplay: the replay's chase camera never inside or behind the pile  -  0 of 16
+
+=== D3. The planes' cockpit view in flight (the camera at the pilot's eyes)
+  plane: the camera 0.00 / 0.77 / -2.58 m (right / up / forward) from the pilot's seat; picture 80_D3_cockpit_plane.png
+FAIL  cockpit plane: the camera at the pilot's head (0.6 to 0.9 m over the seat, ahead of it, beside it under 0.2 m)  -  (0.00, 0.77, -2.58)
+  dart: the camera 0.00 / 0.77 / -3.02 m (right / up / forward) from the pilot's seat; picture 80_D3_cockpit_dart.png
+FAIL  cockpit dart: the camera at the pilot's head (0.6 to 0.9 m over the seat, ahead of it, beside it under 0.2 m)  -  (0.00, 0.77, -3.02)
+
+3 of 7 checks passed.

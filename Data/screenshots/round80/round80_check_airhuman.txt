@@ -1,0 +1,17 @@
+Round 80 check, 2026-10-28 22:18, the exe, 1280 x 720, muted.
+
+=== A. The human-like pilot (the plane's own controls as the AI pilots, flat out, 0.1 s late, a little noise; the Sky Hopper) against 3 AI, 1 lap: one ring missed on purpose and gone back for
+  Quarry Air Race Normal: the player 2:56.568, place 4 of 4; ring 7 missed, not gone back for; missed 3; crashes 2; AI: EMBER 1:42.096 (missed 0, back 0/0, late 0, careful 2, off-pace laps 0); GOLD 1:48.843 (missed 1, back 0/0, late 0, careful 1, off-pace laps 0); BLUE 1:42.730 (missed 0, back 0/0, late 0, careful 0, off-pace laps 0)
+FAIL  airhuman Quarry Air Race Normal: a ring missed and gone back for, and still the winner  -  went back False, place 4
+  Quarry Air Race Hard: the player 2:56.245, place 4 of 4; ring 7 missed, not gone back for; missed 3; crashes 2; AI: EMBER 1:35.120 (missed 1, back 0/0, late 0, careful 0, off-pace laps 0); GOLD 1:38.035 (missed 0, back 0/0, late 1, careful 0, off-pace laps 0); BLUE 1:47.494 (missed 1, back 0/0, late 1, careful 1, off-pace laps 0)
+FAIL  airhuman Quarry Air Race Hard: a ring missed and gone back for, and in the pack (not last)  -  went back False, place 4
+  Highway Air Race Normal: the player 4:41.531, place 4 of 4; ring 8 missed and gone back for (no penalty); missed 0; crashes 1; AI: EMBER 3:04.743 (missed 0, back 0/0, late 0, careful 3, off-pace laps 0); GOLD 2:50.406 (missed 1, back 0/0, late 0, careful 4, off-pace laps 0); BLUE 2:47.836 (missed 0, back 0/0, late 0, careful 4, off-pace laps 0)
+FAIL  airhuman Highway Air Race Normal: a ring missed and gone back for, and still the winner  -  went back True, place 4
+  Highway Air Race Hard: the player 4:43.077, place 4 of 4; ring 8 missed and gone back for (no penalty); missed 0; crashes 1; AI: EMBER 2:45.861 (missed 1, back 0/0, late 0, careful 3, off-pace laps 0); GOLD 2:40.262 (missed 0, back 0/0, late 0, careful 3, off-pace laps 0); BLUE 2:40.425 (missed 0, back 0/0, late 0, careful 2, off-pace laps 0)
+FAIL  airhuman Highway Air Race Hard: a ring missed and gone back for, and in the pack (not last)  -  went back True, place 4
+  Air Tour Normal: the player 6:39.007, place 4 of 4; ring 12 missed and gone back for (no penalty); missed 2; crashes 1; AI: EMBER 5:00.982 (missed 1, back 0/0, late 0, careful 4, off-pace laps 0); GOLD 5:47.342 (missed 2, back 1/1, late 1, careful 3, off-pace laps 0); BLUE 4:23.435 (missed 0, back 0/0, late 0, careful 4, off-pace laps 0)
+FAIL  airhuman Air Tour Normal: a ring missed and gone back for, and still the winner  -  went back True, place 4
+  Air Tour Hard: the player 6:37.899, place 4 of 4; ring 12 missed and gone back for (no penalty); missed 1; crashes 1; AI: EMBER 4:07.044 (missed 0, back 0/0, late 0, careful 1, off-pace laps 0); GOLD 4:57.035 (missed 2, back 0/0, late 0, careful 2, off-pace laps 0); BLUE 4:49.697 (missed 1, back 0/0, late 0, careful 3, off-pace laps 0)
+FAIL  airhuman Air Tour Hard: a ring missed and gone back for, and in the pack (not last)  -  went back True, place 4
+
+0 of 6 checks passed.

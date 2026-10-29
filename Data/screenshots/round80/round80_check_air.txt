@@ -1,0 +1,15 @@
+Round 80 check, 2026-10-28 20:12, the exe, 1280 x 720, muted.
+
+=== A. The AI pilots' mistakes: each air course x Easy / Normal / Hard x 2 races, 3 AI, 2 laps, the player parked on the runway
+  quarry_air_race    Easy  : missed rings per AI a race 2.2 (0 to 5), laps 99.9 to 132.8 s, one AI's two laps 7.2 s apart on average (up to 29.2), totals 201.1 to 241.9 s, not finished 0
+  quarry_air_race    Normal: missed rings per AI a race 1.2 (0 to 3), laps 93.9 to 137.9 s, one AI's two laps 12.0 s apart on average (up to 35.9), totals 192.6 to 239.8 s, not finished 0
+  quarry_air_race    Hard  : missed rings per AI a race 0.8 (0 to 2), laps 89.8 to 110.8 s, one AI's two laps 4.9 s apart on average (up to 15.6), totals 183.5 to 211.1 s, not finished 0
+  highway_air_race   Easy  : missed rings per AI a race 0.7 (0 to 2), laps 172.9 to 229.9 s, one AI's two laps 12.6 s apart on average (up to 27.1), totals 352.7 to 432.8 s, not finished 0
+  highway_air_race   Normal: missed rings per AI a race 0.3 (0 to 1), laps 166.0 to 383.0 s, one AI's two laps 47.7 s apart on average (up to 195.6), totals 344.5 to 570.4 s, not finished 0
+  highway_air_race   Hard  : missed rings per AI a race 0.7 (0 to 2), laps 160.1 to 193.2 s, one AI's two laps 6.6 s apart on average (up to 31.0), totals 321.7 to 364.4 s, not finished 0
+  air_tour           Easy  : missed rings per AI a race 4.5 (0 to 7), laps 277.0 to 343.7 s, one AI's two laps 11.2 s apart on average (up to 31.3), totals 570.6 to 687.3 s, not finished 0
+  air_tour           Normal: missed rings per AI a race 3.7 (0 to 9), laps 261.9 to 338.3 s, one AI's two laps 13.4 s apart on average (up to 33.2), totals 530.3 to 656.9 s, not finished 0
+  air_tour           Hard  : missed rings per AI a race 2.7 (0 to 4), laps 252.4 to 310.4 s, one AI's two laps 7.2 s apart on average (up to 23.7), totals 528.5 to 620.5 s, not finished 0
+  every AI and race: 80_A_air_ai.csv
+
+0 of 0 checks passed.

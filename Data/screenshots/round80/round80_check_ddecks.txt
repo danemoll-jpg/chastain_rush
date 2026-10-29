@@ -1,0 +1,43 @@
+Round 80 check, 2026-10-28 20:12, the exe, 1280 x 720, muted.
+
+=== Dan's BUG-001 (session 2026-10-28_17-26-14-935_f93341): Whitlock Avenue, the square race, the train passing, from his place and heading
+  at (1608.5, -8524.6) heading 84: the crossing closed (the train passing), its arms at 35 degrees; picture 80_BUG-001_after.png (the tie stack to the right of the road before the tracks, the loading dock past them)
+PASS  dan: the train passing Whitlock Avenue as in Dan's picture
+
+=== C. The Whitlock Avenue jump: the square race (1 lap, 3 AI, Normal), the human-like driver (Street Classic); a southbound train told to reach Whitlock as it comes
+  jump: finished 1:54.898; resets 5; longest in the air 1.34 s; the train lined up yes; Whitlock from North Marietta Parkway to past the dock 26.5 s (game time); waited at the gates 0.0 s; over the tracks: the crossing open, a train car under the car no stuck at (1599, -8541) s 1039; stuck at (1673, -8528) s 1113; stuck at (1724, -8528) s 1164; stuck at (1732, -8523) s 1173; stuck at (1748, -8522) s 1188;
+FAIL  whitlock: over the tracks off the tie stack (over 1.2 s in the air), a train under it, no reset  -  air 1.34 s, train under False, resets 5
+  wait: NOT finished; resets 0; longest in the air 1.66 s; the train lined up yes; Whitlock from North Marietta Parkway to past the dock 45.2 s (game time); waited at the gates 67.3 s; 
+PASS  whitlock: on the road the train stops you (no free way round)  -  waited 67.3 s
+  the jump against waiting: 26.5 s against 45.2 s through the stretch
+
+=== D1. Every Express Lanes deck both ways, the human-like driver up to 33 m/s (Street Classic, no traffic): air and landings
+  deck at (529, 12), 48 m its own way: through in 4.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (531, 0)), resets 0
+  deck at (529, 12), 48 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (528, 13)), resets 0
+  deck at (758, -1649), 62 m its own way: through in 6.8 s, top 33 m/s, longest in the air 0.18 s (off at (756, -1718)), hardest landing 1.1 m/s in a step (at (757, -1710)), resets 0
+  deck at (758, -1649), 62 m the other way: through in 6.6 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (756, -1702)), resets 0
+  deck at (620, -455), 52 m its own way: through in 5.4 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (613, -420)), resets 0
+  deck at (620, -455), 52 m the other way: through in 5.5 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.1 m/s in a step (at (612, -410)), resets 0
+  deck at (-355, -856), 97 m its own way: through in 7.0 s, top 33 m/s, longest in the air 0.82 s (off at (-356, -854)), hardest landing 1.5 m/s in a step (at (-359, -849)), resets 0  <- LOOK
+  deck at (-355, -856), 97 m the other way: through in 6.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.2 m/s in a step (at (-377, -811)), resets 0
+  deck at (-624, -381), 79 m its own way: through in 6.5 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.0 m/s in a step (at (-655, -334)), resets 0
+  deck at (-624, -381), 79 m the other way: through in 6.8 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.0 m/s in a step (at (-662, -324)), resets 0
+  deck at (-1414, 1617), 115 m its own way: through in 8.1 s, top 33 m/s, longest in the air 0.22 s (off at (-1357, 1535)), hardest landing 1.0 m/s in a step (at (-1362, 1545)), resets 0
+  deck at (-1414, 1617), 115 m the other way: through in 8.8 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.7 m/s in a step (at (-1352, 1525)), resets 0
+  deck at (-54, -2128), 463 m its own way: through in 45.1 s, top 33 m/s, longest in the air 1.94 s (off at (81, -2560)), hardest landing 7.7 m/s in a step (at (81, -2560)), resets 2 stuck at (81, -2560) s 454; stuck at (81, -2562) s 456;  <- LOOK
+  deck at (-54, -2128), 463 m the other way: NOT through in 120.0 s, top 27 m/s, longest in the air 0.00 s (off at (86, -2573)), hardest landing 2.5 m/s in a step (at (82, -2565)), resets 22 stuck at (82, -2565) s 37; stuck at (83, -2565) s 37; stuck at (83, -2565) s 37; stuck at (83, -2565) s 37; stuck at (83, -2565) s 37; stuck at (82, -2565) s 37; stuck at (83, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (83, -2565) s 37; stuck at (82, -2565) s 37; stuck at (83, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37; stuck at (83, -2565) s 37; stuck at (82, -2565) s 37; stuck at (82, -2565) s 37;  <- LOOK
+  deck at (2049, -4662), 1833 m its own way: through in 89.9 s, top 33 m/s, longest in the air 2.68 s (off at (2479, -5173)), hardest landing 12.2 m/s in a step (at (2302, -4973)), resets 2 stuck at (2526, -5217) s 819; stuck at (2591, -5277) s 908;  <- LOOK
+  deck at (2049, -4662), 1833 m the other way: through in 77.6 s, top 34 m/s, longest in the air 2.62 s (off at (2331, -5010)), hardest landing 11.0 m/s in a step (at (2311, -4988)), resets 1 stuck at (2319, -4978) s 1417;  <- LOOK
+  deck at (1481, -4251), 47 m its own way: through in 4.9 s, top 33 m/s, longest in the air 0.00 s (off at (0, 0)), hardest landing 0.3 m/s in a step (at (1493, -4257)), resets 0
+  deck at (1481, -4251), 47 m the other way: through in 5.0 s, top 33 m/s, longest in the air 0.02 s (off at (1443, -4230)), hardest landing 0.2 m/s in a step (at (1444, -4231)), resets 0
+  deck at (1828, -4449), 52 m its own way: through in 7.2 s, top 33 m/s, longest in the air 0.40 s (off at (1769, -4410)), hardest landing 0.9 m/s in a step (at (1867, -4479)), resets 0
+  deck at (1828, -4449), 52 m the other way: through in 7.0 s, top 33 m/s, longest in the air 0.48 s (off at (1763, -4405)), hardest landing 0.4 m/s in a step (at (1744, -4396)), resets 0
+FAIL  ddecks: every Express Lanes deck both ways through, under 0.5 s in the air, no landing over 6 m/s  -  5 not
+
+=== D3. The planes' cockpit view in flight (the camera at the pilot's eyes)
+  plane: the camera 0.00 / 0.77 / -2.86 m (right / up / forward) from the pilot's seat; picture 80_D3_cockpit_plane.png
+FAIL  cockpit plane: the camera at the pilot's head (0.6 to 0.9 m over the seat, ahead of it, beside it under 0.2 m)  -  (0.00, 0.77, -2.86)
+  dart: the camera 0.00 / 0.77 / -1.67 m (right / up / forward) from the pilot's seat; picture 80_D3_cockpit_dart.png
+FAIL  cockpit dart: the camera at the pilot's head (0.6 to 0.9 m over the seat, ahead of it, beside it under 0.2 m)  -  (0.00, 0.77, -1.67)
+
+2 of 6 checks passed.

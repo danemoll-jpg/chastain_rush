@@ -1,0 +1,7 @@
+Round 80 check, 2026-10-28 19:47, the exe, 1280 x 720, muted.
+
+=== B. The square race's deck, BEFORE (Round 79's route, the nearest point anywhere): 5 races x 3 AI on Normal, clean and with Normal traffic; loops (over 300 degrees turned within 60 m) and the time Waddell -> Haynes
+  clean: loops 11 (GOLD race 1 at (1910, -8367); BLUE race 1 at (1910, -8373); BLUE race 3 at (1909, -8369); EMBER race 3 at (1905, -8366); EMBER race 3 at (1901, -8367); GOLD race 4 at (1922, -8365); EMBER race 4 at (1910, -8369); GOLD race 4 at (1904, -8368)); Waddell -> Haynes through the deck 15 times, 18.0 s average, 13.4 to 28.9 s; not finished 0
+  traffic: loops 9 (GOLD race 1 at (1909, -8366); BLUE race 2 at (1910, -8368); EMBER race 2 at (1908, -8365); BLUE race 2 at (1991, -8389); BLUE race 3 at (1910, -8368); EMBER race 3 at (1909, -8368); GOLD race 4 at (1909, -8368); BLUE race 5 at (1909, -8369)); Waddell -> Haynes through the deck 15 times, 15.1 s average, 11.5 to 18.5 s; not finished 0
+
+0 of 0 checks passed.
