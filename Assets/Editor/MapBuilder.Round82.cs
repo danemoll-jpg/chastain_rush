@@ -209,7 +209,20 @@ namespace ChastainRush
                     }
                     return o;
                 }
-                var y0 = Gauss(raw, R82Sigma);
+                // (build 2: the decks' own heights from OSM stood metres off the ground at their ends, and the smoothing made that step a 10 % slope by
+                // Greers Chapel Drive): across each run of deck the profile starts from a straight line between the road's heights at its two ends, or the
+                // ground under it where that stands higher; the crossings lift it where a road passes under
+                var raw2 = (double[])raw.Clone();
+                for (int i = 0; i < N;)
+                {
+                    if (L[i].bridge < 0) { i++; continue; }
+                    int j = i; while (j + 1 < N && L[j + 1].bridge >= 0) j++;
+                    int a0 = Mathf.Max(0, i - 1), a1 = Mathf.Min(N - 1, j + 1);
+                    double ya = L[a0].bridge < 0 ? raw[a0] : terrain.Height(L[a0].p.x, L[a0].p.y), yb = L[a1].bridge < 0 ? raw[a1] : terrain.Height(L[a1].p.x, L[a1].p.y);
+                    for (int k = i; k <= j; k++) { double t = (cum[k] - cum[a0]) / System.Math.Max(cum[a1] - cum[a0], 1e-3); raw2[k] = System.Math.Max(ya + (yb - ya) * t, terrain.Height(L[k].p.x, L[k].p.y)); }
+                    i = j + 1;
+                }
+                var y0 = Gauss(raw2, R82Sigma);
                 // the bounds from the crossings on this line
                 var lbs = new List<(float s, float need, float spread, string what)>(); var ubs = new List<(float s, float cap, float spread, string what)>();
                 foreach (var c in r82Cross.crossings)
