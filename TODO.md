@@ -116,7 +116,7 @@ What the real junction is (Dan's photos, north to south): I-575 comes down from 
 north-west with its Express lanes on its west side. Where they meet (x about 380 to 1000, z about -2900 to -3900 in the game) the I-575 Express lane leaves I-575's
 middle, climbs and crosses OVER I-75 on its own long curved flyover and comes down on I-75's west side to join the I-75 Express lanes; I-575 southbound's general
 lanes cross over I-75 northbound on their own bridge beside it and merge into I-75 southbound; south of the junction I-75 is one wide highway with the joined
-Express lanes (two) on its south-west side behind a barrier. In the game (top-down pictures `local/round81/topdown/merge.png`, `bug9.png`): the flyover and I-575's
+Express lanes (two) on its south-west side behind a barrier. In the game (top-down pictures `Data/screenshots/round81/81_before_topdown_merge.png`, `_bug9.png`, `_express575.png`): the flyover and I-575's
 bridge stand at about the height of the roads under them (OSM's deck heights from bare-earth ground), so where they cross I-75 the decks and roads meet in trenches and
 humps; the ramps up to them are short and stepped (BUG-009 at x 508 z -3173: "this needs to be smoothed. The bridge obvs should be higher"; BUG-010 at x 497
 z -3143: "needs to be smoothed").
