@@ -114,6 +114,42 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 85, BUMPERS AND BARRIERS THAT BOUNCE YOU BACK ON COURSE (Dan, 2026-10-30 09:38, after playing Round 84's HIGH MODE).** Item 0, the one-heavy-job rule and the
+end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
+Dan: "i WANT it so that in high mode that you bounce of barriers and they keep you straight on course as opposed to having you got hung up on the wall. Actually in
+general I want this for bumpers". Round 84's own check saw it: the bot stalled against a HIGH bumper 6 to 9 times a lap and reset.
+A. HIGH MODE BUMPERS. Hitting a gutter bumper at any angle short of head-on turns you back along the course and keeps your speed (a glancing hit loses little; the
+   harder the angle, the more it costs, but you leave the bumper pointed down the course, never stopped, spun or riding along it). No snagging: smooth, continuous
+   colliders without posts, seams or corners the wheels or body catch; no friction against the vehicle's side; the bumper's push away from it, not up (no climbing,
+   no launch). Planes and AI unaffected (AI still pass through).
+B. THE SAME FOR BARRIERS IN GENERAL (Dan: "in general I want this for bumpers"), in every mode: the race closure barriers and course barriers, guard rails, the
+   Express Lanes' walls and bridge parapets, highway median walls, and the course-edge rails on the trails. A glancing hit slides you along and straightens you
+   to the barrier's line instead of hanging you up; a head-on hit still stops you (normal mode keeps its crashes). Breakable things (fences, signs, gates, mailboxes)
+   stay breakable, and solid scenery (trees, houses) is not part of this. Say which colliders were changed.
+Check: the human-like driver pushed into the edges for a lap of the Kennesaw trails, the Noonday Creek Extension and the Chastain Glen loop in HIGH MODE (stalls
+against a bumper before / after: aim 0), and into the walls along the I-75 Express Lanes and a course's closure barriers in normal mode at 10, 20 and 30 degrees
+(speed kept and heading after each hit, before / after); a recorded clip or picture series of one glancing hit each.
+Build: quick builds only if no world rebuild is needed. PUBLISH through the launcher.
+For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode.
+
+## QUEUED rounds
+**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
+(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
+437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
+(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 84
+**Played by Dan 2026-10-30 (HIGH MODE); his note is Round 85.**
 **Round 84, HIGH MODE FROM WOODSTOCK RUSH; the Express gate in the middle of the highway (Dan, 2026-10-30 03:21, after driving 0.83.0 a bit on the Steam Deck).**
 Rounds 82 and 83 were driven briefly; Dan reviews them fully later. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's
 remaining road failures wait (QUEUED): Dan: "On this round, before continuing fixing roads can we add high mode from Woodstock rush".
@@ -156,23 +192,7 @@ Published: `game-8400` (0.84.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Decisions: everything already unlocked (nothing is locked here); the bumper height and the 50 % speed give-back are Racer's first guesses; split screen's halves show their own HIGH tag.
 For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase, a friend in split screen); do the bumpers feel right on the mountain and trails; the Express gates at I-575 (715, -956) and (712, -2027).
 
-## QUEUED rounds
-**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
-(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
-437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
-(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 83
+## Previous delivery 2: Round 83
 **Driven briefly by Dan on the Steam Deck 2026-10-30 (one note, Round 84 B); full review of 82 and 83 later.**
 **Round 83, ROUND 82's KNOWN-BROKEN ITEMS (Dan, 2026-10-29 17:05: "lets go ahead and have it take care of these. I will review everythng a little later").** Round 82 is
 not yet driven by Dan (he reviews 82 and 83 together). Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round
@@ -207,7 +227,7 @@ E DONE (on Dan's OK, 2026-10-30): the 0.81 release folders deleted, 10.0 GB free
 Published: `game-8300` (0.83.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 00:45 (build 3 + the walls' quick builds). Disk (project folders) 42.6 -> 42.0 GB; Builds 9.3 GB after E.
 For Dan to check: the I-75 Express Lanes southbound at the I-575 merge and at the Frey Road deck; Skip Spann; Frey Road; the ramp by the Canton Road Connector; Greers Chapel's median; the places listed under D.
 
-## Previous delivery 2: Round 82
+## Previous delivery 3: Round 82
 **Not yet driven by Dan: he asked for its known-broken items to be done first (Round 83) and reviews both together.**
 **Round 82, THE EXPRESS LANES DONE PROPERLY (bridges over roads, no dips, no walls across them), roads under highways, the rail bridge's end, the Glen fence
 (Dan, 2026-10-29 09:40; reports BUG-001 to BUG-008 of session `2026-10-29_09-12-54-968_3aae2d` (BUG-004 repeats BUG-003), read by Claude, after the Round 81 build).**
@@ -271,103 +291,6 @@ E DONE. Fence 713/1987 breakable except in a reverse race (`R81WestOf6`). From D
 New rule copied into CLAUDE.md (one heavy job at a time, Below Normal, 3 Build Maps).
 Published: `game-8200` (0.82.0, Latest) on `danemoll-jpg/chastain-rush-releases`, from build 5; the installed launcher picks it up. Disk 33.1 -> 32.8 GB (Builds 17.9 GB: the 0.81 release folders are still there).
 For Dan to check: Greers Chapel (BUG-005), the Big Shanty ramp, the rail at BUG-008, the Glen fence, I-575's Express Lanes. Known broken: the I-75 Express Lanes at the I-575 junction merge, Skip Spann Connector, Frey Road, the 2 short crossings.
-
-## Previous delivery 3: Round 81
-**Reviewed: Dan drove it 2026-10-29 09:12 (free roam and the Glen loop); his notes are Round 82.**
-**Round 81, THE I-75 / I-575 JUNCTION AND ITS EXPRESS LANES AS THE REAL ONE, THE GATES ON THE RAMPS, and Dan's other reports (Dan, 2026-10-29 02:39; reports
-BUG-001 to BUG-010 of session `2026-10-29_01-57-15-107_610675`, read by Claude, after the Round 80 build; Dan's three aerial photos of the junction (Google Maps,
-reference only: never committed, never traced) in this chat: "where 75/575 and their express lanes merge because it is a big mess in the game").** Round 80 is
-reviewed. Item 0 and the end-of-round clean-up apply. ONE full Build Map at the end. Tuning limit applies. Short results.
-What the real junction is (Dan's photos, north to south): I-575 comes down from the north with its one reversible Express lane in its middle; I-75 comes from the
-north-west with its Express lanes on its west side. Where they meet (x about 380 to 1000, z about -2900 to -3900 in the game) the I-575 Express lane leaves I-575's
-middle, climbs and crosses OVER I-75 on its own long curved flyover and comes down on I-75's west side to join the I-75 Express lanes; I-575 southbound's general
-lanes cross over I-75 northbound on their own bridge beside it and merge into I-75 southbound; south of the junction I-75 is one wide highway with the joined
-Express lanes (two) on its south-west side behind a barrier. In the game (top-down pictures `Data/screenshots/round81/81_before_topdown_merge.png`, `_bug9.png`, `_express575.png`): the flyover and I-575's
-bridge stand at about the height of the roads under them (OSM's deck heights from bare-earth ground), so where they cross I-75 the decks and roads meet in trenches and
-humps; the ramps up to them are short and stepped (BUG-009 at x 508 z -3173: "this needs to be smoothed. The bridge obvs should be higher"; BUG-010 at x 497
-z -3143: "needs to be smoothed").
-A. THE JUNCTION AS THE PHOTOS SHOW IT. The I-575 Express flyover (OSM 624557373, deck 451950526, 451950527) and I-575 southbound's bridges (163463460, 536793083)
-   lifted to stand clear over every road they cross (at least 6 m under the deck, as Round 78's rail bridges), each a long smooth climb and descent (one vertical
-   curve each way that a car at 35 m/s stays down on), their ends met by the roads they continue without a step; the ground under and beside them cut or built up so
-   nothing pokes through and nothing is buried; the junction drivable every way at highway speed (the general lanes and the Express lanes, both directions of the
-   Express lanes). World changes here (the box above) and at H's Express Lanes crossings; other similar spots listed for Dan. Check: each road through the junction both ways by the human-like
-   driver (air, landings, resets), pictures from Dan's spots BUG-009 / BUG-010 before and after, a top-down picture against Dan's photos.
-B. THE EXPRESS LANES' GATES ON THE RAMPS FROM THE GENERAL LANES, NEVER ON THE EXPRESS LANES. BUG-005 (x 741 z -1138): "The express lane is two ways. But the gates
-   are on exits from the highway so the road going to the express lane is blocked and never the express lane itself otherwise cars wouldn't be able to travel it";
-   BUG-007 (x 644 z -2446): "another example. shouldn't be here"; BUG-008 (x 722 z -1988): "express lane gates should be here instead" (where the ramp leaves
-   I-575's general lanes). Each gate at the general road's end of its ramp (where it leaves or joins the general lanes or the local road), none where the ramp meets
-   the Express lanes. Check: pictures from Dan's three spots; traffic through each open ramp; a closed one blocks entry from the general lanes only.
-C. BUG-006 (x 745 z -1721, I-575 just south of Chastain Road): "whats with this?" A line of cars standing nose to tail on the road beside I-575 (the Express lane: a
-   traffic queue that never moves) and lumps of ground in the median. Find why the cars stand (a gate, a closed edge, a dead end at the reversal) and fix it; the median
-   ground smooth. Check: the spot at 5 PM and 8 AM with Heavy traffic, cars moving; picture.
-D. BUG-001 (the Marietta Square race): "Got hit by the train on the marietta square race and it sent me all the way to the opening point of the game" (his report
-   was taken at Chastain Glen, x 2947 z 795, where it sent him). A train's hit puts the player back on the race's line short of the crossing, facing the race's way,
-   never at the game's start. Check: hit by the train at Mill Street and Whitlock in a race (and in Free Roam: put back on the road there).
-E. BUG-002 (x 1632 z -8518, Whitlock Avenue's crossing, lap 3): "what is this?" (the picture: the crossing's gate arm standing straight up in the road beside the
-   car, a black box and big grey triangles hanging over the road: the crossing's post, lamp bar and crossbuck broken into shapes that do not look like anything).
-   Broken crossing gear falls as pieces that look like what they were (as the fences' and signs' do), or the post and gear are not breakable; the arm never stands in
-   the lane. Check: drive through the crossing's post; pictures.
-F. BUG-003 (x 2854 z 1132, Chastain Glen Lane, heading 249, the forward lap's shortcut whose line the minimap draws from here into the yards): "the approach to this
-   shortcut needs to be fixed. it is nearly impossible to hit it. For one thing if you try to line it up from this angle something sends you flying and you cant line it
-   up because of this. Then after you cut through the yard not all the fences are breakable which leads to you getting stuck". Find what throws a car lining up from
-   his place (a curb, a lip, a drive's edge) and smooth it; every fence across the shortcut's line breakable (those that stop free ways stay as the shortcut rule
-   wants, but not across its own line). Check: from Dan's place and heading, the human-like driver lines it up and takes it, no launch, no stop.
-G. BUG-004 (x 1198 z 1670, beside Bells Ferry Road Northwest, heading 349): "buried house" (the picture: a one-storey house sunk to its window sills in the slope).
-   Settle it as Round 52's (floor at its ground, the lot cut). Check: picture from Dan's place.
-H. THE EXPRESS LANES AS FLYOVERS, WALLED OFF (queued 2026-10-29 01:36, folded in here as it said). Round 80 D1's options for EL13: Dan: "the express
-lanes are usually bridges when they cross 75/575. So they should be that way". Where the Express Lanes cross I-75 / I-575, their ramps or the Canton Road
-Connector, the lanes go OVER as a bridge (a flyover: a smooth, gradual climb and descent at highway grades, piers, the crossing road left underneath at
-its own level), not humps. EL13 first (the connector and the two ramps), then every other Express Lanes crossing the same way, including the 463 m deck
-at I-75 / Barrett (1.9 s air one way, a wall at its south end the other) and the three short decks' hops (`round80_check_ddecks.txt`). Check: every
-Express Lanes deck driven both ways at top speed: no air over 0.3 s, no step in the road surface, traffic through it; pictures of each flyover from the road below.
-Dan, 01:38: "they generally have walls as they are seperated from the main roads": the Express Lanes are walled off from the main lanes along their length (concrete
-barrier walls both sides, on the flyovers as bridge parapets), so you get in and out only at their gated ramps (a smashed gate still lets you in, Round 80 E).
-   A covers the I-75 / I-575 junction's flyovers; H is every other Express Lanes crossing and the walls along their whole length, done to the same rules.
-I. THE STEAM DECK (Dan, 2026-10-29 03:34: "I also want the steam deck stuff done in this round"; was the installer round's C). Measure the game at the Deck's 1280x800 with Dan's PC held to about the Deck's power (frame rate at Marietta Square in a race,
-   I-75 with Round 80's traffic, Town Center, the Kennesaw summit). It opens full screen on the Deck. If any spot is under about 40 fps, a
-   "Steam Deck" graphics setting (lower draw distance, traffic and people), on its own when the screen is 1280x800. Dan confirms on the Deck itself.
-   Also bring over whatever Woodstock Rush does for the Deck (Racer is read only: search its CLAUDE.md / CODEX_RULES.md / archive for "Steam Deck" and
-   full screen). Measure after this round's traffic and world changes. Report each spot's frame rate before / after, Deck setting off / on.
-   J and K: the installer round, moved in (Dan, 2026-10-29 03:36: "yes include it"; queued 00:43: "I would also need an installation file like I have for
-   Woodstock Rush. Which I would want to use the same update system so I only have to install it once"). THIS ROUND SAYS PUBLISH. Do J and K last, from
-   the round's final build, so the first release Dan installs carries everything above; the starter also installs on the Steam Deck (I).
-J. THE LAUNCHER AND UPDATER. Bring over Woodstock Rush's launcher and update system (`Racer/Launcher/`, `Tools/Prepare-LauncherRelease.py`,
-   `Tools/Publish-LauncherRelease.py`, `Tools/Package-LauncherStarter.py`; read only, as `Docs/FROM-WOODSTOCK-RUSH.md` items 1 to 6 say): Chastain Rush's own
-   release repo, its own signing identity made once (never reuse, print or expose Woodstock Rush's key), the launcher titled CHASTAIN RUSH with its
-   cover art and icon. Same behavior: on opening it checks, installs a newer game and soundtrack by itself, then starts the game; B / Esc plays now;
-   rollback to the previous version; saves and personal music kept.
-K. THE INSTALL FILE. A starter download like Woodstock Rush's (launcher + game + soundtrack, with the icon and poster for a Steam shortcut). Dan
-   installs it once; after that every published round reaches him through the launcher. Publish the first release and prove it end to end: a
-   clean install from the starter, then a second small release picked up and installed by that launcher.
-Check: item 0 for every item.
-For Dan to check: the junction driven every way (general lanes and Express lanes); the gates on the ramps; I-575 by Chastain Road; a train hit in the square race;
-the Whitlock crossing broken; the Chastain Glen shortcut from his spot; the house on Bells Ferry Road; every Express Lanes flyover and its walls;
-the game on the Steam Deck (full screen, frame rate in the square, on I-75, at Town Center, at the summit).
-Install from the starter on the PC and the Deck; the launcher updating itself to the second release.
-
-**Status (Claude, 2026-10-29): built (full Build Map + exe 2026-10-29 06:13), checked in the exe, not yet driven by Dan; published (K).** Evidence `Data/screenshots/round81/`.
-Two full Build Maps: the 2nd for A / H's second try after the first's check (decks stepped, walls climbed). Tuning limit reached on A / H.
-A PARTLY. `MapBuilder.Round81.cs` R81Flyovers (after SmoothBridgeEnds): each junction flyover and Express Lanes deck laid with 250 m of road either side as one curve, 6 m under the slab
-over every road crossed (report `round81_flyovers.txt`). The junction (`round81_check_final.txt` A): the I-575 Express flyover 0.08 / 0.32 s in the air (was a step), I-575 southbound
-and northbound and I-75 both ways no air; BUG-010 after: a smooth climb (`81_BUG-010_after`); BUG-009's spot is now under the raised flyover (the drive over it: `81_A_I575Expressflyoverso`).
-NOT met: the I-75 Express lanes through the junction 1.3 s in the air and a wall where I-575's connector merges (507, -3350).
-B DONE. Gates at the general road's end of each ramp, one per branch (6, `round80_express_decks.txt`); the whole ramp shut with its gate. Dan's BUG-008 spot: gate 4 35 m on; BUG-005 / 007: none.
-C DONE. The queue: in a reversal every ramp was shut, exits too (a dead end). Exits now stay open; drivers re-plan when the lanes turn. BUG-006 at 5 PM / 8 AM / 12:30 Heavy: 0 cars standing
-(`round81_check_c_lanes.txt`); the lanes at four hours as scheduled. The median at BUG-006 is still lumpy (the lane's approach raised up to 4.3 m by A's pass): `81_BUG-006_after`.
-D DONE. Train hit at Whitlock / Mill Street in the square race: put back 19 / 16 m short of the crossing on the line; Free Roam 110 m on along the road (`CarRecovery`).
-E DONE. The gear breaks into post, crossbuck, lamp bar, box; the arm lies on the verge (`81_E_after_*`).
-F PARTLY. The fences west of the landing (1572/2065, 2065/1452, 1452/1052, the side gate) breakable in forward races. "Sends you flying" NOT reproduced (6 run-ins from Dan's place, traced:
-no launch before the kicker); the nearest solid thing on a wide line-up is race barrier B5 21 m from his place.
-G DONE. House 1559 settled (Round 52's); picture `81_BUG-004_after`.
-H PARTLY. Every Express deck both ways (`D1`): I-75 / Barrett 463 m now 0 s air both ways (was 1.9 s / a wall); EL13 a flyover over the connector and ramps (up to 15.7 m higher) but still
-2.1 s air and stuck; the Big Shanty deck 2.6 s against its way; the (-1414, 1617) deck a terrain face at its end against its way. Walls along the lanes, 24.8 km, 1.8 m out, open at ramps.
-I DONE (estimate). Settings > Display > Steam Deck (Auto / On / Off; Auto at 1280 x 800 or the Deck's GPU): view, traffic, people 60 %. PC held to 4 cores at 1280 x 800, Normal traffic,
-off -> on: square 104 -> 119 fps, I-75 167 -> 175, Town Center 171 -> 192, summit 77 -> 100. Not measured on a Deck (the minimized window does not load the GPU).
-J DONE locally. `Launcher/` (Woodstock Rush's, CHASTAIN RUSH, its own key `Builds/PublisherPrivate/`), `Tools/Build-Launcher.ps1`, `LauncherBridge`, the release tools.
-K DONE, PUBLISHED to `danemoll-jpg/chastain-rush-releases` (Dan made the repo): `build-8100` (0.81.0 + soundtrack, Latest then), `starter-8100` (`ChastainRush-0.81.0-Full.zip`,
-1.37 GB, no soundtrack: game + soundtrack pass 2 GiB; not Latest), `game-8101` (0.81.1, Latest). Proven from GitHub (`launcher_published/`): the downloaded ZIP (SHA-256 matched)
-installed 0.81.0, its first start fetched the soundtrack and started the game (handshake PASS); after 0.81.1 was published the same launcher updated itself (saves backed up, 0.81.0 kept).
-For Dan to check: install from starter-8100 on the PC and the Deck (README inside); the junction and the Express Lanes (EL13, Big Shanty, the merge wall); the Glen shortcut; BUG-006's median; the Deck.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
