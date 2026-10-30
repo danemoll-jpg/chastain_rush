@@ -134,7 +134,7 @@ Check: item 0 for every item.
 For Dan to check (with Round 82's list): the I-75 Express Lanes through the I-575 junction both ways; Skip Spann Connector; Frey Road; the crossing ramp over I-75 by
 Canton Road; Greers Chapel's median.
 
-**Status (Claude, 2026-10-30): built (3 full Build Maps, the last 2026-10-29 21:43; then 3 quick builds of the Edges step for the walls: exe 2026-10-30 00:04), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round83/`.
+**Status (Claude, 2026-10-30): built (3 full Build Maps, the last 2026-10-29 21:43; then 3 quick builds of the Edges step for the walls; exe 2026-10-30 00:45), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round83/`.
 Found on the way: the code after build 5 had pulled Chastain Road's bridge down onto I-575 (a "join" of a deck crossing a road), dug 4 m into the Express Lanes beside Frey Road, refilled Frey Road's
 medians to deck height and cut a 1 m pothole at many deck ends: all fixed. New tool: a planning-only dry run (`ChastainRush.MapBuilder.DryFromCommandLine`, `Tools/race/dry_ride.py`; no build).
 A PARTLY. Flyovers laid before the Express Lanes; a flat 3.8 m shoulder to the Express walls; no bank beside a joined deck's span; walls opened for the ramp merging at the join. I-575 flyover into the I-75 lanes: through
@@ -142,10 +142,10 @@ both ways, never stuck (0.76 s / 0.48 s in the air). I-75 Express end to end: no
 B DONE / PARTLY. Frey Road clean both ways. Skip Spann: its bridge one climb (no crests between the roads it crosses, the grade limit 9 %); 3 of 4 end-to-end runs clean, one 0.38 s off its west deck end.
 C DONE. The ramp's end held to the Canton Road Connector's deck it merges onto: 10.2 / 10.8 m clear, 6 % at most; picture `83_C_ramp.png`.
 D. Greers Chapel's median smooth (`83_D_greers.png`). I-575's Express Lanes end to end both ways: no air, no stop at the seam deck, no wall hits. Chastain Road's ramp junctions east of I-75 blurred.
-All 420 crossing runs on the final exe: RESULT_B.
+All crossing runs on the final exe (416, both ways, `final_b_crossings.txt`; the runs on an "over" line now start on its bridge, not the ground under it): 352 clean, 64 not, at: Frey Road (the Express deck's start, I-75's deck), I-75's decks at Big Shanty Road (-584, -410) and Bells Ferry Road (1520, -4228) (1.1 to 2.6 s), Phillip Landrum (770, -1680) (2 s), the Canton Road Connector's interchange (2306..2401, -5011..-4902) (up to 2.2 s; ramp 437897716's forward runs stop), Allgood Road (3458, -6205) (stops), Greers Chapel (0.3 to 0.4 s; the Express under it 1.4 s), Chastain Road east of I-75 (0.3 to 0.5 s), the I-575 flyover driven backwards. Not fixed: the three full Build Maps were used.
 E NOT DONE: deleting the 0.81 release folders was refused by this session's permission check; Dan's OK needed.
-Published: PUBLISH_LINE. Disk: DISK_LINE.
-For Dan to check: the I-75 Express Lanes southbound at the I-575 merge and at the Frey Road deck; Skip Spann's west deck end; the rest of Round 82's list.
+Published: `game-8300` (0.83.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 00:45 (build 3 + the walls' quick builds). Disk (project folders) 42.6 -> 42.0 GB; Builds 19.3 GB with the 0.81 folders.
+For Dan to check: the I-75 Express Lanes southbound at the I-575 merge and at the Frey Road deck; Skip Spann; Frey Road; the ramp by the Canton Road Connector; Greers Chapel's median; the places listed under D.
 
 ## QUEUED rounds
 Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool

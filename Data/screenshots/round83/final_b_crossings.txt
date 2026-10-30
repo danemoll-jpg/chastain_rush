@@ -1,0 +1,616 @@
+Round 20 check, 2026-10-30 00:45, the exe, 1280 x 720, muted.
+
+=== The lines of local/round83/r83_lines_b.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  Larry McDonald Memorial Highway (163463866) over at (-1380, 1586), 6.0 -> 8.9 m clear, 297 m: through in 19.5 s, top 30 m/s, longest in the air 0.48 s, hardest landing 2.3 m/s (at (-1415, 1637)), resets 1, wall hits 0 stuck at (-1410, 1627) s 200;  <- LOOK
+    0.48 s in the air, from (-1354, 1552) to (-1362, 1565)
+    stopped at (-1410.3, 358.0, 1627.2): stay:BridgeStructure:n(0.57,-0.01,-0.82):p(-1410.6,357.70,1629.3):J341.3 
+  Larry McDonald Memorial Highway (163463866) over at (-1380, 1586), 6.0 -> 8.9 m clear (the other way), 297 m: through in 34.1 s, top 30 m/s, longest in the air 1.20 s, hardest landing 5.0 m/s (at (-1357, 1550)), resets 3, wall hits 0 stuck at (-1358, 1545) s 194; stuck at (-1352, 1553) s 191; stuck at (-1355, 1551) s 190;  <- LOOK
+    1.20 s in the air, from (-1357, 1550) to (-1358, 1545)
+    stopped at (-1357.9, 361.0, 1544.5): stay:BridgeStructure:n(-0.64,-0.19,0.75):p(-1356.9,361.28,1543.0):J301.7 
+    0.40 s in the air, from (-1354, 1552) to (-1353, 1553)
+    stopped at (-1352.2, 360.4, 1552.9): stay:Terrain_10_17:n(-0.08,-0.13,0.99):p(-1352.3,360.38,1551.0):J314.6 
+    0.54 s in the air, from (-1355, 1552) to (-1355, 1551)
+    stopped at (-1355.2, 360.4, 1551.4): stay:Terrain_10_17:n(-0.68,0.17,0.71):p(-1354.5,360.43,1549.4):J311.3 
+    0.58 s in the air, from (-1355, 1552) to (-1355, 1551)
+  Frey Road Northwest (631653335) under at (-1380, 1586), 6.0 -> 8.9 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1380, 1603)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1380, 1586), 6.0 -> 8.9 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1382, 1639)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138519) over at (-1379, 1569), 4.3 -> 10.7 m clear, 297 m: through in 18.0 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.9 m/s (at (-1361, 1544)), resets 1, wall hits 216 stuck at (-1347, 1521) s 208;  <- LOOK
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+    wall hit at (-1347, 1522)
+  Northwest Corridor Express Lanes (623138519) over at (-1379, 1569), 4.3 -> 10.7 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 3.4 m/s (at (-1418, 1627)), resets 0, wall hits 4  <- LOOK
+    wall hit at (-1418, 1627)
+    wall hit at (-1419, 1628)
+    wall hit at (-1419, 1628)
+    wall hit at (-1419, 1629)
+  Frey Road Northwest (631653335) under at (-1379, 1569), 4.3 -> 10.7 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1380, 1603)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1379, 1569), 4.3 -> 10.7 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1379, 1578)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463873) over at (-1379, 1532), 2.6 -> 9.3 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1347, 1485)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463873) over at (-1379, 1532), 2.6 -> 9.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-1354, 1495)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1379, 1532), 2.6 -> 9.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1379, 1544)), resets 0, wall hits 0
+  Frey Road Northwest (631653335) under at (-1379, 1532), 2.6 -> 9.3 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1378, 1638)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1109, 774), 3.2 -> 7.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.12 s, hardest landing 0.5 m/s (at (-1160, 767)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1109, 774), 3.2 -> 7.6 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.10 s, hardest landing 1.4 m/s (at (-1149, 768)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 774), 3.2 -> 7.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1122, 849)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 774), 3.2 -> 7.6 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1125, 861)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1109, 762), 1.7 -> 7.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1147, 756)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1109, 762), 1.7 -> 7.4 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1157, 756)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 762), 1.7 -> 7.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1108, 617)), resets 0, wall hits 0
+  motorway_link (9118504) under at (-1109, 762), 1.7 -> 7.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1124, 861)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1087, 777), 2.1 -> 7.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.12 s, hardest landing 0.5 m/s (at (-1160, 767)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1087, 777), 2.1 -> 7.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.10 s, hardest landing 1.4 m/s (at (-1149, 767)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1087, 777), 2.1 -> 7.6 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1091, 793)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1087, 777), 2.1 -> 7.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1089, 783)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1084, 766), 0.8 -> 7.5 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1147, 756)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1084, 766), 0.8 -> 7.5 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1030, 774)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1084, 766), 0.8 -> 7.5 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1081, 750)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-1084, 766), 0.8 -> 7.5 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1093, 801)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1070, 780), 1.3 -> 8.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.12 s, hardest landing 0.5 m/s (at (-1160, 767)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1070, 780), 1.3 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.10 s, hardest landing 1.7 m/s (at (-1149, 767)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1070, 780), 1.3 -> 8.3 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1075, 791)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1070, 780), 1.3 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1076, 803)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1067, 769), 0.0 -> 8.2 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (-1055, 772)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1067, 769), 0.0 -> 8.2 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1031, 774)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1067, 769), 0.0 -> 8.2 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1074, 796)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-1067, 769), 0.0 -> 8.2 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1064, 759)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1057, 782), 0.3 -> 7.5 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.5 m/s (at (-1160, 767)), resets 0, wall hits 0
+  Skip Spann Connector (564146483) over at (-1057, 782), 0.3 -> 7.5 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.14 s, hardest landing 2.0 m/s (at (-1150, 768)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-1057, 782), 0.3 -> 7.5 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1076, 857)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-1057, 782), 0.3 -> 7.5 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1067, 824)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1054, 771), -0.7 -> 7.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.5 m/s (at (-1056, 772)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1054, 771), -0.7 -> 7.0 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1030, 774)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-1054, 771), -0.7 -> 7.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1076, 857)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-1054, 771), -0.7 -> 7.0 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1075, 852)), resets 0, wall hits 0
+  Skip Spann Connector (564146480) over at (-1047, 783), 0.0 -> 8.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.5 m/s (at (-1160, 766)), resets 0, wall hits 0
+  Skip Spann Connector (564146480) over at (-1047, 783), 0.0 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.28 s, hardest landing 1.8 m/s (at (-1150, 769)), resets 0, wall hits 0
+  motorway_link (437902738) under at (-1047, 783), 0.0 -> 8.3 m clear, 222 m: through in 8.9 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1074, 848)), resets 0, wall hits 0
+  motorway_link (437902738) under at (-1047, 783), 0.0 -> 8.3 m clear (the other way), 222 m: through in 8.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1050, 795)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1043, 772), -0.7 -> 7.8 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1148, 756)), resets 0, wall hits 0
+  Skip Spann Connector (564146481) over at (-1043, 772), -0.7 -> 7.8 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1031, 774)), resets 0, wall hits 0
+  motorway_link (437902738) under at (-1043, 772), -0.7 -> 7.8 m clear, 234 m: through in 9.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1073, 849)), resets 0, wall hits 0
+  motorway_link (437902738) under at (-1043, 772), -0.7 -> 7.8 m clear (the other way), 234 m: through in 9.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1049, 794)), resets 0, wall hits 0
+  Chastain Road (163463407) over at (-995, 423), 9.4 -> 10.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1079, 403)), resets 0, wall hits 0
+  Chastain Road (163463407) over at (-995, 423), 9.4 -> 10.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-1100, 395)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-995, 423), 9.4 -> 10.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-1007, 465)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437901768) under at (-995, 423), 9.4 -> 10.0 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-959, 283)), resets 0, wall hits 0
+  Chastain Road (163463411) over at (-982, 448), 8.7 -> 9.3 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.22 s, hardest landing 0.3 m/s (at (-856, 482)), resets 0, wall hits 0
+  Chastain Road (163463411) over at (-982, 448), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.3 m/s (at (-849, 484)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-982, 448), 8.7 -> 9.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-985, 460)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-982, 448), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-986, 468)), resets 0, wall hits 0
+  Chastain Road (437905319) over at (-977, 428), 9.0 -> 9.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-845, 463)), resets 0, wall hits 0
+  Chastain Road (437905319) over at (-977, 428), 9.0 -> 9.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-853, 460)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-977, 428), 9.0 -> 9.6 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-986, 461)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (623138520) under at (-977, 428), 9.0 -> 9.6 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-986, 468)), resets 0, wall hits 0
+  Chastain Road (163463411) over at (-971, 450), 8.1 -> 8.8 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.4 m/s (at (-861, 480)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (-850, 483) to (-857, 481)
+  Chastain Road (163463411) over at (-971, 450), 8.1 -> 8.8 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.46 s, hardest landing 0.3 m/s (at (-849, 483)), resets 0, wall hits 0  <- LOOK
+    0.46 s in the air, from (-843, 485) to (-829, 488)
+  Larry McDonald Memorial Highway (175898801) under at (-971, 450), 8.1 -> 8.8 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-957, 396)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-971, 450), 8.1 -> 8.8 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-956, 391)), resets 0, wall hits 0
+  Chastain Road (437905319) over at (-966, 431), 8.4 -> 9.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.28 s, hardest landing 0.3 m/s (at (-844, 461)), resets 0, wall hits 0
+  Chastain Road (437905319) over at (-966, 431), 8.4 -> 9.1 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.08 s, hardest landing 0.2 m/s (at (-841, 462)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-966, 431), 8.4 -> 9.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-958, 396)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898801) under at (-966, 431), 8.4 -> 9.1 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-952, 374)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789464) over at (-605, -410), 10.8 -> 11.9 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-623, -382)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789464) over at (-605, -410), 10.8 -> 11.9 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-580, -444)), resets 0, wall hits 0
+  Big Shanty Road Northwest (1127469048) under at (-605, -410), 10.8 -> 11.9 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-714, -453)), resets 0, wall hits 0
+  Big Shanty Road Northwest (1127469048) under at (-605, -410), 10.8 -> 11.9 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-700, -446)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789464) over at (-597, -422), 10.4 -> 11.5 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-623, -382)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789464) over at (-597, -422), 10.4 -> 11.5 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-580, -444)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540230) under at (-597, -422), 10.4 -> 11.5 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-598, -422)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540230) under at (-597, -422), 10.4 -> 11.5 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-618, -431)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898800) over at (-588, -404), 8.1 -> 8.8 m clear, 297 m: through in 59.8 s, top 30 m/s, longest in the air 1.28 s, hardest landing 5.6 m/s (at (-597, -389)), resets 5, wall hits 0 stuck at (-593, -382) s 170; stuck at (-597, -389) s 167; stuck at (-600, -391) s 167; stuck at (-606, -391) s 171; stuck at (-597, -390) s 167;  <- LOOK
+    1.28 s in the air, from (-597, -389) to (-594, -383)
+    stopped at (-593.6, 313.6, -382.9): stay:BridgeStructure:n(0.21,0.98,0.07):p(-594.6,313.52,-382.7):J169.2 stay:Terrain_12_14:n(0.21,0.98,0.07):p(-593.2,313.16,-382.1):J29.7 
+    stopped at (-596.9, 313.3, -389.0): stay:Terrain_12_14:n(0.68,0.20,-0.71):p(-598.9,313.42,-388.2):J336.1 
+    stopped at (-600.2, 313.3, -390.8): stay:Terrain_12_14:n(0.20,-0.07,-0.98):p(-601.0,313.14,-389.1):J339.1 
+    0.64 s in the air, from (-598, -390) to (-600, -392)
+    stopped at (-606.4, 312.9, -390.7): stay:Terrain_12_14:n(-0.18,0.75,-0.64):p(-605.5,312.62,-390.8):J162.3 
+    0.32 s in the air, from (-606, -391) to (-606, -391)
+    stopped at (-606.5, 312.6, -391.0): stay:Terrain_12_14:n(-0.30,0.62,-0.72):p(-605.5,312.64,-390.8):J31.3 
+  Larry McDonald Memorial Highway (175898800) over at (-588, -404), 8.1 -> 8.8 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 1.78 s, hardest landing 11.8 m/s (at (-570, -432)), resets 0, wall hits 0  <- LOOK
+    0.44 s in the air, from (-597, -390) to (-590, -401)
+    1.78 s in the air, from (-568, -435) to (-543, -473)
+  Big Shanty Road Northwest (1127469048) under at (-588, -404), 8.1 -> 8.8 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-714, -452)), resets 0, wall hits 0
+  Big Shanty Road Northwest (1127469048) under at (-588, -404), 8.1 -> 8.8 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-645, -425)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (175898800) over at (-580, -415), 7.3 -> 8.2 m clear, 297 m: through in 15.3 s, top 30 m/s, longest in the air 1.30 s, hardest landing 5.6 m/s (at (-597, -389)), resets 0, wall hits 0  <- LOOK
+    1.30 s in the air, from (-597, -389) to (-594, -383)
+  Larry McDonald Memorial Highway (175898800) over at (-580, -415), 7.3 -> 8.2 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 1.76 s, hardest landing 11.7 m/s (at (-570, -432)), resets 0, wall hits 0  <- LOOK
+    0.44 s in the air, from (-597, -390) to (-590, -400)
+    1.76 s in the air, from (-568, -435) to (-544, -473)
+  Big Shanty Road Northwest (392540230) under at (-580, -415), 7.3 -> 8.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-451, -367)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540230) under at (-580, -415), 7.3 -> 8.2 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-566, -411)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (-49, -2152), 14.5 -> 15.9 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-54, -2130)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (-49, -2152), 14.5 -> 15.9 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-53, -2125)), resets 0, wall hits 0
+  Barrett Parkway (437900760) under at (-49, -2152), 14.5 -> 15.9 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-155, -2230)), resets 0, wall hits 0
+  Barrett Parkway (437900760) under at (-49, -2152), 14.5 -> 15.9 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (47, -2086)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (-43, -2177), 15.0 -> 16.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-54, -2130)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (-43, -2177), 15.0 -> 16.7 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-57, -2126)), resets 0, wall hits 0
+  Barrett Parkway (977991560) under at (-43, -2177), 15.0 -> 16.7 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (77, -2093)), resets 0, wall hits 0
+  Barrett Parkway (977991560) under at (-43, -2177), 15.0 -> 16.7 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (-13, -2160)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463875) over at (-36, -2143), 8.5 -> 9.2 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.36 s, hardest landing 1.1 m/s (at (-29, -2168)), resets 0, wall hits 0  <- LOOK
+    0.36 s in the air, from (-26, -2181) to (-28, -2171)
+  Larry McDonald Memorial Highway (163463875) over at (-36, -2143), 8.5 -> 9.2 m clear (the other way), 297 m: through in 37.0 s, top 30 m/s, longest in the air 1.54 s, hardest landing 5.6 m/s (at (-46, -2188)), resets 3, wall hits 0 stuck at (-57, -2211) s 208; stuck at (-60, -2198) s 196; stuck at (-57, -2211) s 208;  <- LOOK
+    0.34 s in the air, from (-28, -2182) to (-31, -2183)
+    1.54 s in the air, from (-33, -2184) to (-45, -2188)
+    1.02 s in the air, from (-62, -2207) to (-63, -2215)
+    stopped at (-57.1, 332.7, -2211.2): stay:Terrain_12_11:n(-0.85,0.20,-0.49):p(-55.7,332.03,-2210.1):J418.6 
+    stopped at (-59.7, 326.7, -2197.7): stay:trunk:n(-0.58,0.00,0.81):p(-58.4,326.74,-2199.1):J307.1 
+    1.28 s in the air, from (-45, -2202) to (-34, -2207)
+    0.74 s in the air, from (-23, -2214) to (-13, -2217)
+  Barrett Parkway (437900761) under at (-36, -2143), 8.5 -> 9.2 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (29, -2100)), resets 0, wall hits 0
+  Barrett Parkway (437900761) under at (-36, -2143), 8.5 -> 9.2 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (81, -2064)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463875) over at (-29, -2168), 8.6 -> 9.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.38 s, hardest landing 1.0 m/s (at (-28, -2168)), resets 0, wall hits 0  <- LOOK
+    0.38 s in the air, from (-25, -2181) to (-28, -2170)
+  Larry McDonald Memorial Highway (163463875) over at (-29, -2168), 8.6 -> 9.2 m clear (the other way), 297 m: through in 19.3 s, top 30 m/s, longest in the air 1.58 s, hardest landing 4.9 m/s (at (-46, -2188)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (-28, -2182) to (-31, -2183)
+    1.58 s in the air, from (-33, -2184) to (-46, -2188)
+    0.82 s in the air, from (-24, -2210) to (-12, -2216)
+  Barrett Parkway (977991560) under at (-29, -2168), 8.6 -> 9.2 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (82, -2092)), resets 0, wall hits 0
+  Barrett Parkway (977991560) under at (-29, -2168), 8.6 -> 9.2 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (92, -2082)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (2, -2353), 2.0 -> 7.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (11, -2376)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (2, -2353), 2.0 -> 7.4 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-9, -2320)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463881) under at (2, -2353), 2.0 -> 7.4 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (15, -2374)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463881) under at (2, -2353), 2.0 -> 7.4 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-68, -2226)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (65, -2524), 2.2 -> 11.9 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (86, -2570)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789455) over at (65, -2524), 2.2 -> 11.9 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (81, -2567)), resets 0, wall hits 0
+  motorway_link (879570834) under at (65, -2524), 2.2 -> 11.9 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (45, -2501)), resets 0, wall hits 0
+  motorway_link (879570834) under at (65, -2524), 2.2 -> 11.9 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (43, -2499)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1169449564) over at (122, -2642), -0.8 -> 6.0 m clear, 273 m: through in 11.0 s, top 30 m/s, longest in the air 0.42 s, hardest landing 0.4 m/s (at (82, -2660)), resets 0, wall hits 0  <- LOOK
+    0.42 s in the air, from (217, -2596) to (210, -2599)
+  Greers Chapel Drive Northwest (1169449564) over at (122, -2642), -0.8 -> 6.0 m clear (the other way), 273 m: through in 10.4 s, top 30 m/s, longest in the air 0.18 s, hardest landing 1.8 m/s (at (229, -2589)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149145) under at (122, -2642), -0.8 -> 6.0 m clear, 297 m: through in 16.0 s, top 30 m/s, longest in the air 1.46 s, hardest landing 10.2 m/s (at (77, -2551)), resets 0, wall hits 10  <- LOOK
+    1.46 s in the air, from (77, -2552) to (86, -2561)
+    wall hit at (89, -2568)
+    wall hit at (89, -2568)
+    wall hit at (89, -2569)
+    wall hit at (89, -2569)
+    wall hit at (89, -2569)
+    wall hit at (89, -2570)
+    wall hit at (89, -2570)
+  Northwest Corridor Express Lanes (564149145) under at (122, -2642), -0.8 -> 6.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (84, -2566)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (127, -2652), -1.0 -> 6.0 m clear, 272 m: through in 10.5 s, top 30 m/s, longest in the air 0.14 s, hardest landing 2.3 m/s (at (236, -2604)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (127, -2652), -1.0 -> 6.0 m clear (the other way), 272 m: through in 10.9 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.6 m/s (at (234, -2605)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (223, -2607) to (217, -2609)
+  Northwest Corridor Express Lanes (564149145) under at (127, -2652), -1.0 -> 6.0 m clear, 297 m: through in 16.3 s, top 30 m/s, longest in the air 1.32 s, hardest landing 9.1 m/s (at (77, -2551)), resets 0, wall hits 4  <- LOOK
+    1.32 s in the air, from (78, -2552) to (84, -2561)
+    wall hit at (88, -2568)
+    wall hit at (88, -2568)
+    wall hit at (88, -2568)
+    wall hit at (88, -2568)
+    0.88 s in the air, from (87, -2569) to (86, -2573)
+  Northwest Corridor Express Lanes (564149145) under at (127, -2652), -1.0 -> 6.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (85, -2565)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1169449564) over at (140, -2633), -0.8 -> 15.7 m clear, 252 m: through in 10.0 s, top 30 m/s, longest in the air 0.42 s, hardest landing 0.4 m/s (at (82, -2662)), resets 0, wall hits 0  <- LOOK
+    0.42 s in the air, from (217, -2596) to (210, -2599)
+  Greers Chapel Drive Northwest (1169449564) over at (140, -2633), -0.8 -> 15.7 m clear (the other way), 252 m: through in 9.8 s, top 31 m/s, longest in the air 0.20 s, hardest landing 1.5 m/s (at (229, -2591)), resets 0, wall hits 0
+  motorway_link (879570834) under at (140, -2633), -0.8 -> 15.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (187, -2714)), resets 0, wall hits 0
+  motorway_link (879570834) under at (140, -2633), -0.8 -> 15.7 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (110, -2587)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (146, -2643), -0.8 -> 15.7 m clear, 251 m: through in 9.8 s, top 30 m/s, longest in the air 0.12 s, hardest landing 2.8 m/s (at (236, -2604)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (146, -2643), -0.8 -> 15.7 m clear (the other way), 251 m: through in 10.2 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.6 m/s (at (234, -2605)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (223, -2607) to (217, -2609)
+  motorway_link (879570834) under at (146, -2643), -0.8 -> 15.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (104, -2570)), resets 0, wall hits 0
+  motorway_link (879570834) under at (146, -2643), -0.8 -> 15.7 m clear (the other way), 297 m: through in 12.7 s, top 30 m/s, longest in the air 0.54 s, hardest landing 6.3 m/s (at (124, -2602)), resets 0, wall hits 0  <- LOOK
+    0.54 s in the air, from (123, -2602) to (116, -2601)
+  Greers Chapel Drive Northwest (1169449564) over at (153, -2627), -0.8 -> 9.7 m clear, 237 m: through in 9.5 s, top 30 m/s, longest in the air 0.42 s, hardest landing 0.4 m/s (at (62, -2670)), resets 0, wall hits 0  <- LOOK
+    0.42 s in the air, from (217, -2596) to (210, -2599)
+  Greers Chapel Drive Northwest (1169449564) over at (153, -2627), -0.8 -> 9.7 m clear (the other way), 237 m: through in 9.2 s, top 30 m/s, longest in the air 0.20 s, hardest landing 1.6 m/s (at (229, -2590)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463881) under at (153, -2627), -0.8 -> 9.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (198, -2709)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463881) under at (153, -2627), -0.8 -> 9.7 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (194, -2700)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (159, -2637), -0.9 -> 10.4 m clear, 236 m: through in 9.3 s, top 30 m/s, longest in the air 0.14 s, hardest landing 2.7 m/s (at (236, -2606)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (159, -2637), -0.9 -> 10.4 m clear (the other way), 236 m: through in 9.6 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.6 m/s (at (234, -2605)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (223, -2607) to (217, -2609)
+  Larry McDonald Memorial Highway (163463881) under at (159, -2637), -0.9 -> 10.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (198, -2709)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (163463881) under at (159, -2637), -0.9 -> 10.4 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (194, -2700)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1169449564) over at (179, -2614), -0.8 -> 7.6 m clear, 207 m: through in 8.5 s, top 30 m/s, longest in the air 0.42 s, hardest landing 0.4 m/s (at (62, -2671)), resets 0, wall hits 0  <- LOOK
+    0.42 s in the air, from (217, -2596) to (210, -2599)
+  Greers Chapel Drive Northwest (1169449564) over at (179, -2614), -0.8 -> 7.6 m clear (the other way), 207 m: through in 8.2 s, top 30 m/s, longest in the air 0.20 s, hardest landing 1.5 m/s (at (230, -2590)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686455) under at (179, -2614), -0.8 -> 7.6 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (184, -2625)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686455) under at (179, -2614), -0.8 -> 7.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (188, -2632)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (185, -2625), -0.6 -> 8.0 m clear, 209 m: through in 8.3 s, top 30 m/s, longest in the air 0.12 s, hardest landing 2.6 m/s (at (236, -2604)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (185, -2625), -0.6 -> 8.0 m clear (the other way), 209 m: through in 8.9 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.6 m/s (at (234, -2605)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (223, -2607) to (218, -2609)
+  Larry McDonald Memorial Highway (119686455) under at (185, -2625), -0.6 -> 8.0 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (186, -2623)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686455) under at (185, -2625), -0.6 -> 8.0 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (188, -2631)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1169449564) over at (192, -2608), -0.7 -> 7.8 m clear, 192 m: through in 8.1 s, top 30 m/s, longest in the air 0.42 s, hardest landing 0.4 m/s (at (63, -2672)), resets 0, wall hits 0  <- LOOK
+    0.42 s in the air, from (217, -2596) to (210, -2599)
+  Greers Chapel Drive Northwest (1169449564) over at (192, -2608), -0.7 -> 7.8 m clear (the other way), 192 m: through in 7.9 s, top 30 m/s, longest in the air 0.32 s, hardest landing 1.6 m/s (at (91, -2658)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (96, -2655) to (103, -2651)
+  motorway_link (437899454) under at (192, -2608), -0.7 -> 7.8 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (194, -2613)), resets 0, wall hits 0
+  motorway_link (437899454) under at (192, -2608), -0.7 -> 7.8 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (249, -2738)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (197, -2619), -0.1 -> 8.0 m clear, 194 m: through in 7.9 s, top 30 m/s, longest in the air 0.12 s, hardest landing 1.9 m/s (at (235, -2603)), resets 0, wall hits 0
+  Greers Chapel Drive Northwest (1554737789) over at (197, -2619), -0.1 -> 8.0 m clear (the other way), 194 m: through in 8.2 s, top 30 m/s, longest in the air 0.32 s, hardest landing 0.6 m/s (at (234, -2605)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (223, -2607) to (218, -2609)
+  motorway_link (437899454) under at (197, -2619), -0.1 -> 8.0 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (148, -2501)), resets 0, wall hits 0
+  motorway_link (437899454) under at (197, -2619), -0.1 -> 8.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (248, -2734)), resets 0, wall hits 0
+  Chastain Road Northwest (182380646) over at (349, 946), 11.0 -> 11.6 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (228, 934)), resets 0, wall hits 0
+  Chastain Road Northwest (182380646) over at (349, 946), 11.0 -> 11.6 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (483, 932)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154401) under at (349, 946), 11.0 -> 11.6 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (350, 940)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154401) under at (349, 946), 11.0 -> 11.6 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (376, 802)), resets 0, wall hits 0
+  Chastain Road Northwest (182380646) over at (359, 946), 10.7 -> 11.3 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (280, 940)), resets 0, wall hits 0
+  Chastain Road Northwest (182380646) over at (359, 946), 10.7 -> 11.3 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (286, 943)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (442149008) under at (359, 946), 10.7 -> 11.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (364, 917)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (442149008) under at (359, 946), 10.7 -> 11.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (331, 1086)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (472, -3290), 7.6 -> 10.1 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.08 s, hardest landing 0.4 m/s (at (494, -3156)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (472, -3290), 7.6 -> 10.1 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.08 s, hardest landing 1.7 m/s (at (496, -3152)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789456) under at (472, -3290), 7.6 -> 10.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (514, -3376)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789456) under at (472, -3290), 7.6 -> 10.1 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (490, -3324)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (477, -3246), 9.3 -> 10.8 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.08 s, hardest landing 0.8 m/s (at (494, -3157)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (477, -3246), 9.3 -> 10.8 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.72 s, hardest landing 1.9 m/s (at (494, -3149)), resets 0, wall hits 0  <- LOOK
+    0.72 s in the air, from (495, -3145) to (500, -3125)
+  Larry McDonald Memorial Highway (119686448) under at (477, -3246), 9.3 -> 10.8 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (487, -3265)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686448) under at (477, -3246), 9.3 -> 10.8 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (487, -3267)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (485, -3204), 9.7 -> 10.3 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.8 m/s (at (494, -3157)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (163463460) over at (485, -3204), 9.7 -> 10.3 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.82 s, hardest landing 1.9 m/s (at (470, -3313)), resets 0, wall hits 0  <- LOOK
+    0.82 s in the air, from (493, -3145) to (497, -3122)
+  Larry McDonald Memorial Highway (570368037) under at (485, -3204), 9.7 -> 10.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (424, -3085)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (570368037) under at (485, -3204), 9.7 -> 10.3 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (497, -3227)), resets 0, wall hits 0
+  motorway_link (451950526) over at (496, -3284), 7.7 -> 9.1 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.5 m/s (at (503, -3382)), resets 0, wall hits 0
+  motorway_link (451950526) over at (496, -3284), 7.7 -> 9.1 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.72 s, hardest landing 2.4 m/s (at (501, -3374)), resets 0, wall hits 0  <- LOOK
+    0.72 s in the air, from (500, -3368) to (500, -3349)
+  Larry McDonald Memorial Highway (119686448) under at (496, -3284), 7.7 -> 9.1 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (490, -3273)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686448) under at (496, -3284), 7.7 -> 9.1 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (487, -3268)), resets 0, wall hits 0
+  motorway_link (451950526) over at (498, -3343), 6.3 -> 7.4 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.5 m/s (at (503, -3383)), resets 0, wall hits 0
+  motorway_link (451950526) over at (498, -3343), 6.3 -> 7.4 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.68 s, hardest landing 2.0 m/s (at (504, -3374)), resets 0, wall hits 0  <- LOOK
+    0.68 s in the air, from (503, -3367) to (501, -3348)
+  Northwest Corridor Express Lanes (536789456) under at (498, -3343), 6.3 -> 7.4 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (494, -3333)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789456) under at (498, -3343), 6.3 -> 7.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (509, -3364)), resets 0, wall hits 0
+  motorway_link (451950526) over at (500, -3233), 9.2 -> 9.8 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.2 m/s (at (500, -3354)), resets 0, wall hits 0
+  motorway_link (451950526) over at (500, -3233), 9.2 -> 9.8 m clear (the other way), 297 m: NOT through in 60.0 s, top 28 m/s, longest in the air 2.12 s, hardest landing 14.5 m/s (at (510, -3176)), resets 5, wall hits 0 stuck at (502, -3376) s 5; stuck at (508, -3175) s 206; stuck at (508, -3175) s 207; stuck at (510, -3175) s 206; stuck at (509, -3175) s 206;  <- LOOK
+    0.92 s in the air, from (496, -3368) to (492, -3373)
+    2.12 s in the air, from (495, -3302) to (490, -3277)
+    0.62 s in the air, from (502, -3206) to (506, -3193)
+    stopped at (507.9, 355.0, -3175.1): stay:BridgeStructure:n(0.01,-1.00,0.03):p(509.0,356.64,-3174.4):J229.7 
+    stopped at (508.2, 355.1, -3175.0): stay:BridgeStructure:n(0.01,-1.00,0.03):p(507.7,356.66,-3173.6):J348.2 
+    stopped at (509.8, 355.1, -3175.4): stay:BridgeStructure:n(0.01,-1.00,0.03):p(509.1,356.65,-3174.2):J358.8 
+    stopped at (508.8, 355.1, -3175.2): stay:BridgeStructure:n(0.01,-1.00,0.03):p(508.2,356.65,-3173.9):J360.6 
+    stopped at (509.2, 355.1, -3175.3): stay:BridgeStructure:n(0.01,-1.00,0.03):p(508.6,356.65,-3174.0):J369.4 
+  Larry McDonald Memorial Highway (570368037) under at (500, -3233), 9.2 -> 9.8 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (452, -3138)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (570368037) under at (500, -3233), 9.2 -> 9.8 m clear (the other way), 297 m: through in 11.1 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (564, -3361)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231576) over at (517, -13), 8.9 -> 9.5 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (514, 4)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231576) over at (517, -13), 8.9 -> 9.5 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (522, -39)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (517, -13), 8.9 -> 9.5 m clear, 297 m: through in 11.4 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (394, -62)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (517, -13), 8.9 -> 9.5 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (402, -58)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231576) over at (519, -23), 8.7 -> 9.3 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (514, 4)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231576) over at (519, -23), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (522, -38)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (519, -23), 8.7 -> 9.3 m clear, 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (420, -65)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (519, -23), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (398, -76)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154403) over at (532, -7), 9.0 -> 10.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (529, 10)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154403) over at (532, -7), 9.0 -> 10.2 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (539, -33)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (532, -7), 9.0 -> 10.2 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (666, 11)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (532, -7), 9.0 -> 10.2 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (673, 9)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154403) over at (534, -17), 8.6 -> 10.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (528, 10)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564154403) over at (534, -17), 8.6 -> 10.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (537, -33)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (534, -17), 8.6 -> 10.0 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (672, -3)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (534, -17), 8.6 -> 10.0 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (425, -65)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231565) over at (544, -3), 8.7 -> 9.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (549, -30)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231565) over at (544, -3), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.5 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (551, -41)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (544, -3), 8.7 -> 9.3 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (663, 11)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392541110) under at (544, -3), 8.7 -> 9.3 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (672, 8)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231565) over at (545, -12), 8.5 -> 9.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (548, -30)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (196231565) over at (545, -12), 8.5 -> 9.1 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (551, -41)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (545, -12), 8.5 -> 9.1 m clear, 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (673, -1)), resets 0, wall hits 0
+  Big Shanty Road Northwest (392540235) under at (545, -12), 8.5 -> 9.1 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (419, -65)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (536793083) over at (708, -3710), 16.3 -> 11.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.3 m/s (at (820, -3787)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (536793083) over at (708, -3710), 16.3 -> 11.3 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.80 s, hardest landing 2.4 m/s (at (811, -3784)), resets 0, wall hits 0  <- LOOK
+    0.80 s in the air, from (808, -3781) to (796, -3773)
+  Northwest Corridor Express Lanes (536789456) under at (708, -3710), 16.3 -> 11.3 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (635, -3611)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (536789456) under at (708, -3710), 16.3 -> 11.3 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (631, -3604)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380658) over at (741, -1687), 7.5 -> 6.0 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.4 m/s (at (742, -1720)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380658) over at (741, -1687), 7.5 -> 6.0 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.5 m/s (at (741, -1709)), resets 0, wall hits 0
+  Barrett Parkway (838363565) under at (741, -1687), 7.5 -> 6.0 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (818, -1688)), resets 0, wall hits 0
+  Barrett Parkway (838363565) under at (741, -1687), 7.5 -> 6.0 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (882, -1690)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380658) over at (742, -1671), 7.3 -> 5.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.4 m/s (at (738, -1719)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380658) over at (742, -1671), 7.3 -> 5.4 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.5 m/s (at (742, -1709)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (742, -1671), 7.3 -> 5.4 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (643, -1669)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (742, -1671), 7.3 -> 5.4 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (726, -1672)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (367181845) over at (757, -1672), 7.7 -> 7.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (759, -1652)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (367181845) over at (757, -1672), 7.7 -> 7.1 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (756, -1709)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (757, -1672), 7.7 -> 7.1 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (704, -1672)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (757, -1672), 7.7 -> 7.1 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (702, -1670)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380660) over at (769, -1688), 9.9 -> 8.3 m clear, 297 m: through in 11.8 s, top 30 m/s, longest in the air 2.12 s, hardest landing 11.6 m/s (at (769, -1651)), resets 0, wall hits 0  <- LOOK
+    2.12 s in the air, from (769, -1650) to (768, -1597)
+  Phillip Landrum Memorial Highway (182380660) over at (769, -1688), 9.9 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.6 m/s (at (772, -1657)), resets 0, wall hits 0
+  Barrett Parkway (838363565) under at (769, -1688), 9.9 -> 8.3 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (908, -1691)), resets 0, wall hits 0
+  Barrett Parkway (838363565) under at (769, -1688), 9.9 -> 8.3 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (889, -1690)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (182380660) over at (770, -1672), 9.3 -> 7.4 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 1.92 s, hardest landing 11.6 m/s (at (773, -1652)), resets 0, wall hits 0  <- LOOK
+    2.14 s in the air, from (773, -1650) to (774, -1597)
+  Phillip Landrum Memorial Highway (182380660) over at (770, -1672), 9.3 -> 7.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.7 m/s (at (772, -1657)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (770, -1672), 9.3 -> 7.4 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (735, -1670)), resets 0, wall hits 0
+  Barrett Parkway (540661934) under at (770, -1672), 9.3 -> 7.4 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (729, -1671)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149146) over at (1503, -4262), 5.8 -> 9.4 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1483, -4253)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149146) over at (1503, -4262), 5.8 -> 9.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1521, -4270)), resets 0, wall hits 0
+  Bells Ferry Road Northeast (343482776) under at (1503, -4262), 5.8 -> 9.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1505, -4258)), resets 0, wall hits 0
+  Bells Ferry Road Northeast (343482776) under at (1503, -4262), 5.8 -> 9.4 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1502, -4264)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (100762237) over at (1515, -4241), 5.6 -> 7.0 m clear, 297 m: NOT through in 60.0 s, top 30 m/s, longest in the air 2.08 s, hardest landing 14.2 m/s (at (1497, -4230)), resets 7, wall hits 0 stuck at (1530, -4249) s 165; stuck at (1532, -4248) s 167; stuck at (1531, -4251) s 167; stuck at (1531, -4250) s 167; stuck at (1531, -4250) s 167; stuck at (1531, -4251) s 167; stuck at (1531, -4250) s 167;  <- LOOK
+    2.08 s in the air, from (1497, -4231) to (1493, -4242)
+    stopped at (1529.6, 366.7, -4248.6): stay:BridgeStructure:n(-0.05,-1.00,0.03):p(1530.2,367.08,-4247.9):J4799.3 stay:Terrain_15_8:n(0.00,1.00,0.00):p(1531.7,366.40,-4248.4):J4170.3 
+    0.34 s in the air, from (1497, -4230) to (1498, -4230)
+    stopped at (1532.4, 368.3, -4247.9): stay:BridgeStructure:n(-0.87,0.00,0.50):p(1533.6,367.92,-4249.6):J352.3 
+    stopped at (1530.8, 368.3, -4250.7): stay:BridgeStructure:n(-0.87,0.00,0.50):p(1531.9,368.57,-4252.5):J69.7 
+    stopped at (1531.4, 368.3, -4249.7): stay:BridgeStructure:n(-0.87,0.00,0.50):p(1532.5,367.92,-4251.5):J355.4 
+    stopped at (1531.0, 368.3, -4250.4): stay:BridgeStructure:n(-0.87,0.00,0.50):p(1532.1,367.94,-4252.1):J355.9 
+    stopped at (1530.8, 368.3, -4250.7): stay:BridgeStructure:n(-0.87,0.00,0.50):p(1532.0,368.57,-4252.4):J355.7 
+  Larry McDonald Memorial Highway (100762237) over at (1515, -4241), 5.6 -> 7.0 m clear (the other way), 297 m: through in 16.0 s, top 31 m/s, longest in the air 1.34 s, hardest landing 8.0 m/s (at (1518, -4239)), resets 0, wall hits 0  <- LOOK
+    1.30 s in the air, from (1552, -4261) to (1519, -4240)
+    1.34 s in the air, from (1502, -4230) to (1504, -4222)
+  Bells Ferry Road Northeast (343482776) under at (1515, -4241), 5.6 -> 7.0 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1505, -4256)), resets 0, wall hits 0
+  Bells Ferry Road Northeast (343482776) under at (1515, -4241), 5.6 -> 7.0 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1501, -4264)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (119686452) over at (1528, -4214), 8.5 -> 9.4 m clear, 297 m: through in 14.1 s, top 31 m/s, longest in the air 1.10 s, hardest landing 7.1 m/s (at (1514, -4206)), resets 0, wall hits 0  <- LOOK
+    1.10 s in the air, from (1514, -4207) to (1506, -4210)
+  Larry McDonald Memorial Highway (119686452) over at (1528, -4214), 8.5 -> 9.4 m clear (the other way), 297 m: through in 14.7 s, top 30 m/s, longest in the air 2.60 s, hardest landing 15.1 m/s (at (1508, -4205)), resets 0, wall hits 0  <- LOOK
+    2.60 s in the air, from (1508, -4205) to (1542, -4214)
+  Bells Ferry Road Northeast (343482776) under at (1528, -4214), 8.5 -> 9.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1504, -4261)), resets 0, wall hits 0
+  Bells Ferry Road Northeast (343482776) under at (1528, -4214), 8.5 -> 9.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1501, -4263)), resets 0, wall hits 0
+  Canton Road Connector (175900804) over at (1624, -6088), 5.7 -> 10.7 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.2 m/s (at (1632, -6052)), resets 0, wall hits 0
+  Canton Road Connector (175900804) over at (1624, -6088), 5.7 -> 10.7 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.4 m/s (at (1620, -6099)), resets 0, wall hits 0
+  Elizabeth Street Northeast (1448505400) under at (1624, -6088), 5.7 -> 10.7 m clear, 297 m: through in 13.2 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1724, -6018)), resets 0, wall hits 0
+  Elizabeth Street Northeast (1448505400) under at (1624, -6088), 5.7 -> 10.7 m clear (the other way), 297 m: through in 13.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1656, -6069)), resets 0, wall hits 0
+  Canton Road Connector (175900808) over at (1639, -6079), 5.7 -> 8.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.4 m/s (at (1634, -6089)), resets 0, wall hits 0
+  Canton Road Connector (175900808) over at (1639, -6079), 5.7 -> 8.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.2 m/s (at (1647, -6042)), resets 0, wall hits 0
+  Elizabeth Street Northeast (1448505400) under at (1639, -6079), 5.7 -> 8.4 m clear, 297 m: through in 12.6 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1614, -6095)), resets 0, wall hits 0
+  Elizabeth Street Northeast (1448505400) under at (1639, -6079), 5.7 -> 8.4 m clear (the other way), 297 m: through in 12.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1520, -6161)), resets 0, wall hits 0
+  Canton Road Connector (175900801) over at (1704, -5749), 3.1 -> 9.1 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.5 m/s (at (1711, -5720)), resets 0, wall hits 0
+  Canton Road Connector (175900801) over at (1704, -5749), 3.1 -> 9.1 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.5 m/s (at (1698, -5765)), resets 0, wall hits 0
+  Cobb Parkway North (88426482) under at (1704, -5749), 3.1 -> 9.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1646, -5720)), resets 0, wall hits 0
+  Cobb Parkway North (88426482) under at (1704, -5749), 3.1 -> 9.1 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1643, -5716)), resets 0, wall hits 0
+  Canton Road Connector (175900801) over at (1709, -5734), 2.9 -> 8.3 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.4 m/s (at (1714, -5720)), resets 0, wall hits 0
+  Canton Road Connector (175900801) over at (1709, -5734), 2.9 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.5 m/s (at (1699, -5764)), resets 0, wall hits 0
+  Cobb Parkway North (88426473) under at (1709, -5734), 2.9 -> 8.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1768, -5766)), resets 0, wall hits 0
+  Cobb Parkway North (88426473) under at (1709, -5734), 2.9 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1756, -5757)), resets 0, wall hits 0
+  Canton Road Connector (175900811) over at (1716, -5755), 4.6 -> 9.3 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (1710, -5770)), resets 0, wall hits 0
+  Canton Road Connector (175900811) over at (1716, -5755), 4.6 -> 9.3 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (1726, -5724)), resets 0, wall hits 0
+  Cobb Parkway North (288140743) under at (1716, -5755), 4.6 -> 9.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1646, -5720)), resets 0, wall hits 0
+  Cobb Parkway North (288140743) under at (1716, -5755), 4.6 -> 9.3 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1642, -5716)), resets 0, wall hits 0
+  Canton Road Connector (175900811) over at (1720, -5741), 3.4 -> 8.6 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (1710, -5770)), resets 0, wall hits 0
+  Canton Road Connector (175900811) over at (1720, -5741), 3.4 -> 8.6 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (1726, -5724)), resets 0, wall hits 0
+  Cobb Parkway North (88426473) under at (1720, -5741), 3.4 -> 8.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1766, -5766)), resets 0, wall hits 0
+  Cobb Parkway North (88426473) under at (1720, -5741), 3.4 -> 8.6 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1754, -5760)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (624557375) over at (1853, -4468), 5.4 -> 14.0 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1832, -4448)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (624557375) over at (1853, -4468), 5.4 -> 14.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1870, -4477)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1853, -4468), 5.4 -> 14.0 m clear, 297 m: through in 12.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1956, -4438)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1853, -4468), 5.4 -> 14.0 m clear (the other way), 297 m: through in 12.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1909, -4451)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (100762650) over at (1880, -4459), -0.7 -> 16.7 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.7 m/s (at (1913, -4480)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (100762650) over at (1880, -4459), -0.7 -> 16.7 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (1903, -4473)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1880, -4459), -0.7 -> 16.7 m clear, 297 m: through in 12.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1939, -4441)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1880, -4459), -0.7 -> 16.7 m clear (the other way), 297 m: through in 12.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1910, -4451)), resets 0, wall hits 0
+  Canton Road Northeast (63222662) over at (1913, -5855), 4.4 -> 7.9 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.6 m/s (at (1905, -5866)), resets 0, wall hits 0
+  Canton Road Northeast (63222662) over at (1913, -5855), 4.4 -> 7.9 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.5 m/s (at (1936, -5805)), resets 0, wall hits 0
+  Cobb Parkway North (288140740) under at (1913, -5855), 4.4 -> 7.9 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.08 s, hardest landing 0.5 m/s (at (1988, -5890)), resets 0, wall hits 0
+  Cobb Parkway North (288140740) under at (1913, -5855), 4.4 -> 7.9 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.3 m/s (at (1979, -5886)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (100762636) over at (1918, -4446), -0.5 -> 16.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (1933, -4454)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (100762636) over at (1918, -4446), -0.5 -> 16.2 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.06 s, hardest landing 0.2 m/s (at (1892, -4425)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1918, -4446), -0.5 -> 16.2 m clear, 297 m: through in 12.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1956, -4439)), resets 0, wall hits 0
+  Dickson Road Northeast (9141860) under at (1918, -4446), -0.5 -> 16.2 m clear (the other way), 297 m: through in 12.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1931, -4443)), resets 0, wall hits 0
+  Canton Road Northeast (63222662) over at (1919, -5843), 3.1 -> 7.7 m clear, 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.46 s, hardest landing 0.5 m/s (at (1904, -5867)), resets 0, wall hits 0  <- LOOK
+    0.46 s in the air, from (1947, -5788) to (1954, -5777)
+  Canton Road Northeast (63222662) over at (1919, -5843), 3.1 -> 7.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.3 m/s (at (1958, -5770)), resets 0, wall hits 0
+  Cobb Parkway North (287142785) under at (1919, -5843), 3.1 -> 7.7 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1900, -5834)), resets 0, wall hits 0
+  Cobb Parkway North (287142785) under at (1919, -5843), 3.1 -> 7.7 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2044, -5907)), resets 0, wall hits 0
+  motorway_link (437892229) over at (1931, -4442), -0.9 -> 15.7 m clear, 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1955, -4460)), resets 0, wall hits 0
+  motorway_link (437892229) over at (1931, -4442), -0.9 -> 15.7 m clear (the other way), 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (1960, -4460)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (1931, -4442), -0.9 -> 15.7 m clear, 297 m: through in 12.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2013, -4442)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (1931, -4442), -0.9 -> 15.7 m clear (the other way), 297 m: through in 12.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1917, -4445)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (561642029) over at (2097, -4721), 4.4 -> 8.2 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2050, -4664)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (561642029) over at (2097, -4721), 4.4 -> 8.2 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2046, -4661)), resets 0, wall hits 0
+  motorway_link (9119542) under at (2097, -4721), 4.4 -> 8.2 m clear, 297 m: through in 12.1 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2103, -4746)), resets 0, wall hits 0
+  motorway_link (9119542) under at (2097, -4721), 4.4 -> 8.2 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2097, -4732)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2199, -4848), -0.7 -> 8.5 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2132, -4765)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2199, -4848), -0.7 -> 8.5 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2128, -4759)), resets 0, wall hits 0
+  motorway_link (9117188) under at (2199, -4848), -0.7 -> 8.5 m clear, 297 m: through in 13.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2307, -4916)), resets 0, wall hits 0
+  motorway_link (9117188) under at (2199, -4848), -0.7 -> 8.5 m clear (the other way), 297 m: through in 13.8 s, top 27 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2161, -4862)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2306, -4981), -1.5 -> 6.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2300, -4973)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2306, -4981), -1.5 -> 6.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2332, -5018)), resets 0, wall hits 0
+  Canton Road Connector (100762131) under at (2306, -4981), -1.5 -> 6.6 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.38 s, hardest landing 0.4 m/s (at (2395, -4886)), resets 0, wall hits 0  <- LOOK
+    0.38 s in the air, from (2308, -4977) to (2300, -4985)
+  Canton Road Connector (100762131) under at (2306, -4981), -1.5 -> 6.6 m clear (the other way), 297 m: through in 19.9 s, top 30 m/s, longest in the air 1.12 s, hardest landing 6.8 m/s (at (2398, -4882)), resets 1, wall hits 0 stuck at (2410, -4883) s 290;  <- LOOK
+    0.32 s in the air, from (2314, -4970) to (2320, -4963)
+    1.12 s in the air, from (2399, -4883) to (2408, -4890)
+    stopped at (2409.5, 381.1, -4883.2): stay:BridgeStructure:n(0.77,0.00,-0.64):p(2407.7,381.26,-4882.4):J421.3 
+  Northwest Corridor Express Lanes (685000423) over at (2324, -5003), -1.4 -> 6.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2300, -4973)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2324, -5003), -1.4 -> 6.7 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2292, -4967)), resets 0, wall hits 0
+  Canton Road Connector (286831634) under at (2324, -5003), -1.4 -> 6.7 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.26 s, hardest landing 0.3 m/s (at (2329, -4996)), resets 0, wall hits 0
+  Canton Road Connector (286831634) under at (2324, -5003), -1.4 -> 6.7 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.26 s, hardest landing 0.2 m/s (at (2318, -5011)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2330, -5011), -1.8 -> 7.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2299, -4972)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2330, -5011), -1.8 -> 7.6 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2334, -5019)), resets 0, wall hits 0
+  motorway_link (274716914) under at (2330, -5011), -1.8 -> 7.6 m clear, 276 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 3.2 m/s (at (2401, -4930)), resets 7, wall hits 0 stuck at (2401, -4931) s 256; stuck at (2400, -4930) s 256; stuck at (2400, -4930) s 256; stuck at (2398, -4929) s 256; stuck at (2399, -4930) s 256; stuck at (2398, -4929) s 256; stuck at (2399, -4930) s 256;  <- LOOK
+    stopped at (2401.2, 382.3, -4930.1): stay:BridgeStructure:n(0.00,-1.00,0.00):p(2401.3,382.64,-4929.5):J12473.7 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.9,381.87,-4932.1):J11848.4 
+    stopped at (2399.8, 382.3, -4929.8): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.7,382.65,-4930.1):J7596.7 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.5,382.00,-4928.5):J6990.7 
+    stopped at (2399.8, 382.3, -4929.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.7,382.65,-4930.1):J7461.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.9,382.05,-4927.8):J6890.6 
+    stopped at (2398.1, 382.3, -4928.6): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2397.7,382.65,-4927.5):J7997.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.1,382.04,-4926.7):J7365.8 
+    stopped at (2399.3, 382.2, -4929.5): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.3,382.64,-4927.6):J8381.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.3,381.85,-4931.6):J7706.2 
+    stopped at (2398.5, 382.2, -4928.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.8,382.64,-4928.1):J7323.2 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,381.85,-4931.0):J6655.0 
+    stopped at (2399.3, 382.2, -4929.5): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.3,382.64,-4927.6):J8386.1 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.3,381.85,-4931.6):J7705.8 
+  motorway_link (274716914) under at (2330, -5011), -1.8 -> 7.6 m clear (the other way), 276 m: NOT through in 60.0 s, top 26 m/s, longest in the air 1.82 s, hardest landing 9.4 m/s (at (2393, -4937)), resets 5, wall hits 0 stuck at (2407, -4923) s 10; stuck at (2348, -4997) s 105; stuck at (2348, -4998) s 105; stuck at (2348, -4999) s 106; stuck at (2348, -5004) s 110;  <- LOOK
+    stopped at (2406.9, 371.4, -4923.1): stay:Terrain_16_7:n(0.83,0.56,0.01):p(2405.6,370.51,-4923.8):J562.7 
+    0.32 s in the air, from (2409, -4917) to (2408, -4919)
+    1.82 s in the air, from (2393, -4938) to (2393, -4955)
+    1.18 s in the air, from (2349, -4996) to (2350, -5009)
+    1.02 s in the air, from (2349, -4994) to (2350, -4989)
+    stopped at (2348.3, 377.3, -4997.2): stay:Terrain_16_7:n(0.98,0.17,0.07):p(2346.5,378.04,-4996.4):J148.3 
+    stopped at (2348.4, 377.5, -4998.4): stay:Terrain_16_7:n(0.98,0.18,0.06):p(2346.6,377.97,-4997.9):J249.3 
+    stopped at (2348.3, 377.9, -4998.6): stay:Terrain_16_7:n(0.83,-0.55,0.07):p(2346.7,378.66,-4999.3):J247.9 
+  Canton Road Connector (100762130) over at (2337, -4949), 9.2 -> 10.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.36 s, hardest landing 0.6 m/s (at (2394, -4887)), resets 0, wall hits 0  <- LOOK
+    0.36 s in the air, from (2308, -4978) to (2301, -4986)
+  Canton Road Connector (100762130) over at (2337, -4949), 9.2 -> 10.0 m clear (the other way), 297 m: through in 14.5 s, top 30 m/s, longest in the air 0.96 s, hardest landing 6.8 m/s (at (2400, -4883)), resets 0, wall hits 0  <- LOOK
+    0.32 s in the air, from (2315, -4972) to (2322, -4965)
+    0.96 s in the air, from (2400, -4884) to (2407, -4889)
+  motorway_link (274716913) under at (2337, -4949), 9.2 -> 10.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2376, -4990)), resets 0, wall hits 0
+  motorway_link (274716913) under at (2337, -4949), 9.2 -> 10.0 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2310, -4921)), resets 0, wall hits 0
+  Canton Road Connector (100762130) over at (2353, -4932), 8.4 -> 9.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.34 s, hardest landing 0.5 m/s (at (2393, -4887)), resets 0, wall hits 0  <- LOOK
+    0.34 s in the air, from (2307, -4977) to (2300, -4984)
+  Canton Road Connector (100762130) over at (2353, -4932), 8.4 -> 9.4 m clear (the other way), 297 m: through in 15.9 s, top 30 m/s, longest in the air 2.16 s, hardest landing 8.3 m/s (at (2402, -4884)), resets 0, wall hits 0  <- LOOK
+    2.16 s in the air, from (2400, -4883) to (2402, -4884)
+  Larry McDonald Memorial Highway (437892231) under at (2353, -4932), 8.4 -> 9.4 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2374, -4956)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2353, -4932), 8.4 -> 9.4 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2352, -4930)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2355, -4970), 11.0 -> 11.8 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.22 s, hardest landing 0.3 m/s (at (2329, -4996)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2355, -4970), 11.0 -> 11.8 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.26 s, hardest landing 0.3 m/s (at (2420, -4904)), resets 0, wall hits 0
+  motorway_link (274716913) under at (2355, -4970), 11.0 -> 11.8 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2401, -5024)), resets 0, wall hits 0
+  motorway_link (274716913) under at (2355, -4970), 11.0 -> 11.8 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2339, -4953)), resets 0, wall hits 0
+  motorway_link (437897716) over at (2361, -4977), 7.1 -> 8.8 m clear, 230 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 1.7 m/s (at (2401, -4930)), resets 8, wall hits 0 stuck at (2400, -4929) s 211; stuck at (2399, -4929) s 211; stuck at (2399, -4929) s 210; stuck at (2399, -4929) s 210; stuck at (2401, -4930) s 210; stuck at (2399, -4929) s 210; stuck at (2399, -4929) s 210; stuck at (2400, -4930) s 210;  <- LOOK
+    stopped at (2399.6, 382.3, -4928.8): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.4,382.64,-4927.7):J15065.8 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.0,381.87,-4930.8):J14377.7 
+    stopped at (2398.8, 382.3, -4928.6): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.2,382.64,-4928.4):J11369.7 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,382.03,-4927.4):J10697.2 
+    stopped at (2398.6, 382.3, -4928.7): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.9,382.64,-4928.2):J8997.3 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.4,382.04,-4927.1):J8401.0 
+    stopped at (2398.7, 382.2, -4928.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2398.8,382.64,-4927.1):J8448.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.5,381.85,-4931.0):J7780.6 
+    stopped at (2400.6, 382.2, -4930.3): stay:BridgeStructure:n(0.03,-1.00,0.04):p(2401.3,382.64,-4929.5):J9162.5 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.3,381.84,-4932.3):J8542.2 
+    stopped at (2398.6, 382.2, -4928.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.0,382.64,-4928.2):J8220.9 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,381.85,-4930.9):J7547.2 
+    stopped at (2399.0, 382.3, -4929.2): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.4,382.64,-4928.6):J7682.1 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.8,382.02,-4927.6):J7084.6 
+    stopped at (2399.8, 382.2, -4929.8): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.8,382.64,-4928.1):J7786.7 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.7,381.84,-4931.9):J7125.2 
+  motorway_link (437897716) over at (2361, -4977), 7.1 -> 8.8 m clear (the other way), 230 m: through in 9.9 s, top 29 m/s, longest in the air 0.22 s, hardest landing 0.2 m/s (at (2321, -5012)), resets 0, wall hits 0
+  motorway_link (274716913) under at (2361, -4977), 7.1 -> 8.8 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2400, -5024)), resets 0, wall hits 0
+  motorway_link (274716913) under at (2361, -4977), 7.1 -> 8.8 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2393, -5015)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2372, -4953), 10.7 -> 11.8 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.20 s, hardest landing 0.3 m/s (at (2329, -4996)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2372, -4953), 10.7 -> 11.8 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.22 s, hardest landing 0.3 m/s (at (2420, -4904)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2372, -4953), 10.7 -> 11.8 m clear, 297 m: through in 11.2 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2373, -4955)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2372, -4953), 10.7 -> 11.8 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2366, -4946)), resets 0, wall hits 0
+  Canton Road Connector (100762130) over at (2376, -4907), 7.2 -> 8.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.34 s, hardest landing 0.5 m/s (at (2395, -4889)), resets 0, wall hits 0  <- LOOK
+    0.34 s in the air, from (2309, -4979) to (2302, -4986)
+  Canton Road Connector (100762130) over at (2376, -4907), 7.2 -> 8.3 m clear (the other way), 297 m: through in 16.1 s, top 30 m/s, longest in the air 2.14 s, hardest landing 8.0 m/s (at (2402, -4884)), resets 0, wall hits 0  <- LOOK
+    0.34 s in the air, from (2315, -4972) to (2321, -4965)
+    2.14 s in the air, from (2400, -4883) to (2402, -4884)
+  Larry McDonald Memorial Highway (274716911) under at (2376, -4907), 7.2 -> 8.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2295, -4815)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (274716911) under at (2376, -4907), 7.2 -> 8.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2318, -4842)), resets 0, wall hits 0
+  motorway_link (437897716) over at (2377, -4958), 4.2 -> 8.1 m clear, 206 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 2.8 m/s (at (2401, -4930)), resets 8, wall hits 0 stuck at (2400, -4929) s 187; stuck at (2400, -4930) s 187; stuck at (2401, -4930) s 186; stuck at (2399, -4929) s 187; stuck at (2401, -4930) s 187; stuck at (2399, -4929) s 187; stuck at (2400, -4929) s 187; stuck at (2399, -4929) s 186;  <- LOOK
+    stopped at (2400.0, 382.3, -4929.3): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.8,382.64,-4928.1):J12940.2 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.6,381.87,-4931.3):J12202.3 
+    stopped at (2400.1, 382.2, -4929.7): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2401.3,382.64,-4929.5):J12108.2 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.7,381.86,-4931.7):J11476.3 
+    stopped at (2400.8, 382.2, -4930.4): stay:BridgeStructure:n(0.00,-1.00,0.01):p(2401.3,382.64,-4929.5):J9161.4 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.6,381.85,-4932.4):J8712.4 
+    stopped at (2399.0, 382.2, -4928.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.0,382.64,-4927.3):J10409.1 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,381.85,-4930.9):J9753.8 
+    stopped at (2401.2, 382.2, -4930.4): stay:BridgeStructure:n(-0.13,-0.98,0.15):p(2401.3,382.64,-4929.5):J8325.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.8,381.86,-4932.4):J7817.3 
+    stopped at (2398.5, 382.3, -4928.5): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.9,382.64,-4928.2):J11234.0 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.4,382.04,-4927.1):J10883.5 
+    stopped at (2399.7, 382.2, -4929.4): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.7,382.64,-4928.0):J10884.8 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.3,381.85,-4931.4):J10216.6 
+    stopped at (2399.3, 382.2, -4929.1): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.3,382.64,-4927.6):J10796.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.9,381.86,-4931.1):J10144.2 
+  motorway_link (437897716) over at (2377, -4958), 4.2 -> 8.1 m clear (the other way), 206 m: through in 8.9 s, top 29 m/s, longest in the air 0.20 s, hardest landing 0.2 m/s (at (2321, -5012)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2377, -4958), 4.2 -> 8.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2369, -4950)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2377, -4958), 4.2 -> 8.1 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2363, -4943)), resets 0, wall hits 0
+  Canton Road Connector (100762130) over at (2381, -4902), 7.0 -> 8.1 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.36 s, hardest landing 0.7 m/s (at (2396, -4888)), resets 0, wall hits 0  <- LOOK
+    0.36 s in the air, from (2309, -4978) to (2302, -4986)
+  Canton Road Connector (100762130) over at (2381, -4902), 7.0 -> 8.1 m clear (the other way), 297 m: through in 15.9 s, top 30 m/s, longest in the air 2.14 s, hardest landing 8.0 m/s (at (2402, -4884)), resets 0, wall hits 0  <- LOOK
+    2.14 s in the air, from (2400, -4883) to (2402, -4884)
+  motorway_link (9117194) under at (2381, -4902), 7.0 -> 8.1 m clear, 251 m: through in 10.0 s, top 29 m/s, longest in the air 0.04 s, hardest landing 0.5 m/s (at (2394, -4888)), resets 0, wall hits 0
+  motorway_link (9117194) under at (2381, -4902), 7.0 -> 8.1 m clear (the other way), 251 m: through in 27.1 s, top 30 m/s, longest in the air 0.48 s, hardest landing 6.2 m/s (at (2399, -4883)), resets 2, wall hits 0 stuck at (2407, -4890) s 129; stuck at (2400, -4883) s 129;  <- LOOK
+    0.48 s in the air, from (2400, -4884) to (2405, -4886)
+    0.32 s in the air, from (2406, -4886) to (2408, -4887)
+    stopped at (2406.5, 379.1, -4889.9): stay:Terrain_16_7:n(-0.70,0.20,0.68):p(2408.5,379.57,-4889.9):J49.9 stay:trunk:n(0.89,0.00,0.45):p(2404.7,378.67,-4890.4):J497.4 
+    stopped at (2399.9, 380.7, -4883.3): stay:Terrain_16_7:n(0.00,0.33,-0.95):p(2400.3,380.41,-4881.2):J342.9 
+  Canton Road Connector (100762134) over at (2396, -4929), 10.3 -> 11.1 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.20 s, hardest landing 0.3 m/s (at (2330, -4997)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2396, -4929), 10.3 -> 11.1 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.24 s, hardest landing 0.3 m/s (at (2420, -4904)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (274716911) under at (2396, -4929), 10.3 -> 11.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2310, -4834)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (274716911) under at (2396, -4929), 10.3 -> 11.1 m clear (the other way), 297 m: through in 11.1 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2323, -4846)), resets 0, wall hits 0
+  motorway_link (437897716) over at (2398, -4931), 0.2 -> 9.6 m clear, 170 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.10 s, hardest landing 2.7 m/s (at (2400, -4930)), resets 8, wall hits 0 stuck at (2333, -5006) s 49; stuck at (2399, -4928) s 151; stuck at (2400, -4929) s 151; stuck at (2400, -4930) s 150; stuck at (2400, -4930) s 151; stuck at (2398, -4928) s 151; stuck at (2399, -4929) s 151; stuck at (2400, -4929) s 150;  <- LOOK
+    stopped at (2332.9, 382.9, -5005.7): stay:BridgeStructure:n(0.22,-0.26,-0.94):p(2332.3,383.15,-5003.9):J318.8 stay:BridgeDecks:n(0.03,1.00,0.03):p(2333.7,382.79,-5005.2):J96.6 
+    stopped at (2399.0, 382.3, -4928.2): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.1,382.64,-4928.4):J15100.3 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,381.89,-4930.3):J14350.3 
+    stopped at (2399.7, 382.2, -4929.3): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.6,382.64,-4927.9):J11260.3 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.2,381.86,-4931.3):J10586.9 
+    stopped at (2400.3, 382.2, -4929.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2401.3,382.64,-4929.5):J11714.1 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.0,381.85,-4931.9):J11051.1 
+    stopped at (2399.9, 382.2, -4929.5): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.7,382.64,-4928.0):J11540.2 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.8,381.86,-4931.6):J10875.0 
+    stopped at (2398.4, 382.3, -4928.4): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2398.6,382.66,-4929.7):J9945.5 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.0,382.05,-4927.8):J9386.2 
+    stopped at (2399.2, 382.2, -4929.0): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.2,382.64,-4927.5):J10545.6 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.7,381.85,-4931.0):J9870.6 
+    stopped at (2399.5, 382.2, -4929.3): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.4,382.64,-4927.7):J11963.9 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.4,381.86,-4931.4):J11284.5 
+  motorway_link (437897716) over at (2398, -4931), 0.2 -> 9.6 m clear (the other way), 170 m: through in 7.4 s, top 29 m/s, longest in the air 0.20 s, hardest landing 0.2 m/s (at (2321, -5013)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (274716911) under at (2398, -4931), 0.2 -> 9.6 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2311, -4833)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (274716911) under at (2398, -4931), 0.2 -> 9.6 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2323, -4846)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2399, -4926), 10.3 -> 11.1 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.22 s, hardest landing 0.3 m/s (at (2330, -4997)), resets 0, wall hits 0
+  Canton Road Connector (100762134) over at (2399, -4926), 10.3 -> 11.1 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.24 s, hardest landing 0.3 m/s (at (2420, -4904)), resets 0, wall hits 0
+  motorway_link (9117194) under at (2399, -4926), 10.3 -> 11.1 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2491, -5038)), resets 0, wall hits 0
+  motorway_link (9117194) under at (2399, -4926), 10.3 -> 11.1 m clear (the other way), 297 m: through in 11.2 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2373, -4894)), resets 0, wall hits 0
+  motorway_link (437897716) over at (2401, -4928), -0.2 -> 9.9 m clear, 167 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.00 s, hardest landing 2.4 m/s (at (2401, -4930)), resets 9, wall hits 0 stuck at (2401, -4929) s 148; stuck at (2399, -4929) s 147; stuck at (2399, -4929) s 147; stuck at (2400, -4930) s 147; stuck at (2399, -4929) s 147; stuck at (2399, -4929) s 147; stuck at (2398, -4929) s 147; stuck at (2400, -4930) s 147; stuck at (2399, -4929) s 147;  <- LOOK
+    stopped at (2400.7, 382.3, -4929.4): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2401.3,382.64,-4929.5):J17380.8 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2400.5,381.89,-4931.5):J16709.8 
+    stopped at (2399.2, 382.3, -4929.4): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.6,382.64,-4928.8):J7656.1 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.0,382.02,-4927.9):J7018.1 
+    stopped at (2398.6, 382.2, -4929.0): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2398.6,382.64,-4926.9):J7973.5 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.7,381.85,-4931.0):J7307.1 
+    stopped at (2400.0, 382.2, -4930.0): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2401.3,382.64,-4929.5):J8739.8 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.8,381.84,-4932.0):J8079.0 
+    stopped at (2398.6, 382.2, -4929.2): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2398.7,382.64,-4927.1):J6939.9 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.6,381.84,-4931.2):J6255.4 
+    stopped at (2398.6, 382.2, -4929.0): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2399.9,382.64,-4928.2):J7051.3 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.2,381.93,-4929.8):J6405.7 
+    stopped at (2398.5, 382.3, -4928.9): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2400.0,382.64,-4928.2):J6776.2 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2398.5,382.03,-4927.1):J6818.5 
+    stopped at (2399.9, 382.2, -4930.0): stay:BridgeStructure:n(-0.01,-1.00,-0.01):p(2401.0,382.64,-4929.7):J7342.7 stay:BridgeDecks:n(-0.03,1.00,-0.05):p(2399.8,381.84,-4932.0):J6670.1 
+  motorway_link (437897716) over at (2401, -4928), -0.2 -> 9.9 m clear (the other way), 167 m: through in 7.1 s, top 29 m/s, longest in the air 0.24 s, hardest landing 0.2 m/s (at (2321, -5012)), resets 0, wall hits 0
+  motorway_link (9117194) under at (2401, -4928), -0.2 -> 9.9 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2363, -4872)), resets 0, wall hits 0
+  motorway_link (9117194) under at (2401, -4928), -0.2 -> 9.9 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2374, -4891)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2425, -5121), 0.2 -> 12.9 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2447, -5143)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2425, -5121), 0.2 -> 12.9 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2440, -5136)), resets 0, wall hits 0
+  motorway_link (274716914) under at (2425, -5121), 0.2 -> 12.9 m clear, 297 m: through in 13.9 s, top 28 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2428, -5108)), resets 0, wall hits 0
+  motorway_link (274716914) under at (2425, -5121), 0.2 -> 12.9 m clear (the other way), 297 m: through in 13.4 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2430, -5091)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2481, -5176), -1.8 -> 6.4 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2446, -5145)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2481, -5176), -1.8 -> 6.4 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2512, -5207)), resets 0, wall hits 0
+  motorway_link (286831637) under at (2481, -5176), -1.8 -> 6.4 m clear, 297 m: through in 12.1 s, top 30 m/s, longest in the air 0.14 s, hardest landing 0.3 m/s (at (2502, -5160)), resets 0, wall hits 0
+  motorway_link (286831637) under at (2481, -5176), -1.8 -> 6.4 m clear (the other way), 297 m: through in 12.1 s, top 30 m/s, longest in the air 0.18 s, hardest landing 0.2 m/s (at (2494, -5168)), resets 0, wall hits 0
+  motorway_link (100762127) over at (2547, -4730), 8.6 -> 9.2 m clear, 297 m: through in 12.0 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.4 m/s (at (2577, -4790)), resets 0, wall hits 0
+  motorway_link (100762127) over at (2547, -4730), 8.6 -> 9.2 m clear (the other way), 297 m: through in 12.0 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.2 m/s (at (2533, -4715)), resets 0, wall hits 0
+  Canton Road Connector (100762213) under at (2547, -4730), 8.6 -> 9.2 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2453, -4828)), resets 0, wall hits 0
+  Canton Road Connector (100762213) under at (2547, -4730), 8.6 -> 9.2 m clear (the other way), 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2561, -4717)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2548, -5240), 0.3 -> 12.4 m clear, 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2520, -5213)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2548, -5240), 0.3 -> 12.4 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2512, -5206)), resets 0, wall hits 0
+  motorway_link (9118747) under at (2548, -5240), 0.3 -> 12.4 m clear, 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2512, -5223)), resets 0, wall hits 0
+  motorway_link (9118747) under at (2548, -5240), 0.3 -> 12.4 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2459, -5208)), resets 0, wall hits 0
+  motorway_link (100762127) over at (2561, -4754), 9.0 -> 9.7 m clear, 297 m: through in 12.4 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.4 m/s (at (2576, -4791)), resets 0, wall hits 0
+  motorway_link (100762127) over at (2561, -4754), 9.0 -> 9.7 m clear (the other way), 297 m: through in 11.9 s, top 30 m/s, longest in the air 0.04 s, hardest landing 0.2 m/s (at (2535, -4713)), resets 0, wall hits 0
+  Canton Road Connector (100762132) under at (2561, -4754), 9.0 -> 9.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2505, -4815)), resets 0, wall hits 0
+  Canton Road Connector (100762132) under at (2561, -4754), 9.0 -> 9.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2497, -4821)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2580, -5267), -9.9 -> 5.9 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2520, -5213)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (685000423) over at (2580, -5267), -9.9 -> 5.9 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2514, -5206)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) under at (2580, -5267), -9.9 -> 5.9 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (2563, -5284)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) under at (2580, -5267), -9.9 -> 5.9 m clear (the other way), 297 m: through in 11.2 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2556, -5290)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) over at (2587, -5260), 10.5 -> 8.2 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (2563, -5284)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) over at (2587, -5260), 10.5 -> 8.2 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (2556, -5290)), resets 0, wall hits 0
+  motorway_link (9118747) under at (2587, -5260), 10.5 -> 8.2 m clear, 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2576, -5254)), resets 0, wall hits 0
+  motorway_link (9118747) under at (2587, -5260), 10.5 -> 8.2 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2570, -5250)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) over at (2618, -5232), 10.4 -> 11.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (2699, -5151)), resets 0, wall hits 0
+  Canton Road Northeast (63222660) over at (2618, -5232), 10.4 -> 11.0 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.5 m/s (at (2694, -5160)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2618, -5232), 10.4 -> 11.0 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2647, -5264)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (437892231) under at (2618, -5232), 10.4 -> 11.0 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2573, -5181)), resets 0, wall hits 0
+  Canton Road Connector (100762211) over at (2672, -4557), 9.6 -> 8.7 m clear, 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2659, -4586)), resets 0, wall hits 0
+  Canton Road Connector (100762211) over at (2672, -4557), 9.6 -> 8.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2661, -4575)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2672, -4557), 9.6 -> 8.7 m clear, 297 m: through in 12.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2666, -4557)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2672, -4557), 9.6 -> 8.7 m clear (the other way), 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2657, -4554)), resets 0, wall hits 0
+  Canton Road Connector (100762215) over at (2696, -4569), 9.7 -> 7.6 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2685, -4589)), resets 0, wall hits 0
+  Canton Road Connector (100762215) over at (2696, -4569), 9.7 -> 7.6 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (2682, -4597)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2696, -4569), 9.7 -> 7.6 m clear, 297 m: through in 12.0 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2666, -4557)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2696, -4569), 9.7 -> 7.6 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2660, -4552)), resets 0, wall hits 0
+  motorway_link (100762212) over at (2715, -4580), 9.2 -> 6.3 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2724, -4547)), resets 0, wall hits 0
+  motorway_link (100762212) over at (2715, -4580), 9.2 -> 6.3 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2724, -4556)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2715, -4580), 9.2 -> 6.3 m clear, 297 m: through in 11.9 s, top 29 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2666, -4557)), resets 0, wall hits 0
+  Dickson Road Northeast (9129439) under at (2715, -4580), 9.2 -> 6.3 m clear (the other way), 297 m: through in 11.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (2660, -4552)), resets 0, wall hits 0
+  Allgood Road Northeast (100762098) over at (3436, -6215), 7.4 -> 10.0 m clear, 297 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.12 s, hardest landing 2.8 m/s (at (3497, -6187)), resets 7, wall hits 0 stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217; stuck at (3497, -6187) s 217;  <- LOOK
+    stopped at (3497.1, 349.7, -6187.2): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.1,349.35,-6187.3):J349.3 
+    stopped at (3497.1, 349.7, -6187.3): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.1,349.35,-6187.3):J352.7 
+    stopped at (3497.1, 349.7, -6187.3): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.2,349.41,-6187.4):J17.6 
+    stopped at (3496.9, 349.7, -6187.0): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.34,-6187.1):J352.5 
+    stopped at (3497.0, 349.7, -6187.0): stay:BridgeStructure:n(-0.91,0.03,-0.41):p(3499.0,349.39,-6187.1):J351.6 
+    stopped at (3497.0, 349.7, -6187.1): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.40,-6187.1):J352.1 
+    stopped at (3497.0, 349.7, -6187.1): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.40,-6187.1):J352.2 
+  Allgood Road Northeast (100762098) over at (3436, -6215), 7.4 -> 10.0 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.80 s, hardest landing 3.7 m/s (at (3479, -6194)), resets 0, wall hits 0  <- LOOK
+    0.80 s in the air, from (3504, -6183) to (3483, -6193)
+  Northwest Corridor Express Lanes (561642032) under at (3436, -6215), 7.4 -> 10.0 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3424, -6202)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (561642032) under at (3436, -6215), 7.4 -> 10.0 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3345, -6115)), resets 0, wall hits 0
+  Allgood Road Northeast (100762098) over at (3458, -6205), 7.9 -> 8.7 m clear, 297 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.14 s, hardest landing 2.8 m/s (at (3497, -6187)), resets 9, wall hits 0 stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193; stuck at (3497, -6187) s 193;  <- LOOK
+    stopped at (3497.0, 349.7, -6187.2): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.1,349.37,-6187.2):J353.0 
+    stopped at (3496.9, 349.7, -6187.0): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.35,-6187.1):J352.8 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.34,-6187.0):J345.1 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.34,-6187.0):J352.8 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.00,-0.41):p(3499.0,349.37,-6187.0):J355.2 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.00,-0.41):p(3499.0,349.36,-6187.0):J355.5 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.34,-6187.0):J352.4 
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.00,-0.41):p(3499.0,349.34,-6187.0):J356.3 
+  Allgood Road Northeast (100762098) over at (3458, -6205), 7.9 -> 8.7 m clear (the other way), 297 m: through in 11.6 s, top 30 m/s, longest in the air 0.80 s, hardest landing 6.0 m/s (at (3479, -6194)), resets 0, wall hits 0  <- LOOK
+    0.80 s in the air, from (3503, -6182) to (3482, -6192)
+    0.32 s in the air, from (3409, -6226) to (3401, -6231)
+  Larry McDonald Memorial Highway (472814564) under at (3458, -6205), 7.9 -> 8.7 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3450, -6197)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (472814564) under at (3458, -6205), 7.9 -> 8.7 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3446, -6191)), resets 0, wall hits 0
+  Allgood Road Northeast (100762098) over at (3479, -6195), 5.8 -> 7.2 m clear, 297 m: NOT through in 60.0 s, top 30 m/s, longest in the air 0.14 s, hardest landing 2.8 m/s (at (3497, -6187)), resets 9, wall hits 0 stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169; stuck at (3497, -6187) s 169;  <- LOOK
+    stopped at (3496.9, 349.7, -6186.9): stay:BridgeStructure:n(-0.91,0.00,-0.41):p(3499.0,349.36,-6187.0):J357.1 
+    stopped at (3496.8, 349.7, -6186.7): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3498.9,349.37,-6186.8):J353.5 
+    stopped at (3496.8, 349.7, -6186.7): stay:BridgeStructure:n(-0.91,0.00,-0.41):p(3498.9,349.35,-6186.8):J363.1 
+    stopped at (3496.9, 349.7, -6187.0): stay:BridgeStructure:n(-0.91,0.03,-0.41):p(3499.0,349.39,-6187.1):J351.9 
+    stopped at (3496.8, 349.7, -6186.7): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3498.9,349.36,-6186.8):J352.5 
+    stopped at (3496.9, 349.7, -6187.0): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3499.0,349.37,-6187.1):J354.1 
+    stopped at (3496.8, 349.7, -6186.7): stay:BridgeStructure:n(-0.91,0.04,-0.41):p(3498.9,349.37,-6186.8):J352.6 
+    stopped at (3496.8, 349.7, -6186.7): stay:BridgeStructure:n(-0.91,0.03,-0.41):p(3498.9,349.38,-6186.8):J353.0 
+  Allgood Road Northeast (100762098) over at (3479, -6195), 5.8 -> 7.2 m clear (the other way), 297 m: through in 11.5 s, top 30 m/s, longest in the air 0.80 s, hardest landing 5.3 m/s (at (3479, -6192)), resets 0, wall hits 0  <- LOOK
+    0.80 s in the air, from (3503, -6182) to (3481, -6191)
+  Larry McDonald Memorial Highway (198292214) under at (3479, -6195), 5.8 -> 7.2 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3387, -6085)), resets 0, wall hits 0
+  Larry McDonald Memorial Highway (198292214) under at (3479, -6195), 5.8 -> 7.2 m clear (the other way), 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (3472, -6186)), resets 0, wall hits 0
+FAIL  lines: 416 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  64 not
+
+0 of 1 checks passed.
