@@ -69,7 +69,23 @@ namespace ChastainRush
         int recordTrack = -1, recordBoard; string recordsVehicle = "All vehicles";
         List<(string route, string direction)> RecordTracks() => race ? race.RecordTracks() : new List<(string, string)>();
         static string TrackTitle((string route, string direction) t) => RaceController.RecordTitle(t.route) + " - " + (t.direction.StartsWith("reverse") ? "Reverse" : "Forward") + (t.direction.EndsWith("-rain") ? ", rain" : t.direction.EndsWith("-snow") ? ", snow" : "");   // Round 35: the weather's boards
-        static bool OnTrack((string route, string direction) t, string category) => RecordBoards.LapCategory(category) == t.route + "|" + t.direction;
+        static bool OnTrack((string route, string direction) t, string category) => RecordBoards.LapCategory(category) == recordPrefix + t.route + "|" + t.direction;
+        // Round 84 (A4): Racer 1.2's HIGH tab: the HIGH MODE boards ("high-" categories) come after the normal pages, each marked HIGH
+        static string recordPrefix = "";
+        List<(string route, string direction)> HighRecordTracks()
+        {
+            var list = new List<(string, string)>(); var boards = RaceController.Boards; if (boards == null) return list;
+            foreach (var (route, direction) in RecordTracks())
+            {
+                if (direction.Contains("-")) continue;
+                foreach (var d in new[] { direction, direction + "-rain", direction + "-snow" })
+                {
+                    string key = HighMode.RecordPrefix + route + "|" + d;
+                    if (boards.Top(c => RecordBoards.LapCategory(c) == key, false).Count > 0 || boards.Top(c => RecordBoards.LapCategory(c) == key, true).Count > 0) list.Add((route, d));
+                }
+            }
+            return list;
+        }
         static string RecordDate(string date) => DateTime.TryParse(date, null, System.Globalization.DateTimeStyles.RoundtripKind, out var d) ? d.ToLocalTime().ToString("d MMM yyyy") : "—";
         void OpenRecords() { recordTrack = -1; recordsVehicle = "All vehicles"; Navigate("records"); }
         // Racer's ChooseRecordTrack: the route being raced (or set up), else the first with times
@@ -86,23 +102,38 @@ namespace ChastainRush
         {
             var tracks = RecordTracks(); var boards = RaceController.Boards;
             int acts = ArcadeActivities.Instance && ArcadeActivities.Instance.Sites.Length > 0 ? 1 : 0;
-            int pagesN = tracks.Count + (StuntPark.Current ? 2 : 0) + acts + 2;   // Round 39 (Part D): the Getaway and Speed Patrol Top 10s last   // Round 36 (A1): the Stunt event Top 10 and the Top 10 Best Combos after the routes; (B) the activities
-            if (recordTrack < 0 || recordTrack >= pagesN) ChooseRecordTrack(tracks);
+            int baseN = tracks.Count + (StuntPark.Current ? 2 : 0) + acts + 2;   // Round 39 (Part D): the Getaway and Speed Patrol Top 10s last   // Round 36 (A1): the Stunt event Top 10 and the Top 10 Best Combos after the routes; (B) the activities
+            var high = HighRecordTracks(); int pagesN = baseN + high.Count + (StuntPark.Current ? 2 : 0);   // Round 84 (A4): then the HIGH MODE boards
+            recordPrefix = "";
+            if (recordTrack < 0 || recordTrack >= pagesN)
+            {
+                ChooseRecordTrack(tracks);
+                int hi = race && race.Route != null && HighMode.Now ? high.FindIndex(t => t.route == race.Route.RecordName && t.direction == race.Route.Direction) : -1;   // a HIGH session opens on its HIGH board
+                if (hi >= 0) recordTrack = baseN + hi;
+            }
             Clear("RECORDS", "");
-            if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0) + acts) { RenderPoliceRecords(recordTrack - (tracks.Count + (StuntPark.Current ? 2 : 0) + acts), pagesN); return; }   // Round 39
-            if (recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0)) { RenderActivityRecords(pagesN); return; }
-            if (recordTrack >= tracks.Count) { RenderStuntRecords(recordTrack - tracks.Count, pagesN); return; }
+            int ti = recordTrack;
+            if (recordTrack >= baseN)
+            {
+                int i = recordTrack - baseN;
+                if (i >= high.Count) { StuntProgress.ShowHigh = true; RenderStuntRecords(i - high.Count, pagesN); StuntProgress.ShowHigh = null; return; }
+                recordPrefix = HighMode.RecordPrefix; tracks = high; ti = i; if (recordBoard == 2) recordBoard = 0;   // no clean-lap ghost in HIGH MODE
+            }
+            else StuntProgress.ShowHigh = false;
+            if (recordTrack < baseN && recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0) + acts) { RenderPoliceRecords(recordTrack - (tracks.Count + (StuntPark.Current ? 2 : 0) + acts), pagesN); return; }   // Round 39
+            if (recordTrack < baseN && recordTrack >= tracks.Count + (StuntPark.Current ? 2 : 0)) { RenderActivityRecords(pagesN); return; }
+            if (recordTrack < baseN && recordTrack >= tracks.Count) { RenderStuntRecords(recordTrack - tracks.Count, pagesN); StuntProgress.ShowHigh = null; return; }
             if (tracks.Count == 0 || boards == null) { details.gameObject.SetActive(true); details.text = "No routes."; Row(0, "back", "Back", BackPage); return; }
-            var track = tracks[recordTrack];
+            var track = tracks[ti];
             if (recordBoard == 2) { RenderGhostBoard(track); return; }   // Round 43 (B1)
             bool raceBoard = recordBoard == 1;
             var vehicles = boards.TopVehicles(c => OnTrack(track, c), raceBoard);
             if (recordsVehicle != "All vehicles" && !vehicles.Contains(recordsVehicle)) recordsVehicle = "All vehicles";
             var board = boards.Top(c => OnTrack(track, c), raceBoard, recordsVehicle == "All vehicles" ? null : recordsVehicle);
             int row = 0;
-            Step(row++, "record-track", TrackTitle(track) + (vehicles.Length > 0 || boards.TopVehicles(c => OnTrack(track, c), !raceBoard).Length > 0 ? "" : "   (no times yet)"),
+            Step(row++, "record-track", (recordPrefix != "" ? "HIGH · " : "") + TrackTitle(track) + (vehicles.Length > 0 || boards.TopVehicles(c => OnTrack(track, c), !raceBoard).Length > 0 ? "" : "   (no times yet)"),
                  d => { recordTrack = (recordTrack + d + pagesN) % pagesN; recordsVehicle = "All vehicles"; Show(); });
-            Step(row++, "record-board", raceBoard ? "BEST RACES" : "BEST LAPS", d => { recordBoard = (recordBoard + d + 3) % 3; recordsVehicle = "All vehicles"; Show(); });
+            Step(row++, "record-board", raceBoard ? "BEST RACES" : "BEST LAPS", d => { recordBoard = recordPrefix != "" ? 1 - recordBoard : (recordBoard + d + 3) % 3; recordsVehicle = "All vehicles"; Show(); });
             if (vehicles.Length > 1 || recordsVehicle != "All vehicles")
             {
                 var choices = vehicles.Prepend("All vehicles").ToList();
@@ -158,7 +189,7 @@ namespace ChastainRush
         // more pages of the route row (left / right reaches them after the routes)
         void RenderStuntRecords(int which, int pagesN)
         {
-            Step(0, "record-track", which == 0 ? "STUNT EVENT TOP 10" : "TOP 10 BEST COMBOS", d => { recordTrack = (recordTrack + d + pagesN) % pagesN; Show(); });
+            Step(0, "record-track", (StuntProgress.ShowHigh == true ? "HIGH · " : "") + (which == 0 ? "STUNT EVENT TOP 10" : "TOP 10 BEST COMBOS"), d => { recordTrack = (recordTrack + d + pagesN) % pagesN; Show(); });
             Controls(0, 1);
             details.gameObject.SetActive(true); details.GetComponent<UnityEngine.UI.LayoutElement>().preferredHeight = 56;
             details.text = which == 0

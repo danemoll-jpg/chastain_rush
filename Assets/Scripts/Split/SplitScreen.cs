@@ -132,6 +132,7 @@ namespace ChastainRush
             clone.transform.SetParent(null, true);
             clone.SetActive(true);
             P2 = clone.GetComponent<ArcadeVehicle>();
+            ChastainRush.HighAssist.Ensure(P2, 2);   // Round 84 (A): the clone of player 1's vehicle carries its HIGH MODE assist: player 2's own choice
             // a human player 2 answers only their own device; the AI's input stays off (the race's driver or the cruiser drives it)
             var input = clone.GetComponent<VehicleInput>(); if (!SplitScreen.P2Ai) input.Bind(SplitScreen.P2Device); input.enabled = !SplitScreen.P2Ai;
             P2.enabled = true; P2.Body.isKinematic = false;

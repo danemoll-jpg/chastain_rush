@@ -22,6 +22,7 @@ namespace ChastainRush
             if (!StuntPark.Current) { Confirm("STUNT EVENT", "There is no stunt park in this map build.", "OK", () => Show()); return; }
             // the vehicle being driven, if it is a stunt vehicle, is the one shown first (as Racer's "newest driven vehicle the event allows")
             var cfg = car.GetComponent<VehicleConfiguration>(); if (cfg && cfg.Profile.Stunt) StuntChoice = cfg.profileId;
+            HighMode.P1High = HighMode.P2High = HighMode.On;   // Round 84
             Navigate("stunt");
         }
         void RenderStuntSetup()

@@ -209,7 +209,7 @@ namespace Racer
             {
                 r.medal = StuntProgress.MedalFor(r.points);
                 bool human = r.player == 1 || r.player == 2 && !SplitScreen.P2Ai;   // Racer: the AI's results are never recorded (Round 38: nor a rival's)
-                r.entry = human ? StuntProgress.Finish(SplitScreen.Active ? SplitScreen.NameOf(r.player) : PlayerNames.Player, r.vehicle, r.points, r.best) : null;
+                r.entry = human ? StuntProgress.Finish(SplitScreen.Active ? SplitScreen.NameOf(r.player) : PlayerNames.Player, r.vehicle, r.points, r.best, r.player) : null;   // Round 84: a HIGH MODE player's on the HIGH board
             }
             // 0.110 Part A: each place read after every player's entry is in (two players next to each other: #5 and #6, not both #5)
             foreach (var r in Riders) { r.place = r.entry != null ? StuntProgress.PlaceOf(r.entry) : 0; r.log.Add($"results: {r.points:N0} pts, {MedalUi.Name(r.medal)}, best combo {r.best:N0}, tricks {r.Tricks}, bails {r.Bails}, Top 10 #{r.place}" + (r.rival ? $", recoveries {r.rival.Recoveries}, lines {string.Join(" ", r.rival.LinesTaken)}" : "")); }

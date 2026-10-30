@@ -193,7 +193,7 @@ namespace Racer
             // 0.108 Part D: the Top 10 Best Combos (in the park; in the Stunt event only while the player's round still counts)
             LastComboPlace = 0;
             if (park && StuntPark.Current && StuntEvent.Counts(car))
-                LastComboPlace = Player == 2 && ChastainRush.SplitScreen.P2Ai ? 0 : StuntProgress.RecordComboTop(ChastainRush.SplitScreen.Active ? ChastainRush.SplitScreen.NameOf(Player) : PlayerNames.Player, configuration.profileId, total, links, LastComboTricks);   // Round 37: each player's name; never the AI's
+                LastComboPlace = Player == 2 && ChastainRush.SplitScreen.P2Ai ? 0 : StuntProgress.RecordComboTop(ChastainRush.SplitScreen.Active ? ChastainRush.SplitScreen.NameOf(Player) : PlayerNames.Player, configuration.profileId, total, links, LastComboTricks, Player);   // Round 84: HIGH MODE's own board; Round 37: each player's name; never the AI's
             string top = LastComboPlace > 0 ? $"\nNEW TOP 10 COMBO — #{LastComboPlace}" : "";
             if (bail != null) StuntSay($"BAILED / {bail}\nCOMBO ENDED · x{links} · {total:N0} pts" + top, 4);
             else if (links > 1) StuntSay($"COMBO x{links} / {total:N0} pts" + top, 3.5f);

@@ -198,7 +198,7 @@ namespace ChastainRush
             return "";
         }
         // Round 62: by the name its records are kept under now (a renamed route: "Noonday Creek" is shown as the Noonday Creek Extension), else as saved
-        public string Title => $"{(RaceController.RecordTitles.TryGetValue(recordName ?? "", out var now) ? now : string.IsNullOrEmpty(routeName) ? RaceController.RecordTitle(recordName) : routeName)} {(direction.StartsWith("reverse") ? "reverse" : "forward")}{(direction.Contains("-") ? " (" + direction.Substring(direction.IndexOf('-') + 1) + ")" : "")}";
+        public string Title => (category != null && category.StartsWith(HighMode.RecordPrefix) ? "HIGH · " : "") + $"{(RaceController.RecordTitles.TryGetValue(recordName ?? "", out var now) ? now : string.IsNullOrEmpty(routeName) ? RaceController.RecordTitle(recordName) : routeName)} {(direction.StartsWith("reverse") ? "reverse" : "forward")}{(direction.Contains("-") ? " (" + direction.Substring(direction.IndexOf('-') + 1) + ")" : "")}";
         public string When { get { return DateTime.TryParse(date, null, System.Globalization.DateTimeStyles.RoundtripKind, out var d) ? d.ToLocalTime().ToString("MMM d, yyyy h:mm tt") : date; } }
     }
 }

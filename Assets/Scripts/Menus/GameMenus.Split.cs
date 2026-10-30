@@ -28,6 +28,7 @@ namespace ChastainRush
             if (SplitScreen.P2Device == null) SplitScreen.P2Ai = true;
             VehicleSwitch.LoadSaved(2, out SplitScreen.P2Vehicle, out SplitScreen.P2Colour);
             if (VehicleProfile.IndexOf(SplitScreen.P2Vehicle) < 0) SplitScreen.P2Vehicle = "atv";
+            if (page != "split") HighMode.P1High = HighMode.P2High = HighMode.On;   // Round 84: each player's HIGH MODE starts as the main switch
             if (page != "split") Navigate("split"); else Show();
         }
         // The devices a player slot can take: the keyboard and every connected controller, never the other slot's (null = the AI, player 2)
@@ -38,7 +39,7 @@ namespace ChastainRush
         // A or Start on a controller that no player holds (or Enter on a keyboard nobody holds) joins it as player 2 (Racer's UpdateSplitJoin)
         void UpdateSplitJoin()
         {
-            if (!open || (page != "split" && page != "police") || modal != null) return;   // Round 39: the POLICE page joins player 2 too
+            if (!open || (page != "split" && page != "police" && page != "high-two" && page != "high-chases") || modal != null) return;   // Round 39: the POLICE page joins player 2 too; Round 84: HIGH MODE's two-player pages
             if (SplitScreen.P1Device != null && !SplitScreen.P1Device.added) { SplitScreen.P1Device = null; Show(); return; }
             if (SplitScreen.P2Device != null && !SplitScreen.P2Device.added) { SplitScreen.P2Device = null; SplitScreen.P2Ai = true; Show(); return; }
             foreach (var pad in Gamepad.all) if (!Assigned(pad) && (pad.buttonSouth.wasPressedThisFrame || pad.startButton.wasPressedThisFrame)) { Join(pad); return; }
@@ -73,7 +74,7 @@ namespace ChastainRush
         void UpdateSplitDevices()
         {
             InputDevice who = null;
-            if (open && modal == null && (page == "split" || page == "police")) who = SplitScreen.P1Device;
+            if (open && modal == null && (page == "split" || page == "police" || page == "high-two" || page == "high-chases")) who = SplitScreen.P1Device;
             else if (open && KeyboardPage && keyboardFor == 2) who = SplitScreen.P2Device;
             else if (open && modal == null && splitGarage && (page == "garage" || page == "rider")) who = garagePlayer == 2 && SplitScreen.P2Device != null ? SplitScreen.P2Device : SplitScreen.P1Device;
             if (who != null) { RestrictMenuDevices(who); restricted = true; }
@@ -91,6 +92,7 @@ namespace ChastainRush
             int n = 0;
             Step(n++, "split-p1", "Player 1:   " + (SplitScreen.P1Device == null ? "press A on a controller, or Enter" : SplitScreen.DeviceName(SplitScreen.P1Device)), d => CycleSlot(1, d));
             Step(n++, "split-p2", "Player 2:   " + (SplitScreen.P2Ai ? "AI driver   (A on another controller joins)" : SplitScreen.DeviceName(SplitScreen.P2Device)), d => CycleSlot(2, d));
+            n = PlayerHighRows(n);   // Round 84 (A1): a HIGH MODE row per player (Racer 1.2.0-review2)
             Step(n++, "split-mode", "Mode:   " + SplitModes[(int)mode], d => { SplitScreen.Mode = (SplitScreen.Kind)(((int)SplitScreen.Mode + d + 4) % 4); FixSplitVehicles(); Show(); });
             StepAct(n++, "split-p1-name", "Player 1 name:   " + PlayerNames.Player + "   (A: new name)", d => { var nm = NextKnownName(PlayerNames.Player, d, SplitScreen.P2Ai ? null : SplitScreen.NameOf(2)); if (nm != PlayerNames.Player) { GameSettings.Settings.playerName = nm; if (!CheckRun.Active) GameSettings.SaveSettings(); } Show(); },
                 () => { keyboardFor = 1; OpenNameEntry(PlayerNames.Named ? PlayerNames.Player : "", v => { if (!SplitScreen.P2Ai && v == SplitScreen.NameOf(2)) { keyboardError = "Player 2 already has that name."; return false; } GameSettings.Settings.playerName = v; PlayerNames.Remember(v); if (!CheckRun.Active) GameSettings.SaveSettings(); return true; }, null, "PLAYER 1'S NAME"); });
@@ -177,6 +179,7 @@ namespace ChastainRush
             Clear(finished ? "SPLIT SCREEN / RACE OVER" : ev ? "STUNT EVENT / PAUSED" : "SPLIT SCREEN / PAUSED", missing ?? $"{SplitModes[(int)SplitScreen.Mode]}   ·   {SplitScreen.NameOf(1)} and {SplitScreen.NameOf(2)}   ·   either player's controller works this menu.");
             int n = 0;
             Row(n++, "resume", finished ? "SEE THE RESULTS" : "RESUME", CloseMenu); buttons[0].interactable = missing == null;
+            n = PlayerHighRows(n);   // Round 84 (A1): each player's HIGH MODE (a race: restart, or from the next race; Free Roam: at once)
             if (racing) Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", () => { if (finished) { CloseMenu(); race.StartRace(); } else Confirm("RESTART THE RACE?", "Both players go back to the grid.", "RESTART", () => { CloseMenu(); race.StartRace(); }); });
             if (ev && ev.State != StuntEvent.Phase.Done) Row(n++, "stunt-restart", "RESTART THE EVENT", () => Confirm("RESTART THE STUNT EVENT?", "A new round; the points so far are cleared.", "RESTART", () => { CloseMenu(); ev.Rematch(); }));
             if (!racing && !ev && StuntPark.Current && !SplitScreen.OneView) Row(n++, "split-stunt", "STUNT EVENT FOR TWO", () => { var ss = SplitScreen.Session; CloseMenu(); var rs = car.GetComponent<VehicleRespawn>(); if (rs) rs.PlaceAt(StuntPark.StartPos, StuntPark.Current.startYaw); if (SplitScreen.P2Ai) ss.StuntRide(); StuntEvent.Begin(ss.P1, ss.P2, ss.Activities2); });   // Round 38: an AI player 2 rides the park's lines

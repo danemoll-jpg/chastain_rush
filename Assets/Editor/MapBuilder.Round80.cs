@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -231,20 +231,57 @@ namespace ChastainRush
                     placed.Add((k, Enumerable.Reverse(qk).ToList(), towardLanes, lk.oneway || oneway, lk.width, lk.deck != null && lk.deck.Length == lk.p.Count ? (fwd ? Enumerable.Reverse(lk.deck).ToArray() : lk.deck) : null, lk.id, uS, uN, J));
                 }
             }
+            // Round 84 (B, Dan on the Deck: "the express lane gate was in the middle of the highway as opposed to the entrance"): the median slip ramps
+            // between I-575 and the Express Lanes (564149747, 564154406) leave I-575's own centreline, so 30 m in their gate's arm stood across I-575's
+            // lanes. Now the gate goes at the first place from 30 m in (5 m steps) where its arm and post, shut and open, keep 0.5 m clear of every other
+            // road's pavement (map.json's centrelines and widths); if none does, the clearest place with the arm cut to the ramp's own width
+            var others = new List<(List<Vector2> p, float half, long id)>();
+            foreach (var r in map.roads) if (r.points != null) others.Add((ToPoints(r.points), Mathf.Max(1.5f, r.width * .5f), r.osm_id));
+            if (map.bridges != null) foreach (var b in map.bridges) if (b.points != null) others.Add((ToPoints(b.points), Mathf.Max(1.5f, b.width * .5f), -1));
+            static float SegSeg(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+            {
+                static float PtSeg(Vector2 p, Vector2 s0, Vector2 s1) { var ab = s1 - s0; float t = Mathf.Clamp01(Vector2.Dot(p - s0, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); return (s0 + ab * t - p).magnitude; }
+                float Cross(Vector2 u, Vector2 v) => u.x * v.y - u.y * v.x;
+                float d1 = Cross(b - a, c - a), d2 = Cross(b - a, d - a), d3 = Cross(d - c, a - c), d4 = Cross(d - c, b - c);
+                if (d1 * d2 < 0f && d3 * d4 < 0f) return 0f;
+                return Mathf.Min(Mathf.Min(PtSeg(a, c, d), PtSeg(b, c, d)), Mathf.Min(PtSeg(c, a, b), PtSeg(d, a, b)));
+            }
             foreach (var pl in placed)
             {
                 // q runs from the general road's end toward the lanes: the gate 30 m in from that end (its middle when shorter); f points toward the general end
                 // (local +Z of the gate: the signs face a driver coming from the general road toward the lanes)
                 var q = pl.q; var deck = pl.deck; var oneway = pl.oneway; var width = pl.width; var id = pl.id; bool towardLanes = pl.towardLanes;
                 float len = 0f; for (int i = 1; i < q.Count; i++) len += (q[i] - q[i - 1]).magnitude;
-                float at = Mathf.Min(30f, len * .5f), acc = 0f; Vector2 G = q[0], f = -(q[1] - q[0]).normalized; int seg = 1;
-                for (int i = 1; i < q.Count; i++) { float l = (q[i] - q[i - 1]).magnitude; if (acc + l >= at) { G = Vector2.Lerp(q[i - 1], q[i], (at - acc) / Mathf.Max(l, 1e-4f)); f = -(q[i] - q[i - 1]).normalized; seg = i; break; } acc += l; }
+                (Vector2 G, Vector2 f, int seg) At(float at)
+                {
+                    float acc = 0f; Vector2 g = q[0], ff = -(q[1] - q[0]).normalized; int sg = 1;
+                    for (int i = 1; i < q.Count; i++) { float l = (q[i] - q[i - 1]).magnitude; if (acc + l >= at) { g = Vector2.Lerp(q[i - 1], q[i], (at - acc) / Mathf.Max(l, 1e-4f)); ff = -(q[i] - q[i - 1]).normalized; sg = i; break; } acc += l; }
+                    return (g, ff, sg);
+                }
+                var own = links[pl.li].p; var near = others.Where(o => !(o.id > 0 && o.id == id) && !(o.p.Count == own.Count && (o.p[0] - own[0]).sqrMagnitude < .01f && (o.p[o.p.Count - 1] - own[own.Count - 1]).sqrMagnitude < .01f)
+                                                   && o.p.Any(v => q.Any(w => (v - w).sqrMagnitude < 150f * 150f))).ToList();
+                float Clear(Vector2 g, Vector2 ff, float w)
+                {
+                    var ac = new Vector2(ff.y, -ff.x); var post = g - ac * (w * .5f + .5f); var tip = g + ac * (w * .5f + .2f); var open = post + ff * (w + .4f);
+                    float best = float.MaxValue;
+                    foreach (var o in near) for (int i = 1; i < o.p.Count; i++) best = Mathf.Min(best, Mathf.Min(SegSeg(post, tip, o.p[i - 1], o.p[i]), SegSeg(post, open, o.p[i - 1], o.p[i])) - o.half);
+                    return best;
+                }
+                float W = Mathf.Max(4.5f, width) + 1.2f;
+                float at0 = Mathf.Min(30f, len * .5f), bestAt = at0, bestClear = float.MinValue; bool fits = false;
+                for (float s = at0; s <= Mathf.Max(at0, len - 30f) + .01f; s += 5f)
+                {
+                    var (g, ff, _) = At(s); float c = Clear(g, ff, W);
+                    if (c > bestClear) { bestClear = c; bestAt = s; }
+                    if (c >= .5f) { fits = true; bestAt = s; bestClear = c; break; }
+                }
+                if (!fits) W = Mathf.Max(width, 3.5f) + .4f;
+                var (G, f, seg) = At(bestAt);
                 float y = Ground(terrain, G.x, G.y);
                 if (deck != null && deck.Length == q.Count) y = Mathf.Lerp(deck[seg - 1], deck[seg], .5f);
                 bool usableSouth = pl.usableSouth, usableNorth = pl.usableNorth;
                 // the gate's frame at its post: local +Z out along the ramp (away from the lanes), local +X across it
                 var f3 = new Vector3(f.x, 0f, f.y); var across = Vector3.Cross(Vector3.up, f3).normalized;
-                float W = Mathf.Max(4.5f, width) + 1.2f;
                 var postAt = new Vector3(G.x, y, G.y) - across * (W * .5f + .5f);
                 int no = gates.Count + 1;
                 var gateGo = new GameObject($"Express gate {no}"); gateGo.transform.SetParent(root.transform, false);
@@ -277,7 +314,7 @@ namespace ChastainRush
                 gate.hinge = hinge; gate.arm = armGo; gate.openYaw = -88f;
                 gates.Add(gate);
                 log.Add($"gate {no}: link {(id > 0 ? id.ToString() : "(a deck)")} at ({G.x:0.0}, {G.y:0.0}) {y:0.0} m, {(oneway ? (towardLanes ? "one-way onto the lanes" : "one-way off the lanes") : "two-way")}, used " +
-                        (usableSouth && usableNorth ? "both ways" : usableSouth ? "southbound" : "northbound"));
+                        (usableSouth && usableNorth ? "both ways" : usableSouth ? "southbound" : "northbound") + $", {bestAt:0} m in from the general end, {(bestClear == float.MaxValue ? "no other road near" : $"{bestClear:0.0} m clear of other roads")}{(fits ? "" : " (no clear place: the arm cut to the ramp)")}");
             }
             lanes.gates = gates.ToArray();
             System.IO.File.AppendAllText(System.IO.Path.Combine(ProjectRoot, GeneratedDir, "round80_express_decks.txt"), "\nGates:\n" + string.Join("\n", log) + "\n");

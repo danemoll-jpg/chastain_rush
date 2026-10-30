@@ -133,7 +133,15 @@ namespace ChastainRush
                 return boards;
             }
         }
-        public string BoardCategory => Route != null ? RecordBoards.Category(Route.RecordName, RecordDirection, Route.Laps) : "";
+        public string BoardCategory => CategoryFor(1);
+        // Round 84 (A4): a HIGH MODE player's times go on their own "high-" boards (Racer 1.2), each split-screen player's by their own choice
+        public string CategoryFor(int seat) => Route != null ? RecordBoards.Category((HighFor(seat) ? HighMode.RecordPrefix : "") + Route.RecordName, RecordDirection, Route.Laps) : "";
+        // Round 84 (A): this race is in HIGH MODE (taken at each start and kept until the next: a race keeps the mode it started with; in Free
+        // Roam the switch's, taken whenever the course is loaded)
+        bool high1, high2;
+        public bool High => high1 || high2;
+        public bool HighFor(int seat) => seat == 2 ? high2 : high1;
+        void TakeHighMode() { high1 = SplitScreen.Active ? HighMode.P1High : HighMode.On; high2 = SplitScreen.Active && HighMode.P2High && !SplitScreen.P2Ai; }
         // Round 35 (Part C): Racer's WeatherGrip.RecordTag: a race in rain or snow (with the grip setting On) keeps its times apart ("forward-rain")
         string RecordDirection => Route.Direction + Racer.WeatherGrip.RecordTag(Racer.WeatherGrip.ChosenFor());
         public string RecordDirectionTag => RecordDirection;   // Round 57 (F): a replay's direction as the records key it
@@ -181,6 +189,7 @@ namespace ChastainRush
             carBox = car.GetComponentInChildren<BoxCollider>();
             P.Car = car; P.Box = carBox;
             if (respawn) respawn.Respawned += OnRespawned;
+            HighAssist.Ensure(car, 1); HighBadge.Ensure();   // Round 84 (A): HIGH MODE's forgiving driving (on while it applies) and its badge
             Ghost = gameObject.AddComponent<CleanLapGhost>(); Ghost.Initialize(this, Path.GetDirectoryName(RecordsPath()));   // Round 43 (B1)
             gameObject.AddComponent<ReplayRecorder>();   // Round 57 (F): every race recorded
             var args = Environment.GetCommandLineArgs();
@@ -265,6 +274,9 @@ namespace ChastainRush
             if (!string.IsNullOrEmpty(dir) && !RouteData.Allows(dir)) dir = RouteData.direction;   // Round 18: Noonday Creek is forward only (its jumps face one way)
             Route = RaceRoute.Create(RouteData, dir);
             if (LapsOverride > 0) Route.Laps = LapsOverride;
+            if (State == Stage.Free) TakeHighMode();   // Round 84 (A): in Free Roam the switch's (the records shown are its boards)
+            // Round 84 (A3, this game only: Woodstock Rush has no air races): in a HIGH MODE air race the rings are larger
+            if (Route.Air && High) foreach (var g in Route.Checkpoints.Append(Route.Gate)) { g.Ring *= HighMode.RingScale; g.RingW *= HighMode.RingScale; g.RingH *= HighMode.RingScale; }
             LoadRecords();
             if (markers == null) markers = new GameObject("RaceMarkers").AddComponent<RaceMarkers>();
             if (!markers.GetComponent<AirGuideArrow>()) markers.gameObject.AddComponent<AirGuideArrow>();   // Round 73 (B2): the air race's 3D arrow
@@ -277,6 +289,8 @@ namespace ChastainRush
         public void StartRace()
         {
             if (!enabled || !car) return;
+            TakeHighMode();   // Round 84 (A): the race keeps the mode it starts with
+            if (High && HighMode.WeatherChoice == 3) HighMode.Roll();   // Random: a new weather each race
             LoadRoute(); // picks up a changed direction
             RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
@@ -288,6 +302,7 @@ namespace ChastainRush
             if (State == Stage.Free) wasInputEnabled = input.enabled;
             State = Stage.Countdown; CountdownRemaining = 3f; attempt2 = Guid.NewGuid().ToString("N");
             RemoveAi();
+            if (high1 && (!SplitScreen.Active || high2)) RoadDriver.Difficulty = 0;   // Round 84 (A3): HIGH MODE's rivals are Easy (a mixed split-screen race keeps the setup's)
             PlaceOnGrid();
             P.Reset(); P.Name = SplitScreen.Active ? SplitScreen.NameOf(1) : "YOU";   // Round 37: in split screen each player by name
             Entrants.Clear(); Entrants.Add(P);
@@ -299,6 +314,9 @@ namespace ChastainRush
             barriers.Build(Route);   // closed roads appear with the race ...
             FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
             BuildAiLine();   // Round 70 (B): the AI's racing line, once the barriers stand
+            HighBumpers.Apply(this);   // Round 84 (A3): a HIGH MODE race's gutter bumpers (hidden otherwise)
+            HighAssist.Ensure(car, 1); if (SplitScreen.P2Car) HighAssist.Ensure(SplitScreen.P2Car, 2);
+            if (High) Log($"HIGH MODE race{(SplitScreen.Active ? $" (player 1 {(high1 ? "HIGH" : "normal")}, player 2 {(high2 ? "HIGH" : "normal")})" : "")}: {HighBumpers.Report}");
             Log($"RACE START requested: {Route.Name}, {Route.Direction}, {Route.Laps} laps, lap {Route.LapLength:0} m, {Route.Checkpoints.Count} checkpoints, run-in {Route.RunInLength:0} m, {barriers.Count} road barriers, {Route.Shortcuts.Count} official shortcuts"
                 + (barriers.Seals + barriers.Rails + barriers.Gates.Count > 0 ? $", {barriers.Seals} seals, {barriers.Rails} railings, {barriers.Gates.Count} switch gates" : ""));
             markers.Refresh(this);
@@ -315,6 +333,7 @@ namespace ChastainRush
             input.enabled = true;
             Say("", 0f);
             if (barriers != null) barriers.Clear();   // ... and go away in free driving
+            HighBumpers.Hide();   // Round 84 (A3)
             RaceRoute.Active = null;   // Round 27
             P.ActiveShortcut = null;
             RemoveAi();
@@ -585,7 +604,7 @@ namespace ChastainRush
             if (e.IsPlayer && !NoRecords) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
             if (e.IsPlayer && NoRecords) lapRanks.Add(0);
             else if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
-            else if (e.Seat == 2 && e.IsHuman) Boards.Add(attempt2 + "/lap/" + lapNo, BoardCategory, false, lap, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));   // Round 37: player 2's own, under their name
+            else if (e.Seat == 2 && e.IsHuman) Boards.Add(attempt2 + "/lap/" + lapNo, CategoryFor(2), false, lap, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));   // Round 37: player 2's own, under their name
             string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
             string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
             e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
@@ -596,7 +615,7 @@ namespace ChastainRush
                 else SayTo(e, $"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
-            if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, true, e.CompletedLaps >= Route.Laps, e.Missed.Count == 0 && !NoRecords);   // Round 43 (B1)
+            if (e.IsPlayer && Ghost) Ghost.Boundary(at, crossing, e.Car.Body.rotation, true, e.CompletedLaps >= Route.Laps, e.Missed.Count == 0 && !NoRecords && !high1);   // Round 43 (B1); Round 84: no clean-lap ghost from a HIGH MODE lap (the bumpers)
             GetComponent<ReplayRecorder>()?.Lap(e, lapNo, at - raw, at, e.IsPlayer && lapRanks.Count > 0 ? lapRanks[lapRanks.Count - 1] : 0);   // Round 57 (F): a new #1 lap keeps its replay
             if (e.CompletedLaps >= Route.Laps) { Finish(e, at); return; }
             e.LapStart = at; e.NextCheckpoint = 0; e.LapPenalty = 0f; e.Missed.Clear(); e.Forgiven.Clear(); e.ActiveShortcut = null; e.LapAway = false; e.RingSkipped = -1;
@@ -626,7 +645,7 @@ namespace ChastainRush
             if (e.Seat == 2 && e.IsHuman)
             {
                 // Round 37: player 2's race on the Top 10 under their name (Racer's SplitRace.Record)
-                e.RaceRank = Boards.Add(attempt2 + "/race", BoardCategory, true, e.FinalTotal, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));
+                e.RaceRank = Boards.Add(attempt2 + "/race", CategoryFor(2), true, e.FinalTotal, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));
                 Log(e, $"TOP 10: race {(e.RaceRank > 0 ? "#" + e.RaceRank : "not on the board")}");
                 SayTo(e, $"Finished! Total {Fmt(e.FinalTotal)}", 10f);
             }
@@ -984,7 +1003,7 @@ namespace ChastainRush
 
         // Round 13: kept per vehicle. The Street Classic ("original", the retired prototype's own tuning) keeps the key the
         // records had before, so its best times carry on; every other vehicle adds its id
-        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{Route.RecordName}|{RecordDirection}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
+        string RecordKey { get { string v = car ? car.GetComponent<VehicleConfiguration>()?.profileId : null; return $"{(high1 ? HighMode.RecordPrefix : "")}{Route.RecordName}|{RecordDirection}|{Route.Laps}" + (string.IsNullOrEmpty(v) || v == "original" ? "" : "|" + v); } }
         public void ReloadRecords() { if (Route != null) LoadRecords(); }   // Round 13: after a vehicle switch
 
         public static string RecordsPath()

@@ -33,7 +33,7 @@ namespace Racer
         // the record-key suffix that keeps wet and snow times off the dry boards: "" in Clear and with the setting Off, "-rain" or
         // "-snow" otherwise. `chosen` is the race's own weather (the race setup's), so it holds after the finish too.
         public static string RecordTag(Weather chosen) { Refresh(); return !enabled ? "" : chosen == Weather.Rain ? "-rain" : chosen == Weather.Snow ? "-snow" : ""; }
-        public static Weather ChosenFor() => (Weather)Mathf.Clamp(ChastainRush.GameMenus.Current.weather, 0, 2);   // Chastain Rush: the race setup's weather
+        public static Weather ChosenFor() => ChastainRush.HighMode.LookApplies ? ChastainRush.HighMode.Weather : (Weather)Mathf.Clamp(ChastainRush.GameMenus.Current.weather, 0, 2);   // Chastain Rush: the race setup's weather (Round 84: HIGH MODE's own)
         // the grip under one wheel's contact
         public static float ForHit(Weather weather, Collider collider, Vector3 point)
         {

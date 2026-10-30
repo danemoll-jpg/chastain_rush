@@ -53,11 +53,17 @@ namespace ChastainRush
             body.angularVelocity += transform.forward * Random.Range(-2.5f, 2.5f) + transform.right * Random.Range(-1.5f, 1.5f);
             BreakSounds.Play(body.position, Mathf.Max(10f, body.linearVelocity.magnitude), BreakSounds.Kind.Iron);
             Debug.Log($"[Plane] crash: {why} at ({body.position.x:0.0}, {body.position.y:0.0}, {body.position.z:0.0}), {body.linearVelocity.magnitude:0.0} m/s");
+            // Round 84 (A3, Claude's adaptation: Woodstock Rush has no air races): in a HIGH MODE air race no crash: the plane is put back flying at once
+            var rc = RaceController.Instance;
+            if (rc && rc.AirRace && rc.State == RaceController.Stage.Racing && HighMode.ForVehicle(car) && rc.AirReset(this)) { HighCrashes++; Debug.Log("[Plane] HIGH MODE: back in the air at once"); }
         }
+        public static int HighCrashes { get; private set; }   // checks (Round 84)
+        // Round 84 (A3): HIGH MODE's quicker reset (Free Roam): the crash's wait shorter
+        float CrashWait => HighMode.ForVehicle(car) ? 1f : CrashFor;
         void CrashStep(float dt)
         {
             var body = car.Body; body.useGravity = true; body.AddForce(-body.linearVelocity * .5f, ForceMode.Acceleration);
-            if (Time.time - crashedAt < CrashFor) return;
+            if (Time.time - crashedAt < CrashWait) return;
             if (RaceController.Instance && RaceController.Instance.AirReset(this)) return;   // Round 71: in the air race, back in the air before the last ring
             PutOnStrip();
             Recovered();

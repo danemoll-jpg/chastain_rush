@@ -167,6 +167,7 @@ namespace ChastainRush
         public List<Entry> Top(string jump) => Load().entries.Where(e => e.jump == jump).OrderByDescending(e => e.distance).Take(10).ToList();
         int Add(Jump j, ArcadeVehicle c, float dist, float height, float air, string landing)
         {
+            if (HighMode.ForVehicle(c)) return 0;   // Round 84 (Racer 1.2): a HIGH MODE jump is not put on the (normal) Top 10
             var b = Load(); var cfg = c.GetComponent<VehicleConfiguration>();
             var e = new Entry { jump = j.id, vehicle = cfg ? cfg.profileId : "original", name = PlayerNames.Player, landing = landing, date = DateTime.UtcNow.ToString("o"), distance = dist, height = height, air = air };
             b.entries.Add(e);

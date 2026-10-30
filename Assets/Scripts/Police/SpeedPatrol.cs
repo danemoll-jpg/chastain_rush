@@ -225,6 +225,7 @@ namespace Racer
             Places.Clear(); var board = PoliceKit.Load<Board>(BoardFile);
             foreach (var c in Cops)
             {
+                if (HighMode.ForPlayer(c.player)) { Places.Add(0); continue; }   // Round 84 (Racer 1.2): HIGH MODE patrols are not put on the (normal) Top 10
                 var e = new Entry { name = PoliceKit.NameOf(c.player), points = c.points, catches = c.catches, minutes = PoliceSetup.Minutes, date = System.DateTime.Now.ToString("yyyy-MM-dd") };
                 board.entries.Add(e); var top = board.entries.Where(x => x.minutes == e.minutes).OrderByDescending(x => x.points).ThenBy(x => board.entries.IndexOf(x)).Take(10).ToList();
                 Places.Add(top.IndexOf(e) + 1);

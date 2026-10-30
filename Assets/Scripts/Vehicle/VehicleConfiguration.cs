@@ -150,7 +150,7 @@ namespace Racer
             bool needsHelp=transform.up.y<.35f && motor.Body.linearVelocity.magnitude<5;
             overturned=needsHelp?overturned+Time.fixedDeltaTime:0;
             upright=transform.up.y>.7f && motor.GroundedWheels>=2?upright+Time.fixedDeltaTime:0;
-            if(overturned>1.2f && !WipedOut) Wipeout();
+            if(overturned>1.2f && !WipedOut && !ChastainRush.HighAssist.For(motor)) Wipeout();   // Round 84 (A): Racer 1.2: no wrecks in HIGH MODE (it flips itself upright)
             if(upright>.35f && WipedOut) Recover();   // Chastain Rush: no RaceFlow recovery message
         }
         void Wipeout()

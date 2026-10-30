@@ -40,6 +40,8 @@ namespace Racer
         // Chastain Rush, Round 57 (F): a race replay's puppet (ReplayViewer): kinematic, its speed and steering from the recording, so the wheels,
         // the front end, the lean, the rider's arms and its engine follow them
         [System.NonSerialized] public bool Puppet; [System.NonSerialized] public float PuppetSpeed, PuppetSteer;
+        // Chastain Rush, Round 84 (A): Racer 1.2 HIGH MODE (HighAssist): a flight levels itself more, so landings come down straighter
+        [System.NonSerialized] public bool Forgiving;
         public Rigidbody Body { get; private set; }
         VehicleInput input;
         float steer;
@@ -206,7 +208,7 @@ namespace Racer
             if (playerStep) input.AirActive = airControl > 0 && GroundedWheels == 0;
             float tip = air ? input.AirPitch : aiAir ? AiAirInput.x : 0, rollInput = air ? steering : aiAir ? AiAirInput.z : 0, spin = air ? input.AirSpin : aiAir ? AiAirInput.y : 0;
             AirSteering = aiAir || air && (Mathf.Abs(tip) > .1f || Mathf.Abs(rollInput) > .1f || Mathf.Abs(spin) > .1f);
-            float level = grounded ? 1 : AirSteering ? 0 : airStability;
+            float level = grounded ? 1 : AirSteering ? 0 : Forgiving ? Mathf.Max(airStability, .5f) : airStability;   // Round 84 (A): Racer 1.2's HIGH MODE
             AlignmentTorque = ((tilt * uprightStrength - tiltVelocity * uprightDamping) * level).magnitude;
             Body.AddTorque((tilt * uprightStrength - tiltVelocity * uprightDamping) * level, ForceMode.Acceleration);
             if (AirSteering)

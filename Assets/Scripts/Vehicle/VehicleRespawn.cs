@@ -12,6 +12,8 @@ namespace Racer
         public Transform spawnPoint;
         public float fallResetHeight = -15;
         public event Action Respawned;
+        // Chastain Rush, Round 84 (A): true while Respawned runs for a reset (R / Y, a crash); false for a placement (the grid, map travel): HighPrompt counts resets only
+        public bool ByReset { get; private set; }
         // Chastain Rush, Round 10
         public delegate bool RecoverFn(VehicleRespawn respawn, out Vector3 position, out float yawDegrees);
         public static RecoverFn Recover;
@@ -53,10 +55,12 @@ namespace Racer
             bool crashed = resetAt > 0f && Time.time >= resetAt; if (crashed) resetAt = -1f;
             if (input.ConsumeReset() || crashed)
             {
+                ByReset = true;
                 if (Recover != null && Recover(this, out var rp, out var ry)) Place(rp, Quaternion.Euler(0, ry, 0));
                 // Round 73 (C3): never back onto the very spot the car is stuck at; the start (the map's spawn) then
                 else if ((safePosition - vehicle.Body.position).magnitude > 4f) Place(safePosition, safeRotation);
                 else Place(startPosition, startRotation);
+                ByReset = false;
                 return;
             }
             RecordSafePose();
@@ -81,7 +85,7 @@ namespace Racer
         }
 
         // Chastain Rush, Round 78 (A): hit by a train: put back as R does, after a moment (the crash is seen)
-        public void ResetSoon(float delay) { if (resetAt < 0f) resetAt = Time.time + delay; }
+        public void ResetSoon(float delay) { if (resetAt < 0f) resetAt = Time.time + (ChastainRush.HighAssist.For(vehicle) ? delay * .5f : delay); }   // Round 84 (A): HIGH MODE's quicker reset
 
         // Chastain Rush, Round 5: the race puts the car on its grid with this. It also makes that pose the one R returns to,
         // so a reset right after a restart cannot send the car back to wherever it last stood before the race.

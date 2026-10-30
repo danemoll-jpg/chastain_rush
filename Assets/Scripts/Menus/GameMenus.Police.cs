@@ -19,6 +19,7 @@ namespace ChastainRush
             if (SplitScreen.P1Device == null || !SplitScreen.P1Device.added) SplitScreen.P1Device = opener;
             if (SplitScreen.P2Device != null && (!SplitScreen.P2Device.added || SplitScreen.P2Device == SplitScreen.P1Device)) SplitScreen.P2Device = null;
             if (SplitScreen.P2Device == null) SplitScreen.P2Ai = true;
+            HighMode.P1High = HighMode.P2High = HighMode.On;   // Round 84: the full POLICE setup uses the main switch for both players (Racer 1.2.0-review2)
             Navigate("police");
         }
         bool PoliceReady => !PoliceSetup.Two || (PoliceSetup.Mode == PoliceSetup.Game.Getaway && PoliceSetup.P2AiRunner) || (SplitScreen.P1Device != null && SplitScreen.P2Device != null && !SplitScreen.P2Ai);

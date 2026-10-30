@@ -211,7 +211,7 @@ namespace Racer
         public sealed class TrailerConditions { public float hour; public Weather weather; public float phase; public bool paused; }
         public TrailerConditions Trailer { get; set; }
         // The hour the sky shows now (the Trailer Mode hour while one is set).
-        public float LookHour => Trailer != null && Mode == "Free Roam" ? Trailer.hour : Hour;
+        public float LookHour => Trailer != null && Mode == "Free Roam" ? Trailer.hour : Mode == "Free Roam" && ChastainRush.HighMode.LookApplies && ChastainRush.HighMode.FixedHour >= 0 ? ChastainRush.HighMode.FixedHour : Hour;   // Round 84: Racer 1.2's HIGH MODE hour
         public static float PhaseOf(int day, float hour) => Mathf.Repeat((day - 1 + hour / 24f) / CalendarDays, 1);
         public static float Illumination(float phase) => (1 - Mathf.Cos(phase * 2 * Mathf.PI)) * .5f;
         public string Clock => $"{Mathf.FloorToInt(Hour) % 24:00}:{Mathf.FloorToInt(Hour * 60) % 60:00}";
@@ -257,6 +257,9 @@ namespace Racer
             var race = ChastainRush.GameMenus.Current;
             RaceTime = (TimeOfDay)Mathf.Clamp(race.timeOfDay, 0, 3); RaceWeather = (Weather)Mathf.Clamp(race.weather, 0, 2);
             RoamWeather = (Weather)Mathf.Clamp(s.roamWeather, 0, 2);
+            // Racer 1.2 HIGH MODE: its TIME & WEATHER (split screen keeps its own setup's). Chastain Rush, Round 84
+            bool high = ChastainRush.HighMode.LookApplies;
+            if (high) { RaceTime = ChastainRush.HighMode.RaceTime; RaceWeather = RoamWeather = ChastainRush.HighMode.Weather; }
             var rc = ChastainRush.RaceController.Instance;
             string was = session;
             session = rc && rc.State != ChastainRush.RaceController.Stage.Free ? "Race" : "Free Roam";
@@ -271,6 +274,7 @@ namespace Racer
                 if (!Trailer.paused) Trailer.hour = Mathf.Repeat(Trailer.hour + Time.deltaTime / 60f * FreeRoamHoursPerRealMinute, 24);
                 Apply(Cycle(Trailer.hour, Trailer.weather, Trailer.phase)); applied = "Trailer";
             }
+            else if (Mode == "Free Roam" && high && ChastainRush.HighMode.FixedHour >= 0) { Apply(Cycle(ChastainRush.HighMode.FixedHour, RoamWeather, MoonPhase)); applied = "Free Roam"; }   // Racer 1.2: the clock stands still and is not saved
             else if (Mode == "Free Roam")
             {
                 float h = Hour + Time.deltaTime / 60f * FreeRoamHoursPerRealMinute;   // scaled time: the clock stands while a menu pauses the game

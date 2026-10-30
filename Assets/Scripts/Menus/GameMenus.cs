@@ -64,6 +64,8 @@ namespace ChastainRush
             RaceController.DirectionOverride = Current.direction;
             RaceController.AiCount = Current.opponents ? 3 : 0;
             RoadDriver.Difficulty = Current.difficulty;
+            // Round 84 (A2): a HIGH MODE race is the course's own laps against 3 Easy rivals (the saved race setup is kept for normal mode)
+            if (HighMode.On && !SplitScreen.Active) { RaceController.LapsOverride = 0; RaceController.AiCount = 3; RoadDriver.Difficulty = 0; }
         }
 
         // ---------------------------------------------------------------- boot
@@ -107,6 +109,8 @@ namespace ChastainRush
             Build();
             StuntEvent.Finished += ShowStuntResults;   // Round 36 (A1)
             PoliceSession.Finished += ShowPoliceResults;   // Round 39 (Part D)
+            EnsureHighPrompt(); HighBadge.Ensure();   // Round 84 (A): "Would you like to play HIGH MODE?" and the HIGH badge
+            if (HighMode.On && HighMode.WeatherChoice == 3) HighMode.Roll();
             OpenMenu(true);
             AskNameOnce();   // Round 34 (C2): Racer's welcome
             StartupTitle.Begin();   // Round 51 (Part A): Dan's cover, the spoken title and the theme over the title menu
@@ -163,7 +167,7 @@ namespace ChastainRush
         void LateUpdate()
         {
             if (!started) return;
-            UpdateShell(); UpdateGaragePreview(); UpdateBindingRows();
+            UpdateShell(); UpdateGaragePreview(); UpdateBindingRows(); UpdateMinis();   // Round 84: HIGH MODE's VEHICLE previews
             if (open && modal == null && EventSystem.current && !EventSystem.current.currentSelectedGameObject)
             { var first = buttons.FirstOrDefault(b => b.gameObject.activeInHierarchy && b.interactable); if (first) EventSystem.current.SetSelectedGameObject(first.gameObject); }
         }
@@ -315,16 +319,18 @@ namespace ChastainRush
         readonly Dictionary<int, Action<int>> adjustments = new();
         readonly MenuActionRegistry registry = new();
         string modal, modalMessage, modalLabel; Action modalConfirm;
+        string modalNoLabel; Action modalNo;   // Round 84: Racer's two-answer confirm (RESTART / KEEP RACING, YES / NO); B is the second answer
 
         void Navigate(string next) { CapturePage(); pages.Push(page); page = next; MenuInput.ConsumeThroughRelease(); Show(); }
         void BackPage()
         {
-            if (modal != null) { modal = null; MenuInput.ConsumeThroughRelease(); Show(); return; }
+            if (modal != null) { var no = modalNo; modal = null; modalNo = null; MenuInput.ConsumeThroughRelease(); if (no != null) no(); else Show(); return; }
             if (KeyboardPage) { CloseKeyboard(false); return; }   // Round 34
             if (pages.Count > 0) { CapturePage(); page = pages.Pop(); MenuInput.ConsumeThroughRelease(); Show(); return; }
             if (!title) CloseMenu();
         }
-        void Confirm(string head, string message, string label, Action commit) { CapturePage(); modal = head; modalMessage = message; modalLabel = label; modalConfirm = commit; MenuInput.ConsumeThroughRelease(); Show(); }
+        void Confirm(string head, string message, string label, Action commit) { CapturePage(); modal = head; modalMessage = message; modalLabel = label; modalConfirm = commit; modalNoLabel = null; modalNo = null; MenuInput.ConsumeThroughRelease(); Show(); }
+        void Confirm2(string head, string message, string yesLabel, Action yes, string noLabel, Action no) { Confirm(head, message, yesLabel, yes); modalNoLabel = noLabel; modalNo = no; Show(); }
         string PageKey => (title ? "title/" : race && race.State != RaceController.Stage.Free ? "race/" : "free/") + page;
         string renderedKey = "";   // the page on screen (Racer's renderedKey): its focus is remembered under its own key
         void CapturePage() { var cur = EventSystem.current ? EventSystem.current.currentSelectedGameObject : null; if (renderedKey != "" && cur && cur.transform.IsChildOf(content)) pageMemory[renderedKey] = cur.name; }
@@ -379,7 +385,7 @@ namespace ChastainRush
             renderedKey = "";
             if (!open) return;
             ResetSplitRowColors();   // Round 37: the split page's player rows are colored
-            if (modal != null) { Clear(modal, modalMessage); Row(0, "confirm", modalLabel, () => { var c = modalConfirm; modal = null; c(); }); Row(1, "cancel", "Cancel", () => { modal = null; Show(); }); }
+            if (modal != null) { Clear(modal, modalMessage); Row(0, "confirm", modalLabel, () => { var c = modalConfirm; modal = null; modalNo = null; c(); }); Row(1, "cancel", modalNoLabel ?? "Cancel", () => { var no = modalNo; modal = null; modalNo = null; if (no != null) no(); else Show(); }); }
             else Render();
             // up / down follow the rows as drawn (Racer 0.91 Part A)
             var active = buttons.Where(b => b.gameObject.activeSelf && b.interactable).OrderBy(DrawnOrder).ToList();   // Round 34: rows in groups by their group's place
@@ -399,6 +405,7 @@ namespace ChastainRush
             var stage = race ? race.State : RaceController.Stage.Free;
             ClearBindingRows();   // Round 27: the Controls page's glyphs
             if (page == "music" || page == "library" || SettingsPage) { RenderSettings(); return; }   // Round 27 (C1)
+            if (RenderHighPages()) return;   // Round 84 (A): HIGH MODE's pages (GameMenus.High.cs)
             switch (page)
             {
                 case "race": RenderRaceSetup(); return;
@@ -422,27 +429,33 @@ namespace ChastainRush
             }
             if (!title && stage == RaceController.Stage.Free && PoliceSession.Running) { RenderPolicePause(); return; }   // Round 39: before the split pause (the mode owns its split)
             if (!title && SplitScreen.Active && !(stage == RaceController.Stage.Free && StuntEvent.Current && StuntEvent.Current.State == StuntEvent.Phase.Done)) { RenderSplitPause(); return; }   // Round 37
+            if (title && HighMode.On) { RenderHighMain(); return; }   // Round 84 (A2): HIGH MODE's menu (fewer choices)
             if (title)
             {
                 Clear("CHASTAIN RUSH", "Chastain Glen, Marietta, Georgia.   " + (race ? race.Route.Name + ", " + Current.laps + " laps" : ""));
-                Row(0, "race", "RACE", () => Navigate("race"));
-                Row(1, "roam", "FREE ROAM", () => { title = false; LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
-                RoamWeatherRow(2);   // Round 35 (Part C)
-                Row(3, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
-                Row(4, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D)
-                Row(5, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
-                Row(6, "garage", "GARAGE", () => OpenGarage("roam"));
-                Row(7, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
-                Row(8, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
-                Row(9, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
-                Row(10, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
+                int t = 0;
+                HighRow(t++);   // Round 84 (A1): HIGH MODE: OFF, the top row
+                Row(t++, "race", "RACE", () => Navigate("race"));
+                Row(t++, "roam", "FREE ROAM", () => { title = false; LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); CloseMenu(); LoadingScreen.Started(); });   // Round 51 (B): behind the cover
+                RoamWeatherRow(t++);   // Round 35 (Part C)
+                Row(t++, "stunt", "STUNT EVENT", OpenStuntSetup);   // Round 36 (A1): Racer's main menu > FREE ROAM > STUNT EVENT
+                Row(t++, "police", "POLICE", OpenPoliceSetup);   // Round 39 (Part D)
+                Row(t++, "split", "SPLIT SCREEN", OpenSplitSetup);   // Round 37: Racer's main menu > SPLIT SCREEN
+                Row(t++, "garage", "GARAGE", () => OpenGarage("roam"));
+                Row(t++, "records", "RECORDS", OpenRecords);   // Round 34 (C3)
+                Row(t++, "replays", "REPLAYS", OpenReplays);   // Round 57 (F)
+                Row(t++, "settings", "SETTINGS", () => Navigate("settings-audio"));   // Round 27 (C1): the Screen row is on its Display page
+                Row(t++, "quit", "QUIT GAME", () => Confirm("QUIT CHASTAIN RUSH?", "", "QUIT", Quit));
                 return;
             }
             if (stage == RaceController.Stage.Free && StuntEvent.Current) { RenderStuntPause(); return; }   // Round 36 (A1)
+            if (stage == RaceController.Stage.Free && HighMode.On) { RenderHighMain(); return; }   // Round 84 (A2)
+            if (stage != RaceController.Stage.Free && race.High) { RenderHighRacePause(); return; }   // Round 84 (A2): a HIGH MODE race's pause and results
             if (stage == RaceController.Stage.Free)
             {
                 Clear("PAUSED", "Free roam" + (StuntPark.Current && car && StuntPark.Inside(car.Body.position, 30) ? "  ·  " + StuntPark.Title : "") + EggLine);   // Round 48: the egg count
                 int fr = 0;
+                HighRow(fr++);   // Round 84 (A1)
                 Row(fr++, "resume", "RESUME", CloseMenu);
                 RoamWeatherRow(fr++);   // Round 35 (Part C)
                 Row(fr++, "race", "RACE", () => Navigate("race"));
@@ -464,6 +477,7 @@ namespace ChastainRush
             Clear(finished ? "RACE OVER" : "PAUSED", race.Route.Name + ", " + race.Route.Laps + " laps, " + race.Route.Direction + (RaceController.AiCount > 0 ? (race.Route.Air ? ", 3 AI pilots" : ", 3 AI drivers") : race.Route.Air ? ", time trial" : ", solo"));
             int n = 0;
             if (!finished) Row(n++, "resume", "RESUME", CloseMenu);
+            HighRow(n++);   // Round 84 (A1): switchable from pause (a race asks restart or keep racing)
             if (race.CanSimulateRemaining) Row(n++, "complete", "COMPLETE RACE", () => { race.CompleteRace(); CloseMenu(); });   // Round 54 (C)
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
             Row(n++, "setup", "RACE SETUP", () => Navigate("race"));
@@ -647,6 +661,8 @@ namespace ChastainRush
 
         void StartRace()
         {
+            if (highPending != null && vehicles && race && race.State != RaceController.Stage.Countdown && race.State != RaceController.Stage.Racing) { vehicles.Select(highPending, VehicleSwitch.Pick.Roam); highPending = null; EnsureRouteVehicle(); }   // Round 84: HIGH MODE's VEHICLE chosen during the race
+            else if (highPending != null && vehicles && race) { race.EndRace(); vehicles.Select(highPending, VehicleSwitch.Pick.Roam); highPending = null; EnsureRouteVehicle(); }
             ApplySettings();
             StuntEvent.End();   // Round 36: a race ends the Stunt event
             title = false; CloseMenu();

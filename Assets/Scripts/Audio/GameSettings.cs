@@ -54,6 +54,10 @@ namespace Racer
             public bool splitLeftRight;
             public string player2Name = "";
             public RiderLook rider2 = new();
+            // Racer 1.2 (RacerSave.Options.highMode / highTime / highWeather): HIGH MODE on or off (the game starts in the mode last used), and its
+            // TIME & WEATHER (time: 0 Morning, 1 Day, 2 Sunset, 3 Night, 4 Day cycle; weather: 0 Clear, 1 Rain, 2 Snow, 3 Random). Chastain Rush, Round 84
+            public bool highMode;
+            public int highTime = 4, highWeather = 0;
         }
 
         static Options current;

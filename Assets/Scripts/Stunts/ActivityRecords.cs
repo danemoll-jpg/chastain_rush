@@ -33,6 +33,7 @@ namespace Racer
         public List<Entry> Board(string[] keys)=>Archive.entries.Where(e=>keys.Contains(e.key)).OrderByDescending(e=>e.value).Take(10).ToList();
         public bool Add(Entry e,bool save=true)
         {
+            if(ChastainRush.HighMode.Now)return false;   // Round 84 (Racer 1.2): nothing done in HIGH MODE goes on the Free Roam activity boards
             if(Error!=null||string.IsNullOrEmpty(e.id)||!float.IsFinite(e.value)||e.value<=0||Archive.entries.Any(x=>x.id==e.id))return false;
             Archive.entries.Add(e);
             var keep=Board(e.key);Archive.entries.RemoveAll(x=>x.key==e.key&&!keep.Contains(x));
