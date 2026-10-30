@@ -69,11 +69,10 @@ namespace ChastainRush
             var bumpers = FindObjectsByType<MeshCollider>(FindObjectsSortMode.None).Where(c => HighBumpers.IsBumper(c) && c.enabled && c.gameObject.activeInHierarchy).ToList();
             var own = car.GetComponentsInChildren<Collider>().Where(c => !c.isTrigger && c.enabled).ToList();
             var run = new HumanRun(); bool flown = false, down = false; float downAt = -1f, airNow = 0f; bool shotIn = false, shotAir = false, shotDown = false; var lipFlat = Flat(j.lipAt);
-            float lipS = 140f, landS = 140f + Mathf.Max(0f, j.land - j.lip);
-            var cum = Cum(line);
+            var cum = Cum(line); float lipS = Project(line, cum, j.lipAt, out _), landS = lipS + Mathf.Max(0f, j.land - j.lip), sNow = 0f;
             yield return HumanDrive(line, 40f, 40f, run, () =>
             {
-                var p = car.Body.position; float s = ProjectNear(line, cum, p, 0f, out _);
+                var p = car.Body.position; sNow = ProjectNear(line, cum, p, sNow, out _); float s = sNow;
                 res.top = Mathf.Max(res.top, car.Body.linearVelocity.magnitude);
                 if (pics != null && !shotIn && s > lipS - 40f) { shotIn = true; StartCoroutine(Capture(pics + "_runin")); }
                 if (car.GroundedWheels == 0 && s > lipS - 15f) { airNow += Time.fixedDeltaTime; if (airNow > .3f) flown = true; res.air = Mathf.Max(res.air, airNow); if (pics != null && !shotAir && airNow > .6f) { shotAir = true; StartCoroutine(Capture(pics + "_air")); } }
