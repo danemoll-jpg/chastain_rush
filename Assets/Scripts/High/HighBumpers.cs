@@ -40,7 +40,7 @@ namespace ChastainRush
         public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
         public static string DumpTo;   // checks: where the probed profiles go
-        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f;
+        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f, CrossClear = 7f;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
         static readonly Dictionary<string, GameObject> built = new();
@@ -243,6 +243,21 @@ namespace ChastainRush
             }
             bool Gap(int line, float s) => gap.TryGetValue(line, out var o) && o[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, o.Length - 1)];
             float Funnel(int line, float s) => funnel.TryGetValue(line, out var o) ? o[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, o.Length - 1)] : 0f;
+            // another line's jump flies over or lands here (a shortcut's jump coming down where it rejoins the lap): no bumper within CrossClear of its
+            // flight, from the lip to RunOut past its landing
+            bool UnderFlight(int line, Vector3 w)
+            {
+                var q = new Vector2(w.x, w.z);
+                foreach (var jp in Jumps)
+                {
+                    if (jp.line == line) continue;
+                    var a = new Vector2(jp.lipAt.x, jp.lipAt.z); var b = new Vector2(jp.landAt.x, jp.landAt.z); var ab = b - a;
+                    if (ab.sqrMagnitude > 1e-4f) b += ab.normalized * RunOut; ab = b - a;
+                    float t = ab.sqrMagnitude < 1e-4f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
+                    if ((a + ab * t - q).sqrMagnitude < CrossClear * CrossClear && Mathf.Abs(w.y - Mathf.Lerp(jp.lipAt.y, jp.landAt.y, t)) < 12f) return true;
+                }
+                return false;
+            }
 
             var material = BumperMaterial();
             if (!bounce) bounce = new PhysicsMaterial("HIGH MODE bumper") { bounciness = 0f, bounceCombine = PhysicsMaterialCombine.Minimum,   // Round 85: WallGlance turns a vehicle off it (was a 0.3 bounce)
@@ -281,6 +296,7 @@ namespace ChastainRush
                     if (!Surface(p + outward * d, roadY, out float y) || y < roadY - 1f) { edge = Mathf.Max(2.2f, d - .3f); break; }   // the ground drops away here
                 w = p + outward * edge; w.y = roadY;
                 if (Open(w, line, s, p, outward)) { Openings++; return false; }
+                if (UnderFlight(line, w)) { if (side < 0 && !wrap) JumpStations++; return false; }   // Round 86: under another line's jump
                 return wrap || !Duplicate(w, owner, s, l.length);
             }
         }
