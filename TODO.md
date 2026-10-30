@@ -114,6 +114,53 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 84, HIGH MODE FROM WOODSTOCK RUSH; the Express gate in the middle of the highway (Dan, 2026-10-30 03:21, after driving 0.83.0 a bit on the Steam Deck).**
+Rounds 82 and 83 were driven briefly; Dan reviews them fully later. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's
+remaining road failures wait (QUEUED): Dan: "On this round, before continuing fixing roads can we add high mode from Woodstock rush".
+A. HIGH MODE, PORTED. Bring over Woodstock Rush's HIGH MODE (Racer is read only; its spec and results: `Racer/PROJECT_TODO_ARCHIVE.md` "Previous delivery — HIGH MODE"
+   and the 1.2.0-review2 addition; code `HighMode.cs`, `HighBumpers.cs`, HighAssist, `RaceMenus.High.cs`, `RaceMenus.Split.cs`, and the later fixes in
+   `Racer/PROJECT_TODO.md` that mention HIGH MODE). Port the finished code rather than rewriting; list what came with it. As there:
+   1. HIGH MODE: ON / OFF as the main menu's top row (A or left / right), remembered, a HIGH badge on the menu and HUD; switchable from pause (a race asks restart or
+      keep racing); split screen: a row per player.
+   2. Fewer choices: HIGH MODE, (RESUME DRIVING), FREE ROAM, RACE (pick a track and go: default laps, Easy rivals), CHASES & STUNTS (one page: this game's police modes and
+      stunt events, each starting at once with defaults), VEHICLE (one scrolling row with pictures and stat bars, also in pause and on race results), TIME & WEATHER,
+      REPLAYS, SETTINGS, QUIT. Everything unlocked; nothing done in HIGH MODE unlocks anything in normal mode, except goose eggs, which count in every mode (as
+      Woodstock Rush's acorns ended up).
+   3. Forgiving: gutter bumpers along both edges of every car race course and its shortcuts, HIGH races only (openings where a shortcut, the rivals' line or a traffic
+      road crosses or joins; drawn and solid only for a HIGH player); no wrecks from landings, upright after 1 s; quicker reset; hits cost half; rivals Easy.
+      The air races (this game only, Claude's adaptation, say what was done): rings larger and no crash (a plane that hits the ground or a building is put back
+      flying at once).
+   4. HIGH records on their own boards, marked HIGH; replays marked HIGH; a HIGH tab on the records screen.
+   5. In normal mode, 3 wrecks or resets in 2 minutes or 2 in one lap asks "Would you like to play HIGH MODE?" Yes / No (No: once a session).
+   Controller first, only the device being played shown, readable at 1280 x 800 (the Deck).
+   Check: the menu by controller at 4K and 1280 x 800 (a picture of each HIGH page); one HIGH lap of the Kennesaw Mountain trails and the Noonday Creek Extension steering
+   into the edges: stays on the course; a crooked landing: HIGH upright, normal wrecks; an air race in HIGH flown into the ground: back flying; a HIGH record on the HIGH
+   board only; the prompt after forced wrecks; a test save only, never Dan's.
+B. THE EXPRESS GATE IN THE MIDDLE OF THE HIGHWAY. Dan saw on the Deck (no bug report possible there): "the express lane gate was in the middle of the highway as opposed
+   to the entrance". Find it: for every Express gate, check its arm stands across its own ramp only, at the ramp's general-road end (Round 81 B), never across a lane of
+   I-75, I-575, the Express Lanes or any through road; Round 83's wall and ramp changes may have moved a ramp's line under a gate. Fix every one that is wrong. Check: a
+   picture of every gate from the driver's seat, and each driven past on the highway beside it at speed (no gate met).
+Check: item 0 for every item. Build: one full Build Map only if B needs the world rebuilt (quick builds otherwise). PUBLISH through the launcher (Dan plays on the Deck).
+For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase); the Express gates.
+
+## QUEUED rounds
+**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
+(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
+437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
+(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 83
+**Driven briefly by Dan on the Steam Deck 2026-10-30 (one note, Round 84 B); full review of 82 and 83 later.**
 **Round 83, ROUND 82's KNOWN-BROKEN ITEMS (Dan, 2026-10-29 17:05: "lets go ahead and have it take care of these. I will review everythng a little later").** Round 82 is
 not yet driven by Dan (he reviews 82 and 83 together). Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round
 clean-up apply. Round 82's note on the tuning limit stands: these are bugs (stuck, walls, humps, roads too low), not numbers to tune. Short results.
@@ -147,18 +194,7 @@ E DONE (on Dan's OK, 2026-10-30): the 0.81 release folders deleted, 10.0 GB free
 Published: `game-8300` (0.83.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 00:45 (build 3 + the walls' quick builds). Disk (project folders) 42.6 -> 42.0 GB; Builds 9.3 GB after E.
 For Dan to check: the I-75 Express Lanes southbound at the I-575 merge and at the Frey Road deck; Skip Spann; Frey Road; the ramp by the Canton Road Connector; Greers Chapel's median; the places listed under D.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 82
+## Previous delivery 2: Round 82
 **Not yet driven by Dan: he asked for its known-broken items to be done first (Round 83) and reviews both together.**
 **Round 82, THE EXPRESS LANES DONE PROPERLY (bridges over roads, no dips, no walls across them), roads under highways, the rail bridge's end, the Glen fence
 (Dan, 2026-10-29 09:40; reports BUG-001 to BUG-008 of session `2026-10-29_09-12-54-968_3aae2d` (BUG-004 repeats BUG-003), read by Claude, after the Round 81 build).**
@@ -223,7 +259,7 @@ New rule copied into CLAUDE.md (one heavy job at a time, Below Normal, 3 Build M
 Published: `game-8200` (0.82.0, Latest) on `danemoll-jpg/chastain-rush-releases`, from build 5; the installed launcher picks it up. Disk 33.1 -> 32.8 GB (Builds 17.9 GB: the 0.81 release folders are still there).
 For Dan to check: Greers Chapel (BUG-005), the Big Shanty ramp, the rail at BUG-008, the Glen fence, I-575's Express Lanes. Known broken: the I-75 Express Lanes at the I-575 junction merge, Skip Spann Connector, Frey Road, the 2 short crossings.
 
-## Previous delivery 2: Round 81
+## Previous delivery 3: Round 81
 **Reviewed: Dan drove it 2026-10-29 09:12 (free roam and the Glen loop); his notes are Round 82.**
 **Round 81, THE I-75 / I-575 JUNCTION AND ITS EXPRESS LANES AS THE REAL ONE, THE GATES ON THE RAMPS, and Dan's other reports (Dan, 2026-10-29 02:39; reports
 BUG-001 to BUG-010 of session `2026-10-29_01-57-15-107_610675`, read by Claude, after the Round 80 build; Dan's three aerial photos of the junction (Google Maps,
@@ -319,77 +355,6 @@ K DONE, PUBLISHED to `danemoll-jpg/chastain-rush-releases` (Dan made the repo): 
 1.37 GB, no soundtrack: game + soundtrack pass 2 GiB; not Latest), `game-8101` (0.81.1, Latest). Proven from GitHub (`launcher_published/`): the downloaded ZIP (SHA-256 matched)
 installed 0.81.0, its first start fetched the soundtrack and started the game (handshake PASS); after 0.81.1 was published the same launcher updated itself (saves backed up, 0.81.0 kept).
 For Dan to check: install from starter-8100 on the PC and the Deck (README inside); the junction and the Express Lanes (EL13, Big Shanty, the merge wall); the Glen shortcut; BUG-006's median; the Deck.
-
-## Previous delivery 3: Round 80
-**Reviewed: Dan drove it 2026-10-29 01:57 to 02:39 (Free Roam and the square and Glen races); his notes are Round 81.**
-**Round 80, AIR AI THAT MAKES MISTAKES, THE SQUARE AI AT THE DECK, A JUMP AT WHITLOCK, THE EXPRESS LANES' SCHEDULE AND GATES, BUSIER HIGHWAYS,
-Round 79's found-not-changed items (Dan, 2026-10-28 17:45; report BUG-001 of session `2026-10-28_17-26-14-935_f93341`, read by Claude, after the Round 79
-build; gate photo `local/reference_photos/express_lanes/express_lane_gate.png`).** Round 79 is reviewed. Item 0 and the end-of-round clean-up apply. ONE full
-Build Map at the end (world changes: C, D, E). Tuning limit applies. Short results.
-A. AIR RACE AI THAT CAN BE CAUGHT. Dan: "On the air race it seems the ai planes never make a mistake so if you make a mistake you can't make up for it".
-   AI pilots (`Race/PlanePilot.cs`) fly a perfect line every lap. Give them human mistakes, scaled by difficulty (Easy most, Hard fewest but some): a
-   late turn that runs wide, a ring missed and gone back for, a low or underpass ring taken slow and careful, a lap off the pace. Use the same
-   catch-up the car AI uses, if it has one. Check: on every air course (Quarry, Highway, Air Tour) and each difficulty, 3 AI x 2 races: their missed
-   rings and lap spread; and a human-like pilot that misses one ring and goes back for it can still win on Medium and finish in the pack on Hard
-   (fix the check pilot's crash-looping, Round 79, so it can fly the courses). Report the numbers.
-B. THE SQUARE AI AT THE PARKING DECK. Dan: "On the marietta square race seems the AI is confused about the parking deck turn. Some times I noticed
-   them driving in circles before continuing". Find why (the Lawrence Street deck's turn in or out: a target they overshoot, the wrong level, a
-   checkpoint they circle for) and fix it. Check: 5 square races x 3 AI, both a clean race and one with traffic and the train: no AI turns a full
-   circle anywhere (trace heading; a loop = more than 300 degrees turned within 60 m), times through the deck before / after.
-C. A JUMP AT WHITLOCK. BUG-001 (x 1608.55 z -8524.74 h 102, the square race's Whitlock Avenue crossing, stopped at the gate with the train passing):
-   "why no jumps on this side?" Only Mill Street's crossing has a jump (the ballast pile). Give the Whitlock crossing its own way over the train,
-   something different that belongs by a railroad (not another pile: e.g. a loading dock, a flatbed on a siding, a stack of ties), real physics,
-   clears a train at the speed the course allows, clean landing, no free way round. Check: jumped over a passing train (picture), and driven round it.
-D. ROUND 79's FOUND-NOT-CHANGED ITEMS. (1) Express Lanes 13's 780 m deck flies 2.06 s and lands hard (10.7 m/s) driven against its direction: with E
-   the lanes run both ways, so smooth it both ways (and every Express Lanes deck: drive each both ways, list air and landings). (2) The replay's
-   chase camera can sit inside the ballast pile by Mill Street: keep replay cameras out of solid things. (3) The plane's cockpit view sits behind
-   the pilot: put it at the pilot's eyes (both planes). Pictures before / after for each.
-E. THE EXPRESS LANES' SCHEDULE AND GATES. Dan: "they are always moving in just one direction. Please use these directions":
-   Southbound (toward Atlanta) open 1:00 AM to 11:00 AM; reversal 11:00 AM to 1:30 PM; Northbound (away from Atlanta) open 1:30 PM to 11:00 PM;
-   reversal 11:00 PM to 1:00 AM. Run it on the game's clock (`WorldClock`). Every Express Lanes entrance and exit gets a gate like Dan's photo: a
-   red and white striped swing arm with red lamps along its top, a red DO NOT ENTER banner hung under it, the green EXPRESS LANE sign and the
-   keep-left / keep-right sign by it. Closed entrances (and all of them during a reversal) have the arm down; open ones up. Traffic and police
-   use the lanes only in the open direction, none during a reversal (cars already in finish their trip). The gates and the lanes' direction go into
-   replays (Round 79's clock). The arms BREAK when hit (Dan, 18:02: "i want them to break, but you would be driving against traffic"): smash a
-   closed gate and you are in the lanes the wrong way, with that direction's traffic coming at you. Check: the lanes at 6 AM, noon, 5 PM and midnight: gates
-   (pictures, the photo's look), traffic counted each way.
-F. BUSIER HIGHWAYS. Dan: "can we have more traffic so it is more realistic. Specifically the highways get busy". More traffic everywhere, the
-   highways (I-75, I-575, Barrett Parkway, the Express Lanes when open) much busier: steady traffic in every lane, the AI and the player weaving
-   through it. Frame rate at the busiest highway spot, the square and Town Center before / after (4K full screen for that one check, and a Steam
-   Deck-sized window); if the cost is noticeable, report and Dan decides. Check: traffic counted on I-75 and I-575 before / after, pictures.
-Check: item 0 for every item.
-For Dan to check: an air race where you miss a ring; the square race's deck turn; the Whitlock jump; the Express Lanes at different times (gates,
-direction); the highways' traffic; the cockpit view; smashing a closed gate.
-
-**Status (Claude, 2026-10-29): built (full Build Map + exe, 2026-10-28 23:55), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round80/`. Three full Build Maps:
-the 2nd for Express Lanes 13's deck (found laid straight under three banks), the 3rd for the Whitlock dock (found 1 to 2 m into two buildings).
-A PARTLY. AI pilots now err by difficulty (`PlanePilot`: a ring lined up wide, then mostly gone back for; a late turn; slow and careful at a low ring; a lap off the pace). 54 races
-(3 courses x 3 levels x 2, 2 laps, `80_A_air_ai.csv`), every AI finished: rings missed per AI a race Easy / Normal / Hard: Quarry 2.2 / 1.2 / 0.8, Highway 0.7 / 0.3 / 0.7, Air Tour
-4.5 / 3.7 / 2.7; one AI's two laps 4 to 48 s apart on average. The car AI has no catch-up, so neither has this. Found and fixed: a plane put past a ring after its third crash
-was sent back before it again, round and round (Easy, Highway). NOT met (stopped at the tuning limit): the check's human-like pilot (the AI's own law flat out, 0.1 s late, noise,
-one ring missed and gone back for) came last on every course, 1.5 to 2 min behind (e.g. Highway Normal 4:41 vs 2:47 to 3:04); most of that is the go-back itself (it runs out
-650 m slowly before turning, about a minute) and 1 to 2 crashes from its lag. Through the pad it did not hold the line at all. A quicker go-back (for the AI too) is the next step if Dan wants it.
-B DONE. The cause: the lap's line folded back on itself at both ends of the deck (Waddell's leg ran 13 m past the deck's lane, Haynes' started north of its exit), and the AI took
-the nearest point anywhere: `make_marietta_route.py` legs and a de-kink at the deck; `RoadDriver` looks near its last station. 5 races x 3 AI, clean / Normal traffic, the train
-as always: before 11 / 9 loops (all at the deck's entry, 1910, -8367), Waddell to Haynes 18.0 / 15.1 s; after 0 / 0 loops, 11.5 / 11.3 s (`80_B_route_before_after.png`).
-C DONE. A stack of old ties west of the tracks (`tiestack`), the freight house's loading dock east of them the landing (`loadingdock`), `make_marietta_route.py`. Dan's place:
-the stack beside the road, the train behind the gate (`80_BUG-001_after`). Off it at 21 / 24 m/s while a train crosses: 1.9 / 2.2 s, 2.1 / 2.3 m over the train car, down on the
-dock (8 / 12 m/s), no reset (`80_C_wjump_*`). Too slow (under 18 m/s) meets the train. On the road the train stops you (27 to 67 s waited).
-D1 PARTLY (tuning limit). EL13 is the I-75 lanes' 1833 m deck: Round 27 laid every chain of deck pieces straight, and there that ran 10 m under the Canton Road Connector and two
-ramps (banks across the lanes: driven, stuck both ways). It now keeps its own shape (held over what crosses it, smoothed): through both ways, but 2.6 / 2.7 s in the air and 11 to
-12 m/s landings at the connector and a ramp. Options for Dan: lift the lanes over the connector and the ramps as flyovers, or put those roads on decks over the lanes.
-Found, not changed: the 463 m deck at I-75 / Barrett (-54, -2128) flies 1.9 s one way and walls at its south end (82, -2565) the other; small hops (0.4 to 0.8 s) on three short decks (`round80_check_ddecks.txt`).
-D2 DONE. The chase camera's snap and the replay's own chase kept out of solid things: 0 of 16 moments at the Mill Street pile inside or behind it (`80_D2_*`).
-D3 DONE. Both planes' cockpit view at the pilot's eyes: their hands on the stick and the dash ahead (`80_D3_cockpit_*`).
-E DONE. `World/ExpressLanes.cs` (schedule on Free Roam's clock; races: Dawn 6:30, Day 3 PM, Dusk 7:30 PM, Night 2 AM; replays: the hour in the Clock events), `ExpressGate`
-(4 gates, one per ramp; `make_express_signs.py`), `TrafficNetwork.SetDirection`, police paths `RoadNet.Blocked`. At 6 AM / noon / 5 PM / midnight every gate as scheduled
-(`80_E_*_gate2`); at 5 PM 6 cars northbound, none southbound; none in a reversal. A shut gate smashed at 5 PM breaks (replays: `Kind.ExpressGate`); no oncoming car met in 116 m there.
-F DONE, the cost for Dan. 10 / 22 / 34 cars (Light / Normal / Heavy, were 7 / 14 / 22); two in five kept for the highways; every lane of a multi-lane road used; a long edge (the
-highways', the Express Lanes') could only take a new car when its middle was near. Cars on the motorways within 400 m of I-75 at Barrett, Normal / Heavy: before 0.2 / 0.5, after 2.3 / 3.5
-(`80_F_*`). Frame rate, before -> after (Normal / Heavy), I-75 at Barrett: 1280 x 720 125 -> 132 / 145 -> 72; Steam Deck 1280 x 800 107 -> 126 / 115 -> 99; 3840 x 2160 full screen 89 -> 50 /
-96 -> 59; the square at 4K 58 -> 32 / 57 -> 53, Town Center 79 -> 60 / 84 -> 69 (`round80_check_f2_*`; runs vary 10 to 30 %). The I-575 spot showed no motorway cars before or after (a poor spot).
-For Dan to check (added): EL13's options; whether the AI's go-back should be quicker; whether the 4K cost of the busier traffic is acceptable.
-Build: `Builds/ChastainRush/BUILD_INFO.txt` 2026-10-28 23:55. Disk: 28.7 GB -> 28.1 GB (`cleanup_round.py`: local/round68, 73, 74, 77 and Library/BuildHistory cleared).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
