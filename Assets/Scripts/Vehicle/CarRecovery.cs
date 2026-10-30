@@ -15,6 +15,7 @@ namespace ChastainRush
     {
         static readonly Collider[] hits = new Collider[16];
         const float AwayM = 8f;   // Round 73 (C3): a reset of a car that is not flipped goes at least this far
+        public const float NextMargin = 12f, BackOk = 150f;   // Round 86 (B): put this far short of the next checkpoint; a spot up to BackOk behind the last one is kept
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install() => VehicleRespawn.Recover = Find;
@@ -89,12 +90,41 @@ namespace ChastainRush
                         if (Mathf.Repeat(s - a, route.LapLength) <= Mathf.Repeat(b - a, route.LapLength) && (!shortArea || flying || !Inside(k.short_area, at.x, at.z)))
                         { s = Mathf.Repeat(k.to_s - gs, route.LapLength); break; }
                     }
+                // Round 86 (B, Dan: "if a reset is done that the reset does not skip any checkpoints. It should go before the next expected [checkpoint]
+                // you should hit"): a racer whose clock runs is put back on the lap BEFORE the next checkpoint it has not passed (the line when every
+                // checkpoint of the lap is met), never past it: anywhere from the last one it passed (or up to BackOk behind it) to NextMargin short of
+                // the next one; any other spot (past the next checkpoint, a jump's landing beyond it) goes to NextMargin short of it, and if that is inside
+                // a jump's flight (a reset-skip stretch), short of the jump's lip
+                bool windowed = race.ResetWindow(vehicle, out float prevS, out float nextS);
+                float limit = float.MaxValue;   // how far on from prevS a placement may go
+                if (windowed)
+                {
+                    float L = route.LapLength, span = Mathf.Repeat(nextS - prevS, L); if (span < .01f) span = L;
+                    float margin = Mathf.Min(NextMargin, span * .3f); limit = span - margin;
+                    bool behind = Mathf.Repeat(prevS - s, L) <= BackOk && Mathf.Repeat(prevS - s, L) > .01f;
+                    if (!behind && Mathf.Repeat(s - prevS, L) > limit)
+                    {
+                        s = Mathf.Repeat(nextS - margin, L);
+                        if (skips != null)
+                            foreach (var k in skips)
+                            {
+                                float a = Mathf.Repeat(k.s0 - gs, L), b = Mathf.Repeat(k.s1 - gs, L);
+                                if (Mathf.Repeat(s - a, L) <= Mathf.Repeat(b - a, L)) { s = Mathf.Repeat(a - 15f, L); break; }
+                            }
+                    }
+                }
+                bool Allowed(float at)
+                {
+                    if (!windowed) return true; float L = route.LapLength, d = Mathf.Repeat(at - prevS, L);
+                    return d <= limit || L - d <= BackOk + 90f;   // on from the last checkpoint short of the next, or behind the last
+                }
                 // Round 81 (D, Dan's BUG-001: "Got hit by the train on the marietta square race and it sent me all the way to the opening point of the
                 // game"): a car hit at a crossing found every spot within 15 m shut (the crossing closed, the train's cars) and fell back to the map's
                 // spawn; now on back along the lap, short of the crossing, up to 90 m
                 foreach (float ds in new[] { 0f, -3f, 3f, -6f, 6f, -10f, 10f, -15f, -20f, -25f, -30f, -35f, -40f, -50f, -60f, -75f, -90f })
                     foreach (float off in new[] { 0f, -2f, 2f, -3.5f, 3.5f })
                     {
+                        if (!Allowed(s + ds)) continue;   // Round 86 (B): never past the next checkpoint
                         var p = route.PointAt(route.GateS + s + ds, out var f);
                         var right = Vector3.Cross(Vector3.up, f);
                         var q = RaceRoute.Surface(p.x + right.x * off, p.z + right.z * off);

@@ -526,13 +526,26 @@ namespace ChastainRush
                 if (d <= span) { if (first < 0) first = k; last = k; }
             }
             if (first < 0) return;
-            var skipped = new List<int>(); var free = new List<int>();
-            for (int k = e.NextCheckpoint; k < first; k++) { Miss(e, k, RaceClock); skipped.Add(k + 1); }
-            for (int k = first; k <= last; k++) { e.Forgiven.Add(k); free.Add(k + 1); }
-            e.NextCheckpoint = last + 1;
-            Log(e, $"RESET at {RaceClock:0.000}: placed on from lap {from:0} m to {to:0} m; checkpoints {string.Join(",", free)} forgiven" + (skipped.Count > 0 ? $"; MISSED {string.Join(",", skipped)}" : ""));
-            MissMessage(e, skipped);
+            // Round 86 (B): a reset never costs a penalty: every checkpoint from the next one to the last it carried the racer past is forgiven (the
+            // player's reset is now always put short of the next checkpoint, so this is the AI's recovery going on past a trap)
+            var free = new List<int>();
+            for (int k = e.NextCheckpoint; k <= last; k++) { e.Forgiven.Add(k); free.Add(k + 1); }
+            e.NextCheckpoint = last + 1; ResetForgiven += free.Count;
+            Log(e, $"RESET at {RaceClock:0.000}: placed on from lap {from:0} m to {to:0} m; checkpoints {string.Join(",", free)} forgiven");
             if (e.IsPlayer) markers.Refresh(this);
+        }
+        public static int ResetForgiven;   // checks
+        // Round 86 (B): where a reset may put this racer on the lap: from the last checkpoint it passed (prev) to short of the next one it has not (next;
+        // the lap's length for the line); lap stations from the line. False when not racing (before its clock starts, finished, an air race)
+        public bool ResetWindow(ArcadeVehicle car, out float prev, out float next)
+        {
+            prev = next = 0f;
+            if (State != Stage.Racing || Route == null || Route.Air || !car) return false;
+            var e = Entrants.Find(x => x.Car == car); if (e == null || !e.ClockStarted || e.Finished) return false;
+            int n = Route.Checkpoints.Count, k = Mathf.Clamp(e.NextCheckpoint, 0, n);
+            next = k < n ? Route.Checkpoints[k].S : Route.LapLength;
+            prev = k == 0 ? 0f : Route.Checkpoints[k - 1].S;
+            return true;
         }
 
         // Round 54 (B, Dan on Noonday Creek: missed the finish line on lap 2 and "it didnt advance my lap"): the line missed is a missed checkpoint

@@ -113,12 +113,14 @@ namespace ChastainRush
                 int ring = e.NextCheckpoint + 1000 * e.CompletedLaps;
                 var c = airCrashes.TryGetValue(e, out var was) && was.ring == ring ? (ring, was.n + 1) : (ring, 1);
                 airCrashes[e] = c;
-                if (c.Item2 >= 3 && e.ClockStarted && e.NextCheckpoint < Route.Checkpoints.Count)
+                // Round 86 (B, Dan: a reset never skips a checkpoint): only an AI pilot is put past a ring it keeps crashing before, and that ring is
+                // forgiven (no penalty); a person is always put back before the next ring
+                if (c.Item2 >= 3 && e.ClockStarted && e.NextCheckpoint < Route.Checkpoints.Count && !e.IsHuman)
                 {
-                    s = Route.GateS + Route.Checkpoints[e.NextCheckpoint].S + 60f; Log(e, $"third crash before ring {e.NextCheckpoint + 1}: back in the air past it");
+                    s = Route.GateS + Route.Checkpoints[e.NextCheckpoint].S + 60f; Log(e, $"third crash before ring {e.NextCheckpoint + 1}: back in the air past it (forgiven)");
                     // Round 80 (A, the check: an Easy pilot put past ring 13 crashed again beyond it and was put back before ring 12, round and round): the ring
-                    // it is put past is missed now (the usual 5 s), so the next reset is from there
-                    Miss(e, e.NextCheckpoint, RaceClock); e.NextCheckpoint++; e.RingSkipped = -1; if (e.IsPlayer) markers.Refresh(this);
+                    // it is put past is passed now, so the next reset is from there
+                    e.Forgiven.Add(e.NextCheckpoint); e.NextCheckpoint++; e.RingSkipped = -1; if (e.IsPlayer) markers.Refresh(this);
                     airCrashes.Remove(e);
                 }
             }

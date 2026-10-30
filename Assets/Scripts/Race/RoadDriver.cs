@@ -699,6 +699,9 @@ namespace Racer
             }
             unplaced=0;
             var rot=Quaternion.LookRotation(fwd,Vector3.up);
+            // Chastain Rush, Round 86 (B): a recovery that goes on past a checkpoint never costs a penalty: the checkpoints it carries the car past are forgiven
+            var rc=ChastainRush.RaceController.Instance; var lapRoute=ChastainRush.RaceRoute.Active;
+            if(rc!=null&&lapRoute!=null&&!lapRoute.Air) rc.ForgiveReset(Car,lapRoute.LapStationOf(Car.Body.position),lapRoute.LapStationOf(at));
             Car.Body.position=at+Vector3.up*.5f; Car.Body.rotation=rot; transform.SetPositionAndRotation(Car.Body.position,rot);
             Car.Body.linearVelocity=Car.Body.angularVelocity=Vector3.zero; Car.ClearSteering(); Physics.SyncTransforms();
             Racer.NotifyTeleported();
