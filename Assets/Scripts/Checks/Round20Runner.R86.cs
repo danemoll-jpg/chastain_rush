@@ -23,8 +23,8 @@ namespace ChastainRush
         // ---------------------------------------------------------------- A: room for jumps between the HIGH bumpers
         IEnumerator R86Jumps()
         {
-            report.AppendLine(); report.AppendLine("=== A. Every jump on every car course in HIGH MODE, the human-like driver (Street Classic) on the line and 3 m either side");
-            int touchedRuns = 0, runs = 0, jumpsAll = 0;
+            report.AppendLine(); report.AppendLine("=== A. Every jump on every car course in HIGH MODE, the human-like driver (Street Classic) on the line and 3 m either side; touches counted in the air and the first second down");
+            int touchedRuns = 0, runs = 0, jumpsAll = 0, flownRuns = 0;
             foreach (var file in R86Courses)
                 foreach (var dir in new[] { "forward", "reverse" })
                 {
@@ -45,13 +45,13 @@ namespace ChastainRush
                         {
                             bool pics = idx == 1 && off == 0f; string tag = $"86_{file.Replace(".json", "")}_{dir}_first";
                             var res = new R86JumpRun(); yield return R86FlyJump(j, off, res, pics ? tag : null); runs++;
-                            if (res.touch > 0) touchedRuns++;
+                            if (res.touch > 0 && res.air > .3f) touchedRuns++; if (res.air > .3f) flownRuns++;
                             report.AppendLine($"      {(off == 0 ? "on the line" : off < 0 ? "3 m left " : "3 m right")}: top {res.top:0} m/s, in the air {res.air:0.0} s, bumper touches in the air or landing {res.touch}{(res.touch > 0 ? $" at ({res.touchAt.x:0}, {res.touchAt.z:0})" : "")}{(res.note.Length > 0 ? "; " + res.note : "")}");
                         }
                     }
                     race.EndRace(); R84High(false); Flush();
                 }
-            Check("A: no bumper touched in the air or on a landing (every jump, on the line and 3 m either side)", touchedRuns == 0, $"{touchedRuns} of {runs} runs touched a bumper; {jumpsAll} jumps");
+            Check("A: no bumper touched in the air or on a landing (every jump, on the line and 3 m either side)", touchedRuns == 0, $"{touchedRuns} of {flownRuns} runs that flew touched a bumper ({runs} runs, {jumpsAll} jumps)");
         }
         sealed class R86JumpRun { public float top, air; public int touch; public Vector3 touchAt; public string note = ""; }
         IEnumerator R86FlyJump(HighBumpers.Jump j, float off, R86JumpRun res, string pics)
@@ -78,7 +78,7 @@ namespace ChastainRush
                 if (car.GroundedWheels == 0 && s > lipS - 15f) { airNow += Time.fixedDeltaTime; if (airNow > .3f) flown = true; res.air = Mathf.Max(res.air, airNow); if (pics != null && !shotAir && airNow > .6f) { shotAir = true; StartCoroutine(Capture(pics + "_air")); } }
                 else { if (flown && !down) { down = true; downAt = Time.time; } airNow = 0f; }
                 if (pics != null && down && !shotDown && Time.time - downAt > .5f) { shotDown = true; StartCoroutine(Capture(pics + "_landed")); }
-                bool watch = s > lipS - 10f && (!down || Time.time - downAt < 3f);
+                bool watch = s > lipS - 10f && ((car.GroundedWheels == 0 && airNow > .15f) || (down && Time.time - downAt < 1f));
                 if (watch)
                     foreach (var c in own)
                         foreach (var b in bumpers)

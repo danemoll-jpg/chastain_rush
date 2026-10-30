@@ -131,7 +131,7 @@ namespace ChastainRush
             }
 
             int mask = race.PlayerCar ? race.PlayerCar.groundMask.value : 1;
-            var hits = new RaycastHit[16];
+            var hits = new RaycastHit[48];
             bool Surface(Vector3 q, float nearY, out float y)
             {
                 y = 0; int n = Physics.RaycastNonAlloc(new Vector3(q.x, nearY + 2.5f, q.z), Vector3.down, hits, 6, mask, QueryTriggerInteraction.Ignore);
@@ -193,7 +193,7 @@ namespace ChastainRush
                 {
                     var y = DrivenProfile(l, off, n, mask, hits);
                     float Y(int k) { k = Wrap(k); return k < 0 || k >= n || float.IsNaN(y[k]) ? -1e6f : y[k]; }
-                    int last = l.loop ? n + 200 : n - 1;
+                    int last = n - 1;   // a loop's flights still run on past its end (Y wraps); its lips once only
                     for (float v = 12f; v <= vmax + .01f; v += 4f)
                         for (int i = 1; i < last; i++)
                         {
@@ -288,6 +288,7 @@ namespace ChastainRush
                     float d = Mathf.Abs(h.point.y - want); if (h.point.y > want + 1.5f) d += 2f;   // a surface above where it heads: a ramp it climbs, else a roof
                     if (d < best) { best = d; at = h.point.y; }
                 }
+                if (float.IsNaN(at)) at = p.y;   // nothing found under it (a floor the probe misses): the line's own height there
                 y[i] = at;
                 if (!float.IsNaN(at)) { slope = float.IsNaN(prev) ? 0f : Mathf.Clamp((at - prev) / Step, -1.2f, 1.2f); prev = at; }
             }
