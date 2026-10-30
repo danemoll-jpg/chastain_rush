@@ -82,10 +82,10 @@ namespace ChastainRush
             foreach (var (file, veh, cap) in new[] { ("kennesaw_mountain.json", "drifter", 32f), ("noonday_creek.json", "atv", 20f) })
             {
                 report.AppendLine(); report.AppendLine($"=== A3. One HIGH MODE lap of {file} by the human-like driver, steering into the edges on purpose");
-                R84High(true); yield return Vehicle(veh);
+                bool normal = System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-r84Normal") >= 0; R84High(!normal); yield return Vehicle(veh);   // -r84Normal: the same drive in normal mode (no bumpers), for comparison
                 yield return StartRoute(file, "forward", 0, 1);
                 var r = race.Route; var road = race.AiRoad;
-                Check($"lap {file}: the race is in HIGH MODE with its bumpers up", race.High && HighBumpers.Shown, $"high {race.High}, {HighBumpers.Report}");
+                Check($"lap {file}: the race is in {(normal ? "normal mode, no bumpers" : "HIGH MODE with its bumpers up")}", normal ? !race.High && !HighBumpers.Shown : race.High && HighBumpers.Shown, $"high {race.High}, {HighBumpers.Report}");
                 yield return new WaitForSecondsRealtime(.5f); yield return Capture($"84_lap_{file.Replace(".json", "")}_start");
                 // the line: the run-in then the lap, pulled 7 m off the road's middle for 40 m in every 150 (alternate sides): a player aiming at the edge
                 var line = new List<Vector3>();
@@ -99,8 +99,8 @@ namespace ChastainRush
                 var zones = race.AiZones;
                 bool NearJump(float s)
                 {
-                    if (zones != null) foreach (var z in zones) if (Mathf.Repeat(s - (z.s0 - 60f), L) <= z.s1 - z.s0 + 120f) return true;
-                    for (float d = -60f; d <= 120f; d += 10f) if (LandingZone.Contains(r.PointAt(s + d, out _))) return true;
+                    if (zones != null) foreach (var z in zones) if (Mathf.Repeat(s - (z.s0 - 30f), L) <= z.s1 - z.s0 + 60f) return true;
+                    for (float d = -20f; d <= 40f; d += 10f) if (LandingZone.Contains(r.PointAt(s + d, out _))) return true;
                     return false;
                 }
                 for (int i = 0; i < lap.Count; i++)
@@ -124,6 +124,8 @@ namespace ChastainRush
                 });
                 report.AppendLine($"  {run.time:0} s, top {run.topSpeed:0} m/s, longest air {run.maxAir:0.0} s, resets {run.resets}, stuck {run.stuck}{run.note}; {pushes} pushes at the edge; farthest from the line {worst:0.0} m at ({worstAt.x:0}, {worstAt.z:0}); {HighBumpers.Report}; HIGH righted {HighAssist.Righted}");
                 report.AppendLine($"  trace:{run.trace}");
+                var bumpers = FindObjectsByType<MeshCollider>(FindObjectsSortMode.None).Where(cc => HighBumpers.IsBumper(cc) && cc.gameObject.activeInHierarchy).ToList();
+                foreach (System.Text.RegularExpressions.Match mm in System.Text.RegularExpressions.Regex.Matches(run.note, @"stuck at \((-?\d+), (-?\d+)\)")) { var sp = new Vector3(float.Parse(mm.Groups[1].Value), 0f, float.Parse(mm.Groups[2].Value)); sp.y = RaceRoute.Ground(sp.x, sp.z).y + 1f; float nb = bumpers.Count == 0 ? -1f : bumpers.Min(cc => (cc.ClosestPoint(sp) - sp).magnitude); road.Project(sp, out float sl); report.AppendLine($"    stuck at ({sp.x:0}, {sp.z:0}): {Mathf.Abs(sl):0.0} m off the lap line, the nearest bumper {nb:0.0} m"); }
                 yield return Capture($"84_lap_{file.Replace(".json", "")}_end");
                 Check($"lap {file}: the HIGH lap is completed steering into the edges ({pushes} pushes)", race.Player.CompletedLaps >= 1, $"laps {race.Player.CompletedLaps}, resets {run.resets}");
                 Check($"lap {file}: the bumpers keep it on the course (never more than 12 m off the line)", worst <= 12f, $"{worst:0.0} m at ({worstAt.x:0}, {worstAt.z:0})");
