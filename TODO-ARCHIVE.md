@@ -7386,3 +7386,71 @@ K DONE, PUBLISHED to `danemoll-jpg/chastain-rush-releases` (Dan made the repo): 
 installed 0.81.0, its first start fetched the soundtrack and started the game (handshake PASS); after 0.81.1 was published the same launcher updated itself (saves backed up, 0.81.0 kept).
 For Dan to check: install from starter-8100 on the PC and the Deck (README inside); the junction and the Express Lanes (EL13, Big Shanty, the merge wall); the Glen shortcut; BUG-006's median; the Deck.
 
+
+## Round 82 (moved from TODO.md on 2026-10-30 when Round 86 started; word for word)
+
+## Previous delivery 3: Round 82
+**Not yet driven by Dan: he asked for its known-broken items to be done first (Round 83) and reviews both together.**
+**Round 82, THE EXPRESS LANES DONE PROPERLY (bridges over roads, no dips, no walls across them), roads under highways, the rail bridge's end, the Glen fence
+(Dan, 2026-10-29 09:40; reports BUG-001 to BUG-008 of session `2026-10-29_09-12-54-968_3aae2d` (BUG-004 repeats BUG-003), read by Claude, after the Round 81 build).**
+Round 81 is reviewed. Item 0 and the end-of-round clean-up apply. Short results.
+Dan is frustrated: "you said these would be breakable"; "Why is this even a thing? These are obviously bridges. Why are they lying across the road? You need to fix these
+everywhere. SHouldn't need to point out obvious flaws like this". Two rounds (80, 81) ended the Express Lanes PARTLY at the tuning limit; he then found more. This round:
+(1) the tuning limit is for numbers (air time, speed), NOT for a road lying across a road, a wall across a lane, a step you cannot drive up or a dip: those are bugs and
+are fixed, never reported as "partly"; (2) one full Build Map at the end as usual; if its check finds one of those bugs, fix it and build again, but AT MOST 3 full Build Maps in the round (Dan,
+2026-10-29 13:07, after build 6 started with two checks beside it and locked up his computer: stop there and report what is left);
+(3) the check looks at every place it changed the way Dan would (drive it both ways, and a picture from the driver's seat), not only the traces.
+A. EVERY ROAD CROSSING A GRADE-SEPARATED ONE, MAP-WIDE (Dan asked for "everywhere"). BUG-005 (x 114.42 z -2636.04 h 90, on the Northwest Corridor Express Lanes, the
+   picture: the Express Lanes flat on the ground, crossing the interchange's roads at their level, barrier walls lying across them). Rule for the whole map: two roads
+   that cross without sharing an OSM node never meet at one level. Which one goes over is OSM's (bridge=yes / layer, and the real road: the Express Lanes are bridges
+   where they cross 75 / 575 / ramps, Dan 2026-10-29 01:36); the one over is a bridge with at least 5 m under it, reached by a smooth climb and descent; the one under
+   keeps its own level, the ground cut for it. Find EVERY such crossing on the map by script (list each: the two roads, who is over, clearance as built), fix every
+   one that meets at one level or has under 5 m, and list the before / after. Check: every fixed crossing driven both ways on both roads (air, steps, stuck), and
+   pictures of BUG-005's spot and ten others from the driver's seat.
+B. THE EXPRESS LANES' WHOLE LENGTH AS ONE PROFILE. Round 81 H still left EL13 2.1 s in the air and stuck, the Big Shanty deck 2.6 s against its way, the (-1414, 1617)
+   deck's end a terrain face, the I-75 Express lanes 1.3 s and a wall at the merge (507, -3350); Dan found more: BUG-006 (x 1499.89 z -4269.27 h 54: "fix that", the
+   picture: a barrier wall running across the Express lanes at an angle, a ramp beyond with a torn ground edge), BUG-007 (x 2589 z -5263.69, seen from Canton Road's
+   bridge: "there is a big dip in the express lane. fix it"). Stop patching deck by deck: lay each Express Lanes carriageway (I-75's both ways, I-575's) as ONE
+   continuous height profile end to end (on the ground where the ground allows, up on bridges where A says it goes over, down only as far as a road over it needs: no
+   sag deeper than that), grades at most 5 %, vertical curves a car at 35 m/s stays down on; the ground graded to it and every ramp met without a step. The walls
+   (Round 81 H) follow the lanes' edges only, never across a lane or a ramp's mouth. Check: each carriageway driven end to end both ways at top speed by the human-like
+   driver: no air over 0.3 s, no hard landing, never stuck, no wall hit; pictures at Dan's BUG-006 and BUG-007 spots and each place Round 81 listed.
+C. THE BIG SHANTY EXPRESS RAMP AT NOONDAY CREEK (not an underpass). BUG-002 (x -374.14 z -843.31 h 122: "what is going on here?", the picture: jagged dark ground
+   in spikes over the road and a wall) and BUG-003 (x -333.65 z -943.01 h 118: "aand here", the picture: the road runs into a slot under a huge slab barely higher than
+   the car). Dan, 09:47: "what even is that? ... It is a little hard to tell". Claude looked it up in `Data/map.json`: it is I-75's Express Lanes access ramp from Big
+   Shanty Road (motorway_link 536789460, its creek bridge 536789457): it leaves Big Shanty Road (-551, -554), runs south-east beside the Express Lanes, crosses Noonday
+   Creek on its own bridge beside the Express Lanes' bridge (536789462) and I-75's (163463877), and MERGES into the Express Lanes at (-325.5, -947.9) (a shared node)
+   at the creek bridges' south end. BUG-002 is at the ramp's bridge's north end, BUG-003 at the merge. So the slab is most likely the Express Lanes' deck lifted
+   over the ramp as if it crossed it (Round 81's flyover pass) and the spikes the creek valley's ground between the side-by-side bridges: confirm. Fix: the ramp and
+   the Express Lanes' bridges side by side at matching heights, the ramp joining the lanes level at the merge (no deck over it, no slot), the gap between the bridges
+   closed or a clean drop to the creek (no spikes poking up), the creek valley under them clean; A's script must treat roads that share a node (merges, splits) as
+   joining, never as crossing. Check: the ramp driven from Big Shanty Road onto the Express Lanes and the lanes past it at speed (when the lanes run that way;
+   both ways for the drive check); pictures from Dan's two places.
+D. THE RAIL BRIDGE'S END. BUG-008 (x 2730.04 z -5231.56 h 58, on the railroad near Atlanta Industrial Drive: "not evven cant drive forward", the picture: the tracks
+   on a short deck that ends in a raised step of ties). The rails, their ties and ballast run on at the deck's level onto the bank, no step, drivable along the line
+   (as Round 78 / 79's rail decks). Check every rail deck's ends the same way (list); picture from Dan's place.
+E. THE GLEN FENCE IN THE FORWARD RACE. BUG-001 (x 2778.72 z 1028.78 h 149, a FORWARD Chastain Glen loop race, a solid board fence between two houses ahead):
+   "you said these would be breakable. Make it breakable going this direction". Round 81 F said the fences west of the Rooftop leap's landing break in forward races,
+   but this one, on the forward shortcut's line from Dan's heading, is still solid: find which fence it is and why (a piece left out, a second collider, a solid post or
+   gate). Dan, 09:44: it stays UNBREAKABLE in the reverse race (otherwise an unintended shortcut), as Round 81 F made it; breakable in forward races and free roam.
+   Check: driven into from Dan's place and heading in a forward race: it breaks (picture); in a reverse race: it holds.
+Check: item 0 for every item.
+For Dan to check: BUG-005's interchange and any crossing from A's list; the Express Lanes end to end both ways (BUG-006, BUG-007, EL13, Big Shanty, the merge); the Big Shanty
+Express ramp at Noonday Creek (BUG-002 / 003); the rail bridge at BUG-008; the Glen fence in a forward race.
+
+**Status (Claude, 2026-10-29): built (full Build Map + exe 2026-10-29 12:31, build 5), checked in the exe, not yet driven by Dan; published as an update.** Evidence `Data/screenshots/round82/`.
+Full Build Maps: 6 (1, 4, 5 complete; 2, 3, 6 stopped at their planning reports): over Dan's cap of 3; stopped as he asked. The code after build 5 (committed) is NOT in the build.
+A PARTLY. `Tools/mapgen/crossings.py` -> `Data/tracks/crossings.json`: 123 crossings (OSM layer / bridge decides who is over, the Express Lanes over when untagged; merges are joins). At OSM's heights 39 had under 5 m, many lying on the road below
+(Greers Chapel, Skip Spann Connector, Dickson Road, Cobb Parkway). Build 5: 121 with 5 m or more, 2 short (ramp 437897716 over I-75 at (2398, -4931) 2.9 m and (2401, -4928) 1.9 m) (`round82_crossings.txt`).
+BUG-005 after (`82_BUG-005_after.png`): Greers Chapel's bridge high overhead, the lane clear; a jagged ridge in the median beside it. Drives (32 of 256 runs, `check5b_crossings_partial.txt`): 19 clean; Frey Road 0.9 s in the
+air (the lidar's fill under the decks: a 3.4 m hump); Skip Spann Connector humps, 2 s in the air, one fall. Fixed in code after build 5, not built: roads under decks laid at their own level, raised roads carried through junctions, medians one slope.
+B PARTLY. `MapBuilder.Round82.cs` R82ExpressLines: each Express Lanes carriageway one profile end to end (I-575's 4.9 km held to 33 m/s, 5.0 %; I-75's 10.8 km 36 m/s, 7.2 % at (1954, -4553)), the ramps joined level; 6 m wide,
+walls 2.5 m out, closing in at deck ends. I-575 end to end both ways through, 0.16 s longest in the air (one stop at the seam deck (536, -37) and 37 wall scrapes one way). I-75: northbound through but 0.96 s in the air at (845, -3832) and
+0.76 s at (513, -3332); southbound STUCK at the I-575 junction merge (527, -3383) after 2.3 s in the air (Round 81's merge, not fixed). BUG-006 after: on the deck, clean; BUG-007 after: the Express Lanes now over Canton Road's bridge (OSM's layer 2), no dip.
+C DONE. The ramp and the Express deck side by side at one height into the merge, no parapet between them, the gap paved; driven both ways clean (`check5c_i75_ramp_rail_fence.txt`); BUG-002 / 003 after: no slot, no spikes.
+D DONE. Rail decks over nothing are bed (8 of 10; `round82_rail_decks.txt`); the bed meets level crossings level then 4 %. BUG-008 after: ballast and ties run on; driven both ways, 0 s in the air.
+E DONE. Fence 713/1987 breakable except in a reverse race (`R81WestOf6`). From Dan's place: forward race it breaks (27 m through), reverse race it holds (5.7 m).
+New rule copied into CLAUDE.md (one heavy job at a time, Below Normal, 3 Build Maps).
+Published: `game-8200` (0.82.0, Latest) on `danemoll-jpg/chastain-rush-releases`, from build 5; the installed launcher picks it up. Disk 33.1 -> 32.8 GB (Builds 17.9 GB: the 0.81 release folders are still there).
+For Dan to check: Greers Chapel (BUG-005), the Big Shanty ramp, the rail at BUG-008, the Glen fence, I-575's Express Lanes. Known broken: the I-75 Express Lanes at the I-575 junction merge, Skip Spann Connector, Frey Road, the 2 short crossings.
+
