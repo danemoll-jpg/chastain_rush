@@ -278,6 +278,7 @@ namespace ChastainRush
             if (map.bridges != null) foreach (var b in map.bridges) { var q = ToPoints(b.points); for (int i = 0; i + 1 < q.Count; i++) segs.Add((q[i], q[i + 1], b.width * .5f, b.name == ExpressName, b.deck_y, i, false)); }
             var idx = new CellIndex(24f); foreach (var s in segs) idx.Add(s.a, s.b, s.half + 1f);
             var near = new List<int>();
+            var mergeLinks = new HashSet<(Vector2, Vector2)>();   // Round 83: the segments of ramps that merge into an Express Lanes road (an end on it)
             // a wall's point blocked: on another road's pavement (+0.4 m), or on a deck at about the road's height (its parapet is the wall there)
             bool Blocked(Vector2 p, float roadY, Vector2 along, float dEnd = 999f)
             {
@@ -291,7 +292,7 @@ namespace ChastainRush
                     if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
                     // Round 83 (A, build 1: 49 hits on a wall standing in the narrowing gap where the I-575 flyover's road meets the I-75 Express Lanes): no
                     // wall within 5 m of a ramp's pavement at about the road's height (the merge stays open)
-                    if (!s.express && s.link && d < s.half + 5f && dEnd > 30f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 1f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
+                    if (!s.express && s.link && mergeLinks.Contains((s.a, s.b)) && d < s.half + 5f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 1f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
                 }
                 return false;
             }
@@ -300,6 +301,12 @@ namespace ChastainRush
             foreach (var s in segs.Where(x => !x.express))
                 foreach (var e in new[] { s.a, s.b })
                     foreach (int si in idx.Near(e, 2f, near).ToList()) { var x = segs[si]; if (!x.express) continue; var ab = x.b - x.a; float t = Mathf.Clamp01(Vector2.Dot(e - x.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((x.a + ab * t - e).magnitude < 2f) { merges.Add(e); break; } }
+            foreach (var r in map.roads)
+            {
+                if (r.name == ExpressName || !(r.@class ?? "").EndsWith("_link")) continue; var q = ToPoints(r.points); if (q.Count < 2) continue;
+                bool m = false; foreach (var e in new[] { q[0], q[q.Count - 1] }) foreach (int si in idx.Near(e, 2f, near)) { var x = segs[si]; if (!x.express) continue; var ab = x.b - x.a; float t = Mathf.Clamp01(Vector2.Dot(e - x.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((x.a + ab * t - e).magnitude < 2f) m = true; }
+                if (m) for (int i = 0; i + 1 < q.Count; i++) mergeLinks.Add((q[i], q[i + 1]));
+            }
             var deckEnds = new List<Vector2>();
             if (map.bridges != null) foreach (var bb in map.bridges) if (bb.name == ExpressName) { var (ea, ez) = Ends(bb, false); deckEnds.Add(ea); deckEnds.Add(ez); }
             var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
