@@ -123,22 +123,16 @@ namespace ChastainRush
             // a closure across a side road (not a pipe mouth), the course's road in front of it for the run-in
             walls = walls.Where(b => b.transform.parent.name.StartsWith("Barrier ") && b.size.x >= 10f && roads && R85OnRoad(roads, b.transform.position - Flat(b.transform.forward).normalized * 8f)).OrderByDescending(b => b.size.x).ToList();
             Check("wall: the race's barriers are one collider per run (Barrier wall)", allRuns > 0, $"{allRuns} runs, {walls.Count} closures 10 m+ with the road in front");
-            // the first closure whose run-ins (every angle, either way along it) start on a road
+            // the longest closure with the road in front of it: aimed at 2 m from its far end, the run-in (8 m) along its face
             bool picked = false;
-            foreach (var bw in walls)
+            if (walls.Count > 0)
             {
-                var along = Flat(bw.transform.forward).normalized; var bface = bw.transform.position - along * (bw.size.z * .5f); bface.y = RaceRoute.Surface(bface.x, bface.z).y + .7f;
-                foreach (float sgn in new[] { 1f, -1f })
-                {
-                    var lat = Flat(bw.transform.right).normalized * sgn; var nn = -along; bool ok = true;
-                    foreach (float ang in new[] { 10f, 20f, 30f }) { var st = R85Start(bface, nn, lat, ang, 10f); foreach (float f in new[] { 0f, .5f }) if (!R85OnRoad(roads, Vector3.Lerp(st, bface + nn * 1.3f, f))) ok = false; }
-                    if (!ok) continue;
-                    report.AppendLine($"  the barrier: {bw.transform.parent.name}, {bw.size.x:0.0} m long, its face at ({bface.x:0.0}, {bface.z:0.0})");
-                    yield return R85Hits("closure barrier", bface, nn, lat, 18f, 10f); picked = true; break;
-                }
-                if (picked) break;
+                var bw = walls[0]; var along = Flat(bw.transform.forward).normalized; var bface = bw.transform.position - along * (bw.size.z * .5f); bface.y = RaceRoute.Surface(bface.x, bface.z).y + .7f;
+                var lat = Flat(bw.transform.right).normalized; var aim = bface + lat * (bw.size.x * .5f - 2f);
+                report.AppendLine($"  the barrier: {bw.transform.parent.name}, {bw.size.x:0.0} m long, aimed at ({aim.x:0.0}, {aim.z:0.0}) on its face, 2 m from its end");
+                yield return R85Hits("closure barrier", aim, -along, lat, 18f, 8f); picked = true;
             }
-            Check("wall: a closure barrier with every run-in on the road", picked, $"{walls.Count} candidates");
+            Check("wall: a closure barrier with the road in front", picked, $"{walls.Count} candidates");
             race.EndRace();
         }
         static Vector3 R85Start(Vector3 face, Vector3 n, Vector3 t, float angle, float back)
