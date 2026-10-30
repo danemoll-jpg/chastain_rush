@@ -131,10 +131,10 @@ namespace ChastainRush
                 foreach (float sgn in new[] { 1f, -1f })
                 {
                     var lat = Flat(bw.transform.right).normalized * sgn; var nn = -along; bool ok = true;
-                    foreach (float ang in new[] { 10f, 20f, 30f, 70f }) { var st = R85Start(bface, nn, lat, ang, 14f); for (float f = 0f; f <= 1f; f += .25f) if (!R85OnRoad(roads, Vector3.Lerp(st, bface + nn * 1.3f, f))) ok = false; }
+                    foreach (float ang in new[] { 10f, 20f, 30f }) { var st = R85Start(bface, nn, lat, ang, 10f); foreach (float f in new[] { 0f, .5f }) if (!R85OnRoad(roads, Vector3.Lerp(st, bface + nn * 1.3f, f))) ok = false; }
                     if (!ok) continue;
                     report.AppendLine($"  the barrier: {bw.transform.parent.name}, {bw.size.x:0.0} m long, its face at ({bface.x:0.0}, {bface.z:0.0})");
-                    yield return R85Hits("closure barrier", bface, nn, lat, 20f, 14f); picked = true; break;
+                    yield return R85Hits("closure barrier", bface, nn, lat, 18f, 10f); picked = true; break;
                 }
                 if (picked) break;
             }
