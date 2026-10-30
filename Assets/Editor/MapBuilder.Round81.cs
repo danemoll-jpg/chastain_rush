@@ -292,7 +292,7 @@ namespace ChastainRush
                     if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
                     // Round 83 (A, build 1: 49 hits on a wall standing in the narrowing gap where the I-575 flyover's road meets the I-75 Express Lanes): no
                     // wall within 5 m of a ramp's pavement at about the road's height (the merge stays open)
-                    if (!s.express && s.link && mergeLinks.Contains((s.a, s.b)) && d < s.half + 5f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 1f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
+                    if (!s.express && s.link && d < s.half + 5f && (mergeLinks.Contains((s.a, s.b)) || dEnd > 15f)) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 2f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
                 }
                 return false;
             }
@@ -307,6 +307,10 @@ namespace ChastainRush
                 bool m = false; foreach (var e in new[] { q[0], q[q.Count - 1] }) foreach (int si in idx.Near(e, 2f, near)) { var x = segs[si]; if (!x.express) continue; var ab = x.b - x.a; float t = Mathf.Clamp01(Vector2.Dot(e - x.a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); if ((x.a + ab * t - e).magnitude < 2f) m = true; }
                 if (m) for (int i = 0; i + 1 < q.Count; i++) mergeLinks.Add((q[i], q[i + 1]));
             }
+            // Round 83 (D, Dan's I-575 seam deck (536, -37), with I-575's general lanes' bridges right beside it at the old map's edge: cars fell off its ends
+            // whenever walls stood there, and drove through when they did not): no wall within 40 m of that deck
+            var seamDeck = new List<Vector2>();
+            if (map.bridges != null) foreach (var bb in map.bridges) if (bb.osm_id == 564154403) seamDeck.AddRange(ToPoints(bb.points));
             var deckEnds = new List<Vector2>();
             if (map.bridges != null) foreach (var bb in map.bridges) if (bb.name == ExpressName) { var (ea, ez) = Ends(bb, false); deckEnds.Add(ea); deckEnds.Add(ez); }
             var root = new GameObject("Express Lanes walls"); root.transform.SetParent(world, false);
@@ -347,7 +351,7 @@ namespace ChastainRush
                         float dEnd = deckEnds.Count > 0 ? deckEnds.Min(e => (e - line[i]).magnitude) : 999f;
                         off = Mathf.Lerp(half + .35f, off, Mathf.Clamp01((dEnd - 2f) / 25f));
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
-                        if (Blocked(p, roadY, dir, dEnd) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
+                        if (seamDeck.Any(q => (q - line[i]).magnitude < 40f) || Blocked(p, roadY, dir, dEnd) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
                         float footY = Ground(terrain, p.x, p.y);
                         var top = new Vector3(p.x, roadY + .04f, p.y);   // Round 82 (BUG-005: walls climbing over the banks): at the road's height, its foot buried where the bank stands higher
                         if (prev.HasValue)
