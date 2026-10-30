@@ -85,28 +85,44 @@ namespace ChastainRush
             if (race.State != RaceController.Stage.Free) race.EndRace();
             // the Express Lanes' wall: a straight stretch of one of its pieces, the Express road on one side
             Vector3 face = default, n = default, t = default; bool found = false; var roads = RoadLookup.Instance;
+            // a vertex of a wall piece, a point 4 m out from it on the Express road, a ray back to the face; straight if rays 15 m either way along it
+            // meet the same plane within 0.5 m
             foreach (var mc in FindObjectsByType<MeshCollider>(FindObjectsSortMode.None).Where(c => c.name.StartsWith("Express Lanes wall collider")).OrderBy(c => c.name))
             {
-                var vs = mc.sharedMesh.vertices.Select(v => mc.transform.TransformPoint(v)).ToArray(); if (vs.Length < 8) continue;
-                Vector3 a = vs[0], b = vs.OrderByDescending(v => Flat(v - vs[0]).sqrMagnitude).First(); a = vs.OrderByDescending(v => Flat(v - b).sqrMagnitude).First();
-                var d = Flat(b - a); if (d.magnitude < 60f) continue; d.Normalize();
-                if (vs.Any(v => Mathf.Abs(Vector3.Dot(Flat(v - a), Vector3.Cross(Vector3.up, d))) > 1.2f)) continue;   // straight within 1.2 m
-                var m = (a + b) * .5f; var perp = Vector3.Cross(Vector3.up, d);
-                foreach (float side in new[] { 1f, -1f })
+                var vs = mc.sharedMesh.vertices;
+                for (int vi = 0; vi < vs.Length && !found; vi += 7)
                 {
-                    var q = m + perp * side * 4f; if (!roads || !roads.Nearest(q, out string nm, out float dd, out float hh) || !nm.Contains("Express") || dd > hh) continue;
-                    var g = RaceRoute.Surface(q.x, q.z); var from = new Vector3(q.x, g.y + .7f, q.z);
-                    if (!mc.Raycast(new Ray(from, -perp * side), out var hit, 8f)) continue;
-                    face = hit.point; n = Flat(hit.normal).normalized; if (Vector3.Dot(n, perp * side) < 0) n = -n; t = d; found = true; break;
+                    var v = mc.transform.TransformPoint(vs[vi]);
+                    for (int k = 0; k < 8 && !found; k++)
+                    {
+                        var dir8 = Quaternion.Euler(0f, k * 45f, 0f) * Vector3.forward; var q = v + dir8 * 4f;
+                        if (!roads || !roads.Nearest(q, out string nm, out float dd, out float hh) || !nm.Contains("Express") || dd > hh - 1f) continue;
+                        var g = RaceRoute.Surface(q.x, q.z); var from = new Vector3(q.x, g.y + .7f, q.z);
+                        if (!mc.Raycast(new Ray(from, -dir8), out var hit, 6f) || Mathf.Abs(hit.normal.y) > .3f) continue;
+                        var nn = Flat(hit.normal).normalized; if (Vector3.Dot(nn, dir8) < 0) nn = -nn; var tt = Vector3.Cross(Vector3.up, nn);
+                        bool straight = true;
+                        foreach (float off in new[] { -15f, 15f })
+                        {
+                            var q2 = hit.point + nn * 3f + tt * off; var g2 = RaceRoute.Surface(q2.x, q2.z); q2.y = g2.y + .7f;
+                            if (!Physics.Raycast(q2, -nn, out var h2, 6f, ~0, QueryTriggerInteraction.Ignore) || !h2.collider.name.StartsWith("Express Lanes wall") || Mathf.Abs(Vector3.Dot(Flat(h2.point - hit.point), nn)) > .5f) straight = false;
+                            if (!roads.Nearest(q2 - nn * 0f + nn * 3f, out string n2, out float d2, out float h2w) || !n2.Contains("Express")) straight = false;
+                        }
+                        if (!straight) continue;
+                        face = hit.point; n = nn; t = tt; found = true;
+                        report.AppendLine($"  the Express Lanes' wall: {mc.name}, the face at ({face.x:0.0}, {face.z:0.0}), along {Mathf.Atan2(t.x, t.z) * Mathf.Rad2Deg:0} degrees");
+                    }
                 }
-                if (found) { report.AppendLine($"  the Express Lanes' wall: {mc.name}, the face at ({face.x:0.0}, {face.z:0.0}), along {Mathf.Atan2(t.x, t.z) * Mathf.Rad2Deg:0} degrees"); break; }
+                if (found) break;
             }
             Check("wall: a straight stretch of the Express Lanes' wall found", found, "");
             if (found) yield return R85Hits("Express Lanes wall", face, n, t, 28f, 30f);
             // a race's closure barrier (the Chastain Glen loop): its longest unbroken face, from the course's side
             yield return StartRoute("chastain_glen_loop.json", "forward", 0, 1);
-            var walls = race.Barriers.GetComponentsInChildren<BoxCollider>().Where(b => b.name == "Barrier wall").OrderByDescending(b => b.size.x).ToList();
-            Check("wall: the race's barriers are one collider per run (Barrier wall)", walls.Count > 0, $"{walls.Count} runs");
+            var walls = race.Barriers.GetComponentsInChildren<BoxCollider>().Where(b => b.name == "Barrier wall").ToList();
+            int allRuns = walls.Count;
+            // a closure across a side road (not a pipe mouth), the course's road in front of it for the run-in
+            walls = walls.Where(b => b.transform.parent.name.StartsWith("Barrier ") && b.size.x >= 10f && roads && R85OnRoad(roads, b.transform.position - Flat(b.transform.forward).normalized * 8f)).OrderByDescending(b => b.size.x).ToList();
+            Check("wall: the race's barriers are one collider per run (Barrier wall)", allRuns > 0, $"{allRuns} runs, {walls.Count} closures 10 m+ with the road in front");
             if (walls.Count > 0)
             {
                 var bw = walls[0]; var along = Flat(bw.transform.forward).normalized; var lat = Flat(bw.transform.right).normalized;
@@ -116,16 +132,17 @@ namespace ChastainRush
             }
             race.EndRace();
         }
+        static bool R85OnRoad(RoadLookup roads, Vector3 p) => roads.Nearest(p, out _, out float d, out float h) && d < h;
         // one hit per angle: placed back from the face, heading into it at the angle, the speed given, throttle held; measured 0.6 s after the first touch
         IEnumerator R85Hits(string what, Vector3 face, Vector3 n, Vector3 t, float speed, float back)
         {
             foreach (float angle in new[] { 10f, 20f, 30f, 70f })
             {
                 var dir = (t * Mathf.Cos(angle * Mathf.Deg2Rad) - n * Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;
-                var hitAt = face + n * 1.3f; var start = hitAt - dir * back; start = RaceRoute.Surface(start.x, start.z);
+                var hitAt = face + n * 1.3f; var start = hitAt - dir * Mathf.Min(back, 9f / Mathf.Sin(angle * Mathf.Deg2Rad));   // the steep ones start closer (on the road) start = RaceRoute.Surface(start.x, start.z);
                 Place(start, dir, speed); R73Set(0f, 1f, 0f);
                 var cam = Camera.main ? Camera.main.GetComponent<ChaseCamera>() : null; if (cam) cam.Snap();
-                float tt = 0f, touched = -1f, before = 0f; bool pics = angle == 20f; int pic = 0; string tag = what.Replace(" ", "_").Replace("'", "");
+                float tt = 0f, touched = -1f, before = 0f; bool pics = angle == 20f; int pic = 0; string tag = what.Replace(" ", "_").Replace("'", "") + (WallGlance.Off ? "_before" : "");
                 float after = 0f, headErr = 0f, gap = 0f;
                 while (tt < 4f)
                 {
