@@ -279,7 +279,7 @@ namespace ChastainRush
             var idx = new CellIndex(24f); foreach (var s in segs) idx.Add(s.a, s.b, s.half + 1f);
             var near = new List<int>();
             // a wall's point blocked: on another road's pavement (+0.4 m), or on a deck at about the road's height (its parapet is the wall there)
-            bool Blocked(Vector2 p, float roadY, Vector2 along)
+            bool Blocked(Vector2 p, float roadY, Vector2 along, float dEnd = 999f)
             {
                 foreach (int si in idx.Near(p, 0f, near))
                 {
@@ -291,7 +291,7 @@ namespace ChastainRush
                     if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
                     // Round 83 (A, build 1: 49 hits on a wall standing in the narrowing gap where the I-575 flyover's road meets the I-75 Express Lanes): no
                     // wall within 5 m of a ramp's pavement at about the road's height (the merge stays open)
-                    if (!s.express && s.link && d < s.half + 5f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 2f) return true; }
+                    if (!s.express && s.link && d < s.half + 5f && dEnd > 30f) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 1f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
                 }
                 return false;
             }
@@ -340,7 +340,7 @@ namespace ChastainRush
                         float dEnd = deckEnds.Count > 0 ? deckEnds.Min(e => (e - line[i]).magnitude) : 999f;
                         off = Mathf.Lerp(half + .35f, off, Mathf.Clamp01((dEnd - 2f) / 25f));
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
-                        if (Blocked(p, roadY, dir) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
+                        if (Blocked(p, roadY, dir, dEnd) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
                         float footY = Ground(terrain, p.x, p.y);
                         var top = new Vector3(p.x, roadY + .04f, p.y);   // Round 82 (BUG-005: walls climbing over the banks): at the road's height, its foot buried where the bank stands higher
                         if (prev.HasValue)
