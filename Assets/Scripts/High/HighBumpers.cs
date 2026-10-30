@@ -293,13 +293,13 @@ namespace ChastainRush
                 if (!float.IsNaN(at)) { slope = float.IsNaN(prev) ? 0f : Mathf.Clamp((at - prev) / Step, -1.2f, 1.2f); prev = at; }
             }
             // a 5-station median: one station's stray hit (a roof edge, a wall top beside the line) is not a ramp
-            var m = new float[n]; var w5 = new float[5];
+            var med = new float[n]; var w5 = new float[5];
             for (int i = 0; i < n; i++)
             {
                 int c = 0; for (int k = -2; k <= 2; k++) { int q = l.loop ? ((i + k) % n + n) % n : Mathf.Clamp(i + k, 0, n - 1); if (!float.IsNaN(y[q])) w5[c++] = y[q]; }
-                if (c == 0) { m[i] = y[i]; continue; } System.Array.Sort(w5, 0, c); m[i] = w5[c / 2];
+                if (c == 0) { med[i] = y[i]; continue; } System.Array.Sort(w5, 0, c); med[i] = w5[c / 2];
             }
-            return m;
+            return med;
         }
         // the bumpers' red and white come from the vertex colors: the game's vertex-lit shader
         static Material BumperMaterial()
