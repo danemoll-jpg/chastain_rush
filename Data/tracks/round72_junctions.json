@@ -6,6 +6,8 @@
   {"id": "Cobb Parkway North at North Marietta Parkway", "at": [3752.0, -7600.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
   {"id": "George Busbee Parkway at Townpark Drive", "at": [-746.0, 1390.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
   {"id": "Chastain Road at Busbee Drive", "at": [-766.0, 511.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
-  {"id": "Frey Road at its link", "at": [-1389.0, 1411.0], "r": 16.0, "fade": 8.0, "sigma": 3.0}
+  {"id": "Frey Road at its link", "at": [-1389.0, 1411.0], "r": 16.0, "fade": 8.0, "sigma": 3.0},
+  {"id": "Round 83 (D): Chastain Road eastbound at the I-75 ramps east of its bridge (a 0.9 m drop in 4 m off the junction, cars flew 0.5 to 0.8 s)", "at": [-878.0, 453.0], "r": 22.0, "fade": 10.0, "sigma": 6.0},
+  {"id": "Round 83 (D): Chastain Road westbound at the I-75 ramps east of its bridge", "at": [-880.0, 475.0], "r": 22.0, "fade": 10.0, "sigma": 6.0}
  ]
 }

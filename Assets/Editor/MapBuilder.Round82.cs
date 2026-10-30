@@ -343,10 +343,26 @@ namespace ChastainRush
                 }
                 var y = new double[N];
                 const double C = 3.0;
+                // Round 83 (B, build 1: Skip Spann Connector's deck rose over each road under it and dipped between them; westbound a car flew off every
+                // crest): between two roads it goes over within 250 m, the profile runs straight across from one's need to the next's (no dip between)
+                var lbS = lbs.OrderBy(b => b.s).ToList();
+                double Bridge(float s)
+                {
+                    double best = double.MinValue;
+                    for (int q = 0; q + 1 < lbS.Count; q++)
+                    {
+                        var b1 = lbS[q]; var b2 = lbS[q + 1];
+                        if (s <= b1.s || s >= b2.s || b2.s - b1.s > 250f) continue;
+                        if (ubs.Any(u => u.s > b1.s - u.spread && u.s < b2.s + u.spread)) continue;   // (a deck over the line between them: not across it)
+                        best = System.Math.Max(best, b1.need + (b2.need - b1.need) * (s - b1.s) / System.Math.Max(b2.s - b1.s, .1f));
+                    }
+                    return best;
+                }
                 for (int j = 0; j < N; j++)
                 {
                     double E = y0[j] - 50, U = y0[j] + 50;
                     foreach (var b in lbs) E = System.Math.Max(E, b.need - Fall(cum[j], b.s, b.spread));
+                    E = System.Math.Max(E, Bridge(cum[j]));
                     foreach (var b in ubs) U = System.Math.Min(U, b.cap + Fall(cum[j], b.s, b.spread));
                     double v = y0[j];
                     v = .5 * (v + U - System.Math.Sqrt((v - U) * (v - U) + C * C));   // a smooth minimum (under a deck over it)
@@ -356,11 +372,11 @@ namespace ChastainRush
                 // (build 3: the ground along the road had been graded into a 10 % ramp off the old deck's end before this pass, and the profile followed it):
                 // no stretch steeper than grade: each too steep step relaxed from both its ends, never below a road's clearance under it
                 var Ehard = new double[N]; var Uhard = new double[N];
-                for (int j = 0; j < N; j++) { double E = double.MinValue; foreach (var lb in lbs) E = System.Math.Max(E, lb.need - Fall(cum[j], lb.s, lb.spread)); Ehard[j] = E; Uhard[j] = double.MaxValue; }
+                for (int j = 0; j < N; j++) { double E = double.MinValue; foreach (var lb in lbs) E = System.Math.Max(E, lb.need - Fall(cum[j], lb.s, lb.spread)); E = System.Math.Max(E, Bridge(cum[j])); Ehard[j] = E; Uhard[j] = double.MaxValue; }
                 // (build 5: easing the ends back over 80 m made A's short lines steep there): the two end points held to the road as it is, the grade limit
                 // spreading the climb from them
                 Ehard[0] = Uhard[0] = raw[0]; Ehard[N - 1] = Uhard[N - 1] = raw[N - 1]; y[0] = raw[0]; y[N - 1] = raw[N - 1];
-                for (int it = 0; it < 3000; it++)
+                for (int it = 0; it < 40000; it++)   /* Round 83: was 3000 (Skip Spann's ends left at 58 %) */
                 {
                     bool any = false;
                     for (int j = 0; j + 1 < N; j++)
@@ -500,6 +516,18 @@ namespace ChastainRush
                     bool atStart = Near(pc.q[0], 2f, out _) < 1.5f, atEnd = Near(pc.q[pc.q.Count - 1], 2f, out _) < 1.5f;
                     if (!atStart && !atEnd) continue;
                     if (atStart && atEnd) continue;   // a piece lying along the line both ends (none expected)
+                    // Round 83 (build 1: I-75's northbound deck over Frey Road carries on from the end of I-75's line laid under Skip Spann; "joined" it was
+                    // shifted 1.6 m and its far end stopped a car): a piece carrying straight on from a line's end is its continuation, not a join
+                    {
+                        var E = atStart ? pc.q[0] : pc.q[pc.q.Count - 1]; var E2 = atStart ? pc.q[1] : pc.q[pc.q.Count - 2]; bool cont = false;
+                        foreach (var ln in lines)
+                        {
+                            int n = ln.p.Count; if (n < 2) continue;
+                            foreach (var (endP, inner) in new[] { (ln.p[0], ln.p[1]), (ln.p[n - 1], ln.p[n - 2]) })
+                                if ((endP - E).magnitude < 2.5f && Vector2.Dot((endP - inner).normalized, (E2 - E).normalized) > .8f) cont = true;
+                        }
+                        if (cont) { log.Add($"  not joined: {pc.cls} {(pc.deck ? map.bridges[pc.idx].osm_id : map.roads[pc.idx].osm_id)} carries on from the line's end"); continue; }
+                    }
                     // Round 83 (the dry run: Chastain Road's deck, its end lying over I-575's general lanes in plan, was "joined" to them and pulled down 12 m
                     // onto the Express Lanes): an end more than 3 m above or below the line there is a deck crossing it, not a road joining it
                     {
