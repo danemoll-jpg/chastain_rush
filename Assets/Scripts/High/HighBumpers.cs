@@ -22,6 +22,11 @@ namespace ChastainRush
     // - Solid and drawn only for a HIGH MODE player (split screen: the HIGH player's half only, the other player passes through); the AI rivals pass
     //   through them (their racing line uses the shoulders). On the "Ignore Raycast" layer (split screen: a view's own layer): the suspension and the
     //   cameras do not take them for ground.
+    // - Round 86 (A, Dan: "the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps"): every
+    //   jump on a walled line is found from the driven surface along it (the line and 3 m either side, Profile): a flight is simulated from every
+    //   station at every speed from 12 m/s to the fastest vehicle's top speed; where the ground falls away under it and it clears the ground by
+    //   JumpClear or more, no bumper stands from PreLip before the lip to RunOut past the furthest landing. Past that the bumpers come back in a
+    //   funnel, FunnelOut further out, closing to the road's edge over FunnelLength. Every bumper's ends are rounded (a half dome, Emit), never square.
     public static class HighBumpers
     {
         const string RootName = "HIGH MODE bumpers";
@@ -29,7 +34,12 @@ namespace ChastainRush
         public static int Samples { get; private set; }          // checks: bumper stations built
         public static int Openings { get; private set; }         // checks: stations left open for a crossing line
         public static int LandingStations { get; private set; }  // checks: stations on a landing, set wider apart
-        public static string Report => $"{Samples} bumper stations, {Openings} open for crossings, {LandingStations} on landings";
+        public static int JumpStations { get; private set; }     // Round 86: stations left open for a jump's flight and landing
+        public static string Report => $"{Samples} bumper stations, {Openings} open for crossings, {LandingStations} on landings, {JumpStations} open for {Jumps.Count} jumps";
+        // Round 86 (A): the jumps found at the last build (checks: the line, the lip's and the furthest landing's station, the longest flight, the highest)
+        public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
+        public static readonly List<Jump> Jumps = new List<Jump>();
+        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, SideOffset = 3;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
         static readonly Dictionary<string, GameObject> built = new();
@@ -70,7 +80,7 @@ namespace ChastainRush
 
         static GameObject Build(RaceController race)
         {
-            Samples = Openings = LandingStations = 0;
+            Samples = Openings = LandingStations = JumpStations = 0; Jumps.Clear();
             var root = new GameObject(RootName + " " + race.Route.Name + " " + race.Route.Direction) { layer = Layer };
             var roads = RoadLookup.Instance; var rd = race.RouteData; bool trail = rd != null && rd.trail;
             var lines = new List<Line>();
@@ -162,6 +172,56 @@ namespace ChastainRush
             }
             float Widen(int line, float s) { if (!widen.TryGetValue(line, out var w)) return 0; return w[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, w.Length - 1)]; }
 
+            // Round 86 (A): each walled line's jumps: no bumper from PreLip before a lip to RunOut past its furthest landing, then the funnel
+            var gap = new Dictionary<int, bool[]>(); var funnel = new Dictionary<int, float[]>();
+            float vmax = 12f; foreach (var vp in VehicleProfile.All) if (vp.Class != "Plane" && vp.Class != "Helicopter") vmax = Mathf.Max(vmax, vp.Speed);
+            float g = Mathf.Max(1f, -Physics.gravity.y);
+            for (int li = 0; li < lines.Count; li++)
+            {
+                var l = lines[li]; if (!l.walls || l.length <= 0) continue; int n = Mathf.FloorToInt(l.length / Step) + 1;
+                var open = new bool[n]; var fun = new float[n]; gap[li] = open; funnel[li] = fun;
+                int Wrap(int k) => l.loop ? (k % n + n) % n : k;
+                var found = new List<Jump>();
+                foreach (float off in new[] { 0f, -SideOffset, SideOffset })
+                {
+                    var y = DrivenProfile(l, off, n, mask, hits);
+                    float Y(int k) { k = Wrap(k); return k < 0 || k >= n || float.IsNaN(y[k]) ? -1e6f : y[k]; }
+                    int last = l.loop ? n + 200 : n - 1;
+                    for (float v = 12f; v <= vmax + .01f; v += 4f)
+                        for (int i = 1; i < last; i++)
+                        {
+                            float y0 = Y(i - 1), y1 = Y(i); if (y0 < -1e5f || y1 < -1e5f) continue;
+                            float dy = Mathf.Clamp(y1 - y0, -Step * 1.5f, Step * 1.5f), hyp = Mathf.Sqrt(Step * Step + dy * dy), vh = v * Step / hyp, vy = v * dy / hyp, dt = Step / vh;
+                            if (Y(i + 1) >= y1 + vy * dt - .5f * g * dt * dt - .25f) continue;   // the ground follows: still on it
+                            float peak = 0f, t = 0f; int j = i + 1;
+                            for (; (j - i) * Step < 400f; j++)
+                            {
+                                t = (j - i) * Step / vh; float clear = y1 + vy * t - .5f * g * t * t - Y(j); peak = Mathf.Max(peak, Mathf.Min(clear, 100f));
+                                if (clear <= .05f) break;
+                            }
+                            if (peak >= JumpClear)
+                            {
+                                float lip = i * Step, land = j * Step;
+                                var jp = found.Find(q => q.lip <= land && q.land >= lip - PreLip);
+                                if (jp == null) found.Add(jp = new Jump { line = li, lip = lip, land = land });
+                                jp.lip = Mathf.Min(jp.lip, lip); jp.land = Mathf.Max(jp.land, land); jp.air = Mathf.Max(jp.air, t); jp.clear = Mathf.Max(jp.clear, peak);
+                            }
+                            if (j > i + 1) i = j - 1;
+                        }
+                }
+                foreach (var jp in found)
+                {
+                    int a = Mathf.FloorToInt((jp.lip - PreLip) / Step), b = Mathf.CeilToInt((jp.land + RunOut) / Step), f = Mathf.CeilToInt(FunnelLength / Step);
+                    for (int k = a; k <= b; k++) { int w = Wrap(k); if (w >= 0 && w < n) open[w] = true; }
+                    for (int k = 1; k <= f; k++) { int w = Wrap(b + k); if (w >= 0 && w < n) fun[w] = Mathf.Max(fun[w], 1f - (k - 1f) / f); }
+                    jp.lip = l.loop ? Mathf.Repeat(jp.lip, l.length) : jp.lip; jp.land = l.loop ? Mathf.Repeat(jp.land, l.length) : Mathf.Min(jp.land, l.length - .01f);
+                    jp.lipAt = l.at(jp.lip).p; jp.landAt = l.at(jp.land).p; jp.at = l.at; jp.length = l.length; jp.loop = l.loop;
+                    Jumps.Add(jp);
+                }
+            }
+            bool Gap(int line, float s) => gap.TryGetValue(line, out var o) && o[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, o.Length - 1)];
+            float Funnel(int line, float s) => funnel.TryGetValue(line, out var o) ? o[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, o.Length - 1)] : 0f;
+
             var material = BumperMaterial();
             if (!bounce) bounce = new PhysicsMaterial("HIGH MODE bumper") { bounciness = 0f, bounceCombine = PhysicsMaterialCombine.Minimum,   // Round 85: WallGlance turns a vehicle off it (was a 0.3 bounce)
                  dynamicFriction = 0f, staticFriction = 0f, frictionCombine = PhysicsMaterialCombine.Minimum };
@@ -190,8 +250,10 @@ namespace ChastainRush
             bool Sample(Line l, int line, float s, int side, bool wrap, int owner, out Vector3 w, out Vector3 outward)
             {
                 w = outward = default; var (p, f) = l.at(s); f = Vector3.ProjectOnPlane(f, Vector3.up); if (f.sqrMagnitude < 1e-4f) return false; f.Normalize();
+                if (Gap(line, s)) { if (side < 0 && !wrap) JumpStations++; return false; }   // Round 86: a jump's flight and landing
                 if (!Surface(p, p.y, out float roadY) || Mathf.Abs(roadY - p.y) > 1.6f) return false;   // no ground at the line: a gap, a deck over it
-                outward = Vector3.Cross(Vector3.up, f) * side; float half = l.half(s, p), wide = Widen(line, s), reach = Mathf.Lerp(half + 1.2f, Mathf.Max(half + 1.2f, LandingHalf), wide), edge = reach;
+                outward = Vector3.Cross(Vector3.up, f) * side; float half = l.half(s, p), wide = Widen(line, s), reach = Mathf.Lerp(half + 1.2f, Mathf.Max(half + 1.2f, LandingHalf), wide);
+                reach = Mathf.Max(reach, half + 1.2f + FunnelOut * Funnel(line, s)); float edge = reach;   // Round 86: past a landing, the funnel
                 if (reach > half + 1.25f) LandingStations++;
                 for (float d = 2.5f; d <= reach; d += .5f)
                     if (!Surface(p + outward * d, roadY, out float y) || y < roadY - 1f) { edge = Mathf.Max(2.2f, d - .3f); break; }   // the ground drops away here
@@ -199,6 +261,29 @@ namespace ChastainRush
                 if (Open(w, line, s, p, outward)) { Openings++; return false; }
                 return wrap || !Duplicate(w, owner, s, l.length);
             }
+        }
+        // Round 86 (A): the driven surface along a line, 'off' metres to its right, one height per Step (NaN: none): from above, the surface nearest
+        // to where the last two stations point (so it climbs a ramp, stays on a deck or under it, and falls into a hollow)
+        static float[] DrivenProfile(Line l, float off, int n, int mask, RaycastHit[] hits)
+        {
+            var y = new float[n]; float prev = float.NaN, slope = 0f;
+            for (int i = 0; i < n; i++)
+            {
+                var (p, f) = l.at(Mathf.Min(i * Step, l.length - .01f)); f = Vector3.ProjectOnPlane(f, Vector3.up);
+                var q = f.sqrMagnitude < 1e-4f ? p : p + Vector3.Cross(Vector3.up, f.normalized) * off;
+                float want = float.IsNaN(prev) ? p.y : prev + slope * Step, top = Mathf.Max(want, p.y) + 10f;
+                int k = Physics.RaycastNonAlloc(new Vector3(q.x, top, q.z), Vector3.down, hits, 60f, mask, QueryTriggerInteraction.Ignore);
+                float best = float.MaxValue, at = float.NaN;
+                for (int m = 0; m < k; m++)
+                {
+                    var h = hits[m]; if (h.collider.attachedRigidbody || h.normal.y < .3f || h.collider.gameObject.layer == Layer) continue;
+                    float d = Mathf.Abs(h.point.y - want); if (h.point.y > want + 1.5f) d += 2f;   // a surface above where it heads: a ramp it climbs, else a roof
+                    if (d < best) { best = d; at = h.point.y; }
+                }
+                y[i] = at;
+                if (!float.IsNaN(at)) { slope = float.IsNaN(prev) ? 0f : Mathf.Clamp((at - prev) / Step, -1.2f, 1.2f); prev = at; }
+            }
+            return y;
         }
         // the bumpers' red and white come from the vertex colors: the game's vertex-lit shader
         static Material BumperMaterial()
@@ -227,15 +312,25 @@ namespace ChastainRush
                     if (Vector3.Dot(n, m) >= 0) tris.AddRange(new[] { a, b, a2, b, b2, a2 }); else tris.AddRange(new[] { a, a2, b, b, a2, b2 });
                 }
             }
+            // Round 86 (A): each end a rounded half dome (the profile's outer half turned round the end), never a square end to hit
             foreach (int end in new[] { 0, strip.Count - 1 })
             {
-                var (w, o) = strip[end];
-                for (int face = 0; face < 2; face++)
+                var (w, o) = strip[end]; var nb = strip[end == 0 ? 1 : strip.Count - 2].w;
+                var a = Vector3.ProjectOnPlane(w - nb, Vector3.up); a = a.sqrMagnitude < 1e-4f ? Vector3.Cross(o, Vector3.up) : a.normalized;
+                var c = w + o * .5f; const int K = 8; int H = Profile.Length - 4; int start = verts.Count;   // the profile's points 4 .. 8: its top to its outer foot
+                for (int k = 0; k <= K; k++)
                 {
-                    int start = verts.Count; verts.Add(w + o * .5f + Vector3.up * -.2f - origin); colors.Add(White);
-                    foreach (var q in Profile) { verts.Add(w + o * q.x + Vector3.up * q.y - origin); colors.Add(White); }
-                    for (int j = 0; j < P; j++) { int a = start + 1 + j, b = start + 1 + (j + 1) % P; if (face == 0) tris.AddRange(new[] { start, a, b }); else tris.AddRange(new[] { start, b, a }); }
+                    float th = Mathf.PI * k / K; var d = o * Mathf.Cos(th) + a * Mathf.Sin(th);
+                    for (int j = 4; j < Profile.Length; j++) { var q = Profile[j]; verts.Add(c + d * (q.x - .5f) + Vector3.up * q.y - origin); colors.Add(White); }
                 }
+                var mid = c + Vector3.up * -.3f - origin;
+                for (int k = 0; k < K; k++)
+                    for (int j = 0; j + 1 < H; j++)
+                    {
+                        int i0 = start + k * H + j, i1 = i0 + 1, i2 = i0 + H, i3 = i2 + 1;
+                        var nrm = Vector3.Cross(verts[i1] - verts[i0], verts[i2] - verts[i0]); var m = (verts[i0] + verts[i3]) * .5f - mid;
+                        if (Vector3.Dot(nrm, m) >= 0) tris.AddRange(new[] { i0, i1, i2, i1, i3, i2 }); else tris.AddRange(new[] { i0, i2, i1, i1, i2, i3 });
+                    }
             }
             go.transform.position = origin;
             var mesh = new Mesh { name = "HIGH MODE bumper" }; mesh.indexFormat = verts.Count > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;
