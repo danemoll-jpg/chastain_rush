@@ -49,7 +49,7 @@ namespace ChastainRush
                             report.AppendLine($"      {(off == 0 ? "on the line" : off < 0 ? "3 m left " : "3 m right")}: top {res.top:0} m/s, in the air {res.air:0.0} s, bumper touches in the air or landing {res.touch}{(res.touch > 0 ? $" at ({res.touchAt.x:0}, {res.touchAt.z:0})" : "")}{(res.note.Length > 0 ? "; " + res.note : "")}");
                         }
                     }
-                    race.EndRace(); R84High(false);
+                    race.EndRace(); R84High(false); Flush();
                 }
             Check("A: no bumper touched in the air or on a landing (every jump, on the line and 3 m either side)", touchedRuns == 0, $"{touchedRuns} of {runs} runs touched a bumper; {jumpsAll} jumps");
         }

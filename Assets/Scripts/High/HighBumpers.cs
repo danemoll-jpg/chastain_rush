@@ -24,8 +24,8 @@ namespace ChastainRush
     //   cameras do not take them for ground.
     // - Round 86 (A, Dan: "the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps"): every
     //   jump on a walled line is found from the driven surface along it (the line and 3 m either side, Profile): a flight is simulated from every
-    //   station at every speed from 12 m/s to the fastest vehicle's top speed; where the ground falls away under it and it clears the ground by
-    //   JumpClear or more, no bumper stands from PreLip before the lip to RunOut past the furthest landing. Past that the bumpers come back in a
+    //   station at every speed from 12 m/s to the fastest vehicle's top speed (no faster than the line's bends allow there); where the ground falls
+    //   away under it and it clears the ground by JumpClear or more for JumpAir or longer, no bumper stands from PreLip before the lip to RunOut past the furthest landing. Past that the bumpers come back in a
     //   funnel, FunnelOut further out, closing to the road's edge over FunnelLength. Every bumper's ends are rounded (a half dome, Emit), never square.
     public static class HighBumpers
     {
@@ -39,7 +39,7 @@ namespace ChastainRush
         // Round 86 (A): the jumps found at the last build (checks: the line, the lip's and the furthest landing's station, the longest flight, the highest)
         public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
-        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, SideOffset = 3;
+        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = 1f, JumpAir = .5f, SideOffset = 3, BendGrip = 20f;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
         static readonly Dictionary<string, GameObject> built = new();
@@ -72,7 +72,7 @@ namespace ChastainRush
         }
         public static bool IsBumper(Collider c) => c && c.transform.parent && c.transform.parent.name.StartsWith(RootName);
 
-        sealed class Line { public Func<float, (Vector3 p, Vector3 f)> at; public Func<float, Vector3, float> half; public float length; public bool loop; public bool walls; }
+        sealed class Line { public Func<float, (Vector3 p, Vector3 f)> at; public Func<float, Vector3, float> half; public float length; public bool loop; public bool walls; public Func<float, float> curv; }
         struct Band { public Vector3 p; public float half, s; public int line; }
         const float Cell = 16, Step = 2;
         public const float LandingHalf = 11, LandingTaper = 20;
@@ -92,7 +92,7 @@ namespace ChastainRush
                 if (trail || !roads || !roads.Nearest(p, out _, out float d, out float h) || d > h + .5f) return own;
                 return Mathf.Clamp(h, 2.5f, 12f);
             }
-            lines.Add(new Line { at = s => { var p = main.At(s, out var f); return (p, f); }, half = LapHalf, length = main.Length, loop = true, walls = true });
+            lines.Add(new Line { at = s => { var p = main.At(s, out var f); return (p, f); }, half = LapHalf, length = main.Length, loop = true, walls = true, curv = main.LineCurvature });
             foreach (var sc in race.AiShortcuts)
             {
                 var r = sc.Line; if (!r || r.points == null || r.points.Length < 2) continue;
@@ -182,6 +182,13 @@ namespace ChastainRush
                 var open = new bool[n]; var fun = new float[n]; gap[li] = open; funnel[li] = fun;
                 int Wrap(int k) => l.loop ? (k % n + n) % n : k;
                 var found = new List<Jump>();
+                // the speed the line's bends allow at each station (the tightest bend in the 50 m before it, at BendGrip sideways), at most vmax
+                var allow = new float[n];
+                for (int i = 0; i < n; i++)
+                {
+                    float k = 0f; if (l.curv != null) for (float d = 0f; d <= 50f; d += Step) { float q = i * Step - d; if (l.loop) q = Mathf.Repeat(q, l.length); else if (q < 0f) break; k = Mathf.Max(k, Mathf.Abs(l.curv(q))); }
+                    allow[i] = k < 1e-4f ? vmax : Mathf.Min(vmax, Mathf.Sqrt(BendGrip / k));
+                }
                 foreach (float off in new[] { 0f, -SideOffset, SideOffset })
                 {
                     var y = DrivenProfile(l, off, n, mask, hits);
@@ -191,6 +198,7 @@ namespace ChastainRush
                         for (int i = 1; i < last; i++)
                         {
                             float y0 = Y(i - 1), y1 = Y(i); if (y0 < -1e5f || y1 < -1e5f) continue;
+                            int wi = Wrap(i); if (wi >= 0 && wi < n && v > allow[wi] + 2f) continue;   // faster than its bends allow here
                             float dy = Mathf.Clamp(y1 - y0, -Step * 1.5f, Step * 1.5f), hyp = Mathf.Sqrt(Step * Step + dy * dy), vh = v * Step / hyp, vy = v * dy / hyp, dt = Step / vh;
                             if (Y(i + 1) >= y1 + vy * dt - .5f * g * dt * dt - .25f) continue;   // the ground follows: still on it
                             float peak = 0f, t = 0f; int j = i + 1;
@@ -199,7 +207,7 @@ namespace ChastainRush
                                 t = (j - i) * Step / vh; float clear = y1 + vy * t - .5f * g * t * t - Y(j); peak = Mathf.Max(peak, Mathf.Min(clear, 100f));
                                 if (clear <= .05f) break;
                             }
-                            if (peak >= JumpClear)
+                            if (peak >= JumpClear && t >= JumpAir)
                             {
                                 float lip = i * Step, land = j * Step;
                                 var jp = found.Find(q => q.lip <= land && q.land >= lip - PreLip);
