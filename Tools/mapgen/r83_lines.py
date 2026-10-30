@@ -1,4 +1,4 @@
-﻿"""Round 83: the lines the exe check drives (after the build; reads Assets/Generated/round82_crossings.txt through r82_lines.py).
+"""Round 83: the lines the exe check drives (after the build; reads Assets/Generated/round82_crossings.txt through r82_lines.py).
 
   local/round83/r83_lines_a.json  the Express Lanes end to end (I-75's, I-575's) at 35 m/s, pictures at the three places of A, Round 82's places; the I-575
                                   Express flyover into the I-75 Express Lanes (A); the Big Shanty ramp
@@ -48,6 +48,12 @@ def main():
             st.append(round(s, 1))
             nm.append(n)
     a.append({"name": "I-575 Express flyover into the I-75 Express Lanes", "both": True, "cap": 35, "line": [round(v, 2) for p in q for v in p], "pics": st, "picNames": nm})
+    # B: Skip Spann Connector end to end, each carriageway (its bridge over I-75 and both approaches)
+    for nm, ids, a0, a1 in (("Skip Spann Connector eastern carriageway end to end", (564146474, 564146488, 390749397, 564146480, 564146483, 564146479, 564146476, 390749398), (-791.0, 808.0), None),
+                            ("Skip Spann Connector western carriageway end to end", (564146485, 390749399, 390749396, 564146481, 564146482, 390749401, 564146472), None, (-800.0, 790.0))):
+        RB = dict(R); RB.update(B)
+        q = ([a0] if a0 else []) + [p for i in ids for p in r82_lines.pts(RB[i]["points"])] + ([a1] if a1 else [])
+        a.append({"name": nm, "both": True, "cap": 30, "line": [round(v, 2) for p in r82_lines.resample(q, 3.0) for v in p], "pics": [], "picNames": []})
     out = os.path.join(ROOT, "local", "round83")
     os.makedirs(out, exist_ok=True)
     json.dump({"lines": a}, open(os.path.join(out, "r83_lines_a.json"), "w", encoding="utf-8"))

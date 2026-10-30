@@ -608,12 +608,17 @@ namespace ChastainRush
                             // height across Frey Road, laid just before): another road's pavement is never raised by a join (only cut under a deck)
                             bool otherPave = R83OnOtherRoad(p, pathRoads);
                             bool under = UnderOtherDeck(p, null, out float slabB) && (slabB > tg + 1f || best > pc.half + .5f);
-                            if (onDeck || under)
+                            // Round 83 (build 2: the I-575 flyover's road under I-75's southbound bridge kept its old ground while the join re-levelled it on
+                            // both sides: a 1.1 m step at the bridge's edge): under another deck high over it, its own pavement is graded like the rest (capped
+                            // under the slab below)
+                            bool highOver = under && !onDeck && best <= pc.half + .5f && slabB > tg + 2f;
+                            if ((onDeck || under) && !highOver)
                             {
                                 // under its own deck, the line's or another's (the gap between two decks side by side too): cut clear of the slabs
                                 float cap = under ? slabB - .3f : tg - R82Slab - .3f; if (between) cap = Mathf.Min(cap, Mathf.Min(tg, lhh - liftL) - R82Slab - .3f);
                                 return yy > cap ? cap : yy;
                             }
+                            if (highOver) { float ny1 = Mathf.Min(tg, slabB - .3f); if (Mathf.Abs(ny1 - yy) > 1e-3f) changed++; return ny1; }
                             if (dl < halfL + .5f) return yy;   // the line's own road (graded with it)
                             if (otherPave) return yy;
                             // Round 83 (build 1: the I-575 flyover's join built banks beside its span over the I-75 Express Lanes: spikes 5 m up at the lane's
