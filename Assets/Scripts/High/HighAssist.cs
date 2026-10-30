@@ -21,6 +21,7 @@ namespace ChastainRush
         public static void Ensure(ArcadeVehicle c, int player)
         {
             if (!c) return; var a = c.GetComponent<HighAssist>(); if (!a) a = c.gameObject.AddComponent<HighAssist>(); a.Player = player;
+            WallGlance.Ensure(c, player);   // Round 85: glancing off guide walls, in every mode
         }
         public static bool For(ArcadeVehicle c) => c && c.GetComponent<HighAssist>() is HighAssist a && a.On;
         void Awake() { car = GetComponent<ArcadeVehicle>(); respawn = GetComponent<VehicleRespawn>(); config = GetComponent<VehicleConfiguration>(); }
@@ -56,6 +57,7 @@ namespace ChastainRush
         {
             if (!On || c.contactCount == 0) return;
             var n = c.GetContact(0).normal; if (Mathf.Abs(n.y) > .6f) return;   // the ground, a landing, a ramp: not a hit
+            if (!WallGlance.Off && GuideWalls.Is(c.collider)) return;   // Round 85: a bumper or a barrier: WallGlance turns it along the wall instead
             hit = true; hitNormal = n;
         }
         void OnDisable() { if (car) car.Forgiving = false; }

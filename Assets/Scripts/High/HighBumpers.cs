@@ -163,7 +163,8 @@ namespace ChastainRush
             float Widen(int line, float s) { if (!widen.TryGetValue(line, out var w)) return 0; return w[Mathf.Clamp(Mathf.FloorToInt(s / Step), 0, w.Length - 1)]; }
 
             var material = BumperMaterial();
-            if (!bounce) bounce = new PhysicsMaterial("HIGH MODE bumper") { bounciness = .3f, bounceCombine = PhysicsMaterialCombine.Maximum, dynamicFriction = .05f, staticFriction = .05f, frictionCombine = PhysicsMaterialCombine.Minimum };
+            if (!bounce) bounce = new PhysicsMaterial("HIGH MODE bumper") { bounciness = 0f, bounceCombine = PhysicsMaterialCombine.Minimum,   // Round 85: WallGlance turns a vehicle off it (was a 0.3 bounce)
+                 dynamicFriction = 0f, staticFriction = 0f, frictionCombine = PhysicsMaterialCombine.Minimum };
             int chunk = 0;
             for (int li = 0; li < lines.Count; li++)
             {
@@ -245,7 +246,7 @@ namespace ChastainRush
             for (int i = 0; i + 1 < strip.Count; i++)
             {
                 int k = cv.Count; var (wa, _) = strip[i]; var (wb, _) = strip[i + 1];
-                cv.Add(wa + Vector3.up * .3f - origin); cv.Add(wa + Vector3.up * Fence - origin); cv.Add(wb + Vector3.up * .3f - origin); cv.Add(wb + Vector3.up * Fence - origin);
+                cv.Add(wa + Vector3.up * Profile[0].y - origin); cv.Add(wa + Vector3.up * Fence - origin); cv.Add(wb + Vector3.up * Profile[0].y - origin); cv.Add(wb + Vector3.up * Fence - origin);   // Round 85: down to the buried base (it began 0.3 m over the line's height: where the ground beside a trail dips, a body went under it and stuck)
                 ct.AddRange(new[] { k, k + 1, k + 2, k + 2, k + 1, k + 3, k, k + 2, k + 1, k + 2, k + 3, k + 1 });
             }
             var solid = new Mesh { name = "HIGH MODE bumper collision" }; solid.indexFormat = cv.Count > 65000 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16;

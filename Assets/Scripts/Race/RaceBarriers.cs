@@ -102,7 +102,7 @@ namespace ChastainRush
             var root = new GameObject("Mouth barrier " + pm.ids[m]); root.transform.SetParent(transform, false);
             int blocks = Mathf.Max(2, Mathf.RoundToInt(half * 2f / Block));
             float bw = half * 2f / blocks;
-            var c = pm.mouth[m] + along * 0.6f;
+            var c = pm.mouth[m] + along * 0.6f; var run = new List<Vector3>();
             for (int i = 0; i < blocks; i++)
             {
                 var p = c + lateral * (-half + bw * (i + 0.5f));
@@ -113,7 +113,24 @@ namespace ChastainRush
                 var rd = cube.GetComponent<Renderer>();
                 rd.sharedMaterial = i % 2 == 0 ? red : white;
                 rd.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                Destroy(cube.GetComponent<Collider>());
+                run.Add(new Vector3(p.x, c.y, p.z));
             }
+            Solid(root.transform, run, bw, along);
+        }
+
+        // Round 85 (bumpers and barriers that bounce you back on course): a barrier's blocks were a collider each, standing at their own ground
+        // heights, so a vehicle sliding along the row met each block's corner. Now one box for each unbroken run of blocks: one flat face along
+        // the row (from 1 m under the lowest block's ground to the barrier's height over the highest), so WallGlance turns a glancing vehicle along it.
+        void Solid(Transform root, List<Vector3> run, float bw, Vector3 along)
+        {
+            if (run.Count == 0) return;
+            Vector3 a = run[0], b = run[run.Count - 1]; float lo = float.MaxValue, hi = float.MinValue;
+            foreach (var q in run) { lo = Mathf.Min(lo, q.y - 1f); hi = Mathf.Max(hi, q.y + Height); }
+            var go = new GameObject("Barrier wall"); go.transform.SetParent(root, false);
+            var mid = (a + b) * .5f; go.transform.SetPositionAndRotation(new Vector3(mid.x, (lo + hi) * .5f, mid.z), Quaternion.LookRotation(along, Vector3.up));
+            var box = go.AddComponent<BoxCollider>(); box.size = new Vector3(new Vector2(b.x - a.x, b.z - a.z).magnitude + bw, hi - lo, Depth);
+            run.Clear();
         }
 
         public void Clear()
@@ -136,13 +153,15 @@ namespace ChastainRush
             var root = new GameObject("Barrier " + c.id); root.transform.SetParent(transform, false);
             int blocks = Mathf.Max(2, Mathf.RoundToInt(half * 2f / Block));
             float bw = half * 2f / blocks;
+            var run = new List<Vector3>();   // Round 85: the blocks of an unbroken run (x, ground y, z), one collider for them
             for (int i = 0; i < blocks; i++)
             {
                 float off = -half + bw * (i + 0.5f);
                 Vector3 p = new Vector3(c.x, 0f, c.z) + lateral * off;
                 var pl = new Vector2(p.x, p.z);
-                if (OnLine(route, pl - new Vector2(lateral.x, lateral.z) * bw * 0.5f, pl + new Vector2(lateral.x, lateral.z) * bw * 0.5f, p.x, p.z) < LineClearM) { Trimmed++; continue; }   // Round 73 A1
+                if (OnLine(route, pl - new Vector2(lateral.x, lateral.z) * bw * 0.5f, pl + new Vector2(lateral.x, lateral.z) * bw * 0.5f, p.x, p.z) < LineClearM) { Trimmed++; Solid(root.transform, run, bw, along); continue; }   // Round 73 A1
                 float gy = RaceRoute.Surface(p.x, p.z).y;
+                run.Add(new Vector3(p.x, gy, p.z));
                 // each block stands on the ground under it and reaches 1 m below it, so a slope leaves no gap
                 var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.SetParent(root.transform, false);
@@ -151,7 +170,9 @@ namespace ChastainRush
                 var rd = cube.GetComponent<Renderer>();
                 rd.sharedMaterial = i % 2 == 0 ? red : white;
                 rd.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                Destroy(cube.GetComponent<Collider>());
             }
+            Solid(root.transform, run, bw, along);
             // a tall post at each end so the closure reads from far down the street
             foreach (float side in new[] { -1f, 1f })
             {
