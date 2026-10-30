@@ -175,7 +175,7 @@ namespace ChastainRush
         }
         void RenderHighRace()
         {
-            Clear("RACE", "Pick a track and go: its own laps, 3 Easy rivals, bumpers along the course. Air races: larger rings, and a crash puts you back in the air at once.");
+            Clear("RACE", "Pick a track and go: its own laps, 3 Easy rivals, bumpers along the course.\nAir races: larger rings, and a crash puts you back in the air at once.");
             int n = 0;
             Row(n++, "race-2p", "2 PLAYERS   (split screen)…", () => { SplitScreen.Mode = SplitScreen.Kind.Race; OpenSplitSetup(); });
             string cur = race ? race.CurrentFile : "";
