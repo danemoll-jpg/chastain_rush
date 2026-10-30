@@ -1,0 +1,40 @@
+Round 20 check, 2026-10-30 00:06, the exe, 1280 x 720, muted.
+
+=== Round 83's places, a picture from each (the chase camera, on the surface nearest the height given)
+  A_merge_south (A: the I-75 Express Lanes southbound under the I-575 Express flyover, where Round 82's car stuck): at (527.0, 338.1, -3383.0) heading 153; picture 83_A_merge_south.png
+  A_merge_north (A: the I-75 Express Lanes northbound at the flyover's crossing): at (513.0, 340.3, -3332.1) heading 333; picture 83_A_merge_north.png
+  A_join (A: the I-575 flyover's road joining the I-75 Express Lanes, northbound): at (845.0, 342.2, -3832.0) heading 306; picture 83_A_join.png
+  B_skipspann (B: Skip Spann Connector over I-75, eastbound): at (-1135.6, 337.5, 778.2) heading 90; picture 83_B_skipspann.png
+  B_frey (B: Frey Road under the I-75 decks, southbound): at (-1379.0, 349.1, 1610.0) heading 180; picture 83_B_frey.png
+  C_ramp (C: ramp 437897716 over I-75 beside the Canton Road Connector): at (2380.0, 380.7, -4955.0) heading 40; picture 83_C_ramp.png
+  D_greers (D: Dan's BUG-005 place: Greers Chapel's bridge and the median beside it): at (121.3, 355.4, -2635.9) heading 90; picture 83_D_greers.png
+  D_seam (D: I-575's Express Lanes at the seam deck, southbound): at (536.0, 304.9, -37.0) heading 169; picture 83_D_seam.png
+  D_wall (D: I-575's Express Lanes where the walls were scraped): at (754.0, 310.1, -1385.0) heading 178; picture 83_D_wall.png
+
+=== The lines of local/round83/r83_lines_a.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-575 Express Lanes end to end, 4793 m: through in 139.7 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (619, -458)), resets 0, wall hits 0
+  I-575 Express Lanes end to end (the other way), 4793 m: through in 139.3 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (629, -504)), resets 0, wall hits 0
+  I-75 Express Lanes end to end, 10530 m: through in 324.3 s, top 35 m/s, longest in the air 2.46 s, hardest landing 14.8 m/s (at (539, -3383)), resets 2, wall hits 214 stuck at (-1415, 1616) s 273; stuck at (526, -3379) s 5681;  <- LOOK
+    stopped at (-1415.4, 360.3, 1616.9): stay:BridgeStructure:n(0.18,0.00,0.98):p(-1416.2,360.42,1615.1):J348.1 
+    2.46 s in the air, from (508, -3365) to (539, -3383)
+    0.56 s in the air, from (540, -3383) to (540, -3384)
+    wall hit at (526, -3378)
+    wall hit at (526, -3378)
+    wall hit at (526, -3378)
+    wall hit at (526, -3378)
+    wall hit at (526, -3378)
+  I-75 Express Lanes end to end (the other way), 10530 m: through in 308.1 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-328, -946)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes, 1256 m: through in 44.5 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-360, -856)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes (the other way), 1256 m: through in 43.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-327, -946)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes, 1754 m: through in 56.1 s, top 35 m/s, longest in the air 0.76 s, hardest landing 2.1 m/s (at (664, -3699)), resets 0, wall hits 0  <- LOOK
+    0.76 s in the air, from (688, -3717) to (708, -3727)
+  I-575 Express flyover into the I-75 Express Lanes (the other way), 1754 m: through in 53.4 s, top 35 m/s, longest in the air 0.48 s, hardest landing 1.8 m/s (at (503, -3374)), resets 0, wall hits 0  <- LOOK
+    0.48 s in the air, from (503, -3367) to (502, -3353)
+  Skip Spann Connector eastern carriageway end to end, 400 m: through in 15.0 s, top 30 m/s, longest in the air 0.12 s, hardest landing 0.5 m/s (at (-1160, 767)), resets 0, wall hits 0
+  Skip Spann Connector eastern carriageway end to end (the other way), 400 m: through in 15.0 s, top 30 m/s, longest in the air 0.38 s, hardest landing 2.0 m/s (at (-1151, 769)), resets 0, wall hits 0  <- LOOK
+    0.38 s in the air, from (-1145, 769) to (-1136, 771)
+  Skip Spann Connector western carriageway end to end, 410 m: through in 15.5 s, top 30 m/s, longest in the air 0.18 s, hardest landing 0.3 m/s (at (-803, 790)), resets 0, wall hits 0
+  Skip Spann Connector western carriageway end to end (the other way), 410 m: through in 15.7 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (-816, 796)), resets 0, wall hits 0
+FAIL  lines: 12 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  4 not
+
+0 of 1 checks passed.

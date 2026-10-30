@@ -52,11 +52,11 @@ namespace ChastainRush
         }
 
         // Dan's vehicle position (his report's "Vehicle position"), on the surface nearest the height it was at (a deck over a road: the one he was on), heading 'yaw'
-        IEnumerator R82Place(Vector3 at, float yaw)
+        IEnumerator R82Place(Vector3 at, float yaw, bool top = false)
         {
             var hits = Physics.RaycastAll(new Vector3(at.x, at.y + 40f, at.z), Vector3.down, 120f, ~0, QueryTriggerInteraction.Ignore).Where(h => h.rigidbody == null).ToList();
             if (hits.Count == 0) { yield return R74Place(at, yaw); yield break; }
-            var p = hits.OrderBy(h => Mathf.Abs(h.point.y - at.y)).First().point;
+            var p = top ? hits.OrderByDescending(h => h.point.y).First().point : hits.OrderBy(h => Mathf.Abs(h.point.y - at.y)).First().point;
             respawn.PlaceAt(p + Vector3.up * .3f, yaw); car.Body.linearVelocity = Vector3.zero; race.NotifyTeleported();
             var cam = Camera.main ? Camera.main.GetComponent<ChaseCamera>() : null; if (cam) cam.Snap();
             yield return new WaitForSecondsRealtime(2.5f);
@@ -79,7 +79,10 @@ namespace ChastainRush
                 {
                     var line = R73Line(d.line); if (back) line.Reverse(); if (line.Count < 3) continue;
                     var cum = Cum(line); float total = cum[cum.Length - 1];
-                    var f0 = Flat(line[2] - line[0]).normalized; yield return R74Place(line[0], Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg); R73Pad();
+                    var f0 = Flat(line[2] - line[0]).normalized; float yaw0 = Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg;
+                    // Round 83: a line of the road OVER a crossing can start on its bridge: the car on the top surface there, not the ground under it
+                    if (d.name.Contains(" over at ")) yield return R82Place(new Vector3(line[0].x, RaceRoute.Ground(line[0].x, line[0].z).y + 30f, line[0].z), yaw0, true); else yield return R74Place(line[0], yaw0);
+                    R73Pad();
                     var tracer = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); tracer.Take();
                     float jolt = 0f, lastVy = 0f, slow = 0f, tt = 0f; Vector3 joltAt = Vector3.zero; int wallHits = 0; var notes = new List<string>(); bool wasAir = false; float airT = 0f; Vector3 takeoff = Vector3.zero;
                     var watch = StartCoroutine(R73Watch(() =>

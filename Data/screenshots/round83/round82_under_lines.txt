@@ -1,0 +1,278 @@
+Round 82 (A): the roads under decks laid at their own level (MapBuilder.Round82.cs R82UnderLines)
+under: Frey Road Northwest (631653335) at (-1380, 1586) 0: from (-1381, 1779) to (-1367, 1338), 442 m, 0 deck points; held to 27 m/s (the sharpest crest at (-1367, 1338)), steepest 5.8 % at (-1370, 1346); moved up to 3.7 m; 31281 road samples graded, 0 cut under its decks
+  over: none
+  under: Larry McDonald Memorial Highway (163463866) 8.9 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (623138519) 10.7 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (163463873) 9.3 m clear (at most 1 m into its ground)
+join unclassified 9117088 at (-1378, 1452): beside the line 11 m, then -0.4 m eased back over 40 m; 8440 samples
+join secondary 533656617 at (-1377, 1407): beside the line 75 m, then -0.2 m eased back over 40 m; 21937 samples
+join secondary_link 835612434 at (-1377, 1416): beside the line 26 m, then -0.3 m eased back over 40 m; 7481 samples
+join unclassified 835612435 at (-1378, 1452): beside the line 11 m, then -0.4 m eased back over 40 m; 6462 samples
+join service 1376881632 at (-1381, 1719): beside the line 12 m, then -0.3 m eased back over 40 m; 4449 samples
+  under: motorway_link (9118504) at (-1109, 774): its end at (-1353, 1493) merges onto a deck: held to its top 358.0 (was 355.4)
+under: motorway_link (9118504) at (-1109, 774) 0: from (-1353, 1493) to (-1106, 593), 947 m, 0 deck points; held to 30 m/s (the sharpest crest at (-1106, 593)), steepest 5.0 % at (-1106, 605); moved up to 1.1 m; 52192 road samples graded, 0 cut under its decks
+  over: none
+  under: Skip Spann Connector (564146483) 7.5 m clear (at most 1 m into its ground); Skip Spann Connector (564146481) 7.4 m clear (at most 1 m into its ground)
+join motorway 437901768 at (-1143, 991): beside the line 104 m, then -0.9 m eased back over 40 m; 47425 samples
+  not joined: motorway 163463873 carries on from the line's end
+  under: Larry McDonald Memorial Highway (437901768) at (-1087, 777): its end at (-1353, 1493) merges onto a deck: held to its top 358.0 (was 357.8)
+  under: Larry McDonald Memorial Highway (437901768) at (-1087, 777): its end at (-698, -410) merges onto a deck: held to its top 315.4 (was 315.3)
+under: Larry McDonald Memorial Highway (437901768) at (-1087, 777) 0: from (-1353, 1493) to (-698, -410), 2023 m, 0 deck points; held to 35 m/s (the sharpest crest at (-1353, 1493)), steepest 4.5 % at (-730, -360); moved up to 1.5 m; 135232 road samples graded, 0 cut under its decks
+  over: none
+  under: Skip Spann Connector (564146483) 7.6 m clear (at most 1 m into its ground); Skip Spann Connector (564146481) 7.5 m clear (at most 1 m into its ground); Chastain Road (163463411) 9.7 m clear (at most 1 m into its ground); Chastain Road (163463407) 10.0 m clear (at most 1 m into its ground)
+join motorway_link 437901775 at (-1143, 991): beside the line 102 m, then -0.4 m eased back over 40 m; 12071 samples
+join motorway_link 437902739 at (-817, -200): beside the line 138 m, then -0.8 m eased back over 40 m; 18959 samples
+  not joined: motorway 163463873 carries on from the line's end
+  not joined: motorway 175898799 carries on from the line's end
+  under: Larry McDonald Memorial Highway (175898801) at (-1057, 782): its end at (-602, -383) merges onto a deck: held to its top 313.5 (was 313.5)
+  under: Larry McDonald Memorial Highway (175898801) at (-1057, 782): its end at (-1351, 1545) merges onto a deck: held to its top 360.8 (was 360.8)
+under: Larry McDonald Memorial Highway (175898801) at (-1057, 782) 0: from (-602, -383) to (-1351, 1545), 2085 m, 0 deck points; held to 47 m/s (the sharpest crest at (-1341, 1530)), steepest 4.5 % at (-1311, 1480); moved up to 1.4 m; 127387 road samples graded, 0 cut under its decks
+  over: none
+  under: Skip Spann Connector (564146483) 7.5 m clear (at most 1 m into its ground); Skip Spann Connector (564146481) 7.0 m clear (at most 1 m into its ground); Chastain Road (163463411) 8.8 m clear (at most 1 m into its ground); Chastain Road (437905319) 9.1 m clear (at most 1 m into its ground)
+join motorway_link 437902738 at (-1075, 851): beside the line 100 m, then -0.7 m eased back over 40 m; 15105 samples
+join motorway_link 437902740 at (-777, -114): beside the line 82 m, then +0.7 m eased back over 40 m; 16399 samples
+  not joined: motorway 163463866 carries on from the line's end
+  not joined: motorway 175898800 carries on from the line's end
+under: motorway_link (437902738) at (-1047, 783) 0: from (-967, 621) to (-1075, 851), 254 m, 0 deck points; held to 29 m/s (the sharpest crest at (-1075, 851)), steepest 4.9 % at (-1070, 840); moved up to 0.8 m; 12277 road samples graded, 0 cut under its decks
+  over: none
+  under: Skip Spann Connector (564146480) 8.3 m clear (at most 1 m into its ground); Skip Spann Connector (564146481) 7.8 m clear (at most 1 m into its ground)
+  under: Big Shanty Road Northwest (630809649) at (-680, -438): its end at (-848, -502) merges onto a deck: held to its top 301.6 (was 301.6)
+under: Big Shanty Road Northwest (630809649) at (-680, -438) 0: from (-425, -341) to (-848, -502), 453 m, 0 deck points; held to 24 m/s (the sharpest crest at (-425, -341)), steepest 6.2 % at (-438, -346); moved up to 0.6 m; 24642 road samples graded, 0 cut under its decks
+  over: none
+  under: Larry McDonald Memorial Highway (175898799) 11.5 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (536789464) 11.9 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (175898800) 8.8 m clear (at most 1 m into its ground)
+join tertiary 626728832 at (-639, -423): beside the line 12 m, then -0.5 m eased back over 40 m; 19956 samples
+join tertiary 626728833 at (-632, -420): beside the line 12 m, then -0.5 m eased back over 40 m; 21071 samples
+join secondary 631653302 at (-794, -482): beside the line 15 m, then -1.3 m eased back over 40 m; 28502 samples
+join secondary 961874929 at (-794, -482): beside the line 15 m, then +0.2 m eased back over 40 m; 40005 samples
+join service 1127469046 at (-524, -380): beside the line 11 m, then -2.2 m eased back over 62 m; 10779 samples
+join motorway_link 564149148 at (-639, -423): beside the line 11 m, then -0.3 m eased back over 40 m; 18403 samples
+join motorway_link 564149149 at (-632, -420): beside the line 11 m, then -0.3 m eased back over 40 m; 19527 samples
+  not joined: tertiary 392540232 carries on from the line's end
+  under: Big Shanty Road Northwest (630809648) at (-672, -450): its end at (-848, -516) merges onto a deck: held to its top 302.0 (was 300.9)
+under: Big Shanty Road Northwest (630809648) at (-672, -450) 0: from (-848, -516) to (-434, -359), 442 m, 0 deck points; held to 25 m/s (the sharpest crest at (-434, -359)), steepest 6.4 % at (-445, -364); moved up to 0.8 m; 23247 road samples graded, 0 cut under its decks
+  over: none
+  under: Larry McDonald Memorial Highway (175898799) 10.9 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (536789464) 11.5 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (175898800) 8.2 m clear (at most 1 m into its ground)
+join tertiary 626728832 at (-632, -435): beside the line 12 m, then +0.0 m eased back over 40 m; 24037 samples
+join tertiary 626728833 at (-624, -432): beside the line 12 m, then +0.0 m eased back over 40 m; 27115 samples
+  not joined: tertiary 1445405375 carries on from the line's end
+join motorway_link 536789458 at (-624, -432): beside the line 11 m, then -0.1 m eased back over 40 m; 9610 samples
+join motorway_link 536789459 at (-632, -435): beside the line 10 m, then +0.0 m eased back over 40 m; 8550 samples
+  not joined: tertiary 392540233 carries on from the line's end
+under: Barrett Parkway (437900760) at (-91, -2182) 0: from (107, -2044) to (-230, -2283), 413 m, 0 deck points; held to 31 m/s (the sharpest crest at (107, -2044)), steepest 5.0 % at (97, -2051); moved up to 0.6 m; 33888 road samples graded, 0 cut under its decks
+  over: none
+  under: Larry McDonald Memorial Highway (163463865) 10.3 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (536789455) 15.9 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (163463875) 9.2 m clear (at most 1 m into its ground)
+join motorway_link 196256242 at (75, -2067): beside the line 28 m, then -0.4 m eased back over 40 m; 16974 samples
+join motorway_link 196823669 at (-194, -2257): beside the line 21 m, then +0.0 m eased back over 40 m; 17618 samples
+join motorway_link 437900766 at (-170, -2240): beside the line 14 m, then +0.2 m eased back over 40 m; 17870 samples
+join motorway_link 540658339 at (41, -2091): beside the line 58 m, then -0.8 m eased back over 40 m; 13700 samples
+join motorway_link 540658346 at (41, -2091): beside the line 16 m, then -0.4 m eased back over 40 m; 16887 samples
+join motorway_link 541854056 at (19, -2106): beside the line 28 m, then -0.7 m eased back over 40 m; 19786 samples
+join motorway_link 543471042 at (-158, -2231): beside the line 22 m, then -0.4 m eased back over 40 m; 27970 samples
+join motorway_link 977990398 at (-170, -2240): beside the line 20 m, then -0.5 m eased back over 40 m; 15040 samples
+under: Barrett Parkway (977990397) at (-80, -2203) 0: from (-221, -2302) to (101, -2075), 394 m, 0 deck points; held to 34 m/s (the sharpest crest at (97, -2078)), steepest 5.9 % at (91, -2083); moved up to 0.6 m; 29058 road samples graded, 0 cut under its decks
+  over: none
+  under: Larry McDonald Memorial Highway (163463865) 10.2 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (536789455) 16.7 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (163463875) 9.2 m clear (at most 1 m into its ground)
+  not joined: trunk 631653357 carries on from the line's end
+join motorway_link 196256229 at (101, -2075): beside the line 41 m, then -0.2 m eased back over 40 m; 19237 samples
+join motorway_link 196823670 at (-210, -2294): beside the line 29 m, then +0.2 m eased back over 40 m; 2402 samples
+join motorway_link 437899455 at (-29, -2168): beside the line 63 m, then +0.0 m eased back over 40 m; 17590 samples
+join motorway_link 437899456 at (56, -2110): beside the line 12 m, then +0.0 m eased back over 40 m; 19035 samples
+  join motorway_link 540658347: only 25 m of road to ease 0.1 m back over (wants 40)
+join motorway_link 540658347 at (56, -2110): beside the line 14 m, then +0.1 m eased back over 40 m; 548 samples
+join motorway_link 543471038 at (-162, -2259): beside the line 12 m, then +0.3 m eased back over 40 m; 25840 samples
+join motorway_link 977990395 at (-162, -2259): beside the line 15 m, then +0.2 m eased back over 40 m; 15429 samples
+join motorway_link 977990396 at (-140, -2243): beside the line 22 m, then +0.2 m eased back over 40 m; 18055 samples
+  under: Larry McDonald Memorial Highway (163463881) at (2, -2353): its end at (-69, -2223) merges onto a deck: held to its top 337.5 (was 337.4)
+under: Larry McDonald Memorial Highway (163463881) at (2, -2353) 0: from (-69, -2223) to (582, -3452), 1391 m, 0 deck points; held to 42 m/s (the sharpest crest at (582, -3452)), steepest 4.5 % at (-60, -2241); moved up to 1.2 m; 116850 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (536789455) 7.4 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1169449564) 9.0 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1554737789) 9.1 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (163463460) 10.1 m clear (at most 1 m into its ground); motorway_link 451950526 8.5 m clear (at most 1 m into its ground)
+join motorway_link 879570834 at (368, -3029): beside the line 367 m, then -0.5 m eased back over 40 m; 17217 samples
+  not joined: motorway 163463865 carries on from the line's end
+under: motorway_link (879570834) at (65, -2524) 0: from (-75, -2363) to (582, -3452), 1277 m, 0 deck points; held to 31 m/s (the sharpest crest at (-75, -2363)), steepest 6.7 % at (-75, -2363); moved up to 6.5 m; 83806 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (536789455) 11.9 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1169449564) 15.7 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1554737789) 15.7 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (163463460) 10.8 m clear (at most 1 m into its ground); motorway_link 451950526 9.1 m clear (at most 1 m into its ground)
+join motorway 163463881 at (368, -3029): beside the line 367 m, then -4.3 m eased back over 122 m; 42936 samples
+  under: Larry McDonald Memorial Highway (119686455) at (179, -2614): its end at (-23, -2190) merges onto a deck: held to its top 338.3 (was 338.4)
+under: Larry McDonald Memorial Highway (119686455) at (179, -2614) 0: from (267, -2775) to (-23, -2190), 655 m, 0 deck points; held to 36 m/s (the sharpest crest at (267, -2775)), steepest 5.5 % at (261, -2765); moved up to 1.3 m; 51076 road samples graded, 0 cut under its decks
+  over: none
+  under: Greers Chapel Drive Northwest (1169449564) 7.4 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1554737789) 7.5 m clear (at most 1 m into its ground)
+join motorway_link 437899454 at (255, -2753): beside the line 135 m, then -1.3 m eased back over 40 m; 19171 samples
+  not joined: motorway 163463875 carries on from the line's end
+under: motorway_link (437899454) at (192, -2608) 0: from (267, -2775) to (135, -2446), 356 m, 0 deck points; held to 31 m/s (the sharpest crest at (267, -2775)), steepest 5.4 % at (135, -2446); moved up to 1.1 m; 20467 road samples graded, 0 cut under its decks
+  over: none
+  under: Greers Chapel Drive Northwest (1169449564) 7.8 m clear (at most 1 m into its ground); Greers Chapel Drive Northwest (1554737789) 8.0 m clear (at most 1 m into its ground)
+join motorway 119686455 at (255, -2753): beside the line 135 m, then -0.6 m eased back over 40 m; 27858 samples
+  under: Phillip Landrum Memorial Highway (367181843) at (331, 946): its end at (514, 6) merges onto a deck: held to its top 305.1 (was 305.0)
+under: Phillip Landrum Memorial Highway (367181843) at (331, 946) 0: from (299, 1112) to (514, 6), 1126 m, 0 deck points; held to 38 m/s (the sharpest crest at (299, 1112)), steepest 3.1 % at (301, 1104); moved up to 0.4 m; 62877 road samples graded, 0 cut under its decks
+  over: none
+  under: Chastain Road Northwest (1031943927) 11.8 m clear (at most 1 m into its ground); Chastain Road Northwest (182380643) 10.7 m clear (at most 1 m into its ground)
+join motorway_link 9116461 at (437, 399): beside the line 138 m, then +0.4 m eased back over 40 m; 17329 samples
+  not joined: primary 182380646 at (333, 946), +12.6 m off the line (crossing it)
+  not joined: motorway 196231576 carries on from the line's end
+  not joined: primary 1031943927 at (333, 946), +12.6 m off the line (crossing it)
+  under: Phillip Landrum Memorial Highway (442149008) at (359, 946): its end at (540, 15) merges onto a deck: held to its top 305.5 (was 304.5)
+under: Phillip Landrum Memorial Highway (442149008) at (359, 946) 0: from (540, 15) to (326, 1111), 1117 m, 0 deck points; held to 42 m/s (the sharpest crest at (326, 1111)), steepest 2.6 % at (328, 1103); moved up to 0.5 m; 57721 road samples graded, 0 cut under its decks
+  over: none
+  under: Chastain Road Northwest (182380646) 11.3 m clear (at most 1 m into its ground); Chastain Road Northwest (182380643) 10.2 m clear (at most 1 m into its ground)
+join motorway_link 9119806 at (469, 381): beside the line 83 m, then +0.1 m eased back over 40 m; 16201 samples
+  not joined: motorway 196231565 carries on from the line's end
+under: Larry McDonald Memorial Highway (570368037) at (485, -3204) 0: from (581, -3395) to (403, -3042), 396 m, 0 deck points; held to 27 m/s (the sharpest crest at (403, -3042)), steepest 4.7 % at (409, -3054); moved up to 0.6 m; 34552 road samples graded, 0 cut under its decks
+  over: none
+  under: Phillip Landrum Memorial Highway (163463460) 10.3 m clear (at most 1 m into its ground); motorway_link 451950526 9.8 m clear (at most 1 m into its ground)
+under: Big Shanty Road Northwest (392541110) at (517, -13) 0: from (712, 4) to (358, -77), 371 m, 0 deck points; held to 26 m/s (the sharpest crest at (358, -77)), steepest 4.9 % at (362, -75); moved up to 0.6 m; 21712 road samples graded, 0 cut under its decks
+  over: none
+  under: Phillip Landrum Memorial Highway (196231576) 9.5 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (564154403) 10.2 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (196231565) 9.3 m clear (at most 1 m into its ground)
+join service 1487510760 at (621, 14): beside the line 14 m, then -3.9 m eased back over 111 m; 9021 samples
+join service 1487510761 at (593, 11): beside the line 12 m, then -4.2 m eased back over 120 m; 9595 samples
+under: Big Shanty Road Northwest (392540235) at (519, -23) 0: from (362, -90) to (712, -9), 368 m, 0 deck points; held to 26 m/s (the sharpest crest at (362, -90)), steepest 5.1 % at (368, -87); moved up to 0.8 m; 20565 road samples graded, 0 cut under its decks
+  over: none
+  under: Phillip Landrum Memorial Highway (196231576) 9.3 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (564154403) 10.0 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (196231565) 9.1 m clear (at most 1 m into its ground)
+join service 392541118 at (713, -9): beside the line 10 m, then +0.5 m eased back over 40 m; 4568 samples
+under: Barrett Parkway (838363565) at (741, -1687) 0: from (575, -1695) to (937, -1691), 363 m, 0 deck points; held to 21 m/s (the sharpest crest at (575, -1695)), steepest 6.6 % at (575, -1695); moved up to 1.7 m; 21782 road samples graded, 0 cut under its decks
+  over: none
+  under: Phillip Landrum Memorial Highway (182380658) 6.0 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (367181845) 7.6 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (182380660) 8.3 m clear (at most 1 m into its ground)
+join motorway_link 196256227 at (609, -1689): beside the line 20 m, then +0.8 m eased back over 40 m; 23590 samples
+join motorway_link 196256230 at (933, -1691): beside the line 33 m, then +0.3 m eased back over 40 m; 20552 samples
+join motorway_link 367182641 at (644, -1686): beside the line 14 m, then +1.0 m eased back over 40 m; 24420 samples
+join motorway_link 367182642 at (644, -1686): beside the line 20 m, then +0.3 m eased back over 40 m; 15362 samples
+join motorway_link 367182645 at (660, -1686): beside the line 23 m, then -0.1 m eased back over 40 m; 18830 samples
+join motorway_link 442354884 at (898, -1690): beside the line 13 m, then +0.4 m eased back over 40 m; 21109 samples
+join motorway_link 540661935 at (898, -1690): beside the line 13 m, then +0.2 m eased back over 40 m; 17776 samples
+under: Barrett Parkway (540661934) at (742, -1671) 0: from (938, -1674) to (574, -1679), 364 m, 0 deck points; held to 21 m/s (the sharpest crest at (574, -1679)), steepest 7.0 % at (927, -1674); moved up to 2.0 m; 21899 road samples graded, 0 cut under its decks
+  over: none
+  under: Phillip Landrum Memorial Highway (182380658) 5.4 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (367181845) 7.1 m clear (at most 1 m into its ground); Phillip Landrum Memorial Highway (182380660) 7.4 m clear (at most 1 m into its ground)
+  join motorway_link 196256228: only 32 m of road to ease 0.5 m back over (wants 40)
+join motorway_link 196256228 at (933, -1674): beside the line 26 m, then +0.5 m eased back over 40 m; 1496 samples
+join motorway_link 196256247 at (590, -1676): beside the line 32 m, then -0.4 m eased back over 40 m; 17613 samples
+join motorway_link 367182642 at (666, -1670): beside the line 23 m, then +0.5 m eased back over 40 m; 24495 samples
+join motorway_link 540661932 at (893, -1674): beside the line 13 m, then +0.4 m eased back over 40 m; 16812 samples
+join motorway_link 540661935 at (893, -1674): beside the line 13 m, then +0.2 m eased back over 40 m; 20722 samples
+under: Bells Ferry Road Northeast (343482776) at (1503, -4262) 0: from (1406, -4403) to (1601, -4053), 403 m, 0 deck points; held to 37 m/s (the sharpest crest at (1600, -4055)), steepest 4.2 % at (1597, -4062); moved up to 1.8 m; 25768 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (564149146) 9.4 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (100762237) 7.0 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (119686452) 9.4 m clear (at most 1 m into its ground)
+join residential 9133364 at (1480, -4301): beside the line 11 m, then -1.1 m eased back over 40 m; 9862 samples
+join residential 9144508 at (1546, -4178): beside the line 12 m, then +1.2 m eased back over 40 m; 14474 samples
+join service 563630999 at (1567, -4133): beside the line 10 m, then +0.7 m eased back over 40 m; 2379 samples
+  join service 563631001: only 35 m of road to ease 0.2 m back over (wants 40)
+join service 563631001 at (1591, -4077): beside the line 10 m, then +0.2 m eased back over 40 m; 1701 samples
+join service 715434344 at (1588, -4084): beside the line 10 m, then -1.6 m eased back over 47 m; 6194 samples
+join service 715434345 at (1572, -4121): beside the line 10 m, then -1.7 m eased back over 50 m; 6689 samples
+under: North Marietta Parkway (169122153) at (1569, -7953) 0: from (1691, -7835) to (1505, -8110), 341 m, 0 deck points; held to 34 m/s (the sharpest crest at (1505, -8110)), steepest 4.1 % at (1507, -8102); moved up to 0.6 m; 36166 road samples graded, 0 cut under its decks
+  over: none
+  under: Kennesaw Avenue Northwest (245388621) 12.6 m clear (at most 1 m into its ground)
+  join service 334707692: only 33 m of road to ease -1.3 m back over (wants 40)
+join service 334707692 at (1649, -7864): beside the line 15 m, then -1.3 m eased back over 40 m; 912 samples
+  join service 334707698: only 38 m of road to ease -1.2 m back over (wants 40)
+join service 334707698 at (1630, -7883): beside the line 24 m, then -1.2 m eased back over 40 m; 1199 samples
+join service 563545020 at (1663, -7852): beside the line 21 m, then -1.3 m eased back over 40 m; 1767 samples
+under: Elizabeth Street Northeast (1448505400) at (1624, -6088) 0: from (1492, -6123) to (1786, -5983), 369 m, 0 deck points; held to 30 m/s (the sharpest crest at (1786, -5983)), steepest 7.4 % at (1786, -5983); moved up to 4.2 m; 23760 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Connector (175900804) 10.7 m clear (at most 1 m into its ground); Canton Road Connector (175900808) 8.4 m clear (at most 1 m into its ground)
+join unclassified 9122360 at (1594, -6107): beside the line 13 m, then +0.0 m eased back over 40 m; 2607 samples
+  join secondary 284333358: only 0 m of road to ease 0.0 m back over (wants 40)
+join secondary 284333358 at (1533, -6160): beside the line 57 m, then +0.0 m eased back over 40 m; 1473 samples
+join secondary 288145177 at (1533, -6160): beside the line 12 m, then -1.3 m eased back over 40 m; 3206 samples
+  join secondary_link 335842317: only 23 m of road to ease 0.2 m back over (wants 40)
+join secondary_link 335842317 at (1560, -6134): beside the line 24 m, then +0.2 m eased back over 40 m; 1094 samples
+join service 335849288 at (1703, -6039): beside the line 10 m, then -0.8 m eased back over 40 m; 2702 samples
+  join service 335849294: only 16 m of road to ease -1.1 m back over (wants 40)
+join service 335849294 at (1656, -6069): beside the line 10 m, then -1.1 m eased back over 40 m; 1098 samples
+join secondary 531836927 at (1497, -6133): beside the line 50 m, then -0.9 m eased back over 40 m; 3930 samples
+under: Cobb Parkway North (88426482) at (1704, -5749) 0: from (1553, -5674) to (1979, -5888), 477 m, 0 deck points; held to 29 m/s (the sharpest crest at (1979, -5888)), steepest 6.1 % at (1971, -5884); moved up to 0.7 m; 31464 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Connector (175900801) 9.1 m clear (at most 1 m into its ground); Canton Road Connector (175900811) 9.4 m clear (at most 1 m into its ground); Canton Road Northeast (63222662) 8.0 m clear (at most 1 m into its ground)
+join primary_link 343475084 at (1639, -5717): beside the line 19 m, then -0.2 m eased back over 40 m; 17017 samples
+  not joined: primary 678752364 carries on from the line's end
+join motorway_link 9121892 at (1775, -5785): beside the line 12 m, then -0.5 m eased back over 40 m; 17701 samples
+under: Cobb Parkway North (88426473) at (1709, -5734) 0: from (2071, -5920) to (1556, -5654), 579 m, 0 deck points; held to 25 m/s (the sharpest crest at (2071, -5920)), steepest 6.4 % at (2060, -5915); moved up to 1.0 m; 30373 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Connector (175900801) 8.3 m clear (at most 1 m into its ground); Canton Road Connector (175900811) 8.6 m clear (at most 1 m into its ground); Canton Road Northeast (63222662) 7.7 m clear (at most 1 m into its ground)
+  join service 335840827: only 13 m of road to ease -0.6 m back over (wants 40)
+join service 335840827 at (2033, -5900): beside the line 10 m, then -0.6 m eased back over 40 m; 919 samples
+join primary_link 343475084 at (1633, -5694): beside the line 14 m, then -0.1 m eased back over 40 m; 16240 samples
+  join motorway_link 9121892: only 2 m of road to ease -0.1 m back over (wants 40)
+join motorway_link 9121892 at (1782, -5773): beside the line 11 m, then -0.1 m eased back over 40 m; 274 samples
+join motorway_link 88426486 at (1782, -5773): beside the line 11 m, then -0.3 m eased back over 40 m; 17500 samples
+join motorway_link 287142790 at (1811, -5788): beside the line 24 m, then -0.6 m eased back over 40 m; 15193 samples
+join motorway_link 308656184 at (1633, -5694): beside the line 11 m, then -0.3 m eased back over 40 m; 18928 samples
+join motorway_link 308656192 at (1603, -5679): beside the line 22 m, then -0.3 m eased back over 40 m; 18312 samples
+under: Dickson Road Northeast (9141860) at (1853, -4468) 0: from (1749, -4598) to (2847, -4692), 1257 m, 0 deck points; held to 20 m/s (the sharpest crest at (2847, -4692)), steepest 7.8 % at (2847, -4692); moved up to 10.9 m; 74385 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (624557375) 14.0 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (100762650) 16.7 m clear (at most 1 m into its ground); Larry McDonald Memorial Highway (100762636) 16.2 m clear (at most 1 m into its ground); motorway_link 437892229 15.7 m clear (at most 1 m into its ground); motorway_link 100762209 9.5 m clear (at most 1 m into its ground); Canton Road Connector (100762211) 8.7 m clear (at most 1 m into its ground); Canton Road Connector (100762215) 7.6 m clear (at most 1 m into its ground); motorway_link 100762212 6.3 m clear (at most 1 m into its ground)
+join residential 9149105 at (2426, -4549): beside the line 12 m, then -3.4 m eased back over 97 m; 17290 samples
+join residential 9153360 at (2636, -4548): beside the line 13 m, then -0.3 m eased back over 40 m; 14755 samples
+join service 624598307 at (2291, -4551): beside the line 12 m, then +2.3 m eased back over 65 m; 9343 samples
+join service 1378765455 at (2560, -4549): beside the line 10 m, then +1.0 m eased back over 40 m; 5996 samples
+  under: motorway_link (9119542) at (2097, -4721): its end at (1903, -4476) merges onto a deck: held to its top 369.4 (was 366.9)
+under: motorway_link (9119542) at (2097, -4721) 0: from (1903, -4476) to (2106, -4919), 517 m, 0 deck points; held to 28 m/s (the sharpest crest at (2106, -4919)), steepest 4.7 % at (2107, -4905); moved up to 0.7 m; 29081 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (561642029) 8.2 m clear (at most 1 m into its ground)
+join motorway 88426493 at (1958, -4519): beside the line 108 m, then -0.4 m eased back over 40 m; 78363 samples
+  not joined: motorway 100762650 carries on from the line's end
+  under: motorway_link (9117188) at (2199, -4848): its end at (2310, -4977) merges onto a deck: held to its top 384.2 (was 384.1)
+under: motorway_link (9117188) at (2199, -4848) 0: from (2310, -4977) to (2663, -5319), 1039 m, 0 deck points; held to 33 m/s (the sharpest crest at (2663, -5319)), steepest 4.8 % at (2657, -5311); moved up to 1.0 m; 60924 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (685000423) 8.5 m clear (at most 1 m into its ground); Northwest Corridor Express Lanes (685000423) 6.6 m clear (at most 1 m into its ground); Canton Road Connector (100762130) 10.0 m clear (at most 1 m into its ground); Canton Road Connector (100762134) 11.8 m clear (at most 1 m into its ground); motorway_link 437897716 8.8 m clear (at most 1 m into its ground); motorway_link 100762129 10.2 m clear (at most 1 m into its ground); Canton Road Northeast (63222660) 11.3 m clear (at most 1 m into its ground)
+join motorway 437897707 at (2288, -5000): beside the line 34 m, then -1.1 m eased back over 40 m; 36061 samples
+join service 963055566 at (2195, -4849): beside the line 9 m, then -0.1 m eased back over 40 m; 1693 samples
+join service 1469923899 at (2145, -4979): beside the line 9 m, then +0.4 m eased back over 40 m; 3838 samples
+join motorway_link 9116878 at (2302, -4909): beside the line 63 m, then -0.4 m eased back over 40 m; 13478 samples
+join motorway_link 9118747 at (2663, -5319): beside the line 58 m, then +0.0 m eased back over 40 m; 17831 samples
+join motorway_link 274716914 at (2401, -5023): beside the line 51 m, then -0.3 m eased back over 40 m; 13603 samples
+  not joined: motorway_link 274716915 carries on from the line's end
+  not joined: motorway 100762130 carries on from the line's end
+  under: Canton Road Connector (286831634) at (2324, -5003): its end at (1726, -5722) merges onto a deck: held to its top 404.9 (was 403.3)
+  under: Canton Road Connector (286831634) at (2324, -5003): its end at (2329, -4998) merges onto a deck: held to its top 384.2 (was 383.1)
+under: Canton Road Connector (286831634) at (2324, -5003) 0: from (1726, -5722) to (2329, -4998), 950 m, 0 deck points; held to 35 m/s (the sharpest crest at (1726, -5722)), steepest 4.6 % at (1733, -5703); moved up to 2.1 m; 67230 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (685000423) 6.7 m clear (at most 1 m into its ground)
+join motorway_link 9121893 at (1726, -5722): beside the line 67 m, then -0.7 m eased back over 40 m; 16796 samples
+join motorway_link 9122226 at (2204, -5130): beside the line 111 m, then +0.2 m eased back over 40 m; 14927 samples
+  not joined: motorway 100762134 carries on from the line's end
+  not joined: motorway 175900811 carries on from the line's end
+under: Larry McDonald Memorial Highway (437892231) at (2353, -4932) 0: from (2240, -4801) to (2732, -5362), 746 m, 0 deck points; held to 47 m/s (the sharpest crest at (2241, -4803)), steepest 3.2 % at (2358, -4937); moved up to 1.0 m; 81384 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Connector (100762130) 9.4 m clear (at most 1 m into its ground); Canton Road Connector (100762134) 11.8 m clear (at most 1 m into its ground); motorway_link 437897716 8.1 m clear (at most 1 m into its ground); motorway_link 100762129 10.7 m clear (at most 1 m into its ground); Canton Road Northeast (63222660) 11.0 m clear (at most 1 m into its ground)
+  under: motorway_link (9117194) at (2381, -4902): its end at (2403, -4878) merges onto a deck: held to its top 380.6 (was 380.4)
+under: motorway_link (9117194) at (2381, -4902) 0: from (2754, -5339) to (2403, -4878), 1161 m, 0 deck points; held to 46 m/s (the sharpest crest at (2753, -5338)), steepest 4.1 % at (2413, -4869); moved up to 1.0 m; 64942 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Connector (100762130) 8.1 m clear (at most 1 m into its ground); Canton Road Connector (100762134) 11.1 m clear (at most 1 m into its ground); motorway_link 437897716 9.9 m clear (at most 1 m into its ground); motorway_link 100762129 11.3 m clear (at most 1 m into its ground); Canton Road Northeast (63222660) 12.3 m clear (at most 1 m into its ground)
+join motorway 100762213 at (2445, -4836): beside the line 38 m, then -0.5 m eased back over 40 m; 17365 samples
+join motorway 274716911 at (2426, -4962): beside the line 160 m, then -0.7 m eased back over 40 m; 32303 samples
+  not joined: motorway 100762130 carries on from the line's end
+  under: motorway_link (286831637) at (2481, -5176): its end at (2488, -5173) merges onto a deck: held to its top 379.1 (was 379.0)
+under: motorway_link (286831637) at (2481, -5176) 0: from (2309, -5192) to (2488, -5173), 182 m, 0 deck points; held to 32 m/s (the sharpest crest at (2309, -5192)), steepest 4.9 % at (2321, -5192); moved up to 0.7 m; 11025 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (685000423) 6.4 m clear (at most 1 m into its ground)
+join motorway_link 9118747 at (2382, -5193): beside the line 46 m, then -0.2 m eased back over 40 m; 19457 samples
+  not joined: motorway_link 100762129 carries on from the line's end
+  under: Canton Road Connector (100762213) at (2547, -4730): its end at (2657, -4583) merges onto a deck: held to its top 374.9 (was 374.9)
+  under: Canton Road Connector (100762213) at (2547, -4730): its end at (2403, -4878) merges onto a deck: held to its top 380.6 (was 380.6)
+under: Canton Road Connector (100762213) at (2547, -4730) 0: from (2657, -4583) to (2403, -4878), 391 m, 0 deck points; held to 49 m/s (the sharpest crest at (2403, -4878)), steepest 2.8 % at (2530, -4749); moved up to 0.6 m; 28110 road samples graded, 0 cut under its decks
+  over: none
+  under: motorway_link 100762127 9.2 m clear (at most 1 m into its ground)
+join motorway_link 9117194 at (2445, -4836): beside the line 37 m, then -0.4 m eased back over 40 m; 16099 samples
+  not joined: motorway 100762130 carries on from the line's end
+  not joined: motorway 100762211 carries on from the line's end
+under: motorway_link (9118747) at (2548, -5240) 0: from (2345, -5192) to (2967, -5662), 809 m, 0 deck points; held to 33 m/s (the sharpest crest at (2345, -5192)), steepest 4.8 % at (2355, -5192); moved up to 3.3 m; 41786 road samples graded, 0 cut under its decks
+  over: none
+  under: Northwest Corridor Express Lanes (685000423) 12.4 m clear (at most 1 m into its ground); Canton Road Northeast (63222660) 8.3 m clear (at most 1 m into its ground)
+join motorway_link 9117190 at (2663, -5319): beside the line 58 m, then +1.3 m eased back over 40 m; 15649 samples
+join motorway_link 286831637 at (2382, -5193): beside the line 46 m, then -0.6 m eased back over 40 m; 13867 samples
+  not joined: motorway_link 472815398 carries on from the line's end
+  under: Canton Road Connector (100762132) at (2561, -4754): its end at (2422, -4902) merges onto a deck: held to its top 383.0 (was 381.9)
+  under: Canton Road Connector (100762132) at (2561, -4754): its end at (2682, -4594) merges onto a deck: held to its top 375.4 (was 375.4)
+under: Canton Road Connector (100762132) at (2561, -4754) 0: from (2422, -4902) to (2682, -4594), 405 m, 0 deck points; held to 35 m/s (the sharpest crest at (2422, -4902)), steepest 3.3 % at (2428, -4895); moved up to 0.5 m; 27317 road samples graded, 0 cut under its decks
+  over: none
+  under: motorway_link 100762127 9.7 m clear (at most 1 m into its ground)
+  not joined: motorway 100762134 carries on from the line's end
+  not joined: motorway 100762215 carries on from the line's end
+  under: motorway_link (9121350) at (2665, -5187): its end at (2707, -4608) merges onto a deck: held to its top 374.9 (was 374.8)
+under: motorway_link (9121350) at (2665, -5187) 0: from (2762, -5331) to (2707, -4608), 763 m, 0 deck points; held to 57 m/s (the sharpest crest at (2761, -5329)), steepest 4.5 % at (2636, -5053); moved up to 0.4 m; 31356 road samples graded, 0 cut under its decks
+  over: none
+  under: Canton Road Northeast (63222660) 11.8 m clear (at most 1 m into its ground)
+  not joined: motorway_link 100762212 carries on from the line's end
+under: Larry McDonald Memorial Highway (472814564) at (3458, -6205) 0: from (3344, -6073) to (3571, -6339), 350 m, 0 deck points; held to 30 m/s (the sharpest crest at (3344, -6073)), steepest 4.9 % at (3351, -6082); moved up to 0.7 m; 31370 road samples graded, 0 cut under its decks
+  over: none
+  under: Allgood Road Northeast (100762098) 8.7 m clear (at most 1 m into its ground)
+under: Larry McDonald Memorial Highway (198292214) at (3479, -6195) 0: from (3593, -6328) to (3366, -6061), 350 m, 0 deck points; held to 30 m/s (the sharpest crest at (3366, -6061)), steepest 5.0 % at (3374, -6070); moved up to 1.4 m; 26863 road samples graded, 0 cut under its decks
+  over: none
+  under: Allgood Road Northeast (100762098) 7.2 m clear (at most 1 m into its ground)
