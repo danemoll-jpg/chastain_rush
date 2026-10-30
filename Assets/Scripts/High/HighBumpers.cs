@@ -24,7 +24,7 @@ namespace ChastainRush
     //   cameras do not take them for ground.
     // - Round 86 (A, Dan: "the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps"): every
     //   jump on a walled line is found from the driven surface along it (the line and 3 m either side, Profile): a flight is simulated from every
-    //   station at every speed from 12 m/s to the fastest vehicle's top speed (no faster than the line's bends allow there); where the ground falls
+    //   station at every speed from 12 m/s to what the course allows there (its bends, the acceleration out of them, the fastest vehicle); where the ground falls
     //   away under it and it clears the ground by JumpClear or more for JumpAir or longer, no bumper stands from PreLip before the lip to RunOut past the furthest landing. Past that the bumpers come back in a
     //   funnel, FunnelOut further out, closing to the road's edge over FunnelLength. Every bumper's ends are rounded (a half dome, Emit), never square.
     public static class HighBumpers
@@ -40,7 +40,7 @@ namespace ChastainRush
         public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
         public static string DumpTo;   // checks: where the probed profiles go
-        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = 1f, JumpAir = .5f, SideOffset = 3, BendGrip = 20f;
+        public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
         static readonly Dictionary<string, GameObject> built = new();
@@ -183,13 +183,20 @@ namespace ChastainRush
                 var open = new bool[n]; var fun = new float[n]; gap[li] = open; funnel[li] = fun;
                 int Wrap(int k) => l.loop ? (k % n + n) % n : k;
                 var found = new List<Jump>();
-                // the speed the line's bends allow at each station (the tightest bend in the 50 m before it, at BendGrip sideways), at most vmax
-                var allow = new float[n];
+                // the speed the course allows at each station: the line's own bends (its heading over 16 m, at BendGrip sideways; the tightest in the
+                // 50 m before it), then no faster than a car gets out of the last bend (Accel), at most vmax
+                var bend = new float[n]; var heading = new Vector3[n];
+                for (int i = 0; i < n; i++) { var (_, hf) = l.at(Mathf.Min(i * Step, l.length - .01f)); hf.y = 0f; heading[i] = hf.sqrMagnitude < 1e-6f ? Vector3.forward : hf.normalized; }
                 for (int i = 0; i < n; i++)
                 {
-                    float k = 0f; if (l.curv != null) for (float d = 0f; d <= 50f; d += Step) { float q = i * Step - d; if (l.loop) q = Mathf.Repeat(q, l.length); else if (q < 0f) break; k = Mathf.Max(k, Mathf.Abs(l.curv(q))); }
-                    allow[i] = k < 1e-4f ? vmax : Mathf.Min(vmax, Mathf.Sqrt(BendGrip / k));
+                    int a = l.loop ? Wrap(i - 4) : Mathf.Max(0, i - 4), b = l.loop ? Wrap(i + 4) : Mathf.Min(n - 1, i + 4);
+                    float k = Vector3.Angle(heading[a], heading[b]) * Mathf.Deg2Rad / Mathf.Max(Step, 8 * Step);
+                    bend[i] = k < 1e-4f ? vmax : Mathf.Min(vmax, Mathf.Sqrt(BendGrip / k));
                 }
+                var allow = new float[n];
+                for (int i = 0; i < n; i++) { float m = vmax; for (int d = 0; d <= 25; d++) { int q = l.loop ? Wrap(i - d) : Mathf.Max(0, i - d); m = Mathf.Min(m, bend[q]); } allow[i] = m; }
+                for (int pass = 0; pass < (l.loop ? 2 : 1); pass++)
+                    for (int i = 0; i < n; i++) { int q = l.loop ? Wrap(i - 1) : Mathf.Max(0, i - 1); allow[i] = Mathf.Min(allow[i], Mathf.Sqrt(allow[q] * allow[q] + 2f * Accel * Step)); }
                 foreach (float off in new[] { 0f, -SideOffset, SideOffset })
                 {
                     var y = DrivenProfile(l, off, n, mask, hits);
