@@ -18,7 +18,7 @@ namespace ChastainRush
     //   p86fps    C: the frame rate in the woods (Noonday Creek, Kennesaw) standing, then with a dozen trees down in view
     public sealed partial class Round20Runner
     {
-        static readonly string[] R86Courses = { "kennesaw_mountain.json", "chastain_glen_loop.json", "noonday_creek_trail.json", "noonday_creek.json", "chastain_ridge.json", "chastain_lakes.json", "addison_heights.json", "marietta_square.json" };
+        static readonly string[] R86Courses = { "noonday_creek_trail.json", "kennesaw_mountain.json", "chastain_glen_loop.json", "noonday_creek.json", "chastain_ridge.json", "chastain_lakes.json", "addison_heights.json", "marietta_square.json" };
 
         // ---------------------------------------------------------------- A: room for jumps between the HIGH bumpers
         IEnumerator R86Jumps()
