@@ -123,14 +123,28 @@ namespace ChastainRush
             // a closure across a side road (not a pipe mouth), the course's road in front of it for the run-in
             walls = walls.Where(b => b.transform.parent.name.StartsWith("Barrier ") && b.size.x >= 10f && roads && R85OnRoad(roads, b.transform.position - Flat(b.transform.forward).normalized * 8f)).OrderByDescending(b => b.size.x).ToList();
             Check("wall: the race's barriers are one collider per run (Barrier wall)", allRuns > 0, $"{allRuns} runs, {walls.Count} closures 10 m+ with the road in front");
-            if (walls.Count > 0)
+            // the first closure whose run-ins (every angle, either way along it) start on a road
+            bool picked = false;
+            foreach (var bw in walls)
             {
-                var bw = walls[0]; var along = Flat(bw.transform.forward).normalized; var lat = Flat(bw.transform.right).normalized;
-                var bface = bw.transform.position - along * (bw.size.z * .5f); bface.y = RaceRoute.Surface(bface.x, bface.z).y + .7f;
-                report.AppendLine($"  the barrier: {bw.transform.parent.name}, {bw.size.x:0.0} m long, its face at ({bface.x:0.0}, {bface.z:0.0})");
-                yield return R85Hits("closure barrier", bface, -along, lat, 20f, 14f);
+                var along = Flat(bw.transform.forward).normalized; var bface = bw.transform.position - along * (bw.size.z * .5f); bface.y = RaceRoute.Surface(bface.x, bface.z).y + .7f;
+                foreach (float sgn in new[] { 1f, -1f })
+                {
+                    var lat = Flat(bw.transform.right).normalized * sgn; var nn = -along; bool ok = true;
+                    foreach (float ang in new[] { 10f, 20f, 30f, 70f }) { var st = R85Start(bface, nn, lat, ang, 14f); for (float f = 0f; f <= 1f; f += .25f) if (!R85OnRoad(roads, Vector3.Lerp(st, bface + nn * 1.3f, f))) ok = false; }
+                    if (!ok) continue;
+                    report.AppendLine($"  the barrier: {bw.transform.parent.name}, {bw.size.x:0.0} m long, its face at ({bface.x:0.0}, {bface.z:0.0})");
+                    yield return R85Hits("closure barrier", bface, nn, lat, 20f, 14f); picked = true; break;
+                }
+                if (picked) break;
             }
+            Check("wall: a closure barrier with every run-in on the road", picked, $"{walls.Count} candidates");
             race.EndRace();
+        }
+        static Vector3 R85Start(Vector3 face, Vector3 n, Vector3 t, float angle, float back)
+        {
+            var dir = (t * Mathf.Cos(angle * Mathf.Deg2Rad) - n * Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;   // the steep ones start closer (on the road)
+            return face + n * 1.3f - dir * Mathf.Min(back, 9f / Mathf.Sin(angle * Mathf.Deg2Rad));
         }
         static bool R85OnRoad(RoadLookup roads, Vector3 p) => roads.Nearest(p, out _, out float d, out float h) && d < h;
         // one hit per angle: placed back from the face, heading into it at the angle, the speed given, throttle held; measured 0.6 s after the first touch
@@ -139,7 +153,7 @@ namespace ChastainRush
             foreach (float angle in new[] { 10f, 20f, 30f, 70f })
             {
                 var dir = (t * Mathf.Cos(angle * Mathf.Deg2Rad) - n * Mathf.Sin(angle * Mathf.Deg2Rad)).normalized;
-                var hitAt = face + n * 1.3f; var start = hitAt - dir * Mathf.Min(back, 9f / Mathf.Sin(angle * Mathf.Deg2Rad));   // the steep ones start closer (on the road) start = RaceRoute.Surface(start.x, start.z);
+                var start = R85Start(face, n, t, angle, back); start = RaceRoute.Surface(start.x, start.z);
                 Place(start, dir, speed); R73Set(0f, 1f, 0f);
                 var cam = Camera.main ? Camera.main.GetComponent<ChaseCamera>() : null; if (cam) cam.Snap();
                 float tt = 0f, touched = -1f, before = 0f; bool pics = angle == 20f; int pic = 0; string tag = what.Replace(" ", "_").Replace("'", "") + (WallGlance.Off ? "_before" : "");

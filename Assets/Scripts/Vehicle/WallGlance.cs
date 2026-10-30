@@ -20,7 +20,7 @@ namespace ChastainRush
         public const float NormalMax = 50f, HighMax = 82f, NormalLoss = .8f, HighLoss = .6f, Settle = .18f, PinTime = .6f, PinSpeed = 8f;
         ArcadeVehicle car; VehicleConfiguration config;
         public int Player = 1;
-        Vector3 lastVelocity, hitNormal, target; int hitCount; Collider hitCollider; float settleFor, pinnedFor; bool touching;
+        Vector3 lastVelocity, hitNormal, target; int hitCount; Collider hitCollider; float settleFor, pinnedFor, lastTouch = -10f; bool touching, blocked;   // blocked: this touch began head on (a crash): no glance until it leaves the wall
         // checks: every glance (angle in, speed before, speed after, heading error after the settle)
         public static readonly List<string> Log = new List<string>(); public static int Glances, Pins, Crashes;
         public static float LastAngle, LastBefore, LastAfter;
@@ -55,6 +55,7 @@ namespace ChastainRush
 
         void Glance(Rigidbody body)
         {
+            if (blocked) return;   // a head-on hit stays a crash even once the vehicle has swung round against the wall
             var n = Flat(hitNormal); if (n.sqrMagnitude < 1e-4f) return; n.Normalize();
             var before = Flat(lastVelocity); float speed = before.magnitude; if (speed < 3f) return;
             float into = -Vector3.Dot(before, n); if (into <= .2f) return;   // already leaving the wall
@@ -62,7 +63,7 @@ namespace ChastainRush
             if (Mathf.Abs(along) < .5f) along = CourseSign(t, n);
             if (along < 0) t = -t;
             float angle = Vector3.Angle(before, t); bool high = High;
-            if (angle > (high ? HighMax : NormalMax)) { Crashes++; LastAngle = angle; return; }   // head on: the wall stops it, as before
+            if (angle > (high ? HighMax : NormalMax)) { Crashes++; LastAngle = angle; blocked = true; return; }   // head on: the wall stops it, as before
             float keep = 1f - (1f - Mathf.Cos(angle * Mathf.Deg2Rad)) * (high ? HighLoss : NormalLoss);
             float after = speed * keep, push = Mathf.Clamp(.8f + .12f * into, .8f, 3f);
             var v = body.linearVelocity; float vy = Mathf.Min(v.y, Mathf.Max(lastVelocity.y, 0f));   // never up off the wall
@@ -117,6 +118,8 @@ namespace ChastainRush
                 sum += nn; k++;
             }
             if (k == 0) return;
+            if (Time.time - lastTouch > .3f) blocked = false;   // a new touch
+            lastTouch = Time.time;
             touching = true; hitNormal = hitCount == 0 ? sum : hitNormal + sum; hitCount += k; hitCollider = c.collider;
             GuideWalls.Smooth(c.collider);
         }
