@@ -14,6 +14,8 @@ namespace ChastainRush
     // Trees have no colliders (visual only; TreeTrunks gives the nearest ones trunk colliders).
     // Round 19 (item 1): the trees listed in 'breakable' (beside the Noonday Creek trail) can be hidden one by one when they snap
     // (TreeTrunks) and put back when a race starts: their instance matrices are swapped for a zero-size one in every list they are in.
+    // Round 86 (C): every tree can be hidden (Woodstock Rush's breakable trees, TreeTrunks / TreeBreaker): a tree's place in the draw lists is
+    // found the first time it breaks (Find) and remembered.
     [DisallowMultipleComponent]
     public sealed class TreeField : MonoBehaviour
     {
@@ -155,11 +157,29 @@ namespace ChastainRush
             ready = true;
         }
 
-        // Round 19: hide or show one breakable tree (no-op for any other)
-        public bool IsBreakable(int i) => slots.ContainsKey(i);
+        // Round 19: hide or show one breakable tree; Round 86 (C): any tree
+        public bool IsBreakable(int i) => i >= 0 && i < count;
+        Slot Find(int i)
+        {
+            if (slots.TryGetValue(i, out var sl)) return sl;
+            if (!ready || i < 0 || i >= count) return null;
+            var t = Unpack(data, i); int s = Mathf.Min(t.species, Species - 1), fc = FarClassOf[s];
+            float radius = t.radius * 0.05f, crownH = t.crownH * 0.01f, trunkH = t.trunkH * 0.1f, trunkW = t.trunkW * 0.01f;
+            var pos = new Vector3(t.x, t.y, t.z); var rot = Quaternion.Euler(0f, t.yaw * (360f / 65536f), 0f);
+            var crownM = Matrix4x4.TRS(pos + Vector3.up * trunkH * 0.5f, rot, new Vector3(radius, crownH, radius));
+            var trunkM = Matrix4x4.TRS(pos, rot, new Vector3(trunkW, trunkH, trunkW));
+            if (!cells.TryGetValue(new Vector2Int(Mathf.FloorToInt(t.x / NearCell), Mathf.FloorToInt(t.z / NearCell)), out var c)) return null;
+            var fk = new Vector2Int(Mathf.FloorToInt(t.x / FarCell), Mathf.FloorToInt(t.z / FarCell)); FarGroup g = null;
+            foreach (var gg in groups) if (gg.sub.Contains(c)) { g = gg; break; }
+            if (g == null) return null;
+            int Index(Matrix4x4[] a, Matrix4x4 m) { for (int k = 0; k < a.Length; k++) if (a[k].GetColumn(3) == m.GetColumn(3) && a[k].GetColumn(0) == m.GetColumn(0)) return k; return -1; }
+            sl = new Slot { c = c, g = g, s = s, fc = fc, iNear = Index(c.crownA[s], crownM), iCellFar = Index(c.farCrownA[fc], crownM), iGroup = Index(g.crownA[fc], crownM), crown = crownM, trunk = trunkM };
+            if (sl.iNear < 0 || sl.iCellFar < 0 || sl.iGroup < 0) return null;
+            slots[i] = sl; return sl;
+        }
         public bool SetHidden(int i, bool hidden)
         {
-            if (!slots.TryGetValue(i, out var sl) || sl.hidden == hidden) return false;
+            var sl = Find(i); if (sl == null || sl.hidden == hidden) return false;
             sl.hidden = hidden;
             var cr = hidden ? Matrix4x4.zero : sl.crown; var tr = hidden ? Matrix4x4.zero : sl.trunk;
             sl.c.crownA[sl.s][sl.iNear] = cr; sl.c.trunkA[sl.s][sl.iNear] = tr;
@@ -167,7 +187,7 @@ namespace ChastainRush
             sl.g.crownA[sl.fc][sl.iGroup] = cr; sl.g.trunkA[sl.fc][sl.iGroup] = tr;
             return true;
         }
-        public void ShowAll() { foreach (var k in slots.Keys) SetHidden(k, false); }
+        public void ShowAll() { foreach (var k in new List<int>(slots.Keys)) SetHidden(k, false); }
         public int BreakableCount => slots.Count;
 
         void OnBeginCamera(ScriptableRenderContext ctx, Camera cam)
