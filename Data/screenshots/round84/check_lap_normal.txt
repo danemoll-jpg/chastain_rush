@@ -1,0 +1,27 @@
+Round 84 check, 2026-10-30 06:15, the exe, 1280 x 720, muted.
+
+=== A3. One HIGH MODE lap of kennesaw_mountain.json by the human-like driver, steering into the edges on purpose
+PASS  lap kennesaw_mountain.json: the race is in normal mode, no bumpers  -  high False, 0 bumper stations, 0 open for crossings, 0 on landings
+  212 s, top 41 m/s, longest air 4.0 s, resets 5, stuck 5 stuck at (-624, -5197) s 285; stuck at (-589, -5198) s 319; stuck at (-520, -5307) s 446; stuck at (-513, -5316) s 457; stuck at (-453, -5606) s 825;; 6 pushes at the edge; farthest from the line 43.6 m at (-451, -5605); 0 bumper stations, 0 open for crossings, 0 on landings; HIGH righted 0
+  trace: 0:0.0 25:23.6 51:25.6 76:26.4a 101:25.1 126:27.3 152:29.8 177:29.6 202:29.9 228:30.8 253:24.0 279:17.6 319:17.7d19 344:22.5 370:29.2 395:31.8 420:24.0 445:19.7 470:15.0 495:25.4 521:31.2 546:31.7 572:26.9 598:21.5d4 623:6.9ad6 648:20.9 673:23.5 698:23.1 723:14.6 748:21.5 774:20.7a 799:18.9d6 824:5.0d38 849:22.0 874:21.5 899:18.5 925:18.2ad3 957:19.6ad34 982:8.7ad8 1008:21.3 1033:22.5 1058:18.2 1083:17.3 1108:19.8 1133:25.4 1158:28.5 1184:27.9 1209:23.1 1237:24.9d3 1262:18.1 1287:20.4 1313:26.5 1338:29.2 1363:23.0 1389:15.1d3 1417:16.0d6 1442:18.0 1467:24.0 1492:18.1 1517:23.1 1542:17.4 1567:8.6 1593:22.8 1618:21.5 1643:25.2 1668:17.0 1693:23.1 1718:25.0a 1744:23.8d5 1769:25.5 1794:28.1 1820:29.9 1845:30.4 1870:29.3 1895:29.7 1920:17.3 1945:10.3 1970:10.4 1996:19.7 2021:20.1 2046:23.8 2071:27.2 2096:27.0a 2122:28.3d5 2147:25.5 2172:29.1 2198:22.6 2223:22.9 2248:15.7 2273:16.2d6 2299:27.5 2324:31.4 2349:31.2 2375:31.2 2400:31.3 2425:30.6ad3 2450:29.6ad11 2495:31.2ad22 2521:23.9 2546:30.5 2571:31.9 2596:32.1 2622:31.8 2647:32.4 2672:32.2 2697:31.9 2723:32.3 2748:32.3 2773:32.1 2798:15.8 2824:10.4 2849:16.8 2874:25.5 2899:30.3 2925:31.4 2950:31.2 2975:31.1 3001:30.1a 3026:29.7a 3051:31.6ad5 3077:35.6ad8 3102:40.8ad10 3127:12.5d16 3152:28.8 3178:31.7 3203:32.2 3228:31.9 3254:29.3 3279:10.1 3304:10.2 3329:20.5 3354:27.6 3380:31.1 3405:31.3 3430:31.5 3455:31.2 3481:31.0 3506:30.1a 3531:29.2ad4 3556:30.7ad6 3582:34.3ad7 3607:39.6ad9 3632:22.6d13 3657:26.0 3682:27.1
+    stuck at (-624, -5197): 6.1 m off the lap line, the nearest bumper -1.0 m
+    stuck at (-589, -5198): 19.1 m off the lap line, the nearest bumper -1.0 m
+    stuck at (-520, -5307): 5.6 m off the lap line, the nearest bumper -1.0 m
+    stuck at (-513, -5316): 6.3 m off the lap line, the nearest bumper -1.0 m
+    stuck at (-453, -5606): 43.0 m off the lap line, the nearest bumper -1.0 m
+PASS  lap kennesaw_mountain.json: the HIGH lap is completed steering into the edges (6 pushes)  -  laps 1, resets 5
+FAIL  lap kennesaw_mountain.json: the bumpers keep it on the course (never more than 12 m off the line)  -  43.6 m at (-451, -5605)
+
+=== A3. One HIGH MODE lap of noonday_creek.json by the human-like driver, steering into the edges on purpose
+PASS  lap noonday_creek.json: the race is in normal mode, no bumpers  -  high False, 0 bumper stations, 0 open for crossings, 0 on landings
+  169 s, top 21 m/s, longest air 1.9 s, resets 5, stuck 5 stuck at (2314, 1222) s 294; stuck at (2521, 952) s 1063; stuck at (2474, 690) s 1345; stuck at (2447, 722) s 1952; stuck at (2380, 961) s 2225;; 3 pushes at the edge; farthest from the line 27.6 m at (2459, 711); 0 bumper stations, 0 open for crossings, 0 on landings; HIGH righted 0
+  trace: 0:0.0 25:19.9 51:19.7 76:19.1 101:17.9 126:18.1d4 151:14.7 177:19.5 202:19.5 227:19.9 252:20.2 277:17.9ad4 302:14.5 327:18.5 353:16.3 378:15.8 404:17.4 429:10.4 454:14.7 479:17.9 504:12.5d4 530:19.1 555:16.2a 580:19.0 605:10.7 630:13.6d4 655:19.4 680:12.8 705:17.8 731:13.3d3 756:17.5 781:18.9 806:19.6 831:19.3 857:19.7 882:18.8ad3 907:12.6d10 932:19.4 957:19.9 983:20.1 1008:20.1 1033:17.3a 1058:18.8d10 1083:19.4 1108:18.1 1134:15.2 1159:14.0 1184:18.0 1209:17.0 1234:19.7 1260:19.8 1285:17.7d7 1310:16.4ad10 1335:18.4d25 1360:17.6a 1385:17.0a 1410:17.5 1435:18.6 1461:19.5a 1486:18.1 1511:18.6 1536:17.3a 1561:14.1d4 1586:10.3 1612:16.2 1637:14.2 1662:13.7 1687:19.0 1713:19.5 1738:18.5 1763:19.1 1789:19.0 1814:18.9a 1839:17.9ad8 1864:17.1d3 1889:16.7 1914:15.1 1943:14.3ad4 1968:17.9 1994:17.4a 2019:13.9 2044:17.6d3 2069:12.4 2095:13.6 2120:15.3 2145:19.4 2170:19.4 2195:18.4a 2220:10.5d4 2245:19.4 2271:16.0
+    stuck at (2314, 1222): 9.4 m off the lap line, the nearest bumper -1.0 m
+    stuck at (2521, 952): 11.6 m off the lap line, the nearest bumper -1.0 m
+    stuck at (2474, 690): 10.3 m off the lap line, the nearest bumper -1.0 m
+    stuck at (2447, 722): 15.8 m off the lap line, the nearest bumper -1.0 m
+    stuck at (2380, 961): 13.2 m off the lap line, the nearest bumper -1.0 m
+PASS  lap noonday_creek.json: the HIGH lap is completed steering into the edges (3 pushes)  -  laps 1, resets 5
+FAIL  lap noonday_creek.json: the bumpers keep it on the course (never more than 12 m off the line)  -  27.6 m at (2459, 711)
+
+4 of 6 checks passed.

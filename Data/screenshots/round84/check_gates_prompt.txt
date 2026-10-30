@@ -1,0 +1,35 @@
+Round 84 check, 2026-10-30 05:14, the exe, 1280 x 720, muted.
+
+=== A5. Normal mode: 2 wrecks in one lap -> "Would you like to play HIGH MODE?"; NO; 4 more wrecks: not asked again
+  after 2 wrecks: asked 1 time(s), the menu 'WOULD YOU LIKE TO PLAY HIGH MODE?', mishaps 2
+PASS  prompt: asked after 2 wrecks in a lap  -  modal:WOULD YOU LIKE TO PLAY HIGH MODE?
+PASS  prompt: B is No: the game goes on in normal mode, not asked again this session  -  open False, declined True, high False
+PASS  prompt: 4 more wrecks: not asked again  -  asked 1
+
+=== B. The Express gates: each from the driver's seat on its ramp, then the road beside it driven at speed (no gate met)
+  gate 1 at (-644.8, -392.9), heading 147: the arm over named roads: none (its own unnamed ramp only); picture 84_gate1_driver.png
+PASS  gates: gate 1's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Northwest Corridor Express Lanes, driven 239 m at up to 33 m/s; nearest the arm came 26.9 m; resets 0
+PASS  gates: gate 1: driving past on Northwest Corridor Express Lanes at speed meets no gate  -  26.9 m, top 33 m/s
+  gate 2 at (-652.4, -396.1), heading 147: the arm over named roads: none (its own unnamed ramp only); picture 84_gate2_driver.png
+PASS  gates: gate 2's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Big Shanty Road Northwest, driven 295 m at up to 31 m/s; nearest the arm came 124.5 m; resets 3
+PASS  gates: gate 2: driving past on Big Shanty Road Northwest at speed meets no gate  -  124.5 m, top 31 m/s
+  gate 3 at (715.6, -956.2), heading -7: the arm over named roads: none (its own unnamed ramp only); picture 84_gate3_driver.png
+PASS  gates: gate 3's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Phillip Landrum Memorial Highway, driven 335 m at up to 33 m/s; nearest the arm came 4.4 m; resets 2
+PASS  gates: gate 3: driving past on Phillip Landrum Memorial Highway at speed meets no gate  -  4.4 m, top 33 m/s
+  gate 4 at (712.7, -2026.6), heading 7: the arm over named roads: none (its own unnamed ramp only); picture 84_gate4_driver.png
+PASS  gates: gate 4's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Phillip Landrum Memorial Highway, driven 109 m at up to 33 m/s; nearest the arm came 87.0 m; resets 5
+PASS  gates: gate 4: driving past on Phillip Landrum Memorial Highway at speed meets no gate  -  87.0 m, top 33 m/s
+  gate 5 at (-620.6, -463.0), heading -30: the arm over named roads: none (its own unnamed ramp only); picture 84_gate5_driver.png
+PASS  gates: gate 5's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Big Shanty Road Northwest, driven 467 m at up to 33 m/s; nearest the arm came 22.0 m; resets 0
+PASS  gates: gate 5: driving past on Big Shanty Road Northwest at speed meets no gate  -  22.0 m, top 33 m/s
+  gate 6 at (-612.2, -459.8), heading -32: the arm over named roads: none (its own unnamed ramp only); picture 84_gate6_driver.png
+PASS  gates: gate 6's arm stands across no named road (I-75, I-575, the Express Lanes, a through road)
+    beside it: Big Shanty Road Northwest, driven 337 m at up to 33 m/s; nearest the arm came 53.0 m; resets 3
+PASS  gates: gate 6: driving past on Big Shanty Road Northwest at speed meets no gate  -  53.0 m, top 33 m/s
+
+15 of 15 checks passed.

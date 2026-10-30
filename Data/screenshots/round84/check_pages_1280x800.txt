@@ -1,0 +1,22 @@
+Round 84 check, 2026-10-30 06:32, the exe, 1280 x 800, muted.
+
+=== A1/A2. The HIGH MODE menus by a controller, the window 1280 x 800
+PASS  pages: the title's top row is HIGH MODE: OFF  -  high-mode 'HIGH MODE:   OFF'
+PASS  pages: A switches HIGH MODE on; the title becomes HIGH MODE's menu  -  on True, heading 'CHASTAIN RUSH   ·   HIGH MODE'
+  HIGH MODE saved in the check's settings.json: True
+PASS  pages: roam opens its page by the controller  -  high-roam, focus roam-1p
+PASS  pages: B goes back from high-roam  -  root
+PASS  pages: race opens its page by the controller  -  high-race, focus high-track-chastain_glen_loop.json-forward
+PASS  pages: B goes back from high-race  -  root
+PASS  pages: high-chases opens its page by the controller  -  high-chases, focus high-players
+PASS  pages: B goes back from high-chases  -  root
+PASS  pages: high-vehicle opens its page by the controller  -  high-vehicle, focus high-vehicle-pick
+PASS  pages: VEHICLE: right steps to the next vehicle  -  'Street Classic  (Car)   ·   1 / 17' -> 'Longroof GT  (Car)   ·   2 / 17'
+PASS  pages: VEHICLE: A drives it (back on the menu)  -  root
+PASS  pages: high-time opens its page by the controller  -  high-time, focus high-time-of-day
+PASS  pages: TIME & WEATHER: right changes the weather  -  'Weather:   Clear' -> 'Weather:   Rain'
+PASS  pages: B goes back from high-time  -  root
+PASS  pages: the Free Roam pause in HIGH MODE is its menu with RESUME DRIVING  -  CHASTAIN RUSH   ·   HIGH MODE
+PASS  pages: left / right on HIGH MODE switches it off from the pause  -  PAUSED
+
+16 of 16 checks passed.

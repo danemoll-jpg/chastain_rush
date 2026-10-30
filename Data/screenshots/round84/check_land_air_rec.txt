@@ -1,0 +1,29 @@
+Round 84 check, 2026-10-30 04:52, the exe, 1280 x 720, muted.
+
+=== A3. A crooked landing (dropped on its roof from 3 m): HIGH MODE upright, normal mode wrecks
+  Needle 600 HIGH: upright True (up.y 1.00), wrecked False, righted 1; picture 84_land_moto_high.png
+PASS  land: Needle 600 in HIGH MODE is upright again, no wreck  -  up.y 1.00
+  Needle 600 normal: upright False (up.y -1.00), wrecked True, righted 0; picture 84_land_moto_normal.png
+PASS  land: Needle 600 in normal mode wrecks  -  up.y -1.00, wrecked True
+  Drifter Twin HIGH: upright True (up.y 1.00), wrecked False, righted 1; picture 84_land_drifter_high.png
+PASS  land: Drifter Twin in HIGH MODE is upright again, no wreck  -  up.y 1.00
+  Drifter Twin normal: upright False (up.y -1.00), wrecked True, righted 0; picture 84_land_drifter_normal.png
+PASS  land: Drifter Twin in normal mode wrecks  -  up.y -1.00, wrecked True
+
+=== A3. The Quarry Air Race in HIGH MODE, flown into the ground
+  ring 1: 39.0 m in HIGH MODE (the course file's 26.0 m; others in the file: 26.0, 28.0, 16.0, 10.0)
+PASS  air: the rings are larger in HIGH MODE  -  rings 291 m against the file's 194 m in all
+  nose down from 349 m: crashed after 0.9 s (hit Terrain_8_12); 0.4 s later: crashed False, in the air True, 19 m over the ground, 75 m/s
+PASS  air: flown into the ground in HIGH MODE, it is back flying at once  -  hit True, crashed False, 19 m up
+
+=== A4. A HIGH MODE race's times: the HIGH boards only; the replay marked HIGH; the RECORDS page's HIGH board
+  the race: Finished, category high-Chastain Glen loop|forward|laps1; HIGH entries 0 -> 2, normal 0 -> 0
+PASS  rec: the HIGH race's lap and race went on the HIGH boards only  -  HIGH 0->2, normal 0->0
+  its replay: "HIGH · Quarry Air Race forward"
+PASS  rec: the replay is marked HIGH  -  HIGH · Quarry Air Race forward
+PASS  rec: the finish menu is HIGH MODE's results (VEHICLE, CHANGE TRACK)  -  RACE OVER   ·   HIGH MODE
+  RECORDS opened on: 'HIGH · Chastain Glen loop - Forward'
+PASS  rec: RECORDS opens on the HIGH board of this course  -  HIGH · Chastain Glen loop - Forward
+
+=== A5. Normal mode: 2 wrecks in one lap -> "Would you like to play HIGH MODE?"; NO; 4 more wrecks: not asked again
+FAIL  the check finished within 9 minutes  -  stopped by the watchdog
