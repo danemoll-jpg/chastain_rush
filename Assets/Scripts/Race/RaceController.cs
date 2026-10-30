@@ -314,6 +314,7 @@ namespace ChastainRush
             barriers.Build(Route);   // closed roads appear with the race ...
             FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
             BuildAiLine();   // Round 70 (B): the AI's racing line, once the barriers stand
+            if (High && AiCount <= 0 && !Route.Air) BuildAiRoad();   // the bumpers follow this race's lap (with no rivals it is not made otherwise)
             HighBumpers.Apply(this);   // Round 84 (A3): a HIGH MODE race's gutter bumpers (hidden otherwise)
             HighAssist.Ensure(car, 1); if (SplitScreen.P2Car) HighAssist.Ensure(SplitScreen.P2Car, 2);
             if (High) Log($"HIGH MODE race{(SplitScreen.Active ? $" (player 1 {(high1 ? "HIGH" : "normal")}, player 2 {(high2 ? "HIGH" : "normal")})" : "")}: {HighBumpers.Report}");

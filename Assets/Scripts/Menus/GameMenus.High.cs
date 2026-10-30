@@ -81,7 +81,7 @@ namespace ChastainRush
             Row(n++, "roam", "FREE ROAM", () => Navigate("high-roam"));
             Row(n++, "race", "RACE", () => Navigate("high-race"));
             Row(n++, "high-chases", "CHASES & STUNTS", OpenHighChases);
-            Row(n++, "high-vehicle", "VEHICLE   ·   " + VehicleName, () => Navigate("high-vehicle"));
+            Row(n++, "high-vehicle", "VEHICLE   ·   " + VehicleName, OpenHighVehicle);
             Row(n++, "high-time", "TIME & WEATHER   ·   " + TimeWeatherLine, () => Navigate("high-time"));
             Row(n++, "replays", "REPLAYS", OpenReplays);
             Row(n++, "settings", "SETTINGS", () => Navigate("settings-audio"));
@@ -97,7 +97,7 @@ namespace ChastainRush
             HighRow(n++);
             if (race.CanSimulateRemaining) Row(n++, "complete", "COMPLETE RACE", () => { race.CompleteRace(); CloseMenu(); });
             Row(n++, "restart", finished ? "RACE AGAIN" : "RESTART RACE", finished ? StartRace : () => Confirm("RESTART THE RACE?", "The race starts again from the grid.", "RESTART", StartRace));
-            Row(n++, "high-vehicle", "VEHICLE   ·   " + (highPending != null ? VehicleProfile.Find(highPending).Name + "   (from the next race)" : VehicleName), () => Navigate("high-vehicle"));
+            Row(n++, "high-vehicle", "VEHICLE   ·   " + (highPending != null ? VehicleProfile.Find(highPending).Name + "   (from the next race)" : VehicleName), OpenHighVehicle);
             Row(n++, "high-race", "CHANGE TRACK", () => Navigate("high-race"));
             Row(n++, "leave", finished ? "FREE ROAM" : "LEAVE RACE", () => { LoadingScreen.Cover("FREE ROAM", "Chastain Glen, Marietta, Georgia", null); race.EndRace(); CloseMenu(); LoadingScreen.Started(); });
             if (finished && ReplayRecorder.Instance && (ReplayRecorder.Instance.Recording || ReplayRecorder.Instance.Last != null))
@@ -246,13 +246,14 @@ namespace ChastainRush
 
         // ---------- VEHICLE: one scrolling row with pictures and stat bars ----------
         string highPick, highPending;   // pending: chosen during a race, put on at the next start
+        void OpenHighVehicle() { highPick = null; Navigate("high-vehicle"); }   // opens on the vehicle driven now
         static VehicleProfile[] HighVehicleList => VehicleProfile.All.ToArray();
-        static string Where(VehicleProfile p) => p.IsPlane ? "Free Roam and the air races" : p.Flies ? "Free Roam" : p.Stunt ? "Free Roam and the Stunt event" : p.Small ? "every course" : "not on the trails";
+        static string Where(VehicleProfile p) => p.IsPlane ? "Free Roam, air races" : p.Flies ? "Free Roam" : p.Stunt ? "Free Roam, stunts" : p.Small ? "every course" : "not on the trails";
         void RenderHighVehicle()
         {
             var list = HighVehicleList; if (list.Length == 0) { BackPage(); return; }
             string now = highPending ?? car.GetComponent<VehicleConfiguration>().profileId;
-            if (renderedKey != PageKey || !list.Any(v => v.Id == highPick)) highPick = (list.FirstOrDefault(v => v.Id == now) ?? list[0]).Id;
+            if (highPick == null || !list.Any(v => v.Id == highPick)) highPick = (list.FirstOrDefault(v => v.Id == now) ?? list[0]).Id;
             int at = Array.FindIndex(list, v => v.Id == highPick); var p = list[at];
             Clear("VEHICLE", KeyHints.Of("Left / right: every vehicle.   A: drive it.", "Left / right: every vehicle.   Space: drive it.") + "   Color and rider stay as you last set them." + (RaceRunning ? "\nChosen now, it is yours from the next race." : ""));
             var strip = LaterGroup("Every vehicle", content, true, 262); strip.SetSiblingIndex(details.transform.GetSiblingIndex() + 1);

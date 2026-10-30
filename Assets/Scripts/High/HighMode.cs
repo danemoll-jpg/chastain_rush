@@ -16,7 +16,7 @@ namespace ChastainRush
         public static void Set(bool on)
         {
             if (GameSettings.Settings.highMode == on) return;
-            GameSettings.Settings.highMode = on; if (!CheckRun.Active) GameSettings.SaveSettings();
+            GameSettings.Settings.highMode = on; GameSettings.SaveSettings();   // (a check's settings.json is in its own folder)
         }
         // checks only: -highMode 1 / 0 switches it for the run (a check never writes Dan's settings)
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

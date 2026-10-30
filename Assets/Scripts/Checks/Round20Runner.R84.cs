@@ -94,11 +94,20 @@ namespace ChastainRush
                 float L = r.LapLength;
                 var lap = r.SamplePath(0f, r.GateS + L + 30f, 4f);
                 var pushed = new List<Vector3>(); int pushes = 0;
+                // a push: 20 m aimed 7 m off the middle (a player drifting wide, then back), never on a jump's run-up, flight or landing
+                // (the route's held zones and the landing zones, 60 m round them): a crooked take-off is a different test
+                var zones = race.AiZones;
+                bool NearJump(float s)
+                {
+                    if (zones != null) foreach (var z in zones) if (Mathf.Repeat(s - (z.s0 - 60f), L) <= z.s1 - z.s0 + 120f) return true;
+                    for (float d = -60f; d <= 120f; d += 10f) if (LandingZone.Contains(r.PointAt(s + d, out _))) return true;
+                    return false;
+                }
                 for (int i = 0; i < lap.Count; i++)
                 {
                     float s = i * 4f; int block = Mathf.FloorToInt(s / 150f); float into = s - block * 150f;
                     var p = lap[i];
-                    if (block > 0 && into > 60f && into < 100f)
+                    if (block > 0 && into > 60f && into < 80f && !NearJump(block * 150f + 60f))
                     {
                         r.PointAt(s, out var f); var side = Vector3.Cross(Vector3.up, f).normalized * (block % 2 == 0 ? 1f : -1f);
                         p += side * 7f; if (into < 64f) pushes++;
