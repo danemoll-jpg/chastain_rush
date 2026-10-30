@@ -199,7 +199,7 @@ namespace ChastainRush
                         {
                             float y0 = Y(i - 1), y1 = Y(i); if (y0 < -1e5f || y1 < -1e5f) continue;
                             int wi = Wrap(i); if (wi >= 0 && wi < n && v > allow[wi] + 2f) continue;   // faster than its bends allow here
-                            float dy = Mathf.Clamp(y1 - y0, -Step * 1.5f, Step * 1.5f), hyp = Mathf.Sqrt(Step * Step + dy * dy), vh = v * Step / hyp, vy = v * dy / hyp, dt = Step / vh;
+                            float dy = Mathf.Clamp(y1 - y0, -Step * .7f, Step * .7f), hyp = Mathf.Sqrt(Step * Step + dy * dy), vh = v * Step / hyp, vy = v * dy / hyp, dt = Step / vh;
                             if (Y(i + 1) >= y1 + vy * dt - .5f * g * dt * dt - .25f) continue;   // the ground follows: still on it
                             float peak = 0f, t = 0f; int j = i + 1;
                             for (; (j - i) * Step < 400f; j++)
@@ -292,7 +292,14 @@ namespace ChastainRush
                 y[i] = at;
                 if (!float.IsNaN(at)) { slope = float.IsNaN(prev) ? 0f : Mathf.Clamp((at - prev) / Step, -1.2f, 1.2f); prev = at; }
             }
-            return y;
+            // a 5-station median: one station's stray hit (a roof edge, a wall top beside the line) is not a ramp
+            var m = new float[n]; var w5 = new float[5];
+            for (int i = 0; i < n; i++)
+            {
+                int c = 0; for (int k = -2; k <= 2; k++) { int q = l.loop ? ((i + k) % n + n) % n : Mathf.Clamp(i + k, 0, n - 1); if (!float.IsNaN(y[q])) w5[c++] = y[q]; }
+                if (c == 0) { m[i] = y[i]; continue; } System.Array.Sort(w5, 0, c); m[i] = w5[c / 2];
+            }
+            return m;
         }
         // the bumpers' red and white come from the vertex colors: the game's vertex-lit shader
         static Material BumperMaterial()
