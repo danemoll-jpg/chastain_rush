@@ -701,7 +701,7 @@ namespace ChastainRush
                 clean = clean.GetRange(a0, a1 - a0 + 1);
                 var b0 = map.bridges[bi]; string cls = b0.@class ?? ""; bool fast = cls == "motorway" || cls == "trunk" || cls == "motorway_link";
                 var graded = new List<(List<Vector2> p, float[] y)>();
-                R82Lay(map, terrain, new List<List<R82P>> { clean }, lb, lr, R82Lift(cls), b0.width * .5f, fast ? R82Grade : .06f, log, graded,
+                R82Lay(map, terrain, new List<List<R82P>> { clean }, lb, lr, R82Lift(cls), b0.width * .5f, fast ? .06f : .09f /* Round 83 (B, D: Skip Spann's, Greers Chapel's and the Canton Road Connector's climbs did not fit before their ends: 58 %, 29 %, 16 % there; were 4.5 % / 6 %) */, log, graded,
                        $"{(string.IsNullOrEmpty(b0.name) ? cls : b0.name)} ({string.Join(" + ", lb.Select(x => map.bridges[x].osm_id))})");
                 R82Joins(map, terrain, graded, lr, lb, b0.width * .5f, R82Lift(cls), log);
                 foreach (int x in lb) decks.Add(x);
