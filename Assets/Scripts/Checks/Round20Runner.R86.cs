@@ -25,7 +25,10 @@ namespace ChastainRush
         {
             report.AppendLine(); report.AppendLine("=== A. Every jump on every car course in HIGH MODE, the human-like driver (Street Classic) on the line and 3 m either side; touches counted in the air and the first second down");
             int touchedRuns = 0, runs = 0, jumpsAll = 0, flownRuns = 0;
-            foreach (var file in R86Courses)
+            HighBumpers.DumpTo = System.IO.Path.Combine(outputDir, "86_profiles.txt");
+            var argv = System.Environment.GetCommandLineArgs(); int ci = System.Array.IndexOf(argv, "-r86Courses");
+            var courses = ci >= 0 && ci + 1 < argv.Length ? argv[ci + 1].Split(',') : R86Courses; bool profileOnly = System.Array.IndexOf(argv, "-r86ProfileOnly") >= 0;
+            foreach (var file in courses)
                 foreach (var dir in new[] { "forward", "reverse" })
                 {
                     R84High(true); yield return Vehicle("original");
@@ -35,6 +38,7 @@ namespace ChastainRush
                     var r = race.Route; float L = r.LapLength;
                     report.AppendLine($"  {file} {dir}: {HighBumpers.Report}");
                     // the jumps in the lap's order from the line (the first one is the course's "first jump")
+                    if (profileOnly) { foreach (var j in jumps) report.AppendLine($"    jump line {j.line} lip {j.lip:0} ({j.lipAt.x:0}, {j.lipAt.z:0}) land {j.land:0} air {j.air:0.0} clear {j.clear:0.0}"); race.EndRace(); R84High(false); Flush(); continue; }
                     var ordered = jumps.OrderBy(j => j.line == 0 ? r.LapStationOf(j.lipAt) : 1e6f + j.lip).ToList();
                     int idx = 0;
                     foreach (var j in ordered)

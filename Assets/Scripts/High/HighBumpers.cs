@@ -39,6 +39,7 @@ namespace ChastainRush
         // Round 86 (A): the jumps found at the last build (checks: the line, the lip's and the furthest landing's station, the longest flight, the highest)
         public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
+        public static string DumpTo;   // checks: where the probed profiles go
         public const float PreLip = 6, RunOut = 25, FunnelLength = 30, FunnelOut = 8, JumpClear = 1f, JumpAir = .5f, SideOffset = 3, BendGrip = 20f;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
@@ -192,6 +193,12 @@ namespace ChastainRush
                 foreach (float off in new[] { 0f, -SideOffset, SideOffset })
                 {
                     var y = DrivenProfile(l, off, n, mask, hits);
+                    if (DumpTo != null && off == 0f)   // checks: the line's probed ground, station by station
+                    {
+                        var sb = new System.Text.StringBuilder($"# {race.Route.Name} {race.Route.Direction} line {li} length {l.length:0.0} loop {l.loop}").AppendLine().AppendLine("# s x z line_y ground_y allow");
+                        for (int i = 0; i < n; i++) { var (pp, _) = l.at(Mathf.Min(i * Step, l.length - .01f)); sb.Append($"{i * Step:0} {pp.x:0.0} {pp.z:0.0} {pp.y:0.00} {y[i]:0.00} {allow[i]:0.0}").AppendLine(); }
+                        try { System.IO.File.AppendAllText(DumpTo, sb.ToString()); } catch { }
+                    }
                     float Y(int k) { k = Wrap(k); return k < 0 || k >= n || float.IsNaN(y[k]) ? -1e6f : y[k]; }
                     int last = n - 1;   // a loop's flights still run on past its end (Y wraps); its lips once only
                     for (float v = 12f; v <= vmax + .01f; v += 4f)
