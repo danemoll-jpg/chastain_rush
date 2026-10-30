@@ -1,0 +1,26 @@
+Round 20 check, 2026-10-30 10:50, the exe, 1280 x 720, muted.
+
+=== B. Normal mode: the Drifter Twin into a wall at 10, 20, 30 and 70 degrees, throttle held, hands off (WallGlance OFF (before))
+  the Express Lanes' wall: Express Lanes wall collider 0, the face at (338.1, 1027.3), along -12 degrees
+PASS  wall: a straight stretch of the Express Lanes' wall found
+  Express Lanes wall at 10 degrees: 31.2 m/s before, 5.5 m/s 0.6 s after the hit (18 %), heading 14 degrees off the wall's line, 0.3 m from it
+FAIL  wall: Express Lanes wall at 10 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  18 %, 14 degrees
+  Express Lanes wall at 20 degrees: 32.9 m/s before, 4.7 m/s 0.6 s after the hit (14 %), heading 28 degrees off the wall's line, 0.6 m from it
+FAIL  wall: Express Lanes wall at 20 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  14 %, 28 degrees
+  Express Lanes wall at 30 degrees: 31.2 m/s before, 6.7 m/s 0.6 s after the hit (21 %), heading 9 degrees off the wall's line, 0.3 m from it
+FAIL  wall: Express Lanes wall at 30 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  21 %, 9 degrees
+  Express Lanes wall at 70 degrees: 10.8 m/s before, 3.7 m/s 0.6 s after the hit (35 %), heading 22 degrees off the wall's line, 0.5 m from it
+PASS  wall: Express Lanes wall at 70 degrees (head on): it stops you, as before  -  3.7 of 10.8 m/s
+PASS  wall: the race's barriers are one collider per run (Barrier wall)  -  25 runs, 9 closures 10 m+ with the road in front
+  the barrier: Barrier B5, 14.0 m long, aimed at (2852.9, 1114.2) on its face, 2 m from its end
+  closure barrier at 10 degrees: 20.8 m/s before, 23.7 m/s 0.6 s after the hit (114 %), heading 10 degrees off the wall's line, -1.2 m from it
+FAIL  wall: closure barrier at 10 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  114 %, 10 degrees
+  closure barrier at 20 degrees: 20.8 m/s before, 23.6 m/s 0.6 s after the hit (113 %), heading 20 degrees off the wall's line, -3.6 m from it
+FAIL  wall: closure barrier at 20 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  113 %, 20 degrees
+  closure barrier at 30 degrees: 21.0 m/s before, 21.5 m/s 0.6 s after the hit (102 %), heading 9 degrees off the wall's line, -1.1 m from it
+PASS  wall: closure barrier at 30 degrees: slides along, speed kept (80 % or more), straightened (heading within 10 degrees)  -  102 %, 9 degrees
+  closure barrier at 70 degrees: 0.0 m/s before, 0.0 m/s 0.6 s after the hit (0 %), heading 0 degrees off the wall's line, 0.0 m from it (never touched)
+FAIL  wall: closure barrier at 70 degrees (head on): it stops you, as before  -  0.0 of 0.0 m/s
+PASS  wall: a closure barrier with the road in front  -  9 candidates
+
+5 of 11 checks passed.

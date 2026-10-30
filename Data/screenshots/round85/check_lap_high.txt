@@ -1,0 +1,62 @@
+Round 20 check, 2026-10-30 10:51, the exe, 1280 x 720, muted.
+
+=== A. One HIGH MODE lap of kennesaw_mountain.json by the human-like driver, steering into the edges on purpose (WallGlance on)
+PASS  lap kennesaw_mountain.json: HIGH MODE with its bumpers up  -  high True, 3565 bumper stations, 19 open for crossings, 730 on landings
+  199 s, top 40 m/s, resets 0, stuck 0; 6 pushes; farthest from the line 67.3 m at (-801, -5356); glances 119, pinned and turned 1, head on 0
+    15.32 HIGH Bumper 2 at (-626.4, -5198.5): 38 deg, 12.9 -> 11.3 m/s
+    16.18 HIGH Bumper 2 at (-615.1, -5202.3): 11 deg, 17.4 -> 17.2 m/s
+    22.40 HIGH Bumper 52 at (-515.8, -5309.5): 44 deg, 17.4 -> 14.6 m/s
+    29.02 HIGH Bumper 6 at (-415.5, -5407.9): 49 deg, 17.2 -> 13.6 m/s
+    30.06 HIGH Bumper 6 at (-405.2, -5419.1): 22 deg, 19.0 -> 18.2 m/s
+    36.86 HIGH Bumper 56 at (-418.6, -5538.8): 22 deg, 23.0 -> 22.0 m/s
+    43.22 HIGH Bumper 10 at (-535.4, -5628.6): 47 deg, 15.9 -> 12.8 m/s
+    50.88 HIGH Bumper 60 at (-676.5, -5702.7): 49 deg, 17.0 -> 13.5 m/s
+    57.50 HIGH Bumper 14 at (-769.4, -5814.7): 35 deg, 23.7 -> 21.1 m/s
+    58.90 HIGH Bumper 62 at (-785.4, -5838.8): 1 deg, 22.3 -> 22.3 m/s
+    60.94 HIGH Bumper 15 at (-786.0, -5881.3): 26 deg, 20.5 -> 19.2 m/s
+    65.22 HIGH Bumper 64 at (-845.2, -5939.8): 47 deg, 16.9 -> 13.7 m/s
+  trace: 0:0.0 25:23.6 51:25.6 76:26.4a 102:25.2 127:27.3 153:29.9 178:29.6 203:29.8 228:30.8 253:23.7 279:17.4 305:19.6 330:25.9 355:28.7 381:30.6 406:22.1 431:20.9 456:16.3d3 481:22.6 506:27.4 532:24.2 557:22.5 582:18.2 608:16.4d4 633:22.8 658:22.0 683:23.6 709:23.0 734:19.6 759:22.7 785:23.4 810:27.8 836:27.7 861:29.0 886:23.5 912:18.7 937:20.8 962:25.6d3 987:25.7 1012:26.6 1038:19.9 1063:20.1 1088:12.3d4 1113:22.2 1138:27.3 1163:29.5 1188:23.2 1214:21.2 1239:20.4d3 1264:22.8d4 1289:21.3 1315:19.2d3 1340:26.4 1365:20.3 1390:15.9d4 1415:19.0 1441:18.1 1466:22.5 1491:18.2 1516:23.3 1542:20.0 1568:22.4d4 1593:27.3 1618:21.4 1643:25.3 1668:18.4 1693:22.8 1722:19.9d4 1747:25.5 1772:26.1 1797:27.7 1823:31.0 1848:30.4 1873:29.7 1899:29.4 1924:15.4 1949:10.2 1974:11.5 1999:21.4d3 2030:16.6d5 2055:25.3 2081:28.2 2106:27.2ad4 2131:30.9 2157:30.7 2182:25.7 2207:23.8 2232:27.1a 2257:23.4ad3 2283:24.2d4 2308:30.1 2333:30.0 2359:31.4 2384:31.2 2409:31.0 2435:29.8ad5 2460:29.9ad13 2495:31.2ad21 2520:19.0d9 2546:14.9d15 2571:21.5ad13 2596:23.1d17 2621:22.7d13 2646:31.1d13 2671:31.9d13 2697:32.2d13 2722:32.2d13 2747:17.1d26 2773:26.1ad13 2798:16.2d14 2823:10.1d7 2848:18.2d7 2873:23.2d8 2899:25.7ad8 2924:26.7ad8 2949:26.7ad14 2975:28.4ad39 3000:17.0d44 3025:12.7d13 3050:10.3d34 3075:13.3d8 3100:13.6d13 3125:26.0d13 3151:32.0d13 3176:32.2d13 3202:32.1d13 3227:32.4d13 3252:30.7d13 3277:10.4d11 3304:10.2d9 3329:13.9d7 3355:23.9d7 3380:30.4d7 3405:32.3d7 3431:32.1d7 3456:31.4d8 3481:30.4d8 3507:30.1ad7 3532:29.3ad4 3557:30.9a 3582:34.6a 3608:39.9ad5 3633:15.6ad9 3658:23.7 3683:27.1
+PASS  lap kennesaw_mountain.json: the HIGH lap is completed steering into the edges  -  laps 1
+PASS  lap kennesaw_mountain.json: no stall against a bumper (aim 0)  -  0 stalls at a bumper, 0 in all
+
+=== A. One HIGH MODE lap of noonday_creek.json by the human-like driver, steering into the edges on purpose (WallGlance on)
+PASS  lap noonday_creek.json: HIGH MODE with its bumpers up  -  high True, 2443 bumper stations, 77 open for crossings, 1178 on landings
+  151 s, top 20 m/s, resets 1, stuck 1; 3 pushes; farthest from the line 10.8 m at (2365, 906); glances 57, pinned and turned 0, head on 1
+    stuck at (2365, 906): the nearest bumper 5.9 m
+    213.34 HIGH Bumper 35 at (2350.3, 1069.8): 21 deg, 17.9 -> 17.2 m/s
+    214.46 HIGH Bumper 1 at (2342.0, 1088.3): 5 deg, 18.5 -> 18.4 m/s
+    227.22 HIGH Bumper 39 at (2294.8, 1315.4): 21 deg, 17.2 -> 16.4 m/s
+    227.84 HIGH Bumper 39 at (2293.6, 1326.2): 10 deg, 18.5 -> 18.4 m/s
+    229.68 HIGH Bumper 40 at (2292.4, 1346.3): 43 deg, 11.2 -> 9.4 m/s
+    229.74 HIGH Bumper 40 at (2292.1, 1346.8): 13 deg, 9.4 -> 9.3 m/s
+    230.20 HIGH Bumper 5 at (2289.0, 1350.3): 59 deg, 12.4 -> 8.8 m/s
+    234.72 HIGH Bumper 41 at (2354.3, 1353.3): 18 deg, 14.8 -> 14.4 m/s
+    237.68 HIGH Bumper 8 at (2398.9, 1367.7): 37 deg, 18.3 -> 16.1 m/s
+    238.60 HIGH Bumper 8 at (2407.9, 1371.4): 31 deg, 10.5 -> 9.5 m/s
+    239.24 HIGH Bumper 8 at (2415.1, 1373.3): 8 deg, 13.4 -> 13.3 m/s
+    242.48 HIGH Bumper 8 at (2459.2, 1370.0): 11 deg, 15.4 -> 15.3 m/s
+  trace: 0:0.0 25:20.1 51:19.6 76:19.2 101:18.1 126:18.0 151:18.9 176:19.9 202:19.7 227:19.8 252:20.1 277:18.1a 303:19.0 328:18.6 353:15.8 378:15.6 406:18.3d5 431:11.2 456:14.6 481:18.0 506:16.5 531:19.0 556:10.6d5 582:17.2 607:11.9 632:14.6 657:19.7 682:15.9 707:17.0 735:14.3d5 761:18.7 786:19.5 811:18.8 837:19.8 862:20.1 887:18.3a 912:18.9d7 937:20.0 962:19.7 988:20.1 1013:20.1 1038:17.9a 1063:11.9d9 1088:18.1 1113:17.2 1138:16.8 1163:17.2 1189:16.8d5 1214:17.6 1239:19.8 1264:19.5a 1289:9.9d4 1314:13.4d4 1339:18.4 1364:18.3 1390:17.7ad5 1415:17.5d7 1440:19.2 1465:19.5 1491:17.5 1516:18.5 1541:13.2a 1566:11.1 1591:10.4 1616:13.3 1641:16.1d6 1666:18.1 1691:18.6 1717:19.2 1742:18.3 1767:18.2 1792:19.1 1817:18.4a 1842:19.0 1867:19.3 1892:13.6 1918:14.7 1945:11.9d8 1970:11.8 1995:11.8 2021:14.5d6 2046:15.6ad5 2071:11.6d5 2096:15.5d6 2127:12.4d6 2152:19.8d6 2177:11.3 2202:17.9a 2228:19.3 2253:13.9 2280:20.0
+PASS  lap noonday_creek.json: the HIGH lap is completed steering into the edges  -  laps 1
+PASS  lap noonday_creek.json: no stall against a bumper (aim 0)  -  0 stalls at a bumper, 1 in all
+
+=== A. One HIGH MODE lap of chastain_glen_loop.json by the human-like driver, steering into the edges on purpose (WallGlance on)
+PASS  lap chastain_glen_loop.json: HIGH MODE with its bumpers up  -  high True, 1537 bumper stations, 100 open for crossings, 234 on landings
+  78 s, top 26 m/s, resets 0, stuck 0; 4 pushes; farthest from the line 77.3 m at (2939, 799); glances 15, pinned and turned 1, head on 1
+    376.88 HIGH Bumper 3 at (3072.5, 1011.6): 41 deg, 12.4 -> 10.6 m/s
+    376.90 HIGH Bumper 3 at (3072.6, 1011.8): 16 deg, 10.7 -> 10.5 m/s
+    376.92 HIGH Bumper 36 at (3072.7, 1011.8): 1 deg, 10.5 -> 10.5 m/s
+    376.98 HIGH Bumper 36 at (3073.0, 1012.0): 45 deg, 5.4 -> 4.4 m/s
+    377.58 HIGH Bumper 3 at (3072.8, 1012.1): 78 deg, 3.9 -> 2.0 m/s
+    378.18 HIGH pinned on Bumper 3 at (3072.8, 1011.7): turned along the course
+    379.08 HIGH Bumper 3 at (3075.3, 1022.3): 27 deg, 16.2 -> 15.1 m/s
+    386.94 HIGH Bumper 23 at (3132.8, 1147.6): 43 deg, 16.8 -> 14.0 m/s
+    395.46 HIGH Bumper 7 at (3050.6, 1231.0): 21 deg, 19.7 -> 18.9 m/s
+    402.36 HIGH Bumper 27 at (2912.3, 1171.0): 20 deg, 18.2 -> 17.5 m/s
+    410.16 HIGH Bumper 12 at (2788.5, 1094.3): 34 deg, 16.5 -> 14.8 m/s
+    419.50 HIGH Bumper 31 at (2721.2, 993.6): 47 deg, 10.2 -> 8.3 m/s
+  trace: 0:0.0 25:21.5 50:18.5 75:20.3 101:21.3 126:20.4 151:22.7 176:22.4 202:13.1 227:19.1 252:16.9 277:14.6 302:15.6d4 328:22.3 353:22.6 378:15.6 403:20.4 429:18.7 458:16.4d4 483:22.0 508:17.9 533:13.4 558:18.8 584:21.2 609:19.1 635:20.0 660:25.5 685:26.0 710:25.5 736:21.0 764:21.3 789:22.1 814:17.8 840:20.1 865:23.0 890:20.1 915:20.6 945:21.1d5 970:22.6 995:13.1 1020:15.3 1045:20.7 1071:14.6 1096:16.3 1121:19.8 1146:16.6 1171:10.2 1196:16.4 1221:19.0 1246:18.1d4 1272:21.1 1297:24.1 1322:22.5 1347:11.1 1372:10.3 1397:17.2
+PASS  lap chastain_glen_loop.json: the HIGH lap is completed steering into the edges  -  laps 1
+PASS  lap chastain_glen_loop.json: no stall against a bumper (aim 0)  -  0 stalls at a bumper, 0 in all
+  stalls against a bumper over the three laps: 0 (WallGlance on); Round 84's build: Kennesaw 6, Noonday Creek Extension 9
+
+9 of 9 checks passed.
