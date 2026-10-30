@@ -202,7 +202,7 @@ namespace ChastainRush
             int h1 = HighN(), n1 = NormalN();
             report.AppendLine($"  the race: {race.State}, category {race.BoardCategory}; HIGH entries {h0} -> {h1}, normal {n0} -> {n1}");
             Check("rec: the HIGH race's lap and race went on the HIGH boards only", race.State == RaceController.Stage.Finished && h1 > h0 && n1 == n0 && race.BoardCategory.StartsWith(HighMode.RecordPrefix), $"HIGH {h0}->{h1}, normal {n0}->{n1}");
-            var rec = ReplayRecorder.Instance; string title = rec && rec.Last != null ? rec.Last.Title : "(none)";
+            var rec = ReplayRecorder.Instance; var rd2 = rec ? (rec.Current ?? rec.Last) : null; string title = rd2 != null ? rd2.Title : "(none)";   // still recording (it runs on past the finish)
             report.AppendLine($"  its replay: \"{title}\"");
             Check("rec: the replay is marked HIGH", title.StartsWith("HIGH"), title);
             var m = R84Menus(); yield return new WaitForSecondsRealtime(.5f); R74Devices();
@@ -227,9 +227,9 @@ namespace ChastainRush
             {
                 var p = car.Body.position + Vector3.up * 1.5f; var rot = Quaternion.Euler(0f, car.transform.eulerAngles.y, 175f);
                 car.Body.position = p; car.Body.rotation = rot; car.transform.SetPositionAndRotation(p, rot); car.Body.linearVelocity = Vector3.zero;
-                yield return new WaitForSeconds(2.2f);
+                yield return new WaitForSecondsRealtime(2.2f);
                 if (!GameMenus.Open) { R73Pad(); yield return R73Reset(); }   // as a player: Y once it is down
-                yield return new WaitForSeconds(1.5f);
+                yield return new WaitForSecondsRealtime(1.5f);
             }
             yield return Wreck(); yield return Wreck();
             yield return new WaitForSecondsRealtime(.6f);
@@ -264,9 +264,14 @@ namespace ChastainRush
                 if (views) views.SetView(CameraViews.View.FirstPerson); yield return new WaitForSecondsRealtime(.6f);
                 yield return Capture($"84_gate{gi + 1}_driver");
                 if (views) views.SetView(CameraViews.View.Chase);
+                // from overhead (the camera 45 m up, looking straight down at the arm)
+                var cam = Camera.main; var chase = cam ? cam.GetComponent<ChaseCamera>() : null;
+                if (cam) { if (chase) chase.enabled = false; if (views) views.enabled = false; cam.transform.SetPositionAndRotation(c + Vector3.up * 45f, Quaternion.LookRotation(Vector3.down, f)); yield return new WaitForSecondsRealtime(.4f); yield return Capture($"84_gate{gi + 1}_overhead"); if (chase) chase.enabled = true; if (views) views.enabled = true; }
                 // the arm against the map's roads: what it stands across
                 var across = new List<string>();
-                if (roads) for (float d = -1f; d <= 9f; d += .5f) { var q = post + right * d; if (roads.Nearest(q, out string nm, out float dist, out float half) && dist < half && !nm.StartsWith("unnamed") && !across.Contains(nm)) across.Add(nm); }
+                // the arm's own span (its trigger box, shut: from the post to its tip) and the post
+                float tip = col ? col.center.x + col.size.x * .5f : 8f;
+                if (roads) for (float d = -.35f; d <= tip + .01f; d += .25f) { var q = post + right * d; if (roads.Nearest(q, out string nm, out float dist, out float half) && dist < half && !nm.StartsWith("unnamed") && !across.Contains(nm)) across.Add(nm); }
                 report.AppendLine($"  gate {gi + 1} at ({post.x:0.0}, {post.z:0.0}), heading {Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg:0}: the arm over named roads: {(across.Count == 0 ? "none (its own unnamed ramp only)" : string.Join(", ", across))}; picture 84_gate{gi + 1}_driver.png");
                 Check($"gates: gate {gi + 1}'s arm stands across no named road (I-75, I-575, the Express Lanes, a through road)", across.Count == 0, string.Join(", ", across));
                 // the road beside it: the nearest named road within 40 m of the arm's middle, driven 250 m past the gate at speed
