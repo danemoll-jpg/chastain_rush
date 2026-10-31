@@ -208,12 +208,21 @@ namespace ChastainRush
             float side = Mathf.Sign(Vector3.Dot(at - pC, Vector3.Cross(Vector3.up, fC))); if (side == 0f) side = 1f;
             var along = new Vector2(c.dx, c.dz).normalized; var c2 = new Vector2(c.x, c.z); float roadHalf = c.width_m * .5f + Verge;
             float Half(Vector3 p) => roads && roads.Nearest(p, out _, out float d, out float h) && d < h + .5f ? h : 4f;
+            // Round 87: out from the line to past the course road's pavement on that side (the line off its road's middle; a wide junction, a turn lane
+            // of the same road): from the nearest road's half width, walking out while still on a road of the line's own name, at most 14 m
+            string Own(Vector3 p) => roads && roads.Nearest(p, out var nm, out float d, out float h) && d < h + .5f ? nm : null;
+            float Out(Vector3 p, Vector3 right)
+            {
+                float o = Half(p); string own = Own(p); if (own == null) return o;
+                for (; o < 14f; o += .5f) { var q = p + right * side * o; if (!roads.Nearest(q, out var nm, out float d, out float h) || d >= h || nm != own) break; }
+                return o;
+            }
             // the row's stations along the course: within the closed road (and its verges) where it crosses the course's edge
             var pts = new List<float>();
             for (float u = -MouthReach; u <= MouthReach; u += .5f)
             {
                 var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f);
-                var q = p + right * side * (Half(p) + SetBack); var q2 = new Vector2(q.x, q.z);
+                var q = p + right * side * (Out(p, right) + SetBack); var q2 = new Vector2(q.x, q.z);
                 float across = Mathf.Abs(Vector2.Dot(q2 - c2, new Vector2(-along.y, along.x)));   // from the closed road's middle line
                 // on the closed road's side of where it meets the course (where the closed road is the same street running on past a corner, its
                 // line runs back through the course's own road)
@@ -233,7 +242,7 @@ namespace ChastainRush
             for (int i = 0; i < blocks; i++)
             {
                 float u = u0 + bw * (i + .5f);
-                var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Half(p);
+                var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Out(p, right);
                 var q = p + right * side * (hp + SetBack);
                 // never on any pass of the course (its paved half and 1.2 m), nor across an official shortcut's line
                 bool clear = OnLine(route, new Vector2(q.x, q.z), new Vector2(q.x, q.z), q.x, q.z) >= hp + 1.2f && !NearShortcut(route, new Vector2(q.x, q.z));

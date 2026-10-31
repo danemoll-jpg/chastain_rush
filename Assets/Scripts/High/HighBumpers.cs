@@ -128,10 +128,13 @@ namespace ChastainRush
                             // Round 87 (A, Dan's BUG-002 "bumpers shouldn't cross each other", BUG-009 to 011 "most are not needed"): another line's band (a
                             // shortcut's mouth, the course's other carriageway, a second pass) keeps every bumper OtherClear past its paved edge, so no run
                             // crosses another line or stands on a median between the course's own lanes (was: only inside its paved half)
-                            float dx = b.p.x - w.x, dz = b.p.z - w.z; float reach = Old ? Mathf.Max(b.half - .3f, 2.5f) : b.half + OtherClear; if (dx * dx + dz * dz > reach * reach) continue;
+                            float dx = b.p.x - w.x, dz = b.p.z - w.z; float reach = Old ? Mathf.Max(b.half - .3f, 2.5f) : b.half + OtherClear; if (!Old && b.line == line) reach = Mathf.Max(reach, new Vector2(w.x - centre.x, w.z - centre.z).magnitude); if (dx * dx + dz * dz > reach * reach) continue;
                             if (b.line != line) { if (Mathf.Abs(Vector3.Dot(Vector3.ProjectOnPlane(b.p - centre, Vector3.up), outward)) < 1.5f) continue; OpenLines++; return true; }
                             float along = Mathf.Abs(b.s - s); if (l.loop) along = Mathf.Min(along, l.length - along);
                             if (along > 30) { OpenLines++; return true; }   // the same line passing this way again (a hairpin's other leg, a second pass)
+                            // Round 87 (A, BUG-001's inside corner): on the inside of a bend tighter than the bumper's distance out, the offset folds back
+                            // across itself: a bumper nearer to another station of its own line than to its own is left out
+                            if (!Old && along > 2.5f) { float own = new Vector2(w.x - centre.x, w.z - centre.z).magnitude; if (Mathf.Sqrt(dx * dx + dz * dz) < own - .6f) { OpenLines++; return true; } }
                         }
                     }
                 // Chastain Rush: any of the map's roads here (a junction, a side road, a road under a bridge): open. Round 87 (A, Dan's BUG-001 "why is
@@ -247,6 +250,7 @@ namespace ChastainRush
                 foreach (var jp in found)
                 {
                     int a = Mathf.FloorToInt((jp.lip - PreLip) / Step), b = Mathf.CeilToInt((jp.land + RunOut) / Step), f = Mathf.CeilToInt(FunnelLength / Step);
+                    if (!Old && !l.loop && (b + f) * Step + 20f >= l.length) b = n - 1 + f + 1;   // Round 87 (A, Dan's BUG-004): landing near a shortcut's end (where it rejoins the lap): open to its end, no funnel
                     for (int k = a; k <= b; k++) { int w = Wrap(k); if (w >= 0 && w < n) open[w] = true; }
                     for (int k = 1; k <= f; k++) { int w = Wrap(b + k); if (w >= 0 && w < n) fun[w] = Mathf.Max(fun[w], 1f - (k - 1f) / f); }
                     jp.over = l.loop ? 0f : Mathf.Max(0f, jp.land - l.length); jp.lip = l.loop ? Mathf.Repeat(jp.lip, l.length) : jp.lip; jp.land = l.loop ? Mathf.Repeat(jp.land, l.length) : Mathf.Min(jp.land, l.length - .01f);
