@@ -34,14 +34,15 @@ namespace ChastainRush
                 var q = ToPoints(map.bridges[bi].points);
                 for (int i = 0; i + 1 < q.Count; i++) { segs.Add((bi, i)); idx.Add(q[i], q[i + 1], map.bridges[bi].width * .5f + 1f); }
             }
-            bool UnderOther(Vector2 p, int self, HashSet<int> chain)
+            // another deck over p (its slab more than 2.5 m over 'y'; a deck beside this one at about its height is not over it)
+            bool UnderOther(Vector2 p, float y, int self, HashSet<int> chain)
             {
                 foreach (int k in idx.Near(p, 0f, near))
                 {
-                    var (b, i) = segs[k]; if (b == self || chain.Contains(b)) continue; var bb = map.bridges[b];
+                    var (b, i) = segs[k]; if (b == self || chain.Contains(b)) continue; var bb = map.bridges[b]; if (bb.deck_y == null || i + 1 >= bb.deck_y.Length) continue;
                     var a = new Vector2(bb.points[2 * i], bb.points[2 * i + 1]); var e = new Vector2(bb.points[2 * i + 2], bb.points[2 * i + 3]); var ab = e - a;
                     float t = Mathf.Clamp01(Vector2.Dot(p - a, ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
-                    if ((a + ab * t - p).magnitude < bb.width * .5f + 1f) return true;
+                    if ((a + ab * t - p).magnitude < bb.width * .5f + 1f && Mathf.Lerp(bb.deck_y[i], bb.deck_y[i + 1], t) - slab > y + 2.5f) return true;
                 }
                 return false;
             }
@@ -91,25 +92,33 @@ namespace ChastainRush
                         for (int i = 1; i < path.Count; i++) if (s <= cum[i]) return Vector2.Lerp(path[i - 1], path[i], (s - cum[i - 1]) / Mathf.Max(cum[i] - cum[i - 1], 1e-4f));
                         return path[path.Count - 1];
                     }
-                    // as far as it may reach: the chained road's length, and short of passing under another deck
-                    float Lmax = Mathf.Min(R88MaxL, cum[cum.Length - 1]);
-                    for (float s = 2f; s <= Lmax; s += 1f) if (UnderOther(At(s), bi, chain)) { Lmax = Mathf.Max(0f, s - 6f); break; }
-                    if (Lmax < 12f) { log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left"); continue; }
+                    // a kink in the deck's very last segment (Phillip Landrum's north deck rises 0.16 m over its last 3 m where the rest falls 4 %) straightened
+                    // to the grade before it, as SmoothBridgeEnds does
+                    if (n >= 3)
+                    {
+                        int iq = start ? 2 : n - 3; float dl = Mathf.Max(Vector2.Distance(pts[ie], pts[ip]), .1f);
+                        float g1 = (b.deck_y[ie] - b.deck_y[ip]) / dl, g0 = (b.deck_y[ip] - b.deck_y[iq]) / Mathf.Max(Vector2.Distance(pts[ip], pts[iq]), .1f);
+                        if (Mathf.Abs(g1 - g0) > .01f && Mathf.Abs(g0) < .15f) { float was = b.deck_y[ie]; b.deck_y[ie] = b.deck_y[ip] + g0 * dl; log.Add($"{tag}: the deck's last segment straightened ({g1 * 100f:0.0} % to {g0 * 100f:0.0} %, its end {was:0.00} to {b.deck_y[ie]:0.00})"); }
+                    }
                     // the deck's top and grade over its last 8 m or more
                     int ig = ip; float span = Vector2.Distance(pts[ie], pts[ip]);
                     while (span < 8f && (start ? ig + 1 < n : ig - 1 >= 0)) { int nx = start ? ig + 1 : ig - 1; span += Vector2.Distance(pts[ig], pts[nx]); ig = nx; }
                     float deckTop = b.deck_y[ie] + lift, grade = (b.deck_y[ie] - b.deck_y[ig]) / Mathf.Max(span, .1f);
+                    // as far as it may reach: the chained road's length, and short of passing under another deck
+                    float Lmax = Mathf.Min(R88MaxL, cum[cum.Length - 1]);
+                    for (float s = 2f; s <= Lmax; s += 1f) { var p = At(s); if (UnderOther(p, Mathf.Max(terrain.Height(p.x, p.y), deckTop), bi, chain)) { Lmax = Mathf.Max(0f, s - 6f); break; } }
+                    if (Lmax < 12f) { log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left"); continue; }
                     int NM = Mathf.CeilToInt(Lmax / .5f) + 1; var GM = new float[NM];
                     for (int i = 0; i < NM; i++) { var p = At(i * .5f); GM[i] = terrain.Height(p.x, p.y); }
                     float Gs(float s) => GM[Mathf.Clamp(Mathf.RoundToInt(s / .5f), 0, NM - 1)];
-                    // the sharpest crest and sag (second difference over 2 m) of a profile from 4 m back on the deck to L + 10 m
+                    // the sharpest crest and sag (second difference over 4 m: the terrain's own 1 m grid is noise at 2 m) of a profile from 6 m back on the deck to 'to'
                     (float crest, float sag) Bend(System.Func<float, float> y, float to)
                     {
                         float c = 0f, sg = 0f;
-                        for (float s = -4f; s <= to - 2f; s += 1f)
+                        for (float s = -2f; s <= to - 4f; s += 1f)
                         {
                             float Y(float u) => u < 0f ? deckTop + grade * u : y(u);
-                            float k = (Y(s - 2f) - 2f * Y(s) + Y(s + 2f)) / 4f; c = Mathf.Max(c, -k); sg = Mathf.Max(sg, k);
+                            float k = (Y(s - 4f) - 2f * Y(s) + Y(s + 4f)) / 16f; c = Mathf.Max(c, -k); sg = Mathf.Max(sg, k);
                         }
                         return (c, sg);
                     }
@@ -124,18 +133,25 @@ namespace ChastainRush
                         float t = Mathf.Clamp01(s / len2), t2 = t * t, t3 = t2 * t;
                         return (2f * t3 - 3f * t2 + 1f) * y0 + (t3 - 2f * t2 + t) * len2 * grade + (-2f * t3 + 3f * t2) * yl + (t3 - t2) * len2 * gl;
                     }
+                    // the shortest L whose curve a car holds at R88HoldV (its crest) and whose sag is gentle: the curve's own bends, exactly (H'' = 6(1 - 2t)(y1 - y0)/L^2 + ...);
+                    // the road's far grade gl over 10 m either side of L (its 1 m grid smoothed out)
                     for (float ll = Mathf.Min(R88MinL, Lmax); ll <= Lmax + .01f; ll += 4f)
                     {
-                        float yl = Gs(ll), gl = (Gs(Mathf.Min(ll + 10f, Lmax)) - Gs(Mathf.Max(ll - 10f, 0f))) / Mathf.Max(Mathf.Min(ll + 10f, Lmax) - Mathf.Max(ll - 10f, 0f), 1f);
-                        var bd = Bend(s => s >= ll ? Gs(s) : H(s, ll, yl, gl), Mathf.Min(Lmax, ll + 10f));
-                        float k = Mathf.Max(bd.crest, bd.sag * .4f);
+                        float a0 = Mathf.Max(ll - 10f, 0f), a1 = Mathf.Min(ll + 10f, Lmax);
+                        float yl = 0f; int cnt = 0; for (float s = a0; s <= a1 + .01f; s += .5f) { yl += Gs(s); cnt++; } yl /= Mathf.Max(cnt, 1);   // its height: the mean about L (the grade line through it)
+                        float gl = (Gs(a1) - Gs(a0)) / Mathf.Max(a1 - a0, 1f); yl += gl * (ll - (a0 + a1) * .5f);
+                        float cr = 0f, sgm = 0f;
+                        for (float s = 0f; s <= ll; s += ll / 40f) { float k2 = (H(s - 1f, ll, yl, gl) - 2f * H(s, ll, yl, gl) + H(s + 1f, ll, yl, gl)); if (s < 1f || s > ll - 1f) continue; cr = Mathf.Max(cr, -k2); sgm = Mathf.Max(sgm, k2); }
+                        float k = Mathf.Max(cr, sgm * .4f);
                         if (k < bestK) { bestK = k; L = ll; yL = yl; gL = gl; }
-                        if (V(bd.crest) >= R88HoldV && bd.sag < .03f) break;
+                        if (V(cr) >= R88HoldV && sgm < .02f) { L = ll; yL = yl; gL = gl; break; }
                     }
-                    float Target(float s) => s >= L ? Gs(s) : H(s, L, yL, gL);
+                    // past L the road eases from the grade line back onto its own ground over 10 m
+                    float Target(float s) => s >= L ? Mathf.Lerp(yL + gL * (s - L), Gs(s), Smooth01((s - L) / 10f)) : H(s, L, yL, gL);
+                    float Lend = Mathf.Min(L + 10f, Lmax);
                     float half = b.width * .5f, bank = 3.5f, reach = half + bank;
                     float x0 = float.MaxValue, x1 = float.MinValue, z0 = float.MaxValue, z1 = float.MinValue;
-                    for (float s = -4f; s <= L; s += 1f) { var p = At(s); x0 = Mathf.Min(x0, p.x); x1 = Mathf.Max(x1, p.x); z0 = Mathf.Min(z0, p.y); z1 = Mathf.Max(z1, p.y); }
+                    for (float s = -4f; s <= Lend; s += 1f) { var p = At(s); x0 = Mathf.Min(x0, p.x); x1 = Mathf.Max(x1, p.x); z0 = Mathf.Min(z0, p.y); z1 = Mathf.Max(z1, p.y); }
                     int changed = 0; float most = 0f;
                     EditTerrain(terrain, Rect.MinMaxRect(x0 - reach, z0 - reach, x1 + reach, z1 + reach), (x, z, y) =>
                     {
@@ -145,25 +161,26 @@ namespace ChastainRush
                         else
                         {
                             float bestD = float.MaxValue; s = 0f;
-                            for (int i = 0; i + 1 < path.Count && cum[i] <= L + reach; i++)
+                            for (int i = 0; i + 1 < path.Count && cum[i] <= Lend + reach; i++)
                             {
                                 var ab = path[i + 1] - path[i]; float t = Mathf.Clamp01(Vector2.Dot(p - path[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f));
                                 float dd = (path[i] + ab * t - p).sqrMagnitude; if (dd < bestD) { bestD = dd; s = cum[i] + t * ab.magnitude; }
                             }
                             d = Mathf.Sqrt(bestD);
                         }
-                        if (s > L || d > reach || s < -.7f) return y;
+                        if (s > Lend || d > reach || s < -.7f) return y;
                         if (s < 0f) { if (d > half + .35f) return y; float u = deckTop + grade * s - .02f; if (Mathf.Abs(u - y) < 1e-3f) return y; changed++; most = Mathf.Max(most, Mathf.Abs(u - y)); return u; }
-                        if (UnderOther(p, bi, chain)) return y;
+                        if (UnderOther(p, Target(s), bi, chain)) return y;
                         // the change along the line at s, faded out across the banks and over the last 6 m before L
-                        float delta = Target(s) - Gs(s);
+                        // (the height itself, level across the road: adding the change at the line to each sample overshot where the ground is steep
+                        // right at a deck's end; Frey Road's Express deck kept a 0.7 m spike at its end)
                         float fade = (d <= half + .5f ? 1f : 1f - Mathf.SmoothStep(0f, 1f, (d - half - .5f) / (bank - .5f)));
-                        float ny = y + delta * fade;
+                        float ny = y + (Target(s) - y) * fade;
                         if (Mathf.Abs(ny - y) > 1e-3f) { changed++; most = Mathf.Max(most, Mathf.Abs(ny - y)); }
                         return ny;
                     });
                     for (int i = 0; i < NM; i++) { var p = At(i * .5f); GM[i] = terrain.Height(p.x, p.y); }
-                    var after = Bend(Gs, Mathf.Min(Lmax, L + 10f));
+                    var after = Bend(Gs, Mathf.Min(Lmax, L + 20f));
                     // the abutment's record: the deck as it now stands
                     foreach (var end in BridgeEnds) if (end.bridge == bi && end.start == start) { end.deckTop = deckTop; end.slabBottom = deckTop - slab; end.ground = GM[0]; }
                     log.Add($"{tag}: step {step0:0.00} -> {deckTop - GM[0]:0.00} m, crest held to {V(before.crest):0} -> {V(after.crest):0} m/s, sag {before.sag:0.000} -> {after.sag:0.000} per m; " +
