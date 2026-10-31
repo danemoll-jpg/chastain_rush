@@ -235,28 +235,33 @@ namespace ChastainRush
             // the unbroken stretch nearest the closure
             int best = 0; for (int i = 1; i < pts.Count; i++) if (Mathf.Abs(pts[i]) < Mathf.Abs(pts[best])) best = i;
             int i0 = best, i1 = best; while (i0 > 0 && pts[i0 - 1] > pts[i0] - .6f) i0--; while (i1 + 1 < pts.Count && pts[i1 + 1] < pts[i1] + .6f) i1++;
-            float u0 = pts[i0], u1 = pts[i1], length = u1 - u0;
+            float u0 = pts[i0], u1 = pts[i1];
+            // the row itself, every 0.25 m of the course: its length is its own (round a corner's outside it sweeps a wider arc than the line)
+            var row = new List<(Vector3 q, float hp)>();
+            for (float u = u0; u <= u1 + .001f; u += .25f) { var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Out(p, right); row.Add((p + right * side * (hp + SetBack), hp)); }
+            var cum = new float[row.Count]; for (int i = 1; i < row.Count; i++) cum[i] = cum[i - 1] + new Vector2(row[i].q.x - row[i - 1].q.x, row[i].q.z - row[i - 1].q.z).magnitude;
+            float length = cum[^1];
             if (length < 2f) return null;
             int blocks = Mathf.Max(2, Mathf.RoundToInt(length / Block)); float bw = length / blocks;
             var root = new GameObject("Barrier " + c.id); root.transform.SetParent(transform, false);
             var run = new List<Vector3>(); Vector3 runAlong = Vector3.zero;
-            Vector3 first = Vector3.zero, last = Vector3.zero; bool any = false;
+            Vector3 first = Vector3.zero, last = Vector3.zero; bool any = false; int k = 0;
             for (int i = 0; i < blocks; i++)
             {
-                float u = u0 + bw * (i + .5f);
-                var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Out(p, right);
-                var q = p + right * side * (hp + SetBack);
+                float at = bw * (i + .5f); while (k + 2 < row.Count && cum[k + 1] < at) k++;
+                float t = Mathf.InverseLerp(cum[k], cum[k + 1], at); var q = Vector3.Lerp(row[k].q, row[k + 1].q, t); float hp = Mathf.Lerp(row[k].hp, row[k + 1].hp, t);
+                var tan = row[k + 1].q - row[k].q; tan.y = 0f; tan = tan.sqrMagnitude > 1e-6f ? tan.normalized : Vector3.right;
                 // never on any pass of the course (its paved half and 1.2 m), nor across an official shortcut's line
                 bool clear = OnLine(route, new Vector2(q.x, q.z), new Vector2(q.x, q.z), q.x, q.z) >= hp + 1.2f && !NearShortcut(route, new Vector2(q.x, q.z));
                 if (!clear) { Trimmed++; SolidAlong(root.transform, run, bw, runAlong); continue; }
                 float gy = RaceRoute.Surface(q.x, q.z).y;
-                // a run of blocks is one straight box: a new one where the course bends more than 6 degrees from the run's start
-                if (run.Count > 0 && Vector3.Angle(runAlong, f) > 6f) SolidAlong(root.transform, run, bw, runAlong);
-                if (run.Count == 0) runAlong = f;
+                // a run of blocks is one straight box: a new one where the row bends more than 6 degrees from the run's start
+                if (run.Count > 0 && Vector3.Angle(runAlong, tan) > 6f) SolidAlong(root.transform, run, bw, runAlong);
+                if (run.Count == 0) runAlong = tan;
                 run.Add(new Vector3(q.x, gy, q.z));
                 var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.SetParent(root.transform, false);
-                cube.transform.SetPositionAndRotation(new Vector3(q.x, gy + Height * 0.5f - 0.5f, q.z), Quaternion.LookRotation(right * side, Vector3.up));
+                cube.transform.SetPositionAndRotation(new Vector3(q.x, gy + Height * 0.5f - 0.5f, q.z), Quaternion.LookRotation(Vector3.Cross(tan, Vector3.up), Vector3.up));
                 cube.transform.localScale = new Vector3(bw + .05f, Height + 1f, Depth);
                 var rd = cube.GetComponent<Renderer>(); rd.sharedMaterial = i % 2 == 0 ? red : white; rd.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 Destroy(cube.GetComponent<Collider>());
