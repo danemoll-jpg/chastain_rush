@@ -42,7 +42,8 @@ namespace ChastainRush
         public sealed class Jump { public int line; public float lip, land, air, clear, over; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
         public static string DumpTo;   // checks: where the probed profiles go
-        public const float PreLip = 6, RunOut = 40, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f, CrossClear = 7f;
+        public const float PreLip = 10,   // Round 87: was 6 (the Lyndon trailer's lip)
+                           RunOut = 40, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f, CrossClear = 7f;
         // Round 87 (A): another line's band clear by this past its paved edge; runs shorter than MinRun left out; the distance out changes at most MaxSlope
         // a station (10 degrees); ends curve out by EndCurve over EndLength; under another line's flight the clear widens by FlightCone a meter along it
         public const float OtherClear = 3.5f, MinRun = 10f, MaxSlope = .35f, EndLength = 12f, EndCurve = 2.5f, FlightCone = .15f;
@@ -360,8 +361,12 @@ namespace ChastainRush
                 var outward = Vector3.Cross(Vector3.up, f) * side; float half = l.half(s, p), wide = Widen(line, s), reach = Mathf.Lerp(half + 1.2f, Mathf.Max(half + 1.2f, LandingHalf), wide);
                 reach = Mathf.Max(reach, half + 1.2f + FunnelOut * Funnel(line, s)); float edge = reach;   // Round 86: past a landing, the funnel
                 if (reach > half + 1.25f) LandingStations++;
+                bool raised = false;
                 for (float d = 2.5f; d <= reach; d += .5f)
-                    if (!Surface(p + outward * d, roadY, out float y) || y < roadY - 1f) { edge = Mathf.Max(2.2f, d - .3f); break; }   // the ground drops away here
+                    if (!Surface(p + outward * d, roadY, out float y) || y < roadY - 1f) { edge = Mathf.Max(2.2f, d - .3f); raised = d < half - .5f; break; }   // the ground drops away here
+                // Round 87 (D, the Lyndon jump's trailer): the drop inside the line's own width is a raised ramp or deck the line runs up (not a road's
+                // edge): no bumper beside it (it stood 2.2 m out at the deck's height, in the way of anything a little off the line)
+                if (raised && !Old) return false;
                 var w = p + outward * edge; w.y = roadY;
                 if (Open(w, line, s, p, outward)) { Openings++; return false; }
                 if (UnderFlight(line, w)) { if (side < 0 && !wrap) JumpStations++; return false; }   // Round 86: under another line's jump
