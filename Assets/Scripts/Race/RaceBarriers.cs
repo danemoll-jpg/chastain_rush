@@ -215,7 +215,9 @@ namespace ChastainRush
             {
                 float o = Half(p); string own = Own(p); if (own == null) return o;
                 for (; o < 14f; o += .5f) { var q = p + right * side * o; if (!roads.Nearest(q, out var nm, out float d, out float h) || d >= h || nm != own) break; }
-                return o;
+                // and past the mouth's own pavement (a corner's outside, where a driver swings wide), at most 6 m more
+                for (float o2 = o; o2 < o + 6f; o2 += .5f) { var q = p + right * side * o2; if (!roads.Nearest(q, out _, out float d, out float h) || d >= h) return o2; }
+                return o + 6f;
             }
             // the row's stations along the course: within the closed road (and its verges) where it crosses the course's edge
             var pts = new List<float>();

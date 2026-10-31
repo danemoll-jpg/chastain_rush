@@ -248,6 +248,29 @@ namespace ChastainRush
                             if (j > i + 1) i = j - 1;
                         }
                 }
+                // Round 87 (A, Dan's BUG-004: the Lyndon trailer): a stretch where the line itself is in the air (a shortcut whose heights are its flight)
+                // is a jump too: from the last station on the ground to the first one back on it
+                if (!Old)
+                {
+                    int airFrom = -1;
+                    for (int i = 0; i <= n; i++)
+                    {
+                        bool air = false;
+                        if (i < n)
+                        {
+                            var (pa, _) = l.at(Mathf.Min(i * Step, l.length - .01f));
+                            int k = Physics.RaycastNonAlloc(pa + Vector3.up * .5f, Vector3.down, hits, 40f, mask, QueryTriggerInteraction.Ignore); float under = float.MaxValue;
+                            for (int m = 0; m < k; m++) { var h = hits[m]; if (h.collider.attachedRigidbody || h.collider.gameObject.layer == Layer || h.normal.y < .3f) continue; under = Mathf.Min(under, pa.y - h.point.y); }
+                            air = under > 2.1f;
+                        }
+                        if (air && airFrom < 0) airFrom = i;
+                        if (!air && airFrom >= 0)
+                        {
+                            if ((i - airFrom) * Step >= 6f) { float lip = Mathf.Max(0, airFrom - 1) * Step, land = i * Step; if (!found.Exists(q => q.lip <= land && q.land >= lip - PreLip)) found.Add(new Jump { line = li, lip = lip, land = land, air = (land - lip) / 20f }); }
+                            airFrom = -1;
+                        }
+                    }
+                }
                 foreach (var jp in found)
                 {
                     int a = Mathf.FloorToInt((jp.lip - PreLip) / Step), b = Mathf.CeilToInt((jp.land + RunOut) / Step), f = Mathf.CeilToInt(FunnelLength / Step);
