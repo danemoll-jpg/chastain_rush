@@ -85,6 +85,9 @@ namespace ChastainRush
             // Round 58 (D): the Chastain Ridge track's vertical curves too (Chastain Ridge Drive's valley, Dan's BUG-003), the same way
             string ridgePath = System.IO.Path.Combine(ProjectRoot, RidgeTrackFile);
             if (System.IO.File.Exists(ridgePath)) { var rd = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(ridgePath)); R55VerticalCurves(terrain, rd); R55Blur(terrain, rd); }
+            // Round 87 (E): the Kennesaw Mountain track's too (the drive's climb, Dan's "significant bump")
+            string mountainPath = System.IO.Path.Combine(ProjectRoot, MountainTrackFile);
+            if (System.IO.File.Exists(mountainPath)) { var md = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(mountainPath)); R55VerticalCurves(terrain, md); R55Blur(terrain, md); }
             string path = System.IO.Path.Combine(ProjectRoot, AddisonTrackFile);
             if (!System.IO.File.Exists(path)) return;
             var d = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(path));

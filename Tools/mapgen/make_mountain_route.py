@@ -565,6 +565,12 @@ jumps_out = [{"id": j["id"], "look": j["look"], "name": j["name"], "lip": [round
               "s_lip": round(j["sL"], 1), "catch_from_m": round(j["xa"], 1), "catch_to_m": round(j["xb"], 1), "outrun_to_m": round(j["x_end"], 1)} for j in jumps]
 track = {"note": "Round 68: the Kennesaw Mountain race's world pieces, from Tools/mapgen/make_mountain_route.py (MapBuilder.Mountain.cs). Coordinates are map meters (= Unity x, z).",
          "grades": grades, "clear_lines": clear, "break_lines": breaks, "landing_zones": zones_land, "jumps": jumps_out, "route_name": SETTINGS["name"]}
+# Round 87 (E, Dan 2026-10-31: "On the way up the hill there is a significant bump that generally causes all vehicles to jump off the road over the
+# barriers"): measured on the built ground, the drive's climb at x -395 to -410 z -5516 to -5533 goes 15 % into 25 % and back to 14 % within about
+# 30 m (a crest that throws a car 2 s at 33 m/s). Made one vertical curve over 90 m about (-400.4, -5526.7), across the road (MapBuilder.Round55.cs
+# R55VerticalCurves, read from this file): at most 3.9 m/s2 over the crest at 36 m/s, the ground moved by up to 1.4 m
+_kc = [q for q in resample(lap, 1.0) if -445.0 < q[0] < -375.0 and -5572.0 < q[1] < -5462.0]
+track["vertical_curves"] = [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": [-400.4, -5526.7], "length": 90.0, "fit": 6.0, "half": 4.5, "blend": 4.0}]
 lead = [point_at(lap, L_lap - LEAD_IN_M + k * 2.0, C) for k in range(int(LEAD_IN_M / 2.0))] + [lap[0]]
 route = dict(SETTINGS)
 route.update({
