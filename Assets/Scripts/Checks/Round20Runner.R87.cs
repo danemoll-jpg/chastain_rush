@@ -217,7 +217,7 @@ namespace ChastainRush
                 yield return StartRoute("noonday_creek_trail.json", dir, 0, 3);
                 var r = race.Route; float L = r.LapLength; var e = race.Player; e.ClockStarted = true; e.StartAt = e.LapStart = race.RaceClock;
                 // the lap's stretch with heights of its own (the mall's floors): its stations
-                var own = new List<float>(); for (float s = 0; s < L; s += 3f) { var p = r.PointAt(r.GateS + s, out _); if (R87OwnAt(r, p)) own.Add(s); }
+                var own = new List<float>(); for (float s = 0; s < L; s += 3f) { var p = r.PointAt(r.GateS + s, out _); if (R87OwnAt(r, p) && p.x > 260f && p.x < 600f && p.z > -1420f && p.z < -1120f) own.Add(s); }   // Town Center's footprint
                 var spots = new List<(string what, Vector3 p, Vector3 f, int next, RaceShortcut sc)>();
                 if (own.Count > 0)
                     foreach (float frac in new[] { .15f, .4f, .65f, .9f })
