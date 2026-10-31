@@ -404,6 +404,22 @@ namespace ChastainRush
             return Mathf.Repeat(bs - GateS, LapLength);
         }
 
+        // Round 87 (C): as LapStationOf, but where the lap has heights of its own (OwnY: a mall's two floors) height counts too
+        public float LapStationNear(Vector3 p)
+        {
+            if (OwnY == null || Underground || Air) return LapStationOf(p);
+            float best = float.MaxValue, bs = 0f;
+            for (int i = 0; i + 1 < Path.Length; i++)
+            {
+                Vector3 a = Flat(Path[i]), b = Flat(Path[i + 1]), ab = b - a, q = Flat(p);
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - a, ab) / ab.sqrMagnitude);
+                float d = (a + ab * t - q).sqrMagnitude;
+                if (i + 1 < OwnY.Length && OwnY[i] && OwnY[i + 1]) { float dy = Mathf.Lerp(Path[i].y, Path[i + 1].y, t) - p.y; d += VerticalWeight * dy * dy; }
+                if (d < best) { best = d; bs = cum[i] + t * (cum[i + 1] - cum[i]); }
+            }
+            return Mathf.Repeat(bs - GateS, LapLength);
+        }
+
         public static Vector3 Ground(float x, float z) { float y = GroundQuery.Height(x, z); return new Vector3(x, float.IsNaN(y) ? 0f : y, z); }
 
         // Round 27 (the underground race): while an underground route is raced (Active), the race's own idea of "the ground" there is the

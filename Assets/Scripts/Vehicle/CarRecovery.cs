@@ -69,7 +69,13 @@ namespace ChastainRush
             if (racing)
             {
                 var route = race.Route;
-                float s = route.LapStationOf(at);
+                // Round 87 (C, Dan's BUG-007 "I reset in the mall and ended up way over here"): on an official shortcut (the Carroway renovation through
+                // Town Center forgives CP8 to CP10, so CP11 was next while still in the mall), back on that shortcut's own line where it was, never on to
+                // the lap past the checkpoints it forgives
+                var me = race.EntrantFor(vehicle);
+                if (!Old && me != null && me.ActiveShortcut != null && ShortcutSpot(r, me.ActiveShortcut, at, out pos, out yaw)) return true;
+                // Round 87 (C): where the lap has heights of its own (the mall's two floors), the lap point nearest in height too
+                float s = Old ? route.LapStationOf(at) : route.LapStationNear(at);
                 // Round 33 (the Ridge leap is part of the lap): the lap's line crosses the hollow in the air; a reset anywhere from the
                 // lip to the landing puts the vehicle on New Chastain Road past the landing, facing on (never in the hollow under the flight)
                 // Round 39: and in the reverse Chastain Ridge, from the climb's foot to its landing: on Chastain Ridge Drive past the landing
@@ -169,6 +175,41 @@ namespace ChastainRush
             }
             pos = default; yaw = 0f;
             return false;   // VehicleRespawn falls back to the last stable spot
+        }
+
+        public static bool Old;   // Round 87 checks (-r87Old): Round 86's way
+
+        // Round 87 (C): the nearest point of a shortcut's line (height counting), then back along it, on its own floor, facing the way it goes
+        static bool ShortcutSpot(VehicleRespawn r, RaceShortcut sc, Vector3 at, out Vector3 pos, out float yaw)
+        {
+            pos = default; yaw = 0f; var path = sc.Path; if (path == null || path.Length < 2) return false;
+            float best = float.MaxValue, along = 0f, acc = 0f;
+            for (int i = 0; i + 1 < path.Length; i++)
+            {
+                var a = path[i]; var ab = path[i + 1] - a; var ab2 = new Vector2(ab.x, ab.z); float L = ab2.magnitude;
+                float t = L < 1e-4f ? 0f : Mathf.Clamp01(Vector2.Dot(new Vector2(at.x - a.x, at.z - a.z), ab2) / (L * L));
+                var q = a + ab * t; float d = new Vector2(q.x - at.x, q.z - at.z).sqrMagnitude + RaceRoute.VerticalWeight * (q.y - at.y) * (q.y - at.y);
+                if (d < best) { best = d; along = acc + t * L; }
+                acc += L;
+            }
+            if (best > 30f * 30f) return false;   // far from it: the lap's way
+            foreach (float ds in new[] { 0f, -3f, 3f, -6f, -10f, -15f, -20f, -30f, -40f, -55f, -70f })
+                foreach (float off in new[] { 0f, -1.5f, 1.5f, -3f, 3f })
+                {
+                    float want = Mathf.Clamp(along + ds, 0f, acc - .01f), c = 0f;
+                    for (int i = 0; i + 1 < path.Length; i++)
+                    {
+                        var ab = path[i + 1] - path[i]; float L = new Vector2(ab.x, ab.z).magnitude;
+                        if (c + L < want && i + 2 < path.Length) { c += L; continue; }
+                        var f = new Vector3(ab.x, 0f, ab.z).normalized; var p = Vector3.Lerp(path[i], path[i + 1], L < 1e-4f ? 0f : Mathf.Clamp01((want - c) / L)) + Vector3.Cross(Vector3.up, f) * off;
+                        // its own floor: the surface nearest the line's height (a mall's floor, a deck), else the race's ground
+                        var q = Physics.Raycast(new Vector3(p.x, p.y + 2.5f, p.z), Vector3.down, out var hit, 6f, ~0, QueryTriggerInteraction.Ignore) && !hit.collider.attachedRigidbody ? hit.point : RaceRoute.Surface(p.x, p.z, p.y);
+                        float y = Mathf.Atan2(f.x, f.z) * Mathf.Rad2Deg;
+                        if (Clear(r, q, y, false)) { pos = q; yaw = y; return true; }
+                        break;
+                    }
+                }
+            return false;
         }
 
         static bool Inside(float[] poly, float x, float z)
