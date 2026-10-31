@@ -237,8 +237,12 @@ namespace ChastainRush
             int i0 = best, i1 = best; while (i0 > 0 && pts[i0 - 1] > pts[i0] - .6f) i0--; while (i1 + 1 < pts.Count && pts[i1 + 1] < pts[i1] + .6f) i1++;
             float u0 = pts[i0], u1 = pts[i1];
             // the row itself, every 0.25 m of the course: its length is its own (round a corner's outside it sweeps a wider arc than the line)
+            // one distance out for the whole row (the widest pavement along it), so it runs parallel to the course (a distance that changed from
+            // block to block zigzagged across the lanes)
+            var raw = new List<(Vector3 p, Vector3 right)>(); float far = 0f;
+            for (float u = u0; u <= u1 + .001f; u += .25f) { var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); raw.Add((p, right)); far = Mathf.Max(far, Out(p, right)); }
             var row = new List<(Vector3 q, float hp)>();
-            for (float u = u0; u <= u1 + .001f; u += .25f) { var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Out(p, right); row.Add((p + right * side * (hp + SetBack), hp)); }
+            foreach (var (p, right) in raw) row.Add((p + right * side * (far + SetBack), far));
             var cum = new float[row.Count]; for (int i = 1; i < row.Count; i++) cum[i] = cum[i - 1] + new Vector2(row[i].q.x - row[i - 1].q.x, row[i].q.z - row[i - 1].q.z).magnitude;
             float length = cum[^1];
             if (length < 2f) return null;
