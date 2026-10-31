@@ -114,6 +114,41 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 88, THE KENNESAW CLIMB'S RUN-OFF CARRIED BACK, THE BUMP AT THE KENNESAW RACE'S START, AND THE LEFTOVER ROAD WORK (Dan, 2026-10-31 13:28: "there is also a smaller
+bump at the beginning of the race. Lets wrap this into whatever code said it wants to do and then any remaining road work we had leftover").** Round 87 is reviewed.
+Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. All world changes of A, B and C batched
+into ONE full Build Map where possible. Round 82's note stands: stuck, walls, steps and launches are bugs, not numbers to tune. Short results.
+A. THE KENNESAW CLIMB'S RUN-OFF, CARRIED BACK (queued by Code after Round 87 E; Dan: "Yes, next round"). Round 87 E's 18 m level run-off on the bend's outside (left) at
+   x -398 z -5520 runs from 20 m before the crest to 60 m past it (`make_mountain_route.py` KC_FROM / KC_TO, its clear line). Normal-mode cars still run 10 to 24 m wide
+   on the left 38 to 55 m BEFORE the crest (x -360 to -375, z -5471 to -5491; the Street Classic 7.8 m below the road). Start it about 80 m before the crest (KC_FROM about
+   -80), trees cleared with it. Check: `-exeRound87 -r87Only p87climb` (widest point and air, normal and HIGH): never off the road's level ground.
+B. THE BUMP AT THE KENNESAW RACE'S START. Dan: "there is also a smaller bump at the beginning of the race". Claude found in Dan's bump log (`%USERPROFILE%\AppData\LocalLow\
+   Chastain Rush\Chastain Rush\bump_log.txt`, his Kennesaw race 2026-10-31 00:19:46, the first event of the race): Kennesaw Mountain Drive at x -831.9 z -5187.9 (y 395):
+   JOLT +6.2 m/s in 0.1 s at 31 m/s, AIRBORNE 0.90 s, 2.47 m up, 28 m, landing x -806.2 z -5173.7. Confirm it is the one near the start (check the start grid), and smooth
+   it into the road (one vertical curve the course's speed stays down on). Leave the trail's designed big jumps alone (the repeated ~1 s flights at x -500 z -5320 and x
+   -1188 z -5940 each lap are the course's jumps unless they throw cars off the road). Check: the start to the first bend at full throttle in the bike, a car and the
+   heaviest vehicle, normal and HIGH: no air over 0.3 s there.
+C. THE LEFTOVER ROAD WORK (queued since Round 83). 64 of 416 crossing runs were not clean: Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road
+   (-584, -410) and Bells Ferry Road (1520, -4228), Phillip Landrum (770, -1680), the Canton Road Connector's interchange (2306..2401, -5011..-4902) and ramp 437897716, Allgood
+   Road (3458, -6205), Greers Chapel (and the Express Lanes under it, 1.4 s), Chastain Road east of I-75, the I-575 flyover driven backwards; the I-75 Express Lanes
+   southbound 2.5 s in the air at the I-575 merge (508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end (0.38 s). Fix each. Check: all 416 crossing runs
+   on the final build (one at a time, Below Normal): list clean / not; the Express Lanes end to end both ways.
+Check: item 0 for every item. PUBLISH through the launcher.
+For Dan to check: the Kennesaw race (the start and the climb, normal mode); the Express Lanes through the I-575 merge; any crossing from C's list.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 87
+**Reviewed: Dan drove it 2026-10-31 (the Kennesaw race); his notes are Round 88.**
 **Round 87, BUMPERS AND BARRIERS THAT NEVER FACE YOU, A HIGH RESET WHEN YOU JUMP OUT, the Addison Heights and Noonday Creek Trail reports (Dan, 2026-10-31 00:38; reports
 BUG-001 to BUG-011 of session `2026-10-31_00-06-51-254_769f69` (BUG-009 / 010 / 011 one place), read by Claude, after the Round 86 build; HIGH MODE races of Addison
 Heights (BUG-001 to 006) and the Noonday Creek Trail (BUG-007 to 011)).** Round 86 is reviewed. Item 0, the one-heavy-job rule and the end-of-round clean-up apply.
@@ -169,28 +204,7 @@ Published: `game-8700` (0.87.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Published (E follow-up): `game-8701` (0.87.1, Latest), the exe of 2026-10-31 11:30. Disk (project folders) 35.3 -> 35.3 GB (Builds now also keeps 0.87.1's release folder).
 For Dan to check: Addison Heights and the Noonday Creek Trail in HIGH MODE (Embry's corners, the Lyndon landing, Barrett's closures, Ring Road / Mall Boulevard); jumping out over a bumper; a reset in the mall and on the Carroway shortcut; the Kennesaw climb in normal mode (the run-off on the bend's outside; wide runs still leave the road just before it).
 
-## QUEUED rounds
-**THE KENNESAW CLIMB'S RUN-OFF, CARRIED BACK (Dan, 2026-10-31: "Yes, next round").** Round 87 E's 18 m level run-off on the bend's outside (left) at x -398 z -5520
-runs from 20 m before the crest to 60 m past it (`make_mountain_route.py` KC_FROM / KC_TO, its clear line). Normal-mode cars still run 10 to 24 m wide on the left
-38 to 55 m BEFORE the crest (x -360 to -375, z -5471 to -5491; the Street Classic 7.8 m below the road). Start it about 80 m before the crest (KC_FROM about -80), trees cleared
-with it; one full Build Map; check: `-exeRound87 -r87Only p87climb` (widest point and air, normal and HIGH). Two attempts, then report.
-
-**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
-(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
-437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
-(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 86
+## Previous delivery 2: Round 86
 **Reviewed: Dan raced it in HIGH MODE 2026-10-31 00:06; his notes are Round 87.**
 **Round 86, ROOM FOR JUMPS BETWEEN HIGH BUMPERS, RESETS THAT NEVER SKIP A CHECKPOINT, BREAKABLE TREES AS IN WOODSTOCK RUSH (Dan, 2026-10-30 12:04, after playing
 0.85.0).** Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
@@ -224,7 +238,7 @@ Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
 For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
 
-## Previous delivery 2: Round 85
+## Previous delivery 3: Round 85
 **Played by Dan 2026-10-30 (HIGH MODE); his notes are Round 86.**
 **Round 85, BUMPERS AND BARRIERS THAT BOUNCE YOU BACK ON COURSE (Dan, 2026-10-30 09:38, after playing Round 84's HIGH MODE).** Item 0, the one-heavy-job rule and the
 end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
@@ -252,50 +266,6 @@ B: normal mode, Drifter Twin, throttle held (`check_wall_before.txt` / `_after.t
 Disk (project folders) 32.9 -> 32.5 GB; Builds 9.9 GB.
 Decisions: the angle limits and speed losses above are first guesses; the players only (AI racers not given it).
 For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode; whether a 50-degree hit should still glance or crash.
-
-## Previous delivery 3: Round 84
-**Played by Dan 2026-10-30 (HIGH MODE); his note is Round 85.**
-**Round 84, HIGH MODE FROM WOODSTOCK RUSH; the Express gate in the middle of the highway (Dan, 2026-10-30 03:21, after driving 0.83.0 a bit on the Steam Deck).**
-Rounds 82 and 83 were driven briefly; Dan reviews them fully later. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's
-remaining road failures wait (QUEUED): Dan: "On this round, before continuing fixing roads can we add high mode from Woodstock rush".
-A. HIGH MODE, PORTED. Bring over Woodstock Rush's HIGH MODE (Racer is read only; its spec and results: `Racer/PROJECT_TODO_ARCHIVE.md` "Previous delivery — HIGH MODE"
-   and the 1.2.0-review2 addition; code `HighMode.cs`, `HighBumpers.cs`, HighAssist, `RaceMenus.High.cs`, `RaceMenus.Split.cs`, and the later fixes in
-   `Racer/PROJECT_TODO.md` that mention HIGH MODE). Port the finished code rather than rewriting; list what came with it. As there:
-   1. HIGH MODE: ON / OFF as the main menu's top row (A or left / right), remembered, a HIGH badge on the menu and HUD; switchable from pause (a race asks restart or
-      keep racing); split screen: a row per player.
-   2. Fewer choices: HIGH MODE, (RESUME DRIVING), FREE ROAM, RACE (pick a track and go: default laps, Easy rivals), CHASES & STUNTS (one page: this game's police modes and
-      stunt events, each starting at once with defaults), VEHICLE (one scrolling row with pictures and stat bars, also in pause and on race results), TIME & WEATHER,
-      REPLAYS, SETTINGS, QUIT. Everything unlocked; nothing done in HIGH MODE unlocks anything in normal mode, except goose eggs, which count in every mode (as
-      Woodstock Rush's acorns ended up).
-   3. Forgiving: gutter bumpers along both edges of every car race course and its shortcuts, HIGH races only (openings where a shortcut, the rivals' line or a traffic
-      road crosses or joins; drawn and solid only for a HIGH player); no wrecks from landings, upright after 1 s; quicker reset; hits cost half; rivals Easy.
-      The air races (this game only, Claude's adaptation, say what was done): rings larger and no crash (a plane that hits the ground or a building is put back
-      flying at once).
-   4. HIGH records on their own boards, marked HIGH; replays marked HIGH; a HIGH tab on the records screen.
-   5. In normal mode, 3 wrecks or resets in 2 minutes or 2 in one lap asks "Would you like to play HIGH MODE?" Yes / No (No: once a session).
-   Controller first, only the device being played shown, readable at 1280 x 800 (the Deck).
-   Check: the menu by controller at 4K and 1280 x 800 (a picture of each HIGH page); one HIGH lap of the Kennesaw Mountain trails and the Noonday Creek Extension steering
-   into the edges: stays on the course; a crooked landing: HIGH upright, normal wrecks; an air race in HIGH flown into the ground: back flying; a HIGH record on the HIGH
-   board only; the prompt after forced wrecks; a test save only, never Dan's.
-B. THE EXPRESS GATE IN THE MIDDLE OF THE HIGHWAY. Dan saw on the Deck (no bug report possible there): "the express lane gate was in the middle of the highway as opposed
-   to the entrance". Find it: for every Express gate, check its arm stands across its own ramp only, at the ramp's general-road end (Round 81 B), never across a lane of
-   I-75, I-575, the Express Lanes or any through road; Round 83's wall and ramp changes may have moved a ramp's line under a gate. Fix every one that is wrong. Check: a
-   picture of every gate from the driver's seat, and each driven past on the highway beside it at speed (no gate met).
-Check: item 0 for every item. Build: one full Build Map only if B needs the world rebuilt (quick builds otherwise). PUBLISH through the launcher (Dan plays on the Deck).
-For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase); the Express gates.
-
-**Status (Claude, 2026-10-30): built (one quick build of the Edges step, exe 06:31), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round84/` (menu, landing and prompt pictures in `local/round84/`: the spawn is behind them). No bug report newer than Round 82's.
-A DONE. Ported from Racer: HighMode, HighAssist, HighPrompt (`Assets/Scripts/High/`), HighBumpers, the HIGH pages (`Menus/GameMenus.High.cs`, with RaceMenus.Pick's small turning previews), the HIGH badge (IMGUI here, `HighBadge`), ArcadeVehicle `Forgiving`, the high- boards, StuntProgress's HIGH Top 10s.
-- A1/A2 pages by controller, 16/16 at 1280 x 800 and 3840 x 2160 windowed (`check_pages_*.txt`): HIGH MODE top row (A or left / right, saved), HIGH menu, FREE ROAM 1 / 2 players, RACE (every course and direction, then go: its own laps, 3 Easy rivals), CHASES & STUNTS (Getaway, Cop vs Runner, Speed Patrol, Stunt event; Easy, 5 min), VEHICLE (scrolling row, pictures, 3 stat bars; also in a HIGH race's pause / results), TIME & WEATHER; pause row in races (RESTART / KEEP RACING); split screen: a row per player (setup and pause).
-- A3 bumpers on every car course and its shortcuts (not the air races, not the Underground's pipes); solid and drawn only for a HIGH player, AI pass through; openings at shortcuts, the lap passing again and any map road. HIGH laps by the human-like bot pushing into the edges: Kennesaw and Noonday Creek Extension completed. Against the same drive in normal mode (`check_lap_*.txt`): Noonday 27.6 m off the line -> 10.3 m; Kennesaw's largest offsets (38 to 44 m) are jump flights in both modes. The bot still stalls against a bumper 6 to 9 times a lap and resets (Racer's check: the same bot limit).
-- A3 landing: dropped on its roof, HIGH upright in about 1 s, normal wrecks (Needle 600, Drifter Twin). Quicker reset: the reset is at once here already; a crash's wait halved (trains), 1 s (planes, Free Roam).
-- A3 air races (this game only): rings 1.5 times; a crash in a HIGH air race puts the plane back flying at once (nosed into the ground: crash 0.9 s, 0.4 s later flying 19 m up at 75 m/s).
-- A4: a HIGH race went on the high- boards only (HIGH 0 -> 2, normal 0 -> 0); its replay "HIGH · ..."; RECORDS has the HIGH boards after the normal ones (opened on this course's HIGH board). HIGH police, quarry and activity runs stay off the normal Top 10s; goose eggs count in every mode.
-- A5: 2 wrecks in a lap asked "Would you like to play HIGH MODE?"; B = No; 4 more wrecks: not asked again.
-B DONE. Cause: gates 3 and 4 sit on the median slip ramps between I-575 and the Express Lanes; 30 m in from the general end those ramps still overlap I-575, so the arms stood 3 to 4 m into I-575. Now each gate goes at the first place (5 m steps) where its arm and post, shut and open, keep 0.5 m clear of every other road (`BuildExpressGates`): gates 3 and 4 moved to 105 m in; 1, 2, 5, 6 unchanged. Check (`check_gates_prompt.txt`, `84_gate*_overhead.png`, `_driver.png`): no arm over a named road; the road beside each driven at 30 to 33 m/s, no gate met.
-Published: `game-8400` (0.84.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 06:31. Disk (project folders) 33.1 -> 32.5 GB; Builds 9.9 GB (0.82.0's and 0.83.0's release folders kept).
-Decisions: everything already unlocked (nothing is locked here); the bumper height and the 50 % speed give-back are Racer's first guesses; split screen's halves show their own HIGH tag.
-For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase, a friend in split screen); do the bumpers feel right on the mountain and trails; the Express gates at I-575 (715, -956) and (712, -2027).
 
 ## Technical notes (standing)
 Technical Notes / Blockers
