@@ -114,6 +114,68 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 87, BUMPERS AND BARRIERS THAT NEVER FACE YOU, A HIGH RESET WHEN YOU JUMP OUT, the Addison Heights and Noonday Creek Trail reports (Dan, 2026-10-31 00:38; reports
+BUG-001 to BUG-011 of session `2026-10-31_00-06-51-254_769f69` (BUG-009 / 010 / 011 one place), read by Claude, after the Round 86 build; HIGH MODE races of Addison
+Heights (BUG-001 to 006) and the Noonday Creek Trail (BUG-007 to 011)).** Round 86 is reviewed. Item 0, the one-heavy-job rule and the end-of-round clean-up apply.
+Short results. Round 83's road failures still wait (QUEUED).
+Dan: "Some of these are general issues. Mainly that barriers and bumpers shouldn't be at an angle that would cause you to run into them head on when following a course.
+Also in high mode if someone jumps outside of the bumpers, they should be reset onto the track". So A and B are rules for EVERY course (forward, reverse, shortcuts),
+HIGH bumpers and normal-mode barriers alike; Dan's places are examples, each checked by name.
+A. NEVER HEAD ON. Following a course's line, no bumper or barrier end, corner or run ever faces you: every run lies along the course (parallel to its edge, never
+   angled across a lane), every end tapers or curves away from the line behind the edge, and where two runs meet they join in one rounded curve (BUG-002 x 3292.64 z
+   307.55, Embry Lane: "bumpers shouldn't cross each other like this. when they join they should be roounded", the picture: two runs crossing, an end sticking out into
+   the road). Closure barriers stand across the closed road's mouth, set back off the course's edge, in a line that follows the course, never with a corner in the road
+   (BUG-008 x 1300.15 z -1671.25, Barrett Parkway: "Why is this barrier like this? It should be out of the way not have an edge sticking int he middle of the road", the
+   picture: a zigzag of barrier blocks and a bumper stub in the lanes). Bumpers on the OUTSIDE of every corner, never an opening there (BUG-001 x 3216.77 z 535.67,
+   Embry Lane: "why is there no bumper on this corner? It is one of the easiest places to flying off the track"); openings only where a shortcut or the course itself
+   leaves or rejoins. Fewer, simpler: no bumpers that do nothing (on medians between the course's own lanes, round mouths of roads that are closed anyway, doubled
+   beside a closure barrier) (BUG-009 to 011 x 423.67 z -1494.34, Mall Boulevard / Ring Road: "this is a little confusing all these barriers\bumpers but most are not
+   needed", the pictures: bumper and barrier runs on both sides of each carriageway and the median, ends pointing into the lane). Check, by script on every course and
+   direction: no bumper or barrier piece within the course's driven width whose face is more than 25 degrees off the line ahead; the human-like driver on the line
+   and 3 m either side touches no end; pictures at each of Dan's places before / after.
+B. HIGH MODE: OUT OF THE BUMPERS, BACK ON THE TRACK. A HIGH player who lands, or ends up, outside the bumpers (or off the course past an opening that is not a shortcut)
+   is reset onto the course at once (after about a second down), placed as Round 86 B places resets (before the next checkpoint not yet passed, facing the course's
+   way, no penalty). Check: jumped out over a bumper on three courses: back on the line, next checkpoint ahead.
+C. RESETS FROM INSIDE THE MALL. BUG-007 (x 789.60 z -1683.53, Barrett Parkway, the Noonday Creek Trail race, checkpoint 12 of 13 next): "I reset in the mall and ended up
+   way over here". Round 86 B's rule failed there (the line through Town Center's two levels, or a checkpoint inside it, missed): a reset in the mall goes back on the
+   course's line inside the mall before the next checkpoint. Check: resets at five places through the mall (both levels, both directions of the race): each lands
+   inside the mall, next checkpoint ahead.
+D. ADDISON HEIGHTS: SLOWED IN THE ROAD, THROWN INTO THE BUMPERS, THE JUMP'S LANDING. BUG-003 (x 2967.67 z 417.02, Joel Drive: "there is something here that slows the
+   car down") and BUG-005 (x 2962.48 z 408.83: "the bushes seem to cause slow down in the middle of the road", the picture: the shortcut's slowing bushes beside the
+   lane): the slowing bushes and their slow-down never reach the course's road (they block only the free way round a shortcut, as the rule says). BUG-006 (x 2874.80
+   z 417.87, Joel Drive: "somthing here caused me to run into the bumers"; the bump log has a JOLT at x 2875 z 411): find the jolt and smooth it. BUG-004 (x 2811.13 z
+   498.87, Lyndon Drive, heading 36: "this area should be open so that you don't run into the bumper coming off the jump", the picture: a bumper's end in the landing
+   ahead): the jump's landing and run-out open (Round 86 A missed it: say why). Check: Joel Drive and Lyndon Drive driven through Dan's places on the line: no slowing,
+   no jolt, no bumper touched.
+E. THE KENNESAW CLIMB'S KICKER (Dan, 2026-10-31 00:44, not captured as a report: "On the way up the hill there is a significant bump that generally causes all
+   vehicles to jump off the road over the barriers"; found by Claude in Dan's bump log `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\bump_log.txt`, his
+   Kennesaw race 2026-10-31 00:20 and 00:21, both laps the same): Kennesaw Mountain Drive at x -394 to -402 z -5516 to -5523 (y 469 to 471): JOLT +2.8 m/s in 0.1 s, then
+   AIRBORNE at 28 m/s with vy +13.2 / +14.2 m/s (speed falling from 33 to 28: a steep face, not a crest); lap 1 flew 2.16 s, 11.7 m up, 59 m, landing at x -444.5 z -5564.6
+   4.1 m off the line; lap 2 never logged a landing (off the road). Smooth that face into the climb (one vertical curve the course's speed stays down on, or, if a jump
+   belongs there, one that throws you straight along the road and lands on it), the barriers and bumpers beside it per A. Check: the climb driven at full throttle by
+   the human-like driver in several vehicles (the bike, a car, the heaviest), normal and HIGH: no air over 0.5 s there, never off the road; picture of the spot.
+Check: item 0 for every item. Quick builds unless a world rebuild is needed. PUBLISH through the launcher.
+For Dan to check: HIGH MODE races of Addison Heights and the Noonday Creek Trail (bumpers and barriers, a reset in the mall, jumping out over a bumper); any other
+course's barriers; the Kennesaw climb at x -398 z -5520.
+
+## QUEUED rounds
+**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
+(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
+437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
+(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
+
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 86
+**Reviewed: Dan raced it in HIGH MODE 2026-10-31 00:06; his notes are Round 87.**
 **Round 86, ROOM FOR JUMPS BETWEEN HIGH BUMPERS, RESETS THAT NEVER SKIP A CHECKPOINT, BREAKABLE TREES AS IN WOODSTOCK RUSH (Dan, 2026-10-30 12:04, after playing
 0.85.0).** Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
 A. HIGH BUMPERS CLEAR OF JUMPS. Dan: "In high mode, the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps so
@@ -146,23 +208,7 @@ Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
 For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
 
-## QUEUED rounds
-**ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
-(Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
-437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
-(508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end. Fix each; the one-heavy-job rule and its 3 Build Maps apply.
-
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 85
+## Previous delivery 2: Round 85
 **Played by Dan 2026-10-30 (HIGH MODE); his notes are Round 86.**
 **Round 85, BUMPERS AND BARRIERS THAT BOUNCE YOU BACK ON COURSE (Dan, 2026-10-30 09:38, after playing Round 84's HIGH MODE).** Item 0, the one-heavy-job rule and the
 end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
@@ -191,7 +237,7 @@ Disk (project folders) 32.9 -> 32.5 GB; Builds 9.9 GB.
 Decisions: the angle limits and speed losses above are first guesses; the players only (AI racers not given it).
 For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode; whether a 50-degree hit should still glance or crash.
 
-## Previous delivery 2: Round 84
+## Previous delivery 3: Round 84
 **Played by Dan 2026-10-30 (HIGH MODE); his note is Round 85.**
 **Round 84, HIGH MODE FROM WOODSTOCK RUSH; the Express gate in the middle of the highway (Dan, 2026-10-30 03:21, after driving 0.83.0 a bit on the Steam Deck).**
 Rounds 82 and 83 were driven briefly; Dan reviews them fully later. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's
@@ -234,41 +280,6 @@ B DONE. Cause: gates 3 and 4 sit on the median slip ramps between I-575 and the 
 Published: `game-8400` (0.84.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 06:31. Disk (project folders) 33.1 -> 32.5 GB; Builds 9.9 GB (0.82.0's and 0.83.0's release folders kept).
 Decisions: everything already unlocked (nothing is locked here); the bumper height and the 50 % speed give-back are Racer's first guesses; split screen's halves show their own HIGH tag.
 For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase, a friend in split screen); do the bumpers feel right on the mountain and trails; the Express gates at I-575 (715, -956) and (712, -2027).
-
-## Previous delivery 3: Round 83
-**Driven briefly by Dan on the Steam Deck 2026-10-30 (one note, Round 84 B); full review of 82 and 83 later.**
-**Round 83, ROUND 82's KNOWN-BROKEN ITEMS (Dan, 2026-10-29 17:05: "lets go ahead and have it take care of these. I will review everythng a little later").** Round 82 is
-not yet driven by Dan (he reviews 82 and 83 together). Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round
-clean-up apply. Round 82's note on the tuning limit stands: these are bugs (stuck, walls, humps, roads too low), not numbers to tune. Short results.
-Start from the code committed after build 5 (roads under decks at their own level, raised roads carried through junctions, medians one slope): it is not in 0.82.0.
-A. THE I-75 EXPRESS LANES AT THE I-575 JUNCTION. Southbound STUCK at the merge (527, -3383) after 2.3 s in the air (Round 81's merge, never fixed); northbound 0.96 s in
-   the air at (845, -3832) and 0.76 s at (513, -3332). Where I-575's Express flyover comes down and joins the I-75 Express Lanes, the two meet level, side by side, as C
-   did at Big Shanty (no parapet between, the gap paved, one height into the join). Check: the I-75 Express Lanes end to end both ways at top speed, and the I-575 flyover
-   into them: no air over 0.3 s, never stuck; pictures at the three spots.
-B. SKIP SPANN CONNECTOR (humps, 2 s in the air, one fall) and FREY ROAD (0.9 s, the lidar's fill under the decks: a 3.4 m hump): the roads under the decks at their own
-   level, smooth. Check: each driven both ways, no air over 0.3 s.
-C. THE TWO SHORT CROSSINGS: ramp 437897716 over I-75 at (2398, -4931) 2.9 m and (2401, -4928) 1.9 m: at least 5 m clear, smooth climbs. Check: driven over and under.
-D. THE REST OF ROUND 82 A's LIST. Only 32 of the 256 crossing drives ran: run all of them on the final build (one at a time) and fix any crossing that is stuck, steps or
-   flies over 0.3 s. The jagged ridge in the median beside Greers Chapel's bridge (`82_BUG-005_after.png`) smoothed. I-575's Express Lanes: the stop at the seam deck
-   (536, -37) and the 37 wall scrapes one way (the walls out of the lane's line).
-E. DISK: remove the 0.81 release folders from Builds (`LauncherRelease-8100`, `-8101`, `LauncherStarter-8100`; the published copies stay on GitHub), keeping 0.82.0's.
-Then PUBLISH the build through the launcher (as Round 82: Dan updates on the PC and the Steam Deck, installed on its SD card).
-Check: item 0 for every item.
-For Dan to check (with Round 82's list): the I-75 Express Lanes through the I-575 junction both ways; Skip Spann Connector; Frey Road; the crossing ramp over I-75 by
-Canton Road; Greers Chapel's median.
-
-**Status (Claude, 2026-10-30): built (3 full Build Maps, the last 2026-10-29 21:43; then 3 quick builds of the Edges step for the walls; exe 2026-10-30 00:45), checked in the exe, not yet driven by Dan.** Evidence `Data/screenshots/round83/`.
-Found on the way: the code after build 5 had pulled Chastain Road's bridge down onto I-575 (a "join" of a deck crossing a road), dug 4 m into the Express Lanes beside Frey Road, refilled Frey Road's
-medians to deck height and cut a 1 m pothole at many deck ends: all fixed. New tool: a planning-only dry run (`ChastainRush.MapBuilder.DryFromCommandLine`, `Tools/race/dry_ride.py`; no build).
-A PARTLY. Flyovers laid before the Express Lanes; a flat 3.8 m shoulder to the Express walls; no bank beside a joined deck's span; walls opened for the ramp merging at the join. I-575 flyover into the I-75 lanes: through
-both ways, never stuck (0.76 s / 0.48 s in the air). I-75 Express end to end: northbound clean; southbound through but 2.5 s in the air at the merge (508, -3365) and one stop at the Frey Road deck's start (`final_a_express_lines.txt`).
-B DONE / PARTLY. Frey Road clean both ways. Skip Spann: its bridge one climb (no crests between the roads it crosses, the grade limit 9 %); 3 of 4 end-to-end runs clean, one 0.38 s off its west deck end.
-C DONE. The ramp's end held to the Canton Road Connector's deck it merges onto: 10.2 / 10.8 m clear, 6 % at most; picture `83_C_ramp.png`.
-D. Greers Chapel's median smooth (`83_D_greers.png`). I-575's Express Lanes end to end both ways: no air, no stop at the seam deck, no wall hits. Chastain Road's ramp junctions east of I-75 blurred.
-All crossing runs on the final exe (416, both ways, `final_b_crossings.txt`; the runs on an "over" line now start on its bridge, not the ground under it): 352 clean, 64 not, at: Frey Road (the Express deck's start, I-75's deck), I-75's decks at Big Shanty Road (-584, -410) and Bells Ferry Road (1520, -4228) (1.1 to 2.6 s), Phillip Landrum (770, -1680) (2 s), the Canton Road Connector's interchange (2306..2401, -5011..-4902) (up to 2.2 s; ramp 437897716's forward runs stop), Allgood Road (3458, -6205) (stops), Greers Chapel (0.3 to 0.4 s; the Express under it 1.4 s), Chastain Road east of I-75 (0.3 to 0.5 s), the I-575 flyover driven backwards. Not fixed: the three full Build Maps were used.
-E DONE (on Dan's OK, 2026-10-30): the 0.81 release folders deleted, 10.0 GB freed; 0.82.0's and 0.83.0's kept.
-Published: `game-8300` (0.83.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 00:45 (build 3 + the walls' quick builds). Disk (project folders) 42.6 -> 42.0 GB; Builds 9.3 GB after E.
-For Dan to check: the I-75 Express Lanes southbound at the I-575 merge and at the Frey Road deck; Skip Spann; Frey Road; the ramp by the Canton Road Connector; Greers Chapel's median; the places listed under D.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
