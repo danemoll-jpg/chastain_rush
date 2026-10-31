@@ -573,11 +573,17 @@ track = {"note": "Round 68: the Kennesaw Mountain race's world pieces, from Tool
 # Round 87 E follow-up (Dan picked "Wider bench"): in normal mode a car flat out still ran 13 to 20 m wide off the bend's outside (the left) and dropped
 # down the 3 to 8 m fall there. The level band now runs out to KC_LEFT m on the left from KC_FROM to KC_TO m about the crest (the bend is -30 to +40,
 # a car runs widest just past it), easing back to the road's 7.5 m over KC_TAPER at each end, banked down over KC_BLEND; the trees cleared off it.
-KC_AT, KC_LEFT, KC_BLEND, KC_FROM, KC_TO, KC_TAPER = (-400.4, -5526.7), 18.0, 18.0, -20.0, 60.0, 20.0
+# Round 88 A (Dan: "Yes, next round"): normal-mode cars still ran 10 to 24 m wide 38 to 55 m BEFORE the crest: the run-off now starts 80 m before it
+KC_AT, KC_LEFT, KC_BLEND, KC_FROM, KC_TO, KC_TAPER = (-400.4, -5526.7), 18.0, 18.0, -80.0, 60.0, 20.0
 _rs = resample(lap, 1.0); _rc = cum(_rs); _ic = min(range(len(_rs)), key=lambda i: (_rs[i][0] - KC_AT[0]) ** 2 + (_rs[i][1] - KC_AT[1]) ** 2)
 _kc = [q for q, c in zip(_rs, _rc) if KC_FROM - KC_TAPER - 30.0 <= c - _rc[_ic] <= KC_TO + KC_TAPER + 30.0]
 track["vertical_curves"] = [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": list(KC_AT), "length": 90.0, "fit": 6.0, "half": 7.5, "blend": 2.0,
                              "half_left": KC_LEFT, "blend_left": KC_BLEND, "wide_from": KC_FROM, "wide_to": KC_TO, "taper": KC_TAPER}]
+# Round 88 B (Dan: "there is also a smaller bump at the beginning of the race"; his bump log: JOLT +6.2 m/s at 31 m/s, 0.9 s in the air, at x -832 z -5188):
+# the start line, where the descent's grade ends on the drive: the planned ground rises 0.26 m in the 2 m before the line (about 3 % into 13 %, then 7 %),
+# a small kicker. One vertical curve of 80 m through the line (both grades held at its ends), across the road
+_is = 0; _ks = [q for q, c in zip(_rs, _rc) if c <= 60.0] ; _ke = [q for q, c in zip(_rs, _rc) if c >= _rc[-1] - 60.0]
+track["vertical_curves"].append({"id": "Round 88 B the Kennesaw race's start line", "points": flat(_ke + _ks), "at": list(lap[0]), "length": 80.0, "fit": 6.0, "half": 7.5, "blend": 2.5})
 _ro = []
 for q, c in zip(_rs, _rc):
     d = c - _rc[_ic]

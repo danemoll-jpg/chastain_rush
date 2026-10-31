@@ -238,6 +238,7 @@ namespace ChastainRush
             BuildClock.Lap("R82Crossings");
             PlanRailroad(map, terrain);              // Round 77 (C): the railroad edge to edge, its bed graded, roads dipped under its bridges (MapBuilder.Railroad.cs)
             PlanKennestone(map, terrain);            // Round 77 (B): Kennestone hospital and the map's parking decks (their ground levelled) (MapBuilder.Kennestone.cs)
+            R88DeckEnds(map, terrain);              // Round 88 (C): the decks' ends at Round 83's leftover places laid onto their roads, after every pass that moves a deck (MapBuilder.Round88.cs)
             BuildClock.Lap("SmoothBridgeEnds");
             AddisonNow = Ridge.Load(AddisonTrackFile); AddisonExtra = LoadAddisonExtra();   // Round 52: the Addison Heights race's cleared line (MapBuilder.Round52.cs); Round 53: its shortcuts' pieces (MapBuilder.Round53.cs)
             LakesNow = Ridge.Load(LakesTrackFile); LakesExtra = LoadLakesExtra();   // Round 44: the Chastain Lakes race's world pieces (MapBuilder.LakesRace.cs), read before the amenity area is planned

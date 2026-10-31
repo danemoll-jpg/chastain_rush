@@ -101,6 +101,9 @@ namespace ChastainRush
             // Round 87 (E): the Kennesaw Mountain track's too (the drive's climb, Dan's "significant bump")
             string mountainPath = System.IO.Path.Combine(ProjectRoot, MountainTrackFile);
             if (System.IO.File.Exists(mountainPath)) { var md = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(mountainPath)); R55VerticalCurves(terrain, md); R55Blur(terrain, md); }
+            // Round 88 (C): Chastain Road east of I-75 (Data/tracks/round88_roads.json)
+            string r88Path = System.IO.Path.Combine(ProjectRoot, "Data/tracks/round88_roads.json");
+            if (System.IO.File.Exists(r88Path)) { var rd88 = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(r88Path)); R55VerticalCurves(terrain, rd88); R55Blur(terrain, rd88); }
             string path = System.IO.Path.Combine(ProjectRoot, AddisonTrackFile);
             if (!System.IO.File.Exists(path)) return;
             var d = JsonUtility.FromJson<R55File>(System.IO.File.ReadAllText(path));
