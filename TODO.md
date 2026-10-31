@@ -170,6 +170,11 @@ Published (E follow-up): `game-8701` (0.87.1, Latest), the exe of 2026-10-31 11:
 For Dan to check: Addison Heights and the Noonday Creek Trail in HIGH MODE (Embry's corners, the Lyndon landing, Barrett's closures, Ring Road / Mall Boulevard); jumping out over a bumper; a reset in the mall and on the Carroway shortcut; the Kennesaw climb in normal mode (the run-off on the bend's outside; wide runs still leave the road just before it).
 
 ## QUEUED rounds
+**THE KENNESAW CLIMB'S RUN-OFF, CARRIED BACK (Dan, 2026-10-31: "Yes, next round").** Round 87 E's 18 m level run-off on the bend's outside (left) at x -398 z -5520
+runs from 20 m before the crest to 60 m past it (`make_mountain_route.py` KC_FROM / KC_TO, its clear line). Normal-mode cars still run 10 to 24 m wide on the left
+38 to 55 m BEFORE the crest (x -360 to -375, z -5471 to -5491; the Street Classic 7.8 m below the road). Start it about 80 m before the crest (KC_FROM about -80), trees cleared
+with it; one full Build Map; check: `-exeRound87 -r87Only p87climb` (widest point and air, normal and HIGH). Two attempts, then report.
+
 **ROUND 83's REMAINING ROAD FAILURES (after Round 84, Dan 2026-10-30 03:21: HIGH MODE first).** From Round 83's status: 64 of 416 crossing runs not clean
 (Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road and Bells Ferry Road, Phillip Landrum, the Canton Road Connector's interchange and ramp
 437897716, Allgood Road, Greers Chapel, Chastain Road east of I-75, the I-575 flyover backwards); the I-75 Express Lanes southbound 2.5 s in the air at the I-575 merge
