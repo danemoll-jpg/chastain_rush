@@ -13,7 +13,8 @@ namespace ChastainRush
     public sealed class HighAssist : MonoBehaviour
     {
         ArcadeVehicle car; VehicleRespawn respawn; VehicleConfiguration config;
-        Vector3 lastVelocity, hitNormal; bool hit; float overturned;
+        Vector3 lastVelocity, hitNormal; bool hit; float overturned, outFor;
+        public const float OutFor = 1f;   // Round 87 (B)
         public static int Righted { get; private set; }   // checks
         public int Player = 1;   // split screen: whose vehicle (each player's own choice)
         public bool On => car && !car.Body.isKinematic && !car.Puppet && !(config && config.Profile != null && config.Profile.Flies) && HighMode.ForPlayer(Player);
@@ -28,7 +29,7 @@ namespace ChastainRush
         void FixedUpdate()
         {
             bool on = On; car.Forgiving = on;
-            if (!on) { overturned = 0; hit = false; lastVelocity = car.Body.linearVelocity; return; }
+            if (!on) { overturned = 0; outFor = 0; hit = false; lastVelocity = car.Body.linearVelocity; return; }
             if (hit)
             {
                 hit = false;
@@ -41,6 +42,13 @@ namespace ChastainRush
             bool over = transform.up.y < .45f && car.Body.linearVelocity.magnitude < 8 && car.GroundedWheels < 2;
             overturned = over ? overturned + Time.fixedDeltaTime : 0;
             if (overturned >= 1f) Right();
+            // Round 87 (B, Dan: "in high mode if someone jumps outside of the bumpers, they should be reset onto the track"): in a HIGH MODE race, down
+            // (two wheels or more) outside the bumpers (or off the course past an opening that is not a shortcut's) for OutFor: put back on the course
+            // as a reset does (CarRecovery: before the next checkpoint not yet passed, facing the course's way, no penalty)
+            var race = RaceController.Instance;
+            bool outside = race && race.State == RaceController.Stage.Racing && race.HighFor(Player) && race.EntrantFor(car) is RaceEntrant me && !me.Finished && me.ClockStarted && car.GroundedWheels >= 2 && HighBumpers.Outside(car.Body.position);
+            outFor = outside ? outFor + Time.fixedDeltaTime : 0f;
+            if (outFor >= OutFor && respawn) { outFor = 0f; HighBumpers.OutResets++; respawn.ResetSoon(0f); Debug.Log($"[High] out of the bumpers at ({car.Body.position.x:0.0}, {car.Body.position.z:0.0}): put back on the course"); }
         }
         void Right()
         {
