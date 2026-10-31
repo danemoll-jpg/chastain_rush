@@ -577,7 +577,13 @@ track = {"note": "Round 68: the Kennesaw Mountain race's world pieces, from Tool
 KC_AT, KC_LEFT, KC_BLEND, KC_FROM, KC_TO, KC_TAPER = (-400.4, -5526.7), 18.0, 18.0, -80.0, 60.0, 20.0
 _rs = resample(lap, 1.0); _rc = cum(_rs); _ic = min(range(len(_rs)), key=lambda i: (_rs[i][0] - KC_AT[0]) ** 2 + (_rs[i][1] - KC_AT[1]) ** 2)
 _kc = [q for q, c in zip(_rs, _rc) if KC_FROM - KC_TAPER - 30.0 <= c - _rc[_ic] <= KC_TO + KC_TAPER + 30.0]
-track["vertical_curves"] = [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": list(KC_AT), "length": 90.0, "fit": 6.0, "half": 7.5, "blend": 2.0,
+# Round 88 A (attempt 2): below the run-off the drive climbs in terraces, its grade 16 % then 6 % every 35 m or so (at 165, 135, 100 and 57 m before the
+# crest); each steep-to-flat change is a small crest that threw cars 0.3 to 0.7 s and 13 to 25 m into the bend at 35 to 39 m/s (the check's bump log).
+# One vertical curve over them, from 200 to 40 m before the crest, laid FIRST (the crest's own curve below then reads this ground at its foot)
+_wb = [q for q, c in zip(_rs, _rc) if -240.0 <= c - _rc[_ic] <= -5.0]
+_wb_at = min(_wb, key=lambda q: abs(next(c for qq, c in zip(_rs, _rc) if qq is q) - (_rc[_ic] - 120.0)))
+track["vertical_curves"] = [{"id": "Round 88 A the Kennesaw climb's terraces below the bend", "points": flat(_wb), "at": list(_wb_at), "length": 160.0, "fit": 8.0, "half": 7.5, "blend": 2.5}]
+track["vertical_curves"] += [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": list(KC_AT), "length": 90.0, "fit": 6.0, "half": 7.5, "blend": 2.0,
                              "half_left": KC_LEFT, "blend_left": KC_BLEND, "wide_from": KC_FROM, "wide_to": KC_TO, "taper": KC_TAPER}]
 # Round 88 B (Dan: "there is also a smaller bump at the beginning of the race"; his bump log: JOLT +6.2 m/s at 31 m/s, 0.9 s in the air, at x -832 z -5188):
 # the start line, where the descent's grade ends on the drive: the planned ground rises 0.26 m in the 2 m before the line (about 3 % into 13 %, then 7 %),

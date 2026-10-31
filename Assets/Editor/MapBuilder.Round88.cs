@@ -94,11 +94,25 @@ namespace ChastainRush
                     }
                     // a kink in the deck's very last segment (Phillip Landrum's north deck rises 0.16 m over its last 3 m where the rest falls 4 %) straightened
                     // to the grade before it, as SmoothBridgeEnds does
-                    if (n >= 3)
+                    var keepDeck = (float[])b.deck_y.Clone();   // (put back if this end is left as it is)
+                    // Build #1's probe: several decks turn up over their last 2 to 4 m (Allgood Road 0.75 m, I-75 by Frey Road 1.2 m: a kicker), over more
+                    // than one segment. The deck's points within 6 m of its end are put on the line through its points 6 to 20 m back (a least-squares fit)
                     {
-                        int iq = start ? 2 : n - 3; float dl = Mathf.Max(Vector2.Distance(pts[ie], pts[ip]), .1f);
-                        float g1 = (b.deck_y[ie] - b.deck_y[ip]) / dl, g0 = (b.deck_y[ip] - b.deck_y[iq]) / Mathf.Max(Vector2.Distance(pts[ip], pts[iq]), .1f);
-                        if (Mathf.Abs(g1 - g0) > .01f && Mathf.Abs(g0) < .15f) { float was = b.deck_y[ie]; b.deck_y[ie] = b.deck_y[ip] + g0 * dl; log.Add($"{tag}: the deck's last segment straightened ({g1 * 100f:0.0} % to {g0 * 100f:0.0} %, its end {was:0.00} to {b.deck_y[ie]:0.00})"); }
+                        var dEnd = new float[n]; for (int k = 1; k < n; k++) { int a0 = start ? k : n - 1 - k, a1 = start ? k - 1 : n - k; dEnd[a0] = dEnd[a1] + Vector2.Distance(pts[a0], pts[a1]); }
+                        float sx = 0f, sy = 0f, sxx = 0f, sxy = 0f; int m = 0;
+                        for (int k = 0; k < n; k++) if (dEnd[k] >= 6f && dEnd[k] <= 20f) { sx += dEnd[k]; sy += b.deck_y[k]; sxx += dEnd[k] * dEnd[k]; sxy += dEnd[k] * b.deck_y[k]; m++; }
+                        if (m < 2) { int kf = -1; for (int k = 0; k < n; k++) if (dEnd[k] >= 3f && (kf < 0 || dEnd[k] < dEnd[kf])) kf = k; int kg = -1; for (int k = 0; k < n; k++) if (kf >= 0 && dEnd[k] > dEnd[kf] && (kg < 0 || dEnd[k] < dEnd[kg])) kg = k;
+                                     if (kf >= 0 && kg >= 0) { sx = dEnd[kf] + dEnd[kg]; sy = b.deck_y[kf] + b.deck_y[kg]; sxx = dEnd[kf] * dEnd[kf] + dEnd[kg] * dEnd[kg]; sxy = dEnd[kf] * b.deck_y[kf] + dEnd[kg] * b.deck_y[kg]; m = 2; } }
+                        if (m >= 2 && Mathf.Abs(m * sxx - sx * sx) > 1e-3f)
+                        {
+                            float gd = (m * sxy - sx * sy) / (m * sxx - sx * sx), y0d = (sy - gd * sx) / m;   // y = y0d + gd * (distance from the end)
+                            if (Mathf.Abs(gd) < .12f)
+                            {
+                                float dmost = 0f; int moved = 0;
+                                for (int k = 0; k < n; k++) if (dEnd[k] < 6f) { float want = y0d + gd * dEnd[k]; if (Mathf.Abs(b.deck_y[k] - want) > .03f) { dmost = Mathf.Max(dmost, Mathf.Abs(b.deck_y[k] - want)); b.deck_y[k] = want; moved++; } }
+                                if (moved > 0) log.Add($"{tag}: the deck's last 6 m put back on its own grade ({-gd * 100f:0.0} % toward the end), {moved} point(s) moved by up to {dmost:0.00} m");
+                            }
+                        }
                     }
                     // the deck's top and grade over its last 8 m or more
                     int ig = ip; float span = Vector2.Distance(pts[ie], pts[ip]);
@@ -107,7 +121,7 @@ namespace ChastainRush
                     // as far as it may reach: the chained road's length, and short of passing under another deck
                     float Lmax = Mathf.Min(R88MaxL, cum[cum.Length - 1]);
                     for (float s = 2f; s <= Lmax; s += 1f) { var p = At(s); if (UnderOther(p, Mathf.Max(terrain.Height(p.x, p.y), deckTop), bi, chain)) { Lmax = Mathf.Max(0f, s - 6f); break; } }
-                    if (Lmax < 12f) { log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left"); continue; }
+                    if (Lmax < 12f) { System.Array.Copy(keepDeck, b.deck_y, keepDeck.Length); log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left (its deck as it was)"); continue; }
                     int NM = Mathf.CeilToInt(Lmax / .5f) + 1; var GM = new float[NM];
                     for (int i = 0; i < NM; i++) { var p = At(i * .5f); GM[i] = terrain.Height(p.x, p.y); }
                     float Gs(float s) => GM[Mathf.Clamp(Mathf.RoundToInt(s / .5f), 0, NM - 1)];
