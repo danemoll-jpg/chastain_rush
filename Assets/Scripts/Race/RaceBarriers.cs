@@ -248,8 +248,8 @@ namespace ChastainRush
             Vector3 first = Vector3.zero, last = Vector3.zero; bool any = false; int k = 0;
             for (int i = 0; i < blocks; i++)
             {
-                float at = bw * (i + .5f); while (k + 2 < row.Count && cum[k + 1] < at) k++;
-                float t = Mathf.InverseLerp(cum[k], cum[k + 1], at); var q = Vector3.Lerp(row[k].q, row[k + 1].q, t); float hp = Mathf.Lerp(row[k].hp, row[k + 1].hp, t);
+                float along_ = bw * (i + .5f); while (k + 2 < row.Count && cum[k + 1] < along_) k++;
+                float t = Mathf.InverseLerp(cum[k], cum[k + 1], along_); var q = Vector3.Lerp(row[k].q, row[k + 1].q, t); float hp = Mathf.Lerp(row[k].hp, row[k + 1].hp, t);
                 var tan = row[k + 1].q - row[k].q; tan.y = 0f; tan = tan.sqrMagnitude > 1e-6f ? tan.normalized : Vector3.right;
                 // never on any pass of the course (its paved half and 1.2 m), nor across an official shortcut's line
                 bool clear = OnLine(route, new Vector2(q.x, q.z), new Vector2(q.x, q.z), q.x, q.z) >= hp + 1.2f && !NearShortcut(route, new Vector2(q.x, q.z));
