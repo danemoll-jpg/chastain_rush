@@ -69,15 +69,27 @@ namespace ChastainRush
                 float amount = Coverage(car.Body.position);
                 if (amount <= 0f || !Physics.Raycast(car.Body.position, Vector3.down, out var hit, car.suspensionLength + 0.5f, 1, QueryTriggerInteraction.Ignore)
                     || !(hit.collider is TerrainCollider)) continue;
+                if (OnPavement(car.Body.position)) continue;   // Round 87 (D)
                 var horizontal = Vector3.ProjectOnPlane(car.Body.linearVelocity, Vector3.up);
                 car.Body.AddForce(-horizontal * Mathf.Min(Drag * amount, 0.8f / Time.fixedDeltaTime), ForceMode.Acceleration);
             }
+        }
+
+        // Round 87 (D, Dan's BUG-003 / BUG-005 on Joel Drive: "the bushes seem to cause slow down in the middle of the road"): a bed's line reached over
+        // the course's road (the Joel terrace's bank, 3.5 m either side of a line drawn at the road's edge). The map build never draws a shrub on a road,
+        // a drive or a walk (MapBuilder.BuildShrubBeds); now the drag stops there too: none on a road's pavement (its half width and 0.3 m)
+        public static bool Old;   // checks (-r87Old)
+        static bool OnPavement(Vector3 p)
+        {
+            var roads = RoadLookup.Instance;
+            return !Old && roads && roads.Nearest(p, out _, out float d, out float h) && d < h + .3f;
         }
 
         // the strongest bed at a point (checks)
         public static float CoverageAt(Vector3 position)
         {
             float best = 0f;
+            if (OnPavement(position)) return 0f;   // Round 87 (D)
             foreach (var s in FindObjectsByType<ShrubBeds>(FindObjectsSortMode.None)) best = Mathf.Max(best, s.Coverage(position));
             return best;
         }
