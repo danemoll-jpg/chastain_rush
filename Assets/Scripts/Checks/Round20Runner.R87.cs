@@ -122,7 +122,16 @@ namespace ChastainRush
                                 if (a > 25f) { bars++; if (where.Count < 8) where.Add($"barrier {b.Data.id} block ({t.position.x:0}, {t.position.z:0}) {a:0} deg"); }
                             }
                     badAll += bad; endsAll += ends; barsAll += bars;
-                    report.AppendLine($"  {file} {dir}: {HighBumpers.Report}; {race.Barriers?.Built.Count ?? 0} closures ({race.Barriers?.Rows.Count ?? 0} along the course, {race.Barriers?.Trimmed ?? 0} blocks left off a line); across the course: {bad} bumper pieces, {ends} bumper ends, {bars} barrier blocks{(where.Count > 0 ? ": " + string.Join("; ", where) : "")}");
+                    // the layout, for top-down plots (Tools/race/plot_layout.py)
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        foreach (var l in lines) { sb.Append("line"); for (int i = 0; i < l.p.Count; i++) sb.Append($" {l.p[i].x:0.0},{l.p[i].z:0.0},{l.half[i]:0.0}"); sb.AppendLine(); }
+                        if (info != null) foreach (var st in info.strips) { sb.Append("bump"); foreach (var q in st) sb.Append($" {q.x:0.0},{q.z:0.0}"); sb.AppendLine(); }
+                        if (race.Barriers) foreach (var b in race.Barriers.Built) foreach (var t in b.Root.GetComponentsInChildren<Transform>()) if (t.localScale.x >= .6f && t.GetComponent<Renderer>()) sb.AppendLine($"block {b.Data.id} {t.position.x:0.0},{t.position.z:0.0},{t.right.x:0.00},{t.right.z:0.00},{t.localScale.x:0.0}");
+                        if (info != null) foreach (var j in info.jumps) sb.AppendLine($"jump {j.line} {j.lipAt.x:0.0},{j.lipAt.z:0.0} {j.landAt.x:0.0},{j.landAt.z:0.0} over {j.over:0}");
+                        try { System.IO.File.WriteAllText(System.IO.Path.Combine(outputDir, $"87_layout_{file.Replace(".json", "")}_{dir}_{R87Tag}.txt"), sb.ToString()); } catch { }
+                    }
+                    report.AppendLine($"  {file} {dir}: {info?.report}; {race.Barriers?.Built.Count ?? 0} closures ({race.Barriers?.Rows.Count ?? 0} along the course, {race.Barriers?.Trimmed ?? 0} blocks left off a line); across the course: {bad} bumper pieces, {ends} bumper ends, {bars} barrier blocks{(where.Count > 0 ? ": " + string.Join("; ", where) : "")}");
                     race.EndRace(); R84High(false); Flush();
                 }
             Check("A: no bumper piece or barrier block inside a course's driven width more than 25 degrees off the line", badAll == 0 && barsAll == 0, $"{badAll} bumper pieces, {barsAll} barrier blocks");

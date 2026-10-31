@@ -298,25 +298,30 @@ namespace ChastainRush
                 for (int side = -1; side <= 1; side += 2)
                 {
                     int count = Mathf.FloorToInt(l.length / Step), owner = li * 2 + (side > 0 ? 1 : 0);
-                    var run = new List<St>();
+                    var run = new List<St>(); var runs = new List<List<St>>(); bool firstAtStart = false;
                     for (int i = 0; i <= count + (l.loop ? 1 : 0); i++)
                     {
                         float s = l.loop ? Mathf.Repeat(i * Step, l.length) : Mathf.Min(i * Step, l.length - .01f);
                         var ok = Sample(l, li, s, side, i > count, owner, out var st);
-                        if (ok && run.Count > 0 && (run[^1].w - st.w).magnitude > 7) { Finish(run, li, l); run = new List<St>(); }
-                        if (ok) { run.Add(st); if (i <= count) { Place(st.w, owner, s); Samples++; } }
-                        else if (run.Count > 0) { Finish(run, li, l); run = new List<St>(); }
+                        if (ok && run.Count > 0 && (run[^1].w - st.w).magnitude > 7) { runs.Add(run); run = new List<St>(); }
+                        if (ok) { if (i == 0) firstAtStart = true; run.Add(st); if (i <= count) { Place(st.w, owner, s); Samples++; } }
+                        else if (run.Count > 0) { runs.Add(run); run = new List<St>(); }
                     }
-                    if (run.Count > 0) Finish(run, li, l);
+                    bool lastAtEnd = run.Count > 0; if (run.Count > 0) runs.Add(run);
+                    // Round 87: on a loop, the run over the lap's seam (the start line) is one run, not two ends there
+                    if (!Old && l.loop && firstAtStart && lastAtEnd && runs.Count > 1) { var joined = new List<St>(runs[^1]); joined.AddRange(runs[0].Skip(1)); runs[0] = joined; runs.RemoveAt(runs.Count - 1); }
+                    bool closed = !Old && l.loop && runs.Count == 1 && firstAtStart && lastAtEnd;   // all the way round: no ends
+                    foreach (var r in runs) Finish(r, li, l, closed);
                 }
             }
+            info.jumps.AddRange(Jumps); info.report = Report;
             Debug.Log($"[High] bumpers for {race.Route.Name} {race.Route.Direction}: {Report}, {chunk} pieces");
             return root;
 
             // Round 87 (A): one unbroken run of stations: a stub (shorter than MinRun) is left out; the distance out from the line changes at most
             // MaxSlope per station (never a step in or out you can hit: nearer the line where the ground needs it, eased into over the stations before);
             // each end that is not the run's continuation curves out away from the line (EndCurve over EndLength) where the ground and other lines allow
-            void Finish(List<St> run, int line, Line l)
+            void Finish(List<St> run, int line, Line l, bool closed = false)
             {
                 if (run.Count < 2) return;
                 if (!Old && (run.Count - 1) * Step < MinRun) { Stubs++; return; }
@@ -324,7 +329,7 @@ namespace ChastainRush
                 {
                     for (int i = 1; i < run.Count; i++) run[i] = run[i].With(Mathf.Min(run[i].edge, run[i - 1].edge + MaxSlope));
                     for (int i = run.Count - 2; i >= 0; i--) run[i] = run[i].With(Mathf.Min(run[i].edge, run[i + 1].edge + MaxSlope));
-                    int k = Mathf.Min(Mathf.RoundToInt(EndLength / Step), run.Count / 2);
+                    int k = closed ? 0 : Mathf.Min(Mathf.RoundToInt(EndLength / Step), run.Count / 2);
                     foreach (int end in new[] { 0, run.Count - 1 })
                         for (int j = 0; j < k; j++)
                         {
@@ -365,7 +370,7 @@ namespace ChastainRush
         // Round 87: what a build made, for the HIGH MODE reset (Inside) and the checks (each run's middle line)
         public sealed class Info
         {
-            public readonly List<Vector3[]> strips = new List<Vector3[]>();
+            public readonly List<Vector3[]> strips = new List<Vector3[]>(); public readonly List<Jump> jumps = new List<Jump>(); public string report = "";
             readonly Dictionary<long, List<Vector4>> cells = new Dictionary<long, List<Vector4>>();
             public void Add(Vector3 p, float r) { long k = Key(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.z / Cell)); if (!cells.TryGetValue(k, out var l)) cells[k] = l = new List<Vector4>(); l.Add(new Vector4(p.x, p.y, p.z, r)); }
             // on the course: within its bumpers' reach (and a meter more) of some station, at its height (within 10 m: a deck over a road is not it)

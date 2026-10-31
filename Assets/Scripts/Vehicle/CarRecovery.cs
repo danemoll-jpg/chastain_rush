@@ -107,7 +107,7 @@ namespace ChastainRush
                 {
                     float L = route.LapLength, span = Mathf.Repeat(nextS - prevS, L); if (span < .01f) span = L;
                     float margin = Mathf.Min(NextMargin, span * .3f); limit = span - margin;
-                    bool behind = Mathf.Repeat(prevS - s, L) <= BackOk && Mathf.Repeat(prevS - s, L) > .01f;
+                    bool behind = Mathf.Repeat(prevS - s, L) <= BackOk;   // Round 87: right at the last checkpoint counts as behind it (was: past the window)
                     if (!behind && Mathf.Repeat(s - prevS, L) > limit)
                     {
                         s = Mathf.Repeat(nextS - margin, L);

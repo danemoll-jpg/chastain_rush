@@ -215,7 +215,10 @@ namespace ChastainRush
                 var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f);
                 var q = p + right * side * (Half(p) + SetBack); var q2 = new Vector2(q.x, q.z);
                 float across = Mathf.Abs(Vector2.Dot(q2 - c2, new Vector2(-along.y, along.x)));   // from the closed road's middle line
-                if (across <= roadHalf) pts.Add(u);
+                // on the closed road's side of where it meets the course (where the closed road is the same street running on past a corner, its
+                // line runs back through the course's own road)
+                bool beyond = c.contact == null || c.contact.Length < 2 || Vector2.Dot(q2 - new Vector2(c.contact[0], c.contact[1]), along) >= -.5f;
+                if (across <= roadHalf && beyond) pts.Add(u);
             }
             if (pts.Count < 2) return null;
             // the unbroken stretch nearest the closure
