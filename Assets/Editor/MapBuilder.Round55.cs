@@ -13,7 +13,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class R55Spot { public string id; public float[] at; public float r, fade, sigma; }
-        [Serializable] class R55Curve { public string id; public float[] points, at; public float length, fit, half, blend; }
+        [Serializable] class R55Curve { public string id; public float[] points, at; public float length, fit, half, blend, half_left, blend_left, wide_from, wide_to, taper; }   // Round 87 E: a run-off on the left (wide_from..wide_to m about 'at', tapered over 'taper')
         [Serializable] class R55Ruts { public string id; public float[] points; }
         [Serializable] class R55File { public R55Spot[] smooth_spots; public R55Curve[] vertical_curves; public R55Ruts[] worn_tracks; }
 
@@ -42,38 +42,51 @@ namespace ChastainRush
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
                 var at = new Vector2(vc.at[0], vc.at[1]); int ic = 0; for (int i = 1; i < n; i++) if ((p[i] - at).sqrMagnitude < (p[ic] - at).sqrMagnitude) ic = i;
                 float s0 = cs[ic] - vc.length * 0.5f, s1 = cs[ic] + vc.length * 0.5f;
+                // Round 87 (E, Dan picked "Wider bench" for the Kennesaw climb): the level band runs out to half_left on the line's left (the bend's
+                // outside) from wide_from to wide_to m about the curve's middle, easing back to 'half' over 'taper' at each end; the line is carried on
+                // past the curve (at the ground's own height under it) as far as the run-off reaches
+                bool wide = vc.half_left > vc.half && vc.wide_to > vc.wide_from;
+                float lo = s0 - 8f, hi = s1 + 8f;
+                if (wide) { lo = Mathf.Min(lo, cs[ic] + vc.wide_from - vc.taper - 6f); hi = Mathf.Max(hi, cs[ic] + vc.wide_to + vc.taper + 6f); }
+                float HalfLeft(float sAt) => !wide ? vc.half : vc.half + (vc.half_left - vc.half) * Smooth01(Mathf.Min((sAt - (cs[ic] + vc.wide_from - vc.taper)) / Mathf.Max(vc.taper, .1f), ((cs[ic] + vc.wide_to + vc.taper) - sAt) / Mathf.Max(vc.taper, .1f)));
                 float H(float s) { int i = 0; while (i + 2 < n && cs[i + 1] < s) i++; return Mathf.Lerp(raw[i], raw[i + 1], Mathf.InverseLerp(cs[i], cs[i + 1], s)); }
                 float y0 = H(s0), y1 = H(s1), g0 = (H(s0) - H(s0 - vc.fit)) / vc.fit, g1 = (H(s1 + vc.fit) - H(s1)) / vc.fit, L = s1 - s0;
-                var pts = new System.Collections.Generic.List<float>(); var ys = new System.Collections.Generic.List<float>(); float most = 0f;
+                var pts = new System.Collections.Generic.List<float>(); var ys = new System.Collections.Generic.List<float>(); var hl = new System.Collections.Generic.List<float>(); float most = 0f;
                 for (int i = 0; i < n; i++)
                 {
-                    if (cs[i] < s0 - 8f || cs[i] > s1 + 8f) continue;
+                    if (cs[i] < lo || cs[i] > hi) continue;
                     float t = Mathf.Clamp01((cs[i] - s0) / L), t2 = t * t, t3 = t2 * t;
                     float y = cs[i] < s0 || cs[i] > s1 ? raw[i] : (2f * t3 - 3f * t2 + 1f) * y0 + (t3 - 2f * t2 + t) * L * g0 + (-2f * t3 + 3f * t2) * y1 + (t3 - t2) * L * g1;
-                    pts.Add(p[i].x); pts.Add(p[i].y); ys.Add(y); most = Mathf.Max(most, Mathf.Abs(y - raw[i]));
+                    pts.Add(p[i].x); pts.Add(p[i].y); ys.Add(y); hl.Add(HalfLeft(cs[i])); most = Mathf.Max(most, Mathf.Abs(y - raw[i]));
                 }
                 if (ys.Count < 3) continue;
-                SetAlong(terrain, pts.ToArray(), ys.ToArray(), vc.half, vc.blend, 6f);
-                Debug.Log($"[Round55] D: {vc.id}: {g0 * 100f:0.0} % into {g1 * 100f:0.0} % over a {L:0} m vertical curve (the ground moved by up to {most:0.00} m)");
+                SetAlong(terrain, pts.ToArray(), ys.ToArray(), vc.half, vc.blend, 6f, wide ? hl.ToArray() : null, vc.blend_left > 0f ? vc.blend_left : vc.blend);
+                Debug.Log($"[Round55] D: {vc.id}: {g0 * 100f:0.0} % into {g1 * 100f:0.0} % over a {L:0} m vertical curve (the ground moved by up to {most:0.00} m)" + (wide ? $"; level to {vc.half_left:0.#} m on the left from {vc.wide_from:0} to {vc.wide_to:0} m" : ""));
             }
         }
 
         // as GradeAlong, but nothing past the line's ends (GradeAlong's end caps level a disc round each end), and faded in from each end over 'fadeEnds'
-        static void SetAlong(TerrainGrid terrain, float[] flat, float[] y, float half, float blend, float fadeEnds)
+        static void SetAlong(TerrainGrid terrain, float[] flat, float[] y, float half, float blend, float fadeEnds, float[] halfLeft = null, float blendLeft = 0f)
         {
             var p = ToPoints(flat); int n = p.Count; float reach = half + blend;
+            if (halfLeft != null) reach = Mathf.Max(reach, halfLeft.Max() + blendLeft);
             var cs = new float[n]; for (int i = 1; i < n; i++) cs[i] = cs[i - 1] + (p[i] - p[i - 1]).magnitude; float L = cs[n - 1];
             var area = Rect.MinMaxRect(p.Min(q => q.x) - reach, p.Min(q => q.y) - reach, p.Max(q => q.x) + reach, p.Max(q => q.y) + reach);
             EditTerrain(terrain, area, (x, z, gy) =>
             {
-                var q = new Vector2(x, z); float best = float.MaxValue, target = gy, along = 0f; bool past = false;
+                var q = new Vector2(x, z); float best = float.MaxValue, target = gy, along = 0f, hw = half, bw = blend; bool past = false;
                 for (int i = 0; i + 1 < n; i++)
                 {
                     var ab = p[i + 1] - p[i]; float tu = Vector2.Dot(q - p[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f), t = Mathf.Clamp01(tu); float dd = (p[i] + ab * t - q).magnitude;
-                    if (dd < best) { best = dd; target = Mathf.Lerp(y[i], y[i + 1], t); along = Mathf.Lerp(cs[i], cs[i + 1], t); past = (i == 0 && tu < 0f) || (i == n - 2 && tu > 1f); }
+                    if (dd < best)
+                    {
+                        best = dd; target = Mathf.Lerp(y[i], y[i + 1], t); along = Mathf.Lerp(cs[i], cs[i + 1], t); past = (i == 0 && tu < 0f) || (i == n - 2 && tu > 1f);
+                        var v = q - p[i]; bool left = halfLeft != null && ab.x * v.y - ab.y * v.x > 0f;   // > 0: on the left
+                        hw = left ? Mathf.Lerp(halfLeft[i], halfLeft[i + 1], t) : half; bw = left ? blendLeft : blend;
+                    }
                 }
-                if (best >= reach || past) return gy;
-                float w = (best <= half ? 1f : Smooth01(1f - (best - half) / blend)) * Smooth01(Mathf.Min(along, L - along) / fadeEnds);
+                if (best >= hw + bw || past) return gy;
+                float w = (best <= hw ? 1f : Smooth01(1f - (best - hw) / bw)) * Smooth01(Mathf.Min(along, L - along) / fadeEnds);
                 return gy + w * (target - gy);
             });
         }

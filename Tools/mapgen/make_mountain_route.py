@@ -570,8 +570,21 @@ track = {"note": "Round 68: the Kennesaw Mountain race's world pieces, from Tool
 # 30 m (a crest that throws a car 2 s at 33 m/s). Made one vertical curve over 90 m about (-400.4, -5526.7), across the road (MapBuilder.Round55.cs
 # R55VerticalCurves, read from this file): at most 3.9 m/s2 over the crest at 36 m/s, the ground moved by up to 1.4 m; set flat 7.5 m either side of the
 # line (the 0.5 to 0.75 m berm 5 to 7 m out on the bend's outside, at the edge of a 3.8 m drop, threw a car going wide off the road)
-_kc = [q for q in resample(lap, 1.0) if -445.0 < q[0] < -375.0 and -5572.0 < q[1] < -5462.0]
-track["vertical_curves"] = [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": [-400.4, -5526.7], "length": 90.0, "fit": 6.0, "half": 7.5, "blend": 2.0}]
+# Round 87 E follow-up (Dan picked "Wider bench"): in normal mode a car flat out still ran 13 to 20 m wide off the bend's outside (the left) and dropped
+# down the 3 to 8 m fall there. The level band now runs out to KC_LEFT m on the left from KC_FROM to KC_TO m about the crest (the bend is -30 to +40,
+# a car runs widest just past it), easing back to the road's 7.5 m over KC_TAPER at each end, banked down over KC_BLEND; the trees cleared off it.
+KC_AT, KC_LEFT, KC_BLEND, KC_FROM, KC_TO, KC_TAPER = (-400.4, -5526.7), 18.0, 18.0, -20.0, 60.0, 20.0
+_rs = resample(lap, 1.0); _rc = cum(_rs); _ic = min(range(len(_rs)), key=lambda i: (_rs[i][0] - KC_AT[0]) ** 2 + (_rs[i][1] - KC_AT[1]) ** 2)
+_kc = [q for q, c in zip(_rs, _rc) if KC_FROM - KC_TAPER - 30.0 <= c - _rc[_ic] <= KC_TO + KC_TAPER + 30.0]
+track["vertical_curves"] = [{"id": "Round 87 E the Kennesaw climb's kicker", "points": flat(_kc), "at": list(KC_AT), "length": 90.0, "fit": 6.0, "half": 7.5, "blend": 2.0,
+                             "half_left": KC_LEFT, "blend_left": KC_BLEND, "wide_from": KC_FROM, "wide_to": KC_TO, "taper": KC_TAPER}]
+_ro = []
+for q, c in zip(_rs, _rc):
+    d = c - _rc[_ic]
+    if KC_FROM - KC_TAPER <= d <= KC_TO + KC_TAPER and int(d) % 4 == 0:
+        i = _rs.index(q); t = unit((_rs[min(i + 1, len(_rs) - 1)][0] - _rs[i - 1][0], _rs[min(i + 1, len(_rs) - 1)][1] - _rs[i - 1][1])); nl = (-t[1], t[0])
+        _ro.append((q[0] + nl[0] * 13.0, q[1] + nl[1] * 13.0))
+track["clear_lines"].append({"id": "Round 87 E the climb's run-off", "points": flat(_ro), "half": 10.0})
 lead = [point_at(lap, L_lap - LEAD_IN_M + k * 2.0, C) for k in range(int(LEAD_IN_M / 2.0))] + [lap[0]]
 route = dict(SETTINGS)
 route.update({

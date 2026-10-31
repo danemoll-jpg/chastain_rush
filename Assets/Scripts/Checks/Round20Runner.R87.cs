@@ -337,18 +337,18 @@ namespace ChastainRush
                     for (float s = s0 - 300f; s <= s0 + 150f; s += 3f) line.Add(r.PointAt(r.GateS + s, out _));
                     race.Player.ClockStarted = true;
                     Place(RaceRoute.Surface(line[0].x, line[0].z), line[1] - line[0], 20f); yield return new WaitForSecondsRealtime(.3f);
-                    float air = 0f, maxAir = 0f, worstLat = 0f; bool pic = false; var cum = Cum(line); float sNow = 0f;
+                    float air = 0f, maxAir = 0f, worstLat = 0f, worstSigned = 0f, worstAt = 0f, drop = 0f; Vector3 worstP = Vector3.zero; bool pic = false; var cum = Cum(line); float sNow = 0f;
                     var run = new HumanRun();
                     yield return HumanDrive(line, 60f, 60f, run, () =>
                     {
                         var p = car.Body.position; sNow = ProjectNear(line, cum, p, sNow, out float dev);
                         bool near = Mathf.Abs(sNow - 300f) < 70f;
-                        if (near) { air = car.GroundedWheels == 0 ? air + Time.fixedDeltaTime : 0f; maxAir = Mathf.Max(maxAir, air); worstLat = Mathf.Max(worstLat, Mathf.Abs(dev)); }
+                        if (near) { air = car.GroundedWheels == 0 ? air + Time.fixedDeltaTime : 0f; maxAir = Mathf.Max(maxAir, air); if (Mathf.Abs(dev) > worstLat) { var la = At(line, cum, sNow); var lb = At(line, cum, sNow + 1f); worstLat = Mathf.Abs(dev); worstSigned = (lb.x - la.x) * (p.z - la.z) - (lb.z - la.z) * (p.x - la.x) > 0f ? dev : -dev; worstAt = sNow - 300f; worstP = p; } drop = Mathf.Max(drop, RaceRoute.Surface(line[Mathf.Clamp(Mathf.RoundToInt(sNow / 3f), 0, line.Count - 1)].x, line[Mathf.Clamp(Mathf.RoundToInt(sNow / 3f), 0, line.Count - 1)].z).y - p.y); }
                         if (!pic && veh == "original" && !high && sNow > 295f) { pic = true; StartCoroutine(Capture("87_climb_spot")); }
                         return false;
                     }, null, null, null, false);
                     bool ok = maxAir <= .5f && worstLat < 6f && run.resets == 0; if (!ok) bad++;
-                    report.AppendLine($"  {(high ? "HIGH" : "normal")} {Nm(veh)}: top {run.topSpeed:0} m/s, longest air within 70 m of the spot {maxAir:0.00} s, farthest off the line there {worstLat:0.0} m, resets {run.resets}{(ok ? "" : "  <- WRONG")}");
+                    report.AppendLine($"  {(high ? "HIGH" : "normal")} {Nm(veh)}: top {run.topSpeed:0} m/s, longest air within 70 m of the spot {maxAir:0.00} s, farthest off the line there {worstLat:0.0} m ({(worstSigned > 0f ? "left, the outside" : "right")}, {worstAt:+0;-0} m from the spot, at ({worstP.x:0}, {worstP.z:0})), most below the line's ground {drop:0.0} m, resets {run.resets}{(ok ? "" : "  <- WRONG")}");
                     race.EndRace(); R84High(false); Flush();
                 }
             Check("E: the climb: no air over 0.5 s, never off the road (3 vehicles, normal and HIGH)", bad == 0, $"{bad} of 6 runs wrong");

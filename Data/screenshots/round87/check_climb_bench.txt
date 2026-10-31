@@ -1,0 +1,12 @@
+Round 87 check, 2026-10-31 11:31, the exe, 1280 x 720, muted.
+
+=== E. The Kennesaw climb at x -398 z -5520, full throttle by the human-like driver, from 300 m below to 150 m above
+  normal Drifter Twin: top 39 m/s, longest air within 70 m of the spot 0.60 s, farthest off the line there 10.4 m (left, the outside, -38 m from the spot, at (-375, -5491)), most below the line's ground 0.0 m, resets 0  <- WRONG
+  normal Street Classic: top 36 m/s, longest air within 70 m of the spot 0.82 s, farthest off the line there 24.1 m (left, the outside, -55 m from the spot, at (-360, -5471)), most below the line's ground 7.8 m, resets 0  <- WRONG
+  normal Skyfin Cruiser: top 36 m/s, longest air within 70 m of the spot 0.72 s, farthest off the line there 19.1 m (left, the outside, -43 m from the spot, at (-365, -5485)), most below the line's ground 3.6 m, resets 0  <- WRONG
+  HIGH Drifter Twin: top 39 m/s, longest air within 70 m of the spot 0.16 s, farthest off the line there 4.0 m (left, the outside, -69 m from the spot, at (-383, -5458)), most below the line's ground 0.0 m, resets 0
+  HIGH Street Classic: top 36 m/s, longest air within 70 m of the spot 0.34 s, farthest off the line there 3.5 m (left, the outside, -9 m from the spot, at (-391, -5518)), most below the line's ground 0.0 m, resets 0
+  HIGH Skyfin Cruiser: top 36 m/s, longest air within 70 m of the spot 0.08 s, farthest off the line there 3.5 m (left, the outside, -31 m from the spot, at (-383, -5497)), most below the line's ground 0.0 m, resets 0
+FAIL  E: the climb: no air over 0.5 s, never off the road (3 vehicles, normal and HIGH)  -  3 of 6 runs wrong
+
+0 of 1 checks passed.
