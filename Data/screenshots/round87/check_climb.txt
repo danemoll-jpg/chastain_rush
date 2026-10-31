@@ -1,0 +1,88 @@
+Round 87 check, 2026-10-31 03:38, the exe, 1280 x 720, muted.
+
+=== Dan's places, HIGH MODE, his vehicle's spot and heading (after)
+  BUG-001 (3222.8, 532.2) heading 120: picture 87_BUG-001_after.png; within 25 m: 3 bumper runs (2 ends), 0 closure barriers
+  BUG-002 (3285.8, 306.2) heading 259: picture 87_BUG-002_after.png; within 25 m: 4 bumper runs (4 ends), 1 closure barriers
+  BUG-003 (2961.2, 415.0) heading 253: picture 87_BUG-003_after.png; within 25 m: 3 bumper runs (2 ends), 0 closure barriers
+  BUG-004 (2815.3, 504.5) heading 36: picture 87_BUG-004_after.png; within 25 m: 7 bumper runs (10 ends), 1 closure barriers
+  BUG-005 (2969.2, 410.8) heading 74: picture 87_BUG-005_after.png; within 25 m: 2 bumper runs (2 ends), 0 closure barriers
+  BUG-006 (2880.7, 414.1) heading 123: picture 87_BUG-006_after.png; within 25 m: 2 bumper runs (0 ends), 0 closure barriers
+  BUG-007 (796.4, -1685.1) heading 103: picture 87_BUG-007_after.png; within 25 m: 2 bumper runs (1 ends), 0 closure barriers
+  BUG-008 (1307.0, -1669.8) heading 78: picture 87_BUG-008_after.png; within 25 m: 2 bumper runs (2 ends), 2 closure barriers
+  BUG-009 (430.0, -1512.8) heading 144: picture 87_BUG-009_after.png; within 25 m: 3 bumper runs (4 ends), 1 closure barriers
+  BUG-010 (426.2, -1500.9) heading 159: picture 87_BUG-010_after.png; within 25 m: 3 bumper runs (3 ends), 1 closure barriers
+
+=== A. Every car course both ways, HIGH MODE (after): bumper pieces and closure barrier blocks inside a course's driven width (paved half + 1 m) more than 25 degrees off the line; bumper ends inside it
+  noonday_creek_trail.json forward: 4667 bumper stations, 402 open for crossings (123 other lines, 467 other roads), 248 on landings, 761 open for 17 jumps, 32 stubs left out, 968 end stations curved out; 41 closures (34 along the course, 0 blocks left off a line); across the course: 8 bumper pieces, 10 bumper ends, 0 barrier blocks: bumper end (727, -441); bumper end (899, -1680); bumper end (1708, -1681); bumper (1170, -1696) 28 deg; bumper (1179, -1696) 31 deg; bumper (1181, -1697) 41 deg; bumper end (1169, -1697); bumper end (1182, -1698)
+  noonday_creek_trail.json reverse: 4577 bumper stations, 324 open for crossings (179 other lines, 430 other roads), 294 on landings, 800 open for 13 jumps, 24 stubs left out, 890 end stations curved out; 48 closures (40 along the course, 0 blocks left off a line); across the course: 2 bumper pieces, 5 bumper ends, 1 barrier blocks: bumper end (639, -1680); bumper end (1705, -1677); bumper (1330, -1662) 25 deg; bumper (1322, -1661) 35 deg; bumper end (1321, -1660); bumper end (588, -1320); bumper end (1686, -587); barrier B19 block (520, -1698) 55 deg
+  kennesaw_mountain.json forward: 2388 bumper stations, 0 open for crossings (0 other lines, 0 other roads), 188 on landings, 613 open for 4 jumps, 2 stubs left out, 67 end stations curved out; 2 closures (0 along the course, 0 blocks left off a line); across the course: 0 bumper pieces, 0 bumper ends, 0 barrier blocks
+  chastain_glen_loop.json forward: 1277 bumper stations, 161 open for crossings (201 other lines, 23 other roads), 80 on landings, 110 open for 3 jumps, 1 stubs left out, 238 end stations curved out; 9 closures (7 along the course, 0 blocks left off a line); across the course: 0 bumper pieces, 3 bumper ends, 0 barrier blocks: bumper end (2936, 883); bumper end (2938, 883); bumper end (2856, 1131)
+  chastain_glen_loop.json reverse: 1171 bumper stations, 91 open for crossings (124 other lines, 20 other roads), 12 on landings, 150 open for 3 jumps, 2 stubs left out, 235 end stations curved out; 9 closures (7 along the course, 4 blocks left off a line); across the course: 0 bumper pieces, 3 bumper ends, 0 barrier blocks: bumper end (2858, 1131); bumper end (2938, 883); bumper end (2936, 883)
+  noonday_creek.json forward: 1177 bumper stations, 72 open for crossings (89 other lines, 0 other roads), 688 on landings, 686 open for 17 jumps, 2 stubs left out, 381 end stations curved out; 4 closures (4 along the course, 0 blocks left off a line); across the course: 0 bumper pieces, 0 bumper ends, 0 barrier blocks
+  noonday_creek.json reverse: 1119 bumper stations, 124 open for crossings (127 other lines, 0 other roads), 820 on landings, 833 open for 21 jumps, 1 stubs left out, 333 end stations curved out; 4 closures (4 along the course, 0 blocks left off a line); across the course: 0 bumper pieces, 0 bumper ends, 0 barrier blocks
+  chastain_ridge.json forward: 1447 bumper stations, 190 open for crossings (111 other lines, 108 other roads), 164 on landings, 469 open for 8 jumps, 13 stubs left out, 307 end stations curved out; 31 closures (28 along the course, 0 blocks left off a line); across the course: 10 bumper pieces, 5 bumper ends, 6 barrier blocks: bumper (3569, 581) 33 deg; bumper (3568, 584) 26 deg; bumper (3566, 587) 36 deg; bumper (3504, 1081) 43 deg; bumper end (3504, 1081); bumper (3580, 584) 82 deg; bumper (3519, 1006) 33 deg; bumper (3518, 1014) 27 deg
+  chastain_ridge.json reverse: 1834 bumper stations, 169 open for crossings (149 other lines, 97 other roads), 264 on landings, 309 open for 8 jumps, 4 stubs left out, 462 end stations curved out; 27 closures (24 along the course, 6 blocks left off a line); across the course: 10 bumper pieces, 9 bumper ends, 4 barrier blocks: bumper (3578, 588) 31 deg; bumper (3577, 582) 34 deg; bumper (3576, 580) 31 deg; bumper (3560, 764) 26 deg; bumper (3559, 762) 29 deg; bumper end (3547, 839); bumper end (3558, 761); bumper end (3559, 757)
+  chastain_lakes.json forward: 2142 bumper stations, 113 open for crossings (95 other lines, 63 other roads), 192 on landings, 555 open for 10 jumps, 6 stubs left out, 367 end stations curved out; 18 closures (15 along the course, 0 blocks left off a line); across the course: 4 bumper pieces, 4 bumper ends, 0 barrier blocks: bumper (1344, 1149) 28 deg; bumper end (1344, 1148); bumper (1353, 1146) 31 deg; bumper end (1350, 1144); bumper (1228, 1239) 52 deg; bumper end (1257, 1169); bumper (1235, 1241) 52 deg; bumper end (1262, 1172)
+  chastain_lakes.json reverse: 2428 bumper stations, 127 open for crossings (141 other lines, 68 other roads), 68 on landings, 371 open for 8 jumps, 3 stubs left out, 379 end stations curved out; 17 closures (14 along the course, 1 blocks left off a line); across the course: 1 bumper pieces, 2 bumper ends, 0 barrier blocks: bumper end (1349, 1142); bumper (1344, 1149) 26 deg; bumper end (1343, 1146)
+  addison_heights.json forward: 2111 bumper stations, 137 open for crossings (222 other lines, 39 other roads), 60 on landings, 149 open for 3 jumps, 7 stubs left out, 347 end stations curved out; 12 closures (10 along the course, 0 blocks left off a line); across the course: 2 bumper pieces, 4 bumper ends, 0 barrier blocks: bumper end (3186, 308); bumper end (3133, 105); bumper (2809, 457) 48 deg; bumper end (2810, 458); bumper (2817, 457) 48 deg; bumper end (2816, 458)
+  addison_heights.json reverse: 1786 bumper stations, 79 open for crossings (88 other lines, 46 other roads), 30 on landings, 285 open for 8 jumps, 4 stubs left out, 209 end stations curved out; 14 closures (14 along the course, 1 blocks left off a line); across the course: 1 bumper pieces, 1 bumper ends, 0 barrier blocks: bumper (3007, 408) 34 deg; bumper end (3008, 409)
+  marietta_square.json forward: 880 bumper stations, 99 open for crossings (33 other lines, 132 other roads), 82 on landings, 131 open for 5 jumps, 5 stubs left out, 315 end stations curved out; 22 closures (21 along the course, 0 blocks left off a line); across the course: 5 bumper pieces, 6 bumper ends, 2 barrier blocks: bumper (1905, -8509) 31 deg; bumper (1905, -8510) 28 deg; bumper (1905, -8510) 41 deg; bumper end (1532, -8416); bumper end (1544, -8518); bumper end (1821, -8527); bumper end (1919, -8399); bumper (1531, -8404) 26 deg
+FAIL  A: no bumper piece or barrier block inside a course's driven width more than 25 degrees off the line  -  43 bumper pieces, 13 barrier blocks
+FAIL  A: no bumper end inside a course's driven width  -  52 ends
+
+=== A. HIGH MODE, the human-like driver (Drifter Twin) on the line and 3 m either side (after): touches of a bumper's or barrier's end (within 4 m of it), and of any bumper or barrier
+  addison_heights.json on the line (lap 0 to 2040 m): 90 s, top 40 m/s, resets 0, out-of-bumper resets so far 0; touches 0, at an end 0
+  addison_heights.json 3 m left (lap 0 to 2040 m): 83 s, top 40 m/s, resets 0, out-of-bumper resets so far 0; touches 0, at an end 0
+  addison_heights.json 3 m right (lap 0 to 2040 m): 141 s, top 40 m/s, resets 0, out-of-bumper resets so far 5; touches 1, at an end 1: (2994, 128) Bumper 57
+  noonday_creek_trail.json on the line (lap 3150 to 4700 m): 53 s, top 39 m/s, resets 0, out-of-bumper resets so far 5; touches 0, at an end 0
+  noonday_creek_trail.json 3 m left (lap 3150 to 4700 m): 58 s, top 40 m/s, resets 0, out-of-bumper resets so far 5; touches 0, at an end 0
+  noonday_creek_trail.json 3 m right (lap 3150 to 4700 m): 60 s, top 39 m/s, resets 0, out-of-bumper resets so far 6; touches 0, at an end 0
+FAIL  A: the human-like driver touches no bumper or barrier end (line and 3 m either side)  -  1 end touches
+
+=== B. HIGH MODE: thrown out over a bumper (the Street Classic, 14 m/s out and up) on three courses, three places each (after)
+  addison_heights.json at lap 408 m: down outside at (3099, 166), put back after 3.3 s at lap 408 m, 151 m short of CP3, penalty 0 s
+  addison_heights.json at lap 714 m: down outside at (3004, 203), put back after 2.7 s at lap 714 m, 152 m short of CP5, penalty 0 s
+  addison_heights.json at lap 1020 m: down outside at (2926, 435), put back after 2.2 s at lap 1025 m, 223 m short of CP6, penalty 0 s
+  chastain_glen_loop.json at lap 249 m: down outside at (3113, 1052), put back after 2.8 s at lap 247 m, 153 m short of CP2, penalty 0 s
+  chastain_glen_loop.json at lap 436 m: down outside at (3114, 1253), put back after 2.8 s at lap 437 m, 183 m short of CP3, penalty 0 s
+  chastain_glen_loop.json at lap 623 m: down outside at (2923, 1185), put back after 2.9 s at lap 624 m, 87 m short of CP4, penalty 0 s
+  kennesaw_mountain.json at lap 705 m: down outside at (-455, -5556), put back after 2.8 s at lap 701 m, 130 m short of CP2, penalty 0 s
+  kennesaw_mountain.json at lap 1233 m: down outside at (-830, -5914), put back after 4.4 s at lap 1238 m, 388 m short of CP3, penalty 0 s
+  kennesaw_mountain.json at lap 1762 m: down outside at (-1201, -6037), put back after 3.3 s at lap 1762 m, 268 m short of CP4, penalty 0 s
+PASS  B: thrown out over a bumper, put back on the course before the next checkpoint, no penalty  -  0 of 9 wrong
+
+=== C. The Noonday Creek Trail: resets (Y) inside Town Center (after)
+  forward, lap 2709 m (y 305.6): put at (304, -1159) y 306.1, 0 m from where it was, +0.5 m up; 64 m short of CP8
+  forward, lap 2790 m (y 305.6): put at (322, -1227) y 306.1, 0 m from where it was, +0.5 m up; 150 m short of CP9
+  forward, lap 2871 m (y 313.1): put at (380, -1248) y 313.6, 0 m from where it was, +0.5 m up; 69 m short of CP9
+  forward, lap 2955 m (y 313.1): put at (461, -1227) y 313.6, 0 m from where it was, +0.5 m up; 334 m short of CP10
+  forward, the Carroway renovation shortcut's middle (y 305.6): put at (236, -1311) y 306.1, 0 m from where it was, +0.5 m up; on the shortcut
+  reverse, lap 2763 m (y 313.1): put at (446, -1231) y 313.6, 0 m from where it was, +0.5 m up; 157 m short of CP6
+  reverse, lap 2844 m (y 312.1): put at (371, -1250) y 313.4, 4 m from where it was, +1.3 m up; 79 m short of CP6
+  reverse, lap 2925 m (y 305.6): put at (319, -1215) y 306.1, 0 m from where it was, +0.5 m up; 337 m short of CP7
+  reverse, lap 3009 m (y 305.6): put at (302, -1152) y 306.1, 0 m from where it was, +0.5 m up; 253 m short of CP7
+  reverse, the Carroway renovation shortcut's middle (y 305.6): put at (237, -1317) y 306.1, 0 m from where it was, +0.5 m up; on the shortcut
+PASS  C: a reset in the mall stays in the mall, before the next checkpoint  -  0 of 10 wrong
+
+=== D. Addison Heights forward, HIGH MODE, the human-like driver (Drifter Twin) through Dan's places (after)
+  Joel Drive on the line: 101 s, top 38 m/s, longest air 1.4 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 5; bumper / barrier touches 0: jolt (3009, 374) +3.2 m/s; jolt (2896, 417) +4.9 m/s; jolt (2876, 414) +3.4 m/s; jolt (2778, 421) +3.2 m/s; jolt (2998, 348) +3.2 m/s; in a shrub bed: 21 -> 4 m/s
+  Joel Drive 2 m left: 87 s, top 41 m/s, longest air 2.0 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 4; bumper / barrier touches 0: jolt (3008, 375) +3.1 m/s; jolt (3002, 414) +3.7 m/s; jolt (2821, 415) +3.0 m/s; jolt (2763, 419) +6.3 m/s; in a shrub bed: never
+  Joel Drive 2 m right: 101 s, top 40 m/s, longest air 1.4 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 5; bumper / barrier touches 0: jolt (3011, 373) +3.2 m/s; jolt (2773, 423) +3.3 m/s; jolt (3141, 248) +3.9 m/s; jolt (3130, 219) +3.1 m/s; jolt (3004, 357) +3.1 m/s; in a shrub bed: 10 -> 6 m/s
+  the Lyndon jump on the line: 32 s, top 38 m/s, longest air 2.3 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 2; bumper / barrier touches 1: touch (2811, 456) Bumper 66; jolt (2804, 425) +3.3 m/s; jolt (2822, 489) +5.1 m/s; in a shrub bed: 4 -> 4 m/s
+  the Lyndon jump 2 m left: 19 s, top 38 m/s, longest air 1.9 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 1; bumper / barrier touches 0: jolt (2796, 500) +6.0 m/s; in a shrub bed: 21 -> 10 m/s
+  the Lyndon jump 2 m right: 54 s, top 36 m/s, longest air 2.5 s, resets 0, stuck 0; jolts (3 m/s up or down in 0.1 s, wheels down) 9; bumper / barrier touches 3: touch (2815, 456) Bumper 68; touch (2815, 457) Bumper 68; jolt (2815, 456) +3.1 m/s; touch (2812, 457) Bumper 66; jolt (2811, 454) +3.1 m/s; in a shrub bed: 8 -> 4 m/s
+  shrub beds on the course's road at Dan's BUG-003 / 005: coverage 0.00 and 0.00 (0: no drag)
+PASS  D: no slow-down from the shrub beds on Joel Drive  -  speed lost in a bed at most 16.6 m/s
+FAIL  D: no bumper or barrier touched on Joel Drive and the Lyndon jump  -  4 touches
+FAIL  D: no jolt on Joel Drive and the Lyndon jump  -  26 jolts
+
+=== E. The Kennesaw climb at x -398 z -5520, full throttle by the human-like driver, from 300 m below to 150 m above
+  normal Drifter Twin: top 39 m/s, longest air within 70 m of the spot 1.84 s, farthest off the line there 19.5 m, resets 0  <- WRONG
+  normal Street Classic: top 36 m/s, longest air within 70 m of the spot 1.20 s, farthest off the line there 19.9 m, resets 0  <- WRONG
+  normal Skyfin Cruiser: top 36 m/s, longest air within 70 m of the spot 0.88 s, farthest off the line there 13.1 m, resets 0  <- WRONG
+  HIGH Drifter Twin: top 38 m/s, longest air within 70 m of the spot 0.10 s, farthest off the line there 4.1 m, resets 0
+  HIGH Street Classic: top 36 m/s, longest air within 70 m of the spot 0.36 s, farthest off the line there 3.4 m, resets 0
+  HIGH Skyfin Cruiser: top 36 m/s, longest air within 70 m of the spot 0.18 s, farthest off the line there 3.5 m, resets 0
+FAIL  E: the climb: no air over 0.5 s, never off the road (3 vehicles, normal and HIGH)  -  3 of 6 runs wrong
+
+3 of 9 checks passed.
