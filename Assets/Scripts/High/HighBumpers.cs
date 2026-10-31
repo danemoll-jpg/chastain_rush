@@ -35,12 +35,17 @@ namespace ChastainRush
         public static int Openings { get; private set; }         // checks: stations left open for a crossing line
         public static int LandingStations { get; private set; }  // checks: stations on a landing, set wider apart
         public static int JumpStations { get; private set; }     // Round 86: stations left open for a jump's flight and landing
-        public static string Report => $"{Samples} bumper stations, {Openings} open for crossings, {LandingStations} on landings, {JumpStations} open for {Jumps.Count} jumps";
+        public static int OpenLines, OpenRoads, Stubs, Curved;   // Round 87: stations open for another line's band / another road; stub runs left out; end stations curved out
+        public static bool Old;   // Round 87 checks (-r87Old): Round 86's layout (the before pictures)
+        public static string Report => $"{Samples} bumper stations, {Openings} open for crossings ({OpenLines} other lines, {OpenRoads} other roads), {LandingStations} on landings, {JumpStations} open for {Jumps.Count} jumps, {Stubs} stubs left out, {Curved} end stations curved out";
         // Round 86 (A): the jumps found at the last build (checks: the line, the lip's and the furthest landing's station, the longest flight, the highest)
-        public sealed class Jump { public int line; public float lip, land, air, clear; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
+        public sealed class Jump { public int line; public float lip, land, air, clear, over; public Vector3 lipAt, landAt; public Func<float, (Vector3 p, Vector3 f)> at; public float length; public bool loop; }
         public static readonly List<Jump> Jumps = new List<Jump>();
         public static string DumpTo;   // checks: where the probed profiles go
         public const float PreLip = 6, RunOut = 40, FunnelLength = 30, FunnelOut = 8, JumpClear = .8f, JumpAir = .4f, SideOffset = 3, BendGrip = 20f, Accel = 12f, CrossClear = 7f;
+        // Round 87 (A): another line's band clear by this past its paved edge; runs shorter than MinRun left out; the distance out changes at most MaxSlope
+        // a station (10 degrees); ends curve out by EndCurve over EndLength; under another line's flight the clear widens by FlightCone a meter along it
+        public const float OtherClear = 3.5f, MinRun = 10f, MaxSlope = .35f, EndLength = 12f, EndCurve = 2.5f, FlightCone = .15f;
         public static bool Shown => current && current.activeSelf;
         static PhysicsMaterial bounce;
         static readonly Dictionary<string, GameObject> built = new();
@@ -81,7 +86,7 @@ namespace ChastainRush
 
         static GameObject Build(RaceController race)
         {
-            Samples = Openings = LandingStations = JumpStations = 0; Jumps.Clear();
+            Samples = Openings = LandingStations = JumpStations = 0; OpenLines = OpenRoads = Stubs = Curved = 0; Jumps.Clear();
             var root = new GameObject(RootName + " " + race.Route.Name + " " + race.Route.Direction) { layer = Layer };
             var roads = RoadLookup.Instance; var rd = race.RouteData; bool trail = rd != null && rd.trail;
             var lines = new List<Line>();
@@ -120,14 +125,22 @@ namespace ChastainRush
                         foreach (var b in list)
                         {
                             if (Mathf.Abs(b.p.y - w.y) > 4) continue;
-                            float dx = b.p.x - w.x, dz = b.p.z - w.z; float reach = Mathf.Max(b.half - .3f, 2.5f); if (dx * dx + dz * dz > reach * reach) continue;
-                            if (b.line != line) { if (Mathf.Abs(Vector3.Dot(Vector3.ProjectOnPlane(b.p - centre, Vector3.up), outward)) < 1.5f) continue; return true; }
+                            // Round 87 (A, Dan's BUG-002 "bumpers shouldn't cross each other", BUG-009 to 011 "most are not needed"): another line's band (a
+                            // shortcut's mouth, the course's other carriageway, a second pass) keeps every bumper OtherClear past its paved edge, so no run
+                            // crosses another line or stands on a median between the course's own lanes (was: only inside its paved half)
+                            float dx = b.p.x - w.x, dz = b.p.z - w.z; float reach = Old ? Mathf.Max(b.half - .3f, 2.5f) : b.half + OtherClear; if (dx * dx + dz * dz > reach * reach) continue;
+                            if (b.line != line) { if (Mathf.Abs(Vector3.Dot(Vector3.ProjectOnPlane(b.p - centre, Vector3.up), outward)) < 1.5f) continue; OpenLines++; return true; }
                             float along = Mathf.Abs(b.s - s); if (l.loop) along = Mathf.Min(along, l.length - along);
-                            if (along > 30) return true;   // the same line passing this way again (a hairpin's other leg, a second pass)
+                            if (along > 30) { OpenLines++; return true; }   // the same line passing this way again (a hairpin's other leg, a second pass)
                         }
                     }
-                // Chastain Rush: any of the map's roads here (a junction, a side road, a road under a bridge): open
-                if (roads && roads.Nearest(w, out _, out float d, out float h) && d < h - .3f) return true;
+                // Chastain Rush: any of the map's roads here (a junction, a side road, a road under a bridge): open. Round 87 (A, Dan's BUG-001 "why is
+                // there no bumper on this corner?"): not the course's own road (on the outside of a corner the bumper stood on the same road's pavement
+                // past the line's cut, and was left out): only another road (a closed side road has its barrier across its mouth)
+                if (roads && roads.Nearest(w, out var name, out float d, out float h) && d < h - .3f)
+                {
+                    if (Old || !roads.Nearest(centre, out var own, out float dc, out float hc) || dc > hc + .5f || own != name) { OpenRoads++; return true; }
+                }
                 return false;
             }
 
@@ -206,7 +219,7 @@ namespace ChastainRush
                         for (int i = 0; i < n; i++) { var (pp, _) = l.at(Mathf.Min(i * Step, l.length - .01f)); sb.Append($"{i * Step:0} {pp.x:0.0} {pp.z:0.0} {pp.y:0.00} {y[i]:0.00} {allow[i]:0.0}").AppendLine(); }
                         try { System.IO.File.AppendAllText(DumpTo, sb.ToString()); } catch { }
                     }
-                    float Y(int k) { k = Wrap(k); return k < 0 || k >= n || float.IsNaN(y[k]) ? -1e6f : y[k]; }
+                    float Y(int k) { k = Wrap(k); if (!Old && !l.loop && k >= n) k = n - 1; return k < 0 || k >= n || float.IsNaN(y[k]) ? -1e6f : y[k]; }   // Round 87: past a line's end its last ground (a shortcut's jump landing on the lap past it)
                     int last = n - 1;   // a loop's flights still run on past its end (Y wraps); its lips once only
                     for (float v = 12f; v <= vmax + .01f; v += 4f)
                         for (int i = 1; i < last; i++)
@@ -236,7 +249,7 @@ namespace ChastainRush
                     int a = Mathf.FloorToInt((jp.lip - PreLip) / Step), b = Mathf.CeilToInt((jp.land + RunOut) / Step), f = Mathf.CeilToInt(FunnelLength / Step);
                     for (int k = a; k <= b; k++) { int w = Wrap(k); if (w >= 0 && w < n) open[w] = true; }
                     for (int k = 1; k <= f; k++) { int w = Wrap(b + k); if (w >= 0 && w < n) fun[w] = Mathf.Max(fun[w], 1f - (k - 1f) / f); }
-                    jp.lip = l.loop ? Mathf.Repeat(jp.lip, l.length) : jp.lip; jp.land = l.loop ? Mathf.Repeat(jp.land, l.length) : Mathf.Min(jp.land, l.length - .01f);
+                    jp.over = l.loop ? 0f : Mathf.Max(0f, jp.land - l.length); jp.lip = l.loop ? Mathf.Repeat(jp.lip, l.length) : jp.lip; jp.land = l.loop ? Mathf.Repeat(jp.land, l.length) : Mathf.Min(jp.land, l.length - .01f);
                     jp.lipAt = l.at(jp.lip).p; jp.landAt = l.at(jp.land).p; jp.at = l.at; jp.length = l.length; jp.loop = l.loop;
                     Jumps.Add(jp);
                 }
@@ -252,54 +265,127 @@ namespace ChastainRush
                 {
                     if (jp.line == line) continue;
                     var a = new Vector2(jp.lipAt.x, jp.lipAt.z); var b = new Vector2(jp.landAt.x, jp.landAt.z); var ab = b - a;
-                    if (ab.sqrMagnitude > 1e-4f) b += ab.normalized * RunOut; ab = b - a;
+                    if (ab.sqrMagnitude > 1e-4f) b += ab.normalized * (RunOut + (Old ? 0f : jp.over)); ab = b - a;   // Round 87: and past the line's end where it lands beyond it
                     float t = ab.sqrMagnitude < 1e-4f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
-                    if ((a + ab * t - q).sqrMagnitude < CrossClear * CrossClear && Mathf.Abs(w.y - Mathf.Lerp(jp.lipAt.y, jp.landAt.y, t)) < 12f) return true;
+                    float clear = Old ? CrossClear : CrossClear + FlightCone * t * ab.magnitude;   // Round 87 (A, Dan's BUG-004 "this area should be open"): wider further along
+                    if ((a + ab * t - q).sqrMagnitude < clear * clear && Mathf.Abs(w.y - Mathf.Lerp(jp.lipAt.y, jp.landAt.y, t)) < 12f) return true;
                 }
                 return false;
             }
+            bool UnderFlightAny(Vector3 w) => UnderFlight(-1, w);
 
             var material = BumperMaterial();
             if (!bounce) bounce = new PhysicsMaterial("HIGH MODE bumper") { bounciness = 0f, bounceCombine = PhysicsMaterialCombine.Minimum,   // Round 85: WallGlance turns a vehicle off it (was a 0.3 bounce)
                  dynamicFriction = 0f, staticFriction = 0f, frictionCombine = PhysicsMaterialCombine.Minimum };
-            int chunk = 0;
+            int chunk = 0; var info = new Info(); infos[root] = info;
+            // Round 87 (B): where the course is, for the HIGH MODE reset out of the bumpers: every line's stations (walled or not), how far out its
+            // bumpers stand (wider on a jump's flight and landing), and the lead-in from the grid
+            for (int li = 0; li < lines.Count; li++)
+            {
+                var l = lines[li]; if (l.length <= 0) continue;
+                for (float s = 0; s < l.length; s += Step)
+                {
+                    var (p, _) = l.at(s); float half = l.half(s, p), r = half + 1.2f + Mathf.Max(FunnelOut * Funnel(li, s), (LandingHalf - half - 1.2f) * Widen(li, s));
+                    if (Gap(li, s) || UnderFlightAny(p)) r = Mathf.Max(r, LandingHalf + 4f);
+                    info.Add(p, r);
+                }
+            }
+            var lead = race.Route.LeadIn; if (lead != null) for (int i = 0; i + 1 < lead.Length; i++) { float L = Vector3.Distance(lead[i], lead[i + 1]); for (float t = 0; t < L; t += Step) info.Add(Vector3.Lerp(lead[i], lead[i + 1], t / L), 9f); }
+
             for (int li = 0; li < lines.Count; li++)
             {
                 var l = lines[li]; if (!l.walls || l.length <= 0) continue;
                 for (int side = -1; side <= 1; side += 2)
                 {
-                    var strip = new List<(Vector3 w, Vector3 o)>(); int count = Mathf.FloorToInt(l.length / Step);
+                    int count = Mathf.FloorToInt(l.length / Step), owner = li * 2 + (side > 0 ? 1 : 0);
+                    var run = new List<St>();
                     for (int i = 0; i <= count + (l.loop ? 1 : 0); i++)
                     {
                         float s = l.loop ? Mathf.Repeat(i * Step, l.length) : Mathf.Min(i * Step, l.length - .01f);
-                        int owner = li * 2 + (side > 0 ? 1 : 0);
-                        var ok = Sample(l, li, s, side, i > count, owner, out var w, out var o);
-                        if (ok && strip.Count > 0 && (strip[^1].w - w).magnitude > 7) ok = false;
-                        if (ok) { strip.Add((w, o)); if (i <= count) { Place(w, owner, s); Samples++; } }
-                        if ((!ok || strip.Count >= 40 || i == count + (l.loop ? 1 : 0)) && strip.Count >= 2) { Emit(root.transform, strip, chunk++, material); var last = strip[^1]; strip.Clear(); if (ok) strip.Add(last); }
-                        else if (!ok) strip.Clear();
+                        var ok = Sample(l, li, s, side, i > count, owner, out var st);
+                        if (ok && run.Count > 0 && (run[^1].w - st.w).magnitude > 7) { Finish(run, li, l); run = new List<St>(); }
+                        if (ok) { run.Add(st); if (i <= count) { Place(st.w, owner, s); Samples++; } }
+                        else if (run.Count > 0) { Finish(run, li, l); run = new List<St>(); }
                     }
+                    if (run.Count > 0) Finish(run, li, l);
                 }
             }
             Debug.Log($"[High] bumpers for {race.Route.Name} {race.Route.Direction}: {Report}, {chunk} pieces");
             return root;
 
-            bool Sample(Line l, int line, float s, int side, bool wrap, int owner, out Vector3 w, out Vector3 outward)
+            // Round 87 (A): one unbroken run of stations: a stub (shorter than MinRun) is left out; the distance out from the line changes at most
+            // MaxSlope per station (never a step in or out you can hit: nearer the line where the ground needs it, eased into over the stations before);
+            // each end that is not the run's continuation curves out away from the line (EndCurve over EndLength) where the ground and other lines allow
+            void Finish(List<St> run, int line, Line l)
             {
-                w = outward = default; var (p, f) = l.at(s); f = Vector3.ProjectOnPlane(f, Vector3.up); if (f.sqrMagnitude < 1e-4f) return false; f.Normalize();
+                if (run.Count < 2) return;
+                if (!Old && (run.Count - 1) * Step < MinRun) { Stubs++; return; }
+                if (!Old)
+                {
+                    for (int i = 1; i < run.Count; i++) run[i] = run[i].With(Mathf.Min(run[i].edge, run[i - 1].edge + MaxSlope));
+                    for (int i = run.Count - 2; i >= 0; i--) run[i] = run[i].With(Mathf.Min(run[i].edge, run[i + 1].edge + MaxSlope));
+                    int k = Mathf.Min(Mathf.RoundToInt(EndLength / Step), run.Count / 2);
+                    foreach (int end in new[] { 0, run.Count - 1 })
+                        for (int j = 0; j < k; j++)
+                        {
+                            int i = end == 0 ? j : run.Count - 1 - j; var st = run[i]; float t = 1f - j / (float)k, add = EndCurve * t * t;
+                            // as far out as the ground (no drop) and the other lines let it
+                            for (; add > .05f; add -= .25f)
+                            {
+                                var q = st.p + st.o * (st.edge + add);
+                                if (Surface(q, st.y, out float qy) && qy > st.y - 1f && !Open(new Vector3(q.x, st.y, q.z), line, st.s, st.p, st.o)) break;
+                            }
+                            if (add > .05f) { run[i] = st.With(st.edge + add); Curved++; }
+                        }
+                }
+                var strip = new List<(Vector3 w, Vector3 o)>(run.Count); foreach (var st in run) strip.Add((st.Final, st.o));
+                info.strips.Add(strip.ConvertAll(q => q.w + q.o * .5f).ToArray());
+                for (int a = 0; a + 1 < strip.Count; a += 39) Emit(root.transform, strip.GetRange(a, Mathf.Min(40, strip.Count - a)), chunk++, material);
+            }
+
+            bool Sample(Line l, int line, float s, int side, bool wrap, int owner, out St st)
+            {
+                st = default; var (p, f) = l.at(s); f = Vector3.ProjectOnPlane(f, Vector3.up); if (f.sqrMagnitude < 1e-4f) return false; f.Normalize();
                 if (Gap(line, s)) { if (side < 0 && !wrap) JumpStations++; return false; }   // Round 86: a jump's flight and landing
                 if (!Surface(p, p.y, out float roadY) || Mathf.Abs(roadY - p.y) > 1.6f) return false;   // no ground at the line: a gap, a deck over it
-                outward = Vector3.Cross(Vector3.up, f) * side; float half = l.half(s, p), wide = Widen(line, s), reach = Mathf.Lerp(half + 1.2f, Mathf.Max(half + 1.2f, LandingHalf), wide);
+                var outward = Vector3.Cross(Vector3.up, f) * side; float half = l.half(s, p), wide = Widen(line, s), reach = Mathf.Lerp(half + 1.2f, Mathf.Max(half + 1.2f, LandingHalf), wide);
                 reach = Mathf.Max(reach, half + 1.2f + FunnelOut * Funnel(line, s)); float edge = reach;   // Round 86: past a landing, the funnel
                 if (reach > half + 1.25f) LandingStations++;
                 for (float d = 2.5f; d <= reach; d += .5f)
                     if (!Surface(p + outward * d, roadY, out float y) || y < roadY - 1f) { edge = Mathf.Max(2.2f, d - .3f); break; }   // the ground drops away here
-                w = p + outward * edge; w.y = roadY;
+                var w = p + outward * edge; w.y = roadY;
                 if (Open(w, line, s, p, outward)) { Openings++; return false; }
                 if (UnderFlight(line, w)) { if (side < 0 && !wrap) JumpStations++; return false; }   // Round 86: under another line's jump
+                st = new St { p = new Vector3(p.x, roadY, p.z), o = outward, edge = edge, y = roadY, s = s, w = w };
                 return wrap || !Duplicate(w, owner, s, l.length);
             }
         }
+        struct St { public Vector3 p, o, w; public float edge, y, s; public St With(float e) { var c = this; c.edge = e; return c; } public Vector3 Final => p + o * edge; }
+
+        // Round 87: what a build made, for the HIGH MODE reset (Inside) and the checks (each run's middle line)
+        public sealed class Info
+        {
+            public readonly List<Vector3[]> strips = new List<Vector3[]>();
+            readonly Dictionary<long, List<Vector4>> cells = new Dictionary<long, List<Vector4>>();
+            public void Add(Vector3 p, float r) { long k = Key(Mathf.FloorToInt(p.x / Cell), Mathf.FloorToInt(p.z / Cell)); if (!cells.TryGetValue(k, out var l)) cells[k] = l = new List<Vector4>(); l.Add(new Vector4(p.x, p.y, p.z, r)); }
+            // on the course: within its bumpers' reach (and a meter more) of some station, at its height (within 10 m: a deck over a road is not it)
+            public bool Inside(Vector3 q)
+            {
+                int cx = Mathf.FloorToInt(q.x / Cell), cz = Mathf.FloorToInt(q.z / Cell);
+                for (int x = cx - 1; x <= cx + 1; x++) for (int z = cz - 1; z <= cz + 1; z++)
+                        if (cells.TryGetValue(Key(x, z), out var l)) foreach (var v in l)
+                            {
+                                float dx = v.x - q.x, dz = v.z - q.z, r = v.w + 1f;
+                                if (dx * dx + dz * dz <= r * r && Mathf.Abs(v.y - q.y) < 10f) return true;
+                            }
+                return false;
+            }
+        }
+        static readonly Dictionary<GameObject, Info> infos = new Dictionary<GameObject, Info>();
+        public static Info Current => current && infos.TryGetValue(current, out var i) ? i : null;
+        // Round 87 (B): a HIGH MODE player out of the bumpers (checks: how many were put back)
+        public static bool Outside(Vector3 q) { var i = Current; return Shown && i != null && !i.Inside(q); }
+        public static int OutResets;
         // Round 86 (A): the driven surface along a line, 'off' metres to its right, one height per Step (NaN: none): from above, the surface nearest
         // to where the last two stations point (so it climbs a ramp, stays on a deck or under it, and falls into a hollow)
         static float[] DrivenProfile(Line l, float off, int n, int mask, RaycastHit[] hits)

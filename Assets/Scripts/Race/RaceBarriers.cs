@@ -54,7 +54,7 @@ namespace ChastainRush
                 // Round 73 A1 (Dan's BUG-001 / BUG-002 on Kennesaw Mountain: barriers straight across the race's own road): a closure the race's line
                 // (the lap or the lead-in) passes through is never built; one whose end reaches the line's road loses the blocks within LineClearM of it
                 if (OnLine(route, a, b, c.x, c.z) < 1.5f) { OnCourse.Add($"{c.id} {c.label}"); Debug.LogWarning($"[RaceBarriers] closure {c.id} '{c.label}' is on the race's line: not built"); continue; }
-                built.Add(MakeBarrier(c, route));
+                built.Add((!Old ? AlongCourse(c, route) : null) ?? MakeBarrier(c, route));
             }
             // Round 24 A2 (A3): every pipe mouth this race does not go through is closed too (PipeMouths, from the map build)
             MouthsClosed.Clear();
@@ -136,7 +136,7 @@ namespace ChastainRush
         public void Clear()
         {
             for (int i = transform.childCount - 1; i >= 0; i--) Destroy(transform.GetChild(i).gameObject);
-            built.Clear(); Gates.Clear(); Seals = Rails = 0; OnCourse.Clear(); Trimmed = 0;
+            built.Clear(); Gates.Clear(); Seals = Rails = 0; OnCourse.Clear(); Trimmed = 0; Rows.Clear();
         }
 
         static float DistToSegment(Vector2 p, Vector2 a, Vector2 b)
@@ -187,6 +187,105 @@ namespace ChastainRush
                 Destroy(post.GetComponent<Collider>());
             }
             return new Barrier { Data = c, Root = root, Centre = new Vector3(c.x, RaceRoute.Surface(c.x, c.z).y, c.z), Along = along, HalfLength = half };
+        }
+
+        // Round 87 (A, Dan's BUG-008 on Barrett Parkway: "It should be out of the way not have an edge sticking in the middle of the road"; and "barriers
+        // and bumpers shouldn't be at an angle that would cause you to run into them head on when following a course"): a closure was a row square to
+        // the CLOSED road, so where that road leaves at a shallow angle (a fork, a ramp, a turn lane) the row ran out across the course's own lanes and
+        // the blocks trimmed off the line left a zigzag with ends in the road. Now the row stands across the closed road's mouth ALONG the course: at
+        // the course's paved edge plus SetBack (the course's road there, else a 4 m half width), following the course's curve, as long as the closed
+        // road (its width and the verges) meets that edge, never within the course's paved half and 1.2 m of any pass of the course's line. A closure
+        // more than MouthReach from the lap (a lead-in's), or one whose mouth cannot be found, keeps Round 85's row.
+        public static bool Old;   // checks (-r87Old)
+        public const float SetBack = 2.2f, MouthReach = 45f;
+        Barrier AlongCourse(RouteClosureJson c, RaceRoute route)
+        {
+            var roads = RoadLookup.Instance; var at = new Vector3(c.x, 0f, c.z);
+            float sC = route.LapStationOf(at); var pC = route.PointAt(route.GateS + sC, out var fC);
+            float toLap = new Vector2(pC.x - c.x, pC.z - c.z).magnitude;
+            if (toLap > MouthReach) return null;
+            if (route.LeadIn != null && route.LeadIn.Length > 1 && OnPath(route.LeadIn, new Vector2(c.x, c.z)) < toLap) return null;   // the lead-in's
+            float side = Mathf.Sign(Vector3.Dot(at - pC, Vector3.Cross(Vector3.up, fC))); if (side == 0f) side = 1f;
+            var along = new Vector2(c.dx, c.dz).normalized; var c2 = new Vector2(c.x, c.z); float roadHalf = c.width_m * .5f + Verge;
+            float Half(Vector3 p) => roads && roads.Nearest(p, out _, out float d, out float h) && d < h + .5f ? h : 4f;
+            // the row's stations along the course: within the closed road (and its verges) where it crosses the course's edge
+            var pts = new List<float>();
+            for (float u = -MouthReach; u <= MouthReach; u += .5f)
+            {
+                var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f);
+                var q = p + right * side * (Half(p) + SetBack); var q2 = new Vector2(q.x, q.z);
+                float across = Mathf.Abs(Vector2.Dot(q2 - c2, new Vector2(-along.y, along.x)));   // from the closed road's middle line
+                if (across <= roadHalf) pts.Add(u);
+            }
+            if (pts.Count < 2) return null;
+            // the unbroken stretch nearest the closure
+            int best = 0; for (int i = 1; i < pts.Count; i++) if (Mathf.Abs(pts[i]) < Mathf.Abs(pts[best])) best = i;
+            int i0 = best, i1 = best; while (i0 > 0 && pts[i0 - 1] > pts[i0] - .6f) i0--; while (i1 + 1 < pts.Count && pts[i1 + 1] < pts[i1] + .6f) i1++;
+            float u0 = pts[i0], u1 = pts[i1], length = u1 - u0;
+            if (length < 2f) return null;
+            int blocks = Mathf.Max(2, Mathf.RoundToInt(length / Block)); float bw = length / blocks;
+            var root = new GameObject("Barrier " + c.id); root.transform.SetParent(transform, false);
+            var run = new List<Vector3>(); Vector3 runAlong = Vector3.zero;
+            Vector3 first = Vector3.zero, last = Vector3.zero; bool any = false;
+            for (int i = 0; i < blocks; i++)
+            {
+                float u = u0 + bw * (i + .5f);
+                var p = route.PointAt(route.GateS + sC + u, out var f); var right = Vector3.Cross(Vector3.up, f); float hp = Half(p);
+                var q = p + right * side * (hp + SetBack);
+                // never on any pass of the course (its paved half and 1.2 m), nor across an official shortcut's line
+                bool clear = OnLine(route, new Vector2(q.x, q.z), new Vector2(q.x, q.z), q.x, q.z) >= hp + 1.2f && !NearShortcut(route, new Vector2(q.x, q.z));
+                if (!clear) { Trimmed++; SolidAlong(root.transform, run, bw, runAlong); continue; }
+                float gy = RaceRoute.Surface(q.x, q.z).y;
+                // a run of blocks is one straight box: a new one where the course bends more than 6 degrees from the run's start
+                if (run.Count > 0 && Vector3.Angle(runAlong, f) > 6f) SolidAlong(root.transform, run, bw, runAlong);
+                if (run.Count == 0) runAlong = f;
+                run.Add(new Vector3(q.x, gy, q.z));
+                var cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                cube.transform.SetParent(root.transform, false);
+                cube.transform.SetPositionAndRotation(new Vector3(q.x, gy + Height * 0.5f - 0.5f, q.z), Quaternion.LookRotation(right * side, Vector3.up));
+                cube.transform.localScale = new Vector3(bw + .05f, Height + 1f, Depth);
+                var rd = cube.GetComponent<Renderer>(); rd.sharedMaterial = i % 2 == 0 ? red : white; rd.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                Destroy(cube.GetComponent<Collider>());
+                if (!any) first = q; last = q; any = true;
+            }
+            SolidAlong(root.transform, run, bw, runAlong);
+            if (!any) { Destroy(root); return null; }
+            // a tall post at each end, a little further out (it reads from far down the street; never nearer the road than the row)
+            foreach (var e in new[] { first, last })
+            {
+                var pe = route.PointAt(route.GateS + route.LapStationOf(e), out var fe); var o = e - pe; o.y = 0f; o = o.sqrMagnitude > 1e-4f ? o.normalized : Vector3.Cross(Vector3.up, fe) * side;
+                var q = e + o * .4f; float gy = RaceRoute.Surface(q.x, q.z).y;
+                var post = GameObject.CreatePrimitive(PrimitiveType.Cube); post.transform.SetParent(root.transform, false);
+                post.transform.SetPositionAndRotation(new Vector3(q.x, gy + 1.6f, q.z), Quaternion.LookRotation(o, Vector3.up));
+                post.transform.localScale = new Vector3(0.35f, 3.4f, 0.35f); post.GetComponent<Renderer>().sharedMaterial = red; Destroy(post.GetComponent<Collider>());
+            }
+            Rows.Add(new Row { id = c.id, a = first, b = last });
+            return new Barrier { Data = c, Root = root, Centre = new Vector3(c.x, RaceRoute.Surface(c.x, c.z).y, c.z), Along = new Vector3(along.x, 0f, along.y), HalfLength = length * .5f };
+        }
+        public sealed class Row { public string id; public Vector3 a, b; }
+        public readonly List<Row> Rows = new List<Row>();   // checks: each closure row along the course, end to end
+        // one box for a straight run of blocks laid along the course
+        void SolidAlong(Transform root, List<Vector3> run, float bw, Vector3 f)
+        {
+            if (run.Count == 0) return;
+            Vector3 a = run[0], b = run[run.Count - 1]; float lo = float.MaxValue, hi = float.MinValue;
+            foreach (var q in run) { lo = Mathf.Min(lo, q.y - 1f); hi = Mathf.Max(hi, q.y + Height); }
+            var dir = new Vector3(b.x - a.x, 0f, b.z - a.z); if (dir.sqrMagnitude < 1e-4f) dir = f; dir.y = 0f; dir.Normalize();
+            var go = new GameObject("Barrier wall"); go.transform.SetParent(root, false);
+            var mid = (a + b) * .5f; go.transform.SetPositionAndRotation(new Vector3(mid.x, (lo + hi) * .5f, mid.z), Quaternion.LookRotation(Vector3.Cross(dir, Vector3.up), Vector3.up));
+            var box = go.AddComponent<BoxCollider>(); box.size = new Vector3(new Vector2(b.x - a.x, b.z - a.z).magnitude + bw, hi - lo, Depth);
+            run.Clear();
+        }
+        static float OnPath(Vector3[] path, Vector2 q)
+        {
+            float best = float.MaxValue;
+            for (int i = 0; i + 1 < path.Length; i++) best = Mathf.Min(best, DistToSegment(q, new Vector2(path[i].x, path[i].z), new Vector2(path[i + 1].x, path[i + 1].z)));
+            return best;
+        }
+        static bool NearShortcut(RaceRoute route, Vector2 q)
+        {
+            foreach (var sc in route.Shortcuts) if (sc.Path != null && OnPath(sc.Path, q) < ShortcutClearM + .75f) return true;
+            return false;
         }
 
         static Material Unlit(Color col)
