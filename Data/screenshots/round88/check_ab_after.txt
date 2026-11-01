@@ -1,0 +1,27 @@
+Round 20 check, 2026-10-31 18:49, the exe, 1280 x 720, muted.
+
+=== A. The Kennesaw climb at x -398 z -5520 (the run-off now from 80 m before the crest), full throttle by the human-like driver, from 300 m below to 150 m above
+  normal Drifter Twin: top 43 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 4.1 m (left, the outside, +53 m from the crest, at (-437, -5561)), most below the line's ground 0.2 m (-24 m), resets 0
+  normal Street Classic: top 38 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 3.2 m (left, the outside, -24 m from the crest, at (-385, -5503)), most below the line's ground 0.0 m (-24 m), resets 0
+  normal Skyfin Cruiser: top 38 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 2.4 m (left, the outside, +82 m from the crest, at (-464, -5572)), most below the line's ground 0.0 m (+0 m), resets 0
+  HIGH Drifter Twin: top 43 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 4.0 m (left, the outside, +6 m from the crest, at (-400, -5532)), most below the line's ground 0.2 m (-56 m), resets 0
+  HIGH Street Classic: top 38 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 3.5 m (left, the outside, -49 m from the crest, at (-381, -5479)), most below the line's ground 0.1 m (-24 m), resets 0
+  HIGH Skyfin Cruiser: top 38 m/s, longest air from 100 m before to 90 m past the crest 0.00 s, farthest off the line 3.4 m (left, the outside, -70 m from the crest, at (-384, -5457)), most below the line's ground 0.0 m (-15 m), resets 0
+PASS  A: the climb: no air over 0.5 s, never off the road's level ground (3 vehicles, normal and HIGH)  -  0 of 6 runs wrong
+
+=== B. The Kennesaw race's start line (Dan's bump at x -832 z -5188, lap distance 0): from the grid, and flying through the line at the end of a lap
+  normal Drifter Twin from the grid: top 36 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  normal Drifter Twin flying through the line: top 45 m/s, longest air within 60 m of the line 0.50 s (at (-869.7, -5207.6)), resets 0  <- WRONG
+  normal Street Classic from the grid: top 32 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  normal Street Classic flying through the line: top 42 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  normal Skyfin Cruiser from the grid: top 33 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  normal Skyfin Cruiser flying through the line: top 42 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  HIGH Drifter Twin from the grid: top 37 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  HIGH Drifter Twin flying through the line: top 45 m/s, longest air within 60 m of the line 0.54 s (at (-868.6, -5206.7)), resets 0  <- WRONG
+  HIGH Street Classic from the grid: top 33 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  HIGH Street Classic flying through the line: top 42 m/s, longest air within 60 m of the line 0.10 s (at (-879.3, -5215.8)), resets 0
+  HIGH Skyfin Cruiser from the grid: top 36 m/s, longest air within 60 m of the line 0.00 s, resets 0
+  HIGH Skyfin Cruiser flying through the line: top 41 m/s, longest air within 60 m of the line 0.00 s, resets 0
+FAIL  B: the start line: no air over 0.3 s (3 vehicles, from the grid and flying, normal and HIGH)  -  2 of 12 runs wrong
+
+1 of 2 checks passed.

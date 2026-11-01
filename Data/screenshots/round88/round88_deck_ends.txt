@@ -1,0 +1,89 @@
+Round 88 (C): the decks' ends at Round 83's leftover places laid onto their roads (MapBuilder.Round88.cs R88DeckEnds). Per end: the step and the sharpest crest / sag before -> after (the speed a car holds wheels down)
+bridge 13 (Larry McDonald Memorial Highway 163463866) start at (-1351, 1545): the deck's last 6 m put back on its own grade (6.6 % toward the end), 3 point(s) moved by up to 0.60 m
+bridge 13 (Larry McDonald Memorial Highway 163463866) start at (-1351, 1545): step -0.61 -> 0.02 m, crest held to 14 -> 44 m/s, sag 0.032 -> 0.001 per m; laid over 28 m of 150 (1 way(s)), the ground moved by up to 2.75 m (1732 samples)
+bridge 13 (Larry McDonald Memorial Highway 163463866) end at (-1411, 1632): the deck's last 6 m put back on its own grade (-2.2 % toward the end), 2 point(s) moved by up to 1.28 m
+bridge 13 (Larry McDonald Memorial Highway 163463866) end at (-1411, 1632): step 1.04 -> 0.02 m, crest held to 8 -> 40 m/s, sag 0.255 -> 0.008 per m; laid over 80 m of 150 (1 way(s)), the ground moved by up to 2.87 m (4022 samples)
+bridge 15 (Larry McDonald Memorial Highway 163463873) start at (-1415, 1585): the deck's last 6 m put back on its own grade (0.9 % toward the end), 3 point(s) moved by up to 0.10 m
+bridge 15 (Larry McDonald Memorial Highway 163463873) start at (-1415, 1585): step 0.03 m, crest held to 121 m/s: fine, left
+bridge 15 (Larry McDonald Memorial Highway 163463873) end at (-1353, 1493): the deck's last 6 m put back on its own grade (-4.7 % toward the end), 2 point(s) moved by up to 0.04 m
+bridge 15 (Larry McDonald Memorial Highway 163463873) end at (-1353, 1493): step 0.24 -> 0.01 m, crest held to 29 -> 102 m/s, sag 0.021 -> 0.003 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.04 m (1525 samples)
+bridge 17 (Larry McDonald Memorial Highway 175898799) start at (-698, -410): the deck's last 6 m put back on its own grade (3.9 % toward the end), 1 point(s) moved by up to 0.39 m
+bridge 17 (Larry McDonald Memorial Highway 175898799) start at (-698, -410): step -0.40 -> 0.01 m, crest held to 18 -> 65 m/s, sag 0.023 -> 0.003 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.25 m (1507 samples)
+bridge 17 (Larry McDonald Memorial Highway 175898799) end at (-658, -471): the deck's last 6 m put back on its own grade (-3.9 % toward the end), 2 point(s) moved by up to 1.08 m
+bridge 17 (Larry McDonald Memorial Highway 175898799) end at (-658, -471): step -1.05 -> 0.02 m, crest held to 13 -> 41 m/s, sag 0.087 -> 0.006 per m; laid over 60 m of 150 (1 way(s)), the ground moved by up to 1.99 m (3175 samples)
+bridge 18 (Larry McDonald Memorial Highway 175898800) start at (-568, -434): the deck's last 6 m put back on its own grade (-5.2 % toward the end), 1 point(s) moved by up to 0.91 m
+bridge 18 (Larry McDonald Memorial Highway 175898800) start at (-568, -434): step -0.89 -> 0.01 m, crest held to 8 -> 43 m/s, sag 0.263 -> 0.007 per m; laid over 60 m of 150 (1 way(s)), the ground moved by up to 1.81 m (3145 samples)
+bridge 18 (Larry McDonald Memorial Highway 175898800) end at (-602, -383): the deck's last 6 m put back on its own grade (5.2 % toward the end), 1 point(s) moved by up to 0.49 m
+bridge 18 (Larry McDonald Memorial Highway 175898800) end at (-602, -383): step -0.50 -> 0.02 m, crest held to 16 -> 58 m/s, sag 0.028 -> 0.003 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.27 m (1531 samples)
+bridge 19 (Phillip Landrum Memorial Highway 182380658) start at (743, -1648): step 0.81 -> 0.01 m, crest held to 12 -> 53 m/s, sag 0.137 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.09 m (1230 samples)
+bridge 19 (Phillip Landrum Memorial Highway 182380658) end at (740, -1712): step 1.19 -> 0.01 m, crest held to 11 -> 107 m/s, sag 0.154 -> 0.004 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.23 m (1253 samples)
+bridge 20 (Phillip Landrum Memorial Highway 182380660) start at (768, -1714): step 1.30 -> 0.01 m, crest held to 11 -> 62 m/s, sag 0.169 -> 0.003 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.34 m (1230 samples)
+bridge 20 (Phillip Landrum Memorial Highway 182380660) end at (771, -1649): the deck's last 6 m put back on its own grade (-4.0 % toward the end), 1 point(s) moved by up to 0.52 m
+bridge 20 (Phillip Landrum Memorial Highway 182380660) end at (771, -1649): step 1.08 -> 0.02 m, crest held to 10 -> 43 m/s, sag 0.179 -> 0.005 per m; laid over 36 m of 150 (1 way(s)), the ground moved by up to 1.08 m (1679 samples)
+bridge 29 (Northwest Corridor Express Lanes 367181845) start at (758, -1649): the deck's last 6 m put back on its own grade (-1.3 % toward the end), 1 point(s) moved by up to 0.04 m
+bridge 29 (Northwest Corridor Express Lanes 367181845) start at (758, -1649): step 0.59 -> 0.02 m, crest held to 19 -> 61 m/s, sag 0.061 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.16 m (1003 samples)
+bridge 29 (Northwest Corridor Express Lanes 367181845) end at (756, -1711): the deck's last 6 m put back on its own grade (1.9 % toward the end), 4 point(s) moved by up to 0.13 m
+bridge 29 (Northwest Corridor Express Lanes 367181845) end at (756, -1711): step 1.60 -> 0.02 m, crest held to 10 -> 74 m/s, sag 0.205 -> 0.005 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.88 m (1003 samples)
+bridge 30 (Skip Spann Connector 390749396) start at (-1150, 756): the deck's last 6 m put back on its own grade (-4.7 % toward the end), 1 point(s) moved by up to 0.04 m
+bridge 30 (Skip Spann Connector 390749396) start at (-1150, 756): step 0.73 -> 0.01 m, crest held to 16 -> 56 m/s, sag 0.091 -> 0.004 per m; laid over 24 m of 150 (3 way(s)), the ground moved by up to 2.42 m (1158 samples)
+bridge 30 (Skip Spann Connector 390749396) end at (-1131, 759): runs into the next deck, left
+bridge 38 (Northwest Corridor Express Lanes 536789464) start at (-624, -381): step 0.93 -> 0.02 m, crest held to 14 -> 75 m/s, sag 0.108 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.12 m (1019 samples)
+bridge 38 (Northwest Corridor Express Lanes 536789464) end at (-580, -447): step 0.67 -> 0.02 m, crest held to 17 -> 93 m/s, sag 0.076 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.12 m (997 samples)
+bridge 39 (Skip Spann Connector 564146479) start at (-1132, 771): runs into the next deck, left
+bridge 39 (Skip Spann Connector 564146479) end at (-1151, 768): the deck's last 6 m put back on its own grade (-2.1 % toward the end), 2 point(s) moved by up to 0.06 m
+bridge 39 (Skip Spann Connector 564146479) end at (-1151, 768): step 1.04 -> 0.01 m, crest held to 13 -> 67 m/s, sag 0.126 -> 0.002 per m; laid over 24 m of 150 (4 way(s)), the ground moved by up to 1.08 m (1492 samples)
+bridge 45 (Northwest Corridor Express Lanes 623138519) start at (-1414, 1617): the deck's last 6 m put back on its own grade (-1.0 % toward the end), 2 point(s) moved by up to 0.08 m
+bridge 45 (Northwest Corridor Express Lanes 623138519) start at (-1414, 1617): step 0.92 -> 0.01 m, crest held to 14 -> 94 m/s, sag 0.117 -> 0.006 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 3.56 m (1066 samples)
+bridge 45 (Northwest Corridor Express Lanes 623138519) end at (-1349, 1522): the deck's last 6 m put back on its own grade (-1.8 % toward the end), 2 point(s) moved by up to 0.04 m
+bridge 45 (Northwest Corridor Express Lanes 623138519) end at (-1349, 1522): step 0.85 -> 0.02 m, crest held to 14 -> 94 m/s, sag 0.102 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.64 m (1027 samples)
+bridge 51 (Canton Road Northeast 63222662) start at (1905, -5869): the deck's last 6 m put back on its own grade (3.8 % toward the end), 4 point(s) moved by up to 0.12 m
+bridge 51 (Canton Road Northeast 63222662) start at (1905, -5869): step 1.35 -> 0.01 m, crest held to 11 -> 50 m/s, sag 0.175 -> 0.005 per m; laid over 24 m of 150 (4 way(s)), the ground moved by up to 1.63 m (1241 samples)
+bridge 51 (Canton Road Northeast 63222662) end at (1927, -5828): step 3.33 -> 0.02 m, crest held to 7 -> 28 m/s, sag 0.408 -> 0.023 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 4.49 m (1253 samples)
+bridge 52 (Allgood Road Northeast 100762098) start at (3427, -6219): step 1.88 -> 0.01 m, crest held to 9 -> 50 m/s, sag 0.210 -> 0.000 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 5.13 m (1824 samples)
+bridge 52 (Allgood Road Northeast 100762098) end at (3501, -6185): the deck's last 6 m put back on its own grade (-9.5 % toward the end), 2 point(s) moved by up to 1.68 m
+bridge 52 (Allgood Road Northeast 100762098) end at (3501, -6185): step 0.64 -> 0.02 m, crest held to 7 -> 41 m/s, sag 0.304 -> 0.006 per m; laid over 68 m of 150 (3 way(s)), the ground moved by up to 4.68 m (4117 samples)
+bridge 53 (Canton Road Connector 100762130) start at (2403, -4878): the deck's last 6 m put back on its own grade (-3.3 % toward the end), 1 point(s) moved by up to 0.74 m
+bridge 53 (Canton Road Connector 100762130) start at (2403, -4878): step -0.75 -> 0.01 m, crest held to 15 -> 44 m/s, sag 0.057 -> 0.007 per m; laid over 40 m of 150 (2 way(s)), the ground moved by up to 1.09 m (2179 samples)
+bridge 53 (Canton Road Connector 100762130) end at (2310, -4977): the road under another deck within 6 m, left (its deck as it was)
+bridge 54 (Canton Road Connector 100762134) start at (2329, -4998): the road under another deck within 6 m, left (its deck as it was)
+bridge 54 (Canton Road Connector 100762134) end at (2422, -4902): step 0.29 -> 0.02 m, crest held to 22 -> 46 m/s, sag 0.015 -> 0.005 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.09 m (1224 samples)
+bridge 57 (Larry McDonald Memorial Highway 100762237) start at (1493, -4228): the deck's last 6 m put back on its own grade (6.0 % toward the end), 1 point(s) moved by up to 0.24 m
+bridge 57 (Larry McDonald Memorial Highway 100762237) start at (1493, -4228): step -0.23 -> 0.01 m, crest held to 27 -> 47 m/s, sag 0.018 -> 0.005 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.98 m (2414 samples)
+bridge 57 (Larry McDonald Memorial Highway 100762237) end at (1535, -4252): the deck's last 6 m put back on its own grade (-5.9 % toward the end), 2 point(s) moved by up to 3.04 m
+bridge 57 (Larry McDonald Memorial Highway 100762237) end at (1535, -4252): step 1.01 -> 0.02 m, crest held to 5 -> 40 m/s, sag 0.537 -> 0.007 per m; laid over 88 m of 150 (1 way(s)), the ground moved by up to 6.83 m (6926 samples)
+bridge 60 (Larry McDonald Memorial Highway 119686452) start at (1549, -4226): step 0.03 -> 0.02 m, crest held to 19 -> 23 m/s, sag 0.032 -> 0.023 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.37 m (2387 samples)
+bridge 60 (Larry McDonald Memorial Highway 119686452) end at (1505, -4201): the deck's last 6 m put back on its own grade (-3.3 % toward the end), 2 point(s) moved by up to 0.46 m
+bridge 60 (Larry McDonald Memorial Highway 119686452) end at (1505, -4201): step -0.39 -> 0.01 m, crest held to 19 -> 41 m/s, sag 0.040 -> 0.010 per m; laid over 36 m of 150 (2 way(s)), the ground moved by up to 0.84 m (3280 samples)
+bridge 61 (Phillip Landrum Memorial Highway 163463460) start at (496, -3147): the deck's last 6 m put back on its own grade (0.6 % toward the end), 3 point(s) moved by up to 0.86 m
+bridge 61 (Phillip Landrum Memorial Highway 163463460) start at (496, -3147): step -0.21 -> 0.01 m, crest held to 15 -> 44 m/s, sag 0.066 -> 0.005 per m; laid over 56 m of 150 (1 way(s)), the ground moved by up to 1.58 m (2378 samples)
+bridge 61 (Phillip Landrum Memorial Highway 163463460) end at (471, -3313): the deck's last 6 m put back on its own grade (-2.9 % toward the end), 3 point(s) moved by up to 0.05 m
+bridge 61 (Phillip Landrum Memorial Highway 163463460) end at (471, -3313): step 1.08 -> 0.01 m, crest held to 12 -> 94 m/s, sag 0.127 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 6.07 m (1200 samples)
+bridge 62 (Larry McDonald Memorial Highway 163463865) start at (-100, -2161): step 0.01 m, crest held to 52 m/s: fine, left
+bridge 62 (Larry McDonald Memorial Highway 163463865) end at (-69, -2223): the deck's last 6 m put back on its own grade (0.1 % toward the end), 2 point(s) moved by up to 0.89 m
+bridge 62 (Larry McDonald Memorial Highway 163463865) end at (-69, -2223): step -0.90 -> 0.01 m, crest held to 14 -> 43 m/s, sag 0.060 -> 0.008 per m; laid over 36 m of 122 (1 way(s)), the ground moved by up to 1.01 m (2086 samples)
+bridge 63 (Larry McDonald Memorial Highway 163463875) start at (-24, -2189): the deck's last 6 m put back on its own grade (-0.6 % toward the end), 2 point(s) moved by up to 1.37 m
+bridge 63 (Larry McDonald Memorial Highway 163463875) start at (-24, -2189): step -1.38 -> 0.02 m, crest held to 11 -> 39 m/s, sag 0.090 -> 0.007 per m; laid over 52 m of 150 (1 way(s)), the ground moved by up to 1.45 m (2779 samples)
+bridge 63 (Larry McDonald Memorial Highway 163463875) end at (-41, -2121): the deck's last 6 m put back on its own grade (0.6 % toward the end), 3 point(s) moved by up to 0.26 m
+bridge 63 (Larry McDonald Memorial Highway 163463875) end at (-41, -2121): step 1.17 -> 0.02 m, crest held to 11 -> 47 m/s, sag 0.123 -> 0.003 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 2.06 m (1532 samples)
+bridge 79 (Northwest Corridor Express Lanes 536789455) start at (-54, -2128): step 0.39 -> 0.02 m, crest held to 24 -> 94 m/s, sag 0.041 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.12 m (1010 samples)
+bridge 79 (Northwest Corridor Express Lanes 536789455) end at (84, -2568): the deck's last 6 m put back on its own grade (0.1 % toward the end), 4 point(s) moved by up to 0.31 m
+bridge 79 (Northwest Corridor Express Lanes 536789455) end at (84, -2568): step 0.47 -> 0.01 m, crest held to 16 -> 51 m/s, sag 0.080 -> 0.008 per m; laid over 24 m of 72 (2 way(s)), the ground moved by up to 3.27 m (1030 samples)
+bridge 80 (Phillip Landrum Memorial Highway 536793083) start at (577, -3601): the deck's last 6 m put back on its own grade (1.8 % toward the end), 1 point(s) moved by up to 0.03 m
+bridge 80 (Phillip Landrum Memorial Highway 536793083) start at (577, -3601): step 1.61 -> 0.02 m, crest held to 10 -> 56 m/s, sag 0.190 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 9.29 m (1183 samples)
+bridge 80 (Phillip Landrum Memorial Highway 536793083) end at (812, -3784): step 1.89 -> 0.01 m, crest held to 11 -> 73 m/s, sag 0.162 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 3.18 m (1180 samples)
+bridge 82 (Northwest Corridor Express Lanes 564149146) start at (1481, -4251): step 0.53 -> 0.02 m, crest held to 21 -> 77 m/s, sag 0.058 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.15 m (1120 samples)
+bridge 82 (Northwest Corridor Express Lanes 564149146) end at (1522, -4273): step 0.80 -> 0.01 m, crest held to 15 -> 94 m/s, sag 0.092 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.53 m (1150 samples)
+bridge 94 (Greers Chapel Drive Northwest 1169449564) start at (211, -2599): the deck's last 6 m put back on its own grade (-1.8 % toward the end), 3 point(s) moved by up to 0.10 m
+bridge 94 (Greers Chapel Drive Northwest 1169449564) start at (211, -2599): step 1.09 -> 0.39 m, crest held to 12 -> 17 m/s, sag 0.104 -> 0.040 per m; laid over 24 m of 24 (1 way(s)), the ground moved by up to 5.91 m (1205 samples)
+bridge 94 (Greers Chapel Drive Northwest 1169449564) end at (90, -2658): the deck's last 6 m put back on its own grade (-5.7 % toward the end), 4 point(s) moved by up to 0.15 m
+bridge 94 (Greers Chapel Drive Northwest 1169449564) end at (90, -2658): step 8.74 -> 0.01 m, crest held to 5 -> 51 m/s, sag 1.031 -> 0.011 per m; laid over 32 m of 150 (2 way(s)), the ground moved by up to 12.63 m (1661 samples)
+bridge 97 (Greers Chapel Drive Northwest 1554737789) start at (95, -2668): the deck's last 6 m put back on its own grade (-5.9 % toward the end), 3 point(s) moved by up to 0.14 m
+bridge 97 (Greers Chapel Drive Northwest 1554737789) start at (95, -2668): step 5.96 -> 0.01 m, crest held to 5 -> 55 m/s, sag 0.725 -> 0.011 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 11.81 m (1345 samples)
+bridge 97 (Greers Chapel Drive Northwest 1554737789) end at (217, -2609): step 2.44 -> 0.01 m, crest held to 8 -> 118 m/s, sag 0.307 -> 0.012 per m; laid over 23 m of 23 (1 way(s)), the ground moved by up to 6.78 m (1181 samples)
+bridge 103 ( 437897716) start at (2334, -5006): the deck's last 6 m put back on its own grade (5.3 % toward the end), 3 point(s) moved by up to 0.09 m
+bridge 103 ( 437897716) start at (2334, -5006): the road under another deck within 6 m, left (its deck as it was)
+bridge 103 ( 437897716) end at (2411, -4913): no road on the ground carries on from it, left
+bridge 104 ( 451950526) start at (510, -3168): the deck's last 6 m put back on its own grade (4.2 % toward the end), 3 point(s) moved by up to 0.10 m
+bridge 104 ( 451950526) start at (510, -3168): step 0.48 -> 0.01 m, crest held to 23 -> 50 m/s, sag 0.044 -> 0.002 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 1.64 m (1052 samples)
+bridge 104 ( 451950526) end at (502, -3375): the deck's last 6 m put back on its own grade (-5.5 % toward the end), 4 point(s) moved by up to 0.31 m
+bridge 104 ( 451950526) end at (502, -3375): step 1.37 -> 0.02 m, crest held to 12 -> 54 m/s, sag 0.128 -> 0.005 per m; laid over 24 m of 150 (1 way(s)), the ground moved by up to 2.49 m (1081 samples)
