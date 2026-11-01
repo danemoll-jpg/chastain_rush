@@ -1,0 +1,13 @@
+Round 83 check, 2026-11-01 02:37, the exe, 1280 x 720, muted.
+
+=== The lines of local/round89/rerun_a.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-75 Express Lanes end to end, 10530 m: through in 308.1 s, top 35 m/s, longest in the air 0.14 s, hardest landing 0.3 m/s (at (88, -2577)), resets 0, wall hits 1  <- LOOK
+    wall hit at (2043, -4661)
+  I-75 Express Lanes end to end (the other way), 10530 m: through in 305.1 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.5 m/s (at (85, -2569)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes, 1754 m: through in 54.9 s, top 35 m/s, longest in the air 2.20 s, hardest landing 12.5 m/s (at (654, -3673)), resets 0, wall hits 0  <- LOOK
+    0.34 s in the air, from (513, -3169) to (510, -3181)
+    2.20 s in the air, from (656, -3674) to (701, -3694)
+  I-575 Express flyover into the I-75 Express Lanes (the other way), 1754 m: through in 52.9 s, top 35 m/s, longest in the air 0.08 s, hardest landing 0.3 m/s (at (556, -2916)), resets 0, wall hits 0
+FAIL  lines: 4 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  2 not
+
+0 of 1 checks passed.

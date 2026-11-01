@@ -1,0 +1,45 @@
+Round 83 check, 2026-11-01 01:58, the exe, 1280 x 720, muted.
+
+=== The lines of local/round83/r83_lines_a.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-575 Express Lanes end to end, 4793 m: through in 139.9 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (528, 10)), resets 0, wall hits 0
+  I-575 Express Lanes end to end (the other way), 4793 m: through in 147.1 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (258, 1426)), resets 0, wall hits 32  <- LOOK
+    wall hit at (324, 1040)
+    wall hit at (258, 1426)
+    wall hit at (258, 1426)
+    wall hit at (258, 1426)
+    wall hit at (258, 1427)
+    wall hit at (258, 1427)
+    wall hit at (258, 1427)
+    wall hit at (258, 1427)
+  I-75 Express Lanes end to end, 10530 m: through in 325.9 s, top 36 m/s, longest in the air 2.28 s, hardest landing 13.7 m/s (at (505, -3363)), resets 0, wall hits 5  <- LOOK
+    wall hit at (-1176, 1152)
+    wall hit at (-866, 51)
+    wall hit at (-161, -1672)
+    2.38 s in the air, from (506, -3363) to (516, -3362)
+    wall hit at (674, -3679)
+    wall hit at (3560, -6351)
+  I-75 Express Lanes end to end (the other way), 10530 m: NOT through in 631.7 s, top 35 m/s, longest in the air 1.42 s, hardest landing 6.1 m/s (at (3436, -6219)), resets 101, wall hits 22559 stuck at (3359, -6114) s 857; stuck at (3362, -6118) s 852; stuck at (3362, -6118) s 852; stuck at (3361, -6117) s 853; stuck at (3360, -6116) s 855; stuck at (3359, -6115) s 856; stuck at (3359, -6114) s 857; stuck at (3358, -6114) s 857; stuck at (3359, -6115) s 856; stuck at (3359, -6115) s 856; stuck at (3357, -6112) s 859; stuck at (3358, -6114) s 858; stuck at (3359, -6114) s 857; stuck at (3358, -6113) s 858; stuck at (3358, -6113) s 859; stuck at (3357, -6113) s 859; stuck at (3358, -6113) s 858; stuck at (3359, -6114) s 857; stuck at (3358, -6114) s 857; stuck at (3358, -6113) s 858; stuck at (3358, -6114) s 858; stuck at (3358, -6114) s 857; stuck at (3358, -6113) s 858; stuck at (3358, -6114) s 858; stuck at (3359, -6114) s 856; stuck at (3358, -6113) s 858; stuck at (3357, -6112) s 860; stuck at (3357, -6112) s 860; stuck at (3355, -6110) s 862; stuck at (3354, -6109) s 864; stuck at (3354, -6109) s 864; stuck at (3355, -6109) s 863; stuck at (3353, -6108) s 865; stuck at (3353, -6107) s 866; stuck at (3351, -6105) s 869; stuck at (3350, -6105) s 870; stuck at (3349, -6103) s 872; stuck at (3349, -6103) s 871; stuck at (3348, -6102) s 873; stuck at (3347, -6101) s 875; stuck at (3347, -6101) s 874; stuck at (3346, -6100) s 876; stuck at (3345, -6098) s 878; stuck at (3345, -6098) s 878; stuck at (3344, -6097) s 880; stuck at (3342, -6095) s 882; stuck at (3341, -6094) s 883; stuck at (3339, -6092) s 887; stuck at (3340, -6093) s 885; stuck at (3339, -6092) s 886; stuck at (3340, -6093) s 885; stuck at (3338, -6091) s 888; stuck at (3338, -6091) s 888; stuck at (3338, -6090) s 889; stuck at (3336, -6089) s 891; stuck at (3338, -6091) s 888; stuck at (3338, -6091) s 888; stuck at (3338, -6091) s 888; stuck at (3338, -6090) s 889; stuck at (3338, -6091) s 888; stuck at (3338, -6091) s 888; stuck at (3337, -6089) s 890; stuck at (3338, -6090) s 889; stuck at (3338, -6091) s 888; stuck at (3338, -6090) s 889; stuck at (3337, -6090) s 889; stuck at (3337, -6090) s 889; stuck at (3338, -6091) s 888; stuck at (3337, -6089) s 890; stuck at (3338, -6090) s 889; stuck at (3336, -6089) s 891; stuck at (3337, -6090) s 890; stuck at (3338, -6090) s 889; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3336, -6089) s 890; stuck at (3336, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3337, -6090) s 889; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3334, -6086) s 895; stuck at (3334, -6087) s 894; stuck at (3336, -6089) s 891; stuck at (3335, -6087) s 893; stuck at (3336, -6089) s 891; stuck at (3337, -6089) s 890; stuck at (3337, -6089) s 890; stuck at (3336, -6088) s 891; stuck at (3336, -6088) s 891; stuck at (3336, -6089) s 891; stuck at (3335, -6087) s 893; stuck at (3335, -6087) s 893; stuck at (3335, -6087) s 893; stuck at (3335, -6088) s 892; stuck at (3335, -6087) s 893; stuck at (3335, -6087) s 893;  <- LOOK
+    1.42 s in the air, from (3436, -6218) to (3433, -6185)
+    wall hit at (3403, -6163)
+    wall hit at (3381, -6138)
+    wall hit at (3381, -6138)
+    wall hit at (3360, -6115)
+    wall hit at (3360, -6115)
+    wall hit at (3359, -6114)
+    wall hit at (3359, -6114)
+  Big Shanty Express ramp onto the lanes, 1256 m: through in 44.1 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-359, -856)), resets 0, wall hits 1  <- LOOK
+    wall hit at (-205, -1477)
+  Big Shanty Express ramp onto the lanes (the other way), 1256 m: through in 43.9 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-326, -946)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes, 1754 m: NOT through in 130.3 s, top 35 m/s, longest in the air 95.14 s, hardest landing 18.9 m/s (at (512, -3223)), resets 0, wall hits 0  <- LOOK
+    1.52 s in the air, from (514, -3177) to (512, -3223)
+    0.66 s in the air, from (507, -3226) to (497, -3228)
+    1.68 s in the air, from (495, -3264) to (483, -3291)
+    stopped at (505.5, 344.2, -3373.3): stay:Terrain_13_9:n(-0.94,-0.09,-0.33):p(506.1,343.27,-3373.6):J114.9 stay:BridgeStructure:n(0.94,0.09,0.33):p(504.9,344.52,-3372.5):J138.1 
+  I-575 Express flyover into the I-75 Express Lanes (the other way), 1754 m: through in 53.0 s, top 36 m/s, longest in the air 0.08 s, hardest landing 0.3 m/s (at (560, -2916)), resets 0, wall hits 0
+  Skip Spann Connector eastern carriageway end to end, 400 m: through in 14.9 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-864, 812)), resets 0, wall hits 0
+  Skip Spann Connector eastern carriageway end to end (the other way), 400 m: through in 14.9 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-855, 812)), resets 0, wall hits 0
+  Skip Spann Connector western carriageway end to end, 410 m: through in 15.5 s, top 30 m/s, longest in the air 0.10 s, hardest landing 0.3 m/s (at (-802, 793)), resets 0, wall hits 0
+  Skip Spann Connector western carriageway end to end (the other way), 410 m: through in 15.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-1143, 758)), resets 0, wall hits 0
+FAIL  lines: 12 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  5 not
+
+0 of 1 checks passed.
