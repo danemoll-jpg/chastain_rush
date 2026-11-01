@@ -371,6 +371,14 @@ for j in (J3, J1, J2):
 
 # ---------------------------------------------------------------- the world pieces
 grades, surfaces, berms, clear = [], [], [], []
+# (the roads the course meets: every way with a closure, and the quarry jumps drive; the jumps' run-up heads)
+shut_ids = {c["osm_id"] for c in closures}
+shut_cells = {}
+for oid, name, width, wp in ways:
+    if oid in shut_ids:
+        for q in resample(wp, 3.0):
+            if course_gap(q) > BENCH_HALF + 3.0: shut_cells.setdefault((int(q[0] // 20), int(q[1] // 20)), []).append(q)   # (the parts off the course)
+heads = [on_line(j, 0.0) for j in (J1, J2, J3)]
 def every(lst, n): return lst[::n] + ([lst[-1]] if (len(lst) - 1) % n else [])
 for pc in pieces:
     if pc["kind"] == "jump": continue
@@ -398,11 +406,18 @@ for pc in pieces:
     grades.append(g)
     surfaces.append({"id": pc["name"], "points": flat(every(P, 2)), "half": BENCH_HALF})
     clear.append({"id": f"the Viking Quarry race: {pc['name']}", "points": flat(every(P, 4)), "half": CLEAR_HALF})
-    # the berms: a low rock berm along an edge where the ground beyond falls 3 m or more below the road (a haul road's safety berm)
+    # the berms: a low rock berm along an edge where the ground beyond falls 3 m or more below the road (a haul road's safety berm); none within
+    # 14 m of a road the course meets or crosses (its closures), Free Roam's quarry jumps drive, or a jump's run-up head (nothing shut in Free Roam)
+    def berm_ok(k, side):
+        a, b = loop[max(0, k - 2)], loop[min(len(loop) - 1, k + 2)]; t_ = unit((b[0] - a[0], b[1] - a[1])); q = loop[k]
+        e = (q[0] - t_[1] * side * (BENCH_HALF + .8), q[1] + t_[0] * side * (BENCH_HALF + .8))
+        if any(math.dist(e, c) < 30.0 for c in heads): return False
+        cx, cz = int(e[0] // 20), int(e[1] // 20)
+        return not any(math.dist(e, w) < 14.0 for dx in (-1, 0, 1) for dz in (-1, 0, 1) for w in shut_cells.get((cx + dx, cz + dz), ()))
     for side in (1, -1):
         run = []
         for k, (gl, gr, y) in zip(ks + [None], lat_g + [(1e9, 1e9, 0.0)]):
-            if k is not None and y - (gl if side > 0 else gr) >= 3.0: run.append(k); continue
+            if k is not None and y - (gl if side > 0 else gr) >= 3.0 and berm_ok(k, side): run.append(k); continue
             if len(run) >= 10: berms.append({"id": f"{pc['name']} {'left' if side > 0 else 'right'} {len(berms)}", "points": flat([loop[i] for i in every(run, 2)]), "side": side, "lat": BENCH_HALF + 0.8})
             run = []
 print(f"{len(grades)} grades, {len(berms)} berm runs ({sum(len(b['points']) // 2 for b in berms) * 4:.0f} m)")

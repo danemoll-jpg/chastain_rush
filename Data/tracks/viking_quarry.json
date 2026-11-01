@@ -13003,28 +13003,7 @@
    "lat": 8.8
   },
   {
-   "id": "G round The Corner's start left 9",
-   "points": [
-    -2000.63,
-    -2026.96,
-    -2000.45,
-    -2022.97,
-    -2000.27,
-    -2018.98,
-    -2000.11,
-    -2014.99,
-    -2000.01,
-    -2011.0,
-    -2000.0,
-    -2007.0,
-    -2000.0,
-    -2005.0
-   ],
-   "side": 1,
-   "lat": 8.8
-  },
-  {
-   "id": "X the high haul bench left 10",
+   "id": "X the high haul bench left 9",
    "points": [
     -2031.33,
     -1128.2,
@@ -13099,7 +13078,7 @@
    "lat": 8.8
   },
   {
-   "id": "X the high haul bench left 11",
+   "id": "X the high haul bench left 10",
    "points": [
     -2181.41,
     -1072.06,
@@ -13168,7 +13147,7 @@
    "lat": 8.8
   },
   {
-   "id": "X the high haul bench left 12",
+   "id": "X the high haul bench left 11",
    "points": [
     -2300.64,
     -1121.62,
@@ -13321,7 +13300,7 @@
    "lat": 8.8
   },
   {
-   "id": "X the high haul bench right 13",
+   "id": "X the high haul bench right 12",
    "points": [
     -2031.33,
     -1128.2,
@@ -13364,7 +13343,7 @@
    "lat": 8.8
   },
   {
-   "id": "X the high haul bench right 14",
+   "id": "X the high haul bench right 13",
    "points": [
     -2098.66,
     -1094.43,
@@ -13383,7 +13362,7 @@
    "lat": 8.8
   },
   {
-   "id": "T the west rim and the plateau left 15",
+   "id": "T the west rim and the plateau left 14",
    "points": [
     -2874.85,
     -1402.83,
@@ -13428,7 +13407,7 @@
    "lat": 8.8
   },
   {
-   "id": "T the west rim and the plateau right 16",
+   "id": "T the west rim and the plateau right 15",
    "points": [
     -2770.08,
     -1312.28,
@@ -13457,7 +13436,7 @@
    "lat": 8.8
   },
   {
-   "id": "T the west rim and the plateau right 17",
+   "id": "T the west rim and the plateau right 16",
    "points": [
     -2613.5,
     -1965.51,
@@ -13486,7 +13465,7 @@
    "lat": 8.8
   },
   {
-   "id": "T the west rim and the plateau right 18",
+   "id": "T the west rim and the plateau right 17",
    "points": [
     -2356.07,
     -2117.58,
