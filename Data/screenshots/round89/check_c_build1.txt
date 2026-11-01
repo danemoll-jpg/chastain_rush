@@ -1,0 +1,277 @@
+Round 89 check, 2026-11-01 05:46, the exe, 1280 x 720, muted.
+
+=== C. A copy of Dan's goose-egg save (put in the check's folder before the run)
+  250 eggs, 25 areas, tiers 10, 25, 60, 125, 190, 250; save C:\Users\danmo\chastain_rush\local\round89\check_c\goose-eggs-v1.json
+PASS  C: 250 eggs, the tiers rescaled to 250  -  250 eggs, tiers 10, 25, 60, 125, 190, 250
+PASS  C: a copy of Dan's save keeps its found eggs  -  Dan's copy: 19 found, tiers 10; in the game: 19 / 250 found (19 of his), tiers reached 10
+  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. The map: the new areas, and the GOOSE EGGS count
+  areas: Chastain Glen 6 / 12, Grasmere, Commons and Enclave 1 / 7, Chastain Lakes 1 / 9, Chastain Ridge and Canton Road 1 / 9, Chastain Corner 0 / 10, Noonday Creek 0 / 10, Underground 5 / 12, North neighborhoods 1 / 9, Bells Ferry neighborhoods 1 / 7, East neighborhoods 0 / 8, South neighborhoods 3 / 7, Town Center at Cobb 0 / 12, Kennesaw State University 0 / 10, The airport 0 / 8, Viking Quarry 0 / 8, Kennesaw Mountain 0 / 14, Marietta Square 0 / 13, Kennestone 0 / 6, Noonday Creek Trail 0 / 10, Addison Heights 0 / 10, The highways 0 / 10, West neighborhoods 0 / 15, Middle neighborhoods 0 / 13, South neighborhoods (Marietta) 0 / 13, The woods 0 / 8
+PASS  C: the map lists 25 areas and the hunt counts 250  -  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. Every new egg: a placed-car probe (the Street Classic put 16 m back toward the nearest road, driven through at 9 m/s)
+  egg-101 Town Center at Cobb (hard, low) at (446, 313.7, -1231): taken   [Town Center: inside the mall, on the race's way through]
+  egg-102 Town Center at Cobb (hard, low) at (480, 313.7, -1221): taken   [Town Center: inside the mall, on the race's way through]
+  egg-103 Town Center at Cobb (hard, low) at (328, 306.2, -1250): taken   [Town Center: inside the mall, on the race's way through]
+  egg-104 Town Center at Cobb (hard, low) at (376, 306.2, -1249): taken   [Town Center: inside the mall, on the race's way through]
+  egg-105 Town Center at Cobb (hard, low) at (314, 306.2, -1198): taken   [Town Center: inside the mall, on the race's way through]
+  egg-106 Town Center at Cobb (hard, low) at (305, 306.2, -1161): taken   [Town Center: inside the mall, on the race's way through]
+  egg-107 Town Center at Cobb (hard, ground) at (124, 317.8, -474): taken   [Town Center: on the roof of a 2-level parking deck]
+  egg-108 Town Center at Cobb (hard, ground) at (111, 328.8, -347): taken   [Town Center: on the roof of a 5-level parking deck]
+  egg-109 Town Center at Cobb (easy, ground) at (80, 300.9, -1005): taken   [Town Center: by Ring Road Northwest]
+  egg-110 Town Center at Cobb (easy, ground) at (451, 298.3, -903): taken   [Town Center: by Town Center Drive]
+  egg-111 Town Center at Cobb (easy, ground) at (436, 315.4, -1533): taken   [Town Center: by Mall Boulevard Northwest]
+  egg-112 Town Center at Cobb (easy, ground) at (113, 300.0, -982): taken   [Town Center: by Ring Road Northwest]
+  egg-113 Kennesaw State University (easy, ground) at (-1501, 344.2, 484): taken   [KSU: by Kennesaw State University Road]
+  egg-114 Kennesaw State University (easy, ground) at (-1499, 344.4, 773): taken   [KSU: by Kennesaw State University Road]
+  egg-115 Kennesaw State University (easy, ground) at (-2024, 336.9, 801): taken   [KSU: by Pine Knoll Court]
+  egg-116 Kennesaw State University (easy, ground) at (-1611, 338.5, 769): taken   [KSU: by Paulding Avenue]
+  egg-117 Kennesaw State University (easy, ground) at (-1500, 355.3, 1414): taken   [KSU: by Campus Loop Road]
+  egg-118 Kennesaw State University (easy, ground) at (-1761, 319.8, 507): taken   [KSU: in a parking lot]
+  egg-119 Kennesaw State University (easy, ground) at (-1657, 367.2, 1635): taken   [KSU: in a parking lot]
+  egg-120 Kennesaw State University (hard, ground) at (-1427, 385.1, 1358): taken   [KSU: on the roof of a 8-level parking deck]
+  egg-121 Kennesaw State University (hard, ground) at (-1340, 356.6, 677): taken   [KSU: on the roof of a 5-level parking deck]
+  egg-122 Kennesaw State University (hard, ground) at (-1745, 384.4, 1556): taken   [KSU: on the roof of a 5-level parking deck]
+  egg-123 The airport (easy, ground) at (-3446, 334.8, -2013): taken   [the airport: on the apron and taxiways]
+  egg-124 The airport (easy, ground) at (-3150, 330.6, -1961): taken   [the airport: on the apron and taxiways]
+  egg-125 The airport (easy, ground) at (-3709, 338.0, -1867): taken   [the airport: on the apron and taxiways]
+  egg-126 The airport (easy, ground) at (-2176, 319.2, -1934): taken   [the airport: on the apron and taxiways]
+  egg-127 The airport (easy, ground) at (-1662, 315.6, -2326): taken   [the airport: by Vaughn Road]
+  egg-128 The airport (easy, ground) at (-2683, 307.9, -2391): taken   [the airport: by Barrett Park Drive]
+  egg-129 The airport (hard, ground) at (-3949, 357.9, -1133): taken   [near the airport: behind a house]
+  egg-130 The airport (hard, ground) at (-3513, 335.4, -1647): driven past, not taken (ended 15.2 m from it)  <- WRONG   [near the airport: behind a house]
+  egg-131 Viking Quarry (hard, ground) at (-1789, 216.4, -1331): taken   [Viking Quarry: on J1 landing's deck (do the jump)]
+  egg-132 Viking Quarry (hard, ground) at (-2000, 214.4, -1358): taken   [Viking Quarry: on J2 landing's deck (do the jump)]
+  egg-133 Viking Quarry (hard, ground) at (-2116, 190.6, -1402): taken   [Viking Quarry: on J3 landing's deck (do the jump)]
+  egg-134 Viking Quarry (easy, ground) at (-2300, 315.2, -2061): taken   [Viking Quarry: by the drive in]
+  egg-135 Viking Quarry (easy, ground) at (-2159, 299.1, -2034): taken   [Viking Quarry: by the drive in]
+  egg-136 Viking Quarry (easy, ground) at (-2025, 304.4, -2018): taken   [Viking Quarry: by the drive in]
+  egg-137 Viking Quarry (hard, ground) at (-2187, 302.5, -2133): taken   [Viking Quarry: in the woods]
+  egg-138 Viking Quarry (hard, ground) at (-2229, 300.1, -2199): taken   [Viking Quarry: in the woods]
+  egg-139 Kennesaw Mountain (hard, ground) at (-1155, 518.5, -6142): no open ground within 16 m to start from  <- WRONG   [Kennesaw Mountain: on the summit leap's landing (do the leap)]
+  egg-140 Kennesaw Mountain (hard, ground) at (-771, 562.8, -5537): taken   [Kennesaw Mountain: on the summit flight's catch slope]
+  egg-141 Kennesaw Mountain (hard, ground) at (-976, 446.4, -5428): taken   [Kennesaw Mountain: on the west face's catch slope]
+  egg-142 Kennesaw Mountain (hard, ground) at (-867, 394.4, -5205): taken   [Kennesaw Mountain: on the earthworks's catch slope]
+  egg-143 Kennesaw Mountain (easy, ground) at (-968, 380.9, -5069): taken   [Kennesaw Mountain: by Stilesboro Road]
+  egg-144 Kennesaw Mountain (easy, ground) at (-1810, 377.2, -5467): taken   [Kennesaw Mountain: by Old Mountain Road Northwest]
+  egg-145 Kennesaw Mountain (easy, ground) at (-1021, 390.5, -5210): driven past, not taken (ended 13.4 m from it, stopped)  <- WRONG   [Kennesaw Mountain: by Kennesaw Mountain Drive]
+  egg-146 Kennesaw Mountain (easy, ground) at (-912, 378.9, -5020): taken   [Kennesaw Mountain: by Stilesboro Road]
+  egg-147 Kennesaw Mountain (hard, ground) at (-591, 474.0, -5388): taken   [Kennesaw Mountain: on Kennesaw Mountain Trail]
+  egg-148 Kennesaw Mountain (hard, ground) at (-2835, 368.3, -5950): taken   [Kennesaw Mountain: on 24 Gun Battery Trail]
+  egg-149 Kennesaw Mountain (hard, ground) at (-1607, 387.1, -5371): taken   [Kennesaw Mountain: on 24 Gun Battery Trail]
+  egg-150 Kennesaw Mountain (hard, ground) at (-1792, 428.9, -6983): taken   [Kennesaw Mountain: on Pigeon Hill Trail]
+  egg-151 Kennesaw Mountain (hard, ground) at (-1769, 382.4, -4686): driven past, not taken (ended 13.7 m from it, stopped)  <- WRONG   [Kennesaw Mountain: in the woods]
+  egg-152 Kennesaw Mountain (hard, ground) at (-1466, 379.5, -4774): taken   [Kennesaw Mountain: in the woods]
+  egg-153 Marietta Square (easy, ground) at (1782, 378.8, -8457): driven past, not taken (ended 4.6 m from it, stopped)  <- WRONG   [Marietta Square: in Glover Park]
+  egg-154 Marietta Square (easy, ground) at (1751, 378.6, -8454): taken   [Marietta Square: in Glover Park]
+  egg-155 Marietta Square (easy, ground) at (1816, 381.2, -8672): taken   [Marietta Square: by Atlanta Street Southeast]
+  egg-156 Marietta Square (easy, ground) at (1556, 369.9, -8181): taken   [Marietta Square: by Polk Street Northwest]
+  egg-157 Marietta Square (easy, ground) at (1991, 365.8, -8579): taken   [Marietta Square: by Roswell Street Southeast]
+  egg-158 Marietta Square (easy, ground) at (1773, 378.6, -8504): taken   [Marietta Square: by South Park Square Southeast]
+  egg-159 Marietta Square (easy, ground) at (1874, 369.6, -8994): taken   [Marietta Square: by Atlanta Street Southeast]
+  egg-160 Marietta Square (hard, ground) at (1594, 375.9, -8404): driven past, not taken (ended 16.2 m from it, stopped)  <- WRONG   [Marietta Square: on a race jump's landing]
+  egg-161 Marietta Square (hard, ground) at (1659, 377.4, -8528): taken   [Marietta Square: on a race jump's landing]
+  egg-162 Marietta Square (hard, ground) at (2116, 365.4, -8202): taken   [Marietta Square: on the roof of a 2-level parking deck]
+  egg-163 Marietta Square (hard, ground) at (1865, 395.3, -8318): taken   [Marietta Square: on the roof of a 7-level parking deck]
+  egg-164 Marietta Square (hard, ground) at (1422, 362.8, -8682): taken   [Marietta Square: behind a house]
+  egg-165 Marietta Square (hard, ground) at (2198, 371.8, -8595): driven past, not taken (ended 15.5 m from it, stopped)  <- WRONG   [Marietta Square: behind a house]
+  egg-166 Kennestone (hard, ground) at (1461, 414.2, -6559): taken   [Kennestone: on the roof of a 2-level parking deck]
+  egg-167 Kennestone (hard, ground) at (1380, 416.3, -6818): taken   [Kennestone: on the roof of a 4-level parking deck]
+  egg-168 Kennestone (hard, ground) at (1386, 409.8, -6569): taken   [Kennestone: on the roof of a 2-level parking deck]
+  egg-169 Kennestone (easy, ground) at (1457, 407.6, -6820): taken   [Kennestone: in a parking lot]
+  egg-170 Kennestone (easy, ground) at (1643, 403.1, -6622): taken   [Kennestone: by Church Street Northwest]
+  egg-171 Kennestone (easy, ground) at (1185, 395.1, -6533): taken   [Kennestone: by Tower Road Northwest]
+  egg-172 Noonday Creek Trail (easy, ground) at (1287, 292.8, -743): driven past, not taken (ended 11.0 m from it, stopped)  <- WRONG   [the Noonday Creek Trail: on the trail]
+  egg-173 Noonday Creek Trail (easy, ground) at (276, 290.2, -653): taken   [the Noonday Creek Trail: on the trail]
+  egg-174 Noonday Creek Trail (easy, ground) at (660, 285.1, -457): driven past, not taken (ended 7.3 m from it, stopped)  <- WRONG   [the Noonday Creek Trail: on the trail]
+  egg-175 Noonday Creek Trail (easy, ground) at (878, 290.5, -540): taken   [the Noonday Creek Trail: on the trail]
+  egg-176 Noonday Creek Trail (easy, ground) at (544, 291.4, -490): taken   [the Noonday Creek Trail: on the trail]
+  egg-177 Noonday Creek Trail (hard, ground) at (1645, 283.0, -655): taken   [the Noonday Creek Trail: on the creek leap's landing]
+  egg-178 Noonday Creek Trail (hard, ground) at (1357, 283.8, -935): driven past, not taken (ended 11.6 m from it, stopped)  <- WRONG   [the Noonday Creek Trail: in the woods]
+  egg-179 Noonday Creek Trail (hard, ground) at (1368, 281.4, -870): taken   [the Noonday Creek Trail: in the woods]
+  egg-180 Noonday Creek Trail (hard, ground) at (1104, 283.7, -749): taken   [the Noonday Creek Trail: in the woods]
+  egg-181 Noonday Creek Trail (hard, ground) at (1361, 284.1, -904): taken   [the Noonday Creek Trail: in the woods]
+  egg-182 Addison Heights (hard, ground) at (2811, 301.3, 506): taken   [Addison Heights: on LY's landing]
+  egg-183 Addison Heights (hard, ground) at (2992, 327.0, 384): taken   [Addison Heights: on TL's landing]
+  egg-184 Addison Heights (easy, ground) at (3214, 336.7, 309): taken   [Addison Heights: by Elaine Circle Northeast]
+  egg-185 Addison Heights (easy, ground) at (3054, 336.7, 319): taken, but the car fell 2.9 m  <- WRONG   [Addison Heights: by Elaine Circle Northeast]
+  egg-186 Addison Heights (easy, ground) at (2957, 308.9, 317): taken   [Addison Heights: by Crawford Circle]
+  egg-187 Addison Heights (easy, ground) at (2806, 302.8, 540): taken   [Addison Heights: by Lyndon Drive]
+  egg-188 Addison Heights (hard, ground) at (3095, 309.1, 133): taken   [Addison Heights: behind a house]
+  egg-189 Addison Heights (hard, ground) at (3072, 343.8, 451): taken   [Addison Heights: behind a house]
+  egg-190 Addison Heights (hard, ground) at (2924, 293.5, 86): driven past, not taken (ended 11.6 m from it, stopped)  <- WRONG   [Addison Heights: behind a house]
+  egg-191 Addison Heights (hard, ground) at (2900, 300.0, 178): taken   [Addison Heights: behind a house]
+  egg-192 The highways (hard, low) at (2671, 364.8, -4551): taken   [the highways: under Canton Road Connector, beside Dickson Road Northeast]
+  egg-193 The highways (hard, low) at (543, 295.1, -8): taken   [the highways: under Phillip Landrum Memorial Highway, beside Big Shanty Road Northwest]
+  egg-194 The highways (hard, low) at (1913, 354.7, -4442): taken   [the highways: under Larry McDonald Memorial Highway, beside Dickson Road Northeast]
+  egg-195 The highways (hard, low) at (1509, 362.0, -4241): taken   [the highways: under Larry McDonald Memorial Highway, beside Bells Ferry Road Northeast]
+  egg-196 The highways (hard, low) at (-1373, 349.3, 1570): taken   [the highways: under Northwest Corridor Express Lanes, beside Frey Road Northwest]
+  egg-197 The highways (hard, low) at (1877, 353.1, -4454): taken   [the highways: under Larry McDonald Memorial Highway, beside Dickson Road Northeast]
+  egg-198 The highways (easy, ground) at (925, 300.9, -1665): taken   [the highways: beside a ramp]
+  egg-199 The highways (easy, ground) at (219, 328.7, 1039): taken   [the highways: beside a ramp]
+  egg-200 The highways (easy, ground) at (-196, 322.7, -2194): taken   [the highways: beside a ramp]
+  egg-201 The highways (easy, ground) at (519, 323.8, -1664): taken   [the highways: beside a ramp]
+  egg-202 West neighborhoods (easy, ground) at (-7591, 375.7, -2778): taken   [the west neighborhoods: by Valley Hill Road Northwest]
+  egg-203 West neighborhoods (easy, ground) at (-3507, 382.9, 975): taken   [the west neighborhoods: by Maple Drive]
+  egg-204 West neighborhoods (easy, ground) at (-4812, 367.3, -2349): taken   [the west neighborhoods: by Sycamore Drive Northwest]
+  egg-205 West neighborhoods (easy, ground) at (-6625, 317.7, 1564): taken   [the west neighborhoods: by Monrovia Trail]
+  egg-206 West neighborhoods (easy, ground) at (-7639, 374.8, -2748): driven past, not taken (ended 15.2 m from it, stopped)  <- WRONG   [the west neighborhoods: by Valley Hill Road Northwest]
+  egg-207 West neighborhoods (easy, ground) at (-3256, 332.0, -4343): taken   [the west neighborhoods: by Donovans Pass]
+  egg-208 West neighborhoods (hard, ground) at (-5562, 318.7, -1780): driven past, not taken (ended 15.7 m from it, stopped)  <- WRONG   [the west neighborhoods: behind a house]
+  egg-209 West neighborhoods (hard, ground) at (-5180, 352.1, 10): taken   [the west neighborhoods: behind a house]
+  egg-210 West neighborhoods (hard, ground) at (-2679, 314.1, -754): taken   [the west neighborhoods: behind a house]
+  egg-211 West neighborhoods (hard, ground) at (-8298, 288.8, 407): taken   [the west neighborhoods: behind a house]
+  egg-212 West neighborhoods (hard, ground) at (-3374, 326.7, -4427): driven past, not taken (ended 15.5 m from it, stopped)  <- WRONG   [the west neighborhoods: behind a house]
+  egg-213 West neighborhoods (hard, ground) at (-7424, 363.3, -4149): taken   [the west neighborhoods: behind a house]
+  egg-214 Middle neighborhoods (easy, ground) at (3343, 384.8, -4519): taken   [the middle neighborhoods: by Sawyer Road Northeast]
+  egg-215 Middle neighborhoods (easy, ground) at (-281, 351.5, -4300): taken   [the middle neighborhoods: by Maple Grove Way Northwest]
+  egg-216 Middle neighborhoods (easy, ground) at (2543, 320.9, -2832): taken   [the middle neighborhoods: by Kurtz Road Northeast]
+  egg-217 Middle neighborhoods (easy, ground) at (3000, 393.4, -3243): taken   [the middle neighborhoods: by Squire Drive Northeast]
+  egg-218 Middle neighborhoods (easy, ground) at (-104, 313.7, -1376): taken   [the middle neighborhoods: by Towne Center Access Road Northwest]
+  egg-219 Middle neighborhoods (easy, ground) at (563, 308.1, -1062): taken   [the middle neighborhoods: by Ring Road Northwest]
+  egg-220 Middle neighborhoods (hard, ground) at (3286, 338.1, -1443): taken   [the middle neighborhoods: behind a house]
+  egg-221 Middle neighborhoods (hard, ground) at (1466, 387.8, -4020): taken   [the middle neighborhoods: behind a house]
+  egg-222 Middle neighborhoods (hard, ground) at (3735, 365.1, -4467): taken   [the middle neighborhoods: behind a house]
+  egg-223 Middle neighborhoods (hard, ground) at (2887, 337.1, -1532): taken   [the middle neighborhoods: behind a house]
+  egg-224 Middle neighborhoods (hard, ground) at (2415, 324.7, -3088): driven past, not taken (ended 18.9 m from it, stopped)  <- WRONG   [the middle neighborhoods: behind a house]
+  egg-225 South neighborhoods (Marietta) (easy, ground) at (2213, 376.1, -8719): taken   [the south neighborhoods: by Alexander Street Southeast]
+  egg-226 South neighborhoods (Marietta) (easy, ground) at (-4124, 343.0, -5876): taken   [the south neighborhoods: by Ector Chase Northwest]
+  egg-227 South neighborhoods (Marietta) (easy, ground) at (166, 360.5, -7951): taken   [the south neighborhoods: by Maple Avenue Northwest]
+  egg-228 South neighborhoods (Marietta) (easy, ground) at (-6837, 345.3, -7603): taken   [the south neighborhoods: by the road]
+  egg-229 South neighborhoods (Marietta) (easy, ground) at (-883, 359.6, -7231): taken   [the south neighborhoods: by Kent Terrace Northwest]
+  egg-230 South neighborhoods (Marietta) (easy, ground) at (1963, 382.8, -9144): taken   [the south neighborhoods: by Atlanta Street Southeast]
+  egg-231 South neighborhoods (Marietta) (hard, ground) at (799, 382.2, -7546): driven past, not taken (ended 15.6 m from it, stopped)  <- WRONG   [the south neighborhoods: behind a house]
+  egg-232 South neighborhoods (Marietta) (hard, ground) at (3880, 368.6, -8865): driven past, not taken (ended 7.1 m from it, stopped)  <- WRONG   [the south neighborhoods: behind a house]
+  egg-233 South neighborhoods (Marietta) (hard, ground) at (2807, 381.5, -9165): driven past, not taken (ended 15.7 m from it, stopped)  <- WRONG   [the south neighborhoods: behind a house]
+  egg-234 South neighborhoods (Marietta) (hard, ground) at (413, 381.1, -6914): taken   [the south neighborhoods: behind a house]
+  egg-235 South neighborhoods (Marietta) (hard, ground) at (-6286, 365.2, -5355): taken   [the south neighborhoods: behind a house]
+  egg-236 The woods (hard, ground) at (2881, 393.3, -8551): taken   [the extension: in the woods]
+  egg-237 The woods (hard, ground) at (876, 364.7, -8118): driven past, not taken (ended 6.1 m from it, stopped)  <- WRONG   [the extension: in the woods]
+  egg-238 The woods (hard, ground) at (-8390, 334.7, -3590): driven past, not taken (ended 14.7 m from it, stopped)  <- WRONG   [the extension: in the woods]
+  egg-239 The woods (hard, ground) at (708, 311.1, -1617): taken   [the extension: in the woods]
+  egg-240 The woods (hard, ground) at (-358, 367.0, -4873): driven past, not taken (ended 8.0 m from it, stopped)  <- WRONG   [the extension: in the woods]
+  egg-241 The woods (hard, ground) at (3737, 352.6, -5222): taken   [the extension: in the woods]
+  egg-242 West neighborhoods (easy, ground) at (-8525, 302.4, -1873): driven past, not taken (ended 9.3 m from it)  <- WRONG   [west neighborhoods: by Owens Landing Way]
+  egg-243 Middle neighborhoods (easy, ground) at (2867, 336.8, -664): taken   [middle neighborhoods: by Brookridge Court]
+  egg-244 South neighborhoods (Marietta) (easy, ground) at (2703, 347.3, -7499): taken   [south neighborhoods: by Morningside Drive Northeast]
+  egg-245 The woods (hard, ground) at (1271, 284.6, -1071): taken   [the extension: in the woods]
+  egg-246 West neighborhoods (easy, ground) at (-7418, 372.7, -2895): taken   [west neighborhoods: by Enclave Court Northwest]
+  egg-247 Middle neighborhoods (easy, ground) at (3235, 374.9, -4031): taken   [middle neighborhoods: by Myrtle Drive]
+  egg-248 South neighborhoods (Marietta) (easy, ground) at (-3193, 342.9, -5387): taken   [south neighborhoods: by Valor Ridge Way Northwest]
+  egg-249 The woods (hard, ground) at (-402, 361.6, -4761): taken   [the extension: in the woods]
+  egg-250 West neighborhoods (easy, ground) at (-6970, 321.3, -1268): taken   [west neighborhoods: by Kates Court Northwest]
+FAIL  C: every new egg reached by a car and taken (none inside a building or under the ground)  -  128 of 150 taken, 23 wrong
+
+=== B. The police radio's streets: Getaway on the Needle 600 to heat 5 (the heat five times faster in the check), three places outside the first map
+  Town Center / Barrett Parkway: top heat 5, 52 calls with a street, 41 lines played (0 text only)
+    Suspect off-road, heading toward Town Center Drive.   [P02+D216]  player on Ring Road Northwest (D272, 27 m off it)
+    Units posted at the exits on Ring Road.   [P04+D272]  player on Ring Road Northwest (D272, 27 m off it)
+    Suspect back on Town Center Drive.   [P03+D216]  player on Town Center Drive (D216, 10 m off it)
+    Lost visual. Last seen on Town Center Drive.   [P01+D216]  player on Town Center Drive (D216, 6 m off it)
+    Suspect heading west on Town Center Drive.   [P14+D216]  player on Town Center Drive (D216, 4 m off it)
+    Suspect near Town Center Drive.   [P16+D216]  player on service (no line, 4 m off it)
+    Unit six, joining from the Express Lanes.   [U6+P08+D139]  player on service (no line, 1 m off it)
+    Suspect near Mall Boulevard.   [P16+D180]  player on service (no line, 4 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 3 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 7 m off it)
+    Lost visual. Last seen on Barrett Parkway.   [P01+D144]  player on Barrett Parkway (D144, 4 m off it)
+    Lost visual. Last seen on Barrett Parkway.   [P01+D144]  player on Barrett Parkway (D144, 1 m off it)
+    Units posted at the exits on Roberts Trail.   [P04+D273]  player on Barrett Parkway (D144, 5 m off it)
+    Suspect turning onto Barrett Creek Boulevard.   [P15+D223]  player on Barrett Creek Boulevard (D223, 2 m off it)
+    Suspect near Barrett Creek Boulevard.   [P16+D223]  player on service (no line, 3 m off it)
+    Suspect turning onto Barrett Creek Boulevard.   [P15+D223]  player on Barrett Creek Boulevard (D223, 6 m off it)
+    Suspect near Barrett Creek Boulevard.   [P16+D223]  player on service (no line, 4 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on secondary_link (no line, 3 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 3 m off it)
+    Suspect turning onto Chastain Meadows Parkway.   [P15+D006]  player on Chastain Meadows Parkway Northwest (D006, 6 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 4 m off it)
+    Suspect turning onto Barrett Creek Boulevard.   [P15+D223]  player on Barrett Creek Boulevard (D223, 5 m off it)
+    Suspect near Barrett Creek Boulevard.   [P16+D223]  player on secondary_link (no line, 3 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 6 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 4 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 6 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 5 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 5 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 5 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 3 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 5 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 4 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 4 m off it)
+    Lost visual. Last seen on Barrett Parkway.   [P01+D144]  player on Barrett Parkway (D144, 1 m off it)
+    Unit six, rejoining from Piedmont Road.   [U6+P09+D195]  player on Barrett Parkway (D144, 2 m off it)
+    Units posted at the exits on Piedmont Road.   [P04+D195]  player on Barrett Parkway (D144, 2 m off it)
+    Suspect turning onto Piedmont Road.   [P15+D195]  player on Piedmont Road (D195, 1 m off it)
+    Roadblock set up on High Oak Drive ahead of the suspect.   [P06+D252+P07]  player on service (no line, 12 m off it)
+    Suspect near Piedmont Road.   [P16+D195]  player on service (no line, 5 m off it)
+    Suspect turning onto Piedmont Road.   [P15+D195]  player on Piedmont Road (D195, 6 m off it)
+    Suspect turning onto Bells Ferry Road.   [P15+D004]  player on Bells Ferry Road (D004, 5 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 9 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 4 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 4 m off it)
+    Suspect near Barrett Parkway.   [P16+D144]  player on service (no line, 4 m off it)
+    Suspect turning onto Barrett Parkway.   [P15+D144]  player on Barrett Parkway (D144, 2 m off it)
+    Suspect near Bells Ferry Road.   [P16+D004]  player on service (no line, 1 m off it)
+    Suspect turning onto Bells Ferry Road.   [P15+D004]  player on Bells Ferry Road (D004, 7 m off it)
+    Suspect turning onto Piedmont Road.   [P15+D195]  player on Piedmont Road (D195, 7 m off it)
+    Suspect off-road, heading toward Piedmont Road.   [P02+D195]  player on Piedmont Road (D195, 24 m off it)
+    Units posted at the exits on Piedmont Road.   [P04+D195]  player on Piedmont Road (D195, 24 m off it)
+    Suspect back on Piedmont Road.   [P03+D195]  player on Piedmont Road (D195, 9 m off it)
+  Marietta Square: top heat 5, 11 calls with a street, 11 lines played (0 text only)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 5 m off it)
+    Suspect turning onto Hansell Street.   [P15+D247]  player on Hansell Street Northeast (D247, 3 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Unit three, joining from Church Street.   [U3+P08+D153]  player on Cherokee Street Northeast (D151, 2 m off it)
+    Suspect near Cherokee Street.   [P16+D151]  player on Ardis Street (no line, 1 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 5 m off it)
+    Suspect near Cherokee Street.   [P16+D151]  player on Forest Avenue Northeast (no line, 1 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 1 m off it)
+    Lost visual. Last seen on Cherokee Street.   [P01+D151]  player on Cherokee Street Northeast (D151, 2 m off it)
+    Units posted at the exits on North Marietta Parkway.   [P04+D187]  player on Cherokee Street Northeast (D151, 5 m off it)
+    Suspect near Cherokee Street.   [P16+D151]  player on service (no line, 24 m off it)
+  Kennesaw (Burnt Hickory Road): top heat 5, 42 calls with a street, 35 lines played (0 text only)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 5 m off it)
+    Units posted at the exits on Kennesaw Mountain Drive.   [P04+D257]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 5 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on tertiary_link (no line, 5 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 0 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 1 m off it)
+    Units posted at the exits on Springer Bend and Kennesaw Avenue.   [P04+D278+P05+D175]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on Mountain Retreat Way Northwest (no line, 5 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 4 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on service (no line, 2 m off it)
+    Unit four, joining from Old 41 Highway.   [U4+P08+D190]  player on service (no line, 2 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on Old 41 Highway Northwest (D190, 2 m off it)  <- WRONG: "near" on a street that has a line
+    Roadblock set up on Old 41 Highway ahead of the suspect.   [P06+D190+P07]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 5 m off it)
+    Suspect turning onto Hames Road.   [P15+D246]  player on Hames Road Northwest (D246, 2 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on Kirk Road Northwest (no line, 4 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 6 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on service (no line, 7 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on Kirk Road Northwest (no line, 33 m off it)
+    Suspect near Kennesaw Avenue.   [P16+D175]  player on service (no line, 1 m off it)
+    Suspect near Kennesaw Avenue.   [P16+D175]  player on Kirk Road Northwest (no line, 2 m off it)
+    Suspect turning onto Kennesaw Avenue.   [P15+D175]  player on Kennesaw Avenue Northwest (D175, 2 m off it)
+    Suspect turning onto Hames Road.   [P15+D246]  player on Hames Road Northwest (D246, 4 m off it)
+    Lost visual. Last seen on Parkside Village Way.   [P01+D265]  player on Parkside Village Way Northwest (D265, 6 m off it)
+    Suspect near Parkside Village Drive.   [P16+D264]  player on service (no line, 4 m off it)
+    Units posted at the exits on Old 41 Highway.   [P04+D190]  player on service (no line, 5 m off it)
+    Suspect turning onto Parkside Village Way.   [P15+D265]  player on Parkside Village Way Northwest (D265, 7 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 21 m off it)
+    Roadblock set up on Old 41 Highway ahead of the suspect.   [P06+D190+P07]  player on Old 41 Highway Northwest (D190, 17 m off it)
+    Suspect near Parkside Village Way.   [P16+D265]  player on service (no line, 4 m off it)
+    Suspect turning onto Parkside Village Way.   [P15+D265]  player on Parkside Village Way Northwest (D265, 4 m off it)
+    Suspect near Parkside Village Way.   [P16+D265]  player on service (no line, 4 m off it)
+    Suspect turning onto Parkside Village Way.   [P15+D265]  player on Parkside Village Way Northwest (D265, 3 m off it)
+    Suspect turning onto Parkside Village Drive.   [P15+D264]  player on Parkside Village Drive Northwest (D264, 7 m off it)
+    Lost visual. Last seen on Parkside Village Drive.   [P01+D264]  player on service (no line, 2 m off it)
+    Units posted at the exits on Kennesaw Avenue.   [P04+D175]  player on service (no line, 2 m off it)
+    Suspect near Parkside Village Way.   [P16+D265]  player on service (no line, 3 m off it)
+    Suspect turning onto Parkside Village Way.   [P15+D265]  player on Parkside Village Way Northwest (D265, 1 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on service (no line, 15 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on service (no line, 7 m off it)
+    Suspect near Parkside Village Way.   [P16+D265]  player on service (no line, 6 m off it)
+FAIL  B: every street call names the suspect's own street (or "near" the nearest street with a line where his has none), voiced  -  105 calls with a street (41 on the suspect's street, 35 "near"), 1 wrong, 0 lines text only
+
+3 of 5 checks passed.

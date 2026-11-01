@@ -1,0 +1,60 @@
+Round 83 check, 2026-11-01 06:03, the exe, 1280 x 720, muted.
+
+=== The lines of local/round89/a_lines_t.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  motorway_link (879570834) under at (65, -2524), 2.2 -> 11.9 m clear, 297 m: through in 11.4 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (45, -2501)), resets 0, wall hits 0
+  motorway_link (879570834) under at (65, -2524), 2.2 -> 11.9 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (42, -2500)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149145) under at (122, -2642), -0.8 -> 6.0 m clear, 297 m: through in 14.8 s, top 30 m/s, longest in the air 3.16 s, hardest landing 18.2 m/s (at (175, -2692)), resets 0, wall hits 5  <- LOOK
+    3.16 s in the air, from (133, -2656) to (175, -2692)
+    wall hit at (175, -2746)
+    0.82 s in the air, from (174, -2729) to (175, -2746)
+    wall hit at (175, -2746)
+    wall hit at (176, -2746)
+    wall hit at (177, -2747)
+    wall hit at (177, -2748)
+  Northwest Corridor Express Lanes (564149145) under at (122, -2642), -0.8 -> 6.0 m clear (the other way), 297 m: through in 11.3 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (84, -2568)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149145) under at (127, -2652), -1.0 -> 6.0 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (87, -2577)), resets 0, wall hits 0
+  Northwest Corridor Express Lanes (564149145) under at (127, -2652), -1.0 -> 6.0 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (84, -2568)), resets 0, wall hits 0
+  motorway_link (879570834) under at (140, -2633), -0.8 -> 15.7 m clear, 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (206, -2747)), resets 0, wall hits 0
+  motorway_link (879570834) under at (140, -2633), -0.8 -> 15.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (96, -2565)), resets 0, wall hits 0
+  motorway_link (879570834) under at (146, -2643), -0.8 -> 15.7 m clear, 297 m: through in 12.3 s, top 30 m/s, longest in the air 1.10 s, hardest landing 8.5 m/s (at (138, -2638)), resets 0, wall hits 0  <- LOOK
+    0.44 s in the air, from (137, -2627) to (138, -2638)
+    1.10 s in the air, from (139, -2640) to (150, -2660)
+  motorway_link (879570834) under at (146, -2643), -0.8 -> 15.7 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (96, -2558)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (536793083) over at (708, -3710), 16.3 -> 11.3 m clear, 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.1 m/s (at (818, -3790)), resets 0, wall hits 0
+  Phillip Landrum Memorial Highway (536793083) over at (708, -3710), 16.3 -> 11.3 m clear (the other way), 297 m: through in 11.8 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (803, -3777)), resets 0, wall hits 0
+  Canton Road Northeast (63222662) over at (1913, -5855), 4.4 -> 7.9 m clear, 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.92 s, hardest landing 1.8 m/s (at (1945, -5793)), resets 0, wall hits 0  <- LOOK
+    0.92 s in the air, from (1948, -5788) to (1959, -5764)
+  Canton Road Northeast (63222662) over at (1913, -5855), 4.4 -> 7.9 m clear (the other way), 297 m: through in 11.3 s, top 30 m/s, longest in the air 0.38 s, hardest landing 0.8 m/s (at (1936, -5806)), resets 0, wall hits 0  <- LOOK
+    0.38 s in the air, from (1943, -5793) to (1938, -5803)
+  Canton Road Northeast (63222662) over at (1919, -5843), 3.1 -> 7.7 m clear, 297 m: through in 11.7 s, top 30 m/s, longest in the air 1.66 s, hardest landing 5.7 m/s (at (1945, -5793)), resets 0, wall hits 0  <- LOOK
+    1.66 s in the air, from (1947, -5789) to (1964, -5749)
+  Canton Road Northeast (63222662) over at (1919, -5843), 3.1 -> 7.7 m clear (the other way), 297 m: through in 11.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.4 m/s (at (1939, -5804)), resets 0, wall hits 0
+  Cobb Parkway North (287142785) under at (1919, -5843), 3.1 -> 7.7 m clear, 297 m: through in 11.1 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (1901, -5832)), resets 0, wall hits 0
+  Cobb Parkway North (287142785) under at (1919, -5843), 3.1 -> 7.7 m clear (the other way), 297 m: through in 11.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.0 m/s (at (2044, -5908)), resets 0, wall hits 0
+  I-575 Express Lanes end to end, 4793 m: through in 141.7 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.8 m/s (at (585, -2800)), resets 0, wall hits 30  <- LOOK
+    wall hit at (585, -2800)
+    wall hit at (585, -2800)
+    wall hit at (584, -2800)
+    wall hit at (584, -2800)
+    wall hit at (584, -2800)
+    wall hit at (584, -2800)
+    wall hit at (584, -2800)
+    wall hit at (584, -2800)
+  I-575 Express Lanes end to end (the other way), 4793 m: through in 139.0 s, top 36 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (629, -504)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes, 1256 m: through in 43.2 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-359, -856)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes (the other way), 1256 m: through in 44.2 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-326, -946)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes, 1754 m: through in 60.5 s, top 35 m/s, longest in the air 1.96 s, hardest landing 12.4 m/s (at (655, -3673)), resets 0, wall hits 0  <- LOOK
+    2.00 s in the air, from (656, -3673) to (690, -3691)
+    0.72 s in the air, from (697, -3718) to (702, -3731)
+  I-575 Express flyover into the I-75 Express Lanes (the other way), 1754 m: through in 76.6 s, top 35 m/s, longest in the air 2.30 s, hardest landing 15.2 m/s (at (505, -3173)), resets 0, wall hits 37  <- LOOK
+    1.70 s in the air, from (661, -3679) to (650, -3638)
+    wall hit at (638, -3625)
+    wall hit at (630, -3614)
+    wall hit at (625, -3606)
+    wall hit at (625, -3605)
+    wall hit at (620, -3597)
+    wall hit at (616, -3590)
+    wall hit at (612, -3582)
+FAIL  lines: 24 runs, each through with under 0.3 s in the air, no landing over 6 m/s, no reset, no wall hit  -  8 not
+
+0 of 1 checks passed.

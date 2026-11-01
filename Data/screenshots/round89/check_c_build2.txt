@@ -1,0 +1,85 @@
+Round 89 check, 2026-11-01 06:53, the exe, 1280 x 720, muted.
+
+=== C. A copy of Dan's goose-egg save (put in the check's folder before the run)
+  250 eggs, 25 areas, tiers 10, 25, 60, 125, 190, 250; save C:\Users\danmo\chastain_rush\local\round89\check_c2\goose-eggs-v1.json
+PASS  C: 250 eggs, the tiers rescaled to 250  -  250 eggs, tiers 10, 25, 60, 125, 190, 250
+PASS  C: a copy of Dan's save keeps its found eggs  -  Dan's copy: 19 found, tiers 10; in the game: 19 / 250 found (19 of his), tiers reached 10
+  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. The map: the new areas, and the GOOSE EGGS count
+  areas: Chastain Glen 6 / 12, Grasmere, Commons and Enclave 1 / 7, Chastain Lakes 1 / 9, Chastain Ridge and Canton Road 1 / 9, Chastain Corner 0 / 10, Noonday Creek 0 / 10, Underground 5 / 12, North neighborhoods 1 / 9, Bells Ferry neighborhoods 1 / 7, East neighborhoods 0 / 8, South neighborhoods 3 / 7, Town Center at Cobb 0 / 12, Kennesaw State University 0 / 10, The airport 0 / 8, Viking Quarry 0 / 8, Kennesaw Mountain 0 / 14, Marietta Square 0 / 13, Kennestone 0 / 6, Noonday Creek Trail 0 / 10, Addison Heights 0 / 10, The highways 0 / 10, West neighborhoods 0 / 15, Middle neighborhoods 0 / 13, Marietta neighborhoods 0 / 13, The woods 0 / 8
+PASS  C: the map lists 25 areas and the hunt counts 250  -  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. Every new egg: a placed-car probe (the Street Classic put 16 m back toward the nearest road, driven through at 9 m/s)
+  only 23 eggs (-r89Eggs)
+  egg-130 The airport (hard, ground) at (-3167, 328.0, -1474): taken   [near the airport: behind a house (moved, Round 89's probe)]
+  egg-139 Kennesaw Mountain (hard, ground) at (-1232, 419.6, -6392): taken   [Kennesaw Mountain: past the summit leap, on its run-out (moved, Round 89's probe)]
+  egg-145 Kennesaw Mountain (easy, ground) at (-526, 387.9, -5091): taken   [Kennesaw Mountain: by Old 41 Highway Northwest (moved, Round 89's probe)]
+  egg-151 Kennesaw Mountain (hard, ground) at (-642, 377.1, -4985): taken   [Kennesaw Mountain: in the woods, off the road (moved, Round 89's probe)]
+  egg-153 Marietta Square (easy, ground) at (1490, 368.7, -8207): taken   [Marietta Square: by North Marietta Parkway (moved, Round 89's probe)]
+  egg-160 Marietta Square (hard, ground) at (2188, 359.5, -8478): driven past, not taken (ended 15.8 m from it, stopped)  <- WRONG   [Marietta Square: behind a house (moved, Round 89's probe)]
+  egg-165 Marietta Square (hard, ground) at (2358, 354.3, -8268): driven past, not taken (ended 16.1 m from it, stopped)  <- WRONG   [Marietta Square: behind a house (moved, Round 89's probe)]
+  egg-172 Noonday Creek Trail (easy, ground) at (133, 294.4, -896): taken   [the Noonday Creek Trail: by Hidden Forest Court (moved, Round 89's probe)]
+  egg-174 Noonday Creek Trail (easy, ground) at (100, 307.0, -558): taken   [the Noonday Creek Trail: by Grace Street Northwest (moved, Round 89's probe)]
+  egg-178 Noonday Creek Trail (hard, ground) at (1636, 300.0, -406): taken   [the Noonday Creek Trail: in the woods, off the road (moved, Round 89's probe)]
+  egg-185 Addison Heights (easy, ground) at (3263, 327.6, 418): taken   [Addison Heights: by Embry Lane Northeast (moved, Round 89's probe)]
+  egg-190 Addison Heights (hard, ground) at (2849, 302.6, 446): taken   [Addison Heights: behind a house (moved, Round 89's probe)]
+  egg-206 West neighborhoods (easy, ground) at (-4791, 373.3, -2423): taken   [the west neighborhoods: by Kennesaw Due West Road Northwest (moved, Round 89's probe)]
+  egg-208 West neighborhoods (hard, ground) at (-8031, 302.9, 238): taken   [the west neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-212 West neighborhoods (hard, ground) at (-7039, 337.4, 344): driven past, not taken (ended 4.2 m from it)  <- WRONG   [the west neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-224 Middle neighborhoods (hard, ground) at (1843, 341.1, -3835): taken   [the middle neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-231 Marietta neighborhoods (hard, ground) at (2145, 358.3, -8456): driven past, not taken (ended 7.7 m from it, stopped)  <- WRONG   [the south neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-232 Marietta neighborhoods (hard, ground) at (-22, 371.7, -6567): taken   [the south neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-233 Marietta neighborhoods (hard, ground) at (-5579, 312.6, -7278): taken   [the south neighborhoods: behind a house (moved, Round 89's probe)]
+  egg-237 The woods (hard, ground) at (-4633, 350.0, -897): driven past, not taken (ended 4.9 m from it, stopped)  <- WRONG   [the extension: in the woods, off the road (moved, Round 89's probe)]
+  egg-238 The woods (hard, ground) at (-381, 353.7, -4608): taken   [the extension: in the woods, off the road (moved, Round 89's probe)]
+  egg-240 The woods (hard, ground) at (1741, 400.6, -5807): taken   [the extension: in the woods, off the road (moved, Round 89's probe)]
+  egg-242 West neighborhoods (easy, ground) at (-2528, 332.6, -4200): taken   [west neighborhoods: by the road (moved, Round 89's probe)]
+FAIL  C: every new egg reached by a car and taken (none inside a building or under the ground)  -  18 of 23 taken, 5 wrong
+
+=== B. The police radio's streets: Getaway on the Needle 600 to heat 5 (the heat five times faster in the check), three places outside the first map
+  Town Center / Barrett Parkway: top heat 5, 8 calls with a street, 14 lines played (0 text only)
+    Suspect off-road, heading toward Town Center Drive.   [P02+D216]  player on Ring Road Northwest (D272, 26 m off it)
+    Units posted at the exits on Ring Road.   [P04+D272]  player on Ring Road Northwest (D272, 26 m off it)
+    Suspect back on Town Center Drive.   [P03+D216]  player on Town Center Drive (D216, 9 m off it)
+    Roadblock set up on Town Center Drive ahead of the suspect.   [P06+D216+P07]  player on Town Center Drive (D216, 8 m off it)
+    Suspect heading west on Town Center Drive.   [P14+D216]  player on Town Center Drive (D216, 7 m off it)
+    Unit one, joining from the Express Lanes.   [U1+P08+D139]  player on Town Center Drive (D216, 15 m off it)
+    Unit two, joining from Town Center Drive.   [U2+P08+D216]  player on Town Center Drive (D216, 3 m off it)
+    Suspect near I-575.   [P16+D140]  player on motorway_link (no line, 14 m off it)
+  Marietta Square: top heat 5, 14 calls with a street, 15 lines played (0 text only)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Suspect turning onto Hansell Street.   [P15+D247]  player on Hansell Street Northeast (D247, 1 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 2 m off it)
+    Unit three, joining from Cherokee Street.   [U3+P08+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Suspect turning onto Kennesaw Avenue.   [P15+D175]  player on Kennesaw Avenue Northeast (D175, 3 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 8 m off it)
+    Suspect turning onto Kennesaw Avenue.   [P15+D175]  player on Kennesaw Avenue Northeast (D175, 8 m off it)
+    Lost visual. Last seen on Kennesaw Avenue.   [P01+D175]  player on Kennesaw Avenue Northeast (D175, 6 m off it)
+    Units posted at the exits on North Marietta Parkway.   [P04+D187]  player on Kennesaw Avenue Northeast (D175, 1 m off it)
+    Lost visual. Last seen on North Marietta Parkway.   [P01+D187]  player on Church Street Northwest (D153, 26 m off it)
+    Suspect turning onto Church Street.   [P15+D153]  player on service (no line, 5 m off it)  <- WRONG: names a street the suspect is not on
+    Suspect turning onto North Marietta Parkway.   [P15+D187]  player on North Marietta Parkway (D187, 7 m off it)
+    Suspect turning onto Church Street.   [P15+D153]  player on Church Street Northwest (D153, 4 m off it)
+    Suspect near Church Street.   [P16+D153]  player on Brumby Street Northwest (no line, 7 m off it)
+  Kennesaw (Burnt Hickory Road): top heat 5, 17 calls with a street, 21 lines played (0 text only)
+    Unit three, joining from Old 41 Highway.   [U3+P08+D190]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 5 m off it)
+    Units posted at the exits on Stilesboro Road and Kennesaw Mountain Drive.   [P04+D212+P05+D257]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Suspect heading east on Old 41 Highway.   [P13+D190]  player on Old 41 Highway Northwest (D190, 4 m off it)
+    Unit six, joining from White Road.   [U6+P08+D294]  player on Old 41 Highway Northwest (D190, 4 m off it)
+    Lost visual. Last seen on Kennesaw Avenue.   [P01+D175]  player on Kennesaw Avenue Northwest (D175, 7 m off it)
+    Suspect turning onto Kennesaw Avenue.   [P15+D175]  player on Kennesaw Avenue Northwest (D175, 1 m off it)
+    Unit one, joining from Kennesaw Avenue.   [U1+P08+D175]  player on Kennesaw Avenue Northwest (D175, 6 m off it)
+    Roadblock set up on Kennesaw Avenue ahead of the suspect.   [P06+D175+P07]  player on Kennesaw Avenue Northwest (D175, 6 m off it)
+    Lost visual. Last seen on Kennesaw Avenue.   [P01+D175]  player on Kennesaw Avenue Northwest (D175, 7 m off it)
+    Units posted at the exits on Hames Road and Kennesaw Avenue.   [P04+D246+P05+D175]  player on Kennesaw Avenue Northwest (D175, 3 m off it)
+    Suspect near Kennesaw Avenue.   [P16+D175]  player on Marble Mill Road Northwest (no line, 4 m off it)
+    Suspect near Old 41 Highway.   [P16+D190]  player on Marble Mill Road Northwest (no line, 5 m off it)
+    Suspect near Church Street Extension.   [P16+D154]  player on Marble Mill Road Northwest (no line, 4 m off it)
+    Roadblock set up on EMC Parkway ahead of the suspect.   [P06+D162+P07]  player on Marble Mill Road Northwest (no line, 2 m off it)
+    Suspect near Church Street Extension.   [P16+D154]  player on Loudermilk Drive Northwest (no line, 29 m off it)
+    Suspect near Church Street Extension.   [P16+D154]  player on Loudermilk Drive Northwest (no line, 5 m off it)
+FAIL  B: every street call names the suspect's own street (or "near" the nearest street with a line where his has none), voiced  -  39 calls with a street (13 on the suspect's street, 7 "near"), 1 wrong, 0 lines text only
+
+3 of 5 checks passed.

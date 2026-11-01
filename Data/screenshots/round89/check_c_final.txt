@@ -1,0 +1,99 @@
+Round 89 check, 2026-11-01 07:57, the exe, 1280 x 720, muted.
+
+=== C. A copy of Dan's goose-egg save (put in the check's folder before the run)
+  250 eggs, 25 areas, tiers 10, 25, 60, 125, 190, 250; save C:\Users\danmo\chastain_rush\local\round89\check_c3\goose-eggs-v1.json
+PASS  C: 250 eggs, the tiers rescaled to 250  -  250 eggs, tiers 10, 25, 60, 125, 190, 250
+PASS  C: a copy of Dan's save keeps its found eggs  -  Dan's copy: 19 found, tiers 10; in the game: 19 / 250 found (19 of his), tiers reached 10
+  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. The map: the new areas, and the GOOSE EGGS count
+  areas: Chastain Glen 6 / 12, Grasmere, Commons and Enclave 1 / 7, Chastain Lakes 1 / 9, Chastain Ridge and Canton Road 1 / 9, Chastain Corner 0 / 10, Noonday Creek 0 / 10, Underground 5 / 12, North neighborhoods 1 / 9, Bells Ferry neighborhoods 1 / 7, East neighborhoods 0 / 8, South neighborhoods 3 / 7, Town Center at Cobb 0 / 12, Kennesaw State University 0 / 10, The airport 0 / 8, Viking Quarry 0 / 8, Kennesaw Mountain 0 / 14, Marietta Square 0 / 13, Kennestone 0 / 6, Noonday Creek Trail 0 / 10, Addison Heights 0 / 10, The highways 0 / 10, West neighborhoods 0 / 15, Middle neighborhoods 0 / 13, Marietta neighborhoods 0 / 13, The woods 0 / 8
+PASS  C: the map lists 25 areas and the hunt counts 250  -  Goose eggs: 19 / 250 found   ·   tiers reached: 10
+
+=== C. Every new egg: a placed-car probe (the Street Classic put 16 m back toward the nearest road, driven through at 9 m/s)
+  only 5 eggs (-r89Eggs)
+  egg-160 Marietta Square (easy, ground) at (1594, 366.7, -8881): taken   [Marietta Square: by Crescent Circle (moved twice, Round 89's probe)]
+  egg-165 Marietta Square (easy, ground) at (2192, 373.7, -8645): taken   [Marietta Square: by Roswell Street Southeast (moved twice, Round 89's probe)]
+  egg-212 West neighborhoods (easy, ground) at (-7545, 347.0, -2470): taken   [the west neighborhoods: by Chippewa Run Northwest (moved twice, Round 89's probe)]
+  egg-231 Marietta neighborhoods (easy, ground) at (-6436, 368.1, -6342): taken   [the south neighborhoods: by Fallwood Drive Northwest (moved twice, Round 89's probe)]
+  egg-237 The woods (easy, ground) at (-4476, 361.9, -756): taken   [the extension: by Cherokee Street Northwest (moved twice, Round 89's probe)]
+PASS  C: every new egg reached by a car and taken (none inside a building or under the ground)  -  5 of 5 taken, 0 wrong
+
+=== B. The police radio's streets: Getaway on the Needle 600 to heat 5 (the heat five times faster in the check), three places outside the first map
+  Town Center / Barrett Parkway: top heat 5, 17 calls with a street, 22 lines played (0 text only)
+    Suspect off-road, heading toward Town Center Drive.   [P02+D216]  player on Ring Road Northwest (D272, 25 m off it)
+    Units posted at the exits on Ring Road.   [P04+D272]  player on Ring Road Northwest (D272, 25 m off it)
+    Suspect back on Town Center Drive.   [P03+D216]  player on Town Center Drive (D216, 10 m off it)
+    Roadblock set up on Town Center Drive ahead of the suspect.   [P06+D216+P07]  player on Town Center Drive (D216, 6 m off it)
+    Suspect heading north on Town Center Drive.   [P11+D216]  player on Town Center Drive (D216, 4 m off it)
+    Unit one, joining from Town Center Drive.   [U1+P08+D216]  player on Town Center Drive (D216, 28 m off it)
+    Suspect off-road, heading toward Town Center Drive.   [P02+D216]  player on Town Center Drive (D216, 24 m off it)
+    Units posted at the exits on I-575.   [P04+D140]  player on Town Center Drive (D216, 24 m off it)
+    Suspect back on Town Center Drive.   [P03+D216]  player on Town Center Drive (D216, 9 m off it)
+    Suspect turning onto Mall Boulevard.   [P15+D180]  player on Mall Boulevard Northwest (D180, 8 m off it)
+    Suspect turning onto Town Center Drive.   [P15+D216]  player on Town Center Drive (D216, 6 m off it)
+    Suspect turning onto Mall Boulevard.   [P15+D180]  player on Mall Boulevard Northwest (D180, 7 m off it)
+    Suspect heading west on Mall Boulevard.   [P14+D180]  player on Mall Boulevard Northwest (D180, 2 m off it)
+    Suspect off-road, heading toward Mall Boulevard.   [P02+D180]  player on service (no line, 25 m off it)
+    Suspect back on Mall Boulevard.   [P03+D180]  player on Mall Boulevard Northwest (D180, 5 m off it)
+    Suspect turning onto Town Center Drive.   [P15+D216]  player on Town Center Drive (D216, 8 m off it)
+    Suspect turning onto Mall Boulevard.   [P15+D180]  player on Mall Boulevard Northwest (D180, 8 m off it)
+  Marietta Square: top heat 5, 27 calls with a street, 31 lines played (0 text only)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 1 m off it)
+    Suspect turning onto Dobbs Street.   [P15+D237]  player on Dobbs Street Northeast (D237, 4 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Unit three, joining from Church Street.   [U3+P08+D153]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Lost visual. Last seen on Cherokee Street.   [P01+D151]  player on Cherokee Street Northeast (D151, 1 m off it)
+    Suspect turning onto North Marietta Parkway.   [P15+D187]  player on North Marietta Parkway (D187, 4 m off it)
+    Suspect turning onto Cherokee Street.   [P15+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Unit five, joining from Cherokee Street.   [U5+P08+D151]  player on Cherokee Street Northeast (D151, 7 m off it)
+    Lost visual. Last seen on Cherokee Street.   [P01+D151]  player on Cherokee Street Northeast (D151, 2 m off it)
+    Units posted at the exits on Cherokee Street.   [P04+D151]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Roadblock set up on Cherokee Street ahead of the suspect.   [P06+D151+P07]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Unit two, rejoining from Chicopee Drive.   [U2+P09+D152]  player on Cherokee Street Northeast (D151, 4 m off it)
+    Lost visual. Last seen on Cherokee Street.   [P01+D151]  player on Cherokee Street Northeast (D151, 3 m off it)
+    Suspect heading north on Cherokee Street.   [P11+D151]  player on Cherokee Street Northeast (D151, 7 m off it)
+    Lost visual. Last seen on Cherokee Street.   [P01+D151]  player on Cherokee Street Northeast (D151, 3 m off it)
+    Suspect near Cherokee Street.   [P16+D151]  player on service (no line, 1 m off it)
+    Suspect near Church Street.   [P16+D153]  player on Margaret Avenue Northeast (no line, 1 m off it)
+    Suspect heading north on Church Street.   [P11+D153]  player on Church Street Northwest (D153, 5 m off it)
+    Lost visual. Last seen on Church Street.   [P01+D153]  player on Church Street Northwest (D153, 1 m off it)
+    Units posted at the exits on Tower Road.   [P04+D214]  player on Church Street Northwest (D153, 2 m off it)
+    Lost visual. Last seen on Church Street.   [P01+D153]  player on Church Street Northwest (D153, 2 m off it)
+    Units posted at the exits on Elizabeth Street.   [P04+D164]  player on Canton Road Connector (D137, 27 m off it)
+    Suspect back on Church Street.   [P03+D153]  player on Church Street Northwest (D153, 6 m off it)
+    Suspect near Church Street Extension.   [P16+D154]  player on primary_link (no line, 5 m off it)
+    Lost visual. Last seen on Church Street Extension.   [P01+D154]  player on Church Street Extension Northwest (D154, 12 m off it)
+    Suspect near Church Street Extension.   [P16+D154]  player on Church Street Extension Northwest (D154, 3 m off it)  <- WRONG: "near" on a street that has a line
+    Suspect heading north on Church Street Extension.   [P11+D154]  player on Church Street Extension Northwest (D154, 5 m off it)
+  Kennesaw (Burnt Hickory Road): top heat 5, 27 calls with a street, 32 lines played (0 text only)
+    Unit three, joining from Old 41 Highway.   [U3+P08+D190]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 1 m off it)
+    Units posted at the exits on Stilesboro Road.   [P04+D212]  player on Old 41 Highway Northwest (D190, 0 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Suspect heading east on Old 41 Highway.   [P13+D190]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Unit five, joining from Kennesaw Avenue.   [U5+P08+D175]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Suspect turning onto Kennesaw Avenue.   [P15+D175]  player on Kennesaw Avenue Northwest (D175, 2 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 4 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 1 m off it)
+    Units posted at the exits on Kennesaw Avenue.   [P04+D175]  player on Old 41 Highway Northwest (D190, 5 m off it)
+    Roadblock set up on Old 41 Highway ahead of the suspect.   [P06+D190+P07]  player on Old 41 Highway Northwest (D190, 1 m off it)
+    Suspect turning onto Hames Road.   [P15+D246]  player on Hames Road Northwest (D246, 1 m off it)
+    Suspect turning onto Old 41 Highway.   [P15+D190]  player on Old 41 Highway Northwest (D190, 2 m off it)
+    Lost visual. Last seen on Old 41 Highway.   [P01+D190]  player on Old 41 Highway Northwest (D190, 3 m off it)
+    Unit one, rejoining from Old 41 Highway.   [U1+P09+D190]  player on Old 41 Highway Northwest (D190, 0 m off it)
+    Suspect near Hames Road.   [P16+D246]  player on service (no line, 3 m off it)
+    Suspect near Kennesaw Avenue.   [P16+D175]  player on Kirk Road Northwest (no line, 7 m off it)
+    Suspect off-road, heading toward Kennesaw Avenue.   [P02+D175]  player on Kennesaw Avenue Northwest (D175, 45 m off it)
+    Units posted at the exits on Kennesaw Avenue and Kennesaw Mountain Drive.   [P04+D175+P05+D257]  player on Kennesaw Avenue Northwest (D175, 45 m off it)
+    Suspect back on Kennesaw Avenue.   [P03+D175]  player on Kennesaw Avenue Northwest (D175, 2 m off it)
+    Suspect heading south on Kennesaw Avenue.   [P12+D175]  player on Kennesaw Avenue Northwest (D175, 8 m off it)
+    Unit one, rejoining from Kennesaw Avenue.   [U1+P09+D175]  player on Kennesaw Avenue Northwest (D175, 2 m off it)
+    Suspect off-road, heading toward Kennesaw Avenue.   [P02+D175]  player on Kennesaw Avenue Northwest (D175, 23 m off it)
+    Suspect back on Kennesaw Avenue.   [P03+D175]  player on Kennesaw Avenue Northwest (D175, 17 m off it)
+    Suspect heading south on Kennesaw Avenue.   [P12+D175]  player on Kennesaw Avenue Northwest (D175, 7 m off it)
+    Roadblock set up on Kennesaw Avenue ahead of the suspect.   [P06+D175+P07]  player on service (no line, 9 m off it)
+FAIL  B: every street call names the suspect's own street (or "near" the nearest street with a line where his has none), voiced  -  71 calls with a street (28 on the suspect's street, 6 "near"), 1 wrong, 0 lines text only
+
+4 of 5 checks passed.

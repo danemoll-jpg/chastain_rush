@@ -1,0 +1,67 @@
+before: Data/screenshots/round83/final_b_crossings.txt (416 runs); after: local/round89/final_b/round83_check.txt (416 runs)
+counts: WORSE 1, better 63, same 352
+WORSE (was clean)        motorway_link (879570834) under at (146, -2643): through, air 0.00 s, landing 0.0 m/s  ->  through, air 1.28 s, landing 9.1 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463866) over at (-1380, 1586): through, air 0.48 s, landing 2.3 m/s, resets 1  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463866) over at (-1380, 1586) the other way: through, air 1.20 s, landing 5.0 m/s, resets 3  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Northwest Corridor Express Lanes (623138519) over at (-1379, 1569): through, air 0.10 s, landing 0.9 m/s, resets 1, walls 216  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Northwest Corridor Express Lanes (623138519) over at (-1379, 1569) the other way: through, air 0.00 s, landing 3.4 m/s, walls 4  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Chastain Road (163463411) over at (-971, 450): through, air 0.32 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Chastain Road (163463411) over at (-971, 450) the other way: through, air 0.46 s, landing 0.3 m/s  ->  through, air 0.00 s, landing 0.1 m/s
+better (now clean)       Larry McDonald Memorial Highway (175898800) over at (-588, -404): through, air 1.28 s, landing 5.6 m/s, resets 5  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (175898800) over at (-588, -404) the other way: through, air 1.78 s, landing 11.8 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (175898800) over at (-580, -415): through, air 1.30 s, landing 5.6 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (175898800) over at (-580, -415) the other way: through, air 1.76 s, landing 11.7 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463875) over at (-36, -2143): through, air 0.36 s, landing 1.1 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463875) over at (-36, -2143) the other way: through, air 1.54 s, landing 5.6 m/s, resets 3  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463875) over at (-29, -2168): through, air 0.38 s, landing 1.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (163463875) over at (-29, -2168) the other way: through, air 1.58 s, landing 4.9 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (122, -2642): through, air 0.42 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Northwest Corridor Express Lanes (564149145) under at (122, -2642): through, air 1.46 s, landing 10.2 m/s, walls 10  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Greers Chapel Drive Northwest (1554737789) over at (127, -2652) the other way: through, air 0.32 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.6 m/s
+better (now clean)       Northwest Corridor Express Lanes (564149145) under at (127, -2652): through, air 1.32 s, landing 9.1 m/s, walls 4  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (140, -2633): through, air 0.42 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Greers Chapel Drive Northwest (1554737789) over at (146, -2643) the other way: through, air 0.32 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.5 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (153, -2627): through, air 0.42 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Greers Chapel Drive Northwest (1554737789) over at (159, -2637) the other way: through, air 0.32 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.5 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (179, -2614): through, air 0.42 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Greers Chapel Drive Northwest (1554737789) over at (185, -2625) the other way: through, air 0.32 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (192, -2608): through, air 0.42 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Greers Chapel Drive Northwest (1169449564) over at (192, -2608) the other way: through, air 0.32 s, landing 1.6 m/s  ->  through, air 0.00 s, landing 0.1 m/s
+better (now clean)       Greers Chapel Drive Northwest (1554737789) over at (197, -2619) the other way: through, air 0.32 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.5 m/s
+better (now clean)       Phillip Landrum Memorial Highway (163463460) over at (477, -3246) the other way: through, air 0.72 s, landing 1.9 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Phillip Landrum Memorial Highway (163463460) over at (485, -3204) the other way: through, air 0.82 s, landing 1.9 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (451950526) over at (496, -3284) the other way: through, air 0.72 s, landing 2.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (451950526) over at (498, -3343) the other way: through, air 0.68 s, landing 2.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (451950526) over at (500, -3233) the other way: NOT through, air 2.12 s, landing 14.5 m/s, resets 5  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Phillip Landrum Memorial Highway (536793083) over at (708, -3710) the other way: through, air 0.80 s, landing 2.4 m/s  ->  through, air 0.00 s, landing 0.0 m/s
+better (now clean)       Phillip Landrum Memorial Highway (182380660) over at (769, -1688): through, air 2.12 s, landing 11.6 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Phillip Landrum Memorial Highway (182380660) over at (770, -1672): through, air 1.92 s, landing 11.6 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (100762237) over at (1515, -4241): NOT through, air 2.08 s, landing 14.2 m/s, resets 7  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (100762237) over at (1515, -4241) the other way: through, air 1.34 s, landing 8.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Larry McDonald Memorial Highway (119686452) over at (1528, -4214): through, air 1.10 s, landing 7.1 m/s  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Larry McDonald Memorial Highway (119686452) over at (1528, -4214) the other way: through, air 2.60 s, landing 15.1 m/s  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Canton Road Northeast (63222662) over at (1919, -5843): through, air 0.46 s, landing 0.5 m/s  ->  through, air 0.24 s, landing 3.9 m/s
+better (now clean)       Canton Road Connector (100762131) under at (2306, -4981): through, air 0.38 s, landing 0.4 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762131) under at (2306, -4981) the other way: through, air 1.12 s, landing 6.8 m/s, resets 1  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (274716914) under at (2330, -5011): NOT through, air 0.00 s, landing 3.2 m/s, resets 7  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (274716914) under at (2330, -5011) the other way: NOT through, air 1.82 s, landing 9.4 m/s, resets 5  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2337, -4949): through, air 0.36 s, landing 0.6 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2337, -4949) the other way: through, air 0.96 s, landing 6.8 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2353, -4932): through, air 0.34 s, landing 0.5 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2353, -4932) the other way: through, air 2.16 s, landing 8.3 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (437897716) over at (2361, -4977): NOT through, air 0.00 s, landing 1.7 m/s, resets 8  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2376, -4907): through, air 0.34 s, landing 0.5 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2376, -4907) the other way: through, air 2.14 s, landing 8.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (437897716) over at (2377, -4958): NOT through, air 0.00 s, landing 2.8 m/s, resets 8  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2381, -4902): through, air 0.36 s, landing 0.7 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Canton Road Connector (100762130) over at (2381, -4902) the other way: through, air 2.14 s, landing 8.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (9117194) under at (2381, -4902) the other way: through, air 0.48 s, landing 6.2 m/s, resets 2  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (437897716) over at (2398, -4931): NOT through, air 0.10 s, landing 2.7 m/s, resets 8  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (437897716) over at (2401, -4928): NOT through, air 0.00 s, landing 2.4 m/s, resets 9  ->  through, air 0.00 s, landing 0.3 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3436, -6215): NOT through, air 0.12 s, landing 2.8 m/s, resets 7  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3436, -6215) the other way: through, air 0.80 s, landing 3.7 m/s  ->  through, air 0.00 s, landing 0.1 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3458, -6205): NOT through, air 0.14 s, landing 2.8 m/s, resets 9  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3458, -6205) the other way: through, air 0.80 s, landing 6.0 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3479, -6195): NOT through, air 0.14 s, landing 2.8 m/s, resets 9  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       Allgood Road Northeast (100762098) over at (3479, -6195) the other way: through, air 0.80 s, landing 5.3 m/s  ->  through, air 0.00 s, landing 0.2 m/s
+same (faulted)           motorway_link (879570834) under at (146, -2643) the other way: through, air 0.54 s, landing 6.3 m/s  ->  through, air 0.50 s, landing 6.0 m/s

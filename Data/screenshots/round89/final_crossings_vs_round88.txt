@@ -1,0 +1,7 @@
+before: Data/screenshots/round88/c2_crossings.txt (416 runs); after: local/round89/final_b/round83_check.txt (416 runs)
+counts: WORSE 2, better 3, same 411
+WORSE (was clean)        motorway_link (879570834) under at (146, -2643): through, air 0.00 s, landing 0.0 m/s  ->  through, air 1.28 s, landing 9.1 m/s
+WORSE (was clean)        motorway_link (879570834) under at (146, -2643) the other way: through, air 0.00 s, landing 0.1 m/s  ->  through, air 0.50 s, landing 6.0 m/s
+better (now clean)       Northwest Corridor Express Lanes (623138519) over at (-1379, 1569) the other way: through, air 0.00 s, landing 0.2 m/s, walls 1  ->  through, air 0.00 s, landing 0.2 m/s
+better (now clean)       motorway_link (879570834) under at (140, -2633) the other way: through, air 1.08 s, landing 6.2 m/s  ->  through, air 0.00 s, landing 0.0 m/s
+better (now clean)       Canton Road Northeast (63222662) over at (1919, -5843): through, air 0.26 s, landing 8.9 m/s  ->  through, air 0.24 s, landing 3.9 m/s

@@ -1,0 +1,17 @@
+Round 83 check, 2026-11-01 09:43, the exe, 1280 x 720, muted.
+
+=== The lines of local/round83/r83_lines_a.json, the human-like driver (Street Classic, no traffic, 3 PM): in the air over 0.3 s, a landing over 6 m/s, a reset, a stop or a wall hit is a fault
+  I-575 Express Lanes end to end, 4793 m: through in 140.5 s, top 35 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (622, -457)), resets 0, wall hits 1  <- LOOK
+    wall hit at (621, -445)
+  I-575 Express Lanes end to end (the other way), 4793 m: through in 145.1 s, top 35 m/s, longest in the air 0.00 s, hardest landing 2.4 m/s (at (535, -37)), resets 0, wall hits 0
+  I-75 Express Lanes end to end, 10530 m: through in 305.3 s, top 35 m/s, longest in the air 0.14 s, hardest landing 0.3 m/s (at (89, -2577)), resets 0, wall hits 1  <- LOOK
+    wall hit at (-59, -2122)
+  I-75 Express Lanes end to end (the other way), 10530 m: through in 321.2 s, top 35 m/s, longest in the air 0.90 s, hardest landing 7.6 m/s (at (-329, -947)), resets 1, wall hits 0 stuck at (-330, -948) s 7448;  <- LOOK
+    0.90 s in the air, from (-329, -947) to (-330, -946)
+    0.38 s in the air, from (-330, -946) to (-331, -946)
+    stopped at (-330.8, 303.0, -946.5): stay:BridgeStructure:n(-0.53,0.82,-0.20):p(-329.4,303.47,-947.2):J156.4 
+  Big Shanty Express ramp onto the lanes, 1256 m: through in 43.4 s, top 30 m/s, longest in the air 0.00 s, hardest landing 0.3 m/s (at (-360, -856)), resets 0, wall hits 0
+  Big Shanty Express ramp onto the lanes (the other way), 1256 m: through in 43.7 s, top 31 m/s, longest in the air 0.00 s, hardest landing 0.2 m/s (at (-328, -946)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes, 1754 m: through in 53.1 s, top 35 m/s, longest in the air 0.10 s, hardest landing 0.4 m/s (at (557, -2930)), resets 0, wall hits 0
+  I-575 Express flyover into the I-75 Express Lanes (the other way), 1754 m: through in 53.3 s, top 35 m/s, longest in the air 0.06 s, hardest landing 0.3 m/s (at (559, -2916)), resets 0, wall hits 0
+  Skip Spann Connector eastern carriageway end to end, 400 m: through in 15.0 s, top 30 m/s, longest in the air 0.02 s, hardest landing 0.3 m/s (at (-864, 811)), resets 0, wall hits 0
