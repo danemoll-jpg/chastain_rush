@@ -59,6 +59,9 @@ namespace ChastainRush
             path = Path.Combine(Path.GetDirectoryName(RaceController.RecordsPath()) ?? Application.persistentDataPath, SaveName);
             try { if (File.Exists(path)) data = JsonUtility.FromJson<Save>(File.ReadAllText(path)) ?? new Save(); data.found ??= new List<string>(); data.tiers ??= new List<int>(); }
             catch (Exception e) { error = "Egg hunt save unavailable: " + e.Message; }
+            // Round 89: the tiers rescaled to 250 eggs (10, 25, 60, 125, 190, 250). A save from the 100-egg hunt keeps its found eggs (by id); old tiers
+            // no longer in the list (50, 75, 100) become the new tiers its count already reaches, silently (no notice for a tier reached before)
+            if (data.tiers.Any(x => Array.IndexOf(tiers, x) < 0)) { int f0 = data.found.Count(id => sites.Any(s => s.id == id)); data.tiers = tiers.Where(x => f0 >= x).ToList(); }
             Settle();
             shell = new Material(Shader.Find("Universal Render Pipeline/Lit")) { color = new Color(.96f, .93f, .84f), enableInstancing = true };
             shell.EnableKeyword("_EMISSION"); shell.SetColor("_EmissionColor", new Color(.22f, .2f, .14f));
@@ -89,6 +92,16 @@ namespace ChastainRush
             int n = 0;
             foreach (var s in sites)
             {
+                // Round 89: a "low" egg (inside Town Center's mall, under a highway's deck) sits on the lowest surface under it with a car's room over it
+                if (s.kind == "low")
+                {
+                    var tops = Physics.RaycastAll(new Vector3(s.position.x, 900f, s.position.z), Vector3.down, 1800f, ~0, QueryTriggerInteraction.Ignore)
+                        .Where(h => !h.collider.attachedRigidbody && h.collider.name.IndexOf("trunk", StringComparison.OrdinalIgnoreCase) < 0 && h.collider.name.IndexOf("tree", StringComparison.OrdinalIgnoreCase) < 0 && !h.collider.name.StartsWith("Barrier"))
+                        .Select(h => h.point.y).OrderBy(y => y).ToList();
+                    for (int k = 0; k < tops.Count; k++)
+                        if (k + 1 >= tops.Count || tops[k + 1] - tops[k] > 2.6f) { s.position = new Vector3(s.position.x, tops[k] + .55f, s.position.z); n++; break; }
+                    continue;
+                }
                 if (s.kind != "ground") continue;
                 var hits = Physics.RaycastAll(new Vector3(s.position.x, 700f, s.position.z), Vector3.down, 1400f, ~0, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance);
                 foreach (var h in hits)
