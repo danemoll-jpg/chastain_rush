@@ -420,7 +420,7 @@ namespace Racer
                 var edge = Vector3.Cross(Vector3.up, t).normalized * Mathf.Max(0, Net.Half[at] - 1.6f) * (Random.value < .5f ? -1 : 1);
                 var cop = SpawnCop(Net.P[at] + edge, t); if (cop == null) continue;
                 cop.exitUnit = true; cop.driver.Frozen = false; cop.driver.Role = CopDriver.Task.Exit; cop.driver.Hold = true; cop.lights.Siren = true; cop.lights.Silent = false; placed++;
-                var st = PoliceRadio.RoadId(Net, at); if (st != null) names.Add(st);
+                var st = PoliceRadio.RoadId(Net, at); if (st != null && !st.StartsWith(PoliceRadio.Near)) names.Add(st);   // Round 89: only streets the units are on
             }
             Trace($"{Clock:F0}s call-in: exits {exitNodes.Count}, wanted {want}, placed {names.Count}, cops now {Cops.Count(c => c.car && !c.block)}");
             var named = names.Distinct().Take(2).ToList();
@@ -527,7 +527,7 @@ namespace Racer
             if (fewest < want && Cops.Count(c => c.car && !c.block) < MaxCops + 4)
             {
                 int node = PlaceAhead(r); if (node < 0) return;
-                var cop = SpawnCop(Net.P[node], FaceRunner(node, r)); if (cop != null) { cop.driver.Frozen = false; cop.catching = false; var st = PoliceRadio.RoadId(Net, node); Say(st != null ? new[] { UnitId(cop.id), "P08", st } : new[] { "R13" }, r.player); }
+                var cop = SpawnCop(Net.P[node], FaceRunner(node, r)); if (cop != null) { cop.driver.Frozen = false; cop.catching = false; var st = PoliceRadio.RoadId(Net, node); Say(st != null && !st.StartsWith(PoliceRadio.Near) ? new[] { UnitId(cop.id), "P08", st } : new[] { "R13" }, r.player); }   // Round 89: a unit names only the street it is on
                 return;
             }
             foreach (var c in Cops)
@@ -541,7 +541,7 @@ namespace Racer
                 if (PoliceKit.Seen(c.car.Body.position)) continue;
                 int node = PlaceAhead(cr); if (node < 0) continue;
                 c.driver.Place(Net.P[node], FaceRunner(node, cr)); c.driver.Stop(); c.farSince = -1; c.catching = false;
-                var st2 = PoliceRadio.RoadId(Net, node); if (st2 != null) Say(new[] { UnitId(c.id), "P09", st2 }, cr.player);
+                var st2 = PoliceRadio.RoadId(Net, node); if (st2 != null && !st2.StartsWith(PoliceRadio.Near)) Say(new[] { UnitId(c.id), "P09", st2 }, cr.player);
                 break;
             }
         }

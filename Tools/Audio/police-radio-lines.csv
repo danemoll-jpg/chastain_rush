@@ -34,6 +34,7 @@ P12,Suspect heading south on...,street follows,,cop
 P13,Suspect heading east on...,street follows,,cop
 P14,Suspect heading west on...,street follows,,cop
 P15,Suspect turning onto...,street follows,,cop
+P16,Suspect near...,"street follows: the nearest street with a line, when the suspect's own street has none (Round 89)",,cop+pilot
 U1,"Unit one,",unit number,,cop
 U2,"Unit two,",unit number,,cop
 U3,"Unit three,",unit number,,cop
@@ -54,9 +55,9 @@ H02,Got a speeder! In pursuit.,A hidden cruiser clocks you,,cop
 H03,Suspect's gone. Back to patrol.,You escaped; Free Roam carries on,,cop
 H04,Suspect in custody.,Caught; Free Roam carries on,,cop
 D001,New Chastain Road.,street name,New Chastain Road,cop
-D002,Chastain Road.,street name,Chastain Road Northwest,cop
+D002,Chastain Road.,street name,Chastain Road Northwest;Chastain Road,cop
 D003,Canton Road.,street name,Canton Road;Canton Road Northeast,cop
-D004,Bells Ferry Road.,street name,Bells Ferry Road Northeast;Bells Ferry Road Northwest,cop
+D004,Bells Ferry Road.,street name,Bells Ferry Road Northeast;Bells Ferry Road Northwest;Bells Ferry Road,cop
 D005,Hartley Woods Drive.,street name,Hartley Woods Drive Northeast,cop
 D006,Chastain Meadows Parkway.,street name,Chastain Meadows Parkway Northwest,cop
 D007,Chastain Glen Lane.,street name,Chastain Glen Lane,cop
@@ -189,3 +190,163 @@ D133,Southwick Court.,street name,Southwick Court Northwest,cop
 D134,Chastain Court.,street name,Chastain Court Northeast,cop
 D135,Lowe Court.,street name,Lowe Court Northwest,cop
 D136,Chastain Place.,street name,Chastain Place,cop
+D137,Canton Road Connector.,street name,Canton Road Connector,cop
+D138,I-75.,street name,Larry McDonald Memorial Highway,cop
+D139,the Express Lanes.,street name,Northwest Corridor Express Lanes,cop
+D140,I-575.,street name,Phillip Landrum Memorial Highway,cop
+D141,Allgood Road.,street name,Allgood Road;Allgood Road Northeast,cop
+D142,Atlanta Street.,street name,Atlanta Street;Atlanta Street Southeast,cop
+D143,Barrett Lakes Boulevard.,street name,Barrett Lakes Boulevard;Barrett Lakes Boulevard Northwest,cop
+D144,Barrett Parkway.,street name,Barrett Parkway,cop
+D145,Ben King Road.,street name,Ben King Road;Ben King Road Northwest,cop
+D146,Big Shanty Drive.,street name,Big Shanty Drive;Big Shanty Drive Northwest,cop
+D147,Blue Springs Road.,street name,Blue Springs Road;Blue Springs Road Northwest,cop
+D148,Bob Cox Road.,street name,Bob Cox Road;Bob Cox Road Northwest,cop
+D149,Burnt Hickory Road.,street name,Burnt Hickory Road;Burnt Hickory Road Northwest,cop
+D150,Busbee Drive.,street name,Busbee Drive;Busbee Drive Northwest,cop
+D151,Cherokee Street.,street name,Cherokee Street;Cherokee Street Northeast;Cherokee Street Northwest,cop
+D152,Chicopee Drive.,street name,Chicopee Drive;Chicopee Drive Northeast,cop
+D153,Church Street.,street name,Church Street;Church Street Northeast;Church Street Northwest,cop
+D154,Church Street Extension.,street name,Church Street Extension;Church Street Extension Northwest,cop
+D155,Cobb Parkway.,street name,Cobb Parkway;Cobb Parkway Northwest,cop
+D156,Cobb Parkway North.,street name,Cobb Parkway North,cop
+D157,Cobb Place Boulevard.,street name,Cobb Place Boulevard;Cobb Place Boulevard Northwest,cop
+D158,Collins Road.,street name,Collins Road;Collins Road Northwest,cop
+D159,Dallas Street.,street name,Dallas Street,cop
+D160,Due West Road.,street name,Due West Road;Due West Road Northwest,cop
+D161,Duncan Road.,street name,Duncan Road;Duncan Road Northwest,cop
+D162,EMC Parkway.,street name,E M C Parkway;E M C Parkway Northeast,cop
+D163,East Park Square.,street name,East Park Square;East Park Square Northeast,cop
+D164,Elizabeth Street.,street name,Elizabeth Street;Elizabeth Street Northeast,cop
+D165,Ernest West Barrett Parkway.,street name,Ernest West Barrett Parkway,cop
+D166,Fairground Street.,street name,Fairground Street;Fairground Street Southeast,cop
+D167,Frey Road.,street name,Frey Road;Frey Road Northwest,cop
+D168,George Busbee Parkway.,street name,George Busbee Parkway;George Busbee Parkway Northwest,cop
+D169,Gordon Combs Road.,street name,Gordon Combs Road;Gordon Combs Road Northwest,cop
+D170,Greers Chapel Drive.,street name,Greers Chapel Drive;Greers Chapel Drive Northwest,cop
+D171,Greers Chapel Road.,street name,Greers Chapel Road;Greers Chapel Road Northwest,cop
+D172,Industrial Park Drive.,street name,Industrial Park Drive;Industrial Park Drive Northeast,cop
+D173,Jiles Road.,street name,Jiles Road,cop
+D174,Jim Owens Road.,street name,Jim Owens Road;Jim Owens Road Northwest,cop
+D175,Kennesaw Avenue.,street name,Kennesaw Avenue;Kennesaw Avenue Northeast;Kennesaw Avenue Northwest,cop
+D176,Kennesaw Due West Road.,street name,Kennesaw Due West Road;Kennesaw Due West Road Northwest,cop
+D177,Lawrence Street.,street name,Lawrence Street;Lawrence Street Northeast,cop
+D178,Lemon Street.,street name,Lemon Street;Lemon Street Northeast,cop
+D179,Mack Dobbs Road.,street name,Mack Dobbs Road;Mack Dobbs Road Northwest,cop
+D180,Mall Boulevard.,street name,Mall Boulevard;Mall Boulevard Northwest,cop
+D181,McCollum Parkway.,street name,McCollum Parkway;McCollum Parkway Northwest,cop
+D182,Mill Street.,street name,Mill Street;Mill Street Northwest,cop
+D183,Moon Station Road.,street name,Moon Station Road,cop
+D184,New Salem Road.,street name,New Salem Road,cop
+D185,North Fairground Street.,street name,North Fairground Street;North Fairground Street Northeast,cop
+D186,North Main Street.,street name,North Main Street,cop
+D187,North Marietta Parkway.,street name,North Marietta Parkway,cop
+D188,North Park Square.,street name,North Park Square;North Park Square Northeast,cop
+D189,North Roberts Road.,street name,North Roberts Road,cop
+D190,Old 41 Highway.,street name,Old 41 Highway;Old 41 Highway Northwest,cop
+D191,Old Hamilton Road.,street name,Old Hamilton Road,cop
+D192,Old Stilesboro Road.,street name,Old Stilesboro Road,cop
+D193,Old U.S. 41 Highway.,street name,Old US 41 Highway;Old US 41 Highway Northwest,cop
+D194,Paul Samuel Road.,street name,Paul Samuel Road;Paul Samuel Road Northwest,cop
+D195,Piedmont Road.,street name,Piedmont Road;Piedmont Road Northeast,cop
+D196,Pine Mountain Court.,street name,Pine Mountain Court,cop
+D197,Pine Mountain Road.,street name,Pine Mountain Road;Pine Mountain Road Northwest,cop
+D198,Pine Mountain Way.,street name,Pine Mountain Way,cop
+D199,Polk Street.,street name,Polk Street;Polk Street Northwest,cop
+D200,Powder Springs Street.,street name,Powder Springs Street;Powder Springs Street Southwest,cop
+D201,Roberts Boulevard.,street name,Roberts Boulevard;Roberts Boulevard Northwest,cop
+D202,Roberts Court.,street name,Roberts Court,cop
+D203,Roswell Street.,street name,Roswell Street;Roswell Street Southeast,cop
+D204,Sandy Plains Road.,street name,Sandy Plains Road;Sandy Plains Road Northeast,cop
+D205,Shiloh Valley Drive.,street name,Shiloh Valley Drive;Shiloh Valley Drive Northwest,cop
+D206,Skip Spann Connector.,street name,Skip Spann Connector,cop
+D207,South Fairground Street.,street name,South Fairground Street;South Fairground Street Southeast,cop
+D208,South Main Street.,street name,South Main Street;South Main Street Northwest,cop
+D209,South Marietta Parkway.,street name,South Marietta Parkway;South Marietta Parkway Southeast;South Marietta Parkway Southwest,cop
+D210,South Park Square.,street name,South Park Square;South Park Square Northeast;South Park Square Southeast,cop
+D211,Stanley Road.,street name,Stanley Road;Stanley Road Northwest,cop
+D212,Stilesboro Road.,street name,Stilesboro Road,cop
+D213,Summers Street.,street name,Summers Street;Summers Street Northwest,cop
+D214,Tower Road.,street name,Tower Road;Tower Road Northwest,cop
+D215,Tower Street.,street name,Tower Street;Tower Street Northwest,cop
+D216,Town Center Drive.,street name,Town Center Drive,cop
+D217,Watts Drive.,street name,Watts Drive,cop
+D218,Waverly Way.,street name,Waverly Way;Waverly Way Southeast,cop
+D219,West Park Square.,street name,West Park Square;West Park Square Northwest,cop
+D220,Whitlock Avenue.,street name,Whitlock Avenue;Whitlock Avenue Southwest,cop
+D221,Alexander Street.,street name,Alexander Street;Alexander Street Southeast,cop
+D222,Anderson Street.,street name,Anderson Street;Anderson Street Southeast,cop
+D223,Barrett Creek Boulevard.,street name,Barrett Creek Boulevard,cop
+D224,Barrett Creek Parkway.,street name,Barrett Creek Parkway,cop
+D225,Bartow Avenue.,street name,Bartow Avenue,cop
+D226,Berrywood Drive.,street name,Berrywood Drive,cop
+D227,Brackett Road.,street name,Brackett Road;Brackett Road Northeast,cop
+D228,Campus Loop Road.,street name,Campus Loop Road,cop
+D229,Cape Sable Drive.,street name,Cape Sable Drive;Cape Sable Drive Northeast,cop
+D230,Cobb Avenue.,street name,Cobb Avenue,cop
+D231,Cottonwood Drive.,street name,Cottonwood Drive,cop
+D232,Country Club Court.,street name,Country Club Court,cop
+D233,Crescent Circle.,street name,Crescent Circle,cop
+D234,Delacoure Drive.,street name,Delacoure Drive,cop
+D235,Denmead Street.,street name,Denmead Street;Denmead Street Northwest,cop
+D236,Devonshire Drive.,street name,Devonshire Drive,cop
+D237,Dobbs Street.,street name,Dobbs Street;Dobbs Street Northeast;Dobbs Street Northwest,cop
+D238,Draw Drive.,street name,Draw Drive,cop
+D239,Edgewood Drive.,street name,Edgewood Drive,cop
+D240,Ethridge Lane.,street name,Ethridge Lane;Ethridge Lane Northwest,cop
+D241,Fern Valley Road.,street name,Fern Valley Road,cop
+D242,Frey Lake Court.,street name,Frey Lake Court,cop
+D243,Frey Lake Road.,street name,Frey Lake Road,cop
+D244,Grace Street.,street name,Grace Street;Grace Street Northwest,cop
+D245,Green Street.,street name,Green Street;Green Street Southeast,cop
+D246,Hames Road.,street name,Hames Road;Hames Road Northwest,cop
+D247,Hansell Street.,street name,Hansell Street;Hansell Street Northeast;Hansell Street Northwest,cop
+D248,Haynes Street.,street name,Haynes Street;Haynes Street Northeast,cop
+D249,Henderson Street.,street name,Henderson Street,cop
+D250,Heyoak Court.,street name,Heyoak Court,cop
+D251,Hidden Forest Court.,street name,Hidden Forest Court,cop
+D252,High Oak Drive.,street name,High Oak Drive,cop
+D253,Hunt Cliff Court.,street name,Hunt Cliff Court;Hunt Cliff Court Northeast,cop
+D254,Hunt Cliff Drive.,street name,Hunt Cliff Drive;Hunt Cliff Drive Northeast,cop
+D255,Keith School Lane.,street name,Keith School Lane,cop
+D256,Kendric Farm Lane.,street name,Kendric Farm Lane,cop
+D257,Kennesaw Mountain Drive.,street name,Kennesaw Mountain Drive,cop
+D258,Lakebrooke Drive.,street name,Lakebrooke Drive,cop
+D259,Lath House Lane.,street name,Lath House Lane,cop
+D260,Locust Street.,street name,Locust Street;Locust Street Northwest,cop
+D261,Marietta Drive.,street name,Marietta Drive,cop
+D262,Mechelle Lane.,street name,Mechelle Lane,cop
+D263,Meeting Street.,street name,Meeting Street;Meeting Street Southeast,cop
+D264,Parkside Village Drive.,street name,Parkside Village Drive;Parkside Village Drive Northwest,cop
+D265,Parkside Village Way.,street name,Parkside Village Way;Parkside Village Way Northwest,cop
+D266,Paulding Avenue.,street name,Paulding Avenue,cop
+D267,Pine Knoll Court.,street name,Pine Knoll Court,cop
+D268,Plaza Park Walk.,street name,Plaza Park Walk;Plaza Park Walk Northwest,cop
+D269,Pomeroy Street.,street name,Pomeroy Street,cop
+D270,Prado Lane.,street name,Prado Lane,cop
+D271,Ridgewood Drive.,street name,Ridgewood Drive,cop
+D272,Ring Road.,street name,Ring Road;Ring Road Northwest,cop
+D273,Roberts Trail.,street name,Roberts Trail;Roberts Trail Northwest,cop
+D274,Rockbridge Court.,street name,Rockbridge Court;Rockbridge Court Northeast,cop
+D275,Rockbridge Road.,street name,Rockbridge Road,cop
+D276,Root Street.,street name,Root Street;Root Street Northeast,cop
+D277,Shannon Drive.,street name,Shannon Drive;Shannon Drive Northeast,cop
+D278,Springer Bend.,street name,Springer Bend;Springer Bend Northwest,cop
+D279,Stone Field Run.,street name,Stone Field Run;Stone Field Run Northwest,cop
+D280,Summit Ridge Drive.,street name,Summit Ridge Drive,cop
+D281,Towne Center Access Road.,street name,Towne Center Access Road;Towne Center Access Road Northwest,cop
+D282,Triple Creek Court.,street name,Triple Creek Court,cop
+D283,Vaughn Road.,street name,Vaughn Road,cop
+D284,Verney Drive.,street name,Verney Drive,cop
+D285,Vickery Drive.,street name,Vickery Drive,cop
+D286,Vickery Way.,street name,Vickery Way,cop
+D287,Vintage Club Circle.,street name,Vintage Club Circle,cop
+D288,Vintage Club Drive.,street name,Vintage Club Drive,cop
+D289,Vintage Reserve Lane.,street name,Vintage Reserve Lane,cop
+D290,Waddell Street.,street name,Waddell Street;Waddell Street Northeast;Waddell Street Southeast,cop
+D291,Washington Avenue.,street name,Washington Avenue;Washington Avenue Northeast,cop
+D292,Wayland Street.,street name,Wayland Street;Wayland Street Southeast,cop
+D293,White Circle.,street name,White Circle;White Circle Northwest,cop
+D294,White Road.,street name,White Road;White Road Northwest,cop
+D295,Winters Street.,street name,Winters Street;Winters Street Southeast,cop
+D296,Wright Street.,street name,Wright Street;Wright Street Southwest,cop

@@ -61,7 +61,7 @@ namespace Racer
         // the words on screen: the pieces joined ("Suspect heading north on..." + "Canton Road." -> "Suspect heading north on Canton Road.")
         public static string TextOf(params string[] ids)
         {
-            Ensure(); var parts = new List<string>();
+            Ensure(); var parts = new List<string>(); ids = Fix(ids);
             foreach (var id in ids) if (id != null && display.TryGetValue(id, out var t)) parts.Add(t);
             if (parts.Count == 0) return "";
             for (int i = 0; i < parts.Count; i++)
@@ -86,14 +86,36 @@ namespace Racer
             foreach (var suffix in new[] { " Northeast", " Northwest", " Southeast", " Southwest" }) if (osmName.EndsWith(suffix) && streetOf.TryGetValue(osmName.Substring(0, osmName.Length - suffix.Length), out id)) return id;
             return null;
         }
-        // the street at a road network node: its own name if the script has it, else the nearest node within 250 m on a street the script has
+        // the street at a road network node: its own name if the script has it, else the nearest node within 250 m on a street the script has,
+        // marked "~" (Round 89: not the street the suspect is on, so the call becomes "Suspect near ..." (P16) in Fix, never a wrong "on")
         public static string RoadId(RoadNet net, int node)
         {
             if (net == null || node < 0) return null;
             var id = StreetId(net.RoadNames[net.Road[node]]); if (id != null) return id;
             int best = -1; float bd = float.MaxValue;
             foreach (int i in net.Near(net.P[node], 250)) { if (StreetId(net.RoadNames[net.Road[i]]) == null) continue; float d = (net.P[i] - net.P[node]).sqrMagnitude; if (d < bd) { bd = d; best = i; } }
-            return best >= 0 ? StreetId(net.RoadNames[net.Road[best]]) : null;
+            return best >= 0 ? Near + StreetId(net.RoadNames[net.Road[best]]) : null;
+        }
+        public const string Near = "~";
+        // Round 89: a call with a street marked "~" (the nearest street with a line, not the one the suspect is on) is said as "Suspect near <street>."
+        // (P16; the pilot has its take too); a call without one is unchanged. TextOf and Speak both put calls through it.
+        public static string[] Fix(string[] ids)
+        {
+            if (ids == null) return ids; Ensure();
+            foreach (var id in ids) if (id != null && id.StartsWith(Near))
+                {
+                    var st = id.Substring(Near.Length);
+                    if (!display.ContainsKey("P16")) return new[] { st };   // an older script: the street alone
+                    return new[] { "P16", st };
+                }
+            return ids;
+        }
+        // the street a call names (for checks): the D id and whether it is "near" rather than "on"
+        public static (string id, bool near) StreetIn(string[] ids)
+        {
+            if (ids == null) return (null, false); bool nr = ids.Any(i => i != null && i.StartsWith(Near));
+            foreach (var i in ids) if (i != null) { var s = i.StartsWith(Near) ? i.Substring(Near.Length) : i; if (s.Length > 1 && s[0] == 'D' && char.IsDigit(s[1])) return (s, nr); }
+            return (null, false);
         }
         // the street at a point: the nearest one the script names (off-road: along 'ahead' first, the nearest street ahead)
         public static string PlaceId(RoadNet net, Vector3 p, Vector3 ahead = default)
@@ -116,7 +138,8 @@ namespace Racer
         // a line with a street in it; the street left out (and the line shown without it) when none is known
         public static string[] With(string phrase, string street, string ending = null) => street == null ? (ending == null ? new[] { phrase } : new[] { phrase, ending }) : ending == null ? new[] { phrase, street } : new[] { phrase, street, ending };
 
-        public static void Speak(string[] ids, bool priority = false) { PoliceRadioVoice.Ensure(); PoliceRadioVoice.Instance?.Enqueue(ids, priority); }
+        public static System.Action<string[]> Said;   // Round 89: checks: every call as it is said (after Fix)
+        public static void Speak(string[] ids, bool priority = false) { var f = Fix(ids); Said?.Invoke(f); PoliceRadioVoice.Ensure(); PoliceRadioVoice.Instance?.Enqueue(f, priority); }
         public static void Clear() { PoliceRadioVoice.Instance?.Flush(); }
     }
 
