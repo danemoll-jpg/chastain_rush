@@ -42,6 +42,9 @@ namespace ChastainRush
             yield return FreeRoam(); yield return Clock(13f); yield return Vehicle("original");
             var h = Hunt; if (!h) { Check("the egg hunt is in the build", false); yield break; }
             var news = h.sites.Where(s => int.TryParse(s.id.Substring(4), out int n) && n > 100).ToList();
+            // -r89Eggs egg-130,egg-139,...: only those (a re-probe of eggs moved after a first run)
+            var argv89 = System.Environment.GetCommandLineArgs(); int ai = System.Array.IndexOf(argv89, "-r89Eggs");
+            if (ai >= 0 && ai + 1 < argv89.Length) { var only = new HashSet<string>(argv89[ai + 1].Split(',')); news = news.Where(s => only.Contains(s.id)).ToList(); report.AppendLine($"  only {news.Count} eggs (-r89Eggs)"); }
             int taken = 0, bad = 0; var shotArea = new HashSet<string>(); var net = RoadNet.Shared; var rows = new List<string>();
             int picked = 0; string lastId = null; System.Action<EggHunt.Site> on = x => { picked++; lastId = x.id; }; EggHunt.Picked += on;
             foreach (var s in news)

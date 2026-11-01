@@ -69,6 +69,7 @@ namespace ChastainRush
             if (tag == "round67" && parts == null) parts = new[] { "mloop", "mjumps", "mwalk", "mpics", "tcreek", "tpark", "tmound", "tpics" };   // Round 67 (Round20Runner.R67.cs); mai as well when named
             if (tag == "round72" && parts == null) parts = new[] { "qjump", "qshort", "qreplay", "qpics" };   // Round 72 (Round20Runner.R72.cs)
             if (tag == "round75" && parts == null) parts = new[] { "dan", "types", "mapb" };   // Round 75 (Round20Runner.R75.cs)
+            if (tag == "round89" && parts == null) parts = new[] { "p89save", "p89map", "p89eggs", "p89radio" };   // Round 89 (Round20Runner.R89.cs)
             if (tag == "round82" && parts == null) parts = new[] { "dan", "lines", "fence" };   // Round 82 (Round20Runner.R82.cs)
             if (tag == "round81" && parts == null) parts = new[] { "dan", "fshort", "dtrain", "ecross", "bgates", "junction", "ddecks", "hwalls" };   // Round 81 (Round20Runner.R81.cs); cqueue with -traffic Heavy, fps on its own runs
             if (tag == "round80" && parts == null) parts = new[] { "dan", "whitlock", "deck", "ddecks", "dreplay", "cockpit", "air", "airhuman" };   // Round 80 (Round20Runner.R80.cs); lanes with -traffic Heavy, traffic on its own runs

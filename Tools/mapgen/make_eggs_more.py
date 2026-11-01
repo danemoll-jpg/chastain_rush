@@ -292,7 +292,7 @@ A = area("Viking Quarry", "The quarry lake west of the airport: its three jumps 
 Q = J("Data/tracks/quarry_jumps.json")
 for z in Q["landing_zones"]:
     r = pts(z["poly"]); c = centroid(r)
-    add(A, "hard", "ground", c, f"Viking Quarry: on {z['id'].replace('quarry jump ', '')}'s deck (do the jump)", 3.5)
+    add(A, "hard", "ground", c, f"Viking Quarry: by {z['id'].replace('quarry jump ', '')}'s landing", 3.5)
 dr = pts(Q["access"]["drive"]); near_points(A, "easy", "ground", dr[:: max(1, len(dr) // 6)], 3, "Viking Quarry: by the drive in", clear=4.0, jitter=4.0)
 QB = (min(p[0] for p in dr) - 400, min(p[1] for p in dr) - 400, max(p[0] for p in dr) + 400, max(p[1] for p in dr) + 400)
 woods(A, QB, 2, "Viking Quarry")
@@ -382,7 +382,7 @@ BN = (-2300.0, -4600.0, 3980.0, 0.0)
 A = area("Middle neighborhoods", "South of Chastain Road to the mountain and Marietta: off Barrett Parkway, Big Shanty Road, Bells Ferry's south end and Canton Road")
 street(A, road_ids(BN, ("residential",)), 6, "the middle neighborhoods", BN); yards(A, BN, 5, "the middle neighborhoods")
 SN = (-8600.0, -9600.0, 3980.0, -4600.0)
-A = area("South neighborhoods (Marietta)", "South of the mountain, round Marietta and Kennestone, out to the map's south edge")
+A = area("Marietta neighborhoods", "South of the mountain, round Marietta and Kennestone, out to the map's south edge")
 street(A, road_ids(SN, ("residential",)), 6, "the south neighborhoods", SN); yards(A, SN, 5, "the south neighborhoods")
 
 # the woods (6 + top-up): out in the extension's woods
@@ -390,8 +390,8 @@ A = area("The woods", "The extension's woods: between the neighborhoods, along t
 woods(A, (-8600, -9600, 3980, 0), 6, "the extension")
 
 # top up to 150 from the bigger areas (by a road), trim to 150
-order = ["West neighborhoods", "Middle neighborhoods", "South neighborhoods (Marietta)", "The woods"]
-boxes = {"West neighborhoods": WN, "Middle neighborhoods": BN, "South neighborhoods (Marietta)": SN, "The woods": (-8600, -9600, 3980, 0)}
+order = ["West neighborhoods", "Middle neighborhoods", "Marietta neighborhoods", "The woods"]
+boxes = {"West neighborhoods": WN, "Middle neighborhoods": BN, "Marietta neighborhoods": SN, "The woods": (-8600, -9600, 3980, 0)}
 k = 0
 while len(eggs) < 150 and k < 400:
     nm = order[k % len(order)]; k += 1
@@ -399,6 +399,78 @@ while len(eggs) < 150 and k < 400:
     else: street(nm, road_ids(boxes[nm], ("residential", "unclassified")), 1, nm.split(" (")[0].lower(), boxes[nm])
 eggs = eggs[:150]
 for i, e in enumerate(eggs): e["id"] = f"egg-{101 + i:03d}"
+
+# ---- --fix <check report>: the eggs the exe's probe could not reach (lines "  egg-NNN ... <- WRONG") moved, each to a nearer, open spot of the same
+# area and kind of finding, its id kept; every other egg stays exactly where it is (the placement above is deterministic)
+if "--fix" in sys.argv:
+    import re
+    rep = open(sys.argv[sys.argv.index("--fix") + 1], encoding="utf-8").read()
+    wrong = set(re.findall(r"^  (egg-\d+) .*<- WRONG", rep, re.M))
+    BOXES = {"Town Center at Cobb": TC, "Kennesaw State University": KSU, "The airport": APB, "Viking Quarry": QB, "Kennesaw Mountain": KM,
+             "Marietta Square": MS, "Kennestone": KN, "Noonday Creek Trail": TB, "Addison Heights": AH, "The highways": (-2000, -5000, 3900, 1900),
+             "West neighborhoods": WN, "Middle neighborhoods": BN, "Marietta neighborhoods": SN, "The woods": (-8600, -9600, 3980, 0)}
+    rejected = [(e["x"], e["z"]) for e in eggs if e["id"] in wrong]
+    def free(q): return all(math.dist(q, r) > 40 for r in rejected)
+    def near_yard(area_, box):
+        """a back yard close to its street: 4.5 m past the wall, the house within 35 m of the road"""
+        houses = [i for i, r in enumerate(BLD) if 60 < area_of(r) < 450 and in_box(centroid(r), box)]
+        for _ in range(3000):
+            if not houses: return None
+            h = rng.choice(houses); r = BLD[h]; c = centroid(r); near = None
+            for i in GR.near(c):
+                p, w, nm, cl = ROADS[i]
+                if cl in ("service", "motorway", "motorway_link"): continue
+                for a, b in zip(p[:-1], p[1:]):
+                    d = seg_dist(c, a, b)
+                    if near is None or d < near[0]: near = (d, a, b)
+            if near is None or near[0] > 35: continue
+            _, a, b = near; ab = (b[0] - a[0], b[1] - a[1]); L2 = ab[0] ** 2 + ab[1] ** 2 or 1e-9
+            t = max(0, min(1, ((c[0] - a[0]) * ab[0] + (c[1] - a[1]) * ab[1]) / L2)); f = (a[0] + ab[0] * t, a[1] + ab[1] * t)
+            d = (c[0] - f[0], c[1] - f[1]); L = math.hypot(*d)
+            if L < 1: continue
+            d = (d[0] / L, d[1] / L); half = max(abs((p[0] - c[0]) * d[0] + (p[1] - c[1]) * d[1]) for p in r)
+            q = (c[0] + d[0] * (half + 4.5), c[1] + d[1] * (half + 4.5))
+            if free(q) and ok(q, 3.0, 0.12, 6.0) and not any(math.dist(q, (o["x"], o["z"])) < 30 for o in keep + eggs): return q, "behind a house"
+        return None
+    def near_road_side(box):
+        ids = road_ids(box)
+        for _ in range(2000):
+            if not ids: return None
+            p, w, nm, c = ROADS[rng.choice(ids)]
+            k = rng.randrange(len(p) - 1); a, b = p[k], p[k + 1]; L = math.dist(a, b)
+            if L < 2: continue
+            t = rng.random(); cpt = (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+            if not in_box(cpt, box): continue
+            nx, nz = -(b[1] - a[1]) / L, (b[0] - a[0]) / L; s = rng.choice((-1, 1))
+            q = (cpt[0] + nx * s * (w / 2 + 1.5), cpt[1] + nz * s * (w / 2 + 1.5))
+            if free(q) and ok(q, 5.0, 0.10, 0.8) and not any(math.dist(q, (o["x"], o["z"])) < 30 for o in keep + eggs): return q, f"by {nm or 'the road'}"
+        return None
+    def near_woods(box):
+        cand = [r for r in WOODS if any(in_box(p, box) for p in r)]
+        for _ in range(4000):
+            if not cand: return None
+            r = rng.choice(cand); xs_ = [p[0] for p in r]; zs_ = [p[1] for p in r]
+            q = (rng.uniform(max(min(xs_), box[0]), min(max(xs_), box[2])), rng.uniform(max(min(zs_), box[1]), min(max(zs_), box[3])))
+            if inside(q, r) and free(q) and ok(q, 5.0, 0.12, 10.0) and rdist(q) < 30 and not any(math.dist(q, (o["x"], o["z"])) < 30 for o in keep + eggs): return q, "in the woods, off the road"
+        return None
+    moved = 0
+    for e in eggs:
+        if e["id"] not in wrong: continue
+        box = BOXES.get(e["area"]); got = None
+        if "summit leap" in e["note"]:
+            tr_ = pts(SL["leap"]["track"]); got = (tr_[min(len(tr_) - 1, 12)], "past the summit leap, on its run-out")
+        elif "Glover Park" in e["note"]:
+            got = near_road_side(box)
+        elif e["how"] == "easy":
+            got = near_road_side(box)
+        elif "woods" in e["note"]:
+            got = near_woods(box) or near_yard(e["area"], box)
+        else:
+            got = near_yard(e["area"], box) or near_woods(box)
+        if got is None: print("  no new spot for", e["id"], e["area"]); continue
+        q, why = got; e["x"], e["z"], e["kind"] = round(q[0], 2), round(q[1], 2), "ground"
+        e["note"] = f"{e['note'].split(':')[0]}: {why} (moved, Round 89's probe)"; moved += 1
+    print(f"--fix: {moved} of {len(wrong)} eggs moved")
 
 # ---- the file: Round 48's 100 + these; areas (old ones kept with their counts, new ones added); destinations; tiers 250
 names = {a["name"] for a in AREAS}
@@ -448,7 +520,7 @@ def mid_egg(nm):
     e = [x for x in eggs if x["area"] == nm]
     return (sum(x["x"] for x in e) / len(e), sum(x["z"] for x in e) / len(e)) if e else None
 for did, title, nm in (("west-kennesaw", "West Kennesaw neighborhoods", "West neighborhoods"), ("middle-neighborhoods", "Middle neighborhoods", "Middle neighborhoods"),
-                       ("marietta-south", "South Marietta neighborhoods", "South neighborhoods (Marietta)")):
+                       ("marietta-south", "South Marietta neighborhoods", "Marietta neighborhoods")):
     q = mid_egg(nm)
     if q:
         # the egg nearest the middle (a point in the area, not between its parts)

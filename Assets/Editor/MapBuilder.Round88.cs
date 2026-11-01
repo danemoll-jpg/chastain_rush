@@ -238,14 +238,15 @@ namespace ChastainRush
                     for (float s = 2f; s <= Lmax; s += 1f) { var p = At(s); if (UnderOther(p, Mathf.Max(terrain.Height(p.x, p.y), deckTop), bi, chain)) { Lmax = Mathf.Max(0f, s - 6f); break; } }
                     // Round 89 (A): never over a railroad crossing (PlanRailroad graded the road and the bed to each other before this; Canton Road's deck 51
                     // was laid across the tracks 60 m past its end and the rails stood out of the road: a landing at 8.9 m/s there). Stop 8 m short of the
-                    // crossing, the curve and its ease inside that.
-                    float Lcurve = Lmax;
+                    // crossing, the curve and its ease inside that. Attempt 2 (attempt 1's 21 m curve and 20 m ease flew cars 1.7 s): the curve as long as
+                    // it can be, its ease only 6 m, ending 2 m short of the crossing's pavement
+                    float Lcurve = Lmax, ease = R88Ease;
                     if (RailCrossings != null)
                         for (float s = 0f; s <= Lmax + R88Ease; s += 1f)
                         {
                             var p = At(s); bool hit = false;
                             foreach (var rc in RailCrossings) if ((rc.at - p).sqrMagnitude < 100f) { hit = true; break; }
-                            if (hit) { Lcurve = Mathf.Max(0f, s - 8f - R88Ease); Lmax = Mathf.Min(Lmax, s - 8f); log.Add($"{tag}: a railroad crossing {s:0} m on: the curve to {Lcurve:0} m at most, eased out by {Lmax:0} m"); break; }
+                            if (hit) { ease = 6f; Lmax = Mathf.Min(Lmax, s - 2f); Lcurve = Mathf.Max(0f, Lmax - ease); log.Add($"{tag}: a railroad crossing {s:0} m on: the curve to {Lcurve:0} m at most, eased out by {Lmax:0} m"); break; }
                         }
                     if (Lmax < 12f) { System.Array.Copy(keepDeck, b.deck_y, keepDeck.Length); log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left (its deck as it was)"); continue; }
                     int NM = Mathf.CeilToInt(Lmax / .5f) + 1; var GM = new float[NM];
@@ -276,7 +277,7 @@ namespace ChastainRush
                     // the shortest L whose whole profile a car holds at R88HoldV (its crest) with a gentle sag: the curve, then the ease from its grade line back onto
                     // the road's own ground over 20 m, and 10 m of that ground on (Round 88 judged the curve alone: Canton Road's east end kept a 28 m/s crest in its ease).
                     // The road's far grade gl over 10 m either side of L (its 1 m grid smoothed out); the bends over 4 m, as Bend measures them
-                    const float Ease = R88Ease;
+                    float Ease = ease;
                     float Prof(float s, float ll, float yl, float gl) => s >= ll ? Mathf.Lerp(yl + gl * (s - ll), Gs(s), Smooth01((s - ll) / Ease)) : H(s, ll, yl, gl);
                     for (float ll = Mathf.Min(R88MinL, Lcurve); ll <= Lcurve + .01f; ll += 4f)
                     {

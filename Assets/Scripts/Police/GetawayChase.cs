@@ -325,7 +325,8 @@ namespace Racer
                     if (!r.offRoad && r.human)
                     {
                         int sn = Net.Nearest(r.body.position, out float sd, 40); string st = sn >= 0 && sd < Net.Half[sn] + 4f ? PoliceRadio.RoadId(Net, sn) : null;
-                        if (st != null && st != r.street) { if (r.street != null) Say(new[] { "P15", st }, r.player); r.street = st; r.nextHeading = Time.time + 18; }
+                        // Round 89: "near X" and "on X" are one street here: no call for a dip onto a frontage or parking road beside it and back
+                        if (st != null && st.TrimStart('~') != r.street?.TrimStart('~')) { if (r.street != null) Say(new[] { "P15", st }, r.player); r.street = st; r.nextHeading = Time.time + 18; }
                         else if (st != null && Time.time >= r.nextHeading) { r.nextHeading = Time.time + Random.Range(22f, 34f); var hp = PoliceRadio.HeadingPhrase(r.body.linearVelocity); if (hp != null && r.body.linearVelocity.magnitude > 6) Say(new[] { hp, st }, r.player); }
                     }
                 }

@@ -125,7 +125,7 @@
    "eggs": 13
   },
   {
-   "name": "South neighborhoods (Marietta)",
+   "name": "Marietta neighborhoods",
    "direction": "South of the mountain, round Marietta and Kennestone, out to the map's south edge",
    "eggs": 13
   },
@@ -1560,11 +1560,11 @@
    "area": "The airport",
    "how": "hard",
    "kind": "ground",
-   "x": -3512.53,
-   "z": -1646.73,
+   "x": -3167.33,
+   "z": -1473.78,
    "y": 0.0,
    "radius": 2.8,
-   "note": "near the airport: behind a house"
+   "note": "near the airport: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-131",
@@ -1575,7 +1575,7 @@
    "z": -1331.09,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Viking Quarry: on J1 landing's deck (do the jump)"
+   "note": "Viking Quarry: by J1 landing's landing"
   },
   {
    "id": "egg-132",
@@ -1586,7 +1586,7 @@
    "z": -1358.28,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Viking Quarry: on J2 landing's deck (do the jump)"
+   "note": "Viking Quarry: by J2 landing's landing"
   },
   {
    "id": "egg-133",
@@ -1597,7 +1597,7 @@
    "z": -1401.76,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Viking Quarry: on J3 landing's deck (do the jump)"
+   "note": "Viking Quarry: by J3 landing's landing"
   },
   {
    "id": "egg-134",
@@ -1659,11 +1659,11 @@
    "area": "Kennesaw Mountain",
    "how": "hard",
    "kind": "ground",
-   "x": -1155.25,
-   "z": -6141.93,
+   "x": -1232.2,
+   "z": -6392.46,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Kennesaw Mountain: on the summit leap's landing (do the leap)"
+   "note": "Kennesaw Mountain: past the summit leap, on its run-out (moved, Round 89's probe)"
   },
   {
    "id": "egg-140",
@@ -1725,11 +1725,11 @@
    "area": "Kennesaw Mountain",
    "how": "easy",
    "kind": "ground",
-   "x": -1021.12,
-   "z": -5210.13,
+   "x": -526.13,
+   "z": -5091.46,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Kennesaw Mountain: by Kennesaw Mountain Drive"
+   "note": "Kennesaw Mountain: by Old 41 Highway Northwest (moved, Round 89's probe)"
   },
   {
    "id": "egg-146",
@@ -1791,11 +1791,11 @@
    "area": "Kennesaw Mountain",
    "how": "hard",
    "kind": "ground",
-   "x": -1769.49,
-   "z": -4685.76,
+   "x": -641.68,
+   "z": -4985.26,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Kennesaw Mountain: in the woods"
+   "note": "Kennesaw Mountain: in the woods, off the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-152",
@@ -1813,11 +1813,11 @@
    "area": "Marietta Square",
    "how": "easy",
    "kind": "ground",
-   "x": 1782.11,
-   "z": -8457.47,
+   "x": 1489.74,
+   "z": -8206.67,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Marietta Square: in Glover Park"
+   "note": "Marietta Square: by North Marietta Parkway (moved, Round 89's probe)"
   },
   {
    "id": "egg-154",
@@ -1890,11 +1890,11 @@
    "area": "Marietta Square",
    "how": "hard",
    "kind": "ground",
-   "x": 1594.0,
-   "z": -8403.6,
+   "x": 2188.19,
+   "z": -8477.98,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Marietta Square: on a race jump's landing"
+   "note": "Marietta Square: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-161",
@@ -1945,11 +1945,11 @@
    "area": "Marietta Square",
    "how": "hard",
    "kind": "ground",
-   "x": 2197.59,
-   "z": -8594.75,
+   "x": 2357.6,
+   "z": -8268.35,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Marietta Square: behind a house"
+   "note": "Marietta Square: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-166",
@@ -2022,11 +2022,11 @@
    "area": "Noonday Creek Trail",
    "how": "easy",
    "kind": "ground",
-   "x": 1287.2,
-   "z": -742.69,
+   "x": 133.49,
+   "z": -895.54,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the Noonday Creek Trail: on the trail"
+   "note": "the Noonday Creek Trail: by Hidden Forest Court (moved, Round 89's probe)"
   },
   {
    "id": "egg-173",
@@ -2044,11 +2044,11 @@
    "area": "Noonday Creek Trail",
    "how": "easy",
    "kind": "ground",
-   "x": 659.86,
-   "z": -456.82,
+   "x": 99.84,
+   "z": -557.94,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the Noonday Creek Trail: on the trail"
+   "note": "the Noonday Creek Trail: by Grace Street Northwest (moved, Round 89's probe)"
   },
   {
    "id": "egg-175",
@@ -2088,11 +2088,11 @@
    "area": "Noonday Creek Trail",
    "how": "hard",
    "kind": "ground",
-   "x": 1356.68,
-   "z": -935.28,
+   "x": 1636.26,
+   "z": -406.03,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the Noonday Creek Trail: in the woods"
+   "note": "the Noonday Creek Trail: in the woods, off the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-179",
@@ -2165,11 +2165,11 @@
    "area": "Addison Heights",
    "how": "easy",
    "kind": "ground",
-   "x": 3054.39,
-   "z": 318.82,
+   "x": 3262.65,
+   "z": 418.41,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Addison Heights: by Elaine Circle Northeast"
+   "note": "Addison Heights: by Embry Lane Northeast (moved, Round 89's probe)"
   },
   {
    "id": "egg-186",
@@ -2220,11 +2220,11 @@
    "area": "Addison Heights",
    "how": "hard",
    "kind": "ground",
-   "x": 2923.95,
-   "z": 86.1,
+   "x": 2848.66,
+   "z": 445.95,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Addison Heights: behind a house"
+   "note": "Addison Heights: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-191",
@@ -2396,11 +2396,11 @@
    "area": "West neighborhoods",
    "how": "easy",
    "kind": "ground",
-   "x": -7639.41,
-   "z": -2747.6,
+   "x": -4790.87,
+   "z": -2422.98,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the west neighborhoods: by Valley Hill Road Northwest"
+   "note": "the west neighborhoods: by Kennesaw Due West Road Northwest (moved, Round 89's probe)"
   },
   {
    "id": "egg-207",
@@ -2418,11 +2418,11 @@
    "area": "West neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": -5562.1,
-   "z": -1780.03,
+   "x": -8030.98,
+   "z": 238.0,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the west neighborhoods: behind a house"
+   "note": "the west neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-209",
@@ -2462,11 +2462,11 @@
    "area": "West neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": -3374.15,
-   "z": -4426.67,
+   "x": -7038.71,
+   "z": 343.96,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the west neighborhoods: behind a house"
+   "note": "the west neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-213",
@@ -2594,15 +2594,15 @@
    "area": "Middle neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": 2414.66,
-   "z": -3088.08,
+   "x": 1843.16,
+   "z": -3835.18,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the middle neighborhoods: behind a house"
+   "note": "the middle neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-225",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": 2212.88,
@@ -2613,7 +2613,7 @@
   },
   {
    "id": "egg-226",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": -4123.51,
@@ -2624,7 +2624,7 @@
   },
   {
    "id": "egg-227",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": 165.57,
@@ -2635,7 +2635,7 @@
   },
   {
    "id": "egg-228",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": -6836.8,
@@ -2646,7 +2646,7 @@
   },
   {
    "id": "egg-229",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": -882.55,
@@ -2657,7 +2657,7 @@
   },
   {
    "id": "egg-230",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": 1963.32,
@@ -2668,40 +2668,40 @@
   },
   {
    "id": "egg-231",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": 798.61,
-   "z": -7545.97,
+   "x": 2145.18,
+   "z": -8456.24,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the south neighborhoods: behind a house"
+   "note": "the south neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-232",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": 3880.27,
-   "z": -8865.12,
+   "x": -21.52,
+   "z": -6567.45,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the south neighborhoods: behind a house"
+   "note": "the south neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-233",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "hard",
    "kind": "ground",
-   "x": 2806.85,
-   "z": -9165.4,
+   "x": -5579.25,
+   "z": -7277.61,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the south neighborhoods: behind a house"
+   "note": "the south neighborhoods: behind a house (moved, Round 89's probe)"
   },
   {
    "id": "egg-234",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "hard",
    "kind": "ground",
    "x": 412.84,
@@ -2712,7 +2712,7 @@
   },
   {
    "id": "egg-235",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "hard",
    "kind": "ground",
    "x": -6286.12,
@@ -2737,22 +2737,22 @@
    "area": "The woods",
    "how": "hard",
    "kind": "ground",
-   "x": 875.76,
-   "z": -8118.42,
+   "x": -4633.18,
+   "z": -897.31,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the extension: in the woods"
+   "note": "the extension: in the woods, off the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-238",
    "area": "The woods",
    "how": "hard",
    "kind": "ground",
-   "x": -8389.77,
-   "z": -3590.1,
+   "x": -381.47,
+   "z": -4607.66,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the extension: in the woods"
+   "note": "the extension: in the woods, off the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-239",
@@ -2770,11 +2770,11 @@
    "area": "The woods",
    "how": "hard",
    "kind": "ground",
-   "x": -358.36,
-   "z": -4872.55,
+   "x": 1740.97,
+   "z": -5806.99,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the extension: in the woods"
+   "note": "the extension: in the woods, off the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-241",
@@ -2792,11 +2792,11 @@
    "area": "West neighborhoods",
    "how": "easy",
    "kind": "ground",
-   "x": -8525.35,
-   "z": -1873.32,
+   "x": -2527.54,
+   "z": -4199.51,
    "y": 0.0,
    "radius": 2.8,
-   "note": "west neighborhoods: by Owens Landing Way"
+   "note": "west neighborhoods: by the road (moved, Round 89's probe)"
   },
   {
    "id": "egg-243",
@@ -2811,14 +2811,14 @@
   },
   {
    "id": "egg-244",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": 2702.5,
    "z": -7498.84,
    "y": 0.0,
    "radius": 2.8,
-   "note": "south neighborhoods: by Morningside Drive Northeast"
+   "note": "marietta neighborhoods: by Morningside Drive Northeast"
   },
   {
    "id": "egg-245",
@@ -2855,14 +2855,14 @@
   },
   {
    "id": "egg-248",
-   "area": "South neighborhoods (Marietta)",
+   "area": "Marietta neighborhoods",
    "how": "easy",
    "kind": "ground",
    "x": -3192.56,
    "z": -5386.65,
    "y": 0.0,
    "radius": 2.8,
-   "note": "south neighborhoods: by Valor Ridge Way Northwest"
+   "note": "marietta neighborhoods: by Valor Ridge Way Northwest"
   },
   {
    "id": "egg-249",
@@ -3323,11 +3323,11 @@
   {
    "id": "west-kennesaw",
    "title": "West Kennesaw neighborhoods",
-   "x": -5625.4,
-   "z": -1736.7,
+   "x": -6975.23,
+   "z": -1268.15,
    "y": 0.0,
    "fixed": false,
-   "yaw": 34.4
+   "yaw": 179.2
   },
   {
    "id": "middle-neighborhoods",
