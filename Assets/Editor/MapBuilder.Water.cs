@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Racer;
 using UnityEngine;
@@ -127,9 +129,13 @@ namespace ChastainRush
                 beds.Rings.Add(ring); beds.RingBounds.Add(BoundsOf(ring, 0f));
                 if (ring.Count >= 3) beds.Level[wi] = WaterLevel(ring, terrain);
             }
-            foreach (var s in map.streams)
+            // Round 90 (the Viking Quarry race: Noonday Creek's head ran across The Corner's run-up and slowed every car into the lake): a stream
+            // stops 14 m either side of a race course built over it (it runs on under the course in a culvert, unseen): the course stays dry
+            var dry = QuarryRaceCourse();
+            foreach (var s0 in map.streams)
+              foreach (var run in DryRuns(Densify(ToPoints(s0.points), 2f), dry))
             {
-                var pts = Densify(ToPoints(s.points), 2f);
+                var pts = run;
                 var surf = new List<float>();
                 for (int i = 0; i < pts.Count; i++)
                 {
@@ -140,6 +146,7 @@ namespace ChastainRush
                 for (int i = 1; i + 1 < surf.Count; i++) surf[i] = Mathf.Min(surf[i], (surf[i - 1] + surf[i] + surf[i + 1]) / 3f);
                 beds.Streams.Add((pts, surf));
             }
+            Debug.Log($"[Round90] streams kept off the Viking Quarry course: {dry.Count} course points");
             beds.Index();
             // 2. the cut: lower only
             // the cut fades out where the ground stands more than BankFade above the water, so a bank or a hillside beside the
@@ -208,6 +215,27 @@ namespace ChastainRush
                 }
             }
             Debug.Log($"[Round15] ShallowWater: {areas} ponds and lakes by outline, {boxes} stream boxes");
+        }
+    
+        // Round 90: the Viking Quarry race's course (Data/tracks/viking_quarry.json "course"), read here because the water is planned before the
+        // mountain's pieces; and a line split into the runs that stay 14 m clear of it
+        [Serializable] class QrCourseOnly { public float[] course; }
+        static List<Vector2> QuarryRaceCourse()
+        {
+            string path = Path.Combine(ProjectRoot, "Data/tracks/viking_quarry.json"); if (!File.Exists(path)) return new List<Vector2>();
+            var f = JsonUtility.FromJson<QrCourseOnly>(File.ReadAllText(path)); return f?.course != null ? Densify(ToPoints(f.course), 3f) : new List<Vector2>();
+        }
+        static IEnumerable<List<Vector2>> DryRuns(List<Vector2> pts, List<Vector2> course)
+        {
+            if (course.Count == 0) { yield return pts; yield break; }
+            var cur = new List<Vector2>();
+            float x0 = course.Min(c => c.x) - 15f, x1 = course.Max(c => c.x) + 15f, z0 = course.Min(c => c.y) - 15f, z1 = course.Max(c => c.y) + 15f;
+            foreach (var q in pts)
+            {
+                bool wet = true; if (q.x > x0 && q.x < x1 && q.y > z0 && q.y < z1) foreach (var c in course) if ((c - q).sqrMagnitude < 14f * 14f) { wet = false; break; }
+                if (wet) cur.Add(q); else { if (cur.Count >= 2) yield return cur; cur = new List<Vector2>(); }
+            }
+            if (cur.Count >= 2) yield return cur;
         }
     }
 }

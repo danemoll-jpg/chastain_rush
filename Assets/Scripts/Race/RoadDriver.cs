@@ -667,6 +667,10 @@ namespace Racer
             // flight): the route's reset-skip stretches (a jump from its lip to past its landing) put the AI past them, as CarRecovery does the player
             var rr=RaceRoute.Active; var skips=rr==null||rr.Data==null?null:rr.OwnReverse?rr.Data.reset_skip_rev:!rr.Reverse?rr.Data.reset_skip:null;
             if(skips!=null) foreach(var k in skips) if(current>=k.s0&&current<=k.s1){current=k.to_s;again=false;break;}
+            // Chastain Rush, Round 90 (the Viking Quarry race's check: three AI short at The Corner, under its landing deck's front, their station read
+            // as the haul road's further on): a car inside a jump's short area (the lake under the flight, the bank under the landing deck) by its
+            // position goes past that jump's landing, whatever station it was read at
+            if(skips!=null){var cp=Car.Body.position; foreach(var k in skips) if(k.short_area!=null&&k.short_area.Length>=6&&InArea(k.short_area,cp.x,cp.z)){current=k.to_s;again=false;break;}}
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
@@ -738,6 +742,7 @@ namespace Racer
 
         // Chastain Rush, Round 49 check: a spot with something over it (the lake trail's footbridge: the lap's height there is the ground under the
         // deck, the stream bed; two AI cars were put back under it again and again). Not in the underground race (its pipes have a ceiling)
+        static bool InArea(float[] poly,float x,float z){bool c=false;int n=poly.Length/2;for(int i=0,j=n-1;i<n;j=i++){float xi=poly[2*i],zi=poly[2*i+1],xj=poly[2*j],zj=poly[2*j+1];if((zi>z)!=(zj>z)&&x<(xj-xi)*(z-zi)/(zj-zi+1e-9f)+xi)c=!c;}return c;}   // Chastain Rush, Round 90
         bool Covered(Vector3 q)
         {
             if(RaceRoute.Active!=null&&RaceRoute.Active.Underground) return false;

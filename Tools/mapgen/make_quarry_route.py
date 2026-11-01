@@ -359,7 +359,8 @@ widths = [{"id": f"{j['id']} {j['name']}: the run-up and kicker", "s0": st(jk(j,
 print(f"{len(zones)} AI zones ({nb} bends)")
 
 # ---------------------------------------------------------------- resets: anywhere a short jump ends up (the lake, the bank under the landing deck, the deck's front) back on
-# the run-up before the jump, facing it; on the flight or the landing past the deck's front: on past the landing
+# the run-up's head before the jump, facing it; on the flight or the landing past the deck's front: on past the landing (but never past the next
+# checkpoint: CarRecovery then puts it at the run-up's head too)
 reset_skip = []
 for j in (J3, J1, J2):
     d = j["dir"]; nl = (-d[1], d[0]); o = j["origin"]
@@ -367,7 +368,7 @@ for j in (J3, J1, J2):
     a0, a1 = j["lip_s"] + 45.0, j["land_s"][0] - 1.0
     poly = [W(a0, -34.0), W(a1, -34.0), W(a1, 34.0), W(a0, 34.0)]
     reset_skip.append({"id": f"{j['id']} {j['name']}", "s0": st(jk(j, j["lip_s"] - 2.0)), "s1": st(jk(j, j["land_s"][-1])), "to_s": st(jk(j, j["land_s"][-1] + 25.0)),
-                       "short_s": st(jk(j, 45.0)), "short_area": flat(poly)})
+                       "short_s": st(jk(j, 8.0)), "short_area": flat(poly)})   # (the run-up's head: the whole run-up ahead, as Free Roam's start box)
 
 # ---------------------------------------------------------------- the world pieces
 grades, surfaces, berms, clear = [], [], [], []

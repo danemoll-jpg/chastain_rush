@@ -61,12 +61,19 @@ namespace ChastainRush
                     var p = car.Body.position; float al = R90Along(j, p, out _);
                     if (!seat && al > j.lip_s - 6f) { seat = true; lipV = car.Body.linearVelocity.magnitude; StartCoroutine(R90Seat(views, $"90_{j.id}_driver_at_lip")); }
                     if (car.GroundedWheels == 0 && al > j.lip_s) air += Time.fixedDeltaTime; else if (air > 1f) return true;
-                    if (!tv && air > 2.2f) { tv = true; StartCoroutine(R90Tv(j, $"90_{j.id}_tv_midflight")); }
+                    if (!tv && air > 4.2f) { tv = true; StartCoroutine(R90Tv(j, $"90_{j.id}_tv_midflight")); }
                     return false;
                 }, s => R90Hold(car.Body.position));
                 yield return new WaitForSecondsRealtime(1.5f);
                 report.AppendLine($"  {j.id} {j.name}: lip {lipV:0.0} m/s (window {j.window.lo:0.0} to {j.window.hi:0.0}), {air:0.0} s in the air; pictures 90_{j.id}_driver_at_lip, 90_{j.id}_tv_midflight");
                 yield return Capture($"90_{j.id}_landed");
+            }
+            // the course from the player's camera: the benches, the cutting, the haul road, the rims (each checkpoint, 25 m before it)
+            for (int k = 0; k < race.Route.Checkpoints.Count; k++)
+            {
+                var cpk = race.Route.Checkpoints[k]; var p = race.Route.PointAt(race.Route.GateS + cpk.S - 25f, out var f);
+                Place(RaceRoute.Surface(p.x, p.z), f, 0f); race.NotifyTeleported(); var cam = Camera.main ? Camera.main.GetComponent<ChaseCamera>() : null; if (cam) cam.Snap();
+                yield return new WaitForSecondsRealtime(1.5f); yield return Capture($"90_course_cp{k + 1:00}");
             }
             race.EndRace();
         }
@@ -79,7 +86,7 @@ namespace ChastainRush
         IEnumerator R90Tv(QuarryJumps.Jump j, string name)
         {
             // Free Roam's TV camera on the rim beside the flight (its event's replay camera), looking at the car
-            var at = QuarryJumps.At(j, j.lip_s + 10f, -30f); float gy = GroundQuery.Height(at.x, at.z); at.y = Mathf.Max(float.IsNaN(gy) ? j.lip_y : gy + 8f, j.water_y + 8f);
+            var at = QuarryJumps.At(j, j.land_s[0] - 10f, 26f); float gy = GroundQuery.Height(at.x, at.z); at.y = Mathf.Max(float.IsNaN(gy) ? j.lip_y : gy + 6f, j.water_y + 6f);   // (the landing deck's camera, as the replay's)
             float ts = Time.timeScale; Time.timeScale = .03f;
             yield return Still(name, at, car.Body.position + Vector3.up * .8f, 40f);
             Time.timeScale = ts;
@@ -161,17 +168,18 @@ namespace ChastainRush
                                 string res = wet ? "SHORT (the lake)" : al < cur.land_s[0] - 1f ? "SHORT (the bank)" : al <= cur.land_s[cur.land_s.Length - 1] ? "on the deck" : "past the deck (the catch)";
                                 if (!wet && al >= cur.land_s[0] - 1f) cleared++; else shortN++;
                                 log.Add($"lap {race.Player.CompletedLaps + 1} {cur.id}: lip {lipV:0.0} m/s (window {cur.window.lo:0.0} to {cur.window.hi:0.0}), {airT:0.0} s, down {al - cur.lip_s:0} m out, {lat:0.0} m off its middle: {res}");
+                                report.AppendLine($"    ({(high ? "HIGH" : "normal")} {R90Nm(vid)}) " + log[log.Count - 1]); Flush();
                                 cur = null;
                             }
                         }
+                        if (run.resets + RaceController.LakeResets - lr0 > 8) { report.AppendLine("    GAVE UP: more than 8 resets"); return true; }
                         return race.Player.Finished;
                     }, s => R90Hold(car.Body.position));
-                    float wait = 0f; while (race.Entrants.Any(x => !x.Finished) && wait < 400f) { yield return new WaitForSecondsRealtime(.5f); wait += 1f; }
+                    float wait = 0f; while (race.Player.Finished && race.Entrants.Any(x => !x.Finished) && wait < 400f) { yield return new WaitForSecondsRealtime(.5f); wait += 1f; }
                     Time.timeScale = 1f;
                     string tag = $"{(high ? "HIGH" : "normal")} {R90Nm(vid)}";
                     report.AppendLine($"  {tag}: " + string.Join("; ", race.Entrants.Select(x => $"{x.Name} ({x.VehicleName}) {(x.Finished ? RaceController.Fmt(x.FinalTotal) + (x.Estimated ? " est." : "") : "NOT finished")}, laps {string.Join(" / ", x.LapTimes.Select(v => RaceController.Fmt(v)))}, missed {x.MissedTotal}, resets {(x.Driver != null ? x.Driver.RecoveryCount : 0)}")));
                     report.AppendLine($"    the player: {run.resets} resets by Y, {RaceController.LakeResets - lr0} lake resets, stuck {run.stuck}{run.note}; top {run.topSpeed:0} m/s");
-                    foreach (var l in log) report.AppendLine("    " + l);
                     report.AppendLine($"    trace:{run.trace}");
                     Check($"race {tag}: the player finishes {laps} laps", race.Player.Finished, $"laps {race.Player.CompletedLaps}");
                     Check($"race {tag}: every jump cleared at race speed (none short)", shortN == 0 && flights >= 3 * laps, $"{cleared} cleared, {shortN} short, {flights} flights of {3 * laps}");

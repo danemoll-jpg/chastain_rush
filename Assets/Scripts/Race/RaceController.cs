@@ -389,7 +389,8 @@ namespace ChastainRush
         {
             var rd = Route?.Data; if (rd == null || rd.lake_reset_s <= 0f || !e.IsHuman || !e.Car) return;
             var skips = Route.OwnReverse ? rd.reset_skip_rev : !Route.Reverse ? rd.reset_skip : null; if (skips == null) return;
-            var p = e.Car.Body.position; bool wet = e.Car.WaterImmersion > .05f || ShallowWater.InWater(p);
+            // (in the water, or come to rest there: on the bank under a landing deck, or on the lake's bed with the water's drag)
+            var p = e.Car.Body.position; bool wet = e.Car.WaterImmersion > .05f || ShallowWater.InWater(p) || e.Car.Body.linearVelocity.magnitude < 4f;
             bool inside = false;
             if (wet) foreach (var k in skips) if (k.short_area != null && k.short_area.Length >= 6 && InPoly(k.short_area, p.x, p.z)) { inside = true; break; }
             float t = inside ? (lakeFor.TryGetValue(e, out float v) ? v : 0f) + dt : 0f; lakeFor[e] = t;

@@ -115,7 +115,9 @@ namespace ChastainRush
                             foreach (var k in skips)
                             {
                                 float a = Mathf.Repeat(k.s0 - gs, L), b = Mathf.Repeat(k.s1 - gs, L);
-                                if (Mathf.Repeat(s - a, L) <= Mathf.Repeat(b - a, L)) { s = Mathf.Repeat(a - 15f, L); break; }
+                                // Round 90 (the Viking Quarry race's check: 15 m short of a lip the car rolled off it from a standstill, fell and was put
+                                // back there again for 30 minutes): a skip with a short_s (its run-up's head) puts it there, with the whole run-up ahead
+                                if (Mathf.Repeat(s - a, L) <= Mathf.Repeat(b - a, L)) { s = k.short_s > 0f ? Mathf.Repeat(k.short_s - gs, L) : Mathf.Repeat(a - 15f, L); break; }
                             }
                     }
                 }
