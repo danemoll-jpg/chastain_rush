@@ -21,11 +21,24 @@ namespace ChastainRush
         // the Canton Road Connector's interchange (53, 54, 103), Allgood Road (52), Phillip Landrum by Chastain Road (80), Skip Spann's west deck (30, 39);
         // Round 89: I-75 over Dickson Road (59: a 0.36 m step and a gap at its west end, 2.5 s in the air in Round 88's check)
         static readonly int[] R88Bridges = { 13, 15, 45, 17, 18, 38, 62, 63, 79, 94, 97, 19, 20, 29, 61, 104, 57, 60, 82, 51, 53, 54, 103, 52, 80, 30, 39, 59 };
-        const float R88HoldV = 40f, R88MaxL = 150f, R88MinL = 24f;
+        const float R88HoldV = 40f, R88MaxL = 150f, R88MinL = 24f, R88Ease = 20f;
         // Round 89: a ramp's deck merging onto another deck (build-log numbers): where their footprints meet, the ramp at the other's top, eased in over the
         // 60 m before. The Canton Road Connector's link 437897716 (103) ran 1.9 m under the eastbound Connector's deck (54) where they meet, into its
         // side wall: Round 88's check cars stopped there 8 times. At one height the bridge builder leaves the wall between them out (R82SideOpen).
         static readonly (int ramp, int onto)[] R89Merges = { (103, 54) };
+        // Round 89 (A): ends put back as they were before Round 88 (the pass leaves them, their deck untouched): "51e" = bridge 51's end, "80s" = its start.
+        // A dry run can try others with -r89Back "51e;80s" (added to these) or -r88Off (the whole pass off: the build before Round 88 C).
+        // 80s: deck 80's start at (577, -3601) sits on ramp 451950527's line (the I-575 Express flyover's way on to the I-75 Express Lanes); Round 88 made
+        // it flush, so a car on the ramp drove up onto the deck and fell 15 m off its side where the ramp leaves it (2.2 s in the air, Round 87: 0.76 s)
+        static readonly string[] R89Back = { "80s" };
+
+        static HashSet<string> R89BackSet()
+        {
+            var set = new HashSet<string>(R89Back);
+            var a = System.Environment.GetCommandLineArgs();
+            for (int i = 0; i + 1 < a.Length; i++) if (a[i] == "-r89Back") foreach (var s in a[i + 1].Split(';', ',')) if (s.Trim().Length > 0) set.Add(s.Trim());
+            return set;
+        }
 
         static void R89Merge(MapData map, int ri, int oi, List<string> log)
         {
@@ -66,6 +79,8 @@ namespace ChastainRush
         {
             var log = new List<string> { "Round 88 (C): the decks' ends at Round 83's leftover places laid onto their roads (MapBuilder.Round88.cs R88DeckEnds). Per end: the step and the sharpest crest / sag before -> after (the speed a car holds wheels down)" };
             const float g = 9.81f, slab = 0.7f;
+            if (System.Environment.GetCommandLineArgs().Contains("-r88Off")) { log.Add("-r88Off: the pass is off (the build before Round 88 C)"); System.IO.File.WriteAllLines(System.IO.Path.Combine(ProjectRoot, GeneratedDir, "round88_deck_ends.txt"), log); return; }
+            var back = R89BackSet();
             var pick = new HashSet<int>(R88Bridges.Select(b => b - 1));
             // every deck's footprint (to stop a road's easing short of passing under another deck)
             var idx = new CellIndex(16f); var segs = new List<(int b, int i)>(); var near = new List<int>();
@@ -102,6 +117,7 @@ namespace ChastainRush
                     var E = pts[ie]; var outward = (E - pts[ip]).normalized;
                     string tag = $"bridge {bi + 1} ({b.name} {b.osm_id}) {(start ? "start" : "end")} at ({E.x:0}, {E.y:0})";
                     if (EdgeCut(b, map)) { log.Add($"{tag}: cut by the map's edge, left"); continue; }
+                    if (back.Contains($"{bi + 1}{(start ? "s" : "e")}")) { log.Add($"{tag}: put back as before Round 88 (R89Back), left"); continue; }
                     // the decks chained to this one (end to end within 3 m): this end runs into another deck, left
                     var chain = new HashSet<int>(); bool chained = false;
                     for (int bj = 0; bj < map.bridges.Length; bj++)
@@ -220,6 +236,17 @@ namespace ChastainRush
                     // as far as it may reach: the chained road's length, and short of passing under another deck
                     float Lmax = Mathf.Min(R88MaxL, cum[cum.Length - 1]);
                     for (float s = 2f; s <= Lmax; s += 1f) { var p = At(s); if (UnderOther(p, Mathf.Max(terrain.Height(p.x, p.y), deckTop), bi, chain)) { Lmax = Mathf.Max(0f, s - 6f); break; } }
+                    // Round 89 (A): never over a railroad crossing (PlanRailroad graded the road and the bed to each other before this; Canton Road's deck 51
+                    // was laid across the tracks 60 m past its end and the rails stood out of the road: a landing at 8.9 m/s there). Stop 8 m short of the
+                    // crossing, the curve and its ease inside that.
+                    float Lcurve = Lmax;
+                    if (RailCrossings != null)
+                        for (float s = 0f; s <= Lmax + R88Ease; s += 1f)
+                        {
+                            var p = At(s); bool hit = false;
+                            foreach (var rc in RailCrossings) if ((rc.at - p).sqrMagnitude < 100f) { hit = true; break; }
+                            if (hit) { Lcurve = Mathf.Max(0f, s - 8f - R88Ease); Lmax = Mathf.Min(Lmax, s - 8f); log.Add($"{tag}: a railroad crossing {s:0} m on: the curve to {Lcurve:0} m at most, eased out by {Lmax:0} m"); break; }
+                        }
                     if (Lmax < 12f) { System.Array.Copy(keepDeck, b.deck_y, keepDeck.Length); log.Add($"{tag}: the road under another deck within {Lmax + 6f:0} m, left (its deck as it was)"); continue; }
                     int NM = Mathf.CeilToInt(Lmax / .5f) + 1; var GM = new float[NM];
                     for (int i = 0; i < NM; i++) { var p = At(i * .5f); GM[i] = terrain.Height(p.x, p.y); }
@@ -249,9 +276,9 @@ namespace ChastainRush
                     // the shortest L whose whole profile a car holds at R88HoldV (its crest) with a gentle sag: the curve, then the ease from its grade line back onto
                     // the road's own ground over 20 m, and 10 m of that ground on (Round 88 judged the curve alone: Canton Road's east end kept a 28 m/s crest in its ease).
                     // The road's far grade gl over 10 m either side of L (its 1 m grid smoothed out); the bends over 4 m, as Bend measures them
-                    const float Ease = 20f;
+                    const float Ease = R88Ease;
                     float Prof(float s, float ll, float yl, float gl) => s >= ll ? Mathf.Lerp(yl + gl * (s - ll), Gs(s), Smooth01((s - ll) / Ease)) : H(s, ll, yl, gl);
-                    for (float ll = Mathf.Min(R88MinL, Lmax); ll <= Lmax + .01f; ll += 4f)
+                    for (float ll = Mathf.Min(R88MinL, Lcurve); ll <= Lcurve + .01f; ll += 4f)
                     {
                         float a0 = Mathf.Max(ll - 10f, 0f), a1 = Mathf.Min(ll + 10f, Lmax);
                         float yl = 0f; int cnt = 0; for (float s = a0; s <= a1 + .01f; s += .5f) { yl += Gs(s); cnt++; } yl /= Mathf.Max(cnt, 1);   // its height: the mean about L (the grade line through it)
