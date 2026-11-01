@@ -471,6 +471,18 @@ if "--fix" in sys.argv:
         q, why = got; e["x"], e["z"], e["kind"] = round(q[0], 2), round(q[1], 2), "ground"
         e["note"] = f"{e['note'].split(':')[0]}: {why} (moved, Round 89's probe)"; moved += 1
     print(f"--fix: {moved} of {len(wrong)} eggs moved")
+    # --fix2 <second report>: eggs that failed again after the first move: by a road in their area (found easily)
+    if "--fix2" in sys.argv:
+        rep2 = open(sys.argv[sys.argv.index("--fix2") + 1], encoding="utf-8").read()
+        wrong2 = set(re.findall(r"^  (egg-\d+) .*<- WRONG", rep2, re.M))
+        rejected += [(e["x"], e["z"]) for e in eggs if e["id"] in wrong2]
+        for e in eggs:
+            if e["id"] not in wrong2: continue
+            got = near_road_side(BOXES.get(e["area"]))
+            if got is None: print("  no road spot for", e["id"]); continue
+            q, why = got; e["x"], e["z"], e["kind"], e["how"] = round(q[0], 2), round(q[1], 2), "ground", "easy"
+            e["note"] = f"{e['note'].split(':')[0]}: {why} (moved twice, Round 89's probe)"
+        print(f"--fix2: {len(wrong2)} eggs moved by a road")
 
 # ---- the file: Round 48's 100 + these; areas (old ones kept with their counts, new ones added); destinations; tiers 250
 names = {a["name"] for a in AREAS}

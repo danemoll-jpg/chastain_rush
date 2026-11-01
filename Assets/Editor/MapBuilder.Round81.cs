@@ -271,6 +271,7 @@ namespace ChastainRush
         // every Express Lanes road on the ground (the decks have their parapets), 0.6 m outside its pavement, solid; none where another road's pavement
         // reaches the wall's line (the ramps on and off, so their gated ramps are the only way in or out, and a road crossing at grade), none under or on a
         // deck at the road's own height. Game-independent world piece (built in the Edges step with the gates).
+        static readonly Vector2 R89Greers = new Vector2(130f, -2650f);   // Round 89 (A): the only place the walls stay closed beside a low ramp (the report's place)
         static void BuildExpressWalls(MapData map, TerrainGrid terrain, Materials mats, Transform world)
         {
             var segs = new List<(Vector2 a, Vector2 b, float half, bool express, float[] deck, int i, bool link)>();
@@ -289,7 +290,8 @@ namespace ChastainRush
                     // (Round 83 tried keeping the wall beside other decks off the road's height in build 2: new scrapes at I-575's seam deck; back to Round 82's rule)
                     if (s.deck != null) { if (d < s.half + 1.2f && s.i + 1 < s.deck.Length && Mathf.Abs(Mathf.Lerp(s.deck[s.i], s.deck[s.i + 1], t) - roadY) < 3f) return true; continue; }
                     // (a road running alongside, the general lanes: the wall stands between them, not left out; a ramp or a road at grade: left out)
-                    if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) return true;
+                    // Round 89 (A): a ramp cut well below the lanes (Greers Chapel's exit, 6 to 9 m lower under its decks) is a drop, not a way off: the wall stays
+                    if (!s.express && d < s.half + .4f && (s.link || Mathf.Abs(Vector2.Dot(ab.normalized, along)) < .9f)) { var on0 = s.a + ab * t; if (s.link && (p - R89Greers).magnitude < 200f && Mathf.Abs(Ground(terrain, on0.x, on0.y) - roadY) > 1.5f) continue; return true; }
                     // Round 83 (A, build 1: 49 hits on a wall standing in the narrowing gap where the I-575 flyover's road meets the I-75 Express Lanes): no
                     // wall within 5 m of a ramp's pavement at about the road's height (the merge stays open)
                     if (!s.express && s.link && d < s.half + 5f && (mergeLinks.Contains((s.a, s.b)) || dEnd > 15f)) { var on = s.a + ab * t; if (Mathf.Abs(Ground(terrain, on.x, on.y) - roadY) < 2f) return true; }   // (final build: opened the walls before two I-575 deck starts, cars hit the parapets' ends: not within 30 m of an Express deck's end)
@@ -351,7 +353,8 @@ namespace ChastainRush
                         float dEnd = deckEnds.Count > 0 ? deckEnds.Min(e => (e - line[i]).magnitude) : 999f;
                         off = Mathf.Lerp(half + .35f, off, Mathf.Clamp01((dEnd - 2f) / 25f));
                         var p = line[i] + right * (side * off); float roadY = Ground(terrain, line[i].x, line[i].y);
-                        if (seamDeck.Any(q => (q - line[i]).magnitude < 40f) || Blocked(p, roadY, dir, dEnd) || merges.Any(m => (m - line[i]).magnitude < 35f)) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
+                        bool dropHere = (p - R89Greers).magnitude < 200f && Ground(terrain, p.x, p.y) < roadY - 2f;   // Round 89 (A): the ground at the wall's line 2 m+ below the lane: never left open for a merge
+                        if (seamDeck.Any(q => (q - line[i]).magnitude < 40f) || Blocked(p, roadY, dir, dEnd) || (!dropHere && merges.Any(m => (m - line[i]).magnitude < 35f))) { prev = null; skipped += 3f; continue; }   // Round 82 (C): open round every merge
                         float footY = Ground(terrain, p.x, p.y);
                         var top = new Vector3(p.x, roadY + .04f, p.y);   // Round 82 (BUG-005: walls climbing over the banks): at the road's height, its foot buried where the bank stands higher
                         if (prev.HasValue)

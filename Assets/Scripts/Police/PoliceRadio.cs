@@ -93,7 +93,7 @@ namespace Racer
             if (net == null || node < 0) return null;
             var id = StreetId(net.RoadNames[net.Road[node]]); if (id != null) return id;
             // Round 89: at a junction the nearest node can be the side road's: a street with a line whose pavement is right there is the one it is on
-            foreach (int i in net.Near(net.P[node], 12)) { var si = StreetId(net.RoadNames[net.Road[i]]); if (si != null && (net.P[i] - net.P[node]).magnitude < net.Half[i] + 3f) return si; }
+            foreach (int i in net.Near(net.P[node], 12)) { var si = StreetId(net.RoadNames[net.Road[i]]); if (si != null && (net.P[i] - net.P[node]).magnitude < net.Half[i] + .5f) return si; }   // (within its pavement: a service road beside it is not on it)
             int best = -1; float bd = float.MaxValue;
             foreach (int i in net.Near(net.P[node], 250)) { if (StreetId(net.RoadNames[net.Road[i]]) == null) continue; float d = (net.P[i] - net.P[node]).sqrMagnitude; if (d < bd) { bd = d; best = i; } }
             return best >= 0 ? Near + StreetId(net.RoadNames[net.Road[best]]) : null;

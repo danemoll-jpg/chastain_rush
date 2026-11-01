@@ -1888,13 +1888,13 @@
   {
    "id": "egg-160",
    "area": "Marietta Square",
-   "how": "hard",
+   "how": "easy",
    "kind": "ground",
-   "x": 2188.19,
-   "z": -8477.98,
+   "x": 1594.1,
+   "z": -8880.62,
    "y": 0.0,
    "radius": 3.5,
-   "note": "Marietta Square: behind a house (moved, Round 89's probe)"
+   "note": "Marietta Square: by Crescent Circle (moved twice, Round 89's probe)"
   },
   {
    "id": "egg-161",
@@ -1943,13 +1943,13 @@
   {
    "id": "egg-165",
    "area": "Marietta Square",
-   "how": "hard",
+   "how": "easy",
    "kind": "ground",
-   "x": 2357.6,
-   "z": -8268.35,
+   "x": 2192.14,
+   "z": -8644.85,
    "y": 0.0,
    "radius": 2.8,
-   "note": "Marietta Square: behind a house (moved, Round 89's probe)"
+   "note": "Marietta Square: by Roswell Street Southeast (moved twice, Round 89's probe)"
   },
   {
    "id": "egg-166",
@@ -2460,13 +2460,13 @@
   {
    "id": "egg-212",
    "area": "West neighborhoods",
-   "how": "hard",
+   "how": "easy",
    "kind": "ground",
-   "x": -7038.71,
-   "z": 343.96,
+   "x": -7545.44,
+   "z": -2470.16,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the west neighborhoods: behind a house (moved, Round 89's probe)"
+   "note": "the west neighborhoods: by Chippewa Run Northwest (moved twice, Round 89's probe)"
   },
   {
    "id": "egg-213",
@@ -2669,13 +2669,13 @@
   {
    "id": "egg-231",
    "area": "Marietta neighborhoods",
-   "how": "hard",
+   "how": "easy",
    "kind": "ground",
-   "x": 2145.18,
-   "z": -8456.24,
+   "x": -6435.92,
+   "z": -6342.05,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the south neighborhoods: behind a house (moved, Round 89's probe)"
+   "note": "the south neighborhoods: by Fallwood Drive Northwest (moved twice, Round 89's probe)"
   },
   {
    "id": "egg-232",
@@ -2735,13 +2735,13 @@
   {
    "id": "egg-237",
    "area": "The woods",
-   "how": "hard",
+   "how": "easy",
    "kind": "ground",
-   "x": -4633.18,
-   "z": -897.31,
+   "x": -4476.18,
+   "z": -755.67,
    "y": 0.0,
    "radius": 2.8,
-   "note": "the extension: in the woods, off the road (moved, Round 89's probe)"
+   "note": "the extension: by Cherokee Street Northwest (moved twice, Round 89's probe)"
   },
   {
    "id": "egg-238",
@@ -3323,11 +3323,11 @@
   {
    "id": "west-kennesaw",
    "title": "West Kennesaw neighborhoods",
-   "x": -6975.23,
-   "z": -1268.15,
+   "x": -4812.13,
+   "z": -2343.82,
    "y": 0.0,
    "fixed": false,
-   "yaw": 179.2
+   "yaw": 271.2
   },
   {
    "id": "middle-neighborhoods",
