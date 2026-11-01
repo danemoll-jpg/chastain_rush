@@ -62,6 +62,35 @@ namespace ChastainRush
             yield return new WaitForSecondsRealtime(2.5f);
         }
 
+        // Round 89: the height of the surface a crossing line's road is on at line[0]: from the crossing ("at (x, z)" in its name; the lowest surface there
+        // for the road under, the highest for the road over) back along the line every metre, keeping to the surface nearest the last (never more than
+        // 0.6 m up onto one: that is a slab over it). Null when the name names no crossing.
+        static float? R89StartY(List<Vector3> line, string name)
+        {
+            int at = name.IndexOf(" at ("); if (at < 0) return null;
+            var parts = name.Substring(at + 5).Split(')')[0].Split(',');
+            if (parts.Length < 2 || !float.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cx)
+                || !float.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out float cz)) return null;
+            bool over = name.Contains(" over at ");
+            int kc = 0; float bd = float.MaxValue;
+            for (int k = 0; k < line.Count; k++) { float dd = (line[k].x - cx) * (line[k].x - cx) + (line[k].z - cz) * (line[k].z - cz); if (dd < bd) { bd = dd; kc = k; } }
+            List<float> Surf(float x, float z) => Physics.RaycastAll(new Vector3(x, 1500f, z), Vector3.down, 3000f, ~0, QueryTriggerInteraction.Ignore)
+                .Where(h => h.rigidbody == null && h.normal.y >= .6f).Select(h => h.point.y).ToList();
+            var s0 = Surf(line[kc].x, line[kc].z); if (s0.Count == 0) return null;
+            float y = over ? s0.Max() : s0.Min();
+            for (int k = kc; k > 0; k--)
+            {
+                var a = line[k]; var b = line[k - 1]; int steps = Mathf.Max(1, Mathf.CeilToInt(new Vector2(b.x - a.x, b.z - a.z).magnitude));
+                for (int j = 1; j <= steps; j++)
+                {
+                    var q = Vector3.Lerp(a, b, j / (float)steps); var sf = Surf(q.x, q.z); if (sf.Count == 0) continue;
+                    var c = sf.Where(v => v <= y + .6f).ToList(); if (c.Count == 0) c = sf;
+                    y = c.OrderBy(v => Mathf.Abs(v - y)).First();
+                }
+            }
+            return y;
+        }
+
         // ---------------------------------------------------------------- lines
         IEnumerator R82LinesPart()
         {
@@ -81,7 +110,12 @@ namespace ChastainRush
                     var cum = Cum(line); float total = cum[cum.Length - 1];
                     var f0 = Flat(line[2] - line[0]).normalized; float yaw0 = Mathf.Atan2(f0.x, f0.z) * Mathf.Rad2Deg;
                     // Round 83: a line of the road OVER a crossing can start on its bridge: the car on the top surface there, not the ground under it
-                    if (d.name.Contains(" over at ")) yield return R82Place(new Vector3(line[0].x, RaceRoute.Ground(line[0].x, line[0].z).y + 30f, line[0].z), yaw0, true); else yield return R74Place(line[0], yaw0);
+                    // Round 89: the surface the line's road is on at its start, traced back from the crossing (the road under it: the lowest surface there;
+                    // over it: the highest). Round 88 started every "under" line on the ground, so a line whose road starts on a deck (the Express Lanes by
+                    // Greers Chapel) was driven along the ground under that deck into its abutment.
+                    float? y89 = R89StartY(line, d.name);
+                    if (y89.HasValue) yield return R82Place(new Vector3(line[0].x, y89.Value, line[0].z), yaw0);
+                    else if (d.name.Contains(" over at ")) yield return R82Place(new Vector3(line[0].x, RaceRoute.Ground(line[0].x, line[0].z).y + 30f, line[0].z), yaw0, true); else yield return R74Place(line[0], yaw0);
                     R73Pad();
                     var tracer = car.GetComponent<ContactTracer>() ?? car.gameObject.AddComponent<ContactTracer>(); tracer.Take();
                     float jolt = 0f, lastVy = 0f, slow = 0f, tt = 0f; Vector3 joltAt = Vector3.zero; int wallHits = 0; var notes = new List<string>(); bool wasAir = false; float airT = 0f; Vector3 takeoff = Vector3.zero;

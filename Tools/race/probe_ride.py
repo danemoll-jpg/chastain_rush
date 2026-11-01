@@ -29,7 +29,29 @@ def load(lines_path, tsv):
     return lines, pts
 
 
-def ride(P, v, start_high):
+def start_y(P, name):
+    """Round 89: the surface the line's road is on at P[0], traced back from the crossing ("at (x, z)" in the name; lowest there for the road
+    under, highest for the road over), keeping to the surface nearest the last and never more than 0.6 m up onto one."""
+    import re
+    m = re.search(r" at \((-?[0-9.]+), (-?[0-9.]+)\)", name)
+    if not m:
+        return None
+    cx, cz = float(m.group(1)), float(m.group(2))
+    kc = min(range(len(P)), key=lambda k: (P[k][0] - cx) ** 2 + (P[k][1] - cz) ** 2)
+    surf = [y for y, ny, nm in P[kc][2] if ny >= 0.6]
+    if not surf:
+        return None
+    y = max(surf) if " over at " in name else min(surf)
+    for k in range(kc - 1, -1, -1):
+        sf = [h for h, ny, nm in P[k][2] if ny >= 0.6]
+        if not sf:
+            continue
+        c = [h for h in sf if h <= y + 0.6] or sf
+        y = min(c, key=lambda h: abs(h - y))
+    return y
+
+
+def ride(P, v, start_high, y_start=None):
     n = len(P)
     S, names, walls = [], [], []
     prev, slope = None, 0.0
@@ -40,6 +62,8 @@ def ride(P, v, start_high):
         if prev is None:
             ter = [s for s in surf if s[1].startswith("Terrain")]
             pick = max(surf) if start_high or not ter else ter[0]
+            if y_start is not None:
+                pick = min(surf, key=lambda s: abs(s[0] - y_start))
         else:
             pred = prev + slope * 0.5
             # never jump up more than 0.6 m to a surface (that is a slab above), unless it is the only one
@@ -86,7 +110,7 @@ def main():
         v = L.get("cap") or 30
         for d in (0, 1):
             R = P if d == 0 else P[::-1]
-            S, names, walls, steps, airs, maxair, hard = ride(R, v, " over " in L["name"])
+            S, names, walls, steps, airs, maxair, hard = ride(R, v, " over " in L["name"], start_y(R, L["name"]))
             fault = maxair > 0.3 or hard > 6 or walls or steps
             bad += bool(fault)
             print(f"{'LOOK' if fault else 'ok  '} {L['name']}{' (the other way)' if d else ''}: air {maxair:.2f} s, landing {hard:.1f} m/s, {len(steps)} steps, {len(walls)} walls")
