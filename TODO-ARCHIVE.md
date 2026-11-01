@@ -7571,3 +7571,40 @@ Disk (project folders) 32.9 -> 32.5 GB; Builds 9.9 GB.
 Decisions: the angle limits and speed losses above are first guesses; the players only (AI racers not given it).
 For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode; whether a 50-degree hit should still glance or crash.
 
+
+## Round 86 (moved from TODO.md on 2026-11-01 when Round 90 started; word for word)
+
+## Previous delivery 3: Round 86
+**Reviewed: Dan raced it in HIGH MODE 2026-10-31 00:06; his notes are Round 87.**
+**Round 86, ROOM FOR JUMPS BETWEEN HIGH BUMPERS, RESETS THAT NEVER SKIP A CHECKPOINT, BREAKABLE TREES AS IN WOODSTOCK RUSH (Dan, 2026-10-30 12:04, after playing
+0.85.0).** Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
+A. HIGH BUMPERS CLEAR OF JUMPS. Dan: "In high mode, the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps so
+   this doesn't happen". On every course in HIGH MODE (forward and reverse, shortcuts too), no bumper stands where a jump's flight or landing can carry you: from each
+   ramp's, kicker's, pile's or plume's lip through its whole flight (at the speeds the course allows, left and right of the line) to the end of its landing run-out,
+   the bumpers stop short and pick up again once you are down and straight, ending in a rounded, angled-in end that turns you back (Round 85), never a square end you
+   can hit. Find Dan's "first jump" (the first jump of the course he raced: say which) and show it. Check: every jump on every course in HIGH, flown by the human-like
+   driver on the line and 3 m either side: no bumper touched in the air or on landing; pictures of the first jump's gap.
+B. A RESET NEVER SKIPS A CHECKPOINT. Dan: "if a reset is done that the reset does not skip any checkpoints. It should go before the next expected [checkpoint] you
+   should hit. Not penalize you for skipping you ahead too far". A reset in a race (yours or the automatic one, any mode, every course, shortcuts, the air races'
+   resets too) puts you on the course's line BEFORE the next checkpoint you have not yet passed, facing the course's way, never past it; and no missed-checkpoint
+   penalty is ever given for a checkpoint a reset carried you past. Check: resets forced just before, at and just past each checkpoint of three courses (the Glen
+   loop, Kennesaw, Marietta Square) and one air race: the next checkpoint is always ahead, no penalty.
+C. TREES BREAKABLE AS IN WOODSTOCK RUSH. Dan: "Trees need to be more breakable as we have done in woodstock rush" (this changes the 2026-10-10 rule that trees are
+   solid). Port Woodstock Rush 1.3's breakable trees (`Racer/PROJECT_TODO_ARCHIVE.md` "Free Roam world: big ramps ... breakable trees", `SceneryTrees.cs` `Break`,
+   `TreeBreaker` in `RoamWorld.cs`): every tree on the map breaks when hit fast enough for its trunk (0.5 m: 7 m/s, 1.0 m: 24 m/s, as there), falls the way it was
+   hit with leaf and bark debris and the wood smash sounds, costs 15 to 45 % of the speed (half in HIGH MODE), has no collider once down (never wrecks you), and
+   stands again when every player is 160 m away. In races and free roam alike. This game's existing breakable trees (`TreeField.breakable`, `FallingTree`) become this
+   one system. Frame rate in the woods (Noonday Creek, Kennesaw) before / after, and on the Steam Deck setting, with a dozen trees down in view.
+   Check: a thin trunk at 12 m/s breaks, a big one at 12 m/s holds and at 30 m/s breaks; no wreck; all back after leaving.
+Check: item 0 for every item. Quick builds unless a world rebuild is needed. PUBLISH through the launcher.
+For Dan to check: HIGH MODE's first jump (and the others); a reset next to a checkpoint; driving through the woods.
+
+**Status (Claude, 2026-10-30): built (code only on Round 84's scene, exe 18:43), checked in the exe, published 0.86.0 (`game-8600`), not yet driven by Dan.** Evidence `Data/screenshots/round86/` (tree pictures in `local/round86/check9/`: Chastain Glen). No bug report newer than Round 82's.
+A DONE. `HighBumpers`: every jump on every walled line found from the driven ground along it (the line and 3 m either side, median-filtered) by flights at every speed up to what the course allows there (its bends at 20 m/s2 sideways, 12 m/s2 out of them); a jump is 0.8 m clear for 0.4 s. No bumper from 6 m before a lip to 40 m past the furthest landing, nor within 7 m of another line's flight (a shortcut landing on the lap); then a funnel 8 m further out closing in over 30 m; every bumper end a rounded half dome. Found: 130 jumps on 14 course-directions (Kennesaw 4: a crest before J1, J1, J2, J3). Dan's "first jump": not recorded (he played on the Deck); taken as the Kennesaw Mountain race's first, at (-1083, -5833) before J1, pictures `86_kennesaw_*_first_*`.
+  Check (`check_jumps_all.txt`, then `check_jumps_final.txt`): the human-like driver (Street Classic) on the line and 3 m either side, touches in the air or the first second down. All courses: 7 of 320 flown runs touched (shortcuts landing on the lap, a long landing); after the two fixes, the three courses with touches again: 0 of 215. Kennesaw reverse and Marietta reverse are not raced.
+B DONE. `CarRecovery`: a reset in a race goes between the last checkpoint passed and 12 m short of the next one (the line when all are met), never past; if that is inside a jump's flight, before its lip. A reset never costs a penalty; the AI's recovery forgives what it skips; in the air races only an AI pilot is put past a ring after three crashes (forgiven). Check: 108 resets on the Glen loop, Kennesaw and Marietta Square (15 m before, at, 15 m and 60 m past each checkpoint): 0 past, 0 penalties; Quarry Air Race, every ring, reset and 3 crashes: 0 wrong.
+C DONE. Woodstock Rush 1.3's breakable trees for every tree (`TreeTrunks`: its TreeBreaker and Needed, 7 m/s at 0.5 m, 24 m/s at 1 m, HIGH 45 %; speed -15 to -45 %, half in HIGH; `FallingTree` falls in 1.5 s with a thud and nine pieces of debris, lies with no collider; back when every player is 160 m away; `TreeField` hides any tree). Players and AI break them; the Noonday trail's old trigger trees are this system now; `-treesSolid` in a check is Round 85's way. This map's trunks are 0.28 to 0.73 m (median 0.49 m: 7 m/s). Check: a 0.41 m trunk at 11 m/s broke (-15 %, upright), a 0.72 m one held at 13 m/s and broke at 22 m/s (the run-in topped out there), no wreck; all 3 back 220 m away. Frame rate (1280 x 720, not measured at 3840 x 2160) standing / 12 trees down in view: Noonday woods 75 / 86 fps, Kennesaw 57 / 58; Steam Deck setting 166 / 176 and 121 / 127.
+Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 18:43. Disk (project folders) 34.4 -> 33.8 GB; Builds 11.3 GB (0.83.0 to 0.86.0's release folders kept).
+Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
+For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
+

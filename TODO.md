@@ -114,6 +114,38 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 90, A VIKING QUARRY CAR RACE WITH HUGE JUMPS OVER THE LAKE (Dan, 2026-11-01 11:37: "The quarry - I wanted a car race with huge jumps over the lake").** Rounds 88
+and 89 are not yet driven by Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
+This settles the long-open quarry question (Laura Lake / Viking Quarry, queued since 2026-10-22). Two earlier tries at a Quarry Track were not built (Rounds 73 / 74,
+`make_quarry_track.py`, output in `local/round73/` and `round74/quarry_track_unbuilt/`): the haul road crossed the lane so racers skipped a loop, and the AI and the check
+driver got stuck (56 resets). Learn from them; design a new course, not that one.
+A. THE QUARRY RACE. A car circuit (race setup "Viking Quarry", forward; reverse only if it plays well) round and through Viking Quarry whose heart is HUGE JUMPS OVER THE
+   LAKE, on the course's line, not off to the side: at least three big lake crossings per lap (more if the quarry allows), each flying a real stretch of water (much
+   bigger than anything in the neighborhoods: think Kennesaw summit leap scale), plus the rim, the haul roads down the benches, the water's edge.
+   - Real physics only (standing rule): every launch off a ramp is a physics jump; size each ramp's angle and run-up so the speed the course gives there clears the water
+     with margin for every vehicle class allowed (say which), landings on sloped decks or banks that match the flight (no flat slams), run-outs long and clear.
+   - Ramps that belong in a quarry, all different (variety rule, not dirt piles): a rock ledge off a bench, a haul-road ramp of crushed stone, a conveyor gantry, a tipped
+     dump-truck bed, a stacked-boulder kicker, the Free Roam steel kickers if one fits the line (they stay in Free Roam as well).
+   - Coming up short means the lake: the car splashes, sinks partway (water rules, Woodstock Rush's), and is reset before the jump's checkpoint (Round 86 B), so a bad
+     run-up costs time, never the race. No free way round a lake jump (standing rule): the jump is the course.
+   - No crossings of the course with itself or with the haul roads at one level (the earlier tries' failure): a crossing is a bridge or is closed.
+   - Checkpoints line each run-up up straight; the crowd on the bleachers; signs only where the standing rules allow (tire tracks / LANDING boards).
+   - Built like the other courses: AI that takes every jump at the right speed (they slow for the run-up's window, never jump short as a rule), closures off the line,
+     records, ghosts, replays (the winner's flight from the TV camera), the map and loading inset, HIGH MODE bumpers (Round 86 / 87 rules: open at every jump's flight and
+     landing; out over a bumper resets you).
+   Say the lap's length, the number and size of the jumps (gap over water, air time, height) and the lap time.
+Check: the human-like driver races 3 laps against 3 AI in three vehicles (the bike, a car, the heaviest allowed), normal and HIGH: every jump cleared at race speed, no
+stuck spot, no reset except a forced short jump (it resets before the jump); a deliberately slow run-up at each jump lands in the lake and resets correctly; all AI finish.
+Pictures: each jump from the driver's seat at the lip and from the TV camera mid-flight. PUBLISH through the launcher.
+For Dan to check: the Viking Quarry race (normal and HIGH), the jumps, a short one into the lake.
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 89
+**Not yet driven by Dan; he reviews it with Rounds 88 and 90.**
 **Round 89, THE ROADS ROUND 88 MADE WORSE FIRST, THEN THE REST; POLICE RADIO STREET NAMES FOR THE WHOLE MAP; GOOSE EGGS ACROSS THE WHOLE MAP (Dan, 2026-11-01 03:04: "OK
 so it is done, but I dont have a chance to test. Can we have continue to fix stuff? Also, don't we need to include more street names for the cops? I would also like to
 either spreadout the goose eggs or create more to be found all across the map. We did both these things before the map was expanded").** Round 88 is not yet driven by
@@ -157,18 +189,7 @@ C DONE. 150 more eggs (egg-101 to egg-250, `make_eggs_more.py`): 14 new areas (T
 Published: `game-8900` (0.89.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-11-01 07:56 (543 files: the 162 new radio clips ship with the game). Disk clean-up: 41.3 -> 41.1 GB (these folders).
 For Dan to check: Canton Road over Cobb Parkway toward the railroad; the I-575 Express flyover onto the I-75 Express Lanes; the Express Lanes past Greers Chapel's exit; a chase in Marietta or Town Center (street names); new eggs anywhere south and west.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 88
+## Previous delivery 2: Round 88
 **Not yet driven by Dan (2026-11-01: no chance to test yet); he reviews it with Round 89.**
 **Round 88, THE KENNESAW CLIMB'S RUN-OFF CARRIED BACK, THE BUMP AT THE KENNESAW RACE'S START, AND THE LEFTOVER ROAD WORK (Dan, 2026-10-31 13:28: "there is also a smaller
 bump at the beginning of the race. Lets wrap this into whatever code said it wants to do and then any remaining road work we had leftover").** Round 87 is reviewed.
@@ -201,7 +222,7 @@ Published: `game-8800` (0.88.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 C continued (Dan: "Keep fixing C"; 1 more full Build Map, exe 2026-11-01 01:17; published `game-8801`, 0.88.1). The ground kept under a deck's last 30 m (decks put back on their grade had sunk into it), a deck overhead with 5 m+ clear no longer stops the laying (the Connector interchange), ramp 437897716 merged level with deck 54 (+3.9 m, eased over 60 m), deck ends fitted on 10 to 30 m, the whole easing judged, short roads joined across junctions, I-75 over Dickson Road (bridge 59) added; the crossing check starts each line on its own road's surface. All 416 crossing runs (`c2_crossings.txt`): 45 -> 3 not clean (Express Lanes 623138519 one wall touch the other way, as before; motorway_link 879570834 at (140, -2633) 1.1 s, was 2.2; Canton Road at (1919, -5843) a 8.9 m/s landing, was 2.1 s in the air). Express Lanes end to end (`c2_express.txt`, rerun `c2_express_rerun.txt`): I-75 through both ways, no stop at Frey Road (one wall touch); I-575 clean; the flyover into I-75 still 2.2 s on deck 80 at (656, -3674) (as Round 88; tuning limit reached). The first run had two falls off the line where the probed surfaces match Round 88's exactly; the rerun drove both through.
 For Dan to check: the Kennesaw climb and the start line (normal mode, the Drifter Twin flat out); the crossings (Canton Road Connector, Bells Ferry, Big Shanty, Greers Chapel); the Express Lanes at Frey Road and the I-575 flyover's deck 80.
 
-## Previous delivery 2: Round 87
+## Previous delivery 3: Round 87
 **Reviewed: Dan drove it 2026-10-31 (the Kennesaw race); his notes are Round 88.**
 **Round 87, BUMPERS AND BARRIERS THAT NEVER FACE YOU, A HIGH RESET WHEN YOU JUMP OUT, the Addison Heights and Noonday Creek Trail reports (Dan, 2026-10-31 00:38; reports
 BUG-001 to BUG-011 of session `2026-10-31_00-06-51-254_769f69` (BUG-009 / 010 / 011 one place), read by Claude, after the Round 86 build; HIGH MODE races of Addison
@@ -257,40 +278,6 @@ E follow-up (Dan 2026-10-31: "Wider bench"; the round's 3rd and last full Build 
 Published: `game-8700` (0.87.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-31 05:31. Disk (project folders) 34.2 -> 33.7 GB; Builds keeps 0.83.0 to 0.87.0's release folders.
 Published (E follow-up): `game-8701` (0.87.1, Latest), the exe of 2026-10-31 11:30. Disk (project folders) 35.3 -> 35.3 GB (Builds now also keeps 0.87.1's release folder).
 For Dan to check: Addison Heights and the Noonday Creek Trail in HIGH MODE (Embry's corners, the Lyndon landing, Barrett's closures, Ring Road / Mall Boulevard); jumping out over a bumper; a reset in the mall and on the Carroway shortcut; the Kennesaw climb in normal mode (the run-off on the bend's outside; wide runs still leave the road just before it).
-
-## Previous delivery 3: Round 86
-**Reviewed: Dan raced it in HIGH MODE 2026-10-31 00:06; his notes are Round 87.**
-**Round 86, ROOM FOR JUMPS BETWEEN HIGH BUMPERS, RESETS THAT NEVER SKIP A CHECKPOINT, BREAKABLE TREES AS IN WOODSTOCK RUSH (Dan, 2026-10-30 12:04, after playing
-0.85.0).** Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
-A. HIGH BUMPERS CLEAR OF JUMPS. Dan: "In high mode, the first jump i keep clipping a bumper which spins me out. Lets leave more space for bumpers at the end of ramps so
-   this doesn't happen". On every course in HIGH MODE (forward and reverse, shortcuts too), no bumper stands where a jump's flight or landing can carry you: from each
-   ramp's, kicker's, pile's or plume's lip through its whole flight (at the speeds the course allows, left and right of the line) to the end of its landing run-out,
-   the bumpers stop short and pick up again once you are down and straight, ending in a rounded, angled-in end that turns you back (Round 85), never a square end you
-   can hit. Find Dan's "first jump" (the first jump of the course he raced: say which) and show it. Check: every jump on every course in HIGH, flown by the human-like
-   driver on the line and 3 m either side: no bumper touched in the air or on landing; pictures of the first jump's gap.
-B. A RESET NEVER SKIPS A CHECKPOINT. Dan: "if a reset is done that the reset does not skip any checkpoints. It should go before the next expected [checkpoint] you
-   should hit. Not penalize you for skipping you ahead too far". A reset in a race (yours or the automatic one, any mode, every course, shortcuts, the air races'
-   resets too) puts you on the course's line BEFORE the next checkpoint you have not yet passed, facing the course's way, never past it; and no missed-checkpoint
-   penalty is ever given for a checkpoint a reset carried you past. Check: resets forced just before, at and just past each checkpoint of three courses (the Glen
-   loop, Kennesaw, Marietta Square) and one air race: the next checkpoint is always ahead, no penalty.
-C. TREES BREAKABLE AS IN WOODSTOCK RUSH. Dan: "Trees need to be more breakable as we have done in woodstock rush" (this changes the 2026-10-10 rule that trees are
-   solid). Port Woodstock Rush 1.3's breakable trees (`Racer/PROJECT_TODO_ARCHIVE.md` "Free Roam world: big ramps ... breakable trees", `SceneryTrees.cs` `Break`,
-   `TreeBreaker` in `RoamWorld.cs`): every tree on the map breaks when hit fast enough for its trunk (0.5 m: 7 m/s, 1.0 m: 24 m/s, as there), falls the way it was
-   hit with leaf and bark debris and the wood smash sounds, costs 15 to 45 % of the speed (half in HIGH MODE), has no collider once down (never wrecks you), and
-   stands again when every player is 160 m away. In races and free roam alike. This game's existing breakable trees (`TreeField.breakable`, `FallingTree`) become this
-   one system. Frame rate in the woods (Noonday Creek, Kennesaw) before / after, and on the Steam Deck setting, with a dozen trees down in view.
-   Check: a thin trunk at 12 m/s breaks, a big one at 12 m/s holds and at 30 m/s breaks; no wreck; all back after leaving.
-Check: item 0 for every item. Quick builds unless a world rebuild is needed. PUBLISH through the launcher.
-For Dan to check: HIGH MODE's first jump (and the others); a reset next to a checkpoint; driving through the woods.
-
-**Status (Claude, 2026-10-30): built (code only on Round 84's scene, exe 18:43), checked in the exe, published 0.86.0 (`game-8600`), not yet driven by Dan.** Evidence `Data/screenshots/round86/` (tree pictures in `local/round86/check9/`: Chastain Glen). No bug report newer than Round 82's.
-A DONE. `HighBumpers`: every jump on every walled line found from the driven ground along it (the line and 3 m either side, median-filtered) by flights at every speed up to what the course allows there (its bends at 20 m/s2 sideways, 12 m/s2 out of them); a jump is 0.8 m clear for 0.4 s. No bumper from 6 m before a lip to 40 m past the furthest landing, nor within 7 m of another line's flight (a shortcut landing on the lap); then a funnel 8 m further out closing in over 30 m; every bumper end a rounded half dome. Found: 130 jumps on 14 course-directions (Kennesaw 4: a crest before J1, J1, J2, J3). Dan's "first jump": not recorded (he played on the Deck); taken as the Kennesaw Mountain race's first, at (-1083, -5833) before J1, pictures `86_kennesaw_*_first_*`.
-  Check (`check_jumps_all.txt`, then `check_jumps_final.txt`): the human-like driver (Street Classic) on the line and 3 m either side, touches in the air or the first second down. All courses: 7 of 320 flown runs touched (shortcuts landing on the lap, a long landing); after the two fixes, the three courses with touches again: 0 of 215. Kennesaw reverse and Marietta reverse are not raced.
-B DONE. `CarRecovery`: a reset in a race goes between the last checkpoint passed and 12 m short of the next one (the line when all are met), never past; if that is inside a jump's flight, before its lip. A reset never costs a penalty; the AI's recovery forgives what it skips; in the air races only an AI pilot is put past a ring after three crashes (forgiven). Check: 108 resets on the Glen loop, Kennesaw and Marietta Square (15 m before, at, 15 m and 60 m past each checkpoint): 0 past, 0 penalties; Quarry Air Race, every ring, reset and 3 crashes: 0 wrong.
-C DONE. Woodstock Rush 1.3's breakable trees for every tree (`TreeTrunks`: its TreeBreaker and Needed, 7 m/s at 0.5 m, 24 m/s at 1 m, HIGH 45 %; speed -15 to -45 %, half in HIGH; `FallingTree` falls in 1.5 s with a thud and nine pieces of debris, lies with no collider; back when every player is 160 m away; `TreeField` hides any tree). Players and AI break them; the Noonday trail's old trigger trees are this system now; `-treesSolid` in a check is Round 85's way. This map's trunks are 0.28 to 0.73 m (median 0.49 m: 7 m/s). Check: a 0.41 m trunk at 11 m/s broke (-15 %, upright), a 0.72 m one held at 13 m/s and broke at 22 m/s (the run-in topped out there), no wreck; all 3 back 220 m away. Frame rate (1280 x 720, not measured at 3840 x 2160) standing / 12 trees down in view: Noonday woods 75 / 86 fps, Kennesaw 57 / 58; Steam Deck setting 166 / 176 and 121 / 127.
-Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 18:43. Disk (project folders) 34.4 -> 33.8 GB; Builds 11.3 GB (0.83.0 to 0.86.0's release folders kept).
-Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
-For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
