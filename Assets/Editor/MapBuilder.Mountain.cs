@@ -39,6 +39,7 @@ namespace ChastainRush
             MergeSummitRamp(MountainNow);   // Round 70 (A): the summit ramp's grades, lines and catch zone with the mountain's (MapBuilder.SummitRamp.cs)
             MergeAirLanes(MountainNow);   // Round 71: the air race's low flight lanes cleared of trees (MapBuilder.SummitRamp.cs)
             MergeQuarryJumps(MountainNow);   // Round 72: the Viking Quarry jumps' run-out grades, cleared lines and catch zones (MapBuilder.QuarryJumps.cs)
+            MergeQuarryRace(MountainNow);   // Round 90: the Viking Quarry race's benches, roads and cleared lines (MapBuilder.QuarryRace.cs)
             // Round 68: where the lines run on or beside the drive (the departure below the summit, the join by the visitor center) the drive's own
             // levelled surface is kept: those points take the ground as built so far (the drive is levelled before this), eased into the line's profile
             foreach (var gr in MountainNow.Data.grades ?? new RidgeGrade[0])
@@ -104,6 +105,7 @@ namespace ChastainRush
             foreach (var j in MountainExtra?.jumps ?? new MountainJump[0]) { MountainJumpLook(terrain, mats, root, j); n++; }
             BuildSummitRamp(terrain, mats, root);   // Round 70 (A)
             BuildQuarryJumps(terrain, mats, root);   // Round 72 (A): the Viking Quarry jumps
+            BuildQuarryRace(terrain, mats, root);   // Round 90: the Viking Quarry race's gravel, berms and pit dividers
             Debug.Log($"[Round67] Kennesaw Mountain: {n} jumps dressed, {MountainNow.Data.landing_zones?.Length ?? 0} landing zones; {MountainNow.TreesRemoved} trees kept off the bench and the summit lot");
         }
 

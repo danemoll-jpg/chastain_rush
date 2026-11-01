@@ -141,6 +141,7 @@ namespace ChastainRush
             yes = HighBumpers.IsBumper(c)
                 || n.StartsWith("Express Lanes wall", System.StringComparison.Ordinal)
                 || n == "BridgeStructure" || n == "Closure"
+                || n.StartsWith("Quarry berm", System.StringComparison.Ordinal) || n.StartsWith("Quarry divider", System.StringComparison.Ordinal)   // Round 90: the Viking Quarry race's berms and pit dividers
                 || c.GetComponentInParent<RaceBarriers>() != null;
             if (known.Count > 20000) known.Clear();
             known[id] = yes; return yes;

@@ -52,7 +52,7 @@ namespace ChastainRush
         readonly List<AudioSource> muted = new List<AudioSource>();
         InputAction aPlay, aSlow, aCam, aPrev, aNext, aLapPrev, aLapNext, aRestart, aHud, aSave, aLeave, aFf, aRw, aMove, aLook, aUp, aDown;
         // TV cameras
-        struct Tv { public Vector3 at; public float s; }
+        struct Tv { public Vector3 at; public float s, reach; }   // reach (Round 90): how far this camera follows (0: tvReach)
         readonly List<Tv> tv = new List<Tv>();
         float tvSince; Vector3 freePos; float freeYaw, freePitch;
 
@@ -338,6 +338,19 @@ namespace ChastainRush
                 foreach (var at in ExtraTv) { int best = 0; float bd = float.MaxValue; for (int i = 0; i < path.Count; i++) { float dd = (path[i] - at).sqrMagnitude; if (dd < bd) { bd = dd; best = i; } } tv.Add(new Tv { at = at, s = cumJ[best] }); }
                 return;
             }
+            // Round 90 (the Viking Quarry race: "the winner's flight from the TV camera"): over and above the cameras along the way, each quarry jump's
+            // own (by the kicker, on the rims beside the flight, over the lake, at the landing deck), which follow a car 400 m
+            if (Data.routeName == "Viking Quarry" && QuarryJumps.Instance)
+            {
+                var cumQ = new float[path.Count]; for (int i = 1; i < path.Count; i++) cumQ[i] = cumQ[i - 1] + (path[i] - path[i - 1]).magnitude;
+                foreach (var at in QuarryJumps.TvSpots())
+                    for (int i = 0, best = -1; i < path.Count; i++)   // the camera at each pass of the focused racer's own way within 300 m of it (one per lap)
+                    {
+                        float dd = (path[i] - at).magnitude; if (dd > 300f) { if (best >= 0) { tv.Add(new Tv { at = at, s = cumQ[best], reach = 400f }); best = -1; } continue; }
+                        if (best < 0 || dd < (path[best] - at).magnitude) best = i;
+                        if (i == path.Count - 1 && best >= 0) tv.Add(new Tv { at = at, s = cumQ[best], reach = 400f });
+                    }
+            }
             // Round 71 (the air race): for a plane, cameras in the air beside its way (every 160 m, 30 m off to a side, 6 m up, ahead of it), not on the ground
             var veh = VehicleProfile.Find(Data.racers[Mathf.Clamp(Data.focus, 0, Data.racers.Count - 1)].vehicle); tvReach = veh != null && veh.Flies ? 190f : 75f;
             if (veh != null && veh.Flies)
@@ -380,6 +393,7 @@ namespace ChastainRush
                 if (!Physics.Raycast(back, dd.normalized, dd.magnitude, ~0, QueryTriggerInteraction.Ignore)) tv.Add(new Tv { at = back, s = cum[j] });
             }
         }
+        float Reach(Tv c) => c.reach > 0f ? c.reach : tvReach;
         bool Sees(Vector3 from, Vector3 to) { var d = to - from; return !Physics.Raycast(from, d.normalized, Mathf.Max(0f, d.magnitude - 1f), ~0, QueryTriggerInteraction.Ignore); }
 
         void UpdateCamera(float dt)
@@ -402,13 +416,13 @@ namespace ChastainRush
             }
             // TV: keep the camera while it sees the racer within 75 m and the racer has not gone 25 m past it; then the next one ahead that sees it
             float sNow = NearestS(target.transform.position);
-            bool keep = TvIndex >= 0 && TvIndex < tv.Count && (tv[TvIndex].at - tp).magnitude < tvReach && Sees(tv[TvIndex].at, tp) && sNow - tv[TvIndex].s < 25f;
+            bool keep = TvIndex >= 0 && TvIndex < tv.Count && (tv[TvIndex].at - tp).magnitude < Reach(tv[TvIndex]) && Sees(tv[TvIndex].at, tp) && sNow - tv[TvIndex].s < (tv[TvIndex].reach > 0f ? 60f : 25f);
             if (!keep && Time.unscaledTime - tvSince > 1.2f || TvIndex < 0)
             {
                 int best = -1; float bestKey = float.MaxValue;
                 for (int i = 0; i < tv.Count; i++)
                 {
-                    float dist = (tv[i].at - tp).magnitude; if (dist > tvReach) continue;
+                    float dist = (tv[i].at - tp).magnitude; if (dist > Reach(tv[i])) continue;
                     float ahead = tv[i].s - sNow; float k = ahead >= -5f ? ahead : 200f - ahead;   // the next one ahead first
                     if (k < bestKey && Sees(tv[i].at, tp)) { bestKey = k; best = i; }
                 }

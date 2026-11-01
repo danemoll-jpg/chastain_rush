@@ -58,7 +58,8 @@ namespace ChastainRush
         // Round 72: the summit ramp's steel deck as a builder of its own (the quarry jumps' kickers and landing decks too): the deck's driven top on its
         // own collider (an "sc" surface; held: RampHold keeps a vehicle on it), its red edges, underside, kerb rails, two box girders and the
         // trestle bents every 8 m down to the ground, along the line o + d * s, the deck at deck_y over deck_s. Returns the bents.
-        static int SteelRamp(TerrainGrid terrain, Materials mats, Transform go, string deckName, string steelName, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool held)
+        // Round 90: deckTint / steelWork (the Viking Quarry race's crushed-stone kicker: the same held deck in the stone's color, no steel under it)
+        static int SteelRamp(TerrainGrid terrain, Materials mats, Transform go, string deckName, string steelName, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool held, Color? deckTint = null, bool steelWork = true)
         {
             var n = new Vector2(-d.y, d.x);
             Vector3 W(float s, float lat, float y) { var q = o + d * s + n * lat; return new Vector3(q.x, y, q.y); }
@@ -66,12 +67,13 @@ namespace ChastainRush
             int m = deck_s.Length; float h = half, thick = 0.5f;
             // ---- the deck: its driven top a collider of its own (a held ramp: RampHold keeps a vehicle on it and its speed up it; registered with
             // VehicleSurfaceContacts as an "sc" surface, so no seam turns a contact against the travel)
-            var top = new MeshBuilder(); top.Tint = RampDeck;
+            var top = new MeshBuilder(); top.Tint = deckTint ?? RampDeck;
             for (int i = 0; i < m; i++) { top.Vertex(W(deck_s[i], -h, deck_y[i])); top.Vertex(W(deck_s[i], h, deck_y[i])); }
             for (int i = 0; i + 1 < m; i++) { int a = 2 * i; top.Tri(a, a + 1, a + 2); top.Tri(a + 1, a + 3, a + 2); }   // facing up
             var deck = top.ToObject(deckName, mats.House, go, false);
             var mc = deck.AddComponent<MeshCollider>(); mc.sharedMesh = deck.GetComponent<MeshFilter>().sharedMesh; mc.sharedMaterial = RampMaterial();
             deck.AddComponent<ShortcutSurface>().held = held;
+            if (!steelWork) return 0;
             // ---- the steel: the deck's edges and underside, the lip's end plate, low edge rails (look only), the trestle bents every 8 m down to the ground
             var mb = new MeshBuilder();
             for (int i = 0; i + 1 < m; i++)

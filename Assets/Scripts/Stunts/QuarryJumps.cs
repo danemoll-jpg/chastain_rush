@@ -46,6 +46,15 @@ namespace ChastainRush
         void Awake() { Instance = this; try { Jumps = JsonUtility.FromJson<File_>(json)?.jumps ?? new Jump[0]; } catch (Exception e) { Debug.LogWarning("[Round72] quarry jumps unreadable: " + e.Message); } }
         void OnDestroy() { if (Instance == this) Instance = null; }
 
+        // TV cameras: by the kicker, on each rim beside the flight, at the landing deck, from the bleachers (Round 90: the Viking Quarry race's replays too)
+        static List<Vector3> TvOf(Jump J)
+        {
+            var tv = new List<Vector3>();
+            foreach (var (s, lat, up) in new[] { (J.lip_s - 60f, 18f, 4f), (J.lip_s + 10f, -30f, 8f), (J.lip_s + (J.land_s[0] - J.lip_s) * .5f, 120f, 30f), (J.land_s[0] - 10f, 26f, 6f), (J.land_s[J.land_s.Length - 1] + 30f, -24f, 5f) })
+            { var q = At(J, s, lat); float gy = GroundQuery.Height(q.x, q.z); q.y = Mathf.Max(float.IsNaN(gy) ? J.lip_y : gy + up, J.water_y + up); tv.Add(q); }
+            return tv;
+        }
+        public static List<Vector3> TvSpots() { var all = new List<Vector3>(); if (Instance) foreach (var j in Instance.Jumps) all.AddRange(TvOf(j)); return all; }
         public static Vector3 At(Jump j, float s, float lat = 0f) { var q = new Vector2(j.origin[0], j.origin[1]) + new Vector2(j.dir[0], j.dir[1]) * s + new Vector2(-j.dir[1], j.dir[0]) * lat; return new Vector3(q.x, 0f, q.y); }
         public static Vector3 Forward(Jump j) => new Vector3(j.dir[0], 0f, j.dir[1]);
         public static Vector3 StartPoint(Jump j) { var p = new Vector3(j.start[0], 0f, j.start[1]); p.y = GroundQuery.Height(p.x, p.z); return p; }
@@ -198,11 +207,7 @@ namespace ChastainRush
             var d = new ReplayData { kind = "jump", routeName = "Viking Quarry: " + J.name, recordName = J.name, laps = 1, t0 = 0f, t1 = frames[frames.Count - 1].t, focus = 0, date = DateTime.UtcNow.ToString("o") };
             var r = new ReplayData.Racer { name = PlayerNames.Player, vehicle = cfg ? cfg.profileId : "original", player = true, seat = 1 };
             r.track.frames.AddRange(frames); d.racers.Add(r);
-            // TV cameras: by the kicker, on each rim beside the flight, at the landing deck, from the bleachers
-            var tv = new List<Vector3>();
-            foreach (var (s, lat, up) in new[] { (J.lip_s - 60f, 18f, 4f), (J.lip_s + 10f, -30f, 8f), (J.lip_s + (J.land_s[0] - J.lip_s) * .5f, 120f, 30f), (J.land_s[0] - 10f, 26f, 6f), (J.land_s[J.land_s.Length - 1] + 30f, -24f, 5f) })
-            { var q = At(J, s, lat); float gy = GroundQuery.Height(q.x, q.z); q.y = Mathf.Max(float.IsNaN(gy) ? J.lip_y : gy + up, J.water_y + up); tv.Add(q); }
-            ReplayViewer.ExtraTv = tv;
+            ReplayViewer.ExtraTv = TvOf(J);
             ReplayViewer.Open(d, () => ReplayViewer.ExtraTv = null);
             replayUntil = 0f;
         }

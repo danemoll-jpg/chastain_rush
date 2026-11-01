@@ -46,17 +46,21 @@ import os as _os
 OVH1, OVH2, OVH3 = (float(v) for v in _os.environ.get("QJ_OVH", "30,30,55").split(","))   # the landing decks' fronts over the bank face (m before the bench's edge)
 # (each deck runs on at least 25 m past the bench's edge onto its cut: LAND_L per jump = its overhang + 25 or more)
 JUMPS = [
-    dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin", overhang=OVH1, land_l=OVH1 + 26.0),
-    dict(id="J2", name="The Long One", lip=(-2000.0, -1649.0), heading=0.0, run=360.0, bench_min=200.0, design="Needle 600", overhang=OVH2, land_l=OVH2 + 26.0),
-    dict(id="J3", name="The Big One", lip=(-2200.0, -1716.0), heading=15.0, run=340.0, bench_min=185.0, design="Needle 600", overhang=OVH3, land_l=OVH3 + 26.0),
+    # Round 90 (look): the race's three jumps all different (the variety rule): The Corner keeps its steel kicker, The Long One is the old conveyor's
+    # gantry, The Big One a haul-road ramp of crushed stone (the same deck under each: look only)
+    dict(id="J1", name="The Corner", lip=(-1720.0, -1590.0), heading=345.0, run=320.0, bench_min=200.0, design="Drifter Twin", overhang=OVH1, land_l=OVH1 + 26.0, look="steel"),
+    dict(id="J2", name="The Long One", lip=(-2000.0, -1649.0), heading=0.0, run=360.0, bench_min=200.0, design="Needle 600", overhang=OVH2, land_l=OVH2 + 26.0, look="conveyor"),
+    dict(id="J3", name="The Big One", lip=(-2200.0, -1716.0), heading=15.0, run=340.0, bench_min=185.0, design="Needle 600", overhang=OVH3, land_l=OVH3 + 26.0, look="stone"),
 ]
 # (top m/s, push m/s2) as Round 68 / 70; CORR: Round 70's ramp flew 8 to 16 % shorter in the exe than this model said (its lip speeds lower)
 VEHICLES = {"Street Classic": (49.0, 14.5), "Highball Fastback": (52.0, 16.0), "Drifter Twin": (58.0, 16.0), "Needle 600": (61.0, 18.0),
             "Stunt Buggy": (50.0, 17.5), "Stunt Bike": (55.0, 18.0)}
 CORR = 0.79   # Round 73: the exe through the game's own input (the check's human-like rider): the Street Classic flat out off The Corner's lip at 43.7 m/s, CLEAN at 250 m (the bikes slower on the rough first run-ups: 31 to 34 m/s),
               # this model's 49.8 (Round 72's 0.93 came from a scripted check that drove the vehicle with its physics off)
-DECK_HALF = 4.5            # the kicker's deck: 9 m wide
-LAND_HALF = 10.0           # the landing deck: 20 m wide
+# Round 90 (the Viking Quarry race runs over these three lines, four cars abreast): the kickers 18 m wide (were 9) and the landing decks 30 m (were
+# 20); the profiles (and so every flight and speed window) unchanged
+DECK_HALF = 9.0            # the kicker's deck: 18 m wide
+LAND_HALF = 15.0           # the landing deck: 30 m wide
 LAND_L = 38.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a shallow cut in the bench
 LAND_REL = 38.0            # the landing deck lies this much shallower than the design flight comes down (about 10 degrees: a cut of 6 to 7 m that
                            # climbs back within 80 m, clear of the haul road beyond The Long One; the catch zone sets a vehicle on its wheels)
@@ -66,6 +70,12 @@ RUNOUT = 110.0             # the catch past the landing deck's foot, graded smoo
 PAD_HALF = 15.0            # the pad round the kicker: flat at its foot's height this far either side of the line
 PAVED = [a for a in M["aeroways"] if a.get("kind") in ("runway", "taxiway")]
 ROADS_NEAR = [pts(r["points"]) for r in M["roads"] if any(-3000 < x < -1300 and -2300 < z < -1000 for x, z in pts(r["points"]))] + [pts(a["points"]) for a in PAVED]
+# Round 90: the Viking Quarry race's course (Tools/mapgen/make_quarry_route.py writes it): the bleachers kept off it as off a road
+_RACE = os.path.join(ROOT, "Data/tracks/viking_quarry.json")
+if os.path.exists(_RACE):
+    _c = json.load(open(_RACE, encoding="utf-8")).get("course")
+    if _c: COURSE = [pts(_c)]
+COURSE = globals().get("COURSE", [])
 
 
 def design(J):
@@ -197,6 +207,11 @@ def design(J):
                 ab = (v[0] - u[0], v[1] - u[1]); L2 = ab[0] ** 2 + ab[1] ** 2
                 t = 0 if L2 < 1e-9 else max(0, min(1, ((q[0] - u[0]) * ab[0] + (q[1] - u[1]) * ab[1]) / L2))
                 if math.dist(q, (u[0] + ab[0] * t, u[1] + ab[1] * t)) < 24.0: return False
+        for rd in COURSE:   # Round 90: 40 m off the race's line (a car running wide never meets a stand)
+            for u, v in zip(rd, rd[1:]):
+                ab = (v[0] - u[0], v[1] - u[1]); L2 = ab[0] ** 2 + ab[1] ** 2
+                t = 0 if L2 < 1e-9 else max(0, min(1, ((q[0] - u[0]) * ab[0] + (q[1] - u[1]) * ab[1]) / L2))
+                if math.dist(q, (u[0] + ab[0] * t, u[1] + ab[1] * t)) < 40.0: return False
         return True
     spots = []
     for side, sgn in ((1, 1.0), (2, -1.0)):
@@ -222,7 +237,7 @@ def design(J):
                 deck_s=deck_s, deck_y=deck_y, half=DECK_HALF, angle_deg=round(ang, 2), radius_m=round(R, 1), lip_s=s_lip, lip_y=round(y_lip, 3), tallest_m=round(tall, 1),
                 land_s=[round(v, 2) for v in land_s], land_y=[round(v, 3) for v in land_y], land_half=LAND_HALF, land_angle_deg=round(math.degrees(alpha), 1),
                 bench_y=round(bench, 2), edge_s=round(edge, 1), runout_to=round(ro_s[-1], 1), water_y=WATER, design=J["design"],
-                start=flat([P(6.0)]), start_yaw=J["heading"], gantry=dict(at=flat([P(10.0)]), yaw=J["heading"]), stands=stands, flights=flights)
+                start=flat([P(6.0)]), start_yaw=J["heading"], gantry=dict(at=flat([P(10.0)]), yaw=J["heading"]), stands=stands, flights=flights, look=J.get("look", "steel"))
     return jump, grades, clear, zones
 
 

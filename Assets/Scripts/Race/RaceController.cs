@@ -44,6 +44,9 @@ namespace ChastainRush
         public static readonly List<RouteShortcutJson> ExtraShortcuts = new List<RouteShortcutJson>(); // checks only: shortcuts not in the file
         public static bool EntryPlanesOff;   // checks only (Round 13): shortcuts are taken by their corridor alone
         public const float MissPenaltySeconds = 5f;   // Racer: RaceProgress.Miss forces 5 s per missed gate
+        // Round 90 (the Viking Quarry race: an 8.8 km lap whose legs pass within a few hundred meters of each other across the airport's plateau): a route may
+        // charge more per missed checkpoint (miss_penalty_s), so cutting across to another leg costs more than it saves
+        public float MissPenalty => Route != null && Route.Data != null && Route.Data.miss_penalty_s > 0f ? Route.Data.miss_penalty_s : MissPenaltySeconds;
 
         [Header("Set by MapBuilder (Chastain Rush > Build Map)")]
         [TextArea] public string embeddedRouteJson;   // the route file as it was when the scene was built
@@ -377,6 +380,36 @@ namespace ChastainRush
             return Mathf.Abs(Vector3.Dot(right, cr)) * hx + Mathf.Abs(Vector3.Dot(right, cf)) * hz;
         }
 
+        // Round 90 (the Viking Quarry race: "Coming up short means the lake: the car splashes, sinks partway and is reset before the jump"): a player
+        // whose car has been in the water for lake_reset_s inside a jump's reset area (route reset_skip short_area: the lake under the flight, the
+        // bank under the landing deck) is put back on the run-up as by the reset button (CarRecovery: short_s, never a penalty)
+        readonly Dictionary<RaceEntrant, float> lakeFor = new Dictionary<RaceEntrant, float>();
+        public static int LakeResets;   // for the checks
+        void LakeReset(RaceEntrant e, float dt)
+        {
+            var rd = Route?.Data; if (rd == null || rd.lake_reset_s <= 0f || !e.IsHuman || !e.Car) return;
+            var skips = Route.OwnReverse ? rd.reset_skip_rev : !Route.Reverse ? rd.reset_skip : null; if (skips == null) return;
+            var p = e.Car.Body.position; bool wet = e.Car.WaterImmersion > .05f || ShallowWater.InWater(p);
+            bool inside = false;
+            if (wet) foreach (var k in skips) if (k.short_area != null && k.short_area.Length >= 6 && InPoly(k.short_area, p.x, p.z)) { inside = true; break; }
+            float t = inside ? (lakeFor.TryGetValue(e, out float v) ? v : 0f) + dt : 0f; lakeFor[e] = t;
+            if (t >= rd.lake_reset_s)
+            {
+                lakeFor[e] = -999f;   // (once, until it is out of the water)
+                var rs = e.Car.GetComponent<VehicleRespawn>(); if (rs) { rs.ResetSoon(0f); LakeResets++; Log(e, $"in the lake at ({p.x:0}, {p.z:0}) {rd.lake_reset_s:0.0} s: put back on the run-up"); }
+            }
+        }
+        static bool InPoly(float[] poly, float x, float z)
+        {
+            bool c = false; int n = poly.Length / 2;
+            for (int i = 0, j = n - 1; i < n; j = i++)
+            {
+                float xi = poly[2 * i], zi = poly[2 * i + 1], xj = poly[2 * j], zj = poly[2 * j + 1];
+                if ((zi > z) != (zj > z) && x < (xj - xi) * (z - zi) / (zj - zi + 1e-9f) + xi) c = !c;
+            }
+            return c;
+        }
+
         // ---------------------------------------------------------------- per frame
 
         void FixedUpdate()
@@ -409,6 +442,7 @@ namespace ChastainRush
                 if (!e.Car) continue;
                 if (e.Finished) { e.PrevPos = e.Car.transform.position; continue; }
                 Step(e, t0, dt);
+                LakeReset(e, dt);   // Round 90
                 // Round 27 (the underground race): a racer over a switch's plate opens its gate for everyone, for the rest of the race
                 if (barriers != null && barriers.Gates.Count > 0 && barriers.TryOpen(e.Car.Body.position, e.Name, out var opened))
                 {
@@ -467,15 +501,15 @@ namespace ChastainRush
         void Miss(RaceEntrant e, int index, float at)
         {
             e.Missed.Add(index);
-            e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
-            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  CP{index + 1}  +{MissPenaltySeconds:0} s  missed");
-            Log(e, $"PENALTY +{MissPenaltySeconds:0} s: missed CP{index + 1} on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
+            e.PenaltyTotal += MissPenalty; e.LapPenalty += MissPenalty; e.MissedTotal++;
+            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  CP{index + 1}  +{MissPenalty:0} s  missed");
+            Log(e, $"PENALTY +{MissPenalty:0} s: missed CP{index + 1} on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
         }
 
         void MissMessage(RaceEntrant e, List<int> skipped)
         {
             if (skipped.Count == 0 || !e.IsHuman) return;
-            SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s", 4f);
+            SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenalty:0} s", 4f);
         }
 
         void OnCheckpoint(RaceEntrant e, int index, float at)
@@ -568,10 +602,10 @@ namespace ChastainRush
         void OnLineMissed(RaceEntrant e, float at)
         {
             int n = Route.Checkpoints.Count;
-            e.Missed.Add(n); e.PenaltyTotal += MissPenaltySeconds; e.LapPenalty += MissPenaltySeconds; e.MissedTotal++;
+            e.Missed.Add(n); e.PenaltyTotal += MissPenalty; e.LapPenalty += MissPenalty; e.MissedTotal++;
             bool last = e.CompletedLaps + 1 >= Route.Laps;
-            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  {(last ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s  missed");
-            Log(e, $"PENALTY +{MissPenaltySeconds:0} s: went past the {(last ? "finish" : "start / finish")} line outside it on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
+            e.PenaltyLog.Add($"Lap {e.CompletedLaps + 1}  {(last ? "finish" : "start / finish")} line  +{MissPenalty:0} s  missed");
+            Log(e, $"PENALTY +{MissPenalty:0} s: went past the {(last ? "finish" : "start / finish")} line outside it on lap {e.CompletedLaps + 1} at {at:0.000} (race penalty now {e.PenaltyTotal:0} s)");
             CountLap(e, at, true);
         }
 
@@ -624,8 +658,8 @@ namespace ChastainRush
             e.LapLog.Add($"Lap {lapNo}: {Fmt(lap)}{pen}{fg}" + (best ? "  best lap" : ""));
             if (e.IsHuman)
             {
-                if (lineMissed) SayTo(e, $"Missed the {(e.CompletedLaps >= Route.Laps ? "finish" : "start / finish")} line  +{MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
-                else if (skipped.Count > 0) SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenaltySeconds:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                if (lineMissed) SayTo(e, $"Missed the {(e.CompletedLaps >= Route.Laps ? "finish" : "start / finish")} line  +{MissPenalty:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
+                else if (skipped.Count > 0) SayTo(e, $"Missed checkpoint{(skipped.Count > 1 ? "s" : "")} {string.Join(", ", skipped)}  +{skipped.Count * MissPenalty:0} s     Lap {lapNo} {Fmt(lap)}", 5f);
                 else SayTo(e, $"Lap {lapNo} {Fmt(lap)}" + (best ? "  best lap!" : ""), 4f);
             }
             Log(e, $"LAP {lapNo} COUNTED {lap:0.000} (clock {raw:0.000} + penalty {e.LapPenalty:0.0})" + (e.Missed.Count > 0 ? $"; {MissedText(e)}" : "") + (e.Forgiven.Count > 0 ? $"; forgiven {string.Join(",", e.Forgiven.ConvertAll(x => "CP" + (x + 1)))}" : ""));
@@ -1306,7 +1340,7 @@ namespace ChastainRush
             Shadowed(new Rect(r.x + 20, r.y + 116, r.width - 30, 30), Card("TOP 10  BEST LAP", FinishCards.Lap), small);
             Shadowed(new Rect(r.x + 20, r.y + 144, r.width - 30, 30), Card("TOP 10  TOTAL RACE", FinishCards.Race), small);
             float y = r.y + 182;
-            Shadowed(new Rect(r.x + 20, y, r.width, 26), PenaltyTotal > 0f ? $"<color=#ffb040>Penalties  +{PenaltyTotal:0} s  ({MissedTotal} missed checkpoint{(MissedTotal == 1 ? "" : "s")}, {MissPenaltySeconds:0} s each)</color>" : "Penalties  none", small); y += 28;
+            Shadowed(new Rect(r.x + 20, y, r.width, 26), PenaltyTotal > 0f ? $"<color=#ffb040>Penalties  +{PenaltyTotal:0} s  ({MissedTotal} missed checkpoint{(MissedTotal == 1 ? "" : "s")}, {MissPenalty:0} s each)</color>" : "Penalties  none", small); y += 28;
             foreach (var line in LapLog) { Shadowed(new Rect(r.x + 20, y, r.width - 30, 26), line, small); y += 24; }
             if (Entrants.Count > 1)
             {

@@ -102,6 +102,8 @@ namespace ChastainRush
         public RouteSealJson[] seals;
         public RouteRailJson[] rails;
         public RouteSwitchGateJson[] switch_gates;
+        public float lake_reset_s;   // Round 90: a player in the water inside a reset_skip short_area this long is reset (0: off)
+        public float miss_penalty_s;   // Round 90: seconds per missed checkpoint (0: RaceController.MissPenaltySeconds); the Viking Quarry race 30
         public RouteResetSkipJson[] reset_skip;   // Round 33 (the Ridge leap): a reset between s0 and s1 (forward) puts the vehicle at to_s, past the landing
         // Round 39 (C, the reverse Chastain Ridge): a reverse lap of its own, in travel order, when the reverse is not the loop run backward (other
         // carriageways, right-hand lanes the other way, a jump that only works one way): its gate, checkpoints, junctions, closures and reset skips

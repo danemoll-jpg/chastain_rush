@@ -17,7 +17,7 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class QjSpot { public float[] at; public float yaw, y; }
-        [Serializable] class QjJump { public string id, name; public float[] origin, dir, deck_s, deck_y, land_s, land_y, start; public float half, lip_s, lip_y, land_half, runout_to, start_yaw; public QjSpot gantry; public QjSpot[] stands; }
+        [Serializable] class QjJump { public string id, name; public float[] origin, dir, deck_s, deck_y, land_s, land_y, start; public float half, lip_s, lip_y, land_half, runout_to, start_yaw; public QjSpot gantry; public QjSpot[] stands; public string look; }   // look: Round 90
         [Serializable] class QjSign { public float[] at; public float facing; public string text, jump; }
         [Serializable] class QjAccess { public float[] drive; public float half; public QjSign[] signs, boards, landings; }   // landings: Round 74
         [Serializable] class QjFile { public RidgeGrade[] grades; public RidgeClear[] clear_lines; public CtZone[] landing_zones; public QjJump[] jumps; public QjAccess access; }
@@ -57,9 +57,15 @@ namespace ChastainRush
             {
                 var o = new Vector2(j.origin[0], j.origin[1]); var d = new Vector2(j.dir[0], j.dir[1]).normalized; var nl = new Vector2(-d.y, d.x);
                 var jt = new GameObject("Quarry jump " + j.id + " " + j.name).transform; jt.SetParent(go, false);
-                int bk = SteelRamp(terrain, mats, jt, $"sc quarry {j.id} kicker deck", $"Quarry {j.id} kicker steel", o, d, j.deck_s, j.deck_y, j.half, true);
+                // Round 90 (the Viking Quarry race flies all three: the variety rule): The Corner keeps its steel kicker, The Big One's is a haul-road ramp
+                // of crushed stone (the same held deck, stone to the ground under it), The Long One's the old conveyor's gantry (the steel kicker with the
+                // conveyor's gallery running up beside it to a head house at the lip); every flight the same
+                bool stone = j.look == "stone";
+                int bk = SteelRamp(terrain, mats, jt, $"sc quarry {j.id} kicker deck", $"Quarry {j.id} kicker steel", o, d, j.deck_s, j.deck_y, j.half, true, stone ? CrushedStone : (Color?)null, !stone);
                 // Round 73 (C3 (1), Dan's BUG-006: stuck in under a ramp's trestle): the kicker skirted solid to the ground, sides and lip end
-                Skirt(terrain, mats, jt, $"Quarry {j.id} kicker skirt", o, d, j.deck_s, j.deck_y, j.half);
+                Skirt(terrain, mats, jt, $"Quarry {j.id} kicker skirt", o, d, j.deck_s, j.deck_y, j.half, false, stone ? Shade(CrushedStone, .82f) : (Color?)null);
+                if (stone) StoneRampLook(terrain, mats, jt, j, o, d);
+                else if (j.look == "conveyor") ConveyorLook(terrain, mats, jt, j, o, d);
                 // Round 73 (C4): the landing deck lies on its graded cut in the far bench (its top at the bench's edge): nothing under it
                 int bl = SteelRamp(terrain, mats, jt, $"sc quarry {j.id} landing deck", $"Quarry {j.id} landing steel", o, d, j.land_s, j.land_y, j.land_half, false);
                 // Round 73: its front stands out over the bank face on its trestle: skirted to the ground, its front a solid face (short: into it, into the lake)
@@ -195,9 +201,9 @@ namespace ChastainRush
 
         // Round 73 (C3 (1)): solid steel skirts from a ramp deck's edges down into the ground, and its lip end down to the ground under it, with their
         // collider: nothing can be driven in under a ramp or wedged in its trestle
-        static void Skirt(TerrainGrid terrain, Materials mats, Transform parent, string name, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool frontPlate = false)
+        static void Skirt(TerrainGrid terrain, Materials mats, Transform parent, string name, Vector2 o, Vector2 d, float[] deck_s, float[] deck_y, float half, bool frontPlate = false, Color? tint = null)
         {
-            var n = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); mb.Tint = Shade(RampSteel, .9f);
+            var n = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); mb.Tint = tint ?? Shade(RampSteel, .9f);
             Vector3 W(float s, float lat, float y) { var q = o + d * s + n * lat; return new Vector3(q.x, y, q.y); }
             float G(float s, float lat) { var q = o + d * s + n * lat; return Ground(terrain, q.x, q.y) - .6f; }
             var n3 = new Vector3(n.x, 0f, n.y); var d3 = new Vector3(d.x, 0f, d.y);
@@ -342,6 +348,75 @@ namespace ChastainRush
                 mb.Tint = new Color(.95f, .85f, .2f); RibbonGrid(mb, dash, Enumerable.Repeat(.3f, 3).ToArray(), .1f, terrain, 1);
             }
             mb.ToObject($"Quarry {j.id} run-up lane", mats.Driveway, parent, false, false);
+        }
+    
+        // ---------------------------------------------------------------- Round 90: the race's kicker looks (look only: the held deck under each is the jump)
+        static readonly Color CrushedStone = new Color(.60f, .57f, .52f), ConveyorSteel = new Color(.55f, .45f, .22f), ConveyorBelt = new Color(.12f, .12f, .12f);
+
+        // The Big One: a haul-road ramp of crushed stone: the deck the stone's color, its sides stone to the ground (the skirt), heaped with boulders along
+        // both edges and spilled at the foot, the run-up's last stretch paved with the same stone
+        static void StoneRampLook(TerrainGrid terrain, Materials mats, Transform parent, QjJump j, Vector2 o, Vector2 d)
+        {
+            var nl = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); int m = j.deck_s.Length;
+            for (int i = 0; i < m; i += 3)
+                foreach (float side in new[] { -1f, 1f })
+                {
+                    float s = j.deck_s[i]; var q = o + d * s + nl * side * (j.half + 1.2f); float gy = Ground(terrain, q.x, q.y), top = j.deck_y[i];
+                    int h = (int)(q.x * 31f + q.y * 17f);
+                    float hh = Mathf.Max(1.2f, (top - gy) * (.55f + .3f * Hash01(h, 1)));   // a heap against the ramp's side, below its edge
+                    var fr = MakeFrame(new Vector3(q.x, gy - .4f, q.y), d, 1f);
+                    BoxF(mb, fr, -1.4f - Hash01(h, 2), 1.4f + Hash01(h, 3), 0f, hh, -1.6f, 1.6f, Hash01(h, 4) < .5f ? BermStone : BermDark);
+                    BoxF(mb, fr, -.9f, .9f, hh - .1f, hh + .5f + Hash01(h, 5), -1.0f, 1.0f, Shade(CrushedStone, .9f));
+                }
+            // the spill at the foot of the ramp
+            var foot = o + d * j.deck_s[0];
+            for (int k = -4; k <= 4; k++)
+            {
+                var q = foot - d * 3f + nl * (k * j.half / 4f); int h = (int)(q.x * 11f + q.y * 5f);
+                BoxF(mb, MakeFrame(new Vector3(q.x, Ground(terrain, q.x, q.y) - .35f, q.y), d, 1f), -1.2f, 1.2f, 0f, .45f + .3f * Hash01(h, 1), -2.5f, 1.5f, Shade(CrushedStone, .95f));
+            }
+            var go = mb.ToObject($"Quarry {j.id} stone ramp look", mats.House, parent, false); go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
+            var apron = new List<Vector2>(); for (float s = j.deck_s[0] - 60f; s <= j.deck_s[0]; s += 3f) apron.Add(o + d * s);
+            var am = new MeshBuilder(); am.Tint = CrushedStone; RibbonGrid(am, apron, Enumerable.Repeat(j.half * 2f, apron.Count).ToArray(), .09f, terrain, 3);
+            am.ToObject($"Quarry {j.id} stone apron", mats.Driveway, parent, false, false);
+        }
+
+        // The Long One: the old conveyor's gantry: the steel kicker with a covered conveyor gallery running up beside it from a feed hopper on the run-up
+        // to a head house over the lip, on steel legs; its side a guide wall (a car glancing it is turned along it, WallGlance)
+        static void ConveyorLook(TerrainGrid terrain, Materials mats, Transform parent, QjJump j, Vector2 o, Vector2 d)
+        {
+            var nl = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); int m = j.deck_s.Length;
+            float lat = j.half + 3.2f, w = 2.6f, s0 = j.deck_s[0] - 70f, s1 = j.deck_s[m - 1] + 2f;
+            float yLip = j.deck_y[m - 1] + 2.5f;
+            float Gy(float s) { var q = o + d * s + nl * lat; return Ground(terrain, q.x, q.y); }
+            float y0 = Gy(s0) + 1.5f;
+            float Y(float s) => Mathf.Lerp(y0, yLip, Mathf.InverseLerp(s0, s1, s));
+            Vector3 P(float s, float u, float y) { var q = o + d * s + nl * (lat + u); return new Vector3(q.x, y, q.y); }
+            var holder = new GameObject("Conveyor gallery solid").transform; holder.SetParent(parent, false);
+            for (float s = s0; s < s1 - .1f; s += 6f)
+            {
+                float e = Mathf.Min(s1, s + 6f), ya = Y(s), yb = Y(e);
+                var a = P(s, 0f, ya); var b = P(e, 0f, yb);
+                Beam(mb, a + Vector3.up * 1.2f, b + Vector3.up * 1.2f, w, 2.4f, ConveyorSteel);                        // the gallery
+                Beam(mb, a + Vector3.up * 2.5f, b + Vector3.up * 2.5f, w + .4f, .2f, Shade(ConveyorSteel, .7f));     // its roof
+                Beam(mb, a + Vector3.up * .1f, b + Vector3.up * .1f, w * .6f, .2f, ConveyorBelt);                     // the belt under it
+                if (Mathf.Repeat(s - s0, 12f) < .1f)   // a pair of legs every 12 m
+                    foreach (float u in new[] { -w * .5f, w * .5f })
+                    {
+                        float g = Gy(s); var top = P(s, u, ya - .1f); var ft = P(s, u * 1.3f, g - .5f);
+                        if (top.y - ft.y > 1f) { Beam(mb, ft, top, .35f, .35f, RampSteel); BoxF(mb, MakeFrame(P(s, u * 1.3f, g), d, 1f), -.7f, .7f, -.4f, .2f, -.7f, .7f, new Color(.6f, .6f, .58f)); }
+                    }
+                var bc = new GameObject("Quarry berm conveyor").AddComponent<BoxCollider>(); bc.transform.SetParent(holder, false);
+                var mid = (a + b) * .5f; float yLow = Mathf.Min(Gy(s), Gy(e)) - .5f, yTop = Mathf.Max(ya, yb) + 2.6f;
+                bc.transform.SetPositionAndRotation(new Vector3(mid.x, (yLow + yTop) * .5f, mid.z), Quaternion.LookRotation(new Vector3(d.x, 0f, d.y)));
+                bc.size = new Vector3(w + .6f, yTop - yLow, (b - a).magnitude);
+            }
+            // the feed hopper at its foot and the head house over the lip
+            var hf = MakeFrame(P(s0 - 2f, 0f, Gy(s0)), d, 1f);
+            BoxF(mb, hf, -2.2f, 2.2f, 0f, 3.2f, -2.5f, 2.5f, Shade(ConveyorSteel, .85f)); BoxF(mb, hf, -2.8f, 2.8f, 3.2f, 4.0f, -3f, 3f, ConveyorSteel);
+            var hh = MakeFrame(P(s1, 0f, yLip - 1.2f), d, 1f);
+            BoxF(mb, hh, -2.4f, 2.4f, 0f, 4.4f, -1f, 3.5f, ConveyorSteel); BoxF(mb, hh, -2.8f, 2.8f, 4.4f, 4.8f, -1.4f, 3.9f, Shade(ConveyorSteel, .7f));
+            var go = mb.ToObject($"Quarry {j.id} conveyor look", mats.House, parent, false); go.GetComponent<MeshRenderer>().shadowCastingMode = ShadowCastingMode.On;
         }
     }
 }
