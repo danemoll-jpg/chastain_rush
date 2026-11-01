@@ -7539,3 +7539,35 @@ Published: `game-8400` (0.84.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Decisions: everything already unlocked (nothing is locked here); the bumper height and the 50 % speed give-back are Racer's first guesses; split screen's halves show their own HIGH tag.
 For Dan to check: HIGH MODE on the PC and the Deck (Free Roam, a race, an air race, a chase, a friend in split screen); do the bumpers feel right on the mountain and trails; the Express gates at I-575 (715, -956) and (712, -2027).
 
+
+## Round 85 (moved from TODO.md on 2026-11-01 when Round 89 started; word for word)
+
+## Previous delivery 3: Round 85
+**Played by Dan 2026-10-30 (HIGH MODE); his notes are Round 86.**
+**Round 85, BUMPERS AND BARRIERS THAT BOUNCE YOU BACK ON COURSE (Dan, 2026-10-30 09:38, after playing Round 84's HIGH MODE).** Item 0, the one-heavy-job rule and the
+end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
+Dan: "i WANT it so that in high mode that you bounce of barriers and they keep you straight on course as opposed to having you got hung up on the wall. Actually in
+general I want this for bumpers". Round 84's own check saw it: the bot stalled against a HIGH bumper 6 to 9 times a lap and reset.
+A. HIGH MODE BUMPERS. Hitting a gutter bumper at any angle short of head-on turns you back along the course and keeps your speed (a glancing hit loses little; the
+   harder the angle, the more it costs, but you leave the bumper pointed down the course, never stopped, spun or riding along it). No snagging: smooth, continuous
+   colliders without posts, seams or corners the wheels or body catch; no friction against the vehicle's side; the bumper's push away from it, not up (no climbing,
+   no launch). Planes and AI unaffected (AI still pass through).
+B. THE SAME FOR BARRIERS IN GENERAL (Dan: "in general I want this for bumpers"), in every mode: the race closure barriers and course barriers, guard rails, the
+   Express Lanes' walls and bridge parapets, highway median walls, and the course-edge rails on the trails. A glancing hit slides you along and straightens you
+   to the barrier's line instead of hanging you up; a head-on hit still stops you (normal mode keeps its crashes). Breakable things (fences, signs, gates, mailboxes)
+   stay breakable, and solid scenery (trees, houses) is not part of this. Say which colliders were changed.
+Check: the human-like driver pushed into the edges for a lap of the Kennesaw trails, the Noonday Creek Extension and the Chastain Glen loop in HIGH MODE (stalls
+against a bumper before / after: aim 0), and into the walls along the I-75 Express Lanes and a course's closure barriers in normal mode at 10, 20 and 30 degrees
+(speed kept and heading after each hit, before / after); a recorded clip or picture series of one glancing hit each.
+Build: quick builds only if no world rebuild is needed. PUBLISH through the launcher.
+For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode.
+
+**Status (Claude, 2026-10-30): built (code only on Round 84's scene, exe 10:48), checked in the exe, published 0.85.0 (`game-8500`), not yet driven by Dan.** Evidence `Data/screenshots/round85/` (barrier pictures in `local/round85/`: Chastain Glen). No bug report newer than Round 82's.
+How: `Vehicle/WallGlance.cs` on the players' vehicles (both split-screen players; AI, planes, helicopter unchanged). A hit on a guide wall is turned along it: speed kept 1 - (1 - cos a) x 0.8 (HIGH 0.6), a sideways push off it (never up), heading and travel held on the wall's line 0.18 s, no friction. Normal mode up to 50 degrees; past that, and for the rest of that touch, a crash as before. HIGH up to 82 degrees, and pinned slow against a bumper 0.6 s: turned down the course at 8 m/s.
+Colliders changed (`GuideWalls`): HIGH bumpers (solid fence now down to their buried base, it began 0.3 m up; no bounce, no friction); race closure barriers and pipe-mouth barriers (one box per unbroken run instead of a box per block); the Underground's rails and seals; the Express Lanes' walls; bridge parapets (`BridgeStructure`); map-edge closures. No highway median walls exist. Trail railings stay breakable (Round 64), so not changed.
+A: HIGH laps steering into the edges (`check_lap_high.txt`): stalls against a bumper Kennesaw 6 -> 0, Noonday Creek Extension 9 -> 0, Chastain Glen loop 0 (no before); 119 / 57 / 15 glances; one stuck spot on Noonday 5.9 m from any bumper. Pictures: `85_lap_*_glance_0..2` (against the bumper, then pointed down the course beside it).
+B: normal mode, Drifter Twin, throttle held (`check_wall_before.txt` / `_after.txt`). Express Lanes wall, speed kept 0.6 s after / heading off the wall's line: 10 deg 18 % / 14 -> 110 % / 1; 20 deg 14 % / 28 -> 106 % / 0; 30 deg 21 % / 9 -> 102 % / 1; 70 deg (head on) 35 % -> 53 % (still a hit, not a slide). Closure barrier B5 (Chastain Glen loop), after: 10 deg 114 % / 10; 20 deg 106 % / 4; 30 deg 100 % / 4. Its before is not a clean comparison: aimed 2 m from the barrier's end, the car slid round the end (two attempts at the barrier site; stopped there per the tuning limit). Pictures: `85_Express_Lanes_wall_20deg_*` (after) and `_before_20deg_*`.
+Disk (project folders) 32.9 -> 32.5 GB; Builds 9.9 GB.
+Decisions: the angle limits and speed losses above are first guesses; the players only (AI racers not given it).
+For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode; whether a 50-degree hit should still glance or crash.
+

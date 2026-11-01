@@ -114,6 +114,51 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 89, THE ROADS ROUND 88 MADE WORSE FIRST, THEN THE REST; POLICE RADIO STREET NAMES FOR THE WHOLE MAP; GOOSE EGGS ACROSS THE WHOLE MAP (Dan, 2026-11-01 03:04: "OK
+so it is done, but I dont have a chance to test. Can we have continue to fix stuff? Also, don't we need to include more street names for the cops? I would also like to
+either spreadout the goose eggs or create more to be found all across the map. We did both these things before the map was expanded").** Round 88 is not yet driven by
+Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply; A's and C's world changes in one
+Build Map where possible. Short results.
+A. ROADS: NOTHING WORSE THAN BEFORE, THEN KEEP FIXING. Round 88 C made four places worse: Canton Road at (1913, -5855) 2.1 s (beside deck 51, whose end its pass changed),
+   I-75 at (1880, -4459) 2.5 s, Greers Chapel's 0.2 s flights now 0.4 s, the I-575 Express flyover into I-75 2.2 s forward (was 0.76 s). FIRST each of these is fixed
+   properly or put back as it was before Round 88 (two attempts each, then put it back): no place ends this round worse than before Round 88. THEN the rest of Round 88's
+   list: I-75's Express Lanes northbound stuck at the Frey Road deck (3.3 s in the air), I-75 southbound 0.94 s at the I-575 merge, Frey Road / I-75, I-75 at Big Shanty,
+   I-75 by Greers Chapel and the Express under it, Bells Ferry, the Canton Road Connector interchange. Check: all 416 crossing runs and the Express Lanes end to end both
+   ways on the final build: list each place better / same / worse than Round 87's build; none worse.
+B. POLICE RADIO STREET NAMES FOR THE EXPANDED MAP. The radio's street lines (D001 to D136, Round 41 / 45, `Tools/Audio/police-radio-lines.csv`, Dan's ElevenLabs cop and
+   pilot voices) cover only the first map; since then the map grew west and south (Town Center, KSU, the airport, Kennesaw Mountain, Marietta Square, Kennestone): Claude
+   counted about 1,880 named streets on it now, 1,747 without a line, 80 of them main roads (Barrett Parkway, Cobb Parkway, Chastain's neighbors, Church / Cherokee /
+   Roswell / Atlanta Streets, Big Shanty, Bells Ferry's ends, Old 41, Polk, Mill Street, Mall Boulevard, Busbee, Frey, Greers Chapel, Allgood, Burnt Hickory, ...).
+   Add lines (new D IDs after D136, never changing existing IDs) for: every named trunk / primary / secondary / tertiary road and its links; the highways as people say
+   them (I-75, I-575, the Express Lanes; motorways were left out before, but chases now run on them); and the residential and unclassified streets within 300 m of any
+   race course, police spawn, hidden cop or fast-travel spot. Say the count before making audio; over 400 new clips: do NOT stop (Dan, 2026-11-01 03:13, overnight): make the main roads' and the
+   highways' clips first (and the "Suspect near..." piece), leave the residential / unclassified streets listed for the next round, and carry on. Make the clips with the studio
+   (`python Tools/Audio/police_radio_studio.py --make-missing`, cop voice; pilot takes `_air` where the pilot can say them, the key from ELEVENLABS_API_KEY, never printed).
+   A street with no line: the radio names the nearest street that has one, with a new phrase piece "Suspect near..." (and its pilot take), never silence or a wrong
+   "on". Check: a Getaway on the Needle 600 to heat 5 in Town Center / Barrett Parkway, Marietta Square and Kennesaw: calls name the right streets (log each call's street
+   and the player's road).
+C. GOOSE EGGS ACROSS THE WHOLE MAP. The 100 eggs (`Data/explore/eggs.json`, `make_eggs.py`, Round 48) all lie in the first map (x 118 to 3910, z 280 to 1879); the map
+   now runs to x -8630, z -8311. Keep the 100 (their IDs, so Dan's found eggs stay found) and ADD 150 (250 in all) spread over the expansion by area and size (Town Center
+   inside and out, KSU, the airport, the quarry, Kennesaw Mountain, Marietta Square, Kennestone, Noonday Creek Trail, Addison Heights, the neighborhoods, the woods, the
+   pipe network's new reaches), the same mix of easy / hidden / stunt-reached as Round 48; new areas and destinations added to the exploration map and fast travel; tiers
+   rescaled to 250 (what they unlock still waits for Dan). Check: every new egg reached in the exe (a reachability drive or placed-car probe per egg), none inside
+   buildings or under ground, the GOOSE EGGS page and map showing 250, a copy of Dan's save keeping its found eggs.
+Check: item 0 for every item. PUBLISH through the launcher.
+For Dan to check (with Round 88's list): the places Round 88 made worse; the Express Lanes at Frey Road; a police chase outside the first map (street names); new goose eggs.
+
+## QUEUED rounds
+Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
+area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
+this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
+so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
+ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 88
+**Not yet driven by Dan (2026-11-01: no chance to test yet); he reviews it with Round 89.**
 **Round 88, THE KENNESAW CLIMB'S RUN-OFF CARRIED BACK, THE BUMP AT THE KENNESAW RACE'S START, AND THE LEFTOVER ROAD WORK (Dan, 2026-10-31 13:28: "there is also a smaller
 bump at the beginning of the race. Lets wrap this into whatever code said it wants to do and then any remaining road work we had leftover").** Round 87 is reviewed.
 Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. All world changes of A, B and C batched
@@ -145,18 +190,7 @@ Published: `game-8800` (0.88.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 C continued (Dan: "Keep fixing C"; 1 more full Build Map, exe 2026-11-01 01:17; published `game-8801`, 0.88.1). The ground kept under a deck's last 30 m (decks put back on their grade had sunk into it), a deck overhead with 5 m+ clear no longer stops the laying (the Connector interchange), ramp 437897716 merged level with deck 54 (+3.9 m, eased over 60 m), deck ends fitted on 10 to 30 m, the whole easing judged, short roads joined across junctions, I-75 over Dickson Road (bridge 59) added; the crossing check starts each line on its own road's surface. All 416 crossing runs (`c2_crossings.txt`): 45 -> 3 not clean (Express Lanes 623138519 one wall touch the other way, as before; motorway_link 879570834 at (140, -2633) 1.1 s, was 2.2; Canton Road at (1919, -5843) a 8.9 m/s landing, was 2.1 s in the air). Express Lanes end to end (`c2_express.txt`, rerun `c2_express_rerun.txt`): I-75 through both ways, no stop at Frey Road (one wall touch); I-575 clean; the flyover into I-75 still 2.2 s on deck 80 at (656, -3674) (as Round 88; tuning limit reached). The first run had two falls off the line where the probed surfaces match Round 88's exactly; the rerun drove both through.
 For Dan to check: the Kennesaw climb and the start line (normal mode, the Drifter Twin flat out); the crossings (Canton Road Connector, Bells Ferry, Big Shanty, Greers Chapel); the Express Lanes at Frey Road and the I-575 flyover's deck 80.
 
-## QUEUED rounds
-Laura Lake (Dan, 2026-10-22 05:37): "Oddly enough I had no clue about the laura lake which code refered to as a quary. its a very cool
-area where we could have some really big jumps". What to make of it (a free-roam jump area, a race, a stunt course) waits for Dan. Dan, 2026-10-25 02:11: "I was mistaken this is actually called 'Viking Quarry Lake overlook'...I have no idea. Maybe if we add planes
-this could be a cool area. also maybe there is a car race or stunt races that have large ramps to jump you over evel knievel style". Ideas
-so far (not a round yet): planes (later, from the airport next door); a car race round the quarry; stunt events with huge Evel Knievel-style
-ramps launching you across the quarry lake. Use the name OSM gives it (check), else "the quarry".
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 87
+## Previous delivery 2: Round 87
 **Reviewed: Dan drove it 2026-10-31 (the Kennesaw race); his notes are Round 88.**
 **Round 87, BUMPERS AND BARRIERS THAT NEVER FACE YOU, A HIGH RESET WHEN YOU JUMP OUT, the Addison Heights and Noonday Creek Trail reports (Dan, 2026-10-31 00:38; reports
 BUG-001 to BUG-011 of session `2026-10-31_00-06-51-254_769f69` (BUG-009 / 010 / 011 one place), read by Claude, after the Round 86 build; HIGH MODE races of Addison
@@ -213,7 +247,7 @@ Published: `game-8700` (0.87.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Published (E follow-up): `game-8701` (0.87.1, Latest), the exe of 2026-10-31 11:30. Disk (project folders) 35.3 -> 35.3 GB (Builds now also keeps 0.87.1's release folder).
 For Dan to check: Addison Heights and the Noonday Creek Trail in HIGH MODE (Embry's corners, the Lyndon landing, Barrett's closures, Ring Road / Mall Boulevard); jumping out over a bumper; a reset in the mall and on the Carroway shortcut; the Kennesaw climb in normal mode (the run-off on the bend's outside; wide runs still leave the road just before it).
 
-## Previous delivery 2: Round 86
+## Previous delivery 3: Round 86
 **Reviewed: Dan raced it in HIGH MODE 2026-10-31 00:06; his notes are Round 87.**
 **Round 86, ROOM FOR JUMPS BETWEEN HIGH BUMPERS, RESETS THAT NEVER SKIP A CHECKPOINT, BREAKABLE TREES AS IN WOODSTOCK RUSH (Dan, 2026-10-30 12:04, after playing
 0.85.0).** Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
@@ -246,35 +280,6 @@ C DONE. Woodstock Rush 1.3's breakable trees for every tree (`TreeTrunks`: its T
 Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-30 18:43. Disk (project folders) 34.4 -> 33.8 GB; Builds 11.3 GB (0.83.0 to 0.86.0's release folders kept).
 Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
 For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
-
-## Previous delivery 3: Round 85
-**Played by Dan 2026-10-30 (HIGH MODE); his notes are Round 86.**
-**Round 85, BUMPERS AND BARRIERS THAT BOUNCE YOU BACK ON COURSE (Dan, 2026-10-30 09:38, after playing Round 84's HIGH MODE).** Item 0, the one-heavy-job rule and the
-end-of-round clean-up apply. Short results. Round 83's road failures still wait (QUEUED).
-Dan: "i WANT it so that in high mode that you bounce of barriers and they keep you straight on course as opposed to having you got hung up on the wall. Actually in
-general I want this for bumpers". Round 84's own check saw it: the bot stalled against a HIGH bumper 6 to 9 times a lap and reset.
-A. HIGH MODE BUMPERS. Hitting a gutter bumper at any angle short of head-on turns you back along the course and keeps your speed (a glancing hit loses little; the
-   harder the angle, the more it costs, but you leave the bumper pointed down the course, never stopped, spun or riding along it). No snagging: smooth, continuous
-   colliders without posts, seams or corners the wheels or body catch; no friction against the vehicle's side; the bumper's push away from it, not up (no climbing,
-   no launch). Planes and AI unaffected (AI still pass through).
-B. THE SAME FOR BARRIERS IN GENERAL (Dan: "in general I want this for bumpers"), in every mode: the race closure barriers and course barriers, guard rails, the
-   Express Lanes' walls and bridge parapets, highway median walls, and the course-edge rails on the trails. A glancing hit slides you along and straightens you
-   to the barrier's line instead of hanging you up; a head-on hit still stops you (normal mode keeps its crashes). Breakable things (fences, signs, gates, mailboxes)
-   stay breakable, and solid scenery (trees, houses) is not part of this. Say which colliders were changed.
-Check: the human-like driver pushed into the edges for a lap of the Kennesaw trails, the Noonday Creek Extension and the Chastain Glen loop in HIGH MODE (stalls
-against a bumper before / after: aim 0), and into the walls along the I-75 Express Lanes and a course's closure barriers in normal mode at 10, 20 and 30 degrees
-(speed kept and heading after each hit, before / after); a recorded clip or picture series of one glancing hit each.
-Build: quick builds only if no world rebuild is needed. PUBLISH through the launcher.
-For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode.
-
-**Status (Claude, 2026-10-30): built (code only on Round 84's scene, exe 10:48), checked in the exe, published 0.85.0 (`game-8500`), not yet driven by Dan.** Evidence `Data/screenshots/round85/` (barrier pictures in `local/round85/`: Chastain Glen). No bug report newer than Round 82's.
-How: `Vehicle/WallGlance.cs` on the players' vehicles (both split-screen players; AI, planes, helicopter unchanged). A hit on a guide wall is turned along it: speed kept 1 - (1 - cos a) x 0.8 (HIGH 0.6), a sideways push off it (never up), heading and travel held on the wall's line 0.18 s, no friction. Normal mode up to 50 degrees; past that, and for the rest of that touch, a crash as before. HIGH up to 82 degrees, and pinned slow against a bumper 0.6 s: turned down the course at 8 m/s.
-Colliders changed (`GuideWalls`): HIGH bumpers (solid fence now down to their buried base, it began 0.3 m up; no bounce, no friction); race closure barriers and pipe-mouth barriers (one box per unbroken run instead of a box per block); the Underground's rails and seals; the Express Lanes' walls; bridge parapets (`BridgeStructure`); map-edge closures. No highway median walls exist. Trail railings stay breakable (Round 64), so not changed.
-A: HIGH laps steering into the edges (`check_lap_high.txt`): stalls against a bumper Kennesaw 6 -> 0, Noonday Creek Extension 9 -> 0, Chastain Glen loop 0 (no before); 119 / 57 / 15 glances; one stuck spot on Noonday 5.9 m from any bumper. Pictures: `85_lap_*_glance_0..2` (against the bumper, then pointed down the course beside it).
-B: normal mode, Drifter Twin, throttle held (`check_wall_before.txt` / `_after.txt`). Express Lanes wall, speed kept 0.6 s after / heading off the wall's line: 10 deg 18 % / 14 -> 110 % / 1; 20 deg 14 % / 28 -> 106 % / 0; 30 deg 21 % / 9 -> 102 % / 1; 70 deg (head on) 35 % -> 53 % (still a hit, not a slide). Closure barrier B5 (Chastain Glen loop), after: 10 deg 114 % / 10; 20 deg 106 % / 4; 30 deg 100 % / 4. Its before is not a clean comparison: aimed 2 m from the barrier's end, the car slid round the end (two attempts at the barrier site; stopped there per the tuning limit). Pictures: `85_Express_Lanes_wall_20deg_*` (after) and `_before_20deg_*`.
-Disk (project folders) 32.9 -> 32.5 GB; Builds 9.9 GB.
-Decisions: the angle limits and speed losses above are first guesses; the players only (AI racers not given it).
-For Dan to check: HIGH MODE on the mountain and the trails, bouncing off the bumpers; scraping the Express Lanes' walls and a race's barriers in normal mode; whether a 50-degree hit should still glance or crash.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
