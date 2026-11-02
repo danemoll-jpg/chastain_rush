@@ -366,7 +366,10 @@ while k < len(loop):   # the bends: the speed a car takes them at about 9 m/s2 s
     else: k += 1
 zones = [z for z in zones if z["s1"] > z["s0"]]; zones.sort(key=lambda z: z["s0"])
 # the run-ups narrower for the AI (the kickers 18 m wide: the AI's line kept 5 m either side of the middle)
-widths = [{"id": f"{j['id']} {j['name']}: the run-up and kicker", "s0": st(jk(j, 20.0)), "s1": st(jk(j, j["lip_s"])), "half": 5.0} for j in (J1, J2, J3)]
+# and through each flight to past its landing deck a line of 1 m either side of the middle: over the lake the racing line's probes find no ground, and
+# the line they made wiggled there, so the AI braked at the lip for bends that are not there (the first race check: AI short at The Corner)
+widths = [{"id": f"{j['id']} {j['name']}: the run-up and kicker", "s0": st(jk(j, 20.0)), "s1": st(jk(j, j["lip_s"] - 30.0)), "half": 5.0} for j in (J1, J2, J3)]
+widths += [{"id": f"{j['id']} {j['name']}: the kicker, the flight and the landing", "s0": st(jk(j, j["lip_s"] - 30.0)), "s1": st(jk(j, j["land_s"][-1] + 30.0)), "half": 1.0} for j in (J1, J2, J3)]
 print(f"{len(zones)} AI zones ({nb} bends)")
 
 # ---------------------------------------------------------------- resets: anywhere a short jump ends up (the lake, the bank under the landing deck, the deck's front) back on
@@ -376,7 +379,9 @@ reset_skip = []
 for j in (J3, J1, J2):
     d = j["dir"]; nl = (-d[1], d[0]); o = j["origin"]
     def W(s, lat, o=o, d=d, nl=nl): return (o[0] + d[0] * s + nl[0] * lat, o[1] + d[1] * s + nl[1] * lat)
-    a0, a1 = j["lip_s"] + 45.0, j["land_s"][0] - 1.0
+    # (from just past the lip where nothing runs under the flight (The Corner: the lake's south-east corner); past the low bench under The Long One's
+    # and The Big One's lips, 13 and 34 m out)
+    a0, a1 = j["lip_s"] + {"J1": 4.0, "J2": 24.0, "J3": 46.0}[j["id"]], j["land_s"][0] - 1.0
     poly = [W(a0, -34.0), W(a1, -34.0), W(a1, 34.0), W(a0, 34.0)]
     reset_skip.append({"id": f"{j['id']} {j['name']}", "s0": st(jk(j, j["lip_s"] - 2.0)), "s1": st(jk(j, j["land_s"][-1])), "to_s": st(jk(j, j["land_s"][-1] + 25.0)),
                        "short_s": st(jk(j, 8.0)), "short_area": flat(poly)})   # (the run-up's head: the whole run-up ahead, as Free Roam's start box)

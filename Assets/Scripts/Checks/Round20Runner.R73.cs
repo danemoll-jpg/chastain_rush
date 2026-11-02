@@ -68,11 +68,17 @@ namespace ChastainRush
         {
             R73Pad(); var cum = Cum(line); float s = 0f, steerCmd = 0f, t = 0f, slowFor = 0f, liftUntil = -1f, airFor = 0f, nextTrace = 0f; int pic = 0; bool airShot = false;
             float wobbleSeed = (float)r73rng.NextDouble() * 100f; var lagged = new Queue<(float t, float steer)>();
+            var lastPos = car.Body.position;
             float near = 0f; { var p0 = car.Body.position; ProjectNear(line, cum, p0, 0f, out _); near = ProjectNear(line, cum, p0, 0f, out _); s = near; }
             while (t < timeout)
             {
                 yield return new WaitForFixedUpdate(); float dt = Time.fixedDeltaTime; t += dt;
-                var p = car.Body.position; s = ProjectNear(line, cum, p, s, out float dev);
+                var p = car.Body.position;
+                // Round 90: put back by a reset (a jump to another place): found again on the line, up to 3 km back (the old s, kept within 60 m, cut
+                // across the plateau toward where it had been)
+                if ((p - lastPos).magnitude > 30f && t > dt * 1.5f) { s = ProjectWindow(line, cum, p, s - 3000f, s + 100f); }
+                lastPos = p;
+                s = ProjectNear(line, cum, p, s, out float dev);
                 float v = car.Body.linearVelocity.magnitude; run.topSpeed = Mathf.Max(run.topSpeed, v);
                 if (s >= nextTrace) { nextTrace = s + 25f; run.trace.Append($" {s:0}:{v:0.0}{(car.GroundedWheels == 0 ? "a" : "")}{(Mathf.Abs(dev) > 3f ? $"d{dev:0}" : "")}"); }
                 if (s >= cum[cum.Length - 1] - 3f) { run.reachedEnd = true; break; }
@@ -106,6 +112,18 @@ namespace ChastainRush
             R73Set(0, 0, 0); run.time = t; run.sEnd = s;
         }
 
+        static float ProjectWindow(List<Vector3> line, float[] cum, Vector3 p, float lo, float hi)
+        {
+            float best = float.MaxValue, bs = Mathf.Max(0f, lo);
+            for (int i = 0; i + 1 < line.Count; i++)
+            {
+                if (cum[i + 1] < lo || cum[i] > hi) continue;
+                Vector3 a = Flat(line[i]), ab = Flat(line[i + 1] - line[i]), q = Flat(p);
+                float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector3.Dot(q - a, ab) / ab.sqrMagnitude); float d = (a + ab * t - q).sqrMagnitude;
+                if (d < best) { best = d; bs = cum[i] + t * (cum[i + 1] - cum[i]); }
+            }
+            return bs;
+        }
         // ---------------------------------------------------------------- dan: Dan's six reports from his own spots
         IEnumerator R73Dan()
         {
