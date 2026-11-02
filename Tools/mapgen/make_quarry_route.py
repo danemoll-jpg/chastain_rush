@@ -451,7 +451,7 @@ for pc in pieces:
             g["points"] = flat(every(P[n2 - 1:], 2)); g["y"] = [round(v, 3) for v in every(Y[n2 - 1:], 2)]; g["blend_left"] = every(bl[n2 - 1:], 2)
             grades.append(g2)
     else:
-        bl = [round(min(20.0, max(5.0, abs(y - 0.5 * (gl + gr)) + 4.0)), 2) for (gl, gr, y) in lat_g]
+        bl = [round(min(32.0, max(6.0, 1.8 * abs(y - 0.5 * (gl + gr)) + 6.0)), 2) for (gl, gr, y) in lat_g]   # (Round 90: banks of about 30 degrees, a car running wide drives back up)
         g = {"id": f"the Viking Quarry race: {pc['name']}", "points": flat(every(P, 2)), "y": [round(v, 3) for v in every(Y, 2)], "half": BENCH_HALF + 1.0, "blend": 6.0,
              "blends": every(bl, 2), "open_ends": True, "legs": pc["name"][0] == "F"}
     grades.append(g)

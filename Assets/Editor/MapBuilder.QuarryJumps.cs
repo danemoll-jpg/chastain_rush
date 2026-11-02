@@ -237,8 +237,7 @@ namespace ChastainRush
             {
                 var q = o + d * s0 + nl * side * w; float gy = Ground(terrain, q.x, q.y);
                 BoxF(mb, MakeFrame(new Vector3(q.x, gy - .5f, q.y), d, 1f), -.5f, .5f, 0f, top - gy + .8f, -.5f, .5f, RampRed);
-                var bc = new GameObject("post").AddComponent<BoxCollider>(); bc.transform.SetParent(col, false);
-                bc.transform.SetPositionAndRotation(new Vector3(q.x, (gy + top) * .5f, q.y), Quaternion.LookRotation(new Vector3(d.x, 0f, d.y))); bc.size = new Vector3(1f, top - gy + 1f, 1f);
+                // (Round 90: no collider: since the landings are 90 m wide earth slopes the posts stand on the slope a wide landing comes down on)
             }
             var c = o + d * s0; var fr = MakeFrame(new Vector3(c.x, top - 3.2f, c.y), -d, 1f);   // its face toward the kicker
             BoxF(mb, fr, -w, w, 3.2f, 6.4f, 0f, .3f, Bunting[2]);
