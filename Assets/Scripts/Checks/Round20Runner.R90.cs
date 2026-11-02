@@ -143,7 +143,7 @@ namespace ChastainRush
                 foreach (var vid in vehicles)
                 {
                     bool high = mode == "high"; R84High(high); yield return Vehicle(vid);
-                    RoadDriver.Difficulty = 1; yield return StartRoute(R90File, "forward", 3, laps);
+                    RoadDriver.Difficulty = 1; yield return StartRoute(R90File, "forward", int.Parse(R90Arg("-r90Ai", "3")), laps);
                     var r = race.Route; if (r == null) { Check("race: the Viking Quarry race loads", false); yield break; }
                     var jumps = R90Jumps();
                     var line = new List<Vector3>(r.LeadIn ?? new Vector3[0]);

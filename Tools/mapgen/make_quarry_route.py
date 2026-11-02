@@ -100,7 +100,7 @@ def heading(a, b): return math.degrees(math.atan2(b[0] - a[0], b[1] - a[1])) % 3
 def on_line(j, s): return (j["origin"][0] + j["dir"][0] * s, j["origin"][1] + j["dir"][1] * s)
 
 
-SETTINGS = {"name": "Viking Quarry", "direction": "forward", "directions": ["forward"], "laps": 2, "traffic": False, "lake_reset_s": 1.5,
+SETTINGS = {"name": "Viking Quarry", "direction": "forward", "directions": ["forward"], "laps": 2, "traffic": False, "lake_reset_s": 1.5, "ai_safe_jumps": True,
             "gate_half_width_m": 22.0, "checkpoint_half_width_m": 16.0, "gate_below_m": 6.0, "gate_above_m": 120.0, "reverse_grid_back_m": 45.0,
             # every ground vehicle that clears The Long One from its run-up (the jumps' design: Tools/mapgen/make_quarry_jumps.py); never the stunt ones
             "vehicles": ["original", "tourer", "roadster", "fastback", "pebble", "skyfin", "moto", "scrambler", "drifter", "atv", "mower"]}

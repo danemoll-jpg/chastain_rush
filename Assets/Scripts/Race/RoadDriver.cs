@@ -231,7 +231,7 @@ namespace Racer
             if(!finished&&!plannedBranch&&!activeBranch)
             {
                 var z=NearZone(s,90f);
-                if(z!=null&&(jumpRolled!=z.id||jumpLap!=Racer.CompletedLaps)){jumpRolled=z.id;jumpLap=Racer.CompletedLaps;jumpKind=Variation.RollJump(true,out jumpSide);jumpZone=jumpKind!=0?z:null;}
+                if(z!=null&&(jumpRolled!=z.id||jumpLap!=Racer.CompletedLaps)){jumpRolled=z.id;jumpLap=Racer.CompletedLaps;jumpKind=Variation.RollJump(true,out jumpSide);if(Race&&Race.RouteData!=null&&Race.RouteData.ai_safe_jumps&&IsJumpZone(z))jumpKind=0;jumpZone=jumpKind!=0?z:null;}   // Chastain Rush, Round 90: a route's lake jumps never mistaken on purpose (ai_safe_jumps: short there is the lake)
                 if(jumpZone!=null&&NearZone(s,90f)!=jumpZone)jumpZone=null;
                 if(jumpZone!=null&&jumpKind==2)desiredLane=trail?Mathf.Clamp(desiredLane+jumpSide*.9f,-passLane-.2f,passLane+.2f):desiredLane+jumpSide*1.2f;
             }
@@ -670,7 +670,9 @@ namespace Racer
             // Chastain Rush, Round 90 (the Viking Quarry race's check: three AI short at The Corner, under its landing deck's front, their station read
             // as the haul road's further on): a car inside a jump's short area (the lake under the flight, the bank under the landing deck) by its
             // position goes past that jump's landing, whatever station it was read at
-            if(skips!=null){var cp=Car.Body.position; foreach(var k in skips) if(k.short_area!=null&&k.short_area.Length>=6&&InArea(k.short_area,cp.x,cp.z)){current=k.to_s;again=false;break;}}
+            RouteResetSkipJson inSkip=null;
+            if(skips!=null){var cp=Car.Body.position; foreach(var k in skips) if(k.short_area!=null&&k.short_area.Length>=6&&InArea(k.short_area,cp.x,cp.z)){current=k.to_s;again=false;inSkip=k;break;}}
+            if(skips!=null&&inSkip==null) foreach(var k in skips) if(current>=k.s0&&current<=k.s1+40f){inSkip=k;break;}
             if(!found)
             {
                 plannedBranch=null; progressBranch=null;
@@ -690,6 +692,14 @@ namespace Racer
             }
             // Chastain Rush, Round 49 check (a mower wedged under the lake trail's footbridge, every spot within 34 m touching the bridge, the rails or
             // the water: 180 tries, never moved): after four tries with no clear spot it goes back on the lap's middle 20 m on anyway (never a trap)
+            // Chastain Rush, Round 90 (the race check: AI fallen off The Corner's lip onto the rim's edge below it, no clear spot past the landing
+            // for 300 tries): at a jump, back to its run-up's head (short_s) instead, the whole run-up ahead
+            if(!found&&inSkip!=null&&inSkip.short_s>0f)
+                foreach(float ds in new[]{0f,6f,12f,20f,30f})
+                {
+                    var p=DriveRoad.At(inSkip.short_s+ds,out var f); f=Vector3.ProjectOnPlane(f,Vector3.up).normalized; p=RaceRoute.Surface(p.x,p.z,p.y);
+                    if(Clear(p,f)){at=p;fwd=f;found=true;break;}
+                }
             if(!found)
             {
                 if(++unplaced<4) return;
