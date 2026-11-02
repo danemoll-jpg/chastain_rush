@@ -406,8 +406,11 @@ for j in (J3, J1, J2):
     def W(s, lat, o=o, d=d, nl=nl): return (o[0] + d[0] * s + nl[0] * lat, o[1] + d[1] * s + nl[1] * lat)
     # (from just past the lip where nothing runs under the flight (The Corner: the lake's south-east corner); past the low bench under The Long One's
     # and The Big One's lips, 13 and 34 m out)
-    a0, a1 = j["lip_s"] + {"J1": 4.0, "J2": 24.0, "J3": 46.0}[j["id"]], j["land_s"][0] - 1.0
-    poly = [W(a0, -34.0), W(a1, -34.0), W(a1, 34.0), W(a0, 34.0)]
+    a0, a1 = j["lip_s"] + {"J1": 4.0, "J2": 24.0, "J3": 70.0}[j["id"]], j["land_s"][0] - 1.0
+    # (Round 90 after-run: a short, wide landing came down on the landing slope's front face 37 m off the line, just outside the area: now the slope's
+    # whole front, 55 m either side, to 4 m into it)
+    a1 = j["land_s"][0] + 4.0
+    poly = [W(a0, -55.0), W(a1, -55.0), W(a1, 55.0), W(a0, 55.0)]
     reset_skip.append({"id": f"{j['id']} {j['name']}", "s0": st(jk(j, j["lip_s"] - 2.0)), "s1": st(jk(j, j["land_s"][-1])), "to_s": st(jk(j, j["land_s"][-1] + 25.0)),
                        "short_s": st(jk(j, 8.0)), "short_area": flat(poly)})   # (the run-up's head: the whole run-up ahead, as Free Roam's start box)
 

@@ -75,7 +75,7 @@ namespace ChastainRush
                 StartBox(terrain, mats, jt, j, lamps);
                 // ---- the start gantry: two steel towers either side of the run-up, a beam with the bunting over it, the countdown lamps on the right tower
                 var mb = new MeshBuilder();
-                var g = new Vector2(j.gantry.at[0], j.gantry.at[1]); float gw = j.half + 3f, gh = 8f;
+                var g = new Vector2(j.gantry.at[0], j.gantry.at[1]); float gw = j.half + 9f, gh = 8f;   // (Round 90: the towers 18 m out (were 12): a racer swinging wide into the run-up clipped one and lost its line)
                 Vector3 G(float lat, float y, float along = 0f) { var q = g + nl * lat + d * along; return new Vector3(q.x, Ground(terrain, q.x, q.y) + y, q.y); }
                 var gantryCols = new GameObject("Gantry towers").transform; gantryCols.SetParent(jt, false);
                 foreach (float side in new[] { -1f, 1f })
