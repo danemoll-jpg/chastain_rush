@@ -9,6 +9,7 @@
  "lake_reset_s": 1.5,
  "ai_safe_jumps": true,
  "ai_flat_stations": true,
+ "high_half_m": 8.0,
  "gate_half_width_m": 22.0,
  "checkpoint_half_width_m": 16.0,
  "gate_below_m": 6.0,

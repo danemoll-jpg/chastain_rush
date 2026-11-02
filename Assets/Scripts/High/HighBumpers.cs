@@ -95,6 +95,9 @@ namespace ChastainRush
             // the lap's paved half width: the map's road under the line, else the lap's own (a trail's, a lot, the mall)
             float LapHalf(float s, Vector3 p)
             {
+                // Round 90 (the Viking Quarry race's check: AI pinned on bumpers 3.7 m from the middle of its 16 m benches, over the old 5 m service roads, and
+                // 2.2 m off the kicker's middle where the AI's line is held narrow): a course with its own paved half width (high_half_m) uses it everywhere
+                var rdH = race.RouteData; if (rdH != null && rdH.high_half_m > 0f) return rdH.high_half_m;
                 float own = main.HalfWidth(s);
                 if (trail || !roads || !roads.Nearest(p, out _, out float d, out float h) || d > h + .5f) return own;
                 return Mathf.Clamp(h, 2.5f, 12f);
