@@ -38,7 +38,7 @@ namespace ChastainRush
         float R90Hold(Vector3 p, float extra = .8f)
         {
             var q = QuarryJumps.Instance; if (!q) return 99f;
-            foreach (var j in q.Jumps) { float al = R90Along(j, p, out float lat); if (Mathf.Abs(lat) < 9f && al > 20f && al < j.lip_s - 4f) return (j.window.lo + j.window.hi) / 2f + extra; }
+            foreach (var j in q.Jumps) { float al = R90Along(j, p, out float lat); if (Mathf.Abs(lat) < 9f && al > 20f && al < j.lip_s - 4f) return -((j.window.lo + j.window.hi) / 2f + extra); }   // (negative: this speed on the run-up, as a player reads the window)
             return 99f;
         }
         string R90Arg(string name, string def) { var a = Environment.GetCommandLineArgs(); int i = Array.IndexOf(a, name); return i >= 0 && i + 1 < a.Length ? a[i + 1] : def; }
@@ -151,7 +151,8 @@ namespace ChastainRush
                     line.Add(r.PointAt(r.GateS, out _)); line.Add(r.PointAt(r.GateS + 30f, out _));
                     var run = new HumanRun(); var log = new List<string>(); int cleared = 0, flights = 0, shortN = 0, lr0 = RaceController.LakeResets;
                     QuarryJumps.Jump cur = null; float airT = 0f, lipV = 0f; bool flying = false;
-                    Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
+                    // (at the real speed: at twice it, at this frame rate, the virtual pad's steering came in coarse steps and the driver weaved up the run-ups)
+                    float ts = float.Parse(R90Arg("-r90TimeScale", "1"), System.Globalization.CultureInfo.InvariantCulture); Time.timeScale = ts; Time.maximumDeltaTime = .5f;
                     float t0 = Time.time;
                     yield return HumanDrive(line, 60f, 2400f, run, () =>
                     {

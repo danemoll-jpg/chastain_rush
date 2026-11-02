@@ -99,7 +99,7 @@ namespace ChastainRush
                 // the speed: the cap, less into the bends it sees coming (late), or the held speed by eye
                 var f0 = At(line, cum, s + 5f) - At(line, cum, s); var f1 = At(line, cum, s + 45f) - At(line, cum, s + 40f);
                 float bend = Vector3.Angle(Flat(f0), Flat(f1)); float target = Mathf.Lerp(cap, 10f, Mathf.Clamp01(bend / 75f));
-                if (speedAt != null) target = Mathf.Min(target, speedAt(s));
+                if (speedAt != null) { float h = speedAt(s); target = h < 0f ? -h : Mathf.Min(target, h); }   // Round 90: a negative held speed is the speed itself (a jump's run-up, by its window)
                 if (t > liftUntil && r73rng.NextDouble() < dt * .04) liftUntil = t + .3f;   // a lift now and then
                 float thr = v < target - .7f ? 1f : v < target + .3f ? .45f : 0f, brk = v > target + 4f ? .8f : 0f;
                 if (t < liftUntil) thr = 0f;
