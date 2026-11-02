@@ -241,6 +241,30 @@ for pc in pieces:
 for pc in pieces:
     if pc["kind"] in ("bench", "gravel"):
         i0, i1 = pc["i0"], pc["i1"]; prof[i0:i1] = gsm(prof[i0:i1], 4.0)
+# Round 90 (the race check's "wall" where the low bench leaves The Big One's catch: the bench's first meters were graded to the ground as it was before
+# the catch cut it, a 10 m step): each new piece meets a jump at the jump's own graded surface, its run-up's head (run_y) or its catch's floor (the bench
+# 0.25 m down), eased into the piece's own profile over 60 m; and a jump's points get that surface too (the overlap of the grades at the joins)
+def jump_surface(j, s_):
+    if s_ <= j["run_s"][-1]: return float(np.interp(s_, j["run_s"], j["run_y"]))
+    return j["bench_y"] - 0.25
+JP = {pc["name"].split(" ")[0]: pc for pc in pieces}
+for pc in pieces:
+    if pc["kind"] != "jump": continue
+    j = JJ[pc["name"].split(" ")[0]]
+    for k in range(pc["i0"], pc["i1"]):
+        s_ = (k - pc["i0"]) * 2.0
+        if s_ <= j["run_s"][-1] or s_ >= catch_end(j) - 40.0: prof[k] = jump_surface(j, s_)
+for a, b in zip(pieces, pieces[1:] + pieces[:1]):
+    if a["kind"] == "jump" and b["kind"] != "jump":       # a piece leaving a jump's catch
+        y0 = prof[a["i1"] - 1]; n = min(30, b["i1"] - b["i0"])
+        for i in range(n): w = 0.5 - 0.5 * math.cos(math.pi * i / n); prof[b["i0"] + i] = y0 * (1 - w) + prof[b["i0"] + i] * w
+    if b["kind"] == "jump" and a["kind"] != "jump":       # a piece into a jump's run-up
+        y1 = prof[b["i0"]]; n = min(70, a["i1"] - a["i0"])
+        for i in range(n): w = 0.5 - 0.5 * math.cos(math.pi * i / n); k = a["i1"] - 1 - i; prof[k] = y1 * (1 - w) + prof[k] * w
+    if a["kind"] != "jump" and b["kind"] != "jump":       # two new pieces: their profiles met in a step (the cutting's head and the gravel's start)
+        k0 = b["i0"]; win = list(range(max(a["i0"], k0 - 120), min(b["i1"], k0 + 120))); sm = gsm([prof[k] for k in win], 12.0)
+        for k, v in zip(win, sm):
+            if abs(k - k0) <= 60: w = 0.5 + 0.5 * math.cos(math.pi * abs(k - k0) / 60.0); prof[k] = v * w + prof[k] * (1 - w)
 # ---------------------------------------------------------------- nothing built on the course: every building's outline at least 6 m off the road's edge
 _bad = []
 for _bi, _b in enumerate(M["buildings"]):
