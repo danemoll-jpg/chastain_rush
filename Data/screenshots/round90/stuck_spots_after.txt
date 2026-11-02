@@ -1,0 +1,20 @@
+Round 90 check, 2026-11-02 04:00, the exe, 1280 x 720, muted.
+
+=== The stuck spots of the earlier run: what is there
+  spot 1 (-2119, -1474), the surface at 197.4 m: Quarry jump J3 The Big One/sc quarry J3 landing deck 0.8 m; Quarry jump J3 The Big One/Quarry J3 landing skirt 0.8 m; the ground (slope 15 deg) 0.8 m
+  spot 2 (-1969, -1398), the surface at 217.7 m: the ground (slope 14 deg) 0.8 m
+  spot 3 (-2016, -1418), the surface at 222.4 m: Quarry jump J2 The Long One/Quarry J2 landing skirt 0.8 m; Quarry jump J2 The Long One/sc quarry J2 landing deck 0.8 m; the ground (slope 13 deg) 0.8 m
+  spot 4 (-1983, -1425), the surface at 224.0 m: the ground (slope 13 deg) 0.8 m; Landing banner posts/post 2.2 m; Quarry jump J2 The Long One/Quarry J2 landing skirt 0.8 m; Quarry jump J2 The Long One/sc quarry J2 landing deck 0.8 m
+  spot 5 (-1980, -1427), the surface at 224.4 m: the ground (slope 13 deg) 0.8 m; Landing banner posts/post 3.1 m
+  spot 6 (-1789, -1395), the surface at 224.3 m: Quarry jump J1 The Corner/sc quarry J1 landing deck 0.8 m; Quarry jump J1 The Corner/Quarry J1 landing skirt 0.8 m; the ground (slope 15 deg) 0.8 m
+  spot 7 (-1786, -1404), the surface at 226.7 m: Quarry jump J1 The Corner/sc quarry J1 landing deck 0.8 m; Quarry jump J1 The Corner/Quarry J1 landing skirt 0.8 m; Landing banner posts/post 1.2 m; the ground (slope 13 deg) 0.8 m
+  spot 8 (-1835, -1193), the surface at 231.1 m: the ground (slope 38 deg) 0.8 m
+  spot 9 (-1859, -1179), the surface at 236.2 m: the ground (slope 4 deg) 0.8 m
+  spot 10 (-1872, -1169), the surface at 237.7 m: the ground (slope 4 deg) 0.8 m
+  spot 11 (-2083, -1087), the surface at 237.5 m: the ground (slope 36 deg) 0.8 m
+  spot 12 (-2346, -1147), the surface at 278.3 m: the ground (slope 8 deg) 0.8 m
+  spot 13 (-2752, -1591), the surface at 177.1 m: the ground (slope 2 deg) 0.8 m
+  spot 14 (-1618, -1948), the surface at 307.0 m: the ground (slope 0 deg) 0.8 m
+  spot 15 (-2014, -1757), the surface at 318.7 m: Conveyor gallery solid/Quarry berm conveyor 3.4 m; the ground (slope 0 deg) 0.8 m
+
+0 of 0 checks passed.
