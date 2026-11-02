@@ -440,6 +440,14 @@ for pc in pieces:
             bl = [4.0 if ks[i] >= kc else b for i, b in enumerate(bl)]
         g = {"id": f"the Viking Quarry race: {pc['name']}", "points": flat(every(P, 2)), "y": [round(v, 3) for v in every(Y, 2)], "half": BENCH_HALF + 1.0, "blend": 6.0,
              "blend_left": every(bl, 2), "blend_r": 4.0, "open_ends": True}
+        if pc["name"][0] == "S":
+            # (the race check: a car running wide out of the low bench's first bend, after The Big One's landing, met a cut face 20 m tall and stopped
+            # dead; from the catch to the pit floor's west end (x -2450) the bend's outside is a bank, 18 m out, a car runs up it and back)
+            kc2 = k_of((-2450.0, -1296.0), pc); n2 = next((i for i, k in enumerate(ks) if k >= kc2), len(ks)) // 2 * 2 + 1
+            g2 = dict(g); g2["id"] += " (the pit floor)"; g2["points"] = flat(every(P[:n2], 2)); g2["y"] = [round(v, 3) for v in every(Y[:n2], 2)]
+            g2["blend_left"] = every(bl[:n2], 2); g2["blend_r"] = 18.0
+            g["points"] = flat(every(P[n2 - 1:], 2)); g["y"] = [round(v, 3) for v in every(Y[n2 - 1:], 2)]; g["blend_left"] = every(bl[n2 - 1:], 2)
+            grades.append(g2)
     else:
         bl = [round(min(20.0, max(5.0, abs(y - 0.5 * (gl + gr)) + 4.0)), 2) for (gl, gr, y) in lat_g]
         g = {"id": f"the Viking Quarry race: {pc['name']}", "points": flat(every(P, 2)), "y": [round(v, 3) for v in every(Y, 2)], "half": BENCH_HALF + 1.0, "blend": 6.0,
