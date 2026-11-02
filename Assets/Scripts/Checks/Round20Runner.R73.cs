@@ -89,7 +89,9 @@ namespace ChastainRush
                 airFor = 0f;
                 // where it looks: ahead along the line, more ahead the faster, wandering a little either side (a person's line)
                 float wander = (Mathf.PerlinNoise(wobbleSeed, t * .25f) - .5f) * 3.0f;
-                var a = At(line, cum, s + 7f + .55f * v); var a2 = At(line, cum, s + 8f + .55f * v);
+                // Round 90: on a jump's run-up (a held window speed, negative) a player lines up and holds straight: the aim far ahead, no wandering
+                float held = speedAt != null ? speedAt(s) : 99f; float look = held < 0f ? 80f : 7f + .55f * v; if (held < 0f) wander = 0f;
+                var a = At(line, cum, s + look); var a2 = At(line, cum, s + look + 1f);
                 var side = Vector3.Cross(Vector3.up, Flat(a2 - a).normalized); var aim = a + side * wander;
                 float ang = Vector3.SignedAngle(Flat(car.transform.forward), Flat(aim - p), Vector3.up);
                 // the reaction lag: what it steers now is what it wanted 0.15 s ago
@@ -99,7 +101,7 @@ namespace ChastainRush
                 // the speed: the cap, less into the bends it sees coming (late), or the held speed by eye
                 var f0 = At(line, cum, s + 5f) - At(line, cum, s); var f1 = At(line, cum, s + 45f) - At(line, cum, s + 40f);
                 float bend = Vector3.Angle(Flat(f0), Flat(f1)); float target = Mathf.Lerp(cap, 10f, Mathf.Clamp01(bend / 75f));
-                if (speedAt != null) { float h = speedAt(s); target = h < 0f ? -h : Mathf.Min(target, h); }   // Round 90: a negative held speed is the speed itself (a jump's run-up, by its window)
+                if (speedAt != null) { float h = held; target = h < 0f ? -h : Mathf.Min(target, h); }   // Round 90: a negative held speed is the speed itself (a jump's run-up, by its window)
                 if (t > liftUntil && r73rng.NextDouble() < dt * .04) liftUntil = t + .3f;   // a lift now and then
                 float thr = v < target - .7f ? 1f : v < target + .3f ? .45f : 0f, brk = v > target + 4f ? .8f : 0f;
                 if (t < liftUntil) thr = 0f;

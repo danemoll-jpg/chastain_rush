@@ -20,6 +20,9 @@ namespace Racer
             return halfWidth;
         }
         float[] distance;
+        // Chastain Rush, Round 90 (the Viking Quarry race: over each lake jump the line runs down to the water and up the far bank, 200 m of height):
+        // stations measured flat, as the route's own (RaceRoute's), so its held zones and jumps' stretches are where the AI is
+        public bool flatStations;
         public float Length { get; private set; }
 
         public void Initialize()
@@ -28,7 +31,7 @@ namespace Racer
                 return;
             distance = new float[points.Length + 1];
             for (int i = 0; i < points.Length-(openHighway?1:0); i++)
-                distance[i + 1] = distance[i] + Vector3.Distance(points[i], points[(i + 1) % points.Length]);
+                distance[i + 1] = distance[i] + (flatStations ? Vector2.Distance(new Vector2(points[i].x, points[i].z), new Vector2(points[(i + 1) % points.Length].x, points[(i + 1) % points.Length].z)) : Vector3.Distance(points[i], points[(i + 1) % points.Length]));
             Length = distance[points.Length-(openHighway?1:0)];
             cellStart = null; // 0.82: the Project grid is rebuilt with the stations
         }

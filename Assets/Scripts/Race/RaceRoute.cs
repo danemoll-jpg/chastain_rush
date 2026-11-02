@@ -102,7 +102,8 @@ namespace ChastainRush
         public RouteSealJson[] seals;
         public RouteRailJson[] rails;
         public RouteSwitchGateJson[] switch_gates;
-        public bool ai_safe_jumps;   // Round 90: no jump mistakes (short, off line) at its jumps' zones (the AI's run-ups): short there is the lake
+        public bool ai_safe_jumps;
+        public bool ai_flat_stations;   // Round 90: the AI's road measured flat (RaceRoad.flatStations), as the route's stations   // Round 90: no jump mistakes (short, off line) at its jumps' zones (the AI's run-ups): short there is the lake
         public float lake_reset_s;   // Round 90: a player in the water inside a reset_skip short_area this long is reset (0: off)
         public float miss_penalty_s;   // Round 90: seconds per missed checkpoint (0: RaceController.MissPenaltySeconds); the Viking Quarry race 30
         public RouteResetSkipJson[] reset_skip;   // Round 33 (the Ridge leap): a reset between s0 and s1 (forward) puts the vehicle at to_s, past the landing
