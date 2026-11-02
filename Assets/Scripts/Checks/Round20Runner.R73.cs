@@ -59,6 +59,7 @@ namespace ChastainRush
         static float[] Cum(List<Vector3> l) { var c = new float[l.Count]; for (int i = 1; i < l.Count; i++) c[i] = c[i - 1] + Flat(l[i] - l[i - 1]).magnitude; return c; }
 
         // ---------------------------------------------------------------- the human-like driver
+        public static Func<Vector3, IEnumerator> StuckProbe;   // Round 90: what a check does at a stuck moment before the reset (a picture, what the car touches)
         public sealed class HumanRun { public float time, maxAir, airNow, topSpeed; public int resets, stuck; public bool reachedEnd; public string note = ""; public List<string> pics = new List<string>(); public float sEnd; public StringBuilder trace = new StringBuilder(); }
         // drives 'line' from where the vehicle is to its end (or until 'stop'), at up to 'cap' m/s (a human: a little late on the stick, a wandering
         // line, late on the brakes); 'speedAt' (optional) the speed it holds at a station (by eye: the HUD's speed, a lag of 0.35 s); 'pics' stations
@@ -108,7 +109,7 @@ namespace ChastainRush
                 R73Set(steerCmd, thr, brk);
                 // stuck: barely moving with the throttle on for 4 s: Y (the reset), as a player would
                 if (v < 1.2f && thr > .5f) slowFor += dt; else slowFor = 0f;
-                if (slowFor > 4f && pressYWhenStuck) { run.stuck++; run.note += $" stuck at ({p.x:0}, {p.z:0}) s {s:0};"; yield return R73Reset(); run.resets++; slowFor = 0f; }
+                if (slowFor > 4f && pressYWhenStuck) { run.stuck++; run.note += $" stuck at ({p.x:0}, {p.z:0}) s {s:0};"; if (StuckProbe != null) yield return StuckProbe(p); yield return R73Reset(); run.resets++; slowFor = 0f; }
                 while (pics != null && pic < pics.Count && s >= pics[pic].s) { yield return Capture(pics[pic].name); run.pics.Add(pics[pic].name); pic++; }
             }
             R73Set(0, 0, 0); run.time = t; run.sEnd = s;

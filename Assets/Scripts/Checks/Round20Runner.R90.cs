@@ -131,9 +131,55 @@ namespace ChastainRush
             race.EndRace();
         }
 
+        // ---------------------------------------------------------------- what is at a place: every collider within reach, the ground's slope, a picture
+        string R90Touching(Vector3 p, float reach)
+        {
+            var parts = new List<string>();
+            foreach (var c in Physics.OverlapSphere(p + Vector3.up * .8f, reach, ~0, QueryTriggerInteraction.Ignore))
+            {
+                if (car && c.attachedRigidbody == car.Body) continue;
+                if (c.attachedRigidbody != null) { parts.Add("a vehicle"); continue; }
+                var cp = c.ClosestPoint(p + Vector3.up * .8f); string where = $"{(cp - p).magnitude:0.0} m";
+                if (c is TerrainCollider)
+                {
+                    if (Physics.Raycast(new Vector3(cp.x, cp.y + 3f, cp.z), Vector3.down, out var h, 8f, ~0, QueryTriggerInteraction.Ignore) && h.collider == c)
+                        parts.Add($"the ground (slope {Vector3.Angle(h.normal, Vector3.up):0} deg) {where}");
+                    else parts.Add($"the ground {where}");
+                }
+                else parts.Add($"{(c.transform.parent ? c.transform.parent.name + "/" : "")}{c.name} {where}");
+            }
+            return parts.Count == 0 ? "nothing within reach (in the air or on open ground)" : string.Join("; ", parts.Distinct().Take(10));
+        }
+        int r90Stuck;
+        IEnumerator R90StuckProbe(Vector3 p)
+        {
+            r90Stuck++; string name = $"90_stuck_{r90Stuck:00}";
+            float tilt = car ? Vector3.Angle(car.transform.up, Vector3.up) : 0f; int wheels = car ? car.GroundedWheels : 0;
+            report.AppendLine($"      STUCK {r90Stuck} at ({p.x:0.0}, {p.y:0.0}, {p.z:0.0}): tilt {tilt:0} deg, {wheels} wheels down; touching: {R90Touching(p, 2.6f)}; picture {name}"); Flush();
+            yield return Capture(name);
+        }
+        // the 'before' spots (-r90Spots "x,z;x,z"): what stands there, and a picture from 16 m back and 9 m up
+        IEnumerator R90Spots()
+        {
+            var arg = R90Arg("-r90Spots", ""); if (arg == "") yield break;
+            report.AppendLine(); report.AppendLine("=== The stuck spots of the earlier run: what is there");
+            yield return Clock(13f); if (race.State != RaceController.Stage.Free) race.EndRace();
+            int k = 0;
+            foreach (var sp in arg.Split(';'))
+            {
+                var xz = sp.Split(','); if (xz.Length < 2) continue; k++;
+                float x = float.Parse(xz[0], System.Globalization.CultureInfo.InvariantCulture), z = float.Parse(xz[1], System.Globalization.CultureInfo.InvariantCulture);
+                var g = RaceRoute.Surface(x, z);
+                report.AppendLine($"  spot {k} ({x:0}, {z:0}), the surface at {g.y:0.0} m: {R90Touching(g, 4f)}"); Flush();
+                yield return Still($"90_before_spot{k:00}", g + new Vector3(-12f, 9f, -12f), g + Vector3.up * .5f, 55f);
+                yield return Still($"90_before_spot{k:00}_b", g + new Vector3(14f, 7f, 10f), g + Vector3.up * .5f, 55f);
+            }
+        }
+
         // ---------------------------------------------------------------- the race
         IEnumerator R90Races()
         {
+            StuckProbe = R90StuckProbe;
             var vehicles = R90Arg("-r90Vehicles", "moto,original,skyfin").Split(','); int laps = int.Parse(R90Arg("-r90Laps", "3"));
             var modes = R90Arg("-r90Modes", "normal,high").Split(',');
             report.AppendLine(); report.AppendLine($"=== The race: {laps} laps against 3 AI ({string.Join(", ", vehicles.Select(R90Nm))}), Normal difficulty, the player driven by the human-like driver in each, {string.Join(" and ", modes)}");
@@ -188,7 +234,8 @@ namespace ChastainRush
                     Check($"race {tag}: every AI finishes", race.Entrants.Where(x => !x.IsPlayer).All(x => x.Finished && !x.Estimated), string.Join(", ", race.Entrants.Where(x => !x.IsPlayer && (!x.Finished || x.Estimated)).Select(x => x.Name)));
                     race.EndRace(); R84High(false); Flush(); yield return new WaitForSecondsRealtime(.5f);
                 }
-            RaceController.AiVehiclesOverride = null;
+            RaceController.AiVehiclesOverride = null; StuckProbe = null;
+            report.AppendLine($"  stuck moments in all: {r90Stuck}");
         }
     }
 }

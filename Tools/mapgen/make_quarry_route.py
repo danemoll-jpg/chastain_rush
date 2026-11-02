@@ -474,7 +474,8 @@ print(f"{len(grades)} grades, {len(berms)} berm runs ({sum(len(b['points']) // 2
 # The Big One cannot drive across to the haul bench behind The Long One, and so on)
 dividers = [{"id": "between The Big One and The Long One", "points": flat(resample([(-2048.0, -1432.0), (-2046.0, -1300.0), (-2046.0, -1200.0), (-2090.0, -1168.0), (-2170.0, -1165.0),
                                                                                      (-2270.0, -1190.0), (-2370.0, -1236.0), (-2440.0, -1262.0)], 4.0))},
-            {"id": "between The Long One and The Corner", "points": flat(resample([(-1972.0, -1452.0), (-1972.0, -1300.0), (-1974.0, -1160.0), (-1980.0, -1060.0)], 4.0))}]
+            # (Round 90: east of The Long One's landing slope (45 m either side of its line), then in to the north wall clear of the haul road's hairpin)
+            {"id": "between The Long One and The Corner", "points": flat(resample([(-1950.0, -1452.0), (-1950.0, -1250.0), (-1985.0, -1150.0), (-1985.0, -1060.0)], 4.0))}]
 for dv in dividers:
     dp = pts(dv["points"]); print(f"divider {dv['id']}: {cum(dp)[-1]:.0f} m, nearest the course {min(course_gap(q) for q in dp):.1f} m")
 track = {"note": "Round 90: the Viking Quarry race's world pieces, from Tools/mapgen/make_quarry_route.py (MapBuilder.QuarryRace.cs). Coordinates are map meters (= Unity x, z).",

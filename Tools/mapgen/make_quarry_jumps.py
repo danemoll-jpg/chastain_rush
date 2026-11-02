@@ -61,6 +61,11 @@ CORR = 0.79   # Round 73: the exe through the game's own input (the check's huma
 # 20); the profiles (and so every flight and speed window) unchanged
 DECK_HALF = 9.0            # the kicker's deck: 18 m wide
 LAND_HALF = 15.0           # the landing deck: 30 m wide
+# Round 90 (Dan, watching the race check: the car "perched on the edge of a grey stepped structure by a landing deck"; every reset of the check was a car
+# landed 20 to 85 m wide of a deck, on the bank face or the deck's side beside it): each landing is a wide earth landing slope at the deck's own angle,
+# APRON_HALF either side of the line, filled out over the bank face as far as the deck's front, the steel deck lying in its middle; the catch past it as
+# wide. A car landing wide comes down on the same slope and rolls on into the run-out.
+APRON_HALF = 45.0
 LAND_L = 38.0              # the landing deck's length: from the far bench's edge (its top at the bench's height) down into a shallow cut in the bench
 LAND_REL = 38.0            # the landing deck lies this much shallower than the design flight comes down (about 10 degrees: a cut of 6 to 7 m that
                            # climbs back within 80 m, clear of the haul road beyond The Long One; the catch zone sets a vehicle on its wheels)
@@ -192,12 +197,12 @@ def design(J):
     def proud(s):
         dy = float(np.interp(s, land_s, land_y)); return max(raw(s, lat) - dy for lat in np.arange(-(LAND_HALF + 4.0), LAND_HALF + 4.01, 2.0))
     cut_from = next((float(s) for s in np.arange(land_s[0], edge + 0.1, 1.0) if proud(s) > -2.0), edge) - 4.0
-    ro_s = list(np.arange(max(land_s[0], min(edge, cut_from)), land_s[-1] + back_L + 30.0, 2.0))   # (from there: over the face the deck stands on its trestle)
+    ro_s = list(np.arange(land_s[0], land_s[-1] + back_L + 30.0, 2.0))   # (Round 90: from the deck's front: the landing slope filled out under it)
     def ro_at(s):
-        if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.25
+        if s <= land_s[-1]: return float(np.interp(s, land_s, land_y)) - 0.15
         y = land_y[-1] - 0.25 + RISE_BACK * (s - land_s[-1]); return min(y, max(bench, raw(s))) if s > land_s[-1] + back_L else y
     ro_y = [ro_at(s) for s in ro_s]
-    runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": LAND_HALF + 3.0, "blend": 16.0, "open_ends": True}   # (Round 74: 3 m clear each side, gentler banks; were 1.5, 12)
+    runout = {"id": f"quarry jump {J['id']} landing cut and catch", "points": flat([P(s) for s in ro_s]), "y": [round(v, 3) for v in ro_y], "half": APRON_HALF, "blend": 22.0, "open_ends": True}   # (Round 90: APRON_HALF either side (was 18), its banks 22 m)
     under = None
     stands, pads = [], []
     # Round 73 (C2): each stand at the first of its candidate spots clear of every road (24 m from a road's middle) and the jump's own corridor
@@ -215,7 +220,7 @@ def design(J):
         return True
     spots = []
     for side, sgn in ((1, 1.0), (2, -1.0)):
-        cands = [P(land_s[-1] + a, sgn * (LAND_HALF + l)) for a in (20.0, 0.0, -20.0, 45.0) for l in (34.0, 48.0, 62.0)]
+        cands = [P(land_s[-1] + a, sgn * (APRON_HALF + l)) for a in (20.0, 0.0, -20.0, 45.0) for l in (14.0, 26.0, 38.0)]   # (Round 90: off the landing slope)
         spots.append((next((c for c in cands if road_clear(c)), None), (J["heading"] + 90.0 * sgn) % 360))
     kc = [P(s_lip - a, l) for a in (60.0, 90.0, 120.0) for l in (32.0, -32.0, 45.0, -45.0)]
     k = next((c for c in kc if road_clear(c)), None)
@@ -226,7 +231,7 @@ def design(J):
         pads.append({"id": f"quarry jump {J['id']} bleachers' pad {len(pads)}", "points": flat([at, (at[0] + 0.01, at[1])]), "y": [round(gy, 3)] * 2, "half": 16.0, "blend": 8.0})
     clear = [{"id": f"quarry jump {J['id']}", "points": flat([P(0.0), P(ro_s[-1])]), "half": 18.0}]
     for st in stands: clear.append({"id": f"quarry jump {J['id']} bleachers", "points": flat([st["at"], (st["at"][0] + 0.01, st["at"][1])]), "half": 18.0})
-    zone_l = [P(s, LAND_HALF + 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]; zone_r = [P(s, -LAND_HALF - 3) for s in (land_s[0] - 2, land_s[-1] + back_L)]
+    zone_l = [P(s, APRON_HALF) for s in (land_s[0] - 2, land_s[-1] + back_L)]; zone_r = [P(s, -APRON_HALF) for s in (land_s[0] - 2, land_s[-1] + back_L)]   # (Round 90: the whole landing slope)
     zones = [{"id": f"quarry jump {J['id']} landing", "poly": flat(zone_l + zone_r[::-1]), "catch": True}]
     grades = lane_grades + [pad, runout] + pads
     # (the speed window shown on the HUD: the exe's flights carry a little less far than this ballistic model: the Street Classic off The Corner at
@@ -284,8 +289,8 @@ out["access"] = {"drive": flat(dense), "half": 3.5,
                  # Round 74 (E, Dan's BUG-004: on The Big One's landing deck from the north, "ramp is blocked. I don't understand where these ramps lead
                  # to"): a LANDING board beside each landing deck's run-out, facing anyone arriving from the bench's side (the north): the deck is a landing,
                  # its run-up is across the quarry
-                 "landings": [dict(jump=j["id"], at=flat([(j["origin"][0] + j["dir"][0] * (j["land_s"][-1] + 12.0) - j["dir"][1] * (LAND_HALF + 7.0),
-                                                           j["origin"][1] + j["dir"][1] * (j["land_s"][-1] + 12.0) + j["dir"][0] * (LAND_HALF + 7.0))]),
+                 "landings": [dict(jump=j["id"], at=flat([(j["origin"][0] + j["dir"][0] * (j["land_s"][-1] + 12.0) - j["dir"][1] * (APRON_HALF + 7.0),
+                                                           j["origin"][1] + j["dir"][1] * (j["land_s"][-1] + 12.0) + j["dir"][0] * (APRON_HALF + 7.0))]),
                                    facing=math.degrees(math.atan2(j["dir"][0], j["dir"][1])) % 360) for j in out["jumps"]]}
 print(f"the quarry jumps drive: {sum(math.dist(a, b) for a, b in zip(dense, dense[1:])):.0f} m, from ({WEST_END[0]:.0f}, {WEST_END[1]:.0f}) behind the three start boxes to ({EAST_END[0]:.0f}, {EAST_END[1]:.0f})")
 json.dump(out, open(OUT, "w", encoding="utf-8"), indent=1)

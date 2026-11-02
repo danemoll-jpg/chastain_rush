@@ -243,6 +243,7 @@ namespace ChastainRush
             // Round 90 (Round20Runner.R90.cs)
             if (tag == "round90")
             {
+                if (Do("q90spots")) yield return Guard(R90Spots());
                 if (Do("q90pics")) yield return Guard(R90Pics());
                 if (Do("q90short")) yield return Guard(R90Short());
                 if (Do("q90race")) yield return Guard(R90Races());
