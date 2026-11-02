@@ -152,7 +152,7 @@ s_ctrl += cut_pts; s_y_ctrl += [None] * len(cut_pts)
 S_line = curve(s_ctrl, 1)
 
 # ---------------------------------------------------------------- D, the cutting's top round to The Corner's run-up
-d_ctrl = [(CUT_X, CUT_END_Z + 30.0), (CUT_X, CUT_END_Z), (CUT_X + 2.0, -2032.0), (-1765.0, -2062.0), (-1715.0, -2072.0), (-1668.0, -2052.0), on_line(J1, -95.0), on_line(J1, -50.0), on_line(J1, 0.0)]
+d_ctrl = [(CUT_X, CUT_END_Z + 30.0), (CUT_X, CUT_END_Z), (CUT_X + 4.0, -2020.0), (-1762.0, -2036.0), (-1720.0, -2040.0), (-1680.0, -2030.0), on_line(J1, -95.0), on_line(J1, -50.0), on_line(J1, 0.0)]   # (the U's foot kept 30 m north of G)
 D_line = curve(d_ctrl, 1)
 
 # ---------------------------------------------------------------- J1 The Corner, then F up the haul road
@@ -175,8 +175,9 @@ east = roads[30655025]
 k_top = next(i for i, q in enumerate(east) if abs(q[0] + 1612) < 1 and abs(q[1] + 1355) < 1)
 k_corner = next(i for i, q in enumerate(east) if abs(q[0] + 1610) < 1 and abs(q[1] + 1504) < 1)
 er = list(reversed(east[k_corner:k_top + 1]))   # (-1612, -1355) south to (-1610, -1504)
-g_ctrl = [(-1612.0, -1450.0), (-1610.0, -1504.0), (-1596.0, -1560.0), (-1578.0, -1640.0), (-1572.0, -1760.0), (-1572.0, -1900.0), (-1580.0, -2040.0), (-1620.0, -2100.0), (-1700.0, -2116.0),
-          (-1850.0, -2118.0), (-1940.0, -2112.0), (-1990.0, -2080.0), on_line(J2, -40.0), on_line(J2, 0.0)]
+# (Round 90 check 2: the first line ran through the airport's buildings south of the start boxes (OSM 8444, 7464): now north of them, 20 m clear)
+g_ctrl = [(-1612.0, -1450.0), (-1610.0, -1504.0), (-1596.0, -1560.0), (-1578.0, -1640.0), (-1572.0, -1760.0), (-1572.0, -1900.0), (-1576.0, -2010.0), (-1598.0, -2055.0),
+          (-1660.0, -2072.0), (-1800.0, -2074.0), (-1920.0, -2074.0), (-1975.0, -2064.0), on_line(J2, -40.0), on_line(J2, 0.0)]
 G_line = curve(g_ctrl, 1)
 add("G round The Corner's start", G_line, "gravel")
 add("J2 The Long One", jline(J2, 0.0, catch_end(J2)), "jump")
@@ -190,7 +191,8 @@ add("X the high haul bench", X_line, "bench")
 nw = roads[9122211]
 nw = [q for q in nw if q[0] <= -2680.0]
 t_ctrl = [X_line[-1]] + nw + [(-2890.0, -1440.0), (-2905.0, -1530.0), (-2905.0, -1640.0), (-2885.0, -1720.0), (-2820.0, -1800.0), (-2700.0, -1900.0),
-                              (-2580.0, -1990.0), (-2460.0, -2075.0), (-2380.0, -2112.0), (-2330.0, -2118.0), on_line(J3, -60.0), on_line(J3, -30.0), on_line(J3, 0.0)]
+                              (-2650.0, -1990.0), (-2625.0, -2080.0), (-2580.0, -2118.0), (-2450.0, -2121.0), (-2360.0, -2126.0), on_line(J3, -80.0), on_line(J3, -40.0), on_line(J3, 0.0)]
+# (Round 90 check 2: round the west and south sides of the airport's warehouse (OSM building 6599), not through it)
 T_line = curve(t_ctrl, 0)
 add("T the west rim and the plateau", T_line, "gravel")
 # ---------------------------------------------------------------- the loop: every piece end to end (each starts where the last one ends)
@@ -239,6 +241,15 @@ for pc in pieces:
 for pc in pieces:
     if pc["kind"] in ("bench", "gravel"):
         i0, i1 = pc["i0"], pc["i1"]; prof[i0:i1] = gsm(prof[i0:i1], 4.0)
+# ---------------------------------------------------------------- nothing built on the course: every building's outline at least 6 m off the road's edge
+_bad = []
+for _bi, _b in enumerate(M["buildings"]):
+    _f = pts(_b["footprint"])
+    if not any(-3000 < x < -1450 and -2300 < z < -950 for x, z in _f): continue
+    _ring = resample(_f + _f[:1], 3.0)
+    _d = min(math.dist(q, loop[k]) for q in _ring for k in range(0, len(loop), 2) if abs(q[0] - loop[k][0]) < 60 and abs(q[1] - loop[k][1]) < 60) if any(abs(q[0] - loop[k][0]) < 60 and abs(q[1] - loop[k][1]) < 60 for q in _ring for k in range(0, len(loop), 8)) else 1e9
+    if _d < BENCH_HALF + 6.0: _bad.append((_bi, round(_d - BENCH_HALF, 1)))
+print("buildings within 6 m of the road's edge:", _bad if _bad else "none")
 # ---------------------------------------------------------------- the report: grades, bends, cut and fill
 def turn_r(k, w=4):
     a, b, c = loop[(k - w) % len(loop)], loop[k], loop[(k + w) % len(loop)]
