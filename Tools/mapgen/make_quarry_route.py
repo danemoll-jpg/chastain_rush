@@ -130,8 +130,8 @@ def contour_z(x, h, z0, z1, step=0.5):
 S_TOE_Y, S_TOP_Y, S_TOP_X = 177.0, 266.0, -1860.0   # the bench at the quarry's south-west corner, and where it turns into the cutting
 s_ctrl = [on_line(J3, catch_end(J3) - 20.0), on_line(J3, catch_end(J3)),
           (-2092.0, -1262.0), (-2122.0, -1243.0), (-2165.0, -1252.0), (-2205.0, -1285.0), (-2300.0, -1300.0), (-2420.0, -1296.0), (-2500.0, -1300.0),
-          (-2565.0, -1340.0), (-2620.0, -1395.0), (-2690.0, -1458.0), (-2745.0, -1520.0), (-2765.0, -1562.0), (-2748.0, -1586.0), (-2705.0, -1594.0)]
-s_y_ctrl = [None, 206.6, 207.0, 208.0, 210.0, 214.0, 222.0, 222.0, 220.0, 214.0, 205.0, 194.0, 184.0, 179.0, S_TOE_Y, S_TOE_Y]
+          (-2565.0, -1340.0), (-2620.0, -1395.0), (-2690.0, -1458.0), (-2742.0, -1516.0), (-2763.0, -1556.0), (-2754.0, -1583.0), (-2726.0, -1596.0), (-2690.0, -1603.0)]   # (Round 90: the south-west corner's bend rounder)
+s_y_ctrl = [None, 206.6, 207.0, 208.0, 210.0, 214.0, 222.0, 222.0, 220.0, 214.0, 205.0, 194.0, 184.0, 179.0, S_TOE_Y, S_TOE_Y, S_TOE_Y]
 # along the south cliff: every 40 m of x from the south-west corner to the cutting, the bench on the cliff's face at its height (rising evenly)
 wall_x = list(np.arange(-2660.0, S_TOP_X - 0.1, 40.0)) + [S_TOP_X]
 for x in wall_x:
@@ -329,6 +329,7 @@ print("checkpoints: " + ", ".join(f"CP{c['id']} {c['s']:.0f} {c['label']}" for c
 # ---------------------------------------------------------------- closures: every road (and Free Roam's quarry jumps drive) that meets the course is barred where it
 # leaves it, at the first place its whole barrier stands CLOSURE_CLEAR m off the course
 CLOSURE_CLEAR = 6.0
+DRIVE_CLEAR = 24.0   # (Round 90: the quarry jumps drive's barriers, by the run-ups' heads, 32 m off the course's middle: a car swinging wide into a run-up never meets one)
 dense = resample(loop + [loop[0]], 2.0)
 cell = {}
 for i, q in enumerate(dense): cell.setdefault((int(q[0] // 20), int(q[1] // 20)), []).append(i)
@@ -353,7 +354,7 @@ for oid, name, width, wp in ways:
             k = j
             while 0 <= k < len(p):   # walk on along the road until the barrier's whole width is clear of the course
                 q = p[k]; t_ = unit((p[min(k + 1, len(p) - 1)][0] - p[max(k - 1, 0)][0], p[min(k + 1, len(p) - 1)][1] - p[max(k - 1, 0)][1])); ac = (-t_[1], t_[0])
-                if all(course_gap((q[0] + ac[0] * h * f, q[1] + ac[1] * h * f)) >= BENCH_HALF + CLOSURE_CLEAR for f in (-1, -.5, 0, .5, 1)): break
+                if all(course_gap((q[0] + ac[0] * h * f, q[1] + ac[1] * h * f)) >= BENCH_HALF + (DRIVE_CLEAR if oid == 0 else CLOSURE_CLEAR) for f in (-1, -.5, 0, .5, 1)): break
                 k += step
             if not (0 <= k < len(p)): continue
             q = p[k]; t_ = unit((p[min(k + 1, len(p) - 1)][0] - p[max(k - 1, 0)][0], p[min(k + 1, len(p) - 1)][1] - p[max(k - 1, 0)][1]))
@@ -420,6 +421,7 @@ for oid, name, width, wp in ways:
         for q in resample(wp, 3.0):
             if course_gap(q) > BENCH_HALF + 3.0: shut_cells.setdefault((int(q[0] // 20), int(q[1] // 20)), []).append(q)   # (the parts off the course)
 heads = [on_line(j, 0.0) for j in (J1, J2, J3)]
+lands = [on_line(j, s_) for j in (J1, J2, J3) for s_ in np.arange(j["land_s"][0], catch_end(j) + 0.1, 15.0)]   # (along each landing and catch, its middle; 60 m reaches past its 45 m slope)
 def every(lst, n): return lst[::n] + ([lst[-1]] if (len(lst) - 1) % n else [])
 for pc in pieces:
     if pc["kind"] == "jump": continue
@@ -439,7 +441,7 @@ for pc in pieces:
             kc = k_of((CUT_X, -1662.0), pc)
             bl = [4.0 if ks[i] >= kc else b for i, b in enumerate(bl)]
         g = {"id": f"the Viking Quarry race: {pc['name']}", "points": flat(every(P, 2)), "y": [round(v, 3) for v in every(Y, 2)], "half": BENCH_HALF + 1.0, "blend": 6.0,
-             "blend_left": every(bl, 2), "blend_r": 4.0, "open_ends": True}
+             "blend_left": every(bl, 2), "blend_r": 4.0 if pc["name"][0] == "S" else 12.0, "open_ends": True}   # (Round 90: the high bench's uphill side a bank, 12 m: a car meeting it rides up, never a cut face)
         if pc["name"][0] == "S":
             # (the race check: a car running wide out of the low bench's first bend, after The Big One's landing, met a cut face 20 m tall and stopped
             # dead; from the catch to the pit floor's west end (x -2450) the bend's outside is a bank, 18 m out, a car runs up it and back)
@@ -460,13 +462,13 @@ for pc in pieces:
     def berm_ok(k, side):
         a, b = loop[max(0, k - 2)], loop[min(len(loop) - 1, k + 2)]; t_ = unit((b[0] - a[0], b[1] - a[1])); q = loop[k]
         e = (q[0] - t_[1] * side * (BENCH_HALF + .8), q[1] + t_[0] * side * (BENCH_HALF + .8))
-        if any(math.dist(e, c) < 30.0 for c in heads): return False
+        if any(math.dist(e, c) < 60.0 for c in heads + lands): return False   # (Round 90: 60 m clear of a run-up's head and of a landing's slope)
         cx, cz = int(e[0] // 20), int(e[1] // 20)
         return not any(math.dist(e, w) < 14.0 for dx in (-1, 0, 1) for dz in (-1, 0, 1) for w in shut_cells.get((cx + dx, cz + dz), ()))
     for side in (1, -1):
         run = []
         for k, (gl, gr, y) in zip(ks + [None], lat_g + [(1e9, 1e9, 0.0)]):
-            if k is not None and y - (gl if side > 0 else gr) >= 3.0 and berm_ok(k, side): run.append(k); continue
+            if k is not None and y - (gl if side > 0 else gr) >= 10.0 and berm_ok(k, side): run.append(k); continue
             if len(run) >= 10: berms.append({"id": f"{pc['name']} {'left' if side > 0 else 'right'} {len(berms)}", "points": flat([loop[i] for i in every(run, 2)]), "side": side, "lat": BENCH_HALF + 0.8})
             run = []
 print(f"{len(grades)} grades, {len(berms)} berm runs ({sum(len(b['points']) // 2 for b in berms) * 4:.0f} m)")

@@ -386,7 +386,7 @@ namespace ChastainRush
         static void ConveyorLook(TerrainGrid terrain, Materials mats, Transform parent, QjJump j, Vector2 o, Vector2 d)
         {
             var nl = new Vector2(-d.y, d.x); var mb = new MeshBuilder(); int m = j.deck_s.Length;
-            float lat = j.half + 3.2f, w = 2.6f, s0 = j.deck_s[0] - 70f, s1 = j.deck_s[m - 1] + 2f;
+            float lat = j.half + 8f, w = 2.6f, s0 = j.deck_s[0] - 70f, s1 = j.deck_s[m - 1] + 2f;   // (Round 90 check: a car 10 m off the run-up's middle met its end: now 17 m out, past the kicker's pad)
             float yLip = j.deck_y[m - 1] + 2.5f;
             float Gy(float s) { var q = o + d * s + nl * lat; return Ground(terrain, q.x, q.y); }
             float y0 = Gy(s0) + 1.5f;

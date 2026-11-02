@@ -140,6 +140,37 @@ Pictures: each jump from the driver's seat at the lip and from the TV camera mid
 For Dan to check: the Viking Quarry race (normal and HIGH), the jumps, a short one into the lake.
 
 ## QUEUED rounds
+**NEXT ROUND (Round 91), after Round 90: SPLIT-SCREEN NOTES AT THE TOP, PLANE ROLLS AND LOOPS, THE UNDERGROUND ACROSS THE WHOLE MAP (Dan, 2026-11-02 01:40).**
+A. SPLIT SCREEN: NOTES AT THE TOP. Dan: "when in split screen, for notes like Jump distance and speed traps can we put at the top of the screens instead of in the middle
+   of the screens?" In split screen, every pop-up note (jump distance / air time, speed traps, combos, stunt scores, near misses, egg found, RING MISSED and the like) shows
+   at the top of that player's half, out of the middle of the view, readable at 1280 x 800 (the Deck) and 4K; one player's screen unchanged unless it also covers the middle.
+   Check: pictures of each note in both halves, side by side and top / bottom split.
+B. PLANES: BARREL ROLLS AND LOOPS. Dan: "Allow planes to do barrel roles and loops". Both planes (and new ones later) can roll all the way round and pull a full loop:
+   no bank or pitch limit in the air (`PlaneFlight`, `PlaneRoll / PlanePitch / PlaneBank`), still arcade-easy (it levels itself when you let go, as now, unless you hold
+   the roll / pitch), and it does not crash itself upside down at height. AI pilots unchanged unless they need it. Free Roam, air races and HIGH MODE (HIGH: a roll or
+   loop never ends in a crash; Round 84's put-back stays). Optional if cheap: a small "BARREL ROLL" / "LOOP" note like the car stunt notes. Check: a barrel roll each
+   way and an inside loop in each plane by the human-like pilot (controller input), recorded as a picture series; the plane keeps flying.
+C. THE UNDERGROUND ACROSS THE WHOLE MAP. Dan: "we need to expand the underground system to cover the larger map. We can for example have at least a couple pipes at the
+   bottom of the quarry. We can have one or more leading to other parts of the underground network and one or two that shoot the user up back to the top of the
+   quarry". The pipe network (`pipe_network.py`, network.json, `Docs/PIPE-NETWORK.md`; Dan's vision: a maze with secret exits all over, the hub chasm, pop-out manhole
+   covers, gates and switches) covers only the first map. Extend it over the expansion: mains from the existing network west and south to Town Center (and under the
+   mall), KSU, Kennestone, Marietta Square, Kennesaw Mountain's foot, the airport and Viking Quarry, with secret exits (manholes, drains, creek outfalls, rigged hydrants)
+   in each area, the express on long runs, the map's PIPES layer and the Underground's map. At VIKING QUARRY: at least two pipe mouths at the bottom of the quarry
+   (in the lake: aquarium pipes, standing rule; or in the quarry floor's dry part), at least one leading into the network, and one or two LAUNCH pipes that shoot you up
+   and out back to the top of the quarry (a scripted geyser-style flight is allowed: creative, not a ramp; you land on the rim on drivable ground). Check: every new main
+   driven end to end (no stuck spot, no step, walls rideable as the old pipes); each exit reached and left; the quarry's launch pipes from inside: out on the rim, upright.
+Check: item 0 for every item. One round's rules (one heavy job at a time, at most 3 full Build Maps). PUBLISH through the launcher.
+
+**THEN (Round 92): A RACE FOR A PLANE OR A CAR (Dan, 2026-11-02 01:40).** Dan: "I would like to add a race that you could race as a plane or a car. The estimated time for
+both should be about the same and should use much of the same road. But we can do things to give the cars an advantage and add disadvantage to the planes so that one
+whole race should take the car and the plane about the same amount of time. For example planes could have things like forcing them to go a longer path and have cps under
+bridges to force them to fly more precisely and having to lower speed whereas cars could have underground shortcuts using the underground tube system". One course, raced
+in race setup as a car or a plane (and mixed fields: cars and planes together, AI of both). Cars: the roads, with underground shortcuts through the expanded network
+(Round 91 C) and its express runs. Planes: rings that follow much of the same road but take longer ways round, low rings under bridges and overpasses (precise and slow:
+rings small enough that full speed misses them), slow gates (a ring you must take under a speed). Tune so a good car lap and a good plane lap (the human-like driver and
+pilot, and the AI on each level) come within about 5 % of each other; report both times per difficulty (two tuning attempts, then report). Records separate for cars and
+planes, and a combined board; ghosts and replays of both; HIGH MODE for both. Check: 3 races each way (all cars, all planes, mixed) with times.
+
 Held by Dan, not to start until he says:
 - the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
   it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.

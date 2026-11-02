@@ -61,7 +61,7 @@ namespace ChastainRush
                     var t = (c[Mathf.Min(i + 1, c.Count - 1)] - c[Mathf.Max(i - 1, 0)]).normalized; var nl = new Vector2(-t.y, t.x);
                     line.Add(c[i] + nl * (b.side > 0 ? 1f : -1f) * b.lat);
                 }
-                segs += BermRow(terrain, mats, bt, $"Quarry berm {nb}", line, 1.1f, 1.6f, false); nb++;
+                segs += BermRow(terrain, mats, bt, $"Quarry berm {nb}", line, 1.3f, .8f, false); nb++;   // (Round 90 check: a car sat up on the 1.6 m wide berm: now a thin wall it slides along)
             }
             // ---- the pit dividers (race time only)
             int nd = 0;
