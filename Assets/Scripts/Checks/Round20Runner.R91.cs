@@ -198,7 +198,7 @@ namespace ChastainRush
                 if (line.Count < 3) continue;
                 var x = net.exits.FirstOrDefault(e => e.tube == t.id); var mh = net.manholes.FirstOrDefault(m => m.tube == t.id);
                 // out of an exit: on past its mouth; up a manhole: on past the street point
-                if (x != null) { var A = new Vector3(x.a[0], 0f, x.a[1]); var B = new Vector3(x.b[0], 0f, x.b[1]); var o = (A - B).normalized; line.Add(RaceRoute.Surface(A.x, A.z)); if (x.launch_to == null) for (float d = 4f; d <= 20f; d += 4f) line.Add(RaceRoute.Surface(A.x + o.x * d, A.z + o.z * d)); }
+                if (x != null) { var A = new Vector3(x.a[0], 0f, x.a[1]); var B = new Vector3(x.b[0], 0f, x.b[1]); var o = (A - B).normalized; line.Add(RaceRoute.Surface(A.x, A.z)); if (x.launch_to != null) line.Add(RaceRoute.Surface(A.x + o.x * 12f, A.z + o.z * 12f)); if (x.launch_to == null) for (float d = 4f; d <= 20f; d += 4f) line.Add(RaceRoute.Surface(A.x + o.x * d, A.z + o.z * d)); }
                 if (mh != null) { var e = line[line.Count - 1]; var o = Flat(e - line[line.Count - 4]).normalized; for (float d = 4f; d <= 16f; d += 4f) line.Add(RaceRoute.Surface(mh.x + o.x * d, mh.z + o.z * d)); }
                 var p0 = line[3] + Vector3.up * .6f; Place(p0, line[5] - line[3], 8f); line.RemoveRange(0, 3);   // (9 m in: out of the junction, clear of the other pipes' openings) yield return new WaitForSecondsRealtime(.3f);
                 var run = new HumanRun(); float jolt = 0f, lastVy = car.Body.linearVelocity.y; int l0 = PipeLaunch.Launches; bool launched = false;

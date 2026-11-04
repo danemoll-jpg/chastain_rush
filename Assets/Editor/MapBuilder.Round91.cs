@@ -49,7 +49,8 @@ namespace ChastainRush
                 if (x.launch_to == null || x.launch_to.Length < 3 || !n.Built(n.F.tubes.First(t => t.id == x.tube))) continue;
                 var a = new Vector2(x.a[0], x.a[1]); var b = new Vector2(x.b[0], x.b[1]); var o = (a - b).normalized;
                 var go = new GameObject("Pipe launch " + x.id); go.transform.SetParent(root, false);
-                var q = b + o * Mathf.Min(6f, (a - b).magnitude * .4f); go.transform.position = new Vector3(q.x, x.b_floor, q.y);   // just out of the headwall, in the open cut
+                // just out of the cut's mouth on open ground (from inside the narrow cut, a throw turned toward the rim met the cut's side wall)
+                var q = a + o * 3f; go.transform.position = new Vector3(q.x, x.ground_a, q.y);
                 var pl = go.AddComponent<PipeLaunch>(); pl.outward = new Vector3(o.x, 0f, o.y); pl.launchName = x.name.ToLowerInvariant();
                 pl.target = new Vector3(x.launch_to[0], x.launch_to[1], x.launch_to[2]);
                 pl.landDir = x.launch_dir != null && x.launch_dir.Length >= 2 ? new Vector3(x.launch_dir[0], 0f, x.launch_dir[1]).normalized : pl.outward;
