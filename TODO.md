@@ -114,6 +114,62 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 92, THE LAUNCHER UPDATE FIXED, GLASS UNDER THE CREEKS, THE RACE FOR A PLANE OR A CAR (Dan, 2026-11-04 12:37, three photos of his screen, no reports; and the queued race of
+2026-11-02 01:40).** Round 91 is reviewed. Item 0, the one-heavy-job rule (at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
+0. FIRST: THE UPDATE THAT NEVER ARRIVED (Dan, 2026-11-04 12:42, a photo of the launcher: "Installed: 0.90.0" and "Manifest size limit exceeded"; "So let's get this fixed and
+   ignore my complaints until I can review"). Cause (Claude): Dan's installed launcher refuses any file of 2 GiB or more (`Launcher/store.cpp` `Bytes`: b < 2 GiB, "Manifest size limit
+   exceeded"), and 0.91.0's `ChastainRush_Data/sharedassets0.assets` is 2,193,343,600 bytes (level0.resS 1,994,916,288, close behind). Round 91's "proven from GitHub" missed it.
+   Fix it so the launcher ALREADY INSTALLED on Dan's PC and Deck (it cannot be changed from here) takes the update: every file in a release under 2 GiB with room to grow (aim
+   at most 1.6 GiB each): split the world's data across more files (e.g. the map's areas in their own scenes / asset bundles loaded with the main scene, or Unity's build
+   settings that split shared assets), and / or shrink it (texture and mesh compression, the terrain's data) without changing how the game looks or plays; frame rate and load time
+   before / after (PC and the Steam Deck setting). Then: (1) the publisher refuses any file over 1.8 GiB, with the file named; (2) every publish is proven the way Dan gets it: the
+   PREVIOUS published release installed by the published starter's launcher, then updated by it to the new one from GitHub (not a fresh install); (3) a new launcher build with the
+   per-file limit raised (files streamed, 64-bit sizes) AND able to update itself from the releases, shipped inside the next game update so later launchers fix themselves; say
+   whether the installed launcher can take it in place, and if not, the one step Dan does once. Publish 0.92.0 with 0 done (and E and F if they are done), and confirm the
+   installed 0.90.0 launcher updates to it.
+   HELD until Dan has played 0.91 or later (his photos were 0.90.0; Round 91 0 may already cover them): his 2026-11-04 12:37 notes, kept word for word in QUEUED as "QUARRY NOTES
+   FROM 0.90". Do not work on them this round.
+E. CREEK CROSSINGS IN GLASS. Round 91 C left the new mains in plain concrete where they pass under creeks: the standing rule says every pipe through a body of water is an aquarium
+   pipe (creeks included). Make those runs glass (water above, fish, weeds, light). Check: a picture from inside at each.
+F. A RACE FOR A PLANE OR A CAR (queued since 2026-11-02; Dan, 2026-11-04: "I had mentioned I wanted a race that was airplanes vs cars. What happened to it?"; it waited for Round 91's
+   underground). Dan: "a race that you could race as a plane or a car. The estimated time for both should be about the same and should use much of the same road. But we can do things
+   to give the cars an advantage and add disadvantage to the planes so that one whole race should take the car and the plane about the same amount of time. For example planes could
+   have things like forcing them to go a longer path and have cps under bridges to force them to fly more precisely and having to lower speed whereas cars could have underground
+   shortcuts using the underground tube system". One course, raced in race setup as a car or a plane, and in mixed fields (cars and planes together, AI of both). Cars: the roads, with
+   underground shortcuts through the new network (Round 91 C: M7 / M8 and their express runs, entered and left by manholes on the course). Planes: rings that follow much of the
+   same road but take longer ways round, low rings under bridges and overpasses (small enough that full speed misses them), slow gates (a ring you must take under a speed). Tune so a
+   good car lap and a good plane lap (the human-like driver and pilot, and the AI on each level) come within about 5 % of each other; report both times per difficulty (two tuning
+   attempts, then report). Records separate for cars and planes, and a combined board; ghosts and replays of both; HIGH MODE for both (bumpers for cars, Round 84's put-back for planes).
+   Check: 3 races each way (all cars, all planes, mixed) with times; the car takes every pipe shortcut, the plane every low ring.
+Check: item 0 for every item. PUBLISH through the launcher.
+For Dan to check: the launcher updating itself on the PC and the Deck; the glass under the creeks; the plane-or-car race.
+
+## QUEUED rounds
+**QUARRY NOTES FROM 0.90 (Dan, 2026-11-04 12:37; HELD: Dan reviews 0.91+ first, then says which still apply).**
+NOTE: Dan's photos show "CHECKPOINT n / 19": that is 0.90.0's count (0.91.0 has 22). FIRST check which build his PC and Deck run (the launcher's installed version) and say it;
+if the launcher did not update to 0.91.0, find why and fix it. Each item below is checked on 0.91's world first (some may already be fixed by Round 91 0); map his 0.90 checkpoints
+to 0.91's: 0.90 CP4 = "the pit floor", CP11 = "the haul road's hairpin", CP12 = "the east rim".
+A. AN UNINTENDED JUMP BEFORE THE HAUL ROAD'S HAIRPIN. Photo 1 (lap 2, 0.90 "CHECKPOINT 11 / 19" 201 m ahead: just after The Corner's landing / run-out, the gravel crest with the lake
+   below): "smooth this so it isn't an unintended jump". Find it (the bump log if Dan's PC session has it; else a driven trace) and smooth it into one vertical curve.
+B. THE PIT FLOOR AFTER THE BIG ONE: A TRAIL, AND NO JUMP ON IT. Photo 2 (lap 2, 0.90 "CHECKPOINT 4 / 19" 326 m: right after The Big One's landing, an open grass field, the quarry
+   walls ahead, no trail): "road removed but still no trail right away to lead the way. Also when do find the trail there was another unintended jump". The gravel course runs from
+   the landing's run-out straight on, visible from the touchdown, edged (Round 91's reflector posts), to the pit floor; smooth the jump on it.
+C. ROADS TO NOWHERE OUT OF THE QUARRY. Photo 3 (lap 1, 0.90 "CHECKPOINT 12 / 19" 123 m: toward the east rim, a grey road climbing a bank off to the left into nothing, another on the right,
+   barriers at their mouths): "this road and general roads like this leading to nowhere in the quarry need to be removed. This is the only event here so roads unrelated to it make no
+   sense". Remove EVERY road inside the quarry (pit, benches, walls, rim inside the quarry's outline) that is not the race's course or a way in / out the race or Free Roam needs
+   (`drop_roads`, as Round 91 0), with their barriers; list them. Check: a top-down picture of the quarry before / after; the race's closures still close what is left.
+D. THE QUARRY'S PIPES AND GEYSERS FINDABLE, AND NO GETTING STUCK. Dan: "outside of the race I didn't find any entrances to the underground nor the geysers to push drivers up. Should be
+   clearer so you don't get stuck there". In Free Roam: the shore exit into the network and the two launch pipes are plain to see from the pit floor and the rim (a big concrete
+   headwall / culvert mouth that reads as a way in, worn tire tracks to it, the geysers spouting now and then so you see where they are from afar, a little mist); on the map
+   (Free Roam's map and PIPES layer) and the minimap as icons; one of each in view from the bottom of each haul road. A car that drives down into the pit always has a way out in sight:
+   the haul roads up, or a launch. Check: from the pit floor's middle and from each landing, a picture showing a way out; driven from the rim to each pipe and out by launch.
+
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 91
+**Reviewed: Dan drove the quarry 2026-11-04 (photos; his notes are Round 92).**
 **Round 91, THE QUARRY RACE READABLE AFTER ITS LANDINGS, SPLIT-SCREEN NOTES AT THE TOP, PLANE ROLLS AND LOOPS, THE UNDERGROUND ACROSS THE WHOLE MAP (Dan, 2026-11-02 01:40
 and 16:42; started 2026-11-03).** Rounds 88 to 90 driven only briefly by Dan. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results.
 0. THE QUARRY RACE AFTER THE BIG ONE (Dan, 2026-11-02 16:42, a photo of his screen, no report: lap 1, CHECKPOINT 4 / 19 "the pit floor" 320 m ahead, just after
@@ -153,22 +209,7 @@ Not done: where the new mains pass under a creek the pipe is plain concrete (the
 Published: game 0.91.0 (`game-9100`, Latest) through the launcher. Clean-up: 44.9 -> 44.6 GB.
 For Dan to check: Viking Quarry after each landing (normal and HIGH); split-screen notes; rolls and loops in both planes (and HIGH near the ground); the new pipes from Town Center / KSU / Kennesaw / Kennestone / the Square / the airport, and both quarry launch pipes.
 
-## QUEUED rounds
-**THEN (Round 92): A RACE FOR A PLANE OR A CAR (Dan, 2026-11-02 01:40).** Dan: "I would like to add a race that you could race as a plane or a car. The estimated time for
-both should be about the same and should use much of the same road. But we can do things to give the cars an advantage and add disadvantage to the planes so that one
-whole race should take the car and the plane about the same amount of time. For example planes could have things like forcing them to go a longer path and have cps under
-bridges to force them to fly more precisely and having to lower speed whereas cars could have underground shortcuts using the underground tube system". One course, raced
-in race setup as a car or a plane (and mixed fields: cars and planes together, AI of both). Cars: the roads, with underground shortcuts through the expanded network
-(Round 91 C) and its express runs. Planes: rings that follow much of the same road but take longer ways round, low rings under bridges and overpasses (precise and slow:
-rings small enough that full speed misses them), slow gates (a ring you must take under a speed). Tune so a good car lap and a good plane lap (the human-like driver and
-pilot, and the AI on each level) come within about 5 % of each other; report both times per difficulty (two tuning attempts, then report). Records separate for cars and
-planes, and a combined board; ghosts and replays of both; HIGH MODE for both. Check: 3 races each way (all cars, all planes, mixed) with times.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 90
+## Previous delivery 2: Round 90
 **Driven briefly by Dan 2026-11-02 (one note: Round 91 item 0); not fully reviewed.**
 **Round 90, A VIKING QUARRY CAR RACE WITH HUGE JUMPS OVER THE LAKE (Dan, 2026-11-01 11:37: "The quarry - I wanted a car race with huge jumps over the lake").** Rounds 88
 and 89 are not yet driven by Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
@@ -201,7 +242,7 @@ Dan's 2026-11-02 note (the check car "perched on the edge of a grey stepped stru
 NOT MET: "no reset": the human-like driver still comes up short on 1 to 7 jumps a race (lake resets), mostly its first try after a run-up's bend (from a run-up's head it makes every window). The AI finish every normal race (8 to 9 resets in 3 laps each); in HIGH MODE the AI were still on lap 3 when the player finished (6 to 7 minute laps) and are not proven to finish. (Tuning limit; Dan decides.)
 Published: game 0.90.0 (`game-9000`, Latest) through the launcher. Clean-up: 43.5 -> 42.6 GB. For Dan to check: the race (normal and HIGH), a wide landing at each jump, a short one into the lake, HIGH with AI.
 
-## Previous delivery 2: Round 89
+## Previous delivery 3: Round 89
 **Not yet driven by Dan; he reviews it with Rounds 88 and 90.**
 **Round 89, THE ROADS ROUND 88 MADE WORSE FIRST, THEN THE REST; POLICE RADIO STREET NAMES FOR THE WHOLE MAP; GOOSE EGGS ACROSS THE WHOLE MAP (Dan, 2026-11-01 03:04: "OK
 so it is done, but I dont have a chance to test. Can we have continue to fix stuff? Also, don't we need to include more street names for the cops? I would also like to
@@ -245,39 +286,6 @@ B DONE. 160 street lines added (D137 to D296: 4 highways as said (I-75, I-575, t
 C DONE. 150 more eggs (egg-101 to egg-250, `make_eggs_more.py`): 14 new areas (Town Center inside and out, KSU, the airport, Viking Quarry, Kennesaw Mountain, Marietta Square, Kennestone, Noonday Creek Trail, Addison Heights, the highways, west / middle / Marietta neighborhoods, the woods), 77 easy / 73 hard (yards, woods, parking deck roofs, inside the mall, under highway decks, by jump landings); 5 new fast-travel places (the airport, Kennestone, West Kennesaw, the middle neighborhoods, South Marietta); tiers 10, 25, 60, 125, 190, 250 (10 and 25 kept so a reached tier stays). No new pipe-network reaches exist outside the first map, so no eggs there. Check: every new egg reached by a car and taken in the exe (127 first, 23 moved and 18 taken, the last 5 moved by a road and taken); a copy of Dan's save keeps its 19 eggs and tier 10; the map lists 25 areas, 19 / 250.
 Published: `game-8900` (0.89.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-11-01 07:56 (543 files: the 162 new radio clips ship with the game). Disk clean-up: 41.3 -> 41.1 GB (these folders).
 For Dan to check: Canton Road over Cobb Parkway toward the railroad; the I-575 Express flyover onto the I-75 Express Lanes; the Express Lanes past Greers Chapel's exit; a chase in Marietta or Town Center (street names); new eggs anywhere south and west.
-
-## Previous delivery 3: Round 88
-**Not yet driven by Dan (2026-11-01: no chance to test yet); he reviews it with Round 89.**
-**Round 88, THE KENNESAW CLIMB'S RUN-OFF CARRIED BACK, THE BUMP AT THE KENNESAW RACE'S START, AND THE LEFTOVER ROAD WORK (Dan, 2026-10-31 13:28: "there is also a smaller
-bump at the beginning of the race. Lets wrap this into whatever code said it wants to do and then any remaining road work we had leftover").** Round 87 is reviewed.
-Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. All world changes of A, B and C batched
-into ONE full Build Map where possible. Round 82's note stands: stuck, walls, steps and launches are bugs, not numbers to tune. Short results.
-A. THE KENNESAW CLIMB'S RUN-OFF, CARRIED BACK (queued by Code after Round 87 E; Dan: "Yes, next round"). Round 87 E's 18 m level run-off on the bend's outside (left) at
-   x -398 z -5520 runs from 20 m before the crest to 60 m past it (`make_mountain_route.py` KC_FROM / KC_TO, its clear line). Normal-mode cars still run 10 to 24 m wide
-   on the left 38 to 55 m BEFORE the crest (x -360 to -375, z -5471 to -5491; the Street Classic 7.8 m below the road). Start it about 80 m before the crest (KC_FROM about
-   -80), trees cleared with it. Check: `-exeRound87 -r87Only p87climb` (widest point and air, normal and HIGH): never off the road's level ground.
-B. THE BUMP AT THE KENNESAW RACE'S START. Dan: "there is also a smaller bump at the beginning of the race". Claude found in Dan's bump log (`%USERPROFILE%\AppData\LocalLow\
-   Chastain Rush\Chastain Rush\bump_log.txt`, his Kennesaw race 2026-10-31 00:19:46, the first event of the race): Kennesaw Mountain Drive at x -831.9 z -5187.9 (y 395):
-   JOLT +6.2 m/s in 0.1 s at 31 m/s, AIRBORNE 0.90 s, 2.47 m up, 28 m, landing x -806.2 z -5173.7. Confirm it is the one near the start (check the start grid), and smooth
-   it into the road (one vertical curve the course's speed stays down on). Leave the trail's designed big jumps alone (the repeated ~1 s flights at x -500 z -5320 and x
-   -1188 z -5940 each lap are the course's jumps unless they throw cars off the road). Check: the start to the first bend at full throttle in the bike, a car and the
-   heaviest vehicle, normal and HIGH: no air over 0.3 s there.
-C. THE LEFTOVER ROAD WORK (queued since Round 83). 64 of 416 crossing runs were not clean: Frey Road's Express deck start and I-75's deck, I-75's decks at Big Shanty Road
-   (-584, -410) and Bells Ferry Road (1520, -4228), Phillip Landrum (770, -1680), the Canton Road Connector's interchange (2306..2401, -5011..-4902) and ramp 437897716, Allgood
-   Road (3458, -6205), Greers Chapel (and the Express Lanes under it, 1.4 s), Chastain Road east of I-75, the I-575 flyover driven backwards; the I-75 Express Lanes
-   southbound 2.5 s in the air at the I-575 merge (508, -3365) and a stop at the Frey Road deck; Skip Spann's west deck end (0.38 s). Fix each. Check: all 416 crossing runs
-   on the final build (one at a time, Below Normal): list clean / not; the Express Lanes end to end both ways.
-Check: item 0 for every item. PUBLISH through the launcher.
-For Dan to check: the Kennesaw race (the start and the climb, normal mode); the Express Lanes through the I-575 merge; any crossing from C's list.
-
-**Status (Claude, 2026-10-31): built (2 full Build Maps, exe 18:47; a 3rd started was stopped in its planning when its deck-end pass was found wrong, and one was cut off by the session ending and re-run), checked in the exe, published (0.90.0, `game-9000`), not yet driven by Dan.** Evidence `Data/screenshots/round88/`. No bug report newer than Round 87's.
-A DONE. The run-off from 80 m before the crest (`KC_FROM` -80). Build 1's check: still 0.5 to 1.5 s in the air and the Drifter Twin 52 m wide: the bump log showed the drive's terraces below the bend (16 % then 6 % every 35 m, 57 to 165 m before the crest) kicking cars 0.3 to 0.7 s into it. Attempt 2: one vertical curve over them (`make_mountain_route.py`, laid before the crest's). Check (`check_ab_after.txt`): 3 vehicles, normal and HIGH, 0.00 s in the air, at most 4.1 m off the line, never below its ground. Pictures `88_A_climb_before/after.png` (level grass run-off left of the bend, no trees).
-B DONE at Dan's spot. The start line (lap 0, where the descent's grade meets the drive) rose 0.26 m in 2 m (3 % into 13 %): one 80 m vertical curve through it. Check: from the grid and flying through the line, 3 vehicles, normal and HIGH: 0.00 s in the air at the line. One flag: the Drifter Twin at 45 m/s flies 0.5 s and lands 43 m BEFORE the line (the descent's run-out, not changed). Pictures `88_B_start_before.png` (Dan's spot), `88_B_start_after.png`.
-C PARTLY (tuning limit, 2 attempts). Probed on the built colliders (`R88Probe`, `Tools/race/probe_ride.py`): nearly every failure was a deck's end not meeting its road (Round 27's end pass follows only one short OSM way; later passes move decks; several decks turn up 0.5 to 3 m over their last 3 m). `MapBuilder.Round88.cs` R88DeckEnds (after every deck pass, on C's 27 decks only): the deck's last 6 m put back on its own grade, the road on (OSM's ways chained) laid as one curve held at 40 m/s (`round88_deck_ends.txt`); Chastain Road's kink east of I-75 one vertical curve (`Data/tracks/round88_roads.json`). All 416 crossing runs (`final_c_crossings.txt`): 64 -> 45 not clean; fixed 28 (Allgood Road, Phillip Landrum at (770, -1680), the I-575 merge ramp and flyover, Skip Spann's west end, Chastain Road east of I-75, part of Bells Ferry); still: Frey Road / I-75, I-75 at Big Shanty, I-75 by Greers Chapel and the Express under it, Bells Ferry, the Canton Road Connector interchange (its ramp's decks overlap: left as they were). NEW faults: Canton Road at (1913, -5855) 2.1 s (beside deck 51, whose end the pass changed), I-75 at (1880, -4459) 2.5 s, Greers Chapel's 0.2 s flights now 0.4 s. Dan decides: revert deck 51 / keep going on the rest next round.
-  The Express Lanes end to end (`final_c_express.txt`): I-575's both ways and the Big Shanty ramp clean; I-75 southbound 0.94 s at the I-575 merge (was 2.5 s), no stop; I-75 northbound still stuck at the Frey Road deck, now with 3.3 s in the air there (Round 83: stuck there too); the I-575 flyover into I-75 2.2 s forward (was 0.76 s), clean the other way (was 0.48 s).
-Published: `game-8800` (0.88.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-31 18:47.
-C continued (Dan: "Keep fixing C"; 1 more full Build Map, exe 2026-11-01 01:17; published `game-8801`, 0.88.1). The ground kept under a deck's last 30 m (decks put back on their grade had sunk into it), a deck overhead with 5 m+ clear no longer stops the laying (the Connector interchange), ramp 437897716 merged level with deck 54 (+3.9 m, eased over 60 m), deck ends fitted on 10 to 30 m, the whole easing judged, short roads joined across junctions, I-75 over Dickson Road (bridge 59) added; the crossing check starts each line on its own road's surface. All 416 crossing runs (`c2_crossings.txt`): 45 -> 3 not clean (Express Lanes 623138519 one wall touch the other way, as before; motorway_link 879570834 at (140, -2633) 1.1 s, was 2.2; Canton Road at (1919, -5843) a 8.9 m/s landing, was 2.1 s in the air). Express Lanes end to end (`c2_express.txt`, rerun `c2_express_rerun.txt`): I-75 through both ways, no stop at Frey Road (one wall touch); I-575 clean; the flyover into I-75 still 2.2 s on deck 80 at (656, -3674) (as Round 88; tuning limit reached). The first run had two falls off the line where the probed surfaces match Round 88's exactly; the rerun drove both through.
-For Dan to check: the Kennesaw climb and the start line (normal mode, the Drifter Twin flat out); the crossings (Canton Road Connector, Bells Ferry, Big Shanty, Greers Chapel); the Express Lanes at Frey Road and the I-575 flyover's deck 80.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
