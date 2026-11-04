@@ -33,6 +33,8 @@ namespace ChastainRush
                 car.Body.angularVelocity = Vector3.zero;
                 // (it leaves aimed at its landing: a flight that left along the cut first and curved round met the pit's west wall)
                 var aim = new Vector3(target.x - car.Body.position.x, 0f, target.z - car.Body.position.z).normalized;
+                // (off the cut's floor and turned to the flight first: a wheel still dragging as it turned read as a hit and let it go)
+                car.Body.position += Vector3.up * 1.5f; car.Body.rotation = Quaternion.LookRotation(aim, Vector3.up); car.transform.SetPositionAndRotation(car.Body.position, car.Body.rotation);
                 var f = GuidedFlight.Begin(car, launchName, car.Body.position.y, target, aim, landDir, angleDeg);   // (from where it is: the rise to the rim in the flight)
                 Launches++; Last = $"{launchName}: from ({transform.position.x:0}, {transform.position.z:0}) to ({target.x:0}, {target.y:0}, {target.z:0}), {(f ? f.Planned : 0f):0.0} s planned";
                 Debug.Log("[PipeLaunch] " + Last);
