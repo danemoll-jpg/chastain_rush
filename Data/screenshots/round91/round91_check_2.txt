@@ -1,0 +1,31 @@
+Round 91 check, 2026-11-04 04:58, the exe, 1280 x 720, muted.
+
+=== A: split screen, each player's notes at the top of their half
+  side by side, jump: the note's box at y 108 (the half's own units), at the top; picture 91_split_side_jump
+  side by side, trap: the note's box at y 108 (the half's own units), at the top; picture 91_split_side_trap
+  top / bottom, jump: the note's box at y 108 (the half's own units), at the top; picture 91_split_stack_jump
+  top / bottom, trap: the note's box at y 108 (the half's own units), at the top; picture 91_split_stack_trap
+PASS  A: in split screen the jump and speed-trap notes are at the top of each half (both layouts)  -  4 of 4; race notes: pictures 91_split_*_race
+
+=== B: barrel rolls and loops, each plane flown by the virtual controller (full throttle; the stick held, then let go)
+    roll_right: 3.4 s held, then roll -29, pitch 0, 101 m/s, 419 m up
+    roll_left: 3.4 s held, then roll 29, pitch 0, 110 m/s, 401 m up
+    loop: 12.4 s held, then roll 0, pitch -30, 129 m/s, 355 m up
+    the loop: -67 m from where it started, heading 0 deg off
+  plane: barrel roll right yes, left yes, loop yes; 5 s after letting go: roll 0, pitch 0, flying; lowest 304 m over the ground
+PASS  B plane: a barrel roll each way and an inside loop on the controller, still flying after  -  rolls True/True, loop True, crashes 0
+    roll_right: 2.0 s held, then roll -27, pitch 0, 119 m/s, 430 m up
+    roll_left: 1.9 s held, then roll 27, pitch 0, 132 m/s, 373 m up
+    loop: 9.2 s held, then roll 0, pitch -30, 148 m/s, 411 m up
+    the loop: -27 m from where it started, heading 0 deg off
+  dart: barrel roll right yes, left yes, loop yes; 5 s after letting go: roll 0, pitch 0, flying; lowest 335 m over the ground
+PASS  B dart: a barrel roll each way and an inside loop on the controller, still flying after  -  rolls True/True, loop True, crashes 0
+
+=== C: the underground across the map: every stage-5 pipe driven end to end, every new exit and manhole driven out of, the quarry's launch pipes
+  B33 B33 (Viking Quarry: the west launch pipe) (43 m): 3 s, stuck 0, resets 0, top 86 m/s, hardest jolt 3426 m/s2; launch fired (launch quarry west: from (-2526, -1363) to (-2620, 325, -1858), 10.7 s planned; the flight: hit after 0.16 s at (-2526, 158, -1365)); came down at (-2538, 155, -1370), 495 m from its target, upright -> PROBLEM
+  B34 B34 (Viking Quarry: the east launch pipe) (47 m): 5 s, stuck 0, resets 0, top 85 m/s, hardest jolt 3194 m/s2; launch fired (launch quarry east: from (-2469, -1359) to (-2380, 322, -1852), 10.7 s planned; the flight: down (touched Terrain_9_12) after 10.18 s at (-2355, 322, -1848)); came down at (-2398, 322, -1869), 25 m from its target, upright -> ok
+  B39 B39 (Kennesaw Mountain: the exit) (67 m): 5 s, stuck 0, resets 0, top 23 m/s, hardest jolt 92 m/s2; out of EXIT KENNESAW MOUNTAIN: outside at (-685, 387, -5088) -> ok
+FAIL  C: every stage-5 pipe driven end to end with no stuck spot, every new exit and manhole driven out of  -  2 of 3
+FAIL  C: each quarry launch pipe throws you out of the pit onto the rim, upright  -  1 of 2
+
+3 of 5 checks passed.

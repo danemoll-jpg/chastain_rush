@@ -1,0 +1,22 @@
+Round 91 check, 2026-11-04 06:24, the exe, 1280 x 720, muted.
+
+=== Item 0: the Viking Quarry race readable after its landings (the Drifter Twin; driver's seat and chase)
+  J1 The Corner: touchdown at lap 4866 m; the next checkpoint CP11 35 m on: IN VIEW from the driver's seat; pictures 91_land_J1_seat, _chase
+  J2 The Long One: touchdown at lap 7394 m; the next checkpoint CP18 36 m on: IN VIEW from the driver's seat; pictures 91_land_J2_seat, _chase
+  J3 The Big One: touchdown at lap 1619 m; the next checkpoint CP3 47 m on: IN VIEW from the driver's seat; pictures 91_land_J3_seat, _chase
+  Dan's spot (lap 1700 m): the next checkpoint CP4 82 m on: in view; picture 91_dan_spot
+PASS  0: at Dan's spot the next checkpoint's arch is in view  -  CP4, 82 m
+PASS  0: from every landing's touchdown the next checkpoint's arch is in view (driver's seat)  -  3 of 3
+  16 bends pictured (91_bend_<lap m>)
+  J1 The Corner (HIGH): touchdown at lap 4866 m; the next checkpoint CP11 35 m on: IN VIEW from the driver's seat; pictures 91_land_J1_seat_high, _chase_high
+  J2 The Long One (HIGH): touchdown at lap 7394 m; the next checkpoint CP18 36 m on: IN VIEW from the driver's seat; pictures 91_land_J2_seat_high, _chase_high
+  J3 The Big One (HIGH): touchdown at lap 1619 m; the next checkpoint CP3 47 m on: IN VIEW from the driver's seat; pictures 91_land_J3_seat_high, _chase_high
+  Dan's spot (lap 1700 m): the next checkpoint CP4 82 m on: in view; picture 91_dan_spot_high
+
+=== C: the underground across the map: every stage-5 pipe driven end to end, every new exit and manhole driven out of, the quarry's launch pipes
+  B33 B33 (Viking Quarry: the west launch pipe) (43 m): 4 s, stuck 0, resets 0, top 85 m/s, hardest jolt 3139 m/s2; launch fired (launch quarry west: from (-2542, -1384) to (-2620, 325, -1858), 10.4 s planned; the flight: down (touched Terrain_8_12) after 9.28 s at (-2670, 325, -1840)); came down at (-2650, 325, -1876), 35 m from its target, upright -> ok
+  B34 B34 (Viking Quarry: the east launch pipe) (47 m): 11 s, stuck 0, resets 0, top 194 m/s, hardest jolt 4451 m/s2; launch DID NOT fire (launch quarry west: from (-2542, -1384) to (-2620, 325, -1858), 10.4 s planned; the flight: down (touched Terrain_8_12) after 9.28 s at (-2670, 325, -1840)); came down at (217, 297, -1253), 2665 m from its target, upright -> PROBLEM
+FAIL  C: every stage-5 pipe driven end to end with no stuck spot, every new exit and manhole driven out of  -  1 of 2
+FAIL  C: each quarry launch pipe throws you out of the pit onto the rim, upright  -  1 of 2
+
+2 of 4 checks passed.

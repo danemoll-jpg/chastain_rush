@@ -1,0 +1,8 @@
+Round 91 check, 2026-11-04 06:29, the exe, 1280 x 720, muted.
+
+=== C: the underground across the map: every stage-5 pipe driven end to end, every new exit and manhole driven out of, the quarry's launch pipes
+  B34 B34 (Viking Quarry: the east launch pipe) (47 m): 4 s, stuck 0, resets 0, top 84 m/s, hardest jolt 3255 m/s2; launch fired (launch quarry east: from (-2458, -1372) to (-2380, 322, -1852), 10.5 s planned; the flight: down (touched Terrain_9_12) after 9.52 s at (-2335, 321, -1835)); came down at (-2363, 322, -1874), 28 m from its target, upright -> ok
+PASS  C: every stage-5 pipe driven end to end with no stuck spot, every new exit and manhole driven out of  -  1 of 1
+FAIL  C: each quarry launch pipe throws you out of the pit onto the rim, upright  -  1 of 1
+
+1 of 2 checks passed.

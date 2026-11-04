@@ -1,0 +1,59 @@
+Round 91 check, 2026-11-04 04:23, the exe, 1280 x 720, muted.
+
+=== Item 0: the Viking Quarry race readable after its landings (the Drifter Twin; driver's seat and chase)
+  J1 The Corner: touchdown at lap 4866 m; the next checkpoint CP11 35 m on: IN VIEW from the driver's seat; pictures 91_land_J1_seat, _chase
+  J2 The Long One: touchdown at lap 7394 m; the next checkpoint CP18 36 m on: IN VIEW from the driver's seat; pictures 91_land_J2_seat, _chase
+  J3 The Big One: touchdown at lap 1619 m; the next checkpoint CP3 47 m on: IN VIEW from the driver's seat; pictures 91_land_J3_seat, _chase
+  Dan's spot (lap 1700 m): the next checkpoint CP4 82 m on: in view; picture 91_dan_spot
+PASS  0: at Dan's spot the next checkpoint's arch is in view  -  CP4, 82 m
+PASS  0: from every landing's touchdown the next checkpoint's arch is in view (driver's seat)  -  3 of 3
+  16 bends pictured (91_bend_<lap m>)
+  J1 The Corner (HIGH): touchdown at lap 4866 m; the next checkpoint CP11 35 m on: IN VIEW from the driver's seat; pictures 91_land_J1_seat_high, _chase_high
+  J2 The Long One (HIGH): touchdown at lap 7394 m; the next checkpoint CP18 36 m on: IN VIEW from the driver's seat; pictures 91_land_J2_seat_high, _chase_high
+  J3 The Big One (HIGH): touchdown at lap 1619 m; the next checkpoint CP3 47 m on: IN VIEW from the driver's seat; pictures 91_land_J3_seat_high, _chase_high
+  Dan's spot (lap 1700 m): the next checkpoint CP4 82 m on: in view; picture 91_dan_spot_high
+
+=== A: split screen, each player's notes at the top of their half
+  side by side, jump: the note's box at y 108 (the half's own units), at the top; picture 91_split_side_jump
+  side by side, trap: the note's box at y 108 (the half's own units), at the top; picture 91_split_side_trap
+  top / bottom, jump: the note's box at y 108 (the half's own units), at the top; picture 91_split_stack_jump
+  top / bottom, trap: the note's box at y 108 (the half's own units), at the top; picture 91_split_stack_trap
+PASS  A: in split screen the jump and speed-trap notes are at the top of each half (both layouts)  -  4 of 4; race notes: pictures 91_split_*_race
+
+=== B: barrel rolls and loops, each plane flown by the virtual controller (full throttle; the stick held, then let go)
+    roll_right: 3.4 s held, then roll -29, pitch 0, 101 m/s, 419 m up
+    roll_left: 3.4 s held, then roll 29, pitch 0, 110 m/s, 399 m up
+    loop: 19.0 s held, then roll 0, pitch -1, 108 m/s, 1392 m up
+  plane: barrel roll right yes, left yes, loop yes; 5 s after letting go: roll 0, pitch 0, flying; lowest 359 m over the ground
+PASS  B plane: a barrel roll each way and an inside loop on the controller, still flying after  -  rolls True/True, loop True, crashes 0
+    roll_right: 2.0 s held, then roll -27, pitch 0, 118 m/s, 430 m up
+    roll_left: 1.9 s held, then roll 27, pitch 0, 132 m/s, 379 m up
+    loop: 14.6 s held, then roll 0, pitch -1, 133 m/s, 1353 m up
+  dart: barrel roll right yes, left yes, loop yes; 5 s after letting go: roll 0, pitch 0, flying; lowest 375 m over the ground
+PASS  B dart: a barrel roll each way and an inside loop on the controller, still flying after  -  rolls True/True, loop True, crashes 0
+
+=== C: the underground across the map: every stage-5 pipe driven end to end, every new exit and manhole driven out of, the quarry's launch pipes
+  M7a M7 South Main (the hub to J20, Town Center) (2927 m): 13 s, stuck 0, resets 0, top 314 m/s, hardest jolt 1106 m/s2; 3 m from the far end -> ok
+  M7b M7 South Main (J20 to J24, Kennesaw Mountain) (4017 m): 14 s, stuck 0, resets 0, top 401 m/s, hardest jolt 1911 m/s2; 3 m from the far end -> ok
+  M7c M7 South Main (J24 to J25, Kennestone; glass under Christon Lake) (2836 m): 113 s, stuck 0, resets 0, top 215 m/s, hardest jolt 608 m/s2; 3 m from the far end -> ok
+  M7d M7 South Main (J25 to J26, Marietta Square) (1872 m): 13 s, stuck 0, resets 0, top 196 m/s, hardest jolt 503 m/s2; 3 m from the far end -> ok
+  M8a M8 West Main (J20 to J23, Viking Quarry) (2752 m): 13 s, stuck 0, resets 0, top 292 m/s, hardest jolt 149 m/s2; 3 m from the far end -> ok
+  M8b M8 West Main (J23 to J22, Kennesaw State, glass under the campus pond) (2258 m): 17 s, stuck 0, resets 0, top 224 m/s, hardest jolt 141 m/s2; 3 m from the far end -> ok
+  B30 B30 (Town Center: Ring Road) (334 m): 10 s, stuck 0, resets 0, top 50 m/s, hardest jolt 117 m/s2; up MH20 (Ring Road Northwest): out on the street -> ok
+  B31 B31 (Town Center: the exit) (197 m): 11 s, stuck 0, resets 0, top 47 m/s, hardest jolt 329 m/s2; out of EXIT TOWN CENTER: outside -> ok
+  B32 B32 (Viking Quarry: the shore exit) (25 m): 420 s, stuck 0, resets 0, top 24 m/s, hardest jolt 626 m/s2; out of EXIT QUARRY FLOOR: outside -> ok
+  B33 B33 (Viking Quarry: the west launch pipe) (43 m): 3 s, stuck 0, resets 0, top 87 m/s, hardest jolt 3535 m/s2; launch fired (launch quarry west: from (-2526, -1363) to (-2620, 325, -1858), 10.8 s planned); came down at (-2583, 114, -1561), 299 m from its target, upright -> PROBLEM
+  B34 B34 (Viking Quarry: the east launch pipe) (47 m): 3 s, stuck 0, resets 0, top 85 m/s, hardest jolt 3211 m/s2; launch fired (launch quarry east: from (-2469, -1359) to (-2380, 322, -1852), 10.9 s planned); came down at (-2410, 322, -1867), 34 m from its target, upright -> ok
+  B35 B35 (Viking Quarry to the airport, round the lake's west end) (1199 m): 17 s, stuck 0, resets 0, top 117 m/s, hardest jolt 291 m/s2; out of EXIT AIRPORT: outside -> ok
+  B36 B36 (Kennesaw State: Campus Loop Road) (120 m): 5 s, stuck 0, resets 0, top 45 m/s, hardest jolt 80 m/s2; up MH22 (Campus Loop Road): out on the street -> ok
+  B37 B37 (Kennesaw State: Paulding Avenue) (160 m): 6 s, stuck 0, resets 0, top 45 m/s, hardest jolt 135 m/s2; up MH21 (Paulding Avenue): out on the street -> ok
+  B38 B38 (Kennesaw Mountain: Kennesaw Mountain Drive) (144 m): 5 s, stuck 0, resets 0, top 45 m/s, hardest jolt 131 m/s2; up MH24 (Kennesaw Mountain Drive): out on the street -> ok
+  B39 B39 (Kennesaw Mountain: the exit) (67 m): 11 s, stuck 0, resets 0, top 180 m/s, hardest jolt 809 m/s2; out of EXIT KENNESAW MOUNTAIN: STILL INSIDE -> PROBLEM
+  B40 B40 (Kennestone: Campbell Hill Street) (153 m): 3 s, stuck 0, resets 0, top 53 m/s, hardest jolt 151 m/s2; up MH25 (Campbell Hill Street Northwest): out on the street -> ok
+  B41 B41 (Kennestone: the exit) (178 m): 7 s, stuck 0, resets 0, top 45 m/s, hardest jolt 58 m/s2; out of EXIT KENNESTONE: outside -> ok
+  B42 B42 (Marietta Square: Root Street) (116 m): 5 s, stuck 0, resets 0, top 45 m/s, hardest jolt 121 m/s2; up MH26 (Root Street Northeast): out on the street -> ok
+  B43 B43 (Marietta Square: the exit) (150 m): 7 s, stuck 0, resets 0, top 45 m/s, hardest jolt 19 m/s2; out of EXIT MARIETTA SQUARE: outside -> ok
+FAIL  C: every stage-5 pipe driven end to end with no stuck spot, every new exit and manhole driven out of  -  18 of 20
+FAIL  C: each quarry launch pipe throws you out of the pit onto the rim, upright  -  1 of 2
+
+5 of 7 checks passed.
