@@ -19,7 +19,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void StartBridge()
-        {
+        { if (ChastainRush.WorldBoot.Defer(StartBridge)) return; 
             if (Argument("-racerLauncherReady") == null) return;
             var go = new GameObject("Launcher startup handshake"); DontDestroyOnLoad(go); go.AddComponent<LauncherBridge>();
         }
@@ -37,8 +37,40 @@ namespace ChastainRush
                 try { Directory.CreateDirectory(Path.GetDirectoryName(path)); File.WriteAllText(path + ".tmp", nonce); File.Move(path + ".tmp", path); }
                 catch (Exception e) { Debug.LogWarning("Launcher ready signal unavailable: " + e.Message); }
                 Debug.Log("[Launcher] ready signal written" + (ManagedMusic != null ? $"; soundtrack {ManagedMusic}, personal music {PersonalMusic}" : ""));
+                ReplaceOldLauncher(path);
             }
             Destroy(gameObject);
+        }
+
+        // Round 92 (item 0): launcher 1 (installed with 0.81 to 0.91) cannot update itself and refuses any file of 2 GiB or more. This game carries the
+        // new launcher (Launcher/ChastainRushLauncher.exe beside the exe, in the signed release); when the launcher that started it is one of launcher
+        // 1's known builds, the running launcher's exe is renamed to .old (Windows allows renaming a running exe) and the new one copied in its place.
+        // Its next start is the new launcher (which then updates itself from later releases and removes the .old file). Nothing else is touched.
+        static readonly string[] OldLaunchers = { "f5648b527344a36369661d04a805b80ee089e340e658b366c6588283db2da9a3" };
+        static void ReplaceOldLauncher(string readyPath)
+        {
+            string exe = null, old = null;
+            try
+            {
+                var root = Directory.GetParent(Path.GetDirectoryName(readyPath))?.FullName; if (root == null) return;   // <root>/startup/<nonce>.ready
+                exe = Path.Combine(root, "ChastainRushLauncher.exe"); old = exe + ".old";
+                var shipped = Path.Combine(Path.GetDirectoryName(Application.dataPath), "Launcher", "ChastainRushLauncher.exe");
+                if (!File.Exists(exe) || !File.Exists(shipped)) return;
+                if (Array.IndexOf(OldLaunchers, Sha256(exe)) < 0) return;   // only a known launcher 1
+                if (File.Exists(old)) File.Delete(old);
+                File.Move(exe, old); File.Copy(shipped, exe);
+                Debug.Log("[Launcher] launcher 1 replaced by the launcher this release carries: " + exe);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[Launcher] launcher not replaced: " + e.Message);
+                try { if (exe != null && !File.Exists(exe) && File.Exists(old)) File.Move(old, exe); } catch (Exception) { }
+            }
+        }
+        static string Sha256(string file)
+        {
+            using var sha = System.Security.Cryptography.SHA256.Create(); using var f = File.OpenRead(file);
+            return BitConverter.ToString(sha.ComputeHash(f)).Replace("-", "").ToLowerInvariant();
         }
     }
 }

@@ -1,0 +1,38 @@
+39801 batching-static renderers, 2920 MB of vertices and indices if all batched
+  meshes of at most   1000 vertices:  23970 renderers,     399 MB; the rest  15831 renderers,    2521 MB
+  meshes of at most   2000 vertices:  32190 renderers,     975 MB; the rest   7611 renderers,    1945 MB
+  meshes of at most   4000 vertices:  37553 renderers,    1670 MB; the rest   2248 renderers,    1250 MB
+  meshes of at most   8000 vertices:  39147 renderers,    2058 MB; the rest    654 renderers,     862 MB
+  meshes of at most  16000 vertices:  39451 renderers,    2204 MB; the rest    350 renderers,     716 MB
+  meshes of at most  32000 vertices:  39613 renderers,    2363 MB; the rest    188 renderers,     557 MB
+  meshes of at most  65000 vertices:  39743 renderers,    2602 MB; the rest     58 renderers,     318 MB
+by parent (top 40):
+       540 MB    4686 renderers, largest   18735 verts  World/Houses
+       523 MB   13929 renderers, largest   14708 verts  World/Businesses
+       470 MB     421 renderers, largest  234019 verts  World/BusinessLots
+       463 MB    5609 renderers, largest    9580 verts  World/Roads
+       327 MB    6886 renderers, largest    7308 verts  World/RoadPaint
+       153 MB    2745 renderers, largest    6138 verts  World/ServiceRoads
+       110 MB     123 renderers, largest   56520 verts  World/Railroad
+        64 MB      26 renderers, largest  182430 verts  World/MallLots
+        32 MB      45 renderers, largest  485202 verts  World/Airport pavement
+        26 MB    3199 renderers, largest     866 verts  World/Driveways
+        23 MB      12 renderers, largest   65596 verts  World/Express Lanes walls
+        23 MB       1 renderers, largest  522184 verts  World/Road closures (map edge)
+        14 MB      94 renderers, largest    8351 verts  World/HoodHouses
+        10 MB       5 renderers, largest   87040 verts  World/Glass M2a under pond W9
+         7 MB     467 renderers, largest    3660 verts  World/BusinessLotPaint
+         7 MB       3 renderers, largest  167526 verts  World/ShoppingCenter
+         7 MB      13 renderers, largest   46336 verts  World/Quarry jump J1 The Corner
+         7 MB      14 renderers, largest   46016 verts  World/Quarry jump J3 The Big One
+         6 MB      16 renderers, largest   32496 verts  World/Shrub beds look
+         6 MB       2 renderers, largest  126588 verts  World/Bridges
+         5 MB     161 renderers, largest    7560 verts  World/Trail tread
+         5 MB       1 renderers, largest  106614 verts  World/World
+         5 MB      13 renderers, largest   44448 verts  World/Quarry jump J2 The Long One
+         4 MB      35 renderers, largest    7545 verts  World/HoodSidewalks
+         4 MB      38 renderers, largest    5988 verts  World/HoodProps
+         4 MB      27 renderers, largest   11112 verts  World/MallLotPaint
+         4 MB       5 renderers, largest   82056 verts  World/Kennestone
+         4 MB       5 renderers, largest   30720 verts  World/Glass B28 under pond W9
+         3 MB      44 renderers, largest    4124 ver

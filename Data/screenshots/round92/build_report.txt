@@ -1,0 +1,395 @@
+=== sharedassets0.assets  2091.3 MB  17730 objects
+  type Mesh                             1000.7 MB  16936
+  type TerrainData                       673.0 MB  312
+  type Texture2D                         417.0 MB  351
+  type Shader                              0.4 MB  24
+  type Material                            0.1 MB  93
+  type PreloadData                         0.0 MB  1
+  type AudioClip                           0.0 MB  9
+  type Cubemap                             0.0 MB  1
+  type TerrainLayer                        0.0 MB  1
+  type PhysicsMaterial                     0.0 MB  2
+  src       157.8 MB      32  Assets/Generated/Meshes/pack_00124.asset
+  src        54.4 MB     276  Assets/Generated/Meshes/pack_00062.asset
+  src        45.2 MB     246  Assets/Generated/Meshes/pack_00143.asset
+  src        42.7 MB     300  Assets/Generated/Meshes/pack_00066.asset
+  src        42.1 MB     275  Assets/Generated/Meshes/pack_00147.asset
+  src        40.2 MB     300  Assets/Generated/Meshes/pack_00063.asset
+  src        39.2 MB     300  Assets/Generated/Meshes/pack_00064.asset
+  src        38.1 MB     300  Assets/Generated/Meshes/pack_00065.asset
+  src        38.0 MB       9  Assets/Generated/Meshes/pack_00125.asset
+  src        37.1 MB     300  Assets/Generated/Meshes/pack_00067.asset
+  src        27.8 MB     134  Assets/Generated/Meshes/pack_00145.asset
+  src        23.9 MB     159  Assets/Generated/Meshes/pack_00142.asset
+  src        22.6 MB     158  Assets/Generated/Meshes/pack_00156.asset
+  src        16.9 MB     224  Assets/Generated/Meshes/pack_00151.asset
+  src        16.5 MB     221  Assets/Generated/Meshes/pack_00150.asset
+  src        16.1 MB     225  Assets/Generated/Meshes/pack_00153.asset
+  src        15.9 MB     225  Assets/Generated/Meshes/pack_00152.asset
+  src        15.9 MB     225  Assets/Generated/Meshes/pack_00154.asset
+  src        15.6 MB     217  Assets/Generated/Meshes/pack_00149.asset
+  src        14.3 MB     300  Assets/Generated/Meshes/pack_00091.asset
+  src        14.1 MB     199  Assets/Generated/Meshes/pack_00155.asset
+  src        13.8 MB     300  Assets/Generated/Meshes/pack_00106.asset
+  src        13.2 MB     300  Assets/Generated/Meshes/pack_00105.asset
+  src        11.6 MB     300  Assets/Generated/Meshes/pack_00096.asset
+  src        10.9 MB     300  Assets/Generated/Meshes/pack_00102.asset
+  src        10.9 MB     300  Assets/Generated/Meshes/pack_00095.asset
+  src        10.8 MB     300  Assets/Generated/Meshes/pack_00094.asset
+  src        10.0 MB     300  Assets/Generated/Meshes/pack_00103.asset
+  src         9.6 MB     300  Assets/Generated/Meshes/pack_00097.asset
+  src         9.6 MB     300  Assets/Generated/Meshes/pack_00099.asset
+  src         9.1 MB     153  Assets/Generated/Meshes/pack_00148.asset
+  src         8.9 MB     300  Assets/Generated/Meshes/pack_00098.asset
+  src         8.6 MB     300  Assets/Generated/Meshes/pack_00104.asset
+  src         8.2 MB     300  Assets/Generated/Meshes/pack_00092.asset
+  src         8.1 MB     300  Assets/Generated/Meshes/pack_00093.asset
+  src         8.0 MB     300  Assets/Generated/Meshes/pack_00101.asset
+  src         7.6 MB     192  Assets/Generated/Meshes/pack_00107.asset
+  src         7.0 MB     300  Assets/Generated/Meshes/pack_00100.asset
+  src         6.9 MB     140  Assets/Generated/Meshes/pack_00144.asset
+  src         6.5 MB     290  Assets/Generated/Meshes/pack_00127.asset
+  obj        22.9 MB  Mesh  Assets/Generated/Meshes/pack_00147.asset
+  obj        20.4 MB  Mesh  Assets/Generated/Meshes/pack_00145.asset
+  obj         9.8 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         9.8 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         9.4 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         9.2 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         8.9 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         7.9 MB  Mesh  Assets/Generated/Meshes/pack_00125.asset
+  obj         7.8 MB  Mesh  Assets/Generated/Meshes/pack_00124.asset
+  obj         7.7 MB  Mesh  Assets/Generated/Meshes/pack_00142.asset
+=== level0.resS  1902.5 MB  950 objects
+  type Mesh                             1902.5 MB  950
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 791
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 241
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 828
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 369
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 61
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 811
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 470
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 308
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 42
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 276
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 320
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 696
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 208
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 929
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 113
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 525
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 439
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 143
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 185
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 55
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 75
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 482
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 4
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 416
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 646
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 656
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 654
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 203
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 521
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 517
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 382
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 228
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 359
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 553
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 291
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 872
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 921
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 501
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 504
+  src         2.2 MB       1  Built-in Mesh: Combined Mesh (root: scene) 588
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 791
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 241
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 828
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 369
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 61
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 811
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 470
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 308
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 42
+  obj         2.2 MB  Mesh  Built-in Mesh: Combined Mesh (root: scene) 276
+=== level0  315.5 MB  689253 objects
+  type Mesh                              235.1 MB  950
+  type MonoBehaviour                      39.1 MB  114038
+  type Transform                          13.5 MB  177108
+  type GameObject                         10.2 MB  177108
+  type MeshRenderer                        8.4 MB  51467
+  type BoxCollider                         7.0 MB  108688
+  type MeshFilter                          1.2 MB  51471
+  type Light                               0.5 MB  1865
+  type MeshCollider                        0.4 MB  5837
+  type Terrain                             0.1 MB  312
+  type ParticleSystem                      0.0 MB  4
+  type TerrainCollider                     0.0 MB  312
+  type SphereCollider                      0.0 MB  51
+  type ParticleSystemRenderer              0.0 MB  4
+  type CapsuleCollider                     0.0 MB  17
+  src       315.5 MB  689253  Assets/Generated/ChastainPrototype.unity
+  obj        17.7 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         1.8 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         1.2 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         1.2 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         0.9 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         0.7 MB  MonoBehaviour  Assets/Generated/ChastainPrototype.unity
+  obj         0.5 MB  Mesh  Assets/Generated/ChastainPrototype.unity
+  obj         0.4 MB  Mesh  Assets/Generated/ChastainPrototype.unity
+  obj         0.4 MB  Mesh  Assets/Generated/ChastainPrototype.unity
+  obj         0.4 MB  Mesh  Assets/Generated/ChastainPrototype.unity
+=== resources.assets.resS  329.6 MB  1376 objects
+  type Texture2D                         316.0 MB  3
+  type Mesh                               13.6 MB  1373
+  src       311.4 MB       1  Assets/Generated/Resources/WorldMapPicture.png
+  src         8.4 MB     896  Assets/Resources/VehicleModels/Rider.fbx
+  src         4.5 MB       1  Assets/Resources/Title/Cover.png
+  src         0.4 MB      21  Assets/Resources/VehicleModels/PoliceBike.fbx
+  src         0.4 MB      27  Assets/Resources/VehicleModels/StuntBuggy.fbx
+  src         0.4 MB      26  Assets/Resources/VehicleModels/PatrolCar.fbx
+  src         0.3 MB      23  Assets/Resources/VehicleModels/TrailFour.fbx
+  src         0.3 MB      23  Assets/Resources/VehicleModels/Needle600.fbx
+  src         0.3 MB      23  Assets/Resources/VehicleModels/LongroofGT.fbx
+  src         0.3 MB      22  Assets/Resources/VehicleModels/Roadster.fbx
+  src         0.3 MB      27  Assets/Resources/VehicleModels/StreetClassic.fbx
+  src         0.3 MB      27  Assets/Resources/VehicleModels/Skyfin.fbx
+  src         0.3 MB      26  Assets/Resources/VehicleModels/Pebble.fbx
+  src         0.3 MB      17  Assets/Resources/VehicleModels/StuntBike.fbx
+  src         0.2 MB      26  Assets/Resources/VehicleModels/Fastback.fbx
+  src         0.2 MB      27  Assets/Resources/VehicleModels/TurfRocket.fbx
+  src         0.2 MB      17  Assets/Resources/VehicleModels/Scrambler.fbx
+  src         0.2 MB      17  Assets/Resources/VehicleModels/Drifter.fbx
+  src         0.2 MB      16  Assets/Resources/VehicleModels/Helicopter.fbx
+  src         0.1 MB      12  Assets/Resources/VehicleModels/Plane.fbx
+  src         0.1 MB      22  Assets/Resources/VehicleModels/TrafficPickup.fbx
+  src         0.1 MB      22  Assets/Resources/VehicleModels/TrafficVan.fbx
+  src         0.1 MB      22  Assets/Resources/VehicleModels/TrafficWagon.fbx
+  src         0.1 MB      22  Assets/Resources/VehicleModels/TrafficSedan.fbx
+  src         0.1 MB      12  Assets/Resources/VehicleModels/PlaneDart.fbx
+  src         0.0 MB       1  Assets/Resources/WaterIceFrost.png
+  obj       311.4 MB  Texture2D  Assets/Generated/Resources/WorldMapPicture.png
+  obj         4.5 MB  Texture2D  Assets/Resources/Title/Cover.png
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/PoliceBike.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/PatrolCar.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/StuntBike.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.1 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+=== sharedassets0.assets.resS  41.2 MB  33 objects
+  type Texture2D                          40.7 MB  32
+  type Cubemap                             0.5 MB  1
+  src        10.7 MB       1  Assets/HandMade/Mall/MallSigns.png
+  src        10.7 MB       1  Assets/HandMade/Businesses/BusinessSigns.png
+  src         5.3 MB       1  Assets/HandMade/ShoppingCenter/StoreSigns.png
+  src         1.3 MB       1  Assets/HandMade/Network/NetworkSigns.png
+  src         1.3 MB       1  Assets/HandMade/StuntPark/StuntSigns.png
+  src         1.3 MB       1  Assets/HandMade/Shortcut/IntakeSignRight.png
+  src         1.3 MB       1  Assets/HandMade/Shortcut/PartySignRight.png
+  src         1.3 MB       1  Assets/HandMade/Shortcut/PartySignLeft.png
+  src         0.7 MB       1  Assets/HandMade/Entrance/ChastainCommonsSign.png
+  src         0.7 MB       1  Assets/HandMade/Entrance/ChastainGlenSign.png
+  src         0.7 MB       1  Assets/HandMade/Entrance/ChastainEnclaveSign.png
+  src         0.5 MB       1  Resources/unity_builtin_extra
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/ExpressKeepRight.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryBoard_J2.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryBoard_J1.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryLanding_J2.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/Detour.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryJumps.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryLanding_J3.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryBoard_J3.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/RoadClosed.png
+  src         0.3 MB       1  Assets/HandMade/Shortcut/ShortcutSign.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/ExpressLane.png
+  src         0.3 MB       1  Assets/HandMade/RoadSigns/QuarryLanding_J1.png
+  src         0.2 MB       1  Assets/HandMade/RoadSigns/ExpressDoNotEnter.png
+  src         0.2 MB       1  Assets/HandMade/Mall/MattressSale.png
+  src         0.2 MB       1  Assets/HandMade/Mall/RaffleBoard.png
+  src         0.2 MB       1  Assets/HandMade/Enclave/EnclaveWindscreen.png
+  src         0.2 MB       1  Assets/HandMade/RoadCrew/StopPaddle.png
+  src         0.2 MB       1  Assets/HandMade/RoadSigns/TurnRight.png
+  src         0.2 MB       1  Assets/HandMade/RoadCrew/SlowPaddle.png
+  src         0.2 MB       1  Assets/HandMade/RoadSigns/TurnLeft.png
+  src         0.0 MB       1  Assets/HandMade/RoadSigns/Advisory15.png
+  obj        10.7 MB  Texture2D  Assets/HandMade/Mall/MallSigns.png
+  obj        10.7 MB  Texture2D  Assets/HandMade/Businesses/BusinessSigns.png
+  obj         5.3 MB  Texture2D  Assets/HandMade/ShoppingCenter/StoreSigns.png
+  obj         1.3 MB  Texture2D  Assets/HandMade/Network/NetworkSigns.png
+  obj         1.3 MB  Texture2D  Assets/HandMade/StuntPark/StuntSigns.png
+  obj         1.3 MB  Texture2D  Assets/HandMade/Shortcut/IntakeSignRight.png
+  obj         1.3 MB  Texture2D  Assets/HandMade/Shortcut/PartySignRight.png
+  obj         1.3 MB  Texture2D  Assets/HandMade/Shortcut/PartySignLeft.png
+  obj         0.7 MB  Texture2D  Assets/HandMade/Entrance/ChastainCommonsSign.png
+  obj         0.7 MB  Texture2D  Assets/HandMade/Entrance/ChastainGlenSign.png
+=== resources.assets  12.6 MB  7149 objects
+  type TextAsset                           7.7 MB  5
+  type Mesh                                4.1 MB  1373
+  type Material                            0.4 MB  222
+  type MeshRenderer                        0.2 MB  1373
+  type Transform                           0.1 MB  1396
+  type GameObject                          0.1 MB  1396
+  type Shader                              0.0 MB  6
+  type MeshFilter                          0.0 MB  1373
+  type Texture2D                           0.0 MB  3
+  type AudioClip                           0.0 MB  2
+  src         6.0 MB       1  Assets/Resources/Scenery/edge_scenery.bytes
+  src         3.2 MB    4494  Assets/Resources/VehicleModels/Rider.fbx
+  src         0.9 MB       1  Assets/Generated/Resources/Railroad.json
+  src         0.8 MB       1  Assets/Generated/Resources/MapStreets.json
+  src         0.1 MB     144  Assets/Resources/VehicleModels/PatrolCar.fbx
+  src         0.1 MB     131  Assets/Resources/VehicleModels/Needle600.fbx
+  src         0.1 MB     145  Assets/Resources/VehicleModels/StuntBuggy.fbx
+  src         0.1 MB     116  Assets/Resources/VehicleModels/PoliceBike.fbx
+  src         0.1 MB     147  Assets/Resources/VehicleModels/Skyfin.fbx
+  src         0.1 MB     146  Assets/Resources/VehicleModels/StreetClassic.fbx
+  src         0.1 MB     126  Assets/Resources/VehicleModels/LongroofGT.fbx
+  src         0.1 MB     141  Assets/Resources/VehicleModels/Pebble.fbx
+  src         0.1 MB     121  Assets/Resources/VehicleModels/Roadster.fbx
+  src         0.1 MB     141  Assets/Resources/VehicleModels/Fastback.fbx
+  src         0.1 MB     123  Assets/Resources/VehicleModels/TrailFour.fbx
+  src         0.1 MB     145  Assets/Resources/VehicleModels/TurfRocket.fbx
+  src         0.1 MB      94  Assets/Resources/VehicleModels/Drifter.fbx
+  src         0.1 MB      91  Assets/Resources/VehicleModels/Helicopter.fbx
+  src         0.1 MB      94  Assets/Resources/VehicleModels/StuntBike.fbx
+  src         0.1 MB      94  Assets/Resources/VehicleModels/Scrambler.fbx
+  src         0.1 MB     122  Assets/Resources/VehicleModels/TrafficPickup.fbx
+  src         0.1 MB     122  Assets/Resources/VehicleModels/TrafficVan.fbx
+  src         0.1 MB     122  Assets/Resources/VehicleModels/TrafficWagon.fbx
+  src         0.1 MB     122  Assets/Resources/VehicleModels/TrafficSedan.fbx
+  src         0.1 MB      71  Assets/Resources/VehicleModels/Plane.fbx
+  src         0.0 MB      71  Assets/Resources/VehicleModels/PlaneDart.fbx
+  src         0.0 MB       1  Assets/Shaders/Horizon.shader
+  src         0.0 MB       1  Assets/Shaders/Weather/StylizedClouds.shader
+  src         0.0 MB       1  Assets/Shaders/Weather/MoonPhase.shader
+  src         0.0 MB       1  Assets/Shaders/Weather/NightStars.shader
+  src         0.0 MB       1  Assets/Shaders/Weather/LightningBolt.shader
+  src         0.0 MB       1  Assets/Resources/Shaders/OverlayUnlit.shader
+  src         0.0 MB       1  Assets/Resources/PerformanceTestRunInfo.json
+  src         0.0 MB       1  Assets/Resources/VehicleGlazing.mat
+  src         0.0 MB       1  Assets/Resources/WaterIce.mat
+  src         0.0 MB       1  Assets/Resources/WeatherRain.mat
+  src         0.0 MB       1  Assets/Resources/WeatherSnow.mat
+  src         0.0 MB       1  Assets/Resources/SkyClouds.mat
+  src         0.0 MB       1  Assets/Resources/WaterIceFrost.png
+  src         0.0 MB       1  Assets/Generated/Resources/WorldMapPicture.png
+  obj         6.0 MB  TextAsset  Assets/Resources/Scenery/edge_scenery.bytes
+  obj         0.9 MB  TextAsset  Assets/Generated/Resources/Railroad.json
+  obj         0.8 MB  TextAsset  Assets/Generated/Resources/MapStreets.json
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/PoliceBike.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+  obj         0.0 MB  Mesh  Assets/Resources/VehicleModels/Rider.fbx
+=== resources.resource  6.4 MB  2 objects
+  type AudioClip                           6.4 MB  2
+  src         6.3 MB       1  Assets/Resources/Title/Theme.wav
+  src         0.1 MB       1  Assets/Resources/Title/Voice.wav
+  obj         6.3 MB  AudioClip  Assets/Resources/Title/Theme.wav
+  obj         0.1 MB  AudioClip  Assets/Resources/Title/Voice.wav
+=== globalgamemanagers.assets.resS  2.5 MB  13 objects
+  type Texture2D                           2.5 MB  13
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium01.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium05.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Large02.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Thin01.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium03.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium06.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium04.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Thin02.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium02.png
+  src         0.3 MB       1  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Large01.png
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Textures/DebugFont.tga
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Textures/BlueNoise64/L/LDR_LLL1_0.png
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Textures/BayerMatrix.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium01.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium05.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Large02.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Thin01.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium03.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium06.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium04.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Thin02.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Medium02.png
+  obj         0.3 MB  Texture2D  Packages/com.unity.render-pipelines.universal/Textures/FilmGrain/Large01.png
+=== sharedassets0.resource  1.4 MB  9 objects
+  type AudioClip                           1.4 MB  9
+  src         0.3 MB       1  Assets/Audio/Wildlife/ANMLWdog-coyote_howling-Elevenlabs.mp3
+  src         0.2 MB       1  Assets/Audio/Wildlife/frog-1.wav
+  src         0.2 MB       1  Assets/Audio/Wildlife/bird-1.wav
+  src         0.2 MB       1  Assets/Audio/Wildlife/squirrel-1.wav
+  src         0.2 MB       1  Assets/Audio/Wildlife/squirrel-2.wav
+  src         0.2 MB       1  Assets/Audio/Wildlife/bird-2.wav
+  src         0.2 MB       1  Assets/Audio/Wildlife/frog-2.wav
+  src         0.0 MB       1  Assets/Audio/Wildlife/Deer-original-2.wav
+  src         0.0 MB       1  Assets/Audio/Wildlife/Deer-original-1.wav
+  obj         0.3 MB  AudioClip  Assets/Audio/Wildlife/ANMLWdog-coyote_howling-Elevenlabs.mp3
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/frog-1.wav
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/bird-1.wav
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/squirrel-1.wav
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/squirrel-2.wav
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/bird-2.wav
+  obj         0.2 MB  AudioClip  Assets/Audio/Wildlife/frog-2.wav
+  obj         0.0 MB  AudioClip  Assets/Audio/Wildlife/Deer-original-2.wav
+  obj         0.0 MB  AudioClip  Assets/Audio/Wildlife/Deer-original-1.wav
+=== globalgamemanagers.assets  0.6 MB  1496 objects
+  type Shader                              0.3 MB  26
+  type MonoScript                          0.2 MB  1429
+  type ComputeShader                       0.1 MB  3
+  type MonoBehaviour                       0.0 MB  23
+  type Texture2D                           0.0 MB  13
+  type PreloadData                         0.0 MB  1
+  type Material                            0.0 MB  1
+  src         0.1 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/CoreBlit.shader
+  src         0.1 MB       1  Packages/com.unity.render-pipelines.core/Runtime/Vrs/Shaders/VrsTexture.compute
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/ComputeScreenSpaceReflection.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/MipGen/Shaders/DepthPyramid.compute
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/MipGen/Shaders/ColorPyramid.compute
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrass.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLit.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassBillboard.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Debug/HDRDebugView.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/CoreBlitColorAndDepth.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.core/Shaders/CoreCopy.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/BlitFullPrecision.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/CopyDepth.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Debug/DebugReplacement.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/CameraMotionVectors.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/MipGen/Shaders/ColorPyramidPS.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/Sampling.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/UIBackdropFilterComposite.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/StencilDitherMaskSeed.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.core/Runtime/Vrs/Shaders/VrsVisualization.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/FallbackError.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.core/Runtime/RenderPipelineResources/FallbackShader.shader
+  src         0.0 MB       1  Assets/UniversalRenderPipelineGlobalSettings.asset
+  src         0.0 MB      20  Assets/DefaultVolumeProfile.asset
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/StencilDeferred.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/ClusterDeferred.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/XR/XRMirrorView.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/Utils/BlitHDROverlay.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/Decal/DBuffer/DBufferClear.shader
+  src         0.0 MB       1  Assets/Settings/URP.asset
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/XR/XROcclusionMesh.shader
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Shaders/XR/XRMotionVector.shader
+  src         0.0 MB       1  
+  src         0.0 MB       1  Resources/unity_builtin_extra
+  src         0.0 MB       1  Assets/Settings/URP_Renderer.asset
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.core/Runtime-PrivateShared/InternalBridge/RenderPipelineEditorUtilityBridge.cs
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.core/Runtime-PrivateShared/InternalRenderPipelineGlobalSettingsUtils.cs
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/Debug/UniversalRenderPipelineVolumeDebugSettings.deprecated.cs
+  src         0.0 MB       1  Packages/com.unity.collections/Unity.Collections.Tests/Jobs/CoreCLRTestAssemblies/PublicJobPrivateGeneric/PublicJobPrivateGenericTestJob.cs
+  src         0.0 MB       1  Packages/com.unity.render-pipelines.universal/Runtime/RenderPipelineResources/UniversalRenderPipelineFilmGrainResources.cs
+  obj         0.1 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Utils/CoreBlit.shader
+  obj         0.1 MB  ComputeShader  Packages/com.unity.render-pipelines.core/Runtime/Vrs/Shaders/VrsTexture.compute
+  obj         0.0 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Utils/ComputeScreenSpaceReflection.shader
+  obj         0.0 MB  ComputeShader  Packages/com.unity.render-pipelines.universal/Runtime/MipGen/Shaders/DepthPyramid.compute
+  obj         0.0 MB  ComputeShader  Packages/com.unity.render-pipelines.universal/Runtime/MipGen/Shaders/ColorPyramid.compute
+  obj         0.0 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrass.shader
+  obj         0.0 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/TerrainDetailLit.shader
+  obj         0.0 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Terrain/WavingGrassBillboard.shader
+  obj         0.0 MB  Shader  Packages/com.unity.render-pipelines.universal/Shaders/Debug/HDRDebugView.shader
+  obj         0.0 MB  Shader  Packages/com.un

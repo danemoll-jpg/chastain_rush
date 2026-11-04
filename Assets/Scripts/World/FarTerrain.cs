@@ -17,7 +17,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Install)) return; 
             if (FindAnyObjectByType<FarTerrain>() || Terrain.activeTerrains.Length == 0) return;
             new GameObject("Far terrain").AddComponent<FarTerrain>();
         }

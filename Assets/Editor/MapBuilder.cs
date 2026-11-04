@@ -129,6 +129,7 @@ namespace ChastainRush
             try { Plan(c, false); } finally { FlushAssets(); }
             var rec = new StepRecorder(c, true);
             foreach (var st in Steps(c)) rec.Run(st);
+            TrimStaticBatching(c.scene);   // Round 92 (item 0)
             EditorSceneManager.SaveScene(c.scene, ScenePath);
             BuildClock.Lap("EditorSceneManager.SaveScene");
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
@@ -1118,6 +1119,25 @@ namespace ChastainRush
             Debug.Log($"[MapBuilder] Driveways: {osm} from OSM, {generated} generated");
         }
 
+        // Round 92 (item 0): the player build writes the world's static batches into ONE file of the world scene (2.0 GB with every renderer in
+        // them, past the 2 GiB the installed launcher takes). A renderer whose mesh has more than BatchMaxVerts vertices is already one big draw (a
+        // road grid cell, a lot, a whole building shell) and gains nothing from batching, while its copy is most of the batches' size: it is left out
+        // of static batching (still static for occlusion). The many small meshes are batched as before. Run on the world scene before every save.
+        const int BatchMaxVerts = 4000;
+        static void TrimStaticBatching(UnityEngine.SceneManagement.Scene scene)
+        {
+            int kept = 0, left = 0;
+            foreach (var root in scene.GetRootGameObjects())
+                foreach (var r in root.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    var go = r.gameObject; var f = GameObjectUtility.GetStaticEditorFlags(go);
+                    if ((f & StaticEditorFlags.BatchingStatic) == 0) continue;
+                    var mf = r.GetComponent<MeshFilter>(); var m = mf ? mf.sharedMesh : null;
+                    if (m && m.vertexCount > BatchMaxVerts) { GameObjectUtility.SetStaticEditorFlags(go, f & ~StaticEditorFlags.BatchingStatic); left++; } else kept++;
+                }
+            Debug.Log($"[Round92] static batching: {kept} renderers batched, {left} of more than {BatchMaxVerts} vertices left out (one draw each already)");
+        }
+
         // ------------------------------------------------------------ water
 
         static void BuildWater(MapData map, TerrainGrid terrain, Materials mats, Transform parent, Neighborhood hood)
@@ -1135,13 +1155,21 @@ namespace ChastainRush
                 foreach (var p in ring) mb.Vertex(new Vector3(p.x, level + PondLift, p.y));
                 foreach (var tri in EarClip(ring)) mb.Tri(v + tri.x, v + tri.z, v + tri.y);
             }
+            // Round 92 (E): the creek pools over the stage-5 mains (MapBuilder.Network.cs DigCreekPool), at the creek's surface
+            foreach (int pi in CreekPools)
+            {
+                var ring = Beds.Rings[pi]; int v = mb.Count;
+                foreach (var p in ring) mb.Vertex(new Vector3(p.x, Beds.Level[pi] + PondLift, p.y));
+                foreach (var tri in EarClip(ring)) mb.Tri(v + tri.x, v + tri.z, v + tri.y);
+            }
+            bool InPool(Vector2 q) { foreach (int pi in CreekPools) if (Beds.RingBounds[pi].Contains(q) && InPolygon(q, Beds.Rings[pi])) return true; return false; }
             // Round 15: a stream is drawn level across at its surface, as wide as the water in its channel, and not on pavement
             foreach (var (pts, surf) in Beds.Streams)
             {
                 var run = new List<Vector3>();
                 for (int i = 0; i <= pts.Count; i++)
                 {
-                    bool dry = i == pts.Count || pave.Clearance(pts[i], 6f) < 1f;
+                    bool dry = i == pts.Count || pave.Clearance(pts[i], 6f) < 1f || InPool(pts[i]);   // Round 92: not inside a creek pool
                     if (!dry) { run.Add(new Vector3(pts[i].x, surf[i], pts[i].y)); continue; }
                     if (run.Count >= 2) AddLevelRibbon(mb, run, StreamHalf * 2f);
                     run.Clear();

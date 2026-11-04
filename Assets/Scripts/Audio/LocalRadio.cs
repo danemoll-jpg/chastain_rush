@@ -28,7 +28,7 @@ namespace Racer
         // Chastain Rush: one radio for the whole run, made with the first scene (Racer: LocalRadio.Attach from RaceFlow)
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if(persistent)return;
             if(ChastainRush.CheckRun.Active&&Array.IndexOf(Environment.GetCommandLineArgs(),"-radio")<0)return;   // checks: no radio unless asked
             var go=new GameObject("Continuous local radio");DontDestroyOnLoad(go);

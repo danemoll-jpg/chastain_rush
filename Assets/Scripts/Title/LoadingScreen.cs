@@ -71,7 +71,7 @@ namespace ChastainRush
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void Boot() { if (Application.isBatchMode || !Allowed) return; Show("CHASTAIN RUSH", "Starting up", null); }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void SceneLoaded() { if (instance && instance.holding) { instance.target = Mathf.Max(instance.target, SceneShare); instance.step.text = "The world"; } }
+        static void SceneLoaded() { if (ChastainRush.WorldBoot.Defer(SceneLoaded)) return;  if (instance && instance.holding) { instance.target = Mathf.Max(instance.target, SceneShare); instance.step.text = "The world"; } }
 
         // The screen over work in the scene (a race's grid, Free Roam); the caller does the work, then calls Started().
         public static void Cover(string what, string detail, RaceRoute route)

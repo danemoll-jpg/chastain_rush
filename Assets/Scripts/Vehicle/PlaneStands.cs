@@ -28,7 +28,7 @@ namespace ChastainRush
         public IReadOnlyList<(Vector3 at, float yaw, Transform shown)> Spots => stands;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Boot() { if (!Instance && FindAnyObjectByType<HelipadStands>()) new GameObject("Plane stands").AddComponent<PlaneStands>(); }
+        static void Boot() { if (ChastainRush.WorldBoot.Defer(Boot)) return;  if (!Instance && FindAnyObjectByType<HelipadStands>()) new GameObject("Plane stands").AddComponent<PlaneStands>(); }
 
         void Awake() => Instance = this;
         void Start()

@@ -65,7 +65,7 @@ namespace Racer
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if(Instance)return;var sw=FindAnyObjectByType<VehicleSwitch>();if(!sw)return;
             var a=sw.gameObject.AddComponent<ArcadeActivities>();a.Initialize(Path.GetDirectoryName(RaceController.RecordsPath()));
         }

@@ -1,5 +1,6 @@
 """Deliberate publisher operation. Default is dry run; never called by game builds."""
-import argparse, hashlib, json, os, pathlib, subprocess, urllib.request
+import argparse, base64, hashlib, json, os, pathlib, subprocess, urllib.request
+FILE_LIMIT=int(1.8*1024**3)   # Round 92: the installed launcher refuses any file of 2 GiB or more
 REPO='danemoll-jpg/chastain-rush-releases'
 LATEST_CATALOG='https://github.com/'+REPO+'/releases/latest/download/update-catalog.json'
 # Round 81 (J): the GitHub CLI: $GH, else Woodstock Rush's bundled one (Builds/PublisherTools, used as a tool, read only), else 'gh' on the path
@@ -16,6 +17,13 @@ def main():
         with file.open('rb') as f:
             for block in iter(lambda:f.read(1024*1024),b''): h.update(block)
         if h.hexdigest()!=item['sha256']: raise ValueError('Staged asset changed after inventory')
+    # Round 92 (item 0): no release goes out with a file the installed launchers cannot take (every file of each signed manifest, and each asset)
+    big=[f"{item['path']} ({item['bytes']:,} bytes)" for item in inventory['assets'] if item['bytes']>=FILE_LIMIT]
+    for name in ('game-manifest.json','soundtrack-manifest.json'):
+        if (assets/name).is_file():
+            m=json.loads(base64.b64decode(json.loads((assets/name).read_text())['payload']))
+            big+=[f"{name}: {f['path']} ({f['bytes']:,} bytes)" for f in m.get('files',[]) if f['bytes']>=FILE_LIMIT]
+    if big: raise ValueError('Refused: over the 1.8 GiB per-file limit (the installed launcher refuses 2 GiB): '+'; '.join(big))
     print(json.dumps(dict(repository=REPO,tag=tag,assets=len(inventory['assets']),bytes=sum(x['bytes'] for x in inventory['assets']),publish=a.publish)))
     if not a.publish:return
     if a.confirm_repository!=REPO:raise ValueError('Explicit repository confirmation required')

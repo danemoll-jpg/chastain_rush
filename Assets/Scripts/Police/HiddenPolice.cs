@@ -31,7 +31,7 @@ namespace Racer
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (Current || !PoliceRoads.Instance) return;
             CheckAllows = System.Environment.GetCommandLineArgs().Contains("-hiddenPolice");
             new GameObject("Hidden police").AddComponent<HiddenPolice>();

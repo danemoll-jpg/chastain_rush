@@ -61,9 +61,11 @@ namespace ChastainRush
             string root = Path.GetDirectoryName(Application.dataPath);
             string dir = Path.Combine(root, dev ? OutputDir + "Dev" : OutputDir);
             Directory.CreateDirectory(dir);
+            // Round 92 (item 0): Boot, the data scenes, then the world (WorldSplit): no file of the build reaches the launcher's 2 GiB limit
+            var scenes = WorldSplit.Make(MapBuilder.ScenePath);
             var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
             {
-                scenes = new[] { MapBuilder.ScenePath },
+                scenes = scenes,
                 locationPathName = Path.Combine(dir, ExeName),
                 target = BuildTarget.StandaloneWindows64,
                 options = dev ? BuildOptions.Development : BuildOptions.None,
@@ -71,6 +73,7 @@ namespace ChastainRush
             var s = report.summary;
             string music = s.result == BuildResult.Succeeded ? CopyMusic(root, dir) : "music not copied (build failed)";   // Round 27 (B1)
             if (s.result == BuildResult.Succeeded) CopyPoliceRadio(root, dir);   // Round 39 (Part D)
+            string launcher = s.result == BuildResult.Succeeded ? CopyLauncher(root, dir) : "";   // Round 92 (item 0)
             string persistent = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData", "LocalLow", PlayerSettings.companyName, PlayerSettings.productName);
             var lines = new[]
             {
@@ -83,16 +86,35 @@ namespace ChastainRush
                 "Keys: Esc twice quits, F2 or P frame-rate counter, F3 or [ debug panel, F4 or ] bug capture, F6 or \\ debug menu, T race, X leave race, R reset car",
                 "Radio (Round 27, Racer's): D-pad down or N station / off, D-pad right or . next song, D-pad left or , previous, D-pad up or I what is playing",
                 music,
+                launcher,
             };
+            bool tooBig = false;
+            if (s.result == BuildResult.Succeeded) lines = lines.Concat(new[] { $"Scenes: {scenes.Length} (Boot, {scenes.Length - 2} data, the world); largest files:" }).Concat(WorldSplit.CheckFiles(dir, out tooBig)).ToArray();
             File.WriteAllLines(Path.Combine(dir, "BUILD_INFO.txt"), lines.Concat(report.steps.SelectMany(st => st.messages)
                 .Where(m => m.type == LogType.Error || m.type == LogType.Exception).Select(m => "ERROR " + m.content)));
             Debug.Log("[PlayerBuild] " + string.Join("\n", lines));
             if (s.result != BuildResult.Succeeded) throw new InvalidOperationException("Player build failed: " + s.result);
+            if (tooBig) throw new InvalidOperationException("Player build: a file of the build is 1.8 GiB or more (BUILD_INFO.txt): the installed launcher could not take it");
             // A MonoBehaviour in a file of another name is "missing" in a player: the build still succeeds but writes a scene
             // the exe cannot load (Round 8: the fence panels and the geese). Treat it as a failed build.
             int missing = report.steps.SelectMany(st => st.messages).Count(m => m.content.Contains("is missing or no valid script is attached"));
             if (missing > 0) throw new InvalidOperationException($"Player build: {missing} components have a missing script (a MonoBehaviour must live in a file named after it); the exe would not load");
             return report;
+        }
+
+        // Round 92 (item 0): the launcher travels with the game (Launcher/ChastainRushLauncher.exe and launcher.json {"build": N}, N from Launcher/core.hpp's
+        // LauncherBuild): a launcher older than N replaces itself with it, and the game replaces launcher 1 (LauncherBridge). Build it first:
+        // powershell -File Tools/Build-Launcher.ps1
+        static string CopyLauncher(string root, string dir)
+        {
+            var exe = Path.Combine(root, "Builds", "Launcher", "ChastainRushLauncher.exe");
+            var m = System.Text.RegularExpressions.Regex.Match(File.ReadAllText(Path.Combine(root, "Launcher", "core.hpp")), @"LauncherBuild=(\d+)");
+            var to = Path.Combine(dir, "Launcher");
+            if (!File.Exists(exe) || !m.Success) { Debug.LogWarning("Round 92: no launcher copied (Builds/Launcher/ChastainRushLauncher.exe missing)"); return "Launcher: NOT copied (build it with Tools/Build-Launcher.ps1)"; }
+            Directory.CreateDirectory(to);
+            File.Copy(exe, Path.Combine(to, "ChastainRushLauncher.exe"), true);
+            File.WriteAllText(Path.Combine(to, "launcher.json"), "{\"build\": " + m.Groups[1].Value + "}");
+            return $"Launcher: build {m.Groups[1].Value} in Launcher/ (from Builds/Launcher, {File.GetLastWriteTime(exe):yyyy-MM-dd HH:mm})";
         }
 
         // Round 39 (Part D): Dan's police radio clips (Tools/Audio/police_radio_studio.py writes SourceArt/Audio/PoliceRadio/<id>.wav) into

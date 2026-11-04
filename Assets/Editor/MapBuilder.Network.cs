@@ -30,7 +30,8 @@ namespace ChastainRush
     public static partial class MapBuilder
     {
         [Serializable] class NetEnd { public string kind, chamber, pipe, manhole, exit, lvl; public int wall, side; public float t, level, inset; public bool high; }
-        [Serializable] class NetGlass { public int pond; public float s0, s1, surface; }
+        [Serializable] class NetGlass { public int pond; public int pool = -1; public float s0, s1, surface; }   // Round 92 (E): pool, a creek pool (network.json pools) instead of a pond
+        [Serializable] class NetPool { public string id, tube, creek; public float[] at; public float surface; public float[] ring; }
         [Serializable] class NetFlood { public float s0, s1, level; }
         [Serializable] class NetTube { public string id, name; public float d; public bool main; public int stage, to_hub; public float[] stripe; public NetEnd a, b; public float[] pts; public NetGlass[] glass; public NetFlood flood; }
         [Serializable] class NetOpening { public int wall; public float t, d, inset; public string tube, lvl; public bool high; }
@@ -38,7 +39,7 @@ namespace ChastainRush
         [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; public float[] launch_to, launch_dir; public float launch_angle; }   // Round 91 (C): launch_*, a launch pipe's geyser (PipeLaunch)
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
         [Serializable] class NetExpress { public string id, name, tube; public float s0, s1, top; }   // Round 25 (B2): the pipe express's stretches; Round 26: top, its own top speed
-        [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; public NetExpress[] express; }
+        [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; public NetExpress[] express; public NetPool[] pools; }
 
         // a mesh with UVs (the pipes' stained concrete needs them), one-sided faces (from Round 23's MapBuilder.NetworkEntrance.cs)
         sealed class UvMesh
@@ -160,6 +161,7 @@ namespace ChastainRush
         // ---------------------------------------------------------------- planning (before anything samples the ground)
         static void PlanNetwork(TerrainGrid terrain, Network n, MapData map)
         {
+            CreekPools.Clear(); poolRing.Clear();   // Round 92 (E)
             if (n == null) return;
             // manholes: terrain holes where the street's ground is inside the riser's top, the street cut round it
             foreach (var m in n.F.manholes)
@@ -208,6 +210,7 @@ namespace ChastainRush
                 var g = n.Geo[t.id];
                 foreach (var gl in t.glass)
                 {
+                    if (gl.pool >= 0) gl.pond = DigCreekPool(terrain, n, gl, g, map);   // Round 92 (E): the creek pool over it, a pond like the others from here on
                     if (gl.s1 - gl.s0 < 8f || gl.pond < 0 || gl.pond >= Beds.Rings.Count) continue;
                     var ring = Beds.Rings[gl.pond];
                     // Round 24 Part B (item 5, Dan: "if I am in the middle of a lake I would want it to look like I am in the middle of a lake
@@ -828,6 +831,47 @@ namespace ChastainRush
                 if (moved > worst) { worst = moved; worstName = mc.name; }
             }
             Debug.Log($"[Round54] {floors} manhole floors refitted to the finished ground; the most moved {worst:0.000} m ({worstName})");
+        }
+
+        // ---------------------------------------------------------------- Round 92 (E): a creek pool over a stage-5 main
+        // The standing rule: every pipe through a body of water is an aquarium pipe, creeks included. Where a main passes under a creek
+        // (Tools/mapgen/pipe_network.py, network.json 'pools'), a pool at the creek's own surface is dug round the crossing like P1's (a rounded
+        // rectangle along the pipe, 1 in 7 to its half-meter bed, banks 1 in 3 up to the ground, never into pavement or over the pipe's crown
+        // past its glass), then it is a pond like the others: the glass, its bowl and fish (as under a pond), its water surface (BuildWater),
+        // wading (RegisterWater), trees kept out, the map. The creek's own ribbon is not drawn inside it.
+        public static readonly List<int> CreekPools = new List<int>();
+        static readonly Dictionary<int, int> poolRing = new Dictionary<int, int>();
+        static int DigCreekPool(TerrainGrid terrain, Network n, NetGlass gl, NetTubeGeo g, MapData map)
+        {
+            if (n.F.pools == null || gl.pool >= n.F.pools.Length) return -1;
+            if (poolRing.TryGetValue(gl.pool, out int known) && known < Beds.Rings.Count) return known;
+            var pj = n.F.pools[gl.pool]; var ring = new List<Vector2>();
+            for (int i = 0; i + 1 < pj.ring.Length; i += 2) ring.Add(new Vector2(pj.ring[i], pj.ring[i + 1]));
+            var at = new Vector2(pj.at[0], pj.at[1]);
+            float surface = Beds.NearStream(at, out float sd, out float ss) && sd < 6f ? ss : pj.surface;
+            float level = surface - PondLift;
+            var pave = new Pavement(map); float most = 0f; int lowered = 0;
+            int i0 = g.At(gl.s0 - 30f), i1 = g.At(gl.s1 + 30f);
+            EditTerrain(terrain, BoundsOf(ring, 14f), (x, z, y) =>
+            {
+                var q = new Vector2(x, z); float d = DistToEdges(q, ring); bool inside = InPolygon(q, ring);
+                if (!inside && d > 14f) return y;
+                if (pave.Clearance(q, 6f) < 2f) return y;   // never into a road
+                float target = inside ? level - Mathf.Min(BedDepth - PondLift, d * PondSlope) : level + d * PoolBank;
+                // past the glass, half a meter of ground kept over the pipe's crown
+                for (int i = i0; i <= i1; i += 1)
+                {
+                    if (g.S[i] >= gl.s0 && g.S[i] <= gl.s1) continue;
+                    var a = g.P[i]; if (Mathf.Abs(a.x - x) > g.R + 3f || Mathf.Abs(a.z - z) > g.R + 3f) continue;
+                    if (new Vector2(a.x - x, a.z - z).magnitude < g.R + PipeWall + 2f) target = Mathf.Max(target, a.y + 2f * g.R + PipeWall + 0.5f);
+                }
+                if (target >= y) return y;
+                lowered++; most = Mathf.Max(most, y - target); return target;
+            });
+            Beds.Rings.Add(ring); Beds.RingBounds.Add(BoundsOf(ring, 0f)); int idx = Beds.Rings.Count - 1; Beds.Level[idx] = level;
+            poolRing[gl.pool] = idx; CreekPools.Add(idx);
+            Debug.Log($"[Round92] creek pool {pj.id} over {pj.tube} where it passes under {pj.creek} at ({at.x:0}, {at.y:0}): the surface {surface:0.00} m (the creek's), dug up to {most:0.00} m ({lowered} terrain samples lowered)");
+            return idx;
         }
 
         // ---------------------------------------------------------------- glass under a pond (P1's parts: MapBuilder.ClearPipe.cs)

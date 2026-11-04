@@ -12,6 +12,11 @@ namespace fs=std::filesystem;
 using json=nlohmann::json;
 using Progress=std::function<void(const std::string&,uint64_t,uint64_t)>;
 inline constexpr int LauncherSchema=1;
+// Round 92: this launcher's build. A game release carries the newest launcher as Launcher/ChastainRushLauncher.exe with Launcher/launcher.json
+// {"build":N}; a launcher older than N replaces itself with it on its next start (launcher.cpp SelfUpdate). Launcher 1 (0.81 to 0.91) refused any
+// file of 2 GiB or more; this one takes files and packages up to 64 GiB.
+inline constexpr int LauncherBuild=2;
+inline constexpr uint64_t MaxFileBytes=64ULL*1024*1024*1024;
 inline constexpr const char* CatalogURL="https://github.com/danemoll-jpg/chastain-rush-releases/releases/latest/download/update-catalog.json";
 std::wstring Wide(const std::string& s);
 std::string Utf8(const std::wstring& s);

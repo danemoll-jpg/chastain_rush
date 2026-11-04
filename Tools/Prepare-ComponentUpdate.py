@@ -22,12 +22,14 @@ def main():
     if a.component=='game':
         files=[f for f in r.inventory(a.source) if f['path'].split('/')[0] not in {'Music','ChastainRush_BurstDebugInformation_DoNotShip','ChastainRush_BackUpThisFolder_ButDontShipItWithYourGame'}]
         if not any(f['path']=='ChastainRush.exe' for f in files):raise ValueError('Complete runtime required')
+        r.guard(files,'Game file')
         archive=assets/'game.zip'
         with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=5) as z:
             for f in files:z.write(a.source/f['path'],f['path'])
+        r.guard([dict(path='game.zip',bytes=archive.stat().st_size)],'Game package')
         manifest.update(files=files,saveSchema=1,package=dict(url=base+'/game.zip',bytes=archive.stat().st_size,sha256=r.digest(archive)))
     else:
-        files=r.inventory(a.source);old={f['path']:f for f in previous['files']}
+        files=r.inventory(a.source);r.guard(files,'Soundtrack file');old={f['path']:f for f in previous['files']}
         for f in files:
             prior=old.get(f['path'])
             if prior and prior['sha256']==f['sha256'] and prior['bytes']==f['bytes']:f['url']=prior['url'];continue

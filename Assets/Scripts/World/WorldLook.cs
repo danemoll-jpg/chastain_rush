@@ -227,7 +227,7 @@ namespace Racer
         // Chastain Rush: made with the first scene (Racer: with every scene that has a RaceDirector)
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             Disabled = Array.IndexOf(Environment.GetCommandLineArgs(), "-lookOff") >= 0;
             UnityEngine.SceneManagement.SceneManager.sceneLoaded += (_, _) => Ensure();
             Application.quitting += Restore;

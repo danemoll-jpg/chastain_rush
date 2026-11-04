@@ -1,0 +1,24 @@
+Round 92 check, 2026-11-04 13:02, the exe, 1280 x 800, muted.
+
+=== Item 0: load time and frame rate (Steam Deck setting ON, 1280 x 800)
+  load: the check's first frame 28.7 s after the process started (Windows process start to the check runner)
+  data file sharedassets0.assets: 2092 MB
+  data file level0.resS: 1903 MB
+  data file level0: 337 MB
+  data file resources.assets.resS: 330 MB
+  data file sharedassets0.assets.resS: 41 MB
+  data file resources.assets: 13 MB
+  Chastain Glen entrance      58 fps average, median   60 fps, 99th percentile  43.8 ms
+  Chastain Enclave            59 fps average, median   60 fps, 99th percentile  25.1 ms
+  Stunt park                  60 fps average, median   60 fps, 99th percentile  18.4 ms
+  Underground hub             60 fps average, median   60 fps, 99th percentile  18.0 ms
+  Town Center                 58 fps average, median   60 fps, 99th percentile  43.1 ms
+  KSU                         59 fps average, median   60 fps, 99th percentile  26.8 ms
+  Viking Quarry J1            51 fps average, median   60 fps, 99th percentile  79.0 ms
+  Airport                     59 fps average, median   60 fps, 99th percentile  20.2 ms
+  Kennesaw summit             58 fps average, median   60 fps, 99th percentile  33.1 ms
+  Kennestone                  60 fps average, median   60 fps, 99th percentile  18.1 ms
+  Marietta Square             59 fps average, median   60 fps, 99th percentile  19.5 ms
+  ALL PLACES 58 fps average, median 60 fps, 99th percentile 31.6 ms
+
+0 of 0 checks passed.

@@ -88,7 +88,7 @@ namespace ChastainRush
         void OnDisable() { all.Remove(this); }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Install() { ChaseCamera.PipeView = View; }
+        static void Install() { if (ChastainRush.WorldBoot.Defer(Install)) return;  ChaseCamera.PipeView = View; }
 
         // ---------------------------------------------------------------- Round 19: riding the walls
         sealed class Ride { public float lastGround = -10f, stick, stuck; }

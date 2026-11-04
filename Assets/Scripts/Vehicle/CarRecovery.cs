@@ -18,7 +18,7 @@ namespace ChastainRush
         public const float NextMargin = 12f, BackOk = 150f;   // Round 86 (B): put this far short of the next checkpoint; a spot up to BackOk behind the last one is kept
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Install() => VehicleRespawn.Recover = Find;
+        static void Install() { if (ChastainRush.WorldBoot.Defer(Install)) return; VehicleRespawn.Recover = Find; }
 
         public static bool Find(VehicleRespawn r, out Vector3 pos, out float yaw)
         {

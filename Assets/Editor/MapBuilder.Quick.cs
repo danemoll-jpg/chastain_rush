@@ -417,6 +417,7 @@ namespace ChastainRush
                     Debug.Log($"[QuickBuild] race routes taken afresh: {string.Join(", ", files)}");
                 }
             EditorSceneManager.MarkSceneDirty(scene);
+            TrimStaticBatching(scene);   // Round 92 (item 0)
             EditorSceneManager.SaveScene(scene, ScenePath);
             AssetDatabase.SaveAssets();
             man.steps = recs.ToArray(); man.built = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " (quick: " + parts + ")";

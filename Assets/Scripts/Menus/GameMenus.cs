@@ -72,7 +72,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (CheckRun.Active) return;
             Create();
         }

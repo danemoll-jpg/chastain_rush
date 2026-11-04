@@ -11,7 +11,7 @@ namespace ChastainRush
         GameObject panel; Text day, time; Racer.MoonIcon moon;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Boot() { if (!FindAnyObjectByType<RoamClock>() && FindAnyObjectByType<Racer.ArcadeVehicle>()) new GameObject("Free Roam clock").AddComponent<RoamClock>(); }
+        static void Boot() { if (ChastainRush.WorldBoot.Defer(Boot)) return;  if (!FindAnyObjectByType<RoamClock>() && FindAnyObjectByType<Racer.ArcadeVehicle>()) new GameObject("Free Roam clock").AddComponent<RoamClock>(); }
 
         void Awake()
         {

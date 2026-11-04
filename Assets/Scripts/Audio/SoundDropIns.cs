@@ -31,7 +31,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (Instance != null || Application.isBatchMode) return;
             var go = new GameObject("SoundDropIns"); DontDestroyOnLoad(go);
             Instance = go.AddComponent<SoundDropIns>();

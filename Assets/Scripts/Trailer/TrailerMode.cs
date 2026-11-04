@@ -50,7 +50,7 @@ namespace ChastainRush
         static void ResetProcess() { Active = false; Instance = null; }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (Instance || !FindAnyObjectByType<ArcadeVehicle>()) return;   // the world scene
             var go = new GameObject("Trailer Mode"); var mode = go.AddComponent<TrailerMode>(); Instance = mode;
             mode.baseFixed = Time.fixedDeltaTime; mode.BuildPanel();

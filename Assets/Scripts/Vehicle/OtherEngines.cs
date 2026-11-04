@@ -35,7 +35,7 @@ namespace Racer
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (Current) return;
             var g = new GameObject("Other vehicles' engines"); DontDestroyOnLoad(g); Current = g.AddComponent<OtherEngines>();
         }

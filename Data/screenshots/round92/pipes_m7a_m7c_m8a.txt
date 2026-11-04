@@ -1,0 +1,10 @@
+Round 91 check, 2026-11-04 15:16, the exe, 1280 x 720, muted.
+
+=== C: the underground across the map: every stage-5 pipe driven end to end, every new exit and manhole driven out of, the quarry's launch pipes
+  M7a M7 South Main (the hub to J20, Town Center) (2927 m): 41 s, stuck 0, resets 0, top 153 m/s, hardest jolt 137 m/s2; 3 m from the far end -> ok
+  M7c M7 South Main (J24 to J25, Kennestone; glass under Christon Lake) (2836 m): 104 s, stuck 0, resets 0, top 215 m/s, hardest jolt 615 m/s2; 3 m from the far end -> ok
+  M8a M8 West Main (J20 to J23, Viking Quarry) (2752 m): 27 s, stuck 0, resets 0, top 219 m/s, hardest jolt 164 m/s2; 3 m from the far end -> ok
+PASS  C: every stage-5 pipe driven end to end with no stuck spot, every new exit and manhole driven out of  -  3 of 3
+FAIL  C: each quarry launch pipe throws you out of the pit onto the rim, upright  -  0 of 0
+
+1 of 2 checks passed.

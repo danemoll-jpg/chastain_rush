@@ -46,7 +46,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             if (Application.isBatchMode || Instance != null || FindAnyObjectByType<ArcadeVehicle>() == null) return;
             var go = new GameObject("DeveloperHud");
             go.AddComponent<BumpLogger>();

@@ -39,7 +39,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Install()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Install)) return; 
             if (FindAnyObjectByType<EdgeScenery>() || Terrain.activeTerrains.Length == 0) return;
             if (System.Array.IndexOf(System.Environment.GetCommandLineArgs(), "-sceneryOff") >= 0) return;
             if (Resources.Load<TextAsset>("Scenery/edge_scenery") == null) return;

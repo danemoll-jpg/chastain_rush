@@ -122,11 +122,11 @@ Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 11
 
 | Pipe | | Size | Length | Floor | Notes |
 |---|---|---|---|---|---|
-| M7a | M7 South Main (the hub to J20, Town Center) | 5.0 m | 2902 m | 252 to 296 m | HUB to J20;  |
+| M7a | M7 South Main (the hub to J20, Town Center) | 5.0 m | 2903 m | 252 to 296 m | HUB to J20; glass under the creek pool CP1 (26 m), the creek pool CP2 (26 m) |
 | M7b | M7 South Main (J20 to J24, Kennesaw Mountain) | 5.0 m | 4013 m | 296 to 384 m | J20 to J24;  |
-| M7c | M7 South Main (J24 to J25, Kennestone; glass under Christon Lake) | 5.0 m | 2768 m | 359 to 399 m | J24 to J25; glass under pond W157 (69 m) |
+| M7c | M7 South Main (J24 to J25, Kennestone; glass under Christon Lake) | 5.0 m | 2768 m | 359 to 399 m | J24 to J25; glass under pond W157 (69 m), the creek pool CP3 (27 m) |
 | M7d | M7 South Main (J25 to J26, Marietta Square) | 5.0 m | 1864 m | 353 to 399 m | J25 to J26;  |
-| M8a | M8 West Main (J20 to J23, Viking Quarry) | 5.0 m | 2724 m | 156 to 296 m | J20 to J23;  |
+| M8a | M8 West Main (J20 to J23, Viking Quarry) | 5.0 m | 2726 m | 156 to 296 m | J20 to J23; glass under the creek pool CP4 (26 m) |
 | M8b | M8 West Main (J23 to J22, Kennesaw State, glass under the campus pond) | 5.0 m | 2222 m | 156 to 308 m | J23 to J22; glass under pond W22 (26 m) |
 | B30 | B30 (Town Center: Ring Road) | 3.5 m | 300 m | 292 to 296 m | J20 to MH20; pops out at MH20 |
 | B31 | B31 (Town Center: the exit) | 3.5 m | 189 m | 296 to 296 m | J20 to X_TC; comes out at exit town center |
@@ -194,23 +194,26 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E37 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
 | E38 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
 | E39 B29 express | B29 (5.0 m) | glass under W0's end (72 m along) | MH15's foot (193 m along) | 120 m | 45 m/s | about 3 s | 6 s |
-| E40 M7a express | M7a (5.0 m) | HUB (20 m along) | J20 (2882 m along) | 2862 m | 313 m/s | about 11 s | 143 s |
-| E41 M7b express | M7b (5.0 m) | J20 (20 m along) | J24 (3993 m along) | 3973 m | 400 m/s | about 12 s | 199 s |
-| E42 M7c express | M7c (5.0 m) | J24 (20 m along) | glass under W157's start (2021 m along) | 2001 m | 215 m/s | about 12 s | 100 s |
-| E43 M7c express | M7c (5.0 m) | glass under W157's end (2130 m along) | J25 (2748 m along) | 618 m | 60 m/s | about 12 s | 31 s |
-| E44 M7d express | M7d (5.0 m) | J25 (20 m along) | J26 (1844 m along) | 1824 m | 196 m/s | about 12 s | 91 s |
-| E45 M8a express | M8a (5.0 m) | J20 (20 m along) | J23 (2704 m along) | 2684 m | 292 m/s | about 11 s | 134 s |
-| E46 M8b express | M8b (5.0 m) | J23 (20 m along) | glass under W22's start (2106 m along) | 2086 m | 224 m/s | about 12 s | 104 s |
-| E47 B30 express | B30 (3.5 m) | J20 (20 m along) | MH20's foot (280 m along) | 260 m | 45 m/s | about 6 s | 13 s |
-| E48 B31 express | B31 (3.5 m) | J20 (20 m along) | Exit Town Center (169 m along) | 149 m | 45 m/s | about 4 s | 7 s |
-| E49 B35 express | B35 (5.0 m) | J23 (20 m along) | Exit Airport (1130 m along) | 1110 m | 117 m/s | about 12 s | 55 s |
-| E50 B36 express | B36 (3.5 m) | J22 (20 m along) | MH22's foot (84 m along) | 64 m | 45 m/s | about 2 s | 3 s |
-| E51 B37 express | B37 (3.5 m) | J22 (20 m along) | MH21's foot (109 m along) | 89 m | 45 m/s | about 3 s | 4 s |
-| E52 B38 express | B38 (3.5 m) | J24 (20 m along) | MH24's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
-| E53 B40 express | B40 (3.5 m) | J25 (20 m along) | MH25's foot (102 m along) | 82 m | 45 m/s | about 2 s | 4 s |
-| E54 B41 express | B41 (3.5 m) | J25 (20 m along) | Exit Kennestone (147 m along) | 127 m | 45 m/s | about 4 s | 6 s |
-| E55 B42 express | B42 (3.5 m) | J26 (20 m along) | MH26's foot (83 m along) | 63 m | 45 m/s | about 2 s | 3 s |
-| E56 B43 express | B43 (3.5 m) | J26 (20 m along) | Exit Marietta Square (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
+| E40 M7a express | M7a (5.0 m) | HUB (20 m along) | glass under creek pool CP1's start (1471 m along) | 1451 m | 153 m/s | about 12 s | 73 s |
+| E41 M7a express | M7a (5.0 m) | glass under creek pool CP1's end (1537 m along) | glass under creek pool CP2's start (2034 m along) | 498 m | 47 m/s | about 11 s | 25 s |
+| E42 M7a express | M7a (5.0 m) | glass under creek pool CP2's end (2100 m along) | J20 (2883 m along) | 782 m | 80 m/s | about 12 s | 39 s |
+| E43 M7b express | M7b (5.0 m) | J20 (20 m along) | J24 (3993 m along) | 3973 m | 400 m/s | about 12 s | 199 s |
+| E44 M7c express | M7c (5.0 m) | J24 (20 m along) | glass under W157's start (2021 m along) | 2001 m | 215 m/s | about 12 s | 100 s |
+| E45 M7c express | M7c (5.0 m) | glass under creek pool CP3's end (2195 m along) | J25 (2748 m along) | 553 m | 53 m/s | about 11 s | 28 s |
+| E46 M7d express | M7d (5.0 m) | J25 (20 m along) | J26 (1844 m along) | 1824 m | 196 m/s | about 12 s | 91 s |
+| E47 M8a express | M8a (5.0 m) | J20 (20 m along) | glass under creek pool CP4's start (612 m along) | 592 m | 57 m/s | about 12 s | 30 s |
+| E48 M8a express | M8a (5.0 m) | glass under creek pool CP4's end (678 m along) | J23 (2706 m along) | 2028 m | 219 m/s | about 11 s | 101 s |
+| E49 M8b express | M8b (5.0 m) | J23 (20 m along) | glass under W22's start (2106 m along) | 2086 m | 224 m/s | about 12 s | 104 s |
+| E50 B30 express | B30 (3.5 m) | J20 (20 m along) | MH20's foot (280 m along) | 260 m | 45 m/s | about 6 s | 13 s |
+| E51 B31 express | B31 (3.5 m) | J20 (20 m along) | Exit Town Center (169 m along) | 149 m | 45 m/s | about 4 s | 7 s |
+| E52 B35 express | B35 (5.0 m) | J23 (20 m along) | Exit Airport (1130 m along) | 1110 m | 117 m/s | about 12 s | 55 s |
+| E53 B36 express | B36 (3.5 m) | J22 (20 m along) | MH22's foot (84 m along) | 64 m | 45 m/s | about 2 s | 3 s |
+| E54 B37 express | B37 (3.5 m) | J22 (20 m along) | MH21's foot (109 m along) | 89 m | 45 m/s | about 3 s | 4 s |
+| E55 B38 express | B38 (3.5 m) | J24 (20 m along) | MH24's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
+| E56 B40 express | B40 (3.5 m) | J25 (20 m along) | MH25's foot (102 m along) | 82 m | 45 m/s | about 2 s | 4 s |
+| E57 B41 express | B41 (3.5 m) | J25 (20 m along) | Exit Kennestone (147 m along) | 127 m | 45 m/s | about 4 s | 6 s |
+| E58 B42 express | B42 (3.5 m) | J26 (20 m along) | MH26's foot (83 m along) | 63 m | 45 m/s | about 2 s | 3 s |
+| E59 B43 express | B43 (3.5 m) | J26 (20 m along) | Exit Marietta Square (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
 
 ## What differs from the proposal
 

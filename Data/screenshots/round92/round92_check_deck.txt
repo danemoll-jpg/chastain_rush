@@ -1,0 +1,26 @@
+Round 92 check, 2026-11-04 15:12, the exe, 1280 x 800, muted.
+
+=== Item 0: load time and frame rate (Steam Deck setting ON, 1280 x 800)
+  load: the check's first frame 26.6 s after the process started (Windows process start to the check runner)
+  data file level7.resS: 1201 MB
+  data file sharedassets6.assets: 1097 MB
+  data file sharedassets1.assets: 698 MB
+  data file sharedassets5.assets: 697 MB
+  data file sharedassets3.assets: 690 MB
+  data file sharedassets4.assets: 666 MB
+  memory at load: Unity reserved 7.07 GB, allocated 6.08 GB, mesh memory 3.27 GB
+  Chastain Glen entrance      60 fps average, median   60 fps, 99th percentile  18.0 ms
+  Chastain Enclave            60 fps average, median   60 fps, 99th percentile  20.1 ms
+  Stunt park                  60 fps average, median   60 fps, 99th percentile  17.9 ms
+  Underground hub             60 fps average, median   60 fps, 99th percentile  17.9 ms
+  Town Center                 60 fps average, median   60 fps, 99th percentile  17.9 ms
+  KSU                         60 fps average, median   60 fps, 99th percentile  18.0 ms
+  Viking Quarry J1            55 fps average, median   60 fps, 99th percentile  35.9 ms
+  Airport                     60 fps average, median   60 fps, 99th percentile  17.9 ms
+  Kennesaw summit             60 fps average, median   60 fps, 99th percentile  23.8 ms
+  Kennestone                  60 fps average, median   60 fps, 99th percentile  17.9 ms
+  Marietta Square             60 fps average, median   60 fps, 99th percentile  18.3 ms
+  memory after the 11 places: Unity reserved 7.08 GB, allocated 6.21 GB, mesh memory 3.27 GB
+  ALL PLACES 59 fps average, median 60 fps, 99th percentile 20.3 ms
+
+0 of 0 checks passed.

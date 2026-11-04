@@ -72,7 +72,7 @@ namespace Racer
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             WorldLook.Applied -= Attach; WorldLook.Applied += Attach;
         }
         static void Attach(LookPreset p)

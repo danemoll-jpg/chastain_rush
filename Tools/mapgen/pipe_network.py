@@ -611,10 +611,13 @@ def profile(s, pts, d, fixed, main, maxg, glass_ranges, caps=None):
     t = [norm(sub(pts[min(i + 1, n - 1)], pts[max(i - 1, 0)])) for i in range(n)]
     g = [min_ground_across(pts[i], t[i], d * 0.5 + 0.5) for i in range(n)]
     need = [g[i] - cover - d - 0.3 for i in range(n)]
-    inglass = [False] * n
-    for (a, b, y) in glass_ranges:
+    inglass = [False] * n; lift = [False] * n
+    for gr_ in glass_ranges:
+        a, b, y = gr_[0], gr_[1], gr_[2]
         for i in range(n):
-            if a <= s[i] <= b: need[i] = y; inglass[i] = True
+            if a <= s[i] <= b:
+                need[i] = y; inglass[i] = True
+                if len(gr_) > 3 and gr_[3]: lift[i] = True   # Round 92 (E): a creek pool's glass: the pipe brought up to it (ramps at the grade limit)
     if caps:   # Round 28: under another pipe where it crosses it
         for i in range(n):
             if caps[i] is not None: need[i] = min(need[i], caps[i])
@@ -625,6 +628,9 @@ def profile(s, pts, d, fixed, main, maxg, glass_ranges, caps=None):
             if abs(s[i] - f[0]) <= f[2]: lock[i] = True
     base = [float(np.interp(s[i], fs, fl)) for i in range(n)]
     floor = [base[i] if lock[i] else min(base[i], need[i]) for i in range(n)]
+    if any(lift):
+        for i in range(n):
+            if lift[i] and not lock[i]: floor[i] = need[i]; lock[i] = True
     for _ in range(3):
         for i in range(1, n):
             if not lock[i]: floor[i] = min(floor[i], floor[i - 1] + maxg * (s[i] - s[i - 1]))
@@ -689,6 +695,58 @@ def make_heads(tb, ops, est):
     return heads, plan
 
 
+
+# Round 92 (E, the standing rule: every pipe through a body of water is an aquarium pipe, creeks included): where a stage-5 main passes under a
+# creek, a small pool at the creek's level is dug round the crossing (a rounded rectangle along the pipe, clear of roads and buildings) and the
+# pipe runs under it in glass, as under a pond. The pools go to network.json 'pools'; a glass stretch under one has 'pool' (its index), 'pond' -1.
+CREEK_STAGE = 5
+POOL_HALF_L, POOL_CORNER = 17.0, 6.0
+POOLS = []
+SKIPPED_POOLS = []
+POOL_MAX_RISE = 25.0   # at most this much climb (and as much down) added to a main to bring it up under a creek
+BLDS = []
+for b in M["buildings"]:
+    f = b.get("footprint")
+    if f and len(f) >= 6:
+        r = P2(f); BLDS.append((r, min(x for x, z in r) - 30, min(z for x, z in r) - 30, max(x for x, z in r) + 30, max(z for x, z in r) + 30))
+def _clear_of_paved(q):
+    """the distance from q to the nearest road's edge or building wall (up to 60 m)"""
+    best = 60.0
+    for name, cls, w, pts in ROADS:
+        for a, b in zip(pts, pts[1:]):
+            if min(a[0], b[0]) - 60 > q[0] or max(a[0], b[0]) + 60 < q[0] or min(a[1], b[1]) - 60 > q[1] or max(a[1], b[1]) + 60 < q[1]: continue
+            best = min(best, seg_dist(q, a, b)[0] - w * 0.5)
+    for ring, x0, z0, x1, z1 in BLDS:
+        if not (x0 <= q[0] <= x1 and z0 <= q[1] <= z1): continue
+        best = min(best, 0.0 if in_poly(q, ring) else min(seg_dist(q, ring[j], ring[(j + 1) % len(ring)])[0] for j in range(len(ring))))
+    return best
+def _pool_ring(c, u, hl, hw, rc):
+    n = (-u[1], u[0]); ring = []
+    for cx, cz, a0 in ((hl - rc, hw - rc, 0.0), (-(hl - rc), hw - rc, 90.0), (-(hl - rc), -(hw - rc), 180.0), (hl - rc, -(hw - rc), 270.0)):
+        for k in range(7):
+            a = math.radians(a0 + 15.0 * k); lx, lz = cx + rc * math.cos(a), cz + rc * math.sin(a)
+            ring.append((c[0] + u[0] * lx + n[0] * lz, c[1] + u[1] * lx + n[1] * lz))
+    return ring
+def creek_crossings(pts):
+    """(index on the line, the crossing point, stream index) where the line crosses a creek that is not in a culvert"""
+    xs = [p[0] for p in pts]; zs = [p[1] for p in pts]; bx0, bz0, bx1, bz1 = min(xs) - 2, min(zs) - 2, max(xs) + 2, max(zs) + 2
+    out = []
+    for si, sp in enumerate(STREAMS):
+        if M["streams"][si].get("tunnel"): continue
+        for c, e in zip(sp, sp[1:]):
+            if max(c[0], e[0]) < bx0 or min(c[0], e[0]) > bx1 or max(c[1], e[1]) < bz0 or min(c[1], e[1]) > bz1: continue
+            for i in range(len(pts) - 1):
+                a, b = pts[i], pts[i + 1]
+                if max(a[0], b[0]) < min(c[0], e[0]) or min(a[0], b[0]) > max(c[0], e[0]) or max(a[1], b[1]) < min(c[1], e[1]) or min(a[1], b[1]) > max(c[1], e[1]): continue
+                den = (b[0] - a[0]) * (e[1] - c[1]) - (b[1] - a[1]) * (e[0] - c[0])
+                if abs(den) < 1e-9: continue
+                t = ((c[0] - a[0]) * (e[1] - c[1]) - (c[1] - a[1]) * (e[0] - c[0])) / den; v = ((c[0] - a[0]) * (b[1] - a[1]) - (c[1] - a[1]) * (b[0] - a[0])) / den
+                if 0 <= t <= 1 and 0 <= v <= 1: out.append((i, (a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1])), si))
+    out.sort(); keep = []
+    for o in out:
+        if not keep or o[0] - keep[-1][0] > 40: keep.append(o)   # a creek's meander crossing the line twice close together: one pool
+    return keep
+
 def run_profile(tb, heads, plan):
     d = tb["d"]; R = d * 0.5
     rad = 22.0 if d >= 5 else 12.0
@@ -716,7 +774,40 @@ def run_profile(tb, heads, plan):
             else: runs.append(cur); cur = [i]
         runs.append(cur); run = max(runs, key=len)
         a, b = s[run[0]], s[run[-1]]
-        gr.append((a, b, lv - 1.0 - d - 0.05)); glass_out.append(dict(pond=wi, s0=round(a, 1), s1=round(b, 1), surface=round(lv, 2)))
+        gr.append((a, b, lv - 1.0 - d - 0.05)); glass_out.append(dict(pond=wi, pool=-1, s0=round(a, 1), s1=round(b, 1), surface=round(lv, 2)))
+    if tb["stage"] == CREEK_STAGE:
+        for i0, x, si in creek_crossings(pts):
+            cname = M["streams"][si].get("name") or "a creek"
+            if s[i0] < 30 or s[i0] > L - 30: print(f"  {tb['id']}: {cname} at ({x[0]:.0f}, {x[1]:.0f}): too near the pipe's end for a pool, none"); continue
+            u = norm(sub(pts[min(i0 + 6, len(pts) - 1)], pts[max(i0 - 6, 0)]))
+            found = None
+            for hw in (11.0, 9.0, 7.5):
+                for sh in (0.0, 4.0, -4.0, 8.0, -8.0, 11.0, -11.0):
+                    c = add(x, u, sh); ring = _pool_ring(c, u, POOL_HALF_L, hw, min(POOL_CORNER, hw - 1.0))
+                    if not in_poly(x, ring) or min(seg_dist(x, ring[j], ring[(j + 1) % len(ring)])[0] for j in range(len(ring))) < 4.0: continue
+                    if min(_clear_of_paved(q) for q in ring + [c]) < 4.0: continue
+                    found = (ring, hw, sh); break
+                if found: break
+            if not found: print(f"  {tb['id']}: {cname} at ({x[0]:.0f}, {x[1]:.0f}): no room for a pool clear of roads and buildings, none"); continue
+            ring, hw, sh = found
+            inside = [i for i in range(len(pts)) if abs(s[i] - s[i0]) < POOL_HALF_L + 2 and in_poly(pts[i], ring)
+                      and min(seg_dist(pts[i], ring[j], ring[(j + 1) % len(ring)])[0] for j in range(len(ring))) > R + 1.0]
+            run = [i for i in inside if abs(i - i0) <= POOL_HALF_L + 2]
+            if len(run) < 12: print(f"  {tb['id']}: {cname}: only {len(run)} m of the pipe inside its pool, none"); continue
+            lv = min(ground(x[0] + ox, x[1] + oz) for ox in (-2.0, 0.0, 2.0) for oz in (-2.0, 0.0, 2.0)) + 0.05
+            a, b = s[min(run)], s[max(run)]; y = lv - 1.0 - d - 0.05
+            floor0 = profile(s, pts, d, fixed, tb["main"], max_grade(tb), gr)[0]
+            rise = y - min(floor0[i] for i in run); ramp = max(0.0, rise) / max_grade(tb) + 8.0
+            locks = [f[2] for f in fixed if f[0] == 0.0] + [0.0]; locke = [f[2] for f in fixed if f[0] == L] + [0.0]
+            if rise > POOL_MAX_RISE or a - ramp < max(locks) + 4.0 or b + ramp > L - max(locke) - 4.0:
+                print(f"  {tb['id']}: {cname} at ({x[0]:.0f}, {x[1]:.0f}): the pipe runs {rise + 1.0 + d + 0.05:.0f} m under the creek; bringing it up to glass would take "
+                      f"{rise:.0f} m of climb ({ramp:.0f} m of ramp at {max_grade(tb) * 100:.0f} % each side, {s[i0]:.0f} m from its start, {L - s[i0]:.0f} m from its end): no pool, plain pipe")
+                SKIPPED_POOLS.append(dict(tube=tb["id"], creek=cname, at=[round(x[0]), round(x[1])], depth=round(rise + 1.0 + d + 0.05, 1))); continue
+            gr.append((a, b, y, rise > 0.0))
+            glass_out.append(dict(pond=-1, pool=len(POOLS), s0=round(a, 1), s1=round(b, 1), surface=round(lv, 2)))
+            POOLS.append(dict(id=f"CP{len(POOLS) + 1}", tube=tb["id"], creek=cname, at=[round(x[0], 2), round(x[1], 2)], surface=round(lv, 2),
+                              ring=[round(v, 2) for q in ring for v in q]))
+            print(f"  {tb['id']}: {cname} at ({x[0]:.0f}, {x[1]:.0f}): pool {POOLS[-1]['id']} {2 * POOL_HALF_L:.0f} x {2 * hw:.0f} m (shifted {sh:+.0f} m along), glass {b - a:.0f} m, the creek at {lv:.2f} m" + (f"; the pipe brought up {rise:.1f} m" if rise > 0 else ""))
     caps = None
     if tb.get("under"):   # Round 28 (S2): its shell 1.8 m under the floor of each pipe it crosses, within 14 m of that pipe's line (the dip survives the smoothing)
         caps = [None] * len(pts)
@@ -938,7 +1029,7 @@ def express(tubes, stage, exits):
     for t in tubes:
         if t["stage"] > stage: continue
         L = t["report"]["length"]
-        stops = sorted([(g["s0"], g["s1"], f"glass under W{g['pond']}") for g in t["glass"]]
+        stops = sorted([(g["s0"], g["s1"], f"glass under W{g['pond']}" if g.get("pool", -1) < 0 else f"glass under creek pool CP{g['pool'] + 1}") for g in t["glass"]]
                        + ([(t["flood"]["s0"], t["flood"]["s1"], "the flooded sag")] if t.get("flood") else []))
         runs = []; a, an = 0.0, end_name(t["a"])
         for s0, s1, what in stops:
@@ -983,7 +1074,7 @@ def main():
                     "'wall' 0 +u, 1 +v, 2 -u, 3 -v of the chamber's frame, 't' along it), 'pipe' (an entrance barrel of Data/pipes/pipes.json), 'mh' "
                     "(a manhole riser up to the street), 'x' (an exit or outfall cut). Only what is at or under build_stage is built; a built "
                     "chamber's opening onto a pipe not built yet ends in a short stub at a closed grille.",
-               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS, express=express(tubes, stage, exits))
+               build_stage=stage, tubes=tubes, chambers=chambers, exits=exits, manholes=manholes, differs=DIFFERS, express=express(tubes, stage, exits), pools=POOLS, pools_not_built=SKIPPED_POOLS)
     clearance_report(tubes, chambers)
     json.dump(doc, open(OUT, "w", encoding="utf-8"), indent=0)
     if not a.out: write_doc(tubes, chambers, exits, manholes, stage, doc["express"])
@@ -1025,7 +1116,7 @@ def write_doc(tubes, chambers, exits, manholes, stage, exp=()):
         md.append("|---|---|---|---|---|---|")
         for t in ts:
             r = t["report"]; notes = []
-            if t["glass"]: notes.append("glass under " + ", ".join(f"pond W{g['pond']} ({g['s1'] - g['s0']:.0f} m)" for g in t["glass"]))
+            if t["glass"]: notes.append("glass under " + ", ".join((f"pond W{g['pond']}" if g.get("pool", -1) < 0 else f"the creek pool CP{g['pool'] + 1}") + f" ({g['s1'] - g['s0']:.0f} m)" for g in t["glass"]))
             if t.get("flood"): notes.append("a flooded sag (slow)")
             for e in (t["a"], t["b"]):
                 if e["kind"] == "mh": notes.append(f"pops out at {e['manhole']}")

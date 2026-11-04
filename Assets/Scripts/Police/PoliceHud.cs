@@ -14,7 +14,7 @@ namespace Racer
     public sealed class PoliceHud : MonoBehaviour
     {
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Boot() { if (!FindAnyObjectByType<PoliceHud>()) new GameObject("Police HUD").AddComponent<PoliceHud>(); }
+        static void Boot() { if (ChastainRush.WorldBoot.Defer(Boot)) return;  if (!FindAnyObjectByType<PoliceHud>()) new GameObject("Police HUD").AddComponent<PoliceHud>(); }
         GUIStyle big, mid, line, panel; Texture2D back;
         readonly List<WorldMap.Place> marks = new();
         void OnDestroy() { if (back) Destroy(back); foreach (var m in marks) WorldMap.Places.Remove(m); }

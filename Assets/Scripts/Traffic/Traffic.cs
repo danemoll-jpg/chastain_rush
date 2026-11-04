@@ -51,7 +51,7 @@ namespace ChastainRush
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         static void Boot()
-        {
+        { if (ChastainRush.WorldBoot.Defer(Boot)) return; 
             var args = Environment.GetCommandLineArgs(); ForcedLevel = -1; Horns = 0;
             for (int i = 0; i + 1 < args.Length; i++) if (args[i] == "-traffic") ForcedLevel = Mathf.Max(0, Array.IndexOf(LevelNames, args[i + 1]));
             OldMix = Array.IndexOf(args, "-r80TrafficOld") >= 0;

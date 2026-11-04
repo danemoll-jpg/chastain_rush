@@ -19,6 +19,12 @@ def sign(payload,key):
     raw=json.dumps(payload,sort_keys=True,separators=(',',':'),ensure_ascii=False).encode()
     public=json.loads((ROOT/'Launcher/pinned-key.json').read_text())
     return dict(keyId=public['keyId'],payload=base64.b64encode(raw).decode(),signature=base64.b64encode(key.sign(raw,padding.PKCS1v15(),hashes.SHA256())).decode())
+# Round 92 (item 0): the launcher installed on Dan's PC and Deck (0.90.0's) refuses any release file of 2 GiB or more ("Manifest size
+# limit exceeded"; 0.91.0's sharedassets0.assets was 2.19 GB). Refuse anything at 1.8 GiB or more, and name it.
+FILE_LIMIT=int(1.8*1024**3)
+def guard(files,what):
+    big=[f for f in files if f['bytes']>=FILE_LIMIT]
+    if big: raise ValueError(what+': over the 1.8 GiB per-file limit (the installed launcher refuses 2 GiB): '+', '.join(f"{f['path']} ({f['bytes']:,} bytes)" for f in big))
 def write(path,obj): path.write_text(json.dumps(obj,indent=2),encoding='utf-8')
 def main():
     p=argparse.ArgumentParser(description=__doc__)
@@ -40,12 +46,12 @@ def main():
         if item.is_symlink() or item.is_junction(): raise ValueError('Linked runtime input')
         if item.is_dir(): shutil.copytree(item,runtime/item.name)
         else: shutil.copy2(item,runtime/item.name)
-    files=inventory(runtime); archive=assets/'game.zip'
+    files=inventory(runtime); guard(files,'Game file'); archive=assets/'game.zip'
     with zipfile.ZipFile(archive,'w',zipfile.ZIP_DEFLATED,compresslevel=5) as z:
         for f in files: z.write(runtime/f['path'],f['path'])
-    if archive.stat().st_size>=2*1024**3: raise ValueError('Game asset exceeds GitHub release limit')
+    guard([dict(path='game.zip',bytes=archive.stat().st_size)],'Game package')
     gm=dict(schema=1,type='game',platform='windows-x64',minLauncher=1,build=a.build,version=a.version,notes=a.notes,saveSchema=1,files=files,package=dict(url=base+'/game.zip',bytes=archive.stat().st_size,sha256=digest(archive)))
-    music=inventory(a.bundle_music)
+    music=inventory(a.bundle_music); guard(music,'Soundtrack file')
     shared=a.out/'starter/shared/soundtracks'/str(a.music_build);shared.mkdir(parents=True)
     for f in music:
         source=a.bundle_music/f['path'];target=shared/f['path'];target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(source,target)
