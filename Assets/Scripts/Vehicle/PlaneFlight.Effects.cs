@@ -101,6 +101,7 @@ namespace ChastainRush
             string hint = !Airborne && !Crashed ? (pad ? "RT throttle · LT brake · left stick steer; past take-off speed pull back" : "W throttle · S brake · A/D steer; past take-off speed press Down")
                         : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick pitch / bank · RT / LT throttle · LB / RB rudder" : "Arrows pitch / bank · W/S throttle · A/D rudder") : "";
             GUI.Label(new Rect(r.x + 14, r.y + 96, 480, 24), hint, small);
+            TrickGui(W);   // Round 91 (B): BARREL ROLL / LOOP
             if (Leaving)
             {
                 var b = new Rect(W * .5f - 330, 120, 660, 76);

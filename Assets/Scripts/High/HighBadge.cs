@@ -30,8 +30,9 @@ namespace ChastainRush
             GUI.backgroundColor = oldColor;
             if (Time.unscaledTime < noteUntil && note != "")
             {
-                var c = line.normal.textColor; line.normal.textColor = new Color(0, 0, 0, .85f); GUI.Label(new Rect(2, h * .3f + 2, w, 36), note, line);
-                line.normal.textColor = c; GUI.Label(new Rect(0, h * .3f, w, 36), note, line);
+                float ny = SplitScreen.Active ? 40f : h * .3f;   // Round 91 (A): in split screen at the top, out of the middle of the views
+                var c = line.normal.textColor; line.normal.textColor = new Color(0, 0, 0, .85f); GUI.Label(new Rect(2, ny + 2, w, 36), note, line);
+                line.normal.textColor = c; GUI.Label(new Rect(0, ny, w, 36), note, line);
             }
             GUI.matrix = old;
         }

@@ -14,6 +14,7 @@ namespace ChastainRush
     {
         public SplitSession session;
         GUIStyle small, big, huge, centre; Texture2D back, arrow;
+        public static Rect NoteRect;   // checks (Round 91): where the last Free Roam note was drawn, in the half's own units
         static readonly Color P1Tint = new Color(.3f, .95f, .81f), P2Tint = new Color(1, .74f, .25f);
 
         void Styles()
@@ -99,8 +100,10 @@ namespace ChastainRush
             if (race.State == RaceController.Stage.Countdown) { mid = Mathf.CeilToInt(race.CountdownRemaining).ToString(); size = 96; }
             else if (race.GoShowing) { mid = "GO!"; size = 96; }
             else if (e.Finished) mid = $"<b>FINISHED   {Ordinal(race.Ordered().IndexOf(e) + 1)}</b>\n<size=22>{RaceController.Fmt(e.FinalTotal)}</size>" + (race.AllHumansFinished ? "" : "\n<size=18>waiting for the other player</size>");
-            else if (e.Message.Length > 0 && Time.time < e.MessageUntil) mid = $"<b>{e.Message}</b>";
             if (mid != "") Shadow(new Rect(0, h * .3f, w, h * .3f), mid, new GUIStyle(centre) { fontSize = Mathf.RoundToInt(size) });
+            // Round 91 (A, Dan: "for notes like Jump distance and speed traps can we put at the top of the screens instead of in the middle"): this
+            // player's own notes (missed checkpoint, ring missed, shortcut, wrong way...) at the top, under the next checkpoint's name
+            else if (e.Message.Length > 0 && Time.time < e.MessageUntil) Shadow(new Rect(w * .2f, 102, w * .6f, 64), $"<b>{e.Message}</b>", new GUIStyle(centre) { fontSize = 26, alignment = TextAnchor.UpperCenter });
         }
         static string Ordinal(int n) => n + (n % 100 >= 11 && n % 100 <= 13 ? "th" : n % 10 == 1 ? "st" : n % 10 == 2 ? "nd" : n % 10 == 3 ? "rd" : "th");
 
@@ -137,9 +140,18 @@ namespace ChastainRush
             }
             else if (Time.unscaledTime - session.StartedAt < 6) mid = "<size=20>Split-screen " + (SplitScreen.Mode == SplitScreen.Kind.StuntPark ? "stunt park" : "Free Roam") + ": jumps, speed traps and tricks score for each of you\n(timed activity attempts are for one player)</size>";
             string hud = acts ? acts.Hud : ""; if (hud.Contains("> ACTIVITIES") || hud.Contains("> STUNT EVENT")) hud = hud.Split('\n')[0];   // Racer: timed attempts are single-player only
-            if (mid == "" && !string.IsNullOrEmpty(hud)) mid = "<size=20>" + hud + "</size>";
             if (mid != "") Shadow(new Rect(w * .1f, h * .14f, w * .8f, h * .3f), mid, new GUIStyle(centre) { fontSize = 22 });
-            if (acts && acts.ResultShowing) GUI.DrawTexture(new Rect(w / 2 - 27, h * .14f + h * .3f, 54, 54), MedalUi.Sprite(acts.LastMedal).texture);
+            // Round 91 (A): this player's jump / speed-trap / combo lines at the top of the half, out of the middle: beside the panel on a wide half
+            // (top / bottom split), under it on a narrow one
+            else if (!string.IsNullOrEmpty(hud))
+            {
+                bool wide = w > 1000f; var st = new GUIStyle(centre) { fontSize = 20, alignment = TextAnchor.UpperCenter };
+                var nr = wide ? new Rect(w * .25f, 14, w * .5f, 0) : new Rect(14, ph + 22, w - 28, 0);
+                nr.height = st.CalcHeight(new GUIContent(hud), nr.width) + 6;
+                var bg = new Rect(nr.x + nr.width * .5f - Mathf.Min(nr.width, st.CalcSize(new GUIContent(hud)).x + 30) * .5f, nr.y - 4, Mathf.Min(nr.width, st.CalcSize(new GUIContent(hud)).x + 30), nr.height + 8);
+                GUI.DrawTexture(bg, back); Shadow(nr, hud, st); NoteRect = nr;
+                if (acts && acts.ResultShowing) GUI.DrawTexture(new Rect(bg.xMax + 6, nr.y - 6, 54, 54), MedalUi.Sprite(acts.LastMedal).texture);
+            }
         }
 
         // Racer's SplitRoam.Toward: "→ Kyle  240 m", the direction (from this player's view) and distance to the other player

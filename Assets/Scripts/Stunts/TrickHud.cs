@@ -51,6 +51,8 @@ namespace Racer
             var c = new GUIContent(text); var dims = style.CalcSize(c); float pad = size * .45f;
             float top = Screen.height - view.yMax + view.height * .42f;
             var box = new Rect(view.x + Mathf.Max(14, view.width * .012f), top, dims.x + pad * 2, dims.y + pad * 1.4f);
+            // Chastain Rush, Round 91 (A): in split screen at the top right of its player's half, out of the middle of the view
+            if (SplitScreen.Active && !SplitScreen.OneView) { float m = Mathf.Max(12, view.height * .025f); box.x = view.xMax - box.width - m; box.y = Screen.height - view.yMax + m; }
             GUI.DrawTexture(box, back);
             var inner = new Rect(box.x + pad, box.y + pad * .7f, dims.x, dims.y);
             var colour = style.normal.textColor;

@@ -139,8 +139,10 @@ namespace ChastainRush
             float targetV = Mathf.Lerp(StallSpeed * .9f, Top, Throttle);
             Airspeed += ((targetV - Airspeed) * Gain - 9.81f * Mathf.Sin(pitchDeg * Mathf.Deg2Rad) * .75f - Mathf.Abs(Mathf.Sin(rollDeg * Mathf.Deg2Rad)) * 1.2f) * dt;
             Airspeed = Mathf.Clamp(Airspeed, 10f, Top * 1.35f);
-            // pitch: the stick sets the rate; let go and it eases back to level; slow, the nose eases down until it has speed again; never past the ceiling
             float slow = Mathf.Clamp01((StallSpeed + 6f - Airspeed) / 10f);
+            if (Aerobatic) FreeAttitude(body, pIn, bIn, rud, slow, dt);   // Round 91 (B): the player's plane rolls and loops (PlaneFlight.Aerobatics.cs)
+            else {
+            // pitch: the stick sets the rate; let go and it eases back to level; slow, the nose eases down until it has speed again; never past the ceiling
             if (Mathf.Abs(pIn) > .05f) pitchDeg += pIn * PitchR * Mathf.Lerp(1f, .55f, Mathf.Clamp01(Airspeed / Top)) * dt;
             else pitchDeg = Mathf.MoveTowards(pitchDeg, 0f, 14f * dt);
             if (slow > 0f) pitchDeg = Mathf.MoveTowards(pitchDeg, -12f, 30f * slow * dt);
@@ -153,6 +155,7 @@ namespace ChastainRush
             rollDeg = Mathf.Clamp(rollDeg, -Bank, Bank);
             float turn = Mathf.Rad2Deg * 9.81f * Mathf.Tan(rollDeg * Mathf.Deg2Rad) / Mathf.Max(Airspeed, 15f);
             yawDeg += (turn + rud * RudderRate) * dt;
+            }
             if (Outside > 0f) Airspeed = Mathf.MoveTowards(Airspeed, Mathf.Max(StallSpeed + 10f, Airspeed * .97f), 6f * dt);   // the headwind
             // the body: along its nose at the airspeed (a lift that just holds it: the climb is the nose's), turned to the attitude
             var rot = Quaternion.Euler(-pitchDeg, yawDeg, -rollDeg);
@@ -189,7 +192,7 @@ namespace ChastainRush
         void LiftOff(Rigidbody body, float fwd)
         {
             Airborne = true; liftedAt = Time.time; Airspeed = Mathf.Max(fwd, TakeOffSpeed); pitchDeg = 10f; rollDeg = 0f; yawDeg = transform.eulerAngles.y;
-            Throttle = Mathf.Max(Throttle, .75f); TakeOffs++;
+            Throttle = Mathf.Max(Throttle, .75f); TakeOffs++; ResetTricks();
             Debug.Log($"[Plane] lift off at ({body.position.x:0.0}, {body.position.y:0.0}, {body.position.z:0.0}), {fwd:0.0} m/s");
         }
         // checks: put it in the air where it is, level, at 'v' m/s
@@ -206,7 +209,7 @@ namespace ChastainRush
         }
         void TouchDown(Rigidbody body)
         {
-            Airborne = false; body.useGravity = true; Landings++;
+            Airborne = false; body.useGravity = true; Landings++; ResetTricks();
             var n = groundNormal.y > .8f ? groundNormal : Vector3.up; var f = Vector3.ProjectOnPlane(transform.forward, n).normalized;
             body.MoveRotation(Quaternion.LookRotation(f, n)); body.linearVelocity = f * Airspeed * Mathf.Cos(pitchDeg * Mathf.Deg2Rad); body.angularVelocity = Vector3.zero;
             Throttle = Mathf.Min(Throttle, .2f);
