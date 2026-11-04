@@ -71,6 +71,7 @@ namespace ChastainRush
                 var only = ro.gameObject.AddComponent<RaceOnly>(); only.reverse = false; only.showInForwardOf = string.IsNullOrEmpty(f.route_name) ? "Viking Quarry" : f.route_name;
                 nd += BermRow(terrain, mats, ro, $"Quarry divider {dv.id}", ToPoints(dv.points), 1.0f, .7f, true);
             }
+            BuildRunOutPosts(terrain, mats, go);   // Round 91 (0): the run-outs' edges (MapBuilder.Round91.cs)
             Debug.Log($"[Round90] the Viking Quarry race: {ns} gravel surfaces, {nb} berm runs ({segs} pieces), {nd} divider barriers (race time only)");
         }
 

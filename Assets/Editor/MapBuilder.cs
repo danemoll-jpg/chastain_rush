@@ -160,6 +160,7 @@ namespace ChastainRush
             ProjectSetup.EnsureUrp();
             var map = c.map = JsonUtility.FromJson<MapData>(File.ReadAllText(Path.Combine(ProjectRoot, "Data/map.json")));
             Round47Drives(map);   // Round 47 (B): the drives on Chastain Road at Dan's spot go to their own street
+            R91DropRoads(map);    // Round 91 (0): the real quarry's service roads in the pit, under the race's landing slopes, cut / not drawn (MapBuilder.Round91.cs)
             var meta = c.meta = LoadTerrainMeta();
 
             if (!quick)
@@ -495,6 +496,7 @@ namespace ChastainRush
             {
                 swClass.Start();
                 var r = map.roads[ri];
+                if (!R91Drawn(r.osm_id)) { swClass.Stop(); continue; }   // Round 91 (0)
                 var pts = Densify(ToPoints(r.points), 2f);
                 float lift = (RoadLift.TryGetValue(r.@class, out var l) ? l : 0.06f) * vScale;
                 // Round 7: a service way inside Chastain Glen (the crossover through the entrance island) is paved like the

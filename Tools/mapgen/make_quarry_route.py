@@ -163,6 +163,10 @@ roads = {r["osm_id"]: pts(r["points"]) for r in M["roads"]}
 haul = roads[1173718687]   # from the east rim down: (-1612, -1355) ... (-1946, -1160) ... (-2241, -1397)
 k_junction = next(i for i, q in enumerate(haul) if abs(q[0] + 1946) < 1 and abs(q[1] + 1160) < 1)
 haul_up = list(reversed(haul[:k_junction + 1]))   # from the junction (-1946, -1160) up to the east rim
+# Round 91 (0, Dan: "a huge plain grey wedge rising steeply into the sky"): the real quarry's service road down into the pit west of that junction, and its
+# branch 1173718688, lay draped over the race's graded landing slopes and benches (a road climbing a steep fill bank: the grey wedge). They are not built
+# (MapBuilder.QuarryRace.cs reads drop_roads before the planning) and get no closures.
+DROP_ROADS = [{"osm_id": 1173718687, "keep_to": [-1946.0, -1160.0]}, {"osm_id": 1173718688}]
 # the haul road's own line has a switchback of 6 m radius and a step of 20 %; the race's haul road follows it round one hairpin of about 25 m at the
 # bench's north end and climbs evenly from The Corner's bench to the east rim (a bench graded over the old road)
 f_ctrl = [on_line(J1, catch_end(J1) - 20.0), on_line(J1, catch_end(J1)), (-1836.0, -1214.0), (-1872.0, -1178.0), (-1912.0, -1152.0), (-1940.0, -1132.0),
@@ -301,6 +305,7 @@ def jk(j, s): pc = PC[j["id"]]; return pc["i0"] + int(round(s / 2.0))   # a jump
 CPS = [(k_of((-2700.0, -1900.0), PC["T"]), "the runway's end", 0.0),
        (jk(J3, 30.0), "The Big One's run-up", 12.0),
        (jk(J3, J3["land_s"][-1] + 6.0), "The Big One's landing", 22.0),
+       (jk(J3, catch_end(J3) - 10.0), "The Big One's run-out", 0.0),   # Round 91 (0): from each landing the next arch in view (the way on)
        (k_of((-2420.0, -1296.0), PC["S"]), "the pit floor", 0.0),
        (k_of((-2760.0, -1545.0), PC["S"]), "the west end", 0.0),
        (k_of((-2380.0, -1668.0), PC["S"]), "the south cliff", 0.0),
@@ -308,12 +313,14 @@ CPS = [(k_of((-2700.0, -1900.0), PC["T"]), "the runway's end", 0.0),
        (k_of((CUT_X, -1900.0), PC["S"]), "the cutting", 0.0),
        (jk(J1, 30.0), "The Corner's run-up", 12.0),
        (jk(J1, J1["land_s"][-1] + 6.0), "The Corner's landing", 22.0),
+       (jk(J1, catch_end(J1) - 10.0), "The Corner's run-out", 0.0),
        (k_of((-1940.0, -1118.0), PC["F"]), "the haul road's hairpin", 0.0),
        (k_of((-1612.0, -1450.0), PC["F"]), "the east rim", 0.0),
        (k_of((-1572.0, -1900.0), PC["G"]), "the east plateau", 0.0),
        (k_of((-1850.0, -2118.0), PC["G"]), "behind the start boxes", 0.0),
        (jk(J2, 30.0), "The Long One's run-up", 12.0),
        (jk(J2, J2["land_s"][-1] + 6.0), "The Long One's landing", 22.0),
+       (jk(J2, catch_end(J2) - 10.0), "The Long One's run-out", 0.0),
        (k_of((-2200.0, -1072.0), PC["X"]), "the north wall", 0.0),
        (k_of((-2550.0, -1232.0), PC["X"]), "the north-west rim", 0.0),
        (k_of((-2863.0, -1384.0), PC["T"]), "the west rim", 0.0)]
@@ -339,8 +346,8 @@ def course_gap(q):
         for dz in (-2, -1, 0, 1, 2):
             for i in cell.get((cx + dx, cz + dz), ()): best = min(best, math.dist(q, dense[i]))
     return best
-ways = [(r["osm_id"], r.get("name") or r["class"], r["width"], pts(r["points"])) for r in M["roads"]
-        if any(-3000 < x < -1450 and -2260 < z < -950 for x, z in pts(r["points"]))]
+ways = [(r["osm_id"], r.get("name") or r["class"], r["width"], haul[:k_junction + 1] if r["osm_id"] == 1173718687 else pts(r["points"])) for r in M["roads"]
+        if any(-3000 < x < -1450 and -2260 < z < -950 for x, z in pts(r["points"])) and r["osm_id"] != 1173718688]   # (Round 91: the dropped roads' parts left out)
 ways.append((0, "the quarry jumps drive", 7.0, pts(Q["access"]["drive"])))
 closures = []
 for oid, name, width, wp in ways:
@@ -426,8 +433,15 @@ for oid, name, width, wp in ways:
 heads = [on_line(j, 0.0) for j in (J1, J2, J3)]
 lands = [on_line(j, s_) for j in (J1, J2, J3) for s_ in np.arange(j["land_s"][0], catch_end(j) + 0.1, 15.0)]   # (along each landing and catch, its middle; 60 m reaches past its 45 m slope)
 def every(lst, n): return lst[::n] + ([lst[-1]] if (len(lst) - 1) % n else [])
+markers = []
 for pc in pieces:
-    if pc["kind"] == "jump": continue
+    if pc["kind"] == "jump":
+        # Round 91 (0): the gravel on from each landing deck's end down the landing slope and the catch to the bench (the way on in view from where you
+        # land: it had been the slope's grass), its edges marked by reflector posts (nothing solid where a wide landing comes down) on 80 m into the next piece
+        j = JJ[pc["name"].split(" ")[0]]; k0 = jk(j, j["land_s"][-1] + 2.0); k1 = min(len(loop), pc["i1"] + 2)
+        surfaces.append({"id": pc["name"] + " run-out", "points": flat(every(loop[k0:k1], 2)), "half": BENCH_HALF})
+        markers.append({"id": pc["name"] + " run-out", "points": flat(every(loop[k0:min(len(loop), pc["i1"] + 40)], 2)), "half": BENCH_HALF + 1.2})
+        continue
     i0, i1 = pc["i0"], pc["i1"]
     ks = list(range(max(0, i0 - 2), min(len(loop), i1 + 2)))   # (from 4 m back on the piece before: no gap at a join)
     P = [loop[k] for k in ks]; Y = [prof[k] for k in ks]
@@ -484,7 +498,7 @@ dividers = [{"id": "between The Big One and The Long One", "points": flat(resamp
 for dv in dividers:
     dp = pts(dv["points"]); print(f"divider {dv['id']}: {cum(dp)[-1]:.0f} m, nearest the course {min(course_gap(q) for q in dp):.1f} m")
 track = {"note": "Round 90: the Viking Quarry race's world pieces, from Tools/mapgen/make_quarry_route.py (MapBuilder.QuarryRace.cs). Coordinates are map meters (= Unity x, z).",
-         "route_name": SETTINGS["name"], "grades": grades, "clear_lines": clear, "landing_zones": [], "surfaces": surfaces, "berms": berms, "dividers": dividers,
+         "route_name": SETTINGS["name"], "grades": grades, "clear_lines": clear, "landing_zones": [], "surfaces": surfaces, "berms": berms, "dividers": dividers, "markers": markers, "drop_roads": DROP_ROADS,
          "course": flat(every(loop, 4))}
 lead = [point_at(loop[k_start - 40:k_start + 1], 2.0 * i) for i in range(41)]
 loop_out = loop[k_start:] + loop[:k_start]

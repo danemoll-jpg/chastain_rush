@@ -134,8 +134,8 @@ namespace ChastainRush
                 }
             }
             if (map.driveways != null) foreach (var d in map.driveways) r.Line(ToPoints(d.points), Mathf.Max(d.width, 3f), Drive);
-            foreach (var rd in map.roads) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f) + 1.5f, Edge);
-            foreach (var rd in map.roads) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f), Asphalt);
+            foreach (var rd in map.roads) if (R91Drawn(rd.osm_id)) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f) + 1.5f, Edge);   // (Round 91: not the dropped quarry road)
+            foreach (var rd in map.roads) if (R91Drawn(rd.osm_id)) r.Line(ToPoints(rd.points), Mathf.Max(rd.width, 4f), Asphalt);
             foreach (var b in map.bridges) { r.Line(ToPoints(b.points), Mathf.Max(b.width, 4f) + 3f, Edge); r.Line(ToPoints(b.points), Mathf.Max(b.width, 4f) + 1f, Deck); }
             // the Noonday Creek trail
             if (ct != null && ct.P.Count > 1) { var l = ct.P.ToList(); l.Add(ct.P[0]); r.Line(l, ct.Data.tread_half_m * 2f, new Color(0.62f, 0.44f, 0.24f)); }

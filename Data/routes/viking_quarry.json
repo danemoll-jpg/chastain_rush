@@ -8970,13 +8970,22 @@
    "id": 3
   },
   {
+   "s": 1781.6,
+   "pos": [
+    -2090.8,
+    -1308.4
+   ],
+   "label": "The Big One's run-out",
+   "id": 4
+  },
+  {
    "s": 2179.8,
    "pos": [
     -2420.8,
     -1296.0
    ],
    "label": "the pit floor",
-   "id": 4
+   "id": 5
   },
   {
    "s": 2619.5,
@@ -8985,7 +8994,7 @@
     -1544.1
    ],
    "label": "the west end",
-   "id": 5
+   "id": 6
   },
   {
    "s": 3045.2,
@@ -8994,7 +9003,7 @@
     -1659.8
    ],
    "label": "the south cliff",
-   "id": 6
+   "id": 7
   },
   {
    "s": 3432.9,
@@ -9003,7 +9012,7 @@
     -1635.7
    ],
    "label": "under The Long One",
-   "id": 7
+   "id": 8
   },
   {
    "s": 3906.6,
@@ -9012,7 +9021,7 @@
     -1899.1
    ],
    "label": "the cutting",
-   "id": 8
+   "id": 9
   },
   {
    "s": 4355.6,
@@ -9022,7 +9031,7 @@
    ],
    "label": "The Corner's run-up",
    "half_m": 12.0,
-   "id": 9
+   "id": 10
   },
   {
    "s": 4901.6,
@@ -9032,7 +9041,16 @@
    ],
    "label": "The Corner's landing",
    "half_m": 22.0,
-   "id": 10
+   "id": 11
+  },
+  {
+   "s": 4977.6,
+   "pos": [
+    -1806.4,
+    -1267.4
+   ],
+   "label": "The Corner's run-out",
+   "id": 12
   },
   {
    "s": 5187.7,
@@ -9041,7 +9059,7 @@
     -1117.2
    ],
    "label": "the haul road's hairpin",
-   "id": 11
+   "id": 13
   },
   {
    "s": 5718.6,
@@ -9050,7 +9068,7 @@
     -1450.3
    ],
    "label": "the east rim",
-   "id": 12
+   "id": 14
   },
   {
    "s": 6171.9,
@@ -9059,7 +9077,7 @@
     -1899.5
    ],
    "label": "the east plateau",
-   "id": 13
+   "id": 15
   },
   {
    "s": 6589.5,
@@ -9068,7 +9086,7 @@
     -2075.0
    ],
    "label": "behind the start boxes",
-   "id": 14
+   "id": 16
   },
   {
    "s": 6817.3,
@@ -9078,7 +9096,7 @@
    ],
    "label": "The Long One's run-up",
    "half_m": 12.0,
-   "id": 15
+   "id": 17
   },
   {
    "s": 7429.3,
@@ -9088,7 +9106,16 @@
    ],
    "label": "The Long One's landing",
    "half_m": 22.0,
-   "id": 16
+   "id": 18
+  },
+  {
+   "s": 7499.3,
+   "pos": [
+    -2000.0,
+    -1295.0
+   ],
+   "label": "The Long One's run-out",
+   "id": 19
   },
   {
    "s": 7855.1,
@@ -9097,7 +9124,7 @@
     -1071.9
    ],
    "label": "the north wall",
-   "id": 17
+   "id": 20
   },
   {
    "s": 8244.3,
@@ -9106,7 +9133,7 @@
     -1231.9
    ],
    "label": "the north-west rim",
-   "id": 18
+   "id": 21
   },
   {
    "s": 8604.0,
@@ -9115,7 +9142,7 @@
     -1384.5
    ],
    "label": "the west rim",
-   "id": 19
+   "id": 22
   }
  ],
  "junctions": [
@@ -9165,78 +9192,8 @@
     "service"
    ],
    "pos": [
-    -1942.4,
-    -1145.4
-   ]
-  },
-  {
-   "s": 7525.7,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -1988.8,
-    -1268.3
-   ]
-  },
-  {
-   "s": 7487.3,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2010.8,
-    -1306.2
-   ]
-  },
-  {
-   "s": 1675.6,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2107.4,
-    -1413.6
-   ]
-  },
-  {
-   "s": 1655.6,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2134.1,
-    -1427.1
-   ]
-  },
-  {
-   "s": 1709.6,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2099.9,
-    -1380.9
-   ]
-  },
-  {
-   "s": 1721.6,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2115.9,
-    -1363.6
-   ]
-  },
-  {
-   "s": 1935.9,
-   "roads": [
-    "service"
-   ],
-   "pos": [
-    -2177.0,
-    -1275.6
+    -1942.2,
+    -1144.8
    ]
   },
   {
@@ -9465,10 +9422,10 @@
   {
    "road": "service",
    "osm_id": 1173718687,
-   "x": -1637.56,
+   "x": -1637.52,
    "z": -1358.18,
-   "dx": 0.993,
-   "dz": 0.118,
+   "dx": 0.9929,
+   "dz": 0.119,
    "width_m": 5.0,
    "junction_s": 5622.8,
    "contact": [
@@ -9483,146 +9440,20 @@
   {
    "road": "service",
    "osm_id": 1173718687,
-   "x": -1944.0,
-   "z": -1151.15,
+   "x": -1944.37,
+   "z": -1152.47,
    "dx": -0.2659,
    "dz": -0.964,
    "width_m": 5.0,
    "junction_s": 5165.7,
    "contact": [
-    -1942.4,
-    -1145.4
-   ],
-   "arc_m": 6.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q5"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718687,
-   "x": -1979.97,
-   "z": -1250.38,
-   "dx": 0.441,
-   "dz": 0.8975,
-   "width_m": 5.0,
-   "junction_s": 7525.7,
-   "contact": [
-    -1988.8,
-    -1268.3
-   ],
-   "arc_m": 20.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q6"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718687,
-   "x": -2018.93,
-   "z": -1317.6,
-   "dx": -0.5786,
-   "dz": -0.8156,
-   "width_m": 5.0,
-   "junction_s": 7487.3,
-   "contact": [
-    -2010.8,
-    -1306.2
-   ],
-   "arc_m": 14.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q7"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718687,
-   "x": -2096.4,
-   "z": -1405.02,
-   "dx": 0.7812,
-   "dz": 0.6242,
-   "width_m": 5.0,
-   "junction_s": 1675.6,
-   "contact": [
-    -2107.4,
-    -1413.6
-   ],
-   "arc_m": 14.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q8"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718687,
-   "x": -2139.92,
-   "z": -1428.5,
-   "dx": -0.9938,
-   "dz": -0.1111,
-   "width_m": 5.0,
-   "junction_s": 1655.6,
-   "contact": [
-    -2134.1,
-    -1427.1
-   ],
-   "arc_m": 6.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q9"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718688,
-   "x": -2093.38,
-   "z": -1385.51,
-   "dx": 0.8187,
-   "dz": -0.5742,
-   "width_m": 5.0,
-   "junction_s": 1709.6,
-   "contact": [
-    -2099.9,
-    -1380.9
+    -1942.2,
+    -1144.8
    ],
    "arc_m": 8.0,
    "barrier_on": "service",
    "label": "service off the Viking Quarry course",
-   "id": "Q10"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718688,
-   "x": -2121.2,
-   "z": -1348.81,
-   "dx": -0.2596,
-   "dz": 0.9657,
-   "width_m": 5.0,
-   "junction_s": 1721.6,
-   "contact": [
-    -2115.9,
-    -1363.6
-   ],
-   "arc_m": 16.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q11"
-  },
-  {
-   "road": "service",
-   "osm_id": 1173718688,
-   "x": -2172.5,
-   "z": -1279.51,
-   "dx": 0.7401,
-   "dz": -0.6725,
-   "width_m": 5.0,
-   "junction_s": 1935.9,
-   "contact": [
-    -2177.0,
-    -1275.6
-   ],
-   "arc_m": 6.0,
-   "barrier_on": "service",
-   "label": "service off the Viking Quarry course",
-   "id": "Q12"
+   "id": "Q5"
   },
   {
    "road": "service",
@@ -9640,7 +9471,7 @@
    "arc_m": 14.0,
    "barrier_on": "service",
    "label": "service off the Viking Quarry course",
-   "id": "Q13"
+   "id": "Q6"
   },
   {
    "road": "service",
@@ -9658,7 +9489,7 @@
    "arc_m": 6.0,
    "barrier_on": "service",
    "label": "service off the Viking Quarry course",
-   "id": "Q14"
+   "id": "Q7"
   },
   {
    "road": "service",
@@ -9676,7 +9507,7 @@
    "arc_m": 10.0,
    "barrier_on": "service",
    "label": "service off the Viking Quarry course",
-   "id": "Q15"
+   "id": "Q8"
   },
   {
    "road": "service",
@@ -9694,7 +9525,7 @@
    "arc_m": 4.0,
    "barrier_on": "service",
    "label": "service off the Viking Quarry course",
-   "id": "Q16"
+   "id": "Q9"
   },
   {
    "road": "the quarry jumps drive",
@@ -9712,7 +9543,7 @@
    "arc_m": 26.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q17"
+   "id": "Q10"
   },
   {
    "road": "the quarry jumps drive",
@@ -9730,7 +9561,7 @@
    "arc_m": 24.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q18"
+   "id": "Q11"
   },
   {
    "road": "the quarry jumps drive",
@@ -9748,7 +9579,7 @@
    "arc_m": 24.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q19"
+   "id": "Q12"
   },
   {
    "road": "the quarry jumps drive",
@@ -9766,7 +9597,7 @@
    "arc_m": 24.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q20"
+   "id": "Q13"
   },
   {
    "road": "the quarry jumps drive",
@@ -9784,7 +9615,7 @@
    "arc_m": 26.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q21"
+   "id": "Q14"
   },
   {
    "road": "the quarry jumps drive",
@@ -9802,7 +9633,7 @@
    "arc_m": 22.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q22"
+   "id": "Q15"
   },
   {
    "road": "the quarry jumps drive",
@@ -9820,7 +9651,7 @@
    "arc_m": 86.0,
    "barrier_on": "the quarry jumps drive",
    "label": "the quarry jumps drive off the Viking Quarry course",
-   "id": "Q23"
+   "id": "Q16"
   }
  ],
  "closure_stubs_not_barred": [],

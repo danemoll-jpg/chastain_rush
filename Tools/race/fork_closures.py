@@ -24,6 +24,15 @@ class Grid:
                 for r in s.g.get((i + di, j + dj), ()): best = min(best, math.dist(q, r))
         return best
 roads = [(r, dense(pts(r["points"]), 1.0)) for r in M["roads"] if r.get("class") not in ("footway", "path", "track", "cycleway", "steps", "pedestrian")]
+# Round 91: roads (or their parts) a track file drops from the build (its "drop_roads": the osm_id, and keep_to: the point the kept part ends at) get no barriers
+import glob as _glob
+for _f in _glob.glob("Data/tracks/*.json"):
+    for _d in json.load(open(_f, encoding="utf-8-sig")).get("drop_roads", []) if _f.endswith("viking_quarry.json") else []:
+        for _i, (r, rp) in enumerate(roads):
+            if r["osm_id"] != _d["osm_id"]: continue
+            if "keep_to" not in _d: roads[_i] = (r, []); continue
+            _p = pts(r["points"]); _k = min(range(len(_p)), key=lambda k: math.dist(_p[k], _d["keep_to"]))
+            roads[_i] = (r, dense(_p[:_k + 1], 1.0))
 def forks(line_grid, sc_grids, bars):
     out = []
     for r, rp in roads:
