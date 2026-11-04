@@ -43,9 +43,43 @@ PIPES = {p["id"]: p for p in json.load(open(os.path.join(ROOT, "Data/pipes/pipes
 
 
 def ground(x, z):
+    if not (0.0 <= x <= MW and 0.0 <= z <= MD): return ground_ext(x, z)   # Round 91 (C): the map extension (the core's ground as it always was)
     x = min(max(x, 0.0), MW - 1.0); z = min(max(z, 0.0), MD - 1.0)
     fx, fz = x / SX, z / SZ; i, j = int(fx), int(fz); a, b = fx - i, fz - j
     return float(H[j, i] * (1 - a) * (1 - b) + H[j, i + 1] * a * (1 - b) + H[j + 1, i] * (1 - a) * b + H[j + 1, i + 1] * a * b)
+
+
+# Round 91 (C, Dan: "expand the underground system to cover the larger map"): the ground of the map extension, for the new pipes. The lower of
+# mapgen's ground (Assets/Generated/terrain_full.r16, and terrain_piece3.r16 for Marietta Square's piece) and the ground AS BUILT (the map build
+# grades a lot of it: the quarry's benches and landing slopes, the railroad's bed, the levelled main roads), from the built scene
+# (ChastainRush.GroundGrid.Run over the extension every 8 m, pooled to the lowest in 16 m cells: Data/pipes/built_ground_ext.npz, made by
+# --built-grid <csv>), less a meter (a pipe out here has at least a meter more over it than its cover)
+_EXT = {}
+def _ext_load():
+    if _EXT: return _EXT
+    for key, name in (("full", "terrain_full"), ("piece", "terrain_piece3")):
+        mt = json.load(open(os.path.join(ROOT, f"Assets/Generated/{name}.json")))
+        arr = np.memmap(os.path.join(ROOT, f"Assets/Generated/{name}.r16"), dtype="<u2", mode="r", shape=(mt["grid_z"], mt["grid_x"]))
+        _EXT[key] = (mt, arr)
+    bp = os.path.join(ROOT, "Data/pipes/built_ground_ext.npz")
+    _EXT["built"] = dict(np.load(bp)) if os.path.exists(bp) else None
+    if _EXT["built"] is None: print("  (no Data/pipes/built_ground_ext.npz: the extension's pipes on mapgen's ground only)")
+    return _EXT
+def _raw(mt, arr, x, z):
+    fx = (x - mt["origin_x_m"]) / mt["step_x_m"]; fz = (z - mt["origin_z_m"]) / mt["step_z_m"]
+    if not (0 <= fx < mt["grid_x"] - 1 and 0 <= fz < mt["grid_z"] - 1): return None
+    i, j = int(fx), int(fz); a, b = fx - i, fz - j
+    h = float(arr[j, i]) * (1 - a) * (1 - b) + float(arr[j, i + 1]) * a * (1 - b) + float(arr[j + 1, i]) * (1 - a) * b + float(arr[j + 1, i + 1]) * a * b
+    return h / 65535.0 * (mt["max_height"] - mt["min_height"]) + mt["min_height"]
+def ground_ext(x, z):
+    e = _ext_load(); g = _raw(*e["full"], x, z)
+    if g is None: g = _raw(*e["piece"], x, z)
+    if g is None: g = 300.0
+    bg = e["built"]
+    if bg is not None:   # (the most the build cut below mapgen's ground in this 16 m cell)
+        i = int((x - float(bg["x0"])) // float(bg["cell"])); j = int((z - float(bg["z0"])) // float(bg["cell"])); a = bg["cut"]
+        if 0 <= j < a.shape[0] and 0 <= i < a.shape[1]: g += float(a[j, i])
+    return g - 1.0
 
 
 def P2(a): return [(a[i], a[i + 1]) for i in range(0, len(a), 2)]
@@ -298,6 +332,76 @@ DIFFERS = [
     "Round 24 (Dan): L_W8, the launch over the Chastain Glen pond, and its pipe B18 are out (they left a house floating); GP, 100 m away, is that pond's way in and out",
     "Round 28 (Dan: \"Lets try the shortcuts\"): the underground race's switch shortcuts are built as world pipes. S2 the dive pipe: two junctions on M5 (J14, J15; M5's line and floor kept) and a straight pipe between them that dives under M5's bend (up to 24 %) with a flooded sump at the bottom; J15 sits 30 m clear of B8. S3 the high line: J1 straight to a high opening 2.5 m up J2's west wall (J2 3 m taller and 2 m wider), lined up with M1b's opening across the room: you fly over J2's floor",
 ]
+
+
+# ================================================================ stage 5: the map extension (Round 91 C)
+# Dan (2026-11-02): "we need to expand the underground system to cover the larger map. We can for example have at least a couple pipes at the
+# bottom of the quarry. We can have one or more leading to other parts of the underground network and one or two that shoot the user up back to
+# the top of the quarry". Two new mains, both reaching the hub along the mains:
+#   M7 SOUTH MAIN  the hub's floor, south-west under the creek valley to J20 under Town Center at Cobb; on south to J24 at Kennesaw Mountain's foot,
+#                  J25 by Kennestone Hospital and J26 under Marietta Square
+#   M8 WEST MAIN   J20 west to J23 under Viking Quarry's pit floor; on north under the quarry's north wall to J22 at Kennesaw State (in glass under
+#                  the campus pond)
+# Each area a manhole in a side street and an exit in a bank; at Viking Quarry an exit on the pit floor, a 5 m branch on to the airport, and
+# two LAUNCH pipes whose mouths on the pit floor blow a geyser that throws you up out of the pit onto the rim (PipeLaunch, an aimed flight:
+# creative, not a ramp). The new ends and junctions keep clear of everything built before (the core's pipes are unchanged).
+STRIPES.update({"M7": (0.95, 0.95, 0.92), "M8": (0.10, 0.80, 0.78)})
+J5X = (24.0, 24.0, 8.0)     # a junction where many pipes meet (Viking Quarry)
+CH.update({
+    "J20": dict(name="J20 TOWN CENTER", kind="junction", at=(222.0, -1252.0), yaw=15.0, size=J5M, stage=5, sign="M7 SOUTH MAIN  /  M8 WEST MAIN"),
+    # (Viking Quarry: under the low ledge on the pit's north shore, below the race's low haul bench, so its pipes come out on the shore at its level)
+    "J23": dict(name="J23 VIKING QUARRY", kind="junction", at=(-2500.0, -1325.0), yaw=0.0, size=J5X, stage=5, sign="M8 WEST MAIN", floor=156.0),
+    "J22": dict(name="J22 KENNESAW STATE", kind="junction", at=(-1872.0, 760.0), yaw=0.0, size=J5M, stage=5, sign="M8 WEST MAIN"),
+    "J24": dict(name="J24 KENNESAW MOUNTAIN", kind="junction", at=(-760.0, -5150.0), yaw=0.0, size=J5M, stage=5, sign="M7 SOUTH MAIN"),
+    "J25": dict(name="J25 KENNESTONE", kind="junction", at=(1480.0, -6560.0), yaw=0.0, size=J5M, stage=5, sign="M7 SOUTH MAIN"),
+    "J26": dict(name="J26 MARIETTA SQUARE", kind="junction", at=(1765.0, -8417.0), yaw=0.0, size=J5M, stage=5, sign="M7 SOUTH MAIN"),
+})
+# the exits: a bank 80 to 260 m from each junction, clear of roads, drives, buildings, water, streams, the railroad and every race course (a search
+# over the built ground); the quarry's on its north shore at the junction's level. A launch: where its geyser throws you ('to': on the runway's
+# grass by the rim, the way it lands along 'dir'), at 'angle' degrees
+def _rim(x, z): return (x, round(ground(x, z) + 1.0 + 0.6, 2), z)
+EXITS.update({
+    "X_TC":   dict(name="EXIT TOWN CENTER", at=(-22.5, -1304.0)),
+    "X_KMT":  dict(name="EXIT KENNESAW MOUNTAIN", at=(-700.5, -5096.5)),
+    "X_KEN":  dict(name="EXIT KENNESTONE", at=(1310.1, -6436.6)),
+    "X_MAR":  dict(name="EXIT MARIETTA SQUARE", at=(1593.8, -8361.4)),
+    "X_AIR":  dict(name="EXIT AIRPORT", at=(-2805.1, -2023.4), max_len=30.0),   # (the pipe climbs out of the pit, not a long trench)
+    "X_QF":   dict(name="EXIT QUARRY FLOOR", at=(-2500.0, -1380.0)),
+    "L_Q1":   dict(name="LAUNCH QUARRY WEST", at=(-2540.0, -1382.0), launch=dict(to=_rim(-2620.0, -1858.0), dir=(1.0, 0.045), angle=52.0)),
+    "L_Q2":   dict(name="LAUNCH QUARRY EAST", at=(-2460.0, -1370.0), launch=dict(to=_rim(-2380.0, -1852.0), dir=(-1.0, -0.045), angle=52.0)),
+})
+MANHOLES.update({
+    "MH20": ("Ring Road Northwest", (145.0, -979.0)), "MH22": ("Campus Loop Road", (-1861.0, 868.0)), "MH21": ("Paulding Avenue", (-1758.0, 799.0)),
+    "MH24": ("Kennesaw Mountain Drive", (-661.0, -5198.0)), "MH25": ("Campbell Hill Street Northwest", (1460.0, -6452.0)),
+    "MH26": ("Root Street Northeast", (1761.0, -8307.0)),
+})
+TUBES += [
+    T("M7a", "M7 South Main (the hub to J20, Town Center)", MAIN, True, 5, ("ch", "HUB"), [(1700.0, 800.0), (1000.0, -200.0), (400.0, -1000.0)], ("ch", "J20"), stripe="M7"),
+    T("M7b", "M7 South Main (J20 to J24, Kennesaw Mountain)", MAIN, True, 5, ("ch", "J20"), [(100.0, -1700.0), (-400.0, -3300.0), (-700.0, -4700.0)], ("ch", "J24"), stripe="M7"),
+    T("M7c", "M7 South Main (J24 to J25, Kennestone; glass under Christon Lake)", MAIN, True, 5, ("ch", "J24"), [(-760.0, -5330.0), (-300.0, -5500.0), (740.0, -6237.0), (1000.0, -6237.0)], ("ch", "J25"), glass=[157], stripe="M7"),
+    T("M7d", "M7 South Main (J25 to J26, Marietta Square)", MAIN, True, 5, ("ch", "J25"), [(1600.0, -7200.0), (1720.0, -8000.0)], ("ch", "J26"), stripe="M7"),
+    T("M8a", "M8 West Main (J20 to J23, Viking Quarry)", MAIN, True, 5, ("ch", "J20"), [(-200.0, -1300.0), (-1000.0, -1250.0), (-1800.0, -1270.0), (-2300.0, -1250.0)], ("ch", "J23"), stripe="M8"),
+    T("M8b", "M8 West Main (J23 to J22, Kennesaw State, glass under the campus pond)", MAIN, True, 5, ("ch", "J23"), [(-2470.0, -1200.0), (-2250.0, -1000.0), (-2000.0, -300.0), (-1880.0, 450.0), (-1873.0, 640.0), (-1873.0, 700.0)], ("ch", "J22"), glass=[22], stripe="M8"),
+    # the areas' ways out
+    T("B30", "B30 (Town Center: Ring Road)", NARROW, False, 5, ("ch", "J20"), [], ("mh", "MH20")),
+    T("B31", "B31 (Town Center: the exit)", NARROW, False, 5, ("ch", "J20"), [], ("x", "X_TC")),
+    T("B32", "B32 (Viking Quarry: the shore exit)", MAIN, False, 5, ("ch", "J23"), [], ("x", "X_QF"), max_grade=0.18),
+    T("B33", "B33 (Viking Quarry: the west launch pipe)", MAIN, False, 5, ("ch", "J23"), [], ("x", "L_Q1"), max_grade=0.18),
+    T("B34", "B34 (Viking Quarry: the east launch pipe)", MAIN, False, 5, ("ch", "J23"), [], ("x", "L_Q2"), max_grade=0.18),
+    T("B35", "B35 (Viking Quarry to the airport, round the lake's west end)", MAIN, False, 5, ("ch", "J23"), [(-2750.0, -1330.0), (-2950.0, -1450.0), (-3050.0, -1700.0), (-2950.0, -1950.0)], ("x", "X_AIR"), max_grade=0.20),
+    T("B36", "B36 (Kennesaw State: Campus Loop Road)", NARROW, False, 5, ("ch", "J22"), [], ("mh", "MH22")),
+    T("B37", "B37 (Kennesaw State: Paulding Avenue)", NARROW, False, 5, ("ch", "J22"), [], ("mh", "MH21")),   # (no bank low enough near: a second manhole)
+    T("B38", "B38 (Kennesaw Mountain: Kennesaw Mountain Drive)", NARROW, False, 5, ("ch", "J24"), [], ("mh", "MH24")),
+    T("B39", "B39 (Kennesaw Mountain: the exit)", NARROW, False, 5, ("ch", "J24"), [], ("x", "X_KMT")),
+    T("B40", "B40 (Kennestone: Campbell Hill Street)", NARROW, False, 5, ("ch", "J25"), [], ("mh", "MH25")),
+    T("B41", "B41 (Kennestone: the exit)", NARROW, False, 5, ("ch", "J25"), [], ("x", "X_KEN")),
+    T("B42", "B42 (Marietta Square: Root Street)", NARROW, False, 5, ("ch", "J26"), [], ("mh", "MH26")),
+    T("B43", "B43 (Marietta Square: the exit)", NARROW, False, 5, ("ch", "J26"), [], ("x", "X_MAR")),
+]
+DIFFERS.append("Round 91 (C, Dan: \"expand the underground system to cover the larger map\"): stage 5, the map extension: M7 SOUTH MAIN from the hub's floor to J20 under "
+               "Town Center, J24 at Kennesaw Mountain's foot, J25 by Kennestone (glass under Christon Lake) and J26 under Marietta Square; M8 WEST MAIN from J20 to J23 under "
+               "Viking Quarry's north shore and on to J22 at Kennesaw State (glass under the campus pond); a manhole and an exit in each area; at the quarry an exit on the "
+               "shore, a branch round the lake to the airport and two launch pipes that throw you up out of the pit onto the rim by the runway")
 
 
 # ================================================================ resolve
@@ -716,6 +820,8 @@ def build(stage_max):
             exits_out.append(dict(id=h["exit"], name=EXITS[h["exit"]]["name"], tube=tb["id"], a=[round(h["A"][0], 2), round(h["A"][1], 2)],
                                   b=[round(h["B"][0], 2), round(h["B"][1], 2)], b_floor=round(pts3[-1][1] if k == 1 else pts3[0][1], 2), d=d,
                                   outfall=h["outfall"], stage=tb["stage"], ground_a=round(h["gA"], 2)))
+            xl = EXITS[h["exit"]].get("launch")   # Round 91 (C): a launch pipe's geyser: where it throws you (PipeLaunch)
+            if xl: exits_out[-1].update(launch_to=[round(v, 2) for v in xl["to"]], launch_dir=[round(v, 4) for v in norm(xl["dir"])], launch_angle=xl.get("angle", 62.0))
         s3 = [0.0]
         for i in range(1, len(pts3)): s3.append(s3[-1] + math.dist(pts3[i], pts3[i - 1]))
         worst = min(range(len(cov)), key=lambda i: cov[i])
@@ -850,7 +956,23 @@ def express(tubes, stage, exits):
 
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--stage", type=int, default=None); ap.add_argument("--plot", action="store_true"); ap.add_argument("--out", default=None); a = ap.parse_args()
+    ap = argparse.ArgumentParser(); ap.add_argument("--stage", type=int, default=None); ap.add_argument("--plot", action="store_true"); ap.add_argument("--out", default=None)
+    ap.add_argument("--built-grid", default=None); a = ap.parse_args()
+    if a.built_grid:   # Round 91: the built scene's ground (GroundGrid's csv) to Data/pipes/built_ground_ext.npz, the lowest in each 16 m cell
+        d = np.loadtxt(a.built_grid, delimiter=",", skiprows=1, usecols=(0, 1, 2), dtype=np.float64)
+        d = d[np.isfinite(d[:, 2])]; cell = 16.0; x0, z0 = float(d[:, 0].min()), float(d[:, 1].min())
+        # (how far the build cut below mapgen's ground: built minus mapgen's at each sample, the most in each cell; a natural slope is 0)
+        e = _ext_load(); rawv = np.full(len(d), np.nan)
+        for mt, arr in (e["full"], e["piece"]):
+            fx = (d[:, 0] - mt["origin_x_m"]) / mt["step_x_m"]; fz = (d[:, 1] - mt["origin_z_m"]) / mt["step_z_m"]
+            ok = (fx >= 0) & (fx < mt["grid_x"] - 1) & (fz >= 0) & (fz < mt["grid_z"] - 1) & np.isnan(rawv)
+            v = np.asarray(arr[fz[ok].astype(int), fx[ok].astype(int)], dtype=np.float64)
+            rawv[ok] = v / 65535.0 * (mt["max_height"] - mt["min_height"]) + mt["min_height"]
+        cut = np.minimum(0.0, np.nan_to_num(d[:, 2] - rawv, nan=0.0))
+        ii = ((d[:, 0] - x0) // cell).astype(int); jj = ((d[:, 1] - z0) // cell).astype(int)
+        low = np.zeros((jj.max() + 1, ii.max() + 1), dtype=np.float32); np.minimum.at(low, (jj, ii), cut.astype(np.float32))
+        np.savez_compressed(os.path.join(ROOT, "Data/pipes/built_ground_ext.npz"), x0=x0, z0=z0, cell=cell, cut=low)
+        print(f"wrote Data/pipes/built_ground_ext.npz: {low.shape[1]} x {low.shape[0]} cells of {cell:.0f} m from {len(d)} samples; cut up to {-low.min():.1f} m"); return
     global OUT
     if a.out: OUT = a.out
     old = json.load(open(OUT)) if os.path.exists(OUT) else {}
@@ -877,7 +999,7 @@ def main():
 
 
 DOC = os.path.join(ROOT, "Docs/PIPE-NETWORK.md")
-STAGE_NAMES = {0: "Part B: the two entrances", 1: "Stage 1: the hub, the trunk, the Enclave", 2: "Stage 2: Noonday", 3: "Stage 3: the Glen and the shops", 4: "Stage 4: the lakes"}
+STAGE_NAMES = {0: "Part B: the two entrances", 1: "Stage 1: the hub, the trunk, the Enclave", 2: "Stage 2: Noonday", 3: "Stage 3: the Glen and the shops", 4: "Stage 4: the lakes", 5: "Stage 5: the map extension (Round 91)"}
 
 
 def write_doc(tubes, chambers, exits, manholes, stage, exp=()):
@@ -890,10 +1012,10 @@ def write_doc(tubes, chambers, exits, manholes, stage, exp=()):
           "**Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off "
           "in different directions; every exit is a way in as well. Manholes open only from below.", "",
           "**Finding your way**: the mains carry a color stripe along both walls, with chevrons on it every 8 m pointing to the hub, their "
-          "names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple) and a "
+          "names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple, M7 white, M8 teal) and a "
           "HUB sign with an arrow stands beside the one that leads to the hub; every main ends in the hub; the maze branches are unmarked. Underground, the map "
           "(M or View) shows the pipes and the junctions', manholes' and exits' names.", ""]
-    for st in range(0, 5):
+    for st in range(0, 6):
         ts = [t for t in tubes if t["stage"] == st]
         if not ts: continue
         state = "BUILT" if st <= stage else "not built yet"

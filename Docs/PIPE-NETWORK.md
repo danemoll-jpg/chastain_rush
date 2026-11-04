@@ -1,10 +1,10 @@
 # The underground pipe network, as built
 
-Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 4**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
+Made by `Tools/mapgen/pipe_network.py` from its layout (Data/pipes/network.json); built by the map build (MapBuilder.Network.cs, MapBuilder.NetworkHub.cs) up to **stage 5**. The plan it follows: Docs/PIPE-NETWORK-PROPOSAL.md. World, not race: there is no underground race, no gates and no switches (the race's proposal markers are kept: debug menu, Proposal markers).
 
 **Ways in**: BF (the creek channel west of Bells Ferry Road) and GP (the Chastain Glen pond's culvert), each two pipes that go off in different directions; every exit is a way in as well. Manholes open only from below.
 
-**Finding your way**: the mains carry a color stripe along both walls, with chevrons on it every 8 m pointing to the hub, their names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple) and a HUB sign with an arrow stands beside the one that leads to the hub; every main ends in the hub; the maze branches are unmarked. Underground, the map (M or View) shows the pipes and the junctions', manholes' and exits' names.
+**Finding your way**: the mains carry a color stripe along both walls, with chevrons on it every 8 m pointing to the hub, their names are painted over their openings in the junctions (M1 red, M5 orange, M3 green, M4 yellow, M2 blue, M6 purple, M7 white, M8 teal) and a HUB sign with an arrow stands beside the one that leads to the hub; every main ends in the hub; the maze branches are unmarked. Underground, the map (M or View) shows the pipes and the junctions', manholes' and exits' names.
 
 ## Part B: the two entrances (BUILT)
 
@@ -118,6 +118,37 @@ Manholes: **MH12** in Laurel Green Court Northwest (x 801, z 1162; riser 19 m); 
 
 Exits: **Exit Far West Pond** (x 182, z 1488); **Exit Nelson Lake** (x 262, z 118); **Exit Lake Stream** (x 470, z 1425)
 
+## Stage 5: the map extension (Round 91) (BUILT)
+
+| Pipe | | Size | Length | Floor | Notes |
+|---|---|---|---|---|---|
+| M7a | M7 South Main (the hub to J20, Town Center) | 5.0 m | 2902 m | 252 to 296 m | HUB to J20;  |
+| M7b | M7 South Main (J20 to J24, Kennesaw Mountain) | 5.0 m | 4013 m | 296 to 384 m | J20 to J24;  |
+| M7c | M7 South Main (J24 to J25, Kennestone; glass under Christon Lake) | 5.0 m | 2768 m | 359 to 399 m | J24 to J25; glass under pond W157 (69 m) |
+| M7d | M7 South Main (J25 to J26, Marietta Square) | 5.0 m | 1864 m | 353 to 399 m | J25 to J26;  |
+| M8a | M8 West Main (J20 to J23, Viking Quarry) | 5.0 m | 2724 m | 156 to 296 m | J20 to J23;  |
+| M8b | M8 West Main (J23 to J22, Kennesaw State, glass under the campus pond) | 5.0 m | 2222 m | 156 to 308 m | J23 to J22; glass under pond W22 (26 m) |
+| B30 | B30 (Town Center: Ring Road) | 3.5 m | 300 m | 292 to 296 m | J20 to MH20; pops out at MH20 |
+| B31 | B31 (Town Center: the exit) | 3.5 m | 189 m | 296 to 296 m | J20 to X_TC; comes out at exit town center |
+| B32 | B32 (Viking Quarry: the shore exit) | 5.0 m | 23 m | 156 to 157 m | J23 to X_QF; comes out at exit quarry floor |
+| B33 | B33 (Viking Quarry: the west launch pipe) | 5.0 m | 29 m | 154 to 156 m | J23 to L_Q1; comes out at launch quarry west |
+| B34 | B34 (Viking Quarry: the east launch pipe) | 5.0 m | 31 m | 156 to 160 m | J23 to L_Q2; comes out at launch quarry east |
+| B35 | B35 (Viking Quarry to the airport, round the lake's west end) | 5.0 m | 1150 m | 156 to 308 m | J23 to X_AIR; comes out at exit airport |
+| B36 | B36 (Kennesaw State: Campus Loop Road) | 3.5 m | 104 m | 308 to 316 m | J22 to MH22; pops out at MH22 |
+| B37 | B37 (Kennesaw State: Paulding Avenue) | 3.5 m | 129 m | 308 to 321 m | J22 to MH21; pops out at MH21 |
+| B38 | B38 (Kennesaw Mountain: Kennesaw Mountain Drive) | 3.5 m | 112 m | 384 to 395 m | J24 to MH24; pops out at MH24 |
+| B39 | B39 (Kennesaw Mountain: the exit) | 3.5 m | 49 m | 384 to 384 m | J24 to X_KMT; comes out at exit kennesaw mountain |
+| B40 | B40 (Kennestone: Campbell Hill Street) | 3.5 m | 122 m | 399 to 402 m | J25 to MH25; pops out at MH25 |
+| B41 | B41 (Kennestone: the exit) | 3.5 m | 167 m | 398 to 399 m | J25 to X_KEN; comes out at exit kennestone |
+| B42 | B42 (Marietta Square: Root Street) | 3.5 m | 103 m | 367 to 367 m | J26 to MH26; pops out at MH26 |
+| B43 | B43 (Marietta Square: the exit) | 3.5 m | 143 m | 367 to 367 m | J26 to X_MAR; comes out at exit marietta square |
+
+Chambers: **J20 TOWN CENTER** (junction, x 222, z -1252, floor 296 m); **J23 VIKING QUARRY** (junction, x -2500, z -1325, floor 156 m); **J22 KENNESAW STATE** (junction, x -1872, z 760, floor 308 m); **J24 KENNESAW MOUNTAIN** (junction, x -760, z -5150, floor 384 m); **J25 KENNESTONE** (junction, x 1480, z -6560, floor 399 m); **J26 MARIETTA SQUARE** (junction, x 1765, z -8417, floor 367 m)
+
+Manholes: **MH20** in Ring Road Northwest (x 145, z -979; riser 7 m); **MH22** in Campus Loop Road (x -1861, z 868; riser 9 m); **MH21** in Paulding Avenue (x -1758, z 799; riser 10 m); **MH24** in Kennesaw Mountain Drive (x -661, z -5198; riser 16 m); **MH25** in Campbell Hill Street Northwest (x 1460, z -6452; riser 6 m); **MH26** in Root Street Northeast (x 1761, z -8307; riser 6 m)
+
+Exits: **Exit Town Center** (x -22, z -1304); **Exit Quarry Floor** (x -2500, z -1380); **Launch Quarry West** (x -2540, z -1382); **Launch Quarry East** (x -2460, z -1370); **Exit Airport** (x -2805, z -2023); **Exit Kennesaw Mountain** (x -700, z -5096); **Exit Kennestone** (x 1310, z -6437); **Exit Marietta Square** (x 1594, z -8361)
+
 ## The pipe express (free roam only)
 
 On every run of pipe longer than about 100 m between two places where you have a choice or a reason to stop (a junction, the hub, an exit, a manhole's foot, the split behind BF or GP, either end of a glass stretch or a flooded sag), an **EXPRESS** band painted round the pipe and arrows on the floor mark each end, 20 m short of those places. Drive in at either end and the water surges: the controls lock and you are carried along the floor's middle (a whoosh, speed streaks), and let go at the far end at 20 m/s, facing on out of it, so every turn is still yours. A long one goes faster, so no ride is longer than about 12 s. Glass stretches are never express. Debug menu, **Pipe express**: Boost (the default), Warp (a short dark fade, then you are at the far end) or Off. During a race it is off and these pipes drive as any other; the AI never uses it. On the map the express stretches are drawn in cyan.
@@ -163,6 +194,23 @@ On every run of pipe longer than about 100 m between two places where you have a
 | E37 B23 express | B23 (3.5 m) | J9 (20 m along) | MH12's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
 | E38 B24 express | B24 (3.5 m) | J9 (20 m along) | MH13's foot (288 m along) | 268 m | 45 m/s | about 7 s | 13 s |
 | E39 B29 express | B29 (5.0 m) | glass under W0's end (72 m along) | MH15's foot (193 m along) | 120 m | 45 m/s | about 3 s | 6 s |
+| E40 M7a express | M7a (5.0 m) | HUB (20 m along) | J20 (2882 m along) | 2862 m | 313 m/s | about 11 s | 143 s |
+| E41 M7b express | M7b (5.0 m) | J20 (20 m along) | J24 (3993 m along) | 3973 m | 400 m/s | about 12 s | 199 s |
+| E42 M7c express | M7c (5.0 m) | J24 (20 m along) | glass under W157's start (2021 m along) | 2001 m | 215 m/s | about 12 s | 100 s |
+| E43 M7c express | M7c (5.0 m) | glass under W157's end (2130 m along) | J25 (2748 m along) | 618 m | 60 m/s | about 12 s | 31 s |
+| E44 M7d express | M7d (5.0 m) | J25 (20 m along) | J26 (1844 m along) | 1824 m | 196 m/s | about 12 s | 91 s |
+| E45 M8a express | M8a (5.0 m) | J20 (20 m along) | J23 (2704 m along) | 2684 m | 292 m/s | about 11 s | 134 s |
+| E46 M8b express | M8b (5.0 m) | J23 (20 m along) | glass under W22's start (2106 m along) | 2086 m | 224 m/s | about 12 s | 104 s |
+| E47 B30 express | B30 (3.5 m) | J20 (20 m along) | MH20's foot (280 m along) | 260 m | 45 m/s | about 6 s | 13 s |
+| E48 B31 express | B31 (3.5 m) | J20 (20 m along) | Exit Town Center (169 m along) | 149 m | 45 m/s | about 4 s | 7 s |
+| E49 B35 express | B35 (5.0 m) | J23 (20 m along) | Exit Airport (1130 m along) | 1110 m | 117 m/s | about 12 s | 55 s |
+| E50 B36 express | B36 (3.5 m) | J22 (20 m along) | MH22's foot (84 m along) | 64 m | 45 m/s | about 2 s | 3 s |
+| E51 B37 express | B37 (3.5 m) | J22 (20 m along) | MH21's foot (109 m along) | 89 m | 45 m/s | about 3 s | 4 s |
+| E52 B38 express | B38 (3.5 m) | J24 (20 m along) | MH24's foot (92 m along) | 72 m | 45 m/s | about 2 s | 4 s |
+| E53 B40 express | B40 (3.5 m) | J25 (20 m along) | MH25's foot (102 m along) | 82 m | 45 m/s | about 2 s | 4 s |
+| E54 B41 express | B41 (3.5 m) | J25 (20 m along) | Exit Kennestone (147 m along) | 127 m | 45 m/s | about 4 s | 6 s |
+| E55 B42 express | B42 (3.5 m) | J26 (20 m along) | MH26's foot (83 m along) | 63 m | 45 m/s | about 2 s | 3 s |
+| E56 B43 express | B43 (3.5 m) | J26 (20 m along) | Exit Marietta Square (123 m along) | 103 m | 45 m/s | about 3 s | 5 s |
 
 ## What differs from the proposal
 
@@ -180,3 +228,4 @@ On every run of pipe longer than about 100 m between two places where you have a
 - Round 24 Part B (Dan: "It is very easy to get turned around in the tunnels"): chevrons on the mains' stripes point the way to the hub along the mains, and every junction on a main has a HUB sign with an arrow beside the main that leads there
 - Round 24 (Dan): L_W8, the launch over the Chastain Glen pond, and its pipe B18 are out (they left a house floating); GP, 100 m away, is that pond's way in and out
 - Round 28 (Dan: "Lets try the shortcuts"): the underground race's switch shortcuts are built as world pipes. S2 the dive pipe: two junctions on M5 (J14, J15; M5's line and floor kept) and a straight pipe between them that dives under M5's bend (up to 24 %) with a flooded sump at the bottom; J15 sits 30 m clear of B8. S3 the high line: J1 straight to a high opening 2.5 m up J2's west wall (J2 3 m taller and 2 m wider), lined up with M1b's opening across the room: you fly over J2's floor
+- Round 91 (C, Dan: "expand the underground system to cover the larger map"): stage 5, the map extension: M7 SOUTH MAIN from the hub's floor to J20 under Town Center, J24 at Kennesaw Mountain's foot, J25 by Kennestone (glass under Christon Lake) and J26 under Marietta Square; M8 WEST MAIN from J20 to J23 under Viking Quarry's north shore and on to J22 at Kennesaw State (glass under the campus pond); a manhole and an exit in each area; at the quarry an exit on the shore, a branch round the lake to the airport and two launch pipes that throw you up out of the pit onto the rim by the runway

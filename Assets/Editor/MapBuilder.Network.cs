@@ -35,7 +35,7 @@ namespace ChastainRush
         [Serializable] class NetTube { public string id, name; public float d; public bool main; public int stage, to_hub; public float[] stripe; public NetEnd a, b; public float[] pts; public NetGlass[] glass; public NetFlood flood; }
         [Serializable] class NetOpening { public int wall; public float t, d, inset; public string tube, lvl; public bool high; }
         [Serializable] class NetChamber { public string id, name, kind, sign, hub_tube; public float x, z, yaw, length, width, height, floor, drop, mid, top, inset_mid, inset_floor, ceiling, roof_open; public int stage; public NetOpening[] openings; }   // Round 44: roof_open, LD's hole under the lake drain
-        [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; }
+        [Serializable] class NetExit { public string id, name, tube; public float[] a, b; public float b_floor, d, ground_a; public int outfall, stage; public float[] launch_to, launch_dir; public float launch_angle; }   // Round 91 (C): launch_*, a launch pipe's geyser (PipeLaunch)
         [Serializable] class NetManhole { public string id, name, tube, road; public float x, z, y, d, height; public float[] dir; public int stage, riser_points; }
         [Serializable] class NetExpress { public string id, name, tube; public float s0, s1, top; }   // Round 25 (B2): the pipe express's stretches; Round 26: top, its own top speed
         [Serializable] class NetFile { public int build_stage; public NetTube[] tubes; public NetChamber[] chambers; public NetExit[] exits; public NetManhole[] manholes; public NetExpress[] express; }
@@ -343,6 +343,7 @@ namespace ChastainRush
             foreach (var (g, gl, T, TS) in n.Glass) BuildNetworkGlass(terrain, mats, root, g, gl, T, TS, cells);
             BuildPipeWarp(root, n, pipes);        // Round 25 (B1): the debug menu's pipe warp places (MapBuilder.NetworkWarp.cs)
             BuildPipeExpress(root, mats, n);      // Round 25 (B2): the pipe express
+            BuildPipeLaunches(root, n);           // Round 91 (C): the quarry's launch pipes (MapBuilder.Round91.cs)
             // the run time: cells switched on near the camera
             var nc = root.gameObject.AddComponent<NetworkCells>();
             nc.roots = cells.Cells.Select(c => c.root).ToArray(); nc.bounds = cells.Cells.Select(c => c.b).ToArray();
