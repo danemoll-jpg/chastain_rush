@@ -146,7 +146,7 @@ namespace ChastainRush
             else if (!string.IsNullOrEmpty(hud))
             {
                 bool wide = w > 1000f; var st = new GUIStyle(centre) { fontSize = 20, alignment = TextAnchor.UpperCenter };
-                var nr = wide ? new Rect(w * .25f, 14, w * .5f, 0) : new Rect(14, ph + 22, w - 28, 0);
+                var nr = wide ? new Rect(w * .25f, 14, w * .5f, 0) : new Rect(14, ph + 22, w * .7f - 28, 0);   // (a narrow half: left of the minimap, top right)
                 nr.height = st.CalcHeight(new GUIContent(hud), nr.width) + 6;
                 var bg = new Rect(nr.x + nr.width * .5f - Mathf.Min(nr.width, st.CalcSize(new GUIContent(hud)).x + 30) * .5f, nr.y - 4, Mathf.Min(nr.width, st.CalcSize(new GUIContent(hud)).x + 30), nr.height + 8);
                 GUI.DrawTexture(bg, back); Shadow(nr, hud, st); NoteRect = nr;

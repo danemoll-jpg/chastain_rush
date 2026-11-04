@@ -44,7 +44,7 @@ namespace ChastainRush
             if (rolling) att = att * Quaternion.AngleAxis(-bIn * Roll * dt, Vector3.forward);
             // let go: the wings level the near way (quicker from upside down), the nose back to the horizon
             var f = att * Vector3.forward;
-            if (!rolling && Outside <= 0f && Mathf.Abs(f.y) < .9f)
+            if (!rolling && !pitching && Outside <= 0f && Mathf.Abs(f.y) < .9f)   // (not while the pitch is held: over a loop's top it is upside down on purpose)
             {
                 float r = RollOf(att), step = Mathf.MoveTowards(r, 0f, (Mathf.Abs(r) > 90f ? 70f : 40f) * dt) - r;
                 att = att * Quaternion.AngleAxis(-step, Vector3.forward);

@@ -162,7 +162,12 @@ namespace ChastainRush
                 IEnumerator LetGo(float sec) { float t = 0f; while (t < sec) { R73Set(0f, 1f, 0f, 0f); yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime; minH = Mathf.Min(minH, pl.HeightAboveGround); } }
                 int r0 = pl.Rolls; yield return Hold("roll_right", 1f, 0f, () => pl.Rolls > r0, 8f); bool rr = pl.Rolls > r0; yield return LetGo(3f);
                 int r1 = pl.Rolls; yield return Hold("roll_left", -1f, 0f, () => pl.Rolls > r1, 8f); bool rl = pl.Rolls > r1; yield return LetGo(3f);
-                int l0 = pl.Loops; yield return Hold("loop", 0f, -1f, () => pl.Loops > l0, 22f); bool lp = pl.Loops > l0; yield return LetGo(5f);
+                int l0 = pl.Loops; float y0 = car.Body.position.y, h0 = pl.YawDeg;
+                yield return Hold("loop", 0f, -1f, () => pl.Loops > l0, 22f);
+                float dy = car.Body.position.y - y0, dh = Mathf.Abs(Mathf.DeltaAngle(h0, pl.YawDeg));
+                bool lp = pl.Loops > l0 && Mathf.Abs(dy) < 250f && dh < 45f;   // (a loop comes back round: about the height and the heading it went in at)
+                report.AppendLine($"    the loop: {dy:+0;-0} m from where it started, heading {dh:0} deg off");
+                yield return LetGo(5f);
                 bool flying = pl.Airborne && !pl.Crashed && pl.Crashes == c0;
                 yield return Capture($"91_{id}_after");
                 report.AppendLine($"  {id}: barrel roll right {(rr ? "yes" : "NO")}, left {(rl ? "yes" : "NO")}, loop {(lp ? "yes" : "NO")}; 5 s after letting go: roll {pl.RollDeg:0}, pitch {pl.PitchDeg:0}, {(flying ? "flying" : "NOT flying (" + pl.CrashReason + ")")}; lowest {minH:0} m over the ground");
@@ -195,7 +200,7 @@ namespace ChastainRush
                 // out of an exit: on past its mouth; up a manhole: on past the street point
                 if (x != null) { var A = new Vector3(x.a[0], 0f, x.a[1]); var B = new Vector3(x.b[0], 0f, x.b[1]); var o = (A - B).normalized; line.Add(RaceRoute.Surface(A.x, A.z)); if (x.launch_to == null) for (float d = 4f; d <= 20f; d += 4f) line.Add(RaceRoute.Surface(A.x + o.x * d, A.z + o.z * d)); }
                 if (mh != null) { var e = line[line.Count - 1]; var o = Flat(e - line[line.Count - 4]).normalized; for (float d = 4f; d <= 16f; d += 4f) line.Add(RaceRoute.Surface(mh.x + o.x * d, mh.z + o.z * d)); }
-                var p0 = line[0] + Vector3.up * .6f; Place(p0, line[2] - line[0], 8f); yield return new WaitForSecondsRealtime(.3f);
+                var p0 = line[3] + Vector3.up * .6f; Place(p0, line[5] - line[3], 8f); line.RemoveRange(0, 3);   // (9 m in: out of the junction, clear of the other pipes' openings) yield return new WaitForSecondsRealtime(.3f);
                 var run = new HumanRun(); float jolt = 0f, lastVy = car.Body.linearVelocity.y; int l0 = PipeLaunch.Launches; bool launched = false;
                 float t0 = Time.time;
                 yield return HumanDrive(line, 26f, 420f, run, () =>
@@ -212,7 +217,7 @@ namespace ChastainRush
                     yield return new WaitForSecondsRealtime(1.2f);
                     var p = car.Body.position; var tgt = new Vector3(x.launch_to[0], x.launch_to[1], x.launch_to[2]); float off = Flat(p - tgt).magnitude; bool up = Vector3.Dot(car.transform.up, Vector3.up) > .7f;
                     ok = launched && off < 45f && up && !DrainPipe.InsideAny(p); if (ok) lgood++;
-                    end = $"launch {(launched ? "fired" : "DID NOT fire")} ({PipeLaunch.Last}); came down at ({p.x:0}, {p.y:0}, {p.z:0}), {off:0} m from its target, {(up ? "upright" : "NOT upright")}";
+                    end = $"launch {(launched ? "fired" : "DID NOT fire")} ({PipeLaunch.Last}; the flight: {GuidedFlight.LastEnd}); came down at ({p.x:0}, {p.y:0}, {p.z:0}), {off:0} m from its target, {(up ? "upright" : "NOT upright")}";
                     yield return Capture($"91_launch_{x.id}_landed");
                 }
                 else
@@ -220,7 +225,7 @@ namespace ChastainRush
                     var p = car.Body.position; bool outside = !DrainPipe.InsideAny(p);
                     float reach = Flat(p - line[line.Count - 1]).magnitude;
                     ok = run.stuck == 0 && run.resets == 0 && reach < 25f && ((x == null && mh == null) || outside);
-                    end = x != null ? $"out of {x.name}: {(outside ? "outside" : "STILL INSIDE")}" : mh != null ? $"up {mh.id} ({mh.road}): {(outside ? "out on the street" : "STILL INSIDE")}" : $"{reach:0} m from the far end";
+                    end = x != null ? $"out of {x.name}: {(outside ? "outside" : "STILL INSIDE")} at ({p.x:0}, {p.y:0}, {p.z:0})" : mh != null ? $"up {mh.id} ({mh.road}): {(outside ? "out on the street" : "STILL INSIDE")}" : $"{reach:0} m from the far end";
                     if (x != null || mh != null) yield return Capture($"91_out_{t.id}");
                 }
                 n++; if (ok) good++;

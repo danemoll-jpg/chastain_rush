@@ -31,7 +31,9 @@ namespace ChastainRush
                 recent[car.Body] = Time.time;
                 Geyser.Spray(transform.position, 3.5f, 30f);
                 car.Body.angularVelocity = Vector3.zero;
-                var f = GuidedFlight.Begin(car, launchName, car.Body.position.y, target, outward, landDir, angleDeg);   // (from where it is: the rise to the rim in the flight)
+                // (it leaves aimed at its landing: a flight that left along the cut first and curved round met the pit's west wall)
+                var aim = new Vector3(target.x - car.Body.position.x, 0f, target.z - car.Body.position.z).normalized;
+                var f = GuidedFlight.Begin(car, launchName, car.Body.position.y, target, aim, landDir, angleDeg);   // (from where it is: the rise to the rim in the flight)
                 Launches++; Last = $"{launchName}: from ({transform.position.x:0}, {transform.position.z:0}) to ({target.x:0}, {target.y:0}, {target.z:0}), {(f ? f.Planned : 0f):0.0} s planned";
                 Debug.Log("[PipeLaunch] " + Last);
             }
