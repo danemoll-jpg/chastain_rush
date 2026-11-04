@@ -39,6 +39,9 @@ namespace ChastainRush
         // Round 73 (B2 / B3, the air race): a ring flown past outside it: still to be gone back for (no penalty) until the next one is taken (then the
         // usual 5 s); meanwhile the guide points at the next one. -1: none
         public int RingSkipped = -1;
+        // Round 92 (F, Wings & Wheels): the lap this racer races (a car on the car's lap, a plane on the plane's); null: the race's own (RaceController.Route)
+        public RaceRoute Lap;
+        public bool Flies => Lap != null && Lap.Air;
         public string VehicleName => Car && Car.GetComponent<VehicleConfiguration>() ? Car.GetComponent<VehicleConfiguration>().Profile.Name : "";
 
         public void Reset()

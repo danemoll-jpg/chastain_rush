@@ -14,7 +14,7 @@ namespace ChastainRush
     //
     // Round 6: gates are wide and forgiving; official shortcuts (shaped after Racer's WoodlandRoute: a path, an entry plane,
     // the gates it bypasses) and road closures (barriers across roads that leave the course) are part of the route data.
-    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; public float y, ring_m, ring_w, ring_h; }   // Round 71 (the air race): y the ring's middle, ring_m a ring's radius, ring_w / ring_h a frame's half width and half height   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
+    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; public float y, ring_m, ring_w, ring_h; public float max_speed; }   // Round 92 (F): max_speed, a SLOW ring: it counts only under this speed (m/s; 0: any)   // Round 71 (the air race): y the ring's middle, ring_m a ring's radius, ring_w / ring_h a frame's half width and half height   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
 
     // Round 6: an OFFICIAL shortcut. A path from entry to exit, an entry plane across it a little way in (crossing that plane
     // in the direction of the path is "taking the shortcut") and the checkpoints it forgives. Heights come from the world.
@@ -130,6 +130,11 @@ namespace ChastainRush
         // (RailTrains.Align at GO: the trains' clock moved on so a southbound train reaches it then)
         public float[] train_meet; public float train_meet_s;
         public float gate_y, gate_ring_air_m;
+        // Round 92 (F, Wings & Wheels): twin, the other lap of the same race (the car's lap names the plane's and back): the race is raced on the one
+        // that fits the player's vehicle, and with mixed_ai the AI field mixes cars and planes, each on its own lap; pipe_express, the pipe express runs
+        // in this race (for everyone in a pipe); air_start, the planes start in the air on the lead-in (lead_in + lead_in_y) and are let go at GO
+        public string twin;
+        public bool mixed_ai, pipe_express, air_start;
         public bool Allows(string direction) => directions == null || directions.Length == 0 || Array.IndexOf(directions, direction) >= 0;
         public bool AllowsVehicle(string id) => air ? vehicles != null && Array.IndexOf(vehicles, id) >= 0 :   // Round 71: an air route's own (the plane) only
             !Racer.VehicleProfile.Find(id).Stunt && !Racer.VehicleProfile.Find(id).Flies &&   // Round 63: never the helicopter
@@ -147,6 +152,7 @@ namespace ChastainRush
         public float HalfWidth, S;   // S: distance along the lap in travel order from the lap's own start
         public float Below = 6f, Above = 25f;   // metres under / over Position.y that still count (a jump over the gate counts)
         public float Arch;                      // Round 27: the arch's height (0: the usual 7.5 m)
+        public float MaxSpeed;                  // Round 92 (F): a SLOW ring counts only under this speed (m/s; 0: any)
         // Round 71 (the air race): a ring in the sky (Ring its radius) or a frame (RingW / RingH its half width and half height) round Position, upright
         // across Forward: the plane's middle passes inside it (reach does not count: the rings are sized for the plane)
         public float Ring, RingW, RingH;
@@ -191,14 +197,19 @@ namespace ChastainRush
         // CorridorOffLap or more from the lap's centreline) and its half width. A car anywhere in it is on the shortcut, however
         // it got there (Dan was charged for CP2 on all three laps: his line round house 1763 passed outside #2's entry plane)
         public List<(Vector2 a, Vector2 b)> Corridor = new List<(Vector2, Vector2)>();
+        public List<(float a, float b)> CorridorY = new List<(float, float)>();   // Round 92 (F): the path's heights there
         public float CorridorHalf;
         public bool InCorridor(Vector3 p)
         {
             var q = new Vector2(p.x, p.z); float r2 = CorridorHalf * CorridorHalf;
-            foreach (var (a, b) in Corridor)
+            for (int i = 0; i < Corridor.Count; i++)
             {
+                var (a, b) = Corridor[i];
                 var ab = b - a; float t = ab.sqrMagnitude < 1e-6f ? 0f : Mathf.Clamp01(Vector2.Dot(q - a, ab) / ab.sqrMagnitude);
-                if ((a + ab * t - q).sqrMagnitude <= r2) return true;
+                if ((a + ab * t - q).sqrMagnitude > r2) continue;
+                // Round 92 (F): within 8 m under the path's height (the ground over a buried pipe of the tube is not the tube); up to 30 m over it (a jump's flight)
+                if (i < CorridorY.Count) { float y = Mathf.Lerp(CorridorY[i].a, CorridorY[i].b, t); if (p.y < y - 8f || p.y > y + 30f) continue; }
+                return true;
             }
             return false;
         }
@@ -267,7 +278,8 @@ namespace ChastainRush
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
                 g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m;
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
-                if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; g.EitherWay = true; }   // Round 71; Round 73 (B3)
+                if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; g.EitherWay = true; }
+                g.MaxSpeed = order[i].c.max_speed;   // Round 92 (F)   // Round 71; Round 73 (B3)
                 r.Checkpoints.Add(g);
             }
             foreach (var jn in (r.OwnReverse ? j.junctions_rev : j.junctions) ?? new RouteJunctionJson[0]) r.Junctions.Add($"{Mathf.Repeat((r.OwnReverse ? jn.s : r.Reverse ? L - jn.s : jn.s) - gateS, L):0} m: {string.Join(" / ", jn.roads)}");
@@ -323,7 +335,7 @@ namespace ChastainRush
                 sc.CorridorHalf = Mathf.Max(half, CorridorHalfMin);
                 for (int i = 0; i + 1 < pts.Count; i++)
                     if (c[i] >= inset && c[i + 1] <= len - 3f && DistToLap(pts[i]) >= CorridorOffLap && DistToLap(pts[i + 1]) >= CorridorOffLap)
-                        sc.Corridor.Add((new Vector2(pts[i].x, pts[i].z), new Vector2(pts[i + 1].x, pts[i + 1].z)));
+                    { sc.Corridor.Add((new Vector2(pts[i].x, pts[i].z), new Vector2(pts[i + 1].x, pts[i + 1].z))); sc.CorridorY.Add((pts[i].y, pts[i + 1].y)); }
                 sc.FirstForgiven = int.MaxValue; sc.LastForgiven = -1;
                 if (sj.forgives != null)
                     foreach (int id in sj.forgives)

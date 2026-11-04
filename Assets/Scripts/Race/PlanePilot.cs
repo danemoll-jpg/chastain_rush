@@ -39,12 +39,13 @@ namespace ChastainRush
         public static readonly float[] MissChance = { .12f, .08f, .05f };
         public static int ForceMiss = -1;   // checks: the player's pilot misses this ring (its Id) on purpose
 
+        RaceRoute Lap => race ? race.LapOf(entrant) : null;   // Round 92 (F): its own lap
         public void Initialize(RaceController r, ArcadeVehicle c, RaceEntrant e, int n, float laneOffset)
         {
             race = r; car = c; entrant = e; index = n; lane = laneOffset; plane = c.GetComponent<PlaneFlight>();
             int skill = Mathf.Clamp(RoadDriver.Difficulty, 0, 2);
             Pace = Mathf.Min(1f, Paces[skill] - .015f * n + (skill == 2 ? .015f * 2 : 0f));   // Hard: the leader at full, the others a touch under
-            path = r.Route.Path; cum = new float[path.Length];
+            path = r.LapOf(e).Path; cum = new float[path.Length];   // Round 92 (F): its own lap (a mixed race)
             for (int i = 1; i < path.Length; i++) { var d = path[i] - path[i - 1]; d.y = 0f; cum[i] = cum[i - 1] + d.magnitude; }
             L = cum[cum.Length - 1];
             rng = new System.Random(unchecked(DriverVariation.Seed + n * 7919));
@@ -64,9 +65,9 @@ namespace ChastainRush
 
         void FixedUpdate()
         {
-            if (!race || !plane || !plane.enabled || race.Route == null) return;
+            if (!race || !plane || !plane.enabled || Lap == null) return;
             if (race.State == RaceController.Stage.Countdown || race.State == RaceController.Stage.Free) { if (!Advise) plane.sThrottle = 0f; else aThrottle = 0f; return; }
-            if (!Advise && car.Body.isKinematic) { car.Body.isKinematic = false; car.Body.linearVelocity = Vector3.zero; }   // GO
+            if (!Advise && car.Body.isKinematic) { if (race.AirStartOf(entrant)) race.ReleaseAirStartOf(entrant); else { car.Body.isKinematic = false; car.Body.linearVelocity = Vector3.zero; } }   // GO (Round 92: an air start)
             if (plane.Crashed) { backRing = null; lateUntil = -1f; return; }
             // Round 80 (A): put back by a reset (a jump in place): no turning back for a ring behind it for a while
             if ((car.Body.position - lastPos).sqrMagnitude > 60f * 60f) { quietUntil = Time.time + 8f; backRing = null; lateUntil = -1f; missSide = 0f; }
@@ -85,9 +86,9 @@ namespace ChastainRush
         // the take-off run: in its lane along the runway, full throttle, past the take-off speed pull back
         void Roll()
         {
-            var fwd = Quaternion.Euler(0, race.Route.GridYaw, 0) * Vector3.forward; var right = Vector3.Cross(Vector3.up, fwd);
-            float off = Vector3.Dot(car.Body.position - race.Route.GridPosition, right) - lane;
-            float err = Mathf.DeltaAngle(car.transform.eulerAngles.y, race.Route.GridYaw);
+            var fwd = Quaternion.Euler(0, Lap.GridYaw, 0) * Vector3.forward; var right = Vector3.Cross(Vector3.up, fwd);
+            float off = Vector3.Dot(car.Body.position - Lap.GridPosition, right) - lane;
+            float err = Mathf.DeltaAngle(car.transform.eulerAngles.y, Lap.GridYaw);
             Set(plane.Airspeed > PlaneFlight.TakeOffSpeed + 3f ? .9f : 0f, 0f, 0f, 1f, Mathf.Clamp(err * .08f - off * .03f, -1f, 1f));
             Why = "take-off run";
         }
@@ -126,7 +127,7 @@ namespace ChastainRush
                 // a ring flown past outside it (a wide line-up, a late turn): mostly gone back for, else on (5 s)
                 float past = Vector3.Dot(pos - ring.Position, ring.Forward);
                 bool forced = Advise && entrant.IsPlayer && ForceMiss == ring.Id;   // a check's human-like pilot that missed it on purpose goes back for it
-                if ((Mistakes || forced) && ring != race.Route.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
+                if ((Mistakes || forced) && ring != Lap.Gate && past > 30f && past < 250f && toRing < 600f && backFor != id && decidedFor == id)
                 {
                     backFor = id;   // decided once
                     if (forced || rng.NextDouble() < GoBackChance[Skill] && HighAround(ring, pos)) { backPhase = 0; backSince = Time.time; backRing = ring; Backs++; missSide = 0f; return; }
@@ -173,9 +174,16 @@ namespace ChastainRush
             float paceV = Mathf.Lerp(PlaneFlight.StallSpeed * .9f, plane.Top, lapPace);
             if (careful && ring != null && Flat(ring.Position - pos).magnitude < 450f) paceV = Mathf.Min(paceV, Mathf.Lerp(PlaneFlight.StallSpeed, plane.Top, .55f));   // a low ring, slow and careful
             float wantV = Mathf.Min(paceV, vmax);
-            float thr = entrant.Finished ? .7f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, plane.Top, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
+            // Round 92 (F): a SLOW ring (RaceGate.MaxSpeed): down to under its speed well before it (the plane sheds speed slowly with the throttle off)
+            bool slowRing = false;
+            if (ring != null && ring.MaxSpeed > 0f)
+            {
+                float dr = Flat(ring.Position - pos).magnitude, over = Mathf.Max(0f, plane.Airspeed - (ring.MaxSpeed - 6f));
+                if (dr < 150f + over * 14f) { wantV = Mathf.Min(wantV, ring.MaxSpeed - 6f); slowRing = true; }
+            }
+            float thr = entrant.Finished ? .7f : slowRing && plane.Airspeed > wantV ? 0f : Mathf.Clamp01(Mathf.InverseLerp(PlaneFlight.StallSpeed * .9f, plane.Top, wantV) - (plane.Airspeed > wantV + 6f ? .3f : 0f));
             Set(Mathf.Clamp((pitchWant - plane.PitchDeg) / 3f, -1f, 1f), Mathf.Clamp((bankWant - plane.RollDeg) / 14f, -1f, 1f), Mathf.Clamp(yawErr / 9f, -1f, 1f), thr);
-            Why = vmax < paceV ? $"slowing for the turn ({vmax:0} m/s)" : missSide != 0f ? "lining up wide" : lateUntil > 0f ? "late turn" : careful ? "careful at a low ring" : lapPace < Pace ? "off the pace this lap" : "pace";
+            Why = slowRing ? $"slowing for a slow ring ({ring.MaxSpeed:0} m/s)" : vmax < paceV ? $"slowing for the turn ({vmax:0} m/s)" : missSide != 0f ? "lining up wide" : lateUntil > 0f ? "late turn" : careful ? "careful at a low ring" : lapPace < Pace ? "off the pace this lap" : "pace";
         }
 
         // how far the line turns over the 300 m after a ring (a late turn there runs wide)
@@ -227,7 +235,7 @@ namespace ChastainRush
 
         RaceGate NextRing()
         {
-            var r = race.Route; if (r == null) return null;
+            var r = Lap; if (r == null) return null;
             return !entrant.ClockStarted ? r.Gate : entrant.NextCheckpoint < r.Checkpoints.Count ? r.Checkpoints[entrant.NextCheckpoint] : r.Gate;
         }
 

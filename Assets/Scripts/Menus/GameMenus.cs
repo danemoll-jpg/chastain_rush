@@ -643,7 +643,11 @@ namespace ChastainRush
             var choices = RaceController.SavedAiChoices();
             var rd = race ? race.RouteData : null;   // Round 18: only the route's vehicles
             Clear("OPPONENT VEHICLES", "Random picks a new vehicle every race." + (rd != null && !rd.air && rd.vehicles != null && rd.vehicles.Length > 0 ? "\n" + rd.name + ": motorcycles, the ATV and the mower only." : ""));
-            var list = new List<string> { "random" }; list.AddRange(VehicleProfile.All.Where(p => rd == null || rd.AllowsVehicle(p.Id)).Select(p => p.Id));
+            // Round 92 (F): a mixed race (Wings & Wheels) offers cars and planes: a car races the road lap, a plane the rings; Random alternates them
+            var twinData = rd != null && rd.mixed_ai && race.TwinData != null ? race.TwinData : null;
+            bool Offered(string v) => rd == null || rd.AllowsVehicle(v) || twinData != null && twinData.AllowsVehicle(v);
+            if (twinData != null) details.text = "Random: a car, a plane, a car. A car races the roads (and the tube), a plane the rings.";
+            var list = new List<string> { "random" }; list.AddRange(VehicleProfile.All.Where(p => Offered(p.Id)).Select(p => p.Id));
             for (int i = 0; i < choices.Length; i++)
             {
                 int slot = i; string id = choices[i];
@@ -655,8 +659,15 @@ namespace ChastainRush
                     RaceController.SaveAiChoices(choices); Show();
                 });
             }
-            Row(choices.Length, "all-random", "All random", () => { for (int i = 0; i < choices.Length; i++) choices[i] = "random"; RaceController.SaveAiChoices(choices); Show(); });
-            Row(choices.Length + 1, "back", "Back", BackPage);
+            Row(choices.Length, "all-random", twinData != null ? "All random (cars and planes)" : "All random", () => { for (int i = 0; i < choices.Length; i++) choices[i] = "random"; RaceController.SaveAiChoices(choices); Show(); });
+            int nextRow = choices.Length + 1;
+            if (twinData != null)
+            {
+                string[] Kind(bool planes) => VehicleProfile.All.Where(p => planes ? twinData.air ? twinData.AllowsVehicle(p.Id) : rd.AllowsVehicle(p.Id) && p.IsPlane : (twinData.air ? rd.AllowsVehicle(p.Id) : twinData.AllowsVehicle(p.Id)) && !p.IsPlane).Select(p => p.Id).ToArray();
+                Row(nextRow++, "all-cars", "All cars", () => { var k = Kind(false); for (int i = 0; i < choices.Length; i++) choices[i] = k[(i * 3) % k.Length]; RaceController.SaveAiChoices(choices); Show(); });
+                Row(nextRow++, "all-planes", "All planes", () => { var k = Kind(true); for (int i = 0; i < choices.Length; i++) choices[i] = k[i % k.Length]; RaceController.SaveAiChoices(choices); Show(); });
+            }
+            Row(nextRow, "back", "Back", BackPage);
         }
 
         void StartRace()

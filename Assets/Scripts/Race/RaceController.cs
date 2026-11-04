@@ -165,8 +165,9 @@ namespace ChastainRush
                     var j = JsonUtility.FromJson<RouteJson>(embeddedRouteJsons[i]); if (j == null || string.IsNullOrEmpty(j.name)) continue;
                     foreach (var d in new[] { "forward", "reverse" }) if (j.Allows(d) && (d == "forward" || j.directions != null && j.directions.Length > 0 || j.reverse_grid_back_m > 0f))
                     {
-                        string rn = string.IsNullOrEmpty(j.records_as) ? j.name : j.records_as; RecordTitles[rn] = j.name;   // Round 54 (A1): kept under records_as, shown by name
+                        string rn = string.IsNullOrEmpty(j.records_as) ? j.name : j.records_as; RecordTitles[rn] = string.IsNullOrEmpty(j.twin) ? j.name : rn;   // Round 54 (A1): kept under records_as, shown by name (Round 92: a pair's by its own: cars / planes)
                         list.Add((rn, d));
+                        var cn = CombinedNameOf(j); if (cn != null) { RecordTitles[cn] = cn; list.Add((cn, d)); }   // Round 92 (F): the combined board
                         // Round 35 (Part C): a wet or snowy board, once it has a time
                         foreach (var w in new[] { "-rain", "-snow" }) { string key = rn + "|" + d + w; if (Boards != null && (Boards.Top(c => RecordBoards.LapCategory(c) == key, false).Count > 0 || Boards.Top(c => RecordBoards.LapCategory(c) == key, true).Count > 0)) list.Add((rn, d + w)); }
                     }
@@ -280,6 +281,7 @@ namespace ChastainRush
             if (State == Stage.Free) TakeHighMode();   // Round 84 (A): in Free Roam the switch's (the records shown are its boards)
             // Round 84 (A3, this game only: Woodstock Rush has no air races): in a HIGH MODE air race the rings are larger
             if (Route.Air && High) foreach (var g in Route.Checkpoints.Append(Route.Gate)) { g.Ring *= HighMode.RingScale; g.RingW *= HighMode.RingScale; g.RingH *= HighMode.RingScale; }
+            LoadTwin(dir);   // Round 92 (F): the race's other lap (Wings & Wheels)
             LoadRecords();
             if (markers == null) markers = new GameObject("RaceMarkers").AddComponent<RaceMarkers>();
             if (!markers.GetComponent<AirGuideArrow>()) markers.gameObject.AddComponent<AirGuideArrow>();   // Round 73 (B2): the air race's 3D arrow
@@ -295,7 +297,7 @@ namespace ChastainRush
             TakeHighMode();   // Round 84 (A): the race keeps the mode it starts with
             if (High && HighMode.WeatherChoice == 3) HighMode.Roll();   // Random: a new weather each race
             LoadRoute(); // picks up a changed direction
-            RaceRoute.Active = Route;   // Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
+            RaceRoute.Active = Twin != null ? CarLap : Route;   // Round 92 (F): the car's lap for the ground (a mixed race's AI cars); Round 27: the underground race's heights for the grid, the AI and the resets (RaceRoute.Surface)
             EnsureAllowedVehicle();   // Round 18: Noonday Creek is for the small vehicles only
             RaceClock = 0f; PlayerFinishedAt = 0f; winnerCelebrated = false; parkSlots = 0; NoRecords = false;
             NewBestLap = NewBestTotal = false;
@@ -314,9 +316,9 @@ namespace ChastainRush
             input.enabled = false;
             Say("Get ready", 2f);
             if (barriers == null) barriers = new GameObject("RaceBarriers").AddComponent<RaceBarriers>();
-            barriers.Build(Route);   // closed roads appear with the race ...
+            barriers.Build(Twin != null ? CarLap : Route);   // closed roads appear with the race ... (Round 92: the car's lap's)
             FenceChunk.RestoreAll(); // Round 7: smashed fences are whole again when a race (re)starts
-            BuildAiLine();   // Round 70 (B): the AI's racing line, once the barriers stand
+            if (Twin != null && Route.Air) WithLap(CarLap, CarData, BuildAiLine); else BuildAiLine();   // Round 92 (F): a mixed race's AI cars race the car's lap; Round 70 (B): the AI's racing line, once the barriers stand
             if (High && AiCount <= 0 && !Route.Air) BuildAiRoad();   // the bumpers follow this race's lap (with no rivals it is not made otherwise)
             HighBumpers.Apply(this);   // Round 84 (A3): a HIGH MODE race's gutter bumpers (hidden otherwise)
             HighAssist.Ensure(car, 1); if (SplitScreen.P2Car) HighAssist.Ensure(SplitScreen.P2Car, 2);
@@ -365,6 +367,7 @@ namespace ChastainRush
             if (plane && plane.enabled) { plane.Recovered(); g += Vector3.up * (PlaneFlight.WheelDrop - .2f); }   // Round 71: the plane stands on its wheels on the runway
             if (respawn) respawn.PlaceAt(g + Vector3.up * 0.3f, Route.GridYaw);
             else { car.Body.position = g + Vector3.up * 0.8f; car.Body.rotation = Quaternion.Euler(0, Route.GridYaw, 0); car.Body.linearVelocity = Vector3.zero; }
+            if (Route.Air && Route.Data != null && Route.Data.air_start && plane && plane.enabled) car.Body.isKinematic = true;   // Round 92 (F): held in the air until GO
             P.PrevPos = car.transform.position;
         }
 
@@ -420,12 +423,13 @@ namespace ChastainRush
 
             if (State == Stage.Countdown)
             {
-                car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero;
+                if (!car.Body.isKinematic) { car.Body.linearVelocity = Vector3.zero; car.Body.angularVelocity = Vector3.zero; }
                 foreach (var h in Entrants) if (h.Seat == 2 && h.Driver == null && h.Car) { h.Car.Body.linearVelocity = Vector3.zero; h.Car.Body.angularVelocity = Vector3.zero; }   // Round 37
                 if (!LoadingScreen.Holding) CountdownRemaining -= dt;   // Round 51: the countdown starts once the loading screen has gone
                 if (CountdownRemaining <= 0f)
                 {
                     State = Stage.Racing; input.enabled = true; goFlashUntil = Time.time + 1.0f; RaceClock = 0f;
+                    foreach (var h in Entrants) if (h.Driver == null && h.IsHuman) ReleaseAirStart(h);   // Round 92 (F): an air start (the AI pilots let themselves go)
                     // Round 78 (B): a route that crosses the railroad asks for a train to meet it (the Marietta Square race: Mill Street, lap 1)
                     var rdT = Route?.Data; if (rdT?.train_meet != null && rdT.train_meet.Length == 2 && RailTrains.Instance) RailTrains.Instance.Align(new Vector3(rdT.train_meet[0], 0f, rdT.train_meet[1]), rdT.train_meet_s, true);
                     Say("Cross the start line to start the clock", 6f);
@@ -456,13 +460,25 @@ namespace ChastainRush
 
         // the gates one racer passed during this step, in the order they happened
         void Step(RaceEntrant e, float t0, float dt)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             Vector3 pos = e.Car.transform.position, prevPos = e.PrevPos;
             var hits = new List<(float f, int id)>();
             if (Route.Gate.Crossed(prevPos, pos, Reach(e, Route.Gate), out float fg)) hits.Add((fg, 0));
             else if (e.ClockStarted && e.NextCheckpoint >= Route.Checkpoints.Count && LineMissedWide(e, prevPos, pos, out float fw)) hits.Add((fw, 4000));   // Round 54 (B)
             for (int i = 0; i < Route.Checkpoints.Count; i++)
-                if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(e, Route.Checkpoints[i]), out float fc)) hits.Add((fc, i + 1));
+                if (Route.Checkpoints[i].Crossed(prevPos, pos, Reach(e, Route.Checkpoints[i]), out float fc))
+                {
+                    // Round 92 (F): a SLOW ring taken too fast does not count (the plane goes back for it, or it is missed: 5 s)
+                    var g = Route.Checkpoints[i]; float v = e.Car.Body.linearVelocity.magnitude;
+                    if (g.MaxSpeed > 0f && v > g.MaxSpeed)
+                    {
+                        SlowRingTooFast++;
+                        if (e.IsHuman && i == e.NextCheckpoint) SayTo(e, $"TOO FAST for ring {i + 1}: a slow ring, under {Racer.DisplayUnits.Speed(g.MaxSpeed)} (you: {Racer.DisplayUnits.Speed(v)})", 4f);
+                        Log(e, $"ring {i + 1} (slow, {g.MaxSpeed:0} m/s) passed at {v:0.0} m/s: not counted");
+                        continue;
+                    }
+                    hits.Add((fc, i + 1));
+                }
             if (Route.Air && e.IsHuman) AirRingPassedBy(e, prevPos, pos);   // Round 73 (B2 / B3): RING MISSED
             for (int i = 0; i < Route.Shortcuts.Count; i++)
             {
@@ -514,7 +530,7 @@ namespace ChastainRush
         }
 
         void OnCheckpoint(RaceEntrant e, int index, float at)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             if (!e.ClockStarted) return;       // before the first start-line crossing there is no lap to be on
             if (index < e.NextCheckpoint) return; // already passed (or already missed / forgiven) this lap
             var skipped = new List<int>();
@@ -550,8 +566,9 @@ namespace ChastainRush
         // nothing. Stations are the lap's own (from the line). Checkpoints still waiting before the first forgiven one were really missed.
         public void ForgiveReset(ArcadeVehicle car, float from, float to)
         {
-            if (State != Stage.Racing || Route == null || !car) return;
+            if (State != Stage.Racing || this.Route == null || !car) return;
             var e = Entrants.Find(x => x.Car == car); if (e == null || !e.ClockStarted || e.Finished) return;
+            var Route = LapOf(e);   // Round 92 (F)
             float L = Route.LapLength, span = Mathf.Repeat(to - from, L);
             if (span <= 0.01f || span > 0.5f * L) return;
             int first = -1, last = -1;
@@ -570,13 +587,15 @@ namespace ChastainRush
             if (e.IsPlayer) markers.Refresh(this);
         }
         public static int ResetForgiven;   // checks
+        public static int SlowRingTooFast;   // Round 92 (F): checks
         // Round 86 (B): where a reset may put this racer on the lap: from the last checkpoint it passed (prev) to short of the next one it has not (next;
         // the lap's length for the line); lap stations from the line. False when not racing (before its clock starts, finished, an air race)
         public bool ResetWindow(ArcadeVehicle car, out float prev, out float next)
         {
             prev = next = 0f;
-            if (State != Stage.Racing || Route == null || Route.Air || !car) return false;
+            if (State != Stage.Racing || this.Route == null || !car) return false;
             var e = Entrants.Find(x => x.Car == car); if (e == null || !e.ClockStarted || e.Finished) return false;
+            var Route = LapOf(e); if (Route.Air) return false;   // Round 92 (F)
             int n = Route.Checkpoints.Count, k = Mathf.Clamp(e.NextCheckpoint, 0, n);
             next = k < n ? Route.Checkpoints[k].S : Route.LapLength;
             prev = k == 0 ? 0f : Route.Checkpoints[k - 1].S;
@@ -589,7 +608,7 @@ namespace ChastainRush
         // there. A racer who never comes near the line (a cut through the yards) still has no lap until it crosses it, as before.
         public const float LineMissReach = 40f;
         bool LineMissedWide(RaceEntrant e, Vector3 from, Vector3 to, out float fraction)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             fraction = 0f; var g = Route.Gate;
             Vector3 a = from - g.Position, b = to - g.Position;
             float za = Vector3.Dot(a, g.Forward), zb = Vector3.Dot(b, g.Forward);
@@ -601,7 +620,7 @@ namespace ChastainRush
             return d < 0.1f * L || d > 0.75f * L;   // near the line along the lap (not another stretch that passes its plane)
         }
         void OnLineMissed(RaceEntrant e, float at)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             int n = Route.Checkpoints.Count;
             e.Missed.Add(n); e.PenaltyTotal += MissPenalty; e.LapPenalty += MissPenalty; e.MissedTotal++;
             bool last = e.CompletedLaps + 1 >= Route.Laps;
@@ -619,7 +638,7 @@ namespace ChastainRush
 
         Vector3 crossing;
         void OnGate(RaceEntrant e, float at)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             if (Route.Air && e.IsPlayer) markers.RingPassed(Route.Gate);   // Round 71
             if (!e.ClockStarted)
             {
@@ -643,7 +662,7 @@ namespace ChastainRush
 
         // the lap ends: at the line, or (Round 54, B) at the next lap's checkpoint when the line was missed
         void CountLap(RaceEntrant e, float at, bool lineMissed)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             var skipped = new List<int>();
             for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++) { Miss(e, k, at); skipped.Add(k + 1); }
             float raw = at - e.LapStart, lap = raw + e.LapPenalty;
@@ -653,6 +672,7 @@ namespace ChastainRush
             if (e.IsPlayer && !NoRecords) { best = BestLap <= 0f || lap < BestLap; if (best) { BestLap = lap; NewBestLap = true; SaveRecords(); } }
             if (e.IsPlayer && NoRecords) lapRanks.Add(0);
             else if (e.IsPlayer) { LastLapRank = Boards.Add(attempt + "/lap/" + lapNo, BoardCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null); lapRanks.Add(LastLapRank); }   // Round 34 (C1)
+            if (e.IsPlayer && !NoRecords && CombinedCategory != null) Boards.Add(attempt + "/lap/" + lapNo + "/all", CombinedCategory, false, lap, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 92 (F): cars and planes together
             else if (e.Seat == 2 && e.IsHuman) Boards.Add(attempt2 + "/lap/" + lapNo, CategoryFor(2), false, lap, VehicleOf(e), DateTime.UtcNow.ToString("o"), name: SplitScreen.NameOf(2));   // Round 37: player 2's own, under their name
             string pen = e.LapPenalty > 0f ? $"  (includes +{e.LapPenalty:0} s penalty, {MissedText(e)})" : "";
             string fg = e.Forgiven.Count > 0 ? $"  (shortcut: CP{string.Join(",", e.Forgiven.ConvertAll(x => x + 1))} forgiven)" : "";
@@ -671,13 +691,13 @@ namespace ChastainRush
             if (e.IsPlayer) markers.Refresh(this);
         }
 
-        string MissedText(RaceEntrant e) { var names = new List<string>(); foreach (int k in e.Missed) names.Add(k >= Route.Checkpoints.Count ? "the line" : "CP" + (k + 1)); return "missed " + string.Join(", ", names); }
+        string MissedText(RaceEntrant e) { var Route = LapOf(e); var names = new List<string>(); foreach (int k in e.Missed) names.Add(k >= Route.Checkpoints.Count ? "the line" : "CP" + (k + 1)); return "missed " + string.Join(", ", names); }
 
         bool winnerCelebrated;   // Round 28 (C2)
         int parkSlots;           // Round 28: finished AI cars' places on the route's parking line (RoadDriver.DriveToPark)
         public int TakeParkSlot() => parkSlots++;
         void Finish(RaceEntrant e, float at)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             e.Finished = true; e.FinalTotal = at - e.StartAt + e.PenaltyTotal;   // its clock plus every penalty
             e.FinishedAt = at + e.PenaltyTotal;
             Log(e, $"FINISH total {e.FinalTotal:0.000} (clock {e.FinalTotal - e.PenaltyTotal:0.000} + penalties {e.PenaltyTotal:0.0}); laps {string.Join(" ", e.LapTimes.ConvertAll(x => x.ToString("0.000")))}; place {Ordered().IndexOf(e) + 1}");
@@ -705,6 +725,7 @@ namespace ChastainRush
             if (bestTotal) { BestTotal = total; NewBestTotal = true; }
             if (!NoRecords) SaveRecords();
             RaceRank = NoRecords ? 0 : Boards.Add(attempt + "/race", BoardCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 34 (C1, C2)
+            if (!NoRecords && CombinedCategory != null) Boards.Add(attempt + "/race/all", CombinedCategory, true, total, VehicleId, DateTime.UtcNow.ToString("o"), name: SplitScreen.Active ? SplitScreen.NameOf(1) : null);   // Round 92 (F)
             FinishCards.Finish(e.LapTimes, lapRanks.ToArray(), attempt, total, RaceRank);
             GetComponent<ReplayRecorder>()?.Finished(e, RaceRank);   // Round 57 (F): a new #1 race keeps its replay
             Log($"TOP 10: race {(RaceRank > 0 ? "#" + RaceRank : "not on the board")}, laps {string.Join(" ", lapRanks.ConvertAll(x => x > 0 ? "#" + x : "-"))}");
@@ -928,14 +949,20 @@ namespace ChastainRush
         void SpawnAi()
         {
             if (AiCount <= 0) { aiActive = false; return; }
-            if (Route.Air) { SpawnPilots(); return; }   // Round 71: the air race's AI pilots (RaceController.Air.cs)
+            if (Mixed) { SpawnMixed(); return; }   // Round 92 (F): cars and planes (RaceController.Twin.cs)
+            if (Route.Air) { SpawnPilots(null, null); return; }   // Round 71: the air race's AI pilots (RaceController.Air.cs)
+            SpawnDrivers(null, null);
+        }
+        // the AI drivers in the given slots (all: null) with the given vehicles (null: AiVehicles)
+        void SpawnDrivers(int[] only, string[] ids)
+        {
             BuildAiRoad();
             var rng = new System.Random(Environment.TickCount);
             DriverVariation.Seed = rng.Next();
-            var vehicles = AiVehicles(rng);
+            var vehicles = ids ?? AiVehicles(rng);
             var slots = GridSlots();
             var riders = RiderLook.Field(DriverVariation.Seed, Mathf.Max(3, AiCount), RiderLook.Player);
-            for (int n = 0; n < AiCount; n++)
+            foreach (int n in only ?? Enumerable.Range(0, AiCount).ToArray())
             {
                 var clone = Instantiate(car.gameObject);
                 clone.name = AiNames[n];
@@ -960,7 +987,7 @@ namespace ChastainRush
                 ai.Body.position = pos + Vector3.up * Mathf.Max(.4f, ai.suspensionLength - Physics.gravity.magnitude / ai.springStrength);
                 ai.Body.rotation = rot; clone.transform.SetPositionAndRotation(ai.Body.position, rot);
                 ai.Body.linearVelocity = ai.Body.angularVelocity = Vector3.zero; ai.ClearSteering();
-                var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>() };
+                var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>(), Lap = spawnLap };
                 var driver = clone.AddComponent<RoadDriver>();
                 e.Driver = driver;
                 driver.Initialize(this, ai, e, RoadDriver.Difficulty == 2 ? .97f + n * .015f : .94f + n * .025f, n);   // Racer's pace spread for rivals (Round 70: on Hard .97 to 1.0, the leader at full pace)
@@ -1020,7 +1047,7 @@ namespace ChastainRush
                 if (estimate)
                 {
                     var cfg = e.Car.GetComponent<VehicleConfiguration>();
-                    float more = Route.Air ? remaining / AirPace(e) : (float)e.Estimate.Duration(RaceClock, remaining, cfg ? cfg.Profile : VehicleProfile.All[0], false, RoadDriver.Difficulty);   // Round 71: a plane's own pace
+                    float more = LapOf(e).Air ? remaining / AirPace(e) : (float)e.Estimate.Duration(RaceClock, remaining, cfg ? cfg.Profile : VehicleProfile.All[0], false, RoadDriver.Difficulty);   // Round 71: a plane's own pace
                     if (!e.ClockStarted) { e.ClockStarted = true; e.StartAt = RaceClock; }
                     e.Finished = e.Estimated = true;
                     e.FinalTotal = RaceClock + more - e.StartAt + e.PenaltyTotal; e.FinishedAt = RaceClock + more + e.PenaltyTotal;
@@ -1034,13 +1061,15 @@ namespace ChastainRush
 
         // distance still to drive to the finish, and progress (for the places): laps done x lap + how far into this lap
         float Into(RaceEntrant e)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             float L = Route.LapLength, st = Route.LapStationOf(e.Car.transform.position);
             if (st > L - 60f && e.NextCheckpoint == 0) st -= L;   // just over the line, still read as the end of the last lap
             return st;
         }
-        float Remaining(RaceEntrant e) => !e.ClockStarted ? Route.Laps * Route.LapLength + Vector3.Distance(e.Car.transform.position, Route.Gate.Position) : Mathf.Max(0f, (Route.Laps - e.CompletedLaps) * Route.LapLength - Into(e));
-        public float Score(RaceEntrant e) => e.Finished ? 1e7f - e.FinishedAt : !e.ClockStarted ? -Vector3.Distance(e.Car.transform.position, Route.Gate.Position) : e.CompletedLaps * Route.LapLength + Into(e);
+        float Remaining(RaceEntrant e) { var Route = LapOf(e); return !e.ClockStarted ? Route.Laps * Route.LapLength + Vector3.Distance(e.Car.transform.position, Route.Gate.Position) : Mathf.Max(0f, (Route.Laps - e.CompletedLaps) * Route.LapLength - Into(e)); }
+        // Round 92 (F): in a race of two laps (cars and planes) progress is the share of the race done, so a car and a plane compare (scaled to this
+        // race's lap length: the same as before in a race of one lap)
+        public float Score(RaceEntrant e) { var Route = LapOf(e); float k = this.Route != null && Twin != null ? this.Route.LapLength / Mathf.Max(1f, Route.LapLength) : 1f; return e.Finished ? 1e7f - e.FinishedAt : !e.ClockStarted ? -Vector3.Distance(e.Car.transform.position, Route.Gate.Position) * k : (e.CompletedLaps * Route.LapLength + Into(e)) * k; }
         public List<RaceEntrant> Ordered()
         {
             var list = new List<RaceEntrant>(Entrants);
@@ -1113,13 +1142,13 @@ namespace ChastainRush
         // Round 73 (B2): in the air race, once a ring has been flown past outside it the guide points at the one after it (the missed one can still be
         // gone back for); null otherwise
         public RaceGate AirAim(RaceEntrant e)
-        {
+        { var Route = e != null ? LapOf(e) : this.Route;   // Round 92 (F)
             if (Route == null || !Route.Air || e == null || e.RingSkipped < 0 || e.RingSkipped != e.NextCheckpoint) return null;
             return e.RingSkipped + 1 < Route.Checkpoints.Count ? Route.Checkpoints[e.RingSkipped + 1] : Route.Gate;
         }
         // the ring after the one the guide points at (shown dimmer), or null
         public RaceGate AirAfter(RaceEntrant e)
-        {
+        { var Route = e != null ? LapOf(e) : this.Route;   // Round 92 (F)
             if (Route == null || !Route.Air || e == null || !e.ClockStarted) return Route != null && Route.Air && Route.Checkpoints.Count > 0 ? Route.Checkpoints[0] : null;
             int k = (e.RingSkipped >= 0 && e.RingSkipped == e.NextCheckpoint ? e.RingSkipped + 1 : e.NextCheckpoint) + 1;
             return k < Route.Checkpoints.Count ? Route.Checkpoints[k] : k == Route.Checkpoints.Count ? Route.Gate : null;
@@ -1136,7 +1165,7 @@ namespace ChastainRush
         public bool GoShowing => State == Stage.Racing && Time.time < goFlashUntil;
         public float LapClockOf(RaceEntrant e) => e.ClockStarted && State != Stage.Free ? RaceClock - e.LapStart + e.LapPenalty : 0f;
         public float TotalClockOf(RaceEntrant e) => (e.ClockStarted ? (e.Finished ? e.FinalTotal - e.PenaltyTotal : RaceClock - e.StartAt) : 0f) + e.PenaltyTotal;
-        public RaceGate TargetOf(RaceEntrant e) => State == Stage.Free || Route == null ? null : !e.ClockStarted ? Route.Gate : e.NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[e.NextCheckpoint] : Route.Gate;
+        public RaceGate TargetOf(RaceEntrant e) => State == Stage.Free || Route == null ? null : LapOf(e) != Route ? LapTarget(e) : !e.ClockStarted ? Route.Gate : e.NextCheckpoint < Route.Checkpoints.Count ? Route.Checkpoints[e.NextCheckpoint] : Route.Gate;
         static string VehicleOf(RaceEntrant e) => e.Car && e.Car.GetComponent<VehicleConfiguration>() ? e.Car.GetComponent<VehicleConfiguration>().profileId : "original";
         void SeatPlayerTwo()
         {

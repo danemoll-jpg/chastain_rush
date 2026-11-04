@@ -37,7 +37,7 @@ def forks(line_grid, sc_grids, bars):
     out = []
     for r, rp in roads:
         dd = [line_grid.d(q) for q in rp]
-        if min(dd) > ON: continue
+        if not dd or min(dd) > ON: continue
         for i in range(1, len(rp)):
             for a, b in ((i - 1, i), (i, i - 1)):
                 if not (dd[a] <= ON and dd[b] > ON): continue

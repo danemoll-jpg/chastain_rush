@@ -52,7 +52,10 @@ namespace ChastainRush
             whoosh = gameObject.AddComponent<AudioSource>(); whoosh.clip = Whoosh(); whoosh.spatialBlend = 0f; Racer.SoundMix.Track(whoosh, 0.8f, Racer.SoundMix.Kind.Effects); whoosh.playOnAwake = false;   /* Round 27: the Effects volume */
         }
 
-        static bool Allowed => Setting != Mode.Off && (RaceController.Instance == null || RaceController.Instance.State == RaceController.Stage.Free);
+        // Round 92 (F, Dan: "cars could have underground shortcuts using the underground tube system"): and in a race whose route asks for it
+        // (route pipe_express: Wings & Wheels' tube), for the player; the AI drive those pipes as any pipe
+        static bool Allowed => Setting != Mode.Off && (RaceController.Instance == null || RaceController.Instance.State == RaceController.Stage.Free
+            || RaceController.Instance.CarLap?.Data != null && RaceController.Instance.CarLap.Data.pipe_express);
 
         void FixedUpdate()
         {

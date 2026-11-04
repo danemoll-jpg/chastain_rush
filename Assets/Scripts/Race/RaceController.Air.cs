@@ -19,14 +19,14 @@ namespace ChastainRush
         public bool IsAir(string file) { var j = RouteJsonOf(file); return j != null && j.Contains("\"air\": true"); }
         public const float AirResetBack = 150f, AirResetSpeed = 70f;
 
-        void SpawnPilots()
+        void SpawnPilots(int[] only, string[] ids)
         {
             var rng = new System.Random(System.Environment.TickCount);
             DriverVariation.Seed = rng.Next();
             var riders = RiderLook.Field(DriverVariation.Seed, Mathf.Max(3, AiCount), RiderLook.Player);
             var fwd = Quaternion.Euler(0, Route.GridYaw, 0) * Vector3.forward; var right = Vector3.Cross(Vector3.up, fwd);
             var planes = new List<ArcadeVehicle> { car };
-            for (int n = 0; n < AiCount; n++)
+            foreach (int n in only ?? Enumerable.Range(0, AiCount).ToArray())
             {
                 var clone = Instantiate(car.gameObject); clone.name = AiNames[n];
                 foreach (var mb in clone.GetComponents<MonoBehaviour>())
@@ -42,18 +42,19 @@ namespace ChastainRush
                 cfg.riderLook = riders[n % riders.Length];
                 // Round 74 (H): AI pilots fly either plane (the route's planes; the opponents page's choice for the slot if it is one of them, else random)
                 var planeIds = (RouteData?.vehicles ?? new string[0]).Where(v => VehicleProfile.Find(v).IsPlane).ToArray(); if (planeIds.Length == 0) planeIds = new[] { VehicleProfile.Plane.Id };
-                var savedAi = SavedAiChoices(); string pid = n < savedAi.Length && planeIds.Contains(savedAi[n]) ? savedAi[n] : planeIds[UnityEngine.Random.Range(0, planeIds.Length)];
+                var savedAi = SavedAiChoices(); string pid = ids != null ? ids[n] : n < savedAi.Length && planeIds.Contains(savedAi[n]) ? savedAi[n] : planeIds[UnityEngine.Random.Range(0, planeIds.Length)];   // Round 92 (F): a mixed race's
                 cfg.Apply(pid);
                 cfg.SetPaint(AiPaints[n % AiPaints.Length]);
                 float d = 45f + 45f * (n / 2), side = n % 2 == 0 ? 9f : -9f; if (n == 2) side = 0f;
                 var p = Route.GridPosition + fwd * d + right * side;
-                if (HelicopterFlight.GroundUnder(new Vector3(p.x, 2500f, p.z), out var hit)) p = hit.point;
-                p += Vector3.up * (PlaneFlight.WheelDrop + .1f);
+                bool airStart = RouteData != null && RouteData.air_start;   // Round 92 (F): in the air on the lead-in, held until GO
+                if (airStart) { var q = Route.LeadIn != null && Route.LeadIn.Length > 0 ? Route.LeadIn[0] : Route.GridPosition; p.y = q.y; p -= fwd * (d * .5f); }
+                else { if (HelicopterFlight.GroundUnder(new Vector3(p.x, 2500f, p.z), out var hit)) p = hit.point; p += Vector3.up * (PlaneFlight.WheelDrop + .1f); }
                 var rot = Quaternion.LookRotation(fwd, Vector3.up);
                 ai.enabled = false; ai.Body.isKinematic = true;
                 ai.Body.position = p; ai.Body.rotation = rot; clone.transform.SetPositionAndRotation(p, rot);
                 ai.ClearSteering();
-                var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>() };
+                var e = new RaceEntrant { Name = AiNames[n], Car = ai, Box = clone.GetComponent<BoxCollider>(), Lap = spawnLap };
                 var pilot = clone.AddComponent<PlanePilot>();
                 pilot.Initialize(this, ai, e, n, side);
                 e.Reset(); Entrants.Add(e); planes.Add(ai);
@@ -69,7 +70,7 @@ namespace ChastainRush
 
         // a plane's pace so far (meters of the lap a second since it crossed the start), for an estimated finish
         float AirPace(RaceEntrant e)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             float t = RaceClock - e.StartAt; float done = e.ClockStarted ? e.CompletedLaps * Route.LapLength + Into(e) : 0f;
             return t > 20f && done > 1000f ? Mathf.Clamp(done / t, 50f, 140f) : 95f;
         }
@@ -79,7 +80,7 @@ namespace ChastainRush
         // be gone back for (flown through either way: no penalty) until the next one is taken (then the usual 5 s, OnCheckpoint)
         public const float AirMissNear = 400f;
         void AirRingPassedBy(RaceEntrant e, Vector3 from, Vector3 to)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             if (!e.ClockStarted || e.NextCheckpoint >= Route.Checkpoints.Count || e.RingSkipped == e.NextCheckpoint) return;
             var g = Route.Checkpoints[e.NextCheckpoint];
             Vector3 a = from - g.Position, b = to - g.Position; float za = Vector3.Dot(a, g.Forward), zb = Vector3.Dot(b, g.Forward);
@@ -105,7 +106,7 @@ namespace ChastainRush
         // time): the third crash before the same ring puts the plane back just past that ring (missed: the usual 5 s), never round the same loop again
         readonly Dictionary<RaceEntrant, (int ring, int n)> airCrashes = new Dictionary<RaceEntrant, (int, int)>();
         bool AirSpot(RaceEntrant e, out Vector3 at, out float yaw, out float pitch, bool crash = false)
-        {
+        { var Route = LapOf(e);   // Round 92 (F): this racer's own lap
             float ringS = !e.ClockStarted || e.NextCheckpoint == 0 ? 0f : Route.Checkpoints[Mathf.Min(e.NextCheckpoint, Route.Checkpoints.Count) - 1].S;
             float s = Route.GateS + ringS - AirResetBack;
             if (crash)
@@ -135,8 +136,9 @@ namespace ChastainRush
         // a crash's reset (PlaneFlight.CrashStep): straight into the air
         public bool AirReset(PlaneFlight plane)
         {
-            if (!AirRace || (State != Stage.Racing && State != Stage.Finished) || !plane) return false;
-            var e = EntrantOf(plane); if (e == null || !AirSpot(e, out var at, out float yaw, out float pitch, true)) return false;
+            if ((State != Stage.Racing && State != Stage.Finished) || !plane) return false;
+            var e = EntrantOf(plane); if (e == null || !LapOf(e).Air || !AirSpot(e, out var at, out float yaw, out float pitch, true)) return false;   // Round 92 (F): the racer's own lap
+            var Route = LapOf(e);
             plane.AirStart(at, yaw, pitch, AirResetSpeed);
             Teleported(e);
             Log(e, $"CRASH RESET: back in the air at ({at.x:0}, {at.y:0}, {at.z:0}) before {(e.ClockStarted && e.NextCheckpoint > 0 ? "ring " + Mathf.Min(e.NextCheckpoint, Route.Checkpoints.Count) : "the start ring")}");
@@ -146,8 +148,8 @@ namespace ChastainRush
         public bool AirReset(PlaneFlight plane, out Vector3 pos, out float yaw)
         {
             pos = Vector3.zero; yaw = 0f;
-            if (!AirRace || (State != Stage.Racing && State != Stage.Finished) || !plane) return false;
-            var e = EntrantOf(plane); if (e == null || !AirSpot(e, out var at, out yaw, out float pitch)) return false;
+            if ((State != Stage.Racing && State != Stage.Finished) || !plane) return false;
+            var e = EntrantOf(plane); if (e == null || !LapOf(e).Air || !AirSpot(e, out var at, out yaw, out float pitch)) return false;   // Round 92 (F)
             pos = at; plane.pendingAir = (at, yaw, pitch, AirResetSpeed);
             Log(e, $"RESET: back in the air at ({at.x:0}, {at.y:0}, {at.z:0})");
             return true;

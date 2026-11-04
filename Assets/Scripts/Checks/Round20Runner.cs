@@ -247,6 +247,10 @@ namespace ChastainRush
             {
                 if (Do("e92glass")) yield return Guard(R92Glass());
                 if (Do("p92fps")) yield return Guard(R92Fps());
+                if (Do("f92car")) yield return Guard(R92CarLaps());
+                if (Do("f92plane")) yield return Guard(R92PlaneLaps());
+                if (Do("f92ai")) yield return Guard(R92AiRaces());
+                if (Do("f92pics")) yield return Guard(R92Pics());
             }
             // Round 91 (Round20Runner.R91.cs)
             if (tag == "round91")
