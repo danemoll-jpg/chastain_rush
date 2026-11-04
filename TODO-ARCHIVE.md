@@ -7608,3 +7608,63 @@ Published: `game-8600` (0.86.0, Latest) on `danemoll-jpg/chastain-rush-releases`
 Decisions: the jump-finding numbers above are first guesses (a jump here is anything that throws you 0.8 m up for 0.4 s, so some crests count); hand-placed kit trees keep their own solid trunks.
 For Dan to check: HIGH MODE's jumps (Kennesaw, the Noonday trails, Addison's Elaine jump); a reset next to a checkpoint; driving through the woods, thin trees at 25 km/h and big ones flat out.
 
+
+## Round 87 (moved from TODO.md on 2026-11-03 when Round 91 started; word for word)
+
+## Previous delivery 3: Round 87
+**Reviewed: Dan drove it 2026-10-31 (the Kennesaw race); his notes are Round 88.**
+**Round 87, BUMPERS AND BARRIERS THAT NEVER FACE YOU, A HIGH RESET WHEN YOU JUMP OUT, the Addison Heights and Noonday Creek Trail reports (Dan, 2026-10-31 00:38; reports
+BUG-001 to BUG-011 of session `2026-10-31_00-06-51-254_769f69` (BUG-009 / 010 / 011 one place), read by Claude, after the Round 86 build; HIGH MODE races of Addison
+Heights (BUG-001 to 006) and the Noonday Creek Trail (BUG-007 to 011)).** Round 86 is reviewed. Item 0, the one-heavy-job rule and the end-of-round clean-up apply.
+Short results. Round 83's road failures still wait (QUEUED).
+Dan: "Some of these are general issues. Mainly that barriers and bumpers shouldn't be at an angle that would cause you to run into them head on when following a course.
+Also in high mode if someone jumps outside of the bumpers, they should be reset onto the track". So A and B are rules for EVERY course (forward, reverse, shortcuts),
+HIGH bumpers and normal-mode barriers alike; Dan's places are examples, each checked by name.
+A. NEVER HEAD ON. Following a course's line, no bumper or barrier end, corner or run ever faces you: every run lies along the course (parallel to its edge, never
+   angled across a lane), every end tapers or curves away from the line behind the edge, and where two runs meet they join in one rounded curve (BUG-002 x 3292.64 z
+   307.55, Embry Lane: "bumpers shouldn't cross each other like this. when they join they should be roounded", the picture: two runs crossing, an end sticking out into
+   the road). Closure barriers stand across the closed road's mouth, set back off the course's edge, in a line that follows the course, never with a corner in the road
+   (BUG-008 x 1300.15 z -1671.25, Barrett Parkway: "Why is this barrier like this? It should be out of the way not have an edge sticking int he middle of the road", the
+   picture: a zigzag of barrier blocks and a bumper stub in the lanes). Bumpers on the OUTSIDE of every corner, never an opening there (BUG-001 x 3216.77 z 535.67,
+   Embry Lane: "why is there no bumper on this corner? It is one of the easiest places to flying off the track"); openings only where a shortcut or the course itself
+   leaves or rejoins. Fewer, simpler: no bumpers that do nothing (on medians between the course's own lanes, round mouths of roads that are closed anyway, doubled
+   beside a closure barrier) (BUG-009 to 011 x 423.67 z -1494.34, Mall Boulevard / Ring Road: "this is a little confusing all these barriers\bumpers but most are not
+   needed", the pictures: bumper and barrier runs on both sides of each carriageway and the median, ends pointing into the lane). Check, by script on every course and
+   direction: no bumper or barrier piece within the course's driven width whose face is more than 25 degrees off the line ahead; the human-like driver on the line
+   and 3 m either side touches no end; pictures at each of Dan's places before / after.
+B. HIGH MODE: OUT OF THE BUMPERS, BACK ON THE TRACK. A HIGH player who lands, or ends up, outside the bumpers (or off the course past an opening that is not a shortcut)
+   is reset onto the course at once (after about a second down), placed as Round 86 B places resets (before the next checkpoint not yet passed, facing the course's
+   way, no penalty). Check: jumped out over a bumper on three courses: back on the line, next checkpoint ahead.
+C. RESETS FROM INSIDE THE MALL. BUG-007 (x 789.60 z -1683.53, Barrett Parkway, the Noonday Creek Trail race, checkpoint 12 of 13 next): "I reset in the mall and ended up
+   way over here". Round 86 B's rule failed there (the line through Town Center's two levels, or a checkpoint inside it, missed): a reset in the mall goes back on the
+   course's line inside the mall before the next checkpoint. Check: resets at five places through the mall (both levels, both directions of the race): each lands
+   inside the mall, next checkpoint ahead.
+D. ADDISON HEIGHTS: SLOWED IN THE ROAD, THROWN INTO THE BUMPERS, THE JUMP'S LANDING. BUG-003 (x 2967.67 z 417.02, Joel Drive: "there is something here that slows the
+   car down") and BUG-005 (x 2962.48 z 408.83: "the bushes seem to cause slow down in the middle of the road", the picture: the shortcut's slowing bushes beside the
+   lane): the slowing bushes and their slow-down never reach the course's road (they block only the free way round a shortcut, as the rule says). BUG-006 (x 2874.80
+   z 417.87, Joel Drive: "somthing here caused me to run into the bumers"; the bump log has a JOLT at x 2875 z 411): find the jolt and smooth it. BUG-004 (x 2811.13 z
+   498.87, Lyndon Drive, heading 36: "this area should be open so that you don't run into the bumper coming off the jump", the picture: a bumper's end in the landing
+   ahead): the jump's landing and run-out open (Round 86 A missed it: say why). Check: Joel Drive and Lyndon Drive driven through Dan's places on the line: no slowing,
+   no jolt, no bumper touched.
+E. THE KENNESAW CLIMB'S KICKER (Dan, 2026-10-31 00:44, not captured as a report: "On the way up the hill there is a significant bump that generally causes all
+   vehicles to jump off the road over the barriers"; found by Claude in Dan's bump log `%USERPROFILE%\AppData\LocalLow\Chastain Rush\Chastain Rush\bump_log.txt`, his
+   Kennesaw race 2026-10-31 00:20 and 00:21, both laps the same): Kennesaw Mountain Drive at x -394 to -402 z -5516 to -5523 (y 469 to 471): JOLT +2.8 m/s in 0.1 s, then
+   AIRBORNE at 28 m/s with vy +13.2 / +14.2 m/s (speed falling from 33 to 28: a steep face, not a crest); lap 1 flew 2.16 s, 11.7 m up, 59 m, landing at x -444.5 z -5564.6
+   4.1 m off the line; lap 2 never logged a landing (off the road). Smooth that face into the climb (one vertical curve the course's speed stays down on, or, if a jump
+   belongs there, one that throws you straight along the road and lands on it), the barriers and bumpers beside it per A. Check: the climb driven at full throttle by
+   the human-like driver in several vehicles (the bike, a car, the heaviest), normal and HIGH: no air over 0.5 s there, never off the road; picture of the spot.
+Check: item 0 for every item. Quick builds unless a world rebuild is needed. PUBLISH through the launcher.
+For Dan to check: HIGH MODE races of Addison Heights and the Noonday Creek Trail (bumpers and barriers, a reset in the mall, jumping out over a bumper); any other
+course's barriers; the Kennesaw climb at x -398 z -5520.
+
+**Status (Claude, 2026-10-31): built (one full Build Map for E, exe 05:31), checked in the exe, published 0.87.0 (`game-8700`), not yet driven by Dan.** Evidence `Data/screenshots/round87/` (`87_BUG-0xx_before/after.png` from Dan's spot and heading; `check_before.txt` = Round 86's layout via `-r87Old`, `check_after.txt`). Reports read: session `2026-10-31_00-06-51-254_769f69` BUG-001 to 011.
+A MOSTLY DONE. `HighBumpers`: a bumper keeps 3.5 m past any other line's paved edge (no crossing runs, none on a median between the course's own lanes), opens only for ANOTHER road (the outside of a corner on the course's own road keeps its bumper: BUG-001), no fold on a tight bend's inside, its distance out changes at most 10 degrees, ends curve 2.5 m out over 12 m, runs under 10 m left out, a loop's seam joined. Closures (`RaceBarriers.AlongCourse`): the row stands ALONG the course across the closed road's mouth, past all the pavement there plus 2.2 m, one set-back per row (BUG-008: out of the lanes). Check, every car course both ways: pieces inside a course's driven width more than 25 degrees off the line 109 bumper / 14 barrier -> 37 / 2; bumper ends inside it 182 -> 46 (left: the trail race under I-575 and on Barrett west of I-575, Chastain Ridge at x 3570 z 580 and 3510 z 1080, Marietta Square, a few corner ends). Human-like driver on the line and 3 m either side: Addison lap and the trail race's Ring Road to Barrett stretch, 0 end touches in four of five full runs (one run: the inside end at BUG-001's corner, 3 m right).
+B DONE. `HighAssist`: in a HIGH race, down (2 wheels) outside the bumpers' reach (`HighBumpers.Inside`, the lead-in counts) for 1 s: put back as a reset (before the next checkpoint, no penalty). Check: thrown over a bumper 9 times on Addison, the Glen loop and Kennesaw: all put back in 2.2 to 4.4 s, next checkpoint ahead, no penalty.
+C DONE. BUG-007: Dan was on the Carroway renovation shortcut (it forgives CP8 to 10), so the reset measured him against the lap and put him 12 m short of CP11 on Barrett (reproduced: (788, -1688)). Now a reset on an active shortcut stays on its line (`CarRecovery.ShortcutSpot`), the lap station counts the mall's floors (`RaceRoute.LapStationNear`). Check: 10 resets in Town Center (both floors, both directions, the shortcut): all within 4 m, same floor, next checkpoint ahead.
+D DONE. BUG-003 / 005: the Joel terrace's bed reached 3.5 m over Joel Drive; no shrub drag on any road's pavement now (`ShrubBeds`; the bushes were never drawn there). BUG-006: the ground along and across Joel Drive is smooth; the "jolt" was the bike hitting the bumper where it stepped in at the road's edge (now smoothed). BUG-004: the Lyndon trailer jump was missed by Round 86 because its shortcut line carries the flight in its own heights (no "jump" found): a line in the air now counts as one, and a landing near a shortcut's end leaves it open to the lap; no bumper beside a raised ramp. Check: Joel Drive and the Lyndon jump driven on the line and 2 m either side: 0 bumper touches, no drag at Dan's spots.
+E NOT MET (tuning limit, 2 attempts). The climb's crest (15 -> 25 -> 14 % in 30 m) is one 90 m vertical curve now (`R55VerticalCurves` reads the mountain track; ground moved up to 1.4 m), flat 7.5 m either side to take out a 0.5 to 0.75 m berm at the edge of a 3.8 m drop on the bend's outside. HIGH: the Drifter Twin, Street Classic, Skyfin 0.10 / 0.36 / 0.18 s in the air, on the road. Normal mode at full throttle (39 / 36 / 36 m/s): still 1.8 / 1.2 / 0.9 s in the air and 13 to 20 m off the line (was 2.1 s and 90 m): they run wide at the bend and drop off the edge. Dan decides: a barrier along that edge in normal mode, or a wider bench.
+E follow-up (Dan 2026-10-31: "Wider bench"; the round's 3rd and last full Build Map, exe 11:30): the climb's level band runs 18 m out on the bend's outside (left) from 20 m before the crest to 60 m past it, tapered over 20 m, banked down over 18 m, trees cleared (vertical curve `half_left` / `blend_left` / `wide_from` / `wide_to` / `taper`, `make_mountain_route.py` KC_*). Normal mode: air 0.60 / 0.82 / 0.72 s (was 1.8 / 1.2 / 0.9) but they still run 10 / 24 / 19 m wide, 38 to 55 m BEFORE the crest (the bend's first part, x -360 to -375 z -5471 to -5491), ahead of the run-off (Street Classic 7.8 m below the road there). HIGH unchanged (on the road). [check_climb_bench.txt](Data/screenshots/round87/check_climb_bench.txt), picture at the crest [87_climb_bench.png](Data/screenshots/round87/87_climb_bench.png) (level grass run-off on the left, no trees, nothing floating). NOT MET: carrying the run-off back to about 80 m before the crest needs a 4th full Build Map (limit 3): next round if Dan wants it.
+Published: `game-8700` (0.87.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-10-31 05:31. Disk (project folders) 34.2 -> 33.7 GB; Builds keeps 0.83.0 to 0.87.0's release folders.
+Published (E follow-up): `game-8701` (0.87.1, Latest), the exe of 2026-10-31 11:30. Disk (project folders) 35.3 -> 35.3 GB (Builds now also keeps 0.87.1's release folder).
+For Dan to check: Addison Heights and the Noonday Creek Trail in HIGH MODE (Embry's corners, the Lyndon landing, Barrett's closures, Ring Road / Mall Boulevard); jumping out over a bumper; a reset in the mall and on the Carroway shortcut; the Kennesaw climb in normal mode (the run-off on the bend's outside; wide runs still leave the road just before it).
+
