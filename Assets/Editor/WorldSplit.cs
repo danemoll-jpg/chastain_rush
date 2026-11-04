@@ -41,15 +41,44 @@ namespace ChastainRush
                 if (shares.Count == 0 || size + b > ShareDiskBytes) { shares.Add(new List<string>()); size = 0; }
                 shares[shares.Count - 1].Add(p); size += b;
             }
+            // meshes drawn only through static batches: the build keeps just their batched copy (in the world scene's own file), so a data
+            // scene must not hold on to them (that would ship every one twice); a mesh a collider, an unbatched renderer or anything else uses stays
+            var batchedOnly = BatchedOnlyMeshes(worldScene);
             var list = new List<string> { Scene("Boot", go => go.AddComponent<WorldBoot>().worldScene = Path.GetFileNameWithoutExtension(worldScene)) };
             for (int i = 0; i < shares.Count; i++)
             {
-                var objs = shares[i].SelectMany(p => AssetDatabase.LoadAllAssetsAtPath(p)).Where(o => o != null && !(o is GameObject) && !(o is Component)).ToArray();
+                var objs = shares[i].SelectMany(p => AssetDatabase.LoadAllAssetsAtPath(p)).Where(o => o != null && !(o is GameObject) && !(o is Component) && !(o is Mesh m && batchedOnly.Contains(m))).ToArray();
                 list.Add(Scene($"Data{i + 1}", go => go.AddComponent<WorldDataShare>().assets = objs));
                 Debug.Log($"[WorldSplit] Data{i + 1}: {shares[i].Count} files, {shares[i].Sum(p => new FileInfo(p).Length) / 1048576.0:0} MB on disk, {objs.Length} objects");
             }
             list.Add(worldScene);
             return list.ToArray();
+        }
+
+        static HashSet<Mesh> BatchedOnlyMeshes(string worldScene)
+        {
+            var scene = EditorSceneManager.OpenScene(worldScene, OpenSceneMode.Single);
+            var batched = new HashSet<Mesh>(); var used = new HashSet<Mesh>();
+            foreach (var root in scene.GetRootGameObjects())
+            {
+                foreach (var mf in root.GetComponentsInChildren<MeshFilter>(true))
+                {
+                    var m = mf.sharedMesh; if (!m) continue; var r = mf.GetComponent<MeshRenderer>();
+                    bool inBatch = r && r.enabled && mf.gameObject.activeInHierarchy && GameObjectUtility.AreStaticEditorFlagsSet(mf.gameObject, StaticEditorFlags.BatchingStatic);
+                    (inBatch ? batched : used).Add(m);
+                }
+                foreach (var mc in root.GetComponentsInChildren<MeshCollider>(true)) if (mc.sharedMesh) used.Add(mc.sharedMesh);
+                // any other component's reference to a mesh (scripts that keep meshes: trees, kits, breakables)
+                foreach (var c in root.GetComponentsInChildren<MonoBehaviour>(true))
+                {
+                    if (c == null) continue;
+                    var so = new SerializedObject(c); var it = so.GetIterator();
+                    while (it.Next(true)) if (it.propertyType == SerializedPropertyType.ObjectReference && it.objectReferenceValue is Mesh rm) used.Add(rm);
+                }
+            }
+            batched.ExceptWith(used);
+            Debug.Log($"[WorldSplit] {batched.Count} meshes drawn only through static batches (left to the build), {used.Count} meshes used otherwise");
+            return batched;
         }
 
         static string Scene(string name, Action<GameObject> fill)

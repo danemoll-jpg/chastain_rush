@@ -1,4 +1,4 @@
-Round 92 check, 2026-11-04 15:08, the exe, 1280 x 720, muted.
+Round 92 check, 2026-11-04 15:30, the exe, 1280 x 720, muted.
 
 === E: glass under the creeks (the stage-5 mains' creek pools)
   CP1 (M7a under a creek at 1056, -120): glass 26 m; the car in the pipe; the crown 1.0 m under the creek's surface; pictures 92_glass_CP1_seat / _chase / _bank
@@ -8,26 +8,26 @@ Round 92 check, 2026-11-04 15:08, the exe, 1280 x 720, muted.
 PASS  E: every creek pool's glass stretch is a pipe under water  -  4 of 4
 
 === Item 0: load time and frame rate (Steam Deck setting off, 1280 x 720)
-  load: the check's first frame 42.7 s after the process started (Windows process start to the check runner)
+  load: the check's first frame 29.4 s after the process started (Windows process start to the check runner)
   data file level7.resS: 1201 MB
   data file sharedassets6.assets: 1097 MB
-  data file sharedassets1.assets: 698 MB
-  data file sharedassets5.assets: 697 MB
-  data file sharedassets3.assets: 690 MB
-  data file sharedassets4.assets: 666 MB
+  data file sharedassets5.assets: 651 MB
+  data file sharedassets4.assets: 432 MB
+  data file sharedassets3.assets: 417 MB
+  data file resources.assets.resS: 330 MB
   memory at load: Unity reserved 7.07 GB, allocated 6.11 GB, mesh memory 3.27 GB
-  Chastain Glen entrance      60 fps average, median   60 fps, 99th percentile  19.3 ms
-  Chastain Enclave            60 fps average, median   60 fps, 99th percentile  17.4 ms
-  Stunt park                  60 fps average, median   60 fps, 99th percentile  18.3 ms
-  Underground hub             60 fps average, median   60 fps, 99th percentile  18.2 ms
-  Town Center                 57 fps average, median   60 fps, 99th percentile  18.4 ms
-  KSU                         58 fps average, median   60 fps, 99th percentile  18.9 ms
-  Viking Quarry J1            53 fps average, median   60 fps, 99th percentile  49.6 ms
-  Airport                     60 fps average, median   60 fps, 99th percentile  22.5 ms
-  Kennesaw summit             40 fps average, median   41 fps, 99th percentile  46.8 ms
-  Kennestone                  60 fps average, median   60 fps, 99th percentile  22.6 ms
-  Marietta Square             60 fps average, median   60 fps, 99th percentile  23.9 ms
+  Chastain Glen entrance      59 fps average, median   60 fps, 99th percentile  21.5 ms
+  Chastain Enclave            59 fps average, median   60 fps, 99th percentile  22.2 ms
+  Stunt park                  60 fps average, median   60 fps, 99th percentile  22.7 ms
+  Underground hub             59 fps average, median   60 fps, 99th percentile  23.8 ms
+  Town Center                 60 fps average, median   60 fps, 99th percentile  18.6 ms
+  KSU                         60 fps average, median   60 fps, 99th percentile  18.2 ms
+  Viking Quarry J1            33 fps average, median   57 fps, 99th percentile 153.3 ms
+  Airport                     55 fps average, median   60 fps, 99th percentile  37.5 ms
+  Kennesaw summit             32 fps average, median   30 fps, 99th percentile  51.5 ms
+  Kennestone                  56 fps average, median   60 fps, 99th percentile  34.3 ms
+  Marietta Square             57 fps average, median   60 fps, 99th percentile  35.0 ms
   memory after the 11 places: Unity reserved 7.10 GB, allocated 6.21 GB, mesh memory 3.27 GB
-  ALL PLACES 57 fps average, median 60 fps, 99th percentile 33.4 ms
+  ALL PLACES 54 fps average, median 60 fps, 99th percentile 49.7 ms
 
 1 of 1 checks passed.
