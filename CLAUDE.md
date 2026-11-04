@@ -1,4 +1,4 @@
-﻿# Project Context & Rules â€” Chastain Rush
+# Project Context & Rules — Chastain Rush
 
 Sequel to Woodstock Rush (the `Racer` repo). Same kind of game, but the map is
 generated from real-world data for the Chastain Glen area of Marietta, GA.
@@ -38,7 +38,7 @@ generated from real-world data for the Chastain Glen area of Marietta, GA.
   them in an ignored folder; commit only the cropped, processed data.
 - **One world, routes laid over it.** Don't build a separate copy of the world
   per course.
-- **Licensing:** OpenStreetMap needs a visible "Â© OpenStreetMap contributors"
+- **Licensing:** OpenStreetMap needs a visible "© OpenStreetMap contributors"
   credit. No Google Maps data of any kind.
 - **Privacy:** don't commit the owner's street address or house number.
 
@@ -203,8 +203,8 @@ Full text: `Docs/FROM-WOODSTOCK-RUSH.md`. Read it once. The ones that bite:
   (this restates "World changes only where Dan pointed" above; it binds the planner writing `TODO.md` too).
 - **Targeted testing only:** one check per fix, where it changed. Dan drives the full courses himself.
 - **Batch small fixes into one round** rather than several, since the build and cleanup happen once per round.
-- **One heavy job at a time, at low priority â€” STANDING RULE (Dan, 2026-10-29 13:07).** Dan: "CODE Seems to keep locking up my computer with whatever it is doing" (Round 82 ran its 6th full Build Map with two exe checks (check5a, check5b) at the same moment). From now on: never run a Build Map, a player build and an exe check (or two exe checks) at the same time; one at a time. Start Unity batch runs and check exes at Below Normal priority (PowerShell `Start-Process ... -PassThru` then `.PriorityClass = 'BelowNormal'`, or `start /belownormal`) and give Unity's batch runs fewer worker threads (`-job-worker-count` about half the cores), so Dan's computer stays usable. At most 3 full Build Maps in a round; past that, stop and report.
-- **One map rebuild per round, and a limit on tuning â€” DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
+- **One heavy job at a time, at low priority — STANDING RULE (Dan, 2026-10-29 13:07).** Dan: "CODE Seems to keep locking up my computer with whatever it is doing" (Round 82 ran its 6th full Build Map with two exe checks (check5a, check5b) at the same moment). From now on: never run a Build Map, a player build and an exe check (or two exe checks) at the same time; one at a time. Start Unity batch runs and check exes at Below Normal priority (PowerShell `Start-Process ... -PassThru` then `.PriorityClass = 'BelowNormal'`, or `start /belownormal`) and give Unity's batch runs fewer worker threads (`-job-worker-count` about half the cores), so Dan's computer stays usable. At most 3 full Build Maps in a round; past that, stop and report.
+- **One map rebuild per round, and a limit on tuning — DECIDED (2026-10-18).** Dan, after Round 41 ran 9 hours (Part A alone
   7.5 h of 30-minute Build Map runs while tuning the crypt toward a time target it never reached): (1) a round makes all its
   world changes first and runs Build Map and the exe build ONCE, at the end (code-only steps in between use
   `-playerBuildKeepScene`); each part still gets its own commit and its own targeted check on that one build. (2) Tuning
@@ -516,7 +516,7 @@ after stage 2); the map is no longer a rectangle: `World/MapLand.cs` (the land's
 for MapEdge's walls and push-back, the helicopter's and plane's boundary, the edge closures (`MapBuilder.Edges.cs`), BridgeEnds; `TerrainGrid` has holes (`Has`, `All`,
 `At` falls back to the nearest tile); `make_scenery.py` writes version 2 (the land's rectangles); the map picture marks off-map ground. B Marietta Square
 (`python Tools/mapgen/make_marietta.py` writes `Data/tracks/marietta_square.json` from raw/osm_ext3.json; re-run after mapgen; built by `MapBuilder.MariettaSquare.cs`, quick
-step Marietta: Glover Park, the fountain, the bandstand, breakable benches / lamps / planters / cafÃ© tables, brick walks, crosswalks and parking marks, the railroad,
+step Marietta: Glover Park, the fountain, the bandstand, breakable benches / lamps / planters / café tables, brick walks, crosswalks and parking marks, the railroad,
 the theater, market, museum and depot; the old storefronts round the square are `MariettaHistoric` shops in `MapBuilder.Businesses.cs`; signs rows 54 to 63 of
 `make_business_signs.py`); the piece's houses: `python Tools/mapgen/neighborhoods_rest.py --piece` (appended neighborhoods, `piece` 3); fast travel
 `add_extension_places.py` "marietta-square"; check places `python Tools/mapgen/ext_drives.py --round76`. C the Kennesaw banks: the grade's `legs` (GradeAlong takes both
