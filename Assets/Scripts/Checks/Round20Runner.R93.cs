@@ -225,20 +225,23 @@ namespace ChastainRush
                 int pr0 = RaceStuckReset.Prompts, ar0 = RaceStuckReset.AutoResets; var p0 = car.Body.position;
                 car.Body.rotation = Quaternion.LookRotation(Vector3.up, -f) ; car.transform.rotation = car.Body.rotation; car.Body.position = p0 + Vector3.up * 1.2f;
                 car.Body.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
-                float t = 0f, prompt = -1f, reset = -1f; bool shot = false;
+                // the player holds the throttle, as a wedged player does (HIGH rights the bike at once; still pinned with the throttle on, it is stuck)
+                R73Pad(); R73Set(0f, 1f, 0f); int rg0 = HighAssist.Righted;
+                float t = 0f, prompt = -1f, reset = -1f, righted = -1f; bool shot = false;
                 while (t < 14f)
                 {
                     yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
+                    if (righted < 0f && HighAssist.Righted > rg0) righted = t;
                     if (prompt < 0f && RaceStuckReset.Prompts > pr0) prompt = t;
                     if (prompt > 0f && !shot && t > prompt + .5f && !high) { shot = true; yield return Capture("93_d_prompt"); }
                     if (RaceStuckReset.AutoResets > ar0) { reset = t; yield return new WaitForFixedUpdate(); car.Body.constraints = RigidbodyConstraints.None; break; }
                 }
-                car.Body.constraints = RigidbodyConstraints.None; yield return new WaitForSecondsRealtime(1f);
+                R73Set(0f, 0f, 0f); car.Body.constraints = RigidbodyConstraints.None; yield return new WaitForSecondsRealtime(1f);
                 if (high) yield return Capture("93_d_after_high"); else yield return Capture("93_d_after_normal");
                 var q = car.Body.position; float up = Vector3.Angle(car.transform.up, Vector3.up);
-                report.AppendLine($"  {(high ? "HIGH" : "normal")}: prompt at {prompt:0.0} s, reset at {reset:0.0} s; after: ({q.x:0.0}, {q.y:0.0}, {q.z:0.0}) tilted {up:0} deg, lap station {r.LapStationOf(q):0} m (checkpoint 3 at {r.Checkpoints[2].S:0} m), next checkpoint {p.NextCheckpoint + 1}");
-                Check($"D1 {(high ? "HIGH" : "normal")}: the wedged bike is reset by itself ({(high ? "at about 5 s" : "a prompt at about 5 s, the reset at about 8 s")}), upright, short of the next checkpoint",
-                    reset > 0f && prompt > 0f && (high ? reset < 6.5f : prompt < 6.5f && reset > 7f && reset < 9.5f) && up < 20f && p.NextCheckpoint == 2, $"prompt {prompt:0.0}, reset {reset:0.0}");
+                report.AppendLine($"  {(high ? "HIGH" : "normal")}: {(high ? $"righted by HIGH at {righted:0.0} s, " : "")}prompt at {prompt:0.0} s, reset at {reset:0.0} s; after: ({q.x:0.0}, {q.y:0.0}, {q.z:0.0}) tilted {up:0} deg, lap station {r.LapStationOf(q):0} m (checkpoint 3 at {r.Checkpoints[2].S:0} m), next checkpoint {p.NextCheckpoint + 1}");
+                Check($"D1 {(high ? "HIGH" : "normal")}: the wedged bike is {(high ? "righted at once, then (still pinned, throttle on) reset by itself about 5 s later" : "offered a reset at about 5 s and reset by itself at about 8 s")}, upright, short of the next checkpoint",
+                    reset > 0f && prompt > 0f && (high ? righted >= 0f && righted < 1.5f && reset < righted + 6.5f : prompt < 6.5f && reset > 7f && reset < 9.5f) && up < 20f && p.NextCheckpoint == 2, $"{(high ? $"righted {righted:0.0}, " : "")}prompt {prompt:0.0}, reset {reset:0.0}");
                 race.EndRace(); R84High(false);
             }
 
