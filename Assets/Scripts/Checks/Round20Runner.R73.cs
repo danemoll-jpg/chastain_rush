@@ -51,6 +51,7 @@ namespace ChastainRush
         {
             var st = new GamepadState { leftStick = new Vector2(Mathf.Clamp(steer, -1f, 1f), Mathf.Clamp(pitch, -1f, 1f)), rightTrigger = Mathf.Clamp01(throttle), leftTrigger = Mathf.Clamp01(brake) };
             if (y) st = st.WithButton(GamepadButton.North);
+            if (r93Shoulder.HasValue) st = st.WithButton(r93Shoulder.Value);   // Round 93 (B): a shoulder button held with the stick
             InputSystem.QueueStateEvent(r73pad, st);
         }
         IEnumerator R73Reset() { R73Set(0, 0, 0, 0, true); yield return new WaitForFixedUpdate(); yield return new WaitForFixedUpdate(); yield return null; R73Set(0, 0, 0); yield return new WaitForSecondsRealtime(.8f); }

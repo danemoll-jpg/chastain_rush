@@ -46,8 +46,12 @@ namespace ChastainRush
             foreach (var s in f.surfaces ?? new QrLine[0])
             {
                 var pts = ToPoints(s.points); if (pts.Count < 2) continue;
+                // Round 93 (A, Dan's photo after The Big One: "an unwanted bump", a sheet of grass across the gravel): the gravel had a vertex every 4 m
+                // along and across, so the 1 m ground stood up through it between them; now every 1.5 m along and 1 m across, each on the highest
+                // ground within 0.45 m (RibbonGridMax), so no ground shows through
+                pts = Resample(pts, 1.5f);
                 var gm = new MeshBuilder(); gm.Tint = Gravel;
-                RibbonGrid(gm, pts, Enumerable.Repeat(s.half * 2f, pts.Count).ToArray(), .06f, terrain, 4);
+                RibbonGridMax(gm, pts, Enumerable.Repeat(s.half * 2f, pts.Count).ToArray(), .06f, terrain, Mathf.Max(4, Mathf.RoundToInt(s.half * 2f)));
                 gm.ToObject($"Viking Quarry race gravel {ns++} {s.id}", mats.Driveway, go, false, false);
             }
             // ---- the berms
