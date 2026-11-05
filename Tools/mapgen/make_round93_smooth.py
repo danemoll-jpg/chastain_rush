@@ -50,8 +50,10 @@ for j in load("Data/tracks/quarry_jumps.json")["jumps"]:
     o, d = np.array(j["origin"]), np.array(j["dir"]); nl = np.array([-d[1], d[0]])
     al = (p - o) @ d; lat = (p - o) @ nl
     keep |= (np.abs(lat) < 25.0) & (al > -10.0) & (al < j["land_s"][-1] + 40.0)
-lines.append({"id": "Viking Quarry", "closed": True, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 40.0), "keep": ranges(keep),
-              "half": 8.0, "blend": 6.0, "sigma": 5.0, "crest_g": 0.8, "sag_g": 2.5, "max_change": 3.0, "despike_reach": 35.0})
+lines.append({"id": "Viking Quarry", "closed": True, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 45.0), "keep": ranges(keep),
+              # crest 0.45 g at up to 45 m/s (Round 93 check: the bikes hopped 0.5 to 0.7 s at 36 to 42 m/s where the climbs out of J1's and J2's
+              # catch slopes eased off at 0.8 g / 40 m/s: a sprung vehicle leaves before the bare limit)
+              "half": 8.0, "blend": 6.0, "sigma": 5.0, "crest_g": 0.45, "sag_g": 2.5, "max_change": 3.0, "despike_reach": 35.0})
 print(f"Viking Quarry: {len(p)} points, {keep.sum()} kept ({len(ranges(keep)) // 2} stretches)")
 # ---- Wings & Wheels (the car's lap)
 r = load("Data/routes/wings_and_wheels.json"); lp = np.array(r["loop"]).reshape(-1, 2); p = resample(lp, 2.0)
@@ -69,7 +71,7 @@ for ln in rail.get("lines", []):
     for k in range(len(q)):
         keep |= np.hypot(p[:, 0] - q[k, 0], p[:, 1] - q[k, 1]) < 12.0
 lines.append({"id": "Wings & Wheels", "closed": True, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 52.0), "keep": ranges(keep),
-              "half": 5.5, "blend": 5.0, "sigma": 4.0, "crest_g": 0.8, "sag_g": 2.5, "max_change": 1.2})
+              "half": 5.5, "blend": 5.0, "sigma": 4.0, "crest_g": 0.55, "sag_g": 2.5, "max_change": 2.0})
 print(f"Wings & Wheels: {len(p)} points, {keep.sum()} kept ({len(ranges(keep)) // 2} stretches)")
 json.dump({"source": "Tools/mapgen/make_round93_smooth.py (Round 93 A, C1)", "lines": lines}, open(OUT, "w", encoding="utf-8"))
 print("wrote", OUT)
