@@ -114,6 +114,42 @@ needed, never read it in full. When Dan marks a round reviewed, it becomes "Prev
 oldest one (delivery 4) is appended to the end of `TODO-ARCHIVE.md` word for word under a dated heading.
 
 ## CURRENT round
+**Round 93, THE QUARRY BUMP AFTER THE BIG ONE, PLANE ROLLS ONLY WITH A SHOULDER BUTTON, WINGS & WHEELS SMOOTHED (Dan, 2026-11-05 00:25, a photo of his screen on 0.92, no report).** Round 92 is reviewed
+(the update reached him). Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results. (Dan, 00:33: the held quarry notes from 0.90 are irrelevant now: dropped.)
+A. THE QUARRY BUMP AFTER THE BIG ONE. Photo (lap 1, "CHECKPOINT 5 / 22" 340 m ahead: between "The Big One's run-out" (CP4, s 1782) and "the pit floor" (CP5, s 2180), so about s 1840;
+   the gravel road with a sheet of grass lying across it right in front of the bike (the ground standing up through the gravel), and ahead at the bend a jagged green wall of
+   ground spikes): "this needs to be fixed. It is an unwanted bump". The gravel laid over the ground there with no grass through it, one smooth surface, no lip; the spiky wall at
+   the bend cut back to a clean bank. Then the whole lap the same way: everywhere the ground pokes through or stands proud of the course's gravel (a probe along the course,
+   both edges and the middle), and every unwanted hop over 0.3 s on the human-like driver's line (the course's designed jumps excepted). Check: the bump log of three laps on the
+   bike and a car, normal and HIGH: no unwanted hop; a picture from Dan's spot before / after.
+B. PLANES: ROLL ONLY WITH A SHOULDER BUTTON. Dan: "I don't like the way the planes fly after the update. To roll lets make it so you have to press the shoulder buttons. Shoulder
+   buttons in conjunction with the stick will cause you to roll without the shoulder button you turn just like needle". Round 91 B made the stick roll freely. Now:
+   - Without a shoulder button: the stick flies the plane as before Round 91 (bank-and-turn, limited bank and pitch, wings level themselves), turning like the Needle
+     (the stick left / right turns the plane, as easy as steering a bike).
+   - Holding a shoulder button (LB or RB, either; keyboard: its own key) with the stick: the plane rolls all the way round (left / right) and pitches all the way round for
+     loops (up / down); let go of the shoulder button and it levels the near way, as Round 91 B's recovery.
+   - BARREL ROLL / LOOP notes stay; HIGH's pull-out near the ground stays; AI pilots unchanged. The control hints on screen and in the menus say it (only the device in use).
+   - Check what the shoulder buttons did in a plane before (throttle? camera?) and move that elsewhere if needed, saying where.
+   Check: controller input in both planes: a turn without the shoulder (bank limited, no roll past it), a roll each way and an inside loop with it, level after letting go.
+C. WINGS & WHEELS: SMOOTH ROADS, AN OBVIOUS U-TURN, NO SLOW GATES (Dan, 2026-11-05 00:33, after racing it on the road and winning: "There was one spot on the wing and wheels
+   race that also need clean up to be more smooth. So please check this course as well for unsmooth roads. I think on that race since there is a uturn lets make it more obvious.
+   I don't like the idea of airplane checkpoints where you have to fly at a different speed. Can't we add a couple more checkpoints to make their course a little longer").
+   (1) The car's lap (Cherokee, Tower Road, Church, Hansell, the tube): every unwanted hop or jolt found and smoothed, as A (bump log of three laps, bike and car, normal and HIGH;
+   none over 0.3 s, the tube's own entry and exit drives clean too). (2) The U-turn on the car's lap (say where): plain to see coming up: the turn's checkpoint arch placed so it
+   faces you, the barriers / bumpers along the turn's outside guiding you round (never across, Round 87), a U-turn arrow board before it, and the minimap's line showing it.
+   (3) The planes: no slow gates (remove every ring that must be taken under a speed); instead a couple more rings that make the planes' way a little longer (and the low rings
+   under bridges stay); retune toward the car's time (two attempts, then report the car / plane laps per difficulty). Check: three races (cars, planes, mixed) with times;
+   the human-like driver takes the U-turn without missing its checkpoint.
+Check: item 0 for every item. PUBLISH through the launcher (prove the update from 0.92.1 the way Dan gets it).
+For Dan to check: the quarry after The Big One; flying both planes (turns, rolls, loops); Wings & Wheels (the smooth lap, the U-turn, the planes' longer way).
+
+## QUEUED rounds
+Held by Dan, not to start until he says:
+- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
+  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
+
+## Previous delivery 1 (newest): Round 92
+**Reviewed: Dan updated to it and played 2026-11-05 (the quarry, the planes); his notes are Round 93.**
 **Round 92, THE LAUNCHER UPDATE FIXED, GLASS UNDER THE CREEKS, THE RACE FOR A PLANE OR A CAR (Dan, 2026-11-04 12:37, three photos of his screen, no reports; and the queued race of
 2026-11-02 01:40).** Round 91 is reviewed. Item 0, the one-heavy-job rule (at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
 0. FIRST: THE UPDATE THAT NEVER ARRIVED (Dan, 2026-11-04 12:42, a photo of the launcher: "Installed: 0.90.0" and "Manifest size limit exceeded"; "So let's get this fixed and
@@ -153,31 +189,7 @@ E DONE. Where the stage-5 mains pass under a creek, a pool at the creek's level 
 F DONE, timing NOT within 5 % after the two tuning attempts (reported, not tuned further). "Wings & Wheels" (race setup, Street or Air; `make_wings_route.py`, `make_wings_air_route.py`; `RaceController.Twin.cs`): one race, two laps over the same streets round Kennestone and the square. A car runs Cherokee, Tower Road, Church and Hansell (4.7 km), with THE TUBE: off Tower Road by worn tracks into the X_KEN mouth, down M7d with the express, out of the Root Street manhole (forgives CP4 to 8; the corridor now checks height, so the ground over the pipe does not count). A plane flies 10.1 km of rings the long way round: two low frames (under the hospital's skybridge, under the railroad), two slow rings (50 and 45 m/s, "TOO FAST" if over). Mixed fields (each racer its own lap; the opponents page offers cars and planes, All cars / All planes), records per kind plus a combined board, pipe express on in this race. Attempt 1 ran the southwest loop off the land (every plane into the edge wall); attempt 2 put it back and lengthened the northwest loop; the tree on Church Street's descent to C1 is cleared (track `wings_and_wheels_air.json`). Check (the exe, `f_final/`): human-like car 2:54 by the roads, 2:23 through the tube (2:10 in a cleaner run; 3 stalls this time near the turn-off and Cherokee), human-like plane 2:03 / 2:03, no crash, every low frame and slow ring taken. AI best laps, cars / planes: Easy 2:12-2:33 / 1:58-2:11; Normal 2:06-2:26 / 1:58-2:08; Hard 2:01-2:16 / 1:55-2:03. All 9 fields (all cars, all planes, mixed x 3 levels) finished; the AI took the tube on its own. Planes are 5 to 14 % quicker. To even it: shorten the car's lap or make the plane's longer (Dan decides). Pictures looked at: the turn-off (the orange shortcut on the minimap), inside the tube, the pop-out onto Root Street toward the line, the low frame under the skybridge. Not checked: HIGH MODE, ghosts and replays in this race (they use the shared race code).
 Full Build Maps used: 2 of 3. Build `Builds/ChastainRush/BUILD_INFO.txt` 2026-11-04 21:43. Disk: repo folders 83.3 -> 45 GB (clean-up plus this round's three update-test installs), C: free 106 -> 138 GB.
 
-## QUEUED rounds
-**QUARRY NOTES FROM 0.90 (Dan, 2026-11-04 12:37; HELD: Dan reviews 0.91+ first, then says which still apply).**
-NOTE: Dan's photos show "CHECKPOINT n / 19": that is 0.90.0's count (0.91.0 has 22). FIRST check which build his PC and Deck run (the launcher's installed version) and say it;
-if the launcher did not update to 0.91.0, find why and fix it. Each item below is checked on 0.91's world first (some may already be fixed by Round 91 0); map his 0.90 checkpoints
-to 0.91's: 0.90 CP4 = "the pit floor", CP11 = "the haul road's hairpin", CP12 = "the east rim".
-A. AN UNINTENDED JUMP BEFORE THE HAUL ROAD'S HAIRPIN. Photo 1 (lap 2, 0.90 "CHECKPOINT 11 / 19" 201 m ahead: just after The Corner's landing / run-out, the gravel crest with the lake
-   below): "smooth this so it isn't an unintended jump". Find it (the bump log if Dan's PC session has it; else a driven trace) and smooth it into one vertical curve.
-B. THE PIT FLOOR AFTER THE BIG ONE: A TRAIL, AND NO JUMP ON IT. Photo 2 (lap 2, 0.90 "CHECKPOINT 4 / 19" 326 m: right after The Big One's landing, an open grass field, the quarry
-   walls ahead, no trail): "road removed but still no trail right away to lead the way. Also when do find the trail there was another unintended jump". The gravel course runs from
-   the landing's run-out straight on, visible from the touchdown, edged (Round 91's reflector posts), to the pit floor; smooth the jump on it.
-C. ROADS TO NOWHERE OUT OF THE QUARRY. Photo 3 (lap 1, 0.90 "CHECKPOINT 12 / 19" 123 m: toward the east rim, a grey road climbing a bank off to the left into nothing, another on the right,
-   barriers at their mouths): "this road and general roads like this leading to nowhere in the quarry need to be removed. This is the only event here so roads unrelated to it make no
-   sense". Remove EVERY road inside the quarry (pit, benches, walls, rim inside the quarry's outline) that is not the race's course or a way in / out the race or Free Roam needs
-   (`drop_roads`, as Round 91 0), with their barriers; list them. Check: a top-down picture of the quarry before / after; the race's closures still close what is left.
-D. THE QUARRY'S PIPES AND GEYSERS FINDABLE, AND NO GETTING STUCK. Dan: "outside of the race I didn't find any entrances to the underground nor the geysers to push drivers up. Should be
-   clearer so you don't get stuck there". In Free Roam: the shore exit into the network and the two launch pipes are plain to see from the pit floor and the rim (a big concrete
-   headwall / culvert mouth that reads as a way in, worn tire tracks to it, the geysers spouting now and then so you see where they are from afar, a little mist); on the map
-   (Free Roam's map and PIPES layer) and the minimap as icons; one of each in view from the bottom of each haul road. A car that drives down into the pit always has a way out in sight:
-   the haul roads up, or a launch. Check: from the pit floor's middle and from each landing, a picture showing a way out; driven from the rim to each pipe and out by launch.
-
-Held by Dan, not to start until he says:
-- the CAMPAIGN (2026-10-16 21:34: "I want to hold off on campaign until we get more tracks ... we will have to keep reorganizing
-  it otherwise"); the shop, vehicle unlocks and cups / playlists wait with it.
-
-## Previous delivery 1 (newest): Round 91
+## Previous delivery 2: Round 91
 **Reviewed: Dan drove the quarry 2026-11-04 (photos; his notes are Round 92).**
 **Round 91, THE QUARRY RACE READABLE AFTER ITS LANDINGS, SPLIT-SCREEN NOTES AT THE TOP, PLANE ROLLS AND LOOPS, THE UNDERGROUND ACROSS THE WHOLE MAP (Dan, 2026-11-02 01:40
 and 16:42; started 2026-11-03).** Rounds 88 to 90 driven only briefly by Dan. Item 0, the one-heavy-job rule and the end-of-round clean-up apply. Short results.
@@ -218,7 +230,7 @@ Not done: where the new mains pass under a creek the pipe is plain concrete (the
 Published: game 0.91.0 (`game-9100`, Latest) through the launcher. Clean-up: 44.9 -> 44.6 GB.
 For Dan to check: Viking Quarry after each landing (normal and HIGH); split-screen notes; rolls and loops in both planes (and HIGH near the ground); the new pipes from Town Center / KSU / Kennesaw / Kennestone / the Square / the airport, and both quarry launch pipes.
 
-## Previous delivery 2: Round 90
+## Previous delivery 3: Round 90
 **Driven briefly by Dan 2026-11-02 (one note: Round 91 item 0); not fully reviewed.**
 **Round 90, A VIKING QUARRY CAR RACE WITH HUGE JUMPS OVER THE LAKE (Dan, 2026-11-01 11:37: "The quarry - I wanted a car race with huge jumps over the lake").** Rounds 88
 and 89 are not yet driven by Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply. Short results.
@@ -250,51 +262,6 @@ A DONE. "Viking Quarry" (`Tools/mapgen/make_quarry_route.py`, world `MapBuilder.
 Dan's 2026-11-02 note (the check car "perched on the edge of a grey stepped structure by a landing deck"): every stuck moment looked at (`stuck_spots_before.txt`, pictures `before_spot*` / `after_spot*`): 7 were wide or short landings caught on a 43 to 66 degree bank beside a deck, against its steel side skirt (the decks stood out over the bank on trestles); 6 were the rock berms ("the grey stepped structure", 1.6 m wide stones a car sat up on: at the haul road's start, the south-west corner, The Corner's run-up head); 1 the high bench's vertical cut face; 1 the conveyor gallery's end. Fixed: each landing is now an earth landing slope 90 m wide at its deck's angle, filled out to the deck's front (the deck lies on it), its banner posts not solid; berms only over 10 m drops, 60 m from landings and run-up heads, a thin wall; banks of about 30 degrees; the gallery and the start gantries' towers 17 / 18 m out. The player's resets per race (button + lake), before -> after: normal Needle 7 -> 1, Street Classic 9 (gave up) -> 4 (finished), Skyfin 9 (gave up) -> 6 (finished); HIGH Needle 3 -> 1, Street Classic 1 -> 2, Skyfin 5 -> 4; stuck moments 18 -> 1 (in the lake 70 m wide of The Big One, outside its reset area). (`race_check_before.txt`, `race_check_after.txt`.)
 NOT MET: "no reset": the human-like driver still comes up short on 1 to 7 jumps a race (lake resets), mostly its first try after a run-up's bend (from a run-up's head it makes every window). The AI finish every normal race (8 to 9 resets in 3 laps each); in HIGH MODE the AI were still on lap 3 when the player finished (6 to 7 minute laps) and are not proven to finish. (Tuning limit; Dan decides.)
 Published: game 0.90.0 (`game-9000`, Latest) through the launcher. Clean-up: 43.5 -> 42.6 GB. For Dan to check: the race (normal and HIGH), a wide landing at each jump, a short one into the lake, HIGH with AI.
-
-## Previous delivery 3: Round 89
-**Not yet driven by Dan; he reviews it with Rounds 88 and 90.**
-**Round 89, THE ROADS ROUND 88 MADE WORSE FIRST, THEN THE REST; POLICE RADIO STREET NAMES FOR THE WHOLE MAP; GOOSE EGGS ACROSS THE WHOLE MAP (Dan, 2026-11-01 03:04: "OK
-so it is done, but I dont have a chance to test. Can we have continue to fix stuff? Also, don't we need to include more street names for the cops? I would also like to
-either spreadout the goose eggs or create more to be found all across the map. We did both these things before the map was expanded").** Round 88 is not yet driven by
-Dan. Item 0, the one-heavy-job rule (one job at a time, Below Normal, at most 3 full Build Maps) and the end-of-round clean-up apply; A's and C's world changes in one
-Build Map where possible. Short results.
-A. ROADS: NOTHING WORSE THAN BEFORE, THEN KEEP FIXING. Round 88 C made four places worse: Canton Road at (1913, -5855) 2.1 s (beside deck 51, whose end its pass changed),
-   I-75 at (1880, -4459) 2.5 s, Greers Chapel's 0.2 s flights now 0.4 s, the I-575 Express flyover into I-75 2.2 s forward (was 0.76 s). FIRST each of these is fixed
-   properly or put back as it was before Round 88 (two attempts each, then put it back): no place ends this round worse than before Round 88. THEN the rest of Round 88's
-   list: I-75's Express Lanes northbound stuck at the Frey Road deck (3.3 s in the air), I-75 southbound 0.94 s at the I-575 merge, Frey Road / I-75, I-75 at Big Shanty,
-   I-75 by Greers Chapel and the Express under it, Bells Ferry, the Canton Road Connector interchange. Check: all 416 crossing runs and the Express Lanes end to end both
-   ways on the final build: list each place better / same / worse than Round 87's build; none worse.
-B. POLICE RADIO STREET NAMES FOR THE EXPANDED MAP. The radio's street lines (D001 to D136, Round 41 / 45, `Tools/Audio/police-radio-lines.csv`, Dan's ElevenLabs cop and
-   pilot voices) cover only the first map; since then the map grew west and south (Town Center, KSU, the airport, Kennesaw Mountain, Marietta Square, Kennestone): Claude
-   counted about 1,880 named streets on it now, 1,747 without a line, 80 of them main roads (Barrett Parkway, Cobb Parkway, Chastain's neighbors, Church / Cherokee /
-   Roswell / Atlanta Streets, Big Shanty, Bells Ferry's ends, Old 41, Polk, Mill Street, Mall Boulevard, Busbee, Frey, Greers Chapel, Allgood, Burnt Hickory, ...).
-   Add lines (new D IDs after D136, never changing existing IDs) for: every named trunk / primary / secondary / tertiary road and its links; the highways as people say
-   them (I-75, I-575, the Express Lanes; motorways were left out before, but chases now run on them); and the residential and unclassified streets within 300 m of any
-   race course, police spawn, hidden cop or fast-travel spot. Say the count before making audio; over 400 new clips: do NOT stop (Dan, 2026-11-01 03:13, overnight): make the main roads' and the
-   highways' clips first (and the "Suspect near..." piece), leave the residential / unclassified streets listed for the next round, and carry on. Make the clips with the studio
-   (`python Tools/Audio/police_radio_studio.py --make-missing`, cop voice; pilot takes `_air` where the pilot can say them, the key from ELEVENLABS_API_KEY, never printed).
-   A street with no line: the radio names the nearest street that has one, with a new phrase piece "Suspect near..." (and its pilot take), never silence or a wrong
-   "on". Check: a Getaway on the Needle 600 to heat 5 in Town Center / Barrett Parkway, Marietta Square and Kennesaw: calls name the right streets (log each call's street
-   and the player's road).
-C. GOOSE EGGS ACROSS THE WHOLE MAP. The 100 eggs (`Data/explore/eggs.json`, `make_eggs.py`, Round 48) all lie in the first map (x 118 to 3910, z 280 to 1879); the map
-   now runs to x -8630, z -8311. Keep the 100 (their IDs, so Dan's found eggs stay found) and ADD 150 (250 in all) spread over the expansion by area and size (Town Center
-   inside and out, KSU, the airport, the quarry, Kennesaw Mountain, Marietta Square, Kennestone, Noonday Creek Trail, Addison Heights, the neighborhoods, the woods, the
-   pipe network's new reaches), the same mix of easy / hidden / stunt-reached as Round 48; new areas and destinations added to the exploration map and fast travel; tiers
-   rescaled to 250 (what they unlock still waits for Dan). Check: every new egg reached in the exe (a reachability drive or placed-car probe per egg), none inside
-   buildings or under ground, the GOOSE EGGS page and map showing 250, a copy of Dan's save keeping its found eggs.
-Check: item 0 for every item. PUBLISH through the launcher.
-For Dan to check (with Round 88's list): the places Round 88 made worse; the Express Lanes at Frey Road; a police chase outside the first map (street names); new goose eggs.
-
-**Status (Claude, 2026-11-01): built (3 full Build Maps, the limit; exe 07:56), checked in the exe, published (0.90.0, `game-9000`), not yet driven by Dan.** Evidence `Data/screenshots/round89/`. No bug report newer than Round 87's.
-A DONE but one ramp. All 416 crossing runs on the final build (`final_crossings.txt`): 2 not clean, both ramp 879570834 under Greers Chapel's decks at (146, -2643) (1.3 s and 0.5 s). Against Round 87's build (`final_crossings_vs_round87.txt`): 63 better, 352 same, 1 worse (that ramp: Round 83's check started it on another surface; its ground is the same with and without Round 88, two dry runs; no build left to try it). Express Lanes end to end (`final_express.txt`, rerun `final_express_i75_rerun.txt`): I-575 clean (one wall touch one way), Big Shanty ramp clean both ways, the I-575 flyover into I-75 0.10 s (Round 87 0.76 s); I-75 one run each way faulted and the rerun the other way round (northbound a stop on the Big Shanty merge's bridge structure, then clean; southbound clean, then 1.2 s and wall scrapes at the I-575 merge (508, -3365), Round 87 there 2.5 s and 214 hits): the human-like driver's line varies there. The first Express run's last short lines overlapped the rerun's start by a few minutes (two exes at once, my mistake).
-  Worse than Round 87 after 0.88.1 (`compare_crossings.py` of Round 83's 416 runs against 0.88.1's): 2 runs (ramp 879570834 under Greers Chapel, Canton Road at deck 51), plus the I-575 Express flyover (2.2 s, Round 87 0.76 s). The rest of Round 88's list was already clean in 0.88.1 (Frey Road, Big Shanty, Bells Ferry, the Connector interchange, the Express Lanes through Frey Road).
-  Flyover: PUT BACK. Deck 80's start (577, -3601) lies on ramp 451950527's line; Round 88 made it flush, so a car on the ramp drove up the deck and fell 15 m off its side (`R89Back` "80s"). Now clean both ways; Phillip Landrum over deck 80 clean both ways too (pictures `89A_before_flyover_deck80.png`).
-  Canton Road (deck 51): FIXED, attempt 2. Round 88's laying ran 64 m past the deck's end, over the railroad crossing at 49 m (the rails stood out: `89A_before_canton_51.png` shows the crossing). The laying now stops short of any rail crossing (attempt 1, a 21 m curve: 1.7 s in the air; attempt 2, a 40 m curve and a 6 m ease 2 m short of it): all 4 runs clean.
-  Greers Chapel: the ramp's ground is the same with and without Round 88 (two dry runs); Round 83's check started that line on another surface. In these builds the Express Lanes run beside it flew 3 s twice: the exit ramp is cut 6 to 9 m under the lanes and the wall stood open beside it (cars fell in). The wall now stays closed there where the ramp is more than 1.5 m below the lanes (`R89Greers`, within 200 m of (130, -2650) only).
-B DONE. 160 street lines added (D137 to D296: 4 highways as said (I-75, I-575, the Express Lanes, the Canton Road Connector), 80 main roads, 76 local streets within 300 m of a course, a hidden cop or a fast-travel spot; the bare "Chastain Road" and "Bells Ferry Road" added to D002 / D004), under 400 so all made: 162 clips (cop voice; "Suspect near..." P16 with its pilot take), 2,700 characters. A street with no line: "Suspect near <the nearest street with a line>". Check (`check_c_final.txt`): Getaway on the Needle 600 to heat 5 at Town Center / Barrett Parkway, Marietta Square, Kennesaw: 71 street calls, all voiced, 70 right; 1 "near" said right at a junction on Church Street Extension (two attempts at that edge, left: tuning limit).
-C DONE. 150 more eggs (egg-101 to egg-250, `make_eggs_more.py`): 14 new areas (Town Center inside and out, KSU, the airport, Viking Quarry, Kennesaw Mountain, Marietta Square, Kennestone, Noonday Creek Trail, Addison Heights, the highways, west / middle / Marietta neighborhoods, the woods), 77 easy / 73 hard (yards, woods, parking deck roofs, inside the mall, under highway decks, by jump landings); 5 new fast-travel places (the airport, Kennestone, West Kennesaw, the middle neighborhoods, South Marietta); tiers 10, 25, 60, 125, 190, 250 (10 and 25 kept so a reached tier stays). No new pipe-network reaches exist outside the first map, so no eggs there. Check: every new egg reached by a car and taken in the exe (127 first, 23 moved and 18 taken, the last 5 moved by a road and taken); a copy of Dan's save keeps its 19 eggs and tier 10; the map lists 25 areas, 19 / 250.
-Published: `game-8900` (0.89.0, Latest) on `danemoll-jpg/chastain-rush-releases`, the exe of 2026-11-01 07:56 (543 files: the 162 new radio clips ship with the game). Disk clean-up: 41.3 -> 41.1 GB (these folders).
-For Dan to check: Canton Road over Cobb Parkway toward the railroad; the I-575 Express flyover onto the I-75 Express Lanes; the Express Lanes past Greers Chapel's exit; a chase in Marietta or Town Center (street names); new eggs anywhere south and west.
 
 ## Technical notes (standing)
 Technical Notes / Blockers
