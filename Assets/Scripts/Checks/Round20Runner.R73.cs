@@ -90,7 +90,7 @@ namespace ChastainRush
                 if (s > maxS + 3f) { maxS = s; maxT = t; }
                 if (RaceStuck) { run.note += " the race was ended STUCK;"; break; }
                 if (t - maxT > StuckEndSeconds) { run.note += $" STUCK: no progress for {StuckEndSeconds:0} s at ({p.x:0}, {p.z:0}) s {s:0}; the drive ended;"; run.stuckOut = true; yield return Capture($"stuck_end_{++stuckPics}"); break; }
-                if (t - refT > 5f && pressYWhenStuck) { yield return StuckSelfReset(run, p, s); refT = t; refS = -1f; lastPos = car.Body.position; continue; }
+                if (t - refT > 5f && pressYWhenStuck) { yield return StuckSelfReset(run, p, s); refT = t; refS = -1f; lastPos = car.Body.position; s = ProjectWindow(line, cum, lastPos, s - 3000f, s + 100f); continue; }   // (found again on the line where the reset put it: a reset to a jump's run-up is 300+ m back)
                 float v = car.Body.linearVelocity.magnitude; run.topSpeed = Mathf.Max(run.topSpeed, v);
                 if (s >= nextTrace) { nextTrace = s + 25f; run.trace.Append($" {s:0}:{v:0.0}{(car.GroundedWheels == 0 ? "a" : "")}{(Mathf.Abs(dev) > 3f ? $"d{dev:0}" : "")}"); }
                 if (s >= cum[cum.Length - 1] - 3f) { run.reachedEnd = true; break; }
