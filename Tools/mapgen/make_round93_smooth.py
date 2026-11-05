@@ -3,6 +3,7 @@ lines the map build smooths along (MapBuilder.Round93.cs R93SmoothLaps): each ra
 of the line: sqrt(lateral g x radius), at most the course's top, the most within 40 m either way), and the stretches kept as they are:
   Viking Quarry: each quarry jump from its run-up's head to 40 m past its landing deck (Data/tracks/quarry_jumps.json land_s), within 25 m of
                  its line: the catch beyond is smoothed (each catch's end met the bench with a lip that threw a car 2 to 3 s: Dan's bump after The Big One)
+  Viking Quarry also: spike cells within 35 m of the lap cut down (the "jagged green wall" at the bend after The Big One)
   Wings & Wheels: within 12 m of a bridge deck the lap runs on or under (map.json bridges) and of the railroad (Data/tracks/railroad.json)
 Writes Data/tracks/round93_smooth.json. Re-run after a route script or mapgen, then a full Build Map (a planning change).
 Usage: python Tools/mapgen/make_round93_smooth.py"""
@@ -50,7 +51,7 @@ for j in load("Data/tracks/quarry_jumps.json")["jumps"]:
     al = (p - o) @ d; lat = (p - o) @ nl
     keep |= (np.abs(lat) < 25.0) & (al > -10.0) & (al < j["land_s"][-1] + 40.0)
 lines.append({"id": "Viking Quarry", "closed": True, "points": [round(float(v), 2) for v in p.ravel()], "speeds": speeds(p, 40.0), "keep": ranges(keep),
-              "half": 8.0, "blend": 6.0, "sigma": 5.0, "crest_g": 0.8, "sag_g": 2.5, "max_change": 3.0})
+              "half": 8.0, "blend": 6.0, "sigma": 5.0, "crest_g": 0.8, "sag_g": 2.5, "max_change": 3.0, "despike_reach": 35.0})
 print(f"Viking Quarry: {len(p)} points, {keep.sum()} kept ({len(ranges(keep)) // 2} stretches)")
 # ---- Wings & Wheels (the car's lap)
 r = load("Data/routes/wings_and_wheels.json"); lp = np.array(r["loop"]).reshape(-1, 2); p = resample(lp, 2.0)

@@ -19,7 +19,7 @@ namespace ChastainRush
 {
     public static partial class MapBuilder
     {
-        [Serializable] class R93Line { public string id; public float[] points, speeds; public int[] keep; public float half, blend, sigma, crest_g, sag_g, max_change; public bool closed; }
+        [Serializable] class R93Line { public string id; public float[] points, speeds; public int[] keep; public float half, blend, sigma, crest_g, sag_g, max_change, despike_reach; public bool closed; }
         [Serializable] class R93File { public R93Line[] lines; }
         const string Round93File = "Data/tracks/round93_smooth.json";
 
@@ -34,8 +34,17 @@ namespace ChastainRush
                 var keep = new bool[n];
                 if (ln.keep != null) for (int k = 0; k + 1 < ln.keep.Length; k += 2) for (int i = Mathf.Max(0, ln.keep[k]); i <= Mathf.Min(n - 1, ln.keep[k + 1]); i++) keep[i] = true;
                 var ds = new float[n]; for (int i = 1; i < n; i++) ds[i] = (p[i] - p[i - 1]).magnitude; float step = ds.Skip(1).Average();
+                int spikes = ln.despike_reach > 0f ? R93Despike(terrain, p, keep, ln.despike_reach) : 0;
                 var raw = new float[n]; for (int i = 0; i < n; i++) raw[i] = terrain.Height(p[i].x, p[i].y);
                 int Idx(int i) => ln.closed ? (i % n + n) % n : Mathf.Clamp(i, 0, n - 1);
+                // 0b. holes and spikes on the line (the quarry's lake bed cut 40 m into the low bench where the line runs by its edge): a point more than
+                // 2 m off the median of the line within 14 m either way takes that median (the cap below does not hold these back)
+                int holes = 0;
+                {
+                    int W = Mathf.Max(3, Mathf.RoundToInt(14f / step)); var med = new float[n]; var buf = new List<float>();
+                    for (int i = 0; i < n; i++) { buf.Clear(); for (int q = -W; q <= W; q++) { int j = i + q; if (!ln.closed && (j < 0 || j >= n)) continue; buf.Add(raw[Idx(j)]); } buf.Sort(); med[i] = buf[buf.Count / 2]; }
+                    for (int i = 0; i < n; i++) if (!keep[i] && Mathf.Abs(raw[i] - med[i]) > 2f) { raw[i] = med[i]; holes++; }
+                }
                 // 1. the blur
                 var h = (float[])raw.Clone();
                 if (ln.sigma > 0f)
@@ -93,10 +102,37 @@ namespace ChastainRush
                     }
                     s0 = e + 1;
                 }
-                string line = $"{ln.id}: {n} points, {changed} moved over 5 cm, the most {most:0.00} m at ({p[at].x:0.0}, {p[at].y:0.0}) (raw {raw[at]:0.00}); {it} passes; {pieces} pieces laid";
+                string line = $"{ln.id}: {spikes} spike cells cut, {holes} points in holes or on spikes; {n} points, {changed} moved over 5 cm, the most {most:0.00} m at ({p[at].x:0.0}, {p[at].y:0.0}) (raw {raw[at]:0.00}); {it} passes; {pieces} pieces laid";
                 rep.AppendLine(line); Debug.Log("[Round93] " + line);
             }
             try { File.WriteAllText(Path.Combine(ProjectRoot, "Assets/Generated/round93_smooth.txt"), rep.ToString()); } catch (Exception) { }
+        }
+
+        // 0. (Round 93 A: "a jagged green wall of ground spikes" at the bend after The Big One: a row of single cells 13 to 17 m over the ground either
+        // side, left between two grades) within 'reach' of the line (the kept stretches' points apart), any cell more than 2 m over the median of the
+        // 7 x 7 cells round it comes down to that median; two passes. Returns the cells cut.
+        static int R93Despike(TerrainGrid terrain, List<Vector2> p, bool[] keep, float reach)
+        {
+            int cut = 0;
+            for (int pass = 0; pass < 2; pass++)
+                for (int a = 0; a < p.Count; a += 40)
+                {
+                    int b = Mathf.Min(p.Count - 1, a + 41); var seg = new List<Vector2>(); for (int i = a; i <= b; i++) if (!keep[i]) seg.Add(p[i]);
+                    if (seg.Count < 2) continue;
+                    var area = Rect.MinMaxRect(seg.Min(q => q.x) - reach, seg.Min(q => q.y) - reach, seg.Max(q => q.x) + reach, seg.Max(q => q.y) + reach);
+                    var win = new float[49];
+                    EditTerrain(terrain, area, (x, z, gy) =>
+                    {
+                        var q = new Vector2(x, z); float best = float.MaxValue;
+                        for (int i = 0; i + 1 < seg.Count; i++) { var ab = seg[i + 1] - seg[i]; float t = Mathf.Clamp01(Vector2.Dot(q - seg[i], ab) / Mathf.Max(ab.sqrMagnitude, 1e-6f)); best = Mathf.Min(best, (seg[i] + ab * t - q).magnitude); }
+                        if (best > reach) return gy;
+                        int k = 0; for (int dz = -3; dz <= 3; dz++) for (int dx = -3; dx <= 3; dx++) win[k++] = terrain.Height(x + dx, z + dz);
+                        Array.Sort(win); float med = win[24];
+                        if (gy > med + 2f) { cut++; return med; }
+                        return gy;
+                    });
+                }
+            return cut;
         }
 
         // SetAlong with each end faded on its own (0: not faded, the piece meets the next one at full strength)

@@ -154,9 +154,9 @@ namespace ChastainRush
                 bool turnsOk = true; string turnTxt = "";
                 foreach (float dir in new[] { 1f, -1f })
                 {
-                    float most = 0f; float y0 = pl.YawDeg; bool free = false; int r0 = pl.Rolls;
-                    yield return Fly(dir, 0f, null, 6f, null, dir > 0 ? "turn_right" : "turn_left", t => { most = Mathf.Max(most, Mathf.Abs(pl.RollDeg)); free |= pl.FreeFlight; });
-                    float yawRate = Mathf.Abs(Mathf.DeltaAngle(y0, pl.YawDeg)) / 6f;   // (under 180 degrees in 6 s: see the rate below)
+                    float most = 0f, prevYaw = pl.YawDeg, turned = 0f; bool free = false; int r0 = pl.Rolls;
+                    yield return Fly(dir, 0f, null, 6f, null, dir > 0 ? "turn_right" : "turn_left", t => { most = Mathf.Max(most, Mathf.Abs(pl.RollDeg)); free |= pl.FreeFlight; turned += Mathf.DeltaAngle(prevYaw, pl.YawDeg); prevYaw = pl.YawDeg; });
+                    float yawRate = Mathf.Abs(turned) / 6f;   // (summed step by step: a full circle and more in 6 s)
                     yield return Fly(0f, 0f, null, 3f, null, null); float after = Mathf.Abs(pl.RollDeg);
                     bool ok = most <= pl.Bank + .5f && !free && pl.Rolls == r0 && after < 5f; turnsOk &= ok;
                     turnTxt += $" {(dir > 0 ? "right" : "left")}: bank at most {most:0} deg (limit {pl.Bank:0}), about {yawRate:0} deg/s, {(free ? "FREE FLIGHT came on" : "no roll past it")}, wings {after:0} deg 3 s after letting go;";
