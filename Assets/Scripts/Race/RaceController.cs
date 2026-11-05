@@ -569,13 +569,19 @@ namespace ChastainRush
             if (State != Stage.Racing || this.Route == null || !car) return;
             var e = Entrants.Find(x => x.Car == car); if (e == null || !e.ClockStarted || e.Finished) return;
             var Route = LapOf(e);   // Round 92 (F)
-            float L = Route.LapLength, span = Mathf.Repeat(to - from, L);
+            // Round 93 (D2: the Viking Quarry's lake reset "placed on from lap 7306 m to 1028 m; checkpoints 3 ... 22 forgiven"): 'from' was the lap
+            // station of where the vehicle was, and a point off the lap (the lake out in the pit) can lie nearest the lap's far end: the move back onto
+            // the run-up then read as a short step on over the whole lap. Measured now from the last checkpoint this racer passed (it is always past
+            // that): a checkpoint is forgiven only if the new spot is past it, and a spot more than half a lap on from it is a spot put back
+            float L = Route.LapLength; int n = Route.Checkpoints.Count;
+            if (e.NextCheckpoint >= n) return;   // only the line is left: nothing to forgive
+            float prevS = e.NextCheckpoint == 0 ? 0f : Route.Checkpoints[e.NextCheckpoint - 1].S, span = Mathf.Repeat(to - prevS, L);
             if (span <= 0.01f || span > 0.5f * L) return;
             int first = -1, last = -1;
-            for (int k = e.NextCheckpoint; k < Route.Checkpoints.Count; k++)
+            for (int k = e.NextCheckpoint; k < n; k++)
             {
-                float d = Mathf.Repeat(Route.Checkpoints[k].S - from, L);
-                if (d <= span) { if (first < 0) first = k; last = k; }
+                float d = Mathf.Repeat(Route.Checkpoints[k].S - prevS, L);
+                if (d < span) { if (first < 0) first = k; last = k; }
             }
             if (first < 0) return;
             // Round 86 (B): a reset never costs a penalty: every checkpoint from the next one to the last it carried the racer past is forgiven (the
@@ -1125,7 +1131,7 @@ namespace ChastainRush
 
         void Say(string text, float seconds) { Message = text; messageUntil = Time.time + seconds; }
         // Round 37: a racer's own line (the player's is the one-player HUD's message too)
-        void SayTo(RaceEntrant e, string text, float seconds) { if (e.IsPlayer) Say(text, seconds); e.Message = text; e.MessageUntil = Time.time + seconds; }
+        public void SayTo(RaceEntrant e, string text, float seconds) { if (e.IsPlayer) Say(text, seconds); e.Message = text; e.MessageUntil = Time.time + seconds; }
         void Log(string text) { Logged?.Invoke(text); if (!Application.isBatchMode) Debug.Log("[Race] " + text); }
         void Log(RaceEntrant e, string text) => Log(e.IsPlayer ? text : e.Name + ": " + text);   // Round 15: the AI drivers' events carry their name
 

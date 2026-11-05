@@ -353,9 +353,13 @@ namespace ChastainRush
             // the stick's dead zone is radial (min 0.12, max 0.95): the wanted (bank, pitch) put through it the other way round, as a player's thumb does
             Vector2 Stick(Vector2 c) { float m = c.magnitude; if (m < .01f) return Vector2.zero; m = Mathf.Min(m, 1f); return c / c.magnitude * Mathf.Min(1f, .12f + m * .83f); }
             Time.timeScale = scale; Time.maximumDeltaTime = .5f;
-            while (t < limit && !p.Finished)
+            float still = 0f;
+            while (t < limit && !p.Finished && !RaceStuck)
             {
                 yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
+                // Round 93 (stuck rule): standing still on the ground 5 s (not at the start): the reset button, as a player would
+                if (t > 8f && car.Body.linearVelocity.magnitude < 2f) still += Time.fixedDeltaTime; else still = 0f;
+                if (still > 5f) { still = 0f; note.Append($" stuck at ({car.Body.position.x:0}, {car.Body.position.z:0}): reset;"); yield return Capture($"stuck_{++stuckPics}"); pl.Scripted = false; yield return R73Reset(); }
                 q.Enqueue((t, adv.aPitch, adv.aBank, adv.aRudder, adv.aThrottle, adv.aSteer));
                 var c = q.Peek(); while (q.Count > 1 && t - q.Peek().t > .1f) c = q.Dequeue();
                 float n1 = (Mathf.PerlinNoise(seed, t * .7f) - .5f) * .07f, n2 = (Mathf.PerlinNoise(seed + 9f, t * .7f) - .5f) * .05f;
@@ -385,7 +389,7 @@ namespace ChastainRush
                     var watch = StartCoroutine(R73Watch(() => { if (missIdx >= 0 && race.Player.RingSkipped == missIdx) skipped = true; }, () => true));
                     yield return R80HumanFly(900f, 2f, note);
                     StopCoroutine(watch); PlanePilot.ForceMiss = -1;
-                    float w = 0f; Time.timeScale = 3f; while (race.Entrants.Any(e => !e.Finished) && w < 200f) { yield return new WaitForSecondsRealtime(.5f); w += .5f; } Time.timeScale = 1f;
+                    float w = 0f; Time.timeScale = 3f; while (race.Entrants.Any(e => !e.Finished) && w < 200f && !RaceStuck) { yield return new WaitForSecondsRealtime(.5f); w += .5f; } Time.timeScale = 1f;
                     var order = race.Entrants.Where(e => e.Finished).OrderBy(e => e.FinalTotal).ToList(); int place = order.IndexOf(race.Player) + 1;
                     bool wentBack = skipped && !race.Player.Missed.Contains(missIdx);
                     string dn = diff == 2 ? "Hard" : "Normal";

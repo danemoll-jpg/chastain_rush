@@ -61,16 +61,17 @@ namespace ChastainRush
 
         // ---------------------------------------------------------------- the human-like driver
         public static Func<Vector3, IEnumerator> StuckProbe;   // Round 90: what a check does at a stuck moment before the reset (a picture, what the car touches)
-        public sealed class HumanRun { public float time, maxAir, airNow, topSpeed; public int resets, stuck; public bool reachedEnd; public string note = ""; public List<string> pics = new List<string>(); public float sEnd; public StringBuilder trace = new StringBuilder(); }
+        public sealed class HumanRun { public float time, maxAir, airNow, topSpeed; public int resets, stuck; public bool reachedEnd, stuckOut; public string note = ""; public List<string> pics = new List<string>(); public float sEnd; public StringBuilder trace = new StringBuilder(); }
         // drives 'line' from where the vehicle is to its end (or until 'stop'), at up to 'cap' m/s (a human: a little late on the stick, a wandering
         // line, late on the brakes); 'speedAt' (optional) the speed it holds at a station (by eye: the HUD's speed, a lag of 0.35 s); 'pics' stations
         // where it takes a picture (name, station); 'airPic' a picture 1.5 s into each spell in the air
         IEnumerator HumanDrive(List<Vector3> line, float cap, float timeout, HumanRun run, Func<bool> stop = null, Func<float, float> speedAt = null,
                                List<(string name, float s)> pics = null, string airPic = null, bool pressYWhenStuck = true)
         {
+            if (race.State != RaceController.Stage.Free) stuckFlag = false;
             R73Pad(); var cum = Cum(line); float s = 0f, steerCmd = 0f, t = 0f, slowFor = 0f, liftUntil = -1f, airFor = 0f, nextTrace = 0f; int pic = 0; bool airShot = false;
             float wobbleSeed = (float)r73rng.NextDouble() * 100f; var lagged = new Queue<(float t, float steer)>();
-            var lastPos = car.Body.position;
+            var lastPos = car.Body.position; float refS = -1f, refT = 0f, maxS = -1f, maxT = 0f;   // Round 93 (stuck rule): progress along the line
             float near = 0f; { var p0 = car.Body.position; ProjectNear(line, cum, p0, 0f, out _); near = ProjectNear(line, cum, p0, 0f, out _); s = near; }
             while (t < timeout)
             {
@@ -78,9 +79,18 @@ namespace ChastainRush
                 var p = car.Body.position;
                 // Round 90: put back by a reset (a jump to another place): found again on the line, up to 3 km back (the old s, kept within 60 m, cut
                 // across the plateau toward where it had been)
-                if ((p - lastPos).magnitude > 30f && t > dt * 1.5f) { s = ProjectWindow(line, cum, p, s - 3000f, s + 100f); }
+                bool jumped = (p - lastPos).magnitude > 30f && t > dt * 1.5f;
+                if (jumped) { s = ProjectWindow(line, cum, p, s - 3000f, s + 100f); }
                 lastPos = p;
                 s = ProjectNear(line, cum, p, s, out float dev);
+                // Round 93 (STANDING RULE "Check runs never sit stuck"): progress is the line's station, wheels down or not (a bike on its tail against a
+                // wall has none down: it was "in the air" for 20+ minutes); 5 s without 3 m of it: the reset button, with a picture; 2 minutes without
+                // new ground: the drive ends, STUCK
+                if (refS < 0f || jumped || s > refS + 3f) { refS = s; refT = t; }
+                if (s > maxS + 3f) { maxS = s; maxT = t; }
+                if (RaceStuck) { run.note += " the race was ended STUCK;"; break; }
+                if (t - maxT > StuckEndSeconds) { run.note += $" STUCK: no progress for {StuckEndSeconds:0} s at ({p.x:0}, {p.z:0}) s {s:0}; the drive ended;"; run.stuckOut = true; yield return Capture($"stuck_end_{++stuckPics}"); break; }
+                if (t - refT > 5f && pressYWhenStuck) { yield return StuckSelfReset(run, p, s); refT = t; refS = -1f; lastPos = car.Body.position; continue; }
                 float v = car.Body.linearVelocity.magnitude; run.topSpeed = Mathf.Max(run.topSpeed, v);
                 if (s >= nextTrace) { nextTrace = s + 25f; run.trace.Append($" {s:0}:{v:0.0}{(car.GroundedWheels == 0 ? "a" : "")}{(Mathf.Abs(dev) > 3f ? $"d{dev:0}" : "")}"); }
                 if (s >= cum[cum.Length - 1] - 3f) { run.reachedEnd = true; break; }
@@ -108,9 +118,6 @@ namespace ChastainRush
                 float thr = v < target - .7f ? 1f : v < target + .3f ? .45f : 0f, brk = v > target + 4f ? .8f : 0f;
                 if (t < liftUntil) thr = 0f;
                 R73Set(steerCmd, thr, brk);
-                // stuck: barely moving with the throttle on for 4 s: Y (the reset), as a player would
-                if (v < 1.2f && thr > .5f) slowFor += dt; else slowFor = 0f;
-                if (slowFor > 4f && pressYWhenStuck) { run.stuck++; run.note += $" stuck at ({p.x:0}, {p.z:0}) s {s:0};"; if (StuckProbe != null) yield return StuckProbe(p); yield return R73Reset(); run.resets++; slowFor = 0f; }
                 while (pics != null && pic < pics.Count && s >= pics[pic].s) { yield return Capture(pics[pic].name); run.pics.Add(pics[pic].name); pic++; }
             }
             R73Set(0, 0, 0); run.time = t; run.sEnd = s;
@@ -435,7 +442,7 @@ namespace ChastainRush
             var p = race.Player; float t = 0f; int phase = 0; float bankCmd = 0f, pitchCmd = 0f; var seen = new HashSet<int>(); bool backFor = false, missSaid = false, wentBack = false; int crashes0 = pl.Crashes;
             float seed = (float)r73rng.NextDouble() * 50f;
             Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
-            while (t < 600f && !p.Finished)
+            while (t < 600f && !p.Finished && !RaceStuck)
             {
                 yield return new WaitForFixedUpdate(); float dt = Time.fixedDeltaTime; t += dt;
                 var tgt = race.Target; if (tgt == null) continue;
@@ -498,7 +505,7 @@ namespace ChastainRush
                     return 99f;
                 }) : (Func<float, float>)null;
                 yield return HumanDrive(line, 40f, 420f, run, () => race.Player.Finished, hold);
-                float wait = 0f; while (race.Entrants.Any(e => !e.Finished) && wait < 200f) { yield return new WaitForSecondsRealtime(.5f); wait += 1f; }
+                float wait = 0f; while (race.Entrants.Any(e => !e.Finished) && wait < 200f && !RaceStuck) { yield return new WaitForSecondsRealtime(.5f); wait += 1f; }
                 Time.timeScale = 1f;
                 report.AppendLine($"  {r.Name} {dir} ({Nm(vid)}): " + string.Join("; ", race.Entrants.Select(e => $"{e.Name} {(e.Finished ? RaceController.Fmt(e.FinalTotal) + (e.Estimated ? " est." : "") : "NOT finished")}")) + $"; the player's resets {run.resets}{run.note}");
                 Check($"races {r.Name}: every racer finishes", race.Entrants.All(e => e.Finished && !e.Estimated), string.Join(", ", race.Entrants.Where(e => !e.Finished || e.Estimated).Select(e => e.Name)));

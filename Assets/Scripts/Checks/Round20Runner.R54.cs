@@ -25,6 +25,7 @@ namespace ChastainRush
     {
         IEnumerator StartRoute(string file, string dir, int ai, int laps = 0)
         {
+            stuckFlag = false;   // Round 93
             RaceController.RouteOverride = file; RaceController.DirectionOverride = dir; RaceController.LapsOverride = laps; RaceController.AiCount = ai;
             if (race.State != RaceController.Stage.Free) race.EndRace();
             race.Reload(); race.StartRace();

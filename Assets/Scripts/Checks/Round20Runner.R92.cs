@@ -174,7 +174,7 @@ namespace ChastainRush
                     var ai = race.Entrants.Where(e => !e.IsPlayer).ToList();
                     Time.timeScale = 2f; Time.maximumDeltaTime = .5f;
                     float end = Time.realtimeSinceStartup + 8f * 60f;
-                    while (Time.realtimeSinceStartup < end && ai.Any(e => !e.Finished)) yield return new WaitForSecondsRealtime(.5f);
+                    while (Time.realtimeSinceStartup < end && ai.Any(e => !e.Finished) && !RaceStuck) yield return new WaitForSecondsRealtime(.5f);
                     Time.timeScale = 1f;
                     string dn = diff == 2 ? "Hard" : diff == 1 ? "Normal" : "Easy";
                     report.AppendLine($"  {dn}, {f.name}: " + string.Join("; ", ai.Select(e => $"{e.Name} {e.VehicleName} ({(e.Flies ? "plane" : "car")}) {(e.Finished && !e.Estimated ? RaceController.Fmt(e.FinalTotal) : "NOT finished")}, laps {string.Join(" / ", e.LapTimes.Select(v => RaceController.Fmt(v)))}, missed {e.MissedTotal}, shortcuts {e.ShortcutsTaken.Count}")));

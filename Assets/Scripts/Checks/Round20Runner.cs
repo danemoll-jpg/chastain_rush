@@ -49,7 +49,7 @@ namespace ChastainRush
             var argv = Environment.GetCommandLineArgs();
             for (int i = 0; i + 1 < argv.Length; i++) { if (argv[i] == "-r93Only" || argv[i] == "-r92Only" || argv[i] == "-r91Only" || argv[i] == "-r90Only" || argv[i] == "-r89Only" || argv[i] == "-r88Only" || argv[i] == "-r87Only" || argv[i] == "-r86Only" || argv[i] == "-r85Only" || argv[i] == "-r84Only" || argv[i] == "-r83Only" || argv[i] == "-r82Only" || argv[i] == "-r81Only" || argv[i] == "-r80Only" || argv[i] == "-r79Only" || argv[i] == "-r78Only" || argv[i] == "-r77Only" || argv[i] == "-r75Only" || argv[i] == "-r74Only" || argv[i] == "-r73Only" || argv[i] == "-r72Only" || argv[i] == "-r71Only" || argv[i] == "-r70Only" || argv[i] == "-r69Only" || argv[i] == "-r68Only" || argv[i] == "-r67Only" || argv[i] == "-r66Only" || argv[i] == "-r64Only" || argv[i] == "-r63Only" || argv[i] == "-r62Only" || argv[i] == "-r60Only" || argv[i] == "-r59Only" || argv[i] == "-r58Only" || argv[i] == "-r57Only" || argv[i] == "-r56Only" || argv[i] == "-r55Only" || argv[i] == "-r54Only" || argv[i] == "-r53Only" || argv[i] == "-r52Only" || argv[i] == "-r50Only" || argv[i] == "-r49Only" || argv[i] == "-r48Only" || argv[i] == "-r47Only" || argv[i] == "-r46Only" || argv[i] == "-r45Only" || argv[i] == "-r44Only" || argv[i] == "-r43Only" || argv[i] == "-r42Only" || argv[i] == "-r41Only" || argv[i] == "-r40Only" || argv[i] == "-r39Only" || argv[i] == "-r38Only" || argv[i] == "-r37Only" || argv[i] == "-r36Only" || argv[i] == "-r20Only" || argv[i] == "-r21Only" || argv[i] == "-r26Only" || argv[i] == "-r33Only" || argv[i] == "-r34Only" || argv[i] == "-r35Only") only = argv[i + 1]; if (argv[i] == "-r20Vehicles") ids = argv[i + 1].Split(','); }
             float minutes = 25f; for (int i = 0; i + 1 < argv.Length; i++) if (argv[i] == "-r20Minutes") float.TryParse(argv[i + 1], out minutes);
-            StartCoroutine(Watchdog(minutes));   // a check run always ends (a stuck part must not leave the exe running)
+            StartCoroutine(Watchdog(minutes)); StartCoroutine(RaceStuckGuard());   // Round 93: a race stuck 2 minutes is ended (Round20Runner.Stuck.cs)   // a check run always ends (a stuck part must not leave the exe running)
             var parts = only == null ? null : only.Split(',');
             if (tag == "round21" && parts == null) parts = new[] { "r1", "six", "races", "revlap", "fwdlap", "revslow", "revrace" };   // Round 21's default parts
             if (tag == "round26" && parts == null) parts = new[] { "ramps", "express", "walls" };   // Round 26 (Round20Runner.R26.cs)
@@ -248,6 +248,7 @@ namespace ChastainRush
                 if (Do("a93dan")) yield return Guard(R93Dan());
                 if (Do("b93plane")) yield return Guard(R93Plane());
                 if (Do("c93uturn")) yield return Guard(R93UTurn());
+                if (Do("d93reset")) yield return Guard(R93Reset());
                 if (Do("a93hops")) yield return Guard(R93Hops());
             }
             // Round 92 (Round20Runner.R92.cs)

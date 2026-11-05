@@ -23,6 +23,7 @@ namespace ChastainRush
         {
             if (!c) return; var a = c.GetComponent<HighAssist>(); if (!a) a = c.gameObject.AddComponent<HighAssist>(); a.Player = player;
             WallGlance.Ensure(c, player);   // Round 85: glancing off guide walls, in every mode
+            RaceStuckReset.Ensure(c, player);   // Round 93 (D1): a wedged vehicle in a race gets a reset
         }
         public static bool For(ArcadeVehicle c) => c && c.GetComponent<HighAssist>() is HighAssist a && a.On;
         void Awake() { car = GetComponent<ArcadeVehicle>(); respawn = GetComponent<VehicleRespawn>(); config = GetComponent<VehicleConfiguration>(); }

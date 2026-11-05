@@ -211,5 +211,71 @@ namespace ChastainRush
             Check("C2: the human-like driver takes the U-turn without missing its checkpoint", pe.Finished && hit, $"missed {pe.MissedTotal}");
             race.EndRace();
         }
+
+        // ---------------------------------------------------------------- D: a wedged vehicle gets a reset; a reset never skips a checkpoint or a lap
+        IEnumerator R93Reset()
+        {
+            report.AppendLine(); report.AppendLine("=== D1: the bike held on its tail (rotation and position frozen, as wedged against a wall) in a race: the prompt and the reset by itself, normal and HIGH");
+            yield return Clock(13f); yield return Vehicle("moto");
+            foreach (bool high in new[] { false, true })
+            {
+                R84High(high); yield return StartRoute("wings_and_wheels.json", "forward", 0, 2); var r = race.Route; var p = race.Player;
+                p.ClockStarted = true; p.NextCheckpoint = 2;
+                var at = r.PointAt(r.GateS + r.Checkpoints[2].S - 60f, out var f); Place(RaceRoute.Surface(at.x, at.z), f, 0f); yield return new WaitForSecondsRealtime(.5f);
+                int pr0 = RaceStuckReset.Prompts, ar0 = RaceStuckReset.AutoResets; var p0 = car.Body.position;
+                car.Body.rotation = Quaternion.LookRotation(Vector3.up, -f) ; car.transform.rotation = car.Body.rotation; car.Body.position = p0 + Vector3.up * 1.2f;
+                car.Body.constraints = RigidbodyConstraints.FreezeRotation | RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionZ;
+                float t = 0f, prompt = -1f, reset = -1f; bool shot = false;
+                while (t < 14f)
+                {
+                    yield return new WaitForFixedUpdate(); t += Time.fixedDeltaTime;
+                    if (prompt < 0f && RaceStuckReset.Prompts > pr0) prompt = t;
+                    if (prompt > 0f && !shot && t > prompt + .5f && !high) { shot = true; yield return Capture("93_d_prompt"); }
+                    if (RaceStuckReset.AutoResets > ar0) { reset = t; yield return new WaitForFixedUpdate(); car.Body.constraints = RigidbodyConstraints.None; break; }
+                }
+                car.Body.constraints = RigidbodyConstraints.None; yield return new WaitForSecondsRealtime(1f);
+                if (high) yield return Capture("93_d_after_high"); else yield return Capture("93_d_after_normal");
+                var q = car.Body.position; float up = Vector3.Angle(car.transform.up, Vector3.up);
+                report.AppendLine($"  {(high ? "HIGH" : "normal")}: prompt at {prompt:0.0} s, reset at {reset:0.0} s; after: ({q.x:0.0}, {q.y:0.0}, {q.z:0.0}) tilted {up:0} deg, lap station {r.LapStationOf(q):0} m (checkpoint 3 at {r.Checkpoints[2].S:0} m), next checkpoint {p.NextCheckpoint + 1}");
+                Check($"D1 {(high ? "HIGH" : "normal")}: the wedged bike is reset by itself ({(high ? "at about 5 s" : "a prompt at about 5 s, the reset at about 8 s")}), upright, short of the next checkpoint",
+                    reset > 0f && prompt > 0f && (high ? reset < 6.5f : prompt < 6.5f && reset > 7f && reset < 9.5f) && up < 20f && p.NextCheckpoint == 2, $"prompt {prompt:0.0}, reset {reset:0.0}");
+                race.EndRace(); R84High(false);
+            }
+
+            report.AppendLine(); report.AppendLine("=== D2: the reset button pressed 25 m before each checkpoint and before the line (that checkpoint next), and in the quarry's lake: nothing forgiven it did not pass, no lap moved");
+            yield return Vehicle("original"); R73Pad();
+            foreach (var course in R93Arg("-r93ResetCourses", "viking_quarry.json,wings_and_wheels.json,chastain_glen_loop.json,kennesaw_mountain.json").Split(','))
+            {
+                yield return StartRoute(course, "forward", 0, 3); var r = race.Route; if (r == null) { Check($"D2 {course}: loads", false); continue; }
+                var p = race.Player; int n = r.Checkpoints.Count; var bad = new List<string>();
+                for (int k = 0; k <= n; k++)
+                {
+                    p.ClockStarted = true; p.CompletedLaps = 1; p.NextCheckpoint = k; p.Forgiven.Clear(); p.ActiveShortcut = null;
+                    float sk = k < n ? r.Checkpoints[k].S : r.LapLength;
+                    var at = r.PointAt(r.GateS + sk - 25f, out var f); Place(RaceRoute.Surface(at.x, at.z), f, 0f); yield return new WaitForSecondsRealtime(.4f);
+                    yield return R73Reset(); yield return new WaitForSecondsRealtime(.3f);
+                    float st = r.LapStationOf(car.Body.position);
+                    bool ok = p.NextCheckpoint == k && p.Forgiven.Count == 0 && p.CompletedLaps == 1 && (Mathf.Repeat(sk - st, r.LapLength) < .5f * r.LapLength);
+                    if (!ok) bad.Add($"{(k < n ? "CP" + (k + 1) : "the line")}: next {p.NextCheckpoint + 1}, forgiven {string.Join(",", p.Forgiven.Select(x => x + 1))}, laps {p.CompletedLaps}, put at lap {st:0} m (target {sk:0} m)");
+                }
+                if (course.StartsWith("viking"))
+                {
+                    // the lake in the pit beside The Big One, after CP2 (Player.log: "in the lake at (-1980, -1488)", then CP3 ... 22 forgiven)
+                    foreach (var w in new[] { new Vector3(-1980f, 0f, -1488f), new Vector3(-2124f, 0f, -1599f) })
+                    {
+                        p.ClockStarted = true; p.CompletedLaps = 1; p.NextCheckpoint = 2; p.Forgiven.Clear(); int lr = RaceController.LakeResets;
+                        Place(RaceRoute.Surface(w.x, w.z), Vector3.forward, 0f); float t = 0f;
+                        while (RaceController.LakeResets == lr && t < 8f) { yield return new WaitForSecondsRealtime(.2f); t += .2f; }
+                        yield return new WaitForSecondsRealtime(.5f);
+                        bool reset = RaceController.LakeResets > lr; float st = r.LapStationOf(car.Body.position);
+                        report.AppendLine($"  {r.Name}: in the lake at ({w.x:0}, {w.z:0}) after CP2: {(reset ? "put back" : "NOT put back")} at lap {st:0} m; next {p.NextCheckpoint + 1}, forgiven {(p.Forgiven.Count == 0 ? "none" : string.Join(",", p.Forgiven.Select(x => x + 1)))}");
+                        if (!reset || p.NextCheckpoint != 2 || p.Forgiven.Count > 0 || p.CompletedLaps != 1) bad.Add($"lake ({w.x:0}, {w.z:0}): next {p.NextCheckpoint + 1}, forgiven {p.Forgiven.Count}");
+                    }
+                }
+                report.AppendLine($"  {r.Name}: {n} checkpoints and the line reset before: {(bad.Count == 0 ? "every one kept as next, nothing forgiven, no lap moved" : string.Join("; ", bad))}");
+                Check($"D2 {r.Name}: no reset forgives a checkpoint it did not pass or moves a lap", bad.Count == 0, $"{bad.Count} wrong");
+                race.EndRace(); Flush();
+            }
+        }
     }
 }
