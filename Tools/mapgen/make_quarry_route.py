@@ -302,9 +302,11 @@ PC = {pc["name"].split(" ")[0]: pc for pc in pieces}
 def jk(j, s): pc = PC[j["id"]]; return pc["i0"] + int(round(s / 2.0))   # a jump piece's point at its own station s (2 m apart from 0)
 
 # ---------------------------------------------------------------- checkpoints (Woodstock Rush's rules: a missed one costs the route's penalty, the lap counts)
+# Round 93: each landing's checkpoint counts as wide as its landing slope (make_quarry_jumps.py APRON_HALF 45 m; -45: the arch stays 22 m, count_half_m 45):
+# a jump landed 30 to 40 m off the line missed the 22 m one (+30 s every lap in the check)
 CPS = [(k_of((-2700.0, -1900.0), PC["T"]), "the runway's end", 0.0),
        (jk(J3, 30.0), "The Big One's run-up", 12.0),
-       (jk(J3, J3["land_s"][-1] + 6.0), "The Big One's landing", 22.0),
+       (jk(J3, J3["land_s"][-1] + 6.0), "The Big One's landing", -45.0),
        (jk(J3, catch_end(J3) - 10.0), "The Big One's run-out", 0.0),   # Round 91 (0): from each landing the next arch in view (the way on)
        (k_of((-2420.0, -1296.0), PC["S"]), "the pit floor", 0.0),
        (k_of((-2760.0, -1545.0), PC["S"]), "the west end", 0.0),
@@ -312,14 +314,14 @@ CPS = [(k_of((-2700.0, -1900.0), PC["T"]), "the runway's end", 0.0),
        (k_of((-2000.0, -1640.0), PC["S"]), "under The Long One", 0.0),
        (k_of((CUT_X, -1900.0), PC["S"]), "the cutting", 0.0),
        (jk(J1, 30.0), "The Corner's run-up", 12.0),
-       (jk(J1, J1["land_s"][-1] + 6.0), "The Corner's landing", 22.0),
+       (jk(J1, J1["land_s"][-1] + 6.0), "The Corner's landing", -45.0),
        (jk(J1, catch_end(J1) - 10.0), "The Corner's run-out", 0.0),
        (k_of((-1940.0, -1118.0), PC["F"]), "the haul road's hairpin", 0.0),
        (k_of((-1612.0, -1450.0), PC["F"]), "the east rim", 0.0),
        (k_of((-1572.0, -1900.0), PC["G"]), "the east plateau", 0.0),
        (k_of((-1850.0, -2118.0), PC["G"]), "behind the start boxes", 0.0),
        (jk(J2, 30.0), "The Long One's run-up", 12.0),
-       (jk(J2, J2["land_s"][-1] + 6.0), "The Long One's landing", 22.0),
+       (jk(J2, J2["land_s"][-1] + 6.0), "The Long One's landing", -45.0),
        (jk(J2, catch_end(J2) - 10.0), "The Long One's run-out", 0.0),
        (k_of((-2200.0, -1072.0), PC["X"]), "the north wall", 0.0),
        (k_of((-2550.0, -1232.0), PC["X"]), "the north-west rim", 0.0),
@@ -327,7 +329,8 @@ CPS = [(k_of((-2700.0, -1900.0), PC["T"]), "the runway's end", 0.0),
 cps = []
 for k, label, half in CPS:
     c = {"s": st(k), "pos": [round(loop[k][0], 1), round(loop[k][1], 1)], "label": label}
-    if half > 0: c["half_m"] = half
+    if half < 0: c["half_m"] = 22.0; c["count_half_m"] = -half
+    elif half > 0: c["half_m"] = half
     cps.append(c)
 cps.sort(key=lambda c: c["s"])
 for i, c in enumerate(cps, 1): c["id"] = i

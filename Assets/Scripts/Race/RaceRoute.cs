@@ -14,7 +14,7 @@ namespace ChastainRush
     //
     // Round 6: gates are wide and forgiving; official shortcuts (shaped after Racer's WoodlandRoute: a path, an entry plane,
     // the gates it bypasses) and road closures (barriers across roads that leave the course) are part of the route data.
-    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; public float y, ring_m, ring_w, ring_h; public float max_speed; }   // Round 92 (F): max_speed, a SLOW ring: it counts only under this speed (m/s; 0: any)   // Round 71 (the air race): y the ring's middle, ring_m a ring's radius, ring_w / ring_h a frame's half width and half height   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
+    [Serializable] public class RouteCheckpointJson { public int id; public float s; public float[] pos; public string label; public float arch_m, half_m; public float y, ring_m, ring_w, ring_h; public float max_speed; public float count_half_m; }   // Round 93: count_half_m, the half width the checkpoint counts over when wider than its arch (half_m): a quarry landing as wide as its slope   // Round 92 (F): max_speed, a SLOW ring: it counts only under this speed (m/s; 0: any)   // Round 71 (the air race): y the ring's middle, ring_m a ring's radius, ring_w / ring_h a frame's half width and half height   // Round 27: arch_m, the arch's height (0: 7.5 m; low in a pipe); half_m its own half width (0: the route's)
 
     // Round 6: an OFFICIAL shortcut. A path from entry to exit, an entry plane across it a little way in (crossing that plane
     // in the direction of the path is "taking the shortcut") and the checkpoints it forgives. Heights come from the world.
@@ -152,6 +152,7 @@ namespace ChastainRush
         public Vector3 Forward;      // horizontal travel direction through the gate
         public Vector3 Right;
         public float HalfWidth, S;   // S: distance along the lap in travel order from the lap's own start
+        public float CountHalf;   // Round 93: counts out to this half width when wider than HalfWidth (the arch keeps HalfWidth)
         public float Below = 6f, Above = 25f;   // metres under / over Position.y that still count (a jump over the gate counts)
         public float Arch;                      // Round 27: the arch's height (0: the usual 7.5 m)
         public float MaxSpeed;                  // Round 92 (F): a SLOW ring counts only under this speed (m/s; 0: any)
@@ -179,7 +180,7 @@ namespace ChastainRush
                 float across = Vector3.Dot(hit, Right), up = hit.y;
                 return Ring > 0f ? across * across + up * up <= Ring * Ring : Mathf.Abs(across) <= RingW && Mathf.Abs(up) <= RingH;
             }
-            return Mathf.Abs(Vector3.Dot(hit, Right)) <= HalfWidth + reach && hit.y >= -Below && hit.y <= Above;
+            return Mathf.Abs(Vector3.Dot(hit, Right)) <= Mathf.Max(HalfWidth, CountHalf) + reach && hit.y >= -Below && hit.y <= Above;
         }
     }
 
@@ -278,7 +279,7 @@ namespace ChastainRush
             {
                 var g = r.MakeGate(i + 1, order[i].c.label, order[i].s, order[i].c.half_m > 0f ? order[i].c.half_m : j.checkpoint_half_width_m);   // Round 27: half_m
                 g.S = Mathf.Repeat(order[i].s - gateS, L);
-                g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m;
+                g.DataId = order[i].c.id; g.Arch = order[i].c.arch_m; g.CountHalf = order[i].c.count_half_m;
                 g.Below = r.Gate.Below; g.Above = r.Gate.Above;
                 if (j.air) { g.Ring = order[i].c.ring_m; g.RingW = order[i].c.ring_w; g.RingH = order[i].c.ring_h; g.Position.y = order[i].c.y; g.EitherWay = true; }
                 g.MaxSpeed = order[i].c.max_speed;   // Round 92 (F)   // Round 71; Round 73 (B3)
