@@ -5,8 +5,8 @@ air behind the start ring and let go at GO: there is no runway here):
   CH   up Cherokee Street; KE Kennestone's east side
   NA   a wide loop west past Tower Road and North Avenue (the cars' lap goes round North Avenue; the planes go further)
   C1   down Church Street; U2 UNDER the hospital's glass skybridge (10.5 m clear: Round 78)
-  C2   Church Street south, a SLOW ring (under 50 m/s or it does not count)
-  MS   Marietta Square, a SLOW ring (under 45 m/s)
+  EK   (Round 93) a loop east of Cherokee Street back to Kennestone
+  C2   Church Street south; MS Marietta Square (Round 93: no longer slow rings); SE (Round 93) a wide loop east of the square
   P1   onto South Marietta Parkway; U3 UNDER the railroad's bridge (11 m clear)
   WS   back north-west of the square and round onto Cherokee Street for the line
 Heights, floors, ceilings and the rounding are make_air_tour_route.py's (this script is that one with its own course; --room takes the exe's probe of the
@@ -54,7 +54,10 @@ CTRL = [
     ((1801.0, -8060.0), ("SF", "Start / finish", "ring", 22, ("agl", 30))),
     ((1825.0, -7800.0), None),
     ((1842.0, -7560.0), ("CH", "Up Cherokee Street", "ring", 22, ("agl", 28))),
-    ((1880.0, -7100.0), None),
+    # Round 93 (C3): out east of Cherokee Street and back to Kennestone (a longer way in place of the slow rings)
+    ((2050.0, -7380.0), None),
+    ((2350.0, -7170.0), ("EK", "East of Kennestone", "ring", 26, ("agl", 45))),
+    ((2260.0, -6870.0), None),
     ((1885.0, -6800.0), ("KE", "Kennestone east", "ring", 24, ("agl", 40))),
     ((1840.0, -6420.0), None),
     ((1650.0, -6230.0), None),
@@ -73,14 +76,15 @@ CTRL = [
     ((1664.0, -6640.0), ("C1", "Down Church Street", "ring", 20, ("agl", 18))),
     ((1671.4, -6745.2), ("U2", "Under the hospital's skybridge", "frame", (9, 3.0), ("agl", 5.2))),
     ((1683.0, -6850.0), None),
-    ((1695.0, -7300.0), ("C2", "Church Street south (slow)", "ring", 24, ("agl", 30))),
+    ((1695.0, -7300.0), ("C2", "Church Street south", "ring", 24, ("agl", 30))),
     ((1735.0, -7900.0), None),
-    ((1765.0, -8464.0), ("MS", "Marietta Square (slow)", "ring", 24, ("agl", 30))),
+    ((1765.0, -8464.0), ("MS", "Marietta Square", "ring", 24, ("agl", 30))),
+    # Round 93 (C3): a wide loop east of the square before the parkway
     ((1980.0, -8585.0), None),
-    ((2184.0, -8704.0), None),
-    ((2233.0, -8770.0), None),
-    ((2239.0, -8852.0), None),
-    ((2201.0, -8925.0), None),
+    ((2330.0, -8600.0), None),
+    ((2640.0, -8720.0), ("SE", "East of the square", "ring", 26, ("agl", 45))),
+    ((2600.0, -8940.0), None),
+    ((2330.0, -9000.0), None),
     ((2131.0, -8967.0), None),
     ((1957.5, -9013.4), ("P1", "Onto the parkway", "ring", 22, ("agl", 14))),
     ((1841.6, -9044.5), ("U3", "Under the railroad", "frame", (10, 3.0), ("agl", 5.4))),
@@ -91,7 +95,7 @@ CTRL = [
     ((1700.0, -8260.0), None),
     ((1790.0, -8180.0), None),
 ]
-SLOW = {"C2": 50.0, "MS": 45.0}
+SLOW = {}   # Round 93 (C3, Dan: "I don't like the idea of airplane checkpoints where you have to fly at a different speed"): no slow rings
 CLEARED = {"P1": (130, 40), "U3": (40, 160), "C1": (170, 40)}
 LOW = {"C1": (150, 150), "U2": (250, 200), "U3": (200, 200), "P1": (120, 120)}
 LOW_CLEAR = {"C1": 12.0, "U2": 3.8, "U3": 3.8, "P1": 8.0}   # a slow ring counts only under this speed (m/s)
