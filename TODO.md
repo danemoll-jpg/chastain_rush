@@ -107,6 +107,13 @@ the simple version, not as requirements to tune. Copy both rules into CLAUDE.md'
 `.PriorityClass = 'BelowNormal'`, or `start /belownormal`) and give Unity's batch runs fewer worker threads (`-job-worker-count` about half the cores), so Dan's
 computer stays usable. At most 3 full Build Maps in a round; past that, stop and report. Copy this rule into CLAUDE.md's "Process" in the same words.
 
+**Check runs never sit stuck — STANDING RULE (Dan, 2026-11-05 05:05).** Dan, with a picture of a check race's bike wedged upright against a building wall at lap 21:34:
+"I dont understand why it does this all the time. I just see it stuck for 20+ minutes doing nothing. this isn't the first time." From now on: (1) the human-like driver and
+pilot reset themselves the way a player would (the reset button) after about 5 s with no progress along the course, and the check logs it with a picture; (2) a race in a
+check that makes no progress for 2 minutes is ended and reported as STUCK (where, what it was against), never left to the run's long watchdog (150 / 330 minutes); (3) a
+check run's total time budget is set from the work (laps x expected lap time x 2), not a blanket hour count; (4) Claude Code watches a running check's log and stops it
+as soon as it is stuck or clearly failing, instead of waiting it out. Copy this rule into CLAUDE.md's "Process" in the same words.
+
 ## Process (Dan, 2026-10-15; full rules in CLAUDE.md "Process")
 This file holds only: the standing rules above, the CURRENT round, QUEUED rounds, the last three "Previous delivery"
 sections, and the technical notes at the end. Everything older is in `TODO-ARCHIVE.md`, word for word: search it when
@@ -140,6 +147,14 @@ C. WINGS & WHEELS: SMOOTH ROADS, AN OBVIOUS U-TURN, NO SLOW GATES (Dan, 2026-11-
    (3) The planes: no slow gates (remove every ring that must be taken under a speed); instead a couple more rings that make the planes' way a little longer (and the low rings
    under bridges stay); retune toward the car's time (two attempts, then report the car / plane laps per difficulty). Check: three races (cars, planes, mixed) with times;
    the human-like driver takes the U-turn without missing its checkpoint.
+D. A WEDGED VEHICLE AND A RESET THAT SKIPPED THE LAP (found 2026-11-05 05:05). (1) Dan's picture: the bike stood upright on its tail against a building's wall beside the
+   road, wheels off the ground, and no reset came for 20+ minutes. In a race (normal and HIGH) a player's vehicle that is wedged, on its tail or nose, or not moving along the
+   course for about 5 s is offered / given a reset as an AI's is (HIGH: automatic; normal: a "Press Y to reset" prompt, automatic after about 8 s); say which race and
+   where. (2) `local/round93/after_hops1/Player.log`, the Viking Quarry race: "[Race] RESET ... placed on from lap 7306 m to 1028 m; checkpoints 3, 4, 5, ... 22 forgiven"
+   (four times): a reset near the lap's end put the car back to The Big One's run-up and FORGAVE checkpoints 3 to 22, breaking Round 86 B (a reset never skips a
+   checkpoint; it goes before the next one not yet passed). Find why (the lap's wrap at the finish, the lap station measured against the next lap) and fix it for every
+   course. Check: resets forced at each checkpoint's approach and just before the finish line on the quarry, Wings & Wheels and two other courses: none forgives a
+   checkpoint it did not pass, none moves you a lap.
 Check: item 0 for every item. PUBLISH through the launcher (prove the update from 0.92.1 the way Dan gets it).
 For Dan to check: the quarry after The Big One; flying both planes (turns, rolls, loops); Wings & Wheels (the smooth lap, the U-turn, the planes' longer way).
 
