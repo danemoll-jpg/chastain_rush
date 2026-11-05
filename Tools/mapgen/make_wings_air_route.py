@@ -59,9 +59,10 @@ CTRL = [
     ((1840.0, -6420.0), None),
     ((1650.0, -6230.0), None),
     ((1250.0, -6150.0), None),
-    ((820.0, -6250.0), ("NA", "West of North Avenue", "ring", 26, ("agl", 45))),
-    ((700.0, -6520.0), None),
-    ((900.0, -6800.0), None),
+    ((640.0, -6230.0), ("NA", "West of North Avenue", "ring", 26, ("agl", 45))),
+    ((470.0, -6520.0), None),
+    ((600.0, -6880.0), None),
+    ((900.0, -6900.0), None),
     ((1150.0, -6760.0), None),
     ((1330.0, -6620.0), None),
     ((1410.0, -6330.0), None),
@@ -84,14 +85,14 @@ CTRL = [
     ((1957.5, -9013.4), ("P1", "Onto the parkway", "ring", 22, ("agl", 14))),
     ((1841.6, -9044.5), ("U3", "Under the railroad", "frame", (10, 3.0), ("agl", 5.4))),
     ((1680.0, -9080.0), None),
-    ((1400.0, -9020.0), None),
-    ((1180.0, -8700.0), ("WS", "West of the square", "ring", 26, ("agl", 45))),
-    ((1330.0, -8360.0), None),
+    ((1530.0, -9000.0), None),
+    ((1490.0, -8640.0), ("WS", "West of the square", "ring", 26, ("agl", 45))),
+    ((1560.0, -8360.0), None),
     ((1700.0, -8260.0), None),
     ((1790.0, -8180.0), None),
 ]
 SLOW = {"C2": 50.0, "MS": 45.0}
-CLEARED = {"P1": (130, 40), "U3": (40, 160)}
+CLEARED = {"P1": (130, 40), "U3": (40, 160), "C1": (170, 40)}
 LOW = {"C1": (150, 150), "U2": (250, 200), "U3": (200, 200), "P1": (120, 120)}
 LOW_CLEAR = {"C1": 12.0, "U2": 3.8, "U3": 3.8, "P1": 8.0}   # a slow ring counts only under this speed (m/s)
 # ---------------------------------------------------------------- the line in plan: a closed centripetal Catmull-Rom through the control points
@@ -319,6 +320,8 @@ route = {
                          half_m=float(r["size"] if r["kind"] == "ring" else r["size"][0]), max_speed=SLOW.get(r["name"], 0.0)) for k, r in enumerate(cps)],
 }
 json.dump(route, open(OUT, "w"), indent=1)
+json.dump({"source": "Tools/mapgen/make_wings_air_route.py (Round 92 F): Wings & Wheels' low flight lanes, cleared of trees by the Trees step (MapBuilder.SummitRamp.cs MergeAirLanes)", "clear_lines": clear_lines},
+          open(os.path.join(ROOT, "Data/tracks/wings_and_wheels_air.json"), "w"), indent=1)
 
 print("wrote", OUT, f"({len(cps)} rings and the line)")
 

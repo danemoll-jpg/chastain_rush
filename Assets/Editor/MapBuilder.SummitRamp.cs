@@ -53,6 +53,9 @@ namespace ChastainRush
             // Round 78 (C): the air tour's lanes too (South Marietta Parkway's trees either side of its run under the railroad)
             string tour = Path.Combine(ProjectRoot, "Data/tracks/air_tour.json");
             if (File.Exists(tour)) { var ft = JsonUtility.FromJson<AirLanesFile>(File.ReadAllText(tour)); d.clear_lines = d.clear_lines.Concat(ft.clear_lines ?? new RidgeClear[0]).ToArray(); Debug.Log($"[Round78] the air tour: {ft.clear_lines?.Length ?? 0} flight lanes cleared of trees"); }
+            // Round 92 (F): Wings & Wheels' plane lanes (the tree on Church Street's descent to C1, the parkway under the railroad)
+            string wings = Path.Combine(ProjectRoot, "Data/tracks/wings_and_wheels_air.json");
+            if (File.Exists(wings)) { var fw = JsonUtility.FromJson<AirLanesFile>(File.ReadAllText(wings)); d.clear_lines = d.clear_lines.Concat(fw.clear_lines ?? new RidgeClear[0]).ToArray(); Debug.Log($"[Round92] Wings & Wheels: {fw.clear_lines?.Length ?? 0} flight lanes cleared of trees"); }
         }
 
         // Round 72: the summit ramp's steel deck as a builder of its own (the quarry jumps' kickers and landing decks too): the deck's driven top on its

@@ -64,6 +64,7 @@ static bool SelfUpdate(const fs::path& exe){
  if(build<=LauncherBuild)return false;
  std::string want;for(auto& f:store->state["game"]["manifest"]["files"])if(f.value("path","")=="Launcher/ChastainRushLauncher.exe")want=f.value("sha256","");
  auto have=Hash(next);if(want.empty()||want.size()!=have.size()||_stricmp(want.c_str(),have.c_str())!=0){store->Log("Launcher update skipped: the shipped launcher does not match its signed manifest");return false;}
+ if(_stricmp(Hash(exe).c_str(),have.c_str())==0)return false;   // already this launcher (a release whose launcher.json overstates its build: no restart loop)
  auto old=fs::path(exe.wstring()+L".old");
  if(!MoveFileExW(exe.c_str(),old.c_str(),MOVEFILE_REPLACE_EXISTING)){store->Log("Launcher update skipped: cannot rename the running launcher");return false;}
  if(!CopyFileW(next.c_str(),exe.c_str(),TRUE)){MoveFileExW(old.c_str(),exe.c_str(),MOVEFILE_REPLACE_EXISTING);store->Log("Launcher update failed: copy; the old launcher was put back");return false;}
