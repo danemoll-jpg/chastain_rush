@@ -65,7 +65,8 @@ namespace ChastainRush
                 foreach (var sc in route.Shortcuts) lines.Add(sc.Path);
                 foreach (int m in mouths.Unused(lines)) { MakeMouthBarrier(mouths, m); MouthsClosed.Add(mouths.ids[m]); }
             }
-            BuildUnderground(route);   // Round 27: the underground race's seals, railings and switch gates (RaceBarriers.Underground.cs)
+            BuildUnderground(route);
+            BuildUTurns(route);   // Round 93 (C2): a row along each U-turn's outside and its board (RaceBarriers.UTurns.cs)   // Round 27: the underground race's seals, railings and switch gates (RaceBarriers.Underground.cs)
         }
 
         public readonly List<string> MouthsClosed = new List<string>();   // Round 24 A2: for the checks and the log

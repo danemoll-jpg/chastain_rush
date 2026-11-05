@@ -59,6 +59,7 @@ namespace ChastainRush
     }
 
     [Serializable] public class RoutePieceJson { public long osm_id; public string name; public float length_m; public bool reverse; }
+    [Serializable] public class RouteUTurnJson { public float[] pos; public float reach; }   // Round 93 (C2): a U-turn's apex and reach (Race/RaceUTurns.cs)
     [Serializable] public class RouteJunctionJson { public float s; public string[] roads; public float[] pos; }
     [Serializable]
     public class RouteJson
@@ -75,6 +76,7 @@ namespace ChastainRush
         public RouteJunctionJson[] junctions;
         public RouteShortcutJson[] official_shortcuts;
         public RouteClosureJson[] closures;
+        public RouteUTurnJson[] u_turns;   // Round 93 (C2): the race layer's U-turn guides (RaceUTurns)
         // Round 18: the Noonday Creek trail. directions: the ones this route may be raced in (none listed = both); vehicles: the
         // only vehicle ids allowed on it (none listed = all); trail: a narrow trail (the AI keeps close to the line: its half
         // width, lane and passing lane), ai_zones: held speeds

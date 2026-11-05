@@ -134,7 +134,12 @@ namespace ChastainRush
             if (route == null) return;
             Add(route.Path, Main, 5f, true);
             foreach (var sc in route.Shortcuts) Add(sc.Path, Optional, 3f, false);
+            // Round 93 (C2): each U-turn's stretch (RaceUTurns), drawn over the course in amber with an arrowhead the way you go
+            uturns.Clear();
+            foreach (var t in RaceUTurns.Of(route)) { var l = new List<Vector3>(); for (float u = -t.reach; u <= t.reach + .01f; u += 3f) l.Add(route.PointAt(route.GateS + t.s + u, out _)); uturns.Add(l.ToArray()); }
         }
+        readonly List<Vector3[]> uturns = new List<Vector3[]>();
+        static readonly Color UTurnColor = new Color(1f, .62f, .1f);
         void Add(Vector3[] pts, Color c, float w, bool closed)
         {
             if (pts == null || pts.Length < 2) return;
@@ -229,6 +234,13 @@ namespace ChastainRush
             if (under)
                 foreach (var s in pipeLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) { Line(vh, a, b, 6, new Color(.02f, .04f, .05f)); Line(vh, a, b, 4, s.c); } }
             foreach (var s in raceLines) { var a = Project(s.a); var b = Project(s.b); if (In(a, b)) Line(vh, a, b, s.w, s.c); }
+            if (route != null && race && race.State != RaceController.Stage.Free)
+                foreach (var l in uturns)
+                {
+                    for (int i = 1; i < l.Length; i++) { var a = Project(l[i - 1]); var b = Project(l[i]); if (In(a, b)) { Line(vh, a, b, 8, new Color(.02f, .04f, .05f)); Line(vh, a, b, 5, UTurnColor); } }
+                    var tip = Project(l[l.Length - 1]); var back = Project(l[l.Length - 3]); var d = (tip - back).normalized; var n = new Vector2(-d.y, d.x);
+                    if (bounds.Contains(tip)) { Triangle(vh, tip + d * 9, tip - d * 5 + n * 9, tip - d * 5 - n * 9, new Color(.02f, .04f, .05f)); Triangle(vh, tip + d * 6, tip - d * 3 + n * 6, tip - d * 3 - n * 6, UTurnColor); }
+                }
             // Round 78 (A): the running trains' cars (dark outline, rust red)
             RailTrains.ForEachCar((ra, rb) => { var a = Project(ra); var b = Project(rb); if (In(a, b)) { Line(vh, a, b, 7, new Color(.03f, .04f, .05f)); Line(vh, a, b, 4.5f, new Color(.86f, .36f, .18f)); } });
             // Round 36: Racer's stunt park and activity sites on the minimap (Free Roam): the park's outline, a diamond at each place

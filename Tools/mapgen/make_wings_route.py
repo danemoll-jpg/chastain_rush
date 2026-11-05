@@ -101,7 +101,7 @@ CHECKPOINTS = [
     (1840.0, -7590.0, "Cherokee Street"),
     (1870.0, -6800.0, "Cherokee Street north"),
     (1450.0, -6508.0, "Tower Road west"),
-    (1195.0, -6515.0, "The U-turn"),
+    (1222.0, -6509.0, "The U-turn"),   # Round 93 (C2): on the westbound approach 25 m before the apex, so its arch faces you (it stood side-on at the apex)
     (1500.0, -6524.0, "Tower Road east"),
     (1688.0, -7100.0, "Church Street"),
     (1700.0, -7900.0, "Church Street south"),
@@ -313,11 +313,18 @@ print(f"closures: {len(closures)}; dead-end stubs not barred: {len(stubs)}")
 for c in closures:
     if c["road"].startswith("Root Street"): print(f"  Root Street barrier at ({c['x']:.0f}, {c['z']:.0f}); the manhole at ({MH26[0]:.0f}, {MH26[1]:.0f})")
 
+# Round 93 (C2, Dan: "since there is a uturn lets make it more obvious"): the U-turn at Tower Road's west end (its apex: the lap's westmost point
+# there), for the race layer's barrier row along its outside, its U-turn board and the minimap (Race/RaceUTurns.cs)
+apex = min((q for q in lap if math.dist(q, (1195.0, -6515.0)) < 60.0), key=lambda q: q[0])
+u_turns = [{"pos": [round(apex[0], 1), round(apex[1], 1)], "reach": 30.0}]
+print(f"the U-turn's apex at ({apex[0]:.1f}, {apex[1]:.1f})")
+
 out = dict(SETTINGS)
 out.update({
     "source": "Tools/mapgen/make_wings_route.py (Round 92 F): Cherokee Street, Tower Road, Church Street, Hansell Street; the tube from the Kennestone exit to the Root Street manhole",
     "lap_length_m": round(L_lap, 1), "loop": flat(lap), "gate_s": gate_s, "lead_in": flat(lead), "lead_in_length_m": LEAD_IN_M,
     "checkpoints": cps, "junctions": merged, "loop_pieces": [], "official_shortcuts": [shortcut], "closures": closures, "closure_stubs_not_barred": stubs,
+    "u_turns": u_turns,
 })
 json.dump(out, open(OUT_ROUTE, "w", encoding="utf-8"), indent=0)
 print(f"wrote {OUT_ROUTE}")
