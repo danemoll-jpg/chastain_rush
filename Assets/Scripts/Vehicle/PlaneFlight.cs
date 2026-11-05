@@ -9,8 +9,8 @@ namespace ChastainRush
     // minimap, exploration and resets keep working; VehicleConfiguration.Apply adds this and starts it. ArcadeVehicle does not run by itself while the
     // plane is on (ArcadeVehicle.Flown): on the ground this calls its Simulate with the plane's own controls (it rolls on its wheels, steers, brakes),
     // in the air it flies the body itself. Free Roam only (VehicleProfile.Flies).
-    //   Pad:      left stick: pitch (pull back: nose up) and bank (the bank turns it); RT / LT throttle up / down (on the ground LT brakes); LB / RB
-    //             rudder; X view (chase, far chase, cockpit; the right stick looks round); Y reset.
+    //   Pad:      left stick: pitch (pull back: nose up) and bank (the bank turns it); RT / LT throttle up / down (on the ground LT brakes); LB or RB
+    //             held with the stick: roll all the way round and loop (Round 93; was the rudder); X view (chase, far chase, cockpit; the right stick looks round); Y reset.
     //   Keyboard: W / S throttle up / down (on the ground S brakes); up / down arrows nose down / up; left / right arrows bank; A / D rudder (and
     //             steer on the ground); V view; R reset.
     // Take-off: full throttle down the runway (or any long straight road or field) and past TakeOffSpeed pull back. In the air it holds its height
@@ -28,7 +28,7 @@ namespace ChastainRush
         public float Bank { get; private set; } = MaxBank; public float Gain { get; private set; } = SpeedGain;   // the wheels' bottom below the body's middle (Tools/Blender/plane.py GROUND)
         ArcadeVehicle car; VehicleConfiguration config; VehicleInput vInput;
         Transform visual, prop, disc; Renderer discRenderer;
-        InputAction stick, throttleUp, throttleDown, rudder, keysThrottle, keysPitch, keysBank;
+        InputAction stick, throttleUp, throttleDown, rudder, keysThrottle, keysPitch, keysBank, aeroButton;
         float pitchDeg, rollDeg, yawDeg, propAngle;
         public bool Airborne { get; private set; }
         public float Throttle { get; private set; }            // 0..1
@@ -95,28 +95,33 @@ namespace ChastainRush
             stick = new InputAction("Plane stick", InputActionType.Value, expectedControlType: "Vector2"); stick.AddBinding("<Gamepad>/leftStick").WithProcessor("stickDeadzone(min=0.12,max=0.95)"); stick.Enable();
             throttleUp = new InputAction("Plane throttle up", InputActionType.Value); throttleUp.AddBinding("<Gamepad>/rightTrigger").WithProcessor("axisDeadzone(min=0.1,max=1)"); throttleUp.Enable();
             throttleDown = new InputAction("Plane throttle down", InputActionType.Value); throttleDown.AddBinding("<Gamepad>/leftTrigger").WithProcessor("axisDeadzone(min=0.1,max=1)"); throttleDown.Enable();
+            // Round 93 (B): LB / RB were the rudder; now either one held is the roll-and-loop button (keyboard: Shift); the rudder is the keyboard's A / D only
+            // (on the pad the stick's turn covers it: the player's plane turns off the stick like the Needle, PlayerBankTurn)
             rudder = new InputAction("Plane rudder", InputActionType.Value);
-            rudder.AddCompositeBinding("1DAxis").With("Negative", "<Gamepad>/leftShoulder").With("Positive", "<Gamepad>/rightShoulder");
             rudder.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/a").With("Positive", "<Keyboard>/d"); rudder.Enable();
+            aeroButton = new InputAction("Plane roll and loop", InputActionType.Button);
+            foreach (var b in new[] { "<Gamepad>/leftShoulder", "<Gamepad>/rightShoulder", "<Keyboard>/leftShift", "<Keyboard>/rightShift" }) aeroButton.AddBinding(b);
+            aeroButton.Enable();
             keysThrottle = new InputAction("Plane throttle keys", InputActionType.Value); keysThrottle.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/s").With("Positive", "<Keyboard>/w"); keysThrottle.Enable();
             keysPitch = new InputAction("Plane pitch keys", InputActionType.Value); keysPitch.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/upArrow").With("Positive", "<Keyboard>/downArrow"); keysPitch.Enable();
             keysBank = new InputAction("Plane bank keys", InputActionType.Value); keysBank.AddCompositeBinding("1DAxis").With("Negative", "<Keyboard>/leftArrow").With("Positive", "<Keyboard>/rightArrow"); keysBank.Enable();
         }
         void DisposeInput()
         {
-            foreach (var a in new[] { stick, throttleUp, throttleDown, rudder, keysThrottle, keysPitch, keysBank }) a?.Dispose();
-            stick = throttleUp = throttleDown = rudder = keysThrottle = keysPitch = keysBank = null;
+            foreach (var a in new[] { stick, throttleUp, throttleDown, rudder, keysThrottle, keysPitch, keysBank, aeroButton }) a?.Dispose();
+            stick = throttleUp = throttleDown = rudder = keysThrottle = keysPitch = keysBank = aeroButton = null;
         }
         static bool InputFree => !MenuInput.Blocked && !GameMenus.Open && !WorldMap.OwnsInput && Time.timeScale > 0;
         // pitch + nose up, bank + right, up / down the throttle's change (or a scripted target), rudder + right
         void Read(out float pitch, out float bank, out float up, out float down, out float rud)
         {
-            pitch = bank = up = down = rud = 0;
+            pitch = bank = up = down = rud = 0; AeroHeld = false;
             if (Scripted) { pitch = sPitch; bank = sBank; rud = sRudder; if (sThrottle >= 0f) { up = sThrottle > Throttle + .01f ? 1f : 0f; down = sThrottle < Throttle - .01f ? 1f : 0f; } down = Mathf.Max(down, sBrake); return; }
             if (stick == null || !InputFree || (vInput && !vInput.enabled)) return;
             var s = stick.ReadValue<Vector2>(); pitch = Mathf.Clamp(-s.y + keysPitch.ReadValue<float>(), -1, 1); bank = Mathf.Clamp(s.x + keysBank.ReadValue<float>(), -1, 1);
             float k = keysThrottle.ReadValue<float>(); up = Mathf.Max(throttleUp.ReadValue<float>(), k > 0 ? k : 0); down = Mathf.Max(throttleDown.ReadValue<float>(), k < 0 ? -k : 0);
             rud = rudder.ReadValue<float>();
+            AeroHeld = aeroButton != null && aeroButton.IsPressed();
         }
 
         void Update() => Effects(Time.deltaTime);
@@ -140,7 +145,9 @@ namespace ChastainRush
             Airspeed += ((targetV - Airspeed) * Gain - 9.81f * Mathf.Sin(pitchDeg * Mathf.Deg2Rad) * .75f - Mathf.Abs(Mathf.Sin(rollDeg * Mathf.Deg2Rad)) * 1.2f) * dt;
             Airspeed = Mathf.Clamp(Airspeed, 10f, Top * 1.35f);
             float slow = Mathf.Clamp01((StallSpeed + 6f - Airspeed) / 10f);
-            if (Aerobatic) FreeAttitude(body, pIn, bIn, rud, slow, dt);   // Round 91 (B): the player's plane rolls and loops (PlaneFlight.Aerobatics.cs)
+            // Round 93 (B): the player's plane rolls and loops only while a shoulder button is held (PlaneFlight.Aerobatics.cs); let go and it levels
+            // the near way in the free flight, then flies the limited flight again
+            if (Aerobatic && FreeNow(pIn, bIn)) FreeAttitude(body, AeroHeld ? pIn : 0f, AeroHeld ? bIn : 0f, rud, slow, dt);
             else {
             // pitch: the stick sets the rate; let go and it eases back to level; slow, the nose eases down until it has speed again; never past the ceiling
             if (Mathf.Abs(pIn) > .05f) pitchDeg += pIn * PitchR * Mathf.Lerp(1f, .55f, Mathf.Clamp01(Airspeed / Top)) * dt;
@@ -149,12 +156,16 @@ namespace ChastainRush
             if (body.position.y > Ceiling) pitchDeg = Mathf.Min(pitchDeg, Mathf.Lerp(0f, -8f, (body.position.y - Ceiling) / 60f));
             pitchDeg = Mathf.Clamp(pitchDeg, -MaxPitch - 10f, MaxPitch * (1f - slow * .8f));
             // bank: the stick rolls it; let go and the wings come level; the bank turns it (a coordinated turn), the rudder a little more
-            if (Mathf.Abs(bIn) > .05f && Outside <= 0f) rollDeg += bIn * Roll * dt;   // (past the map's edge the turn back has the bank)
+            // Round 93 (B, Dan: "without the shoulder button you turn just like needle"): the player's stick sets the bank itself (full stick = the
+            // plane's bank limit, let go = level) and turns it a little more on top, as easy as steering the bike; AI pilots and checks as before
+            bool player = Aerobatic;
+            if (player && Outside <= 0f) rollDeg = Mathf.MoveTowards(rollDeg, bIn * Bank, Roll * dt);
+            else if (Mathf.Abs(bIn) > .05f && Outside <= 0f) rollDeg += bIn * Roll * dt;   // (past the map's edge the turn back has the bank)
             else if (Outside <= 0f) rollDeg = Mathf.MoveTowards(rollDeg, 0f, 40f * dt);
             Boundary(body.position, ref rollDeg);   // past the map's edge: a wide turn back (PlaneFlight.Effects.cs)
             rollDeg = Mathf.Clamp(rollDeg, -Bank, Bank);
             float turn = Mathf.Rad2Deg * 9.81f * Mathf.Tan(rollDeg * Mathf.Deg2Rad) / Mathf.Max(Airspeed, 15f);
-            yawDeg += (turn + rud * RudderRate) * dt;
+            yawDeg += (turn + rud * RudderRate + (player && Outside <= 0f ? bIn * PlayerBankTurn : 0f)) * dt;
             }
             if (Outside > 0f) Airspeed = Mathf.MoveTowards(Airspeed, Mathf.Max(StallSpeed + 10f, Airspeed * .97f), 6f * dt);   // the headwind
             // the body: along its nose at the airspeed (a lift that just holds it: the climb is the nose's), turned to the attitude

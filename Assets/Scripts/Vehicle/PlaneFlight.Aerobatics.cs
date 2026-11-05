@@ -11,6 +11,23 @@ namespace ChastainRush
     public sealed partial class PlaneFlight
     {
         bool Aerobatic => !Scripted && !(vInput && !vInput.enabled) && !(car && car.Puppet);
+        // Round 93 (B, Dan: "To roll lets make it so you have to press the shoulder buttons"): the free flight only while LB / RB (Shift) is held, and
+        // after it is let go until the wings are level and the nose near the horizon again; then the limited bank-and-turn flight takes over
+        public const float PlayerBankTurn = 16f;   // deg/s at full stick on top of the bank's turn (the shoulders' old rudder, now on the stick)
+        public bool AeroHeld { get; private set; }
+        public bool FreeFlight { get; private set; }   // checks: the free (roll and loop) flight is on
+        bool FreeNow(float pIn, float bIn)
+        {
+            if (AeroHeld) { FreeFlight = true; return true; }
+            if (!FreeFlight) return false;
+            var att = Quaternion.Euler(-pitchDeg, yawDeg, -rollDeg); var f = att * Vector3.forward; float r = RollOf(att);
+            float p = Mathf.Asin(Mathf.Clamp(f.y, -1f, 1f)) * Mathf.Rad2Deg;
+            if (Mathf.Abs(r) > 12f || p > MaxPitch || p < -MaxPitch - 10f || (att * Vector3.up).y < .5f) return true;   // still levelling
+            // level again: hand the attitude to the limited flight as plain angles
+            FreeFlight = false; var h = Ahead(att);
+            pitchDeg = p; rollDeg = r; yawDeg = Mathf.Atan2(h.x, h.z) * Mathf.Rad2Deg;
+            return false;
+        }
         float rollAcc, pitchAcc, rollIdle, pitchIdle; string trickNote = ""; float trickAt = -9f;
         public int Rolls { get; private set; }   // checks
         public int Loops { get; private set; }

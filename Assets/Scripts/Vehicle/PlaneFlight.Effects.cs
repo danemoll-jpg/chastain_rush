@@ -90,7 +90,7 @@ namespace ChastainRush
             float s = Mathf.Max(1f, Screen.height / 800f); var old = GUI.matrix; GUI.matrix = Matrix4x4.Scale(new Vector3(s, s, 1f));
             float W = Screen.width / s, Hh = Screen.height / s;
             var v = car.Body.linearVelocity; float heading = Mathf.Repeat(transform.eulerAngles.y, 360f); string[] points = { "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
-            var r = new Rect(24, Hh - 150, 500, 126);
+            var r = new Rect(24, Hh - 150, 610, 126);   // (Round 93: wider for the roll-and-loop hint)
             var oc = GUI.color; GUI.color = new Color(0, 0, 0, .45f); GUI.DrawTexture(r, Texture2D.whiteTexture); GUI.color = oc;
             GUI.Label(new Rect(r.x + 14, r.y + 8, 470, 34), $"{DisplayUnits.Feet(Mathf.Max(0, HeightAboveGround)):0} ft   {DisplayUnits.Mph(v.magnitude):0} mph   throttle {Throttle * 100:0}%", big);
             string climb = Mathf.Abs(v.y) > .5f ? $"   {(v.y > 0 ? "climbing" : "descending")} {DisplayUnits.Feet(Mathf.Abs(v.y)) * 60:0} ft/min" : "";
@@ -99,8 +99,8 @@ namespace ChastainRush
             GUI.Label(new Rect(r.x + 14, r.y + 70, 470, 24), state, small);
             bool pad = KeyHints.Pad;   // Round 74 (B): the device in use (switches at once)
             string hint = !Airborne && !Crashed ? (pad ? "RT throttle · LT brake · left stick steer; past take-off speed pull back" : "W throttle · S brake · A/D steer; past take-off speed press Down")
-                        : Time.unscaledTime - shownAt < 14f ? (pad ? "Left stick pitch / bank · RT / LT throttle · LB / RB rudder" : "Arrows pitch / bank · W/S throttle · A/D rudder") : "";
-            GUI.Label(new Rect(r.x + 14, r.y + 96, 480, 24), hint, small);
+                        : Time.unscaledTime - shownAt < 14f ? (pad ? "Stick turn / climb · hold LB or RB: roll, loop · RT / LT throttle" : "Arrows turn / climb · hold Shift: roll, loop · W/S throttle · A/D rudder") : "";
+            GUI.Label(new Rect(r.x + 14, r.y + 96, 590, 24), hint, small);
             TrickGui(W);   // Round 91 (B): BARREL ROLL / LOOP
             if (Leaving)
             {

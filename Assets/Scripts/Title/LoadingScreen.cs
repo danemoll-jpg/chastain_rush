@@ -48,6 +48,7 @@ namespace ChastainRush
             ("Worn tire tracks leaving the road mark a shortcut. Pull it off and you save time; fumble it and you lose more.", null),
             ("An official shortcut forgives the checkpoints it skips. A missed checkpoint anywhere else costs 5 seconds.", null),
             ("In the air, the left stick tips the nose and LB / RB spin you.", "In the air, W / S tips the nose and Q / E spin you."),
+            ("In a plane the stick turns you; hold LB or RB with it to roll all the way round or loop.", "In a plane the arrows turn you; hold Shift with them to roll all the way round or loop."),   // Round 93 (B)
             ("100 goose eggs are hidden around the map. GOOSE EGGS on the pause menu shows your count; the map shows the egg areas.", null),
             ("POLICE on the menus: outrun the cops in a Getaway, or catch speeders on Speed Patrol.", null),
             ("The Chastain Corner Stunt Park fills the old Kroger lot: ramps, a loop and the abandoned bank. STUNT EVENT scores your tricks.", null),
